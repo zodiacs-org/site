@@ -1,0 +1,147 @@
+{
+ "packDigest": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+ "series": {
+  "1975-01-01": {
+   "moonWindow": [
+    "1977-06-19T00:00:00Z",
+    "1978-04-15T00:00:00Z"
+   ],
+   "joins": 12,
+   "insideFloor": [
+    {
+     "series": "emb",
+     "at": "1978-04-08T00:00:00 TDB",
+     "tdbSec": -685886400,
+     "elongationDeg": 4.658690143754879
+    }
+   ],
+   "within10Deg": 1,
+   "nearest": [
+    {
+     "series": "emb",
+     "at": "1978-04-08T00:00:00 TDB",
+     "tdbSec": -685886400,
+     "elongationDeg": 4.658690143754879
+    },
+    {
+     "series": "moon",
+     "at": "1977-07-20T00:00:00 TDB",
+     "tdbSec": -708523200,
+     "elongationDeg": 42.59780063215691
+    }
+   ]
+  },
+  "2007-03-15": {
+   "moonWindow": [
+    "2009-08-31T00:00:00Z",
+    "2010-06-27T00:00:00Z"
+   ],
+   "joins": 11,
+   "insideFloor": [
+    {
+     "series": "moon",
+     "at": "2009-11-17T00:00:00 TDB",
+     "tdbSec": 311688000,
+     "elongationDeg": 4.805397990048433
+    },
+    {
+     "series": "sun",
+     "at": "2009-11-17T00:00:00 TDB",
+     "tdbSec": 311688000,
+     "elongationDeg": 4.805397990048433
+    }
+   ],
+   "within10Deg": 2,
+   "nearest": [
+    {
+     "series": "moon",
+     "at": "2009-11-17T00:00:00 TDB",
+     "tdbSec": 311688000,
+     "elongationDeg": 4.805397990048433
+    },
+    {
+     "series": "sun",
+     "at": "2009-11-17T00:00:00 TDB",
+     "tdbSec": 311688000,
+     "elongationDeg": 4.805397990048433
+    }
+   ]
+  },
+  "1912-12-12": {
+   "moonWindow": [
+    "1915-05-31T00:00:00Z",
+    "1916-03-26T00:00:00Z"
+   ],
+   "joins": 12,
+   "insideFloor": [
+    {
+     "series": "moon",
+     "at": "1915-08-11T00:00:00 TDB",
+     "tdbSec": -2663236800,
+     "elongationDeg": 0.5575493343484875
+    }
+   ],
+   "within10Deg": 1,
+   "nearest": [
+    {
+     "series": "moon",
+     "at": "1915-08-11T00:00:00 TDB",
+     "tdbSec": -2663236800,
+     "elongationDeg": 0.5575493343484875
+    },
+    {
+     "series": "moon",
+     "at": "1915-07-10T00:00:00 TDB",
+     "tdbSec": -2666001600,
+     "elongationDeg": 26.94576174658851
+    }
+   ]
+  },
+  "2103-01-23": {
+   "moonWindow": [
+    "2105-07-11T00:00:00Z",
+    "2106-05-07T00:00:00Z"
+   ],
+   "joins": 12,
+   "insideFloor": [],
+   "within10Deg": 0,
+   "nearest": [
+    {
+     "series": "moon",
+     "at": "2106-05-05T00:00:00 TDB",
+     "tdbSec": 3355732800,
+     "elongationDeg": 17.073112220605907
+    },
+    {
+     "series": "moon",
+     "at": "2106-04-03T00:00:00 TDB",
+     "tdbSec": 3352968000,
+     "elongationDeg": 17.514274264600186
+    }
+   ]
+  },
+  "2040-01-01": {
+   "moonWindow": [
+    "2042-06-19T00:00:00Z",
+    "2043-04-15T00:00:00Z"
+   ],
+   "joins": 12,
+   "insideFloor": [],
+   "within10Deg": 0,
+   "nearest": [
+    {
+     "series": "emb",
+     "at": "2042-10-13T00:00:00 TDB",
+     "tdbSec": 1350043200,
+     "elongationDeg": 11.773370522987882
+    },
+    {
+     "series": "moon",
+     "at": "2042-06-21T00:00:00 TDB",
+     "tdbSec": 1340193600,
+     "elongationDeg": 39.76620030759571
+    }
+   ]
+  }
+ }
+}

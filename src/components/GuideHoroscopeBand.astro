@@ -1,49 +1,95 @@
 ---
+/**
+ * The sign guide's horoscope card: the first two sentences of the sign's
+ * published daily reading (the same edition /horoscopes/{sign}/ prints,
+ * quoted verbatim, never rewritten), the edition's date and Moon phase, the
+ * passage's own sky receipt, and plain links to the day, week and month.
+ *
+ * The quoted text is edition text: the page passes the edition date to
+ * Base, the reading sits in a [data-edition-content] scope, and its relative
+ * words go through EditionText, so a day-old deploy reads "the October 16
+ * edition" instead of "today", exactly as the daily horoscope page does.
+ * No island: everything here is server-rendered markup and links.
+ */
+import SignIcon from './SignIcon.astro';
+import EditionText from './EditionText.astro';
+import programData from '../data/horoscope-program.json';
+import { pageReadingFromProgram } from '../lib/horoscope-page-data';
+import type { HoroscopeProgram } from '../lib/horoscope-program';
+import { guideDailyExcerpt } from '../lib/guide-daily';
+
 interface Props {
   signName: string;
   slug: string;
 }
 
 const { signName, slug } = Astro.props;
+const reading = pageReadingFromProgram(programData as HoroscopeProgram, slug, 'today');
+const daily = guideDailyExcerpt(reading);
 ---
-<aside class="guide-horoscopes" aria-label={`${signName} horoscopes`}>
-  <em class="guide-horoscopes__kicker">Your {signName} horoscope</em>
-  <p>
-    <a href={`/horoscopes/${slug}/`}>{signName} today</a>
-    <span aria-hidden="true">·</span>
-    <a href={`/horoscopes/${slug}/weekly/`}>this week</a>
-    <span aria-hidden="true">·</span>
-    <a href={`/horoscopes/${slug}/monthly/`}>this month</a>
-  </p>
-</aside>
+<section class="guide-horoscopes" aria-label={`${signName} horoscopes`}>
+  <div class="guide-horoscopes__head">
+    <div class="guide-horoscopes__who">
+      <SignIcon sign={slug} size={46} webpOnly />
+      <div data-edition-content="true">
+        <p class="guide-horoscopes__label" data-guide-daily="label"><EditionText current={`Today’s ${signName} horoscope`} editionDate={daily.editionDate} /></p>
+        <p class="guide-horoscopes__date" data-guide-daily="date"><time datetime={daily.editionDate}>{daily.dateLabel}</time>{daily.moonPhase && <> · {daily.moonPhase}</>}</p>
+      </div>
+    </div>
+    <nav class="seg guide-horoscopes__tabs" aria-label={`${signName} horoscope periods`}>
+      <a class="is-on" href={`/horoscopes/${slug}/`}>Today</a>
+      <a href={`/horoscopes/${slug}/weekly/`}>This week</a>
+      <a href={`/horoscopes/${slug}/monthly/`}>This month</a>
+    </nav>
+  </div>
+  <div class="guide-horoscopes__reading" data-edition-content="true">
+    <p class="guide-horoscopes__text" data-guide-daily="text"><EditionText current={daily.excerpt} editionDate={daily.editionDate} /></p>
+    {daily.receipt && <p class="guide-horoscopes__receipt" data-guide-daily="receipt">{daily.receipt}</p>}
+  </div>
+  <div class="guide-horoscopes__go">
+    <a class="btn btn--primary" href={`/horoscopes/${slug}/`}><span>Read the full horoscope</span><span class="orb" aria-hidden="true">↗</span></a>
+    <span class="reassure">A new reading each day, for reflection.</span>
+  </div>
+</section>
 
 <style>
   .guide-horoscopes {
-    padding: 18px 20px;
-    border: 1px solid color-mix(in srgb, var(--sign) 24%, var(--hair-2));
-    border-radius: var(--r-md);
-    background: color-mix(in srgb, var(--sign) 5%, var(--void-1));
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.5fr) auto;
+    gap: 40px;
+    align-items: center;
+    margin-top: 32px;
+    padding: 30px 34px;
+    border: 1px solid color-mix(in oklab, var(--sign) 22%, transparent);
+    border-radius: var(--r-lg);
+    background: color-mix(in oklab, var(--sign) 6%, var(--void-1));
   }
-  .guide-horoscopes__kicker {
-    display: block;
-    margin-bottom: 7px;
-    color: var(--muted);
-    font-family: var(--font-serif);
-    font-size: var(--text-sm);
-  }
-  .guide-horoscopes p {
-    display: flex;
+  .guide-horoscopes__head { display: grid; gap: 14px; justify-items: start; }
+  .guide-horoscopes__who { display: flex; align-items: center; gap: 14px; }
+  .guide-horoscopes__who > :global(.sign-icon) { width: 46px; }
+  .guide-horoscopes__label { margin: 0; font-weight: 600; font-size: 1.0625rem; line-height: 1.3; letter-spacing: -0.01em; color: var(--ink-0); }
+  .guide-horoscopes__date { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+  .guide-horoscopes__tabs { background: rgba(6, 7, 9, 0.35); }
+  .guide-horoscopes__tabs a { min-height: 34px; padding: 0 14px; font-size: 0.8125rem; }
+  .guide-horoscopes__tabs a.is-on { background: var(--ink-0); color: var(--void-0); }
+  .guide-horoscopes__text {
     margin: 0;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 7px;
-    color: var(--faint);
-    font-size: var(--text-base);
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    line-height: 1.32;
+    color: var(--ink-0);
+    text-wrap: pretty;
   }
-  .guide-horoscopes a {
-    color: var(--text);
-    text-decoration-color: color-mix(in srgb, var(--sign) 52%, transparent);
-    text-underline-offset: 4px;
+  .guide-horoscopes__receipt { margin: 10px 0 0; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .guide-horoscopes__go { display: grid; gap: 12px; justify-items: start; }
+  @media (max-width: 1100px) {
+    .guide-horoscopes { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   }
-  .guide-horoscopes a:hover { color: var(--sign); }
+  @media (max-width: 760px) {
+    .guide-horoscopes { margin-top: 24px; padding: 22px 20px; gap: 18px; }
+    .guide-horoscopes__text { font-size: 1.28rem; }
+    .guide-horoscopes__go { justify-items: stretch; }
+    .guide-horoscopes__go .btn { width: 100%; }
+    .guide-horoscopes__go .reassure { text-align: center; }
+  }
 </style>

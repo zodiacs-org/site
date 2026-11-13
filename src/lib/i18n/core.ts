@@ -1,4 +1,4 @@
-export const LOCALES = ['en', 'es', 'pt', 'fr', 'it', 'ru', 'ar'] as const;
+export const LOCALES = ['en', 'es', 'pt', 'fr', 'it', 'ru', 'ar', 'zh-hans', 'zh-hant'] as const;
 export type Locale = typeof LOCALES[number];
 
 /** Locales with complete production routes and catalogs. */
@@ -8,6 +8,18 @@ export type ReleasedLocale = typeof RELEASED_LOCALES[number];
 /** Locales whose complete UI catalog can render in a gated preview. */
 export const CATALOG_LOCALES = ['en', 'es', 'pt', 'fr', 'it', 'ru'] as const;
 export type CatalogLocale = typeof CATALOG_LOCALES[number];
+
+/**
+ * Locales released for one section only (the Chinese zodiac guide). They have
+ * no complete UI catalog: shared chrome reads a chrome-only catalog that
+ * fails the build on any key it does not carry, and every other route keeps
+ * its English page.
+ */
+export const SECTION_LOCALES = ['zh-hans', 'zh-hant'] as const;
+export type SectionLocale = typeof SECTION_LOCALES[number];
+
+/** Locales that can render a page with the shared navigation and footer. */
+export type PageLocale = CatalogLocale | SectionLocale;
 
 export const DEFAULT_LOCALE: ReleasedLocale = 'en';
 
@@ -42,6 +54,8 @@ export const LOCALE_META = {
   it: { pathPrefix: '/it', htmlLang: 'it', dir: 'ltr', hreflang: 'it', intlLocale: 'it-IT', ogLocale: 'it_IT', languageName: 'Italiano' },
   ru: { pathPrefix: '/ru', htmlLang: 'ru', dir: 'ltr', hreflang: 'ru', intlLocale: 'ru-RU', ogLocale: 'ru_RU', languageName: 'Русский' },
   ar: { pathPrefix: '/ar', htmlLang: 'ar', dir: 'rtl', hreflang: 'ar', intlLocale: 'ar-u-ca-gregory-nu-latn', ogLocale: 'ar_AR', languageName: 'العربية' },
+  'zh-hans': { pathPrefix: '/zh-hans', htmlLang: 'zh-Hans', dir: 'ltr', hreflang: 'zh-Hans', intlLocale: 'zh-Hans', ogLocale: 'zh_CN', languageName: '简体中文' },
+  'zh-hant': { pathPrefix: '/zh-hant', htmlLang: 'zh-Hant', dir: 'ltr', hreflang: 'zh-Hant', intlLocale: 'zh-Hant', ogLocale: 'zh_TW', languageName: '繁體中文' },
 } as const satisfies Record<Locale, LocaleMeta>;
 
 export function isLocale(locale: string): locale is Locale {
@@ -54,6 +68,14 @@ export function isReleasedLocale(locale: string): locale is ReleasedLocale {
 
 export function isCatalogLocale(locale: string): locale is CatalogLocale {
   return (CATALOG_LOCALES as readonly string[]).includes(locale);
+}
+
+export function isSectionLocale(locale: string): locale is SectionLocale {
+  return (SECTION_LOCALES as readonly string[]).includes(locale);
+}
+
+export function isPageLocale(locale: string): locale is PageLocale {
+  return isCatalogLocale(locale) || isSectionLocale(locale);
 }
 
 /** Parse every declared locale, including staged locales with no routes yet. */
@@ -74,6 +96,12 @@ export function normalizeReleasedLocale(locale: string | undefined | null): Rele
 export function normalizeCatalogLocale(locale: string | undefined | null): CatalogLocale {
   const normalized = normalizeKnownLocale(locale);
   return isCatalogLocale(normalized) ? normalized : DEFAULT_LOCALE;
+}
+
+/** Resolve the locale a page renders in, including the section-only locales. */
+export function normalizePageLocale(locale: string | undefined | null): PageLocale {
+  const normalized = normalizeKnownLocale(locale);
+  return isPageLocale(normalized) ? normalized : DEFAULT_LOCALE;
 }
 
 /** Existing rendering API remains release-gated; staged locales fail closed. */

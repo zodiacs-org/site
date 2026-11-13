@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-27T04:35:12.139052+00:00",
+  "origin": "https://zodiacs.org",
+  "images": [
+    {
+      "url": "https://zodiacs.org/api/og/chart-twins-image?s=taurus&m=leo",
+      "status": 200,
+      "contentType": "image/jpeg",
+      "width": 1200,
+      "height": 630,
+      "bytes": 129119,
+      "sha256": "cb4355179e2807ccd649c254c9b3c5bc3c09f8a8dd8d379c20543c1c8325704e"
+    },
+    {
+      "url": "https://zodiacs.org/api/og/chart-twins-story?s=taurus&m=leo",
+      "status": 200,
+      "contentType": "image/jpeg",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 294089,
+      "sha256": "0ebe6e5e0317ea1899e1cb5715518fa0b6264acfd010df80bcd00523ae051f6f"
+    },
+    {
+      "url": "https://zodiacs.org/api/og/famous-chart-image?p=frida-kahlo",
+      "status": 200,
+      "contentType": "image/jpeg",
+      "width": 1200,
+      "height": 630,
+      "bytes": 109360,
+      "sha256": "a70771cc158b03394f11a64c9e9d0a575627c179f7c622ed7a431880b9885c1a"
+    },
+    {
+      "url": "https://zodiacs.org/api/og/famous-chart-story?p=frida-kahlo",
+      "status": 200,
+      "contentType": "image/jpeg",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 259424,
+      "sha256": "7ea0e0b942ca8c37c17598cc5598c28a8d8e3b07391defcbd520502885badaa2"
+    },
+    {
+      "url": "https://zodiacs.org/api/og/milestone-image?k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31",
+      "status": 200,
+      "contentType": "image/jpeg",
+      "width": 1200,
+      "height": 630,
+      "bytes": 106517,
+      "sha256": "857dc46af8cd724e2aae6566a79ded507d3d67e25cf3b746e92144d18aa155c9"
+    },
+    {
+      "url": "https://zodiacs.org/api/og/milestone-story?k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31",
+      "status": 200,
+      "contentType": "image/jpeg",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 259778,
+      "sha256": "dc9c4137e79c10e30de8cdbbaf8b8bc33a54eacdaddcb5e1e8ec961f90d11fee"
+    }
+  ],
+  "unknownPersonStatus": 404
+}

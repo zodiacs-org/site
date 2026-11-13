@@ -54,7 +54,12 @@ def main():
         if args.check:
             if not target.exists() or target.read_bytes() != payload:
                 raise ValueError(f"Stale {filename}; run npm run ai:package")
-        else:
+        # Unchanged archives keep their exact file and modification time.
+        elif not target.exists() or target.read_bytes() != payload:
+            # An archive already built for a version keeps its bytes: it may have
+            # been reviewed or uploaded. A change needs a new version.
+            if target.exists():
+                raise ValueError(f"{filename} already exists with other bytes; use a new version")
             target.write_bytes(payload)
         manifest["packages"].append({"name": name, "version": version, "file": filename, "bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest(), "members": members})
         print(f"{'Verified' if args.check else 'Built'} {filename} ({len(payload)} bytes)")

@@ -10,7 +10,7 @@ import {
   type Daily,
 } from '../daily';
 import type { DailyPublication } from '../daily-publication';
-import type { PublishedEventDescriptor } from '../events/publication';
+import type { PublishedEventDescriptor } from '../events/site-publication';
 import type { HoroscopeProgram } from '../horoscope-program';
 import type { SavedChart } from '../profile/schema';
 import { SIGN_SLUGS, signForLongitude } from '../signs';
@@ -133,7 +133,7 @@ describe('daily email content', () => {
       },
       daily, publication: subjectPublication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
     });
-    expect(leo.subject).toBe('Leo today — messages come to the front');
+    expect(leo.subject).toBe('Leo today: messages come to the front');
 
     const collectivePublication = publicationWithCollectiveLine();
     const timed = renderDailyEmail({
@@ -158,7 +158,7 @@ describe('daily email content', () => {
     const expected = transitLine(contact.transiting, contact.type, contact.natal);
     const message = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'chart@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'chart@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily,
@@ -184,7 +184,7 @@ describe('daily email content', () => {
     })), ascendant);
     const message = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'grounded@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'grounded@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily, publication: groundedPublication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
@@ -204,7 +204,7 @@ describe('daily email content', () => {
     const chart = chartWithBodies([{ body: 'Sun', lon: 120, retrograde: false }], 120);
     const message = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'ahead@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'ahead@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily, publication, program, nearbyEvent: futureEvent,
@@ -214,15 +214,15 @@ describe('daily email content', () => {
     const eventDate = new Intl.DateTimeFormat('en', {
       month: 'long', day: 'numeric', timeZone: 'UTC',
     }).format(new Date(futureEvent.anchor));
-    const expected = `Ahead: Fixture event 1 on ${eventDate} falls in your ${ORDINAL[house]} house — a checkpoint for ${HOUSE_THEME[house]}.`;
+    const expected = `Ahead: Fixture event 1 on ${eventDate} falls in your ${ORDINAL[house]} house, a checkpoint for ${HOUSE_THEME[house]}.`;
     expect(message.text).toContain(expected);
     expect(message.html).toContain(`Ahead: Fixture event 1 on ${eventDate}`);
-    expect(message.html).toContain(`falls in your ${ORDINAL[house]} house — a checkpoint for ${HOUSE_THEME[house]}.`);
+    expect(message.html).toContain(`falls in your ${ORDINAL[house]} house, a checkpoint for ${HOUSE_THEME[house]}.`);
     expect(message.text).not.toContain(futureEvent.summary);
 
     const ambiguous = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'ambiguous@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'ambiguous@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily,
@@ -238,7 +238,7 @@ describe('daily email content', () => {
     const untimedChart = chartWithBodies([{ body: 'Sun', lon: 120, retrograde: false }]);
     const untimed = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'untimed@example.com', userId: 'user', chartId: untimedChart.id,
+        tier: 'chart', email: 'untimed@example.com', userId: 'user', chartId: untimedChart.id, revision: 1,
         chart: untimedChart, timezone: 'UTC',
       },
       daily, publication, program, nearbyEvent: futureEvent,
@@ -252,7 +252,7 @@ describe('daily email content', () => {
     staleChart.birth.time = null;
     const stale = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'stale@example.com', userId: 'user', chartId: staleChart.id,
+        tier: 'chart', email: 'stale@example.com', userId: 'user', chartId: staleChart.id, revision: 1,
         chart: staleChart, timezone: 'UTC',
       },
       daily, publication, program, nearbyEvent: futureEvent,
@@ -274,13 +274,13 @@ describe('daily email content', () => {
       recipient: sun, daily, publication, program, nearbyEvent: futureEvent,
       baseUrl: 'https://zodiacs.org', unsubscribeUrl,
     });
-    expect(sunFuture.text).toContain(`Ahead: ${futureEvent.title} — ${futureEvent.summary}`);
+    expect(sunFuture.text).toContain(`Ahead: ${futureEvent.title}. ${futureEvent.summary}`);
 
     const chart = chartWithBodies([{ body: 'Sun', lon: 120, retrograde: false }], 120);
     const recipients = [
       sun,
       {
-        tier: 'chart' as const, email: 'chart@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart' as const, email: 'chart@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
     ];
@@ -299,7 +299,7 @@ describe('daily email content', () => {
     expect(selectTodayContacts(natalPointsForChart(chart), daily.bodies, TRANSIT_ORB, 3)).toEqual([]);
     const message = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'quiet@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'quiet@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily,
@@ -320,19 +320,19 @@ describe('daily email content', () => {
     reference.birth.time = null;
     const before = JSON.stringify(reference);
     const messageFor = (chart: SavedChart) => renderDailyEmail({
-      recipient: { tier: 'chart', email: 'reference@example.com', userId: 'user', chartId: chart.id, chart, timezone: 'UTC' },
+      recipient: { tier: 'chart', email: 'reference@example.com', userId: 'user', chartId: chart.id, revision: 1, chart, timezone: 'UTC' },
       daily, publication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
     });
     const known = messageFor(timed), unknown = messageFor(reference);
     expect(known.text).toContain('Sun-sign baseline');
     expect(known.preheader).not.toContain('Birth time is unknown');
-    expect(known.subject).toBe('Your chart today — a quieter sky');
+    expect(known.subject).toBe('Your chart today: a quieter sky');
     for (const body of [unknown.text, unknown.html]) {
       expect(body).not.toContain('Sun-sign baseline');
       expect(body).toContain('reference-moment positions');
       expect(body).toContain('the Sun sign has not been verified across the whole birth date');
     }
-    expect(unknown.subject).toBe('Your reference chart today — a quieter sky');
+    expect(unknown.subject).toBe('Your reference chart today: a quieter sky');
     expect(unknown.preheader).toContain('Birth time is unknown');
     expect(JSON.stringify(reference)).toBe(before);
   });
@@ -344,7 +344,7 @@ describe('daily email content', () => {
     reference.birth.time = null;
     const before = JSON.stringify(reference);
     const messageFor = (chart: SavedChart) => renderDailyEmail({
-      recipient: { tier: 'chart', email: 'reference@example.com', userId: 'user', chartId: chart.id, chart, timezone: 'UTC' },
+      recipient: { tier: 'chart', email: 'reference@example.com', userId: 'user', chartId: chart.id, revision: 1, chart, timezone: 'UTC' },
       daily, publication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
     });
     const known = messageFor(timed), unknown = messageFor(reference);
@@ -391,7 +391,7 @@ describe('brand and sign pictures', () => {
     if (!timed) chart.birth = { ...chart.birth, time: null, timeKnown: false };
     return renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'pictures@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'pictures@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily, publication, program, nearbyEvent: eventOffset(2),
@@ -399,7 +399,7 @@ describe('brand and sign pictures', () => {
     });
   };
 
-  it('puts the Zodiacs ring in every header', () => {
+  it('puts the brand lockup, the tilted ring and ZODIACS · ORG, in every header', () => {
     for (const html of [
       chartMessage(true).html,
       chartMessage(false).html,
@@ -407,7 +407,11 @@ describe('brand and sign pictures', () => {
         recipient: { tier: 'sun_sign', email: 'ring@example.com', sign: 'leo', contactId: 'ring', timezone: 'UTC' },
         daily, publication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
       }).html,
-    ]) expect(html).toContain('src="https://zodiacs.org/assets/app-icons/v3/favicon-96.png"');
+    ]) {
+      expect(html).toContain('src="https://zodiacs.org/assets/brand/tilted-ring@3x.png" width="34" height="19"');
+      expect(html).toContain('letter-spacing:.2em;text-transform:uppercase;margin:0;color:#EEF1F7;white-space:nowrap">Zodiacs<span style="margin:0 .2em;color:#7A8397">·</span><span style="font-weight:500;color:#C6CCDA">org</span></p>');
+      expect(html).not.toContain('favicon-96.png');
+    }
   });
 
   it('shows a chart Sun sign disc only when the birth time makes the Sun sign certain', () => {

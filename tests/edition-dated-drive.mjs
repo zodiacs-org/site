@@ -31,6 +31,7 @@ import { chromium } from 'playwright-core';
 import { datedEditionTextIn, datedEditionTitleIn, editionDateLabel } from '../src/lib/edition-freshness.ts';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
+import { editionLayoutStreaming } from './edition-layout-stream-drive.mjs';
 
 const publication = JSON.parse(await readFile(new URL('../src/data/daily-publication.json', import.meta.url), 'utf8'));
 const program = JSON.parse(await readFile(new URL('../src/data/horoscope-program.json', import.meta.url), 'utf8'));
@@ -166,8 +167,11 @@ await withPreview({ port: 4393 }, async (baseURL) => {
     }
 
     async function settle(page) {
-      // client:idle islands hydrate after load; give them their idle turn.
-      await page.waitForFunction(() => document.querySelectorAll('astro-island[client="idle"][ssr]').length === 0);
+      // client:idle and client:painted islands hydrate after load or after
+      // the first paint; give them their idle turn.
+      await page.waitForFunction(() => document.querySelectorAll(
+        'astro-island[client="idle"][ssr], astro-island[client="painted"][ssr]',
+      ).length === 0);
       await page.evaluate(() => new Promise((resolve) => {
         requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(resolve, 250)));
       }));
@@ -303,7 +307,7 @@ await withPreview({ port: 4393 }, async (baseURL) => {
     try {
       check('/today/ without JavaScript: no state is decided', await page.getAttribute('html', 'data-edition-state') === null);
       const heading = await page.locator('.today-hero h1').innerText();
-      check('/today/ without JavaScript: the heading is dated', heading === `The ${editionDateLabel(editionDate)} edition`, heading);
+      check('/today/ without JavaScript: the heading is dated', heading === `The sky on ${editionDateLabel(editionDate)}`, heading);
     } finally {
       await context.close();
     }
@@ -313,6 +317,13 @@ await withPreview({ port: 4393 }, async (baseURL) => {
     await new Promise((resolve) => server.close(resolve));
   }
 });
+
+try {
+  await withPreview({ port: 4396 }, editionLayoutStreaming);
+  check('Partly streamed edition controls and wheel: CLS is exactly 0', true);
+} catch (error) {
+  check('Partly streamed edition controls and wheel: CLS is exactly 0', false, error.message);
+}
 
 let failures = 0;
 for (const result of results) {

@@ -94,7 +94,7 @@ export function eclipseHitLine(hit: EclipseHit): string {
       ? `lands on your ${hit.body}`
       : `lands directly across from your ${hit.body}`;
   const role = BODY_ROLE[hit.body] ?? hit.body.toLowerCase();
-  return `The ${e.kind} ${e.type} eclipse of ${monthDay(e.peak)} (${e.degree.toFixed(1)}° ${cap(e.sign)}) ${where} — eclipses tend to fast-forward whatever house your ${role} runs.`;
+  return `The ${e.kind} ${e.type} eclipse of ${monthDay(e.peak)} (${e.degree.toFixed(1)}° ${cap(e.sign)}) ${where}. Eclipses tend to fast-forward whatever house your ${role} runs.`;
 }
 
 /** Cached Saturn-return window shape, stored per chart id. */
@@ -112,7 +112,7 @@ export function saturnWindowLine(seasons: SaturnWindowCache['seasons'], now: Dat
   const ord = ['', 'first', 'second', 'third'];
   const active = seasons.find((s) => new Date(s.from) <= now && now <= new Date(s.to));
   if (active) {
-    return `Your ${ord[active.index] ?? `${active.index}th`} Saturn return is running now — it opened ${monthDay(active.from)} and closes ${monthDay(active.to)}.`;
+    return `Your ${ord[active.index] ?? `${active.index}th`} Saturn return is running now. It opened ${monthDay(active.from)} and closes ${monthDay(active.to)}.`;
   }
   const next = seasons.find((s) => new Date(s.from) > now);
   if (next) {
@@ -121,7 +121,7 @@ export function saturnWindowLine(seasons: SaturnWindowCache['seasons'], now: Dat
     if (monthDay(next.from) === monthDay(next.to)) {
       return `Your ${label} Saturn return arrives around ${monthDay(next.from)}.`;
     }
-    return `Your ${label} Saturn return runs ${monthDay(next.from)} – ${monthDay(next.to)}.`;
+    return `Your ${label} Saturn return runs ${monthDay(next.from)} to ${monthDay(next.to)}.`;
   }
   const last = seasons[seasons.length - 1];
   return `Your last Saturn return closed ${monthDay(last.to)}; the next lies beyond this chart's horizon.`;

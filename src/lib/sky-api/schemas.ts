@@ -336,7 +336,12 @@ function componentSchema(schema: Schema): Schema {
   return rest;
 }
 
-function jsonResponse(ref: string, description: string) {
+/**
+ * A file's response. Its example is the file the site serves at `example`
+ * (under /api/v1/), which scripts/sky-api.test.mjs validates against this
+ * response's schema in every build.
+ */
+function jsonResponse(ref: string, description: string, example: string) {
   return {
     200: {
       description,
@@ -344,7 +349,12 @@ function jsonResponse(ref: string, description: string) {
         'Access-Control-Allow-Origin': { schema: { const: '*' }, description: 'Every endpoint is open to any origin.' },
         'Cache-Control': { schema: str, description: 'Short on daily files, a day on yearly files.' },
       },
-      content: { 'application/json': { schema: { $ref: `#/components/schemas/${ref}` } } },
+      content: {
+        'application/json': {
+          schema: { $ref: `#/components/schemas/${ref}` },
+          examples: { served: { summary: 'The file zodiacs.org serves at this path', externalValue: `${API_BASE}/${example}` } },
+        },
+      },
     },
     404: { description: 'No such file: a year or body outside coverage.' },
   };
@@ -361,6 +371,9 @@ export function buildOpenApi(
     schema: { type: 'integer', enum: years },
     description: `A covered calendar year (${years[0]}–${years.at(-1)}).`,
   });
+  // A year's example is the edition's year where the family covers it, else the first year it covers.
+  const editionYear = Number(dailyDate.slice(0, 4));
+  const exampleYear = (years: number[]) => (years.includes(editionYear) ? editionYear : years[0]);
   const yearPath = (family: string, schema: string, summary: string, years: number[]) => ({
     [`/api/v1/${family}/{year}.json`]: {
       get: {
@@ -368,7 +381,7 @@ export function buildOpenApi(
         summary,
         tags: ['yearly'],
         parameters: [yearParam(years)],
-        responses: jsonResponse(schema, `${summary}.`),
+        responses: jsonResponse(schema, `${summary}.`, `${family}/${exampleYear(years)}.json`),
       },
     },
   });
@@ -390,17 +403,17 @@ export function buildOpenApi(
       { ...COMPUTE_TAG },
     ],
     paths: {
-      '/api/v1/index.json': { get: { operationId: 'getIndex', summary: 'Every endpoint and document', tags: ['daily'], responses: jsonResponse('index', 'The endpoint manifest.') } },
-      '/api/v1/sky/today.json': { get: { operationId: 'getToday', summary: "Today's sky", tags: ['daily'], responses: jsonResponse('today', "Today's positions, moon, retrogrades, and events.") } },
-      '/api/v1/sky/upcoming.json': { get: { operationId: 'getUpcoming', summary: 'Upcoming events', tags: ['daily'], responses: jsonResponse('upcoming', 'The next weeks of sky events.') } },
-      '/api/v1/signs.json': { get: { operationId: 'getSigns', summary: 'The twelve signs', tags: ['daily'], responses: jsonResponse('signs', 'Sign metadata, Sun seasons, and occupants.') } },
+      '/api/v1/index.json': { get: { operationId: 'getIndex', summary: 'Every endpoint and document', tags: ['daily'], responses: jsonResponse('index', 'The endpoint manifest.', 'index.json') } },
+      '/api/v1/sky/today.json': { get: { operationId: 'getToday', summary: "Today's sky", tags: ['daily'], responses: jsonResponse('today', "Today's positions, moon, retrogrades, and events.", 'sky/today.json') } },
+      '/api/v1/sky/upcoming.json': { get: { operationId: 'getUpcoming', summary: 'Upcoming events', tags: ['daily'], responses: jsonResponse('upcoming', 'The next weeks of sky events.', 'sky/upcoming.json') } },
+      '/api/v1/signs.json': { get: { operationId: 'getSigns', summary: 'The twelve signs', tags: ['daily'], responses: jsonResponse('signs', 'Sign metadata, Sun seasons, and occupants.', 'signs.json') } },
       '/api/v1/planets/{planet}.json': {
         get: {
           operationId: 'getPlanet',
           summary: 'One body',
           tags: ['daily'],
           parameters: [{ name: 'planet', in: 'path', required: true, schema: { type: 'string', enum: [...PLANET_SLUGS] }, description: 'Lowercase body name.' }],
-          responses: jsonResponse('planet', 'Current position, retrograde status, next ingress and station.'),
+          responses: jsonResponse('planet', 'Current position, retrograde status, next ingress and station.', 'planets/sun.json'),
         },
       },
       ...yearPath('retrogrades', 'retrogrades', 'Retrograde windows for a year', skyYears),

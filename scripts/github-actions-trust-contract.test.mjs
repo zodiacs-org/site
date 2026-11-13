@@ -35,6 +35,21 @@ describe('GitHub Actions trust boundaries', () => {
     expect(preview).not.toContain('github.event.client_payload.git.sha');
   });
 
+  it('runs every Vercel dispatch only for this project, on the default branch, without credentials', async () => {
+    const dispatched = (await workflows()).filter(({ body }) => /^\s*repository_dispatch\s*:/mu.test(body));
+    expect(dispatched.map(({ name }) => name)).toEqual(['indexnow-changes.yml', 'preview-api-smoke.yml']);
+    for (const { name, body } of dispatched) {
+      for (const [, type] of body.matchAll(/^\s*- '([^']+)'$/gmu)) expect(type, name).toMatch(/^vercel\.deployment\.[a-z]+$/u);
+      expect(body, name).toContain("github.actor == 'vercel[bot]'");
+      expect(body, name).toContain('github.event.client_payload.project.id == vars.VERCEL_PROJECT_ID');
+      expect(body, name).toContain("github.event.client_payload.project.name == 'zodiacs-org'");
+      expect(body, name).toMatch(/github\.event\.client_payload\.environment == '(?:preview|production)'/u);
+      expect(body, name).toContain('ref: ${{ github.event.repository.default_branch }}');
+      expect(body, name).toContain('persist-credentials: false');
+      expect(body, name).not.toContain('github.event.client_payload.git.');
+    }
+  });
+
   it('scopes every Actions secret reference to its exact protected environment', async () => {
     const expected = new Map([
       ['account-deletion-receipt-cleanup.yml', 'account-cleanup-production'],

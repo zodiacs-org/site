@@ -1,0 +1,279 @@
+{
+  "checkedAt": "2026-10-28T10:25:11.402Z",
+  "source": "https://zodiacs.org/mcp",
+  "scope": "Generic MCP preflight, not a Muse host result",
+  "clientCapabilities": {},
+  "museHost": {
+    "status": "blocked-owner-on-waitlist",
+    "toolSelection": "unverified",
+    "cards": "unverified",
+    "investmentRefusal": "unverified"
+  },
+  "checks": [
+    "health and initialize version 0.5.1",
+    "all 13 tool names and input schemas match release baseline",
+    "all tools declare read-only, non-destructive access",
+    "all synthetic tool calls satisfy published output schemas and have text content",
+    "4 existing card resources satisfy their repository budgets (Studio 2 MB, other panels 600 KB)",
+    "invalid input refused without echoing canary"
+  ],
+  "tools": [
+    {
+      "name": "get_capabilities",
+      "input": {},
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": null
+    },
+    {
+      "name": "get_sky",
+      "input": {
+        "instant": "2026-10-28T12:00:00Z",
+        "zone": "Asia/Bangkok",
+        "bodies": [
+          "Sun",
+          "Moon",
+          "Mercury"
+        ]
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": null
+    },
+    {
+      "name": "get_upcoming_events",
+      "input": {
+        "from": "2026-10-28T00:00:00Z",
+        "to": "2026-11-04T00:00:00Z",
+        "zone": "Asia/Bangkok",
+        "kinds": [
+          "lunation"
+        ]
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": "ui://zodiacs/sky-events-v4.html"
+    },
+    {
+      "name": "check_sky_fact",
+      "input": {
+        "kind": "retrograde",
+        "body": "Mercury",
+        "instant": "2026-10-28T12:00:00Z"
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": null
+    },
+    {
+      "name": "get_horoscope",
+      "input": {
+        "sign": "leo",
+        "zone": "Asia/Bangkok"
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": "ui://zodiacs/horoscopes-v6.html"
+    },
+    {
+      "name": "open_chart_studio",
+      "input": {},
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": "ui://zodiacs/chart-studio-v6.html"
+    },
+    {
+      "name": "get_occasion_sky",
+      "input": {
+        "occasion": "wedding",
+        "date": "2027-06-12",
+        "time": "17:00",
+        "zone": "Europe/Rome",
+        "latitude": 43.7696,
+        "longitude": 11.2558,
+        "place": "Florence, Italy"
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": "ui://zodiacs/occasions-v8.html"
+    },
+    {
+      "name": "get_life_milestones",
+      "input": {
+        "birthDate": "1997-03-15"
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": "ui://zodiacs/occasions-v8.html"
+    },
+    {
+      "name": "get_compatibility",
+      "input": {
+        "a": {
+          "birthDate": "1990-05-03",
+          "time": "08:30",
+          "zone": "Europe/Madrid",
+          "latitude": 40.4168,
+          "longitude": -3.7038,
+          "place": "Madrid, Spain"
+        },
+        "b": {
+          "birthDate": "1992-08-10"
+        }
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": "ui://zodiacs/occasions-v8.html"
+    },
+    {
+      "name": "find_chart_twins",
+      "input": {
+        "birthDate": "1990-05-03"
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": "ui://zodiacs/occasions-v8.html"
+    },
+    {
+      "name": "get_famous_chart",
+      "input": {
+        "name": "Frida Kahlo"
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": "ui://zodiacs/occasions-v8.html"
+    },
+    {
+      "name": "get_birthday",
+      "input": {
+        "birthDate": "1990-05-03"
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": "ui://zodiacs/occasions-v8.html"
+    },
+    {
+      "name": "get_sky_calendar",
+      "input": {
+        "language": "en"
+      },
+      "readOnly": true,
+      "outputSchemaValid": true,
+      "textFallbackPresent": true,
+      "resourceUri": "ui://zodiacs/occasions-v8.html"
+    }
+  ],
+  "resources": [
+    {
+      "uri": "ui://zodiacs/sky-events-v4.html",
+      "mimeType": "text/html;profile=mcp-app",
+      "bytes": 86515,
+      "sha256": "7a1db3093ae647a0fb7695e5282d537f1b61351f56f7c477ae8a8b5d96731fa3",
+      "htmlAvailable": true,
+      "museRendering": "unverified"
+    },
+    {
+      "uri": "ui://zodiacs/horoscopes-v6.html",
+      "mimeType": "text/html;profile=mcp-app",
+      "bytes": 323970,
+      "sha256": "567dc7beec110af087b75107f611c513cdf73b8a910226b83c8d3bab95743458",
+      "htmlAvailable": true,
+      "museRendering": "unverified"
+    },
+    {
+      "uri": "ui://zodiacs/chart-studio-v6.html",
+      "mimeType": "text/html;profile=mcp-app",
+      "bytes": 1001895,
+      "sha256": "9fef51b4c35b7b9dd9a8b78a654fa222812b5805c5351406ea81d1fb3087d899",
+      "htmlAvailable": true,
+      "museRendering": "unverified"
+    },
+    {
+      "uri": "ui://zodiacs/occasions-v8.html",
+      "mimeType": "text/html;profile=mcp-app",
+      "bytes": 338377,
+      "sha256": "697936e02db78acbccd2ccdf8697cc13c9624f8b253ca16e81908313c9f0c531",
+      "htmlAvailable": true,
+      "museRendering": "unverified"
+    }
+  ],
+  "rateLimitWaits": [
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "resources/list",
+      "seconds": 60
+    },
+    {
+      "method": "resources/list",
+      "seconds": 60
+    },
+    {
+      "method": "resources/read",
+      "seconds": 60
+    },
+    {
+      "method": "resources/read",
+      "seconds": 60
+    }
+  ],
+  "initialize": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {
+      "tools": {
+        "listChanged": true
+      },
+      "resources": {
+        "listChanged": true
+      }
+    },
+    "serverInfo": {
+      "name": "zodiacs",
+      "version": "0.5.1"
+    },
+    "instructions": "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never guess a birth time or a sign. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology\u2019s reading. Zodiacs does not schedule anything, pick investments, make health predictions or guarantee how anything will turn out; do not call its tools for those requests, and say plainly that it cannot."
+  },
+  "initializedNotification": {
+    "status": 202
+  },
+  "preflight": "passed",
+  "baseline": "src/ai-tools/accounts/flag-off.fixture.json, occasions.toolsList"
+}

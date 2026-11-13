@@ -1,9 +1,207 @@
-# Claude directory listing — draft
+# Claude directory listing
 
-Prepared 7 October 2026 from Anthropic's [connector submission guide], [plugin
-submission guide] and [publishing overview]. Nothing has been submitted. The
-owner chooses the account, answers the data-handling and compliance questions,
-and clicks Submit.
+## Icon and reviewer texts, 7 and 8 November 2026
+
+- **7 November, with Dias's yes:** the custom icon URL is now
+  `https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v3.png`, 0.6.6's
+  picture. Saving also re-read the server, so the copy of the tools reviewers
+  see moved to 7 November: 19 tools, with 0.6.5's `get_occasion_sky`. A short
+  note on 0.6.5 went to the review thread (ticket #145701231) the same day.
+- **8 November, with Dias's yes:** the reviewer instructions pasted on
+  6 November, thirteen numbered prompts, lost step 11, a card for a baby born
+  a week earlier, and the additional notes now name
+  0.6.6 and 0.6.5's change to `get_occasion_sky`, no longer list a baby's
+  arrival or a coming of age among the occasions without links, and drop the
+  sentence about a 16 October snapshot. Asked in Claude on 7 November, that
+  step's prompt made a birthday card for the baby and read the baby's chart;
+  with PR #915 the hosted server refuses both
+  ([RESYNC-0.6.0.md](RESYNC-0.6.0.md)).
+  Saving re-read the server again: 19 tools, the copy dated 8 November, with a
+  portal note that some items were left out to fit its size limits. The
+  listing is still in review.
+
+## Product rule and 0.6.1 prepared, 4 November 2026
+
+Dias replaced the "no predictions" rule for astrology readings on 4 November
+2026. Horoscopes and transit readings are forecasts: share them plainly and
+confidently, each with a label written exactly "Reading confidence NN%". The
+number is how specific the details were, never the odds that an event
+happens, by the one rule in `src/ai-tools/reading-confidence.ts`: 40 for a Sun
+sign alone, 55 for a date without both a clock time and a place, 70 for a date
+with a clock time and a place, and 5 more when a named contact's orb is under
+1 degree, never past 95. An explainer carries no label. Forecasts are not
+health, financial or medical advice and not a promise of an outcome. The
+8 October 2026 ban on betting tips, sports picks, market timing and election
+forecasts stays. The decision is recorded in `docs/STRATEGY.md`.
+
+Privacy, as the server now states it: Zodiacs never stores or logs birth
+details. Links never carry a birth year, time, place or names; a birthday link
+carries only the month and day. Ask before using someone else's birth details.
+
+`main` offers 19 tools where both switches are on: the thirteen in review, byte
+for byte, then the five 0.6.0 tools and `find_birthplace`. Version 0.6.1 adds
+the inline readings panel `ui://zodiacs/readings-v3.html` for the five 0.6.0
+tools (no sidebar launch), the under-18 rule and the privacy and forecast
+wording above. The steps and the updated reviewer note are in
+[RESYNC-0.6.0.md](RESYNC-0.6.0.md). Nothing was synced, saved or sent.
+
+The directory text already submitted still says Zodiacs makes no personal
+predictions (the 15 October 2026 note and the description below). That portal
+copy has not been resubmitted, and this note does not change it. The next
+resubmission must replace it with the 4 November rule.
+
+## 0.6.0 prepared, 2 November 2026
+
+Five read-only tools are ready behind `ZODIACS_COVERAGE_ENABLED`, with the
+thirteen in review unchanged. Nothing was synced, saved or sent. The steps,
+a 1,511-character description and a draft note to the reviewers are in
+[RESYNC-0.6.0.md](RESYNC-0.6.0.md).
+
+## Second sync, 28 October 2026
+
+Dias approved syncing the tools again after R44 (#840) went live. In the
+full editor, Sync from server was selected, and Dias saved the listing with
+**Save and update submission**. The header then read "updated just now",
+and the status stayed **In review**.
+
+The captured snapshot did not change. The Tools tab still dates the tool
+list 16 October 2026, and the submission's server snapshot is the one
+captured on 16 October at 10:52 UTC. Selecting Sync sent no request from the
+browser; it fills in the tool names, and those are unchanged. The additional
+notes saved earlier the same day still give reviewers the current
+definitions and the four panel addresses, which match production. The
+Self-tested box was left unticked, as it was, and no email was sent.
+
+## Branding refresh, 28 October 2026
+
+Dias approved refreshing the existing listing, including its profile picture.
+Saved the selected tilted ring as the custom directory icon:
+`https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v2.png`.
+The one-liner now reads "Explore your birth chart, compatibility, horoscopes
+and the sky on days that matter." The description matches the approved
+1,784-character 0.5.1 wording, with commas around partners, friends and family.
+The icon and wording persisted after a reload. Status remains **In review**.
+
+Activated Sync from server and saved the result. All thirteen current tool
+names are present and marked read-only. The portal still labels its captured
+definition snapshot as 16 October, and its horoscope expansion still shows
+the older description. Do not claim that this captured description or date
+was refreshed. The current investment boundary and four panel addresses are
+provided to the reviewer in the listing's additional notes. No email was sent
+and no policy or self-test checkbox was changed.
+
+Two new carousel candidates are generated by
+`node tests/claude-directory-cards.mjs --version 0.5.1`. Their unmodified
+panel HTML matches the live occasions v8 resource byte for byte. They use
+live answers for the same synthetic Madrid comparison and Florence wedding
+prompts already paired with the carousel. The 375px phone layout is captured
+at double resolution, after fonts and artwork decode, so the wedding's
+published 720px artwork is not enlarged past its source resolution.
+The generated receipt is under `0.5.1/screenshots.json`.
+
+Candidate image URLs, pending a separately approved production publication:
+
+- `https://zodiacs.org/assets/ai/review/zodiacs-comparison-card-0.5.1.png`
+- `https://zodiacs.org/assets/ai/review/zodiacs-wedding-card-0.5.1.png`
+
+The candidates pass checks for matching live HTML, successful tool answers,
+decoded artwork, source resolution, owned asset requests, no browser errors
+and no horizontal overflow. The generator refuses any image URL already
+published, verified by deliberately attempting version 0.5.0 and observing
+its refusal before writing. Old 0.5.0 screenshots and both published plugin
+packages remain unchanged. No source, new image or deployment has been
+published for this refresh. The carousel still uses its older URLs until the
+new files are live and verified.
+
+## Inspection, 27 October 2026
+
+The existing edit page still says the submission is in review and that
+reviewers see saved updates without a new submission. It lists thirteen tools
+with a snapshot dated 16 October. The description includes compatibility
+scores, occasion ratings and personal weekly forecasts. It retains the older
+punctuation around partners, friends and family; the current resubmission
+source uses commas. The carousel still points to the published 0.5.0
+comparison and wedding images. The one-liner and use cases are unchanged.
+
+No field was edited, no save or sync was clicked, and no reviewer email was
+sent during this inspection. Any update requires the owner's separate yes.
+
+
+## Review-state update — 16 October 2026
+
+With the owner's explicit approval, the in-review directory entry's description
+was replaced with `app_info.description` from
+`integrations/chatgpt/chatgpt-app-submission.json`, and **Sync from server**
+updated the displayed tool list from six to the thirteen public production
+tools. The overview confirmed both changes, the unchanged
+`https://zodiacs.org/mcp` URL, no authentication, and **In review** status.
+This was an edit to the existing submission; the approved tool sync was its
+only server refresh.
+
+The production connector was then checked in Claude web and desktop with the
+comparison and Florence wedding prompts from `RESUBMISSION-0.5.0.md`. Both hosts
+rendered the comparison panel's 58/100 score ring, three component scores and
+missing-time caveat. Both rendered the wedding panel's 69/100 rating, Florence
+on 12 June 2027 at 17:00, reasons including Mercury retrograde, and golden hour
+20:13–20:57. The initial plain comparison request in each host did not reliably
+select the connector; explicitly asking to use Zodiacs produced the panels.
+
+The browser and desktop host screenshots remain in local release evidence;
+they include host chrome and are not carousel assets. The app-only,
+source-generated carousel candidates are
+[`06-comparison-card.png`](06-comparison-card.png) and
+[`07-wedding-card.png`](07-wedding-card.png), with matching copies prepared for
+`/assets/ai/review/` when this branch is published. The editor accepts an
+image URL on a Zodiacs-controlled HTTPS domain paired with an example prompt.
+No new images were uploaded, no further scan was requested, and no reviewer
+email was sent. The original
+one-liner and older reviewer test instructions below have not yet been revised
+in the portal.
+
+## Correction sent — 15 October 2026, 18:01 UTC
+
+After #761 reached production, a correction was sent from admin@zodiacs.org to
+mcp-review@anthropic.com as a reply on ticket #145701231, with the owner's
+authorization. It withdraws the earlier statement that Zodiacs never chooses or
+ranks dates, scores relationships or predicts outcomes, and says what changed:
+
+- the comparison tool gives a score out of 100, with attraction, communication
+  and long-term stability, and can compare someone with a published famous chart;
+- the occasion tool rates a date out of 100 and can list the best-rated days in
+  a range of up to 92 days;
+- a horoscope can include a personal forecast for the person's week;
+- comparison and date results can be shared as a link whose preview shows the score.
+
+It states that every result gives its astrological reasons and says it is
+astrology's reading, not a guarantee; that Zodiacs does not pick investments,
+make health predictions or guarantee outcomes; that storage is unchanged; that
+share links carry only first names, signs, scores and an occasion's date and
+place; and that all tools stay read-only with no sign-in. No reply yet.
+
+## 0.5.0 review update — 15 October 2026
+
+The existing listing at https://claude.ai/directory/manage/zodiacs remains in
+review. A note was sent from admin@zodiacs.org to the submission contact,
+mcp-review@anthropic.com, describing the production update at the unchanged
+https://zodiacs.org/mcp endpoint. This is a reviewer notification, not evidence
+that the directory has approved or refreshed the listing.
+
+The server now offers thirteen read-only tools. Seven additions were explained:
+occasion sky cards, life milestone dates, two-chart comparisons, chart twins,
+published famous charts, birthday facts and solar returns, and sky-calendar
+subscription links. The note states that supplied birth and occasion details
+are not retained; anonymous daily call totals contain no request details or
+user identifiers. It also states that Zodiacs never chooses or ranks dates,
+scores relationships or predicts outcomes.
+
+The note gives the public name **Zodiacs**, subtitle **Birth charts & horoscopes**,
+the updated privacy page, documentation, and the
+[0.5.0 walkthrough](https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.0.mp4).
+The entries below preserve the original 7 October submission for reference.
+
+Originally prepared 7 October 2026 from Anthropic's [connector submission guide],
+[plugin submission guide] and [publishing overview]. The owner submitted the
+connector that day. The dated entries below distinguish submission from approval.
 
 [connector submission guide]: https://claude.com/docs/connectors/building/submission
 [plugin submission guide]: https://claude.com/docs/plugins/submit
@@ -88,10 +286,10 @@ ChatGPT profile. Anthropic can't edit it after submission.
 
 ## Carousel screenshots
 
-Five PNGs in this folder, made by `tests/claude-directory-shots.ts` from this
+Seven PNGs in this folder, made by `tests/claude-directory-shots.ts` from this
 branch's panels with live answers from the server: dark theme, Bangkok time,
 1,440–1,520 pixels wide, the app only, no prompt in the image. The birth date
-in 05 is made up.
+in 05 and the details in 06 and 07 are synthetic examples.
 
 | File | Paired prompt |
 | --- | --- |
@@ -100,6 +298,8 @@ in 05 is made up.
 | `03-sky-this-week.png` | Use Zodiacs to show this week's sky calendar for Bangkok. |
 | `04-chart-studio-start.png` | Help me read my birth chart. |
 | `05-chart-without-birth-time.png` | Help me read my birth chart. I don't know my birth time. |
+| `06-comparison-card.png` | Compare my chart with my partner's and tell us how compatible we are: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992. |
+| `07-wedding-card.png` | We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day. |
 
 Re-run the script just before submitting so the readings and dates are current.
 
@@ -133,6 +333,10 @@ owner confirms each one.
 - Sponsored content: no.
 
 ## Test & launch
+
+The text below is the original submission's. The thirteen-prompt text pasted
+on 6 November replaced it, and its step 11 was removed on 8 November (see the
+top of this file).
 
 Paste into the reviewer instructions:
 

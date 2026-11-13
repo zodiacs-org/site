@@ -1,0 +1,139 @@
+{
+ "postHoc": "post hoc and unscored; the 1912 holdout is previously seen data for #860",
+ "join": -2663236800,
+ "joinIso": "1915-08-11T00:00:00.000Z",
+ "moonRecordIndex": 749,
+ "isMoonRecordEdge": true,
+ "cases": {
+  "F2": {
+   "planContiguous": true,
+   "spansTouchingJoin": [
+    {
+     "cls": "excluded",
+     "span": [
+      -2663277384.375,
+      -2663236800
+     ]
+    },
+    {
+     "cls": "boundary",
+     "span": [
+      -2663236800,
+      -2663236757.8125
+     ]
+    }
+   ],
+   "joinSpan": [
+    -2663236800,
+    -2663236757.8125
+   ],
+   "joinSpanWidthSec": 42.1875,
+   "before": "excluded",
+   "beforeSpan": [
+    -2663277384.375,
+    -2663236800
+   ],
+   "after": "excluded",
+   "afterSpan": [
+    -2663236757.8125,
+    -2663204653.125
+   ],
+   "recordedProbe": {
+    "span": [
+     -2663236800,
+     -2663236757.8125
+    ],
+    "widthSec": 42.1875,
+    "closestApproachDeg": 4.436650280923557,
+    "refusals": 0,
+    "samples": 65
+   },
+   "recomputedProbe": {
+    "closestApproachDeg": 4.436650280923557,
+    "atTdbSec": -2663236757.8125,
+    "minElDeg": 0.5575493343484875,
+    "maxElDeg": 0.5633497190764433,
+    "monotoneIncreasing": true,
+    "refusals": 0
+   },
+   "recordedEqualsRecomputed": true,
+   "otherBoundaryWorstDeg": 0.0000729076163121789
+  },
+  "A2": {
+   "planContiguous": true,
+   "spansTouchingJoin": [
+    {
+     "cls": "excluded",
+     "span": [
+      -2663277384.375,
+      -2663236800
+     ]
+    },
+    {
+     "cls": "boundary",
+     "span": [
+      -2663236800,
+      -2663236757.8125
+     ]
+    }
+   ],
+   "joinSpan": [
+    -2663236800,
+    -2663236757.8125
+   ],
+   "joinSpanWidthSec": 42.1875,
+   "before": "excluded",
+   "beforeSpan": [
+    -2663277384.375,
+    -2663236800
+   ],
+   "after": "excluded",
+   "afterSpan": [
+    -2663236757.8125,
+    -2663204653.125
+   ],
+   "recordedProbe": {
+    "span": [
+     -2663236800,
+     -2663236757.8125
+    ],
+    "widthSec": 42.1875,
+    "closestApproachDeg": 4.436650280923557,
+    "refusals": 0,
+    "samples": 65
+   },
+   "recomputedProbe": {
+    "closestApproachDeg": 4.436650280923557,
+    "atTdbSec": -2663236757.8125,
+    "minElDeg": 0.5575493343484875,
+    "maxElDeg": 0.5633497190764433,
+    "monotoneIncreasing": true,
+    "refusals": 0
+   },
+   "recordedEqualsRecomputed": true,
+   "otherBoundaryWorstDeg": 0.0000729076163121789
+  }
+ },
+ "bundleV2": {
+  "span": [
+   -2663236842.1875,
+   -2663236757.8125
+  ],
+  "widthSec": 84.375,
+  "recordedOnItsPack": 4.436650280925394,
+  "resampledOnThisPack": {
+   "closestApproachDeg": 4.436650280923557,
+   "atTdbSec": -2663236757.8125,
+   "minElDeg": 0.5517490766247539,
+   "maxElDeg": 0.5633497190764433,
+   "monotoneIncreasing": true,
+   "refusals": 0
+  }
+ },
+ "elongationAt": {
+  "0": 0.5575493343484875,
+  "-42.1875": 0.5517490766247539,
+  "42.1875": 0.5633497190764433,
+  "84.375": 0.5691501408587403
+ }
+}

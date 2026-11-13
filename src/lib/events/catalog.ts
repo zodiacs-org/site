@@ -21,10 +21,12 @@ import {
   ingressId, ingressPath, isoDay, lunationId, lunationPath,
   moonNameForDate, retrogradeId, retrogradePath, stationId,
 } from './format';
-import { publishedEventById } from './publication';
+import { publishedEventById } from './site-publication';
+import { NASA_INSTANT_SOURCE, nasaAspectAt, nasaIngressAt, nasaStationAt } from '../nasa-instants';
 import type { CatalogEvent, EventFacts, EventLink } from './types';
 import { FIXTURE_EVENTS } from './fixtures';
 import { interpretationFor } from './interpretations';
+import { lunarTotalityMinutes } from '../nasa-lunar-eclipses';
 
 /** Planets whose ingresses and mutual aspects carry a standalone page. */
 export const SLOW_BODIES = ['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'] as const;
@@ -55,6 +57,31 @@ const transitSource = (month: string) => `transits-${month}.json` as const;
 
 const anchor = (facts: EventFacts): number =>
   new Date(facts.at ?? facts.start ?? 0).getTime();
+
+
+/**
+ * Print NASA's instant while the page keeps the name it was published under:
+ * the id, path and publication receipt stay on the committed instant.
+ */
+function withCommitted<T extends Omit<EventFacts, 'id' | 'path' | 'title'>>(
+  base: T,
+  committedBase: T,
+): { base: T; committed?: EventFacts['committed'] } {
+  const moved = base.at !== committedBase.at || base.start !== committedBase.start || base.end !== committedBase.end;
+  if (!moved) return { base: committedBase };
+  const engine = [committedBase.at ?? committedBase.start, committedBase.end].filter(Boolean).join(' and ');
+  const derived = `exact ${base.at ? 'instant' : 'stations'} from ${NASA_INSTANT_SOURCE}; the engine catalog gave ${engine}`;
+  return {
+    base: {
+      ...base,
+      provenance: { ...base.provenance, derived: [...(base.provenance.derived ?? []), derived] },
+    },
+    committed: {
+      anchor: (committedBase.at ?? committedBase.start)!,
+      title: eventTitle(committedBase),
+    },
+  };
+}
 
 /** Lunations 2026–2027 from sky.json instants; sign/degree via the engine
  * at each committed instant; monthly catalogs are preferred when present. */
@@ -119,7 +146,8 @@ function eclipseFacts(): EventFacts[] {
       longitude: eclipse.lon,
       eclipseKind: eclipse.kind,
       obscuration: eclipse.obscuration,
-      totalMinutes: eclipse.totalMinutes,
+      // NASA's canon length of totality, rounded to the minute (src/lib/nasa-lunar-eclipses.ts).
+      totalMinutes: eclipse.type === 'lunar' ? lunarTotalityMinutes(eclipse.peak, eclipse.totalMinutes) : eclipse.totalMinutes,
       provenance: { source: 'eclipses.json' as const, generatedAt: eclipsesData.generatedAt },
     };
     return {
@@ -173,7 +201,7 @@ function retrogradeFacts(): EventFacts[] {
     ])];
     // The retrograde runs high-degree → low-degree; list signs in that order.
     signs.reverse();
-    const base = {
+    const committedBase = {
       family: 'retrograde' as const,
       subtype: 'cycle',
       start: window.from,
@@ -191,11 +219,17 @@ function retrogradeFacts(): EventFacts[] {
         derived: ['station signs and degrees read from the engine at the committed instants'],
       },
     };
+    const { base, committed } = withCommitted({
+      ...committedBase,
+      start: nasaStationAt(window.planet, window.from) ?? window.from,
+      end: window.to === null ? null : nasaStationAt(window.planet, window.to) ?? window.to,
+    }, committedBase);
     return {
       ...base,
       id: retrogradeId(window.planet, window.from),
       path: retroCyclePath(window.planet, window.from),
       title: eventTitle(base),
+      ...(committed ? { committed } : {}),
     };
   });
 }
@@ -207,7 +241,7 @@ function stationFacts(): EventFacts[] {
   for (const window of retroWindows) {
     if (!window.clamped) {
       const lon = bodyLongitude(window.planet as BodyName, new Date(window.from));
-      const base = {
+      const committedBase = {
         family: 'station' as const,
         subtype: 'retrograde',
         at: window.from,
@@ -218,16 +252,21 @@ function stationFacts(): EventFacts[] {
         direction: 'retrograde' as const,
         provenance: { source: 'sky.json' as const, generatedAt: sky.generatedAt },
       };
+      const { base, committed } = withCommitted(
+        { ...committedBase, at: nasaStationAt(window.planet, window.from) ?? window.from },
+        committedBase,
+      );
       stations.push({
         ...base,
         id: stationId(window.planet, 'retrograde', window.from),
         path: retroCyclePath(window.planet, window.from),
         title: eventTitle(base),
+        ...(committed ? { committed } : {}),
       });
     }
     if (window.to) {
       const lon = bodyLongitude(window.planet as BodyName, new Date(window.to));
-      const base = {
+      const committedBase = {
         family: 'station' as const,
         subtype: 'direct',
         at: window.to,
@@ -238,11 +277,16 @@ function stationFacts(): EventFacts[] {
         direction: 'direct' as const,
         provenance: { source: 'sky.json' as const, generatedAt: sky.generatedAt },
       };
+      const { base, committed } = withCommitted(
+        { ...committedBase, at: nasaStationAt(window.planet, window.to) ?? window.to },
+        committedBase,
+      );
       stations.push({
         ...base,
         id: stationId(window.planet, 'direct', window.to),
         path: retroCyclePath(window.planet, window.from),
         title: eventTitle(base),
+        ...(committed ? { committed } : {}),
       });
     }
   }
@@ -272,7 +316,7 @@ function ingressFacts(): EventFacts[] {
         rx.planet === planet
         && new Date(rx.from).getTime() <= at
         && (rx.to === null || at <= new Date(rx.to).getTime()));
-      const base = {
+      const committedBase = {
         family: 'ingress' as const,
         subtype: retrograde ? 'retrograde-re-entry' : 'ingress',
         at: window.from,
@@ -281,11 +325,16 @@ function ingressFacts(): EventFacts[] {
         fromSign: occupancy[index - 1]?.sign,
         provenance: { source: 'ingresses.json' as const, generatedAt: ingressesData.generatedAt },
       };
+      const { base, committed } = withCommitted(
+        { ...committedBase, at: nasaIngressAt(planet, window.from) ?? window.from },
+        committedBase,
+      );
       facts.push({
         ...base,
         id: ingressId(planet, window.sign, window.from),
         path: ingressPath(planet, window.sign, window.from),
         title: eventTitle(base),
+        ...(committed ? { committed } : {}),
       });
     });
   }
@@ -301,7 +350,7 @@ function aspectFacts(): EventFacts[] {
     for (const aspect of month.aspects) {
       if (!slow.has(aspect.a) || !slow.has(aspect.b)) continue;
       if (aspect.orb !== 0) continue;
-      const base = {
+      const committedBase = {
         family: 'aspect' as const,
         subtype: aspect.type,
         at: aspect.at,
@@ -312,11 +361,16 @@ function aspectFacts(): EventFacts[] {
         orb: 0 as const,
         provenance: { source: transitSource(month.month) },
       };
+      const { base, committed } = withCommitted(
+        { ...committedBase, at: nasaAspectAt(aspect.a, aspect.b, aspect.type, aspect.at) ?? aspect.at },
+        committedBase,
+      );
       facts.push({
         ...base,
         id: aspectId(aspect.a, aspect.type, aspect.b, aspect.at),
         path: aspectPath(aspect.a, aspect.type, aspect.b, aspect.at),
         title: eventTitle(base),
+        ...(committed ? { committed } : {}),
       });
     }
   }
@@ -371,8 +425,8 @@ function nearbyReason(subject: EventFacts, other: EventFacts): string {
   switch (other.family) {
     case 'station':
       return other.direction === 'retrograde'
-        ? `${other.bodies[0]} turns retrograde ${gap} — its review colors this moment`
-        : `${other.bodies[0]} turns direct ${gap} — a stalled thread starts moving`;
+        ? `${other.bodies[0]} turns retrograde ${gap}. Its review colors this moment`
+        : `${other.bodies[0]} turns direct ${gap}. A stalled thread starts moving`;
     case 'eclipse':
       return `The ${other.subtype} eclipse ${gap} makes this an eclipse-season moment`;
     case 'lunation':
@@ -380,9 +434,9 @@ function nearbyReason(subject: EventFacts, other: EventFacts): string {
         ? `The full moon ${gap} brings this thread to light`
         : `The new moon ${gap} opens the next chapter of this story`;
     case 'ingress':
-      return `${other.bodies[0]} changes sign ${gap} — the backdrop shifts with it`;
+      return `${other.bodies[0]} changes sign ${gap}. The backdrop shifts with it`;
     case 'aspect':
-      return `${other.bodies[0]} and ${other.bodies[1]} are exact ${gap} — part of the same sky`;
+      return `${other.bodies[0]} and ${other.bodies[1]} are exact ${gap}, part of the same sky`;
     case 'retrograde':
       return `${other.bodies[0]} is retrograde through this period`;
   }
@@ -452,8 +506,8 @@ function buildCatalog(): EventsCatalog {
         && other.subtype === wanted
         && Math.abs(anchor(other) - anchor(facts)) <= ECLIPSE_MATCH_MS);
       if (match) eclipse = linkFor(match, facts.subtype === 'new'
-        ? 'This new moon is also a solar eclipse — the fuller story is there'
-        : 'This full moon is also a lunar eclipse — the fuller story is there');
+        ? 'This new moon is also a solar eclipse. The fuller story is there'
+        : 'This full moon is also a lunar eclipse. The fuller story is there');
     }
 
     // Nearby: dated moments within the window, closest first, capped at
@@ -476,8 +530,9 @@ function buildCatalog(): EventsCatalog {
     // Stations point back to their cycle page.
     let cycle: EventLink | undefined;
     if (facts.family === 'station') {
+      const committedAt = facts.committed?.anchor ?? facts.at;
       const window = retroWindows.find((rx) => rx.planet === facts.bodies[0]
-        && (rx.from === facts.at || rx.to === facts.at));
+        && (rx.from === committedAt || rx.to === committedAt));
       if (window) {
         cycle = {
           id: retrogradeId(facts.bodies[0], window.from),
@@ -488,6 +543,8 @@ function buildCatalog(): EventsCatalog {
 
     const interpretation = interpretationFor(facts);
     const published = publishedEventById.get(facts.id);
+    // The receipt names the page by its committed instant and title.
+    const receipt = facts.committed ?? { anchor: facts.at ?? facts.start, title: facts.title };
     // The committed publication receipt is the only indexing allowlist. A
     // matching ID alone is insufficient: if a fact changes, verification must
     // regenerate and review the receipt before that page can remain public.
@@ -495,8 +552,8 @@ function buildCatalog(): EventsCatalog {
       interpretation
       && published
       && published.path === facts.path
-      && published.title === facts.title
-      && published.anchor === (facts.at ?? facts.start),
+      && published.title === receipt.title
+      && published.anchor === receipt.anchor,
     );
 
     return {

@@ -5,6 +5,7 @@ import RaceBoard from '../../islands/RaceBoard';
 import { SIGNS, signBySlug } from '../../lib/signs';
 import { championSeasons, currentAnnouncement } from '../../lib/games/champions';
 import { daysLeftInSeason, isoWeekUtc, seasonInstanceAt } from '../../lib/games/season';
+import { announcementResult } from '../games/_season-result';
 import '../../styles/race.css';
 
 const gamesEnabled = (import.meta.env.PUBLIC_ZODIAC_GAMES_ENABLED
@@ -25,9 +26,8 @@ const raceSigns = SIGNS.map(({ slug, name, glyph, hue }) => ({ slug, name, glyph
 // engraved above the board while its successor season runs.
 const champion = currentAnnouncement(championSeasons(), buildInstant);
 const championSignEntry = champion ? signBySlug(champion.champion) : null;
-const runnerUpName = champion ? signBySlug(champion.runnerUp).name : '';
 
-const title = 'The Race — The Zodiac Games | Zodiacs.org';
+const title = 'The Race: The Zodiac Games | Zodiacs.org';
 const description =
   'Twelve signs. One race. Every season crowns a champion. Join your sign for free, check in weekly, and watch the standings.';
 ---
@@ -39,7 +39,6 @@ const description =
 >
   <section class="section--tight container container--narrow">
     <header class="race-hero">
-      <em class="kicker">The Zodiac Games</em>
       <h1 class="display">The Race</h1>
       <p class="race-hero__season">
         {season.sign.name} Season · {buildDaysLeft} {buildDaysLeft === 1 ? 'day' : 'days'} left · Week {buildWeek.isoWeek}
@@ -60,7 +59,7 @@ const description =
           src={`/assets/sculptures/512/${champion.champion}.webp`}
           width={160}
           height={160}
-          alt={`The ${championSignEntry.name} Zodiac design — the ${champion.seasonName} Season trophy, completed`}
+          alt={`The ${championSignEntry.name} Zodiac design, the ${champion.seasonName} Season trophy, completed`}
           loading="eager"
           decoding="async"
         />
@@ -68,7 +67,7 @@ const description =
           <p class="race-champion__sign display">{championSignEntry.name}</p>
           <p class="race-champion__title">{champion.seasonName} Season Champion · {champion.year}</p>
           <p class="race-champion__detail">
-            Won by {champion.marginPoints.toLocaleString('en')} {champion.marginPoints === 1 ? 'point' : 'points'} over {runnerUpName}. Engraved. Permanent.
+            {announcementResult(champion)} Engraved. Permanent.
           </p>
           <a href="/games/history/">See the Trophy Hall →</a>
         </div>
@@ -107,7 +106,7 @@ const description =
 
       <h2>How seasons work</h2>
       <p>
-        Each zodiac season is one championship — about a month long, twelve a
+        Each zodiac season is one championship, about a month long, twelve a
         year. All twelve signs compete in every season. When a season closes,
         the leader becomes Season Champion, the trophy is engraved, and the
         next season starts from zero.
@@ -129,7 +128,7 @@ const description =
       <dt>Can someone buy a win?</dt>
       <dd>
         No. Money can’t add points. Not ours, not anyone’s. If anything ever
-        makes you think otherwise, tell us — we’ll treat it as a bug.
+        makes you think otherwise, tell us. We’ll treat it as a bug.
       </dd>
 
       <dt>What does the winner get?</dt>
@@ -143,7 +142,7 @@ const description =
 
       <dt>What happens to my data?</dt>
       <dd>
-        Almost nothing. No cookies for tracking, no names or accounts — we
+        Almost nothing. No cookies for tracking, no names or accounts. We
         count, we don’t watch. Joining sets one signed cookie so your check-ins count
         for your team, and it identifies a browser, not a person. Email is
         optional and only sends standings. Unsubscribe anytime.

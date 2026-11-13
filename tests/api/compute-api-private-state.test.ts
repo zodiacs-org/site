@@ -48,7 +48,8 @@ dispose() {`);
       // beside it exactly as they are in the packaged function.
       const adapter = await transform(read('api/_compute/handler.ts'), { loader: 'ts', format: 'esm', target: 'node22' });
       writeFileSync(join(directory, 'handler.mjs'), adapter.code);
-      const basis = pathToFileURL(join(root, 'src/lib/engine/time-basis.mjs')).href;
+      const timeEntry = JSON.parse(read('node_modules/@zodiacs/engine/package.json')).exports['./time'].import;
+      const basis = pathToFileURL(join(root, 'node_modules/@zodiacs/engine', timeEntry)).href;
       writeFileSync(join(directory, 'run.mjs'), `
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';

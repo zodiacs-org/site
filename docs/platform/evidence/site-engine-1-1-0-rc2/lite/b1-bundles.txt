@@ -1,0 +1,857 @@
+# Lite B1 on the adoption head (the adoption plan's J-2), 2026-11-04, macOS arm64, Node 22.22.2.
+# Head 92702bb9b732d88224847df3e27cb0925bfb70df. The base's side is Phase C's two builds of
+# 0bf69bd56aaec8fbfd99bd4b45877064dc1234df (bundles-base-default.json, bundles-base-production.json).
+# Tools, run from copies outside the repository (programme notes, notes/rc2-2026-11-01/):
+#   byte reports: sr/tools/report-bundles-bytes.mjs (sha256 cb559bd5e7c425af1a03c5ba4f006ad99f8b2c96b68eff9d8c71c2a1f39b83ca), with SR_SITE set to this checkout;
+#   comparison: sr2/tools/compare-bundles.mjs (sha256 53b8ae6cf92de95207de2f41ffc1aad7d15ab9016ac3c0726c1d9e9b5cf061bf);
+#   attribution: sr/tools/sr-attribution.config.mjs pointed at this checkout's astro.config.mjs (adoption/tools/attribution.config.mjs,
+#   sha256 ebb88e0fa177458905bc2eefa306178cf10bd4a890838b0eaed37a5085333203) and sr/tools/engine-attribution.mjs (sha256 854e21d9ecc9388da0fa0d6ff97d0b51a3f8a5871f0c3454513a19f4d1d8cbff);
+#   the grown closures: adoption/tools/b1-grown.mjs (sha256 4936ec377c80ebce62d55722236ddaeda88e083eb80a707aaf1f9683a5b5497e).
+# The production-flags build takes site-check.yml's production-flags-build environment with the three _SECRET
+# variables set to local stand-ins of 32 characters or more (sr/tools/production-flags.env.sh).
+
+## The default build (npx astro build)
+# command: node scripts/report-bundles.mjs --fail
+route gzip sizes (initial transitive local JS):
+  /                  19.1 KB /   42 KB  (22 chunks)
+  /birth-chart/      66.0 KB /   71 KB  (44 chunks)
+  /big-three/        26.5 KB /   30 KB  (20 chunks)
+  /transits/         27.7 KB /   30 KB  (25 chunks)
+  /solar-return/     22.3 KB /   30 KB  (18 chunks)
+  /lunar-return/     22.2 KB /   30 KB  (18 chunks)
+  /numerology/       17.3 KB /   30 KB  (7 chunks)
+  /numerology/life-path/7/   17.3 KB /   30 KB  (7 chunks)
+  /void-of-course-moon/    0.0 KB /    5 KB  (0 chunks)
+  /today/            20.1 KB / 21.5 KB  (14 chunks)
+  /compatibility/    33.8 KB /   36 KB  (25 chunks)
+  /aries/             0.0 KB /    0 KB  (0 chunks)
+  /almanac/           0.0 KB /    0 KB  (0 chunks)
+  /almanac/sky-2026-08/    0.0 KB /    0 KB  (0 chunks)
+  /almanac/reading-a-childs-chart/    0.0 KB /    0 KB  (0 chunks)
+  /registry/collection/    0.0 KB /   48 KB  (0 chunks)
+  /learn/aspects/sun-moon/    0.0 KB /    0 KB  (0 chunks)
+  /learn/aspects/moon-venus/    0.0 KB /    0 KB  (0 chunks)
+  /learn/aspects/venus-mars/    0.0 KB /    0 KB  (0 chunks)
+chunk gates:
+  chunk-max          50.1 KB /   60 KB  (/_astro/client.D2SwsgPS.js)
+  engine-chunk       32.6 KB / 32.598046875 KB  (/_astro/full.AUZx8EGL.js; 8 static chunks)
+engine isolation: package boundary clear; homepage markers clear
+report-bundles: budgets pass
+# exit code: 0
+
+# command: node compare-bundles.mjs bundles-base-default.json bundles-default.json (SR2's tool, copied)
+previous: bundles-base-default.json
+current:  bundles-default.json
+
+route                              allowance   previous (chunks)   current (chunks)   change
+/                                      43008   20047 (22)         19590 (22)         -457  (chunk list differs)
+/birth-chart/                          72704   66962 (43)         67546 (44)         +584  (chunk list differs)
+/big-three/                            30720   27128 (20)         27168 (20)         +40  (chunk list differs)
+/transits/                             30720   28818 (25)         28382 (25)         -436  (chunk list differs)
+/solar-return/                         30720   23294 (18)         22857 (18)         -437  (chunk list differs)
+/lunar-return/                         30720   23196 (18)         22761 (18)         -435  (chunk list differs)
+/numerology/                           30720   17711 (7)          17711 (7)          0
+/numerology/life-path/7/               30720   17711 (7)          17711 (7)          0
+/void-of-course-moon/                   5120   0 (0)              0 (0)              0
+/today/                                22016   21017 (14)         20564 (14)         -453  (chunk list differs)
+/compatibility/                        36864   35026 (25)         34594 (25)         -432  (chunk list differs)
+/aries/                                    0   0 (0)              0 (0)              0
+/almanac/                                  0   0 (0)              0 (0)              0
+/almanac/sky-2026-08/                      0   0 (0)              0 (0)              0
+/almanac/reading-a-childs-chart/           0   0 (0)              0 (0)              0
+/registry/collection/                  49152   0 (0)              0 (0)              0
+/learn/aspects/sun-moon/                   0   0 (0)              0 (0)              0
+/learn/aspects/moon-venus/                 0   0 (0)              0 (0)              0
+/learn/aspects/venus-mars/                 0   0 (0)              0 (0)              0
+
+chunk-max: previous 51331 /_astro/client.D2SwsgPS.js; current 51331 /_astro/client.D2SwsgPS.js; change 0
+engine-chunk: previous 33267 (7 chunks, /_astro/full.D1bmmMrj.js); current 33361 (8 chunks, /_astro/full.AUZx8EGL.js); change +94; closure lists differ
+birth-window worker: previous 40350; current 40325; change -25
+failures: previous 0; current 0
+
+served chunks: previous 293, current 294; identical path and SHA-256: 167
+  only now: /_astro/AccountBoundProfileSurface.C699lLmW.js (1279 gzip)
+  only now: /_astro/AccountProfileAccessBootstrap.Fi67Io5l.js (1574 gzip)
+  only now: /_astro/AccountSyncV2Panel.C-0E--zW.js (15356 gzip)
+  only now: /_astro/ApproachRead.DhXxzBUW.js (1835 gzip)
+  only now: /_astro/AspectPatternDiagram.CSoKIs6M.js (2856 gzip)
+  only now: /_astro/AspectPatternFeature.B2wzeGhZ.js (1269 gzip)
+  only now: /_astro/AspectPatternPanel.DOMGj4h5.js (3862 gzip)
+  only now: /_astro/BabyShowerSky.BIThFJ3i.js (2304 gzip)
+  only now: /_astro/BabyZodiac.BGxA9UqX.js (2115 gzip)
+  only now: /_astro/BigThreeQuick.DfEhdLip.js (3170 gzip)
+  only now: /_astro/BirthTimeWindow.CdnsrgWT.js (2227 gzip)
+  only now: /_astro/ChartActionDock.CTaxmORH.js (16344 gzip)
+  only now: /_astro/ChartCalculator.D21Nlh0t.js (21983 gzip)
+  only now: /_astro/ChartCompare.D7KWcbUJ.js (3673 gzip)
+  only now: /_astro/ChartLens.CkNi6RdK.js (6932 gzip)
+  only now: /_astro/ChartShareDialog.80YbD5qw.js (3354 gzip)
+  only now: /_astro/ChartTwins.mY1dwzrm.js (1980 gzip)
+  only now: /_astro/CommunicationRead.Cd_XJIji.js (1792 gzip)
+  only now: /_astro/CompatibilityShareControl.DwqCrdUf.js (1759 gzip)
+  only now: /_astro/DailyForYou.BRTUIDon.js (1740 gzip)
+  only now: /_astro/DailyPublicChart.BvDNeSek.js (773 gzip)
+  only now: /_astro/DeveloperDemo.DxuXbxYl.js (10563 gzip)
+  only now: /_astro/EclipticView.DKQxiBPI.js (15362 gzip)
+  only now: /_astro/GroupCharts.NnP5RcIr.js (2672 gzip)
+  only now: /_astro/LearningPath.DRWOK1Mv.js (3145 gzip)
+  only now: /_astro/LearningSavedEntry.kSKN6r0T.js (812 gzip)
+  only now: /_astro/LifeMilestones.DrFVUB7p.js (2578 gzip)
+  only now: /_astro/LivingSelfChartChooser.DHIJMEEw.js (844 gzip)
+  only now: /_astro/LunarReturnCalculator.Df9uNS0C.js (3552 gzip)
+  only now: /_astro/LunarReturnResult.ClSIUwCk.js (5465 gzip)
+  only now: /_astro/MiniBirthChartWidget.C5p0J_fJ.js (3898 gzip)
+  only now: /_astro/MoonPhaseTool.QpsO1f7c.js (2646 gzip)
+  only now: /_astro/OccasionSky.Bac1m8Mw.js (3654 gzip)
+  only now: /_astro/PersonalCalendar.B-Ow9IDG.js (1962 gzip)
+  only now: /_astro/PersonalCalendar.worker-COk_pD6K.js (35141 gzip)
+  only now: /_astro/PositionsShareSurface.DXdPtUTq.js (9688 gzip)
+  only now: /_astro/PostChartDailyBrief.BcEpGFfd.js (3194 gzip)
+  only now: /_astro/PrivateCompatibilityInvite.C5ZZeoB9.js (1491 gzip)
+  only now: /_astro/ProfileCardInbox.DuGZ59lB.js (1922 gzip)
+  only now: /_astro/ProfileDashboard.DLgSIXhG.js (5562 gzip)
+  only now: /_astro/ProfileDashboard.DtmsokVv.js (87 gzip)
+  only now: /_astro/ProfileIdentity.C39AW5IG.js (4660 gzip)
+  only now: /_astro/ProfileKeepClose.CUvZMQ1p.js (1638 gzip)
+  only now: /_astro/ProfileManager.BIPaZ5O7.js (9921 gzip)
+  only now: /_astro/ProfileManager.Mgxjrjgn.js (103 gzip)
+  only now: /_astro/ProfilePeople.DEQnXUpD.js (2099 gzip)
+  only now: /_astro/ProfileSafety.BBwOkiHp.js (2526 gzip)
+  only now: /_astro/ProfileSunSignCapture.CP-xMLYj.js (914 gzip)
+  only now: /_astro/RegistryAura.BOlowyLX.js (16231 gzip)
+  only now: /_astro/RelationshipWheel.Dg4rNcPT.js (19405 gzip)
+  only now: /_astro/ReturnPersonal.CMqfX2VT.js (3442 gzip)
+  only now: /_astro/SaturnReturnCalculator.DjLVrCpU.js (3079 gzip)
+  only now: /_astro/SavedRecordsPanel.C-l1CtZ6.js (3284 gzip)
+  only now: /_astro/SendBackExperience.CQwlNnFU.js (3486 gzip)
+  only now: /_astro/SharingBirthForm.CmRltK4h.js (880 gzip)
+  only now: /_astro/SolarReturnCalculator.i5rsIkSy.js (3648 gzip)
+  only now: /_astro/SolarReturnResult.B_HORfaz.js (6189 gzip)
+  only now: /_astro/SomeoneElseChart.BpKVvHVX.js (5224 gzip)
+  only now: /_astro/SynastryCalculator.BKJ4-3xf.js (11451 gzip)
+  only now: /_astro/TodayBrief.DHoWT8BM.js (6652 gzip)
+  only now: /_astro/TransitItinerary.Dw-v8yxi.js (3611 gzip)
+  only now: /_astro/TransitItinerary.worker-C0-Yvv9L.js (33394 gzip)
+  only now: /_astro/TransitRing.CdhvKBPF.js (6992 gzip)
+  only now: /_astro/TransitSearch.jst0bqIx.js (2922 gzip)
+  only now: /_astro/TransitSearch.worker-JntwqaG5.js (33086 gzip)
+  only now: /_astro/TransitTracker.B98cKYhN.js (5351 gzip)
+  only now: /_astro/WalletChart.CKaJHtTc.js (3824 gzip)
+  only now: /_astro/WelcomeBack.BUKJPW8h.js (1182 gzip)
+  only now: /_astro/Wrapped.worker-BlEgdO7_.js (33127 gzip)
+  only now: /_astro/aspect-pattern-card.Bqxzxuig.js (2086 gzip)
+  only now: /_astro/aspects.7J9QU68H.js (227 gzip)
+  only now: /_astro/backup.Ch4hM8ma.js (2076 gzip)
+  only now: /_astro/birth-window.worker-BNC_5yeI.js (40325 gzip)
+  only now: /_astro/calculator-receipt.Brg7biGc.js (860 gzip)
+  only now: /_astro/card-link.5iMgJKBc.js (1876 gzip)
+  only now: /_astro/card.-VShLL-E.js (5513 gzip)
+  only now: /_astro/chart-context-card.CYgWDgeB.js (1652 gzip)
+  only now: /_astro/chart-image-sky.BrRXBwKX.js (685 gzip)
+  only now: /_astro/chart-signature.ColUR-EE.js (2446 gzip)
+  only now: /_astro/chunk-F4JKI3XV.DXFJXQuL.js (745 gzip)
+  only now: /_astro/chunk-HTT4HMQ6.BaLuxxut.js (7791 gzip) same content as previous /_astro/chunk-CIVYAHTP.BaLuxxut.js
+  only now: /_astro/chunk-NIRYKLHT.Bm5YfgXm.js (22989 gzip)
+  only now: /_astro/chunk-NNOSOOWS.CflCEcE2.js (1781 gzip)
+  only now: /_astro/chunk-QRBHGADI.B_4IIeNk.js (1079 gzip)
+  only now: /_astro/chunk-RMBWKZI2.DZR4n1wo.js (538 gzip)
+  only now: /_astro/compatibility-card.BKcoN18O.js (3026 gzip)
+  only now: /_astro/composite-card.EJrPTtei.js (2001 gzip)
+  only now: /_astro/compositeCopy.8jP0RYZK.js (7228 gzip)
+  only now: /_astro/compute.BT6Zfbjr.js (1223 gzip)
+  only now: /_astro/compute.CGMB-A1P.js (925 gzip)
+  only now: /_astro/contacts.cfHkapLc.js (618 gzip)
+  only now: /_astro/dignities.Dwt_E1DU.js (1162 gzip)
+  only now: /_astro/due-window.0fg1wxx0.js (652 gzip)
+  only now: /_astro/fixtures.DNyJVgkG.js (307 gzip)
+  only now: /_astro/full.AUZx8EGL.js (313 gzip)
+  only now: /_astro/geo.Iw2kWo4c.js (1545 gzip)
+  only now: /_astro/local-date-reference.2-Ce7e_-.js (1528 gzip)
+  only now: /_astro/localToUtc.DTkj4LvN.js (1701 gzip)
+  only now: /_astro/lunar-return-card.BYgrqmim.js (2764 gzip)
+  only now: /_astro/milestone-card.Cesr3J4R.js (1651 gzip)
+  only now: /_astro/natal.BK1-YGkx.js (5242 gzip)
+  only now: /_astro/private-invite.Bvq_I-Qg.js (671 gzip)
+  only now: /_astro/profile-chart-handoff.CYrnuYhE.js (274 gzip)
+  only now: /_astro/progressions.CMO1QnlW.js (271 gzip)
+  only now: /_astro/read-store.Du8nKHqt.js (718 gzip)
+  only now: /_astro/receipt.BWrGOwmW.js (8802 gzip)
+  only now: /_astro/refresh.DRxRKybB.js (771 gzip)
+  only now: /_astro/replay.B2kFcp31.js (287 gzip)
+  only now: /_astro/resolve.BaOQpZR4.js (789 gzip)
+  only now: /_astro/returns.DBfzpiRQ.js (527 gzip)
+  only now: /_astro/saved-record-access.C5zMg0cm.js (7520 gzip)
+  only now: /_astro/share-card.C8oEjdD8.js (1507 gzip)
+  only now: /_astro/share-card.DxXAvdag.js (17547 gzip)
+  only now: /_astro/share-positions-untimed.BppzrZYg.js (543 gzip)
+  only now: /_astro/site-clock.ByR0f6Sh.js (125 gzip)
+  only now: /_astro/solar-return.BWrzIUGs.js (344 gzip)
+  only now: /_astro/store.Bn1Hx8OF.js (1494 gzip)
+  only now: /_astro/synastry.CC2Sl2_v.js (672 gzip)
+  only now: /_astro/sync.C5pKGIEc.js (1962 gzip)
+  only now: /_astro/techniques.ID10CBpU.js (3484 gzip)
+  only now: /_astro/today-reading.BOiDrK_N.js (1496 gzip)
+  only now: /_astro/tour.BlZZ6aIZ.js (24474 gzip)
+  only now: /_astro/transit-scan.Df2OiTy4.js (1902 gzip)
+  only now: /_astro/use-learning-sources.ak-gM90z.js (1245 gzip)
+  only now: /_astro/useEngine.CbWMjCBm.js (402 gzip)
+  only now: /_astro/useProfile.QbPvihj7.js (298 gzip)
+  only now: /_astro/year-scan.O2G7pGGG.js (662 gzip)
+  only before: /_astro/AccountBoundProfileSurface.CZe4BJjU.js (1277 gzip)
+  only before: /_astro/AccountProfileAccessBootstrap.Db-8_qF6.js (1555 gzip)
+  only before: /_astro/AccountSyncV2Panel.BJ0ZfBMZ.js (15337 gzip)
+  only before: /_astro/ApproachRead.Dkca5hQ7.js (1838 gzip)
+  only before: /_astro/AspectPatternDiagram.7V1BY63J.js (2855 gzip)
+  only before: /_astro/AspectPatternFeature.y84buw2w.js (1251 gzip)
+  only before: /_astro/AspectPatternPanel.C5zx6StK.js (3843 gzip)
+  only before: /_astro/BabyShowerSky.-jeGx3BY.js (2282 gzip)
+  only before: /_astro/BabyZodiac.C9qc_fM-.js (2116 gzip)
+  only before: /_astro/BigThreeQuick.5Yryfawn.js (3153 gzip)
+  only before: /_astro/BirthTimeWindow.C1_OpNNA.js (2227 gzip)
+  only before: /_astro/ChartActionDock.Dd0SHGGz.js (16319 gzip)
+  only before: /_astro/ChartCalculator.DkcSjUNK.js (21952 gzip)
+  only before: /_astro/ChartCompare.BuJSNtk6.js (3647 gzip)
+  only before: /_astro/ChartLens.B4yuuMno.js (6904 gzip)
+  only before: /_astro/ChartShareDialog.Br64QsEN.js (3352 gzip)
+  only before: /_astro/ChartTwins.BaZ6d23i.js (1980 gzip)
+  only before: /_astro/CommunicationRead.pBUZvMeq.js (1795 gzip)
+  only before: /_astro/CompatibilityShareControl.FGJBYJ6O.js (1743 gzip)
+  only before: /_astro/DailyForYou.EcAK7-LZ.js (1742 gzip)
+  only before: /_astro/DailyPublicChart.ocKsG22N.js (773 gzip)
+  only before: /_astro/DeveloperDemo.DLbjeft5.js (10564 gzip)
+  only before: /_astro/EclipticView.C_4J7MoB.js (13188 gzip)
+  only before: /_astro/GroupCharts.C8zRINis.js (2652 gzip)
+  only before: /_astro/LearningPath.D5xgrwP9.js (3142 gzip)
+  only before: /_astro/LearningSavedEntry.A6MKvwsR.js (810 gzip)
+  only before: /_astro/LifeMilestones.Ygl4v7VM.js (2556 gzip)
+  only before: /_astro/LivingSelfChartChooser.D_vNYyvK.js (842 gzip)
+  only before: /_astro/LunarReturnCalculator.BZr23ibz.js (3531 gzip)
+  only before: /_astro/LunarReturnResult.BwZ0YG8E.js (5448 gzip)
+  only before: /_astro/MiniBirthChartWidget.BLnbOU-D.js (3878 gzip)
+  only before: /_astro/MoonPhaseTool.DM6q0og3.js (2645 gzip)
+  only before: /_astro/OccasionSky.iNqOmou6.js (3633 gzip)
+  only before: /_astro/PersonalCalendar.Ct8GqMIO.js (1962 gzip)
+  only before: /_astro/PersonalCalendar.worker-D5jCHEp1.js (35072 gzip)
+  only before: /_astro/PositionsShareSurface.-seQ7u9r.js (9689 gzip)
+  only before: /_astro/PostChartDailyBrief.Cd-B7QCm.js (3194 gzip)
+  only before: /_astro/PrivateCompatibilityInvite.BZg-FDQM.js (1491 gzip)
+  only before: /_astro/ProfileCardInbox.c7TitqFw.js (1922 gzip)
+  only before: /_astro/ProfileDashboard.Cj6O4pKo.js (5541 gzip)
+  only before: /_astro/ProfileDashboard.Cl1qshh-.js (87 gzip)
+  only before: /_astro/ProfileIdentity.DF8de7N3.js (4660 gzip)
+  only before: /_astro/ProfileKeepClose.BbBF6fga.js (1639 gzip)
+  only before: /_astro/ProfileManager.BbUjbOS_.js (103 gzip)
+  only before: /_astro/ProfileManager.wv54snaz.js (9921 gzip)
+  only before: /_astro/ProfilePeople.DF3Y5ycB.js (2100 gzip)
+  only before: /_astro/ProfileSafety.DMnfTc2E.js (2524 gzip)
+  only before: /_astro/ProfileSunSignCapture.Cs_7mkG4.js (915 gzip)
+  only before: /_astro/RegistryAura.CIWFTb41.js (16231 gzip)
+  only before: /_astro/RelationshipWheel.C6v857nC.js (19385 gzip)
+  only before: /_astro/ReturnPersonal.BDCSn-bS.js (3423 gzip)
+  only before: /_astro/SaturnReturnCalculator.C_J_eNny.js (3054 gzip)
+  only before: /_astro/SavedRecordsPanel.fWmwL2BW.js (3264 gzip)
+  only before: /_astro/SendBackExperience.fMAy2Nxa.js (3468 gzip)
+  only before: /_astro/SharingBirthForm.C1NTBKwc.js (878 gzip)
+  only before: /_astro/SolarReturnCalculator.BUxdPEEM.js (3629 gzip)
+  only before: /_astro/SolarReturnResult.B2FH9fPC.js (6166 gzip)
+  only before: /_astro/SomeoneElseChart.BAsb_dpp.js (5224 gzip)
+  only before: /_astro/SynastryCalculator.CSgjQG8-.js (11449 gzip)
+  only before: /_astro/TodayBrief.Broewacx.js (6649 gzip)
+  only before: /_astro/TransitItinerary.MGQvCHbI.js (3612 gzip)
+  only before: /_astro/TransitItinerary.worker-Bg3XFWXl.js (33306 gzip)
+  only before: /_astro/TransitRing.CKa4OM3K.js (6971 gzip)
+  only before: /_astro/TransitSearch.CkKNOtDU.js (2923 gzip)
+  only before: /_astro/TransitSearch.worker-tBq-OXpB.js (33011 gzip)
+  only before: /_astro/TransitTracker.wuEI9ulN.js (5354 gzip)
+  only before: /_astro/WalletChart.E1IUlapW.js (3803 gzip)
+  only before: /_astro/WelcomeBack.DLrD7diO.js (1183 gzip)
+  only before: /_astro/Wrapped.worker-DWzCoFIl.js (33057 gzip)
+  only before: /_astro/aspect-pattern-card.DgNA-n00.js (2091 gzip)
+  only before: /_astro/aspects.InQWH60-.js (226 gzip)
+  only before: /_astro/backup.DQhkbqm2.js (2077 gzip)
+  only before: /_astro/birth-window.worker-Oqr5lpkd.js (40350 gzip)
+  only before: /_astro/calculator-receipt.CUX2qBAy.js (859 gzip)
+  only before: /_astro/card-link.BrzNRGj9.js (1855 gzip)
+  only before: /_astro/card.Cynv2i1j.js (5518 gzip)
+  only before: /_astro/chart-context-card.BfF4T_k6.js (1655 gzip)
+  only before: /_astro/chart-image-sky.DERmke45.js (666 gzip)
+  only before: /_astro/chart-signature.BZmHc02M.js (2446 gzip)
+  only before: /_astro/chunk-CIVYAHTP.BaLuxxut.js (7791 gzip)
+  only before: /_astro/chunk-FRYARIYL.BRNJ2nRf.js (1083 gzip)
+  only before: /_astro/chunk-VDVUUMY2.IzwH7gy7.js (1782 gzip)
+  only before: /_astro/chunk-W2TMLFJ3.DKN6N7Ei.js (22980 gzip)
+  only before: /_astro/chunk-YJ7WZ7NS.DbhukoJm.js (1199 gzip)
+  only before: /_astro/compatibility-card.T_VJBcoE.js (3006 gzip)
+  only before: /_astro/composite-card.9UuKVUuA.js (1997 gzip)
+  only before: /_astro/compositeCopy.DAzXC4Db.js (6732 gzip)
+  only before: /_astro/compute.DgsLCCyk.js (1220 gzip)
+  only before: /_astro/compute.nT_a3eWz.js (924 gzip)
+  only before: /_astro/contacts.BdhTUVKV.js (615 gzip)
+  only before: /_astro/dignities.BWJDhj4R.js (715 gzip)
+  only before: /_astro/due-window.DnA5itpm.js (652 gzip)
+  only before: /_astro/fixtures.DH4iAFcd.js (305 gzip)
+  only before: /_astro/full.D1bmmMrj.js (311 gzip)
+  only before: /_astro/geo.CU4g-ilQ.js (1546 gzip)
+  only before: /_astro/local-date-reference.yi9gLsrc.js (1528 gzip)
+  only before: /_astro/localToUtc.DLLQdl2G.js (1700 gzip)
+  only before: /_astro/lunar-return-card.Cd-Jtrnz.js (2767 gzip)
+  only before: /_astro/milestone-card.mBU7HnMt.js (1648 gzip)
+  only before: /_astro/natal.D6ioUWhy.js (5244 gzip)
+  only before: /_astro/private-invite.DkTU33nI.js (652 gzip)
+  only before: /_astro/profile-chart-handoff.3NH83hih.js (275 gzip)
+  only before: /_astro/progressions.W-pkXArY.js (271 gzip)
+  only before: /_astro/read-store.1hBZWqaL.js (717 gzip)
+  only before: /_astro/receipt.C3G32mzj.js (8780 gzip)
+  only before: /_astro/refresh.t8Ft6fQs.js (769 gzip)
+  only before: /_astro/replay.DHVhak58.js (286 gzip)
+  only before: /_astro/resolve.DYbR-7ND.js (789 gzip)
+  only before: /_astro/returns.CHltbqU4.js (525 gzip)
+  only before: /_astro/saved-record-access.COYOBvVw.js (7521 gzip)
+  only before: /_astro/share-card.BEF94bHs.js (1509 gzip)
+  only before: /_astro/share-card.BXxjqXMG.js (17525 gzip)
+  only before: /_astro/share-positions-untimed.DHcrQjAt.js (522 gzip)
+  only before: /_astro/site-clock.CZONq-Pj.js (125 gzip)
+  only before: /_astro/solar-return.C7BtLQ3k.js (342 gzip)
+  only before: /_astro/store.gJsCeEuS.js (1495 gzip)
+  only before: /_astro/synastry.BXzpqJDq.js (671 gzip)
+  only before: /_astro/sync.BsmQJMyI.js (1960 gzip)
+  only before: /_astro/techniques.3hEEFagR.js (3470 gzip)
+  only before: /_astro/today-reading.QPaZJWAH.js (1498 gzip)
+  only before: /_astro/tour.W4EVwOKv.js (24476 gzip)
+  only before: /_astro/transit-scan.PS4VeKp7.js (1900 gzip)
+  only before: /_astro/use-learning-sources.Dgl4sLek.js (1246 gzip)
+  only before: /_astro/useEngine.Ct15KAm3.js (380 gzip)
+  only before: /_astro/useProfile.GD6aCz8b.js (301 gzip)
+  only before: /_astro/year-scan.C5fg2zmY.js (664 gzip)
+
+budgeted routes that moved: 8
+# B1 control on the default build: /birth-chart/ set 1 KB under its measured value; --fail must exit 1
+# measured 67546 bytes; budget set to 64.962890625 KB (66522 bytes)
+# command: node scripts/report-bundles.mjs --fail
+report-bundles: 1 failures
+  - /birth-chart/: 66.0 KB gz exceeds 64.962890625 KB
+# exit code: 1
+# restored budgets.json: sha256 f128c1d65367f3ffbdbcc6ac4ba28ca6c5956ee1964235d6df5ff08fad1b8284 (before control: f128c1d65367f3ffbdbcc6ac4ba28ca6c5956ee1964235d6df5ff08fad1b8284)
+
+## The engine files in each chunk (a diagnostic build of the default build with SR's attribution plugin)
+attribution build: 294 chunks, every one identical (path and SHA-256) to the default build
+/_astro/EclipticView.DKQxiBPI.js (gzip 15362; 7 non-engine modules)
+    dist/lite-declinations.js  rendered 8881
+    dist/lite-sect.js  rendered 3169
+/_astro/PersonalCalendar.worker-COk_pD6K.js (gzip 35141; 11 non-engine modules)
+    dist/chunk-RMBWKZI2.js  rendered 230
+    dist/chunk-NNOSOOWS.js  rendered 326
+    dist/chunk-2BB5GQ3P.js  rendered 6274
+    dist/chunk-BHJXUY67.js  rendered 4990
+    dist/chunk-B5LKF437.js  rendered 12996
+    dist/chunk-NIRYKLHT.js  rendered 3806
+    dist/chunk-CPALRSPC.js  rendered 1487
+    dist/chunk-TSS2SZWQ.js  rendered 8213
+    dist/chunk-QRBHGADI.js  rendered 767
+    dist/techniques.js  rendered 1315
+/_astro/TransitItinerary.worker-C0-Yvv9L.js (gzip 33394; 5 non-engine modules)
+    dist/chunk-RMBWKZI2.js  rendered 228
+    dist/chunk-NNOSOOWS.js  rendered 326
+    dist/chunk-2BB5GQ3P.js  rendered 6278
+    dist/chunk-BHJXUY67.js  rendered 4990
+    dist/chunk-B5LKF437.js  rendered 12375
+    dist/chunk-NIRYKLHT.js  rendered 2913
+/_astro/TransitSearch.worker-JntwqaG5.js (gzip 33086; 7 non-engine modules)
+    dist/chunk-RMBWKZI2.js  rendered 230
+    dist/chunk-NNOSOOWS.js  rendered 326
+    dist/chunk-2BB5GQ3P.js  rendered 6274
+    dist/chunk-BHJXUY67.js  rendered 4990
+    dist/chunk-B5LKF437.js  rendered 12996
+    dist/chunk-NIRYKLHT.js  rendered 3804
+    dist/chunk-TSS2SZWQ.js  rendered 8213
+/_astro/Wrapped.worker-BlEgdO7_.js (gzip 33127; 8 non-engine modules)
+    dist/chunk-RMBWKZI2.js  rendered 230
+    dist/chunk-NNOSOOWS.js  rendered 326
+    dist/chunk-2BB5GQ3P.js  rendered 6274
+    dist/chunk-BHJXUY67.js  rendered 4990
+    dist/chunk-B5LKF437.js  rendered 12996
+    dist/chunk-NIRYKLHT.js  rendered 3804
+    dist/chunk-TSS2SZWQ.js  rendered 8213
+/_astro/birth-window.worker-BNC_5yeI.js (gzip 40325; 4 non-engine modules)
+    dist/chunk-RMBWKZI2.js  rendered 2589
+    dist/chunk-NNOSOOWS.js  rendered 10346
+    dist/chunk-2BB5GQ3P.js  rendered 6466
+    dist/chunk-BHJXUY67.js  rendered 5278
+    dist/chunk-B5LKF437.js  rendered 13622
+    dist/chunk-F4JKI3XV.js  rendered 1611
+    dist/chunk-NIRYKLHT.js  rendered 3747
+    dist/chunk-CPALRSPC.js  rendered 1553
+    dist/chunk-PFGUCNOK.js  rendered 1437
+    dist/window.js  rendered 33453
+/_astro/card.-VShLL-E.js (gzip 5513; 5 non-engine modules)
+    dist/chunk-RRB65OLH.js  rendered 1037
+    dist/sky.js  rendered 9922
+/_astro/chunk-B5LKF437.7_bxrzb_.js (gzip 6537; 0 non-engine modules)
+    dist/chunk-BHJXUY67.js  rendered 4698
+    dist/chunk-B5LKF437.js  rendered 12209
+/_astro/chunk-CPALRSPC.DWNyQy_f.js (gzip 501; 0 non-engine modules)
+    dist/chunk-CPALRSPC.js  rendered 1452
+/_astro/chunk-F4JKI3XV.DXFJXQuL.js (gzip 745; 0 non-engine modules)
+    dist/chunk-F4JKI3XV.js  rendered 2933
+/_astro/chunk-HTT4HMQ6.BaLuxxut.js (gzip 7791; 0 non-engine modules)
+    dist/chunk-HTT4HMQ6.js  rendered 23725
+/_astro/chunk-KFTJMMG7.CQq0AFD4.js (gzip 634; 0 non-engine modules)
+    dist/chunk-KFTJMMG7.js  rendered 2297
+/_astro/chunk-NIRYKLHT.Bm5YfgXm.js (gzip 22989; 1 non-engine modules)
+    dist/chunk-2BB5GQ3P.js  rendered 6126
+    dist/chunk-NIRYKLHT.js  rendered 6388
+/_astro/chunk-NNOSOOWS.CflCEcE2.js (gzip 1781; 0 non-engine modules)
+    dist/chunk-NNOSOOWS.js  rendered 9864
+/_astro/chunk-PFGUCNOK.72E_83Yx.js (gzip 846; 0 non-engine modules)
+    dist/chunk-PFGUCNOK.js  rendered 2677
+/_astro/chunk-QRBHGADI.B_4IIeNk.js (gzip 1079; 0 non-engine modules)
+    dist/chunk-QRBHGADI.js  rendered 2988
+/_astro/chunk-RMBWKZI2.DZR4n1wo.js (gzip 538; 0 non-engine modules)
+    dist/chunk-RMBWKZI2.js  rendered 2552
+/_astro/chunk-TSS2SZWQ.Dhr43fJV.js (gzip 1857; 0 non-engine modules)
+    dist/chunk-TSS2SZWQ.js  rendered 9209
+/_astro/compositeCopy.8jP0RYZK.js (gzip 7228; 4 non-engine modules)
+    dist/lite-composite.js  rendered 3578
+/_astro/dignities.Dwt_E1DU.js (gzip 1162; 2 non-engine modules)
+    dist/lite-dignities.js  rendered 3952
+/_astro/geo.Iw2kWo4c.js (gzip 1545; 0 non-engine modules)
+    dist/geo.js  rendered 5093
+/_astro/progressions.CMO1QnlW.js (gzip 271; 1 non-engine modules)
+    dist/chunk-2K3DWRJN.js  rendered 517
+/_astro/receipt.BWrGOwmW.js (gzip 8802; 0 non-engine modules)
+    dist/chunk-OVXQQEXL.js  rendered 1967
+    dist/receipt.js  rendered 39088
+/_astro/techniques.ID10CBpU.js (gzip 3484; 0 non-engine modules)
+    dist/chunk-47ERTK5X.js  rendered 950
+    dist/techniques.js  rendered 13742
+/_astro/tzdb-2025c-00-6GVG6RYL.o1FB3h2V.js (gzip 3317; 0 non-engine modules)
+    dist/tzdb-2025c-00-6GVG6RYL.js  rendered 12688
+/_astro/tzdb-2025c-01-CEYMG3LE.D9o2_5X6.js (gzip 3127; 0 non-engine modules)
+    dist/tzdb-2025c-01-CEYMG3LE.js  rendered 11828
+/_astro/tzdb-2025c-02-NWQJCVUU.Dic7vfKg.js (gzip 4238; 0 non-engine modules)
+    dist/tzdb-2025c-02-NWQJCVUU.js  rendered 18320
+/_astro/tzdb-2025c-03-PLHP6VH4.KKcrqjC9.js (gzip 2545; 0 non-engine modules)
+    dist/tzdb-2025c-03-PLHP6VH4.js  rendered 9675
+/_astro/tzdb-2025c-04-MEKUJA6M.BOTJyefL.js (gzip 3131; 0 non-engine modules)
+    dist/tzdb-2025c-04-MEKUJA6M.js  rendered 13057
+/_astro/tzdb-2025c-05-3K5YKZBL.BFC59_WX.js (gzip 3628; 0 non-engine modules)
+    dist/tzdb-2025c-05-3K5YKZBL.js  rendered 14020
+/_astro/tzdb-2025c-06-L2VV5XJV.DZBBNSu1.js (gzip 3020; 0 non-engine modules)
+    dist/tzdb-2025c-06-L2VV5XJV.js  rendered 11572
+/_astro/tzdb-2025c-07-H3GLGJGY.D8jvxl_a.js (gzip 3750; 0 non-engine modules)
+    dist/tzdb-2025c-07-H3GLGJGY.js  rendered 16953
+/_astro/tzdb-2025c-08-DA7QQIGD.t__Erz0Q.js (gzip 3610; 0 non-engine modules)
+    dist/tzdb-2025c-08-DA7QQIGD.js  rendered 13619
+/_astro/tzdb-2025c-09-MTXIO3QL.Bxb9eIMI.js (gzip 3003; 0 non-engine modules)
+    dist/tzdb-2025c-09-MTXIO3QL.js  rendered 11351
+/_astro/tzdb-2025c-10-ASL4UW5C.DACi51my.js (gzip 2967; 0 non-engine modules)
+    dist/tzdb-2025c-10-ASL4UW5C.js  rendered 10218
+/_astro/tzdb-2025c-11-EQEOANYB.taFkXdsx.js (gzip 3589; 0 non-engine modules)
+    dist/tzdb-2025c-11-EQEOANYB.js  rendered 15520
+/_astro/tzdb-2025c-12-NKCCXJ5G.o8-oHjPD.js (gzip 3121; 0 non-engine modules)
+    dist/tzdb-2025c-12-NKCCXJ5G.js  rendered 13312
+/_astro/tzdb-2025c-13-DYTF3UC7.DOB6pRnd.js (gzip 2929; 0 non-engine modules)
+    dist/tzdb-2025c-13-DYTF3UC7.js  rendered 11380
+/_astro/tzdb-2025c-14-C25H45R5.CqvuAlLS.js (gzip 2775; 0 non-engine modules)
+    dist/tzdb-2025c-14-C25H45R5.js  rendered 11175
+/_astro/tzdb-2025c-15-7OYYZWRY.BSDLg9kh.js (gzip 3235; 0 non-engine modules)
+    dist/tzdb-2025c-15-7OYYZWRY.js  rendered 12826
+
+engine files per budgeted closure:
+  /: chunk-F4JKI3XV.DXFJXQuL.js [chunk-F4JKI3XV.js]
+  /birth-chart/: chunk-F4JKI3XV.DXFJXQuL.js [chunk-F4JKI3XV.js]; chunk-NNOSOOWS.CflCEcE2.js [chunk-NNOSOOWS.js]; chunk-RMBWKZI2.DZR4n1wo.js [chunk-RMBWKZI2.js]; dignities.Dwt_E1DU.js [lite-dignities.js]
+  /transits/: chunk-F4JKI3XV.DXFJXQuL.js [chunk-F4JKI3XV.js]
+  /solar-return/: chunk-F4JKI3XV.DXFJXQuL.js [chunk-F4JKI3XV.js]
+  /lunar-return/: chunk-F4JKI3XV.DXFJXQuL.js [chunk-F4JKI3XV.js]
+  /today/: chunk-F4JKI3XV.DXFJXQuL.js [chunk-F4JKI3XV.js]
+  /compatibility/: chunk-F4JKI3XV.DXFJXQuL.js [chunk-F4JKI3XV.js]
+  engine-chunk: chunk-B5LKF437.7_bxrzb_.js [chunk-BHJXUY67.js, chunk-B5LKF437.js]; chunk-F4JKI3XV.DXFJXQuL.js [chunk-F4JKI3XV.js]; chunk-NIRYKLHT.Bm5YfgXm.js [chunk-2BB5GQ3P.js, chunk-NIRYKLHT.js]; chunk-NNOSOOWS.CflCEcE2.js [chunk-NNOSOOWS.js]; chunk-RMBWKZI2.DZR4n1wo.js [chunk-RMBWKZI2.js]
+  birth-window worker: birth-window.worker-BNC_5yeI.js [chunk-RMBWKZI2.js, chunk-NNOSOOWS.js, chunk-2BB5GQ3P.js, chunk-BHJXUY67.js, chunk-B5LKF437.js, chunk-F4JKI3XV.js, chunk-NIRYKLHT.js, chunk-CPALRSPC.js, chunk-PFGUCNOK.js, window.js]
+
+## Closures that grew on the default build
+default: closures that grew from the base build to the head build, with the chunks that differ
+
+/birth-chart/: 66962 -> 67546 gzip bytes (+584); 43 -> 44 chunks
+  changed  /_astro/ChartCalculator.D21Nlh0t.js (21952 -> 21983 gzip, +31)
+  new      /_astro/chunk-F4JKI3XV.DXFJXQuL.js (745 gzip); engine files: chunk-F4JKI3XV.js
+  new      /_astro/chunk-NNOSOOWS.CflCEcE2.js (1781 gzip); engine files: chunk-NNOSOOWS.js
+  new      /_astro/chunk-RMBWKZI2.DZR4n1wo.js (538 gzip); engine files: chunk-RMBWKZI2.js
+  changed  /_astro/dignities.Dwt_E1DU.js (715 -> 1162 gzip, +447); engine files: lite-dignities.js
+  changed  /_astro/local-date-reference.2-Ce7e_-.js (1528 -> 1528 gzip, 0)
+  changed  /_astro/localToUtc.DTkj4LvN.js (1700 -> 1701 gzip, +1)
+  changed  /_astro/useEngine.CbWMjCBm.js (380 -> 402 gzip, +22)
+  gone     /_astro/chunk-VDVUUMY2.IzwH7gy7.js (1782 gzip)
+  gone     /_astro/chunk-YJ7WZ7NS.DbhukoJm.js (1199 gzip)
+
+/big-three/: 27128 -> 27168 gzip bytes (+40); 20 -> 20 chunks
+  changed  /_astro/BigThreeQuick.DfEhdLip.js (3153 -> 3170 gzip, +17)
+  changed  /_astro/localToUtc.DTkj4LvN.js (1700 -> 1701 gzip, +1)
+  changed  /_astro/useEngine.CbWMjCBm.js (380 -> 402 gzip, +22)
+
+engine-chunk: 33267 -> 33361 gzip bytes (+94); 7 -> 8 chunks
+  new      /_astro/chunk-F4JKI3XV.DXFJXQuL.js (745 gzip); engine files: chunk-F4JKI3XV.js
+  new      /_astro/chunk-NIRYKLHT.Bm5YfgXm.js (22989 gzip); engine files: chunk-2BB5GQ3P.js, chunk-NIRYKLHT.js
+  new      /_astro/chunk-NNOSOOWS.CflCEcE2.js (1781 gzip); engine files: chunk-NNOSOOWS.js
+  new      /_astro/chunk-RMBWKZI2.DZR4n1wo.js (538 gzip); engine files: chunk-RMBWKZI2.js
+  changed  /_astro/full.AUZx8EGL.js (311 -> 313 gzip, +2)
+  gone     /_astro/chunk-VDVUUMY2.IzwH7gy7.js (1782 gzip)
+  gone     /_astro/chunk-W2TMLFJ3.DKN6N7Ei.js (22980 gzip)
+  gone     /_astro/chunk-YJ7WZ7NS.DbhukoJm.js (1199 gzip)
+
+## The production-flags build (site-check.yml's production-flags-build environment, the three _SECRET stand-ins at 32 characters or more; npx astro build)
+# command: node scripts/report-bundles.mjs --fail
+route gzip sizes (initial transitive local JS):
+  /                  19.1 KB /   42 KB  (22 chunks)
+  /birth-chart/      69.1 KB /   71 KB  (45 chunks)
+  /big-three/        26.5 KB /   30 KB  (20 chunks)
+  /transits/         27.7 KB /   30 KB  (25 chunks)
+  /solar-return/     22.3 KB /   30 KB  (18 chunks)
+  /lunar-return/     22.2 KB /   30 KB  (18 chunks)
+  /numerology/       17.3 KB /   30 KB  (7 chunks)
+  /numerology/life-path/7/   17.3 KB /   30 KB  (7 chunks)
+  /void-of-course-moon/    0.0 KB /    5 KB  (0 chunks)
+  /today/            20.1 KB / 21.5 KB  (14 chunks)
+  /compatibility/    34.2 KB /   36 KB  (25 chunks)
+  /aries/             0.0 KB /    0 KB  (0 chunks)
+  /almanac/           0.0 KB /    0 KB  (0 chunks)
+  /almanac/sky-2026-08/    0.0 KB /    0 KB  (0 chunks)
+  /almanac/reading-a-childs-chart/    0.0 KB /    0 KB  (0 chunks)
+  /registry/collection/   33.0 KB /   48 KB  (20 chunks)
+  /learn/aspects/sun-moon/    0.0 KB /    0 KB  (0 chunks)
+  /learn/aspects/moon-venus/    0.0 KB /    0 KB  (0 chunks)
+  /learn/aspects/venus-mars/    0.0 KB /    0 KB  (0 chunks)
+chunk gates:
+  chunk-max          50.2 KB /   60 KB  (/_astro/client.CCm7tF5v.js)
+  engine-chunk       32.6 KB / 32.598046875 KB  (/_astro/full.AUZx8EGL.js; 8 static chunks)
+engine isolation: package boundary clear; homepage markers clear
+report-bundles: budgets pass
+# exit code: 0
+
+# command: node compare-bundles.mjs bundles-base-production.json bundles-production.json (SR2's tool, copied)
+previous: bundles-base-production.json
+current:  bundles-production.json
+
+route                              allowance   previous (chunks)   current (chunks)   change
+/                                      43008   20047 (22)         19590 (22)         -457  (chunk list differs)
+/birth-chart/                          72704   70152 (44)         70731 (45)         +579  (chunk list differs)
+/big-three/                            30720   27128 (20)         27168 (20)         +40  (chunk list differs)
+/transits/                             30720   28818 (25)         28382 (25)         -436  (chunk list differs)
+/solar-return/                         30720   23294 (18)         22857 (18)         -437  (chunk list differs)
+/lunar-return/                         30720   23196 (18)         22761 (18)         -435  (chunk list differs)
+/numerology/                           30720   17711 (7)          17711 (7)          0
+/numerology/life-path/7/               30720   17711 (7)          17711 (7)          0
+/void-of-course-moon/                   5120   0 (0)              0 (0)              0
+/today/                                22016   21017 (14)         20561 (14)         -456  (chunk list differs)
+/compatibility/                        36864   35472 (25)         35039 (25)         -433  (chunk list differs)
+/aries/                                    0   0 (0)              0 (0)              0
+/almanac/                                  0   0 (0)              0 (0)              0
+/almanac/sky-2026-08/                      0   0 (0)              0 (0)              0
+/almanac/reading-a-childs-chart/           0   0 (0)              0 (0)              0
+/registry/collection/                  49152   34295 (20)         33839 (20)         -456  (chunk list differs)
+/learn/aspects/sun-moon/                   0   0 (0)              0 (0)              0
+/learn/aspects/moon-venus/                 0   0 (0)              0 (0)              0
+/learn/aspects/venus-mars/                 0   0 (0)              0 (0)              0
+
+chunk-max: previous 51366 /_astro/client.CCm7tF5v.js; current 51366 /_astro/client.CCm7tF5v.js; change 0
+engine-chunk: previous 33267 (7 chunks, /_astro/full.D1bmmMrj.js); current 33361 (8 chunks, /_astro/full.AUZx8EGL.js); change +94; closure lists differ
+birth-window worker: previous 40350; current 40325; change -25
+failures: previous 0; current 0
+
+served chunks: previous 295, current 296; identical path and SHA-256: 168
+  only now: /_astro/AccountBoundProfileSurface.CLjXp68r.js (1279 gzip)
+  only now: /_astro/AccountProfileAccessBootstrap.Dz8zDM6J.js (1577 gzip)
+  only now: /_astro/AccountSyncV2Panel.DJiEF9QL.js (15357 gzip)
+  only now: /_astro/ApproachRead.DhXxzBUW.js (1835 gzip)
+  only now: /_astro/AspectPatternDiagram.CSoKIs6M.js (2856 gzip)
+  only now: /_astro/AspectPatternFeature.B2wzeGhZ.js (1269 gzip)
+  only now: /_astro/AspectPatternPanel.DOMGj4h5.js (3862 gzip)
+  only now: /_astro/BabyShowerSky.BIThFJ3i.js (2304 gzip)
+  only now: /_astro/BabyZodiac.BGxA9UqX.js (2115 gzip)
+  only now: /_astro/BigThreeQuick.DfEhdLip.js (3170 gzip)
+  only now: /_astro/BirthTimeWindow.CdnsrgWT.js (2227 gzip)
+  only now: /_astro/ChartActionDock.CTaxmORH.js (16344 gzip)
+  only now: /_astro/ChartCalculator.BVsZzi5L.js (21984 gzip)
+  only now: /_astro/ChartCompare.D7KWcbUJ.js (3673 gzip)
+  only now: /_astro/ChartLens.CkNi6RdK.js (6932 gzip)
+  only now: /_astro/ChartShareDialog.80YbD5qw.js (3354 gzip)
+  only now: /_astro/ChartTwins.mY1dwzrm.js (1980 gzip)
+  only now: /_astro/CommunicationRead.Cd_XJIji.js (1792 gzip)
+  only now: /_astro/CompatibilityShareControl.DwqCrdUf.js (1759 gzip)
+  only now: /_astro/DailyForYou.BRTUIDon.js (1740 gzip)
+  only now: /_astro/DailyPublicChart.BvDNeSek.js (773 gzip)
+  only now: /_astro/DeveloperDemo.DxuXbxYl.js (10563 gzip)
+  only now: /_astro/EclipticView.DKQxiBPI.js (15362 gzip)
+  only now: /_astro/GroupCharts.NnP5RcIr.js (2672 gzip)
+  only now: /_astro/InviteExperience.BLONDOdV.js (4767 gzip)
+  only now: /_astro/LearningPath.DRWOK1Mv.js (3145 gzip)
+  only now: /_astro/LearningSavedEntry.kSKN6r0T.js (812 gzip)
+  only now: /_astro/LifeMilestones.DrFVUB7p.js (2578 gzip)
+  only now: /_astro/LivingSelfChartChooser.DISbopJi.js (844 gzip)
+  only now: /_astro/LunarReturnCalculator.Df9uNS0C.js (3552 gzip)
+  only now: /_astro/LunarReturnResult.ClSIUwCk.js (5465 gzip)
+  only now: /_astro/MiniBirthChartWidget.C5p0J_fJ.js (3898 gzip)
+  only now: /_astro/MoonPhaseTool.QpsO1f7c.js (2646 gzip)
+  only now: /_astro/OccasionSky.Bac1m8Mw.js (3654 gzip)
+  only now: /_astro/PersonalCalendar.B-Ow9IDG.js (1962 gzip)
+  only now: /_astro/PersonalCalendar.worker-COk_pD6K.js (35141 gzip)
+  only now: /_astro/PositionsShareSurface.DXdPtUTq.js (9688 gzip)
+  only now: /_astro/PostChartDailyBrief.Cpj35NVQ.js (3189 gzip)
+  only now: /_astro/PrivateCompatibilityInvite.C5ZZeoB9.js (1491 gzip)
+  only now: /_astro/ProfileCardInbox.DuGZ59lB.js (1922 gzip)
+  only now: /_astro/ProfileDashboard.BdcHLVaB.js (87 gzip)
+  only now: /_astro/ProfileDashboard.D16p6xyp.js (5561 gzip)
+  only now: /_astro/ProfileIdentity.DLxuWvBt.js (4659 gzip)
+  only now: /_astro/ProfileKeepClose.CUvZMQ1p.js (1638 gzip)
+  only now: /_astro/ProfileManager.CwRaGKg9.js (103 gzip)
+  only now: /_astro/ProfileManager.DejCOfZQ.js (10093 gzip)
+  only now: /_astro/ProfilePeople.DEQnXUpD.js (2099 gzip)
+  only now: /_astro/ProfileSafety.BJ_nKSj9.js (2527 gzip)
+  only now: /_astro/ProfileSunSignCapture.BYzz265P.js (914 gzip)
+  only now: /_astro/RegistryAura.BOlowyLX.js (16231 gzip)
+  only now: /_astro/RelationshipWheel.Dg4rNcPT.js (19405 gzip)
+  only now: /_astro/ReturnPersonal.CMqfX2VT.js (3442 gzip)
+  only now: /_astro/SaturnReturnCalculator.DjLVrCpU.js (3079 gzip)
+  only now: /_astro/SavedRecordsPanel.CB3NDvAa.js (3284 gzip)
+  only now: /_astro/SendBackExperience.CQwlNnFU.js (3486 gzip)
+  only now: /_astro/SharingBirthForm.CmRltK4h.js (880 gzip)
+  only now: /_astro/SolarReturnCalculator.i5rsIkSy.js (3648 gzip)
+  only now: /_astro/SolarReturnResult.B_HORfaz.js (6189 gzip)
+  only now: /_astro/SomeoneElseChart.BpKVvHVX.js (5224 gzip)
+  only now: /_astro/SynastryCalculator.CfwqosRy.js (11896 gzip)
+  only now: /_astro/TodayBrief.GciWjd3K.js (6649 gzip)
+  only now: /_astro/TransitItinerary.Dw-v8yxi.js (3611 gzip)
+  only now: /_astro/TransitItinerary.worker-C0-Yvv9L.js (33394 gzip)
+  only now: /_astro/TransitRing.CdhvKBPF.js (6992 gzip)
+  only now: /_astro/TransitSearch.jst0bqIx.js (2922 gzip)
+  only now: /_astro/TransitSearch.worker-JntwqaG5.js (33086 gzip)
+  only now: /_astro/TransitTracker.B98cKYhN.js (5351 gzip)
+  only now: /_astro/WalletChart.CKaJHtTc.js (3824 gzip)
+  only now: /_astro/WelcomeBack.BUKJPW8h.js (1182 gzip)
+  only now: /_astro/Wrapped.worker-BlEgdO7_.js (33127 gzip)
+  only now: /_astro/aspect-pattern-card.Bqxzxuig.js (2086 gzip)
+  only now: /_astro/aspects.7J9QU68H.js (227 gzip)
+  only now: /_astro/backup.Ch4hM8ma.js (2076 gzip)
+  only now: /_astro/birth-window.worker-BNC_5yeI.js (40325 gzip)
+  only now: /_astro/calculator-receipt.Brg7biGc.js (860 gzip)
+  only now: /_astro/card-link.5iMgJKBc.js (1876 gzip)
+  only now: /_astro/card.-VShLL-E.js (5513 gzip)
+  only now: /_astro/chart-context-card.CYgWDgeB.js (1652 gzip)
+  only now: /_astro/chart-image-sky.BrRXBwKX.js (685 gzip)
+  only now: /_astro/chart-signature.ColUR-EE.js (2446 gzip)
+  only now: /_astro/chunk-F4JKI3XV.DXFJXQuL.js (745 gzip)
+  only now: /_astro/chunk-HTT4HMQ6.BaLuxxut.js (7791 gzip) same content as previous /_astro/chunk-CIVYAHTP.BaLuxxut.js
+  only now: /_astro/chunk-NIRYKLHT.Bm5YfgXm.js (22989 gzip)
+  only now: /_astro/chunk-NNOSOOWS.CflCEcE2.js (1781 gzip)
+  only now: /_astro/chunk-QRBHGADI.B_4IIeNk.js (1079 gzip)
+  only now: /_astro/chunk-RMBWKZI2.DZR4n1wo.js (538 gzip)
+  only now: /_astro/compatibility-card.BKcoN18O.js (3026 gzip)
+  only now: /_astro/composite-card.EJrPTtei.js (2001 gzip)
+  only now: /_astro/compositeCopy.8jP0RYZK.js (7228 gzip)
+  only now: /_astro/compute.BT6Zfbjr.js (1223 gzip)
+  only now: /_astro/compute.CGMB-A1P.js (925 gzip)
+  only now: /_astro/contacts.cfHkapLc.js (618 gzip)
+  only now: /_astro/dignities.Dwt_E1DU.js (1162 gzip)
+  only now: /_astro/due-window.0fg1wxx0.js (652 gzip)
+  only now: /_astro/fixtures.DNyJVgkG.js (307 gzip)
+  only now: /_astro/full.AUZx8EGL.js (313 gzip)
+  only now: /_astro/geo.Iw2kWo4c.js (1545 gzip)
+  only now: /_astro/local-date-reference.2-Ce7e_-.js (1528 gzip)
+  only now: /_astro/localToUtc.DTkj4LvN.js (1701 gzip)
+  only now: /_astro/lunar-return-card.BYgrqmim.js (2764 gzip)
+  only now: /_astro/milestone-card.Cesr3J4R.js (1651 gzip)
+  only now: /_astro/natal.BK1-YGkx.js (5242 gzip)
+  only now: /_astro/private-invite.Bvq_I-Qg.js (671 gzip)
+  only now: /_astro/profile-chart-handoff.CYrnuYhE.js (274 gzip)
+  only now: /_astro/progressions.CMO1QnlW.js (271 gzip)
+  only now: /_astro/read-store.Du8nKHqt.js (718 gzip)
+  only now: /_astro/receipt.BWrGOwmW.js (8802 gzip)
+  only now: /_astro/refresh.DxZhTn76.js (770 gzip)
+  only now: /_astro/replay.B2kFcp31.js (287 gzip)
+  only now: /_astro/resolve.BaOQpZR4.js (789 gzip)
+  only now: /_astro/returns.DBfzpiRQ.js (527 gzip)
+  only now: /_astro/saved-record-access.hx1xcRMf.js (7521 gzip)
+  only now: /_astro/share-card.C8oEjdD8.js (1507 gzip)
+  only now: /_astro/share-card.DxXAvdag.js (17547 gzip)
+  only now: /_astro/share-positions-untimed.BppzrZYg.js (543 gzip)
+  only now: /_astro/site-clock.ByR0f6Sh.js (125 gzip)
+  only now: /_astro/solar-return.BWrzIUGs.js (344 gzip)
+  only now: /_astro/store.DXTIDIVc.js (1756 gzip)
+  only now: /_astro/synastry.CC2Sl2_v.js (672 gzip)
+  only now: /_astro/sync.7G2qRRzx.js (1962 gzip)
+  only now: /_astro/techniques.ID10CBpU.js (3484 gzip)
+  only now: /_astro/today-reading.BOiDrK_N.js (1496 gzip)
+  only now: /_astro/tour.BlZZ6aIZ.js (24474 gzip)
+  only now: /_astro/transit-scan.Df2OiTy4.js (1902 gzip)
+  only now: /_astro/use-learning-sources.ak-gM90z.js (1245 gzip)
+  only now: /_astro/useEngine.CbWMjCBm.js (402 gzip)
+  only now: /_astro/useProfile.QbPvihj7.js (298 gzip)
+  only now: /_astro/year-scan.O2G7pGGG.js (662 gzip)
+  only before: /_astro/AccountBoundProfileSurface.QytJtME0.js (1280 gzip)
+  only before: /_astro/AccountProfileAccessBootstrap.BuAk6Vb9.js (1557 gzip)
+  only before: /_astro/AccountSyncV2Panel.bfAtZZ1o.js (15336 gzip)
+  only before: /_astro/ApproachRead.Dkca5hQ7.js (1838 gzip)
+  only before: /_astro/AspectPatternDiagram.7V1BY63J.js (2855 gzip)
+  only before: /_astro/AspectPatternFeature.y84buw2w.js (1251 gzip)
+  only before: /_astro/AspectPatternPanel.C5zx6StK.js (3843 gzip)
+  only before: /_astro/BabyShowerSky.-jeGx3BY.js (2282 gzip)
+  only before: /_astro/BabyZodiac.C9qc_fM-.js (2116 gzip)
+  only before: /_astro/BigThreeQuick.5Yryfawn.js (3153 gzip)
+  only before: /_astro/BirthTimeWindow.C1_OpNNA.js (2227 gzip)
+  only before: /_astro/ChartActionDock.Dd0SHGGz.js (16319 gzip)
+  only before: /_astro/ChartCalculator.7TsyWE9l.js (21956 gzip)
+  only before: /_astro/ChartCompare.BuJSNtk6.js (3647 gzip)
+  only before: /_astro/ChartLens.B4yuuMno.js (6904 gzip)
+  only before: /_astro/ChartShareDialog.Br64QsEN.js (3352 gzip)
+  only before: /_astro/ChartTwins.BaZ6d23i.js (1980 gzip)
+  only before: /_astro/CommunicationRead.pBUZvMeq.js (1795 gzip)
+  only before: /_astro/CompatibilityShareControl.FGJBYJ6O.js (1743 gzip)
+  only before: /_astro/DailyForYou.EcAK7-LZ.js (1742 gzip)
+  only before: /_astro/DailyPublicChart.ocKsG22N.js (773 gzip)
+  only before: /_astro/DeveloperDemo.DLbjeft5.js (10564 gzip)
+  only before: /_astro/EclipticView.C_4J7MoB.js (13188 gzip)
+  only before: /_astro/GroupCharts.C8zRINis.js (2652 gzip)
+  only before: /_astro/InviteExperience.DFqSVk0z.js (4767 gzip)
+  only before: /_astro/LearningPath.D5xgrwP9.js (3142 gzip)
+  only before: /_astro/LearningSavedEntry.A6MKvwsR.js (810 gzip)
+  only before: /_astro/LifeMilestones.Ygl4v7VM.js (2556 gzip)
+  only before: /_astro/LivingSelfChartChooser.EiQ3RXGb.js (844 gzip)
+  only before: /_astro/LunarReturnCalculator.BZr23ibz.js (3531 gzip)
+  only before: /_astro/LunarReturnResult.BwZ0YG8E.js (5448 gzip)
+  only before: /_astro/MiniBirthChartWidget.BLnbOU-D.js (3878 gzip)
+  only before: /_astro/MoonPhaseTool.DM6q0og3.js (2645 gzip)
+  only before: /_astro/OccasionSky.iNqOmou6.js (3633 gzip)
+  only before: /_astro/PersonalCalendar.Ct8GqMIO.js (1962 gzip)
+  only before: /_astro/PersonalCalendar.worker-D5jCHEp1.js (35072 gzip)
+  only before: /_astro/PositionsShareSurface.-seQ7u9r.js (9689 gzip)
+  only before: /_astro/PostChartDailyBrief.BPBjes3J.js (3191 gzip)
+  only before: /_astro/PrivateCompatibilityInvite.BZg-FDQM.js (1491 gzip)
+  only before: /_astro/ProfileCardInbox.c7TitqFw.js (1922 gzip)
+  only before: /_astro/ProfileDashboard.DBfoh-8f.js (5542 gzip)
+  only before: /_astro/ProfileDashboard.LRrsfG89.js (87 gzip)
+  only before: /_astro/ProfileIdentity.IEvo-l-0.js (4663 gzip)
+  only before: /_astro/ProfileKeepClose.BbBF6fga.js (1639 gzip)
+  only before: /_astro/ProfileManager.B7UL8htK.js (103 gzip)
+  only before: /_astro/ProfileManager.By1Uviy4.js (10093 gzip)
+  only before: /_astro/ProfilePeople.DF3Y5ycB.js (2100 gzip)
+  only before: /_astro/ProfileSafety.BARZDc2Q.js (2524 gzip)
+  only before: /_astro/ProfileSunSignCapture.CVqiUjuw.js (917 gzip)
+  only before: /_astro/RegistryAura.CIWFTb41.js (16231 gzip)
+  only before: /_astro/RelationshipWheel.C6v857nC.js (19385 gzip)
+  only before: /_astro/ReturnPersonal.BDCSn-bS.js (3423 gzip)
+  only before: /_astro/SaturnReturnCalculator.C_J_eNny.js (3054 gzip)
+  only before: /_astro/SavedRecordsPanel.B6pa0bNi.js (3263 gzip)
+  only before: /_astro/SendBackExperience.fMAy2Nxa.js (3468 gzip)
+  only before: /_astro/SharingBirthForm.C1NTBKwc.js (878 gzip)
+  only before: /_astro/SolarReturnCalculator.BUxdPEEM.js (3629 gzip)
+  only before: /_astro/SolarReturnResult.B2FH9fPC.js (6166 gzip)
+  only before: /_astro/SomeoneElseChart.BAsb_dpp.js (5224 gzip)
+  only before: /_astro/SynastryCalculator.CqElx3DB.js (11895 gzip)
+  only before: /_astro/TodayBrief.Da4r8tzc.js (6649 gzip)
+  only before: /_astro/TransitItinerary.MGQvCHbI.js (3612 gzip)
+  only before: /_astro/TransitItinerary.worker-Bg3XFWXl.js (33306 gzip)
+  only before: /_astro/TransitRing.CKa4OM3K.js (6971 gzip)
+  only before: /_astro/TransitSearch.CkKNOtDU.js (2923 gzip)
+  only before: /_astro/TransitSearch.worker-tBq-OXpB.js (33011 gzip)
+  only before: /_astro/TransitTracker.wuEI9ulN.js (5354 gzip)
+  only before: /_astro/WalletChart.E1IUlapW.js (3803 gzip)
+  only before: /_astro/WelcomeBack.DLrD7diO.js (1183 gzip)
+  only before: /_astro/Wrapped.worker-DWzCoFIl.js (33057 gzip)
+  only before: /_astro/aspect-pattern-card.DgNA-n00.js (2091 gzip)
+  only before: /_astro/aspects.InQWH60-.js (226 gzip)
+  only before: /_astro/backup.DQhkbqm2.js (2077 gzip)
+  only before: /_astro/birth-window.worker-Oqr5lpkd.js (40350 gzip)
+  only before: /_astro/calculator-receipt.CUX2qBAy.js (859 gzip)
+  only before: /_astro/card-link.BrzNRGj9.js (1855 gzip)
+  only before: /_astro/card.Cynv2i1j.js (5518 gzip)
+  only before: /_astro/chart-context-card.BfF4T_k6.js (1655 gzip)
+  only before: /_astro/chart-image-sky.DERmke45.js (666 gzip)
+  only before: /_astro/chart-signature.BZmHc02M.js (2446 gzip)
+  only before: /_astro/chunk-CIVYAHTP.BaLuxxut.js (7791 gzip)
+  only before: /_astro/chunk-FRYARIYL.BRNJ2nRf.js (1083 gzip)
+  only before: /_astro/chunk-VDVUUMY2.IzwH7gy7.js (1782 gzip)
+  only before: /_astro/chunk-W2TMLFJ3.DKN6N7Ei.js (22980 gzip)
+  only before: /_astro/chunk-YJ7WZ7NS.DbhukoJm.js (1199 gzip)
+  only before: /_astro/compatibility-card.T_VJBcoE.js (3006 gzip)
+  only before: /_astro/composite-card.9UuKVUuA.js (1997 gzip)
+  only before: /_astro/compositeCopy.DAzXC4Db.js (6732 gzip)
+  only before: /_astro/compute.DgsLCCyk.js (1220 gzip)
+  only before: /_astro/compute.nT_a3eWz.js (924 gzip)
+  only before: /_astro/contacts.BdhTUVKV.js (615 gzip)
+  only before: /_astro/dignities.BWJDhj4R.js (715 gzip)
+  only before: /_astro/due-window.DnA5itpm.js (652 gzip)
+  only before: /_astro/fixtures.DH4iAFcd.js (305 gzip)
+  only before: /_astro/full.D1bmmMrj.js (311 gzip)
+  only before: /_astro/geo.CU4g-ilQ.js (1546 gzip)
+  only before: /_astro/local-date-reference.yi9gLsrc.js (1528 gzip)
+  only before: /_astro/localToUtc.DLLQdl2G.js (1700 gzip)
+  only before: /_astro/lunar-return-card.Cd-Jtrnz.js (2767 gzip)
+  only before: /_astro/milestone-card.mBU7HnMt.js (1648 gzip)
+  only before: /_astro/natal.D6ioUWhy.js (5244 gzip)
+  only before: /_astro/private-invite.DkTU33nI.js (652 gzip)
+  only before: /_astro/profile-chart-handoff.3NH83hih.js (275 gzip)
+  only before: /_astro/progressions.W-pkXArY.js (271 gzip)
+  only before: /_astro/read-store.1hBZWqaL.js (717 gzip)
+  only before: /_astro/receipt.C3G32mzj.js (8780 gzip)
+  only before: /_astro/refresh.VYol5rmy.js (769 gzip)
+  only before: /_astro/replay.DHVhak58.js (286 gzip)
+  only before: /_astro/resolve.DYbR-7ND.js (789 gzip)
+  only before: /_astro/returns.CHltbqU4.js (525 gzip)
+  only before: /_astro/saved-record-access.O7PHZtpz.js (7521 gzip)
+  only before: /_astro/share-card.BEF94bHs.js (1509 gzip)
+  only before: /_astro/share-card.BXxjqXMG.js (17525 gzip)
+  only before: /_astro/share-positions-untimed.DHcrQjAt.js (522 gzip)
+  only before: /_astro/site-clock.CZONq-Pj.js (125 gzip)
+  only before: /_astro/solar-return.C7BtLQ3k.js (342 gzip)
+  only before: /_astro/store.BlWJm7A6.js (1758 gzip)
+  only before: /_astro/synastry.BXzpqJDq.js (671 gzip)
+  only before: /_astro/sync.DlWE1TE9.js (1964 gzip)
+  only before: /_astro/techniques.3hEEFagR.js (3470 gzip)
+  only before: /_astro/today-reading.QPaZJWAH.js (1498 gzip)
+  only before: /_astro/tour.W4EVwOKv.js (24476 gzip)
+  only before: /_astro/transit-scan.PS4VeKp7.js (1900 gzip)
+  only before: /_astro/use-learning-sources.Dgl4sLek.js (1246 gzip)
+  only before: /_astro/useEngine.Ct15KAm3.js (380 gzip)
+  only before: /_astro/useProfile.GD6aCz8b.js (301 gzip)
+  only before: /_astro/year-scan.C5fg2zmY.js (664 gzip)
+
+budgeted routes that moved: 9
+
+engine-bearing chunks of the default build (40): 40 served byte for byte (same path and SHA-256) by the production-flags build too
+
+## Closures that grew on the production-flags build (engine files from the default build's attribution, where the chunk is the same)
+production: closures that grew from the base build to the head build, with the chunks that differ
+
+/birth-chart/: 70152 -> 70731 gzip bytes (+579); 44 -> 45 chunks
+  changed  /_astro/ChartCalculator.BVsZzi5L.js (21956 -> 21984 gzip, +28)
+  changed  /_astro/PostChartDailyBrief.Cpj35NVQ.js (3191 -> 3189 gzip, -2)
+  new      /_astro/chunk-F4JKI3XV.DXFJXQuL.js (745 gzip); engine files: chunk-F4JKI3XV.js
+  new      /_astro/chunk-NNOSOOWS.CflCEcE2.js (1781 gzip); engine files: chunk-NNOSOOWS.js
+  new      /_astro/chunk-RMBWKZI2.DZR4n1wo.js (538 gzip); engine files: chunk-RMBWKZI2.js
+  changed  /_astro/dignities.Dwt_E1DU.js (715 -> 1162 gzip, +447); engine files: lite-dignities.js
+  changed  /_astro/local-date-reference.2-Ce7e_-.js (1528 -> 1528 gzip, 0)
+  changed  /_astro/localToUtc.DTkj4LvN.js (1700 -> 1701 gzip, +1)
+  changed  /_astro/useEngine.CbWMjCBm.js (380 -> 402 gzip, +22)
+  gone     /_astro/chunk-VDVUUMY2.IzwH7gy7.js (1782 gzip)
+  gone     /_astro/chunk-YJ7WZ7NS.DbhukoJm.js (1199 gzip)
+
+/big-three/: 27128 -> 27168 gzip bytes (+40); 20 -> 20 chunks
+  changed  /_astro/BigThreeQuick.DfEhdLip.js (3153 -> 3170 gzip, +17)
+  changed  /_astro/localToUtc.DTkj4LvN.js (1700 -> 1701 gzip, +1)
+  changed  /_astro/useEngine.CbWMjCBm.js (380 -> 402 gzip, +22)
+
+engine-chunk: 33267 -> 33361 gzip bytes (+94); 7 -> 8 chunks
+  new      /_astro/chunk-F4JKI3XV.DXFJXQuL.js (745 gzip); engine files: chunk-F4JKI3XV.js
+  new      /_astro/chunk-NIRYKLHT.Bm5YfgXm.js (22989 gzip); engine files: chunk-2BB5GQ3P.js, chunk-NIRYKLHT.js
+  new      /_astro/chunk-NNOSOOWS.CflCEcE2.js (1781 gzip); engine files: chunk-NNOSOOWS.js
+  new      /_astro/chunk-RMBWKZI2.DZR4n1wo.js (538 gzip); engine files: chunk-RMBWKZI2.js
+  changed  /_astro/full.AUZx8EGL.js (311 -> 313 gzip, +2)
+  gone     /_astro/chunk-VDVUUMY2.IzwH7gy7.js (1782 gzip)
+  gone     /_astro/chunk-W2TMLFJ3.DKN6N7Ei.js (22980 gzip)
+  gone     /_astro/chunk-YJ7WZ7NS.DbhukoJm.js (1199 gzip)
+# B1 control on the production build: /birth-chart/ set 1 KB under its measured value; --fail must exit 1
+# measured 70731 bytes; budget set to 68.0732421875 KB (69707 bytes)
+# command: node scripts/report-bundles.mjs --fail
+report-bundles: 1 failures
+  - /birth-chart/: 69.1 KB gz exceeds 68.0732421875 KB
+# exit code: 1
+# restored budgets.json: sha256 f128c1d65367f3ffbdbcc6ac4ba28ca6c5956ee1964235d6df5ff08fad1b8284 (before control: f128c1d65367f3ffbdbcc6ac4ba28ca6c5956ee1964235d6df5ff08fad1b8284)

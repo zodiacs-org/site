@@ -1,0 +1,1177 @@
+{
+  "capturedAt": "2026-10-27T03:54:35.704Z",
+  "url": "https://zodiacs.org/mcp",
+  "panels": [
+    {
+      "name": "sky-events",
+      "uri": "ui://zodiacs/sky-events-v4.html",
+      "sha256": "7a1db3093ae647a0fb7695e5282d537f1b61351f56f7c477ae8a8b5d96731fa3",
+      "legacyCount": 3
+    },
+    {
+      "name": "chart-studio",
+      "uri": "ui://zodiacs/chart-studio-v5.html",
+      "sha256": "568414d5f261fffbbbcf2a2c06085e6207746afc1c0e5637c791281b615a53a4",
+      "legacyCount": 4
+    },
+    {
+      "name": "horoscopes",
+      "uri": "ui://zodiacs/horoscopes-v5.html",
+      "sha256": "5d7ca905c54bbad51b5ccac5724c755b7d38fe959cd1d6c4f21db631f121d1fc",
+      "legacyCount": 4
+    },
+    {
+      "name": "occasions",
+      "uri": "ui://zodiacs/occasions-v7.html",
+      "sha256": "2f8dcc597f15f14a79951fd0f8590be34532261efb384747e4e51a74c2c5ec70",
+      "legacyCount": 6
+    }
+  ],
+  "assets": [
+    {
+      "url": "https://zodiacs.org/assets/sign-art/aries-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 56413
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/aries-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 57552
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/taurus-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 56561
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/taurus-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 67378
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/gemini-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 57014
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/gemini-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 51236
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/cancer-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 59902
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/cancer-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 63666
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/leo-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 59311
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/leo-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 66476
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/virgo-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 57272
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/virgo-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 54774
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/libra-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 57354
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/libra-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 56918
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/scorpio-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 61904
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/scorpio-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 69452
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/sagittarius-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 58264
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/sagittarius-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 63292
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/capricorn-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 58218
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/capricorn-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 69642
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/aquarius-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 58114
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/aquarius-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 59350
+    },
+    {
+      "url": "https://zodiacs.org/assets/sign-art/pisces-1200.avif",
+      "width": 1200,
+      "height": 800,
+      "bytes": 56290
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/pisces-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 71602
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/wedding-hero-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 54026
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/wedding-hero-light-720.webp",
+      "width": 720,
+      "height": 480,
+      "bytes": 107016
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/sky-calendar-hero-1200.webp",
+      "width": 1200,
+      "height": 800,
+      "bytes": 238058
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/sky-calendar-hero-light-1200.webp",
+      "width": 1200,
+      "height": 800,
+      "bytes": 297488
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/milestones-hero-1200.webp",
+      "width": 1200,
+      "height": 800,
+      "bytes": 140514
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/milestones-hero-light-1200.webp",
+      "width": 1200,
+      "height": 800,
+      "bytes": 153872
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/twins-hero-1200.webp",
+      "width": 1200,
+      "height": 800,
+      "bytes": 211618
+    },
+    {
+      "url": "https://zodiacs.org/assets/card-art/twins-hero-light-1200.webp",
+      "width": 1200,
+      "height": 800,
+      "bytes": 180784
+    }
+  ],
+  "calls": [
+    {
+      "name": "get_occasion_sky",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": true,
+        "tool": "get_occasion_sky",
+        "data": {
+          "occasion": "wedding",
+          "date": "2027-06-12",
+          "time": "17:00",
+          "zone": "Europe/Rome",
+          "place": "Florence, Italy",
+          "names": null,
+          "card": {
+            "title": "The sky on your wedding day",
+            "interpretation": "A Gemini Sun is the sign of conversation; a Libra Moon, of partnership.",
+            "closing": "The sky you say your vows under."
+          },
+          "instant": {
+            "utc": "2027-06-12T15:00:00.000Z",
+            "local": "Sat 12 Jun 2027, 17:00"
+          },
+          "instantIs": "given-time",
+          "sky": {
+            "bodies": [
+              {
+                "body": "Sun",
+                "sign": "gemini",
+                "degree": 21.4,
+                "retrograde": false
+              },
+              {
+                "body": "Moon",
+                "sign": "libra",
+                "degree": 6.2,
+                "retrograde": false
+              },
+              {
+                "body": "Mercury",
+                "sign": "cancer",
+                "degree": 6.2,
+                "retrograde": true
+              },
+              {
+                "body": "Venus",
+                "sign": "gemini",
+                "degree": 5,
+                "retrograde": false
+              },
+              {
+                "body": "Mars",
+                "sign": "virgo",
+                "degree": 12.6,
+                "retrograde": false
+              },
+              {
+                "body": "Jupiter",
+                "sign": "leo",
+                "degree": 22.1,
+                "retrograde": false
+              },
+              {
+                "body": "Saturn",
+                "sign": "aries",
+                "degree": 25.1,
+                "retrograde": false
+              }
+            ],
+            "moon": {
+              "phase": "First Quarter",
+              "illuminationPercent": 63,
+              "waxing": true
+            },
+            "retrograde": [
+              "Mercury"
+            ]
+          },
+          "moonSignChange": null,
+          "evening": {
+            "sunrise": {
+              "utc": "2027-06-12T03:32:38.653Z",
+              "local": "Sat 12 Jun 2027, 05:32"
+            },
+            "sunset": {
+              "utc": "2027-06-12T18:57:11.858Z",
+              "local": "Sat 12 Jun 2027, 20:57"
+            },
+            "goldenHour": {
+              "start": {
+                "utc": "2027-06-12T18:13:23.463Z",
+                "local": "Sat 12 Jun 2027, 20:13"
+              },
+              "end": {
+                "utc": "2027-06-12T18:57:11.858Z",
+                "local": "Sat 12 Jun 2027, 20:57"
+              }
+            },
+            "civilDusk": {
+              "utc": "2027-06-12T19:33:11.782Z",
+              "local": "Sat 12 Jun 2027, 21:33"
+            },
+            "moonrise": {
+              "utc": "2027-06-12T12:25:54.819Z",
+              "local": "Sat 12 Jun 2027, 14:25"
+            },
+            "moonset": {
+              "utc": "2027-06-11T23:30:05.326Z",
+              "local": "Sat 12 Jun 2027, 01:30"
+            },
+            "moonHighest": {
+              "at": {
+                "utc": "2027-06-12T18:14:20.580Z",
+                "local": "Sat 12 Jun 2027, 20:14"
+              },
+              "altitude": 38
+            },
+            "planetsAfterDusk": [
+              "Mars",
+              "Jupiter"
+            ],
+            "flags": []
+          },
+          "rating": {
+            "score": 69,
+            "verdict": "A good day for it",
+            "reasons": [
+              "The Moon is growing (63% full): a lucky sign for new beginnings.",
+              "The Moon is in Libra: a warm, sociable mood.",
+              "Mercury is retrograde: expect delays and mix-ups, so double-check plans and paperwork."
+            ]
+          },
+          "bestDays": null,
+          "cardUrl": "https://zodiacs.org/occasions/?ref=assistant#o=wedding&d=2027-06-12&t=17%3A00&tz=Europe%2FRome&lat=43.7696&lon=11.2558&place=Florence%2C+Italy",
+          "shareUrl": "https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-12&p=Florence%2C+Italy&sun=gemini&moon=libra&score=69&v=good&ref=assistant",
+          "note": "Astrology’s reading of the day, for insight and fun, not a guarantee of how it will go."
+        },
+        "links": [
+          {
+            "title": "Open the printable card",
+            "url": "https://zodiacs.org/occasions/?ref=assistant#o=wedding&d=2027-06-12&t=17%3A00&tz=Europe%2FRome&lat=43.7696&lon=11.2558&place=Florence%2C+Italy"
+          },
+          {
+            "title": "Occasion cards on Zodiacs",
+            "url": "https://zodiacs.org/occasions/?ref=assistant"
+          },
+          {
+            "title": "How we calculate",
+            "url": "https://zodiacs.org/methodology/?ref=assistant"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_horoscope",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": true,
+        "tool": "get_horoscope",
+        "data": {
+          "status": "available",
+          "sign": "leo",
+          "signName": "Leo",
+          "period": "day",
+          "focus": "general",
+          "date": "2026-10-27",
+          "dateLabel": "Tuesday 27 October",
+          "zone": "Asia/Bangkok",
+          "zoneLabel": "Bangkok",
+          "zoneSource": "request",
+          "reading": {
+            "title": "Leo · Tuesday 27 October",
+            "paragraphs": [
+              {
+                "text": "Today, choose what should be visible in your work and public role. For Leo, presence is strongest when the point is clearer than the performance. The full moon puts career, reputation, and public responsibilities on the day’s agenda."
+              },
+              {
+                "text": "Before agreeing to another plan, check what you need at home and make time for it. In this reading, Mercury retrograde in Scorpio brings attention to home, family, and your private life."
+              },
+              {
+                "text": "Connect career, reputation, and public responsibilities with home, family, and your private life; choose the contribution you would still value without applause."
+              }
+            ]
+          },
+          "why": {
+            "note": "These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.",
+            "facts": [
+              {
+                "text": "Moon at 22° Taurus",
+                "when": "Tue 27 Oct, 7:00 pm"
+              },
+              {
+                "text": "Mercury at 20° Scorpio",
+                "when": "Tue 27 Oct, 7:00 pm"
+              }
+            ],
+            "houses": [
+              "Moon in Taurus: your 10th solar house",
+              "Mercury in Scorpio: your 4th solar house"
+            ]
+          },
+          "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&d=2026-10-27&ref=assistant",
+          "disclosure": "For reflection. Astrology does not establish what will happen in your life."
+        },
+        "links": [
+          {
+            "title": "Leo on Zodiacs",
+            "url": "https://zodiacs.org/horoscopes/leo/?ref=assistant"
+          },
+          {
+            "title": "How we calculate",
+            "url": "https://zodiacs.org/methodology/?ref=assistant"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_compatibility",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": true,
+        "tool": "get_compatibility",
+        "data": {
+          "a": {
+            "name": null,
+            "label": "Person A",
+            "birthDate": "1990-05-03",
+            "timeKnown": true,
+            "placed": true,
+            "place": null,
+            "sun": "taurus",
+            "moon": "leo",
+            "rising": "gemini",
+            "famous": false,
+            "url": null
+          },
+          "b": {
+            "name": null,
+            "label": "Person B",
+            "birthDate": "1992-08-10",
+            "timeKnown": false,
+            "placed": false,
+            "place": null,
+            "sun": "leo",
+            "moon": null,
+            "rising": null,
+            "famous": false,
+            "url": null
+          },
+          "score": {
+            "overall": 58,
+            "areas": {
+              "attraction": 68,
+              "communication": 56,
+              "stability": 50
+            },
+            "verdict": "A good match, with some work to do",
+            "headline": "Attraction is the strongest part of this pairing; long-term stability will take the most work."
+          },
+          "signPair": {
+            "slug": "taurus-leo",
+            "signs": [
+              "taurus",
+              "leo"
+            ],
+            "same": false,
+            "element": {
+              "label": "Spark and soil",
+              "note": "Fire starts, earth finishes: you’ll get a lot done together, but expect clashes over pace."
+            },
+            "modality": {
+              "label": "Two anchors",
+              "note": "Two loyal, stubborn signs: a lasting bond, but neither backs down in an argument."
+            },
+            "polarity": "One outgoing, one private: you balance each other, as one talks it out and the other thinks it through."
+          },
+          "contacts": [
+            {
+              "aBody": "Pluto",
+              "bBody": "Neptune",
+              "aspect": "sextile",
+              "orb": 0.3,
+              "generational": false,
+              "line": "Person A’s intensity works easily with Person B’s imagination. An easy spark that grows when you use it."
+            },
+            {
+              "aBody": "Neptune",
+              "bBody": "Uranus",
+              "aspect": "conjunction",
+              "orb": 0.3,
+              "generational": false,
+              "line": "Person A’s imagination sits right on top of Person B’s independence. You’ll feel this one strongly."
+            },
+            {
+              "aBody": "Pluto",
+              "bBody": "Jupiter",
+              "aspect": "sextile",
+              "orb": 0.5,
+              "generational": false,
+              "line": "Person A’s intensity works easily with Person B’s appetite for more. An easy spark that grows when you use it."
+            },
+            {
+              "aBody": "Mars",
+              "bBody": "Mars",
+              "aspect": "square",
+              "orb": 0.6,
+              "generational": false,
+              "line": "Person A’s drive pushes against Person B’s. Expect friction here, especially under stress."
+            },
+            {
+              "aBody": "Mercury",
+              "bBody": "Uranus",
+              "aspect": "trine",
+              "orb": 1,
+              "generational": false,
+              "line": "Person A’s way of thinking flows with Person B’s independence. This flows naturally and brings out the best in you both."
+            },
+            {
+              "aBody": "Mercury",
+              "bBody": "Saturn",
+              "aspect": "square",
+              "orb": 1.2,
+              "generational": false,
+              "line": "Person A’s way of thinking pushes against Person B’s sense of duty. Expect friction here, especially under stress."
+            },
+            {
+              "aBody": "Pluto",
+              "bBody": "Sun",
+              "aspect": "square",
+              "orb": 1.6,
+              "generational": false,
+              "line": "Person A’s intensity pushes against Person B’s sense of self. Expect friction here, especially under stress."
+            },
+            {
+              "aBody": "Pluto",
+              "bBody": "Saturn",
+              "aspect": "square",
+              "orb": 1.6,
+              "generational": false,
+              "line": "Person A’s intensity pushes against Person B’s sense of duty. Expect friction here, especially under stress."
+            }
+          ],
+          "counts": {
+            "easeful": 12,
+            "charged": 13,
+            "total": 31,
+            "byAspect": {
+              "conjunction": 6,
+              "sextile": 4,
+              "square": 8,
+              "trine": 8,
+              "opposition": 5
+            }
+          },
+          "elements": {
+            "a": {
+              "fire": 1,
+              "earth": 5,
+              "air": 0,
+              "water": 4
+            },
+            "b": {
+              "fire": 2,
+              "earth": 4,
+              "air": 2,
+              "water": 1
+            }
+          },
+          "modalities": {
+            "a": {
+              "cardinal": 4,
+              "fixed": 4,
+              "mutable": 2
+            },
+            "b": {
+              "cardinal": 2,
+              "fixed": 4,
+              "mutable": 3
+            }
+          },
+          "pageUrl": "https://zodiacs.org/compatibility/taurus-leo/?ref=assistant",
+          "cardUrl": null,
+          "shareUrl": "https://zodiacs.org/share/compatibility/?as=taurus&bs=leo&score=58&attraction=68&communication=56&stability=50&v=good&ref=assistant",
+          "notes": [
+            "Without a birth time for Person B, the Moon is left out: it moves about 13° in a day, so its contacts cannot be placed. Positions are for noon on the birth date, and the other orbs can differ by about a degree."
+          ],
+          "note": "Astrology’s reading of your two charts, for insight and fun, not a guarantee of how things will turn out."
+        },
+        "links": [
+          {
+            "title": "Compatibility on Zodiacs",
+            "url": "https://zodiacs.org/compatibility/?ref=assistant"
+          },
+          {
+            "title": "How we calculate",
+            "url": "https://zodiacs.org/methodology/?ref=assistant"
+          }
+        ]
+      }
+    },
+    {
+      "name": "find_chart_twins",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": true,
+        "tool": "find_chart_twins",
+        "data": {
+          "birthDate": "1990-05-03",
+          "timeKnown": false,
+          "you": {
+            "sun": "taurus",
+            "moon": null
+          },
+          "twins": [
+            {
+              "name": "Audrey Hepburn",
+              "slug": "audrey-hepburn",
+              "shortDescription": "Film actor · Belgium · 1929–1993",
+              "born": "1929-05-04",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/audrey-hepburn/?ref=assistant"
+            },
+            {
+              "name": "Bertrand Russell",
+              "slug": "bertrand-russell",
+              "shortDescription": "Analytic philosopher and logician · United Kingdom · 1872–1970",
+              "born": "1872-05-18",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/bertrand-russell/?ref=assistant"
+            },
+            {
+              "name": "Charlotte Brontë",
+              "slug": "charlotte-bronte",
+              "shortDescription": "Novelist and poet · United Kingdom · 1816–1855",
+              "born": "1816-04-21",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/charlotte-bronte/?ref=assistant"
+            },
+            {
+              "name": "Ella Fitzgerald",
+              "slug": "ella-fitzgerald",
+              "shortDescription": "Jazz singer · United States · 1917–1996",
+              "born": "1917-04-25",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/ella-fitzgerald/?ref=assistant"
+            },
+            {
+              "name": "Eva Perón",
+              "slug": "eva-peron",
+              "shortDescription": "Politician and stage actor · Argentina · 1919–1952",
+              "born": "1919-05-07",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/eva-peron/?ref=assistant"
+            },
+            {
+              "name": "Florence Nightingale",
+              "slug": "florence-nightingale",
+              "shortDescription": "Nurse and writer · Italy · 1820–1910",
+              "born": "1820-05-12",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/florence-nightingale/?ref=assistant"
+            },
+            {
+              "name": "Immanuel Kant",
+              "slug": "immanuel-kant",
+              "shortDescription": "Philosopher · Prussia · 1724–1804",
+              "born": "1724-04-22",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/immanuel-kant/?ref=assistant"
+            },
+            {
+              "name": "Johan Cruyff",
+              "slug": "johan-cruyff",
+              "shortDescription": "Association football player · Netherlands · 1947–2016",
+              "born": "1947-04-25",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/johan-cruyff/?ref=assistant"
+            },
+            {
+              "name": "Karl Marx",
+              "slug": "karl-marx",
+              "shortDescription": "Philosopher · Germany · 1818–1883",
+              "born": "1818-05-05",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/karl-marx/?ref=assistant"
+            },
+            {
+              "name": "Katharine Hepburn",
+              "slug": "katharine-hepburn",
+              "shortDescription": "Film actor · United States · 1907–2003",
+              "born": "1907-05-12",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/katharine-hepburn/?ref=assistant"
+            },
+            {
+              "name": "Rabindranath Tagore",
+              "slug": "rabindranath-tagore",
+              "shortDescription": "Poet and composer · India · 1861–1941",
+              "born": "1861-05-07",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/rabindranath-tagore/?ref=assistant"
+            },
+            {
+              "name": "Sigmund Freud",
+              "slug": "sigmund-freud",
+              "shortDescription": "Psychoanalyst and essayist · Czech Republic · 1856–1939",
+              "born": "1856-05-06",
+              "shares": "sun",
+              "url": "https://zodiacs.org/people/sigmund-freud/?ref=assistant"
+            }
+          ],
+          "total": 12,
+          "notes": [
+            "Birth times in this directory are unknown, so we compare verified Sun and Moon signs only. Rising signs are not compared.",
+            "Your Moon sign is unverified without a birth time, so only your Sun is compared."
+          ],
+          "pageUrl": "https://zodiacs.org/chart-twins/?ref=assistant",
+          "shareUrl": "https://zodiacs.org/share/chart-twins/?s=taurus&ref=assistant"
+        },
+        "links": [
+          {
+            "title": "Chart twins on Zodiacs",
+            "url": "https://zodiacs.org/chart-twins/?ref=assistant"
+          },
+          {
+            "title": "Famous birth charts on Zodiacs",
+            "url": "https://zodiacs.org/people/?ref=assistant"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_famous_chart",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": true,
+        "tool": "get_famous_chart",
+        "data": {
+          "found": true,
+          "person": {
+            "name": "Frida Kahlo",
+            "slug": "frida-kahlo",
+            "shortDescription": "Painter · Mexico · 1907–1954",
+            "born": "1907-07-06",
+            "birthplace": "Coyoacán",
+            "sun": {
+              "sign": "cancer",
+              "degree": 13.5
+            },
+            "moon": {
+              "sign": null,
+              "degree": null
+            },
+            "placements": [
+              {
+                "body": "Sun",
+                "sign": "cancer",
+                "degree": 13.5,
+                "settled": true
+              },
+              {
+                "body": "Moon",
+                "sign": "gemini",
+                "degree": 1.5,
+                "settled": false
+              },
+              {
+                "body": "Mercury",
+                "sign": "leo",
+                "degree": 6.4,
+                "settled": true
+              },
+              {
+                "body": "Venus",
+                "sign": "gemini",
+                "degree": 24.5,
+                "settled": true
+              },
+              {
+                "body": "Mars",
+                "sign": "capricorn",
+                "degree": 13.4,
+                "settled": true
+              },
+              {
+                "body": "Jupiter",
+                "sign": "cancer",
+                "degree": 20.5,
+                "settled": true
+              },
+              {
+                "body": "Saturn",
+                "sign": "pisces",
+                "degree": 27.5,
+                "settled": true
+              },
+              {
+                "body": "Uranus",
+                "sign": "capricorn",
+                "degree": 10.6,
+                "settled": true
+              },
+              {
+                "body": "Neptune",
+                "sign": "cancer",
+                "degree": 12.4,
+                "settled": true
+              },
+              {
+                "body": "Pluto",
+                "sign": "gemini",
+                "degree": 23.8,
+                "settled": true
+              }
+            ],
+            "lede": "The Sun and Mars sit 0.2° from an exact opposition — near enough that the tradition reads identity and drive as a single working part. Across the wheel, each body sees the other in full. The old reading is not conflict so much as permanent mutual visibility.",
+            "url": "https://zodiacs.org/people/frida-kahlo/?ref=assistant",
+            "birthdayUrl": "https://zodiacs.org/birthday/july-6/?ref=assistant"
+          },
+          "alsoMatched": [],
+          "note": "Positions at 12:00 civil time in Coyoacán—a reference instant, not a birth time. No houses, rising sign, angles, or sect were computed.",
+          "shareUrl": "https://zodiacs.org/share/famous-chart/?p=frida-kahlo&ref=assistant"
+        },
+        "links": [
+          {
+            "title": "Frida Kahlo's chart on Zodiacs",
+            "url": "https://zodiacs.org/people/frida-kahlo/?ref=assistant"
+          },
+          {
+            "title": "Famous birth charts on Zodiacs",
+            "url": "https://zodiacs.org/people/?ref=assistant"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_life_milestones",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": true,
+        "tool": "get_life_milestones",
+        "data": {
+          "birthDate": "1997-05-01",
+          "timeKnown": false,
+          "asOf": "2026-10-27T03:55:52.078Z",
+          "milestones": [
+            {
+              "kind": "jupiter-return",
+              "name": "Jupiter return",
+              "index": 1,
+              "age": 11,
+              "first": "2009-04-03T11:22:48.831Z",
+              "last": "2009-11-20T19:01:44.744Z",
+              "passes": [
+                {
+                  "at": "2009-04-03T11:22:48.831Z",
+                  "retrograde": false
+                },
+                {
+                  "at": "2009-09-03T21:02:29.582Z",
+                  "retrograde": true
+                },
+                {
+                  "at": "2009-11-20T19:01:44.744Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "jupiter-return",
+              "name": "Jupiter return",
+              "index": 2,
+              "age": 23,
+              "first": "2021-03-14T06:09:20.900Z",
+              "last": "2021-03-14T06:09:20.900Z",
+              "passes": [
+                {
+                  "at": "2021-03-14T06:09:20.900Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "saturn-return",
+              "name": "Saturn return",
+              "index": 1,
+              "age": 29,
+              "first": "2026-06-29T10:15:00.987Z",
+              "last": "2027-03-10T00:05:49.710Z",
+              "passes": [
+                {
+                  "at": "2026-06-29T10:15:00.987Z",
+                  "retrograde": false
+                },
+                {
+                  "at": "2026-08-23T08:56:45.567Z",
+                  "retrograde": true
+                },
+                {
+                  "at": "2027-03-10T00:05:49.710Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "jupiter-return",
+              "name": "Jupiter return",
+              "index": 3,
+              "age": 35,
+              "first": "2033-02-24T20:55:24.334Z",
+              "last": "2033-02-24T20:55:24.334Z",
+              "passes": [
+                {
+                  "at": "2033-02-24T20:55:24.334Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "uranus-opposition",
+              "name": "Uranus opposition",
+              "index": 1,
+              "age": 44,
+              "first": "2041-08-04T02:35:05.155Z",
+              "last": "2041-08-04T02:35:05.155Z",
+              "passes": [
+                {
+                  "at": "2041-08-04T02:35:05.155Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "jupiter-return",
+              "name": "Jupiter return",
+              "index": 4,
+              "age": 47,
+              "first": "2045-02-09T00:08:34.994Z",
+              "last": "2045-02-09T00:08:34.994Z",
+              "passes": [
+                {
+                  "at": "2045-02-09T00:08:34.994Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "saturn-return",
+              "name": "Saturn return",
+              "index": 2,
+              "age": 58,
+              "first": "2056-04-14T05:55:12.741Z",
+              "last": "2056-04-14T05:55:12.741Z",
+              "passes": [
+                {
+                  "at": "2056-04-14T05:55:12.741Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "jupiter-return",
+              "name": "Jupiter return",
+              "index": 5,
+              "age": 59,
+              "first": "2057-01-23T22:55:02.316Z",
+              "last": "2057-01-23T22:55:02.316Z",
+              "passes": [
+                {
+                  "at": "2057-01-23T22:55:02.316Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "jupiter-return",
+              "name": "Jupiter return",
+              "index": 6,
+              "age": 71,
+              "first": "2069-01-06T20:10:29.010Z",
+              "last": "2069-01-06T20:10:29.010Z",
+              "passes": [
+                {
+                  "at": "2069-01-06T20:10:29.010Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "jupiter-return",
+              "name": "Jupiter return",
+              "index": 7,
+              "age": 83,
+              "first": "2080-05-01T07:11:04.908Z",
+              "last": "2080-12-17T22:11:59.728Z",
+              "passes": [
+                {
+                  "at": "2080-05-01T07:11:04.908Z",
+                  "retrograde": false
+                },
+                {
+                  "at": "2080-07-18T01:07:56.197Z",
+                  "retrograde": true
+                },
+                {
+                  "at": "2080-12-17T22:11:59.728Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "saturn-return",
+              "name": "Saturn return",
+              "index": 3,
+              "age": 88,
+              "first": "2085-05-29T03:54:51.186Z",
+              "last": "2086-02-19T05:24:28.439Z",
+              "passes": [
+                {
+                  "at": "2085-05-29T03:54:51.186Z",
+                  "retrograde": false
+                },
+                {
+                  "at": "2085-09-29T01:14:48.622Z",
+                  "retrograde": true
+                },
+                {
+                  "at": "2086-02-19T05:24:28.439Z",
+                  "retrograde": false
+                }
+              ]
+            },
+            {
+              "kind": "jupiter-return",
+              "name": "Jupiter return",
+              "index": 8,
+              "age": 94,
+              "first": "2092-04-02T20:41:24.770Z",
+              "last": "2092-11-20T13:25:35.720Z",
+              "passes": [
+                {
+                  "at": "2092-04-02T20:41:24.770Z",
+                  "retrograde": false
+                },
+                {
+                  "at": "2092-09-02T03:58:06.303Z",
+                  "retrograde": true
+                },
+                {
+                  "at": "2092-11-20T13:25:35.720Z",
+                  "retrograde": false
+                }
+              ]
+            }
+          ],
+          "next": {
+            "kind": "saturn-return",
+            "name": "Saturn return",
+            "index": 1,
+            "age": 29,
+            "first": "2026-06-29T10:15:00.987Z",
+            "last": "2027-03-10T00:05:49.710Z",
+            "passes": [
+              {
+                "at": "2026-06-29T10:15:00.987Z",
+                "retrograde": false
+              },
+              {
+                "at": "2026-08-23T08:56:45.567Z",
+                "retrograde": true
+              },
+              {
+                "at": "2027-03-10T00:05:49.710Z",
+                "retrograde": false
+              }
+            ]
+          },
+          "numbers": {
+            "fullMoons": 365,
+            "mercuryRetrogrades": 93,
+            "jupiterReturns": 2
+          },
+          "cardUrl": "https://zodiacs.org/occasions/milestones/?ref=assistant#b=1997-05-01",
+          "shareUrl": "https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=29&f=2026-06-29&l=2027-03-10&ref=assistant",
+          "note": "Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day."
+        },
+        "links": [
+          {
+            "title": "Life milestones on Zodiacs",
+            "url": "https://zodiacs.org/occasions/milestones/?ref=assistant"
+          },
+          {
+            "title": "How we calculate",
+            "url": "https://zodiacs.org/methodology/?ref=assistant"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_sky_calendar",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": true,
+        "tool": "get_sky_calendar",
+        "data": {
+          "language": "ru",
+          "feedUrl": "https://zodiacs.org/ru/sky-calendar.ics",
+          "subscribeUrl": "webcal://zodiacs.org/ru/sky-calendar.ics",
+          "pageUrl": "https://zodiacs.org/ru/sky-calendar/?ref=assistant",
+          "shareUrl": "https://zodiacs.org/share/sky-calendar/?k=new-moon&d=2026-11-09&ref=assistant",
+          "contains": [
+            "New moons",
+            "Full moons",
+            "Solar and lunar eclipse peaks (global, not local visibility)",
+            "Retrograde windows for Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto"
+          ],
+          "covers": {
+            "from": "2026-01-01T00:00:00.000Z",
+            "to": "2031-02-25T11:25:06.444Z"
+          },
+          "next": [
+            {
+              "title": "Новолуние",
+              "start": "2026-11-09T07:02:05.269Z",
+              "end": null
+            },
+            {
+              "title": "Полнолуние",
+              "start": "2026-11-24T14:53:35.120Z",
+              "end": null
+            },
+            {
+              "title": "Новолуние",
+              "start": "2026-12-09T00:51:52.151Z",
+              "end": null
+            }
+          ],
+          "howTo": {
+            "google": "In Google Calendar on the web, next to Other calendars choose + then From URL, and paste https://zodiacs.org/ru/sky-calendar.ics.",
+            "apple": "On an iPhone, iPad or Mac, open webcal://zodiacs.org/ru/sky-calendar.ics; or in Calendar on a Mac choose File → New Calendar Subscription and paste https://zodiacs.org/ru/sky-calendar.ics.",
+            "outlook": "In Outlook, choose Add calendar → Subscribe from web, and paste https://zodiacs.org/ru/sky-calendar.ics."
+          },
+          "note": "A public feed of computed sky events; it takes no personal details. Subscribing keeps it up to date, and times show in your calendar's time zone."
+        },
+        "links": [
+          {
+            "title": "Sky calendar on Zodiacs",
+            "url": "https://zodiacs.org/ru/sky-calendar/?ref=assistant"
+          }
+        ]
+      }
+    }
+  ]
+}

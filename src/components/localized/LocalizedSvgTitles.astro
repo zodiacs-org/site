@@ -1,0 +1,22 @@
+---
+/**
+ * A server-rendered chart wheel (src/lib/wheel/Wheel.tsx) in its slot, with
+ * the sign discs' <title> tooltips in the page's language. The wheel writes
+ * the English sign names; this swaps only those twelve titles, so the
+ * drawing itself is byte-for-byte the shared component's.
+ */
+import { SIGNS, signName } from '../../lib/signs';
+import type { CatalogLocale } from '../../lib/i18n/core';
+
+interface Props {
+  locale: CatalogLocale;
+}
+
+const { locale } = Astro.props;
+const names = new Map(SIGNS.map((sign) => [sign.name, signName(sign, locale)]));
+const html = (await Astro.slots.render('default')).replace(
+  /<title>([^<]*)<\/title>/gu,
+  (match, name: string) => (names.has(name) ? `<title>${names.get(name)}</title>` : match),
+);
+---
+<Fragment set:html={html} />

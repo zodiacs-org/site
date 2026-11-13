@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { SolarReturnExportModel } from '../islands/solar-return/export-model';
+import { solarReturnImageModel } from './share-card';
 import { buildSolarReturnCalendar, solarReturnCalendarFilename } from './solar-return-ical';
 
 const GENERATED_AT = '2026-09-05T08:00:00Z';
@@ -57,10 +58,47 @@ describe('Solar Return calendar handoff', () => {
     });
     const calendar = buildSolarReturnCalendar(approximate, GENERATED_AT);
     expect(property(calendar, 'SUMMARY')).toBe('SUMMARY:Approximate solar return · 2027');
-    expect(property(calendar, 'DTSTART')).toBe('DTSTART:20270101T000000Z');
-    expect(property(calendar, 'UID')).toContain('solar-return-2027-20270101T000000000Z@zodiacs.org');
+    // Without a birth time the marker is the return's own UTC date, a whole
+    // day, never a clock time: 23:59:45 is still 31 December, not rounded on.
+    expect(unfold(calendar)).toContain(`DTSTART;VALUE=DATE:20261231${CRLF}DTEND;VALUE=DATE:20270101${CRLF}`);
+    expect(unfold(calendar)).not.toMatch(/DTSTART:|DURATION:/u);
+    // The receipt time (DTSTAMP) is the only clock time in the file.
+    expect(unfold(calendar).split(CRLF).filter((line) => /\d{8}T\d{6}/u.test(line))).toEqual(['DTSTAMP:20260905T080000Z']);
+    expect(property(calendar, 'UID')).toBe('UID:solar-return-2027-20261231@zodiacs.org');
+    expect(property(calendar, 'DESCRIPTION')).toContain('Calendar marker for the day of the return.');
+    expect(property(calendar, 'DESCRIPTION')).not.toContain('one-minute');
     expect(property(calendar, 'DESCRIPTION')).toContain('The return instant can shift by hours with your exact birth time.');
     expect(solarReturnCalendarFilename(approximate)).toBe('zodiacs-approximate-solar-return-2027.ics');
+  });
+
+  it('dates a return without a birth time by its unrounded UTC instant, in the calendar and on the image', () => {
+    // Birth date 1995-09-28, no time: the 2026 return is 2026-09-27T23:59:51.003Z.
+    // The page, the birthday report and get_solar_return give 27 September.
+    const late = model({ instantUtc: '2026-09-27T23:59:51.003Z', noTime: true, title: 'Approximate solar return' });
+    const calendar = unfold(buildSolarReturnCalendar(late, GENERATED_AT));
+    expect(calendar).toContain(`DTSTART;VALUE=DATE:20260927${CRLF}DTEND;VALUE=DATE:20260928${CRLF}`);
+    expect(property(calendar, 'UID')).toBe('UID:solar-return-2026-20260927@zodiacs.org');
+    expect(calendar).not.toContain('20260928T');
+    const image = solarReturnImageModel(late);
+    // The image prints `${instantUtc.slice(0, 10)} UTC` for a return without a birth time.
+    expect(`${image.instantUtc.slice(0, 10)} UTC`).toBe('2026-09-27 UTC');
+    expect(image.instantUtc.slice(0, 10)).not.toBe('2026-09-28');
+  });
+
+  it('still rounds a timed return to the whole minute across a minute and day boundary', () => {
+    const timed = model({ returnYear: 2027, instantUtc: '2026-12-31T23:59:45Z' });
+    const calendar = unfold(buildSolarReturnCalendar(timed, GENERATED_AT));
+    expect(property(calendar, 'DTSTART')).toBe('DTSTART:20270101T000000Z');
+    expect(property(calendar, 'DURATION')).toBe('DURATION:PT1M');
+    expect(property(calendar, 'UID')).toBe('UID:solar-return-2027-20270101T000000000Z@zodiacs.org');
+    expect(solarReturnImageModel(timed).instantUtc).toBe('2027-01-01T00:00:00.000Z');
+    const lateTimed = model({ instantUtc: '2026-09-27T23:59:51.003Z' });
+    expect(property(buildSolarReturnCalendar(lateTimed, GENERATED_AT), 'DTSTART')).toBe('DTSTART:20260928T000000Z');
+    expect(solarReturnImageModel(lateTimed).instantUtc).toBe('2026-09-28T00:00:00.000Z');
+    // Below the half minute it stays on the earlier minute.
+    const early = model({ instantUtc: '2026-09-27T23:59:29.999Z' });
+    expect(property(buildSolarReturnCalendar(early, GENERATED_AT), 'DTSTART')).toBe('DTSTART:20260927T235900Z');
+    expect(solarReturnImageModel(early).instantUtc).toBe('2026-09-27T23:59:00.000Z');
   });
 
   it('does not mark a known-time unlocated return as approximate', () => {
@@ -93,8 +131,11 @@ describe('Solar Return calendar handoff', () => {
       expect(new TextEncoder().encode(line).byteLength).toBeLessThanOrEqual(75);
     }
     expect(property(calendar, 'DESCRIPTION')).toBe(
-      'DESCRIPTION:Calendar marker — the one-minute duration is for display only\\, not a duration of the solar return.'
+      'DESCRIPTION:Calendar marker for the day of the return. It is not a duration of the solar return.'
       + '\\nThe return instant can shift by hours with your exact birth time.',
+    );
+    expect(property(buildSolarReturnCalendar(model(), GENERATED_AT), 'DESCRIPTION')).toBe(
+      'DESCRIPTION:Calendar marker. The one-minute duration is for display only\\, not a duration of the solar return.',
     );
   });
 

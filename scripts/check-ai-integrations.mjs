@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile, access } from 'node:fs/promises';
+import { PLUGIN_AVATAR_PATH } from './build-plugin-avatar.mjs';
 // OpenAI submission-errors reference, verified 2026-10-06. A valid ZIP can
 // still fail the portal when its listing uses an unsupported category.
 const submissionCategories = new Set(['Productivity', 'Creativity', 'Developer Tools', 'Business & Operations', 'Data & Analytics', 'Communication', 'Education & Research', 'Security', 'Finance', 'Healthcare', 'Travel', 'Entertainment', 'Other']);
@@ -47,6 +48,8 @@ const sky = await json('plugins/zodiacs-sky/plugin.json');
 const skyCompatibility = await json('plugins/zodiacs-sky/.codex-plugin/plugin.json');
 assert.equal(skyCompatibility.version, sky.version);
 const { interface: skyInterface, ...skySettings } = sky.extensions['com.openai'];
+assert.equal(skyInterface.composerIcon, PLUGIN_AVATAR_PATH);
+assert.equal(skyInterface.logo, PLUGIN_AVATAR_PATH);
 assert.deepEqual(skyCompatibility.interface, skyInterface);
 assert.deepEqual(skyCompatibility.extensions['com.openai'], skySettings);
 assert.deepEqual((await json('plugins/zodiacs-sky/.mcp.json')).mcpServers['zodiacs-sky'], { type: 'http', url: 'https://zodiacs.org/mcp' });
@@ -67,10 +70,17 @@ assert.ok(!sky.apps && !sky.hooks && !sky.extensions['com.openai'].apps && !sky.
 assert.deepEqual((await json('plugins/zodiacs-sky/mcp.json')).mcpServers['zodiacs-sky'], { type: 'streamable-http', url: 'https://zodiacs.org/mcp' });
 assert.deepEqual((await json('plugins/zodiacs-developer/mcp.json')).mcpServers['zodiacs-developer'], { type: 'stdio', command: 'node', cwd: './', args: ['${PLUGIN_ROOT}/mcp/server.mjs'] });
 const submission = await json('integrations/chatgpt/chatgpt-app-submission.json');
-const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'];
+assert.equal(skyInterface.longDescription, submission.app_info.description, 'Sky package About must match the reviewed submission copy');
+// 0.5.0: the six released tools and the seven tools that share the occasions panel. 0.6.0 adds five, and
+// 0.6.2 lists find_birthplace (offered since 0.6.1) with its own justifications.
+const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio', 'get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar',
+  'get_natal_chart', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'explain_astrology', 'find_birthplace'];
 assert.deepEqual(Object.keys(submission.tools), names);
 assert.equal(submission.schema_version, 1); assert.ok(submission.app_info.subtitle.length <= 30);
-assert.equal(submission.app_info.category, 'EDUCATION');
+// 0.6.3: the portal could not confirm Education & Research for the 0.6.2 draft, so the owner chose
+// Entertainment from its list. The package and the submission copy carry the same category.
+assert.equal(skyInterface.category, 'Entertainment', 'Sky package category');
+assert.equal(submission.app_info.category, 'ENTERTAINMENT');
 assert.equal(submission.test_cases.length, 5); assert.equal(submission.negative_test_cases.length, 3);
 for (const name of names) {
   assert.deepEqual(submission.tools[name].annotations, { readOnlyHint: true, openWorldHint: false, destructiveHint: false });
@@ -85,9 +95,17 @@ for (const [index, entry] of submission.test_cases.entries()) {
     assert.ok(names.includes(name)); coveredTools.add(name);
   }
 }
-assert.deepEqual([...coveredTools].sort(), [...names].sort(), 'Five review scenarios still cover all six tools');
+// Five positive cases cannot cover nineteen tools. From 0.6.2 none of them states anyone's own
+// birth details: a sky question, a horoscope, a famous chart with an explainer, the date rating
+// with find_birthplace for its town, and a comparison of two famous charts, which keep the two
+// tools the scan flagged. find_chart_twins moved to the reviewer prompts.
+for (const name of ['get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'get_famous_chart', 'explain_astrology', 'get_occasion_sky', 'get_compatibility', 'find_birthplace']) assert.ok(coveredTools.has(name), `The review scenarios cover ${name}`);
 for (const entry of submission.negative_test_cases) assert.equal(entry.tools_triggered, null);
-assert.equal((await json('integrations/chatgpt/evaluation-cases.json')).length, 40);
+const evaluationCases = await json('integrations/chatgpt/evaluation-cases.json');
+assert.equal(evaluationCases.length, 70);
+// The five 0.6.0 tools are past the five-case review limit, so the evaluation set covers each of them;
+// find_birthplace, listed after them, is in the review cases themselves.
+for (const name of names.slice(13, 18)) assert.ok(evaluationCases.some(entry => entry.tool === name && entry.ok), `An evaluation case runs ${name}`);
 const vercel = await json('vercel.json');
 for (const [source, route] of [['/mcp', '1'], ['/mcp/', '1'], ['/mcp/health', 'health'], ['/mcp/health/', 'health']]) {
   assert.ok(vercel.rewrites.some(entry => entry.source === source && entry.destination === `/api/compatibility?__zodiacs_ai=${route}`));
@@ -101,8 +119,9 @@ await access(new URL('src/pages/horoscopes/[sign]/index.astro', root));
 const packageInfo = await json('plugins/zodiacs-developer/package.json');
 assert.equal(packageInfo.dependencies['@zodiacs/engine'], '1.0.0');
 assert.equal(packageInfo.dependencies['@modelcontextprotocol/server'], '2.0.0');
-// The site/embedded runtime and the external recipes both use the published 1.0.0: the site from its vendored copy of the carried archive, the recipes from npm.
-const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-1.0.0.tgz');
+// The site/embedded runtime uses the vendored 1.1.0-rc.2 candidate, which npm does not carry; the external
+// recipes keep the published 1.0.0 from npm, which computes the same values.
+const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-1.1.0-rc.2.tgz');
 // The developer plugin carries the engine's notices as ENGINE-* copies, which
 // its NOTICE says are unchanged; the claims ledger reads the release's own
 // under public/developers/engine/reference/release/.

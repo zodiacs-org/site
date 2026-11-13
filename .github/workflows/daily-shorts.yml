@@ -1,0 +1,68 @@
+name: Daily Shorts
+
+# Builds the day's twelve short videos (one per sign) and their captions, and
+# keeps them as a downloadable workflow artifact for posting by hand. Run by
+# hand only: there is no schedule, and nothing here posts to any social
+# network or uses any account. Posting is a separate decision for the owner.
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Day to build (YYYY-MM-DD). Empty means the published edition on main; the day before and after also work.'
+        required: false
+        default: ''
+      only:
+        description: 'Signs to build, comma separated (for example aries,leo). Empty means all twelve.'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-shorts
+  cancel-in-progress: false
+
+jobs:
+  shorts:
+    name: Build the daily short videos
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium and ffmpeg
+        run: |
+          npx playwright-core install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Build the videos and captions
+        env:
+          SHORTS_DATE: ${{ inputs.date }}
+          SHORTS_ONLY: ${{ inputs.only }}
+        run: |
+          args=()
+          if [ -n "$SHORTS_DATE" ]; then args+=(--date "$SHORTS_DATE"); fi
+          if [ -n "$SHORTS_ONLY" ]; then args+=(--only "$SHORTS_ONLY"); fi
+          npm run data:shorts -- "${args[@]}"
+
+      - name: Upload the videos and captions
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: daily-shorts-${{ github.run_number }}
+          path: dist-shorts/
+          if-no-files-found: error
+          retention-days: 14

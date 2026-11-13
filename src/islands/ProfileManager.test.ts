@@ -33,7 +33,7 @@ describe('English profile chart count', () => {
 
   it('keeps the existing plural explanation for multiple saved charts', () => {
     expect(PF_BOOK_COPY.en.count(2)).toBe(
-      '2 birth charts saved — yours and the people you read for.',
+      '2 birth charts saved, yours and the people you read for.',
     );
   });
 });

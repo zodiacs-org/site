@@ -26,10 +26,10 @@ const EXACT_DATE_FORMATTER = new Intl.DateTimeFormat('en', {
 
 const SEARCH_COPY = {
   title: 'Find a transit',
-  intro: 'Pick a moving planet, a point in your chart, and a window — get the exact dates, computed on this device.',
+  intro: 'Pick a moving planet, a point in your chart, and a window. Get the exact dates, computed on this device.',
   fastBodyNote: 'Sun through Mars make these contacts every few weeks; the search really earns its keep on the slow planets.',
   empty: 'No exact contacts in this window. Widen the range or add bodies.',
-  cap: (count: number) => `Showing the first 200 of ${count} contacts — narrow the range or the bodies to see the rest.`,
+  cap: (count: number) => `Showing the first 200 of ${count} contacts. Narrow the range or the bodies to see the rest.`,
   running: (body: TransitBody) => `Scanning ${body}…`,
   calendar: 'Calendar file for these dates',
   calendarNote: 'The times in the file come from your exact chart, so anyone you share it with, or any online calendar you import it into, can work out your birth time from them, and your birthplace from those for your Ascendant or Midheaven.',
@@ -276,7 +276,7 @@ export function TransitSearch({
       </form>
 
       {busy && progress && (
-        <p class="tsearch__status mono" role="status">{SEARCH_COPY.running(progress)}</p>
+        <p class="tsearch__status" role="status">{SEARCH_COPY.running(progress)}</p>
       )}
       {error && <p class="calc__error" role="alert">{error}</p>}
 
@@ -287,7 +287,7 @@ export function TransitSearch({
       {grouped && grouped.total > 0 && (
         <div class="tsearch__results" data-search-results>
           <div class="tsearch__result-head">
-            <p class="mono">{grouped.total} exact {grouped.total === 1 ? 'contact' : 'contacts'}</p>
+            <p>{grouped.total} exact {grouped.total === 1 ? 'contact' : 'contacts'}</p>
             <button class="btn btn--glass" type="button" onClick={downloadCalendar} data-search-calendar>
               <span>{SEARCH_COPY.calendar}</span>
             </button>
@@ -314,7 +314,7 @@ export function TransitSearch({
                           data-search-exact={contact.exactUtc}
                           data-search-pass-count={contact.passCount}
                         >
-                          <span class="mono">{formatExactDate(contact.exactUtc)}</span>
+                          <span class="tsearch__when">{formatExactDate(contact.exactUtc)}</span>
                           {contact.passCount > 1 && (
                             <span>Pass {contact.pass} of {contact.passCount}</span>
                           )}

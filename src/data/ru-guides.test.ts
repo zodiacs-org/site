@@ -3,18 +3,18 @@ import { SIGNS } from '../lib/signs';
 import { RU_GUIDES, russianGuideFor } from './ru-guides';
 
 const EXPECTED = [
-  { slug: 'aries', name: 'Овен', dates: '21 мар – 19 апр', prep: 'Овне', element: 'кардинальный знак огня', ruler: 'Марс' },
-  { slug: 'taurus', name: 'Телец', dates: '20 апр – 20 мая', prep: 'Тельце', element: 'фиксированный знак земли', ruler: 'Венера' },
-  { slug: 'gemini', name: 'Близнецы', dates: '21 мая – 20 июн', prep: 'Близнецах', element: 'мутабельный знак воздуха', ruler: 'Меркурий' },
-  { slug: 'cancer', name: 'Рак', dates: '21 июн – 22 июл', prep: 'Раке', element: 'кардинальный знак воды', ruler: 'Луна' },
-  { slug: 'leo', name: 'Лев', dates: '23 июл – 22 авг', prep: 'Льве', element: 'фиксированный знак огня', ruler: 'Солнце' },
-  { slug: 'virgo', name: 'Дева', dates: '23 авг – 22 сен', prep: 'Деве', element: 'мутабельный знак земли', ruler: 'Меркурий' },
-  { slug: 'libra', name: 'Весы', dates: '23 сен – 22 окт', prep: 'Весах', element: 'кардинальный знак воздуха', ruler: 'Венера' },
-  { slug: 'scorpio', name: 'Скорпион', dates: '23 окт – 21 ноя', prep: 'Скорпионе', element: 'фиксированный знак воды', ruler: 'Марс в традиции и Плутон в современной астрологии' },
-  { slug: 'sagittarius', name: 'Стрелец', dates: '22 ноя – 21 дек', prep: 'Стрельце', element: 'мутабельный знак огня', ruler: 'Юпитер' },
-  { slug: 'capricorn', name: 'Козерог', dates: '22 дек – 19 янв', prep: 'Козероге', element: 'кардинальный знак земли', ruler: 'Сатурн' },
-  { slug: 'aquarius', name: 'Водолей', dates: '20 янв – 18 фев', prep: 'Водолее', element: 'фиксированный знак воздуха', ruler: 'Сатурн в традиции и Уран в современной астрологии' },
-  { slug: 'pisces', name: 'Рыбы', dates: '19 фев – 20 мар', prep: 'Рыбах', element: 'мутабельный знак воды', ruler: 'Юпитер в традиции и Нептун в современной астрологии' },
+  { slug: 'aries', name: 'Овен', dates: 'с 21 мар по 19 апр', prep: 'Овне', element: 'кардинальный знак огня', ruler: 'Марс' },
+  { slug: 'taurus', name: 'Телец', dates: 'с 20 апр по 20 мая', prep: 'Тельце', element: 'фиксированный знак земли', ruler: 'Венера' },
+  { slug: 'gemini', name: 'Близнецы', dates: 'с 21 мая по 20 июн', prep: 'Близнецах', element: 'мутабельный знак воздуха', ruler: 'Меркурий' },
+  { slug: 'cancer', name: 'Рак', dates: 'с 21 июн по 22 июл', prep: 'Раке', element: 'кардинальный знак воды', ruler: 'Луна' },
+  { slug: 'leo', name: 'Лев', dates: 'с 23 июл по 22 авг', prep: 'Льве', element: 'фиксированный знак огня', ruler: 'Солнце' },
+  { slug: 'virgo', name: 'Дева', dates: 'с 23 авг по 22 сен', prep: 'Деве', element: 'мутабельный знак земли', ruler: 'Меркурий' },
+  { slug: 'libra', name: 'Весы', dates: 'с 23 сен по 22 окт', prep: 'Весах', element: 'кардинальный знак воздуха', ruler: 'Венера' },
+  { slug: 'scorpio', name: 'Скорпион', dates: 'с 23 окт по 21 ноя', prep: 'Скорпионе', element: 'фиксированный знак воды', ruler: 'Марс в традиции и Плутон в современной астрологии' },
+  { slug: 'sagittarius', name: 'Стрелец', dates: 'с 22 ноя по 21 дек', prep: 'Стрельце', element: 'мутабельный знак огня', ruler: 'Юпитер' },
+  { slug: 'capricorn', name: 'Козерог', dates: 'с 22 дек по 19 янв', prep: 'Козероге', element: 'кардинальный знак земли', ruler: 'Сатурн' },
+  { slug: 'aquarius', name: 'Водолей', dates: 'с 20 янв по 18 фев', prep: 'Водолее', element: 'фиксированный знак воздуха', ruler: 'Сатурн в традиции и Уран в современной астрологии' },
+  { slug: 'pisces', name: 'Рыбы', dates: 'с 19 фев по 20 мар', prep: 'Рыбах', element: 'мутабельный знак воды', ruler: 'Юпитер в традиции и Нептун в современной астрологии' },
 ] as const;
 
 function readerText(slug: string) {

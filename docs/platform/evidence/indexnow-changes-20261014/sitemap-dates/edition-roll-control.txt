@@ -1,0 +1,6 @@
+# Edition rolls: the plan step of the previous workflow (2af3578f) and of this one, each on a scratch repository whose
+# head rolls src/data/daily.json from 2026-10-14 to 2026-10-15 and changes one more thing (scripts/sitemap-rendered-changes.test.mjs runs the same cases)
+roll + public/registry/technical/index.html rewritten | previous workflow: exit 0 (passes, nothing compared) | this workflow: exit 1 (fails)
+roll + an existing research item rewritten | previous workflow: exit 0 (passes, nothing compared) | this workflow: exit 1 (fails)
+roll + a sign page deleted | previous workflow: exit 0 (passes, nothing compared) | this workflow: exit 1 (fails)
+roll + a sign page rewritten and a new research item | previous workflow: exit 0 (passes, nothing compared) | this workflow: exit 0 (passes, nothing compared)

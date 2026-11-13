@@ -28,7 +28,8 @@ export const VOCABULARY_SCHEMA = 'zodiacs.conventions-vocabulary.v1';
  * current set.
  */
 export const SET_WRITERS = Object.freeze([
-  { from: '0.1.1-rc.16', to: null },
+  { from: '1.1.0-rc.1', to: null },
+  { from: '0.1.1-rc.16', to: '1.0.0' },
   { from: '0.1.1-rc.15', to: '0.1.1-rc.15' },
   { from: '0.1.1-rc.8', to: '0.1.1-rc.14' },
   { from: '0.1.1-rc.7', to: '0.1.1-rc.7' },
@@ -38,6 +39,7 @@ export const SET_WRITERS = Object.freeze([
 /** What each key of a conventions set covers. Its value is the engine's own token. */
 export const CONVENTION_KEYS: Readonly<Record<string, string>> = Object.freeze({
   calendar: 'The calendar dates are read on.',
+  conventionIds: 'Which ids of the Zodiacs conventions registry (zodiacs.org/developers/conventions) a record lists in receipt.conventionIds, and in what order.',
   zodiac: 'The zodiac longitudes are measured in.',
   planetPositions: 'How the planets\' positions are reduced: the observer, the frame, and which corrections apply.',
   moonPosition: 'Where the Moon\'s position comes from, and which corrections apply to it.',
@@ -75,7 +77,7 @@ export function conventionsVocabulary() {
   }));
   return {
     schema: VOCABULARY_SCHEMA,
-    note: 'A Zodiacs-owned draft vocabulary, not an industry interoperability standard. Each calculation record names the set it was computed under in receipt.conventions; a record is read only under a set the engine version it names wrote.',
+    note: 'A Zodiacs-owned draft vocabulary, not an industry interoperability standard. Each calculation record names the set it was computed under in receipt.conventions, and from 1.1.0-rc.1 lists the ids of the Zodiacs conventions registry that it names in receipt.conventionIds. A record is read only under a set the engine version it names may carry: a set before rc.16\'s under the versions that wrote it, and rc.16\'s and the current one under 0.1.1-rc.16 and later.',
     receiptSchema: NATAL_RECEIPT_SCHEMA,
     engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { name: EPHEMERIS.name, version: EPHEMERIS.version } },
     keys,
@@ -89,7 +91,7 @@ const METHODOLOGY_SECTIONS = Object.freeze([
   '## What a chart holds',
   'Twelve bodies: the Sun, the Moon, the planets from Mercury to Pluto, and the two lunar nodes of the Moon\'s instantaneous orbit. Each comes with its tropical ecliptic longitude of date, in degrees from 0 up to 360, its latitude, and its daily motion in longitude, which is negative while it is retrograde. The resource zodiacs://conventions lists the conventions the engine\'s calculation records state.',
   '## Time',
-  '`utc`, and every instant the other tools take, must carry its zone, `Z` or an offset. This server applies the offset written there and nothing else: it looks up no place and no time zone. From 1972 to the end of the IERS table it carries, the engine reads the instant as UTC, taking Terrestrial Time from the IERS leap seconds and UT1 from IERS UT1 − UTC. It reads any other instant as UT1, with ΔT (TT − UT1) from its versioned model. A calculation record states the ΔT used, with its uncertainty and its source, and how the instant became UT1 and Terrestrial Time.',
+  '`utc`, and every instant the other tools take, must carry its zone, `Z` or an offset. They apply the offset written there and nothing else. From 1972 to the end of the IERS table it carries, the engine reads the instant as UTC, taking Terrestrial Time from the IERS leap seconds and UT1 from IERS UT1 − UTC. It reads any other instant as UT1, with ΔT (TT − UT1) from its versioned model. A calculation record states the ΔT used, with its uncertainty and its source, and how the instant became UT1 and Terrestrial Time.',
   '## An unknown birth time',
   'With `timeKnown: false` the instant is a reference, not a birth time. The positions are those at that instant, angles and houses are left out, and the reply says why. Nothing implies noon: `reference: "utc-noon"` records that midday UTC stands in for an unknown time.',
   '## Houses',
@@ -102,10 +104,14 @@ const METHODOLOGY_SECTIONS = Object.freeze([
   `\`get_positions\`, \`find_events\` and \`check_sky_fact\` run, on this machine, the hosted compute API's own calculations, the parser and the function behind POST https://zodiacs.org/api/v1/positions, /events and /sky-fact, so for the same request they return the same result and the same receipt. \`get_positions\` gives the twelve rows of a chart at each of up to ${BUDGETS['positions.instants']} instants.`,
   `\`find_events\` finds sign ingresses, stations and new and full moons in a window of up to ${BUDGETS['events.windowDays']} days. It samples each motion at a fixed step, ${SEARCH_STEP_DAYS.default} days for most bodies and ${SEARCH_STEP_DAYS.moon} day for the Moon and for the Moon–Sun elongation behind every lunation, and bisects each crossing it sees 24 times. The search is tested, not proven to miss nothing, and its receipt says so in \`search.completeness\`. A window excludes its start and includes its end.`,
   `\`check_sky_fact\` answers \`true\`, \`false\` or \`depends\`, with the computed values that decide the answer. It never interprets. ${ANY_ZONE_DAY_TEXT}`,
+  `An aspect fact holds while the two bodies' separation is within the orb a chart uses for that aspect, the wider one when the Sun or the Moon is one of them. On a date, the reply gives where the aspect begins or ends and where it is exact, which the same crossing search finds on the difference between the two longitudes, at the Moon's step when the Moon is one of them.`,
+  '## Local times and places',
+  '`resolve_birth_time` runs the compute API\'s time endpoint, POST https://zodiacs.org/api/v1/time, on this machine, with the resolver its function uses, @zodiacs/engine/geo, and the zone histories it loads, which are built into this server. A local date and time in an IANA zone becomes UTC and Terrestrial Time. A time the clocks skipped moves forward by the gap (`dst-gap`); one they repeated takes the earlier instant (`dst-fold`). A time before the place adopted a legal time is read on a local mean time (`lmt`): the place\'s own with its longitude, the zone reference city\'s without one. Up to 1970-01-01 the offsets are those of tzdb 2025c with its backzone file, which the engine ships; from then on, the runtime\'s own time zone data. Where the shipped history answered, `intlOffsetMinutes` is the zone\'s offset at the same instant in the runtime\'s data, tzdb\'s default build, and the flags include `zone-history-disputed` where the two differ. A date written in the Julian calendar is accepted up to 1923-12-31 and converted before the time is read; with a country code the reply gives the birth forms\' note on when that country changed calendar. With `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which records with citations what the clocks said in France and the United States from 1870 to 1919, the reply adds the atlas\'s reading of the same wall time: each instant with the rule the atlas applies, its uncertainty flag (documented, inferred or uncertain) and reasons, and its citations, and how many seconds the first instant is from tzdb\'s. Pass the `utc` it returns to the other tools.',
+  '`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site\'s birthplace search, built into this server: names that start with the query first, then, from three characters, names that begin with the same letter and contain it, each by population; a place is matched by its GeoNames name or its ASCII spelling, with accents, letter case and apostrophes set aside. Coordinates are rounded to 0.01°, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.',
   '## Dates',
   'Requests are accepted from 1800 to 2199. That is the range the rest of Zodiacs supports, not a range in which every date has been checked: the engine\'s records state `broadDateRange: "not-certified"`.',
   '## Citing a result',
-  'Every result other than a refusal carries `cite`: `url`, the tool\'s entry on the developer page; `receipt`, `sha256:` and the SHA-256 of a receipt\'s RFC 8785 canonical JSON; and the engine and its version. A chart cites the engine\'s calculation receipt, which the record carries. That receipt holds the instant as it was written, offset included, the coordinates and the settings, so its digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With `timeKnown: false` the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison and the capabilities reply cite the adapter\'s own receipt, which they carry and which holds nothing from a record. `get_positions`, `find_events` and `check_sky_fact` cite the compute API\'s receipt for the same calculation, which they carry and which holds no instant, date or body from the request, so their digest is the one the compute API cites for the same request.',
+  'Every result other than a refusal carries `cite`: `url`, the tool\'s entry on the developer page; `receipt`, `sha256:` and the SHA-256 of a receipt\'s RFC 8785 canonical JSON; and the engine and its version. A chart cites the engine\'s calculation receipt, which the record carries. That receipt holds the instant as it was written, offset included, the coordinates and the settings, so its digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With `timeKnown: false` the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison and the capabilities reply cite the adapter\'s own receipt, which they carry and which holds nothing from a record. `get_positions`, `find_events`, `check_sky_fact` and `resolve_birth_time` cite the compute API\'s receipt for the same calculation, which they carry and which holds no instant, date, zone or body from the request, so their digest is the one the compute API cites for the same request. `search_places` cites the adapter\'s receipt, which names the place index and holds nothing from the query.',
 ]);
 
 export function methodology(): string {
@@ -113,7 +119,7 @@ export function methodology(): string {
     '# How this server calculates',
     '',
     `${ADAPTER_NAME} ${ADAPTER_VERSION} runs @zodiacs/engine ${ENGINE_VERSION}, with astronomy-engine ${EPHEMERIS.version}, on the machine it runs on.`,
-    'The site\'s methodology page, https://zodiacs.org/methodology/, describes the same engine as the site\'s calculators use it, and https://zodiacs.org/developers/engine/ reports how far its results were from other software in dated measurements. This text says what the six tools do with it.',
+    'The site\'s methodology page, https://zodiacs.org/methodology/, describes the same engine as the site\'s calculators use it, and https://zodiacs.org/developers/engine/ reports how far its results were from other software in dated measurements. This text says what the eight tools do with it.',
     '',
     ...METHODOLOGY_SECTIONS.flatMap((section) => [section, '']),
   ].join('\n');
@@ -141,7 +147,7 @@ export const RESOURCES: readonly ResourceDefinition[] = Object.freeze([
     name: 'methodology',
     uri: METHODOLOGY_URI,
     title: 'How this server calculates',
-    description: 'What a chart holds, how an instant is read, unknown birth times, house systems, aspects, comparisons, positions, events and sky facts, the accepted dates, and what a result cites.',
+    description: 'What a chart holds, how an instant is read, unknown birth times, house systems, aspects, comparisons, positions, events and sky facts, local times and places, the accepted dates, and what a result cites.',
     mimeType: 'text/markdown',
     read: methodology,
   },

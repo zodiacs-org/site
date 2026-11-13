@@ -22,11 +22,24 @@ function check(changes = {}) {
     'dist/_astro/full.fixture.js': 'import { engine } from "./engine-core.fixture.js";export { engine };',
     'dist/_astro/engine-core.fixture.js': 'export const engine=["Value is not boolean:","Light-travel time solver did not converge"];',
     'dist/_astro/receipt.fixture.js': 'export const provenance={name:"astronomy-engine"};',
-    'src/lib/engine/server-ephemeris.ts': 'import * as A from "astronomy-engine";',
+    // The three lazy views whose static closures must hold no engine marker (lite B2).
+    'dist/_astro/EclipticView.fixture.js': 'export const view="ecliptic";',
+    'dist/_astro/RelationshipWheel.fixture.js': 'export const view="relationship";',
+    'dist/_astro/ChartCalculator.fixture.js': 'export const view="calculator";',
+    'src/lib/engine/server-ephemeris.ts': 'import * as A from "astronomy-engine";import { timeBasis } from "@zodiacs/engine/time";',
     'src/lib/engine/full.ts': 'import { computeChart } from "@zodiacs/engine/internal";',
     'src/lib/engine/aspects.ts': 'import { A } from "@zodiacs/engine/internal/math";',
     'src/lib/engine/houses.ts': 'import { H } from "@zodiacs/engine/internal/math";',
     'src/lib/engine/types.ts': 'import { T } from "@zodiacs/engine/internal/math";',
+    // The allowed importers of @zodiacs/engine/time and @zodiacs/engine/lite, and an api/ the
+    // lite check walks (since engine 1.1.0-rc.2; the hosted tools' Chiron since the merge of main's #886).
+    'src/ai-tools/features/chiron.ts': 'import { timeBasis } from "@zodiacs/engine/time";',
+    'src/lib/compute-api/endpoints.ts': 'import { timeBasis } from "@zodiacs/engine/time";',
+    'src/lib/composite.ts': 'import { compositeMidpoints } from "@zodiacs/engine/lite";',
+    'src/lib/declination.ts': 'import { findDeclinationAspects } from "@zodiacs/engine/lite";',
+    'src/lib/dignities.ts': 'import { dignitiesFor } from "@zodiacs/engine/lite";',
+    'src/lib/sect.ts': 'import { sectReading } from "@zodiacs/engine/lite";',
+    'api/handler.ts': 'export default function handler() {}',
     ...changes,
   };
   for (const [name, contents] of Object.entries(files)) {
@@ -175,4 +188,24 @@ describe('birth-window worker built boundary',()=>{
   const result=check({'src/islands/birth-window.worker.ts':'import { birthWindow } from "../lib/engine/full";','dist/_astro/birth-window.worker-fixture.js':'import "./engine-core.fixture.js";import "./worker-extra.fixture.js";','dist/_astro/worker-extra.fixture.js':'export const data='+JSON.stringify(text)+';'});
   expect(result.code).toBe(1);expect(result.output).toContain('worker static closure exceeds original chunk-max budget');
  });
+});
+
+describe('optional review-route budgets', () => {
+  const natal = JSON.stringify({ '/learn/aspects/sun-moon/': 0, '/learn/aspects/moon-venus/': 0, '/learn/aspects/venus-mars/': 0 });
+  const pages = Object.fromEntries(['sun-moon', 'moon-venus', 'venus-mars'].map((pair) => [`dist/learn/aspects/${pair}/index.html`, '']));
+  it('skips natal pair routes a normal build does not emit', () => {
+    expect(check({ 'budgets.natal-aspects.json': natal }).code).toBe(0);
+  });
+  it('holds every emitted natal pair route to a 0 KB entry closure', () => {
+    expect(check({ 'budgets.natal-aspects.json': natal, ...pages }).code).toBe(0);
+    const over = check({ 'budgets.natal-aspects.json': natal, ...pages,
+      'dist/learn/aspects/moon-venus/index.html': '<script type="module" src="/_astro/client.fixture.js"></script>' });
+    expect(over.code).toBe(1);
+    expect(over.output).toContain('/learn/aspects/moon-venus/: 0.0 KB gz exceeds 0 KB');
+  });
+  it('rejects a malformed optional budget', () => {
+    const result = check({ 'budgets.natal-aspects.json': JSON.stringify({ '/learn/aspects/sun-moon/': -1 }) });
+    expect(result.code).toBe(1);
+    expect(result.output).toContain('budgets.natal-aspects.json: /learn/aspects/sun-moon/ must be a route');
+  });
 });

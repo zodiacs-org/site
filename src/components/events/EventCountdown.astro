@@ -1,0 +1,151 @@
+---
+/**
+ * The countdown on an event page: days, hours, minutes and seconds to the
+ * exact moment, and that moment in the reader's own time zone. The server
+ * prints the moment in UTC with placeholder cells; a small script reads the
+ * browser's clock and zone and fills the same boxes, which are sized in
+ * advance so nothing moves when it does. Nothing is fetched or sent.
+ */
+import { eventClock, eventDayLong } from '../../lib/events/format';
+import type { CountdownMoment } from '../../lib/events/countdown';
+
+interface Props {
+  moments: CountdownMoment[];
+  hue?: string;
+}
+
+const { moments, hue } = Astro.props;
+const first = moments[0];
+const utcLine = (iso: string) => `${eventDayLong(iso)} at ${eventClock(iso)}`;
+const units = [
+  ['days', 'days'],
+  ['hours', 'hours'],
+  ['minutes', 'min'],
+  ['seconds', 'sec'],
+] as const;
+---
+{first && (
+  <section
+    class="event-section event-countdown reveal"
+    aria-labelledby="countdown-head"
+    data-event-countdown
+    style={hue ? `--sign:${hue}` : undefined}
+  >
+    <h2 id="countdown-head">When it happens</h2>
+    <div class="countdown shell tinted">
+      <div class="countdown__core core tinted" data-countdown data-moments={JSON.stringify(moments)}>
+        <p class="countdown__label" data-countdown-label>{first.label}</p>
+        <div class="countdown__face">
+        <div class="countdown__units" aria-hidden="true" data-countdown-units>
+          {units.map(([key, label]) => (
+            <span class="countdown__unit">
+              <span class="countdown__n" data-unit={key}>--</span>
+              <span class="countdown__l">{label}</span>
+            </span>
+          ))}
+        </div>
+        <p class="countdown__past" data-countdown-past hidden></p>
+        </div>
+        <p class="sr-only" data-countdown-spoken></p>
+        <p class="countdown__local">
+          <span class="countdown__local-lead">Exact at</span>{' '}
+          <time datetime={first.at} data-countdown-local>{utcLine(first.at)}</time>
+        </p>
+      </div>
+    </div>
+    {moments.length > 1 && (
+      <ul class="countdown__moments">
+        {moments.map((moment) => (
+          <li>
+            <span class="countdown__moment-label">{moment.label}</span>
+            <time class="countdown__moment-time mono" datetime={moment.at} data-countdown-time>{utcLine(moment.at)}</time>
+          </li>
+        ))}
+      </ul>
+    )}
+    <p class="countdown__note">
+      Times are shown in UTC until this page reads your device’s time zone. The
+      zone stays on your device.
+    </p>
+  </section>
+)}
+
+<script>
+  import {
+    countdownParts, lastMoment, localMomentLabel, nextMoment, pad2, sinceLabel,
+    type CountdownMoment,
+  } from '../../lib/events/countdown';
+
+  function start(root: HTMLElement): void {
+    let moments: CountdownMoment[] = [];
+    try {
+      moments = JSON.parse(root.dataset.moments ?? '[]') as CountdownMoment[];
+    } catch {
+      return;
+    }
+    if (moments.length === 0) return;
+    const section = root.closest('[data-event-countdown]');
+    const label = root.querySelector<HTMLElement>('[data-countdown-label]');
+    const unitsBox = root.querySelector<HTMLElement>('[data-countdown-units]');
+    const past = root.querySelector<HTMLElement>('[data-countdown-past]');
+    const spoken = root.querySelector<HTMLElement>('[data-countdown-spoken]');
+    const local = root.querySelector<HTMLTimeElement>('[data-countdown-local]');
+    const cells = {
+      days: root.querySelector<HTMLElement>('[data-unit="days"]'),
+      hours: root.querySelector<HTMLElement>('[data-unit="hours"]'),
+      minutes: root.querySelector<HTMLElement>('[data-unit="minutes"]'),
+      seconds: root.querySelector<HTMLElement>('[data-unit="seconds"]'),
+    };
+
+    // Each listed moment in the reader's own zone, once.
+    section?.querySelectorAll<HTMLTimeElement>('[data-countdown-time]').forEach((node) => {
+      try { node.textContent = localMomentLabel(node.dateTime).replace(/ \([^)]*\)$/, ''); } catch { /* keep UTC */ }
+    });
+
+    let shownAt = '';
+    let spokenMinute = -1;
+    let timer = 0;
+    const tick = () => {
+      const now = Date.now();
+      const target = nextMoment(moments, now);
+      if (!target) {
+        const last = lastMoment(moments, now) ?? moments[moments.length - 1];
+        if (label) label.textContent = last.label;
+        if (unitsBox) unitsBox.style.visibility = 'hidden';
+        if (past) {
+          past.hidden = false;
+          past.textContent = `This happened ${sinceLabel(Date.parse(last.at), now)}.`;
+        }
+        if (spoken) spoken.textContent = past?.textContent ?? '';
+        if (local && shownAt !== last.at) {
+          shownAt = last.at;
+          local.dateTime = last.at;
+          try { local.textContent = localMomentLabel(last.at); } catch { /* keep UTC */ }
+        }
+        window.clearInterval(timer);
+        return;
+      }
+      const parts = countdownParts(Date.parse(target.at), now);
+      if (label) label.textContent = target.label;
+      if (cells.days) cells.days.textContent = String(parts.days);
+      if (cells.hours) cells.hours.textContent = pad2(parts.hours);
+      if (cells.minutes) cells.minutes.textContent = pad2(parts.minutes);
+      if (cells.seconds) cells.seconds.textContent = pad2(parts.seconds);
+      if (local && shownAt !== target.at) {
+        shownAt = target.at;
+        local.dateTime = target.at;
+        try { local.textContent = localMomentLabel(target.at); } catch { /* keep UTC */ }
+      }
+      // A screen reader hears the time left when it reads the box, not every second.
+      const minute = Math.floor(parts.totalMs / 60_000);
+      if (spoken && minute !== spokenMinute) {
+        spokenMinute = minute;
+        spoken.textContent = `${parts.days} days, ${parts.hours} hours and ${parts.minutes} minutes to go.`;
+      }
+    };
+    tick();
+    timer = window.setInterval(tick, 1000);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-countdown]').forEach(start);
+</script>

@@ -2,10 +2,20 @@
  * The capability demo: a real, precomputed chart (Frida Kahlo, public
  * birth data, Rodden AA) with build-time captions. The component is
  * server-rendered; its tiny classic script only toggles existing DOM.
+ *
+ * Layout: the wheel (with the full-size selector for every mark beneath
+ * it) beside her big three as three rows, one "What it means" note that
+ * the rows and the wheel both update, and the call to action. The page
+ * sets the section heading, and `.demo` uses display: contents so the
+ * wheel and the guide sit in the page's own grid.
  */
 import Wheel from '../lib/wheel/Wheel';
-import { formatLongitude, SIGNS, signForLongitude } from '../lib/signs';
-import { t } from '../lib/i18n';
+import { degreeInSign, formatLongitude, SIGNS, signEssence, signForLongitude, signName } from '../lib/signs';
+import { signTagline } from '../lib/sign-display';
+import { localizePath, t, type CatalogLocale } from '../lib/i18n';
+import { aspectLabel, planetLabel } from '../lib/i18n/astrology';
+import { intlLocale } from '../lib/i18n/dates';
+import { DEMO_CHART_COPY } from '../lib/demo-chart-copy';
 import { matchAspect } from '../lib/engine/aspects';
 import { houseOf, norm } from '../lib/engine/houses';
 import { natalAspectLine, planetInHouseLine } from '../lib/natal';
@@ -45,6 +55,13 @@ const aspectHue: Record<string, string> = {
 };
 
 const titleCase = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+
+/** 103.3755 → "13°22′", the degree within the sign. */
+function degreeLabel(lon: number) {
+  const deg = degreeInSign(lon);
+  const d = Math.floor(deg);
+  return `${d}°${String(Math.floor((deg - d) * 60)).padStart(2, '0')}′`;
+}
 
 function annularSectorPath(from: number, span: number, inner: number, outer: number) {
   const safeSpan = Math.max(0.1, Math.min(359.9, span));
@@ -97,18 +114,47 @@ function signOccupantLine(occupants: string[]) {
   return `Her ${naturalList(occupants)} use this style in this chart.`;
 }
 
-export default function DemoChart() {
+/** "13°22′"-style orb, as the receipt and the wheel print degrees. */
+function orbLabel(orb: number) {
+  const d = Math.floor(orb);
+  return `${d}°${String(Math.floor((orb - d) * 60)).padStart(2, '0')}′`;
+}
+
+/**
+ * English renders exactly as it always has. Another catalogue locale swaps
+ * in DEMO_CHART_COPY and its own names, essences and links.
+ */
+export default function DemoChart({ locale = 'en' }: { locale?: CatalogLocale }) {
+  const l10n = locale === 'en' ? null : DEMO_CHART_COPY[locale];
+  const lower = (value: string) => value.charAt(0).toLocaleLowerCase(intlLocale(locale)) + value.slice(1);
+  const list = (items: string[]) => new Intl.ListFormat(intlLocale(locale), { type: 'conjunction' }).format(items);
+  const houseWord = t(locale, 'house').toLocaleLowerCase(intlLocale(locale));
   const bodies = demo.bodies.filter((b) => b.body !== 'South Node');
   const planets = bodies.filter((b) => !b.body.includes('Node'));
   const sun = demo.bodies.find((b) => b.body === 'Sun')!;
   const moon = demo.bodies.find((b) => b.body === 'Moon')!;
   const asc = demo.angles.asc;
 
-  const callouts = [
-    { label: 'Sun', lon: sun.lon, copy: 'Identity, purpose, and the direction she grows into.' },
-    { label: 'Moon', lon: moon.lon, copy: 'Emotional needs, instinct, and what helps her feel steady.' },
-    { label: 'Rising', lon: asc, copy: 'First impression, approach, and how other people meet her.' },
+  // Her big three. Each row selects its own mark: the Sun, the Moon, and
+  // the first house, which begins at the rising degree.
+  const placedTitle = (body: string, lon: number) => {
+    const sign = signForLongitude(lon);
+    return l10n!.placed(planetLabel(locale, body), sign, signName(sign, locale));
+  };
+  const bigThree = l10n ? [
+    { id: 'body:Sun', title: placedTitle('Sun', sun.lon), lon: sun.lon, copy: l10n.bigThree[0] },
+    { id: 'body:Moon', title: placedTitle('Moon', moon.lon), lon: moon.lon, copy: l10n.bigThree[1] },
+    { id: 'house:1', title: l10n.rising(signForLongitude(asc), signName(signForLongitude(asc), locale)), lon: asc, copy: l10n.bigThree[2] },
+  ] : [
+    { id: 'body:Sun', title: `Sun in ${signForLongitude(sun.lon).name}`, lon: sun.lon, copy: 'Identity, purpose, and the direction she grows into.' },
+    { id: 'body:Moon', title: `Moon in ${signForLongitude(moon.lon).name}`, lon: moon.lon, copy: 'Emotional needs, instinct, and what helps her feel steady.' },
+    { id: 'house:1', title: `${signForLongitude(asc).name} rising`, lon: asc, copy: 'First impression, approach, and how other people meet her.' },
   ];
+  /** A placement as a computed fact, then the essence of the sign it uses. */
+  const placementCaption = (lon: number, house: number) => {
+    const sign = signForLongitude(lon);
+    return `${formatLongitude(lon, locale)}, ${houseWord} ${house}. ${signName(sign, locale)}${l10n!.colon}${lower(signEssence(sign, locale))}`;
+  };
   const aspects = planets.flatMap((a, index) => planets.slice(index + 1).flatMap((b) => {
     const match = matchAspect(a.body, a.lon, b.body, b.lon);
     return match ? [{ a: a.body, b: b.body, type: match.def.type, orb: match.orb }] : [];
@@ -125,10 +171,10 @@ export default function DemoChart() {
     return {
       id: `body:${body.body}`,
       key: body.body,
-      label: `${body.body}, house ${house}`,
-      kind: 'Planet',
-      title: `${body.body} in ${sign.name}`,
-      caption: aboutHer(planetInHouseLine(body.body, house)),
+      label: l10n ? `${planetLabel(locale, body.body)}, ${houseWord} ${house}` : `${body.body}, house ${house}`,
+      kind: l10n ? l10n.kinds.planet : 'Planet',
+      title: l10n ? placedTitle(body.body, body.lon) : `${body.body} in ${sign.name}`,
+      caption: l10n ? placementCaption(body.lon, house) : aboutHer(planetInHouseLine(body.body, house)),
       drawLon,
       point: markerPoint,
       hue: sign.hue,
@@ -141,10 +187,12 @@ export default function DemoChart() {
     return {
       id: `sign:${sign.slug}`,
       key: sign.slug,
-      label: `${sign.name} sign`,
-      kind: 'Sign',
-      title: sign.name,
-      caption: `${sign.essence} ${signOccupantLine(occupants)}`,
+      label: l10n ? signName(sign, locale) : `${sign.name} sign`,
+      kind: l10n ? l10n.kinds.sign : 'Sign',
+      title: l10n ? signName(sign, locale) : sign.name,
+      caption: l10n
+        ? `${signEssence(sign, locale)} ${occupants.length ? l10n.occupants(list(occupants.map((body) => planetLabel(locale, body)))) : l10n.noOccupants}`
+        : `${signTagline(sign)} ${signOccupantLine(occupants)}`,
       hue: sign.hue,
       point: point(index * 30 + 15, R_SIGNS),
       path: annularSectorPath(index * 30 + 1.5, 27, R_SIGN_FOCUS_INNER, R_SIGN_FOCUS_OUTER),
@@ -154,13 +202,18 @@ export default function DemoChart() {
   const rawHouseTargets = demo.houses.cusps.map((cusp, index) => {
     const house = index + 1;
     const occupant = planets.find((body) => houseOf(body.lon, demo.houses.cusps) === house);
+    const occupants = planets.filter((body) => houseOf(body.lon, demo.houses.cusps) === house);
     return {
       id: `house:${house}`,
       key: house,
-      label: `House ${house}`,
-      kind: 'Life area',
-      title: `House ${house}`,
-      caption: occupant
+      label: l10n ? `${t(locale, 'house')} ${house}` : `House ${house}`,
+      kind: l10n ? l10n.kinds.house : 'Life area',
+      title: l10n ? `${t(locale, 'house')} ${house}` : `House ${house}`,
+      caption: l10n
+        ? `${l10n.houseSign(signName(signForLongitude(cusp + 1), locale))} ${occupants.length
+          ? l10n.houseOccupants(list(occupants.map((body) => planetLabel(locale, body.body))))
+          : l10n.emptyHouse ?? t(locale, 'emptyHouseNote')}`
+        : occupant
         ? aboutHer(planetInHouseLine(occupant.body, house))
         : t('en', 'emptyHouseNote'),
       point: housePoints[index],
@@ -173,13 +226,18 @@ export default function DemoChart() {
     const p1 = point(a.lon, R_ASPECTS);
     const p2 = point(b.lon, R_ASPECTS);
     const along = 0.34 + (index % 3) * 0.16;
+    const localTitle = l10n
+      ? l10n.aspect(planetLabel(locale, aspect.a), aspect.type, aspectLabel(locale, aspect.type), planetLabel(locale, aspect.b))
+      : '';
     return {
       ...aspect,
       id: `aspect:${aspect.a}-${aspect.type}-${aspect.b}`,
-      label: `${aspect.a} ${aspect.type} ${aspect.b}`,
-      kind: 'Connection',
-      title: `${aspect.a} ${titleCase(aspect.type)} ${aspect.b}`,
-      caption: aboutHer(natalAspectLine(aspect.a, aspect.type, aspect.b)),
+      label: l10n ? localTitle : `${aspect.a} ${aspect.type} ${aspect.b}`,
+      kind: l10n ? l10n.kinds.aspect : 'Connection',
+      title: l10n ? localTitle : `${aspect.a} ${titleCase(aspect.type)} ${aspect.b}`,
+      caption: l10n
+        ? `${l10n.aspectGloss[aspect.type] ?? ''} ${l10n.orb(orbLabel(aspect.orb))}`.trim()
+        : aboutHer(natalAspectLine(aspect.a, aspect.type, aspect.b)),
       point: { x: p1.x + (p2.x - p1.x) * along, y: p1.y + (p2.y - p1.y) * along },
       p1,
       p2,
@@ -203,19 +261,6 @@ export default function DemoChart() {
     hit: collisionAwareHit(interactivePoints, aspectOffset + index, 5.4),
   }));
   const sunTarget = planetTargets.find((target) => target.key === 'Sun')!;
-  const sunHouse = houseOf(sun.lon, demo.houses.cusps);
-  const housePreview = houseTargets[sunHouse - 1];
-  const aspectPreview = aspectTargets[0];
-  const previewSteps = [
-    { id: sunTarget.id, kind: sunTarget.kind, label: 'Her Sun', title: sunTarget.title },
-    { id: housePreview.id, kind: housePreview.kind, label: `House ${sunHouse}`, title: housePreview.title },
-    ...(aspectPreview ? [{
-      id: aspectPreview.id,
-      kind: aspectPreview.kind,
-      label: 'Tight aspect',
-      title: aspectPreview.title,
-    }] : []),
-  ];
   const defaultCaption = sunTarget.caption;
 
   return (
@@ -226,206 +271,209 @@ export default function DemoChart() {
       data-active-id={sunTarget.id}
       data-demo-motion="instant"
     >
-        <div class="demo__jumps" role="group" aria-label="Preview chart features">
-          {previewSteps.map((step, index) => (
-            <button
-              type="button"
-              class="demo__jump"
-              aria-pressed={index === 0 ? 'true' : 'false'}
-              data-demo-jump={step.id}
-              key={step.id}
-            >
-              <span class="mono--label">{step.kind}</span>
-              <strong>{step.label}</strong>
-            </button>
-          ))}
-        </div>
-
-      <div class="demo__wheel shell">
-        <div class="core demo__wheel-core">
-          <div class="demo__wheel-stage">
-            <span class="demo__sample-badge mono">Sample chart · Frida Kahlo</span>
-            <Wheel
-              bodies={bodies}
-              asc={asc}
-              mc={demo.angles.mc}
-              cusps={demo.houses?.cusps ?? null}
-              aspects={aspects}
-              size={SIZE}
-              preview
-              deferIcons
-            />
-            <svg class="demo__focus-layer" viewBox="0 0 100 100" aria-hidden="true">
-              {signTargets.map((target) => (
-                <path
-                  key={`focus-${target.id}`}
-                  d={target.path}
-                  class="demo__focus-sign"
-                  data-demo-highlight={target.id}
-                  data-demo-highlight-kind="sign"
-                  data-active="false"
-                  style={`--focus:${target.hue}`}
-                />
-              ))}
-              {planetTargets.map((target) => (
-                <g
-                  key={`focus-${target.id}`}
-                  data-demo-highlight={target.id}
-                  data-demo-highlight-kind="planet"
-                  data-active={target.id === sunTarget.id ? 'true' : 'false'}
-                  style={`--focus:${target.hue}`}
-                >
-                  <circle class="demo__focus-disc" cx={target.point.x} cy={target.point.y} r="3.9" />
-                  <circle class="demo__focus-ring" cx={target.point.x} cy={target.point.y} r="3.25" />
-                </g>
-              ))}
-              {houseTargets.map((target) => (
-                <path
-                  key={`focus-${target.id}`}
-                  d={target.path}
-                  class="demo__focus-house"
-                  data-demo-highlight={target.id}
-                  data-demo-highlight-kind="house"
-                  data-active="false"
-                />
-              ))}
-              {aspectTargets.map((target) => (
-                <g
-                  key={`focus-${target.id}`}
-                  data-demo-highlight={target.id}
-                  data-demo-highlight-kind="aspect"
-                  data-active="false"
-                  style={`--focus:${target.hue}`}
-                >
-                  <line class="demo__focus-aspect" x1={target.p1.x} y1={target.p1.y} x2={target.p2.x} y2={target.p2.y} />
-                  <circle class="demo__focus-node" cx={target.p1.x} cy={target.p1.y} r="1.45" />
-                  <circle class="demo__focus-node" cx={target.p2.x} cy={target.p2.y} r="1.45" />
-                </g>
-              ))}
-            </svg>
-            <div class="demo__targets">
-              {signTargets.map((target) => (
-                <button
-                  type="button"
-                  class="demo__target demo__target--sign"
-                  style={position(target.point, target.hue)}
-                  aria-label={target.label}
-                  aria-pressed="false"
-                  data-demo-target
-                  data-demo-id={target.id}
-                  data-demo-layer="signs"
-                  data-demo-kind={target.kind}
-                  data-demo-title={target.title}
-                  data-demo-sign={target.key}
-                  data-demo-copy={target.caption}
-                />
-              ))}
-              {planetTargets.map((target) => (
-                <span
-                  class="demo__target demo__target--planet"
-                  style={position(target.point, target.hue, target.hit)}
-                  aria-hidden="true"
-                  data-selected={target.id === sunTarget.id ? 'true' : 'false'}
-                  data-demo-target
-                  data-demo-id={target.id}
-                  data-demo-layer="planets"
-                  data-demo-kind={target.kind}
-                  data-demo-title={target.title}
-                  data-demo-body={target.key}
-                  data-demo-draw-lon={target.drawLon.toFixed(6)}
-                  data-demo-copy={target.caption}
-                />
-              ))}
-              {houseTargets.map((target) => (
-                <span
-                  class="demo__target demo__target--house"
-                  style={position(target.point, undefined, target.hit)}
-                  aria-hidden="true"
-                  data-selected="false"
-                  data-demo-target
-                  data-demo-id={target.id}
-                  data-demo-layer="houses"
-                  data-demo-kind={target.kind}
-                  data-demo-title={target.title}
-                  data-demo-copy={target.caption}
-                />
-              ))}
-              {aspectTargets.map((target) => (
-                <span
-                  class="demo__target demo__target--aspect"
-                  style={position(target.point, undefined, target.hit)}
-                  aria-hidden="true"
-                  data-selected="false"
-                  data-demo-target
-                  data-demo-id={target.id}
-                  data-demo-layer="aspects"
-                  data-demo-kind={target.kind}
-                  data-demo-title={target.title}
-                  data-demo-copy={target.caption}
-                />
-              ))}
-            </div>
+      <div class="demo__wheel">
+        {/* Outside the stage: the stage's overlays must cover the wheel alone. */}
+        <span class="demo__sample-badge">{l10n ? l10n.badge : 'Sample chart · Frida Kahlo'}</span>
+        <div class="demo__wheel-stage">
+          <Wheel
+            bodies={bodies}
+            asc={asc}
+            mc={demo.angles.mc}
+            cusps={demo.houses?.cusps ?? null}
+            aspects={aspects}
+            size={SIZE}
+            preview
+            deferIcons
+            ariaLabel={l10n?.wheel}
+          />
+          <svg class="demo__focus-layer" viewBox="0 0 100 100" aria-hidden="true">
+            {signTargets.map((target) => (
+              <path
+                key={`focus-${target.id}`}
+                d={target.path}
+                class="demo__focus-sign"
+                data-demo-highlight={target.id}
+                data-demo-highlight-kind="sign"
+                data-active="false"
+                style={`--focus:${target.hue}`}
+              />
+            ))}
+            {planetTargets.map((target) => (
+              <g
+                key={`focus-${target.id}`}
+                data-demo-highlight={target.id}
+                data-demo-highlight-kind="planet"
+                data-active={target.id === sunTarget.id ? 'true' : 'false'}
+                style={`--focus:${target.hue}`}
+              >
+                <circle class="demo__focus-disc" cx={target.point.x} cy={target.point.y} r="3.9" />
+                <circle class="demo__focus-ring" cx={target.point.x} cy={target.point.y} r="3.25" />
+              </g>
+            ))}
+            {houseTargets.map((target) => (
+              <path
+                key={`focus-${target.id}`}
+                d={target.path}
+                class="demo__focus-house"
+                data-demo-highlight={target.id}
+                data-demo-highlight-kind="house"
+                data-active="false"
+              />
+            ))}
+            {aspectTargets.map((target) => (
+              <g
+                key={`focus-${target.id}`}
+                data-demo-highlight={target.id}
+                data-demo-highlight-kind="aspect"
+                data-active="false"
+                style={`--focus:${target.hue}`}
+              >
+                <line class="demo__focus-aspect" x1={target.p1.x} y1={target.p1.y} x2={target.p2.x} y2={target.p2.y} />
+                <circle class="demo__focus-node" cx={target.p1.x} cy={target.p1.y} r="1.45" />
+                <circle class="demo__focus-node" cx={target.p2.x} cy={target.p2.y} r="1.45" />
+              </g>
+            ))}
+          </svg>
+          <div class="demo__targets">
+            {signTargets.map((target) => (
+              <button
+                type="button"
+                class="demo__target demo__target--sign"
+                style={position(target.point, target.hue)}
+                aria-label={target.label}
+                aria-pressed="false"
+                data-demo-target
+                data-demo-id={target.id}
+                data-demo-layer="signs"
+                data-demo-kind={target.kind}
+                data-demo-title={target.title}
+                data-demo-sign={target.key}
+                data-demo-copy={target.caption}
+              />
+            ))}
+            {planetTargets.map((target) => (
+              <span
+                class="demo__target demo__target--planet"
+                style={position(target.point, target.hue, target.hit)}
+                aria-hidden="true"
+                data-selected={target.id === sunTarget.id ? 'true' : 'false'}
+                data-demo-target
+                data-demo-id={target.id}
+                data-demo-layer="planets"
+                data-demo-kind={target.kind}
+                data-demo-title={target.title}
+                data-demo-body={target.key}
+                data-demo-draw-lon={target.drawLon.toFixed(6)}
+                data-demo-copy={target.caption}
+              />
+            ))}
+            {houseTargets.map((target) => (
+              <span
+                class="demo__target demo__target--house"
+                style={position(target.point, undefined, target.hit)}
+                aria-hidden="true"
+                data-selected="false"
+                data-demo-target
+                data-demo-id={target.id}
+                data-demo-layer="houses"
+                data-demo-kind={target.kind}
+                data-demo-title={target.title}
+                data-demo-copy={target.caption}
+              />
+            ))}
+            {aspectTargets.map((target) => (
+              <span
+                class="demo__target demo__target--aspect"
+                style={position(target.point, undefined, target.hit)}
+                aria-hidden="true"
+                data-selected="false"
+                data-demo-target
+                data-demo-id={target.id}
+                data-demo-layer="aspects"
+                data-demo-kind={target.kind}
+                data-demo-title={target.title}
+                data-demo-copy={target.caption}
+              />
+            ))}
           </div>
-          <p class="demo__preview-hint mono">Select a mark on the wheel—or choose a starting point.</p>
-          <p class="demo__receipt mono">
-            {demo.name} · {demo.birth} · computed as {demo.utc.replace('T', ' ').slice(0, 19)} UTC ·{' '}
-            <a href="https://www.astro.com/astro-databank/Kahlo%2C_Frida" target="_blank" rel="noopener noreferrer">
-              published time source
-            </a> · <a href="/methodology/" data-check-our-math>{t('en', 'trustMath')}</a>
-          </p>
+        </div>
+        <div class="demo__explore">
+          <p class="demo__preview-hint">{l10n ? l10n.hint : 'Select a mark on the wheel, or choose any part of the chart here.'}</p>
+          <label class="demo__selector">
+            <span>{l10n ? l10n.explore : 'Explore the chart'}</span>
+            <select aria-label={l10n ? l10n.explore : 'Explore the chart'} data-demo-select defaultValue={sunTarget.id}>
+              <optgroup label={l10n ? l10n.groups[0] : 'Planets'}>
+                {planetTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
+              </optgroup>
+              <optgroup label={l10n ? l10n.groups[1] : 'Signs'}>
+                {signTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
+              </optgroup>
+              <optgroup label={l10n ? l10n.groups[2] : 'Life areas'}>
+                {houseTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
+              </optgroup>
+              <optgroup label={l10n ? l10n.groups[3] : 'Connections'}>
+                {aspectTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
+              </optgroup>
+            </select>
+          </label>
         </div>
       </div>
 
       <div class="demo__guide">
-        <div class="demo__guide-head">
-          <em class="kicker">Try the preview</em>
-          <h3>Three ways into a chart</h3>
-          <p>Choose a starting point below, or select any symbol on the wheel.</p>
-        </div>
-
-        <label class="demo__selector">
-          Explore the chart
-          <select aria-label="Explore the chart" data-demo-select defaultValue={sunTarget.id}>
-            <optgroup label="Planets">
-              {planetTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
-            </optgroup>
-            <optgroup label="Signs">
-              {signTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
-            </optgroup>
-            <optgroup label="Life areas">
-              {houseTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
-            </optgroup>
-            <optgroup label="Connections">
-              {aspectTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
-            </optgroup>
-          </select>
-        </label>
-
-        <article class="demo__insight" aria-live="polite" aria-atomic="true">
-          <span class="mono--label" data-demo-kind-output>{sunTarget.kind}</span>
-          <h3 data-demo-title-output>{sunTarget.title}</h3>
-          <p data-demo-caption>{defaultCaption}</p>
-          <a class="btn btn--primary demo__cta" href="/birth-chart/">
-            <span>See my birth chart</span><span class="orb">↗</span>
-          </a>
-        </article>
-
-        <div class="demo__big-three" aria-label="Frida Kahlo's big three">
-          {callouts.map((c) => {
-            const s = signForLongitude(c.lon);
+        <div class="demo__jumps" role="group" aria-label={l10n ? l10n.bigThreeLabel : 'Frida Kahlo’s big three'}>
+          {bigThree.map((row, index) => {
+            const s = signForLongitude(row.lon);
             return (
-              <div class="demo__callout" style={`--sign:${s.hue}`} key={c.label}>
-                <span class="mono--label">{c.label} · {formatLongitude(c.lon)}</span>
-                <strong>{s.name}</strong>
-                <p>{c.copy}</p>
-              </div>
+              <button
+                type="button"
+                class="demo__jump"
+                style={`--sign:${s.hue}`}
+                aria-pressed={index === 0 ? 'true' : 'false'}
+                data-demo-jump={row.id}
+                key={row.id}
+              >
+                <img class="demo__jump-disc" data-src={`/assets/zodiac-icons/128/${s.slug}.webp`} width="44" height="44" alt="" decoding="async" />
+                <span class="demo__jump-text">
+                  <strong>{row.title}</strong>
+                  <span class="demo__jump-copy">{row.copy}</span>
+                </span>
+                <span class="demo__jump-degree">{degreeLabel(row.lon)}</span>
+              </button>
             );
           })}
         </div>
 
-        <p class="demo__cta-line">
-          A real chart, calculated from the 1907 sky. <strong>Your preview takes about twenty seconds.</strong>
-        </p>
+        <article class="demo__insight" aria-live="polite" aria-atomic="true">
+          <p class="demo__insight-head">
+            <span class="kicker">{l10n ? l10n.meaning : 'What it means'}</span>
+            <span class="demo__insight-kind" data-demo-kind-output>{sunTarget.kind}</span>
+          </p>
+          <h3 data-demo-title-output>{sunTarget.title}</h3>
+          <p data-demo-caption>{defaultCaption}</p>
+        </article>
+
+        <div class="demo__actions">
+          <a class="btn btn--primary demo__cta" href={l10n ? localizePath(locale, '/birth-chart/') : '/birth-chart/'}>
+            <span>{l10n ? l10n.cta : 'See my birth chart'}</span><span class="orb">↗</span>
+          </a>
+          <a class="textlink" href={l10n ? localizePath(locale, '/methodology/') : '/methodology/'} data-check-our-math>{t(locale, 'trustMath')} <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+
+        {l10n ? (
+          <p class="demo__receipt">
+            {l10n.birth} · {l10n.instant(demo.utc.replace('T', ' ').slice(0, 19))} ·{' '}
+            <a href="https://www.astro.com/astro-databank/Kahlo%2C_Frida" target="_blank" rel="noopener noreferrer">
+              {l10n.source}
+            </a>
+          </p>
+        ) : (
+          <p class="demo__receipt">
+            {demo.birth} · computed as {demo.utc.replace('T', ' ').slice(0, 19)} UTC ·{' '}
+            <a href="https://www.astro.com/astro-databank/Kahlo%2C_Frida" target="_blank" rel="noopener noreferrer">
+              published time source
+            </a>
+          </p>
+        )}
       </div>
     </div>
   );

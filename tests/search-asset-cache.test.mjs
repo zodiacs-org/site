@@ -16,7 +16,7 @@ function effectiveCacheControl(path) {
 }
 
 describe('Search ranking asset cache release', () => {
-  it.each(['search-ui', 'webmcp-register'])('revalidates the stable %s bundle', (asset) => {
+  it.each(['search-ui', 'webmcp-register', 'webmcp-calculators'])('revalidates the stable %s bundle', (asset) => {
     expect(effectiveCacheControl(`/assets/${asset}.js`))
       .toBe('public, max-age=0, must-revalidate');
   });

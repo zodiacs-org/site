@@ -8,7 +8,6 @@ import { configuredWalletChains } from '../../../lib/wallet/config';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
 const weeklyDigestEnabled = weeklyDigestSignupEnabled();
 const webPushEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
@@ -17,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '3 ottobre 2026';
-const modifiedAt = '2026-10-03T00:00:00.000Z';
+const updated = '11 novembre 2026';
+const modifiedAt = '2026-11-11T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -82,7 +81,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 
       <h2>Guide</h2>
       <p>{t('it', 'trustGuideNotice')}</p>
-      <p> Quando invii una domanda a Guide, quel messaggio, i messaggi recenti di Guide e il contesto visibile di Guide vengono inviati a OpenAI per un controllo di sicurezza dell’input e per generare una bozza di risposta. Quella bozza generata viene poi inviata di nuovo a OpenAI per un secondo controllo di sicurezza prima che tu la veda. Ogni richiesta all’API Responses usa <code>store: false</code>. La conversazione web in corso con Guide resta soltanto in questa sessione del browser, non viene sincronizzata con un account e non viene archiviata come testo sui server di Zodiacs.org, che tu abbia effettuato l’accesso o no. OpenAI dichiara che per impostazione predefinita i dati dell’API non vengono usati per addestrare i suoi modelli, e che i suoi log di monitoraggio degli abusi conservano i contenuti inviati fino a 30 giorni, o più a lungo quando la legge lo richiede o quando è necessario per proteggere i suoi servizi o altre persone da danni. Per applicare il limite giornaliero conserviamo un identificativo irreversibile con sale derivato dal tuo indirizzo IP, mai l’IP originale, insieme al suo conteggio giornaliero e a una traccia di ogni richiesta. Ogni successivo controllo del limite elimina i conteggi anteriori al giorno UTC precedente e le tracce delle richieste più vecchie di 48 ore. Non inviamo quell’identificativo a OpenAI e non inseriamo il testo delle conversazioni nei metadati del fornitore. Guide imposta anche un cookie di sessione che contiene un identificativo casuale e firmato. Serve a limitare le richieste simultanee da uno stesso browser, dura fino alla fine della sessione del browser e non viene conservato insieme ai tuoi messaggi. </p>
+      <p> Quando invii una domanda a Guide, quel messaggio, i messaggi recenti di Guide e il contesto visibile di Guide vengono inviati a Anthropic per un controllo di sicurezza dell’input e per generare una bozza di risposta. Quella bozza generata viene poi inviata di nuovo a Anthropic per un secondo controllo di sicurezza prima che tu la veda. La conversazione web in corso con Guide resta soltanto in questa sessione del browser, non viene sincronizzata con un account e non viene archiviata come testo sui server di Zodiacs.org, che tu abbia effettuato l’accesso o no. Anthropic dichiara che, per impostazione predefinita, non usa input o output dell’API per addestrare i modelli e li elimina dai propri sistemi entro 30 giorni, salvo quando la legge o l’applicazione della sua politica d’uso richiedono una conservazione più lunga. Per applicare il limite giornaliero conserviamo un identificativo irreversibile con sale derivato dal tuo indirizzo IP, mai l’IP originale, insieme al suo conteggio giornaliero e a una traccia di ogni richiesta. Ogni successivo controllo del limite elimina i conteggi anteriori al giorno UTC precedente e le tracce delle richieste più vecchie di 48 ore. Non inviamo quell’identificativo a Anthropic e non inseriamo il testo delle conversazioni nei metadati del fornitore. Guide imposta anche un cookie di sessione che contiene un identificativo casuale e firmato. Serve a limitare le richieste simultanee da uno stesso browser, dura fino alla fine della sessione del browser e non viene conservato insieme ai tuoi messaggi. </p>
 
       <h2>I temi che salvi</h2>
       <p>
@@ -265,9 +264,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           <p>
             Gli account restano facoltativi. I calcolatori senza account e il
             salvataggio locale dei temi funzionano senza effettuare l’accesso.
-            La versione di prova della sincronizzazione cifrata accetta al
-            massimo un tema che confermi esplicitamente come tuo. L’anteprima è
-            riservata agli adulti di 18 anni o più.
+            La sincronizzazione cifrata conserva al massimo un tema, che confermi esplicitamente come tuo, ed è riservata agli adulti di 18 anni o più.
           </p>
           <ul>
             <li>
@@ -286,10 +283,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
               coordinate, il fuso orario e le posizioni derivate vengono cifrati
               dal nostro server con una chiave dati propria di ciascun record.
               Quella chiave è cifrata a sua volta con una chiave di servizio
-              conservata fuori dal database. È una cifratura gestita dal
-              servizio — non una cifratura end-to-end — quindi Zodiacs può
-              decifrare il record quando lo ripristini su un altro dispositivo
-              con accesso effettuato.
+              conservata fuori dal database. È una cifratura gestita dal servizio, non una cifratura end-to-end, quindi Zodiacs può decifrare il record quando lo ripristini su un altro dispositivo con accesso effettuato, quando crei un invito a partire da esso e, se attivi le email con il tuo tema, quando vengono scritte le tue email.
             </li>
             <li>
               Il database riceve una busta cifrata del tema, più gli
@@ -334,12 +328,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
               l’assistenza.
             </li>
             <li>
-              Gli account con temi del precedente sistema di sincronizzazione
-              nel cloud non vengono migrati in silenzio. La versione di prova si
-              mette in pausa e offre l’esportazione finché non sarà disponibile
-              una revisione esplicita della migrazione, tema per tema;
-              l’eliminazione definitiva dell’account rimuove anche quei record
-              del vecchio sistema.
+              I temi del precedente sistema di sincronizzazione nel cloud non vengono mai trasferiti nella sincronizzazione cifrata. Finché non li rimuoveremo dal nostro database, l’esportazione dell’account li include e l’eliminazione definitiva dell’account li rimuove.
+            </li>
+            <li>
+              «Usa il mio tema per le mie email» è una scelta separata nel tuo profilo, disattivata per impostazione predefinita, e richiede il tuo tema sincronizzato. Finché è attiva, l’email quotidiana sul tema che confermi e, se la ricevi, la sintesi settimanale vengono scritte a partire da quel tema: il processo di invio lo decifra solo per scrivere la tua email. Un’email quotidiana sul tema mostra il nome del tema, la data, l’ora e il luogo di nascita, come il tuo profilo, e viene inviata all’indirizzo del tuo account tramite Resend. Finché è disattivata, nessuna email usa il tuo tema.
             </li>
           </ul>
         </>
@@ -387,10 +379,21 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       )}
 
       <h2>E-mail</h2>
-      {weeklyDigestEnabled && (
+      {weeklyDigestEnabled && !accountSyncV2Enabled && (
         <p>
           Chi ha un account può iscriversi a un’e-mail settimanale che riassume
           il cielo della settimana in arrivo per i propri temi salvati.
+          L’opzione non è selezionata per impostazione predefinita. Se ti
+          iscrivi, conserviamo quella preferenza e inviamo l’e-mail tramite il
+          nostro fornitore di e-mail,
+          <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
+          Ogni e-mail include un link per annullare l’iscrizione con un clic, e
+          puoi disattivarla dal tuo profilo in qualsiasi momento.
+        </p>
+      )}
+      {weeklyDigestEnabled && accountSyncV2Enabled && (
+        <p>
+          Chi ha un account può iscriversi a un’e-mail settimanale che riassume il cielo della settimana in arrivo. Con «Usa il mio tema per le mie email» attivo, è scritta a partire dal tuo tema sincronizzato; altrimenti elenca gli eventi principali del cielo della settimana e non usa alcun tema.
           L’opzione non è selezionata per impostazione predefinita. Se ti
           iscrivi, conserviamo quella preferenza e inviamo l’e-mail tramite il
           nostro fornitore di e-mail,
@@ -421,6 +424,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         calcolato per il mezzogiorno nel luogo di nascita, e allora ne indicano
         il fuso orario o, prima dell’ora standard, la longitudine.
       </p>
+      <p>Anche un file di calendario che crei nella pagina del calendario del cielo, con le tue rivoluzioni solari, le tappe della vita e i contatti dei pianeti lenti, viene creato nel tuo browser; i dati di nascita che inserisci lì non ci vengono inviati né conservati. I suoi orari vengono dal tuo tema, quindi chiunque con cui lo condividi, o qualsiasi calendario online in cui lo importi, può ricavarne la tua data di nascita e, con l’ora di nascita, anche l’ora; senza, il tema è calcolato per mezzogiorno nel tuo luogo di nascita, e allora indicano il suo fuso orario o, prima dell’ora ufficiale, la sua longitudine. Il file non contiene contatti con l’ascendente né con il medio cielo.</p>
       {webPushEnabled && (
         <p>
           Se attivi le notifiche quotidiane, conserviamo la sottoscrizione push
@@ -469,33 +473,24 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 
       <h2>Hosting, log e analisi</h2>
       <p> Il sito è ospitato su <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>. Come per qualsiasi servizio di hosting web, i suoi server elaborano le richieste fatte dal tuo browser e possono conservare log tecnici di breve durata (come indirizzo IP e tipo di browser) per fornire il sito e proteggerlo dagli abusi. Non mostriamo pubblicità e non usiamo cookie di tracciamento tra siti né pixel di marketing di terze parti. </p>
-      {accountSyncV2Enabled ? (
-        <p>
-          Gli strumenti di analisi di terze parti sono disattivati durante tutta
-          l’anteprima ad accesso controllato della sincronizzazione cifrata.
-          Questo impedisce che uno script di analisi condivida lo stesso
-          contesto di pagina della memoria privata dei temi nel browser.
-        </p>
-      ) : (
-        <p>
-          Contiamo le visualizzazioni di pagina e l’uso anonimo delle funzioni
-          con Plausible, un servizio di analisi senza cookie. Per non contare
-          più volte lo stesso dispositivo nell’arco di un giorno, Plausible
-          elabora brevemente l’indirizzo IP e lo user agent per ricavare un
-          identificativo limitato a questo sito, a questo dispositivo e a questo
-          giorno. L’IP e lo user agent originali non vengono conservati; il sale
-          usato per quell’identificativo ruota e viene eliminato ogni 24 ore.
-          Plausible non riceve dati di nascita, indirizzi pubblici,
-          identificativi del tema, identificativi dell’account collegato né
-          l’elenco esatto dei segni detenuti. Non riceve nemmeno un
-          identificativo tra siti.
-          Gli eventi di Aura contengono solo categorie ammesse, come un esito e
-          una fascia approssimativa del numero di segni detenuti; allo stesso
-          modo, gli altri eventi registrano «è stato salvato un tema», mai di
-          chi.
-        </p>
-      )}
-      {webAnalyticsEnabled && !accountSyncV2Enabled && (
+      <p>
+        Contiamo le visualizzazioni di pagina e l’uso anonimo delle funzioni
+        con Plausible, un servizio di analisi senza cookie. Per non contare
+        più volte lo stesso dispositivo nell’arco di un giorno, Plausible
+        elabora brevemente l’indirizzo IP e lo user agent per ricavare un
+        identificativo limitato a questo sito, a questo dispositivo e a questo
+        giorno. L’IP e lo user agent originali non vengono conservati; il sale
+        usato per quell’identificativo ruota e viene eliminato ogni 24 ore.
+        Plausible non riceve dati di nascita, indirizzi pubblici,
+        identificativi del tema, identificativi dell’account collegato né
+        l’elenco esatto dei segni detenuti. Non riceve nemmeno un
+        identificativo tra siti.
+        Gli eventi di Aura contengono solo categorie ammesse, come un esito e
+        una fascia approssimativa del numero di segni detenuti; allo stesso
+        modo, gli altri eventi registrano «è stato salvato un tema», mai di
+        chi.{accountSyncV2Enabled ? ' Nessuno script di analisi viene eseguito sulla tua pagina del profilo, sulla pagina di accesso né su alcuna pagina che può mostrare un tema salvato nel tuo browser o sincronizzato con il tuo account, come la home page, il tema natale o i transiti.' : ''}
+      </p>
+      {webAnalyticsEnabled && (
         <p>
           Contiamo le visualizzazioni di pagina anche con Vercel Web Analytics,
           il contatore senza cookie integrato nella nostra piattaforma di
@@ -541,6 +536,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         {accountSyncV2Enabled
           ? <li>Esportare o eliminare un account dalla pagina del profilo; scegliere separatamente se cancellare i dati di questo browser.</li>
           : <li>Eliminare un account e i suoi dati sincronizzati scrivendoci.</li>}
+        {accountSyncV2Enabled && <li>Disattivare «Usa il mio tema per le mie email» o ritirare la sincronizzazione dei temi dal tuo profilo, in qualsiasi momento.</li>}
         {weeklyDigestEnabled && <li>Disattivare l’e-mail settimanale con un clic, in qualsiasi momento.</li>}
         <li>Ritirare un invito di compatibilità dal tuo profilo prima che venga usato.</li>
         <li>Chiedere la correzione, l’oscuramento o la rimozione di un profilo di People.</li>

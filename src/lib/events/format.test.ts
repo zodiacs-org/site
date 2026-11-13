@@ -26,9 +26,26 @@ describe('events format — receipts', () => {
     expect(eventDay('2026-07-29T14:36:19.011Z')).toBe('July 29, 2026');
     expect(eventClock('2026-07-29T14:36:19.011Z')).toBe('14:36 UTC');
     expect(windowLabel('2026-06-29T17:37:12.860Z', '2026-07-23T22:56:19.394Z'))
-      .toBe('Jun 29, 2026 – Jul 23, 2026');
+      .toBe('Jun 29, 2026 to Jul 23, 2026');
     expect(windowLabel('2026-06-29T17:37:12.860Z', null))
-      .toBe('Jun 29, 2026 – past the data horizon');
+      .toBe('Jun 29, 2026 to past the data horizon');
+  });
+});
+
+describe('events format — display titles', () => {
+  it('ends every catalog title with a comma and its date, which the hub and related lists cut off', () => {
+    // src/pages/events/index.astro and src/components/events/EventRelated.astro
+    // print the date separately and show the title up to this separator.
+    const shortTitle = (title: string) => title.replace(/(?:,| —) .*$/, '');
+    for (const event of eventsCatalog().events) {
+      const { facts } = event;
+      const date = facts.family === 'retrograde'
+        ? new Date(facts.start!).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+        : eventDay(facts.at!);
+      const short = shortTitle(facts.title);
+      expect(facts.title, facts.id).toBe(`${short}, ${date}`);
+      expect(short, facts.id).not.toMatch(/[,—–]/u);
+    }
   });
 });
 

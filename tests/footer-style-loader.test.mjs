@@ -28,7 +28,8 @@ function run({ top = 1800, readyState = 'loading', io = 'normal', hasFooter = tr
   const timers = [];
   const observations = [];
   const linkEvents = new Map();
-  const footer = hasFooter ? { getBoundingClientRect: () => ({ top }) } : null;
+  const reads = { count: 0 };
+  const footer = hasFooter ? { getBoundingClientRect: () => { reads.count += 1; return { top }; } } : null;
   const window = {
     innerHeight: 1000,
     addEventListener: (type, callback, options) => listeners.set(type, { callback, options }),
@@ -66,8 +67,15 @@ function run({ top = 1800, readyState = 'loading', io = 'normal', hasFooter = tr
     };
   }
   runInNewContext(source, { window, document, IntersectionObserver: window.IntersectionObserver });
+  // A browser's observer reports once right after the first layout; that
+  // first report is where the loader learns whether the footer starts near
+  // the screen (the 200px margin below the viewport).
+  const observing = observations[0];
+  if (observing?.target && !observing.disconnected) {
+    observing.callback([{ isIntersecting: top <= window.innerHeight + 200 }]);
+  }
   return {
-    links, listeners, timers, observations, footer, linkEvents, root,
+    links, listeners, timers, observations, footer, linkEvents, root, reads,
     load() { listeners.get('load')?.callback(); },
     advance() { for (const timer of timers.splice(0)) timer.callback(); },
     approach(intersects = true) { observations[0].callback([{ isIntersecting: intersects }]); },
@@ -86,12 +94,23 @@ describe('actual footer stylesheet loader', () => {
     expect(header?.value).toBe('public, max-age=0, must-revalidate');
   });
 
-  it('requests an initially visible/near footer immediately before window load', () => {
+  it('requests an initially visible/near footer on the first report, before window load', () => {
     for (const top of [200, 1200]) {
       const state = run({ top });
       expectOneStylesheet(state);
-      expect(state.observations).toHaveLength(0);
+      expect(state.observations).toHaveLength(1);
+      expect(state.observations[0].disconnected).toBe(true);
+      expect(state.listeners.has('load')).toBe(false);
       expect(state.timers.map((timer) => timer.delay)).toEqual([3000]);
+    }
+  });
+
+  it('reads no layout while the page parses when an observer can report it', () => {
+    for (const top of [200, 1800]) expect(run({ top }).reads.count).toBe(0);
+    for (const io of ['absent', 'constructor-error', 'observe-error']) {
+      const fallback = run({ io, top: 200 });
+      expect(fallback.reads.count).toBe(1);
+      expectOneStylesheet(fallback);
     }
   });
 

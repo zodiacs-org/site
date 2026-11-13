@@ -1,0 +1,14 @@
+# The regenerated outputs against the base (the adoption plan's J-12), 2026-11-04, head 64096451fa134714cb41525410116b2d9a4e6f7b.
+
+## The regeneration record names its candidate commit, the adoption commit, as 1.1.0-rc.1's names its own:
+@@ -1,6 +1,7 @@
+ {
+   "schema": "zodiacs.regenerated-outputs.v1",
+   "base": "0bf69bd56aaec8fbfd99bd4b45877064dc1234df",
++  "candidateCommit": "620403bcf73c91020053230fd8da2de0899698d4",
+   "generator": "docs/platform/evidence/site-engine-1-1-0-rc2/tools/regenerate.py",
+   "runtime": "Node v22.22.2, macOS arm64",
+   "files": [
+# command: python3 docs/platform/evidence/site-engine-1-1-0-rc2/tools/check-regenerated-outputs.py
+PASS: 74 regenerated outputs match the record (65 identical, 7 base bytes kept, 2 regenerated)
+# exit code: 0

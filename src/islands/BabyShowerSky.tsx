@@ -93,7 +93,7 @@ export default function BabyShowerSky() {
           <div class="occasion-card" tabIndex={-1}>
             <p class="kicker occasion-card__kicker">{names.trim() ? `For ${names.trim()}’s baby shower` : 'For the baby shower'}</p>
             <h2 class="occasion-card__title">The sky around your due date</h2>
-            <p class="occasion-card__sub">Due {dayMonth(window_.due)} · window {dayMonth(window_.from)} – {dayMonth(window_.to)}</p>
+            <p class="occasion-card__sub">Due {dayMonth(window_.due)} · window {dayMonth(window_.from)} to {dayMonth(window_.to)}</p>
             <div class="due-bar" role="img" aria-label={window_.sunSpans.map((span) => `${signName(span.sign)} from ${dayMonth(span.from)} to ${dayMonth(span.to)}`).join('; ')}>
               {window_.sunSpans.map((span, index) => (
                 <div class={index > 0 ? 'due-bar__span due-bar__span--end' : 'due-bar__span'} key={span.sign} style={`flex:${spanDays(span.from, span.to)};background:var(--sign-${span.sign})`}>

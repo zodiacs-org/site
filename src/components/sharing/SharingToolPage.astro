@@ -6,9 +6,11 @@ import PrivateCompatibilityInvite from '../../islands/PrivateCompatibilityInvite
 import GroupCharts from '../../islands/GroupCharts';
 import ChartTwins from '../../islands/ChartTwins';
 import SharingToolLinks from './SharingToolLinks.astro';
+import HeroCrop from '../HeroCrop.astro';
 import { localizePath, type CatalogLocale } from '../../lib/i18n';
 import { SHARING_COPY, sharingText as s } from '../../lib/sharing/copy';
 import { DIRECTORY_PEOPLE } from '../../lib/people';
+import { TWIN_DIRECTORY } from '../../lib/sharing/twin-directory';
 import { sampleGroup, sampleTwins, sampleContacts, SAMPLE_PAIR_SLUGS, SAMPLE_TWIN_SIGNS } from '../../lib/sharing/samples';
 import { ROLE_HUES, ROLE_KEYS } from '../../lib/sharing/group';
 import { t } from '../../lib/i18n';
@@ -23,7 +25,7 @@ const titleKey = ({ big: 'bigTitle', invite: 'inviteTitle', group: 'groupTitle',
 const ledeKey = ({ big: 'bigLede', invite: 'inviteLede', group: 'groupLede', twins: 'twinsLede' } as const)[kind];
 const path = ({ big: '/big-three/', invite: '/compatibility/invite/', group: '/group-charts/', twins: '/chart-twins/' })[kind];
 const route = localizePath(locale, path);
-const directory = kind === 'twins' ? DIRECTORY_PEOPLE.map((person) => ({ slug: person.slug, name: person.displayName, sun: person.sunSign.slug, moon: person.moon.uncertain ? null : person.moon.sign })) : [];
+const directory = kind === 'twins' ? [...TWIN_DIRECTORY] : [];
 const headlineKey = kind === 'group' ? 'groupHeadline' : titleKey;
 const englishCue = englishOnlyCue(locale);
 const groupSample = kind === 'group' ? sampleGroup(DIRECTORY_PEOPLE) : [];
@@ -57,6 +59,8 @@ const jsonLd = [{ '@type': 'WebApplication', name: s(locale, titleKey), descript
     {kind === 'group' && <GroupCharts locale={locale} client:load />}
     {kind === 'twins' && <ChartTwins locale={locale} directory={directory} client:load />}
     <noscript><p>{s(locale, 'jsRequired')}</p><a href={localizePath(locale, '/tools/')}>{s(locale, 'toolsLabel')}</a></noscript>
+    {kind === 'big' && <HeroCrop crop="sun-moon-signs" locale={locale} class="sharing-art" />}
+    {kind === 'twins' && <HeroCrop crop="twins" locale={locale} class="sharing-art" />}
     <SharingToolLinks locale={locale} current={path} />
   </section>
 </Base>

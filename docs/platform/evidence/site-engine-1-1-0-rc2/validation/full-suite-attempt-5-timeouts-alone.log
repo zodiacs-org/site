@@ -1,0 +1,24 @@
+
+ RUN  v3.2.7 <checkout>
+
+ ✓ src/lib/account-v2/cutover.test.ts (8 tests) 163ms
+ ✓ scripts/analytics-referrer-privacy.test.mjs (1 test) 209ms
+ ✓ scripts/games-sql-readiness.test.mjs (4 tests) 3333ms
+   ✓ Zodiac Games SQL container readiness > waits through socket-only initialization before the unchanged SQL sequence  1897ms
+   ✓ Zodiac Games SQL container readiness > retains the bounded readiness failure, diagnostics and container cleanup  935ms
+   ✓ Zodiac Games SQL container readiness > keeps a real SQL-stage failure fatal without retrying or running later files  320ms
+ ✓ src/ai-tools/features/personal-transits.test.ts (13 tests) 9492ms
+   ✓ get_personal_transits > lists the next 30 days of exact contacts by default, soonest first, with the site’s transit sentences  493ms
+   ✓ get_personal_transits > keeps long windows to the slow planets, up to 366 days  642ms
+   ✓ get_personal_transits > never words a contact as a health or money prediction  2212ms
+   ✓ get_personal_transits > refuses a window that starts before the birth date, and a year ahead before the birth  329ms
+   ✓ get_personal_transits > gives a fuller year ahead without a birth time: the slow planets on the personal planets too  511ms
+   ✓ get_personal_transits > labels each contact with a reading confidence from the birth details  667ms
+   ✓ get_personal_transits > says which clock the dates are on, and assumes UTC only when no zone was given or shared  1198ms
+   ✓ get_personal_transits > leaves romantic wording out when the birth date is under 18, and never reads the sixth house as health  2200ms
+   ✓ get_personal_transits > gives the natal Sun sign for the panel, and none when an untimed birth day changed it  621ms
+
+ Test Files  4 passed (4)
+      Tests  26 passed (26)
+   Start at  14:20:10
+   Duration  10.56s (transform 480ms, setup 0ms, collect 838ms, tests 13.20s, environment 0ms, prepare 305ms)

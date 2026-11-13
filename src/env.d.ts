@@ -3,5 +3,6 @@
 declare namespace astroHTML.JSX {
   interface IntrinsicAttributes {
     'client:interaction'?: boolean | { eagerHash?: boolean };
+    'client:painted'?: boolean;
   }
 }

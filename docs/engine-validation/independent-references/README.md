@@ -83,7 +83,7 @@ arbiter, clock and product-model disclosure describe Horizons and ERFA.
 
 Every reference is evaluated at the engine's own UT1 and TT for its instant,
 as the engine makes astronomy-engine's time (`tools/engine-clock.ts`, from the
-engine's own time basis, `src/lib/engine/time-basis.mjs`). Since engine
+engine's own time basis, `@zodiacs/engine/time`). Since engine
 0.1.1-rc.15 an instant from 1972-01-01 to 2027-10-02 is read as UTC: TT =
 UTC + (TAI − UTC) + 32.184 s from the IERS leap seconds, and UT1 = UTC +
 (UT1 − UTC) from the IERS tables (basis `iers-utc/1`). Any other instant is

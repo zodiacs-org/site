@@ -101,11 +101,12 @@ async function guide(page, engine) {
     return p && getComputedStyle(p).transform === 'none';
   });
   const box = await panel.boundingBox();
-  check(`${engine}: Guide remains compact and inset`, box.x >= 8 && box.width <= 374
-    && box.y > 200 && box.height >= 844 * .5 && box.height <= 844 * .7, JSON.stringify(box));
+  // Phones get Guide as a full-screen sheet (owner-chosen 2026-11-05).
+  check(`${engine}: Guide is a full-screen sheet on a phone`, box.x === 0 && box.y === 0
+    && box.width === 390 && Math.abs(box.height - 844) <= 2, JSON.stringify(box));
   check(`${engine}: touch opening does not focus the composer`, await panel.evaluate(p =>
     document.activeElement === p && !document.activeElement.matches('input,textarea')));
-  await shot(page, `${engine}-compact-guide`);
+  await shot(page, `${engine}-guide-sheet`);
   await page.locator('.zassistant__input').fill('What is my rising sign?');
   // Approximate the space a soft keyboard leaves; this is not an OS keyboard.
   await page.setViewportSize({ width: 390, height: 480 });
@@ -154,7 +155,7 @@ try { await withPreview({ port: 8784 }, async baseURL => {
       await journey('startup-input', page => earlyTyping(page, baseURL, engine));
       await journey('quick-horoscope', async page => {
         await page.goto(baseURL);
-        await page.getByRole('link', { name: 'Your horoscope', exact: true }).click();
+        await page.getByRole('link', { name: 'See your horoscope', exact: true }).click();
         await page.locator('main a[href="/horoscopes/cancer/"]').first().click();
         await page.getByRole('heading', { level: 1 }).waitFor();
         check(`${engine}: sign reading requires no chart`, /Cancer/.test(await page.locator('h1').textContent()));
@@ -168,7 +169,8 @@ try { await withPreview({ port: 8784 }, async baseURL => {
       let savedState;
       await journey('known-time-first-chart', async (page, context) => {
         await page.goto(baseURL);
-        await page.getByRole('link', { name: 'Get your free birth chart ↗', exact: true }).click();
+        // The hero and the closing panel both offer it; the hero comes first.
+        await page.getByRole('link', { name: 'Get your free birth chart ↗', exact: true }).first().click();
         await calculate(page);
         await page.locator('[data-first-reading-start]').click();
         for (let step = 1; step <= 4; step++) {

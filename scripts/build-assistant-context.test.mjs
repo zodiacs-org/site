@@ -10,7 +10,7 @@ import {
   TOOL_ROUTES,
   buildAssistantContext,
   extractCanonicalLabels,
-  extractLearnTopics,
+  learnTopics,
   generateAssistantContext,
 } from './build-assistant-context.mjs';
 
@@ -33,7 +33,6 @@ describe('assistant site context', () => {
       '/astrologer-kit/',
       '/your-sky-wrapped/',
       '/chart-of-the-day/',
-      '/baby-zodiac/',
       '/big-three/',
       '/chart-twins/',
       '/compatibility/invite/',
@@ -74,14 +73,21 @@ describe('assistant site context', () => {
       // The engine's own product page at /developers/engine/ adds one more.
       // The conformance suite's results page at /developers/conformance/ adds one more.
       // The compute API, AI integrations and sky benchmark each add a page.
-      // The three occasion cards (/occasions/, milestones, baby shower) add three.
-      consumerRoutes: 709,
+      // The occasion cards (/occasions/, milestones) add two; the baby shower card was hidden on 2026-11-12.
+      // Hidden on 2026-11-12: /baby-zodiac/ (one tool, one static/consumer route) and /occasions/baby-shower/ (one static/consumer route).
+      // The conventions registry at /developers/conventions/ adds one more.
+      // The assistant showcase at /apps/ adds one evergreen page.
+      // The developer demo at /developers/demo/ adds one more.
+      // The time atlas at /developers/time-atlas/ adds one more.
+      // The Year Ahead Score at /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
+      // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
+      consumerRoutes: 715,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 70,
-      tools: 28,
+      staticPages: 76,
+      tools: 27,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');
@@ -100,7 +106,7 @@ describe('assistant site context', () => {
     expect(context).toContain('Chart calculation does not send birth fields to a chart API.');
     expect(context).toContain('optional account sync, which starts when a person signs in, uploads their saved charts');
     expect(context).not.toContain('only the charts a person chooses');
-    expect(context).toContain('The public Guide sends chat messages to OpenAI');
+    expect(context).toContain('The public Guide sends chat messages to Anthropic');
     expect(context).toContain('placements-only chart summary only after the person explicitly chooses “Attach my chart”');
     expect(context).not.toContain('Birth details stay on the device.');
 
@@ -132,16 +138,16 @@ describe('assistant site context', () => {
   });
 
   it('extracts the learn-hub topics and the canonical strategy labels from their sources', () => {
-    const topics = extractLearnTopics(`
-      <a class="tile clusters__card" href="/learn/planets/">
-        <strong>The planets</strong><p>Ten planets, ten jobs.</p>
-      </a>
-    `);
+    const topics = learnTopics([
+      { route: '/learn/planets/', title: 'The planets', description: 'Ten planets, ten jobs.' },
+    ]);
     expect(topics).toEqual([{
       route: '/learn/planets/',
       title: 'The planets',
       description: 'Ten planets, ten jobs.',
     }]);
+    expect(learnTopics().map((topic) => topic.route)).toContain('/learn/glossary/');
+    expect(() => learnTopics([{ route: '/learn/planets/', title: '', description: 'x' }])).toThrow(/Incomplete learn topic/);
 
     const labels = extractCanonicalLabels(`
 ## 4. Voice & microcopy

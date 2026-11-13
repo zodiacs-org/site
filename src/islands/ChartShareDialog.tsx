@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { storyCardText } from '../lib/story-card-copy';
 import type { Chart } from '../lib/engine/types';
 import { t, type CatalogLocale as Locale } from '../lib/i18n';
 import { encodeSharedPositionsLink, type PositionsShareInput } from '../lib/share-positions';
@@ -14,6 +15,7 @@ import {
   type ChartSheetBirthDetails,
   type PreparedChartCard,
 } from '../lib/share-card';
+import { downloadPreparedChartCard } from '../lib/share-card-save';
 import { ensurePastelZodiacIconEmbedding } from '../lib/share-card-pastel-icons';
 import { shareCardText } from '../lib/share-card-copy';
 import { signBySlug, signForLongitude, signName } from '../lib/signs';
@@ -26,6 +28,7 @@ type Mode = 'full' | 'moon' | 'rising';
 type CardState = 'idle' | 'busy' | 'saved' | 'error';
 type Choice = 'sheet' | 'signature' | 'big-three' | 'full' | 'placement';
 type PreparedState = 'idle' | 'preparing' | 'ready' | 'busy' | 'saved' | 'error';
+type StoryModule = typeof import('../lib/big-three-story-card');
 
 interface Props {
   chart: Chart;
@@ -54,7 +57,7 @@ const LINK_COPY = {
   ru: { copied: 'Ссылка скопирована', details: 'Скопировать ссылку с данными рождения', detailsNote: 'Включает ваши данные рождения.', sheet: 'Поделиться листом карты' },
 } as const;
 
-function trackShare(variant: 'details_link' | 'positions_link' | 'big_three_card' | 'full_chart_card' | 'signature_card'): void {
+function trackShare(variant: 'details_link' | 'positions_link' | 'big_three_card' | 'full_chart_card' | 'signature_card' | 'big_three_story'): void {
   const analytics = (window as Window & {
     zodiacsAnalytics?: { track?: (name: string, props: { variant: string }) => void };
   }).zodiacsAnalytics;
@@ -90,6 +93,16 @@ export default function ChartShareDialog({
   const [states, setStates] = useState<Record<Choice, PreparedState>>({
     sheet: 'idle', signature: 'idle', 'big-three': 'idle', full: 'idle', placement: 'idle',
   });
+
+  // The story card is made only when asked for: it fetches the twelve large
+  // sign discs, which nobody else in this dialog needs.
+  const [story, setStory] = useState<{ state: PreparedState; card: PreparedChartCard | null; url: string | null; canShare: boolean }>({
+    state: 'idle', card: null, url: null, canShare: false,
+  });
+  const storyUrlRef = useRef<string | null>(null);
+  useEffect(() => () => {
+    if (storyUrlRef.current) URL.revokeObjectURL(storyUrlRef.current);
+  }, []);
 
   const primaryChoice: Choice = mode === 'full' ? 'sheet' : 'placement';
   const primaryAlternative = primaryShareCardVariant(locale, Boolean(chart.angles));
@@ -198,6 +211,54 @@ export default function ChartShareDialog({
       if (generation === generationRef.current[choice]) setStates((current) => ({ ...current, [choice]: 'error' }));
     } finally {
       if (preparationRef.current.get(choice) === generation) preparationRef.current.delete(choice);
+    }
+  }
+
+  async function makeStory(): Promise<void> {
+    if (story.state === 'preparing') return;
+    setStory((current) => ({ ...current, state: 'preparing' }));
+    try {
+      const renderer: StoryModule = await import('../lib/big-three-story-card');
+      const card = await renderer.prepareBigThreeStoryCard(chart, locale, {
+        referenceTime: !chart.input.timeKnown, moonAmbiguous, birthDate,
+      });
+      const file = new File([card.blob], card.filename, { type: 'image/png' });
+      let canShare = false;
+      try { canShare = Boolean(navigator.canShare?.({ files: [file] })); } catch { canShare = false; }
+      if (storyUrlRef.current) URL.revokeObjectURL(storyUrlRef.current);
+      const url = URL.createObjectURL(card.blob);
+      storyUrlRef.current = url;
+      setStory({ state: 'ready', card, url, canShare });
+    } catch (error) {
+      console.error(error);
+      setStory((current) => ({ ...current, state: 'error' }));
+    }
+  }
+
+  function shareStory(): void {
+    const card = story.card;
+    if (!card || story.state === 'busy') return;
+    setStory((current) => ({ ...current, state: 'busy' }));
+    // Prepared before this tap, so the share sheet opens within it (iOS).
+    void savePreparedChartCard(card).then((outcome) => {
+      if (outcome !== 'cancelled') trackShare('big_three_story');
+      setStory((current) => ({ ...current, state: outcome === 'cancelled' ? 'ready' : 'saved' }));
+    }, (error) => {
+      console.error(error);
+      setStory((current) => ({ ...current, state: 'error' }));
+    });
+  }
+
+  function downloadStory(): void {
+    const card = story.card;
+    if (!card) return;
+    try {
+      downloadPreparedChartCard(card);
+      trackShare('big_three_story');
+      setStory((current) => ({ ...current, state: 'saved' }));
+    } catch (error) {
+      console.error(error);
+      setStory((current) => ({ ...current, state: 'error' }));
     }
   }
 
@@ -364,11 +425,62 @@ export default function ChartShareDialog({
             </button>
           )}
         </div>
+        {mode === 'full' && (
+          <section class="calc-share-dialog__story" aria-labelledby="chart-share-story-title" data-share-story={story.state}>
+            <div class="calc-share-dialog__story-preview">
+              {story.url
+                ? <img src={story.url} width={90} height={160} alt={storyCardText(locale, 'storyTitle')} data-share-story-preview />
+                : <span class="calc-share-dialog__story-blank" aria-hidden="true" />}
+            </div>
+            <div class="calc-share-dialog__story-copy">
+              <h3 id="chart-share-story-title">{storyCardText(locale, 'storyAction')}</h3>
+              <p class="calc-share-dialog__note">
+                {storyCardText(locale, 'storyNote')}
+                {!chart.angles && <> {storyCardText(locale, 'risingNeedsTime')}.</>}
+              </p>
+              <div class="calc-share-dialog__story-actions">
+                {!story.card ? (
+                  <button
+                    class="btn btn--ghost calc-share-dialog__card"
+                    type="button"
+                    onClick={() => void makeStory()}
+                    disabled={story.state === 'preparing'}
+                    data-share-story-make
+                  >
+                    <span>{story.state === 'preparing' ? shareText(locale, 'preparingImage') : storyCardText(locale, 'storyAction')}</span><span class="orb">+</span>
+                  </button>
+                ) : (
+                  <>
+                    {story.canShare && (
+                      <button
+                        class="btn btn--primary calc-share-dialog__card"
+                        type="button"
+                        onClick={shareStory}
+                        disabled={story.state === 'busy'}
+                        data-share-story-share
+                      >
+                        <span>{storyCardText(locale, 'storyShare')}</span><span class="orb">↗</span>
+                      </button>
+                    )}
+                    <button
+                      class={`btn ${story.canShare ? 'btn--ghost' : 'btn--primary'} calc-share-dialog__card`}
+                      type="button"
+                      onClick={downloadStory}
+                      data-share-story-download
+                    >
+                      <span>{storyCardText(locale, 'storyDownload')}</span><span class="orb">{story.state === 'saved' ? '✓' : '↓'}</span>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
         <p class="calc-share-dialog__note" data-chart-image-privacy>
           {shareText(locale, !hideBirthDetails ? 'chartImagePrivacyDetails'
             : chart.input.timeKnown ? 'chartImagePrivacy' : 'chartImagePrivacyNoTime')}
         </p>
-        {(card === 'error' || Object.values(states).includes('error')) && <p class="calc__error" role="alert">{t(locale, 'cardError')}</p>}
+        {(card === 'error' || Object.values(states).includes('error') || story.state === 'error') && <p class="calc__error" role="alert">{t(locale, 'cardError')}</p>}
       </div>
     </dialog>
   );

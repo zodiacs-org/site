@@ -1,0 +1,249 @@
+{
+ "what": "Every solar and lunar eclipse from 2025 to 2030 as NASA's Five Millennium Canon catalogs list it: the catalog number, the date, the instant of greatest eclipse in Terrestrial Dynamical Time (TD, which is TT), the Delta T the canon used, the Saros series and the eclipse type (first letter: T total, A annular, H hybrid, P partial, N penumbral).",
+ "sources": [
+  {
+   "catalog": "solar",
+   "title": "Five Millennium Catalog of Solar Eclipses: 2001 to 2100, F. Espenak and J. Meeus, NASA Goddard Space Flight Center",
+   "url": "https://eclipse.gsfc.nasa.gov/SEcat5/SE2001-2100.html",
+   "retrievedUtc": "2026-11-04T13:36:07Z",
+   "bytes": 127736,
+   "sha256": "a9c08f5b4b51d5c85ccfa18d8bfccd98ec8a7d93f06e2d40691943b4105acf9e"
+  },
+  {
+   "catalog": "lunar",
+   "title": "Five Millennium Catalog of Lunar Eclipses: 2001 to 2100, F. Espenak and J. Meeus, NASA Goddard Space Flight Center",
+   "url": "https://eclipse.gsfc.nasa.gov/LEcat5/LE2001-2100.html",
+   "retrievedUtc": "2026-11-04T13:36:10Z",
+   "bytes": 78017,
+   "sha256": "0f640913669a640418f05c173cea0bdeca194fcac6b5b196b6b9ab1b08122792"
+  }
+ ],
+ "solar": [
+  {
+   "catalog": "09563",
+   "date": "2025-03-29",
+   "greatestEclipseTD": "10:48:36",
+   "deltaTSeconds": 75,
+   "saros": 149,
+   "type": "P"
+  },
+  {
+   "catalog": "09564",
+   "date": "2025-09-21",
+   "greatestEclipseTD": "19:43:04",
+   "deltaTSeconds": 75,
+   "saros": 154,
+   "type": "P"
+  },
+  {
+   "catalog": "09565",
+   "date": "2026-02-17",
+   "greatestEclipseTD": "12:13:06",
+   "deltaTSeconds": 75,
+   "saros": 121,
+   "type": "A"
+  },
+  {
+   "catalog": "09566",
+   "date": "2026-08-12",
+   "greatestEclipseTD": "17:47:06",
+   "deltaTSeconds": 75,
+   "saros": 126,
+   "type": "T"
+  },
+  {
+   "catalog": "09567",
+   "date": "2027-02-06",
+   "greatestEclipseTD": "16:00:48",
+   "deltaTSeconds": 76,
+   "saros": 131,
+   "type": "A"
+  },
+  {
+   "catalog": "09568",
+   "date": "2027-08-02",
+   "greatestEclipseTD": "10:07:50",
+   "deltaTSeconds": 76,
+   "saros": 136,
+   "type": "T"
+  },
+  {
+   "catalog": "09569",
+   "date": "2028-01-26",
+   "greatestEclipseTD": "15:08:59",
+   "deltaTSeconds": 76,
+   "saros": 141,
+   "type": "A"
+  },
+  {
+   "catalog": "09570",
+   "date": "2028-07-22",
+   "greatestEclipseTD": "02:56:40",
+   "deltaTSeconds": 77,
+   "saros": 146,
+   "type": "T"
+  },
+  {
+   "catalog": "09571",
+   "date": "2029-01-14",
+   "greatestEclipseTD": "17:13:48",
+   "deltaTSeconds": 77,
+   "saros": 151,
+   "type": "P"
+  },
+  {
+   "catalog": "09572",
+   "date": "2029-06-12",
+   "greatestEclipseTD": "04:06:13",
+   "deltaTSeconds": 77,
+   "saros": 118,
+   "type": "P"
+  },
+  {
+   "catalog": "09573",
+   "date": "2029-07-11",
+   "greatestEclipseTD": "15:37:19",
+   "deltaTSeconds": 77,
+   "saros": 156,
+   "type": "P"
+  },
+  {
+   "catalog": "09574",
+   "date": "2029-12-05",
+   "greatestEclipseTD": "15:03:58",
+   "deltaTSeconds": 77,
+   "saros": 123,
+   "type": "P"
+  },
+  {
+   "catalog": "09575",
+   "date": "2030-06-01",
+   "greatestEclipseTD": "06:29:13",
+   "deltaTSeconds": 78,
+   "saros": 128,
+   "type": "A"
+  },
+  {
+   "catalog": "09576",
+   "date": "2030-11-25",
+   "greatestEclipseTD": "06:51:37",
+   "deltaTSeconds": 78,
+   "saros": 133,
+   "type": "T"
+  }
+ ],
+ "lunar": [
+  {
+   "catalog": "09706",
+   "date": "2025-03-14",
+   "greatestEclipseTD": "06:59:56",
+   "deltaTSeconds": 75,
+   "saros": 123,
+   "type": "T"
+  },
+  {
+   "catalog": "09707",
+   "date": "2025-09-07",
+   "greatestEclipseTD": "18:12:58",
+   "deltaTSeconds": 75,
+   "saros": 128,
+   "type": "T"
+  },
+  {
+   "catalog": "09708",
+   "date": "2026-03-03",
+   "greatestEclipseTD": "11:34:52",
+   "deltaTSeconds": 75,
+   "saros": 133,
+   "type": "T"
+  },
+  {
+   "catalog": "09709",
+   "date": "2026-08-28",
+   "greatestEclipseTD": "04:14:04",
+   "deltaTSeconds": 75,
+   "saros": 138,
+   "type": "P"
+  },
+  {
+   "catalog": "09710",
+   "date": "2027-02-20",
+   "greatestEclipseTD": "23:14:06",
+   "deltaTSeconds": 76,
+   "saros": 143,
+   "type": "N"
+  },
+  {
+   "catalog": "09711",
+   "date": "2027-07-18",
+   "greatestEclipseTD": "16:04:09",
+   "deltaTSeconds": 76,
+   "saros": 110,
+   "type": "Ne"
+  },
+  {
+   "catalog": "09712",
+   "date": "2027-08-17",
+   "greatestEclipseTD": "07:14:59",
+   "deltaTSeconds": 76,
+   "saros": 148,
+   "type": "N"
+  },
+  {
+   "catalog": "09713",
+   "date": "2028-01-12",
+   "greatestEclipseTD": "04:14:13",
+   "deltaTSeconds": 76,
+   "saros": 115,
+   "type": "P"
+  },
+  {
+   "catalog": "09714",
+   "date": "2028-07-06",
+   "greatestEclipseTD": "18:20:57",
+   "deltaTSeconds": 77,
+   "saros": 120,
+   "type": "P"
+  },
+  {
+   "catalog": "09715",
+   "date": "2028-12-31",
+   "greatestEclipseTD": "16:53:15",
+   "deltaTSeconds": 77,
+   "saros": 125,
+   "type": "T"
+  },
+  {
+   "catalog": "09716",
+   "date": "2029-06-26",
+   "greatestEclipseTD": "03:23:22",
+   "deltaTSeconds": 77,
+   "saros": 130,
+   "type": "T+"
+  },
+  {
+   "catalog": "09717",
+   "date": "2029-12-20",
+   "greatestEclipseTD": "22:43:12",
+   "deltaTSeconds": 78,
+   "saros": 135,
+   "type": "T"
+  },
+  {
+   "catalog": "09718",
+   "date": "2030-06-15",
+   "greatestEclipseTD": "18:34:34",
+   "deltaTSeconds": 78,
+   "saros": 140,
+   "type": "P"
+  },
+  {
+   "catalog": "09719",
+   "date": "2030-12-09",
+   "greatestEclipseTD": "22:28:51",
+   "deltaTSeconds": 78,
+   "saros": 145,
+   "type": "N"
+  }
+ ]
+}

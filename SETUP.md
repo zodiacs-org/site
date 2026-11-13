@@ -75,8 +75,8 @@ These values may appear in client bundles. They must never contain a secret.
 | `PUBLIC_PLAUSIBLE_SCRIPT_URL` | Analytics enabled | Full cookieless analytics script URL. Unset means no provider script. |
 | `PUBLIC_PLAUSIBLE_ENDPOINT` | Optional analytics override | First-party or self-hosted Plausible-compatible event endpoint. |
 | `PUBLIC_PLAUSIBLE_DOMAIN` | Optional analytics override | Analytics site/domain identifier. |
-| `PUBLIC_ACCOUNT_SYNC_V2_ENABLED` | Approved account-v2 client preview, first interlock | Must equal exactly `1` together with `PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK=1`; either value missing or malformed leaves the v1 client intact. Keep unset in Production and ordinary Development. |
-| `PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK` | Approved account-v2 client preview, second interlock | Must equal exactly `1` together with `PUBLIC_ACCOUNT_SYNC_V2_ENABLED=1`. This acknowledges that the statically rendered client is global within that deployment, so set it only on an access-controlled Preview whose protection has been verified first. |
+| `PUBLIC_ACCOUNT_SYNC_V2_ENABLED` | Account sync v2 client, build time | Must equal exactly `1` to ship the v2 account client to every visitor of that deployment (the site is static, so it is global). Missing or any other value leaves the v1 client. Pair it with `ACCOUNT_SYNC_V2_API_ENABLED=1`; a change needs a new deployment. Remote analytics stay on ordinary pages and off the profile and auth surfaces. |
+| `PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK` | Retired | Ignored since launch. It may be removed; leaving it set changes nothing. |
 | `PUBLIC_WEB_PUSH_ENABLED` | Browser push prompt enabled | Must equal `1`; one half of the push kill switch. |
 | `PUBLIC_VAPID_KEY` | Browser push enabled | Browser-visible VAPID public key. |
 | `PUBLIC_COMPAT_INVITES_ENABLED` | Phase 4 invitation UI enabled | Must equal `1`; exposes the English invitation, arrival, profile-register, send-back, and return-link UI. This is public configuration, not a secret. |
@@ -93,8 +93,8 @@ These values may appear in client bundles. They must never contain a secret.
 | `COMPAT_INVITE_TEST_USER_IDS` | Vercel server configuration | Comma-separated list of exact Auth user UUIDs allowed to create invitations while public authorization is off. Missing or empty fails closed: nobody can create. Retain the approved canary owner after launch so disabling `COMPAT_INVITES_PUBLIC_ENABLED` restores the reviewed private boundary. Clearing this value never launches the feature. |
 | `COMPAT_INVITE_BASE_URL` | Vercel server configuration, optional | HTTPS site origin used in the one-time creation URL; defaults to `https://zodiacs.org`. |
 | `COMPAT_INVITE_SWEEP_SECRET` | Vercel + `compatibility-invite-production` environment secret | At least 32 characters. The same value authenticates the hourly cleanup workflow to the server endpoint. |
-| `ACCOUNT_SYNC_V2_API_ENABLED` | Vercel server flag | Must equal exactly `1` for new enrollment and ordinary v2 sync. Missing or any other value fails closed. It is a sync-canary switch, not a privacy-rights switch: export, deletion recovery, consent withdrawal, and removal of an existing remote chart remain available during rollback. |
-| `ACCOUNT_SYNC_V2_CANARY_USER_IDS` | Vercel server configuration | Comma-separated list of 1–100 exact Auth user UUIDs admitted to the private sync canary. Missing, empty, malformed, or oversized configuration denies enrollment, upload, and read calls; it never creates public access. |
+| `ACCOUNT_SYNC_V2_API_ENABLED` | Vercel server flag | Must equal exactly `1` for new enrollment and ordinary v2 sync. Missing or any other value fails closed. It is the sync kill switch, not a privacy-rights switch: export, deletion recovery, consent withdrawal, and removal of an existing remote chart remain available during rollback. Every signed-in account is admitted; remote chart storage still requires `chart_sync` consent, the self attestation, and an 18+ birth date. |
+| `ACCOUNT_SYNC_V2_CANARY_USER_IDS` | Retired | Ignored since the all-adult launch. It may be removed from Vercel; leaving it set changes nothing. |
 | `ACCOUNT_SYNC_V2_ENCRYPTION_KEYS` | Vercel server secret | JSON object containing 1–16 positive numeric key versions mapped to canonical base64 32-byte service-managed encryption keys. Retain older keys until every envelope using them has been re-encrypted or deleted. Never use a `PUBLIC_` prefix. |
 | `ACCOUNT_SYNC_V2_ACTIVE_KEY_VERSION` | Vercel server configuration | Positive version present in `ACCOUNT_SYNC_V2_ENCRYPTION_KEYS`; new chart and provider-locator envelopes use this version. Change it only as part of a reviewed key-rotation plan. |
 | `ACCOUNT_SYNC_V2_FINGERPRINT_KEYS` | Vercel server secret | Separate JSON keyring containing 1–4 positive numeric versions mapped to canonical base64 32-byte HMAC keys for mutation and deletion-recovery verifiers. It must not reuse an encryption key or enter a browser bundle. |
@@ -256,6 +256,12 @@ The production schema must include the RLS-protected `push_subscriptions` and
 enabling push. Delivery claims are the database authority for the advertised
 rolling caps; an in-memory or workflow-only counter is not sufficient.
 
+The topics migration (`20261106090000_push_subscription_topics.sql`) adds a
+flag per stream to `push_subscriptions` (`sky_alerts`, backfilled true, and
+`lunation_reminders` for the Moon journal's new and full Moon reminders). The
+subscribe API writes those columns, so apply it before deploying the code that
+sends them with push switched on.
+
 ### Phase 4 compatibility invitations
 
 Phase 4 uses three independent controls:
@@ -357,9 +363,8 @@ These are outside this program and should remain off unless separately authorize
 | Phase 4 create/open | `COMPAT_INVITES_ENABLED=1` + Supabase server contract | Creation, token exchange, and session reads fail closed. Existing status, revocation, hiding, completion replay, and cleanup remain available when the contract exists. |
 | Phase 4 public creation | `COMPAT_INVITES_PUBLIC_ENABLED=1` | Creation remains limited to exact Auth UUIDs in the canary allowlist. Authentication and owned synchronized-chart checks apply in either mode. |
 | Phase 4 canary creation | `COMPAT_INVITE_TEST_USER_IDS` | Only exact listed Auth user UUIDs may create. Missing or empty denies every creator; clearing it never creates public access. |
-| Account sync v2 client | `PUBLIC_ACCOUNT_SYNC_V2_ENABLED=1` + `PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK=1` | Either interlock missing or malformed preserves the v1 client and legacy synchronization path. Both flags must remain off in Production and may be paired only in a verified access-controlled Preview. |
+| Account sync v2 client | `PUBLIC_ACCOUNT_SYNC_V2_ENABLED=1` (build time) | Missing or malformed preserves the v1 client, whose cloud chart writes are paused in the database. |
 | Account sync v2 enrollment/ordinary sync | `ACCOUNT_SYNC_V2_API_ENABLED=1` + complete server keyrings + pending private schema | New enrollment and ordinary sync return disabled. Export, account deletion prepare/status/finish, consent withdrawal, and deletion of an existing remote chart remain available privacy controls. |
-| Account sync v2 canary admission | `ACCOUNT_SYNC_V2_CANARY_USER_IDS` | Missing, empty, malformed, or more than 100 UUIDs denies admission, upload, and reads. It does not restrict rollback privacy controls. |
 | Account deletion receipt cleanup | `ACCOUNT_SYNC_V2_CLEANUP_SECRET` in Vercel and GitHub Actions | The endpoint is indistinguishable from not found and performs no database call; the hourly workflow exits without sending a request. Provision before deletion receipts can exist, then retain through the recovery window even if sync flags are turned off. |
 | Guide model call | default-on with complete server key/quota configuration; `GUIDE_KILL_SWITCH=1` is the emergency stop | The launcher remains useful without an account. If configuration or Luna access is unavailable, generation fails closed without a provider fallback. |
 | Registry Collection | `PUBLIC_REGISTRY_COLLECTION_ENABLED=1` + RPCs + firewall rule | No entry point, sitemap entry, or Aura route exposure. |
@@ -604,7 +609,7 @@ All schedules are UTC.
 | `.github/workflows/weekly-digest.yml` | Monday 06:00, 06:15, 07:00, 10:00, 18:00; Tuesday recovery at 05:00/05:15, 06:00/06:15, 07:00/07:15, 10:00/10:15, 17:00/17:15 | Fixture smoke always. Scheduled delivery/recovery requires `DIGEST_ENABLED=true`; an explicit manual `dry_run=false` dispatch is the separately controlled limit-one canary path and does not use that schedule gate. | Off by default; live credentials exist only in the default-branch-restricted `weekly-digest-production` environment. |
 | `.github/workflows/pulse-refresh.yml` | Monday 06:17 | Refreshes Wikipedia/Trends pulse data and commits changes. | Existing, best effort. |
 | `.github/workflows/distribution-refresh.yml` | Monday 06:31 | Refreshes Registry ownership distribution and commits changes. | Existing Registry operation. |
-| `.github/workflows/push-daily.yml` | Daily 07:00 | Verifies the committed events publication and dry-runs the July 18 event plus the July 22 quiet day; when enabled, applies the global priority/cap schedule, sends at most one source-backed event alert, and otherwise sends nothing. | Off by default; real delivery requires GitHub `PUSH_ENABLED=true`. |
+| `.github/workflows/push-daily.yml` | Daily 07:00 | Verifies the committed events publication and dry-runs the July 18 event plus the July 22 quiet day; when enabled, applies the global priority/cap schedule, sends at most one source-backed event alert, and otherwise sends nothing. Then, on a new or full Moon UTC day only, sends the Moon journal reminder to browsers that opted in on `/moon-journal/`, under the same per-endpoint caps. | Off by default; real delivery requires GitHub `PUSH_ENABLED=true`. |
 | `.github/workflows/transits-monthly.yml` | Monthly on day 25 at 05:41 | Computes next month's facts, verifies deterministic regeneration, commits, and opens the twelve-sign editorial issue. | Always on; Phase 1 may automate prose but must preserve fact verification. |
 | `.github/workflows/site-check.yml` | Push/PR/manual | Full build, type, fact, browser, schema, bundle, visual, Lighthouse, widget, drift, disposable PostgreSQL 17 concurrency, and flags-on push-browser gates. | Required before merge. |
 

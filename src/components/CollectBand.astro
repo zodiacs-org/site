@@ -28,7 +28,7 @@ const englishOnly = englishOnlyCue(locale);
   data-registry-bridge-surface={surface}
   data-registry-bridge-locale={locale}
 >
-  <span class="collect-band__label mono">{copy.label}</span>
+  <span class="collect-band__label">{copy.label}</span>
   <span class="collect-band__text">
     {copy.text}
   </span>
@@ -70,12 +70,21 @@ const englishOnly = englishOnlyCue(locale);
     padding: 12px 18px;
     border: 1px solid var(--hair-1);
     border-radius: var(--r-md);
-    background: linear-gradient(90deg, rgba(198, 204, 218, 0.04), transparent 60%);
+    background: var(--void-1);
+    transition: border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease);
+  }
+  /* The strip is one link: it answers the pointer and keyboard as a whole. */
+  .collect-band:focus-within { border-color: var(--hair-3); }
+  @media (hover: hover) and (pointer: fine) {
+    .collect-band:hover { border-color: var(--hair-2); background: var(--void-2); }
+    .collect-band:hover .collect-band__link { color: var(--text); transform: translateX(2px); }
   }
   .collect-band__label {
-    font-size: 9.5px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    letter-spacing: 0;
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
     color: var(--faint);
   }
   .collect-band__text {
@@ -89,6 +98,11 @@ const englishOnly = englishOnlyCue(locale);
     color: var(--text-2);
     text-decoration: none;
     white-space: nowrap;
+    transition: color var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
   }
   .collect-band__link:hover { color: var(--text); }
+  @media (prefers-reduced-motion: reduce) {
+    .collect-band, .collect-band__link { transition: none; }
+    .collect-band:hover .collect-band__link { transform: none; }
+  }
 </style>

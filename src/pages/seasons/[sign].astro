@@ -1,0 +1,16 @@
+---
+/**
+ * One sign's season in English. The page is
+ * src/components/seasons/SeasonPage.astro, shared with the Spanish,
+ * Portuguese, French and Italian pages under src/pages/[releasedLocale]/seasons/.
+ */
+import SeasonPage from '../../components/seasons/SeasonPage.astro';
+import { SIGNS } from '../../lib/signs';
+
+export function getStaticPaths() {
+  return SIGNS.map((sign) => ({ params: { sign: sign.slug } }));
+}
+
+const { sign: slug } = Astro.params as { sign: string };
+---
+<SeasonPage slug={slug} locale="en" />

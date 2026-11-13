@@ -4,8 +4,11 @@ import Base from '../../../layouts/Base.astro';
 import Faq from '../../../components/Faq.astro';
 import AspectGlyph from '../../../components/AspectGlyph';
 import AspectWheel from '../../../components/AspectWheel.astro';
+import NatalPairLinks from '../../../components/learn/NatalPairLinks.astro';
 import { ASPECTS } from '../../../lib/engine/aspects';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
+import { natalAspectsEnabled, natalAspectsPublished } from '../../../lib/natal-aspect-pairs';
+import natalAspectsPublication from '../../../data/natal-aspects-publication.json';
 
 const ASPECT_ORDER = ['conjunction', 'sextile', 'square', 'trine', 'opposition'] as const;
 
@@ -45,7 +48,10 @@ const jsonLd = [
     description: entry.data.description,
     url: `https://zodiacs.org/learn/aspects/${slug}/`,
     datePublished: entry.data.published.toISOString(),
-    dateModified: entry.data.updated.toISOString(),
+    // The natal pair links re-date the guide, as the sitemap does.
+    dateModified: natalAspectsPublished && natalAspectsPublication.updated > entry.data.updated.toISOString().slice(0, 10)
+      ? `${natalAspectsPublication.updated}T00:00:00.000Z`
+      : entry.data.updated.toISOString(),
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org/learn/aspects/${slug}/` },
@@ -85,8 +91,8 @@ const jsonLd = [
   <article class="container container--narrow learn-detail">
     <header class="learn-detail__hero learn-detail__hero--figured reveal">
       <div class="learn-detail__heroText">
+        <a class="crumb" href="/learn/aspects/"><span class="crumb__arrow" aria-hidden="true">←</span>The aspects</a>
         <AspectGlyph type={type} size={46} class="learn-hero-glyph" />
-        <em class="kicker">The aspects</em>
         <h1 id={slug} class="display">The {type}</h1>
         <p class="learn-detail__role">{entry.data.theme}</p>
         <p class="learn-detail__facts mono">
@@ -103,6 +109,8 @@ const jsonLd = [
     <section class="reveal">
       <Faq items={entry.data.faq} heading="Asked and answered" />
     </section>
+
+    {natalAspectsEnabled && <NatalPairLinks type={type} />}
 
     <div class="learn-detail__cta shell tinted reveal">
       <div class="core tinted learn-detail__cta-core">
@@ -143,7 +151,7 @@ const jsonLd = [
     line-height: 1;
   }
   .learn-detail__role { margin: 0; font-size: var(--text-lg); color: var(--muted); max-width: 52ch; text-wrap: pretty; }
-  .learn-detail__facts { margin: 2px 0 0; font-size: 11px; color: var(--faint); letter-spacing: 0.06em; }
+  .learn-detail__facts { margin: 2px 0 0; font-family: var(--font-sans); font-size: 14px; color: var(--faint); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 
   .learn-detail__cta-core { padding: clamp(22px, 4vw, 32px); display: grid; gap: 10px; justify-items: start; }
   .learn-detail__cta-core strong { font-size: var(--text-lg); letter-spacing: -0.01em; }

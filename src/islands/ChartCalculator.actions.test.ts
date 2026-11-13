@@ -15,7 +15,7 @@ const wheelActionCopy = {
   pt: ['Ações do mapa', 'Fazer o tour guiado', 'Repetir o tour', 'Ler outro mapa', 'A assinatura do seu mapa', 'A assinatura deste mapa', 'Comparar com o meu', 'Adicionar meu mapa para comparar', 'Compartilhar este mapa'],
   fr: ['Actions du thème', 'Faire la visite guidée', 'Rejouer la visite', 'Lire un autre thème', 'La signature de ton thème', 'La signature de son thème', 'Comparer avec le mien', 'Ajouter mon thème pour comparer', 'Partager ce thème'],
   it: ['Azioni del tema', 'Inizia il tour guidato', 'Ripeti il tour', 'Leggi un altro tema', 'La firma del tuo tema', 'La firma del suo tema', 'Confronta con il mio', 'Aggiungi il mio tema per confrontare', 'Condividi questo tema'],
-  ru: ['Действия с картой', 'Пройти экскурсию', 'Повторить экскурсию', 'Прочитать другую карту — пока по-английски', 'Характерный рисунок вашей карты', 'Характерный рисунок этой карты', 'Сравнить с моей — пока по-английски', 'Добавить мою карту для сравнения — пока по-английски', 'Поделиться этой картой'],
+  ru: ['Действия с картой', 'Пройти экскурсию', 'Повторить экскурсию', 'Прочитать другую карту (пока по-английски)', 'Характерный рисунок вашей карты', 'Характерный рисунок этой карты', 'Сравнить с моей (пока по-английски)', 'Добавить мою карту для сравнения (пока по-английски)', 'Поделиться этой картой'],
 };
 
 describe('Chart result action contract', () => {
@@ -40,7 +40,7 @@ describe('Chart result action contract', () => {
       ['Ver em três dimensões', 'Ocultar a terceira dimensão'],
       ['Voir en trois dimensions', 'Masquer la troisième dimension'],
       ['Vedilo in tre dimensioni', 'Nascondi la terza dimensione'],
-      ['Показать в трёх измерениях — пока по-английски', 'Скрыть третье измерение — пока по-английски'],
+      ['Показать в трёх измерениях (пока по-английски)', 'Скрыть третье измерение (пока по-английски)'],
     ]);
   });
 

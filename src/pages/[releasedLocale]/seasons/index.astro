@@ -1,0 +1,11 @@
+---
+/** The sign-season hub in Spanish, Portuguese, French and Italian: /es/seasons/ and the rest. */
+import SeasonsHubPage from '../../../components/seasons/SeasonsHubPage.astro';
+import type { SeasonLocale } from '../../../lib/seasons/copy';
+
+export function getStaticPaths() {
+  return (['es', 'pt', 'fr', 'it'] as const).map((releasedLocale) => ({ params: { releasedLocale } }));
+}
+const locale = Astro.params.releasedLocale as Exclude<SeasonLocale, 'en'>;
+---
+<SeasonsHubPage locale={locale} />

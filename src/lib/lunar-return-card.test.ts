@@ -32,6 +32,8 @@ function install() {
     }),
     fillText: vi.fn((text: string, _x: number, y: number) => { painted.push({ text, y }); }),
     fillRect: vi.fn(), drawImage: vi.fn(), save: vi.fn(), restore: vi.fn(),
+    // The brand lockup's ring is twelve filled arcs.
+    beginPath: vi.fn(), arc: vi.fn(), fill: vi.fn(), globalAlpha: 1, letterSpacing: '0px',
   };
   const sizes: number[][] = [];
   const canvas = { width: 0, height: 0, getContext: vi.fn(() => context),
@@ -88,7 +90,7 @@ describe('dedicated lunar image content', () => {
     expect(fixture.labels).toHaveLength(3);
   });
 
-  it('paints complete event/reference/readings with the actual wheel input and canonical brand', async () => {
+  it('paints complete event/reference/readings with the actual wheel input and the brand lockup', async () => {
     const fixture = install(), card = model();
     const prepared = await prepareLunarReturnCard({ ...card, privateName: 'NEVER_PAINT_PRIVATE' } as LunarReturnExportModel);
     const text = fixture.painted.map((row) => row.text).join(' ');
@@ -97,7 +99,7 @@ describe('dedicated lunar image content', () => {
     expect(text).toContain('Next after: 2026-09-05 10:00 UTC'); expect(text).not.toMatch(/13:14:15|\.678/u);
     card.reading.forEach((row) => expect(text).toContain(row.text));
     [...card.readingBasis, ...card.notes].forEach((value) => expect(text).toContain(value));
-    expect(text).toContain('Zodiacs.org'); expect(text).not.toContain('NEVER_PAINT_PRIVATE');
+    expect(text).toContain('ZODIACS · ORG'); expect(text).not.toContain('Zodiacs.org'); expect(text).not.toContain('NEVER_PAINT_PRIVATE');
     const node = hooks.render.mock.calls[0][0] as VNode<{ signImageHrefs: Record<string, string> }>;
     // The angles at the middle of their whole degree, as a chart's link keeps them.
     expect(node.props).toMatchObject({ bodies: card.wheel.bodies, asc: 15.5, mc: 105.5, dsc: 195.5, ic: 285.5, cusps: card.wheel.houses!.cusps, aspects: card.wheel.aspects });
@@ -105,11 +107,13 @@ describe('dedicated lunar image content', () => {
     const hrefs = node.props.signImageHrefs;
     expect(Object.keys(hrefs)).toHaveLength(12);
     expect(Object.values(hrefs).every((href) => href.startsWith('data:image/webp;base64,'))).toBe(true);
-    expect(fixture.fetch).toHaveBeenCalledTimes(13);
-    expect(fixture.context.drawImage).toHaveBeenCalledTimes(2);
+    // The twelve sign icons and nothing for the brand: the lockup draws its own ring.
+    expect(fixture.fetch).toHaveBeenCalledTimes(12);
+    expect(fixture.context.drawImage).toHaveBeenCalledTimes(1);
+    expect(fixture.context.arc).toHaveBeenCalledTimes(12);
     expect(hooks.render).toHaveBeenLastCalledWith(null, fixture.host);
     expect(fixture.sizes).toEqual([[1080, 1350]]); expect(fixture.canvas.width).toBe(0);
-    expect(fixture.close).toHaveBeenCalledOnce(); expect(fixture.images[0].src).toBe('');
+    expect(createImageBitmap).not.toHaveBeenCalled(); expect(fixture.images[0].src).toBe('');
     expect(prepared.filename).toBe('zodiacs-lunar-return-20260924T1314Z.png');
     expect(prepared.blob.type).toBe('image/png');
   });
@@ -141,7 +145,7 @@ describe('dedicated lunar image content', () => {
   it('fails overflowing copy instead of clipping its qualification and releases allocated resources', async () => {
     const fixture = install(); const card = model(); card.notes = ['A '.repeat(2000)];
     await expect(prepareLunarReturnCard(card)).rejects.toThrow('lunar_text_overflow');
-    expect(fixture.canvas.toBlob).not.toHaveBeenCalled(); expect(fixture.close).toHaveBeenCalledOnce();
+    expect(fixture.canvas.toBlob).not.toHaveBeenCalled();
     expect(fixture.canvas.width).toBe(0); expect(fixture.images[0].src).toBe('');
   });
   it('rejects unavailable fonts and permits retry after an artwork failure', async () => {
@@ -155,7 +159,7 @@ describe('dedicated lunar image content', () => {
 });
 
 describe('finite preparation and resource ownership', () => {
-  it.each(['fonts', 'headers', 'body', 'bytes', 'SVG', 'bitmap', 'PNG'] as const)('bounds stalled %s to one fifteen-second window', async (stage) => {
+  it.each(['fonts', 'headers', 'body', 'bytes', 'SVG', 'PNG'] as const)('bounds stalled %s to one fifteen-second window', async (stage) => {
     vi.useFakeTimers(); const fixture = install();
     let complete!: (value: any) => void;
     const held = new Promise<any>((resolve) => { complete = resolve; });
@@ -164,15 +168,13 @@ describe('finite preparation and resource ownership', () => {
     if (stage === 'body') fixture.fetch.mockResolvedValueOnce({ ok: true, blob: () => held } as Response);
     if (stage === 'bytes') fixture.fetch.mockResolvedValueOnce({ ok: true, blob: async () => ({ type: 'image/webp', arrayBuffer: () => held }) } as unknown as Response);
     if (stage === 'SVG') fixture.imageControl.complete = false;
-    if (stage === 'bitmap') vi.mocked(createImageBitmap).mockReturnValueOnce(held);
     if (stage === 'PNG') fixture.canvas.toBlob.mockImplementationOnce((callback) => { complete = callback; });
     const failure = prepareLunarReturnCard(model()).catch((cause) => cause);
     await vi.advanceTimersByTimeAsync(15_000);
     expect((await failure).message).toBe('lunar_prepare_timeout'); expect(vi.getTimerCount()).toBe(0);
     expect(fixture.canvas.width).toBe(0);
     const writes = fixture.painted.length;
-    if (stage === 'bitmap') { const lateClose = vi.fn(); complete({ close: lateClose }); await vi.advanceTimersByTimeAsync(0); expect(lateClose).toHaveBeenCalledOnce(); }
-    else if (stage === 'fonts') complete([{ status: 'loaded' }]);
+    if (stage === 'fonts') complete([{ status: 'loaded' }]);
     else if (stage === 'headers') complete(new Response(new Blob(['late'])));
     else if (stage === 'bytes') complete(new ArrayBuffer(1));
     else if (stage !== 'SVG') complete(new Blob(['late']));
@@ -182,39 +184,29 @@ describe('finite preparation and resource ownership', () => {
       expect(fixture.images[0]).toMatchObject({ src: '', onload: null, onerror: null });
       expect(hooks.render).toHaveBeenLastCalledWith(null, fixture.host);
     }
-    if (stage === 'PNG') expect(fixture.close).toHaveBeenCalledOnce();
   });
-  it('cleans up the WebKit brand decoding URL after source abort', async () => {
-    const fixture = install(); vi.stubGlobal('createImageBitmap', undefined);
+  it('cleans up the wheel decoding URL after source abort', async () => {
+    const fixture = install(); fixture.imageControl.complete = false;
     const controller = new AbortController();
-    fixture.fetch.mockImplementation(async (path) => {
-      if (String(path).includes('/brand/')) fixture.imageControl.complete = false;
-      return { ok: true, blob: async () => new Blob(['artwork'], { type: 'image/png' }) } as Response;
-    });
-    // The fallback's second image is held, after the real wheel image decodes.
-    const original = fixture.fetch.getMockImplementation()!;
-    fixture.fetch.mockImplementation(async (...args) => {
-      if (fixture.fetch.mock.calls.length === 13) fixture.imageControl.complete = false;
-      return original(...args);
-    });
     const failure = prepareLunarReturnCard(model(), controller.signal).catch((cause) => cause);
     for (let step = 0; step < 60; step++) await Promise.resolve();
-    expect(fixture.images).toHaveLength(2);
+    expect(fixture.images).toHaveLength(1);
     controller.abort(new Error('source replaced')); expect((await failure).message).toBe('source replaced');
     for (let step = 0; step < 10; step++) await Promise.resolve();
-    expect(URL.revokeObjectURL).toHaveBeenCalledTimes(2);
+    expect(URL.revokeObjectURL).toHaveBeenCalledOnce();
     expect(fixture.images.every((image) => image.src === '' && image.onload === null && image.onerror === null)).toBe(true);
+    expect(hooks.render).toHaveBeenLastCalledWith(null, fixture.host);
   });
   it('honors an already-revoked parent before any async work', async () => {
     const fixture = install(), controller = new AbortController(); controller.abort(new Error('source revoked'));
     await expect(prepareLunarReturnCard(model(), controller.signal)).rejects.toThrow('source revoked');
     expect(fixture.fonts.load).not.toHaveBeenCalled(); expect(fixture.fetch).not.toHaveBeenCalled();
   });
-  it('releases a successfully decoded WebKit brand and a failed PNG before retry', async () => {
-    const fixture = install(); vi.stubGlobal('createImageBitmap', undefined);
+  it('releases the decoded wheel and a failed PNG before retry', async () => {
+    const fixture = install();
     fixture.canvas.toBlob.mockImplementationOnce((callback) => callback(null));
     await expect(prepareLunarReturnCard(model())).rejects.toThrow('lunar_png_unavailable');
-    expect(fixture.images).toHaveLength(2);
+    expect(fixture.images).toHaveLength(1);
     expect(fixture.images.every((image) => image.src === '' && image.onload === null && image.onerror === null)).toBe(true);
     expect(fixture.canvas.width).toBe(0);
     await expect(prepareLunarReturnCard(model())).resolves.toMatchObject({ filename: expect.stringContaining('lunar-return') });

@@ -1,0 +1,9 @@
+{
+  "deploymentId": "dpl_5fb9s2dqYGZBsfn6Sz2fGH1V8EUP",
+  "aliasUpdatedAt": "2026-11-05T08:18:33.310Z",
+  "readyState": "READY",
+  "target": "production",
+  "githubCommitSha": "bff5672feb2b56434698d4e4331914ddc3f16c24",
+  "readAt": "2026-11-05T11:04:39Z",
+  "read": "Vercel connector get_alias (zodiacs.org) and get_deployment, just before the control run"
+}

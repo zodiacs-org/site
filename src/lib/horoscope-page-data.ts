@@ -6,13 +6,38 @@ import type {
   HoroscopeSurface,
 } from './horoscope-program';
 import { signBySlug } from './signs';
+import { exactInstant } from './nasa-instants';
 
-export type HoroscopePageSurface = 'today' | 'tomorrow' | 'weekly' | 'monthly' | 'love' | 'career' | 'year';
+export type HoroscopePageSurface = 'today' | 'tomorrow' | 'weekly' | 'monthly' | 'love' | 'career' | 'year' | 'year2026';
 
 export interface HoroscopeSkyMarker {
   label: string;
   value: string;
   datetime?: string;
+}
+
+/**
+ * One planet (or one exact event) behind a part of the reading, already in
+ * reader wording. Built from the same evidence receipts as the sky strip;
+ * the reading's own sentences are never touched.
+ */
+export interface HoroscopeSkyPlanet {
+  /** The evidence receipt this row stands for. */
+  id: string;
+  body: string;
+  /** Sign slug the body occupies, when the receipt or its solar-house mapping names one. */
+  sign?: string;
+  /** "Moon in Sagittarius", "Sun sextile Jupiter". */
+  title: string;
+  /** One dry line: the Moon's phase, the motion, or the exact event time. */
+  detail: string;
+  /** The page sign's solar house for this body, when the reading maps one. */
+  house?: number;
+  /** Degree in sign ("29°31′"), or the date when no degree is recorded. */
+  value: string;
+  /** Short UTC date of the receipt ("Oct 16"). */
+  date: string;
+  at: string;
 }
 
 export interface HoroscopeProgramPageReading {
@@ -24,11 +49,17 @@ export interface HoroscopeProgramPageReading {
     heading: string;
     body: string;
     receipt?: string;
+    /** The planet the section starts from, for the section's subhead. */
+    planet?: HoroscopeSkyPlanet;
   }>;
   skyStrip: {
     label: string;
     markers: HoroscopeSkyMarker[];
   };
+  /** The distinct planets behind the reading, in reading order (at most four). */
+  sky?: HoroscopeSkyPlanet[];
+  /** Words in the reading itself, for the reading-time note. */
+  wordCount?: number;
   sourceNote: string;
   datePublished: string;
   dateModified: string;
@@ -41,7 +72,19 @@ const SURFACE_KEY: Record<Exclude<HoroscopePageSurface, 'monthly'>, HoroscopeSur
   love: 'love',
   career: 'career',
   year: 'yearly-2027',
+  year2026: 'yearly-2026',
 };
+
+/** The yearly pages, each with the year its reading covers and the day it was first published. */
+const YEAR_PAGES: Partial<Record<HoroscopePageSurface, { year: string; published: string }>> = {
+  year: { year: '2027', published: '2026-07-19T00:00:00.000Z' },
+  year2026: { year: '2026', published: '2026-11-02T00:00:00.000Z' },
+};
+
+/** The year a yearly page covers, or undefined for every other surface. */
+export function horoscopePageYear(surface: HoroscopePageSurface): string | undefined {
+  return YEAR_PAGES[surface]?.year;
+}
 
 const TITLE: Record<Exclude<HoroscopePageSurface, 'monthly'>, string> = {
   today: 'daily horoscope',
@@ -50,11 +93,12 @@ const TITLE: Record<Exclude<HoroscopePageSurface, 'monthly'>, string> = {
   love: 'love horoscope',
   career: 'career horoscope',
   year: '2027 horoscope',
+  year2026: '2026 horoscope',
 };
 
-const SECTION_HEADS: Record<Exclude<HoroscopePageSurface, 'monthly' | 'year'>, string[]> = {
-  today: ['What matters now', 'Where to focus', 'A moment to watch'],
-  tomorrow: ['What matters tomorrow', 'Where to focus', 'A moment to watch'],
+const SECTION_HEADS: Record<Exclude<HoroscopePageSurface, 'monthly' | 'year' | 'year2026'>, string[]> = {
+  today: ['What matters now', 'Where to focus', 'Something to notice'],
+  tomorrow: ['What matters tomorrow', 'Where to focus', 'Something to notice'],
   weekly: ['The week begins', 'Early week', 'Midweek', 'A turning point', 'The week closes'],
   love: ['How to connect', 'What you need emotionally'],
   career: ['Where to focus', 'What supports progress'],
@@ -67,6 +111,7 @@ const SKY_STRIP_LABEL: Record<Exclude<HoroscopePageSurface, 'monthly'>, string> 
   love: 'Relationship sky',
   career: 'Work sky',
   year: '2027 sky markers',
+  year2026: '2026 sky markers',
 };
 
 const cap = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
@@ -88,15 +133,41 @@ function dateLabel(date: string, short = false): string {
 }
 
 function periodLabel(reading: HoroscopeReading, surface: Exclude<HoroscopePageSurface, 'monthly'>): string {
-  if (surface === 'year') return '2027';
+  const year = horoscopePageYear(surface);
+  if (year) return year;
   if (surface === 'weekly') {
-    return `${dateLabel(reading.period.from, true)}–${dateLabel(reading.period.through, true)}`;
+    return `${dateLabel(reading.period.from, true)} to ${dateLabel(reading.period.through, true)}`;
   }
   return dateLabel(reading.period.from);
 }
 
+const RECEIPT_WHEN = / on [A-Z][a-z]+ \d{1,2}, \d{4} at \d{2}:\d{2} UTC$/u;
+
+/**
+ * A dated planet event with NASA's instant (src/lib/nasa-instants.ts) in
+ * place of the engine's, in its `at` and in the time its label prints. The
+ * receipt keeps its id, which names the committed instant.
+ */
+function withNasaInstant(receipt: HoroscopeEvidenceReceipt): HoroscopeEvidenceReceipt {
+  if (receipt.kind !== 'sky-event') return receipt;
+  let at = receipt.at;
+  if ((receipt.eventKind === 'ingress' || receipt.eventKind === 'station') && receipt.body) {
+    at = exactInstant({ kind: receipt.eventKind, body: receipt.body, at: receipt.at });
+  } else if (receipt.eventKind === 'aspect' && receipt.a && receipt.b && receipt.eventType) {
+    at = exactInstant({ kind: 'aspect', a: receipt.a, b: receipt.b, type: receipt.eventType, at: receipt.at });
+  }
+  if (at === receipt.at) return receipt;
+  if (!RECEIPT_WHEN.test(receipt.label)) {
+    throw new Error(`Horoscope receipt ${receipt.id} does not end with its UTC date and time: ${receipt.label}`);
+  }
+  const date = new Intl.DateTimeFormat('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+  }).format(new Date(at));
+  return { ...receipt, at, label: receipt.label.replace(RECEIPT_WHEN, ` on ${date} at ${utcClock(at)} UTC`) };
+}
+
 function evidenceMap(program: HoroscopeProgram): Map<string, HoroscopeEvidenceReceipt> {
-  return new Map(program.evidence.map((receipt) => [receipt.id, receipt]));
+  return new Map(program.evidence.map((receipt) => [receipt.id, withNasaInstant(receipt)]));
 }
 
 function receiptLine(
@@ -158,6 +229,82 @@ function skyStripFor(
   };
 }
 
+const SKY_ROWS_MAX = 4;
+
+function utcShortDate(at: string): string {
+  return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(at));
+}
+
+function utcClock(at: string): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'UTC',
+  }).format(new Date(at));
+}
+
+/** 29.53 → "29°31′", truncated like formatLongitude in signs.ts. */
+export function degreeLabel(degree: number): string {
+  const d = Math.floor(degree);
+  const m = Math.floor((degree - d) * 60);
+  return `${d}°${String(m).padStart(2, '0')}′`;
+}
+
+function signWord(slug: string | undefined): string {
+  return slug ? signBySlug(slug).name : '';
+}
+
+/**
+ * The planet a passage starts from: its first cited position or exact
+ * event, with the page sign's solar house for that body when the passage
+ * maps one.
+ */
+function passagePlanet(
+  refs: readonly string[],
+  receipts: ReadonlyMap<string, HoroscopeEvidenceReceipt>,
+): HoroscopeSkyPlanet | undefined {
+  const cited = refs
+    .map((ref) => receipts.get(ref))
+    .filter((receipt): receipt is HoroscopeEvidenceReceipt => Boolean(receipt));
+  const primary = cited.find((receipt) => receipt.kind !== 'solar-house');
+  if (!primary) return undefined;
+  const mapped = cited.find((receipt) => (
+    receipt.kind === 'solar-house'
+    && receipt.body === primary.body
+    && (receipt.sourceFactId === undefined || receipt.sourceFactId === primary.id)
+  ));
+  const sign = primary.sign ?? mapped?.sign;
+  const body = primary.body ?? 'Sky';
+  const date = utcShortDate(primary.at);
+  const exact = `${date}, ${utcClock(primary.at)} UTC`;
+  let title = `${body} in ${signWord(sign)}`;
+  let detail = primary.label;
+  if (primary.kind === 'body-position') {
+    detail = primary.moonPhase ?? (primary.retrograde ? 'Retrograde' : 'Moving direct');
+  } else if (primary.eventKind === 'station') {
+    detail = `Stations ${primary.eventType ?? ''} ${exact}`.replace(/\s+/gu, ' ');
+  } else if (primary.eventKind === 'ingress') {
+    detail = `Enters ${signWord(sign)} ${exact}`;
+  } else if (primary.eventKind === 'eclipse') {
+    title = `${cap(primary.eventType ?? 'an')} eclipse in ${signWord(sign)}`;
+    detail = `Exact ${exact}`;
+  } else if (primary.eventKind === 'aspect' && primary.a && primary.b) {
+    title = `${primary.a} ${primary.eventType ?? 'aspect'} ${primary.b}`;
+    detail = `Exact ${exact}`;
+  } else if (!sign) {
+    title = primary.label;
+  }
+  return {
+    id: primary.id,
+    body,
+    sign,
+    title,
+    detail,
+    house: mapped?.house,
+    value: typeof primary.degree === 'number' ? degreeLabel(primary.degree) : date,
+    date,
+    at: primary.at,
+  };
+}
+
 function yearHeading(
   refs: readonly string[],
   receipts: ReadonlyMap<string, HoroscopeEvidenceReceipt>,
@@ -196,7 +343,7 @@ function descriptionFor(
   if (surface === 'career') {
     return `${signName} career horoscope for ${label}: where to focus your effort and what can move work forward.`;
   }
-  return `${signName} 2027 horoscope: the year’s turning points in love, work, home, and personal growth.`;
+  return `${signName} ${horoscopePageYear(surface)} horoscope: the year’s turning points in love, work, home, and personal growth.`;
 }
 
 function introFor(
@@ -208,7 +355,7 @@ function introFor(
   if (surface === 'weekly') return `The choices and turning points shaping ${signName}’s week.`;
   if (surface === 'love') return `What connection is asking of ${signName} now.`;
   if (surface === 'career') return `Where ${signName}’s effort can make the most difference.`;
-  return `The turning points shaping ${signName}’s 2027.`;
+  return `The turning points shaping ${signName}’s ${horoscopePageYear(surface)}.`;
 }
 
 export function pageReadingFromProgram(
@@ -225,27 +372,38 @@ export function pageReadingFromProgram(
   const signData = signBySlug(sign);
   const receipts = evidenceMap(program);
   const label = periodLabel(reading, surface);
-  const heads = surface === 'year' ? null : SECTION_HEADS[surface];
+  const yearPage = YEAR_PAGES[surface];
+  const heads = surface === 'year' || surface === 'year2026' ? null : SECTION_HEADS[surface];
   const sections = reading.passages.map((passage, index) => ({
     heading: passage.heading
       ?? heads?.[index]
       ?? yearHeading(passage.evidenceRefs, receipts, index, reading.passages.length),
     body: passage.text,
     receipt: receiptLine(passage.evidenceRefs, receipts),
+    planet: passagePlanet(passage.evidenceRefs, receipts),
   }));
+  const sky = [...new Map(
+    sections
+      .map((section) => section.planet)
+      .filter((planet): planet is HoroscopeSkyPlanet => Boolean(planet))
+      .map((planet) => [planet.id, planet] as const),
+  ).values()].slice(0, SKY_ROWS_MAX);
+  const wordCount = reading.passages
+    .map((passage) => passage.text.trim().split(/\s+/u).filter(Boolean).length)
+    .reduce((sum, count) => sum + count, 0);
   const skyStrip = skyStripFor(reading, surface, receipts);
-  const datePublished = surface === 'year'
-    ? '2026-07-19T00:00:00.000Z'
+  const datePublished = yearPage
+    ? yearPage.published
     : surface === 'weekly'
       ? `${reading.period.from}T00:00:00.000Z`
       : `${program.anchorDate}T00:00:00.000Z`;
-  const dateModified = surface === 'year'
+  const dateModified = yearPage
     ? datePublished
     : surface === 'weekly'
       ? datePublished
     : `${program.anchorDate}T00:00:00.000Z`;
-  const sourceNote = surface === 'year'
-    ? `The dates and positions here come from the 2027 eclipse, ingress, and retrograde calendar. Each event is read through ${signData.name} solar houses; all times use UTC.`
+  const sourceNote = yearPage
+    ? `The dates and positions here come from the ${yearPage.year} eclipse, ingress, and retrograde calendar. Each event is read through ${signData.name} solar houses; all times use UTC.`
     : surface === 'weekly'
       ? `The astrology here follows seven noon-UTC sky snapshots from ${reading.period.from} through ${reading.period.through}. Each section connects to the recorded position or exact event shown below.`
       : `The astrology here follows the ${reading.period.from} noon-UTC sky. Each section connects to the recorded position or exact event shown below.`;
@@ -256,6 +414,8 @@ export function pageReadingFromProgram(
     intro: introFor(signData.name, surface),
     sections,
     skyStrip,
+    sky,
+    wordCount,
     sourceNote,
     datePublished,
     dateModified,

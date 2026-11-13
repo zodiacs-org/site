@@ -1,10 +1,17 @@
 ---
 import Base from '../../layouts/Base.astro';
+import AskGuideAbout from '../../components/AskGuideAbout.astro';
+import HeroCrop from '../../components/HeroCrop.astro';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
 import { formatLongitude } from '../../lib/signs';
 import { formatDate, formatShortDate } from '../../lib/i18n/dates';
+
+// The years the committed table covers (sky.json runs to the start of its
+// last year plus one), so the copy names the span the table lists.
+const firstYear = new Date(sky.from).getUTCFullYear();
+const lastYear = new Date(Date.parse(sky.to) - 1).getUTCFullYear();
 
 // All computed at build time from the committed sky data — the page
 // ships as receipts, no client ephemeris.
@@ -24,7 +31,7 @@ const windows = (sky.retrogrades as { planet: string; from: string; to: string |
     return {
       from,
       to,
-      label: `${fmt(from)} – ${to ? fmt(to) : 'ongoing'}`,
+      label: `${fmt(from)} to ${to ? fmt(to) : 'ongoing'}`,
       stationRx: formatLongitude(bodyLongitude('Mercury', from)),
       stationDirect: to ? formatLongitude(bodyLongitude('Mercury', to)) : null,
       state: to && to < buildNow ? 'past' : from > buildNow ? 'upcoming' : 'active',
@@ -39,9 +46,9 @@ const fmtShort = (d: Date) =>
   formatDate('en', d, { month: 'long', day: 'numeric', timeZone: 'UTC' });
 
 const status = active
-  ? `Mercury is retrograde right now — it stations direct on ${fmtShort(active.to!)}.`
+  ? `Mercury is retrograde right now. It stations direct on ${fmtShort(active.to!)}.`
   : next
-    ? `Mercury is direct right now — the next retrograde runs ${fmtShort(next.from)} to ${fmtShort(next.to!)}, ${next.to!.getUTCFullYear()}.`
+    ? `Mercury is direct right now. The next retrograde runs ${fmtShort(next.from)} to ${fmtShort(next.to!)}, ${next.to!.getUTCFullYear()}.`
     : 'Mercury is direct right now.';
 
 const retroToday = (sky.retrogrades as { planet: string; from: string; to: string | null }[])
@@ -53,19 +60,19 @@ const asOf = formatShortDate('en', buildNow);
 const faq = [
   {
     q: 'When is the next Mercury retrograde?',
-    a: `${status} The full table above lists every window through ${windows.at(-1)?.to?.getUTCFullYear() ?? '2027'}, computed from Mercury's actual motion and refined to the hour.`,
+    a: `${status} The full table above lists every window through ${windows.at(-1)?.to?.getUTCFullYear() ?? lastYear}, computed from Mercury's actual motion and refined to the hour.`,
   },
   {
     q: 'What is Mercury retrograde, actually?',
-    a: 'An optical effect. Mercury laps the Sun faster than Earth does, and three or four times a year it overtakes us on the inside — from our moving viewpoint it appears to slow, stop, and slide backward through the zodiac for about three weeks. Nothing changes direction in space; the appearance is real enough to compute to within a few minutes.',
+    a: 'An optical effect. Mercury laps the Sun faster than Earth does, and three or four times a year it overtakes us on the inside. From our moving viewpoint it appears to slow, stop, and slide backward through the zodiac for about three weeks. Nothing changes direction in space; the appearance is real enough to compute to within a few minutes.',
   },
   {
     q: 'How long does Mercury retrograde last?',
-    a: 'About three weeks, three or four times a year. Astrologers also watch the "shadow" — the week or two on either side while Mercury crosses the same degrees at normal speed — but the dated windows here are the retrograde proper, station to station.',
+    a: 'About three weeks, three or four times a year. Astrologers also watch the "shadow" (the week or two on either side while Mercury crosses the same degrees at normal speed), but the dated windows here are the retrograde proper, station to station.',
   },
   {
     q: 'What does Mercury retrograde mean in astrology?',
-    a: 'Mercury is the planet astrologers assign to communication, travel, and information, so its retrograde picked up a reputation for garbled messages, travel snags, and technology mutiny. The working advice is more boring than the memes: build in margin, confirm the details, and treat the window as review season — finish, revise, and double-check rather than launch.',
+    a: 'Mercury is the planet astrologers assign to communication, travel, and information, so its retrograde picked up a reputation for garbled messages, travel snags, and technology mutiny. The working advice is more boring than the memes: build in margin, confirm the details, and treat the window as review season: finish, revise, and double-check rather than launch.',
   },
   {
     q: 'Do other planets go retrograde?',
@@ -94,8 +101,8 @@ const eventNodes = upcomingWindows.map((window) => {
 const dataset = {
   '@type': 'Dataset',
   '@id': 'https://zodiacs.org/mercury-retrograde/#dataset',
-  name: 'Mercury retrograde windows, 2026–2027',
-  description: 'Computed Mercury retrograde and direct station instants and tropical zodiac positions for 2026 and 2027.',
+  name: `Mercury retrograde windows, ${firstYear} to ${lastYear}`,
+  description: `Computed Mercury retrograde and direct station instants and tropical zodiac positions for ${firstYear} through ${lastYear}.`,
   url: 'https://zodiacs.org/mercury-retrograde/',
   creator: { '@id': 'https://zodiacs.org/#org' },
   publisher: { '@id': 'https://zodiacs.org/#org' },
@@ -109,9 +116,9 @@ const dataset = {
 const jsonLd = [
   {
     '@type': 'WebPage',
-    name: 'Mercury retrograde dates, 2026–2027',
+    name: `Mercury retrograde dates, ${firstYear} to ${lastYear}`,
     url: 'https://zodiacs.org/mercury-retrograde/',
-    description: 'Exact Mercury retrograde dates for 2026 and 2027, computed from the planet’s real motion, with station positions.',
+    description: `Exact Mercury retrograde dates for ${firstYear} through ${lastYear}, computed from the planet’s real motion, with station positions.`,
   },
   {
     '@type': 'FAQPage',
@@ -126,11 +133,11 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Mercury Retrograde Dates 2026 & 2027 — Exact, Computed | Zodiacs.org"
-  description="Every Mercury retrograde through 2027, computed from the planet's real motion: exact dates, station positions, and what the window actually asks of you."
+  title="Mercury Retrograde Dates 2026 to 2030: Exact, Computed | Zodiacs.org"
+  description="Every Mercury retrograde through 2030, computed from the planet's real motion: exact dates, station positions, and what the window actually asks of you."
   path="/mercury-retrograde/"
   image="/assets/og/v2/tool/mercury-retrograde.png"
-  imageAlt="Mercury retrograde dates — Zodiacs.org"
+  imageAlt="Mercury retrograde dates, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
 >
@@ -139,7 +146,7 @@ const jsonLd = [
       <h1 class="display">See when Mercury turns retrograde.</h1>
       <p>
         Every window below is computed from <a href="/learn/glossary/#mercury">Mercury</a>’s actual motion,
-        <a href="/learn/glossary/#station">station to station</a>, refined to the hour, through the end of 2027.
+        <a href="/learn/glossary/#station">station to station</a>, refined to the hour, through the end of {lastYear}.
       </p>
     </div>
 
@@ -147,7 +154,7 @@ const jsonLd = [
       <div class="core tinted rx-now__core">
         <span class="mono--label">As of {asOf}</span>
         <strong class="rx-now__line">{status}</strong>
-        <span class="rx-now__all mono">
+        <span class="rx-now__all">
           Retrograde today: {retroToday.length ? retroToday.join(', ') : 'nothing'} ·
           every planet's windows are on <a href="/retrogrades/">the retrograde page</a>
           · <a href="/mercury-retrograde/2027/">just 2027</a>
@@ -158,8 +165,8 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="section-head reveal">
-      <h2>The windows, 2026–2027</h2>
-      <p>Dates in universal time. The position shown is where Mercury stands still each time — the stations.</p>
+      <h2>The windows, {firstYear} to {lastYear}</h2>
+      <p>Dates in universal time. The position shown is where Mercury stands still each time, the stations.</p>
     </div>
     <div class="table-wrap reveal">
       <table class="rx-table">
@@ -172,7 +179,7 @@ const jsonLd = [
               <td data-label="Window">{w.label}</td>
               <td class="mono" data-label="Stations retrograde at">{w.stationRx}</td>
               <td class="mono" data-label="Stations direct at">{w.stationDirect ?? '—'}</td>
-              <td class="mono rx-table__state" data-label="Status">{w.state === 'active' ? 'now' : w.state === 'upcoming' ? 'ahead' : ''}</td>
+              <td class="rx-table__state" data-label="Status">{w.state === 'active' ? 'now' : w.state === 'upcoming' ? 'ahead' : ''}</td>
             </tr>
           ))}
         </tbody>
@@ -182,13 +189,14 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="prose reveal">
+      <HeroCrop crop="clock-hand" />
       <h2>What is actually happening up there</h2>
       <p>
         Nothing slows down and nothing reverses. Mercury orbits the <a href="/learn/glossary/#sun">Sun</a> in 88
         days to our 365, and a few times a year it passes us on the inside
         lane. Watched from a moving Earth, the planet seems to brake, hang
         motionless for a day or two, and drift backward through the <a href="/learn/glossary/#zodiac">zodiac</a>{' '}
-        before resuming course — the same illusion you get when a slower
+        before resuming course, the same illusion you get when a slower
         train out the window appears to roll backward. The dates above are
         that illusion, computed precisely.
       </p>
@@ -200,16 +208,17 @@ const jsonLd = [
         window as review season. Finish what’s open, reread before sending,
         confirm the booking, and hold big launches and signatures for the
         other forty-five weeks of the year if you can. Not because the sky
-        forbids them — because a scheduled excuse to double-check is
+        forbids them, because a scheduled excuse to double-check is
         genuinely useful.
       </p>
       <p>
         Where a <a href="/learn/glossary/#retrograde">retrograde</a> lands in <em>your</em> chart decides which corner
-        of life does the reviewing — that takes your{' '}
+        of life does the reviewing. That takes your{' '}
         <a href="/birth-chart/">birth chart</a>. And if you were born with
         Mercury retrograde (roughly one person in five), astrologers read it
         as an inward-processing style, not a defect.
       </p>
+      <AskGuideAbout prompt="Where will this Mercury retrograde land in my chart, and what should I review?" />
     </div>
   </section>
 
@@ -241,8 +250,19 @@ const jsonLd = [
   .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
 
   .rx-now__core { padding: clamp(20px, 4vw, 28px); display: grid; gap: 10px; }
+  /* One flat status card: no outer bezel, sign wash or lit edge. Its links
+     brighten the border when focused. */
+  .rx-now.shell { padding: 0; border: 0; background: none; }
+  .rx-now.shell > .rx-now__core {
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: var(--void-1);
+    box-shadow: none;
+    transition: border-color var(--dur-1) var(--ease);
+  }
+  .rx-now.shell:focus-within > .rx-now__core { border-color: var(--hair-3); }
   .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
-  .rx-now__all { font-size: 11.5px; color: var(--faint); letter-spacing: 0.05em; }
+  .rx-now__all { font-family: var(--font-sans); font-size: 13px; color: var(--faint); letter-spacing: 0; }
   .rx-now__all a { color: var(--muted); }
   .rx-now__all a:hover { color: var(--text); }
 

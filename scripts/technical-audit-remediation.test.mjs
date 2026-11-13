@@ -62,6 +62,8 @@ describe('technical audit remediation contracts', () => {
     expect(cacheFor('/assets/vendor/(.*)')).toBe('public, max-age=31536000, immutable');
     expect(cacheFor('/assets/astrofolio/v2/(.*)')).toBe('public, max-age=31536000, immutable');
     expect(cacheFor('/assets/og/v2/share-pastel-wheel-20260809.png')).toBe('public, max-age=31536000, immutable');
+    expect(cacheFor('/assets/og/v2/share-pastel-wheel-20261019.png')).toBe('public, max-age=31536000, immutable');
+    expect(cacheFor('/assets/og/v8/home-20261019.jpg')).toBe('public, max-age=31536000, immutable');
     // `.v1` identifies the archive schema, not immutable content; the file is
     // appended repeatedly and must continue to revalidate.
     expect(cacheFor('/assets/data/registry-market-history.v1.json')).toBe('public, max-age=0, must-revalidate');
@@ -161,19 +163,26 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const LEGAL_IDENTITY_LASTMOD = '2026-08-29'");
     expect(sitemap).toContain("...['/', '/about/', '/privacy/', '/terms/'].map((loc) => [loc, LEGAL_IDENTITY_LASTMOD] as const)");
     // The approved trust notices revise both schemas and sitemap dates together.
-    expect(terms).toContain("const modifiedAt = '2026-10-03T00:00:00.000Z'");
+    expect(terms).toContain("const modifiedAt = '2026-11-11T00:00:00.000Z'");
     expect(sitemap).toContain("const OWNER_TRUST_LASTMOD = '2026-10-03'");
+    expect(sitemap).toContain("['/terms/', '2026-11-11'] as const,");
     expect(sitemap).toContain("...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const)");
     // So did the elections endpoint's sentence on the privacy page, on 5 October,
-    // and the hosted MCP server's request-log retention, on 9 October.
-    expect(privacy).toContain("const modifiedAt = '2026-10-09T00:00:00.000Z'");
+    // and the hosted MCP server's request-log retention, on 9 October, and the
+    // ?ref= on links from the Zodiacs app with its 0.5.0 tools' wording, on 14 October,
+    // and what the app's links carry, on 4 November, worded exactly on 5 November,
+    // and the assistants it names, with Gemini added, on 6 November, and the occasions
+    // it lists with no card link, a birthday alone, on 7 November.
+    expect(privacy).toContain("const modifiedAt = '2026-11-11T00:00:00.000Z'");
+    expect(sitemap).toContain("['/privacy/', '2026-11-11'] as const,");
+    expect(sitemap).toContain("const ASSISTANT_REF_LASTMOD = '2026-10-14'");
     expect(sitemap).toContain("const MCP_HOST_LOGS_LASTMOD = '2026-10-09'");
     expect(sitemap).toContain("...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const)");
     expect(sitemap).toContain("const ELECTIONS_LASTMOD = '2026-10-05'");
     expect(sitemap).toContain("const ELECTIONS_ROUTES = ['/developers/', '/developers/compute/', '/developers/support/', '/privacy/'] as const;");
     expect(sitemap).toContain("...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const)");
     for (const page of [privacy, terms]) expect(page).toContain('dateModified: modifiedAt');
-    expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
+    expect(about).toContain("dateModified: '2026-10-16T00:00:00.000Z'");
     expect(sitemap).toContain("const ENGINE_PHASE1_LASTMOD = '2026-09-23'");
     expect(sitemap).toContain("const PRIVACY_AUDIT_LASTMOD = '2026-09-28'");
     expect(sitemap).toContain("const SHARE_IMAGE_REVIEW_LASTMOD = '2026-09-29'");
@@ -181,15 +190,15 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const DELTAT_ATTRIBUTION_ROUTES = ['/methodology/', '/terms/'] as const;");
     expect(sitemap).toContain("'/about/', '/ask/', '/birth-chart/someone-else/', '/methodology/', '/privacy/', '/tools/',");
     for (const [page, path, modified] of [
-      [learn, '/learn/', '2026-09-05T00:00:00.000Z'],
-      [houses, '/learn/houses/', '2026-08-23T00:00:00.000Z'],
+      [learn, '/learn/', '2026-10-16T00:00:00.000Z'],
+      [houses, '/learn/houses/', '2026-10-16T00:00:00.000Z'],
     ]) {
       expect(page).toContain(`...editorialDates('${path}')`);
       expect(editorialDates(path)).toEqual({ dateModified: modified });
     }
     expect(sitemap).toContain('EDITORIAL_METADATA[loc]?.modified');
-    expect(glossary).toContain("const PAGE_DATE = '2026-08-23'");
-    expect(thesis).toContain('property="article:modified_time" content="2026-09-05"');
-    expect(thesis).toContain('"dateModified": "2026-09-05"');
+    expect(glossary).toContain("const PAGE_DATE = '2026-10-16'");
+    expect(thesis).toContain('property="article:modified_time" content="2026-11-12"');
+    expect(thesis).toContain('"dateModified": "2026-11-12"');
   });
 });

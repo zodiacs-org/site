@@ -28,7 +28,8 @@ describe('event times against Swiss Ephemeris', () => {
     const published = eventsCatalog().events
       .map(({ facts }) => facts)
       .filter((facts) => facts.family !== 'retrograde' && facts.at)
-      .map((facts) => `${facts.id} ${facts.at}`)
+      // The engine catalog's own instants: a page that prints NASA's keeps it in `committed`.
+      .map((facts) => `${facts.id} ${facts.committed?.anchor ?? facts.at}`)
       .sort();
     const measured = evidence.deltas.map((row) => `${row.id} ${row.published}`).sort();
     // A regenerated catalog needs docs/platform/evidence/events-vs-swiss-*/tools run again.
@@ -39,7 +40,10 @@ describe('event times against Swiss Ephemeris', () => {
     expect(evidence.summary.lunation.maxAbsSeconds).toBeLessThan(MINUTE);
     expect(evidence.summary.eclipse.maxAbsSeconds).toBeLessThan(MINUTE);
     expect(read('src/pages/full-moon-calendar/index.astro')).toContain('to within a minute, in universal time');
-    expect(read('src/pages/full-moon-calendar/index.astro')).toContain('timed to within a minute through the end of 2027');
+    // The Swiss comparison above covers 2026 and 2027; the November 2026 NASA audit
+    // (docs/accuracy-audit-2026-11/) times every lunation the table holds, to 2030.
+    expect(read('src/pages/full-moon-calendar/index.astro')).toContain('timed to within a minute through the end of {lastYear}');
+    expect(read('src/pages/full-moon-calendar/index.astro')).toContain('const lastYear = new Date(Date.parse(sky.to) - 1).getUTCFullYear();');
     expect(read('src/pages/events/index.astro')).toContain('and eclipses are timed to within a minute');
   });
 
@@ -49,7 +53,6 @@ describe('event times against Swiss Ephemeris', () => {
     expect(evidence.summary.station.maxAbsSeconds).toBeLessThan(7 * MINUTE);
     const byPlanet = evidence.summary.stationMaxAbsSecondsByPlanet;
     for (const planet of ['Mercury', 'Venus', 'Mars']) expect(byPlanet[planet]).toBeLessThan(10 * MINUTE);
-    expect(read('src/pages/events/index.astro')).toContain('a station can be off by up to about seven minutes');
     expect(read('src/components/events/EventFactsBand.astro'))
       .toContain('so these station times can be off by a few minutes.');
     expect(read('src/pages/mercury-retrograde/index.astro')).toContain('compute to within a few minutes');
@@ -64,7 +67,21 @@ describe('event times against Swiss Ephemeris', () => {
     const band = read('src/components/events/EventFactsBand.astro');
     expect(band).toContain('this time can be off by up to about half an hour.');
     expect(band).toContain('so slowly that this time can be off by several hours.');
-    expect(read('src/pages/events/index.astro')).toContain('Uranus, Neptune or Pluto by several hours');
+  });
+
+  it('print the planets\' station, sign change and alignment times from NASA JPL, as the events pages say', () => {
+    // src/lib/nasa-instants.test.ts holds the table to every committed event the pages print.
+    const catalog = eventsCatalog();
+    for (const event of catalog.events) {
+      const { facts } = event;
+      if (!['ingress', 'aspect', 'station', 'retrograde'].includes(facts.family)) continue;
+      if (facts.family === 'retrograde' && facts.clamped && !facts.end) continue;
+      expect(facts.committed, facts.id).toBeDefined();
+      expect(facts.provenance.derived?.some((line) => line.includes('NASA JPL Horizons (DE441)')), facts.id).toBe(true);
+    }
+    expect(read('src/pages/events/index.astro')).toContain("sign changes and alignments take their times from NASA JPL's DE441");
+    expect(read('src/components/events/EventFactsBand.astro')).toContain("NASA JPL's, from its DE441 ephemeris.");
+    expect(read('src/components/events/EventEvidence.astro')).toContain("stations and aspects come from NASA\n    JPL's DE441 ephemeris");
   });
 });
 
@@ -186,6 +203,35 @@ describe('the NASA JPL Horizons figure', () => {
       expect(read(path), path).toContain('the largest difference is 14.8 arcseconds');
     }
     expect(read('src/pages/developers/index.astro').replace(/\s+/g, ' ')).toContain('the largest difference is 14.8 arcseconds');
+  });
+});
+
+describe('how event times are checked, on the methodology page', () => {
+  const page = () => read('src/pages/methodology/index.astro').replace(/\s+/g, ' ');
+
+  it('gives the Neptune example from the NASA table and the engine instant it replaced', () => {
+    const table = JSON.parse(read('src/data/nasa-event-instants.json'));
+    const row = table.ingresses.find((entry) => entry.body === 'Neptune' && entry.sign === 'aries'
+      && entry.nasa.startsWith('2026-01-26'));
+    expect(row.nasa.slice(11, 16)).toBe('17:35');
+    const hours = (Date.parse(row.nasa) - Math.max(...row.engine.map(Date.parse))) / 3_600_000;
+    expect(Math.round(hours)).toBe(3);
+    expect(page()).toContain('Neptune entered Aries at 17:35 UTC on January 26, 2026, about three hours later');
+    expect(table.coverage.Neptune.stations).toBe('2025-11-06 to 2031-05-27');
+    expect(page()).toContain('exact aspects from November 2025 to May 2031');
+  });
+
+  it('bounds the Sun\'s sign changes by the table\'s measured maximum', () => {
+    const table = JSON.parse(read('src/data/nasa-event-instants.json'));
+    expect(table.withinOneMinute.sunIngresses.maxSeconds).toBeLessThanOrEqual(44);
+    expect(page()).toContain('The Sun\'s sign changes agree within 44 seconds.');
+  });
+
+  it('states the built-page counts of the November 2026 audit', () => {
+    const report = read('docs/accuracy-audit-2026-11/REPORT.md');
+    const counts = /\*\*Built pages \(what the site says\)\*\*: (\d+) claims checked, (\d+) match/u.exec(report);
+    const format = (n) => Number(n).toLocaleString('en-US');
+    expect(page()).toContain(`we checked ${format(counts[1])} statements on the built English pages against NASA, from sign dates to eclipse times, and ${format(counts[2])} agreed`);
   });
 });
 

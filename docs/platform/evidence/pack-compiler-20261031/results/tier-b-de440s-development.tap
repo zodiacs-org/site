@@ -1,0 +1,520 @@
+TAP version 13
+# Subtest: R1: the development case establishes completeness before the holdout counts
+ok 1 - R1: the development case establishes completeness before the holdout counts
+  ---
+  duration_ms: 13.081584
+  type: 'test'
+  ...
+# Subtest: R2: the development case establishes completeness before the holdout counts
+ok 2 - R2: the development case establishes completeness before the holdout counts
+  ---
+  duration_ms: 103.997334
+  type: 'test'
+  ...
+# Subtest: H1: Sun at 69.284365 deg, 1975-01-01 .. 1975-10-28
+ok 3 - H1: Sun at 69.284365 deg, 1975-01-01 .. 1975-10-28
+  ---
+  duration_ms: 82.743583
+  type: 'test'
+  ...
+# Subtest: A1: Sun at 249.284365 deg, 1975-01-01 .. 1975-10-28
+ok 4 - A1: Sun at 249.284365 deg, 1975-01-01 .. 1975-10-28
+  ---
+  duration_ms: 71.227083
+  type: 'test'
+  ...
+# Subtest: H2: Moon at 299.121263 deg, 1977-06-19 .. 1978-04-15
+ok 5 - H2: Moon at 299.121263 deg, 1977-06-19 .. 1978-04-15
+  ---
+  duration_ms: 1416.148791
+  type: 'test'
+  ...
+# Subtest: A2: Moon at 119.121263 deg, 1977-06-19 .. 1978-04-15
+ok 6 - A2: Moon at 119.121263 deg, 1977-06-19 .. 1978-04-15
+  ---
+  duration_ms: 1457.618083
+  type: 'test'
+  ...
+# Subtest: H3: Mercury at 33.313017 deg, 1979-12-06 .. 1980-10-01
+ok 7 - H3: Mercury at 33.313017 deg, 1979-12-06 .. 1980-10-01
+  ---
+  duration_ms: 256.253708
+  type: 'test'
+  ...
+# Subtest: A3: Mercury at 213.313017 deg, 1979-12-06 .. 1980-10-01
+ok 8 - A3: Mercury at 213.313017 deg, 1979-12-06 .. 1980-10-01
+  ---
+  duration_ms: 247.69275
+  type: 'test'
+  ...
+# Subtest: H4: Venus at 203.912806 deg, 1982-05-24 .. 1983-03-20
+ok 9 - H4: Venus at 203.912806 deg, 1982-05-24 .. 1983-03-20
+  ---
+  duration_ms: 77.268417
+  type: 'test'
+  ...
+# Subtest: A4: Venus at 23.912806 deg, 1982-05-24 .. 1983-03-20
+ok 10 - A4: Venus at 23.912806 deg, 1982-05-24 .. 1983-03-20
+  ---
+  duration_ms: 77.711125
+  type: 'test'
+  ...
+# Subtest: H5: Mars at 47.294828 deg, 1984-11-09 .. 1985-09-05
+ok 11 - H5: Mars at 47.294828 deg, 1984-11-09 .. 1985-09-05
+  ---
+  duration_ms: 69.6535
+  type: 'test'
+  ...
+# Subtest: A5: Mars at 227.294828 deg, 1984-11-09 .. 1985-09-05
+ok 12 - A5: Mars at 227.294828 deg, 1984-11-09 .. 1985-09-05
+  ---
+  duration_ms: 68.666917
+  type: 'test'
+  ...
+# Subtest: H6: Jupiter at 27.824767 deg, 1987-04-28 .. 1988-02-22
+ok 13 - H6: Jupiter at 27.824767 deg, 1987-04-28 .. 1988-02-22
+  ---
+  duration_ms: 39.311792
+  type: 'test'
+  ...
+# Subtest: A6: Jupiter at 207.824767 deg, 1987-04-28 .. 1988-02-22
+ok 14 - A6: Jupiter at 207.824767 deg, 1987-04-28 .. 1988-02-22
+  ---
+  duration_ms: 40.436916
+  type: 'test'
+  ...
+# Subtest: H7: Saturn at 293.276007 deg, 1989-10-14 .. 1990-08-10
+ok 15 - H7: Saturn at 293.276007 deg, 1989-10-14 .. 1990-08-10
+  ---
+  duration_ms: 22.152167
+  type: 'test'
+  ...
+# Subtest: A7: Saturn at 113.276007 deg, 1989-10-14 .. 1990-08-10
+ok 16 - A7: Saturn at 113.276007 deg, 1989-10-14 .. 1990-08-10
+  ---
+  duration_ms: 21.511167
+  type: 'test'
+  ...
+# Subtest: H8: Uranus at 284.396447 deg, 1992-04-01 .. 1993-01-26
+ok 17 - H8: Uranus at 284.396447 deg, 1992-04-01 .. 1993-01-26
+  ---
+  duration_ms: 17.982125
+  type: 'test'
+  ...
+# Subtest: A8: Uranus at 104.396447 deg, 1992-04-01 .. 1993-01-26
+ok 18 - A8: Uranus at 104.396447 deg, 1992-04-01 .. 1993-01-26
+  ---
+  duration_ms: 18.311125
+  type: 'test'
+  ...
+# Subtest: H9: Neptune at 294.289267 deg, 1994-09-18 .. 1995-07-15
+ok 19 - H9: Neptune at 294.289267 deg, 1994-09-18 .. 1995-07-15
+  ---
+  duration_ms: 15.994375
+  type: 'test'
+  ...
+# Subtest: A9: Neptune at 114.289267 deg, 1994-09-18 .. 1995-07-15
+ok 20 - A9: Neptune at 114.289267 deg, 1994-09-18 .. 1995-07-15
+  ---
+  duration_ms: 16.8155
+  type: 'test'
+  ...
+# Subtest: H10: Pluto at 242.891737 deg, 1997-03-06 .. 1997-12-31
+ok 21 - H10: Pluto at 242.891737 deg, 1997-03-06 .. 1997-12-31
+  ---
+  duration_ms: 16.167666
+  type: 'test'
+  ...
+# Subtest: A10: Pluto at 62.891737 deg, 1997-03-06 .. 1997-12-31
+ok 22 - A10: Pluto at 62.891737 deg, 1997-03-06 .. 1997-12-31
+  ---
+  duration_ms: 15.947417
+  type: 'test'
+  ...
+# Subtest: the antipode series really does have roots for the half-plane to reject
+ok 23 - the antipode series really does have roots for the half-plane to reject
+  ---
+  duration_ms: 980.271708
+  type: 'test'
+  ...
+# Subtest: section 9 usefulness gate: at least half the holdout establishes completeness
+ok 24 - section 9 usefulness gate: at least half the holdout establishes completeness
+  ---
+  duration_ms: 0.085584
+  type: 'test'
+  ...
+# Subtest: T9 (stationary): a longitude extremum, with both roots bracketed or declared
+ok 25 - T9 (stationary): a longitude extremum, with both roots bracketed or declared
+  ---
+  duration_ms: 287.406667
+  type: 'test'
+  ...
+# Subtest: T12: the reference and the released reducer agree, measured like for like
+ok 26 - T12: the reference and the released reducer agree, measured like for like
+  ---
+  duration_ms: 6.686208
+  type: 'test'
+  ...
+# Subtest: F1: Sun at 68.944944 deg of date, 1975-01-01 .. 1975-10-28
+ok 27 - F1: Sun at 68.944944 deg of date, 1975-01-01 .. 1975-10-28
+  ---
+  duration_ms: 177.845625
+  type: 'test'
+  ...
+# Subtest: B1: Sun at 248.944944 deg of date, 1975-01-01 .. 1975-10-28
+ok 28 - B1: Sun at 248.944944 deg of date, 1975-01-01 .. 1975-10-28
+  ---
+  duration_ms: 109.540125
+  type: 'test'
+  ...
+# Subtest: F2: Moon at 298.813118 deg of date, 1977-06-19 .. 1978-04-15
+ok 29 - F2: Moon at 298.813118 deg of date, 1977-06-19 .. 1978-04-15
+  ---
+  duration_ms: 1987.676
+  type: 'test'
+  ...
+# Subtest: B2: Moon at 118.813118 deg of date, 1977-06-19 .. 1978-04-15
+ok 30 - B2: Moon at 118.813118 deg of date, 1977-06-19 .. 1978-04-15
+  ---
+  duration_ms: 1989.839834
+  type: 'test'
+  ...
+# Subtest: F3: Mercury at 33.035196 deg of date, 1979-12-06 .. 1980-10-01
+ok 31 - F3: Mercury at 33.035196 deg of date, 1979-12-06 .. 1980-10-01
+  ---
+  duration_ms: 300.108334
+  type: 'test'
+  ...
+# Subtest: B3: Mercury at 213.035196 deg of date, 1979-12-06 .. 1980-10-01
+ok 32 - B3: Mercury at 213.035196 deg of date, 1979-12-06 .. 1980-10-01
+  ---
+  duration_ms: 300.019875
+  type: 'test'
+  ...
+# Subtest: F4: Venus at 203.667412 deg of date, 1982-05-24 .. 1983-03-20
+ok 33 - F4: Venus at 203.667412 deg of date, 1982-05-24 .. 1983-03-20
+  ---
+  duration_ms: 111.887166
+  type: 'test'
+  ...
+# Subtest: B4: Venus at 23.667412 deg of date, 1982-05-24 .. 1983-03-20
+ok 34 - B4: Venus at 23.667412 deg of date, 1982-05-24 .. 1983-03-20
+  ---
+  duration_ms: 111.845084
+  type: 'test'
+  ...
+# Subtest: F5: Mars at 47.08519 deg of date, 1984-11-09 .. 1985-09-05
+ok 35 - F5: Mars at 47.08519 deg of date, 1984-11-09 .. 1985-09-05
+  ---
+  duration_ms: 101.560708
+  type: 'test'
+  ...
+# Subtest: B5: Mars at 227.08519 deg of date, 1984-11-09 .. 1985-09-05
+ok 36 - B5: Mars at 227.08519 deg of date, 1984-11-09 .. 1985-09-05
+  ---
+  duration_ms: 100.317875
+  type: 'test'
+  ...
+# Subtest: F6: Jupiter at 27.653018 deg of date, 1987-04-28 .. 1988-02-22
+ok 37 - F6: Jupiter at 27.653018 deg of date, 1987-04-28 .. 1988-02-22
+  ---
+  duration_ms: 57.449666
+  type: 'test'
+  ...
+# Subtest: B6: Jupiter at 207.653018 deg of date, 1987-04-28 .. 1988-02-22
+ok 38 - B6: Jupiter at 207.653018 deg of date, 1987-04-28 .. 1988-02-22
+  ---
+  duration_ms: 58.284583
+  type: 'test'
+  ...
+# Subtest: F7: Saturn at 293.142505 deg of date, 1989-10-14 .. 1990-08-10
+ok 39 - F7: Saturn at 293.142505 deg of date, 1989-10-14 .. 1990-08-10
+  ---
+  duration_ms: 42.252875
+  type: 'test'
+  ...
+# Subtest: B7: Saturn at 113.142505 deg of date, 1989-10-14 .. 1990-08-10
+ok 40 - B7: Saturn at 113.142505 deg of date, 1989-10-14 .. 1990-08-10
+  ---
+  duration_ms: 41.724208
+  type: 'test'
+  ...
+# Subtest: F8: Uranus at 284.298936 deg of date, 1992-04-01 .. 1993-01-26
+ok 41 - F8: Uranus at 284.298936 deg of date, 1992-04-01 .. 1993-01-26
+  ---
+  duration_ms: 37.931417
+  type: 'test'
+  ...
+# Subtest: B8: Uranus at 104.298936 deg of date, 1992-04-01 .. 1993-01-26
+ok 42 - B8: Uranus at 104.298936 deg of date, 1992-04-01 .. 1993-01-26
+  ---
+  duration_ms: 38.419541
+  type: 'test'
+  ...
+# Subtest: F9: Neptune at 294.224645 deg of date, 1994-09-18 .. 1995-07-15
+ok 43 - F9: Neptune at 294.224645 deg of date, 1994-09-18 .. 1995-07-15
+  ---
+  duration_ms: 35.252166
+  type: 'test'
+  ...
+# Subtest: B9: Neptune at 114.224645 deg of date, 1994-09-18 .. 1995-07-15
+ok 44 - B9: Neptune at 114.224645 deg of date, 1994-09-18 .. 1995-07-15
+  ---
+  duration_ms: 34.076041
+  type: 'test'
+  ...
+# Subtest: F10: Pluto at 242.857689 deg of date, 1997-03-06 .. 1997-12-31
+ok 45 - F10: Pluto at 242.857689 deg of date, 1997-03-06 .. 1997-12-31
+  ---
+  duration_ms: 35.729875
+  type: 'test'
+  ...
+# Subtest: B10: Pluto at 62.857689 deg of date, 1997-03-06 .. 1997-12-31
+ok 46 - B10: Pluto at 62.857689 deg of date, 1997-03-06 .. 1997-12-31
+  ---
+  duration_ms: 34.461625
+  type: 'test'
+  ...
+# Subtest: the antipode series really does have roots for the half-plane to reject
+ok 47 - the antipode series really does have roots for the half-plane to reject
+  ---
+  duration_ms: 1792.703459
+  type: 'test'
+  ...
+# Subtest: the frame-separated cases are the two the results document names
+ok 48 - the frame-separated cases are the two the results document names
+  ---
+  duration_ms: 0.228708
+  type: 'test'
+  ...
+# Subtest: section 10 usefulness gate: at least half the holdout establishes completeness
+ok 49 - section 10 usefulness gate: at least half the holdout establishes completeness
+  ---
+  duration_ms: 0.134042
+  type: 'test'
+  ...
+# Subtest: both paths are supplied and exist
+ok 50 - both paths are supplied and exist
+  ---
+  duration_ms: 0.402667
+  type: 'test'
+  ...
+# Subtest: the pack agrees with the uncompressed kernel to the compression budget
+ok 51 - the pack agrees with the uncompressed kernel to the compression budget
+  ---
+  duration_ms: 40.367958
+  type: 'test'
+  ...
+# Subtest: the pack path is supplied and exists
+ok 52 - the pack path is supplied and exists
+  ---
+  duration_ms: 1.05425
+  type: 'test'
+  ...
+# Subtest: the real pack opens, verifies, and reports its integrity honestly
+ok 53 - the real pack opens, verifies, and reports its integrity honestly
+  ---
+  duration_ms: 7.246125
+  type: 'test'
+  ...
+# Subtest: an out-of-band digest that matches opens, and one that does not is refused
+ok 54 - an out-of-band digest that matches opens, and one that does not is refused
+  ---
+  duration_ms: 9.444125
+  type: 'test'
+  ...
+# Subtest: the resident and file-backed loaders agree on the real pack, bit for bit
+ok 55 - the resident and file-backed loaders agree on the real pack, bit for bit
+  ---
+  duration_ms: 23.134709
+  type: 'test'
+  ...
+# Subtest: the answers are astronomically sane, not merely self-consistent
+ok 56 - the answers are astronomically sane, not merely self-consistent
+  ---
+  duration_ms: 2.086917
+  type: 'test'
+  ...
+# Subtest: the search finds the March 2024 equinox and all thirteen 2024 new moons
+ok 57 - the search finds the March 2024 equinox and all thirteen 2024 new moons
+  ---
+  duration_ms: 134.277834
+  type: 'test'
+  ...
+# Subtest: the prototype and corrected reductions differ by the amount the measurement says
+ok 58 - the prototype and corrected reductions differ by the amount the measurement says
+  ---
+  duration_ms: 3.69625
+  type: 'test'
+  ...
+# Subtest: the validated geometric mode establishes completeness on the real pack
+ok 59 - the validated geometric mode establishes completeness on the real pack
+  ---
+  duration_ms: 8.310459
+  type: 'test'
+  ...
+# Subtest: the validated and empirical modes are different quantities, and say so
+ok 60 - the validated and empirical modes are different quantities, and say so
+  ---
+  duration_ms: 17.537459
+  type: 'test'
+  ...
+# Subtest: the validated mode proves an empty interval empty
+ok 61 - the validated mode proves an empty interval empty
+  ---
+  duration_ms: 1.845458
+  type: 'test'
+  ...
+# Subtest: K1: Sun at 29deg is proven, with no missed and no extra event
+ok 62 - K1: Sun at 29deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 1036.438041
+  type: 'test'
+  ...
+# Subtest: K2: Moon at 82deg is proven, with no missed and no extra event
+ok 63 - K2: Moon at 82deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 8234.902917
+  type: 'test'
+  ...
+# Subtest: K3: Mercury at 135deg is proven, with no missed and no extra event
+ok 64 - K3: Mercury at 135deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 3340.660583
+  type: 'test'
+  ...
+# Subtest: K4: Venus at 188deg is proven, with no missed and no extra event
+ok 65 - K4: Venus at 188deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 938.621834
+  type: 'test'
+  ...
+# Subtest: K5: Mars at 241deg is proven, with no missed and no extra event
+ok 66 - K5: Mars at 241deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 901.231417
+  type: 'test'
+  ...
+# Subtest: K6: Jupiter at 294deg is proven, with no missed and no extra event
+ok 67 - K6: Jupiter at 294deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 440.466875
+  type: 'test'
+  ...
+# Subtest: K7: Saturn at 347deg is proven, with no missed and no extra event
+ok 68 - K7: Saturn at 347deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 215.026584
+  type: 'test'
+  ...
+# Subtest: K8: Uranus at 40deg is proven, with no missed and no extra event
+ok 69 - K8: Uranus at 40deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 146.228459
+  type: 'test'
+  ...
+# Subtest: K9: Neptune at 93deg is proven, with no missed and no extra event
+ok 70 - K9: Neptune at 93deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 117.315625
+  type: 'test'
+  ...
+# Subtest: K10: Pluto at 146deg is proven, with no missed and no extra event
+ok 71 - K10: Pluto at 146deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 104.727625
+  type: 'test'
+  ...
+# Subtest: S1: Mars at 120deg is proven, with no missed and no extra event
+ok 72 - S1: Mars at 120deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 550.431292
+  type: 'test'
+  ...
+# Subtest: S2: Mercury at 300deg is proven, with no missed and no extra event
+ok 73 - S2: Mercury at 300deg is proven, with no missed and no extra event
+  ---
+  duration_ms: 1382.873833
+  type: 'test'
+  ...
+# Subtest: supplementary M1: Sun at its own midpoint longitude
+ok 74 - supplementary M1: Sun at its own midpoint longitude
+  ---
+  duration_ms: 966.750375
+  type: 'test'
+  ...
+# Subtest: supplementary M2: Moon at its own midpoint longitude
+ok 75 - supplementary M2: Moon at its own midpoint longitude
+  ---
+  duration_ms: 7942.355292
+  type: 'test'
+  ...
+# Subtest: supplementary M3: Mercury at its own midpoint longitude
+ok 76 - supplementary M3: Mercury at its own midpoint longitude
+  ---
+  duration_ms: 3355.156041
+  type: 'test'
+  ...
+# Subtest: supplementary M4: Venus at its own midpoint longitude
+ok 77 - supplementary M4: Venus at its own midpoint longitude
+  ---
+  duration_ms: 925.865209
+  type: 'test'
+  ...
+# Subtest: supplementary M5: Mars at its own midpoint longitude
+ok 78 - supplementary M5: Mars at its own midpoint longitude
+  ---
+  duration_ms: 897.394833
+  type: 'test'
+  ...
+# Subtest: supplementary M6: Jupiter at its own midpoint longitude
+ok 79 - supplementary M6: Jupiter at its own midpoint longitude
+  ---
+  duration_ms: 445.242917
+  type: 'test'
+  ...
+# Subtest: supplementary M7: Saturn at its own midpoint longitude
+ok 80 - supplementary M7: Saturn at its own midpoint longitude
+  ---
+  duration_ms: 220.627417
+  type: 'test'
+  ...
+# Subtest: supplementary M8: Uranus at its own midpoint longitude
+ok 81 - supplementary M8: Uranus at its own midpoint longitude
+  ---
+  duration_ms: 146.755833
+  type: 'test'
+  ...
+# Subtest: supplementary M9: Neptune at its own midpoint longitude
+ok 82 - supplementary M9: Neptune at its own midpoint longitude
+  ---
+  duration_ms: 117.883041
+  type: 'test'
+  ...
+# Subtest: supplementary M10: Pluto at its own midpoint longitude
+ok 83 - supplementary M10: Pluto at its own midpoint longitude
+  ---
+  duration_ms: 115.5295
+  type: 'test'
+  ...
+# Subtest: supplementary T1: Mars at a window and read-off date both chosen after the holdout, unlike M1-M10
+ok 84 - supplementary T1: Mars at a window and read-off date both chosen after the holdout, unlike M1-M10
+  ---
+  duration_ms: 546.022083
+  type: 'test'
+  ...
+# Subtest: the contract names what it does not apply, and does not claim to be apparent
+ok 85 - the contract names what it does not apply, and does not claim to be apparent
+  ---
+  duration_ms: 2.214875
+  type: 'test'
+  ...
+1..85
+# tests 85
+# suites 0
+# pass 85
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 33170.590458

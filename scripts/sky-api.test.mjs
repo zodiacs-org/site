@@ -37,6 +37,30 @@ addFormats(ajv);
 for (const name of SCHEMA_NAMES) ajv.addSchema(SCHEMAS[name], SCHEMAS[name].$id);
 
 describe('sky data API — coverage and contracts', () => {
+  it('gives every file operation an example, the file it serves, which its response schema validates', () => {
+    const openapi = JSON.parse(build.files.get('openapi.json'));
+    // The document's own component schemas, resolved as the document references them.
+    const documentId = 'https://zodiacs.org/api/v1/openapi.json';
+    const documentAjv = new Ajv2020({ strict: false, allErrors: true });
+    addFormats(documentAjv);
+    documentAjv.addSchema({ $id: documentId, components: openapi.components });
+    const operations = Object.entries(openapi.paths).filter(([, item]) => item.get);
+    expect(operations).toHaveLength(11);
+    for (const [template, item] of operations) {
+      const content = item.get.responses['200'].content['application/json'];
+      const examples = Object.values(content.examples ?? {});
+      expect(examples, template).toHaveLength(1);
+      const [{ externalValue }] = examples;
+      expect(externalValue.startsWith('https://zodiacs.org/api/v1/'), template).toBe(true);
+      const file = externalValue.slice('https://zodiacs.org/api/v1/'.length);
+      const pattern = new RegExp(`^${template.replace('/api/v1/', '').replace(/\{year\}/g, '\\d{4}').replace(/\{planet\}/g, '[a-z]+').replace(/\./g, '\\.')}$`);
+      expect(file, template).toMatch(pattern);
+      const data = JSON.parse(build.files.get(file));
+      const validate = documentAjv.getSchema(`${documentId}${content.schema.$ref}`);
+      expect(validate(data), `${file}: ${JSON.stringify(validate.errors?.slice(0, 3))}`).toBe(true);
+    }
+  });
+
   it('emits only years whose twelve monthly snapshots are committed, bounded by each scan horizon', () => {
     expect(completeTransitYears(['2025-11', '2025-12', '2026-01'])).toEqual([]);
     const full = Array.from({ length: 12 }, (_, i) => `2026-${String(i + 1).padStart(2, '0')}`);

@@ -1,0 +1,20 @@
+PASS  R1 the zodiacs.org alias names a READY production deployment built from the merge commit or a commit that contains it
+PASS  D1 lite D1: the alias, as R1
+PASS  R2 /developers/engine/ names engine 1.1.0-rc.2 as a candidate npm does not carry
+PASS  R3 /developers/support/ names engine 1.1.0-rc.2 as a candidate npm does not carry
+PASS  R4 /developers/mcp/ names engine 1.1.0-rc.2 as a candidate npm does not carry
+PASS  R5 /llms.txt names engine 1.1.0-rc.2 as a candidate npm does not carry
+PASS  R6 /llms-full.txt names engine 1.1.0-rc.2 as a candidate npm does not carry
+PASS  R7 TypeDoc provenance names 1.1.0-rc.2 and its archive
+PASS  R8 MCP manifest is the merge's
+PASS  R9 MCP archive 0.1.0-rc.26 has the manifest's digest
+PASS  R10 the documented positions example is the one sent
+PASS  R11 compute API answers on engine 1.1.0-rc.2, with the receipt's convention ids
+PASS  S3b compute API time records equal timeBasis from the vendored @zodiacs/engine/time on 1.1.0-rc.2, and the request 1 ms later differs
+PASS  D2 lite D2: the EclipticView closure equals the local build of the merge byte for byte, holds neither ephemeris marker and holds its lite texts
+PASS  D2 lite D2: the RelationshipWheel closure equals the local build of the merge byte for byte, holds neither ephemeris marker and holds its lite texts
+FAIL  D2 lite D2: the ChartCalculator closure equals the local build of the merge byte for byte, holds neither ephemeris marker and holds its lite texts · {"view":"ChartCalculator","chunk":"/_astro/ChartCalculator.CYghgyqu.js","files":43,"bytes":172926,"missing":[],"local":{"chunk":"/_astro/ChartCalculator.CeQOgj19.js","files":43},"equalToLocal":false,"markers":[],"texts":{"sign must be a lowercase zodiac sign name.":true}}
+PASS  D3 lite D3: the engine chunk names 1.1.0-rc.2
+PASS  C9 time-bands C9: /developers/conventions/registry.json names time-band:first-order (for the record)
+PASS  V1 the varga check: the reference serves functions/vedic.vargaSensitivity.html, and the engine chunk names the version (D3)
+18 passed, 1 failed; 153 requests

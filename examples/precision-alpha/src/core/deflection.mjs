@@ -180,6 +180,48 @@ export function elongationCosInterval(e, d, dist) {
 }
 
 /**
+ * The same cosine over a span, in CENTRED form: its enclosure at the
+ * span's midpoint, plus the most it can move from there.
+ *
+ * It is the same quantity, not a second definition: the midpoint value is
+ * `elongationCosInterval` itself, on enclosures of `e` and `d` at one
+ * instant. What changes is how the span is covered. The interval form
+ * above composes span-wide enclosures of `e` and `d`, and because `d`
+ * appears in the numerator and the denominator and each product is
+ * enclosed on its own, it measured about 2,900 times the cosine's true
+ * variation over a 60-second Moon cell, whatever the cell's width. The
+ * mean-value form below has the true variation's own scaling.
+ *
+ * The rate. Write g = e . d/|d| = cos(E), E the angle between the unit
+ * vectors. Then g' = e' . dh + e . dh', with dh = d/|d|, e' perpendicular
+ * to e and dh' perpendicular to dh. So e' . dh = e' . (dh - (dh . e) e)
+ * and e . dh' = (e - (e . dh) dh) . dh', and both bracketed vectors have
+ * length sin E. Hence |g'| <= (|e'| + |dh'|) sin E, with |e'| <= |u'|/|u|
+ * for e = u/|u| and |dh'| <= |d'|/|d|. The caller supplies
+ * `rate >= |e'| + |dh'|` over the whole span; sin E is bounded here from
+ * `cosOver`, an enclosure of the cosine over the same span.
+ *
+ * Sound only where e and d are differentiable across the span: the
+ * caller must not use it over a window that crosses a record boundary of
+ * any series it rests on (`withinOneRecord`).
+ *
+ * @param {{lo:number,hi:number}}   cosMid  the cosine's enclosure at the midpoint
+ * @param {{lo:number,hi:number}}   cosOver an enclosure of the cosine over the span
+ * @param {number} rate  an upper bound on |e'| + |dh'| over the span, 1/s
+ * @param {number} half  the largest distance from the midpoint to an end, s
+ */
+export function elongationCosCentred(cosMid, cosOver, rate, half) {
+  if (!(rate >= 0) || !(half >= 0) || !Number.isFinite(rate) || !Number.isFinite(half)) return null;
+  // The smallest |cos| over the span bounds sin E from above. The interval
+  // form can exceed [-1, 1]; the true cosine cannot.
+  const m = I.mig({ lo: Math.max(cosOver.lo, -1), hi: Math.min(cosOver.hi, 1) });
+  const s2 = I.sub(I.iv(1), I.mul(I.iv(m), I.iv(m)));
+  const sinMax = Math.min(1, Math.sqrt(Math.max(0, s2.hi)) * (1 + 2 * I.PAD));
+  const reach = rate * half * sinMax * (1 + 4 * I.PAD);
+  return I.add(cosMid, I.iv(-reach, reach));
+}
+
+/**
  * The verdict the floor gives on an elongation-cosine enclosure.
  *
  * Three answers, and the two bounds that decide them are DIFFERENT

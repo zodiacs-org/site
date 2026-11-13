@@ -20,7 +20,7 @@ const ROOT = resolve(dirname(FILE), '..');
 const DOCS = 'https://zodiacs.org/developers/';
 const SOURCE_PATHS = [
   'src/mcp', 'src/lib/compute-api', 'src/lib/sky-api', 'src/lib/receipt-digest.ts',
-  'src/lib/engine/time-basis.mjs', 'src/lib/time', 'src/lib/compare', 'src/data',
+  'src/lib/time', 'src/lib/compare', 'src/data',
   'api/_compute', 'examples/mcp-server', 'public/examples/mcp-server.json',
   'public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz', 'vendor',
   'scripts/build-compute-handler.mjs', 'scripts/build-compute-local-time.mjs',

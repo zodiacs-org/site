@@ -7,6 +7,7 @@ import { CheckOurMath } from './ChartTrust';
  * is named as unknowable before the birth minute. Engine loads lazily
  * on first compute (bundle rule: only full.ts touches the ephemeris).
  */
+import { rangeWords } from '../lib/range-words';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { signForLongitude, signName, signPrepositional, type Sign } from '../lib/signs';
 import { birthdaySlug } from '../lib/birthdays';
@@ -135,7 +136,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
       <form class="calc__form" onSubmit={compute} aria-busy={busy}>
         <div class="calc__grid">
           <label class="field">
-            <span class="field__label mono">{t(locale, 'babyDueDate')}</span>
+            <span class="field__label">{t(locale, 'babyDueDate')}</span>
             <input
               class="field__input"
               type="date"
@@ -173,7 +174,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
                     <> {t(locale, 'babySunNearEdge')} {signName(reading.sun.nearEdge, locale)} {t(locale, 'babySunNearEdgeTail')}</>
                   )}
                 </p>
-                <span class="mono baby-receipt">
+                <span class="baby-receipt">
                   {fmtDay(reading.dueISO, locale)} · {t(locale, 'babyNoonNote')}
                 </span>
               </>
@@ -183,7 +184,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
                   {t(locale, 'babySunSplitA')} <strong>{signName(reading.sun.a, locale)}</strong> {t(locale, 'babySunSplitOr')}{' '}
                   <strong>{signName(reading.sun.b, locale)}</strong> {t(locale, 'babySunSplitTail')}
                 </p>
-                <span class="mono baby-receipt">
+                <span class="baby-receipt">
                   {fmtDay(reading.dueISO, locale)} · {signName(reading.sun.a, locale)} → {signName(reading.sun.b, locale)}
                 </span>
               </>
@@ -196,9 +197,8 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
             <ul class="baby-spans">
               {reading.moonSpans.map((s) => (
                 <li key={s.fromISO}>
-                  <span class="mono baby-receipt">
-                    {fmtDay(s.fromISO, locale)}
-                    {s.toISO !== s.fromISO && <> – {fmtDay(s.toISO, locale)}</>}
+                  <span class="baby-receipt">
+                    {s.toISO !== s.fromISO ? rangeWords(locale, fmtDay(s.fromISO, locale), fmtDay(s.toISO, locale)) : fmtDay(s.fromISO, locale)}
                   </span>
                   <span>{t(locale, 'moonIn')} {locale === 'ru' ? signPrepositional(s.sign) : signName(s.sign, locale)}</span>
                 </li>
@@ -210,7 +210,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
             <div class="baby-block">
               <h3>{t(locale, 'babyRetroHead')}</h3>
               <p>
-                {reading.retro.map((planet) => planetLabel(locale, planet)).join(' · ')} — {t(locale, 'babyRetroBody')}
+                {reading.retro.map((planet) => planetLabel(locale, planet)).join(' · ')}, {t(locale, 'babyRetroBody')}
               </p>
             </div>
           )}
@@ -226,7 +226,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
               href={reading.birthdayHref}
               title={locale === 'ru' ? 'Материал пока доступен по-английски' : undefined}
             >
-              <span>{t(locale, 'babyDateLink')}{locale === 'ru' ? ' — пока по-английски' : ''}</span><span class="orb">→</span>
+              <span>{t(locale, 'babyDateLink')}{locale === 'ru' ? ' (пока по-английски)' : ''}</span><span class="orb">→</span>
             </a>
             <a class="btn btn--primary" href={localizePath(locale, '/birth-chart/')}>
               <span>{t(locale, 'babyChartLink')}</span><span class="orb">↗</span>

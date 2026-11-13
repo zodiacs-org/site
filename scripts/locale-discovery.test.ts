@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { signDates } from '../src/lib/signs';
+import { signDateRange } from '../src/lib/sign-display';
 
 const read = (path: string) => readFileSync(resolve(path), 'utf8');
 
@@ -23,17 +24,28 @@ describe('localized discovery surfaces', () => {
   });
 
   it('uses localized sign dates on both daily horoscope surfaces', () => {
-    for (const locale of ['es', 'pt'] as const) {
-      for (const route of ['index.astro', '[sign]/index.astro']) {
+    // The es and pt routes are thin; the shared localized components render them.
+    const surfaces = [
+      { route: 'index.astro', component: 'src/components/localized/LocalizedHoroscopeHub.astro', tag: '<LocalizedHoroscopeHub ' },
+      { route: '[sign]/index.astro', component: 'src/components/localized/LocalizedHoroscope.astro', tag: '<LocalizedHoroscope ' },
+    ];
+    for (const { route, component, tag } of surfaces) {
+      for (const locale of ['es', 'pt'] as const) {
         const page = read(`src/pages/${locale}/horoscopes/${route}`);
-        expect(page).toContain('{signDates(sign, locale)}');
-        expect(page).not.toContain('{sign.dates}');
+        expect(page).toContain(`${tag}locale="${locale}"`);
       }
+      const source = read(component);
+      expect(source).toContain('{signDateRange(sign, locale)}');
+      expect(source).not.toContain('{sign.dates}');
     }
     expect(signDates('aries', 'es')).toBe('21 mar – 19 abr');
     expect(signDates('capricorn', 'es')).toBe('22 dic – 19 ene');
     expect(signDates('sagittarius', 'pt')).toBe('22 nov – 21 dez');
     expect(signDates('aquarius', 'pt')).toBe('20 jan – 18 fev');
+    expect(signDateRange('aries', 'es')).toBe('del 21 mar al 19 abr');
+    expect(signDateRange('capricorn', 'es')).toBe('del 22 dic al 19 ene');
+    expect(signDateRange('sagittarius', 'pt')).toBe('de 22 nov a 21 dez');
+    expect(signDateRange('aquarius', 'pt')).toBe('de 20 jan a 18 fev');
   });
 
   it('labels the localized Today card for its sign edition, not saved-chart personalization', () => {
@@ -53,7 +65,7 @@ describe('localized discovery surfaces', () => {
       pt: { action: 'escolher signo', daily: 'O céu de hoje', longer: 'leituras semanais e mensais' },
       fr: { action: 'choisir un signe', daily: 'Le ciel du jour', longer: 'lectures de la semaine et du mois' },
       it: { action: 'scegliere un segno', daily: 'Il cielo di oggi', longer: 'letture della settimana e del mese' },
-      ru: { action: 'выбрать знак — пока по-английски', daily: 'Сегодняшнее небо', longer: 'прогнозы на неделю и месяц' },
+      ru: { action: 'выбрать знак (пока по-английски)', daily: 'Сегодняшнее небо', longer: 'прогнозы на неделю и месяц' },
     };
     for (const [locale, expected] of Object.entries(links)) {
       const page = read(`src/pages/${locale}/tools/index.astro`);
@@ -71,11 +83,16 @@ describe('localized discovery surfaces', () => {
   });
 
   it('takes French and Italian forecast CTAs to the available edition with a visible language cue', () => {
+    // The translated homes share one component: the hero's forecast link is
+    // the locale's own edition where one exists, else English, announced.
+    const home = read('src/components/localized/LocalizedHome.astro');
+    expect(home).toContain('const href = localizePath(locale, path);');
+    expect(home).toContain("const horoscopes = route('/horoscopes/');");
+    expect(home).toContain('<a class="btn btn--ghost lhero__ghost" href={horoscopes.href} hreflang="en" title={cue.aria}><span>{c.hero.horoscope}{cue.suffix}</span></a>');
+    expect(home).toMatch(/\/horoscopes\/\$\{sign\.slug\}\/`\)/u);
+    expect(home).not.toMatch(/href="\/(?:fr|it)\/horoscopes\//u);
     for (const locale of ['fr', 'it']) {
-      const page = read(`src/pages/${locale}/index.astro`);
-      expect(page).toContain(`href={localizePath('${locale}', '/horoscopes/')} hreflang="en"`);
-      expect(page).toContain('{englishOnly?.suffix}</span>');
-      expect(page).not.toContain(`href="/${locale}/horoscopes/"`);
+      expect(read(`src/pages/${locale}/index.astro`)).toContain(`<LocalizedHome locale="${locale}"`);
     }
   });
 

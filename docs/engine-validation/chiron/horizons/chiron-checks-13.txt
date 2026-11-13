@@ -1,0 +1,176 @@
+API VERSION: 1.2
+API SOURCE: NASA/JPL Horizons API
+
+
+
+*******************************************************************************
+Ephemeris / API_USER Wed Nov  4 09:07:12 2026 Pasadena, USA      / Horizons    
+*******************************************************************************
+Target body name: 2060 Chiron (1977 UB)           {source: JPL#171}
+Center body name: Earth (399)                     {source: DE441}
+Center-site name: GEOCENTRIC
+*******************************************************************************
+Start time      : A.D. 1800-Jan-01 14:39:25.3440 TT      
+Stop  time      : A.D. 1800-Apr-27 05:15:44.9280 TT      
+Step-size       : 0 steps
+*******************************************************************************
+Target pole/equ : undefined
+Target radii    : 83. km                                                       
+Center geodetic : 0.0, 0.0, -6378.137             {E-lon(deg),Lat(deg),Alt(km)}
+Center cylindric: 0.0, 0.0, 0.0                   {E-lon(deg),Dxy(km),Dz(km)}
+Center pole/equ : ITRF93                          {East-longitude positive}
+Center radii    : 6378.137, 6378.137, 6356.752 km {Equator_a, b, pole_c}       
+Target primary  : Sun
+Vis. interferer : MOON (R_eq= 1737.400) km        {source: DE441}
+Rel. light bend : Sun                             {source: DE441}
+Rel. lght bnd GM: 1.3271E+11 km^3/s^2                                          
+Small-body perts: Yes                             {source: SB441-N16}
+Atmos refraction: NO (AIRLESS)
+RA format       : DEG
+Time format     : JD  
+Calendar mode   : Mixed Julian/Gregorian
+EOP file        : eop.261103.p270130                                           
+EOP coverage    : DATA-BASED 1962-JAN-20 TO 2026-NOV-03. PREDICTS-> 2027-JAN-29
+Units conversion: 1 au= 149597870.700 km, c= 299792.458 km/s, 1 day= 86400.0 s 
+Table cut-offs 1: Elevation (-90.0deg=NO ),Airmass (>38.000=NO), Daylight (NO )
+Table cut-offs 2: Solar elongation (  0.0,180.0=NO ),Local Hour Angle( 0.0=NO )
+Table cut-offs 3: RA/DEC angular rate (     0.0=NO )                           
+*******************************************************************************
+Initial IAU76/J2000 heliocentric ecliptic osculating elements (au, days, deg.):
+  EPOCH=  2457916.5 ! 2017-Jun-12.00 (TDB)         Residual RMS= .19933        
+   EC= .3824171374703196   QR= 8.427522999110739   TP= 2450143.7110841358      
+   OM= 209.2011323125998   W=  339.6529896907077   IN= 6.94959060447848        
+  Equivalent ICRF heliocentric cartesian coordinates (au, au/d):
+   X= 1.843374627977423E+01  Y=-1.877818593473934E+00  Z= 5.548833989583914E-01
+  VX= 7.316266023833624E-04 VY= 2.960187278972600E-03 VZ= 9.710586201315230E-04
+Asteroid physical parameters (km, seconds, rotational period in hours):        
+   GM= n.a.                RAD= 83.                ROTPER= 5.918               
+   H= 5.54                 G= .150                 B-V= .704                   
+                           ALBEDO= .150            STYP= Cb                    
+*******************************************************************************
+Date_________JDTT        ObsEcLon    ObsEcLat
+*********************************************
+$$SOE
+2378497.110710000     231.3253400   2.1193531
+2378497.152284000     231.3296924   2.1196553
+2378497.610710000     231.3775544   2.1229942
+2378497.652284000     231.3818830   2.1232976
+2378498.110710000     231.4294811   2.1266488
+2378498.152284000     231.4337857   2.1269533
+2378499.350232000     231.5569587   2.1357666
+2378499.811627000     231.6039514   2.1391815
+2378499.850232000     231.6078719   2.1394678
+2378500.311627000     231.6545921   2.1428951
+2378500.339430000     231.6573993   2.1431019
+2378500.350232000     231.6584898   2.1431823
+2378500.811627000     231.7049359   2.1466218
+2378500.839430000     231.7077266   2.1468295
+2378501.339430000     231.7577549   2.1505702
+2378519.050882000     233.3182767   2.2913501
+2378519.550882000     233.3558575   2.2955523
+2378520.050882000     233.3930505   2.2997665
+2378523.335992000     233.6275998   2.3277493
+2378523.835992000     233.6617868   2.3320521
+2378524.335992000     233.6955710   2.3363662
+2378524.629159000     233.7151923   2.3389008
+2378525.129159000     233.7483360   2.3432325
+2378525.629159000     233.7810749   2.3475752
+2378529.577907000     234.0252864   2.3822431
+2378530.077907000     234.0543753   2.3866781
+2378530.577907000     234.0830474   2.3911229
+2378539.262909000     234.5128184   2.4697654
+2378539.762909000     234.5335446   2.4743689
+2378540.262909000     234.5538289   2.4789800
+2378555.364014000     234.9527252   2.6211204
+2378555.864014000     234.9587320   2.6258911
+2378556.364014000     234.9642791   2.6306636
+2378557.067422000     234.9713053   2.6373802
+2378557.191262000     234.9724482   2.6385630
+2378557.567422000     234.9757473   2.6421561
+2378557.691262000     234.9767766   2.6433392
+2378557.862983000     234.9781573   2.6449797
+2378558.067422000     234.9797306   2.6469330
+2378558.191262000     234.9806463   2.6481162
+2378558.362983000     234.9818695   2.6497571
+2378558.862983000     234.9851231   2.6545350
+2378570.232530000     234.9360862   2.7628519
+2378570.732530000     234.9286203   2.7675801
+2378571.232530000     234.9207171   2.7723035
+2378573.115743000     234.8870267   2.7900474
+2378573.615743000     234.8770407   2.7947450
+2378574.115743000     234.8666185   2.7994364
+2378575.080569000     234.8452772   2.8084707
+2378575.580569000     234.8335822   2.8131424
+2378576.080569000     234.8214556   2.8178069
+2378579.216545000     234.7356919   2.8468774
+2378579.716545000     234.7204975   2.8514799
+2378580.216545000     234.7048935   2.8560726
+2378603.714972000     233.5663291   3.0556422
+2378604.214972000     233.5347971   3.0594439
+2378604.714972000     233.5030202   3.0632231
+2378611.719270000     233.0351393   3.1136533
+2378612.219270000     233.0003334   3.1170644
+2378612.719270000     232.9653677   3.1204491
+$$EOE
+*******************************************************************************
+Column meaning:
+ 
+TIME
+
+  Terrestrial Time ("TT") output was requested. This continuous timescale
+is the relativistic proper time of a clock at rest on the Earth's geoid (at
+"mean sea level"), but defined for a specified gravitational time dilation,
+so a coordinate time. It is appropriate for observations and measurements
+from the surface of the Earth.
+
+  TT runs at a uniform rate of one SI second per second and is independent of
+irregularities in Earth's rotation. It is a theoretical ideal, approximated
+(with a constant offset of 32.184 seconds) by the measured International Atomic
+Time (TAI) after 1955.  TT is the relativistic successor to the now deprecated
+non-relativistic Ephemeris Time (ET).
+
+  The TT scale requested here is a time-scale conversion from internal
+Barycentric Dynamical Time (TDB) and differs periodically from TDB with an
+amplitude less than 2 ms for several thousand years centered on present.
+The time-scale conversion for Earth is used regardless of observer location
+within the solar system, although clock rates may differ due to the local
+gravity field.
+
+  Any 'b' symbol in the 1st-column denotes a B.C. date. First-column blank
+(" ") denotes an A.D. date.
+ 
+CALENDAR SYSTEM
+
+  Mixed calendar mode was active such that calendar dates after AD 1582-Oct-15
+(if any) are in the modern Gregorian system. Dates prior to 1582-Oct-5 (if any)
+are in the Julian calendar system, which is automatically extended for dates
+prior to its adoption on 45-Jan-1 BC.  The Julian calendar is useful for
+matching historical dates. The Gregorian calendar more accurately corresponds
+to the Earth's orbital motion and seasons. A "Gregorian-only" calendar mode is
+available if such physical events are the primary interest.
+
+  NOTE: "n.a." in output means quantity "not available" at the print-time.
+ 
+ 'ObsEcLon    ObsEcLat' =
+   Observer-centered IAU76/80 ecliptic-of-date longitude and latitude of the
+target centers' apparent position, with light-time, gravitational deflection of
+light, and stellar aberrations.  Units: DEGREES
+
+Computations by ...
+
+    Solar System Dynamics Group, Horizons On-Line Ephemeris System
+    4800 Oak Grove Drive, Jet Propulsion Laboratory
+    Pasadena, CA  91109   USA
+
+    General site: https://ssd.jpl.nasa.gov/
+    Mailing list: https://ssd.jpl.nasa.gov/email_list.html
+    System news : https://ssd.jpl.nasa.gov/horizons/news.html
+    User Guide  : https://ssd.jpl.nasa.gov/horizons/manual.html
+    Connect     : browser        https://ssd.jpl.nasa.gov/horizons/app.html#/x
+                  API            https://ssd-api.jpl.nasa.gov/doc/horizons.html
+                  command-line   telnet ssd.jpl.nasa.gov 6775
+                  e-mail/batch   https://ssd.jpl.nasa.gov/ftp/ssd/horizons_batch.txt
+                  scripts        https://ssd.jpl.nasa.gov/ftp/ssd/SCRIPTS
+    Inquiries   : Jon.D.Giorgini@jpl.nasa.gov
+
+*******************************************************************************

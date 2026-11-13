@@ -7,10 +7,12 @@ import {
   CORE_ROUTE_LOCALES,
   DAILY_READING_ROUTE_LOCALES,
   CATALOG_LOCALES,
+  CHINESE_ZODIAC_ROUTE_LOCALES,
   LEGACY_HOME_SELECTOR_LOCALES,
   INDEXABLE_SIGN_GUIDE_LOCALES,
   PROGRAMMATIC_ROUTE_LOCALES,
   RELEASED_LOCALES,
+  SECTION_LOCALES,
   STAGED_CORE_ROUTE_LOCALES,
   alternatePaths,
   availableLocalesForPath,
@@ -29,9 +31,9 @@ import {
 import { SIGN_SLUGS } from '../signs';
 
 describe('i18n helpers', () => {
-  it('keeps every localized UI catalog aligned with all 452 English keys', () => {
+  it('keeps every localized UI catalog aligned with all 453 English keys', () => {
     const englishKeys = Object.keys(UI.en).sort();
-    expect(englishKeys).toHaveLength(452);
+    expect(englishKeys).toHaveLength(453);
     for (const locale of CATALOG_LOCALES) {
       expect(Object.keys(UI[locale]).sort()).toEqual(englishKeys);
     }
@@ -139,7 +141,7 @@ describe('i18n helpers', () => {
   });
 
   it('publishes Russian only on the reviewed core route family', () => {
-    expect(LOCALES).toEqual(['en', 'es', 'pt', 'fr', 'it', 'ru', 'ar']);
+    expect(LOCALES).toEqual(['en', 'es', 'pt', 'fr', 'it', 'ru', 'ar', 'zh-hans', 'zh-hant']);
     expect(RELEASED_LOCALES).toEqual(['en', 'es', 'pt', 'fr', 'it']);
     expect(CORE_ROUTE_LOCALES).toEqual(['en', 'es', 'pt', 'fr', 'it', 'ru']);
     expect(CATALOG_LOCALES).toEqual(['en', 'es', 'pt', 'fr', 'it', 'ru']);
@@ -166,7 +168,25 @@ describe('i18n helpers', () => {
     expect(renderableLocalesForPath('/tools/')).toEqual(CORE_ROUTE_LOCALES);
     expect(availableLocalesForPath('/birthday/february-29/')).toEqual(['en']);
     expect(renderableLocalesForPath('/birthday/february-29/')).toEqual(PROGRAMMATIC_ROUTE_LOCALES);
-    expect(availableLocalesForPath('/learn/chinese-zodiac/dragon/')).toEqual(PROGRAMMATIC_ROUTE_LOCALES);
+    expect(availableLocalesForPath('/learn/chinese-zodiac/dragon/')).toEqual(CHINESE_ZODIAC_ROUTE_LOCALES);
+    expect(CHINESE_ZODIAC_ROUTE_LOCALES).toEqual([...PROGRAMMATIC_ROUTE_LOCALES, 'zh-hans', 'zh-hant']);
+    expect(LOCALE_META['zh-hans']).toEqual({
+      pathPrefix: '/zh-hans', htmlLang: 'zh-Hans', dir: 'ltr', hreflang: 'zh-Hans',
+      intlLocale: 'zh-Hans', ogLocale: 'zh_CN', languageName: '简体中文',
+    });
+    expect(LOCALE_META['zh-hant']).toEqual({
+      pathPrefix: '/zh-hant', htmlLang: 'zh-Hant', dir: 'ltr', hreflang: 'zh-Hant',
+      intlLocale: 'zh-Hant', ogLocale: 'zh_TW', languageName: '繁體中文',
+    });
+    // The section locales publish the Chinese zodiac guide and nothing else.
+    for (const locale of SECTION_LOCALES) {
+      expect(localizePath(locale, '/learn/chinese-zodiac/rat/')).toBe(`/${locale}/learn/chinese-zodiac/rat/`);
+      for (const path of ['/', '/tools/', '/aries/', '/birthday/february-29/', '/learn/', '/horoscopes/', '/compatibility/aries-leo/']) {
+        expect(localizePath(locale, path)).toBe(path);
+        expect(alternatePaths(path) ?? {}).not.toHaveProperty(locale);
+      }
+      expect(stripLocale(`/${locale}/learn/chinese-zodiac/`)).toBe('/learn/chinese-zodiac/');
+    }
     expect(availableLocalesForPath('/aries/')).toEqual(INDEXABLE_SIGN_GUIDE_LOCALES);
     expect(renderableLocalesForPath('/aries/')).toEqual(CORE_ROUTE_LOCALES);
     expect(alternatePaths('/tools/')).toHaveProperty('ru', '/ru/tools/');
@@ -226,6 +246,8 @@ describe('i18n helpers', () => {
         pt: `/pt${path}`,
         fr: `/fr${path}`,
         it: `/it${path}`,
+        'zh-hans': `/zh-hans${path}`,
+        'zh-hant': `/zh-hant${path}`,
       });
     }
     expect(alternatePaths('/birthday/july-15/')).toEqual({ en: '/birthday/july-15/' });
@@ -264,7 +286,7 @@ describe('i18n helpers', () => {
   it('renders the chart Registry bridge as complete localized sentences', () => {
     expect(tf('en', 'recordChartSun', { sign: 'Leo' })).toBe('Your Sun is in Leo.');
     expect(tf('en', 'recordChartBody', { sign: 'Leo' })).toBe(
-      'Leo is one of the Twelve—with its own artwork, history, and official Registry record.',
+      'Leo is one of the Twelve, with its own artwork, history, and official Registry record.',
     );
     expect(tf('en', 'recordChartLink', { sign: 'Leo' })).toBe('Explore the Leo Registry →');
 
@@ -279,9 +301,9 @@ describe('i18n helpers', () => {
     expect(UI.pt.navCollect).toBe('Astrofolio');
     expect(UI.pt.recordLabel).toBe('Ala do acervo');
     expect(UI.pt.recordOneOfTwelve).toBe(
-      'também integra os Doze — um registro canônico no acervo.',
+      'também integra os Doze, um registro canônico no acervo.',
     );
-    expect(UI.pt.recordViewLink).toBe('Ver o registro — por enquanto em inglês →');
+    expect(UI.pt.recordViewLink).toBe('Ver o registro (por enquanto em inglês) →');
   });
 
   it('uses the approved French registry register', () => {
@@ -289,9 +311,9 @@ describe('i18n helpers', () => {
     expect(UI.fr.footerRegistry).toBe('Registry');
     expect(UI.fr.recordLabel).toBe('Aile des collections');
     expect(UI.fr.recordOneOfTwelve).toBe(
-      'figure aussi parmi les Douze — une notice de référence dans le registre.',
+      'figure aussi parmi les Douze, une notice de référence dans le registre.',
     );
-    expect(UI.fr.recordViewLink).toBe('Voir la notice — pour l’instant en anglais →');
+    expect(UI.fr.recordViewLink).toBe('Voir la notice (pour l’instant en anglais) →');
   });
 
   it('uses the approved Italian registry register', () => {
@@ -299,14 +321,14 @@ describe('i18n helpers', () => {
     expect(UI.it.footerRegistry).toBe('Registry');
     expect(UI.it.recordLabel).toBe('Ala della collezione');
     expect(UI.it.recordOneOfTwelve).toBe(
-      'esiste anche come uno dei Dodici — una scheda di riferimento nel registro.',
+      'esiste anche come uno dei Dodici, una scheda di riferimento nel registro.',
     );
-    expect(UI.it.recordViewLink).toBe('Vedi la scheda — per ora in inglese →');
+    expect(UI.it.recordViewLink).toBe('Vedi la scheda (per ora in inglese) →');
   });
 
   it('keeps the Spanish baby result sentences grammatical when signs are inserted', () => {
     expect(`${UI.es.babySunNearEdge} Géminis ${UI.es.babySunNearEdgeTail}`).toBe(
-      'La fecha está cerca del borde del signo: si el bebé nace más de un día antes o después, puede tener el Sol en Géminis — la fecha de nacimiento decide.',
+      'La fecha está cerca del borde del signo: si el bebé nace más de un día antes o después, puede tener el Sol en Géminis (la fecha de nacimiento decide).',
     );
     expect(`${UI.es.babySunSplitA} Aries ${UI.es.babySunSplitOr} Tauro ${UI.es.babySunSplitTail}`).toBe(
       'El Sol cambia de signo ese día: el bebé nace con el Sol en Aries o en Tauro según la hora. El momento exacto del nacimiento decide.',
@@ -316,7 +338,7 @@ describe('i18n helpers', () => {
 
   it('keeps the Portuguese baby result sentences grammatical when signs are inserted', () => {
     expect(UI.pt.babySunNearEdge + ' Gêmeos ' + UI.pt.babySunNearEdgeTail).toBe(
-      'A data fica perto da transição de signo, então nascer mais de um dia antes ou depois pode levar o Sol para Gêmeos — a data do nascimento é que decide.',
+      'A data fica perto da transição de signo, então nascer mais de um dia antes ou depois pode levar o Sol para Gêmeos (a data do nascimento é que decide).',
     );
     expect(
       UI.pt.babySunSplitA + ' Áries ' + UI.pt.babySunSplitOr + ' Touro ' + UI.pt.babySunSplitTail,
@@ -328,7 +350,7 @@ describe('i18n helpers', () => {
 
   it('keeps the Italian baby result sentences grammatical when signs are inserted', () => {
     expect(UI.it.babySunNearEdge + ' Gemelli ' + UI.it.babySunNearEdgeTail).toBe(
-      'La data è vicina al confine del segno, quindi nascere più di un giorno prima o dopo può portare il Sole in Gemelli — decide la data di nascita.',
+      'La data è vicina al confine del segno, quindi nascere più di un giorno prima o dopo può portare il Sole in Gemelli (decide la data di nascita).',
     );
     expect(
       UI.it.babySunSplitA + ' Ariete ' + UI.it.babySunSplitOr + ' Toro ' + UI.it.babySunSplitTail,

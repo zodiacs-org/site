@@ -1,0 +1,132 @@
+---
+/**
+ * The tools hub's "start here" panel: the painted sign ring, the birth
+ * chart's icon, what the chart gives you, what you need, one button and a
+ * short reassurance line. Every string comes from the page, so each locale
+ * passes only copy it already has. The art is the page's first picture.
+ */
+import ArtFrame from '../ArtFrame.astro';
+import ToolIcon from '../ToolIcon.astro';
+import { HERO_CROP_SIZE, heroCropAlt, heroCropSrc, heroCropSrcset } from '../../lib/hero-crops';
+import type { CatalogLocale } from '../../lib/i18n/core';
+
+interface Props {
+  href: string;
+  title: string;
+  text: string;
+  /** What the calculator asks for, one short item each. */
+  needs: readonly string[];
+  /** Optional lead-in before the needs ("You need"). */
+  needsLabel?: string;
+  /** Accessible name for the needs list when there is no visible lead-in. */
+  needsName?: string;
+  cta: string;
+  reassure?: string;
+  /** Optional tag over the art ("Start here"). */
+  tag?: string;
+  locale?: CatalogLocale;
+  headingId?: string;
+}
+
+const {
+  href,
+  title,
+  text,
+  needs,
+  needsLabel,
+  needsName,
+  cta,
+  reassure,
+  tag,
+  locale = 'en',
+  headingId = 'tools-lead-h',
+} = Astro.props;
+---
+<article class="tools-lead" aria-labelledby={headingId}>
+  <ArtFrame
+    class="tools-lead__art"
+    src={heroCropSrc('sign-ring', 560)}
+    srcset={heroCropSrcset('sign-ring')}
+    sizes="(min-width: 1101px) 560px, (min-width: 861px) 470px, calc(100vw - 40px)"
+    width={HERO_CROP_SIZE.width}
+    height={HERO_CROP_SIZE.height}
+    alt={heroCropAlt('sign-ring', locale)}
+    focus="40% 60%"
+    spot="42% 58%"
+    eager
+  />
+  {tag && <span class="tools-lead__tag">{tag}</span>}
+  <div class="tools-lead__body">
+    <ToolIcon name="birth-chart" size={72} inset={false} class="tools-lead__icon" />
+    <h2 class="h-2" id={headingId}>{title}</h2>
+    <p class="tools-lead__text">{text}</p>
+    <ul class="tools-lead__needs" aria-label={needsLabel ?? needsName}>
+      {needsLabel && <li class="tools-lead__needs-k" aria-hidden="true">{needsLabel}</li>}
+      {needs.map((need) => <li>{need}</li>)}
+    </ul>
+    <div class="btn-row">
+      <a class="btn btn--primary btn--lg" href={href}>{cta} <span class="orb" aria-hidden="true">↗</span></a>
+    </div>
+    {reassure && <p class="reassure">{reassure}</p>}
+  </div>
+</article>
+
+<style>
+  .tools-lead {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: linear-gradient(180deg, #10131b, #0c0f15);
+    box-shadow: 0 40px 80px -48px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  .tools-lead :global(.tools-lead__art) { aspect-ratio: 560 / 250; border-radius: 0; background: #10131b; }
+  .tools-lead :global(.tools-lead__art)::after {
+    background:
+      linear-gradient(180deg, rgba(16, 19, 27, 0) 58%, #10131b 99%),
+      radial-gradient(ellipse 62% 70% at var(--spot, 50% 52%), transparent 0 34%, rgba(16, 19, 27, 0.35) 70%, rgba(16, 19, 27, 0.7) 100%);
+  }
+  .tools-lead__tag {
+    position: absolute;
+    z-index: 3;
+    top: 16px;
+    left: 16px;
+    padding: 6px 13px;
+    border-radius: var(--r-full);
+    background: rgba(10, 12, 17, 0.62);
+    border: 1px solid rgba(238, 241, 247, 0.3);
+    font-size: 13px;
+    font-weight: 550;
+    color: var(--ink-0);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .tools-lead__body { position: relative; padding: 0 32px 30px; }
+  .tools-lead__body :global(.tools-lead__icon) {
+    position: relative;
+    z-index: 4;
+    margin-top: -36px;
+    box-shadow: 0 0 0 6px #10131b;
+  }
+  .tools-lead .h-2 { margin-top: 16px; font-size: clamp(2rem, 1.4rem + 1.6vw, 2.6rem); }
+  .tools-lead__text { margin: 10px 0 0; color: var(--text-2); font-size: 1.0625rem; line-height: 1.55; max-width: 44ch; text-wrap: pretty; }
+  .tools-lead__needs { list-style: none; padding: 0; margin: 18px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .tools-lead__needs li { font-size: 13px; color: var(--ink-1); padding: 5px 12px; border: 1px solid var(--hair-2); border-radius: var(--r-full); line-height: 1.3; }
+  .tools-lead__needs .tools-lead__needs-k { border: 0; padding-left: 0; padding-right: 2px; color: var(--faint); }
+  .tools-lead .btn-row { margin-top: 24px; }
+  .tools-lead .reassure { margin-top: 14px; }
+
+  @media (max-width: 760px) {
+    .tools-lead { border-radius: 24px; }
+    .tools-lead :global(.tools-lead__art) { aspect-ratio: 16 / 9; }
+    .tools-lead__body { padding: 0 20px 22px; }
+    .tools-lead__body :global(.tools-lead__icon) { --tool-icon-size: 60px; margin-top: -30px; box-shadow: 0 0 0 5px #10131b; }
+    .tools-lead .h-2 { font-size: 2rem; margin-top: 12px; }
+    .tools-lead__text { font-size: 1rem; }
+    .tools-lead__needs { gap: 6px; }
+    .tools-lead__needs li { font-size: 12px; padding: 4px 9px; }
+    .tools-lead__needs .tools-lead__needs-k { width: 100%; padding: 0; }
+    .tools-lead .btn-row { margin-top: 20px; }
+    .tools-lead .btn { width: 100%; }
+  }
+</style>

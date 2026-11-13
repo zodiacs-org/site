@@ -36,9 +36,9 @@ describe('Russian chart-result seams', () => {
     const runtime = await readFile(new URL('../lib/i18n/ru-runtime/server.ts', import.meta.url), 'utf8');
     expect(source).toContain('russianCopy?.chart.wheelActions ?? {');
     expect(source).not.toContain('WHEEL_ACTION_COPY');
-    expect(runtime).toContain("another: 'Прочитать другую карту — пока по-английски'");
-    expect(runtime).toContain("compareMine: 'Сравнить с моей — пока по-английски'");
-    expect(runtime).toContain("compareAdd: 'Добавить мою карту для сравнения — пока по-английски'");
+    expect(runtime).toContain("another: 'Прочитать другую карту (пока по-английски)'");
+    expect(runtime).toContain("compareMine: 'Сравнить с моей (пока по-английски)'");
+    expect(runtime).toContain("compareAdd: 'Добавить мою карту для сравнения (пока по-английски)'");
   });
 
   it('scrubs only profile-origin handoffs and fences delayed chart computation', async () => {

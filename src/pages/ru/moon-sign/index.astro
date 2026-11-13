@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import Faq from '../../../components/Faq.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import ChartCalculator from '../../../islands/ChartCalculator';
 import '../../../styles/calculator.css';
 
@@ -46,13 +47,14 @@ const jsonLd = [
 ];
 ---
 <Base
+  accountSurface
   clientUi
-  title="Лунный знак по дате рождения — рассчитать онлайн"
+  title="Лунный знак по дате рождения: рассчитать онлайн"
   description="Найдите свой лунный знак по дате рождения. Считается в браузере, с честными оговорками, когда Луна меняла знак."
   path="/ru/moon-sign/"
   locale="ru"
   image="/assets/og/v2/tool/moon-sign.png"
-  imageAlt="Калькулятор лунного знака — Zodiacs.org"
+  imageAlt="Калькулятор лунного знака, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
@@ -67,6 +69,7 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="crescent-band" locale="ru" />
     <Faq items={faq} heading="Вопросы о лунном знаке" />
   </section>
 </Base>

@@ -89,11 +89,10 @@ await withPreview({ port: 4394 }, async (baseURL) => {
       await settledBox(stage);
 
       check(
-        `${width}px: preview is promoted ahead of the zero-input daily section`,
+        `${width}px: the zero-input daily signs come first, then the preview`,
         await page.locator('#chart-preview').evaluate((section) => {
-          const daily = Array.from(document.querySelectorAll('section')).find((candidate) =>
-            candidate.querySelector('.tbs'));
-          return !daily || Boolean(section.compareDocumentPosition(daily) & Node.DOCUMENT_POSITION_FOLLOWING);
+          const daily = document.querySelector('#today-by-sign');
+          return Boolean(daily) && Boolean(section.compareDocumentPosition(daily) & Node.DOCUMENT_POSITION_PRECEDING);
         }),
       );
       check(
@@ -105,6 +104,11 @@ await withPreview({ port: 4394 }, async (baseURL) => {
 
       const jumps = page.locator('[data-demo-jump]');
       check(`${width}px: three explicit preview starting points render`, await jumps.count() === 3);
+      check(
+        `${width}px: the starting points are her Sun, Moon and rising`,
+        JSON.stringify(await jumps.evaluateAll((buttons) => buttons.map((button) => button.dataset.demoJump)))
+          === JSON.stringify(['body:Sun', 'body:Moon', 'house:1']),
+      );
       const jumpHeights = await jumps.evaluateAll((buttons) => buttons.map((button) => button.getBoundingClientRect().height));
       check(
         `${width}px: preview controls meet the 44px touch floor`,
@@ -125,9 +129,10 @@ await withPreview({ port: 4394 }, async (baseURL) => {
           && await page.locator('[data-demo-kind-output]').textContent() === 'Life area',
       );
 
-      const aspectJump = page.locator('[data-demo-jump^="aspect:"]');
+      // Connections are reached from the full-size selector under the wheel.
+      const aspectId = await page.locator('[data-demo-layer="aspects"]').first().getAttribute('data-demo-id');
       const aspectUrl = page.url();
-      await aspectJump.click();
+      await page.getByLabel('Explore the chart', { exact: true }).selectOption(aspectId);
       await wait(70);
       const aspectChartTop = await documentTop(chartFrame);
       check(
@@ -331,12 +336,12 @@ await withPreview({ port: 4394 }, async (baseURL) => {
         .map((button) => button.getAttribute('data-demo-copy') ?? '')
         .filter((copy) => /\b(?:you|your)\b/i.test(copy)));
       check(`${width}px: Frida captions stay third-person`, secondPerson.length === 0, secondPerson.join(' | '));
-      const calloutSecondPerson = await page.locator('.demo__callout p').evaluateAll((paragraphs) => paragraphs
+      const calloutSecondPerson = await page.locator('.demo__jump-copy').evaluateAll((paragraphs) => paragraphs
         .map((paragraph) => paragraph.textContent ?? '')
         .filter((copy) => /\b(?:you|your)\b/i.test(copy)));
       check(
         `${width}px: Frida big-three preview stays third-person`,
-        calloutSecondPerson.length === 0,
+        calloutSecondPerson.length === 0 && await page.locator('.demo__jump-copy').count() === 3,
         calloutSecondPerson.join(' | '),
       );
       const malformed = await allTargets.evaluateAll((buttons) => buttons

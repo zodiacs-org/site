@@ -1,30 +1,39 @@
 /**
- * Declination aspects — the family a chart wheel cannot draw.
+ * Declination aspects: the family a chart wheel cannot draw.
  *
- * The wheel measures one angle: ecliptic longitude, the position round the
- * zodiac. Declination measures a different one — how far north or south of
+ * The wheel measures one angle, ecliptic longitude, the position round the
+ * zodiac. Declination measures a different one: how far north or south of
  * the celestial equator a body actually stands. The two are independent
  * enough that a pair can sit a third of the sky apart in longitude and
  * still ride the same declination circle, at the same height above the
  * equator, crossing the sky together night after night.
  *
  * Traditional practice reads that as a conjunction in all but name (a
- * parallel), and reads the mirrored case — equal declinations on opposite
- * sides of the equator — as an opposition (a contraparallel).
+ * parallel), and reads the mirrored case, equal declinations on opposite
+ * sides of the equator, as an opposition (a contraparallel).
  *
- * Arithmetic over positions the chart already carries; no ephemeris here.
+ * Since engine 1.1.0-rc.2 the arithmetic is the engine's own, from
+ * `@zodiacs/engine/lite`, which loads no ephemeris; this module keeps the
+ * site's names, shapes and default obliquity over it. Positions come from
+ * the chart already; nothing here computes one.
  */
-import { declinationOf, OBLIQUITY, separation } from './wheel/ecliptic3d';
+import {
+  DEFAULT_DECLINATION_ORB_POLICY,
+  declinationOf as packageDeclinationOf,
+  declinationOrb as packageDeclinationOrb,
+  declinationsForBodies,
+  findDeclinationAspects as packageFindDeclinationAspects,
+} from '@zodiacs/engine/lite';
+import { OBLIQUITY } from './wheel/ecliptic3d';
 
 /**
- * Declination aspects are held to a tight orb — a degree is already wide
- * for a measurement that only spans ±23.4° in total. The luminaries carry
- * the wider allowance, the same way they do for longitude aspects.
+ * Declination aspects are held to a tight orb: a degree is already wide
+ * for a measurement that only spans 23.4 degrees either side of the equator
+ * for the Sun. The luminaries carry the wider allowance, the same way they
+ * do for longitude aspects. Both orbs are inclusive.
  */
-export const DECLINATION_ORB = 1;
-export const DECLINATION_ORB_LUMINARY = 1.5;
-
-const LUMINARIES = new Set(['Sun', 'Moon']);
+export const DECLINATION_ORB = DEFAULT_DECLINATION_ORB_POLICY.orb;
+export const DECLINATION_ORB_LUMINARY = DEFAULT_DECLINATION_ORB_POLICY.luminaryOrb;
 
 export type DeclinationAspectType = 'parallel' | 'contraparallel';
 
@@ -43,58 +52,62 @@ export interface DeclinationAspect {
   /** Declination of each body, north positive. */
   decA: number;
   decB: number;
-  /** The pair's ecliptic separation — what the flat wheel shows instead. */
+  /** The pair's ecliptic separation: what the flat wheel shows instead. */
   separation: number;
+}
+
+/** A body's declination, and whether it stands beyond the Sun's bounds. */
+export interface DeclinationMark {
+  body: string;
+  /** Degrees, north positive. */
+  dec: number;
+  /**
+   * Beyond the obliquity, strictly. A body labelled exactly Sun stays inside
+   * while its ecliptic latitude is within 0.001 degrees, by the engine's
+   * convention: the Sun itself only grazes the bound at a solstice.
+   */
+  outOfBounds: boolean;
 }
 
 /** The orb this pair is allowed, widened when a luminary is involved. */
 export function declinationOrb(a: string, b: string): number {
-  return LUMINARIES.has(a) || LUMINARIES.has(b)
-    ? DECLINATION_ORB_LUMINARY
-    : DECLINATION_ORB;
+  return packageDeclinationOrb(a, b);
 }
 
 /**
- * Every parallel and contraparallel among the bodies handed in.
+ * Declination: the angle north or south of the celestial equator, which is
+ * a different measurement from ecliptic latitude and the one that decides
+ * whether a body is out of bounds.
+ */
+export function declinationOf(lonDeg: number, latDeg: number, obliquityDeg = OBLIQUITY): number {
+  return packageDeclinationOf(lonDeg, latDeg, obliquityDeg);
+}
+
+/**
+ * Every parallel and contraparallel among the bodies handed in, tightest
+ * first.
  *
- * Which of the two a pair forms never needs a sign test: |δa − δb| is the
- * smaller quantity exactly when the declinations share a sign, and
- * |δa + δb| exactly when they oppose. Taking the smaller therefore picks
- * the right relationship and its orb in one step.
- *
- * The two are equal only when one body sits exactly on the equator, which
- * is its own mirror and so takes no side. That reading is called a
- * parallel, since a body at 0° is at the same height as its partner in the
- * only sense the equator admits.
+ * Which of the two a pair forms is the smaller of the two distances: the
+ * difference of the declinations when they share a side of the equator, and
+ * their sum when they oppose. The two are equal only when one body sits
+ * exactly on the equator, which is its own mirror and so takes no side; that
+ * reading is called a parallel. The engine decides each inclusion, type and
+ * order exactly on the declinations, and refuses with a RangeError a body
+ * named twice or a position that is not a finite number.
  */
 export function findDeclinationAspects(
   bodies: readonly DeclinationBody[],
   obliquityDeg = OBLIQUITY,
 ): DeclinationAspect[] {
-  const placed = bodies.map((body) => ({
-    ...body,
-    dec: declinationOf(body.lon, body.lat, obliquityDeg),
-  }));
+  return packageFindDeclinationAspects(bodies, obliquityDeg)
+    .map(({ a, b, type, orb, decA, decB, separation }) => ({ a, b, type, orb, decA, decB, separation }));
+}
 
-  const found: DeclinationAspect[] = [];
-  for (let i = 0; i < placed.length; i += 1) {
-    for (let j = i + 1; j < placed.length; j += 1) {
-      const a = placed[i];
-      const b = placed[j];
-      const sameSide = Math.abs(a.dec - b.dec);
-      const mirrored = Math.abs(a.dec + b.dec);
-      const orb = Math.min(sameSide, mirrored);
-      if (orb > declinationOrb(a.body, b.body)) continue;
-      found.push({
-        a: a.body,
-        b: b.body,
-        type: sameSide <= mirrored ? 'parallel' : 'contraparallel',
-        orb,
-        decA: a.dec,
-        decB: b.dec,
-        separation: separation(a.lon, b.lon),
-      });
-    }
-  }
-  return found.sort((one, other) => one.orb - other.orb);
+/** Each body's declination and bounds flag, in the order handed in. */
+export function declinationRows(
+  bodies: readonly DeclinationBody[],
+  obliquityDeg = OBLIQUITY,
+): DeclinationMark[] {
+  return declinationsForBodies(bodies, obliquityDeg).rows
+    .map(({ body, dec, outOfBounds }) => ({ body, dec, outOfBounds }));
 }

@@ -1,0 +1,1172 @@
+{
+ "schema": "zodiacs.public-adoption-baseline.v2",
+ "collected": {
+  "from": "2026-10-30T15:16:58Z",
+  "to": "2026-10-30T15:35:45Z",
+  "collector": "tools/collect.py, Python standard library, anonymous HTTPS GETs"
+ },
+ "npm": {
+  "@zodiacs/engine": {
+   "lastMonthStatus": 200,
+   "lastMonth": 906,
+   "lastWeek": 58,
+   "daily": [
+    {
+     "downloads": 0,
+     "day": "2026-09-28"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-09-29"
+    },
+    {
+     "downloads": 257,
+     "day": "2026-09-30"
+    },
+    {
+     "downloads": 151,
+     "day": "2026-10-01"
+    },
+    {
+     "downloads": 44,
+     "day": "2026-10-02"
+    },
+    {
+     "downloads": 7,
+     "day": "2026-10-03"
+    },
+    {
+     "downloads": 9,
+     "day": "2026-10-04"
+    },
+    {
+     "downloads": 1,
+     "day": "2026-10-05"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-06"
+    },
+    {
+     "downloads": 48,
+     "day": "2026-10-07"
+    },
+    {
+     "downloads": 30,
+     "day": "2026-10-08"
+    },
+    {
+     "downloads": 38,
+     "day": "2026-10-09"
+    },
+    {
+     "downloads": 29,
+     "day": "2026-10-10"
+    },
+    {
+     "downloads": 203,
+     "day": "2026-10-11"
+    },
+    {
+     "downloads": 15,
+     "day": "2026-10-12"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-13"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-14"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-15"
+    },
+    {
+     "downloads": 2,
+     "day": "2026-10-16"
+    },
+    {
+     "downloads": 6,
+     "day": "2026-10-17"
+    },
+    {
+     "downloads": 6,
+     "day": "2026-10-18"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-19"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-20"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-21"
+    },
+    {
+     "downloads": 2,
+     "day": "2026-10-22"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-23"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-24"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-25"
+    },
+    {
+     "downloads": 0,
+     "day": "2026-10-26"
+    },
+    {
+     "downloads": 11,
+     "day": "2026-10-27"
+    },
+    {
+     "downloads": 45,
+     "day": "2026-10-28"
+    },
+    {
+     "downloads": 2,
+     "day": "2026-10-29"
+    }
+   ],
+   "distTags": {
+    "latest": "1.0.0",
+    "next": "0.1.1-rc.16"
+   },
+   "versions": [
+    "0.1.1-rc.14",
+    "0.1.1-rc.15",
+    "0.1.1-rc.16",
+    "1.0.0"
+   ]
+  },
+  "@zodiacs/mcp-server": {
+   "lastMonthStatus": 404,
+   "lastMonth": null
+  },
+  "@zodiacs/cli": {
+   "lastMonthStatus": 404,
+   "lastMonth": null
+  },
+  "@zodiacs/ai-tools": {
+   "lastMonthStatus": 404,
+   "lastMonth": null
+  },
+  "@zodiacs/wheel": {
+   "lastMonthStatus": 404,
+   "lastMonth": null
+  }
+ },
+ "pypi": {
+  "recent": {
+   "last_day": 0,
+   "last_month": 128,
+   "last_week": 8
+  },
+  "withoutMirrorsTotal": 153,
+  "withoutMirrorsDays": 15,
+  "version": "0.1.0a1",
+  "releases": [
+   "0.1.0a1"
+  ]
+ },
+ "github": {
+  "zodiacs-org/engine": {
+   "stargazers_count": 0,
+   "forks_count": 0,
+   "subscribers_count": 0,
+   "open_issues_count": 41,
+   "pushed_at": "2026-10-29T14:04:28Z"
+  },
+  "zodiacs-org/site": {
+   "stargazers_count": 0,
+   "forks_count": 1,
+   "subscribers_count": 0,
+   "open_issues_count": 61,
+   "pushed_at": "2026-10-30T00:44:59Z"
+  },
+  "engineDependents": {
+   "REPOSITORY": {
+    "status": 200,
+    "displayed": {
+     "REPOSITORY": {
+      "count": 0,
+      "text": "0 Repositories"
+     },
+     "PACKAGE": {
+      "count": 0,
+      "text": "0 Packages"
+     }
+    }
+   },
+   "PACKAGE": {
+    "status": 200,
+    "displayed": {
+     "REPOSITORY": {
+      "count": 0,
+      "text": "0 Repositories"
+     },
+     "PACKAGE": {
+      "count": 0,
+      "text": "0 Packages"
+     }
+    }
+   }
+  }
+ },
+ "githubSearch": {
+  "github-code-search-zodiacs-org.json": {
+   "endpoint": "search/code",
+   "q": "\"zodiacs.org\" -org:zodiacs-org",
+   "authenticated": true,
+   "total_count": 29,
+   "incomplete_results": false,
+   "repositories": [
+    "AdemMlayel/laravel",
+    "D0ubleZ/Cmpt456-project1",
+    "Eddie-Z/project",
+    "KeYu-Red/CMPT456-Project",
+    "Neo-Stark/GIW",
+    "akashrajkn/Celestial-Search",
+    "aropop/ProjectInformationRetrieval",
+    "b0xtch/lucene-solr",
+    "cirosantilli/expired-domain-names-by-day-2012",
+    "cirosantilli/expired-domain-names-by-day-2013",
+    "cirosantilli/expired-domain-names-by-day-2014",
+    "cirosantilli/expired-domain-names-by-day-2020",
+    "cirosantilli/expired-domain-names-by-day-2021",
+    "cirosantilli/expired-domain-names-by-day-2022",
+    "devs4v/devs4v-information-retrieval15",
+    "hariDasu/nodeIndexing",
+    "jinde-swati/fortinet-fortisoar-connector-fortisoar-soc-simulator",
+    "ldangyo/webSearchHomework",
+    "uwescience/courses",
+    "yiyangd/CMPT456-Information-Retrieval-Project"
+   ],
+   "sha256": "286549830c61ade26f44f33f2e33a1ce416494bf81cc7fe34df85e729ee6976f",
+   "file": "raw/github-code-search-zodiacs-org.json"
+  },
+  "github-code-search-zodiacs-engine.json": {
+   "endpoint": "search/code",
+   "q": "\"@zodiacs/engine\" -org:zodiacs-org",
+   "authenticated": true,
+   "total_count": 0,
+   "incomplete_results": false,
+   "repositories": [],
+   "sha256": "4af480b8ee5b87b369a76c49bd22c9a783908272ebffbe97898f8ab0f0772a5f",
+   "file": "raw/github-code-search-zodiacs-engine.json"
+  },
+  "github-issues-search-zodiacs-org.json": {
+   "endpoint": "search/issues",
+   "q": "\"zodiacs.org\" -org:zodiacs-org",
+   "authenticated": true,
+   "total_count": 0,
+   "incomplete_results": false,
+   "repositories": [],
+   "sha256": "c9938edecb99d754b2d039ac9eec320a94c769b6a6417921e2dcbef9e2fe01a0",
+   "file": "raw/github-issues-search-zodiacs-org.json"
+  },
+  "retrievedAt": "2026-10-30T15:18:03Z"
+ },
+ "mcpRegistry": {
+  "namedSearch": {
+   "status": 200,
+   "returned": 0,
+   "metadata": {
+    "count": 0
+   }
+  },
+  "crawl": {
+   "pages": 532,
+   "servers": 53123,
+   "mentioningZodiacs": [
+    {
+     "name": "io.github.yonlandwu/chinese-almanac-mcp",
+     "description": "Chinese almanac (黄历) MCP: date selection, daily almanac, solar terms, zodiac horoscopes."
+    },
+    {
+     "name": "net.totallytarot/calculators",
+     "description": "Astrology, Vedic, Chinese and Maya calendar maths on real engines, cited in every answer."
+    }
+   ],
+   "pagesSha256": "0e87518b43e50b81ebdb5bc7e8f80dbddc1b641b66ae937e11ebcf9f40d65855",
+   "filter": "version=latest, limit=100, following metadata.nextCursor"
+  }
+ },
+ "wikipedia": {
+  "en": 0,
+  "de": 0,
+  "fr": 0,
+  "es": 0,
+  "it": 0,
+  "pt": 0,
+  "ru": 0,
+  "ja": 0,
+  "zh": 0,
+  "nl": 0,
+  "pl": 0,
+  "sv": 0,
+  "uk": 0,
+  "ko": 0,
+  "tr": 0,
+  "hi": 0,
+  "fa": 0,
+  "ar": 0,
+  "id": 0,
+  "vi": 0,
+  "wikidata": 0
+ },
+ "hackerNews": {
+  "urlField": {
+   "status": 200,
+   "nbHits": 0
+  },
+  "fullText": {
+   "status": 200,
+   "nbHits": 0
+  }
+ },
+ "openAlex": {
+  "fulltext": {
+   "status": 200,
+   "count": 0
+  },
+  "search": {
+   "status": 200,
+   "count": 0
+  }
+ },
+ "reddit": {
+  "status": 403,
+  "note": "403 to an anonymous request; not measured"
+ },
+ "responses": [
+  {
+   "url": "https://api.npmjs.org/downloads/point/last-month/@zodiacs/engine",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:16:58Z",
+   "bytes": 85,
+   "sha256": "d2cbb9dc7917f81466474a6bc1ee27c5c8445ec7861a3f420bcfd7ab45119799",
+   "retained": "raw/npm-last-month-zodiacs_engine.json"
+  },
+  {
+   "url": "https://api.npmjs.org/downloads/point/last-month/@zodiacs/mcp-server",
+   "status": 404,
+   "retrievedAt": "2026-10-30T15:16:59Z",
+   "bytes": 49,
+   "sha256": "c628cacdcbbc5309c820b42ba1d78f2f814e405273731c535e380b099e1d11da",
+   "retained": "raw/npm-last-month-zodiacs_mcp-server.json"
+  },
+  {
+   "url": "https://api.npmjs.org/downloads/point/last-month/@zodiacs/cli",
+   "status": 404,
+   "retrievedAt": "2026-10-30T15:17:00Z",
+   "bytes": 42,
+   "sha256": "fc3c637ff943739b7ebad3ce5a594c42c752c92c1195a3138cee7cc3c19d2a0a",
+   "retained": "raw/npm-last-month-zodiacs_cli.json"
+  },
+  {
+   "url": "https://api.npmjs.org/downloads/point/last-month/@zodiacs/ai-tools",
+   "status": 404,
+   "retrievedAt": "2026-10-30T15:17:01Z",
+   "bytes": 47,
+   "sha256": "71e928bd5b77f931f9441d7338b7e5d30e12736f0c7715c5999b506bf27e738c",
+   "retained": "raw/npm-last-month-zodiacs_ai-tools.json"
+  },
+  {
+   "url": "https://api.npmjs.org/downloads/point/last-month/@zodiacs/wheel",
+   "status": 404,
+   "retrievedAt": "2026-10-30T15:17:02Z",
+   "bytes": 44,
+   "sha256": "5a46bbc1a69b6c463f7b79aa6d0829413b05609da49f17db4e0b3a589d2c9328",
+   "retained": "raw/npm-last-month-zodiacs_wheel.json"
+  },
+  {
+   "url": "https://api.npmjs.org/downloads/point/last-week/@zodiacs/engine",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:02Z",
+   "bytes": 84,
+   "sha256": "f5f9331da52ac1b7de195ff6b3f84903f111d4f6b34073cb6b36a277a19120ba",
+   "retained": "raw/npm-last-week-zodiacs_engine.json"
+  },
+  {
+   "url": "https://api.npmjs.org/downloads/range/2026-09-28:2026-10-29/@zodiacs/engine",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:03Z",
+   "bytes": 1217,
+   "sha256": "204fe4d68779c8d5d7007cdc9300165fff2654176e32620cbaa76436c3842270",
+   "retained": "raw/npm-range-zodiacs_engine.json"
+  },
+  {
+   "url": "https://registry.npmjs.org/@zodiacs%2fengine",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:04Z",
+   "bytes": 79734,
+   "sha256": "ad11df781601103c86de6fb74ecb5e1fae9b57b67d09908bfb908e756761dbbe",
+   "retained": "not retained: digest only"
+  },
+  {
+   "url": "https://pypistats.org/api/packages/zodiacs/recent",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:05Z",
+   "bytes": 101,
+   "sha256": "678714fdb668b3bdade79fad7fec09d6600a3a3a120e55e6d9e3f140303b8e6c",
+   "retained": "raw/pypistats-zodiacs-recent.json"
+  },
+  {
+   "url": "https://pypistats.org/api/packages/zodiacs/overall?mirrors=false",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:07Z",
+   "bytes": 1035,
+   "sha256": "7e3e3b541ac95356eb81cd1cb5bebc24aeb96e6456b83177a9bca1f4845785ee",
+   "retained": "raw/pypistats-zodiacs-overall-without-mirrors.json"
+  },
+  {
+   "url": "https://pypi.org/pypi/zodiacs/json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:08Z",
+   "bytes": 10962,
+   "sha256": "5254d333635ff2acb9eece3344989a823033b52aaa2f9931c6cf78bd74e82cf5",
+   "retained": "raw/pypi-zodiacs.json"
+  },
+  {
+   "url": "https://api.github.com/repos/zodiacs-org/engine",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:08Z",
+   "bytes": 5440,
+   "sha256": "86eaf13f653f73e5bc6165de0914db6dabf941663efa2b87b47e9206f1fdf68e",
+   "retained": "raw/github-engine.json"
+  },
+  {
+   "url": "https://api.github.com/repos/zodiacs-org/site",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:09Z",
+   "bytes": 5185,
+   "sha256": "1d01b28ebc1ad00ba43851dc1b5a8c054817cc0e6c663cf65f580a4254a93a06",
+   "retained": "raw/github-site.json"
+  },
+  {
+   "url": "https://github.com/zodiacs-org/engine/network/dependents?dependent_type=REPOSITORY",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:09Z",
+   "bytes": 140811,
+   "sha256": "8cd504e656db4fa1996ee980b72efa86817a3dd238c64e88b7bd64b11802026c",
+   "retained": "raw/github-engine-dependents-repository.html"
+  },
+  {
+   "url": "https://github.com/zodiacs-org/engine/network/dependents?dependent_type=PACKAGE",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:10Z",
+   "bytes": 140717,
+   "sha256": "eac5d1a2aa2a49a7b73d7946b805321b3a61926505c41a929b33f4bfe307d9f8",
+   "retained": "not retained: digest only"
+  },
+  {
+   "url": "https://registry.modelcontextprotocol.io/v0/servers?search=zodiacs&limit=100&version=latest",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:17:11Z",
+   "bytes": 38,
+   "sha256": "bd77acb780201187e66256677f13e4145d6839a056c477181355b19589b40f23",
+   "retained": "raw/mcp-registry-search-zodiacs.json"
+  },
+  {
+   "url": "https://en.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:02Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://en.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:02Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://en.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:03Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://en.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:03Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://de.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:04Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://de.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:04Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://de.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:05Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://de.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:05Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://fr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:06Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://fr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:06Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://fr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:06Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://fr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:07Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://es.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:07Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://es.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:08Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://es.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:08Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://es.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:09Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://it.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:09Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://it.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:10Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://it.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:10Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://it.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:11Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://pt.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:11Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://pt.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:12Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://pt.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:12Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://pt.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:13Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ru.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:13Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ru.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:14Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ru.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:14Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ru.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:15Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ja.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:15Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ja.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:16Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ja.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:16Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ja.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:17Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://zh.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:17Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://zh.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:18Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://zh.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:18Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://zh.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:19Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://nl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:19Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://nl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:19Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://nl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:20Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://nl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:20Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://pl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:21Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://pl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:21Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://pl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:22Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://pl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:22Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://sv.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:22Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://sv.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:23Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://sv.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:23Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://sv.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:24Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://uk.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:24Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://uk.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:25Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://uk.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:25Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://uk.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:26Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ko.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:26Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ko.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:27Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ko.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:27Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ko.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:28Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://tr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:29Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://tr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:29Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://tr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:29Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://tr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:30Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://hi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:30Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://hi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:31Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://hi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:31Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://hi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:32Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://fa.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:32Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://fa.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:33Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://fa.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:33Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://fa.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:34Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ar.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:34Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ar.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:35Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ar.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:35Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://ar.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:36Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://id.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:36Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://id.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:37Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://id.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:37Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://id.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:38Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://vi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:38Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://vi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:39Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://vi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:39Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://vi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:40Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://www.wikidata.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:40Z",
+   "bytes": 47,
+   "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+   "retained": "raw/wikipedia-exturlusage.json (combined; digest of the original response bytes kept)"
+  },
+  {
+   "url": "https://hn.algolia.com/api/v1/search?query=zodiacs.org&restrictSearchableAttributes=url&hitsPerPage=100",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:40Z",
+   "bytes": 443,
+   "sha256": "564c7216a26ebfd6c8f7054f446f0d28d44b21262641489b0953b31c7910149b",
+   "retained": "raw/hn-urlField.json"
+  },
+  {
+   "url": "https://hn.algolia.com/api/v1/search?query=%22zodiacs.org%22&hitsPerPage=100",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:41Z",
+   "bytes": 403,
+   "sha256": "18b1a9fab8e601caa62493c852e298f16febde484b550843cf0fa87f00031513",
+   "retained": "raw/hn-fullText.json"
+  },
+  {
+   "url": "https://api.openalex.org/works?filter=fulltext.search%3Azodiacs.org&per-page=50",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:41Z",
+   "bytes": 998,
+   "sha256": "5137febdd616942fb46038a5c65f5203741ac6bd402f7f752e0b3a6637a6185e",
+   "retained": "raw/openalex-fulltext.json"
+  },
+  {
+   "url": "https://api.openalex.org/works?search=%22zodiacs.org%22&per-page=50",
+   "status": 200,
+   "retrievedAt": "2026-10-30T15:35:43Z",
+   "bytes": 1035,
+   "sha256": "c3aa93a1d73a925375a6bd3e3be7e7759ecc696b9b6496beeb071e4c47046e7f",
+   "retained": "raw/openalex-search.json"
+  },
+  {
+   "url": "https://www.reddit.com/search.json?q=url%3Azodiacs.org&limit=100",
+   "status": 403,
+   "retrievedAt": "2026-10-30T15:35:44Z",
+   "bytes": 189908,
+   "sha256": "13bcba13bd1bad5aace04e8a76880b710337a8d595224967e874401832cc203c",
+   "retained": "not retained: digest only"
+  }
+ ]
+}

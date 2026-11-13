@@ -5,7 +5,8 @@ import { solarHouse } from '../daily';
 import { eventsCatalog, RETRO_PAGE_PLANETS, SLOW_BODIES } from './catalog';
 import { eventClock, metaDescription, metaTitle, moonNameForDate } from './format';
 import { INTERPRETED_IDS, interpretationFor } from './interpretations';
-import { publishedEventPages } from './publication';
+import { publishedEventPages } from './site-publication';
+import { nasaStationAt } from '../nasa-instants';
 
 const catalog = eventsCatalog();
 const byId = catalog.byId;
@@ -96,10 +97,10 @@ describe('events catalog — construction', () => {
     expect(catalog.pages.some((page) => page.facts.id === mercuryCycle.facts.id)).toBe(true);
   });
 
-  it('indexes exactly the committed 2026–2027 publication receipt', () => {
+  it('indexes exactly the committed 2026 to 2030 publication receipts', () => {
     const publishedIds = new Set(publishedEventPages.map((event) => event.id));
     const eligible = catalog.pages.filter((event) => event.indexEligible);
-    expect(eligible).toHaveLength(92);
+    expect(eligible).toHaveLength(219);
     expect(new Set(eligible.map((event) => event.facts.id))).toEqual(publishedIds);
     for (const event of eligible) {
       expect(event.interpretation, event.facts.id).toBeDefined();
@@ -263,8 +264,12 @@ describe('events catalog — derivation agreement', () => {
         const id = `${station.planet.toLowerCase()}-stations-${station.type}-${station.at.slice(0, 10)}`;
         const event = byId.get(id);
         expect(event, id).toBeDefined();
-        expect(Math.abs(new Date(event!.facts.at!).getTime() - new Date(station.at).getTime()), id)
+        // The page is named by the committed station (sky.json and the month
+        // agree to the second) and prints NASA's instant for it.
+        const committed = event!.facts.committed?.anchor ?? event!.facts.at!;
+        expect(Math.abs(new Date(committed).getTime() - new Date(station.at).getTime()), id)
           .toBeLessThan(2_000);
+        expect(event!.facts.at, id).toBe(nasaStationAt(station.planet, committed));
       }
       for (const aspect of source.aspects) {
         if (!slowBodies.has(aspect.a) || !slowBodies.has(aspect.b) || aspect.orb !== 0) continue;

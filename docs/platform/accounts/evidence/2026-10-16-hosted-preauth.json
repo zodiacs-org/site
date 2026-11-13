@@ -1,0 +1,31 @@
+{
+  "schema": "zodiacs.accounts-hosted-preauth.v1",
+  "capturedAt": "2026-10-16T10:53:16.210Z",
+  "host": "https://zodiacs-accounts-test.vercel.app",
+  "checks": [
+    {
+      "name": "Exact staging OAuth resource and issuer",
+      "passed": true
+    },
+    {
+      "name": "Shared consent config and staging CSP",
+      "passed": true
+    },
+    {
+      "name": "Thirteen anonymous tools plus one OAuth save tool",
+      "passed": true
+    },
+    {
+      "name": "Anonymous capability call",
+      "passed": true
+    },
+    {
+      "name": "Anonymous save asks for sign-in",
+      "passed": true
+    },
+    {
+      "name": "Invalid bearer is refused",
+      "passed": true
+    }
+  ]
+}

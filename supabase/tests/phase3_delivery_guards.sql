@@ -518,13 +518,13 @@ $$;
 
 -- Service inserts prove the identity sequence grant used by the subscription
 -- endpoint, while endpoints and encryption keys remain in one table only.
-insert into public.push_subscriptions (endpoint, p256dh, auth, lang) values
-  ('https://push.test/caps-a', 'public_caps_a', 'auth_caps_a', 'en'),
-  ('https://push.test/caps-b', 'public_caps_b', 'auth_caps_b', 'en'),
-  ('https://push.test/persist', 'public_persist', 'auth_persist', 'en'),
-  ('https://push.test/refresh', 'public_refresh', 'auth_refresh', 'en'),
-  ('https://push.test/expired', 'public_expired', 'auth_expired', 'en'),
-  ('https://push.test/failed', 'public_failed', 'auth_failed', 'en');
+insert into public.push_subscriptions (endpoint, p256dh, auth, lang, sky_alerts) values
+  ('https://push.test/caps-a', 'public_caps_a', 'auth_caps_a', 'en', true),
+  ('https://push.test/caps-b', 'public_caps_b', 'auth_caps_b', 'en', true),
+  ('https://push.test/persist', 'public_persist', 'auth_persist', 'en', true),
+  ('https://push.test/refresh', 'public_refresh', 'auth_refresh', 'en', true),
+  ('https://push.test/expired', 'public_expired', 'auth_expired', 'en', true),
+  ('https://push.test/failed', 'public_failed', 'auth_failed', 'en', true);
 
 select pg_temp.assert_true(
   (select count(distinct subscription_id) = 6
@@ -654,8 +654,8 @@ select pg_temp.assert_true(
 );
 delete from public.push_subscriptions
 where endpoint = 'https://push.test/persist';
-insert into public.push_subscriptions (endpoint, p256dh, auth, lang) values
-  ('https://push.test/persist', 'public_persist_new', 'auth_persist_new', 'en');
+insert into public.push_subscriptions (endpoint, p256dh, auth, lang, sky_alerts) values
+  ('https://push.test/persist', 'public_persist_new', 'auth_persist_new', 'en', true);
 
 select pg_temp.assert_true(
   (

@@ -34,7 +34,7 @@ function install() {
     save: vi.fn(function () { stack.push({ font: context.font, textAlign: context.textAlign }); }),
     restore: vi.fn(function () { Object.assign(context, stack.pop()); }),
     drawImage: vi.fn(), fillRect: vi.fn(), translate: vi.fn(), scale: vi.fn(), beginPath: vi.fn(), arc: vi.fn(),
-    moveTo: vi.fn(), lineTo: vi.fn(), stroke: vi.fn(), fill: vi.fn(), strokeText: vi.fn(),
+    moveTo: vi.fn(), lineTo: vi.fn(), stroke: vi.fn(), fill: vi.fn(), strokeText: vi.fn(), globalAlpha: 1, letterSpacing: '0px',
   };
   const encodedSizes: number[][] = [];
   const canvas = { width: 0, height: 0, getContext: vi.fn(() => context),
@@ -64,12 +64,13 @@ describe('selected pattern image facts and ownership', () => {
     expect(text).toContain(card.title); expect(text).toContain(card.reading); expect(text).toContain(card.scope);
     card.receipt.forEach((receipt) => expect(text).toContain(receipt));
     card.points.forEach((point) => expect(text).toContain(`${point.body} · ${point.lon}°`));
-    expect(text).toContain('Zodiacs.org'); expect(text).not.toContain('private-source');
-    expect(fixture.context.drawImage).toHaveBeenCalledOnce(); expect(fixture.close).toHaveBeenCalledOnce();
+    expect(text).toContain('ZODIACS · ORG'); expect(text).not.toContain('Zodiacs.org'); expect(text).not.toContain('private-source');
+    // The brand lockup draws its own ring: the card fetches and decodes no image.
+    expect(fixture.fetch).not.toHaveBeenCalled(); expect(fixture.context.drawImage).not.toHaveBeenCalled();
     expect(fixture.encodedSizes).toEqual([[1080, 1350]]); expect(fixture.canvas.width).toBe(0);
     expect(prepared.filename).toMatch(new RegExp(`^zodiacs-${context}-${kind}-[a-f0-9]{16}\\.png$`));
     expect(prepared.blob.type).toBe('image/png');
-    expect(fixture.painted.filter((row) => row.y > 590 && row.text !== 'Zodiacs.org').every((row) => row.y <= 1224)).toBe(true);
+    expect(fixture.painted.filter((row) => row.y > 590 && !['ZODIACS', '·', 'ORG'].includes(row.text)).every((row) => row.y <= 1224)).toBe(true);
   });
 
   it('draws T-square chords at true positions, independently of the collision labels', async () => {
@@ -93,53 +94,30 @@ describe('selected pattern image facts and ownership', () => {
 });
 
 describe('finite preparation and resource release', () => {
-  it('retries the same image after a brand failure without a poisoned cache', async () => {
-    const fixture = install(); fixture.fetch.mockRejectedValueOnce(new Error('offline'));
-    await expect(prepareAspectPatternCard(selected())).rejects.toThrow('offline');
-    await expect(prepareAspectPatternCard(selected())).resolves.toMatchObject({ filename: expect.stringContaining('grand-cross') });
-    expect(fixture.fetch).toHaveBeenCalledTimes(2);
-  });
-  it.each(['fonts', 'headers', 'body', 'bitmap', 'PNG'] as const)('bounds stalled %s to one total fifteen-second window', async (stage) => {
+  it.each(['fonts', 'PNG'] as const)('bounds stalled %s to one total fifteen-second window', async (stage) => {
     vi.useFakeTimers(); const fixture = install();
     let complete!: (value: any) => void;
     const held = new Promise<any>((resolve) => { complete = resolve; });
     if (stage === 'fonts') fixture.fonts.load.mockReturnValueOnce(held);
-    if (stage === 'headers') fixture.fetch.mockReturnValueOnce(held);
-    if (stage === 'body') fixture.fetch.mockResolvedValueOnce({ ok: true, blob: () => held } as Response);
-    if (stage === 'bitmap') vi.mocked(createImageBitmap).mockReturnValueOnce(held);
     if (stage === 'PNG') fixture.canvas.toBlob.mockImplementationOnce((callback) => { complete = callback; });
     const failure = prepareAspectPatternCard(selected()).catch((cause) => cause);
     await vi.advanceTimersByTimeAsync(15_000);
     expect((await failure).message).toBe('pattern_prepare_timeout');
     expect(vi.getTimerCount()).toBe(0); expect(fixture.canvas.width).toBe(0);
-    if (stage === 'PNG') expect(fixture.close).toHaveBeenCalledOnce();
     const writes = fixture.painted.length;
-    if (stage === 'bitmap') { const lateClose = vi.fn(); complete({ close: lateClose }); await vi.advanceTimersByTimeAsync(0); expect(lateClose).toHaveBeenCalledOnce(); }
-    else if (stage === 'fonts') complete([{ status: 'loaded' }]);
-    else if (stage === 'headers') complete(new Response(new Blob(['late'])));
+    if (stage === 'fonts') complete([{ status: 'loaded' }]);
     else complete(new Blob(['late']));
     await vi.advanceTimersByTimeAsync(0); expect(fixture.painted).toHaveLength(writes);
-  });
-  it('revokes a stalled WebKit image URL and releases its handlers on abort', async () => {
-    vi.useFakeTimers(); install(); vi.stubGlobal('createImageBitmap', undefined);
-    const images: { src: string; onload: unknown; onerror: unknown }[] = [];
-    vi.stubGlobal('Image', class { src = ''; onload = null; onerror = null; constructor() { images.push(this); } });
-    const failure = prepareAspectPatternCard(selected()).catch((cause) => cause);
-    await vi.advanceTimersByTimeAsync(15_000);
-    expect((await failure).message).toBe('pattern_prepare_timeout');
-    expect(URL.revokeObjectURL).toHaveBeenCalledExactlyOnceWith('blob:pattern-brand');
-    expect(images[0]).toMatchObject({ src: '', onload: null, onerror: null });
-    expect(vi.getTimerCount()).toBe(0);
   });
   it('honors parent revocation before fetching or painting', async () => {
     const fixture = install(), controller = new AbortController(); controller.abort(new Error('source replaced'));
     await expect(prepareAspectPatternCard(selected(), controller.signal)).rejects.toThrow('source replaced');
     expect(fixture.fetch).not.toHaveBeenCalled(); expect(fixture.canvas.toBlob).not.toHaveBeenCalled();
   });
-  it('fails unpaintable text and releases brand ownership', async () => {
+  it('fails unpaintable text and releases the canvas', async () => {
     const fixture = install(); fixture.context.measureText.mockReturnValue({ width: 5000 });
     await expect(prepareAspectPatternCard(selected())).rejects.toThrow('pattern_text_overflow');
-    expect(fixture.close).toHaveBeenCalledOnce(); expect(fixture.canvas.toBlob).not.toHaveBeenCalled();
+    expect(fixture.canvas.width).toBe(0); expect(fixture.canvas.toBlob).not.toHaveBeenCalled();
   });
   it('fails unavailable fonts without painting a substitute', async () => {
     const fixture = install(); fixture.fonts.load.mockResolvedValueOnce([]);

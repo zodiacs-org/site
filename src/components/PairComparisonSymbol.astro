@@ -1,0 +1,36 @@
+---
+// Fixed outlines for the comparison badges, avoiding platform glyph fallback
+// for U+263D, U+260C, U+2640, U+2642 and their U+FE0E text selectors.
+// Moon/conjunction: DejaVu Sans 2.37. Venus/Mars: Liberation Sans 2.1.5,
+// at the existing Instrument Sans fallback's 103.5% size adjustment.
+// Both sources use 2048 units/em. The viewBox retains the original 1em
+// line box and Instrument Sans baseline (0.86em with line-height: 1).
+// Source notices: docs/licenses/pair-comparison-symbols.txt.
+interface Props { symbol: 'moon' | 'venus-mars' | 'conjunction' }
+const { symbol } = Astro.props;
+const paths = {
+  moon: 'M894 -1495Q1289 -1495 1561 -1118Q1667 -945 1667 -747Q1667 -355 1271 -98Q1092 0 916 0H867Q820 0 739 -15V-21Q1016 -100 1141 -277Q1296 -479 1296 -747Q1296 -1147 962 -1371Q826 -1451 733 -1467V-1470Q733 -1481 882 -1495ZM922 -1433V-1430Q1379 -1233 1379 -741Q1379 -339 1042 -107L999 -83V-79H1005Q1091 -79 1249 -162Q1482 -314 1564 -558Q1593 -651 1593 -744V-753Q1593 -1070 1246 -1331Q1083 -1433 925 -1433Z',
+  conjunction: 'M646 -863Q503 -863 402.5 -763.0Q302 -663 302 -519Q302 -377 402.5 -276.5Q503 -176 646 -176Q788 -176 888.5 -276.5Q989 -377 989 -519Q989 -663 889.5 -763.0Q790 -863 646 -863ZM980 -922Q999 -906 1017 -887Q1169 -734 1169.0 -518.0Q1169 -302 1016.0 -149.5Q863 3 646 3Q431 3 278.0 -149.5Q125 -302 125.0 -518.0Q125 -734 276.5 -887.0Q428 -1040 646 -1040Q742 -1040 826 -1011L1096 -1478L1250 -1389Z',
+  venus: 'M732 -578Q656 -589 602.5 -627.0Q549 -665 515.0 -726.0Q481 -787 481 -862Q481 -988 568.0 -1070.5Q655 -1153 769 -1153Q887 -1153 970 -1067Q1056 -984 1056 -862Q1056 -753 984.0 -672.0Q912 -591 806 -578V-412H1062V-342H806V-80H732V-342H474V-412H732ZM767 -1069Q711 -1069 665.0 -1042.5Q619 -1016 590.5 -968.5Q562 -921 562 -864Q562 -778 623.5 -717.5Q685 -657 767 -657Q854 -657 913 -719Q974 -780 974 -864Q974 -922 945.5 -969.5Q917 -1017 870.5 -1043.0Q824 -1069 767 -1069Z',
+  mars: 'M1023 -1024Q876 -1067 833 -1110Q825 -1115 825 -1128Q825 -1136 831 -1145Q837 -1149 845 -1149L878 -1145Q946 -1128 1005 -1128Q1093 -1128 1134 -1141Q1170 -1153 1183 -1153Q1199 -1153 1199 -1139L1193 -1112Q1177 -1052 1177 -954Q1177 -876 1189 -825L1193 -793Q1193 -784 1189 -778L1175 -772Q1156 -772 1137.5 -804.5Q1119 -837 1101.0 -882.0Q1083 -927 1070 -977L833 -739Q917 -658 917 -549Q917 -424 829.5 -337.0Q742 -250 626 -250Q510 -250 423.5 -331.5Q337 -413 337 -535Q337 -655 421.5 -740.0Q506 -825 628 -825Q699 -825 782 -782ZM628 -750Q539 -750 477.0 -689.0Q415 -628 415 -539Q415 -444 478.0 -385.0Q541 -326 628 -326Q717 -326 778.0 -388.5Q839 -451 839 -539Q839 -626 777.0 -688.0Q715 -750 628 -750Z',
+};
+// Venus/Mars retain two 1536-unit advances at 103.5%, minus 1px
+// letter spacing per cluster at 15px: 2 * (1536 * 1.035 - 2048 / 15).
+const width = symbol === 'moon' ? 1836 : symbol === 'conjunction' ? 1375 : 2906.453333;
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox={`0 -1761.28 ${width} 2048`}
+  width={`${width / 2048}em`}
+  height="1em"
+  fill="currentColor"
+  aria-hidden="true"
+  focusable="false"
+>
+  {symbol === 'venus-mars' ? (
+    <g transform="scale(1.035)">
+      <path d={paths.venus} />
+      <path d={paths.mars} transform="translate(1404.0837)" />
+    </g>
+  ) : <path d={paths[symbol]} />}
+</svg>

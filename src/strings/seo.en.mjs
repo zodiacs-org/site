@@ -27,7 +27,7 @@ export const HOROSCOPE_OG_SURFACES = Object.freeze([
 ]);
 
 export const OG_EN = Object.freeze({
-  fallbackAlt: 'Zodiacs.org — free birth charts, sign guides, and astrology tools.',
+  fallbackAlt: 'Zodiacs.org: free birth charts, sign guides, and astrology tools.',
   site: 'zodiacs.org',
   signNames: Object.freeze({
     aries: 'Aries',
@@ -63,21 +63,31 @@ export const OG_EN = Object.freeze({
   },
   astrofolio: {
     path: '/astrofolio/',
-    image: '/assets/og/astrofolio/v5/faces.jpg',
+    image: '/assets/og/astrofolio/v6/faces.jpg',
     alt: 'Astrofolio: the collection of twelve official Zodiac tokens.',
+  },
+  // Your 2027 sky's own card (npm run data:og -- --only-year-sky-card): the
+  // page's headline and a line, with the twelve sign discs as the year's wheel.
+  // A new design takes a new folder; this one stays published once shared.
+  yearSky: {
+    path: '/your-2027-sky/',
+    image: '/assets/og/year-sky/v1/2027.jpg',
+    title: 'Your 2027 sky',
+    line: 'The year’s eclipses, returns and slow planets, read for your own chart.',
+    alt: 'Your 2027 sky: the year’s eclipses, returns and slow planets, read for your own chart, beside a ring of the twelve sign discs.',
   },
   terminal: {
     path: '/terminal/',
-    image: '/assets/og/v6/terminal.png',
+    image: '/assets/og/v7/terminal.png',
     alt: 'Terminal: expert market context and reviewed research for the twelve official Zodiac tokens.',
   },
   thesis: {
     kicker: 'The Thesis',
     title: 'Why Zodiacs Matter',
-    footer: 'zodiacs.org — The Registry · History, ownership, modern rails · Nº 09',
+    footer: 'zodiacs.org · The Registry · An essay on twelve zodiac coins · Nº 10',
     path: '/thesis/',
     image: '/assets/og/v2/thesis.png',
-    alt: 'Why Zodiacs Matter — history, digital ownership, and modern rails · Nº 09.',
+    alt: 'Why Zodiacs Matter, an essay on twelve zodiac coins · Nº 10.',
   },
   disclosure: {
     kicker: 'Registry disclosure',
@@ -145,16 +155,19 @@ export const OG_EN = Object.freeze({
     { key: 'rising-sign', path: '/rising-sign/', kicker: 'Free calculator', title: 'Your rising sign', sub: 'How people first read you — from your birth time and place.' },
     { key: 'moon-phase', path: '/moon-phase/', kicker: 'Free calculator', title: 'The moon, any night', sub: 'Tonight’s phase, and the moon of any date that matters to you.' },
     { key: 'saturn-return', path: '/saturn-return/', kicker: 'Free calculator', title: 'Your Saturn return', sub: 'The exact dates, every pass and retrograde loop included.' },
-    { key: 'mercury-retrograde', path: '/mercury-retrograde/', kicker: 'The calendar', title: 'Mercury retrograde', sub: 'Every window through 2027, with station dates and the themes to watch.' },
+    { key: 'solar-return', englishOnly: true, path: '/solar-return/', kicker: 'Free calculator', title: 'Your solar return', sub: 'The chart of your next birthday, and the year’s main themes.' },
+    { key: 'year-score', englishOnly: true, path: '/year-score/', kicker: 'Free calculator', title: 'Your year ahead, scored', sub: 'The next twelve months from 0 to 10, with your best and hardest months.' },
+    { key: 'birthday-report', englishOnly: true, path: '/birthday-report/', kicker: 'For your birthday', title: 'Your birthday report', sub: 'Solar return, Year Ahead Score, numerology and a tarot card, on one page.' },
+    { key: 'mercury-retrograde', path: '/mercury-retrograde/', kicker: 'The calendar', title: 'Mercury retrograde', sub: 'Every window through 2030, with station dates and the themes to watch.' },
     { key: 'compatibility', path: '/compatibility/', kicker: 'Compatibility', title: 'Two charts, compared', sub: 'Whole-chart synastry — plus guides to all 78 sign pairings.' },
     { key: 'horoscopes', path: '/horoscopes/', kicker: 'Horoscopes', title: 'All twelve signs', sub: 'Daily through yearly readings with clear themes and one useful next move.' },
     { key: 'learn', path: '/learn/', kicker: 'Learn astrology', title: 'Read your chart', sub: 'The signs, the planets, the houses, and the aspects — and how they fit together.' },
     { key: 'how-to-read-a-birth-chart', path: '/learn/how-to-read-a-birth-chart/', kicker: 'Learn astrology', title: 'How to read a birth chart', sub: 'Big three, planets room by room, the working aspects, then the weather — in order.' },
     { key: 'tools', path: '/tools/', kicker: 'Free astrology tools', title: 'Calculators, no signup', sub: 'Birth chart, compatibility, moon sign, rising sign, and more — free to use.' },
     { key: 'transits', path: '/transits/', kicker: 'Free tracker', title: 'Your transits, today', sub: 'The current sky aspected to your birth chart, within 3° of exact.' },
-    { key: 'eclipses', path: '/eclipses/', kicker: 'The calendar', title: 'Eclipses, dated', sub: 'Every solar and lunar eclipse through 2028, with exact peak times and signs.' },
-    { key: 'full-moon-calendar', path: '/full-moon-calendar/', kicker: 'The calendar', title: 'Every full moon', sub: 'Exact instants through 2027, with each moon’s sign, degree, and name.' },
-    { key: 'retrogrades', path: '/retrogrades/', kicker: 'The calendar', title: 'Every retrograde', sub: 'All eight planets, with every station window through 2027.' },
+    { key: 'eclipses', path: '/eclipses/', kicker: 'The calendar', title: 'Eclipses, dated', sub: 'Every solar and lunar eclipse through 2030, with exact peak times and signs.' },
+    { key: 'full-moon-calendar', path: '/full-moon-calendar/', kicker: 'The calendar', title: 'Every full moon', sub: 'Exact instants through 2030, with each moon’s sign, degree, and name.' },
+    { key: 'retrogrades', path: '/retrogrades/', kicker: 'The calendar', title: 'Every retrograde', sub: 'All eight planets, with every station window through 2030.' },
     { key: 'baby-zodiac', path: '/baby-zodiac/', kicker: 'Free calculator', title: 'What sign will the baby be?', sub: 'The due date’s near-certain Sun, the week’s possible Moons, and what waits for the clock.' },
     { key: 'birthday', path: '/birthday/', kicker: 'Birthday astrology', title: 'Your birthday, read closely', sub: 'Character, love, work, growth, and an exact cusp answer when the year matters.' },
     { key: 'ask', path: '/ask/', kicker: 'Astrology guide', title: 'Guide', sub: 'Ask about this site, astrology, or your own chart.' },
@@ -194,7 +207,7 @@ export const SCHEMA_EN = Object.freeze({
   organizationName: ORGANIZATION_NAME,
   organizationAlternateName: 'Zodiacs.org',
   websiteName: 'Zodiacs.org',
-  websiteDescription: 'Free birth charts, moon signs, compatibility, horoscopes, and sign guides — private in your browser.',
+  websiteDescription: 'Free birth charts, moon signs, compatibility, horoscopes, and sign guides, private in your browser.',
   breadcrumbHome: 'Zodiacs.org',
   applicationCategory: 'LifestyleApplication',
   operatingSystem: 'Any device with a modern web browser',
@@ -281,7 +294,7 @@ export function ogImageForPath(path) {
 export function ogAltForPath(path) {
   const normalized = normalizedPath(path);
   const tool = OG_EN.tools.find((entry) => entry.path === normalized);
-  if (tool) return `${tool.title} — Zodiacs.org`;
+  if (tool) return `${tool.title} | Zodiacs.org`;
   return ogSpecialForPath(normalized)?.value.alt ?? OG_EN.fallbackAlt;
 }
 

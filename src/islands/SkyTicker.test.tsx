@@ -12,7 +12,7 @@ describe('server-rendered sky receipt', () => {
     const sun = daily.bodies.find(({ body }) => body === 'Sun')!;
     const moon = daily.bodies.find(({ body }) => body === 'Moon')!;
 
-    expect(html).toContain('class="skyticker mono"');
+    expect(html).toContain('class="skyticker"');
     expect(html).toContain(`Sun ${formatLongitude(sun.lon, 'en')}`);
     expect(html).toContain(`Moon in ${signForLongitude(moon.lon).name}`);
     expect(html).toContain('aria-label=');

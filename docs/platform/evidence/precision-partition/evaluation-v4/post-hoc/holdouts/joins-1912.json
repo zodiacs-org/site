@@ -1,0 +1,1637 @@
+{
+  "tool": "joins.mjs",
+  "postHoc": "post hoc and unscored: these holdouts were opened by earlier versions and are previously seen data for #860.",
+  "run": "<post-hoc>/holdouts/holdout-1912-run.json",
+  "label": "holdout-1912",
+  "packDigest": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+  "floorDeg": 5,
+  "method": {
+    "joins": "record edges initEt + k * intervalSec of the stored series, strictly inside the window; times only",
+    "crossings": "tier-B deflected reference, elongation every 300 s, sign changes of (elongation - 5) bisected to 1e-3 s",
+    "selection": "Moon-series joins within 43,200 s of a reference floor crossing, plus the 1915-08-11 00:00 TDB join wherever it lies in a window",
+    "spans": "boundary or unresolved spans meeting [J - 86,400 s, J + 86,400 s]",
+    "p2": "65 samples, lo + (hi - lo) k / 64, min |elongation - 5 deg|, as the harness approachesFloor does"
+  },
+  "windows": [
+    {
+      "cases": [
+        "F2",
+        "A2"
+      ],
+      "window": [
+        -2669457530.816,
+        -2643537530.816
+      ],
+      "windowIso": [
+        "1915-05-31T00:00:00Z",
+        "1916-03-26T00:00:00Z"
+      ],
+      "floorCrossings": [
+        {
+          "tdbSec": -2668371022.124689,
+          "bracketTdbSec": [
+            -2668371022.124975,
+            -2668371022.124403
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "1915-06-12T13:49:37.876Z TDB"
+        },
+        {
+          "tdbSec": -2668330699.823969,
+          "bracketTdbSec": [
+            -2668330699.824255,
+            -2668330699.823683
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "1915-06-13T01:01:40.177Z TDB"
+        },
+        {
+          "tdbSec": -2665826226.323145,
+          "bracketTdbSec": [
+            -2665826226.323431,
+            -2665826226.322859
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "1915-07-12T00:42:53.677Z TDB"
+        },
+        {
+          "tdbSec": -2665759777.833193,
+          "bracketTdbSec": [
+            -2665759777.833479,
+            -2665759777.8329067
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "1915-07-12T19:10:22.167Z TDB"
+        },
+        {
+          "tdbSec": -2663277405.6316547,
+          "bracketTdbSec": [
+            -2663277405.631941,
+            -2663277405.6313686
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "1915-08-10T12:43:14.369Z TDB"
+        },
+        {
+          "tdbSec": -2663204615.5641727,
+          "bracketTdbSec": [
+            -2663204615.564459,
+            -2663204615.5638866
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "1915-08-11T08:56:24.436Z TDB"
+        },
+        {
+          "tdbSec": -2660723426.185053,
+          "bracketTdbSec": [
+            -2660723426.185339,
+            -2660723426.184767
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "1915-09-09T02:09:33.815Z TDB"
+        },
+        {
+          "tdbSec": -2660663830.2707844,
+          "bracketTdbSec": [
+            -2660663830.2710705,
+            -2660663830.2704983
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "1915-09-09T18:42:49.730Z TDB"
+        },
+        {
+          "tdbSec": -2658165041.3479023,
+          "bracketTdbSec": [
+            -2658165041.3481884,
+            -2658165041.347616
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "1915-10-08T16:49:18.653Z TDB"
+        },
+        {
+          "tdbSec": -2658132736.7292576,
+          "bracketTdbSec": [
+            -2658132736.7295437,
+            -2658132736.7289715
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "1915-10-09T01:47:43.271Z TDB"
+        },
+        {
+          "tdbSec": -2655605847.598284,
+          "bracketTdbSec": [
+            -2655605847.59857,
+            -2655605847.5979977
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "1915-11-07T07:42:32.402Z TDB"
+        },
+        {
+          "tdbSec": -2655604551.2355976,
+          "bracketTdbSec": [
+            -2655604551.2358837,
+            -2655604551.2353115
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "1915-11-07T08:04:08.765Z TDB"
+        },
+        {
+          "tdbSec": -2653077892.5274067,
+          "bracketTdbSec": [
+            -2653077892.527693,
+            -2653077892.5271206
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "1915-12-06T13:55:07.473Z TDB"
+        },
+        {
+          "tdbSec": -2653045358.5251026,
+          "bracketTdbSec": [
+            -2653045358.5253887,
+            -2653045358.5248165
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "1915-12-06T22:57:21.475Z TDB"
+        },
+        {
+          "tdbSec": -2650545026.6508274,
+          "bracketTdbSec": [
+            -2650545026.6511135,
+            -2650545026.6505413
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "1916-01-04T21:29:33.350Z TDB"
+        },
+        {
+          "tdbSec": -2650490275.088709,
+          "bracketTdbSec": [
+            -2650490275.088995,
+            -2650490275.088423
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "1916-01-05T12:42:04.912Z TDB"
+        },
+        {
+          "tdbSec": -2648003939.6614246,
+          "bracketTdbSec": [
+            -2648003939.6617107,
+            -2648003939.6611385
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "1916-02-03T07:21:00.339Z TDB"
+        },
+        {
+          "tdbSec": -2647941433.0236607,
+          "bracketTdbSec": [
+            -2647941433.023947,
+            -2647941433.0233746
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "1916-02-04T00:42:46.977Z TDB"
+        },
+        {
+          "tdbSec": -2645452069.7872334,
+          "bracketTdbSec": [
+            -2645452069.7875195,
+            -2645452069.7869473
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "1916-03-03T20:12:10.213Z TDB"
+        },
+        {
+          "tdbSec": -2645399216.4320164,
+          "bracketTdbSec": [
+            -2645399216.4323025,
+            -2645399216.4317303
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "1916-03-04T10:53:03.568Z TDB"
+        }
+      ],
+      "floorCrossingScan": {
+        "stepSec": 300,
+        "samples": 86401,
+        "refusals": 0
+      },
+      "recordJoins": [
+        {
+          "series": "moon",
+          "recordLengthSec": 2764800,
+          "joins": [
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 747,
+              "tdbSec": -2668766400,
+              "tdbIso": "1915-06-08T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 395377.8753108978,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 52.51326709655186,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 748,
+              "tdbSec": -2666001600,
+              "tdbIso": "1915-07-10T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 175373.67685508728,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 26.94576174658851,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 749,
+              "tdbSec": -2663236800,
+              "tdbIso": "1915-08-11T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 32184.43582725525,
+              "withinHalfDayOfFloorCrossing": true,
+              "elongationAtJoinDeg": 0.5575493343484875,
+              "isDecisiveJoin": true,
+              "insideFloorAtJoin": true
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 750,
+              "tdbSec": -2660472000,
+              "tdbIso": "1915-09-12T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -191830.27078437805,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 33.136332353130086,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 751,
+              "tdbSec": -2657707200,
+              "tdbIso": "1915-10-14T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -425536.7292575836,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 69.31949497091132,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 752,
+              "tdbSec": -2654942400,
+              "tdbIso": "1915-11-15T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -662151.2355976105,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 102.80819547161427,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 753,
+              "tdbSec": -2652177600,
+              "tdbIso": "1915-12-17T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -867758.5251026154,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 130.27153489200145,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 754,
+              "tdbSec": -2649412800,
+              "tdbIso": "1916-01-18T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -1077475.0887088776,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 154.16268255897117,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 755,
+              "tdbSec": -2646648000,
+              "tdbIso": "1916-02-19T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 1195930.2127666473,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 177.85282940564773,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 756,
+              "tdbSec": -2643883200,
+              "tdbIso": "1916-03-22T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -1516016.4320163727,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 150.90545316694784,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            }
+          ]
+        },
+        {
+          "series": "emb",
+          "recordLengthSec": 23673600,
+          "joins": [
+            {
+              "series": "emb",
+              "recordIndexStartingHere": 88,
+              "tdbSec": -2650795200,
+              "tdbIso": "1916-01-02T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 250173.34917259216,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 45.250530770473986,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            }
+          ]
+        },
+        {
+          "series": "sun",
+          "recordLengthSec": 34560000,
+          "joins": [
+            {
+              "series": "sun",
+              "recordIndexStartingHere": 60,
+              "tdbSec": -2660472000,
+              "tdbIso": "1915-09-12T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -191830.27078437805,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 33.136332353130086,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            }
+          ]
+        }
+      ],
+      "perCase": {
+        "F2": {
+          "selectedJoins": [
+            {
+              "scope": "asked: a Moon record join",
+              "join": {
+                "series": "moon",
+                "recordIndexStartingHere": 749,
+                "tdbSec": -2663236800,
+                "tdbIso": "1915-08-11T00:00:00 TDB",
+                "nearestFloorCrossingMinusJoinSec": 32184.43582725525,
+                "withinHalfDayOfFloorCrossing": true,
+                "elongationAtJoinDeg": 0.5575493343484875,
+                "isDecisiveJoin": true,
+                "insideFloorAtJoin": true
+              },
+              "spans": [
+                {
+                  "source": "#860 plain deflected search: unresolved run",
+                  "cells": 76,
+                  "why": "the solar elongation enclosure straddles this profile's 5 degree floor over this cell",
+                  "span": [
+                    -2663277430.517578,
+                    -2663277380.419922
+                  ],
+                  "spanIso": [
+                    "1915-08-10T12:42:49.483Z TDB",
+                    "1915-08-10T12:43:39.581Z TDB"
+                  ],
+                  "lengthSec": 50.09765625,
+                  "startMinusJoinSec": -40630.517578125,
+                  "endMinusJoinSec": -40580.419921875,
+                  "containsJoin": false,
+                  "touchesJoin": false,
+                  "closestApproachDeg": 0.00002221611239061616,
+                  "p2Pass": true,
+                  "minElongationDeg": 4.996565945354229,
+                  "maxElongationDeg": 5.0033896002053675,
+                  "refusals": 0,
+                  "samples": 65
+                },
+                {
+                  "source": "#860 partitioned path: plan boundary span",
+                  "neighbours": {
+                    "before": {
+                      "class": "admissible",
+                      "span": [
+                        -2665759739.0625,
+                        -2663277426.5625
+                      ],
+                      "adjacent": true
+                    },
+                    "after": {
+                      "class": "excluded",
+                      "span": [
+                        -2663277384.375,
+                        -2663236800
+                      ],
+                      "adjacent": true
+                    }
+                  },
+                  "span": [
+                    -2663277426.5625,
+                    -2663277384.375
+                  ],
+                  "spanIso": [
+                    "1915-08-10T12:42:53.438Z TDB",
+                    "1915-08-10T12:43:35.625Z TDB"
+                  ],
+                  "lengthSec": 42.1875,
+                  "startMinusJoinSec": -40626.5625,
+                  "endMinusJoinSec": -40584.375,
+                  "containsJoin": false,
+                  "touchesJoin": false,
+                  "closestApproachDeg": 0.00002221611239061616,
+                  "p2Pass": true,
+                  "minElongationDeg": 4.997104658257815,
+                  "maxElongationDeg": 5.002850895152534,
+                  "refusals": 0,
+                  "samples": 65
+                },
+                {
+                  "source": "#860 partitioned path: plan boundary span",
+                  "neighbours": {
+                    "before": {
+                      "class": "excluded",
+                      "span": [
+                        -2663277384.375,
+                        -2663236800
+                      ],
+                      "adjacent": true
+                    },
+                    "after": {
+                      "class": "excluded",
+                      "span": [
+                        -2663236757.8125,
+                        -2663204653.125
+                      ],
+                      "adjacent": true
+                    }
+                  },
+                  "span": [
+                    -2663236800,
+                    -2663236757.8125
+                  ],
+                  "spanIso": [
+                    "1915-08-11T00:00:00 TDB",
+                    "1915-08-11T00:00:42.188Z TDB"
+                  ],
+                  "lengthSec": 42.1875,
+                  "startMinusJoinSec": 0,
+                  "endMinusJoinSec": 42.1875,
+                  "containsJoin": true,
+                  "touchesJoin": true,
+                  "closestApproachDeg": 4.436650280923557,
+                  "p2Pass": false,
+                  "minElongationDeg": 0.5575493343484875,
+                  "maxElongationDeg": 0.5633497190764433,
+                  "refusals": 0,
+                  "samples": 65
+                },
+                {
+                  "source": "#860 partitioned path: plan boundary span",
+                  "neighbours": {
+                    "before": {
+                      "class": "excluded",
+                      "span": [
+                        -2663236757.8125,
+                        -2663204653.125
+                      ],
+                      "adjacent": true
+                    },
+                    "after": {
+                      "class": "admissible",
+                      "span": [
+                        -2663204610.9375,
+                        -2660723437.5
+                      ],
+                      "adjacent": true
+                    }
+                  },
+                  "span": [
+                    -2663204653.125,
+                    -2663204610.9375
+                  ],
+                  "spanIso": [
+                    "1915-08-11T08:55:46.875Z TDB",
+                    "1915-08-11T08:56:29.063Z TDB"
+                  ],
+                  "lengthSec": 42.1875,
+                  "startMinusJoinSec": 32146.875,
+                  "endMinusJoinSec": 32189.0625,
+                  "containsJoin": false,
+                  "touchesJoin": false,
+                  "closestApproachDeg": 0.0000016822711090824782,
+                  "p2Pass": true,
+                  "minElongationDeg": 4.994795995108984,
+                  "maxElongationDeg": 5.000640979002855,
+                  "refusals": 0,
+                  "samples": 65
+                },
+                {
+                  "source": "#860 plain deflected search: unresolved run",
+                  "cells": 62,
+                  "why": "the solar elongation enclosure straddles this profile's 5 degree floor over this cell",
+                  "span": [
+                    -2663204635.986328,
+                    -2663204595.1171875
+                  ],
+                  "spanIso": [
+                    "1915-08-11T08:56:04.014Z TDB",
+                    "1915-08-11T08:56:44.883Z TDB"
+                  ],
+                  "lengthSec": 40.869140625,
+                  "startMinusJoinSec": 32164.013671875,
+                  "endMinusJoinSec": 32204.8828125,
+                  "containsJoin": false,
+                  "touchesJoin": false,
+                  "closestApproachDeg": 0.0000016822711090824782,
+                  "p2Pass": true,
+                  "minElongationDeg": 4.997170513537665,
+                  "maxElongationDeg": 5.0028328643113955,
+                  "refusals": 0,
+                  "samples": 65
+                }
+              ],
+              "earlier": {
+                "v1": [
+                  {
+                    "source": "earlier v1 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                    "span": [
+                      -2663323748.4375,
+                      -2663159217.1875
+                    ],
+                    "spanIso": [
+                      "1915-08-09T23:50:51.563Z TDB",
+                      "1915-08-11T21:33:02.813Z TDB"
+                    ],
+                    "lengthSec": 164531.25,
+                    "startMinusJoinSec": -86948.4375,
+                    "endMinusJoinSec": 77582.8125,
+                    "containsJoin": true,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 0.0093153419900327,
+                    "p2Pass": true,
+                    "minElongationDeg": 0.08695864436330852,
+                    "maxElongationDeg": 11.32242794462498,
+                    "refusals": 0,
+                    "samples": 65
+                  }
+                ],
+                "v2": [
+                  {
+                    "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                    "span": [
+                      -2663277426.5625,
+                      -2663277384.375
+                    ],
+                    "spanIso": [
+                      "1915-08-10T12:42:53.438Z TDB",
+                      "1915-08-10T12:43:35.625Z TDB"
+                    ],
+                    "lengthSec": 42.1875,
+                    "startMinusJoinSec": -40626.5625,
+                    "endMinusJoinSec": -40584.375,
+                    "containsJoin": false,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 0.00002221611239061616,
+                    "p2Pass": true,
+                    "minElongationDeg": 4.997104658257815,
+                    "maxElongationDeg": 5.002850895152534,
+                    "refusals": 0,
+                    "samples": 65
+                  },
+                  {
+                    "source": "earlier v2 plain search: unresolved run (its own pack)",
+                    "span": [
+                      -2663277406.1279297,
+                      -2663277405.46875
+                    ],
+                    "spanIso": [
+                      "1915-08-10T12:43:13.873Z TDB",
+                      "1915-08-10T12:43:14.532Z TDB"
+                    ],
+                    "lengthSec": 0.6591796875,
+                    "startMinusJoinSec": -40606.1279296875,
+                    "endMinusJoinSec": -40605.46875,
+                    "containsJoin": false,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 2.3021555772828606e-7,
+                    "p2Pass": true,
+                    "minElongationDeg": 4.999977783887609,
+                    "maxElongationDeg": 5.000067569198647,
+                    "refusals": 0,
+                    "samples": 65
+                  },
+                  {
+                    "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                    "span": [
+                      -2663236842.1875,
+                      -2663236757.8125
+                    ],
+                    "spanIso": [
+                      "1915-08-10T23:59:17.813Z TDB",
+                      "1915-08-11T00:00:42.188Z TDB"
+                    ],
+                    "lengthSec": 84.375,
+                    "startMinusJoinSec": -42.1875,
+                    "endMinusJoinSec": 42.1875,
+                    "containsJoin": true,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 4.436650280923557,
+                    "p2Pass": false,
+                    "minElongationDeg": 0.5517490766247539,
+                    "maxElongationDeg": 0.5633497190764433,
+                    "refusals": 0,
+                    "samples": 65
+                  },
+                  {
+                    "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                    "span": [
+                      -2663204653.125,
+                      -2663204610.9375
+                    ],
+                    "spanIso": [
+                      "1915-08-11T08:55:46.875Z TDB",
+                      "1915-08-11T08:56:29.063Z TDB"
+                    ],
+                    "lengthSec": 42.1875,
+                    "startMinusJoinSec": 32146.875,
+                    "endMinusJoinSec": 32189.0625,
+                    "containsJoin": false,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 0.0000016822711090824782,
+                    "p2Pass": true,
+                    "minElongationDeg": 4.994795995108984,
+                    "maxElongationDeg": 5.000640979002855,
+                    "refusals": 0,
+                    "samples": 65
+                  },
+                  {
+                    "source": "earlier v2 plain search: unresolved run (its own pack)",
+                    "span": [
+                      -2663204616.2109375,
+                      -2663204614.892578
+                    ],
+                    "spanIso": [
+                      "1915-08-11T08:56:23.790Z TDB",
+                      "1915-08-11T08:56:25.108Z TDB"
+                    ],
+                    "lengthSec": 1.318359375,
+                    "startMinusJoinSec": 32183.7890625,
+                    "endMinusJoinSec": 32185.107421875,
+                    "containsJoin": false,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 0.0000011717450902892779,
+                    "p2Pass": true,
+                    "minElongationDeg": 4.999910353659253,
+                    "maxElongationDeg": 5.000093010901673,
+                    "refusals": 0,
+                    "samples": 65
+                  }
+                ]
+              }
+            }
+          ],
+          "boundarySpans": [
+            {
+              "span": [
+                -2668371060.9375,
+                -2668370976.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003735121405412656,
+              "p2Pass": true,
+              "minElongationDeg": 4.9970689729386475,
+              "maxElongationDeg": 5.002500663800672,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2668330729.6875,
+                -2668330645.3125
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000029623807205503283,
+              "p2Pass": true,
+              "minElongationDeg": 4.998072355677535,
+              "maxElongationDeg": 5.00352409113847,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2665826268.75,
+                -2665826184.375
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000026979962520101708,
+              "p2Pass": true,
+              "minElongationDeg": 4.9952698381867355,
+              "maxElongationDeg": 5.004785567562049,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2665759823.4375,
+                -2665759739.0625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.0000614154692897273,
+              "p2Pass": true,
+              "minElongationDeg": 4.9947991943409225,
+              "maxElongationDeg": 5.0044229483420315,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2663277426.5625,
+                -2663277384.375
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00002221611239061616,
+              "p2Pass": true,
+              "minElongationDeg": 4.997104658257815,
+              "maxElongationDeg": 5.002850895152534,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2663236800,
+                -2663236757.8125
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": false,
+              "joinsWithin2sOfSpan": [
+                "moon 1915-08-11T00:00:00 TDB"
+              ],
+              "closestApproachDeg": 4.436650280923557,
+              "p2Pass": false,
+              "minElongationDeg": 0.5575493343484875,
+              "maxElongationDeg": 0.5633497190764433,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2663204653.125,
+                -2663204610.9375
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.0000016822711090824782,
+              "p2Pass": true,
+              "minElongationDeg": 4.994795995108984,
+              "maxElongationDeg": 5.000640979002855,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2660723437.5,
+                -2660723395.3125
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000013666066015716183,
+              "p2Pass": true,
+              "minElongationDeg": 4.996126348424662,
+              "maxElongationDeg": 5.001419951697826,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2660663868.75,
+                -2660663784.375
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003144719621595016,
+              "p2Pass": true,
+              "minElongationDeg": 4.995097535990931,
+              "maxElongationDeg": 5.0058494898722525,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2658165103.125,
+                -2658164976.5625
+              ],
+              "lengthSec": 126.5625,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003625898843839792,
+              "p2Pass": true,
+              "minElongationDeg": 4.995048051154059,
+              "maxElongationDeg": 5.004735846904544,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2658132787.5,
+                -2658132703.125
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00004977000955630473,
+              "p2Pass": true,
+              "minElongationDeg": 4.996089009474707,
+              "maxElongationDeg": 5.002593751915885,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2655606600,
+                -2655603773.4375
+              ],
+              "lengthSec": 2826.5625,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000005390942535932197,
+              "p2Pass": true,
+              "minElongationDeg": 4.998906804074808,
+              "maxElongationDeg": 5.004198029420751,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2653077923.4375,
+                -2653077839.0625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00005208838589165765,
+              "p2Pass": true,
+              "minElongationDeg": 4.99526719048976,
+              "maxElongationDeg": 5.002741248836519,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2653045396.875,
+                -2653045312.5
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000010432366483570377,
+              "p2Pass": true,
+              "minElongationDeg": 4.996599704172091,
+              "maxElongationDeg": 5.004088340405732,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2650545070.3125,
+                -2650544985.9375
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000023092975767191604,
+              "p2Pass": true,
+              "minElongationDeg": 4.993967649137242,
+              "maxElongationDeg": 5.006471113469664,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2650490310.9375,
+                -2650490226.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000037372724801088,
+              "p2Pass": true,
+              "minElongationDeg": 4.994712707527881,
+              "maxElongationDeg": 5.007159024684705,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2648003948.4375,
+                -2648003906.25
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000032886323959147035,
+              "p2Pass": true,
+              "minElongationDeg": 4.994679597732712,
+              "maxElongationDeg": 5.001397465100467,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2647941468.75,
+                -2647941426.5625
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000020520140342483728,
+              "p2Pass": true,
+              "minElongationDeg": 4.99437712960196,
+              "maxElongationDeg": 5.001016954820316,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2645452110.9375,
+                -2645452026.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003407152598455809,
+              "p2Pass": true,
+              "minElongationDeg": 4.994759357441553,
+              "maxElongationDeg": 5.004992043119294,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2645399250,
+                -2645399165.625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.0000729076163121789,
+              "p2Pass": true,
+              "minElongationDeg": 4.995982555973492,
+              "maxElongationDeg": 5.006084039377215,
+              "refusals": 0,
+              "samples": 65
+            }
+          ],
+          "boundarySpansWithoutAFloorCrossing": 1,
+          "p2FailuresByThisProbe": 1
+        },
+        "A2": {
+          "selectedJoins": [
+            {
+              "scope": "asked: a Moon record join",
+              "join": {
+                "series": "moon",
+                "recordIndexStartingHere": 749,
+                "tdbSec": -2663236800,
+                "tdbIso": "1915-08-11T00:00:00 TDB",
+                "nearestFloorCrossingMinusJoinSec": 32184.43582725525,
+                "withinHalfDayOfFloorCrossing": true,
+                "elongationAtJoinDeg": 0.5575493343484875,
+                "isDecisiveJoin": true,
+                "insideFloorAtJoin": true
+              },
+              "spans": [
+                {
+                  "source": "#860 plain deflected search: unresolved run",
+                  "cells": 76,
+                  "why": "the solar elongation enclosure straddles this profile's 5 degree floor over this cell",
+                  "span": [
+                    -2663277430.517578,
+                    -2663277380.419922
+                  ],
+                  "spanIso": [
+                    "1915-08-10T12:42:49.483Z TDB",
+                    "1915-08-10T12:43:39.581Z TDB"
+                  ],
+                  "lengthSec": 50.09765625,
+                  "startMinusJoinSec": -40630.517578125,
+                  "endMinusJoinSec": -40580.419921875,
+                  "containsJoin": false,
+                  "touchesJoin": false,
+                  "closestApproachDeg": 0.00002221611239061616,
+                  "p2Pass": true,
+                  "minElongationDeg": 4.996565945354229,
+                  "maxElongationDeg": 5.0033896002053675,
+                  "refusals": 0,
+                  "samples": 65
+                },
+                {
+                  "source": "#860 partitioned path: plan boundary span",
+                  "neighbours": {
+                    "before": {
+                      "class": "admissible",
+                      "span": [
+                        -2665759739.0625,
+                        -2663277426.5625
+                      ],
+                      "adjacent": true
+                    },
+                    "after": {
+                      "class": "excluded",
+                      "span": [
+                        -2663277384.375,
+                        -2663236800
+                      ],
+                      "adjacent": true
+                    }
+                  },
+                  "span": [
+                    -2663277426.5625,
+                    -2663277384.375
+                  ],
+                  "spanIso": [
+                    "1915-08-10T12:42:53.438Z TDB",
+                    "1915-08-10T12:43:35.625Z TDB"
+                  ],
+                  "lengthSec": 42.1875,
+                  "startMinusJoinSec": -40626.5625,
+                  "endMinusJoinSec": -40584.375,
+                  "containsJoin": false,
+                  "touchesJoin": false,
+                  "closestApproachDeg": 0.00002221611239061616,
+                  "p2Pass": true,
+                  "minElongationDeg": 4.997104658257815,
+                  "maxElongationDeg": 5.002850895152534,
+                  "refusals": 0,
+                  "samples": 65
+                },
+                {
+                  "source": "#860 partitioned path: plan boundary span",
+                  "neighbours": {
+                    "before": {
+                      "class": "excluded",
+                      "span": [
+                        -2663277384.375,
+                        -2663236800
+                      ],
+                      "adjacent": true
+                    },
+                    "after": {
+                      "class": "excluded",
+                      "span": [
+                        -2663236757.8125,
+                        -2663204653.125
+                      ],
+                      "adjacent": true
+                    }
+                  },
+                  "span": [
+                    -2663236800,
+                    -2663236757.8125
+                  ],
+                  "spanIso": [
+                    "1915-08-11T00:00:00 TDB",
+                    "1915-08-11T00:00:42.188Z TDB"
+                  ],
+                  "lengthSec": 42.1875,
+                  "startMinusJoinSec": 0,
+                  "endMinusJoinSec": 42.1875,
+                  "containsJoin": true,
+                  "touchesJoin": true,
+                  "closestApproachDeg": 4.436650280923557,
+                  "p2Pass": false,
+                  "minElongationDeg": 0.5575493343484875,
+                  "maxElongationDeg": 0.5633497190764433,
+                  "refusals": 0,
+                  "samples": 65
+                },
+                {
+                  "source": "#860 partitioned path: plan boundary span",
+                  "neighbours": {
+                    "before": {
+                      "class": "excluded",
+                      "span": [
+                        -2663236757.8125,
+                        -2663204653.125
+                      ],
+                      "adjacent": true
+                    },
+                    "after": {
+                      "class": "admissible",
+                      "span": [
+                        -2663204610.9375,
+                        -2660723437.5
+                      ],
+                      "adjacent": true
+                    }
+                  },
+                  "span": [
+                    -2663204653.125,
+                    -2663204610.9375
+                  ],
+                  "spanIso": [
+                    "1915-08-11T08:55:46.875Z TDB",
+                    "1915-08-11T08:56:29.063Z TDB"
+                  ],
+                  "lengthSec": 42.1875,
+                  "startMinusJoinSec": 32146.875,
+                  "endMinusJoinSec": 32189.0625,
+                  "containsJoin": false,
+                  "touchesJoin": false,
+                  "closestApproachDeg": 0.0000016822711090824782,
+                  "p2Pass": true,
+                  "minElongationDeg": 4.994795995108984,
+                  "maxElongationDeg": 5.000640979002855,
+                  "refusals": 0,
+                  "samples": 65
+                },
+                {
+                  "source": "#860 plain deflected search: unresolved run",
+                  "cells": 62,
+                  "why": "the solar elongation enclosure straddles this profile's 5 degree floor over this cell",
+                  "span": [
+                    -2663204635.986328,
+                    -2663204595.1171875
+                  ],
+                  "spanIso": [
+                    "1915-08-11T08:56:04.014Z TDB",
+                    "1915-08-11T08:56:44.883Z TDB"
+                  ],
+                  "lengthSec": 40.869140625,
+                  "startMinusJoinSec": 32164.013671875,
+                  "endMinusJoinSec": 32204.8828125,
+                  "containsJoin": false,
+                  "touchesJoin": false,
+                  "closestApproachDeg": 0.0000016822711090824782,
+                  "p2Pass": true,
+                  "minElongationDeg": 4.997170513537665,
+                  "maxElongationDeg": 5.0028328643113955,
+                  "refusals": 0,
+                  "samples": 65
+                }
+              ],
+              "earlier": {
+                "v1": [
+                  {
+                    "source": "earlier v1 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                    "span": [
+                      -2663323748.4375,
+                      -2663159217.1875
+                    ],
+                    "spanIso": [
+                      "1915-08-09T23:50:51.563Z TDB",
+                      "1915-08-11T21:33:02.813Z TDB"
+                    ],
+                    "lengthSec": 164531.25,
+                    "startMinusJoinSec": -86948.4375,
+                    "endMinusJoinSec": 77582.8125,
+                    "containsJoin": true,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 0.0093153419900327,
+                    "p2Pass": true,
+                    "minElongationDeg": 0.08695864436330852,
+                    "maxElongationDeg": 11.32242794462498,
+                    "refusals": 0,
+                    "samples": 65
+                  }
+                ],
+                "v2": [
+                  {
+                    "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                    "span": [
+                      -2663277426.5625,
+                      -2663277384.375
+                    ],
+                    "spanIso": [
+                      "1915-08-10T12:42:53.438Z TDB",
+                      "1915-08-10T12:43:35.625Z TDB"
+                    ],
+                    "lengthSec": 42.1875,
+                    "startMinusJoinSec": -40626.5625,
+                    "endMinusJoinSec": -40584.375,
+                    "containsJoin": false,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 0.00002221611239061616,
+                    "p2Pass": true,
+                    "minElongationDeg": 4.997104658257815,
+                    "maxElongationDeg": 5.002850895152534,
+                    "refusals": 0,
+                    "samples": 65
+                  },
+                  {
+                    "source": "earlier v2 plain search: unresolved run (its own pack)",
+                    "span": [
+                      -2663277406.1279297,
+                      -2663277405.46875
+                    ],
+                    "spanIso": [
+                      "1915-08-10T12:43:13.873Z TDB",
+                      "1915-08-10T12:43:14.532Z TDB"
+                    ],
+                    "lengthSec": 0.6591796875,
+                    "startMinusJoinSec": -40606.1279296875,
+                    "endMinusJoinSec": -40605.46875,
+                    "containsJoin": false,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 2.3021555772828606e-7,
+                    "p2Pass": true,
+                    "minElongationDeg": 4.999977783887609,
+                    "maxElongationDeg": 5.000067569198647,
+                    "refusals": 0,
+                    "samples": 65
+                  },
+                  {
+                    "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                    "span": [
+                      -2663236842.1875,
+                      -2663236757.8125
+                    ],
+                    "spanIso": [
+                      "1915-08-10T23:59:17.813Z TDB",
+                      "1915-08-11T00:00:42.188Z TDB"
+                    ],
+                    "lengthSec": 84.375,
+                    "startMinusJoinSec": -42.1875,
+                    "endMinusJoinSec": 42.1875,
+                    "containsJoin": true,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 4.436650280923557,
+                    "p2Pass": false,
+                    "minElongationDeg": 0.5517490766247539,
+                    "maxElongationDeg": 0.5633497190764433,
+                    "refusals": 0,
+                    "samples": 65
+                  },
+                  {
+                    "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                    "span": [
+                      -2663204653.125,
+                      -2663204610.9375
+                    ],
+                    "spanIso": [
+                      "1915-08-11T08:55:46.875Z TDB",
+                      "1915-08-11T08:56:29.063Z TDB"
+                    ],
+                    "lengthSec": 42.1875,
+                    "startMinusJoinSec": 32146.875,
+                    "endMinusJoinSec": 32189.0625,
+                    "containsJoin": false,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 0.0000016822711090824782,
+                    "p2Pass": true,
+                    "minElongationDeg": 4.994795995108984,
+                    "maxElongationDeg": 5.000640979002855,
+                    "refusals": 0,
+                    "samples": 65
+                  },
+                  {
+                    "source": "earlier v2 plain search: unresolved run (its own pack)",
+                    "span": [
+                      -2663204616.2109375,
+                      -2663204614.892578
+                    ],
+                    "spanIso": [
+                      "1915-08-11T08:56:23.790Z TDB",
+                      "1915-08-11T08:56:25.108Z TDB"
+                    ],
+                    "lengthSec": 1.318359375,
+                    "startMinusJoinSec": 32183.7890625,
+                    "endMinusJoinSec": 32185.107421875,
+                    "containsJoin": false,
+                    "touchesJoin": false,
+                    "closestApproachDeg": 0.0000011717450902892779,
+                    "p2Pass": true,
+                    "minElongationDeg": 4.999910353659253,
+                    "maxElongationDeg": 5.000093010901673,
+                    "refusals": 0,
+                    "samples": 65
+                  }
+                ]
+              }
+            }
+          ],
+          "boundarySpans": [
+            {
+              "span": [
+                -2668371060.9375,
+                -2668370976.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003735121405412656,
+              "p2Pass": true,
+              "minElongationDeg": 4.9970689729386475,
+              "maxElongationDeg": 5.002500663800672,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2668330729.6875,
+                -2668330645.3125
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000029623807205503283,
+              "p2Pass": true,
+              "minElongationDeg": 4.998072355677535,
+              "maxElongationDeg": 5.00352409113847,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2665826268.75,
+                -2665826184.375
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000026979962520101708,
+              "p2Pass": true,
+              "minElongationDeg": 4.9952698381867355,
+              "maxElongationDeg": 5.004785567562049,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2665759823.4375,
+                -2665759739.0625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.0000614154692897273,
+              "p2Pass": true,
+              "minElongationDeg": 4.9947991943409225,
+              "maxElongationDeg": 5.0044229483420315,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2663277426.5625,
+                -2663277384.375
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00002221611239061616,
+              "p2Pass": true,
+              "minElongationDeg": 4.997104658257815,
+              "maxElongationDeg": 5.002850895152534,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2663236800,
+                -2663236757.8125
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": false,
+              "joinsWithin2sOfSpan": [
+                "moon 1915-08-11T00:00:00 TDB"
+              ],
+              "closestApproachDeg": 4.436650280923557,
+              "p2Pass": false,
+              "minElongationDeg": 0.5575493343484875,
+              "maxElongationDeg": 0.5633497190764433,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2663204653.125,
+                -2663204610.9375
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.0000016822711090824782,
+              "p2Pass": true,
+              "minElongationDeg": 4.994795995108984,
+              "maxElongationDeg": 5.000640979002855,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2660723437.5,
+                -2660723395.3125
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000013666066015716183,
+              "p2Pass": true,
+              "minElongationDeg": 4.996126348424662,
+              "maxElongationDeg": 5.001419951697826,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2660663868.75,
+                -2660663784.375
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003144719621595016,
+              "p2Pass": true,
+              "minElongationDeg": 4.995097535990931,
+              "maxElongationDeg": 5.0058494898722525,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2658165103.125,
+                -2658164976.5625
+              ],
+              "lengthSec": 126.5625,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003625898843839792,
+              "p2Pass": true,
+              "minElongationDeg": 4.995048051154059,
+              "maxElongationDeg": 5.004735846904544,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2658132787.5,
+                -2658132703.125
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00004977000955630473,
+              "p2Pass": true,
+              "minElongationDeg": 4.996089009474707,
+              "maxElongationDeg": 5.002593751915885,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2655606600,
+                -2655603773.4375
+              ],
+              "lengthSec": 2826.5625,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000005390942535932197,
+              "p2Pass": true,
+              "minElongationDeg": 4.998906804074808,
+              "maxElongationDeg": 5.004198029420751,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2653077923.4375,
+                -2653077839.0625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00005208838589165765,
+              "p2Pass": true,
+              "minElongationDeg": 4.99526719048976,
+              "maxElongationDeg": 5.002741248836519,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2653045396.875,
+                -2653045312.5
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000010432366483570377,
+              "p2Pass": true,
+              "minElongationDeg": 4.996599704172091,
+              "maxElongationDeg": 5.004088340405732,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2650545070.3125,
+                -2650544985.9375
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000023092975767191604,
+              "p2Pass": true,
+              "minElongationDeg": 4.993967649137242,
+              "maxElongationDeg": 5.006471113469664,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2650490310.9375,
+                -2650490226.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000037372724801088,
+              "p2Pass": true,
+              "minElongationDeg": 4.994712707527881,
+              "maxElongationDeg": 5.007159024684705,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2648003948.4375,
+                -2648003906.25
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000032886323959147035,
+              "p2Pass": true,
+              "minElongationDeg": 4.994679597732712,
+              "maxElongationDeg": 5.001397465100467,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2647941468.75,
+                -2647941426.5625
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000020520140342483728,
+              "p2Pass": true,
+              "minElongationDeg": 4.99437712960196,
+              "maxElongationDeg": 5.001016954820316,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2645452110.9375,
+                -2645452026.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003407152598455809,
+              "p2Pass": true,
+              "minElongationDeg": 4.994759357441553,
+              "maxElongationDeg": 5.004992043119294,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                -2645399250,
+                -2645399165.625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.0000729076163121789,
+              "p2Pass": true,
+              "minElongationDeg": 4.995982555973492,
+              "maxElongationDeg": 5.006084039377215,
+              "refusals": 0,
+              "samples": 65
+            }
+          ],
+          "boundarySpansWithoutAFloorCrossing": 1,
+          "p2FailuresByThisProbe": 1
+        }
+      },
+      "partitionIdenticalAcrossCases": true
+    }
+  ]
+}

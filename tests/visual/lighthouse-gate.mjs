@@ -27,8 +27,15 @@ export const budgets = {
 // no-op. The ceilings below still cap those worst measurements, and the
 // score floors are the scores those accepted-worst samples produce — one
 // consistent concession per route, not two independent ones.
+//
+// 2026-10-17: the homepage's calibration is retired. Its ~3.0s worst mode
+// was page-side after all: the sky-today icons and the sample chart's discs
+// sat inside the browser's lazy-load distance and finished before the poster
+// painted, so the simulation counted them on the LCP path whenever they won
+// that race. They now wait until their section nears the screen, and the
+// home measured 2.10s/99 and 2.11s/99 worst-of-3 in the two CI runs since
+// (#771 at aad5445c, #775 at f951d0fb), and 2.03-2.10s locally in every run.
 export const calibrations = {
-  home: { lcp: 3_100, performance: 0.90 },
   'birth-chart': { lcp: 2_800, performance: 0.93 },
 };
 

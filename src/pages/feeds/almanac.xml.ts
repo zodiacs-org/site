@@ -1,6 +1,7 @@
 /** RSS 2.0 feed of published Almanac articles, newest first. */
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { isHiddenAlmanacSlug } from '../../data/hidden-child-pages.mjs';
 
 const SITE = 'https://zodiacs.org';
 
@@ -18,7 +19,8 @@ function lede(body: string): string {
 }
 
 export const GET: APIRoute = async () => {
-  const entries = (await getCollection('almanac', ({ data }) => !data.draft))
+  // Hidden articles (src/data/hidden-child-pages.mjs) are left out of the feed.
+  const entries = (await getCollection('almanac', ({ id, data }) => !data.draft && !isHiddenAlmanacSlug(id)))
     .sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
   const latest = entries[0]?.data.updated ?? new Date(0);
 
@@ -39,7 +41,7 @@ export const GET: APIRoute = async () => {
     <title>The Zodiacs.org Almanac</title>
     <link>${SITE}/almanac/</link>
     <atom:link href="${SITE}/feeds/almanac.xml" rel="self" type="application/rss+xml" />
-    <description>The sky, written down — what is happening up there and what the astrological tradition makes of it.</description>
+    <description>The sky, written down: what is happening up there and what the astrological tradition makes of it.</description>
     <language>en</language>
     <lastBuildDate>${latest.toUTCString()}</lastBuildDate>
 ${items}

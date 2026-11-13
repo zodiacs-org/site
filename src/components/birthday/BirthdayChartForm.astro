@@ -1,0 +1,148 @@
+---
+/**
+ * The birth chart, started from the birthday. The calculator accepts a date
+ * (and an optional time) in its URL fragment, the same hand-off the Moon
+ * phase tool uses (src/lib/chart-handoff.ts dateHandoffFragment): this form
+ * adds the reader's year to the page's month and day and opens
+ * /birth-chart/#date=YYYY-MM-DD&time=HH:MM (or time=unknown), where the
+ * birthplace field takes focus. The fields have no names, so without
+ * JavaScript the button opens the empty calculator and no birth detail ever
+ * reaches a URL query or a server.
+ */
+import ArtFrame from '../ArtFrame.astro';
+import { ART, artSrc, artSrcset } from '../../lib/art';
+
+interface Props {
+  month: number;
+  day: number;
+  label: string;
+}
+
+const { month, day, label } = Astro.props;
+const mm = String(month).padStart(2, '0');
+const dd = String(day).padStart(2, '0');
+---
+<form class="kpanel bday-form" action="/birth-chart/" method="get" data-bday-handoff data-month={mm} data-day={dd} novalidate>
+  <ArtFrame
+    src={artSrc('birthday-sundial')}
+    srcset={artSrcset('birthday-sundial')}
+    sizes="(min-width: 960px) 470px, calc(100vw - 40px)"
+    width={ART['birthday-sundial'].width}
+    height={ART['birthday-sundial'].height}
+    alt=""
+    class="bday-form__art"
+    spot="50% 64%"
+  />
+  <div class="bday-form__body">
+    <p class="bday-form__title">Your birth chart, starting from {label}</p>
+    <div class="bday-form__row">
+      <div class="bday-form__field">
+        <span class="bday-form__label">Birth date</span>
+        <span class="bday-form__input bday-form__input--filled"><b>{label}</b><span class="bday-form__tick" aria-hidden="true">✓</span></span>
+      </div>
+      <div class="bday-form__field">
+        <label class="bday-form__label" for="bday-year">Year</label>
+        <input class="bday-form__input" id="bday-year" inputmode="numeric" autocomplete="bday-year" maxlength="4" placeholder="e.g. 1994" aria-describedby="bday-form-error" />
+      </div>
+    </div>
+    <div class="bday-form__field">
+      <span class="bday-form__label bday-form__label--row">
+        <label for="bday-time">Birth time</label>
+        <label class="bday-form__check"><input type="checkbox" id="bday-time-unknown" /> I don’t know it</label>
+      </span>
+      <input class="bday-form__input" id="bday-time" type="time" />
+    </div>
+    <p class="bday-form__error" id="bday-form-error" role="alert" hidden></p>
+    <button class="btn btn--primary btn--lg bday-form__go" type="submit"><span>Get your free birth chart</span><span class="orb" aria-hidden="true">↗</span></button>
+    <p class="reassure">Your birthplace comes next, on the chart page. Free, with no signup.</p>
+  </div>
+</form>
+
+<script is:inline>
+  (function () {
+    var form = document.querySelector('[data-bday-handoff]');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = '';
+    var year = form.querySelector('#bday-year');
+    var time = form.querySelector('#bday-time');
+    var unknown = form.querySelector('#bday-time-unknown');
+    var error = form.querySelector('#bday-form-error');
+    var say = function (message) {
+      error.textContent = message;
+      error.hidden = !message;
+      if (message) year.focus();
+    };
+    unknown.addEventListener('change', function () {
+      time.disabled = unknown.checked;
+      if (unknown.checked) time.value = '';
+    });
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var value = year.value.trim();
+      var y = Number(value);
+      if (!/^\d{4}$/.test(value) || y < 1800 || y > 2199) {
+        say('Enter your birth year as four digits, from 1800 to 2199.');
+        return;
+      }
+      var month = form.dataset.month;
+      var day = form.dataset.day;
+      var leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+      if (month === '02' && day === '29' && !leap) {
+        say(value + ' had no February 29. Check the year.');
+        return;
+      }
+      say('');
+      var clock = !unknown.checked && /^\d{2}:\d{2}$/.test(time.value) ? time.value : 'unknown';
+      var params = new URLSearchParams();
+      params.set('date', value + '-' + month + '-' + day);
+      params.set('time', clock);
+      window.location.assign(form.getAttribute('action') + '#' + params.toString());
+    });
+  })();
+</script>
+
+<style>
+  .bday-form { padding: 0; overflow: hidden; }
+  .bday-form :global(.bday-form__art) { aspect-ratio: 16 / 7; border-radius: 0; }
+  .bday-form :global(.bday-form__art > img) { object-position: 50% 60%; }
+  .bday-form__body { display: grid; gap: 18px; padding: 26px 28px 28px; }
+  .bday-form__title { margin: 0; font-family: var(--font-serif); font-size: 1.45rem; font-weight: 500; line-height: 1.15; color: var(--ink-0); }
+  .bday-form__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .bday-form__field { display: grid; gap: 8px; min-width: 0; }
+  .bday-form__label { font-size: 0.875rem; font-weight: 550; color: var(--ink-1); }
+  .bday-form__label--row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .bday-form__check { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; color: var(--muted); cursor: pointer; }
+  .bday-form__check input { width: 16px; height: 16px; margin: 0; accent-color: var(--sign, var(--ink-1)); }
+  .bday-form__input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 50px;
+    padding: 0 16px;
+    border: 1px solid var(--hair-2);
+    border-radius: 14px;
+    background: rgba(198, 204, 218, 0.03);
+    color: var(--ink-0);
+    font: inherit;
+    font-size: 1rem;
+    color-scheme: dark;
+  }
+  .bday-form__input::placeholder { color: var(--faint); }
+  .bday-form__input:focus-visible { outline: 2px solid var(--ink-1); outline-offset: 2px; }
+  .bday-form__input:disabled { opacity: 0.45; }
+  .bday-form__input--filled {
+    border-color: color-mix(in oklab, var(--sign) 38%, transparent);
+    background: color-mix(in oklab, var(--sign) 6%, transparent);
+  }
+  .bday-form__input--filled b { font-weight: 550; }
+  .bday-form__tick { font-size: 13px; font-weight: 550; color: var(--sign); }
+  .bday-form__error { margin: -4px 0 0; font-size: 0.875rem; color: var(--ink-0); }
+  .bday-form__go { width: 100%; }
+  .bday-form .reassure { margin-top: -4px; text-align: center; }
+  @media (max-width: 760px) {
+    .bday-form__body { padding: 20px; }
+    .bday-form__row { gap: 12px; }
+  }
+</style>

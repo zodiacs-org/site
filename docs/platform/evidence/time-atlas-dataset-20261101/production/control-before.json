@@ -1,0 +1,387 @@
+{
+  "schema": "zodiacs.time-atlas-production.v1",
+  "base": "https://zodiacs.org",
+  "control": null,
+  "commit": "2f2a56699c10a8d1de1b2b5a731d0122a0a11ff2",
+  "deployment": {
+    "deploymentId": "dpl_7oWVdoEKjmaUWqGw9AVJPYH45dFT",
+    "aliasUpdatedAt": "2026-11-04T00:14:34.966Z",
+    "readyState": "READY",
+    "target": "production",
+    "githubCommitSha": "e632fe4cdbb02116d219bb68b280799d2a47b9f6"
+  },
+  "readAt": "2026-11-04T03:58:12.244Z",
+  "passed": 0,
+  "of": 24,
+  "checks": [
+    {
+      "name": "1 the zodiacs.org alias names a READY production deployment that is or contains 2f2a5669",
+      "ok": false,
+      "detail": {
+        "deployment": {
+          "deploymentId": "dpl_7oWVdoEKjmaUWqGw9AVJPYH45dFT",
+          "aliasUpdatedAt": "2026-11-04T00:14:34.966Z",
+          "readyState": "READY",
+          "target": "production",
+          "githubCommitSha": "e632fe4cdbb02116d219bb68b280799d2a47b9f6"
+        },
+        "containsCommit": false
+      }
+    },
+    {
+      "name": "2 /developers/time-atlas/ answers 200 as text/html",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "name": "3 the page holds the viewer: the base, the 23 comparisons, every period, each difference with its explanation, the explanations and findings, the sources, the rules, the files; no excerpt, no en or em dash, nothing more to run or load, a target for every link",
+      "ok": false,
+      "detail": {
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "bytes": 72111,
+        "problems": [
+          "viewer: page 404, reference 200"
+        ],
+        "more": 0
+      }
+    },
+    {
+      "name": "4 the page holds the licence and attribution text and its Dataset markup",
+      "ok": false,
+      "detail": {
+        "problems": [
+          "licence: page 404"
+        ]
+      }
+    },
+    {
+      "name": "5 the page holds the correction text with its three links, and the form at engine main is named \"Atlas correction\"",
+      "ok": false,
+      "detail": {
+        "problems": [
+          "corrections: page 404"
+        ],
+        "form": {
+          "status": 200,
+          "named": true
+        }
+      }
+    },
+    {
+      "name": "6 /developers/time-atlas/0.1.0/data/atlas.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "7 /developers/time-atlas/0.1.0/data/places.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "8 /developers/time-atlas/0.1.0/data/leads.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "9 /developers/time-atlas/0.1.0/data/citations-fr.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "10 /developers/time-atlas/0.1.0/data/rules-fr.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "11 /developers/time-atlas/0.1.0/data/citations-als.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "12 /developers/time-atlas/0.1.0/data/rules-als.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "13 /developers/time-atlas/0.1.0/data/citations-us.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "14 /developers/time-atlas/0.1.0/data/rules-us.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "15 /developers/time-atlas/0.1.0/data/tzdb-explanations.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "16 /developers/time-atlas/0.1.0/tzdb/differences.json answers 200 as application/json with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "17 /developers/time-atlas/0.1.0/TZDB-DIFFERENCES.md answers 200 as text/markdown with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "18 /developers/time-atlas/0.1.0/README.md answers 200 as text/markdown with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "19 /developers/time-atlas/0.1.0/COVERAGE.md answers 200 as text/markdown with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "20 /developers/time-atlas/0.1.0/CORRECTIONS.md answers 200 as text/markdown with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "21 /developers/time-atlas/0.1.0/LICENSING.md answers 200 as text/markdown with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "22 /developers/time-atlas/0.1.0/LICENSE.txt answers 200 as text/plain with the bytes of 2f2a5669 and of the engine at 7307665b",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "indexed": false,
+        "sameAsCommit": false,
+        "engine": {
+          "commit": "7307665bdbc432269fdac006104f661be16000bc",
+          "status": 200,
+          "same": false
+        },
+        "accessControlAllowOrigin": "*"
+      }
+    },
+    {
+      "name": "23 /developers/time-atlas/0.1.0/files.json answers 200 as application/json with the bytes of 2f2a5669",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+        "same": false
+      }
+    },
+    {
+      "name": "24 /developers/ links the page, sitemap.xml lists it with a lastmod, and llms.txt and llms-full.txt give its address",
+      "ok": false,
+      "detail": {
+        "linkedFromHub": false,
+        "sitemap": {
+          "status": 200,
+          "listed": false,
+          "lastmod": null
+        },
+        "llms": false,
+        "llmsFull": false
+      }
+    }
+  ]
+}

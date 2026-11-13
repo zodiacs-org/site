@@ -1,0 +1,20 @@
+# The MCP adapter's pin (the adoption plan's J-11, decision D-5), 2026-11-04, head 64096451fa134714cb41525410116b2d9a4e6f7b.
+
+## The MCP adapter's manifest pinned to the adoption commit that holds the rc.26 archive
+# public/examples/zodiacs-mcp-server-0.1.0-rc.26.tgz sha256 48b7a36c775df1b4793a250612f082956d1723e7c20f537d6a83451bfb0ffccc
+# command: node scripts/pack-mcp-server.mjs --artifact-commit 620403bcf73c91020053230fd8da2de0899698d4
+pack-mcp-server: wrote zodiacs-mcp-server-0.1.0-rc.26.tgz (905475 bytes, sha256 48b7a36c775d…, commit 620403bcf73c91020053230fd8da2de0899698d4)
+# exit code: 0
+# public/examples/zodiacs-mcp-server-0.1.0-rc.26.tgz after: sha256 48b7a36c775df1b4793a250612f082956d1723e7c20f537d6a83451bfb0ffccc (unchanged); the archive at 620403bcf73c91020053230fd8da2de0899698d4: 48b7a36c775df1b4793a250612f082956d1723e7c20f537d6a83451bfb0ffccc
+@@ -6,7 +6,7 @@
+   "file": "zodiacs-mcp-server-0.1.0-rc.26.tgz",
+   "bytes": 905475,
+   "sha256": "48b7a36c775df1b4793a250612f082956d1723e7c20f537d6a83451bfb0ffccc",
+-  "artifactCommit": "0000000000000000000000000000000000000000",
++  "artifactCommit": "620403bcf73c91020053230fd8da2de0899698d4",
+   "artifactRepository": "https://github.com/zodiacs-org/site",
+   "artifactPath": "public/examples/zodiacs-mcp-server-0.1.0-rc.26.tgz",
+   "engine": {
+# command: npm run mcp:pack:check
+pack-mcp-server: verified zodiacs-mcp-server-0.1.0-rc.26.tgz (905475 bytes, sha256 48b7a36c775d…, commit 620403bcf73c91020053230fd8da2de0899698d4)
+# exit code: 0

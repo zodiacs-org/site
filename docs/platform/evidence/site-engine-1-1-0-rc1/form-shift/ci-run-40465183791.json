@@ -1,0 +1,87 @@
+{
+  "schema": "zodiacs.lighthouse-shift-summary.v1",
+  "samples": [
+    {
+      "sample": "ru-birth-chart-1",
+      "path": "/ru/birth-chart/",
+      "cumulativeLayoutShift": 0,
+      "shiftedElements": [],
+      "firstContentfulPaintMs": 131.6,
+      "shifts": []
+    },
+    {
+      "sample": "ru-birth-chart-2",
+      "path": "/ru/birth-chart/",
+      "cumulativeLayoutShift": 0.007647932861627081,
+      "shiftedElements": [
+        {
+          "selector": "form.calc__form > div.core > div.calc__fields > details.calc__options",
+          "score": 0.007647932861627081
+        }
+      ],
+      "firstContentfulPaintMs": 99.3,
+      "shifts": [
+        {
+          "ms": 131.8,
+          "score": 0.007647932861627081
+        }
+      ]
+    },
+    {
+      "sample": "ru-birth-chart-3",
+      "path": "/ru/birth-chart/",
+      "cumulativeLayoutShift": 0,
+      "shiftedElements": [],
+      "firstContentfulPaintMs": 113.3,
+      "shifts": []
+    },
+    {
+      "sample": "ru-home-1",
+      "path": "/ru/",
+      "cumulativeLayoutShift": 0,
+      "shiftedElements": [],
+      "firstContentfulPaintMs": 191.6,
+      "shifts": []
+    },
+    {
+      "sample": "ru-home-2",
+      "path": "/ru/",
+      "cumulativeLayoutShift": 0,
+      "shiftedElements": [],
+      "firstContentfulPaintMs": 183.1,
+      "shifts": []
+    },
+    {
+      "sample": "ru-home-3",
+      "path": "/ru/",
+      "cumulativeLayoutShift": 0,
+      "shiftedElements": [],
+      "firstContentfulPaintMs": 196.7,
+      "shifts": []
+    },
+    {
+      "sample": "birth-chart-1",
+      "path": "/birth-chart/",
+      "cumulativeLayoutShift": 0,
+      "shiftedElements": [],
+      "firstContentfulPaintMs": 170.7,
+      "shifts": []
+    },
+    {
+      "sample": "birth-chart-2",
+      "path": "/birth-chart/",
+      "cumulativeLayoutShift": 0,
+      "shiftedElements": [],
+      "firstContentfulPaintMs": 205.4,
+      "shifts": []
+    },
+    {
+      "sample": "birth-chart-3",
+      "path": "/birth-chart/",
+      "cumulativeLayoutShift": 0,
+      "shiftedElements": [],
+      "firstContentfulPaintMs": 197.9,
+      "shifts": []
+    }
+  ]
+}

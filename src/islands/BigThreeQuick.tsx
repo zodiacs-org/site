@@ -282,7 +282,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
                       </picture>
                       {signName(sign, locale)}
                     </span>
-                    <span class="mono three-card__deg">{formatLongitude(lon, locale)}</span>
+                    <span class="three-card__deg">{formatLongitude(lon, locale)}</span>
                     {locale === 'en' && readingModule && <p class="three-card__read">{readingModule.bigThree(kind, sign.slug)}</p>}
                     <a class="three-card__more" href={localizePath(locale, `/${sign.slug}/`)}>{s(locale, 'readSign', { sign: signName(sign, locale) })} →</a>
                   </div>

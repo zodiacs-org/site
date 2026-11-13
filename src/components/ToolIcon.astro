@@ -1,0 +1,83 @@
+---
+/**
+ * A tool's icon: its line drawing on a flat pastel disc, built like the
+ * twelve sign icons so the two sit side by side as one family. Static
+ * markup, no JavaScript. Drawings and hues live in src/lib/tool-icons.ts.
+ *
+ *   <ToolIcon name="moon-sign" />                        44px, decorative
+ *   <ToolIcon name="compatibility" size={64} />
+ *   <ToolIcon name="guide" label="Guide" />              announced as an image
+ *   <ToolIcon name="today" inset={false} />              disc fills the box
+ *
+ * `size` is the box in CSS pixels. By default the disc is inset by the same
+ * 3.75% margin the sign icon images carry, so a 44px tool icon and a 44px
+ * SignIcon show equal discs; `inset={false}` fills the box instead (for
+ * overlapping stacks or an icon set into a panel edge). A parent can resize
+ * every icon inside it, for a breakpoint, by setting --tool-icon-size.
+ */
+import { TOOL_ICONS, type ToolIconName } from '../lib/tool-icons';
+
+interface Props {
+  name: ToolIconName;
+  /** Box size in CSS pixels. */
+  size?: number;
+  /** Accessible name. Without one the icon is decorative and hidden from assistive tech. */
+  label?: string;
+  /** Inset the disc like the sign icon images (default), or fill the box. */
+  inset?: boolean;
+  class?: string;
+}
+
+const { name, size = 44, label, inset = true, class: className } = Astro.props;
+const icon = TOOL_ICONS[name];
+if (!icon) throw new Error(`ToolIcon: no drawing named "${name}".`);
+---
+<span
+  class:list={['tool-icon', !inset && 'tool-icon--full', className]}
+  style={`--tool-icon-hue:var(--sign-${icon.hue});--tool-icon-box:${size}px`}
+  role={label ? 'img' : undefined}
+  aria-label={label || undefined}
+  aria-hidden={label ? undefined : 'true'}
+><svg
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  set:html={icon.body}
+></svg></span>
+
+<style>
+  .tool-icon {
+    --_d: var(--tool-icon-size, var(--tool-icon-box));
+    flex: none;
+    box-sizing: border-box;
+    display: inline-grid;
+    place-items: center;
+    width: var(--_d);
+    height: var(--_d);
+    padding: calc(var(--_d) * 0.0375);
+    border-radius: 50%;
+    background: var(--tool-icon-hue);
+    background-clip: content-box;
+    color: #060709;
+    line-height: 0;
+    vertical-align: middle;
+  }
+  .tool-icon--full {
+    padding: 0;
+    background-clip: border-box;
+  }
+  .tool-icon svg {
+    display: block;
+    width: 66%;
+    height: 66%;
+    overflow: visible;
+  }
+  @media (forced-colors: active) {
+    .tool-icon { forced-color-adjust: none; }
+  }
+</style>

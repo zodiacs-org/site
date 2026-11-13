@@ -23,7 +23,8 @@ describe('growth link graph', () => {
 
   it('keeps horoscope programs linked back to their full sign guide', async () => {
     const program = await source('../components/HoroscopeProgramPage.astro');
-    expect(program).toContain('href={`/${sign.slug}/`}>Full {sign.name} guide →</a>');
+    expect(program).toContain('<a class="hz-guide" href={`/${sign.slug}/`}>');
+    expect(program).toContain('Full {sign.name} guide <span class="arr">→</span>');
   });
 
   it('links published calendar rows while preserving their stable anchor IDs', async () => {
@@ -55,9 +56,17 @@ describe('growth link graph', () => {
   });
 
   it('sends the Spanish hero to the localized calculator', async () => {
-    const homepage = await source('../pages/es/index.astro');
-    expect(homepage).toContain("href={localizePath('es', '/birth-chart/')}");
-    expect(homepage).toContain('Obtén tu carta natal gratis');
-    expect(homepage).not.toContain('por ahora en inglés');
+    // The translated homes share one component; the Spanish copy is its own record.
+    const [homepage, home, copy] = await Promise.all([
+      source('../pages/es/index.astro'),
+      source('../components/localized/LocalizedHome.astro'),
+      source('../components/localized/home-copy.ts'),
+    ]);
+    const spanish = copy.slice(copy.indexOf('  es: {'), copy.indexOf('  pt: {'));
+    expect(homepage).toContain('<LocalizedHome locale="es"');
+    expect(home).toContain("const birthChart = localizePath(locale, '/birth-chart/');");
+    expect(home).toContain('<a class="btn btn--primary" href={birthChart}><span>{c.hero.cta}</span>');
+    expect(spanish).toContain("cta: 'Obtén tu carta natal gratis'");
+    expect(spanish).not.toContain('por ahora en inglés');
   });
 });

@@ -1,6 +1,6 @@
 {
-  "made": "2026-10-07T14:37:15.512Z",
-  "source": "Real panels from this build with live answers from https://zodiacs.org/mcp; dark theme; Bangkok time zone; the birth date in 05 is made up",
+  "made": "2026-10-16T16:36:56.385Z",
+  "source": "Real panels from this build with live answers from https://zodiacs.org/mcp; dark theme; Bangkok time zone; personal details in 05–07 are synthetic examples",
   "screenshots": [
     {
       "file": "01-choose-your-sign.png",
@@ -21,6 +21,14 @@
     {
       "file": "05-chart-without-birth-time.png",
       "prompt": "Help me read my birth chart. I don't know my birth time."
+    },
+    {
+      "file": "06-comparison-card.png",
+      "prompt": "Compare my chart with my partner's and tell us how compatible we are: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992."
+    },
+    {
+      "file": "07-wedding-card.png",
+      "prompt": "We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day."
     }
   ]
 }

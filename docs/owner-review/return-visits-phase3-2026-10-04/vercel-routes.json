@@ -38,6 +38,10 @@
       "src": "^/c(?:/(.*))$"
     },
     {
+      "source": "/year/(.*)",
+      "src": "^/year(?:/(.*))$"
+    },
+    {
       "source": "/people/rigoberta-menchu/",
       "src": "^/people/rigoberta-menchu/$"
     },
@@ -134,6 +138,10 @@
       "src": "^/assets/webmcp-register\\.js$"
     },
     {
+      "source": "/assets/webmcp-calculators.js",
+      "src": "^/assets/webmcp-calculators\\.js$"
+    },
+    {
       "source": "/assets/site-footer.css",
       "src": "^/assets/site-footer\\.css$"
     },
@@ -196,6 +204,14 @@
     {
       "source": "/assets/og/v2/share-pastel-wheel-20260809.png",
       "src": "^/assets/og/v2/share-pastel-wheel-20260809\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/share-pastel-wheel-20261019.png",
+      "src": "^/assets/og/v2/share-pastel-wheel-20261019\\.png$"
+    },
+    {
+      "source": "/assets/og/v8/home-20261019.jpg",
+      "src": "^/assets/og/v8/home-20261019\\.jpg$"
     },
     {
       "source": "/_astro/(.*)",

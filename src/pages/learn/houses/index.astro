@@ -27,7 +27,7 @@ const jsonLd = [
     ...editorialDates('/learn/houses/'),
     name: 'The twelve houses in astrology',
     url: 'https://zodiacs.org/learn/houses/',
-    description: 'What the twelve houses of a birth chart mean, from self to solitude — each explained plainly.',
+    description: 'What the twelve houses of a birth chart mean, from self to solitude, each explained plainly.',
   },
   {
     '@type': 'ItemList',
@@ -44,14 +44,14 @@ const jsonLd = [
 <Base
   type="website"
   editorialLine
-  title="The 12 Houses in Astrology — What Each One Means | Zodiacs.org"
-  description="The twelve houses of a birth chart explained plainly: money, home, work, partnership, career, and the rest of life's floor plan — house by house."
+  title="The 12 Houses in Astrology: What Each One Means | Zodiacs.org"
+  description="The twelve houses of a birth chart explained plainly: money, home, work, partnership, career, and the rest of life's floor plan, house by house."
   path="/learn/houses/"
   jsonLd={jsonLd}
 >
   <section class="section--tight container container--narrow">
     <div class="cluster-hero reveal">
-      <em class="kicker">Learn</em>
+      <a class="crumb" href="/learn/"><span class="crumb__arrow" aria-hidden="true">←</span>Learn</a>
       <h1 class="display">The twelve houses</h1>
       <p>
         Houses divide a <a href="/learn/glossary/#birth-chart">birth chart</a> into twelve areas of life. In quadrant systems such as Placidus, the first-house cusp is the exact <a href="/learn/glossary/#ascendant">ascendant</a> degree. In <a href="/learn/glossary/#whole-sign-houses">whole-sign houses</a>, the ascendant’s entire sign is the first house and the angle sits somewhere inside it. That house concerns self and approach; the sequence then
@@ -85,7 +85,7 @@ const jsonLd = [
     </ol>
 
     <p class="cluster-note reveal">
-      Houses need your birth time — <a href="/birth-chart/">run your chart</a>{' '}
+      Houses need your birth time. <a href="/birth-chart/">Run your chart</a>{' '}
       to see all twelve populated. Or continue with{' '}
       <a href="/learn/planets/">the planets</a> and{' '}
       <a href="/learn/aspects/">the aspects</a>.

@@ -1,5 +1,59 @@
 # Native ChatGPT walkthroughs
 
+## 0.5.1 recording prepared, 27 October 2026
+
+Status: local candidate for owner review, not published or uploaded. The new
+movie shows the production comparison and Florence wedding cards after the
+sharper-artwork release. It contains real recorded card interactions, with
+waiting time trimmed and the conversation cropped to exclude browser and
+account details. No unrelated windows or confirmation dialogs appear in the
+edit. The exported movie was reviewed in native project filmstrips and at
+normal playback speed.
+
+- Proposed URL: `https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.1.mp4`
+- Duration: 41 seconds, H.264, 1080 by 1600 pixels, 30 frames per second.
+- Audio: intentionally silent.
+- SHA-256: `51bb6000a328b5fcb4dec11b5e552ec14bbb31ab60ad9be9443796fe1379ce35`.
+- Timeline: 0 to 22 seconds, the synthetic Madrid comparison and expanded
+  scores and contacts; 22 to 41 seconds, the synthetic Florence wedding,
+  rating, reasons and evening times.
+- Editable native project: `Zodiacs-051-live-demo.tsrct`, retained locally with
+  the original recordings and review previews.
+- Keep `zodiacs-sky-0.5.0.mp4` unchanged. Publish only after the owner approves.
+
+
+## 0.5.0 — 17 October 2026
+
+Video: `public/assets/ai/review/zodiacs-sky-0.5.0.mp4`
+SHA-256: `2cefd355e42269b073b676c62f3c4af4605c20deaa4bc0454fa6b2b19dbd6883`
+
+A silent 43-second walkthrough, 1280 × 720, assembled from actual ChatGPT
+web captures of a private connection to the live Zodiacs endpoint. The
+browser-tab frames follow scrolling through two completed cards. The captured
+scroll was slowed so reviewers can read it; this is edited capture, not a
+continuous screen recording or a phone recording. The final four seconds show
+the linked printable wedding card. The card contents were not edited.
+
+The comparison uses synthetic birth details: 3 May 1990 at 08:30 in Madrid,
+and 10 August 1992 with unknown birth time. The wedding uses Florence, 12 June
+2027 at 17:00. The connection called production `https://zodiacs.org/mcp` for
+both cards. The printable link retained Florence, the date and the time after
+loading and removed its referral query parameter.
+
+| Time | Shown |
+| --- | --- |
+| 0:00 | Comparison prompt and compatibility score, 58/100 |
+| 0:08 | Attraction, communication, stability and interpretation |
+| 0:16 | Closest contacts, unknown-time limit and not-a-guarantee note |
+| 0:25 | Wedding prompt and day rating, 69/100 |
+| 0:31 | Reasons, Sun and Moon, golden hour and sunset |
+| 0:39 | Linked printable card with Florence, date and time preserved |
+
+No account records, calendar writes or real birth details are included. The
+separate host acceptance evidence covers the other handoff prompts and the
+owner's phone check; this video demonstrates the comparison and wedding flows.
+
+
 ## 0.4.0 — 7 October 2026
 
 Video: `public/assets/ai/review/zodiacs-sky-0.4.0.mp4`

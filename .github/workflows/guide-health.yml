@@ -1,0 +1,43 @@
+name: Guide Health
+
+# Asks the live Guide one fixed public question each day. A failed run means
+# visitors can't get answers (for example a revoked GUIDE_ANTHROPIC_API_KEY),
+# and GitHub emails the owner about the failed workflow.
+on:
+  schedule:
+    - cron: '23 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: guide-health
+  cancel-in-progress: true
+
+jobs:
+  guide:
+    name: Guide answers on production
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Ask Guide one question
+        run: node scripts/guide-health-check.mjs https://zodiacs.org

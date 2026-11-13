@@ -1,28 +1,158 @@
 import { z } from 'zod';
 import { BUDGETS, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS } from '../lib/compute-api/constants';
-import { OCCASION_KINDS } from '../lib/occasions/kinds';
-import { HOROSCOPE_FOCUSES, HOROSCOPE_PERIODS, HOROSCOPE_SIGNS, HOROSCOPE_URI } from './horoscope/reading';
+import { COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
+import type { OccasionKind } from '../lib/occasions/kinds';
+import { BEST_DAYS_MAX_WINDOW } from '../lib/occasions/best-dates';
+import { compatibilityInput, compatibilityResult } from './features/compatibility';
+import { chartTwinsData, chartTwinsInput, famousChartData, famousChartInput } from './features/people';
+import { birthdayData, birthdayInput, skyCalendarData, skyCalendarInput } from './features/birthday';
+import { HOROSCOPE_FOCUSES, HOROSCOPE_PERIODS, HOROSCOPE_SIGNS, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS } from './horoscope/reading';
+import { natalChartData, natalChartDataWithNodes, natalChartInput, natalChartInputWithHouses } from './features/natal-chart';
+import { horoscopePeriodData, horoscopePeriodDataWithShare, horoscopePeriodInput } from './features/horoscope-period';
+import { chineseZodiacData, chineseZodiacDataWithShare, chineseZodiacInput } from './features/chinese-zodiac';
+import { personalTransitsData, personalTransitsInput } from './features/personal-transits';
+import { explainData, explainInput, explainInputWithSkyEvents } from './features/explain';
+import { birthplaceData, birthplaceInput } from './features/birthplace';
+import { skyEventsData, skyEventsInput } from './features/sky-events';
+import { yearScoreData, yearScoreInput, yearScoreSelfInput } from './features/year-score';
+import { solarReturnData, solarReturnInput } from './features/solar-return';
+import { numerologyData, numerologyInput } from './features/numerology';
 
-export const AI_VERSION = '0.4.0';
+export const AI_VERSION = '0.6.6';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
 /** The released tools: what the reviewed plugin offers. */
 export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'] as const;
-/** The occasion tools, offered only where ZODIACS_OCCASIONS_ENABLED=1 (docs/platform/zodiacs-ai/OCCASIONS.md). */
-export const OCCASION_TOOL_NAMES = ['get_occasion_sky', 'get_life_milestones'] as const;
+/**
+ * The 0.5.0 tools: the occasion tools, compatibility, famous people, birthdays and the calendar feed.
+ * Offered only where ZODIACS_OCCASIONS_ENABLED=1 (docs/platform/zodiacs-ai/OCCASIONS.md).
+ */
+/**
+ * The occasions get_occasion_sky takes: every card occasion but a baby's arrival and a coming of age, which centre
+ * on a child's or a teenager's birth date. 0.6.5 takes those two out after OpenAI's review found that the baby
+ * occasion, with names, a place and coordinates, could collect identifying or locating details about a child under
+ * 13 (docs/platform/zodiacs-ai/RESUBMISSION-0.6.0.md). The site's own occasion picker keeps all twelve.
+ */
+export const ASSISTANT_OCCASION_KINDS = ['wedding', 'anniversary', 'met', 'birthday', 'pet', 'home', 'job', 'graduation', 'retirement', 'gathering'] as const satisfies readonly OccasionKind[];
+/**
+ * The occasions 0.6.5 withdrew, and words an assistant may try for them, compared lower-cased without accents,
+ * spaces or punctuation. Asked for one, the hosted server answers this fixed sentence, not the list of the others.
+ */
+export const WITHDRAWN_OCCASIONS: readonly string[] = ['baby', 'newborn', 'infant', 'birth', 'babyshower', 'comingofage', 'quinceanera', 'barmitzvah', 'batmitzvah'];
+export const WITHDRAWN_OCCASION_REFUSAL = "This tool makes no card for a baby's arrival or a coming of age. Do not send a child's name, birth date or place under another occasion.";
+/**
+ * The hosted server's fixed answer to a call that carries a child's birth date: a birth date less than 13 years
+ * before today, or still to come, or a birthday card for a day in those 13 years, which can be a birth date. An
+ * assistant can call a baby's arrival a birthday, so the withdrawn occasions alone do not keep a child's details out.
+ * Its middle sentence gives an adult's request a way forward; it ends on what not to send.
+ */
+export const UNDER_13_REFUSAL = "Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.";
+export const OCCASION_TOOL_NAMES = ['get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'] as const;
+/**
+ * The 0.5 tools: the thirteen the directories reviewed. Their tools/list entries, including this list as the
+ * error branch's and get_capabilities' tool enum, stay byte for byte as published, apart from the two occasions
+ * 0.6.5 takes out of get_occasion_sky (src/ai-tools/release-060.test.ts).
+ */
 export const ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES] as const;
-export type AiToolName = typeof ALL_AI_TOOL_NAMES[number];
+/**
+ * The 0.6.0 tools: a natal chart readout, monthly, yearly and weekly horoscopes, the Chinese zodiac, personal
+ * transits and astrology explainers. Read-only and anonymous like the others. Offered only where
+ * ZODIACS_COVERAGE_ENABLED=1 joins ZODIACS_OCCASIONS_ENABLED=1, so a deployment changes nothing the directories
+ * see until the owner switches them on (docs/platform/zodiacs-ai/claude-directory/RESYNC-0.6.0.md).
+ */
+export const COVERAGE_TOOL_NAMES = ['get_natal_chart', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'explain_astrology'] as const;
+/**
+ * A public place name for the chart tools. Offered with the coverage tools, after them, so the thirteen
+ * published definitions stay the first thirteen entries in tools/list.
+ */
+export const PLACE_TOOL_NAMES = ['find_birthplace'] as const;
+/**
+ * Every tool the hosted server offers with the coverage switch, in tools/list order: the nineteen production lists.
+ * The sky events switch adds SKY_EVENTS_TOOL_NAMES after them (EVERY_TOOL_WITH_SKY_EVENTS).
+ */
+export const EVERY_AI_TOOL_NAME = [...ALL_AI_TOOL_NAMES, ...COVERAGE_TOOL_NAMES, ...PLACE_TOOL_NAMES] as const;
+/**
+ * search_sky_events: eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods, months or
+ * years ahead. Offered only where ZODIACS_SKY_EVENTS_ENABLED=1 joins the coverage switch, last in tools/list, so with
+ * the switch off the nineteen entries keep their places and bytes (src/ai-tools/sky-events.test.ts).
+ */
+export const SKY_EVENTS_TOOL_NAMES = ['search_sky_events'] as const;
+/** Every tool the hosted server can offer, in tools/list order, with the sky events switch on. */
+export const EVERY_TOOL_WITH_SKY_EVENTS = [...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES] as const;
+/**
+ * get_year_score: the Year Ahead Score for a birth chart or a public figure from the Year Ahead directory. Offered
+ * only where ZODIACS_YEAR_SCORE_ENABLED=1 joins the coverage switch, last in tools/list, so with the switch off every
+ * other entry keeps its place and bytes (src/ai-tools/year-score.test.ts).
+ */
+export const YEAR_SCORE_TOOL_NAMES = ['get_year_score'] as const;
+/**
+ * get_solar_return: the chart for the person's next birthday with the year's main themes. Offered only where
+ * ZODIACS_SOLAR_RETURN_ENABLED=1 joins the coverage switch, after get_year_score, so with it off every other entry
+ * keeps its place and bytes (src/ai-tools/solar-return.test.ts).
+ */
+export const SOLAR_RETURN_TOOL_NAMES = ['get_solar_return'] as const;
+/**
+ * get_numerology: Pythagorean numerology from a birth date and, if given, a name. Numerology is a separate tradition
+ * from astrology. Offered only where ZODIACS_NUMEROLOGY_ENABLED=1 joins the coverage and occasion switches, after every
+ * other tool, so with the switch off every entry before it keeps its place and bytes (src/ai-tools/numerology.test.ts).
+ */
+export const NUMEROLOGY_TOOL_NAMES = ['get_numerology'] as const;
+/** Every tool name the hosted server knows, in tools/list order, with every switch on. */
+export const EVERY_TOOL_NAME = [...EVERY_TOOL_WITH_SKY_EVENTS, ...YEAR_SCORE_TOOL_NAMES, ...SOLAR_RETURN_TOOL_NAMES, ...NUMEROLOGY_TOOL_NAMES] as const;
+/** The same list, under the name the numerology and schema tests use. */
+export const EVERY_SWITCHED_TOOL = EVERY_TOOL_NAME;
+export type AiToolName = typeof EVERY_TOOL_NAME[number];
+export type CoverageToolName = typeof COVERAGE_TOOL_NAMES[number];
+export type PlaceToolName = typeof PLACE_TOOL_NAMES[number];
+export type SkyEventsToolName = typeof SKY_EVENTS_TOOL_NAMES[number];
+export type YearScoreToolName = typeof YEAR_SCORE_TOOL_NAMES[number];
+export type SolarReturnToolName = typeof SOLAR_RETURN_TOOL_NAMES[number];
+export type NumerologyToolName = typeof NUMEROLOGY_TOOL_NAMES[number];
 export const OCCASIONS_SWITCH_ENV = 'ZODIACS_OCCASIONS_ENABLED';
+export const COVERAGE_SWITCH_ENV = 'ZODIACS_COVERAGE_ENABLED';
+/** Off unless exactly '1', and only with the coverage switch: search_sky_events, the natal chart's houseSystem and nodes, and explain_astrology's event and house topics. */
+export const SKY_EVENTS_SWITCH_ENV = 'ZODIACS_SKY_EVENTS_ENABLED';
+/** Off unless exactly '1', and only with the occasion and coverage switches: get_year_score. */
+export const YEAR_SCORE_SWITCH_ENV = 'ZODIACS_YEAR_SCORE_ENABLED';
+/**
+ * Off unless exactly '1', and only with the Year Ahead Score switch: get_year_score takes a public figure's name
+ * (person) as well as the person's own birth details. Off, the tool takes only the person's own details; the site's
+ * figure pages are not affected.
+ */
+export const YEAR_SCORE_PEOPLE_SWITCH_ENV = 'ZODIACS_YEAR_SCORE_PEOPLE_ENABLED';
+/** Off unless exactly '1', and only with the occasion and coverage switches: get_solar_return. */
+export const SOLAR_RETURN_SWITCH_ENV = 'ZODIACS_SOLAR_RETURN_ENABLED';
+/** Off unless exactly '1', and only with the coverage and occasion switches: get_numerology. */
+export const NUMEROLOGY_SWITCH_ENV = 'ZODIACS_NUMEROLOGY_ENABLED';
 /** The compute API's own events bound. */
 export const MAX_EVENT_DAYS = BUDGETS['events.windowDays'];
 export const MAX_HTTP_BYTES = 16_384;
 export const AI_ROUTE_PARAM = '__zodiacs_ai';
 export const AI_SWITCH_ENV = 'ZODIACS_MCP_ENABLED';
 export const ORIGIN = 'https://zodiacs.org';
-export const WIDGET_URI = 'ui://zodiacs/sky-events-v1.html';
-export const STUDIO_URI = 'ui://zodiacs/chart-studio-v2.html';
-// Keep existing host definitions readable while their tool metadata is refreshed.
+// ChatGPT keeps a panel by its URI, so a changed panel gets a new one. The
+// earlier URIs stay registered and serve the current panel, so conversations
+// and host definitions that still name them keep working.
+export const WIDGET_URI = 'ui://zodiacs/sky-events-v4.html';
+export const LEGACY_WIDGET_URIS = ['ui://zodiacs/sky-events-v3.html', 'ui://zodiacs/sky-events-v2.html', 'ui://zodiacs/sky-events-v1.html'] as const;
+export const STUDIO_URI = 'ui://zodiacs/chart-studio-v6.html';
+export const LEGACY_STUDIO_URIS = ['ui://zodiacs/chart-studio-v5.html', 'ui://zodiacs/chart-studio-v4.html', 'ui://zodiacs/chart-studio-v3.html', 'ui://zodiacs/chart-studio-v2.html', 'ui://zodiacs/chart-studio-v1.html'] as const;
+/** The first Chart Studio URI, kept for existing callers. */
 export const LEGACY_STUDIO_URI = 'ui://zodiacs/chart-studio-v1.html';
-export { HOROSCOPE_URI };
+export { HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS };
+/** The occasion tools' panel, offered only while ZODIACS_OCCASIONS_ENABLED=1. */
+export const OCCASIONS_URI = 'ui://zodiacs/occasions-v8.html';
+/**
+ * The five coverage tools' panel, registered only while those tools are offered. readings-v1 and readings-v2
+ * were built for staging drives and are retired: panel-fingerprints.json keeps their hashes so neither name
+ * can be reused for other bytes.
+ */
+export const READINGS_URI = 'ui://zodiacs/readings-v3.html';
+/**
+ * The readings panel while ZODIACS_SKY_EVENTS_ENABLED=1, for get_natal_chart alone: the same cards, with the lunar
+ * nodes and Chiron listed in the birth chart (src/ai-tools/readings-panel/views-sky-events.tsx). Switched off, nothing names it.
+ */
+export const READINGS_SKY_EVENTS_URI = 'ui://zodiacs/readings-v4.html';
+export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v7.html', 'ui://zodiacs/occasions-v6.html', 'ui://zodiacs/occasions-v5.html', 'ui://zodiacs/occasions-v4.html', 'ui://zodiacs/occasions-v3.html', 'ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 
 /** What people see on the tool-call line and in the plugin's details. */
@@ -35,6 +165,21 @@ export const TOOL_TITLES: Record<AiToolName, string> = {
   open_chart_studio: 'Chart Studio',
   get_occasion_sky: 'The sky on a day',
   get_life_milestones: 'Life milestones',
+  get_compatibility: 'Compare two charts',
+  find_chart_twins: 'Chart twins',
+  get_famous_chart: 'A famous birth chart',
+  get_birthday: 'Your birthday',
+  get_sky_calendar: 'Sky calendar for your calendar app',
+  get_natal_chart: 'Birth chart readout',
+  get_horoscope_period: 'Monthly, yearly and weekly horoscopes',
+  get_chinese_zodiac: 'Chinese zodiac',
+  get_personal_transits: 'Your transits',
+  explain_astrology: 'Astrology explained',
+  find_birthplace: 'Find a birthplace',
+  search_sky_events: 'Search sky events',
+  get_year_score: 'Year Ahead Score',
+  get_solar_return: 'Your solar return',
+  get_numerology: 'Numerology numbers',
 };
 
 const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).');
@@ -54,17 +199,21 @@ export const INPUT_SCHEMAS = {
   }),
   check_sky_fact: z.strictObject({ kind: z.enum(['sign', 'retrograde', 'ingress', 'phase']), body: z.enum(EVENT_BODIES).optional(), sign: z.enum(SIGN_SLUGS).optional(), phase: z.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone.optional() }),
   get_occasion_sky: z.strictObject({
-    occasion: z.enum(OCCASION_KINDS).describe('What the day is: wedding, anniversary, met (the day they met), birthday, baby (the day a baby arrived), pet, home, job, graduation, retirement, coming-of-age or gathering.'),
-    date: date.describe('The day, such as 2027-06-12 (years 1800–2199).'),
+    occasion: z.enum(ASSISTANT_OCCASION_KINDS).describe('What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering.'),
+    date: date.optional().describe('The day, such as 2027-06-12 (years 1800–2199). Needed unless searchFrom and searchTo are given.'),
+    searchFrom: date.optional().describe('To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo.'),
+    searchTo: date.optional().describe('The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back.'),
     time: wallClock.optional().describe('The local clock time, such as 19:00, if the person gives one. Needs zone.'),
     zone: zone.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
-    latitude: z.number().min(-90).max(90).optional().describe('The place, for the evening sky. Give it with longitude and zone.'),
-    longitude: z.number().min(-180).max(180).optional(),
-    place: z.string().min(1).max(80).optional().describe('The place name for the card, such as Florence, Italy. Shown only.'),
-    names: z.string().min(1).max(60).optional().describe('Up to two first names to show on the card, if the person wants them.'),
+    latitude: z.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
+    longitude: z.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
+    place: z.string().min(1).max(80).optional().describe('Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored.'),
+    names: z.string().min(1).max(60).optional().describe('Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.'),
   }).superRefine((args, context) => {
     if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
     if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A time or a place needs its time zone.' });
+    if ((args.searchFrom === undefined) !== (args.searchTo === undefined)) context.addIssue({ code: 'custom', message: 'Give searchFrom and searchTo together.' });
+    if (args.date === undefined && args.searchFrom === undefined) context.addIssue({ code: 'custom', message: 'Give a date, or a window to search.' });
   }),
   get_life_milestones: z.strictObject({
     birthDate: date.describe('The birth date, such as 1997-03-15.'),
@@ -74,22 +223,76 @@ export const INPUT_SCHEMAS = {
   }).superRefine((args, context) => {
     if (args.time !== undefined && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time needs its time zone.' });
   }),
+  get_compatibility: compatibilityInput,
+  find_chart_twins: chartTwinsInput,
+  get_famous_chart: famousChartInput,
+  get_birthday: birthdayInput,
+  get_sky_calendar: skyCalendarInput,
+  get_natal_chart: natalChartInput,
+  get_horoscope_period: horoscopePeriodInput,
+  get_chinese_zodiac: chineseZodiacInput,
+  get_personal_transits: personalTransitsInput,
+  explain_astrology: explainInput,
+  find_birthplace: birthplaceInput,
+  search_sky_events: skyEventsInput,
+  // The person's own birth details only; the public-figure form is YEAR_SCORE_PEOPLE_INPUT (inputSchemaFor).
+  get_year_score: yearScoreSelfInput,
+  get_solar_return: solarReturnInput,
+  get_numerology: numerologyInput,
   get_horoscope: z.strictObject({
     sign: z.enum(HOROSCOPE_SIGNS).optional().describe('Sun sign. Leave it out to let the person choose; never guess it.'),
     period: z.enum(HOROSCOPE_PERIODS).optional().describe('day (the default) or week.'),
     focus: z.enum(HOROSCOPE_FOCUSES).optional().describe('For a daily reading: general (the default), love or career.'),
     date: date.optional().describe("A date such as 2026-10-08. Leave it out for the person's today."),
     zone: zone.optional(),
-  }),
+    birthDate: date.optional().describe("Optional: the person's birth date, for a personal forecast of their week from their own chart. Not stored."),
+    birthTime: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe('Optional birth time on the local clock; needs birthZone. Not stored.'),
+    birthZone: zone.optional().describe("Optional: the birthplace's time zone, needed with birthTime. Not stored."),
+  }).refine((args) => args.birthDate !== undefined || (args.birthTime === undefined && args.birthZone === undefined), { message: 'A birth time or birthplace zone needs the birth date.' }),
 };
 
 const link = z.object({ title: z.string(), url: z.url() });
-const jsonObject = z.record(z.string(), z.unknown());
-const calculation = z.object({ schema: z.string(), result: jsonObject, receipt: jsonObject, backend: jsonObject, cite: z.object({ url: z.url(), receipt: z.string(), engine: z.string(), version: z.string() }) });
+
+/** A compute API schema with its references to other components written out, so it stands alone in a tool's schema. */
+function inlined(schema: unknown): unknown {
+  if (Array.isArray(schema)) return schema.map(inlined);
+  if (!schema || typeof schema !== 'object') return schema;
+  const node = schema as Record<string, unknown>;
+  if (typeof node.$ref === 'string') {
+    const component = COMPUTE_SCHEMAS[node.$ref.replace('#/components/schemas/', '')];
+    if (!component) throw new Error(`No compute API component for ${node.$ref}`);
+    return inlined(component);
+  }
+  return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inlined(value)]));
+}
+
+/**
+ * A value the compute API returns, carried in a result as the API returns it. Its schema is the one the API
+ * documents for it (components.schemas in /api/v1/openapi.json), so every part of it states its type; at run time
+ * it is still checked only as an object, as before, so the server never refuses its own calculation over a field
+ * the API documents loosely.
+ */
+function computeValue(component: string): z.ZodType<Record<string, unknown>> {
+  if (!COMPUTE_SCHEMAS[component]) throw new Error(`No compute API component ${component}`);
+  return z.unknown()
+    .refine((value) => typeof value === 'object' && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` })
+    .meta(inlined(COMPUTE_SCHEMAS[component]) as Record<string, unknown>) as z.ZodType<Record<string, unknown>>;
+}
+const calculationOf = <R extends z.ZodType>(result: R) => z.object({
+  schema: z.string(), result, receipt: computeValue('ComputeReceipt'), backend: computeValue('Backend'),
+  cite: z.object({ url: z.url(), receipt: z.string(), engine: z.string(), version: z.string() }),
+});
+/** The engine's conventions and coverage statements, as its receipts write them: a name for each, and its value. */
+const statements = z.record(z.string(), z.string());
+const limits = z.object({
+  from: z.string(), to: z.string(), eventWindowDays: z.number().int(), eventKinds: z.array(z.enum(EVENT_KINDS)),
+  samples: z.number().int(), factSamples: z.number().int(),
+});
 const localTime = z.object({ utc: z.string(), zone: z.string(), display: z.string() });
 const body = z.object({ body: z.string(), lon: z.number(), lat: z.number(), speed: z.number(), retrograde: z.boolean(), sign: z.string(), degree: z.number() });
-const positionResult = z.object({ instants: z.array(z.object({ instant: z.string(), bodies: z.array(body), deltaT: jsonObject, timeScale: jsonObject, flags: z.array(z.string()) })) });
+const positionResult = z.object({ instants: z.array(z.object({ instant: z.string(), bodies: z.array(body), deltaT: computeValue('DeltaT'), timeScale: computeValue('TimeScale'), flags: z.array(z.string()) })) });
 const event = z.object({ kind: z.enum(EVENT_KINDS), at: z.string(), localAt: z.string(), body: z.string().optional(), sign: z.string(), type: z.string().optional(), retrograde: z.boolean().optional(), lon: z.number().optional(), degree: z.number().optional() });
+const personal = z.object({ timeKnown: z.boolean(), items: z.array(z.object({ title: z.string(), line: z.string(), when: z.string() })), note: z.string() });
 const horoscope = z.object({
   status: z.enum(['available', 'unavailable', 'choose-sign']),
   sign: z.enum(HOROSCOPE_SIGNS).optional(),
@@ -105,12 +308,15 @@ const horoscope = z.object({
   why: z.object({ note: z.string(), facts: z.array(z.object({ text: z.string(), when: z.string() })), houses: z.array(z.string()) }).optional(),
   available: z.array(z.object({ date: z.string(), label: z.string() })).optional(),
   message: z.string().optional(),
+  personal: personal.optional(),
+  /** The share link for the reading shown, when there is one. */
+  shareUrl: z.url().nullable().optional(),
   disclosure: z.string(),
 });
 const clockTime = z.object({ utc: z.string(), local: z.string() });
-const occasionNote = 'Astronomical facts with traditional astrological meanings. Zodiacs does not choose or rank dates and does not say how the day will go.';
+const occasionNote = 'Astrology’s reading of the day, for insight and fun, not a guarantee of how it will go.';
 const occasionSky = z.object({
-  occasion: z.enum(OCCASION_KINDS), date: z.string(), time: z.string().nullable(), zone: z.string().nullable(),
+  occasion: z.enum(ASSISTANT_OCCASION_KINDS), date: z.string(), time: z.string().nullable(), zone: z.string().nullable(),
   place: z.string().nullable(), names: z.string().nullable(),
   card: z.object({ title: z.string(), interpretation: z.string(), closing: z.string() }),
   instant: clockTime, instantIs: z.enum(['given-time', 'local-noon', 'utc-noon']),
@@ -127,7 +333,14 @@ const occasionSky = z.object({
     moonHighest: z.object({ at: clockTime, altitude: z.number() }).nullable(),
     planetsAfterDusk: z.array(z.string()), flags: z.array(z.string()),
   }).nullable(),
+  rating: z.object({ score: z.number().int().min(0).max(100), verdict: z.string(), reasons: z.array(z.string()) }),
+  /** With a search window: the three best-rated days in it, best first; the card is for date, else the best day. */
+  bestDays: z.object({
+    from: z.string(), to: z.string(), days: z.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
+    best: z.array(z.object({ date: z.string(), score: z.number().int().min(0).max(100), verdict: z.string(), reasons: z.array(z.string()) })).max(3),
+  }).nullable(),
   cardUrl: z.url().nullable(),
+  shareUrl: z.url().nullable(),
   note: z.literal(occasionNote),
 });
 const milestone = z.object({
@@ -139,26 +352,61 @@ const lifeMilestones = z.object({
   milestones: z.array(milestone), next: milestone.nullable(),
   numbers: z.object({ fullMoons: z.number(), mercuryRetrogrades: z.number(), jupiterReturns: z.number() }),
   cardUrl: z.url().nullable(),
+  shareUrl: z.url().nullable(),
   note: z.literal('Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.'),
 });
 export const OCCASION_NOTE = occasionNote;
 
 const dataSchemas = {
   open_chart_studio: z.object({ title: z.literal('Chart Studio'), calculation: z.literal('browser-local'), initialChart: z.literal('birth-details'), sharing: z.literal('user-reviewed-selection-only') }),
-  get_capabilities: z.object({ name: z.literal('Zodiacs'), version: z.string(), engine: jsonObject, tools: z.array(z.enum(ALL_AI_TOOL_NAMES)), limits: jsonObject, conventions: jsonObject, coverage: jsonObject, privacy: z.string(), limitations: z.array(z.string()) }),
-  get_sky: z.object({ mode: z.enum(['current-instant', 'requested-instant']), time: localTime, calculation: calculation.extend({ result: positionResult }), moonPhase: z.object({ name: z.string(), angle: z.number(), illumination: z.number() }), interpretation: z.literal('Astronomical calculations; no personal prediction is supplied.') }),
-  get_upcoming_events: z.object({ from: z.string(), to: z.string(), zone: z.string(), events: z.array(event), calculation, completeness: z.literal('tested-not-proven') }),
-  check_sky_fact: z.object({ answer: z.enum(['true', 'false', 'depends']), calculation, interpretation: z.literal('The verdict checks an astronomical proposition, not an astrological prediction.') }),
+  get_capabilities: z.object({ name: z.literal('Zodiacs'), version: z.string(), engine: computeValue('Backend'), tools: z.array(z.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements, coverage: statements, privacy: z.string(), limitations: z.array(z.string()) }),
+  get_sky: z.object({ mode: z.enum(['current-instant', 'requested-instant']), time: localTime, calculation: calculationOf(positionResult), moonPhase: z.object({ name: z.string(), angle: z.number(), illumination: z.number() }), interpretation: z.literal('Astronomical calculations; no personal prediction is supplied.') }),
+  get_upcoming_events: z.object({ from: z.string(), to: z.string(), zone: z.string(), events: z.array(event), calculation: calculationOf(computeValue('EventsResult')), completeness: z.literal('tested-not-proven') }),
+  check_sky_fact: z.object({ answer: z.enum(['true', 'false', 'depends']), calculation: calculationOf(computeValue('SkyFactResult')), interpretation: z.literal('The verdict checks an astronomical proposition, not an astrological prediction.') }),
   get_horoscope: horoscope,
   get_occasion_sky: occasionSky,
   get_life_milestones: lifeMilestones,
+  get_compatibility: compatibilityResult,
+  find_chart_twins: chartTwinsData,
+  get_famous_chart: famousChartData,
+  get_birthday: birthdayData,
+  get_sky_calendar: skyCalendarData,
+  get_natal_chart: natalChartData,
+  get_horoscope_period: horoscopePeriodData,
+  get_chinese_zodiac: chineseZodiacData,
+  get_personal_transits: personalTransitsData,
+  explain_astrology: explainData,
+  find_birthplace: birthplaceData,
+  search_sky_events: skyEventsData,
+  get_year_score: yearScoreData,
+  get_solar_return: solarReturnData,
+  get_numerology: numerologyData,
 };
 
 export const ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(ALL_AI_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** The 0.6.0 tools' refusal: the same shape, naming only their own tools, so the 0.5 schemas keep their bytes. */
+export const COVERAGE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(COVERAGE_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** find_birthplace names only itself, so the five coverage tools keep their error enum. */
+export const PLACE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(PLACE_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** search_sky_events names only itself, as find_birthplace does. */
+export const SKY_EVENTS_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(SKY_EVENTS_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** get_solar_return names only itself. */
+export const SOLAR_RETURN_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(SOLAR_RETURN_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** get_year_score names only itself. */
+export const YEAR_SCORE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(YEAR_SCORE_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** get_numerology names only itself. */
+export const NUMEROLOGY_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(NUMEROLOGY_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 function outputSchema<T extends AiToolName, S extends z.ZodType>(tool: T, data: S) {
+  const error = (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool)
+    ? COVERAGE_ERROR_SCHEMA
+    : (PLACE_TOOL_NAMES as readonly string[]).includes(tool) ? PLACE_ERROR_SCHEMA
+      : (SKY_EVENTS_TOOL_NAMES as readonly string[]).includes(tool) ? SKY_EVENTS_ERROR_SCHEMA
+        : (YEAR_SCORE_TOOL_NAMES as readonly string[]).includes(tool) ? YEAR_SCORE_ERROR_SCHEMA
+          : (SOLAR_RETURN_TOOL_NAMES as readonly string[]).includes(tool) ? SOLAR_RETURN_ERROR_SCHEMA
+            : (NUMEROLOGY_TOOL_NAMES as readonly string[]).includes(tool) ? NUMEROLOGY_ERROR_SCHEMA : ERROR_SCHEMA;
   return z.union([
     z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(true), tool: z.literal(tool), data, links: z.array(link) }),
-    ERROR_SCHEMA,
+    error,
   ]);
 }
 export const OUTPUT_SCHEMAS = {
@@ -168,16 +416,76 @@ export const OUTPUT_SCHEMAS = {
   get_horoscope: outputSchema('get_horoscope', dataSchemas.get_horoscope),
   get_occasion_sky: outputSchema('get_occasion_sky', dataSchemas.get_occasion_sky),
   get_life_milestones: outputSchema('get_life_milestones', dataSchemas.get_life_milestones),
+  get_compatibility: outputSchema('get_compatibility', dataSchemas.get_compatibility),
+  find_chart_twins: outputSchema('find_chart_twins', dataSchemas.find_chart_twins),
+  get_famous_chart: outputSchema('get_famous_chart', dataSchemas.get_famous_chart),
+  get_birthday: outputSchema('get_birthday', dataSchemas.get_birthday),
+  get_sky_calendar: outputSchema('get_sky_calendar', dataSchemas.get_sky_calendar),
+  get_natal_chart: outputSchema('get_natal_chart', dataSchemas.get_natal_chart),
+  get_horoscope_period: outputSchema('get_horoscope_period', dataSchemas.get_horoscope_period),
+  get_chinese_zodiac: outputSchema('get_chinese_zodiac', dataSchemas.get_chinese_zodiac),
+  get_personal_transits: outputSchema('get_personal_transits', dataSchemas.get_personal_transits),
+  explain_astrology: outputSchema('explain_astrology', dataSchemas.explain_astrology),
+  find_birthplace: outputSchema('find_birthplace', dataSchemas.find_birthplace),
+  search_sky_events: outputSchema('search_sky_events', dataSchemas.search_sky_events),
+  get_year_score: outputSchema('get_year_score', dataSchemas.get_year_score),
+  get_solar_return: outputSchema('get_solar_return', dataSchemas.get_solar_return),
+  get_numerology: outputSchema('get_numerology', dataSchemas.get_numerology),
 };
 
 /** Read by the assistant and shown to people in the plugin's details: plain first sentence, then routing detail. */
 export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   open_chart_studio: 'Opens Chart Studio, an interactive birth chart the person fills in themselves: birth date, place, and time if they know it. Call it with no arguments and do not ask for birth details first. The chart is calculated inside the panel; you see only the parts the person chooses to share.',
-  get_capabilities: 'Lists what Zodiacs can do, its limits and how it handles privacy. Use it when the person asks what Zodiacs can do, or when you need those details before choosing another tool. Zodiacs does not schedule anything, pick stocks or investments, or promise personal outcomes, so do not call it to check before turning those requests down. No sign-in or birth details needed.',
+  get_capabilities: 'Lists what Zodiacs can do, its limits and how it handles privacy. Use it when the person asks what Zodiacs can do, or when you need those details before choosing another tool. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes, so do not call it to check before turning those requests down. No sign-in or birth details needed.',
   get_sky: "Shows where the Sun, Moon and planets are right now, or at a moment the person names, with the Moon's phase. Pass the person's time zone if you know it so times read on their clock. Astronomy only; it makes no personal prediction.",
   get_upcoming_events: "Shows what changes in the sky over the coming days or weeks: planets changing sign, turning retrograde or direct, and new and full Moons, for up to 92 days. Supply from and to, and the person's time zone. With no arguments it opens the calendar for the next seven days. It does not list eclipses or every aspect.",
   check_sky_fact: "Checks a claim such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?' and answers yes, no, or that it depends on the time zone when the answer changes during that day. Use instant or date for sign and retrograde checks, date for ingress and Moon-phase checks. Astronomy only; it cannot check predictions. API documentation: https://zodiacs.org/developers/compute/ .",
-  get_horoscope: "Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Use it when the person asks for a horoscope or reading, not to answer a request for certainty about a relationship, money or health. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written, keep its dates, and present it as reflection, not a personal birth-chart forecast.",
-  get_occasion_sky: "Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, the day a baby arrived, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It does not choose or rank dates or say how the day will go: when asked which date is best, give the facts for each date they name.",
-  get_life_milestones: "Lists astrology's life milestones from a birth date: each Jupiter return (about every 12 years), the Saturn returns (around 29, 58 and 88) and the Uranus opposition (early forties), with dates, ages and every pass of a retrograde loop, the next one coming, and how many full Moons and Mercury retrogrades the person has lived through. A birth date is enough; add the birth time and time zone if known. It makes no prediction.",
+  get_horoscope: "Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Do not call this tool for stock picks, investment advice, financial forecasts, health predictions or guaranteed outcomes, even when the request mentions a horoscope. Decline those requests without a tool call; do not offer astrology-themed investment suggestions. Use it for a horoscope or reflective reading. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written and keep its dates. If the person gives their birth date (and time and birthplace zone if known), pass them too: the result adds a personal forecast for their week from their own chart. Lead with those personal lines, with their dates. If you can schedule tasks for the person, offer once, briefly, to send them their horoscope every morning; Zodiacs itself sends no notifications. If they want to share the reading, give them the returned shareUrl exactly.",
+  get_occasion_sky: "Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It also rates the date from 0 to 100 with a verdict and the astrological reasons (Venus, the Moon's phase and sign, retrograde planets); share the rating and its reasons plainly. When asked for the best days for an occasion, give the window as searchFrom and searchTo (up to 92 days, such as a whole month); it rates every day in it and returns the three best-rated days with their reasons, and the card for the best one unless a date is also given. When asked which of a few named dates is best, call it for each date and compare the ratings. It never guarantees how the day will go. For the printable card, copy the returned cardUrl exactly, including every field after #; do not reconstruct it from the conversation. If cardUrl is null, use the returned page link. If they want to share the rating, give them the returned shareUrl exactly.",
+  get_life_milestones: "Lists astrology's life milestones from a birth date: each Jupiter return (about every 12 years), the Saturn returns (around 29, 58 and 88) and the Uranus opposition (early forties), with dates, ages and every pass of a retrograde loop, the next one coming, and how many full Moons and Mercury retrogrades the person has lived through. A birth date is enough; add the birth time and time zone if known. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it shows the milestone the card leads with, never the birth date.",
+  get_compatibility: "Compares two people's birth charts: their Sun, Moon and rising signs, the closest contacts between their planets with what each traditionally means, and how their elements balance. Use it when someone asks about compatibility with a partner, friend or family member, or with a famous person. Each person needs a birth date; add a birth time, time zone and birthplace coordinates when known, and first names if they want them shown. To compare someone with a famous person Zodiacs publishes, give that side as { famous: \"<name>\" } instead: it uses their published chart for noon on their birth date, without a Moon or rising sign, and links to their page. If Zodiacs has no chart for that name it says so (found: false); never make one up. It returns a compatibility score out of 100 with scores for attraction, communication and long-term stability, a verdict and a headline: lead with the score and verdict in plain words, then the strongest and hardest contacts. Present it as astrology's reading, never a guarantee of how the relationship will turn out. If they want to share the score, give them the returned shareUrl exactly.",
+  find_chart_twins: "Finds famous people whose birth charts share the person's Sun sign, Moon sign or both, from the people Zodiacs publishes charts for, with a link to each person's chart. A birth date is enough for the Sun; the Moon needs the birth time and time zone. Use it when someone asks which famous people share their sign or chart. If they want to share it, give them the returned shareUrl exactly; it carries their signs, never the birth date.",
+  get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up. If they want to share the chart, give them the returned shareUrl exactly.",
+  get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. Use a full birth date only to resolve a cusp date's sign in that birth year or calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; do not request coordinates for modern birthdays. It links to the date's birthday page and names the famous people Zodiacs publishes who were born on that day, as the page does. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it carries the month and day, never the year.",
+  get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian. If they want to share the calendar, give them the returned shareUrl exactly; it shows the next event.",
+  get_natal_chart: "Reads one person's birth chart in the conversation when they have already given their birth date. If they have not, or want to explore it themselves, use open_chart_studio. It gives the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets (the tightest by orb), and the balance of elements and modes, each with what astrology traditionally reads into it. Add the birth time, the birthplace's time zone and its latitude and longitude only as the person gives them, and never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. When the birth time fell in a daylight saving change (a skipped or a repeated hour), timeNote says which instant the chart used; tell the person. If the birth date is under 18, do not frame the chart as romance or attraction. chartUrl opens the birth chart page and does not carry the birth date, time, place or coordinates; give it as the page to open, not as a link that holds their details.",
+  get_horoscope_period: "Shows a Sun-sign horoscope for a month, a year, or a love or career week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses; a month's sky leaves out the Moon's sign changes. Monthly readings are published from the first of each month; yearly readings are published for 2026 and 2027. A week is only for focus love or career: it adds that focus's daily readings in the week and keeps the sky events that bear on it. For a general week, and for today's or tomorrow's horoscope, use get_horoscope. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. If the person is under 18, do not use focus love and do not frame the reading as romance or attraction. Share the forecast plainly and confidently, with the reading-confidence label it returns. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.",
+  get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own. Without a zone the current year assumes UTC and the answer says so.",
+  get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Use it for my transits, what's coming up for me, or my year ahead, once the person has given a birth date; for a Sun-sign horoscope use get_horoscope or get_horoscope_period. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Pass currentZone, where they live now, so the dates fall on their own clock. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. A retrograde contact's pass number counts the whole loop, including passes outside the window. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. If the birth date is under 18, do not frame the lines as romance or attraction. Present each line plainly and confidently as astrology's reading, with its reading-confidence label, never as a guarantee, and never turn a line into health, financial or medical advice.",
+  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading to give anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the friendship reading and do not frame the pair as romance or attraction.",
+  find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place.",
+  search_sky_events: "Finds one kind of sky event months or years ahead: solar and lunar eclipses, planets and Chiron turning retrograde or direct (stations), planets and Chiron changing sign (ingresses), new and full Moons, and void-of-course Moon periods. Use it for questions such as when the next eclipse is, when Mercury next turns retrograde, when Saturn enters Taurus, when Chiron changes sign, every full Moon next year, or when the Moon is void of course this week. Name the kinds, and the planets (or Chiron) for stations and sign changes; give from and to as dates (to at most two years after from, and at most 31 days in all for void-of-course periods), the person's time zone and, if needed, a limit. Each event comes with its time in UTC and on the person's clock, its sign, one plain line and a link to its page on zodiacs.org when there is one. Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, with the same times: from the Moon's last major aspect to the Sun or a planet through Pluto in a sign until it enters the next sign. For everything that changes in the sky over the next days or weeks (up to 92 days), use get_upcoming_events; to follow eclipses, retrogrades and Moons in a calendar app, use get_sky_calendar. These are calculated dates, not forecasts: share them as facts, and keep what they mean in astrology separate.",
+  get_year_score: "Gives the Year Ahead Score for the person's own birth chart: a number from 0 to 10 for the twelve months from a date (today by default), the best and hardest months, and the slow-planet transits driving it (Jupiter, Saturn, Uranus, Neptune and Pluto in aspect to the Sun, Moon, Mercury, Venus and Mars). 5 is an ordinary year. Use it when someone asks how their own year ahead looks. Give their birth date, with the time and time zone only if they know them; never guess a time. It scores the person's own chart only: for a public figure, say it does not score other people here. Birth details are used for this answer only: never stored, logged or put in a link. Share the score with its reading-confidence label and the limits it returns, and the returned shareUrl exactly if they want to share it. A low score means pressure, not doom: describe it as a demanding year that rewards patience. Money, career, wellbeing and legal themes may be read as astrology traditionally reads them, such as a strong year for earnings or a good window to sign agreements; never give a price or trading call, a buy or sell signal, a diagnosis or medical timing, a death prediction, or a legal win or loss. It refuses a birth date less than 13 years ago.",
+  get_solar_return: "Gives the person's solar return: the chart for their next birthday, cast for the instant the Sun returns to its birth degree, with the year's main themes (the return's rising sign and the house of its Sun with a birth time and place, the Moon's sign with a birth time, where Jupiter grows and Saturn builds, and the chart's tightest aspect). Use it for questions such as what my next birthday chart says, or what themes my coming year holds. Give their birth date, with the time, time zone and coordinates only if they know them; never guess a time. which: current gives the return that opened the birthday year now running. Birth details are used for this answer only: never stored, logged or put in a link. Share the themes with the reading-confidence label and the limits it returns, the time on the person's clock, and the returned shareUrl exactly if they want to share it. Money, career, wellbeing and legal themes may be read as astrology traditionally reads them; never give a price or trading call, a buy or sell signal, a diagnosis or medical timing, a death prediction, or a legal win or loss. It refuses a birth date less than 13 years ago.",
+  get_numerology: "Works out numerology numbers from a birth date and, if the person gives it, their full name at birth: the Life Path, Expression, Soul Urge and Personality numbers (Pythagorean system, with 11, 22 and 33 kept as master numbers) and the Personal Year, each with Zodiacs' own written meaning. Numerology is a separate tradition from astrology, with no planets, signs or sky in it: say so when you share it, and do not present it as part of a birth chart. Use it when someone asks for their life path number or another numerology number. Give the birth date, and the name only as the person gives it for this reading; never guess either. The name and date are used for this answer only: they are not returned, stored or put in a link. Share the meanings plainly as numerology's traditional reading, including work, money and wellbeing where the tradition speaks to them, such as an 8 Personal Year as a strong year for earnings. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.",
 };
+
+/**
+ * With ZODIACS_SKY_EVENTS_ENABLED=1 four coverage tools say, take or return more: get_natal_chart a house system, the
+ * lunar nodes and the big three's share link, explain_astrology the event and house topics it then explains, and
+ * get_chinese_zodiac and get_horoscope_period the share links to their cards. Switched off, every definition is the one above.
+ */
+export const SKY_EVENTS_INPUT_SCHEMAS: Partial<Record<AiToolName, z.ZodType>> = {
+  get_natal_chart: natalChartInputWithHouses,
+  explain_astrology: explainInputWithSkyEvents,
+};
+export const SKY_EVENTS_OUTPUT_SCHEMAS: Partial<Record<AiToolName, z.ZodType>> = {
+  get_natal_chart: outputSchema('get_natal_chart', natalChartDataWithNodes),
+  get_chinese_zodiac: outputSchema('get_chinese_zodiac', chineseZodiacDataWithShare),
+  get_horoscope_period: outputSchema('get_horoscope_period', horoscopePeriodDataWithShare),
+};
+export const SKY_EVENTS_TOOL_DESCRIPTIONS: Partial<Record<AiToolName, string>> = {
+  get_natal_chart: `${TOOL_DESCRIPTIONS.get_natal_chart} Houses are whole-sign unless houseSystem is placidus; Placidus cannot be drawn from about 66.6 degrees latitude, so there the chart uses whole-sign houses and houseNote says so. It also gives the North and South Nodes, the true node rather than the mean node, with their signs and houses, and Chiron, from NASA JPL Horizons positions for 1800 to 2199: its sign, degree, whether it is retrograde, its house when the birth time and place are known, and its aspects to the planets under the chart's own orbs. Outside those years Chiron is left out and unknown says so. If they want to share their big three, give them the returned shareUrl exactly; it carries the Sun, Moon and rising signs, never the birth date.`,
+  get_chinese_zodiac: `${TOOL_DESCRIPTIONS.get_chinese_zodiac} If they want to share it, give them the returned shareUrl exactly; it names the animal alone, never a date or a year.`,
+  get_horoscope_period: `${TOOL_DESCRIPTIONS.get_horoscope_period} If they want to share a month's or a year's published reading, give them the returned shareUrl exactly.`,
+  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading to give anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, Chiron, the houses or one house, Placidus and whole-sign houses, aspects or one aspect, retrogrades, stations and retrograde loops, Mercury retrograde, Moon phases, new and full Moons, the void-of-course Moon, eclipses, the lunar nodes, ingresses (planets changing sign), the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. For the dates of eclipses, stations, sign changes, new and full Moons and void-of-course periods, Chiron's included, use search_sky_events. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the friendship reading and do not frame the pair as romance or attraction.",
+};
+/** A tool's published input schema, or its sky events form while that switch is on. */
+/** With ZODIACS_YEAR_SCORE_PEOPLE_ENABLED=1: get_year_score also takes a public figure's name (person). */
+export const YEAR_SCORE_PEOPLE_INPUT: z.ZodType = yearScoreInput;
+export const YEAR_SCORE_PEOPLE_DESCRIPTION = "Gives the Year Ahead Score: a number from 0 to 10 for the twelve months from a date (today by default), the best and hardest months, and the slow-planet transits driving it (Jupiter, Saturn, Uranus, Neptune and Pluto in aspect to the Sun, Moon, Mercury, Venus and Mars). 5 is an ordinary year. Use it when someone asks how their year ahead looks, or how a well-known person's year looks, by name. Give either the person's own birth date (with the time and time zone only if they know them; never guess a time), or person with a public figure's full name from the Zodiacs Year Ahead directory. A name the directory does not have is answered plainly with no score; do not estimate one. Birth details are used for this answer only: never stored, logged or put in a link. Ask before using someone else's private birth details. Share the score with its reading-confidence label and the limits it returns. A low score means pressure, not doom: describe it as a demanding year that rewards patience. Money, career, wellbeing and legal themes may be read as astrology traditionally reads them, such as a strong year for earnings or a good window to sign agreements; never give a price or trading call, a buy or sell signal, a diagnosis or medical timing, a death prediction, or a legal win or loss. It refuses a birth date less than 13 years ago.";
+/** The switches that change a definition in tools/list. */
+export interface SchemaSwitches { yearScorePeople?: boolean }
+export const inputSchemaFor = (tool: AiToolName, skyEvents: boolean, switches: SchemaSwitches = {}): z.ZodType => (tool === 'get_year_score' && switches.yearScorePeople ? YEAR_SCORE_PEOPLE_INPUT : undefined) ?? (skyEvents ? SKY_EVENTS_INPUT_SCHEMAS[tool] : undefined) ?? INPUT_SCHEMAS[tool];
+export const outputSchemaFor = (tool: AiToolName, skyEvents: boolean): z.ZodType => (skyEvents ? SKY_EVENTS_OUTPUT_SCHEMAS[tool] : undefined) ?? OUTPUT_SCHEMAS[tool];
+export const descriptionFor = (tool: AiToolName, skyEvents: boolean, switches: SchemaSwitches = {}): string => (tool === 'get_year_score' && switches.yearScorePeople ? YEAR_SCORE_PEOPLE_DESCRIPTION : undefined) ?? (skyEvents ? SKY_EVENTS_TOOL_DESCRIPTIONS[tool] : undefined) ?? TOOL_DESCRIPTIONS[tool];

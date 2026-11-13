@@ -21,6 +21,12 @@ describe('occasion card words', () => {
   it('pairs the Sun and Moon themes, and says it once when they share a sign', () => {
     expect(sunMoonLine('gemini', 'libra')).toBe('A Gemini Sun is the sign of conversation; a Libra Moon, of partnership.');
     expect(sunMoonLine('leo', 'leo')).toBe('The Sun and Moon are both in Leo, the sign of warmth and celebration.');
+    // "An" before the two signs that start with a vowel, Sun or Moon.
+    expect(sunMoonLine('aries', 'pisces')).toBe('An Aries Sun is the sign of beginnings; a Pisces Moon, of imagination and tenderness.');
+    expect(sunMoonLine('capricorn', 'aquarius')).toMatch(/^A Capricorn Sun is the sign of .+; an Aquarius Moon, of .+\.$/u);
+    for (const sun of Object.keys(SIGN_THEME)) for (const moon of Object.keys(SIGN_THEME)) {
+      expect(sunMoonLine(sun, moon), `${sun} ${moon}`).not.toMatch(/\b[Aa] [AEIOU]/u);
+    }
     expect(() => sunMoonLine('ophiuchus', 'leo')).toThrow(RangeError);
   });
 });

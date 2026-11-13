@@ -136,7 +136,7 @@ describe('Lighthouse gate samples', () => {
 
   it('holds the valid samples to the budgets and calibrations the gate had', async () => {
     expect(budgets).toEqual({ score: 0.95, lcp: 2_500, cls: 0, tbt: 200 });
-    expect(calibrations).toEqual({ home: { lcp: 3_100, performance: 0.90 }, 'birth-chart': { lcp: 2_800, performance: 0.93 } });
+    expect(calibrations).toEqual({ 'birth-chart': { lcp: 2_800, performance: 0.93 } });
     const tbt = (value) => () => result({ tbt: value }, 'genuine');
     expect((await gate([tbt(200), pass, pass])).verdict.failed).toBe(false);
     expect((await gate([tbt(201), pass, pass])).verdict.failed).toBe(true);
@@ -161,6 +161,7 @@ describe('Lighthouse gate samples', () => {
   it('describes a miss beside its budget', () => {
     expect(describeMisses({ performance: 0.71, tbt: 2_518.4 }, ['performance', 'tbt'], route))
       .toBe('performance 71 (floor 95), TBT 2518 ms (budget 200 ms)');
-    expect(describeMisses({ lcp: 3_210 }, ['lcp'], { name: 'home' })).toBe('LCP 3.21 s (budget 3.10 s)');
+    expect(describeMisses({ lcp: 3_210 }, ['lcp'], { name: 'birth-chart' })).toBe('LCP 3.21 s (budget 2.80 s)');
+    expect(describeMisses({ lcp: 2_610 }, ['lcp'], { name: 'home' })).toBe('LCP 2.61 s (budget 2.50 s)');
   });
 });

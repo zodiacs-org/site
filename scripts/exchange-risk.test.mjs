@@ -16,7 +16,7 @@ describe('Exchange risk and trust copy', () => {
     expect(html).toContain('Zodiacs.org operates Astrofolio');
     expect(html).toContain('<title>Terminal · Advanced Market Route · Zodiacs.org</title>');
     expect(html).toContain('<meta property="og:title" content="Terminal · Advanced Market Route" />');
-    expect(html).toContain('https://zodiacs.org/assets/og/v6/terminal.png');
+    expect(html).toContain('https://zodiacs.org/assets/og/v7/terminal.png');
     expect(html).not.toContain('https://zodiacs.org/assets/og/v2/registry.png');
     expect(html).toContain('"name": "Advanced market route"');
     expect(html).toContain('"name": "Terminal", "item": "https://zodiacs.org/terminal/"');

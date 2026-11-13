@@ -1,0 +1,68 @@
+pack verified: container 9856b50f, payload 0c7e1c93, file 00a56b4c, 1737664 bytes, compiler 1.1.0
+cases: F1 Sun 68.944945; F2 Moon 298.813118; F3 Mercury 33.035194; F4 Venus 203.667398; F5 Mars 47.085193; F6 Jupiter 27.653017; F7 Saturn 293.142503; F8 Uranus 284.298936; F9 Neptune 294.224642; F10 Pluto 242.85769
+F1 Sun: reference scan 1 roots, 14401 samples, 0 refusals, 0.1 s
+  F1 geometric: v1 finished established 57 ev 12 cells 1 ev'ts | v2 finished established 57 ev 12 cells 1 ev'ts | lost 0 | whole result identical true
+  F1 retarded: v1 finished established 635 ev 12 cells 1 ev'ts | v2 finished established 635 ev 12 cells 1 ev'ts | lost 0 | whole result identical true
+  F1 aberrated: v1 finished established 635 ev 12 cells 1 ev'ts | v2 finished established 635 ev 12 cells 1 ev'ts | lost 0 | whole result identical true
+  F1 ofDate: v1 finished established 635 ev 12 cells 1 ev'ts | v2 finished established 635 ev 12 cells 1 ev'ts | lost 0 | whole result identical true
+  F1 deflected: v1 finished established 635 ev 12 cells 1 ev'ts | v2 finished established 635 ev 12 cells 1 ev'ts | lost 0 | whole result identical true
+F2 Moon: reference scan 11 roots, 86401 samples, 0 refusals, 0.4 s
+  F2 geometric: v1 finished established 1316 ev 290 cells 11 ev'ts | v2 finished established 1316 ev 290 cells 11 ev'ts | lost 0 | whole result identical true
+  F2 retarded: v1 finished established 264348 ev 10130 cells 11 ev'ts | v2 finished established 31312 ev 592 cells 11 ev'ts | lost 0 | whole result identical false
+  F2 aberrated: v1 finished established 264328 ev 10130 cells 11 ev'ts | v2 finished established 28384 ev 484 cells 11 ev'ts | lost 0 | whole result identical false
+  F2 ofDate: v1 finished established 269422 ev 10320 cells 11 ev'ts | v2 finished established 28204 ev 490 cells 11 ev'ts | lost 0 | whole result identical false
+  F2 deflected: v1 budget-exhausted 4000001 ev 157818 cells 2 ev'ts | v2 finished 1594431 ev 61718 cells 11 ev'ts | lost 0 | whole result identical false
+F3 Mercury: reference scan 1 roots, 28801 samples, 0 refusals, 0.2 s
+  F3 geometric: v1 finished established 128 ev 55 cells 1 ev'ts | v2 finished established 128 ev 55 cells 1 ev'ts | lost 0 | whole result identical true
+  F3 retarded: v1 finished established 2307 ev 47 cells 1 ev'ts | v2 finished established 2307 ev 47 cells 1 ev'ts | lost 0 | whole result identical true
+  F3 aberrated: v1 finished established 2307 ev 47 cells 1 ev'ts | v2 finished established 2307 ev 47 cells 1 ev'ts | lost 0 | whole result identical true
+  F3 ofDate: v1 finished established 2307 ev 47 cells 1 ev'ts | v2 finished established 2307 ev 47 cells 1 ev'ts | lost 0 | whole result identical true
+  F3 deflected: v1 finished 1917153 ev 74085 cells 1 ev'ts | v2 finished 1917153 ev 74085 cells 1 ev'ts | lost 0 | whole result identical true
+F4 Venus: reference scan 1 roots, 14401 samples, 0 refusals, 0.1 s
+  F4 geometric: v1 finished established 154 ev 24 cells 1 ev'ts | v2 finished established 154 ev 24 cells 1 ev'ts | lost 0 | whole result identical true
+  F4 retarded: v1 finished established 1671 ev 18 cells 1 ev'ts | v2 finished established 1671 ev 18 cells 1 ev'ts | lost 0 | whole result identical true
+  F4 aberrated: v1 finished established 1671 ev 18 cells 1 ev'ts | v2 finished established 1671 ev 18 cells 1 ev'ts | lost 0 | whole result identical true
+  F4 ofDate: v1 finished established 1622 ev 18 cells 1 ev'ts | v2 finished established 1622 ev 18 cells 1 ev'ts | lost 0 | whole result identical true
+  F4 deflected: v1 finished 515262 ev 30438 cells 0 ev'ts | v2 finished 515262 ev 30438 cells 0 ev'ts | lost 0 | whole result identical true
+F5 Mars: reference scan 1 roots, 14401 samples, 0 refusals, 0.1 s
+  F5 geometric: v1 finished established 52 ev 11 cells 1 ev'ts | v2 finished established 52 ev 11 cells 1 ev'ts | lost 0 | whole result identical true
+  F5 retarded: v1 finished established 706 ev 11 cells 1 ev'ts | v2 finished established 706 ev 11 cells 1 ev'ts | lost 0 | whole result identical true
+  F5 aberrated: v1 finished established 706 ev 11 cells 1 ev'ts | v2 finished established 706 ev 11 cells 1 ev'ts | lost 0 | whole result identical true
+  F5 ofDate: v1 finished established 684 ev 11 cells 1 ev'ts | v2 finished established 684 ev 11 cells 1 ev'ts | lost 0 | whole result identical true
+  F5 deflected: v1 finished 285751 ev 17405 cells 1 ev'ts | v2 finished 285751 ev 17405 cells 1 ev'ts | lost 0 | whole result identical true
+F6 Jupiter: reference scan 2 roots, 7201 samples, 0 refusals, 0.0 s
+  F6 geometric: v1 finished established 144 ev 33 cells 2 ev'ts | v2 finished established 144 ev 33 cells 2 ev'ts | lost 0 | whole result identical true
+  F6 retarded: v1 finished established 1190 ev 17 cells 2 ev'ts | v2 finished established 1190 ev 17 cells 2 ev'ts | lost 0 | whole result identical true
+  F6 aberrated: v1 finished established 1209 ev 17 cells 2 ev'ts | v2 finished established 1209 ev 17 cells 2 ev'ts | lost 0 | whole result identical true
+  F6 ofDate: v1 finished established 1206 ev 17 cells 2 ev'ts | v2 finished established 1206 ev 17 cells 2 ev'ts | lost 0 | whole result identical true
+  F6 deflected: v1 finished established 2105 ev 55 cells 2 ev'ts | v2 finished established 2105 ev 55 cells 2 ev'ts | lost 0 | whole result identical true
+F7 Saturn: reference scan 2 roots, 7201 samples, 0 refusals, 0.0 s
+  F7 geometric: v1 finished established 105 ev 16 cells 2 ev'ts | v2 finished established 105 ev 16 cells 2 ev'ts | lost 0 | whole result identical true
+  F7 retarded: v1 finished established 1066 ev 12 cells 2 ev'ts | v2 finished established 1066 ev 12 cells 2 ev'ts | lost 0 | whole result identical true
+  F7 aberrated: v1 finished established 1076 ev 12 cells 2 ev'ts | v2 finished established 1076 ev 12 cells 2 ev'ts | lost 0 | whole result identical true
+  F7 ofDate: v1 finished established 1050 ev 12 cells 2 ev'ts | v2 finished established 1050 ev 12 cells 2 ev'ts | lost 0 | whole result identical true
+  F7 deflected: v1 finished 63956 ev 3978 cells 2 ev'ts | v2 finished 63956 ev 3978 cells 2 ev'ts | lost 0 | whole result identical true
+F8 Uranus: reference scan 2 roots, 7201 samples, 0 refusals, 0.0 s
+  F8 geometric: v1 finished established 134 ev 30 cells 2 ev'ts | v2 finished established 134 ev 30 cells 2 ev'ts | lost 0 | whole result identical true
+  F8 retarded: v1 finished established 1188 ev 20 cells 2 ev'ts | v2 finished established 1188 ev 20 cells 2 ev'ts | lost 0 | whole result identical true
+  F8 aberrated: v1 finished established 1178 ev 20 cells 2 ev'ts | v2 finished established 1178 ev 20 cells 2 ev'ts | lost 0 | whole result identical true
+  F8 ofDate: v1 finished established 1242 ev 20 cells 2 ev'ts | v2 finished established 1242 ev 20 cells 2 ev'ts | lost 0 | whole result identical true
+  F8 deflected: v1 finished 58351 ev 3616 cells 2 ev'ts | v2 finished 58351 ev 3616 cells 2 ev'ts | lost 0 | whole result identical true
+F9 Neptune: reference scan 2 roots, 7201 samples, 0 refusals, 0.0 s
+  F9 geometric: v1 finished established 67 ev 15 cells 1 ev'ts | v2 finished established 67 ev 15 cells 1 ev'ts | lost 0 | whole result identical true
+  F9 retarded: v1 finished established 685 ev 13 cells 1 ev'ts | v2 finished established 685 ev 13 cells 1 ev'ts | lost 0 | whole result identical true
+  F9 aberrated: v1 finished established 685 ev 13 cells 1 ev'ts | v2 finished established 685 ev 13 cells 1 ev'ts | lost 0 | whole result identical true
+  F9 ofDate: v1 finished established 1045 ev 13 cells 2 ev'ts | v2 finished established 1045 ev 13 cells 2 ev'ts | lost 0 | whole result identical true
+  F9 deflected: v1 finished 55409 ev 3445 cells 2 ev'ts | v2 finished 55409 ev 3445 cells 2 ev'ts | lost 0 | whole result identical true
+F10 Pluto: reference scan 2 roots, 7201 samples, 0 refusals, 0.0 s
+  F10 geometric: v1 finished established 131 ev 51 cells 0 ev'ts | v2 finished established 131 ev 51 cells 0 ev'ts | lost 0 | whole result identical true
+  F10 retarded: v1 finished established 686 ev 27 cells 0 ev'ts | v2 finished established 686 ev 27 cells 0 ev'ts | lost 0 | whole result identical true
+  F10 aberrated: v1 finished established 728 ev 29 cells 0 ev'ts | v2 finished established 728 ev 29 cells 0 ev'ts | lost 0 | whole result identical true
+  F10 ofDate: v1 finished established 1271 ev 23 cells 2 ev'ts | v2 finished established 1271 ev 23 cells 2 ev'ts | lost 0 | whole result identical true
+  F10 deflected: v1 finished established 5092 ev 207 cells 2 ev'ts | v2 finished established 5092 ev 207 cells 2 ev'ts | lost 0 | whole result identical true
+apparent() grid: 1000 calls per tree, 0 differ
+E-1 PASS: 0 lost (task definition: 0), threw 0
+E-2 (ten-case) PASS: 0 unequal of 43 both-established
+E-3 (ten-case) sense 2 unamended PASS, A-1 PASS over 46 same-count results; sense 1 PASS
+non-Moon whole-result identity: 45 of 45
+exit 0

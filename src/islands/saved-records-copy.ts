@@ -68,7 +68,7 @@ export interface SavedRecordsCopy {
 
 const en: SavedRecordsCopy = {
   heading: 'Calculation records on this device',
-  intro: 'Each record is the exact calculation file for a chart you chose to keep. Records stay in this browser only; they are never part of account sync. Clearing this browser’s site data removes them, and the browser can discard them if storage runs low — download anything you want to keep for good.',
+  intro: 'Each record is the exact calculation file for a chart you chose to keep. Records stay in this browser only; they are never part of account sync. Clearing this browser’s site data removes them, and the browser can discard them if storage runs low. Download anything you want to keep for good.',
   keep: 'Keep this calculation on this device',
   keeping: 'Keeping…',
   kept: 'Kept on this device.',
@@ -180,7 +180,7 @@ const es: SavedRecordsCopy = {
 const pt: SavedRecordsCopy = {
   ...en,
   heading: 'Registros de cálculo neste dispositivo',
-  intro: 'Cada registro é o arquivo de cálculo exato de um mapa que você decidiu guardar. Os registros ficam apenas neste navegador; nunca fazem parte da sincronização da conta. Limpar os dados deste site remove os registros, e o navegador pode descartá-los se faltar espaço — baixe o que você quiser guardar de vez.',
+  intro: 'Cada registro é o arquivo de cálculo exato de um mapa que você decidiu guardar. Os registros ficam apenas neste navegador; nunca fazem parte da sincronização da conta. Limpar os dados deste site remove os registros, e o navegador pode descartá-los se faltar espaço. Baixe o que você quiser guardar de vez.',
   keep: 'Guardar este cálculo neste dispositivo',
   keeping: 'Guardando…',
   kept: 'Guardado neste dispositivo.',
@@ -358,7 +358,7 @@ const ru: SavedRecordsCopy = {
   keepUnavailable: 'Записи расчёта недоступны в этом браузере.',
   keepLocked: 'Записи расчёта для аккаунта этого браузера заблокированы. Войдите, чтобы сохранить этот расчёт.',
   keepReadOnly: 'Войдите, чтобы сохранять новые расчёты. Записи вашего аккаунта остаются доступными для чтения, пока вы не вошли.',
-  keepFull: 'Сохранённых здесь записей уже максимум — 40. Удалите одну в Профиле, чтобы сохранить другую.',
+  keepFull: 'Сохранённых здесь записей уже максимум: 40. Удалите одну в Профиле, чтобы сохранить другую.',
   keepUncertain: 'Запись могла сохраниться, а могла и нет. Проверьте Профиль, прежде чем сохранять снова; автоматических повторов нет.',
   keepFailed: 'Не удалось сохранить этот расчёт. Ничего не записано.',
   keepChanged: 'Ничего не сохранено: доступные здесь записи изменились в другой вкладке или вместе с состоянием входа. Сохраните ещё раз, если это по-прежнему нужно.',

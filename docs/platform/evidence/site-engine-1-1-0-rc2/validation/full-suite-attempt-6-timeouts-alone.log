@@ -1,0 +1,18 @@
+
+ RUN  v3.2.7 <checkout>
+
+ ✓ scripts/sitemap-rendered-changes.test.mjs (25 tests) 3617ms
+   ✓ a pull request that rolls the daily edition > the plan step > compares two commits of one edition  350ms
+   ✓ a pull request that rolls the daily edition > the plan step > passes a head that only rolls the edition, with nothing to compare  370ms
+   ✓ a pull request that rolls the daily edition > the plan step > fails a head that rolls the edition and changes a file of those directories the publication does not write  1505ms
+   ✓ a pull request that rolls the daily edition > the plan step > fails a head that rolls the edition and changes anything else  344ms
+ ✓ scripts/games-sql-readiness.test.mjs (4 tests) 4288ms
+   ✓ Zodiac Games SQL container readiness > waits through socket-only initialization before the unchanged SQL sequence  2466ms
+   ✓ Zodiac Games SQL container readiness > reproduces the original premature socket-readiness failure  394ms
+   ✓ Zodiac Games SQL container readiness > retains the bounded readiness failure, diagnostics and container cleanup  1102ms
+   ✓ Zodiac Games SQL container readiness > keeps a real SQL-stage failure fatal without retrying or running later files  325ms
+
+ Test Files  2 passed (2)
+      Tests  29 passed (29)
+   Start at  16:13:25
+   Duration  4.93s (transform 97ms, setup 0ms, collect 129ms, tests 7.91s, environment 0ms, prepare 185ms)

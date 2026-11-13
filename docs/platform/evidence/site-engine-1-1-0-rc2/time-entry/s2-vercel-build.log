@@ -1,0 +1,127 @@
+Vercel CLI 62.0.0 (Node.js 22.22.2)
+WARNING! Build not running on Vercel. System environment variables will not be available.
+Installing dependencies...
+
+up to date in 992ms
+
+241 packages are looking for funding
+  run `npm fund` for details
+Using TypeScript 5.9.3 (local user-provided)
+src/lib/ical.ts(2,37): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './engine/transit-scan.js'?
+
+src/lib/engine/transit-scan-core.ts(8,65): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './types.js'?
+src/lib/engine/transit-scan-core.ts(25,46): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './transit-scan-shared.js'?
+
+src/lib/engine/server-ephemeris.ts(35,31): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './types.js'?
+
+src/lib/engine/transit-scan-shared.ts(1,43): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './types.js'?
+
+Using TypeScript 5.9.3 (local user-provided)
+src/lib/email/provider.ts(18,47): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../i18n/core.js'?
+
+src/lib/i18n/ui/server.ts(10,39): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './schema.js'?
+
+src/lib/i18n/ui/pt.ts(1,32): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './schema.js'?
+
+src/lib/i18n/ui/es.ts(1,32): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './schema.js'?
+
+src/lib/i18n/ui/fr.ts(1,32): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './schema.js'?
+
+src/lib/i18n/ui/it.ts(2,32): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './schema.js'?
+
+src/lib/i18n/ui/ru.ts(1,32): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './schema.js'?
+src/lib/i18n/ui/ru.ts(2,36): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../plural.js'?
+
+src/lib/i18n/ui/zh-hans.ts(1,32): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './schema.js'?
+
+src/lib/i18n/ui/zh-hant.ts(1,32): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './schema.js'?
+
+src/lib/i18n/ru-runtime/client.ts(1,73): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './schema.js'?
+
+Using TypeScript 5.9.3 (local user-provided)
+src/lib/email/daily-server.ts(267,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
+src/lib/email/daily-server.ts(269,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
+src/lib/email/daily-server.ts(271,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
+src/lib/email/daily-server.ts(602,21): error TS2322: Type 'unknown' is not assignable to type 'string'.
+
+Using TypeScript 5.9.3 (local user-provided)
+api/email/_confirm.ts(18,29): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../../src/lib/i18n/core.js'?
+
+src/lib/email/server-page.ts(4,28): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../i18n/ui/schema.js'?
+
+src/lib/email/daily-page.ts(36,52): error TS2339: Property 'action' does not exist on type '{ kind?: "form"; action: string; token: string; label: string; decision?: string; secondary?: { label: string; decision: string; }; } | { kind: "link"; href: string; label: string; }'.
+  Property 'action' does not exist on type '{ kind: "link"; href: string; label: string; }'.
+src/lib/email/daily-page.ts(36,117): error TS2339: Property 'token' does not exist on type '{ kind?: "form"; action: string; token: string; label: string; decision?: string; secondary?: { label: string; decision: string; }; } | { kind: "link"; href: string; label: string; }'.
+  Property 'token' does not exist on type '{ kind: "link"; href: string; label: string; }'.
+src/lib/email/daily-page.ts(36,135): error TS2339: Property 'decision' does not exist on type '{ kind?: "form"; action: string; token: string; label: string; decision?: string; secondary?: { label: string; decision: string; }; } | { kind: "link"; href: string; label: string; }'.
+  Property 'decision' does not exist on type '{ kind: "link"; href: string; label: string; }'.
+src/lib/email/daily-page.ts(36,205): error TS2339: Property 'decision' does not exist on type '{ kind?: "form"; action: string; token: string; label: string; decision?: string; secondary?: { label: string; decision: string; }; } | { kind: "link"; href: string; label: string; }'.
+  Property 'decision' does not exist on type '{ kind: "link"; href: string; label: string; }'.
+src/lib/email/daily-page.ts(37,16): error TS2339: Property 'secondary' does not exist on type '{ kind?: "form"; action: string; token: string; label: string; decision?: string; secondary?: { label: string; decision: string; }; } | { kind: "link"; href: string; label: string; }'.
+  Property 'secondary' does not exist on type '{ kind: "link"; href: string; label: string; }'.
+src/lib/email/daily-page.ts(38,74): error TS2339: Property 'action' does not exist on type '{ kind?: "form"; action: string; token: string; label: string; decision?: string; secondary?: { label: string; decision: string; }; } | { kind: "link"; href: string; label: string; }'.
+  Property 'action' does not exist on type '{ kind: "link"; href: string; label: string; }'.
+src/lib/email/daily-page.ts(38,139): error TS2339: Property 'token' does not exist on type '{ kind?: "form"; action: string; token: string; label: string; decision?: string; secondary?: { label: string; decision: string; }; } | { kind: "link"; href: string; label: string; }'.
+  Property 'token' does not exist on type '{ kind: "link"; href: string; label: string; }'.
+src/lib/email/daily-page.ts(38,206): error TS2339: Property 'secondary' does not exist on type '{ kind?: "form"; action: string; token: string; label: string; decision?: string; secondary?: { label: string; decision: string; }; } | { kind: "link"; href: string; label: string; }'.
+  Property 'secondary' does not exist on type '{ kind: "link"; href: string; label: string; }'.
+src/lib/email/daily-page.ts(38,264): error TS2339: Property 'secondary' does not exist on type '{ kind?: "form"; action: string; token: string; label: string; decision?: string; secondary?: { label: string; decision: string; }; } | { kind: "link"; href: string; label: string; }'.
+  Property 'secondary' does not exist on type '{ kind: "link"; href: string; label: string; }'.
+
+Using TypeScript 5.9.3 (local user-provided)
+Using TypeScript 5.9.3 (local user-provided)
+Using TypeScript 5.9.3 (local user-provided)
+Using TypeScript 5.9.3 (local user-provided)
+api/aura-holdings.ts(15,8): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/lib/wallet/types.js'?
+
+api/wallet-birth.ts(17,8): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/lib/wallet/types.js'?
+
+src/lib/wallet/holdings.ts(11,34): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './types.js'?
+
+src/lib/wallet/config.ts(1,34): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './types.js'?
+
+src/lib/wallet/address.ts(1,34): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './types.js'?
+
+src/lib/wallet/providers.ts(6,8): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './types.js'?
+
+src/lib/aura/cabinet-finish.ts(6,8): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './types.js'?
+
+Using TypeScript 5.9.3 (local user-provided)
+src/lib/invite/validate.ts(10,31): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../scene/types.js'?
+src/lib/invite/validate.ts(12,42): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './types.js'?
+
+src/ai-tools/features/place-table.ts(35,26): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../../lib/geo/rank.js'?
+src/ai-tools/features/place-table.ts(36,33): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './birthplace.js'?
+
+src/lib/share-preview.ts(7,42): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './share-positions.js'?
+
+src/lib/share-results.ts(244,40): error TS2550: Property 'hasOwn' does not exist on type 'ObjectConstructor'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2022' or later.
+src/lib/share-results.ts(263,40): error TS2550: Property 'hasOwn' does not exist on type 'ObjectConstructor'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2022' or later.
+
+src/ai-tools/share-links.ts(306,24): error TS2322: Type 'string' is not assignable to type '"leo" | "aquarius" | "aries" | "cancer" | "capricorn" | "gemini" | "libra" | "pisces" | "sagittarius" | "scorpio" | "taurus" | "virgo"'.
+src/ai-tools/share-links.ts(347,17): error TS2322: Type 'string' is not assignable to type '"leo" | "aquarius" | "aries" | "cancer" | "capricorn" | "gemini" | "libra" | "pisces" | "sagittarius" | "scorpio" | "taurus" | "virgo"'.
+
+src/ai-tools/horoscope/reading.ts(6,62): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../../lib/horoscope-program-types.js'?
+src/ai-tools/horoscope/reading.ts(7,31): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../../lib/share-results.js'?
+src/ai-tools/horoscope/reading.ts(9,53): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './window.js'?
+
+src/lib/compat-score.ts(12,34): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './engine/synastry.js'?
+src/lib/compat-score.ts(13,30): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './signs.js'?
+
+src/lib/occasions/date-score.ts(8,35): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './kinds.js'?
+src/lib/occasions/date-score.ts(9,39): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './sky.js'?
+
+src/lib/occasions/milestone-words.ts(5,36): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './milestones.js'?
+
+src/lib/return-visits/copy.ts(1,36): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../i18n/core.js'?
+src/lib/return-visits/copy.ts(537,89): error TS2550: Property 'hasOwn' does not exist on type 'ObjectConstructor'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2022' or later.
+
+Using TypeScript 5.9.3 (local user-provided)
+Using TypeScript 5.9.3 (local user-provided)
+Using TypeScript 5.9.3 (local user-provided)
+Build Completed in .vercel/output [12s]
+npm notice
+npm notice New major version of npm available! 10.9.7 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

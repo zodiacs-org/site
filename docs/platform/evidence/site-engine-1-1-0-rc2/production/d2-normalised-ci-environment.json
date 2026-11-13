@@ -1,0 +1,15 @@
+{
+ "view": "ChartCalculator",
+ "files": {
+  "production": 43,
+  "local": 43
+ },
+ "equalByteForByte": 41,
+ "equalWhenNormalised": 41,
+ "onlyInProduction": [],
+ "onlyInLocal": [],
+ "differingWhenNormalised": [
+  "ChartCalculator.<hash>.js",
+  "account-save-loader.<hash>.js"
+ ]
+}

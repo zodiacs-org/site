@@ -1,0 +1,51 @@
+name: Keep the installed browser packages
+description: >-
+  Run straight after `npx playwright-core install --with-deps`, so a test
+  that fails later still leaves the cache for the next run. Keeps the .deb
+  file of each installed version, named as apt names it, names the set after
+  a digest of those file names, and saves it only when the set differs from
+  the one restored (a new runner image, an Ubuntu update or a Playwright
+  upgrade). So the cache follows updates and does not grow with superseded
+  versions. Give the calling step continue-on-error and a time limit.
+
+inputs:
+  name:
+    description: Cache name, as given to browser-debs/restore.
+    required: true
+  restored-key:
+    description: The matched-key output of browser-debs/restore.
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Collect the installed versions' packages
+      id: set
+      shell: bash
+      env:
+        NAME: ${{ inputs.name }}
+        RESTORED: ${{ inputs.restored-key }}
+      run: |
+        [[ $NAME =~ ^[a-z0-9][a-z0-9-]*$ ]] || { echo "::error::Invalid cache name '$NAME'"; exit 1; }
+        export LC_ALL=C
+        cd /var/cache/apt/archives
+        dpkg-query -W -f '${Package}_${Version}_${Architecture}.deb\n' | sed 's/:/%3a/g' | sort -u > "$RUNNER_TEMP/installed-debs"
+        find . -maxdepth 1 -name '*.deb' -printf '%f\n' | sort | comm -12 - "$RUNNER_TEMP/installed-debs" > "$RUNNER_TEMP/kept-debs"
+        key="$NAME-$ImageOS-$(sha256sum < "$RUNNER_TEMP/kept-debs" | cut -c1-16)"
+        echo "$(wc -l < "$RUNNER_TEMP/kept-debs") packages as $key, restored ${RESTORED:-nothing}"
+        if [ "$key" != "$RESTORED" ]; then
+          rm -rf "$HOME/$NAME"
+          mkdir "$HOME/$NAME"
+          xargs -r -d '\n' -a "$RUNNER_TEMP/kept-debs" cp -t "$HOME/$NAME/"
+          du -sh "$HOME/$NAME"
+        fi
+        # Named only once every file is in place.
+        if [ -s "$RUNNER_TEMP/kept-debs" ]; then echo "key=$key" >> "$GITHUB_OUTPUT"; fi
+
+    - name: Save them when the set changed
+      if: steps.set.outputs.key != '' && steps.set.outputs.key != inputs.restored-key
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/${{ inputs.name }}
+        key: ${{ steps.set.outputs.key }}

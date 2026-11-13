@@ -1,0 +1,331 @@
+--- <860-export>/examples/precision-alpha/tools/measure/partition-evaluation.mjs	2026-11-01 02:01:56
++++ <post-hoc>/holdouts/holdout-driver.mjs	2026-11-01 02:28:47
+@@ -1,4 +1,37 @@
+ /**
++ * HOLDOUT DRIVER (post hoc, unscored). A copy of
++ * tools/measure/partition-evaluation.mjs (SHA-256 1b41c4bb..., identical in
++ * the #860 head tree and the version-1 tree) changed ONLY as listed here;
++ * `driver-vs-harness.diff` beside this file is the exact diff.
++ *
++ *   node holdout-driver.mjs --pack=/path/to.zeph --cases=/path/to/run.json \
++ *        --head=/path/to/head/precision-alpha --v1=/path/to/v1/precision-alpha \
++ *        --out=file.json --label=holdout-1912 [--case=F2] [--repeat=4]
++ *
++ * Changes from the harness:
++ *  1. The code under test is imported from --head (default: the #860 export)
++ *     by absolute path, instead of '../../src', because this file does not
++ *     live in that tree. Version 1 is imported from --v1 the same way.
++ *  2. The cases are TAKEN from an earlier run's run.json (--cases), not
++ *     redrawn: id, body, window and target exactly as recorded there. The
++ *     record's own case-list digest is recomputed and checked, every window
++ *     is checked to lie inside the pack's coverage and inside the records of
++ *     every series the case uses, and `from`/`to` are checked against the
++ *     harness's own tdb() of the recorded ISO dates.
++ *  3. In the same invocation, version 1 (--v1) runs its plain deflected
++ *     search and its partitioned path on every case, on its own opening of
++ *     the same pack, with the same budgets. Those results are recorded under
++ *     `v1` per case and in `additional`; they feed none of #860's targets.
++ *  4. Extra raw output per case (`spans`, `p2.allProbes`, `refRoots`), so
++ *     the record-join check can be done afterwards without re-running.
++ *  5. An `additional` block after #860's report: the earlier rule's P-4
++ *     (version 1's unpartitioned search in this invocation as the
++ *     denominator, as PARTITION-EVALUATION-V2.md of the bundle section 7
++ *     words it), the earlier rule's P-8, and the derived-class cross-check.
++ *  Nothing in #860's scoring (P-1 to P-7, the verdict) is changed.
++ *
++ * Original header follows.
++ *
+  * The partition evaluation, by PARTITION-EVALUATION.md sections 5, 6 and 7.
+  *
+  *   node tools/measure/partition-evaluation.mjs --pack=/path/to.zeph \
+@@ -15,24 +48,42 @@
+  *
+  * Research tool. Not in the published archive and not in the site build.
+  */
+-import { writeFileSync, mkdirSync } from 'node:fs';
++import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
+ import { dirname } from 'node:path';
+-import { openPackFile } from '../../src/node.mjs';
+-import { makeDeflectedReference } from '../../test/tier-b/_deflected-reference.mjs';
+-import { searchDeflectedLongitude } from '../../src/core/retarded-search.mjs';
+-import { searchDeflectedOverPartition } from '../../src/core/partitioned-search.mjs';
+-import { partitionDomain, PARTITION_DEFAULTS } from '../../src/core/domain-partition.mjs';
+-import { DEFLECTION_PROFILE } from '../../src/core/deflection.mjs';
++import { createHash } from 'node:crypto';
++import { loadavg, cpus } from 'node:os';
++const STARTED_AT = new Date().toISOString();
++const LOAD_AT_START = loadavg();
+ 
+ const args = new Map();
+ for (const a of process.argv.slice(2)) { const [k, v] = a.split('='); args.set(k.replace(/^--/, ''), v ?? true); }
++const SCRATCH = '<scratch>/p45';
++const HEAD = args.get('head') ?? `${SCRATCH}/prior-versions/head/examples/precision-alpha`;
++const V1 = args.get('v1') ?? `${SCRATCH}/v1/examples/precision-alpha`;
++const CASES_FILE = args.get('cases');
++if (!CASES_FILE) { process.stderr.write('--cases is required\n'); process.exit(2); }
++const { openPackFile } = await import(`${HEAD}/src/node.mjs`);
++const { makeDeflectedReference } = await import(`${HEAD}/test/tier-b/_deflected-reference.mjs`);
++const { searchDeflectedLongitude } = await import(`${HEAD}/src/core/retarded-search.mjs`);
++const { searchDeflectedOverPartition } = await import(`${HEAD}/src/core/partitioned-search.mjs`);
++const { partitionDomain, PARTITION_DEFAULTS } = await import(`${HEAD}/src/core/domain-partition.mjs`);
++const { DEFLECTION_PROFILE } = await import(`${HEAD}/src/core/deflection.mjs`);
++const V1M = {
++  node: await import(`${V1}/src/node.mjs`),
++  retarded: await import(`${V1}/src/core/retarded-search.mjs`),
++  partitioned: await import(`${V1}/src/core/partitioned-search.mjs`),
++  partition: await import(`${V1}/src/core/domain-partition.mjs`),
++  deflection: await import(`${V1}/src/core/deflection.mjs`),
++};
++const CASE_RECORD = JSON.parse(readFileSync(CASES_FILE, 'utf8'));
+ const PACK = args.get('pack');
+ const OUT = args.get('out') ?? null;
+-const EPOCH = args.get('epoch') ?? '1975-01-01T00:00:00Z';
++const EPOCH = CASE_RECORD.epoch;
+ const ONE = args.get('case') ?? null;
+ const REPEAT = Number(args.get('repeat') ?? 4);
+ const LABEL = args.get('label') ?? (EPOCH.startsWith('1975') ? 'regression' : 'holdout');
+ if (!PACK) { process.stderr.write('--pack is required\n'); process.exit(2); }
++if (LABEL === 'regression') { process.stderr.write('this driver runs earlier holdouts only; --label must not be regression\n'); process.exit(2); }
+ 
+ const DAY = 86400;
+ const J2000_UTC = Date.UTC(2000, 0, 1, 12);
+@@ -103,23 +154,58 @@
+ const packDigest = rt.integrity?.computedDigest ?? null;
+ if (!packDigest) { process.stderr.write("the pack did not report a computed digest; a partition key without one is not an identity\n"); process.exit(2); }
+ 
++// ------------------------------------------- version 1, the same pack
++const rtV1 = await V1M.node.openPackFile(PACK);
++const ephV1 = rtV1.ephemeris;
++const packDigestV1 = rtV1.integrity?.computedDigest ?? null;
++if (packDigestV1 !== packDigest) { process.stderr.write(`the two trees compute different container digests: ${packDigest} vs ${packDigestV1}\n`); process.exit(2); }
++
+ // ------------------------------------------------------------- the cases
++/**
++ * CHANGED: taken from the earlier run's record, not redrawn. The record's
++ * `cases` array is the list its `caseListDigest` was computed over (the
++ * bundle harness: sha256(JSON.stringify(caseList))), so the digest is
++ * recomputed here first: a mismatch would mean this is not the list that
++ * run opened.
++ */
++const sha256 = (x) => createHash('sha256').update(x).digest('hex');
++const recordedList = CASE_RECORD.cases;
++const caseListCheck = {
++  file: CASES_FILE,
++  recordedDigest: CASE_RECORD.caseListDigest ?? null,
++  recomputedDigest: sha256(JSON.stringify(recordedList)),
++};
++caseListCheck.ok = caseListCheck.recordedDigest === caseListCheck.recomputedDigest;
++if (!caseListCheck.ok) { process.stderr.write(`the case list does not match its recorded digest: ${JSON.stringify(caseListCheck)}\n`); process.exit(2); }
++const { targetWeights, observerWeights, coverage: seriesCoverage } = await import(`${HEAD}/src/core/retarded.mjs`);
+ const CASES = [];
+-for (let i = 0; i < BODIES.length; i += 1) {
+-  const body = BODIES[i];
+-  const fromIso = plus(EPOCH, 900 * i);
+-  const toIso = plus(fromIso, 300);
+-  const from = tdb(fromIso);
+-  const to = tdb(toIso);
+-  const lon = ref.lonDeg(body, (from + to) / 2);
+-  if (lon === null) {
+-    CASES.push({ id: `F${i + 1}`, body, fromIso, toIso, skipped: 'the reference refuses the midpoint geometry' });
+-    CASES.push({ id: `A${i + 1}`, body, fromIso, toIso, skipped: 'the reference refuses the midpoint geometry' });
+-    continue;
++const caseChecks = [];
++for (const c of recordedList) {
++  if (c.skipped) { CASES.push({ id: c.id, body: c.body, fromIso: c.fromIso, toIso: c.toIso, skipped: c.skipped }); continue; }
++  const series = c.id.startsWith('F') ? 'main' : 'antipode';
++  const used = new Map([...targetWeights(eph, c.body), ...observerWeights(eph), ...targetWeights(eph, 'Sun')]);
++  const [recLo, recHi] = seriesCoverage(eph, used);
++  const check = {
++    id: c.id,
++    body: c.body,
++    fromIso: c.fromIso,
++    toIso: c.toIso,
++    from: c.from,
++    to: c.to,
++    fromMatchesTdbOfIso: Object.is(c.from, tdb(c.fromIso)),
++    toMatchesTdbOfIso: Object.is(c.to, tdb(c.toIso)),
++    insidePackCoverage: c.from >= eph.coverage.startEtSecTdb && c.to <= eph.coverage.stopEtSecTdb,
++    // A day of margin before the window for the emission times (light-time
++    // is seconds for the Moon, hours for Pluto).
++    insideRecordsOfEverySeriesUsed: c.from - DAY >= recLo && c.to <= recHi,
++    seriesUsed: [...used.keys()],
++    recordsTdbSec: [recLo, recHi],
++  };
++  caseChecks.push(check);
++  if (!(check.fromMatchesTdbOfIso && check.toMatchesTdbOfIso && check.insidePackCoverage && check.insideRecordsOfEverySeriesUsed)) {
++    process.stderr.write(`a recorded case fails its checks: ${JSON.stringify(check)}\n`); process.exit(2);
+   }
+-  const targetDeg = Number(lon.toFixed(6));
+-  CASES.push({ id: `F${i + 1}`, series: 'main', body, from, to, fromIso, toIso, targetDeg });
+-  CASES.push({ id: `A${i + 1}`, series: 'antipode', body, from, to, fromIso, toIso, targetDeg: Number(((targetDeg + 180) % 360).toFixed(6)) });
++  CASES.push({ id: c.id, series, body: c.body, from: c.from, to: c.to, fromIso: c.fromIso, toIso: c.toIso, targetDeg: c.targetDeg });
+ }
+ 
+ // --------------------------------------------------------------- helpers
+@@ -199,6 +285,22 @@
+     maxCells: MAX_CELLS,
+   });
+   const partMs = Date.now() - t1;
++
++  // --- ADDED: version 1 in the same invocation, same pack, same budgets.
++  // Feeds none of #860's targets; the earlier rule's P-4 denominator.
++  const t1a = Date.now();
++  const v1Base = V1M.retarded.searchDeflectedLongitude(ephV1, { ...spec, maxEvaluations: MAX_EVALUATIONS, maxCells: MAX_CELLS });
++  const v1BaseMs = Date.now() - t1a;
++  const t1b = Date.now();
++  const v1Part = V1M.partitioned.searchDeflectedOverPartition(ephV1, {
++    ...spec,
++    packDigest: packDigestV1,
++    boundaryToleranceSec: BOUNDARY_TOLERANCE_SEC,
++    relightWidthRatio: RELIGHT_WIDTH_RATIO,
++    maxEvaluations: MAX_EVALUATIONS,
++    maxCells: MAX_CELLS,
++  });
++  const v1PartMs = Date.now() - t1b;
+ 
+   // --- the independent reference, for bracketing and for P-6
+   const scanKey = `${c.body}|${c.targetDeg}|${c.from}|${c.to}`;
+@@ -330,8 +432,62 @@
+      */
+     ratioIsLowerBound: base.execution.status !== 'finished',
+     derivedClass: null,
++    // ---- ADDED: raw output for the record-join check. No target reads it.
++    spans: {
++      baseline: {
++        excluded: base.accounting.excluded.map((x) => [x.fromTdbSec, x.toTdbSec]),
++        unresolved: base.accounting.unresolved.map((x) => ({ span: [x.fromTdbSec, x.toTdbSec], cells: x.cells ?? null, why: x.why ?? null })),
++      },
++      partition: {
++        admissible: part.plan.admissible,
++        excluded: part.plan.excluded,
++        boundary: part.plan.boundary,
++        unprocessed: part.plan.unprocessed,
++        unresolved: part.accounting.unresolved.map((u) => ({ span: [u.fromTdbSec, u.toTdbSec], domain: u.domain ?? null, cells: u.cells ?? null, why: u.why ?? null })),
++        notSearched: part.accounting.notSearched ?? null,
++        admissibleNotFullyExamined: part.accounting.admissibleNotFullyExamined ?? null,
++      },
++      partitionDiagnostics: part.plan.diagnostics,
++    },
++    p2AllProbes: boundaryProbes,
++    refRoots: scan.roots,
++    eventList: {
++      baseline: base.events.map((e) => ({ tdbSec: e.tdbSec, bracketTdbSec: e.bracketTdbSec, kind: e.kind ?? null, direction: e.direction ?? null })),
++      partition: part.events.map((e) => ({ tdbSec: e.tdbSec, bracketTdbSec: e.bracketTdbSec, kind: e.kind ?? null, direction: e.direction ?? null, domain: e.domain ?? null, eligibility: e.eligibility ?? null })),
++    },
++    v1: {
++      baseline: {
++        status: v1Base.execution.status,
++        established: v1Base.completeness.established,
++        events: v1Base.events.length,
++        evaluations: v1Base.execution.evaluations,
++        cells: v1Base.execution.cells,
++        ms: v1BaseMs,
++        excludedSpanDays: v1Base.accounting.excluded.reduce((a, x) => a + (x.toTdbSec - x.fromTdbSec), 0) / DAY,
++        unresolvedRuns: v1Base.accounting.unresolved.length,
++        eventTimes: v1Base.events.map((e) => e.tdbSec),
++      },
++      partition: {
++        status: v1Part.execution.status,
++        finished: v1Part.execution.finished,
++        events: v1Part.events.length,
++        overRequest: v1Part.completeness.overRequest,
++        exhaustiveOverAdmissible: v1Part.completeness.exhaustiveOverAdmissible,
++        evaluations: v1Part.execution.evaluations,
++        partitionEvaluations: v1Part.execution.partitionEvaluations,
++        searchEvaluations: v1Part.execution.searchEvaluations,
++        cells: v1Part.execution.cells,
++        ms: v1PartMs,
++        admissibleSec: v1Part.accounting.admissibleSec,
++        excludedSec: v1Part.accounting.excludedSec,
++        boundarySec: v1Part.accounting.boundarySec,
++        unprocessedSec: v1Part.accounting.unprocessedSec,
++        boundarySpans: v1Part.plan.boundary.length,
++        derivedClass: v1Part.accounting.excludedSec > 0 || v1Part.accounting.boundarySec > 0 ? 'conjunction-heavy' : 'no-conjunction',
++      },
++    },
+   });
+-  process.stderr.write(`${c.id} ${c.body}: baseline ${base.execution.evaluations} (${base.execution.status}) -> partition ${part.execution.evaluations} (${part.execution.status}), ${(base.execution.evaluations / Math.max(1, part.execution.evaluations)).toFixed(2)}x\n`);
++  process.stderr.write(`${c.id} ${c.body}: baseline ${base.execution.evaluations} (${base.execution.status}) -> partition ${part.execution.evaluations} (${part.execution.status}), ${(base.execution.evaluations / Math.max(1, part.execution.evaluations)).toFixed(2)}x | v1 baseline ${v1Base.execution.evaluations} (${v1Base.execution.status}), v1 partition ${v1Part.execution.evaluations} (${v1Part.execution.status})\n`);
+ }
+ for (const r of rows) if (!r.skipped) r.derivedClass = derivedClass(r);
+ 
+@@ -553,5 +709,79 @@
+     ? 'PARTIAL: P-1 and P-6 hold; at least one of P-2..P-5 does not, and is recorded with its measured number'
+     : 'PASS: every declared target held');
+ 
++// ------------------------------------------------- ADDED: not #860's targets
++/**
++ * Everything below is outside #860's rule and changes nothing above.
++ *
++ * The earlier rule (bundle PARTITION-EVALUATION-V2.md section 7): on a
++ * holdout, P-4 and P-5 take their denominators from the ORIGINAL runtime's
++ * unpartitioned search on the same case, run in the same invocation; the
++ * conjunction-heavy cases are derived from the partition under test
++ * (excluded or boundary time > 0) and cross-checked against the version-1
++ * partition's classes. Its harness also required the partitioned run to
++ * have finished. P-8: the unpartitioned deflected Moon search, with the
++ * package defaults (4,000,000 / 400,000, the budgets used here), reaches
++ * `finished` on F2 and A2.
++ */
++const earlierRatio = (r) => r.v1.baseline.evaluations / Math.max(1, r.partition.evaluations);
++const additional = {
++  postHoc: 'These holdouts were opened by earlier versions (bundle branch moon-enclosure). For #860\'s code they are previously seen data: everything in this file is post hoc and unscored.',
++  node: process.version,
++  startedAt: STARTED_AT,
++  finishedAt: new Date().toISOString(),
++  cpus: cpus().length,
++  loadAverage: { atStart: LOAD_AT_START, atEnd: loadavg() },
++  wallClockNote: 'Wall times are secondary and not scored; the machine was shared with other work and the run was under nice -n 10. Evaluations and cells are deterministic.',
++  head: HEAD,
++  v1: V1,
++  caseListCheck,
++  caseChecks,
++  packDigestV1: packDigestV1,
++  earlierRuleP4: {
++    target: 'cold end-to-end evaluations of the partitioned path at most 1/4 of the ORIGINAL runtime\'s unpartitioned search on the same case (this invocation), on every derived conjunction-heavy case; the partitioned run must have finished',
++    basis: 'derived from the #860 partition: excluded or boundary time > 0',
++    perCase: live.filter((r) => r.derivedClass === 'conjunction-heavy').map((r) => ({
++      id: r.id,
++      body: r.body,
++      denominatorV1Unpartitioned: r.v1.baseline.evaluations,
++      denominatorStatus: r.v1.baseline.status,
++      cold: r.partition.evaluations,
++      coldStatus: r.partition.status,
++      ratio: earlierRatio(r),
++      ratioIsLowerBound: r.v1.baseline.status !== 'finished',
++      pass: r.partition.status === 'finished' && earlierRatio(r) >= P4_FACTOR,
++    })),
++  },
++  earlierRuleP5: {
++    target: 'cold evaluations at most twice the ORIGINAL runtime\'s unpartitioned search, on every derived conjunction-free case (reported beside P-4; the task asked for P-4 and P-8)',
++    perCase: live.filter((r) => r.derivedClass === 'no-conjunction').map((r) => ({
++      id: r.id, body: r.body, denominatorV1Unpartitioned: r.v1.baseline.evaluations, cold: r.partition.evaluations,
++      pass: r.partition.status === 'finished' && r.partition.evaluations <= P5_FACTOR * r.v1.baseline.evaluations,
++    })),
++  },
++  earlierRuleP8: {
++    target: 'the unpartitioned deflected search (#860 code), package-default budgets, reaches finished on both Moon cases',
++    now: moon.map((r) => ({ id: r.id, status: r.baseline.status, evaluations: r.baseline.evaluations, cells: r.baseline.cells, events: r.baseline.events })),
++    originalRuntime: moon.map((r) => ({ id: r.id, status: r.v1.baseline.status, evaluations: r.v1.baseline.evaluations, cells: r.v1.baseline.cells, events: r.v1.baseline.events })),
++  },
++  v2Rule: {
++    target: 'V-2: on F2 and A2 both the partitioned search and the plain deflected search reach finished within 4,000,000 evaluations',
++    perCase: moon.map((r) => ({
++      id: r.id,
++      partitioned: { status: r.partition.status, evaluations: r.partition.evaluations },
++      plain: { status: r.baseline.status, evaluations: r.baseline.evaluations },
++      pass: r.partition.status === 'finished' && r.partition.evaluations <= MAX_EVALUATIONS
++        && r.baseline.status === 'finished' && r.baseline.evaluations <= MAX_EVALUATIONS,
++    })),
++  },
++  derivedClassCrossCheck: live.map((r) => ({ id: r.id, head: r.derivedClass, v1: r.v1.partition.derivedClass, agree: r.derivedClass === r.v1.partition.derivedClass })),
++};
++additional.earlierRuleP4.pass = additional.earlierRuleP4.perCase.length === 0 ? null : additional.earlierRuleP4.perCase.every((x) => x.pass);
++additional.earlierRuleP5.pass = additional.earlierRuleP5.perCase.length === 0 ? null : additional.earlierRuleP5.perCase.every((x) => x.pass);
++additional.earlierRuleP8.pass = moon.length === 0 ? null : moon.every((r) => r.baseline.status === 'finished');
++additional.v2Rule.pass = moon.length === 0 ? null : additional.v2Rule.perCase.every((x) => x.pass);
++report.additional = additional;
++
+ if (OUT) { mkdirSync(dirname(OUT), { recursive: true }); writeFileSync(OUT, `${JSON.stringify(report, null, 2)}\n`); }
+ process.stdout.write(`${JSON.stringify(report.targets, null, 2)}\n${report.verdict.summary}\n`);
++process.stdout.write(`ADDED (not #860's targets): earlier-rule P-4 ${additional.earlierRuleP4.pass}, earlier-rule P-5 ${additional.earlierRuleP5.pass}, earlier-rule P-8 ${additional.earlierRuleP8.pass}, V-2 ${additional.v2Rule.pass}, derived classes agree ${additional.derivedClassCrossCheck.every((x) => x.agree)}\n`);

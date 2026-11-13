@@ -1,0 +1,97 @@
+Private birth-data search, 2026-10-27 (counts only)
+
+Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mjs
+(SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), run from this checkout with Node 22.22.2.
+Runs: two, each with both pattern sets.
+  The first over 68d12fceed2fb197e62d52479c5062f2c0dd0203..15d8e06e, the carry
+  18273949 and the adoption commit before one of its records (the host
+  drive's) withheld a digest of this machine's configuration; with that
+  change it became fa2a6e01. Its tree: 18,499 files.
+  The second over 68d12fce..25151c6a: the carry 18273949, the adoption
+  fa2a6e01 and the commit that first recorded this search, which adds no
+  matching line. Its tree: 18,506 files. The commit after it changes only
+  this description.
+Each run reads every added line, every added or changed binary with gzip
+contents read, added paths and messages, and the tree of its last commit.
+Both runs give the counts below.
+Patterns: the owner's two private pattern sets, kept outside every repository
+with the raw outputs. No pattern, matched line, label or path is recorded here.
+The owner's excluded engine file does not exist in this repository; the
+tool's exclusion is stated in its output all the same.
+
+Each pattern set gives the same counts.
+
+Lines the carry and adoption commits add: 15 birth-data lines, under 5
+anonymous labels, in 6 places: four regenerated JavaScript bundles, and the two new archives
+(developer plugin 0.3.14's ZIP and MCP adapter 0.1.0-rc.25's), whose bundles
+are byte for byte two of those four. Every one is birth data already on main
+(68d12fce), re-emitted by the regeneration. Read whole at the adoption commit,
+the four bundles hold 13 matching lines:
+  9 are main's lines with only version strings changed;
+  4 are single lines of about a megabyte each, embedded panels and data, whose
+    8 matches each sit in the same 300 characters on either side as on main;
+    the lines changed elsewhere.
+The four bundles hold 17 matches before the adoption and 17 after.
+No other line in the range matches.
+
+Tree: 484 birth-data lines in each run's tree, with either set, against 473
+in the 18,454 files of main's 68d12fce, read with the first. The 11 more
+are the two new archives' copies of their bundles, as the tool reads them,
+with either set: 4 in the plugin ZIP and 7 in the adapter archive; the
+earlier archives keep theirs. The tree's lines predate this adoption and stay as the 2026-10-08 record
+(../site-engine-1-0-0-rc2/refresh-20261008/) classified the lines introduced
+then; no blanket privacy clearance of the tree is claimed.
+
+Third run, after main (922924ee, #837) was merged into this branch: over
+b23dab83..61880d54, both sets. It reads main's five #837 commits, which
+main already carries, and the merge, against each of its parents. The
+merge's 23 lines, under the same 5 labels, are in the four bundles the merge
+rebuilt and in three archives: the 0.3.14 ZIP, the adapter archive and,
+read against this branch, main's rebuilt 0.3.13 ZIP. In the four bundles 13
+lines match: 9 are main's (922924ee) lines with only version strings
+changed, and the 4 single long lines' 8 matches each sit in the same 300
+characters on either side as on main; the bundles hold 17 matches before
+and after. The tree: 484 lines in 18,519 files, the 11 in the two new
+archives as above. The commit after the merge changes only this record.
+
+Fourth run, after main (3f50b316, #823) was merged into this branch: over
+ef2ce850..56fdecb7, both sets, with Node 22.22.2. It reads main's fifteen
+#823 commits, which main already carries, and the merge, against each of its
+parents. The merge's 23 lines are under the same 5 labels, in the same seven
+places as the third run's: the four bundles the merge rebuilt, the 0.3.14 ZIP,
+the adapter archive and, read against this branch, main's rebuilt 0.3.13 ZIP.
+In the four bundles 13 lines match. Nine are main's (3f50b316) lines with only
+version strings changed. The other four are the single long lines; each of
+their 8 matches sits in the same 300 characters on either side as on main. The
+bundles hold 17 matches before and after. The tree: 484 lines in 18,528 files,
+the 11 in the two new archives as above. The commit after the merge records
+this run and the local gate's logs at the merge; searched with both sets,
+it adds no matching line.
+
+Fifth run, both sets, with Node 22.22.2: over 937199b8..ef8b35d8, the birth
+chart form's change (ffbd90b1) and its record (ef8b35d8), which add no
+matching line; then over ef8b35d8..828f9e33, the merge of main (bdf4ef88,
+#836 and #835) with main's eighteen commits, which main already carries. The
+merge's 15 lines are under the same 5 labels, in six places: the four
+bundles, the 0.3.14 ZIP and the adapter archive (main's 0.3.13 ZIP did not
+change this time). In the four bundles 13 lines match. Nine are main's
+(bdf4ef88) lines with only version strings changed; the other four are the
+single long lines, each of whose 8 matches sits in the same 300 characters on
+either side as on main. The bundles hold 17 matches before and after. The
+tree: 484 lines in 18,586 files, the 11 in the two new archives as above.
+The merge was pushed after this search.
+
+Sixth run, after main (59a9383c, #807) was merged into this branch: over
+828f9e33..55544dc1, both sets, with Node 22.22.2. It reads main's fifteen
+#807 commits, which main already carries, and the merge, against each of its
+parents. The merge's 26 lines are under the same 5 labels, in eight places:
+the four bundles the merge rebuilt, the 0.3.14 ZIP, the adapter archive,
+main's rebuilt 0.3.13 ZIP (read against this branch) and one of main's text
+files that #807 changed. The five text files hold 16 matching lines. Twelve
+are main's (59a9383c) lines with only version strings changed. The other four
+are the single long lines, each of whose 8 matches sits in the same 300
+characters on either side as on main. The files hold 20 matches before and
+after. The tree: 487 lines in 18,594 files. The 3 more than before are main's,
+added by #807; the 11 in the two new archives are as above. The commit after
+the merge adds the Phase 1 captures, this record and the README's; searched
+with both sets before it was pushed, it adds no matching line.

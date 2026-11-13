@@ -1,0 +1,59 @@
+# F-89 S2 and S3 on the adoption head (the adoption plan's J-9), 2026-11-04, macOS arm64, Node 22.22.2, head 64096451fa134714cb41525410116b2d9a4e6f7b.
+# The F-89 preregistration's S2 and S3 (engine docs/evidence/1.1.0-rc.2-20261102/f89/PREREGISTRATION.md, section 7). S2's claims rules
+# with the ratchet at 2 are the claims test's second attempt (lite/b5-reference-and-claims.txt, part 2: 11 of 11 rules pass);
+# its control and the rest of S2 and S3 follow.
+
+## F-89 S2: the reference's drift check
+# command: node scripts/build-engine-reference.mjs --check
+Engine reference: drift PASS (15 public entry points; archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c)
+# exit code: 0
+
+## F-89 S2's control: the claims ledger with its ratchet left at 11 must fail R5
+# edit in docs/claims/ledger.json (restored afterwards): "maxOpenOverstated": 2 written 11
+# command: npx vitest run scripts/claims-ledger.test.mjs -t R5
+ ↓ scripts/claims-ledger.test.mjs > claims ledger > is sorted, one record per line, on the current lexicon and parser
+ ↓ scripts/claims-ledger.test.mjs > claims ledger > R1 lists every sentence the extractor selects
+ ↓ scripts/claims-ledger.test.mjs > claims ledger > R2 finds every listed sentence in its file, still selected
+ ↓ scripts/claims-ledger.test.mjs > claims ledger > R3 resolves every claim's evidence
+ ↓ scripts/claims-ledger.test.mjs > claims ledger > R4 finds every binding in its code or data
+ × scripts/claims-ledger.test.mjs > claims ledger > R5 keeps false and stale claims to protected paths and overstated claims to the ratchet
+  only 2 overstated claims remain open; lower maxOpenOverstated to 2
+ ↓ scripts/claims-ledger.test.mjs > claims ledger > R6 holds translations to the English claims and computes their protection
+ ↓ scripts/claims-ledger.test.mjs > claims ledger > R7 matches the conventions and coverage the engine's receipt states
+ ↓ scripts/claims-ledger.test.mjs > claims ledger > R8 exempts only for a listed reason, citing third parties
+ ↓ scripts/claims-ledger.test.mjs > claims ledger > R9 leaves no orphans
+ ↓ scripts/claims-ledger.test.mjs > claims ledger > R10 extracts and triggers the injected controls, and the splitter holds its goldens
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+  only 2 overstated claims remain open; lower maxOpenOverstated to 2
++   "only 2 overstated claims remain open; lower maxOpenOverstated to 2",
+    230|       problems.push(`only ${open.length} overstated claims remain open…
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 skipped (11)
+# exit code: 1
+# restored docs/claims/ledger.json: sha256 a11922757014da98a3de6610a28df79b3ef8d29fe3353244de6068950d71c231 (before control: a11922757014da98a3de6610a28df79b3ef8d29fe3353244de6068950d71c231)
+
+## F-89 S3: the programme ledger after the adoption's ledger notes (notes only, no status changes)
+# command: node c7-ledger-notes.mjs <checkout> (programme notes, adoption/tools/c7-ledger-notes.mjs)
+P2.E.declinations (merged, merged): note now 1670 characters
+P2.E.sect (merged, merged): note now 1347 characters
+P2.E.composite (not-started, none): note now 893 characters
+P2.E.dignities (not-started, none): note now 1076 characters
+P2.B.vargas (partial, deployed): note now 730 characters
+P1.M3c (not-started, none): note now 665 characters
+# units whose fields other than notes changed: 0; asOf unchanged: true
+# command: node scripts/programme-ledger.mjs
+programme-ledger: wrote docs/platform/programme/LEDGER.md
+# exit code: 0
+# command: node scripts/programme-ledger.mjs --check
+programme-ledger: OK
+# exit code: 0
+# P1.14's row in LEDGER.md: unchanged from the base 0bf69bd56aaec8fbfd99bd4b45877064dc1234df
+
+## F-89 S3's control: the same regeneration from a scratch copy of the acceptance ledger with P1.14's status set to accepted
+# P1.14 in the scratch copy: status partial written accepted (release deployed, 2 evidence items, blockedBy none)
+# command: node <scratch>/scripts/programme-ledger.mjs (the site's script, copied with the scratch ledger beside it)
+programme-ledger: wrote docs/platform/programme/LEDGER.md
+# exit code: 0
+# P1.14's row from the scratch copy: differs from LEDGER.md's (the check fails, as it must)
+#   <  partial
+#   >  accepted

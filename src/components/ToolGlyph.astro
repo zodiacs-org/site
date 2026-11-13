@@ -1,6 +1,6 @@
 ---
 /**
- * Tool-card icon: a crafted celestial glyph on a filled pastel disc, so the
+ * Tool-card icon: a crafted celestial glyph on a flat pastel disc, so the
  * calculators sit in the same visual language as the twelve sign icons
  * (pastel disc + dark line-art) rather than a thin mono symbol. The disc hue
  * comes from --sign, set on the enclosing tile. Drawings live in
@@ -29,9 +29,8 @@ const markup = TOOL_GLYPH[kind] ?? '';
 </span>
 
 <style>
-  /* Filled pastel disc with a soft top catch-light and a hue-matched drop
-     shadow — the same dimensional treatment as the sign-icon discs, so the
-     tool cards read as crafted, not a thin mono glyph in a hairline ring. */
+  /* Flat pastel disc with a dark line glyph, the same treatment as the sign
+     icon discs: no gradient, no glow. */
   .tool-glyph {
     display: inline-grid;
     place-items: center;
@@ -39,24 +38,18 @@ const markup = TOOL_GLYPH[kind] ?? '';
     height: 46px;
     margin-bottom: 4px;
     border-radius: 50%;
-    background:
-      radial-gradient(118% 118% at 30% 22%, color-mix(in oklab, var(--sign) 82%, #ffffff 18%), var(--sign) 68%);
+    background: var(--sign);
     color: var(--void-0, #060709);
-    box-shadow:
-      0 5px 16px -7px color-mix(in oklab, var(--sign) 60%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4),
-      inset 0 -6px 12px -8px rgba(6, 7, 9, 0.28);
+    box-shadow: none;
+    transition: box-shadow var(--dur-1, 180ms) var(--ease, ease);
   }
   .tool-glyph svg {
     width: 24px;
     height: 24px;
     display: block;
   }
-  /* The disc lifts a touch on card hover (the tile sets no transform on us). */
+  /* The card's hover answers with a soft ring of the disc's own hue. */
   :global(.tile:hover) .tool-glyph {
-    box-shadow:
-      0 8px 22px -8px color-mix(in oklab, var(--sign) 68%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.45),
-      inset 0 -6px 12px -8px rgba(6, 7, 9, 0.28);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--sign) 22%, transparent);
   }
 </style>

@@ -1,0 +1,57 @@
+---
+/**
+ * One of the guide's Sun, Moon and rising cards. The heading and text are
+ * the guide's own subsection; the link at the foot goes one level deeper.
+ */
+import { PLANET_GLYPH } from '../../lib/glyphs/paths';
+import { signBySlug } from '../../lib/signs';
+
+interface Props {
+  kind: 'sun' | 'moon' | 'rising';
+  sign: string;
+}
+const { kind, sign: slug } = Astro.props;
+const sign = signBySlug(slug);
+const link = {
+  sun: { href: `/learn/placements/sun-in-${slug}/`, label: `Sun in ${sign.name}` },
+  moon: { href: `/learn/placements/moon-in-${slug}/`, label: `Moon in ${sign.name}` },
+  rising: { href: `/rising-sign/${slug}/`, label: `${sign.name} rising profile` },
+}[kind];
+// The horizon with the Sun coming up over it, for the rising sign.
+const RISING = '<path d="M3 17h18M7 17a5 5 0 0 1 10 0M12 6v3M5.6 9.6l1.8 1.8M18.4 9.6l-1.8 1.8"/>';
+const glyph = kind === 'rising' ? RISING : PLANET_GLYPH[kind === 'sun' ? 'Sun' : 'Moon'];
+---
+<article class="kcard guide-place">
+  <span class="guide-place__glyph" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" set:html={glyph} />
+  </span>
+  <div class="guide-place__body"><slot /></div>
+  <a class="textlink" href={link.href}>{link.label} <span class="arr" aria-hidden="true">→</span></a>
+</article>
+
+<style>
+  .guide-place { display: flex; flex-direction: column; padding: 24px; }
+  .guide-place__glyph {
+    display: grid; place-items: center;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--hue);
+    color: #120c0a;
+  }
+  .guide-place__body { flex: 1; }
+  .guide-place__body :global(h3) {
+    margin: 22px 0 0;
+    font-family: var(--font-sans);
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--ink-0);
+  }
+  .guide-place__body :global(p) { margin: 8px 0 0; max-width: none; color: var(--muted); font-size: 0.9375rem; line-height: 1.58; }
+  .guide-place .textlink { margin-top: 18px; align-self: flex-start; font-size: 0.875rem; text-decoration: none; }
+  @media (max-width: 760px) {
+    .guide-place { flex: 0 0 82%; scroll-snap-align: start; padding: 20px; }
+    .guide-place__body :global(h3) { margin-top: 16px; }
+  }
+</style>

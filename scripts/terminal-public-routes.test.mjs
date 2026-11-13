@@ -56,13 +56,13 @@ describe('Terminal public-route split', () => {
     expect(consumer).toContain('aria-label="Astrofolio navigation"');
     expect(consumer).toContain('/assets/astrofolio/v2/zodiac-ring-192.png');
     expect(consumer).toContain('/assets/astrofolio/v2/leo/astrofolio.webmanifest');
-    expect(consumer).toContain('/assets/og/astrofolio/v5/faces.jpg');
+    expect(consumer).toContain('/assets/og/astrofolio/v6/faces.jpg');
     expect(consumer).not.toContain('/assets/og/astrofolio/v4/');
     expect(consumer).toContain('<meta property="og:image:type" content="image/jpeg" />');
     expect(consumer).not.toMatch(/Zodiac Terminal(?: Pro)?/u);
     expect(pro).toContain('<title>Terminal · Live Prices, Liquidity &amp; Research · Zodiacs.org</title>');
     expect(pro).toContain('<h1 id="pro-static-title">Terminal</h1>');
-    expect(pro).toContain('/assets/og/v6/terminal.png');
+    expect(pro).toContain('/assets/og/v7/terminal.png');
     expect(pro).not.toContain('/assets/astrofolio/v2/');
     expect(pro).toContain('title="Zodiacs.org Markets Research"');
     expect(pro).not.toContain('Zodiac Markets Research');
@@ -134,6 +134,21 @@ describe('Terminal public-route split', () => {
     expect(legacyUrls).toContain("{ path: '/astrofolio/', priority: 0.8 }");
     expect(legacyUrls).toContain("{ path: '/terminal/', priority: 0.78 }");
     expect(sitemap).not.toContain("'/registry/research/'");
+  });
+
+  it('keeps every research note noindex and out of the sitemaps while the archive stays indexed', async () => {
+    const [index, note, sitemap] = await Promise.all([
+      read('src/pages/terminal/research/index.astro'),
+      read('src/pages/terminal/research/[slug].astro'),
+      read('src/pages/sitemap.xml.ts'),
+    ]);
+    // Unconditional: Base renders it as "noindex, follow", so the notes stay linked and crawlable.
+    expect(note).toMatch(/<Base[\s\S]*?\n {2}noindex\n[\s\S]*?>/u);
+    expect(note).not.toContain('noindex={');
+    expect(note).not.toContain('nofollow');
+    expect(index).not.toMatch(/\bnoindex\b/u);
+    expect(sitemap).toContain("{ loc: '/terminal/research/', priority: 0.68 }");
+    expect(sitemap).not.toMatch(/registryResearchPublication\.items/u);
   });
 
   it('keeps research breadcrumbs inside the Terminal identity', async () => {

@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { runInNewContext } from 'node:vm';
-import { buildServiceWorker } from './build-service-worker.mjs';
+import { buildServiceWorker, serviceWorkerAssets } from './build-service-worker.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
 
@@ -155,6 +155,50 @@ describe('offline service worker posture', () => {
     expect(worker.caches.open).toHaveBeenCalledOnce();
   });
 
+  it('serves cache-first only the data the cache version covers, and other data network-first', async () => {
+    // The version digests the city shards; the chart-twins directory and the publication records are outside it.
+    const outputDirectory = await mkdtemp(resolve(tmpdir(), 'zodiacs-sw-data-'));
+    try {
+      await mkdir(resolve(outputDirectory, 'data/cities'), { recursive: true });
+      for (const path of ['data/cities/index.json', 'data/chart-twins.json', 'data/daily-publication.json']) {
+        await writeFile(resolve(outputDirectory, path), '{}');
+      }
+      const assets = await serviceWorkerAssets(outputDirectory);
+      expect(assets).toContain('/data/cities/index.json');
+      expect(assets).not.toContain('/data/chart-twins.json');
+      expect(assets).not.toContain('/data/daily-publication.json');
+    } finally {
+      await rm(outputDirectory, { recursive: true, force: true });
+    }
+    const worker = runWorker(await builtWorker(false));
+    const handler = worker.handlers.get('fetch');
+    const stale = { ok: true, status: 200, stale: true };
+    const cache = { put: vi.fn(async () => {}), match: vi.fn(async () => stale), keys: vi.fn(async () => []) };
+    worker.caches.open.mockImplementation(async () => cache);
+    const fetchFrom = async (path) => {
+      let completion;
+      handler({
+        request: { method: 'GET', mode: 'cors', url: `https://zodiacs.org${path}` },
+        respondWith: (promise) => { completion = Promise.resolve(promise); },
+      });
+      return completion;
+    };
+    // A city shard's cached copy stands until the version changes.
+    expect(await fetchFrom('/data/cities/index.json')).toBe(stale);
+    expect(worker.networkFetch).not.toHaveBeenCalled();
+    // The rest come from the network, and the copy kept is answered only offline.
+    for (const path of ['/data/chart-twins.json', '/data/daily-publication.json']) {
+      worker.networkFetch.mockClear();
+      cache.put.mockClear();
+      const answer = await fetchFrom(path);
+      expect(worker.networkFetch).toHaveBeenCalledOnce();
+      expect(answer).not.toBe(stale);
+      expect(cache.put).toHaveBeenCalledOnce();
+      worker.networkFetch.mockRejectedValueOnce(new TypeError('offline'));
+      expect(await fetchFrom(path)).toBe(stale);
+    }
+  });
+
   it('ships with push disabled and versioned shell/data caches', async () => {
     const source = await readFile(resolve(ROOT, 'public/sw.js'), 'utf8');
     expect(source).toContain('const PUSH_ENABLED = false');
@@ -223,6 +267,23 @@ describe('offline service worker posture', () => {
     expect(worker.showNotification).toHaveBeenCalledTimes(publication.timeline.length);
     expect(worker.showNotification.mock.calls.map(([, options]) => options.data.url))
       .toEqual(publication.timeline.map((event) => event.path));
+  });
+
+  it('shows a Moon journal reminder that opens the journal', async () => {
+    const worker = runWorker(await builtWorker(true));
+    const handler = worker.handlers.get('push');
+
+    await dispatchPush(handler, {
+      title: 'New Moon in Scorpio today',
+      body: 'Exact at 07:02 UTC. Your journal question is waiting.',
+      url: '/moon-journal/',
+    });
+    await dispatchPush(handler, { title: 'Title', body: 'Body', url: '/moon-journal/entries?id=1' });
+
+    expect(worker.showNotification).toHaveBeenCalledTimes(1);
+    const [title, options] = worker.showNotification.mock.calls[0];
+    expect(title).toBe('New Moon in Scorpio today');
+    expect(options.data.url).toBe('/moon-journal/');
   });
 
   it('opens validated event destinations and fails closed on invalid click data', async () => {

@@ -1,3 +1,597 @@
+Solar and lunar returns accepted, 2026-11-08 (Asia/Bangkok):
+P2.A.timing.returns passes its preregistered worked-example test, and you
+ratified its three departures.
+
+**Overall delivery: 50%** (50.123% to three decimals): 91.45 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 1.5 from B3.c's entry
+below: P2.A.timing.returns (1.5) moves from partial to accepted, and Phase 2 A
+Western from 12.1 of 29.6 to 13.6 of 29.6.
+
+- **The test.** Five searchers read 380 sources for printed worked examples
+  of solar and lunar returns. Ten readers read 83 of the 124 candidates again,
+  blind, from the scans (the 41 excluded on facts alone were read once), and
+  the holdout was frozen in `f7e5ed14`, 30 candidates with a computed
+  tolerance, and pushed before the engine ran. Of the 13 the rules leave scored,
+  11 agree with engine 1.1.0-rc.2: 6 of 8 solar, from 4 authors and 4 works,
+  and 5 of 5 lunar. The pass rule needs 5, 1, 2 and 2, and two thirds.
+- **Departures.** Three were made before the run and are disclosed: community
+  uploads of in-copyright works are not counted as public scans (D11, 31
+  records out); candidates excluded on facts alone were read once (D17); and
+  the blind re-read of the scored fixtures ran before the run, not after it.
+  You ratified all three on 8 November.
+- **Your answers.** On 8 November you approved withholding the community-upload
+  records' readings, then their authors and titles, after your private search
+  matched the first freeze commit; you allowed the one name match left; and
+  you ratified the three departures.
+- **Nothing served changes.** This record adds evidence, a test, the ledger,
+  its table and this file (site#921).
+- **Still yours.** OQ10's Q5 (step 1.14h).
+- **Follow-ups.** Planetary returns (P2.A.timing.planetary-returns) could get
+  their own preregistration; P4.1, the DE440 hosted backend; P1.M3c's version 2.
+
+The record is
+[the evidence README](../evidence/returns-worked-examples-20261107/README.md).
+
+The time atlas dataset accepted, 2026-11-07 (Asia/Bangkok): B3.c
+accepted on your answers.
+
+**Overall delivery: 49%** (49.301% to three decimals): 89.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 2.0 from engine
+1.1.0-rc.2's entry below: B3.c (2) moves from validated to accepted, and
+Frontier bets (first slices) from 32 of 41 to 34 of 41.
+
+- **Your answers.** On 6 November you approved, in one question, the
+  reading of "released" (the atlas 0.1.0 served permanently by zodiacs.org
+  under `/developers/time-atlas/0.1.0/`, with no tag, GitHub release or
+  DOI) and the first-use drive's Firefox half as a departure. On 7 November
+  you accepted main's Site Check on `0bf69bd5` (run 41806876561, 21 of 21
+  jobs) in place of one on the merge, which failed on a horoscope test
+  outside the atlas; no atlas file, page or test changed between the two.
+- **Nothing served changes.** This record changes only the ledger, its
+  table, this file and the evidence README.
+- **Still yours.** OQ10's Q5 (step 1.14h).
+- **Follow-ups.** As in the entry below: CI's production-flags
+  environment, P1.M3c's version 2 and Chart Studio's panel on rc.2.
+
+The record is
+[the evidence README](../evidence/time-atlas-dataset-20261101/README.md#the-owners-acceptance-6-and-7-november).
+
+Engine 1.1.0-rc.2 in production, 2026-11-06 (Asia/Bangkok): five units
+accepted on your ratification; P1.M3c failed.
+
+**Overall delivery: 48%** (48.205% to three decimals): 87.95 of 182.45
+weighted units accepted; blocked 3% (5), or 2.740%. Up 4.0 from B3.c's
+entry below: P2.E.declinations, P2.E.sect, P2.E.composite and
+P2.E.dignities (0.5 each) and P2.B.vargas (2) are accepted, and P1.M3c
+(0.75) moves from not-started to failed, which does not count. Phase 2 E,
+the techniques moved into the package, is complete.
+
+- **Adopted and live.** #884 merged on your delegation as `3fac4230` on 5
+  November at 18:52, after green CI, an independent review in three rounds
+  and the Phase 1 captures; zodiacs.org has served it since 18:58. The site
+  takes the engine's own time basis from `@zodiacs/engine/time` and its
+  declinations, sect, composite and dignities from `@zodiacs/engine/lite`,
+  and serves engine 1.1.0-rc.2's reference with the varga sensitivity and
+  F-89's nine corrections. The hosted MCP server's 19 tools are byte for
+  byte what they were.
+- **Production.** The checks named before any run pass 18 of 19 on the
+  merge's deployment and on the next one; their controls failed on the
+  deployment before the merge. The one failure, D2 on the birth chart
+  calculator's closure, is a configuration gap: the CI build it is compared
+  with has the account saves switch off and stand-in database settings, and
+  with that switch on all 43 files match apart from those settings.
+- **Your answers.** On 6 November you approved, in one question, the
+  measuring rules chosen after the trial runs (OQ5) and the two test gaps
+  (Firefox on this Mac, and D2's), and confirmed it after the D2 cause was
+  corrected. That is what makes the five units accepted.
+- **Still yours.** B3.c's two acts, as in its entry below, and OQ10's Q5
+  (step 1.14h).
+- **Follow-ups.** CI's production-flags environment, which Sitemap Dates
+  shares, does not set `PUBLIC_ACCOUNT_SAVES_ENABLED` as production does.
+  P1.M3c's version 2 and Chart Studio's panel on rc.2 wait for later
+  candidates.
+
+The record is
+[the evidence README](../evidence/site-engine-1-1-0-rc2/README.md#production).
+
+The time atlas dataset in production, 2026-11-04 (Asia/Bangkok): B3.c
+validated, not accepted.
+
+**Overall delivery: 46%** (46.013% to three decimals): 83.95 of 182.45
+weighted units accepted; blocked 3% (5), or 2.740%. Unchanged in what is
+accepted from P4.5's entry below: B3.c moves from not-started to
+validated, which does not count, and its weight of 2 joins the weight
+blocked on the owner, which was 3 (1.644%).
+
+- **B3.c, validated and deployed, waiting for you.** #862 merged on your
+  approval as `2f2a5669`, and zodiacs.org serves it from
+  `dpl_5L1BPzRrw9QY9DmaJUnf7KzzoiVz`, READY in production and built from
+  the merge.
+  - The time atlas 0.1.0 is published as a dataset under CC BY 4.0: the 17
+    files of the engine repository's `atlas/` at `7307665b`, byte for byte,
+    and their index `files.json`, under `/developers/time-atlas/0.1.0/`.
+  - `/developers/time-atlas/` shows the atlas against tzdb 2025c with
+    backzone with no script run: the 23 comparisons, all 287 periods, each
+    of the 108 differences with its one explanation, the 11 explanations
+    and their 37 sources, and all 59 rules with their versions and changes.
+  - The production check passes 24 of 24 there. Run after the merge and
+    before its deployment, the same check passed 0 of 24, and each of its
+    three controls at the deployment fails exactly its check.
+  - Main's Site Check on the merge (run 41769911262) failed in one of its
+    21 jobs, on a test outside this unit that fails the same way before the
+    merge: the daily edition of 4 November rewrote the horoscope window,
+    and `horoscope-period.test.ts`, whose clock is fixed at 2 November, no
+    longer finds a love reading dated 2 November in it. So the production
+    record's fourth condition, a passing Site Check on the merge, is not
+    met.
+
+  The record is
+  [the evidence README](../evidence/time-atlas-dataset-20261101/README.md#production).
+- **What waits for you.** You replied to the merge request: "i have no idea
+  what those things are that are still with me and you can go ahead and
+  merge and continue. Resolve it yourself." The preregistration takes an
+  approval with no other answer as accepting its reading of "released";
+  this reply also hands the questions back, and DECISIONS-2026-10-05 §4
+  keeps the programme from accepting its own reading or departure under a
+  delegation. Two acts stay yours: accepting the reading of "released"
+  (served by zodiacs.org under a path whose files never change, with no
+  tag, GitHub release or DOI), and accepting the first-use drive's unrun
+  Firefox half as a departure, or a run of that half where Playwright's
+  Firefox starts.
+
+The Moon enclosure fix, 2026-11-01 (Asia/Bangkok): P4.5 validated, not
+accepted.
+
+**Overall delivery: 46%** (46.013% to three decimals): 83.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Unchanged from P4.2's
+entry below: P4.5 moves from not-started to validated, which does not count,
+and Phase 4 stays at 5%.
+
+- **P4.5, validated, pending the owner.** The partition evaluation was run
+  again as the programme's fourth preregistered attempt, version 4
+  ([the rule](../../../examples/precision-alpha/PARTITION-EVALUATION-V4.md),
+  [the result](../../../examples/precision-alpha/PARTITION-RESULTS-V4.md)),
+  and passes its own rule on development data. The three before it stay
+  recorded beside it: version 1 is PARTIAL (P-3, P-4); versions 2 and 3, on
+  the unpushed branch `moon-enclosure` (2026-09-30, in the owner's bundle),
+  are FAIL on E-3 with the holdout PARTIAL on P-2, and FAIL on both corpora.
+  Version 4's rule and runs were made without reading them, although this
+  file (checkpoint 8) and the 2026-09-30 handoff named them. It was written
+  as version 2, and renamed on 2026-11-01.
+  - The fix: the geocentric vector is enclosed from merged weights, so the
+    Earth-Moon barycentre's 30 km/s cancels instead of counting twice, and
+    the partition's elongation is enclosed in centred form.
+  - On the regression cases every target holds. The Moon's undecided
+    boundary falls from 5.266 to 0.0114 per cent of its window, and every
+    conjunction case is at least 5.44 times cheaper than the plain search,
+    where version 1 reached only 3.17 on the Moon and 3.95 on Saturn. The
+    plain deflected Moon search, which used up its whole budget of four
+    million evaluations, now finishes in 1.59 million.
+  - A fixture matrix rebuilt from the audit's description (the audit's own
+    is committed on `moon-enclosure`, not on main): no false proof on
+    fixtures whose records join continuously, no lost event, and every
+    planet-like result bit-identical between the versions, by construction.
+    On the ten main cases, deflected rung only, no event is lost and the nine
+    bodies other than the Moon are bit-identical.
+  - Version 1's holdout, and a fresh one picked by hand at 2040-01-01,
+    outside the programme's seeded rule, pass every target they score; the
+    fresh one is reported beside the verdict.
+  - After the verdict, post hoc and unscored: on version 2's 1912 holdout
+    this code's own harness gives PARTIAL, on P-2, at the Moon's record join
+    of 1915-08-11, a 42 s boundary span 4.44 degrees inside the floor, which
+    is how version 2's holdout failed; on version 3's 2103 holdout it gives
+    PASS. The audit's matrix gives 120 results identical to version 1's, the
+    five-rung ladder loses no event, and the domain-agreement tool reports
+    four contradictions (F2, F3, F8, F9).
+- **Owner decisions that acceptance waits for.**
+  - Whether a fourth attempt may count. Version 3's preregistered rule says
+    "No fourth version is started from it", and its status note "Do not
+    start a version 4"; the 2026-09-30 handoff plans a new version only
+    after `moon-enclosure`'s post-review work, which was not done.
+  - Whether a P-2 failure at a record join blocks the gate. Version 4 leaves
+    the cell that starts at a record join inside the floor as boundary; P-2 passes on its own
+    corpora only because those joins lie 0.336 and 0.192 degrees from the
+    floor, and fails on 1912 (F-99).
+  - The scope. Version 4 leaves out the rest of brief v1's M4.1 and M4.2,
+    such as local derivative bounds and `buildPartitionedResult`, which
+    narrows P4.5's source; no recorded decision does that. On
+    `moon-enclosure`'s version 2 the local bounds let the triple root's
+    light-time rungs finish but did not decide it.
+- **Findings.** F-99 to F-103: the record-join refusal and its P-2 spans;
+  review A's A-1, an unsound case inherited from version 1; review B's B-1
+  and B-3 to B-5, inherited; B-2, new with version 4 and fixed; and the
+  domain agreement.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 46% (83.95 of 182.45); blocked 2% (3)`.
+
+The pack compiler, 2026-10-31 (Asia/Bangkok): P4.2 accepted.
+
+**Overall delivery: 46%** (46.013% to three decimals): 83.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Phase 4 is at 5%, its
+first accepted unit.
+
+- **P4.2, accepted.** Compiler 2.0.0 meets version 1's M2.1, under a rule
+  committed before it ran
+  ([the evidence README](../evidence/pack-compiler-20261031/README.md)):
+  - DE440 whole, DE440 from 1790 to 2210 and DE432s each compile to a pack
+    that opens and answers for all ten bodies, with every body proven
+    inside its position budget. 1.1.0 wrote DE440 packs that the runtime
+    refused, and a DE432s pack that extrapolated past the kernel.
+  - Tier B passes 85 of 85 on the 1790 to 2210 pack (2,489,632 bytes)
+    against `de440.bsp`. The payload digests are recorded, and the cropped
+    compile gives the same bytes twice.
+  - The span comes from the kernel, and the fit grows two coefficients at
+    a time until it is proven inside half its budget, or the pack is
+    refused. On DE440s, 1.1.0's own proven bounds had put all eleven bodies
+    over budget.
+  - The runtime now checks the header's format version and convention
+    tokens, and the header names its producer, source kernel, citation and
+    modification as NAIF's rules ask.
+  - One departure from the brief's wording, stated before the runs: every
+    record is shortened to fit the span exactly, rather than the last one
+    clipped, because the runtime's searches assume equal records.
+- **Not distributed.** No kernel or pack is committed while NAIF has not
+  answered the derived-coefficient question.
+
+Public adoption baselines, 2026-10-30 (Asia/Bangkok): P0.7a accepted.
+
+**Overall delivery: 45%** (45.190% to three decimals): 82.45 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Phase 0 is at 90%.
+
+- **P0.7a, accepted.** Every public measure its gate names is recorded with
+  its date and method ([the evidence README](../evidence/public-adoption-baseline-20261030/README.md)):
+  - npm `@zodiacs/engine`: 906 downloads in the last month and 58 in the
+    last week; the other four packages are not published.
+  - PyPI `zodiacs`: 128 downloads in the last month.
+  - GitHub: the engine has 0 stars, 0 forks and 0 dependents; the site has
+    0 stars and 1 fork.
+  - The official MCP Registry, inventoried in full (53,123 servers): no
+    entry from zodiacs.org.
+  - Citing domains: none found in Wikipedia (20 editions and Wikidata),
+    Hacker News, OpenAlex, GitHub or web search.
+- **Still to do in Phase 0.** P0.7b needs your Search Console and Bing
+  access.
+
+R44 in production, 2026-10-27 (Asia/Bangkok): accepted.
+
+**Overall delivery: 45%** (45.053% to three decimals): 82.2 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Standards §4.4 is at
+100%.
+
+- **R44, accepted and deployed.** #840 merged as `d698bc08` on your
+  instruction. zodiacs.org serves it from
+  `dpl_9BVVN29Z2d8zWsiBUthJo1ytcePn`, READY in production and built from the
+  merge.
+  - Receipts list the registry's ids. The documented chart and houses
+    receipts and a synthetic polar chart's list the ids they and their
+    result name, by the engine's rule. The positions, events, time,
+    sky-fact and elections receipts list the ids their own fields name.
+    The hosted MCP server's `check_sky_fact` receipt is the compute API's
+    for the same question.
+  - Every id is registered, and every citation digest is its receipt's.
+  - The conformance page links suite 0.2.0, and all 500 of its vectors list
+    their kind and arbiter ids.
+  - The registry serves 156 ids, each with its address.
+  - The checks pass 11 of 11 (engine), 25 of 25 (ids) and 12 of 12
+    (registry). Each control fails exactly the checks that read what it
+    changes. Before the deployment, the registry check failed 7 of 12.
+  - Main's Site Check passed on the merge, all 21 jobs on the first
+    attempt (run 40523018478).
+
+  The record is
+  [the evidence README](../evidence/convention-ids-20261027/README.md).
+- **Checked again on the next deployment, 28 October.** The daily sky
+  commit `457ad878`, whose parent is the merge, went live at 07:16 as
+  `dpl_ErxbAH1Qp8jfhqWVKY3w6CDKpet1`. The same checks pass there, 11 of 11,
+  25 of 25 and 12 of 12, and each control fails the same checks as before.
+  Everything they record by digest is byte for byte what the merge's
+  deployment served, except the OpenAPI document, which names the day's
+  data.
+- **The AI portals, checked 28 October.** OpenAI's copy, under review with
+  0.5.1, was scanned after the deployment and already has the new
+  definitions, so no rescan was needed. The Claude directory keeps its
+  snapshot of 16 October: Sync from server refreshes only the tool names,
+  which have not changed, and the listing's notes give reviewers the current
+  definitions. Asking the directory team to refresh the snapshot is your
+  call.
+- **Not checked.** Request forms beyond the documented ones and one polar
+  chart. The local MCP adapter's own receipt for place searches states no
+  convention, so it lists no ids.
+
+The conventions registry in production, 2026-10-20 (Asia/Bangkok): R44
+stays partial.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **R44, partial and deployed.** #781 merged as `e024e602`. zodiacs.org
+  served it from `dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg`, READY in production and
+  built from the merge. It serves the same bytes today from
+  `dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97`, built from `81c8a38f`.
+  - Every one of the registry's 154 ids has its address on
+    `/developers/conventions/`, and Chromium opening each address lands on
+    that id's entry.
+  - `registry.json` and the Markdown twin serve the merge's registry.
+  - The developer index, the conformance page, `llms.txt` and the sitemap
+    link to it.
+  - The production check passes 12 of 12. With one id renamed, exactly the
+    five checks that read the ids fail. Before the deployment, all 11 page
+    checks failed.
+  - Main's Site Check passed on the merge (run 39410915393, on the one
+    rerun `AGENTS.md` gives the `/today/` sky ticker's known 0.00087
+    layout shift).
+
+  The record is
+  [the evidence README](../evidence/conventions-registry-20261018/README.md).
+- **What keeps R44 open.** The brief asks every receipt, API field and
+  conformance vector to use the registry's ids (the review of #813).
+  - Calc receipts do, writing ids such as `frame:ecliptic-j2000`.
+  - Natal and compute API receipts and the conformance vectors hold a field
+    and a bare value, such as `conventions.zodiac` "tropical" or `kind`
+    "houses.cusps". The registry maps each to an id, but they are not the
+    ids themselves.
+  - Carrying the ids needs an engine release for natal receipts, a compute
+    receipt change on the site and a conformance suite release, or your
+    revision of the gate.
+- **On the way:**
+  - A review found two endpoint ids that no receipt names. They were dropped,
+    and the tests now check that direction too.
+  - A review found the page missing from the structured-data contract. It
+    is now there.
+  - At phone width the page scrolled sideways. Its definitions now wrap.
+- **House rules.** Main's `AGENTS.md` (#788) asks every agent to open draft
+  pull requests only and leave each merge to the owner. This record is a
+  draft for the owner to merge.
+
+The conventions registry, 2026-10-18 (Asia/Bangkok): R44 stays partial
+until production.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **R44, partial.** The registry gives each id a receipt or conformance
+  vector names its definition, its sources and an address on
+  `/developers/conventions/`. It is also JSON and a Markdown twin, under
+  CC0. It holds 154 ids in 57 namespaces:
+  - every convention id calc receipts write;
+  - every value of the five natal conventions sets, the seven superseded
+    ones with the versions that wrote them;
+  - the natal receipt's houses, flags, reference instant, time records and
+    coverage statements;
+  - the compute API receipt's own fields;
+  - the conformance vectors' kinds and arbiters.
+
+  Tests hold it to the engine's exports and unions, to receipts across the
+  conditions their fields name, and to the suite
+  ([the record](../evidence/conventions-registry-20261018/README.md)).
+- **What keeps R44 open:** the merge, the deployment and the production
+  check.
+
+The hosted MCP tools reviewed in production, 2026-10-18 (Asia/Bangkok): P3.6
+stays partial.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P3.6, partial.** #777 merged as `b8b3b54c`. zodiacs.org serves it from
+  `dpl_GTcEdh5MKK1fBMTCY5AEnnwKqHYz`, built from the merge.
+  - The Inspector's `--strict` check (2.10.1) exits 0 there, with no error and
+    no untyped part; before the deploy it exited 6.
+  - All 13 tools answer within the output schemas they advertise.
+  - None of the MCP conformance suite's 32 server scenarios fails. The
+    review ran from this machine and from the workflow on main (run
+    39079719569) ([the record](../evidence/hosted-mcp-review-20261018/README.md)).
+- **Main's Site Check** passed on #777's merge (run 39079314240).
+- **What keeps P3.6 open.** The registry entry, which needs the owner's
+  approval to publish and a verified `org.zodiacs` namespace.
+
+The hosted MCP tools typed and reviewed, 2026-10-18 (Asia/Bangkok): P3.6
+stays partial.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P3.6, partial.** The Inspector's `--strict` check (2.10.1) found 14
+  untyped parts, 3 errors and 15 nullable-type warnings in the 13 tools
+  production offers. The owner asked for the fix before the 0.5.0
+  resubmission.
+  - The compute API's values now carry the schemas the API documents for
+    them. The capabilities' limits, conventions and coverage have exact
+    types, and the pairs are two-item arrays.
+  - Served locally, the change passes `--strict` with no error and no untyped
+    part. Every tool answers within its advertised output schema.
+  - None of the conformance suite's 32 server scenarios fails
+    ([the record](../evidence/hosted-mcp-review-20261018/README.md)).
+- **What keeps P3.6 open.** The same review of production after the deploy,
+  and the registry entry, which needs the owner's approval to publish.
+
+WebMCP tools on every calculator page in production, 2026-10-17
+(Asia/Bangkok): A2 accepted.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **A2, accepted.** Each of the sixteen calculator pages, and each page that
+  embeds one (the rising signs' profiles, the compatibility pairs and the Life
+  Path pages), registers the calculator's WebMCP tool when the browser or an
+  extension provides `modelContext`, in every locale it is built in: 543
+  pages, each found from every address the host serves as the page. English
+  pages keep `zodiacs.search`. The calculations load only on a call and run
+  in the browser with the page's own code. #772 merged as `069ef13e`, and
+  zodiacs.org serves it from `dpl_64gyTAnwkNLdFsEUnD9s3WoVkmNB`, built from
+  the merge. There the WebMCP drive passes on all 543 pages and seven other
+  addresses of them; before the merge it stopped at once
+  ([the record](../evidence/webmcp-calculators-20261015/README.md)).
+- **Main's Site Check** passed on #772's merge (run 39035340598).
+
+WebMCP tools on every calculator page, 2026-10-17 (Asia/Bangkok): A2 stays
+partial until production.
+
+**Overall delivery: 43%** (43.409% to three decimals): 79.2 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **A2, partial.** Each of the sixteen calculator pages, and each page that
+  embeds one (the rising signs' profiles, the compatibility pairs and the Life
+  Path pages), registers the calculator's WebMCP tool when the browser or an
+  extension provides `modelContext`, in every locale it is built in: 543
+  pages. English pages keep `zodiacs.search`.
+  The calculations load only on a call and run in the browser with the
+  page's own code. Tests run each island's code beside its tool, and the
+  WebMCP drive calls every tool on every page of a local build
+  ([the record](../evidence/webmcp-calculators-20261015/README.md)).
+- **What keeps A2 open:** the merge, the deployment and the production
+  check.
+
+The compute API playground in production, 2026-10-17 (Asia/Bangkok): P3.8
+accepted.
+
+**Overall delivery: 43%** (43.409% to three decimals): 79.2 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P3.8, accepted.** `/developers/playground/` (#767, merged as `6bbda021`)
+  offers the compute API's 14 documented requests and the three refusals a
+  body provokes. Send posts a request to the hosted API, Run in this browser
+  answers it with the API's own calculations, and the page compares the
+  answers path by path and checks each citation against its receipt. Code in
+  five languages and a link reproduce the request, and the Markdown twin and
+  `examples.json` give agents the same. The drive passed 53 of 53 against
+  zodiacs.org on the merge's own deployment,
+  `dpl_Bs8UKEC7igJeo1qBg2cUYVhrBUY7`: every documented request reproduces by
+  an agent's path and a person's, with its controls called out. On
+  `dpl_88MT9GVVRQMFif9ZX1ykvb725283`, the next day's edition, which contains
+  the merge, a production check that records and verifies the deployment it
+  reads passes 9 of 9 (0 of 8 before the merge), and the drive again passes
+  53 of 53 ([the record](../evidence/developer-playground-20261016/README.md)).
+- **Its dependency.** P3.3 stays merged: its own gate (a negative control on
+  the logs, latency and cost) touches nothing the playground's gate needs, as
+  P3.2's sidereal zodiac did not touch P2.D.frames.
+- **Main's Site Check** passed on #767's merge (run 38976740729).
+
+Sitemap dates follow page changes, 2026-10-15 (Asia/Bangkok): S8 stays
+partial, for Bing alone.
+
+**Overall delivery: 43%** (42.587% to three decimals): 77.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **S8, partial.** #745 merged as `8ae5a7af` and production serves it
+  (`dpl_BCPzM8CJW4ZXCostxbedzoqwKppC`). The sitemap dates the three developer
+  pages it re-dated, and IndexNow run 38602573527 submitted exactly those
+  three (HTTP 200).
+- **F-97, fixed.** The Sitemap Dates workflow now fails a pull request whose
+  changed pages keep their sitemap dates. It builds the base and the head under
+  one pinned clock and compares each sitemap page's content. Run on the merges
+  of 2026-10-13 and 2026-10-14, it found seven pages still undated in
+  production, which this change re-dates
+  ([the record](../evidence/indexnow-changes-20261014/README.md)).
+  IndexNow Changes now also resubmits a page dated in the last three days
+  whose content changed again.
+- **What keeps S8 open:** Bing's verification is still the owner's report.
+- **Main's Site Check** passed on #745's merge (run 38601979991).
+
+OpenAPI examples for the static sky files, 2026-10-15 (Asia/Bangkok): P3.4
+stays partial.
+
+**Overall delivery: 43%** (42.587% to three decimals): 77.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P3.4, partial.** Each of the eleven GET operations of
+  `/api/v1/openapi.json` now names an example: the file the site serves at
+  that path, which `scripts/sky-api.test.mjs` validates against the
+  operation's response schema in every build. With the compute endpoints'
+  examples, every body the document describes has one
+  ([the record](../evidence/openapi-get-examples-20261015/README.md)). The
+  TypeScript and Python clients are private preparations; releasing them is
+  the owner's decision.
+- **F-96, fixed** (#748, merged as `75933efb`). Chromium's full-page capture
+  recreates a page's font faces, which load again during the capture, so a
+  capture could paint before they had. The visual harness now loads every face
+  the drawn text needs before each capture, and retakes a capture that misses
+  the unchanged 0.1% limit. With `--update`, it writes a baseline only when
+  two captures in a row agree.
+
+IndexNow for changed URLs in production, 2026-10-14 (Asia/Bangkok): S8 stays
+partial.
+
+**Overall delivery: 43%** (42.587% to three decimals): 77.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **S8, partial.** #744 merged as `f4a6b344`. IndexNow Changes submits every
+  URL the live sitemap adds, re-dates or drops after each production
+  deployment and promotion, and every six hours, since Vercel sends no
+  dispatch for an Instant Rollback. Its first production run submitted 415 of
+  1,838 URLs, the 36 developer pages and the dataset pages among them (HTTP
+  200) ([the record](../evidence/indexnow-changes-20261014/README.md)). Two
+  gaps keep S8 open: a page counts as changed only when its sitemap date
+  changes, and the sitemap keeps evergreen pages' dates by hand, with no check
+  (F-97; three developer pages #740 and #742 changed are re-dated here); and
+  Bing's verification is the owner's report, which the repository cannot
+  observe. Google Search Console verifies zodiacs.org by DNS.
+- **Main's Site Check** passed on the merge (run 38526001370). #744's own first
+  run failed one visual-regression case on a page it does not change, whose
+  display faces had not loaded at capture (F-96, open).
+
+Birth-time tools in production, 2026-10-14 (Asia/Bangkok): the local MCP
+adapter reads a local birth time and searches birthplaces (#742), and the
+compute API's time endpoint and the adapter read the Zodiacs time atlas beside
+tzdb. A1.c and B3.b are accepted.
+
+**Overall delivery: 43%** (42.587% to three decimals): 77.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **A1.c.** #742 merged as `ef463943`: the MCP adapter 0.1.0-rc.24 that
+  zodiacs.org serves has `resolve_birth_time`, which flags a skipped or
+  repeated wall time, a local mean time, an uncertain or disputed zone history
+  and a date written in the Julian calendar with the birth forms' calendar
+  note, and `search_places`, the site's birthplace search. The time endpoint
+  the tool runs answers its documented examples as documented, 11 of 11
+  checks, 0 of 11 before the merge
+  ([the record](../evidence/birth-time-tools-20261012/README.md#production)).
+- **B3.b.** The same endpoint reads Strasbourg in 1916 on the time atlas with
+  its rule, uncertainty flag and citations, Brest in 1880 on its own longitude
+  within a second of the atlas, and refuses an atlas place in another zone,
+  with another longitude or with another country
+  ([the record](../evidence/time-atlas-reading-20261012/README.md#production)).
+- **F-94 (major).** Five Codex rounds on #742 found that the place search, on
+  the site's birth forms too, matched only GeoNames' ASCII names, so
+  "Zürich", "Zurich" and "Düsseldorf" found nothing; it now matches either
+  name, and every place of the index is reached by both. Open: a contains
+  tier across letters, and names the index does not give a place.
+- **F-95.** The daily publication check fails on arm64 when a recomputed fact
+  differs in its last bit, as the 2026-10-14 edition's Pluto longitude does;
+  CI, on x86-64, passes.
+- **Main's Site Check** passed on the merge (run 38508506592).
+
+Developer documentation in production, 2026-10-14 (Asia/Bangkok): the claims
+ledger reads every developer document the site serves (#730), seven guides
+answer the developer queries of the brief (#735), and `check_sky_fact` checks
+aspects (#740). P1.15, S4 and A1.b are accepted.
+
+**Overall delivery: 42%** (41.628% to three decimals): 75.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P1.15.** #730 merged as `7d12c0f1`; zodiacs.org's `llms.txt` and
+  `llms-full.txt` are the merge's, byte for byte, and describe no retired share
+  path as live (7 of 7 checks; 1 of 7 before the merge;
+  [the record](../evidence/p1-15-production-20261013/README.md)). Main's Site
+  Check passed on a re-run after one /thesis/ Lighthouse sample measured CLS
+  0.0000915 (F-93, open).
+- **S4.** #735 merged as `d205a673`: the guides' pages, twins, llms files and
+  sitemap are what two local builds of the merge make, 32 of 32 checks with 52
+  browser navigations, three controls each failing only what they target
+  ([the record](../evidence/developer-query-guides-20261013/README.md)).
+  `/developers/compare/`, which the gate names, points to the four guides that
+  compare the engine with other software since #740.
+- **A1.b.** #740 merged as `848e6087`: the compute API's sky-fact endpoint
+  answers the documented aspect example as documented, the MCP adapter rc.23
+  archive is served with its digest, and the hosted Chart Studio is the
+  merge's with F-91's fix, 6 of 6 checks, 0 of 6 before the merge
+  ([the record](../evidence/sky-fact-aspects-20261012/README.md)). Plugin
+  0.3.11's release note says that the plugin's `check_sky_fact` is the hosted
+  tools' and keeps four kinds.
+- **Main's Site Check.** #731's post-merge run failed the Phase 1 scope guard,
+  because it merged on CI that predated #734 with its allowance pinned to the
+  older base (F-92); main's next push passed it.
+
 Local times on the engine's resolver, 2026-10-12 (Asia/Bangkok): the site
 reads every local birth time with `@zodiacs/engine/geo` from 1.0.0, and its
 own copy of the logic is gone. P1.01b and P1.12b are accepted.

@@ -1,0 +1,246 @@
+/* The assistant cards' one design system (DESIGN.md, "Assistant cards").
+   Light host theme by default; the dark card is the Cosmic Void card. */
+:root {
+  --paper: #f3f4f7; --card: #ffffff; --tile: #f4f5f8; --line: #d8dbe4; --line-soft: #e5e7ee;
+  --ink: #161922; --ink-2: #343a49; --muted: #565e72; --track: #e6e8ee; --notice: #8a4b00; --orb: rgba(255, 255, 255, .16);
+  --serif: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  --sans: 'Instrument Sans', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #0d0f13; --card: #16191f; --tile: #1c2029; --line: #34394a; --line-soft: #272c38;
+  --ink: #eef1f7; --ink-2: #c6ccda; --muted: #a0a8ba; --track: #2a303d; --notice: #f0b866; --orb: rgba(22, 25, 31, .1); color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --paper: #0d0f13; --card: #16191f; --tile: #1c2029; --line: #34394a; --line-soft: #272c38;
+  --ink: #eef1f7; --ink-2: #c6ccda; --muted: #a0a8ba; --track: #2a303d; --notice: #f0b866; --orb: rgba(22, 25, 31, .1); color-scheme: dark;
+}
+/* A card's hue arrives as --hue/--hue-2 (pastels) and --hue-deep/--hue-2-deep (text tones for the light card). */
+.card, .shell { --accent: var(--hue-deep, var(--ink-2)); --accent-2: var(--hue-2-deep, var(--accent)); --ring-a: var(--hue, #c6ccda); --ring-b: var(--hue-2, var(--ring-a)); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) :is(.card, .shell) { --accent: var(--hue, var(--ink-2)); --accent-2: var(--hue-2, var(--accent)); } }
+:root[data-theme="dark"] :is(.card, .shell) { --accent: var(--hue, var(--ink-2)); --accent-2: var(--hue-2, var(--accent)); }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+main { max-width: 760px; margin: 0 auto; padding: 16px 16px 18px; display: grid; gap: 12px; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:is(a, button, summary):focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+p { margin: 0; }
+
+/* The card */
+.card { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px; display: grid; gap: 20px; min-width: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.card > * { min-width: 0; }
+/* The nameplate: the brand lockup (DESIGN.md, "The brand lockup"), at the
+   nav's 13px. The tilted mark is still; nothing on the card moves on its own. */
+.nameplate { display: inline-flex; align-items: center; gap: 10px; width: fit-content; color: var(--ink); text-decoration: none; white-space: nowrap; direction: ltr; }
+.nameplate svg { flex: none; overflow: visible; }
+.nameplate-name { font: 400 13px/1 var(--serif); letter-spacing: .2em; text-transform: uppercase; }
+.nameplate-sep { margin: 0 .2em; color: var(--muted); }
+.nameplate-tld { font-weight: 500; color: var(--ink-2); }
+
+.card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-top: -2px; }
+.card-head-text { display: grid; gap: 6px; min-width: 0; }
+.kicker { font: italic 400 19px/1.25 var(--serif); color: var(--accent); }
+.card h1 { margin: 0; font: 500 40px/1.06 var(--serif); letter-spacing: -.012em; text-wrap: balance; overflow-wrap: anywhere; }
+.card h1.title-long { font-size: 34px; }
+.card h1.title-longer { font-size: 29px; }
+.meta { margin-top: 2px; color: var(--muted); font-size: 15px; line-height: 1.45; }
+.meta strong { color: var(--ink); font-weight: 600; }
+.meta + .meta { margin-top: 0; }
+
+/* The keepsake head: the art large across the top, the sign discs on its
+   lower edge, the words centred under them. */
+.keepsake { display: grid; justify-items: center; text-align: center; margin-top: -4px; }
+.keepsake > .art { width: 100%; max-width: 540px; }
+.keepsake-discs { position: relative; display: flex; justify-content: center; gap: 10px; }
+.keepsake.has-art .keepsake-discs { margin-top: -30px; }
+.keepsake-text { display: grid; gap: 6px; justify-items: center; margin-top: 14px; min-width: 0; max-width: 34em; }
+.keepsake.has-art:not(.has-discs) .keepsake-text { margin-top: 6px; }
+.keepsake .meta { max-width: 44ch; }
+
+/* The hero row: the figure beside the verdict, one line centred under them. */
+.hero { display: grid; justify-items: center; gap: 10px; text-align: center; }
+.hero-row { display: flex; align-items: center; justify-content: center; gap: 18px; min-width: 0; }
+.hero-figure { flex: none; }
+.hero-row .verdict { text-align: left; max-width: 16em; }
+.hero-words-only .hero-row .verdict { text-align: center; }
+
+/* The hero art: the site's sign panels and the cards' own pieces, each in two
+   twins (dark for the dark host theme, a daylight twin for the light one).
+   No frame, plate or border: the picture fades into the card on every side
+   through two crossed linear masks, so no edge shows in either theme. No
+   text is ever set over it. */
+.card-head.has-art { display: grid; grid-template-columns: minmax(0, 1fr) 272px; align-items: center; gap: 22px; }
+.card-head.has-art:has(.art-2) { grid-template-columns: minmax(0, 1fr) 300px; }
+.art { display: grid; gap: 6px; }
+.art-2 { grid-template-columns: 1fr 1fr; gap: 0; }
+/* Eased ramps on all four sides, crossed: --fade-l/-r are shares of the width, --fade-t/-b of the height. */
+.art-frame { --fade-l: 24%; --fade-r: 24%; --fade-t: 28%; --fade-b: 28%; position: relative; margin: 0; overflow: hidden; aspect-ratio: 3 / 2;
+  --art-mask: linear-gradient(90deg, transparent, rgba(0, 0, 0, .1) calc(var(--fade-l) * .25), rgba(0, 0, 0, .38) calc(var(--fade-l) * .5), rgba(0, 0, 0, .78) calc(var(--fade-l) * .75), #000 var(--fade-l), #000 calc(100% - var(--fade-r)), rgba(0, 0, 0, .78) calc(100% - var(--fade-r) * .75), rgba(0, 0, 0, .38) calc(100% - var(--fade-r) * .5), rgba(0, 0, 0, .1) calc(100% - var(--fade-r) * .25), transparent),
+    linear-gradient(180deg, transparent, rgba(0, 0, 0, .1) calc(var(--fade-t) * .25), rgba(0, 0, 0, .38) calc(var(--fade-t) * .5), rgba(0, 0, 0, .78) calc(var(--fade-t) * .75), #000 var(--fade-t), #000 calc(100% - var(--fade-b)), rgba(0, 0, 0, .78) calc(100% - var(--fade-b) * .75), rgba(0, 0, 0, .38) calc(100% - var(--fade-b) * .5), rgba(0, 0, 0, .1) calc(100% - var(--fade-b) * .25), transparent);
+  -webkit-mask-image: var(--art-mask);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--art-mask);
+  mask-composite: intersect; }
+/* A pair faces each other across a narrow soft seam; the outer sides fade wider. */
+.art-2 .art-frame { aspect-ratio: 4 / 5; --fade-l: 26%; --fade-r: 9%; --fade-t: 22%; --fade-b: 22%; }
+.art-2 .art-frame + .art-frame { --fade-l: 9%; --fade-r: 26%; }
+/* In the keepsake head the art is the picture of the card: wider, with a long fade at the foot for the discs to sit on. */
+.keepsake .art-1 .art-frame { --fade-l: 16%; --fade-r: 16%; --fade-t: 16%; --fade-b: 34%; }
+.keepsake .art-2 .art-frame { aspect-ratio: 5 / 6; --fade-t: 16%; --fade-b: 34%; }
+.art-frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, 50% 50%); }
+.art-flip img { transform: scaleX(-1); }
+/* Which twin shows: the daylight twin in the light theme, the dark one in the
+   dark theme, by the same rules as the colour tokens above. A piece with no
+   light twin keeps its dark picture in both. */
+.art-twins .art-dark { display: none; }
+.art-twins .art-light { display: block; filter: saturate(.94); }
+.art-dark { filter: saturate(.92) brightness(.86); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .art-twins .art-dark { display: block; } :root:not([data-theme="light"]) .art-twins .art-light { display: none; } }
+:root[data-theme="dark"] .art-twins .art-dark { display: block; }
+:root[data-theme="dark"] .art-twins .art-light { display: none; }
+.verdict { font: italic 400 25px/1.2 var(--serif); text-wrap: balance; }
+.summary { color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 46ch; text-wrap: pretty; }
+/* "You share a birthday with …" under a birthday's verdict, as the date's page says it. */
+.famous { margin: 0 auto; color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 46ch; text-align: center; text-wrap: pretty; }
+.famous a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+.famous a:hover { text-decoration-thickness: 2px; }
+
+.ring { --size: 104px; --stroke: 8px; position: relative; width: var(--size); height: var(--size); display: grid; place-content: center; justify-items: center; text-align: center; }
+.ring::before { content: ''; position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(var(--ring-a) 0deg, var(--ring-b) calc(var(--score, 0) * 3.6deg), var(--track) 0deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--stroke)), #000 calc(100% - var(--stroke) + .5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--stroke)), #000 calc(100% - var(--stroke) + .5px)); }
+.ring-plain::before { --stroke: 2px; background: var(--ring-a); }
+.ring-number { position: relative; font: 500 38px/1 var(--serif); letter-spacing: -.02em; font-variant-numeric: lining-nums; }
+.ring-out { position: relative; margin-top: 4px; font-size: 11.5px; line-height: 1.2; color: var(--muted); }
+
+.disc { display: block; flex: none; border-radius: 50%; object-fit: cover; }
+.disc-hero { width: 126px; height: 126px; }
+.disc-head { width: 76px; height: 76px; }
+.disc-mark { width: 52px; height: 52px; }
+.disc-chip { width: 42px; height: 42px; }
+.disc-row { width: 22px; height: 22px; }
+.disc-empty { border: 1px dashed var(--line); }
+
+/* Sign chips and number tiles */
+.chips { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; }
+.chips-one { grid-template-columns: minmax(0, 1fr); }
+.chips li { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.chip-words { display: grid; gap: 1px; min-width: 0; }
+.chip-words strong { font-size: 15.5px; font-weight: 600; line-height: 1.3; }
+.chip-words span { color: var(--muted); font-size: 14px; line-height: 1.35; }
+
+.tiles { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.tiles div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 2px; padding: 12px 14px 13px; border-radius: 12px; background: var(--tile); }
+.tiles dt { color: var(--muted); font-size: 13.5px; line-height: 1.3; }
+.tiles dd { margin: 0; font: 500 32px/1.05 var(--serif); font-variant-numeric: lining-nums tabular-nums; }
+
+/* Words */
+.insight { font: 400 20px/1.5 var(--serif); color: var(--ink); max-width: 62ch; }
+.insight-close { font-style: italic; }
+.card-section { display: grid; gap: 10px; }
+.card-section h2 { margin: 0; font: 500 21px/1.2 var(--serif); }
+.quiet { color: var(--muted); font-size: 14px; line-height: 1.5; }
+.data { font-family: var(--mono); font-size: .88em; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+
+.reasons { margin: 0; padding: 14px 0; list-style: none; display: grid; gap: 10px; border-block: 1px solid var(--line-soft); }
+.reasons li { position: relative; padding-left: 20px; line-height: 1.5; }
+.reasons li::before { content: ''; position: absolute; left: 2px; top: .62em; width: 7px; height: 7px; border-radius: 50%; background: var(--ring-a); }
+.reason-head { display: block; font-weight: 600; }
+.reason-head .data { margin-left: 2px; font-weight: 400; color: var(--muted); }
+
+.facts { margin: 0; display: grid; }
+.facts div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px 16px; padding: 9px 0; }
+.facts div + div { border-top: 1px solid var(--line-soft); }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.facts-stacked div { display: grid; gap: 2px; }
+.facts-stacked dd { text-align: left; }
+.facts .sign-value { display: inline-flex; align-items: center; gap: 8px; }
+
+.more summary { cursor: pointer; width: fit-content; color: var(--ink); font-size: 14.5px; font-weight: 500; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; list-style: none; }
+.more summary::-webkit-details-marker { display: none; }
+.more summary::after { content: ''; display: inline-block; width: 6px; height: 6px; margin: 0 0 3px 9px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); transition: transform .2s ease; }
+.more[open] summary::after { transform: translateY(3px) rotate(225deg); }
+.more[open] > :not(summary) { margin-top: 12px; }
+
+/* The fold: everything past the first screen, between hairlines. */
+.fold { border-block: 1px solid var(--line-soft); }
+.fold > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; cursor: pointer; list-style: none; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold-words { display: grid; gap: 2px; min-width: 0; }
+.fold-label { font-size: 15.5px; font-weight: 600; line-height: 1.3; }
+.fold-hint { color: var(--muted); font-size: 13.5px; line-height: 1.4; }
+.fold-sign { position: relative; flex: none; width: 14px; height: 14px; color: var(--ink); }
+.fold-sign::before, .fold-sign::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; margin-top: -.75px; border-radius: 1px; background: currentColor; transition: transform .2s ease; }
+.fold-sign::after { transform: rotate(90deg); }
+.fold[open] .fold-sign::after { transform: rotate(0deg); }
+.fold-body { display: grid; gap: 20px; padding: 4px 0 20px; min-width: 0; }
+.fold-body > * { min-width: 0; }
+
+/* Actions and the fine print: one pill and one link, never more. */
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
+.actions a.primary { display: inline-flex; align-items: center; gap: 12px; min-height: 46px; padding: 6px 6px 6px 20px; border-radius: 999px; background: var(--ink); color: var(--card); font: 600 15.5px/1.2 var(--sans); text-decoration: none; }
+.actions .orb { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--orb); }
+.actions a.secondary { display: inline-flex; align-items: center; gap: 7px; padding: 4px 0; color: var(--ink); font: 500 15px/1.4 var(--sans); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: var(--accent); text-underline-offset: 5px; }
+.actions a.secondary:hover, .copy:hover, .links a:hover { text-decoration-thickness: 2px; }
+.arrow { display: block; flex: none; }
+.links { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.links a, .copy { padding: 4px 0; border: 0; background: none; color: var(--ink); font: 500 15px/1.4 var(--sans); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: var(--accent); text-underline-offset: 5px; }
+.copy-block { display: grid; gap: 4px; justify-items: start; }
+.status { min-height: 0; color: var(--muted); font-size: 13.5px; }
+.fine { color: var(--muted); font-size: 13px; line-height: 1.5; max-width: 66ch; }
+.notice { color: var(--notice); }
+code { font: 400 13px/1.5 var(--mono); overflow-wrap: anywhere; }
+
+.panel-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 14px; padding: 0 4px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+.panel-foot a { color: var(--muted); text-underline-offset: 3px; }
+
+/* A panel shell for the states before a card (waiting, a refusal, the sign picker) */
+.shell { display: grid; gap: 16px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); }
+.shell > .art { max-width: 320px; }
+
+@media (max-width: 530px) {
+  main { padding: 10px 10px 14px; gap: 10px; }
+  .card { padding: 20px 18px; gap: 18px; border-radius: 16px; }
+  .card h1 { font-size: 33px; }
+  .card h1.title-long { font-size: 29px; }
+  .card h1.title-longer { font-size: 25px; }
+  .kicker { font-size: 18px; }
+  .ring { --size: 92px; --stroke: 7px; }
+  .ring-number { font-size: 33px; }
+  .ring-out { font-size: 11px; }
+  .disc-hero { width: 102px; height: 102px; }
+  .disc-mark { width: 46px; height: 46px; }
+  .card-head.has-art, .card-head.has-art:has(.art-2) { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .card-head.has-art .art { order: -1; }
+  /* On a phone the keepsake art runs to the card's edges. */
+  .keepsake > .art { width: calc(100% + 36px); max-width: none; margin-inline: -18px; }
+  .keepsake .art-1 .art-frame { aspect-ratio: 4 / 3; --fade-l: 8%; --fade-r: 8%; --fade-t: 14%; --fade-b: 34%; }
+  .keepsake .art-2 .art-frame { aspect-ratio: 4 / 5; }
+  .keepsake.has-art .keepsake-discs { margin-top: -26px; }
+  .art-1 .art-frame { aspect-ratio: 16 / 9; --fade-l: 18%; --fade-r: 18%; --fade-t: 26%; --fade-b: 26%; }
+  .art-2 .art-frame { aspect-ratio: 1 / 1; }
+  .disc-head { width: 60px; height: 60px; }
+  .verdict { font-size: 21px; }
+  .hero-row { gap: 14px; }
+  .summary, .famous { font-size: 14px; }
+  .chips { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .tiles { gap: 6px; }
+  .tiles div { padding: 10px 10px 11px; border-radius: 10px; }
+  .tiles dt { font-size: 12.5px; }
+  .tiles dd { font-size: 27px; }
+  .insight { font-size: 18.5px; }
+  .facts dd { text-align: left; }
+  .shell { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media print {
+  html, body { background: #fff; }
+  .actions, .copy-block, .panel-foot { display: none; }
+}

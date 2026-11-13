@@ -1,0 +1,92 @@
+{
+ "tool": "provenance.mjs (label ladder)",
+ "readOnly": "git ls-tree and git rev-parse on the object database only",
+ "commits": {
+  "original": "23dd8cb7567995d645871e0b481f79589de690a1",
+  "main": "931e3281",
+  "head860": "ad34668044b8c750f7b3d61e38d667be727103a0",
+  "bundle": "dfa19aa9077c14c0add9b018cfc80b860d11954a",
+  "mainFull": "931e32818e3ef0b510562c8a7c41bb36fa4646ee"
+ },
+ "results": [
+  {
+   "label": "v1 src against the original runtime 23dd8cb7",
+   "exportDir": "<v1-export>/examples/precision-alpha/src",
+   "commit": "23dd8cb7567995d645871e0b481f79589de690a1",
+   "prefix": "examples/precision-alpha/src",
+   "files": 27,
+   "missing": [],
+   "extra": [],
+   "differing": [],
+   "identical": true
+  },
+  {
+   "label": "v1 src against main 931e3281",
+   "exportDir": "<v1-export>/examples/precision-alpha/src",
+   "commit": "931e32818e3ef0b510562c8a7c41bb36fa4646ee",
+   "prefix": "examples/precision-alpha/src",
+   "files": 27,
+   "missing": [],
+   "extra": [],
+   "differing": [],
+   "identical": true
+  },
+  {
+   "label": "#860 head src against ad346680",
+   "exportDir": "<860-export>/examples/precision-alpha/src",
+   "commit": "ad34668044b8c750f7b3d61e38d667be727103a0",
+   "prefix": "examples/precision-alpha/src",
+   "files": 27,
+   "missing": [],
+   "extra": [],
+   "differing": [],
+   "identical": true
+  },
+  {
+   "label": "v1 deflected reference against 23dd8cb7",
+   "file": "<v1-export>/examples/precision-alpha/test/tier-b/_deflected-reference.mjs",
+   "commit": "23dd8cb7567995d645871e0b481f79589de690a1",
+   "path": "examples/precision-alpha/test/tier-b/_deflected-reference.mjs",
+   "expected": "cdcd05ae70e3637dfc2c90ed75c78939cf0f91df",
+   "actual": "cdcd05ae70e3637dfc2c90ed75c78939cf0f91df",
+   "identical": true
+  },
+  {
+   "label": "#860 head deflected reference against ad346680",
+   "file": "<860-export>/examples/precision-alpha/test/tier-b/_deflected-reference.mjs",
+   "commit": "ad34668044b8c750f7b3d61e38d667be727103a0",
+   "path": "examples/precision-alpha/test/tier-b/_deflected-reference.mjs",
+   "expected": "cdcd05ae70e3637dfc2c90ed75c78939cf0f91df",
+   "actual": "cdcd05ae70e3637dfc2c90ed75c78939cf0f91df",
+   "identical": true
+  },
+  {
+   "label": "bundle harness partition-evaluation-v2.mjs against dfa19aa9",
+   "file": "<moon-enclosure-export>/examples/precision-alpha/tools/measure/partition-evaluation-v2.mjs",
+   "commit": "dfa19aa9077c14c0add9b018cfc80b860d11954a",
+   "path": "examples/precision-alpha/tools/measure/partition-evaluation-v2.mjs",
+   "expected": "bfc5871153a36f4068a5bfd5f4e295c90dde0ccb",
+   "actual": "bfc5871153a36f4068a5bfd5f4e295c90dde0ccb",
+   "identical": true
+  },
+  {
+   "label": "bundle rule PARTITION-EVALUATION-V2.md against dfa19aa9",
+   "file": "<moon-enclosure-export>/examples/precision-alpha/PARTITION-EVALUATION-V2.md",
+   "commit": "dfa19aa9077c14c0add9b018cfc80b860d11954a",
+   "path": "examples/precision-alpha/PARTITION-EVALUATION-V2.md",
+   "expected": "b9461fd5291060ebb5dab795158398931ae615dc",
+   "actual": "b9461fd5291060ebb5dab795158398931ae615dc",
+   "identical": true
+  },
+  {
+   "label": "#860 V-4 harness corpus-versions.mjs against ad346680",
+   "file": "<860-export>/examples/precision-alpha/tools/measure/corpus-versions.mjs",
+   "commit": "ad34668044b8c750f7b3d61e38d667be727103a0",
+   "path": "examples/precision-alpha/tools/measure/corpus-versions.mjs",
+   "expected": "8e79068d5f51fe44ab045eee48cd3a2bdcd18ac1",
+   "actual": "8e79068d5f51fe44ab045eee48cd3a2bdcd18ac1",
+   "identical": true
+  }
+ ],
+ "allIdentical": true
+}

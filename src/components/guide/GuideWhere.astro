@@ -1,0 +1,169 @@
+---
+/**
+ * "Where does the sign sit in your chart?": the zodiac wheel drawn on the
+ * server with the guide's slice lit where it falls (Aries at the top, the
+ * signs counter-clockwise in zodiac order, as the site's other wheels run),
+ * the birth chart invitation, and the ten planets that can occupy the sign.
+ * The discs are lazy images over the SVG, so nothing here loads before the
+ * reader scrolls to it.
+ */
+import SignIcon from '../SignIcon.astro';
+import { PLANET_GLYPH } from '../../lib/glyphs/paths';
+import { SIGNS, signBySlug } from '../../lib/signs';
+
+interface Props {
+  sign: string;
+}
+const { sign: slug } = Astro.props;
+const sign = signBySlug(slug);
+const index = SIGNS.findIndex((s) => s.slug === slug);
+
+const R_OUT = 300;
+const R_BAND = 248;
+const R_MID = 150;
+const R_CORE = 40;
+const R_ICON = 274;
+const rad = (deg: number) => (deg * Math.PI) / 180;
+const pt = (r: number, deg: number) => [r * Math.cos(rad(deg)), r * Math.sin(rad(deg))] as const;
+const f = (n: number) => n.toFixed(2);
+// Sign i spans the screen angles from -75 - 30i (its start, 0° of the sign)
+// to -105 - 30i: Aries is centred at the top and the zodiac runs left.
+const startAngle = (i: number) => -75 - 30 * i;
+const endAngle = (i: number) => -105 - 30 * i;
+const midAngle = (i: number) => -90 - 30 * i;
+
+function bandPath(i: number, r1: number, r2: number): string {
+  const [x1, y1] = pt(r2, startAngle(i));
+  const [x2, y2] = pt(r2, endAngle(i));
+  const [x3, y3] = pt(r1, endAngle(i));
+  const [x4, y4] = pt(r1, startAngle(i));
+  return `M${f(x1)},${f(y1)} A${r2},${r2} 0 0 0 ${f(x2)},${f(y2)} L${f(x3)},${f(y3)} A${r1},${r1} 0 0 1 ${f(x4)},${f(y4)} Z`;
+}
+const slices = SIGNS.map((s, i) => ({ sign: s, path: bandPath(i, R_BAND, R_OUT), lit: i === index }));
+const spokes = SIGNS.map((_, i) => {
+  const [x1, y1] = pt(R_CORE, startAngle(i));
+  const [x2, y2] = pt(R_BAND, startAngle(i));
+  return { x1: f(x1), y1: f(y1), x2: f(x2), y2: f(y2) };
+});
+// A tick at every decan (10°), longer at each sign's start.
+const ticks = Array.from({ length: 36 }, (_, k) => {
+  const deg = -75 - 10 * k;
+  const long = k % 3 === 0;
+  const [x1, y1] = pt(R_BAND, deg);
+  const [x2, y2] = pt(R_BAND - (long ? 7 : 4), deg);
+  return { x1: f(x1), y1: f(y1), x2: f(x2), y2: f(y2) };
+});
+const wedge = bandPath(index, R_CORE, R_BAND);
+const [ex1, ey1] = pt(R_CORE, startAngle(index));
+const [ex2, ey2] = pt(R_OUT + 4, startAngle(index));
+const [fx1, fy1] = pt(R_CORE, endAngle(index));
+const [fx2, fy2] = pt(R_BAND, endAngle(index));
+const discs = SIGNS.map((s, i) => {
+  const [x, y] = pt(R_ICON, midAngle(i));
+  return { sign: s, left: ((x + 320) / 640) * 100, top: ((y + 320) / 640) * 100 };
+});
+const from = index * 30;
+const gradientId = `guide-wheel-${slug}`;
+
+const PLANETS = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
+---
+<div class="guide-where" style={`--sign:${sign.hue}`}>
+  <figure class="guide-where__figure">
+    <div class="guide-where__wheel">
+      <svg viewBox="-320 -320 640 640" role="img" aria-label={`The zodiac wheel with the ${sign.name} slice lit, from ${from}° to ${from + 30}° of the zodiac`}>
+        <defs>
+          <radialGradient id={gradientId} cx="0" cy="0" r={R_BAND} gradientUnits="userSpaceOnUse">
+            <stop offset="0.15" stop-color={sign.hue} stop-opacity="0" />
+            <stop offset="1" stop-color={sign.hue} stop-opacity="0.22" />
+          </radialGradient>
+        </defs>
+        <circle r={R_OUT} fill="#0c0e15" stroke="rgba(198,204,218,0.22)" />
+        {slices.map(({ sign: s, path, lit }) => (
+          <path d={path} fill={s.hue} fill-opacity={lit ? 0.34 : 0.05} stroke="rgba(198,204,218,0.16)" />
+        ))}
+        {spokes.map((l) => <line {...l} stroke="rgba(198,204,218,0.08)" />)}
+        {ticks.map((l) => <line {...l} stroke="rgba(198,204,218,0.18)" />)}
+        <circle r={R_BAND} fill="none" stroke="rgba(198,204,218,0.22)" />
+        <circle r={R_MID} fill="none" stroke="rgba(198,204,218,0.12)" />
+        <path d={wedge} fill={`url(#${gradientId})`} />
+        <line x1={f(ex1)} y1={f(ey1)} x2={f(ex2)} y2={f(ey2)} stroke={sign.hue} stroke-opacity="0.75" stroke-width="1.3" />
+        <line x1={f(fx1)} y1={f(fy1)} x2={f(fx2)} y2={f(fy2)} stroke={sign.hue} stroke-opacity="0.35" />
+        <circle r={R_CORE} fill="#0F121A" stroke="rgba(198,204,218,0.16)" />
+      </svg>
+      {discs.map(({ sign: s, left, top }) => (
+        <span class="guide-where__disc" style={`left:${left.toFixed(3)}%;top:${top.toFixed(3)}%`}>
+          <SignIcon sign={s.slug} size={24} webpOnly />
+        </span>
+      ))}
+      <span class="guide-where__core"><SignIcon sign={sign.slug} size={52} webpOnly /></span>
+    </div>
+    <figcaption>The lit slice is {sign.name}: {from}° to {from + 30}° of the zodiac, counted from the March equinox.</figcaption>
+  </figure>
+  <div class="guide-where__copy">
+    <span class="kicker">Free, about twenty seconds</span>
+    <h2 class="h-2">Where does {sign.name} sit in your chart?</h2>
+    <p class="guide-where__lede">
+      {sign.name} is the same slice of sky in every chart. What changes is the
+      house it falls in and the planets inside it. Your birth chart shows both,
+      along with your Sun, Moon, and rising.
+    </p>
+    <div class="btn-row">
+      <a class="btn btn--primary btn--lg" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb" aria-hidden="true">↗</span></a>
+      <a class="textlink" href="/rising-sign/">Find your rising sign <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+    <p class="reassure">Birth date, time, and place. The chart is computed on your device.</p>
+  </div>
+</div>
+
+<div class="guide-planets">
+  <span class="guide-planets__label">Planets in {sign.name}, each reads differently:</span>
+  {PLANETS.map((planet) => (
+    <a class="pill" href={`/learn/placements/${planet.toLowerCase()}-in-${sign.slug}/`}>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={PLANET_GLYPH[planet]} />
+      {planet}
+    </a>
+  ))}
+</div>
+
+<style>
+  .guide-where {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 44px;
+    align-items: center;
+    margin-top: 20px;
+    padding: 36px 40px 36px 36px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: var(--void-1);
+    overflow: hidden;
+  }
+  .guide-where__figure { margin: 0; }
+  .guide-where__wheel { position: relative; width: 100%; max-width: 420px; margin-inline: auto; aspect-ratio: 1; }
+  .guide-where__wheel svg { display: block; width: 100%; height: 100%; }
+  .guide-where__disc, .guide-where__core { position: absolute; transform: translate(-50%, -50%); line-height: 0; }
+  .guide-where__disc { width: 4.7%; }
+  .guide-where__core { left: 50%; top: 50%; width: 8.2%; }
+  .guide-where__disc :global(.sign-icon), .guide-where__core :global(.sign-icon) { width: 100%; }
+  .guide-where figcaption { margin-top: 10px; text-align: center; font-family: var(--font-sans); font-size: 12.5px; letter-spacing: 0; line-height: 1.5; color: var(--faint); }
+  .guide-where .kicker { margin: 0; }
+  .guide-where .h-2 { margin: 4px 0 0; font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.6rem); font-weight: 500; line-height: 1.05; letter-spacing: -0.005em; color: var(--ink-0); }
+  .guide-where .guide-where__lede { margin: 14px 0 0; max-width: 46ch; font-size: 1.0625rem; line-height: 1.55; color: var(--text-2); }
+  .guide-where .btn-row { margin-top: 26px; }
+  .guide-where .textlink { text-decoration: none; }
+  .guide-where .reassure { margin-top: 14px; }
+  .guide-planets { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 28px; }
+  .guide-planets__label { margin-right: 8px; font-size: 0.9375rem; color: var(--muted); }
+  .guide-planets .pill { min-height: 34px; padding: 0 13px 0 10px; font-size: 0.84rem; gap: 7px; text-decoration: none; color: var(--ink-1); }
+  .guide-planets .pill svg { color: var(--hue); }
+  @media (max-width: 960px) {
+    .guide-where { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .guide-where { padding: 26px 20px; gap: 22px; border-radius: 24px; }
+    .guide-where .btn-row { flex-direction: column; align-items: stretch; }
+    .guide-where .btn { width: 100%; }
+    .guide-where .btn-row .textlink { align-self: flex-start; }
+    .guide-planets__label { width: 100%; }
+  }
+</style>

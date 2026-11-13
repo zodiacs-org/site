@@ -1,0 +1,78 @@
+/* Your 2027 sky (src/pages/your-2027-sky/, src/islands/YearSky.tsx). Cosmic
+   Void: void surfaces, EB Garamond headings, Instrument Sans body, JetBrains
+   Mono only for dates; the planet glyphs are the only chroma. */
+.ys-page { max-width: 850px; }
+.ys-anchor { scroll-margin-top: 90px; }
+
+/* The chooser keeps one height from the server render through hydration and
+   the profile read, so nothing below it moves on load. Every state it can
+   show before the reader acts fits inside this room. */
+.ys-chooser {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 18px;
+  min-height: 372px;
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid var(--hair-1);
+  border-radius: var(--r-md);
+  background: var(--void-1);
+}
+@media (min-width: 380px) { .ys-chooser { min-height: 350px; } }
+@media (min-width: 640px) { .ys-chooser { min-height: 300px; } }
+.ys-chooser:focus-within { border-color: var(--hair-3); }
+.ys-chooser__title { margin: 0; font-family: var(--font-serif); font-weight: 400; font-size: clamp(26px, 4vw, 32px); }
+.ys-chooser__lede { margin: 0; color: var(--text-2); max-width: 62ch; }
+.ys-chooser__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.ys-chooser__select { flex: 1 1 220px; min-width: 0; max-width: 360px; }
+.ys-chooser__switch { padding: 0; border: 0; background: none; color: var(--text); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.ys-chooser__lede a { color: var(--text); }
+.ys-chooser .field { margin: 0; }
+.ys-chooser select { width: 100%; }
+.ys-chooser .sharing-note { margin: 0; }
+/* The privacy note sits at the foot of the reserved room, so it never moves
+   while the chooser fills in above it. */
+.ys-chooser .ys-chooser__privacy { margin-top: auto; }
+.ys-chooser .btn { align-self: flex-start; }
+.ys-chooser__actions .btn { align-self: auto; }
+
+.ys-result { margin-top: 40px; scroll-margin-top: 90px; outline: none; }
+.ys-result__title { margin: 0 0 12px; }
+.ys-result__lede { color: var(--text-2); max-width: 65ch; }
+
+.ys-brief { margin-block: 28px; padding: clamp(18px, 3vw, 26px); border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
+.ys-brief h3 { margin: 0 0 14px; font-family: var(--font-serif); font-weight: 400; font-size: 24px; }
+.ys-brief ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.ys-brief li { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; row-gap: 2px; align-items: baseline; }
+.ys-brief__when { grid-column: 2; font-size: 13px; color: var(--muted); }
+
+.ys-quarter { margin-block: 32px; }
+.ys-quarter h3 { margin: 0 0 6px; font-family: var(--font-serif); font-weight: 400; font-size: 26px; }
+.ys-quarter__lede { color: var(--text-2); margin: 0 0 8px; max-width: 65ch; }
+
+.ys-moments, .ys-background { list-style: none; margin: 0; padding: 0; }
+.ys-moment { padding-block: 18px; border-bottom: 1px solid var(--hair-1); display: grid; gap: 6px; }
+.ys-moment p { margin: 0; max-width: 65ch; }
+.ys-moment__when { font-family: var(--font-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ys-moment__title { margin: 0; font-family: var(--font-serif); font-weight: 400; font-size: 21px; line-height: 1.3; display: flex; align-items: center; gap: 10px; }
+.ys-moment__line { color: var(--text); }
+.ys-moment__detail { color: var(--text-2); font-size: 15px; }
+.ys-moment__confidence { color: var(--muted); font-size: 13px; }
+.ys-glyph { flex: 0 0 auto; color: var(--text-2); vertical-align: -3px; }
+.ys-background li { padding-block: 10px; border-bottom: 1px solid var(--hair-1); color: var(--text-2); }
+
+.ys-share, .ys-calendar { margin-block: 36px; padding: clamp(20px, 4vw, 32px); border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
+.ys-share h3, .ys-calendar h3 { margin: 0 0 10px; font-family: var(--font-serif); font-weight: 400; font-size: 26px; }
+.ys-share p, .ys-calendar p { color: var(--text-2); max-width: 65ch; }
+/* The previews hold their room before the cards are painted. */
+.ys-share__previews { display: flex; gap: 16px; align-items: flex-start; margin-top: 18px; }
+.ys-share__frame { margin: 0; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-0); overflow: hidden; }
+.ys-share__frame--square { width: min(56%, 260px); aspect-ratio: 1 / 1; }
+.ys-share__frame--story { width: min(32%, 146px); aspect-ratio: 9 / 16; }
+.ys-share__frame img { display: block; width: 100%; height: 100%; }
+.ys-status:empty { display: none; }
+
+.ys-shared { margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--hair-1); scroll-margin-top: 90px; }
+.ys-shared > h2 { margin: 0 0 12px; }
+.ys-shared__lede { color: var(--text-2); max-width: 65ch; }
+.ys-invite { margin-top: 28px; color: var(--text-2); }

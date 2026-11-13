@@ -1,0 +1,110 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-daily-market-brief-2026-10-15",
+  "slug": "daily-market-brief-2026-10-15",
+  "kind": "daily-market-brief",
+  "templateId": "daily-market-brief.v1",
+  "issuedAt": "2026-10-15T12:00:00.000Z",
+  "visibleAt": "2026-10-15T12:00:00.000Z",
+  "title": "Sun sextile Jupiter · daily market brief",
+  "summary": "Sun sextile Jupiter leads the disclosed symbolic index; Leo market measures are recorded separately.",
+  "url": "/terminal/research/daily-market-brief-2026-10-15/",
+  "signs": [
+    "libra",
+    "leo"
+  ],
+  "topics": [
+    "markets",
+    "daily-sky",
+    "aspect"
+  ],
+  "symbolicScore": {
+    "sign": "leo",
+    "attention": 26,
+    "tone": 6,
+    "eventIntensity": 2,
+    "calculation": "12 attention / 7 tone / 2 event intensity × 0.9129 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Sun sextile Jupiter is the highest-weighted named factor for Leo in the 2026-10-15 UTC edition. The disclosed score is attention 26/100, tone 6, and symbolic event intensity 2/100.",
+      "evidence": [
+        "src/data/transits-2026-10.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active. This is a traditional symbolic reading, not a price direction or probability.",
+      "evidence": [
+        "src/data/transits-2026-10.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-10-15T00:07:36.177Z, Leo was indexed at $0.00005858, with -3.7% over 24 hours, $58.58K market cap, $58.58K FDV, $13.68K indexed liquidity, $10.25 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-10-15:2026-10-15T00:07:36.177Z",
+    "observedAt": "2026-10-15T00:07:36.177Z",
+    "provider": "DexScreener",
+    "sign": "leo",
+    "priceUsd": 0.00005858,
+    "change24hPct": -3.7,
+    "marketCapUsd": 58578,
+    "fdvUsd": 58578,
+    "liquidityUsd": 13679.75,
+    "volume24hUsd": 10.25,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/48erbgmqizekyloccebd7cs5knqpzqr7qqak9mzapqgq"
+  },
+  "evidence": {
+    "dailyFacts": "src/data/daily.json#2026-10-15",
+    "outlookEdition": "public/assets/registry-outlook.json#daily:2026-10-15",
+    "marketSnapshotId": "registry-market:2026-10-15:2026-10-15T00:07:36.177Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "8ebde9cb2ed7f9aff0ad905bc686f8095a71957ea94fc47b63b3ac926adb3f21",
+  "publishedAt": "2026-10-15T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-15T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "8ebde9cb2ed7f9aff0ad905bc686f8095a71957ea94fc47b63b3ac926adb3f21"
+  },
+  "status": "approved"
+}

@@ -1,0 +1,77 @@
+# Lite B5 version 2 on the adoption head (the adoption plan's J-6), 2026-11-04, macOS arm64, Node 22.22.2, in two parts:
+# part 1, the reference check and B5 version 2's two controls (lite/B5-VERSION-2.md), run once on 92702bb9b732d88224847df3e27cb0925bfb70df;
+# part 2, the claims rules R1 to R10: a first attempt on 92702bb9 that failed R3, and a second attempt on 64096451, citing it, that passed.
+
+# Part 1
+## The reference builds from the vendored 1.1.0-rc.2 archive with its export-coverage assertion
+# command: node scripts/build-engine-reference.mjs --check
+Engine reference: drift PASS (15 public entry points; archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c)
+# exit code: 0
+
+## The export-coverage control: sectReading left out of ./lite's documented names
+# edit in scripts/engine-reference/build.mjs (restored afterwards):
+@@ -80,7 +80,7 @@ export async function buildEngineReference({ check = false } = {}) {
+       const path = join(pkgRoot, value.types);
+       const module = project.children.find((child) => child.name === basename(path, '.d.ts'));
+       const names = checker.getExportsOfModule(checker.getSymbolAtLocation(program.getSourceFile(path))).map((symbol) => symbol.name).sort();
+-      const documented = (module?.children ?? []).map((child) => child.name).sort();
++      const documented = (module?.children ?? []).map((child) => child.name).filter((name) => !(subpath === './lite' && name === 'sectReading')).sort();
+       if (JSON.stringify(names) !== JSON.stringify(documented)) throw new Error(`Export coverage differs for ${subpath}: ${names.filter((name) => !documented.includes(name))}`);
+       module.name = subpath === '.' ? 'engine' : subpath.slice(2);
+       api[subpath] = { declaration: value.types, exports: names };
+# command: node scripts/engine-reference/build.mjs --check
+if (JSON.stringify(names) !== JSON.stringify(documented)) throw new Error(`Export coverage differs for ${subpath}: ${names.filter((name) => !documented.includes(name))}`);
+Error: Export coverage differs for ./lite: sectReading
+# exit code: 1
+# restored scripts/engine-reference/build.mjs: sha256 187aabdf85baa4958016484a648810548b3f836ee9dbdc8509815bfda97bba58 (before control: 187aabdf85baa4958016484a648810548b3f836ee9dbdc8509815bfda97bba58)
+
+## The claims extractor's control, version 2 (lite/B5-VERSION-2.md)
+# planted sentence: The band bounds the error of every position, in arcseconds.
+# before: public/developers/engine/reference/release/README.txt sha256 31cfc113f9da439790dcfdb8eeea0f6606de5a6d8eb2bb01527f3562f27115c9; public/developers/engine/reference/functions/lite.sectReading.html sha256 f456de5ac0dfe3f0f554017c1d33ef4e2f901a3cfcbbae5293d7764d2b702d5b
+# command, without the plants (the reference as built): node scripts/claims-ledger.mjs --unlisted
+0 unlisted sentences
+# exit code: 0; lines naming the planted sentence: 0
+planted: The band bounds the error of every position, in arcseconds.
+# command, with the plants: node scripts/claims-ledger.mjs --unlisted
+# exit code: 1; the listing's lines for the planted sentence, each with the line before it:
+public/developers/engine/reference/functions/lite.sectReading.html [accuracy]
+  The band bounds the error of every position, in arcseconds.
+public/developers/engine/reference/release/README.txt [accuracy]
+  The band bounds the error of every position, in arcseconds.
+2 unlisted sentences
+# restored: public/developers/engine/reference/release/README.txt sha256 31cfc113f9da439790dcfdb8eeea0f6606de5a6d8eb2bb01527f3562f27115c9; public/developers/engine/reference/functions/lite.sectReading.html sha256 f456de5ac0dfe3f0f554017c1d33ef4e2f901a3cfcbbae5293d7764d2b702d5b (before the plants: 31cfc113f9da439790dcfdb8eeea0f6606de5a6d8eb2bb01527f3562f27115c9; f456de5ac0dfe3f0f554017c1d33ef4e2f901a3cfcbbae5293d7764d2b702d5b)
+# with the plants: named under public/developers/engine/reference/release/README.txt 1 time(s), under public/developers/engine/reference/functions/lite.sectReading.html 1 time(s); without them: 0 time(s)
+
+# Part 2. The claims rules, R1 to R10, with product.engine-analyses restated
+
+## First attempt, on 92702bb9 (programme log rc2a-92702bb9-j6-claims-test.log)
+# product.engine-analyses (supported): Beside the chart, @zodiacs/engine computes secondary progressions (since rc.12: the positions one day after birth for each tropical year of 365.2422 days lived), which the site's progressed lens takes from it through src/lib/engine/progressions.ts, and, as separate functions since rc.11, aspects under a configurable policy and declinations: right ascension and declination for each body, parallels and contraparallels, and since rc.14 each row's signed margin to the out-of-bounds limit in arcseconds (boundMarginArcsec). The MCP adapter's tools use neither the aspect policies nor the declinations, and the site's charts do not use the aspect policies; since engine 1.1.0-rc.2 the site's three-dimensional view takes each body's declination and out-of-bounds flag and the parallels and contraparallels from @zodiacs/engine/lite, which carries copies of the root's declination functions that load no ephemeris.
+# maxOpenOverstated 2; open overstated: eng.conformance-sources, eng.rc1-footer
+# command: npx vitest run scripts/claims-ledger.test.mjs
+ ✓ scripts/claims-ledger.test.mjs > claims ledger > is sorted, one record per line, on the current lexicon and parser
+ ✓ scripts/claims-ledger.test.mjs > claims ledger > R1 lists every sentence the extractor selects
+ ✓ scripts/claims-ledger.test.mjs > claims ledger > R2 finds every listed sentence in its file, still selected
+ × scripts/claims-ledger.test.mjs > claims ledger > R3 resolves every claim's evidence
+ ✓ scripts/claims-ledger.test.mjs > claims ledger > R4 finds every binding in its code or data
+ ✓ scripts/claims-ledger.test.mjs > claims ledger > R5 keeps false and stale claims to protected paths and overstated claims to the ratchet
+ ✓ scripts/claims-ledger.test.mjs > claims ledger > R6 holds translations to the English claims and computes their protection
+ ✓ scripts/claims-ledger.test.mjs > claims ledger > R7 matches the conventions and coverage the engine's receipt states
+ ✓ scripts/claims-ledger.test.mjs > claims ledger > R8 exempts only for a listed reason, citing third parties
+ ✓ scripts/claims-ledger.test.mjs > claims ledger > R9 leaves no orphans
+ ✓ scripts/claims-ledger.test.mjs > claims ledger > R10 extracts and triggers the injected controls, and the splitter holds its goldens
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+# exit code: 1
+# R3 failed alone: the claim product.ai-coverage-tools cited the test of src/ai-tools/release-060.test.ts by the title
+# "lists the thirteen live definitions byte for byte, then the five new tools", which D-11 (83f168d8) had renamed for Chart
+# Studio's move to chart-studio-v7.html; nothing else cited it. Not rerun as it stood.
+
+## Second attempt, on 64096451fa134714cb41525410116b2d9a4e6f7b, citing the first (programme log rc2a-64096451-j6-claims-test-2.log)
+# 64096451 restates product.ai-coverage-tools: the thirteen tools keep the 1 November definitions byte for byte apart from
+# Chart Studio's panel address, and the old address still serves the same panel; its evidence cites both release-060 tests
+# by their current titles. No page under src/ or public/ reads the claims ledger, so parts of this record made on 92702bb9 stand.
+# command: npx vitest run scripts/claims-ledger.test.mjs src/ai-tools/release-060.test.ts
+ Test Files  2 passed (2)
+      Tests  23 passed (23)
+# exit code: 0

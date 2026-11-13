@@ -4,6 +4,9 @@
  * rather than @astrojs/sitemap (which only sees Astro routes and would
  * move the sitemap URL robots.txt points at).
  */
+import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-pairs';
+import natalAspectsPublication from '../data/natal-aspects-publication.json';
+import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
 import type { APIRoute } from 'astro';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES } from '../data/numerology-pages';
 import { getCollection } from 'astro:content';
@@ -12,9 +15,10 @@ import { DEFAULT_LOCALE, LOCALE_META, alternatePathEntries, alternatePaths } fro
 import { CHINESE_ZODIAC_PATHS } from '../lib/programmatic-paths';
 import { registryAuraSitemapEntry } from '../lib/registry-aura-entry.mjs';
 import { currentHoroscopeMonth, utcMonth } from '../lib/horoscope-month.mjs';
-import { INDEXABLE_PEOPLE, PEOPLE_DIRECTORY_INDEXABLE } from '../lib/people';
+import { INDEXABLE_PEOPLE, PEOPLE_DIRECTORY_INDEXABLE, peopleForBirthday } from '../lib/people';
 import {
   BIRTHDAY_CUSP_OG_MODIFIED_AT,
+  BIRTHDAY_FAMOUS_LINE_MODIFIED_AT,
   PEOPLE_TEMPLATE_MODIFIED_AT,
   lastmodDate,
   latestModifiedAt,
@@ -23,29 +27,59 @@ import {
 import { dailyEditions } from '../lib/return-visits/chart-of-day';
 import { SIGNS } from '../lib/signs';
 import birthdayFactsData from '../data/birthdays.json';
+import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged } from '../lib/birthday-degrees';
+import { PEOPLE_DEGREES_MODIFIED_AT, peopleDegreesChanged } from '../lib/people-degrees';
 import daily from '../data/daily.json';
 import developerGuides from '../data/developer-guides.json';
 import horoscopeProgram from '../data/horoscope-program.json';
-import eventsPublicationData from '../data/events-publication.json';
 import registryResearchPublicationData from '../data/registry-research/publication.json';
-import type { EventsPublication } from '../lib/events/publication';
+import registryResearchPause from '../data/registry-research/pause.json';
+import { eventsPublication } from '../lib/events/site-publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
+import { isHiddenAlmanacSlug, isHiddenChildPage } from '../data/hidden-child-pages.mjs';
+import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
-const eventsPublication = eventsPublicationData as EventsPublication;
 type RegistryResearchPublication = {
   generatedAt: string;
   items: Array<{ url: string; status: 'published' | 'scheduled'; visibleAt: string; publishedAt: string }>;
 };
 const registryResearchPublication = registryResearchPublicationData as unknown as RegistryResearchPublication;
 const birthdayFacts = birthdayFactsData as unknown as { days: Record<string, { cusp?: unknown }> };
-const researchLastmod = terminalResearchLastmod(registryResearchPublication);
-const YEARLY_HOROSCOPE_LASTMOD = '2026-07-19';
+// /terminal/research/ says publishing is paused while
+// src/data/registry-research/pause.json says so; the notice went up on this date.
+const TERMINAL_RESEARCH_PAUSE_LASTMOD = '2026-11-12';
+const researchLastmod = terminalResearchLastmod(
+  registryResearchPublication,
+  registryResearchPause.status === 'paused' ? TERMINAL_RESEARCH_PAUSE_LASTMOD : undefined,
+);
+// Both yearly pages last changed when their planet ingress, station and
+// aspect times were taken from NASA JPL Horizons (src/lib/nasa-instants.ts).
+const YEARLY_HOROSCOPE_LASTMOD = '2026-11-06';
+const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
-const THESIS_LASTMOD = '2026-09-05';
+// The twelve Registry sign pages re-read their mint and freeze authority on chain (thesis evidence refresh).
+const REGISTRY_SIGN_LASTMOD = '2026-11-10';
+const THESIS_LASTMOD = '2026-11-12';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
+const SKY_HEADS_UP_LASTMOD = '2026-11-12';
+// The sign-season pages and their hub were published together.
+const SEASON_PAGES_LASTMOD = '2026-11-05';
+// The sign season pages' year tables run through 2040 from 2026-11-06.
+const SEASON_SIGN_PAGES_LASTMOD = '2026-11-06';
+// The Spanish, Portuguese, French and Italian editions of Your 2027 sky, the Moon journal, the sign-season hub
+// and its twelve season pages, published together, and the translated tools hubs that list them. Their English
+// pages only gained hreflang alternates, which the rendered-content dates leave out.
+const TRANSLATED_NEW_PAGES_LASTMOD = '2026-11-06';
+const TRANSLATED_NEW_PAGES_ROUTES = (['es', 'pt', 'fr', 'it'] as const).flatMap((locale) => [
+  `/${locale}/your-2027-sky/`,
+  `/${locale}/moon-journal/`,
+  `/${locale}/seasons/`,
+  ...SIGNS.map((sign) => `/${locale}/seasons/${sign.slug}/`),
+  `/${locale}/tools/`,
+]);
 // The numerology calculator; the tools hub and methodology page changed with
 // it. Each Life Path page dates itself from its own `updated` field, the same
 // date its Article markup carries.
@@ -93,7 +127,6 @@ const DELTAT_ATTRIBUTION_ROUTES = ['/methodology/', '/terms/'] as const;
 const COMPUTE_API_LASTMOD = '2026-09-29';
 const COMPUTE_API_ROUTES = [
   '/developers/', '/developers/compute/', '/developers/support/', '/birth-chart/', '/ru/birth-chart/',
-  '/privacy/',
 ] as const;
 // Its review of 2026-09-30 changed what these say about availability, logs,
 // memory and citations, and the four translated birth chart FAQs.
@@ -133,6 +166,9 @@ const ENGINE_RC2_ROUTES = [
 // retention for the hosted MCP server.
 const MCP_HOST_LOGS_LASTMOD = '2026-10-09';
 const MCP_HOST_LOGS_ROUTES = ['/privacy/'] as const;
+// The privacy page names the ?ref= on links from the Zodiacs app, and its 0.5.0 tools' wording.
+const ASSISTANT_REF_LASTMOD = '2026-10-14';
+const ASSISTANT_REF_ROUTES = ['/privacy/'] as const;
 // Engine 1.0.0, published on npm, adopted 2026-10-11 with MCP adapter 0.1.0-rc.19 and developer plugin 0.3.7:
 // the same pages, which name the engine's version, how to install it and that npm carries it.
 const ENGINE_100_LASTMOD = '2026-10-11';
@@ -141,12 +177,240 @@ const ENGINE_100_ROUTES = ENGINE_RC2_ROUTES;
 // link to them.
 const DEVELOPER_GUIDES_LASTMOD = '2026-10-12';
 // Local times read by @zodiacs/engine/geo across the site: the compute API page's account of it, and the
-// MCP page's adapter, now 0.1.0-rc.22 with its README corrected.
+// MCP page's adapter, now 0.1.0-rc.24 with resolve_birth_time and search_places.
 const ENGINE_GEO_LASTMOD = '2026-10-12';
 const ENGINE_GEO_ROUTES = ['/developers/compute/', '/developers/mcp/'] as const;
+// The aspect facts of #740 (merged 2026-10-13): the compare page's section linking the guides that compare the
+// engine with other software.
+const ASPECT_FACTS_LASTMOD = '2026-10-13';
+const ASPECT_FACTS_ROUTES = ['/developers/compare/'] as const;
+// The birth-time tools of #742 (merged 2026-10-14): the compute API page's atlasPlace rules and the MCP page's
+// search_places and resolve_birth_time.
+const BIRTH_TIME_TOOLS_LASTMOD = '2026-10-14';
+const BIRTH_TIME_TOOLS_ROUTES = ['/developers/compute/', '/developers/mcp/'] as const;
+// Pages that changed without a new date, as the Sitemap Dates check (F-97) found them on 2026-10-15 by building
+// each day's merges: the developer hub names the MCP adapter, 0.1.0-rc.23 with #740 and 0.1.0-rc.24 with #742;
+// the MCP guide gained the birth-time tools with #742; the guide index listed #735's seven guides; and
+// #737's pt-BR first-day ordinal ("1º de maio") changed the dates these Portuguese pages print.
+const ADAPTER_RC24_LASTMOD = '2026-10-14';
+const ADAPTER_RC24_ROUTES = ['/developers/', '/developers/docs/astrology-mcp-server/'] as const;
+const QUERY_GUIDES_INDEX_LASTMOD = '2026-10-13';
+const QUERY_GUIDES_INDEX_ROUTES = ['/developers/docs/'] as const;
+const PT_FIRST_DAY_LASTMOD = '2026-10-13';
+const PT_FIRST_DAY_ROUTES = ['/pt/eclipses/', '/pt/full-moon-calendar/', '/pt/mercury-retrograde/', '/pt/retrogrades/'] as const;
+// The October 16 design sweep: decorative labels above headlines removed or
+// turned into back-links and datelines, tool discs added to the tools hubs, and
+// em and en dashes in the copy rewritten as commas, periods and range words.
+const DESIGN_SWEEP_LASTMOD = '2026-10-16';
+const DESIGN_SWEEP_ROUTES = [
+  '/',
+  '/about/',
+  '/almanac/',
+  '/ask/',
+  '/big-three/',
+  '/birth-chart/',
+  '/birth-chart/someone-else/',
+  '/birth-chart/three-dimensions/',
+  '/birthday/',
+  '/compatibility/',
+  '/corrections/',
+  '/developers/',
+  '/developers/compare/',
+  '/eclipses/',
+  '/eclipses/2027/',
+  '/es/',
+  '/es/birth-chart/',
+  '/es/chart-of-the-day/',
+  '/es/compatibility/',
+  '/es/eclipses/',
+  '/es/full-moon-calendar/',
+  '/es/mercury-retrograde/',
+  '/es/methodology/',
+  '/es/profile/',
+  '/es/retrogrades/',
+  '/es/rising-sign/',
+  '/es/sky-calendar/',
+  '/es/tools/',
+  '/es/transits/',
+  '/events/',
+  '/feeds/',
+  '/fr/',
+  '/fr/birth-chart/',
+  '/fr/chart-of-the-day/',
+  '/fr/compatibility/',
+  '/fr/eclipses/',
+  '/fr/full-moon-calendar/',
+  '/fr/mercury-retrograde/',
+  '/fr/methodology/',
+  '/fr/profile/',
+  '/fr/retrogrades/',
+  '/fr/rising-sign/',
+  '/fr/sky-calendar/',
+  '/fr/tools/',
+  '/fr/transits/',
+  '/full-moon-calendar/',
+  '/full-moon-calendar/2027/',
+  '/it/',
+  '/it/birth-chart/',
+  '/it/chart-of-the-day/',
+  '/it/compatibility/',
+  '/it/eclipses/',
+  '/it/full-moon-calendar/',
+  '/it/mercury-retrograde/',
+  '/it/methodology/',
+  '/it/profile/',
+  '/it/retrogrades/',
+  '/it/rising-sign/',
+  '/it/sky-calendar/',
+  '/it/tools/',
+  '/it/transits/',
+  '/learn/communication/',
+  '/learn/glossary/',
+  '/learn/how-to-read-a-birth-chart/',
+  '/learn/zodiac-dates/',
+  '/mercury-retrograde/',
+  '/mercury-retrograde/2027/',
+  '/methodology/',
+  '/moon-phase/',
+  '/moon-sign/',
+  '/occasions/',
+  '/occasions/milestones/',
+  '/privacy/',
+  '/profile/',
+  '/pt/',
+  '/pt/birth-chart/',
+  '/pt/chart-of-the-day/',
+  '/pt/compatibility/',
+  '/pt/eclipses/',
+  '/pt/full-moon-calendar/',
+  '/pt/mercury-retrograde/',
+  '/pt/methodology/',
+  '/pt/profile/',
+  '/pt/retrogrades/',
+  '/pt/rising-sign/',
+  '/pt/sky-calendar/',
+  '/pt/tools/',
+  '/pt/transits/',
+  '/retrogrades/',
+  '/rising-sign/',
+  '/ru/',
+  '/ru/birth-chart/',
+  '/ru/chart-of-the-day/',
+  '/ru/compatibility/',
+  '/ru/methodology/',
+  '/ru/moon-phase/',
+  '/ru/moon-sign/',
+  '/ru/profile/',
+  '/ru/rising-sign/',
+  '/ru/saturn-return/',
+  '/ru/sky-calendar/',
+  '/ru/tools/',
+  '/ru/transits/',
+  '/saturn-return/',
+  '/sky-calendar/',
+  '/solar-return/',
+  '/tools/',
+  '/transits/',
+  '/void-of-course-moon/',
+  '/widgets/',
+  '/fr/aquarius/',
+  '/fr/aries/',
+  '/fr/cancer/',
+  '/fr/capricorn/',
+  '/fr/gemini/',
+  '/fr/leo/',
+  '/fr/libra/',
+  '/fr/pisces/',
+  '/fr/sagittarius/',
+  '/fr/scorpio/',
+  '/fr/taurus/',
+  '/fr/virgo/',
+  '/it/aquarius/',
+  '/it/aries/',
+  '/it/cancer/',
+  '/it/capricorn/',
+  '/it/gemini/',
+  '/it/leo/',
+  '/it/libra/',
+  '/it/pisces/',
+  '/it/sagittarius/',
+  '/it/scorpio/',
+  '/it/taurus/',
+  '/it/virgo/',
+  '/pt/aquarius/',
+  '/pt/aries/',
+  '/pt/cancer/',
+  '/pt/capricorn/',
+  '/pt/gemini/',
+  '/pt/leo/',
+  '/pt/libra/',
+  '/pt/pisces/',
+  '/pt/sagittarius/',
+  '/pt/scorpio/',
+  '/pt/taurus/',
+  '/pt/virgo/',
+] as const;
+// November 6: a Trophy Hall season that ended level on points says it was won
+// on the zodiac-order tiebreak (Virgo 2026: Aries and Capricorn on 100 each),
+// not "won by 0 points".
+const TROPHY_HALL_TIE_LASTMOD = '2026-11-06';
+// The compute API playground (P3.8): the page, and the developer index and compute API page that link to it.
+const PLAYGROUND_LASTMOD = '2026-10-16';
+const PLAYGROUND_ROUTES = ['/developers/playground/', '/developers/', '/developers/compute/'] as const;
+// The design sweep's change to /developers/ (the dash in its sky embed's title)
+// arrives after the playground dated that page 2026-10-16, so it takes the next day.
+const DESIGN_SWEEP_DEVELOPERS_LASTMOD = '2026-10-17';
+// The top-ten redesign reaches the translated homes, birth chart and rising
+// sign pages (their Today and horoscope pages date with the edition).
+const TOP10_LOCALES_LASTMOD = '2026-10-17';
+const TOP10_LOCALES_ROUTES = ['es', 'pt', 'fr', 'it', 'ru']
+  .flatMap((locale) => ['/', '/birth-chart/', '/rising-sign/'].map((path) => `/${locale}${path}`));
+// The profile redesign reaches /profile/ and its five translations.
+const PROFILE_REDESIGN_LASTMOD = '2026-10-18';
+const PROFILE_REDESIGN_ROUTES = ['', '/es', '/pt', '/fr', '/it', '/ru'].map((locale) => `${locale}/profile/`);
+// The conventions registry (R44): its page, and the developer index and conformance page that link to it.
+const CONVENTIONS_LASTMOD = '2026-10-27';
+const CONVENTIONS_ROUTES = ['/developers/conventions/', '/developers/', '/developers/conformance/'] as const;
+// Engine 1.1.0-rc.1 adopted 2026-10-27; the routes are listed where it is applied, last.
+const ENGINE_110_RC1_LASTMOD = '2026-10-27';
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
+];
+// The time atlas dataset (B3.c): its page, and the developer index's card for it, on the day of the
+// daily edition they were built with; listed after the earlier developer entries in EVERGREEN_LASTMOD so
+// the index's date wins over theirs.
+const TIME_ATLAS_LASTMOD = '2026-11-01';
+const TIME_ATLAS_ROUTES = ['/developers/time-atlas/', '/developers/'] as const;
+// Engine 1.1.0-rc.2 adopted 2026-11-05, the day of the daily edition it was built with: the pages the
+// Sitemap Dates comparison found changed (the engine's version, its time and lite entries, the conventions
+// registry's time-band namespace, MCP adapter 0.1.0-rc.26, the playground's engine and answers, the demo's
+// receipts, the guides).
+// Every event page gained its countdown, what to look for in the sky and Guide questions. Dated here, not
+// in events-publication.json, which the published developer plugin bundles byte for byte.
+const EVENT_WATCH_LASTMOD = '2026-11-05';
+const NASA_WINDOW_PLACEMENTS_LASTMOD = '2026-11-07';
+const NASA_WINDOW_PLACEMENTS = [
+  'jupiter-in-scorpio', 'neptune-in-aquarius', 'neptune-in-aries', 'neptune-in-cancer', 'neptune-in-capricorn',
+  'neptune-in-libra', 'neptune-in-sagittarius', 'neptune-in-scorpio', 'neptune-in-taurus', 'pluto-in-aries',
+  'pluto-in-pisces', 'pluto-in-taurus', 'uranus-in-aquarius', 'uranus-in-capricorn',
+];
+// Every event page says where its times come from, and the planets' ingress, station and aspect times are
+// NASA JPL's (src/lib/nasa-instants.ts). Dated here for the same reason as EVENT_WATCH_LASTMOD.
+const EVENT_NASA_TIMES_LASTMOD = '2026-11-06';
+const ACCURACY_AUDIT_REST_LASTMOD = '2026-11-07';
+const ACCURACY_AUDIT_REST_ROUTES = [
+  '/', '/events/', '/moon-phase/', '/tools/',
+  ...['', '/es', '/pt', '/fr', '/it'].flatMap((prefix) => [
+    `${prefix}/eclipses/`, `${prefix}/full-moon-calendar/`, `${prefix}/mercury-retrograde/`, `${prefix}/retrogrades/`,
+  ]),
+  '/eclipses/2027/',
+];
+const ENGINE_110_RC2_LASTMOD = '2026-11-05';
+const ENGINE_110_RC2_ROUTES = [
+  '/developers/', '/developers/compare/', '/developers/compute/', '/developers/conformance/',
+  '/developers/conventions/', '/developers/demo/', '/developers/engine/', '/developers/mcp/',
+  '/developers/playground/', '/developers/support/', ...DEVELOPER_GUIDES_ROUTES,
 ];
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
@@ -157,11 +421,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     '/eclipses/', '/full-moon-calendar/', '/retrogrades/', '/today/', '/learn/', '/tools/',
     '/profile/', '/learn/how-to-read-a-birth-chart/', '/learn/communication/', '/learn/zodiac-dates/', '/learn/glossary/', '/learn/planets/',
     '/learn/houses/', '/learn/aspects/', '/learn/placements/', '/birthday/',
-    '/baby-zodiac/', '/widgets/', '/methodology/', '/about/', '/corrections/', '/privacy/',
+    '/widgets/', '/methodology/', '/about/', '/corrections/', '/privacy/',
     '/terms/', '/feeds/', '/almanac/',
     '/es/', '/es/birth-chart/', '/es/compatibility/', '/es/moon-sign/',
     '/es/rising-sign/', '/es/moon-phase/', '/es/saturn-return/', '/es/transits/',
-    '/es/tools/', '/es/profile/', '/es/baby-zodiac/', '/es/methodology/', '/es/privacy/',
+    '/es/tools/', '/es/profile/', '/es/methodology/', '/es/privacy/',
   ].map((loc) => [
     loc,
     [
@@ -185,10 +449,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
-  // The occasion cards, first published 2026-10-11.
-  ['/occasions/', '2026-10-11'] as const,
+  // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
+  ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
-  ['/occasions/baby-shower/', '2026-10-11'] as const,
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
   ['/fomo/', '2026-09-01'] as const,
@@ -207,7 +470,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
     'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
-  ].map((sign) => [`/registry/${sign}/`, AUDIT_REMEDIATION_LASTMOD] as const),
+  ].map((sign) => [`/registry/${sign}/`, REGISTRY_SIGN_LASTMOD] as const),
   ...[
     '/disclosure/',
     ...CHINESE_ZODIAC_PATHS,
@@ -217,7 +480,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/pt/', '/pt/birth-chart/', '/pt/compatibility/', '/pt/moon-sign/',
     '/pt/rising-sign/', '/pt/moon-phase/', '/pt/saturn-return/', '/pt/transits/',
-    '/pt/tools/', '/pt/profile/', '/pt/baby-zodiac/', '/pt/methodology/', '/pt/privacy/',
+    '/pt/tools/', '/pt/profile/', '/pt/methodology/', '/pt/privacy/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
@@ -226,7 +489,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/fr/', '/fr/birth-chart/', '/fr/compatibility/', '/fr/moon-sign/',
     '/fr/rising-sign/', '/fr/moon-phase/', '/fr/saturn-return/', '/fr/transits/',
-    '/fr/tools/', '/fr/profile/', '/fr/baby-zodiac/', '/fr/methodology/', '/fr/privacy/',
+    '/fr/tools/', '/fr/profile/', '/fr/methodology/', '/fr/privacy/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
@@ -235,7 +498,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/it/', '/it/birth-chart/', '/it/compatibility/', '/it/moon-sign/',
     '/it/rising-sign/', '/it/moon-phase/', '/it/saturn-return/', '/it/transits/',
-    '/it/tools/', '/it/profile/', '/it/baby-zodiac/', '/it/methodology/', '/it/privacy/',
+    '/it/tools/', '/it/profile/', '/it/methodology/', '/it/privacy/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
@@ -244,7 +507,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/ru/', '/ru/birth-chart/', '/ru/compatibility/', '/ru/moon-sign/',
     '/ru/rising-sign/', '/ru/moon-phase/', '/ru/saturn-return/', '/ru/transits/',
-    '/ru/tools/', '/ru/profile/', '/ru/baby-zodiac/', '/ru/methodology/',
+    '/ru/tools/', '/ru/profile/', '/ru/methodology/',
     '/ru/privacy/', '/ru/disclosure/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
@@ -290,9 +553,133 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const),
   ...ENGINE_RC2_ROUTES.map((loc) => [loc, ENGINE_RC2_LASTMOD] as const),
   ...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const),
+  ...ASSISTANT_REF_ROUTES.map((loc) => [loc, ASSISTANT_REF_LASTMOD] as const),
   ...ENGINE_100_ROUTES.map((loc) => [loc, ENGINE_100_LASTMOD] as const),
   ['/developers/', DEVELOPER_GUIDES_LASTMOD] as const,
   ...ENGINE_GEO_ROUTES.map((loc) => [loc, ENGINE_GEO_LASTMOD] as const),
+  ...ASPECT_FACTS_ROUTES.map((loc) => [loc, ASPECT_FACTS_LASTMOD] as const),
+  ...BIRTH_TIME_TOOLS_ROUTES.map((loc) => [loc, BIRTH_TIME_TOOLS_LASTMOD] as const),
+  ...ADAPTER_RC24_ROUTES.map((loc) => [loc, ADAPTER_RC24_LASTMOD] as const),
+  ...QUERY_GUIDES_INDEX_ROUTES.map((loc) => [loc, QUERY_GUIDES_INDEX_LASTMOD] as const),
+  ...PT_FIRST_DAY_ROUTES.map((loc) => [loc, PT_FIRST_DAY_LASTMOD] as const),
+  ...DESIGN_SWEEP_ROUTES.map((loc) => [loc, DESIGN_SWEEP_LASTMOD] as const),
+  ...PLAYGROUND_ROUTES.map((loc) => [loc, PLAYGROUND_LASTMOD] as const),
+  ['/developers/', DESIGN_SWEEP_DEVELOPERS_LASTMOD] as const,
+  ...TOP10_LOCALES_ROUTES.map((loc) => [loc, TOP10_LOCALES_LASTMOD] as const),
+  ...PROFILE_REDESIGN_ROUTES.map((loc) => [loc, PROFILE_REDESIGN_LASTMOD] as const),
+  ...CONVENTIONS_ROUTES.map((loc) => [loc, CONVENTIONS_LASTMOD] as const),
+  // Guide's provider and retention disclosures changed on these public pages.
+  ...[
+    '/about/', '/ask/', '/methodology/', '/privacy/',
+    '/es/methodology/', '/es/privacy/', '/fr/methodology/', '/fr/privacy/',
+    '/it/methodology/', '/it/privacy/', '/pt/methodology/', '/pt/privacy/',
+    '/ru/methodology/', '/ru/privacy/',
+  ].map((loc) => [loc, '2026-10-20'] as const),
+  // Contextual discovery links added to the tools directory.
+  ['/tools/', '2026-10-21'] as const,
+  // Tap-to-explain on the birth chart page's sample wheel.
+  ['/birth-chart/', '2026-10-24'] as const,
+  // The English home's second row of tool links (void-of-course Moon,
+  // numerology, Chinese zodiac). The day of the daily edition it was built
+  // with, since the Sitemap Dates check refuses a later date.
+  ['/', '2026-10-25'] as const,
+  // The conventions registry's citations and names without en or em dashes,
+  // on the day of the daily edition it was built with.
+  ['/developers/conventions/', '2026-10-26'] as const,
+  // Engine 1.1.0-rc.1, MCP adapter 0.1.0-rc.25 and conformance suite 0.2.0 (R44), on the day of the daily
+  // edition they were built with: the pages that name the engine's version and how npm carries it, the
+  // conventions registry and the pages that list ids, the playground's engine and answers, and the guides.
+  ...[
+    ...ENGINE_RC2_ROUTES, '/developers/conventions/', '/developers/playground/',
+    '/developers/docs/astrology-mcp-server/', ...DEVELOPER_GUIDES_ROUTES,
+  ].map((loc) => [loc, ENGINE_110_RC1_LASTMOD] as const),
+  // The birth chart form writes its options after the submit button and the privacy line, where the pages
+  // draw them, so a first paint mid-parse no longer moves them; on the day of the daily edition it was built with.
+  ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
+    .map((loc) => [loc, '2026-10-27'] as const),
+  // The assistant showcase, which lists the Grok template from the day of the daily edition it was built with.
+  ['/apps/', '2026-11-09'] as const,
+  // The showcase's entry links, first published with the showcase.
+  ['/tools/', '2026-10-28'] as const,
+  ['/developers/ai/', '2026-10-28'] as const,
+  // The developer index that links to the demo. The day of the daily edition it was
+  // built with; after the engine 1.1.0-rc.1 entry above so it wins.
+  ['/developers/', '2026-10-28'] as const,
+  // The developer demo, recorded again with reading confidence labels and share links
+  // that carry no birth details.
+  ['/developers/demo/', '2026-11-04'] as const,
+  // The privacy page's assistant section: what the app's links carry (never a birth year, a birth time, a birthplace
+  // or the names you give, and a birthday link only the month and day), worded exactly on 5 November, and the
+  // assistants it names, with Gemini added on 6 November, and the occasions it lists with no card link, a birthday
+  // alone from 7 November. On 11 November it described encrypted chart sync, chart emails and the analytics
+  // scope, and the terms the encrypted sync account; after the owner-trust entry so both win. The five translated
+  // privacy pages describe the same with the switch on and print the same date.
+  ['/privacy/', '2026-11-11'] as const,
+  ['/terms/', '2026-11-11'] as const,
+  ...['/es/privacy/', '/fr/privacy/', '/it/privacy/', '/pt/privacy/', '/ru/privacy/']
+    .map((loc) => [loc, '2026-11-11'] as const),
+  // The conventions registry's traditional void-of-course bodies (void-of-course-bodies:traditional), which the
+  // hosted search_sky_events names. The day of the daily edition it was built with.
+  ['/developers/conventions/', '2026-11-04'] as const,
+  // Your 2027 sky, the calendar-year edition read for a saved chart (first published 5 November 2026).
+  ['/your-2027-sky/', '2026-11-06'] as const,
+  // The Moon journal, first published, and the moon phase page's line linking to it. The day of the daily
+  // edition they were built with.
+  ['/moon-journal/', '2026-11-05'] as const,
+  ['/moon-phase/', '2026-11-05'] as const,
+  // "Ask Guide about this" beside the retrograde and eclipse explainers, and the tools hub's card for
+  // Your 2027 sky.
+  ['/eclipses/', '2026-11-05'] as const,
+  ['/mercury-retrograde/', '2026-11-05'] as const,
+  ['/retrogrades/', '2026-11-05'] as const,
+  ['/tools/', '2026-11-05'] as const,
+  ...TRANSLATED_NEW_PAGES_ROUTES.map((loc) => [loc, TRANSLATED_NEW_PAGES_LASTMOD] as const),
+  // The time atlas dataset and the developer index's card for it, after the entries above so this date wins.
+  ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
+  // Engine 1.1.0-rc.2's pages, last so this date wins.
+  ...ENGINE_110_RC2_ROUTES.map((loc) => [loc, ENGINE_110_RC2_LASTMOD] as const),
+  // The November 2026 accuracy audit: whole degrees truncate, and "an annular" and "an opposition" read right.
+  ['/eclipses/', '2026-11-06'] as const,
+  ['/transits/', '2026-11-06'] as const,
+  // The Year Ahead Score calculator, published 2026-11-09.
+  ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/year-score/', '2026-11-09'] as const] : []),
+  ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday-report/', '2026-11-09'] as const] : []),
+  ...(['es', 'pt', 'fr', 'it', 'ru'] as const).map((locale) => [`/${locale}/transits/`, '2026-11-06'] as const),
+  ['/events/jupiter-opposition-pluto-2026-07-20/', '2026-11-06'] as const,
+  // Your 2027 sky's eclipse lines read the full longitude, so 1°59′ Virgo prints 1°, not 2° (every language).
+  ...(['', '/es', '/pt', '/fr', '/it'] as const).map((prefix) => [`${prefix}/your-2027-sky/`, '2026-11-07'] as const),
+  // The events hub's timeline and its note on timing, with the planets' times from NASA JPL Horizons.
+  ['/events/', '2026-11-06'] as const,
+  // The rest of the November 2026 accuracy audit: totality as NASA's canon gives it, the 18 July 2027
+  // penumbral eclipse said to be unseen, and the eclipse, full moon and retrograde tables named for the
+  // years they hold (to 2030). Every eclipse page links "Every eclipse through 2030".
+  ...ACCURACY_AUDIT_REST_ROUTES.map((loc) => [loc, ACCURACY_AUDIT_REST_LASTMOD] as const),
+  ...eventsPublication.pages
+    .filter((event) => event.family === 'eclipse')
+    .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
+  // The transits page's link to the Year Ahead Score (2026-11-09), last so this date wins.
+  ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/transits/', '2026-11-09'] as const] : []),
+  // The tools hub's Year Ahead Score and Birthday report cards, and the birthday hub's link to the report,
+  // each dated only once its launch switch is on.
+  ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') || launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/tools/', '2026-11-09'] as const] : []),
+  ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday/', '2026-11-09'] as const] : []),
+  // Chart sync pause copy on the birth chart page, the privacy page, and the
+  // profile pages (every language). The day of the daily edition they were
+  // built with.
+  ['/birth-chart/', '2026-11-11'] as const,
+  ['/privacy/', '2026-11-11'] as const,
+  ...['/profile/', '/es/profile/', '/fr/profile/', '/it/profile/', '/pt/profile/', '/ru/profile/']
+    .map((loc) => [loc, '2026-11-11'] as const),
+  // The privacy page's encrypted chart sync, chart emails and analytics scope
+  // wording, merged on 12 November after the pause copy above, so this wins.
+  ['/privacy/', '2026-11-12'] as const,
+  // The English /sky-calendar/ page gained the heads-up calendar on 12 November,
+  // after the October design sweep dates above, so this wins.
+  ['/sky-calendar/', SKY_HEADS_UP_LASTMOD] as const,
+  // The privacy page's analytics paragraph names the arrival words a link can
+  // carry and what the growth test events count (approved 12 November), last so
+  // this wins.
+  ['/privacy/', '2026-11-12'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -307,13 +694,20 @@ function sitemapAlternates(loc: string) {
   return alternatePaths(loc);
 }
 
-export const GET: APIRoute = async () => {
+export type SitemapEntry = { loc: string; priority: number; lastmod?: string };
+
+/**
+ * Every sitemap location, in sitemap.xml's order. The section sitemaps under
+ * /sitemaps/ (src/pages/sitemaps/[section].xml.ts) partition this same list.
+ */
+export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const guides = await getCollection('guides', ({ data }) => !data.draft);
   const pairs = await getCollection('pairs', ({ data }) => !data.draft);
   const learn = await getCollection('learn', ({ data }) => !data.draft);
   const horoscopes = await getCollection('horoscopes', ({ data }) => !data.draft);
   const birthdays = await getCollection('birthdays', ({ data }) => !data.draft);
-  const almanac = await getCollection('almanac', ({ data }) => !data.draft);
+  // Hidden articles (src/data/hidden-child-pages.mjs) are noindex and stay out of the sitemap.
+  const almanac = await getCollection('almanac', ({ id, data }) => !data.draft && !isHiddenAlmanacSlug(id));
   const latestMonth = currentHoroscopeMonth(horoscopes.map((h) => h.data.month), utcMonth(daily.date));
   const latestMonthlyBySign = new Map(
     horoscopes
@@ -344,16 +738,20 @@ export const GET: APIRoute = async () => {
     { loc: '/moon-sign/', priority: 0.9 },
     { loc: '/rising-sign/', priority: 0.9 },
     { loc: '/moon-phase/', priority: 0.85 },
+    { loc: '/moon-journal/', priority: 0.75 },
     { loc: '/saturn-return/', priority: 0.85 },
     { loc: '/solar-return/', priority: 0.85 },
     { loc: '/lunar-return/', priority: 0.85 },
     { loc: '/numerology/', priority: 0.85 },
     { loc: '/void-of-course-moon/', priority: 0.8 },
+    ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [{ loc: '/year-score/', priority: 0.8 }] : []),
+    ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [{ loc: '/birthday-report/', priority: 0.8 }] : []),
     ...LIFE_PATH_NUMBERS.map((number) => ({ loc: `/numerology/life-path/${number}/`, priority: 0.7 })),
     { loc: '/mercury-retrograde/', priority: 0.85 },
     { loc: '/transits/', priority: 0.85 },
     { loc: '/eclipses/', priority: 0.85 },
     { loc: '/full-moon-calendar/', priority: 0.85 },
+    { loc: '/your-2027-sky/', priority: 0.8 },
     { loc: '/full-moon-calendar/2027/', priority: 0.7 },
     { loc: '/eclipses/2027/', priority: 0.7 },
     { loc: '/mercury-retrograde/2027/', priority: 0.7 },
@@ -377,10 +775,8 @@ export const GET: APIRoute = async () => {
     { loc: '/learn/aspects/', priority: 0.7 },
     { loc: '/learn/placements/', priority: 0.7 },
     { loc: '/birthday/', priority: 0.7 },
-    { loc: '/baby-zodiac/', priority: 0.8 },
     { loc: '/occasions/', priority: 0.7 },
     { loc: '/occasions/milestones/', priority: 0.6 },
-    { loc: '/occasions/baby-shower/', priority: 0.6 },
     { loc: '/widgets/', priority: 0.6 },
     { loc: '/developers/', priority: 0.6 },
     { loc: '/developers/support/', priority: 0.6 },
@@ -389,9 +785,14 @@ export const GET: APIRoute = async () => {
     { loc: '/developers/compare/', priority: 0.6 },
     { loc: '/developers/mcp/', priority: 0.6 },
     { loc: '/developers/ai/', priority: 0.6 },
+    { loc: '/apps/', priority: 0.7 },
     { loc: '/developers/conformance/', priority: 0.6 },
+    { loc: '/developers/conventions/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
+    { loc: '/developers/playground/', priority: 0.6 },
+    { loc: '/developers/demo/', priority: 0.6 },
     { loc: '/developers/sky-benchmark/', priority: 0.6 },
+    { loc: '/developers/time-atlas/', priority: 0.6 },
     { loc: '/fomo/', priority: 0.6 },
     { loc: '/disclosure/', priority: 0.5 },
     // Locale variants and hreflang blocks are added below through the same
@@ -415,13 +816,15 @@ export const GET: APIRoute = async () => {
 
   const urls: { loc: string; priority: number; lastmod?: string }[] = [
     ...evergreenUrls,
-    ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: DEVELOPER_GUIDES_LASTMOD })),
+    ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: EVERGREEN_LASTMOD.get(loc) ?? DEVELOPER_GUIDES_LASTMOD })),
     ...(registryAuraEntry ? [registryAuraEntry] : []),
     ...(gamesEnabled ? [
-      { loc: '/race/', priority: 0.8, lastmod: '2026-08-19' },
-      { loc: '/games/history/', priority: 0.6, lastmod: '2026-08-19' },
+      { loc: '/race/', priority: 0.8, lastmod: DESIGN_SWEEP_LASTMOD },
+      { loc: '/games/history/', priority: 0.6, lastmod: TROPHY_HALL_TIE_LASTMOD },
     ] : []),
     { loc: '/horoscopes/', priority: 0.8, lastmod: horoscopeProgram.anchorDate },
+    { loc: '/seasons/', priority: 0.75, lastmod: SEASON_PAGES_LASTMOD },
+    ...SIGNS.map((sign) => ({ loc: `/seasons/${sign.slug}/`, priority: 0.7, lastmod: SEASON_SIGN_PAGES_LASTMOD })),
     // Spanish and Portuguese daily surfaces render the same edition from the
     // same facts; they date with the edition like /today/ does.
     ...(['es', 'pt'] as const).flatMap((locale) => [
@@ -432,15 +835,11 @@ export const GET: APIRoute = async () => {
     ...eventsPublication.pages.map((event) => ({
       loc: event.path,
       priority: 0.64,
-      lastmod: event.lastModified,
+      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVERGREEN_LASTMOD.get(event.path) ?? '']
+        .reduce((latest, date) => (date > latest ? date : latest)),
     })),
-    ...registryResearchPublication.items
-      .filter((item) => item.status === 'published' && item.visibleAt <= registryResearchPublication.generatedAt)
-      .map((item) => ({
-        loc: item.url,
-        priority: 0.56,
-        lastmod: item.publishedAt.slice(0, 10),
-      })),
+    // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
+    // /terminal/research/ above, is listed.
     ...(PEOPLE_DIRECTORY_INDEXABLE ? [{
       loc: '/people/',
       priority: 0.7,
@@ -455,6 +854,8 @@ export const GET: APIRoute = async () => {
       lastmod: lastmodDate(latestModifiedAt(
         PEOPLE_TEMPLATE_MODIFIED_AT,
         person.reviewedAtUtc,
+        // The page began rounding its degrees once (src/lib/people-degrees.ts).
+        ...(peopleDegreesChanged(person) ? [PEOPLE_DEGREES_MODIFIED_AT] : []),
       )),
     })),
     ...guides.map((g) => ({
@@ -472,11 +873,12 @@ export const GET: APIRoute = async () => {
       return [
         { loc: root, priority: 0.8, lastmod: horoscopeProgram.anchorDate },
         { loc: `${root}tomorrow/`, priority: 0.72, lastmod: horoscopeProgram.anchorDate },
-        { loc: `${root}weekly/`, priority: 0.74, lastmod: signProgram.readings.weekly.period.from },
-        { loc: `${root}monthly/`, priority: 0.72, lastmod: monthlyLastmod },
+        { loc: `${root}weekly/`, priority: 0.74, lastmod: laterDate(signProgram.readings.weekly.period.from, HOROSCOPE_TEMPLATE_LASTMOD) },
+        { loc: `${root}monthly/`, priority: 0.72, lastmod: laterDate(monthlyLastmod, HOROSCOPE_TEMPLATE_LASTMOD) },
         { loc: `${root}love/`, priority: 0.7, lastmod: horoscopeProgram.anchorDate },
         { loc: `${root}career/`, priority: 0.7, lastmod: horoscopeProgram.anchorDate },
-        { loc: `${root}2027/`, priority: 0.68, lastmod: YEARLY_HOROSCOPE_LASTMOD },
+        { loc: `${root}2026/`, priority: 0.66, lastmod: laterDate(YEARLY_2026_HOROSCOPE_LASTMOD, HOROSCOPE_TEMPLATE_LASTMOD) },
+        { loc: `${root}2027/`, priority: 0.68, lastmod: laterDate(YEARLY_HOROSCOPE_LASTMOD, HOROSCOPE_TEMPLATE_LASTMOD) },
       ];
     }),
     ...pairs.map((p) => ({
@@ -498,12 +900,22 @@ export const GET: APIRoute = async () => {
             priority: 0.65,
             lastmod: l.data.updated.toISOString().slice(0, 10),
           }]),
+    // Natal planet pairs enter only with a complete publication record; a
+    // local review build (PUBLIC_NATAL_ASPECTS_PREVIEW=1) stays out.
+    ...(natalAspectsPublished ? NATAL_ASPECT_PAIRS.map((pair) => ({
+      loc: `/learn/aspects/${pair}/`,
+      priority: 0.65,
+      lastmod: natalAspectsPublication.updated,
+    })) : []),
     ...birthdays.map((b) => ({
       loc: `/birthday/${b.id}/`,
       priority: 0.65,
       lastmod: lastmodDate(latestModifiedAt(
         b.data.updated,
         ...(birthdayFacts.days[b.id]?.cusp ? [BIRTHDAY_CUSP_OG_MODIFIED_AT] : []),
+        ...(peopleForBirthday(`/birthday/${b.id}/`).length > 0 ? [BIRTHDAY_FAMOUS_LINE_MODIFIED_AT] : []),
+        // The page began printing its degrees from birthdays-precise.json.
+        ...(birthdayDegreesChanged(b.id) ? [BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT] : []),
       )),
     })),
     ...almanac.map((entry) => ({
@@ -525,18 +937,84 @@ export const GET: APIRoute = async () => {
       return [{
         ...url,
         loc,
-        lastmod: EVERGREEN_LASTMOD.has(loc) ? getLastmod(loc) : url.lastmod,
+        lastmod: EVERGREEN_LASTMOD.has(loc) || EDITORIAL_METADATA[loc] ? getLastmod(loc) : url.lastmod,
       }];
     });
   });
-  const allUrls = [
+  // The placement pages whose sign windows now print NASA JPL Horizons' dates
+  // (src/lib/nasa-instants.ts), one day off before on at least one edge.
+  for (const slug of NASA_WINDOW_PLACEMENTS) {
+    const url = urls.find(({ loc }) => loc === `/learn/placements/${slug}/`);
+    if (url) url.lastmod = laterDate(url.lastmod, NASA_WINDOW_PLACEMENTS_LASTMOD);
+  }
+  // The comparison badges became SVG on the English pairs only. Apply the
+  // template date after making localized copies, which keep their own dates.
+  for (const pair of pairs) {
+    const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
+    if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
+  }
+  // The natal planet-pair release links each geometry guide to the same
+  // angle on the three pair pages.
+  if (natalAspectsPublished) {
+    for (const type of ['conjunction', 'sextile', 'square', 'trine', 'opposition']) {
+      const url = urls.find(({ loc }) => loc === `/learn/aspects/${type}/`);
+      if (url) url.lastmod = laterDate(url.lastmod, natalAspectsPublication.updated);
+    }
+  }
+  // Phones get the earlier hero framing back on the English and translated
+  // homes (the Russian home keeps its own poster).
+  for (const loc of ['/', '/es/', '/fr/', '/it/', '/pt/']) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-10-24');
+  }
+  // The coverage lines now read "through 2030", as the eclipse, full moon and
+  // retrograde tables run: the translated homes and tools hubs, and the
+  // Mercury placement pages' retrograde card.
+  const COVERAGE_2030 = [
+    '/es/', '/fr/', '/it/', '/pt/',
+    ...['es', 'fr', 'it', 'pt', 'ru'].map((locale) => `/${locale}/tools/`),
+    ...SIGNS.map((sign) => `/learn/placements/mercury-in-${sign.slug}/`),
+  ];
+  for (const loc of COVERAGE_2030) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-11-07');
+  }
+  // The methodology page says how event times are checked against NASA, and
+  // the events hub links to it.
+  for (const url of urls) {
+    if (url.loc === '/methodology/' || url.loc === '/events/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-08');
+    }
+  }
+  // The event pages of 2028 to 2030 were published on 2026-11-08 (their own
+  // dates come from events-publication-2028-2030.json), and the eclipse and
+  // full moon calendars, in English and translated, now link them.
+  const EVENTS_2030 = ['', '/es', '/fr', '/it', '/pt'].flatMap((prefix) => [
+    `${prefix}/eclipses/`, `${prefix}/full-moon-calendar/`,
+  ]);
+  for (const loc of EVENTS_2030) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
+  }
+  // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
+  // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no
+  // longer lists the article on a child's chart.
+  for (const url of urls) {
+    if (url.loc === '/occasions/' || url.loc === '/tools/' || url.loc === '/almanac/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-12');
+    }
+  }
+  return [
     ...urls,
     ...localizedUrls,
-  ];
+  ].filter((url) => !isHiddenChildPage(url.loc));
+}
 
-  const body = `<?xml version="1.0" encoding="UTF-8"?>
+/** A urlset of the given entries, each with its hreflang alternates, lastmod and priority. */
+export function renderUrlset(entries: readonly SitemapEntry[]): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${allUrls
+${entries
   .map(
     (u) => {
       const alternates = sitemapAlternates(u.loc);
@@ -556,8 +1034,8 @@ ${allUrls
   .join('\n')}
 </urlset>
 `;
+}
 
-  return new Response(body, {
-    headers: { 'Content-Type': 'application/xml; charset=utf-8' },
-  });
-};
+export const GET: APIRoute = async () => new Response(renderUrlset(await sitemapEntries()), {
+  headers: { 'Content-Type': 'application/xml; charset=utf-8' },
+});

@@ -1,7 +1,7 @@
 {
   "schema": "zodiacs.ai-evaluation.v1",
   "scope": "Local adapter with preselected tools and synthetic inputs; not LLM routing, host acceptance, accuracy-reference, load or production latency testing.",
-  "engine": "0.1.1-rc.16",
+  "engine": "1.1.0-rc.1",
   "cases": [
     {
       "id": "01",
@@ -156,22 +156,22 @@
     {
       "id": "31",
       "passed": true,
-      "tool": "search_zodiacs"
+      "tool": "get_horoscope"
     },
     {
       "id": "32",
       "passed": true,
-      "tool": "search_zodiacs"
+      "tool": "get_horoscope"
     },
     {
       "id": "33",
       "passed": true,
-      "tool": "search_zodiacs"
+      "tool": "get_horoscope"
     },
     {
       "id": "34",
       "passed": true,
-      "tool": "search_zodiacs"
+      "tool": "get_horoscope"
     },
     {
       "id": "35",
@@ -202,11 +202,161 @@
       "id": "40",
       "passed": true,
       "tool": "check_sky_fact"
+    },
+    {
+      "id": "41",
+      "passed": true,
+      "tool": "get_occasion_sky"
+    },
+    {
+      "id": "42",
+      "passed": true,
+      "tool": "get_occasion_sky"
+    },
+    {
+      "id": "43",
+      "passed": true,
+      "tool": "get_life_milestones"
+    },
+    {
+      "id": "44",
+      "passed": true,
+      "tool": "get_life_milestones"
+    },
+    {
+      "id": "45",
+      "passed": true,
+      "tool": "get_compatibility"
+    },
+    {
+      "id": "46",
+      "passed": true,
+      "tool": "get_compatibility"
+    },
+    {
+      "id": "47",
+      "passed": true,
+      "tool": "get_compatibility"
+    },
+    {
+      "id": "48",
+      "passed": true,
+      "tool": "get_compatibility"
+    },
+    {
+      "id": "49",
+      "passed": true,
+      "tool": "find_chart_twins"
+    },
+    {
+      "id": "50",
+      "passed": true,
+      "tool": "get_famous_chart"
+    },
+    {
+      "id": "51",
+      "passed": true,
+      "tool": "get_famous_chart"
+    },
+    {
+      "id": "52",
+      "passed": true,
+      "tool": "get_birthday"
+    },
+    {
+      "id": "53",
+      "passed": true,
+      "tool": "get_birthday"
+    },
+    {
+      "id": "54",
+      "passed": true,
+      "tool": "get_sky_calendar"
+    },
+    {
+      "id": "55",
+      "passed": true,
+      "tool": "get_natal_chart"
+    },
+    {
+      "id": "56",
+      "passed": true,
+      "tool": "get_natal_chart"
+    },
+    {
+      "id": "57",
+      "passed": true,
+      "tool": "get_natal_chart"
+    },
+    {
+      "id": "58",
+      "passed": true,
+      "tool": "get_horoscope_period"
+    },
+    {
+      "id": "59",
+      "passed": true,
+      "tool": "get_horoscope_period"
+    },
+    {
+      "id": "60",
+      "passed": true,
+      "tool": "get_horoscope_period"
+    },
+    {
+      "id": "61",
+      "passed": true,
+      "tool": "get_horoscope_period"
+    },
+    {
+      "id": "62",
+      "passed": true,
+      "tool": "get_chinese_zodiac"
+    },
+    {
+      "id": "63",
+      "passed": true,
+      "tool": "get_chinese_zodiac"
+    },
+    {
+      "id": "64",
+      "passed": true,
+      "tool": "get_chinese_zodiac"
+    },
+    {
+      "id": "65",
+      "passed": true,
+      "tool": "get_personal_transits"
+    },
+    {
+      "id": "66",
+      "passed": true,
+      "tool": "get_personal_transits"
+    },
+    {
+      "id": "67",
+      "passed": true,
+      "tool": "get_personal_transits"
+    },
+    {
+      "id": "68",
+      "passed": true,
+      "tool": "explain_astrology"
+    },
+    {
+      "id": "69",
+      "passed": true,
+      "tool": "explain_astrology"
+    },
+    {
+      "id": "70",
+      "passed": true,
+      "tool": "explain_astrology"
     }
   ],
   "localMilliseconds": {
-    "median": 0.752207999999996,
-    "p95": 21.319957999999986
+    "median": 2.0546390000001793,
+    "p95": 64.13097900000002
   },
   "unverified": [
     "Actual ChatGPT and Codex host acceptance",

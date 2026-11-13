@@ -1,0 +1,492 @@
+{
+  "schema": "zodiacs.convention-ids-check.v1",
+  "checkedAt": "2026-10-28T00:22:50.215Z",
+  "target": "https://zodiacs.org",
+  "merge": "d698bc084091b8c9a63d95e0572b270386e4b077",
+  "deployment": {
+    "deploymentId": "dpl_ErxbAH1Qp8jfhqWVKY3w6CDKpet1",
+    "aliasUpdatedAt": "2026-10-28T00:16:41.864Z",
+    "readyState": "READY",
+    "target": "production",
+    "githubCommitSha": "457ad878da3d6cbbf7e4e8a9d1d8ad0159c8187e"
+  },
+  "control": "suite-0.1.0",
+  "registry": {
+    "version": "2026-10-27",
+    "ids": 156,
+    "namespaces": 58,
+    "added": [
+      "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+      "flag:zone-history-disputed"
+    ]
+  },
+  "engine": "1.1.0-rc.1",
+  "suite": "0.1.0",
+  "served": {
+    "registry": {
+      "status": 200,
+      "sha256": "700979e10f73d7a7e7b39bdc947313ecb7f14d03a80232551696a672a1d12425",
+      "entries": 156,
+      "namespaces": 58
+    },
+    "openapi": {
+      "status": 200,
+      "sha256": "40575df437f1a1be3573689166070db10df0902afade21d6a703b3068108a2ed"
+    }
+  },
+  "requests": [
+    {
+      "endpoint": "chart",
+      "name": "utc",
+      "status": 200,
+      "schema": "zodiacs.calculation-receipt.draft-v1",
+      "ids": 26,
+      "sha256": "dce6069a1b41c867468179459ac89cc7bc9efd3d7586b37b97dd05c321d1e835",
+      "citeEqualsDocumented": true,
+      "problems": []
+    },
+    {
+      "endpoint": "chart",
+      "name": "local",
+      "status": 200,
+      "schema": "zodiacs.calculation-receipt.draft-v1",
+      "ids": 26,
+      "sha256": "f2fd10a5768fee83d025e77514be548aeb4928e975f250ec75bca0969e2b86ed",
+      "citeEqualsDocumented": false,
+      "problems": []
+    },
+    {
+      "endpoint": "houses",
+      "name": "koch",
+      "status": 200,
+      "schema": "zodiacs.calculation-receipt.draft-v1",
+      "ids": 26,
+      "sha256": "de453c10c39652e3598e6e7570a11d30186738c10f3f2e0429d7e648a978a9d6",
+      "citeEqualsDocumented": true,
+      "problems": []
+    },
+    {
+      "endpoint": "chart",
+      "name": "polar",
+      "status": 200,
+      "schema": "zodiacs.calculation-receipt.draft-v1",
+      "ids": 28,
+      "sha256": "463b3fecb17f1a152bc06b2a7ece35f2352b2b745bed882cc0ce60a47d338b96",
+      "citeEqualsDocumented": null,
+      "problems": []
+    },
+    {
+      "endpoint": "positions",
+      "name": "two",
+      "status": 200,
+      "schema": "zodiacs.compute-receipt.v1",
+      "ids": 22,
+      "sha256": "1298699a85fca59c4f4c2f98248a5d4c01cd22f200f63021450d3e018360e019",
+      "citeEqualsDocumented": true,
+      "problems": []
+    },
+    {
+      "endpoint": "events",
+      "name": "october",
+      "status": 200,
+      "schema": "zodiacs.compute-receipt.v1",
+      "ids": 25,
+      "sha256": "68cb0ee3f85cddd7d63aab25f1c5b6997cfb62a21618a52758702cc43dae2b36",
+      "citeEqualsDocumented": true,
+      "problems": []
+    },
+    {
+      "endpoint": "time",
+      "name": "pinned",
+      "status": 200,
+      "schema": "zodiacs.compute-receipt.v1",
+      "ids": 24,
+      "sha256": "07d3ce8f9540af87b44a2683b0d9f9419a8546ffdf5ca2428f6836dec95ab16b",
+      "citeEqualsDocumented": false,
+      "problems": []
+    },
+    {
+      "endpoint": "time",
+      "name": "gap",
+      "status": 200,
+      "schema": "zodiacs.compute-receipt.v1",
+      "ids": 24,
+      "sha256": "07d3ce8f9540af87b44a2683b0d9f9419a8546ffdf5ca2428f6836dec95ab16b",
+      "citeEqualsDocumented": false,
+      "problems": []
+    },
+    {
+      "endpoint": "sky-fact",
+      "name": "phase",
+      "status": 200,
+      "schema": "zodiacs.compute-receipt.v1",
+      "ids": 25,
+      "sha256": "fcde3856c86838f7ca7a12dded2a88ebab3a6571b8fc77ebb358d6870a451a4f",
+      "citeEqualsDocumented": true,
+      "problems": []
+    },
+    {
+      "endpoint": "sky-fact",
+      "name": "aspect",
+      "status": 200,
+      "schema": "zodiacs.compute-receipt.v1",
+      "ids": 27,
+      "sha256": "d599056e16e962ee89b9dbcc811adf3ba908a5e5691adee81ebca3406992bd61",
+      "citeEqualsDocumented": false,
+      "problems": []
+    },
+    {
+      "endpoint": "elections",
+      "name": "london",
+      "status": 200,
+      "schema": "zodiacs.compute-receipt.v1",
+      "ids": 27,
+      "sha256": "52413625b395839d157de81a090b6f6b3ef10cffc996c6ad31a5bf2f78625cfe",
+      "citeEqualsDocumented": true,
+      "problems": []
+    }
+  ],
+  "mcp": {
+    "initialize": 200,
+    "session": false,
+    "list": 200,
+    "call": 200,
+    "receiptSchemas": 1,
+    "ids": 25,
+    "sha256": "fcde3856c86838f7ca7a12dded2a88ebab3a6571b8fc77ebb358d6870a451a4f",
+    "problems": []
+  },
+  "named": 46,
+  "conformance": {
+    "page": {
+      "status": 200,
+      "sha256": "096b3d5e8d0be412c82c33965f8371ddd5f33e930c9fce7e6621848733e62be2"
+    },
+    "suite": "0.2.0",
+    "files": [
+      {
+        "file": "L1-positions.json",
+        "status": 200,
+        "sha256": "4e45a5267d806a38624c6cc1eb29dd66229e5ec908fd87de9e1ec69459bb84b8",
+        "summary": true,
+        "registry": false,
+        "suiteVersion": "0.2.0"
+      },
+      {
+        "file": "L2-houses-angles.json",
+        "status": 200,
+        "sha256": "fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5",
+        "summary": true,
+        "registry": false,
+        "suiteVersion": "0.2.0"
+      },
+      {
+        "file": "L3-time-calendars.json",
+        "status": 200,
+        "sha256": "51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66",
+        "summary": true,
+        "registry": false,
+        "suiteVersion": "0.2.0"
+      }
+    ],
+    "vectors": 500
+  },
+  "results": [
+    {
+      "name": "the zodiacs.org alias names a READY production deployment built from a commit that contains the merge",
+      "ok": true,
+      "detail": {
+        "containsMerge": true
+      }
+    },
+    {
+      "name": "this clone's engine is the one the registry names (1.1.0-rc.1)",
+      "ok": true,
+      "detail": {
+        "engineVersion": "1.1.0-rc.1"
+      }
+    },
+    {
+      "name": "registry.json is the merge's registry, with every id's address",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "entries": 156,
+        "namespaces": 58
+      }
+    },
+    {
+      "name": "registry.json holds the 2 ids the merge added, each with its address",
+      "ok": true,
+      "detail": {
+        "added": [
+          "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+          "flag:zone-history-disputed"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "name": "/api/v1/openapi.json documents conventionIds on the calculation receipt and the compute receipt",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "calculation": true,
+        "compute": true
+      }
+    },
+    {
+      "name": "the requests sent are the OpenAPI document's own examples",
+      "ok": true,
+      "detail": {
+        "undocumented": []
+      }
+    },
+    {
+      "name": "chart utc: the receipt lists its and its result's ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "chart",
+        "name": "utc",
+        "status": 200,
+        "schema": "zodiacs.calculation-receipt.draft-v1",
+        "ids": 26,
+        "sha256": "dce6069a1b41c867468179459ac89cc7bc9efd3d7586b37b97dd05c321d1e835",
+        "citeEqualsDocumented": true,
+        "problems": []
+      }
+    },
+    {
+      "name": "chart local: the receipt lists its and its result's ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "chart",
+        "name": "local",
+        "status": 200,
+        "schema": "zodiacs.calculation-receipt.draft-v1",
+        "ids": 26,
+        "sha256": "f2fd10a5768fee83d025e77514be548aeb4928e975f250ec75bca0969e2b86ed",
+        "citeEqualsDocumented": false,
+        "problems": []
+      }
+    },
+    {
+      "name": "houses koch: the receipt lists its and its result's ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "houses",
+        "name": "koch",
+        "status": 200,
+        "schema": "zodiacs.calculation-receipt.draft-v1",
+        "ids": 26,
+        "sha256": "de453c10c39652e3598e6e7570a11d30186738c10f3f2e0429d7e648a978a9d6",
+        "citeEqualsDocumented": true,
+        "problems": []
+      }
+    },
+    {
+      "name": "a synthetic polar chart, whose Placidus falls back: the receipt lists its and its result's ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "chart",
+        "name": "polar",
+        "status": 200,
+        "schema": "zodiacs.calculation-receipt.draft-v1",
+        "ids": 28,
+        "sha256": "463b3fecb17f1a152bc06b2a7ece35f2352b2b745bed882cc0ce60a47d338b96",
+        "citeEqualsDocumented": null,
+        "problems": []
+      }
+    },
+    {
+      "name": "positions two: the receipt lists its own fields' ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "positions",
+        "name": "two",
+        "status": 200,
+        "schema": "zodiacs.compute-receipt.v1",
+        "ids": 22,
+        "sha256": "1298699a85fca59c4f4c2f98248a5d4c01cd22f200f63021450d3e018360e019",
+        "citeEqualsDocumented": true,
+        "problems": []
+      }
+    },
+    {
+      "name": "events october: the receipt lists its own fields' ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "events",
+        "name": "october",
+        "status": 200,
+        "schema": "zodiacs.compute-receipt.v1",
+        "ids": 25,
+        "sha256": "68cb0ee3f85cddd7d63aab25f1c5b6997cfb62a21618a52758702cc43dae2b36",
+        "citeEqualsDocumented": true,
+        "problems": []
+      }
+    },
+    {
+      "name": "time pinned: the receipt lists its own fields' ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "time",
+        "name": "pinned",
+        "status": 200,
+        "schema": "zodiacs.compute-receipt.v1",
+        "ids": 24,
+        "sha256": "07d3ce8f9540af87b44a2683b0d9f9419a8546ffdf5ca2428f6836dec95ab16b",
+        "citeEqualsDocumented": false,
+        "problems": []
+      }
+    },
+    {
+      "name": "time gap: the receipt lists its own fields' ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "time",
+        "name": "gap",
+        "status": 200,
+        "schema": "zodiacs.compute-receipt.v1",
+        "ids": 24,
+        "sha256": "07d3ce8f9540af87b44a2683b0d9f9419a8546ffdf5ca2428f6836dec95ab16b",
+        "citeEqualsDocumented": false,
+        "problems": []
+      }
+    },
+    {
+      "name": "sky-fact phase: the receipt lists its own fields' ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "sky-fact",
+        "name": "phase",
+        "status": 200,
+        "schema": "zodiacs.compute-receipt.v1",
+        "ids": 25,
+        "sha256": "fcde3856c86838f7ca7a12dded2a88ebab3a6571b8fc77ebb358d6870a451a4f",
+        "citeEqualsDocumented": true,
+        "problems": []
+      }
+    },
+    {
+      "name": "sky-fact aspect: the receipt lists its own fields' ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "sky-fact",
+        "name": "aspect",
+        "status": 200,
+        "schema": "zodiacs.compute-receipt.v1",
+        "ids": 27,
+        "sha256": "d599056e16e962ee89b9dbcc811adf3ba908a5e5691adee81ebca3406992bd61",
+        "citeEqualsDocumented": false,
+        "problems": []
+      }
+    },
+    {
+      "name": "elections london: the receipt lists its own fields' ids, registered and cited",
+      "ok": true,
+      "detail": {
+        "endpoint": "elections",
+        "name": "london",
+        "status": 200,
+        "schema": "zodiacs.compute-receipt.v1",
+        "ids": 27,
+        "sha256": "52413625b395839d157de81a090b6f6b3ef10cffc996c6ad31a5bf2f78625cfe",
+        "citeEqualsDocumented": true,
+        "problems": []
+      }
+    },
+    {
+      "name": "the hosted MCP advertises conventionIds in check_sky_fact's output schema",
+      "ok": true,
+      "detail": {
+        "initialize": 200,
+        "list": 200,
+        "tool": true,
+        "receiptSchemas": 1
+      }
+    },
+    {
+      "name": "the hosted MCP's check_sky_fact receipt lists its ids, registered and cited, as the compute API's for the same request",
+      "ok": true,
+      "detail": {
+        "initialize": 200,
+        "session": false,
+        "list": 200,
+        "call": 200,
+        "receiptSchemas": 1,
+        "ids": 25,
+        "sha256": "fcde3856c86838f7ca7a12dded2a88ebab3a6571b8fc77ebb358d6870a451a4f",
+        "problems": []
+      }
+    },
+    {
+      "name": "the receipts name each of the 19 ids of the coverage statements and compute receipts, and the ephemeris",
+      "ok": true,
+      "detail": {
+        "wanted": 19,
+        "unnamed": []
+      }
+    },
+    {
+      "name": "the conformance page's Dataset is suite 0.1.0 with three vectors/0.1.0/ files",
+      "ok": false,
+      "detail": {
+        "status": 200,
+        "version": "0.2.0",
+        "files": 3
+      }
+    },
+    {
+      "name": "vectors/0.1.0/L1-positions.json: its SHA-256 is the summary's and the registry's",
+      "ok": false,
+      "detail": {
+        "file": "L1-positions.json",
+        "status": 200,
+        "sha256": "4e45a5267d806a38624c6cc1eb29dd66229e5ec908fd87de9e1ec69459bb84b8",
+        "summary": true,
+        "registry": false,
+        "suiteVersion": "0.2.0"
+      }
+    },
+    {
+      "name": "vectors/0.1.0/L2-houses-angles.json: its SHA-256 is the summary's and the registry's",
+      "ok": false,
+      "detail": {
+        "file": "L2-houses-angles.json",
+        "status": 200,
+        "sha256": "fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5",
+        "summary": true,
+        "registry": false,
+        "suiteVersion": "0.2.0"
+      }
+    },
+    {
+      "name": "vectors/0.1.0/L3-time-calendars.json: its SHA-256 is the summary's and the registry's",
+      "ok": false,
+      "detail": {
+        "file": "L3-time-calendars.json",
+        "status": 200,
+        "sha256": "51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66",
+        "summary": true,
+        "registry": false,
+        "suiteVersion": "0.2.0"
+      }
+    },
+    {
+      "name": "all 500 vectors list their kind and arbiter ids, sorted and registered",
+      "ok": false,
+      "detail": {
+        "vectors": 500,
+        "problems": 500,
+        "sample": [
+          "L1-POS-0001",
+          "L1-POS-0002",
+          "L1-POS-0003"
+        ]
+      }
+    }
+  ],
+  "passed": 20,
+  "failed": 5
+}

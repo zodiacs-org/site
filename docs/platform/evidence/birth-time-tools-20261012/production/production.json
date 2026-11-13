@@ -1,0 +1,98 @@
+{
+  "schema": "zodiacs.birth-time-tools-production.v1",
+  "base": "https://zodiacs.org",
+  "control": false,
+  "expectedCommit": "ef46394374ae1ccd8de3ef8b312734e0f3f1e474",
+  "readAt": "2026-10-14T03:58:20.846Z",
+  "passed": 11,
+  "of": 11,
+  "checks": [
+    {
+      "deploymentId": "dpl_BQLq9CNADcAhSKT3NCdyTASBBmxF",
+      "aliasUpdatedAt": "2026-10-14T03:57:18.080Z",
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "ef46394374ae1ccd8de3ef8b312734e0f3f1e474",
+      "name": "the zodiacs.org alias names a READY production deployment built from the commit",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "d3678f0ec87bc49a22b3ad599f8ce942f69a2a37c2ecfa5108f8e2d20a3bc7cf",
+      "version": "0.1.0-rc.24",
+      "name": "the MCP adapter's manifest is the commit's, byte for byte",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "bytes": 911940,
+      "sha256": "23445637af974fa1ad77ed8f49b4807cc164e1f6572819ebae5ad8d295fffe49",
+      "supersedes": "0.1.0-rc.23",
+      "name": "the MCP adapter 0.1.0-rc.24 archive has the manifest's size and digest",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "ea9da4d7827fc388a2adfc5dfa5466734683778717785964d58a9f32ddc1fc41",
+      "name": "the place index is the commit's, byte for byte, with its list of places filed under another letter",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "documentedRequest": true,
+      "flags": [
+        "dst-gap"
+      ],
+      "name": "the compute API's time endpoint answers a wall time the spring clock change skipped, flagged dst-gap, as documented",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "documentedRequest": true,
+      "flags": [],
+      "name": "the compute API's time endpoint answers a date written in the Julian calendar, converted, with the calendar note for its country, as documented",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "documentedRequest": true,
+      "flags": [],
+      "atlas": {
+        "secondsFromTzdb": -7200
+      },
+      "name": "the compute API's time endpoint answers a place of the time atlas, read beside tzdb with the atlas's rule, uncertainty flag and citations, as documented",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "longitude": -4.48628,
+      "secondsFromTzdb": -0.293,
+      "name": "tzdb reads an atlas place on the place's own longitude when none is sent: Brest in 1880 agrees with the atlas within a second",
+      "ok": true
+    },
+    {
+      "status": 400,
+      "code": "invalid-request",
+      "pointer": "/longitude",
+      "message": "With atlasPlace, must be the place's own longitude, to 0.01°, or be left out, when the place's own is used.",
+      "name": "another town's longitude with an atlas place is refused at /longitude",
+      "ok": true
+    },
+    {
+      "status": 400,
+      "code": "invalid-request",
+      "pointer": "/atlasPlace",
+      "message": "Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place's clock.",
+      "name": "an atlas place outside local.zone is refused at /atlasPlace",
+      "ok": true
+    },
+    {
+      "status": 400,
+      "code": "invalid-request",
+      "pointer": "/country",
+      "message": "With atlasPlace, must be the place's own country, FR or US, or be left out, so that the calendar history is that place's.",
+      "name": "another country than the atlas place's is refused at /country",
+      "ok": true
+    }
+  ]
+}

@@ -1,14 +1,19 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import SignIcon from '../../../components/SignIcon.astro';
+import SignGuideHero from '../../../components/SignGuideHero.astro';
+import SignGuideFacts from '../../../components/SignGuideFacts.astro';
 import Faq from '../../../components/Faq.astro';
 import CollectBand from '../../../components/CollectBand.astro';
 import ShareRow from '../../../components/ShareRow.astro';
-import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signDates, signName } from '../../../lib/signs';
-import { localizePath } from '../../../lib/i18n';
+import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signName } from '../../../lib/signs';
+import { signDateRange } from '../../../lib/sign-display';
+import { planetLabel } from '../../../lib/i18n/astrology';
+import { localizePath, t } from '../../../lib/i18n';
 import { frenchGuideFor } from '../../../data/fr-guides';
 import { pairSlug } from '../../../lib/compat';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
+import { signArtCard } from '../../../lib/og-art-cards.mjs';
 
 export function getStaticPaths() {
   return SIGN_SLUGS.map((sign) => ({ params: { sign } }));
@@ -34,6 +39,15 @@ const easeful = {
   pisces: ['cancer', 'scorpio', 'capricorn'],
 }[sign.slug]!;
 
+// The hero's quick answers, in the labels this locale's catalogue already
+// carries for the chart inspector (dates, element, ruler).
+const upperFirst = (value: string) => value.replace(/^\p{L}/u, (letter) => letter.toLocaleUpperCase('fr'));
+const heroFacts = [
+  { label: t('fr', 'dates'), value: upperFirst(signDateRange(sign, 'fr')) },
+  { label: t('fr', 'element'), value: upperFirst(elementLabel(sign.element, 'fr')) },
+  { label: t('fr', 'ruler'), value: planetLabel('fr', sign.ruler), glyph: sign.ruler },
+];
+
 const jsonLd = [
   {
     '@type': 'Article',
@@ -45,7 +59,7 @@ const jsonLd = [
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org/fr/${sign.slug}/` },
-    image: `https://zodiacs.org/assets/og/v2/sign/${sign.slug}.png`,
+    image: `https://zodiacs.org${signArtCard(sign.slug, 'fr')}`,
     inLanguage: 'fr',
     about: { '@type': 'Thing', name: `${signName(sign, 'fr')} (astrologie)` },
   },
@@ -72,25 +86,20 @@ const jsonLd = [
   title={`${guide.title} | Zodiacs.org`}
   description={guide.description}
   path={`/fr/${sign.slug}/`}
-  image={`/assets/og/v2/sign/${sign.slug}.png`}
-  imageAlt={`${signName(sign, 'fr')} — guide du signe sur Zodiacs.org`}
+  image={signArtCard(sign.slug, 'fr')}
+  imageAlt={`${signName(sign, 'fr')}, guide du signe sur Zodiacs.org`}
   type="article"
   locale="fr"
   jsonLd={jsonLd}
 >
   <article style={`--sign:${sign.hue}`}>
-    <header class="guide-es-hero container">
-      <SignIcon sign={sign.slug} size={168} loading="eager" class="guide-es-hero__icon" />
-      <div>
-        <span class="eyebrow">{sign.glyph} · {elementLabel(sign.element, 'fr')} · {signDates(sign, 'fr')}</span>
-        <h1 class="display">{signName(sign, 'fr')}</h1>
-        <p>{guide.intro[0]}</p>
-        <div class="guide-es-hero__ctas">
-          <a class="btn btn--primary" href={localizePath('fr', '/birth-chart/')}><span>Obtiens ton thème astral gratuit</span><span class="orb">↗</span></a>
-          <a class="btn btn--ghost" href={localizePath('fr', '/compatibility/')}><span>Voir la compatibilité</span></a>
-        </div>
-      </div>
-    </header>
+    <SignGuideHero sign={sign.slug} locale="fr" title={signName(sign, 'fr')} sub={guide.intro[0]}>
+      <a class="btn btn--primary btn--lg" href={localizePath('fr', '/birth-chart/')}><span>Obtiens ton thème astral gratuit</span><span class="orb" aria-hidden="true">↗</span></a>
+      <a class="btn btn--glass btn--lg" href={localizePath('fr', '/compatibility/')}><span>Voir la compatibilité</span></a>
+    </SignGuideHero>
+    <div class="kwrap guide-locale-facts">
+      <SignGuideFacts facts={heroFacts} />
+    </div>
 
     <div class="container container--narrow guide-es-body">
       <div class="reveal">
@@ -140,7 +149,7 @@ const jsonLd = [
       </section>
 
       <ShareRow
-        text={`${signName(sign, 'fr')} — le guide complet`}
+        text={`${signName(sign, 'fr')}, le guide complet`}
         url={`https://zodiacs.org/fr/${sign.slug}/`}
         locale="fr"
       />
@@ -160,33 +169,7 @@ const jsonLd = [
 </Base>
 
 <style>
-  .guide-es-hero {
-    display: grid;
-    gap: clamp(22px, 5vw, 44px);
-    align-items: center;
-    padding-block: clamp(28px, 6vw, 68px) clamp(22px, 5vw, 42px);
-  }
-  @media (min-width: 760px) {
-    .guide-es-hero { grid-template-columns: auto minmax(0, 1fr); }
-  }
-  .guide-es-hero :global(.guide-es-hero__icon) {
-    width: clamp(118px, 16vw, 168px);
-    filter: drop-shadow(0 18px 44px color-mix(in oklab, var(--sign) 30%, transparent));
-  }
-  .guide-es-hero h1 {
-    margin: 12px 0 14px;
-    font-size: var(--text-hero);
-    line-height: 0.96;
-  }
-  .guide-es-hero p {
-    margin: 0;
-    max-width: 58ch;
-    color: var(--muted);
-    font-size: var(--text-lg);
-    line-height: 1.6;
-    text-wrap: pretty;
-  }
-  .guide-es-hero__ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .guide-locale-facts { margin-bottom: clamp(36px, 5vw, 56px); }
   .guide-es-body { display: grid; gap: clamp(28px, 5vw, 46px); }
   .guide-es-panel__core { padding: clamp(22px, 4vw, 32px); display: grid; gap: 12px; }
   .guide-es-panel h2 { margin: 0; font-size: var(--text-xl); }

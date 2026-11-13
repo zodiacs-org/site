@@ -75,7 +75,7 @@ describe('chartSignature', () => {
     expect(signature.title).toBe('Sun trine Mars');
     expect(signature.detail).toBe('0.8° orb');
     expect(signature.summary).toMatch(/Your Sun.*your Mars/i);
-    expect(signature.summary).toContain('purpose and action can reinforce each other');
+    expect(signature.summary).toContain('Purpose and action can reinforce each other');
   });
 
   it('finds a sign stellium before whole-chart balance', () => {

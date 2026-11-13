@@ -9,16 +9,52 @@ export const GUIDE_LOADER_MARKER = 'zodiacs-guide-loader-v1';
 export const GUIDE_SHELL_URL = '/assets/assistant-ui.js?v=icon-guide-5';
 export const GUIDE_PRIVATE_SESSION_KEY = 'zodiacs.guide.private-session.v1';
 export const GUIDE_OPEN_PENDING_KEY = 'zodiacs.guide.open-pending.v1';
+/**
+ * The question an opener carried (a quick-prompt chip's site-written
+ * question, or what the visitor typed into site search), kept in this tab's
+ * sessionStorage across the private reload so the reopened drawer can still
+ * offer it as an editable draft. Nothing is sent until the visitor sends it.
+ */
+export const GUIDE_OPEN_PROMPT_KEY = 'zodiacs.guide.open-prompt.v1';
 
-export function guideLoaderSource(locale = 'en') {
+/**
+ * `carryPrompt` keeps an opener's question across the private reload (see
+ * GUIDE_OPEN_PROMPT_KEY). Astro pages turn it on through SiteFooter. The
+ * frozen wing pages (Registry, SDK, Terminal, archive) call it without
+ * options and keep the earlier loader byte for byte; they carry no
+ * quick-prompt chips.
+ */
+export function guideLoaderSource(locale = 'en', { carryPrompt = false } = {}) {
   const serializedLocale = JSON.stringify(String(locale));
+  const promptKeyLine = carryPrompt ? `\n    var openPromptKey = '${GUIDE_OPEN_PROMPT_KEY}';` : '';
+  const pendingOpenerSource = carryPrompt ? `function pendingOpener() {
+      var prompt = safeSessionGet(openPromptKey);
+      try { sessionStorage.removeItem(openPromptKey); } catch (error) {}
+      if (!prompt) return null;
+      var openers = document.querySelectorAll('[data-assistant-open][data-assistant-prompt]');
+      for (var i = 0; i < openers.length; i += 1) {
+        if (openers[i].getAttribute('data-assistant-prompt') === prompt) return openers[i];
+      }
+      var holder = document.createElement('span');
+      holder.hidden = true;
+      holder.setAttribute('data-assistant-prompt', prompt.slice(0, 280));
+      document.body.appendChild(holder);
+      return holder;
+    }
+    ` : '';
+  const transitionParam = carryPrompt ? 'from' : '';
+  const rememberPrompt = carryPrompt ? `
+        var prompt = from && from.getAttribute('data-assistant-prompt');
+        if (prompt) sessionStorage.setItem(openPromptKey, prompt);` : '';
+  const reopenWith = carryPrompt ? 'pendingOpener()' : 'null';
+  const transitionArg = carryPrompt ? 'target' : '';
   return `(function () {
     var modulePromise;
     var timer = 0;
     var intentPending = false;
     var defaultLocale = ${serializedLocale};
     var privateSessionKey = '${GUIDE_PRIVATE_SESSION_KEY}';
-    var openPendingKey = '${GUIDE_OPEN_PENDING_KEY}';
+    var openPendingKey = '${GUIDE_OPEN_PENDING_KEY}';${promptKeyLine}
     function safeSessionGet(key) {
       try { return sessionStorage.getItem(key); } catch (error) { return null; }
     }
@@ -33,12 +69,12 @@ export function guideLoaderSource(locale = 'en') {
       }
       return false;
     }
-    function beginPrivateTransition() {
+    ${pendingOpenerSource}function beginPrivateTransition(${transitionParam}) {
       if (!document.documentElement.hasAttribute('data-guide-analytics-boundary')) return false;
       if (safeSessionGet(privateSessionKey) === '1') return false;
       try {
         sessionStorage.setItem(privateSessionKey, '1');
-        sessionStorage.setItem(openPendingKey, '1');
+        sessionStorage.setItem(openPendingKey, '1');${rememberPrompt}
         location.reload();
       } catch (error) {
         location.assign('/ask/#guide');
@@ -63,7 +99,7 @@ export function guideLoaderSource(locale = 'en') {
     }
     function mountGuide() {
       loadGuide().then(function (mod) {
-        if (consumePendingOpen()) return mod.openAssistant(defaultLocale, null);
+        if (consumePendingOpen()) return mod.openAssistant(defaultLocale, ${reopenWith});
         return mod.bootstrapGuide(defaultLocale).then(stopIntentListener);
       }).catch(function () {});
     }
@@ -84,7 +120,7 @@ export function guideLoaderSource(locale = 'en') {
       event.preventDefault();
       event.stopImmediatePropagation();
       stopScheduledMount();
-      if (beginPrivateTransition()) return;
+      if (beginPrivateTransition(${transitionArg})) return;
       loadGuide().then(function (mod) {
         return mod.openAssistant(
           target.getAttribute('data-assistant-locale') || defaultLocale,

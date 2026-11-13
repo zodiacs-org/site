@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { randomUUID } from 'node:crypto';
+import { waitUntil } from '@vercel/functions';
 import {
   GUIDE_LIMITS,
   GUIDE_SCHEMAS,
@@ -25,9 +26,11 @@ import {
   GUIDE_PROVIDER_MODEL,
   GUIDE_SAFETY_RESPONSE_MODEL,
 } from './policy.js';
-import { guideSafetyCompletion, streamSafeGuideOpenAIResponse } from './safety.js';
+import { guideSafetyCompletion } from './safety.js';
+import { streamSafeGuideAnthropicResponse } from './anthropic.js';
 import { classifyGuideCurrentTurnSafety } from './local-safety.js';
 import { GuideQuotaController, GuideQuotaError, type GuideQuotaLease } from './quota.js';
+import { countGuideFeedback } from './feedback.js';
 import {
   guideAnonymousPrincipal,
   guideOperationHash,
@@ -80,18 +83,21 @@ interface GuideHandlerDependencies {
   now: () => number;
   protocolReady: boolean;
   authorizeTurn?: GuideAuthorizeTurn;
-  streamProvider: typeof streamSafeGuideOpenAIResponse;
+  streamProvider: typeof streamSafeGuideAnthropicResponse;
   quotaController?: GuideQuotaController;
   fetcher: typeof fetch;
   uuid: () => string;
   reportProviderDiagnostic: (diagnostic: GuideProviderDiagnosticV1) => void;
+  reportFeedback: (feedback: { event: 'guide_feedback_v1'; vote: GuideFeedbackVote }) => void;
+  /** Keeps the daily vote count running after the 204 has been sent. */
+  waitUntil: (promise: Promise<unknown>) => void;
 }
 
 const DEFAULT_DEPENDENCIES: GuideHandlerDependencies = {
   env: process.env,
   now: Date.now,
   protocolReady: true,
-  streamProvider: streamSafeGuideOpenAIResponse,
+  streamProvider: streamSafeGuideAnthropicResponse,
   fetcher: fetch,
   uuid: randomUUID,
   reportProviderDiagnostic: (diagnostic) => {
@@ -99,6 +105,12 @@ const DEFAULT_DEPENDENCIES: GuideHandlerDependencies = {
     // prompt, output, header, stack, or provider identifier.
     console.warn(JSON.stringify(diagnostic));
   },
+  reportFeedback: (feedback) => {
+    // Only the vote. The daily totals are kept in Supabase
+    // (guide_feedback_daily; scripts/guide-feedback-report.mjs prints them).
+    console.info(JSON.stringify(feedback));
+  },
+  waitUntil,
 };
 
 function sanitizedProviderDiagnostic(value: unknown): GuideProviderDiagnosticV1 | null {
@@ -154,6 +166,23 @@ function setPrivateHeaders(res: any, contentType: string): void {
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
   res.setHeader('Vary', 'Authorization, Cookie, Origin');
+}
+
+/**
+ * Thumbs up or down on a Guide answer. The vote is the whole message: the
+ * request has no body, and the log line holds only the vote, so no question,
+ * answer, identity or session ever reaches it.
+ */
+export type GuideFeedbackVote = 'up' | 'down';
+
+function feedbackVote(req: any): GuideFeedbackVote | null {
+  const query = req.query;
+  if (!query || typeof query !== 'object' || Array.isArray(query)) return null;
+  const keys = Object.keys(query);
+  if (keys.length !== 1 || keys[0] !== 'action') return null;
+  if (query.action === 'feedback-up') return 'up';
+  if (query.action === 'feedback-down') return 'down';
+  return null;
 }
 
 function sendJson(res: any, status: number, body: unknown): void {
@@ -611,6 +640,35 @@ export function createGuideHandler(overrides: Partial<GuideHandlerDependencies> 
       sendJson(res, 405, { error: 'method_not_allowed' });
       return;
     }
+    const vote = feedbackVote(req);
+    if (vote) {
+      if (dependencies.env.GUIDE_KILL_SWITCH === '1') {
+        sendJson(res, 503, { error: 'disabled' });
+        return;
+      }
+      if (!isExactAccountOrigin(req, dependencies.env)) {
+        sendJson(res, 403, { error: 'forbidden' });
+        return;
+      }
+      // Only a browser that already holds Guide's signed session cookie (it
+      // has had an answer) is counted, so a bare script cannot stuff the
+      // tally. Others get the same empty 204 and nothing is recorded.
+      const principal = guideAnonymousPrincipal(req, guideSecret(dependencies.env));
+      if (principal && principal.setCookie === null) {
+        dependencies.reportFeedback({ event: 'guide_feedback_v1', vote });
+        // Fire and forget: the count sends only the vote, never fails the 204
+        // and logs nothing.
+        try {
+          dependencies.waitUntil(countGuideFeedback(dependencies.fetcher, dependencies.env, vote));
+        } catch {
+          // No request context to wait on; the count still runs.
+        }
+      }
+      res.statusCode = 204;
+      setPrivateHeaders(res, 'text/plain; charset=utf-8');
+      res.end();
+      return;
+    }
     if (action(req) !== GUIDE_ACTION) {
       sendJson(res, 404, { error: 'invalid_action' });
       return;
@@ -687,7 +745,7 @@ export function createGuideHandler(overrides: Partial<GuideHandlerDependencies> 
       const localCrisis = classifyGuideCurrentTurnSafety(
         authority.turn.projection.userMessage,
       ) === 'crisis';
-      const apiKey = dependencies.env.OPENAI_API_KEY;
+      const apiKey = dependencies.env.GUIDE_ANTHROPIC_API_KEY;
       if (!localCrisis && (typeof apiKey !== 'string' || !apiKey)) {
         sendJson(res, 503, rejection(request, 'temporarily_unavailable', true));
         return;

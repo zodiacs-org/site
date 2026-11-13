@@ -43,16 +43,16 @@ export function yearCacheFresh(cache: YearScanCache, engineVersion: string, now:
 /** The ascendant is not in BODY_ROLE; its lines live here, same register. */
 const ASC_LINE: Record<ScanAspectEvent['aspect'], Record<'Jupiter' | 'Saturn', string>> = {
   conjunction: {
-    Jupiter: 'Jupiter crosses your rising degree — the outward year gets bigger: more room, more visibility, more yes.',
-    Saturn: 'Saturn crosses your rising degree — a season of taking yourself more seriously, and being taken that way.',
+    Jupiter: 'Jupiter crosses your rising degree. The outward year gets bigger: more room, more visibility, more yes.',
+    Saturn: 'Saturn crosses your rising degree, a season of taking yourself more seriously, and being taken that way.',
   },
   square: {
-    Jupiter: 'Jupiter squares your rising degree — growth that argues with the image you present; the fix is updating the image.',
-    Saturn: 'Saturn squares your rising degree — structure presses on how you show up; commitments want renegotiating.',
+    Jupiter: 'Jupiter squares your rising degree, growth that argues with the image you present; the fix is updating the image.',
+    Saturn: 'Saturn squares your rising degree. Structure presses on how you show up; commitments want renegotiating.',
   },
   opposition: {
-    Jupiter: 'Jupiter stands opposite your rising degree — the year grows through other people: partners, audiences, the ones across the table.',
-    Saturn: 'Saturn stands opposite your rising degree — relationships get weighed; what survives the audit is yours.',
+    Jupiter: 'Jupiter stands opposite your rising degree. The year grows through other people: partners, audiences, the ones across the table.',
+    Saturn: 'Saturn stands opposite your rising degree. Relationships get weighed; what survives the audit is yours.',
   },
 };
 
@@ -64,7 +64,7 @@ function aspectLine(e: ScanAspectEvent): string {
 function aspectReceipt(e: ScanAspectEvent): string {
   const when = e.from === e.to || monthDay(e.from) === monthDay(e.to)
     ? monthDay(e.from)
-    : `${monthDay(e.from)} – ${monthDay(e.to)}`;
+    : `${monthDay(e.from)} to ${monthDay(e.to)}`;
   const passes = e.passes > 1 ? ` · ${e.passes} exact passes` : '';
   return `${e.body} ${e.aspect} Natal ${e.natal} · ${when}${passes}`;
 }
@@ -80,7 +80,7 @@ export function solarReturnEvents(scan: YearScanResult): YearAheadEvent[] {
       at,
       kind: 'solar-return' as const,
       body: 'Sun',
-      line: 'Your solar return — the Sun back on its natal degree, the moment your birthday actually lands. The year resets here.',
+      line: 'Your solar return: the Sun back on its natal degree, the moment your birthday actually lands. The year resets here.',
       receipt: `solar return · ${monthDay(at)}, ${hh}:${mm} UTC`,
     };
   });
@@ -124,9 +124,9 @@ export function ingressEvents(
     if (start < from || start > to) continue;
     const yours =
       w.sign === sunSign
-        ? ' That is your sun sign — the cycle starts again where your chart keeps its engine.'
+        ? ' That is your sun sign. The cycle starts again where your chart keeps its engine.'
         : risingSign && w.sign === risingSign
-          ? ' That is your rising sign — the change shows up first in how you meet the world.'
+          ? ' That is your rising sign. The change shows up first in how you meet the world.'
           : '';
     const tone =
       w.planet === 'Jupiter'
@@ -136,7 +136,7 @@ export function ingressEvents(
       at: w.from,
       kind: 'ingress',
       body: w.planet,
-      line: `${w.planet} enters ${cap(w.sign)} on ${monthDay(w.from)} — ${tone}.${yours}`,
+      line: `${w.planet} enters ${cap(w.sign)} on ${monthDay(w.from)}, ${tone}.${yours}`,
       receipt: `${w.planet} → ${cap(w.sign)} · ${monthDay(w.from)}`,
     });
   }
@@ -180,9 +180,9 @@ export function saturnSeasonEvents(
         kind: 'saturn-return' as const,
         body: 'Saturn',
         line: oneDay
-          ? `Your ${label} Saturn return lands around ${monthDay(s.from)} — the long audit of what you have built, in one clean pass.`
-          : `Your ${label} Saturn return runs ${monthDay(s.from)} – ${monthDay(s.to)} — the long audit of what you have built, arriving in passes.`,
-        receipt: `Saturn return ${s.index} · ${oneDay ? monthDay(s.from) : `${monthDay(s.from)} – ${monthDay(s.to)}`}`,
+          ? `Your ${label} Saturn return lands around ${monthDay(s.from)}, the long audit of what you have built, in one clean pass.`
+          : `Your ${label} Saturn return runs ${monthDay(s.from)} to ${monthDay(s.to)}, the long audit of what you have built, arriving in passes.`,
+        receipt: `Saturn return ${s.index} · ${oneDay ? monthDay(s.from) : `${monthDay(s.from)} to ${monthDay(s.to)}`}`,
       };
     });
 }

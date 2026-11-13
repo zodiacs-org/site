@@ -1,0 +1,182 @@
+{
+ "packDigest": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+ "grid": {
+  "moon": {
+   "intervalDays": 32,
+   "nrec": 3425
+  },
+  "emb": {
+   "intervalDays": 274,
+   "nrec": 400
+  },
+  "sun": {
+   "intervalDays": 400,
+   "nrec": 274
+  }
+ },
+ "windows": {
+  "1975 regression (all versions)": {
+   "from": "1977-06-19T00:00:00Z",
+   "to": "1978-04-15T00:00:00Z",
+   "joins": {
+    "moon": 9,
+    "emb": 2,
+    "sun": 1
+   },
+   "refused": 0,
+   "within10Deg": [
+    {
+     "series": "emb",
+     "at": "1978-04-07T23:58:50.816Z",
+     "elongationDeg": 4.659
+    }
+   ],
+   "nearest": [
+    {
+     "series": "emb",
+     "at": "1978-04-07T23:58:50.816Z",
+     "elongationDeg": 4.659
+    },
+    {
+     "series": "moon",
+     "at": "1977-07-19T23:58:50.816Z",
+     "elongationDeg": 42.598
+    },
+    {
+     "series": "sun",
+     "at": "1978-02-12T23:58:50.816Z",
+     "elongationDeg": 68.268
+    }
+   ]
+  },
+  "2007 v1 holdout (run again by #860, unscored)": {
+   "from": "2009-08-31T00:00:00Z",
+   "to": "2010-06-27T00:00:00Z",
+   "joins": {
+    "moon": 9,
+    "emb": 1,
+    "sun": 1
+   },
+   "refused": 0,
+   "within10Deg": [
+    {
+     "series": "moon",
+     "at": "2009-11-16T23:58:50.816Z",
+     "elongationDeg": 4.805
+    },
+    {
+     "series": "sun",
+     "at": "2009-11-16T23:58:50.816Z",
+     "elongationDeg": 4.805
+    }
+   ],
+   "nearest": [
+    {
+     "series": "moon",
+     "at": "2009-11-16T23:58:50.816Z",
+     "elongationDeg": 4.805
+    },
+    {
+     "series": "sun",
+     "at": "2009-11-16T23:58:50.816Z",
+     "elongationDeg": 4.805
+    },
+    {
+     "series": "moon",
+     "at": "2009-12-18T23:58:50.816Z",
+     "elongationDeg": 27.529
+    }
+   ]
+  },
+  "1912 bundle v2 holdout": {
+   "from": "1915-05-31T00:00:00Z",
+   "to": "1916-03-26T00:00:00Z",
+   "joins": {
+    "moon": 10,
+    "emb": 1,
+    "sun": 1
+   },
+   "refused": 0,
+   "within10Deg": [
+    {
+     "series": "moon",
+     "at": "1915-08-10T23:58:50.816Z",
+     "elongationDeg": 0.558
+    }
+   ],
+   "nearest": [
+    {
+     "series": "moon",
+     "at": "1915-08-10T23:58:50.816Z",
+     "elongationDeg": 0.558
+    },
+    {
+     "series": "moon",
+     "at": "1915-07-09T23:58:50.816Z",
+     "elongationDeg": 26.946
+    },
+    {
+     "series": "moon",
+     "at": "1915-09-11T23:58:50.816Z",
+     "elongationDeg": 33.136
+    }
+   ]
+  },
+  "2103 bundle v3 holdout": {
+   "from": "2105-07-11T00:00:00Z",
+   "to": "2106-05-07T00:00:00Z",
+   "joins": {
+    "moon": 10,
+    "emb": 1,
+    "sun": 1
+   },
+   "refused": 0,
+   "within10Deg": [],
+   "nearest": [
+    {
+     "series": "moon",
+     "at": "2106-05-04T23:58:50.816Z",
+     "elongationDeg": 17.073
+    },
+    {
+     "series": "moon",
+     "at": "2106-04-02T23:58:50.816Z",
+     "elongationDeg": 17.514
+    },
+    {
+     "series": "sun",
+     "at": "2106-04-02T23:58:50.816Z",
+     "elongationDeg": 17.514
+    }
+   ]
+  },
+  "2040 #860 holdout": {
+   "from": "2042-06-19T00:00:00Z",
+   "to": "2043-04-15T00:00:00Z",
+   "joins": {
+    "moon": 10,
+    "emb": 1,
+    "sun": 1
+   },
+   "refused": 0,
+   "within10Deg": [],
+   "nearest": [
+    {
+     "series": "emb",
+     "at": "2042-10-12T23:58:50.816Z",
+     "elongationDeg": 11.773
+    },
+    {
+     "series": "moon",
+     "at": "2042-06-20T23:58:50.816Z",
+     "elongationDeg": 39.766
+    },
+    {
+     "series": "moon",
+     "at": "2043-04-04T23:58:50.816Z",
+     "elongationDeg": 63.861
+    }
+   ]
+  }
+ }
+}

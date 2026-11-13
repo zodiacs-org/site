@@ -22,8 +22,7 @@
  * catalogue's first instant, 2026-01-01T00:00Z, are range ends, not events
  * (docs/platform/evidence/site-engine-rc15/model-clock.json). Code that
  * must match the engine to the millisecond takes the engine's own UT1 and TT
- * from src/lib/engine/time-basis.mjs, as src/lib/engine/server-ephemeris.ts
- * does.
+ * from @zodiacs/engine/time, as src/lib/engine/server-ephemeris.ts does.
  *
  * `scripts/deltat-install-guard.test.mjs` holds every direct importer of
  * astronomy-engine to it.

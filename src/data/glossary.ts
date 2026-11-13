@@ -438,7 +438,7 @@ const terms: GlossaryTerm[] = [
   {
     slug: 'natural-house',
     term: 'Natural house',
-    definition: 'The sign–house correspondence, often called the “natural house” scheme, is a modern teaching device that pairs Aries with the first house, Taurus with the second, and so on. It is not a traditional rulership table and never determines the houses in a calculated natal chart.',
+    definition: 'The sign-house correspondence, often called the “natural house” scheme, is a modern teaching device that pairs Aries with the first house, Taurus with the second, and so on. It is not a traditional rulership table and never determines the houses in a calculated natal chart.',
     related: ['house', 'zodiac-sign', 'whole-sign-houses'],
     link: { href: '/learn/houses/', label: 'Read the house guides' },
   },
@@ -475,7 +475,7 @@ const terms: GlossaryTerm[] = [
   {
     slug: 'quadrant',
     term: 'Quadrant',
-    definition: 'A quadrant is one of four chart regions bounded by the ascendant–descendant and midheaven–IC axes. Quadrant house systems such as Placidus subdivide those regions into three houses each.',
+    definition: 'A quadrant is one of four chart regions bounded by the ascendant-descendant and midheaven-IC axes. Quadrant house systems such as Placidus subdivide those regions into three houses each.',
     related: ['angle', 'placidus', 'house-system'],
   },
   {
@@ -573,7 +573,7 @@ const terms: GlossaryTerm[] = [
   {
     slug: 'seventh-house',
     term: 'Seventh house',
-    definition: 'The seventh house covers one-to-one partnership, agreement, negotiation, and open opposition. It faces the first house across the ascendant–descendant axis.',
+    definition: 'The seventh house covers one-to-one partnership, agreement, negotiation, and open opposition. It faces the first house across the ascendant-descendant axis.',
     related: ['first-house', 'descendant', 'house'],
     link: { href: '/learn/houses/seventh-house/', label: 'Read the seventh-house guide' },
   },

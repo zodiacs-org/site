@@ -10,7 +10,7 @@
 import { describe, expect, it } from 'vitest';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -217,6 +217,29 @@ describe('the archive the site distributes', () => {
   it('names the archive after the version inside it', () => {
     expect(manifest.file).toBe(`zodiacs-mcp-server-${manifest.version}.tgz`);
     expect(manifest.releaseStatus).toBe('unpublished-candidate');
+  });
+
+  it('supersedes the latest archive the site served before it', async () => {
+    // rc.22 was first cut saying it superseded rc.19, the version its branch
+    // began from, though the site had served rc.21 since; rc.23 repeated it.
+    // The archives served beside this one say which version came last.
+    const candidate = JSON.parse(await readFile(resolve(ROOT, 'examples/mcp-server/candidate.json'), 'utf8'));
+    const parts = (version) => version.replace(/^0\.1\.0-rc\./u, '').split('.').map(Number);
+    const compare = (a, b) => {
+      const [x, y] = [parts(a), parts(b)];
+      for (let index = 0; index < Math.max(x.length, y.length); index += 1) {
+        const difference = (x[index] ?? -1) - (y[index] ?? -1);
+        if (difference) return difference;
+      }
+      return 0;
+    };
+    const earlier = (await readdir(PUBLIC))
+      .map((name) => /^zodiacs-mcp-server-(0\.1\.0-rc\.\d+(?:\.\d+)*)\.tgz$/u.exec(name)?.[1])
+      .filter((version) => version && compare(version, manifest.version) < 0)
+      .sort(compare);
+    expect(earlier.length).toBeGreaterThan(0);
+    expect(candidate.version).toBe(manifest.version);
+    expect(candidate.supersedes).toBe(earlier.at(-1));
   });
 
   it('ships a lockfile whose root version matches the package', async () => {

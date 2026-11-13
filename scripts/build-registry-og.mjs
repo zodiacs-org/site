@@ -1,9 +1,20 @@
 /**
- * Builds the immutable Registry catalogue OG family.
+ * The Registry's share cards: the twelve catalogue lot cards and the hub
+ * card the Registry and its technical page share.
  *
- * The established v2 cards remain byte-stable as the editorial text plate.
- * This versioned family replaces only their icon-only art field with each
- * sign's canonical high-resolution pastel disc and normalized gold sculpture.
+ * v4 (2026-10-19) is the current family. Each lot card is v3's composition,
+ * the sign's canonical high-resolution pastel disc and normalized gold
+ * sculpture, laid on a text plate whose footer row carries the brand lockup
+ * (DESIGN.md, "Brand Lockup"); the hub card is the Registry card with the
+ * same footer row. The plates and the hub card are drawn in Chromium by
+ * `npm run data:og -- --only-registry` (scripts/build-og-void.mjs), which
+ * hands them to buildRegistryOgFamily below. Chromium's text is not
+ * byte-stable across platforms, so CI verifies the committed family
+ * (scripts/verify-registry-og.mjs) instead of re-rendering it.
+ *
+ * v3 is frozen: its twelve cards, built on the pinned v2 plates
+ * (/assets/og/v2/registry/{sign}.png), stay published byte for byte for the
+ * links already shared, as does /assets/og/v2/registry.png.
  */
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -14,15 +25,36 @@ import { SIGN_ORDER } from './sign-data.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-export const REGISTRY_OG_VERSION = 'v3';
-export const REGISTRY_OG_BASE = `/assets/og/registry/${REGISTRY_OG_VERSION}`;
-export const REGISTRY_OG_GEOMETRY = Object.freeze({
-  width: 1200,
-  height: 630,
-  footerRuleY: 546,
-  sculptureBox: Object.freeze({ left: 640, top: 38, width: 500, height: 492 }),
-  seal: Object.freeze({ left: 1012, top: 397, iconSize: 118, ringSize: 138 }),
+/** The frozen v3 family, verified as published. */
+export const REGISTRY_OG_V3 = Object.freeze({
+  version: 'v3',
+  base: '/assets/og/registry/v3',
+  plateSource: '/assets/og/v2/registry/{sign}.png',
+  geometry: Object.freeze({
+    width: 1200,
+    height: 630,
+    footerRuleY: 546,
+    sculptureBox: Object.freeze({ left: 640, top: 38, width: 500, height: 492 }),
+    seal: Object.freeze({ left: 1012, top: 397, iconSize: 118, ringSize: 138 }),
+  }),
 });
+
+export const REGISTRY_OG_VERSION = 'v4';
+export const REGISTRY_OG_BASE = `/assets/og/registry/${REGISTRY_OG_VERSION}`;
+/** The Registry hub's and the technical page's card. */
+export const REGISTRY_OG_HUB = `${REGISTRY_OG_BASE}/hub.png`;
+/**
+ * v3's geometry. The art field now stops at the footer rule, so the footer
+ * row the plate draws below it (the lockup, then the page's address on the
+ * right) shows in full.
+ */
+export const REGISTRY_OG_GEOMETRY = Object.freeze({
+  ...REGISTRY_OG_V3.geometry,
+  fieldBottom: REGISTRY_OG_V3.geometry.footerRuleY,
+});
+export const REGISTRY_OG_ICON_SOURCE = '/assets/sdk/zodiac-icons/circle/{sign}.png';
+export const REGISTRY_OG_SCULPTURE_SOURCE = '/assets/sculptures/1024/{sign}.webp';
+export const REGISTRY_OG_DIRECTORY = resolve(root, `public${REGISTRY_OG_BASE}`);
 
 const VOID = '#060709';
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -31,9 +63,13 @@ const sourcePath = (rootDirectory, template, sign) => resolve(
   'public',
   template.replace('{sign}', sign).replace(/^\//, ''),
 );
+/** The cards' encoding: one 8-bit palette, as v3 wrote it. */
+const encode = (input) => sharp(input)
+  .png({ palette: true, colours: 256, dither: 0.45, compressionLevel: 9, effort: 10 })
+  .toBuffer();
 
 function rightFieldSvg() {
-  const { width, height } = REGISTRY_OG_GEOMETRY;
+  const { width, height, fieldBottom } = REGISTRY_OG_GEOMETRY;
   return Buffer.from(`<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="seam" x1="0" y1="0" x2="1" y2="0">
@@ -45,10 +81,13 @@ function rightFieldSvg() {
         <stop offset=".42" stop-color="#704018" stop-opacity=".075"/>
         <stop offset="1" stop-color="${VOID}" stop-opacity="0"/>
       </radialGradient>
+      <clipPath id="field"><rect x="0" y="0" width="${width}" height="${fieldBottom}"/></clipPath>
     </defs>
-    <rect x="660" y="0" width="540" height="630" fill="${VOID}"/>
-    <rect x="590" y="0" width="110" height="630" fill="url(#seam)"/>
-    <ellipse cx="895" cy="288" rx="292" ry="285" fill="url(#gold)"/>
+    <g clip-path="url(#field)">
+      <rect x="660" y="0" width="540" height="${fieldBottom}" fill="${VOID}"/>
+      <rect x="590" y="0" width="110" height="${fieldBottom}" fill="url(#seam)"/>
+      <ellipse cx="895" cy="288" rx="292" ry="285" fill="url(#gold)"/>
+    </g>
   </svg>`);
 }
 
@@ -82,14 +121,11 @@ async function normalizeSculpture(bytes) {
     .toBuffer({ resolveWithObject: true });
 }
 
-async function renderRegistryCard(rootDirectory, sign) {
-  const baseCardFile = sourcePath(rootDirectory, '/assets/og/v2/registry/{sign}.png', sign);
-  const iconFile = sourcePath(rootDirectory, '/assets/sdk/zodiac-icons/circle/{sign}.png', sign);
-  const sculptureFile = sourcePath(rootDirectory, '/assets/sculptures/1024/{sign}.webp', sign);
-  const [baseCard, iconSource, sculptureSource] = await Promise.all([
-    readFile(baseCardFile),
-    readFile(iconFile),
-    readFile(sculptureFile),
+/** One lot card: the sign's sculpture and seal laid on its plate. */
+export async function composeRegistryCard(rootDirectory, sign, plate) {
+  const [iconSource, sculptureSource] = await Promise.all([
+    readFile(sourcePath(rootDirectory, REGISTRY_OG_ICON_SOURCE, sign)),
+    readFile(sourcePath(rootDirectory, REGISTRY_OG_SCULPTURE_SOURCE, sign)),
   ]);
   const sculpture = await normalizeSculpture(sculptureSource);
   const { sculptureBox, seal } = REGISTRY_OG_GEOMETRY;
@@ -101,7 +137,7 @@ async function renderRegistryCard(rootDirectory, sign) {
     .resize(seal.iconSize, seal.iconSize, { fit: 'contain', kernel: sharp.kernel.lanczos3 })
     .png({ compressionLevel: 9, adaptiveFiltering: true })
     .toBuffer();
-  const bytes = await sharp(baseCard)
+  const composed = await sharp(plate)
     .composite([
       { input: rightFieldSvg(), left: 0, top: 0 },
       { input: sculpture.data, left: sculptureLeft, top: sculptureTop },
@@ -109,28 +145,35 @@ async function renderRegistryCard(rootDirectory, sign) {
       { input: icon, left: seal.left, top: seal.top },
       { input: footerRuleSvg(), left: 0, top: 0 },
     ])
-    .png({ palette: true, colours: 256, dither: 0.45, compressionLevel: 9, effort: 10 })
+    .png()
     .toBuffer();
-
   return {
-    bytes,
+    bytes: await encode(composed),
     sourceSha256: {
-      baseCard: hash(baseCard),
+      plate: hash(plate),
       icon: hash(iconSource),
       sculpture: hash(sculptureSource),
     },
   };
 }
 
+/**
+ * Writes the v4 family from the plates and the hub card build-og-void.mjs
+ * drew: `plates` maps each sign to its plate's PNG, `hub` is the hub card's.
+ */
 export async function buildRegistryOgFamily({
+  plates,
+  hub,
   rootDirectory = root,
-  outputDirectory = resolve(rootDirectory, `public/assets/og/registry/${REGISTRY_OG_VERSION}`),
-} = {}) {
+  outputDirectory = resolve(rootDirectory, `public${REGISTRY_OG_BASE}`),
+}) {
+  if (!(plates instanceof Map) || SIGN_ORDER.some((sign) => !plates.has(sign)) || !hub) {
+    throw new Error('buildRegistryOgFamily needs a plate for every sign and the hub card; run npm run data:og -- --only-registry');
+  }
   await mkdir(outputDirectory, { recursive: true });
   const cards = [];
-
   for (const sign of SIGN_ORDER) {
-    const rendered = await renderRegistryCard(rootDirectory, sign);
+    const rendered = await composeRegistryCard(rootDirectory, sign, plates.get(sign));
     const filename = `${sign}.png`;
     await writeFile(resolve(outputDirectory, filename), rendered.bytes);
     cards.push({
@@ -140,18 +183,21 @@ export async function buildRegistryOgFamily({
       sourceSha256: rendered.sourceSha256,
     });
   }
+  const hubBytes = await encode(hub);
+  await writeFile(resolve(outputDirectory, 'hub.png'), hubBytes);
 
   const manifest = {
-    schema: 'zodiacs.registry-og.v3',
+    schema: 'zodiacs.registry-og.v4',
     version: REGISTRY_OG_VERSION,
     base: REGISTRY_OG_BASE,
     type: 'image/png',
     width: REGISTRY_OG_GEOMETRY.width,
     height: REGISTRY_OG_GEOMETRY.height,
-    baseCardSource: '/assets/og/v2/registry/{sign}.png',
-    iconSource: '/assets/sdk/zodiac-icons/circle/{sign}.png',
-    sculptureSource: '/assets/sculptures/1024/{sign}.webp',
+    plateSource: 'scripts/build-og-void.mjs --only-registry (drawn in Chromium, not published)',
+    iconSource: REGISTRY_OG_ICON_SOURCE,
+    sculptureSource: REGISTRY_OG_SCULPTURE_SOURCE,
     geometry: REGISTRY_OG_GEOMETRY,
+    hub: { image: REGISTRY_OG_HUB, sha256: hash(hubBytes) },
     cards,
   };
   await writeFile(resolve(outputDirectory, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
@@ -159,6 +205,6 @@ export async function buildRegistryOgFamily({
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const manifest = await buildRegistryOgFamily();
-  console.log(`Registry OG: ${manifest.cards.length} ${manifest.version} catalogue cards written.`);
+  console.error('The Registry cards are drawn with the other share cards: npm run data:og -- --only-registry');
+  process.exit(1);
 }

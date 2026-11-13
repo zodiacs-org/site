@@ -818,7 +818,10 @@ function explain(left: NatalEnvelope, right: NatalEnvelope, differences: Differe
     });
   }
 
-  const conventionRows = differences.filter((row) => row.area === 'Conventions').map((row) => row.id);
+  // `conventionIds`, from engine 1.1.0-rc.1, says how a record lists the
+  // registry's ids, not how anything was calculated, so it has its own cause.
+  const conventionRows = differences
+    .filter((row) => row.area === 'Conventions' && row.id !== 'convention-conventionIds').map((row) => row.id);
   if (conventionRows.length > 0) {
     explanations.push({
       id: 'conventions', evidence: 'reported',
@@ -827,6 +830,16 @@ function explain(left: NatalEnvelope, right: NatalEnvelope, differences: Differe
       // conventions read every instant as UT1. That row belongs to them.
       covers: [...conventionRows, ...(has('time-scale') && !scaleDiffers ? ['time-scale'] : [])],
       detail: 'Different conventions can make values incomparable rather than merely different.',
+    });
+  }
+
+  if (has('convention-conventionIds')) {
+    explanations.push({
+      id: 'convention-ids', evidence: 'reported',
+      statement: 'The two records state differently whether they list the ids of the conventions registry.',
+      covers: ['convention-conventionIds'],
+      detail: 'From engine 1.1.0-rc.1 a record lists, in conventionIds, the ids of the Zodiacs conventions registry that it '
+        + 'and its result name. The list restates the record’s other fields and changes no value.',
     });
   }
 

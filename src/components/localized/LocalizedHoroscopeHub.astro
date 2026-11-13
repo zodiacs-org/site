@@ -1,0 +1,277 @@
+---
+/**
+ * The horoscope hub in Spanish and Portuguese. The English hub
+ * (src/pages/horoscopes/index.astro) is the reference layout: the jump
+ * picker, the twelve cards and Guide's questions, with every visible
+ * string from COPY below.
+ *
+ * Each card's line is the sign's own first house line from
+ * dailyReadingForLocale, printed whole: the localized editions publish
+ * daily readings only, so the longer periods link to the English edition
+ * with the English-only cue.
+ */
+import Base from '../../layouts/Base.astro';
+import AskGuideLine from '../AskGuideLine.astro';
+import EmailCapture from '../EmailCapture.astro';
+import GuideQuickPrompts from '../GuideQuickPrompts.astro';
+import RaceRamp from '../RaceRamp.astro';
+import SignIcon from '../SignIcon.astro';
+import dailyData from '../../data/daily.json';
+import type { Daily } from '../../lib/daily';
+import { dailyReadingForLocale } from '../../lib/i18n/daily-reading';
+import { formatDate } from '../../lib/i18n/dates';
+import { englishOnlyCue } from '../../lib/i18n/english-only';
+import { localizePath, t } from '../../lib/i18n';
+import { SIGNS, signName } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
+
+type Locale = 'es' | 'pt';
+interface Props { locale: Locale }
+
+interface Copy {
+  title: (date: string) => string;
+  description: (date: string) => string;
+  imageAlt: string;
+  h1: string;
+  dateline: (date: string) => string;
+  lede: string;
+  stamp: (date: string) => string;
+  jumpLabel: string;
+  pickerAria: string;
+  read: string;
+  notePersonal: string;
+  noteChart: string;
+  noteSky: string;
+  noteSkyLink: string;
+  noteLonger: string;
+  noteEnglish: string;
+  askLead: string;
+  askLabel: string;
+  prompts: string[];
+  methodSummary: string;
+  methodBefore: (date: string) => string;
+  methodLink: string;
+}
+
+const COPY: Record<Locale, Copy> = {
+  es: {
+    title: (date) => `Horóscopos de hoy, ${date} | Zodiacs.org`,
+    description: (date) => `Horóscopos de hoy, ${date}: una nota clara para cada uno de los doce signos, calculada a partir de las posiciones reales del cielo.`,
+    imageAlt: 'Horóscopos de hoy para los doce signos, Zodiacs.org',
+    h1: 'Horóscopos de hoy',
+    dateline: (date) => `Edición diaria · ${date}`,
+    lede: 'Busca tu signo y encontrarás la nota más concreta del cielo de hoy. Lee primero tu signo solar y, si lo conoces, también tu ascendente.',
+    stamp: (date) => `Se actualiza cada día · ${date}`,
+    jumpLabel: 'Ve a tu signo',
+    pickerAria: 'Elige el signo de tu horóscopo',
+    read: 'Leer hoy →',
+    notePersonal: '¿Quieres una lectura más personal? ',
+    noteChart: 'Calcula tu carta natal gratis',
+    noteSky: ' El cielo completo, planeta por planeta, está en ',
+    noteSkyLink: 'la página del cielo de hoy',
+    noteLonger: '. Las lecturas de mañana, de la semana y del mes están en ',
+    noteEnglish: 'la edición en inglés',
+    askLead: '¿No sabes por dónde empezar?',
+    askLabel: 'Preguntar a Guide',
+    prompts: [
+      '¿Leo mi signo solar o mi ascendente?',
+      '¿Qué significa el cielo de hoy para todos?',
+      '¿Cómo se calculan estos horóscopos?',
+    ],
+    methodSummary: 'Detrás de estas lecturas',
+    methodBefore: (date) => `Esta es la edición UTC del ${date}; las posiciones usan el cielo registrado a las 12:00 UTC. Los horóscopos por signo solar dan la visión general. Consulta `,
+    methodLink: 'cómo calculamos',
+  },
+  pt: {
+    title: (date) => `Horóscopos de hoje, ${date} | Zodiacs.org`,
+    description: (date) => `Horóscopos de hoje, ${date}: uma nota clara para cada um dos doze signos, calculada a partir das posições reais do céu.`,
+    imageAlt: 'Horóscopos de hoje para os doze signos, Zodiacs.org',
+    h1: 'Horóscopos de hoje',
+    dateline: (date) => `Edição diária · ${date}`,
+    lede: 'Encontre o seu signo e veja a nota mais concreta sobre o céu de hoje. Leia primeiro o seu signo solar e, se souber, o seu ascendente também.',
+    stamp: (date) => `Atualizado todo dia · ${date}`,
+    jumpLabel: 'Vá para o seu signo',
+    pickerAria: 'Escolha o signo do seu horóscopo',
+    read: 'Ler hoje →',
+    notePersonal: 'Quer uma visão mais pessoal? ',
+    noteChart: 'Calcule o seu mapa astral grátis',
+    noteSky: ' O céu completo, planeta por planeta, está na ',
+    noteSkyLink: 'página do céu de hoje',
+    noteLonger: '. As leituras de amanhã, da semana e do mês estão na ',
+    noteEnglish: 'edição em inglês',
+    askLead: 'Não sabe por onde começar?',
+    askLabel: 'Perguntar ao Guide',
+    prompts: [
+      'Devo ler o meu signo solar ou o meu ascendente?',
+      'O que o céu de hoje significa para todos?',
+      'Como estes horóscopos são calculados?',
+    ],
+    methodSummary: 'Por trás destas leituras',
+    methodBefore: (date) => `Esta é a edição UTC de ${date}; as posições usam o céu registrado às 12h UTC. Os horóscopos por signo solar dão a visão geral. Veja `,
+    methodLink: 'como calculamos',
+  },
+};
+
+const { locale } = Astro.props;
+const c = COPY[locale];
+const cue = englishOnlyCue(locale);
+const local = (path: string) => localizePath(locale, path);
+const daily = dailyData as Daily;
+const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
+  day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+});
+const cards = SIGNS.map((sign) => {
+  const reading = dailyReadingForLocale(sign.slug, daily, locale);
+  return { sign, teaser: reading.lines.find((line) => line.house !== undefined)?.text ?? reading.headline };
+});
+---
+<Base
+  stableTypography
+  title={c.title(dateLabel)}
+  description={c.description(dateLabel)}
+  path={`/${locale}/horoscopes/`}
+  locale={locale}
+  editionDate={daily.date}
+  image="/assets/og/v2/tool/horoscopes.png"
+  imageAlt={c.imageAlt}
+>
+  <section class="section--tight container container--narrow" data-edition-content="true">
+    <div class="hhl-hero">
+      <h1 class="display">{c.h1}</h1>
+      <p class="dateline">{c.dateline(dateLabel)}</p>
+      <p>{c.lede}</p>
+      <span class="hhl-hero__stamp">{c.stamp(dateLabel)}</span>
+    </div>
+
+    <p class="hhl-jump-label">{c.jumpLabel}</p>
+    <nav class="hhl-picker" aria-label={c.pickerAria}>
+      {cards.map(({ sign }) => (
+        <a href={local(`/horoscopes/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
+          <SignIcon sign={sign.slug} size={24} webpOnly fetchPriority="low" />
+          <span>{signName(sign, locale)}</span>
+        </a>
+      ))}
+    </nav>
+
+    <h2 class="display hhl-preview-title">{t(locale, 'todayBySignTitle')}</h2>
+    <div class="hhl-grid">
+      {cards.map(({ sign, teaser }) => (
+        <a class="tile hhl-card" href={local(`/horoscopes/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
+          <SignIcon sign={sign.slug} size={48} />
+          <span class="hhl-card__name">{signName(sign, locale)}</span>
+          <span class="hhl-card__dates">{signDateRange(sign, locale)}</span>
+          <span class="hhl-card__today">
+            <span class="hhl-card__label">{dateLabel}</span>
+            {teaser}
+          </span>
+          <span class="hhl-card__go">{c.read}</span>
+        </a>
+      ))}
+    </div>
+
+    <EmailCapture placement="horoscopes" locale={locale} />
+
+    <p class="hhl-note">
+      {c.notePersonal}<a href={local('/birth-chart/')}>{c.noteChart}</a>.{c.noteSky}<a href={local('/today/')}>{c.noteSkyLink}</a>{c.noteLonger}<a href="/horoscopes/" hreflang="en" title={cue?.aria}>{c.noteEnglish}</a>.
+    </p>
+
+    <div class="hhl-ask">
+      <AskGuideLine lead={c.askLead} locale={locale} />
+      <GuideQuickPrompts prompts={c.prompts} locale={locale} label={c.askLabel} />
+    </div>
+
+    <RaceRamp gap="28px" locale={locale} />
+
+    <details class="hhl-method">
+      <summary>{c.methodSummary}</summary>
+      <p>{c.methodBefore(dateLabel)}<a href={local('/methodology/')}>{c.methodLink}</a>.</p>
+    </details>
+  </section>
+</Base>
+
+<style>
+  .hhl-hero { max-width: 62ch; margin-bottom: clamp(26px, 5vw, 42px); }
+  .hhl-hero h1 { margin: 14px 0; font-size: var(--text-2xl); line-height: 1.04; }
+  .hhl-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+  .hhl-hero__stamp {
+    display: block;
+    margin-top: 14px;
+    color: var(--faint);
+    font-size: 13px;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .hhl-jump-label { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+  .hhl-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 28px; }
+  .hhl-picker a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 0;
+    min-height: 48px;
+    padding-inline: 6px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-md);
+    color: var(--text-2);
+    font-size: 13px;
+    text-decoration: none;
+  }
+  .hhl-picker a span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hhl-picker a:hover { border-color: var(--sign); background: var(--void-2); }
+  .hhl-picker a:focus-visible { outline: 2px solid var(--sign); outline-offset: 3px; }
+  @media (max-width: 359px) { .hhl-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 700px) { .hhl-picker { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+  .hhl-preview-title { margin: 28px 0 18px; font-size: 30px; font-weight: 400; }
+  .hhl-grid { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 700px) { .hhl-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 1000px) { .hhl-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .hhl-card {
+    display: grid;
+    grid-template-rows: auto auto auto 1fr auto;
+    justify-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 22px 14px 17px;
+    color: var(--text);
+    text-align: center;
+    text-decoration: none;
+  }
+  .hhl-card__name { font-weight: 650; letter-spacing: -0.01em; }
+  .hhl-card__dates { color: var(--faint); font-size: 12.5px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+  .hhl-card__today {
+    margin-top: 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--hair-1);
+    color: var(--text-2);
+    font-size: 12px;
+    line-height: 1.5;
+    text-wrap: pretty;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  .hhl-card__label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--faint);
+    font-size: 12px;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .hhl-card__go { margin-top: 4px; color: var(--faint); font-size: 12.5px; letter-spacing: 0; }
+  .hhl-card:hover .hhl-card__go { color: var(--text); }
+  .hhl-note { margin-top: clamp(22px, 4vw, 34px); color: var(--muted); font-size: var(--text-sm); }
+  .hhl-note a { color: var(--text); }
+  .hhl-ask { margin-top: clamp(18px, 3vw, 26px); }
+  .hhl-method { margin-top: 12px; border-top: 1px solid var(--hair-1); color: var(--muted); font-size: var(--text-sm); }
+  .hhl-method summary { min-height: 44px; padding: 11px 0; color: var(--muted); cursor: pointer; }
+  .hhl-method summary:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 3px; }
+  .hhl-method p { margin: 0 0 14px; }
+  .hhl-method a { color: var(--text); }
+  @media (max-width: 460px) {
+    /* Longer sign names (Capricornio, Capricórnio) sit under their disc. */
+    .hhl-picker a { flex-direction: column; gap: 3px; min-height: 60px; padding-block: 6px; font-size: 12px; }
+    .hhl-grid { grid-template-columns: 1fr; }
+    .hhl-card { padding-inline: 18px; }
+  }
+</style>

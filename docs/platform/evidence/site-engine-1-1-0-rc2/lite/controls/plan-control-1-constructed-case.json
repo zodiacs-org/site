@@ -1,0 +1,32 @@
+{
+  "control": "1, on its constructed case alone (2026-11-04)",
+  "sections": [
+    "D2-A"
+  ],
+  "constructedD2A": [
+    {
+      "label": "control 1 only: a luminary pair at orb 1.49995 (obliquity 0, declinations 10 and 8.50005)",
+      "bodies": [
+        {
+          "body": "Sun",
+          "lon": 10,
+          "lat": 10
+        },
+        {
+          "body": "Moon",
+          "lon": 200,
+          "lat": 8.50005
+        }
+      ],
+      "obliquity": 0
+    }
+  ],
+  "sharedCharts": false,
+  "siteMutations": [
+    {
+      "file": "src/lib/declination.ts",
+      "from": "export const DECLINATION_ORB_LUMINARY = 1.5;",
+      "to": "export const DECLINATION_ORB_LUMINARY = 1.4999;"
+    }
+  ]
+}

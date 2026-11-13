@@ -44,7 +44,8 @@ describe.skipIf(!existsSync(distRoot))('built client UI payloads', () => {
       ...[
         'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
         'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
-      ].map((sign) => `horoscopes/${sign}/index.html`),
+      ].flatMap((sign) => ['', 'tomorrow/', 'weekly/', 'monthly/', 'love/', 'career/', '2027/']
+        .map((period) => `horoscopes/${sign}/${period}index.html`)),
     ];
 
     for (const path of criticalPaths) {
@@ -54,12 +55,11 @@ describe.skipIf(!existsSync(distRoot))('built client UI payloads', () => {
       expect(html, path).not.toContain('data-inline-critical-css');
     }
 
-    const tomorrow = readFileSync(
-      join(distRoot, 'horoscopes', 'aries', 'tomorrow', 'index.html'),
-      'utf8',
-    );
-    expect(tomorrow).toMatch(/<link\b[^>]*\brel=["']stylesheet["']/i);
-    expect(tomorrow).not.toContain('<style data-zdx-critical=');
+    // Every horoscope period opens on the sign-art hero and is inlined; the
+    // hub is not a latency-sensitive entry page and keeps its stylesheets.
+    const hub = readFileSync(join(distRoot, 'horoscopes', 'index.html'), 'utf8');
+    expect(hub).toMatch(/<link\b[^>]*\brel=["']stylesheet["']/i);
+    expect(hub).not.toContain('<style data-zdx-critical=');
 
     const russianBirthChart = readFileSync(
       join(distRoot, 'ru', 'birth-chart', 'index.html'),

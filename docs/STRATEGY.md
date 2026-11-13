@@ -8,6 +8,8 @@ This document is the operating strategy for the Learn / Explore / Collect restru
 
 **Owner decision · 2026-10-08: no predictions.** Zodiacs does not build or publish betting tips, sports picks, market timing or election forecasts, on the site, in the plugins or in any API. Blinded tests of astrology come out at chance, both assistant stores ban the money and advertising mechanics behind those products, and gambling-advertising and financial-promotion law applies. What Zodiacs does instead: calculate the sky, offer astrology as interpretation for reflection, and test sky claims honestly in public (source: the research report "Zodiacs should test sky claims, not sell them", 8 October 2026).
 
+**Owner decision · 2026-11-04 (Dias): forecasts, stated plainly.** This replaces the 8 October rule's "interpretation for reflection" for astrology forecasts. Horoscopes and transit readings are forecasts: share them plainly and confidently, each with a label written exactly "Reading confidence NN%". The number is how specific the details were, never the odds that an event happens, by one rule for every tool (`src/ai-tools/reading-confidence.ts`): 40 for a Sun sign alone, 55 for a date without both a clock time and a place, 70 for a date with a clock time and a place, and 5 more when a named contact's orb is under 1 degree, never past 95. An explainer explains and carries no label. Forecasts are not health, financial or medical advice and not a promise of an outcome, and the 8 October ban on betting tips, sports picks, market timing and election forecasts stays. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day. The hosted MCP server offers 19 tools with both switches on: the 13 published, byte for byte, then the five 0.6.0 tools and `find_birthplace`.
+
 ---
 
 ## 0. The honest verdict
@@ -17,7 +19,7 @@ This document is the operating strategy for the Learn / Explore / Collect restru
 - **Free tools → identity layer is the proven wedge** in this category. The incumbent calculator sites (Astro-Seek, Cafe Astrology, astrology.com) win on depth and lose badly on UX, design, and mobile. A genuinely modern, fast, beautiful calculator experience is a real, exploitable gap — not a hopeful one.
 - **`zodiacs.org` is a category-exact domain** with unusual existing craft discipline: anti-hype copy rules, CI content gates, data-generated pages, weekly refresh automation, and AEO plumbing (llms.txt, IndexNow, AI-crawler allowlists) that most competitors don't have.
 - **The visual raw material already exists**: the 12 pastel SDK icons and the ambient astronomical-dial films give the site a distinctive identity from day one.
-- **Client-side chart calculation makes privacy a feature**: chart calculation stays on the device. Birth details leave only when a visitor explicitly opts into account sync or types them into Guide; attaching a chart to Guide sends previewed derived placements to OpenAI, not the saved name, birth date, time, place, or coordinates. Marginal calculation cost per user is ~zero, and no major competitor leads with this local-first posture.
+- **Client-side chart calculation makes privacy a feature**: chart calculation stays on the device. Birth details leave only when a visitor explicitly opts into account sync or types them into Guide; attaching a chart to Guide sends previewed derived placements to Anthropic, not the saved name, birth date, time, place, or coordinates. Marginal calculation cost per user is ~zero, and no major competitor leads with this local-first posture.
 
 **What's weak or dangerous — stated plainly:**
 
@@ -157,7 +159,7 @@ The Registry is **the record**: its verification experience lives at `/registry/
 - **Geocoding:** no API — GeoNames cities index shipped as sharded static JSON with client-side typeahead (CC-BY attribution in the calculator footnote and colophon).
 - **Timezones:** GeoNames rows carry the IANA zone; historical offsets from 1970 on come from the browser's own tzdb via `Intl`, and before 1970 from the tzdb 2025c history with backzone that `@zodiacs/engine/geo` ships, with the birthplace's own local mean time before its zone's era ended; explicit DST-gap/fold policy and flags saved on the chart. Documented on `/methodology/`.
 - **Paid astrology APIs** (astrology-api.io, AstrologyAPI.com, Prokerala): not on the core path — per-call pricing taxes exactly the growth we want. Useful as validation datasets and a Phase-3 option for exotic calculations.
-- **Privacy dividend:** chart calculation stays on the device. Birth details leave only through explicit account sync or when the visitor types them into Guide; the optional Guide chart attachment sends previewed derived placements to OpenAI, not saved identity or birth-input fields. Lead with the precise local-first claim, not an absolute no-transmission promise.
+- **Privacy dividend:** chart calculation stays on the device. Birth details leave only through explicit account sync or when the visitor types them into Guide; the optional Guide chart attachment sends previewed derived placements to Anthropic, not saved identity or birth-input fields. Lead with the precise local-first claim, not an absolute no-transmission promise.
 
 ## 12. Technical stack
 
@@ -167,6 +169,7 @@ Astro 5 static + Preact islands · TypeScript engine lib shared browser/Node · 
 
 - **Base:** cool void near-blacks (`#060709 → #1C2130`), cool off-white ink, hairline borders. Premium restraint; zero mystical clip-art.
 - **The pastel icons are the design language, not decoration**: hero wheel, Signs nav grid, calculator sign chips, placement tables, guide heroes, pair lockups, profile big-three, wing rows, share cards, 404. Served as resized AVIF/WebP tiers (24/64/200px) — never the raw 1024px PNGs.
+- **One brand lockup everywhere the brand signs** (owner-chosen 2026-10-19): the tilted twelve-dot ring and ZODIACS · ORG in the nav, the footers, the share and OG images, emails and the assistant cards (DESIGN.md, "Brand Lockup"). Phones keep ZODIACS | ASTROFOLIO in the top bar; the favicon and app icons keep the flat ring. On an image made for one person the ring turns to bring their Sun sign to the front, and the same ring settles into the lockup in the two-second end card for short videos.
 - **Per-sign accent tokens from the disc hues** (`--sign-aries: #DE8E79` … `--sign-pisces: #A9D4C4`), element groupings, `color-mix` tinting — no 12× component variants.
 - **Type:** Instrument Sans variable (display to text; hero up to ~4.5rem clamp) + JetBrains Mono for computed data. Cinzel/Cormorant survive only inside the legacy wing until its retheme.
 - **Motion:** the house easing (`cubic-bezier(0.32,0.72,0,1)`), scroll-reveal discipline, hero-wheel slow orbit, chart stroke-draw-in — all behind `prefers-reduced-motion`.

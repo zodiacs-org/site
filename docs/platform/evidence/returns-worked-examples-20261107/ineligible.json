@@ -1,0 +1,701 @@
+{
+ "purpose": "The holdout's exclusion list (PREREGISTRATION.md, H1 to H3). It is built from the development data of 1 November 2026 and holds none of their engine results.",
+ "rules": {
+  "H1": "A work is ineligible if an entry below records it (its volume, issue or edition) as read, or as the source of a verified candidate. Sources an entry names but records as not read are eligible, unless a verified candidate came from the same volume or issue.",
+  "H2": "Another edition or printing of an ineligible work is ineligible for any example that work contains.",
+  "H3": "A development return (same native, same body, same return year) is ineligible from any source."
+ },
+ "searchEntries": [
+  "leo: archive.org advancedsearch creator:(Leo, Alan) - 67 hits, used to locate every Leo scan below",
+  "leo: archive.org bub_gb_OY7ZLx4jQmcC, The Progressed Horoscope 1st ed. 1906 (djvu.txt): p. 287 has only a short 'Solar Revolutions' note that defers the subject, with no example. Appendix I (pp. 295-298) quotes a 1903 Modern Astrology paper on progressed/diurnal figures, which are not returns",
+  "leo: archive.org astrologyforall00leogoog and bub_gb_8CwSAAAAYAAJ, Astrology for All 1899: Part I only; no revolutions",
+  "leo: archive.org modern-astrology-alan-leo (DLI): OCR is unusable Devanagari garble; appears to be a Progressed Horoscope copy",
+  "leo: archive.org in.ernet.dli.2015.128064, The Progressed Horoscope 5th ed. 1936 (djvu.txt plus IIIF page images n40, n196-n205, n242, n1): FOUND Queen Mary SR 1910 and Mrs Besant SR 1907",
+  "leo: archive.org modern-astrology-alan-leo_202605 and pyas-modern-astrology-alan-leo_202608: Progressed Horoscope copies carrying 'Note to the Second Edition'; same Chapter XVII text and pages 233-242",
+  "leo: archive.org dli.ernet.128062, Key to Your Own Nativity (DLI 1920): an advertisement lists Progressed Horoscope 'Part III Solar Revolutions and Transits ... birthday maps'; no example",
+  "leo: archive.org howtojudgenativi00leoa (1928), artofsynthesis00leoa (1926), dli.ernet.19807 Astrology for All (1910), lifeworkofalanle00leob (1919), saturnreaperbein00leoa (1916): no worked returns",
+  "leo: archive.org in.ernet.dli.2015.170445, Esoteric Astrology 1913: glossary definition of 'Revolution' only. bwb_S0-EDA-929, Alan Leo's Dictionary of Astrology 1929: definition only",
+  "leo: archive.org b24886038, Daath, Medical Astrology 1907: nothing",
+  "leo: archive.org Astrologer's Magazine s5239id1338203 (1890-91), astrologersmaga00unkngoog (1893-94), bub_gb_4ykSAAAAYAAJ and astrologersmaga01unkngoog (1894-95): no return with a stated time ('Concerning a Horoscope' mentions a qualitative 1895 Solar Revolution of an unnamed native)",
+  "leo: archive.org bwb_S0-DTL-301, V. E. Robson (editor of Modern Astrology), A Students' Text-Book of Astrology 1922, pp. 221-223: Solar/Lunar Revolution defined, no worked example",
+  "leo: Casting the Horoscope: archive.org bwb_P9-EAH-891, bwb_W9-CZB-256 and castinghoroscope0000unse are restricted lending copies (text private); Google Books kqoY00Yohp8C (Kessinger 2003) has no preview. Not readable, so not used",
+  "leo: HathiTrust catalog and full-text search: blocked by a bot-verification page; not bypassed, not used",
+  "leo: IAPSOP modern_astrology directory: only 1936-1942 issues of a different periodical",
+  "leo: astrolearn.com Modern Astrology volume scans: paid downloads; not used",
+  "leo: archive.org full-text search API queries: \"solar revolution\" \"Alan Leo\"; \"lunar revolution\"; \"solar revolution\"/\"lunar revolution\"/\"solar return\"/\"Saturn returns\" with \"Modern Astrology\"; \"solar revolution\" \"H. S. Green\"; \"progressed birthday\" \"solar revolution\"; \"birthday map\" \"Alan Leo\"; \"lunar return\" \"Alan Leo\"; \"Lyncroft Gardens\"/\"Imperial Buildings\" \"solar revolution\"; \"revolutional figure\"; \"Directions and Directing\" \"diurnal horoscope\"; \"return of Saturn\" \"Alan Leo\"; \"lunar revolution\" \"Sepharial\"; \"King's solar revolution\"; \"return of the Sun to his place of birth\"",
+  "leo: IAPSOP-horoscope_v2_n6_january_1904 and the-horoscope (The Horoscope, ed. Rollo Ireton, 1904): a review says H. S. Green gave the King's Solar Revolution as 'Nov. 10th, 11.44 a.m.' in Modern Astrology, Nov. 1903. This is a secondary description; the original issue is not readable online (Google Books DJjQl4InZ4oC, 1903, no preview). Its Zadkiel item on the Emperor of Austria's '68th Solar return' gives no time",
+  "leo: IAPSOP-horoscope_v2_n7_april_1904: review mentions Green's 'Current Synodical Lunations and Lunar Returns'; original found, see Modern Astrology 1904 below",
+  "leo: Google Books ySASAAAAYAAJ, H. S. Green, Theoretical Astrology (1903), pp. 24-26, 93 (text plus page images): FOUND King Edward VII SR 1900",
+  "leo: Google Books Jr0RKggURd4C, H. S. Green, Directions and Directing (Astrological Manuals No. V, foreword by Alan Leo, 1905), pp. 4, 40-43, 54-58, 63-66, 69: FOUND Prince of Wales (George V) SR 1893. Its synodical-lunation and mundane-day examples are not returns",
+  "leo: Google Books bHByvw3G4bgC, Modern Astrology New Series Vol. I (1904), pp. 55-59, 277-279, 296-298: FOUND three Queen Victoria lunar returns. King Edward VII lunar returns Nos. 5 and 7 (pp. 296-298) are only 'eleven days before' 24 June 1902 and 'two days before the coronation', with no stated time, so not listed",
+  "leo: Google Books SKmUTq_h-GYC, Modern Astrology NS Vol. III (1906), pp. 159-161, 278-280, 378: p. 280 ('Uraniel', Finnish native b. 25/11/'77) discusses a Solar Revolution with no time; the other pages are irrelevant",
+  "leo: Google Books v2RAAAAAYAAJ, Leo and Green, The Horoscope in Detail (2nd ed. 1906): nothing relevant",
+  "leo: Google Books 9PF9Wb1auN4C, W. S. Randall, 'Astrology for All' Series index (1917), p. 39 (search snippet): lists 'Queen Mary: Solar Revolution, 1910, 234 ... Mrs Besant: Solar Revolution, 1907, 238', which corroborates that the chapter predates 1917",
+  "leo: Google Books web search (tbm=bks): \"King's solar revolution\"; \"solar revolution\" \"Modern Astrology\" (1895-1925); \"lunar return\" OR \"lunar returns\" \"Modern astrology\"; \"solar revolution\" \"Queen Victoria\" 1899; \"lunar return\" \"a.m.\"; \"solar revolution\" \"Greenwich Mean Time\"; Saturn-return phrases. Google then served a CAPTCHA; stopped and not bypassed",
+  "leo: Google Books API: daily quota exhausted (HTTP 429)",
+  "leo: WebSearch: Alan Leo 'Casting the Horoscope' archive.org; \"Solar Revolution and Precession\"; Modern Astrology volume scans; books.google Modern astrology. Only astrolearn (paid) and catalogue pages came back",
+  "leo: Online Books Page, Alan Leo listing: HathiTrust records (blocked) and Google Books The Horoscope in Detail",
+  "leo: OUT OF SWEEP lead, IAPSOP-occult_review_v26_n5_nov_1917 p. 257 (Ralph Shirley, 'Notes of the Month'): King George V solar revolution 'at 8.45 p.m., June 3', year implied 1918; not Leo circle, not listed",
+  "leo: OUT OF SWEEP lead, IAPSOP-occult_review_v37_n1_jan_1923 p. 62: review of Sepharial's The Daily Guide (solar and lunar revolution method); book not examined",
+  "leo: OUT OF SWEEP lead, McGillLibrary Borderland v.1 n.4 (1894) pp. 359-360: solar revolutions of a gardener's brother and sister (b. 1856 and 1852) for Dec. 1892. Gives Sun longitudes (18°7'56\" and 22°14'51\" Sagittarius) and angles but no stated time; not listed. Borderland v.4 (1897) only has a Zadkiel forecast",
+  "leo: OUT OF SWEEP leads not examined in detail: Old Moore's Monthly Messenger 1907/1909/1910-11/1912-13, Old Moore's Monthly Outlook 1908 ('Solar revolution itself which occurred at 4.44 p.m.'), British Journal of Astrology 1914-16, Astrology (Astrological Lodge) 1934-1940 DLI issues",
+  "nineteenth: archive.org advancedsearch (metadata): title:(text-book of astrology); creator:(pearce) AND astrology; 'pearce text-book astrology'; creator:(Pearce, Alfred John / Pearce, A. J. / Pearce, Alfred J); 'Alfred J. Pearce'; genethlialogy; title:(genethliacal); title:(text-book) AND astrology; title:(astrology) AND year:[1870 TO 1915]. No scan of Pearce's Text-Book of Astrology on archive.org. Pearce items found: Science of the Stars 1881, Crisis in Egypt 1884, Weather Guide-Book 1864",
+  "nineteenth: archive.org advancedsearch: simmonite; title:(arcana astral); title:(manual of astrology); title:(guide to astrology); title:(grammar of astrology); title:(introduction to astrology); title:(dictionary of astrology); creator:(Raphael) AND astrology; creator:(Zadkiel); creator:(Simmonite); title:(revolutions) AND astrology; title:(solar revolutions). These located the items below",
+  "nineteenth: Google Books Atom feed (google.com/books/feeds/volumes), opened in the built-in browser. Pearce Text-Book of Astrology: 1879 (iddRtAEACAAJ), 1900* (xUSvngEACAAJ), 1911 (yan6PAAACAAJ, _ooHMwEACAAJ, 0_bSmgEACAAJ, vSC9OwAACAAJ) and 1970 (slAyAQAAMAAJ) are all 'no preview'. The 2006 AFA reprint (lav2Z3qt7DgC) is partial preview only and was not used",
+  "nineteenth: Google Books Atom feed: inauthor:simmonite; intitle:prognostications intitle:revolutions (gave xSRbAAAAcAAJ, dated 1854, full view; oX9cFPnjA0sC, Daily Guide 1891, full view); intitle:arcana inauthor:simmonite; intitle:'guide to astrology' inauthor:raphael; intitle:'manual of astrology' inauthor:raphael; intitle:'grammar of astrology'; intitle:'introduction to astrology' inauthor:zadkiel; intitle:'dictionary of astrology' inauthor:wilson",
+  "nineteenth: HathiTrust catalog search 'pearce text-book of astrology'. Blocked by a Cloudflare bot-verification page (curl, WebFetch and browser); I did not try to get past it",
+  "nineteenth: National Library of Ireland catalogue record vtls000649655 (Pearce Text-Book vol. I, 1879): HTTP 403",
+  "nineteenth: Google Books API (googleapis.com/books/v1): quota error, not used. books.google.com search via WebFetch: redirected to a Google 'sorry' page, not pursued",
+  "nineteenth: WebSearch: Simmonite \"Prognostications on Revolutions\" \"Solar Figures\" year published. No firm date found",
+  "nineteenth: WebSearch: Pearce \"Text-book of astrology\" 1879 full text archive.org OR hathitrust OR books.google. Catalogue and bookseller pages only",
+  "nineteenth: WebSearch: \"revolutional figure\" Pearce astrology solar revolution. Nothing usable",
+  "nineteenth: WebSearch: books.google.com \"The Text-book of Astrology\" Pearce Cousins 1879. No full-view copy",
+  "nineteenth: WebSearch: hathitrust \"text-book of astrology\" Pearce. No full-view copy",
+  "nineteenth: W. J. Simmonite, Prognostications on Revolutions; or, Solar Figures [1854], archive.org prognosticationsonrevolutionsorsolar (djvu.txt and page images n11, n19-n21). WORKED SOLAR RETURN: Queen Victoria, 35th, 23 May 1854",
+  "nineteenth: J. Story / Simmonite, The Daily Guide, with Simmonite's Prognostications on Revolutions (Foulsham 1891), Google Books oX9cFPnjA0sC text view pp. 8-10. Same Victoria example reprinted, still printing '3h. 51m. 55s.'",
+  "nineteenth: W. J. Simmonite, Complete Arcana of Astral Philosophy (ed. J. Story, Foulsham 1890), archive.org completearcanaa00storgoog djvu.txt. Ch. XXXV 'Of Revolutionary Figures' (paras 612-626, pp. 183-186) and 'Of Periodic Revolutions' (pp. 180-183) give rules only, no worked return. Also Google Books _iEWSDsJi1QC (710-page issue), pp. 141-145: periodic-revolution rules only",
+  "nineteenth: W. J. Simmonite & J. Story, Horary Astrology (1896), archive.org simmonitestoryhorary djvu.txt. No revolution material",
+  "nineteenth: Raphael (R. C. Smith), A Manual of Astrology (1828), archive.org manualofastrolog00raph and amanualastrolog00smitgoog djvu.txt. No solar or lunar revolution worked. Only 'periodical direction' remarks (Sun back to its own place every 19 years, applied to Princess Charlotte's marriage), with no instant",
+  "nineteenth: Raphael (R. T. Cross), The Guide to Astrology vol. I (1877), archive.org guidetoastrolog00unkngoog djvu.txt. No revolutions (aphorism 56 only)",
+  "nineteenth: Raphael, The Guide to Astrology, Google Books kVlAc3fO00AC (1884, vol. I), i1YWAAAAYAAJ (1886, vol. I) and WX5RAAAAYAAJ (1901, 'New and Complete System of Directions'), searched inside for revolution/birthday/direction. Only Ptolemy's aphorism on the 'annual revolution' (p. 80); no worked return",
+  "nineteenth: Raphael (R. T. Cross), The Guide to Astrology, one-volume edition (Foulsham 1905), archive.org guidetoastrology00raphiala (djvu.txt and page images n121-n124). WORKED SOLAR RETURN: King Edward VII, November 1906",
+  "nineteenth: Zadkiel (R. J. Morrison), The Grammar of Astrology (Sherwood, Gilbert & Piper 1833), archive.org b22014305 (djvu.txt and page images n49, n50, n53, n143-n145). WORKED SOLAR RETURN: Ada, 10 Dec 1823 (Ch. XVII)",
+  "nineteenth: Lilly / Zadkiel, An Introduction to Astrology (H. G. Bohn 1852), archive.org anintroductiont00zadkgoog (djvu.txt and page images n400, n403, n463-n464). Same Ada return, Grammar Ch. XVII p. 441. The only other revolution (Dec 1834, p. 442) has no instant",
+  "nineteenth: James Wilson, A Complete Dictionary of Astrology (1819), archive.org b29298180 (djvu.txt and page images n383-n384). Entry REVOLUTIONS, pp. 351-353: a 'certain person's' natal places and 'Revolution, 24 years after, exactly at noon', but no date, place or time basis for either, and the author says the Sun is 'a minute distant, because I took it at noon'. Not a stated instant; DISCARDED",
+  "nineteenth: A. J. Pearce, The Science of the Stars [1881], archive.org sciencestars00peargoog (djvu.txt and page images n7, n81-n83, n112, n133-n137). Read in place of the unreachable Text-Book. Ch. XIX 'On Solar Revolutions', pp. 120-125: four worked solar returns (Napoleon III 1870, Victoria 1854, Alexander II 1877, King of Spain 1882). Pearce's own 'Solar Revolution for 1648 [sic]' has no instant",
+  "nineteenth: Urania, a monthly journal of astrology (1880, ed. Pearce), Google Books QvoDAAAAQAAJ full view, text view and page images of pp. 40-41. Pp. 40-45: Czar Alexander II nativity (used only for that candidate's natal data); the 1880 return is mentioned without an instant. Pp. 114-115: King of Prussia's returns described without instants. P. 234: 'solar revolution of October 17th, 1869' with no time",
+  "nineteenth: Google Books feed also listed Grammar of Astrology 2nd ed. 1840 (HBlbAAAAcAAJ) and Introduction to Astrology 1891 (Fk8XAAAAYAAJ) in full view. Not opened (later printings of the Ada example)",
+  "nineteenth: Wikipedia REST summaries (Queen Victoria, Ada Lovelace, Napoleon III, Alexander II of Russia, Alfonso XII, Edward VII), read only to confirm death years",
+  "early-modern: WebSearch: archive.org Placidus \"Primum Mobile\" Cooper 1814 thirty remarkable nativities. Found catalogue records and vendor scans only; no archive.org, HathiTrust or Google Books full view of the 1814 Cooper text.",
+  "early-modern: WebSearch: Lilly \"Christian Astrology\" archive.org djvu.txt revolution merchant. This led to archive.org b30338724.",
+  "early-modern: WebSearch: \"Primum mobile\" Placidus Cooper 1814 hathitrust OR books.google full view \"thirty remarkable nativities\". Nothing usable.",
+  "early-modern: WebSearch: \"Collection of Thirty Remarkable Nativities\" Placidus Sibly 1789 books.google.com. The only copy found was on Scribd, which is not an allowed source, so it was not used.",
+  "early-modern: archive.org advancedsearch by title or creator: primum mobile; placidus; titis; thirty remarkable nativities; astronomy and elementary philosophy; sibly; christian astrology; gadbury; partridge john; coley; celestial philosophy; clavis astrologiae; opus reformatum; defectio geniturarum; tabulae primi mobilis; collectio geniturarum; doctrine of nativities; nativity 1600-1720; astrologia restaurata; physiomathematica; \"remarkable nativities\"; nativities 1780-1830",
+  "early-modern: archive.org b30338724: Lilly, Christian Astrology 1647, Wellcome copy. Read the djvu.txt OCR and checked the page images through IIIF: leaves 553, 768-770, 816-861. Six solar returns found.",
+  "early-modern: EEBO-TCP master index (raw.githubusercontent.com/textcreationpartnership/Texts/master/TCP.csv), used to find keyed transcriptions",
+  "early-modern: EEBO-TCP A42844 (Gadbury, Just and Pious Scorpionist, 1677), checked against archive.org b3034119x leaves 21, 41, 43. One solar and one lunar return found.",
+  "early-modern: EEBO-TCP A86045 (Gadbury as 'Merlinus Verax', Nativity of Carolus Gustavus, 1659), checked against archive.org b3034119x leaves 49, 58, 61. Two solar returns found.",
+  "early-modern: EEBO-TCP A42768 (Gadbury, life and death of Vincent Wing, 1669), checked against archive.org bim_early-english-books-1475-1640_a-brief-relation-of-the-_gadbury-john_1669 canvases 30 and 35. Two solar returns found.",
+  "early-modern: EEBO-TCP A42878 (Nativity of Lewis the Fourteenth, 1680, attributed to Gadbury), checked against archive.org bim_early-english-books-1641-1700_the-nativity-of-the-most_gadbury-john_1680 canvases 22-26. Five solar returns found.",
+  "early-modern: EEBO-TCP A76792 (Blackwel, Nativity of Mr. Will. Lilly, 1660), checked against archive.org bim_early-english-books-1641-1700_the-nativity-of-mr-will_blackwell-james_1660 canvases 8, 15, 16. One solar return found. TCP keying errors in latitude (25°38') and divisor (57′53″) were corrected from the scan, which reads 52°38' and 57′43″.",
+  "early-modern: EEBO-TCP A88290 (Lilly, Starry Messenger, 1645): no natal return with a stated time",
+  "early-modern: EEBO-TCP A42785 (Gadbury, Cardines Coeli, 1684): none",
+  "early-modern: EEBO-TCP A56504 (Partridge, Defectio Geniturarum, 1697): discusses and attacks revolutions; no computed return instants found by keyword search",
+  "early-modern: EEBO-TCP A57689 (Ramesey, Astrologia Restaurata, 1653): mundane revolutions of the year only",
+  "early-modern: EEBO-TCP A47491 (Kirby, Marrow of Astrology, 1687): none",
+  "early-modern: EEBO-TCP A30719 (Butler, Hagiastrologia, 1680): none",
+  "early-modern: EEBO-TCP A65576 (Works of Sir George Wharton, 1683): only the mundane revolution of the world (Apotelesma); no natal return",
+  "early-modern: archive.org the-doctrine-of-nativities-and-horary-questions-by-john-gadbury (Gadbury, Genethlialogia, 1658): read the OCR and checked page images on canvases 144-145. Two solar returns found. Also read the p. 228 OCR, which names Sir John Reynolds' revolution but gives no time.",
+  "early-modern: archive.org b30325134 (Gadbury, Collectio Geniturarum, 1662): mapped about 20 revolution figures through djvu.xml. Six were transcribed from page images (leaves 44-45, 71-72, 75-76, 123-124, 143-144, 167, 170). The rest are listed as leads in the notes.",
+  "early-modern: archive.org bim_early-english-books-1641-1700_clavis-astrologi-elimat_coley-henry_1676 (Coley, Clavis Astrologiae Elimata, 2nd edn 1676): read the OCR and page images on canvases 772-774. One solar return found. The uploaded copy coley-henry-clavis-astrologiae-elimata has an unusable 170-byte djvu.txt.",
+  "early-modern: archive.org bim_early-english-books-1641-1700_opus-reformatum-or-a-t_partridge-john_1693 (Partridge, Opus Reformatum, 1693): gives Cromwell's 'final Revolution' figure but explicitly does not compute an exact return time, so not usable",
+  "early-modern: archive.org b28764067_0003 (M. Sibly, Astronomy and Elementary Philosophy, 1789, Placidus): theory only. Its note says the thirty nativities are in a separate volume, and no allowed full-text copy of that volume was found.",
+  "early-modern: archive.org bim_eighteenth-century_astronomy-and-elementary_titi-placido_1789: same work as above; identified only",
+  "early-modern: quod.lib.umich.edu EEBO-TCP: blocked by a Cloudflare challenge, which I did not attempt to get past. Used the GitHub TCP XML instead.",
+  "early-modern: Google Books API (books.googleapis.com) for Placidus translations: quota exhausted, no results",
+  "early-modern: HathiTrust catalog API for OCLC 710365739 and 4655073 (Cooper 1814 / Primum mobile): no records",
+  "early-modern: archive.org bub_gb_8D2AQ2ziR3UC (Placidus, Tabulae primi mobilis, 1657, Latin, with the thirty nativities): identified but not read, because it is Latin and outside this English-language sweep. Lead for a Latin sweep.",
+  "early-modern: archive.org bim_eighteenth-century_a-collection-of-remarkab_worsdale-john_1799 (Worsdale 1799): identified, not read (outside sweep)",
+  "twentieth: Sepharial, The Manual of Astrology (Foulsham 1979 reissue of 1898 New Manual) archive.org sepharial-manual-of-astrology _djvu.txt: 'Solar Revolutions' pp. 174-175 gives method and revolutional-additives table only; planetary-cycle notes (Venus 8 yr, Saturn 59 yr) are not nativity returns. No worked example.",
+  "twentieth: Sepharial, The New Manual of Astrology (1909 printing), Google Books OR58rD25SKcC, search-inside 'solar revolution' -> p. 206: same method text, no example.",
+  "twentieth: Sepharial, Directional Astrology 1915 (archive in.ernet.dli.2015.201431) and 1921 (archive DirectionalAstrology) _djvu.txt: no solar/lunar revolutions.",
+  "twentieth: Sepharial, The Solar Epoch (Aquarian 1970 reprint, archive dli.ernet.107615): prenatal epoch only; in.gov.ignca.49351 copy returned HTTP 500.",
+  "twentieth: Sepharial, Astrology: How to Make and Read Your Own Horoscope (Gutenberg #46963) ch. VII Revolutions: method only (solar, lunar, synodical), no worked example.",
+  "twentieth: Sepharial, The Science of Foreknowledge (archive the-science-of-foreknowledge): none.",
+  "twentieth: Sepharial, Cosmic Symbolism (Gutenberg #70749): none.",
+  "twentieth: Sepharial, Primary Directions Made Easy (archive in.ernet.dli.2015.128334): none.",
+  "twentieth: Sepharial, Prognostic Astronomy 1901 (Google Books OXlLb8L6HDAC) search-inside 'revolution': no hits.",
+  "twentieth: Sepharial, The Daily Guide (Foulsham c.1922/1925): Occult Review Jan 1923 review (archive IAPSOP-occult_review_v37_n1_jan_1923, p. 62) says it explains the Solar and Lunar Revolution with examples. Full text is only on HathiTrust (catalog record 103357600), blocked by Cloudflare bot verification which I did not pass; Google Books _9GdswEACAAJ has no preview. NOT READ (best unread lead in this sweep).",
+  "twentieth: Sepharial, Transits and Planetary Periods (1920): archive transitsplanetar0000seph (1998 reprint) is borrow-only; no full view found; not read.",
+  "twentieth: Sepharial, New Dictionary of Astrology (1921): HathiTrust only (blocked); not read.",
+  "twentieth: Max Heindel, Simplified Scientific Astrology (1919, archive simplifiedscien00heingoog): none.",
+  "twentieth: Max & Augusta Foss Heindel, The Message of the Stars (1927 printing, archive messageofstars0000maxh_o6y3): none ('lunar revolution' hit is the Moon's monthly cycle, not a return).",
+  "twentieth: Llewellyn George, A to Z Horoscope Maker and Delineator (26th ed. 1970, archive a-to-z-horoscope-maker-and-delineator): glossary definitions of Solar Revolution only.",
+  "twentieth: Llewellyn George, The Astrologer's Searchlight (1922, archive astrologerssearc00geor) 'Revolutions' pp. 23-24: definitions only.",
+  "twentieth: Llewellyn George, Astrological Gleanings (1912, Google Books fC4SAAAAYAAJ p. 44): same definitions only.",
+  "twentieth: Llewellyn George, Astrological Bulletina 1911 (Google Books KcviEwyZPYoC) and New Astrological Bulletina 1921 (3CJMAQAAMAAJ pp. 48, 52): nothing.",
+  "twentieth: Llewellyn George, Planetary Hour Book (1975 ed. archive perpetualplaneta0000geor borrow-only) and Astrological Chats (1933, not online): not read.",
+  "twentieth: Evangeline Adams, Astrology: Your Place in the Sun (1927, archive astrologyyourpl00adam): none.",
+  "twentieth: Evangeline Adams, Astrology: Your Place Among the Stars (1930, archive astrologyyourpla007413mbp): none; Astrology for Everyone (1931) borrow-only; The Bowl of Heaven not found in readable form.",
+  "twentieth: C. E. O. Carter, A Concise Encyclopaedia of Psychological Astrology (1924, archive in.ernet.dli.2015.128345): none.",
+  "twentieth: C. E. O. Carter, Symbolic Directions in Modern Astrology (archive in.ernet.dli.2015.128260): none.",
+  "twentieth: C. E. O. Carter, The Principles of Astrology (1925): only the 1971 ed. is on archive (principlesofastr00cart, borrow-only); no Google full view; not read.",
+  "twentieth: C. E. O. Carter (ed.), Astrology quarterly Vol 9 No 2 Dec 1935 (in.ernet.dli.2015.76397) and Vol 13 No 3 1939 (in.ernet.dli.2015.76399): S. A. Sanders / A. Ruperti articles, no computed return times.",
+  "twentieth: Vivian Robson, A Students' Text-Book of Astrology (1922, archive bwb_S0-DTL-301) pp. 220-222: definitions of solar, precessional, progressive and lunar revolutions; no worked example.",
+  "twentieth: Vivian Robson, Electional Astrology (1937, in.ernet.dli.2015.128090) and The Fixed Stars and Constellations in Astrology (1923, in.ernet.dli.2015.128091): none.",
+  "twentieth: Vivian Robson, A Beginner's Guide to Practical Astrology (1931): no online copy found.",
+  "twentieth: Old Moore's Monthly Messenger (Foulsham; Sepharial wrote monthly notes) IAPSOP vols I 1907-08, II 1908-09, III 1909-10, IV-V 1910-11, VI-VII 1912-13: candidates from vol II (Astrolabus Nov 1908; Forrest Jul 1909). Excluded as date-only: Edward VII SR '9th Nov., 1909, had ♈ 28 on the meridian' (vol III Jun 1910, unsigned editorial); hypothetical natives born 1 Feb 1862 -> 2 Feb 1912 and 1 Feb 1865 late evening -> 3 Feb 1912; 'Capt. Smith's anniversary for 1912 would fall on January 28th' (vol VI 1912); Forrest's 1909 birth-time test gives computed birth times, not returns.",
+  "twentieth: British Journal of Astrology vols 8-9 1914-16 (IAPSOP): only remarks such as 'at the solar return of the Grand Duchess Marie the Sun is conjoined with Saturn'; no computed return times.",
+  "twentieth: The Horoscope (ed. Rollo Ireton) Oct 1903, Jan 1904, Apr 1904, Jul 1904 (IAPSOP): Jan 1904 reviews H. S. Green's 'King's Solar Revolution (Nov. 10th, 11.44 a.m.)' in Modern Astrology Nov 1903 (secondary mention only; primary not read); Oct 1903 A. G. Trent note gives Leo XIII's revolution 'March 2, 1877' (date only).",
+  "twentieth: The Occult Review Nov 1915 (IAPSOP): King Albert's '41st solar revolution (birthday) on April 8, 1916' (date only); Nov 1917: candidate; Jan 1923: Daily Guide review; Sep 1926: advertisements only.",
+  "twentieth: Azoth Apr and Jun 1921 (IAPSOP): letters on solar revolution method; no examples.",
+  "twentieth: Modern Astrology 1906 (Google Books SKmUTq_h-GYC) pp. 159, 280, 378: 'Uraniel' Finnish case mentions solar and progressed solar revolutions without times; p. 378 review notes Green's Theoretical Astrology has worked revolution diagrams.",
+  "twentieth: H. S. Green, Theoretical Astrology (1903, Google Books ySASAAAAYAAJ) pp. 23-25 and front matter: candidate (King Edward VII 1900).",
+  "twentieth: archive.org advancedsearch: creator:sepharial, creator:'Old, W. Gorn', creator:heindel, creator:'llewellyn george', creator:'evangeline adams', creator:'robson, vivian', carter AND astrology, title searches (manual of astrology, solar epoch, horoscope maker, principles of astrology, daily guide, cosmic symbolism, transits and planetary periods, astrological chats, astrology of accidents, bowl of heaven, beginner's guide to practical astrology), IAPSOP identifier listings (old_moores, horoscope, star_lore, british_journal_of_astrology, modern_astrology, rays_from_the_rose_cross, coming).",
+  "twentieth: archive.org full-text (fts) queries: '\"solar revolution\" sepharial'; '\"solar revolution\" \"Llewellyn George\"'; '\"solar revolution\" Heindel'; '\"Saturn returns to its radical place\"', '\"return of Saturn to its radical place\"', '\"Saturn returned to its radical place\"', '\"Jupiter returns to its radical place\"' (0 hits each); '\"Saturn returns to its own place\"' / '\"Saturn returned to its own place\"' (only mid-century hits); '\"lunar revolution\" sepharial \"daily guide\"'; '\"Astrological Chats\" \"Llewellyn George\"'; '\"solar revolution\"' (IAPSOP hits listed); '\"solar revolution\" \"Notes of the Month\"'; '\"birthday figure\" \"solar revolution\" King'.",
+  "twentieth: Google Books full-view feed queries: sepharial \"solar revolution\"; \"solar revolution\" astrology; sepharial astrology; inauthor:sepharial; \"astrological bulletina\"; \"transits and planetary periods\"; \"new dictionary of astrology\" sepharial; \"prognostic astronomy\"; \"daily guide\" sepharial; \"lunar revolution\" astrology; \"solar return\" astrology sepharial; \"principles of astrology\" carter; \"message of the stars\" heindel; \"simplified scientific astrology\"; \"horoscope maker and delineator\"; \"planetary hour book\" george; \"evangeline adams\" \"bowl of heaven\"; \"vivian robson\" astrology; \"solar revolution\" \"lunar revolution\" sepharial; \"solar revolution\" \"G.M.T.\"; \"lunar return\" astrology; \"Saturn returns\" \"radical place\".",
+  "twentieth: HathiTrust catalog record 103357600 and babel full-text search: blocked by Cloudflare 'security verification' in curl, WebFetch and the built-in browser; not bypassed.",
+  "twentieth: WebSearch: Sepharial \"The Daily Guide\" Foulsham 1922 \"solar revolution\" full text (dealer listings only); Online Books Page author listings for Sepharial and Llewellyn George (HathiTrust links only).",
+  "lunar-planetary-open: WebSearch: '\"lunar revolution\" nativity example \"Moon returns\" radical place archive.org astrology 19th century': only modern glossaries and book listings (Skyscript glossary, Dykes Persian Nativities, Hoppmann). No worked example.",
+  "lunar-planetary-open: WebSearch: 'Morin Astrologia Gallica liber 23 revolutionibus lunaris revolutio example archive.org': led to the Source Library record and the 1661 Latin edition (Book 23 covers solar and lunar revolutions).",
+  "lunar-planetary-open: https://sourcelibrary.org/book/astrologia-gallica-morin: catalogue; the scan source is archive.org ned-kbn-all-00004541-001. Also https://sourcelibrary.org/book/astrologia-gallica-morin/page/69906304e7b7642c081dda78 (leaf 719): not transcribed, nothing usable.",
+  "lunar-planetary-open: https://archive.org/metadata/ned-kbn-all-00004541-001: Morin, Astrologia Gallica, The Hague 1661, KB Netherlands copy, public-domain scan.",
+  "lunar-planetary-open: archive.org full-text search inside ned-kbn-all-00004541-001 (https://ia600807.us.archive.org/fulltext/inside.php?...): queries Revolutio Lunaris, \"Revolutio Lunaris\", Revolutionis Lunaris, \"Revolutionibus Lunaribus\", \"Revolutionem Lunarem\", Lunaribus, Lunarem, 1583, Autoris, Francopoli. Used only to find Liber 23; several returned 0 or failed with IncompleteRead.",
+  "lunar-planetary-open: OCR page text (https://ia600807.us.archive.org/BookReader/BookReaderGetTextWrapper.php?path=/24/items/ned-kbn-all-00004541-001/ned-kbn-all-00004541-001_djvu.xml&page=N) for leaves 480, 682, 683, 688, 699, 700, 710, 716, 717, 718, 719, 720, 721, 722, 723, 724, 725, 726, 727, 734, 740.",
+  "lunar-planetary-open: Scan images, read visually at full resolution through IIIF crops (https://iiif.archive.org/image/iiif/3/ned-kbn-all-00004541-001%2fned-kbn-all-00004541-001_jp2.zip%2fned-kbn-all-00004541-001_jp2%2fned-kbn-all-00004541-001_0NNN.jp2/x,y,w,h/max/0/default.jpg): leaf 479 (Morin radix, Lib. XVII p. 397) and leaves 716-726 (Lib. XXIII pp. 634-644).",
+  "lunar-planetary-open: https://dn710809.ca.archive.org/0/items/ned-kbn-all-00004541-001/ned-kbn-all-00004541-001_page_numbers.json: leaf-to-printed-page map (leaf 479 = p. 397; leaves 716-726 = pp. 634-644).",
+  "lunar-planetary-open: Morin Lib. XXIII pp. 600-601 and 606 (leaves 682, 683, 688): states that every planet's periodic revolution to its radical place renews its force, and gives the solar-revolution method. No Saturn or Jupiter return example. p. 645 (leaf 727, quarters of solar/lunar revolutions) and pp. 652/658 (leaves 734/740, timing): no dated planetary-return example. Pp. 618 and 628 (leaves 700, 710) hold solar-revolution examples (Morin 1612; Condren 1608/1611), outside this sweep, not transcribed.",
+  "lunar-planetary-open: https://en.wikipedia.org/wiki/Jean-Baptiste_Morin_(mathematician): Morin's death, Paris, 6 Nov 1656; Astrologia Gallica posthumous, The Hague 1661.",
+  "lunar-planetary-open: WebSearch: 'Casebooks Project Napier Forman \"revolution\" nativity annual figure case': found the Cambridge digital edition of the Forman/Napier casebooks.",
+  "lunar-planetary-open: Casebooks cases read: https://casebooks.lib.cam.ac.uk/cases/CASE32723, CASE32724, CASE79934, CASE79935, CASE76838 (used). Also CASE32841 (William Morgan: 'August 3. 16 h. 5. p m', notation unexplained, no nativity), CASE50127 (John Monson: 'revol nativ. 1619 feb 2 ... h. 0. 30 p m', ambiguous, old-style year), CASE13169 (Richard Napier senior: year 1615 against a question dated by June 1614, ambiguous), CASE40749 (Martha Peniston: '7|6|' unexplained). These four were not used.",
+  "lunar-planetary-open: https://casebooks.lib.cam.ac.uk/identified-entities/PERSON18784: Sir Richard Napier (the nephew); alternative birth times; his records run to 17 Jan 1676.",
+  "lunar-planetary-open: Casebooks search URLs (https://casebooks.lib.cam.ac.uk/search?keyword=revolutio and ...?keyword=revolutionis&f1-document-type=Case::Entry): the results are not visible to a plain fetch.",
+  "lunar-planetary-open: WebSearch: '\"Revolutions entry concerning\" casebooks Napier': listed CASE13169, CASE13172, CASE76838, CASE79935, CASE50127, CASE32724, CASE32841, CASE40749.",
+  "lunar-planetary-open: WebSearch: 'site:casebooks.lib.cam.ac.uk \"revolutio\" nativitatis': gave Azzolini 2011, 'Refining the astrologer's art' (JHA). Its typeset.io/scispace PDF came back empty, the journal is not open access, not used.",
+  "lunar-planetary-open: WebSearch: 'open access article historical horoscope \"solar revolution\" OR \"annual revolution\" nativity reproduced computed time sixteenth century astrologer worked example': nothing relevant.",
+  "lunar-planetary-open: WebSearch: '\"Saturn returned to\" OR \"Saturn returning to\" \"radical place\" nativity died year ... Pearce OR Zadkiel OR Raphael OR Sepharial': no worked planetary return. Checked Alan Leo, Saturn the Reaper (1916), archive.org saturnreaperbein00leoa, by full-text search for \"radical place\" and \"returns to\": 0 matches.",
+  "lunar-planetary-open: WebSearch: 'Sela \"Ibn Ezra on Nativities and Continuous Horoscopy\" open access Brill PDF revolution example': Brill 2013, not open access, not used.",
+  "lunar-planetary-open: archive.org advancedsearch title:(primum mobile): Placidus/Cooper translation not found under that title. 'Supplement to Placidus de Titus' (1790, Cromwell) noted, not read (a solar topic).",
+  "lunar-planetary-open: Sanity check only, not a source: a low-precision Meeus lunar series run locally to test each Morin figure date against the Moon's place. Results are in the notes and change no number."
+ ],
+ "verifiedCandidateSources": [
+  {
+   "kind": "solar-return",
+   "author": "Alan Leo",
+   "title": "The Progressed Horoscope ('Astrology for All' Series Vol. V), Part III, Chapter XVII 'Solar Revolutions or Birthday Maps', Example I",
+   "page": "pp. 236-237 (method, natal Sun, Example I computation) and p. 240 (result); chart p. 234; birth data p. 26. Scan leaves n199, n200, n203, n197, n40",
+   "subject": "Queen Mary (Mary of Teck), consort of George V"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Alan Leo",
+   "title": "The Progressed Horoscope ('Astrology for All' Series Vol. V), Part III, Chapter XVII 'Solar Revolutions or Birthday Maps', Example III",
+   "page": "p. 237 (natal Sun to seconds), p. 236 (summary), p. 238 (chart), p. 241 (Example III); birth data p. 281 (Ch. XXI). Scan leaves n200, n199, n201, n204, n242",
+   "subject": "Mrs Annie Besant"
+  },
+  {
+   "kind": "solar-return",
+   "author": "H. S. Green (foreword by Alan Leo)",
+   "title": "Directions and Directing (Astrological Manuals No. V), Chapter X 'Solar Revolutions'",
+   "page": "pp. 55-56 (text and logarithms), p. 54 (chart 'An Illustration'); birth data p. 40 (Fig. 3) and p. 41",
+   "subject": "'the Prince of Wales' (George, later King George V), born at Marlborough House 3 June 1865, married 6 July 1893"
+  },
+  {
+   "kind": "solar-return",
+   "author": "H. S. Green",
+   "title": "Theoretical Astrology, Chapter III 'The Three Circles; Revolutions; Lunations; Directions'",
+   "page": "p. 24 (result), p. 25 (discussion), p. 26 (natal luminaries)",
+   "subject": "King Edward VII ('King Edward's Solar Revolution for November, 1900')"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "H. S. Green",
+   "title": "'Current Synodical Lunations and Lunar Returns', Modern Astrology (formerly The Astrologers' Magazine), New Series Vol. I",
+   "page": "pp. 55-57; Map No. 1 on p. 56; result in text on p. 57",
+   "subject": "Queen Victoria"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "H. S. Green",
+   "title": "'Current Synodical Lunations and Lunar Returns' (second article), Modern Astrology, New Series Vol. I",
+   "page": "p. 278 (Map No. 3 and text); article on pp. 277-279",
+   "subject": "Queen Victoria"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "H. S. Green",
+   "title": "'Current Synodical Lunations and Lunar Returns' (second article), Modern Astrology, New Series Vol. I",
+   "page": "p. 279",
+   "subject": "Queen Victoria"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Alfred J. Pearce (Alfred John Pearce, 1840-1923)",
+   "title": "The Science of the Stars, Chapter XIX 'On Solar Revolutions'",
+   "page": "pp. 121-123: computation p. 121, RAMC and angles p. 122, return chart Fig. 8 p. 123 (scan leaves n133-n135). Natal chart Fig. 5, p. 100 (leaf n112).",
+   "subject": "Louis Napoleon (Napoleon III), Emperor of the French"
+  },
+  {
+   "kind": "solar-return",
+   "author": "W. J. Simmonite (William Joseph Simmonite)",
+   "title": "Prognostications on Revolutions; or, Solar Figures: showing the daily events likely to occur throughout the natal year of any person's horoscope. Sections 'Of Revolution Figures' and 'To Erect a Revolution Figure'",
+   "page": "Natal figure p. 9 (scan leaf n19); computation p. 10 (n20); proportion result, clock time, RAMC and return figure p. 11 (n21); judgment pp. 72-75",
+   "subject": "Queen Victoria ('Her Majesty Victoria', 'Victoria Reg.')"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Alfred J. Pearce (Alfred John Pearce, 1840-1923)",
+   "title": "The Science of the Stars, Chapter XIX 'On Solar Revolutions' (return); natal example in 'On Casting the Horoscope'",
+   "page": "Return p. 124 (scan leaf n136). Natal pp. 69-70 (leaves n81-n82); speculum and footnote p. 71 (leaf n83).",
+   "subject": "H.M. Queen Victoria"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Alfred J. Pearce (Alfred John Pearce, 1840-1923)",
+   "title": "The Science of the Stars, Chapter XIX 'On Solar Revolutions'",
+   "page": "p. 124 (scan leaf n136)",
+   "subject": "'the King of Spain' / 'this young monarch', born 28 November 1857 at Madrid (Alfonso XII)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "'Raphael' (Robert Thomas Cross, 1850-1923, the later Raphael, not R. C. Smith)",
+   "title": "The Guide to Astrology: containing a complete system of genethliacal astrology. Chapter V 'Solar Returns or Birthday Figures'",
+   "page": "pp. 117-121: natal statement p. 118, natal chart and Sun longitude p. 119, computation and return chart p. 120 (scan leaves n121-n124)",
+   "subject": "'the King' (King Edward VII)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Zadkiel (Lieut. Richard James Morrison), editor; the example is in his 'Grammar of Astrology' bound with Lilly's Introduction",
+   "title": "An Introduction to Astrology, by William Lilly ... with numerous emendations ... by Zadkiel. Appended 'Grammar of Astrology', Chapter XVII 'Of Revolutions, Lunations, Transits, &c.'",
+   "page": "Return p. 441 (scan leaf n463). Natal data pp. 377-378 (leaf n400). Natal Sun p. 381 (leaf n403).",
+   "subject": "'Ada', Lord Byron's daughter (Augusta Ada Byron, later Countess of Lovelace)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Zadkiel (Lieut. Richard James Morrison)",
+   "title": "The Grammar of Astrology: containing all things necessary for calculating a nativity by common arithmetic. Chap. XVII 'Of Revolutions, Lunations, Transits, &c.'",
+   "page": "Return pp. 124-125 (scan leaves n143-n144). Natal statement p. 30 (n49). RAMC working p. 31 (n50). Natal Sun p. 34 (n53).",
+   "subject": "'Ada', Lord Byron's daughter (Augusta Ada Byron, later Countess of Lovelace)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Alfred J. Pearce (Alfred John Pearce, 1840-1923)",
+   "title": "The Science of the Stars, Chapter XIX 'On Solar Revolutions' (return). Natal data from Pearce's journal Urania, 'The Czar of Russia', February 1880.",
+   "page": "Science of the Stars p. 124 (scan leaf n136), which itself says 'See Urania for February, 1880, p. 41'. Urania 1880 pp. 41-42 (natal figure and text).",
+   "subject": "Alexander II, Czar of Russia ('the late Czar')"
+  },
+  {
+   "kind": "solar-return",
+   "author": "William Lilly",
+   "title": "Christian Astrology Modestly Treated of in Three Books (Book III, Chap. 'Of Revolutions')",
+   "page": "pp. 734-736 (scan leaves 768-770); natal data p. 519 (leaf 553)",
+   "subject": "'our Native', an English merchant (Lilly's Book III example nativity, 'A Merchant borne the 19 of Septemb. Anno 1616')"
+  },
+  {
+   "kind": "solar-return",
+   "author": "William Lilly",
+   "title": "Christian Astrology Modestly Treated of in Three Books (Book III, yearly judgment of the merchant's nativity)",
+   "page": "p. 814 (scan leaf 848)",
+   "subject": "the same English merchant ('our Native', born 19 Sept 1616)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "William Lilly",
+   "title": "Christian Astrology Modestly Treated of in Three Books (Book III)",
+   "page": "p. 822 (scan leaf 856)",
+   "subject": "the same English merchant (born 19 Sept 1616)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "William Lilly",
+   "title": "Christian Astrology Modestly Treated of in Three Books (Book III)",
+   "page": "p. 824 (scan leaf 858)",
+   "subject": "the same English merchant (born 19 Sept 1616)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "William Lilly",
+   "title": "Christian Astrology Modestly Treated of in Three Books (Book III)",
+   "page": "p. 825 (scan leaf 859)",
+   "subject": "the same English merchant (born 19 Sept 1616)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "William Lilly",
+   "title": "Christian Astrology Modestly Treated of in Three Books (Book III)",
+   "page": "p. 827 (scan leaf 861)",
+   "subject": "the same English merchant (born 19 Sept 1616)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "The Just and Pious Scorpionist: or, the Nativity of that thrice Excellent Man Sir Matthew Hales, Late Lord Chief Justice of England",
+   "page": "p. [21] (b3034119x leaf 41); natal p. [1] (leaf 21)",
+   "subject": "Sir Matthew Hale ('Hales'), Lord Chief Justice"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "John Gadbury",
+   "title": "The Just and Pious Scorpionist: or, the Nativity of that thrice Excellent Man Sir Matthew Hales",
+   "page": "p. [23] (b3034119x leaf 43)",
+   "subject": "Sir Matthew Hale ('Hales')"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury (published as 'Merlinus Verax'; TCP/Wing attribution)",
+   "title": "The Nativity of that most Illustrious and Magnanimous Prince, Carolus Gustavus, King of Sweden, Astrologically handled",
+   "page": "pp. 13-14 (b3034119x leaves 57-58); natal p. 5 (leaf 49)",
+   "subject": "Charles X Gustav (Carolus Gustavus), King of Sweden"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury (published as 'Merlinus Verax')",
+   "title": "The Nativity of that most Illustrious and Magnanimous Prince, Carolus Gustavus, King of Sweden, Astrologically handled",
+   "page": "pp. 16-17 (b3034119x leaves 60-61)",
+   "subject": "Charles X Gustav, King of Sweden"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "A Brief Relation of the Life and Death of the late famous Astrologer, Mr. Vincent Wing, together with his Nativity",
+   "page": "p. 19 (scan canvas 30); natal figure p. 6, Sun longitude in the direction table (TCP page 33). Pagination of the pamphlet is irregular.",
+   "subject": "Vincent Wing, astronomer and almanac-maker"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "A Brief Relation of the Life and Death of the late famous Astrologer, Mr. Vincent Wing, together with his Nativity",
+   "page": "p. 32 as printed (scan canvas 35); text on p. 23 (canvas 34)",
+   "subject": "Vincent Wing"
+  },
+  {
+   "kind": "solar-return",
+   "author": "attributed to John Gadbury (no author on the title page; EEBO/TCP attribution)",
+   "title": "The Nativity of the Most Valiant and Puissant Monarch Lewis the Fourteenth, King of France and Navarre, Astronomically and Astrologically Handled",
+   "page": "p. 23 (canvas 22); natal p. 3, Sun longitude p. 5",
+   "subject": "Louis XIV, King of France"
+  },
+  {
+   "kind": "solar-return",
+   "author": "attributed to John Gadbury",
+   "title": "The Nativity of the Most Valiant and Puissant Monarch Lewis the Fourteenth ...",
+   "page": "p. 24 (canvas 23)",
+   "subject": "Louis XIV"
+  },
+  {
+   "kind": "solar-return",
+   "author": "attributed to John Gadbury",
+   "title": "The Nativity of the Most Valiant and Puissant Monarch Lewis the Fourteenth ...",
+   "page": "p. 25 (canvas 24)",
+   "subject": "Louis XIV"
+  },
+  {
+   "kind": "solar-return",
+   "author": "attributed to John Gadbury",
+   "title": "The Nativity of the Most Valiant and Puissant Monarch Lewis the Fourteenth ...",
+   "page": "p. 26 (canvas 25)",
+   "subject": "Louis XIV"
+  },
+  {
+   "kind": "solar-return",
+   "author": "attributed to John Gadbury",
+   "title": "The Nativity of the Most Valiant and Puissant Monarch Lewis the Fourteenth ...",
+   "page": "p. 27 (canvas 26)",
+   "subject": "Louis XIV"
+  },
+  {
+   "kind": "solar-return",
+   "author": "James Blackwel",
+   "title": "The Nativity of Mr. Will. Lilly Astrologically performed; Shewing how he hath lived, and what Death he may probably die",
+   "page": "pp. 10-11 (scan canvases 15-16); natal p. 3 (canvas 8)",
+   "subject": "William Lilly, astrologer"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Henry Coley",
+   "title": "Clavis Astrologiae Elimata: or, A Key to the Whole Art of Astrology, New Filed and Polished (Chap. XXXI, Of the Revolution of the Sun to his Radical place)",
+   "page": "pp. 703-705 (scan canvases 772-774); exemplary geniture p. 465",
+   "subject": "Coley's 'Exemplary Geniture', 'a loving Friend of mine' (not named)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "Genethlialogia, or, The Doctrine of Nativities (Chap. XLII, An Example of a Revolution)",
+   "page": "p. 267 (scan canvas 144, a two-page spread)",
+   "subject": "the book's example native ('the Native'), born near Oxford in 1627; not named in the passages read"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "Genethlialogia, or, The Doctrine of Nativities (Chap. XLIII)",
+   "page": "p. 269 (scan canvas 145, a two-page spread)",
+   "subject": "the book's example native (born near Oxford, 31 Dec 1627)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "Collectio Geniturarum: or, A Collection of Nativities, in CL Genitures",
+   "page": "p. 19 (leaf 45); natal figure p. 18 (leaf 44)",
+   "subject": "'The Lady Elizabeth' (Princess Elizabeth, daughter of Charles I)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "Collectio Geniturarum: or, A Collection of Nativities, in CL Genitures",
+   "page": "p. 46 (leaf 72); natal figure p. 45 (leaf 71)",
+   "subject": "Robert Devereux, 'Earl of Essex' (2nd Earl)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "Collectio Geniturarum: or, A Collection of Nativities, in CL Genitures",
+   "page": "p. 50 (leaf 76); natal figure p. 49 (leaf 75)",
+   "subject": "'The Lord Francis Villiers'"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "Collectio Geniturarum: or, A Collection of Nativities, in CL Genitures",
+   "page": "p. 102 (leaf 124); natal figure p. 101 (leaf 123)",
+   "subject": "'Mr. John Gregory of Christs Colledge in Oxford' (the orientalist John Gregory)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "Collectio Geniturarum: or, A Collection of Nativities, in CL Genitures",
+   "page": "p. 122 (leaf 144); natal figure p. 121 (leaf 143)",
+   "subject": "'The learned Judge Reeves'"
+  },
+  {
+   "kind": "solar-return",
+   "author": "John Gadbury",
+   "title": "Collectio Geniturarum: or, A Collection of Nativities, in CL Genitures",
+   "page": "p. 148 (leaf 170); natal figure p. 145 (leaf 167)",
+   "subject": "'Oliver Cromwel' (Oliver Cromwell)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "H. S. Green",
+   "title": "Theoretical Astrology",
+   "page": "p. 24 (text). The accompanying figure on p. 23 is for the precession-corrected variant.",
+   "subject": "King Edward VII ('King Edward's Solar Revolution for November, 1900')"
+  },
+  {
+   "kind": "solar-return",
+   "author": "'Astrolabus' (pseudonym)",
+   "title": "Striking Recovery from an Usually Fatal Complaint",
+   "page": "pp. 29-30. Scan leaves n28 (p. 29, natal figure) and n29 (p. 30, solar-revolution sentence).",
+   "subject": "'Master A. H-', a lad from the Ipswich area injured on 1 May 1908 (anonymous)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Edwin Forrest",
+   "title": "The Solar Revolution",
+   "page": "p. 192 (scan leaf n191)",
+   "subject": "unnamed native whose mother died on 11 August 1883"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Ralph Shirley, editor ('Notes of the Month', unsigned; masthead 'Edited by Ralph Shirley'). The figure may come from Zadkiel's Almanac for 1918, which he is reviewing.",
+   "title": "Notes of the Month (review of Zadkiel's Almanac and Ephemeris for 1918)",
+   "page": "p. 257",
+   "subject": "King George V ('King George', 'the King')"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (Joannes Baptista Morinus, 1583-1656)",
+   "title": "Astrologia Gallica principiis & rationibus propriis stabilita, atque in XXVI. libros distributa, Liber XXIII (revolutions), Caput X (worked examples of lunar revolutions; Caput IX 'Quomodo figura revolutionis Lunae sit erigenda' precedes, chapter titles per OCR)",
+   "page": "pp. 634-635: intro p. 634 right column, figure p. 635 top, death date p. 635. Scan leaves 716-717.",
+   "subject": "Gustavus Adolphus, King of Sweden ('Gustavi Adolphi Regis Suetiae')"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (examples of lunar revolutions)",
+   "page": "p. 635: intro bottom-left; figure bottom half of the page. Scan leaf 717.",
+   "subject": "Cardinal Richelieu ('Cardinalis Richelius')"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (examples of lunar revolutions)",
+   "page": "p. 636: intro right column top; figure mid-page; event date bottom of left column. Scan leaf 718.",
+   "subject": "'Nobilissimus Vir D. Tronsonus' (Tronson, courtier exiled from the court of Louis XIII)"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (examples of lunar revolutions)",
+   "page": "p. 636 (intro and death date, right column) and p. 637 (figure, top). Scan leaves 718-719.",
+   "subject": "D. Tronson (same native as the 1626 example)"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (examples of lunar revolutions)",
+   "page": "p. 636 (intro, right column bottom) and p. 637 (figure, bottom; dates of illness and death, right column). Scan leaves 718-719.",
+   "subject": "François de Bonne, duc de Lesdiguières, Constable of France ('invictissimi Connestabilis Desdiguiers')"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (Morin's own lunar revolutions); radix in Liber XVII",
+   "page": "p. 638: intro top; figure top; event date mid right column. Radix: Lib. XVII p. 397. Scan leaves 720 and 479.",
+   "subject": "Jean-Baptiste Morin, the author himself"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (Morin's own lunar revolutions)",
+   "page": "p. 638 (figure, bottom) and p. 639 (intro, top left). Radix on p. 397. Scan leaves 720-721.",
+   "subject": "Jean-Baptiste Morin, the author"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (Morin's own lunar revolutions)",
+   "page": "p. 639: intro right column; figure mid-page. Scan leaf 721.",
+   "subject": "Jean-Baptiste Morin, the author"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (Morin's own lunar revolutions)",
+   "page": "p. 639 (intro, right column bottom) and p. 640 (figure, top). Scan leaves 721-722.",
+   "subject": "Jean-Baptiste Morin, the author"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (Morin's own lunar revolutions)",
+   "page": "p. 640: intro right column; figure bottom. Scan leaf 722.",
+   "subject": "Jean-Baptiste Morin, the author"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (Morin's own lunar revolutions)",
+   "page": "p. 641: intro top of right column; figure mid-page. Scan leaf 723.",
+   "subject": "Jean-Baptiste Morin, the author"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (Morin's own lunar revolutions)",
+   "page": "p. 642: intro top of right column; figure mid-page. Scan leaf 724.",
+   "subject": "Jean-Baptiste Morin, the author"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (Morin's own lunar revolutions)",
+   "page": "p. 642 (intro, right column bottom) and p. 643 (figure, top). Scan leaves 724-725.",
+   "subject": "Jean-Baptiste Morin, the author"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (Morin's own lunar revolutions)",
+   "page": "p. 643: intro across both columns of the lower half; figure lower half. Scan leaf 725.",
+   "subject": "Jean-Baptiste Morin, the author"
+  },
+  {
+   "kind": "lunar-return",
+   "author": "Jean-Baptiste Morin (1583-1656)",
+   "title": "Astrologia Gallica, Liber XXIII, Caput X (examples of lunar revolutions)",
+   "page": "p. 644: intro top of right column; figure top; death date lower left column. Scan leaf 726.",
+   "subject": "Charles de Condren, Superior General of the Oratory ('B. Patris Caroli de Condren')"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Unidentified hand in Richard Napier's casebooks (Bodleian MS Ashmole 204). Edited by Lauren Kassell, Michael Hawkins, Robert Ralley, John Young, Joanne Edge, Janet Yvonne Martin-Portugues and Natalie Kaoukji.",
+   "title": "The casebooks of Simon Forman and Richard Napier, 1596-1634: a digital edition. CASE79935 (Revolutions entry) with CASE79934 (Nativity).",
+   "page": "MS Ashmole 204, f. 47r: nativity at top of the folio (CASE79934), revolution in the middle (CASE79935)",
+   "subject": "Mr Richard Napier 'the nephew', i.e. Sir Richard Napier (PERSON18784)"
+  },
+  {
+   "kind": "solar-return",
+   "author": "Richard Napier (1559-1634), astrologer-physician. Edited by Lauren Kassell, Michael Hawkins, Robert Ralley, John Young, Joanne Edge, Janet Yvonne Martin-Portugues and Natalie Kaoukji.",
+   "title": "The casebooks of Simon Forman and Richard Napier, 1596-1634: a digital edition. CASE32724 (Revolutions entry) with CASE32723 (Nativity).",
+   "page": "MS Ashmole 229, f. 19r: nativity upper left (CASE32723), revolution top right (CASE32724)",
+   "subject": "Lady Constable [Dormer] (PERSON22643)"
+  }
+ ],
+ "developmentReturns": [
+  {
+   "native": "Queen Mary (Mary of Teck)",
+   "body": "Sun",
+   "years": [
+    1910
+   ]
+  },
+  {
+   "native": "Annie Besant",
+   "body": "Sun",
+   "years": [
+    1907
+   ]
+  },
+  {
+   "native": "George V (as Prince of Wales and as King)",
+   "body": "Sun",
+   "years": [
+    1893,
+    1917,
+    1918
+   ]
+  },
+  {
+   "native": "Edward VII",
+   "body": "Sun",
+   "years": [
+    1900,
+    1903,
+    1906
+   ]
+  },
+  {
+   "native": "Napoleon III",
+   "body": "Sun",
+   "years": [
+    1870
+   ]
+  },
+  {
+   "native": "Queen Victoria",
+   "body": "Sun",
+   "years": [
+    1833,
+    1854
+   ]
+  },
+  {
+   "native": "Alfonso XII of Spain",
+   "body": "Sun",
+   "years": [
+    1862,
+    1870,
+    1872,
+    1882
+   ]
+  },
+  {
+   "native": "Ada Lovelace (Augusta Ada Byron)",
+   "body": "Sun",
+   "years": [
+    1823
+   ]
+  },
+  {
+   "native": "Alexander II of Russia",
+   "body": "Sun",
+   "years": [
+    1877
+   ]
+  },
+  {
+   "native": "'Master A. H.' (Astrolabus, Old Moore's Monthly Messenger)",
+   "body": "Sun",
+   "years": [
+    1908
+   ]
+  },
+  {
+   "native": "the unnamed native of Edwin Forrest's 'The Solar Revolution' (mother died 11 August 1883)",
+   "body": "Sun",
+   "years": [
+    1883
+   ]
+  },
+  {
+   "native": "Queen Victoria",
+   "body": "Moon",
+   "years": [
+    1899,
+    1900,
+    1901
+   ]
+  }
+ ],
+ "note": "developmentReturns lists only returns from 1800 on, since W5 already excludes earlier ones. Where an entry names several years for one native, every one is listed."
+}

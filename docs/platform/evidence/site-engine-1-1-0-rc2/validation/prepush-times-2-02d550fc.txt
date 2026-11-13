@@ -1,0 +1,80 @@
+second attempt, citing rc2a-e7068c9d-prepush-times.txt (its type check and the developer first-use drive's Firefox launch failed); D-14 accepts the Firefox launch only
+head 02d550fc base f45734dc node v22.22.2 npm 10.9.7 Darwin arm64 label prepush
+2026-11-04T14:13:41Z
+v22.22.2
+HEAD 02d550fc99fc1f73ccac76b00250e766e0bbdb98 origin/main f45734dc801e6251799f53020f5da2e4b9e75d29
+build 0 (free before: 9308 MB)
+2026-11-04T14:15:23Z
+vitest 1 (free before: 9323 MB)
+2026-11-04T14:16:52Z
+ Test Files  1 failed | 635 passed | 1 skipped (637)
+      Tests  1 failed | 8174 passed | 13 skipped (8188)
+vitest failing files: scripts/phase1-acceptance-evidence.test.mjs
+check 0 (free before: 9218 MB)
+2026-11-04T14:17:43Z
+ai-check 0 (free before: 9224 MB)
+2026-11-04T14:17:44Z
+ai-test 0 (free before: 9224 MB)
+2026-11-04T14:17:59Z
+mcp-build-check 0 (free before: 9223 MB)
+2026-11-04T14:17:59Z
+mcp-pack-check 0 (free before: 9223 MB)
+2026-11-04T14:18:00Z
+compute-handler 0 (free before: 9225 MB)
+2026-11-04T14:18:00Z
+compute-local-time 0 (free before: 9225 MB)
+2026-11-04T14:18:00Z
+cities-also 0 (free before: 9224 MB)
+2026-11-04T14:18:01Z
+phase1-scope 0 (free before: 9224 MB)
+2026-11-04T14:18:01Z
+guide-twins 0 (free before: 9224 MB)
+2026-11-04T14:18:01Z
+guide-browser 0 (free before: 9224 MB)
+2026-11-04T14:18:19Z
+guide-examples 0 (free before: 9222 MB)
+2026-11-04T14:18:29Z
+guide-python 0 (free before: 9221 MB)
+2026-11-04T14:18:29Z
+claims-unlisted 0 (free before: 9221 MB)
+2026-11-04T14:18:36Z
+claims-orphans 0 (free before: 9220 MB)
+2026-11-04T14:18:42Z
+programme-ledger 0 (free before: 9219 MB)
+2026-11-04T14:18:42Z
+playground-engine-check 0 (free before: 9219 MB)
+2026-11-04T14:18:43Z
+engine-bundle-check 0 (free before: 9219 MB)
+2026-11-04T14:18:43Z
+natal-aspect-examples-check 0 (free before: 9219 MB)
+2026-11-04T14:18:46Z
+engine-reference-check 0 (free before: 9192 MB)
+2026-11-04T14:18:47Z
+check-engine-reference 0 (free before: 9192 MB)
+2026-11-04T14:18:48Z
+engine-reference-test 0 (free before: 9192 MB)
+2026-11-04T14:18:49Z
+engine-reference-drive 0 (free before: 9192 MB)
+2026-11-04T14:19:09Z
+natal-aspects-drive 0 (free before: 9209 MB)
+2026-11-04T14:19:15Z
+compatibility-browser 0 (free before: 9209 MB)
+2026-11-04T14:20:56Z
+t17-positions-share 0 (free before: 9223 MB)
+2026-11-04T14:21:12Z
+platform-developers-drive 0 (free before: 9222 MB)
+2026-11-04T14:21:30Z
+developer-first-use-drive 1 (free before: 9148 MB)
+2026-11-04T14:24:41Z
+widgets-browser 0 (free before: 8372 MB)
+2026-11-04T14:24:58Z
+mcp-protocol 0 (free before: 8107 MB)
+2026-11-04T14:25:02Z
+mcp-protocol rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/protocol-drive.json
+mcp-host 0 (free before: 8105 MB)
+2026-11-04T14:25:06Z
+mcp-host rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/host-drive.json
+mcp-benchmark 0 (free before: 8104 MB)
+2026-11-04T14:25:06Z
+mcp-benchmark rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/benchmark.json
+STOPPED by hand at 2026-11-04T14:41:38Z during webmcp (36 steps done: all exit 0 but the accepted two, the Phase 1 capture test and the first-use drive's Firefox launch, 44 other checks passing), to make the independent review's fixes; the third attempt runs on the final head

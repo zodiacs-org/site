@@ -93,8 +93,8 @@ const jsonLd = [
 >
   <article class="container container--narrow learn-detail">
     <header class="learn-detail__hero reveal">
+      <a class="crumb" href="/learn/planets/"><span class="crumb__arrow" aria-hidden="true">←</span>The planets</a>
       <PlanetGlyph body={planet} size={34} disc hue={rules[0]?.hue ?? classicRules[0]?.hue} class="learn-hero-glyph" />
-      <em class="kicker">The planets</em>
       <h1 id={slug} class="display">{planet}</h1>
       <p class="learn-detail__role">{entry.data.role}</p>
       <p class="learn-detail__facts mono">
@@ -115,7 +115,7 @@ const jsonLd = [
     <div class="learn-detail__cta shell tinted reveal">
       <div class="core tinted learn-detail__cta-core">
         <strong>Where is {planet} in your chart?</strong>
-        <p>Sign, house, and aspects — computed from your birth moment, on your device.</p>
+        <p>Sign, house, and aspects, computed from your birth moment, on your device.</p>
         <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
       </div>
     </div>
@@ -153,7 +153,7 @@ const jsonLd = [
   }
   .learn-detail__glyph { color: var(--muted); font-weight: 400; margin-right: 4px; }
   .learn-detail__role { margin: 0; font-size: var(--text-lg); color: var(--muted); max-width: 52ch; text-wrap: pretty; }
-  .learn-detail__facts { margin: 2px 0 0; font-size: 11px; color: var(--faint); letter-spacing: 0.06em; }
+  .learn-detail__facts { margin: 2px 0 0; font-family: var(--font-sans); font-size: 14px; color: var(--faint); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 
   .learn-detail__cta-core { padding: clamp(22px, 4vw, 32px); display: grid; gap: 10px; justify-items: start; }
   .learn-detail__cta-core strong { font-size: var(--text-lg); letter-spacing: -0.01em; }

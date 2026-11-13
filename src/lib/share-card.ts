@@ -37,8 +37,14 @@ import {
   drawShareBrandLockup,
   withShareBrandIcon,
 } from './share-card-brand';
+import { ringFront } from './ring-front';
+import { downloadPreparedChartCard, savePngBlob, type CardOutcome, type PreparedChartCard } from './share-card-save';
 
-export type CardOutcome = 'shared' | 'downloaded' | 'cancelled';
+// The save and download steps live in share-card-save.ts so lighter cards
+// (the story cards) can share them without loading this renderer.
+export { downloadPreparedChartCard, savePngBlob };
+export type { CardOutcome, PreparedChartCard };
+
 export type ChartCardVariant = 'full' | 'big-three' | 'communication' | 'signature' | 'approach' | 'sheet';
 export type PrimaryShareCardVariant = Extract<ChartCardVariant, 'signature' | 'big-three' | 'full'>;
 
@@ -254,15 +260,26 @@ export const SHARE_CARD_WORDMARK = Object.freeze({
   align: 'right' as const,
 });
 
+/**
+ * The sign a chart card's lockup ring brings to the front: the chart's Sun
+ * sign when the chart settles it (ring-front.ts). A chart from a link carries
+ * no birth-time flag, so its angles stand for one.
+ */
+export function cardRingFront(chart: Pick<BigThreeCardChart, 'bodies' | 'angles'> & { input?: { timeKnown?: boolean } }): string | null {
+  return ringFront(chart.bodies, chart.input ? chart.input.timeKnown === true : chart.angles !== null);
+}
+
 async function drawPortraitShareBrand(
   context: CanvasRenderingContext2D,
   centerY: number = PORTRAIT_SHARE_CARD_BRAND_LAYOUT.centerY,
+  front: string | null = null,
 ): Promise<void> {
   await withShareBrandIcon((icon) => {
     drawShareBrandLockup(context, icon, {
       ...PORTRAIT_SHARE_CARD_BRAND_LAYOUT,
       centerY,
       serif: SERIF,
+      front,
     });
   });
 }
@@ -761,7 +778,7 @@ async function drawFullChartCard(
   ctx.fillText(chartCardReceipt(chart, locale), 66, PORTRAIT_SHARE_CARD_BRAND_LAYOUT.centerY);
   ctx.textAlign = 'center';
 
-  await drawPortraitShareBrand(ctx);
+  await drawPortraitShareBrand(ctx, undefined, cardRingFront(chart));
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
@@ -833,7 +850,7 @@ async function drawBigThreeCard(
   timeNotes.forEach((note, index) => ctx.fillText(note, W / 2, 1630 + index * 34));
   ctx.font = `400 24px ${MONO}`;
   ctx.fillText(shareCardFormat(locale, 'engineReceipt', { version: chart.engineVersion }), W / 2, 1770);
-  await drawPortraitShareBrand(ctx, 1850);
+  await drawPortraitShareBrand(ctx, 1850, cardRingFront(chart));
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
@@ -920,7 +937,7 @@ async function drawCommunicationCard(
   ctx.textAlign = 'left';
   ctx.fillText(content.receipt, 72, 1260);
 
-  await drawPortraitShareBrand(ctx);
+  await drawPortraitShareBrand(ctx, undefined, cardRingFront(chart));
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
@@ -1044,7 +1061,7 @@ async function drawSignatureCard(
   ctx.fillStyle = INK_2;
   ctx.font = `400 24px ${MONO}`;
   ctx.fillText(content.receipt, 72, 1260);
-  await drawPortraitShareBrand(ctx);
+  await drawPortraitShareBrand(ctx, undefined, cardRingFront(chart));
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
@@ -1145,7 +1162,7 @@ async function drawApproachCard(
   ctx.fillStyle = INK_2;
   ctx.font = `400 24px ${MONO}`;
   ctx.fillText(content.receipt, 72, 1260);
-  await drawPortraitShareBrand(ctx);
+  await drawPortraitShareBrand(ctx, undefined, cardRingFront(chart));
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
@@ -1227,9 +1244,9 @@ export function chartSheetSettings(
   return `${reference}Apparent geocentric · Tropical of date · ${houses} · True Node`;
 }
 
-export const CHART_SHEET_ASPECT_SCOPE = 'Major aspects · Sun–Pluto · Nodes & angles excluded';
+export const CHART_SHEET_ASPECT_SCOPE = 'Major aspects · Sun-Pluto · Nodes & angles excluded';
 /** The scope of an image of a chart without a birth time, which leaves the Moon's aspects out. */
-export const CHART_SHEET_ASPECT_SCOPE_NO_MOON = 'Major aspects · Sun–Pluto · Moon, nodes & angles excluded';
+export const CHART_SHEET_ASPECT_SCOPE_NO_MOON = 'Major aspects · Sun-Pluto · Moon, nodes & angles excluded';
 export const CHART_SHEET_ASPECT_LEGEND = 'Orb · A applying · S separating';
 
 export function chartSheetOrbLimits(): string[] {
@@ -1432,6 +1449,7 @@ async function drawChartSheet(
       fontSize: CHART_SHEET_LAYOUT.brandFontSize,
       gap: CHART_SHEET_LAYOUT.brandGap,
       serif: SERIF,
+      front: cardRingFront(chart),
     });
   });
 
@@ -1594,7 +1612,7 @@ async function drawPlacementCard(
   timeNotes.forEach((note, index) => ctx.fillText(note, W / 2, 1090 + index * 34));
   ctx.font = `400 24px ${MONO}`;
   ctx.fillText(shareCardFormat(locale, 'engineReceipt', { version: chart.engineVersion }), W / 2, 1238);
-  await drawPortraitShareBrand(ctx);
+  await drawPortraitShareBrand(ctx, undefined, cardRingFront(chart));
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
   return blob;
@@ -1620,10 +1638,6 @@ export async function saveChartCard(
   return savePreparedChartCard(await prepareChartCard(chart, options));
 }
 
-export interface PreparedChartCard {
-  blob: Blob;
-  filename: string;
-}
 
 /**
  * What a solar return image shows of the return: no more of the birth than a
@@ -1635,10 +1649,14 @@ export interface PreparedChartCard {
  * whole degree), with whole-sign houses, which follow from the ascendant's
  * sign; Placidus houses, and the house they put the Sun in, are left out, and
  * a note says so. A return without a birth time is computed from 12:00 UTC on
- * the birth date (solar-return/compute.ts).
+ * the birth date (solar-return/compute.ts) and printed as the UTC date of the
+ * return itself, unrounded: rounding to the minute first could move a return
+ * at 23:59:30 or later to the next day, away from the date the page gives.
  */
 export function solarReturnImageModel(model: SolarReturnExportModel): SolarReturnExportModel {
-  const instantUtc = wholeMinuteInstant(new Date(model.instantUtc)).toISOString();
+  const instantUtc = model.noTime
+    ? new Date(model.instantUtc).toISOString()
+    : wholeMinuteInstant(new Date(model.instantUtc)).toISOString();
   const { angles, houses } = model.wheel;
   if (!angles) return { ...model, instantUtc };
   const asc = wholeDegreeAngle(angles.asc);
@@ -1692,7 +1710,8 @@ export async function prepareSolarReturnCard(source: SolarReturnExportModel): Pr
   ctx.fillText(title, 72, 68);
   ctx.font = `400 22px ${MONO}`;
   ctx.fillStyle = INK_2;
-  ctx.fillText(`${model.instantUtc.slice(0, 16).replace('T', ' ')} UTC`, 72, 144);
+  // Without a birth time the return is a date, a day either side, never a clock time.
+  ctx.fillText(model.noTime ? `${model.instantUtc.slice(0, 10)} UTC` : `${model.instantUtc.slice(0, 16).replace('T', ' ')} UTC`, 72, 144);
 
   const wheel = await loadSvg(await wheelSvgString(model.wheel));
   ctx.drawImage(wheel, (W - 610) / 2, 192, 610, 610);
@@ -1728,7 +1747,8 @@ export async function prepareSolarReturnCard(source: SolarReturnExportModel): Pr
   ctx.fillStyle = INK_2;
   ctx.textBaseline = 'middle';
   ctx.fillText(`Engine ${model.engineVersion}`, 72, 1290);
-  await drawPortraitShareBrand(ctx);
+  // The return's Sun stands where the natal Sun stood, so its sign is the person's.
+  await drawPortraitShareBrand(ctx, undefined, ringFront(model.wheel.bodies, !model.noTime));
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
   return { blob, filename: `zodiacs-${model.noTime ? 'approximate-' : ''}solar-return-${model.returnYear}.png` };
@@ -1822,36 +1842,4 @@ export async function prepareChartCard(
 
 export function savePreparedChartCard(prepared: PreparedChartCard): Promise<CardOutcome> {
   return savePngBlob(prepared.blob, prepared.filename);
-}
-
-/** Explicit download: no native share sheet and no async work before the click. */
-export function downloadPreparedChartCard(prepared: PreparedChartCard): 'downloaded' {
-  const url = URL.createObjectURL(prepared.blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = prepared.filename;
-  try {
-    document.body.appendChild(a);
-    a.click();
-  } finally {
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 0);
-  }
-  return 'downloaded';
-}
-
-export async function savePngBlob(blob: Blob, filename: string): Promise<CardOutcome> {
-  const file = new File([blob], filename, { type: 'image/png' });
-
-  try {
-    if (navigator.canShare?.({ files: [file] })) {
-      await navigator.share({ files: [file] });
-      return 'shared';
-    }
-  } catch (err) {
-    if ((err as DOMException)?.name === 'AbortError') return 'cancelled';
-    // Capability checks and rejected share sheets both retain the download path.
-  }
-
-  return downloadPreparedChartCard({ blob, filename: file.name });
 }

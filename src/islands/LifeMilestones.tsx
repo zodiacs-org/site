@@ -141,7 +141,7 @@ export default function LifeMilestones() {
               {card.milestones.map((milestone) => (
                 <div key={`${milestone.kind}-${milestone.index}`}>
                   <dt>{title(milestone)} · age {milestone.age}</dt>
-                  <dd>{day(milestone.first)}{milestone.passes.length > 1 ? ` – ${day(milestone.last)}` : ''}</dd>
+                  <dd>{day(milestone.first)}{milestone.passes.length > 1 ? ` to ${day(milestone.last)}` : ''}</dd>
                 </div>
               ))}
             </dl>

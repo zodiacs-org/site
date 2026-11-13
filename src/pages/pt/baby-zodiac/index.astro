@@ -1,5 +1,7 @@
 ---
+// Hidden since 2026-11-12 (src/data/hidden-child-pages.mjs): noindex and nofollow, out of the sitemap and navigation.
 import Base from '../../../layouts/Base.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import Faq from '../../../components/Faq.astro';
 import BabyZodiac from '../../../islands/BabyZodiac';
 import '../../../styles/calculator.css';
@@ -52,9 +54,11 @@ const jsonLd = [
   title="Qual será o signo do meu bebê? Calculadora | Zodiacs.org"
   description="Informe a data prevista do parto e veja o signo solar quase certo, os possíveis signos lunares da semana e o que só dá para saber depois do nascimento."
   path="/pt/baby-zodiac/"
+  noindex
+  nofollow
   locale="pt"
   image="/assets/og/v2/tool/baby-zodiac.png"
-  imageAlt="Calculadora do zodíaco do bebê — Zodiacs.org"
+  imageAlt="Calculadora do zodíaco do bebê, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container container--narrow">
@@ -74,11 +78,12 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="zodiac-figures" locale="pt" />
     <div class="prose reveal">
       <p>
         O Sol passa um mês em cada signo, então a data prevista oferece uma
-        resposta bastante segura; as exceções — datas no limite de um signo ou
-        bebês que nascem antes — são calculadas acima, em vez de adivinhadas. A
+        resposta bastante segura; as exceções, datas no limite de um signo ou
+        bebês que nascem antes, são calculadas acima, em vez de adivinhadas. A
         Lua muda de signo a cada dois ou três dias, e o ascendente muda a cada
         duas horas: ele depende do minuto exato do nascimento. Depois do parto, o{' '}
         <a href="/pt/birth-chart/">mapa astral completo</a> calcula tudo.

@@ -181,7 +181,7 @@ function stelliumSignature(
     kind: 'stellium',
     eyebrow: 'Standout in your chart',
     title: `${members.length}-planet ${signName(sign, locale)} stellium`,
-    summary: `${members.map(({ body }) => body).join(', ')} all sit in ${signName(sign, locale)} — that sign’s agenda gets ${members.length} votes in this chart.`,
+    summary: `${members.map(({ body }) => body).join(', ')} all sit in ${signName(sign, locale)}. That sign’s agenda gets ${members.length} votes in this chart.`,
     detail: 'Three or more planets concentrated in one sign',
     signSlugs: [slug],
     bodies: members.map(({ body }) => body),

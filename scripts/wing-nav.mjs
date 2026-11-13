@@ -1,4 +1,5 @@
 import { initProfileNavigation } from '../src/lib/profile/navigation-avatar.mjs';
+import { tiltedRingSvg } from '../src/lib/brand-lockup.mjs';
 
 // Unified site-wide navigation — the WING copy.
 //
@@ -6,9 +7,10 @@ import { initProfileNavigation } from '../src/lib/profile/navigation-avatar.mjs'
 // src/components/SiteNav.astro; every wing surface (the hub SPA, the 12 sign
 // pages, the archive, the thesis and SDK pages) renders the SAME bar from this
 // module so the two registers share one navigation. The markup/CSS below mirror
-// SiteNav.astro's design (BrandMark + "Zodiacs" wordmark, sentence-case
-// Instrument Sans links, a pastel Signs dropdown, a Registry chip, and a
-// mobile burger overlay) — in the wing's inlined-token form (no hashed bundle).
+// SiteNav.astro's design (the brand lockup: the tilted ring and ZODIACS · ORG,
+// sentence-case Instrument Sans links, a pastel Signs dropdown, a Registry
+// chip, and a mobile burger overlay) — in the wing's inlined-token form (no
+// hashed bundle).
 //
 // Link set (owner-directed): Tools ▾ · Signs ▾ · Today · Learn · Horoscopes · Saved charts
 // on the left, an "Astrofolio" chip on the right. The verification Registry remains
@@ -128,7 +130,7 @@ export function wingNavHtml({ includeSearch = true } = {}) {
     : '';
   return `<div class="wnav-wrap">
     <nav class="wnav" aria-label="Primary" data-wnav>
-      <a class="wnav__mark" href="/"><span class="wnav__name">Zodiacs<span class="wnav__sep">·</span><span class="wnav__dim">org</span></span></a>
+      <a class="wnav__mark" href="/" aria-label="Zodiacs.org">${tiltedRingSvg({ width: 34, className: 'wnav__ring' })}<span class="wnav__name" aria-hidden="true">Zodiacs<span class="wnav__sep">·</span><span class="wnav__dim">org</span></span></a>
       <div class="wnav__links">
         <button class="wnav__link wnav__dropdown-btn" type="button" data-wnav-tools aria-expanded="false" aria-controls="wnav-tools" aria-haspopup="true">Tools<svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button class="wnav__link wnav__dropdown-btn" type="button" data-wnav-signs aria-expanded="false" aria-controls="wnav-signs" aria-haspopup="true">Signs<svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -340,6 +342,7 @@ export function wingNavCss() {
   .wnav__sep { color: var(--ink-mute, #8A93A6); margin: 0 4px; }
   .wnav__dim { color: var(--ink-2, #C6CCDA); font-weight: 500; }
   @media (max-width: 919.5px) { .wnav__sep, .wnav__dim { display: none; } }
+  .wnav__ring { display: none; flex-shrink: 0; overflow: visible; }
   .wnav__search { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border: none; border-radius: 999px; background: none; color: var(--ink-2, #C6CCDA); cursor: pointer; text-decoration: none; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
   .wnav__search:hover { color: var(--ink, #EEF1F7); background: rgba(198,204,218,0.07); }
   @media (max-width: 919.5px) {
@@ -421,8 +424,11 @@ export function wingNavCss() {
   @keyframes wnav-turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .wnav-tools, .wnav-signs, .wnav__burger, .wnav__dropdown-btn svg, .wnav__burger-line { transition: none; } .wnav__mark:hover .wnav__brand { animation: none; } }
   @media (min-width: 920px) {
-    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
-    .wnav__mark { grid-area: mark; min-width: 0; }
+    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 168px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
+    .wnav__mark { grid-area: mark; min-width: 0; gap: 10px; }
+    .wnav__ring { display: block; }
+    .wnav__name { letter-spacing: 0.2em; }
+    .wnav__sep { margin: 0 0.2em; }
     .wnav__links { grid-area: links; min-width: 0; grid-template-columns: 74px 74px 64px 62px minmax(0, 1fr); }
     .wnav__profile-shortcut { grid-area: profile; }
     .wnav__search { grid-area: search; box-sizing: border-box; width: 62px; height: 44px; }

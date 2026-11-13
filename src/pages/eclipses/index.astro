@@ -1,16 +1,22 @@
 ---
 import Base from '../../layouts/Base.astro';
+import AskGuideAbout from '../../components/AskGuideAbout.astro';
 import '../../styles/rx-table.css';
 import eclipseData from '../../data/eclipses.json';
 import { signBySlug } from '../../lib/signs';
 import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
-import { publishedEventById } from '../../lib/events/publication';
+import { publishedEventById } from '../../lib/events/site-publication';
+import { isInvisiblePenumbral, lunarTotalityMinutes } from '../../lib/nasa-lunar-eclipses';
 
-// Every eclipse 2026–2028 from the committed data — receipts, no
+// Every eclipse in the committed data (2026 to 2030), receipts, no
 // client ephemeris.
 const buildNow = new Date();
 const eventHorizon = new Date(buildNow);
 eventHorizon.setUTCFullYear(eventHorizon.getUTCFullYear() + 1);
+
+// The years eclipses.json covers, so the copy names the span the table lists.
+const firstYear = new Date(eclipseData.from).getUTCFullYear();
+const lastYear = new Date(Date.parse(eclipseData.to) - 1).getUTCFullYear();
 
 const sources = [
   { label: 'NASA Eclipse Catalog', href: 'https://eclipse.gsfc.nasa.gov/eclipse.html' },
@@ -35,16 +41,18 @@ const eclipses = (eclipseData.eclipses as EclipseEntry[]).map((e) => {
   let detail = '';
   if (e.type === 'solar') {
     detail = e.kind === 'total'
-      ? 'totality — the Sun fully covered along the track'
+      ? 'totality, the Sun fully covered along the track'
       : e.kind === 'annular'
-        ? `ring eclipse — ${pct}% of the Sun covered at maximum`
+        ? `ring eclipse, ${pct}% of the Sun covered at maximum`
         : 'partial only';
   } else {
     detail = e.kind === 'total'
-      ? `totality lasts about ${e.totalMinutes} minutes`
+      ? `totality lasts about ${lunarTotalityMinutes(e.peak, e.totalMinutes)} minutes`
       : e.kind === 'partial'
         ? `${pct}% of the Moon in shadow at maximum`
-        : 'penumbral — a subtle shading, easy to miss';
+        : isInvisiblePenumbral(e.peak, e.kind)
+          ? 'penumbral, so slight that no eye or camera will see it'
+          : 'penumbral, a subtle shading, easy to miss';
   }
   return {
     ...e,
@@ -63,13 +71,17 @@ const nextSolar = eclipses.find((e) => !e.past && e.type === 'solar');
 const nextLunar = eclipses.find((e) => !e.past && e.type === 'lunar');
 const upcomingEvents = eclipses.filter((e) => e.at >= buildNow && e.at <= eventHorizon);
 
+/** "a" or "an" before an eclipse kind: an annular eclipse, a total one. */
+const article = (word: string) => (/^[aeiou]/i.test(word) ? 'an' : 'a');
+const capArticle = (word: string) => (article(word) === 'an' ? 'An' : 'A');
+
 const fmtDay = (d: Date) =>
   formatDate('en', d, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const fmtTime = (d: Date) =>
   formatTime('en', d, { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
 
 const status = next
-  ? `The next eclipse is a ${next.label.toLowerCase()} eclipse on ${fmtDay(next.at)}, in ${next.sign.name}.`
+  ? `The next eclipse is ${article(next.label)} ${next.label.toLowerCase()} eclipse on ${fmtDay(next.at)}, in ${next.sign.name}.`
   : 'Later eclipse dates are not available yet.';
 
 const asOf = formatShortDate('en', buildNow);
@@ -78,26 +90,26 @@ const faq = [
   {
     q: 'When is the next solar eclipse?',
     a: nextSolar
-      ? `A ${nextSolar.kind} solar eclipse peaks on ${fmtDay(nextSolar.at)}, with the Sun in ${nextSolar.sign.name}. Solar eclipses are only visible from a limited track — for the August 12, 2026 total eclipse, totality crosses Greenland, western Iceland, and northern Spain.`
+      ? `${capArticle(nextSolar.kind)} ${nextSolar.kind} solar eclipse peaks on ${fmtDay(nextSolar.at)}, with the Sun in ${nextSolar.sign.name}. Solar eclipses are only visible from a limited track. For the August 12, 2026 total eclipse, totality crosses Greenland, western Iceland, and northern Spain.`
       : 'Later solar eclipse dates are not available yet.',
   },
   {
     q: 'When is the next lunar eclipse?',
     a: nextLunar
-      ? `A ${nextLunar.kind} lunar eclipse peaks on ${fmtDay(nextLunar.at)}, with the Moon in ${nextLunar.sign.name}. Unlike solar eclipses, a lunar eclipse is visible from the entire night side of Earth at once.`
+      ? `${capArticle(nextLunar.kind)} ${nextLunar.kind} lunar eclipse peaks on ${fmtDay(nextLunar.at)}, with the Moon in ${nextLunar.sign.name}. Unlike solar eclipses, a lunar eclipse is visible from the entire night side of Earth at once.`
       : 'Later lunar eclipse dates are not available yet.',
   },
   {
     q: 'What is the difference between a solar and a lunar eclipse?',
-    a: 'A solar eclipse is the Moon passing in front of the Sun at a new moon — visible only along a narrow track, in daylight. A lunar eclipse is the Moon passing through Earth’s shadow at a full moon — visible from anywhere the Moon is up, and safe to watch with bare eyes. Solar eclipses need eye protection at every stage short of totality.',
+    a: 'A solar eclipse is the Moon passing in front of the Sun at a new moon, visible only along a narrow track, in daylight. A lunar eclipse is the Moon passing through Earth’s shadow at a full moon, visible from anywhere the Moon is up, and safe to watch with bare eyes. Solar eclipses need eye protection at every stage short of totality.',
   },
   {
     q: 'Why do eclipses come in pairs?',
-    a: 'The Moon’s orbit is tilted about five degrees, so most new and full moons miss the alignment. Twice a year the geometry lines up for a few weeks — an eclipse season — and inside each season you usually get one solar and one lunar eclipse about two weeks apart. The table shows the rhythm: February–March and August in 2026.',
+    a: 'The Moon’s orbit is tilted about five degrees, so most new and full moons miss the alignment. Twice a year the geometry lines up for a few weeks, an eclipse season, and inside each season you usually get one solar and one lunar eclipse about two weeks apart. The table shows the rhythm: February to March and August in 2026.',
   },
   {
     q: 'What do eclipses mean in astrology?',
-    a: 'Astrologers read eclipses as amplified lunations: a new or full moon that lands close to the Moon’s nodes, the points astrology associates with direction and change. The tradition treats them as accelerants — beginnings and endings arriving faster than usual — in whichever part of your chart holds the eclipse’s degree. Finding that part takes your birth chart.',
+    a: 'Astrologers read eclipses as amplified lunations: a new or full moon that lands close to the Moon’s nodes, the points astrology associates with direction and change. The tradition treats them as accelerants, beginnings and endings arriving faster than usual, in whichever part of your chart holds the eclipse’s degree. Finding that part takes your birth chart.',
   },
 ];
 
@@ -117,8 +129,8 @@ const eventNodes = upcomingEvents.map((e) => {
 const dataset = {
   '@type': 'Dataset',
   '@id': 'https://zodiacs.org/eclipses/#dataset',
-  name: 'Solar and lunar eclipse dates, 2026–2028',
-  description: 'Computed peak instants, eclipse types, and tropical zodiac positions for every solar and lunar eclipse from 2026 through 2028.',
+  name: `Solar and lunar eclipse dates, ${firstYear} to ${lastYear}`,
+  description: `Computed peak instants, eclipse types, and tropical zodiac positions for every solar and lunar eclipse from ${firstYear} through ${lastYear}.`,
   url: 'https://zodiacs.org/eclipses/',
   creator: { '@id': 'https://zodiacs.org/#org' },
   publisher: { '@id': 'https://zodiacs.org/#org' },
@@ -132,10 +144,10 @@ const dataset = {
 const jsonLd = [
   {
     '@type': 'WebPage',
-    name: 'Eclipse dates 2026–2028',
+    name: `Eclipse dates ${firstYear} to ${lastYear}`,
     url: 'https://zodiacs.org/eclipses/',
     description:
-      'Every solar and lunar eclipse from 2026 through 2028: exact peak times, type, and zodiac sign, computed from the real geometry.',
+      `Every solar and lunar eclipse from ${firstYear} through ${lastYear}: exact peak times, type, and zodiac sign, computed from the real geometry.`,
   },
   {
     '@type': 'FAQPage',
@@ -150,17 +162,17 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Eclipse Dates 2026–2028 — Solar & Lunar, Exact | Zodiacs.org"
-  description="Every solar and lunar eclipse through 2028 with exact peak times and zodiac signs — including the August 12, 2026 total solar eclipse over Iceland and Spain."
+  title="Eclipse Dates 2026 to 2030: Solar & Lunar, Exact | Zodiacs.org"
+  description="Every solar and lunar eclipse through 2030 with exact peak times and zodiac signs, including the August 12, 2026 total solar eclipse over Iceland and Spain."
   path="/eclipses/"
   image="/assets/og/v2/tool/eclipses.png"
-  imageAlt="Eclipse dates — Zodiacs.org"
+  imageAlt="Eclipse dates, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
 >
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
-      <h1 class="display">Find every eclipse through 2028.</h1>
+      <h1 class="display">Find every eclipse through {lastYear}.</h1>
       <p>Find the next solar or lunar eclipse, its peak time in UTC and its Zodiac sign.</p>
     </div>
 
@@ -169,15 +181,15 @@ const jsonLd = [
         <span class="mono--label">As of {asOf}</span>
         <strong class="rx-now__line">{status}</strong>
         <span class="rx-now__all mono">
-          Eclipse seasons run twice a year — solar and lunar arrive about two weeks apart
+          Eclipse seasons run twice a year. Solar and lunar arrive about two weeks apart
           · <a href="/eclipses/2027/">just the 2027 eclipses</a>
         </span>
       </div>
     </div>
     <details class="calendar-method"><summary>How this calendar works</summary>
       <p>
-        Every <a href="/learn/glossary/#eclipse">solar and lunar eclipse</a> through 2028, computed from the
-        real geometry &mdash; peak instants in universal time, with the <a href="/learn/glossary/#zodiac-sign">sign</a>{' '}
+        Every <a href="/learn/glossary/#eclipse">solar and lunar eclipse</a> through {lastYear}, computed from the
+        real geometry: peak instants in universal time, with the <a href="/learn/glossary/#zodiac-sign">sign</a>{' '}
         each one lands in.
       </p>
     </details>
@@ -185,7 +197,7 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="section-head reveal">
-      <h2>The eclipses, 2026&ndash;2028</h2>
+      <h2>The eclipses, {firstYear} to {lastYear}</h2>
       <p>Peak times in universal time. Solar eclipses are visible along a limited track; lunar eclipses from the whole night side of Earth.</p>
     </div>
     <div class="table-wrap reveal">
@@ -217,14 +229,14 @@ const jsonLd = [
         Every eclipse is a new or full moon with better aim than usual. The
         Moon&rsquo;s orbit tilts about five degrees against the Sun&rsquo;s path, so
         most months its shadow misses us and Earth&rsquo;s shadow misses it.
-        Twice a year the crossing points &mdash; the <a href="/learn/glossary/#lunar-nodes">nodes</a> &mdash; line up with the
+        Twice a year the crossing points (the <a href="/learn/glossary/#lunar-nodes">nodes</a>) line up with the
         Sun, and for a few weeks any lunation lands square in the geometry:
         a new moon blocks the Sun somewhere on Earth, a full moon slides
         into Earth&rsquo;s shadow. That is the whole machinery, and it is why the
         table above clusters into seasons.
       </p>
       <p>
-        The one worth planning around is <strong>August 12, 2026</strong> &mdash; the
+        The one worth planning around is <strong>August 12, 2026</strong>, the
         first total solar eclipse over mainland Europe since 1999. Totality
         crosses Greenland, western Iceland, and northern Spain in the late
         afternoon; most of Europe sees a deep partial. A lunar eclipse
@@ -235,7 +247,7 @@ const jsonLd = [
       <p>
         Astrology reads eclipses as lunations with the volume turned up,
         because they happen on the nodal axis the tradition associates with
-        direction &mdash; where you&rsquo;re headed and what you&rsquo;re leaving. The
+        direction: where you&rsquo;re headed and what you&rsquo;re leaving. The
         working advice is unglamorous: watch what surfaces in the{' '}
         <a href="/full-moon-calendar/">lunation cycle</a> those weeks, and
         read the sign pairing against{' '}
@@ -243,6 +255,7 @@ const jsonLd = [
         headlines. The <a href="/horoscopes/">monthly horoscopes</a> date
         each one as it arrives.
       </p>
+      <AskGuideAbout prompt="What does the next eclipse mean in astrology, and how do I read it against my chart?" />
     </div>
   </section>
 
@@ -275,7 +288,7 @@ const jsonLd = [
 
   .rx-now__core { padding: clamp(20px, 4vw, 28px); display: grid; gap: 10px; }
   .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
-  .rx-now__all { font-size: 11.5px; color: var(--faint); letter-spacing: 0.05em; }
+  .rx-now__all { font-family: var(--font-sans); font-size: 13px; color: var(--faint); letter-spacing: 0; }
 
   /* .table-wrap + .rx-table (desktop + mobile stacking) live in
      ../../styles/rx-table.css (shared). */

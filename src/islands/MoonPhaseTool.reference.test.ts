@@ -104,7 +104,7 @@ describe('Moon phase reference result', () => {
     expect(result.error).toBe(t('en', 'localDateReferenceError'));
   });
 
-  it('corrects the real January 16 boundary disagreement without changing full values', async () => {
+  it('agrees with the lite calculation near the January 16 boundary without changing full values', async () => {
     const actual = await capture({ date: '2024-01-16', time: '10:18', zone: null });
     expect(moonPhaseName(new Date('2024-01-16T10:18:00Z'))).toBe('Waxing Crescent');
     // rc.16's full IAU 2000B adds the same 0.0514465″ of nutation in
@@ -112,7 +112,8 @@ describe('Moon phase reference result', () => {
     // phase therefore stay exactly the same as on rc.15's UTC/IERS clock.
     expect(actual.result!.angle).toBe(67.50628923593246);
     expect(actual.result!.lon).toBe(3.271515249695085);
-    expect(actual.result!.phase).toBe('First Quarter');
+    // 67.5° is a crescent under the standard names: the quarters span 78° to 102°.
+    expect(actual.result!.phase).toBe('Waxing Crescent');
     expect(actual.result!.illum).toBe((1 - Math.cos((actual.result!.angle * Math.PI) / 180)) / 2);
   });
 
@@ -170,11 +171,11 @@ describe('Moon phase reference result', () => {
   });
 
   it.each([
-    ['2024-01-09', ['Waning Crescent', 'Waning Crescent', 'New Moon']],
-    ['2024-01-16', ['Waxing Crescent', 'First Quarter', 'First Quarter']],
+    ['2024-01-09', ['Waning Crescent', 'Waning Crescent', 'Waning Crescent']],
+    ['2024-01-16', ['Waxing Crescent', 'Waxing Crescent', 'Waxing Crescent']],
     ['2024-04-07', ['Waning Crescent', 'New Moon', 'New Moon']],
     ['2024-01-01', ['Waning Gibbous', 'Waning Gibbous', 'Waning Gibbous']],
-  ])('preserves the existing finite phase-category witness for %s', (date, phases) => {
+  ])('names the standard phase-category witness for %s', (date, phases) => {
     expect(['00:00', '12:00', '23:59'].map(time => moonPhaseName(new Date(`${date}T${time}:00Z`)))).toEqual(phases);
   });
 

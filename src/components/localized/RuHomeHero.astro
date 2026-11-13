@@ -1,0 +1,301 @@
+---
+/**
+ * The Russian home's hero. Same frame, scrim, type and controls as the other
+ * homes (src/components/localized/localized-home.css), with its own media
+ * contract, which tests/ru-hero-source.test.mjs pins: the reviewed Russian
+ * poster files are the LCP, eager and high priority with their intrinsic
+ * size, and the film's sources stay detached until a real interaction, on
+ * every viewport. Reduced motion and constrained data keep the poster.
+ */
+import { localizePath } from '../../lib/i18n';
+
+interface Props {
+  title: string;
+  sub: string;
+  cta: string;
+  horoscope: string;
+  horoscopeHref: string;
+  englishCue: { suffix: string; aria: string };
+  trust: string;
+  credit: string;
+  pause: string;
+}
+
+const { title, sub, cta, horoscope, horoscopeHref, englishCue, trust, credit, pause } = Astro.props;
+---
+<section class="lhero container">
+  <div class="lhero__frame">
+    <picture>
+      <source
+        media="(max-width: 719px)"
+        srcset="/assets/hero/zodiacs-hero-poster-ru-mobile.avif"
+        type="image/avif"
+      />
+      <img
+        class="lhero__poster hero-ru__poster"
+        src="/assets/hero/zodiacs-hero-poster-ru.avif"
+        width="1440"
+        height="810"
+        loading="eager"
+        fetchpriority="high"
+        alt=""
+        aria-hidden="true"
+        data-hero-poster-ru
+      />
+    </picture>
+    <video
+      class="lhero__video"
+      muted
+      loop
+      playsinline
+      preload="none"
+      disablepictureinpicture
+      aria-hidden="true"
+      tabindex="-1"
+      data-hero-video-ru
+    >
+      <source data-src="/assets/hero/zodiacs-hero-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
+      <source data-src="/assets/hero/zodiacs-hero.mp4" type="video/mp4" />
+    </video>
+    <div class="lhero__scrim" aria-hidden="true"></div>
+    <div class="lhero__content">
+      <h1 class="lhero__title">{title}</h1>
+      <p class="lhero__sub">{sub}</p>
+      <div class="lhero__ctas">
+        <a class="btn btn--primary" href={localizePath('ru', '/birth-chart/')}><span>{cta}</span><span class="orb">↗</span></a>
+        <a
+          class="btn btn--ghost lhero__ghost"
+          href={horoscopeHref}
+          hreflang="en"
+          title={englishCue.aria}
+          aria-label={`${horoscope}. ${englishCue.aria}`}
+        ><span>{horoscope}{englishCue.suffix}</span></a>
+      </div>
+      <p class="lhero__trust">{trust}</p>
+    </div>
+    <span class="lhero__credit">{credit}</span>
+    <button class="lhero-motion" type="button" data-hero-motion-toggle aria-pressed="false" aria-label={pause}>
+      <svg class="lhero-motion__pause" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><rect x="2" y="1.5" width="2.6" height="9" rx="1" /><rect x="7.4" y="1.5" width="2.6" height="9" rx="1" /></svg>
+      <svg class="lhero-motion__play" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3.2 1.6v8.8l7.4-4.4z" /></svg>
+    </button>
+  </div>
+  <script is:inline>
+    // The poster remains the LCP and the complete reduced-motion or
+    // constrained-data experience. Video sources attach only after a real
+    // interaction; offscreen ambient work pauses and resumes safely.
+    (function () {
+      var v = document.querySelector('[data-hero-video-ru]');
+      var p = document.querySelector('[data-hero-poster-ru]');
+      if (!v || !p) return;
+      var frame = v.closest('.lhero__frame');
+      var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      var reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var constrained = connection && (
+        connection.saveData ||
+        ['slow-2g', '2g'].indexOf(connection.effectiveType) !== -1
+      );
+      var manuallyPaused = false;
+      try { manuallyPaused = sessionStorage.getItem('zodiacs:motion-paused') === '1'; } catch (_) {}
+      var toggle = document.querySelector('[data-hero-motion-toggle]');
+      var visible = true;
+      var interacted = false;
+      var playbackRequested = false;
+      var playPending = false;
+      var posterFallback = false;
+      var playAttempt = 0;
+      var abortRetried = false;
+
+      var detachSources = function () {
+        playAttempt += 1;
+        playPending = false;
+        v.querySelectorAll('source[data-src]').forEach(function (source) {
+          source.removeAttribute('src');
+        });
+        delete v.dataset.sourcesAttached;
+        v.preload = 'none';
+        v.load();
+      };
+      var attachSources = function () {
+        if (!v.dataset.sourcesAttached) {
+          v.querySelectorAll('source[data-src]').forEach(function (source) {
+            source.src = source.dataset.src;
+          });
+          v.dataset.sourcesAttached = 'true';
+          v.preload = 'auto';
+          v.load();
+        }
+      };
+      var usePosterFallback = function () {
+        if (posterFallback) return;
+        posterFallback = true;
+        playAttempt += 1;
+        playPending = false;
+        v.dataset.heroPlayback = 'poster-fallback';
+        v.classList.remove('is-playing');
+        v.pause();
+        detachSources();
+      };
+      var tryPlay = function () {
+        if (manuallyPaused || !playbackRequested || !visible || document.hidden || constrained || reducedQuery.matches || posterFallback || playPending) return;
+        attachSources();
+        var attempt = ++playAttempt;
+        playPending = true;
+        v.dataset.heroPlayback = 'loading';
+        var promise;
+        try {
+          promise = v.play();
+        } catch (error) {
+          usePosterFallback();
+          return;
+        }
+        if (!promise || !promise.then) {
+          playPending = false;
+          abortRetried = false;
+          v.dataset.heroPlayback = 'playing';
+          v.classList.add('is-playing');
+          return;
+        }
+        promise.then(function () {
+          if (attempt !== playAttempt) return;
+          playPending = false;
+          abortRetried = false;
+          if (!visible || document.hidden) {
+            v.pause();
+            v.dataset.heroPlayback = 'paused';
+            return;
+          }
+          v.dataset.heroPlayback = 'playing';
+          v.classList.add('is-playing');
+        }).catch(function (error) {
+          if (attempt !== playAttempt) return;
+          playPending = false;
+          if (error && error.name === 'AbortError') {
+            v.dataset.heroPlayback = 'paused';
+            if (visible && !document.hidden && !abortRetried) {
+              abortRetried = true;
+              window.setTimeout(tryPlay, 0);
+            }
+            return;
+          }
+          usePosterFallback();
+        });
+      };
+
+      var setVisible = function (nextVisible) {
+        visible = Boolean(nextVisible) && !document.hidden;
+        p.dataset.heroVisible = String(visible);
+        v.dataset.heroVisible = String(visible);
+        if (!visible) {
+          playAttempt += 1;
+          playPending = false;
+          if (playbackRequested) v.pause();
+          if (v.dataset.heroPlayback === 'playing' || v.dataset.heroPlayback === 'loading') v.dataset.heroPlayback = 'paused';
+          return;
+        }
+        tryPlay();
+      };
+
+      var beginPlayback = function () {
+        if (interacted) return;
+        interacted = true;
+        v.dataset.heroInteracted = 'true';
+        if (constrained || reducedQuery.matches) return;
+        playbackRequested = true;
+        tryPlay();
+      };
+
+      if (toggle && manuallyPaused) toggle.setAttribute('aria-pressed', 'true');
+      toggle && toggle.addEventListener('click', function () {
+        manuallyPaused = !manuallyPaused;
+        try { sessionStorage.setItem('zodiacs:motion-paused', manuallyPaused ? '1' : '0'); } catch (_) {}
+        toggle.setAttribute('aria-pressed', String(manuallyPaused));
+        p.dataset.heroMotion = manuallyPaused || reducedQuery.matches ? 'static' : 'drift';
+        if (manuallyPaused) { playAttempt += 1; playPending = false; v.pause(); v.classList.remove('is-playing'); v.dataset.heroPlayback = 'paused'; }
+        else { playbackRequested = true; tryPlay(); }
+      });
+      p.dataset.heroMotion = reducedQuery.matches || manuallyPaused ? 'static' : 'drift';
+      v.dataset.heroPlayback = 'poster';
+
+      ['pointerdown', 'touchstart', 'keydown'].forEach(function (eventName) {
+        window.addEventListener(eventName, beginPlayback, { once: true, passive: true, capture: true });
+      });
+
+      // The observer's first report, right after the first layout, is the
+      // frame's starting visibility; reading the frame's rect here would lay
+      // the page out mid-parse, ahead of the poster's paint.
+      if (frame && 'IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          setVisible(entries[0] && entries[0].isIntersecting);
+        }, { threshold: 0.01 });
+        observer.observe(frame);
+      } else {
+        setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
+      }
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) setVisible(false);
+        else setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
+      });
+
+      reducedQuery.addEventListener && reducedQuery.addEventListener('change', function () {
+        p.dataset.heroMotion = reducedQuery.matches || manuallyPaused ? 'static' : 'drift';
+        if (reducedQuery.matches) {
+          playAttempt += 1;
+          playPending = false;
+          if (playbackRequested) v.pause();
+          v.dataset.heroPlayback = 'paused';
+          v.classList.remove('is-playing');
+          return;
+        }
+        if (interacted && !constrained && !posterFallback) {
+          playbackRequested = true;
+          tryPlay();
+        }
+      });
+
+      v.addEventListener('error', function () {
+        if (constrained || posterFallback || !playbackRequested || !v.dataset.sourcesAttached) return;
+        if (v.dataset.sourceRetry === 'true') {
+          usePosterFallback();
+          return;
+        }
+        v.dataset.sourceRetry = 'true';
+        playPending = false;
+        detachSources();
+        window.setTimeout(function () {
+          if (posterFallback || !visible) return;
+          attachSources();
+          tryPlay();
+        }, 0);
+      });
+      window.addEventListener('pagehide', function () {
+        playAttempt += 1;
+        playPending = false;
+        if (playbackRequested) v.pause();
+      });
+      window.addEventListener('pageshow', function (event) {
+        if (event.persisted) setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
+      });
+    })();
+  </script>
+</section>
+
+<style>
+  /* The Russian poster drifts on phones like the others; these rules hold
+     the media contract next to the markup it governs. */
+  @keyframes hero-poster-drift {
+    0% { transform: scale(1.035) translate3d(0, 0, 0); }
+    100% { transform: scale(1.06) translate3d(-0.55%, 0.4%, 0); }
+  }
+  @media (max-width: 719px) and (prefers-reduced-motion: no-preference) {
+    .hero-ru__poster[data-hero-motion='drift'] {
+      animation: hero-poster-drift 18s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+      will-change: transform;
+    }
+    .hero-ru__poster[data-hero-visible='false'] { animation-play-state: paused; }
+  }
+  /* The Russian phone poster is already a portrait cut of the frame. */
+  @media (max-width: 719px) {
+    .hero-ru__poster { object-position: center 42%; }
+  }
+</style>

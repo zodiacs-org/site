@@ -1,0 +1,57 @@
+{
+  "base": "https://zodiacs.org",
+  "fetchedAt": "2026-10-27T14:43:10Z",
+  "rows": [
+    {
+      "path": "/developers/conventions/registry.json",
+      "status": 200,
+      "sha256": "1b4e30a2cad5a09dccbdc2cfa777eb49bae7b5073ff23b43ce63810df1c22e4f",
+      "names110rc1": false,
+      "namesConventionIds": false,
+      "ids": 154,
+      "namespaces": 57
+    },
+    {
+      "path": "/api/v1/openapi.json",
+      "status": 200,
+      "sha256": "5c6d3c7eb1594e8d6e8a059d19bba689c63db91960cc47b6cb981ce830565b25",
+      "names110rc1": false,
+      "namesConventionIds": false
+    },
+    {
+      "path": "/developers/engine/",
+      "status": 200,
+      "sha256": "9987a1070f2b8032bb90dde00f53aabc43c159898238b388b79fc8b155a52e81",
+      "names110rc1": false,
+      "namesConventionIds": false
+    },
+    {
+      "path": "/llms.txt",
+      "status": 200,
+      "sha256": "e5b4adc401fa1c988599c8a282090f03b4319abc29e90be2bcd36ed8a5d2d41a",
+      "names110rc1": false,
+      "namesConventionIds": false
+    },
+    {
+      "path": "/api/v1/llms.txt",
+      "status": 200,
+      "sha256": "c402756e3cf901dbc84916d5772b0ffd86f1cf88901a0edeb6f9d2a09c0f9003",
+      "names110rc1": false,
+      "namesConventionIds": false
+    },
+    {
+      "path": "/developers/mcp/",
+      "status": 200,
+      "sha256": "1fff23ccbc9b3b74bba91e5e24921e4b2ba409950a060e855b100b93dff43e29",
+      "names110rc1": false,
+      "namesConventionIds": false
+    },
+    {
+      "path": "/support/engine/",
+      "status": 404,
+      "sha256": "cca9f140c6c25098cd7e73bd90f1c460f4f1725b389bc441c445b4fdeb23532b",
+      "names110rc1": false,
+      "namesConventionIds": false
+    }
+  ]
+}

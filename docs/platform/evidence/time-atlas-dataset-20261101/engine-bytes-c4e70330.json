@@ -1,0 +1,113 @@
+{
+  "schema": "zodiacs.time-atlas-engine-bytes.v1",
+  "commit": "c4e70330751b17f6ebd6322958c270f09f93d3a3",
+  "tree": "2b2936eb25159af831f59da7c04c0d952861d1ce",
+  "indexTree": "8e1bc174cafdb8c09ee7986cae4527cdbac18e9a",
+  "cloneHead": "4b116cc72acfdce22a542e3d09c42bf2acd94a83",
+  "passed": 16,
+  "of": 17,
+  "files": [
+    {
+      "path": "data/atlas.json",
+      "source": "atlas/data/atlas.json",
+      "ok": true,
+      "detail": "SHA-256 4104e88dfc5b1eaaa1789e5c6c260a290c0d27c1878f39fd54df472355dcb7de, as the folder and the index give it"
+    },
+    {
+      "path": "data/places.json",
+      "source": "atlas/data/places.json",
+      "ok": true,
+      "detail": "SHA-256 1c1366ae622ffed271ee2717454a5e723253ad28f5b1b444086e571664ef00db, as the folder and the index give it"
+    },
+    {
+      "path": "data/leads.json",
+      "source": "atlas/data/leads.json",
+      "ok": true,
+      "detail": "SHA-256 f247caf33ee57ff7708dc496cf1c5f2cece41f274f2969e4f2616840c462d54b, as the folder and the index give it"
+    },
+    {
+      "path": "data/citations-fr.json",
+      "source": "atlas/data/citations-fr.json",
+      "ok": true,
+      "detail": "SHA-256 3b91f1e679cbb67e1bcb381979d0e21a51842671e339b901d21cfeb652b06b5a, as the folder and the index give it"
+    },
+    {
+      "path": "data/rules-fr.json",
+      "source": "atlas/data/rules-fr.json",
+      "ok": true,
+      "detail": "SHA-256 f6922563cf13ecb679cb152b04bddb73103c20f9ac1a445d80e106a9e11d53be, as the folder and the index give it"
+    },
+    {
+      "path": "data/citations-als.json",
+      "source": "atlas/data/citations-als.json",
+      "ok": true,
+      "detail": "SHA-256 5102d32cb2f1a588d569fc3aa57d8e9ebcdaa28843b90cab19c56b54a8f96f3b, as the folder and the index give it"
+    },
+    {
+      "path": "data/rules-als.json",
+      "source": "atlas/data/rules-als.json",
+      "ok": true,
+      "detail": "SHA-256 6cff3b85bfaf32555dec81399044a8f3e1cba2712d129637635330733807fa20, as the folder and the index give it"
+    },
+    {
+      "path": "data/citations-us.json",
+      "source": "atlas/data/citations-us.json",
+      "ok": true,
+      "detail": "SHA-256 0c06ad3a6255083814b3ddad19c6ef6a7dbdfd8e1b3d004c8bc182836df1dd3b, as the folder and the index give it"
+    },
+    {
+      "path": "data/rules-us.json",
+      "source": "atlas/data/rules-us.json",
+      "ok": true,
+      "detail": "SHA-256 be300c2a1961f982500e6cbe57cd5c4165b8235da32655001886443f8d2648b4, as the folder and the index give it"
+    },
+    {
+      "path": "data/tzdb-explanations.json",
+      "source": "atlas/data/tzdb-explanations.json",
+      "ok": true,
+      "detail": "SHA-256 3035f49a9c018b9164be6c64b8f85969bf4fcb7a1bd8d1d06395af541dc56fba, as the folder and the index give it"
+    },
+    {
+      "path": "tzdb/differences.json",
+      "source": "atlas/tzdb/differences.json",
+      "ok": true,
+      "detail": "SHA-256 46efb73ea6264200b54e86ad979bc5e50a0b932ee589aa1986e84eef1ff957dc, as the folder and the index give it"
+    },
+    {
+      "path": "TZDB-DIFFERENCES.md",
+      "source": "atlas/TZDB-DIFFERENCES.md",
+      "ok": true,
+      "detail": "SHA-256 1fbf2d47a168fc2626a630cbcf8384e284e3aa8d7dffd1a6d05267cba4486a53, as the folder and the index give it"
+    },
+    {
+      "path": "README.md",
+      "source": "atlas/README.md",
+      "ok": false,
+      "detail": "engine a78e4f559b2c8ca92d9bbb04304d803fbb26699eaa0575d12bd97e38a1a7ebda, folder ba480ca8860e163ef6ba7ebbcf773881e36085e94d99a1bdf00f029e35868cea, index ba480ca8860e163ef6ba7ebbcf773881e36085e94d99a1bdf00f029e35868cea"
+    },
+    {
+      "path": "COVERAGE.md",
+      "source": "atlas/COVERAGE.md",
+      "ok": true,
+      "detail": "SHA-256 375e2aa1cf6bc2428ff713628c4b53391db5957257b0e1130e8eff7e6e61de75, as the folder and the index give it"
+    },
+    {
+      "path": "CORRECTIONS.md",
+      "source": "atlas/CORRECTIONS.md",
+      "ok": true,
+      "detail": "SHA-256 362be60dfcccec7e7c9c71594e313378b603d1b90e5499caf1e948da3e3d0013, as the folder and the index give it"
+    },
+    {
+      "path": "LICENSING.md",
+      "source": "atlas/LICENSING.md",
+      "ok": true,
+      "detail": "SHA-256 7ba4edc0d9862a7e534057e0ecc3fc426b0cef41f38f2c5edb6b5e53ceb438fc, as the folder and the index give it"
+    },
+    {
+      "path": "LICENSE.txt",
+      "source": "atlas/LICENSE",
+      "ok": true,
+      "detail": "SHA-256 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411, as the folder and the index give it"
+    }
+  ]
+}

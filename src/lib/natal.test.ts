@@ -142,22 +142,24 @@ describe('natalAspectLine', () => {
       natalAspectLine('Sun', 'conjunction', 'Mercury'),
     ];
     expect(createHash('sha256').update(JSON.stringify(originals)).digest('hex'))
-      .toBe('2e94f742ad84d5ad333df876579fab3aa83aac2bf83f7204c0c726e8bbb1e94c');
+      .toBe('ba76a698d494c90faf4f0e88c94fba0ba4abbc2bf455825d3e10adf0864e88ba');
   });
 
   it('gives different conjunctions different meanings beyond the planet names', () => {
-    const imagination = natalAspectLine('Sun', 'conjunction', 'Neptune').split(' — ')[1];
-    const affection = natalAspectLine('Venus', 'conjunction', 'Pluto').split(' — ')[1];
-    expect(imagination).toContain('imagination');
-    expect(affection).toContain('affection');
+    // Everything after the opening planet clause ("Your Sun is fused to your Neptune.").
+    const reading = (line: string) => line.match(/^Your \S+ [^.,]+ your \S+[.,] (.+)$/u)?.[1];
+    const imagination = reading(natalAspectLine('Sun', 'conjunction', 'Neptune'));
+    const affection = reading(natalAspectLine('Venus', 'conjunction', 'Pluto'));
+    expect(imagination).toContain('Imagination');
+    expect(affection).toContain('Affection');
     expect(affection).not.toBe(imagination);
-    expect(new Set(Object.values(NATAL_ASPECT_LINES).map((line) => line.split(' — ')[1])).size)
+    expect(new Set(Object.values(NATAL_ASPECT_LINES).map(reading)).size)
       .toBe(36);
   });
 
   it('keeps the general reader for pairs outside the authored coverage', () => {
     expect(natalAspectLine('Jupiter', 'trine', 'Neptune')).toBe(
-      'Your Jupiter runs downhill into your Neptune — your appetite for more and your imagination help each other so smoothly the gift is easy to miss.',
+      'Your Jupiter runs downhill into your Neptune. Your appetite for more and your imagination help each other so smoothly the gift is easy to miss.',
     );
     expect(natalAspectLine('Chiron', 'unknown', 'Moon')).toBe('Your Chiron aspects your Moon.');
   });

@@ -2,13 +2,13 @@ import type { ReleasedLocale as Locale } from '../lib/i18n';
 
 const EN = {
   heading: 'Sky alerts, when they’re earned?',
-  body: 'A notification only for the dates that matter — full moons, eclipses, retrograde turns. Most days, nothing.',
+  body: 'A notification only for the dates that matter: full moons, eclipses, retrograde turns. Most days, nothing.',
   ios: 'On iPhone and iPad, alerts work only after you add Zodiacs to your Home Screen. Install first, then return here.',
   accept: 'Turn on sky alerts',
   installing: 'Turning on…',
   dismiss: 'Not now',
   dismissLabel: 'Dismiss the sky-alerts offer',
-  on: 'Sky alerts are on — only the dates that matter, never more than one a day.',
+  on: 'Sky alerts are on. Only the dates that matter, never more than one a day.',
   off: 'Turn off',
   denied: 'Notifications are blocked in this browser, so sky alerts can’t reach you. Your browser’s site settings can change that whenever you like.',
   error: 'Sky alerts are unavailable right now. Try again later.',

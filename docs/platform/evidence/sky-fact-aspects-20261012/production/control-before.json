@@ -1,0 +1,58 @@
+{
+  "schema": "zodiacs.sky-fact-aspects-production.v1",
+  "base": "https://zodiacs.org",
+  "control": true,
+  "expectedCommit": "53e99a59958b5d6256fe373fd3182b4ba4e03a18",
+  "readAt": "2026-10-13T18:12:46.469Z",
+  "passed": 0,
+  "of": 6,
+  "checks": [
+    {
+      "deploymentId": "dpl_FAScqzyQZu1fdtef1hbyoyC82iGN",
+      "aliasUpdatedAt": 1791911042544,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "6af799c712a550d71d113e73d847bacf21586aa0",
+      "name": "the zodiacs.org alias names a READY production deployment built from the commit",
+      "ok": false
+    },
+    {
+      "status": 200,
+      "sha256": "8be146b6a003df3ad20a0e2a94e925cd5ca6dda60991e1957e7095e65106d34c",
+      "version": "0.1.0-rc.23",
+      "name": "the MCP adapter's manifest is the commit's, byte for byte",
+      "ok": false
+    },
+    {
+      "status": 404,
+      "bytes": 77462,
+      "sha256": "a0b0556a1f71441781915947ee294023db39044a79c624cfae851349b3fdc19e",
+      "supersedes": "0.1.0-rc.22",
+      "name": "the MCP adapter 0.1.0-rc.23 archive has the manifest's size and digest",
+      "ok": false
+    },
+    {
+      "status": 400,
+      "documentedRequest": true,
+      "answer": null,
+      "basis": null,
+      "name": "the compute API's sky-fact endpoint answers the documented aspect example as documented",
+      "ok": false
+    },
+    {
+      "status": 200,
+      "bytes": 904942,
+      "sha256": "730d209c720b938f614409cfa35301ab262685df3514475260dc3f09ce7b7547",
+      "committedSha256": "31b692224a5bd39db82016fa957743208119a4b85403604f0d174e369fc31a78",
+      "name": "the hosted MCP's Chart Studio is the commit's, byte for byte, with F-91's wording",
+      "ok": false
+    },
+    {
+      "status": 200,
+      "sha256": "21e9a38d34d5bbae490e9de6a1651175c6edcd62171250bda7224bdf942dbd00",
+      "linked": [],
+      "name": "/developers/compare/ has the section linking the four guides that compare the engine with other software",
+      "ok": false
+    }
+  ]
+}

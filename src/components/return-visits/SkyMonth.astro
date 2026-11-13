@@ -44,7 +44,7 @@ const zoneNote = new Intl.DateTimeFormat(lang, { timeZone: 'UTC', timeZoneName: 
       <button type="button" class="skym__btn" data-step="1" aria-label={monthTitle(clamp(start.y, start.m + 1).y, clamp(start.y, start.m + 1).m, locale)}>→</button>
     </div>
   </div>
-  <p class="skym__zone mono" data-sky-zone>{zoneNote}</p>
+  <p class="skym__zone" data-sky-zone>{zoneNote}</p>
   <div class="skym__body" data-sky-body set:html={html} />
   <script type="application/json" data-sky-events set:html={JSON.stringify(events).replace(/</g, '\\u003c')} />
 </section>
@@ -102,9 +102,9 @@ const zoneNote = new Intl.DateTimeFormat(lang, { timeZone: 'UTC', timeZoneName: 
   .skym__btn:hover:not(:disabled) { background: var(--void-2); }
   .skym__btn:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 2px; }
   .skym__btn:disabled { opacity: 0.35; cursor: default; }
-  .skym__zone { margin: 0; color: var(--faint); font-size: 12px; }
+  .skym__zone { margin: 0; color: var(--faint); font-size: 13px; letter-spacing: 0; }
   .skym__grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
-  .skym__wd { padding: 0 6px 4px; color: var(--faint); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .skym__wd { padding: 0 6px 4px; color: var(--faint); font-size: 12.5px; letter-spacing: 0; }
   .skym__cell {
     position: relative; min-width: 0; min-height: 52px;
     display: flex; flex-direction: column; gap: 4px;
@@ -131,7 +131,7 @@ const zoneNote = new Intl.DateTimeFormat(lang, { timeZone: 'UTC', timeZoneName: 
   .skym__list li { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 12px; padding: 11px 2px; border-bottom: 1px solid var(--hair-1); }
   .skym__list .skym__name { color: var(--text); text-decoration: none; }
   .skym__list a.skym__name:hover { text-decoration: underline; }
-  .skym__list time { font-family: var(--font-mono); font-size: 12px; color: var(--muted); text-align: end; }
+  .skym__list time { font-size: 13px; color: var(--muted); text-align: end; font-variant-numeric: tabular-nums; }
   .skym__mark svg { display: block; width: 20px; height: 20px; }
   .skym__mark--retro { display: block; width: 20px; height: 3px; border-radius: 2px; background: var(--hue); }
   @media (min-width: 760px) {

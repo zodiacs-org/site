@@ -1,9 +1,13 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import type { MinimalBody, PairSummary } from '../lib/engine/synastry';
 import { tf, type CatalogLocale as Locale } from '../lib/i18n';
 import { pairSlug } from '../lib/pair-slug';
 import { shareCardText } from '../lib/share-card-copy';
 import { signForLongitude, signName } from '../lib/signs';
+import type { SavedPairSide } from '../lib/profile/pairs';
+import type { SavedChart } from '../lib/profile/schema';
+import { settledSignIndex } from '../lib/profile/settled-signs';
+import { SIGNS } from '../lib/signs';
 
 interface CompatibilitySharePerson {
   label: string;
@@ -44,7 +48,7 @@ export function CompatibilityPairingCta({
       <span>{tf(locale, 'pairingCta', {
         a: signName(signA, locale),
         b: signName(signB, locale),
-      })}{locale === 'ru' ? ' — пока по-английски' : ''}</span>
+      })}{locale === 'ru' ? ' (пока по-английски)' : ''}</span>
       <span class="orb">→</span>
     </a>
   );
@@ -103,4 +107,72 @@ export function CompatibilityShareControl({
       )}
     </>
   );
+}
+
+interface CompatibilityResult {
+  a: CompatibilitySharePerson;
+  b: CompatibilitySharePerson;
+  summary: PairSummary;
+  sides: readonly [SavedPairSide | null, SavedPairSide | null];
+}
+
+/**
+ * The actions under a compatibility result: the pair guide, the share card
+ * and, where the build has it on, "Save to your profile". The calculator
+ * hands over the whole result, and the fields each action needs are picked
+ * here, in this module that loads after the result renders, so the
+ * compatibility page's first load carries none of it.
+ */
+export function CompatibilityResultActions({ result, locale }: {
+  result: CompatibilityResult;
+  /** No longer read: the profile save keeps only the two Sun signs. */
+  charts: readonly SavedChart[];
+  locale: Locale;
+}) {
+  const person = ({ label, bodies, asc, untimedDate, utc }: CompatibilitySharePerson): CompatibilitySharePerson => (
+    { label, bodies, asc, untimedDate, utc }
+  );
+  const [a, b] = result.sides;
+  return (
+    <>
+      <CompatibilityPairingCta a={person(result.a)} b={person(result.b)} locale={locale} />
+      <CompatibilityShareControl a={person(result.a)} b={person(result.b)} summary={result.summary} locale={locale} />
+      {ACCOUNT_SAVES && a && b && <CompatibilityAccountSave signA={settledSunSlug(result.a)} signB={settledSunSlug(result.b)} locale={locale} />}
+    </>
+  );
+}
+
+/**
+ * "Save to your profile" under a compatibility result, in English, where the
+ * build has it on. It loads the save line itself rather than through
+ * account-save-loader: a static import of that shared chunk would add its name
+ * to the compatibility page's first-load preload list.
+ */
+const ACCOUNT_SAVES = import.meta.env.PUBLIC_ACCOUNT_SAVES_ENABLED === '1' && Boolean(import.meta.env.PUBLIC_SUPABASE_URL);
+
+/**
+ * The Sun sign the reading on screen settles, or null. A side with no rising
+ * sign may lack a birth time, so its Sun counts only when a day's motion
+ * keeps it in one sign.
+ */
+export function settledSunSlug(person: Pick<CompatibilitySharePerson, 'bodies' | 'asc' | 'untimedDate'>): string | null {
+  const sun = person.bodies.find((body) => body.body === 'Sun');
+  if (!sun) return null;
+  const index = settledSignIndex('Sun', sun.lon, person.untimedDate === undefined && person.asc !== null);
+  return index === null ? null : SIGNS[index].slug;
+}
+
+function CompatibilityAccountSave({ signA, signB, locale }: {
+  signA: string | null;
+  signB: string | null;
+  locale: Locale;
+}) {
+  const [account, setAccount] = useState<typeof import('./AccountSaveAction') | null>(null);
+  useEffect(() => {
+    if (!ACCOUNT_SAVES || locale !== 'en') return;
+    let active = true;
+    void import('./AccountSaveAction').then((loaded) => { if (active) setAccount(loaded); }).catch(() => {});
+    return () => { active = false; };
+  }, [locale]);
+  return account ? <account.ComparisonSave signA={signA} signB={signB} /> : null;
 }

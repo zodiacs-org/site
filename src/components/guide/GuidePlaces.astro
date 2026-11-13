@@ -1,0 +1,23 @@
+---
+/** Sun, Moon and rising in the sign: three cards, a swipeable row on phones. */
+---
+<div class="guide-places"><slot /></div>
+
+<style>
+  .guide-places { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 30px; }
+  @media (max-width: 960px) and (min-width: 761px) { .guide-places { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 760px) {
+    .guide-places {
+      display: flex;
+      gap: 12px;
+      margin-right: -20px;
+      padding-right: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: 0;
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+    }
+    .guide-places::-webkit-scrollbar { display: none; }
+  }
+</style>

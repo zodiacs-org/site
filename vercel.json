@@ -246,6 +246,162 @@
       "destination": "/api/compatibility?__zodiacs_og_route=image"
     },
     {
+      "source": "/share/compatibility/",
+      "destination": "/api/compatibility?__zodiacs_share=compatibility-link"
+    },
+    {
+      "source": "/api/og/compatibility-image",
+      "destination": "/api/compatibility?__zodiacs_share=compatibility-image"
+    },
+    {
+      "source": "/api/og/compatibility-story",
+      "destination": "/api/compatibility?__zodiacs_share=compatibility-story"
+    },
+    {
+      "source": "/share/occasion/",
+      "destination": "/api/compatibility?__zodiacs_share=occasion-link"
+    },
+    {
+      "source": "/api/og/occasion-image",
+      "destination": "/api/compatibility?__zodiacs_share=occasion-image"
+    },
+    {
+      "source": "/api/og/occasion-story",
+      "destination": "/api/compatibility?__zodiacs_share=occasion-story"
+    },
+    {
+      "source": "/share/birthday/",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-link"
+    },
+    {
+      "source": "/api/og/birthday-image",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-image"
+    },
+    {
+      "source": "/api/og/birthday-story",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-story"
+    },
+    {
+      "source": "/share/sky-calendar/",
+      "destination": "/api/compatibility?__zodiacs_share=sky-calendar-link"
+    },
+    {
+      "source": "/api/og/sky-calendar-image",
+      "destination": "/api/compatibility?__zodiacs_share=sky-calendar-image"
+    },
+    {
+      "source": "/api/og/sky-calendar-story",
+      "destination": "/api/compatibility?__zodiacs_share=sky-calendar-story"
+    },
+    {
+      "source": "/share/horoscope/",
+      "destination": "/api/compatibility?__zodiacs_share=horoscope-link"
+    },
+    {
+      "source": "/api/og/horoscope-image",
+      "destination": "/api/compatibility?__zodiacs_share=horoscope-image"
+    },
+    {
+      "source": "/api/og/horoscope-story",
+      "destination": "/api/compatibility?__zodiacs_share=horoscope-story"
+    },
+    {
+      "source": "/share/chart-twins/",
+      "destination": "/api/compatibility?__zodiacs_share=chart-twins-link"
+    },
+    {
+      "source": "/api/og/chart-twins-image",
+      "destination": "/api/compatibility?__zodiacs_share=chart-twins-image"
+    },
+    {
+      "source": "/api/og/chart-twins-story",
+      "destination": "/api/compatibility?__zodiacs_share=chart-twins-story"
+    },
+    {
+      "source": "/share/famous-chart/",
+      "destination": "/api/compatibility?__zodiacs_share=famous-chart-link"
+    },
+    {
+      "source": "/api/og/famous-chart-image",
+      "destination": "/api/compatibility?__zodiacs_share=famous-chart-image"
+    },
+    {
+      "source": "/api/og/famous-chart-story",
+      "destination": "/api/compatibility?__zodiacs_share=famous-chart-story"
+    },
+    {
+      "source": "/share/year-score/",
+      "destination": "/api/compatibility?__zodiacs_share=year-score-link"
+    },
+    {
+      "source": "/api/og/year-score-image",
+      "destination": "/api/compatibility?__zodiacs_share=year-score-image"
+    },
+    {
+      "source": "/share/birthday-report/",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-report-link"
+    },
+    {
+      "source": "/api/og/birthday-report-image",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-report-image"
+    },
+    {
+      "source": "/share/solar-return/",
+      "destination": "/api/compatibility?__zodiacs_share=solar-return-link"
+    },
+    {
+      "source": "/api/og/solar-return-image",
+      "destination": "/api/compatibility?__zodiacs_share=solar-return-image"
+    },
+    {
+      "source": "/share/milestone/",
+      "destination": "/api/compatibility?__zodiacs_share=milestone-link"
+    },
+    {
+      "source": "/api/og/milestone-image",
+      "destination": "/api/compatibility?__zodiacs_share=milestone-image"
+    },
+    {
+      "source": "/api/og/milestone-story",
+      "destination": "/api/compatibility?__zodiacs_share=milestone-story"
+    },
+    {
+      "source": "/share/big-three/",
+      "destination": "/api/compatibility?__zodiacs_share=big-three-link"
+    },
+    {
+      "source": "/api/og/big-three-image",
+      "destination": "/api/compatibility?__zodiacs_share=big-three-image"
+    },
+    {
+      "source": "/api/og/big-three-story",
+      "destination": "/api/compatibility?__zodiacs_share=big-three-story"
+    },
+    {
+      "source": "/share/chinese-zodiac/",
+      "destination": "/api/compatibility?__zodiacs_share=chinese-zodiac-link"
+    },
+    {
+      "source": "/api/og/chinese-zodiac-image",
+      "destination": "/api/compatibility?__zodiacs_share=chinese-zodiac-image"
+    },
+    {
+      "source": "/api/og/chinese-zodiac-story",
+      "destination": "/api/compatibility?__zodiacs_share=chinese-zodiac-story"
+    },
+    {
+      "source": "/share/invite/",
+      "destination": "/api/compatibility?__zodiacs_share=invite-link"
+    },
+    {
+      "source": "/api/og/invite-image",
+      "destination": "/api/compatibility?__zodiacs_share=invite-image"
+    },
+    {
+      "source": "/api/og/invite-story",
+      "destination": "/api/compatibility?__zodiacs_share=invite-story"
+    },
+    {
       "source": "/api/games",
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },
@@ -260,6 +416,14 @@
     {
       "source": "/v1/guide/turn",
       "destination": "/api/guide?action=turn"
+    },
+    {
+      "source": "/v1/guide/feedback/up",
+      "destination": "/api/guide?action=feedback-up"
+    },
+    {
+      "source": "/v1/guide/feedback/down",
+      "destination": "/api/guide?action=feedback-down"
     },
     {
       "source": "/api/account/:action",
@@ -296,6 +460,18 @@
     {
       "source": "/mcp/health/",
       "destination": "/api/compatibility?__zodiacs_ai=health"
+    },
+    {
+      "source": "/.well-known/oauth-protected-resource",
+      "destination": "/api/compatibility?__zodiacs_ai=resource"
+    },
+    {
+      "source": "/.well-known/oauth-protected-resource/mcp",
+      "destination": "/api/compatibility?__zodiacs_ai=resource"
+    },
+    {
+      "source": "/oauth/consent/",
+      "destination": "/api/compatibility?__zodiacs_ai=consent"
     },
     {
       "source": "/api/v1/positions",
@@ -398,6 +574,15 @@
           "key": "Referrer-Policy",
           "value": "no-referrer"
         },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/year/(.*)",
+      "headers": [
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow, noarchive"
@@ -661,6 +846,15 @@
       ]
     },
     {
+      "source": "/assets/webmcp-calculators.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/assets/site-footer.css",
       "headers": [
         {
@@ -797,6 +991,24 @@
     },
     {
       "source": "/assets/og/v2/share-pastel-wheel-20260809.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/share-pastel-wheel-20261019.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v8/home-20261019.jpg",
       "headers": [
         {
           "key": "Cache-Control",

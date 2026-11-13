@@ -9,7 +9,7 @@ import { GLOSSARY, type GlossaryTerm } from '../../../data/glossary';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
 
 const PAGE_URL = 'https://zodiacs.org/learn/glossary/';
-const PAGE_DATE = '2026-08-23';
+const PAGE_DATE = '2026-10-16';
 const headline = 'The astrology glossary';
 const description =
   'Astrology words in plain English, with precise definitions for signs, chart anatomy, aspects, motion, timing, houses, planets, and synastry.';
@@ -102,18 +102,17 @@ const jsonLd = [
 ];
 ---
 <Base
-  title={`Astrology Glossary — ${GLOSSARY.length} Terms Defined | Zodiacs.org`}
+  title={`Astrology Glossary | ${GLOSSARY.length} Terms Defined | Zodiacs.org`}
   description={description}
   path="/learn/glossary/"
   type="article"
   image="/assets/og/v2/tool/learn.png"
-  imageAlt="The astrology glossary — Zodiacs.org"
+  imageAlt="The astrology glossary, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
 >
   <article class="glossary" data-glossary-browser>
     <header class="section--tight container container--narrow glossary__hero">
-      <em class="kicker">Plain English first</em>
       <h1 class="display">{headline}.</h1>
       <p class="glossary__lede">
         Start with a simple explanation, then open the precise definition when
@@ -128,7 +127,6 @@ const jsonLd = [
     <section class="container container--narrow glossary__finder" aria-labelledby="find-a-term">
       <div class="glossary__finder-heading">
         <div>
-          <em class="kicker">Find an answer</em>
           <h2 id="find-a-term">What did you come across?</h2>
         </div>
         <p class="mono" aria-live="polite">
@@ -167,15 +165,13 @@ const jsonLd = [
     >
       <div class="glossary__section-heading">
         <div>
-          <em class="kicker">New to astrology?</em>
           <h2 id="start-here">Start with these terms</h2>
         </div>
         <p>These fifteen explain most of what you will meet in a first birth chart.</p>
       </div>
       <div class="glossary__starter-grid">
-        {beginnerTerms.map((entry, index) => (
+        {beginnerTerms.map((entry) => (
           <a class="glossary__starter-card" href={`#${entry.slug}`}>
-            <span class="mono">{String(index + 1).padStart(2, '0')}</span>
             <strong>{entry.term}</strong>
             <span>{entry.plainDefinition}</span>
           </a>
@@ -185,7 +181,7 @@ const jsonLd = [
 
     <section class="section--tight container container--narrow glossary__reference" aria-labelledby="glossary-a-z">
       <div class="glossary__jump-head">
-        <h2 id="glossary-a-z">A–Z reference</h2>
+        <h2 id="glossary-a-z">A to Z reference</h2>
         <p id="jump-instruction">Jump to a letter</p>
       </div>
       <div class="glossary__jump" role="group" aria-labelledby="jump-instruction">
@@ -356,6 +352,7 @@ const jsonLd = [
   .glossary__count {
     margin: 20px 0 0;
     color: var(--faint);
+    font-family: var(--font-sans);
     font-size: var(--text-xs);
   }
 
@@ -468,8 +465,8 @@ const jsonLd = [
 
   .glossary__starter-card {
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 5px 12px;
+    align-content: start;
+    gap: 5px;
     min-height: 132px;
     padding: 18px;
     border: 1px solid var(--hair-1);
@@ -490,11 +487,6 @@ const jsonLd = [
     outline-offset: 2px;
   }
 
-  .glossary__starter-card > .mono {
-    grid-row: 1 / span 2;
-    color: var(--faint);
-    font-size: 0.68rem;
-  }
 
   .glossary__starter-card strong {
     color: var(--text);
@@ -667,7 +659,8 @@ const jsonLd = [
     border: 1px solid var(--hair-1);
     border-radius: var(--r-full);
     color: var(--faint);
-    font-size: 0.64rem;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
   }
 
   .glossary__plain,
@@ -730,9 +723,8 @@ const jsonLd = [
   .glossary__meta-label {
     margin-right: 10px;
     color: var(--faint);
-    font-size: 0.72em;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0;
   }
 
   .glossary__meta a {

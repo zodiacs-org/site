@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
 import mdx from '@astrojs/mdx';
+import { natalAspectRoutes } from './scripts/natal-aspects-policy.mjs';
 
 function interactionDirective() {
   return {
@@ -10,6 +11,20 @@ function interactionDirective() {
         addClientDirective({
           name: 'interaction',
           entrypoint: './src/client-directives/interaction.ts',
+        });
+      },
+    },
+  };
+}
+
+function paintedDirective() {
+  return {
+    name: 'zodiacs-painted-directive',
+    hooks: {
+      'astro:config:setup': ({ addClientDirective }) => {
+        addClientDirective({
+          name: 'painted',
+          entrypoint: './src/client-directives/painted.ts',
         });
       },
     },
@@ -54,7 +69,7 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
-  integrations: [interactionDirective(), preact(), mdx()],
+  integrations: [interactionDirective(), paintedDirective(), natalAspectRoutes(), preact(), mdx()],
   build: {
     format: 'directory',
     inlineStylesheets: 'auto',

@@ -1,0 +1,144 @@
+---
+/**
+ * One natal planet-pair reference: five geometry sections from the MDX
+ * entry, the calculator's orbs, what an unknown birth time changes, two
+ * engine-backed examples and four questions. Rendered only through
+ * src/pages/learn/aspects/[slug].astro when natal pairs are enabled.
+ */
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Faq from '../Faq.astro';
+import NatalPairDiagram from './NatalPairDiagram.astro';
+import evidence from '../../data/natal-aspect-examples.json';
+import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { NATAL_ASPECT_PAIRS, NATAL_PAIR_SUMMARIES, natalAspectsPublished, natalPairHeading, type NatalAspectPair } from '../../lib/natal-aspect-pairs';
+import styles from '../../styles/natal-aspects.css?raw';
+
+interface Props { entry: CollectionEntry<'natalAspectPairs'> }
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { pair, bodies, title, description, faq, sources, updated } = entry.data;
+const [a, b] = bodies;
+const name = NATAL_PAIR_SUMMARIES[pair].name;
+const path = `/learn/aspects/${pair}/`;
+const day = (iso: string) => iso.slice(0, 10);
+const deg = (value: number, digits = 2) => `${value.toFixed(digits)}°`;
+const cap = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+/** "the Sun", "the Moon", but plain "Venus" and "Mars". */
+const named = (body: string) => (body === 'Sun' || body === 'Moon' ? `the ${body}` : body);
+const lights = bodies.filter((body) => body === 'Sun' || body === 'Moon');
+
+const record = evidence.pairs.find((item) => item.pair === pair);
+if (!record) throw new Error(`Missing natal evidence for ${pair}`);
+const examples = entry.data.examples.map((id) => {
+  const example = record.examples.find((item) => item.id === id);
+  if (!example) throw new Error(`Missing verified example ${id}`);
+  return example;
+});
+const sensitive = record.timeSensitive;
+const schematic = Object.fromEntries(evidence.schematic.map((item) => [item.id, item]));
+const windows = evidence.venus.venusMarsWindows;
+const orbFor = (def: (typeof evidence.conventions)[number]) => (record.luminary ? def.orbLuminary : def.orb);
+const hues: Record<string, string> = { Sun: 'var(--sign-leo)', Moon: 'var(--sign-cancer)', Venus: 'var(--sign-libra)', Mars: 'var(--sign-aries)' };
+const others = NATAL_ASPECT_PAIRS.filter((slug) => slug !== pair) as NatalAspectPair[];
+
+const jsonLd = [
+  {
+    '@type': 'Article', headline: title, description, url: `https://zodiacs.org${path}`,
+    datePublished: entry.data.published.toISOString(), dateModified: updated.toISOString(),
+    creativeWorkStatus: natalAspectsPublished ? 'Published' : 'Draft',
+    author: EDITOR_AUTHOR, publisher: { '@id': 'https://zodiacs.org/#org' }, inLanguage: 'en',
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org${path}` },
+    about: { '@type': 'Thing', name: `${name} aspects (natal astrology)` },
+    citation: sources.map((source) => ({ '@type': 'CreativeWork', name: source.label, url: source.href })),
+  },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },
+    { '@type': 'ListItem', position: 2, name: 'Learn', item: 'https://zodiacs.org/learn/' },
+    { '@type': 'ListItem', position: 3, name: 'The aspects', item: 'https://zodiacs.org/learn/aspects/' },
+    { '@type': 'ListItem', position: 4, name: `${name} in a birth chart`, item: `https://zodiacs.org${path}` },
+  ] },
+  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a: answer }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: answer } })) },
+];
+---
+<Base title={title} description={description} path={path} type="article" noindex={!natalAspectsPublished} jsonLd={jsonLd} sources={sources} stableTypography>
+  <Fragment slot="head"><style is:inline set:html={styles}></style></Fragment>
+  <article class="container container--narrow natal-ref" data-natal-pair={pair}>
+    <header class="natal-ref__hero">
+      <div class="natal-ref__heroText">
+        <a class="crumb" href="/learn/aspects/"><span class="crumb__arrow" aria-hidden="true">←</span>The aspects</a>
+        <p class="kicker">Natal aspects</p>
+        <h1 class="display">{name} aspects in a birth chart</h1>
+        <p class="natal-ref__lede">{description}</p>
+        <p class="natal-ref__context">This page reads {named(a)} and {named(b)} inside one natal chart. Comparing one person's {a} with another person's {b} is a two-chart reading, which the <a href="/compatibility/">compatibility tool</a> calculates.</p>
+        <p class="natal-ref__meta">Updated <time datetime={day(updated.toISOString())}>{day(updated.toISOString())}</time>. {entry.data.reviewer && `Reviewed by ${entry.data.reviewer}.`}</p>
+      </div>
+      <NatalPairDiagram a={a} b={b} id={`${pair}-diagram`} hueA={hues[a]} hueB={hues[b]} />
+    </header>
+
+    <div class="prose"><Content /></div>
+
+    <section id="orbs" class="natal-ref__panel" aria-labelledby="orbs-heading">
+      <h2 id="orbs-heading">How the calculator counts an aspect</h2>
+      <p>The <a href="/birth-chart/">birth chart calculator</a> places {named(a)} and {named(b)} on the zodiac wheel as seen from Earth at the moment of birth. It measures the gap between them the short way round, anywhere from 0° to 180°, and names the aspect whose angle is nearest. The aspect only counts if the gap is close enough to that angle. How far from exact it may be is called the orb. {lights.length === 2
+        ? 'Astrologers call the Sun and Moon the lights and give them more room, so this pair gets the wider orbs.'
+        : lights.length === 1
+          ? `Astrologers call the Sun and Moon the lights and give them more room. ${cap(named(lights[0]))} is one of them, so this pair gets the wider orbs.`
+          : 'Neither planet is the Sun or the Moon, which astrologers give more room, so this pair uses the standard orbs.'}</p>
+      <div class="natal-ref__table-wrap" role="region" aria-label={`Aspect angles and orbs for ${name}`} tabindex="0">
+        <table class="natal-ref__table">
+          <caption>How far from exact each aspect can be for {name}, in degrees</caption>
+          <thead><tr><th scope="col">Aspect</th><th scope="col">Exact angle</th><th scope="col">Orb for this pair</th><th scope="col">{record.luminary ? 'Standard orb' : 'With the Sun or Moon'}</th></tr></thead>
+          <tbody>{evidence.conventions.map((def) => (
+            <tr><th scope="row"><a href={`/learn/aspects/${def.type}/`}>{def.type}</a></th><td>{def.angle}°</td><td>{orbFor(def)}°</td><td>{record.luminary ? def.orb : def.orbLuminary}°</td></tr>
+          ))}</tbody>
+        </table>
+      </div>
+      <p>When the gap is narrowing toward exact, the aspect is called applying; when it is widening, separating. The calculator says which. The choice of house system and the place of birth do not change these angles. Orbs are a matter of custom, and other astrologers and apps use different ones.</p>
+      <p>Positions run from 0° to 360° around the wheel, so the numbers can look far apart when the planets are close. {schematic.wraparound.bodies[0].body} at {schematic.wraparound.bodies[0].longitude}° and {schematic.wraparound.bodies[1].body} at {schematic.wraparound.bodies[1].longitude}° are only {schematic.wraparound.separation}° apart, a {schematic.wraparound.geometry}. A gap of {schematic['luminary-allowance'].separation}° counts as a {schematic['luminary-allowance'].geometry} for {schematic['luminary-allowance'].bodies[0].body} and {schematic['luminary-allowance'].bodies[1].body}, but as {schematic['standard-allowance'].geometry ?? 'no aspect at all'} for {schematic['standard-allowance'].bodies[0].body} and {schematic['standard-allowance'].bodies[1].body}, because {named(schematic['luminary-allowance'].bodies[0].body)} gets more room. These positions are made up to show the idea.</p>
+      <p>For each body by itself, read <a href={`/learn/planets/${a.toLowerCase()}/`}>{named(a)}</a> and <a href={`/learn/planets/${b.toLowerCase()}/`}>{named(b)}</a>. Each angle has its own guide in the table above.</p>
+    </section>
+
+    <section id="birth-time" class="natal-ref__panel" aria-labelledby="birth-time-heading">
+      <h2 id="birth-time-heading">What an unknown birth time changes</h2>
+      <p>Without a birth time the calculator draws the chart for noon on the birth date, says so on the result, and leaves out the rising sign and the houses. For a pair like this one, what matters is how far the two bodies move in a day.</p>
+      <p>On {day(sensitive.utc)} the gap between {named(a)} and {named(b)} went from {deg(sensitive.daySpan.from.separation)} at the start of the day to {deg(sensitive.daySpan.to.separation)} at the end (midnight to midnight, Greenwich time). At noon the calculator shows a {sensitive.geometry}, {deg(sensitive.orb)} from exact. Checked once an hour from midnight to midnight, though, the {sensitive.geometry} is there in only {sensitive.daySpan.samplesListingGeometry} of the {sensitive.daySpan.hourlySamples} checks. The {examples[0].geometry} in the first example below, {deg(examples[0].residualOrb)} from exact at noon, is there in {examples[0].daySpan.samplesListingGeometry} of {examples[0].daySpan.hourlySamples}.</p>
+      {record.luminary
+        ? <p>A close {name} aspect usually holds whatever the hour; one near the edge of its orb may not have been there at all. Treat a {name} aspect from a noon chart as provisional until the time is known.</p>
+        : <p>Checked every day from 2001 through 2008, a Venus-Mars aspect lasted between {Math.min(...windows.map((item) => item.minDays))} and {Math.max(...windows.map((item) => item.maxDays))} days in a row. An unknown hour matters only when the aspect sits close to the edge of its orb, as in the case above.</p>}
+    </section>
+
+    <section id="examples" class="natal-ref__panel natal-ref__examples" aria-labelledby="examples-heading">
+      <h2 id="examples-heading">Two worked examples</h2>
+      <p>These two moments were chosen to show the aspect; they are not anyone's birthday. The positions come from the same calculation the birth chart calculator uses, given in degrees around the zodiac wheel from 0° at the start of Aries. Real birth times are rarely known this precisely.</p>
+      {examples.map((example, index) => (
+        <article aria-labelledby={`example-${index}`}>
+          <h3 id={`example-${index}`}>Example {index + 1}: {natalPairHeading(pair, example.geometry).replace(' in a birth chart', '')}</h3>
+          <dl>
+            <dt>Moment (Greenwich time)</dt><dd class="natal-ref__num"><time datetime={example.utc}>{example.utc}</time></dd>
+            {example.bodies.map((body) => <><dt>{body.body}</dt><dd class="natal-ref__num">{deg(body.longitude, 5)}</dd></>)}
+            <dt>Gap between them</dt><dd class="natal-ref__num">{deg(example.separation, 5)}</dd>
+            <dt>Exact angle</dt><dd class="natal-ref__num">{example.angle}°</dd>
+            <dt>Orb</dt><dd class="natal-ref__num">{deg(example.residualOrb, 5)}, {example.applying ? 'applying' : 'separating'}</dd>
+            <dt>Across that day</dt><dd>The gap went from {deg(example.daySpan.from.separation)} at midnight to {deg(example.daySpan.to.separation)} at the next midnight; the aspect was there in {example.daySpan.samplesListingGeometry} of {example.daySpan.hourlySamples} hourly checks</dd>
+            <dt>Checked</dt><dd>Worked out again with the site's calculator on {example.provenance.verifiedAt}, with the same result.</dd>
+          </dl>
+        </article>
+      ))}
+      <p class="natal-ref__meta">All five aspects happen for {name}. The calculator found each one within 1° of exact on these dates: {record.feasibility.map((item) => `${day(item.utc)} (${item.geometry})`).join(', ')}.</p>
+    </section>
+
+    <section><Faq items={faq} heading={`Questions about ${name} in a birth chart`} /></section>
+
+    <aside class="natal-ref__cta" aria-label="Find this pair in your chart">
+      <strong>Find {name} in your own chart</strong>
+      <p>The birth chart calculator lists every major aspect in your chart with its exact orb, and whether it is applying or separating.</p>
+      <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
+    </aside>
+
+    <nav class="natal-ref__more" aria-label="More natal aspect pairs">
+      {others.map((slug) => <a href={`/learn/aspects/${slug}/`}>{NATAL_PAIR_SUMMARIES[slug].name} in a birth chart</a>)}
+      <a href="/learn/aspects/">All aspects</a>
+    </nav>
+  </article>
+</Base>

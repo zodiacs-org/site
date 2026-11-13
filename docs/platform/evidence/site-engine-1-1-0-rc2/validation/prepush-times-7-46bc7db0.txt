@@ -1,0 +1,97 @@
+seventh attempt, on the captures' head (C8, 46bc7db0), citing rc2a-88ecad61-prepush-times.txt (sixth: 40 of 42 exit 0; the full suite failed the accepted Phase 1 test and two tests at their 5-second limit under load, which pass alone; the first-use drive only its Firefox launch); D-14 accepts the Firefox launch only, and the Phase 1 capture test is no longer an accepted failure
+head 46bc7db0 base bff5672f node v22.22.2 npm 10.9.7 Darwin arm64 label prepush
+2026-11-05T11:06:39Z
+v22.22.2
+HEAD 46bc7db0a6f928c20e086b807ec900f65e91beda origin/main bff5672feb2b56434698d4e4331914ddc3f16c24
+build 0 (free before: 11033 MB)
+2026-11-05T11:09:50Z
+vitest 0 (free before: 9360 MB)
+2026-11-05T11:11:59Z
+ Test Files  642 passed | 1 skipped (643)
+      Tests  8283 passed | 13 skipped (8296)
+vitest failing files:
+check 0 (free before: 9336 MB)
+2026-11-05T11:12:56Z
+ai-check 0 (free before: 9338 MB)
+2026-11-05T11:12:58Z
+ai-test 0 (free before: 9335 MB)
+2026-11-05T11:13:33Z
+mcp-build-check 0 (free before: 11168 MB)
+2026-11-05T11:13:33Z
+mcp-pack-check 0 (free before: 11167 MB)
+2026-11-05T11:13:35Z
+compute-handler 0 (free before: 11166 MB)
+2026-11-05T11:13:36Z
+compute-local-time 0 (free before: 11161 MB)
+2026-11-05T11:13:37Z
+cities-also 0 (free before: 11160 MB)
+2026-11-05T11:13:38Z
+phase1-scope 0 (free before: 11160 MB)
+2026-11-05T11:13:38Z
+guide-twins 0 (free before: 11160 MB)
+2026-11-05T11:13:38Z
+guide-browser 0 (free before: 11160 MB)
+2026-11-05T11:14:07Z
+guide-examples 0 (free before: 9497 MB)
+2026-11-05T11:14:31Z
+guide-python 0 (free before: 9512 MB)
+2026-11-05T11:14:33Z
+claims-unlisted 0 (free before: 9511 MB)
+2026-11-05T11:14:44Z
+claims-orphans 0 (free before: 9485 MB)
+2026-11-05T11:14:53Z
+programme-ledger 0 (free before: 9484 MB)
+2026-11-05T11:14:53Z
+playground-engine-check 0 (free before: 9483 MB)
+2026-11-05T11:14:54Z
+engine-bundle-check 0 (free before: 9484 MB)
+2026-11-05T11:14:55Z
+natal-aspect-examples-check 0 (free before: 9483 MB)
+2026-11-05T11:14:59Z
+engine-reference-check 0 (free before: 9482 MB)
+2026-11-05T11:15:01Z
+check-engine-reference 0 (free before: 9485 MB)
+2026-11-05T11:15:04Z
+engine-reference-test 0 (free before: 9485 MB)
+2026-11-05T11:15:06Z
+engine-reference-drive 0 (free before: 9483 MB)
+2026-11-05T11:15:28Z
+natal-aspects-drive 0 (free before: 9473 MB)
+2026-11-05T11:15:35Z
+compatibility-browser 0 (free before: 11120 MB)
+2026-11-05T11:17:24Z
+t17-positions-share 0 (free before: 11323 MB)
+2026-11-05T11:17:41Z
+platform-developers-drive 0 (free before: 11297 MB)
+2026-11-05T11:18:02Z
+developer-first-use-drive 1 (free before: 9720 MB)
+2026-11-05T11:21:16Z
+widgets-browser 0 (free before: 9821 MB)
+2026-11-05T11:21:43Z
+mcp-protocol 0 (free before: 9825 MB)
+2026-11-05T11:21:50Z
+mcp-protocol rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/protocol-drive.json
+mcp-host 0 (free before: 9797 MB)
+2026-11-05T11:21:55Z
+mcp-host rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/host-drive.json
+mcp-benchmark 0 (free before: 9793 MB)
+2026-11-05T11:21:56Z
+mcp-benchmark rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/benchmark.json
+webmcp 0 (free before: 9796 MB)
+2026-11-05T11:45:31Z
+production-flags-build 0 (free before: 9993 MB)
+2026-11-05T11:45:54Z
+production-flags-report-bundles 0 (free before: 9767 MB)
+2026-11-05T11:45:56Z
+independent-references 0 (free before: 9766 MB)
+2026-11-05T11:45:59Z
+independent-references-diff 0 (free before: 9764 MB)
+2026-11-05T11:45:59Z
+registry-hub-check 0 (free before: 9764 MB)
+2026-11-05T11:46:00Z
+wing-builders 0 (free before: 9764 MB)
+2026-11-05T11:46:01Z
+wing-drift 0 (free before: 9763 MB)
+2026-11-05T11:46:01Z
+status at the end: 0 lines
+PREPUSH END

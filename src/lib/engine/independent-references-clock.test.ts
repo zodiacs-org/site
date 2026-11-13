@@ -5,7 +5,7 @@ import eightCases from './fixtures/independent-eight-cases.json';
 import lunarReturns from './fixtures/independent-lunar-returns.json';
 import nodePolar from './fixtures/independent-node-polar.json';
 import transitWindows from './fixtures/transit-window-horizons.json';
-import { timeBasis } from './time-basis.mjs';
+import { timeBasis } from '@zodiacs/engine/time';
 
 // The independent references are evaluated at the engine's own UT1 and TT
 // (docs/engine-validation/independent-references/README.md, "Clock"). Since

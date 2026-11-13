@@ -54,7 +54,8 @@ What the site does send, and when, is described on
 
 All rights reserved; see [LICENSE](LICENSE), which also lists the parts that
 come with their own terms: the chart engine (MIT code with CC BY 4.0 ΔT data, and the time and star data its NOTICE lists), the CC BY 4.0 sky
-data and GeoNames place data, and third-party packages.
+data, the CC BY 4.0 historical time atlas (whose resolver is MIT) and GeoNames
+place data, and third-party packages.
 
 [CONTRIBUTING.md](CONTRIBUTING.md) says what kinds of report are welcome,
 [SECURITY.md](SECURITY.md) how to report a security problem, and

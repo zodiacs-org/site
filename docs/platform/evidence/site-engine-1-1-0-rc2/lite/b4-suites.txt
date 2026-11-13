@@ -1,0 +1,132 @@
+# Lite B4 on the adoption head (the adoption plan's J-5), 2026-11-04, macOS arm64, Node 22.22.2, head 92702bb9b732d88224847df3e27cb0925bfb70df.
+# The site's suites against the four adapters, unchanged, then each control with one rule changed, restored and checked by its SHA-256.
+# The dignity adapter holds no table since the adapters' commit, so Mercury's exaltation is changed where the table lives, in the installed
+# package's dist/lite-dignities.js (the parity tool's control 8 makes the same edit on a scratch copy); the package is compared with the
+# vendored archive file by file afterwards.
+
+## The suites against the adapters, unchanged
+# command: npx vitest run src/lib/sect.test.ts src/lib/declination.test.ts src/lib/declination-link-inputs.test.ts src/lib/composite.test.ts src/lib/dignities.test.ts src/lib/chart-context.test.ts src/lib/wheel/ecliptic3d.test.ts src/islands/synastry
+#   23 src/islands/SynastryCalculator.recovery.test.ts ✓
+#   1 src/islands/SynastryCalculator.share.test.ts ✓
+#   2 src/islands/SynastryCalculator.test.ts ✓
+#   22 src/islands/synastry/CompositePanel.test.tsx ✓
+#   5 src/islands/synastry/InviteExperience.test.ts ✓
+#   14 src/islands/synastry/RelationshipWheel.recovery.test.tsx ✓
+#   7 src/islands/synastry/SendBackExperience.test.tsx ✓
+#   23 src/islands/synastry/composite-model.test.tsx ✓
+#   4 src/islands/synastry/composite-picture.test.ts ✓
+#   7 src/islands/synastry/inviteClient.test.ts ✓
+#   3 src/islands/synastry/relationshipData.test.ts ✓
+#   7 src/islands/synastry/synastryLines.test.ts ✓
+#   109 src/lib/chart-context.test.ts ✓
+#   3 src/lib/composite.test.ts ✓
+#   2 src/lib/declination-link-inputs.test.ts ✓
+#   13 src/lib/declination.test.ts ✓
+#   5 src/lib/dignities.test.ts ✓
+#   11 src/lib/sect.test.ts ✓
+#   28 src/lib/wheel/ecliptic3d.test.ts ✓
+ Test Files  19 passed (19)
+      Tests  289 passed (289)
+# exit code: 0
+
+## Control: sect
+# edit in src/lib/sect.ts (restored afterwards):
+@@ -75,7 +75,7 @@ export function sectOf(input: {
+ }): SectReading {
+   const reading = sectReading({
+     convention: 'altitude',
+-    sunAltitude: input.sunAltitude,
++    sunAltitude: input.sunAltitude > 0 || !(input.sunAltitude >= 0) ? input.sunAltitude : -Number.MIN_VALUE,
+     sunLon: input.sunLon,
+     mercuryLon: input.mercuryLon ?? null,
+   });
+# command: npx vitest run src/lib/sect.test.ts
+ × src/lib/sect.test.ts > sect > gives the Sun on the horizon itself to the day
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+# exit code: 1
+# restored src/lib/sect.ts: sha256 a1fc39be7055f1d9a8af987ed8defbf6184886da9bf6119beb7b8f1a77caf6c7 (before control: a1fc39be7055f1d9a8af987ed8defbf6184886da9bf6119beb7b8f1a77caf6c7)
+
+## Control: mercury-exalted-in-gemini
+# edit in node_modules/@zodiacs/engine/dist/lite-dignities.js (restored afterwards):
+#   189c189
+#   <   Mercury: "virgo",
+#   ---
+#   >   Mercury: "gemini",
+# command: npx vitest run src/lib/dignities.test.ts
+ × src/lib/dignities.test.ts > dignities > Mercury in Virgo reads as exaltation over domicile
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+# exit code: 1
+# command: npx vitest run src/lib/chart-context.test.ts
+ × src/lib/chart-context.test.ts > coexisting classical labels > locks 'Mercury' in 'gemini' independently
+ × src/lib/chart-context.test.ts > coexisting classical labels > locks 'Mercury' in 'virgo' independently
+ × src/lib/chart-context.test.ts > coexisting classical labels > locks 'Mercury' in 'sagittarius' independently
+ × src/lib/chart-context.test.ts > coexisting classical labels > locks 'Mercury' in 'pisces' independently
+ × src/lib/chart-context.test.ts > coexisting classical labels > preserves both Mercury overlaps and the legacy priority
+ × src/lib/chart-context.test.ts > bounded dispositor graph and independent certainty > all seven reach the one Mercury domicile, without treating exaltation as a separate edge
+ × src/lib/chart-context.test.ts > bounded dispositor graph and independent certainty > rejects invalid cusp topology without erasing valid dignity facts
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  7 failed | 102 passed (109)
+# exit code: 1
+# restored node_modules/@zodiacs/engine/dist/lite-dignities.js: sha256 feb63f3680b625f3fcf9d21d8bfe8595b0c183a1b71b32e8dc91185fc3bac7a2 (before control: feb63f3680b625f3fcf9d21d8bfe8595b0c183a1b71b32e8dc91185fc3bac7a2)
+
+## Control: latitude-dropped
+# edit in src/lib/declination.ts (restored afterwards):
+@@ -80,7 +80,7 @@ export function declinationOrb(a: string, b: string): number {
+  * whether a body is out of bounds.
+  */
+ export function declinationOf(lonDeg: number, latDeg: number, obliquityDeg = OBLIQUITY): number {
+-  return packageDeclinationOf(lonDeg, latDeg, obliquityDeg);
++  return packageDeclinationOf(lonDeg, 0, obliquityDeg);
+ }
+
+ /**
+# command: npx vitest run src/lib/declination.test.ts
+ × src/lib/declination.test.ts > declination > puts the ecliptic pole one obliquity short of the celestial pole
+ × src/lib/declination.test.ts > finding parallels and contraparallels > takes ecliptic latitude into account rather than longitude alone
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  2 failed | 11 passed (13)
+# exit code: 1
+# restored src/lib/declination.ts: sha256 7454c99d5bb84df2d29c216ba0a1bc47fadeaae9e0e049ac7f62e6d34bafda94 (before control: 7454c99d5bb84df2d29c216ba0a1bc47fadeaae9e0e049ac7f62e6d34bafda94)
+
+## Control: longer-arc
+# edit in src/lib/composite.ts (restored afterwards):
+@@ -25,7 +25,7 @@ export function compositeMidpoints(
+   a: readonly { body: BodyName; lon: number }[],
+   b: readonly { body: BodyName; lon: number }[],
+ ): CompositePoint[] {
+-  return packageCompositeMidpoints(a, b).map(({ body, lon }) => ({ body, lon }));
++  return packageCompositeMidpoints(a, b).map(({ body, lon }) => ({ body, lon: (lon + 180) % 360 }));
+ }
+
+ /**
+# command: npx vitest run src/lib/composite.test.ts
+ × src/lib/composite.test.ts > compositeMidpoints > uses the shorter arc and preserves chart-a order for shared bodies
+ × src/lib/composite.test.ts > compositeMidpoints > takes the eastward midpoint from chart a for exact opposites
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+# exit code: 1
+# command: npx vitest run src/islands/synastry
+ × src/islands/synastry/composite-model.test.tsx > composite facts and selection ownership > keeps shared bodies in source-A order and strips unrelated natal fields
+ × src/islands/synastry/composite-model.test.tsx > composite facts and selection ownership > preserves the eastward-from-A convention only at exact opposition
+ × src/islands/synastry/composite-model.test.tsx > composite facts and selection ownership > retains reference Moon facts but marks them provisional for undefined
+ × src/islands/synastry/composite-model.test.tsx > composite facts and selection ownership > retains reference Moon facts but marks them provisional for {"aTimeKnown":false,"bTimeKnown":true}
+ × src/islands/synastry/composite-model.test.tsx > composite facts and selection ownership > retains reference Moon facts but marks them provisional for {"aTimeKnown":true,"bTimeKnown":false}
+ × src/islands/synastry/composite-model.test.tsx > composite facts and selection ownership > retains reference Moon facts but marks them provisional for {"aTimeKnown":false,"bTimeKnown":false}
+ × src/islands/synastry/composite-model.test.tsx > composite facts and selection ownership > does not invent an absent Moon, a Moon uncertainty range, angles, or missing selections
+ × src/islands/synastry/composite-model.test.tsx > composite wheel geometry and rendered facts > leaves isolated marker angles unchanged and supports empty or node-only frames
+ × src/islands/synastry/composite-model.test.tsx > composite wheel geometry and rendered facts > uses the same selected body ID for the visible marker and factual selection model
+ × src/islands/synastry/relationshipData.test.ts > composite tab data > uses compositeMidpoints conventions and derives static-wheel aspects
+ × src/islands/synastry/CompositePanel.test.tsx > composite selection and uncertainty > offers every actual point/contact as a native pressed control linked to its live receipt
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  3 failed | 9 passed (12)
+      Tests  11 failed | 107 passed (118)
+# exit code: 1
+# restored src/lib/composite.ts: sha256 3a60b061641e4d49da9b80f49d6680c672743c090accebf3d9bb706d4178ab87 (before control: 3a60b061641e4d49da9b80f49d6680c672743c090accebf3d9bb706d4178ab87)
+# the installed package equals the archive again (diff -r against the unpacked archive)

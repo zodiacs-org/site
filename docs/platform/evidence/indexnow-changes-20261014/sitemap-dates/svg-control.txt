@@ -1,0 +1,42 @@
+# Control: 26802bcd plus AspectWheel's node radius only (7 to 9), against 26802bcd (edition 2026-10-15), with this fingerprint
+Pages in both builds: 1840; unchanged: 1835; changed and re-dated: 0; changed and already dated that day: 0; re-dated with no change in content: 0; new: 0; removed: 0.
+5 page(s) changed without a new sitemap date. Give each a new date in src/pages/sitemap.xml.ts (or the data it is dated from), so IndexNow Changes submits it:
+- /learn/aspects/conjunction/ (still 2026-07-05)
+- /learn/aspects/opposition/ (still 2026-07-05)
+- /learn/aspects/sextile/ (still 2026-07-05)
+- /learn/aspects/square/ (still 2026-07-05)
+- /learn/aspects/trine/ (still 2026-07-05)
+
+/learn/aspects/conjunction/
+  - drawing 2: circle cx="94.6" cy="38.24" r="7"
+  - drawing 2: circle cx="105.4" cy="38.24" r="7"
+  + drawing 2: circle cx="94.6" cy="38.24" r="9"
+  + drawing 2: circle cx="105.4" cy="38.24" r="9"
+
+/learn/aspects/opposition/
+  - drawing 2: circle cx="100" cy="38" r="7"
+  - drawing 2: circle cx="100" cy="162" r="7"
+  + drawing 2: circle cx="100" cy="38" r="9"
+  + drawing 2: circle cx="100" cy="162" r="9"
+
+/learn/aspects/sextile/
+  - drawing 2: circle cx="100" cy="38" r="7"
+  - drawing 2: circle cx="153.69" cy="69" r="7"
+  + drawing 2: circle cx="100" cy="38" r="9"
+  + drawing 2: circle cx="153.69" cy="69" r="9"
+
+/learn/aspects/square/
+  - drawing 2: circle cx="100" cy="38" r="7"
+  - drawing 2: circle cx="162" cy="100" r="7"
+  + drawing 2: circle cx="100" cy="38" r="9"
+  + drawing 2: circle cx="162" cy="100" r="9"
+
+/learn/aspects/trine/
+  - drawing 2: circle cx="100" cy="38" r="7"
+  - drawing 2: circle cx="153.69" cy="131" r="7"
+  + drawing 2: circle cx="100" cy="38" r="9"
+  + drawing 2: circle cx="153.69" cy="131" r="9"
+
+# The same control with the previous fingerprint, which read no SVG drawing
+Pages in both builds: 1840; unchanged: 1840; changed and re-dated: 0; changed and already dated that day: 0; re-dated with no change in content: 0; new: 0; removed: 0.
+Every page whose content changed has a new sitemap date.

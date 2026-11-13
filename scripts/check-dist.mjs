@@ -18,9 +18,13 @@
  *      deferred search/WebMCP assets exist with their expected fingerprints.
  *   7. sitemap.xml — unique dated locs resolve, exclude noindex, and cover
  *      every indexable built page's same-origin canonical.
+ *      sitemap-index.xml's section sitemaps list exactly its entries, once.
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
+ *  10. The inline profile access loader names the built bootstrap chunk.
  */
+import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
+import { attr, canonicalHref, renderedLinks, crawlDepths, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -30,6 +34,9 @@ import {
   searchIndexShapeFailures, shouldIndexPath,
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
+import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
+import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
+import { TIME_ATLAS_DATA_FILES, TIME_ATLAS_FOLDER, timeAtlasFileProblems, timeAtlasPageProblems } from './check-time-atlas.mjs';
 import {
   ABSENT_LOCALES,
   HREFLANG_LOCALE_POLICY,
@@ -39,6 +46,8 @@ import {
   expectedHreflangsForPath,
   hreflangRouteFamily,
 } from './i18n-hreflang-policy.mjs';
+import { readEventsPublication } from './lib/events-publications.mjs';
+import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
@@ -62,7 +71,7 @@ const RUSSIAN_INDEXED_PATHS = new Set([
   ...(dailyPublishedDays.length ? ['/ru/chart-of-the-day/'] : []),
   '/ru/', '/ru/tools/', '/ru/birth-chart/', '/ru/compatibility/',
   '/ru/moon-sign/', '/ru/rising-sign/', '/ru/moon-phase/',
-  '/ru/saturn-return/', '/ru/transits/', '/ru/baby-zodiac/',
+  '/ru/saturn-return/', '/ru/transits/',
   '/ru/profile/', '/ru/methodology/', '/ru/privacy/', '/ru/disclosure/',
   '/ru/sky-calendar/', '/ru/astrologer-kit/', '/ru/your-sky-wrapped/',
   '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
@@ -77,12 +86,11 @@ const PHASE1_HOROSCOPE_PATHS = ZODIAC_SIGN_SLUGS.flatMap((sign) => [
   `/horoscopes/${sign}/monthly/`,
   `/horoscopes/${sign}/love/`,
   `/horoscopes/${sign}/career/`,
+  `/horoscopes/${sign}/2026/`,
   `/horoscopes/${sign}/2027/`,
 ]);
 const PHASE1_READER_PATHS = new Set(['/today/', '/horoscopes/', ...PHASE1_HOROSCOPE_PATHS]);
-const eventsPublication = JSON.parse(
-  await readFile(resolve(repo, 'src/data/events-publication.json'), 'utf8'),
-);
+const eventsPublication = await readEventsPublication(repo);
 const publishedEventPaths = new Set([
   ...(eventsPublication.hub?.indexEligible ? [eventsPublication.hub.path] : []),
   ...(eventsPublication.pages ?? []).map((event) => event.path),
@@ -383,23 +391,17 @@ const builtPageByFile = new Map(files.map((file) => [
 const phase1Graph = new Map([...builtPageByFile.values()].map((path) => [path, new Set()]));
 const phase1Inbound = new Map([...PHASE1_READER_PATHS].map((path) => [path, new Set()]));
 const phase1Metadata = [];
+const discoveryGraph = new Map();
 for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const sourcePath = builtPageByFile.get(file);
-  for (const match of html.matchAll(/<a\b[^>]*\bhref=(?:"([^"]+)"|'([^']+)')[^>]*>/gi)) {
-    const value = match[1] ?? match[2];
-    if (/^(?:mailto:|tel:|data:|javascript:|#|\/\/)/i.test(value)) continue;
-    try {
-      const url = new URL(value, `${SITE_ORIGIN}${sourcePath}`);
-      if (url.origin !== SITE_ORIGIN) continue;
-      const target = targetPath(url.pathname);
-      const linkedPath = target ? builtPageByFile.get(target) : undefined;
-      if (!linkedPath || linkedPath === sourcePath) continue;
-      phase1Graph.get(sourcePath)?.add(linkedPath);
-      phase1Inbound.get(linkedPath)?.add(sourcePath);
-    } catch {
-      // Malformed internal links are reported by the forward resolver above.
-    }
+  discoveryGraph.set(sourcePath, renderedLinks(sourcePath, html));
+  for (const pathname of discoveryGraph.get(sourcePath)) {
+    const target = targetPath(pathname);
+    const linkedPath = target ? builtPageByFile.get(target) : undefined;
+    if (!linkedPath || linkedPath === sourcePath) continue;
+    phase1Graph.get(sourcePath)?.add(linkedPath);
+    phase1Inbound.get(linkedPath)?.add(sourcePath);
   }
 
   if (PHASE1_READER_PATHS.has(sourcePath)) {
@@ -643,24 +645,180 @@ if (!(await exists(searchUiPath))) {
   }
 }
 
+// The calculator pages' WebMCP tools (src/lib/webmcp/calculator-tools.ts): name, English path, and whether the page
+// is localized in the released locales.
+const WEBMCP_CALCULATOR_TOOLS = [
+  ['zodiacs.birth_chart', '/birth-chart/', true],
+  ['zodiacs.moon_sign', '/moon-sign/', true],
+  ['zodiacs.rising_sign', '/rising-sign/', true],
+  ['zodiacs.big_three', '/big-three/', true],
+  ['zodiacs.compatibility', '/compatibility/', true],
+  ['zodiacs.transits', '/transits/', true],
+  ['zodiacs.saturn_return', '/saturn-return/', true],
+  ['zodiacs.solar_return', '/solar-return/', false],
+  ['zodiacs.lunar_return', '/lunar-return/', false],
+  ['zodiacs.numerology', '/numerology/', false],
+  ['zodiacs.moon_phase', '/moon-phase/', true],
+  ['zodiacs.baby_zodiac', '/baby-zodiac/', true],
+  ['zodiacs.chart_twins', '/chart-twins/', true],
+  ['zodiacs.group_chart', '/group-charts/', true],
+  ['zodiacs.chart_pdf', '/astrologer-kit/', true],
+  ['zodiacs.year_wrapped', '/your-sky-wrapped/', true],
+];
 const webMcpPath = resolve(root, 'assets/webmcp-register.js');
 if (!(await exists(webMcpPath))) {
   fail('webmcp: missing assets/webmcp-register.js');
 } else {
   const webMcp = await readFile(webMcpPath, 'utf8');
-  for (const fingerprint of ['zodiacs.search', 'INVALID_INPUT', 'INDEX_UNAVAILABLE']) {
+  for (const fingerprint of ['zodiacs.search', 'INVALID_INPUT', 'INDEX_UNAVAILABLE', 'webmcp-calculators.js?v=calculators-1', ...WEBMCP_CALCULATOR_TOOLS.map(([name]) => name)]) {
     if (!webMcp.includes(fingerprint)) {
       fail(`webmcp: assets/webmcp-register.js is missing ${fingerprint}`);
     }
   }
 }
+const webMcpCalculatorsPath = resolve(root, 'assets/webmcp-calculators.js');
+if (!(await exists(webMcpCalculatorsPath))) {
+  fail('webmcp: missing assets/webmcp-calculators.js');
+} else {
+  const calculators = await readFile(webMcpCalculatorsPath, 'utf8');
+  for (const fingerprint of ['runCalculatorTool', 'UNKNOWN_TOOL', '/data/chart-twins.json', ...WEBMCP_CALCULATOR_TOOLS.map(([name]) => name)]) {
+    if (!calculators.includes(fingerprint)) fail(`webmcp: assets/webmcp-calculators.js is missing ${fingerprint}`);
+  }
+}
 
 for (const relativePath of ['index.html', 'aries/index.html']) {
   const html = await readFile(resolve(root, relativePath), 'utf8');
-  for (const asset of ['search-ui', 'webmcp-register']) {
-    if (!html.includes(`import('/assets/${asset}.js?v=search-ranking-2')`)
-        || html.includes(`import('/assets/${asset}.js')`)) {
-      fail(`${asset}: ${relativePath} must use the refreshed Search ranking cache key`);
+  for (const [asset, key] of [['search-ui', 'search-ranking-2'], ['webmcp-register', 'calculators-1']]) {
+    // The inline loaders are reprinted by minify-inline-scripts.mjs, which may
+    // change their quotes; the address is what counts.
+    const loads = (address) => html.includes(`import('${address}')`) || html.includes(`import("${address}")`);
+    if (!loads(`/assets/${asset}.js?v=${key}`) || loads(`/assets/${asset}.js`)) {
+      fail(`${asset}: ${relativePath} must use the cache key ?v=${key}`);
+    }
+  }
+}
+// Track A2: a calculator page registers its WebMCP tool in every locale it is built in, and the English page and
+// every released locale's page exist where the page is localized.
+let webMcpCalculatorPages = 0;
+for (const [name, path, localized] of WEBMCP_CALCULATOR_TOOLS) {
+  for (const locale of ['', 'es', 'pt', 'fr', 'it', 'ru']) {
+    const relativePath = `${locale ? `${locale}` : ''}${path}index.html`.replace(/^\//, '');
+    if (!(await exists(resolve(root, relativePath)))) {
+      if (locale === '' || (localized && locale !== 'ru')) fail(`webmcp: ${name} has no page at /${relativePath}`);
+      continue;
+    }
+    const html = await readFile(resolve(root, relativePath), 'utf8');
+    if (!html.includes('/assets/webmcp-register.js?v=calculators-1') || !html.includes('registerWebMcpPage')) {
+      fail(`webmcp: ${relativePath} must register its calculator tool`);
+    }
+    webMcpCalculatorPages += 1;
+  }
+}
+if (webMcpCalculatorPages < 60) fail(`webmcp: only ${webMcpCalculatorPages} calculator pages register a tool`);
+
+// Track A2, by what each page renders: a built page with a calculator island registers that calculator's tool, as
+// the shipped bundle's own lookup finds it, and no page registers a calculator tool without its calculator. Pages
+// that embed a calculator (a rising sign's profile, a compatibility pair, a Life Path page) count too. ChartCalculator
+// serves three tools and ReturnPersonal two, told apart by the page's first path segment; an island not named here,
+// or on a page no tool matches, fails until it is given one.
+const WEBMCP_ISLAND_TOOLS = {
+  ChartCalculator: { 'birth-chart': 'zodiacs.birth_chart', 'moon-sign': 'zodiacs.moon_sign', 'rising-sign': 'zodiacs.rising_sign' },
+  SynastryCalculator: { compatibility: 'zodiacs.compatibility' },
+  NumerologyCalculator: { numerology: 'zodiacs.numerology' },
+  BigThreeQuick: { 'big-three': 'zodiacs.big_three' },
+  TransitTracker: { transits: 'zodiacs.transits' },
+  SaturnReturnCalculator: { 'saturn-return': 'zodiacs.saturn_return' },
+  SolarReturnCalculator: { 'solar-return': 'zodiacs.solar_return' },
+  LunarReturnCalculator: { 'lunar-return': 'zodiacs.lunar_return' },
+  MoonPhaseTool: { 'moon-phase': 'zodiacs.moon_phase' },
+  BabyZodiac: { 'baby-zodiac': 'zodiacs.baby_zodiac' },
+  ChartTwins: { 'chart-twins': 'zodiacs.chart_twins' },
+  GroupCharts: { 'group-charts': 'zodiacs.group_chart' },
+  ReturnPersonal: { 'astrologer-kit': 'zodiacs.chart_pdf', 'your-sky-wrapped': 'zodiacs.year_wrapped' },
+};
+if (await exists(webMcpPath)) {
+  const { webMcpToolsForPage } = await import(pathToFileURL(webMcpPath).href);
+  let webMcpToolPages = 0;
+  for (const file of await htmlFiles(root)) {
+    const html = idCache.get(file) ?? await readFile(file, 'utf8');
+    const path = `/${relative(root, file).split(sep).join('/').replace(/index\.html$/u, '')}`;
+    const plain = path.replace(/^\/(?:es|pt|fr|it|ru)(?=\/)/u, '');
+    const islands = [...new Set([...html.matchAll(/<astro-island[^>]*component-url="\/_astro\/([A-Za-z0-9_-]+?)\.[A-Za-z0-9_-]+\.js"/gu)]
+      .map((match) => match[1]).filter((island) => Object.hasOwn(WEBMCP_ISLAND_TOOLS, island)))];
+    const expected = [...new Set(islands.map((island) => WEBMCP_ISLAND_TOOLS[island][plain.split('/')[1]] ?? `none for ${island}`))].sort();
+    const registered = webMcpToolsForPage({ path, search: path === plain })
+      .map((tool) => tool.name).filter((name) => name !== 'zodiacs.search').sort();
+    if (JSON.stringify(expected) !== JSON.stringify(registered)) {
+      fail(`webmcp: ${path} renders ${islands.join(', ') || 'no calculator'} but registers ${registered.join(', ') || 'no calculator tool'}`);
+    }
+    if (registered.length === 0) continue;
+    if (!html.includes('/assets/webmcp-register.js?v=calculators-1') || !html.includes('registerWebMcpPage')) {
+      fail(`webmcp: ${path} must load the registration of its calculator tool`);
+    }
+    webMcpToolPages += 1;
+  }
+  // 81 calculator pages, 60 rising-sign profiles, 390 compatibility pairs and 12 Life Path pages on 2026-10-17.
+  if (webMcpToolPages < 540) fail(`webmcp: only ${webMcpToolPages} pages register a calculator tool`);
+}
+const twinDirectoryPath = resolve(root, 'data/chart-twins.json');
+if (!(await exists(twinDirectoryPath))) {
+  fail('webmcp: missing data/chart-twins.json, which zodiacs.chart_twins reads');
+} else {
+  const twins = JSON.parse(await readFile(twinDirectoryPath, 'utf8'));
+  const keys = new Set(twins.people?.flatMap((person) => Object.keys(person)));
+  if (twins.schema !== 'zodiacs.chart-twins.v1' || !(twins.people?.length > 100)
+      || [...keys].sort().join() !== 'moon,name,slug,sun') {
+    fail('webmcp: data/chart-twins.json must list the directory\'s names and signs, and nothing else');
+  }
+}
+// The conventions registry (R44): every id has its anchor on the page, which a link to the id lands on, and the JSON
+// gives every id with the address of that anchor.
+{
+  const registry = JSON.parse(await readFile(resolve(repo, 'src/data/conventions/registry.json'), 'utf8'));
+  const registryIds = registry.namespaces.flatMap((space) => space.entries.map((entry) => entry.id));
+  const pagePath = resolve(root, 'developers/conventions/index.html');
+  const jsonPath = resolve(root, 'developers/conventions/registry.json');
+  if (!(await exists(pagePath)) || !(await exists(jsonPath))) {
+    fail('conventions: missing developers/conventions/index.html or its registry.json');
+  } else {
+    const unescape = (text) => text.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+    const anchors = new Set([...(await readFile(pagePath, 'utf8')).matchAll(/\sid="([^"]*)"/g)].map((match) => unescape(match[1])));
+    const unanchored = registryIds.filter((id) => !anchors.has(id));
+    if (unanchored.length) fail(`conventions: ${unanchored.length} ids have no anchor on the page, such as ${unanchored.slice(0, 3).join(', ')}`);
+    const served = JSON.parse(await readFile(jsonPath, 'utf8'));
+    const servedEntries = served.namespaces?.flatMap((space) => space.entries) ?? [];
+    const misaddressed = servedEntries.filter((entry) => entry.uri !== `${registry.base}#${encodeURI(entry.id)}`);
+    if (servedEntries.map((entry) => entry.id).join('\n') !== registryIds.join('\n') || misaddressed.length) {
+      fail('conventions: registry.json must give every id of the registry, in order, with its address on the page');
+    }
+  }
+}
+// The time atlas 0.1.0 (B3.c): the files its index lists, as listed, and its page, held to those files
+// (the preregistration's C6), with the sky benchmark's page as the reference for the scripts it loads.
+{
+  const folder = resolve(root, TIME_ATLAS_FOLDER);
+  const pagePath = resolve(root, 'developers/time-atlas/index.html');
+  const referencePath = resolve(root, 'developers/sky-benchmark/index.html');
+  if (!(await exists(resolve(folder, 'files.json')))) {
+    fail(`time atlas: missing ${TIME_ATLAS_FOLDER}/files.json`);
+  } else {
+    const fileProblems = await timeAtlasFileProblems(folder);
+    for (const problem of fileProblems) fail(`time atlas: ${problem}`);
+    if (!(await exists(pagePath))) {
+      fail('time atlas: missing developers/time-atlas/index.html');
+    } else if (!(await exists(referencePath))) {
+      fail('time atlas: missing developers/sky-benchmark/index.html, the reference for the page\'s scripts');
+    } else if (!fileProblems.length) {
+      const read = (path) => readFile(resolve(folder, path), 'utf8');
+      const data = Object.fromEntries(await Promise.all(TIME_ATLAS_DATA_FILES.map(async (name) => [name, JSON.parse(await read(`data/${name}`))])));
+      for (const problem of timeAtlasPageProblems({
+        page: await readFile(pagePath, 'utf8'),
+        reference: await readFile(referencePath, 'utf8'),
+        index: await read('files.json'),
+        data,
+        differences: JSON.parse(await read('tzdb/differences.json')),
+        report: await read('TZDB-DIFFERENCES.md'),
+      })) fail(`time atlas: ${problem}`);
     }
   }
 }
@@ -927,8 +1085,16 @@ for (const m of sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) {
   if (target.endsWith('.html')) {
     const html = idCache.get(target) ?? (await readFile(target, 'utf8'));
     if (hasNoindex(html)) fail(`sitemap.xml: noindex page included — ${m[1]}`);
+    for (const error of sitemapCanonicalErrors(url.pathname, html, redirectSources)) fail(error);
   }
 }
+
+// Sitemap submission cannot replace a navigable HTML path from the homepage.
+const discoveryDepths = crawlDepths(discoveryGraph);
+for (const path of sitemapLocs) {
+  if (!discoveryDepths.has(path)) fail(`sitemap.xml: no rendered anchor path from homepage to ${path}`);
+}
+console.log(`Indexing discovery: ${[...sitemapLocs].filter((path) => discoveryDepths.has(path)).length}/${sitemapLocs.size} sitemap URLs reachable from home`);
 for (const block of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
   const loc = block[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '?';
   try {
@@ -971,7 +1137,7 @@ for (const match of sitemap.matchAll(/<xhtml:link\b[^>]*>/g)) {
     }
   }
 }
-for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.registry.json']) {
+for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.registry.json', '/sky-calendar-heads-up.ics', '/sky-calendar-heads-up.json']) {
   if (sitemapLocs.has(artifact)) fail(`sitemap.xml: machine artifact must not be indexed — ${artifact}`);
   const target = targetPath(artifact);
   if (!target || !(await exists(target))) {
@@ -998,27 +1164,20 @@ for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.regist
     const block = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)]
       .find((match) => match[1].includes(`<loc>${loc}</loc>`))?.[1];
     const lastmod = block?.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
-    const expected = sign.readings?.weekly?.period?.from;
+    // The page last changed when its week began or when the shared reading
+    // template last changed, whichever is later.
+    const period = sign.readings?.weekly?.period?.from;
+    const expected = period ? laterDate(period, HOROSCOPE_TEMPLATE_LASTMOD) : undefined;
     if (lastmod !== expected) {
-      fail(`sitemap.xml: /horoscopes/${sign.sign}/weekly/ lastmod ${lastmod ?? 'missing'} does not match weekly period ${expected ?? 'missing'}`);
+      fail(`sitemap.xml: /horoscopes/${sign.sign}/weekly/ lastmod ${lastmod ?? 'missing'} does not match weekly period ${period ?? 'missing'} or template revision ${HOROSCOPE_TEMPLATE_LASTMOD}`);
     }
   }
-}
-
-function attr(tag, name) {
-  return tag.match(new RegExp(`\\b${name}=(?:"([^"]*)"|'([^']*)')`, 'i'))?.slice(1).find(Boolean) ?? null;
 }
 
 function hasNoindex(html) {
   return [...html.matchAll(/<meta\b[^>]*>/gi)].some((match) =>
     attr(match[0], 'name')?.toLowerCase() === 'robots' &&
     attr(match[0], 'content')?.toLowerCase().split(/\s*,\s*/).includes('noindex'));
-}
-
-function canonicalHref(html) {
-  const tag = [...html.matchAll(/<link\b[^>]*>/gi)].find((match) =>
-    attr(match[0], 'rel')?.toLowerCase().split(/\s+/).includes('canonical'));
-  return tag ? attr(tag[0], 'href') : null;
 }
 
 function alternateHrefMap(markup, sitemapBlock = false) {
@@ -1135,6 +1294,9 @@ const registryAuraIndexed = sitemapLocs.has('/registry/collection/');
 // the Registry Collection follows its own: the sitemap entry and the built
 // page appear and disappear together.
 const raceIndexed = sitemapLocs.has('/race/');
+// The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
+const yearScoreIndexed = sitemapLocs.has('/year-score/');
+const birthdayReportIndexed = sitemapLocs.has('/birthday-report/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
 const indexablePeoplePaths = new Set(
   JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).people
@@ -1145,12 +1307,10 @@ const registryResearchPublication = JSON.parse(await readFile(
   resolve(repo, 'src/data/registry-research/publication.json'),
   'utf8',
 ));
-const indexedRegistryResearchPaths = new Set([
-  '/terminal/research/',
-  ...registryResearchPublication.items
-    .filter((item) => item.status === 'published' && item.visibleAt <= registryResearchPublication.generatedAt)
-    .map((item) => item.url),
-]);
+// Only the research archive is indexed. Its notes, published or scheduled, are
+// built and linked but `noindex, follow` (owner decision, 2026-10-26).
+const indexedRegistryResearchPaths = new Set(['/terminal/research/']);
+const registryResearchNotePaths = new Set(registryResearchPublication.items.map((item) => item.url));
 const developerGuidePaths = new Set([
   '/developers/docs/',
   ...JSON.parse(await readFile(resolve(repo, 'src/data/developer-guides.json'), 'utf8'))
@@ -1182,16 +1342,38 @@ const sitemapPolicy = {
   // + one version-bound developer guide page per entry of the shared catalogue, and its index
   //   (developerGuidePaths, below; 26 with the seven S4 query pages).
   // +3 for the English-only occasion cards (/occasions/, milestones, baby shower).
-  total: 1422 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /developers/playground/, the compute API playground.
+  // +1 for /developers/conventions/, the conventions registry.
+  // +1 for /developers/demo/, the three-question developer demo.
+  // +26 for the Chinese zodiac guide in Simplified and Traditional Chinese (hub and twelve animals each).
+  // Terminal Research adds its archive alone (indexedRegistryResearchPaths): its
+  // published notes (227 that day) left the sitemap as noindex pages on 2026-10-26.
+  // +1 for /apps/, the English assistant showcase.
+  // +12 for the English-only 2026 yearly horoscope pages.
+  // +1 for /developers/time-atlas/, the time atlas dataset and its comparison with tzdb 2025c.
+  // +13 for the English sign-season hub and its twelve season pages.
+  // +1 for /moon-journal/, the device-only Moon journal.
+  // +1 for /your-2027-sky/, the 2027 personal sky edition.
+  // +60 for the Spanish, Portuguese, French and Italian editions of /your-2027-sky/, /moon-journal/, /seasons/
+  //     and the twelve /seasons/{sign}/ pages (15 per locale).
+  // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
+  // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
+  // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
+  // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/).
+  total: 1532 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+    + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
+    // +3 natal aspect pair pages once their publication record is released.
+    + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size + developerGuidePaths.size,
   // 78 pairs in English and in es, pt, fr and it.
   compatibilityPairs: 390,
   birthdays: 366,
-  chineseZodiac: 65,
+  // 13 pages in English, es, pt, fr, it, zh-hans and zh-hant.
+  chineseZodiac: 91,
   disclosures: 6,
-  extendedHoroscopePages: 72,
+  extendedHoroscopePages: 84,
   dailyReadingPages: 42,
   eventPages: publishedEventPaths.size,
   peoplePages: indexablePeoplePaths.size,
@@ -1201,11 +1383,11 @@ const sitemapPolicy = {
 const indexedFamilies = [
   { label: 'compatibility pairs', pattern: /^\/(?:(?:es|pt|fr|it)\/)?compatibility\/[a-z]+-[a-z]+\/$/, expected: sitemapPolicy.compatibilityPairs, localized: true },
   { label: 'birthdays', pattern: /^\/(?:(?:es|pt|fr|it)\/)?birthday\/[a-z]+-\d{1,2}\/$/, expected: sitemapPolicy.birthdays, localized: true },
-  { label: 'Chinese zodiac', pattern: /^\/(?:(?:es|pt|fr|it)\/)?learn\/chinese-zodiac(?:\/[a-z]+)?\/$/, expected: sitemapPolicy.chineseZodiac, localized: true },
+  { label: 'Chinese zodiac', pattern: /^\/(?:(?:es|pt|fr|it|zh-hans|zh-hant)\/)?learn\/chinese-zodiac(?:\/[a-z]+)?\/$/, expected: sitemapPolicy.chineseZodiac, localized: true },
   { label: 'disclosures', pattern: /^\/(?:(?:es|pt|fr|it|ru)\/)?disclosure\/$/, expected: sitemapPolicy.disclosures, localized: true },
   {
     label: 'English-only extended horoscope pages',
-    pattern: /^\/horoscopes\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/(?:tomorrow|weekly|monthly|love|career|2027)\/$/,
+    pattern: /^\/horoscopes\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/(?:tomorrow|weekly|monthly|love|career|2026|2027)\/$/,
     expected: sitemapPolicy.extendedHoroscopePages,
     localized: false,
   },
@@ -1230,6 +1412,8 @@ const indexedFamilies = [
   { label: 'Life Path pages', pattern: /^\/numerology\/life-path\/(?:[1-9]|11|22|33)\/$/, expected: 12, localized: false },
   { label: 'Registry Collection', pattern: /^\/registry\/collection\/$/, expected: Number(registryAuraIndexed), localized: false },
   { label: 'The Race', pattern: /^\/race\/$/, expected: Number(raceIndexed), localized: false },
+  { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
+  { label: 'Birthday report', pattern: /^\/birthday-report\/$/, expected: Number(birthdayReportIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
   { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },
   { label: 'Terminal Research', pattern: /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/, expected: sitemapPolicy.registryResearchPages, localized: false },
@@ -1255,6 +1439,24 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/u.test(path))),
   indexedRegistryResearchPaths,
 );
+for (const notePath of registryResearchNotePaths) {
+  const file = resolve(root, notePath.slice(1), 'index.html');
+  if (!(await exists(file))) {
+    fail(`Terminal Research: note is not built — ${notePath}`);
+    continue;
+  }
+  const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
+  const robots = [...html.matchAll(/<meta\b[^>]*>/gi)]
+    .map((match) => match[0])
+    .find((tag) => attr(tag, 'name')?.toLowerCase() === 'robots');
+  const directives = attr(robots ?? '', 'content')?.toLowerCase().split(/\s*,\s*/) ?? [];
+  if (!directives.includes('noindex') || !directives.includes('follow')) {
+    fail(`Terminal Research: note must be "noindex, follow" — ${notePath}`);
+  }
+  if (sitemapLocs.has(notePath) || sitemapAlternatePaths.has(notePath)) {
+    fail(`Terminal Research: noindex note leaked into sitemap discovery — ${notePath}`);
+  }
+}
 
 const packetFNoindexCounts = { localizedBirthdays: 0, russianSignGuides: 0, people: 0 };
 for (const file of files) {
@@ -1324,11 +1526,6 @@ for (const family of indexedFamilies) {
   for (const loc of locs) {
     const target = targetPath(loc);
     if (!target || !(await exists(target))) continue;
-    const html = idCache.get(target) ?? (await readFile(target, 'utf8'));
-    const canonical = canonicalHref(html);
-    if (canonical !== `https://zodiacs.org${loc}`) {
-      fail(`sitemap.xml: ${loc} is not self-canonical — ${canonical ?? 'missing'}`);
-    }
     const block = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)]
       .find((match) => match[1].includes(`<loc>https://zodiacs.org${loc}</loc>`))?.[1] ?? '';
     if (!family.localized && /hreflang=/.test(block)) {
@@ -1381,10 +1578,13 @@ for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const rel = relative(root, file);
   const pagePath = htmlFileToPath(rel.split(sep).join('/'));
+  const hiddenChildPage = isHiddenChildPage(pagePath);
   const russianRouteAvailable = expectedHreflangsForPath(pagePath).has('ru')
-    || LOCALIZED_404_PATHS.has(pagePath);
+    || LOCALIZED_404_PATHS.has(pagePath)
+    || (hiddenChildPage && pagePath.startsWith('/ru/'));
   const russianRouteRenderable = russianRouteAvailable
-    || hreflangRouteFamily(pagePath) === 'sign-guide';
+    || hreflangRouteFamily(pagePath) === 'sign-guide'
+    || hiddenChildPage;
   if (!russianRouteRenderable && /href=["'](?:https:\/\/zodiacs\.org)?\/ru(?:\/|["'#?])/.test(html)) {
     fail(`${rel}: Russian route leaked onto a deferred or programmatic page`);
   }
@@ -1466,6 +1666,7 @@ for (const file of files) {
 for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   if (hasNoindex(html)) continue;
+  if (sitemapLocs.has(htmlFileToPath(relative(root, file)))) continue;
   const rel = relative(root, file);
   const canonical = canonicalHref(html);
   if (!canonical) {
@@ -1485,6 +1686,57 @@ for (const file of files) {
   }
   if (!sitemapLocs.has(url.pathname)) {
     fail(`${rel}: canonical missing from sitemap — ${url.pathname}`);
+  }
+}
+
+// ---- 6b. Section sitemaps ----------------------------------------------------
+// sitemap-index.xml lists the section sitemaps under sitemaps/, which together
+// carry every sitemap.xml entry exactly once, each block byte for byte as
+// sitemap.xml has it (src/pages/sitemaps/_sections.ts).
+{
+  const index = await readFile(resolve(root, 'sitemap-index.xml'), 'utf8').catch(() => null);
+  if (index === null) fail('missing sitemap-index.xml');
+  else {
+    if (!index.startsWith('<?xml') || !/<sitemapindex\b/u.test(index)) fail('sitemap-index.xml: not a sitemap index');
+    const listed = new Set();
+    const sectionPathOf = new Map();
+    for (const m of index.matchAll(/<sitemap>\s*<loc>([^<]+)<\/loc>/g)) {
+      const url = new URL(m[1]);
+      if (url.origin !== 'https://zodiacs.org' || !/^\/sitemaps\/[a-z-]+\.xml$/u.test(url.pathname)) {
+        fail(`sitemap-index.xml: unexpected sitemap ${m[1]}`);
+        continue;
+      }
+      if (listed.has(url.pathname)) fail(`sitemap-index.xml: duplicate sitemap ${url.pathname}`);
+      listed.add(url.pathname);
+      const child = await readFile(resolve(root, url.pathname.slice(1)), 'utf8').catch(() => null);
+      if (child === null) {
+        fail(`sitemap-index.xml: listed sitemap has no file: ${url.pathname}`);
+        continue;
+      }
+      if (!child.startsWith('<?xml') || !/<urlset\b/u.test(child)) fail(`${url.pathname}: not a urlset`);
+      const blocks = [...child.matchAll(/<url>([\s\S]*?)<\/url>/g)];
+      if (blocks.length === 0) fail(`${url.pathname}: lists no URLs`);
+      if (blocks.length > 50_000) fail(`${url.pathname}: ${blocks.length} URLs, over the 50,000 limit`);
+      for (const block of blocks) {
+        const path = new URL(block[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? 'https://invalid.invalid/').pathname;
+        if (sectionPathOf.has(path)) fail(`${url.pathname}: ${path} is also listed by ${sectionPathOf.get(path)}`);
+        sectionPathOf.set(path, url.pathname);
+        if (!sitemapLocs.has(path)) fail(`${url.pathname}: ${path} is not in sitemap.xml`);
+        else if (sitemapBlocksByPath.get(path) !== block[1]) fail(`${url.pathname}: ${path} differs from its sitemap.xml entry`);
+      }
+    }
+    for (const path of sitemapLocs) {
+      if (!sectionPathOf.has(path)) fail(`sitemap-index.xml: ${path} is in no section sitemap`);
+    }
+    const built = await readdir(resolve(root, 'sitemaps')).catch(() => []);
+    for (const name of built) {
+      if (!listed.has(`/sitemaps/${name}`)) fail(`sitemaps/${name}: not listed by sitemap-index.xml`);
+    }
+    console.log(`Section sitemaps: ${listed.size} sitemaps, ${sectionPathOf.size}/${sitemapLocs.size} sitemap.xml URLs`);
+  }
+  const robots = await readFile(resolve(root, 'robots.txt'), 'utf8').catch(() => '');
+  for (const line of ['Sitemap: https://zodiacs.org/sitemap.xml', 'Sitemap: https://zodiacs.org/sitemap-index.xml']) {
+    if (!robots.split('\n').includes(line)) fail(`robots.txt: missing "${line}"`);
   }
 }
 
@@ -1621,6 +1873,17 @@ for (const [file, path] of builtPageByFile) {
     .replace(ENTITIES, (entity) => (/^&(?:nbsp|#160|#x[aA]0);$/u.test(entity) ? ' ' : 'x'));
   const joined = [...html.matchAll(INLINE_JOIN)].length;
   if (joined) fail(`${path}: ${joined} place(s) where text runs into an inline element; end the line with {' '}`);
+}
+
+// ---- Profile access loader ---------------------------------------------------
+// With account sync v2, pages outside the profile and the two main calculators
+// import the access bootstrap through an inline loader whose chunk URL is
+// stamped after the build (scripts/stamp-profile-access-loader.mjs). Every
+// loader must name the one chunk the save path also imports, and that chunk
+// must be imported by the save path; each requirement fails on its own.
+{
+  const { problems } = await verifyProfileAccessLoader(root);
+  for (const problem of problems.slice(0, 20)) fail(`profile access loader: ${problem}`);
 }
 
 // ---- Report ------------------------------------------------------------------

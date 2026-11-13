@@ -2,6 +2,7 @@
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/prose.css';
+import '../styles/kit.css';
 import ArticleContents from '../components/ArticleContents.astro';
 import SEO from '../components/SEO.astro';
 import SiteNav from '../components/SiteNav.astro';
@@ -11,15 +12,28 @@ import EditorialLine from '../components/EditorialLine.astro';
 import GlassDefs from '../components/GlassDefs.astro';
 import EditionFreshnessGuard from '../components/EditionFreshnessGuard.astro';
 import { ANALYTICS_EVENT_PROPS, ANALYTICS_EVENT_VALUES } from '../lib/analytics';
+import { ARRIVAL_REF_VALUES } from '../lib/analytics-config.mjs';
+import { ARRIVAL_SOURCE_SESSION_KEY } from '../lib/arrival-source';
 import { hasDailyChartEmailProvider } from '../lib/email/daily-config';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
-import { LOCALE_META, UI, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
+import { LOCALE_META, UI, isSectionLocale, normalizePageLocale, t, type PageLocale as Locale } from '../lib/i18n';
 import { RUSSIAN_RUNTIME } from '../lib/i18n/ru-runtime/server';
 import AccountProfileAccessBootstrap from '../islands/AccountProfileAccessBootstrap';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../lib/account-v2/feature-flags';
 import { ACCOUNT_V2_PROFILE_ACCESS_KEY } from '../lib/account-v2/profile-access';
+import { ACCOUNT_BOUNDARY_PROFILE_KEYS } from '../lib/account-v2/profile-boundary';
+import {
+  PROFILE_ACCESS_CHUNK_PLACEHOLDER,
+  PROFILE_ACCESS_DEV_ENTRY,
+  profileAccessBootstrapEager,
+  profileAccessLoaderScript,
+  profileAccessMarkerKeys,
+} from '../lib/account-v2/profile-access-loader.mjs';
+import { PROFILE_SUN_SIGN_KEY } from '../lib/profile/store';
+import { supabaseAuthStorageKeyName } from '../lib/profile/saved-pages-config';
 import { GUIDE_PRIVATE_SESSION_KEY } from '../lib/assistant/guide-loader.mjs';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../lib/web-analytics.mjs';
+import { calculatorToolForPath } from '../lib/webmcp/calculator-tools';
 import {
   ACCOUNT_V2_LOCAL_OWNER_KEY,
   ACCOUNT_V2_RETAINED_OWNER_KEY,
@@ -68,6 +82,14 @@ interface Props {
   /** Suppress third-party runtime scripts on pages handling private account data. */
   privateSurface?: boolean;
   /**
+   * This page reads the browser's saved charts or account (the local profile
+   * store, the living chart, or a chart restored from account sync v2) and can
+   * render them. While account sync v2 is on, remote analytics stay off here,
+   * exactly as on a privateSurface page. `tests/analytics-account-surfaces.test.ts`
+   * finds every such page through its imports and fails if one is missing.
+   */
+  accountSurface?: boolean;
+  /**
    * Do not register the PWA worker on this route.
    *
    * For a surface that must be able to say it stores nothing: the worker's
@@ -95,33 +117,67 @@ interface Props {
 }
 
 const props = Astro.props;
-const locale = normalizeCatalogLocale(props.locale);
+const locale = normalizePageLocale(props.locale);
+// WebMCP (Track A2): Search on English pages, and on a calculator page, in every locale, the page's own tool.
+const webMcpSearch = locale === 'en';
+const webMcpCalculator = calculatorToolForPath(Astro.url.pathname) !== null;
 // The daily-sky feed is English; its link title is localized so feed readers list it in the page's language.
 const FEED_TITLES: Record<typeof locale, { sky: string; horoscopes: string; almanac: string }> = {
-  en: { sky: 'Zodiacs.org — the sky, daily', horoscopes: 'Zodiacs.org daily horoscopes', almanac: 'The Zodiacs.org Almanac' },
-  es: { sky: 'Zodiacs.org — el cielo, cada día (en inglés)', horoscopes: 'Horóscopos diarios de Zodiacs.org (en inglés)', almanac: 'Almanaque de Zodiacs.org (en inglés)' },
-  pt: { sky: 'Zodiacs.org — o céu, todo dia (em inglês)', horoscopes: 'Horóscopos diários do Zodiacs.org (em inglês)', almanac: 'Almanaque do Zodiacs.org (em inglês)' },
-  fr: { sky: 'Zodiacs.org — le ciel, chaque jour (en anglais)', horoscopes: 'Horoscopes quotidiens de Zodiacs.org (en anglais)', almanac: 'Almanach de Zodiacs.org (en anglais)' },
-  it: { sky: 'Zodiacs.org — il cielo, ogni giorno (in inglese)', horoscopes: 'Oroscopi quotidiani di Zodiacs.org (in inglese)', almanac: 'Almanacco di Zodiacs.org (in inglese)' },
-  ru: { sky: 'Zodiacs.org — небо каждый день (по-английски)', horoscopes: 'Ежедневные гороскопы Zodiacs.org (по-английски)', almanac: 'Альманах Zodiacs.org (по-английски)' },
+  en: { sky: 'Zodiacs.org | the sky, daily', horoscopes: 'Zodiacs.org daily horoscopes', almanac: 'The Zodiacs.org Almanac' },
+  es: { sky: 'Zodiacs.org | el cielo, cada día (en inglés)', horoscopes: 'Horóscopos diarios de Zodiacs.org (en inglés)', almanac: 'Almanaque de Zodiacs.org (en inglés)' },
+  pt: { sky: 'Zodiacs.org | o céu, todo dia (em inglês)', horoscopes: 'Horóscopos diários do Zodiacs.org (em inglês)', almanac: 'Almanaque do Zodiacs.org (em inglês)' },
+  fr: { sky: 'Zodiacs.org | le ciel, chaque jour (en anglais)', horoscopes: 'Horoscopes quotidiens de Zodiacs.org (en anglais)', almanac: 'Almanach de Zodiacs.org (en anglais)' },
+  it: { sky: 'Zodiacs.org | il cielo, ogni giorno (in inglese)', horoscopes: 'Oroscopi quotidiani di Zodiacs.org (in inglese)', almanac: 'Almanacco di Zodiacs.org (in inglese)' },
+  ru: { sky: 'Zodiacs.org | небо каждый день (по-английски)', horoscopes: 'Ежедневные гороскопы Zodiacs.org (по-английски)', almanac: 'Альманах Zodiacs.org (по-английски)' },
+  'zh-hans': { sky: 'Zodiacs.org 每日星空（英文）', horoscopes: 'Zodiacs.org 每日星座解读（英文）', almanac: 'Zodiacs.org 天文年历（英文）' },
+  'zh-hant': { sky: 'Zodiacs.org 每日星空（英文）', horoscopes: 'Zodiacs.org 每日星座解讀（英文）', almanac: 'Zodiacs.org 天文年曆（英文）' },
 };
-const clientUi = props.clientUi ? UI[locale] : null;
+// Section locales carry a chrome-only catalog, which is never embedded for islands.
+if (props.clientUi && isSectionLocale(locale)) throw new Error(`${locale} pages cannot hydrate UI islands`);
+const clientUi = props.clientUi && !isSectionLocale(locale) ? UI[locale] : null;
 const russianRuntime = props.clientUi && locale === 'ru' ? RUSSIAN_RUNTIME : null;
 const plausibleScriptUrl = import.meta.env.PUBLIC_PLAUSIBLE_SCRIPT_URL?.trim();
 const plausibleEndpoint = import.meta.env.PUBLIC_PLAUSIBLE_ENDPOINT?.trim() ?? '';
 const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN?.trim() ?? '';
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
+// Remote analytics never run on a privateSurface page. The account, sync and
+// profile surfaces (profile in every locale, the auth callback) are private
+// whenever account sync v2 is on, and so is every accountSurface page: each
+// page that reads the saved charts or the account and can render them (the
+// birth chart, Today, transits, the homepages' welcome back, the chart tools).
+// A saved or synced chart and its consents therefore never share a page with
+// an analytics script. The access-controlled preview turned analytics off on
+// every page; since launch ordinary content pages keep the same
+// privacy-scoped analytics they had with the v1 client
+// (docs/ACCOUNT-SYNC-V2-TECHNICAL-CONTRACT.md).
+const analyticsExcluded = Boolean(
+  props.privateSurface || (props.accountSurface && accountSyncV2Enabled),
+);
 const plausibleEnabled = Boolean(
-  plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface
-  && !accountSyncV2Enabled,
+  plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded,
 );
 const webAnalyticsEnabled = Boolean(
-  vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface
-  && !accountSyncV2Enabled,
+  vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded,
 );
+// With account sync v2, only the profile pages and the two main calculators
+// hydrate the access bootstrap at load. Every other page carries the small
+// presence loader, which imports the same bootstrap only for a visitor who
+// already keeps something on this device, opens the account entry point, or
+// saves (src/lib/account-v2/profile-access-loader.mjs).
+const accountAccessEager = accountSyncV2Enabled && profileAccessBootstrapEager(props.path);
+const accountAccessLoader = accountSyncV2Enabled && !accountAccessEager
+  ? profileAccessLoaderScript({
+    src: import.meta.env.DEV ? PROFILE_ACCESS_DEV_ENTRY : PROFILE_ACCESS_CHUNK_PLACEHOLDER,
+    keys: profileAccessMarkerKeys({
+      supabaseAuthKey: supabaseAuthStorageKeyName(import.meta.env.PUBLIC_SUPABASE_URL),
+      ownerKey: ACCOUNT_V2_LOCAL_OWNER_KEY,
+      retainedOwnerKey: ACCOUNT_V2_RETAINED_OWNER_KEY,
+      profileKeys: [...ACCOUNT_BOUNDARY_PROFILE_KEYS, PROFILE_SUN_SIGN_KEY],
+    }),
+  })
+  : null;
 const dailyEmailLifecycleEnabled = hasDailyChartEmailProvider(process.env);
 const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ? direction : undefined;
 
@@ -289,19 +345,51 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
          preload desktop-only; People profiles opt in at every width because
          late font discovery extends their measured first-render path. -->
     <SEO {...props} />
-    {locale === 'en' && !props.noAssistant && (
-      <script is:inline>
+    {(webMcpSearch || webMcpCalculator) && !props.noAssistant && (
+      <script is:inline define:vars={{ webMcpSearch }}>
         (function () {
           var context = document.modelContext || Reflect.get(navigator, 'modelContext');
           if (!context || typeof context.registerTool !== 'function') return;
-          // This bundle shares Search ranking; bypass the previous immutable URL.
-          import('/assets/webmcp-register.js?v=search-ranking-2')
-            .then(function (module) { return module.registerWebMcpSearch(context); })
-            .catch(function () {});
+          // The tools are for assistants, not for the first screen. Fetched
+          // at once, the bundle shared the hero's connections in every browser
+          // that has WebMCP, so it registers a beat after load, clear of the
+          // page's first paint, or after 4 s if a stalled request holds load.
+          var registered = false;
+          function register() {
+            if (registered) return;
+            registered = true;
+            // The bundle registers Search and the calculator tools; bypass the previous immutable URL.
+            import('/assets/webmcp-register.js?v=calculators-1')
+              .then(function (module) {
+                return module.registerWebMcpPage(context, { path: location.pathname, search: webMcpSearch });
+              })
+              .catch(function () {});
+          }
+          if (document.readyState === 'complete') window.setTimeout(register, 400);
+          else window.addEventListener('load', function () { window.setTimeout(register, 400); }, { once: true });
+          window.setTimeout(register, 4000);
         })();
       </script>
     )}
-    <script is:inline>window.zodiacsAnalytics = window.zodiacsAnalytics || Object.freeze({ track: function () {} });</script>
+    <script is:inline define:vars={{ arrivalRefs: ARRIVAL_REF_VALUES, arrivalSessionKey: ARRIVAL_SOURCE_SESSION_KEY }}>window.zodiacsAnalytics = window.zodiacsAnalytics || Object.freeze({ track: function () {} });
+      // Links from the Zodiacs app in an assistant carry ?ref=chatgpt or ?ref=assistant. Note which,
+      // then take it out of the address so it is not copied into links people share.
+      // A word on the closed arrival list is also kept for this tab only (src/lib/arrival-source.ts);
+      // any other word is dropped, never stored.
+      (function () {
+        try {
+          var url = new URL(location.href);
+          var ref = url.searchParams.get('ref');
+          if (ref === null) return;
+          window.zodiacsArrival = ref === 'chatgpt' || ref === 'assistant' ? ref : null;
+          if (arrivalRefs.indexOf(ref) !== -1) {
+            try { sessionStorage.setItem(arrivalSessionKey, ref); } catch (error) {}
+          }
+          url.searchParams.delete('ref');
+          history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+        } catch (error) {}
+      })();
+    </script>
     {plausibleEnabled && (
       <>
         <script is:inline define:vars={{
@@ -363,6 +451,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
                 source: 'astrology', destination: destination
               });
             });
+            if (window.zodiacsArrival) window.zodiacsAnalytics.track('assistant_arrival', { assistant: window.zodiacsArrival });
             var remoteScript = document.createElement('script');
             remoteScript.defer = true;
             remoteScript.dataset.zodiacsRemoteAnalytics = '';
@@ -403,7 +492,8 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     <slot name="head" />
   </head>
   <body>
-    {accountSyncV2Enabled && <AccountProfileAccessBootstrap client:load />}
+    {accountAccessEager && <AccountProfileAccessBootstrap client:load />}
+    {accountAccessLoader && <script is:inline data-profile-access-loader set:html={accountAccessLoader} />}
     <!-- Keep the route catalog ahead of every island, but out of <head> so
          its ~20KB inline payload cannot delay CSS and LCP-font discovery. -->
     {clientUi && (
@@ -426,7 +516,8 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
 
     <main id="main">
       <slot />
-      <ArticleContents enabled={locale === 'en' && (props.path.startsWith('/learn/') || props.path === '/methodology/' || /^\/(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/$/.test(props.path)) && props.path !== '/learn/glossary/'} />
+      {/* Sign guides carry their own contents rail (src/pages/[sign]/index.astro). */}
+      <ArticleContents enabled={locale === 'en' && (props.path.startsWith('/learn/') || props.path === '/methodology/') && props.path !== '/learn/glossary/'} />
     </main>
 
     {(props.editorialLine ?? props.type === 'article') && <EditorialLine locale={locale} />}
@@ -465,29 +556,99 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         }
         var root = document.documentElement;
         var footer = document.querySelector('.zfooter');
-        var nearViewport = footer && footer.getBoundingClientRect().top <= window.innerHeight + 200;
-        if (!nearViewport) root.removeAttribute('data-footer-styles-pending');
-        if (nearViewport) appendStylesheet();
-        else {
-          if (footer && 'IntersectionObserver' in window) {
-            try {
-              observer = new IntersectionObserver(function (entries) {
-                for (var index = 0; index < entries.length; index += 1) {
-                  if (entries[index].isIntersecting) { appendStylesheet(); return; }
-                }
-              }, { threshold: 0, rootMargin: '0px 0px 200px 0px' });
-              observer.observe(footer);
-            } catch (_) {
-              if (observer) observer.disconnect();
-              observer = null;
-            }
-          }
-          if (document.readyState === 'complete') appendAfterLoad();
+        var placed = false;
+        function place(nearViewport) {
+          if (placed) return;
+          placed = true;
+          if (!nearViewport) root.removeAttribute('data-footer-styles-pending');
+          if (nearViewport) appendStylesheet();
+          else if (document.readyState === 'complete') appendAfterLoad();
           else window.addEventListener('load', appendAfterLoad, { once: true });
         }
+        // Where the footer starts comes from the observer's first report,
+        // right after the first layout. Reading its rect here, while the page
+        // still parses, laid the whole page out ahead of the first paint.
+        if (footer && 'IntersectionObserver' in window) {
+          try {
+            observer = new IntersectionObserver(function (entries) {
+              for (var index = 0; index < entries.length; index += 1) {
+                if (entries[index].isIntersecting) { place(true); appendStylesheet(); return; }
+              }
+              place(false);
+            }, { threshold: 0, rootMargin: '0px 0px 200px 0px' });
+            observer.observe(footer);
+            return;
+          } catch (_) {
+            if (observer) observer.disconnect();
+            observer = null;
+          }
+        }
+        place(Boolean(footer) && footer.getBoundingClientRect().top <= window.innerHeight + 200);
       })();
     </script>
     <noscript><style>@import url('/assets/site-footer.css?v=20261006');</style></noscript>
+
+    {props.localTypography && locale === 'en' && (
+      <script is:inline>
+        /* Pages on the local type tier paint their body copy in the metric-
+           matched local face, so a late webfont can never move the first
+           screen. Once the page has loaded, the brand face is fetched once and
+           handed to each section only while that section is off screen, so
+           visible text never changes face and nothing a reader sees shifts. */
+        (function upgradeBodyFace() {
+          if (!('FontFace' in window) || !document.fonts || !('IntersectionObserver' in window)) return;
+          var family = "'Instrument Sans Body', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif";
+          // The home page's display serif is its own preloaded subset; other
+          // pages on this tier fall back to Georgia and take EB Garamond too.
+          var serifIsLocal = /^['"]?EB Garamond Fallback/.test(getComputedStyle(document.documentElement).getPropertyValue('--font-serif').trim());
+          var serif = "'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', Georgia, serif";
+          function start() {
+            var upright = new FontFace('Instrument Sans Body', 'url(/fonts/instrument-sans-latin-wght-normal.woff2) format("woff2-variations")', { weight: '400 700', style: 'normal', display: 'swap' });
+            var italic = new FontFace('Instrument Sans Body', 'url(/fonts/instrument-sans-latin-wght-italic.woff2) format("woff2-variations")', { weight: '400 700', style: 'italic', display: 'swap' });
+            document.fonts.add(italic);
+            upright.load().then(function (face) {
+              document.fonts.add(face);
+              var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                  // A zero-area box (an island's display:contents wrapper, a
+                  // hidden block) says nothing about where its children are.
+                  var box = entry.boundingClientRect;
+                  if (entry.isIntersecting || box.width === 0 || box.height === 0) return;
+                  entry.target.style.setProperty('--font-sans', family);
+                  if (serifIsLocal) entry.target.style.setProperty('--font-serif', serif);
+                  // Re-declare the inherited body face only on blocks that
+                  // wear it. A serif heading at this depth keeps its own rule,
+                  // which reads the upgraded --font-serif set just above.
+                  if (/Instrument Sans/.test(getComputedStyle(entry.target).fontFamily)) {
+                    entry.target.style.fontFamily = 'var(--font-sans)';
+                  }
+                  observer.unobserve(entry.target);
+                });
+              });
+              // Sections and their direct blocks: a section taller than the
+              // screen never leaves it while it is being read, its blocks do.
+              var blocks = document.querySelectorAll('main > *, main > * > *, main > * > * > *, .zfooter');
+              blocks.forEach(function (block) { observer.observe(block); });
+              // While the tab is hidden nothing can be seen to move, so the
+              // rest of the page takes the brand face then.
+              document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState !== 'hidden') return;
+                observer.disconnect();
+                var main = document.querySelector('main');
+                [main, document.querySelector('.zfooter')].forEach(function (block) {
+                  if (!block) return;
+                  block.style.setProperty('--font-sans', family);
+                  if (serifIsLocal) block.style.setProperty('--font-serif', serif);
+                  block.style.fontFamily = 'var(--font-sans)';
+                });
+              }, { once: true });
+            }).catch(function () {});
+          }
+          if (document.readyState === 'complete') window.setTimeout(start, 400);
+          else window.addEventListener('load', function () { window.setTimeout(start, 400); }, { once: true });
+        })();
+      </script>
+    )}
 
     <script>
       // A small heading entrance, once, before it enters the reading area.

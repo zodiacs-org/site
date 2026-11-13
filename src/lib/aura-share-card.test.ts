@@ -56,7 +56,6 @@ function installCanvas(
     icons?: boolean;
     missingIcon?: string;
     context?: boolean;
-    brandBitmap?: boolean;
   } = {},
 ): CanvasHarness {
   const painted: CanvasHarness["painted"] = [];
@@ -88,6 +87,7 @@ function installCanvas(
     globalAlpha: 1,
     imageSmoothingEnabled: false,
     imageSmoothingQuality: "low",
+    letterSpacing: "0px",
     lineWidth: 1,
     strokeStyle: "",
     textAlign: "left",
@@ -137,9 +137,6 @@ function installCanvas(
   const fallbackImages: Array<{ src: string }> = [];
   vi.stubGlobal("fetch", fetch);
   vi.stubGlobal("createImageBitmap", vi.fn(async (blob: Blob) => {
-    if (options.brandBitmap === false && blob.type === "image/png") {
-      throw new Error("bitmap_decode_failed");
-    }
     const bitmap = { close: vi.fn() };
     decodedIcons.push(bitmap);
     return bitmap;
@@ -355,7 +352,7 @@ describe("Registry Aura collection talisman snapshot", () => {
 });
 
 describe("Registry Aura talisman PNG", () => {
-  it("paints a 1080×1350 collection seal, represented set, method, and wordmark", async () => {
+  it("paints a 1080×1350 collection seal, represented set, method, and the brand lockup", async () => {
     const harness = installCanvas();
     const blob = await drawAuraShareCard(input);
     expect(blob.type).toBe("image/png");
@@ -378,7 +375,7 @@ describe("Registry Aura talisman PNG", () => {
       "Your collection, set against today’s sky.",
       "PUBLIC EDITION · COLLECTION + DATED SKY",
       "REGISTRY CHECKED JUL 16, 2026 UTC",
-      "Zodiacs.org",
+      "ZODIACS · ORG",
     ]) {
       expect(text).toContain(required);
     }
@@ -515,27 +512,22 @@ describe("Registry Aura talisman PNG", () => {
       "/assets/zodiac-icons/128/capricorn.webp",
       "/assets/zodiac-icons/128/aquarius.webp",
       "/assets/zodiac-icons/128/pisces.webp",
-      "/assets/app-icons/v3/icon-512.png",
     ]);
-    expect(harness.context.drawImage).toHaveBeenCalledTimes(16);
+    // The twelve orbit icons and three in the ledger; the lockup draws its own ring.
+    expect(harness.context.drawImage).toHaveBeenCalledTimes(15);
     expect(harness.painted.filter(({ text }) => text.includes("×3"))).toHaveLength(1);
-    const brand = harness.painted.find(({ text }) => text === "Zodiacs.org");
-    expect(brand).toMatchObject({
-      fillStyle: "#8E96AB",
-      textAlign: "right",
-      textBaseline: "middle",
-      x: 1014,
-      y: 1290,
-    });
-    expect(brand?.font).toContain('22px "EB Garamond"');
-    expect(harness.context.drawImage).toHaveBeenLastCalledWith(
-      harness.decodedIcons.at(-1),
-      expect.any(Number),
-      1268,
-      44,
-      44,
-    );
-    expect(harness.decodedIcons).toHaveLength(13);
+    // The brand lockup in the portrait frame's corner: ZODIACS · ORG left to
+    // right on one baseline, half a cap height below y 1290, ending at x 1014
+    // (every letter measures 14px here, with 4px tracking).
+    const lockup = harness.painted.filter(({ text }) => ["ZODIACS", "·", "ORG"].includes(text));
+    expect(lockup.map(({ text, x, y, textAlign, textBaseline }) => ({ text, x, y, textAlign, textBaseline }))).toEqual([
+      { text: "ZODIACS", x: 812, y: 1296.5, textAlign: "left", textBaseline: "alphabetic" },
+      { text: "·", x: 942, y: 1296.5, textAlign: "left", textBaseline: "alphabetic" },
+      { text: "ORG", x: 964, y: 1296.5, textAlign: "left", textBaseline: "alphabetic" },
+    ]);
+    expect(lockup[0].font).toContain('20px "EB Garamond"');
+    expect(harness.painted.some(({ text }) => text === "Zodiacs.org")).toBe(false);
+    expect(harness.decodedIcons).toHaveLength(12);
     harness.decodedIcons.forEach((icon) => expect(icon.close).toHaveBeenCalledOnce());
   });
 
@@ -544,16 +536,6 @@ describe("Registry Aura talisman PNG", () => {
     await expect(drawAuraShareCard(input)).rejects.toThrow("zodiac_icon_unavailable:libra");
     expect(harness.painted).toEqual([]);
     expect(harness.decodedIcons).toHaveLength(11);
-    harness.decodedIcons.forEach((icon) => expect(icon.close).toHaveBeenCalledOnce());
-  });
-
-  it("keeps the profile mark when WebKit cannot bitmap-decode the brand PNG", async () => {
-    const harness = installCanvas({ brandBitmap: false });
-    await drawAuraShareCard(input);
-
-    expect(harness.fallbackImages).toHaveLength(1);
-    expect(harness.context.drawImage).toHaveBeenCalledTimes(16);
-    expect(harness.decodedIcons).toHaveLength(12);
     harness.decodedIcons.forEach((icon) => expect(icon.close).toHaveBeenCalledOnce());
   });
 
@@ -591,7 +573,7 @@ describe("Registry Aura talisman PNG", () => {
   it("releases canonical artwork when the canvas context is unavailable", async () => {
     const harness = installCanvas({ context: false });
     await expect(drawAuraShareCard(input)).rejects.toThrow("canvas_unavailable");
-    expect(harness.decodedIcons).toHaveLength(13);
+    expect(harness.decodedIcons).toHaveLength(12);
     harness.decodedIcons.forEach((icon) => expect(icon.close).toHaveBeenCalledOnce());
   });
 });

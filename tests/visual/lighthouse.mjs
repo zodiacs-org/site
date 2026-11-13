@@ -1,3 +1,4 @@
+import { NATAL_ASPECT_PAIRS, natalAspectsEnabled, natalAspectsPublished } from '../../scripts/natal-aspects-policy.mjs';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -57,6 +58,13 @@ const routes = [
 // flag and audits it here.
 if (process.env.LIGHTHOUSE_INCLUDE_AURA === '1') {
   routes.push({ name: 'registry-aura', path: '/registry/collection/' });
+}
+// Natal planet-pair pages exist only in published or review builds
+// (PUBLIC_NATAL_ASPECTS_PREVIEW=1); only the review edition is noindex, on purpose.
+if (natalAspectsEnabled) {
+  routes.push(...NATAL_ASPECT_PAIRS.map((pair) => ({
+    name: `natal-${pair}`, path: `/learn/aspects/${pair}/`, intentionalNoindex: !natalAspectsPublished,
+  })));
 }
 const routeFilter = new Set(
   (process.env.LIGHTHOUSE_ROUTES ?? '').split(',').map((name) => name.trim()).filter(Boolean),

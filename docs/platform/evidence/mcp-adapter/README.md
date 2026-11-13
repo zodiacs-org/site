@@ -432,10 +432,10 @@ rc.16.2's. The engine is still 0.1.1-rc.16. What changed:
   fixed sentence, after the JSON Pointer of the field it refused; one the
   tool's input schema refuses first, such as an unknown argument or a value
   outside a list, gets the MCP SDK's validation message.
-  `src/mcp/sky-tools.test.ts` holds this over a seeded synthetic corpus of 252
-  requests (61 for positions, 25 event windows and 166 sky facts), each run
-  through the tool and through the compute API's own request handler, over 17
-  refused requests, and over 43 more at the two ends of the accepted dates.
+  `src/mcp/sky-tools.test.ts` holds this over a seeded synthetic corpus of 301
+  requests (61 for positions, 25 event windows and 215 sky facts), each run
+  through the tool and through the compute API's own request handler, over 21
+  refused requests, and over 47 more at the two ends of the accepted dates.
   Every result is checked against the tool's output schema, in zod and as the
   JSON Schema a host reads, against the compute API's OpenAPI components, and
   through the SDK's own client.

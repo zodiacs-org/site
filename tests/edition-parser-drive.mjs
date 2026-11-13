@@ -69,7 +69,7 @@ await withPreview({ port: 4389 }, async (baseURL) => {
     const response = await page.goto(`http://127.0.0.1:${server.address().port}/today/`, { waitUntil: 'networkidle' });
     assert.equal(response.status(), 200);
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-    assert.equal(await page.locator('.today-hero h1').innerText(), 'Today');
+    assert.equal(await page.locator('.today-hero h1').innerText(), 'The sky today');
     const cls = await page.evaluate(() => globalThis.__editionParserShifts.reduce((sum, value) => sum + value, 0));
     assert.equal(cls, 0, 'Streamed current-edition labels must have exactly zero CLS');
     console.log(JSON.stringify({ status: 'passed', browser: browser.version(), scenario: 'coalesced parser text before DOMContentLoaded', cls }));

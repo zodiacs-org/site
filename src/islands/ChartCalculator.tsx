@@ -72,6 +72,7 @@ import CalculationReload, { calculationError, calculationLoadMessage } from './C
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
 import { learningInputIdentity } from '../lib/learning-input-identity';
+import { useAccountSaveModule } from './account-save-loader';
 import type { AspectType } from '../lib/engine/types';
 import {
   clearPostChartContext,
@@ -152,11 +153,11 @@ const LENS_LABELS: Record<ReleasedLocale, Record<'rail' | 'natal' | LensId, stri
   it: { rail: 'Il tema nel tempo', natal: 'Natale', sky: 'Cielo attuale', progressed: 'Progredito', return: 'Rivoluzione solare' },
 };
 const DETAIL_LABELS: Record<ReleasedLocale, { lead: string; placements: string; aspects: string }> = {
-  en: { lead: 'See exact chart data — ', placements: ' placements · ', aspects: ' aspects' },
-  es: { lead: 'Ver los datos exactos — ', placements: ' posiciones · ', aspects: ' aspectos' },
-  pt: { lead: 'Ver os dados exatos — ', placements: ' posições · ', aspects: ' aspectos' },
-  fr: { lead: 'Voir les données exactes — ', placements: ' positions · ', aspects: ' aspects' },
-  it: { lead: 'Vedi i dati esatti — ', placements: ' posizioni · ', aspects: ' aspetti' },
+  en: { lead: 'See exact chart data: ', placements: ' placements · ', aspects: ' aspects' },
+  es: { lead: 'Ver los datos exactos: ', placements: ' posiciones · ', aspects: ' aspectos' },
+  pt: { lead: 'Ver os dados exatos: ', placements: ' posições · ', aspects: ' aspectos' },
+  fr: { lead: 'Voir les données exactes\u00a0: ', placements: ' positions · ', aspects: ' aspects' },
+  it: { lead: 'Vedi i dati esatti: ', placements: ' posizioni · ', aspects: ' aspetti' },
 };
 const DETAIL_STORAGE_KEY = 'zodiacs.detail.v1';
 const CHART_BOOK_COPY = {
@@ -167,7 +168,7 @@ const CHART_BOOK_COPY = {
   it: { label: 'Di chi è questo tema?', save: 'Salva', skip: 'Salta' },
 } as const satisfies Record<ReleasedLocale, { label: string; save: string; skip: string }>;
 const PERSON_CHART_COPY = {
-  en: (name: string) => `${name}'s chart — "you" below means ${name}.`,
+  en: (name: string) => `${name}'s chart: "you" below means ${name}.`,
   es: (name: string) => `La carta de ${name}: el "tú" de abajo se refiere a ${name}.`,
   pt: (name: string) => `O mapa de ${name}: o "você" abaixo se refere a ${name}.`,
   fr: (name: string) => `Le thème de ${name}\u00a0: le «\u00a0tu\u00a0» ci-dessous désigne ${name}.`,
@@ -362,7 +363,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<FormFieldErrors>({});
-  const [saved, setSaved] = useState<'idle' | 'saved' | 'full' | 'error'>('idle');
+  const [saved, setSaved] = useState<'idle' | 'saved' | 'full' | 'error' | 'unavailable'>('idle');
+  const chartAccountSave = useAccountSaveModule(Boolean(chart) && mode === 'full' && locale === 'en');
   const [shareInput, setShareInput] = useState<ShareChartInput | null>(null);
   const [computedInput, setComputedInput] = useState<RunInput | null>(null);
   const [profileRevision, setProfileRevision] = useState(0);
@@ -1828,9 +1830,28 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     const identity = chartIdentity();
     if (!owner || !chart || !computedInput || !identity) return;
     track('chart_save', { source: saveOriginRef.current });
+    const saveGeneration = savePromptGenerationRef.current;
+    if (!profileAccessAllowed()) {
+      // With account sync on, this page may not have loaded the access
+      // bootstrap yet. Wait for its decision; the write below still runs
+      // only if it grants this tab access, and the access generation is
+      // captured after that decision, so a later change still cancels it.
+      let access: 'allowed' | 'denied' | 'unavailable' = 'unavailable';
+      try {
+        const { ensureProfileWriteAccess } = await import('../lib/account-v2/profile-access-request');
+        access = await ensureProfileWriteAccess();
+      } catch {
+        access = 'unavailable';
+      }
+      if (!resultIsCurrent(owner) || saveGeneration !== savePromptGenerationRef.current) return;
+      if (access === 'unavailable') {
+        setSaved('unavailable');
+        closeSavePrompt();
+        return;
+      }
+    }
     const now = new Date().toISOString();
     const accessGeneration = profileAccessGeneration.current;
-    const saveGeneration = savePromptGenerationRef.current;
     const saveUiIsCurrent = () => resultIsCurrent(owner)
       && accessGeneration === profileAccessGeneration.current
       && saveGeneration === savePromptGenerationRef.current;
@@ -1982,7 +2003,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const AspectPatternFeature = chartActionDockModule?.AspectPatternFeature;
   const saveError = saved === 'full'
     ? t(locale, 'chartSaveFull')
-    : saved === 'error' ? t(locale, 'chartSaveError') : null;
+    : saved === 'error' ? t(locale, 'chartSaveError')
+      : saved === 'unavailable' ? t(locale, 'profileSaveUnavailable') : null;
   const CalendarSubscribe = calendarSurface?.default;
   const ApproachRead = approachSurface?.default;
   const CommunicationRead = communicationSurface?.default;
@@ -2050,7 +2072,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               }}
               showUnknownTime={mode !== 'rising'}
               requireKnownTime
-              timeHelp={mode === 'rising' ? t(locale, 'risingTimeHelp') : !timeKnown
+              timeHelp={mode === 'rising' ? locale === 'en' ? (
+                <>
+                  <b>Your time matters here.</b> The rising sign changes about every two hours, so even 15 minutes can change the answer.{' '}
+                  <small>Your birth certificate is the best source.</small>
+                </>
+              ) : t(locale, 'risingTimeHelp') : !timeKnown
                 ? mode === 'moon' && locale === 'en'
                   ? 'Without a birth time, we show a reference position. Your Moon sign may be uncertain.'
                   : t(locale, 'chartTimeHelp')
@@ -2062,44 +2089,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               timeError={fieldErrors.time ? t(locale, 'birthTimeRequired') : undefined}
               placeError={fieldErrors.place ? t(locale, 'placePickHint') : undefined}
             />
-
-            {mode === 'full' && (
-              <details class="calc__options">
-                <summary>{locale === 'en' ? 'Chart options' : t(locale, 'houseSystem')} <span>· {houseSystem === 'whole' ? t(locale, 'wholeSignDefault') : t(locale, 'placidus')}</span></summary>
-                <div class="field">
-                  <label class="field__label" for="house-system">{t(locale, 'houseSystem')}</label>
-                  <select
-                    id="house-system" class="field__input"
-                    value={houseSystem}
-                    onChange={(e) => {
-                      invalidateProfileHandoff();
-                      setHouseSystem((e.target as HTMLSelectElement).value as HouseSystem);
-                    }}
-                  >
-                    <option value="whole">{t(locale, 'wholeSignDefault')}</option>
-                    <option value="placidus">{t(locale, 'placidus')}</option>
-                  </select>
-                  {locale === 'en' ? (
-                    <>
-                      {/* Keep this sentence aligned with the houseSystemHelp catalog entry. */}
-                      <p class="field__help">
-                        You can keep the default. Change this only if you prefer another house system.
-                      </p>
-                      <p class="field__help">
-                        How the chart divides into twelve areas of life.{' '}
-                        <AstroTerm term="whole-sign-houses" label="Whole sign" surface="birth-chart-form" /> gives
-                        each sign one house; <AstroTerm term="placidus" label="Placidus" surface="birth-chart-form" />{' '}
-                        varies house sizes by exact birth time and place. Planets stay put — only house
-                        boundaries move.
-                      </p>
-                      <p class="field__help calc__context-cue">{t(locale, 'contextHelpCue')}</p>
-                    </>
-                  ) : (
-                    <p class="field__help">{t(locale, 'houseSystemHelp')}</p>
-                  )}
-                </div>
-              </details>
-            )}
           </div>
 
           <button class="btn btn--primary calc__submit" type="submit" disabled={busy}>
@@ -2116,6 +2105,46 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           <p class="calc__privacy">
             {subjectMode === 'other' ? otherSubjectCopy.privacy : t(locale, 'privacyDevice')}
           </p>
+          {/* The birth chart pages draw the options after the button and the privacy line,
+              so they follow them in the document too: a panel parsed before those rows
+              would move down when they arrive, after the page has already been painted. */}
+          {mode === 'full' && (
+            <details class="calc__options">
+              <summary>{locale === 'en' ? 'Chart options' : t(locale, 'houseSystem')} <span>· {houseSystem === 'whole' ? t(locale, 'wholeSignDefault') : t(locale, 'placidus')}</span></summary>
+              <div class="field">
+                <label class="field__label" for="house-system">{t(locale, 'houseSystem')}</label>
+                <select
+                  id="house-system" class="field__input"
+                  value={houseSystem}
+                  onChange={(e) => {
+                    invalidateProfileHandoff();
+                    setHouseSystem((e.target as HTMLSelectElement).value as HouseSystem);
+                  }}
+                >
+                  <option value="whole">{t(locale, 'wholeSignDefault')}</option>
+                  <option value="placidus">{t(locale, 'placidus')}</option>
+                </select>
+                {locale === 'en' ? (
+                  <>
+                    {/* Keep this sentence aligned with the houseSystemHelp catalog entry. */}
+                    <p class="field__help">
+                      You can keep the default. Change this only if you prefer another house system.
+                    </p>
+                    <p class="field__help">
+                      How the chart divides into twelve areas of life.{' '}
+                      <AstroTerm term="whole-sign-houses" label="Whole sign" surface="birth-chart-form" /> gives
+                      each sign one house; <AstroTerm term="placidus" label="Placidus" surface="birth-chart-form" />{' '}
+                      varies house sizes by exact birth time and place. Planets stay put. Only house
+                      boundaries move.
+                    </p>
+                    <p class="field__help calc__context-cue">{t(locale, 'contextHelpCue')}</p>
+                  </>
+                ) : (
+                  <p class="field__help">{t(locale, 'houseSystemHelp')}</p>
+                )}
+              </div>
+            </details>
+          )}
           {locale === 'en' && <p class="calc__guide">Need a hand? <a href="/ask/" data-assistant-open>Ask Guide</a></p>}
           {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
           <CalculationReload error={error} locale={locale} />
@@ -2298,7 +2327,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             <details class="evidence-disclosure evidence-disclosure--quiet" data-evidence-disclosure data-evidence-variant="quiet">
               <summary>
                 <span class="evidence-disclosure__summary">
-                  <strong>{detailLabels.lead.replace(/\s*—\s*$/, '')}</strong>
+                  <strong>{detailLabels.lead.replace(/\s*[—:]\s*$/, '')}</strong>
                 </span>
               </summary>
               <div class="evidence-disclosure__body">
@@ -2704,6 +2733,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           {saved === 'saved' && (subjectMode === 'self' && locale === 'en'
             ? <p class="calc__saved" data-your-page-ready>Saved as your chart on this device. Use it with Today, or <a href="/profile/">open your saved charts</a>. Account sync is a separate choice.</p>
             : <p class="calc__saved">{t(locale, 'chartSavedBeforeLink')} <a href={localizePath(locale, '/profile/')}>{t(locale, 'chartSavedLink')}</a> {t(locale, 'chartSavedAfterLink')}</p>)}
+          {chartAccountSave && mode === 'full' && locale === 'en' && <chartAccountSave.default kind="chart" />}
           {mode === 'full' && shareInput && (
             <details class="calc__more" data-chart-more>
               <summary class="calc__more-summary">

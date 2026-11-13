@@ -1,0 +1,35 @@
+---
+/**
+ * Approved v17 painted art for one Chinese zodiac animal.
+ * Responsive WebP (640, 1280, 1920 wide, 16:9). The page is dark-only, so
+ * the frame uses the same dark surface as the rest of the guide.
+ */
+interface Props { slug: string; locale?: 'en' | 'zh-hans' | 'zh-hant'; name: string; eager?: boolean }
+const { slug, locale = 'en', name, eager = true } = Astro.props;
+const SEALS: Record<string, string> = {
+  rat: '鼠', ox: '牛', tiger: '虎', rabbit: '兔', dragon: '龍', snake: '蛇',
+  horse: '馬', goat: '羊', monkey: '猴', rooster: '雞', dog: '狗', pig: '豬',
+};
+const seal = SEALS[slug];
+if (!seal) throw new Error(`No Chinese zodiac art for ${slug}`);
+const alt = locale === 'zh-hans'
+  ? `${name}的彩绘插画，四周是柔和色彩的云带，角落有一枚刻着“${seal}”字的红色印章。`
+  : locale === 'zh-hant'
+    ? `${name}的彩繪插畫，四周是柔和色彩的雲帶，角落有一枚刻著「${seal}」字的紅色印章。`
+    : `Painted illustration of the ${name} among soft pastel cloud ribbons, with a small red seal bearing the character ${seal}.`;
+const base = `/assets/art/chinese-zodiac/${slug}`;
+const srcset = [640, 1280, 1920].map((w) => `${base}-${w}.webp ${w}w`).join(', ');
+---
+<figure class="cz-art">
+  <img
+    src={`${base}-1280.webp`}
+    srcset={srcset}
+    sizes="(min-width: 760px) 720px, 100vw"
+    width="1280"
+    height="720"
+    alt={alt}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
+    decoding="async"
+  />
+</figure>

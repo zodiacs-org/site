@@ -4,6 +4,7 @@
  * that path. Birth-detail entry (or a stale engine version) lazy-loads
  * the engine the same way the chart calculator does.
  */
+import { Fragment } from 'preact';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, type CalendarChoice } from './BirthFields';
 import SignChip from './SignChip';
@@ -32,6 +33,7 @@ import { loadModule } from '../lib/module-load';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
+import { ensureProfileWriteAccess, runAfterProfileAccess } from '../lib/account-v2/profile-access-request';
 
 export interface SlotState {
   source: 'saved' | 'form' | 'link' | 'positions';
@@ -96,7 +98,7 @@ const COMPAT_INVITES_UI_ENABLED = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED 
 // compatibility-only chrome.
 const PAIR_COPY_EN = {
   savedPairs: 'Saved comparisons',
-  useMyChart: 'Use my chart — {handle}',
+  useMyChart: 'Use my chart ({handle})',
   dismissMyChart: 'Dismiss saved-chart suggestion',
   saveCue: 'Up next',
   savePairTitle: 'Keep this reading',
@@ -107,17 +109,17 @@ const PAIR_COPY_EN = {
   reopenPairNote: 'Reopen this comparison anytime from Saved charts.',
   pairSaved: 'Comparison saved on this device.',
   pairExists: 'Already saved.',
-  pairSaveFull: 'You can save up to {n} comparisons — remove one first.',
+  pairSaveFull: 'You can save up to {n} comparisons. Remove one first.',
   pairRemoved: 'Comparison removed.',
   savedComparisonSide: 'from a saved comparison',
-  restoredSideHelp: 'This side came from a saved comparison — clear it to enter someone else.',
+  restoredSideHelp: 'This side came from a saved comparison. Clear it to enter someone else.',
 } as const;
 
 const PAIR_COPY = {
   en: PAIR_COPY_EN,
   es: {
     savedPairs: 'Comparaciones guardadas',
-    useMyChart: 'Usar mi carta — {handle}',
+    useMyChart: 'Usar mi carta ({handle})',
     dismissMyChart: 'Descartar sugerencia de carta guardada',
     saveCue: 'A continuación',
     savePairTitle: 'Conserva esta lectura',
@@ -128,14 +130,14 @@ const PAIR_COPY = {
     reopenPairNote: 'Vuelve a abrir esta comparación cuando quieras desde Cartas guardadas.',
     pairSaved: 'Comparación guardada en este dispositivo.',
     pairExists: 'Ya está guardada.',
-    pairSaveFull: 'Puedes guardar hasta {n} comparaciones — elimina una primero.',
+    pairSaveFull: 'Puedes guardar hasta {n} comparaciones. Elimina una primero.',
     pairRemoved: 'Comparación eliminada.',
     savedComparisonSide: 'de una comparación guardada',
-    restoredSideHelp: 'Este lado viene de una comparación guardada — bórralo para ingresar los datos de otra persona.',
+    restoredSideHelp: 'Este lado viene de una comparación guardada. Bórralo para ingresar los datos de otra persona.',
   },
   pt: {
     savedPairs: 'Comparações salvas',
-    useMyChart: 'Usar meu mapa — {handle}',
+    useMyChart: 'Usar meu mapa ({handle})',
     dismissMyChart: 'Dispensar sugestão de mapa salvo',
     saveCue: 'A seguir',
     savePairTitle: 'Guarde esta leitura',
@@ -146,14 +148,14 @@ const PAIR_COPY = {
     reopenPairNote: 'Abra esta comparação novamente quando quiser em Mapas salvos.',
     pairSaved: 'Comparação salva neste dispositivo.',
     pairExists: 'Já está salva.',
-    pairSaveFull: 'Você pode salvar até {n} comparações — remova uma primeiro.',
+    pairSaveFull: 'Você pode salvar até {n} comparações. Remova uma primeiro.',
     pairRemoved: 'Comparação removida.',
     savedComparisonSide: 'de uma comparação salva',
-    restoredSideHelp: 'Este lado veio de uma comparação salva — limpe-o para inserir os dados de outra pessoa.',
+    restoredSideHelp: 'Este lado veio de uma comparação salva. Limpe-o para inserir os dados de outra pessoa.',
   },
   fr: {
     savedPairs: 'Comparaisons enregistrées',
-    useMyChart: 'Utiliser mon thème — {handle}',
+    useMyChart: 'Utiliser mon thème ({handle})',
     dismissMyChart: 'Fermer la suggestion de thème enregistré',
     saveCue: 'À suivre',
     savePairTitle: 'Garde cette lecture',
@@ -164,14 +166,14 @@ const PAIR_COPY = {
     reopenPairNote: 'Rouvre cette comparaison à tout moment depuis Thèmes enregistrés.',
     pairSaved: 'Comparaison enregistrée sur cet appareil.',
     pairExists: 'Déjà enregistrée.',
-    pairSaveFull: 'Tu peux enregistrer jusqu’à {n} comparaisons — supprime-en une d’abord.',
+    pairSaveFull: 'Tu peux enregistrer jusqu’à {n} comparaisons. Supprime-en une d’abord.',
     pairRemoved: 'Comparaison supprimée.',
     savedComparisonSide: 'd’une comparaison enregistrée',
-    restoredSideHelp: 'Ce côté provient d’une comparaison enregistrée — efface-le pour saisir les données d’une autre personne.',
+    restoredSideHelp: 'Ce côté provient d’une comparaison enregistrée. Efface-le pour saisir les données d’une autre personne.',
   },
   it: {
     savedPairs: 'Confronti salvati',
-    useMyChart: 'Usa il mio tema — {handle}',
+    useMyChart: 'Usa il mio tema ({handle})',
     dismissMyChart: 'Chiudi il suggerimento del tema salvato',
     saveCue: 'Prossimo passo',
     savePairTitle: 'Conserva questa lettura',
@@ -182,14 +184,14 @@ const PAIR_COPY = {
     reopenPairNote: 'Riapri questo confronto quando vuoi da Temi salvati.',
     pairSaved: 'Confronto salvato su questo dispositivo.',
     pairExists: 'Già salvato.',
-    pairSaveFull: 'Puoi salvare fino a {n} confronti — prima rimuovine uno.',
+    pairSaveFull: 'Puoi salvare fino a {n} confronti. Prima rimuovine uno.',
     pairRemoved: 'Confronto rimosso.',
     savedComparisonSide: 'da un confronto salvato',
-    restoredSideHelp: 'Questo lato proviene da un confronto salvato — cancellalo per inserire i dati di un’altra persona.',
+    restoredSideHelp: 'Questo lato proviene da un confronto salvato. Cancellalo per inserire i dati di un’altra persona.',
   },
   ru: {
     savedPairs: 'Сохранённые сравнения',
-    useMyChart: 'Использовать мою карту — {handle}',
+    useMyChart: 'Использовать мою карту ({handle})',
     dismissMyChart: 'Закрыть предложение сохранённой карты',
     saveCue: 'Дальше',
     savePairTitle: 'Сохраните это чтение',
@@ -200,10 +202,10 @@ const PAIR_COPY = {
     reopenPairNote: 'Это сравнение можно открыть снова в разделе сохранённых карт.',
     pairSaved: 'Сравнение сохранено на этом устройстве.',
     pairExists: 'Уже сохранено.',
-    pairSaveFull: 'Можно сохранить до {n} сравнений — сначала удалите одно.',
+    pairSaveFull: 'Можно сохранить до {n} сравнений. Сначала удалите одно.',
     pairRemoved: 'Сравнение удалено.',
     savedComparisonSide: 'из сохранённого сравнения',
-    restoredSideHelp: 'Эта сторона восстановлена из сохранённого сравнения — очистите её, чтобы ввести другого человека.',
+    restoredSideHelp: 'Эта сторона восстановлена из сохранённого сравнения. Очистите её, чтобы ввести другого человека.',
   },
 } as const satisfies Record<Locale, Record<keyof typeof PAIR_COPY_EN, string>>;
 
@@ -212,7 +214,7 @@ const pcf = (locale: Locale, key: keyof typeof PAIR_COPY_EN, values: Record<stri
   pc(locale, key).replace(/\{(\w+)\}/g, (_token: string, k: string) => String(values[k] ?? ''));
 const listLocale = (locale: Locale) => LOCALE_META[locale].intlLocale;
 
-export type PairSaveState = 'idle' | 'saved' | 'exists' | 'full' | 'error';
+export type PairSaveState = 'idle' | 'saved' | 'exists' | 'full' | 'error' | 'unavailable';
 export type ComparisonResultSource = 'plain' | 'invite' | 'invite-restored' | 'returned';
 
 /** One completed state covers both a save from this result and a pair that
@@ -516,7 +518,11 @@ function LoadRecovery({ error, onRetry, locale, area, reopenLink = false }: {
   );
 }
 
-export default function SynastryCalculator({ locale: rawLocale = 'en' }: { locale?: Locale }) {
+export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped = false }: {
+  locale?: Locale;
+  /** The host owns .calc so client:visible can observe the boxed form directly. */
+  unwrapped?: boolean;
+}) {
   const locale = normalizeCatalogLocale(rawLocale);
   const inviteUiActive = COMPAT_INVITES_UI_ENABLED
     && locale === 'en'
@@ -983,7 +989,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
   // button must offer saving again; a slot freed → the full alert is
   // stale).
   useEffect(() => {
-    if (pairSave === 'idle' || pairSave === 'error') return;
+    if (pairSave === 'idle' || pairSave === 'error' || pairSave === 'unavailable') return;
     if (pairSave === 'full') {
       if (pairs.length < MAX_PAIRS) setPairSave('idle');
       return;
@@ -1067,26 +1073,57 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     };
   }
 
-  function onSavePair() {
-    if (!result || !result.sides[0] || !result.sides[1]) return;
-    const outcome = savePair({
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-      a: result.sides[0],
-      b: result.sides[1],
-    });
-    setPairSave(outcome);
-    if (outcome === 'saved' || outcome === 'exists') {
-      setPairAnnounce(pc(locale, outcome === 'saved' ? 'pairSaved' : 'pairExists'));
-    }
-    if (outcome === 'saved') track('chart_saved', { source: 'pair' });
+  function announcePairSaveUnavailable() {
+    setPairSave('unavailable');
+    setPairAnnounce(t(locale, 'profileSaveUnavailable'));
   }
 
-  function saveInvitationPair(): boolean {
+  /**
+   * With account sync on, a first save may find this tab's access bootstrap
+   * not loaded yet. Wait for its decision; the writer still refuses unless
+   * access is granted. False when the comparison changed while waiting or the
+   * bootstrap could not start.
+   */
+  async function pairWriteMayProceed(): Promise<boolean> {
+    if (profileAccessAllowed()) return true;
+    const request = requestRef.current;
+    const access = await ensureProfileWriteAccess();
+    if (requestRef.current !== request) return false;
+    if (access === 'unavailable') {
+      announcePairSaveUnavailable();
+      return false;
+    }
+    return true;
+  }
+
+  function onSavePair() {
+    if (!result || !result.sides[0] || !result.sides[1]) return;
+    const sides: [SavedPairSide, SavedPairSide] = [result.sides[0], result.sides[1]];
+    const request = requestRef.current;
+    runAfterProfileAccess(() => {
+      if (requestRef.current !== request) return;
+      const outcome = savePair({
+        id: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
+        a: sides[0],
+        b: sides[1],
+      });
+      setPairSave(outcome);
+      if (outcome === 'saved' || outcome === 'exists') {
+        setPairAnnounce(pc(locale, outcome === 'saved' ? 'pairSaved' : 'pairExists'));
+      }
+      if (outcome === 'saved') track('chart_saved', { source: 'pair' });
+    }, () => {
+      if (requestRef.current === request) announcePairSaveUnavailable();
+    });
+  }
+
+  async function saveInvitationPair(): Promise<boolean> {
     if (!result || result.source !== 'invite') return false;
     const a = positionsPairSide(result.a.positions, result.a.label);
     const b = positionsPairSide(result.b.positions, result.b.label);
     if (!a || !b) return false;
+    if (!await pairWriteMayProceed()) return false;
     const outcome = savePair({
       id: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
@@ -1108,6 +1145,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     if (slotB.source === 'saved') return charts.some((chart) => chart.id === slotB.savedId);
     if (slotB.source !== 'form' || !slotB.city || !slotB.date) return false;
     const timeKnown = slotB.timeKnown && slotB.time !== '';
+    // Captured after the access decision, so only a later change cancels it.
+    if (!await pairWriteMayProceed()) return false;
     const accessGeneration = profileAccessGeneration.current;
     try {
       const [{ prepareLocalTime, resolveLocalToUtc }, { saveChart }, read] = await Promise.all([
@@ -1191,6 +1230,13 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
   }
 
   function onRemovePair(pair: SavedPair, index: number) {
+    runAfterProfileAccess(
+      () => removeStoredPair(pair, index),
+      () => setPairAnnounce(t(locale, 'profileSaveUnavailable')),
+    );
+  }
+
+  function removeStoredPair(pair: SavedPair, index: number) {
     if (!deletePair(pair.id)) {
       setPairAnnounce(t(locale, 'chartSaveError'));
       return;
@@ -1353,8 +1399,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     }
   }, [busy, error, result]);
 
+  const Root = unwrapped ? Fragment : 'div';
   return (
-    <div class="calc">
+    <Root class={unwrapped ? undefined : 'calc'}>
       {inviteUiError && <LoadRecovery error={inviteUiError} locale={locale} area="invite-ui" onRetry={() => setInviteUiRetry((n) => n + 1)} />}
       {returnBand === 'loading' && <p role="status">Opening the returned reading…</p>}
       {returnError && <LoadRecovery error={returnError} locale={locale} area="return" reopenLink onRetry={() => {
@@ -1460,8 +1507,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
           )}
           {charts.length < 2 && (
             <p class="field__help">
-              {t(locale, 'compareSavedHelp')}{' '}
-              <a href={localizePath(locale, '/birth-chart/')}>{t(locale, 'getBirthChart')} →</a>
+              {`${t(locale, 'compareSavedHelp')} `}
+              <a href={localizePath(locale, '/birth-chart/')}>{`${t(locale, 'getBirthChart')} →`}</a>
             </p>
           )}
           {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
@@ -1567,6 +1614,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                   inviterLabel={result.a.label}
                   onSaveChart={saveInvitationOwnChart}
                   onSavePair={saveInvitationPair}
+                  unavailableMessage={pairSave === 'unavailable' ? t(locale, 'profileSaveUnavailable') : undefined}
                   onStartOwn={startOwnInvitationLoop}
                   onConverted={(action) => track('invite_converted', { action })}
                 />
@@ -1594,18 +1642,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                 )}
                 {compatShareMod && (
                   <div class="calc__actions syn__result-secondary">
-                    <compatShareMod.CompatibilityPairingCta
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc }}
-                      locale={locale}
-                    />
-                    <compatShareMod.CompatibilityShareControl
-                      key={result.at}
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate, utc: result.a.utc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate, utc: result.b.utc }}
-                      summary={result.summary}
-                      locale={locale}
-                    />
+                    <compatShareMod.CompatibilityResultActions key={result.at} result={result} charts={charts} locale={locale} />
                   </div>
                 )}
               </div>
@@ -1625,20 +1662,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                   </button>
                 )}
                 secondary={compatShareMod ? (
-                  <>
-                    <compatShareMod.CompatibilityPairingCta
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc }}
-                      locale={locale}
-                    />
-                    <compatShareMod.CompatibilityShareControl
-                      key={result.at}
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate, utc: result.a.utc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate, utc: result.b.utc }}
-                      summary={result.summary}
-                      locale={locale}
-                    />
-                  </>
+                  <compatShareMod.CompatibilityResultActions key={result.at} result={result} charts={charts} locale={locale} />
                 ) : undefined}
               />
             ) : null
@@ -1646,10 +1670,10 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
           {/* Announcement rides the persistent status node above; these
               visible notes are for sighted users (alerts announce fine
               on insertion). */}
-          {(pairSave === 'full' || pairSave === 'error') && (
+          {(pairSave === 'full' || pairSave === 'error' || pairSave === 'unavailable') && (
             pairSave === 'full'
               ? <p class="calc__error" role="alert" data-pair-status>{pcf(locale, 'pairSaveFull', { n: MAX_PAIRS })}</p>
-              : <p class="calc__error" role="alert" data-pair-status>{t(locale, 'chartSaveError')}</p>
+              : <p class="calc__error" role="alert" data-pair-status>{t(locale, pairSave === 'unavailable' ? 'profileSaveUnavailable' : 'chartSaveError')}</p>
           )}
 
           {wheelMod && result.source === 'plain' && slotA.source !== 'positions'
@@ -1680,6 +1704,6 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
             )}
         </div>
       )}
-    </div>
+    </Root>
   );
 }

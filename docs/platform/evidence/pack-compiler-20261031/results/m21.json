@@ -1,0 +1,1464 @@
+{
+ "what": "Version 1's M2.1 rule for compiler 2.0.0, as PREREGISTRATION.md states it",
+ "node": "v22.22.2",
+ "platform": "darwin-arm64",
+ "kernels": {
+  "de440.bsp": {
+   "bytes": 119799808,
+   "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5"
+  },
+  "de432s.bsp": {
+   "bytes": 10895360,
+   "sha256": "363f32e14f5255359ac32c4d38080cf28ab55564a5e16696a75f63394b666e9b"
+  }
+ },
+ "runs": [
+  {
+   "run": "DE440 full",
+   "command": "compile.mjs --kernel=<kernels>/de440.bsp",
+   "exit": 0,
+   "compileSeconds": 73,
+   "verdict": "compiles, opens and answers",
+   "bytes": 6481936,
+   "fileSha256": "3c8a42831c6b87a1bec433ed3c2d3c9329f79def4d54cd57c3cc8a35fbd6e2fd",
+   "payloadSha256": "fa74500d40fe79804090d0eb792bed0cd55e8a12edd69cc152b24440dd22cc22",
+   "sealedBytes": 6481968,
+   "sealedSha256": "a08553daadd8b14e7e06f277ddfdf7fc0396a3d42636672db0ccbf4b0646d94a",
+   "selfConsistent": true,
+   "coverage": {
+    "start": "1549-12-31T00:00:00.000Z",
+    "stop": "2650-01-25T00:00:00.000Z",
+    "spanDays": 401792,
+    "kernelSpanDays": 401792
+   },
+   "provenance": {
+    "producer": {
+     "name": "Zodiacs",
+     "institution": "zodiacs.org"
+    },
+    "source": {
+     "file": "de440.bsp",
+     "bytes": 119799808,
+     "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+     "ephemeris": "DE440",
+     "originalProducer": "Jet Propulsion Laboratory, California Institute of Technology, distributed by NAIF",
+     "citation": {
+      "text": "Park, R. S., Folkner, W. M., Williams, J. G., and Boggs, D. H. (2021). The JPL Planetary and Lunar Ephemerides DE440 and DE441. The Astronomical Journal 161(3), 105.",
+      "doi": "10.3847/1538-3881/abd414"
+     },
+     "doiInKernelComments": "10.3847/1538-3881/abd414"
+    },
+    "modification": "Not a NAIF kernel and not a SPICE kernel. The positions of the source kernel above were refitted as Chebyshev series per body and quantised by the compiler named in this header; each body's proven position error against the source is in bodies[].provenPosKm. NAIF's rules ask that a modified kernel name whoever made the last modification, here the producer, in place of the original producer, and carry a different file name.",
+    "rulesPage": "https://naif.jpl.nasa.gov/naif/rules.html"
+   },
+   "bodies": [
+    {
+     "name": "mercuryBary",
+     "frame": "sun",
+     "nominal": {
+      "Ldays": 80,
+      "ncoef": 41
+     },
+     "ncoef": 41,
+     "ncoefAdded": 0,
+     "nrec": 5023,
+     "intervalDays": 79.99044395779414,
+     "provenFitKm": 0.13730834739673994,
+     "provenQuantKm": 0.14999999999999997,
+     "provenPosKm": 0.28730834739673994,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 1809264
+    },
+    {
+     "name": "venusBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 400,
+      "ncoef": 43
+     },
+     "ncoef": 47,
+     "ncoefAdded": 4,
+     "nrec": 1005,
+     "intervalDays": 399.7930348258706,
+     "provenFitKm": 0.1208799767209379,
+     "provenQuantKm": 0.15,
+     "provenPosKm": 0.2708799767209379,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 354888
+    },
+    {
+     "name": "emb",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 274,
+      "ncoef": 31
+     },
+     "ncoef": 35,
+     "ncoefAdded": 4,
+     "nrec": 1467,
+     "intervalDays": 273.88684389911384,
+     "provenFitKm": 0.14953271418975878,
+     "provenQuantKm": 0.15,
+     "provenPosKm": 0.2995327141897588,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 347052
+    },
+    {
+     "name": "marsBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 685,
+      "ncoef": 39
+     },
+     "ncoef": 47,
+     "ncoefAdded": 8,
+     "nrec": 587,
+     "intervalDays": 684.4838160136286,
+     "provenFitKm": 0.18894708351275866,
+     "provenQuantKm": 0.25,
+     "provenPosKm": 0.4389470835127587,
+     "budgetKm": 0.5,
+     "insideBudget": true,
+     "bytes": 205404
+    },
+    {
+     "name": "jupiterBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 43
+     },
+     "ncoef": 43,
+     "ncoefAdded": 0,
+     "nrec": 147,
+     "intervalDays": 2733.2789115646256,
+     "provenFitKm": 0.47034819670848277,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.9703481967084828,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 39840
+    },
+    {
+     "name": "saturnBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 22
+     },
+     "ncoef": 24,
+     "ncoefAdded": 2,
+     "nrec": 147,
+     "intervalDays": 2733.2789115646256,
+     "provenFitKm": 0.36356493697625714,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.8635649369762571,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 27036
+    },
+    {
+     "name": "uranusBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 14
+     },
+     "ncoef": 14,
+     "ncoefAdded": 0,
+     "nrec": 147,
+     "intervalDays": 2733.2789115646256,
+     "provenFitKm": 0.43841576765233176,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.9384157676523317,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 16800
+    },
+    {
+     "name": "neptuneBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 11
+     },
+     "ncoef": 11,
+     "ncoefAdded": 0,
+     "nrec": 147,
+     "intervalDays": 2733.2789115646256,
+     "provenFitKm": 0.49642837693828196,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.996428376938282,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 13200
+    },
+    {
+     "name": "plutoBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 10
+     },
+     "ncoef": 12,
+     "ncoefAdded": 2,
+     "nrec": 147,
+     "intervalDays": 2733.2789115646256,
+     "provenFitKm": 0.08186080347945,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.58186080347945,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 13812
+    },
+    {
+     "name": "sun",
+     "frame": "native",
+     "nominal": {
+      "Ldays": 400,
+      "ncoef": 44
+     },
+     "ncoef": 46,
+     "ncoefAdded": 2,
+     "nrec": 1005,
+     "intervalDays": 399.7930348258706,
+     "provenFitKm": 0.11307374134280129,
+     "provenQuantKm": 0.15,
+     "provenPosKm": 0.26307374134280126,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 218184
+    },
+    {
+     "name": "moon",
+     "frame": "native",
+     "nominal": {
+      "Ldays": 32,
+      "ncoef": 31
+     },
+     "ncoef": 33,
+     "ncoefAdded": 2,
+     "nrec": 12556,
+     "intervalDays": 32,
+     "provenFitKm": 0.003540821638201531,
+     "provenQuantKm": 0.005,
+     "provenPosKm": 0.00854082163820153,
+     "budgetKm": 0.01,
+     "insideBudget": true,
+     "bytes": 3416024
+    }
+   ],
+   "answers": [
+    {
+     "ttDaysPastJ2000": -164359.5,
+     "body": "Sun",
+     "lonDeg": 280.124221,
+     "latDeg": 0.0002347,
+     "distKm": 147083720,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -164359.5,
+     "body": "Moon",
+     "lonDeg": 311.9031511,
+     "latDeg": 4.1608453,
+     "distKm": 405998,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -164359.5,
+     "body": "Mercury",
+     "lonDeg": 266.728724,
+     "latDeg": 3.2759517,
+     "distKm": 106883966,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -164359.5,
+     "body": "Venus",
+     "lonDeg": 316.3388179,
+     "latDeg": -1.7859409,
+     "distKm": 183528306,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -164359.5,
+     "body": "Mars",
+     "lonDeg": 261.3692114,
+     "latDeg": -0.4508297,
+     "distKm": 356082717,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -164359.5,
+     "body": "Jupiter",
+     "lonDeg": 46.1323718,
+     "latDeg": -0.9908627,
+     "distKm": 657216709,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -164359.5,
+     "body": "Saturn",
+     "lonDeg": 298.5272514,
+     "latDeg": -0.422365,
+     "distKm": 1632150123,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -164359.5,
+     "body": "Uranus",
+     "lonDeg": 183.3501897,
+     "latDeg": 0.735567,
+     "distKm": 2722493076,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -164359.5,
+     "body": "Neptune",
+     "lonDeg": 33.6348,
+     "latDeg": -1.8358668,
+     "distKm": 4400094312,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -164359.5,
+     "body": "Pluto",
+     "lonDeg": 325.0622513,
+     "latDeg": -11.4460728,
+     "distKm": 6142387581,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 36535.5,
+     "body": "Sun",
+     "lonDeg": 291.8159854,
+     "latDeg": -0.0000785,
+     "distKm": 147128378,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 36535.5,
+     "body": "Moon",
+     "lonDeg": 309.4050766,
+     "latDeg": -3.2343825,
+     "distKm": 389715,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 36535.5,
+     "body": "Mercury",
+     "lonDeg": 305.909412,
+     "latDeg": -1.8976088,
+     "distKm": 185568323,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 36535.5,
+     "body": "Venus",
+     "lonDeg": 333.2202133,
+     "latDeg": -1.5083146,
+     "distKm": 157724783,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 36535.5,
+     "body": "Mars",
+     "lonDeg": 34.2968927,
+     "latDeg": 1.1362944,
+     "distKm": 145223922,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 36535.5,
+     "body": "Jupiter",
+     "lonDeg": 202.21959,
+     "latDeg": 1.3187126,
+     "distKm": 803211916,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 36535.5,
+     "body": "Saturn",
+     "lonDeg": 206.1744875,
+     "latDeg": 2.4691806,
+     "distKm": 1450212104,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 36535.5,
+     "body": "Uranus",
+     "lonDeg": 17.8438507,
+     "latDeg": -0.6225537,
+     "distKm": 2994020818,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 36535.5,
+     "body": "Neptune",
+     "lonDeg": 167.1792483,
+     "latDeg": 0.9710505,
+     "distKm": 4433793071,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 36535.5,
+     "body": "Pluto",
+     "lonDeg": 32.3653747,
+     "latDeg": -16.8566893,
+     "distKm": 7293267806,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 237430.5,
+     "body": "Sun",
+     "lonDeg": 303.5195355,
+     "latDeg": 0.0000044,
+     "distKm": 147170629,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 237430.5,
+     "body": "Moon",
+     "lonDeg": 299.9587167,
+     "latDeg": 2.6891444,
+     "distKm": 364423,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 237430.5,
+     "body": "Mercury",
+     "lonDeg": 292.0565139,
+     "latDeg": -1.2264882,
+     "distKm": 207529948,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 237430.5,
+     "body": "Venus",
+     "lonDeg": 348.9481606,
+     "latDeg": -0.8569241,
+     "distKm": 129307786,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 237430.5,
+     "body": "Mars",
+     "lonDeg": 247.7278559,
+     "latDeg": 0.4533068,
+     "distKm": 290363747,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 237430.5,
+     "body": "Jupiter",
+     "lonDeg": 323.6133296,
+     "latDeg": -0.6959493,
+     "distKm": 892663901,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 237430.5,
+     "body": "Saturn",
+     "lonDeg": 75.500759,
+     "latDeg": -1.6899027,
+     "distKm": 1255198938,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 237430.5,
+     "body": "Uranus",
+     "lonDeg": 235.2005443,
+     "latDeg": 0.3230442,
+     "distKm": 2828106902,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 237430.5,
+     "body": "Neptune",
+     "lonDeg": 293.207864,
+     "latDeg": 0.7286352,
+     "distKm": 4665536470,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 237430.5,
+     "body": "Pluto",
+     "lonDeg": 91.3019124,
+     "latDeg": -8.135717,
+     "distKm": 6780975568,
+     "finite": true
+    }
+   ]
+  },
+  {
+   "run": "DE440 cropped",
+   "command": "compile.mjs --kernel=<kernels>/de440.bsp --fromYear=1790 --toYear=2210",
+   "exit": 0,
+   "compileSeconds": 28.3,
+   "verdict": "compiles, opens and answers",
+   "bytes": 2489632,
+   "fileSha256": "08b5d1a2f5c6ac85c7ec3f4e4b38a23a729f3aef16c94babb3a03f8b7fbc9b62",
+   "payloadSha256": "1ff4ac1b28cb0cf25b97662209e1df3fc7e10bf2a75396416eea153f0735a8bd",
+   "sealedBytes": 2489664,
+   "sealedSha256": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7",
+   "selfConsistent": true,
+   "coverage": {
+    "start": "1790-01-01T00:00:00.000Z",
+    "stop": "2210-01-01T00:00:00.000Z",
+    "spanDays": 153401,
+    "kernelSpanDays": 401792
+   },
+   "provenance": {
+    "producer": {
+     "name": "Zodiacs",
+     "institution": "zodiacs.org"
+    },
+    "source": {
+     "file": "de440.bsp",
+     "bytes": 119799808,
+     "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+     "ephemeris": "DE440",
+     "originalProducer": "Jet Propulsion Laboratory, California Institute of Technology, distributed by NAIF",
+     "citation": {
+      "text": "Park, R. S., Folkner, W. M., Williams, J. G., and Boggs, D. H. (2021). The JPL Planetary and Lunar Ephemerides DE440 and DE441. The Astronomical Journal 161(3), 105.",
+      "doi": "10.3847/1538-3881/abd414"
+     },
+     "doiInKernelComments": "10.3847/1538-3881/abd414"
+    },
+    "modification": "Not a NAIF kernel and not a SPICE kernel. The positions of the source kernel above were refitted as Chebyshev series per body and quantised by the compiler named in this header; each body's proven position error against the source is in bodies[].provenPosKm. NAIF's rules ask that a modified kernel name whoever made the last modification, here the producer, in place of the original producer, and carry a different file name.",
+    "rulesPage": "https://naif.jpl.nasa.gov/naif/rules.html"
+   },
+   "bodies": [
+    {
+     "name": "mercuryBary",
+     "frame": "sun",
+     "nominal": {
+      "Ldays": 80,
+      "ncoef": 41
+     },
+     "ncoef": 41,
+     "ncoefAdded": 0,
+     "nrec": 1918,
+     "intervalDays": 79.97966631908238,
+     "provenFitKm": 0.13612383534532738,
+     "provenQuantKm": 0.14999999999999997,
+     "provenPosKm": 0.28612383534532737,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 691464
+    },
+    {
+     "name": "venusBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 400,
+      "ncoef": 43
+     },
+     "ncoef": 45,
+     "ncoefAdded": 2,
+     "nrec": 384,
+     "intervalDays": 399.4817708333333,
+     "provenFitKm": 0.13660666851132594,
+     "provenQuantKm": 0.15,
+     "provenPosKm": 0.28660666851132593,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 134712
+    },
+    {
+     "name": "emb",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 274,
+      "ncoef": 31
+     },
+     "ncoef": 37,
+     "ncoefAdded": 6,
+     "nrec": 560,
+     "intervalDays": 273.93035714285713,
+     "provenFitKm": 0.13373800424770113,
+     "provenQuantKm": 0.15,
+     "provenPosKm": 0.2837380042477011,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 135288
+    },
+    {
+     "name": "marsBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 685,
+      "ncoef": 39
+     },
+     "ncoef": 45,
+     "ncoefAdded": 6,
+     "nrec": 224,
+     "intervalDays": 684.8258928571429,
+     "provenFitKm": 0.18688196994581274,
+     "provenQuantKm": 0.25,
+     "provenPosKm": 0.43688196994581274,
+     "budgetKm": 0.5,
+     "insideBudget": true,
+     "bytes": 76344
+    },
+    {
+     "name": "jupiterBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 43
+     },
+     "ncoef": 43,
+     "ncoefAdded": 0,
+     "nrec": 56,
+     "intervalDays": 2739.3035714285716,
+     "provenFitKm": 0.4641876379399841,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.9641876379399841,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 15816
+    },
+    {
+     "name": "saturnBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 22
+     },
+     "ncoef": 24,
+     "ncoefAdded": 2,
+     "nrec": 56,
+     "intervalDays": 2739.3035714285716,
+     "provenFitKm": 0.20178640484154486,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.7017864048415449,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 10432
+    },
+    {
+     "name": "uranusBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 14
+     },
+     "ncoef": 14,
+     "ncoefAdded": 0,
+     "nrec": 56,
+     "intervalDays": 2739.3035714285716,
+     "provenFitKm": 0.41246825195615033,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.9124682519561503,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 6384
+    },
+    {
+     "name": "neptuneBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 11
+     },
+     "ncoef": 11,
+     "ncoefAdded": 0,
+     "nrec": 56,
+     "intervalDays": 2739.3035714285716,
+     "provenFitKm": 0.4426901273543698,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.9426901273543697,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 5192
+    },
+    {
+     "name": "plutoBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 10
+     },
+     "ncoef": 10,
+     "ncoefAdded": 0,
+     "nrec": 56,
+     "intervalDays": 2739.3035714285716,
+     "provenFitKm": 0.45226089630574084,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.9522608963057408,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 4944
+    },
+    {
+     "name": "sun",
+     "frame": "native",
+     "nominal": {
+      "Ldays": 400,
+      "ncoef": 44
+     },
+     "ncoef": 46,
+     "ncoefAdded": 2,
+     "nrec": 384,
+     "intervalDays": 399.4817708333333,
+     "provenFitKm": 0.11178657140299726,
+     "provenQuantKm": 0.15,
+     "provenPosKm": 0.26178657140299727,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 84048
+    },
+    {
+     "name": "moon",
+     "frame": "native",
+     "nominal": {
+      "Ldays": 32,
+      "ncoef": 31
+     },
+     "ncoef": 33,
+     "ncoefAdded": 2,
+     "nrec": 4794,
+     "intervalDays": 31.9985398414685,
+     "provenFitKm": 0.00352217537459814,
+     "provenQuantKm": 0.005,
+     "provenPosKm": 0.00852217537459814,
+     "budgetKm": 0.01,
+     "insideBudget": true,
+     "bytes": 1304760
+    }
+   ],
+   "answers": [
+    {
+     "ttDaysPastJ2000": -76699.5,
+     "body": "Sun",
+     "lonDeg": 281.8886483,
+     "latDeg": -0.0002754,
+     "distKm": 147084639,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -76699.5,
+     "body": "Moon",
+     "lonDeg": 111.0274103,
+     "latDeg": -4.5404083,
+     "distKm": 372755,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -76699.5,
+     "body": "Mercury",
+     "lonDeg": 280.5721121,
+     "latDeg": -1.7508443,
+     "distKm": 215063272,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -76699.5,
+     "body": "Venus",
+     "lonDeg": 329.0152475,
+     "latDeg": -1.127723,
+     "distKm": 106307380,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -76699.5,
+     "body": "Mars",
+     "lonDeg": 151.9641283,
+     "latDeg": 3.5606,
+     "distKm": 124693543,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -76699.5,
+     "body": "Jupiter",
+     "lonDeg": 150.8334405,
+     "latDeg": 1.0612931,
+     "distKm": 698143889,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -76699.5,
+     "body": "Saturn",
+     "lonDeg": 348.1386182,
+     "latDeg": -2.12003,
+     "distKm": 1484148204,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -76699.5,
+     "body": "Uranus",
+     "lonDeg": 128.5688176,
+     "latDeg": 0.6587957,
+     "distKm": 2633394322,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -76699.5,
+     "body": "Neptune",
+     "lonDeg": 205.3138205,
+     "latDeg": 1.7080264,
+     "distKm": 4566046993,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -76699.5,
+     "body": "Pluto",
+     "lonDeg": 317.7227287,
+     "latDeg": -8.8814369,
+     "distKm": 5869753069,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 0,
+     "body": "Sun",
+     "lonDeg": 280.3681654,
+     "latDeg": 0.0002274,
+     "distKm": 147103720,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 0,
+     "body": "Moon",
+     "lonDeg": 223.31487,
+     "latDeg": 5.170872,
+     "distKm": 402415,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 0,
+     "body": "Mercury",
+     "lonDeg": 271.8881272,
+     "latDeg": -0.9947566,
+     "distKm": 211750705,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 0,
+     "body": "Venus",
+     "lonDeg": 241.564895,
+     "latDeg": 2.0663698,
+     "distKm": 170178712,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 0,
+     "body": "Mars",
+     "lonDeg": 327.9627294,
+     "latDeg": -1.0677946,
+     "distKm": 276708763,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 0,
+     "body": "Jupiter",
+     "lonDeg": 25.253057,
+     "latDeg": -1.2621917,
+     "distKm": 691316235,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 0,
+     "body": "Saturn",
+     "lonDeg": 40.395678,
+     "latDeg": -2.4448582,
+     "distKm": 1294438314,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 0,
+     "body": "Uranus",
+     "lonDeg": 314.8091505,
+     "latDeg": -0.658335,
+     "distKm": 3100739507,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 0,
+     "body": "Neptune",
+     "lonDeg": 303.1929869,
+     "latDeg": 0.234992,
+     "distKm": 4641198035,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 0,
+     "body": "Pluto",
+     "lonDeg": 251.4547533,
+     "latDeg": 10.8552305,
+     "distKm": 4647163138,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 76699.5,
+     "body": "Sun",
+     "lonDeg": 278.8662278,
+     "latDeg": -0.000187,
+     "distKm": 147133972,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 76699.5,
+     "body": "Moon",
+     "lonDeg": 320.4581901,
+     "latDeg": -4.5053826,
+     "distKm": 366912,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 76699.5,
+     "body": "Mercury",
+     "lonDeg": 263.8982031,
+     "latDeg": 0.0541917,
+     "distKm": 197682094,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 76699.5,
+     "body": "Venus",
+     "lonDeg": 291.0110033,
+     "latDeg": -1.1248739,
+     "distKm": 248211582,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 76699.5,
+     "body": "Mars",
+     "lonDeg": 243.0329245,
+     "latDeg": 0.2126391,
+     "distKm": 339459854,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 76699.5,
+     "body": "Jupiter",
+     "lonDeg": 283.6047715,
+     "latDeg": -0.0354936,
+     "distKm": 924780351,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 76699.5,
+     "body": "Saturn",
+     "lonDeg": 100.7220226,
+     "latDeg": -0.7195899,
+     "distKm": 1201074740,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 76699.5,
+     "body": "Uranus",
+     "lonDeg": 134.3642753,
+     "latDeg": 0.6844651,
+     "distKm": 2643577493,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 76699.5,
+     "body": "Neptune",
+     "lonDeg": 44.9860424,
+     "latDeg": -1.7847546,
+     "distKm": 4370882985,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 76699.5,
+     "body": "Pluto",
+     "lonDeg": 163.5823591,
+     "latDeg": 13.2366674,
+     "distKm": 4926933881,
+     "finite": true
+    }
+   ]
+  },
+  {
+   "run": "DE432s",
+   "command": "compile.mjs --kernel=<kernels>/de432s.bsp",
+   "exit": 0,
+   "compileSeconds": 5.3,
+   "verdict": "compiles, opens and answers",
+   "bytes": 606416,
+   "fileSha256": "6d3fc4b94e4bcd7ecef979e521ce98a38c93cc626589e2df143e41aedfa853cb",
+   "payloadSha256": "5291f8ab2aa92e2ee69c3710bdd5706114bc792def601e512a241402677a64ba",
+   "sealedBytes": 606448,
+   "sealedSha256": "99892e4b3c3ded1187ef283053a249a3bb660af3020efdae4b03aa908aca629e",
+   "selfConsistent": true,
+   "coverage": {
+    "start": "1949-12-14T00:00:00.000Z",
+    "stop": "2050-01-02T00:00:00.000Z",
+    "spanDays": 36544,
+    "kernelSpanDays": 36544
+   },
+   "provenance": {
+    "producer": {
+     "name": "Zodiacs",
+     "institution": "zodiacs.org"
+    },
+    "source": {
+     "file": "de432s.bsp",
+     "bytes": 10895360,
+     "sha256": "363f32e14f5255359ac32c4d38080cf28ab55564a5e16696a75f63394b666e9b",
+     "ephemeris": "DE432",
+     "originalProducer": "Jet Propulsion Laboratory, California Institute of Technology, distributed by NAIF",
+     "citation": null,
+     "doiInKernelComments": null
+    },
+    "modification": "Not a NAIF kernel and not a SPICE kernel. The positions of the source kernel above were refitted as Chebyshev series per body and quantised by the compiler named in this header; each body's proven position error against the source is in bodies[].provenPosKm. NAIF's rules ask that a modified kernel name whoever made the last modification, here the producer, in place of the original producer, and carry a different file name.",
+    "rulesPage": "https://naif.jpl.nasa.gov/naif/rules.html"
+   },
+   "bodies": [
+    {
+     "name": "mercuryBary",
+     "frame": "sun",
+     "nominal": {
+      "Ldays": 80,
+      "ncoef": 41
+     },
+     "ncoef": 41,
+     "ncoefAdded": 0,
+     "nrec": 457,
+     "intervalDays": 79.96498905908096,
+     "provenFitKm": 0.1344489502520418,
+     "provenQuantKm": 0.14999999999999997,
+     "provenPosKm": 0.28444895025204175,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 163676
+    },
+    {
+     "name": "venusBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 400,
+      "ncoef": 43
+     },
+     "ncoef": 45,
+     "ncoefAdded": 2,
+     "nrec": 92,
+     "intervalDays": 397.21739130434776,
+     "provenFitKm": 0.12887645202854148,
+     "provenQuantKm": 0.15,
+     "provenPosKm": 0.2788764520285415,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 32728
+    },
+    {
+     "name": "emb",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 274,
+      "ncoef": 31
+     },
+     "ncoef": 35,
+     "ncoefAdded": 4,
+     "nrec": 134,
+     "intervalDays": 272.7164179104478,
+     "provenFitKm": 0.1432106939072857,
+     "provenQuantKm": 0.15,
+     "provenPosKm": 0.2932106939072857,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 32464
+    },
+    {
+     "name": "marsBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 685,
+      "ncoef": 39
+     },
+     "ncoef": 43,
+     "ncoefAdded": 4,
+     "nrec": 54,
+     "intervalDays": 676.7407407407408,
+     "provenFitKm": 0.23998161011221641,
+     "provenQuantKm": 0.25,
+     "provenPosKm": 0.4899816101122164,
+     "budgetKm": 0.5,
+     "insideBudget": true,
+     "bytes": 18744
+    },
+    {
+     "name": "jupiterBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 43
+     },
+     "ncoef": 43,
+     "ncoefAdded": 0,
+     "nrec": 14,
+     "intervalDays": 2610.285714285714,
+     "provenFitKm": 0.3156095314704103,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.8156095314704104,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 4616
+    },
+    {
+     "name": "saturnBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 22
+     },
+     "ncoef": 22,
+     "ncoefAdded": 0,
+     "nrec": 14,
+     "intervalDays": 2610.285714285714,
+     "provenFitKm": 0.2514716235278652,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.7514716235278651,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 2768
+    },
+    {
+     "name": "uranusBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 14
+     },
+     "ncoef": 14,
+     "ncoefAdded": 0,
+     "nrec": 14,
+     "intervalDays": 2610.285714285714,
+     "provenFitKm": 0.2727755026573777,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.7727755026573777,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 1848
+    },
+    {
+     "name": "neptuneBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 11
+     },
+     "ncoef": 11,
+     "ncoefAdded": 0,
+     "nrec": 14,
+     "intervalDays": 2610.285714285714,
+     "provenFitKm": 0.2782601087087531,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.7782601087087531,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 1496
+    },
+    {
+     "name": "plutoBary",
+     "frame": "ssb",
+     "nominal": {
+      "Ldays": 2740,
+      "ncoef": 10
+     },
+     "ncoef": 10,
+     "ncoefAdded": 0,
+     "nrec": 14,
+     "intervalDays": 2610.285714285714,
+     "provenFitKm": 0.36199444013680904,
+     "provenQuantKm": 0.5,
+     "provenPosKm": 0.861994440136809,
+     "budgetKm": 1,
+     "insideBudget": true,
+     "bytes": 1416
+    },
+    {
+     "name": "sun",
+     "frame": "native",
+     "nominal": {
+      "Ldays": 400,
+      "ncoef": 44
+     },
+     "ncoef": 44,
+     "ncoefAdded": 0,
+     "nrec": 92,
+     "intervalDays": 397.21739130434776,
+     "provenFitKm": 0.14975516324109556,
+     "provenQuantKm": 0.15,
+     "provenPosKm": 0.2997551632410955,
+     "budgetKm": 0.3,
+     "insideBudget": true,
+     "bytes": 20192
+    },
+    {
+     "name": "moon",
+     "frame": "native",
+     "nominal": {
+      "Ldays": 32,
+      "ncoef": 31
+     },
+     "ncoef": 33,
+     "ncoefAdded": 2,
+     "nrec": 1142,
+     "intervalDays": 32,
+     "provenFitKm": 0.003533193431696225,
+     "provenQuantKm": 0.005,
+     "provenPosKm": 0.008533193431696225,
+     "budgetKm": 0.01,
+     "insideBudget": true,
+     "bytes": 306848
+    }
+   ],
+   "answers": [
+    {
+     "ttDaysPastJ2000": -18279.5,
+     "body": "Sun",
+     "lonDeg": 262.6845338,
+     "latDeg": -0.0001669,
+     "distKm": 147232869,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -18279.5,
+     "body": "Moon",
+     "lonDeg": 197.862648,
+     "latDeg": -0.327625,
+     "distKm": 367369,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -18279.5,
+     "body": "Mercury",
+     "lonDeg": 275.3335313,
+     "latDeg": -2.2060388,
+     "distKm": 198642435,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -18279.5,
+     "body": "Venus",
+     "lonDeg": 307.1620556,
+     "latDeg": -1.867638,
+     "distKm": 73076095,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -18279.5,
+     "body": "Mars",
+     "lonDeg": 175.2551236,
+     "latDeg": 2.2232805,
+     "distKm": 206489469,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -18279.5,
+     "body": "Jupiter",
+     "lonDeg": 302.8111729,
+     "latDeg": -0.5736112,
+     "distKm": 866595137,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -18279.5,
+     "body": "Saturn",
+     "lonDeg": 169.2283846,
+     "latDeg": 1.9288792,
+     "distKm": 1381867497,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -18279.5,
+     "body": "Uranus",
+     "lonDeg": 93.4105747,
+     "latDeg": 0.266051,
+     "distKm": 2689858524,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -18279.5,
+     "body": "Neptune",
+     "lonDeg": 197.0146393,
+     "latDeg": 1.5756863,
+     "distKm": 4590728902,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -18279.5,
+     "body": "Pluto",
+     "lonDeg": 138.0507512,
+     "latDeg": 8.1318206,
+     "distKm": 5351775059,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -8.5,
+     "body": "Sun",
+     "lonDeg": 271.7076599,
+     "latDeg": 0.0000325,
+     "distKm": 147140579,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -8.5,
+     "body": "Moon",
+     "lonDeg": 109.6973579,
+     "latDeg": -1.2883754,
+     "distKm": 359027,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -8.5,
+     "body": "Mercury",
+     "lonDeg": 258.84223,
+     "latDeg": -0.0674415,
+     "distKm": 202847106,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -8.5,
+     "body": "Venus",
+     "lonDeg": 231.3339732,
+     "latDeg": 2.2556974,
+     "distKm": 161786627,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -8.5,
+     "body": "Mars",
+     "lonDeg": 321.3714782,
+     "latDeg": -1.1721097,
+     "distKm": 269832208,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -8.5,
+     "body": "Jupiter",
+     "lonDeg": 25.0296063,
+     "latDeg": -1.3065417,
+     "distKm": 672030674,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -8.5,
+     "body": "Saturn",
+     "lonDeg": 40.6295339,
+     "latDeg": -2.4840359,
+     "distKm": 1277039391,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -8.5,
+     "body": "Uranus",
+     "lonDeg": 314.3980726,
+     "latDeg": -0.6607055,
+     "distKm": 3086942858,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -8.5,
+     "body": "Neptune",
+     "lonDeg": 302.8989992,
+     "latDeg": 0.2370053,
+     "distKm": 4631245804,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": -8.5,
+     "body": "Pluto",
+     "lonDeg": 251.1475738,
+     "latDeg": 10.8461253,
+     "distKm": 4655888333,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 18262.5,
+     "body": "Sun",
+     "lonDeg": 280.7475598,
+     "latDeg": 0.0001028,
+     "distKm": 147106966,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 18262.5,
+     "body": "Moon",
+     "lonDeg": 18.6647821,
+     "latDeg": 3.3919495,
+     "distKm": 378705,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 18262.5,
+     "body": "Mercury",
+     "lonDeg": 270.0602487,
+     "latDeg": 3.1356996,
+     "distKm": 104940805,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 18262.5,
+     "body": "Venus",
+     "lonDeg": 281.2470239,
+     "latDeg": -0.6060436,
+     "distKm": 255915858,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 18262.5,
+     "body": "Mars",
+     "lonDeg": 227.7141784,
+     "latDeg": 0.7726813,
+     "distKm": 300991695,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 18262.5,
+     "body": "Jupiter",
+     "lonDeg": 121.6916409,
+     "latDeg": 0.4580789,
+     "distKm": 644937155,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 18262.5,
+     "body": "Saturn",
+     "lonDeg": 297.5741737,
+     "latDeg": -0.2035891,
+     "distKm": 1633908799,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 18262.5,
+     "body": "Uranus",
+     "lonDeg": 170.7325434,
+     "latDeg": 0.7867299,
+     "distKm": 2681391418,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 18262.5,
+     "body": "Neptune",
+     "lonDeg": 53.6034594,
+     "latDeg": -1.7627872,
+     "distKm": 4359225776,
+     "finite": true
+    },
+    {
+     "ttDaysPastJ2000": 18262.5,
+     "body": "Pluto",
+     "lonDeg": 337.5329782,
+     "latDeg": -12.6913728,
+     "distKm": 6275810543,
+     "finite": true
+    }
+   ]
+  }
+ ],
+ "determinism": {
+  "run": "DE440 cropped, compiled a second time",
+  "exit": 0,
+  "fileSha256": "08b5d1a2f5c6ac85c7ec3f4e4b38a23a729f3aef16c94babb3a03f8b7fbc9b62",
+  "identical": true
+ },
+ "verdict": "PASS"
+}

@@ -19,13 +19,16 @@ import { runCompositeBrowserChecks } from './composite-browser-checks.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const PORT = 4399;
-const CURATED_SUN_MOON = 'One of you runs on purpose, the other on feeling, and here they agree — what one wants to do is what the other wants to come home to. This is the classic ease that makes a relationship feel inevitable in retrospect.';
-const FALLBACK_NEPTUNE_URANUS = 'Frida’s imagination pushes against Diego’s independence — friction that forces growth or starts fights, depending on the week.';
-const COMPOSITE_NOTE = "A composite chart is the midpoint of two charts — a portrait of the relationship itself rather than either person. Composite houses need a location convention we won't fake, so this chart is shown without houses.";
-const COMMUNICATION_FIRE_FIRE = 'Two minds that think at speaking speed — conversation as sparring, fast and warm. Nobody finishes their sentences here; nobody minds.';
-const COMMUNICATION_MERCURY_MERCURY = 'Your minds are running compatible operating systems — shorthand develops fast, and it lasts. You will never run out of conversation, only of evening.';
+const CURATED_SUN_MOON = 'One of you runs on purpose, the other on feeling, and here they agree. What one wants to do is what the other wants to come home to. This is the classic ease that makes a relationship feel inevitable in retrospect.';
+const FALLBACK_JUPITER_SATURN = 'Frida’s appetite for more sits right on top of Diego’s sense of duty. You’ll feel this one strongly.';
+// Neptune square Uranus is generational (src/lib/generational-contact.ts): it
+// ranks behind the personal contacts and reads as a shared backdrop.
+const GENERATIONAL_NEPTUNE_URANUS = 'Frida’s imagination meets Diego’s independence. A shared generational backdrop, common to many people born in the same years.';
+const COMPOSITE_NOTE = "A composite chart is the midpoint of two charts, a portrait of the relationship itself rather than either person. Composite houses need a location convention we won't fake, so this chart is shown without houses.";
+const COMMUNICATION_FIRE_FIRE = 'Two minds that think at speaking speed. Conversation as sparring, fast and warm. Nobody finishes their sentences here; nobody minds.';
+const COMMUNICATION_MERCURY_MERCURY = 'Your minds are running compatible operating systems. Shorthand develops fast, and it lasts. You will never run out of conversation, only of evening.';
 const COMMUNICATION_MOON_MERCURY = 'Analysis meets emotion mid-sentence: one wants the feeling named precisely, the other wants it felt first. Ask "solve or listen?" and this aspect behaves.';
-const COMMUNICATION_NO_CONTACT = "Your Mercuries make no major contact — the tradition reads that as neutral, not bad: your minds neither collide nor complete each other by default, so your conversational style is built, not given. The sign pairing above is the material you're building with.";
+const COMMUNICATION_NO_CONTACT = "Your Mercuries make no major contact. The tradition reads that as neutral, not bad: your minds neither collide nor complete each other by default, so your conversational style is built, not given. The sign pairing above is the material you're building with.";
 const SAVED_MC = {
   'drive-frida': 53.32837167390386,
   'drive-diego': 16.9870696472928,
@@ -107,7 +110,7 @@ try {
     (await page.getByRole('tab').count()) === 4
       && await page.locator('[data-relationship-tab="wheel"]').getAttribute('aria-selected') === 'true');
   check('an uncurated top contact keeps the role-composed fallback verbatim',
-    (await page.locator('.syn__aspect-read[data-fallback-line]').first().textContent())?.trim() === FALLBACK_NEPTUNE_URANUS);
+    (await page.locator('.syn__aspect-read[data-fallback-line]').first().textContent())?.trim() === FALLBACK_JUPITER_SATURN);
   const communication = page.locator('[data-communication-read]');
   check('communication read follows top contacts and precedes balances', await communication.evaluate((node) => {
     const siblings = [...(node.parentElement?.children ?? [])];
@@ -158,11 +161,11 @@ try {
 
   const bodyContact = page.locator('[data-grid-contact="Neptune-square-Uranus"]');
   await bodyContact.click();
-  check('grid body-cell selection opens the fallback detail',
-    (await page.locator('[data-grid-detail] [data-fallback-line]').textContent())?.trim() === FALLBACK_NEPTUNE_URANUS);
+  check('grid body-cell selection opens the generational fallback detail',
+    (await page.locator('[data-grid-detail] [data-fallback-line]').textContent())?.trim() === GENERATIONAL_NEPTUNE_URANUS);
   await page.locator('[data-relationship-tab="wheel"]').click();
   check('grid body selection stays focused on the wheel tab',
-    (await page.locator('.tring__row.is-focus').count()) === 1
+    (await page.locator('.tring__focus .tring__focus-read').textContent())?.trim() === GENERATIONAL_NEPTUNE_URANUS
       && await page.locator('[data-transit-aspect="Neptune-square-Uranus"]').evaluate((node) => node.parentElement?.getAttribute('opacity') === '1'));
   await page.locator('[data-relationship-tab="grid"]').click();
   check('body-cell selection survives a round trip across tabs',

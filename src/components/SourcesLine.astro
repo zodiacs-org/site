@@ -6,12 +6,17 @@ export interface SourceLink {
 
 interface Props {
   sources?: SourceLink[];
-  locale?: import('../lib/i18n').CatalogLocale;
+  locale?: import('../lib/i18n').PageLocale;
 }
 
 const sources = Astro.props.sources ?? [];
 const locale = Astro.props.locale ?? 'en';
-const label = locale === 'ru' ? 'Источники' : 'Sources';
+const LABELS: Partial<Record<NonNullable<Props['locale']>, string>> = {
+  ru: 'Источники',
+  'zh-hans': '资料来源',
+  'zh-hant': '資料來源',
+};
+const label = LABELS[locale] ?? 'Sources';
 ---
 {sources.length > 0 && (
   <aside class="sources-line container container--narrow" aria-label={label}>

@@ -7,7 +7,12 @@
  * time, sky-fact and elections carry `zodiacs.compute-receipt.v1`: the same engine
  * identity, conventions and coverage statement the engine writes into its own
  * receipts, read from one it writes, plus what the request used (the ΔT
- * sources of the engine's time basis, searches, time zone data).
+ * sources of the engine's time basis, searches, time zone data), and last
+ * `conventionIds`: every id of the conventions registry
+ * (zodiacs.org/developers/conventions) that the receipt's own fields name, in
+ * code-unit order, each once. The engine's receipts also list their result's
+ * ids; these leave them out, so that a compute receipt holds nothing the
+ * request gave and one request form cites one receipt.
  *
  * `cite.receipt` is a digest of the receipt in the same response, not a second
  * copy: SHA-256 over its RFC 8785 canonical JSON, so any client can recompute
@@ -22,6 +27,7 @@ import {
   REFERENCE_SPAN,
   natalChart,
 } from '@zodiacs/engine';
+import { conventionId } from '@zodiacs/engine/conventions';
 import { createNatalEnvelope, type NatalReceipt } from '@zodiacs/engine/receipt';
 import {
   COMPUTE_RECEIPT_SCHEMA,
@@ -128,6 +134,38 @@ export interface ComputeReceipt {
   timeResolution?: TimeResolutionFacts;
   search?: SearchFacts;
   electionSearch?: ElectionSearchFacts;
+  /** Every id of the conventions registry that the receipt's own fields name, in code-unit order, each once. */
+  conventionIds: string[];
+}
+
+/**
+ * The ids a compute receipt's fields name: each conventions and coverage
+ * field's key and value, the ephemeris, the endpoint, each ΔT source's model,
+ * how local times were read, and how a search ran.
+ */
+export function computeConventionIds(receipt: Omit<ComputeReceipt, 'conventionIds'>): string[] {
+  const ids = new Set<string>();
+  for (const fields of [receipt.conventions, receipt.coverage]) {
+    for (const [key, value] of Object.entries(fields)) ids.add(conventionId(key, value));
+  }
+  ids.add(conventionId('ephemeris', `${receipt.engine.ephemeris.name}@${receipt.engine.ephemeris.version}`));
+  ids.add(conventionId('endpoint', receipt.endpoint));
+  for (const source of receipt.deltaT) ids.add(conventionId('deltat-model', source.model));
+  if (receipt.timeResolution) {
+    ids.add(conventionId('fold-policy', receipt.timeResolution.policy.fold));
+    ids.add(conventionId('gap-policy', receipt.timeResolution.policy.gap));
+  }
+  for (const search of [receipt.search, receipt.electionSearch]) {
+    if (!search) continue;
+    ids.add(conventionId('search-solver', search.solver));
+    ids.add(conventionId('search-window', search.window));
+    ids.add(conventionId('completeness', search.completeness));
+  }
+  if (receipt.electionSearch) {
+    ids.add(conventionId('void-of-course', receipt.electionSearch.voidOfCourse.convention));
+    ids.add(conventionId('void-of-course-bodies', receipt.electionSearch.voidOfCourse.bodies));
+  }
+  return [...ids].sort();
 }
 
 export function computeReceipt(
@@ -135,7 +173,7 @@ export function computeReceipt(
   extra: { timeResolution?: TimeResolutionFacts; search?: SearchFacts; electionSearch?: ElectionSearchFacts } = {},
 ): ComputeReceipt {
   const { conventions, coverage, deltaT } = engineStatements();
-  return {
+  const receipt: Omit<ComputeReceipt, 'conventionIds'> = {
     schema: COMPUTE_RECEIPT_SCHEMA,
     endpoint,
     engine: BACKEND,
@@ -147,6 +185,7 @@ export function computeReceipt(
     ...(extra.search ? { search: extra.search } : {}),
     ...(extra.electionSearch ? { electionSearch: extra.electionSearch } : {}),
   };
+  return { ...receipt, conventionIds: computeConventionIds(receipt) };
 }
 
 export interface Cite {

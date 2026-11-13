@@ -1,8 +1,15 @@
-import { ALL_AI_TOOL_NAMES, type AiToolName } from './contracts';
+import { EVERY_AI_TOOL_NAME, NUMEROLOGY_TOOL_NAMES, SKY_EVENTS_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, YEAR_SCORE_TOOL_NAMES, type AiToolName } from './contracts';
+import { SAVE_TOOL_NAME, type SaveToolName } from './accounts/contracts';
 import { serviceRpc } from './quota';
 
 export const USAGE_HOSTS = ['chatgpt', 'claude', 'other'] as const;
 export type UsageHost = typeof USAGE_HOSTS[number];
+/**
+ * Every name the counter accepts: the hosted tools, search_sky_events while the sky events switch is on,
+ * get_year_score while the Year Ahead Score switch is on, get_solar_return while its switch is on, get_numerology while the numerology switch is on, and the account save tool while accounts are on. The latest usage migration lists these and the other November 2026 tools.
+ */
+export const COUNTED_TOOL_NAMES = [...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES, ...YEAR_SCORE_TOOL_NAMES, ...SOLAR_RETURN_TOOL_NAMES, ...NUMEROLOGY_TOOL_NAMES, SAVE_TOOL_NAME] as const;
+export type CountedToolName = AiToolName | SaveToolName;
 type Environment = Readonly<Record<string, string | undefined>>;
 
 /** A count gives up after this long. No reply ever waits for it. */
@@ -23,9 +30,9 @@ export function usageHostFamily(userAgent: unknown): UsageHost {
  * the database clock. Without full preview/production configuration it does
  * nothing. Resolves false on refusal, failure or timeout and never throws.
  */
-export async function countAiToolCall(tool: AiToolName, host: UsageHost, env: Environment, fetcher: typeof fetch = fetch): Promise<boolean> {
+export async function countAiToolCall(tool: CountedToolName, host: UsageHost, env: Environment, fetcher: typeof fetch = fetch): Promise<boolean> {
   const rpc = serviceRpc(env);
-  if (!rpc || !(ALL_AI_TOOL_NAMES as readonly string[]).includes(tool) || !(USAGE_HOSTS as readonly string[]).includes(host)) return false;
+  if (!rpc || !(COUNTED_TOOL_NAMES as readonly string[]).includes(tool) || !(USAGE_HOSTS as readonly string[]).includes(host)) return false;
   try {
     const response = await fetcher(`${rpc.url}/rest/v1/rpc/zodiacs_mcp_usage_count_v1`, {
       method: 'POST', headers: rpc.headers, cache: 'no-store', redirect: 'error',

@@ -65,6 +65,21 @@ const yearlyEvents: HoroscopeProgramEvent[] = [
   },
 ];
 
+/** 2026 catalog fixture: a year that opens on an ingress and ends on a station whose direct boundary is in 2027. */
+const yearlyEvents2026: HoroscopeProgramEvent[] = [
+  { kind: 'ingress', planet: 'Neptune', sign: 'aries', at: '2026-01-26T14:30:00.000Z', sourceId: 'fixture:2026-events' },
+  { kind: 'station', planet: 'Uranus', type: 'direct', retrograde: false, sign: 'taurus', at: '2026-02-04T02:32:00.000Z', sourceId: 'fixture:2026-events' },
+  { kind: 'ingress', planet: 'Saturn', sign: 'aries', at: '2026-02-14T00:39:00.000Z', sourceId: 'fixture:2026-events' },
+  { kind: 'eclipse', type: 'solar', sign: 'aquarius', degree: 28.8, at: '2026-02-17T12:12:00.000Z', sourceId: 'fixture:2026-events' },
+  { kind: 'eclipse', type: 'lunar', sign: 'virgo', degree: 12.9, at: '2026-03-03T11:34:00.000Z', sourceId: 'fixture:2026-events' },
+  { kind: 'ingress', planet: 'Jupiter', sign: 'leo', at: '2026-06-30T05:56:00.000Z', sourceId: 'fixture:2026-events' },
+  { kind: 'eclipse', type: 'solar', sign: 'leo', degree: 20, at: '2026-08-12T17:46:00.000Z', sourceId: 'fixture:2026-events' },
+  { kind: 'station', planet: 'Venus', type: 'retrograde', retrograde: true, sign: 'scorpio', at: '2026-10-03T07:10:00.000Z', sourceId: 'fixture:2026-events' },
+  { kind: 'station', planet: 'Venus', type: 'direct', retrograde: false, sign: 'libra', at: '2026-11-14T00:21:00.000Z', sourceId: 'fixture:2026-events' },
+  { kind: 'station', planet: 'Jupiter', type: 'retrograde', retrograde: true, sign: 'leo', at: '2026-12-13T00:57:00.000Z', sourceId: 'fixture:2026-events' },
+  { kind: 'station', planet: 'Jupiter', type: 'direct', retrograde: false, sign: 'leo', at: '2027-04-13T02:08:00.000Z', sourceId: 'fixture:2026-events' },
+];
+
 const dates = [
   '2026-07-13', '2026-07-14', '2026-07-15', '2026-07-16',
   '2026-07-17', '2026-07-18', '2026-07-19', '2026-07-20',
@@ -73,10 +88,11 @@ const input: BuildHoroscopeProgramInput = {
   anchorDate: '2026-07-19',
   dailySnapshots: dates.map(fixtureDay),
   yearlyEvents,
+  yearlyEvents2026,
 };
 
 describe('horoscope program domain', () => {
-  it('builds one deterministic, serializable six-surface program for all signs', () => {
+  it('builds one deterministic, serializable seven-surface program for all signs', () => {
     const first = buildHoroscopeProgram(input);
     const second = buildHoroscopeProgram(input);
     expect(first).toEqual(second);
@@ -86,11 +102,12 @@ describe('horoscope program domain', () => {
       today: 'complete',
       tomorrow: 'complete',
       isoWeek: 'complete',
+      yearly2026: 'complete',
       yearly2027: 'complete',
     });
     for (const entry of first.signs) {
       expect(Object.keys(entry.readings).sort()).toEqual([
-        'career', 'love', 'today', 'tomorrow', 'weekly', 'yearly-2027',
+        'career', 'love', 'today', 'tomorrow', 'weekly', 'yearly-2026', 'yearly-2027',
       ]);
     }
     expect(validateHoroscopeProgramAgainstInput(input, first)).toEqual([]);
@@ -278,6 +295,38 @@ describe('horoscope program domain', () => {
     }
   });
 
+  it('builds the 2026 edition from its own catalog, without touching the 2027 edition', () => {
+    const program = buildHoroscopeProgram(input);
+    const without2026 = buildHoroscopeProgram({ ...input, yearlyEvents2026: undefined });
+    const catalogIds = new Set(program.evidence
+      .filter((receipt) => receipt.kind === 'sky-event' && receipt.sourceId === 'fixture:2026-events')
+      .map((receipt) => receipt.id));
+    expect(catalogIds.size).toBe(yearlyEvents2026.length);
+    expect([...catalogIds].every((id) => id.startsWith('fact:2026:event:'))).toBe(true);
+    expect(without2026.coverage.yearly2026).toBe('insufficient');
+    for (const entry of program.signs) {
+      const name = `${entry.sign.charAt(0).toUpperCase()}${entry.sign.slice(1)}`;
+      const yearly = entry.readings['yearly-2026'];
+      expect(yearly.status).toBe('publishable');
+      expect(yearly.title).toBe(`${name} 2026 horoscope`);
+      expect(yearly.period).toEqual({ from: '2026-01-01', through: '2026-12-31', utcBasis: true });
+      expect(yearly.wordCount).toBeGreaterThanOrEqual(1_200);
+      expect(yearly.wordCount).toBeLessThanOrEqual(1_800);
+      expect(yearly.text).not.toMatch(/2027 (?:asks|favors|does|will)|Your 2027|in 2027\b/u);
+      expect(yearly.text).not.toContain('Put three events in your calendar now');
+      const headings = yearly.passages.map((item) => item.heading);
+      expect(headings[0]).toBe(`The shape of ${name}’s 2026`);
+      expect(headings.at(-1)).toBe('Three dates to review the year by');
+      // The year opens on an ingress: the opening and the review name three different dates.
+      expect(yearly.passages[0].text).toContain('Neptune entering Aries on January 26');
+      expect(yearly.passages[0].text).toContain('Jupiter entering Leo on June 30 changes the longer-range emphasis');
+      expect(yearly.passages.at(-1)?.text.match(/Neptune entering Aries/gu)).toHaveLength(1);
+      const cited = new Set(yearly.passages.flatMap((item) => item.evidenceRefs));
+      expect([...catalogIds].filter((id) => id.startsWith('fact:2026:event:') && id.includes(':2026-')).every((id) => cited.has(id))).toBe(true);
+      expect(entry.readings['yearly-2027']).toEqual(without2026.signs.find(({ sign }) => sign === entry.sign)?.readings['yearly-2027']);
+    }
+  });
+
   it('deduplicates repeated house areas in the yearly opening comparison', () => {
     const collision = buildHoroscopeProgram({
       ...input,
@@ -346,6 +395,7 @@ describe('horoscope program domain', () => {
       today: 'complete',
       tomorrow: 'unavailable',
       isoWeek: 'partial',
+      yearly2026: 'insufficient',
       yearly2027: 'insufficient',
     });
     for (const entry of program.signs) {
@@ -355,6 +405,8 @@ describe('horoscope program domain', () => {
       expect(entry.readings['yearly-2027'].status).toBe('insufficient-evidence');
       expect(entry.readings['yearly-2027'].text).toContain('does not replace missing sky data');
       expect(entry.readings['yearly-2027'].passages[0].evidenceRefs).toEqual([]);
+      expect(entry.readings['yearly-2026'].status).toBe('insufficient-evidence');
+      expect(entry.readings['yearly-2026'].text).toMatch(/^[A-Z][a-z]+ 2026 is being held because the 2026 catalog/u);
     }
     expect(validateHoroscopeProgram(program)).toEqual([]);
   });
@@ -407,6 +459,14 @@ describe('horoscope program domain', () => {
     expect(inputFailures).toContain('INPUT-FACT-SIGN');
     expect(inputFailures).toContain('INPUT-EVENT-INSTANT');
     expect(() => buildHoroscopeProgram(malformed)).toThrow(HoroscopeProgramInputError);
+
+    // A 2026 event that is not a station may not borrow an adjacent year.
+    const wrongYear = clone(input);
+    wrongYear.yearlyEvents2026![3].at = '2027-02-06T15:59:00.000Z';
+    expect(validateHoroscopeProgramInput(wrongYear)).toContainEqual(expect.objectContaining({
+      ruleId: 'INPUT-EVENT-INSTANT',
+      path: 'input.yearlyEvents2026[3].at',
+    }));
 
     const missingExactOrb = clone(input) as any;
     delete missingExactOrb.yearlyEvents.find((event: HoroscopeProgramEvent) => event.kind === 'aspect').orb;

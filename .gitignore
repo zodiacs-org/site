@@ -13,6 +13,8 @@ build/
 .cache/
 supabase/.temp/
 .email-preview/
+# Monday Note drafts (npm run note:build): pasted into the provider by hand, never committed.
+.monday-note/
 
 # Scratch checkouts the agent harness creates for isolated subagents.
 .claude/worktrees/
@@ -22,3 +24,6 @@ supabase/.temp/
 # committed record.
 docs/engine-validation/independent-references/tools/__pycache__/
 docs/engine-validation/swiss-output-removal/__pycache__/
+
+# The daily short videos (npm run data:shorts): built for posting by hand, never committed.
+dist-shorts/

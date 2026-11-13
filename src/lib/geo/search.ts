@@ -3,24 +3,9 @@
  * Shards load on demand (first keystroke per letter) and stay cached.
  */
 
-export interface City {
-  name: string;
-  admin1: string;
-  country: string;
-  lat: number;
-  lon: number;
-  tz: string;
-  pop: number;
-}
+import { foldedQuery, queryRows, rankCities, shardKey, type City, type CityIndex, type Row } from './rank';
 
-interface CityIndex {
-  tz: string[];
-  admin1: string[];
-  countries: string[];
-  shards: string[];
-}
-
-type Row = [string, string | 0, number, number, number, number, number, number];
+export type { City } from './rank';
 
 let indexPromise: Promise<CityIndex> | null = null;
 const shardCache = new Map<string, Promise<Row[]>>();
@@ -59,38 +44,12 @@ function shard(key: string): Promise<Row[]> {
   return pending;
 }
 
-const fold = (s: string) =>
-  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-
 export async function searchCities(query: string, limit = 8): Promise<City[]> {
-  const q = fold(query.trim());
-  if (!q[1]) return [];
+  const q = foldedQuery(query);
+  if (!q) return [];
 
   const index = await preloadIndex();
-  const key = /^[a-z]/.test(q) ? q[0] : '0';
+  const key = shardKey(q);
   if (!index.shards.includes(key)) return [];
-  const rows = await shard(key);
-
-  const starts: Row[] = [];
-  const contains: Row[] = [];
-  for (const row of rows) {
-    const ascii = fold(row[1] === 0 ? row[0] : row[1]);
-    const match = ascii.indexOf(q);
-    // `indexOf` is 0 for a prefix and -1 (whose bitwise complement is 0)
-    // for no match, so one lookup serves both result tiers.
-    if (!match) starts.push(row);
-    else if (q[2] && ~match) contains.push(row);
-    if (starts.length >= limit * 3) break;
-  }
-
-  // Rows are population-sorted within the shard already.
-  return [...starts, ...contains].slice(0, limit).map((r) => ({
-    name: r[0],
-    admin1: index.admin1[r[2]] ?? '',
-    country: index.countries[r[3]] ?? '',
-    lat: r[4] / 100,
-    lon: r[5] / 100,
-    tz: index.tz[r[6]],
-    pop: r[7],
-  }));
+  return rankCities(index, queryRows(index, await shard(key), key), q, limit);
 }

@@ -1,0 +1,650 @@
+[
+ {
+  "url": "https://en.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:02Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://en.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:02Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://en.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:03Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://en.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:03Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://de.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:04Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://de.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:04Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://de.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:05Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://de.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:05Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://fr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:06Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://fr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:06Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://fr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:06Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://fr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:07Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://es.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:07Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://es.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:08Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://es.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:08Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://es.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:09Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://it.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:09Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://it.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:10Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://it.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:10Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://it.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:11Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://pt.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:11Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://pt.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:12Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://pt.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:12Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://pt.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:13Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ru.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:13Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ru.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:14Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ru.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:14Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ru.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:15Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ja.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:15Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ja.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:16Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ja.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:16Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ja.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:17Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://zh.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:17Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://zh.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:18Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://zh.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:18Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://zh.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:19Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://nl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:19Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://nl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:19Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://nl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:20Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://nl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:20Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://pl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:21Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://pl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:21Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://pl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:22Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://pl.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:22Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://sv.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:22Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://sv.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:23Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://sv.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:23Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://sv.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:24Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://uk.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:24Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://uk.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:25Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://uk.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:25Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://uk.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:26Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ko.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:26Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ko.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:27Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ko.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:27Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ko.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:28Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://tr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:29Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://tr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:29Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://tr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:29Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://tr.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:30Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://hi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:30Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://hi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:31Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://hi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:31Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://hi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:32Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://fa.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:32Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://fa.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:33Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://fa.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:33Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://fa.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:34Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ar.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:34Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ar.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:35Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ar.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:35Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://ar.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:36Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://id.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:36Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://id.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:37Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://id.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:37Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://id.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:38Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://vi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:38Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://vi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:39Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://vi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:39Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://vi.wikipedia.org/w/api.php?action=query&list=exturlusage&euquery=%2A.zodiacs.org&euprotocol=http&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:40Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ },
+ {
+  "url": "https://www.wikidata.org/w/api.php?action=query&list=exturlusage&euquery=zodiacs.org&euprotocol=https&eulimit=500&format=json",
+  "status": 200,
+  "retrievedAt": "2026-10-30T15:35:40Z",
+  "sha256": "0b9c86115a511a7042e2291c0bf9c3f4dc037f194da56a167b9cfcabf4a8b634",
+  "bytes": 47,
+  "hits": []
+ }
+]

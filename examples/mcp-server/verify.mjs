@@ -5,14 +5,14 @@
  *   npm install && npm run verify
  *
  * It launches ./server.mjs as a real child process, speaks MCP to it with the
- * official client SDK, calls all six tools, checks a handful of values it can
+ * official client SDK, calls all eight tools, checks a handful of values it can
  * verify without a second astrology engine, refuses two bad requests and shows
  * the session still works afterwards. The client checks every result against
  * the output schema the server declares, so a result that does not match
  * stops the run. Exit 0 means the install works.
  *
- * Every birth detail below is synthetic: London and Longyearbyen on dates
- * chosen for what they exercise.
+ * Every birth detail below is synthetic: London, Longyearbyen and Moscow on
+ * dates chosen for what they exercise.
  */
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
@@ -57,8 +57,8 @@ try {
 
   const listed = (await client.listTools()).tools;
   const tools = listed.map((tool) => tool.name).sort();
-  check('all six tools are listed', tools.join(',')
-    === 'calculate_natal_chart,check_sky_fact,compare_calculation_records,find_events,get_capabilities,get_positions', tools);
+  check('all eight tools are listed', tools.join(',')
+    === 'calculate_natal_chart,check_sky_fact,compare_calculation_records,find_events,get_capabilities,get_positions,resolve_birth_time,search_places', tools);
   const resources = (await client.listResources()).resources.map((resource) => resource.uri);
   check('every tool declares an output schema, and both resources are listed',
     listed.every((tool) => tool.outputSchema?.type === 'object')
@@ -127,6 +127,28 @@ try {
   const fact = (await call('check_sky_fact', { kind: 'retrograde', body: 'Sun', instant: '2026-10-15T12:00:00Z' })).value;
   check('a sky fact is answered, with the values that decide it',
     fact?.result?.answer === 'false' && fact.result.facts?.retrograde === false, fact?.result);
+
+  // From a place and a wall clock to the chart's instant: London at 14:30 on
+  // 15 June 1990 was on British Summer Time, an hour ahead of UTC.
+  const places = (await call('search_places', { query: 'London' })).value;
+  const london = places?.places?.[0];
+  check('a place search finds London, with its coordinates and its time zone',
+    london?.name === 'London' && london.timeZone === 'Europe/London'
+    && Math.abs(london.latitude - LONDON.latitude) < 0.01 && Math.abs(london.longitude - LONDON.longitude) < 0.01, london);
+  const local = (await call('resolve_birth_time', {
+    local: { date: '1990-06-15', time: '14:30', zone: london?.timeZone ?? 'Europe/London' }, longitude: london?.longitude,
+  })).value;
+  check('a local birth time resolves to the chart\'s instant',
+    local?.result?.utc === '1990-06-15T13:30:00.000Z' && local.result.offsetMinutes === 60 && local.result.flags.length === 0, local?.result);
+  const skipped = (await call('resolve_birth_time', { local: { date: '2026-03-29', time: '01:30', zone: 'Europe/London' } })).value;
+  check('a wall time the clocks skipped moves forward and is flagged',
+    skipped?.result?.utc === '2026-03-29T01:30:00.000Z' && skipped.result.flags.includes('dst-gap'), skipped?.result);
+  const oldStyle = (await call('resolve_birth_time', {
+    local: { date: '1917-10-25', time: '12:00', zone: 'Europe/Moscow' }, calendar: 'julian', country: 'RU',
+  })).value;
+  check('a date written in the Julian calendar is converted before the time is read',
+    oldStyle?.result?.calendar === 'julian' && oldStyle.result.writtenDate === '1917-10-25'
+    && oldStyle.result.date === '1917-11-07', oldStyle?.result);
 
   const badDate = await call('calculate_natal_chart', { ...LONDON, utc: '2001-02-29T00:00:00Z' });
   check('a date that does not exist is refused', Boolean(badDate.refused), badDate.refused);

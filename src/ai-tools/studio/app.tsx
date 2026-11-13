@@ -1,3 +1,4 @@
+import { BrandLink } from '../panel-brand';
 import { render } from 'preact';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import Wheel from '../../lib/wheel/Wheel';
@@ -5,11 +6,13 @@ import { buildSceneModel } from '../../lib/scene/build';
 import { emphasisFor } from '../../lib/scene/emphasis';
 import { entityId, parseEntityId, type EntityRef } from '../../lib/scene/types';
 import { formatLongitude, SIGNS } from '../../lib/signs';
-import { calculateStudio, compareStudio, EXAMPLE, houseName, recordText, selectionContext, type StudioInput } from './model';
+import { calculateStudio, compareStudio, EXAMPLE, houseName, recordText, selectionContext, sunSignsForDate, type StudioInput } from './model';
 import { StudioBridge } from './bridge';
 import { TimeExplorer } from './TimeExplorer';
 import { RecordInspector } from './RecordInspector';
 import { LocalTimeEntry } from './LocalTimeEntry';
+import { chartHeading, EXAMPLE_HEADING } from './heading';
+import { YourWeekSection } from './YourWeek';
 import './style.css';
 
 declare const STUDIO_ICONS: Record<string, string>;
@@ -44,6 +47,8 @@ function RecordExport({ text }: { text: string }) {
   </div>;
 }
 
+const signLabel = (slug: string) => SIGNS.find(sign => sign.slug === slug)?.name ?? slug;
+
 function App() {
   const [draft, setDraft] = useState<StudioInput>({ ...EXAMPLE });
   const [applied, setApplied] = useState<StudioInput>({ ...EXAMPLE });
@@ -76,6 +81,8 @@ function App() {
   const scene = useMemo(() => buildSceneModel(run.chart, { wheelConventions: false }), [run]);
   const emphasis = useMemo(() => emphasisFor(scene, selection), [scene, selection]);
   const otherSystem = applied.houseSystem === 'placidus' ? 'whole' : 'placidus';
+  // Without a birth time, the Sun's sign may differ across the date's readings in the world's time zones.
+  const sunSigns = useMemo(() => run.chart.input.timeKnown ? [] : sunSignsForDate(applied.date), [run, applied]);
   const comparisonResult = useMemo(() => {
     if (!compare || !run.chart.houses) return { run: null, error: '' };
     try { return { run: calculateStudio({ ...applied, houseSystem: otherSystem }), error: '' }; }
@@ -87,12 +94,13 @@ function App() {
   const changes = comparison ? compareStudio(run, comparison) : [];
   const changed = changes.filter(row => row.currentHouse !== row.comparedHouse).length;
   const dirty = JSON.stringify(draft) !== JSON.stringify(applied);
+  const heading = example ? EXAMPLE_HEADING : chartHeading(applied, run.inputSnapshot.utc);
   const selectedBody = selection?.kind === 'body' ? scene.bodies.find(b => b.body === selection.body) : null;
   const selectedHue = selectedBody ? SIGNS.find(s => s.slug === selectedBody.sign)?.hue : '#B6D4E4';
   const selectedTitle = selection?.kind === 'body' ? selection.body : selection?.kind === 'house' ? `House ${selection.house}` : selection?.kind === 'sign' ? titleCase(selection.sign) : selection?.kind === 'angle' ? ({ asc: 'Ascendant', mc: 'Midheaven', dsc: 'Descendant', ic: 'Imum coeli' }[selection.angle]) : selection?.kind === 'aspect' ? `${selection.a} ${selection.type} ${selection.b}` : 'Select a placement';
   const shareRevision = useRef(0);
   function select(next: EntityRef | null) { shareRevision.current++; setSelection(next); setShareOpen(false); setNotice(''); }
-  function update<K extends keyof StudioInput>(key: K, value: StudioInput[K]) { setDraft(previous => ({ ...previous, local: key === 'houseSystem' ? previous.local : undefined, [key]: value })); setError(''); }
+  function update<K extends keyof StudioInput>(key: K, value: StudioInput[K]) { setDraft(previous => ({ ...previous, local: key === 'houseSystem' ? previous.local : undefined, place: ['latitude', 'longitude', 'timeKnown'].includes(key) ? undefined : previous.place, [key]: value })); setError(''); }
   function apply(input: StudioInput, isExample = false) {
     try {
       const next = calculateStudio(input);
@@ -109,13 +117,13 @@ function App() {
     finally { setSharing(false); }
   }
   if (!started) return <main>
-    <header class="studio-header"><a href="https://zodiacs.org/" target="_blank" rel="noreferrer">Zodiacs<span>·</span>org</a><span class="header-note">Your birth chart</span></header>
+    <header class="studio-header"><BrandLink/><span class="header-note">Your birth chart</span></header>
     <section class="onboarding" aria-label="Your birth details">
       <h1>When and where were you born?</h1>
       <p class="lede">Your chart is worked out inside this panel. Nothing is saved, and the assistant sees only what you choose to share.</p>
       <LocalTimeEntry input={draft} title="Birth date, time and place" intro="Use the time on your birth certificate if you have it, and the town or city you were born in." applyLabel="Make my chart" onApply={input => { apply(input); setStarted(true); }} />
       <details class="unknown-time"><summary>I don't know my birth time</summary>
-        <p>Without a birth time we use midday as a stand-in. Your Sun sign is reliable; your rising sign and houses can't be shown, and the Moon may have changed sign that day.</p>
+        <p>Without a birth time we use 12:00 UTC on your birth date as a stand-in. Your rising sign and houses can't be shown, and the Moon may have changed sign that day. Your Sun sign holds unless the Sun changed sign around that date; the chart will say if it did.</p>
         <form onSubmit={e => { e.preventDefault(); if (unknownDate) { apply({ ...EXAMPLE, date: unknownDate, time: '12:00', timeKnown: false, latitude: '', longitude: '' }); setStarted(true); } }}>
           <label>Birth date<input type="date" required min="1800-01-01" max="2199-12-31" value={unknownDate} onInput={e => setUnknownDate(e.currentTarget.value)} /></label>
           <button type="submit" disabled={!unknownDate}>Make my chart without a time</button>
@@ -127,7 +135,7 @@ function App() {
     <footer class="studio-footer"><a href="https://zodiacs.org/methodology/" target="_blank" rel="noreferrer">How we calculate</a><a href="https://zodiacs.org/privacy/" target="_blank" rel="noreferrer">Privacy</a></footer>
   </main>;
   return <main>
-    <header class="studio-header"><a href="https://zodiacs.org/" target="_blank" rel="noreferrer">Zodiacs<span>·</span>org</a><span class="header-note">An interactive chart workspace</span></header>
+    <header class="studio-header"><BrandLink/><span class="header-note">An interactive chart workspace</span></header>
     <div class="studio-title"><div><p class="kicker">Explore the details</p><h1>Chart Studio</h1><p class="lede">A chart you can explore, compare, and bring into the conversation.</p></div><button class="quiet" onClick={() => { setStarted(false); setWorkspaceEpoch(value => value + 1); }}>Start over</button></div>
     <nav class="workspace-tabs" aria-label="Chart Studio workspaces">{([['chart', 'Chart'], ['time', 'Time Explorer'], ['inspect', 'Chart Inspector']] as const).map(([value, label]) => <button key={value} aria-pressed={workspace === value} onClick={() => setWorkspace(value)}>{label}</button>)}</nav>
     {error && <p class="error" role="alert">{error} The displayed chart still uses its previous inputs.</p>}
@@ -150,12 +158,12 @@ function App() {
     {workspace === 'time' && <TimeExplorer key={workspaceEpoch} input={applied} run={run} onApply={apply} dirty={dirty} />}
     <div class="workspace">
       <section class="chart-area" aria-label="Chart workspace">
-        <div class="chart-meta"><span>{example ? 'Example chart (not yours)' : 'Your chart'}</span><time dateTime={run.inputSnapshot.utc}>{run.inputSnapshot.utc.replace('T', ' · ').replace(':00.000Z', ' UTC').replace('Z', ' UTC')}</time></div>
-        {applied.local && run.chart.input.timeKnown && <p class="local-origin">From {applied.local.resolution.date} at {applied.local.resolution.time} · {applied.local.resolution.timeZone}. Time-zone assumptions are in the calculation record.</p>}
+        <div class="chart-meta"><span>{example ? 'Example chart (not yours)' : 'Your chart'}</span><time dateTime={heading.dateTime}>{heading.text}</time></div>
+        {applied.local && run.chart.input.timeKnown && <p class="local-origin">Converted from your local clock time. Time-zone details are in the calculation record.</p>}
         <div class="wheel-wrap" ref={wheelRoot}><Wheel bodies={run.chart.bodies} asc={run.chart.angles?.asc} mc={run.chart.angles?.mc} cusps={run.chart.houses?.cusps} aspects={run.chart.aspects} size={520} deferIcons interactive={{ scene, selection, emphasis, onSelect: select, label: 'Select a chart element' }} /></div>
         <div class="chart-caption"><span>Tropical zodiac</span><span>{run.chart.houses ? `${houseName(run.chart.houses.system)} houses` : 'No houses or angles'}</span><span>Engine {run.chart.engineVersion}</span></div>
         {run.chart.flags.includes('polar-fallback') && <p class="callout">Placidus is unavailable at this latitude. The engine used whole-sign houses; the receipt records the fallback.</p>}
-        {!run.chart.input.timeKnown && <p class="callout">Birth time unknown. Positions use midday as a stand-in, so the rising sign and houses aren't shown, and the Moon may have been in a different sign at your actual time of birth.</p>}
+        {!run.chart.input.timeKnown && <p class="callout">Birth time unknown. Positions are for 12:00 UTC on your birth date, so the rising sign and houses aren't shown, and the Moon may have been in a different sign at your actual time of birth.{sunSigns.length > 1 && ` The Sun moved from ${signLabel(sunSigns[0])} into ${signLabel(sunSigns[1])} around this date, so your Sun sign depends on when and where you were born.`}</p>}
         {run.chart.input.timeKnown && !run.chart.houses && <p class="callout">No location supplied. Add both coordinates to calculate houses and angles.</p>}
         <div class="compare-control"><label class="check"><input type="checkbox" checked={compare} disabled={!run.chart.houses} onChange={e => setCompare(e.currentTarget.checked)} /> Compare house systems</label>{comparison && <span>{changed} of {changes.length} placements change house</span>}</div>
         {comparisonResult.error && <p class="error" role="alert">{comparisonResult.error}</p>}
@@ -167,6 +175,7 @@ function App() {
         <div class="assistant-action"><button disabled={!selection || sharing} onClick={() => setShareOpen(!shareOpen)} aria-expanded={shareOpen}>Ask about this</button><p>Only the selection you review is shared. Chart positions can reveal personal information.</p>{shareOpen && <div class="share-preview"><h3>Review this selection</h3><p>{selectedTitle}, its computed facts, and the calculation settings shown below.</p><details><summary>See exactly what's shared</summary><pre tabIndex={0}>{context}</pre></details><p>{available ? 'Your assistant provider will receive these facts. Earlier shared selections remain in the conversation.' : 'Open Chart Studio through the connected plugin to share this selection.'}</p><button disabled={!available || sharing} onClick={() => void share()}>{sharing ? 'Sharing…' : 'Share these facts'}</button><button class="quiet" disabled={sharing} onClick={() => setShareOpen(false)}>Cancel</button></div>}<p role="status">{notice}</p></div>
       </aside>
     </div>
+    {!example && workspace === 'chart' && <YourWeekSection run={run} />}
     <section class="records" aria-label="Calculation details"><div class="record-tabs" role="group" aria-label="View calculation details">{(['placements','aspects','receipt'] as const).map(name => <button key={name} aria-pressed={tab === name} onClick={() => setTab(name)}>{titleCase(name)}</button>)}</div>
       {tab === 'placements' && <div class="placement-grid">{scene.bodies.map(b => <button key={b.body} aria-pressed={selection?.kind === 'body' && selection.body === b.body} onClick={() => select({ kind: 'body', body: b.body })}><span>{b.body}</span><strong>{formatLongitude(b.lon)}</strong><small>{b.house ? `House ${b.house}` : 'House unavailable'}{b.retrograde ? ' · retrograde' : ''}</small></button>)}</div>}
       {tab === 'aspects' && <div class="aspect-grid">{scene.aspects.map(a => <button key={entityId({ kind: 'aspect', ...a })} onClick={() => select({ kind: 'aspect', ...a })}><span>{a.a} {a.type} {a.b}</span><small>Orb {a.orb.toFixed(3)}° · {a.applying ? 'applying' : 'separating'}</small></button>)}</div>}

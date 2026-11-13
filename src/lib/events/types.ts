@@ -78,6 +78,12 @@ export interface EventFacts {
   totalMinutes?: number;
   /** Traditional almanac name for full moons ('Buck', 'Blue', …). */
   moonName?: string;
+  /**
+   * The committed catalog instant and title that name the page (its id,
+   * path and publication receipt), when the printed `at`/`start`/`end` and
+   * `title` use NASA's instant instead (src/lib/nasa-instants.ts).
+   */
+  committed?: { anchor: string; title: string };
   provenance: EventProvenance;
 }
 

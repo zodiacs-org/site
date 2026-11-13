@@ -67,8 +67,8 @@
 .cmp__why li { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--hair-2); border-radius: 12px; }
 .cmp__badge {
   justify-self: start; padding: 2px 9px; border-radius: var(--r-full);
-  border: 1px solid var(--hair-2); font-family: var(--font-mono);
-  font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  border: 1px solid var(--hair-2); font-family: var(--font-sans);
+  font-size: 12px; letter-spacing: 0; color: var(--muted);
 }
 .cmp__badge[data-badge="reproduced"] { border-color: color-mix(in oklab, var(--sign-virgo) 55%, transparent); color: var(--sign-virgo); }
 .cmp__badge[data-badge="hypothesis"] { border-color: color-mix(in oklab, var(--sign-libra) 50%, transparent); color: var(--sign-libra); }

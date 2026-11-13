@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.22",
+  "version": "0.1.0-rc.26",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -20,23 +20,37 @@
     "src/lib/compute-api/constants.ts",
     "src/lib/compute-api/errors.ts",
     "src/lib/compute-api/local-time.ts",
-    "src/lib/engine/time-basis.mjs",
     "src/lib/time/civil-date.ts",
     "src/lib/compare/diff.ts",
     "src/lib/compare/angles.ts",
     "src/lib/compare/replay.ts",
+    "src/mcp/time-tools.ts",
+    "src/mcp/places.ts",
+    "src/mcp/places-source.ts",
+    "src/lib/geo/rank.ts",
+    "src/lib/compute-api/local-time-source.ts",
+    "src/lib/time/zone-names.ts",
+    "src/lib/time/calendar.ts",
+    "src/lib/time/calendar-choice.ts",
+    "src/lib/time/birth-calendar.ts",
+    "src/data/gregorian-adoption.ts",
+    "src/data/tz-names.json",
+    "public/data/cities/",
+    "src/lib/time-atlas/index.ts",
+    "src/lib/time-atlas/lib.mjs",
+    "src/lib/time-atlas/places.ts",
+    "src/data/time-atlas/",
     "scripts/build-mcp-server.mjs"
   ],
   "bundled": {
-    "note": "Engine 1.0.0 and the site comparison are inlined into server.mjs. The engine was published to npm on 2026-10-11 under the latest tag; the bundle is built from the archive whose SHA-256 is below, which npm's tarball matches. The adapter is an unpublished candidate. Bundling keeps one copy of the comparison rules.",
+    "note": "Engine 1.1.0-rc.2 and the site comparison are inlined into server.mjs. The engine is an unpublished candidate: npm serves 1.0.0 under the latest tag, which computes the same values, and the bundle is built from the candidate's archive, whose SHA-256 is below. The adapter is an unpublished candidate. Bundling keeps one copy of the comparison rules.",
     "engine": {
       "package": "@zodiacs/engine",
-      "version": "1.0.0",
-      "releaseStatus": "published",
-      "registry": "npm",
+      "version": "1.1.0-rc.2",
+      "releaseStatus": "unpublished-candidate",
       "sourceRepository": "https://github.com/zodiacs-org/engine",
       "sourcePackagePath": "",
-      "artifactSha256": "c4d3754de899fb98882331e6d7b9ce3ce77fb2072baeb002aa0ef8c77b0ab0f6"
+      "artifactSha256": "c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c"
     },
     "ephemeris": {
       "name": "astronomy-engine",
@@ -48,7 +62,22 @@
     },
     "computeApi": {
       "modules": "src/lib/compute-api/",
-      "note": "The hosted compute API's parsers and positions, events and sky-fact calculations, inlined into server.mjs, so get_positions, find_events and check_sky_fact return what POST https://zodiacs.org/api/v1/positions, /events and /sky-fact return for the same request, without a zone."
+      "note": "The hosted compute API's parsers and positions, events, sky-fact and time calculations, inlined into server.mjs, so get_positions, find_events, check_sky_fact and resolve_birth_time return what POST https://zodiacs.org/api/v1/positions, /events, /sky-fact and /time return for the same request. The first three take no zone; resolve_birth_time reads its zone with the engine's geo entry and the zone histories the engine ships, which server.mjs carries."
+    },
+    "places": {
+      "index": "public/data/cities/",
+      "source": "GeoNames cities15000",
+      "licence": "CC BY 4.0",
+      "rows": 33934,
+      "ranking": "src/lib/geo/rank.ts",
+      "note": "The site's birthplace index, which scripts/build-cities.mjs builds and the site's calculators fetch, inlined into server.mjs for search_places with the ranking the site's search uses."
+    },
+    "timeAtlas": {
+      "name": "Zodiacs.org historical time atlas",
+      "version": "0.1.0",
+      "licence": "CC BY 4.0",
+      "source": "https://github.com/zodiacs-org/engine/tree/7307665bdbc432269fdac006104f661be16000bc/atlas",
+      "note": "The engine repository's atlas data, copied byte for byte, and its resolver (atlas/tools/lib.mjs, MIT) with only its loader changed, inlined into server.mjs for resolve_birth_time's atlasPlace."
     }
   },
   "dependencies": {
@@ -85,6 +114,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.21",
-  "changedSince": "0.1.0-rc.22 is 0.1.0-rc.21 with its README corrected: it describes the comparison benchmark as the eighteen scenarios it runs, where it still said ten record pairs. The bundle's code is rc.21's; apart from the adapter version and the digests over it, every tool's arguments, results and receipts are rc.21's. rc.21 is rc.19 rebuilt after the compute API began reading local times with @zodiacs/engine/geo, and marks a fixed offset such as UTC as certain before 1970; the adapter resolves no time zone, so that bundled code never runs in it. Older archives remain unchanged. The adapter itself is still not on npm."
+  "supersedes": "0.1.0-rc.25",
+  "changedSince": "0.1.0-rc.26 bundles engine 1.1.0-rc.2, an unpublished candidate, in place of 1.1.0-rc.1. The engine's time basis, which server.mjs inlines for get_positions, find_events, check_sky_fact and resolve_birth_time, now comes from the engine's own @zodiacs/engine/time entry in place of the site's bundled copy of it, which the site deleted; the two give the same values (the site's F-53 parity checks). Records and receipts name the new engine version; the tools, their arguments and their results are otherwise rc.25's. The archive's NOTICE carries the engine's 1.1.0-rc.2 notice. Older archives remain unchanged. The adapter itself is still not on npm."
 }

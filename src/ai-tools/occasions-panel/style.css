@@ -1,0 +1,15 @@
+/* The occasions panel's own rows; everything else is the shared card kit (../card-kit/card.css). */
+.best-days { margin: 0; padding: 0; list-style: none; display: grid; }
+.best-days li { display: flex; align-items: center; gap: 14px; padding: 10px 0; }
+.best-days li + li { border-top: 1px solid var(--line-soft); }
+.best-day-words { display: grid; gap: 1px; min-width: 0; }
+.ring.ring-small { --size: 52px; --stroke: 4px; flex: none; }
+.ring-small .ring-number { font-size: 21px; }
+
+.people { margin: 0; padding: 0; list-style: none; display: grid; }
+.people li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; }
+.people li + li { border-top: 1px solid var(--line-soft); }
+.people .disc-row { margin-top: 2px; }
+.person-words { display: grid; gap: 1px; min-width: 0; }
+.people a { font-weight: 600; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; }
+.people a:hover { text-decoration-color: var(--accent); }

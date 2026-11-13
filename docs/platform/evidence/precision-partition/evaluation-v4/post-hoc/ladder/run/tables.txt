@@ -1,0 +1,426 @@
+ladder run: 2026-10-31T19:29:40.262Z to 2026-10-31T19:30:10.396Z, node v22.22.2 darwin-arm64
+pack: container 9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355, payload 0c7e1c9357e44f6463dd7f68418865e699a5758325cc04d02a6cd24b56900102, compiler 1.1.0
+scored: no (post hoc; the F windows were opened by earlier versions)
+
+case  rung        tree   status            complete  evaluations       cells  events  unresolved  excluded  ms
+F1    geometric   v1     finished          true               57          12       1           0         0 2
+F1    geometric   #860   finished          true               57          12       1           0         0 2
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F1    retarded    v1     finished          true              635          12       1           0         0 5
+F1    retarded    #860   finished          true              635          12       1           0         0 5
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F1    aberrated   v1     finished          true              635          12       1           0         0 3
+F1    aberrated   #860   finished          true              635          12       1           0         0 4
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F1    ofDate      v1     finished          true              635          12       1           0         0 9
+F1    ofDate      #860   finished          true              635          12       1           0         0 9
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F1    deflected   v1     finished          true              635          12       1           0         0 5
+F1    deflected   #860   finished          true              635          12       1           0         0 6
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F2    geometric   v1     finished          true            1,316         290      11           0         0 1
+F2    geometric   #860   finished          true            1,316         290      11           0         0 1
+                  same-event pairs 11 of 11 v1 events; lost 0; task-definition lost 0; bit-identical pairs 11; same counts true; both established true; counts equal where both established true; whole result identical true
+F2    retarded    v1     finished          true          264,348      10,130      11           0         0 416
+F2    retarded    #860   finished          true           31,312         592      11           0         0 55
+                  same-event pairs 11 of 11 v1 events; lost 0; task-definition lost 0; bit-identical pairs 0; same counts false; both established true; counts equal where both established true; whole result identical false
+F2    aberrated   v1     finished          true          264,328      10,130      11           0         0 404
+F2    aberrated   #860   finished          true           28,384         484      11           0         0 46
+                  same-event pairs 11 of 11 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts false; both established true; counts equal where both established true; whole result identical false
+F2    ofDate      v1     finished          true          269,422      10,320      11           0         0 782
+F2    ofDate      #860   finished          true           28,204         490      11           0         0 93
+                  same-event pairs 11 of 11 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts false; both established true; counts equal where both established true; whole result identical false
+F2    deflected   v1     budget-exhausted  false       4,000,001     157,818       2           2         1 9367
+F2    deflected   #860   finished          false       1,594,431      61,718      11          20        10 3469
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts false; both established false; counts equal where both established true; whole result identical false
+F3    geometric   v1     finished          true              128          55       1           0         0 0
+F3    geometric   #860   finished          true              128          55       1           0         0 0
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F3    retarded    v1     finished          true            2,307          47       1           0         0 6
+F3    retarded    #860   finished          true            2,307          47       1           0         0 4
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F3    aberrated   v1     finished          true            2,307          47       1           0         0 6
+F3    aberrated   #860   finished          true            2,307          47       1           0         0 5
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F3    ofDate      v1     finished          true            2,307          47       1           0         0 8
+F3    ofDate      #860   finished          true            2,307          47       1           0         0 8
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F3    deflected   v1     finished          false       1,917,153      74,085       1          10         5 4606
+F3    deflected   #860   finished          false       1,917,153      74,085       1          10         5 4481
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established false; counts equal where both established true; whole result identical true
+F4    geometric   v1     finished          true              154          24       1           0         0 0
+F4    geometric   #860   finished          true              154          24       1           0         0 0
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F4    retarded    v1     finished          true            1,671          18       1           0         0 3
+F4    retarded    #860   finished          true            1,671          18       1           0         0 4
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F4    aberrated   v1     finished          true            1,671          18       1           0         0 3
+F4    aberrated   #860   finished          true            1,671          18       1           0         0 3
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F4    ofDate      v1     finished          true            1,622          18       1           0         0 9
+F4    ofDate      #860   finished          true            1,622          18       1           0         0 8
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F4    deflected   v1     finished          false         515,262      30,438       0           2         1 1378
+F4    deflected   #860   finished          false         515,262      30,438       0           2         1 1357
+                  same-event pairs 0 of 0 v1 events; lost 0; task-definition lost 0; bit-identical pairs 0; same counts true; both established false; counts equal where both established true; whole result identical true
+F5    geometric   v1     finished          true               52          11       1           0         0 0
+F5    geometric   #860   finished          true               52          11       1           0         0 0
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F5    retarded    v1     finished          true              706          11       1           0         0 2
+F5    retarded    #860   finished          true              706          11       1           0         0 1
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F5    aberrated   v1     finished          true              706          11       1           0         0 1
+F5    aberrated   #860   finished          true              706          11       1           0         0 1
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F5    ofDate      v1     finished          true              684          11       1           0         0 4
+F5    ofDate      #860   finished          true              684          11       1           0         0 3
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F5    deflected   v1     finished          false         285,751      17,405       1           2         1 751
+F5    deflected   #860   finished          false         285,751      17,405       1           2         1 750
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established false; counts equal where both established true; whole result identical true
+F6    geometric   v1     finished          true              144          33       2           0         0 0
+F6    geometric   #860   finished          true              144          33       2           0         0 0
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F6    retarded    v1     finished          true            1,190          17       2           0         0 2
+F6    retarded    #860   finished          true            1,190          17       2           0         0 2
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F6    aberrated   v1     finished          true            1,209          17       2           0         0 2
+F6    aberrated   #860   finished          true            1,209          17       2           0         0 3
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F6    ofDate      v1     finished          true            1,206          17       2           0         0 7
+F6    ofDate      #860   finished          true            1,206          17       2           0         0 6
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F6    deflected   v1     finished          true            2,105          55       2           0         0 10
+F6    deflected   #860   finished          true            2,105          55       2           0         0 11
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F7    geometric   v1     finished          true              105          16       2           0         0 0
+F7    geometric   #860   finished          true              105          16       2           0         0 0
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F7    retarded    v1     finished          true            1,066          12       2           0         0 2
+F7    retarded    #860   finished          true            1,066          12       2           0         0 2
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F7    aberrated   v1     finished          true            1,076          12       2           0         0 2
+F7    aberrated   #860   finished          true            1,076          12       2           0         0 2
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F7    ofDate      v1     finished          true            1,050          12       2           0         0 5
+F7    ofDate      #860   finished          true            1,050          12       2           0         0 5
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F7    deflected   v1     finished          false          63,956       3,978       2           2         1 161
+F7    deflected   #860   finished          false          63,956       3,978       2           2         1 159
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established false; counts equal where both established true; whole result identical true
+F8    geometric   v1     finished          true              134          30       2           0         0 0
+F8    geometric   #860   finished          true              134          30       2           0         0 0
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F8    retarded    v1     finished          true            1,188          20       2           0         0 2
+F8    retarded    #860   finished          true            1,188          20       2           0         0 2
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F8    aberrated   v1     finished          true            1,178          20       2           0         0 2
+F8    aberrated   #860   finished          true            1,178          20       2           0         0 2
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F8    ofDate      v1     finished          true            1,242          20       2           0         0 6
+F8    ofDate      #860   finished          true            1,242          20       2           0         0 5
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F8    deflected   v1     finished          false          58,351       3,616       2           2         1 139
+F8    deflected   #860   finished          false          58,351       3,616       2           2         1 138
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established false; counts equal where both established true; whole result identical true
+F9    geometric   v1     finished          true               67          15       1           0         0 0
+F9    geometric   #860   finished          true               67          15       1           0         0 0
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F9    retarded    v1     finished          true              685          13       1           0         0 1
+F9    retarded    #860   finished          true              685          13       1           0         0 2
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F9    aberrated   v1     finished          true              685          13       1           0         0 1
+F9    aberrated   #860   finished          true              685          13       1           0         0 1
+                  same-event pairs 1 of 1 v1 events; lost 0; task-definition lost 0; bit-identical pairs 1; same counts true; both established true; counts equal where both established true; whole result identical true
+F9    ofDate      v1     finished          true            1,045          13       2           0         0 6
+F9    ofDate      #860   finished          true            1,045          13       2           0         0 5
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F9    deflected   v1     finished          false          55,409       3,445       2           2         1 131
+F9    deflected   #860   finished          false          55,409       3,445       2           2         1 129
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established false; counts equal where both established true; whole result identical true
+F10   geometric   v1     finished          true              131          51       0           0         0 0
+F10   geometric   #860   finished          true              131          51       0           0         0 0
+                  same-event pairs 0 of 0 v1 events; lost 0; task-definition lost 0; bit-identical pairs 0; same counts true; both established true; counts equal where both established true; whole result identical true
+F10   retarded    v1     finished          true              686          27       0           0         0 1
+F10   retarded    #860   finished          true              686          27       0           0         0 1
+                  same-event pairs 0 of 0 v1 events; lost 0; task-definition lost 0; bit-identical pairs 0; same counts true; both established true; counts equal where both established true; whole result identical true
+F10   aberrated   v1     finished          true              728          29       0           0         0 1
+F10   aberrated   #860   finished          true              728          29       0           0         0 1
+                  same-event pairs 0 of 0 v1 events; lost 0; task-definition lost 0; bit-identical pairs 0; same counts true; both established true; counts equal where both established true; whole result identical true
+F10   ofDate      v1     finished          true            1,271          23       2           0         0 5
+F10   ofDate      #860   finished          true            1,271          23       2           0         0 5
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+F10   deflected   v1     finished          true            5,092         207       2           0         0 17
+F10   deflected   #860   finished          true            5,092         207       2           0         0 16
+                  same-event pairs 2 of 2 v1 events; lost 0; task-definition lost 0; bit-identical pairs 2; same counts true; both established true; counts equal where both established true; whole result identical true
+
+events with brackets (TDB seconds past J2000; the geometric rung's TT days times 86,400)
+F1    geometric   v1     #0   -776032626.1854842  [-776032626.1855245, -776032626.185444]  width 8.047e-5 s  increasing  transversal  1975-05-30T15:21:44.630Z
+F1    geometric   #860   #0   -776032626.1854842  [-776032626.1855245, -776032626.185444]  width 8.047e-5 s  increasing  transversal  1975-05-30T15:21:44.630Z
+F1    retarded    v1     #0   -776032626.3205066  [-776032626.3205469, -776032626.3204664]  width 8.047e-5 s  increasing  transversal  1975-05-30T15:21:44.495Z
+F1    retarded    #860   #0   -776032626.3205066  [-776032626.3205469, -776032626.3204664]  width 8.047e-5 s  increasing  transversal  1975-05-30T15:21:44.495Z
+F1    aberrated   v1     #0   -776032120.3207567  [-776032120.320797, -776032120.3207165]  width 8.047e-5 s  increasing  transversal  1975-05-30T15:30:10.495Z
+F1    aberrated   #860   #0   -776032120.3207567  [-776032120.320797, -776032120.3207165]  width 8.047e-5 s  increasing  transversal  1975-05-30T15:30:10.495Z
+F1    ofDate      v1     #0   -776001530.7718501  [-776001530.7718903, -776001530.7718098]  width 8.047e-5 s  increasing  transversal  1975-05-31T00:00:00.044Z
+F1    ofDate      #860   #0   -776001530.7718501  [-776001530.7718903, -776001530.7718098]  width 8.047e-5 s  increasing  transversal  1975-05-31T00:00:00.044Z
+F1    deflected   v1     #0   -776001530.7718501  [-776001530.7718903, -776001530.7718098]  width 8.047e-5 s  increasing  transversal  1975-05-31T00:00:00.044Z
+F1    deflected   #860   #0   -776001530.7718501  [-776001530.7718903, -776001530.7718098]  width 8.047e-5 s  increasing  transversal  1975-05-31T00:00:00.044Z
+F2    geometric   v1     #0   -710040606.7981821  [-710040606.7982211, -710040606.7981431]  width 7.796e-5 s  increasing  transversal  1977-07-02T10:28:44.017Z
+F2    geometric   v1     #1   -707671341.0459146  [-707671341.0459548, -707671341.0458744]  width 8.047e-5 s  increasing  transversal  1977-07-29T20:36:29.770Z
+F2    geometric   v1     #2   -705307765.6509027  [-705307765.6509429, -705307765.6508625]  width 8.047e-5 s  increasing  transversal  1977-08-26T05:09:25.165Z
+F2    geometric   v1     #3   -702951699.407275  [-702951699.4073153, -702951699.4072348]  width 8.047e-5 s  increasing  transversal  1977-09-22T11:37:11.408Z
+F2    geometric   v1     #4   -700599477.1592126  [-700599477.1592528, -700599477.1591723]  width 8.047e-5 s  increasing  transversal  1977-10-19T17:00:53.656Z
+F2    geometric   v1     #5   -698243390.8368363  [-698243390.8368766, -698243390.8367962]  width 8.047e-5 s  increasing  transversal  1977-11-15T23:28:59.979Z
+F2    geometric   v1     #6   -695877887.4116466  [-695877887.4116868, -695877887.4116063]  width 8.047e-5 s  increasing  transversal  1977-12-13T08:34:03.404Z
+F2    geometric   v1     #7   -693504973.4684541  [-693504973.4684944, -693504973.468414]  width 8.047e-5 s  increasing  transversal  1978-01-09T19:42:37.347Z
+F2    geometric   v1     #8   -691132715.480505  [-691132715.4805452, -691132715.4804647]  width 8.047e-5 s  increasing  transversal  1978-02-06T06:40:15.335Z
+F2    geometric   v1     #9   -688768606.6237316  [-688768606.6237718, -688768606.6236913]  width 8.047e-5 s  increasing  transversal  1978-03-05T15:22:04.192Z
+F2    geometric   v1     #10  -686413557.4798777  [-686413557.479918, -686413557.4798375]  width 8.047e-5 s  increasing  transversal  1978-04-01T21:32:53.336Z
+F2    geometric   #860   #0   -710040606.7981821  [-710040606.7982211, -710040606.7981431]  width 7.796e-5 s  increasing  transversal  1977-07-02T10:28:44.017Z
+F2    geometric   #860   #1   -707671341.0459146  [-707671341.0459548, -707671341.0458744]  width 8.047e-5 s  increasing  transversal  1977-07-29T20:36:29.770Z
+F2    geometric   #860   #2   -705307765.6509027  [-705307765.6509429, -705307765.6508625]  width 8.047e-5 s  increasing  transversal  1977-08-26T05:09:25.165Z
+F2    geometric   #860   #3   -702951699.407275  [-702951699.4073153, -702951699.4072348]  width 8.047e-5 s  increasing  transversal  1977-09-22T11:37:11.408Z
+F2    geometric   #860   #4   -700599477.1592126  [-700599477.1592528, -700599477.1591723]  width 8.047e-5 s  increasing  transversal  1977-10-19T17:00:53.656Z
+F2    geometric   #860   #5   -698243390.8368363  [-698243390.8368766, -698243390.8367962]  width 8.047e-5 s  increasing  transversal  1977-11-15T23:28:59.979Z
+F2    geometric   #860   #6   -695877887.4116466  [-695877887.4116868, -695877887.4116063]  width 8.047e-5 s  increasing  transversal  1977-12-13T08:34:03.404Z
+F2    geometric   #860   #7   -693504973.4684541  [-693504973.4684944, -693504973.468414]  width 8.047e-5 s  increasing  transversal  1978-01-09T19:42:37.347Z
+F2    geometric   #860   #8   -691132715.480505  [-691132715.4805452, -691132715.4804647]  width 8.047e-5 s  increasing  transversal  1978-02-06T06:40:15.335Z
+F2    geometric   #860   #9   -688768606.6237316  [-688768606.6237718, -688768606.6236913]  width 8.047e-5 s  increasing  transversal  1978-03-05T15:22:04.192Z
+F2    geometric   #860   #10  -686413557.4798777  [-686413557.479918, -686413557.4798375]  width 8.047e-5 s  increasing  transversal  1978-04-01T21:32:53.336Z
+F2    retarded    v1     #0   -710040574.2400426  [-710040574.2431002, -710040574.236985]  width 6.115e-3 s  increasing  transversal  1977-07-02T10:29:16.575Z
+F2    retarded    v1     #1   -707671306.9795132  [-707671306.9808006, -707671306.9782257]  width 2.575e-3 s  increasing  transversal  1977-07-29T20:37:03.836Z
+F2    retarded    v1     #2   -705307736.4607573  [-705307736.461401, -705307736.4601135]  width 1.287e-3 s  increasing  transversal  1977-08-26T05:09:54.355Z
+F2    retarded    v1     #3   -702951681.5090418  [-702951681.5096855, -702951681.508398]  width 1.287e-3 s  increasing  transversal  1977-09-22T11:37:29.306Z
+F2    retarded    v1     #4   -700599475.0614166  [-700599475.0717163, -700599475.051117]  width 2.060e-2 s  increasing  transversal  1977-10-19T17:00:55.754Z
+F2    retarded    v1     #5   -698243404.7264814  [-698243404.7271252, -698243404.7258377]  width 1.287e-3 s  increasing  transversal  1977-11-15T23:28:46.089Z
+F2    retarded    v1     #6   -695877913.1579161  [-695877913.1585598, -695877913.1572723]  width 1.287e-3 s  increasing  transversal  1977-12-13T08:33:37.658Z
+F2    retarded    v1     #7   -693505004.9372435  [-693505004.9378872, -693505004.9365997]  width 1.287e-3 s  increasing  transversal  1978-01-09T19:42:05.878Z
+F2    retarded    v1     #8   -691132746.0652113  [-691132746.065855, -691132746.0645676]  width 1.287e-3 s  increasing  transversal  1978-02-06T06:39:44.750Z
+F2    retarded    v1     #9   -688768629.521656  [-688768629.524231, -688768629.5190811]  width 5.150e-3 s  increasing  transversal  1978-03-05T15:21:41.294Z
+F2    retarded    v1     #10  -686413566.8233395  [-686413566.8246269, -686413566.822052]  width 2.575e-3 s  increasing  transversal  1978-04-01T21:32:43.992Z
+F2    retarded    #860   #0   -710040574.2398515  [-710040574.2400426, -710040574.2396603]  width 3.823e-4 s  increasing  transversal  1977-07-02T10:29:16.576Z
+F2    retarded    #860   #1   -707671306.9793522  [-707671306.9795132, -707671306.9791913]  width 3.219e-4 s  increasing  transversal  1977-07-29T20:37:03.836Z
+F2    retarded    #860   #2   -705307736.4609182  [-705307736.4610791, -705307736.4607573]  width 3.219e-4 s  increasing  transversal  1977-08-26T05:09:54.355Z
+F2    retarded    #860   #3   -702951681.5088004  [-702951681.5088809, -702951681.5087199]  width 1.609e-4 s  increasing  transversal  1977-09-22T11:37:29.307Z
+F2    retarded    #860   #4   -700599475.0615776  [-700599475.0617385, -700599475.0614166]  width 3.219e-4 s  increasing  transversal  1977-10-19T17:00:55.754Z
+F2    retarded    #860   #5   -698243404.7266424  [-698243404.7268033, -698243404.7264814]  width 3.219e-4 s  increasing  transversal  1977-11-15T23:28:46.089Z
+F2    retarded    #860   #6   -695877913.1579965  [-695877913.158077, -695877913.1579161]  width 1.609e-4 s  increasing  transversal  1977-12-13T08:33:37.658Z
+F2    retarded    #860   #7   -693505004.9374849  [-693505004.9375653, -693505004.9374044]  width 1.609e-4 s  increasing  transversal  1978-01-09T19:42:05.878Z
+F2    retarded    #860   #8   -691132746.0651308  [-691132746.0652113, -691132746.0650504]  width 1.609e-4 s  increasing  transversal  1978-02-06T06:39:44.750Z
+F2    retarded    #860   #9   -688768629.5213342  [-688768629.521656, -688768629.5210123]  width 6.437e-4 s  increasing  transversal  1978-03-05T15:21:41.294Z
+F2    retarded    #860   #10  -686413566.8235809  [-686413566.8236613, -686413566.8235004]  width 1.609e-4 s  increasing  transversal  1978-04-01T21:32:43.992Z
+F2    retarded    pair v1 #6 / #860 #6: |dt| 8.047e-5 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    retarded    pair v1 #8 / #860 #8: |dt| 8.047e-5 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    retarded    pair v1 #1 / #860 #1: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    retarded    pair v1 #2 / #860 #2: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    retarded    pair v1 #4 / #860 #4: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    retarded    pair v1 #5 / #860 #5: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    retarded    pair v1 #0 / #860 #0: |dt| 1.911e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    retarded    pair v1 #3 / #860 #3: |dt| 2.414e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    retarded    pair v1 #7 / #860 #7: |dt| 2.414e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    retarded    pair v1 #10 / #860 #10: |dt| 2.414e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    retarded    pair v1 #9 / #860 #9: |dt| 3.219e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    aberrated   v1     #0   -710040605.5833914  [-710040605.5895066, -710040605.5772763]  width 1.223e-2 s  increasing  transversal  1977-07-02T10:28:45.232Z
+F2    aberrated   v1     #1   -707671339.8258448  [-707671339.8264885, -707671339.825201]  width 1.287e-3 s  increasing  transversal  1977-07-29T20:36:30.990Z
+F2    aberrated   v1     #2   -705307764.4166708  [-705307764.4173145, -705307764.4160271]  width 1.287e-3 s  increasing  transversal  1977-08-26T05:09:26.399Z
+F2    aberrated   v1     #3   -702951698.1604099  [-702951698.1616974, -702951698.1591225]  width 2.575e-3 s  increasing  transversal  1977-09-22T11:37:12.655Z
+F2    aberrated   v1     #4   -700599475.9137154  [-700599475.9162903, -700599475.9111404]  width 5.150e-3 s  increasing  transversal  1977-10-19T17:00:54.902Z
+F2    aberrated   v1     #5   -698243389.6084785  [-698243389.6110535, -698243389.6059036]  width 5.150e-3 s  increasing  transversal  1977-11-15T23:29:01.207Z
+F2    aberrated   v1     #6   -695877886.2042904  [-695877886.2055779, -695877886.2030029]  width 2.575e-3 s  increasing  transversal  1977-12-13T08:34:04.611Z
+F2    aberrated   v1     #7   -693504972.2705126  [-693504972.2711563, -693504972.2698689]  width 1.287e-3 s  increasing  transversal  1978-01-09T19:42:38.545Z
+F2    aberrated   v1     #8   -691132714.2745972  [-691132714.3157959, -691132714.2333984]  width 8.240e-2 s  increasing  transversal  1978-02-06T06:40:16.541Z
+F2    aberrated   v1     #9   -688768605.3991556  [-688768605.3997993, -688768605.3985119]  width 1.287e-3 s  increasing  transversal  1978-03-05T15:22:05.416Z
+F2    aberrated   v1     #10  -686413556.2429905  [-686413556.244278, -686413556.241703]  width 2.575e-3 s  increasing  transversal  1978-04-01T21:32:54.573Z
+F2    aberrated   #860   #0   -710040605.5831048  [-710040605.5832003, -710040605.5830092]  width 1.911e-4 s  increasing  transversal  1977-07-02T10:28:45.232Z
+F2    aberrated   #860   #1   -707671339.8258448  [-707671339.8264885, -707671339.825201]  width 1.287e-3 s  increasing  transversal  1977-07-29T20:36:30.990Z
+F2    aberrated   #860   #2   -705307764.4165099  [-705307764.4166708, -705307764.4163489]  width 3.219e-4 s  increasing  transversal  1977-08-26T05:09:26.399Z
+F2    aberrated   #860   #3   -702951698.1604099  [-702951698.1616974, -702951698.1591225]  width 2.575e-3 s  increasing  transversal  1977-09-22T11:37:12.655Z
+F2    aberrated   #860   #4   -700599475.9135544  [-700599475.9137154, -700599475.9133935]  width 3.219e-4 s  increasing  transversal  1977-10-19T17:00:54.902Z
+F2    aberrated   #860   #5   -698243389.6083176  [-698243389.6084785, -698243389.6081567]  width 3.219e-4 s  increasing  transversal  1977-11-15T23:29:01.207Z
+F2    aberrated   #860   #6   -695877886.2043709  [-695877886.2044513, -695877886.2042904]  width 1.609e-4 s  increasing  transversal  1977-12-13T08:34:04.611Z
+F2    aberrated   #860   #7   -693504972.2706735  [-693504972.2708344, -693504972.2705126]  width 3.219e-4 s  increasing  transversal  1978-01-09T19:42:38.545Z
+F2    aberrated   #860   #8   -691132714.2742753  [-691132714.2745972, -691132714.2739534]  width 6.437e-4 s  increasing  transversal  1978-02-06T06:40:16.541Z
+F2    aberrated   #860   #9   -688768605.3992361  [-688768605.3993165, -688768605.3991556]  width 1.609e-4 s  increasing  transversal  1978-03-05T15:22:05.416Z
+F2    aberrated   #860   #10  -686413556.2432319  [-686413556.2433124, -686413556.2431514]  width 1.609e-4 s  increasing  transversal  1978-04-01T21:32:54.572Z
+F2    aberrated   pair v1 #6 / #860 #6: |dt| 8.047e-5 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    aberrated   pair v1 #9 / #860 #9: |dt| 8.047e-5 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    aberrated   pair v1 #2 / #860 #2: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    aberrated   pair v1 #4 / #860 #4: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    aberrated   pair v1 #5 / #860 #5: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    aberrated   pair v1 #7 / #860 #7: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    aberrated   pair v1 #10 / #860 #10: |dt| 2.414e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    aberrated   pair v1 #0 / #860 #0: |dt| 2.866e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    aberrated   pair v1 #8 / #860 #8: |dt| 3.219e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    ofDate      v1     #0   -710038772.561597  [-710038772.5646546, -710038772.5585394]  width 6.115e-3 s  increasing  transversal  1977-07-02T10:59:18.254Z
+F2    ofDate      v1     #1   -707669503.4059525  [-707669503.4111023, -707669503.4008026]  width 1.030e-2 s  increasing  transversal  1977-07-29T21:07:07.410Z
+F2    ofDate      v1     #2   -705305889.3118143  [-705305889.312458, -705305889.3111706]  width 1.287e-3 s  increasing  transversal  1977-08-26T05:40:41.504Z
+F2    ofDate      v1     #3   -702949782.8082561  [-702949782.8095436, -702949782.8069687]  width 2.575e-3 s  increasing  transversal  1977-09-22T12:09:08.007Z
+F2    ofDate      v1     #4   -700597561.3462687  [-700597561.3469124, -700597561.3456249]  width 1.287e-3 s  increasing  transversal  1977-10-19T17:32:49.469Z
+F2    ofDate      v1     #5   -698241530.8157444  [-698241530.8170319, -698241530.8144569]  width 2.575e-3 s  increasing  transversal  1977-11-16T00:00:00.000Z
+F2    ofDate      v1     #6   -695876102.025032  [-695876102.0301819, -695876102.0198822]  width 1.030e-2 s  increasing  transversal  1977-12-13T09:03:48.790Z
+F2    ofDate      v1     #7   -693503229.1361332  [-693503229.1374207, -693503229.1348457]  width 2.575e-3 s  increasing  transversal  1978-01-09T20:11:41.679Z
+F2    ofDate      v1     #8   -691130955.3192616  [-691130955.320549, -691130955.3179741]  width 2.575e-3 s  increasing  transversal  1978-02-06T07:09:35.496Z
+F2    ofDate      v1     #9   -688766794.0931082  [-688766794.0937519, -688766794.0924644]  width 1.287e-3 s  increasing  transversal  1978-03-05T15:52:16.722Z
+F2    ofDate      v1     #10  -686411706.0421228  [-686411706.0427666, -686411706.0414791]  width 1.287e-3 s  increasing  transversal  1978-04-01T22:03:44.773Z
+F2    ofDate      #860   #0   -710038772.561597  [-710038772.5646546, -710038772.5585394]  width 6.115e-3 s  increasing  transversal  1977-07-02T10:59:18.254Z
+F2    ofDate      #860   #1   -707669503.4057915  [-707669503.4059525, -707669503.4056306]  width 3.219e-4 s  increasing  transversal  1977-07-29T21:07:07.410Z
+F2    ofDate      #860   #2   -705305889.3119752  [-705305889.3121362, -705305889.3118143]  width 3.219e-4 s  increasing  transversal  1977-08-26T05:40:41.504Z
+F2    ofDate      #860   #3   -702949782.8084171  [-702949782.808578, -702949782.8082561]  width 3.219e-4 s  increasing  transversal  1977-09-22T12:09:08.007Z
+F2    ofDate      #860   #4   -700597561.3463491  [-700597561.3464296, -700597561.3462687]  width 1.609e-4 s  increasing  transversal  1977-10-19T17:32:49.469Z
+F2    ofDate      #860   #5   -698241530.8160663  [-698241530.8163881, -698241530.8157444]  width 6.437e-4 s  increasing  transversal  1977-11-15T23:59:59.999Z
+F2    ofDate      #860   #6   -695876102.0247102  [-695876102.025032, -695876102.0243883]  width 6.437e-4 s  increasing  transversal  1977-12-13T09:03:48.791Z
+F2    ofDate      #860   #7   -693503229.1362941  [-693503229.136455, -693503229.1361332]  width 3.219e-4 s  increasing  transversal  1978-01-09T20:11:41.679Z
+F2    ofDate      #860   #8   -691130955.3190202  [-691130955.3191006, -691130955.3189397]  width 1.609e-4 s  increasing  transversal  1978-02-06T07:09:35.496Z
+F2    ofDate      #860   #9   -688766794.0929472  [-688766794.0931082, -688766794.0927863]  width 3.219e-4 s  increasing  transversal  1978-03-05T15:52:16.723Z
+F2    ofDate      #860   #10  -686411706.0423642  [-686411706.0424447, -686411706.0422838]  width 1.609e-4 s  increasing  transversal  1978-04-01T22:03:44.773Z
+F2    ofDate      pair v1 #4 / #860 #4: |dt| 8.047e-5 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    ofDate      pair v1 #1 / #860 #1: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    ofDate      pair v1 #2 / #860 #2: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    ofDate      pair v1 #3 / #860 #3: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    ofDate      pair v1 #7 / #860 #7: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    ofDate      pair v1 #9 / #860 #9: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    ofDate      pair v1 #8 / #860 #8: |dt| 2.414e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    ofDate      pair v1 #10 / #860 #10: |dt| 2.414e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    ofDate      pair v1 #5 / #860 #5: |dt| 3.219e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    ofDate      pair v1 #6 / #860 #6: |dt| 3.219e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 0 inside true, same event true
+F2    deflected   v1     #0   -710038772.561597  [-710038772.5646546, -710038772.5585394]  width 6.115e-3 s  increasing  transversal  1977-07-02T10:59:18.254Z
+F2    deflected   v1     #1   -707669503.4059525  [-707669503.4111023, -707669503.4008026]  width 1.030e-2 s  increasing  transversal  1977-07-29T21:07:07.410Z
+F2    deflected   #860   #0   -710038772.561597  [-710038772.5646546, -710038772.5585394]  width 6.115e-3 s  increasing  transversal  1977-07-02T10:59:18.254Z
+F2    deflected   #860   #1   -707669503.4057915  [-707669503.4059525, -707669503.4056306]  width 3.219e-4 s  increasing  transversal  1977-07-29T21:07:07.410Z
+F2    deflected   #860   #2   -705305889.3119752  [-705305889.3121362, -705305889.3118143]  width 3.219e-4 s  increasing  transversal  1977-08-26T05:40:41.504Z
+F2    deflected   #860   #3   -702949782.8084171  [-702949782.808578, -702949782.8082561]  width 3.219e-4 s  increasing  transversal  1977-09-22T12:09:08.007Z
+F2    deflected   #860   #4   -700597561.3463491  [-700597561.3464296, -700597561.3462687]  width 1.609e-4 s  increasing  transversal  1977-10-19T17:32:49.469Z
+F2    deflected   #860   #5   -698241530.8160663  [-698241530.8163881, -698241530.8157444]  width 6.437e-4 s  increasing  transversal  1977-11-15T23:59:59.999Z
+F2    deflected   #860   #6   -695876102.0247102  [-695876102.025032, -695876102.0243883]  width 6.437e-4 s  increasing  transversal  1977-12-13T09:03:48.791Z
+F2    deflected   #860   #7   -693503229.1362941  [-693503229.136455, -693503229.1361332]  width 3.219e-4 s  increasing  transversal  1978-01-09T20:11:41.679Z
+F2    deflected   #860   #8   -691130955.3190202  [-691130955.3191006, -691130955.3189397]  width 1.609e-4 s  increasing  transversal  1978-02-06T07:09:35.496Z
+F2    deflected   #860   #9   -688766794.0929472  [-688766794.0931082, -688766794.0927863]  width 3.219e-4 s  increasing  transversal  1978-03-05T15:52:16.723Z
+F2    deflected   #860   #10  -686411706.0423642  [-686411706.0424447, -686411706.0422838]  width 1.609e-4 s  increasing  transversal  1978-04-01T22:03:44.773Z
+F2    deflected   pair v1 #1 / #860 #1: |dt| 1.609e-4 s, brackets overlap (1e-3 s widened) true, reference roots checked 1 inside true, same event true
+F3    geometric   v1     #0   -620494270.2116623  [-620494270.2117026, -620494270.2116221]  width 8.047e-5 s  increasing  transversal  1980-05-03T20:27:40.604Z
+F3    geometric   #860   #0   -620494270.2116623  [-620494270.2117026, -620494270.2116221]  width 8.047e-5 s  increasing  transversal  1980-05-03T20:27:40.604Z
+F3    retarded    v1     #0   -620493869.1983074  [-620493869.1983879, -620493869.1982269]  width 1.609e-4 s  increasing  transversal  1980-05-03T20:34:21.617Z
+F3    retarded    #860   #0   -620493869.1983074  [-620493869.1983879, -620493869.1982269]  width 1.609e-4 s  increasing  transversal  1980-05-03T20:34:21.617Z
+F3    aberrated   v1     #0   -620493626.9615605  [-620493626.9616008, -620493626.9615203]  width 8.047e-5 s  increasing  transversal  1980-05-03T20:38:23.854Z
+F3    aberrated   #860   #0   -620493626.9615605  [-620493626.9616008, -620493626.9615203]  width 8.047e-5 s  increasing  transversal  1980-05-03T20:38:23.854Z
+F3    ofDate      v1     #0   -620481530.9184597  [-620481530.9184998, -620481530.9184194]  width 8.047e-5 s  increasing  transversal  1980-05-03T23:59:59.897Z
+F3    ofDate      #860   #0   -620481530.9184597  [-620481530.9184998, -620481530.9184194]  width 8.047e-5 s  increasing  transversal  1980-05-03T23:59:59.897Z
+F3    deflected   v1     #0   -620481530.7951047  [-620481530.795145, -620481530.7950646]  width 8.047e-5 s  increasing  transversal  1980-05-04T00:00:00.020Z
+F3    deflected   #860   #0   -620481530.7951047  [-620481530.795145, -620481530.7950646]  width 8.047e-5 s  increasing  transversal  1980-05-04T00:00:00.020Z
+F4    geometric   v1     #0   -542739315.166329  [-542739315.1663642, -542739315.1662939]  width 7.033e-5 s  increasing  transversal  1982-10-20T19:03:35.649Z
+F4    geometric   #860   #0   -542739315.166329  [-542739315.1663642, -542739315.1662939]  width 7.033e-5 s  increasing  transversal  1982-10-20T19:03:35.649Z
+F4    retarded    v1     #0   -542738854.6172681  [-542738854.6173033, -542738854.6172328]  width 7.045e-5 s  increasing  transversal  1982-10-20T19:11:16.198Z
+F4    retarded    #860   #0   -542738854.6172681  [-542738854.6173033, -542738854.6172328]  width 7.045e-5 s  increasing  transversal  1982-10-20T19:11:16.198Z
+F4    aberrated   v1     #0   -542738461.0362003  [-542738461.0362355, -542738461.036165]  width 7.045e-5 s  increasing  transversal  1982-10-20T19:17:49.779Z
+F4    aberrated   #860   #0   -542738461.0362003  [-542738461.0362355, -542738461.036165]  width 7.045e-5 s  increasing  transversal  1982-10-20T19:17:49.779Z
+F4    ofDate      v1     #0   -542721531.7514867  [-542721531.7520499, -542721531.7509234]  width 1.127e-3 s  increasing  transversal  1982-10-20T23:59:59.064Z
+F4    ofDate      #860   #0   -542721531.7514867  [-542721531.7520499, -542721531.7509234]  width 1.127e-3 s  increasing  transversal  1982-10-20T23:59:59.064Z
+F5    geometric   v1     #0   -464988220.5131829  [-464988220.51320505, -464988220.5131607]  width 4.435e-5 s  increasing  transversal  1985-04-07T16:35:10.302Z
+F5    geometric   #860   #0   -464988220.5131829  [-464988220.51320505, -464988220.5131607]  width 4.435e-5 s  increasing  transversal  1985-04-07T16:35:10.302Z
+F5    retarded    v1     #0   -464987669.5362881  [-464987669.5363283, -464987669.53624785]  width 8.047e-5 s  increasing  transversal  1985-04-07T16:44:21.279Z
+F5    retarded    #860   #0   -464987669.5362881  [-464987669.5363283, -464987669.53624785]  width 8.047e-5 s  increasing  transversal  1985-04-07T16:44:21.279Z
+F5    aberrated   v1     #0   -464987070.3214735  [-464987070.32155395, -464987070.321393]  width 1.609e-4 s  increasing  transversal  1985-04-07T16:54:20.494Z
+F5    aberrated   #860   #0   -464987070.3214735  [-464987070.32155395, -464987070.321393]  width 1.609e-4 s  increasing  transversal  1985-04-07T16:54:20.494Z
+F5    ofDate      v1     #0   -464961530.4497838  [-464961530.45010567, -464961530.44946194]  width 6.437e-4 s  increasing  transversal  1985-04-08T00:00:00.366Z
+F5    ofDate      #860   #0   -464961530.4497838  [-464961530.45010567, -464961530.44946194]  width 6.437e-4 s  increasing  transversal  1985-04-08T00:00:00.366Z
+F5    deflected   v1     #0   -464961530.7609871  [-464961530.76102734, -464961530.76094687]  width 8.047e-5 s  increasing  transversal  1985-04-08T00:00:00.055Z
+F5    deflected   #860   #0   -464961530.7609871  [-464961530.76102734, -464961530.76094687]  width 8.047e-5 s  increasing  transversal  1985-04-08T00:00:00.055Z
+F6    geometric   v1     #0   -393595982.4287474  [-393595982.42890835, -393595982.4285865]  width 3.219e-4 s  increasing  transversal  1987-07-12T23:45:48.387Z
+F6    geometric   v1     #1   -387068705.8982134  [-387068705.89864117, -387068705.8977856]  width 8.556e-4 s  decreasing  transversal  1987-09-26T12:53:44.917Z
+F6    geometric   #860   #0   -393595982.4287474  [-393595982.42890835, -393595982.4285865]  width 3.219e-4 s  increasing  transversal  1987-07-12T23:45:48.387Z
+F6    geometric   #860   #1   -387068705.8982134  [-387068705.89864117, -387068705.8977856]  width 8.556e-4 s  decreasing  transversal  1987-09-26T12:53:44.917Z
+F6    retarded    v1     #0   -393594036.5060091  [-393594036.50665283, -393594036.5053654]  width 1.287e-3 s  increasing  transversal  1987-07-13T00:18:14.309Z
+F6    retarded    v1     #1   -387070723.14544916  [-387070723.145771, -387070723.1451273]  width 6.437e-4 s  decreasing  transversal  1987-09-26T12:20:07.670Z
+F6    retarded    #860   #0   -393594036.5060091  [-393594036.50665283, -393594036.5053654]  width 1.287e-3 s  increasing  transversal  1987-07-13T00:18:14.309Z
+F6    retarded    #860   #1   -387070723.14544916  [-387070723.145771, -387070723.1451273]  width 6.437e-4 s  decreasing  transversal  1987-09-26T12:20:07.670Z
+F6    aberrated   v1     #0   -393593498.93950224  [-393593498.9398241, -393593498.9391804]  width 6.437e-4 s  increasing  transversal  1987-07-13T00:27:11.876Z
+F6    aberrated   v1     #1   -387066697.0064342  [-387066697.00659513, -387066697.00627327]  width 3.219e-4 s  decreasing  transversal  1987-09-26T13:27:13.809Z
+F6    aberrated   #860   #0   -393593498.93950224  [-393593498.9398241, -393593498.9391804]  width 6.437e-4 s  increasing  transversal  1987-07-13T00:27:11.876Z
+F6    aberrated   #860   #1   -387066697.0064342  [-387066697.00659513, -387066697.00627327]  width 3.219e-4 s  decreasing  transversal  1987-09-26T13:27:13.809Z
+F6    ofDate      v1     #0   -393458832.92473555  [-393458832.9250574, -393458832.9244137]  width 6.437e-4 s  increasing  transversal  1987-07-14T13:51:37.891Z
+F6    ofDate      v1     #1   -387201530.3221643  [-387201530.3223252, -387201530.32200336]  width 3.219e-4 s  decreasing  transversal  1987-09-25T00:00:00.493Z
+F6    ofDate      #860   #0   -393458832.92473555  [-393458832.9250574, -393458832.9244137]  width 6.437e-4 s  increasing  transversal  1987-07-14T13:51:37.891Z
+F6    ofDate      #860   #1   -387201530.3221643  [-387201530.3223252, -387201530.32200336]  width 3.219e-4 s  decreasing  transversal  1987-09-25T00:00:00.493Z
+F6    deflected   v1     #0   -393458832.1332693  [-393458832.13391304, -393458832.1326256]  width 1.287e-3 s  increasing  transversal  1987-07-14T13:51:38.682Z
+F6    deflected   v1     #1   -387201530.4896951  [-387201530.49001694, -387201530.4893732]  width 6.437e-4 s  decreasing  transversal  1987-09-25T00:00:00.326Z
+F6    deflected   #860   #0   -393458832.1332693  [-393458832.13391304, -393458832.1326256]  width 1.287e-3 s  increasing  transversal  1987-07-14T13:51:38.682Z
+F6    deflected   #860   #1   -387201530.4896951  [-387201530.49001694, -387201530.4893732]  width 6.437e-4 s  decreasing  transversal  1987-09-25T00:00:00.326Z
+F7    geometric   v1     #0   -309591483.0215469  [-309591483.02158713, -309591483.02150667]  width 8.047e-5 s  increasing  transversal  1990-03-11T06:20:47.794Z
+F7    geometric   v1     #1   -299933236.3719687  [-299933236.3720089, -299933236.37192845]  width 8.047e-5 s  decreasing  transversal  1990-07-01T01:11:34.444Z
+F7    geometric   #860   #0   -309591483.0215469  [-309591483.02158713, -309591483.02150667]  width 8.047e-5 s  increasing  transversal  1990-03-11T06:20:47.794Z
+F7    geometric   #860   #1   -299933236.3719687  [-299933236.3720089, -299933236.37192845]  width 8.047e-5 s  decreasing  transversal  1990-07-01T01:11:34.444Z
+F7    retarded    v1     #0   -309589612.8734529  [-309589612.87361383, -309589612.87329197]  width 3.219e-4 s  increasing  transversal  1990-03-11T06:51:57.942Z
+F7    retarded    v1     #1   -299935380.05155027  [-299935380.05163074, -299935380.0514698]  width 1.609e-4 s  decreasing  transversal  1990-07-01T00:35:50.764Z
+F7    retarded    #860   #0   -309589612.8734529  [-309589612.87361383, -309589612.87329197]  width 3.219e-4 s  increasing  transversal  1990-03-11T06:51:57.942Z
+F7    retarded    #860   #1   -299935380.05155027  [-299935380.05163074, -299935380.0514698]  width 1.609e-4 s  decreasing  transversal  1990-07-01T00:35:50.764Z
+F7    aberrated   v1     #0   -309586235.6034592  [-309586235.6034994, -309586235.60341895]  width 8.047e-5 s  increasing  transversal  1990-03-11T07:48:15.212Z
+F7    aberrated   v1     #1   -299928733.4861532  [-299928733.4861934, -299928733.48611295]  width 8.047e-5 s  decreasing  transversal  1990-07-01T02:26:37.329Z
+F7    aberrated   #860   #0   -309586235.6034592  [-309586235.6034994, -309586235.60341895]  width 8.047e-5 s  increasing  transversal  1990-03-11T07:48:15.212Z
+F7    aberrated   #860   #1   -299928733.4861532  [-299928733.4861934, -299928733.48611295]  width 8.047e-5 s  decreasing  transversal  1990-07-01T02:26:37.329Z
+F7    ofDate      v1     #0   -309441532.6173842  [-309441532.6175451, -309441532.61722326]  width 3.219e-4 s  increasing  transversal  1990-03-12T23:59:58.198Z
+F7    ofDate      v1     #1   -300087705.68302274  [-300087705.68318367, -300087705.6828618]  width 3.219e-4 s  decreasing  transversal  1990-06-29T06:17:05.132Z
+F7    ofDate      #860   #0   -309441532.6173842  [-309441532.6175451, -309441532.61722326]  width 3.219e-4 s  increasing  transversal  1990-03-12T23:59:58.198Z
+F7    ofDate      #860   #1   -300087705.68302274  [-300087705.68318367, -300087705.6828618]  width 3.219e-4 s  decreasing  transversal  1990-06-29T06:17:05.132Z
+F7    deflected   v1     #0   -309441530.61437756  [-309441530.6144178, -309441530.6143373]  width 8.047e-5 s  increasing  transversal  1990-03-13T00:00:00.201Z
+F7    deflected   v1     #1   -300087705.8559045  [-300087705.85594475, -300087705.8558643]  width 8.047e-5 s  decreasing  transversal  1990-06-29T06:17:04.960Z
+F7    deflected   #860   #0   -309441530.61437756  [-309441530.6144178, -309441530.6143373]  width 8.047e-5 s  increasing  transversal  1990-03-13T00:00:00.201Z
+F7    deflected   #860   #1   -300087705.8559045  [-300087705.85594475, -300087705.8558643]  width 8.047e-5 s  decreasing  transversal  1990-06-29T06:17:04.960Z
+F8    geometric   v1     #0   -231220340.65478146  [-231220340.65486145, -231220340.65470147]  width 1.600e-4 s  decreasing  transversal  1992-09-03T08:06:30.161Z
+F8    geometric   v1     #1   -227867469.90542114  [-227867469.90548867, -227867469.9053536]  width 1.351e-4 s  increasing  transversal  1992-10-12T03:27:40.910Z
+F8    geometric   #860   #0   -231220340.65478146  [-231220340.65486145, -231220340.65470147]  width 1.600e-4 s  decreasing  transversal  1992-09-03T08:06:30.161Z
+F8    geometric   #860   #1   -227867469.90542114  [-227867469.90548867, -227867469.9053536]  width 1.351e-4 s  increasing  transversal  1992-10-12T03:27:40.910Z
+F8    retarded    v1     #0   -231227279.00660634  [-231227279.00676727, -231227279.0064454]  width 3.219e-4 s  decreasing  transversal  1992-09-03T06:10:51.809Z
+F8    retarded    v1     #1   -227860743.3787197  [-227860743.37880015, -227860743.37863922]  width 1.609e-4 s  increasing  transversal  1992-10-12T05:19:47.437Z
+F8    retarded    #860   #0   -231227279.00660634  [-231227279.00676727, -231227279.0064454]  width 3.219e-4 s  decreasing  transversal  1992-09-03T06:10:51.809Z
+F8    retarded    #860   #1   -227860743.3787197  [-227860743.37880015, -227860743.37863922]  width 1.609e-4 s  increasing  transversal  1992-10-12T05:19:47.437Z
+F8    aberrated   v1     #0   -231210892.39558876  [-231210892.39566922, -231210892.3955083]  width 1.609e-4 s  decreasing  transversal  1992-09-03T10:43:58.420Z
+F8    aberrated   v1     #1   -227857650.5220294  [-227857650.52235126, -227857650.52170753]  width 6.437e-4 s  increasing  transversal  1992-10-12T06:11:20.293Z
+F8    aberrated   #860   #0   -231210892.39558876  [-231210892.39566922, -231210892.3955083]  width 1.609e-4 s  decreasing  transversal  1992-09-03T10:43:58.420Z
+F8    aberrated   #860   #1   -227857650.5220294  [-227857650.52235126, -227857650.52170753]  width 6.437e-4 s  increasing  transversal  1992-10-12T06:11:20.293Z
+F8    ofDate      v1     #0   -231681532.9766661  [-231681532.97674656, -231681532.97658563]  width 1.609e-4 s  decreasing  transversal  1992-08-28T23:59:57.839Z
+F8    ofDate      v1     #1   -227408337.0418489  [-227408337.04200983, -227408337.04168797]  width 3.219e-4 s  increasing  transversal  1992-10-17T10:59:53.774Z
+F8    ofDate      #860   #0   -231681532.9766661  [-231681532.97674656, -231681532.97658563]  width 1.609e-4 s  decreasing  transversal  1992-08-28T23:59:57.839Z
+F8    ofDate      #860   #1   -227408337.0418489  [-227408337.04200983, -227408337.04168797]  width 3.219e-4 s  increasing  transversal  1992-10-17T10:59:53.774Z
+F8    deflected   v1     #0   -231681530.74589968  [-231681530.74622154, -231681530.7455778]  width 6.437e-4 s  decreasing  transversal  1992-08-29T00:00:00.070Z
+F8    deflected   v1     #1   -227408342.4135357  [-227408342.41361618, -227408342.41345525]  width 1.609e-4 s  increasing  transversal  1992-10-17T10:59:48.402Z
+F8    deflected   #860   #0   -231681530.74589968  [-231681530.74622154, -231681530.7455778]  width 6.437e-4 s  decreasing  transversal  1992-08-29T00:00:00.070Z
+F8    deflected   #860   #1   -227408342.4135357  [-227408342.41361618, -227408342.41345525]  width 1.609e-4 s  increasing  transversal  1992-10-17T10:59:48.402Z
+F9    geometric   v1     #0   -154102781.4592257  [-154102781.45926595, -154102781.45918548]  width 8.047e-5 s  increasing  transversal  1995-02-12T21:39:09.356Z
+F9    geometric   #860   #0   -154102781.4592257  [-154102781.45926595, -154102781.45918548]  width 8.047e-5 s  increasing  transversal  1995-02-12T21:39:09.356Z
+F9    retarded    v1     #0   -154100145.81413716  [-154100145.8141774, -154100145.81409693]  width 8.047e-5 s  increasing  transversal  1995-02-12T22:23:05.001Z
+F9    retarded    #860   #0   -154100145.81413716  [-154100145.8141774, -154100145.81409693]  width 8.047e-5 s  increasing  transversal  1995-02-12T22:23:05.001Z
+F9    aberrated   v1     #0   -154087310.39009392  [-154087310.3901744, -154087310.39001346]  width 1.609e-4 s  increasing  transversal  1995-02-13T01:57:00.425Z
+F9    aberrated   #860   #0   -154087310.39009392  [-154087310.3901744, -154087310.39001346]  width 1.609e-4 s  increasing  transversal  1995-02-13T01:57:00.425Z
+F9    ofDate      v1     #0   -153921539.6889612  [-153921539.68900144, -153921539.68892097]  width 8.047e-5 s  increasing  transversal  1995-02-14T23:59:51.127Z
+F9    ofDate      v1     #1   -140969016.27144516  [-140969016.2714703, -140969016.27142]  width 5.031e-5 s  decreasing  transversal  1995-07-14T21:55:14.544Z
+F9    ofDate      #860   #0   -153921539.6889612  [-153921539.68900144, -153921539.68892097]  width 8.047e-5 s  increasing  transversal  1995-02-14T23:59:51.127Z
+F9    ofDate      #860   #1   -140969016.27144516  [-140969016.2714703, -140969016.27142]  width 5.031e-5 s  decreasing  transversal  1995-07-14T21:55:14.544Z
+F9    deflected   v1     #0   -153921529.57109213  [-153921529.571414, -153921529.57077026]  width 6.437e-4 s  increasing  transversal  1995-02-15T00:00:01.244Z
+F9    deflected   v1     #1   -140969016.33826792  [-140969016.33831823, -140969016.33821762]  width 1.006e-4 s  decreasing  transversal  1995-07-14T21:55:14.477Z
+F9    deflected   #860   #0   -153921529.57109213  [-153921529.571414, -153921529.57077026]  width 6.437e-4 s  increasing  transversal  1995-02-15T00:00:01.244Z
+F9    deflected   #860   #1   -140969016.33826792  [-140969016.33831823, -140969016.33821762]  width 1.006e-4 s  decreasing  transversal  1995-07-14T21:55:14.477Z
+F10   ofDate      v1     #0   -76161539.43496943  [-76161539.43529129, -76161539.43464756]  width 6.437e-4 s  decreasing  transversal  1997-08-02T23:59:51.381Z
+F10   ofDate      v1     #1   -74368728.34623456  [-74368728.3463955, -74368728.34607363]  width 3.219e-4 s  increasing  transversal  1997-08-23T18:00:02.469Z
+F10   ofDate      #860   #0   -76161539.43496943  [-76161539.43529129, -76161539.43464756]  width 6.437e-4 s  decreasing  transversal  1997-08-02T23:59:51.381Z
+F10   ofDate      #860   #1   -74368728.34623456  [-74368728.3463955, -74368728.34607363]  width 3.219e-4 s  increasing  transversal  1997-08-23T18:00:02.469Z
+F10   deflected   v1     #0   -76161528.07007432  [-76161528.07023525, -76161528.06991339]  width 3.219e-4 s  decreasing  transversal  1997-08-03T00:00:02.745Z
+F10   deflected   v1     #1   -74368744.34614778  [-74368744.34630871, -74368744.34598684]  width 3.219e-4 s  increasing  transversal  1997-08-23T17:59:46.469Z
+F10   deflected   #860   #0   -76161528.07007432  [-76161528.07023525, -76161528.06991339]  width 3.219e-4 s  decreasing  transversal  1997-08-03T00:00:02.745Z
+F10   deflected   #860   #1   -74368744.34614778  [-74368744.34630871, -74368744.34598684]  width 3.219e-4 s  increasing  transversal  1997-08-23T17:59:46.469Z
+
+E-1 (ten-case part): PASS; 0 v1 events lost by section 5; 0 by the task's 1e-3 s, same-direction test; threw 0
+E-2 (ten-case part): PASS; 43 (case, rung) both established; 0 with unequal counts []
+E-3 (ten-case part), sense 2: 46 same-count results; unamended PASS (0 failures); A-1 PASS (0 failures); 71 of 71 events bit-identical
+E-3 sense 1 (apparent() grid, ten F windows): PASS; 1000 calls per tree, 0 differ, 0 threw
+every body but the Moon, whole result bit-identical: 45 of 45; counts and events identical: 45 of 45
+
+pack effect on version 1 (this pack against the earlier run's recorded v1 ladder on 4cc6f85a):
+  F5 deflected: recorded {"status":"finished","established":false,"evaluations":285731,"cells":17405,"events":1} | here {"status":"finished","established":false,"evaluations":285751,"cells":17405,"events":1}; events bit-identical true; lost by section 5 0
+  F6 ofDate: recorded {"status":"finished","established":true,"evaluations":1205,"cells":17,"events":2} | here {"status":"finished","established":true,"evaluations":1206,"cells":17,"events":2}; events bit-identical true; lost by section 5 0
+  F6 deflected: recorded {"status":"finished","established":true,"evaluations":2106,"cells":55,"events":2} | here {"status":"finished","established":true,"evaluations":2105,"cells":55,"events":2}; events bit-identical true; lost by section 5 0
+  F7 ofDate: recorded {"status":"finished","established":true,"evaluations":1051,"cells":12,"events":2} | here {"status":"finished","established":true,"evaluations":1050,"cells":12,"events":2}; events bit-identical true; lost by section 5 0
+  F7 deflected: recorded {"status":"finished","established":false,"evaluations":63960,"cells":3978,"events":2} | here {"status":"finished","established":false,"evaluations":63956,"cells":3978,"events":2}; events bit-identical true; lost by section 5 0
+  F8 aberrated: recorded {"status":"finished","established":true,"evaluations":1177,"cells":20,"events":2} | here {"status":"finished","established":true,"evaluations":1178,"cells":20,"events":2}; events bit-identical true; lost by section 5 0
+  F8 deflected: recorded {"status":"finished","established":false,"evaluations":58353,"cells":3616,"events":2} | here {"status":"finished","established":false,"evaluations":58351,"cells":3616,"events":2}; events bit-identical true; lost by section 5 0
+  (43 of 50 (case, rung) identical in counts and events)
+#860's own V-4 (corpus-v4.json) reproduced on the deflected rung: v1 10 of 10, #860 10 of 10

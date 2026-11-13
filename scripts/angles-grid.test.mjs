@@ -25,7 +25,7 @@ import { deltaT } from '@zodiacs/engine/deltat';
 import { e_tilt, MakeTime, SetDeltaTFunction, SiderealTime } from 'astronomy-engine';
 import { describe, expect, it } from 'vitest';
 import { computeChart } from '../src/lib/engine/full';
-import { tilt, timeBasis } from '../src/lib/engine/time-basis.mjs';
+import { tilt, timeBasis } from '@zodiacs/engine/time';
 
 const corpora = resolve(import.meta.dirname, '../docs/platform/evidence/engine-beyond-swiss/corpora');
 const corpusBytes = readFileSync(resolve(corpora, 'angle-grid-inputs.json'));

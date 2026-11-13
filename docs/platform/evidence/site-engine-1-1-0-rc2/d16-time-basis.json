@@ -1,0 +1,20 @@
+{
+  "what": "src/lib/engine/time-basis.mjs (deleted by this branch) against @zodiacs/engine/time's timeBasis",
+  "oldModuleSha256": "5857c888df07dd5a1695273797632ea8736f37a26aad2fe908b3d857d2333f40",
+  "engine": "1.1.0-rc.2",
+  "node": "v22.22.2",
+  "from": "1799-01-01T00:00:00.000Z",
+  "to": "2201-01-01T00:00:00.000Z",
+  "stepMs": 25213000,
+  "scales": [
+    "default",
+    "utc",
+    "ut1",
+    "tt"
+  ],
+  "control": false,
+  "compared": 2012592,
+  "oldThrew": 0,
+  "differing": 0,
+  "pass": true
+}

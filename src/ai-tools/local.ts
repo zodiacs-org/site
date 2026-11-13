@@ -4,9 +4,11 @@
 import { Transform } from 'node:stream';
 import { StdioServerTransport, serveStdio } from '@modelcontextprotocol/server/stdio';
 import { LIMITS } from '../mcp/bounds';
-import { CAPABILITIES_INPUT, COMPARE_INPUT, NATAL_INPUT, PRIVACY, calculateNatalChart, compareCalculationRecords, describeCapabilities, type ToolOutcome } from '../mcp/tools';
+import { CAPABILITIES_INPUT, COMPARE_INPUT, NATAL_INPUT, PRIVACY, calculateNatalChart, compareCalculationRecords, describeLocalChartCapabilities, type ToolOutcome } from '../mcp/tools';
 import { AI_VERSION, READ_ONLY } from './contracts';
+import { loadPlaceTable } from './features/place-table';
 import { createAiServer } from './server';
+import { normaliseCoverageCall } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
 
 function respond(run: () => ToolOutcome) {
@@ -20,14 +22,22 @@ function respond(run: () => ToolOutcome) {
 }
 
 function build() {
-  const server = createAiServer({});
+  const server = createAiServer({ placeTable: async () => loadPlaceTable() });
   server.registerTool('get_local_chart_capabilities', { description: `Local natal and comparison conventions, bounds and privacy. ${PRIVACY.assistant}`, inputSchema: CAPABILITIES_INPUT, annotations: READ_ONLY }, () => respond(() => {
-    const outcome = describeCapabilities();
+    const outcome = describeLocalChartCapabilities();
     return outcome.ok ? { ok: true, value: { ...outcome.value, adapter: { name: 'zodiacs-developer', version: AI_VERSION, releaseStatus: 'unpublished-candidate', transport: 'stdio' } } } : outcome;
   }));
   server.registerTool('calculate_natal_chart', { description: `Calculate one natal chart locally; request output: record for an exportable receipt. Do not invent a birth time or place. ${PRIVACY.assistant}`, inputSchema: NATAL_INPUT, annotations: READ_ONLY }, args => respond(() => calculateNatalChart(args)));
   server.registerTool('compare_calculation_records', { description: `Compare two record strings locally. Pass the record field from calculate_natal_chart with output: record. Do not pass paths or URLs. Preserve evidence levels. ${PRIVACY.assistant}`, inputSchema: COMPARE_INPUT, annotations: READ_ONLY }, args => respond(() => compareCalculationRecords(args)));
   return server;
+}
+
+// A 0.6.0 tool's sign arrives as written ("Leo"); it is lower-cased before the SDK checks the published enum.
+function normaliseLine(line: Buffer): Buffer {
+  try {
+    const message: unknown = JSON.parse(line.toString('utf8'));
+    return normaliseCoverageCall(message) ? Buffer.from(`${JSON.stringify(message)}\n`) : line;
+  } catch { return line; }
 }
 
 // Hold complete lines; discard oversized input and recover at the next newline.
@@ -41,7 +51,7 @@ const gate = new Transform({ transform(chunk: Buffer, _encoding, done) {
     if (dropping) { if (newline >= 0) dropping = false; continue; }
     if (size + part.length > LIMITS.requestBytes) { pending = []; size = 0; dropping = newline < 0; continue; }
     pending.push(part); size += part.length;
-    if (newline >= 0) { this.push(Buffer.concat(pending, size)); pending = []; size = 0; }
+    if (newline >= 0) { this.push(normaliseLine(Buffer.concat(pending, size))); pending = []; size = 0; }
   }
   done();
 }, flush(done) { if (size) this.push(Buffer.concat(pending, size)); done(); } });

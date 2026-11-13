@@ -21,6 +21,7 @@ import { useProfile } from '../lib/hooks/useProfile';
 import { useMe } from '../lib/hooks/useMe';
 import { explicitSelfChart } from '../lib/profile/read-store';
 import { markPrimarySelfChart } from '../lib/profile/store';
+import { runAfterProfileAccess } from '../lib/account-v2/profile-access-request';
 import { DEFAULT_ME, DISPLAY_NAME_MAX, cleanDisplayName, resolvedDisplayName, saveMe } from '../lib/profile/me';
 import { OPEN_CARD_EVENT, cardUrl, encodeCardLink, loadCardPositionsForChart } from '../lib/profile/card-link';
 import { chartHandle, personalChartName, savedChartSunHue } from '../lib/profile/your-people';
@@ -38,29 +39,46 @@ function PhotoMark() {
   return <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 5.5 9.5 3.5h5L16 5.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-11a2 2 0 0 1 2-2h3Z"/><circle cx="12" cy="12.5" r="4"/></svg>;
 }
 
+/** Two overlapping sheets: the site's fonts carry no copy glyph of their own. */
+function CopyMark() {
+  return <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 3.5V3.1A1.6 1.6 0 0 0 8.9 1.5H3.1A1.6 1.6 0 0 0 1.5 3.1v5.8a1.6 1.6 0 0 0 1.6 1.6h.4"/></svg>;
+}
+
 const STORAGE_ERROR = 'This browser wouldn’t keep it. Private browsing or a full disk can do that.';
 /** --ink-1: the disc's colour when the chart cannot settle a Sun sign. */
 const NEUTRAL_HUE = '#C6CCDA';
 
+/**
+ * The header before this browser's profile has loaded (and while an account
+ * gate withholds it): the same shape as the header with no chart marked as
+ * yours, so nothing on the page moves when that header takes its place. It
+ * does not call the page yours yet; the photo disc is a picture here and
+ * becomes the button once the page is live.
+ */
 function Intro() {
   return (
-    <div class="pf-hero">
-      <svg class="pf-hero__mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-        <circle cx="32" cy="32" r="27"/><circle cx="32" cy="32" r="17"/>
-        <path d="M32 5v10m0 34v10M5 32h10m34 0h10M12.9 12.9l7 7m24.2 24.2 7 7M12.9 51.1l7-7m24.2-24.2 7-7"/>
-        <circle cx="32" cy="32" r="4"/>
-      </svg>
-      <em class="kicker">Your astrology</em>
-      <h1 class="display">Your charts, today and ahead.</h1>
-      <p>Keep your birth chart and the people you’ve added here. Today uses the chart you mark as yours; your timeline keeps the readings and observations you choose to save.</p>
-      <a class="pf-hero__start" href="/birth-chart/">Make a birth chart <span aria-hidden="true">↗</span></a>
-    </div>
+    <header class="pf-me pf-me--intro">
+      <div class="pf-me__id">
+        <div class="pf-me__initial">
+          <span class="initial initial--unnamed pf-me__add-name" aria-hidden="true"><PhotoMark /></span>
+        </div>
+        <div class="pf-me__text">
+          <em class="kicker">Your astrology</em>
+          <h1 class="display">Your charts, today and ahead.</h1>
+        </div>
+      </div>
+      <p class="pf-me__intro">Keep your birth chart and the people you’ve added here. Today uses the chart you mark as yours; your timeline keeps the readings and observations you choose to save.</p>
+      <div class="pf-me__actions">
+        <a class="pf-quiet pf-me__share-action" href="/birth-chart/">Make a birth chart <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
   );
 }
 
 /** Pick which saved chart is yours, by name only — never birth details beside it. */
 function SelfChooser({ charts }: { charts: SavedChart[] }) {
   const [error, setError] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
   const recent = [...charts].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 6);
   return (
     <section class="pf-choose" aria-labelledby="pf-choose-title">
@@ -75,7 +93,10 @@ function SelfChooser({ charts }: { charts: SavedChart[] }) {
               <Initial name={personalChartName(chart.name)} hue={savedChartSunHue(chart)} size={36} />
               <span class="pf-row__text"><strong>{chartHandle(chart.name)}</strong></span>
               <span class="pf-row__actions">
-                <button class="pf-chart__action" type="button" onClick={() => setError(!markPrimarySelfChart(chart.id))}>
+                <button class="pf-chart__action" type="button" onClick={() => runAfterProfileAccess(
+                  () => { setUnavailable(false); setError(!markPrimarySelfChart(chart.id)); },
+                  () => { setError(false); setUnavailable(true); },
+                )}>
                   Use as my chart
                 </button>
               </span>
@@ -86,6 +107,7 @@ function SelfChooser({ charts }: { charts: SavedChart[] }) {
           <a class="next-action__quiet pf-choose__more" href="#saved-charts">See every saved chart</a>
         )}
         {error && <p class="field__error" role="alert">This browser wouldn’t save that choice. Try again.</p>}
+        {unavailable && <p class="field__error" role="alert">{t('en', 'profileSaveUnavailable')}</p>}
       </div>
     </section>
   );
@@ -174,7 +196,7 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
     closedPanel.current = null;
   }, [panel]);
 
-  if (!ready) return <div class="pf-introduction"><Intro /></div>;
+  if (!ready) return <Intro />;
 
   const name = draft === null
     ? savedName
@@ -287,11 +309,14 @@ function EditPanel({ initialName, initialPhoto, onDraft, onClose }: {
   function onSubmit(event: Event) {
     event.preventDefault();
     if (preparing) return;
-    if (!saveMe({ displayName: cleanDisplayName(draftName), photo })) {
-      setMessage(STORAGE_ERROR);
-      return;
-    }
-    onClose();
+    const patch = { displayName: cleanDisplayName(draftName), photo };
+    runAfterProfileAccess(() => {
+      if (!saveMe(patch)) {
+        setMessage(STORAGE_ERROR);
+        return;
+      }
+      onClose();
+    }, () => setMessage(t('en', 'profileSaveUnavailable')));
   }
 
   return (
@@ -460,7 +485,7 @@ function SharePanel({ chart, name, hue, placements, onAddName, onClose }: {
           <div class="pf-me__panel-actions">
             <button class="btn btn--primary" type="button" onClick={copy} data-card-link>
               <span>{state === 'copied' ? 'Link copied' : 'Copy card link'}</span>
-              <span class="orb" aria-hidden="true">{state === 'copied' ? '✓' : '⧉'}</span>
+              <span class="orb" aria-hidden="true">{state === 'copied' ? '✓' : <CopyMark />}</span>
             </button>
             {canShare && (
               <button class="btn btn--ghost" type="button" onClick={share}>

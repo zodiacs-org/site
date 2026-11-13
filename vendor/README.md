@@ -1,6 +1,70 @@
 # Vendored @zodiacs/engine artifact
 
-`zodiacs-engine-1.0.0.tgz` is the exact archive consumed by this revision:
+`zodiacs-engine-1.1.0-rc.2.tgz` is the exact archive consumed by this
+revision. It is a **vendored candidate, not on npm**. The registry read of
+2026-11-04 records `1.0.0` under `latest` and `0.1.1-rc.16` under `next`,
+and answers that 1.1.0-rc.2 is not in the registry
+(`docs/platform/evidence/site-engine-1-1-0-rc2/npm-view.txt`).
+
+- Artifact SHA-256: `c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c`
+- Packed size: 318,004 bytes; 90 files; 1,096,783 unpacked bytes.
+- Source commit: `806f76b43c0ee652016fe1b522c02d6f6e9c7ae5`
+- Carrier commit: `59c6ea9d9a4e7845a2880aa8303fcaadbd645170`, merged into engine
+  `main` by `883371f5d592cd952873422f13766038fcfa7b68` (engine PR #82)
+- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/59c6ea9d9a4e7845a2880aa8303fcaadbd645170/artifacts/zodiacs-engine-1.1.0-rc.2.tgz)
+- Licence: **MIT AND CC-BY-4.0**. Keep the archive's LICENSE, LICENSING.md
+  and NOTICE. Both licences apply to the distributed package.
+- [Adoption record](../docs/platform/evidence/site-engine-1-1-0-rc2/README.md);
+  the engine's record of the candidate is its
+  `docs/evidence/1.1.0-rc.2-20261102/`.
+
+The archive and its SHA-256 receipt are byte-for-byte copies of the
+carrier's git objects (blob ids `413e8473…` and `34ba7c9a…`), written from
+the engine repository's local objects, not downloaded. 1.1.0-rc.2 adds two
+entry points: `@zodiacs/engine/time`, the engine's own time basis, nutation
+and frame of date, which the calendar function's server adapter and the
+compute API now import (until this candidate the site bundled a copy of
+them, `src/lib/engine/time-basis.mjs`, which is deleted); and
+`@zodiacs/engine/lite`, declinations, sect, composite midpoints and
+dignities without the ephemeris, which the site's four modules of those
+names now adapt. It also adds first-order time bands to `./time`, a varga
+sensitivity function to `./vedic`, and corrected wording in its README,
+NOTICE and LICENSING.md. Natal receipts and their conventions set are
+1.1.0-rc.1's, naming the new version.
+
+# Previous candidate: 1.1.0-rc.1
+
+`zodiacs-engine-1.1.0-rc.1.tgz` and its checksum remain unchanged. It was a
+**vendored candidate, not on npm**; the registry read of 2026-10-27 recorded
+`1.0.0` under `latest` and `0.1.1-rc.16` under `next`
+(`docs/platform/evidence/site-engine-1-1-0-rc1/npm-view.txt`).
+
+- Artifact SHA-256: `52352d3f8fde4a262483e4a5a6217e02d814aa53269b49c0333325e6c0d6a7b6`
+- Packed size: 292,721 bytes; 77 files; 1,006,494 unpacked bytes.
+- Source commit: `c41706266caf4dde7e03aaa18c08acd569d19a7e`
+- Carrier commit: `6ec3464c22581beca1b151b5bcd70fc040ca4adb`, merged into engine
+  `main` by `d9fc39cd4a81488b1bbee7e205901cdf2d755ef4` (engine PR #75)
+- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/6ec3464c22581beca1b151b5bcd70fc040ca4adb/artifacts/zodiacs-engine-1.1.0-rc.1.tgz)
+- Licence: **MIT AND CC-BY-4.0**. Keep the archive's LICENSE, LICENSING.md
+  and NOTICE. Both licences apply to the distributed package.
+- [Adoption record](../docs/platform/evidence/site-engine-1-1-0-rc1/README.md);
+  the engine's record of the candidate is its
+  `docs/evidence/1.1.0-rc.1-20261026/`.
+
+The archive and its SHA-256 receipt are byte-for-byte copies of the
+carrier's git objects (blob ids `d7167502…` and `8abeaeac…`). 1.1.0-rc.1
+computes the same values as 1.0.0. Its natal receipts carry a sixth
+conventions set, which adds `conventionIds`, and list as
+`receipt.conventionIds` the ids of the Zodiacs conventions registry that the
+receipt and its result name; their envelopes require the feature
+`convention-ids`, so 1.0.0 and earlier engines refuse them as
+`unsupported_feature`. The new entry `@zodiacs/engine/conventions` gives the
+rule and the id syntax. The site's compute receipts list the ids their own
+fields name in the same way.
+
+# Previous release: 1.0.0
+
+`zodiacs-engine-1.0.0.tgz` and its checksum remain unchanged:
 `@zodiacs/engine@1.0.0`, the first stable release. The engine's Release
 workflow published it to npm under `latest` on 2026-10-11 (run
 38144970198, with SLSA provenance), and npm's tarball is these bytes.
@@ -19,9 +83,7 @@ workflow published it to npm under `latest` on 2026-10-11 (run
 
 The archive and its SHA-256 receipt are byte-for-byte copies of the
 carrier's git objects (blob ids `5912e240…` and `4595a764…`). 1.0.0 is
-1.0.0-rc.2 with the version changed: the same API and the same values. For
-this site nothing it computes changes; receipts and generated records name
-1.0.0 where they named 1.0.0-rc.2.
+1.0.0-rc.2 with the version changed: the same API and the same values.
 
 # Previous candidate: 1.0.0-rc.2
 

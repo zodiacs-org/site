@@ -11,6 +11,7 @@ import { dirname, join } from 'node:path';
 import { resolvePeopleIndexPolicy } from '../../../../scripts/people-index-policy.mjs';
 import { inspectCohortSpacing } from './cohort-integrity.mjs';
 import { completeCivilDay } from './civil-day-bounds.mjs';
+import { dignityTableDifferences } from './dignity-parity.mjs';
 import { createHash } from 'node:crypto';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -334,16 +335,14 @@ for (const person of people) {
   check(`disciplines sourced ${person.slug}`, unsourced.length === 0, unsourced.join(', '));
 }
 
-/* 16 — the dignity table matches src/lib/dignities.ts */
-const dignitiesSource = await readFile(join(REPO, 'src/lib/dignities.ts'), 'utf8');
+/* 16: the pilot's dignity table matches the engine's dignitiesFor, which the
+   site's src/lib/dignities.ts adapts since engine 1.1.0-rc.2 (@zodiacs/engine/lite):
+   the seven planets in the twelve signs, all four conditions (dignity-parity.mjs) */
 const toolSource = await readFile(join(HERE, 'compute-astro.mjs'), 'utf8');
-const dignityParity = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn'].every((body) => {
-  const site = dignitiesSource.match(new RegExp(`${body}: \\{[^}]*\\}`, 'u'))?.[0] ?? '';
-  const tool = toolSource.match(new RegExp(`${body}: \\{[^}]*\\}`, 'u'))?.[0] ?? '';
-  const signsOf = (text) => (text.match(/'[a-z]+'/gu) ?? []).join(',');
-  return site.length > 0 && signsOf(site) === signsOf(tool);
-});
-check('dignity table matches src/lib/dignities.ts', dignityParity, '');
+const { dignitiesFor: engineDignitiesFor } = await import('@zodiacs/engine/lite');
+const dignityDifferences = dignityTableDifferences(toolSource, engineDignitiesFor);
+check('dignity table matches the engine\'s dignitiesFor (@zodiacs/engine/lite)', dignityDifferences.length === 0,
+  dignityDifferences.map(({ planet, sign, pilot, engine }) => `${planet} ${sign}: ${pilot} against ${engine}`).join('; '));
 
 /* 17 — subject pronouns are never guessed */
 const PRONOUN = /\b(he|him|his|she|her|hers)\b/iu;

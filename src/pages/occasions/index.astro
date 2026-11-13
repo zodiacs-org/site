@@ -3,6 +3,10 @@ import Base from '../../layouts/Base.astro';
 import OccasionSky from '../../islands/OccasionSky.tsx';
 import '../../styles/calculator.css';
 import '../../styles/occasions.css';
+import { accountSavesEnabled } from '../../lib/profile/saved-pages-config';
+import { SAVED_RESULT_FORWARD } from '../../lib/profile/saved-result-link';
+
+const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
 
 const faq = [
   {
@@ -11,7 +15,7 @@ const faq = [
   },
   {
     q: 'Can it pick the best date for a wedding?',
-    a: 'No. Zodiacs does not pick or rank dates. Enter each date you are considering and compare the facts: sunset times, the Moon, whether Mercury is retrograde. The choice stays yours.',
+    a: 'This card shows the sky for the date you choose. The Zodiacs assistant can rate dates and suggest promising days in a range, with astrological reasons for each. Those ratings are interpretations, not guarantees; the choice stays yours.',
   },
   {
     q: 'Do I need the time?',
@@ -19,7 +23,9 @@ const faq = [
   },
   {
     q: 'Is anything stored?',
-    a: 'No. The sky is worked out on your device. The card’s link keeps the names, date, time and place after the # sign, which browsers do not send to our server, so sharing the link shares the card.',
+    a: accountSaves
+      ? 'Only if you save it to your profile. The sky is worked out on your device, and the card’s link keeps the names, date, time and place after the # sign, which browsers do not send to our server. If you are signed in and choose Save to your profile, that link is stored with your account so it opens on your other devices.'
+      : 'No. The sky is worked out on your device. The card’s link keeps the names, date, time and place after the # sign, which browsers do not send to our server, so sharing the link shares the card.',
   },
 ];
 
@@ -38,11 +44,13 @@ const jsonLd = [
 ---
 <Base
   clientUi
-  title="The Sky on Your Day — Wedding & Birthday Sky Cards | Zodiacs.org"
+  title="The Sky on Your Day: Wedding & Birthday Sky Cards | Zodiacs.org"
   description="A printable card of the sky on a wedding day, birthday, new home or any day: Sun and Moon signs, the Moon's phase, sunset, golden hour and the planets after dark. Free."
   path="/occasions/"
   jsonLd={jsonLd}
 >
+  {/* A birthday, a baby's arrival or a coming of age saved from an assistant links here by its digest alone (#saved=…): it opens on the profile's saved list. */}
+  <script slot="head" is:inline set:html={SAVED_RESULT_FORWARD} />
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
       <h1 class="display">The sky on your day</h1>
@@ -63,8 +71,6 @@ const jsonLd = [
     </div>
     <div class="prose reveal">
       <ul>
-        <li><a href="/occasions/baby-shower/">A baby shower card</a>: the signs across the due-date window, with a guessing game for guests.</li>
-        <li><a href="/baby-zodiac/">Expecting a baby?</a> The signs across the due-date window, and what has to wait for the birth.</li>
         <li><a href="/occasions/milestones/">Your sky milestones</a>: Jupiter and Saturn returns, the Uranus opposition, and the full moons you have lived through.</li>
         <li><a href="/saturn-return/">Turning 29?</a> The dates of your Saturn return, with every pass.</li>
         <li><a href="/solar-return/">Birthday chart</a>: the chart for the moment the Sun returns to its place at your birth.</li>

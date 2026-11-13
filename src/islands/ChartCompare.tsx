@@ -220,7 +220,7 @@ export default function ChartCompare() {
           <legend>Or compare your own records</legend>
           <p class="cmp__note">
             Use the calculation record a birth chart offers for download, or one produced by
-            the developer starter. A full record contains birth details — treat it as private.
+            the developer starter. A full record contains birth details. Treat it as private.
           </p>
           {(['left', 'right'] as const).map((side) => (
             <label key={side} class="cmp__file">

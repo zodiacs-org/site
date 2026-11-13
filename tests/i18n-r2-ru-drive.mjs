@@ -15,14 +15,16 @@ const signs = [
 const corePaths = [
   '/', '/tools/', '/birth-chart/', '/compatibility/', '/moon-sign/',
   '/rising-sign/', '/moon-phase/', '/saturn-return/', '/transits/',
-  '/baby-zodiac/', '/profile/', '/methodology/', '/privacy/', '/disclosure/',
+  '/profile/', '/methodology/', '/privacy/', '/disclosure/',
   '/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/',
   ...signs.map((sign) => `/${sign}/`),
 ];
 const signPaths = new Set(signs.map((sign) => `/${sign}/`));
+const hiddenChildRoutes = new Set(['/ru/baby-zodiac/']);
+const hiddenChildEnglishPaths = ['/baby-zodiac/'];
 const indexedRoutes = corePaths.filter((path) => !signPaths.has(path)).map((path) => `/ru${path}`);
 const noindexSignRoutes = new Set(signs.map((sign) => `/ru/${sign}/`));
-const routes = [...indexedRoutes, ...noindexSignRoutes, '/ru/404/'];
+const routes = [...indexedRoutes, ...noindexSignRoutes, ...hiddenChildRoutes, '/ru/404/'];
 const expectedHreflangs = ['en', 'es', 'pt-BR', 'fr', 'it', 'ru', 'x-default'];
 const structuredImageRoutes = new Set([
   '/ru/birth-chart/', '/ru/compatibility/', '/ru/moon-sign/',
@@ -82,11 +84,15 @@ await withPreview({ port: 4418 }, async (baseURL) => {
           arHref: Boolean(document.querySelector('a[href="/ar"], a[href^="/ar/"]')),
         }));
         const notFound = route === '/ru/404/';
-        const noindex = notFound || noindexSignRoutes.has(route);
+        const hiddenChild = hiddenChildRoutes.has(route);
+        const noindex = notFound || noindexSignRoutes.has(route) || hiddenChild;
+        const nofollow = hiddenChild;
         check(state.lang === 'ru', `${route}@${viewport.width}: lang=${state.lang}`);
         check(state.dir === null, `${route}@${viewport.width}: Russian page emitted dir=${state.dir}`);
         check(
-          state.robots === (noindex ? 'noindex, follow, max-image-preview:large' : 'max-image-preview:large'),
+          state.robots === (noindex
+            ? `${nofollow ? 'noindex, nofollow' : 'noindex, follow'}, max-image-preview:large`
+            : 'max-image-preview:large'),
           `${route}: robots=${state.robots}`,
         );
         check(state.canonical === `https://zodiacs.org${route}`, `${route}: canonical=${state.canonical}`);
@@ -127,7 +133,10 @@ await withPreview({ port: 4418 }, async (baseURL) => {
         if (route === '/ru/' && viewport.width === 1280) {
           const desktopEnglishSeams = await page.locator('.nav__deferred').allTextContents();
           check(desktopEnglishSeams.length === 3, `Russian desktop nav exposes ${desktopEnglishSeams.length} English-only seams; expected 3`);
-          check(desktopEnglishSeams.every((value) => value.trim() === '— пока по-английски'), 'Russian desktop nav seam copy drifted');
+          check(desktopEnglishSeams.every((value) => value.trim() === 'EN'), 'Russian desktop nav seam tag drifted');
+          const seamTitles = await page.locator('.nav__link--deferred, .nav__chip--deferred').evaluateAll((links) => links.map((link) => [link.getAttribute('title'), link.getAttribute('aria-label'), link.getAttribute('hreflang')]));
+          check(seamTitles.length === 3, `Russian desktop nav has ${seamTitles.length} English-only links; expected 3`);
+          check(seamTitles.every(([, label, lang]) => lang === 'en' && (label ?? '').includes('Материал пока доступен по-английски')), 'Russian desktop English-only links lost their spoken cue or hreflang');
           check(await page.locator('.nav__search').count() === 0, 'English-only search control leaked into Russian desktop nav');
           const astrofolioChip = page.locator('.nav__chip');
           check(await astrofolioChip.getAttribute('href') === '/astrofolio/', 'Russian desktop Astrofolio seam points somewhere else');
@@ -142,14 +151,15 @@ await withPreview({ port: 4418 }, async (baseURL) => {
       }
 
       if (viewport.width === 1280) {
-        for (const path of corePaths) {
+        for (const path of [...corePaths, ...hiddenChildEnglishPaths]) {
           await page.goto(`${baseURL}${path}`, { waitUntil: 'domcontentloaded' });
           const russianAlternateNode = page.locator('link[rel="alternate"][hreflang="ru"]');
           const russianAlternate = await russianAlternateNode.count() > 0
             ? await russianAlternateNode.first().getAttribute('href')
             : null;
+          const expectRussian = !signPaths.has(path) && !hiddenChildEnglishPaths.includes(path);
           check(
-            russianAlternate === (signPaths.has(path) ? null : `https://zodiacs.org/ru${path}`),
+            russianAlternate === (expectRussian ? `https://zodiacs.org/ru${path}` : null),
             `${path}: reciprocal Russian alternate=${russianAlternate}`,
           );
           check(

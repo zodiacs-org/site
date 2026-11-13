@@ -1,0 +1,115 @@
+{
+  "schema": "zodiacs.form-shift-split.v1",
+  "viewport": "412x823 mobile",
+  "pauseMs": 2000,
+  "results": [
+    {
+      "path": "/birth-chart/",
+      "cut": "before the submit button",
+      "cumulativeLayoutShift": 0.009587,
+      "shifts": [
+        {
+          "startTime": 2088,
+          "value": 0.009586786518051695,
+          "sources": [
+            {
+              "node": "details.calc__options",
+              "previousY": 713,
+              "currentY": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/birth-chart/",
+      "cut": "before the privacy line",
+      "cumulativeLayoutShift": 0.00114,
+      "shifts": [
+        {
+          "startTime": 2040,
+          "value": 0.0011403251645774185,
+          "sources": [
+            {
+              "node": "details.calc__options",
+              "previousY": 805,
+              "currentY": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/birth-chart/",
+      "cut": "before the options panel",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    },
+    {
+      "path": "/birth-chart/",
+      "cut": "after the options panel",
+      "cumulativeLayoutShift": 0.009587,
+      "shifts": [
+        {
+          "startTime": 2041,
+          "value": 0.009586786518051695,
+          "sources": [
+            {
+              "node": "details.calc__options",
+              "previousY": 713,
+              "currentY": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/ru/birth-chart/",
+      "cut": "before the submit button",
+      "cumulativeLayoutShift": 0.011178,
+      "shifts": [
+        {
+          "startTime": 2043,
+          "value": 0.011177748028531888,
+          "sources": [
+            {
+              "node": "details.calc__options",
+              "previousY": 738,
+              "currentY": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/ru/birth-chart/",
+      "cut": "before the privacy line",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    },
+    {
+      "path": "/ru/birth-chart/",
+      "cut": "before the options panel",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    },
+    {
+      "path": "/ru/birth-chart/",
+      "cut": "after the options panel",
+      "cumulativeLayoutShift": 0.011178,
+      "shifts": [
+        {
+          "startTime": 2041,
+          "value": 0.011177748028531888,
+          "sources": [
+            {
+              "node": "details.calc__options",
+              "previousY": 738,
+              "currentY": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

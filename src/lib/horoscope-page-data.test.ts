@@ -111,6 +111,33 @@ describe('horoscope page sky strip', () => {
     expect(reading.skyStrip.markers[0].value).not.toMatch(/^Moon\b/);
   });
 
+  it('names the cited planet behind every daily section without touching the passage', () => {
+    for (const { sign, readings } of program.signs) {
+      const reading = pageReadingFromProgram(program, sign, 'today');
+      expect(reading.sections.map((section) => section.body)).toEqual(readings.today.passages.map((passage) => passage.text));
+      for (const [index, section] of reading.sections.entries()) {
+        const refs = readings.today.passages[index].evidenceRefs;
+        expect(section.planet, `${sign} section ${index}`).toBeTruthy();
+        expect(refs).toContain(section.planet?.id);
+        expect(section.planet?.title).toMatch(/^[A-Z][a-z]+ (?:in [A-Z][a-z]+|[a-z]+ [A-Z][a-z]+)$/u);
+      }
+      expect(reading.sky?.length).toBeGreaterThanOrEqual(1);
+      expect(reading.sky?.length).toBeLessThanOrEqual(4);
+      expect(new Set(reading.sky?.map((planet) => planet.id)).size).toBe(reading.sky?.length);
+    }
+  });
+
+  it('reads the Moon row with the edition phase and the solar house it maps to', () => {
+    const reading = pageReadingFromProgram(program, 'aries', 'today');
+    const moon = directEvidence('today').find((receipt) => receipt.kind === 'body-position' && receipt.body === 'Moon');
+    const house = directEvidence('today').find((receipt) => (
+      receipt.kind === 'solar-house' && receipt.body === 'Moon' && receipt.sunSign === 'aries'
+    ));
+    const row = reading.sky?.find((planet) => planet.id === moon?.id);
+    expect(row).toMatchObject({ body: 'Moon', sign: moon?.sign, detail: moon?.moonPhase, house: house?.house });
+    expect(row?.value).toMatch(/^\d{1,2}°\d{2}′$/u);
+  });
+
   it('keeps weekly publication metadata stable until the next Monday edition', () => {
     const reading = pageReadingFromProgram(program, 'aries', 'weekly');
     const weekFrom = program.signs[0].readings.weekly.period.from;

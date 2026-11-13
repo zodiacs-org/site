@@ -1,6 +1,7 @@
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { runInNewContext } from 'node:vm';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   expectedStylesheetShape,
@@ -34,7 +35,11 @@ describe('inlineCriticalStyles', () => {
     });
     expect(expectedStylesheetShape('ru/birth-chart/index.html', true)).toEqual({
       inlineCount: 1, deferredCount: 3, externalCount: 6, loaderCount: 1,
-    });
+    });    for (const pair of ['compatibility/aries-cancer/index.html', 'pt/compatibility/pisces-pisces/index.html']) {
+      expect(expectedStylesheetShape(pair, false)).toEqual({
+        inlineCount: 3, deferredCount: 1, externalCount: 1, loaderCount: 1, inlineIsMinimum: true,
+      });
+    }
   });
 
   it('ignores transient build directories and tolerates a vanished directory', async () => {
@@ -175,6 +180,84 @@ describe('inlineCriticalStyles', () => {
     expect(result.html).not.toContain('data-inline-critical-css');
   });
 
+  it('moves only the below-fold faces of a pair page behind the loader', async () => {
+    const faces = {
+      sans: "@font-face{font-family:Instrument Sans;src:url(/fonts/instrument-sans-latin-wght-normal.woff2) format('woff2-variations');font-weight:400 700;font-style:normal;font-display:swap}",
+      italic: "@font-face{font-family:Instrument Sans;src:url(/fonts/instrument-sans-latin-wght-italic.woff2) format('woff2-variations');font-weight:400 700;font-style:italic;font-display:swap}",
+      phase1Italic: "@font-face{font-family:Instrument Sans Phase1;src:url(/fonts/instrument-sans-latin-wght-italic.woff2) format('woff2-variations');font-weight:400 700;font-style:italic;font-display:optional}",
+      mono: "@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations');font-weight:300 600;font-style:normal;font-display:swap}",
+      serifItalic: "@font-face{font-family:EB Garamond;src:url(/fonts/eb-garamond-latin-400-italic.woff2) format('woff2');font-weight:400;font-style:italic;font-display:swap}",
+    };
+    const root = await fixture({
+      'Base.hash.css': `${faces.sans}${faces.italic}${faces.phase1Italic}${faces.mono}${faces.serifItalic}:root{--ink:#fff}`,
+      'calculator.hash.css': '.calc{color:var(--ink)}',
+      'pair-page.hash.css': '.ph-hero{height:840px}',
+    });
+    const marked = '<html data-inline-critical-css><head>'
+      + '<link rel="stylesheet" href="/_astro/Base.hash.css">'
+      + '<link rel="stylesheet" href="/_astro/calculator.hash.css">'
+      + '<link rel="stylesheet" href="/_astro/pair-page.hash.css">'
+      + '</head><body></body></html>';
+    const result = await inlineCriticalStyles(marked, root, { deferFaces: true, keepLinked: /^calculator\./ });
+
+    expect(result.stylesheets).toBe(2);
+    expect(result.html).toContain('<link rel="stylesheet" href="/_astro/calculator.hash.css">');
+    expect(result.html.indexOf('data-zdx-critical="Base.hash.css"')).toBeLessThan(result.html.indexOf('calculator.hash.css'));
+    expect(result.html.indexOf('calculator.hash.css')).toBeLessThan(result.html.indexOf('data-zdx-critical="pair-page.hash.css"'));
+    const base = result.html.match(/<style data-zdx-critical="Base\.hash\.css">([^<]*)<\/style>/)[1];
+    expect(base).toBe(`${faces.sans}${faces.phase1Italic}${faces.serifItalic}:root{--ink:#fff}`);
+    expect(result.html).toContain(
+      `<template data-zdx-deferred-style><style data-zdx-deferred-faces>${faces.italic}${faces.mono}</style>`,
+    );
+    expect(result.html).toContain(`<noscript><style>${faces.italic}${faces.mono}</style></noscript>`);
+    const definitions = JSON.parse(result.html.match(/<script type="application\/json" data-zdx-font-faces>(.*?)<\/script>/)[1]);
+    expect(definitions).toEqual([
+      { family: 'Instrument Sans', source: "url(/fonts/instrument-sans-latin-wght-italic.woff2) format('woff2-variations')", descriptors: { weight: '400 700', style: 'italic', display: 'swap' } },
+      { family: 'JetBrains Mono', source: "url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations')", descriptors: { weight: '300 600', style: 'normal', display: 'swap' } },
+    ]);
+    expect(result.html.indexOf('data-zdx-deferred-faces')).toBeLessThan(result.html.indexOf('data-zdx-deferred-style-loader'));
+    expect(result.html.match(/<link\b[^>]*rel="stylesheet"/g)).toHaveLength(1);
+    expect(result.html).not.toContain('data-inline-critical-css');
+  });
+
+  it('fails closed when the stylesheet to keep linked is missing', async () => {
+    const root = await fixture({ 'Base.hash.css': ':root{--ink:#fff}' });
+    const marked = '<html data-inline-critical-css><head>'
+      + '<link rel="stylesheet" href="/_astro/Base.hash.css">'
+      + '</head></html>';
+
+    await expect(inlineCriticalStyles(marked, root, { keepLinked: /^calculator\./ })).rejects.toThrow(
+      'expected one stylesheet to keep linked, found 0',
+    );
+  });
+
+  it('fails closed when a pair page build loses a below-fold face', async () => {
+    const root = await fixture({
+      'Base.hash.css': "@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations');font-style:normal}",
+    });
+    const marked = '<html data-inline-critical-css><head>'
+      + '<link rel="stylesheet" href="/_astro/Base.hash.css">'
+      + '</head></html>';
+
+    await expect(inlineCriticalStyles(marked, root, { deferFaces: true })).rejects.toThrow(
+      'expected 2 below-fold faces, found 1',
+    );
+  });
+
+  it.each(['unicode-range:U+0000-00FF', 'font-stretch:condensed', 'font-feature-settings:"liga"', 'size-adjust:105%'])('rejects unsupported deferred descriptor %s', async (descriptor) => {
+    const root = await fixture({
+      'Base.hash.css': [
+        `@font-face{font-family:Instrument Sans;src:url(/fonts/instrument-sans-latin-wght-italic.woff2);font-style:italic;${descriptor}}`,
+        '@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2);font-style:normal}',
+      ].join(''),
+    });
+    const marked = '<html data-inline-critical-css><head><link rel="stylesheet" href="/_astro/Base.hash.css"></head></html>';
+
+    await expect(inlineCriticalStyles(marked, root, { deferFaces: true })).rejects.toThrow(
+      `unsupported deferred font descriptor ${descriptor.split(':')[0]}`,
+    );
+  });
+
   it.each([
     ['relative URL', '.x{background:url(../image.png)}', 'relative CSS URL'],
     ['CSS import', '@import "/other.css";', '@import is not safe'],
@@ -197,5 +280,269 @@ describe('inlineCriticalStyles', () => {
     await expect(inlineCriticalStyles(html, root)).rejects.toThrow(
       'refusing non-build stylesheet',
     );
+  });
+});
+
+describe('deferred font loader', () => {
+  async function harness({ supported = true, hash = '', fontTemplate = true, constructorThrowsAt = -1 } = {}) {
+    const root = await fixture({
+      'Base.hash.css': [
+        '@font-face{font-family:Instrument Sans;src:url(/fonts/instrument-sans-latin-wght-italic.woff2);font-weight:400 700;font-style:italic;font-display:swap}',
+        '@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2);font-weight:300 600;font-style:normal;font-display:swap}',
+      ].join(''),
+    });
+    const { html } = await inlineCriticalStyles('<html data-inline-critical-css><head><link rel="stylesheet" href="/_astro/Base.hash.css"></head></html>', root, { deferFaces: true });
+    const definitions = html.match(/<script type="application\/json" data-zdx-font-faces>(.*?)<\/script>/)[1];
+    const code = html.match(/<script data-zdx-deferred-style-loader>(.*?)<\/script>/s)[1];
+    const events = new Map();
+    const timers = [];
+    const loads = [];
+    const added = [];
+    const changes = [];
+    const template = {
+      content: {
+        querySelector: () => fontTemplate ? { textContent: definitions } : null,
+        cloneNode: () => 'CSS fallback',
+      },
+      replaceWith: (node) => changes.push(node),
+      remove: () => changes.push('removed'),
+    };
+    class TestFontFace {
+      constructor(family, source, descriptors) {
+        if (loads.length === constructorThrowsAt) throw new SyntaxError('invalid font');
+        Object.assign(this, { family, source, descriptors });
+      }
+      load() {
+        return new Promise((resolve, reject) => loads.push({ face: this, resolve: () => resolve(this), reject }));
+      }
+    }
+    runInNewContext(code, {
+      FontFace: TestFontFace,
+      window: {
+        FontFace: supported ? TestFontFace : undefined,
+        location: { hash },
+        addEventListener: (type, fn) => events.set(type, fn),
+      },
+      document: {
+        readyState: 'loading',
+        fonts: { add: (face) => added.push(face) },
+        addEventListener: (type, fn) => events.set(type, fn),
+        removeEventListener: (type) => events.delete(type),
+        querySelectorAll: () => [template],
+      },
+      setTimeout: (fn, delay) => { timers.push({ fn, delay }); return timers.length; },
+      clearTimeout: () => {},
+    });
+    return { events, timers, loads, added, changes };
+  }
+
+  // Flush both the load rejection handler and the batch-registration promise.
+  const flush = () => new Promise((done) => setImmediate(done));
+
+  it('loads off-document, then registers both faces without inserting a stylesheet', async () => {
+    const h = await harness();
+    expect(h.loads).toHaveLength(0);
+    h.events.get('load')();
+    expect(h.timers[0].delay).toBe(200);
+    h.timers[0].fn();
+    expect(h.loads.map(({ face }) => face.family)).toEqual(['Instrument Sans', 'JetBrains Mono']);
+    expect(h.added).toHaveLength(0);
+    h.loads[1].resolve();
+    await flush();
+    expect(h.added).toHaveLength(0);
+    h.loads[0].resolve();
+    await flush();
+    expect(h.added).toEqual(h.loads.map(({ face }) => face));
+    expect(h.changes).toEqual(['removed']);
+    expect(h.events.has('pointerdown')).toBe(false);
+  });
+
+  it('keeps a successful face when the other download fails', async () => {
+    const h = await harness({ hash: '#p=shared-chart' });
+    expect(h.loads).toHaveLength(2);
+    h.loads[0].reject(new Error('network failure'));
+    h.loads[1].resolve();
+    await flush();
+    expect(h.added).toEqual([h.loads[1].face]);
+    expect(h.changes).toEqual(['removed']);
+  });
+
+  it('honors early island intent once, before the load fallback fires', async () => {
+    const h = await harness();
+    const intent = h.events.get('pointerdown');
+    intent({ target: { closest: () => null } });
+    expect(h.loads).toHaveLength(0);
+    intent({ target: { closest: () => ({}) } });
+    expect(h.loads).toHaveLength(2);
+    h.events.get('load')();
+    h.timers[0].fn();
+    expect(h.loads).toHaveLength(2);
+    for (const load of h.loads) load.resolve();
+    await flush();
+    expect(h.added).toHaveLength(2);
+    expect(h.changes).toEqual(['removed']);
+  });
+
+  it('retains the CSS fallback when the FontFace API is unavailable', async () => {
+    const h = await harness({ supported: false, hash: '#c=shared-compare' });
+    expect(h.loads).toHaveLength(0);
+    expect(h.changes).toEqual(['CSS fallback']);
+  });
+
+  it.each([0, 1])('inserts CSS when FontFace constructor %i throws', async (constructorThrowsAt) => {
+    const h = await harness({ constructorThrowsAt, hash: '#c=shared-compare' });
+    expect(h.loads).toHaveLength(constructorThrowsAt);
+    expect(h.changes).toEqual(['CSS fallback']);
+    for (const load of h.loads) load.resolve();
+    await flush();
+    expect(h.added).toHaveLength(0);
+  });
+
+  it('adds nothing and removes the template when both downloads fail', async () => {
+    const h = await harness({ hash: '#p=shared-chart' });
+    expect(h.loads).toHaveLength(2);
+    for (const load of h.loads) load.reject(new Error('network failure'));
+    await flush();
+    expect(h.added).toHaveLength(0);
+    expect(h.changes).toEqual(['removed']);
+  });
+
+  it('still inserts ordinary deferred stylesheets on entry pages', async () => {
+    const h = await harness({ fontTemplate: false, hash: '#p=shared-chart' });
+    expect(h.loads).toHaveLength(0);
+    expect(h.changes).toEqual(['CSS fallback']);
+  });
+});
+
+describe('late mono face on horoscope pages', () => {
+  const monoFace = "@font-face{font-family:JetBrains Mono Phase1;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations');font-weight:300 600;font-style:normal;font-display:optional}";
+  const otherFaces = [
+    "@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations');font-weight:300 600;font-style:normal;font-display:swap}",
+    "@font-face{font-family:EB Garamond Phase1;src:url(/fonts/eb-garamond-latin-400-italic.woff2) format('woff2');font-weight:400;font-style:italic;font-display:optional}",
+  ];
+  const marked = '<html data-inline-critical-css><head>'
+    + '<link rel="stylesheet" href="/_astro/Base.hash.css">'
+    + '<link rel="stylesheet" href="/_astro/route.hash.css">'
+    + '</head><body></body></html>';
+
+  async function transform(baseCss = `${otherFaces[0]}${monoFace}${otherFaces[1]}:root{--ink:#fff}`) {
+    const root = await fixture({ 'Base.hash.css': baseCss, 'route.hash.css': '.hz-hero{height:524px}' });
+    return inlineCriticalStyles(marked, root, { lateFace: true });
+  }
+
+  it('moves only the Phase 1 mono face behind a wide-screen media query, with a no-JS copy', async () => {
+    const { html, stylesheets } = await transform();
+
+    expect(stylesheets).toBe(2);
+    const base = html.match(/<style data-zdx-critical="Base\.hash\.css">([^<]*)<\/style>/)[1];
+    expect(base).toBe(`${otherFaces[0]}${otherFaces[1]}:root{--ink:#fff}`);
+    expect(html).toContain(`<style media="(min-width: 761px)" data-zdx-late-face>${monoFace}</style>`);
+    expect(html).toContain(`<noscript><style>${monoFace}</style></noscript>`);
+    expect(html.indexOf('data-zdx-critical="route.hash.css"')).toBeLessThan(html.indexOf('data-zdx-late-face>'));
+    expect(html.indexOf('data-zdx-late-face>')).toBeLessThan(html.indexOf('data-zdx-late-face-loader'));
+    expect(html.indexOf('data-zdx-late-face-loader')).toBeLessThan(html.indexOf('</head>'));
+    expect(html).not.toContain('data-zdx-deferred-style');
+  });
+
+  it('fails closed when the build loses the mono face', async () => {
+    await expect(transform(`${otherFaces.join('')}:root{--ink:#fff}`)).rejects.toThrow(
+      'expected one late JetBrains Mono Phase1 face, found 0',
+    );
+  });
+
+  async function harness({ wide = false, reachedTop = null, supported = true, readyState = 'loading' } = {}) {
+    const { html } = await transform();
+    const code = html.match(/<script data-zdx-late-face-loader>(.*?)<\/script>/s)[1];
+    const events = new Map();
+    const timers = [];
+    const loads = [];
+    const added = [];
+    const elements = [
+      { family: 'Instrument Sans Phase1, sans-serif', box: { top: 120, height: 20 } },
+      { family: '"JetBrains Mono Phase1", ui-monospace', box: { top: 0, height: 0 } },
+      ...(reachedTop === null ? [] : [{ family: '"JetBrains Mono Phase1", ui-monospace', box: { top: reachedTop, height: 18 } }]),
+    ].map(({ family, box }) => ({ family, getBoundingClientRect: () => box }));
+    const declarations = {
+      'font-family': '"JetBrains Mono Phase1"',
+      src: 'url("/fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations")',
+      'font-weight': '300 600',
+      'font-style': 'normal',
+      'font-display': 'optional',
+    };
+    const style = {
+      media: '(min-width: 761px)',
+      sheet: { cssRules: [{ style: { getPropertyValue: (name) => declarations[name] } }] },
+    };
+    class TestFontFace {
+      constructor(family, source, descriptors) {
+        Object.assign(this, { family, source, descriptors });
+      }
+      load() {
+        return new Promise((resolve, reject) => loads.push({ face: this, resolve: () => resolve(this), reject }));
+      }
+    }
+    const window = {
+      FontFace: supported ? TestFontFace : undefined,
+      innerHeight: 823,
+      matchMedia: () => ({ matches: wide }),
+      addEventListener: (type, fn) => events.set(type, fn),
+    };
+    runInNewContext(code, {
+      FontFace: TestFontFace,
+      window,
+      getComputedStyle: (element) => ({ fontFamily: element.family }),
+      document: {
+        readyState,
+        fonts: { add: (face) => added.push(face) },
+        querySelector: () => style,
+        body: { getElementsByTagName: () => elements },
+      },
+      setTimeout: (fn, delay) => { timers.push({ fn, delay }); return timers.length; },
+    });
+    return { events, timers, loads, added };
+  }
+
+  const flush = () => new Promise((done) => setImmediate(done));
+
+  it('leaves wide screens to the media-matched face', async () => {
+    const h = await harness({ wide: true });
+    expect(h.events.size).toBe(0);
+    expect(h.timers).toHaveLength(0);
+  });
+
+  it('keeps the CSS-only path when the FontFace API is unavailable', async () => {
+    const h = await harness({ supported: false });
+    expect(h.events.size).toBe(0);
+  });
+
+  it('loads the same file after load on phones and registers it while its text is off screen', async () => {
+    const h = await harness({ reachedTop: 1836 });
+    expect(h.loads).toHaveLength(0);
+    h.events.get('load')();
+    expect(h.timers[0].delay).toBe(200);
+    h.timers[0].fn();
+    expect(h.loads).toHaveLength(1);
+    expect(h.loads[0].face.family).toBe('JetBrains Mono Phase1');
+    expect(h.loads[0].face.source).toContain('/fonts/jetbrains-mono-latin-wght-normal.woff2');
+    expect(h.loads[0].face.descriptors).toEqual({ weight: '300 600', style: 'normal', display: 'optional' });
+    h.loads[0].resolve();
+    await flush();
+    expect(h.added).toEqual([h.loads[0].face]);
+  });
+
+  it.each([400, 900, -2000])('never swaps the face in once its text has reached the screen (top %i)', async (top) => {
+    const h = await harness({ reachedTop: top, readyState: 'complete' });
+    h.timers[0].fn();
+    h.loads[0].resolve();
+    await flush();
+    expect(h.added).toHaveLength(0);
+  });
+
+  it('adds nothing when the download fails', async () => {
+    const h = await harness({ readyState: 'complete' });
+    h.timers[0].fn();
+    h.loads[0].reject(new Error('network failure'));
+    await flush();
+    expect(h.added).toHaveLength(0);
   });
 });

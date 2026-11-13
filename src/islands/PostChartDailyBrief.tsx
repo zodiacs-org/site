@@ -22,7 +22,7 @@ const COPY = {
   pendingAgain: 'Another confirmation link is on its way. The newest link is the one that works.',
   activeLink: 'Manage it in your profile.',
   pausedTitle: 'Your daily brief is paused.',
-  pausedBody: 'The chart it read was deleted, so delivery stopped. Choose another synced chart whenever you’re ready — nothing is chosen for you.',
+  pausedBody: 'The chart it read was deleted, so delivery stopped. Choose another synced chart whenever you’re ready. Nothing is chosen for you.',
   pausedCta: 'Choose in your profile',
   error: "Couldn't resend the link. Please try again.",
 } as const;
@@ -316,7 +316,7 @@ export function PostChartDailyBrief({ idPrefix }: PostChartDailyBriefProps) {
         <p>
           A personal morning email for{' '}
           <span class="post-chart-daily__inline-value" title={view.chartName}>{view.chartName}</span>
-          {' '}— where each day’s sky touches its saved placements, not just its Sun sign.
+          , where each day’s sky touches its saved placements, not just its Sun sign.
         </p>
         <div class="post-chart-daily__actions">
           <a class="btn btn--primary" href="/profile/#daily-brief">{COPY.syncedCta}</a>

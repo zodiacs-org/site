@@ -135,11 +135,15 @@ const whole = natal({ ...LONDON, houseSystem: 'whole', output: 'record' }).recor
 const offset = natal({ ...LONDON, utc: '1990-06-15T19:00:00+05:30', output: 'record' }).record as string;
 pairs.push([placidus, whole], [whole, placidus], [placidus, offset]);
 // The same record relabelled as engine 0.1.1-rc.15 wrote it, with that version's
-// conventions: a version the comparison's own receipt must not repeat.
+// conventions: a version the comparison's own receipt must not repeat. rc.15's set
+// is taken by its content, the one with a time scale and no nutation key; rc.15
+// listed no ids and required no feature.
 const relabelled = (() => {
   const record = JSON.parse(placidus);
   record.receipt.engine = { ...record.receipt.engine, version: '0.1.1-rc.15' };
-  record.receipt.conventions = { ...NATAL_RECEIPT_CONVENTION_SETS[1] };
+  record.receipt.conventions = { ...NATAL_RECEIPT_CONVENTION_SETS.find((set) => 'timeScale' in set && !('nutation' in set))! };
+  delete record.receipt.conventionIds;
+  record.requiredFeatures = [];
   return JSON.stringify(record);
 })();
 pairs.push([relabelled, placidus], [placidus, relabelled]);
@@ -398,14 +402,14 @@ describe('the conventions vocabulary', () => {
     expect(vocabulary.sets.map((set) => set.conventions)).toEqual([...NATAL_RECEIPT_CONVENTION_SETS]);
     const fresh = createNatalEnvelope(natalChart({ utc: LONDON.utc })).receipt;
     expect(fresh.conventions).toEqual(vocabulary.sets[0].conventions);
-    // The installed engine writes the current set, first introduced in rc.16.
+    // The installed engine writes the current set, first introduced in 1.1.0-rc.1.
     // Compare the whole release tuple across the transition to 1.0 candidates.
     const release = (version: string) => {
       const parts = /^(\d+)\.(\d+)\.(\d+)(?:-rc\.(\d+))?$/.exec(version);
       expect(parts, 'a stable release or numbered release candidate').not.toBeNull();
       return [...parts!.slice(1, 4).map(Number), parts![4] === undefined ? Infinity : Number(parts![4])];
     };
-    expect(vocabulary.sets[0].writtenBy).toEqual({ from: '0.1.1-rc.16', to: null });
+    expect(vocabulary.sets[0].writtenBy).toEqual({ from: '1.1.0-rc.1', to: null });
     const installed = release(ENGINE_VERSION);
     const introduced = release(vocabulary.sets[0].writtenBy.from);
     const order = installed.reduce((result, value, index) => result || Math.sign(value - introduced[index]), 0);
@@ -421,17 +425,25 @@ describe('the conventions vocabulary', () => {
     expect(vocabulary.keys.deltaT.recordedFrom).toBe('0.1.1-rc.8');
     expect(vocabulary.keys.timeScale.recordedFrom).toBe('0.1.1-rc.15');
     expect(vocabulary.keys.nutation.recordedFrom).toBe('0.1.1-rc.16');
+    expect(vocabulary.keys.conventionIds.recordedFrom).toBe('1.1.0-rc.1');
   });
 
   it('names the versions that wrote each set, newest first and without a gap', () => {
-    const rc = (version: string) => Number(/^0\.1\.1-rc\.(\d+)$/.exec(version)![1]);
+    // A release's place in the engine's history: the 0.1.1 candidates by number, then 1.0.0 and the release after
+    // it, 1.1.0-rc.1 (the engine's artifacts/archives.json). The releases between rc.17 and 1.0.0 wrote rc.16's set.
+    const place = (version: string) => {
+      const rc = /^0\.1\.1-rc\.(\d+)$/.exec(version);
+      if (rc) return Number(rc[1]);
+      expect(['1.0.0', '1.1.0-rc.1'], version).toContain(version);
+      return version === '1.0.0' ? 1000 : 1001;
+    };
     expect(vocabulary.sets.map((set) => set.current)).toEqual(vocabulary.sets.map((_set, index) => index === 0));
     expect(SET_WRITERS[0].to).toBeNull();
     for (let index = 1; index < SET_WRITERS.length; index += 1) {
       const { from, to } = SET_WRITERS[index];
-      expect(rc(from)).toBeLessThanOrEqual(rc(to!));
-      // Each older set ends the version before the next one begins.
-      expect(rc(to!) + 1).toBe(rc(SET_WRITERS[index - 1].from));
+      expect(place(from)).toBeLessThanOrEqual(place(to!));
+      // Each older set ends with the release before the one the next set begins with.
+      expect(place(to!) + 1, `${to}, then ${SET_WRITERS[index - 1].from}`).toBe(place(SET_WRITERS[index - 1].from));
     }
     expect(SET_WRITERS.at(-1)!.from).toBe('0.1.1-rc.3');
   });

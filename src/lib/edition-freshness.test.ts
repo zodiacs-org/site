@@ -201,6 +201,11 @@ describe('dated tab titles and the pt-BR first of the month', () => {
       ['pt', 'Hoje — o céu de 1º de novembro de 2026 | Zodiacs.org', 'O céu de 1º de novembro de 2026 | Zodiacs.org'],
       ['pt', 'Horóscopos de hoje — 12 de outubro de 2026 | Zodiacs.org', 'Horóscopos de 12 de outubro de 2026 | Zodiacs.org'],
       ['en', 'Daily Horoscopes — October 12, 2026, All 12 Signs | Zodiacs.org', 'Daily Horoscopes — October 12, 2026, All 12 Signs | Zodiacs.org'],
+      // The same titles once their dash is written as a comma or a colon.
+      ['es', 'Hoy, el cielo del 12 de octubre de 2026 | Zodiacs.org', 'El cielo del 12 de octubre de 2026 | Zodiacs.org'],
+      ['es', 'Horóscopos de hoy, 12 de octubre de 2026 | Zodiacs.org', 'Horóscopos del 12 de octubre de 2026 | Zodiacs.org'],
+      ['pt', 'Hoje: o céu de 1º de novembro de 2026 | Zodiacs.org', 'O céu de 1º de novembro de 2026 | Zodiacs.org'],
+      ['pt', 'Horóscopos de hoje, 12 de outubro de 2026 | Zodiacs.org', 'Horóscopos de 12 de outubro de 2026 | Zodiacs.org'],
     ];
     for (const [locale, title, dated] of titles) expect(datedEditionTitleIn(locale, title)).toBe(dated);
     for (const sign of SIGNS) {
@@ -214,7 +219,7 @@ describe('dated tab titles and the pt-BR first of the month', () => {
   });
 
   it('inlines title rules that date a title in the browser exactly as on the server', () => {
-    for (const [locale, title] of [['es', 'Horóscopo de Piscis hoy, 12 de octubre | Zodiacs.org'], ['pt', 'Hoje — o céu de 12 de outubro de 2026 | Zodiacs.org']] as const) {
+    for (const [locale, title] of [['es', 'Horóscopo de Piscis hoy, 12 de octubre | Zodiacs.org'], ['pt', 'Hoje — o céu de 12 de outubro de 2026 | Zodiacs.org'], ['pt', 'Hoje, o céu de 12 de outubro de 2026 | Zodiacs.org']] as const) {
       const browser = inlineEditionTitleRules(locale)
         .map(([source, flags, replacement]) => [new RegExp(source, flags), replacement] as const)
         .reduce((value, [pattern, replacement]) => value.replace(pattern, replacement), title as string);

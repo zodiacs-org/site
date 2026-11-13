@@ -1,0 +1,39 @@
+# Lite B2 on the adoption head (the adoption plan's J-3), 2026-11-04, macOS arm64, Node 22.22.2, head 92702bb9b732d88224847df3e27cb0925bfb70df.
+# B2 itself, report-bundles' closure block for the EclipticView, RelationshipWheel and ChartCalculator chunks, passes on both builds (b1-bundles.txt).
+# Its control, below, is a default build (npx astro build) with one edit, then a clean rebuild.
+
+# B2 control: the composite adapter takes compositeMidpoints from @zodiacs/engine/techniques (rc.16's regression);
+# its ./lite import stays for compositeAspects, so B3's importer list does not change. Edit (restored afterwards):
+@@ -4,10 +4,8 @@
+  * ephemeris; this module keeps the site's names and its mutable shapes,
+  * copying the engine's frozen rows.
+  */
+-import {
+-  compositeAspects as packageCompositeAspects,
+-  compositeMidpoints as packageCompositeMidpoints,
+-} from '@zodiacs/engine/lite';
++import { compositeAspects as packageCompositeAspects } from '@zodiacs/engine/lite';
++import { compositeMidpoints as packageCompositeMidpoints } from '@zodiacs/engine/techniques';
+ import type { AspectType, BodyName } from './engine/types';
+
+ export interface CompositePoint { body: BodyName; lon: number }
+# command: npx astro build
+# exit code: 0
+# command: node scripts/report-bundles.mjs --fail
+  /birth-chart/      66.0 KB /   71 KB  (44 chunks)
+  /compatibility/    34.0 KB /   36 KB  (25 chunks)
+report-bundles: 2 failures
+  - engine-chunk: /_astro/full.CJ63dWM6.js is 32.6 KB gz (static closure) (limit 32.598046875 KB)
+  - lite view isolation: engine marker found in the RelationshipWheel closure: /_astro/chunk-NIRYKLHT.B71ZlMIb.js
+# exit code: 1
+# restored src/lib/composite.ts: sha256 3a60b061641e4d49da9b80f49d6680c672743c090accebf3d9bb706d4178ab87 (before control: 3a60b061641e4d49da9b80f49d6680c672743c090accebf3d9bb706d4178ab87)
+
+# the clean rebuild, the adapter restored
+# command: npx astro build
+# exit code: 0
+# command: node scripts/report-bundles.mjs --fail
+  /birth-chart/      66.0 KB /   71 KB  (44 chunks)
+  /compatibility/    33.8 KB /   36 KB  (25 chunks)
+  engine-chunk       32.6 KB / 32.598046875 KB  (/_astro/full.AUZx8EGL.js; 8 static chunks)
+report-bundles: budgets pass
+# exit code: 0

@@ -1,0 +1,15 @@
+
+ RUN  v3.2.7 <checkout>
+
+ ✓ tests/api/compute-api-bundle.test.ts (5 tests) 1023ms
+   ✓ the compute API's handler bundle > answers every documented example as the source handler does  548ms
+ ✓ tests/api/compute-api-private-state.test.ts (1 test) 1912ms
+   ✓ compute API private module lifetime > clears exact instants and selected caches on success, refusal and failure, without racing another resolver  1911ms
+ ✓ tests/api/compute-api-privacy.test.ts (7 tests) 1305ms
+   ✓ the site and the compute API > is called by no page, island or script of the site but the developer playground  798ms
+
+ Test Files  3 passed (3)
+      Tests  13 passed (13)
+   Start at  10:27:47
+   Duration  2.68s (transform 937ms, setup 0ms, collect 1.94s, tests 4.24s, environment 1ms, prepare 209ms)
+

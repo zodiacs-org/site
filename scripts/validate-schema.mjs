@@ -11,11 +11,12 @@ import { eventArticleDateFailures } from './event-article-dates.mjs';
 import {
   DEVELOPER_PAGES, SKY_DATA_FOLDERS, developerExpectations, developerStructuredDataErrors, servesUrlIn, skyDataFiles,
 } from './developer-structured-data-checks.mjs';
+import { readEventsPublication } from './lib/events-publications.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(repo, 'dist');
 const SITE_ORIGIN = 'https://zodiacs.org';
-const eventPublication = JSON.parse(await readFile(resolve(repo, 'src/data/events-publication.json'), 'utf8'));
+const eventPublication = await readEventsPublication(repo);
 const publishedEvents = new Map(eventPublication.pages.map((event) => [event.path, event]));
 const SIGN_SLUGS = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
@@ -32,9 +33,14 @@ const developerExpected = developerExpectations({
   manifest: readJson(resolve(repo, 'public/examples/mcp-server.json')),
   conformanceSource: readJson(resolve(repo, 'src/data/conformance/source.json')),
   conformanceSummary: readJson(resolve(repo, 'src/data/conformance/summary.json')),
+  conventionsRegistry: readJson(resolve(repo, 'src/data/conventions/registry.json')),
   skyIndex: readJson(resolve(dist, 'api/v1/index.json')),
   skyFiles: skyDataFiles(Object.fromEntries(SKY_DATA_FOLDERS.map((folder) => [folder, readdirSync(resolve(dist, 'api/v1', folder)).sort()]))),
   benchmarkItems: readJson(resolve(repo, 'public/developers/sky-benchmark/v0/items.json')),
+  timeAtlas: {
+    files: readJson(resolve(repo, 'public/developers/time-atlas/0.1.0/files.json')),
+    manifest: readJson(resolve(repo, 'public/developers/time-atlas/0.1.0/data/atlas.json')),
+  },
 });
 let documentCount = 0;
 let nodeCount = 0;

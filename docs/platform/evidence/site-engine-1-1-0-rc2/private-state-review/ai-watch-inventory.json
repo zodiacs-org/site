@@ -1,0 +1,4658 @@
+{
+  "bundlePath": "integrations/generated/sky-watch.mjs",
+  "bundleSha256": "9044e31ef947b09b331329745d6c220133360b6e3eb5ab59d2b9be09c816213d",
+  "bindings": [
+    {
+      "name": "COMPUTE_ENDPOINTS",
+      "line": 8,
+      "initializer": "Object.freeze([   \"chart\",   \"positions\",   \"houses\",   \"events\",   \"time\",   \"sky-fact\",   \"elections\" ])"
+    },
+    {
+      "name": "COMPUTE_ORIGIN",
+      "line": 17,
+      "initializer": "\"https://zodiacs.org\""
+    },
+    {
+      "name": "COMPUTE_DOCS_URL",
+      "line": 18,
+      "initializer": "`${COMPUTE_ORIGIN}/developers/compute/`"
+    },
+    {
+      "name": "COMPUTE_RATE_LIMIT_ID",
+      "line": 22,
+      "initializer": "\"zodiacs-compute-api\""
+    },
+    {
+      "name": "COMPUTE_EVENTS_RATE_LIMIT_ID",
+      "line": 23,
+      "initializer": "\"zodiacs-compute-events\""
+    },
+    {
+      "name": "RATE_LIMIT_RULES",
+      "line": 24,
+      "initializer": "Object.freeze({   [COMPUTE_RATE_LIMIT_ID]: Object.freeze({ requests: 40, windowSeconds: 60 }),   [COMPUTE_EVENTS_RATE_LIMIT_ID]: Object.freeze({ requests: 10, windowSeconds: 60 }) "
+    },
+    {
+      "name": "RETRY_AFTER_SECONDS",
+      "line": 28,
+      "initializer": "Object.freeze({   rateLimited: 60,   rateLimitUnavailable: 300,   disabled: 3600 })"
+    },
+    {
+      "name": "RESPONSE_HEADERS",
+      "line": 33,
+      "initializer": "Object.freeze({   \"Content-Type\": \"application/json; charset=utf-8\",   \"Cache-Control\": \"no-store\",   \"Access-Control-Allow-Origin\": \"*\",   \"Access-Control-Expose-Headers\": \"Retry-"
+    },
+    {
+      "name": "PREFLIGHT_HEADERS",
+      "line": 41,
+      "initializer": "Object.freeze({   \"Access-Control-Allow-Origin\": \"*\",   \"Access-Control-Allow-Methods\": \"POST, OPTIONS\",   \"Access-Control-Allow-Headers\": \"Content-Type\",   \"Access-Control-Max-Age"
+    },
+    {
+      "name": "MAX_BODY_BYTES",
+      "line": 50,
+      "initializer": "16384"
+    },
+    {
+      "name": "EPOCH",
+      "line": 51,
+      "initializer": "Object.freeze({   from: \"1800-01-01T00:00:00.000Z\",   to: \"2199-12-31T23:59:59.999Z\",   firstYear: 1800,   lastYear: 2199 })"
+    },
+    {
+      "name": "BUDGETS",
+      "line": 57,
+      "initializer": "Object.freeze({   \"positions.instants\": 100,   \"events.windowDays\": 92,   \"events.samples\": 12e3,   \"sky-fact.samples\": 1e3,   \"elections.windowDays\": 31,   \"elections.samples\": 6e"
+    },
+    {
+      "name": "BUDGET_MESSAGES",
+      "line": 65,
+      "initializer": "Object.freeze({   \"positions.instants\": `A positions request takes at most ${BUDGETS[\"positions.instants\"]} instants.`,   \"events.windowDays\": `An events window is at most ${BUDGET"
+    },
+    {
+      "name": "SEARCH_STEP_DAYS",
+      "line": 73,
+      "initializer": "Object.freeze({   default: 5,   moon: 1,   elongation: 1 })"
+    },
+    {
+      "name": "ERROR_CODES",
+      "line": 78,
+      "initializer": "Object.freeze([   \"not-found\",   \"method-not-allowed\",   \"disabled\",   \"rate-limited\",   \"rate-limit-unavailable\",   \"unsupported-media-type\",   \"payload-too-large\",   \"invalid-jso"
+    },
+    {
+      "name": "ERROR_STATUS",
+      "line": 91,
+      "initializer": "Object.freeze({   \"not-found\": 404,   \"method-not-allowed\": 405,   disabled: 503,   \"rate-limited\": 429,   \"rate-limit-unavailable\": 503,   \"unsupported-media-type\": 415,   \"payloa"
+    },
+    {
+      "name": "HOUSE_SYSTEM_NAMES",
+      "line": 104,
+      "initializer": "Object.freeze([   \"whole\",   \"placidus\",   \"porphyry\",   \"equal\",   \"equal-mc\",   \"vehlow\",   \"koch\",   \"regiomontanus\",   \"campanus\",   \"topocentric\",   \"alcabitius\",   \"morinus\","
+    },
+    {
+      "name": "EVENT_BODIES",
+      "line": 119,
+      "initializer": "Object.freeze([   \"Sun\",   \"Moon\",   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\" ])"
+    },
+    {
+      "name": "POSITION_BODIES",
+      "line": 131,
+      "initializer": "Object.freeze([   ...EVENT_BODIES,   \"North Node\",   \"South Node\" ])"
+    },
+    {
+      "name": "STATION_BODIES",
+      "line": 136,
+      "initializer": "Object.freeze([   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\" ])"
+    },
+    {
+      "name": "EVENT_KINDS",
+      "line": 146,
+      "initializer": "Object.freeze([\"ingress\", \"station\", \"lunation\"])"
+    },
+    {
+      "name": "SIGN_SLUGS",
+      "line": 147,
+      "initializer": "Object.freeze([   \"aries\",   \"taurus\",   \"gemini\",   \"cancer\",   \"leo\",   \"virgo\",   \"libra\",   \"scorpio\",   \"sagittarius\",   \"capricorn\",   \"aquarius\",   \"pisces\" ])"
+    },
+    {
+      "name": "PHASES",
+      "line": 161,
+      "initializer": "Object.freeze({   new: 0,   \"first-quarter\": 90,   full: 180,   \"last-quarter\": 270 })"
+    },
+    {
+      "name": "PHASE_NAMES",
+      "line": 167,
+      "initializer": "Object.freeze(Object.keys(PHASES))"
+    },
+    {
+      "name": "SKY_FACT_KINDS",
+      "line": 168,
+      "initializer": "Object.freeze([\"sign\", \"retrograde\", \"ingress\", \"phase\", \"aspect\"])"
+    },
+    {
+      "name": "ELECTION_CONDITION_KINDS",
+      "line": 169,
+      "initializer": "Object.freeze([\"phase\", \"void-of-course\", \"sign\", \"retrograde\", \"angular\"])"
+    },
+    {
+      "name": "MAX_ELECTION_CONDITIONS",
+      "line": 170,
+      "initializer": "5"
+    },
+    {
+      "name": "MOON_HALVES",
+      "line": 171,
+      "initializer": "Object.freeze([\"waxing\", \"waning\"])"
+    },
+    {
+      "name": "ANGULAR_HOUSES",
+      "line": 172,
+      "initializer": "Object.freeze([1, 4, 7, 10])"
+    },
+    {
+      "name": "ANGULAR_MAX_ABS_LATITUDE",
+      "line": 173,
+      "initializer": "60"
+    },
+    {
+      "name": "ELECTION_STEPS",
+      "line": 174,
+      "initializer": "Object.freeze({   houseSampleMinutes: 60,   houseBoundarySeconds: 1,   /**    * Every boundary is within a second, so two less than 2 seconds apart may be    * one instant found tw"
+    },
+    {
+      "name": "FULL_CALCULATION_COST",
+      "line": 184,
+      "initializer": "25"
+    },
+    {
+      "name": "ANY_ZONE_DAY",
+      "line": 185,
+      "initializer": "Object.freeze({   startHoursBeforeUtcMidnight: 14,   endHoursAfterUtcMidnight: 36 })"
+    },
+    {
+      "name": "COMPUTE_RECEIPT_SCHEMA",
+      "line": 192,
+      "initializer": "\"zodiacs.compute-receipt.v1\""
+    },
+    {
+      "name": "SIGNS",
+      "line": 198,
+      "initializer": "Object.freeze([   /* @__PURE__ */ Object.freeze({     slug: \"aries\",     name: \"Aries\",     element: \"fire\",     modality: \"cardinal\",     polarity: \"day\",     naturalHouse: 1   })"
+    },
+    {
+      "name": "DEG",
+      "line": 313,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "RAD",
+      "line": 314,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "HOUSE_SYSTEMS",
+      "line": 315,
+      "initializer": "Object.freeze([   \"whole\",   \"placidus\",   \"porphyry\",   \"equal\",   \"equal-mc\",   \"vehlow\",   \"koch\",   \"regiomontanus\",   \"campanus\",   \"topocentric\",   \"alcabitius\",   \"morinus\","
+    },
+    {
+      "name": "POLAR_UNDEFINED_HOUSE_SYSTEMS",
+      "line": 330,
+      "initializer": "Object.freeze([\"placidus\", \"koch\"])"
+    },
+    {
+      "name": "POLAR_FALLBACK",
+      "line": 331,
+      "initializer": "\"whole\""
+    },
+    {
+      "name": "DEG2",
+      "line": 628,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "ARCSEC",
+      "line": 629,
+      "initializer": "DEG2 / 3600"
+    },
+    {
+      "name": "ARGUMENTS",
+      "line": 630,
+      "initializer": "[   485868.249036,   17179159232178e-4,   128710479305e-5,   1295965810481e-4,   335779.526232,   17395272628478e-4,   107226070369e-5,   1602961601209e-3,   450160.398036,   -6962"
+    },
+    {
+      "name": "MULTIPLIERS",
+      "line": 642,
+      "initializer": "\"22223224042242422224232222340432222224233242421404224031242412242322231222312444324230242322242224442040402242424243240412423422222242223223122432440422042322032122312443242223244"
+    },
+    {
+      "name": "COEFFICIENT_TEXT",
+      "line": 643,
+      "initializer": "\"-172064161,-174666,33386,92052331,9086,15377,-13170906,-1675,-13696,5730336,-3015,-4587,-2276413,-234,2796,978459,-485,1374,2074554,207,-698,-897492,470,-291,1475877,-3633,11817,7"
+    },
+    {
+      "name": "coefficientValues",
+      "line": 644,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "OFFSETS",
+      "line": 648,
+      "initializer": "[-135e-6, 388e-6]"
+    },
+    {
+      "name": "NUTATION_TERMS",
+      "line": 649,
+      "initializer": "77"
+    },
+    {
+      "name": "DEG22",
+      "line": 701,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "ASEC2RAD",
+      "line": 702,
+      "initializer": "DEG22 / 3600"
+    },
+    {
+      "name": "RAD2",
+      "line": 703,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "last",
+      "line": 704,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "DELTA_T_MODEL",
+      "line": 772,
+      "initializer": "\"zodiacs-deltat/1\""
+    },
+    {
+      "name": "DELTA_T_TABLE",
+      "line": 773,
+      "initializer": "Object.freeze({   version: \"2026-09-24\",   digest: \"6371988c510a1c6c\",   from: 1941,   observedTo: 61307,   predictedTo: 61680,   knots: /* @__PURE__ */ Object.freeze([     2482,  "
+    },
+    {
+      "name": "SX",
+      "line": 873,
+      "initializer": "[-720, 400, 1e3, 1500, 1600, 1650, 1720, 1800, 1810, 1820, 1830, 1840]"
+    },
+    {
+      "name": "SY",
+      "line": 874,
+      "initializer": "[   2055059,   660440,   146765,   29264,   8938,   4374,   1073,   1871,   1526,   1668,   1076,   767,   932,   1038,   904,   826,   237,   -113,   -321,   -439,   -388,   -502,"
+    },
+    {
+      "name": "SIG",
+      "line": 908,
+      "initializer": "[   640,   83,   900,   230,   1240,   120,   1400,   15,   1420,   7.5,   1440,   4.2,   1500,   5.6,   1560,   27,   1670,   15,   1710,   3.3,   1720,   3.3,   1760,   1.5,   18"
+    },
+    {
+      "name": "X",
+      "line": 944,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "Y",
+      "line": 945,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "M",
+      "line": 946,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "KX",
+      "line": 947,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "KV",
+      "line": 948,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "OBS",
+      "line": 949,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "PRED",
+      "line": 950,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "SLOPE",
+      "line": 951,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "yearOfMjd",
+      "line": 952,
+      "initializer": "(mjd) => 2e3 + (mjd - 51544.5) / 365.25"
+    },
+    {
+      "name": "longTerm",
+      "line": 953,
+      "initializer": "(y) => {   const t = (y - 1825) / 100;   return 36.525 * (0.89 * t * t + 30 / Math.PI * Math.cos(Math.PI * t / 7.5)); }"
+    },
+    {
+      "name": "longTermRate",
+      "line": 957,
+      "initializer": "(y) => {   const t = (y - 1825) / 100;   return 0.36525 * (1.78 * t - 4 * Math.sin(Math.PI * t / 7.5)); }"
+    },
+    {
+      "name": "REFERENCE_SPAN",
+      "line": 1053,
+      "initializer": "Object.freeze({   from: \"1800-01-01T00:00:00.000Z\",   to: \"2200-01-01T00:00:00.000Z\" })"
+    },
+    {
+      "name": "EPHEMERIS_SPAN",
+      "line": 1057,
+      "initializer": "Object.freeze({   /** The scale of the bounds, as a label, like `fromTT` and `toTT`: not a TimeScaleName, which is lowercase. */   timeScale: \"TT\",   /** Days of Terrestrial Time f"
+    },
+    {
+      "name": "FROM",
+      "line": 1066,
+      "initializer": "Date.UTC(1800, 0, 1)"
+    },
+    {
+      "name": "TO",
+      "line": 1067,
+      "initializer": "Date.UTC(2200, 0, 1)"
+    },
+    {
+      "name": "LEAP_SECOND_LIST",
+      "line": 1072,
+      "initializer": "Object.freeze({   source: \"IERS leap-seconds.list, retrieved 2026-09-29\",   sha256: \"db5a895f16853b03bfc865e8d68f9fc8710ef1740e3400c701cd46a5bbbc3433\",   /** The list's last update"
+    },
+    {
+      "name": "UT1_DATA",
+      "line": 1081,
+      "initializer": "Object.freeze({   version: \"2026-09-24\",   source: \"IERS finals2000A.all (Bulletin A), Last-Modified 2026-09-24T17:37:44Z\",   sha256: \"cc80680ec05c91b65e7d02c6068fe0d44dd0998dc8805"
+    },
+    {
+      "name": "UT1_FROM_MS",
+      "line": 1109,
+      "initializer": "63072e6"
+    },
+    {
+      "name": "UT1_FINALS_FROM_MS",
+      "line": 1110,
+      "initializer": "947808e5"
+    },
+    {
+      "name": "UT1_OBSERVED_TO_MS",
+      "line": 1111,
+      "initializer": "1790208e6"
+    },
+    {
+      "name": "UT1_TO_MS",
+      "line": 1112,
+      "initializer": "18224352e5"
+    },
+    {
+      "name": "UT1_GRID_BEFORE",
+      "line": 1113,
+      "initializer": "122"
+    },
+    {
+      "name": "LEAP_SECONDS_EXPIRE_MS",
+      "line": 1114,
+      "initializer": "18141408e5"
+    },
+    {
+      "name": "TIME_SCALE_NAMES",
+      "line": 1115,
+      "initializer": "Object.freeze([\"utc\", \"ut1\", \"tt\"])"
+    },
+    {
+      "name": "DELTA_T_IERS_MODEL",
+      "line": 1116,
+      "initializer": "\"iers-utc/1\""
+    },
+    {
+      "name": "DAY",
+      "line": 1117,
+      "initializer": "864e5"
+    },
+    {
+      "name": "J2000_MS",
+      "line": 1118,
+      "initializer": "Date.UTC(2e3, 0, 1, 12)"
+    },
+    {
+      "name": "MJD_UNIX",
+      "line": 1119,
+      "initializer": "40587"
+    },
+    {
+      "name": "LEAP_SECONDS_FROM",
+      "line": 1120,
+      "initializer": "Date.UTC(1972, 0, 1)"
+    },
+    {
+      "name": "UT1_FALLBACK_BAND",
+      "line": 1121,
+      "initializer": "0.9"
+    },
+    {
+      "name": "ALPHABET",
+      "line": 1122,
+      "initializer": "\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~\""
+    },
+    {
+      "name": "knots",
+      "line": 1123,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "fallback",
+      "line": 1183,
+      "initializer": "() => ({ seconds: 0, sigma: UT1_FALLBACK_BAND, source: \"fallback\" })"
+    },
+    {
+      "name": "modelDeltaT",
+      "line": 1195,
+      "initializer": "(ut1Ms) => deltaTAt((ut1Ms - J2000_MS) / DAY)"
+    },
+    {
+      "name": "MODEL_KNOTS_FROM",
+      "line": 1248,
+      "initializer": "(1941 - 2e3) * 365.25"
+    },
+    {
+      "name": "ASPECT_TYPES",
+      "line": 1262,
+      "initializer": "Object.freeze([   \"conjunction\",   \"sextile\",   \"square\",   \"trine\",   \"opposition\" ])"
+    },
+    {
+      "name": "ASPECTS",
+      "line": 1269,
+      "initializer": "Object.freeze([   /* @__PURE__ */ Object.freeze({ type: \"conjunction\", angle: 0, orb: 8, luminaryOrb: 10 }),   /* @__PURE__ */ Object.freeze({ type: \"sextile\", angle: 60, orb: 4, l"
+    },
+    {
+      "name": "LUMINARIES",
+      "line": 1276,
+      "initializer": "new Set([\"Sun\", \"Moon\"])"
+    },
+    {
+      "name": "ASPECT_BODY_NAMES",
+      "line": 1277,
+      "initializer": "Object.freeze([   \"Sun\",   \"Moon\",   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\" ])"
+    },
+    {
+      "name": "ASPECT_BODY_SET",
+      "line": 1289,
+      "initializer": "new Set(ASPECT_BODY_NAMES)"
+    },
+    {
+      "name": "ASPECT_BODIES",
+      "line": 1290,
+      "initializer": "new Set(ASPECT_BODY_NAMES)"
+    },
+    {
+      "name": "STATIONARY_RELATIVE_SPEED",
+      "line": 1291,
+      "initializer": "1e-9"
+    },
+    {
+      "name": "ENGINE_VERSION",
+      "line": 1339,
+      "initializer": "\"1.1.0-rc.2\""
+    },
+    {
+      "name": "EPHEMERIS",
+      "line": 1340,
+      "initializer": "Object.freeze({ name: \"astronomy-engine\", version: \"2.1.19\" })"
+    },
+    {
+      "name": "C_AUDAY",
+      "line": 1376,
+      "initializer": "173.1446326846693"
+    },
+    {
+      "name": "KM_PER_AU",
+      "line": 1377,
+      "initializer": "14959787069098932e-8"
+    },
+    {
+      "name": "DEG2RAD",
+      "line": 1378,
+      "initializer": "0.017453292519943295"
+    },
+    {
+      "name": "DAYS_PER_TROPICAL_YEAR",
+      "line": 1379,
+      "initializer": "365.24217"
+    },
+    {
+      "name": "J2000",
+      "line": 1380,
+      "initializer": "new Date(\"2000-01-01T12:00:00Z\")"
+    },
+    {
+      "name": "PI2",
+      "line": 1381,
+      "initializer": "2 * Math.PI"
+    },
+    {
+      "name": "ARC",
+      "line": 1382,
+      "initializer": "3600 * (180 / Math.PI)"
+    },
+    {
+      "name": "ASEC2RAD2",
+      "line": 1383,
+      "initializer": "484813681109536e-20"
+    },
+    {
+      "name": "ASEC180",
+      "line": 1384,
+      "initializer": "180 * 60 * 60"
+    },
+    {
+      "name": "ASEC360",
+      "line": 1385,
+      "initializer": "2 * ASEC180"
+    },
+    {
+      "name": "AU_PER_PARSEC",
+      "line": 1386,
+      "initializer": "ASEC180 / Math.PI"
+    },
+    {
+      "name": "SUN_MAG_1AU",
+      "line": 1387,
+      "initializer": "-0.17 - 5 * Math.log10(AU_PER_PARSEC)"
+    },
+    {
+      "name": "SECONDS_PER_DAY",
+      "line": 1388,
+      "initializer": "24 * 3600"
+    },
+    {
+      "name": "MILLIS_PER_DAY",
+      "line": 1389,
+      "initializer": "SECONDS_PER_DAY * 1e3"
+    },
+    {
+      "name": "SUN_RADIUS_KM",
+      "line": 1390,
+      "initializer": "695700"
+    },
+    {
+      "name": "SUN_RADIUS_AU",
+      "line": 1391,
+      "initializer": "SUN_RADIUS_KM / KM_PER_AU"
+    },
+    {
+      "name": "EARTH_FLATTENING",
+      "line": 1392,
+      "initializer": "0.996647180302104"
+    },
+    {
+      "name": "EARTH_FLATTENING_SQUARED",
+      "line": 1393,
+      "initializer": "EARTH_FLATTENING * EARTH_FLATTENING"
+    },
+    {
+      "name": "EARTH_EQUATORIAL_RADIUS_KM",
+      "line": 1394,
+      "initializer": "6378.1366"
+    },
+    {
+      "name": "EARTH_EQUATORIAL_RADIUS_AU",
+      "line": 1395,
+      "initializer": "EARTH_EQUATORIAL_RADIUS_KM / KM_PER_AU"
+    },
+    {
+      "name": "EARTH_POLAR_RADIUS_KM",
+      "line": 1396,
+      "initializer": "EARTH_EQUATORIAL_RADIUS_KM * EARTH_FLATTENING"
+    },
+    {
+      "name": "EARTH_MEAN_RADIUS_KM",
+      "line": 1397,
+      "initializer": "6371"
+    },
+    {
+      "name": "EARTH_ATMOSPHERE_KM",
+      "line": 1398,
+      "initializer": "88"
+    },
+    {
+      "name": "EARTH_ECLIPSE_RADIUS_KM",
+      "line": 1399,
+      "initializer": "EARTH_MEAN_RADIUS_KM + EARTH_ATMOSPHERE_KM"
+    },
+    {
+      "name": "MOON_EQUATORIAL_RADIUS_KM",
+      "line": 1400,
+      "initializer": "1738.1"
+    },
+    {
+      "name": "MOON_EQUATORIAL_RADIUS_AU",
+      "line": 1401,
+      "initializer": "MOON_EQUATORIAL_RADIUS_KM / KM_PER_AU"
+    },
+    {
+      "name": "MOON_POLAR_RADIUS_KM",
+      "line": 1402,
+      "initializer": "1736"
+    },
+    {
+      "name": "MOON_POLAR_RADIUS_AU",
+      "line": 1403,
+      "initializer": "MOON_POLAR_RADIUS_KM / KM_PER_AU"
+    },
+    {
+      "name": "REFRACTION_NEAR_HORIZON",
+      "line": 1404,
+      "initializer": "34 / 60"
+    },
+    {
+      "name": "EARTH_MOON_MASS_RATIO",
+      "line": 1405,
+      "initializer": "81.30056"
+    },
+    {
+      "name": "SUN_GM",
+      "line": 1406,
+      "initializer": "2959122082855911e-19"
+    },
+    {
+      "name": "EARTH_GM",
+      "line": 1407,
+      "initializer": "8887692390113509e-25"
+    },
+    {
+      "name": "JUPITER_GM",
+      "line": 1408,
+      "initializer": "2825345909524226e-22"
+    },
+    {
+      "name": "SATURN_GM",
+      "line": 1409,
+      "initializer": "8459715185680659e-23"
+    },
+    {
+      "name": "URANUS_GM",
+      "line": 1410,
+      "initializer": "1292024916781969e-23"
+    },
+    {
+      "name": "NEPTUNE_GM",
+      "line": 1411,
+      "initializer": "1524358900784276e-23"
+    },
+    {
+      "name": "MOON_GM",
+      "line": 1412,
+      "initializer": "EARTH_GM / EARTH_MOON_MASS_RATIO"
+    },
+    {
+      "name": "Body",
+      "line": 1430,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "StarList",
+      "line": 1454,
+      "initializer": "[   Body.Star1,   Body.Star2,   Body.Star3,   Body.Star4,   Body.Star5,   Body.Star6,   Body.Star7,   Body.Star8 ]"
+    },
+    {
+      "name": "StarTable",
+      "line": 1464,
+      "initializer": "[   { ra: 0, dec: 0, dist: 0 },   { ra: 0, dec: 0, dist: 0 },   { ra: 0, dec: 0, dist: 0 },   { ra: 0, dec: 0, dist: 0 },   { ra: 0, dec: 0, dist: 0 },   { ra: 0, dec: 0, dist: 0 }"
+    },
+    {
+      "name": "PrecessDirection",
+      "line": 1482,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "vsop",
+      "line": 1487,
+      "initializer": "{   Mercury: [     [       [         [4.40250710144, 0, 0],         [0.40989414977, 1.48302034195, 26087.9031415742],         [0.050462942, 4.47785489551, 52175.8062831484],       "
+    },
+    {
+      "name": "DeltaT",
+      "line": 2224,
+      "initializer": "DeltaT_EspenakMeeus"
+    },
+    {
+      "name": "AstroTime",
+      "line": 2231,
+      "initializer": "class _AstroTime {   /**    * @param {FlexibleDateTime} date    *      A JavaScript Date object, a numeric UTC value expressed in J2000 days, or another AstroTime object.    */   c"
+    },
+    {
+      "name": "CalcMoonCount",
+      "line": 2333,
+      "initializer": "0"
+    },
+    {
+      "name": "Vector",
+      "line": 2637,
+      "initializer": "class {   constructor(x, y, z14, t) {     this.x = x;     this.y = y;     this.z = z14;     this.t = t;   }   /**    * Returns the length of the vector in astronomical units (AU). "
+    },
+    {
+      "name": "StateVector",
+      "line": 2652,
+      "initializer": "class {   constructor(x, y, z14, vx, vy, vz, t) {     this.x = x;     this.y = y;     this.z = z14;     this.vx = vx;     this.vy = vy;     this.vz = vz;     this.t = t;   } }"
+    },
+    {
+      "name": "Spherical",
+      "line": 2663,
+      "initializer": "class {   constructor(lat, lon, dist) {     this.lat = VerifyNumber(lat);     this.lon = VerifyNumber(lon);     this.dist = VerifyNumber(dist);   } }"
+    },
+    {
+      "name": "RotationMatrix",
+      "line": 2670,
+      "initializer": "class {   constructor(rot) {     this.rot = rot;   } }"
+    },
+    {
+      "name": "DAYS_PER_MILLENNIUM",
+      "line": 2739,
+      "initializer": "365250"
+    },
+    {
+      "name": "LON_INDEX",
+      "line": 2740,
+      "initializer": "0"
+    },
+    {
+      "name": "LAT_INDEX",
+      "line": 2741,
+      "initializer": "1"
+    },
+    {
+      "name": "RAD_INDEX",
+      "line": 2742,
+      "initializer": "2"
+    },
+    {
+      "name": "PLUTO_NUM_STATES",
+      "line": 2804,
+      "initializer": "51"
+    },
+    {
+      "name": "PLUTO_TIME_STEP",
+      "line": 2805,
+      "initializer": "29200"
+    },
+    {
+      "name": "PLUTO_DT",
+      "line": 2806,
+      "initializer": "146"
+    },
+    {
+      "name": "PLUTO_NSTEPS",
+      "line": 2807,
+      "initializer": "201"
+    },
+    {
+      "name": "PlutoStateTable",
+      "line": 2808,
+      "initializer": "[   [-73e4, [-26.118207232108, -14.376168177825, 3.384402515299], [0.0016339372163656, -0.0027861699588508, -0.0013585880229445]],   [-700800, [41.974905202127, -0.448502952929, -1"
+    },
+    {
+      "name": "TerseVector",
+      "line": 2861,
+      "initializer": "class _TerseVector {   constructor(x, y, z14) {     this.x = x;     this.y = y;     this.z = z14;   }   clone() {     return new _TerseVector(this.x, this.y, this.z);   }   ToAstro"
+    },
+    {
+      "name": "body_state_t",
+      "line": 2908,
+      "initializer": "class _body_state_t {   constructor(tt, r, v) {     this.tt = tt;     this.r = r;     this.v = v;   }   clone() {     return new _body_state_t(this.tt, this.r, this.v);   }   sub(o"
+    },
+    {
+      "name": "major_bodies_t",
+      "line": 2937,
+      "initializer": "class {   constructor(tt) {     let ssb = new body_state_t(tt, new TerseVector(0, 0, 0), new TerseVector(0, 0, 0));     this.Jupiter = AdjustBarycenterPosVel(ssb, tt, Body.Jupiter,"
+    },
+    {
+      "name": "body_grav_calc_t",
+      "line": 2963,
+      "initializer": "class _body_grav_calc_t {   constructor(tt, r, v, a) {     this.tt = tt;     this.r = r;     this.v = v;     this.a = a;   }   clone() {     return new _body_grav_calc_t(this.tt, t"
+    },
+    {
+      "name": "grav_sim_t",
+      "line": 2974,
+      "initializer": "class {   constructor(bary, grav) {     this.bary = bary;     this.grav = grav;   } }"
+    },
+    {
+      "name": "pluto_cache",
+      "line": 2997,
+      "initializer": "[]"
+    },
+    {
+      "name": "Rotation_JUP_EQJ",
+      "line": 3083,
+      "initializer": "new RotationMatrix([   [0.999432765338654, -0.0336771074697641, 0],   [0.0303959428906285, 0.902057912352809, 0.430543388542295],   [-0.0144994559663353, -0.430299169409101, 0.9025"
+    },
+    {
+      "name": "BodyPosition",
+      "line": 3134,
+      "initializer": "class {   constructor(observerBody, targetBody, aberration, observerPos) {     this.observerBody = observerBody;     this.targetBody = targetBody;     this.aberration = aberration;"
+    },
+    {
+      "name": "ApsisKind",
+      "line": 3223,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "EclipseKind",
+      "line": 3235,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "NodeEventKind",
+      "line": 3242,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "SAFE_MAGNITUDE",
+      "line": 3250,
+      "initializer": "2 ** 1e3"
+    },
+    {
+      "name": "DEG3",
+      "line": 3251,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "RAD3",
+      "line": 3252,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "RA_POLE_TOLERANCE",
+      "line": 3253,
+      "initializer": "32 * Number.EPSILON"
+    },
+    {
+      "name": "DEG23",
+      "line": 3254,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "RAD22",
+      "line": 3255,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "ARCSEC2",
+      "line": 3256,
+      "initializer": "1 / 3600"
+    },
+    {
+      "name": "RAD32",
+      "line": 3257,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "DAY2",
+      "line": 3258,
+      "initializer": "864e5"
+    },
+    {
+      "name": "UTC_CLOCK",
+      "line": 3259,
+      "initializer": "{ scale: \"utc\", pin: void 0 }"
+    },
+    {
+      "name": "basisAt",
+      "line": 3274,
+      "initializer": "(ms, clock2) => timeBasis(ms, clock2.scale, clock2.pin)"
+    },
+    {
+      "name": "timeAt",
+      "line": 3275,
+      "initializer": "(ms, clock2) => timeOf(basisAt(ms, clock2))"
+    },
+    {
+      "name": "PLANETS",
+      "line": 3304,
+      "initializer": "[   { name: \"Sun\", body: Body.Sun },   { name: \"Mercury\", body: Body.Mercury },   { name: \"Venus\", body: Body.Venus },   { name: \"Mars\", body: Body.Mars },   { name: \"Jupiter\", bod"
+    },
+    {
+      "name": "SPEED_STEP_DAYS",
+      "line": 3351,
+      "initializer": "1e-3"
+    },
+    {
+      "name": "NODE_SPEED_STEP_DAYS",
+      "line": 3352,
+      "initializer": "0.25"
+    },
+    {
+      "name": "clockOf",
+      "line": 3401,
+      "initializer": "(input) => ({   scale: input.timeScale ?? \"utc\",   pin: input.deltaT })"
+    },
+    {
+      "name": "ISO_INSTANT",
+      "line": 3446,
+      "initializer": "/^(\\d{4}|[+-]\\d{6})-(\\d{2})-(\\d{2})(?:T(\\d{2}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{1,3}))?)?(Z|[+-](\\d{2}):(\\d{2})))?$/"
+    },
+    {
+      "name": "DAY3",
+      "line": 3478,
+      "initializer": "864e5"
+    },
+    {
+      "name": "REFINE_STEPS",
+      "line": 3479,
+      "initializer": "24"
+    },
+    {
+      "name": "EDGE_PROBE_MAX_MS",
+      "line": 3480,
+      "initializer": "6e4"
+    },
+    {
+      "name": "DUPLICATE_MS",
+      "line": 3481,
+      "initializer": "1e3"
+    },
+    {
+      "name": "GOLDEN",
+      "line": 3482,
+      "initializer": "(Math.sqrt(5) - 1) / 2"
+    },
+    {
+      "name": "SampleBudgetReached",
+      "line": 3483,
+      "initializer": "class { }"
+    },
+    {
+      "name": "HOUSE_SYSTEM_NAMES2",
+      "line": 3711,
+      "initializer": "[   \"whole\",   \"placidus\",   \"porphyry\",   \"equal\",   \"equal-mc\",   \"vehlow\",   \"koch\",   \"regiomontanus\",   \"campanus\",   \"topocentric\",   \"alcabitius\",   \"morinus\",   \"meridian\" "
+    },
+    {
+      "name": "FLAGS",
+      "line": 3753,
+      "initializer": "[   \"dst-gap\",   \"dst-fold\",   \"lmt\",   \"no-time\",   \"polar-fallback\",   \"outside-reference-span\" ]"
+    },
+    {
+      "name": "DERIVED_FLAGS",
+      "line": 3761,
+      "initializer": "[\"no-time\", \"polar-fallback\", \"outside-reference-span\"]"
+    },
+    {
+      "name": "BIRTH_FIELDS",
+      "line": 3798,
+      "initializer": "[   \"utc\",   \"timeScale\",   \"latitude\",   \"longitude\",   \"houseSystem\",   \"timeKnown\",   \"flags\",   \"deltaT\" ]"
+    },
+    {
+      "name": "NAMESPACE",
+      "line": 3880,
+      "initializer": "/^[A-Za-z][A-Za-z0-9-]*$/u"
+    },
+    {
+      "name": "VALUE",
+      "line": 3881,
+      "initializer": "/^[^\\s\\p{Cc}\\p{Cf}\\p{Cs}]+$/u"
+    },
+    {
+      "name": "julianLeap",
+      "line": 3917,
+      "initializer": "(year) => year % 4 === 0"
+    },
+    {
+      "name": "gregorianLeap",
+      "line": 3918,
+      "initializer": "(year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)"
+    },
+    {
+      "name": "SEMVER",
+      "line": 3966,
+      "initializer": "/^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    {
+      "name": "DIGITS",
+      "line": 3967,
+      "initializer": "/^\\d+$/"
+    },
+    {
+      "name": "NATAL_ENVELOPE_SCHEMA",
+      "line": 3994,
+      "initializer": "\"zodiacs.natal-envelope.draft-v1\""
+    },
+    {
+      "name": "NATAL_RECEIPT_SCHEMA",
+      "line": 3995,
+      "initializer": "\"zodiacs.calculation-receipt.draft-v1\""
+    },
+    {
+      "name": "NATAL_ENVELOPE_LIMITS",
+      "line": 3996,
+      "initializer": "Object.freeze({ bytes: 65536, depth: 12, nodes: 4096 })"
+    },
+    {
+      "name": "ERROR_CODES2",
+      "line": 3997,
+      "initializer": "new Set([   \"invalid_json\",   \"invalid_shape\",   \"invalid_value\",   \"inconsistent_result\",   \"invalid_context\",   \"size_limit\",   \"complexity_limit\",   \"unsupported_version\",   \"un"
+    },
+    {
+      "name": "ERROR_BRAND",
+      "line": 4008,
+      "initializer": "new WeakMap()"
+    },
+    {
+      "name": "NatalEnvelopeError",
+      "line": 4009,
+      "initializer": "class extends Error {   code;   constructor(code) {     const fixed = ERROR_CODES2.has(code) ? code : \"invalid_shape\";     super(`Natal envelope rejected: ${fixed}.`);     this.cod"
+    },
+    {
+      "name": "CONVENTIONS_RC3",
+      "line": 4019,
+      "initializer": "Object.freeze({   calendar: \"proleptic-gregorian\",   zodiac: \"tropical\",   planetPositions: \"apparent-geocentric-ecliptic-of-date\",   moonPosition: \"astronomy-engine-ecliptic-geo-m"
+    },
+    {
+      "name": "CONVENTIONS_RC7",
+      "line": 4030,
+      "initializer": "(() => Object.freeze({   ...CONVENTIONS_RC3,   angles: \"gast-and-true-obliquity\",   speed: \"degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day\",   as"
+    },
+    {
+      "name": "CONVENTIONS_RC8",
+      "line": 4036,
+      "initializer": "(() => Object.freeze({   ...CONVENTIONS_RC7,   planetPositions: \"aberrated-geocentric-ecliptic-of-date;no-deflection\",   moonPosition: \"astronomy-engine-ecliptic-geo-moon;no-light-"
+    },
+    {
+      "name": "CONVENTIONS_RC15",
+      "line": 4042,
+      "initializer": "(() => Object.freeze({   ...CONVENTIONS_RC8,   deltaT: \"tt-minus-ut1;value-in-result\",   timeScale: \"tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwis"
+    },
+    {
+      "name": "CONVENTIONS_RC16",
+      "line": 4048,
+      "initializer": "(() => Object.freeze({   ...CONVENTIONS_RC15,   moonPosition: \"astronomy-engine-geo-moon;no-light-time;no-aberration\",   nutation: \"iau2000b;equation-of-equinoxes-with-two-compleme"
+    },
+    {
+      "name": "CONVENTIONS",
+      "line": 4053,
+      "initializer": "(() => Object.freeze({   ...CONVENTIONS_RC16,   conventionIds: \"zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt\" }))()"
+    },
+    {
+      "name": "NATAL_RECEIPT_CONVENTION_SETS",
+      "line": 4057,
+      "initializer": "Object.freeze([   CONVENTIONS,   CONVENTIONS_RC16,   CONVENTIONS_RC15,   CONVENTIONS_RC8,   CONVENTIONS_RC7,   CONVENTIONS_RC3 ])"
+    },
+    {
+      "name": "RC3_TO_RC6",
+      "line": 4065,
+      "initializer": "/^0\\.1\\.1-rc\\.[3-6](?:\\+[A-Za-z0-9.-]+)?$/"
+    },
+    {
+      "name": "RC7",
+      "line": 4066,
+      "initializer": "/^0\\.1\\.1-rc\\.7(?:\\+[A-Za-z0-9.-]+)?$/"
+    },
+    {
+      "name": "RC8_TO_RC14",
+      "line": 4067,
+      "initializer": "/^0\\.1\\.1-rc\\.(?:[89]|1[0-4])(?:\\+[A-Za-z0-9.-]+)?$/"
+    },
+    {
+      "name": "RC15",
+      "line": 4068,
+      "initializer": "/^0\\.1\\.1-rc\\.15(?:\\+[A-Za-z0-9.-]+)?$/"
+    },
+    {
+      "name": "before",
+      "line": 4069,
+      "initializer": "(version2, release) => compareVersions(version2, release) < 0"
+    },
+    {
+      "name": "NUTATION_RELEASE",
+      "line": 4070,
+      "initializer": "\"0.1.1-rc.16\""
+    },
+    {
+      "name": "IDS_FEATURE",
+      "line": 4071,
+      "initializer": "\"convention-ids\""
+    },
+    {
+      "name": "RC9_RELEASE",
+      "line": 4072,
+      "initializer": "\"0.1.1-rc.9\""
+    },
+    {
+      "name": "RC10_RELEASE",
+      "line": 4073,
+      "initializer": "\"0.1.1-rc.10\""
+    },
+    {
+      "name": "COVERAGE",
+      "line": 4074,
+      "initializer": "Object.freeze({   assessment: \"finite-reference-cases-only\",   broadDateRange: \"not-certified\",   angleExclusions: \"exact-geographic-poles-and-ecliptic-horizon-coincidence\",   inpu"
+    },
+    {
+      "name": "BODIES",
+      "line": 4080,
+      "initializer": "[   \"Sun\",   \"Moon\",   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\",   \"North Node\",   \"South Node\" ]"
+    },
+    {
+      "name": "FLAGS_RC7",
+      "line": 4094,
+      "initializer": "[\"dst-gap\", \"dst-fold\", \"lmt\", \"no-time\", \"polar-fallback\"]"
+    },
+    {
+      "name": "FLAGS2",
+      "line": 4095,
+      "initializer": "[...FLAGS_RC7, \"outside-reference-span\"]"
+    },
+    {
+      "name": "TIME_FLAGS",
+      "line": 4096,
+      "initializer": "[\"dst-gap\", \"dst-fold\", \"lmt\"]"
+    },
+    {
+      "name": "HOUSE_SYSTEMS2",
+      "line": 4097,
+      "initializer": "[   \"whole\",   \"placidus\",   \"porphyry\",   \"equal\",   \"equal-mc\",   \"vehlow\",   \"koch\",   \"regiomontanus\",   \"campanus\",   \"topocentric\",   \"alcabitius\",   \"morinus\",   \"meridian\" "
+    },
+    {
+      "name": "HOUSE_SYSTEMS_BEFORE_RC9",
+      "line": 4112,
+      "initializer": "[\"whole\", \"placidus\", \"porphyry\"]"
+    },
+    {
+      "name": "HOUSE_SYSTEMS_BEFORE_RC10",
+      "line": 4113,
+      "initializer": "HOUSE_SYSTEMS2.filter(   (system) => system !== \"equal-mc\" )"
+    },
+    {
+      "name": "POLAR_UNDEFINED",
+      "line": 4116,
+      "initializer": "[\"placidus\", \"koch\"]"
+    },
+    {
+      "name": "TURNING_WITH_ASCENDANT",
+      "line": 4117,
+      "initializer": "[\"regiomontanus\", \"campanus\", \"topocentric\"]"
+    },
+    {
+      "name": "HOSTILE_KEYS",
+      "line": 4118,
+      "initializer": "new Set([\"__proto__\", \"prototype\", \"constructor\"])"
+    },
+    {
+      "name": "BODY_RECORD",
+      "line": 4119,
+      "initializer": "[\"body\", \"lon\", \"lat\", \"speed\", \"retrograde\", \"sign\", \"degree\"]"
+    },
+    {
+      "name": "ANGLES_RECORD",
+      "line": 4120,
+      "initializer": "[\"asc\", \"mc\", \"dsc\", \"ic\"]"
+    },
+    {
+      "name": "HOUSES_RECORD",
+      "line": 4121,
+      "initializer": "[\"system\", \"cusps\"]"
+    },
+    {
+      "name": "ASPECT_RECORD",
+      "line": 4122,
+      "initializer": "[\"a\", \"b\", \"type\", \"orb\", \"applying\"]"
+    },
+    {
+      "name": "DELTA_T_RECORD",
+      "line": 4123,
+      "initializer": "[\"seconds\", \"sigma\", \"model\", \"table\", \"tableDigest\", \"segment\"]"
+    },
+    {
+      "name": "TIME_SCALE_RECORD",
+      "line": 4124,
+      "initializer": "[\"input\", \"basis\", \"ut1MinusUtc\", \"leapSeconds\"]"
+    },
+    {
+      "name": "UT1_RECORD",
+      "line": 4125,
+      "initializer": "[\"seconds\", \"sigma\", \"source\"]"
+    },
+    {
+      "name": "LEAP_SECONDS_RECORD",
+      "line": 4126,
+      "initializer": "[\"taiMinusUtc\", \"listed\"]"
+    },
+    {
+      "name": "DELTA_T_SEGMENTS",
+      "line": 4295,
+      "initializer": "[   \"long-term\",   \"reconstructed\",   \"observed\",   \"predicted\",   \"extrapolated\" ]"
+    },
+    {
+      "name": "J2000_MS2",
+      "line": 4302,
+      "initializer": "Date.UTC(2e3, 0, 1, 12)"
+    },
+    {
+      "name": "IERS_SEGMENTS",
+      "line": 4303,
+      "initializer": "[\"observed\", \"predicted\", \"fallback\"]"
+    },
+    {
+      "name": "LOCAL_FIELDS",
+      "line": 4477,
+      "initializer": "[\"date\", \"time\", \"timeZone\", \"offsetMinutes\", \"gapShiftMinutes\", \"policy\"]"
+    },
+    {
+      "name": "LOCAL_TIME_BASIS_FIELDS",
+      "line": 4478,
+      "initializer": "[   \"calendar\",   \"writtenDate\",   \"tzdbVersion\",   \"dataForm\",   \"clock\",   \"transition\",   \"localMeanTime\" ]"
+    },
+    {
+      "name": "CALENDAR_CHOICE_BEFORE",
+      "line": 4830,
+      "initializer": "\"1924-01-01\""
+    },
+    {
+      "name": "atlas_default",
+      "line": 4855,
+      "initializer": "{   $schema: \"../schema/atlas.schema.json\",   kind: \"atlas-manifest\",   name: \"Zodiacs.org historical time atlas: United States and France, 1870-1919\",   version: \"0.1.0\",   releas"
+    },
+    {
+      "name": "places_default",
+      "line": 4892,
+      "initializer": "{   $schema: \"../schema/atlas.schema.json\",   kind: \"atlas-places\",   description: \"Covered places. Names, first-level administrative divisions (as GeoNames names them today), coor"
+    },
+    {
+      "name": "PRECISION_MS",
+      "line": 5137,
+      "initializer": "{   second: 0,   minute: 0,   hour: 36e5,   day: 864e5,   days: 3 * 864e5,   weeks: 14 * 864e5 }"
+    },
+    {
+      "name": "ATLAS_COMMIT",
+      "line": 5147,
+      "initializer": "\"7307665bdbc432269fdac006104f661be16000bc\""
+    },
+    {
+      "name": "ATLAS_SOURCE",
+      "line": 5148,
+      "initializer": "Object.freeze({   name: atlas_default.name,   version: atlas_default.version,   licence: \"CC BY 4.0\",   url: `https://github.com/zodiacs-org/engine/tree/${ATLAS_COMMIT}/atlas` })"
+    },
+    {
+      "name": "ATLAS_PLACES",
+      "line": 5154,
+      "initializer": "Object.freeze(places_default.places.map(({ id }) => id))"
+    },
+    {
+      "name": "ATLAS_COVERAGE",
+      "line": 5155,
+      "initializer": "Object.freeze({ start: atlas_default.coverage.start, end: atlas_default.coverage.end })"
+    },
+    {
+      "name": "ComputeApiError",
+      "line": 5158,
+      "initializer": "class extends Error {   status;   detail;   headers;   constructor(detail, headers = {}) {     super(detail.message);     this.name = \"ComputeApiError\";     this.status = ERROR_STA"
+    },
+    {
+      "name": "MESSAGES",
+      "line": 5170,
+      "initializer": "Object.freeze({   notFound: \"No compute endpoint is served at this address.\",   methodNotAllowed: \"This endpoint accepts POST with a JSON body, and OPTIONS.\",   disabled: \"The comp"
+    },
+    {
+      "name": "FIXED_OFFSET_ZONE",
+      "line": 5194,
+      "initializer": "/^(?:etc\\/)?(?:utc|uct|gmt|gmt0|gmt[+-]0|greenwich|universal|zulu)$|^etc\\/gmt[+-]\\d{1,2}$/iu"
+    },
+    {
+      "name": "FIXED_OFFSET_ZONE_SOURCE",
+      "line": 5198,
+      "initializer": "FIXED_OFFSET_ZONE.source"
+    },
+    {
+      "name": "PINNED_HISTORY_LAST_DATE",
+      "line": 5201,
+      "initializer": "\"1970-01-01\""
+    },
+    {
+      "name": "BACKEND",
+      "line": 5264,
+      "initializer": "Object.freeze({   name: \"@zodiacs/engine\",   version: ENGINE_VERSION,   ephemeris: Object.freeze({ name: EPHEMERIS.name, version: EPHEMERIS.version }) })"
+    },
+    {
+      "name": "statements",
+      "line": 5269,
+      "initializer": "null"
+    },
+    {
+      "name": "ATLAS_PLACE_IDS",
+      "line": 5348,
+      "initializer": "Object.freeze([   \"fr-paris\",   \"fr-brest\",   \"fr-nantes\",   \"fr-bordeaux\",   \"fr-rouen\",   \"fr-toulouse\",   \"fr-lyon\",   \"fr-marseille\",   \"fr-nice\",   \"fr-ajaccio\",   \"fr-strasbo"
+    },
+    {
+      "name": "ATLAS_PLACE_ZONES",
+      "line": 5371,
+      "initializer": "Object.freeze({   \"fr-paris\": \"Europe/Paris\",   \"fr-brest\": \"Europe/Paris\",   \"fr-nantes\": \"Europe/Paris\",   \"fr-bordeaux\": \"Europe/Paris\",   \"fr-rouen\": \"Europe/Paris\",   \"fr-toul"
+    },
+    {
+      "name": "ATLAS_PLACE_COUNTRIES",
+      "line": 5394,
+      "initializer": "Object.freeze({   \"fr-paris\": \"FR\",   \"fr-brest\": \"FR\",   \"fr-nantes\": \"FR\",   \"fr-bordeaux\": \"FR\",   \"fr-rouen\": \"FR\",   \"fr-toulouse\": \"FR\",   \"fr-lyon\": \"FR\",   \"fr-marseille\": "
+    },
+    {
+      "name": "ATLAS_PLACE_LONGITUDES",
+      "line": 5417,
+      "initializer": "Object.freeze({   \"fr-paris\": 2.3488,   \"fr-brest\": -4.48628,   \"fr-nantes\": -1.55336,   \"fr-bordeaux\": -0.58046,   \"fr-rouen\": 1.09932,   \"fr-toulouse\": 1.44367,   \"fr-lyon\": 4.84"
+    },
+    {
+      "name": "ATLAS_WINDOW",
+      "line": 5440,
+      "initializer": "Object.freeze({ from: \"1870-01-01T00:00:00\", to: \"1920-01-01T00:00:00\" })"
+    },
+    {
+      "name": "CALENDARS",
+      "line": 5443,
+      "initializer": "Object.freeze([\"gregorian\", \"julian\"])"
+    },
+    {
+      "name": "TEXT",
+      "line": 5444,
+      "initializer": "Object.freeze({   body: \"The body must be a JSON object.\",   object: \"Must be a JSON object.\",   unknownField: \"This object has a field this endpoint does not accept.\",   required:"
+    },
+    {
+      "name": "VALIDATION_POINTERS",
+      "line": 5494,
+      "initializer": "Object.freeze([   \"\",   \"/utc\",   \"/local\",   \"/local/date\",   \"/local/time\",   \"/local/zone\",   \"/latitude\",   \"/longitude\",   \"/calendar\",   \"/country\",   \"/atlasPlace\",   \"/hous"
+    },
+    {
+      "name": "INDEXED_POINTERS",
+      "line": 5527,
+      "initializer": "Object.freeze([\"/instants\", \"/bodies\", \"/kinds\", \"/conditions\"])"
+    },
+    {
+      "name": "CONDITION_FIELD_POINTERS",
+      "line": 5528,
+      "initializer": "Object.freeze([\"kind\", \"phase\", \"body\", \"sign\", \"not\"])"
+    },
+    {
+      "name": "ZONE_NAME",
+      "line": 5529,
+      "initializer": "/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/u"
+    },
+    {
+      "name": "INSTANT",
+      "line": 5530,
+      "initializer": "/^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{1,3}))?)?(Z|[+-]\\d{2}:\\d{2})$/u"
+    },
+    {
+      "name": "EPOCH_FROM",
+      "line": 5531,
+      "initializer": "Date.parse(EPOCH.from)"
+    },
+    {
+      "name": "EPOCH_TO",
+      "line": 5532,
+      "initializer": "Date.parse(EPOCH.to)"
+    },
+    {
+      "name": "FIRST_DATE",
+      "line": 5533,
+      "initializer": "`${EPOCH.firstYear}-01-01`"
+    },
+    {
+      "name": "LAST_DATE",
+      "line": 5534,
+      "initializer": "`${EPOCH.lastYear}-12-31`"
+    },
+    {
+      "name": "DAY_MS",
+      "line": 5632,
+      "initializer": "864e5"
+    },
+    {
+      "name": "CONDITION_FIELDS",
+      "line": 5698,
+      "initializer": "Object.freeze({   phase: [\"kind\", \"phase\", \"not\"],   \"void-of-course\": [\"kind\", \"not\"],   sign: [\"kind\", \"body\", \"sign\", \"not\"],   retrograde: [\"kind\", \"body\", \"not\"],   angular: ["
+    },
+    {
+      "name": "VALIDATION_MESSAGES",
+      "line": 5705,
+      "initializer": "TEXT"
+    },
+    {
+      "name": "HOUR_MS",
+      "line": 5708,
+      "initializer": "36e5"
+    },
+    {
+      "name": "DAY_MS2",
+      "line": 5709,
+      "initializer": "864e5"
+    },
+    {
+      "name": "J2000_MS3",
+      "line": 5710,
+      "initializer": "Date.UTC(2e3, 0, 1, 12)"
+    },
+    {
+      "name": "SampleBudget",
+      "line": 5734,
+      "initializer": "class {   constructor(limit) {     this.limit = limit;   }   limit;   used = 0;   get max() {     return BUDGETS[this.limit];   }   options(stepDays) {     const remaining = this.m"
+    },
+    {
+      "name": "KIND_ORDER",
+      "line": 5826,
+      "initializer": "{ ingress: 0, station: 1, lunation: 2 }"
+    },
+    {
+      "name": "BODY_ORDER",
+      "line": 5827,
+      "initializer": "new Map([\"Sun\", \"Moon\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"].map((body2, index) => [body2, index]))"
+    },
+    {
+      "name": "LUMINARIES2",
+      "line": 5909,
+      "initializer": "new Set([\"Sun\", \"Moon\"])"
+    },
+    {
+      "name": "MINUTE_MS",
+      "line": 6090,
+      "initializer": "6e4"
+    },
+    {
+      "name": "HOUR_MS2",
+      "line": 6091,
+      "initializer": "36e5"
+    },
+    {
+      "name": "DAY_MS3",
+      "line": 6092,
+      "initializer": "864e5"
+    },
+    {
+      "name": "VOID_BODIES_MODERN",
+      "line": 6093,
+      "initializer": "Object.freeze([\"Sun\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"])"
+    },
+    {
+      "name": "ASPECT_OFFSETS",
+      "line": 6094,
+      "initializer": "Object.freeze([0, 60, 300, 90, 270, 120, 240, 180])"
+    },
+    {
+      "name": "VOID_SCAN_MS",
+      "line": 6095,
+      "initializer": "3 * HOUR_MS2"
+    },
+    {
+      "name": "VOID_REACH_BEFORE_MS",
+      "line": 6096,
+      "initializer": "4 * DAY_MS3"
+    },
+    {
+      "name": "VOID_REACH_AFTER_MS",
+      "line": 6097,
+      "initializer": "3 * DAY_MS3"
+    },
+    {
+      "name": "HOUSE_STEP_MS",
+      "line": 6098,
+      "initializer": "ELECTION_STEPS.houseSampleMinutes * MINUTE_MS"
+    },
+    {
+      "name": "ref",
+      "line": 6118,
+      "initializer": "(name) => ({ $ref: `#/components/schemas/${name}` })"
+    },
+    {
+      "name": "nullable",
+      "line": 6119,
+      "initializer": "(schema) => ({ anyOf: [schema, { type: \"null\" }] })"
+    },
+    {
+      "name": "YEAR",
+      "line": 6120,
+      "initializer": "\"(?:18|19|20|21)\\\\d{2}\""
+    },
+    {
+      "name": "DATE",
+      "line": 6121,
+      "initializer": "`${YEAR}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\\\d|3[01])`"
+    },
+    {
+      "name": "CLOCK",
+      "line": 6122,
+      "initializer": "\"(?:[01]\\\\d|2[0-3]):[0-5]\\\\d\""
+    },
+    {
+      "name": "OFFSET",
+      "line": 6123,
+      "initializer": "\"(?:Z|[+-](?:(?:0\\\\d|1[0-3]):[0-5]\\\\d|14:00))\""
+    },
+    {
+      "name": "outputInstant",
+      "line": 6124,
+      "initializer": "{ type: \"string\", format: \"date-time\" }"
+    },
+    {
+      "name": "bodyName",
+      "line": 6125,
+      "initializer": "{ enum: [...POSITION_BODIES] }"
+    },
+    {
+      "name": "eventBody",
+      "line": 6126,
+      "initializer": "{ enum: [...EVENT_BODIES] }"
+    },
+    {
+      "name": "sign",
+      "line": 6127,
+      "initializer": "{ enum: [...SIGN_SLUGS] }"
+    },
+    {
+      "name": "num",
+      "line": 6128,
+      "initializer": "{ type: \"number\" }"
+    },
+    {
+      "name": "bool2",
+      "line": 6129,
+      "initializer": "{ type: \"boolean\" }"
+    },
+    {
+      "name": "str",
+      "line": 6130,
+      "initializer": "{ type: \"string\" }"
+    },
+    {
+      "name": "conventionIds",
+      "line": 6131,
+      "initializer": "(description) => ({   type: \"array\",   uniqueItems: true,   items: { type: \"string\", pattern: \"^[A-Za-z][A-Za-z0-9-]*:\\\\S+$\" },   description })"
+    },
+    {
+      "name": "ZONE_PATTERN",
+      "line": 6137,
+      "initializer": "\"^[A-Za-z][A-Za-z0-9_+-]*(?:/[A-Za-z0-9_+-]+){0,3}$\""
+    },
+    {
+      "name": "requestZone",
+      "line": 6138,
+      "initializer": "{   type: \"string\",   maxLength: 64,   pattern: ZONE_PATTERN,   description: \"An IANA time zone name, such as Europe/Paris, in any letter case. The answer names it as tzdb spells i"
+    },
+    {
+      "name": "spanFlags2",
+      "line": 6144,
+      "initializer": "{ type: \"array\", items: { const: \"outside-reference-span\" }, maxItems: 1 }"
+    },
+    {
+      "name": "list2",
+      "line": 6145,
+      "initializer": "(items) => ({ type: \"array\", items })"
+    },
+    {
+      "name": "object",
+      "line": 6146,
+      "initializer": "(required2, properties, description) => ({   type: \"object\",   required: required2,   properties,   ...description ? { description } : {} })"
+    },
+    {
+      "name": "place",
+      "line": 6152,
+      "initializer": "object([\"lon\", \"sign\", \"degree\"], { lon: num, sign, degree: num }, \"A longitude, with its sign and the degree within it.\")"
+    },
+    {
+      "name": "allowedOrb",
+      "line": 6153,
+      "initializer": "{ type: \"number\", minimum: 0, description: \"The widest orb at which the aspect holds between these two bodies, in degrees: the wider one when the Sun or the Moon is one of them.\" }"
+    },
+    {
+      "name": "COMPUTE_SCHEMAS",
+      "line": 6154,
+      "initializer": "Object.freeze({   Instant: {     type: \"string\",     maxLength: 29,     pattern: `^${DATE}T${CLOCK}(?::[0-5]\\\\d(?:\\\\.\\\\d{1,3})?)?${OFFSET}$`,     description: \"An instant in ISO 86"
+    },
+    {
+      "name": "RESULT_SCHEMA",
+      "line": 6849,
+      "initializer": "{   chart: \"ChartResult\",   positions: \"PositionsResult\",   houses: \"HousesResult\",   events: \"EventsResult\",   time: \"TimeResult\",   \"sky-fact\": \"SkyFactResult\",   elections: \"Ele"
+    },
+    {
+      "name": "COMPUTE_COMPONENTS",
+      "line": 6874,
+      "initializer": "Object.freeze({   ...COMPUTE_SCHEMAS,   ...Object.fromEntries(COMPUTE_ENDPOINTS.map((endpoint) => [responseComponentName(endpoint), responseEnvelope(endpoint)])) })"
+    },
+    {
+      "name": "SUMMARIES",
+      "line": 6878,
+      "initializer": "{   chart: \"A natal chart for an instant and a place\",   positions: `Positions and speeds of bodies at up to ${BUDGETS[\"positions.instants\"]} instants`,   houses: \"Angles and house"
+    },
+    {
+      "name": "DESCRIPTIONS",
+      "line": 6887,
+      "initializer": "{   chart: \"Bodies, angles, house cusps and aspects as the engine's natalChart returns them, for an instant given in UTC or as local civil time in an IANA zone. The receipt is the "
+    },
+    {
+      "name": "COMPUTE_TAG",
+      "line": 6896,
+      "initializer": "Object.freeze({   name: \"compute\",   description: `Calculations from a POST body, on the vendored @zodiacs/engine. Birth data goes only in the body; any query string is ignored. Th"
+    },
+    {
+      "name": "OCCASION_KINDS",
+      "line": 6902,
+      "initializer": "[   \"wedding\",   \"anniversary\",   \"met\",   \"birthday\",   \"baby\",   \"pet\",   \"home\",   \"job\",   \"graduation\",   \"retirement\",   \"coming-of-age\",   \"gathering\" ]"
+    },
+    {
+      "name": "DEG4",
+      "line": 6918,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "ARCSEC3",
+      "line": 6919,
+      "initializer": "DEG4 / 3600"
+    },
+    {
+      "name": "RAD4",
+      "line": 6981,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "DAY_MS4",
+      "line": 6982,
+      "initializer": "864e5"
+    },
+    {
+      "name": "STEP_DAYS",
+      "line": 6983,
+      "initializer": "1 / 24"
+    },
+    {
+      "name": "STANDARD_REFRACTION_ARCMIN",
+      "line": 6984,
+      "initializer": "34"
+    },
+    {
+      "name": "SKY_RADII_KM",
+      "line": 6985,
+      "initializer": "Object.freeze({ Sun: 696e3, Moon: 1737.4 })"
+    },
+    {
+      "name": "KM_PER_AU2",
+      "line": 6986,
+      "initializer": "1495978707e-1"
+    },
+    {
+      "name": "WGS84_A",
+      "line": 6987,
+      "initializer": "6378.137"
+    },
+    {
+      "name": "WGS84_F",
+      "line": 6988,
+      "initializer": "1 / 298.257223563"
+    },
+    {
+      "name": "E2",
+      "line": 6989,
+      "initializer": "WGS84_F * (2 - WGS84_F)"
+    },
+    {
+      "name": "BODIES2",
+      "line": 6990,
+      "initializer": "{   Sun: Body.Sun,   Moon: Body.Moon,   Mercury: Body.Mercury,   Venus: Body.Venus,   Mars: Body.Mars,   Jupiter: Body.Jupiter,   Saturn: Body.Saturn,   Uranus: Body.Uranus,   Nept"
+    },
+    {
+      "name": "BudgetSpent",
+      "line": 7085,
+      "initializer": "class { }"
+    },
+    {
+      "name": "HOUR_MS3",
+      "line": 7087,
+      "initializer": "36e5"
+    },
+    {
+      "name": "offsetFrom",
+      "line": 7088,
+      "initializer": "(target, value) => ((value - target + 540) % 360 + 360) % 360 - 180"
+    },
+    {
+      "name": "RAD5",
+      "line": 7207,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "J20002",
+      "line": 7208,
+      "initializer": "2451545"
+    },
+    {
+      "name": "DAY4",
+      "line": 7209,
+      "initializer": "864e5"
+    },
+    {
+      "name": "GOLDEN_HOUR_SUN_ALTITUDE",
+      "line": 7252,
+      "initializer": "6"
+    },
+    {
+      "name": "CIVIL_DUSK_SUN_ALTITUDE",
+      "line": 7253,
+      "initializer": "-6"
+    },
+    {
+      "name": "EVENING_PLANETS",
+      "line": 7254,
+      "initializer": "[\"Venus\", \"Mars\", \"Jupiter\", \"Saturn\"]"
+    },
+    {
+      "name": "EVENING_HOURS",
+      "line": 7255,
+      "initializer": "4"
+    },
+    {
+      "name": "HOUR",
+      "line": 7256,
+      "initializer": "36e5"
+    },
+    {
+      "name": "SIGN_THEME",
+      "line": 7311,
+      "initializer": "{   aries: \"beginnings\",   taurus: \"what lasts\",   gemini: \"conversation\",   cancer: \"home and family\",   leo: \"warmth and celebration\",   virgo: \"care in the details\",   libra: \"p"
+    },
+    {
+      "name": "OCCASION_WORDS",
+      "line": 7325,
+      "initializer": "{   wedding: { title: \"The sky on your wedding day\", closing: \"The sky you say your vows under.\" },   anniversary: { title: \"The sky on the day you married\", closing: \"The Sun come"
+    },
+    {
+      "name": "DEG5",
+      "line": 7359,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "MOON_PHASE_NEW_ILLUMINATION",
+      "line": 7360,
+      "initializer": "0.03"
+    },
+    {
+      "name": "MOON_PHASE_QUARTER_DEGREES",
+      "line": 7361,
+      "initializer": "12"
+    },
+    {
+      "name": "OCCASION_BODIES",
+      "line": 7375,
+      "initializer": "[\"Sun\", \"Moon\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\"]"
+    },
+    {
+      "name": "OCCASION_MIN_YEAR",
+      "line": 7403,
+      "initializer": "1800"
+    },
+    {
+      "name": "OCCASION_MAX_YEAR",
+      "line": 7404,
+      "initializer": "2199"
+    },
+    {
+      "name": "PARTNERSHIP",
+      "line": 7461,
+      "initializer": "new Set([\"wedding\", \"anniversary\", \"met\"])"
+    },
+    {
+      "name": "BEGINNINGS",
+      "line": 7462,
+      "initializer": "new Set([\"home\", \"job\", \"graduation\", \"retirement\", \"coming-of-age\"])"
+    },
+    {
+      "name": "VENUS_STRONG",
+      "line": 7463,
+      "initializer": "new Set([\"taurus\", \"libra\", \"pisces\"])"
+    },
+    {
+      "name": "VENUS_WEAK",
+      "line": 7464,
+      "initializer": "new Set([\"aries\", \"scorpio\", \"virgo\"])"
+    },
+    {
+      "name": "MOON_STRONG",
+      "line": 7465,
+      "initializer": "new Set([\"taurus\", \"cancer\"])"
+    },
+    {
+      "name": "MOON_WEAK",
+      "line": 7466,
+      "initializer": "new Set([\"scorpio\", \"capricorn\"])"
+    },
+    {
+      "name": "GENTLE_MOON",
+      "line": 7467,
+      "initializer": "new Set([\"taurus\", \"cancer\", \"libra\", \"pisces\", \"leo\"])"
+    },
+    {
+      "name": "signName2",
+      "line": 7468,
+      "initializer": "(slug) => slug.charAt(0).toUpperCase() + slug.slice(1)"
+    },
+    {
+      "name": "DATE_VERDICTS",
+      "line": 7469,
+      "initializer": "{   excellent: \"An excellent day for it\",   good: \"A good day for it\",   fair: \"A fair day, with a few cautions\",   challenging: \"A challenging day for it\" }"
+    },
+    {
+      "name": "verdictFor",
+      "line": 7481,
+      "initializer": "(score2) => DATE_VERDICTS[dateVerdictKey(score2)]"
+    },
+    {
+      "name": "BEST_DAYS_MAX_WINDOW",
+      "line": 7520,
+      "initializer": "92"
+    },
+    {
+      "name": "BEST_DAYS_COUNT",
+      "line": 7521,
+      "initializer": "3"
+    },
+    {
+      "name": "BEST_DAY_REASONS",
+      "line": 7522,
+      "initializer": "3"
+    },
+    {
+      "name": "DAY5",
+      "line": 7523,
+      "initializer": "864e5"
+    },
+    {
+      "name": "dayNumber",
+      "line": 7524,
+      "initializer": "(date3) => Date.parse(`${date3}T00:00:00Z`) / DAY5"
+    },
+    {
+      "name": "dateOf",
+      "line": 7525,
+      "initializer": "(day) => new Date(day * DAY5).toISOString().slice(0, 10)"
+    },
+    {
+      "name": "CATALOG_LOCALES",
+      "line": 7563,
+      "initializer": "[\"en\", \"es\", \"pt\", \"fr\", \"it\", \"ru\"]"
+    },
+    {
+      "name": "RUSSIAN_UI_PLURALS",
+      "line": 7575,
+      "initializer": "{   charts: {     one: \"{n} \\u043A\\u0430\\u0440\\u0442\\u0430\",     few: \"{n} \\u043A\\u0430\\u0440\\u0442\\u044B\",     many: \"{n} \\u043A\\u0430\\u0440\\u0442\",     other: \"{n} \\u043A\\u0430\\u"
+    },
+    {
+      "name": "RUSSIAN_RUNTIME",
+      "line": 7627,
+      "initializer": "{   signs: {     names: {       aries: \"\\u041E\\u0432\\u0435\\u043D\",       taurus: \"\\u0422\\u0435\\u043B\\u0435\\u0446\",       gemini: \"\\u0411\\u043B\\u0438\\u0437\\u043D\\u0435\\u0446\\u044B\","
+    },
+    {
+      "name": "SIGNS2",
+      "line": 7776,
+      "initializer": "[   { slug: \"aries\", name: \"Aries\", glyph: \"\\u2648\", dates: \"Mar 21 \\u2013 Apr 19\", start: [3, 21], end: [4, 19], element: \"fire\", modality: \"cardinal\", ruler: \"Mars\", polarity: \"d"
+    },
+    {
+      "name": "SIGN_SLUGS3",
+      "line": 7790,
+      "initializer": "SIGNS2.map((s) => s.slug)"
+    },
+    {
+      "name": "SIGN_NAME_ES",
+      "line": 7791,
+      "initializer": "{   aries: \"Aries\",   taurus: \"Tauro\",   gemini: \"G\\xE9minis\",   cancer: \"C\\xE1ncer\",   leo: \"Leo\",   virgo: \"Virgo\",   libra: \"Libra\",   scorpio: \"Escorpio\",   sagittarius: \"Sagit"
+    },
+    {
+      "name": "SIGN_NAME_PT",
+      "line": 7805,
+      "initializer": "{   aries: \"\\xC1ries\",   taurus: \"Touro\",   gemini: \"G\\xEAmeos\",   cancer: \"C\\xE2ncer\",   leo: \"Le\\xE3o\",   virgo: \"Virgem\",   libra: \"Libra\",   scorpio: \"Escorpi\\xE3o\",   sagittar"
+    },
+    {
+      "name": "SIGN_NAME_FR",
+      "line": 7819,
+      "initializer": "{   aries: \"B\\xE9lier\",   taurus: \"Taureau\",   gemini: \"G\\xE9meaux\",   cancer: \"Cancer\",   leo: \"Lion\",   virgo: \"Vierge\",   libra: \"Balance\",   scorpio: \"Scorpion\",   sagittarius:"
+    },
+    {
+      "name": "SIGN_NAME_IT",
+      "line": 7833,
+      "initializer": "{   aries: \"Ariete\",   taurus: \"Toro\",   gemini: \"Gemelli\",   cancer: \"Cancro\",   leo: \"Leone\",   virgo: \"Vergine\",   libra: \"Bilancia\",   scorpio: \"Scorpione\",   sagittarius: \"Sag"
+    },
+    {
+      "name": "SIGN_NAME_OVERRIDES",
+      "line": 7847,
+      "initializer": "{   en: null,   es: SIGN_NAME_ES,   pt: SIGN_NAME_PT,   fr: SIGN_NAME_FR,   it: SIGN_NAME_IT }"
+    },
+    {
+      "name": "ALL_PAIRS",
+      "line": 7889,
+      "initializer": "SIGNS2.flatMap(   (a, i) => SIGNS2.slice(i).map((b) => [a.slug, b.slug]) )"
+    },
+    {
+      "name": "ELEMENT_NOTES",
+      "line": 7895,
+      "initializer": "{   \"fire+fire\": {     label: \"Shared heat\",     note: \"You two run hot: fast chemistry, quick fights and even quicker make-ups. Expect plenty of excitement.\"   },   \"earth+fire\": "
+    },
+    {
+      "name": "MODALITY_NOTES",
+      "line": 7940,
+      "initializer": "{   \"cardinal+cardinal\": {     label: \"Two starters\",     note: \"Two leaders: plenty of drive, and regular battles over who\\u2019s in charge.\"   },   \"cardinal+fixed\": {     label:"
+    },
+    {
+      "name": "BODY_ROLE",
+      "line": 7992,
+      "initializer": "{   Sun: \"sense of self\",   Moon: \"emotional life\",   Mercury: \"way of thinking\",   Venus: \"way of loving\",   Mars: \"drive\",   Jupiter: \"appetite for more\",   Saturn: \"sense of dut"
+    },
+    {
+      "name": "ASPECT_PHRASE",
+      "line": 8004,
+      "initializer": "{   conjunction: {     verb: \"sits right on top of\",     gloss: \"you\\u2019ll feel this one strongly\"   },   sextile: {     verb: \"works easily with\",     gloss: \"an easy spark that"
+    },
+    {
+      "name": "SLOW_BODIES",
+      "line": 8036,
+      "initializer": "new Set([\"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"])"
+    },
+    {
+      "name": "OUTER_BODIES",
+      "line": 8037,
+      "initializer": "new Set([\"Uranus\", \"Neptune\", \"Pluto\"])"
+    },
+    {
+      "name": "GENERATIONAL_VERB",
+      "line": 8044,
+      "initializer": "{   conjunction: \"lines up with\",   sextile: \"links with\",   square: \"meets\",   trine: \"links with\",   opposition: \"faces\" }"
+    },
+    {
+      "name": "GENERATIONAL_GLOSS",
+      "line": 8051,
+      "initializer": "\"A shared generational backdrop, common to many people born in the same years.\""
+    },
+    {
+      "name": "PERSONAL",
+      "line": 8064,
+      "initializer": "{   Sun: 1,   Moon: 1,   Venus: 1,   Mars: 0.9,   Mercury: 0.8,   Jupiter: 0.55,   Saturn: 0.6,   Uranus: 0.25,   Neptune: 0.25,   Pluto: 0.3 }"
+    },
+    {
+      "name": "AREA_OF",
+      "line": 8076,
+      "initializer": "{   Sun: { attraction: 0.6, communication: 0.4, stability: 0.6 },   Moon: { attraction: 0.5, communication: 0.5, stability: 0.8 },   Mercury: { communication: 1 },   Venus: { attra"
+    },
+    {
+      "name": "MAX_ORB",
+      "line": 8088,
+      "initializer": "{ conjunction: 8, opposition: 8, trine: 7, square: 7, sextile: 5 }"
+    },
+    {
+      "name": "HARD_PLANETS",
+      "line": 8089,
+      "initializer": "new Set([\"Mars\", \"Saturn\", \"Pluto\", \"Uranus\"])"
+    },
+    {
+      "name": "CHEMISTRY",
+      "line": 8090,
+      "initializer": "new Set([\"Venus|Mars\", \"Mars|Venus\", \"Sun|Moon\", \"Moon|Sun\", \"Venus|Venus\", \"Mars|Mars\"])"
+    },
+    {
+      "name": "COMPATIBLE",
+      "line": 8110,
+      "initializer": "{   \"fire+fire\": 6,   \"air+air\": 5,   \"earth+earth\": 6,   \"water+water\": 6,   \"air+fire\": 6,   \"earth+water\": 7,   \"earth+fire\": -3,   \"fire+water\": -4,   \"air+earth\": -3,   \"air+w"
+    },
+    {
+      "name": "AREA_WORDS",
+      "line": 8127,
+      "initializer": "{   attraction: \"attraction\",   communication: \"communication\",   stability: \"long-term stability\" }"
+    },
+    {
+      "name": "COMPAT_VERDICTS",
+      "line": 8132,
+      "initializer": "{   exceptional: \"An exceptional match\",   strong: \"A strong match\",   good: \"A good match, with some work to do\",   mixed: \"A mixed match\",   challenging: \"A challenging match\" }"
+    },
+    {
+      "name": "verdictFor2",
+      "line": 8146,
+      "initializer": "(score2) => COMPAT_VERDICTS[compatVerdictKey(score2)]"
+    },
+    {
+      "name": "SHARE_SIGNS",
+      "line": 8176,
+      "initializer": "[   \"aries\",   \"taurus\",   \"gemini\",   \"cancer\",   \"leo\",   \"virgo\",   \"libra\",   \"scorpio\",   \"sagittarius\",   \"capricorn\",   \"aquarius\",   \"pisces\" ]"
+    },
+    {
+      "name": "COMPATIBILITY_SHARE_PATH",
+      "line": 8190,
+      "initializer": "\"/share/compatibility/\""
+    },
+    {
+      "name": "OCCASION_SHARE_PATH",
+      "line": 8191,
+      "initializer": "\"/share/occasion/\""
+    },
+    {
+      "name": "COMPATIBILITY_SHARE_KEYS",
+      "line": 8192,
+      "initializer": "Object.freeze([\"a\", \"b\", \"as\", \"bs\", \"score\", \"attraction\", \"communication\", \"stability\", \"v\", \"ref\"])"
+    },
+    {
+      "name": "OCCASION_SHARE_KEYS",
+      "line": 8193,
+      "initializer": "Object.freeze([\"o\", \"d\", \"n\", \"p\", \"sun\", \"moon\", \"score\", \"v\", \"ref\"])"
+    },
+    {
+      "name": "LETTER",
+      "line": 8194,
+      "initializer": "\"A-Za-z\\\\u00C0-\\\\u00D6\\\\u00D8-\\\\u00F6\\\\u00F8-\\\\u017F\\\\u0400-\\\\u045F\\\\u0490\\\\u0491\""
+    },
+    {
+      "name": "NAME_RE",
+      "line": 8195,
+      "initializer": "new RegExp(`^[${LETTER}][${LETTER} .'\\u2019-]*$`, \"u\")"
+    },
+    {
+      "name": "NAMES_RE",
+      "line": 8196,
+      "initializer": "new RegExp(`^[${LETTER}][${LETTER} .,&'\\u2019-]*$`, \"u\")"
+    },
+    {
+      "name": "PLACE_RE",
+      "line": 8197,
+      "initializer": "new RegExp(`^[${LETTER}0-9][${LETTER}0-9 .,'\\u2019()-]*$`, \"u\")"
+    },
+    {
+      "name": "DATE_RE",
+      "line": 8198,
+      "initializer": "/^(?:18|19|20|21)[0-9]{2}-[0-9]{2}-[0-9]{2}$/u"
+    },
+    {
+      "name": "SHARE_NAME_MAX",
+      "line": 8199,
+      "initializer": "24"
+    },
+    {
+      "name": "SHARE_NAMES_MAX",
+      "line": 8200,
+      "initializer": "40"
+    },
+    {
+      "name": "SHARE_PLACE_MAX",
+      "line": 8201,
+      "initializer": "48"
+    },
+    {
+      "name": "shareName",
+      "line": 8207,
+      "initializer": "(value) => value ? plain(value.trim(), NAME_RE, SHARE_NAME_MAX) : null"
+    },
+    {
+      "name": "shareNames",
+      "line": 8208,
+      "initializer": "(value) => value ? plain(value.trim().replace(/\\s+/gu, \" \"), NAMES_RE, SHARE_NAMES_MAX) : null"
+    },
+    {
+      "name": "isSign",
+      "line": 8214,
+      "initializer": "(value) => !!value && SHARE_SIGNS.includes(value)"
+    },
+    {
+      "name": "isScore",
+      "line": 8215,
+      "initializer": "(value) => Number.isInteger(value) && value >= 0 && value <= 100"
+    },
+    {
+      "name": "compatibilityShareUrl",
+      "line": 8271,
+      "initializer": "(origin, source) => {   const query = compatibilityShareQuery(source);   return query === null ? null : `${origin}${COMPATIBILITY_SHARE_PATH}?${query}`; }"
+    },
+    {
+      "name": "occasionShareUrl",
+      "line": 8275,
+      "initializer": "(origin, source) => {   const query = occasionShareQuery(source);   return query === null ? null : `${origin}${OCCASION_SHARE_PATH}?${query}`; }"
+    },
+    {
+      "name": "RANK",
+      "line": 8286,
+      "initializer": "{ sign: 0, date: 1, \"timed-place\": 2 }"
+    },
+    {
+      "name": "adaptBody",
+      "line": 8331,
+      "initializer": "(position2) => ({   body: position2.body,   lon: position2.lon,   lat: position2.lat,   speed: position2.speed,   retrograde: position2.retrograde })"
+    },
+    {
+      "name": "ASPECTS2",
+      "line": 8364,
+      "initializer": "ASPECTS.map((aspect) => ({   type: aspect.type,   angle: aspect.angle,   orb: aspect.orb,   orbLuminary: aspect.luminaryOrb }))"
+    },
+    {
+      "name": "DAILY_REACH",
+      "line": 8440,
+      "initializer": "{   Sun: 1.02,   Mercury: 2.2,   Venus: 1.26,   Mars: 0.8,   Jupiter: 0.25,   Saturn: 0.14,   Uranus: 0.07,   Neptune: 0.04,   Pluto: 0.04 }"
+    },
+    {
+      "name": "MONTH_SLUGS",
+      "line": 8471,
+      "initializer": "[   \"january\",   \"february\",   \"march\",   \"april\",   \"may\",   \"june\",   \"july\",   \"august\",   \"september\",   \"october\",   \"november\",   \"december\" ]"
+    },
+    {
+      "name": "MONTH_NAMES",
+      "line": 8485,
+      "initializer": "[   \"January\",   \"February\",   \"March\",   \"April\",   \"May\",   \"June\",   \"July\",   \"August\",   \"September\",   \"October\",   \"November\",   \"December\" ]"
+    },
+    {
+      "name": "DAYS_IN_MONTH",
+      "line": 8499,
+      "initializer": "[31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]"
+    },
+    {
+      "name": "ELEMENT_ORDER",
+      "line": 8503,
+      "initializer": "{   fire: [\"aries\", \"leo\", \"sagittarius\"],   earth: [\"taurus\", \"virgo\", \"capricorn\"],   air: [\"gemini\", \"libra\", \"aquarius\"],   water: [\"cancer\", \"scorpio\", \"pisces\"] }"
+    },
+    {
+      "name": "ORDINAL_DECAN",
+      "line": 8516,
+      "initializer": "[\"first\", \"second\", \"third\"]"
+    },
+    {
+      "name": "people_index_default",
+      "line": 8583,
+      "initializer": "{   schema: \"zodiacs.ai-people-index.v1\",   source: \"src/data/people.json\",   reviewedAtUtc: \"2026-07-25T00:00:00Z\",   people: [     {       slug: \"ada-lovelace\",       name: \"Ada "
+    },
+    {
+      "name": "BIRTHDAY_SHARE_PATH",
+      "line": 16912,
+      "initializer": "\"/share/birthday/\""
+    },
+    {
+      "name": "SKY_CALENDAR_SHARE_PATH",
+      "line": 16913,
+      "initializer": "\"/share/sky-calendar/\""
+    },
+    {
+      "name": "HOROSCOPE_SHARE_PATH",
+      "line": 16914,
+      "initializer": "\"/share/horoscope/\""
+    },
+    {
+      "name": "CHART_TWINS_SHARE_PATH",
+      "line": 16915,
+      "initializer": "\"/share/chart-twins/\""
+    },
+    {
+      "name": "FAMOUS_CHART_SHARE_PATH",
+      "line": 16916,
+      "initializer": "\"/share/famous-chart/\""
+    },
+    {
+      "name": "MILESTONE_SHARE_PATH",
+      "line": 16917,
+      "initializer": "\"/share/milestone/\""
+    },
+    {
+      "name": "BIRTHDAY_SHARE_KEYS",
+      "line": 16918,
+      "initializer": "Object.freeze([\"d\", \"s\", \"ref\"])"
+    },
+    {
+      "name": "SKY_CALENDAR_SHARE_KEYS",
+      "line": 16919,
+      "initializer": "Object.freeze([\"k\", \"b\", \"d\", \"ref\"])"
+    },
+    {
+      "name": "HOROSCOPE_SHARE_KEYS",
+      "line": 16920,
+      "initializer": "Object.freeze([\"s\", \"d\", \"f\", \"w\", \"ref\"])"
+    },
+    {
+      "name": "CHART_TWINS_SHARE_KEYS",
+      "line": 16921,
+      "initializer": "Object.freeze([\"s\", \"m\", \"ref\"])"
+    },
+    {
+      "name": "FAMOUS_CHART_SHARE_KEYS",
+      "line": 16922,
+      "initializer": "Object.freeze([\"p\", \"ref\"])"
+    },
+    {
+      "name": "MILESTONE_SHARE_KEYS",
+      "line": 16923,
+      "initializer": "Object.freeze([\"k\", \"i\", \"a\", \"f\", \"l\", \"ref\"])"
+    },
+    {
+      "name": "SKY_PLANETS",
+      "line": 16924,
+      "initializer": "[\"mercury\", \"venus\", \"mars\", \"jupiter\", \"saturn\", \"uranus\", \"neptune\", \"pluto\"]"
+    },
+    {
+      "name": "SHARE_FOCUSES",
+      "line": 16925,
+      "initializer": "[\"general\", \"love\", \"career\"]"
+    },
+    {
+      "name": "MILESTONE_KINDS",
+      "line": 16926,
+      "initializer": "[\"jupiter-return\", \"saturn-return\", \"uranus-opposition\"]"
+    },
+    {
+      "name": "DAYS_IN_MONTH2",
+      "line": 16927,
+      "initializer": "[31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]"
+    },
+    {
+      "name": "DATE_RE2",
+      "line": 16928,
+      "initializer": "/^(?:18|19|20|21)[0-9]{2}-[0-9]{2}-[0-9]{2}$/u"
+    },
+    {
+      "name": "SLUG_RE",
+      "line": 16929,
+      "initializer": "/^[a-z0-9]+(?:-[a-z0-9]+)*$/u"
+    },
+    {
+      "name": "SLUG_MAX",
+      "line": 16930,
+      "initializer": "64"
+    },
+    {
+      "name": "MILESTONE_INDEX_MAX",
+      "line": 16931,
+      "initializer": "30"
+    },
+    {
+      "name": "MILESTONE_AGE_MAX",
+      "line": 16932,
+      "initializer": "300"
+    },
+    {
+      "name": "MILESTONE_SPAN_MAX",
+      "line": 16933,
+      "initializer": "400"
+    },
+    {
+      "name": "MILESTONE_AGES",
+      "line": 16934,
+      "initializer": "{   \"jupiter-return\": { cycle: 11.86, within: 2 },   \"saturn-return\": { cycle: 29.46, within: 2 },   \"uranus-opposition\": { cycle: 42, within: 5 } }"
+    },
+    {
+      "name": "isSign2",
+      "line": 16939,
+      "initializer": "(value) => !!value && SHARE_SIGNS.includes(value)"
+    },
+    {
+      "name": "pad",
+      "line": 16940,
+      "initializer": "(value) => String(value).padStart(2, \"0\")"
+    },
+    {
+      "name": "isMonday",
+      "line": 16946,
+      "initializer": "(date3) => (/* @__PURE__ */ new Date(`${date3}T12:00:00Z`)).getUTCDay() === 1"
+    },
+    {
+      "name": "dayNumber2",
+      "line": 16950,
+      "initializer": "(date3) => Date.parse(`${date3}T00:00:00Z`) / 864e5"
+    },
+    {
+      "name": "DEFAULT_ORIGIN",
+      "line": 17041,
+      "initializer": "\"https://zodiacs.org\""
+    },
+    {
+      "name": "MAX_TWINS",
+      "line": 17042,
+      "initializer": "12"
+    },
+    {
+      "name": "MAX_ALSO",
+      "line": 17043,
+      "initializer": "4"
+    },
+    {
+      "name": "BODIES3",
+      "line": 17044,
+      "initializer": "[\"Sun\", \"Moon\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"]"
+    },
+    {
+      "name": "signSlug",
+      "line": 17045,
+      "initializer": "z.enum(SIGN_SLUGS)"
+    },
+    {
+      "name": "indexPerson",
+      "line": 17046,
+      "initializer": "z.object({   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/u),   name: z.string().min(1),   shortDescription: z.string().min(1),   born: z.string().regex(/^\\d{4}-\\d{2}-\\d{2}$/"
+    },
+    {
+      "name": "peopleIndex",
+      "line": 17059,
+      "initializer": "z.object({ schema: z.literal(\"zodiacs.ai-people-index.v1\"), source: z.string(), reviewedAtUtc: z.string(), people: z.array(indexPerson) })"
+    },
+    {
+      "name": "PEOPLE_INDEX",
+      "line": 17060,
+      "initializer": "peopleIndex.parse(people_index_default).people"
+    },
+    {
+      "name": "BY_SLUG",
+      "line": 17061,
+      "initializer": "new Map(PEOPLE_INDEX.map((person) => [person.slug, person]))"
+    },
+    {
+      "name": "TWIN_DIRECTORY",
+      "line": 17062,
+      "initializer": "PEOPLE_INDEX.map((person) => ({ slug: person.slug, name: person.name, sun: person.sun.sign, moon: person.moon.sign }))"
+    },
+    {
+      "name": "link",
+      "line": 17063,
+      "initializer": "z.object({ title: z.string(), url: z.url() })"
+    },
+    {
+      "name": "personUrl",
+      "line": 17064,
+      "initializer": "(origin, slug) => `${origin}/people/${slug}/`"
+    },
+    {
+      "name": "zone",
+      "line": 17069,
+      "initializer": "z.string().min(1).max(64).regex(/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/)"
+    },
+    {
+      "name": "chartTwinsInput",
+      "line": 17070,
+      "initializer": "z.strictObject({   birthDate: z.string().regex(/^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$/).describe(\"The birth date, such as 1997-03-15.\"),   time: z.string().regex(/^(?:[01]\\d|2[0-3]):["
+    },
+    {
+      "name": "SHARES",
+      "line": 17080,
+      "initializer": "[\"sun\", \"moon\", \"sun-and-moon\"]"
+    },
+    {
+      "name": "TWINS_NOTES",
+      "line": 17081,
+      "initializer": "{   limit: \"Birth times in this directory are unknown, so we compare verified Sun and Moon signs only. Rising signs are not compared.\",   noMoon: \"Your Moon sign is unverified with"
+    },
+    {
+      "name": "chartTwinsData",
+      "line": 17087,
+      "initializer": "z.object({   birthDate: z.string(),   timeKnown: z.boolean(),   you: z.object({ sun: signSlug.nullable(), moon: signSlug.nullable() }),   twins: z.array(z.object({     name: z.stri"
+    },
+    {
+      "name": "DAY6",
+      "line": 17105,
+      "initializer": "864e5"
+    },
+    {
+      "name": "famousChartInput",
+      "line": 17162,
+      "initializer": "z.strictObject({   name: z.string().trim().min(2).max(80).describe(\"The person's name, such as Ada Lovelace.\") })"
+    },
+    {
+      "name": "lite",
+      "line": 17165,
+      "initializer": "z.object({ name: z.string(), slug: z.string(), url: z.url() })"
+    },
+    {
+      "name": "placementOut",
+      "line": 17166,
+      "initializer": "z.object({ body: z.enum(BODIES3), sign: signSlug, degree: z.number(), settled: z.boolean() })"
+    },
+    {
+      "name": "famousChartData",
+      "line": 17167,
+      "initializer": "z.discriminatedUnion(\"found\", [   z.object({     found: z.literal(true),     person: z.object({       name: z.string(),       slug: z.string(),       shortDescription: z.string(), "
+    },
+    {
+      "name": "NOT_FOUND_NOTE",
+      "line": 17199,
+      "initializer": "\"Zodiacs has no chart for this name in its famous-people directory.\""
+    },
+    {
+      "name": "NORMALIZED",
+      "line": 17203,
+      "initializer": "PEOPLE_INDEX.map((person) => {   const full = normalizeName(person.name);   return { person, full, tokens: full.split(\" \") }; })"
+    },
+    {
+      "name": "COMPATIBILITY_MIN_YEAR",
+      "line": 17253,
+      "initializer": "1800"
+    },
+    {
+      "name": "COMPATIBILITY_MAX_YEAR",
+      "line": 17254,
+      "initializer": "2199"
+    },
+    {
+      "name": "COMPATIBILITY_TOP_CONTACTS",
+      "line": 17255,
+      "initializer": "8"
+    },
+    {
+      "name": "COMPATIBILITY_NOTE",
+      "line": 17256,
+      "initializer": "\"Astrology\\u2019s reading of your two charts, for insight and fun, not a guarantee of how things will turn out.\""
+    },
+    {
+      "name": "ZONE_PATTERN2",
+      "line": 17257,
+      "initializer": "/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/"
+    },
+    {
+      "name": "DATE_PATTERN",
+      "line": 17258,
+      "initializer": "/^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$/"
+    },
+    {
+      "name": "WALL_CLOCK",
+      "line": 17259,
+      "initializer": "/^(?:[01]\\d|2[0-3]):[0-5]\\d$/"
+    },
+    {
+      "name": "PLAIN_TEXT",
+      "line": 17260,
+      "initializer": "/^[^\\u0000-\\u001f\\u007f<>{}[\\]\\\\`]+$/u"
+    },
+    {
+      "name": "plainText",
+      "line": 17261,
+      "initializer": "(max) => z2.string().trim().min(1).max(max).regex(PLAIN_TEXT, \"Use plain text.\")"
+    },
+    {
+      "name": "compatibilityPerson",
+      "line": 17262,
+      "initializer": "z2.strictObject({   famous: plainText(80).optional().describe(\"Instead of birth details: the name of a famous person Zodiacs publishes a chart for, such as Frida Kahlo. Give it alo"
+    },
+    {
+      "name": "compatibilityInput",
+      "line": 17280,
+      "initializer": "z2.strictObject({   a: compatibilityPerson.describe(\"The first person.\"),   b: compatibilityPerson.describe('The second person, or { famous: \"<name>\" } for a famous person Zodiacs "
+    },
+    {
+      "name": "signSlug2",
+      "line": 17284,
+      "initializer": "z2.enum(SIGN_SLUGS)"
+    },
+    {
+      "name": "bodyName2",
+      "line": 17285,
+      "initializer": "z2.enum([\"Sun\", \"Moon\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"])"
+    },
+    {
+      "name": "tally",
+      "line": 17286,
+      "initializer": "(keys) => z2.object(Object.fromEntries(keys.map((key) => [key, z2.number().int().min(0)])))"
+    },
+    {
+      "name": "elementTally",
+      "line": 17287,
+      "initializer": "tally([\"fire\", \"earth\", \"air\", \"water\"])"
+    },
+    {
+      "name": "modalityTally",
+      "line": 17288,
+      "initializer": "tally([\"cardinal\", \"fixed\", \"mutable\"])"
+    },
+    {
+      "name": "interaction",
+      "line": 17289,
+      "initializer": "z2.object({ label: z2.string(), note: z2.string() })"
+    },
+    {
+      "name": "personResult",
+      "line": 17290,
+      "initializer": "z2.object({   name: z2.string().nullable(),   /** The label the contact lines use: the name, or \"Person A\" / \"Person B\". */   label: z2.string(),   birthDate: z2.string(),   timeKn"
+    },
+    {
+      "name": "compatibilityData",
+      "line": 17306,
+      "initializer": "z2.object({   a: personResult,   b: personResult,   score: z2.object({     overall: z2.number().int().min(0).max(100),     areas: z2.object({ attraction: z2.number().int(), communi"
+    },
+    {
+      "name": "compatibilityNotFound",
+      "line": 17346,
+      "initializer": "z2.object({   found: z2.literal(false),   side: z2.enum([\"a\", \"b\"]),   query: z2.string(),   directoryUrl: z2.string(),   note: z2.literal(NOT_FOUND_NOTE) })"
+    },
+    {
+      "name": "compatibilityResult",
+      "line": 17353,
+      "initializer": "z2.union([compatibilityData, compatibilityNotFound])"
+    },
+    {
+      "name": "SIGN_INDEX",
+      "line": 17375,
+      "initializer": "new Map(SIGNS2.map((sign2, index) => [sign2.slug, index]))"
+    },
+    {
+      "name": "slugAt",
+      "line": 17429,
+      "initializer": "(index) => index === null ? null : SIGNS2[index].slug"
+    },
+    {
+      "name": "roundOrb",
+      "line": 17430,
+      "initializer": "(orb) => Math.round(orb * 10) / 10"
+    },
+    {
+      "name": "birthdays_default",
+      "line": 17552,
+      "initializer": "{   generated: \"2026-10-07\",   yearRange: [     1940,     2030   ],   nowYear: 2026,   days: {     \"january-1\": {       month: 1,       day: 1,       lonMin: 279.93,       lonMax: "
+    },
+    {
+      "name": "DAY_MS5",
+      "line": 24744,
+      "initializer": "864e5"
+    },
+    {
+      "name": "MAX_DATE_MS",
+      "line": 24745,
+      "initializer": "864e13"
+    },
+    {
+      "name": "SOLAR_RETURN_WINDOW_DAYS",
+      "line": 24750,
+      "initializer": "200"
+    },
+    {
+      "name": "SOLAR_RETURN_LOOKBACK_DAYS",
+      "line": 24751,
+      "initializer": "370"
+    },
+    {
+      "name": "SOLAR_RETURN_STEP_DAYS",
+      "line": 24752,
+      "initializer": "1"
+    },
+    {
+      "name": "DEG6",
+      "line": 24784,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "REFERENCE_SPAN_START_MS",
+      "line": 24787,
+      "initializer": "Date.parse(\"1800-01-01T00:00:00Z\")"
+    },
+    {
+      "name": "REFERENCE_SPAN_END_MS",
+      "line": 24788,
+      "initializer": "Date.parse(\"2200-01-01T00:00:00Z\")"
+    },
+    {
+      "name": "SUN",
+      "line": 24807,
+      "initializer": "{   aries: \"Your core engine is ignition. You feel most yourself starting things, leading from the front, and finding out by doing. The lifelong lesson: endurance is also a way to "
+    },
+    {
+      "name": "MOON",
+      "line": 24821,
+      "initializer": "{   aries: \"Feelings arrive as action impulses: anger before sadness, movement before words. You process by doing; hard conversations land better after a run.\",   taurus: \"You sett"
+    },
+    {
+      "name": "RISING",
+      "line": 24835,
+      "initializer": "{   aries: \"People meet your momentum before they meet you: decisive, direct, already halfway out the door. Rooms hand you the lead whether you asked or not.\",   taurus: \"You read "
+    },
+    {
+      "name": "sky_default",
+      "line": 24855,
+      "initializer": "{   generatedAt: \"2026-09-30T07:54:56.476Z\",   from: \"2026-01-01T00:00:00.000Z\",   to: \"2031-01-01T00:00:00.000Z\",   stationBoundaryScanTo: \"2031-04-01T00:00:00.000Z\",   shadowBoun"
+    },
+    {
+      "name": "eclipses_default",
+      "line": 25693,
+      "initializer": "{   generatedAt: \"2026-09-25T12:33:01.805Z\",   from: \"2026-01-01T00:00:00.000Z\",   to: \"2031-01-01T00:00:00.000Z\",   eclipses: [     {       type: \"solar\",       kind: \"annular\",  "
+    },
+    {
+      "name": "encoder",
+      "line": 25918,
+      "initializer": "new TextEncoder()"
+    },
+    {
+      "name": "PLANET_LABELS",
+      "line": 25921,
+      "initializer": "{   en: {     Sun: \"Sun\",     Moon: \"Moon\",     Mercury: \"Mercury\",     Venus: \"Venus\",     Mars: \"Mars\",     Jupiter: \"Jupiter\",     Saturn: \"Saturn\",     Uranus: \"Uranus\",     Ne"
+    },
+    {
+      "name": "RETURN_EN",
+      "line": 26000,
+      "initializer": "{   \"discovery\": \"Keep exploring\",   \"calendarTitle\": \"Subscribe to the sky\",   \"calendarLede\": \"New and full moons, eclipse peaks, and planetary retrograde windows in your calenda"
+    },
+    {
+      "name": "RETURN_COPY",
+      "line": 26088,
+      "initializer": "{   en: RETURN_EN,   es: {     \"discovery\": \"Sigue explorando\",     \"calendarTitle\": \"Suscr\\xEDbete al cielo\",     \"calendarLede\": \"Lunas nuevas y llenas, m\\xE1ximos de eclipses y "
+    },
+    {
+      "name": "HOUR2",
+      "line": 26563,
+      "initializer": "36e5"
+    },
+    {
+      "name": "DAY7",
+      "line": 26564,
+      "initializer": "24 * HOUR2"
+    },
+    {
+      "name": "DEFAULT_ORIGIN2",
+      "line": 26565,
+      "initializer": "\"https://zodiacs.org\""
+    },
+    {
+      "name": "ZONE_PATTERN3",
+      "line": 26566,
+      "initializer": "/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/"
+    },
+    {
+      "name": "MIN_YEAR",
+      "line": 26567,
+      "initializer": "1800"
+    },
+    {
+      "name": "MAX_YEAR",
+      "line": 26568,
+      "initializer": "2199"
+    },
+    {
+      "name": "DAYS",
+      "line": 26569,
+      "initializer": "birthdays_default.days"
+    },
+    {
+      "name": "zone2",
+      "line": 26571,
+      "initializer": "z3.string().min(1).max(64).regex(ZONE_PATTERN3)"
+    },
+    {
+      "name": "birthdayInput",
+      "line": 26572,
+      "initializer": "z3.strictObject({   date: z3.string().regex(/^\\d{2}-\\d{2}$/).optional().describe(\"A birthday without a year, as MM-DD, such as 05-03 for 3 May. This is enough for general birthday "
+    },
+    {
+      "name": "clockTime",
+      "line": 26591,
+      "initializer": "z3.object({ utc: z3.string(), local: z3.string() })"
+    },
+    {
+      "name": "signFacts",
+      "line": 26592,
+      "initializer": "z3.object({   slug: z3.string(),   name: z3.string(),   element: z3.string(),   modality: z3.string(),   ruler: z3.string(),   dates: z3.string(),   meaning: z3.string() })"
+    },
+    {
+      "name": "BIRTHDAY_NOTE",
+      "line": 26601,
+      "initializer": "\"Facts about the Sun on this date and their traditional meanings.\""
+    },
+    {
+      "name": "birthdayData",
+      "line": 26602,
+      "initializer": "z3.object({   month: z3.number().int().min(1).max(12),   day: z3.number().int().min(1).max(31),   label: z3.string(),   /** The Sun's noon-UTC degree span on this date across the y"
+    },
+    {
+      "name": "skyCalendarInput",
+      "line": 26841,
+      "initializer": "z3.strictObject({   language: z3.enum(CATALOG_LOCALES).optional().describe(\"The language of the event titles: en (the default), es, pt, fr, it or ru.\") })"
+    },
+    {
+      "name": "nextEvent",
+      "line": 26844,
+      "initializer": "z3.object({ title: z3.string(), start: z3.string(), end: z3.string().nullable() })"
+    },
+    {
+      "name": "skyCalendarData",
+      "line": 26845,
+      "initializer": "z3.object({   language: z3.enum(CATALOG_LOCALES),   feedUrl: z3.url().refine((url) => url.startsWith(\"https://\") && url.endsWith(\".ics\")),   subscribeUrl: z3.url().refine((url) => "
+    },
+    {
+      "name": "PLANET_ORDER",
+      "line": 26858,
+      "initializer": "[\"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"]"
+    },
+    {
+      "name": "iso2",
+      "line": 26862,
+      "initializer": "(value) => new Date(value).toISOString()"
+    },
+    {
+      "name": "HOROSCOPE_URI",
+      "line": 26906,
+      "initializer": "\"ui://zodiacs/horoscopes-v6.html\""
+    },
+    {
+      "name": "LEGACY_HOROSCOPE_URIS",
+      "line": 26907,
+      "initializer": "[\"ui://zodiacs/horoscopes-v5.html\", \"ui://zodiacs/horoscopes-v4.html\", \"ui://zodiacs/horoscopes-v3.html\", \"ui://zodiacs/horoscopes-v2.html\", \"ui://zodiacs/horoscopes-v1.html\"]"
+    },
+    {
+      "name": "HOROSCOPE_SIGNS",
+      "line": 26908,
+      "initializer": "[\"aries\", \"taurus\", \"gemini\", \"cancer\", \"leo\", \"virgo\", \"libra\", \"scorpio\", \"sagittarius\", \"capricorn\", \"aquarius\", \"pisces\"]"
+    },
+    {
+      "name": "HOROSCOPE_FOCUSES",
+      "line": 26909,
+      "initializer": "[\"general\", \"love\", \"career\"]"
+    },
+    {
+      "name": "HOROSCOPE_PERIODS",
+      "line": 26910,
+      "initializer": "[\"day\", \"week\"]"
+    },
+    {
+      "name": "HOROSCOPE_DISCLOSURE",
+      "line": 26911,
+      "initializer": "\"For reflection. Astrology does not establish what will happen in your life.\""
+    },
+    {
+      "name": "WHY_NOTE",
+      "line": 26912,
+      "initializer": "\"These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart"
+    },
+    {
+      "name": "cap",
+      "line": 26913,
+      "initializer": "(value) => value[0].toUpperCase() + value.slice(1)"
+    },
+    {
+      "name": "noon",
+      "line": 26922,
+      "initializer": "(date3) => /* @__PURE__ */ new Date(`${date3}T12:00:00.000Z`)"
+    },
+    {
+      "name": "format2",
+      "line": 26923,
+      "initializer": "(date3, options) => new Intl.DateTimeFormat(\"en-GB\", { timeZone: \"UTC\", ...options }).format(noon(date3))"
+    },
+    {
+      "name": "ORDINAL",
+      "line": 27074,
+      "initializer": "[   \"\",   \"first\",   \"second\",   \"third\",   \"fourth\",   \"fifth\",   \"sixth\",   \"seventh\",   \"eighth\",   \"ninth\",   \"tenth\",   \"eleventh\",   \"twelfth\" ]"
+    },
+    {
+      "name": "NATAL_HOUSE_THEME",
+      "line": 27089,
+      "initializer": "{   1: \"first impressions, instinct, and the way you arrive\",   2: \"earning, owning, and what security is made of\",   3: \"language, siblings, short trips, and the everyday mind\",  "
+    },
+    {
+      "name": "PLACED",
+      "line": 27103,
+      "initializer": "{   Sun: \"centers itself in\",   Moon: \"keeps its tides in\",   Mercury: \"does its thinking in\",   Venus: \"looks for beauty in\",   Mars: \"spends its heat in\",   Jupiter: \"wants more "
+    },
+    {
+      "name": "NATAL_ASPECT",
+      "line": 27115,
+      "initializer": "{   conjunction: {     verb: \"is fused to\",     gloss: \"run as one instrument, hard to play separately\"   },   sextile: {     verb: \"has an open line to\",     gloss: \"cooperate whe"
+    },
+    {
+      "name": "CURATED",
+      "line": 27137,
+      "initializer": "{   \"Sun:1\": \"Your Sun sits in the first house. The self and the surface are the same layer, and people meet most of who you are in the first minute.\",   \"Moon:4\": \"Your Moon keeps"
+    },
+    {
+      "name": "NATAL_ASPECT_LINES",
+      "line": 27147,
+      "initializer": "{   \"Sun:conjunction:Moon\": \"Your Sun is fused to your Moon. You were born near a new moon, and what you want and what you need mostly agree; the risk is not noticing there are two"
+    },
+    {
+      "name": "NATAL_PLANET_ORDER",
+      "line": 27185,
+      "initializer": "[   \"Sun\",   \"Moon\",   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\" ]"
+    },
+    {
+      "name": "ELEMENT_ABSENCE",
+      "line": 27220,
+      "initializer": "{   fire: \"no planet in fire. Initiative is a practice here, not a reflex\",   earth: \"no planet in earth. The practical layer has to be built by hand\",   air: \"no planet in air. Di"
+    },
+    {
+      "name": "ELEMENT_DOMINANT",
+      "line": 27226,
+      "initializer": "{   fire: \"the chart runs hot: initiative first, reflection after\",   earth: \"the chart is load-bearing: real things, on real timelines\",   air: \"the chart lives in language: patte"
+    },
+    {
+      "name": "MODALITY_DOMINANT",
+      "line": 27232,
+      "initializer": "{   cardinal: \"heavy on cardinal signs, better at starting than sustaining\",   fixed: \"heavy on fixed signs, slow to commit, nearly impossible to move after\",   mutable: \"heavy on "
+    },
+    {
+      "name": "cap2",
+      "line": 27290,
+      "initializer": "(s) => s.charAt(0).toUpperCase() + s.slice(1)"
+    },
+    {
+      "name": "SIGN_TAGLINE_OVERRIDES",
+      "line": 27293,
+      "initializer": "{   aries: \"First out of the gate. Direct, fast, unafraid to start.\" }"
+    },
+    {
+      "name": "NATAL_BODY_THEME",
+      "line": 27302,
+      "initializer": "Object.freeze({   Sun: {     what: \"The Sun represents identity, vitality, and the direction you grow into over time.\",     topic: \"identity and direction\"   },   Moon: {     what:"
+    },
+    {
+      "name": "ORDINAL2",
+      "line": 27352,
+      "initializer": "[   \"\",   \"first\",   \"second\",   \"third\",   \"fourth\",   \"fifth\",   \"sixth\",   \"seventh\",   \"eighth\",   \"ninth\",   \"tenth\",   \"eleventh\",   \"twelfth\" ]"
+    },
+    {
+      "name": "DEFAULT_ORIGIN3",
+      "line": 27406,
+      "initializer": "\"https://zodiacs.org\""
+    },
+    {
+      "name": "ZONE_PATTERN4",
+      "line": 27407,
+      "initializer": "/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/"
+    },
+    {
+      "name": "PLAIN_TEXT2",
+      "line": 27408,
+      "initializer": "/^[^\\u0000-\\u001f\\u007f<>{}[\\]\\\\`]+$/u"
+    },
+    {
+      "name": "HOUR3",
+      "line": 27409,
+      "initializer": "36e5"
+    },
+    {
+      "name": "NATAL_MIN_YEAR",
+      "line": 27410,
+      "initializer": "1800"
+    },
+    {
+      "name": "NATAL_MAX_YEAR",
+      "line": 27411,
+      "initializer": "2199"
+    },
+    {
+      "name": "NATAL_TOP_ASPECTS",
+      "line": 27412,
+      "initializer": "8"
+    },
+    {
+      "name": "NATAL_NOTE",
+      "line": 27413,
+      "initializer": "\"Astrology\\u2019s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny.\""
+    },
+    {
+      "name": "PLANETS2",
+      "line": 27414,
+      "initializer": "[\"Sun\", \"Moon\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"]"
+    },
+    {
+      "name": "natalChartInput",
+      "line": 27415,
+      "initializer": "z4.strictObject({   birthDate: z4.string().regex(/^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$/).describe(\"The birth date, such as 1990-05-03 (years 1800 to 2199).\"),   time: z4.string().reg"
+    },
+    {
+      "name": "signSlug3",
+      "line": 27426,
+      "initializer": "z4.enum(SIGNS2.map((sign2) => sign2.slug))"
+    },
+    {
+      "name": "tally2",
+      "line": 27427,
+      "initializer": "(keys) => z4.object(Object.fromEntries(keys.map((key) => [key, z4.number().int().min(0)])))"
+    },
+    {
+      "name": "bigThreeEntry",
+      "line": 27428,
+      "initializer": "z4.object({   /** The sign when the chart settles it; null when it is unknown. */   sign: signSlug3.nullable(),   /** Without a birth time, the signs the body could be in that day;"
+    },
+    {
+      "name": "natalChartData",
+      "line": 27436,
+      "initializer": "z4.object({   birthDate: z4.string(),   time: z4.string().nullable(),   zone: z4.string().nullable(),   place: z4.string().nullable(),   timeKnown: z4.boolean(),   placed: z4.boole"
+    },
+    {
+      "name": "slugAt2",
+      "line": 27527,
+      "initializer": "(index) => index === null ? null : SIGNS2[index].slug"
+    },
+    {
+      "name": "signName4",
+      "line": 27528,
+      "initializer": "(slug) => SIGNS2.find((sign2) => sign2.slug === slug).name"
+    },
+    {
+      "name": "placementUrl",
+      "line": 27529,
+      "initializer": "(origin, body2, slug) => `${origin}/learn/placements/${body2.toLowerCase()}-in-${slug}/`"
+    },
+    {
+      "name": "ingresses_default",
+      "line": 27641,
+      "initializer": "{   generatedAt: \"2026-10-07T14:49:40.658Z\",   horizons: [     {       planets: [         \"Sun\",         \"Mercury\",         \"Venus\",         \"Mars\"       ],       from: \"2026-01-01"
+    },
+    {
+      "name": "HOUSE_THEME",
+      "line": 30453,
+      "initializer": "{   1: \"your identity and how you present yourself\",   2: \"your money, possessions, and priorities\",   3: \"messages, errands, siblings, and your local community\",   4: \"home, famil"
+    },
+    {
+      "name": "DAY8",
+      "line": 30469,
+      "initializer": "864e5"
+    },
+    {
+      "name": "ZONE_PATTERN5",
+      "line": 30470,
+      "initializer": "/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/"
+    },
+    {
+      "name": "ORDINAL3",
+      "line": 30471,
+      "initializer": "[\"\", \"first\", \"second\", \"third\", \"fourth\", \"fifth\", \"sixth\", \"seventh\", \"eighth\", \"ninth\", \"tenth\", \"eleventh\", \"twelfth\"]"
+    },
+    {
+      "name": "MONTHS",
+      "line": 30472,
+      "initializer": "[\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"]"
+    },
+    {
+      "name": "HOROSCOPE_PERIOD_KINDS",
+      "line": 30473,
+      "initializer": "[\"month\", \"year\", \"week\"]"
+    },
+    {
+      "name": "YEAR_PLANETS",
+      "line": 30474,
+      "initializer": "[\"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"]"
+    },
+    {
+      "name": "FOCUS_RULE",
+      "line": 30475,
+      "initializer": "{   love: { planets: [\"Venus\", \"Mars\"], houses: [5, 7, 8], words: \"Venus and Mars, and events in your fifth, seventh and eighth solar houses (romance, partners and intimacy)\" },   "
+    },
+    {
+      "name": "horoscopePeriodInput",
+      "line": 30479,
+      "initializer": "z5.strictObject({   sign: z5.enum(HOROSCOPE_SIGNS).describe(\"Sun sign. Never guess it; ask the person if they have not said.\"),   period: z5.enum(HOROSCOPE_PERIOD_KINDS).describe(\""
+    },
+    {
+      "name": "paragraph",
+      "line": 30486,
+      "initializer": "z5.object({ heading: z5.string().optional(), text: z5.string() })"
+    },
+    {
+      "name": "horoscopePeriodData",
+      "line": 30487,
+      "initializer": "z5.object({   status: z5.enum([\"available\", \"sky-only\"]),   sign: z5.enum(HOROSCOPE_SIGNS),   signName: z5.string(),   period: z5.enum(HOROSCOPE_PERIOD_KINDS),   focus: z5.enum(HOR"
+    },
+    {
+      "name": "cap3",
+      "line": 30521,
+      "initializer": "(text2) => text2.charAt(0).toUpperCase() + text2.slice(1)"
+    },
+    {
+      "name": "addDays",
+      "line": 30522,
+      "initializer": "(date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY8).toISOString().slice(0, 10)"
+    },
+    {
+      "name": "monthLabel",
+      "line": 30523,
+      "initializer": "(month) => `${MONTHS[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`"
+    },
+    {
+      "name": "shortDay",
+      "line": 30524,
+      "initializer": "(date3) => `${Number(date3.slice(8, 10))} ${MONTHS[Number(date3.slice(5, 7)) - 1]} ${date3.slice(0, 4)}`"
+    },
+    {
+      "name": "lunar_new_year_default",
+      "line": 30663,
+      "initializer": "{   schema: \"zodiacs.lunar-new-year.v1\",   rule: \"First day of the first month of the Chinese calendar, on China Standard Time (UTC+8) from 1929 and Beijing mean time before, from "
+    },
+    {
+      "name": "CHINESE_ZODIAC_ANIMALS",
+      "line": 30875,
+      "initializer": "[   { slug: \"rat\", name: \"Rat\", branch: \"\\u5B50\", branchPinyin: \"z\\u01D0\", position: 1, association: \"Traditionally associated with alertness, adaptability, and finding a way throu"
+    },
+    {
+      "name": "CHINESE_ZODIAC_COPY",
+      "line": 30889,
+      "initializer": "Object.freeze({   kicker: \"Chinese zodiac\",   hubTitle: \"The twelve-year animal cycle.\",   hubIntro: \"A careful introduction to the Chinese zodiac: its animal sequence, year tables"
+    },
+    {
+      "name": "HEAVENLY_STEMS",
+      "line": 30937,
+      "initializer": "\"\\u7532\\u4E59\\u4E19\\u4E01\\u620A\\u5DF1\\u5E9A\\u8F9B\\u58EC\\u7678\""
+    },
+    {
+      "name": "EARTHLY_BRANCHES",
+      "line": 30938,
+      "initializer": "\"\\u5B50\\u4E11\\u5BC5\\u536F\\u8FB0\\u5DF3\\u5348\\u672A\\u7533\\u9149\\u620C\\u4EA5\""
+    },
+    {
+      "name": "DEFAULT_ORIGIN4",
+      "line": 30945,
+      "initializer": "\"https://zodiacs.org\""
+    },
+    {
+      "name": "DATES",
+      "line": 30946,
+      "initializer": "lunar_new_year_default.dates"
+    },
+    {
+      "name": "CHINESE_FIRST_YEAR",
+      "line": 30947,
+      "initializer": "lunar_new_year_default.from"
+    },
+    {
+      "name": "CHINESE_LAST_YEAR",
+      "line": 30948,
+      "initializer": "lunar_new_year_default.to - 1"
+    },
+    {
+      "name": "CHINESE_ZODIAC_NOTE",
+      "line": 30949,
+      "initializer": "\"Traditional associations of the Chinese calendar, for reflection: not a personality test or a prediction.\""
+    },
+    {
+      "name": "ZONE_PATTERN6",
+      "line": 30950,
+      "initializer": "/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/"
+    },
+    {
+      "name": "chineseZodiacInput",
+      "line": 30951,
+      "initializer": "z6.strictObject({   birthDate: z6.string().regex(/^(?:19|20|21)\\d{2}-\\d{2}-\\d{2}$/).optional().describe(`The birth date, such as 1990-01-20 (${lunar_new_year_default.from + 1} to $"
+    },
+    {
+      "name": "ELEMENTS2",
+      "line": 30958,
+      "initializer": "[\"wood\", \"fire\", \"earth\", \"metal\", \"water\"]"
+    },
+    {
+      "name": "ANIMAL_SLUGS",
+      "line": 30959,
+      "initializer": "CHINESE_ZODIAC_ANIMALS.map((animal) => animal.slug)"
+    },
+    {
+      "name": "animalRef",
+      "line": 30960,
+      "initializer": "z6.object({ slug: z6.enum(ANIMAL_SLUGS), name: z6.string(), pageUrl: z6.url() })"
+    },
+    {
+      "name": "animalYear",
+      "line": 30961,
+      "initializer": "z6.object({   /** The Chinese calendar year: the Gregorian year its Lunar New Year falls in. */   year: z6.number().int(),   animal: animalRef.extend({ branch: z6.string(), branchP"
+    },
+    {
+      "name": "chineseZodiacData",
+      "line": 30975,
+      "initializer": "z6.object({   /** What the answer was worked out from. */   from: z6.enum([\"birth-date\", \"year\", \"today\"]),   birthDate: z6.string().nullable(),   /** The person's animal year: fro"
+    },
+    {
+      "name": "animalAt",
+      "line": 31018,
+      "initializer": "(position2) => CHINESE_ZODIAC_ANIMALS[((position2 - 1) % 12 + 12) % 12]"
+    },
+    {
+      "name": "animalPage",
+      "line": 31019,
+      "initializer": "(origin, slug) => `${origin}/learn/chinese-zodiac/${slug}/`"
+    },
+    {
+      "name": "ref2",
+      "line": 31020,
+      "initializer": "(origin, animal) => ({ slug: animal.slug, name: animal.name, pageUrl: animalPage(origin, animal.slug) })"
+    },
+    {
+      "name": "cap4",
+      "line": 31021,
+      "initializer": "(text2) => text2.charAt(0).toUpperCase() + text2.slice(1)"
+    },
+    {
+      "name": "dayBefore",
+      "line": 31022,
+      "initializer": "(date3) => new Date(Date.parse(`${date3}T00:00:00Z`) - 864e5).toISOString().slice(0, 10)"
+    },
+    {
+      "name": "SIX_HARMONY",
+      "line": 31023,
+      "initializer": "{ rat: \"ox\", ox: \"rat\", tiger: \"pig\", pig: \"tiger\", rabbit: \"dog\", dog: \"rabbit\", dragon: \"rooster\", rooster: \"dragon\", snake: \"monkey\", monkey: \"snake\", horse: \"goat\", goat: \"hors"
+    },
+    {
+      "name": "DAY9",
+      "line": 31110,
+      "initializer": "864e5"
+    },
+    {
+      "name": "TRANSIT_BODY_ORDER",
+      "line": 31146,
+      "initializer": "[   \"Sun\",   \"Moon\",   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\" ]"
+    },
+    {
+      "name": "DEFAULT_TRANSIT_BODIES",
+      "line": 31158,
+      "initializer": "[   \"Sun\",   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\" ]"
+    },
+    {
+      "name": "SLOW_TRANSIT_BODIES",
+      "line": 31169,
+      "initializer": "[   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\" ]"
+    },
+    {
+      "name": "MAJOR_ASPECT_ORDER",
+      "line": 31176,
+      "initializer": "[   \"conjunction\",   \"sextile\",   \"square\",   \"trine\",   \"opposition\" ]"
+    },
+    {
+      "name": "NATAL_POINT_ORDER",
+      "line": 31183,
+      "initializer": "[   ...TRANSIT_BODY_ORDER,   \"ASC\",   \"MC\" ]"
+    },
+    {
+      "name": "DAY10",
+      "line": 31190,
+      "initializer": "864e5"
+    },
+    {
+      "name": "MINUTE",
+      "line": 31191,
+      "initializer": "6e4"
+    },
+    {
+      "name": "BOUNDARY_EPSILON_MS",
+      "line": 31192,
+      "initializer": "100"
+    },
+    {
+      "name": "ASPECT_TARGET_OFFSETS",
+      "line": 31193,
+      "initializer": "{   conjunction: [0],   sextile: [60, 300],   square: [90, 270],   trine: [120, 240],   opposition: [180] }"
+    },
+    {
+      "name": "STEP_DAYS2",
+      "line": 31200,
+      "initializer": "{   Sun: 1,   Moon: 0.25,   Mercury: 0.5,   Venus: 1,   Mars: 1,   Jupiter: 2,   Saturn: 5,   Uranus: 5,   Neptune: 5,   Pluto: 5 }"
+    },
+    {
+      "name": "TRANSIT_BODY_SET",
+      "line": 31212,
+      "initializer": "new Set(TRANSIT_BODY_ORDER)"
+    },
+    {
+      "name": "BODY_INDEX",
+      "line": 31213,
+      "initializer": "new Map(TRANSIT_BODY_ORDER.map((body2, index) => [body2, index]))"
+    },
+    {
+      "name": "NATAL_INDEX",
+      "line": 31214,
+      "initializer": "new Map(   NATAL_POINT_ORDER.map((point, index) => [point, index]) )"
+    },
+    {
+      "name": "ASPECT_INDEX",
+      "line": 31217,
+      "initializer": "new Map(MAJOR_ASPECT_ORDER.map((aspect, index) => [aspect, index]))"
+    },
+    {
+      "name": "TRANSIT_BODY_SET2",
+      "line": 31418,
+      "initializer": "new Set(TRANSIT_BODY_ORDER)"
+    },
+    {
+      "name": "DAY_MS6",
+      "line": 31426,
+      "initializer": "864e5"
+    },
+    {
+      "name": "ASPECT_OFFSETS2",
+      "line": 31427,
+      "initializer": "[   { aspect: \"conjunction\", offsets: [0] },   { aspect: \"square\", offsets: [90, 270] },   { aspect: \"opposition\", offsets: [180] } ]"
+    },
+    {
+      "name": "TRANSIT_ORB",
+      "line": 31479,
+      "initializer": "3"
+    },
+    {
+      "name": "MOVER",
+      "line": 31480,
+      "initializer": "{   Sun: \"a few days of spotlight\",   Moon: \"a few hours of weather\",   Mercury: \"a busy stretch for messages and errands\",   Venus: \"a soft stretch of warmth and appetite\",   Mars"
+    },
+    {
+      "name": "ASPECT_VERB",
+      "line": 31492,
+      "initializer": "{   conjunction: {     verb: \"sits on\",     gloss: \"and for a while it colors everything there\"   },   sextile: {     verb: \"opens a door for\",     gloss: \"an opening that rewards "
+    },
+    {
+      "name": "shortest",
+      "line": 31523,
+      "initializer": "(a, b) => {   const d = Math.abs(a - b) % 360;   return d > 180 ? 360 - d : d; }"
+    },
+    {
+      "name": "MONTHS2",
+      "line": 31546,
+      "initializer": "[   \"Jan\",   \"Feb\",   \"Mar\",   \"Apr\",   \"May\",   \"Jun\",   \"Jul\",   \"Aug\",   \"Sep\",   \"Oct\",   \"Nov\",   \"Dec\" ]"
+    },
+    {
+      "name": "monthDay",
+      "line": 31560,
+      "initializer": "(iso3) => {   const d = new Date(iso3);   return `${MONTHS2[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`; }"
+    },
+    {
+      "name": "cap5",
+      "line": 31564,
+      "initializer": "(s) => s.charAt(0).toUpperCase() + s.slice(1)"
+    },
+    {
+      "name": "ASC_LINE",
+      "line": 31573,
+      "initializer": "{   conjunction: {     Jupiter: \"Jupiter crosses your rising degree. The outward year gets bigger: more room, more visibility, more yes.\",     Saturn: \"Saturn crosses your rising d"
+    },
+    {
+      "name": "cap6",
+      "line": 31620,
+      "initializer": "(s) => s.charAt(0).toUpperCase() + s.slice(1)"
+    },
+    {
+      "name": "ORDINAL4",
+      "line": 31648,
+      "initializer": "[\"\", \"first\", \"second\", \"third\", \"fourth\"]"
+    },
+    {
+      "name": "DAY11",
+      "line": 31668,
+      "initializer": "864e5"
+    },
+    {
+      "name": "ZONE_PATTERN7",
+      "line": 31669,
+      "initializer": "/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/"
+    },
+    {
+      "name": "DATE2",
+      "line": 31670,
+      "initializer": "/^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$/"
+    },
+    {
+      "name": "TRANSITS_MAX_DAYS",
+      "line": 31671,
+      "initializer": "366"
+    },
+    {
+      "name": "TRANSITS_DEFAULT_DAYS",
+      "line": 31672,
+      "initializer": "30"
+    },
+    {
+      "name": "TRANSITS_PERSONAL_DAYS",
+      "line": 31673,
+      "initializer": "92"
+    },
+    {
+      "name": "TRANSITS_LIMIT",
+      "line": 31674,
+      "initializer": "60"
+    },
+    {
+      "name": "TRANSITS_NOTE",
+      "line": 31675,
+      "initializer": "\"Astrology\\u2019s reading of the sky meeting your birth chart, for reflection: not a guarantee, and not a forecast of health or money.\""
+    },
+    {
+      "name": "ORDINAL5",
+      "line": 31676,
+      "initializer": "[\"\", \"first\", \"second\", \"third\", \"fourth\", \"fifth\", \"sixth\", \"seventh\", \"eighth\", \"ninth\", \"tenth\", \"eleventh\", \"twelfth\"]"
+    },
+    {
+      "name": "zone3",
+      "line": 31677,
+      "initializer": "z7.string().min(1).max(64).regex(ZONE_PATTERN7)"
+    },
+    {
+      "name": "personalTransitsInput",
+      "line": 31678,
+      "initializer": "z7.strictObject({   birthDate: z7.string().regex(DATE2).describe(\"The birth date, such as 1990-05-03 (years 1800 to 2199).\"),   time: z7.string().regex(/^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+    },
+    {
+      "name": "transitBody",
+      "line": 31693,
+      "initializer": "z7.enum(TRANSIT_BODY_ORDER)"
+    },
+    {
+      "name": "natalPoint",
+      "line": 31694,
+      "initializer": "z7.enum([...TRANSIT_BODY_ORDER, \"ASC\", \"MC\"])"
+    },
+    {
+      "name": "personalTransitsData",
+      "line": 31695,
+      "initializer": "z7.object({   mode: z7.enum([\"window\", \"year-ahead\"]),   birthDate: z7.string(),   timeKnown: z7.boolean(),   placed: z7.boolean(),   from: z7.string(),   to: z7.string(),   zone: "
+    },
+    {
+      "name": "POINT_NAME",
+      "line": 31751,
+      "initializer": "{ ASC: \"rising degree\", MC: \"Midheaven\" }"
+    },
+    {
+      "name": "pointName",
+      "line": 31752,
+      "initializer": "(point) => POINT_NAME[point] ?? point"
+    },
+    {
+      "name": "YEAR_AHEAD_PERSONAL_POINTS",
+      "line": 31753,
+      "initializer": "[\"Mercury\", \"Venus\", \"Mars\"]"
+    },
+    {
+      "name": "YEAR_AHEAD_OUTER",
+      "line": 31754,
+      "initializer": "[\"Uranus\", \"Neptune\", \"Pluto\"]"
+    },
+    {
+      "name": "YEAR_AHEAD_PLANETS",
+      "line": 31755,
+      "initializer": "[\"Jupiter\", \"Saturn\", ...YEAR_AHEAD_OUTER]"
+    },
+    {
+      "name": "LOOP_PAD_DAYS",
+      "line": 31756,
+      "initializer": "{   Mercury: 70,   Venus: 100,   Mars: 160,   Jupiter: 220,   Saturn: 220,   Uranus: 250,   Neptune: 250,   Pluto: 250 }"
+    },
+    {
+      "name": "LOOP_GAP_DAYS",
+      "line": 31766,
+      "initializer": "{   Mercury: 60,   Venus: 100,   Mars: 180,   Jupiter: 250,   Saturn: 250,   Uranus: 300,   Neptune: 300,   Pluto: 300 }"
+    },
+    {
+      "name": "SPAN_START",
+      "line": 31776,
+      "initializer": "Date.parse(\"1800-01-01T00:00:00.000Z\")"
+    },
+    {
+      "name": "SPAN_END",
+      "line": 31777,
+      "initializer": "Date.parse(\"2200-01-01T00:00:00.000Z\")"
+    },
+    {
+      "name": "BEFORE_BIRTH",
+      "line": 31824,
+      "initializer": "\"The window starts before the birth date; give a from date on or after the birth date.\""
+    },
+    {
+      "name": "YEAR_BEFORE_BIRTH",
+      "line": 31825,
+      "initializer": "\"year-ahead starts today, which is before the birth date.\""
+    },
+    {
+      "name": "cap7",
+      "line": 31826,
+      "initializer": "(text2) => text2.charAt(0).toUpperCase() + text2.slice(1)"
+    },
+    {
+      "name": "CONTEXT_TERMS",
+      "line": 31978,
+      "initializer": "Object.freeze([   {     slug: \"birth-chart\",     plainDefinition: \"A snapshot of where the planets appeared at the moment you were born.\",     aliases: [\"natal chart\"],     categor"
+    },
+    {
+      "name": "BEGINNER_TERM_SLUGS",
+      "line": 32252,
+      "initializer": "Object.freeze([   \"birth-chart\",   \"big-three\",   \"rising-sign\",   \"house-system\",   \"whole-sign-houses\",   \"placidus\",   \"house\",   \"aspect\",   \"conjunction\",   \"sextile\",   \"squa"
+    },
+    {
+      "name": "contextTermsByKey",
+      "line": 32272,
+      "initializer": "new Map()"
+    },
+    {
+      "name": "conjunction",
+      "line": 32290,
+      "initializer": "aspectDefinition(\"conjunction\")"
+    },
+    {
+      "name": "sextile",
+      "line": 32291,
+      "initializer": "aspectDefinition(\"sextile\")"
+    },
+    {
+      "name": "square",
+      "line": 32292,
+      "initializer": "aspectDefinition(\"square\")"
+    },
+    {
+      "name": "trine",
+      "line": 32293,
+      "initializer": "aspectDefinition(\"trine\")"
+    },
+    {
+      "name": "opposition",
+      "line": 32294,
+      "initializer": "aspectDefinition(\"opposition\")"
+    },
+    {
+      "name": "terms",
+      "line": 32295,
+      "initializer": "[   {     slug: \"zodiac\",     term: \"Zodiac\",     definition: \"The zodiac is the coordinate band around the ecliptic used to describe where chart bodies appear in longitude. This s"
+    },
+    {
+      "name": "GLOSSARY",
+      "line": 33321,
+      "initializer": "Object.freeze(   terms.map((entry) => {     const context = CONTEXT_TERMS.find((candidate) => candidate.slug === entry.slug);     return context ? { ...entry, ...context } : entry;"
+    },
+    {
+      "name": "glossaryByKey",
+      "line": 33327,
+      "initializer": "new Map()"
+    },
+    {
+      "name": "DEFAULT_ORIGIN5",
+      "line": 33337,
+      "initializer": "\"https://zodiacs.org\""
+    },
+    {
+      "name": "EXPLAIN_NOTE",
+      "line": 33338,
+      "initializer": "\"An introduction to how astrology reads these ideas, not a claim that they determine anything.\""
+    },
+    {
+      "name": "MONTHS3",
+      "line": 33339,
+      "initializer": "[\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"]"
+    },
+    {
+      "name": "PLANETS3",
+      "line": 33340,
+      "initializer": "[\"Sun\", \"Moon\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"]"
+    },
+    {
+      "name": "HOUSE_SLUGS",
+      "line": 33341,
+      "initializer": "[\"first\", \"second\", \"third\", \"fourth\", \"fifth\", \"sixth\", \"seventh\", \"eighth\", \"ninth\", \"tenth\", \"eleventh\", \"twelfth\"]"
+    },
+    {
+      "name": "ASPECTS3",
+      "line": 33342,
+      "initializer": "[\"conjunction\", \"sextile\", \"square\", \"trine\", \"opposition\"]"
+    },
+    {
+      "name": "explainInput",
+      "line": 33343,
+      "initializer": "z8.strictObject({   topic: z8.string().trim().min(1).max(80).describe(\"What to explain, in a few words: a sign (leo), a planet (Mercury), a placement (Moon in Scorpio, Jupiter in t"
+    },
+    {
+      "name": "link2",
+      "line": 33346,
+      "initializer": "z8.object({ title: z8.string(), url: z8.url() })"
+    },
+    {
+      "name": "explainData",
+      "line": 33347,
+      "initializer": "z8.object({   found: z8.boolean(),   query: z8.string(),   /** The curated topic matched, such as mercury-retrograde; null when none matched. */   topic: z8.string().nullable(),   "
+    },
+    {
+      "name": "GLOSSARY_BY_SLUG",
+      "line": 33366,
+      "initializer": "new Map(GLOSSARY.map((term2) => [term2.slug, term2]))"
+    },
+    {
+      "name": "term",
+      "line": 33367,
+      "initializer": "(slug) => {   const found = GLOSSARY_BY_SLUG.get(slug);   if (!found) throw new Error(`No glossary term ${slug}`);   return found; }"
+    },
+    {
+      "name": "signRange",
+      "line": 33372,
+      "initializer": "(sign2) => `${sign2.start[1]} ${MONTHS3[sign2.start[0] - 1]} to ${sign2.end[1]} ${MONTHS3[sign2.end[0] - 1]}`"
+    },
+    {
+      "name": "cap8",
+      "line": 33373,
+      "initializer": "(text2) => text2.charAt(0).toUpperCase() + text2.slice(1)"
+    },
+    {
+      "name": "TOPICS",
+      "line": 33374,
+      "initializer": "[   ...SIGNS2.map((sign2) => ({     key: sign2.slug,     title: sign2.name,     aliases: [`${sign2.slug} sign`, `${sign2.slug} traits`, `${sign2.slug} personality`],     glossary: "
+    },
+    {
+      "name": "OUT_OF_SCOPE",
+      "line": 33499,
+      "initializer": "[\"tarot\", \"numerology\", \"horary\", \"vedic\", \"jyotish\", \"sidereal astrology\", \"human design\", \"palmistry\", \"i ching\", \"crystals\", \"kabbalah\"]"
+    },
+    {
+      "name": "EXPLAIN_TOPICS",
+      "line": 33500,
+      "initializer": "TOPICS.map((topic) => topic.key)"
+    },
+    {
+      "name": "WHOLE_QUERY_ONLY",
+      "line": 33507,
+      "initializer": "new Set([\"fall\", \"fire\", \"earth\", \"air\", \"water\", \"chart\", \"fixed\", \"cardinal\", \"mutable\", \"modes\", \"qualities\", \"asc\", \"rx\", \"orb\", \"orbs\", \"station\", \"ruler\", \"rulers\", \"nodes\"])"
+    },
+    {
+      "name": "PLANET_WORDS",
+      "line": 33508,
+      "initializer": "PLANETS3.map((planet) => planet.toLowerCase()).join(\"|\")"
+    },
+    {
+      "name": "SIGN_WORDS",
+      "line": 33509,
+      "initializer": "SIGNS2.map((sign2) => sign2.slug).join(\"|\")"
+    },
+    {
+      "name": "HOUSE_WORDS",
+      "line": 33510,
+      "initializer": "`${HOUSE_SLUGS.join(\"|\")}|1[0-2](?:st|nd|rd|th)?|[1-9](?:st|nd|rd|th)?`"
+    },
+    {
+      "name": "PLANET_IN_SIGN",
+      "line": 33511,
+      "initializer": "new RegExp(`\\\\b(${PLANET_WORDS}) (?:is )?in (${SIGN_WORDS})\\\\b`, \"u\")"
+    },
+    {
+      "name": "SIGN_PLANET",
+      "line": 33512,
+      "initializer": "new RegExp(`\\\\b(${SIGN_WORDS}) (${PLANET_WORDS})\\\\b`, \"u\")"
+    },
+    {
+      "name": "NOT_A_HOUSE",
+      "line": 33513,
+      "initializer": "`(?! (?:degrees?|deg|decans?|minutes?|of|${SIGN_WORDS})\\\\b)`"
+    },
+    {
+      "name": "PLANET_IN_HOUSE",
+      "line": 33514,
+      "initializer": "new RegExp(`\\\\b(${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(?:(${HOUSE_WORDS})(?: house\\\\b|\\\\b${NOT_A_HOUSE})|house (1[0-2]|[1-9])\\\\b)`, \"u\")"
+    },
+    {
+      "name": "HOUSE_PLANET",
+      "line": 33515,
+      "initializer": "new RegExp(`\\\\b(${HOUSE_WORDS}) house (${PLANET_WORDS})\\\\b`, \"u\")"
+    },
+    {
+      "name": "PLANET_HOUSE",
+      "line": 33516,
+      "initializer": "new RegExp(`\\\\b(${PLANET_WORDS}) (${HOUSE_WORDS}) house\\\\b`, \"u\")"
+    },
+    {
+      "name": "SIGN_RISING",
+      "line": 33517,
+      "initializer": "new RegExp(`\\\\b(${SIGN_WORDS}) (?:rising|ascendant|asc)\\\\b`, \"u\")"
+    },
+    {
+      "name": "RISING_SIGN",
+      "line": 33518,
+      "initializer": "new RegExp(`\\\\b(?:rising|ascendant|asc)(?: sign)? (?:is |in |of )?(${SIGN_WORDS})\\\\b`, \"u\")"
+    },
+    {
+      "name": "MC_WORDS",
+      "line": 33519,
+      "initializer": "\"midheaven|mid heaven|mc|m c|medium coeli\""
+    },
+    {
+      "name": "IC_WORDS",
+      "line": 33520,
+      "initializer": "\"ic|imum coeli\""
+    },
+    {
+      "name": "ANGLE_IN_SIGN",
+      "line": 33521,
+      "initializer": "new RegExp(`\\\\b(${MC_WORDS}|${IC_WORDS})(?: sign)? (?:is |in |of )+(${SIGN_WORDS})\\\\b`, \"u\")"
+    },
+    {
+      "name": "SIGN_ANGLE",
+      "line": 33522,
+      "initializer": "new RegExp(`\\\\b(${SIGN_WORDS}) (${MC_WORDS}|${IC_WORDS})\\\\b`, \"u\")"
+    },
+    {
+      "name": "BEYOND_TWELVE",
+      "line": 33523,
+      "initializer": "[\"zeroth\", \"thirteenth\", \"fourteenth\", \"fifteenth\", \"sixteenth\", \"seventeenth\", \"eighteenth\", \"nineteenth\", \"twentieth\"]"
+    },
+    {
+      "name": "NO_SUCH_HOUSE",
+      "line": 33524,
+      "initializer": "new RegExp(`\\\\b(?:(\\\\d+(?:st|nd|rd|th)?|${BEYOND_TWELVE.join(\"|\")}) house|house (\\\\d+)|(?:${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(\\\\d+(?:st|nd|rd|th)|${BEYOND_TWELVE.join(\""
+    },
+    {
+      "name": "DIGNITY",
+      "line": 33525,
+      "initializer": "/\\b(?:in|its|their) (?:fall|detriment|exaltation|domicile)\\b/u"
+    },
+    {
+      "name": "ASCII_LETTERS",
+      "line": 33675,
+      "initializer": "{   \"\\u0142\": \"l\",   \"\\xF8\": \"o\",   \"\\u0111\": \"d\",   \"\\xF0\": \"d\",   \"\\xFE\": \"th\",   \"\\xE6\": \"ae\",   \"\\u0153\": \"oe\",   \"\\xDF\": \"ss\",   \"\\u0131\": \"i\",   \"\\u0127\": \"h\",   \"\\u0167\": \"t"
+    },
+    {
+      "name": "fold2",
+      "line": 33693,
+      "initializer": "(s) => s.normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\").toLowerCase().replace(/[łøđðþæœßıħŧŋĸſŀə]/g, (letter) => ASCII_LETTERS[letter] ?? letter).replace(/[\\u2010-\\u2015]/g, \"-\")"
+    },
+    {
+      "name": "foldedRows",
+      "line": 33708,
+      "initializer": "new WeakMap()"
+    },
+    {
+      "name": "DATE3",
+      "line": 33739,
+      "initializer": "/^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$/"
+    },
+    {
+      "name": "LIMIT",
+      "line": 33740,
+      "initializer": "5"
+    },
+    {
+      "name": "RANK_LIMIT",
+      "line": 33741,
+      "initializer": "40"
+    },
+    {
+      "name": "HOUSE_NUMBER",
+      "line": 33742,
+      "initializer": "/(?:^|[\\s,])\\d+[a-z]?(?=[\\s,]|$)/iu"
+    },
+    {
+      "name": "COUNTRY_ALIAS",
+      "line": 33743,
+      "initializer": "{   uk: \"united kingdom\",   britain: \"united kingdom\",   \"great britain\": \"united kingdom\",   england: \"united kingdom\",   scotland: \"united kingdom\",   wales: \"united kingdom\",   "
+    },
+    {
+      "name": "birthplaceInput",
+      "line": 33755,
+      "initializer": "z9.strictObject({   place: z9.string().trim().min(2).max(80).describe(\"A town or city name, such as London or Almaty. Not a street address. Nothing is stored.\"),   country: z9.stri"
+    },
+    {
+      "name": "placeRow",
+      "line": 33760,
+      "initializer": "z9.object({   name: z9.string(),   region: z9.string(),   country: z9.string(),   latitude: z9.number(),   longitude: z9.number(),   timeZone: z9.string(),   /** The UTC offset at "
+    },
+    {
+      "name": "birthplaceData",
+      "line": 33771,
+      "initializer": "z9.object({   place: z9.string(),   country: z9.string().nullable(),   date: z9.string(),   places: z9.array(placeRow).max(LIMIT),   message: z9.string().nullable(),   source: z9.o"
+    },
+    {
+      "name": "AI_VERSION",
+      "line": 33866,
+      "initializer": "\"0.6.0\""
+    },
+    {
+      "name": "AI_RESULT_SCHEMA",
+      "line": 33867,
+      "initializer": "\"zodiacs.ai-tool-result.v1\""
+    },
+    {
+      "name": "AI_TOOL_NAMES",
+      "line": 33868,
+      "initializer": "[\"get_capabilities\", \"get_sky\", \"get_upcoming_events\", \"check_sky_fact\", \"get_horoscope\", \"open_chart_studio\"]"
+    },
+    {
+      "name": "OCCASION_TOOL_NAMES",
+      "line": 33869,
+      "initializer": "[\"get_occasion_sky\", \"get_life_milestones\", \"get_compatibility\", \"find_chart_twins\", \"get_famous_chart\", \"get_birthday\", \"get_sky_calendar\"]"
+    },
+    {
+      "name": "ALL_AI_TOOL_NAMES",
+      "line": 33870,
+      "initializer": "[...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES]"
+    },
+    {
+      "name": "COVERAGE_TOOL_NAMES",
+      "line": 33871,
+      "initializer": "[\"get_natal_chart\", \"get_horoscope_period\", \"get_chinese_zodiac\", \"get_personal_transits\", \"explain_astrology\"]"
+    },
+    {
+      "name": "PLACE_TOOL_NAMES",
+      "line": 33872,
+      "initializer": "[\"find_birthplace\"]"
+    },
+    {
+      "name": "EVERY_AI_TOOL_NAME",
+      "line": 33873,
+      "initializer": "[...ALL_AI_TOOL_NAMES, ...COVERAGE_TOOL_NAMES, ...PLACE_TOOL_NAMES]"
+    },
+    {
+      "name": "OCCASIONS_SWITCH_ENV",
+      "line": 33874,
+      "initializer": "\"ZODIACS_OCCASIONS_ENABLED\""
+    },
+    {
+      "name": "COVERAGE_SWITCH_ENV",
+      "line": 33875,
+      "initializer": "\"ZODIACS_COVERAGE_ENABLED\""
+    },
+    {
+      "name": "MAX_EVENT_DAYS",
+      "line": 33876,
+      "initializer": "BUDGETS[\"events.windowDays\"]"
+    },
+    {
+      "name": "MAX_HTTP_BYTES",
+      "line": 33877,
+      "initializer": "16384"
+    },
+    {
+      "name": "AI_ROUTE_PARAM",
+      "line": 33878,
+      "initializer": "\"__zodiacs_ai\""
+    },
+    {
+      "name": "AI_SWITCH_ENV",
+      "line": 33879,
+      "initializer": "\"ZODIACS_MCP_ENABLED\""
+    },
+    {
+      "name": "ORIGIN",
+      "line": 33880,
+      "initializer": "\"https://zodiacs.org\""
+    },
+    {
+      "name": "WIDGET_URI",
+      "line": 33881,
+      "initializer": "\"ui://zodiacs/sky-events-v4.html\""
+    },
+    {
+      "name": "LEGACY_WIDGET_URIS",
+      "line": 33882,
+      "initializer": "[\"ui://zodiacs/sky-events-v3.html\", \"ui://zodiacs/sky-events-v2.html\", \"ui://zodiacs/sky-events-v1.html\"]"
+    },
+    {
+      "name": "STUDIO_URI",
+      "line": 33883,
+      "initializer": "\"ui://zodiacs/chart-studio-v7.html\""
+    },
+    {
+      "name": "LEGACY_STUDIO_URIS",
+      "line": 33884,
+      "initializer": "[\"ui://zodiacs/chart-studio-v6.html\", \"ui://zodiacs/chart-studio-v5.html\", \"ui://zodiacs/chart-studio-v4.html\", \"ui://zodiacs/chart-studio-v3.html\", \"ui://zodiacs/chart-studio-v2.h"
+    },
+    {
+      "name": "OCCASIONS_URI",
+      "line": 33885,
+      "initializer": "\"ui://zodiacs/occasions-v8.html\""
+    },
+    {
+      "name": "LEGACY_OCCASIONS_URIS",
+      "line": 33886,
+      "initializer": "[\"ui://zodiacs/occasions-v7.html\", \"ui://zodiacs/occasions-v6.html\", \"ui://zodiacs/occasions-v5.html\", \"ui://zodiacs/occasions-v4.html\", \"ui://zodiacs/occasions-v3.html\", \"ui://zod"
+    },
+    {
+      "name": "READ_ONLY",
+      "line": 33887,
+      "initializer": "{ readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true }"
+    },
+    {
+      "name": "TOOL_TITLES",
+      "line": 33888,
+      "initializer": "{   get_capabilities: \"What Zodiacs can do\",   get_sky: \"Sky right now\",   get_upcoming_events: \"Sky calendar\",   check_sky_fact: \"Check a sky fact\",   get_horoscope: \"Horoscopes\","
+    },
+    {
+      "name": "instant",
+      "line": 33909,
+      "initializer": "z10.string().min(20).max(29).describe(\"A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\\u20132199).\")"
+    },
+    {
+      "name": "ZONE_PATTERN8",
+      "line": 33910,
+      "initializer": "/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/"
+    },
+    {
+      "name": "zone4",
+      "line": 33911,
+      "initializer": "z10.string().min(1).max(64).regex(ZONE_PATTERN8).describe(\"The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.\")"
+    },
+    {
+      "name": "date",
+      "line": 33912,
+      "initializer": "z10.string().regex(/^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$/)"
+    },
+    {
+      "name": "wallClock",
+      "line": 33913,
+      "initializer": "z10.string().regex(/^(?:[01]\\d|2[0-3]):[0-5]\\d$/)"
+    },
+    {
+      "name": "INPUT_SCHEMAS",
+      "line": 33914,
+      "initializer": "{   get_capabilities: z10.strictObject({}),   open_chart_studio: z10.strictObject({}),   get_sky: z10.strictObject({ instant: instant.optional(), zone: zone4.optional(), bodies: z1"
+    },
+    {
+      "name": "link3",
+      "line": 33969,
+      "initializer": "z10.object({ title: z10.string(), url: z10.url() })"
+    },
+    {
+      "name": "calculationOf",
+      "line": 33985,
+      "initializer": "(result) => z10.object({   schema: z10.string(),   result,   receipt: computeValue(\"ComputeReceipt\"),   backend: computeValue(\"Backend\"),   cite: z10.object({ url: z10.url(), recei"
+    },
+    {
+      "name": "statements2",
+      "line": 33992,
+      "initializer": "z10.record(z10.string(), z10.string())"
+    },
+    {
+      "name": "limits",
+      "line": 33993,
+      "initializer": "z10.object({   from: z10.string(),   to: z10.string(),   eventWindowDays: z10.number().int(),   eventKinds: z10.array(z10.enum(EVENT_KINDS)),   samples: z10.number().int(),   factS"
+    },
+    {
+      "name": "localTime",
+      "line": 34001,
+      "initializer": "z10.object({ utc: z10.string(), zone: z10.string(), display: z10.string() })"
+    },
+    {
+      "name": "body",
+      "line": 34002,
+      "initializer": "z10.object({ body: z10.string(), lon: z10.number(), lat: z10.number(), speed: z10.number(), retrograde: z10.boolean(), sign: z10.string(), degree: z10.number() })"
+    },
+    {
+      "name": "positionResult",
+      "line": 34003,
+      "initializer": "z10.object({ instants: z10.array(z10.object({ instant: z10.string(), bodies: z10.array(body), deltaT: computeValue(\"DeltaT\"), timeScale: computeValue(\"TimeScale\"), flags: z10.array"
+    },
+    {
+      "name": "event",
+      "line": 34004,
+      "initializer": "z10.object({ kind: z10.enum(EVENT_KINDS), at: z10.string(), localAt: z10.string(), body: z10.string().optional(), sign: z10.string(), type: z10.string().optional(), retrograde: z10"
+    },
+    {
+      "name": "personal",
+      "line": 34005,
+      "initializer": "z10.object({ timeKnown: z10.boolean(), items: z10.array(z10.object({ title: z10.string(), line: z10.string(), when: z10.string() })), note: z10.string() })"
+    },
+    {
+      "name": "horoscope",
+      "line": 34006,
+      "initializer": "z10.object({   status: z10.enum([\"available\", \"unavailable\", \"choose-sign\"]),   sign: z10.enum(HOROSCOPE_SIGNS).optional(),   signName: z10.string().optional(),   period: z10.enum("
+    },
+    {
+      "name": "clockTime2",
+      "line": 34026,
+      "initializer": "z10.object({ utc: z10.string(), local: z10.string() })"
+    },
+    {
+      "name": "occasionNote",
+      "line": 34027,
+      "initializer": "\"Astrology\\u2019s reading of the day, for insight and fun, not a guarantee of how it will go.\""
+    },
+    {
+      "name": "occasionSky",
+      "line": 34028,
+      "initializer": "z10.object({   occasion: z10.enum(OCCASION_KINDS),   date: z10.string(),   time: z10.string().nullable(),   zone: z10.string().nullable(),   place: z10.string().nullable(),   names"
+    },
+    {
+      "name": "milestone",
+      "line": 34067,
+      "initializer": "z10.object({   kind: z10.enum([\"jupiter-return\", \"saturn-return\", \"uranus-opposition\"]),   name: z10.string(),   index: z10.number(),   age: z10.number(),   first: z10.string(),   "
+    },
+    {
+      "name": "lifeMilestones",
+      "line": 34076,
+      "initializer": "z10.object({   birthDate: z10.string(),   timeKnown: z10.boolean(),   asOf: z10.string(),   milestones: z10.array(milestone),   next: milestone.nullable(),   numbers: z10.object({ "
+    },
+    {
+      "name": "OCCASION_NOTE",
+      "line": 34087,
+      "initializer": "occasionNote"
+    },
+    {
+      "name": "dataSchemas",
+      "line": 34088,
+      "initializer": "{   open_chart_studio: z10.object({ title: z10.literal(\"Chart Studio\"), calculation: z10.literal(\"browser-local\"), initialChart: z10.literal(\"birth-details\"), sharing: z10.literal("
+    },
+    {
+      "name": "ERROR_SCHEMA",
+      "line": 34109,
+      "initializer": "z10.object({ schema: z10.literal(AI_RESULT_SCHEMA), ok: z10.literal(false), tool: z10.enum(ALL_AI_TOOL_NAMES), error: z10.object({ code: z10.string(), message: z10.string(), retryA"
+    },
+    {
+      "name": "COVERAGE_ERROR_SCHEMA",
+      "line": 34110,
+      "initializer": "z10.object({ schema: z10.literal(AI_RESULT_SCHEMA), ok: z10.literal(false), tool: z10.enum(COVERAGE_TOOL_NAMES), error: z10.object({ code: z10.string(), message: z10.string(), retr"
+    },
+    {
+      "name": "PLACE_ERROR_SCHEMA",
+      "line": 34111,
+      "initializer": "z10.object({ schema: z10.literal(AI_RESULT_SCHEMA), ok: z10.literal(false), tool: z10.enum(PLACE_TOOL_NAMES), error: z10.object({ code: z10.string(), message: z10.string(), retryAf"
+    },
+    {
+      "name": "OUTPUT_SCHEMAS",
+      "line": 34119,
+      "initializer": "{   open_chart_studio: outputSchema(\"open_chart_studio\", dataSchemas.open_chart_studio),   get_capabilities: outputSchema(\"get_capabilities\", dataSchemas.get_capabilities),   get_s"
+    },
+    {
+      "name": "TOOL_DESCRIPTIONS",
+      "line": 34140,
+      "initializer": "{   open_chart_studio: \"Opens Chart Studio, an interactive birth chart the person fills in themselves: birth date, place, and time if they know it. Call it with no arguments and do"
+    },
+    {
+      "name": "DAY12",
+      "line": 34877,
+      "initializer": "864e5"
+    },
+    {
+      "name": "YEAR2",
+      "line": 34878,
+      "initializer": "365.25 * DAY12"
+    },
+    {
+      "name": "SYNODIC_MONTH",
+      "line": 34879,
+      "initializer": "29.530588"
+    },
+    {
+      "name": "MERCURY_STEP_DAYS",
+      "line": 34880,
+      "initializer": "4"
+    },
+    {
+      "name": "MILESTONE_WORDS",
+      "line": 34958,
+      "initializer": "{   \"jupiter-return\": {     name: \"Jupiter return\",     about: \"Jupiter is back where it was when you were born, about every twelve years. Astrologers read it as the start of a new"
+    },
+    {
+      "name": "DAY13",
+      "line": 34974,
+      "initializer": "864e5"
+    },
+    {
+      "name": "WEEK_DAYS",
+      "line": 34993,
+      "initializer": "7"
+    },
+    {
+      "name": "WEEK_ORB",
+      "line": 34994,
+      "initializer": "3"
+    },
+    {
+      "name": "WEEK_LIMIT",
+      "line": 34995,
+      "initializer": "5"
+    },
+    {
+      "name": "DAY14",
+      "line": 34996,
+      "initializer": "864e5"
+    },
+    {
+      "name": "SAMPLE_MS",
+      "line": 34997,
+      "initializer": "6 * 36e5"
+    },
+    {
+      "name": "UNTIMED_LEFT_OUT",
+      "line": 34998,
+      "initializer": "[\"Moon\", \"ASC\", \"MC\"]"
+    },
+    {
+      "name": "distance",
+      "line": 35015,
+      "initializer": "(target, lon) => Math.abs(((lon - target + 540) % 360 + 360) % 360 - 180)"
+    },
+    {
+      "name": "keyOf",
+      "line": 35016,
+      "initializer": "(contact) => `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`"
+    },
+    {
+      "name": "computeYourWeek",
+      "line": 35092,
+      "initializer": "(request2) => scanYourWeek(request2, { bodyLongitude: bodyLongitude2, longitudeSpeed: longitudeSpeed2 })"
+    },
+    {
+      "name": "POINT_NAME2",
+      "line": 35095,
+      "initializer": "{ ASC: \"rising sign\", MC: \"Midheaven\" }"
+    },
+    {
+      "name": "pointName2",
+      "line": 35096,
+      "initializer": "(point) => POINT_NAME2[point] ?? point"
+    },
+    {
+      "name": "weekTitle",
+      "line": 35097,
+      "initializer": "(item) => `${item.transitBody} ${item.aspect} your ${pointName2(item.natalPoint)}`"
+    },
+    {
+      "name": "weekLine",
+      "line": 35098,
+      "initializer": "(item) => transitLine(item.transitBody, item.aspect, pointName2(item.natalPoint))"
+    },
+    {
+      "name": "PERSONAL_WEEK_NOTE",
+      "line": 35112,
+      "initializer": "\"From your own birth chart: astrology\\u2019s forecast for your week, not a guarantee.\""
+    },
+    {
+      "name": "PRIVACY_POLICY",
+      "line": 35141,
+      "initializer": "\"https://zodiacs.org/privacy/\""
+    },
+    {
+      "name": "PRIVACY_WITH_BIRTH_TOOLS",
+      "line": 35142,
+      "initializer": "`Public-sky tools and Sun-sign horoscopes need no birth details. The compatibility, occasion, chart-twin, birthday and milestone tools, and a personal weekly forecast in get_horosc"
+    },
+    {
+      "name": "PRIVACY",
+      "line": 35143,
+      "initializer": "`Public-sky tools and horoscopes need no birth details and save no request or result. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodi"
+    },
+    {
+      "name": "methodLink",
+      "line": 35144,
+      "initializer": "{ title: \"How we calculate\", url: `${ORIGIN}/methodology/` }"
+    },
+    {
+      "name": "moonLink",
+      "line": 35145,
+      "initializer": "{ title: \"Explore Moon phases\", url: `${ORIGIN}/moon-phase/` }"
+    },
+    {
+      "name": "LIMITS",
+      "line": 35146,
+      "initializer": "{ from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS[\"events.samples\"], factSamples: BUDGETS[\"sky-fact.samples\"] }"
+    },
+    {
+      "name": "COMPUTE_REQUIRED",
+      "line": 35153,
+      "initializer": "\"This field is required.\""
+    },
+    {
+      "name": "isCoverageTool",
+      "line": 35171,
+      "initializer": "(tool) => COVERAGE_TOOL_NAMES.includes(tool)"
+    },
+    {
+      "name": "isPlaceTool",
+      "line": 35172,
+      "initializer": "(tool) => PLACE_TOOL_NAMES.includes(tool)"
+    },
+    {
+      "name": "COVERAGE_TOOL_SUMMARY",
+      "line": 35173,
+      "initializer": "{   get_natal_chart: \"a birth chart readout\",   get_horoscope_period: \"monthly, yearly and weekly horoscopes from the published readings\",   get_chinese_zodiac: \"the Chinese zodiac"
+    },
+    {
+      "name": "FIELD_FORMAT",
+      "line": 35180,
+      "initializer": "{   birthDate: \"a date such as 1990-05-03\",   date: \"a date such as 2026-12-01\",   from: \"a date such as 2026-11-01\",   to: \"a date such as 2026-12-01\",   time: \"a time such as 08:"
+    },
+    {
+      "name": "BIRTH_YEARS",
+      "line": 35190,
+      "initializer": "{   get_natal_chart: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,   get_personal_transits: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}` }"
+    },
+    {
+      "name": "optionalClock",
+      "line": 35218,
+      "initializer": "(utc, zone7) => utc ? clockTime3(utc, zone7) : null"
+    },
+    {
+      "name": "BIRTH_OCCASIONS",
+      "line": 35219,
+      "initializer": "new Set([\"birthday\", \"baby\", \"coming-of-age\"])"
+    },
+    {
+      "name": "occasionPageUrl",
+      "line": 35220,
+      "initializer": "`${ORIGIN}/occasions/`"
+    },
+    {
+      "name": "occasionsLink",
+      "line": 35236,
+      "initializer": "{ title: \"Occasion cards on Zodiacs\", url: `${ORIGIN}/occasions/` }"
+    },
+    {
+      "name": "STUDIO_HTML",
+      "line": 35665,
+      "initializer": "'<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex\"><title>Chart St"
+    },
+    {
+      "name": "HOROSCOPES_HTML",
+      "line": 35668,
+      "initializer": "'<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex\"><title>Horoscop"
+    },
+    {
+      "name": "OCCASIONS_HTML",
+      "line": 35671,
+      "initializer": "'<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex\"><title>Occasion"
+    },
+    {
+      "name": "WIDGET_HTML",
+      "line": 35674,
+      "initializer": "`<!doctype html> <html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"> <title>Zodiacs sky calendar</title><style> :root{co"
+    },
+    {
+      "name": "digest",
+      "line": 35819,
+      "initializer": "(value) => createHash2(\"sha256\").update(value).digest(\"hex\")"
+    },
+    {
+      "name": "blocked",
+      "line": 35854,
+      "initializer": "new BlockList()"
+    },
+    {
+      "name": "global6",
+      "line": 35856,
+      "initializer": "new BlockList()"
+    },
+    {
+      "name": "callbackPost",
+      "line": 35868,
+      "initializer": "async (raw, headers, body2) => {   const url = callbackUrl(raw);   if (Buffer.byteLength(body2) > 262144) throw new Error(\"payload-too-large\");   const signal = AbortSignal.timeout"
+    },
+    {
+      "name": "WATCH_VERSION",
+      "line": 35932,
+      "initializer": "`sky-watch-v1:${ENGINE_VERSION}`"
+    },
+    {
+      "name": "DAY15",
+      "line": 35933,
+      "initializer": "864e5"
+    },
+    {
+      "name": "BODIES4",
+      "line": 35934,
+      "initializer": "[\"Sun\", \"Moon\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"]"
+    },
+    {
+      "name": "NAMES",
+      "line": 35935,
+      "initializer": "[\"zodiacs.sky.ingress\", \"zodiacs.sky.station\", \"zodiacs.sky.lunation\"]"
+    },
+    {
+      "name": "zone5",
+      "line": 35936,
+      "initializer": "z11.string().max(80).default(\"UTC\").refine((value) => {   try {     new Intl.DateTimeFormat(\"en\", { timeZone: value });     return true;   } catch {     return false;   } })"
+    },
+    {
+      "name": "choices",
+      "line": 35944,
+      "initializer": "(values) => z11.array(z11.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort())"
+    },
+    {
+      "name": "FILTERS",
+      "line": 35945,
+      "initializer": "{   \"zodiacs.sky.ingress\": z11.object({ bodies: choices(BODIES4), zone: zone5 }).strict(),   \"zodiacs.sky.station\": z11.object({ bodies: choices([\"Mercury\", \"Venus\", \"Mars\", \"Jupit"
+    },
+    {
+      "name": "subscriptionParams",
+      "line": 35950,
+      "initializer": "z11.object({   name: z11.enum(NAMES),   arguments: z11.unknown(),   delivery: z11.object({ mode: z11.literal(\"webhook\"), url: z11.string().max(2048), secret: z11.string().max(100) "
+    },
+    {
+      "name": "unsubscribeParams",
+      "line": 35957,
+      "initializer": "subscriptionParams.omit({ ttlMs: true, cursor: true }).extend({   delivery: subscriptionParams.shape.delivery.omit({ secret: true }) })"
+    },
+    {
+      "name": "EVENT_DEFINITIONS",
+      "line": 35960,
+      "initializer": "NAMES.map((name) => ({   name,   description: name.endsWith(\"ingress\") ? \"A selected body crosses a tropical zodiac sign boundary.\" : name.endsWith(\"station\") ? \"A selected planet "
+    },
+    {
+      "name": "uuid",
+      "line": 36005,
+      "initializer": "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i"
+    },
+    {
+      "name": "JWT_PATTERN",
+      "line": 36006,
+      "initializer": "/^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$/"
+    },
+    {
+      "name": "MAX_TOKEN_LENGTH",
+      "line": 36007,
+      "initializer": "8192"
+    },
+    {
+      "name": "WATCH_SCOPES",
+      "line": 36041,
+      "initializer": "[\"openid\"]"
+    },
+    {
+      "name": "WATCH_PERMISSION",
+      "line": 36042,
+      "initializer": "\"sky:watch\""
+    },
+    {
+      "name": "SkyWatch",
+      "line": 36064,
+      "initializer": "class {   constructor(rpc, encryptionKey, post = callbackPost, now = Date.now, oauth) {     this.rpc = rpc;     this.post = post;     this.now = now;     this.oauth = oauth;     th"
+    },
+    {
+      "name": "ACCOUNTS_SWITCH_ENV",
+      "line": 36154,
+      "initializer": "\"ZODIACS_ACCOUNTS_ENABLED\""
+    },
+    {
+      "name": "SAVE_TOOL_NAME",
+      "line": 36155,
+      "initializer": "\"save_to_zodiacs\""
+    },
+    {
+      "name": "ACCOUNT_SCOPES",
+      "line": 36156,
+      "initializer": "[\"openid\"]"
+    },
+    {
+      "name": "ACCOUNT_PERMISSION",
+      "line": 36157,
+      "initializer": "\"profile:save\""
+    },
+    {
+      "name": "SAVE_KINDS",
+      "line": 36158,
+      "initializer": "[\"chart\", \"comparison\", \"occasion\", \"week\"]"
+    },
+    {
+      "name": "SAVED_RECORD_SCHEMA",
+      "line": 36159,
+      "initializer": "\"zodiacs.assistant-save.v1\""
+    },
+    {
+      "name": "MAX_SAVED_RECORD_BYTES",
+      "line": 36160,
+      "initializer": "8192"
+    },
+    {
+      "name": "MAX_SAVED_STRING",
+      "line": 36161,
+      "initializer": "600"
+    },
+    {
+      "name": "MAX_LABEL",
+      "line": 36162,
+      "initializer": "80"
+    },
+    {
+      "name": "PROFILE_URL",
+      "line": 36163,
+      "initializer": "`${ORIGIN}/profile/`"
+    },
+    {
+      "name": "PLAIN_TEXT3",
+      "line": 36164,
+      "initializer": "/^[^\\u0000-\\u001f\\u007f-\\u009f<>{}[\\]\\\\`]+$/u"
+    },
+    {
+      "name": "plainText2",
+      "line": 36165,
+      "initializer": "(max) => z13.string().trim().min(1).max(max).regex(PLAIN_TEXT3, \"Use plain text.\")"
+    },
+    {
+      "name": "date2",
+      "line": 36166,
+      "initializer": "z13.string().regex(/^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$/)"
+    },
+    {
+      "name": "zone6",
+      "line": 36167,
+      "initializer": "z13.string().min(1).max(64).regex(ZONE_PATTERN8)"
+    },
+    {
+      "name": "weekInput",
+      "line": 36168,
+      "initializer": "z13.strictObject({   birthDate: date2.describe(\"The birth date given to get_horoscope, such as 1990-05-03.\"),   birthTime: z13.string().regex(/^(?:[01]\\d|2[0-3]):[0-5]\\d$/u).option"
+    },
+    {
+      "name": "saveInput",
+      "line": 36176,
+      "initializer": "z13.strictObject({   kind: z13.enum(SAVE_KINDS).describe(\"What to save: chart (one person's chart), comparison (get_compatibility), occasion (get_occasion_sky) or week (the persona"
+    },
+    {
+      "name": "link4",
+      "line": 36187,
+      "initializer": "z13.object({ title: z13.string(), url: z13.url() })"
+    },
+    {
+      "name": "saveData",
+      "line": 36188,
+      "initializer": "z13.object({   saved: z13.literal(true),   id: z13.uuid(),   kind: z13.enum(SAVE_KINDS),   title: z13.string(),   summary: z13.string(),   savedAt: z13.string(),   /** True when th"
+    },
+    {
+      "name": "SAVE_ERROR_SCHEMA",
+      "line": 36200,
+      "initializer": "z13.object({   schema: z13.literal(AI_RESULT_SCHEMA),   ok: z13.literal(false),   tool: z13.literal(SAVE_TOOL_NAME),   error: z13.object({ code: z13.string(), message: z13.string()"
+    },
+    {
+      "name": "SAVE_OUTPUT_SCHEMA",
+      "line": 36206,
+      "initializer": "z13.union([   z13.object({ schema: z13.literal(AI_RESULT_SCHEMA), ok: z13.literal(true), tool: z13.literal(SAVE_TOOL_NAME), data: saveData, links: z13.array(link4) }),   SAVE_ERROR"
+    },
+    {
+      "name": "SAVE_TITLE",
+      "line": 36210,
+      "initializer": "\"Save to my Zodiacs account\""
+    },
+    {
+      "name": "SAVE_DESCRIPTION",
+      "line": 36211,
+      "initializer": "\"Saves something Zodiacs worked out in this conversation to the person's own Zodiacs account at zodiacs.org, where they can see it on their profile: a birth chart, a compatibility "
+    },
+    {
+      "name": "SAVE_NOTE",
+      "line": 36212,
+      "initializer": "\"Saved to your Zodiacs account. You can see it on your profile and delete it there at any time.\""
+    },
+    {
+      "name": "VERSION_PREFIX",
+      "line": 36218,
+      "initializer": "\"1.\""
+    },
+    {
+      "name": "NAME_MAX",
+      "line": 36219,
+      "initializer": "24"
+    },
+    {
+      "name": "PLACE_MAX",
+      "line": 36220,
+      "initializer": "40"
+    },
+    {
+      "name": "isControlChar",
+      "line": 36221,
+      "initializer": "(code) => code < 32 || code === 127"
+    },
+    {
+      "name": "PAGE_KINDS",
+      "line": 36251,
+      "initializer": "{ chart: \"chart\", comparison: \"compatibility\", occasion: \"occasion\", week: \"week\" }"
+    },
+    {
+      "name": "PAGE_PATHS",
+      "line": 36252,
+      "initializer": "{   chart: /^\\/(?:birth-chart|people)\\//u,   comparison: /^\\/(?:[a-z]{2}\\/)?compatibility\\//u,   occasion: /^\\/occasions\\//u,   week: /^\\/horoscopes\\//u }"
+    },
+    {
+      "name": "sitePath",
+      "line": 36258,
+      "initializer": "(url) => url.startsWith(`${ORIGIN}/`) ? url.slice(ORIGIN.length) : url"
+    },
+    {
+      "name": "signName5",
+      "line": 36259,
+      "initializer": "(slug) => slug ? SIGNS2.find((sign2) => sign2.slug === slug)?.name ?? null : null"
+    },
+    {
+      "name": "OCCASION_NAMES",
+      "line": 36260,
+      "initializer": "{   wedding: \"Wedding\",   anniversary: \"Anniversary\",   met: \"The day you met\",   birthday: \"Birthday\",   baby: \"A baby\\u2019s arrival\",   pet: \"A new pet\",   home: \"A new home\",  "
+    },
+    {
+      "name": "UUID",
+      "line": 36455,
+      "initializer": "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i"
+    },
+    {
+      "name": "INSTRUCTIONS",
+      "line": 36535,
+      "initializer": "\"Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an a"
+    },
+    {
+      "name": "PANELS",
+      "line": 36536,
+      "initializer": "{   get_upcoming_events: { uri: WIDGET_URI, icon: \"sky-calendar\" },   open_chart_studio: { uri: STUDIO_URI, icon: \"chart-studio\" },   get_horoscope: { uri: HOROSCOPE_URI, icon: \"ho"
+    },
+    {
+      "name": "CLOCK_DEPENDENT",
+      "line": 36548,
+      "initializer": "new Set([\"get_sky\", \"get_upcoming_events\", \"get_horoscope\", \"get_life_milestones\", \"get_birthday\", \"get_sky_calendar\", \"get_horoscope_period\", \"get_chinese_zodiac\", \"get_personal_t"
+    },
+    {
+      "name": "artResourceDomains",
+      "line": 36549,
+      "initializer": "[\"https://zodiacs.org\"]"
+    },
+    {
+      "name": "panelMeta",
+      "line": 36550,
+      "initializer": "(preferredDisplayMode, art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, \"openai/widgetCSP\": { connect_do"
+    },
+    {
+      "name": "shapeOf",
+      "line": 36651,
+      "initializer": "(schema) => schema?.shape ?? schema?._zod?.def?.shape ?? (schema?._zod?.def?.innerType ? shapeOf(schema._zod.def.innerType) : schema?._zod?.def?.in ? shapeOf(schema._zod.def.in) : "
+    },
+    {
+      "name": "unwrap",
+      "line": 36652,
+      "initializer": "(schema) => {   let s = schema;   for (let i = 0; i < 6 && s?._zod?.def?.innerType; i++) s = s._zod.def.innerType;   return s; }"
+    },
+    {
+      "name": "ISO_HINT",
+      "line": 36657,
+      "initializer": "\" Use an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00, not a plain date.\""
+    },
+    {
+      "name": "USAGE_HOSTS",
+      "line": 36729,
+      "initializer": "[\"chatgpt\", \"claude\", \"other\"]"
+    },
+    {
+      "name": "COUNTED_TOOL_NAMES",
+      "line": 36730,
+      "initializer": "[...EVERY_AI_TOOL_NAME, SAVE_TOOL_NAME]"
+    },
+    {
+      "name": "USAGE_TIMEOUT_MS",
+      "line": 36731,
+      "initializer": "1500"
+    },
+    {
+      "name": "LARGE_PANEL_URIS",
+      "line": 36759,
+      "initializer": "new Set([STUDIO_URI, ...LEGACY_STUDIO_URIS, HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS])"
+    },
+    {
+      "name": "ALLOWED_ORIGINS",
+      "line": 36760,
+      "initializer": "new Set([\"https://chatgpt.com\", \"https://chat.openai.com\", \"https://claude.ai\", \"https://claude.com\", ORIGIN])"
+    },
+    {
+      "name": "SECURITY_HEADERS",
+      "line": 36761,
+      "initializer": "{ \"Cache-Control\": \"no-store\", \"X-Content-Type-Options\": \"nosniff\", \"X-Robots-Tag\": \"noindex\" }"
+    },
+    {
+      "name": "handledPreviewRequests",
+      "line": 36762,
+      "initializer": "0"
+    },
+    {
+      "name": "REFUSALS",
+      "line": 36763,
+      "initializer": "{   \"rate-limited\": \"Zodiacs is busy. Try again in a minute.\",   \"rate-limit-unavailable\": \"Zodiacs is busy. Try again in a few minutes.\",   disabled: \"Zodiacs is not available rig"
+    },
+    {
+      "name": "ACCOUNT_ROUTES",
+      "line": 36771,
+      "initializer": "[\"resource\", \"consent\"]"
+    }
+  ],
+  "directWrites": [
+    {
+      "name": "coefficientValues",
+      "kind": "assignment",
+      "line": 646,
+      "expression": "coefficientValues ??= COEFFICIENT_TEXT.split(\",\").map(Number)"
+    },
+    {
+      "name": "last",
+      "kind": "assignment",
+      "line": 737,
+      "expression": "last = {     tt,     rows: [       xx,       yx,       zx,       ce * xy + se * xz,       ce * yy + se * yz,       ce * zy + se * zz,       ce * xz - se * xy,       ce * yz - se * "
+    },
+    {
+      "name": "X",
+      "kind": "assignment",
+      "line": 988,
+      "expression": "X = x"
+    },
+    {
+      "name": "Y",
+      "kind": "assignment",
+      "line": 989,
+      "expression": "Y = y"
+    },
+    {
+      "name": "M",
+      "kind": "assignment",
+      "line": 990,
+      "expression": "M = m"
+    },
+    {
+      "name": "KX",
+      "kind": "assignment",
+      "line": 991,
+      "expression": "KX = kx"
+    },
+    {
+      "name": "KV",
+      "kind": "assignment",
+      "line": 992,
+      "expression": "KV = kv"
+    },
+    {
+      "name": "OBS",
+      "kind": "assignment",
+      "line": 993,
+      "expression": "OBS = obs"
+    },
+    {
+      "name": "PRED",
+      "kind": "assignment",
+      "line": 994,
+      "expression": "PRED = pred"
+    },
+    {
+      "name": "SLOPE",
+      "kind": "assignment",
+      "line": 995,
+      "expression": "SLOPE = (kv[years + 4] - kv[years]) / (pred - obs)"
+    },
+    {
+      "name": "knots",
+      "kind": "assignment",
+      "line": 1155,
+      "expression": "knots ??= decode()"
+    },
+    {
+      "name": "Body",
+      "kind": "assignment",
+      "line": 1453,
+      "expression": "Body = {}"
+    },
+    {
+      "name": "PrecessDirection",
+      "kind": "assignment",
+      "line": 1486,
+      "expression": "PrecessDirection = {}"
+    },
+    {
+      "name": "DeltaT",
+      "kind": "assignment",
+      "line": 2226,
+      "expression": "DeltaT = func"
+    },
+    {
+      "name": "CalcMoonCount",
+      "kind": "update",
+      "line": 2335,
+      "expression": "++CalcMoonCount"
+    },
+    {
+      "name": "ApsisKind",
+      "kind": "assignment",
+      "line": 3227,
+      "expression": "ApsisKind = {}"
+    },
+    {
+      "name": "EclipseKind",
+      "kind": "assignment",
+      "line": 3241,
+      "expression": "EclipseKind = {}"
+    },
+    {
+      "name": "NodeEventKind",
+      "kind": "assignment",
+      "line": 3247,
+      "expression": "NodeEventKind = {}"
+    },
+    {
+      "name": "ERROR_BRAND",
+      "kind": "method",
+      "line": 4016,
+      "expression": "ERROR_BRAND.set(this, fixed)"
+    },
+    {
+      "name": "statements",
+      "kind": "assignment",
+      "line": 5278,
+      "expression": "statements = {       conventions: receipt.conventions,       coverage: receipt.coverage,       deltaT: [         { model, table, tableDigest },         { model: DELTA_T_MODEL, tabl"
+    },
+    {
+      "name": "contextTermsByKey",
+      "kind": "method",
+      "line": 32274,
+      "expression": "contextTermsByKey.set(normalizeContextTerm(entry.slug), entry)"
+    },
+    {
+      "name": "contextTermsByKey",
+      "kind": "method",
+      "line": 32276,
+      "expression": "contextTermsByKey.set(normalizeContextTerm(alias), entry)"
+    },
+    {
+      "name": "glossaryByKey",
+      "kind": "method",
+      "line": 33329,
+      "expression": "glossaryByKey.set(normalizeContextTerm(entry.slug), entry)"
+    },
+    {
+      "name": "glossaryByKey",
+      "kind": "method",
+      "line": 33330,
+      "expression": "glossaryByKey.set(normalizeContextTerm(entry.term), entry)"
+    },
+    {
+      "name": "glossaryByKey",
+      "kind": "method",
+      "line": 33332,
+      "expression": "glossaryByKey.set(normalizeContextTerm(alias), entry)"
+    },
+    {
+      "name": "foldedRows",
+      "kind": "method",
+      "line": 33714,
+      "expression": "foldedRows.set(row, names)"
+    },
+    {
+      "name": "handledPreviewRequests",
+      "kind": "update",
+      "line": 36815,
+      "expression": "handledPreviewRequests++"
+    },
+    {
+      "name": "last",
+      "kind": "assignment",
+      "line": 37146,
+      "expression": "last = undefined"
+    },
+    {
+      "name": "pluto_cache",
+      "kind": "assignment",
+      "line": 37147,
+      "expression": "pluto_cache.length = 0"
+    },
+    {
+      "name": "CalcMoonCount",
+      "kind": "assignment",
+      "line": 37148,
+      "expression": "CalcMoonCount = 0"
+    }
+  ]
+}

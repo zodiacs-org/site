@@ -243,6 +243,21 @@ const OPAQUE_LOADS: Record<string, { expression: string; loads: string[]; why: s
     loads: ['src/lib/assistant/open-assistant.ts'],
     why: '/assets/assistant-drawer.js, which scripts/build-assistant-ui.mjs builds from open-assistant.ts',
   }],
+  'src/islands/DeveloperPlayground.tsx': [{
+    expression: 'PLAYGROUND_ENGINE_PATH',
+    loads: ['src/lib/compute-api/playground.ts'],
+    why: '/developers/playground/engine.mjs, which scripts/build-playground-engine.mjs builds from playground.ts',
+  }],
+  'src/islands/DeveloperDemo.tsx': [{
+    expression: 'PLAYGROUND_ENGINE_PATH',
+    loads: ['src/lib/compute-api/playground.ts'],
+    why: 'the playground\'s /developers/playground/engine.mjs, which the demo runs an edited question with',
+  }],
+  'src/lib/webmcp/register.ts': [{
+    expression: 'CALCULATOR_RUNTIME_URL',
+    loads: ['src/lib/webmcp/calculator-runtime.ts'],
+    why: '/assets/webmcp-calculators.js, which scripts/build-webmcp.mjs builds from calculator-runtime.ts',
+  }],
 };
 
 /**
@@ -252,6 +267,7 @@ const OPAQUE_LOADS: Record<string, { expression: string; loads: string[]; why: s
 const BUILT_FILES: Record<string, { source: string; by: string }> = {
   'assets/search-ui.js': { source: 'src/lib/search/open-search.ts', by: 'scripts/build-search-ui.mjs' },
   'assets/webmcp-register.js': { source: 'src/lib/webmcp/register.ts', by: 'scripts/build-webmcp.mjs' },
+  'assets/webmcp-calculators.js': { source: 'src/lib/webmcp/calculator-runtime.ts', by: 'scripts/build-webmcp.mjs' },
   'assets/registry-token-chart.js': { source: 'src/registry/selected-token-chart.mjs', by: 'scripts/build-registry-token-chart.mjs' },
   'precision-preview/app.mjs': { source: 'src/precision-preview/app.src.mjs', by: 'scripts/build-precision-preview.mjs' },
   // The preview app loads its worker by URL, from beside the built app.mjs.

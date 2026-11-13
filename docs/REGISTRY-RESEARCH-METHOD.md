@@ -29,4 +29,27 @@ After the pilot, only explicitly allowlisted deterministic template IDs can publ
 - JSON Feed: `/feeds/market-research.json`
 - Archive: `/terminal/research/`
 
+Only the archive is offered for indexing. Each item page, `/terminal/research/{slug}/`, stays live and linked from the archive and the feeds but carries `noindex, follow` and is left out of `/sitemap.xml` and the section sitemaps (owner decision, 26 October 2026). `scripts/check-dist.mjs` fails a build in which an item page is indexable or listed.
+
 The rolling window contains the previous 30 UTC calendar days plus approved event briefs through the end of the next seven UTC calendar days. `endsBefore` is the exclusive boundary at 00:00 UTC on the following day. Scheduled items carry `visibleAt`; standard RSS/JSON feeds exclude them until their publication build is eligible.
+
+## Paused (12 November 2026)
+
+Publishing is paused. Dias, the owner, decided this at 10:15 on 12 November 2026, Asia/Bangkok (03:15 UTC): a dated sky reading beside each token's market data is hard to square with the 8 October no-market-timing rule.
+
+The pause is the committed record `src/data/registry-research/pause.json`, with `"status": "paused"`. While it stands:
+
+- `scripts/build-registry-research.mjs` writes nothing, in build mode and with `--check`. It keeps the committed ledger as it is, derives the publication from it with any approval recorded after the pause ignored, and fails unless the result equals the committed ledger, publication, compact feed, archive index and item files. It also fails if an item file exists that the publication does not list. It does not read today's Daily Sky or outlook, so no fresh dated brief is needed to pass.
+- `scripts/build-registry-outlook.mjs` and `scripts/build-app.mjs` publish no new daily or weekly outlook edition. `public/assets/registry-outlook.json` stays as last written.
+- `scripts/check-registry-pairing.mjs`, the dated check in the Daily Sky and Registry Market Snapshot workflows, still requires today's market archive but accepts the last published outlook and research editions. Daily Sky publishes the consumer daily horoscope as before.
+- The publication clock stays at its last value, so the items that were scheduled for later never appear in the feeds.
+- `/terminal/research/`, `/feeds/market-research.xml` and `/feeds/market-research.json` say that publishing is paused and keep listing what was published before the pause as an archive.
+- No published item file is rewritten or removed. Every note page stays live, `noindex, follow`, as before.
+
+The sign-page trade panel is pinned off in the same change (`REGISTRY_TRADE_PINNED_OFF` in `src/trade/entry.mjs`). It stays off even with `PUBLIC_REGISTRY_TRADE_ENABLED=1`.
+
+The Registry Market Snapshot workflow was also disabled by hand (`gh workflow disable`); `gh workflow enable` reverses that.
+
+To resume: set `status` in `pause.json` to `"publishing"`, then run `node scripts/build-registry-outlook.mjs` and `node scripts/build-registry-research.mjs` and commit what they write. No code needs to change.
+
+Open question for Dias: should the archive stay published while the pause lasts, or be taken down? This change leaves it in place.

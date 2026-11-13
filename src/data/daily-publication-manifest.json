@@ -1,7 +1,7 @@
 {
   "schema": "zodiacs.daily-publication-manifest.v2",
-  "date": "2026-10-13",
-  "snapshotAt": "2026-10-13T12:00:00.000Z",
+  "date": "2026-11-13",
+  "snapshotAt": "2026-11-13T12:00:00.000Z",
   "status": "verified",
   "policy": {
     "id": "org.zodiacs.daily.en",
@@ -10,34 +10,34 @@
   },
   "facts": {
     "path": "src/data/daily.json",
-    "fileSha256": "7f015533090964424929e0c1e6dadfcfe9cab02d5603e6a7f9e557fa7ccea53a",
-    "canonicalSha256": "9bf675671fbc51eecbc33eabcb733d6b37bb47deb5f18504cc36d2024ccf1516",
-    "factCount": 46,
+    "fileSha256": "4b605ea425d42c8fb15af9f3b9579ce8a25aa464a1b71a5f9fa98719dfd7de33",
+    "canonicalSha256": "8b24e316987157c3b4d9a7eb2fe057dce1501d6bd8c51dff41d355d4118bf22a",
+    "factCount": 59,
     "eventsCoverage": "complete",
-    "eventsSource": "src/data/transits-2026-10.json",
-    "eventsSourceSha256": "d216bcb3ceda371b0725817894476755dcba8307fa32de990a3aa78eb776fff2",
-    "eventsSourceCanonicalSha256": "2a26fa0a7ee66ad5a8f8c86078cd3c6a14c2f9e81410cd8b68ff6197618e8472",
+    "eventsSource": "src/data/transits-2026-11.json",
+    "eventsSourceSha256": "babed9c405e7352384fb29baf7277aea84ffa46e3c9d32b5ffdfc595a5780ad1",
+    "eventsSourceCanonicalSha256": "92f58512534138c26a868e471823e0adc058dbe5bbb0b767edd4b0dbebdb7557",
     "engine": {
       "name": "@zodiacs/engine",
-      "version": "1.0.0"
+      "version": "1.1.0-rc.2"
     }
   },
   "publication": {
     "path": "src/data/daily-publication.json",
-    "canonicalSha256": "3e78c2c73786b6a629218b053e60db01defcd8965cd885bcae7ef464740e30bc",
+    "canonicalSha256": "e3fb0742990f3489d96120f024e390f7e82711c5d364af79d4f7d4de745d4dec",
     "signCount": 12,
-    "outputCount": 60
+    "outputCount": 72
   },
   "generation": {
     "mode": "deterministic-template",
     "generatorId": "zodiacs.daily-renderer.v1.2",
-    "generatorSha256": "dfd20b00daff39bbe130b36414ec1d5aa9304d836c7247a515151e1e99e91d6a",
+    "generatorSha256": "e6ef525c3c6ae2abd327d49d54154126fbf48ff286fc2bc1b35ee591629be226",
     "model": null,
     "freeformModelOutput": false
   },
   "verification": {
     "verifierId": "zodiacs.daily-verifier.v4",
-    "verifierSha256": "4e4635616d869b874edebccf48324f00b7afda158a389013701925e19f158573",
+    "verifierSha256": "01aace267fca6622c6e52306dbaf6ed6624bc8efa16f9297206db19115b4737a",
     "copyVerifierIndependentFromGenerator": true,
     "astronomyAudit": {
       "implementation": "zodiacs.daily-fact-audit.v2",

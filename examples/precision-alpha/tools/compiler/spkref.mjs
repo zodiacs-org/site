@@ -35,11 +35,26 @@ export class SpkRef {
     this.ni = fr.readInt32LE(12);
     const fward = fr.readInt32LE(76);
     const ss = this.nd + Math.ceil(this.ni / 2);
+    // The comment area: records 2 .. fward-1, 1000 characters each, NUL for
+    // a line break and EOT at the end. The compiler reads a DOI out of it.
+    const comment = [];
+    for (let r = 2; r < fward; r += 1) {
+      const cr = Buffer.allocUnsafe(1000);
+      readSync(fd, cr, 0, 1000, (r - 1) * RECORD);
+      comment.push(cr.toString('latin1'));
+    }
+    const text = comment.join('');
+    const eot = text.indexOf('\x04');
+    this.comment = (eot === -1 ? text : text.slice(0, eot)).replace(/\0/g, '\n');
     const segs = [];
     let next = fward;
     while (next !== 0) {
       const rec = Buffer.allocUnsafe(RECORD);
       readSync(fd, rec, 0, RECORD, (next - 1) * RECORD);
+      // Each summary record is followed by its name record: one name of
+      // 8 * ss characters per summary, in the same order.
+      const names = Buffer.allocUnsafe(RECORD);
+      readSync(fd, names, 0, RECORD, next * RECORD);
       const nxt = rec.readDoubleLE(0);
       const nsum = rec.readDoubleLE(16);
       for (let i = 0; i < nsum; i += 1) {
@@ -54,6 +69,7 @@ export class SpkRef {
           type: rec.readInt32LE(ints + 12),
           first: rec.readInt32LE(ints + 16),
           last: rec.readInt32LE(ints + 20),
+          name: names.toString('latin1', i * ss * 8, (i + 1) * ss * 8).trim(),
         });
       }
       next = nxt;
@@ -89,6 +105,11 @@ export class SpkRef {
    */
   state(seg, et, out) {
     const { init, intlen, rsize, nrec, ncoef, data } = seg;
+    // Refuse rather than extrapolate: 1.x clamped the record index here, so
+    // an instant past the segment silently ran its last polynomial outward.
+    if (!(et >= seg.start && et <= seg.stop)) {
+      throw new RangeError(`${et} s TDB is outside segment ${seg.target}/${seg.center}, which covers ${seg.start}..${seg.stop}`);
+    }
     let idx = Math.floor((et - init) / intlen);
     if (idx < 0) idx = 0;
     if (idx > nrec - 1) idx = nrec - 1;

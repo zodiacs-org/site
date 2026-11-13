@@ -1,0 +1,131 @@
+{
+  "checkedAt": "2026-10-20T10:52:13.548Z",
+  "base": "https://zodiacs.org",
+  "deployment": null,
+  "registry": {
+    "commit": "e024e6026a39c4d348bd8d241d9603a8fc5b0218",
+    "version": "2026-10-18",
+    "ids": 154,
+    "namespaces": 57,
+    "control": null
+  },
+  "served": {
+    "page": {
+      "status": 404,
+      "sha256": "d684aa826f740d40d4d8988a4fe41e8c54cb4d6cf95cf7a4abe011e6f0c6fa9e",
+      "anchors": 0
+    },
+    "browser": {
+      "landed": 0,
+      "missed": 0,
+      "madeUp": null
+    },
+    "json": {
+      "status": 404,
+      "sha256": "d684aa826f740d40d4d8988a4fe41e8c54cb4d6cf95cf7a4abe011e6f0c6fa9e",
+      "entries": 0
+    },
+    "markdown": {
+      "status": 404,
+      "sha256": "d684aa826f740d40d4d8988a4fe41e8c54cb4d6cf95cf7a4abe011e6f0c6fa9e"
+    }
+  },
+  "results": [
+    {
+      "name": "/developers/conventions/ is served as HTML",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "name": "every one of the 154 ids has exactly one anchor on the page",
+      "ok": false,
+      "detail": {
+        "unanchored": 154,
+        "sample": [
+          "zodiac:tropical",
+          "zodiac:sidereal",
+          "ayanamsa:lahiri"
+        ]
+      }
+    },
+    {
+      "name": "every id links to its own address on the page",
+      "ok": false,
+      "detail": {
+        "unlinked": 154,
+        "sample": [
+          "zodiac:tropical",
+          "zodiac:sidereal",
+          "ayanamsa:lahiri"
+        ]
+      }
+    },
+    {
+      "name": "Chromium lands on each id's entry from its address (0 of 154)",
+      "ok": false,
+      "detail": {
+        "missed": 0,
+        "sample": []
+      }
+    },
+    {
+      "name": "control: a made-up id's address lands on no entry",
+      "ok": false,
+      "detail": {
+        "madeUp": null,
+        "status": 404
+      }
+    },
+    {
+      "name": "registry.json is the commit's registry, with every id's address",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "type": "text/html; charset=utf-8",
+        "served": 0
+      }
+    },
+    {
+      "name": "the Markdown twin names every id",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "unnamed": 154
+      }
+    },
+    {
+      "name": "the developer index links to the registry",
+      "ok": false,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "the conformance page links its kinds to the registry",
+      "ok": false,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "llms.txt lists the registry",
+      "ok": false,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "the sitemap lists the page with its date",
+      "ok": false,
+      "detail": {
+        "status": 200,
+        "listed": false
+      }
+    }
+  ],
+  "passed": 0,
+  "failed": 11
+}

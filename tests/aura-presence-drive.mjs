@@ -598,7 +598,8 @@ async function verifySampleAndLiveCollection(browser, baseURL) {
     '4 of the twelve',
     'solana · jul 16, 2026 utc',
     'editions read from the public record',
-    'zodiacs.org',
+    // The brand lockup (DESIGN.md, "Brand Lockup"), painted as ZODIACS, the dot and ORG.
+    'zodiacs · org',
   ]) {
     assert.equal(
       cabinetPaintedLower.includes(expected),
@@ -606,6 +607,7 @@ async function verifySampleAndLiveCollection(browser, baseURL) {
       `cabinet card chrome should include ${expected}`,
     );
   }
+  assert.equal(cabinetPainted.includes('Zodiacs.org'), false, 'cabinet card must not paint the earlier sentence-case wordmark');
   for (const forbidden of [address, profile.charts[0].name, profile.charts[0].birth.date]) {
     assert.equal(cabinetPainted.includes(forbidden), false, `cabinet card must omit ${forbidden}`);
   }

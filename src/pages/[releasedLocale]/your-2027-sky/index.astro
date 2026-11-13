@@ -1,0 +1,11 @@
+---
+/** Your 2027 sky in Spanish, Portuguese, French and Italian: /es/your-2027-sky/ and the rest. */
+import YearSkyPage from '../../../components/year-sky/YearSkyPage.astro';
+import type { YearSkyLocale } from '../../../lib/year-sky/copy';
+
+export function getStaticPaths() {
+  return (['es', 'pt', 'fr', 'it'] as const).map((releasedLocale) => ({ params: { releasedLocale } }));
+}
+const locale = Astro.params.releasedLocale as Exclude<YearSkyLocale, 'en'>;
+---
+<YearSkyPage locale={locale} />

@@ -342,7 +342,7 @@ describe('Guide cloud-processing disclosure', () => {
   it('keeps the browser consent version aligned with the server after the disclosure change', async () => {
     const source = await readFile(new URL('./open-assistant.ts', import.meta.url), 'utf8');
     expect(GUIDE_CLOUD_DISCLOSURE_POLICY_VERSION)
-      .toBe('guide-cloud-processing-2026-10-03.1');
+      .toBe('guide-cloud-processing-2026-10-20.1');
     expect(source).toContain(
       `const CONSENT_POLICY_VERSION = '${GUIDE_CLOUD_DISCLOSURE_POLICY_VERSION}';`,
     );
@@ -356,16 +356,16 @@ describe('Guide cloud-processing disclosure', () => {
     expect(cloudBodies).toHaveLength(5);
 
     const localizedRequirements = [
-      ['recent Guide messages', 'visible sources above', 'generated draft reply back to OpenAI', 'second safety check', 'stays only in this browser session', 'not stored as text by Zodiacs.org'],
-      ['los mensajes recientes', 'las fuentes visibles', 'borrador de respuesta generado de nuevo a OpenAI', 'segunda revisión de seguridad', 'permanece solo en esta sesión del navegador', 'Zodiacs.org no almacena su texto'],
-      ['as mensagens recentes', 'as fontes visíveis', 'rascunho de resposta gerado de volta à OpenAI', 'segunda verificação de segurança', 'fica apenas nesta sessão do navegador', 'não é armazenada como texto pelo Zodiacs.org'],
-      ['les messages récents', 'les sources visibles', 'brouillon de réponse généré à OpenAI', 'second contrôle de sécurité', 'reste uniquement dans cette session du navigateur', 'n’est pas stockée sous forme de texte par Zodiacs.org'],
+      ['recent Guide messages', 'visible sources above', 'generated draft reply back to Anthropic', 'second safety check', 'stays only in this browser session', 'not stored as text by Zodiacs.org'],
+      ['los mensajes recientes', 'las fuentes visibles', 'borrador de respuesta generado de nuevo a Anthropic', 'segunda revisión de seguridad', 'permanece solo en esta sesión del navegador', 'Zodiacs.org no almacena su texto'],
+      ['as mensagens recentes', 'as fontes visíveis', 'rascunho de resposta gerado de volta à Anthropic', 'segunda verificação de segurança', 'fica apenas nesta sessão do navegador', 'não é armazenada como texto pelo Zodiacs.org'],
+      ['les messages récents', 'les sources visibles', 'brouillon de réponse généré à Anthropic', 'second contrôle de sécurité', 'reste uniquement dans cette session du navigateur', 'n’est pas stockée sous forme de texte par Zodiacs.org'],
       ['i messaggi recenti', 'le fonti visibili', 'bozza di risposta generata', 'secondo controllo di sicurezza', 'resta soltanto in questa sessione del browser', 'non viene archiviata come testo da Zodiacs.org'],
     ] as const;
 
     for (const [index, requirements] of localizedRequirements.entries()) {
       const body = cloudBodies[index] ?? '';
-      expect((body.match(/OpenAI/gu) ?? []).length, `locale ${index} names both provider passes`)
+      expect((body.match(/Anthropic/gu) ?? []).length, `locale ${index} names both provider passes`)
         .toBeGreaterThanOrEqual(2);
       for (const requirement of requirements) {
         expect(body, `locale ${index}: ${requirement}`).toContain(requirement);
@@ -770,14 +770,32 @@ describe('assistant profile-access privacy fence', () => {
     const loader = await readFile(new URL('src/lib/assistant/guide-loader.mjs', root), 'utf8');
     const guide = await readFile(new URL('src/pages/ask/index.astro', root), 'utf8');
     expect(base).not.toContain('guideRuntimeEnabled');
-    expect(base).toContain('plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface');
-    expect(base).toContain('&& !accountSyncV2Enabled,');
+    expect(base).toContain('props.privateSurface || (props.accountSurface && accountSyncV2Enabled)');
+    expect(base).toContain('plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded');
+    expect(base).not.toContain('&& !accountSyncV2Enabled');
     expect(base).toContain('data-guide-analytics-boundary={plausibleEnabled || webAnalyticsEnabled ?');
     expect(base).toContain("sessionStorage.getItem(guidePrivateSessionKey) === '1'");
     expect(loader).toContain("export const GUIDE_PRIVATE_SESSION_KEY = 'zodiacs.guide.private-session.v1';");
     expect(loader).toContain("sessionStorage.setItem(privateSessionKey, '1');");
     expect(loader).toContain('location.reload();');
-    expect(shell).toContain('if (beginPrivateTransition()) return;');
+    expect(shell).toContain('if (beginPrivateTransition(from)) return;');
+    // A quick-prompt chip's question survives the private reload, and is
+    // reused only when a chip with exactly that question is on the new page.
+    expect(loader).toContain("export const GUIDE_OPEN_PROMPT_KEY = 'zodiacs.guide.open-prompt.v1';");
+    // Astro pages carry the question; the frozen wing pages keep the earlier
+    // loader byte for byte (the Phase 1 scope guard protects them).
+    const carrying = guideLoaderSource('en', { carryPrompt: true });
+    expect(carrying).toContain('if (beginPrivateTransition(target)) return;');
+    expect(carrying).toContain('if (prompt) sessionStorage.setItem(openPromptKey, prompt);');
+    expect(carrying).toContain("document.querySelectorAll('[data-assistant-open][data-assistant-prompt]')");
+    expect(carrying).toContain('return mod.openAssistant(defaultLocale, pendingOpener());');
+    const frozen = guideLoaderSource('en');
+    expect(frozen).not.toContain('openPromptKey');
+    expect(frozen).toContain('if (beginPrivateTransition()) return;');
+    expect(frozen).toContain('return mod.openAssistant(defaultLocale, null);');
+    const footer = await readFile(new URL('../../components/SiteFooter.astro', import.meta.url), 'utf8');
+    expect(footer).toContain("guideLoaderSource(sectionLocale ? 'en' : locale, { carryPrompt: true })");
+    expect(shell).toContain('if (prompt) sessionStorage.setItem(GUIDE_OPEN_PROMPT_KEY, prompt);');
     expect(guide).toContain('privateSurface');
     for (const path of [
       'public/archive/index.html',

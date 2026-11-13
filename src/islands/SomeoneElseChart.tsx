@@ -381,7 +381,7 @@ export default function SomeoneElseChart() {
             <header>
               <span class="other-chart__step">Most complete</span>
               <h2>Use their birth details</h2>
-              <p>Get their full chart — houses, angles, aspects, and a guided reading — or compare it with yours.</p>
+              <p>Get their full chart (houses, angles, aspects, and a guided reading) or compare it with yours.</p>
             </header>
             <div class="other-chart__birth-fields">
               <BirthFields

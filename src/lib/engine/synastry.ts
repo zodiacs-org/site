@@ -9,6 +9,7 @@ import { ASPECT_BODIES, matchAspect } from './aspects';
 import type { AspectType } from './types';
 import { signForLongitude } from '../signs';
 import type { Element, Modality } from '../signs';
+import { isGenerationalContact } from '../generational-contact';
 
 export interface MinimalBody {
   body: string;
@@ -72,31 +73,12 @@ export function modalityBalance(bodies: MinimalBody[]): Record<Modality, number>
   return out;
 }
 
-/**
- * A slow planet conjunct its own counterpart in the other chart. Pluto
- * takes a dozen years to cross a sign, so any two people born near each
- * other carry Pluto conjunct Pluto at a fraction of a degree; Jupiter and
- * Saturn do the same over shorter spans. Such a contact reports when two
- * people were born, not who they are to each other.
- *
- * Only the same planet against itself qualifies. A cross-body contact
- * between slow planets still varies enough to be worth its orb, and keeps
- * its place in the ranking.
- */
-const SLOW_BODIES = new Set(['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']);
-
-export function isGenerationalContact(
-  aspect: Pick<InterAspect, 'a' | 'b' | 'type'>,
-): boolean {
-  return aspect.type === 'conjunction'
-    && aspect.a === aspect.b
-    && SLOW_BODIES.has(aspect.a);
-}
+export { isGenerationalContact } from '../generational-contact';
 
 /**
  * Contacts ordered by how much they say about this particular pair: orb
- * first, as before, with the generational self-conjunctions moved behind
- * everything else.
+ * first, as before, with the generational contacts moved behind everything
+ * else, so a personal contact always opens the list when there is one.
  *
  * Demoted rather than dropped. A pair whose only tight contacts are
  * generational still gets shown something true — it simply does not lead

@@ -1,0 +1,97 @@
+fifth attempt, on the merge of main 1e89d772 (D-16) with report-bundles.test.mjs's fixture naming Chiron, citing rc2a-3deaa3fa-prepush-times.txt (fourth: 40 of 42 exit 0; the full suite failed the accepted Phase 1 test, report-bundles.test.mjs, whose fixture lacked the new allowed importer, and games-sql-readiness.test.mjs, two tests over 5 s under load and 4 of 4 alone; the first-use drive only its Firefox launch) and rc2a-593207ad-prepush-times.txt (stopped during its build); D-14 accepts the Firefox launch only
+head 3e370c9b base 1e89d772 node v22.22.2 npm 10.9.7 Darwin arm64 label prepush
+2026-11-05T06:39:22Z
+v22.22.2
+HEAD 3e370c9bf9273c6c872e0b6435fad8bf2e61fbae origin/main 1e89d772c29e182ffe0bcbaecaab0738ee8de78f
+build 0 (free before: 17516 MB)
+2026-11-05T06:41:21Z
+vitest 1 (free before: 17577 MB)
+2026-11-05T06:44:52Z
+ Test Files  5 failed | 637 passed | 1 skipped (643)
+      Tests  6 failed | 8276 passed | 13 skipped (8295)
+vitest failing files: scripts/analytics-referrer-privacy.test.mjs scripts/games-sql-readiness.test.mjs scripts/phase1-acceptance-evidence.test.mjs src/ai-tools/features/personal-transits.test.ts src/lib/account-v2/cutover.test.ts
+check 0 (free before: 16921 MB)
+2026-11-05T06:46:09Z
+ai-check 0 (free before: 16111 MB)
+2026-11-05T06:46:10Z
+ai-test 0 (free before: 16111 MB)
+2026-11-05T06:46:30Z
+mcp-build-check 0 (free before: 16110 MB)
+2026-11-05T06:46:30Z
+mcp-pack-check 0 (free before: 16110 MB)
+2026-11-05T06:46:31Z
+compute-handler 0 (free before: 16110 MB)
+2026-11-05T06:46:32Z
+compute-local-time 0 (free before: 16110 MB)
+2026-11-05T06:46:32Z
+cities-also 0 (free before: 16110 MB)
+2026-11-05T06:46:32Z
+phase1-scope 0 (free before: 16110 MB)
+2026-11-05T06:46:33Z
+guide-twins 0 (free before: 16110 MB)
+2026-11-05T06:46:33Z
+guide-browser 0 (free before: 16110 MB)
+2026-11-05T06:46:56Z
+guide-examples 0 (free before: 16106 MB)
+2026-11-05T06:47:18Z
+guide-python 0 (free before: 15820 MB)
+2026-11-05T06:47:19Z
+claims-unlisted 0 (free before: 15820 MB)
+2026-11-05T06:47:32Z
+claims-orphans 0 (free before: 15994 MB)
+2026-11-05T06:47:43Z
+programme-ledger 0 (free before: 15375 MB)
+2026-11-05T06:47:43Z
+playground-engine-check 0 (free before: 15375 MB)
+2026-11-05T06:47:43Z
+engine-bundle-check 0 (free before: 16071 MB)
+2026-11-05T06:47:44Z
+natal-aspect-examples-check 0 (free before: 16071 MB)
+2026-11-05T06:47:47Z
+engine-reference-check 0 (free before: 16071 MB)
+2026-11-05T06:47:49Z
+check-engine-reference 0 (free before: 16072 MB)
+2026-11-05T06:47:51Z
+engine-reference-test 0 (free before: 16072 MB)
+2026-11-05T06:47:52Z
+engine-reference-drive 0 (free before: 16070 MB)
+2026-11-05T06:48:18Z
+natal-aspects-drive 0 (free before: 16028 MB)
+2026-11-05T06:48:26Z
+compatibility-browser 0 (free before: 16027 MB)
+2026-11-05T06:50:31Z
+t17-positions-share 0 (free before: 16020 MB)
+2026-11-05T06:50:50Z
+platform-developers-drive 0 (free before: 16018 MB)
+2026-11-05T06:51:11Z
+developer-first-use-drive 1 (free before: 16035 MB)
+2026-11-05T06:54:25Z
+widgets-browser 0 (free before: 16060 MB)
+2026-11-05T06:54:43Z
+mcp-protocol 0 (free before: 16056 MB)
+2026-11-05T06:54:47Z
+mcp-protocol rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/protocol-drive.json
+mcp-host 0 (free before: 16056 MB)
+2026-11-05T06:54:50Z
+mcp-host rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/host-drive.json
+mcp-benchmark 0 (free before: 16056 MB)
+2026-11-05T06:54:51Z
+mcp-benchmark rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/benchmark.json
+webmcp 0 (free before: 16056 MB)
+2026-11-05T07:19:15Z
+production-flags-build 0 (free before: 15103 MB)
+2026-11-05T07:19:37Z
+production-flags-report-bundles 0 (free before: 15085 MB)
+2026-11-05T07:19:38Z
+independent-references 0 (free before: 15082 MB)
+2026-11-05T07:19:41Z
+independent-references-diff 0 (free before: 15082 MB)
+2026-11-05T07:19:41Z
+registry-hub-check 0 (free before: 15082 MB)
+2026-11-05T07:19:41Z
+wing-builders 0 (free before: 15082 MB)
+2026-11-05T07:19:43Z
+wing-drift 0 (free before: 15082 MB)
+2026-11-05T07:19:43Z
+status at the end: 0 lines
+PREPUSH END

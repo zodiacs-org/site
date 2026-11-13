@@ -4,10 +4,15 @@ import { datedEditionText } from '../lib/edition-freshness';
 interface Props {
   current: string;
   editionDate: string;
+  /**
+   * A shorter dated form for a label where the rule-dated sentence would not
+   * fit (a switch label, a link). Defaults to the shared dating rules.
+   */
+  dated?: string;
 }
 
-const { current, editionDate } = Astro.props;
-const dated = datedEditionText(current, editionDate);
+const { current, editionDate, dated: datedOverride } = Astro.props;
+const dated = datedOverride ?? datedEditionText(current, editionDate);
 ---
 <span
   data-edition-text

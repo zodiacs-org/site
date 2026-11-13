@@ -33,3 +33,16 @@ export function heritage(slug: string): Heritage {
     provenancePrelude: page.provenancePrelude,
   };
 }
+
+/**
+ * The lore is shared with the wing, whose museum register writes asides
+ * between dashes. The consumer guides print the same words with commas.
+ */
+export function plainDashes(text: string): string {
+  return text.replace(/\s*[—–]\s*/gu, ', ');
+}
+
+/** The lede without its closing "This is the record of …" sentence, which is the wing's framing. */
+export function guideLede(lede: string): string {
+  return plainDashes(lede.replace(/\s*This is the record of [^.]*\.\s*$/u, '').trim());
+}

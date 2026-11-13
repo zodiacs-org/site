@@ -1,0 +1,43 @@
+--- gen-main.mjs	2026-10-27 10:27:00
++++ build-compute-handler-audit.mjs	2026-10-27 10:27:00
+@@ -27,10 +27,11 @@
+ import { builtinModules } from 'node:module';
+ import { fileURLToPath, pathToFileURL } from 'node:url';
+ import { dirname, resolve } from 'node:path';
+-import * as esbuild from 'esbuild';
+-import { runtimeImports } from './build-compute-local-time.mjs';
++import { createRequire } from 'node:module';
++import { runtimeImports } from 'file://<checkout>/scripts/build-compute-local-time.mjs';
++const esbuild = createRequire('<checkout>/package.json')('esbuild');
+ 
+-const ROOT = fileURLToPath(new URL('../', import.meta.url));
++const ROOT = '<checkout>/';
+ const ENTRY = resolve(ROOT, 'src/lib/compute-api/handler.ts');
+ export const BUNDLE_PATH = 'api/_compute/compute.mjs';
+ export const TYPES_PATH = 'api/_compute/compute.d.mts';
+@@ -143,9 +144,9 @@
+   for (const input of reviewedInputs) {
+     reviewedHash.update(input).update('\0').update(await readFile(resolve(ROOT, input))).update('\0');
+   }
+-  if (reviewedHash.digest('hex') !== PRIVACY_REVIEWED_ENGINE_INPUTS_SHA256) {
+-    throw new Error('compute engine inputs changed: audit all private mutable state before updating the privacy-reviewed digest');
+-  }
++  // Audit copy: record the digest instead of refusing it.
++  const auditDigest = reviewedHash.digest('hex');
++  console.error(`audit: reviewed-input digest ${auditDigest} (committed pin ${PRIVACY_REVIEWED_ENGINE_INPUTS_SHA256}); inputs ${JSON.stringify(reviewedInputs)}`);
+   const problems = [];
+   for (const needed of ['src/lib/compute-api/handler.ts', 'src/lib/compute-api/endpoints.ts']) {
+     if (!inputs.includes(needed)) problems.push(`the bundle is missing ${needed}`);
+@@ -191,9 +192,9 @@
+     }
+     console.log(`build-compute-handler: up to date (${bytes.length} bytes, sha256 ${digest.slice(0, 12)}…)`);
+   } else {
+-    await mkdir(dirname(resolve(ROOT, BUNDLE_PATH)), { recursive: true });
+-    await writeFile(resolve(ROOT, BUNDLE_PATH), bytes);
+-    await writeFile(resolve(ROOT, TYPES_PATH), types);
++    // Audit copy: write beside this file, never into the checkout.
++    await writeFile(new URL('./compute.mjs', import.meta.url), bytes);
++    await writeFile(new URL('./compute.d.mts', import.meta.url), types);
+     console.log(`build-compute-handler: wrote ${BUNDLE_PATH} (${bytes.length} bytes, sha256 ${digest.slice(0, 12)}…, ${inputs.length} inputs)`);
+   }
+ }

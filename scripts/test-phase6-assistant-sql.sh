@@ -145,6 +145,48 @@ run_phase6_sql_file \
 run_phase6_sql_file \
   "${phase6_repo_root}/supabase/tests/zodiacs_mcp_usage_occasion_tools.sql"
 
+# The account save tool joins the counted names. Same replay rule.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261015150100_zodiacs_mcp_usage_save_tool.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261015150100_zodiacs_mcp_usage_save_tool.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/zodiacs_mcp_usage_save_tool.sql"
+
+# The 0.6.0 tools join the counted names. Same replay rule.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261101181545_zodiacs_mcp_usage_060_tools.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261101181545_zodiacs_mcp_usage_060_tools.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/zodiacs_mcp_usage_060_tools.sql"
+
+# Guide's daily answer-vote counts. A reviewed SQL Editor replay of the
+# migration must be harmless before the test runs.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261106015900_guide_feedback_daily.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/guide_feedback_daily.sql"
+
+# Save to my Zodiacs account: OAuth clients, the Auth projection, the token
+# hook, saved items and their RPC. A reviewed SQL Editor replay must be harmless.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261015150000_zodiacs_accounts_assistant_saves.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/zodiacs_accounts.sql"
+
+# Shared preview hook must replay safely and preserve both original contracts.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261016090639_shared_preview_access_token_hook.sql"
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/shared_preview_access_token_hook.sql"
+
 # Exercise the exact early-production table shape in a second database. The
 # same migration sequence must rename its legacy columns without replacing
 # rows or constraints, survive reviewed SQL Editor replays, restore both

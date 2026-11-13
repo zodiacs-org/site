@@ -1,0 +1,108 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-weekly-outlook-2026-10-19",
+  "slug": "weekly-outlook-2026-10-19",
+  "kind": "weekly-outlook",
+  "templateId": "weekly-outlook.v1",
+  "issuedAt": "2026-10-19T12:00:00.000Z",
+  "visibleAt": "2026-10-19T12:00:00.000Z",
+  "title": "Weekly symbolic outlook · 2026-10-19",
+  "summary": "Scorpio, Aquarius, Libra hold the three highest disclosed attention ranks for the next seven UTC days.",
+  "url": "/terminal/research/weekly-outlook-2026-10-19/",
+  "signs": [
+    "scorpio",
+    "aquarius",
+    "libra"
+  ],
+  "topics": [
+    "markets",
+    "weekly-outlook",
+    "astrology"
+  ],
+  "symbolicScore": {
+    "sign": "scorpio",
+    "attention": 56,
+    "tone": -18,
+    "eventIntensity": 25,
+    "calculation": "17 attention / -10 tone / 12 event intensity × 0.9543 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Scorpio, Aquarius, Libra are ranked first through third by disclosed symbolic attention in the seven-day edition beginning 2026-10-19.",
+      "evidence": [
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "High symbolic attention for this sign, with more friction than ease. Symbolic intensity is elevated. Signal: watchful. This reading supplies cultural context, not a forecast of price or liquidity.",
+      "evidence": [
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-10-19T00:08:10.441Z, Scorpio was indexed at $0.00006211, with -1.19% over 24 hours, $62.12K market cap, $62.12K FDV, $13.74K indexed liquidity, $26.94 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-10-19:2026-10-19T00:08:10.441Z",
+    "observedAt": "2026-10-19T00:08:10.441Z",
+    "provider": "DexScreener",
+    "sign": "scorpio",
+    "priceUsd": 0.00006211,
+    "change24hPct": -1.19,
+    "marketCapUsd": 62116,
+    "fdvUsd": 62115,
+    "liquidityUsd": 13737.15,
+    "volume24hUsd": 26.94,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/3d2kyumgj2yotnc6skx4hnoeswp4n8zqzsq9kfh81yta"
+  },
+  "evidence": {
+    "outlookEdition": "public/assets/registry-outlook.json#weekly:2026-10-19",
+    "marketSnapshotId": "registry-market:2026-10-19:2026-10-19T00:08:10.441Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "40677481d25aff49e940fba759bf2309079a0b4df04b5954ff94f64be6821c39",
+  "publishedAt": "2026-10-19T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-19T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "40677481d25aff49e940fba759bf2309079a0b4df04b5954ff94f64be6821c39"
+  },
+  "status": "approved"
+}

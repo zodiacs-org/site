@@ -225,7 +225,7 @@ try {
   const total = Number(capText?.match(/first 200 of (\d+) contacts/)?.[1] ?? 0);
   check('all-body result renders the exact cap line',
     total > 200
-      && capText === `Showing the first 200 of ${total} contacts — narrow the range or the bodies to see the rest.`,
+      && capText === `Showing the first 200 of ${total} contacts. Narrow the range or the bodies to see the rest.`,
     capText ?? 'missing cap');
   check('rendered rows stop at 200', (await page.locator('[data-search-contact]').count()) === 200);
   const fullCalendar = await calendarFrom(page);

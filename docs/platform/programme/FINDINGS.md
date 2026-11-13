@@ -83,6 +83,19 @@ Severity follows the audit's scale:
 | F-88 | minor | copy | Reviewing F-86's wording found faults in the Spanish and Portuguese daily copy that predate it: the Sun and Moon without their article as subjects ("Sol entra…", "Lua entra…"), Portuguese lists that drop their preposition, a lower-case, wrongly gendered note under "Por qué esta lectura", a doubled "inglés" cue, "cuatro notas por signo" on days with three, and smaller calques | open, for the owner: the files are Phase 1 protected (locale page trees and catalogs), so a fix needs a one-time allowance; each fault and its proposed correction is below; fixed in #731 under a one-time allowance the owner approved on 2026-10-12, each correction reviewed; the pt-BR first of the month and the undated titles remain; the pt-BR first of the month and the tab titles: fixed in #737 |
 | F-89 | minor | engine docs | Statements in engine 1.0.0's README, NOTICE, LICENSING and doc comments that the claims ledger found inaccurate once it read them (F-23): the README's 0.00001″ for the Vertex given Swiss's inputs (0.000014″ at the near-degenerate 1852 case); NOTICE and LICENSING placing `GREGORIAN_ADOPTION` in `dist/geo.js` (a shared chunk it re-exports); every local-time resolution naming its transition (null from 1970 without a jump); receipts naming the ephemeris "from the current set on" (from rc.8's); a plain 5-day scan's blind band given as 0.0103° for Saturn and 0.0205° for Jupiter, twice the f″h²/8 the engine's own stations give (the engine audit's production-event-search-4 left out the half); Placidus needing "up to 63 steps" near the limit, recorded by no test; Munkasey's co-ascendant lying west within 90° − ε of the equator (within ε); `ChartInput.deltaT` defaulting to the model (the time basis); and LICENSING's calc bounds all against Horizons (the mean points are against ERFA definitions) | open: each is an overstated claim in `docs/claims/ledger.json` with this resolution; the engine's next release corrects them, and the reference served here follows when it is regenerated for it |
 | F-90 | minor | licensing | Swiss Ephemeris ΔT values outside statistics: the site's `docs/platform/evidence/deltat-2026-09-25/README.md` still quoted Swiss's ΔT at 2050 and 2100 and its differences from S15 at 1850, 1900 and the year 1000, which DECISIONS-2026-09-28 §3 removed from that folder's JSON; and the engine's `conformance/sources/horizons-24/corpus-tt.json` records Swiss's ΔT for the 24 corpus instants as clock values, where its LICENSING says no Swiss output is committed | site part fixed 2026-10-12 (the README quotes none); engine part open for the owner: keep the 24 values and say so in LICENSING and the conformance README, or replace them with an independent ΔT, which changes the Horizons requests |
+| F-91 | minor | accuracy | Without a birth time, Chart Studio told the reader "Your Sun sign is reliable" and called its 12:00 UTC stand-in "midday", though on the two dates around each of the Sun's twelve sign changes (24 in 2026) the Sun's sign depends on the birth time and place, as the site's own calculator says | fixed with A1.b, in this change: Chart Studio names its stand-in as 12:00 UTC on the birth date and, on such a date, the two signs the Sun moved between; `src/ai-tools/studio/model.test.ts` holds the dates of 2026 to the engine's crossing search, day by day; in production since #740 (merged as `848e6087`, deployment `dpl_AHCoAbgz8RfLgSPZSeU4YKv7vohq`), whose hosted Chart Studio is the merge's, byte for byte |
+| F-92 | minor | process | #731's post-merge Site Check on main (run 38363192751, `127e0767`) failed the Phase 1 scope guard: on a push the guard compares with the previous main head, and #731's one-time allowance was pinned to its pull request's base, which #734 had moved past before #731 was merged on CI that predated #734 | main's next push passed the guard, the allowance no longer being in its diff; from now on a pull request carrying an allowance is merged only on CI run against main's current head, with the allowance pinned to it |
+| F-93 | minor | performance | On main's post-merge Site Check for #730 (run 38381457494, `7d12c0f1`), one of three Lighthouse samples of /thesis/ measured CLS 0.0000915, from the italic `span.it` in `section#everyone-has-a-sign h2.mov__title`; the gate fails any positive CLS but prints three decimals, so its table read 0.000 | the re-run of that check (attempt 2) passed /thesis/ and every other route at 15:37 UTC, and #735's run 38415921818 failed the same way on a change that does not touch /thesis/; the other two samples, and main's runs before it, measured 0; open: keep the italic face from moving the heading after its first layout |
+| F-94 | major | accuracy | The place search, on the site's birth forms and in the MCP adapter's `search_places`, compared a query only with each place's GeoNames ASCII name, which writes ü, ö and ä as ue, oe and ae in many German, Swiss, Swedish and Turkish names, so "Zürich", "Zurich", "Düsseldorf" and "Dusseldorf" found nothing and only "Zuerich" found Zürich, though the tool's description said "with or without accents"; the ASCII names write apostrophes as ' or `, so "Arkhangelsk" did not find Arkhangel’sk; a first letter NFD leaves whole (Łódź, Əhmədbəyli) chose shard `0`, which holds 49 names that do not begin with a letter; the index files a place under the first letter of its ASCII name, so names whose ASCII spelling GeoNames writes with GJ (Đồng Hới, GJong Hoi) or begins with an apostrophe (‘Ibrī), and two places whose names are in two languages (Donostia / San Sebastián, Hondarribia / Fuenterrabia), were not where their first letter leads; and the contains tier reads only names that begin with the query's first letter ("york" finds York but not New York City), though the adapter's documents said names that contain the query | found by Codex on #742 (A1.c) over three rounds, and by auditing the folding against the 33,934 rows of the index; fixed there, on the site and in the tool: a place matches by its GeoNames name or its ASCII name, each folded with accents, letter case and apostrophes set aside, dashes as hyphens, and ł, ø, đ, ð, þ, æ, œ, ß, ı, ə and the other letters NFD leaves whole in ASCII; the index lists, under each letter, the 62 places it files under another whose name begins with it (`also` in `public/data/cities/index.json`, from `scripts/build-cities-also.ts`), and a query reads them with its letter's shard, so no other shard is fetched; `src/lib/geo/rank.test.ts` holds the list to the shards and reaches every place by either of its names; the documents say names that begin with the same letter and contain the query; open: a contains tier across letters, and names the index does not give a place (Cologne for Köln, München for Munich); in production since #742 (merged as `ef463943`, deployment `dpl_BQLq9CNADcAhSKT3NCdyTASBBmxF`), whose place index zodiacs.org serves byte for byte |
+| F-95 | minor | site reproducibility | The site's daily publication check (`scripts/verify-daily-publication.ts`, in every build's prebuild) compares the committed daily facts with a recomputation exactly, as canonical JSON; on arm64 the engine can give a value that differs from x86-64's in its last bit (F-82), and the 2026-10-14 edition's Pluto longitude, 303.0688556479116° as the daily run on Linux x86-64 computed it, recomputed as 303.0688556479117° on an Apple M4, so `npm run build` failed that day on Apple Silicon while CI passed | seen while verifying #742 on the 2026-10-14 edition; with that one step left out, every other prebuild step and the build passed; open: compare within a stated tolerance, or recompute on the platform that published the edition, as F-82 asks of the engine's pins |
+| F-96 | minor | process | #744's Site Check (run 38514642153, 2026-10-14 05:30 UTC) failed one visual-regression case, the full-moon event page at 390 px (0.3291% of pixels against a 0.1% limit), on a change that renders no page: the screenshot has none of the page's serif and monospace text, as text in a face with blocking display has none while the face loads, and the visual test draws its headings in test-only faces with blocking display; the sans-serif text is drawn, and main's run an hour earlier measured 0.0000% on the same case | open: wait for every face the page draws with, including faces that start loading after the wait begins (the same class as F-93); fixed in the visual harness on 2026-10-15. The cause is the capture itself: Chromium's full-page capture (Page.captureScreenshot with captureBeyondViewport, which Playwright uses for fullPage) recreates the page's CSS font faces, which load again during the capture, so a capture that paints before they reload draws text in a blocking face blank; every full-page capture fires the FontFaceSet `loading` event (locally each one recreated all 24 of the home page's faces, and Site Check run 38624394905 logged the event on every capture of home-desktop), while a viewport capture or a resize recreates none. Before each capture the harness now loads every face the drawn text needs, up to 30 s, and fails naming any that failed to load; a capture that misses the unchanged 0.1% limit is taken again, at most three times, and `--update` writes a baseline only when two captures in a row agree. Locally, a first capture with its headings blanked (1.86% off) was retaken and passed at 0.0000%, and with `--update` the blank capture did not become the baseline |
+| F-97 | minor | search | IndexNow Changes submits a page as changed only when its sitemap date changes, and `src/pages/sitemap.xml.ts` keeps evergreen pages' dates by hand ("When an evergreen page's rendered source changes, update its entry here in the same commit"), with no check: #740 changed `/developers/compare/` (still dated 2026-10-11) and #742 changed `/developers/compute/` and `/developers/mcp/` (still 2026-10-12), so a later run would not have submitted them; the first production run did only because it covered every URL dated within 30 days | found by Codex on #745; the three pages are re-dated in #745; open: a check that ties a page's rendered change to its sitemap date, which S8 needs; fixed on 2026-10-15: the Sitemap Dates workflow builds each pull request's base and head with site-check's production-flags environment (the daily email chain's stand-ins included, after Codex found them missing) under one pinned clock and fails when a sitemap page's content (title, description, and the text, links and image descriptions of its `<main>`) changed while its date did not and is earlier than the edition's day. Run on the merges of 2026-10-13 and 2026-10-14, it named the three pages #745 re-dated and seven more still undated in production (`/developers/`, `/developers/docs/`, `/developers/docs/astrology-mcp-server/` and four Portuguese pages #737's first-day ordinal changed), which the same change re-dates. Codex's later findings on #752 are fixed in the same change: a pull request that only rolls the daily edition (the files the daily publication writes: twelve Registry sign pages, and research items only as new files) passes with nothing to compare; a page dated after the edition's day fails; copy held in attributes (placeholders, accessible names, tooltips, shown input values, and the data-label the stylesheets show), the files a page's media show (lazy-loaded ones included), what its inline SVGs draw, and the words its stylesheets add (each with its selector and the rules around it, from linked, inline and imported stylesheets, where its markup or an element it sits in carries their rule's classes) are fingerprinted; and IndexNow Changes resubmits a page dated in the last three days whose content digest moved since its last run, so a second change the same day, or one that becomes live a day later, is submitted. Text a script writes in answer to the visitor is outside the fingerprint, as it is outside a page's indexable content (docs/platform/evidence/indexnow-changes-20261014/README.md) |
+| F-98 | minor | process | Site Check's I18n route-boundary regression (`tests/i18n-r0-drive.mjs`) failed now and then on /es/learn/ with "near-viewport footer CSS waited for window load" and "footer CSS waited for the post-load fallback (null >= … + 250)": on the first attempts of #775's run 39103684996 (2026-10-18 06:41 UTC), #784's run 39211508684 and #781's run 39224024706, and on main's run 39159775076 at `cb4b0a5e`; locally main's build failed it in 4 of 5 runs at `bdcef5f6` and in 1 of 5 at `a353c2b2`. #775 brought `192b43ba`, after which the footer loader learns whether the footer starts near the screen from its IntersectionObserver's first report instead of reading the footer's position while the page parses, and Chromium computes that report in the first frame after the loader observes the footer. On /es/learn/ the parser waits at the navigation's first classic script for the render-blocking stylesheet; when Chromium paints its first frame before the parser reaches the footer, the report needs the next frame, which comes after the page, with nothing left to load, has fired DOMContentLoaded and window load. The drive read the page once, right after DOMContentLoaded, and in those runs found no request yet (`null`), though the observer's report requested the stylesheet a frame later, not the post-load fallback (`docs/platform/evidence/footer-first-report-20261019/README.md`) | fixed here, in the drive; the loader is unchanged, since a request a frame after window load on a page with nothing left to load is what `192b43ba` chose over reading the footer's position while the page parses: the drive waits for the loader's decision (the stylesheet link, or a distant footer's hold dropped) instead of reading the page at DOMContentLoaded; it holds the page's font requests open, so that window load cannot fire, and requires the request before it, which only the observer's report can then make; and with nothing held it keeps the check that the request comes before the post-load fallback. On `a353c2b2`'s build the drive passed 10 of 10 runs; with the loader made to judge the footer distant it fails both checks, and with the request moved to window load it fails the first |
+| F-99 | minor | precision alpha | Version 4 of the partition evaluation refuses its merged and centred enclosures to a cell that starts at a record join, so near a conjunction that cell stays boundary: it is P-2's worst span on every Moon case with a join inside the floor (36.918 s at the barycentre's join of 1978-04-08, 0.336257° from the floor; 42.1875 s at the Moon's and the Sun's joins of 2009-11-17, 0.192043°), and post hoc, on version 2's 1912 holdout, a P-2 failure (42.1875 s at the Moon's join of 1915-08-11, 4.436650°); no test covers a join inside the floor | open, for the owner: whether a P-2 failure at a record join blocks P4.5's gate |
+| F-100 | major | precision alpha | The light-time search treats a cell whose emission times straddle a target's record join as one smooth function (review A of `moon-enclosure`'s version 2, finding A-1, unsound): on synthetic packs whose records disagree by 0.07 or 1 km at the join it misses a root under an established result in 8 of 48 fixtures on each of the retarded and aberrated rungs, and reports a crossing in 7 where the function only jumps; version 1's code gives the same counts | open: inherited, and not changed by version 4; `moon-enclosure` fixed it in `7e6b315b` and its version 3 replaced that fix with join location, neither on main |
+| F-101 | minor | precision alpha | Review B's B-1, B-3, B-4 and B-5 on `moon-enclosure`'s version 2 reproduce on version 4 as on version 1: an imported plan that says it finished with half its admissible span unclassified, under `acceptPartialPlan`, gives `finished: true` with 3,283,200 s unclassified; a cancelled plan given `tauPadFactor` and an unknown option returns `cancelled` without refusing them; `partitionDomain` accepts `maxEvaluations` 0, `relightWidthRatio` -3 and `tauPadFloorSec` -1; a plan with no `execution` fails with a TypeError | open: inherited; `moon-enclosure` fixed them in `37268776` and `1894e4c2` |
+| F-102 | minor | precision alpha | Version 4's change to `acceptPartialPlan` let a fully classified plan relabelled as stopped be searched in full, so the result claimed `completeness.overRequest: true` beside `execution.finished: false` (review B's B-2; version 1 gives `overRequest: false`) | fixed in `d389bab0`: `assertPartitionUsable` refuses a plan that says it stopped and leaves nothing unclassified; a tier-A test fails without the check |
+| F-103 | minor | precision alpha | `tools/measure/domain-agreement.mjs`, unchanged, reports 4 contradictions for version 4 on the regression corpus (588 s on F2, 362 s on F3, 6.6 s on F8 and 1.3 s on F9 that the partition proves excluded and the plain search does not decline), against 0 for version 1 on the same pack and for versions 2 and 3; none of that time lies inside a span the search decided | open, for the owner: version 4's rule does not run the tool, where version 2's E-2 counted it as fatal |
 | F-01 | minor | provenance | Two different archives both named 0.1.1-rc.11 | fix in rc.13 (artifact list; one version, one byte sequence); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-02 | minor | provenance | Engine CI never binds an artifact to its source | fix in rc.13 (CI rebuild-and-compare); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; CI on the merge ran the check; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-03 | minor | provenance | Site CI does not run `mcp:pack:check` | open: site CI change planned; fixed by the rc.14 adoption (2026-09-29): the Legacy wing drift job runs it; merged in #600 (`6cc4d477`) |
@@ -1049,6 +1062,167 @@ adoption changes neither its status nor the fixed denominator.
   accepted every title and "1º" form and changed the birthday sky line in both
   languages to join the year with "de" ("1º de janeiro de 1990", "1 de enero
   de 2026"). The drive checks the tab title on all nine routes.
+
+### F-99: a boundary span at every record join inside the floor (minor, precision alpha)
+
+- **Found.** By the investigation of 2026-11-01 that found the programme's
+  versions 2 and 3 of the partition evaluation on `moon-enclosure`, with the
+  span positions recomputed by its numerics review
+  (`docs/platform/evidence/precision-partition/evaluation-v4/post-hoc/`, `numerics/` and `holdouts/`).
+- **What.** Version 4's partition uses the merged geocentric vector and the
+  centred cosine only where every series they rest on is one polynomial over
+  the cell (`withinOneRecord`, half open). A cell that starts at the record
+  join of a series the target rests on reaches back across it by its
+  emission times, so it falls back to the split and interval enclosures,
+  which near a conjunction are too wide to decide, and it stays boundary at
+  the 60 s tolerance. In every Moon window with a join inside the floor,
+  P-2's worst span is that cell: on the regression corpus, 36.918 s from the
+  barycentre's join of 1978-04-08 00:00:00 TDB, 0.336257° from the floor; on
+  the 2007 holdout, 42.1875 s from the Moon's and the Sun's joins of
+  2009-11-17, 0.192043°; and on version 2's 1912 holdout, post hoc, 42.1875 s
+  from the Moon's join of 1915-08-11, 4.436650°, where P-2 allows 0.5°, so
+  version 4's own harness scores that holdout PARTIAL. It is the mechanism of
+  version 2's holdout failure. Version 4 decides the cell that ends at the
+  join, which version 2 refused, and still refuses the one that starts at
+  it. The Moon windows of version 4's 2040 holdout and version 3's 2103
+  holdout hold no join inside the floor (the nearest are 11.773° and
+  17.073° from the Sun), so they cannot show it.
+- **Why it matters.** Nothing is claimed wrongly: each span is reported as
+  boundary. But P-2 passes on version 4's own corpora only because those
+  joins lie within 0.5° of the floor, and P4.4's completeness units depend on
+  P4.5. No test covers a join inside the floor: version 4's co-moving Moon
+  test uses smooth records, where version 3 added two such tests.
+- **Disposition.** Open, for the owner: whether a P-2 failure at a record
+  join blocks P4.5's gate (`examples/precision-alpha/PARTITION-RESULTS-V4.md`,
+  "P-2 at record joins"). Version 3 removed the mechanism by making every
+  join a cell edge, and failed E-1 and E-3 doing it.
+
+### F-100: the light-time search across a target's record join (major, precision alpha)
+
+- **Found.** By review A of `moon-enclosure`'s version 2 (finding A-1,
+  unsound), on 2026-09-30, and reproduced on version 4's and version 1's
+  code on 2026-11-01 with the reviewer's own sweep (`docs/platform/evidence/precision-partition/evaluation-v4/post-hoc/`,
+  `record/checks/`).
+- **What.** The light-time search's exclusion and monotone tests treat a
+  cell whose emission times straddle a target's record join as one smooth
+  function, though records are separate fits and need not meet at their
+  join. On synthetic packs whose records disagree by 0.07 or 1 km at the
+  join, the retarded and aberrated rungs each establish all 48 fixtures,
+  miss a root under an established result in 8, and report a crossing in 7
+  where the pack's function only jumps. Version 1's code gives the same
+  counts.
+- **Why it matters.** An established result that misses a root is a false
+  proof. Neither fixture matrix the evaluations ran has a record that
+  disagrees with the next at their join, so their "no false proof" covers
+  continuous joins only. How far the real packs' records disagree at their
+  joins is not measured here.
+- **Disposition.** Open: inherited from version 1 and not changed by version
+  4. `moon-enclosure` fixed it in `7e6b315b`, and its version 3 replaced that
+  fix with join location; neither is on main. P4.4's proven verdicts would
+  rest on these searches.
+
+### F-101: review B's findings on supplied plans and options, inherited (minor, precision alpha)
+
+- **Found.** By review B of `moon-enclosure`'s version 2 (findings B-1, B-3,
+  B-4 and B-5), and reproduced on version 4's and version 1's code on
+  2026-11-01 with the reviewer's own cases (`docs/platform/evidence/precision-partition/evaluation-v4/post-hoc/`, `record/checks/`).
+- **What.** On the synthetic pack: an imported plan that says it finished,
+  with half its admissible span moved to unprocessed, accepted with
+  `acceptImportedPlan` and `acceptPartialPlan`, gives
+  `execution.finished: true` with 3,283,200 s unclassified (B-1); a
+  cancelled plan given `tauPadFactor`, which version 4 removed, and an
+  unknown option returns `cancelled` without refusing either (B-3);
+  `partitionDomain` accepts `maxEvaluations` 0, `relightWidthRatio` -3 and
+  `tauPadFloorSec` -1 (B-4); a plan with no `execution` fails with a
+  TypeError (B-5). Each behaves the same on version 1's code.
+- **Why it matters.** All four sit on the boundary of supplied plans and
+  options, which no evaluation exercises. B-1 reports a finished run over
+  time nobody classified; the others accept input that should be refused,
+  or refuse it with the wrong error.
+- **Disposition.** Open. `moon-enclosure` fixed them in `37268776` and
+  `1894e4c2`. The fix for B-2 (F-102) does not cover B-1, the other
+  direction of the same disagreement.
+
+### F-102: a plan relabelled as stopped gave an exact total beside an unfinished run (minor, precision alpha; fixed here)
+
+- **Found.** By review B of `moon-enclosure`'s version 2 (finding B-2), in
+  that branch's own change to `acceptPartialPlan`, and reproduced on version
+  4's code on 2026-11-01. Version 1's code gives `overRequest: false`.
+- **What.** Version 4 makes `acceptPartialPlan` search what a partial plan
+  classified, and folds the plan's status in afterwards (audit finding
+  alpha-search-partition-1). A fully classified plan relabelled
+  `budget-exhausted` or `cancelled`, imported under the option, was
+  searched in full, so the result claimed `completeness.overRequest: true`,
+  an exact total over the request, beside `execution.finished: false`.
+- **Disposition.** Fixed in `d389bab0`. A plan this runtime builds stops
+  only with a cell in flight and puts that cell back as unprocessed, so
+  `assertPartitionUsable` now refuses a plan that says it stopped and leaves
+  nothing unclassified, with or without the option. The tier-A test in
+  `examples/precision-alpha/test/tier-a/partitioned-search.nodetest.mjs`
+  failed before the check and passes with it; plans that really stopped,
+  native or imported, are still accepted. The scored runs pass in only
+  finished plans this runtime built, so no recorded count moves.
+
+### F-103: the domain agreement fails for version 4 (minor, precision alpha)
+
+- **Found.** On 2026-11-01, post hoc, running
+  `examples/precision-alpha/tools/measure/domain-agreement.mjs` unchanged on
+  the ten main regression cases (`docs/platform/evidence/precision-partition/evaluation-v4/post-hoc/`, `integrity/`).
+- **What.** The tool compares the partition with the plain deflected
+  search's own domain verdict. For version 4 it reports 4 contradictions:
+  588 s on F2, 362 s on F3, 6.6 s on F8 and 1.3 s on F9 that the partition
+  proves excluded and the plain search does not decline. None of that time
+  lies inside a span the search decided. Version 1 on the same pack reports
+  0, and versions 2 and 3 recorded 0 on their own runs.
+- **Why it matters.** Version 4 tightens the partition's enclosures for
+  every body (the merged vector and the centred cosine) and the search's
+  only for the Moon (the merged vector), so the partition now proves
+  exclusion where the search neither declines nor decides. That fails the
+  tool's containment test as the tool defines it; it contradicts nothing
+  the search decided. Version 2's rule counted this test in E-2, which was
+  fatal there; version 4's rule does not run it.
+- **Disposition.** Open, for the owner: whether the relation should hold
+  for version 4, which would take the same enclosures in the search's
+  cells, or be restated.
+
+### F-53 1.1.0-rc.2 update (2026-11-06)
+
+- **Fixed in 1.1.0-rc.2, deployed and ratified.** `@zodiacs/engine/time`, new
+  in 1.1.0-rc.2, exports the engine's own time basis. The site's adoption
+  (zodiacs-org/site#884, merged as `3fac4230`) takes the server ephemeris's
+  and the compute API's time basis from it and deletes
+  `src/lib/engine/time-basis.mjs`, its generator and its CI step; main's
+  Chiron tool, added meanwhile, takes it from the entry too (D-16: the same
+  record as the deleted module at 2,012,592 calls from 1799 to 2201).
+  Production served it from `dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw`, built from the
+  merge, and then from `dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5`: S3b passed on both,
+  and S3a was not run (the calendar route answers 410). Time-entry S1, T4 and
+  S1b found the entry giving what the bundled module gave, value for value.
+  The owner ratified its readings (R1 to R6, OQ5) on 2026-11-06
+  (`docs/platform/evidence/site-engine-1-1-0-rc2/README.md`, The owner's
+  ratification).
+
+### F-89 1.1.0-rc.2 update (2026-11-06)
+
+- **Corrected and served.** Engine 1.1.0-rc.2 carries the nine corrected
+  statements, and the site's engine reference serves them since site#884
+  (`3fac4230`).
+- **The claims ledger.** Item 1's Swiss claim is retired for the ERFA figures
+  of the Vertex and the East Point (OQ9 (c)). Items 2, 6 and 7 leave the
+  ledger, as their corrected sentences carry no trigger word. Items 3, 4, 5,
+  8 and 9 are supported on rc.2's text. The ratchet of open overstated claims
+  is 2: `eng.conformance-sources` and `eng.rc1-footer`, each with the step its
+  resolution names.
+- **Ratified.** The owner ratified R-F89 (OQ5) on 2026-11-06. P1.14 stays
+  partial (OQ10 Q2).
+
+### F-52 1.1.0-rc.2 update (2026-11-06)
+
+- **The fix plan may now name `@zodiacs/engine/time`.** The generators that
+  call astronomy-engine directly can take the engine's time basis from the
+  package's own entry, as the server ephemeris and the compute API now do,
+  instead of the bundled module the plan named, which the adoption deleted;
+  nothing else in the plan changes.
 
 ### F-84 — production verification, 2026-10-13
 

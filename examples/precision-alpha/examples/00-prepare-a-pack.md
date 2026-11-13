@@ -61,3 +61,14 @@ PRECISION_PACK=./D.v2.zeph PRECISION_KERNEL=/path/to/de440s.bsp npm run test:dat
 ```
 
 Those fail loudly rather than skipping when the data is not there.
+
+*Correction, 2026-10-31.* Compiler 2.0.0 changes what step 2 can expect.
+`--kernel` is required and has no default, and `--out` defaults to
+`<kernel>-<candidate>.zeph` in the working directory. The span is read from
+the kernel, so DE440 (1550 to 2650) and DE432s compile as well as DE440s,
+and `--fromYear` and `--toYear` crop to a window inside it. Every body is
+proven inside its position budget or nothing is written: a refusal prints
+its code as JSON on stderr and exits 3. On DE440s the pack is now 1,780,464
+bytes. `--help` lists the options, and
+`docs/platform/evidence/pack-compiler-20261031/` in the project repository
+records what 2.0.0 measured.

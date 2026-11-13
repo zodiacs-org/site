@@ -1,4 +1,4 @@
 import type { APIRoute } from 'astro';
-import { skyCalendarResponse } from '../lib/return-visits/sky-calendar';
+import { siteSkyCalendarResponse } from '../lib/sky-calendar-feed';
 export const prerender = true;
-export const GET: APIRoute = () => skyCalendarResponse('en');
+export const GET: APIRoute = () => siteSkyCalendarResponse('en');

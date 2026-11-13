@@ -9,6 +9,9 @@
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import EvidenceDisclosure from './EvidenceDisclosure';
+import { POSITION_READINGS, type ReadingPosition } from '../data/numerology-readings';
+import StoryCardShare from '../components/StoryCardShare';
+import { numerologyStoryContent, prepareNumerologyStoryCard } from '../lib/numerology/story-card';
 import {
   formatChain,
   lifePathExample,
@@ -73,6 +76,11 @@ function meaningFor(value: number): NumberMeaning | null {
   return value === 0 ? null : (NUMBER_MEANINGS[value as CoreNumber] ?? null);
 }
 
+/** The position's own reading (src/data/numerology-readings.ts), the same words get_numerology returns; none for a 0. */
+function positionReading(position: ReadingPosition, value: number): string | undefined {
+  return value === 0 ? undefined : POSITION_READINGS[position][value as CoreNumber];
+}
+
 function hueFor(value: number): string {
   return value === 0 ? 'var(--accent)' : (NUMBER_HUES[value as CoreNumber] ?? 'var(--accent)');
 }
@@ -130,7 +138,7 @@ interface CardProps {
   chain?: string;
   /** Replaces the first-sentence summary from NUMBER_MEANINGS when set. */
   summary?: string;
-  /** An extra mono line under the number (personal month and day). */
+  /** An extra line under the number (personal month and day). */
   meta?: string;
 }
 
@@ -144,12 +152,12 @@ function NumberCard({ position, value, chain = '', summary, meta }: CardProps) {
         <span class="display num__number">{value}</span>
         {chain && <span class="mono num__chain">{chain}</span>}
       </div>
-      {meta && <span class="mono num__meta">{meta}</span>}
+      {meta && <span class="num__meta">{meta}</span>}
       {meaning ? (
         <>
           <p class="num__epithet">
             <strong>{meaning.name}</strong>
-            <span class="mono num__keywords">{meaning.keywords.join(' · ')}</span>
+            <span class="num__keywords">{meaning.keywords.join(' · ')}</span>
           </p>
           <p class="num__summary">{summary ?? firstSentence(meaning.summary)}</p>
         </>
@@ -170,7 +178,7 @@ function LetterTable({
     <div class="num__part">
       <span class="num__part-name">
         <span>{part.raw}</span>
-        {folded && <span class="mono num__part-folded">read as {part.letters}</span>}
+        {folded && <span class="num__part-folded">read as {part.letters}</span>}
       </span>
       <ol class="num__letters" aria-label={`Letters of ${part.raw} with their values`}>
         {part.cells.map((cell) => (
@@ -224,9 +232,11 @@ function ageSpan(starts: readonly number[], i: number): string {
 interface Props {
   /** The Life Path whose page this island sits on, so the lead does not link the reader to where they already are. */
   currentLifePath?: CoreNumber;
+  /** The "Share your Life Path" block, shown only while PUBLIC_NUMEROLOGY_SHARE_ENABLED is on (read by the page at build time). */
+  share?: boolean;
 }
 
-export default function NumerologyCalculator({ currentLifePath }: Props) {
+export default function NumerologyCalculator({ currentLifePath, share = false }: Props) {
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
   const [submitted, setSubmitted] = useState<Submitted | null>(null);
@@ -359,12 +369,12 @@ export default function NumerologyCalculator({ currentLifePath }: Props) {
                 <>
                   <p class="num__epithet num__epithet--lead">
                     <strong>{lifePathMeaning.name}</strong>
-                    <span class="mono num__keywords">{lifePathMeaning.keywords.join(' · ')}</span>
+                    <span class="num__keywords">{lifePathMeaning.keywords.join(' · ')}</span>
                   </p>
                   <p class="num__summary num__summary--lead">{lifePathMeaning.summary}</p>
                 </>
               )}
-              <p class="mono num__source">From your birth date, {profile.date.iso}</p>
+              <p class="num__source">From your birth date, {profile.date.iso}</p>
               {lifePath.value !== currentLifePath && (
                 <a class="btn btn--ghost num__read" href={`/numerology/life-path/${lifePath.value}/`}>
                   <span>Read about Life Path {lifePath.value}</span><span class="orb">→</span>
@@ -377,9 +387,9 @@ export default function NumerologyCalculator({ currentLifePath }: Props) {
             <NumberCard position="birthday" value={profile.date.birthday.value} chain={chainIfLonger(profile.date.birthday)} />
             {profile.name && (
               <>
-                <NumberCard position="expression" value={profile.name.expression.value} chain={chainIfLonger(profile.name.expression)} />
-                <NumberCard position="soulUrge" value={profile.name.soulUrge.value} chain={chainIfLonger(profile.name.soulUrge)} />
-                <NumberCard position="personality" value={profile.name.personality.value} chain={chainIfLonger(profile.name.personality)} />
+                <NumberCard position="expression" value={profile.name.expression.value} chain={chainIfLonger(profile.name.expression)} summary={positionReading('expression', profile.name.expression.value)} />
+                <NumberCard position="soulUrge" value={profile.name.soulUrge.value} chain={chainIfLonger(profile.name.soulUrge)} summary={positionReading('soulUrge', profile.name.soulUrge.value)} />
+                <NumberCard position="personality" value={profile.name.personality.value} chain={chainIfLonger(profile.name.personality)} summary={positionReading('personality', profile.name.personality.value)} />
               </>
             )}
             {profile.maturity && (
@@ -407,6 +417,22 @@ export default function NumerologyCalculator({ currentLifePath }: Props) {
               ))}
             </div>
           )}
+
+          {share && (() => {
+            const story = numerologyStoryContent(lifePath.value as CoreNumber);
+            // The card and its link carry the Life Path number alone: never the name or the birth date.
+            return (
+              <StoryCardShare
+                cardKey={story.number}
+                prepare={() => prepareNumerologyStoryCard(lifePath.value as CoreNumber)}
+                pageUrl={story.pageUrl}
+                shareText={story.shareText}
+                heading="Share your Life Path"
+                lede={`A card of Life Path ${story.number} and what the tradition reads into it, with a link to its page. It shows no name or birth date.`}
+                placeholder={<span class="display num__number num__number--lead">{story.number}</span>}
+              />
+            );
+          })()}
 
           <EvidenceDisclosure label="How we compute" variant="panel" className="num__how">
             <div class="num__how-block">

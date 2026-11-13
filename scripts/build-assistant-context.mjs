@@ -11,6 +11,7 @@ import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { GLOSSARY } from '../src/data/glossary.ts';
+import { LEARN_TOPICS } from '../src/lib/learn-topics.ts';
 import { CHINESE_ZODIAC_COPY } from '../src/data/chinese-zodiac.ts';
 import { DEFAULT_LOCALE, LOCALES } from '../src/lib/i18n/core.ts';
 import { EN } from '../src/strings/en.mjs';
@@ -18,6 +19,7 @@ import { RETURN_EN } from '../src/lib/return-visits/copy.ts';
 import { SHARING_EN } from '../src/lib/sharing/copy-en.ts';
 import { WIDGET_EN } from '../src/strings/widgets.ts';
 import { currentHoroscopeMonth, utcMonth } from '../src/lib/horoscope-month.mjs';
+import { HIDDEN_CHILD_PAGE_PATHS } from '../src/data/hidden-child-pages.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_OUTPUT = resolve(repo, 'api/_assistant/context.ts');
@@ -34,7 +36,6 @@ export const TOOL_ROUTES = Object.freeze([
   '/astrologer-kit/',
   '/your-sky-wrapped/',
   '/chart-of-the-day/',
-  '/baby-zodiac/',
   '/big-three/',
   '/chart-twins/',
   '/compatibility/invite/',
@@ -90,9 +91,11 @@ const LOCALIZED_PAGE_PREFIXES = LOCALES
 // every Astrofolio/Fomo/Registry/Terminal route out of the consumer astrology
 // catalog, along with the experimental precision preview: it is noindex, it is
 // not the engine behind any chart on this site, and an assistant pointing a
-// visitor at it would be pointing them at a research surface.
+// visitor at it would be pointing them at a research surface. /auth/ holds the
+// sign-in return page, which does nothing without a provider's one-time code.
 const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/astrofolio/',
+  '/auth/',
   '/bio/',
   '/developers/precision-preview/',
   '/disclosure/',
@@ -101,7 +104,19 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/people/',
   '/registry/',
   '/terminal/',
+  // The Year Ahead directory of living public figures: noindex and nofollow, as the protected People pages are.
+  '/year/',
+  // Pages about babies and children, hidden on 2026-11-12: noindex and nofollow (src/data/hidden-child-pages.mjs).
+  ...HIDDEN_CHILD_PAGE_PATHS,
 ]);
+
+// Pages behind a launch switch (src/lib/launch-flags.ts) stay out of the
+// inventory until their switch is exactly '1', so a page that is not live is
+// never recommended. Commit the output generated with every switch unset.
+const LAUNCH_FLAGGED_ROUTES = Object.freeze({
+  '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
+  '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
+});
 
 function compareText(left, right) {
   return left < right ? -1 : left > right ? 1 : 0;
@@ -203,6 +218,12 @@ function staticDescription(route, source, { ingresses, latestHoroscopeMonth }) {
     return `Dated daily horoscopes for every sign, with the exact UTC edition date printed on the page and links to tomorrow, weekly, ${monthLabel(latestHoroscopeMonth)} monthly, love, career, and year-ahead readings.`;
   }
   if (route === '/learn/zodiac-dates/') return zodiacDatesDescription(ingresses);
+  // The hub's own description names the season under way; the guide keeps its dateless half, so it never goes stale.
+  // Your 2027 sky prints its description from its copy module (src/lib/year-sky/copy.ts, pageDescription).
+  if (route === '/your-2027-sky/') return 'The eclipses, slow planets, retrogrades and returns of 2027 that touch your own birth chart, month by month, with a share card and a calendar file made on your device.';
+  // The Moon journal prints its description from src/lib/moon-journal/page-copy.ts (EN.description).
+  if (route === '/moon-journal/') return 'A private notebook for the new and full Moons, with a question for each one by sign. Kept only on your device, with no account.';
+  if (route === '/seasons/') return 'When each of the twelve sign seasons starts and ends, and what each one asks of every sign.';
 
   const named = source.match(/const description\s*=\s*(['"])([\s\S]*?)\1\s*;/)?.[2];
   if (named) return clean(named);
@@ -258,6 +279,8 @@ async function loadStaticPages(repoRoot, context) {
     if (local === '404.astro') continue;
     const route = pagePath(file, pagesRoot);
     if (UNLISTED_ROUTE_PREFIXES.some((prefix) => route.startsWith(prefix))) continue;
+    const launchFlag = LAUNCH_FLAGGED_ROUTES[route];
+    if (launchFlag && process.env[launchFlag] !== '1') continue;
     // Labeled sample pages for event-template review: never part of the
     // recommendable site inventory.
     if (route.startsWith('/events/preview/')) continue;
@@ -273,18 +296,16 @@ async function loadStaticPages(repoRoot, context) {
   return pages.sort((a, b) => compareText(a.route, b.route));
 }
 
-export function extractLearnTopics(source) {
-  const topics = [];
-  const pattern = /<a\s+class="tile clusters__card"\s+href="([^"]+)">([\s\S]*?)<\/a>/g;
-  for (const match of source.matchAll(pattern)) {
-    const body = match[2];
-    const title = clean(body.match(/<strong>([\s\S]*?)<\/strong>/)?.[1] ?? '');
-    const description = clean(body.match(/<p>([\s\S]*?)<\/p>/)?.[1] ?? '');
-    if (!title || !description) throw new Error(`Incomplete learn topic ${match[1]}`);
-    topics.push({ route: match[1], title, description });
+/** The learn hub's library topics, as the hub prints them (src/lib/learn-topics.ts). */
+export function learnTopics(topics = LEARN_TOPICS) {
+  const list = topics.map(({ route, title, description }) => ({ route, title: clean(title), description: clean(description) }));
+  for (const topic of list) {
+    if (!topic.route.startsWith('/learn/') || !topic.title || !topic.description) {
+      throw new Error(`Incomplete learn topic ${topic.route}`);
+    }
   }
-  if (!topics.length) throw new Error('No learn topics found');
-  return topics;
+  if (!list.length) throw new Error('No learn topics found');
+  return list;
 }
 
 export function extractCanonicalLabels(strategy) {
@@ -380,8 +401,7 @@ export async function generateAssistantContext({ repoRoot = repo } = {}) {
     if (!staticByRoute.has(route)) throw new Error(`Tool route has no static page: ${route}`);
   }
 
-  const learnSource = await readFile(resolve(repoRoot, 'src/pages/learn/index.astro'), 'utf8');
-  const topics = extractLearnTopics(learnSource);
+  const topics = learnTopics();
   const strategy = await readFile(resolve(repoRoot, 'docs/STRATEGY.md'), 'utf8');
   const labels = extractCanonicalLabels(strategy).filter((label) => (
     !/\b(?:Astrofolio|Registry|Registro)\b|\bthe Twelve\b|\bView the record\b|\bgold sculpture\b/iu.test(label)
@@ -422,7 +442,7 @@ export async function generateAssistantContext({ repoRoot = repo } = {}) {
     'SITE CONTEXT — ZODIACS.ORG',
     '',
     'Zodiacs.org is a free astrology reference. Chart calculations run in the visitor’s browser. Positions are computed astronomy; meanings are interpretation.',
-    'Chart calculation does not send birth fields to a chart API. Saved charts are local-first; optional account sync, which starts when a person signs in, uploads their saved charts, including birth details, to that person’s account. The public Guide sends chat messages to OpenAI and sends a placements-only chart summary only after the person explicitly chooses “Attach my chart”, which is offered only with the encrypted sync preview (off on the public site); it never attaches the saved name, birth date, time, place, or coordinates, though the summary’s positions still give the birth date and time and, roughly, the birthplace.',
+    'Chart calculation does not send birth fields to a chart API. Saved charts are local-first; optional account sync, which starts when a person signs in, uploads their saved charts, including birth details, to that person’s account. The public Guide sends chat messages to Anthropic and sends a placements-only chart summary only after the person explicitly chooses “Attach my chart”, which is offered only with the encrypted sync preview (off on the public site); it never attaches the saved name, birth date, time, place, or coordinates, though the summary’s positions still give the birth date and time and, roughly, the birthplace.',
     'Historical civil time from 1970 on uses the IANA/ICU history supplied by the visitor’s browser or device runtime, so for those dates historical coverage and tzdb version depend on that host; before 1970 it comes from a pinned tzdb release (2025c) with its backzone records, which tzdb’s maintainers consider less reliable than the rest. A birth from before its place adopted a legal time uses the birthplace’s own local mean time, from its longitude, with the date each place adopted a legal time taken from the same release. When birth time is unknown, the site uses 12:00 local civil time as a reference for body positions, omits the rising sign, angles, and houses, and marks the Moon’s sign as unverified, because the Moon can change sign during that local date. A code shared from such a chart carries the positions at 12:00 UTC on the birth date instead, so it gives nothing about the birthplace.',
     'The site has English pages and partial Spanish translations. The inventory below lists English routes once; do not invent an English or Spanish page that is not listed.',
     '',

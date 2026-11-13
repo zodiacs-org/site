@@ -70,7 +70,7 @@ const HOUSE_ACTIONS: Record<number, string> = {
   12: 'leave room for rest, closure, and work that happens offstage',
 };
 const PROGRAM_SURFACES = [
-  'today', 'tomorrow', 'weekly', 'love', 'career', 'yearly-2027',
+  'today', 'tomorrow', 'weekly', 'love', 'career', 'yearly-2026', 'yearly-2027',
 ] as const;
 type ProgramSurface = (typeof PROGRAM_SURFACES)[number];
 
@@ -80,6 +80,7 @@ const PROGRAM_WORD_BOUNDS: Record<ProgramSurface, { min: number; max: number }> 
   weekly: { min: 200, max: 300 },
   love: { min: 60, max: 100 },
   career: { min: 60, max: 100 },
+  'yearly-2026': { min: 1_200, max: 1_800 },
   'yearly-2027': { min: 1_200, max: 1_800 },
 };
 
@@ -89,6 +90,7 @@ const PROGRAM_DISTINCTNESS_LIMITS: Record<ProgramSurface, number> = {
   weekly: 0.55,
   love: 0.55,
   career: 0.55,
+  'yearly-2026': 0.72,
   'yearly-2027': 0.72,
 };
 
@@ -585,6 +587,7 @@ function expectedProgramPeriod(anchorDate: string, surface: ProgramSurface): { f
     return { from: tomorrow, through: tomorrow };
   }
   if (surface === 'weekly') return isoWeek(anchorDate);
+  if (surface === 'yearly-2026') return { from: '2026-01-01', through: '2026-12-31' };
   if (surface === 'yearly-2027') return { from: '2027-01-01', through: '2027-12-31' };
   return { from: anchorDate, through: anchorDate };
 }
@@ -606,6 +609,7 @@ function expectedPublishable(coverage: JsonRecord, surface: ProgramSurface): boo
   if (surface === 'today' || surface === 'love' || surface === 'career') return coverage.today === 'complete';
   if (surface === 'tomorrow') return coverage.tomorrow === 'complete';
   if (surface === 'weekly') return coverage.isoWeek === 'complete';
+  if (surface === 'yearly-2026') return coverage.yearly2026 === 'complete';
   return coverage.yearly2027 === 'complete';
 }
 
@@ -761,7 +765,7 @@ function programSemanticViolations(
     if (receipt.kind === 'solar-house' && isHouse(receipt.house)) {
       // The yearly overview identifies its bookend events without interpreting
       // their houses; every other derived claim must name its canonical theme.
-      if (surface === 'yearly-2027' && (passageIndex === 0 || passageIndex === passageCount - 1)) continue;
+      if (surface.startsWith('yearly-') && (passageIndex === 0 || passageIndex === passageCount - 1)) continue;
       const theme = HOUSE_THEMES[Number(receipt.house)];
       const action = HOUSE_ACTIONS[Number(receipt.house)];
       const normalized = text.toLocaleLowerCase('en');
@@ -777,7 +781,7 @@ function programSemanticViolations(
       } else {
         recognizedClaims += 1;
       }
-      if (surface === 'yearly-2027' && passageIndex > 0 && passageIndex < passageCount - 1 && isInstant(receipt.at)) {
+      if (surface.startsWith('yearly-') && passageIndex > 0 && passageIndex < passageCount - 1 && isInstant(receipt.at)) {
         const date = eventDateLabel(receipt.at);
         if (!text.includes(date)) failures.push(failure('COPY-EVIDENCE-DATE', path, `cited event date ${date} is not stated in the passage`));
         else recognizedClaims += 1;
@@ -903,6 +907,7 @@ export function verifyHoroscopeProgramCopy(programValue: unknown): IndependentCo
     || !['complete', 'unavailable'].includes(String(coverage.today))
     || !['complete', 'unavailable'].includes(String(coverage.tomorrow))
     || !['complete', 'partial', 'unavailable'].includes(String(coverage.isoWeek))
+    || !['complete', 'insufficient'].includes(String(coverage.yearly2026))
     || !['complete', 'insufficient'].includes(String(coverage.yearly2027))) {
     failures.push(failure('COPY-STRUCT-COVERAGE', 'program.coverage', 'program coverage values are invalid'));
   }
@@ -1036,7 +1041,7 @@ export function verifyHoroscopeProgramCopy(programValue: unknown): IndependentCo
         // Long-form yearly chapters deliberately revisit dated evidence in
         // chronological and thematic sections. Short-form editions should
         // never repeat or closely paraphrase an action inside one reading.
-        if (surface !== 'yearly-2027') {
+        if (!surface.startsWith('yearly-')) {
           failures.push(...intraReadingActionViolations(joined, `${readingPath}.text`));
         }
         surfaceTexts.get(surface)?.push({ sign, text: joined });

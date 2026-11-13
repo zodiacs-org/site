@@ -1,0 +1,33 @@
+{
+ "tool": "apparent-grid.mjs (results/matrix/scripts)",
+ "sense": "PARTITION-EVALUATION-V2.md (bundle) section 5, sense 1; not a matrix measurement",
+ "trees": {
+  "v1": "<v1-export>/examples/precision-alpha",
+  "v2": "<860-export>/examples/precision-alpha"
+ },
+ "pack": {
+  "bytes": 1737664,
+  "fileSha256": "00a56b4c3e80b55d8cceb5d0c66388449713abeba7ca11727d3154f597b32a6c",
+  "payloadSha256": "0c7e1c9357e44f6463dd7f68418865e699a5758325cc04d02a6cd24b56900102",
+  "headerPayloadSha256": "0c7e1c9357e44f6463dd7f68418865e699a5758325cc04d02a6cd24b56900102",
+  "containerDigest": {
+   "v1": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+   "v2": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355"
+  },
+  "compiler": "1.1.0"
+ },
+ "windows": 10,
+ "instants": 100,
+ "calls": 1000,
+ "threw": {
+  "v1": 0,
+  "v2": 0
+ },
+ "differing": 0,
+ "firstDiffering": [],
+ "digest": {
+  "v1": "3c7a5d5162f88b7586e043e04bf3ea84be39e6faa06b832176bf96017ede038f",
+  "v2": "3c7a5d5162f88b7586e043e04bf3ea84be39e6faa06b832176bf96017ede038f"
+ },
+ "pass": true
+}

@@ -8,17 +8,32 @@ import { describe, expect, it } from 'vitest';
 import {
   DECLINATION_ORB,
   DECLINATION_ORB_LUMINARY,
+  declinationOf,
   declinationOrb,
   findDeclinationAspects,
   type DeclinationBody,
 } from './declination';
-import { declinationOf } from './wheel/ecliptic3d';
+import { OBLIQUITY } from './wheel/ecliptic3d';
 
 /** Ecliptic longitude that lands on a wanted declination, at latitude 0. */
 function lonForDeclination(dec: number, obliquity = 23.44): number {
   return Math.asin(Math.sin(dec * Math.PI / 180) / Math.sin(obliquity * Math.PI / 180))
     * 180 / Math.PI;
 }
+
+// Moved from wheel/ecliptic3d.test.ts with declinationOf (engine 1.1.0-rc.2, @zodiacs/engine/lite).
+describe('declination', () => {
+  it('reaches the obliquity at the solstice points and zero at the equinoxes', () => {
+    expect(declinationOf(90, 0)).toBeCloseTo(OBLIQUITY, 9);
+    expect(declinationOf(270, 0)).toBeCloseTo(-OBLIQUITY, 9);
+    expect(declinationOf(0, 0)).toBeCloseTo(0, 9);
+    expect(declinationOf(180, 0)).toBeCloseTo(0, 9);
+  });
+
+  it('puts the ecliptic pole one obliquity short of the celestial pole', () => {
+    expect(declinationOf(0, 90)).toBeCloseTo(90 - OBLIQUITY, 9);
+  });
+});
 
 describe('declination orbs', () => {
   it('widens for the luminaries and holds elsewhere', () => {

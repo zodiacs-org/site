@@ -1,11 +1,20 @@
 ---
 import SignIcon from './SignIcon.astro';
 import { SIGNS } from '../lib/signs';
-import { CHINESE_ZODIAC_COPY } from '../data/chinese-zodiac';
+import { CHINESE_ZODIAC_ANIMALS, CHINESE_ZODIAC_COPY } from '../data/chinese-zodiac';
+import { chineseZodiacAnimals } from '../data/chinese-zodiac-localized';
+import ChineseZodiacArt from './ChineseZodiacArt.astro';
 
 interface Props { note?: string }
 const { note = CHINESE_ZODIAC_COPY.iconRailNote } = Astro.props;
+// Animal pages (English and Mandarin) lead with the approved painted art.
+const match = Astro.url.pathname.match(/^\/(?:(zh-hans|zh-hant)\/)?learn\/chinese-zodiac\/([a-z]+)\/?$/u);
+const artLocale = (match?.[1] ?? 'en') as 'en' | 'zh-hans' | 'zh-hant';
+const artAnimal = match
+  ? (artLocale === 'en' ? CHINESE_ZODIAC_ANIMALS : chineseZodiacAnimals(artLocale)).find((a) => a.slug === match[2])
+  : undefined;
 ---
+{artAnimal && <ChineseZodiacArt slug={artAnimal.slug} name={artAnimal.name} locale={artLocale} />}
 <aside class="cz-brand" aria-label={note}>
   <div class="cz-brand__icons" aria-hidden="true">
     {SIGNS.map((sign) => <SignIcon sign={sign.slug} size={48} class="cz-brand__icon" />)}

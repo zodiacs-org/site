@@ -19,7 +19,7 @@ import {
   untimedSharedPositions,
 } from './share-positions-noon';
 import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
-import { tilt, timeBasis } from './engine/time-basis.mjs';
+import { tilt, timeBasis } from '@zodiacs/engine/time';
 
 // Sidereal time and obliquity below are read on the engine's clock, as its
 // own angles are (scripts/deltat-install-guard.test.mjs).

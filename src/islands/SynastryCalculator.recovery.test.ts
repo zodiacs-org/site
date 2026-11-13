@@ -33,7 +33,7 @@ vi.mock('./synastry/RelationshipWheel', async () => ({
   ...await import('./ChartTrust'),
 }));
 vi.mock('./CopyLinkButton', () => ({ CopyLinkButton: harness.copyLink }));
-vi.mock('./CompatibilityShareControl', () => ({ CompatibilityShareControl: harness.compatShare, CompatibilityPairingCta: vi.fn() }));
+vi.mock('./CompatibilityShareControl', () => ({ CompatibilityShareControl: harness.compatShare, CompatibilityPairingCta: vi.fn(), CompatibilityResultActions: harness.compatShare }));
 vi.mock('./synastry/InviteExperience', () => ({ InviteArrival: harness.arrivalView, InvitePanel: vi.fn() }));
 vi.mock('./synastry/SendBackExperience', () => ({ SendBackCard: harness.sendCard, ReturnBand: harness.returnView, InvitationConversionCard: vi.fn() }));
 vi.mock('./synastry/inviteClient', () => ({

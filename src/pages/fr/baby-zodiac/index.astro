@@ -1,5 +1,7 @@
 ---
+// Hidden since 2026-11-12 (src/data/hidden-child-pages.mjs): noindex and nofollow, out of the sitemap and navigation.
 import Base from '../../../layouts/Base.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import Faq from '../../../components/Faq.astro';
 import BabyZodiac from '../../../islands/BabyZodiac';
 import '../../../styles/calculator.css';
@@ -52,9 +54,11 @@ const jsonLd = [
   title="Quel sera le signe de mon bébé ? Calculateur | Zodiacs.org"
   description="Indique la date prévue d’accouchement : signe solaire presque certain, signes lunaires possibles et ce qui restera inconnu jusqu’à la naissance."
   path="/fr/baby-zodiac/"
+  noindex
+  nofollow
   locale="fr"
   image="/assets/og/v2/tool/baby-zodiac.png"
-  imageAlt="Calculateur du zodiaque du bébé — Zodiacs.org"
+  imageAlt="Calculateur du zodiaque du bébé, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container container--narrow">
@@ -74,11 +78,12 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="zodiac-figures" locale="fr" />
     <div class="prose reveal">
       <p>
         Le Soleil passe un mois dans chaque signe : la date prévue permet donc
-        de le déterminer avec beaucoup de confiance. Les exceptions — dates
-        à la limite d’un signe ou bébés qui arrivent plus tôt — sont calculées
+        de le déterminer avec beaucoup de confiance. Les exceptions, dates
+        à la limite d’un signe ou bébés qui arrivent plus tôt, sont calculées
         ci-dessus au lieu d’être devinées. La Lune change de signe tous les deux
         ou trois jours, et l’ascendant toutes les deux heures : celui-ci dépend
         de la minute de naissance. Après l’accouchement, le{' '}

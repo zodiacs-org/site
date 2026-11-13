@@ -12,12 +12,12 @@ import {
   splitByDepth,
   gmstHours,
   julianCenturies,
-  declinationOf,
   declinationCircle,
   zenithOf,
   horizonCircle,
   altitudeOf,
 } from './ecliptic3d';
+import { declinationOf } from '../declination';
 
 const CX = 100;
 const CY = 100;
@@ -196,17 +196,6 @@ describe('sidereal time', () => {
 });
 
 describe('declination', () => {
-  it('reaches the obliquity at the solstice points and zero at the equinoxes', () => {
-    expect(declinationOf(90, 0)).toBeCloseTo(OBLIQUITY, 9);
-    expect(declinationOf(270, 0)).toBeCloseTo(-OBLIQUITY, 9);
-    expect(declinationOf(0, 0)).toBeCloseTo(0, 9);
-    expect(declinationOf(180, 0)).toBeCloseTo(0, 9);
-  });
-
-  it('puts the ecliptic pole one obliquity short of the celestial pole', () => {
-    expect(declinationOf(0, 90)).toBeCloseTo(90 - OBLIQUITY, 9);
-  });
-
   it('separates from ecliptic latitude — the reason out of bounds exists', () => {
     // A body north of the ecliptic near the June solstice point stacks its
     // latitude onto the obliquity and can pass the Sun's own limit.

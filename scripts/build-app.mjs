@@ -33,7 +33,10 @@ import {
   injectRegistryExchangeLanding,
 } from '../src/exchange/entry.mjs';
 import { EN } from '../src/strings/en.mjs';
+import { TILTED_RING_DOTS, TILTED_RING_VIEWBOX } from '../src/lib/brand-lockup.mjs';
 import { buildRegistryOutlookArtifact } from './registry-outlook-artifact.mjs';
+import { registryResearchIsPaused } from './registry-research-lib.mjs';
+import { readRegistryResearchPause } from './registry-research-pause.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
@@ -204,14 +207,21 @@ const registryMeta = [
   `const REGISTRY_EXCHANGE_ENABLED=document.querySelector('meta[name="${REGISTRY_EXCHANGE_META}"]')?.content==='1';`,
   `const REGISTRY_EXCHANGE_PATH=${JSON.stringify(REGISTRY_EXCHANGE_PATH)};`,
   `const REGISTRY_EXCHANGE_LANDING_COPY=Object.freeze(${JSON.stringify(REGISTRY_EXCHANGE_LANDING_COPY)});`,
+  `const BRAND_RING_VIEWBOX=${JSON.stringify(TILTED_RING_VIEWBOX)};`,
+  `const BRAND_RING_DOTS=Object.freeze(${JSON.stringify(TILTED_RING_DOTS)});`,
 ].join('');
 const output = banner + registryMeta + code + '\n';
+// While Registry Research is paused (src/data/registry-research/pause.json)
+// no new outlook edition is published: the committed one is kept, unwritten.
+const outlookPaused = registryResearchIsPaused(await readRegistryResearchPause(root));
 const [terminalSplitCss, astrofolioHtml, terminalHtml, thesisHtml, registryOutlook] = await Promise.all([
   readFile(TERMINAL_SPLIT_CSS, 'utf8'),
   readFile(ASTROFOLIO_HTML, 'utf8'),
   readFile(TERMINAL_HTML, 'utf8'),
   readFile(THESIS_HTML, 'utf8'),
-  buildRegistryOutlookArtifact(root),
+  outlookPaused
+    ? readFile(REGISTRY_OUTLOOK, 'utf8').then(JSON.parse)
+    : buildRegistryOutlookArtifact(root),
 ]);
 // Consumer keeps its collection control. Since the 2026-08-31 owner addendum
 // the market gateway also carries a flag-gated venue-route entry, so the
@@ -236,7 +246,7 @@ await Promise.all([
   writeFile(OUT, output, 'utf8'),
   copyFile(REACT_RUNTIME_SOURCE, REACT_RUNTIME),
   copyFile(REACT_DOM_RUNTIME_SOURCE, REACT_DOM_RUNTIME),
-  writeFile(REGISTRY_OUTLOOK, `${JSON.stringify(registryOutlook, null, 2)}\n`, 'utf8'),
+  outlookPaused ? null : writeFile(REGISTRY_OUTLOOK, `${JSON.stringify(registryOutlook, null, 2)}\n`, 'utf8'),
   configuredAstrofolio !== astrofolioHtml ? writeFile(ASTROFOLIO_HTML, configuredAstrofolio, 'utf8') : null,
   configuredTerminal !== terminalHtml ? writeFile(TERMINAL_HTML, configuredTerminal, 'utf8') : null,
   configuredThesis !== thesisHtml ? writeFile(THESIS_HTML, configuredThesis, 'utf8') : null,
@@ -264,5 +274,9 @@ console.log(`  ${output.length} bytes  ·  sha256:${hash}  ·  from src/app.jsx 
 console.log('Self-hosted React 18.3.1 runtime copied to public/assets/vendor.');
 console.log(`Wrote ${REGISTRY_TECHNICAL_HTML}`);
 console.log('  shared Registry styles · 12 signs · 24 official representations');
-console.log(`Wrote ${REGISTRY_OUTLOOK}`);
-console.log(`  daily + weekly symbolic outlook · edition ${registryOutlook.daily.date}`);
+if (outlookPaused) {
+  console.log(`Registry Outlook paused: kept ${REGISTRY_OUTLOOK} as published (edition ${registryOutlook.daily.date})`);
+} else {
+  console.log(`Wrote ${REGISTRY_OUTLOOK}`);
+  console.log(`  daily + weekly symbolic outlook · edition ${registryOutlook.daily.date}`);
+}

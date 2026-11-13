@@ -13,7 +13,8 @@ describe('account sync v2 cutover guards', () => {
       expect(source).toContain('<AccountBoundProfileSurface');
       expect(source).toContain(`<ProfileDashboard locale="${locale}"`);
       expect(source).toContain(`<ProfileManager locale="${locale}"`);
-      expect(source).toContain('PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK');
+      expect(source).toContain('PUBLIC_ACCOUNT_SYNC_V2_ENABLED');
+      expect(source).not.toContain('PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK');
       expect(source).toContain('privateSurface={accountSyncV2Enabled}');
     }
   });
@@ -33,7 +34,7 @@ describe('account sync v2 cutover guards', () => {
 
   it('subscribes to auth before reading a session snapshot', async () => {
     for (const relativePath of [
-      '../../islands/AccountProfileAccessBootstrap.tsx',
+      './profile-access-bootstrap.ts',
       '../../islands/AccountBoundProfileSurface.tsx',
     ]) {
       const source = await readFile(new URL(relativePath, import.meta.url), 'utf8');
@@ -88,6 +89,7 @@ describe('account sync v2 cutover guards', () => {
     const approvedAdapters = new Set([
       'components/HoroscopeProgramPage.astro',
       'components/SiteNav.astro',
+      'components/profile/ProfilePrepaint.astro',
       'islands/ProfileDashboard.tsx',
       'lib/assistant/open-assistant.ts',
       'lib/profile/circle.ts',
@@ -111,6 +113,7 @@ describe('account sync v2 cutover guards', () => {
     for (const path of [
       'components/HoroscopeProgramPage.astro',
       'components/SiteNav.astro',
+      'components/profile/ProfilePrepaint.astro',
       'pages/today/index.astro',
     ]) {
       const source = await readFile(resolve(sourceRoot, path), 'utf8');
@@ -146,16 +149,23 @@ describe('account sync v2 cutover guards', () => {
     expect(reader).not.toContain("from './storage-identity';");
   });
 
-  it('scopes remote analytics away from Guide and the private preview build', async () => {
+  it('scopes remote analytics away from Guide and the account surfaces only', async () => {
     const base = await readFile(new URL('../../layouts/Base.astro', import.meta.url), 'utf8');
     const guide = await readFile(new URL('../../pages/ask/index.astro', import.meta.url), 'utf8');
+    const callback = await readFile(new URL('../../pages/auth/callback/index.astro', import.meta.url), 'utf8');
     expect(base).not.toContain('guideRuntimeEnabled');
-    expect(base).toContain('plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface');
-    expect(base).toContain('&& !accountSyncV2Enabled,');
+    expect(base).toContain('props.privateSurface || (props.accountSurface && accountSyncV2Enabled)');
+    expect(base).toContain('plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded,');
+    // Ordinary pages keep analytics when the v2 client is on; the account
+    // surfaces opt out through privateSurface, and every page that reads the
+    // saved charts through accountSurface, instead of a site-wide switch
+    // (tests/analytics-account-surfaces.test.ts finds those pages).
+    expect(base).not.toContain('&& !accountSyncV2Enabled');
+    expect(callback).toContain('privateSurface={true}');
     expect(base).toContain('data-guide-analytics-boundary={plausibleEnabled || webAnalyticsEnabled ?');
     // The flagged Vercel pageview counter sits behind the same surface exclusions
     // and the same private-session check as Plausible.
-    expect(base).toContain('vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface');
+    expect(base).toContain('vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded');
     const vercelBlock = base.slice(base.indexOf('{webAnalyticsEnabled && ('), base.indexOf('<slot name="head" />'));
     expect(vercelBlock).toContain("sessionStorage.getItem(guidePrivateSessionKey) === '1'");
     expect(vercelBlock).toContain("insights.src = '/_vercel/insights/script.js';");

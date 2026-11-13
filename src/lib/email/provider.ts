@@ -98,7 +98,7 @@ class ResendAdapter implements EmailSubscriptionAdapter {
         '',
         `Confirm subscription: ${confirmation.toString()}`,
         '',
-        'The link works for 48 hours. If you did not request this, ignore this email — nothing will be subscribed.',
+        'The link works for 48 hours. If you did not request this, ignore this email. Nothing will be subscribed.',
       ].join('\n')
       : [
         serverUiMessage(this.locale, 'emailConfirmMessage'),
@@ -130,11 +130,11 @@ class ResendAdapter implements EmailSubscriptionAdapter {
         intro: `Confirm that you want the free Zodiacs.org daily forecast for ${signBySlug(sign!).name}.`,
         sections: [{
           paragraphs: [
-            'The link works for 48 hours. If you did not request this, ignore this email — nothing will be subscribed.',
+            'The link works for 48 hours. If you did not request this, ignore this email. Nothing will be subscribed.',
           ],
         }],
         cta: { label: 'Confirm subscription', url: confirmation.toString() },
-        footerLines: ['Zodiacs.org — free astrology tools and sign guides.'],
+        footerLines: ['Zodiacs.org, free astrology tools and sign guides.'],
       }
       : {
         preheader: serverUiMessage(this.locale, 'emailConfirmMessage'),

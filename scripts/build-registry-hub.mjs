@@ -13,6 +13,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { SIGN_ORDER } from './sign-data.mjs';
+import { REGISTRY_OG_HUB } from './build-registry-og.mjs';
 import { NAV_SIGNS, wingNavCss, wingNavHtml, wingNavScript } from './wing-nav.mjs';
 import { REGISTRY_ESTABLISHED } from '../src/lib/registry-establishment.mjs';
 import { GUIDE_LOADER_MARKER, guideLoaderSource } from '../src/lib/assistant/guide-loader.mjs';
@@ -212,12 +213,12 @@ const html = `<!doctype html>
   <meta property="og:title" content="The 12 Zodiac Profiles | Zodiacs.org" />
   <meta property="og:description" content="The twelve Zodiac signs, their stories, shared birthdays and verified public records." />
   <meta property="og:url" content="https://zodiacs.org/registry/" />
-  <meta property="og:image" content="https://zodiacs.org/assets/og/v2/registry.png" />
+  <meta property="og:image" content="https://zodiacs.org${REGISTRY_OG_HUB}" />
   <meta property="og:image:alt" content="The twelve Zodiac profiles on Zodiacs.org" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="The 12 Zodiac Profiles | Zodiacs.org" />
   <meta name="twitter:description" content="The twelve Zodiac signs, their stories, shared birthdays and verified public records." />
-  <meta name="twitter:image" content="https://zodiacs.org/assets/og/v2/registry.png" />
+  <meta name="twitter:image" content="https://zodiacs.org${REGISTRY_OG_HUB}" />
   <script type="application/ld+json">${JSON.stringify(jsonLd).replaceAll('<', '\\u003c')}</script>
 
   <style>

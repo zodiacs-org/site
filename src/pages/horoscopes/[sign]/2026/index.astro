@@ -1,0 +1,20 @@
+---
+import HoroscopeProgramPage from '../../../../components/HoroscopeProgramPage.astro';
+import programData from '../../../../data/horoscope-program.json';
+import { pageReadingFromProgram } from '../../../../lib/horoscope-page-data';
+import type { HoroscopeProgram } from '../../../../lib/horoscope-program';
+import { SIGNS, signBySlug } from '../../../../lib/signs';
+
+export function getStaticPaths() {
+  return SIGNS.map((sign) => ({
+    params: { sign: sign.slug },
+    props: { signSlug: sign.slug },
+  }));
+}
+
+const { signSlug } = Astro.props;
+const sign = signBySlug(signSlug);
+const program = programData as HoroscopeProgram;
+const reading = pageReadingFromProgram(program, sign.slug, 'year2026');
+---
+<HoroscopeProgramPage signSlug={sign.slug} surface="year2026" reading={reading} />

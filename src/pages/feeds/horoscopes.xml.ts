@@ -25,7 +25,7 @@ export const GET: APIRoute = () => {
     }
     const url = `${SITE}/horoscopes/${sign.slug}/`;
     return `    <item>
-      <title>${esc(`${sign.name} daily horoscope — ${horoscopeProgram.anchorDate}`)}</title>
+      <title>${esc(`${sign.name} daily horoscope, ${horoscopeProgram.anchorDate}`)}</title>
       <link>${url}</link>
       <guid isPermaLink="false">${url}#${horoscopeProgram.anchorDate}</guid>
       <pubDate>${pub}</pubDate>

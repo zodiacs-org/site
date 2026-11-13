@@ -13,6 +13,7 @@ const routeFamilies = [
   { key: 'monthly', suffix: 'monthly', file: 'src/pages/horoscopes/[sign]/monthly/index.astro', surface: 'monthly' },
   { key: 'love', suffix: 'love', file: 'src/pages/horoscopes/[sign]/love/index.astro', surface: 'love' },
   { key: 'career', suffix: 'career', file: 'src/pages/horoscopes/[sign]/career/index.astro', surface: 'career' },
+  { key: 'year2026', suffix: '2026', file: 'src/pages/horoscopes/[sign]/2026/index.astro', surface: 'year2026' },
   { key: 'year', suffix: '2027', file: 'src/pages/horoscopes/[sign]/2027/index.astro', surface: 'year' },
 ];
 
@@ -26,7 +27,7 @@ async function canonicalSignSlugs() {
 }
 
 describe('Phase 1 horoscope URL contract', () => {
-  it('maps seven canonical families across all twelve source signs', async () => {
+  it('maps eight canonical families across all twelve source signs', async () => {
     const signs = await canonicalSignSlugs();
     expect(signs).toHaveLength(12);
     expect(new Set(signs).size).toBe(12);
@@ -35,15 +36,16 @@ describe('Phase 1 horoscope URL contract', () => {
       `/horoscopes/${sign}/${suffix ? `${suffix}/` : ''}`
     )));
 
-    expect(urls).toHaveLength(84);
-    expect(new Set(urls).size).toBe(84);
+    expect(urls).toHaveLength(96);
+    expect(new Set(urls).size).toBe(96);
     const phaseOneRoutes = ['/horoscopes/', ...urls];
-    expect(phaseOneRoutes).toHaveLength(85);
-    expect(new Set(phaseOneRoutes).size).toBe(85);
+    expect(phaseOneRoutes).toHaveLength(97);
+    expect(new Set(phaseOneRoutes).size).toBe(97);
     expect(urls).toContain('/horoscopes/aries/');
     expect(urls).toContain('/horoscopes/aries/tomorrow/');
     expect(urls).toContain('/horoscopes/libra/love/');
     expect(urls).toContain('/horoscopes/capricorn/career/');
+    expect(urls).toContain('/horoscopes/pisces/2026/');
     expect(urls).toContain('/horoscopes/pisces/2027/');
   });
 
@@ -58,9 +60,9 @@ describe('Phase 1 horoscope URL contract', () => {
     }
   });
 
-  it('keeps one SSR renderer boundary for all seven surface families', async () => {
+  it('keeps one SSR renderer boundary for all eight surface families', async () => {
     const source = await read('src/components/HoroscopeProgramPage.astro');
-    for (const surface of ['today', 'tomorrow', 'weekly', 'monthly', 'love', 'career', 'year']) {
+    for (const surface of ['today', 'tomorrow', 'weekly', 'monthly', 'love', 'career', 'year', 'year2026']) {
       expect(source).toContain(`${surface}: {`);
     }
     expect(source).toContain('reading: HoroscopeProgramPageReading');

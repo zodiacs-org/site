@@ -86,7 +86,6 @@ const id = `email-${placement}-${locale}`;
   >
     {postChartManaged && <slot name="post-chart" />}
     <div class="email-capture__copy">
-      {!(daily && placement === 'footer') && <span class="email-capture__kicker">{capture.kicker}</span>}
       <h2
         id={`${id}-title`}
         data-email-title
@@ -182,8 +181,8 @@ const id = `email-${placement}-${locale}`;
       <p class="email-capture__privacy">{capture.privacy}</p>
       {postChartManaged && (
         <p class="email-capture__privacy email-capture__device-note" data-post-chart-device-note hidden>
-          Prefer a brief matched to this exact chart? That exists only for account-synced charts — syncing is always your call, and this chart stays on your device until you make it.{' '}
-          <a href="/profile/#profile-sync">How chart sync works</a>
+          Prefer a brief matched to this exact chart? This needs a chart you synced earlier. Chart sync is paused for now.{' '}
+          <a href="/profile/#profile-sync">About the pause</a>
         </p>
       )}
       <p class="email-capture__status" role="status" aria-live="polite" data-email-status></p>
@@ -206,6 +205,8 @@ const id = `email-${placement}-${locale}`;
     border-radius: var(--r-lg);
     background: var(--void-1);
   }
+  /* The signup answers when someone starts using it. */
+  .email-capture:focus-within { border-color: var(--hair-3); }
   .email-capture[hidden] { display: none; }
   .email-capture__copy[hidden],
   .email-capture__form[hidden],
@@ -213,13 +214,12 @@ const id = `email-${placement}-${locale}`;
   @media (min-width: 860px) {
     .email-capture { grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr); align-items: start; }
   }
-  .email-capture__kicker,
   .email-capture__field label,
   .email-capture__signs legend {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--faint);
   }
   .email-capture h2 {
@@ -266,6 +266,8 @@ const id = `email-${placement}-${locale}`;
     color: var(--text-2);
     font-size: 13px;
   }
+  .email-capture__sign-summary:focus-within { border-color: var(--hair-3); }
+  @media (hover: hover) and (pointer: fine) { .email-capture__sign-summary:hover { border-color: var(--hair-3); } }
   .email-capture__sign-summary[hidden] { display: none; }
   .email-capture__change-sign {
     min-width: 72px;

@@ -29,6 +29,70 @@ export function previousSeasonIdOf(seasonId) {
   return `${previousSign}-${previousYear}`;
 }
 
+/** How far back one run may reach for seasons the Hall never received. */
+export const CATCH_UP_LIMIT = 12;
+
+/**
+ * The season ids the Trophy Hall still owes, oldest first: every season
+ * after the newest one it holds, through `newestClosedId`. On a normal
+ * morning that is the season that closed overnight. After runs that could
+ * not publish it is several (23 Sep to 4 Nov 2026 missed both Virgo and
+ * Libra), and the next run that can publish engraves them all, in order.
+ * An empty Hall starts with the newest closed season alone; the walk never
+ * reaches back more than `limit` seasons.
+ */
+export function seasonsToEngrave(newestClosedId, engravedIds, limit = CATCH_UP_LIMIT) {
+  if (!SEASON_ID_PATTERN.test(newestClosedId ?? '')) {
+    throw new Error(`Malformed season id: ${newestClosedId}`);
+  }
+  const engraved = new Set(engravedIds);
+  if (engraved.size === 0) return [newestClosedId];
+  const owed = [];
+  for (let id = newestClosedId; owed.length < limit && !engraved.has(id); id = previousSeasonIdOf(id)) {
+    owed.unshift(id);
+  }
+  return owed;
+}
+
+/**
+ * Appends the owed seasons to the Hall record (`{ seasons: [...] }`, oldest
+ * first) and returns the entries it added. `archive(seasonId)` resolves to
+ * `{ payload }` with that closed season's archived standings, or `{ skip }`
+ * when the archive cannot answer. The Hall only appends, so the walk stops
+ * at the first season it cannot read rather than engrave a later one past
+ * it (that would lock the earlier season out for good); the next run
+ * resumes there. An uncounted season crowns nobody and is passed over, and
+ * nothing already in the Hall, or older than its newest entry, is written.
+ */
+export async function engraveSeasons(champions, owed, archive, log = () => {}) {
+  const added = [];
+  for (const seasonId of owed) {
+    if (champions.seasons.some((entry) => entry.seasonId === seasonId)) continue;
+    const archived = await archive(seasonId);
+    if (archived.skip) {
+      log(`stopped at ${seasonId}, ${archived.skip}; the next run resumes here.`);
+      break;
+    }
+    if (archived.payload?.seasonId !== seasonId) {
+      throw new Error(`The archive answered ${archived.payload?.seasonId} for ${seasonId}.`);
+    }
+    const entry = championEntryFrom(archived.payload);
+    if (!entry) {
+      log(`${seasonId} ended with an empty board, so it is not counted and crowns no champion.`);
+      continue;
+    }
+    const newest = champions.seasons.at(-1);
+    if (newest && entry.endedAtUtc <= newest.endedAtUtc) {
+      log(`${seasonId} closed before ${newest.seasonId}, the newest Hall entry; the Hall only appends.`);
+      continue;
+    }
+    champions.seasons.push(entry);
+    added.push(entry);
+    log(`engraved ${entry.champion}, ${entry.seasonName} Season Champion · ${entry.year} (won by ${entry.marginPoints}).`);
+  }
+  return added;
+}
+
 /**
  * Builds the immutable Trophy Hall entry from a CLOSED season's archived
  * standings payload. Returns null for an uncounted season (nobody scored) —

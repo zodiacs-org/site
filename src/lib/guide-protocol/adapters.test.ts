@@ -637,9 +637,9 @@ describe('Guide retries and app-owned stream state', () => {
 
   it('pins provider privacy without exposing a key or prompt', () => {
     expect(GUIDE_PROVIDER_PRIVACY_POLICY).toMatchObject({
-      store: false,
+      retentionArrangement: 'standard_30_day',
       productName: 'Guide',
-      currentModelIdentity: 'gpt-5.6-luna',
+      currentModelIdentity: 'claude-sonnet-5-5',
       route: '/v1/guide/turn',
       contextHandling: 'untrusted_data_only',
     });

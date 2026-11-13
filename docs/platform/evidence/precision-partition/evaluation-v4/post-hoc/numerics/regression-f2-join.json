@@ -1,0 +1,115 @@
+{
+ "postHoc": "regression corpus F2 (development data), #860 code, rerun only to locate the worst P-2 span; unscored",
+ "reproducesCommitted": {
+  "evaluations": [
+   292612,
+   292612
+  ],
+  "partitionEvaluations": [
+   262535,
+   262535
+  ],
+  "cells": [
+   11871,
+   11871
+  ],
+  "boundarySec": [
+   2932.039695262909,
+   2932.039695262909
+  ],
+  "boundarySpans": [
+   21,
+   21
+  ],
+  "widestBoundarySecField": [
+   42.1875,
+   42.1875
+  ],
+  "worstP2": [
+   0.33625742337004727,
+   0.33625742337004727
+  ]
+ },
+ "widestCoalescedBoundarySpanSec": 506.25,
+ "boundarySpanWidthsSec": [
+  506.25,
+  506.25,
+  84.375,
+  84.375,
+  84.375,
+  84.375,
+  42.1875,
+  84.375,
+  42.1875,
+  42.1875,
+  126.5625,
+  126.5625,
+  337.5,
+  337.5,
+  84.375,
+  84.375,
+  84.375,
+  84.375,
+  31.640625,
+  36.91828513145447,
+  36.91828513145447
+ ],
+ "worst": {
+  "span": [
+   -685886400,
+   -685886363.0817149
+  ],
+  "widthSec": 36.91828513145447,
+  "isoLo": "1978-04-08T00:00:00.000Z TDB",
+  "closestApproachDeg": 0.33625742337004727,
+  "atTdbSec": -685886363.0817149,
+  "minElDeg": 4.658690143754879,
+  "maxElDeg": 4.663742576629953,
+  "joinsWithin120sOfStart": [
+   {
+    "series": "emb",
+    "join": -685886400,
+    "joinIso": "1978-04-08T00:00:00.000Z TDB",
+    "offsetSec": 0
+   }
+  ],
+  "joinsWithin120sOfEnd": [
+   {
+    "series": "emb",
+    "join": -685886400,
+    "joinIso": "1978-04-08T00:00:00.000Z TDB",
+    "offsetSec": 36.91828513145447
+   }
+  ]
+ },
+ "spansWithAJoinAtAnEnd": [
+  {
+   "span": [
+    -685886400,
+    -685886363.0817149
+   ],
+   "widthSec": 36.91828513145447,
+   "isoLo": "1978-04-08T00:00:00.000Z TDB",
+   "closestApproachDeg": 0.33625742337004727,
+   "atTdbSec": -685886363.0817149,
+   "minElDeg": 4.658690143754879,
+   "maxElDeg": 4.663742576629953,
+   "joinsWithin120sOfStart": [
+    {
+     "series": "emb",
+     "join": -685886400,
+     "joinIso": "1978-04-08T00:00:00.000Z TDB",
+     "offsetSec": 0
+    }
+   ],
+   "joinsWithin120sOfEnd": [
+    {
+     "series": "emb",
+     "join": -685886400,
+     "joinIso": "1978-04-08T00:00:00.000Z TDB",
+     "offsetSec": 36.91828513145447
+    }
+   ]
+  }
+ ]
+}

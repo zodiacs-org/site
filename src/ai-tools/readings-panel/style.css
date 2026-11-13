@@ -1,0 +1,5 @@
+/* The readings panel's own rows; everything else is the shared card kit (../card-kit/card.css). */
+.reading-list { margin: 0; padding: 0; list-style: none; display: grid; }
+.reading-list li { padding: 10px 0; }
+.reading-list li + li { border-top: 1px solid var(--line-soft); }
+.reading-list strong { font-weight: 600; }

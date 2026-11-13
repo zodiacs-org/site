@@ -4,18 +4,45 @@ zodiacs-mcp-server notice
 This archive's own code (server.mjs outside the bundled engine, verify.mjs
 and the files beside them) is under the MIT licence.
 
-server.mjs bundles @zodiacs/engine 1.0.0, whose licence is
+server.mjs bundles @zodiacs/engine 1.1.0-rc.2, whose licence is
 MIT AND CC-BY-4.0. Its ΔT module, inlined into server.mjs, contains 32 values
 of Table S15 of Stephenson, Morrison and Hohenkerk (2016), which are
 published under CC BY 4.0. Its time basis, inlined too, carries TAI - UTC
 from the IERS leap-second list, which is in the public domain, and a table
 of UT1 - UTC derived from IERS EOP 20 C04 for 1972 and from IERS
 finals2000A.all from 1973-01-02. It also carries the IAU 2000B nutation from NOVAS C 3.1 and the
-engine's precession transformation, attributed below. None of the engine's zone histories,
-calendar tables or star values is in server.mjs. If you redistribute this
-archive or server.mjs, keep this notice. The engine's own notice follows
-unchanged; the engine's LICENSING.md, in its archive, gives the terms of
-each source.
+engine's precession transformation, attributed below. From 0.1.0-rc.24,
+for resolve_birth_time, server.mjs also carries the engine's zone histories,
+compiled from the IANA Time Zone Database 2025c with its backzone file, and
+its table of Gregorian calendar adoption dates, both from public-domain
+sources that the engine's notice below names. None of the engine's star
+values is in server.mjs.
+
+server.mjs also carries, from the Zodiacs.org site:
+
+- for search_places, the site's birthplace index, derived from GeoNames
+  cities15000 (https://www.geonames.org/), which is licensed under Creative
+  Commons Attribution 4.0 International (CC BY 4.0):
+  https://creativecommons.org/licenses/by/4.0/. The index keeps each place's
+  name, ASCII name, first-level region, country, latitude and longitude
+  rounded to two decimal places, time zone and population. Credit GeoNames
+  wherever you show its places;
+- for resolve_birth_time's calendar note, the site's table of the dates on
+  which 42 countries took the Gregorian calendar, whose dates come from the
+  IANA Time Zone Database's calendars file and the English, Latvian and
+  Finnish Wikipedia articles the site names beside each row; it copies
+  dates, not text;
+- for resolve_birth_time's atlasPlace, the Zodiacs.org historical time
+  atlas 0.1.0 (the engine repository's atlas/data at commit
+  7307665bdbc432269fdac006104f661be16000bc,
+  https://github.com/zodiacs-org/engine/tree/7307665bdbc432269fdac006104f661be16000bc/atlas),
+  whose data is licensed under Creative Commons Attribution 4.0
+  International (CC BY 4.0), and the resolver of its atlas/tools/lib.mjs,
+  under the MIT licence.
+
+If you redistribute this archive or server.mjs, keep this notice. The
+engine's own notice follows unchanged; the engine's LICENSING.md, in its
+archive, gives the terms of each source.
 
 @zodiacs/engine notice
 ========================
@@ -28,10 +55,11 @@ Don Cross, distributed under the MIT License. Its distributed JavaScript source
 retains the full MIT permission and warranty notice. Source and license metadata:
 https://github.com/cosinekitty/astronomy
 
-The package's frame module (src/frame.ts, built into the ephemeris chunk under
-dist/) reproduces astronomy-engine's precession function, precession_rot, and
-the calc entry's reduction module (src/calc-reduce.ts, built into
-dist/calc.js) its function for an observer on the Earth's ellipsoid, terra:
+The package's frame module (src/frame.ts, built into a shared chunk under
+dist/ that the ephemeris chunk and dist/time.js import) reproduces
+astronomy-engine's precession function, precession_rot, and the calc entry's
+reduction module (src/calc-reduce.ts, built into dist/calc.js) its function
+for an observer on the Earth's ellipsoid, terra:
 
   Copyright (c) 2019-2023 Don Cross <cosinekitty@gmail.com>
   MIT License: the permission and warranty notice is the one in this
@@ -80,15 +108,18 @@ composes it, and the obliquity of J2000.0 of the IAU 2006 precession,
 
 Its bounds and its barycentre's error are measurements: the largest
 differences of this package's own results from NASA JPL Horizons (DE441)
-responses at 32 instants, and of astronomy-engine's barycentre from a
-Newtonian barycentre and from Horizons's. They are not coefficients derived
+responses at 32 instants (for the mean nodes and Black Moon Lilith, from
+their definitions evaluated with ERFA at those instants), and of
+astronomy-engine's barycentre from a Newtonian barycentre and from
+Horizons's. They are not coefficients derived
 from JPL data, and no JPL ephemeris value is in the package.
 
 Essential dignities
 -------------------
 
-The techniques entry (dist/techniques.js) carries the tables of the
-essential dignities as these works give them, and none of their text:
+The techniques entry (dist/techniques.js) and the lite entry
+(dist/lite-dignities.js, which dist/lite.js re-exports) carry the tables of
+the essential dignities as these works give them, and none of their text:
 
   Ptolemy, Tetrabiblos I.17-I.20, tr. F. E. Robbins (Loeb Classical Library,
   1940): domiciles, exaltations, the Egyptian terms.
@@ -197,8 +228,9 @@ Gregorian adoption dates
 ------------------------
 
 @zodiacs/engine/geo carries a table of when 18 countries took the Gregorian
-calendar (GREGORIAN_ADOPTION, in dist/geo.js). Its dates come from these
-public-domain sources:
+calendar (GREGORIAN_ADOPTION), in a shared chunk under dist/ that dist/geo.js
+and dist/techniques.js import. Its dates come from these public-domain
+sources:
 
   IANA Time Zone Database 2025c, file calendars, which quotes H. Grotefend,
   Taschenbuch der Zeitrechnung des deutschen Mittelalters und der Neuzeit,

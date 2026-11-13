@@ -2,8 +2,7 @@
 import { h, render } from 'preact';
 import TechnicalWheel from './wheel/TechnicalWheel';
 import type { LunarReturnExportModel } from '../islands/lunar-return/export-model';
-import { BRAND_ICON_PATHS } from './brand-icons.mjs';
-import { drawShareBrandLockup, PORTRAIT_SHARE_CARD_BRAND_LAYOUT, type LoadedShareBrandIcon } from './share-card-brand';
+import { drawShareBrandLockup, PORTRAIT_SHARE_CARD_BRAND_LAYOUT } from './share-card-brand';
 import { downloadPreparedChartCard, type PreparedChartCard, type CardOutcome } from './share-card';
 import { lunarReturnShownInstant, lunarReturnTimestamp } from './lunar-return-ical';
 import { wholeSignCusps } from './engine/houses';
@@ -84,18 +83,6 @@ async function fetchBlob(path: string, signal: AbortSignal): Promise<Blob> {
   const blob = await response.blob();
   signal.throwIfAborted();
   return blob;
-}
-
-async function brandIcon(signal: AbortSignal): Promise<LoadedShareBrandIcon> {
-  const blob = await fetchBlob(BRAND_ICON_PATHS.icon512, signal);
-  if (typeof createImageBitmap === 'function') {
-    try {
-      const bitmap = await createImageBitmap(blob);
-      if (signal.aborted) { bitmap.close(); signal.throwIfAborted(); }
-      return bitmap;
-    } catch (cause) { if (signal.aborted) throw cause; }
-  }
-  return decodeImage(blob, signal);
 }
 
 async function wheelImage(model: LunarReturnExportModel, signal: AbortSignal): Promise<HTMLImageElement> {
@@ -219,13 +206,9 @@ export function prepareLunarReturnCard(source: LunarReturnExportModel, parent?: 
     const model = lunarReturnImageModel(source);
     const instant = lunarReturnTimestamp(model.instantUtc);
     const reference = lunarReturnTimestamp(model.referenceUtc);
-    let icon: LoadedShareBrandIcon | undefined;
     let wheel: HTMLImageElement | undefined;
     let canvas: HTMLCanvasElement | undefined;
     const release = () => {
-      icon?.close?.();
-      if (icon && 'src' in icon) icon.src = '';
-      icon = undefined;
       if (wheel) wheel.src = '';
       wheel = undefined;
       if (canvas) { canvas.width = 0; canvas.height = 0; }
@@ -239,7 +222,6 @@ export function prepareLunarReturnCard(source: LunarReturnExportModel, parent?: 
       signal.throwIfAborted();
       if (faces.some((loaded) => !loaded.length || loaded.some((face) => face.status !== 'loaded'))) throw new Error('lunar_fonts_unavailable');
       wheel = await wheelImage(model, signal); signal.throwIfAborted();
-      icon = await brandIcon(signal); signal.throwIfAborted();
       canvas = document.createElement('canvas');
       canvas.width = LUNAR_RETURN_CARD_SIZE.width; canvas.height = LUNAR_RETURN_CARD_SIZE.height;
       const context = canvas.getContext('2d');
@@ -258,7 +240,8 @@ export function prepareLunarReturnCard(source: LunarReturnExportModel, parent?: 
       const engine = `Engine ${model.engineVersion}`;
       if (context.measureText(engine).width > 590) throw new Error('lunar_text_overflow');
       context.fillStyle = '#8E96AB'; context.fillText(engine, 64, 1281);
-      drawShareBrandLockup(context, icon, PORTRAIT_SHARE_CARD_BRAND_LAYOUT);
+      // The brand lockup draws its own ring, so the card loads no image for it.
+      drawShareBrandLockup(context, null, PORTRAIT_SHARE_CARD_BRAND_LAYOUT);
       const blob = await new Promise<Blob>((resolve, reject) => canvas!.toBlob((value) =>
         value ? resolve(value) : reject(new Error('lunar_png_unavailable')), 'image/png'));
       signal.throwIfAborted();

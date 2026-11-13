@@ -46,7 +46,7 @@ export function LocalTimeEntry({ input, onApply, title = 'Start with local time'
       {result.input.local!.resolution.clock === 'local-mean-time' && <p class="callout">Before standard time, the place’s longitude determines its local mean time. The calculation record preserves this assumption.</p>}
       {result.zoneUncertain && <p class="callout">Pinned historical data is unavailable for this zone. This conversion uses this browser’s time-zone history; verify the historical clock before relying on it.</p>}
       <p>The converted instant and time-zone assumptions are included in your downloaded record. This step does not share them with the assistant.</p>
-      <button type="button" onClick={() => { onApply({ ...result.input, houseSystem: input.houseSystem }); setResult(null); setNotice('Chart updated from the reviewed local time.'); }}>{applyLabel}</button>
+      <button type="button" onClick={() => { onApply({ ...result.input, houseSystem: input.houseSystem, ...(place ? { place } : {}) }); setResult(null); setNotice('Chart updated from the reviewed local time.'); }}>{applyLabel}</button>
     </div>}
     <p role="status">{notice}</p><p class="city-credit">City data: <a href="https://www.geonames.org/" target="_blank" rel="noreferrer">GeoNames</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>. Population-ranked subset of the site’s city index.</p>
   </section>;

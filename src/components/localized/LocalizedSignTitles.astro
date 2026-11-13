@@ -1,0 +1,21 @@
+---
+/**
+ * The shared Wheel names each sign disc with an SVG <title> in English. On a
+ * localized page the sample wheels pass through here, and the twelve titles
+ * are rewritten to the page's sign names. The Wheel itself stays unchanged:
+ * it rides in the calculator's browser chunk, which English pages load too.
+ */
+import { SIGNS, signName } from '../../lib/signs';
+import type { CatalogLocale } from '../../lib/i18n/core';
+
+interface Props { locale: CatalogLocale }
+
+const { locale } = Astro.props;
+const byName = new Map(SIGNS.map((sign) => [sign.name, signName(sign, locale)]));
+const html = await Astro.slots.render('default');
+const localized = html.replace(/<title>([^<]+)<\/title>/g, (title, name: string) => {
+  const local = byName.get(name);
+  return local ? `<title>${local}</title>` : title;
+});
+---
+<Fragment set:html={localized} />

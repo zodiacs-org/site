@@ -1,0 +1,31 @@
+# #740: 848e6087 against its first parent 6af799c7 (edition 2026-10-13)
+Pages in both builds: 1833; unchanged: 1829; changed and re-dated: 0; changed and already dated that day: 0; re-dated with no change in content: 0; new: 0; removed: 0.
+4 page(s) changed without a new sitemap date. Give each a new date in src/pages/sitemap.xml.ts (or the data it is dated from), so IndexNow Changes submits it:
+- /developers/ (still 2026-10-12)
+- /developers/compare/ (still 2026-10-11)
+- /developers/compute/ (still 2026-10-12)
+- /developers/mcp/ (still 2026-10-12)
+
+/developers/
+  - Unpublished candidate · 0.1.0-rc.22 Connect an AI assistant A local MCP server, tested with Claude Code.
+  + Unpublished candidate · 0.1.0-rc.23 Connect an AI assistant A local MCP server, tested with Claude Code.
+
+/developers/compare/
+
+  + The engine beside other software This page compares two records that Zodiacs software wrote.
+  + How the engine and its API compare with other astrology software is in the developer guides, which give the other projects' versions and licences as their publishers state them:
+  + Swiss Ephemeris alternatives in JavaScript , Ephemeris packages on npm , Python astrology libraries and Astrology API .
+
+/developers/compute/
+  - The answer is depends when it turns on the time of day, because the body changes sign or stations during that day, or, without a zone, on the zone:
+  + aspect :
+  + a body and an other body are in an aspect , a conjunction, sextile, square, trine or opposition, within the orb the chart endpoint's aspects use, at an instant or on a date.
+  + The answer is depends when it turns on the time of day, because the body changes sign or stations during that day or the aspect begins or ends, or, without a zone, on the zone:
+
+/developers/mcp/
+  - Unpublished candidate· zodiacs-mcp-server 0.1.0-rc.22.
+  - FILE='zodiacs-mcp-server-0.1.0-rc.22.tgz' DEST='zodiacs-mcp-server-0.1.0-rc.22' for path in "$FILE" "$DEST"; do if test -e "$path" || test -L "$path"; then echo "Stop:
+  - BASE=$(pwd) trap 'status=$?; if test "$status" -ne 0; then rm -rf "$BASE/$DEST" "$BASE/$FILE"; fi; exit $status' EXIT curl --disable --fail --silent --show-error --location --proto '=https' --max-time 60 \ 'https://raw.githubusercontent.com/zodiacs-org/site/4d1b549becd01942f1ed6e24a2bf737831275097/public/examples/zodiacs-mcp-server-0.1.0-rc.22.tgz' -o "$FILE" test -s "$FILE" || { echo "Stop:
+  + Unpublished candidate· zodiacs-mcp-server 0.1.0-rc.23.
+  + FILE='zodiacs-mcp-server-0.1.0-rc.23.tgz' DEST='zodiacs-mcp-server-0.1.0-rc.23' for path in "$FILE" "$DEST"; do if test -e "$path" || test -L "$path"; then echo "Stop:
+  + BASE=$(pwd) trap 'status=$?; if test "$status" -ne 0; then rm -rf "$BASE/$DEST" "$BASE/$FILE"; fi; exit $status' EXIT curl --disable --fail --silent --show-error --location --proto '=https' --max-time 60 \ 'https://raw.githubusercontent.com/zodiacs-org/site/7ec05433c18c708244673c3973bad55f97982e1c/public/examples/zodiacs-mcp-server-0.1.0-rc.23.tgz' -o "$FILE" test -s "$FILE" || { echo "Stop:

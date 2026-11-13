@@ -6,9 +6,8 @@ import { PRINCIPAL_IDENTITIES } from '../docs/phase5/people-pilot/tools/principa
 import { sourceReviews } from '../docs/phase5/people-pilot/tools/source-reviews.mjs';
 
 export const PEOPLE_IDENTITY_REVIEW_FLAG = '--review-people-identities';
-export const PEOPLE_IDENTITY_REVIEW_SLUGS = Object.freeze([
-  'neil-armstrong', 'amelia-earhart', 'maya-angelou',
-]);
+/** Every reviewed principal identity, in the closed list's order (A20 first). */
+export const PEOPLE_IDENTITY_REVIEW_SLUGS = Object.freeze(Object.keys(PRINCIPAL_IDENTITIES));
 
 export function peopleFactReviewOptions(argv, root, env = process.env) {
   const flag = '--review-people-facts';

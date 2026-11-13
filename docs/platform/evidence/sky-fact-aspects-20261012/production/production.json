@@ -1,0 +1,63 @@
+{
+  "schema": "zodiacs.sky-fact-aspects-production.v1",
+  "base": "https://zodiacs.org",
+  "control": false,
+  "expectedCommit": "848e6087d3e3558aa37030749d010e33e73b4ab6",
+  "readAt": "2026-10-13T20:15:05.002Z",
+  "passed": 6,
+  "of": 6,
+  "checks": [
+    {
+      "deploymentId": "dpl_AHCoAbgz8RfLgSPZSeU4YKv7vohq",
+      "aliasUpdatedAt": 1791922455269,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "848e6087d3e3558aa37030749d010e33e73b4ab6",
+      "name": "the zodiacs.org alias names a READY production deployment built from the commit",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "5681b6196534ef20e5da33077fff38405a891033c330fbb34c919375b79c2908",
+      "version": "0.1.0-rc.23",
+      "name": "the MCP adapter's manifest is the commit's, byte for byte",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "bytes": 125534,
+      "sha256": "be720004e31cd583c34e2873799fb95654a7cf3b1d9ace4b18cff7deffd3f619",
+      "supersedes": "0.1.0-rc.22",
+      "name": "the MCP adapter 0.1.0-rc.23 archive has the manifest's size and digest",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "documentedRequest": true,
+      "answer": "depends",
+      "basis": "local-day",
+      "name": "the compute API's sky-fact endpoint answers the documented aspect example as documented",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "bytes": 905746,
+      "sha256": "31b692224a5bd39db82016fa957743208119a4b85403604f0d174e369fc31a78",
+      "committedSha256": "31b692224a5bd39db82016fa957743208119a4b85403604f0d174e369fc31a78",
+      "name": "the hosted MCP's Chart Studio is the commit's, byte for byte, with F-91's wording",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "a1969a0dc3a233290a7e67ac4abfc8dfe9f1f8373059953289daebffad58f1e1",
+      "linked": [
+        "swiss-ephemeris-alternative-javascript",
+        "ephemeris-npm",
+        "python-astrology-library",
+        "astrology-api"
+      ],
+      "name": "/developers/compare/ has the section linking the four guides that compare the engine with other software",
+      "ok": true
+    }
+  ]
+}

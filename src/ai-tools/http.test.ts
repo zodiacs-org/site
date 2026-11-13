@@ -2,7 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_WIDGET_URIS, LEGACY_STUDIO_URIS, LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, LEGACY_OCCASIONS_URIS, OCCASION_TOOL_NAMES, READINGS_URI, COVERAGE_TOOL_NAMES } from './contracts';
 import committedWindow from '../data/horoscope-window.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
@@ -10,13 +10,14 @@ import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/comp
 let server: Server, base: string;
 let enabled: string | undefined = '1'; let verdict: 'allowed' | 'limited' | 'unavailable' = 'allowed';
 let allowedHost: string; const counted: string[] = [];
-let atomicRequest: 'allowed' | 'limited' | 'unavailable' = 'allowed';
+let atomicRequest: 'allowed' | 'limited' | 'unavailable' | 'throw' = 'allowed';
 let atomicEvent: 'allowed' | 'limited' | 'unavailable' = 'allowed';
 const atomicCounted: string[] = [];
 let occasionsSwitch: string | undefined;
-const env = { get ZODIACS_MCP_ENABLED() { return enabled; }, get ZODIACS_OCCASIONS_ENABLED() { return occasionsSwitch; } };
+let coverageSwitch: string | undefined;
+const env = { get ZODIACS_MCP_ENABLED() { return enabled; }, get ZODIACS_OCCASIONS_ENABLED() { return occasionsSwitch; }, get ZODIACS_COVERAGE_ENABLED() { return coverageSwitch; } };
 beforeAll(async () => {
-  server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); return kind === 'request' ? atomicRequest : atomicEvent; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
+  server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); if (kind === 'request' && atomicRequest === 'throw') throw new Error('budget unreachable'); return (kind === 'request' ? atomicRequest : atomicEvent) as 'allowed' | 'limited' | 'unavailable'; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   base = `http://127.0.0.1:${(server.address() as { port: number }).port}/mcp`;
   allowedHost = new URL(base).host;
@@ -35,13 +36,61 @@ describe('stateless MCP HTTP boundary', () => {
     try {
       for (const [budget, status, retry] of [['limited', 429, '60'], ['unavailable', 503, '300']] as const) {
         atomicRequest = budget; atomicCounted.length = 0;
-        const response = await post(rpc('tools/list'));
+        const response = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }));
         expect(response.status).toBe(status);
         expect(response.headers.get('retry-after')).toBe(retry);
         expect(response.headers.get('cache-control')).toBe('no-store');
         expect(atomicCounted).toEqual(['request']);
       }
     } finally { atomicRequest = 'allowed'; }
+  });
+  it('keeps connecting, listing tools and reading panels out of the service-wide budget, but not the address rule', async () => {
+    const H = { 'MCP-Protocol-Version': '2025-06-18' };
+    try {
+      atomicRequest = 'limited'; counted.length = 0; atomicCounted.length = 0;
+      const init = await post(rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'budget-test', version: '1' } }));
+      expect(init.status).toBe(200);
+      expect((await readMessage(init)).result.serverInfo.name).toBe('zodiacs');
+      expect((await post({ jsonrpc: '2.0', method: 'notifications/initialized' }, H)).status).toBeLessThan(300);
+      const list = await post(rpc('tools/list'), H);
+      expect(list.status).toBe(200);
+      expect((await readMessage(list)).result.tools.length).toBeGreaterThan(0);
+      const resources = await post(rpc('resources/list'), H);
+      expect(resources.status).toBe(200);
+      const uri = (await readMessage(resources)).result.resources[0].uri;
+      expect((await post(rpc('resources/read', { uri }), H)).status).toBe(200);
+      // Every request still meets the per-address rule; none of them used the service-wide budget.
+      expect(counted).toEqual(Array(5).fill(COMPUTE_RATE_LIMIT_ID));
+      expect(atomicCounted).toEqual([]);
+      // A tool call is counted against both, the address rule first.
+      counted.length = 0;
+      const call = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }), H);
+      expect(call.status).toBe(429);
+      expect(call.headers.get('retry-after')).toBe('60');
+      expect(counted).toEqual([COMPUTE_RATE_LIMIT_ID]);
+      expect(atomicCounted).toEqual(['request']);
+      // A method sent as a non-string still meets the budget.
+      atomicCounted.length = 0;
+      expect((await post({ jsonrpc: '2.0', id: 2, method: ['tools/call'], params: { name: 'get_capabilities', arguments: {} } }, H)).status).toBe(429);
+      expect(atomicCounted).toEqual(['request']);
+      // The address rule still refuses setup messages once that address is limited.
+      atomicRequest = 'allowed'; verdict = 'limited';
+      expect((await post(rpc('tools/list'), H)).status).toBe(429);
+    } finally { verdict = 'allowed'; atomicRequest = 'allowed'; }
+  });
+  it('fails closed when the budget cannot count a tool call', async () => {
+    try {
+      atomicRequest = 'throw';
+      const response = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }), { 'MCP-Protocol-Version': '2025-06-18' });
+      expect(response.status).toBe(503);
+      expect(response.headers.get('retry-after')).toBe('300');
+    } finally { atomicRequest = 'allowed'; }
+  });
+  it('still counts the health check against both limits', async () => {
+    try {
+      verdict = 'limited'; expect((await fetch(`${base}?__zodiacs_ai=health`)).status).toBe(429);
+      verdict = 'allowed'; atomicRequest = 'limited'; expect((await fetch(`${base}?__zodiacs_ai=health`)).status).toBe(429);
+    } finally { verdict = 'allowed'; atomicRequest = 'allowed'; }
   });
   it('reserves a global event slot for a date fact and refuses before returning computation', async () => {
     try {
@@ -70,6 +119,7 @@ describe('stateless MCP HTTP boundary', () => {
       expect(tools.tools.find(tool => tool.name === 'check_sky_fact')?.description).toContain('https://zodiacs.org/developers/compute/');
       const calendar = tools.tools.find(tool => tool.name === 'get_upcoming_events')!;
       expect(calendar._meta?.['openai/ui']).toEqual({ entrypoints: [{ type: 'global' }, { type: 'thread' }] });
+      expect((calendar._meta?.ui as { resourceUri?: string } | undefined)?.resourceUri).toBe(WIDGET_URI);
       expect(calendar.annotations?.idempotentHint).toBe(false);
       const opened = await client.callTool({ name: 'get_upcoming_events', arguments: {} });
       expect(opened.isError).toBe(false);
@@ -80,6 +130,10 @@ describe('stateless MCP HTTP boundary', () => {
       expect(launch.isError).toBe(false); expect(OUTPUT_SCHEMAS.open_chart_studio.parse(launch.structuredContent).ok).toBe(true);
       const horoscopes = tools.tools.find(tool => tool.name === 'get_horoscope')!;
       expect(horoscopes.title).toBe('Horoscopes');
+      // Hosts choose a tool from this transport description, before any reading exists.
+      expect(horoscopes.description).toMatch(/Do not call this tool for stock picks, investment advice, financial forecasts, health predictions or guaranteed outcomes/u);
+      expect(horoscopes.description).toMatch(/even when the request mentions a horoscope[.] Decline those requests without a tool call; do not offer astrology-themed investment suggestions/u);
+      expect((horoscopes._meta?.ui as { resourceUri?: string } | undefined)?.resourceUri).toBe(HOROSCOPE_URI);
       expect(horoscopes._meta?.['openai/widgetAccessible']).toBe(true);
       expect(horoscopes._meta?.['openai/outputTemplate']).toBe(HOROSCOPE_URI);
       const reading = await client.callTool({ name: 'get_horoscope', arguments: { sign: 'leo', zone: 'Asia/Bangkok' } });
@@ -89,6 +143,12 @@ describe('stateless MCP HTTP boundary', () => {
       expect((reading._meta?.['zodiacs/horoscope'] as { sign?: string } | undefined)?.sign).toBe('leo');
       const horoscopePanel = await client.readResource({ uri: HOROSCOPE_URI });
       expect((horoscopePanel.contents[0] as { text: string }).text.startsWith('<!doctype html>')).toBe(true);
+      expect(horoscopePanel.contents[0]._meta?.ui).toMatchObject({ csp: { connectDomains: [], resourceDomains: ['https://zodiacs.org'] } });
+      expect(horoscopePanel.contents[0]._meta?.['openai/widgetCSP']).toMatchObject({ connect_domains: [], resource_domains: ['https://zodiacs.org'] });
+      for (const uri of LEGACY_HOROSCOPE_URIS) {
+        const previous = await client.readResource({ uri });
+        expect(previous.contents[0]).toEqual({ ...horoscopePanel.contents[0], uri });
+      }
       const refused = await client.callTool({ name: 'open_chart_studio', arguments: { birth: 'private-canary' } });
       expect(refused.isError).toBe(true); expect(JSON.stringify(refused)).not.toContain('private-canary');
       const panel = await client.readResource({ uri: STUDIO_URI });
@@ -96,14 +156,19 @@ describe('stateless MCP HTTP boundary', () => {
       expect(panel.contents[0]._meta?.['openai/ui']).toMatchObject({ preferredDisplayMode: 'fullscreen' });
       expect(panel.contents[0]).toHaveProperty('text', expect.stringContaining('Chart Studio'));
       expect(studio._meta?.['openai/outputTemplate']).toBe(STUDIO_URI);
-      const previousPanel = await client.readResource({ uri: LEGACY_STUDIO_URI });
-      expect(previousPanel.contents[0].uri).toBe(LEGACY_STUDIO_URI);
-      expect(previousPanel.contents[0]).toEqual({ ...panel.contents[0], uri: LEGACY_STUDIO_URI });
+      for (const uri of LEGACY_STUDIO_URIS) {
+        const previousPanel = await client.readResource({ uri });
+        expect(previousPanel.contents[0]).toEqual({ ...panel.contents[0], uri });
+      }
       const result = await client.callTool({ name: 'get_sky', arguments: { instant: '2026-10-01T06:00:00Z', zone: 'Asia/Bangkok' } });
       expect(result.isError).toBe(false); expect(OUTPUT_SCHEMAS.get_sky.parse(result.structuredContent).ok).toBe(true);
       const widget = await client.readResource({ uri: WIDGET_URI });
       expect(widget.contents[0].mimeType).toBe('text/html;profile=mcp-app');
       expect(widget.contents[0]._meta?.['openai/ui']).toEqual({ availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode: 'inline' });
+      for (const uri of LEGACY_WIDGET_URIS) {
+        const previous = await client.readResource({ uri });
+        expect(previous.contents[0]).toEqual({ ...widget.contents[0], uri });
+      }
     } finally { await client.close(); }
   });
   it.each(['2025-03-26', '2025-06-18', LATEST_PROTOCOL_VERSION])('accepts a supported %s raw protocol handshake', async protocolVersion => {
@@ -134,8 +199,10 @@ describe('stateless MCP HTTP boundary', () => {
   it('defaults off and fails closed if the production limiter cannot count', async () => {
     try {
       enabled = undefined; expect((await post(rpc('tools/list'))).status).toBe(503);
-      enabled = '1'; verdict = 'unavailable'; expect((await post(rpc('tools/list'))).status).toBe(503);
-      verdict = 'limited'; const response = await post(rpc('tools/list')); expect(response.status).toBe(429); expect(response.headers.get('retry-after')).toBe('60');
+      enabled = '1'; verdict = 'unavailable'; expect((await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }))).status).toBe(503);
+      // A setup message fails closed too: the address rule still counts it.
+      expect((await post(rpc('tools/list'))).status).toBe(503);
+      verdict = 'limited'; const response = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} })); expect(response.status).toBe(429); expect(response.headers.get('retry-after')).toBe('60');
     } finally { enabled = '1'; verdict = 'allowed'; }
   });
   it('allows only the exact configured staging hostname and rejects invalid host configuration', async () => {
@@ -185,11 +252,70 @@ describe('stateless MCP HTTP boundary', () => {
     expect(await names()).toEqual(AI_TOOL_NAMES);
     occasionsSwitch = '1';
     try {
-      expect(await names()).toEqual([...AI_TOOL_NAMES, 'get_occasion_sky', 'get_life_milestones']);
+      expect(await names()).toEqual([...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES]);
       const call = await readMessage(await post(rpc('tools/call', { name: 'get_life_milestones', arguments: { birthDate: '1997-03-15' } })));
       expect(call.result.structuredContent).toMatchObject({ ok: true, tool: 'get_life_milestones', data: { birthDate: '1997-03-15' } });
     } finally { occasionsSwitch = undefined; }
     expect(await names()).toEqual(AI_TOOL_NAMES);
+  });
+  it('offers the occasions panel only with the switch on, and all occasion tools open it', async () => {
+    const resources = async () => (await readMessage(await post(rpc('resources/list')))).result.resources.map((resource: { uri: string }) => resource.uri);
+    for (const uri of [OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS]) expect(await resources()).not.toContain(uri);
+    occasionsSwitch = '1';
+    try {
+      for (const uri of [OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS]) expect(await resources()).toContain(uri);
+      const tools = (await readMessage(await post(rpc('tools/list')))).result.tools;
+      for (const name of OCCASION_TOOL_NAMES) {
+        const meta = tools.find((tool: { name: string }) => tool.name === name)._meta;
+        expect(meta['openai/outputTemplate']).toBe(OCCASIONS_URI);
+        expect(meta.ui.resourceUri).toBe(OCCASIONS_URI);
+      }
+      const read = await post(rpc('resources/read', { uri: OCCASIONS_URI }));
+      expect(read.status).toBe(200);
+      const content = (await readMessage(read)).result.contents[0];
+      expect(content.mimeType).toBe('text/html;profile=mcp-app');
+      expect(content.text).toContain('<div id="occasions">');
+      expect(content.text).toContain('https://zodiacs.org/assets/card-art/wedding-hero-720.webp');
+      expect(content._meta?.ui).toMatchObject({ csp: { connectDomains: [], resourceDomains: ['https://zodiacs.org'] } });
+      expect(content._meta?.['openai/widgetCSP']).toMatchObject({ connect_domains: [], resource_domains: ['https://zodiacs.org'] });
+      for (const uri of LEGACY_OCCASIONS_URIS) {
+        const previous = (await readMessage(await post(rpc('resources/read', { uri })))).result.contents[0];
+        expect(previous).toEqual({ ...content, uri });
+      }
+      // Scripts and fonts remain inline. The only remote assets are static art on our own site.
+      expect(content.text).not.toMatch(/<(?:script|link)[^>]+(?:src|href)=["']https?:/u);
+    } finally { occasionsSwitch = undefined; }
+  });
+  it('lists and reads the readings panel only while coverage is on, inline and without a sidebar launch', async () => {
+    const resources = async () => (await readMessage(await post(rpc('resources/list')))).result.resources.map((resource: { uri: string }) => resource.uri);
+    expect(READINGS_URI).toBe('ui://zodiacs/readings-v3.html');
+    occasionsSwitch = '1';
+    try {
+      expect(await resources()).not.toContain(READINGS_URI);
+      coverageSwitch = '1';
+      const listed = await resources();
+      expect(listed).toContain(READINGS_URI);
+      // The retired staging addresses are never served.
+      for (const retired of ['ui://zodiacs/readings-v1.html', 'ui://zodiacs/readings-v2.html']) expect(listed).not.toContain(retired);
+      const tools = (await readMessage(await post(rpc('tools/list')))).result.tools;
+      // get_horoscope_period also needs the published months and the program, which this server is not given.
+      for (const name of COVERAGE_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope_period')) {
+        const meta = tools.find((tool: { name: string }) => tool.name === name)._meta;
+        expect(meta['openai/outputTemplate']).toBe(READINGS_URI);
+        expect(meta.ui.resourceUri).toBe(READINGS_URI);
+        expect(meta['openai/ui'].entrypoints).toEqual([{ type: 'thread' }]);
+      }
+      const read = await post(rpc('resources/read', { uri: READINGS_URI }));
+      expect(read.status).toBe(200);
+      const content = (await readMessage(read)).result.contents[0];
+      expect(content.mimeType).toBe('text/html;profile=mcp-app');
+      expect(content.text).toContain('<div id="readings">');
+      expect(content.text).toContain('https://zodiacs.org/assets/sign-art/leo-1200.avif');
+      expect(content.text).toContain('https://zodiacs.org/assets/art/chinese-zodiac/rat-1280.webp');
+      expect(content._meta?.ui).toMatchObject({ csp: { connectDomains: [], resourceDomains: ['https://zodiacs.org'] } });
+      expect(content._meta?.['openai/ui']).toMatchObject({ preferredDisplayMode: 'inline' });
+      expect(content.text).not.toMatch(/<(?:script|link)[^>]+(?:src|href)=["']https?:/u);
+    } finally { coverageSwitch = undefined; occasionsSwitch = undefined; }
   });
   it('serves the newer per-request protocol envelope without a session', async () => {
     const response = await post(rpc('tools/list', { _meta: {
@@ -199,5 +325,32 @@ describe('stateless MCP HTTP boundary', () => {
     } }), { 'MCP-Protocol-Version': '2026-07-28', 'MCP-Method': 'tools/list' });
     expect(response.status).toBe(200);
     expect((await readMessage(response)).result.tools.map((tool: { name: string }) => tool.name)).toEqual(AI_TOOL_NAMES);
+  });
+});
+
+describe('named argument refusals and protocol errors', () => {
+  beforeAll(() => { occasionsSwitch = '1'; });
+  afterAll(() => { occasionsSwitch = undefined; });
+  const call = async (name: string, args: unknown) => readMessage(await post(rpc('tools/call', { name, arguments: args }), { 'MCP-Protocol-Version': '2025-06-18' }));
+  it('names a missing field and an enum field, never echoing values', async () => {
+    const missing = await call('get_life_milestones', {});
+    expect(missing.result.isError).toBe(true);
+    expect(missing.result.structuredContent).toMatchObject({ ok: false, tool: 'get_life_milestones', error: { code: 'invalid-arguments', message: 'birthDate is required.' } });
+    const sign = await call('get_horoscope', { sign: 'ophiuchus' });
+    expect(sign.result.structuredContent.error.message).toMatch(/^sign must be one of: aries, /);
+    expect(JSON.stringify(sign)).not.toContain('ophiuchus');
+    const extra = await call('get_sky', { secretField: 'x' });
+    expect(JSON.stringify(extra)).not.toContain('secretField');
+  });
+  it('accepts plain dates on get_upcoming_events and explains any other form', async () => {
+    const plain = await call('get_upcoming_events', { from: '2026-11-01', to: '2026-11-20' });
+    expect(plain.result.isError).toBeFalsy();
+    const reply = await call('get_upcoming_events', { from: '1 Nov 2026', to: '2026-11-20' });
+    expect(reply.result.structuredContent.error.message).toContain('from is not in the accepted form. Use an ISO 8601 time with Z or an offset');
+  });
+  it('answers bad JSON with a JSON-RPC parse error', async () => {
+    const bad = await fetch(base, { method: 'POST', headers, body: '{"jsonrpc":"2.0",' });
+    expect(bad.status).toBe(400);
+    expect((await bad.json()).error.code).toBe(-32700);
   });
 });

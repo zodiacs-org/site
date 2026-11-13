@@ -1,0 +1,156 @@
+---
+/**
+ * The birthday's month as a grid of links: each day underlined in its sign's
+ * colour (by the sign table's dates), the page's own day filled, and the days
+ * where the computed years disagree about the sign ringed. Month tabs and
+ * arrows reach the rest of the year. Plain links, no script.
+ */
+import SignIcon from '../SignIcon.astro';
+import birthdays from '../../data/birthdays.json';
+import { DAYS_IN_MONTH, MONTH_NAMES, birthdaySlug, type BirthdayEntry } from '../../lib/birthdays';
+import { seasonSign, type Sign } from '../../lib/signs';
+
+interface Props {
+  month: number;
+  day: number;
+}
+
+const { month, day } = Astro.props;
+const days = birthdays.days as Record<string, BirthdayEntry>;
+const MONTH_SHORT = MONTH_NAMES.map((name) => name.slice(0, 3));
+const count = DAYS_IN_MONTH[month - 1];
+const cells = Array.from({ length: count }, (_, i) => {
+  const d = i + 1;
+  const slug = birthdaySlug(month, d);
+  return { day: d, slug, sign: seasonSign(month, d), cusp: Boolean(days[slug]?.cusp), current: d === day };
+});
+const legend: { sign: Sign; from: number; to: number }[] = [];
+for (const cell of cells) {
+  const last = legend[legend.length - 1];
+  if (last && last.sign.slug === cell.sign.slug) last.to = cell.day;
+  else legend.push({ sign: cell.sign, from: cell.day, to: cell.day });
+}
+const hasCusp = cells.some((cell) => cell.cusp);
+const prevMonth = month === 1 ? 12 : month - 1;
+const nextMonth = month === 12 ? 1 : month + 1;
+const monthName = MONTH_NAMES[month - 1];
+const short = MONTH_SHORT[month - 1];
+---
+<div class="kpanel bday-cal">
+  <div class="bday-cal__head">
+    <h3 class="h-3">{monthName}</h3>
+    <div class="bday-cal__arrows">
+      <a href={`/birthday/${birthdaySlug(prevMonth, 1)}/`} aria-label={MONTH_NAMES[prevMonth - 1]}><span aria-hidden="true">←</span></a>
+      <a href={`/birthday/${birthdaySlug(nextMonth, 1)}/`} aria-label={MONTH_NAMES[nextMonth - 1]}><span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+  <nav class="bday-cal__months" aria-label="Months">
+    {MONTH_SHORT.map((name, i) => (
+      <a class:list={[i + 1 === month && 'is-on']} href={`/birthday/${birthdaySlug(i + 1, 1)}/`} aria-label={MONTH_NAMES[i]}>{name}</a>
+    ))}
+  </nav>
+  <nav class="bday-cal__days" aria-label={`${monthName} birthdays`}>
+    {cells.map((cell) => (
+      <a
+        class:list={[cell.current && 'is-on', cell.cusp && 'is-cusp']}
+        href={`/birthday/${cell.slug}/`}
+        aria-current={cell.current ? 'page' : undefined}
+        aria-label={`${monthName} ${cell.day}${cell.cusp ? ', near a sign change' : ''}`}
+        style={`--sign:${cell.sign.hue}`}
+      >{cell.day}</a>
+    ))}
+  </nav>
+  <div class="bday-cal__legend">
+    {legend.map(({ sign, from, to }) => (
+      <span><SignIcon sign={sign.slug} size={18} />{sign.name}, {short} {from} to {to}</span>
+    ))}
+    {hasCusp && <span><i aria-hidden="true"></i>Near a sign change, the year decides</span>}
+  </div>
+</div>
+
+<style>
+  .bday-cal { padding: clamp(18px, 2.4vw, 28px); }
+  .bday-cal__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .bday-cal__head .h-3 { font-size: 1.7rem; color: var(--ink-0); }
+  .bday-cal__arrows { display: flex; gap: 6px; }
+  .bday-cal__arrows a {
+    display: grid; place-items: center;
+    width: 38px; height: 38px;
+    border: 1px solid var(--hair-2);
+    border-radius: 50%;
+    font-size: 15px;
+    color: var(--ink-1);
+    text-decoration: none;
+  }
+  .bday-cal__arrows a:hover { border-color: var(--hair-3); color: var(--ink-0); }
+  .bday-cal__months {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 4px;
+    margin: 18px 0;
+    padding: 4px;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-full);
+  }
+  .bday-cal__months a {
+    padding: 6px 0;
+    border-radius: var(--r-full);
+    font-size: 12.5px;
+    font-weight: 550;
+    color: var(--muted);
+    text-align: center;
+    text-decoration: none;
+  }
+  .bday-cal__months a:hover { color: var(--ink-0); }
+  .bday-cal__months a.is-on { background: var(--ink-0); color: var(--void-0); }
+  .bday-cal__days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+  .bday-cal__days a {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 52px;
+    border: 1px solid var(--hair-1);
+    border-radius: 12px;
+    background: rgba(198, 204, 218, 0.02);
+    font-size: 0.9375rem;
+    font-weight: 550;
+    color: var(--ink-1);
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .bday-cal__days a::after {
+    content: '';
+    position: absolute;
+    left: 34%;
+    right: 34%;
+    bottom: 7px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--sign);
+    opacity: 0.8;
+  }
+  .bday-cal__days a:hover { border-color: color-mix(in oklab, var(--sign) 45%, transparent); }
+  .bday-cal__days a.is-on { background: var(--sign); border-color: var(--sign); color: var(--void-0); font-weight: 650; }
+  .bday-cal__days a.is-on::after { background: var(--void-0); opacity: 0.35; }
+  .bday-cal__days a.is-cusp::before {
+    content: '';
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 7px;
+    height: 7px;
+    border: 1.5px solid var(--ink-1);
+    border-radius: 50%;
+  }
+  .bday-cal__days a.is-on.is-cusp::before { border-color: var(--void-0); }
+  .bday-cal__legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 16px; font-size: 13px; color: var(--muted); }
+  .bday-cal__legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .bday-cal__legend :global(.sign-icon) { width: 18px; }
+  .bday-cal__legend i { display: inline-block; width: 8px; height: 8px; border: 1.5px solid var(--ink-1); border-radius: 50%; }
+  @media (max-width: 760px) {
+    .bday-cal__months { grid-template-columns: repeat(6, minmax(0, 1fr)); border-radius: 18px; }
+    .bday-cal__days { gap: 5px; }
+    .bday-cal__days a { height: 46px; border-radius: 10px; font-size: 0.875rem; }
+    .bday-cal__days a.is-cusp::before { top: 5px; right: 5px; width: 6px; height: 6px; }
+  }
+</style>

@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import ReturnToolLinks from '../../../components/return-visits/ReturnToolLinks.astro';
 import Faq from '../../../components/Faq.astro';
 import SaturnReturnCalculator from '../../../islands/SaturnReturnCalculator';
@@ -58,7 +59,7 @@ const jsonLd = [
   path="/pt/saturn-return/"
   locale="pt"
   image="/assets/og/v2/tool/saturn-return.png"
-  imageAlt="Calculadora de retorno de Saturno — Zodiacs.org"
+  imageAlt="Calculadora de retorno de Saturno, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
@@ -73,6 +74,7 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="clock-dial" locale="pt" />
     <Faq items={faq} heading="Perguntas sobre o retorno de Saturno" />
   </section>
   <section class="section--tight container container--narrow"><ReturnToolLinks locale="pt" current="/saturn-return/" /></section>

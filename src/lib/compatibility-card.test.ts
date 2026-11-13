@@ -26,15 +26,15 @@ describe('compatibility share card', () => {
     expect(Object.keys(person).sort()).toEqual(['asc', 'bodies', 'label']);
   });
 
-  it('prints the rising sign only to its whole degree, as the two-chart link keeps it', () => {
+  it('prints each placement to its whole degree, truncated, as the two-chart link keeps the rising sign', () => {
     const person: CompatibilityCardPerson = {
       label: 'Person A',
       bodies: [{ body: 'Sun', lon: 12.6 }, { body: 'Moon', lon: 100.2 }],
       asc: 42.7,
     };
     // 42.7° rounded would be Taurus 13°, half a degree past what the link's 12.5° allows.
-    expect(compatibilityPlacementLine(person)).toBe('Aries 13°  ·  Cancer 10°  ·  Taurus 12°');
-    expect(compatibilityPlacementLine({ ...person, asc: null })).toBe('Aries 13°  ·  Cancer 10°  ·  —');
+    expect(compatibilityPlacementLine(person)).toBe('Aries 12°  ·  Cancer 10°  ·  Taurus 12°');
+    expect(compatibilityPlacementLine({ ...person, asc: null })).toBe('Aries 12°  ·  Cancer 10°  ·  —');
   });
 
   it('draws a person without a birth time as their link carries them: 12:00 UTC on the date, without the Moon', async () => {

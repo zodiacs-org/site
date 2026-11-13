@@ -7,8 +7,10 @@ import {
   chineseZodiacAnimals,
   chineseZodiacCopy,
   chineseZodiacLocalizedText,
+  type ChineseZodiacLocale as Locale,
 } from '../../data/chinese-zodiac-localized';
-import { LOCALE_META, localizePath, type ReleasedLocale as Locale } from '../../lib/i18n';
+import { stemBranchYear } from '../../data/chinese-zodiac-zh';
+import { LOCALE_META, isSectionLocale, localizePath } from '../../lib/i18n';
 import '../../styles/chinese-zodiac.css';
 
 interface Props { locale: Exclude<Locale, 'en'>; animalSlug: string }
@@ -22,6 +24,11 @@ const previous = animals[(animal.position + 10) % 12];
 const next = animals[animal.position % 12];
 const path = localizePath(locale, `/learn/chinese-zodiac/${animal.slug}/`);
 const hubPath = localizePath(locale, '/learn/chinese-zodiac/');
+// Chinese readers know each year by its stem-branch name and need no pinyin.
+const chinese = isSectionLocale(locale);
+const chartPath = localizePath(locale, '/birth-chart/');
+const chartIsEnglish = chartPath === '/birth-chart/';
+const colon = chinese ? '：' : ': ';
 const title = chineseZodiacLocalizedText(locale, 'metaAnimalTitle', { animal: animal.name });
 const description = chineseZodiacLocalizedText(locale, 'metaAnimalDescription', {
   animal: animal.name,
@@ -64,14 +71,14 @@ const jsonLd = [
     </header>
 
     <dl class="cz-facts">
-      <div><dt>{copy.branchLabel}</dt><dd>{animal.branch} · {animal.branchPinyin}</dd></div>
+      <div><dt>{copy.branchLabel}</dt><dd>{chinese ? animal.branch : `${animal.branch} · ${animal.branchPinyin}`}</dd></div>
       <div><dt>{copy.sequenceLabel}</dt><dd>{chineseZodiacLocalizedText(locale, 'positionValue', { position: animal.position })}</dd></div>
       <div><dt>{copy.associationLabel}</dt><dd>{animal.context}</dd></div>
     </dl>
 
     <section aria-labelledby={`animal-years-${locale}`}>
       <div class="section-head"><h2 id={`animal-years-${locale}`}>{copy.yearsLabel}</h2></div>
-      <ul class="cz-years">{years.map((year) => <li>{year}</li>)}</ul>
+      <ul class="cz-years">{years.map((year) => <li>{chinese ? `${year} ${stemBranchYear(year)}` : year}</li>)}</ul>
       <p class="cz-sources">{copy.yearsBoundary}</p>
     </section>
 
@@ -93,14 +100,14 @@ const jsonLd = [
     </section>
 
     <nav class="cz-nav" aria-label={copy.allAnimals}>
-      <a href={localizePath(locale, `/learn/chinese-zodiac/${previous.slug}/`)}>← {copy.previous}: {previous.name}</a>
+      <a href={localizePath(locale, `/learn/chinese-zodiac/${previous.slug}/`)}>← {copy.previous}{colon}{previous.name}</a>
       <a href={hubPath}>{copy.kicker}</a>
-      <a href={localizePath(locale, `/learn/chinese-zodiac/${next.slug}/`)}>{copy.next}: {next.name} →</a>
+      <a href={localizePath(locale, `/learn/chinese-zodiac/${next.slug}/`)}>{copy.next}{colon}{next.name} →</a>
     </nav>
 
     <p class="cz-sources">
       <a href="/learn/zodiac-dates/" hreflang="en">{copy.westernLink}</a> ·{' '}
-      <a href={localizePath(locale, '/birth-chart/')}>{copy.chartLink}</a>
+      <a href={chartPath} hreflang={chartIsEnglish ? 'en' : undefined}>{copy.chartLink}</a>
     </p>
   </article>
 </Base>

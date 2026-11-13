@@ -1,0 +1,19 @@
+{
+  "driver": "<post-hoc>/holdouts/holdout-2103-run.json",
+  "unmodified": "<post-hoc>/holdouts/unmodified-harness-2103.json",
+  "unmodifiedEpoch": "2103-01-23T00:00:00Z",
+  "driverEpoch": "2103-01-23T00:00:00Z",
+  "sameCaseIds": true,
+  "ignoredFields": [
+    "ms",
+    "withinWallClock",
+    "partitionMs",
+    "warmMs",
+    "baselineMs",
+    "label"
+  ],
+  "differences": [],
+  "identical": true,
+  "unmodifiedVerdict": "PASS: every declared target held",
+  "driverVerdict": "PASS: every declared target held"
+}

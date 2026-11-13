@@ -61,20 +61,27 @@ function signAt(windows: readonly IngressWindow[], planet: string, at: string): 
   return window.sign;
 }
 
-const YEAR_START = '2027-01-01T00:00:00.000Z';
-const YEAR_END = '2028-01-01T00:00:00.000Z';
+/** The slow planets whose sign changes a yearly edition narrates. */
+const YEAR_INGRESS_PLANETS = new Set(['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']);
 
-function overlaps2027(event: SkyRetrograde): boolean {
-  return event.from < YEAR_END && (event.to === null || event.to > YEAR_START);
-}
-
-export async function yearlyEvents(): Promise<HoroscopeProgramEvent[]> {
+/**
+ * A yearly edition's events: the slow planets' ingresses and the eclipses in
+ * the year, and both stations of every retrograde period that overlaps it.
+ * sky.json starts on its `from` date, so a retrograde already under way then
+ * is listed from that instant; that is the table's edge, not a station, and
+ * only its direct station is kept.
+ */
+export async function yearlyEvents(year: 2026 | 2027 = 2027): Promise<HoroscopeProgramEvent[]> {
+  const yearStart = `${year}-01-01T00:00:00.000Z`;
+  const yearEnd = `${year + 1}-01-01T00:00:00.000Z`;
+  const overlapsYear = (event: SkyRetrograde) => event.from < yearEnd && (event.to === null || event.to > yearStart);
   const ingresses = await readJson<{ windows: IngressWindow[] }>('src/data/ingresses.json');
-  const sky = await readJson<{ retrogrades: SkyRetrograde[] }>('src/data/sky.json');
+  const sky = await readJson<{ from: string; retrogrades: SkyRetrograde[] }>('src/data/sky.json');
   const eclipses = await readJson<{ eclipses: EclipseRecord[] }>('src/data/eclipses.json');
+  const tableStart = new Date(sky.from).toISOString();
 
   const majorIngresses: HoroscopeProgramEvent[] = ingresses.windows
-    .filter((window) => window.from.startsWith('2027-') && window.planet === 'Jupiter')
+    .filter((window) => window.from.startsWith(`${year}-`) && YEAR_INGRESS_PLANETS.has(window.planet))
     .map((window) => ({
       kind: 'ingress',
       planet: window.planet,
@@ -85,7 +92,7 @@ export async function yearlyEvents(): Promise<HoroscopeProgramEvent[]> {
     }));
 
   const eclipseEvents: HoroscopeProgramEvent[] = eclipses.eclipses
-    .filter((event) => event.peak.startsWith('2027-'))
+    .filter((event) => event.peak.startsWith(`${year}-`))
     .map((event) => ({
       kind: 'eclipse',
       type: event.type,
@@ -96,14 +103,14 @@ export async function yearlyEvents(): Promise<HoroscopeProgramEvent[]> {
     }));
 
   const stationEvents: HoroscopeProgramEvent[] = sky.retrogrades
-    .filter(overlaps2027)
+    .filter(overlapsYear)
     .flatMap((event) => {
       if (event.to === null) {
         throw new Error(
-          `Retrograde period ${event.planet} from ${event.from} overlaps 2027 but has no direct-station boundary`,
+          `Retrograde period ${event.planet} from ${event.from} overlaps ${year} but has no direct-station boundary`,
         );
       }
-      return [
+      const stations: HoroscopeProgramEvent[] = [
         {
           kind: 'station' as const,
           planet: event.planet,
@@ -123,6 +130,7 @@ export async function yearlyEvents(): Promise<HoroscopeProgramEvent[]> {
           sourceId: 'src/data/sky.json',
         },
       ];
+      return event.from === tableStart ? stations.slice(1) : stations;
     });
 
   return [...majorIngresses, ...eclipseEvents, ...stationEvents]
@@ -170,7 +178,8 @@ export async function computeHoroscopeEdition(
   const input: BuildHoroscopeProgramInput = {
     anchorDate,
     dailySnapshots,
-    yearlyEvents: await yearlyEvents(),
+    yearlyEvents: await yearlyEvents(2027),
+    yearlyEvents2026: await yearlyEvents(2026),
   };
   const program = buildHoroscopeProgram(input);
   const violations = validateHoroscopeProgramAgainstInput(input, program);

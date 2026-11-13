@@ -1,0 +1,117 @@
+---
+/**
+ * The horizon diagram of src/components/HorizonDiagram.astro, drawn from the
+ * same geometry (src/lib/horizon-geometry.ts) with the words of a translated
+ * page. A separate component on purpose: if the translated pages imported
+ * HorizonDiagram.astro, its stylesheet would move into a chunk shared with
+ * the English page and change that page's markup. Static SVG, no script.
+ */
+import type { Sign } from '../../lib/signs';
+import {
+  HORIZON_R_IN as R_IN,
+  HORIZON_R_OUT as R_OUT,
+  HORIZON_STARS as STARS,
+  horizonGeometry,
+  horizonNumber as f,
+} from '../../lib/horizon-geometry';
+
+export interface HorizonLabels {
+  east: string;
+  west: string;
+  ascendant: string;
+  birthplace: string;
+  risen: string;
+  toRise: string;
+  /** The SVG's accessible name, for the sign on the eastern horizon. */
+  aria: (rising: Sign) => string;
+  /** The caption under the figure: the rising sign, then the one that follows it. */
+  caption: (rising: Sign, next: Sign) => string;
+}
+
+interface Props {
+  /** Ecliptic longitude of the ascendant, in degrees. */
+  asc: number;
+  labels: HorizonLabels;
+  class?: string;
+}
+
+const { asc, labels, class: className } = Astro.props;
+const { rising, next, signs, risingDisc, ticks, id } = horizonGeometry(asc);
+---
+<figure class:list={['horizon-figure', className]}>
+  <svg class="horizon" viewBox="-320 -262 640 392" role="img" aria-label={labels.aria(rising)} style={`--rise:${rising.hue}`}>
+    <defs>
+      <linearGradient id={`${id}-fade`} x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.42" />
+        <stop offset="1" stop-color="#fff" stop-opacity="0" />
+      </linearGradient>
+      <mask id={`${id}-mask`} maskUnits="userSpaceOnUse" x="-320" y="-262" width="640" height="392">
+        <rect x="-320" y="-262" width="640" height="262" fill="#fff" />
+        <rect x="-320" y="0" width="640" height="130" fill={`url(#${id}-fade)`} />
+      </mask>
+      <radialGradient id={`${id}-glow`}>
+        <stop offset="0" stop-color={rising.hue} stop-opacity="0.42" />
+        <stop offset="0.55" stop-color={rising.hue} stop-opacity="0.12" />
+        <stop offset="1" stop-color={rising.hue} stop-opacity="0" />
+      </radialGradient>
+      <marker id={`${id}-arrow`} viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M1 1.5 L7 5 L1 8.5" fill="none" stroke="#C6CCDA" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+      </marker>
+    </defs>
+    {STARS.map(([cx, cy, r, opacity]) => <circle cx={cx} cy={cy} r={r} fill="#C6CCDA" fill-opacity={opacity} />)}
+    <g mask={`url(#${id}-mask)`}>
+      <circle r={R_OUT} fill="rgba(10,12,17,0.55)" stroke="rgba(198,204,218,0.24)" />
+      {signs.map(({ sign, path, disc, isRising }) => (
+        <>
+          <path d={path} fill={sign.hue} fill-opacity={isRising ? 0.2 : 0.07} stroke="rgba(198,204,218,0.16)" />
+          {!isRising && <image href={`/assets/zodiac-icons/48/${sign.slug}.webp`} x={f(disc.x - 17)} y={f(disc.y - 17)} width="34" height="34" />}
+        </>
+      ))}
+      {ticks.map((tick) => <line {...tick} stroke="rgba(198,204,218,0.2)" />)}
+      <circle r={R_IN} fill="none" stroke="rgba(198,204,218,0.2)" />
+      <circle r="96" fill="none" stroke="rgba(198,204,218,0.07)" />
+    </g>
+    <path d="M-213.89,144.27 A258,258 0 0 1 -239.21,-96.65" fill="none" stroke="rgba(198,204,218,0.55)" stroke-width="1.3" stroke-linecap="round" marker-end={`url(#${id}-arrow)`} />
+    <line x1="-316" y1="0" x2="316" y2="0" stroke="rgba(238,241,247,0.62)" stroke-width="1.3" />
+    <circle r="9" fill="rgba(238,241,247,0.08)" />
+    <circle r="4" fill="#EEF1F7" />
+    <circle cx={f(risingDisc.x)} cy={f(risingDisc.y)} r="58" fill={`url(#${id}-glow)`} />
+    <circle cx={f(risingDisc.x)} cy={f(risingDisc.y)} r="33" fill="none" stroke={rising.hue} stroke-opacity="0.75" stroke-width="1.4" />
+    <image href={`/assets/zodiac-icons/128/${rising.slug}.webp`} x={f(risingDisc.x - 28)} y={f(risingDisc.y - 28)} width="56" height="56" />
+    <text class="hz-side hz-side--east" x="-316" y="24">{labels.east}</text>
+    <text class="hz-side" x="316" y="24" text-anchor="end">{labels.west}</text>
+    <text class="hz-asc" x="-162" y="-12">{labels.ascendant}</text>
+    <text class="hz-place" x="0" y="28" text-anchor="middle">{labels.birthplace}</text>
+    <text class="hz-zone" x="0" y="-122" text-anchor="middle">{labels.risen}</text>
+    <text class="hz-zone hz-zone--below" x="0" y="86" text-anchor="middle">{labels.toRise}</text>
+  </svg>
+  <figcaption>{labels.caption(rising, next)}</figcaption>
+</figure>
+
+<style>
+  .horizon-figure { margin: 0; }
+  .horizon { display: block; width: 100%; height: auto; }
+  .horizon text { font-family: var(--font-sans); }
+  .hz-side { font-size: 13px; font-weight: 600; fill: var(--ink-2); }
+  .hz-side--east { fill: var(--ink-0); }
+  .hz-asc { font-size: 13px; font-weight: 600; fill: var(--ink-1); }
+  .hz-place { font-size: 12.5px; fill: var(--ink-2); }
+  .horizon .hz-zone { font-family: var(--font-serif); font-style: italic; font-size: 19px; fill: var(--ink-2); }
+  .horizon .hz-zone--below { fill: var(--ink-3); }
+  figcaption {
+    max-width: 52ch;
+    margin: 12px auto 0;
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.5;
+    text-align: center;
+    text-wrap: pretty;
+  }
+  /* On a phone the drawing scales down, so its labels scale back up. */
+  @media (max-width: 760px) {
+    .hz-side, .hz-asc { font-size: 22.8px; }
+    .hz-place { font-size: 21.9px; }
+    .horizon .hz-zone { font-size: 33.2px; }
+    figcaption { padding-inline: 14px; }
+  }
+</style>

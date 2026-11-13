@@ -98,14 +98,14 @@ const PORTUGUESE_RULES: readonly EditionRule[] = [
 // the relative word and keeps the date it already names. English titles
 // name only their date. Reviewed with the rules above.
 const SPANISH_TITLE_RULES: readonly EditionRule[] = [
-  [/^(\s*)Hoy — el cielo del /gu, '$1El cielo del '],
-  [/^(\s*)Horóscopos de hoy — /gu, '$1Horóscopos del '],
+  [/^(\s*)Hoy(?: —|,|:) el cielo del /gu, '$1El cielo del '],
+  [/^(\s*)Horóscopos de hoy(?: —|,|:) /gu, '$1Horóscopos del '],
   [new RegExp(`^(\\s*)Horóscopo de (${SPANISH_SIGNS}) hoy, `, 'gu'), '$1Horóscopo de $2 del '],
 ];
 
 const PORTUGUESE_TITLE_RULES: readonly EditionRule[] = [
-  [/^(\s*)Hoje — o céu de /gu, '$1O céu de '],
-  [/^(\s*)Horóscopos de hoje — /gu, '$1Horóscopos de '],
+  [/^(\s*)Hoje(?: —|,|:) o céu de /gu, '$1O céu de '],
+  [/^(\s*)Horóscopos de hoje(?: —|,|:) /gu, '$1Horóscopos de '],
   [new RegExp(`^(\\s*)Horóscopo de (${PORTUGUESE_SIGNS}) hoje, `, 'gu'), '$1Horóscopo de $2 de '],
 ];
 

@@ -17,16 +17,16 @@ describe('hreflang release policy', () => {
   it('publishes Russian on core routes without activating Arabic or deferred families', () => {
     expect(HREFLANG_LOCALE_POLICY.map((entry) => entry.locale)).toEqual(LOCALES);
     expect(HREFLANG_LOCALE_POLICY.filter((entry) => entry.indexEligible).map((entry) => entry.locale))
-      .toEqual(['en', 'es', 'pt', 'fr', 'it', 'ru']);
+      .toEqual(['en', 'es', 'pt', 'fr', 'it', 'ru', 'zh-hans', 'zh-hant']);
     for (const entry of HREFLANG_LOCALE_POLICY) {
       expect(entry.hreflang).toBe(LOCALE_META[entry.locale].hreflang);
     }
-    expect(ACTIVE_HREFLANGS).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'ru']);
+    expect(ACTIVE_HREFLANGS).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'ru', 'zh-Hans', 'zh-Hant']);
     expect(INACTIVE_HREFLANGS).toEqual(['ar']);
     expect(STAGED_NOINDEX_LOCALES).toEqual([]);
     expect(ABSENT_LOCALES).toEqual(['ar']);
     expect(X_DEFAULT_HREFLANG).toEqual({
-      hreflang: 'x-default', locale: 'en', expectedBlocks: 1129 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6,
+      hreflang: 'x-default', locale: 'en', expectedBlocks: 1224 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6,
     });
     expect(hreflangRouteFamily('/fr/tools/')).toBe('core');
     expect(hreflangRouteFamily('/birthday/february-29/')).toBe('birthday');
@@ -39,6 +39,11 @@ describe('hreflang release policy', () => {
     expect(hreflangRouteFamily('/es/compatibility/aries-leo/')).toBe('compatibility-pair');
     expect(hreflangRouteFamily('/compatibility/leo-aries/')).toBe(null);
     expect(hreflangRouteFamily('/compatibility/invite/')).toBe('core');
+    // Your 2027 sky, the Moon journal and the sign seasons: es, pt, fr and it; Russian links to the English pages.
+    expect(hreflangRouteFamily('/it/seasons/leo/')).toBe('new-pages');
+    expect(hreflangRouteFamily('/seasons/ophiuchus/')).toBe(null);
+    expect([...expectedHreflangsForPath('/es/your-2027-sky/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
+    expect([...expectedHreflangsForPath('/moon-journal/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
     expect([...expectedHreflangsForPath('/compatibility/pisces-pisces/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
     expect([...expectedHreflangsForPath('/retrogrades/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
     expect([...expectedHreflangsForPath('/tools/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'ru', 'x-default']);
@@ -47,7 +52,9 @@ describe('hreflang release policy', () => {
     expect([...expectedHreflangsForPath('/aries/')])
       .toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
     expect([...expectedHreflangsForPath('/learn/chinese-zodiac/dragon/')])
-      .toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
+      .toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'zh-Hans', 'zh-Hant', 'x-default']);
+    expect(hreflangRouteFamily('/zh-hant/learn/chinese-zodiac/')).toBe('chinese-zodiac');
+    expect([...expectedHreflangsForPath('/zh-hans/aries/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
     expect([...expectedHreflangsForPath('/horoscopes/aries/')]).toEqual(['en', 'es', 'pt-BR', 'x-default']);
     expect([...expectedHreflangsForPath('/horoscopes/aries/weekly/')]).toEqual([]);
     // Rising-sign profiles are translated for es, pt, fr and it; Russian links to the English ones.
@@ -68,10 +75,12 @@ describe('hreflang release policy', () => {
       }
     }
     // Fourteen daily families, four sharing tools, three indexed return tools, twelve rising-sign profiles in
-    // five languages, four sky calendars in five languages, and owner-approved dated editions.
-    expect(HREFLANG_LOCALE_POLICY.find(({ locale }) => locale === 'en')?.expectedBlocks).toBe(575 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
+    // five languages, four sky calendars in five languages, the Chinese zodiac guide's 13 pages in its two
+    // Chinese editions, the 15 pages of Your 2027 sky, the Moon journal and the sign seasons in five
+    // languages, and owner-approved dated editions.
+    expect(HREFLANG_LOCALE_POLICY.find(({ locale }) => locale === 'en')?.expectedBlocks).toBe(569 + 13 * 2 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + 15 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
     for (const locale of ['es', 'pt']) {
-      expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === locale)?.expectedBlocks).toBe(209 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
+      expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === locale)?.expectedBlocks).toBe(203 + 13 * 2 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + 15 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
     }
   });
 });

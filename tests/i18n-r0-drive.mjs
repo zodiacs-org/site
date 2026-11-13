@@ -12,8 +12,15 @@ const CORE_LOCALES = [
 ];
 const PROGRAMMATIC_LOCALES = CORE_LOCALES.filter((entry) => entry.code !== 'ru');
 const CORE_HREFLANGS = [...CORE_LOCALES.map((entry) => entry.hreflang), 'x-default'];
-const PROGRAMMATIC_HREFLANGS = [...PROGRAMMATIC_LOCALES.map((entry) => entry.hreflang), 'x-default'];
 const FORECAST_LOCALES = CORE_LOCALES.filter((entry) => ['en', 'es', 'pt'].includes(entry.code));
+// The Chinese zodiac guide alone also has Simplified and Traditional Chinese editions.
+const CHINESE_ZODIAC_LOCALES = [
+  ...PROGRAMMATIC_LOCALES,
+  { code: 'zh-hans', prefix: '/zh-hans', lang: 'zh-Hans', hreflang: 'zh-Hans' },
+  { code: 'zh-hant', prefix: '/zh-hant', lang: 'zh-Hant', hreflang: 'zh-Hant' },
+];
+const CHINESE_ZODIAC_LANGUAGE_NAMES = ['English', 'Español', 'Português (Brasil)', 'Français', 'Italiano', '简体中文', '繁體中文'];
+const CHINESE_ZODIAC_HREFLANGS = [...CHINESE_ZODIAC_LOCALES.map((entry) => entry.hreflang), 'x-default'];
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
 const localizedPath = (prefix, path) => `${prefix}${path}` || '/';
@@ -38,6 +45,12 @@ async function routeState(page) {
         href: node.getAttribute('href'),
         current: node.getAttribute('aria-current'),
       })),
+    currentLanguage: document.querySelector('.zfooter__locales [aria-current="page"]')?.textContent?.trim() ?? null,
+    navBadges: Array.from(document.querySelectorAll('.nav .nav__deferred'), (node) => node.textContent?.trim()),
+    // Chrome printed in English on a localized page; the selector's own English entry is its name.
+    englishChrome: Array.from(document.querySelectorAll('.nav-wrap [lang="en"], .mobile-menu [lang="en"], .zfooter [lang="en"]'))
+      .filter((node) => !node.classList.contains('zfooter__locale'))
+      .map((node) => node.textContent?.trim()),
     russian: /Русский/u.test(document.body.textContent ?? '')
       || Boolean(document.querySelector('a[href="/ru"], a[href^="/ru/"]')),
     arabic: /العربية/u.test(document.body.textContent ?? '')
@@ -76,7 +89,7 @@ await withPreview({ port: 4417 }, async (baseURL) => {
       }
 
       for (const route of ['/learn/chinese-zodiac/dragon/']) {
-        for (const locale of PROGRAMMATIC_LOCALES) {
+        for (const locale of CHINESE_ZODIAC_LOCALES) {
           const path = localizedPath(locale.prefix, route);
           const response = await page.goto(`${baseURL}${path}`, { waitUntil: 'domcontentloaded' });
           check(response?.status() === 200, `${path}@${viewport.width}: expected 200, got ${response?.status()}`);
@@ -86,10 +99,23 @@ await withPreview({ port: 4417 }, async (baseURL) => {
           check(state.width <= state.viewport + 1, `${path}@${viewport.width}: ${state.width}px overflow`);
           check(state.canonical === `https://zodiacs.org${path}`, `${path}: canonical ${state.canonical}`);
           check(
-            JSON.stringify(state.alternates.map(([lang]) => lang)) === JSON.stringify(PROGRAMMATIC_HREFLANGS),
+            JSON.stringify(state.alternates.map(([lang]) => lang)) === JSON.stringify(CHINESE_ZODIAC_HREFLANGS),
             `${path}: hreflangs ${state.alternates.map(([lang]) => lang).join(',')}`,
           );
-          check(state.selector.length === 5, `${path}: selector has ${state.selector.length} entries`);
+          check(state.selector.length === 7, `${path}: selector has ${state.selector.length} entries`);
+          check(
+            JSON.stringify(state.selector) === JSON.stringify(CHINESE_ZODIAC_LANGUAGE_NAMES),
+            `${path}: selector lists ${state.selector.join(',')}`,
+          );
+          check(
+            state.currentLanguage === CHINESE_ZODIAC_LANGUAGE_NAMES[CHINESE_ZODIAC_LOCALES.indexOf(locale)],
+            `${path}: selector marks ${state.currentLanguage} as current`,
+          );
+          if (locale.code.startsWith('zh-')) {
+            // The tag on English-only destinations is the Chinese short form 英, never a bare EN.
+            check(state.navBadges.length > 0 && state.navBadges.every((badge) => badge === '英'), `${path}: nav badges ${state.navBadges.join(',')}`);
+            check(state.englishChrome.length === 0, `${path}: English chrome ${state.englishChrome.join(' | ')}`);
+          }
           check(!state.russian && !state.arabic, `${path}: deferred locale leaked into programmatic output`);
         }
       }
@@ -178,18 +204,24 @@ await withPreview({ port: 4417 }, async (baseURL) => {
     await page.close();
 
     // A short page can put the canonical footer in the first viewport before
-    // images finish loading. Its stylesheet must be requested immediately,
-    // rather than exposing raw footer markup until the window load event.
+    // images finish loading. Its stylesheet must be requested as soon as the
+    // loader learns the footer is near (the observer's first report, after
+    // the first layout that follows the loader), never by the post-load
+    // fallback, which fires 250 ms after the window load event. The footer is
+    // held hidden until then, so no raw footer markup shows either way.
+    // That report is not due by DOMContentLoaded: when Chromium paints its
+    // first frame before the parser reaches the footer, the report waits for
+    // the next frame, which a page with nothing left to load reaches after
+    // DOMContentLoaded and window load. So both checks wait for the loader's
+    // decision (its link, or a distant footer's hold dropped) instead of
+    // reading the page at DOMContentLoaded.
     // Match the canonical asset independently of its rotating cache version.
-    const shortPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-    await shortPage.addInitScript(() => {
+    const footerLink = 'link[rel="stylesheet"][href^="/assets/site-footer.css?"]';
+    const recordFooterTiming = (selector) => {
       window.__zdxFooterLinkAt = null;
       window.__zdxWindowLoadAt = null;
       const recordFooterLink = () => {
-        if (
-          window.__zdxFooterLinkAt === null
-          && document.querySelector('link[rel="stylesheet"][href^="/assets/site-footer.css?"]')
-        ) {
+        if (window.__zdxFooterLinkAt === null && document.querySelector(selector)) {
           window.__zdxFooterLinkAt = performance.now();
         }
       };
@@ -198,27 +230,68 @@ await withPreview({ port: 4417 }, async (baseURL) => {
         recordFooterLink();
         window.__zdxWindowLoadAt = performance.now();
       }, { once: true });
-    });
+    };
+    const footerDecision = async (page) => {
+      const decided = await page.waitForFunction(
+        (selector) => Boolean(document.querySelector(selector))
+          || !document.documentElement.hasAttribute('data-footer-styles-pending'),
+        footerLink,
+        { timeout: 10_000 },
+      ).then(() => true, () => false);
+      return page.evaluate(({ selector, decided }) => {
+        const footer = document.querySelector('.zfooter');
+        return {
+          decided,
+          nearViewport: Boolean(footer && footer.getBoundingClientRect().top <= innerHeight + 200),
+          stylesheetRequested: Boolean(document.querySelector(selector)),
+          stylesheetObservedAt: window.__zdxFooterLinkAt,
+          windowLoadAt: window.__zdxWindowLoadAt,
+        };
+      }, { selector: footerLink, decided });
+    };
+
+    // With its fonts held in flight, as a short page's images can be, the
+    // page cannot fire window load, so the request must come before it.
+    const heldPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    let releaseFonts;
+    const fontsReleased = new Promise((resolve) => { releaseFonts = resolve; });
+    let heldFonts = 0;
+    try {
+      await heldPage.addInitScript(recordFooterTiming, footerLink);
+      await heldPage.route((url) => url.pathname.startsWith('/fonts/'), async (route) => {
+        heldFonts += 1;
+        await fontsReleased;
+        await route.continue().catch(() => {});
+      });
+      const heldResponse = await heldPage.goto(`${baseURL}/es/learn/`, { waitUntil: 'domcontentloaded' });
+      check(heldResponse?.status() === 200, `/es/learn/: expected 200, got ${heldResponse?.status()}`);
+      const heldFooter = await footerDecision(heldPage);
+      check(heldFonts > 0, '/es/learn/: no font request held window load open');
+      check(
+        heldFooter.decided && heldFooter.stylesheetRequested && heldFooter.windowLoadAt === null,
+        `/es/learn/: near-viewport footer CSS waited for window load (${JSON.stringify(heldFooter)})`,
+      );
+    } finally {
+      releaseFonts();
+      await heldPage.waitForLoadState('load', { timeout: 10_000 }).catch(() => {});
+      await heldPage.close();
+    }
+
+    // With nothing left to load, window load fires as parsing ends and the
+    // observer's report can follow it by a frame; it must still be that
+    // report, not the fallback, that requests the stylesheet.
+    const shortPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    await shortPage.addInitScript(recordFooterTiming, footerLink);
     const shortResponse = await shortPage.goto(`${baseURL}/es/learn/`, {
       waitUntil: 'domcontentloaded',
     });
     check(shortResponse?.status() === 200, `/es/learn/: expected 200, got ${shortResponse?.status()}`);
-    const shortFooter = await shortPage.evaluate(() => {
-      const footer = document.querySelector('.zfooter');
-      const link = document.querySelector('link[rel="stylesheet"][href^="/assets/site-footer.css?"]');
-      return {
-        nearViewport: Boolean(footer && footer.getBoundingClientRect().top <= innerHeight + 200),
-        stylesheetRequested: Boolean(link),
-        stylesheetObservedAt: window.__zdxFooterLinkAt,
-        windowLoadAt: window.__zdxWindowLoadAt,
-      };
-    });
+    const shortFooter = await footerDecision(shortPage);
     check(shortFooter.nearViewport, '/es/learn/: fixture footer is no longer near the first viewport');
-    check(shortFooter.stylesheetRequested, '/es/learn/: near-viewport footer CSS waited for window load');
     check(
-      shortFooter.stylesheetObservedAt !== null
-        && (shortFooter.windowLoadAt === null || shortFooter.stylesheetObservedAt <= shortFooter.windowLoadAt),
-      `/es/learn/: footer CSS was observed after window load (${shortFooter.stylesheetObservedAt} > ${shortFooter.windowLoadAt})`,
+      shortFooter.decided && shortFooter.stylesheetObservedAt !== null
+        && (shortFooter.windowLoadAt === null || shortFooter.stylesheetObservedAt < shortFooter.windowLoadAt + 250),
+      `/es/learn/: footer CSS waited for the post-load fallback (${shortFooter.stylesheetObservedAt} >= ${shortFooter.windowLoadAt} + 250)`,
     );
     await shortPage.close();
   } finally {

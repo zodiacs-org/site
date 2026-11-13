@@ -4,10 +4,17 @@ import { mkdir, readFile } from 'node:fs/promises';
 const publication = JSON.parse(await readFile(new URL('../src/data/events-publication.json', import.meta.url), 'utf8'));
 const demo = JSON.parse(await readFile(new URL('../src/data/demo-chart-frida.json', import.meta.url), 'utf8'));
 const ids = ['neptune-sextile-pluto-2026-09-16', 'new-moon-2026-09-11', 'venus-retrograde-2026-10-03', 'jupiter-enters-leo-2026-06-30', 'eclipse-2026-08-28'];
+// The pages print, and hand to /transits/, NASA's instant for a planet event
+// (src/lib/nasa-instants.ts); the publication keeps the engine's anchor.
+const nasa = JSON.parse(await readFile(new URL('../src/data/nasa-event-instants.json', import.meta.url), 'utf8'));
+const iso = (value) => new Date(value).toISOString();
+const nasaFor = (anchor) => [...nasa.ingresses, ...nasa.stations, ...nasa.aspects]
+  .find((row) => row.engine.some((at) => iso(at) === iso(anchor)));
 const events = ids.map((id) => {
   const event = publication.pages.find((page) => page.id === id);
   if (!event) throw new Error(`Missing event fixture: ${id}`);
-  return event;
+  const row = nasaFor(event.anchor);
+  return { ...event, anchor: row ? iso(row.nasa) : event.anchor };
 });
 const profile = {
   version: 1, settings: { houseSystem: 'whole' },
@@ -49,13 +56,15 @@ export async function runEventTransitChecks({ browser, baseURL, check, outDir = 
         check(`event ${width}: ${event.id} has a plain exact-UTC handoff and substantive reading without JavaScript`,
           href.pathname === '/transits/' && href.searchParams.get('at') === event.anchor
           && [...href.searchParams.keys()].join(',') === 'at'
-          && await staticPage.locator('[data-event-reading] p').count() === 2
+          // Two paragraphs of reading, plus the Reading confidence label every forecast carries.
+          && await staticPage.locator('[data-event-reading] p:not([data-reading-confidence])').count() === 2
+          && await staticPage.locator('[data-event-reading] [data-reading-confidence]').count() === 1
           && await staticPage.locator('.event-reflect li').count() === 2 && await fit(staticPage));
         const articles = await staticPage.locator('script[type="application/ld+json"]').evaluateAll((scripts) => scripts
           .flatMap((script) => { const data = JSON.parse(script.textContent); return data['@graph'] ?? [data]; })
           .filter((node) => node['@type'] === 'Article'));
         check(`event ${width}: ${event.id} exposes the actual revision without inventing first publication`,
-          articles.length === 1 && articles[0].dateModified === '2026-09-06T00:00:00.000Z'
+          articles.length === 1 && articles[0].dateModified === `${event.lastModified}T00:00:00.000Z`
           && !Object.hasOwn(articles[0], 'datePublished'));
         if (outDir) await staticPage.screenshot({ path: `${outDir}/event-${event.id}-${width}.png`, fullPage: true });
       }

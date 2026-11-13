@@ -5,6 +5,8 @@ import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES, type LifePathPage } from '../../../
 import { baseDigit, MASTER_NUMBERS, NUMBER_MEANINGS, type CoreNumber } from '../../../data/numerology-meanings';
 import { lifePathDistribution, lifePathExample, nextDatesWithLifePath, reduceKeepingMasters } from '../../../lib/numerology';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
+import { HOME_ART_CARD } from '../../../lib/og-art-cards.mjs';
+import { launchFlagOn } from '../../../lib/launch-flags';
 import '../../../styles/calculator.css';
 
 export function getStaticPaths() {
@@ -72,7 +74,7 @@ const jsonLd = [
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     inLanguage: 'en',
-    image: 'https://zodiacs.org/assets/og/v2/share-pastel-wheel-20260809.png',
+    image: `https://zodiacs.org${HOME_ART_CARD}`,
     about: { '@type': 'Thing', name: `Life Path ${number}` },
   },
   {
@@ -103,7 +105,7 @@ const jsonLd = [
 >
   <article class="container container--narrow lp-page">
     <header class="lp-hero">
-      <em class="kicker">Life path numbers</em>
+      <a class="crumb" href="/numerology/"><span class="crumb__arrow" aria-hidden="true">←</span>Life path numbers</a>
       <h1 class="display">Life Path {number}</h1>
       <p class="lp-lead">
         <strong>{meaning.name}.</strong> {meaning.keywords.join(', ')}.
@@ -151,7 +153,7 @@ const jsonLd = [
           Computed on your device; nothing is sent anywhere.
         </p>
       </div>
-      <NumerologyCalculator client:visible currentLifePath={number} />
+      <NumerologyCalculator client:visible currentLifePath={number} share={launchFlagOn('PUBLIC_NUMEROLOGY_SHARE_ENABLED')} />
       <noscript>
         <p>This numerology calculator needs JavaScript. Enable it and reload to compute your Life Path and name numbers from your birth date and full name.</p>
       </noscript>
@@ -214,7 +216,7 @@ const jsonLd = [
   }
   .plc-panel__row:first-child { border-top: 1px solid var(--hair-1); }
   @media (min-width: 560px) { .plc-panel__row { grid-template-columns: 190px 1fr; } }
-  .plc-panel__row dt { color: var(--faint); text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em; align-self: baseline; }
+  .plc-panel__row dt { color: var(--faint); font-family: var(--font-sans); font-size: 12px; letter-spacing: 0; align-self: baseline; }
   .plc-panel__row dd { margin: 0; color: var(--text-2); overflow-wrap: anywhere; }
 
   .lp-calc { display: grid; gap: 18px; }

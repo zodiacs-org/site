@@ -149,6 +149,8 @@ Each season has:
 
 The host sign does not receive a scoring advantage.
 
+Signs level on points rank in zodiac order, Aries first and Pisces last, so a tie at the top goes to the earlier sign.
+
 ### 6.5 The trophy
 
 Each season has one visual trophy.

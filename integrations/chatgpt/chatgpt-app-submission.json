@@ -1,11 +1,11 @@
 {
-  "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
+  "$schema": "https://developers.openai.com/plugins/schemas/chatgpt-app-submission.v1.json",
   "schema_version": 1,
   "app_info": {
     "display_name": "Zodiacs",
-    "subtitle": "Sky, horoscopes and charts",
-    "description": "See what's changing in the sky this week, check whether a planet is retrograde, read the horoscope for your sign, and explore your own birth chart. No account is needed. Zodiacs calculates the sky; what it means in astrology is offered as interpretation, for reflection. Horoscopes are dated Sun-sign readings written for your own day, in your time zone. Chart Studio asks for your birth date, place and, if you know it, time, and works out the chart inside the panel. The assistant sees only what you choose to share.",
-    "category": "EDUCATION"
+    "subtitle": "Sky, horoscopes & birth charts",
+    "description": "See what is happening in the sky, read the horoscope Zodiacs publishes for your sign, and explore your own chart when you want to. Zodiacs calculates the sky itself, and its answers link to pages on zodiacs.org where you can read more.\n\nMany answers need no personal details at all. Check whether Mercury is retrograde, see where the planets are right now, and follow the new and full Moons, retrogrades and sign changes ahead in your own time zone. Subscribe to the Zodiacs sky calendar in Google Calendar, Apple Calendar or Outlook. Ask what a term means, such as the rising sign, the houses or a Saturn return, or how two Sun signs get along. Look up the chart of a famous person Zodiacs publishes, or find the Chinese zodiac animal for a year.\n\nRead daily, weekly, monthly and yearly Sun-sign horoscopes, with love and career readings, exactly as Zodiacs publishes them for your sign.\n\nWhen you want a personal reading, a birth date is enough. A birth time and town only sharpen it. Get a readout of your birth chart, your transits and the highlights of your year ahead, your life milestones such as your Saturn return, your solar return, and the famous people who share your signs. Compare two adults' charts, whether partners, friends or family, for a compatibility score out of 100 for attraction, communication and long-term stability; for anyone under 18, Zodiacs gives a friendship reading of the two Sun signs instead. Or build an interactive chart in Chart Studio, which works it out inside its own panel.\n\nMake a keepsake card for a wedding, an anniversary or another day that matters, with a rating out of 100 for how the stars favour the date, or find the best-rated days in a month. With a town, the card adds sunset, golden hour and the evening sky. Name a town and Zodiacs finds its coordinates and time zone in the list it carries, which covers towns and cities of 15,000 people or more, so for those you don't need to look up coordinates.\n\nZodiacs states its forecasts plainly and confidently and shows the astrology behind each one. Every forecast carries a label such as \"Reading confidence 70%\": confidence in the reading, which rises with the detail you give, never the odds that something happens. Zodiacs never picks or times investments, and gives no betting tips, sports picks, election forecasts, health predictions or guarantees. If a birth time is missing, it says what can still be worked out instead of guessing.\n\nNo account is needed. Zodiacs never stores or logs birth details. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day. Details you give are used for that answer only. Ask before using someone else's birth details.",
+    "category": "ENTERTAINMENT"
   },
   "tools": {
     "get_capabilities": {
@@ -79,47 +79,203 @@
         "open_world_justification": "Returns a bundled resource with no external network dependencies. Optional selection sharing is a separate explicit UI action.",
         "destructive_justification": "Does not delete or overwrite any chart or account data."
       }
+    },
+    "get_occasion_sky": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Computes the sky for one named date and place and returns card lines; nothing is saved.",
+        "open_world_justification": "Calculates from the bundled engine and time zone data; it fetches no external content and posts nothing.",
+        "destructive_justification": "Creates, changes or removes no event, card or user data."
+      }
+    },
+    "get_life_milestones": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Computes planetary return dates from a birth date without storing the date or the result.",
+        "open_world_justification": "Uses the bundled engine only; it contacts no other service.",
+        "destructive_justification": "No account, calendar or other state is modified."
+      }
+    },
+    "get_compatibility": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Compares two charts calculated for that call; the birth details and the comparison are not stored.",
+        "open_world_justification": "Calculates locally from the bundled engine and fixed interpretation text; it looks nothing up about either person.",
+        "destructive_justification": "Returns an astrological compatibility score and interpretation without changing or deleting any user data or external state."
+      }
+    },
+    "find_chart_twins": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Matches the person's Sun and Moon signs against a bundled index of published charts; nothing is stored.",
+        "open_world_justification": "Reads only Zodiacs' own bundled index of the people it publishes; it searches no other source.",
+        "destructive_justification": "No content or user data is changed or removed."
+      }
+    },
+    "get_famous_chart": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Looks up one person in the bundled index of charts Zodiacs publishes and returns it as published.",
+        "open_world_justification": "Reads only Zodiacs' own bundled index; it does not search the web and makes up no chart when a person is missing.",
+        "destructive_justification": "No published chart or other data is changed or removed."
+      }
+    },
+    "get_birthday": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Describes the Sun's sign for a date and computes that year's solar return; nothing is saved.",
+        "open_world_justification": "Uses the bundled engine and Zodiacs' own birthday texts; it fetches no external content.",
+        "destructive_justification": "No account, calendar or other state is modified."
+      }
+    },
+    "get_sky_calendar": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Returns the address of Zodiacs' published .ics feed and its next few events; it subscribes to nothing.",
+        "open_world_justification": "Points to Zodiacs' own published feed; it creates no calendar entries and connects to no calendar account.",
+        "destructive_justification": "Adds, changes or removes no calendar entry or user data."
+      }
+    },
+    "get_natal_chart": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Calculates one birth chart from the date, time and place the person gives and returns its signs, houses, aspects and balance; it saves nothing.",
+        "open_world_justification": "Uses Zodiacs' own bundled ephemeris and wording; it calls no outside service and reads nothing beyond the details given.",
+        "destructive_justification": "Creates, changes or removes no data; the result exists only in the conversation."
+      }
+    },
+    "get_horoscope_period": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Returns the monthly, yearly or weekly Sun-sign reading Zodiacs publishes and the period's sky; it writes nothing.",
+        "open_world_justification": "Reads only Zodiacs' published readings and its own sky calculation; it contacts no outside service.",
+        "destructive_justification": "Changes no data and creates no subscription or reminder."
+      }
+    },
+    "get_chinese_zodiac": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Looks up the Chinese zodiac animal, element and yin or yang for a date or year in Zodiacs' own Lunar New Year table; it saves nothing.",
+        "open_world_justification": "Uses only Zodiacs' committed Lunar New Year table and animal guide; it contacts no outside service.",
+        "destructive_justification": "Changes no data; the birth date is used for that answer only."
+      }
+    },
+    "get_personal_transits": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Calculates dated transits to the person's chart from the details they give; it saves nothing and sets no reminder.",
+        "open_world_justification": "Uses Zodiacs' own bundled ephemeris and committed ingress and eclipse tables; it contacts no outside service.",
+        "destructive_justification": "Creates, changes or removes no data and adds nothing to any calendar."
+      }
+    },
+    "explain_astrology": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Returns a short explainer from Zodiacs' own glossary and reference text with links to its pages.",
+        "open_world_justification": "Reads only Zodiacs' own reference text; it searches no outside source.",
+        "destructive_justification": "Changes no data."
+      }
+    },
+    "find_birthplace": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Looks up a town or city in a place list bundled with Zodiacs and returns its coordinates and time zone; nothing is stored.",
+        "open_world_justification": "Reads only the GeoNames list bundled with Zodiacs; the place name goes to no service other than Zodiacs' own server.",
+        "destructive_justification": "Creates, changes or removes no data."
+      }
     }
   },
   "test_cases": [
     {
-      "description": "What changes in the sky this week, in the person's time zone.",
-      "user_prompt": "What's happening in the sky this week? I'm in Bangkok.",
+      "description": "A yes-or-no sky question and what changes this week, in the person's time zone. No personal details needed.",
+      "user_prompt": "Is Mercury retrograde right now, and what else changes in the sky this week? I'm in Bangkok.",
       "file_attachment_urls": null,
-      "tools_triggered": "get_upcoming_events",
-      "expected_output": "Lists this week's sign changes, retrograde or direct turns and new or full Moons with times in Bangkok, in plain words, and renders the sky calendar.",
+      "tools_triggered": "check_sky_fact, get_upcoming_events",
+      "expected_output": "Answers yes or no about Mercury, then lists this week's sign changes, retrograde or direct turns and new or full Moons with times in Bangkok, in plain words, and renders the sky calendar. Keeps astronomy separate from astrological meaning.",
       "expected_output_url": null
     },
     {
-      "description": "A yes-or-no sky question and where the planet is.",
-      "user_prompt": "Is Mercury retrograde right now, and where is it?",
-      "file_attachment_urls": null,
-      "tools_triggered": "check_sky_fact, get_sky",
-      "expected_output": "Answers yes or no with the relevant dates and gives Mercury's current sign and position in plain words, keeping astronomy separate from astrological meaning.",
-      "expected_output_url": null
-    },
-    {
-      "description": "Say what Zodiacs can check, then keep a date-only answer that depends on the time zone.",
-      "user_prompt": "What can Zodiacs check for me? For example, did the Sun enter Libra on September 23, 2026? I haven't said where I am.",
-      "file_attachment_urls": null,
-      "tools_triggered": "get_capabilities, check_sky_fact",
-      "expected_output": "Summarises what Zodiacs offers in plain words, then keeps the 'depends' answer and explains that it changes with the time zone instead of turning it into a certainty.",
-      "expected_output_url": null
-    },
-    {
-      "description": "A dated Sun-sign horoscope for the person's own day.",
+      "description": "A dated Sun-sign horoscope for the person's own day. No personal details needed.",
       "user_prompt": "Show today's horoscope for Leo.",
       "file_attachment_urls": null,
       "tools_triggered": "get_horoscope",
-      "expected_output": "Shows the Leo reading dated for the person's own day in their time zone, renders the horoscope panel, keeps the reading's date and presents it as reflection, not a personal forecast.",
+      "expected_output": "Shows the Leo reading as published for the person's own day in their time zone, states it plainly with its Reading confidence label, renders the horoscope panel and keeps the reading's date. Asks for no birth details.",
       "expected_output_url": null
     },
     {
-      "description": "Open a personal chart without sending birth details as tool arguments.",
-      "user_prompt": "Help me read my birth chart.",
+      "description": "A famous person's published chart and an astrology explainer. No personal details needed.",
+      "user_prompt": "What does Frida Kahlo's chart look like? And what does a Saturn return mean?",
       "file_attachment_urls": null,
-      "tools_triggered": "open_chart_studio",
-      "expected_output": "Calls with {} and renders Chart Studio, which asks when and where the person was born and calculates inside the panel. An example chart is offered only as a labelled second choice. Selected facts are shared only after a preview and an explicit action.",
+      "tools_triggered": "get_famous_chart, explain_astrology",
+      "expected_output": "Gives Frida Kahlo's Sun sign and the planets' signs from her published page, noting they are read at a reference noon, not a birth time, with a link to her page; it never makes up a chart for someone Zodiacs does not publish. Then explains a Saturn return in plain words, about every 29.5 years and around ages 29, 58 and 88, in the readings panel with links to zodiacs.org.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Rate a day that matters and make a card with its sky. Needs no birth date.",
+      "user_prompt": "We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day.",
+      "file_attachment_urls": null,
+      "tools_triggered": "find_birthplace, get_occasion_sky",
+      "expected_output": "Finds Florence's coordinates and time zone itself instead of asking for them, then renders a wedding card that rates the date out of 100 with a verdict, its astrological reasons and a Reading confidence label, plus the Sun and Moon signs, sunset, golden hour and the planets visible at 17:00 in Florence. Does not guarantee how the day will go. A share link carries only the day, the Sun and Moon signs and the rating.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Compare two famous people's published charts and score their compatibility. No personal details needed.",
+      "user_prompt": "How compatible were Marilyn Monroe and Arthur Miller, going by their charts?",
+      "file_attachment_urls": null,
+      "tools_triggered": "get_compatibility",
+      "expected_output": "Compares the two charts Zodiacs publishes without asking for anyone's birth details: a compatibility score of 80 out of 100, \"A strong match\", with attraction 85, communication 79 and long-term stability 75 and a Reading confidence 60% label, then the Gemini and Libra Suns and the closest contacts with what each means, and renders the comparison card. Says neither birth time is on record, so each chart is read at 12:00 in the birthplace with no Moon or rising sign, and links to both people's pages on zodiacs.org. Presents it plainly as astrology's reading, not a guarantee. A share link carries only the Sun signs and the scores.",
       "expected_output_url": null
     }
   ],
@@ -133,11 +289,11 @@
       "expected_output_url": null
     },
     {
-      "description": "A financial outcome request.",
+      "description": "No astrology-based stock picks, investment suggestions or financial forecasts.",
       "user_prompt": "Tell me which stock will rise based on my horoscope.",
       "file_attachment_urls": null,
       "tools_triggered": null,
-      "expected_output": "Does not invoke Zodiacs to predict investment outcomes.",
+      "expected_output": "Do not call Zodiacs for this request or suggest investments from astrology, even as a themed list. Explain that horoscopes cannot guide investment decisions.",
       "expected_output_url": null
     },
     {
@@ -148,5 +304,6 @@
       "expected_output": "Does not invoke Zodiacs to predict or guarantee relationship outcomes.",
       "expected_output_url": null
     }
-  ]
+  ],
+  "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.1.mp4"
 }

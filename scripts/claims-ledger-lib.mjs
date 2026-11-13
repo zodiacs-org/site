@@ -18,7 +18,7 @@
  * - HARD, everywhere else: the unambiguous subset (JPL, arcseconds, IANA,
  *   "in your browser", "never sent" and the like).
  * - NEUTRAL, on translated pages and catalogs: names and numbers that read
- *   the same in any language (JPL, IANA, OpenAI, 12:00, UTC), so a
+ *   the same in any language (JPL, IANA, OpenAI, Anthropic, 12:00, UTC), so a
  *   translation of a listed claim is listed too.
  *
  * Nothing here writes the ledger; scripts/claims-ledger.mjs prints drafts.
@@ -153,8 +153,12 @@ export const SCOPE_ADD = Object.freeze([
  * navigation, built from the code's names and comments, which the pages
  * render; its styles and icons); the archives of past releases, served
  * unchanged as published, whose current files are read from their sources;
- * and the sky benchmark's v0 files under /developers/sky-benchmark/, a frozen
- * dataset of questions, answers and its scorer, which its page describes.
+ * the sky benchmark's v0 files under /developers/sky-benchmark/, a frozen
+ * dataset of questions, answers and its scorer, which its page describes;
+ * and the time atlas's 0.1.0 files under /developers/time-atlas/, the engine
+ * repository's atlas copied byte for byte at a pinned commit and held to its
+ * digests, whose statements are the atlas's own (as for src/data/time-atlas/
+ * below), which its page describes.
  */
 export const SCOPE_ADD_TREES = Object.freeze([
   { root: 'public/developers/engine/reference', pattern: /\.(?:html|txt|json)$/u },
@@ -183,6 +187,9 @@ export const SCOPE_DROP = Object.freeze([
   { pattern: /^api\/_ai\/runtime\.mjs$/u, reason: 'generated from src/ai-tools, src/lib/compute-api and the vendored engine; the source adapters are read instead' },
   { pattern: /^src\/data\/(?:sky|ingresses|eclipses|birthdays)\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/transits-\d{4}-\d{2}\.json$/u, reason: 'generated sky data with no prose' },
+  { pattern: /^src\/data\/time-atlas\//u, reason: 'the engine repository\'s time atlas, copied byte for byte at a pinned commit and held to its digests: its statements are the atlas\'s own, each rule cited to primary sources and checked by the atlas\'s checks (B3.a)' },
+  { pattern: /^src\/data\/horoscope-months\.json$/u, reason: 'generated from src/content/horoscopes by scripts/build-horoscope-months.mjs; the monthly readings are read there instead' },
+  { pattern: /^src\/data\/lunar-new-year\.json$/u, reason: 'generated Lunar New Year dates with no prose (scripts/build-lunar-new-year.mjs)' },
   { pattern: /^src\/data\/people\.json$/u, reason: 'the people pilot\'s frozen, generated copy; its facts are checked by build-people-pilot.mjs --check' },
   { pattern: /(?:^|\/)fixtures\/|\.fixture\.json$/u, reason: 'test fixtures, not copy' },
 ]);
@@ -202,6 +209,7 @@ export const DENSE_FILES = Object.freeze([
   'public/llms-full.txt',
   'public/llms.txt',
   'src/pages/developers/engine/index.astro',
+  'src/pages/developers/time-atlas/index.astro',
   'src/pages/methodology/index.astro',
   'src/pages/privacy/index.astro',
 ]);
@@ -671,7 +679,7 @@ export async function extractBlocks(file, source) {
  */
 export const LEXICON_VERSION = 2;
 
-const BRANDS = /(?:\bOpenAI\b|\bSupabase\b|\bPlausible\b|\bPII\b|\bJPL\b|\bNASA\b|\bHorizons\b|\bSwiss Ephemeris\b|\bIANA\b|\bICU\b)/u;
+const BRANDS = /(?:\bOpenAI\b|\bAnthropic\b|\bSupabase\b|\bPlausible\b|\bPII\b|\bJPL\b|\bNASA\b|\bHorizons\b|\bSwiss Ephemeris\b|\bIANA\b|\bICU\b)/u;
 
 export const FULL = Object.freeze({
   names: BRANDS,
@@ -689,7 +697,7 @@ export const HARD = Object.freeze({
 });
 
 export const NEUTRAL = Object.freeze({
-  names: /(?:\bJPL\b|\bNASA\b|\bHorizons\b|\bIANA\b|\bICU\b|\bOpenAI\b|\bPlausible\b|\bSupabase\b|\b12:00\b|\bUTC\b|\bSwiss Ephemeris\b)/u,
+  names: /(?:\bJPL\b|\bNASA\b|\bHorizons\b|\bIANA\b|\bICU\b|\bOpenAI\b|\bAnthropic\b|\bPlausible\b|\bSupabase\b|\b12:00\b|\bUTC\b|\bSwiss Ephemeris\b)/u,
 });
 
 const LEXICONS = { dense: FULL, trust: FULL, hard: HARD, mirror: NEUTRAL };

@@ -1,0 +1,159 @@
+{
+  "schema": "zodiacs.form-layout.v1",
+  "layouts": {
+    "/birth-chart/ 412x823": {
+      "boxes": {
+        ".calc__core": [
+          20,
+          282.3,
+          372,
+          676.8
+        ],
+        ".calc__fields": [
+          0,
+          0,
+          0,
+          0
+        ],
+        ".calc__submit": [
+          39,
+          720.7,
+          334,
+          64
+        ],
+        ".calc__privacy": [
+          39,
+          798.7,
+          334,
+          41.6
+        ],
+        ".calc__options": [
+          39,
+          860.3,
+          318,
+          57
+        ],
+        ".calc__guide": [
+          39,
+          921.3,
+          334,
+          20.8
+        ]
+      },
+      "formScreenshotSha256": "30c37da9c5c9dbdd5b7a5b99fdd1ff77f788405b6074813ee7bf0de1b9f24453"
+    },
+    "/birth-chart/ 1440x900": {
+      "boxes": {
+        ".calc__core": [
+          120,
+          310.4,
+          549.4,
+          633.9
+        ],
+        ".calc__fields": [
+          0,
+          0,
+          0,
+          0
+        ],
+        ".calc__submit": [
+          149,
+          746.7,
+          491.4,
+          64
+        ],
+        ".calc__privacy": [
+          149,
+          824.7,
+          491.4,
+          21.6
+        ],
+        ".calc__options": [
+          149,
+          866.3,
+          330.1,
+          57
+        ],
+        ".calc__guide": [
+          495.1,
+          866.3,
+          145.3,
+          45.8
+        ]
+      },
+      "formScreenshotSha256": "3c6100b1ac03fb274c4de0b6533b12e676cbdc9d97fb93c95d5ec1f39165d554"
+    },
+    "/ru/birth-chart/ 412x823": {
+      "boxes": {
+        ".calc__core": [
+          20,
+          307.7,
+          372,
+          668.3
+        ],
+        ".calc__fields": [
+          0,
+          0,
+          0,
+          0
+        ],
+        ".calc__submit": [
+          39,
+          746.1,
+          334,
+          80.3
+        ],
+        ".calc__privacy": [
+          39,
+          840.4,
+          334,
+          41.6
+        ],
+        ".calc__options": [
+          39,
+          902,
+          334,
+          57
+        ],
+        ".calc__guide": null
+      },
+      "formScreenshotSha256": "bac63a17a556946fa828765e46eb0c822a3494dc50e64ecd81a3aa0c5fc56729"
+    },
+    "/ru/birth-chart/ 1440x900": {
+      "boxes": {
+        ".calc__core": [
+          120,
+          341.6,
+          549.4,
+          633.9
+        ],
+        ".calc__fields": [
+          0,
+          0,
+          0,
+          0
+        ],
+        ".calc__submit": [
+          149,
+          777.9,
+          491.4,
+          64
+        ],
+        ".calc__privacy": [
+          149,
+          855.9,
+          491.4,
+          21.6
+        ],
+        ".calc__options": [
+          149,
+          897.5,
+          491.4,
+          57
+        ],
+        ".calc__guide": null
+      },
+      "formScreenshotSha256": "931265c42c09d275df846837895be1a1c68ac9fc68eb152f78aa8dfa0cbd091e"
+    }
+  }
+}

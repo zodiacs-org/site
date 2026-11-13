@@ -1,0 +1,18 @@
+---
+/**
+ * On a geometry guide, links to the same angle on each natal pair page.
+ * Rendered only when natal pairs are enabled. No styles of its own: it uses
+ * the page's prose rules, so the guide's stylesheet is unchanged.
+ */
+import { NATAL_ASPECT_PAIRS, natalPairHeading, type NatalAspectPair } from '../../lib/natal-aspect-pairs';
+
+interface Props { type: string }
+const { type } = Astro.props;
+const pairs = NATAL_ASPECT_PAIRS as NatalAspectPair[];
+---
+<section class="prose reveal" aria-labelledby="natal-pairs-heading">
+  <h2 id="natal-pairs-heading">The {type} in three planet pairs</h2>
+  <ul>
+    {pairs.map((pair) => <li><a href={`/learn/aspects/${pair}/#${type}`}>{natalPairHeading(pair, type)}</a></li>)}
+  </ul>
+</section>

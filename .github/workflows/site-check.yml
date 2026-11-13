@@ -26,6 +26,7 @@ jobs:
   build-check:
     name: Build & Check
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -97,8 +98,10 @@ jobs:
         run: |
           npx vitest run scripts/check-developer-authorship.test.mjs
           node scripts/check-developer-authorship.mjs
+        timeout-minutes: 5
 
       - name: Released engine reference
+        timeout-minutes: 5
         run: |
           npm ci --prefix scripts/engine-reference --ignore-scripts
           node scripts/build-engine-reference.mjs --check
@@ -106,10 +109,16 @@ jobs:
           npx vitest run scripts/engine-reference.test.mjs
           node tests/engine-reference-drive.mjs
 
+      - name: Natal aspect pairs released in normal builds
+        timeout-minutes: 5
+        run: node tests/natal-aspects-publication-drive.mjs
+
       - name: Typecheck
+        timeout-minutes: 5
         run: npm run check
 
       - name: Thesis reading and evidence at six viewport widths
+        timeout-minutes: 10
         run: OUT_DIR=tests/visual/artifacts/thesis npm run test:thesis:browser
 
       - name: Upload thesis screenshots
@@ -122,6 +131,7 @@ jobs:
           retention-days: 30
 
       - name: Birth chart export and sharing acceptance
+        timeout-minutes: 5
         env:
           T17_SHARE_EVIDENCE: "1"
         run: node tests/t17-positions-share.mjs
@@ -131,6 +141,7 @@ jobs:
         run: node tests/sign-icon-requests-drive.mjs
 
       - name: Imported calendar input boundaries
+        timeout-minutes: 5
         run: node tests/platform-share-boundary-drive.mjs
 
       - name: Moon lookup result ownership
@@ -166,6 +177,7 @@ jobs:
         run: OUT_DIR=tests/visual/artifacts/saved-natal-storage node tests/saved-natal-storage-drive.mjs
 
       - name: Engine accuracy vectors
+        timeout-minutes: 25
         run: npm test
 
       - name: Return visits, browser PDF and private sharing
@@ -197,6 +209,7 @@ jobs:
       # contract's invariants live. A test nothing runs is not a test.
       # Environment-neutral: no pack, no kernel, no network.
       - name: Precision alpha tier A
+        timeout-minutes: 5
         working-directory: examples/precision-alpha
         run: npm test
 
@@ -205,36 +218,47 @@ jobs:
         run: node scripts/verify-platform-starter.mjs --install
 
       - name: Phase 1 exact-width acceptance evidence
+        timeout-minutes: 5
         run: npm run test:phase1:evidence
 
       - name: Weekly digest smoke
+        timeout-minutes: 5
         run: npm run digest:weekly -- --dry-run --fixture --week-start 2026-07-13 --limit 1
 
       - name: Link & artifact integrity over dist
+        timeout-minutes: 10
         run: node scripts/check-dist.mjs
 
       - name: I18n route-boundary regression
+        timeout-minutes: 5
         run: npm run test:i18n:r0
 
       - name: Russian R2 public-locale acceptance
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/i18n-r2-ru npm run test:i18n:r2
 
       - name: Homepage poster motion and deferred video
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/home-hero npm run test:home-hero:browser
 
       - name: Homepage interactive chart preview
+        timeout-minutes: 5
         run: npm run test:home-demo:browser
 
       - name: Phase 2 sky-events publication drive
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/events npm run test:events:browser
 
       - name: Phase 5 People noindex pilot
+        timeout-minutes: 10
         run: OUT_DIR=tests/visual/artifacts/phase5-people npm run test:phase5:people
 
       - name: Phase 6 Ask Zodiacs drive
+        timeout-minutes: 5
         run: npm run test:phase6:ask
 
       - name: Today SSR and personalization
+        timeout-minutes: 10
         run: npm run test:today:browser
 
       - name: Consumer mobile journeys and early form input
@@ -242,45 +266,59 @@ jobs:
         run: OUT_DIR=tests/visual/artifacts/consumer-experience npm run test:consumer:browser
 
       - name: Horoscope templates, SSR, and responsive behavior
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/horoscope-program npm run test:horoscopes:browser
 
       - name: Link-in-bio page acceptance
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/bio npm run test:bio:browser
 
       - name: Existing compatibility regression drive
+        timeout-minutes: 10
         run: OUT_DIR=tests/visual/artifacts/compatibility npm run test:compatibility:browser
 
       - name: Existing Registry selector regression drive
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/registry npm run test:registry-selector:browser
 
       - name: Zodiac Markets mobile terminal acceptance
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/zodiac-markets node tests/registry-exchange-mobile-drive.mjs
 
       - name: Phase 1 mobile frame cadence
+        timeout-minutes: 5
         run: npm run test:phase1:frames
 
       - name: Structured data validation
+        timeout-minutes: 5
         run: npm run schema:check
 
       - name: Bundle size & engine isolation gates
+        timeout-minutes: 5
         run: node scripts/report-bundles.mjs --fail
 
       - name: Visual regression
+        timeout-minutes: 10
         run: npm run test:visual
 
       - name: Lighthouse performance budgets
+        timeout-minutes: 30
         run: npm run test:lighthouse
 
       - name: Foreign-origin widget integration
+        timeout-minutes: 5
         run: npm run test:widgets:browser
 
       - name: Widget Lighthouse thresholds
+        timeout-minutes: 5
         run: npm run test:widgets:lighthouse
 
       - name: Birth-time window development worker and UTC boundaries
+        timeout-minutes: 10
         run: node tests/birth-time-window-development-drive.mjs
 
       - name: Birth-time window native worker and chart ownership
+        timeout-minutes: 5
         run: node tests/birth-time-window-drive.mjs
 
       - name: Upload Phase 1 browser and performance evidence
@@ -299,6 +337,7 @@ jobs:
   legacy-drift:
     name: Legacy wing drift
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -324,12 +363,14 @@ jobs:
       - name: Verify MCP adapter bundle, archive and manifest
         run: npm run mcp:pack:check
 
-      # The engine's own time basis, which the package does not export, bundled
-      # from the installed dist/ for the calendar function's server adapter and
-      # the reference tools. It must be what the vendored engine gives: the
-      # generator checks it against natalChart before comparing bytes.
-      - name: Verify the engine time-basis bundle
-        run: node scripts/build-time-basis.mjs --check
+      - name: Verify natal aspect example drift
+        run: node scripts/build-natal-aspect-examples.mjs --check
+
+      - name: Verify Sun ingress table drift
+        run: node scripts/build-sun-ingresses.mjs --check
+
+      - name: Verify Moon distance table drift
+        run: node scripts/build-moon-distances.mjs --check
 
       # Committed wing HTML must match what the builders produce from
       # sources (build-app resolves the pinned local @babel/standalone,
@@ -345,6 +386,7 @@ jobs:
           node scripts/build-exchange.mjs
           node scripts/configure-registry-exchange.mjs
           node scripts/build-precision-preview.mjs
+          node scripts/build-playground-engine.mjs
 
       - name: Drift gate
         run: git diff --exit-code -- public/
@@ -358,7 +400,7 @@ jobs:
   swiss-output-removal:
     name: Swiss output removal and independent references
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -520,7 +562,7 @@ jobs:
   saved-records-lifecycle-drive:
     name: Saved calculation records lifecycle drive
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
       PUBLIC_SAVED_RECORDS_ENABLED: "1"
     steps:
@@ -614,6 +656,17 @@ jobs:
 
       - name: PostgreSQL 17 migration, privacy, and concurrency gates
         run: bash scripts/test-games-sql.sh
+
+  saved-pages-sql:
+    name: Saved pages SQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: PostgreSQL 17 migration, row-level security and limit gates
+        run: bash scripts/test-saved-pages-sql.sh
 
   phase4-sharing-drive:
     name: Phase 4 sharing drive
@@ -729,6 +782,58 @@ jobs:
       - name: Browser acceptance drive
         run: npm run test:phase3:pwa
 
+  natal-aspects-reference:
+    # The released natal planet-pair references: the three
+    # /learn/aspects/{pair}/ pages from a normal build, under the normal
+    # postbuild gates (check-dist, report-bundles --fail with
+    # budgets.natal-aspects.json).
+    name: Natal aspect pairs
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LIGHTHOUSE_ROUTES: natal-sun-moon,natal-moon-venus,natal-venus-mars
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install pinned Chromium
+        run: npx playwright-core install chromium
+
+      - name: Verify calculation evidence
+        run: node scripts/build-natal-aspect-examples.mjs --check
+
+      - name: Build released pages with unchanged gates
+        run: npm run build
+
+      - name: Typecheck released pages
+        run: npm run check
+
+      - name: Browser layout, keyboard and register
+        run: node tests/natal-aspects-reference-drive.mjs
+
+      - name: Mobile performance, accessibility and SEO
+        run: npm run test:lighthouse
+
+      - name: Retain natal page evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: natal-aspects-reference-${{ github.run_id }}
+          path: |
+            tests/visual/artifacts/natal-aspects/
+            tests/visual/artifacts/lighthouse/
+          if-no-files-found: ignore
+          retention-days: 30
+
   aura-drive:
     # The flag-on browser acceptance suite for Registry Aura: docket honesty,
     # Alignment grammar, share privacy, wallet lifecycle, forced colors, and
@@ -736,6 +841,7 @@ jobs:
     # the RPC URLs only need to satisfy build-time validation.
     name: Registry Aura drive
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       PUBLIC_REGISTRY_COLLECTION_ENABLED: "1"
       SOLANA_RPC_URL: https://aura-ci.invalid/rpc
@@ -770,6 +876,59 @@ jobs:
           path: docs/acceptance/registry-aura/
           if-no-files-found: ignore
 
+  # The same production flags with encrypted account sync switched on, as
+  # production runs it once launched. PUBLIC_ACCOUNT_SYNC_V2_ENABLED is read
+  # at build time, so only a build with it on runs the dist checks (for
+  # example the localized pages' English-link checks) against the pages it
+  # changes. Build only: no browsers, no email, no Supabase.
+  account-sync-v2-flags-build:
+    name: Build with production's feature flags and account sync on
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PUBLIC_COMPAT_INVITES_ENABLED: "1"
+      PUBLIC_REGISTRY_AURA_ENABLED: "1"
+      PUBLIC_REGISTRY_COLLECTION_ENABLED: "1"
+      PUBLIC_REGISTRY_TRADE_ENABLED: "1"
+      PUBLIC_SAVED_RECORDS_ENABLED: "1"
+      PUBLIC_WEEKLY_DIGEST_ENABLED: "1"
+      PUBLIC_ZODIAC_GAMES_ENABLED: "1"
+      PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_stand_in
+      PUBLIC_VAPID_KEY: ci-stand-in-vapid-public-key
+      PUBLIC_PLAUSIBLE_SCRIPT_URL: https://plausible.io/js/script.js
+      SOLANA_RPC_URL: https://production-flags-ci.invalid/rpc
+      BASE_RPC_URL: https://production-flags-ci.invalid/base
+      # Linux WebKit resolves hosts before Playwright can intercept fetch.
+      # The recovery driver owns this loopback fixture; no live account service.
+      PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      SUPABASE_SERVICE_ROLE_KEY: ci_stand_in_service_role
+      DAILY_EMAIL_ENABLED: "1"
+      EMAIL_PROVIDER: resend
+      RESEND_API_KEY: re_ci_stand_in_sending
+      RESEND_CONTACTS_API_KEY: re_ci_stand_in_contacts
+      RESEND_FROM_EMAIL: "Zodiacs.org <ci@production-flags-ci.invalid>"
+      RESEND_DAILY_SEGMENT_ID: ci_stand_in_daily_segment
+      EMAIL_CONFIRM_SECRET: ci-stand-in-confirm-secret-00000000000000000000
+      DAILY_EMAIL_UNSUBSCRIBE_SECRET: ci-stand-in-unsubscribe-secret-000000000000000
+      DAILY_EMAIL_RECIPIENT_HASH_SECRET: ci-stand-in-recipient-secret-0000000000000000
+      PUBLIC_ACCOUNT_SYNC_V2_ENABLED: "1"
+      ACCOUNT_SYNC_V2_API_ENABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build, dist checks and route budgets (account sync on)
+        run: npm run build
+
   # Production builds with all of these public flags on. The other builds
   # here turn on one flag or none, and pages are smaller then, so a route can
   # pass every budget in CI and still stop the production build at its limit,
@@ -794,7 +953,7 @@ jobs:
     # WebKit's Ubuntu dependencies used almost the previous 20-minute job
     # allowance before either browser drive started. Individual drive limits
     # remain unchanged; allow installation plus both acceptance drives.
-    timeout-minutes: 30
+    timeout-minutes: 40
     env:
       PUBLIC_COMPAT_INVITES_ENABLED: "1"
       PUBLIC_REGISTRY_AURA_ENABLED: "1"
@@ -839,8 +998,46 @@ jobs:
       - name: Build, dist checks and route budgets (production flags on)
         run: npm run build
 
+      # --with-deps has apt install about 180 Ubuntu packages that the runner
+      # image lacks (mostly WebKit's media and font libraries, 114 MB of .deb
+      # files). The Azure Ubuntu mirror usually serves them in about 12
+      # seconds, but in late October and early November it stalled on several
+      # runs for 20 minutes or more, past the job's time limit. So the .deb
+      # files of the installed versions are kept in the Actions cache and
+      # handed to apt before the same install command runs, each first
+      # checked against the SHA256 in the package lists apt has just
+      # downloaded and verified (.github/actions/browser-debs). apt then picks
+      # the same versions as before, uses a cached file whose name and size
+      # match, and downloads anything missing or newer, so the packages
+      # installed, and what the drives below test, stay the same. The mirror
+      # is still needed for the package lists (1 to 15 seconds during those
+      # stalls) and, once, for files the cache lacks. Browser Evidence and
+      # Developer guides restore this job's entry too: Chromium's packages
+      # are among these.
+      #
+      # The cache only saves time, so it never fails the job: when it is slow
+      # or unavailable, apt downloads the packages as it did before. Restore
+      # gives up on a stuck download after 2 minutes.
+      - name: Restore profile test browser packages
+        id: browser-debs
+        continue-on-error: true
+        timeout-minutes: 4
+        uses: ./.github/actions/browser-debs/restore
+        with:
+          name: profile-browser-debs
+
       - name: Install profile test browsers
         run: npx playwright-core install --with-deps chromium webkit
+
+      # Straight after the install, so a drive that fails later still leaves
+      # the packages for the next run. Saved only when the set changed.
+      - name: Save profile test browser packages
+        continue-on-error: true
+        timeout-minutes: 5
+        uses: ./.github/actions/browser-debs/save
+        with:
+          name: profile-browser-debs
+          restored-key: ${{ steps.browser-debs.outputs.matched-key }}
 
       - name: Free sharing and sourced matches in Chromium and WebKit
         timeout-minutes: 8
@@ -861,6 +1058,10 @@ jobs:
         env:
           OUT_DIR: tests/visual/artifacts/profile-recovery
         run: node tests/profile-recovery-drive.mjs
+
+      - name: Profile sign pictures are the same requests for every visitor
+        timeout-minutes: 8
+        run: node tests/profile-sign-icon-requests-drive.mjs
 
       - name: Profile photo editing and navigation on desktop and mobile
         timeout-minutes: 8

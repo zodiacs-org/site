@@ -1,0 +1,19 @@
+{
+  "driver": "<post-hoc>/holdouts/holdout-1912-run.json",
+  "unmodified": "<post-hoc>/holdouts/unmodified-harness-1912.json",
+  "unmodifiedEpoch": "1912-12-12T00:00:00Z",
+  "driverEpoch": "1912-12-12T00:00:00Z",
+  "sameCaseIds": true,
+  "ignoredFields": [
+    "ms",
+    "withinWallClock",
+    "partitionMs",
+    "warmMs",
+    "baselineMs",
+    "label"
+  ],
+  "differences": [],
+  "identical": true,
+  "unmodifiedVerdict": "PARTIAL: P-1 and P-6 hold; at least one of P-2..P-5 does not, and is recorded with its measured number",
+  "driverVerdict": "PARTIAL: P-1 and P-6 hold; at least one of P-2..P-5 does not, and is recorded with its measured number"
+}

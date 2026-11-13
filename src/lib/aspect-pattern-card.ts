@@ -3,8 +3,7 @@ import type { SelectedPatternCard } from './aspect-pattern-model';
 import { patternDiagramGeometry, PATTERN_EDGE_COLORS } from '../islands/aspect-patterns/AspectPatternDiagram';
 import { patternDegrees } from './aspect-pattern-model';
 import { signForLongitude } from './signs';
-import { BRAND_ICON_PATHS } from './brand-icons.mjs';
-import { drawShareBrandLockup, PORTRAIT_SHARE_CARD_BRAND_LAYOUT, type LoadedShareBrandIcon } from './share-card-brand';
+import { drawShareBrandLockup, PORTRAIT_SHARE_CARD_BRAND_LAYOUT } from './share-card-brand';
 import { downloadPreparedChartCard, type CardOutcome, type PreparedChartCard } from './share-card';
 
 export const ASPECT_PATTERN_CARD_SIZE = Object.freeze({ width: 1080, height: 1350 });
@@ -52,44 +51,6 @@ async function bounded<T>(work: (signal: AbortSignal) => Promise<T>, parent?: Ab
     }), stopped]);
   } finally {
     clearTimeout(timer); parent?.removeEventListener('abort', stop); controller.abort();
-  }
-}
-
-/** No asset cache can retain a rejection; bitmap and WebKit URL paths both clean up. */
-async function brandIcon(signal: AbortSignal): Promise<LoadedShareBrandIcon> {
-  const response = await fetch(BRAND_ICON_PATHS.icon512, { signal });
-  signal.throwIfAborted();
-  if (!response.ok) throw new Error('pattern_brand_unavailable');
-  const blob = await response.blob();
-  signal.throwIfAborted();
-  if (typeof createImageBitmap === 'function') {
-    try {
-      const bitmap = await createImageBitmap(blob);
-      if (signal.aborted) { bitmap.close(); signal.throwIfAborted(); }
-      return bitmap;
-    } catch (cause) { if (signal.aborted) throw cause; }
-  }
-  signal.throwIfAborted();
-  const image = new Image();
-  const url = URL.createObjectURL(blob);
-  try {
-    await new Promise<void>((resolve, reject) => {
-      const abort = () => reject(signal.reason);
-      const finish = (cause?: unknown) => {
-        signal.removeEventListener('abort', abort);
-        if (cause) reject(cause); else resolve();
-      };
-      image.onload = () => finish();
-      image.onerror = () => finish(new Error('pattern_brand_unavailable'));
-      signal.addEventListener('abort', abort, { once: true });
-      image.src = url;
-    });
-    signal.throwIfAborted();
-    return image;
-  } finally {
-    image.onload = null; image.onerror = null;
-    if (signal.aborted) image.src = '';
-    URL.revokeObjectURL(url);
   }
 }
 
@@ -149,10 +110,8 @@ export function prepareAspectPatternCard(card: SelectedPatternCard, parent?: Abo
         || edge.orb < 0 || edge.orb > edge.limit || !card.pattern.members.includes(edge.a) || !card.pattern.members.includes(edge.b))) {
       throw new Error('pattern_card_unavailable');
     }
-    let icon: LoadedShareBrandIcon | undefined;
     let canvas: HTMLCanvasElement | undefined;
     const release = () => {
-      icon?.close?.(); icon = undefined;
       if (canvas) { canvas.width = 0; canvas.height = 0; }
     };
     signal.addEventListener('abort', release, { once: true });
@@ -163,7 +122,6 @@ export function prepareAspectPatternCard(card: SelectedPatternCard, parent?: Abo
       ]);
       signal.throwIfAborted();
       if (faces.some((loaded) => !loaded.length || loaded.some((face) => face.status !== 'loaded'))) throw new Error('pattern_fonts_unavailable');
-      icon = await brandIcon(signal); signal.throwIfAborted();
       canvas = document.createElement('canvas');
       canvas.width = ASPECT_PATTERN_CARD_SIZE.width; canvas.height = ASPECT_PATTERN_CARD_SIZE.height;
       const context = canvas.getContext('2d');
@@ -180,7 +138,8 @@ export function prepareAspectPatternCard(card: SelectedPatternCard, parent?: Abo
       for (const receipt of card.receipt) y = paragraph(context, receipt, y, 17, 23, MONO);
       context.fillStyle = INK; y = paragraph(context, card.reading, y + 20, 22, 28);
       context.fillStyle = '#8E96AB'; paragraph(context, card.scope, y + 16, 18, 24);
-      drawShareBrandLockup(context, icon, PORTRAIT_SHARE_CARD_BRAND_LAYOUT);
+      // The brand lockup draws its own ring, so the card loads no image for it.
+      drawShareBrandLockup(context, null, PORTRAIT_SHARE_CARD_BRAND_LAYOUT);
       const blob = await new Promise<Blob>((resolve, reject) => canvas!.toBlob((value) =>
         value ? resolve(value) : reject(new Error('pattern_png_unavailable')), 'image/png'));
       signal.throwIfAborted();

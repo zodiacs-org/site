@@ -1,0 +1,30 @@
+F1 Sun: baseline 681 (finished) -> partition 681 (finished), 1.00x
+A1 Sun: baseline 681 (finished) -> partition 681 (finished), 1.00x
+F2 Moon: baseline 1402703 (finished) -> partition 278751 (finished), 5.03x
+A2 Moon: baseline 1402703 (finished) -> partition 278751 (finished), 5.03x
+F3 Mercury: baseline 1244147 (finished) -> partition 48165 (finished), 25.83x
+A3 Mercury: baseline 1244147 (finished) -> partition 48165 (finished), 25.83x
+F4 Venus: baseline 411020 (finished) -> partition 27162 (finished), 15.13x
+A4 Venus: baseline 411020 (finished) -> partition 27162 (finished), 15.13x
+F5 Mars: baseline 160253 (finished) -> partition 12666 (finished), 12.65x
+A5 Mars: baseline 160253 (finished) -> partition 12666 (finished), 12.65x
+F6 Jupiter: baseline 83128 (finished) -> partition 8041 (finished), 10.34x
+A6 Jupiter: baseline 83128 (finished) -> partition 8041 (finished), 10.34x
+F7 Saturn: baseline 65197 (finished) -> partition 8762 (finished), 7.44x
+A7 Saturn: baseline 65197 (finished) -> partition 8762 (finished), 7.44x
+F8 Uranus: baseline 55682 (finished) -> partition 7951 (finished), 7.00x
+A8 Uranus: baseline 55682 (finished) -> partition 7951 (finished), 7.00x
+F9 Neptune: baseline 29355 (finished) -> partition 5406 (finished), 5.43x
+A9 Neptune: baseline 29355 (finished) -> partition 5406 (finished), 5.43x
+F10 Pluto: baseline 66223 (finished) -> partition 8615 (finished), 7.69x
+A10 Pluto: baseline 66223 (finished) -> partition 8615 (finished), 7.69x
+F1 repeated: plan 0, warm 867/query vs baseline 867/query
+F2 repeated: plan 250074, warm 29303/query vs baseline 1402989/query
+F3 repeated: plan 29234, warm 17927/query vs baseline 1243897/query
+F4 repeated: plan 14871, warm 12056/query vs baseline 410812/query
+F5 repeated: plan 6050, warm 6636/query vs baseline 160253/query
+F6 repeated: plan 3032, warm 4296/query vs baseline 82415/query
+F7 repeated: plan 2823, warm 5417/query vs baseline 64700/query
+F8 repeated: plan 2439, warm 4955/query vs baseline 55150/query
+F9 repeated: plan 1650, warm 3287/query vs baseline 28886/query
+F10 repeated: plan 2598, warm 6017/query vs baseline 66223/query

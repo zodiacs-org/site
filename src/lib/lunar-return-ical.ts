@@ -42,7 +42,7 @@ export function buildLunarReturnCalendar(model: LunarReturnExportModel, generate
   const dtstamp = formatIcalUtc(generatedAt);
   if (!/^\d{8}T\d{6}Z$/.test(dtstamp)) throw new RangeError('Invalid UTC calendar receipt time.');
   const description = [
-    'Calendar marker — the one-minute duration is for display only, not a duration of the lunar return.',
+    'Calendar marker. The one-minute duration is for display only, not a duration of the lunar return.',
     `Next return after the recorded reference: ${reference}.`,
     `Calculated return instant, to the whole minute: ${instant}.`,
   ].join('\n');

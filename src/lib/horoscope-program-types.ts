@@ -9,6 +9,7 @@ export type HoroscopeSurface =
   | 'weekly'
   | 'love'
   | 'career'
+  | 'yearly-2026'
   | 'yearly-2027';
 
 export type ProgramEventKind = DailyEvent['kind'] | 'eclipse';
@@ -53,6 +54,12 @@ export interface BuildHoroscopeProgramInput {
    * period overlaps 2027; other event kinds remain strictly in-year.
    */
   yearlyEvents?: readonly HoroscopeProgramEvent[];
+  /**
+   * Major 2026 events, under the same rules as `yearlyEvents`: in-year
+   * instants, with station boundaries allowed in 2025 or 2027 when the
+   * retrograde period overlaps 2026.
+   */
+  yearlyEvents2026?: readonly HoroscopeProgramEvent[];
 }
 
 export type EvidenceKind =
@@ -130,6 +137,7 @@ export interface HoroscopeProgram {
     today: 'complete' | 'unavailable';
     tomorrow: 'complete' | 'unavailable';
     isoWeek: 'complete' | 'partial' | 'unavailable';
+    yearly2026: 'complete' | 'insufficient';
     yearly2027: 'complete' | 'insufficient';
   };
   evidence: HoroscopeEvidenceReceipt[];

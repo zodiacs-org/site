@@ -519,7 +519,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
               searchError
                 ? <p class="calc__error" role="alert">{searchError}</p>
                 : (
-                    <p class="tsearch__status mono" role="status">
+                    <p class="tsearch__status" role="status">
                       {searchLoading ? 'Loading transit search…' : 'Open to load the transit search.'}
                     </p>
                   )

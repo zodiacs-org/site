@@ -11,6 +11,8 @@ import {
   ogAltForPathAndLocale,
   ogImageForPathAndLocale,
 } from './seo';
+import { yearSkyWords } from '../lib/year-sky/copy';
+import { EDITION_PATH, EDITION_YEAR } from '../lib/year-sky/edition';
 
 describe('Astrofolio and Terminal SEO identity', () => {
   it('maps the consumer collection and expert routes to distinct copy', () => {
@@ -33,8 +35,8 @@ describe('Astrofolio and Terminal SEO identity', () => {
   });
 
   it('publishes distinct cache-stable product images and route-specific alt text', () => {
-    expect(OG_EN.astrofolio.image).toBe('/assets/og/astrofolio/v5/faces.jpg');
-    expect(OG_EN.terminal.image).toBe('/assets/og/v6/terminal.png');
+    expect(OG_EN.astrofolio.image).toBe('/assets/og/astrofolio/v6/faces.jpg');
+    expect(OG_EN.terminal.image).toBe('/assets/og/v7/terminal.png');
     expect(OG_EN.terminal.image).not.toBe(OG_EN.astrofolio.image);
     expect(ogImageForPath('/astrofolio/')).toBe(OG_EN.astrofolio.image);
     expect(ogImageForPath('/terminal/research/')).toBe(OG_EN.terminal.image);
@@ -55,5 +57,19 @@ describe('Astrofolio and Terminal SEO identity', () => {
     expect(BREADCRUMB_LABELS.astrofolio).toBe('Astrofolio');
     expect(BREADCRUMB_LABELS.terminal).toBe('Terminal');
     expect(BREADCRUMB_LABELS.markets).toBe('Terminal venue route');
+  });
+});
+
+describe('Your 2027 sky share card', () => {
+  it('carries the page headline, its own folder and plain words', () => {
+    const card = OG_EN.yearSky;
+    expect(card.path).toBe(EDITION_PATH);
+    expect(card.title).toBe(yearSkyWords('en').heroTitle);
+    expect(card.image).toBe(`/assets/og/year-sky/v1/${EDITION_YEAR}.jpg`);
+    for (const words of [card.title, card.line, card.alt]) {
+      expect(words).not.toMatch(/[\u2013\u2014]/u);
+      expect(words).not.toMatch(/token|market|crypto/iu);
+    }
+    expect(card.alt.startsWith(`${card.title}:`)).toBe(true);
   });
 });

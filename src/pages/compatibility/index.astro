@@ -1,6 +1,7 @@
 ---
 import SharingToolLinks from '../../components/sharing/SharingToolLinks.astro';
 import Base from '../../layouts/Base.astro';
+import { SAVED_RESULT_FORWARD } from '../../lib/profile/saved-result-link';
 import Faq from '../../components/Faq.astro';
 import RaceRamp from '../../components/RaceRamp.astro';
 import SignIcon from '../../components/SignIcon.astro';
@@ -9,16 +10,17 @@ import ToolEmblem from '../../components/ToolEmblem.astro';
 import SynastryCalculator from '../../islands/SynastryCalculator';
 import { SIGNS } from '../../lib/signs';
 import { pairSlug } from '../../lib/compat';
+import { COMPAT_MY_SIGN_SCRIPT } from '../../lib/compat-my-sign';
 import '../../styles/calculator.css';
 
 const faq = [
   {
     q: 'How does astrological compatibility work?',
-    a: 'Astrologers compare two birth charts by measuring the angles between one person’s planets and the other’s — a practice called synastry. Trines and sextiles between charts read as ease; squares and oppositions read as productive friction. Sun-sign compatibility is the one-line summary of a much longer comparison.',
+    a: 'Astrologers compare two birth charts by measuring the angles between one person’s planets and the other’s, a practice called synastry. Trines and sextiles between charts read as ease; squares and oppositions read as productive friction. Sun-sign compatibility is the one-line summary of a much longer comparison.',
   },
   {
     q: 'Is sun-sign compatibility real?',
-    a: 'It is the simplest useful layer. Two people are more than their sun signs — the Moon, Venus, and Mars often matter more in practice. The sun-sign pairing pages here are honest starting points, and the calculator compares two birth charts when you have birth details.',
+    a: 'It is the simplest useful layer. Two people are more than their sun signs. The Moon, Venus, and Mars often matter more in practice. The sun-sign pairing pages here are honest starting points, and the calculator compares two birth charts when you have birth details.',
   },
   {
     q: 'Do I need exact birth times for a compatibility reading?',
@@ -50,17 +52,18 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
 ---
 <Base privateSurface
   clientUi
-  title="Compatibility Calculator — Compare Two Birth Charts | Zodiacs.org"
+  title="Compatibility Calculator: Compare Two Birth Charts | Zodiacs.org"
   description="Free astrology compatibility calculator: compare two birth charts privately in your browser, with clear readings and guides to all 78 sign pairings."
   path="/compatibility/"
   image="/assets/og/v2/tool/compatibility.png"
-  imageAlt="Compatibility calculator — Zodiacs.org"
+  imageAlt="Compatibility calculator, Zodiacs.org"
   jsonLd={jsonLd}
   glass
 >
+  {/* A comparison saved from an assistant without a sign pair links here by its digest alone (#saved=…): it opens on the profile's saved list. */}
+  <script slot="head" is:inline set:html={SAVED_RESULT_FORWARD} />
   <section class="section--tight container container--narrow" id="calculator">
     <div class="compat-hero">
-      <em class="kicker">Two charts, honestly compared</em>
       <h1 class="display">Check your astrology compatibility.</h1>
       <p>
         Compare two <AstroTerm term="birth-chart" label="birth charts" surface="compatibility" />{' '}to explore where a relationship flows and where it catches. You don’t need their birth details: send a link and they add their own.
@@ -108,18 +111,18 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
       <summary>
         <span>
           <strong>Browse all 78 sun-sign pairings</strong>
-          <small>Plain-language guides, without a score</small>
+          <small data-compat-library-note>Plain-language guides, without a score</small>
         </span>
         <span class="compat-library__toggle" aria-hidden="true">+</span>
       </summary>
-      <div class="compat-index">
+      <div class="compat-index" data-compat-index>
         {SIGNS.map((a, index) => (
-          <div class="compat-row" style={`--sign:${a.hue}`}>
+          <div class="compat-row" style={`--sign:${a.hue}`} data-sign={a.slug} data-name={a.name}>
             <a class="compat-row__sign" href={`/${a.slug}/`}>
               <SignIcon sign={a.slug} size={34} class="compat-row__icon" />
-              <span>{a.name}</span>
+              <span data-sign-name>{a.name}</span>
             </a>
-            <div class="compat-row__pairs">
+            <div class="compat-row__pairs" data-pairs>
               {SIGNS.slice(index).map((b) => (
                 <a class="compat-row__pair" href={`/compatibility/${pairSlug(a.slug, b.slug)}/`}>
                   {b.name}
@@ -130,6 +133,8 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
         ))}
       </div>
     </details>
+    {/* A Sun sign remembered on this device leads the library, before paint. */}
+    <script is:inline set:html={COMPAT_MY_SIGN_SCRIPT} />
   </section>
 
   <section class="section--tight container container--narrow">

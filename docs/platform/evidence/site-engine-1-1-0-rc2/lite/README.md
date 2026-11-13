@@ -1,0 +1,201 @@
+# The lite entry's site checks (P2.E declinations, sect, composite and dignities)
+
+This folder holds what the lite preregistration asks of the site's adoption:
+the parity record of section 4, its tool and the tool's controls, B5's
+version 2, and later the bundle reports and the production checks.
+
+## The preregistration
+
+[PREREGISTRATION.md](PREREGISTRATION.md) is the engine's
+`docs/evidence/1.1.0-rc.2-20261102/lite/PREREGISTRATION.md` byte for byte, as
+its header asks ("The site adoption pull request commits the same text beside
+its parity tool before that tool first runs"):
+
+- SHA-256 `9019d67cc9a39b0039d0b9a6f89346f7685034a4e5bdd22393052ff2b05a115f`,
+  61,340 bytes;
+- git blob `1e76a003c21425c2db35c4f65f2ac9b07e958557` at the engine's source
+  commit `806f76b` (`git rev-parse 806f76b:docs/evidence/1.1.0-rc.2-20261102/lite/PREREGISTRATION.md`),
+  the same blob in the tree of engine main `883371f5`.
+
+It is committed here together with the tools below, before either tool runs.
+Its amendments are the engine's; a change the site makes to a control is a
+version of its own in this folder ([B5-VERSION-2.md](B5-VERSION-2.md)).
+
+## The parity tool
+
+[tools/compare-lite.mjs](tools/compare-lite.mjs), written from the rc.16
+record's `../site-engine-rc16/tools/compare-techniques.mjs` to section 4.
+It is run once on the adoption head, from the repository root, with the base
+commit as its argument:
+
+```sh
+nice -n 10 node docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.mjs <base> > docs/platform/evidence/site-engine-1-1-0-rc2/lite/parity.json
+```
+
+A rerun after any change to the tool or to the code is a new attempt with a
+new seed text that cites this one (section 4.1).
+
+How the tool reads section 4, fixed here before it runs:
+
+- **Sides.** S is the base commit's code read from git objects (`git archive`
+  of `src/lib`, `src/islands/chart3d` and `src/islands/synastry`); A is the
+  head commit's four adapters and `src/islands/synastry/relationshipData.ts`,
+  read the same way at the head; P is the installed `@zodiacs/engine/lite`,
+  with the root for `sectOf` and `chartDeclinations`. S and A are bundled by
+  the repository's esbuild for Node with `@zodiacs/engine` and
+  `astronomy-engine` external, and all three resolve the one installed
+  package.
+- **What A is called with.** The adapters are written after this tool, so
+  the tool fixes their interface, which is the lite design's section 10:
+  `declination.ts` exports `findDeclinationAspects(bodies, obliquity)` in the
+  site's shape (no `maximumOrb`) and `declinationRows(bodies, obliquity)`,
+  giving `{ body, dec, outOfBounds }` for each body in input order;
+  `sect.ts` exports `sectOf({ sunAltitude, sunLon, mercuryLon })` in the
+  site's shape; `composite.ts` exports `compositeMidpoints` and
+  `compositeAspects`; `dignities.ts` exports `dignityFor`, `dignitiesFor`
+  and `hasClassicalDignities`. The tool stops if one is missing.
+- **Corpus.** One stream per section, mulberry32 seeded by the 32-bit
+  FNV-1a of `site-engine-1-1-0-rc2-lite:<section>`. The 3,000 charts that
+  D2-A, D2-R, D2-O, S2-A, S2-E and S2-P share come from the section name
+  `charts`: for each, an instant uniform from 1800-01-02 to 2199-12-30, then
+  a latitude (the first 2,400 uniform in [-66, 66]; the last 600 north or
+  south by one draw, their size uniform in [66.6, 88.6]), then a longitude
+  uniform in [-180, 180]. Each is cast by the base's `computeChart` with
+  whole-sign houses (the house system plays no part in what is compared);
+  the bodies are the ten the view draws; the obliquity is the base's
+  `meanObliquity(julianCenturies(utcMs))`; the Sun's altitude is the base's
+  `altitudeOf` from `turnFrame(..., 0).zenith`, the view's frame at scrub
+  zero. D2-P draws two instants per case (the view's own chart, for the
+  obliquity, and the second chart), and every other case has every latitude
+  set to exactly 0. C2-P draws, for each person, whether the time is known,
+  an instant, and for a timed person whether the instant is a whole minute
+  (one in four), so that `pictureBodies` takes both of its paths.
+- **Comparisons and causes.** Every leaf is compared with `Object.is`.
+  Aspect lists are compared by pair: a pair in one list only, a type, the
+  orb and the two declinations, the separation, and the order of the pairs
+  both lists hold, each a difference of its own; rows are compared by body,
+  declination and flag. Each difference gets the first cause of section
+  4.3's table, in its order, whose predicate holds. Where the table is not
+  explicit the tool reads it as follows, and its test holds each reading:
+  `bound-boundary` asks both sides' declinations to lie within 1e-12 of the
+  obliquity; `type-tie` takes either side's declinations; `order-tie` asks
+  every pair of pairs that changes order to have orbs within 1e-12 on both
+  sides; `declination-formula`'s "with the pair set, types and order equal"
+  is a condition on the case for a pair's numbers and does not apply to rows;
+  `composite-validation` also covers C2-X's longitude that is not finite, as
+  C2-X names it; `site-prototype-lookup` takes A's false and null or P's
+  `RangeError` as the other side.
+- **Sections without a pass condition.** D2-X, S2-X and C2-X record S against
+  A and against P; DG-N records S against P; D2-O records the pair sets and
+  flags that change with the true obliquity of date (the root's
+  `chartDeclinations`) in place of the mean; S2-P records each disagreement
+  of the two sect rules, judged by astronomy-engine where the Sun's altitude
+  exceeds 0.01 degrees in size, and lists any judged chart where the site's
+  altitude and astronomy-engine disagree in sign, which section 4.1 makes a
+  question for the owner before anything else is done. An unexplained
+  difference anywhere fails the record.
+- **The referee.** For every D2-A chart and D2-T fixture, P's own
+  declination doubles are read as exact rationals (BigInt) and every pair's
+  type, inclusion under 1 (or 1.5 with the Sun or the Moon) and order are
+  derived and compared with P's list.
+
+## The tool's controls
+
+[tools/compare-lite.test.mjs](tools/compare-lite.test.mjs) holds section
+4.5's eight controls. Control 2 (each cause just outside its predicate, and
+just inside) and the referee's control (its inclusive test written strict
+must disagree on the fixture whose declinations are exactly 1 degree apart)
+are light and run in every `npm test`. Controls 1 and 3 to 8 each run the
+whole tool once, as a child process, with one change (to the base's code, to
+an adapter by a wrapper module around it, or to a scratch copy of the
+package), and run only when `COMPARE_LITE_BASE` names the base commit:
+
+```sh
+COMPARE_LITE_BASE=<base> npx vitest run docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs
+```
+
+A note written before any run, from no measurement: control 1 changes the
+site's luminary orb from 1.5 to 1.4999, which changes a result only where a
+pair with the Sun or the Moon has an orb in (1.4999, 1.5]. A rough estimate
+from the spread of declinations puts the expected number of such pairs among
+the 3,000 charts' 51,000 luminary pairs below one, so the control may find no
+difference to show. If it finds none, it has not behaved as run, and that is
+recorded as it is; nothing here changes it.
+
+**2026-11-04, before any run: control 1's input made able to fail.** Decided
+by the adoption's coordinator under the owner's delegation of 2026-11-04, and
+committed before either tool of this folder has run. As the note above says,
+the luminary orb written 1.4999 changes a result only where a luminary pair's
+declinations lie more than 1.4999 and at most 1.5 degrees apart, and the
+3,000 charts may hold no such pair. So control 1's input now holds, besides
+the charts, one constructed pair (`CONTROL_ONE_CASE` in the tool): the Sun at
+longitude 10 and latitude 10 and the Moon at longitude 200 and latitude
+8.50005, at obliquity 0, where the declination is the latitude, so their
+declinations lie 1.49995 degrees apart, inside (1.4999, 1.5]. The base's rule
+written 1.4999 must drop that pair while the adapter and the package keep it:
+a pair in one result only, its orb 5e-5 from its maximum orb of 1.5, far
+outside `orb-boundary`'s 1e-12, so an unexplained difference in D2-A. The
+case reaches the tool only through a control's plan (`constructedD2A`), which
+the tool refuses without a plan, so it is never part of the parity corpus. No
+rule, threshold, cause or other control changes. That the control now fails
+is to be shown on the constructed case alone, not on the corpus (a plan with
+`sharedCharts: false`, which the tool also refuses without a plan), once the
+adapters the tool reads at the head exist.
+
+**2026-11-04, the result on the constructed case alone.** At the head where
+the four adapters first exist (`2617db5a`), the tool (SHA-256
+`72546938…c8d3`, as committed) ran twice on `CONTROL_ONE_CASE` alone, with
+plans that run D2-A only and leave the shared charts out
+([controls/](controls/); `controls/make-plans.mjs` writes both plans from the
+tool's own constant):
+`nice -n 10 node <this folder>/tools/compare-lite.mjs 0bf69bd56aaec8fbfd99bd4b45877064dc1234df --plan <plan>`.
+
+- With control 1's change, the base's `DECLINATION_ORB_LUMINARY` written
+  1.4999, D2-A finds the Sun and Moon parallel at orb 1.4999500000000001
+  (maximum orb 1.5) in the adapter's and the package's results and not in
+  the base's: 2 unexplained differences, both pair presence; S-A fails, and
+  the referee disagrees with none
+  ([controls/control-1-constructed-case.json](controls/control-1-constructed-case.json)).
+- With no change, the same case agrees in both comparisons, with no
+  difference
+  ([controls/constructed-case-unchanged.json](controls/constructed-case-unchanged.json)).
+
+So control 1 can now fail. A run with a plan never passes the tool's
+verdict, which only the formal run without a plan can pass, so both records
+say `pass: false`; their declinations unit is false and true. The control's
+run on the corpus, with the other controls, is Phase J's, on the adoption's
+head.
+
+## B5
+
+[B5-VERSION-2.md](B5-VERSION-2.md) is B5's version 2: the claims extractor's
+control with a planted sentence that the extractor's lexicon selects.
+
+## Results on the adoption head
+
+Run on 4 November (the adoption plan's Phase J, J-1 to J-7), macOS arm64,
+Node 22.22.2; the evidence README's section "The site checks" gives the
+figures.
+
+- **The parity record** ([parity.json](parity.json)): one formal run on
+  `83f168d8` against the base `0bf69bd5`, with the seed text above. It
+  passes: no unexplained difference, no failed comparison, no referee
+  disagreement and no owner question from S2-P. It is committed as written,
+  and is not run again.
+- **The tool's controls**, in two attempts ([controls/](controls/)). The
+  first, on `83f168d8` ([controls/controls-attempt-1.log](controls/controls-attempt-1.log)),
+  passed 29 of 30: control 5's test counted the record's capped list of
+  unexplained entries, so it found none in D2-P. After the dated amendment
+  of [PREREGISTRATION.md](PREREGISTRATION.md) section 11 ("control 5 counted
+  a capped list"), the second, on `92702bb9`, citing the first
+  ([controls/controls-attempt-2.log](controls/controls-attempt-2.log)),
+  passed 30 of 30, control 5 with D2-R 32,094, D2-P 2,662 and D2-T 28
+  unexplained differences.
+- **B1 to B6**, each with its control: [b1-bundles.txt](b1-bundles.txt)
+  (with the byte reports `bundles-default.json`, `bundles-production.json`
+  and the base's `bundles-base-default.json`, `bundles-base-production.json`),
+  [b2-closures.txt](b2-closures.txt), [b3-importers.txt](b3-importers.txt),
+  [b4-suites.txt](b4-suites.txt), [b5-reference-and-claims.txt](b5-reference-and-claims.txt)
+  (B5 version 2, and the claims rules' two attempts) and
+  [b6-check-16.txt](b6-check-16.txt). Every check passes and every control
+  failed as it must.

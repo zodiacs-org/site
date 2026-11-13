@@ -182,7 +182,7 @@ function wellFormed(value: string): boolean {
   return true;
 }
 
-function validProse(
+export function validProse(
   value: unknown,
   maxCodePoints: number,
   maxBytes: number,
@@ -568,7 +568,7 @@ function allowedLinkTarget(destination: string, allowedPaths: readonly string[])
 }
 
 /** Completed output may link only to the exact paths selected for this turn. */
-function outputLinksAllowed(output: string, allowedPaths: readonly string[]): boolean {
+export function outputLinksAllowed(output: string, allowedPaths: readonly string[]): boolean {
   for (const match of output.matchAll(/\]\(\s*([^\s)]+)(?:\s+[^)]*)?\)/gu)) {
     if (!allowedLinkTarget(match[1] ?? '', allowedPaths)) return false;
   }

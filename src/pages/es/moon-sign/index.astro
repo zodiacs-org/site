@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import Faq from '../../../components/Faq.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import ChartCalculator from '../../../islands/ChartCalculator';
 import '../../../styles/calculator.css';
 
@@ -46,13 +47,14 @@ const jsonLd = [
 ];
 ---
 <Base
+  accountSurface
   clientUi
   title="Calculadora de signo lunar gratis | Zodiacs.org"
   description="Encuentra tu signo lunar gratis: cómo sientes, qué te calma y qué necesitas. Calculado en tu dispositivo, sin cuenta."
   path="/es/moon-sign/"
   locale="es"
   image="/assets/og/v2/tool/moon-sign.png"
-  imageAlt="Calculadora de signo lunar — Zodiacs.org"
+  imageAlt="Calculadora de signo lunar, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
@@ -67,6 +69,7 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="crescent-band" locale="es" />
     <Faq items={faq} heading="Preguntas sobre el signo lunar" />
   </section>
 </Base>

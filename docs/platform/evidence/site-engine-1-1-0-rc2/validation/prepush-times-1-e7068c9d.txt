@@ -1,0 +1,96 @@
+head e7068c9d base f45734dc node v22.22.2 npm 10.9.7 Darwin arm64 label prepush
+2026-11-04T13:15:06Z
+v22.22.2
+HEAD e7068c9d43a712e3333931b454f68460047b5e63 origin/main f45734dc801e6251799f53020f5da2e4b9e75d29
+build 0 (free before: 12154 MB)
+2026-11-04T13:17:11Z
+vitest 1 (free before: 10741 MB)
+2026-11-04T13:18:43Z
+ Test Files  1 failed | 634 passed | 1 skipped (636)
+      Tests  1 failed | 8145 passed | 13 skipped (8159)
+vitest failing files: scripts/phase1-acceptance-evidence.test.mjs
+check 1 (free before: 10587 MB)
+2026-11-04T13:19:37Z
+ai-check 0 (free before: 10323 MB)
+2026-11-04T13:19:38Z
+ai-test 0 (free before: 10323 MB)
+2026-11-04T13:19:50Z
+mcp-build-check 0 (free before: 10320 MB)
+2026-11-04T13:19:50Z
+mcp-pack-check 0 (free before: 10320 MB)
+2026-11-04T13:19:51Z
+compute-handler 0 (free before: 10335 MB)
+2026-11-04T13:19:51Z
+compute-local-time 0 (free before: 10429 MB)
+2026-11-04T13:19:52Z
+cities-also 0 (free before: 10462 MB)
+2026-11-04T13:19:52Z
+phase1-scope 0 (free before: 10461 MB)
+2026-11-04T13:19:52Z
+guide-twins 0 (free before: 10461 MB)
+2026-11-04T13:19:52Z
+guide-browser 0 (free before: 10461 MB)
+2026-11-04T13:20:12Z
+guide-examples 0 (free before: 10443 MB)
+2026-11-04T13:20:24Z
+guide-python 0 (free before: 10441 MB)
+2026-11-04T13:20:25Z
+claims-unlisted 0 (free before: 10439 MB)
+2026-11-04T13:20:32Z
+claims-orphans 0 (free before: 10411 MB)
+2026-11-04T13:20:37Z
+programme-ledger 0 (free before: 10410 MB)
+2026-11-04T13:20:37Z
+playground-engine-check 0 (free before: 10410 MB)
+2026-11-04T13:20:37Z
+engine-bundle-check 0 (free before: 10395 MB)
+2026-11-04T13:20:38Z
+natal-aspect-examples-check 0 (free before: 10395 MB)
+2026-11-04T13:20:40Z
+engine-reference-check 0 (free before: 10394 MB)
+2026-11-04T13:20:42Z
+check-engine-reference 0 (free before: 10384 MB)
+2026-11-04T13:20:44Z
+engine-reference-test 0 (free before: 10384 MB)
+2026-11-04T13:20:45Z
+engine-reference-drive 0 (free before: 10384 MB)
+2026-11-04T13:21:06Z
+natal-aspects-drive 0 (free before: 10353 MB)
+2026-11-04T13:21:12Z
+compatibility-browser 0 (free before: 10336 MB)
+2026-11-04T13:22:57Z
+t17-positions-share 0 (free before: 10424 MB)
+2026-11-04T13:23:14Z
+platform-developers-drive 0 (free before: 10390 MB)
+2026-11-04T13:23:33Z
+developer-first-use-drive 1 (free before: 9984 MB)
+2026-11-04T13:26:48Z
+widgets-browser 0 (free before: 9530 MB)
+2026-11-04T13:27:05Z
+mcp-protocol 0 (free before: 9482 MB)
+2026-11-04T13:27:09Z
+mcp-protocol rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/protocol-drive.json
+mcp-host 0 (free before: 9478 MB)
+2026-11-04T13:27:12Z
+mcp-host rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/host-drive.json
+mcp-benchmark 0 (free before: 9473 MB)
+2026-11-04T13:27:13Z
+mcp-benchmark rewrote tracked files, restored from git: docs/platform/evidence/mcp-adapter/benchmark.json
+webmcp 0 (free before: 9466 MB)
+2026-11-04T13:50:28Z
+production-flags-build 0 (free before: 7791 MB)
+2026-11-04T13:51:22Z
+production-flags-report-bundles 0 (free before: 7576 MB)
+2026-11-04T13:51:27Z
+independent-references 0 (free before: 7573 MB)
+2026-11-04T13:51:33Z
+independent-references-diff 0 (free before: 7570 MB)
+2026-11-04T13:51:33Z
+registry-hub-check 0 (free before: 7570 MB)
+2026-11-04T13:51:34Z
+wing-builders 0 (free before: 7570 MB)
+2026-11-04T13:51:37Z
+wing-drift 0 (free before: 7569 MB)
+2026-11-04T13:51:37Z
+status at the end: 0 lines
+PREPUSH END

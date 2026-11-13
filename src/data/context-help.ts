@@ -31,7 +31,7 @@ export const CONTEXT_TERMS: readonly ContextTermMetadata[] = Object.freeze([
   },
   {
     slug: 'big-three',
-    plainDefinition: 'Your Sun, Moon, and rising signs—the three quickest entry points into a birth chart.',
+    plainDefinition: 'Your Sun, Moon, and rising signs, the three quickest entry points into a birth chart.',
     aliases: ['sun moon rising'],
     category: 'setup',
     level: 'core',
@@ -66,7 +66,7 @@ export const CONTEXT_TERMS: readonly ContextTermMetadata[] = Object.freeze([
   },
   {
     slug: 'placement',
-    plainDefinition: 'A planet in a particular sign, degree, and—when birth time is known—house.',
+    plainDefinition: 'A planet in a particular sign, degree, and, when birth time is known, house.',
     aliases: ['placements'],
     category: 'anatomy',
     level: 'core',
@@ -257,14 +257,14 @@ export const CONTEXT_TERMS: readonly ContextTermMetadata[] = Object.freeze([
   },
   {
     slug: 'element',
-    plainDefinition: 'A sign family—fire, earth, air, or water—used to describe its basic style.',
+    plainDefinition: 'A sign family (fire, earth, air, or water) used to describe its basic style.',
     aliases: ['elements'],
     category: 'sign-quality',
     level: 'core',
   },
   {
     slug: 'modality',
-    plainDefinition: 'A sign family—cardinal, fixed, or mutable—describing how it begins, sustains, or adapts.',
+    plainDefinition: 'A sign family (cardinal, fixed, or mutable) describing how it begins, sustains, or adapts.',
     aliases: ['modalities', 'quality'],
     category: 'sign-quality',
     level: 'core',

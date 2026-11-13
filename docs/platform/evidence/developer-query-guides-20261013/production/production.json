@@ -1,0 +1,1052 @@
+{
+  "schema": "zodiacs.developer-guides-production.v2",
+  "base": "https://zodiacs.org",
+  "expectedCommit": "d205a673361bce6fbc4d0234fcab3040dfe14350",
+  "engine": {
+    "name": "@zodiacs/engine",
+    "version": "1.0.0",
+    "sha256": "c4d3754de899fb98882331e6d7b9ce3ce77fb2072baeb002aa0ef8c77b0ab0f6"
+  },
+  "checkedAt": "2026-10-13T16:54:35.374Z",
+  "alias": {
+    "before": {
+      "deploymentId": "dpl_8xXijxDCnn8daw1FzZatHZ6SzZBE",
+      "aliasUpdatedAt": 1791908903142,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "d205a673361bce6fbc4d0234fcab3040dfe14350"
+    },
+    "after": {
+      "deploymentId": "dpl_8xXijxDCnn8daw1FzZatHZ6SzZBE",
+      "aliasUpdatedAt": 1791908903142,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "d205a673361bce6fbc4d0234fcab3040dfe14350"
+    }
+  },
+  "ok": true,
+  "checks": [
+    {
+      "deploymentId": "dpl_8xXijxDCnn8daw1FzZatHZ6SzZBE",
+      "aliasUpdatedAt": 1791908903142,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "d205a673361bce6fbc4d0234fcab3040dfe14350",
+      "name": "alias names a READY production deployment of the merge",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 88965,
+        "sha256": "b8214255aeb91cdc6a83e4b9939b83c6f23f7feaf520990a1fdc334e822ad6b1",
+        "builtSha256": "1e8d5ebd5af786e4ee44b183e2a088de3031aeb9b541025e95f71998c59362fe",
+        "flagsBuildSha256": "7a5a34050b6dd8e0476a588854d427b986285dc289a6d6993fa4d8654d610041",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 9498,
+          "sha256": "c21a5bc7721c3a320d8c99fb63bdeb091b4c33841d5fb5e6daee061c173dac41",
+          "builtSha256": "c21a5bc7721c3a320d8c99fb63bdeb091b4c33841d5fb5e6daee061c173dac41"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 6525,
+        "sha256": "9d9cf8fe49f9312beb0d7b846490c5a682fb3bc3967d41d2ce3fa6522322241d",
+        "builtSha256": "9d9cf8fe49f9312beb0d7b846490c5a682fb3bc3967d41d2ce3fa6522322241d",
+        "flagsBuildSha256": "9d9cf8fe49f9312beb0d7b846490c5a682fb3bc3967d41d2ce3fa6522322241d",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84377,
+        "sha256": "5480930fd33c1e0baad2f854ff9cb4f36983f02a9f8c0ceafd8b8b0a89dfb5eb",
+        "builtSha256": "5690d9f0ea0c84304870500cc76e8fe1214f34b7037863f2ea0b76804dbfd161",
+        "flagsBuildSha256": "d41aaf5f44f8e2ca0f9035b46cb1847a944cf6b1eb17d754d0354e70df884545",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 4971,
+          "sha256": "5a7ac233ddf0c8cd42c04bd54507ba438780c24b87837981c9df90abd634fcdd",
+          "builtSha256": "5a7ac233ddf0c8cd42c04bd54507ba438780c24b87837981c9df90abd634fcdd"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3438,
+        "sha256": "779ff6a8b87430d0962da88a9df637b0fc9a14ea04abde9a94e030d37263a06b",
+        "builtSha256": "779ff6a8b87430d0962da88a9df637b0fc9a14ea04abde9a94e030d37263a06b",
+        "flagsBuildSha256": "779ff6a8b87430d0962da88a9df637b0fc9a14ea04abde9a94e030d37263a06b",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/node/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84479,
+        "sha256": "4d8458542d16a6a4ed4562b71a868f0e87e2a98ff3cd15c353593ace8816a652",
+        "builtSha256": "e9e39427c9c5b6ed9dc15094d0b72334b4e724e93dd2f36103f72d22fd519d45",
+        "flagsBuildSha256": "ce11c9994359f77e272d31fe5a51dd99e98256227f3cc7511c201bfce67f3909",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 5010,
+          "sha256": "539273134aedc1de74f7ed4fad13949f4dba97b74e9c200932ec6840a79d1934",
+          "builtSha256": "539273134aedc1de74f7ed4fad13949f4dba97b74e9c200932ec6840a79d1934"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3462,
+        "sha256": "9720021a156d7b97650ff5d6a5a43751e9fd3e046844bb98e58754e7f75e8505",
+        "builtSha256": "9720021a156d7b97650ff5d6a5a43751e9fd3e046844bb98e58754e7f75e8505",
+        "flagsBuildSha256": "9720021a156d7b97650ff5d6a5a43751e9fd3e046844bb98e58754e7f75e8505",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/browser/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84411,
+        "sha256": "09c137ceef53109713d93a91e23037e69bc04fa72303fd4893e67558b128b441",
+        "builtSha256": "db097018c11be9d8b92586f24cd753543ee65220017d1a3e96338ec2d40772f9",
+        "flagsBuildSha256": "a00958f238fbe6fa961d6da13019bb0eef580e1b2918453b4ce0682410aa1799",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 4936,
+          "sha256": "01b2667a870261426bff90c38d6fbeaae29d009bbf705b8cdf032ec2f84a1454",
+          "builtSha256": "01b2667a870261426bff90c38d6fbeaae29d009bbf705b8cdf032ec2f84a1454"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3395,
+        "sha256": "747bb91afb3de6670e63c75641509bcc736930218a31183ab7d689a53b8662f7",
+        "builtSha256": "747bb91afb3de6670e63c75641509bcc736930218a31183ab7d689a53b8662f7",
+        "flagsBuildSha256": "747bb91afb3de6670e63c75641509bcc736930218a31183ab7d689a53b8662f7",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/deno/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84166,
+        "sha256": "ecde43d02e3089c3b0cbe2682b0d8fb3763d48a571b64f1cec0f787b87e4e4ec",
+        "builtSha256": "2c8f7ec636ac696c75b554608f9e6fa82901da10dda2dffb5175d80392c647e9",
+        "flagsBuildSha256": "3b2c8622001efb9f1761b553beb8f6f3dc1a9bff8389862e52a446bd95943522",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 4794,
+          "sha256": "aea0b6d94b4d392edfba700308146702da56a195e542cce886a285cdcf0e0360",
+          "builtSha256": "aea0b6d94b4d392edfba700308146702da56a195e542cce886a285cdcf0e0360"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3259,
+        "sha256": "86b086fe708422c19fcc6ba66160332384886eb340f1cde4f7783f648ab1f560",
+        "builtSha256": "86b086fe708422c19fcc6ba66160332384886eb340f1cde4f7783f648ab1f560",
+        "flagsBuildSha256": "86b086fe708422c19fcc6ba66160332384886eb340f1cde4f7783f648ab1f560",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/bun/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84538,
+        "sha256": "ce2e03f311fa9217798bed5150ec1b549b8bf1e26885091f96dbcea95a5a464c",
+        "builtSha256": "ae76a498beabbd4349076bd74500fbf953802f847846ecb390221ef63e78d372",
+        "flagsBuildSha256": "bb7f97b64bb07b3aa13555ab51674adc609bf920f07d4e922435582767c4e86b",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 5031,
+          "sha256": "ce850068eb6f6068e85875961351b9935e2d1834fe330afd4c2027d951ba9767",
+          "builtSha256": "ce850068eb6f6068e85875961351b9935e2d1834fe330afd4c2027d951ba9767"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3493,
+        "sha256": "4973b78eca28b96c1420b41a912d02cc309315749d8910ca726847ce331459d9",
+        "builtSha256": "4973b78eca28b96c1420b41a912d02cc309315749d8910ca726847ce331459d9",
+        "flagsBuildSha256": "4973b78eca28b96c1420b41a912d02cc309315749d8910ca726847ce331459d9",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/cloudflare/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84680,
+        "sha256": "ad2cf13bf75a167ba40dc0d9440514f25ffa413ecb6d0a9cdec430b8e1d76921",
+        "builtSha256": "3334a50e63895290eef753b398492b82e1325bd7db036d74706884872a94bf74",
+        "flagsBuildSha256": "3cc40db4eaade38ab5ffc26194edcbd6a7b330da62104477605211496d686ba7",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 5223,
+          "sha256": "63e1988f7a5638ebe788e6de260f0b58037da5ff830c4e5b6bc9c04888d7bdfa",
+          "builtSha256": "63e1988f7a5638ebe788e6de260f0b58037da5ff830c4e5b6bc9c04888d7bdfa"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3615,
+        "sha256": "2bb5fa1b00a5af379c06174b9653e27244518dcfd648823604ace24e7a7cea0a",
+        "builtSha256": "2bb5fa1b00a5af379c06174b9653e27244518dcfd648823604ace24e7a7cea0a",
+        "flagsBuildSha256": "2bb5fa1b00a5af379c06174b9653e27244518dcfd648823604ace24e7a7cea0a",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/natal/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84173,
+        "sha256": "b58311fdfccf5cb1e80981a36010130fc0d7efea92607441015f85e4b1887ef4",
+        "builtSha256": "ca1688af5c16e29a254ff6193e79df591e177afd9618780b82a43b39158b5715",
+        "flagsBuildSha256": "2e2881928f1f948758a2a53bce8c02f6891915c5bd98de82ac53cd355e34d86c",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 4771,
+          "sha256": "ae406b10755023816fbde540d39212395997f38e0ee7c8c195efe7635196e6da",
+          "builtSha256": "ae406b10755023816fbde540d39212395997f38e0ee7c8c195efe7635196e6da"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3258,
+        "sha256": "b6a901f325996a8ab8644767ef7696c3c975a8e393a6429b66644193f24d8f67",
+        "builtSha256": "b6a901f325996a8ab8644767ef7696c3c975a8e393a6429b66644193f24d8f67",
+        "flagsBuildSha256": "b6a901f325996a8ab8644767ef7696c3c975a8e393a6429b66644193f24d8f67",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/transits/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84576,
+        "sha256": "c065371869b01137f826bdd00f143ac7a36b83e6bcf6a162d52a083be1025e3e",
+        "builtSha256": "ad07b0983003f1390fdfce82a9d9c7c9508a031923213b90e67daea88096961b",
+        "flagsBuildSha256": "5119531a90ca3bee15bb63439e08c4671e780adf168f2cb1ed51a32dec1dbd84",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 5123,
+          "sha256": "c66a1d49491115adc90f02eeb60dbf95b6c1d93dc99d62ed3bdc7a2dcbc49c3d",
+          "builtSha256": "c66a1d49491115adc90f02eeb60dbf95b6c1d93dc99d62ed3bdc7a2dcbc49c3d"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3596,
+        "sha256": "1937f848fbf38056c5fbfbdd07958d8f5c82611fc07ecd7f2ad17700bc151598",
+        "builtSha256": "1937f848fbf38056c5fbfbdd07958d8f5c82611fc07ecd7f2ad17700bc151598",
+        "flagsBuildSha256": "1937f848fbf38056c5fbfbdd07958d8f5c82611fc07ecd7f2ad17700bc151598",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/returns/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84334,
+        "sha256": "ccff38f99fa544f0aa5addaa4d252457cdc17d6040b8611ffd2a90bc2c5ae266",
+        "builtSha256": "3fda2f45fbbefa8397582cdc311c8c1aa83c80ad0dd89884e74524a93b9de4cb",
+        "flagsBuildSha256": "5614a70a57f914bdb447a32a4a465bdf20d6cf1334280cde52e7eeb6e33ce401",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 4910,
+          "sha256": "dfca2d25c8f0aac6e8670ab59e18adea3121dbec641558be955a1610b2aedd7c",
+          "builtSha256": "dfca2d25c8f0aac6e8670ab59e18adea3121dbec641558be955a1610b2aedd7c"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3377,
+        "sha256": "7c0e990a774767602de5373ad990a162a4e61a3ecd5861355c3cf14befdcdca4",
+        "builtSha256": "7c0e990a774767602de5373ad990a162a4e61a3ecd5861355c3cf14befdcdca4",
+        "flagsBuildSha256": "7c0e990a774767602de5373ad990a162a4e61a3ecd5861355c3cf14befdcdca4",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/synastry/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84727,
+        "sha256": "27bc319180952345ff1efefb46e4303d2876c140c8a92f1c7b53eb5bb074173f",
+        "builtSha256": "b46649eb3dfbb8368e223ae5275177a39f02676e638053c1cc3f213a3791f951",
+        "flagsBuildSha256": "bf81e10663b88297f9387b252b45fedfcc3b6b8a56d090d06ebc767ec3345320",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 5213,
+          "sha256": "beeeaf52f71bbfd3c3996584abd2d57a2a78113b821e7423e9179fec6fdf763d",
+          "builtSha256": "beeeaf52f71bbfd3c3996584abd2d57a2a78113b821e7423e9179fec6fdf763d"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3622,
+        "sha256": "0f819b9b8f9c6f3907f565ac708bce95b42f4221de932bf22f5e67d40cd57443",
+        "builtSha256": "0f819b9b8f9c6f3907f565ac708bce95b42f4221de932bf22f5e67d40cd57443",
+        "flagsBuildSha256": "0f819b9b8f9c6f3907f565ac708bce95b42f4221de932bf22f5e67d40cd57443",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/crossings/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 85097,
+        "sha256": "3659c0650a1aa4efacafe5aaa821f6a13f2d89acc2d281ae6db7f35afcf27564",
+        "builtSha256": "9f055d49cac351674d6ef6e67d7d4c12e327f7b5713a31074ea0c775a07973ac",
+        "flagsBuildSha256": "0c091bb71b852a48258529064486e8ba27bf07823a122a585981e7399c331db2",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 5623,
+          "sha256": "85d3caccd8d0faf6f13960fa809896893168355e4e4237de6c3675293155fad4",
+          "builtSha256": "85d3caccd8d0faf6f13960fa809896893168355e4e4237de6c3675293155fad4"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3888,
+        "sha256": "45f15d70e9fb5ff3634d20d500f0a16f5f1a6210efd5baccc2ded3318c23a2e5",
+        "builtSha256": "45f15d70e9fb5ff3634d20d500f0a16f5f1a6210efd5baccc2ded3318c23a2e5",
+        "flagsBuildSha256": "45f15d70e9fb5ff3634d20d500f0a16f5f1a6210efd5baccc2ded3318c23a2e5",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/conventions/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84793,
+        "sha256": "8091b34c61fde6de3a53baa9f6c3dbede4498504476a6f193d6bdfc40a520e23",
+        "builtSha256": "d10f6a913d9de661a9c4774d34d9c9448621660e96c4aad21e8ef3a61a66d75c",
+        "flagsBuildSha256": "cc3d8b45938c69e8c8a91b57cec426888eed0fa73912d5cad0fbfaa4e64a3822",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 5347,
+          "sha256": "7b2fc20340036de33970f8725bcf03d236b381a7f7b7a1dae67c9fda939ec1ff",
+          "builtSha256": "7b2fc20340036de33970f8725bcf03d236b381a7f7b7a1dae67c9fda939ec1ff"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3755,
+        "sha256": "075802cd5522ad54a8ded0bf42994d9845e1c06c79d753b32567d8b9b21ead70",
+        "builtSha256": "075802cd5522ad54a8ded0bf42994d9845e1c06c79d753b32567d8b9b21ead70",
+        "flagsBuildSha256": "075802cd5522ad54a8ded0bf42994d9845e1c06c79d753b32567d8b9b21ead70",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/errors/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84914,
+        "sha256": "be0773936dab3c6cd150bd29959f9012f88088bb75052eb13a63d87e27e82743",
+        "builtSha256": "29b4b4532d329def258532d9cb2d8d7f4c137422e36d968aa4eb6b3eb259db8a",
+        "flagsBuildSha256": "7523b892ee0a64b413a1951c6d11dae6629a905e1ec9656c4aaf82d94fa07e1b",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 5474,
+          "sha256": "07183bfe9bf470b6691e56abad7b7b87015a02f5fdc2b24f1dacdbb62d91f648",
+          "builtSha256": "07183bfe9bf470b6691e56abad7b7b87015a02f5fdc2b24f1dacdbb62d91f648"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3867,
+        "sha256": "95ca4c2681fc95e810d0ea2c55e5b2f23045f60773dd23d14e8a0996109497e4",
+        "builtSha256": "95ca4c2681fc95e810d0ea2c55e5b2f23045f60773dd23d14e8a0996109497e4",
+        "flagsBuildSha256": "95ca4c2681fc95e810d0ea2c55e5b2f23045f60773dd23d14e8a0996109497e4",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/receipts/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 83010,
+        "sha256": "8734f6ffa0ac467c6883504eb24794527e7157cd5ee50588c5bab940cf35428e",
+        "builtSha256": "7599c6330f47d696e775c715cfb11269c6ba44bf5e5336c16b015b432d56785e",
+        "flagsBuildSha256": "ff31ef0aea1a0a4e5bd8212f4075435bb72eccb711f8e85518ee59ac852425ce",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 3514,
+          "sha256": "bb0a53fecd1c0ae2cd280bcd9da400afc81969426ea4e301df81fda02cca96bc",
+          "builtSha256": "bb0a53fecd1c0ae2cd280bcd9da400afc81969426ea4e301df81fda02cca96bc"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 2164,
+        "sha256": "3fbc4c42fddfce1d542551d4e2eaf9c02c6ece99243b4fb0c4aecab026abc519",
+        "builtSha256": "3fbc4c42fddfce1d542551d4e2eaf9c02c6ece99243b4fb0c4aecab026abc519",
+        "flagsBuildSha256": "3fbc4c42fddfce1d542551d4e2eaf9c02c6ece99243b4fb0c4aecab026abc519",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/python/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 82342,
+        "sha256": "a050848560bd8668b74718466b3edabb590b0e2565f36ea4f954d48e2086d2f9",
+        "builtSha256": "f7393f74e416cc7aa76932bc60120473565e77760bd4448a95cd94c0e288a972",
+        "flagsBuildSha256": "cb9ca6c47a10ccbe80ffdf032b10589b17ed69760e667cd921f121ad1e7bf200",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 2893,
+          "sha256": "a6dd07500d6845126f3ea2fa9876dca161746f7ea82f7b5c5bbf663565827c6b",
+          "builtSha256": "a6dd07500d6845126f3ea2fa9876dca161746f7ea82f7b5c5bbf663565827c6b"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 1660,
+        "sha256": "2685409e8cbfabf7fbf350d823b55923df0e1cae5e7957536b29a09228a2d382",
+        "builtSha256": "2685409e8cbfabf7fbf350d823b55923df0e1cae5e7957536b29a09228a2d382",
+        "flagsBuildSha256": "2685409e8cbfabf7fbf350d823b55923df0e1cae5e7957536b29a09228a2d382",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/elections/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84360,
+        "sha256": "a7e7344ac4f4dcc3bb742cbccee58cd65220d26b9c666b9bc2ebfa2d3ef85085",
+        "builtSha256": "febf6f9c68dcc89e5f9e9cccade6f95d041abc1746beb687adda3a85dbf2376b",
+        "flagsBuildSha256": "d450163f000f67033472b0caa5e3c2cfd128f29b126efe814791eb5de16d2c43",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 4722,
+          "sha256": "7b2de8a591e4df1c7e391aab4c8056d55a2b996a98a00eb384080d2512287460",
+          "builtSha256": "7b2de8a591e4df1c7e391aab4c8056d55a2b996a98a00eb384080d2512287460"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3179,
+        "sha256": "36c1361e41a5960764c3931f3047b71dd678a5009859c65f5ecf4e378139a776",
+        "builtSha256": "36c1361e41a5960764c3931f3047b71dd678a5009859c65f5ecf4e378139a776",
+        "flagsBuildSha256": "36c1361e41a5960764c3931f3047b71dd678a5009859c65f5ecf4e378139a776",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/astrology-api/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84008,
+        "sha256": "31c57359c58be99a8563383d759e08ed1ac3cf86f5fcebd2f6546091a98db0c5",
+        "builtSha256": "bb4284047c6aff326c2d4ddf9b704b3aeb152464c9bbd25b65bb2ae2ff38f1cc",
+        "flagsBuildSha256": "22b00197cdc0bd75ef0b1d79dda2b78bd740f7cbb4e36c42b7d2a401dd25bc15",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 4266,
+          "sha256": "98db6e43b876f3cf68d09b1ba1efd3d2613747e859740599a5f2ad133adf1bc8",
+          "builtSha256": "98db6e43b876f3cf68d09b1ba1efd3d2613747e859740599a5f2ad133adf1bc8"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 2861,
+        "sha256": "1958d0e0aef8b8ccae4ab75816ae6667cce23e9ea2b3224896c6c8c351d4bf20",
+        "builtSha256": "1958d0e0aef8b8ccae4ab75816ae6667cce23e9ea2b3224896c6c8c351d4bf20",
+        "flagsBuildSha256": "1958d0e0aef8b8ccae4ab75816ae6667cce23e9ea2b3224896c6c8c351d4bf20",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/birth-chart-api/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 87926,
+        "sha256": "5e90796d972f9b0b607cc0f1bc86a754b9fdb5844bdb1dbf6592dd7f27663e37",
+        "builtSha256": "ca6f84274c752594483d2540644772076ebc61b00e7e0b85b62c9aee7066a62f",
+        "flagsBuildSha256": "92673a71851ce691bea82e3299a7a45ad1dfd707b23082185d9cde5e721588d2",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 7887,
+          "sha256": "9fc70af83880369fc920c98a3f1a7cfb5cbd3b22c584c04a3e916fc0bcca6589",
+          "builtSha256": "9fc70af83880369fc920c98a3f1a7cfb5cbd3b22c584c04a3e916fc0bcca6589"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 5604,
+        "sha256": "ca3ba2dd2fa7fb2e94bf3a72ffe1d8a7921e7e79d5fde138e1d9514f1cb84416",
+        "builtSha256": "ca3ba2dd2fa7fb2e94bf3a72ffe1d8a7921e7e79d5fde138e1d9514f1cb84416",
+        "flagsBuildSha256": "ca3ba2dd2fa7fb2e94bf3a72ffe1d8a7921e7e79d5fde138e1d9514f1cb84416",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/swiss-ephemeris-alternative-javascript/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 86228,
+        "sha256": "823a9529b94c9f8b720a37cfd20b7eefd682a57d7641761f1f5e4ebd7debc913",
+        "builtSha256": "351164e1089f312b8d94296d4d6a426af7ca133e843b975d0e5ac66b1dee664e",
+        "flagsBuildSha256": "97e519b8ad6d1970d29fbdb9d786969209051eb511a248bd1bfbac305d83fa29",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 6515,
+          "sha256": "8ecdad12e31b94ed025dd5cb85272ed775f0e241db6963561e64fe4eba699f3c",
+          "builtSha256": "8ecdad12e31b94ed025dd5cb85272ed775f0e241db6963561e64fe4eba699f3c"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 4452,
+        "sha256": "fff261926b00f78e0456a3f56e67156de333de90514f0fb1791c7d83d82090a3",
+        "builtSha256": "fff261926b00f78e0456a3f56e67156de333de90514f0fb1791c7d83d82090a3",
+        "flagsBuildSha256": "fff261926b00f78e0456a3f56e67156de333de90514f0fb1791c7d83d82090a3",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/ephemeris-npm/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 85288,
+        "sha256": "22a66a9c91d60c5ade1417d51d30fe765ec12f1f98033874c2a0dbda6acd9c38",
+        "builtSha256": "b18f15e92ed9b5f3d64cc3bcfa2a0caf1f141a3391a769e9e36dddeabb7016cc",
+        "flagsBuildSha256": "afde39d313fb1fc955d5d057737f82ab351d8dc4c9afdf81724fcad0162bd82b",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 5626,
+          "sha256": "9ed072aaa8e6d662f28232aad1dd37210886ca673b62da6e70dd9c13ed91aced",
+          "builtSha256": "9ed072aaa8e6d662f28232aad1dd37210886ca673b62da6e70dd9c13ed91aced"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3904,
+        "sha256": "53d5acf4295d6add0dda7298d51005f0d71c7b20126fbcdd3afdebbe9fd190cf",
+        "builtSha256": "53d5acf4295d6add0dda7298d51005f0d71c7b20126fbcdd3afdebbe9fd190cf",
+        "flagsBuildSha256": "53d5acf4295d6add0dda7298d51005f0d71c7b20126fbcdd3afdebbe9fd190cf",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/vedic-astrology-api/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 84698,
+        "sha256": "824f799017a3ddf357f3635dd94ba95b6eae5fb8d5a3f947025609865e6999b9",
+        "builtSha256": "0b71e36863668cfa00673c9c11acdb070a0b90a69f1869b26f846f3de1715d82",
+        "flagsBuildSha256": "0e31d53f98eb78c14513daa4a57f057ff9133b0252e834c778933b6c00580722",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 5005,
+          "sha256": "f697c15edbc31c7b9ef9100121c950fcb7f31e5646be606b058bcdbc7aabfc4f",
+          "builtSha256": "f697c15edbc31c7b9ef9100121c950fcb7f31e5646be606b058bcdbc7aabfc4f"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 3003,
+        "sha256": "874b78de580e84ee8cf6614657e5e5c3bff098a3ea6f98a41ce1e1997b4bed7c",
+        "builtSha256": "874b78de580e84ee8cf6614657e5e5c3bff098a3ea6f98a41ce1e1997b4bed7c",
+        "flagsBuildSha256": "874b78de580e84ee8cf6614657e5e5c3bff098a3ea6f98a41ce1e1997b4bed7c",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/python-astrology-library/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 83462,
+        "sha256": "39cfc74b128241c8505934d868e709a80b789e32f72b390e71649607c6f1e2cf",
+        "builtSha256": "bd3441778fa0485bdef39999e63ef3fdbe2b0d41b4d7502e90881e92fc1c6980",
+        "flagsBuildSha256": "e2a0de170a1d68732d355414b20426b5366ec5dc8287f186c2a29ca2fa700f5d",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 3622,
+          "sha256": "e740b4a268ebbf7412f750e2c48b8f2c826052a3d1c3febbe5290f909a4624c5",
+          "builtSha256": "e740b4a268ebbf7412f750e2c48b8f2c826052a3d1c3febbe5290f909a4624c5"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 2255,
+        "sha256": "c0f21d31b39f3d04529b06343bbd5b131adcb3df8ce741a6312be0f502d30be7",
+        "builtSha256": "c0f21d31b39f3d04529b06343bbd5b131adcb3df8ce741a6312be0f502d30be7",
+        "flagsBuildSha256": "c0f21d31b39f3d04529b06343bbd5b131adcb3df8ce741a6312be0f502d30be7",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/astrology-mcp-server/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 81861,
+        "sha256": "c8ea3ee318704c1bafda426b3f9350608a2d5f18681811f4eddc00b55be33055",
+        "builtSha256": "a6c1792320b4dacbf48d01b74ff922a7467124a7ba7e35aeadb3218bfee7c52c",
+        "flagsBuildSha256": "24c13e57b491ac3653fde84ac7c9acfdc36edd133b5e05ad2104b8d9009a925d",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 2407,
+          "sha256": "b7e2827b0a218c7af29c5a6e58e864811c084fc49ccc75f5473aa0ae0e10b01a",
+          "builtSha256": "b7e2827b0a218c7af29c5a6e58e864811c084fc49ccc75f5473aa0ae0e10b01a"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 1275,
+        "sha256": "557a70e62768da29f960d0678cc7cefe6c867c466a5568b28ab87373088a988d",
+        "builtSha256": "557a70e62768da29f960d0678cc7cefe6c867c466a5568b28ab87373088a988d",
+        "flagsBuildSha256": "557a70e62768da29f960d0678cc7cefe6c867c466a5568b28ab87373088a988d",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/deprecation/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 81944,
+        "sha256": "6ded90cc6284d2b59426db8b823d3b1079617fca47975c4d9d4dbf3cb18f0e3a",
+        "builtSha256": "254296c82abd401639b6c7b17f03d75ed84db6d53713511e8106b541ebddc446",
+        "flagsBuildSha256": "d76b6a2860441a56e8867f30d2bf51111f9fa99372b6ea844116820007307b8c",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 2485,
+          "sha256": "be5f8e509eab42ffa8a8896d104c611675dbb71afd35eeacb16ab745b0d2af37",
+          "builtSha256": "be5f8e509eab42ffa8a8896d104c611675dbb71afd35eeacb16ab745b0d2af37"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 1357,
+        "sha256": "e2ae48a408f069a6735ea1b6be01524631c5a2f85fcf36aef0068d26f009a013",
+        "builtSha256": "e2ae48a408f069a6735ea1b6be01524631c5a2f85fcf36aef0068d26f009a013",
+        "flagsBuildSha256": "e2ae48a408f069a6735ea1b6be01524631c5a2f85fcf36aef0068d26f009a013",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/changelog/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "html": {
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "bytes": 81675,
+        "sha256": "340f2db3391ad61a6f11c8d685e1d6c95424edadf015180fc5cb85632dfe6bbe",
+        "builtSha256": "4a582e715059a9cb7560d6e792378b0d6362e54ee91deb566f06acb4a4508787",
+        "flagsBuildSha256": "b48574063dffdf64b3896929f9ae5458b482e5bc95e52061a26d66aa64911f36",
+        "standInsReplaced": [
+          {
+            "standIn": "https://plausible.io/js/script.js",
+            "piece": 55,
+            "servedLength": 51,
+            "servedSha256": "a3365c89e49cc6e82c1e6a817a6859bb6ee48ce356abe5bd65a48eb75288c722"
+          }
+        ],
+        "problems": [],
+        "article": {
+          "identical": true,
+          "bytes": 2232,
+          "sha256": "972933336c2bb900bc6f584a9fab5f8a0eed44e571686ba8643318f7d0687a06",
+          "builtSha256": "972933336c2bb900bc6f584a9fab5f8a0eed44e571686ba8643318f7d0687a06"
+        }
+      },
+      "markdown": {
+        "status": 200,
+        "contentType": "text/markdown; charset=utf-8",
+        "bytes": 1112,
+        "sha256": "f0510c38a9bf735f2ec7b3795e1520e83ae6ee44e565e05fd3b380e94438bb24",
+        "builtSha256": "f0510c38a9bf735f2ec7b3795e1520e83ae6ee44e565e05fd3b380e94438bb24",
+        "flagsBuildSha256": "f0510c38a9bf735f2ec7b3795e1520e83ae6ee44e565e05fd3b380e94438bb24",
+        "identical": true
+      },
+      "missing": [],
+      "name": "/developers/docs/status/: the production-flags build's page, with its guide article and its twin as built",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 16861,
+      "sha256": "4fe8db5e72aa87314e7dc12fa350b43f95113c28f69f71210db23a6ad7bc21b5",
+      "builtSha256": "4fe8db5e72aa87314e7dc12fa350b43f95113c28f69f71210db23a6ad7bc21b5",
+      "flagsBuildSha256": "4fe8db5e72aa87314e7dc12fa350b43f95113c28f69f71210db23a6ad7bc21b5",
+      "unlisted": [],
+      "name": "/llms.txt is both builds' bytes and lists every guide and twin",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 42587,
+      "sha256": "17ad0bebb77eb6383e0788422586f76c0f5ed6af345596e04373e7c2be5a7ac6",
+      "builtSha256": "17ad0bebb77eb6383e0788422586f76c0f5ed6af345596e04373e7c2be5a7ac6",
+      "flagsBuildSha256": "17ad0bebb77eb6383e0788422586f76c0f5ed6af345596e04373e7c2be5a7ac6",
+      "unlisted": [],
+      "name": "/llms-full.txt is both builds' bytes and lists every guide and twin",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "contentType": "application/xml",
+      "bytes": 819481,
+      "sha256": "9f7ffedb64c09bf13bdb1a7bb1e93ae19df79fc3dba55f39936af7f6ddec6093",
+      "builtSha256": "2a7892d95a027c6bc550dc428b04e7da462155fa20b1af7233bab68b994b372c",
+      "flagsBuildSha256": "9f7ffedb64c09bf13bdb1a7bb1e93ae19df79fc3dba55f39936af7f6ddec6093",
+      "identicalToFlagsUnsetBuild": false,
+      "absent": [],
+      "name": "/sitemap.xml is the production-flags build's bytes, every guide page in it",
+      "ok": true
+    },
+    {
+      "browser": "154.0.8037.98",
+      "navigations": 52,
+      "analyticsRequestsAborted": 52,
+      "failed": [],
+      "name": "every page in Chromium at 360 and 1280 px: 200, its heading, its twin link, no overflow, no page error, no calculation",
+      "ok": true
+    },
+    {
+      "deploymentId": "dpl_8xXijxDCnn8daw1FzZatHZ6SzZBE",
+      "aliasUpdatedAt": 1791908903142,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "d205a673361bce6fbc4d0234fcab3040dfe14350",
+      "name": "alias unchanged during the checks",
+      "ok": true
+    }
+  ]
+}

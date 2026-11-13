@@ -493,9 +493,11 @@ describe('compute API negative control', () => {
 });
 
 describe('the site and the compute API', () => {
-  it('is not called by any page, island or script of the site', () => {
+  it('is called by no page, island or script of the site but the developer playground', () => {
     // The site's calculators compute in the browser; only the API's own
     // documentation names its paths, and only build-time modules import it.
+    // The developer playground is the one exception, held to sending only when
+    // its user presses Send by the test after this one.
     const root = new URL('../../', import.meta.url);
     const DOCUMENTS = new Set(['src/pages/developers/compute/index.astro']);
     const IMPORTERS = new Set(['src/pages/developers/compute/index.astro', 'src/lib/sky-api/schemas.ts', 'src/lib/sky-api/text.ts',
@@ -503,7 +505,23 @@ describe('the site and the compute API', () => {
       // send browser calculations to the hosted compute API.
       'src/ai-tools/contracts.ts', 'src/ai-tools/http.ts', 'src/ai-tools/local.ts', 'src/ai-tools/tools.ts',
       'src/ai-tools/http.test.ts', 'src/ai-tools/tools.test.ts',
+      // It holds the tools' schemas to the compute API's documented ones and calls the tools across its span.
+      'src/ai-tools/schema-types.test.ts',
       'src/ai-tools/quota.ts',
+      // The 0.5.0 tools' server-only modules resolve local times and zones with the same pure operations.
+      'src/ai-tools/features/birthday.ts', 'src/ai-tools/features/compatibility.ts', 'src/ai-tools/features/people.ts',
+      // The horoscope tool's personal week, and the account save tool that works results out again, are server-only too.
+      'src/ai-tools/features/personal-week.ts', 'src/ai-tools/accounts/save.ts',
+      // The 0.6.0 tools' server-only modules: local times for a birth chart and its transits, and a period's sky events.
+      'src/ai-tools/features/natal-chart.ts', 'src/ai-tools/features/personal-transits.ts', 'src/ai-tools/features/horoscope-period.ts',
+      // find_birthplace resolves a place's clock with the same local-time operations.
+      'src/ai-tools/features/birthplace.ts',
+      // search_sky_events (ZODIACS_SKY_EVENTS_ENABLED=1) finds stations and new and full Moons with the same event searches, server-side.
+      'src/ai-tools/features/sky-events.ts',
+      // get_year_score (ZODIACS_YEAR_SCORE_ENABLED=1) resolves a birth's local time with the same operations, server-side.
+      'src/ai-tools/features/year-score.ts',
+      // get_solar_return (ZODIACS_SOLAR_RETURN_ENABLED=1) resolves a birth's local time with the same operations, server-side.
+      'src/ai-tools/features/solar-return.ts',
     ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the
@@ -512,6 +530,16 @@ describe('the site and the compute API', () => {
     // serves imports it, which the end of this test holds, and its bundle makes
     // no network request, which scripts/mcp-artifact.test.mjs holds.
     const ADAPTER = 'src/mcp/';
+    // The developer playground (/developers/playground/): its island sends the
+    // request its user wrote or chose to the API, its other modules name the
+    // endpoints for the code it shows and the examples it offers, and its
+    // browser run bundles the API's parsers and calculations.
+    const PLAYGROUND = new Set(PLAYGROUND_FILES);
+    // The developer demo (/developers/demo/): its island shows answers computed
+    // when the page was built and runs an edited question with the playground's
+    // browser bundle, and its helpers name the endpoints for the commands it
+    // shows. It sends nothing to the API, which the test after the next holds.
+    const DEMO = new Set(DEMO_FILES);
     // Every way a module names another: from, a bare side-effect import, a
     // dynamic import with any quote, and require. An AI review found the first
     // two forms alone let a side-effect import and a template-literal import
@@ -538,7 +566,7 @@ describe('the site and the compute API', () => {
     walk('public/');
     expect(files.length).toBeGreaterThan(1000);
     const callers = files.filter((path) => {
-      if (path.startsWith(ADAPTER)) return false;
+      if (path.startsWith(ADAPTER) || PLAYGROUND.has(path) || DEMO.has(path)) return false;
       const text = readFileSync(new URL(path, root), 'utf8');
       return (PATHS.test(text) && !DOCUMENTS.has(path)) || (IMPORT.test(text) && !IMPORTERS.has(path));
     });
@@ -551,5 +579,61 @@ describe('the site and the compute API', () => {
     for (const path of DOCUMENTS) {
       if (files.includes(path)) expect(readFileSync(new URL(path, root), 'utf8')).not.toMatch(/<script\b/u);
     }
+    for (const path of [...PLAYGROUND, ...DEMO]) expect(files, path).toContain(path);
+  });
+
+  it('is called by the developer playground only when its user presses Send; the browser run sends nothing', () => {
+    const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
+    const island = read('src/islands/DeveloperPlayground.tsx');
+    // One request to the API, in sendToApi, which only the Send button's click calls.
+    expect(island.match(/\bfetch\(/gu)).toHaveLength(2);
+    expect(island.match(/\bfetch\(PLAYGROUND_EXAMPLES_PATH\)/gu)).toHaveLength(1);
+    expect(island.match(/\bsendToApi\b/gu)).toHaveLength(2);
+    expect(island).toContain('onClick={() => void sendToApi()}');
+    const sendToApi = island.slice(island.indexOf('function sendToApi()'), island.indexOf('function runHere()'));
+    expect(sendToApi).toContain('computePath(endpoint)');
+    expect(sendToApi.match(/\bfetch\(/gu)).toHaveLength(1);
+    // The browser run and the helpers make no network request and use no storage.
+    const quiet = /\bfetch\(|XMLHttpRequest|WebSocket|sendBeacon|EventSource|localStorage|sessionStorage|indexedDB|document\.cookie/u;
+    for (const path of ['public/developers/playground/engine.mjs', 'src/lib/compute-api/playground.ts']) {
+      expect(read(path), path).not.toMatch(quiet);
+    }
+    // The helpers' one fetch is the JavaScript the page shows, inside a string.
+    const helpers = read('src/lib/developer-playground.ts');
+    expect(helpers.match(/\bfetch\(/gu)).toHaveLength(1);
+    expect(helpers).toContain("`const response = await fetch('${url}', {`");
+    expect(helpers.replace("`const response = await fetch('${url}', {`", '')).not.toMatch(quiet);
+    expect(island).not.toMatch(/XMLHttpRequest|WebSocket|sendBeacon|EventSource|localStorage|sessionStorage|indexedDB|document\.cookie/u);
+    // The page loads no analytics script: a request typed there can hold a birth.
+    expect(read('src/pages/developers/playground/index.astro')).toMatch(/<Base [^>]*\bprivateSurface\b/u);
+  });
+
+  it('is never called by the developer demo; an edited question runs with the playground bundle', () => {
+    const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
+    const quiet = /\bfetch\(|XMLHttpRequest|WebSocket|sendBeacon|EventSource|localStorage|sessionStorage|indexedDB|document\.cookie/u;
+    for (const path of DEMO_FILES) expect(read(path), path).not.toMatch(quiet);
+    // Its one load is the playground's bundle, which sends nothing (the test above).
+    const island = read('src/islands/DeveloperDemo.tsx');
+    expect(island.match(/\bimport\(/gu)).toHaveLength(1);
+    expect(island).toContain('import(/* @vite-ignore */ PLAYGROUND_ENGINE_PATH)');
+    // The page loads no analytics script: a birth typed there stays in the page.
+    expect(read('src/pages/developers/demo/index.astro')).toMatch(/<Base [^>]*\bprivateSurface\b/u);
   });
 });
+
+const DEMO_FILES = [
+  'src/islands/DeveloperDemo.tsx',
+  'src/lib/developer-demo.ts',
+  'src/pages/developers/demo/index.astro',
+];
+
+const PLAYGROUND_FILES = [
+  'src/islands/DeveloperPlayground.tsx',
+  'src/lib/developer-playground.ts',
+  'src/lib/developer-playground.test.ts',
+  'src/lib/developer-playground-examples.ts',
+  'src/pages/developers/playground/index.astro',
+  'src/pages/developers/playground/examples.json.ts',
+  'src/pages/developers/playground.md.ts',
+  'public/developers/playground/engine.mjs',
+];

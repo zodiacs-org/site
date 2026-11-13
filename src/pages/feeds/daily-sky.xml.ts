@@ -40,7 +40,7 @@ export const GET: APIRoute = () => {
       : '',
     eventBits.length ? `${editionDateLabel(daily.date)}: ${eventBits.join('; ')}.` : '',
     retro.length ? `Retrograde: ${retro.join(', ')}.` : '',
-    `Positions at 12:00 UTC — ${positions}.`,
+    `Positions at 12:00 UTC: ${positions}.`,
   ]
     .filter(Boolean)
     .join(' ');
@@ -49,14 +49,14 @@ export const GET: APIRoute = () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Zodiacs.org — the sky, daily</title>
+    <title>Zodiacs.org | the sky, daily</title>
     <link>${SITE}/transits/</link>
     <atom:link href="${SITE}/feeds/daily-sky.xml" rel="self" type="application/rss+xml" />
     <description>Each day's planetary positions, moon phase, and events, computed at 12:00 UTC.</description>
     <language>en</language>
     <lastBuildDate>${pub}</lastBuildDate>
     <item>
-      <title>${esc(`The sky, ${daily.date} — ${daily.moon.phase}`)}</title>
+      <title>${esc(`The sky, ${daily.date}, ${daily.moon.phase}`)}</title>
       <link>${SITE}/transits/</link>
       <guid isPermaLink="false">${SITE}/feeds/daily-sky/${daily.date}</guid>
       <pubDate>${pub}</pubDate>

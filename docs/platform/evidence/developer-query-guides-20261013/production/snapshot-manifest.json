@@ -1,0 +1,503 @@
+{
+  "schema": "zodiacs.production-snapshot.v1",
+  "base": "https://zodiacs.org",
+  "commit": "d205a673361bce6fbc4d0234fcab3040dfe14350",
+  "guides": 25,
+  "entries": [
+    {
+      "path": "/developers/docs/",
+      "file": "files/000",
+      "readAt": "2026-10-13T16:28:46.454Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 88965,
+      "sha256": "b8214255aeb91cdc6a83e4b9939b83c6f23f7feaf520990a1fdc334e822ad6b1"
+    },
+    {
+      "path": "/developers/docs/index.md",
+      "file": "files/001",
+      "readAt": "2026-10-13T16:28:47.380Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 6525,
+      "sha256": "9d9cf8fe49f9312beb0d7b846490c5a682fb3bc3967d41d2ce3fa6522322241d"
+    },
+    {
+      "path": "/developers/docs/node/",
+      "file": "files/002",
+      "readAt": "2026-10-13T16:28:48.287Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84377,
+      "sha256": "5480930fd33c1e0baad2f854ff9cb4f36983f02a9f8c0ceafd8b8b0a89dfb5eb"
+    },
+    {
+      "path": "/developers/docs/node.md",
+      "file": "files/003",
+      "readAt": "2026-10-13T16:28:48.924Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3438,
+      "sha256": "779ff6a8b87430d0962da88a9df637b0fc9a14ea04abde9a94e030d37263a06b"
+    },
+    {
+      "path": "/developers/docs/browser/",
+      "file": "files/004",
+      "readAt": "2026-10-13T16:28:49.487Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84479,
+      "sha256": "4d8458542d16a6a4ed4562b71a868f0e87e2a98ff3cd15c353593ace8816a652"
+    },
+    {
+      "path": "/developers/docs/browser.md",
+      "file": "files/005",
+      "readAt": "2026-10-13T16:28:50.254Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3462,
+      "sha256": "9720021a156d7b97650ff5d6a5a43751e9fd3e046844bb98e58754e7f75e8505"
+    },
+    {
+      "path": "/developers/docs/deno/",
+      "file": "files/006",
+      "readAt": "2026-10-13T16:28:50.822Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84411,
+      "sha256": "09c137ceef53109713d93a91e23037e69bc04fa72303fd4893e67558b128b441"
+    },
+    {
+      "path": "/developers/docs/deno.md",
+      "file": "files/007",
+      "readAt": "2026-10-13T16:28:51.468Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3395,
+      "sha256": "747bb91afb3de6670e63c75641509bcc736930218a31183ab7d689a53b8662f7"
+    },
+    {
+      "path": "/developers/docs/bun/",
+      "file": "files/008",
+      "readAt": "2026-10-13T16:28:51.808Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84166,
+      "sha256": "ecde43d02e3089c3b0cbe2682b0d8fb3763d48a571b64f1cec0f787b87e4e4ec"
+    },
+    {
+      "path": "/developers/docs/bun.md",
+      "file": "files/009",
+      "readAt": "2026-10-13T16:28:52.433Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3259,
+      "sha256": "86b086fe708422c19fcc6ba66160332384886eb340f1cde4f7783f648ab1f560"
+    },
+    {
+      "path": "/developers/docs/cloudflare/",
+      "file": "files/010",
+      "readAt": "2026-10-13T16:28:52.731Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84538,
+      "sha256": "ce2e03f311fa9217798bed5150ec1b549b8bf1e26885091f96dbcea95a5a464c"
+    },
+    {
+      "path": "/developers/docs/cloudflare.md",
+      "file": "files/011",
+      "readAt": "2026-10-13T16:28:53.115Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3493,
+      "sha256": "4973b78eca28b96c1420b41a912d02cc309315749d8910ca726847ce331459d9"
+    },
+    {
+      "path": "/developers/docs/natal/",
+      "file": "files/012",
+      "readAt": "2026-10-13T16:28:53.418Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84680,
+      "sha256": "ad2cf13bf75a167ba40dc0d9440514f25ffa413ecb6d0a9cdec430b8e1d76921"
+    },
+    {
+      "path": "/developers/docs/natal.md",
+      "file": "files/013",
+      "readAt": "2026-10-13T16:28:54.024Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3615,
+      "sha256": "2bb5fa1b00a5af379c06174b9653e27244518dcfd648823604ace24e7a7cea0a"
+    },
+    {
+      "path": "/developers/docs/transits/",
+      "file": "files/014",
+      "readAt": "2026-10-13T16:28:54.337Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84173,
+      "sha256": "b58311fdfccf5cb1e80981a36010130fc0d7efea92607441015f85e4b1887ef4"
+    },
+    {
+      "path": "/developers/docs/transits.md",
+      "file": "files/015",
+      "readAt": "2026-10-13T16:28:54.741Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3258,
+      "sha256": "b6a901f325996a8ab8644767ef7696c3c975a8e393a6429b66644193f24d8f67"
+    },
+    {
+      "path": "/developers/docs/returns/",
+      "file": "files/016",
+      "readAt": "2026-10-13T16:28:55.644Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84576,
+      "sha256": "c065371869b01137f826bdd00f143ac7a36b83e6bcf6a162d52a083be1025e3e"
+    },
+    {
+      "path": "/developers/docs/returns.md",
+      "file": "files/017",
+      "readAt": "2026-10-13T16:28:56.001Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3596,
+      "sha256": "1937f848fbf38056c5fbfbdd07958d8f5c82611fc07ecd7f2ad17700bc151598"
+    },
+    {
+      "path": "/developers/docs/synastry/",
+      "file": "files/018",
+      "readAt": "2026-10-13T16:28:56.323Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84334,
+      "sha256": "ccff38f99fa544f0aa5addaa4d252457cdc17d6040b8611ffd2a90bc2c5ae266"
+    },
+    {
+      "path": "/developers/docs/synastry.md",
+      "file": "files/019",
+      "readAt": "2026-10-13T16:28:56.717Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3377,
+      "sha256": "7c0e990a774767602de5373ad990a162a4e61a3ecd5861355c3cf14befdcdca4"
+    },
+    {
+      "path": "/developers/docs/crossings/",
+      "file": "files/020",
+      "readAt": "2026-10-13T16:28:57.392Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84727,
+      "sha256": "27bc319180952345ff1efefb46e4303d2876c140c8a92f1c7b53eb5bb074173f"
+    },
+    {
+      "path": "/developers/docs/crossings.md",
+      "file": "files/021",
+      "readAt": "2026-10-13T16:28:57.742Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3622,
+      "sha256": "0f819b9b8f9c6f3907f565ac708bce95b42f4221de932bf22f5e67d40cd57443"
+    },
+    {
+      "path": "/developers/docs/conventions/",
+      "file": "files/022",
+      "readAt": "2026-10-13T16:28:58.099Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 85097,
+      "sha256": "3659c0650a1aa4efacafe5aaa821f6a13f2d89acc2d281ae6db7f35afcf27564"
+    },
+    {
+      "path": "/developers/docs/conventions.md",
+      "file": "files/023",
+      "readAt": "2026-10-13T16:28:58.423Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3888,
+      "sha256": "45f15d70e9fb5ff3634d20d500f0a16f5f1a6210efd5baccc2ded3318c23a2e5"
+    },
+    {
+      "path": "/developers/docs/errors/",
+      "file": "files/024",
+      "readAt": "2026-10-13T16:28:58.752Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84793,
+      "sha256": "8091b34c61fde6de3a53baa9f6c3dbede4498504476a6f193d6bdfc40a520e23"
+    },
+    {
+      "path": "/developers/docs/errors.md",
+      "file": "files/025",
+      "readAt": "2026-10-13T16:28:59.052Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3755,
+      "sha256": "075802cd5522ad54a8ded0bf42994d9845e1c06c79d753b32567d8b9b21ead70"
+    },
+    {
+      "path": "/developers/docs/receipts/",
+      "file": "files/026",
+      "readAt": "2026-10-13T16:28:59.348Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84914,
+      "sha256": "be0773936dab3c6cd150bd29959f9012f88088bb75052eb13a63d87e27e82743"
+    },
+    {
+      "path": "/developers/docs/receipts.md",
+      "file": "files/027",
+      "readAt": "2026-10-13T16:28:59.709Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3867,
+      "sha256": "95ca4c2681fc95e810d0ea2c55e5b2f23045f60773dd23d14e8a0996109497e4"
+    },
+    {
+      "path": "/developers/docs/python/",
+      "file": "files/028",
+      "readAt": "2026-10-13T16:29:00.011Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 83010,
+      "sha256": "8734f6ffa0ac467c6883504eb24794527e7157cd5ee50588c5bab940cf35428e"
+    },
+    {
+      "path": "/developers/docs/python.md",
+      "file": "files/029",
+      "readAt": "2026-10-13T16:29:00.378Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 2164,
+      "sha256": "3fbc4c42fddfce1d542551d4e2eaf9c02c6ece99243b4fb0c4aecab026abc519"
+    },
+    {
+      "path": "/developers/docs/elections/",
+      "file": "files/030",
+      "readAt": "2026-10-13T16:29:00.721Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 82342,
+      "sha256": "a050848560bd8668b74718466b3edabb590b0e2565f36ea4f954d48e2086d2f9"
+    },
+    {
+      "path": "/developers/docs/elections.md",
+      "file": "files/031",
+      "readAt": "2026-10-13T16:29:01.051Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 1660,
+      "sha256": "2685409e8cbfabf7fbf350d823b55923df0e1cae5e7957536b29a09228a2d382"
+    },
+    {
+      "path": "/developers/docs/astrology-api/",
+      "file": "files/032",
+      "readAt": "2026-10-13T16:29:01.360Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84360,
+      "sha256": "a7e7344ac4f4dcc3bb742cbccee58cd65220d26b9c666b9bc2ebfa2d3ef85085"
+    },
+    {
+      "path": "/developers/docs/astrology-api.md",
+      "file": "files/033",
+      "readAt": "2026-10-13T16:29:01.771Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3179,
+      "sha256": "36c1361e41a5960764c3931f3047b71dd678a5009859c65f5ecf4e378139a776"
+    },
+    {
+      "path": "/developers/docs/birth-chart-api/",
+      "file": "files/034",
+      "readAt": "2026-10-13T16:29:02.075Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84008,
+      "sha256": "31c57359c58be99a8563383d759e08ed1ac3cf86f5fcebd2f6546091a98db0c5"
+    },
+    {
+      "path": "/developers/docs/birth-chart-api.md",
+      "file": "files/035",
+      "readAt": "2026-10-13T16:29:02.432Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 2861,
+      "sha256": "1958d0e0aef8b8ccae4ab75816ae6667cce23e9ea2b3224896c6c8c351d4bf20"
+    },
+    {
+      "path": "/developers/docs/swiss-ephemeris-alternative-javascript/",
+      "file": "files/036",
+      "readAt": "2026-10-13T16:29:02.817Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 87926,
+      "sha256": "5e90796d972f9b0b607cc0f1bc86a754b9fdb5844bdb1dbf6592dd7f27663e37"
+    },
+    {
+      "path": "/developers/docs/swiss-ephemeris-alternative-javascript.md",
+      "file": "files/037",
+      "readAt": "2026-10-13T16:29:03.136Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 5604,
+      "sha256": "ca3ba2dd2fa7fb2e94bf3a72ffe1d8a7921e7e79d5fde138e1d9514f1cb84416"
+    },
+    {
+      "path": "/developers/docs/ephemeris-npm/",
+      "file": "files/038",
+      "readAt": "2026-10-13T16:29:03.439Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 86228,
+      "sha256": "823a9529b94c9f8b720a37cfd20b7eefd682a57d7641761f1f5e4ebd7debc913"
+    },
+    {
+      "path": "/developers/docs/ephemeris-npm.md",
+      "file": "files/039",
+      "readAt": "2026-10-13T16:29:04.440Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 4452,
+      "sha256": "fff261926b00f78e0456a3f56e67156de333de90514f0fb1791c7d83d82090a3"
+    },
+    {
+      "path": "/developers/docs/vedic-astrology-api/",
+      "file": "files/040",
+      "readAt": "2026-10-13T16:29:04.729Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 85288,
+      "sha256": "22a66a9c91d60c5ade1417d51d30fe765ec12f1f98033874c2a0dbda6acd9c38"
+    },
+    {
+      "path": "/developers/docs/vedic-astrology-api.md",
+      "file": "files/041",
+      "readAt": "2026-10-13T16:29:05.066Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3904,
+      "sha256": "53d5acf4295d6add0dda7298d51005f0d71c7b20126fbcdd3afdebbe9fd190cf"
+    },
+    {
+      "path": "/developers/docs/python-astrology-library/",
+      "file": "files/042",
+      "readAt": "2026-10-13T16:29:05.600Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 84698,
+      "sha256": "824f799017a3ddf357f3635dd94ba95b6eae5fb8d5a3f947025609865e6999b9"
+    },
+    {
+      "path": "/developers/docs/python-astrology-library.md",
+      "file": "files/043",
+      "readAt": "2026-10-13T16:29:05.963Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 3003,
+      "sha256": "874b78de580e84ee8cf6614657e5e5c3bff098a3ea6f98a41ce1e1997b4bed7c"
+    },
+    {
+      "path": "/developers/docs/astrology-mcp-server/",
+      "file": "files/044",
+      "readAt": "2026-10-13T16:29:06.501Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 83462,
+      "sha256": "39cfc74b128241c8505934d868e709a80b789e32f72b390e71649607c6f1e2cf"
+    },
+    {
+      "path": "/developers/docs/astrology-mcp-server.md",
+      "file": "files/045",
+      "readAt": "2026-10-13T16:29:06.855Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 2255,
+      "sha256": "c0f21d31b39f3d04529b06343bbd5b131adcb3df8ce741a6312be0f502d30be7"
+    },
+    {
+      "path": "/developers/docs/deprecation/",
+      "file": "files/046",
+      "readAt": "2026-10-13T16:29:07.143Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 81861,
+      "sha256": "c8ea3ee318704c1bafda426b3f9350608a2d5f18681811f4eddc00b55be33055"
+    },
+    {
+      "path": "/developers/docs/deprecation.md",
+      "file": "files/047",
+      "readAt": "2026-10-13T16:29:07.542Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 1275,
+      "sha256": "557a70e62768da29f960d0678cc7cefe6c867c466a5568b28ab87373088a988d"
+    },
+    {
+      "path": "/developers/docs/changelog/",
+      "file": "files/048",
+      "readAt": "2026-10-13T16:29:07.861Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 81944,
+      "sha256": "6ded90cc6284d2b59426db8b823d3b1079617fca47975c4d9d4dbf3cb18f0e3a"
+    },
+    {
+      "path": "/developers/docs/changelog.md",
+      "file": "files/049",
+      "readAt": "2026-10-13T16:29:08.183Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 1357,
+      "sha256": "e2ae48a408f069a6735ea1b6be01524631c5a2f85fcf36aef0068d26f009a013"
+    },
+    {
+      "path": "/developers/docs/status/",
+      "file": "files/050",
+      "readAt": "2026-10-13T16:29:08.471Z",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "bytes": 81675,
+      "sha256": "340f2db3391ad61a6f11c8d685e1d6c95424edadf015180fc5cb85632dfe6bbe"
+    },
+    {
+      "path": "/developers/docs/status.md",
+      "file": "files/051",
+      "readAt": "2026-10-13T16:29:08.779Z",
+      "status": 200,
+      "type": "text/markdown; charset=utf-8",
+      "bytes": 1112,
+      "sha256": "f0510c38a9bf735f2ec7b3795e1520e83ae6ee44e565e05fd3b380e94438bb24"
+    },
+    {
+      "path": "/llms.txt",
+      "file": "files/052",
+      "readAt": "2026-10-13T16:29:09.112Z",
+      "status": 200,
+      "type": "text/plain; charset=utf-8",
+      "bytes": 16861,
+      "sha256": "4fe8db5e72aa87314e7dc12fa350b43f95113c28f69f71210db23a6ad7bc21b5"
+    },
+    {
+      "path": "/llms-full.txt",
+      "file": "files/053",
+      "readAt": "2026-10-13T16:29:09.158Z",
+      "status": 200,
+      "type": "text/plain; charset=utf-8",
+      "bytes": 42587,
+      "sha256": "17ad0bebb77eb6383e0788422586f76c0f5ed6af345596e04373e7c2be5a7ac6"
+    },
+    {
+      "path": "/sitemap.xml",
+      "file": "files/054",
+      "readAt": "2026-10-13T16:29:09.452Z",
+      "status": 200,
+      "type": "application/xml",
+      "bytes": 819481,
+      "sha256": "9f7ffedb64c09bf13bdb1a7bb1e93ae19df79fc3dba55f39936af7f6ddec6093"
+    }
+  ]
+}

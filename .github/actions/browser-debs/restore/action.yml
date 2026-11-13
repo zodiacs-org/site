@@ -1,0 +1,92 @@
+name: Hand apt the cached browser packages
+description: >-
+  Run before `npx playwright-core install --with-deps`. Restores the newest
+  Actions cache entry of Ubuntu .deb files that browser-debs/save keeps for
+  this runner OS, and copies into apt's download cache only the files whose
+  SHA256 appears in the package lists apt has just downloaded and verified.
+  The install then picks the same versions as before, takes those files
+  instead of downloading them, and downloads only what is missing or newer.
+  The cache only saves time: give the calling step continue-on-error and a
+  time limit (4 minutes in this repository), and apt downloads as before
+  when the cache is slow or empty. If the limit stops this action while it
+  refreshes apt's package lists, it ends the refresh first, so apt's list
+  lock is free again before the install starts.
+
+inputs:
+  name:
+    description: >-
+      Cache name: files are restored to ~/<name> from the newest entry whose
+      key starts with <name>-<ImageOS>-.
+    required: true
+
+outputs:
+  matched-key:
+    description: Key of the restored entry, empty when nothing was restored.
+    value: ${{ steps.restore.outputs.cache-matched-key }}
+
+runs:
+  using: composite
+  steps:
+    - name: Name the cache for this runner OS
+      id: prefix
+      shell: bash
+      env:
+        NAME: ${{ inputs.name }}
+      run: |
+        [[ $NAME =~ ^[a-z0-9][a-z0-9-]*$ ]] || { echo "::error::Invalid cache name '$NAME'"; exit 1; }
+        echo "prefix=$NAME-$ImageOS-" >> "$GITHUB_OUTPUT"
+        echo "started=$(date +%s)" >> "$GITHUB_OUTPUT"
+
+    # Entries are named after their contents, so this key never matches
+    # exactly and the newest entry for this OS is restored. A stuck
+    # download gives up after 2 minutes.
+    - name: Restore the cached packages
+      id: restore
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      env:
+        SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
+      with:
+        path: ~/${{ inputs.name }}
+        key: ${{ steps.prefix.outputs.prefix }}newest
+        restore-keys: ${{ steps.prefix.outputs.prefix }}
+
+    # apt matches files in its download cache by name and size alone, so it
+    # is handed just the files whose SHA256 its signed package lists
+    # contain. The list refresh gets what is left of 150 seconds since this
+    # action started, and none when under 10 seconds are left. It runs in
+    # the background so that a stop from the caller's time limit reaches
+    # the trap at once: a refresh left running would hold apt's list lock,
+    # and the install's own refresh would fail on it, so the trap ends it
+    # (sudo passes the signal to timeout, which passes it to apt and kills
+    # what is left 5 seconds later) and waits for it before the step ends.
+    # If the refresh fails or is skipped, the check uses the lists already
+    # on the runner, which apt verified too: fewer files may match, and apt
+    # downloads the rest as before.
+    - name: Hand apt the files its package lists vouch for
+      shell: bash
+      env:
+        NAME: ${{ inputs.name }}
+        STARTED: ${{ steps.prefix.outputs.started }}
+      run: |
+        shopt -s nullglob
+        cached=("$HOME/$NAME"/*.deb)
+        : > "$RUNNER_TEMP/verified-debs"
+        if (( ${#cached[@]} )); then
+          left=$(( STARTED + 150 - $(date +%s) ))
+          if (( left >= 10 )); then
+            trap 'sudo kill -TERM $! 2> /dev/null; wait; exit 1' INT TERM
+            sudo timeout -k 5 "$left" apt-get update -qq &
+            wait $! || true
+            trap - INT TERM
+          else
+            echo "No time left to refresh the package lists"
+          fi
+          apt-get indextargets --format '$(FILENAME)' 'Created-By: Packages' \
+            | xargs -r /usr/lib/apt/apt-helper cat-file \
+            | awk '$1 == "SHA256:" { print $2 }' > "$RUNNER_TEMP/listed-sha256"
+          sha256sum "${cached[@]}" \
+            | awk 'NR == FNR { listed[$1]; next } $1 in listed { print $2 }' "$RUNNER_TEMP/listed-sha256" - \
+            > "$RUNNER_TEMP/verified-debs"
+          xargs -r -d '\n' -a "$RUNNER_TEMP/verified-debs" sudo cp -t /var/cache/apt/archives/
+        fi
+        echo "Giving apt $(wc -l < "$RUNNER_TEMP/verified-debs") of ${#cached[@]} cached packages"

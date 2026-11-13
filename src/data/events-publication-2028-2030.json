@@ -1,0 +1,5145 @@
+{
+  "schema": "zodiacs.events-publication.v1",
+  "locale": "en",
+  "window": {
+    "from": "2028-01-01T00:00:00.000Z",
+    "to": "2031-01-01T00:00:00.000Z"
+  },
+  "lastModified": "2026-11-08",
+  "hub": {
+    "path": "/events/",
+    "title": "Sky events",
+    "card": "/assets/og/v2/events/index.png",
+    "indexEligible": true
+  },
+  "pages": [
+    {
+      "id": "full-moon-2028-01-12",
+      "path": "/full-moon/2028-01-12/",
+      "title": "Full moon in Cancer, January 12, 2028",
+      "anchor": "2028-01-12T04:03:06.410Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "The Wolf Moon: the Moon stands opposite the Sun in Cancer.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-01-12.png"
+    },
+    {
+      "id": "eclipse-2028-01-12",
+      "path": "/eclipses/2028-01-12/",
+      "title": "Partial lunar eclipse in Cancer, January 12, 2028",
+      "anchor": "2028-01-12T04:13:07.811Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Cancer.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2028-01-12.png"
+    },
+    {
+      "id": "uranus-trine-pluto-2028-01-13",
+      "path": "/events/uranus-trine-pluto-2028-01-13/",
+      "title": "Uranus trine Pluto, January 13, 2028",
+      "anchor": "2028-01-13T06:52:39.447Z",
+      "family": "aspect",
+      "subtype": "trine",
+      "bodies": [
+        "Uranus",
+        "Pluto"
+      ],
+      "signs": [
+        "gemini",
+        "aquarius"
+      ],
+      "summary": "Uranus and Pluto reach an exact trine.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/uranus-trine-pluto-2028-01-13.png"
+    },
+    {
+      "id": "mercury-retrograde-2028-01-24",
+      "path": "/mercury-retrograde/2028-01-24/",
+      "title": "Mercury retrograde, January 2028",
+      "anchor": "2028-01-24T11:03:29.179Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Mercury appears to reverse through Aquarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mercury-retrograde-2028-01-24.png"
+    },
+    {
+      "id": "eclipse-2028-01-26",
+      "path": "/eclipses/2028-01-26/",
+      "title": "Annular solar eclipse in Aquarius, January 26, 2028",
+      "anchor": "2028-01-26T15:07:49.353Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "A new moon crosses the Sun's face in Aquarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2028-01-26.png"
+    },
+    {
+      "id": "new-moon-2028-01-26",
+      "path": "/new-moon/2028-01-26/",
+      "title": "New moon in Aquarius, January 26, 2028",
+      "anchor": "2028-01-26T15:12:30.887Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Sun and Moon meet in Aquarius; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-01-26.png"
+    },
+    {
+      "id": "full-moon-2028-02-10",
+      "path": "/full-moon/2028-02-10/",
+      "title": "Full moon in Leo, February 10, 2028",
+      "anchor": "2028-02-10T15:03:46.014Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "The Snow Moon: the Moon stands opposite the Sun in Leo.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-02-10.png"
+    },
+    {
+      "id": "new-moon-2028-02-25",
+      "path": "/new-moon/2028-02-25/",
+      "title": "New moon in Pisces, February 25, 2028",
+      "anchor": "2028-02-25T10:37:24.945Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "Sun and Moon meet in Pisces; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-02-25.png"
+    },
+    {
+      "id": "full-moon-2028-03-11",
+      "path": "/full-moon/2028-03-11/",
+      "title": "Full moon in Virgo, March 11, 2028",
+      "anchor": "2028-03-11T01:06:03.070Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "The Worm Moon: the Moon stands opposite the Sun in Virgo.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-03-11.png"
+    },
+    {
+      "id": "new-moon-2028-03-26",
+      "path": "/new-moon/2028-03-26/",
+      "title": "New moon in Aries, March 26, 2028",
+      "anchor": "2028-03-26T04:31:20.913Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Sun and Moon meet in Aries; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-03-26.png"
+    },
+    {
+      "id": "full-moon-2028-04-09",
+      "path": "/full-moon/2028-04-09/",
+      "title": "Full moon in Libra, April 9, 2028",
+      "anchor": "2028-04-09T10:26:36.972Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "The Pink Moon: the Moon stands opposite the Sun in Libra.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-04-09.png"
+    },
+    {
+      "id": "saturn-enters-taurus-2028-04-13",
+      "path": "/events/saturn-enters-taurus-2028-04-13/",
+      "title": "Saturn enters Taurus, April 13, 2028",
+      "anchor": "2028-04-13T04:05:03.310Z",
+      "family": "ingress",
+      "subtype": "ingress",
+      "bodies": [
+        "Saturn"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Saturn moves into Taurus from Aries.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/saturn-enters-taurus-2028-04-13.png"
+    },
+    {
+      "id": "new-moon-2028-04-24",
+      "path": "/new-moon/2028-04-24/",
+      "title": "New moon in Taurus, April 24, 2028",
+      "anchor": "2028-04-24T19:46:56.371Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Sun and Moon meet in Taurus; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-04-24.png"
+    },
+    {
+      "id": "full-moon-2028-05-08",
+      "path": "/full-moon/2028-05-08/",
+      "title": "Full moon in Scorpio, May 8, 2028",
+      "anchor": "2028-05-08T19:48:57.413Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-05-08.png"
+    },
+    {
+      "id": "uranus-trine-pluto-2028-05-10",
+      "path": "/events/uranus-trine-pluto-2028-05-10/",
+      "title": "Uranus trine Pluto, May 10, 2028",
+      "anchor": "2028-05-10T02:50:40.437Z",
+      "family": "aspect",
+      "subtype": "trine",
+      "bodies": [
+        "Uranus",
+        "Pluto"
+      ],
+      "signs": [
+        "gemini",
+        "aquarius"
+      ],
+      "summary": "Uranus and Pluto reach an exact trine.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/uranus-trine-pluto-2028-05-10.png"
+    },
+    {
+      "id": "venus-retrograde-2028-05-10",
+      "path": "/venus-retrograde/2028-05-10/",
+      "title": "Venus retrograde, May 2028",
+      "anchor": "2028-05-10T23:02:03.485Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Venus"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Venus appears to reverse through Gemini.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/venus-retrograde-2028-05-10.png"
+    },
+    {
+      "id": "mercury-retrograde-2028-05-21",
+      "path": "/mercury-retrograde/2028-05-21/",
+      "title": "Mercury retrograde, May 2028",
+      "anchor": "2028-05-21T08:39:52.382Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Mercury appears to reverse through Gemini.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mercury-retrograde-2028-05-21.png"
+    },
+    {
+      "id": "new-moon-2028-05-24",
+      "path": "/new-moon/2028-05-24/",
+      "title": "New moon in Gemini, May 24, 2028",
+      "anchor": "2028-05-24T08:16:19.018Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Sun and Moon meet in Gemini; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-05-24.png"
+    },
+    {
+      "id": "full-moon-2028-06-07",
+      "path": "/full-moon/2028-06-07/",
+      "title": "Full moon in Sagittarius, June 7, 2028",
+      "anchor": "2028-06-07T06:08:49.814Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "The Strawberry Moon: the Moon stands opposite the Sun in Sagittarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-06-07.png"
+    },
+    {
+      "id": "neptune-sextile-pluto-2028-06-09",
+      "path": "/events/neptune-sextile-pluto-2028-06-09/",
+      "title": "Neptune sextile Pluto, June 9, 2028",
+      "anchor": "2028-06-09T01:49:36.552Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/neptune-sextile-pluto-2028-06-09.png"
+    },
+    {
+      "id": "new-moon-2028-06-22",
+      "path": "/new-moon/2028-06-22/",
+      "title": "New moon in Cancer, June 22, 2028",
+      "anchor": "2028-06-22T18:27:35.529Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "Sun and Moon meet in Cancer; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-06-22.png"
+    },
+    {
+      "id": "saturn-square-pluto-2028-06-24",
+      "path": "/events/saturn-square-pluto-2028-06-24/",
+      "title": "Saturn square Pluto, June 24, 2028",
+      "anchor": "2028-06-24T03:18:58.402Z",
+      "family": "aspect",
+      "subtype": "square",
+      "bodies": [
+        "Saturn",
+        "Pluto"
+      ],
+      "signs": [
+        "taurus",
+        "aquarius"
+      ],
+      "summary": "Saturn and Pluto reach an exact square.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/saturn-square-pluto-2028-06-24.png"
+    },
+    {
+      "id": "full-moon-2028-07-06",
+      "path": "/full-moon/2028-07-06/",
+      "title": "Full moon in Capricorn, July 6, 2028",
+      "anchor": "2028-07-06T18:10:50.114Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "The Buck Moon: the Moon stands opposite the Sun in Capricorn.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-07-06.png"
+    },
+    {
+      "id": "eclipse-2028-07-06",
+      "path": "/eclipses/2028-07-06/",
+      "title": "Partial lunar eclipse in Capricorn, July 6, 2028",
+      "anchor": "2028-07-06T18:19:45.579Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Capricorn.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2028-07-06.png"
+    },
+    {
+      "id": "eclipse-2028-07-22",
+      "path": "/eclipses/2028-07-22/",
+      "title": "Total solar eclipse in Cancer, July 22, 2028",
+      "anchor": "2028-07-22T02:55:31.849Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "A new moon crosses the Sun's face in Cancer.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2028-07-22.png"
+    },
+    {
+      "id": "new-moon-2028-07-22",
+      "path": "/new-moon/2028-07-22/",
+      "title": "New moon in Cancer, July 22, 2028",
+      "anchor": "2028-07-22T03:01:44.808Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "Sun and Moon meet in Cancer; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-07-22.png"
+    },
+    {
+      "id": "full-moon-2028-08-05",
+      "path": "/full-moon/2028-08-05/",
+      "title": "Full moon in Aquarius, August 5, 2028",
+      "anchor": "2028-08-05T08:09:49.030Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "The Sturgeon Moon: the Moon stands opposite the Sun in Aquarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-08-05.png"
+    },
+    {
+      "id": "new-moon-2028-08-20",
+      "path": "/new-moon/2028-08-20/",
+      "title": "New moon in Leo, August 20, 2028",
+      "anchor": "2028-08-20T10:43:51.966Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "Sun and Moon meet in Leo; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-08-20.png"
+    },
+    {
+      "id": "jupiter-enters-libra-2028-08-24",
+      "path": "/events/jupiter-enters-libra-2028-08-24/",
+      "title": "Jupiter enters Libra, August 24, 2028",
+      "anchor": "2028-08-24T05:04:19.914Z",
+      "family": "ingress",
+      "subtype": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Jupiter moves into Libra from Virgo.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-enters-libra-2028-08-24.png"
+    },
+    {
+      "id": "full-moon-2028-09-03",
+      "path": "/full-moon/2028-09-03/",
+      "title": "Full moon in Pisces, September 3, 2028",
+      "anchor": "2028-09-03T23:47:35.454Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "The Corn Moon: the Moon stands opposite the Sun in Pisces.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-09-03.png"
+    },
+    {
+      "id": "new-moon-2028-09-18",
+      "path": "/new-moon/2028-09-18/",
+      "title": "New moon in Virgo, September 18, 2028",
+      "anchor": "2028-09-18T18:23:45.722Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Sun and Moon meet in Virgo; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-09-18.png"
+    },
+    {
+      "id": "mercury-retrograde-2028-09-19",
+      "path": "/mercury-retrograde/2028-09-19/",
+      "title": "Mercury retrograde, September 2028",
+      "anchor": "2028-09-19T16:30:15.819Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Mercury appears to reverse through Libra.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mercury-retrograde-2028-09-19.png"
+    },
+    {
+      "id": "jupiter-trine-pluto-2028-09-24",
+      "path": "/events/jupiter-trine-pluto-2028-09-24/",
+      "title": "Jupiter trine Pluto, September 24, 2028",
+      "anchor": "2028-09-24T07:39:35.545Z",
+      "family": "aspect",
+      "subtype": "trine",
+      "bodies": [
+        "Jupiter",
+        "Pluto"
+      ],
+      "signs": [
+        "libra",
+        "aquarius"
+      ],
+      "summary": "Jupiter and Pluto reach an exact trine.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-trine-pluto-2028-09-24.png"
+    },
+    {
+      "id": "jupiter-opposition-neptune-2028-09-28",
+      "path": "/events/jupiter-opposition-neptune-2028-09-28/",
+      "title": "Jupiter opposition Neptune, September 28, 2028",
+      "anchor": "2028-09-28T19:29:36.928Z",
+      "family": "aspect",
+      "subtype": "opposition",
+      "bodies": [
+        "Jupiter",
+        "Neptune"
+      ],
+      "signs": [
+        "libra",
+        "aries"
+      ],
+      "summary": "Jupiter and Neptune reach an exact opposition.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-opposition-neptune-2028-09-28.png"
+    },
+    {
+      "id": "full-moon-2028-10-03",
+      "path": "/full-moon/2028-10-03/",
+      "title": "Full moon in Aries, October 3, 2028",
+      "anchor": "2028-10-03T16:25:01.142Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "The Hunter’s Moon: the Moon stands opposite the Sun in Aries.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-10-03.png"
+    },
+    {
+      "id": "new-moon-2028-10-18",
+      "path": "/new-moon/2028-10-18/",
+      "title": "New moon in Libra, October 18, 2028",
+      "anchor": "2028-10-18T02:56:48.672Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Sun and Moon meet in Libra; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-10-18.png"
+    },
+    {
+      "id": "jupiter-trine-uranus-2028-10-27",
+      "path": "/events/jupiter-trine-uranus-2028-10-27/",
+      "title": "Jupiter trine Uranus, October 27, 2028",
+      "anchor": "2028-10-27T09:03:33.902Z",
+      "family": "aspect",
+      "subtype": "trine",
+      "bodies": [
+        "Jupiter",
+        "Uranus"
+      ],
+      "signs": [
+        "libra",
+        "gemini"
+      ],
+      "summary": "Jupiter and Uranus reach an exact trine.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-trine-uranus-2028-10-27.png"
+    },
+    {
+      "id": "full-moon-2028-11-02",
+      "path": "/full-moon/2028-11-02/",
+      "title": "Full moon in Taurus, November 2, 2028",
+      "anchor": "2028-11-02T09:17:21.255Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "The Beaver Moon: the Moon stands opposite the Sun in Taurus.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-11-02.png"
+    },
+    {
+      "id": "neptune-sextile-pluto-2028-11-08",
+      "path": "/events/neptune-sextile-pluto-2028-11-08/",
+      "title": "Neptune sextile Pluto, November 8, 2028",
+      "anchor": "2028-11-08T04:21:11.666Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/neptune-sextile-pluto-2028-11-08.png"
+    },
+    {
+      "id": "saturn-square-pluto-2028-11-15",
+      "path": "/events/saturn-square-pluto-2028-11-15/",
+      "title": "Saturn square Pluto, November 15, 2028",
+      "anchor": "2028-11-15T12:29:27.342Z",
+      "family": "aspect",
+      "subtype": "square",
+      "bodies": [
+        "Saturn",
+        "Pluto"
+      ],
+      "signs": [
+        "taurus",
+        "aquarius"
+      ],
+      "summary": "Saturn and Pluto reach an exact square.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/saturn-square-pluto-2028-11-15.png"
+    },
+    {
+      "id": "new-moon-2028-11-16",
+      "path": "/new-moon/2028-11-16/",
+      "title": "New moon in Scorpio, November 16, 2028",
+      "anchor": "2028-11-16T13:17:59.597Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "Sun and Moon meet in Scorpio; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-11-16.png"
+    },
+    {
+      "id": "full-moon-2028-12-02",
+      "path": "/full-moon/2028-12-02/",
+      "title": "Full moon in Gemini, December 2, 2028",
+      "anchor": "2028-12-02T01:40:10.975Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "The Cold Moon: the Moon stands opposite the Sun in Gemini.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-12-02.png"
+    },
+    {
+      "id": "new-moon-2028-12-16",
+      "path": "/new-moon/2028-12-16/",
+      "title": "New moon in Sagittarius, December 16, 2028",
+      "anchor": "2028-12-16T02:06:16.774Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "Sun and Moon meet in Sagittarius; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2028-12-16.png"
+    },
+    {
+      "id": "full-moon-2028-12-31",
+      "path": "/full-moon/2028-12-31/",
+      "title": "Full moon in Cancer, December 31, 2028",
+      "anchor": "2028-12-31T16:48:27.585Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "A blue moon: the Moon stands opposite the Sun in Cancer.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2028-12-31.png"
+    },
+    {
+      "id": "eclipse-2028-12-31",
+      "path": "/eclipses/2028-12-31/",
+      "title": "Total lunar eclipse in Cancer, December 31, 2028",
+      "anchor": "2028-12-31T16:52:02.003Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Cancer.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2028-12-31.png"
+    },
+    {
+      "id": "mercury-retrograde-2029-01-07",
+      "path": "/mercury-retrograde/2029-01-07/",
+      "title": "Mercury retrograde, January 2029",
+      "anchor": "2029-01-07T07:57:22.675Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "capricorn",
+        "aquarius"
+      ],
+      "summary": "Mercury appears to reverse through Capricorn and Aquarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mercury-retrograde-2029-01-07.png"
+    },
+    {
+      "id": "eclipse-2029-01-14",
+      "path": "/eclipses/2029-01-14/",
+      "title": "Partial solar eclipse in Capricorn, January 14, 2029",
+      "anchor": "2029-01-14T17:12:36.290Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "A new moon crosses the Sun's face in Capricorn.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2029-01-14.png"
+    },
+    {
+      "id": "new-moon-2029-01-14",
+      "path": "/new-moon/2029-01-14/",
+      "title": "New moon in Capricorn, January 14, 2029",
+      "anchor": "2029-01-14T17:24:29.613Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-01-14.png"
+    },
+    {
+      "id": "full-moon-2029-01-30",
+      "path": "/full-moon/2029-01-30/",
+      "title": "Full moon in Leo, January 30, 2029",
+      "anchor": "2029-01-30T06:03:35.385Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "The Wolf Moon: the Moon stands opposite the Sun in Leo.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-01-30.png"
+    },
+    {
+      "id": "new-moon-2029-02-13",
+      "path": "/new-moon/2029-02-13/",
+      "title": "New moon in Aquarius, February 13, 2029",
+      "anchor": "2029-02-13T10:31:30.883Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Sun and Moon meet in Aquarius; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-02-13.png"
+    },
+    {
+      "id": "mars-retrograde-2029-02-14",
+      "path": "/mars-retrograde/2029-02-14/",
+      "title": "Mars retrograde, February 2029",
+      "anchor": "2029-02-14T08:12:52.118Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mars"
+      ],
+      "signs": [
+        "virgo",
+        "libra"
+      ],
+      "summary": "Mars appears to reverse through Virgo and Libra.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mars-retrograde-2029-02-14.png"
+    },
+    {
+      "id": "full-moon-2029-02-28",
+      "path": "/full-moon/2029-02-28/",
+      "title": "Full moon in Virgo, February 28, 2029",
+      "anchor": "2029-02-28T17:10:13.915Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "The Snow Moon: the Moon stands opposite the Sun in Virgo.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-02-28.png"
+    },
+    {
+      "id": "new-moon-2029-03-15",
+      "path": "/new-moon/2029-03-15/",
+      "title": "New moon in Pisces, March 15, 2029",
+      "anchor": "2029-03-15T04:19:15.732Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "Sun and Moon meet in Pisces; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-03-15.png"
+    },
+    {
+      "id": "saturn-square-pluto-2029-03-29",
+      "path": "/events/saturn-square-pluto-2029-03-29/",
+      "title": "Saturn square Pluto, March 29, 2029",
+      "anchor": "2029-03-29T23:21:02.958Z",
+      "family": "aspect",
+      "subtype": "square",
+      "bodies": [
+        "Saturn",
+        "Pluto"
+      ],
+      "signs": [
+        "taurus",
+        "aquarius"
+      ],
+      "summary": "Saturn and Pluto reach an exact square.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/saturn-square-pluto-2029-03-29.png"
+    },
+    {
+      "id": "full-moon-2029-03-30",
+      "path": "/full-moon/2029-03-30/",
+      "title": "Full moon in Libra, March 30, 2029",
+      "anchor": "2029-03-30T02:26:25.051Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "The Worm Moon: the Moon stands opposite the Sun in Libra.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-03-30.png"
+    },
+    {
+      "id": "new-moon-2029-04-13",
+      "path": "/new-moon/2029-04-13/",
+      "title": "New moon in Aries, April 13, 2029",
+      "anchor": "2029-04-13T21:40:11.937Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Sun and Moon meet in Aries; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-04-13.png"
+    },
+    {
+      "id": "full-moon-2029-04-28",
+      "path": "/full-moon/2029-04-28/",
+      "title": "Full moon in Scorpio, April 28, 2029",
+      "anchor": "2029-04-28T10:36:51.574Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "The Pink Moon: the Moon stands opposite the Sun in Scorpio.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-04-28.png"
+    },
+    {
+      "id": "mercury-retrograde-2029-05-01",
+      "path": "/mercury-retrograde/2029-05-01/",
+      "title": "Mercury retrograde, May 2029",
+      "anchor": "2029-05-01T23:10:21.825Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Mercury appears to reverse through Taurus.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mercury-retrograde-2029-05-01.png"
+    },
+    {
+      "id": "new-moon-2029-05-13",
+      "path": "/new-moon/2029-05-13/",
+      "title": "New moon in Taurus, May 13, 2029",
+      "anchor": "2029-05-13T13:42:09.298Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Sun and Moon meet in Taurus; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-05-13.png"
+    },
+    {
+      "id": "neptune-sextile-pluto-2029-05-22",
+      "path": "/events/neptune-sextile-pluto-2029-05-22/",
+      "title": "Neptune sextile Pluto, May 22, 2029",
+      "anchor": "2029-05-22T17:03:33.380Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/neptune-sextile-pluto-2029-05-22.png"
+    },
+    {
+      "id": "full-moon-2029-05-27",
+      "path": "/full-moon/2029-05-27/",
+      "title": "Full moon in Sagittarius, May 27, 2029",
+      "anchor": "2029-05-27T18:37:33.321Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "The Flower Moon: the Moon stands opposite the Sun in Sagittarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-05-27.png"
+    },
+    {
+      "id": "new-moon-2029-06-12",
+      "path": "/new-moon/2029-06-12/",
+      "title": "New moon in Gemini, June 12, 2029",
+      "anchor": "2029-06-12T03:50:32.472Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Sun and Moon meet in Gemini; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-06-12.png"
+    },
+    {
+      "id": "eclipse-2029-06-12",
+      "path": "/eclipses/2029-06-12/",
+      "title": "Partial solar eclipse in Gemini, June 12, 2029",
+      "anchor": "2029-06-12T04:05:02.841Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "A new moon crosses the Sun's face in Gemini.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2029-06-12.png"
+    },
+    {
+      "id": "eclipse-2029-06-26",
+      "path": "/eclipses/2029-06-26/",
+      "title": "Total lunar eclipse in Capricorn, June 26, 2029",
+      "anchor": "2029-06-26T03:22:14.248Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Capricorn.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2029-06-26.png"
+    },
+    {
+      "id": "full-moon-2029-06-26",
+      "path": "/full-moon/2029-06-26/",
+      "title": "Full moon in Capricorn, June 26, 2029",
+      "anchor": "2029-06-26T03:22:22.748Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "The Strawberry Moon: the Moon stands opposite the Sun in Capricorn.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-06-26.png"
+    },
+    {
+      "id": "eclipse-2029-07-11",
+      "path": "/eclipses/2029-07-11/",
+      "title": "Partial solar eclipse in Cancer, July 11, 2029",
+      "anchor": "2029-07-11T15:36:11.603Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "A new moon crosses the Sun's face in Cancer.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2029-07-11.png"
+    },
+    {
+      "id": "new-moon-2029-07-11",
+      "path": "/new-moon/2029-07-11/",
+      "title": "New moon in Cancer, July 11, 2029",
+      "anchor": "2029-07-11T15:51:06.420Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "Sun and Moon meet in Cancer; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-07-11.png"
+    },
+    {
+      "id": "full-moon-2029-07-25",
+      "path": "/full-moon/2029-07-25/",
+      "title": "Full moon in Aquarius, July 25, 2029",
+      "anchor": "2029-07-25T13:35:49.199Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "The Buck Moon: the Moon stands opposite the Sun in Aquarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-07-25.png"
+    },
+    {
+      "id": "new-moon-2029-08-10",
+      "path": "/new-moon/2029-08-10/",
+      "title": "New moon in Leo, August 10, 2029",
+      "anchor": "2029-08-10T01:55:51.378Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "Sun and Moon meet in Leo; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-08-10.png"
+    },
+    {
+      "id": "full-moon-2029-08-24",
+      "path": "/full-moon/2029-08-24/",
+      "title": "Full moon in Pisces, August 24, 2029",
+      "anchor": "2029-08-24T01:51:18.312Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "The Sturgeon Moon: the Moon stands opposite the Sun in Pisces.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-08-24.png"
+    },
+    {
+      "id": "mercury-retrograde-2029-09-02",
+      "path": "/mercury-retrograde/2029-09-02/",
+      "title": "Mercury retrograde, September 2029",
+      "anchor": "2029-09-02T12:14:28.797Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "virgo",
+        "libra"
+      ],
+      "summary": "Mercury appears to reverse through Virgo and Libra.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mercury-retrograde-2029-09-02.png"
+    },
+    {
+      "id": "new-moon-2029-09-08",
+      "path": "/new-moon/2029-09-08/",
+      "title": "New moon in Virgo, September 8, 2029",
+      "anchor": "2029-09-08T10:44:25.996Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Sun and Moon meet in Virgo; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-09-08.png"
+    },
+    {
+      "id": "full-moon-2029-09-22",
+      "path": "/full-moon/2029-09-22/",
+      "title": "Full moon in Pisces, September 22, 2029",
+      "anchor": "2029-09-22T16:29:22.920Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "The Corn Moon: the Moon stands opposite the Sun in Pisces.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-09-22.png"
+    },
+    {
+      "id": "jupiter-enters-scorpio-2029-09-24",
+      "path": "/events/jupiter-enters-scorpio-2029-09-24/",
+      "title": "Jupiter enters Scorpio, September 24, 2029",
+      "anchor": "2029-09-24T06:27:17.997Z",
+      "family": "ingress",
+      "subtype": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "Jupiter moves into Scorpio from Libra.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-enters-scorpio-2029-09-24.png"
+    },
+    {
+      "id": "new-moon-2029-10-07",
+      "path": "/new-moon/2029-10-07/",
+      "title": "New moon in Libra, October 7, 2029",
+      "anchor": "2029-10-07T19:14:36.818Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Sun and Moon meet in Libra; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-10-07.png"
+    },
+    {
+      "id": "full-moon-2029-10-22",
+      "path": "/full-moon/2029-10-22/",
+      "title": "Full moon in Aries, October 22, 2029",
+      "anchor": "2029-10-22T09:27:39.318Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "The Hunter’s Moon: the Moon stands opposite the Sun in Aries.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-10-22.png"
+    },
+    {
+      "id": "jupiter-square-pluto-2029-11-01",
+      "path": "/events/jupiter-square-pluto-2029-11-01/",
+      "title": "Jupiter square Pluto, November 1, 2029",
+      "anchor": "2029-11-01T00:42:45.196Z",
+      "family": "aspect",
+      "subtype": "square",
+      "bodies": [
+        "Jupiter",
+        "Pluto"
+      ],
+      "signs": [
+        "scorpio",
+        "aquarius"
+      ],
+      "summary": "Jupiter and Pluto reach an exact square.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-square-pluto-2029-11-01.png"
+    },
+    {
+      "id": "new-moon-2029-11-06",
+      "path": "/new-moon/2029-11-06/",
+      "title": "New moon in Scorpio, November 6, 2029",
+      "anchor": "2029-11-06T04:24:09.562Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "Sun and Moon meet in Scorpio; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-11-06.png"
+    },
+    {
+      "id": "full-moon-2029-11-21",
+      "path": "/full-moon/2029-11-21/",
+      "title": "Full moon in Taurus, November 21, 2029",
+      "anchor": "2029-11-21T04:03:01.383Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "The Beaver Moon: the Moon stands opposite the Sun in Taurus.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-11-21.png"
+    },
+    {
+      "id": "neptune-sextile-pluto-2029-11-30",
+      "path": "/events/neptune-sextile-pluto-2029-11-30/",
+      "title": "Neptune sextile Pluto, November 30, 2029",
+      "anchor": "2029-11-30T23:26:53.231Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/neptune-sextile-pluto-2029-11-30.png"
+    },
+    {
+      "id": "new-moon-2029-12-05",
+      "path": "/new-moon/2029-12-05/",
+      "title": "New moon in Sagittarius, December 5, 2029",
+      "anchor": "2029-12-05T14:52:07.613Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "Sun and Moon meet in Sagittarius; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2029-12-05.png"
+    },
+    {
+      "id": "eclipse-2029-12-05",
+      "path": "/eclipses/2029-12-05/",
+      "title": "Partial solar eclipse in Sagittarius, December 5, 2029",
+      "anchor": "2029-12-05T15:02:47.855Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "A new moon crosses the Sun's face in Sagittarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2029-12-05.png"
+    },
+    {
+      "id": "venus-retrograde-2029-12-16",
+      "path": "/venus-retrograde/2029-12-16/",
+      "title": "Venus retrograde, December 2029",
+      "anchor": "2029-12-16T23:49:27.187Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Venus"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Venus appears to reverse through Capricorn.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/venus-retrograde-2029-12-16.png"
+    },
+    {
+      "id": "eclipse-2029-12-20",
+      "path": "/eclipses/2029-12-20/",
+      "title": "Total lunar eclipse in Gemini, December 20, 2029",
+      "anchor": "2029-12-20T22:42:02.582Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Gemini.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2029-12-20.png"
+    },
+    {
+      "id": "full-moon-2029-12-20",
+      "path": "/full-moon/2029-12-20/",
+      "title": "Full moon in Gemini, December 20, 2029",
+      "anchor": "2029-12-20T22:46:30.746Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "The Cold Moon: the Moon stands opposite the Sun in Gemini.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2029-12-20.png"
+    },
+    {
+      "id": "mercury-retrograde-2029-12-22",
+      "path": "/mercury-retrograde/2029-12-22/",
+      "title": "Mercury retrograde, December 2029",
+      "anchor": "2029-12-22T05:49:50.917Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Mercury appears to reverse through Capricorn.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mercury-retrograde-2029-12-22.png"
+    },
+    {
+      "id": "jupiter-opposition-saturn-2029-12-22",
+      "path": "/events/jupiter-opposition-saturn-2029-12-22/",
+      "title": "Jupiter opposition Saturn, December 22, 2029",
+      "anchor": "2029-12-22T07:02:55.781Z",
+      "family": "aspect",
+      "subtype": "opposition",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "signs": [
+        "scorpio",
+        "taurus"
+      ],
+      "summary": "Jupiter and Saturn reach an exact opposition.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-opposition-saturn-2029-12-22.png"
+    },
+    {
+      "id": "new-moon-2030-01-04",
+      "path": "/new-moon/2030-01-04/",
+      "title": "New moon in Capricorn, January 4, 2030",
+      "anchor": "2030-01-04T02:49:33.778Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-01-04.png"
+    },
+    {
+      "id": "full-moon-2030-01-19",
+      "path": "/full-moon/2030-01-19/",
+      "title": "Full moon in Cancer, January 19, 2030",
+      "anchor": "2030-01-19T15:54:21.949Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "The Wolf Moon: the Moon stands opposite the Sun in Cancer.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-01-19.png"
+    },
+    {
+      "id": "new-moon-2030-02-02",
+      "path": "/new-moon/2030-02-02/",
+      "title": "New moon in Aquarius, February 2, 2030",
+      "anchor": "2030-02-02T16:07:33.295Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Sun and Moon meet in Aquarius; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-02-02.png"
+    },
+    {
+      "id": "full-moon-2030-02-18",
+      "path": "/full-moon/2030-02-18/",
+      "title": "Full moon in Leo, February 18, 2030",
+      "anchor": "2030-02-18T06:19:50.394Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "The Snow Moon: the Moon stands opposite the Sun in Leo.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-02-18.png"
+    },
+    {
+      "id": "new-moon-2030-03-04",
+      "path": "/new-moon/2030-03-04/",
+      "title": "New moon in Pisces, March 4, 2030",
+      "anchor": "2030-03-04T06:34:43.583Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "Sun and Moon meet in Pisces; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-03-04.png"
+    },
+    {
+      "id": "full-moon-2030-03-19",
+      "path": "/full-moon/2030-03-19/",
+      "title": "Full moon in Virgo, March 19, 2030",
+      "anchor": "2030-03-19T17:56:32.851Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "The Worm Moon: the Moon stands opposite the Sun in Virgo.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-03-19.png"
+    },
+    {
+      "id": "new-moon-2030-04-02",
+      "path": "/new-moon/2030-04-02/",
+      "title": "New moon in Aries, April 2, 2030",
+      "anchor": "2030-04-02T22:02:36.087Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Sun and Moon meet in Aries; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-04-02.png"
+    },
+    {
+      "id": "mercury-retrograde-2030-04-13",
+      "path": "/mercury-retrograde/2030-04-13/",
+      "title": "Mercury retrograde, April 2030",
+      "anchor": "2030-04-13T02:27:57.831Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "aries",
+        "taurus"
+      ],
+      "summary": "Mercury appears to reverse through Aries and Taurus.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mercury-retrograde-2030-04-13.png"
+    },
+    {
+      "id": "full-moon-2030-04-18",
+      "path": "/full-moon/2030-04-18/",
+      "title": "Full moon in Libra, April 18, 2030",
+      "anchor": "2030-04-18T03:20:03.661Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "The Pink Moon: the Moon stands opposite the Sun in Libra.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-04-18.png"
+    },
+    {
+      "id": "jupiter-opposition-saturn-2030-04-24",
+      "path": "/events/jupiter-opposition-saturn-2030-04-24/",
+      "title": "Jupiter opposition Saturn, April 24, 2030",
+      "anchor": "2030-04-24T01:53:15.482Z",
+      "family": "aspect",
+      "subtype": "opposition",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "signs": [
+        "scorpio",
+        "taurus"
+      ],
+      "summary": "Jupiter and Saturn reach an exact opposition.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-opposition-saturn-2030-04-24.png"
+    },
+    {
+      "id": "new-moon-2030-05-02",
+      "path": "/new-moon/2030-05-02/",
+      "title": "New moon in Taurus, May 2, 2030",
+      "anchor": "2030-05-02T14:12:15.039Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Sun and Moon meet in Taurus; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-05-02.png"
+    },
+    {
+      "id": "neptune-sextile-pluto-2030-05-04",
+      "path": "/events/neptune-sextile-pluto-2030-05-04/",
+      "title": "Neptune sextile Pluto, May 4, 2030",
+      "anchor": "2030-05-04T13:21:05.980Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/neptune-sextile-pluto-2030-05-04.png"
+    },
+    {
+      "id": "full-moon-2030-05-17",
+      "path": "/full-moon/2030-05-17/",
+      "title": "Full moon in Scorpio, May 17, 2030",
+      "anchor": "2030-05-17T11:19:09.663Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-05-17.png"
+    },
+    {
+      "id": "saturn-enters-gemini-2030-06-01",
+      "path": "/events/saturn-enters-gemini-2030-06-01/",
+      "title": "Saturn enters Gemini, June 1, 2030",
+      "anchor": "2030-06-01T02:32:43.173Z",
+      "family": "ingress",
+      "subtype": "ingress",
+      "bodies": [
+        "Saturn"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Saturn moves into Gemini from Taurus.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/saturn-enters-gemini-2030-06-01.png"
+    },
+    {
+      "id": "new-moon-2030-06-01",
+      "path": "/new-moon/2030-06-01/",
+      "title": "New moon in Gemini, June 1, 2030",
+      "anchor": "2030-06-01T06:21:24.327Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Sun and Moon meet in Gemini; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-06-01.png"
+    },
+    {
+      "id": "eclipse-2030-06-01",
+      "path": "/eclipses/2030-06-01/",
+      "title": "Annular solar eclipse in Gemini, June 1, 2030",
+      "anchor": "2030-06-01T06:28:06.265Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "A new moon crosses the Sun's face in Gemini.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2030-06-01.png"
+    },
+    {
+      "id": "eclipse-2030-06-15",
+      "path": "/eclipses/2030-06-15/",
+      "title": "Partial lunar eclipse in Sagittarius, June 15, 2030",
+      "anchor": "2030-06-15T18:33:22.968Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Sagittarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2030-06-15.png"
+    },
+    {
+      "id": "full-moon-2030-06-15",
+      "path": "/full-moon/2030-06-15/",
+      "title": "Full moon in Sagittarius, June 15, 2030",
+      "anchor": "2030-06-15T18:41:01.292Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "The Strawberry Moon: the Moon stands opposite the Sun in Sagittarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-06-15.png"
+    },
+    {
+      "id": "new-moon-2030-06-30",
+      "path": "/new-moon/2030-06-30/",
+      "title": "New moon in Cancer, June 30, 2030",
+      "anchor": "2030-06-30T21:34:28.587Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "Sun and Moon meet in Cancer; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-06-30.png"
+    },
+    {
+      "id": "full-moon-2030-07-15",
+      "path": "/full-moon/2030-07-15/",
+      "title": "Full moon in Capricorn, July 15, 2030",
+      "anchor": "2030-07-15T02:11:59.795Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "The Buck Moon: the Moon stands opposite the Sun in Capricorn.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-07-15.png"
+    },
+    {
+      "id": "new-moon-2030-07-30",
+      "path": "/new-moon/2030-07-30/",
+      "title": "New moon in Leo, July 30, 2030",
+      "anchor": "2030-07-30T11:11:00.057Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "Sun and Moon meet in Leo; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-07-30.png"
+    },
+    {
+      "id": "full-moon-2030-08-13",
+      "path": "/full-moon/2030-08-13/",
+      "title": "Full moon in Aquarius, August 13, 2030",
+      "anchor": "2030-08-13T10:44:25.502Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "The Sturgeon Moon: the Moon stands opposite the Sun in Aquarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-08-13.png"
+    },
+    {
+      "id": "mercury-retrograde-2030-08-16",
+      "path": "/mercury-retrograde/2030-08-16/",
+      "title": "Mercury retrograde, August 2030",
+      "anchor": "2030-08-16T01:22:54.169Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Mercury appears to reverse through Virgo.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mercury-retrograde-2030-08-16.png"
+    },
+    {
+      "id": "new-moon-2030-08-28",
+      "path": "/new-moon/2030-08-28/",
+      "title": "New moon in Virgo, August 28, 2030",
+      "anchor": "2030-08-28T23:07:21.869Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Sun and Moon meet in Virgo; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-08-28.png"
+    },
+    {
+      "id": "full-moon-2030-09-11",
+      "path": "/full-moon/2030-09-11/",
+      "title": "Full moon in Pisces, September 11, 2030",
+      "anchor": "2030-09-11T21:17:57.675Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "The Corn Moon: the Moon stands opposite the Sun in Pisces.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-09-11.png"
+    },
+    {
+      "id": "new-moon-2030-09-27",
+      "path": "/new-moon/2030-09-27/",
+      "title": "New moon in Libra, September 27, 2030",
+      "anchor": "2030-09-27T09:54:40.078Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Sun and Moon meet in Libra; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-09-27.png"
+    },
+    {
+      "id": "full-moon-2030-10-11",
+      "path": "/full-moon/2030-10-11/",
+      "title": "Full moon in Aries, October 11, 2030",
+      "anchor": "2030-10-11T10:46:51.181Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "The Hunter’s Moon: the Moon stands opposite the Sun in Aries.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-10-11.png"
+    },
+    {
+      "id": "jupiter-enters-sagittarius-2030-10-22",
+      "path": "/events/jupiter-enters-sagittarius-2030-10-22/",
+      "title": "Jupiter enters Sagittarius, October 22, 2030",
+      "anchor": "2030-10-22T23:13:59.291Z",
+      "family": "ingress",
+      "subtype": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "Jupiter moves into Sagittarius from Scorpio.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-enters-sagittarius-2030-10-22.png"
+    },
+    {
+      "id": "new-moon-2030-10-26",
+      "path": "/new-moon/2030-10-26/",
+      "title": "New moon in Scorpio, October 26, 2030",
+      "anchor": "2030-10-26T20:16:58.897Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "Sun and Moon meet in Scorpio; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-10-26.png"
+    },
+    {
+      "id": "full-moon-2030-11-10",
+      "path": "/full-moon/2030-11-10/",
+      "title": "Full moon in Taurus, November 10, 2030",
+      "anchor": "2030-11-10T03:30:19.664Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "The Beaver Moon: the Moon stands opposite the Sun in Taurus.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-11-10.png"
+    },
+    {
+      "id": "jupiter-opposition-saturn-2030-11-20",
+      "path": "/events/jupiter-opposition-saturn-2030-11-20/",
+      "title": "Jupiter opposition Saturn, November 20, 2030",
+      "anchor": "2030-11-20T01:08:11.527Z",
+      "family": "aspect",
+      "subtype": "opposition",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "signs": [
+        "sagittarius",
+        "gemini"
+      ],
+      "summary": "Jupiter and Saturn reach an exact opposition.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-opposition-saturn-2030-11-20.png"
+    },
+    {
+      "id": "new-moon-2030-11-25",
+      "path": "/new-moon/2030-11-25/",
+      "title": "New moon in Sagittarius, November 25, 2030",
+      "anchor": "2030-11-25T06:46:30.636Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "Sun and Moon meet in Sagittarius; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-11-25.png"
+    },
+    {
+      "id": "eclipse-2030-11-25",
+      "path": "/eclipses/2030-11-25/",
+      "title": "Total solar eclipse in Sagittarius, November 25, 2030",
+      "anchor": "2030-11-25T06:50:28.108Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "A new moon crosses the Sun's face in Sagittarius.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2030-11-25.png"
+    },
+    {
+      "id": "mercury-retrograde-2030-12-06",
+      "path": "/mercury-retrograde/2030-12-06/",
+      "title": "Mercury retrograde, December 2030",
+      "anchor": "2030-12-06T02:44:33.193Z",
+      "family": "retrograde",
+      "subtype": "cycle",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "sagittarius",
+        "capricorn"
+      ],
+      "summary": "Mercury appears to reverse through Sagittarius and Capricorn.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/mercury-retrograde-2030-12-06.png"
+    },
+    {
+      "id": "jupiter-sextile-pluto-2030-12-08",
+      "path": "/events/jupiter-sextile-pluto-2030-12-08/",
+      "title": "Jupiter sextile Pluto, December 8, 2030",
+      "anchor": "2030-12-08T06:37:34.970Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Jupiter",
+        "Pluto"
+      ],
+      "signs": [
+        "sagittarius",
+        "aquarius"
+      ],
+      "summary": "Jupiter and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-sextile-pluto-2030-12-08.png"
+    },
+    {
+      "id": "eclipse-2030-12-09",
+      "path": "/eclipses/2030-12-09/",
+      "title": "Penumbral lunar eclipse in Gemini, December 9, 2030",
+      "anchor": "2030-12-09T22:27:41.309Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Gemini.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/eclipse-2030-12-09.png"
+    },
+    {
+      "id": "full-moon-2030-12-09",
+      "path": "/full-moon/2030-12-09/",
+      "title": "Full moon in Gemini, December 9, 2030",
+      "anchor": "2030-12-09T22:40:28.279Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "The Cold Moon: the Moon stands opposite the Sun in Gemini.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/full-moon-2030-12-09.png"
+    },
+    {
+      "id": "jupiter-trine-neptune-2030-12-10",
+      "path": "/events/jupiter-trine-neptune-2030-12-10/",
+      "title": "Jupiter trine Neptune, December 10, 2030",
+      "anchor": "2030-12-10T08:13:31.669Z",
+      "family": "aspect",
+      "subtype": "trine",
+      "bodies": [
+        "Jupiter",
+        "Neptune"
+      ],
+      "signs": [
+        "sagittarius",
+        "aries"
+      ],
+      "summary": "Jupiter and Neptune reach an exact trine.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/jupiter-trine-neptune-2030-12-10.png"
+    },
+    {
+      "id": "new-moon-2030-12-24",
+      "path": "/new-moon/2030-12-24/",
+      "title": "New moon in Capricorn, December 24, 2030",
+      "anchor": "2030-12-24T17:32:15.075Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/new-moon-2030-12-24.png"
+    },
+    {
+      "id": "neptune-sextile-pluto-2030-12-26",
+      "path": "/events/neptune-sextile-pluto-2030-12-26/",
+      "title": "Neptune sextile Pluto, December 26, 2030",
+      "anchor": "2030-12-26T17:10:11.607Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08",
+      "card": "/assets/og/v2/events/neptune-sextile-pluto-2030-12-26.png"
+    }
+  ],
+  "timeline": [
+    {
+      "id": "full-moon-2028-01-12",
+      "path": "/full-moon/2028-01-12/",
+      "title": "Full moon in Cancer, January 12, 2028",
+      "anchor": "2028-01-12T04:03:06.410Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "The Wolf Moon: the Moon stands opposite the Sun in Cancer.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2028-01-12",
+      "path": "/eclipses/2028-01-12/",
+      "title": "Partial lunar eclipse in Cancer, January 12, 2028",
+      "anchor": "2028-01-12T04:13:07.811Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Cancer.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-stations-retrograde-2028-01-12",
+      "path": "/retrogrades/#retrograde-jupiter-2028-01-12",
+      "title": "Jupiter stations retrograde, January 12, 2028",
+      "anchor": "2028-01-12T08:54:01.406Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Jupiter slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "uranus-trine-pluto-2028-01-13",
+      "path": "/events/uranus-trine-pluto-2028-01-13/",
+      "title": "Uranus trine Pluto, January 13, 2028",
+      "anchor": "2028-01-13T06:52:39.447Z",
+      "family": "aspect",
+      "subtype": "trine",
+      "bodies": [
+        "Uranus",
+        "Pluto"
+      ],
+      "signs": [
+        "gemini",
+        "aquarius"
+      ],
+      "summary": "Uranus and Pluto reach an exact trine.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-retrograde-2028-01-24",
+      "path": "/mercury-retrograde/2028-01-24/",
+      "title": "Mercury stations retrograde, January 24, 2028",
+      "anchor": "2028-01-24T11:03:29.179Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Mercury slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2028-01-26",
+      "path": "/eclipses/2028-01-26/",
+      "title": "Annular solar eclipse in Aquarius, January 26, 2028",
+      "anchor": "2028-01-26T15:07:49.353Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "A new moon crosses the Sun's face in Aquarius.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-01-26",
+      "path": "/new-moon/2028-01-26/",
+      "title": "New moon in Aquarius, January 26, 2028",
+      "anchor": "2028-01-26T15:12:30.887Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Sun and Moon meet in Aquarius; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-02-10",
+      "path": "/full-moon/2028-02-10/",
+      "title": "Full moon in Leo, February 10, 2028",
+      "anchor": "2028-02-10T15:03:46.014Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "The Snow Moon: the Moon stands opposite the Sun in Leo.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "uranus-stations-direct-2028-02-12",
+      "path": "/retrogrades/#retrograde-uranus-2027-09-15",
+      "title": "Uranus stations direct, February 12, 2028",
+      "anchor": "2028-02-12T23:49:19.276Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Uranus"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Uranus stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-direct-2028-02-14",
+      "path": "/mercury-retrograde/2028-01-24/",
+      "title": "Mercury stations direct, February 14, 2028",
+      "anchor": "2028-02-14T12:39:33.046Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Mercury stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-02-25",
+      "path": "/new-moon/2028-02-25/",
+      "title": "New moon in Pisces, February 25, 2028",
+      "anchor": "2028-02-25T10:37:24.945Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "Sun and Moon meet in Pisces; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-03-11",
+      "path": "/full-moon/2028-03-11/",
+      "title": "Full moon in Virgo, March 11, 2028",
+      "anchor": "2028-03-11T01:06:03.070Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "The Worm Moon: the Moon stands opposite the Sun in Virgo.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-03-26",
+      "path": "/new-moon/2028-03-26/",
+      "title": "New moon in Aries, March 26, 2028",
+      "anchor": "2028-03-26T04:31:20.913Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Sun and Moon meet in Aries; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-04-09",
+      "path": "/full-moon/2028-04-09/",
+      "title": "Full moon in Libra, April 9, 2028",
+      "anchor": "2028-04-09T10:26:36.972Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "The Pink Moon: the Moon stands opposite the Sun in Libra.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "saturn-enters-taurus-2028-04-13",
+      "path": "/events/saturn-enters-taurus-2028-04-13/",
+      "title": "Saturn enters Taurus, April 13, 2028",
+      "anchor": "2028-04-13T04:05:03.310Z",
+      "family": "ingress",
+      "subtype": "ingress",
+      "bodies": [
+        "Saturn"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Saturn moves into Taurus from Aries.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-04-24",
+      "path": "/new-moon/2028-04-24/",
+      "title": "New moon in Taurus, April 24, 2028",
+      "anchor": "2028-04-24T19:46:56.371Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Sun and Moon meet in Taurus; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-05-08",
+      "path": "/full-moon/2028-05-08/",
+      "title": "Full moon in Scorpio, May 8, 2028",
+      "anchor": "2028-05-08T19:48:57.413Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "pluto-stations-retrograde-2028-05-09",
+      "path": "/retrogrades/#retrograde-pluto-2028-05-09",
+      "title": "Pluto stations retrograde, May 9, 2028",
+      "anchor": "2028-05-09T09:32:46.991Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Pluto"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Pluto slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "uranus-trine-pluto-2028-05-10",
+      "path": "/events/uranus-trine-pluto-2028-05-10/",
+      "title": "Uranus trine Pluto, May 10, 2028",
+      "anchor": "2028-05-10T02:50:40.437Z",
+      "family": "aspect",
+      "subtype": "trine",
+      "bodies": [
+        "Uranus",
+        "Pluto"
+      ],
+      "signs": [
+        "gemini",
+        "aquarius"
+      ],
+      "summary": "Uranus and Pluto reach an exact trine.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "venus-stations-retrograde-2028-05-10",
+      "path": "/venus-retrograde/2028-05-10/",
+      "title": "Venus stations retrograde, May 10, 2028",
+      "anchor": "2028-05-10T23:02:03.485Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Venus"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Venus slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-stations-direct-2028-05-13",
+      "path": "/retrogrades/#retrograde-jupiter-2028-01-12",
+      "title": "Jupiter stations direct, May 13, 2028",
+      "anchor": "2028-05-13T20:02:00.849Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Jupiter stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-retrograde-2028-05-21",
+      "path": "/mercury-retrograde/2028-05-21/",
+      "title": "Mercury stations retrograde, May 21, 2028",
+      "anchor": "2028-05-21T08:39:52.382Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Mercury slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-05-24",
+      "path": "/new-moon/2028-05-24/",
+      "title": "New moon in Gemini, May 24, 2028",
+      "anchor": "2028-05-24T08:16:19.018Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Sun and Moon meet in Gemini; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-06-07",
+      "path": "/full-moon/2028-06-07/",
+      "title": "Full moon in Sagittarius, June 7, 2028",
+      "anchor": "2028-06-07T06:08:49.814Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "The Strawberry Moon: the Moon stands opposite the Sun in Sagittarius.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-sextile-pluto-2028-06-09",
+      "path": "/events/neptune-sextile-pluto-2028-06-09/",
+      "title": "Neptune sextile Pluto, June 9, 2028",
+      "anchor": "2028-06-09T01:49:36.552Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-direct-2028-06-14",
+      "path": "/mercury-retrograde/2028-05-21/",
+      "title": "Mercury stations direct, June 14, 2028",
+      "anchor": "2028-06-14T06:07:05.829Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Mercury stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-06-22",
+      "path": "/new-moon/2028-06-22/",
+      "title": "New moon in Cancer, June 22, 2028",
+      "anchor": "2028-06-22T18:27:35.529Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "Sun and Moon meet in Cancer; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "venus-stations-direct-2028-06-22",
+      "path": "/venus-retrograde/2028-05-10/",
+      "title": "Venus stations direct, June 22, 2028",
+      "anchor": "2028-06-22T22:13:04.863Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Venus"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Venus stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "saturn-square-pluto-2028-06-24",
+      "path": "/events/saturn-square-pluto-2028-06-24/",
+      "title": "Saturn square Pluto, June 24, 2028",
+      "anchor": "2028-06-24T03:18:58.402Z",
+      "family": "aspect",
+      "subtype": "square",
+      "bodies": [
+        "Saturn",
+        "Pluto"
+      ],
+      "signs": [
+        "taurus",
+        "aquarius"
+      ],
+      "summary": "Saturn and Pluto reach an exact square.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-07-06",
+      "path": "/full-moon/2028-07-06/",
+      "title": "Full moon in Capricorn, July 6, 2028",
+      "anchor": "2028-07-06T18:10:50.114Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "The Buck Moon: the Moon stands opposite the Sun in Capricorn.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2028-07-06",
+      "path": "/eclipses/2028-07-06/",
+      "title": "Partial lunar eclipse in Capricorn, July 6, 2028",
+      "anchor": "2028-07-06T18:19:45.579Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Capricorn.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-stations-retrograde-2028-07-11",
+      "path": "/retrogrades/#retrograde-neptune-2028-07-11",
+      "title": "Neptune stations retrograde, July 11, 2028",
+      "anchor": "2028-07-11T13:05:31.347Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Neptune"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Neptune slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2028-07-22",
+      "path": "/eclipses/2028-07-22/",
+      "title": "Total solar eclipse in Cancer, July 22, 2028",
+      "anchor": "2028-07-22T02:55:31.849Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "A new moon crosses the Sun's face in Cancer.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-07-22",
+      "path": "/new-moon/2028-07-22/",
+      "title": "New moon in Cancer, July 22, 2028",
+      "anchor": "2028-07-22T03:01:44.808Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "Sun and Moon meet in Cancer; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-08-05",
+      "path": "/full-moon/2028-08-05/",
+      "title": "Full moon in Aquarius, August 5, 2028",
+      "anchor": "2028-08-05T08:09:49.030Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "The Sturgeon Moon: the Moon stands opposite the Sun in Aquarius.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-08-20",
+      "path": "/new-moon/2028-08-20/",
+      "title": "New moon in Leo, August 20, 2028",
+      "anchor": "2028-08-20T10:43:51.966Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "Sun and Moon meet in Leo; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "saturn-stations-retrograde-2028-08-22",
+      "path": "/retrogrades/#retrograde-saturn-2028-08-22",
+      "title": "Saturn stations retrograde, August 22, 2028",
+      "anchor": "2028-08-22T22:16:21.297Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Saturn"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Saturn slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-enters-libra-2028-08-24",
+      "path": "/events/jupiter-enters-libra-2028-08-24/",
+      "title": "Jupiter enters Libra, August 24, 2028",
+      "anchor": "2028-08-24T05:04:19.914Z",
+      "family": "ingress",
+      "subtype": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Jupiter moves into Libra from Virgo.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-09-03",
+      "path": "/full-moon/2028-09-03/",
+      "title": "Full moon in Pisces, September 3, 2028",
+      "anchor": "2028-09-03T23:47:35.454Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "The Corn Moon: the Moon stands opposite the Sun in Pisces.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-09-18",
+      "path": "/new-moon/2028-09-18/",
+      "title": "New moon in Virgo, September 18, 2028",
+      "anchor": "2028-09-18T18:23:45.722Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Sun and Moon meet in Virgo; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "uranus-stations-retrograde-2028-09-19",
+      "path": "/retrogrades/#retrograde-uranus-2028-09-19",
+      "title": "Uranus stations retrograde, September 19, 2028",
+      "anchor": "2028-09-19T00:01:15.146Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Uranus"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Uranus slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-retrograde-2028-09-19",
+      "path": "/mercury-retrograde/2028-09-19/",
+      "title": "Mercury stations retrograde, September 19, 2028",
+      "anchor": "2028-09-19T16:30:15.819Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Mercury slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-trine-pluto-2028-09-24",
+      "path": "/events/jupiter-trine-pluto-2028-09-24/",
+      "title": "Jupiter trine Pluto, September 24, 2028",
+      "anchor": "2028-09-24T07:39:35.545Z",
+      "family": "aspect",
+      "subtype": "trine",
+      "bodies": [
+        "Jupiter",
+        "Pluto"
+      ],
+      "signs": [
+        "libra",
+        "aquarius"
+      ],
+      "summary": "Jupiter and Pluto reach an exact trine.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-opposition-neptune-2028-09-28",
+      "path": "/events/jupiter-opposition-neptune-2028-09-28/",
+      "title": "Jupiter opposition Neptune, September 28, 2028",
+      "anchor": "2028-09-28T19:29:36.928Z",
+      "family": "aspect",
+      "subtype": "opposition",
+      "bodies": [
+        "Jupiter",
+        "Neptune"
+      ],
+      "signs": [
+        "libra",
+        "aries"
+      ],
+      "summary": "Jupiter and Neptune reach an exact opposition.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-10-03",
+      "path": "/full-moon/2028-10-03/",
+      "title": "Full moon in Aries, October 3, 2028",
+      "anchor": "2028-10-03T16:25:01.142Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "The Hunter’s Moon: the Moon stands opposite the Sun in Aries.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-direct-2028-10-11",
+      "path": "/mercury-retrograde/2028-09-19/",
+      "title": "Mercury stations direct, October 11, 2028",
+      "anchor": "2028-10-11T10:30:01.318Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Mercury stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-10-18",
+      "path": "/new-moon/2028-10-18/",
+      "title": "New moon in Libra, October 18, 2028",
+      "anchor": "2028-10-18T02:56:48.672Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Sun and Moon meet in Libra; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "pluto-stations-direct-2028-10-19",
+      "path": "/retrogrades/#retrograde-pluto-2028-05-09",
+      "title": "Pluto stations direct, October 19, 2028",
+      "anchor": "2028-10-19T03:41:40.927Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Pluto"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Pluto stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-trine-uranus-2028-10-27",
+      "path": "/events/jupiter-trine-uranus-2028-10-27/",
+      "title": "Jupiter trine Uranus, October 27, 2028",
+      "anchor": "2028-10-27T09:03:33.902Z",
+      "family": "aspect",
+      "subtype": "trine",
+      "bodies": [
+        "Jupiter",
+        "Uranus"
+      ],
+      "signs": [
+        "libra",
+        "gemini"
+      ],
+      "summary": "Jupiter and Uranus reach an exact trine.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-11-02",
+      "path": "/full-moon/2028-11-02/",
+      "title": "Full moon in Taurus, November 2, 2028",
+      "anchor": "2028-11-02T09:17:21.255Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "The Beaver Moon: the Moon stands opposite the Sun in Taurus.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-sextile-pluto-2028-11-08",
+      "path": "/events/neptune-sextile-pluto-2028-11-08/",
+      "title": "Neptune sextile Pluto, November 8, 2028",
+      "anchor": "2028-11-08T04:21:11.666Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "saturn-square-pluto-2028-11-15",
+      "path": "/events/saturn-square-pluto-2028-11-15/",
+      "title": "Saturn square Pluto, November 15, 2028",
+      "anchor": "2028-11-15T12:29:27.342Z",
+      "family": "aspect",
+      "subtype": "square",
+      "bodies": [
+        "Saturn",
+        "Pluto"
+      ],
+      "signs": [
+        "taurus",
+        "aquarius"
+      ],
+      "summary": "Saturn and Pluto reach an exact square.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-11-16",
+      "path": "/new-moon/2028-11-16/",
+      "title": "New moon in Scorpio, November 16, 2028",
+      "anchor": "2028-11-16T13:17:59.597Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "Sun and Moon meet in Scorpio; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-12-02",
+      "path": "/full-moon/2028-12-02/",
+      "title": "Full moon in Gemini, December 2, 2028",
+      "anchor": "2028-12-02T01:40:10.975Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "The Cold Moon: the Moon stands opposite the Sun in Gemini.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2028-12-16",
+      "path": "/new-moon/2028-12-16/",
+      "title": "New moon in Sagittarius, December 16, 2028",
+      "anchor": "2028-12-16T02:06:16.774Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "Sun and Moon meet in Sagittarius; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-stations-direct-2028-12-16",
+      "path": "/retrogrades/#retrograde-neptune-2028-07-11",
+      "title": "Neptune stations direct, December 16, 2028",
+      "anchor": "2028-12-16T20:49:57.509Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Neptune"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Neptune stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2028-12-31",
+      "path": "/full-moon/2028-12-31/",
+      "title": "Full moon in Cancer, December 31, 2028",
+      "anchor": "2028-12-31T16:48:27.585Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "A blue moon: the Moon stands opposite the Sun in Cancer.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2028-12-31",
+      "path": "/eclipses/2028-12-31/",
+      "title": "Total lunar eclipse in Cancer, December 31, 2028",
+      "anchor": "2028-12-31T16:52:02.003Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Cancer.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "saturn-stations-direct-2029-01-05",
+      "path": "/retrogrades/#retrograde-saturn-2028-08-22",
+      "title": "Saturn stations direct, January 5, 2029",
+      "anchor": "2029-01-05T12:34:24.550Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Saturn"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Saturn stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-retrograde-2029-01-07",
+      "path": "/mercury-retrograde/2029-01-07/",
+      "title": "Mercury stations retrograde, January 7, 2029",
+      "anchor": "2029-01-07T07:57:22.675Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Mercury slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2029-01-14",
+      "path": "/eclipses/2029-01-14/",
+      "title": "Partial solar eclipse in Capricorn, January 14, 2029",
+      "anchor": "2029-01-14T17:12:36.290Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "A new moon crosses the Sun's face in Capricorn.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-01-14",
+      "path": "/new-moon/2029-01-14/",
+      "title": "New moon in Capricorn, January 14, 2029",
+      "anchor": "2029-01-14T17:24:29.613Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-direct-2029-01-27",
+      "path": "/mercury-retrograde/2029-01-07/",
+      "title": "Mercury stations direct, January 27, 2029",
+      "anchor": "2029-01-27T18:38:00.761Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Mercury stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-01-30",
+      "path": "/full-moon/2029-01-30/",
+      "title": "Full moon in Leo, January 30, 2029",
+      "anchor": "2029-01-30T06:03:35.385Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "The Wolf Moon: the Moon stands opposite the Sun in Leo.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-stations-retrograde-2029-02-10",
+      "path": "/retrogrades/#retrograde-jupiter-2029-02-10",
+      "title": "Jupiter stations retrograde, February 10, 2029",
+      "anchor": "2029-02-10T13:05:24.755Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Jupiter slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-02-13",
+      "path": "/new-moon/2029-02-13/",
+      "title": "New moon in Aquarius, February 13, 2029",
+      "anchor": "2029-02-13T10:31:30.883Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Sun and Moon meet in Aquarius; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mars-stations-retrograde-2029-02-14",
+      "path": "/mars-retrograde/2029-02-14/",
+      "title": "Mars stations retrograde, February 14, 2029",
+      "anchor": "2029-02-14T08:12:52.118Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mars"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Mars slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "uranus-stations-direct-2029-02-16",
+      "path": "/retrogrades/#retrograde-uranus-2028-09-19",
+      "title": "Uranus stations direct, February 16, 2029",
+      "anchor": "2029-02-16T10:52:48.456Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Uranus"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Uranus stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-02-28",
+      "path": "/full-moon/2029-02-28/",
+      "title": "Full moon in Virgo, February 28, 2029",
+      "anchor": "2029-02-28T17:10:13.915Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "The Snow Moon: the Moon stands opposite the Sun in Virgo.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-03-15",
+      "path": "/new-moon/2029-03-15/",
+      "title": "New moon in Pisces, March 15, 2029",
+      "anchor": "2029-03-15T04:19:15.732Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "Sun and Moon meet in Pisces; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "saturn-square-pluto-2029-03-29",
+      "path": "/events/saturn-square-pluto-2029-03-29/",
+      "title": "Saturn square Pluto, March 29, 2029",
+      "anchor": "2029-03-29T23:21:02.958Z",
+      "family": "aspect",
+      "subtype": "square",
+      "bodies": [
+        "Saturn",
+        "Pluto"
+      ],
+      "signs": [
+        "taurus",
+        "aquarius"
+      ],
+      "summary": "Saturn and Pluto reach an exact square.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-03-30",
+      "path": "/full-moon/2029-03-30/",
+      "title": "Full moon in Libra, March 30, 2029",
+      "anchor": "2029-03-30T02:26:25.051Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "The Worm Moon: the Moon stands opposite the Sun in Libra.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-04-13",
+      "path": "/new-moon/2029-04-13/",
+      "title": "New moon in Aries, April 13, 2029",
+      "anchor": "2029-04-13T21:40:11.937Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Sun and Moon meet in Aries; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-04-28",
+      "path": "/full-moon/2029-04-28/",
+      "title": "Full moon in Scorpio, April 28, 2029",
+      "anchor": "2029-04-28T10:36:51.574Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "The Pink Moon: the Moon stands opposite the Sun in Scorpio.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-retrograde-2029-05-01",
+      "path": "/mercury-retrograde/2029-05-01/",
+      "title": "Mercury stations retrograde, May 1, 2029",
+      "anchor": "2029-05-01T23:10:21.825Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Mercury slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mars-stations-direct-2029-05-05",
+      "path": "/mars-retrograde/2029-02-14/",
+      "title": "Mars stations direct, May 5, 2029",
+      "anchor": "2029-05-05T18:58:41.337Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mars"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Mars stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "pluto-stations-retrograde-2029-05-11",
+      "path": "/retrogrades/#retrograde-pluto-2029-05-11",
+      "title": "Pluto stations retrograde, May 11, 2029",
+      "anchor": "2029-05-11T04:16:58.212Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Pluto"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Pluto slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-05-13",
+      "path": "/new-moon/2029-05-13/",
+      "title": "New moon in Taurus, May 13, 2029",
+      "anchor": "2029-05-13T13:42:09.298Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Sun and Moon meet in Taurus; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-sextile-pluto-2029-05-22",
+      "path": "/events/neptune-sextile-pluto-2029-05-22/",
+      "title": "Neptune sextile Pluto, May 22, 2029",
+      "anchor": "2029-05-22T17:03:33.380Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-direct-2029-05-25",
+      "path": "/mercury-retrograde/2029-05-01/",
+      "title": "Mercury stations direct, May 25, 2029",
+      "anchor": "2029-05-25T19:15:24.609Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Mercury stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-05-27",
+      "path": "/full-moon/2029-05-27/",
+      "title": "Full moon in Sagittarius, May 27, 2029",
+      "anchor": "2029-05-27T18:37:33.321Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "The Flower Moon: the Moon stands opposite the Sun in Sagittarius.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-06-12",
+      "path": "/new-moon/2029-06-12/",
+      "title": "New moon in Gemini, June 12, 2029",
+      "anchor": "2029-06-12T03:50:32.472Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Sun and Moon meet in Gemini; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2029-06-12",
+      "path": "/eclipses/2029-06-12/",
+      "title": "Partial solar eclipse in Gemini, June 12, 2029",
+      "anchor": "2029-06-12T04:05:02.841Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "A new moon crosses the Sun's face in Gemini.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-stations-direct-2029-06-13",
+      "path": "/retrogrades/#retrograde-jupiter-2029-02-10",
+      "title": "Jupiter stations direct, June 13, 2029",
+      "anchor": "2029-06-13T21:08:06.474Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Jupiter stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2029-06-26",
+      "path": "/eclipses/2029-06-26/",
+      "title": "Total lunar eclipse in Capricorn, June 26, 2029",
+      "anchor": "2029-06-26T03:22:14.248Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Capricorn.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-06-26",
+      "path": "/full-moon/2029-06-26/",
+      "title": "Full moon in Capricorn, June 26, 2029",
+      "anchor": "2029-06-26T03:22:22.748Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "The Strawberry Moon: the Moon stands opposite the Sun in Capricorn.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2029-07-11",
+      "path": "/eclipses/2029-07-11/",
+      "title": "Partial solar eclipse in Cancer, July 11, 2029",
+      "anchor": "2029-07-11T15:36:11.603Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "A new moon crosses the Sun's face in Cancer.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-07-11",
+      "path": "/new-moon/2029-07-11/",
+      "title": "New moon in Cancer, July 11, 2029",
+      "anchor": "2029-07-11T15:51:06.420Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "Sun and Moon meet in Cancer; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-stations-retrograde-2029-07-14",
+      "path": "/retrogrades/#retrograde-neptune-2029-07-14",
+      "title": "Neptune stations retrograde, July 14, 2029",
+      "anchor": "2029-07-14T02:11:34.335Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Neptune"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Neptune slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-07-25",
+      "path": "/full-moon/2029-07-25/",
+      "title": "Full moon in Aquarius, July 25, 2029",
+      "anchor": "2029-07-25T13:35:49.199Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "The Buck Moon: the Moon stands opposite the Sun in Aquarius.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-08-10",
+      "path": "/new-moon/2029-08-10/",
+      "title": "New moon in Leo, August 10, 2029",
+      "anchor": "2029-08-10T01:55:51.378Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "Sun and Moon meet in Leo; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-08-24",
+      "path": "/full-moon/2029-08-24/",
+      "title": "Full moon in Pisces, August 24, 2029",
+      "anchor": "2029-08-24T01:51:18.312Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "The Sturgeon Moon: the Moon stands opposite the Sun in Pisces.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-retrograde-2029-09-02",
+      "path": "/mercury-retrograde/2029-09-02/",
+      "title": "Mercury stations retrograde, September 2, 2029",
+      "anchor": "2029-09-02T12:14:28.797Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Mercury slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "saturn-stations-retrograde-2029-09-06",
+      "path": "/retrogrades/#retrograde-saturn-2029-09-06",
+      "title": "Saturn stations retrograde, September 6, 2029",
+      "anchor": "2029-09-06T08:35:28.710Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Saturn"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Saturn slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-09-08",
+      "path": "/new-moon/2029-09-08/",
+      "title": "New moon in Virgo, September 8, 2029",
+      "anchor": "2029-09-08T10:44:25.996Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Sun and Moon meet in Virgo; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-09-22",
+      "path": "/full-moon/2029-09-22/",
+      "title": "Full moon in Pisces, September 22, 2029",
+      "anchor": "2029-09-22T16:29:22.920Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "The Corn Moon: the Moon stands opposite the Sun in Pisces.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "uranus-stations-retrograde-2029-09-23",
+      "path": "/retrogrades/#retrograde-uranus-2029-09-23",
+      "title": "Uranus stations retrograde, September 23, 2029",
+      "anchor": "2029-09-23T16:20:01.464Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Uranus"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Uranus slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-enters-scorpio-2029-09-24",
+      "path": "/events/jupiter-enters-scorpio-2029-09-24/",
+      "title": "Jupiter enters Scorpio, September 24, 2029",
+      "anchor": "2029-09-24T06:27:17.997Z",
+      "family": "ingress",
+      "subtype": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "Jupiter moves into Scorpio from Libra.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-direct-2029-09-25",
+      "path": "/mercury-retrograde/2029-09-02/",
+      "title": "Mercury stations direct, September 25, 2029",
+      "anchor": "2029-09-25T02:02:57.538Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Mercury stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-10-07",
+      "path": "/new-moon/2029-10-07/",
+      "title": "New moon in Libra, October 7, 2029",
+      "anchor": "2029-10-07T19:14:36.818Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Sun and Moon meet in Libra; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "pluto-stations-direct-2029-10-21",
+      "path": "/retrogrades/#retrograde-pluto-2029-05-11",
+      "title": "Pluto stations direct, October 21, 2029",
+      "anchor": "2029-10-21T03:52:34.833Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Pluto"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Pluto stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-10-22",
+      "path": "/full-moon/2029-10-22/",
+      "title": "Full moon in Aries, October 22, 2029",
+      "anchor": "2029-10-22T09:27:39.318Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "The Hunter’s Moon: the Moon stands opposite the Sun in Aries.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-square-pluto-2029-11-01",
+      "path": "/events/jupiter-square-pluto-2029-11-01/",
+      "title": "Jupiter square Pluto, November 1, 2029",
+      "anchor": "2029-11-01T00:42:45.196Z",
+      "family": "aspect",
+      "subtype": "square",
+      "bodies": [
+        "Jupiter",
+        "Pluto"
+      ],
+      "signs": [
+        "scorpio",
+        "aquarius"
+      ],
+      "summary": "Jupiter and Pluto reach an exact square.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-11-06",
+      "path": "/new-moon/2029-11-06/",
+      "title": "New moon in Scorpio, November 6, 2029",
+      "anchor": "2029-11-06T04:24:09.562Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "Sun and Moon meet in Scorpio; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-11-21",
+      "path": "/full-moon/2029-11-21/",
+      "title": "Full moon in Taurus, November 21, 2029",
+      "anchor": "2029-11-21T04:03:01.383Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "The Beaver Moon: the Moon stands opposite the Sun in Taurus.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-sextile-pluto-2029-11-30",
+      "path": "/events/neptune-sextile-pluto-2029-11-30/",
+      "title": "Neptune sextile Pluto, November 30, 2029",
+      "anchor": "2029-11-30T23:26:53.231Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2029-12-05",
+      "path": "/new-moon/2029-12-05/",
+      "title": "New moon in Sagittarius, December 5, 2029",
+      "anchor": "2029-12-05T14:52:07.613Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "Sun and Moon meet in Sagittarius; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2029-12-05",
+      "path": "/eclipses/2029-12-05/",
+      "title": "Partial solar eclipse in Sagittarius, December 5, 2029",
+      "anchor": "2029-12-05T15:02:47.855Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "A new moon crosses the Sun's face in Sagittarius.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "venus-stations-retrograde-2029-12-16",
+      "path": "/venus-retrograde/2029-12-16/",
+      "title": "Venus stations retrograde, December 16, 2029",
+      "anchor": "2029-12-16T23:49:27.187Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Venus"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Venus slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-stations-direct-2029-12-19",
+      "path": "/retrogrades/#retrograde-neptune-2029-07-14",
+      "title": "Neptune stations direct, December 19, 2029",
+      "anchor": "2029-12-19T08:28:22.880Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Neptune"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Neptune stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2029-12-20",
+      "path": "/eclipses/2029-12-20/",
+      "title": "Total lunar eclipse in Gemini, December 20, 2029",
+      "anchor": "2029-12-20T22:42:02.582Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Gemini.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2029-12-20",
+      "path": "/full-moon/2029-12-20/",
+      "title": "Full moon in Gemini, December 20, 2029",
+      "anchor": "2029-12-20T22:46:30.746Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "The Cold Moon: the Moon stands opposite the Sun in Gemini.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-retrograde-2029-12-22",
+      "path": "/mercury-retrograde/2029-12-22/",
+      "title": "Mercury stations retrograde, December 22, 2029",
+      "anchor": "2029-12-22T05:49:50.917Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Mercury slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-opposition-saturn-2029-12-22",
+      "path": "/events/jupiter-opposition-saturn-2029-12-22/",
+      "title": "Jupiter opposition Saturn, December 22, 2029",
+      "anchor": "2029-12-22T07:02:55.781Z",
+      "family": "aspect",
+      "subtype": "opposition",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "signs": [
+        "scorpio",
+        "taurus"
+      ],
+      "summary": "Jupiter and Saturn reach an exact opposition.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-01-04",
+      "path": "/new-moon/2030-01-04/",
+      "title": "New moon in Capricorn, January 4, 2030",
+      "anchor": "2030-01-04T02:49:33.778Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-direct-2030-01-11",
+      "path": "/mercury-retrograde/2029-12-22/",
+      "title": "Mercury stations direct, January 11, 2030",
+      "anchor": "2030-01-11T05:44:27.919Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Mercury stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "saturn-stations-direct-2030-01-19",
+      "path": "/retrogrades/#retrograde-saturn-2029-09-06",
+      "title": "Saturn stations direct, January 19, 2030",
+      "anchor": "2030-01-19T03:51:15.731Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Saturn"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Saturn stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-01-19",
+      "path": "/full-moon/2030-01-19/",
+      "title": "Full moon in Cancer, January 19, 2030",
+      "anchor": "2030-01-19T15:54:21.949Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "The Wolf Moon: the Moon stands opposite the Sun in Cancer.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "venus-stations-direct-2030-01-26",
+      "path": "/venus-retrograde/2029-12-16/",
+      "title": "Venus stations direct, January 26, 2030",
+      "anchor": "2030-01-26T21:33:25.224Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Venus"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Venus stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-02-02",
+      "path": "/new-moon/2030-02-02/",
+      "title": "New moon in Aquarius, February 2, 2030",
+      "anchor": "2030-02-02T16:07:33.295Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Sun and Moon meet in Aquarius; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-02-18",
+      "path": "/full-moon/2030-02-18/",
+      "title": "Full moon in Leo, February 18, 2030",
+      "anchor": "2030-02-18T06:19:50.394Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "The Snow Moon: the Moon stands opposite the Sun in Leo.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "uranus-stations-direct-2030-02-20",
+      "path": "/retrogrades/#retrograde-uranus-2029-09-23",
+      "title": "Uranus stations direct, February 20, 2030",
+      "anchor": "2030-02-20T23:23:56.571Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Uranus"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Uranus stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-03-04",
+      "path": "/new-moon/2030-03-04/",
+      "title": "New moon in Pisces, March 4, 2030",
+      "anchor": "2030-03-04T06:34:43.583Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "Sun and Moon meet in Pisces; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-stations-retrograde-2030-03-13",
+      "path": "/retrogrades/#retrograde-jupiter-2030-03-13",
+      "title": "Jupiter stations retrograde, March 13, 2030",
+      "anchor": "2030-03-13T14:34:12.245Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "Jupiter slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-03-19",
+      "path": "/full-moon/2030-03-19/",
+      "title": "Full moon in Virgo, March 19, 2030",
+      "anchor": "2030-03-19T17:56:32.851Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "The Worm Moon: the Moon stands opposite the Sun in Virgo.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-04-02",
+      "path": "/new-moon/2030-04-02/",
+      "title": "New moon in Aries, April 2, 2030",
+      "anchor": "2030-04-02T22:02:36.087Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Sun and Moon meet in Aries; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-retrograde-2030-04-13",
+      "path": "/mercury-retrograde/2030-04-13/",
+      "title": "Mercury stations retrograde, April 13, 2030",
+      "anchor": "2030-04-13T02:27:57.831Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Mercury slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-04-18",
+      "path": "/full-moon/2030-04-18/",
+      "title": "Full moon in Libra, April 18, 2030",
+      "anchor": "2030-04-18T03:20:03.661Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "The Pink Moon: the Moon stands opposite the Sun in Libra.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-opposition-saturn-2030-04-24",
+      "path": "/events/jupiter-opposition-saturn-2030-04-24/",
+      "title": "Jupiter opposition Saturn, April 24, 2030",
+      "anchor": "2030-04-24T01:53:15.482Z",
+      "family": "aspect",
+      "subtype": "opposition",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "signs": [
+        "scorpio",
+        "taurus"
+      ],
+      "summary": "Jupiter and Saturn reach an exact opposition.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-05-02",
+      "path": "/new-moon/2030-05-02/",
+      "title": "New moon in Taurus, May 2, 2030",
+      "anchor": "2030-05-02T14:12:15.039Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "Sun and Moon meet in Taurus; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-sextile-pluto-2030-05-04",
+      "path": "/events/neptune-sextile-pluto-2030-05-04/",
+      "title": "Neptune sextile Pluto, May 4, 2030",
+      "anchor": "2030-05-04T13:21:05.980Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-direct-2030-05-06",
+      "path": "/mercury-retrograde/2030-04-13/",
+      "title": "Mercury stations direct, May 6, 2030",
+      "anchor": "2030-05-06T20:18:13.797Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Mercury stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "pluto-stations-retrograde-2030-05-12",
+      "path": "/retrogrades/#retrograde-pluto-2030-05-12",
+      "title": "Pluto stations retrograde, May 12, 2030",
+      "anchor": "2030-05-12T23:12:34.979Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Pluto"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Pluto slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-05-17",
+      "path": "/full-moon/2030-05-17/",
+      "title": "Full moon in Scorpio, May 17, 2030",
+      "anchor": "2030-05-17T11:19:09.663Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "saturn-enters-gemini-2030-06-01",
+      "path": "/events/saturn-enters-gemini-2030-06-01/",
+      "title": "Saturn enters Gemini, June 1, 2030",
+      "anchor": "2030-06-01T02:32:43.173Z",
+      "family": "ingress",
+      "subtype": "ingress",
+      "bodies": [
+        "Saturn"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Saturn moves into Gemini from Taurus.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-06-01",
+      "path": "/new-moon/2030-06-01/",
+      "title": "New moon in Gemini, June 1, 2030",
+      "anchor": "2030-06-01T06:21:24.327Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Sun and Moon meet in Gemini; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2030-06-01",
+      "path": "/eclipses/2030-06-01/",
+      "title": "Annular solar eclipse in Gemini, June 1, 2030",
+      "anchor": "2030-06-01T06:28:06.265Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "A new moon crosses the Sun's face in Gemini.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2030-06-15",
+      "path": "/eclipses/2030-06-15/",
+      "title": "Partial lunar eclipse in Sagittarius, June 15, 2030",
+      "anchor": "2030-06-15T18:33:22.968Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Sagittarius.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-06-15",
+      "path": "/full-moon/2030-06-15/",
+      "title": "Full moon in Sagittarius, June 15, 2030",
+      "anchor": "2030-06-15T18:41:01.292Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "The Strawberry Moon: the Moon stands opposite the Sun in Sagittarius.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-06-30",
+      "path": "/new-moon/2030-06-30/",
+      "title": "New moon in Cancer, June 30, 2030",
+      "anchor": "2030-06-30T21:34:28.587Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "cancer"
+      ],
+      "summary": "Sun and Moon meet in Cancer; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-stations-direct-2030-07-15",
+      "path": "/retrogrades/#retrograde-jupiter-2030-03-13",
+      "title": "Jupiter stations direct, July 15, 2030",
+      "anchor": "2030-07-15T01:25:40.282Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "Jupiter stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-07-15",
+      "path": "/full-moon/2030-07-15/",
+      "title": "Full moon in Capricorn, July 15, 2030",
+      "anchor": "2030-07-15T02:11:59.795Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "The Buck Moon: the Moon stands opposite the Sun in Capricorn.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-stations-retrograde-2030-07-16",
+      "path": "/retrogrades/#retrograde-neptune-2030-07-16",
+      "title": "Neptune stations retrograde, July 16, 2030",
+      "anchor": "2030-07-16T16:30:07.909Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Neptune"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Neptune slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-07-30",
+      "path": "/new-moon/2030-07-30/",
+      "title": "New moon in Leo, July 30, 2030",
+      "anchor": "2030-07-30T11:11:00.057Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "leo"
+      ],
+      "summary": "Sun and Moon meet in Leo; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-08-13",
+      "path": "/full-moon/2030-08-13/",
+      "title": "Full moon in Aquarius, August 13, 2030",
+      "anchor": "2030-08-13T10:44:25.502Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "The Sturgeon Moon: the Moon stands opposite the Sun in Aquarius.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-retrograde-2030-08-16",
+      "path": "/mercury-retrograde/2030-08-16/",
+      "title": "Mercury stations retrograde, August 16, 2030",
+      "anchor": "2030-08-16T01:22:54.169Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Mercury slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-08-28",
+      "path": "/new-moon/2030-08-28/",
+      "title": "New moon in Virgo, August 28, 2030",
+      "anchor": "2030-08-28T23:07:21.869Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Sun and Moon meet in Virgo; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-direct-2030-09-08",
+      "path": "/mercury-retrograde/2030-08-16/",
+      "title": "Mercury stations direct, September 8, 2030",
+      "anchor": "2030-09-08T09:22:24.726Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "virgo"
+      ],
+      "summary": "Mercury stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-09-11",
+      "path": "/full-moon/2030-09-11/",
+      "title": "Full moon in Pisces, September 11, 2030",
+      "anchor": "2030-09-11T21:17:57.675Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "pisces"
+      ],
+      "summary": "The Corn Moon: the Moon stands opposite the Sun in Pisces.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "saturn-stations-retrograde-2030-09-20",
+      "path": "/retrogrades/#retrograde-saturn-2030-09-20",
+      "title": "Saturn stations retrograde, September 20, 2030",
+      "anchor": "2030-09-20T21:31:41.073Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Saturn"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Saturn slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-09-27",
+      "path": "/new-moon/2030-09-27/",
+      "title": "New moon in Libra, September 27, 2030",
+      "anchor": "2030-09-27T09:54:40.078Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "libra"
+      ],
+      "summary": "Sun and Moon meet in Libra; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "uranus-stations-retrograde-2030-09-28",
+      "path": "/retrogrades/#retrograde-uranus-2030-09-28",
+      "title": "Uranus stations retrograde, September 28, 2030",
+      "anchor": "2030-09-28T08:25:14.354Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Uranus"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "Uranus slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-10-11",
+      "path": "/full-moon/2030-10-11/",
+      "title": "Full moon in Aries, October 11, 2030",
+      "anchor": "2030-10-11T10:46:51.181Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "The Hunter’s Moon: the Moon stands opposite the Sun in Aries.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-enters-sagittarius-2030-10-22",
+      "path": "/events/jupiter-enters-sagittarius-2030-10-22/",
+      "title": "Jupiter enters Sagittarius, October 22, 2030",
+      "anchor": "2030-10-22T23:13:59.291Z",
+      "family": "ingress",
+      "subtype": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "Jupiter moves into Sagittarius from Scorpio.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "pluto-stations-direct-2030-10-23",
+      "path": "/retrogrades/#retrograde-pluto-2030-05-12",
+      "title": "Pluto stations direct, October 23, 2030",
+      "anchor": "2030-10-23T03:04:23.671Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Pluto"
+      ],
+      "signs": [
+        "aquarius"
+      ],
+      "summary": "Pluto stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-10-26",
+      "path": "/new-moon/2030-10-26/",
+      "title": "New moon in Scorpio, October 26, 2030",
+      "anchor": "2030-10-26T20:16:58.897Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "scorpio"
+      ],
+      "summary": "Sun and Moon meet in Scorpio; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-11-10",
+      "path": "/full-moon/2030-11-10/",
+      "title": "Full moon in Taurus, November 10, 2030",
+      "anchor": "2030-11-10T03:30:19.664Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "taurus"
+      ],
+      "summary": "The Beaver Moon: the Moon stands opposite the Sun in Taurus.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-opposition-saturn-2030-11-20",
+      "path": "/events/jupiter-opposition-saturn-2030-11-20/",
+      "title": "Jupiter opposition Saturn, November 20, 2030",
+      "anchor": "2030-11-20T01:08:11.527Z",
+      "family": "aspect",
+      "subtype": "opposition",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "signs": [
+        "sagittarius",
+        "gemini"
+      ],
+      "summary": "Jupiter and Saturn reach an exact opposition.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-11-25",
+      "path": "/new-moon/2030-11-25/",
+      "title": "New moon in Sagittarius, November 25, 2030",
+      "anchor": "2030-11-25T06:46:30.636Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "Sun and Moon meet in Sagittarius; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2030-11-25",
+      "path": "/eclipses/2030-11-25/",
+      "title": "Total solar eclipse in Sagittarius, November 25, 2030",
+      "anchor": "2030-11-25T06:50:28.108Z",
+      "family": "eclipse",
+      "subtype": "solar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "A new moon crosses the Sun's face in Sagittarius.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-retrograde-2030-12-06",
+      "path": "/mercury-retrograde/2030-12-06/",
+      "title": "Mercury stations retrograde, December 6, 2030",
+      "anchor": "2030-12-06T02:44:33.193Z",
+      "family": "station",
+      "subtype": "retrograde",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Mercury slows to a standstill and turns retrograde.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-sextile-pluto-2030-12-08",
+      "path": "/events/jupiter-sextile-pluto-2030-12-08/",
+      "title": "Jupiter sextile Pluto, December 8, 2030",
+      "anchor": "2030-12-08T06:37:34.970Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Jupiter",
+        "Pluto"
+      ],
+      "signs": [
+        "sagittarius",
+        "aquarius"
+      ],
+      "summary": "Jupiter and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "eclipse-2030-12-09",
+      "path": "/eclipses/2030-12-09/",
+      "title": "Penumbral lunar eclipse in Gemini, December 9, 2030",
+      "anchor": "2030-12-09T22:27:41.309Z",
+      "family": "eclipse",
+      "subtype": "lunar",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "A full moon passes through Earth's shadow in Gemini.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "full-moon-2030-12-09",
+      "path": "/full-moon/2030-12-09/",
+      "title": "Full moon in Gemini, December 9, 2030",
+      "anchor": "2030-12-09T22:40:28.279Z",
+      "family": "lunation",
+      "subtype": "full",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "gemini"
+      ],
+      "summary": "The Cold Moon: the Moon stands opposite the Sun in Gemini.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "jupiter-trine-neptune-2030-12-10",
+      "path": "/events/jupiter-trine-neptune-2030-12-10/",
+      "title": "Jupiter trine Neptune, December 10, 2030",
+      "anchor": "2030-12-10T08:13:31.669Z",
+      "family": "aspect",
+      "subtype": "trine",
+      "bodies": [
+        "Jupiter",
+        "Neptune"
+      ],
+      "signs": [
+        "sagittarius",
+        "aries"
+      ],
+      "summary": "Jupiter and Neptune reach an exact trine.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-stations-direct-2030-12-21",
+      "path": "/retrogrades/#retrograde-neptune-2030-07-16",
+      "title": "Neptune stations direct, December 21, 2030",
+      "anchor": "2030-12-21T20:41:57.625Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Neptune"
+      ],
+      "signs": [
+        "aries"
+      ],
+      "summary": "Neptune stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "new-moon-2030-12-24",
+      "path": "/new-moon/2030-12-24/",
+      "title": "New moon in Capricorn, December 24, 2030",
+      "anchor": "2030-12-24T17:32:15.075Z",
+      "family": "lunation",
+      "subtype": "new",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "signs": [
+        "capricorn"
+      ],
+      "summary": "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "mercury-stations-direct-2030-12-25",
+      "path": "/mercury-retrograde/2030-12-06/",
+      "title": "Mercury stations direct, December 25, 2030",
+      "anchor": "2030-12-25T21:17:20.184Z",
+      "family": "station",
+      "subtype": "direct",
+      "bodies": [
+        "Mercury"
+      ],
+      "signs": [
+        "sagittarius"
+      ],
+      "summary": "Mercury stands still, then resumes forward motion.",
+      "lastModified": "2026-11-08"
+    },
+    {
+      "id": "neptune-sextile-pluto-2030-12-26",
+      "path": "/events/neptune-sextile-pluto-2030-12-26/",
+      "title": "Neptune sextile Pluto, December 26, 2030",
+      "anchor": "2030-12-26T17:10:11.607Z",
+      "family": "aspect",
+      "subtype": "sextile",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "signs": [
+        "aries",
+        "aquarius"
+      ],
+      "summary": "Neptune and Pluto reach an exact sextile.",
+      "lastModified": "2026-11-08"
+    }
+  ]
+}

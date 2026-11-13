@@ -19,5 +19,5 @@ if (violations.length) {
 await writeFile(HOROSCOPE_PROGRAM_PATH, `${JSON.stringify(program, null, 2)}\n`);
 console.log(
   `horoscope-program: wrote ${program.signs.length} signs for ${program.anchorDate} `
-  + `(${program.evidence.length} evidence receipts; today, tomorrow, weekly, love, career, and 2027)`,
+  + `(${program.evidence.length} evidence receipts; today, tomorrow, weekly, love, career, 2026, and 2027)`,
 );

@@ -1,0 +1,318 @@
+{
+ "check": "S1b",
+ "tool": "adapter-parity.mjs",
+ "adapter": {
+  "path": "src/lib/engine/server-ephemeris.ts",
+  "sha256": "6514e95845c4977300d788fb2725ab1af555dabe3693fcfb679b8be536d885a0"
+ },
+ "module": {
+  "path": "src/lib/engine/time-basis.mjs",
+  "sha256": "5857c888df07dd5a1695273797632ea8736f37a26aad2fe908b3d857d2333f40"
+ },
+ "package": "1.1.0-rc.2",
+ "esbuild": "0.28.1",
+ "compared": [
+  "module",
+  "altered"
+ ],
+ "bundles": {
+  "module": {
+   "inputs": {
+    "module/server-ephemeris.ts": "6514e95845c4977300d788fb2725ab1af555dabe3693fcfb679b8be536d885a0",
+    "module/time-basis.mjs": "5857c888df07dd5a1695273797632ea8736f37a26aad2fe908b3d857d2333f40"
+   },
+   "external": [
+    "@zodiacs/engine/deltat",
+    "node:module"
+   ],
+   "sha256": "c2bdc315127e1ecbfdaa44809ece78519dd79dae92eabeb7c74d11eadf919d0d"
+  },
+  "altered": {
+   "inputs": {
+    "altered/server-ephemeris.ts": "6514e95845c4977300d788fb2725ab1af555dabe3693fcfb679b8be536d885a0",
+    "altered/time-basis.mjs": "a54a84ff7dd1bf1ac5c057c9d853cb9ac55a1b203898a0c69407902441b5801d"
+   },
+   "external": [
+    "@zodiacs/engine/deltat",
+    "node:module"
+   ],
+   "sha256": "024789ea3d436e37ab90d6268511d8b965a00e5416f83359908a503143eb5a84"
+  }
+ },
+ "control": true,
+ "controlBehaved": true,
+ "counts": {
+  "instants": 14765,
+  "bodyLongitude": 177180,
+  "longitudeSpeed": 177180,
+  "errors": 0
+ },
+ "differences": {
+  "values": 243598,
+  "instantsWithDifferences": 14765
+ },
+ "examples": [
+  {
+   "ms": -5364619200000,
+   "body": "Sun",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 280.93927171165353
+   },
+   "altered": {
+    "ok": true,
+    "value": 280.9392717116687
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Moon",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 354.70233535570884
+   },
+   "altered": {
+    "ok": true,
+    "value": 354.7023353557241
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Moon",
+   "what": "longitudeSpeed",
+   "module": {
+    "ok": true,
+    "value": 12.379321004800659
+   },
+   "altered": {
+    "ok": true,
+    "value": 12.37932100482908
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Mercury",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 267.94230469519044
+   },
+   "altered": {
+    "ok": true,
+    "value": 267.9423046952056
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Mercury",
+   "what": "longitudeSpeed",
+   "module": {
+    "ok": true,
+    "value": -0.7631301544677171
+   },
+   "altered": {
+    "ok": true,
+    "value": -0.7631301544961389
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Venus",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 234.1509040318393
+   },
+   "altered": {
+    "ok": true,
+    "value": 234.1509040318545
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Mars",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 244.68342318484366
+   },
+   "altered": {
+    "ok": true,
+    "value": 244.68342318485887
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Mars",
+   "what": "longitudeSpeed",
+   "module": {
+    "ok": true,
+    "value": 0.6945071042423479
+   },
+   "altered": {
+    "ok": true,
+    "value": 0.694507104228137
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Jupiter",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 84.46438100718063
+   },
+   "altered": {
+    "ok": true,
+    "value": 84.46438100719581
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Jupiter",
+   "what": "longitudeSpeed",
+   "module": {
+    "ok": true,
+    "value": -0.12512177661960777
+   },
+   "altered": {
+    "ok": true,
+    "value": -0.12512177664802948
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Saturn",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 128.76430094661174
+   },
+   "altered": {
+    "ok": true,
+    "value": 128.76430094662692
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Saturn",
+   "what": "longitudeSpeed",
+   "module": {
+    "ok": true,
+    "value": -0.06721746049720423
+   },
+   "altered": {
+    "ok": true,
+    "value": -0.06721746046878252
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Uranus",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 177.12642626489298
+   },
+   "altered": {
+    "ok": true,
+    "value": 177.12642626490822
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Uranus",
+   "what": "longitudeSpeed",
+   "module": {
+    "ok": true,
+    "value": -0.00009370717179990606
+   },
+   "altered": {
+    "ok": true,
+    "value": -0.0000937071149564872
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Neptune",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 226.6294202654356
+   },
+   "altered": {
+    "ok": true,
+    "value": 226.62942026545082
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Pluto",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 331.4262553776536
+   },
+   "altered": {
+    "ok": true,
+    "value": 331.42625537766884
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "North Node",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 34.164035777671586
+   },
+   "altered": {
+    "ok": true,
+    "value": 34.16403577768676
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "North Node",
+   "what": "longitudeSpeed",
+   "module": {
+    "ok": true,
+    "value": -0.03961091020414642
+   },
+   "altered": {
+    "ok": true,
+    "value": -0.03961091020426011
+   }
+  },
+  {
+   "ms": -5364619200000,
+   "body": "South Node",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 214.16403577767164
+   },
+   "altered": {
+    "ok": true,
+    "value": 214.16403577768676
+   }
+  },
+  {
+   "ms": -5363755200000,
+   "body": "Sun",
+   "what": "bodyLongitude",
+   "module": {
+    "ok": true,
+    "value": 291.129496587817
+   },
+   "altered": {
+    "ok": true,
+    "value": 291.129496587832
+   }
+  }
+ ],
+ "node": "v22.22.2",
+ "pass": false
+}

@@ -31,15 +31,46 @@ export const EXTERNAL = Object.freeze([
   'zod',
 ]);
 
+/**
+ * Every JSON table as one string literal, parsed at its first import, as
+ * scripts/build-compute-local-time.mjs inlines them: the zone names
+ * resolve_birth_time loads on demand, which esbuild would otherwise wrap in
+ * a CommonJS shim, and the place index search_places reads. V8 parses JSON
+ * text faster than the same data as code.
+ */
+const jsonAsText = {
+  name: 'json-as-text',
+  setup(build) {
+    // esbuild takes Go regular expressions: no u flag.
+    build.onLoad({ filter: /\.json$/ }, async (args) => {
+      const text = JSON.stringify(JSON.parse(await readFile(args.path, 'utf8')));
+      return { contents: `export default JSON.parse(${JSON.stringify(text)});\n`, loader: 'js' };
+    });
+  },
+};
+
 const version = async (name) => JSON.parse(
   await readFile(resolve(ROOT, 'node_modules', name, 'package.json'), 'utf8'),
 ).version;
 
+/**
+ * The external dependencies are named at the adapter's own exact pins, which
+ * an install of the archive resolves. The site's node_modules may carry a
+ * newer MCP SDK for the hosted server at /mcp, so it is not read for them.
+ */
+const pinned = async (name) => {
+  const { dependencies } = JSON.parse(
+    await readFile(resolve(ROOT, 'examples/mcp-server/package.json'), 'utf8'),
+  );
+  if (!dependencies?.[name]) throw new Error(`examples/mcp-server/package.json does not pin ${name}`);
+  return dependencies[name];
+};
+
 export async function buildServerBundle() {
   const [engine, sdk, zod, adapter] = await Promise.all([
     version('@zodiacs/engine'),
-    version('@modelcontextprotocol/server'),
-    version('zod'),
+    pinned('@modelcontextprotocol/server'),
+    pinned('zod'),
     readFile(resolve(ROOT, 'src/mcp/bounds.ts'), 'utf8')
       .then((source) => /ADAPTER_VERSION = '([^']+)'/.exec(source)?.[1]),
   ]);
@@ -69,6 +100,7 @@ export async function buildServerBundle() {
     sourcemap: false,
     minify: false,
     write: false,
+    plugins: [jsonAsText],
   });
   const [file] = result.outputFiles;
   return { bytes: Buffer.from(file.contents), versions: { adapter, engine, sdk, zod, esbuild: esbuild.version } };

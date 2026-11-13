@@ -102,8 +102,8 @@ afterEach(() => {
  * (pages, hooks, legacy stores, other islands) may import any saved-record module.
  */
 const ALLOWED_INBOUND = new Set([
-  'src/islands/AccountProfileAccessBootstrap.tsx -> src/lib/profile/saved-record-access.ts',
-  'src/islands/AccountProfileAccessBootstrap.tsx -> src/lib/profile/saved-record-flags.ts',
+  'src/lib/account-v2/profile-access-bootstrap.ts -> src/lib/profile/saved-record-access.ts',
+  'src/lib/account-v2/profile-access-bootstrap.ts -> src/lib/profile/saved-record-flags.ts',
   'src/islands/AccountSyncV2Panel.tsx -> src/lib/profile/saved-record-access.ts',
   'src/islands/AccountSyncV2Panel.tsx -> src/lib/profile/saved-record-flags.ts',
   'src/islands/ChartCalculator.tsx -> src/lib/profile/saved-record-access.ts',
@@ -142,7 +142,7 @@ describe('inactive saved receipt integration boundary', () => {
     expect([...visited].filter((path) => legacy.has(path)
       || path.startsWith(resolve(ROOT, 'src/lib/living-chart') + '/')
       || path.startsWith(resolve(ROOT, 'src/lib/supabase') + '/')).map((path) => relative(ROOT, path))).toEqual([]);
-  });
+  }, 60_000); // It reads every file under src/ and api/; under a full parallel run that can pass 5 s.
 
   it('imports without storage discovery, writes, auth subscription or network activity', async () => {
     const forbidden = vi.fn(() => { throw new Error('Unexpected activation.'); });
