@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
+import { hasHandoffOrLegacyDetails, takeChartHandoff } from '../lib/chart-handoff';
+import { UNDER_13_SENTENCE, birthDateRefusal, birthDateRefusalText } from '../lib/birth-date-policy';
 
 // Execute the actual component's ownership functions with controlled async
 // boundaries. The browser driver separately verifies rendered interactions.
@@ -52,6 +54,7 @@ function harness() {
     navigator: { userAgent: 'Synthetic browser' }, localStorage: {},
     document: { activeElement: null, body: {} }, HTMLElement: class {},
     window: { location: { hash: '', pathname: '/birth-chart/', search: '' }, dispatchEvent: () => { calls.push('computed-event'); }, matchMedia: () => ({ matches: false }), removeEventListener() {} },
+    hasHandoffOrLegacyDetails, takeChartHandoff, birthDateRefusal, birthDateRefusalText,
     history: { replaceState() {} }, subjectModeFromHash: () => 'other', mineHandoffFromHash: () => ({ kind: 'profile', id: 'synthetic-profile-id' }), profileHandoffOriginsFromHash: () => ({ mine: true }),
     NAME_MAX: 24, linkName: null, isAutoName: () => true,
     CustomEvent: class {}, matchMedia: () => ({ matches: true }),
@@ -264,6 +267,21 @@ describe('ChartCalculator result ownership', () => {
     pending.resolve({ decodePositionsToken: () => ({ publicPositions: true }) }); await flush();
     expect(h.context.positionsOnly).toEqual({ publicPositions: true });
     expect(h.context.mineHandoff).toEqual(change === 'unchanged' || change === 'public-mine' ? { kind: 'profile', id: 'synthetic-profile-id' } : null);
+  });
+
+  it('refuses a birth date less than 13 years ago before loading or computing anything', async () => {
+    const h = harness(); let loads = 0; let tracked = 0;
+    h.context.loadEngine = () => { loads += 1; return Promise.resolve(h.engine); };
+    h.context.track = () => { tracked += 1; };
+    const recent = new Date(Date.now() - 12 * 365.25 * 86_400_000).toISOString().slice(0, 10);
+    await h.context.runChart(input(recent), true); await flush();
+    expectEmpty(h.context);
+    expect(h.context.error).toBe(UNDER_13_SENTENCE);
+    expect(h.context.busy).toBe(false);
+    expect(h.context.focusAfterComputeRef.current).toBe(true);
+    expect(loads).toBe(0); expect(tracked).toBe(0);
+    expect(h.calls).not.toContain('legacy-natal'); expect(h.calls).not.toContain('portable-natal');
+    expect(h.calls).not.toContain('computed-event');
   });
 
   it('does not refill share state or scroll after a synchronous result event edits the form', async () => {

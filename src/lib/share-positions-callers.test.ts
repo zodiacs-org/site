@@ -176,7 +176,7 @@ const PRODUCERS: Record<string, { how: string; calls: string[]; mustUse: string[
     mustUse: ["import('../../engine/server-ephemeris.js')"],
   },
   'src/lib/profile/card-link.ts': {
-    how: 'cards are made from cardPositionsForChart; decoding and matching re-encode codes already made',
+    how: 'no page makes a card any more (card-link-writers.test.ts); the encoder is kept for test fixtures and uses cardPositionsForChart\'s rules; decoding and matching re-encode codes already made',
     calls: [
       'encodeSharedPositionsLink(input.chart)',
       'encodeSharedPositionsLink(chart)',
@@ -187,11 +187,6 @@ const PRODUCERS: Record<string, { how: string; calls: string[]; mustUse: string[
       'timedSharedPositions(positions, chart.summary.utcISO, bodiesAt)',
       'untimedSharedPositions(positions, chart.birth.date, bodiesAt)',
     ],
-  },
-  'src/islands/ProfileIdentity.tsx': {
-    how: 'makes the card from loadCardPositionsForChart',
-    calls: ['encodeCardLink({ chart: positions, label: name })'],
-    mustUse: ['loadCardPositionsForChart(chart)'],
   },
 };
 

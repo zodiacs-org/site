@@ -5,10 +5,13 @@
  * Sun sign's colour, your name, your Sun, Moon and rising, one line from
  * today's reading (so the page is new each day), and the site's usual trio
  * of actions: one white primary, one ghost, one quiet link.
- * Editing your name and sending your card open in place of that row, so
- * the header never shows two primaries at once; and while a received card
- * waits at the top of the page, the card holds the white action and the
- * header's steps down to a ghost.
+ * Editing your name opens in place of that row, so the header never shows
+ * two primaries at once; and while a received card waits at the top of the
+ * page, the card holds the white action and the header's steps down to a
+ * ghost. "Send your card" opens the sign-level big three card for the chart
+ * marked as yours, by its opaque saved-chart id. Chart card links, which
+ * gave the birth date and time to the minute, are no longer made (the
+ * 9 November 2026 audit, Decision A).
  *
  * Only the explicit self chart can become "you"; a friend's chart never
  * does, however recently it was saved. Everything here reads and writes
@@ -16,14 +19,15 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import Initial from '../components/Initial';
-import PlacementList, { chartPlacements, type Placement } from '../components/PlacementList';
+import PlacementList, { chartPlacements } from '../components/PlacementList';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useMe } from '../lib/hooks/useMe';
 import { explicitSelfChart } from '../lib/profile/read-store';
 import { markPrimarySelfChart } from '../lib/profile/store';
 import { runAfterProfileAccess } from '../lib/account-v2/profile-access-request';
 import { DEFAULT_ME, DISPLAY_NAME_MAX, cleanDisplayName, resolvedDisplayName, saveMe } from '../lib/profile/me';
-import { OPEN_CARD_EVENT, cardUrl, encodeCardLink, loadCardPositionsForChart } from '../lib/profile/card-link';
+import { OPEN_CARD_EVENT } from '../lib/profile/card-link';
+import { profileChartHandoffFragment } from '../lib/chart-handoff';
 import { chartHandle, personalChartName, savedChartSunHue } from '../lib/profile/your-people';
 import { initialIcon, initialOf } from '../lib/profile/initial';
 import { prepareProfilePhoto } from '../lib/profile/photo';
@@ -33,15 +37,16 @@ import { moonPhaseLabel } from '../lib/i18n/astrology';
 import type { SavedChart } from '../lib/profile/schema';
 import { useInboxHoldsPrimary, useProfileSurface } from '../lib/profile/surface-gate';
 
-type Panel = 'edit' | 'share' | null;
+type Panel = 'edit' | null;
+
+/** The sign-level big three card for the chart marked as yours, opened by its opaque id only. */
+function bigThreeCardHref(chart: SavedChart): string {
+  const fragment = profileChartHandoffFragment(chart.id);
+  return fragment ? `/big-three/#${fragment}` : '/big-three/';
+}
 
 function PhotoMark() {
   return <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 5.5 9.5 3.5h5L16 5.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-11a2 2 0 0 1 2-2h3Z"/><circle cx="12" cy="12.5" r="4"/></svg>;
-}
-
-/** Two overlapping sheets: the site's fonts carry no copy glyph of their own. */
-function CopyMark() {
-  return <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 3.5V3.1A1.6 1.6 0 0 0 8.9 1.5H3.1A1.6 1.6 0 0 0 1.5 3.1v5.8a1.6 1.6 0 0 0 1.6 1.6h.4"/></svg>;
 }
 
 const STORAGE_ERROR = 'This browser wouldn’t keep it. Private browsing or a full disk can do that.';
@@ -171,18 +176,18 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
   const photoButton = useRef<HTMLButtonElement>(null);
   const editFromPhoto = useRef(false);
   const openPhoto = () => { editFromPhoto.current = true; setPanel('edit'); };
-  const shareButton = useRef<HTMLButtonElement>(null);
   const closedPanel = useRef<Panel>(null);
   // A card waiting at the top of the page holds the one white action.
   const inboxHoldsPrimary = useInboxHoldsPrimary();
 
   useDocumentIdentity(self, savedName, hue);
 
+  // "Send your card" elsewhere on the page (your people, a received card)
+  // opens the same sign-level big three card as the header's link.
   useEffect(() => {
     const open = () => {
       if (!self) return;
-      setPanel('share');
-      requestAnimationFrame(() => headRef.current?.scrollIntoView({ block: 'start' }));
+      window.location.assign(bigThreeCardHref(self));
     };
     window.addEventListener(OPEN_CARD_EVENT, open);
     return () => window.removeEventListener(OPEN_CARD_EVENT, open);
@@ -192,7 +197,7 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
   useEffect(() => {
     if (panel !== 'edit') setDraft(null);
     if (panel !== null || closedPanel.current === null) return;
-    (closedPanel.current === 'edit' ? (editFromPhoto.current ? photoButton : editButton) : shareButton).current?.focus();
+    (editFromPhoto.current ? photoButton : editButton).current?.focus();
     closedPanel.current = null;
   }, [panel]);
 
@@ -251,9 +256,9 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
           <a class={`btn ${inboxHoldsPrimary ? 'btn--ghost' : 'btn--primary'}`} href="/today/">
             <span>{t('en', 'openDailyBrief')}</span><span aria-hidden="true">↗</span>
           </a>
-          <button class="pf-quiet pf-me__share-action" type="button" ref={shareButton} onClick={() => setPanel('share')} data-card-share-toggle>
+          <a class="pf-quiet pf-me__share-action" href={bigThreeCardHref(self)} data-card-share-toggle>
             <span>Send your card</span><span aria-hidden="true">↗</span>
-          </button>
+          </a>
           </> : <a class="pf-quiet pf-me__share-action" href="/birth-chart/">Make a birth chart <span aria-hidden="true">↗</span></a>}
           <button class="pf-quiet" type="button" ref={editButton} onClick={() => { editFromPhoto.current = false; setPanel('edit'); }}>
             Edit profile
@@ -262,16 +267,6 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
       )}
       {panel === 'edit' && (
         <EditPanel initialName={me.displayName ?? savedName ?? ''} initialPhoto={me.photo} onDraft={setDraft} onClose={close} />
-      )}
-      {panel === 'share' && self && (
-        <SharePanel
-          chart={self}
-          name={savedName}
-          hue={hue}
-          placements={placements}
-          onAddName={() => setPanel('edit')}
-          onClose={close}
-        />
       )}
     </header>
     {!self && profile.charts.length > 0 && <SelfChooser charts={profile.charts} />}
@@ -368,144 +363,5 @@ function EditPanel({ initialName, initialPhoto, onDraft, onClose }: {
         <button class="pf-quiet" type="button" onClick={onClose}>Cancel</button>
       </div>
     </form>
-  );
-}
-
-type CopyState = 'idle' | 'copied' | 'manual' | 'shared';
-
-function SharePanel({ chart, name, hue, placements, onAddName, onClose }: {
-  chart: SavedChart;
-  name: string | null;
-  hue: string | null;
-  placements: Placement[];
-  onAddName: () => void;
-  onClose: () => void;
-}) {
-  const [state, setState] = useState<CopyState>('idle');
-  const [canShare, setCanShare] = useState(false);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const [token, setToken] = useState<string | null>(null);
-  useEffect(() => {
-    let current = true;
-    setToken(null);
-    void loadCardPositionsForChart(chart).then((positions) => {
-      if (current) setToken(positions ? encodeCardLink({ chart: positions, label: name }) : null);
-    }, (error) => console.error(error));
-    return () => { current = false; };
-  }, [chart, name]);
-  const url = token ? cardUrl(window.location.origin, token) : null;
-
-  useEffect(() => {
-    setCanShare(typeof navigator.share === 'function');
-    panelRef.current?.focus({ preventScroll: true });
-  }, []);
-  useEffect(() => setState('idle'), [url]);
-
-  async function copy() {
-    if (!url) return;
-    try {
-      await navigator.clipboard.writeText(url);
-      setState('copied');
-    } catch {
-      setState('manual');
-    }
-  }
-
-  async function share() {
-    if (!url) return;
-    try {
-      await navigator.share({
-        title: name ? `${name}’s chart card` : 'A chart card',
-        text: 'Keep my chart card on your Zodiacs.org page, and send me yours.',
-        url,
-      });
-      setState('shared');
-    } catch {
-      // A dismissed share sheet is not an error; the copy button remains.
-    }
-  }
-
-  return (
-    <div
-      class="pf-me__panel pf-share"
-      id="pf-me-share"
-      ref={panelRef}
-      tabIndex={-1}
-      role="group"
-      aria-labelledby="pf-share-title"
-    >
-      <div class="pf-share__layout">
-        <div class="pf-share__copy">
-          <h2 class="pf-share__title" id="pf-share-title">Send your card</h2>
-          <p>
-            {name
-              ? <>It carries the name <strong>{name}</strong> and your chart’s positions.</>
-              : 'It carries your chart’s positions and no name.'}
-            {' '}It has no birth date, time, or place fields, but the planet positions still give your
-            birth date and time.
-          </p>
-          <p>
-            It opens on their own Zodiacs.org page, where they can keep you with their people and send
-            theirs back. Nothing is stored on our side.
-          </p>
-          {chart.birth.timeKnown !== true && (
-            <p class="pf-share__note">Without a birth time, your card has no rising sign and shows your Moon as unsettled.</p>
-          )}
-          {!name && (
-            <p class="pf-share__note">
-              Add a name so they know who it’s from.{' '}
-              <button class="pf-quiet pf-quiet--inline" type="button" onClick={onAddName}>Add your name</button>
-            </p>
-          )}
-        </div>
-        {/* A picture of what the copy beside it says travels. */}
-        <figure class="pf-share__preview" aria-hidden="true">
-          <div class="pf-share__card">
-            <Initial name={name} hue={hue} size={56} />
-            <div class="pf-share__card-text">
-              <strong>{name ?? 'A chart card'}</strong>
-              <PlacementList placements={placements} linked={false} />
-            </div>
-          </div>
-          <figcaption class="mono--label">What they’ll see</figcaption>
-        </figure>
-      </div>
-      {url ? (
-        <>
-          {state === 'manual' && (
-            <input
-              class="field__input pf-share__url"
-              type="text"
-              readOnly
-              value={url}
-              aria-label="Your card link"
-              onFocus={(event) => (event.currentTarget as HTMLInputElement).select()}
-            />
-          )}
-          <div class="pf-me__panel-actions">
-            <button class="btn btn--primary" type="button" onClick={copy} data-card-link>
-              <span>{state === 'copied' ? 'Link copied' : 'Copy card link'}</span>
-              <span class="orb" aria-hidden="true">{state === 'copied' ? '✓' : <CopyMark />}</span>
-            </button>
-            {canShare && (
-              <button class="btn btn--ghost" type="button" onClick={share}>
-                <span>Share</span><span class="orb" aria-hidden="true">↗</span>
-              </button>
-            )}
-            <button class="pf-quiet" type="button" onClick={onClose}>Done</button>
-          </div>
-          <p class="sr-only" role="status">{state === 'copied' ? 'Link copied' : state === 'shared' ? 'Card shared' : ''}</p>
-        </>
-      ) : (
-        <>
-          <p class="field__error" role="alert">
-            This chart can’t make a card yet. Open it once in the birth chart calculator and save it again.
-          </p>
-          <div class="pf-me__panel-actions">
-            <button class="pf-quiet" type="button" onClick={onClose}>Done</button>
-          </div>
-        </>
-      )}
-    </div>
   );
 }

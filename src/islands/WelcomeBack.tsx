@@ -9,7 +9,7 @@ import { NextActionCard } from '../components/NextActionCard';
 import { useProfile } from '../lib/hooks/useProfile';
 import { explicitSelfChart } from '../lib/profile/read-store';
 import { livingChartCaptureEnabled } from '../lib/living-chart/feature-flags';
-import { encodeChartLink } from '../lib/share';
+import { profileChartHandoffFragment } from '../lib/chart-handoff';
 import { localizePath, normalizeCatalogLocale, t, tf, type CatalogLocale as Locale } from '../lib/i18n';
 
 export default function WelcomeBack({ locale: rawLocale = 'en' }: { locale?: Locale }) {
@@ -44,20 +44,12 @@ export default function WelcomeBack({ locale: rawLocale = 'en' }: { locale?: Loc
   const asc = chart.birth.timeKnown ? chart.summary.angles?.asc ?? null : null;
   const handle = chart.name.split('·')[0].trim() || chart.name;
 
-  // Reopen the saved chart straight in the calculator (needs coordinates to
-  // reconstruct; charts saved without a place fall back to the profile list).
-  const openHref = chart.birth.place
-    ? `${localizePath(locale, '/birth-chart/')}#c=${encodeChartLink({
-        date: chart.birth.date,
-        time: chart.birth.time,
-        timeKnown: chart.birth.timeKnown,
-        lat: chart.birth.place.lat,
-        lon: chart.birth.place.lon,
-        tz: chart.birth.place.tz,
-        name: chart.name,
-        place: chart.birth.place.name,
-        houseSystem: chart.summary.houseSystem,
-      })}`
+  // Reopen the saved chart straight in the calculator by its opaque id only
+  // (needs coordinates to reconstruct; charts saved without a place fall back
+  // to the profile list). The link never carries birth details.
+  const openFragment = chart.birth.place ? profileChartHandoffFragment(chart.id) : null;
+  const openHref = openFragment
+    ? `${localizePath(locale, '/birth-chart/')}#${openFragment}`
     : null;
   const nextHref = locale === 'en'
     ? localizePath(locale, '/today/')

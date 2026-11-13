@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { ComponentType } from 'preact';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
 import PlaceSearch from './PlaceSearch';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { loadProfile } from '../lib/profile/read-store';
@@ -111,6 +112,17 @@ export default function LunarReturnCalculator() {
     };
     // A failed load/calculation retries the original reference. Editing the
     // input or starting a calculation after success records a new reference.
+    // A birth date under 13 or still to come (a saved chart's too) is refused before anything loads.
+    // A date read in the Julian calendar is checked again once it is Gregorian.
+    const earlyRefusal = saved || !calendarInPlay(input.birthDate, calendar)
+      ? birthDateRefusal(input.birthDate)
+      : null;
+    if (earlyRefusal) {
+      revision.current += 1;
+      setResult(null);
+      setError(birthDateRefusalText(earlyRefusal));
+      return;
+    }
     const after = new Date((reference.current ?? new Date()).getTime());
     reference.current = after;
     const request = ++revision.current;
@@ -127,6 +139,8 @@ export default function LunarReturnCalculator() {
         if (!isCurrent()) return;
         if ('error' in entry) { setError(entry.error); return; }
         input.birthDate = entry.date;
+        const refusal = birthDateRefusal(input.birthDate);
+        if (refusal) { setError(birthDateRefusalText(refusal)); return; }
       }
       await prepareLocalTime(input.birthDate, input.birthplace?.tz ?? 'UTC');
       if (!isCurrent()) return;
@@ -186,7 +200,7 @@ export default function LunarReturnCalculator() {
           </button>
           <p class="field__help">Finds the next return after the moment you calculate. Each result keeps that reference time.</p>
           <p class="calc__privacy"><strong>Private by default.</strong> The chart is calculated on this device; nothing is uploaded.</p>
-          {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
+          {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef} lang={birthDateRefusalLang(error)}>{error}</p>}
           {error && retryReference && <p class="field__help" data-lr-retry-reference>Retry uses the same reference: {retryReference.replace('T', ' ').replace('Z', ' UTC')}.</p>}
           <CalculationReload error={error} locale="en" />
         </div>

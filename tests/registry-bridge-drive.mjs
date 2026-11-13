@@ -70,7 +70,9 @@ try {
     assert.equal(await page.locator('[data-result-opening]').count(), 1);
     assert.deepEqual(await events(page, 'registry_bridge_impression'), []);
 
-    await page.locator('#birth-date').fill('2026-03-20');
+    // An ingress day (the March 2013 equinox) more than 13 years ago, so the
+    // birth date policy reads it.
+    await page.locator('#birth-date').fill('2013-03-20');
     await submitAndWait(page, 2);
     assert.equal(await bridge.count(), 0, 'unknown-time ingress date must not promote the collection');
     assert.equal(await receipt.getAttribute('data-instant-basis'), 'reference');
@@ -80,7 +82,7 @@ try {
     await submitAndWait(page, 3);
     assert.equal(await bridge.count(), 0, 'known-time results must not promote the collection either');
     assert.equal(await receipt.getAttribute('data-instant-basis'), 'birth');
-    assert.equal(await receipt.locator('time').getAttribute('datetime'), '2026-03-20T15:15:00.000Z');
+    assert.equal(await receipt.locator('time').getAttribute('datetime'), '2013-03-20T15:15:00.000Z');
     assert.deepEqual(await events(page, 'registry_bridge_impression'), []);
     assert.deepEqual(await events(page, 'registry_bridge_click'), []);
     await chartRun.context.close();

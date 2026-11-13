@@ -6,12 +6,15 @@ import { pairSlug } from '../lib/compat';
 import { decodeChartLink, NAME_MAX, type ShareChartInput } from '../lib/share';
 import { decodePositionsLink, type PositionsShareChart } from '../lib/share-positions';
 import {
-  chartHandoffFragment,
   compatibilityHandoffPath,
+  hasChartHandoff,
   mineHandoffFromHash,
   profileHandoffOriginsFromHash,
+  stashChartHandoff,
+  takeChartHandoff,
   type MineHandoff,
 } from '../lib/chart-handoff';
+import { birthDateRefusal, birthDateRefusalText } from '../lib/birth-date-policy';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { bigThree } from '../lib/interpretations';
@@ -212,18 +215,33 @@ export default function SomeoneElseChart() {
     setLinkError('');
   }, [mode]);
 
+  // The visitor's own chart arrives as a session handoff (h=), an opaque saved
+  // id, or a legacy #mine= link. The fragment leaves the address bar first.
   useEffect(() => {
-    const params = new URLSearchParams(window.location.hash.slice(1));
-    if (!params.has('mine') && !params.has('mineId')) return;
-    const mine = mineHandoffFromHash(window.location.hash);
-    const profileOrigin = profileHandoffOriginsFromHash(window.location.hash).mine;
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.slice(1));
+    const handoff = hasChartHandoff(hash);
+    if (!handoff && !params.has('mine') && !params.has('mineId')) return;
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    // A chart whose birth date the policy refuses is not used for comparison.
+    const admitted = (input: MineHandoff | null): MineHandoff | null => (
+      input?.kind === 'input' && birthDateRefusal(input.input.date) ? null : input
+    );
+    if (handoff) {
+      const taken = takeChartHandoff(hash);
+      if (taken?.kind !== 'mine') return;
+      currentMineProfileOrigin.current = false;
+      setCurrentMine(admitted({ kind: 'input', input: taken.input }));
+      return;
+    }
+    const mine = mineHandoffFromHash(hash);
+    const profileOrigin = profileHandoffOriginsFromHash(hash).mine;
     if (profileOrigin && mine?.kind === 'saved') {
       setPendingProfileMineId(mine.id);
     } else {
       currentMineProfileOrigin.current = false;
-      setCurrentMine(mine);
+      setCurrentMine(admitted(mine));
     }
-    history.replaceState(null, '', window.location.pathname + window.location.search);
   }, []);
 
   useEffect(() => {
@@ -257,6 +275,13 @@ export default function SomeoneElseChart() {
       setDateError(entry.error);
       return null;
     }
+    // Checked on the Gregorian date, before anything is handed off.
+    const refusal = birthDateRefusal(entry.date);
+    if (refusal) {
+      setDateError(birthDateRefusalText(refusal));
+      requestAnimationFrame(() => document.getElementById('other-birth-date')?.focus());
+      return null;
+    }
     return {
       date: entry.date,
       time: timeKnown ? time : null,
@@ -270,21 +295,48 @@ export default function SomeoneElseChart() {
     };
   }
 
+  /**
+   * Open their chart through the session handoff: the link carries only a
+   * random key. Without sessionStorage the birth chart opens with its normal
+   * empty form; no link with details is ever made.
+   */
+  function openChart(input: ShareChartInput) {
+    const fragment = stashChartHandoff(input, {
+      subjectMode: 'other',
+      mine: comparisonMine,
+      mineProfileOrigin: comparisonMineProfileOrigin,
+    });
+    go(fragment ? `/birth-chart/#${fragment}` : '/birth-chart/');
+  }
+
+  function compareChart(input: ShareChartInput) {
+    go(compatibilityHandoffPath(input, comparisonMine) ?? '/compatibility/');
+  }
+
   async function openFullChart(event: Event) {
     event.preventDefault();
     const input = await fullDetailsInput();
     if (!input) return;
-    go(`/birth-chart/#${chartHandoffFragment(input, {
-      subjectMode: 'other',
-      mine: comparisonMine,
-      mineProfileOrigin: comparisonMineProfileOrigin,
-    })}`);
+    openChart(input);
   }
 
   async function compareFullChart() {
     const input = await fullDetailsInput();
     if (!input) return;
-    go(compatibilityHandoffPath(input, comparisonMine));
+    compareChart(input);
+  }
+
+  /** A pasted legacy details link is read here; its birth date passes the same policy. */
+  function sharedDetailsInput(): ShareChartInput | null {
+    if (!shared || shared.kind !== 'details' || !consent) return null;
+    const refusal = birthDateRefusal(shared.input.date);
+    if (refusal) {
+      setLinkError(birthDateRefusalText(refusal));
+      return null;
+    }
+    return name.trim()
+      ? { ...shared.input, name: name.trim() }
+      : shared.input;
   }
 
   function validateSharedLink(event: Event) {
@@ -304,22 +356,13 @@ export default function SomeoneElseChart() {
       go(`/birth-chart/#p=${shared.token}&subject=other`);
       return;
     }
-    const input = name.trim()
-      ? { ...shared.input, name: name.trim() }
-      : shared.input;
-    go(`/birth-chart/#${chartHandoffFragment(input, {
-      subjectMode: 'other',
-      mine: comparisonMine,
-      mineProfileOrigin: comparisonMineProfileOrigin,
-    })}`);
+    const input = sharedDetailsInput();
+    if (input) openChart(input);
   }
 
   function compareSharedDetails() {
-    if (!shared || shared.kind !== 'details' || !consent) return;
-    const input = name.trim()
-      ? { ...shared.input, name: name.trim() }
-      : shared.input;
-    go(compatibilityHandoffPath(input, comparisonMine));
+    const input = sharedDetailsInput();
+    if (input) compareChart(input);
   }
 
   function openManualReading() {
@@ -437,7 +480,7 @@ export default function SomeoneElseChart() {
               </button>
             </div>
             <EvidenceDisclosure label="How their information is handled">
-              <p>The handoff uses a URL fragment, which is not sent to the site’s server. The chart removes it from the address bar after reading it.</p>
+              <p>Their details are handed to the next page inside this browser tab only. The link carries a random key, never their birth details, and the next page deletes the details from the tab as soon as it reads them.</p>
             </EvidenceDisclosure>
           </div>
         </form>

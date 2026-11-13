@@ -104,7 +104,8 @@ const CALCULATORS = [
   {
     name: 'zodiacs.lunar_return', path: '/lunar-return/', locales: [], call: { birth: BIRTH, after: '2026-10-15T00:00:00Z' },
     holds: (data) => data.instant > '2026-10-15' && data.instant < '2026-11-15', refuse: { birth: UNTIMED },
-    unread: { birth: { ...BIRTH, date: '2021-03-28', time: '01:30' } },
+    // London's spring-forward gap, more than 13 years ago so the birth date policy does not refuse it first.
+    unread: { birth: { ...BIRTH, date: '2012-03-25', time: '01:30' } },
   },
   {
     name: 'zodiacs.numerology', path: '/numerology/', locales: [],

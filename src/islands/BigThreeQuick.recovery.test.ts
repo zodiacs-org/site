@@ -117,6 +117,16 @@ beforeEach(() => {
   harness.save.mockReset().mockResolvedValue('shared');
   harness.track.mockReset();
   vi.stubGlobal('window', { zodiacsAnalytics: { track: harness.track } });
+  // The full-chart link is offered only where a session handoff can be stashed.
+  const session = new Map<string, string>();
+  vi.stubGlobal('sessionStorage', {
+    get length() { return session.size; },
+    key: (index: number) => [...session.keys()][index] ?? null,
+    getItem: (key: string) => session.get(key) ?? null,
+    setItem: (key: string, value: string) => { session.set(key, String(value)); },
+    removeItem: (key: string) => { session.delete(key); },
+    clear: () => session.clear(),
+  });
   vi.stubGlobal('requestAnimationFrame', vi.fn());
   vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({ matches: true }));
 });
@@ -130,7 +140,8 @@ describe('Big Three optional card recovery', () => {
     await submit();
     await settle();
     expect(find('data-big-three-result')).toBeDefined();
-    expect(find('data-big-three-full').props.href).toMatch(/^\/birth-chart\/#/);
+    // A plain link: the chart is stashed only when the link is followed, and no birth detail is in it.
+    expect(find('data-big-three-full').props.href).toBe('/birth-chart/');
     expect(find('data-big-three-submit').props.disabled).toBe(false);
     expect(find('data-big-three-share').props.disabled).toBe(true);
     expect(text(find('data-big-three-share'))).toContain('Preparing your card');

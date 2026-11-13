@@ -21,8 +21,11 @@ interface Props {
   shareStatusLabel: string;
   anotherLabel: string;
   anotherHref: string;
+  /** Hands an unsaved chart over in session storage on a plain click; the href stays the plain page. */
+  onAnotherClick?: (event: MouseEvent) => void;
   compareLabel?: string;
   compareHref?: string;
+  onCompareClick?: (event: MouseEvent) => void;
   saveLabel?: string;
   onSave?: (trigger: HTMLButtonElement) => void;
   onGuide: () => void;
@@ -47,8 +50,10 @@ export default function ChartActionDock({
   shareStatusLabel,
   anotherLabel,
   anotherHref,
+  onAnotherClick,
   compareLabel,
   compareHref,
+  onCompareClick,
   saveLabel,
   onSave,
   onGuide,
@@ -102,13 +107,13 @@ export default function ChartActionDock({
           <span class="orb" aria-hidden="true">↗</span>
         </button>
         {!tourOpen && compareLabel && compareHref && (
-          <a class="btn btn--ghost" href={compareHref} data-compare-with-mine>
+          <a class="btn btn--ghost" href={compareHref} onClick={onCompareClick} data-compare-with-mine>
             <span>{compareLabel}</span>
             <span class="orb" aria-hidden="true">→</span>
           </a>
         )}
         {showContextualActions && (
-          <a class="btn btn--ghost" href={anotherHref} data-read-another-chart>
+          <a class="btn btn--ghost" href={anotherHref} onClick={onAnotherClick} data-read-another-chart>
             <span>{anotherLabel}</span>
             <span class="orb" aria-hidden="true">→</span>
           </a>

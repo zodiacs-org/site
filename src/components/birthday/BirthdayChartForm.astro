@@ -1,13 +1,16 @@
 ---
 /**
- * The birth chart, started from the birthday. The calculator accepts a date
- * (and an optional time) in its URL fragment, the same hand-off the Moon
- * phase tool uses (src/lib/chart-handoff.ts dateHandoffFragment): this form
- * adds the reader's year to the page's month and day and opens
- * /birth-chart/#date=YYYY-MM-DD&time=HH:MM (or time=unknown), where the
- * birthplace field takes focus. The fields have no names, so without
- * JavaScript the button opens the empty calculator and no birth detail ever
- * reaches a URL query or a server.
+ * The birth chart, started from the birthday. This form adds the reader's
+ * year to the page's month and day and hands the date (and an optional time)
+ * to the calculator the way the Moon phase tool does
+ * (src/lib/chart-handoff.ts stashDateHandoff): the date is stored in this
+ * tab's sessionStorage under zodiacs.handoff.<32 random hex digits>, in the
+ * same format, and the calculator opens at /birth-chart/#h=<that key>, reads
+ * the entry once, deletes it and focuses the birthplace field. A birth year
+ * and time never go into a link. Without sessionStorage the button opens the
+ * empty calculator. The fields have no names, so without JavaScript the
+ * button opens the empty calculator too and no birth detail ever reaches a
+ * URL or a server.
  */
 import ArtFrame from '../ArtFrame.astro';
 import { ART, artSrc, artSrcset } from '../../lib/art';
@@ -92,11 +95,25 @@ const dd = String(day).padStart(2, '0');
         return;
       }
       say('');
-      var clock = !unknown.checked && /^\d{2}:\d{2}$/.test(time.value) ? time.value : 'unknown';
-      var params = new URLSearchParams();
-      params.set('date', value + '-' + month + '-' + day);
-      params.set('time', clock);
-      window.location.assign(form.getAttribute('action') + '#' + params.toString());
+      var clock = !unknown.checked && /^\d{2}:\d{2}$/.test(time.value) ? time.value : null;
+      var action = form.getAttribute('action');
+      var key = null;
+      try {
+        var bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);
+        key = Array.prototype.map.call(bytes, function (b) { return (b < 16 ? '0' : '') + b.toString(16); }).join('');
+        var prefix = 'zodiacs.handoff.';
+        var stale = [];
+        for (var i = 0; i < sessionStorage.length; i += 1) {
+          var name = sessionStorage.key(i);
+          if (name && name.indexOf(prefix) === 0) stale.push(name);
+        }
+        stale.forEach(function (name) { sessionStorage.removeItem(name); });
+        sessionStorage.setItem(prefix + key, JSON.stringify({ k: 'date', d: value + '-' + month + '-' + day, t: clock }));
+      } catch (e) {
+        key = null;
+      }
+      window.location.assign(key ? action + '#h=' + key : action);
     });
   })();
 </script>

@@ -4,6 +4,7 @@ import { preloadIndex, searchCities } from '../lib/geo/search';
 import { SIGNS, signForLongitude, type Sign } from '../lib/signs';
 import { signIcon } from '../lib/sign-icon';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { WIDGET_EN, widgetSignName } from '../strings/widgets';
 
 interface Placement {
@@ -91,6 +92,14 @@ export default function MiniBirthChartWidget({ trustCopy }: { trustCopy: { intro
     event.preventDefault();
     if (!date || !time || !city) {
       setError(WIDGET_EN.widgetError);
+      return;
+    }
+    // Refused before the time zone or the engine loads: nothing is computed for a date under 13 or still to come.
+    const refusal = birthDateRefusal(date);
+    if (refusal) {
+      setComputedUtc(null);
+      setPlacements([]);
+      setError(birthDateRefusalText(refusal));
       return;
     }
 
@@ -212,7 +221,7 @@ export default function MiniBirthChartWidget({ trustCopy }: { trustCopy: { intro
         </button>
       </form>
 
-      {error && <p class="mini-chart__error" role="alert">{error}</p>}
+      {error && <p class="mini-chart__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}
       {placements.length === 3 && (
         <section class="mini-chart__result" aria-live="polite">
           <p class="mini-chart__opening" data-result-opening>{trustCopy.intro}</p>

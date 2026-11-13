@@ -96,6 +96,14 @@ describe('the send-back link', () => {
     expect(await sendBackToken(received, { ...own, untimedDate: '1990-02-30' })).toBeNull();
   });
 
+  it('makes no link for a side whose birth date is under 13 or still to come', async () => {
+    const received = person('Frida', false);
+    const own = person('Me', false);
+    expect(await sendBackToken(received, { ...own, untimedDate: '2199-01-01' })).toBeNull();
+    const twelveYearsAgo = `${new Date().getUTCFullYear() - 12}-06-15`;
+    expect(await sendBackToken({ ...received, untimedDate: twelveYearsAgo }, own)).toBeNull();
+  });
+
   it('keeps sides with a birth time on a whole UTC minute, and received sides, as they are', async () => {
     const a = person('Frida', true);
     const b = { ...person('Me', true), utc: '1990-04-11T06:15:00.000Z' };

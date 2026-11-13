@@ -15,6 +15,7 @@ import type { Birth } from './input';
 import { BIRTHS, city } from '../../../../tests/webmcp/calculator-fixtures';
 import { islandFunction, ref } from '../../../../tests/webmcp/island-code';
 import { LocalDateReferenceError } from './moon-phase';
+import { birthDateRefusal, birthDateRefusalText } from '../../birth-date-policy';
 
 // ChartCalculator's runChart, the code /birth-chart/, /moon-sign/ and /rising-sign/ calculate with.
 const runChart = islandFunction('ChartCalculator.tsx', { function: 'runChart' });
@@ -31,6 +32,7 @@ async function chartPage(mode: 'full' | 'moon' | 'rising', birth: Birth, houseSy
     profileAccessAllowed: () => true,
     loadEngine: async () => engine, loadCalculatorReceipt: async () => receiptModule,
     prepareLocalTime, resolveLocalToUtc, assessLocalDateReference, signForLongitude, moonIsUncertain, t,
+    birthDateRefusal, birthDateRefusalText,
     calculationError: (_error: unknown, _locale: string, fallback: string) => fallback,
     setChart: (chart: Chart) => { state.chart = chart; },
     setError: (error: string) => { state.error = error; },
@@ -62,6 +64,14 @@ describe('the chart tools calculate what the chart pages calculate', () => {
 
   it.each(cases)('%s', async (_label, mode, birth, houseSystem, receipt) => {
     const shown = await chartPage(mode, birth, houseSystem);
+    const refusal = birthDateRefusal(birth.date);
+    if (refusal) {
+      // The page refuses a birth date still to come (or under 13) before it computes anything.
+      expect(shown.chart).toBeNull();
+      expect(shown.error).toBe(birthDateRefusalText(refusal));
+      expect(runChart.missing.has('birthDateRefusal')).toBe(false);
+      return;
+    }
     const computed = await tool(birth, houseSystem, receipt);
     if (shown.error) {
       expect(shown.chart).toBeNull();
@@ -100,7 +110,7 @@ describe('BigThreeQuick (/big-three/)', () => {
       setPlacements: (value: typeof state.placements) => { state.placements = value; },
       setError: (value: string) => { state.error = value; },
       s: (_locale: string, key: string) => key, t, localizePath: (_locale: string, path: string) => path,
-      chartHandoffFragment: () => '', prepareCard: async () => undefined,
+      prepareCard: async () => undefined,
       requestAnimationFrame: () => 0, matchMedia: () => ({ matches: true }),
       calculationError: (_error: unknown, _locale: string, fallback: string) => fallback,
     }, { preventDefault() {} });
