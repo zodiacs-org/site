@@ -97,9 +97,12 @@ export interface PeriodChrome {
   calculator: string;
   otherSigns: string;
   method: string;
-  /** "Confianza de lectura 40%": the site's rule (src/ai-tools/reading-confidence.ts), a Sun sign alone. */
+  /**
+   * "Confianza de lectura 40%": the site's rule (src/ai-tools/reading-confidence.ts), a Sun sign alone.
+   * Italian ignores the value and prints a fixed "Lettura dal segno solare".
+   */
   confidence(value: number): string;
-  /** One sentence: the number says how specific the details are, never the odds that something happens. */
+  /** One sentence: how specific the details are (Italian: that only the Sun sign is used), never the odds that something happens. */
   confidenceNote: string;
   /** Three questions and answers for the FAQ block (FAQPage markup). */
   faq(signName: string, surface: PeriodSurface | 'monthly'): Array<{ q: string; a: string }>;
