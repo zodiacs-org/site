@@ -834,7 +834,7 @@
       {
         "heading": "The hosted server",
         "paragraphs": [
-          "https://zodiacs.org/mcp speaks MCP over Streamable HTTP. It lists 19 tools, all read-only and with no sign-in. Six take no birth details from the conversation: get_sky, get_upcoming_events, check_sky_fact and get_horoscope cover the sky and the daily horoscope, open_chart_studio opens a chart the person fills in themselves, and get_capabilities says what the server can do. The others read a birth chart, compare two charts, describe a day that matters, look up a town and more; the AI assistants page linked below lists every one. In Claude, add it as a custom connector. In code, connect with the official SDK client, which npm install @modelcontextprotocol/client@2.3.1 installs, under Apache-2.0.",
+          "https://zodiacs.org/mcp speaks MCP over Streamable HTTP. It lists 19 tools, all read-only and with no sign-in. Six need no birth details: get_sky, get_upcoming_events, check_sky_fact and get_horoscope cover the sky and the daily horoscope, open_chart_studio opens a chart the person fills in themselves, and get_capabilities says what the server can do. The others read a birth chart, compare two charts, describe a day that matters, look up a town and more; the AI assistants page linked below lists every one. In Claude, add it as a custom connector. In code, connect with the official SDK client, which npm install @modelcontextprotocol/client@2.3.1 installs, under Apache-2.0.",
           "The guide checks run this code with that client against the hosted server's own handler, served locally; Mercury was direct at that instant, so the answer is false."
         ],
         "code": {
