@@ -122,7 +122,7 @@ describe('the numerology copy', () => {
   });
 
   it('reads work and wellbeing where the tradition does, with no money, earnings or promotion language', () => {
-    const MONEY = /\b(?:money|earn\w*|earnings|promotions?|income|salary|salaries|wealth\w*|profit\w*|budgets?|financ\w*|riches|prosper\w*)\b/iu;
+    const MONEY = /\b(?:money|earn|earns|earned|earner|earners|earning|earnings|promotions?|income|salary|salaries|savings?|wealth\w*|profit\w*|budgets?|financ\w*|riches|prosper\w*)\b/iu;
     for (const text of texts) expect(text, text).not.toMatch(MONEY);
     expect(PERSONAL_YEAR_MEANINGS[8]).toContain('A year for results');
     expect(POSITION_READINGS.lifePath[8]).toContain('authority and results');

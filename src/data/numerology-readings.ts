@@ -47,7 +47,7 @@ export const POSITION_READINGS: Readonly<Record<ReadingPosition, Readonly<Record
     1: 'As a Soul Urge, 1 reads as a private wish for independence: to be trusted with your own choices, and to make something that is recognisably yours.',
     2: 'As a Soul Urge, 2 reads as a private wish for closeness and calm, a partnership where you are understood without having to explain everything.',
     3: 'As a Soul Urge, 3 reads as a private wish to be heard and to create: room to play, to make things, and to share what delights you.',
-    4: 'As a Soul Urge, 4 reads as a private wish for steadiness: a settled home, a routine you like, savings you can count on, and work you can trust to hold.',
+    4: 'As a Soul Urge, 4 reads as a private wish for steadiness: a settled home, a routine you like, security you can count on, and work you can trust to hold.',
     5: 'As a Soul Urge, 5 reads as a private wish for freedom: new experiences, room to move, and a life that does not repeat itself.',
     6: 'As a Soul Urge, 6 reads as a private wish to be needed and to make a warm place for other people. Harmony at home matters a great deal.',
     7: 'As a Soul Urge, 7 reads as a private wish for understanding: quiet, time to think, and answers that hold up when you look at them closely.',
