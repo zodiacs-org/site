@@ -33,7 +33,7 @@ line, the date read and the words relied on.
 Facts:
 
 - The package was adapted from modules of the Zodiacs.org site.
-  `[E-LIC-SITE]`
+  `[E-LIC-PROV]`
 - The site repository's licence file begins "Copyright (c) Zodiacs.org. All
   rights reserved." and grants no licence "except where a file or directory
   states other terms". `[S-LICENSE]` The same file names the engine as one
@@ -76,6 +76,8 @@ Facts:
   no IERS page was found that says so. `[E-LIC-IERS]`
 - The site repository still has that sentence in one dated evidence file:
   "IERS product, free to use with citation of the IERS". `[S-DELTAT]`
+- The engine repository still has it in the notice file of its Python
+  package: the IERS "asks that its products be cited". `[E-PY-NOTICE]`
 - For the related product, Bulletin A (`finals2000A.all`), the US Naval
   Observatory's page ends "Distribution Statement A. Approved for public
   release: distribution unlimited." `[T-USNO-BULA]` The repository carries
@@ -92,8 +94,9 @@ Questions:
 - Does it matter that the provider is a French public observatory acting
   for an international service?
 - Is "Distribution Statement A" enough for the use made of Bulletin A?
-- Should the stale sentence in the site's evidence file be corrected, or
-  left as a dated record with a note?
+- Should the stale sentence in the site's evidence file and in the engine's
+  Python notice file be corrected, or, for the dated record, left with a
+  note?
 
 A draft letter to the Earth Orientation Centre is in `02-letter-iers.md`.
 It has not been sent.
@@ -202,8 +205,7 @@ No letter to ESA has been drafted.
 
 This runs through questions 3, 4 and 6. Facts counsel will need:
 
-- The package's code is under the MIT licence, which the engine's record
-  relies on for reuse by anyone. `[E-LIC-SPDX]`
+- The package's code is under the MIT licence. `[E-LIC-SPDX]`
 - The site says its calculators are free. `[J3-ABOUT]` (line 37)
 - The site's footer says: "Zodiacs.org also operates Astrofolio, the Zodiac
   token collection." `[L-METH]` (line 89)
@@ -239,8 +241,8 @@ Facts:
 - The public repository holds, as test evidence, places and lunar nodes
   computed from `de440.bsp` at 200 instants. `[E-DE440-200]` `[E-HZ-FILES]`
   They are not in the published package. `[E-DE440-ORACLES]`
-- JPL's Solar System Dynamics site, a different JPL group, says of its own
-  site: "No permissions are needed. The data provided on this site are
+- JPL's Solar System Dynamics site, at a different address from NAIF's,
+  says of its own site: "No permissions are needed. The data provided on this site are
   considered public domain." `[T-SSD-FAQ]`
 
 Questions:
@@ -326,25 +328,36 @@ Facts:
   committed". `[E-LIC-SWISS]`
 - One committed file says of its 24 instants: "TT was taken as UT + Swiss's
   deltaT, recorded here as a clock value". `[E-SWISS-TT]`
-- The package ships one ayanamsa epoch value whose source is given as
-  "Swiss Ephemeris documentation §2.8.6". `[E-VEDIC-SWISS]`
-- In the site repository, 44,071 values generated with Swiss Ephemeris were
-  removed from the working tree on 2026-09-29; 3,474 were kept "as inputs,
-  statistics or reference values"; "Git history was not rewritten".
-  `[S-SWISS-REMOVAL]`
+- The package ships two ayanamsa epoch values whose trail, in the engine's
+  guide, runs through Swiss Ephemeris's documentation. For Krishnamurti, the
+  guide gives "The value 22.363889° at 1900: Swiss Ephemeris documentation
+  §2.8.6", beside a second source (the Solar Fire user guide); the `source`
+  string in the code itself names KP Reader 1's table. For Lahiri, the guide
+  cites the Indian Astronomical Ephemeris for 1989 "as quoted in the Swiss
+  Ephemeris documentation, §2.8.5". `[E-VEDIC-SWISS]` These are published
+  constants read from documentation, not program output. `[J2-LIC]` (C2)
+- Job 2 also lists one evidence file that says its values before 2021 "are
+  quoted from the Swiss Ephemeris documentation, appendix E". `[J2-LIC]` (C2;
+  underlying file `docs/evidence/vedic-2026-09-28/results/primary-tables.json:65`,
+  not re-read here.)
+- In the site repository, 44,071 values generated with Swiss Ephemeris left
+  their files on 2026-09-29. Of those 44,071, 40,597 are gone from the
+  working tree and 3,474 still appear there "as inputs, statistics or
+  reference values". "Git history was not rewritten". `[S-SWISS-REMOVAL]`
 - Swiss Ephemeris's licence terms were not opened in this job.
 
 Questions:
 
-- Do 24 ΔT values returned by Swiss Ephemeris, a constant read from its
+- Do 24 ΔT values returned by Swiss Ephemeris, two constants read from its
   documentation, or values that remain in a public repository's history,
   create any obligation under Swiss Ephemeris's licence?
 - If so, what is the least that puts it right?
 
 ### 11. Smaller points in the record
 
-Each is a fact from job 2's review, checked against the file named, and a
-plain question: does it matter, and what should be corrected?
+Each is a fact from job 2's review and a plain question: does it matter,
+and what should be corrected? Where a key other than `[J2-LIC]` follows,
+the file was opened in this job; otherwise the line says it was not.
 
 - `.zenodo.json` gives the licence as `"mit"` alone, where the package is
   `MIT AND CC-BY-4.0`. `[E-ZENODO]` `[E-LIC-SPDX]`
@@ -355,6 +368,35 @@ plain question: does it matter, and what should be corrected?
 - A second unmerged branch would take star data from a database under
   CC BY-SA 4.0. `[J2-LIC]` (C7; underlying file
   `infra/fixedstars:fixedstars/package.json`, not re-read here.)
+- `CITATION.cff` lists the two licences and says in a comment that its
+  format "reads a list of licences as a choice between them (OR); that is
+  not meant here". `[E-CITATION]` `[J2-LIC]` (C3)
+- The Python package's notice file says the geo entry "does not
+  redistribute the IANA Time Zone Database". `[E-PY-NOTICE]` The engine's
+  `main` does ship zone histories compiled from it. `[E-NOTICE-TIME]`
+  `[J2-LIC]` (C3)
+- The Python package's build includes bundled archives
+  (`_vendor/*.tgz`). `[E-PYPROJECT]` Job 2 names them as an Astronomy Engine
+  archive and an older engine archive. `[J2-LIC]` (C4; the archives were not
+  opened here.)
+- `LICENSING.md` states several third parties' terms with no address, file
+  or quotation from the party: among them that Horizons responses are
+  "public", that ERFA is BSD 3-Clause, that GeoNames files are CC BY 4.0,
+  that tzdata is in the public domain, and that the classical authors are in
+  the public domain with no jurisdiction or edition named. `[J2-LIC]` (C6;
+  job 2's second pass then found the provider's own text for most of them.)
+- Parts of the engine's provenance are recorded only in the site
+  repository, whose licence file reserves all rights: the ΔT derivation, the
+  research runtime's MIT declaration, the generator of the DE440 oracles and
+  the pack's digests. `[J2-LIC]` (C8) `[E-LIC-DT]` `[E-LIC-DE440]`
+  `[S-LICENSE]` This bears on question 1.
+- **Two readings of JPL's terms are in the engine repository.** For question
+  7: `main` calls Horizons responses "public". `[E-HZ-FILES]` Another branch
+  says JPL's pages "do not supply a blanket licence for numerical API
+  output" and assigns no licence to the responses it keeps.
+  `[E-MINORBODIES]` Job 2 treats that reading as superseded, for Solar
+  System Dynamics data, by the FAQ sentence quoted in question 7; counsel
+  should see both. `[J2-LIC]` (C1)
 - The US Naval Observatory's NOVAS page says "If you use NOVAS, please send
   us an email that outlines your application", and the repository does not
   record one. `[J2-LIC]` (second pass table; underlying page

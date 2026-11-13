@@ -27,9 +27,10 @@ said the same of their own work. `[J1-README]` `[J2-ACC]`
 
 > # How we calculate
 >
-> Every position on Zodiacs.org comes from one piece of software, the
-> Zodiacs engine. This page says what it calculates, what it relies on, and
-> where its limits are.
+> The charts on Zodiacs.org and the answers of its connector for AI
+> assistants are calculated by one piece of software, the Zodiacs engine.
+> `[S-PKG]` `[L-CAPS]` This page says what it calculates, what it relies on,
+> and where its limits are.
 >
 > ## The engine and its source of positions
 >
@@ -70,11 +71,11 @@ said the same of their own work. `[J1-README]` `[J2-ACC]`
 >
 > - From 1972 to 2 October 2027 it reads a time as UTC. Uniform time comes
 >   from the IERS leap seconds, and the Earth's rotation from the IERS values
->   of UT1 − UTC. `[E-TIME]` `[L-CAPS]` (`conventions.timeScale`) Those values
->   are measured up to 24 September 2026 and predicted from there to
->   2 October 2027. `[E-TIME]`
+>   of UT1 − UTC. `[L-METH]` (line 31) `[L-CAPS]` (`conventions.timeScale`)
+>   Those values come from the IERS file of 24 September 2026, which holds
+>   measurements and predictions. `[S-RC2-NOTICE]` `[L-METH]` (line 31)
 > - For other dates it uses a model of ΔT, the difference between uniform
->   time and the Earth's rotation. `[E-TIME]` `[L-CAPS]` Each result states
+>   time and the Earth's rotation. `[L-METH]` (line 31) `[L-CAPS]` Each result states
 >   the value used. `[L-CAPS]` (`conventions.deltaT`)
 > - Far in the future the Earth's rotation is not known, and no one's
 >   forecast of it can be checked yet. NASA JPL's Horizons service, for
@@ -92,7 +93,7 @@ said the same of their own work. `[J1-README]` `[J2-ACC]`
 >   dates the answer can depend on the device. `[J1-README]`
 > - For dates before 1970 the engine uses a fixed release of the IANA time
 >   zone database, 2025c, with its older historical records. `[L-CAPS]`
->   `[E-NOTICE-TIME]` (`NOTICE:172-179`)
+>   `[S-RC2-NOTICE]` `[L-METH]` (line 54)
 > - A time in the hour that repeats when clocks go back is read as the
 >   earlier of the two, and the result says so. `[J1-README]` (T1) `[L-METH]`
 >   (line 53)
@@ -102,9 +103,15 @@ said the same of their own work. `[J1-README]` `[J2-ACC]`
 >
 > ## When the birth time is unknown
 >
-> No rising sign or houses are given, and on a day when the Moon changed
-> sign the Moon's sign is given as uncertain. `[L-METH]` (line 65)
-> `[L-TOOLS]` (`get_natal_chart`)
+> No rising sign or houses are given. `[L-METH]` (line 65) `[L-TOOLS]`
+> (`get_natal_chart`)
+>
+> - On the site, positions are taken at 12:00 local civil time and the
+>   Moon's sign is marked as unverified, because the Moon can change sign
+>   during the day. `[L-METH]` (line 65)
+> - In the connector, a birth date given alone is read at noon UTC
+>   `[J2-BREAKER]` (N4), and on a day when the Moon changed sign the Moon's
+>   sign is given as the two possibilities. `[L-TOOLS]` (`get_natal_chart`)
 >
 > ## Rising sign and houses
 >
@@ -161,10 +168,10 @@ said the same of their own work. `[J1-README]` `[J2-ACC]`
 >   Cross")
 > - ΔT before 1941: 32 values from Stephenson, Morrison and Hohenkerk (2016),
 >   Proceedings of the Royal Society A 472, 20160404, used under CC BY 4.0.
->   `[E-LIC-DT]` `[L-METH]` (line 31)
+>   `[S-RC2-NOTICE]` `[L-METH]` (line 31)
 > - Leap seconds and UT1 − UTC: the International Earth Rotation and
->   Reference Systems Service. `[E-NOTICE-TIME]`
-> - Time zone history: the IANA Time Zone Database. `[E-NOTICE-TIME]`
+>   Reference Systems Service. `[S-RC2-NOTICE]`
+> - Time zone history: the IANA Time Zone Database. `[S-RC2-NOTICE]`
 > - Place names: GeoNames, CC BY 4.0. `[L-METH]` (line 58)
 
 ---
@@ -178,7 +185,7 @@ candidate D.
 
 | | Candidate statement | Rests on | What limits it |
 | --- | --- | --- | --- |
-| A | The engine's public test suite compares 240 positions with NASA JPL Horizons (DE441) at a tolerance of one arcsecond. The engine is within it for 48 and outside it for 192. The median difference in longitude is 2.083″ and the largest is 18.774″. | `[E-RESULTS]`; `[J2-ACC]` (A5, A9) | Measured on the engine's `main` (`bc0b5a7`, version 1.1.0-rc.3 `[E-PKG]`), not on rc.2. 24 instants, 1851 to 2148. `[J2-ACC]` (A1) It is the only candidate on a merged branch. |
+| A | The engine's public test suite compares 240 positions with NASA JPL Horizons (DE441) at a tolerance of one arcsecond. The engine is within it for 48 and outside it for 192. The median difference in longitude is 2.083″ and the largest is 18.774″. | `[E-RESULTS]`; `[J2-ACC]` (A5, A9) | Measured on the engine's `main` (`bc0b5a7`, version 1.1.0-rc.3 `[E-PKG]`), not on rc.2. 24 instants, 1851 to 2148. `[J2-ACC]` (A1) It is the only candidate on the engine's `main`; candidate D's evidence is on the site's `main`. |
 | B | Compared with JPL's DE440 at noon Terrestrial Time on each of 146,097 days from 1800 to 2199, the longitude of the Sun, the Moon and each planet stayed within 30″; the largest difference was 29.19″, for Pluto on the last day. | `[E-SWEEP]`; reviewed by `[J1-SWEEP]` (S2) | An **unmerged draft** (engine pull request 92), on rc.3. One instant a day; Terrestrial Time, so the clock is taken out; Mars to Pluto as system barycentres. `[E-SWEEP]` `[J1-SWEEP]` (finding 7) Pluto's margin is 0.81″ and still growing at the end of the span. `[E-SWEEP]` Against Horizons (DE441) the same build is at 29.69″ in longitude at the end of 2199 `[J1-README]` (P1), and job 1's second session found the whole angle over 30″ (30.32″) on each of the last 31 days. `[J1-BREAKER]` (finding 4; its responses are not committed) Job 1 and job 2 approve no sentence built on it. `[J1-SWEEP]` `[J2-ACC]` (A2) |
 | C | The same comparison for the true node: the largest difference was 32.64″. | `[E-SWEEP]`; `[J1-SWEEP]` (S2) | Same limits as B. **The 30″ of B does not apply to the true node**, and a sentence that says "Sun, Moon and planets" must not be read to cover it. `[E-SWEEP]` `[J1-SWEEP]` |
 | D | Compared with Swiss Ephemeris every tenth day from 1800 to 2026 (91,201 comparisons), the median difference in longitude is 2.0″ and the largest 22.9″ (Venus, 1878). | `[S-SWISS-MULTI]`, measured on 1.1.0-rc.2; printed on the live page `[L-METH]` (line 29) | The reference is Swiss Ephemeris, which the engine repository's rules do not accept as an arbiter of accuracy. `[J2-ACC]` (A6, A8) The same file's figure for 2027 to 2199, 29.108″ (Pluto), is not printed on the live page. `[S-SWISS-MULTI]` `[J2-ACC]` (A8) |
@@ -228,6 +235,8 @@ or the sentence has not been rechecked, not that it is proven false.
 | 30 | "none of them reaches one arcminute: the largest is 24.8 arcseconds, Pluto at 2190" | Refers to the 20 preselected far-future cases. The every-tenth-day run has 29.108″ for 2027 to 2199. | `[S-SWISS-MULTI]`; `[J2-BREAKER]` (S7) |
 | 47 | "By NASA, Neptune entered Aries at 17:35 UTC on January 26, 2026, about three hours later than the engine alone puts it." | The page is consistent with Horizons. The **connector** still prints the engine's time, 14:31:41 UTC, so the two public surfaces disagree (ZOD-63). | `[J3-REPORT]` (other findings, item 2); `[J2-SIGN]` (line 25) |
 | 48 | "New and full Moons and the Moon's sign changes keep the engine's times, because every one of them falls within a minute of NASA's. The Sun's sign changes agree within 44 seconds." | Not rechecked by jobs 1 to 4. Job 4 notes that the thesis page prints ingress times to the millisecond that are up to a minute off. | `[J4-README]` ("Small, checkable errors", F8) |
+| 49 | "In November 2026 we checked 8,891 statements on the built English pages against NASA, from sign dates to eclipse times, and 8,849 agreed." | An accuracy statement not rechecked by jobs 1 to 4; none of their files mentions either figure. Its evidence was not opened in this job. | `[L-METH]` (line 49); `BREAKER.md` (S7) |
+| 31 | "From 1962 on it is within 0.09 seconds of the IERS value on every day" | Not rechecked by jobs 1 to 4, and its evidence was not opened in this job. | `[L-METH]` (line 31); `BREAKER.md` (S7) |
 | 62 | "The entire chart calculation happens in your browser. Your birth date, time, and place are not sent to a chart API" | True of the site's own tools as the page describes them. Not true of the connector, whose chart tools calculate on the server from birth details the assistant sends. The page does not say which it means. | `[L-TOOLS]`; `[L-PRIV]` (line 25); `[J3-BREAKER]` (S5, item 2) |
 | 64 | "Chiron and the asteroids aren't included yet ... they're planned via public-domain JPL data." | "Public-domain JPL data" depends on the source. JPL's Solar System Dynamics site says its data "are considered public domain". NAIF's rules for its kernels never use those words. | `[T-SSD-FAQ]`; `[T-NAIF-RULES]`; `[S-PA-NOTICE]` |
 | 65 | "When birth time is unknown, the site uses 12:00 local civil time as a reference for body positions." | The connector uses noon UTC for a birth date given alone (`"basis":"utc-noon"`). Two surfaces, two conventions; the page describes the site's only. | `[J2-BREAKER]` (N4) |

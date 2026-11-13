@@ -70,8 +70,13 @@ found for EOP 20 C04." `[E-LIC-IERS]`
   the source of the 1972 values and cites Bizouard, Lambert, Gattano, Becker
   and Richard, J. Geod. 93, 621-633 (2019). `[E-NOTICE-TIME]` Our record of
   29 September gives that paper as the technical note on your page for the
-  series. `[E-LIC-IERS]` On your page today the "Technical note" link goes to
-  the readme, and neither names that paper. `[T-C04-PAGE]` `[T-C04-README]`
+  series. `[E-LIC-IERS]` Your page today links the readme as its "Technical
+  note" and, under it, that paper by title, "The IERS EOP 14C04 solution for
+  Earth orientation parameters consistent with ITRF 2014" (doi
+  10.1007/s00190-018-1186-3). `[T-C04-PAGE]` The readme itself names no
+  paper. `[T-C04-README]` The paper describes the 14 C04 solution, and the
+  series served today is 20 C04, which is why we ask below how you would
+  like it cited. `[T-C04-PAGE]` `[T-C04-HEADER]`
 
 For completeness, two other IERS products reach the package, and we are not
 asking you about them:
@@ -132,4 +137,10 @@ admin@zodiacs.org
   `docs/platform/evidence/deltat-2026-09-25/sources.json` say "IERS product,
   free to use with citation of the IERS". `[S-DELTAT]` It is dated evidence
   and was not changed here; the lawyer brief lists it (question 2).
+- The **engine** repository still carries it too, in a notice file of the
+  project's Python package: "the International Earth Rotation and Reference
+  Systems Service (IERS EOP 20 C04 and Bulletin A, finals2000A.all), which
+  asks that its products be cited". `[E-PY-NOTICE]` So "the engine's licence
+  record withdrew that sentence" is true of `LICENSING.md` and not yet of
+  every file. Not changed here.
 - Whether to send before or after the lawyer has seen the brief.

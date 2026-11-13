@@ -25,7 +25,8 @@ The bracketed keys are citations for the reviewing session. They point to
 **To:** The NAIF Manager, Navigation and Ancillary Information Facility,
 Jet Propulsion Laboratory (the contact NAIF's page names when the writer does
 not already know a specific person; by email, which the page prefers)
-`[T-NAIF-CONTACT]`
+`[T-NAIF-CONTACT]` The Rules page itself says: "If you have any questions
+about these rules please contact the NAIF Manager". `[T-NAIF-RULES]`
 
 **From:** Zodiacs.org (Zodiacs LLC), admin@zodiacs.org `[J3-ABOUT]`
 
@@ -55,7 +56,10 @@ institution of whomever has made the last modification". `[T-NAIF-RULES]` It
 also says of a modified kernel that "The file name must also be changed to
 help avoid confusion", and that "Use of SPICE components in commercial
 products is allowed" with "No fees or licensing are required".
-`[T-NAIF-RULES]` We did not find a sentence on that page about data that is
+`[T-NAIF-RULES]` It says that "SPICE kernels placed on the NAIF server may
+be downloaded and used by anyone, consistent with the other rules found on
+this web page", and that modifications to a kernel "must be limited to
+appropriate actions". `[T-NAIF-RULES]` We did not find a sentence on that page about data that is
 computed from a kernel and published in another form. `[T-NAIF-RULES]` That
 is the case we have, so we are asking and not assuming.
 
@@ -80,18 +84,20 @@ is the case we have, so we are asking and not assuming.
   centres. `[E-DE440-BARY]`
 - The pack's header names its producer, the source kernel, a citation and the
   fact of modification. `[S-PACK-HEADER]`
-- **Nothing derived from DE440 is distributed today.** The published package
-  holds no JPL ephemeris value and no coefficient fitted to one.
-  `[E-LIC-JPL]` `[E-NOTICE-DE440]` No kernel and no pack is committed to our
-  repositories. `[S-NAIF-HELD]` `[S-PR943]` Our documentation says: "Whether a
+- **No pack is distributed today, and the published package holds no JPL
+  value.** The package holds no JPL ephemeris value and no coefficient fitted
+  to one. `[E-LIC-JPL]` `[E-NOTICE-DE440]` No kernel and no pack is committed
+  to our repositories. `[S-NAIF-HELD]` `[S-PR943]` Our documentation says: "Whether a
   pack derived from DE440 may be redistributed is a question put to NAIF;
   until it is answered, no pack is distributed, and a caller compiles one
   from its own copy of the kernel." `[E-DE440-PACK]`
-- One thing computed from the kernel is in our public repository as test
-  evidence: apparent places of ten bodies at 200 instants from 1800 to 2200,
-  computed from `de440.bsp` with the ERFA library and used to check our own
-  code. `[E-DE440-200]` `[E-DE440-ORACLES]` These files are not part of the
-  published package. `[E-DE440-ORACLES]`
+- Values computed from the kernel are in our public repository as test
+  evidence. At least these: apparent places of ten bodies at 200 instants
+  from 1800 to 2200, computed from `de440.bsp` with the ERFA library and used
+  to check our own code. `[E-DE440-200]` `[E-DE440-ORACLES]` These files are
+  not part of the published package. `[E-DE440-ORACLES]` A draft branch of
+  the same repository also holds a day-by-day comparison of our results with
+  the kernel, as differences and statistics. `[E-SWEEP]`
 
 **Our questions**
 
@@ -99,9 +105,13 @@ is the case we have, so we are asking and not assuming.
    `de440.bsp` in our own format, under our own file name, with our name as
    its producer and DE440 named as its source?
 2. If so, what wording do you ask for in the file and in our documentation?
-   We would state the producer, the source kernel and its digest, and that
-   the file is a refit and not JPL's own series, which is what we understand
-   your rule for a modified kernel to ask. `[T-NAIF-RULES]`
+   Your rule for a modified kernel asks that the original producer's
+   attribution be replaced "with the name and institution of whomever has
+   made the last modification", that the kernel be "annotated with
+   appropriate metadata" and validated, that the file name be changed, and
+   that modifications be "limited to appropriate actions". `[T-NAIF-RULES]`
+   Beyond that, and of our own accord, we would state the source kernel and
+   its digest, and that the file is a refit and not JPL's own series.
 3. Does the same answer apply to a small set of numbers computed from the
    kernel, such as the 200 instants of positions we keep as test evidence?
 4. Does the answer change if a pack is used in a product that is offered

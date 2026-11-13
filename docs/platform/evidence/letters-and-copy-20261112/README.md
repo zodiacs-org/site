@@ -1,7 +1,8 @@
 # Letters, lawyer brief, tool descriptions and a page draft (ZOD-108)
 
-Written on 12 November 2026 (Asia/Bangkok; 11 November, 18:16 to about
-19:30 UTC) on this job's own branch, from `origin/main` at `7c7b2d16`.
+Written on 12 November 2026 (Asia/Bangkok; 11 November, 18:16 to 18:37
+UTC), and corrected once on 13 November after the second session's review
+(`BREAKER.md`), on this job's own branch, from `origin/main` at `7c7b2d16`.
 Linear: https://linear.app/zodiacs-org/issue/ZOD-108
 
 **Everything here is a draft. Nothing was sent, published or submitted.** No
@@ -52,6 +53,30 @@ and statements of what a draft does not say carry no key.
 "Met" is this session's own reading. The issue gives the verdict to a
 second session.
 
+## The second session's review, and the one fix round
+
+The second session's findings are in [BREAKER.md](BREAKER.md): L3, L4 and L6
+held; L1 and L5 did not, because of one false sentence (B1); L2 was short
+by a few items. On 13 November the owner approved fixing the reports, and
+this folder was corrected once:
+
+| Finding | What changed |
+| --- | --- |
+| B1 | The IERS letter, `SOURCES.md` (T-C04-PAGE) and finding 5 below now say what the Centre's page shows: a link to the readme and, under it, the 2019 paper on the 14 C04 solution. |
+| S1 | NAIF letter: "no pack is distributed and the published package holds no JPL value", and "at least" the 200 instants, with the draft branch's comparison named. |
+| S2 | NAIF letter, question 2: what the rule asks is quoted; the digest and the source kernel are offered as our own. Two more sentences of the rules page are quoted. |
+| S3 | The withdrawn IERS sentence is also in the engine's Python notice file; the IERS letter and the brief say so. |
+| S4 | Brief, question 10: two epoch values, with what the code and the guide each say; the count of removed values reworded. |
+| S5 | Brief, question 11: the rest of C3, and C4, C6, C8 and the second reading of JPL's notice in C1. |
+| S6 | Six citations corrected; the page draft's time and licence lines now cite the rc.2 archive and the live page. |
+| S7 | Part 3 of the page draft gains lines 49 and 31 of the live page. |
+| S8 | "When the birth time is unknown" is split into the site's rule and the connector's. |
+
+The notes N3 (candidate A's wording), N4 (this file's times), N5 (the Rules
+page as support for the addressee) and N7 were taken in passing. The other
+notes ask for no change. The tests have not been judged again after this
+round; this was the one fix round allowed.
+
 ## What this job found that the earlier jobs did not
 
 1. **The A&A "scientific usage" sentence is commented out.** In the archive
@@ -74,8 +99,12 @@ second session.
 4. **NAIF's contact page invites a second message** when a first has had no
    answer, while the site's record says of the first "Do not resend it".
    `[T-NAIF-CONTACT]` `[S-NAIF-SENT]`
-5. **The Centre's page for C04 no longer names the paper our notice cites.**
-   Its "Technical note" link goes to the readme. `[T-C04-PAGE]`
+5. **Withdrawn.** The first version of this file said the Centre's page for
+   C04 no longer names the paper our notice cites. That was wrong: the page
+   links the readme as its "Technical note" and, under it, the 2019 paper
+   on the 14 C04 solution by title and DOI. The second session found this
+   (`BREAKER.md`, B1), and the IERS letter and `SOURCES.md` are corrected.
+   `[T-C04-PAGE]`
 
 ## For the owner (Dias)
 
@@ -130,12 +159,12 @@ Did not:
 
 ```
 $ python3 tools/check-drafts.py
-01-letter-naif.md: 21 distinct keys, undefined: none
-02-letter-iers.md: 20 distinct keys, undefined: none
+01-letter-naif.md: 22 distinct keys, undefined: none
+02-letter-iers.md: 21 distinct keys, undefined: none
 03-letter-cds.md: 17 distinct keys, undefined: none
-04-lawyer-brief.md: 52 distinct keys, undefined: none
-05-tool-descriptions.md: 11 distinct keys, undefined: none
-06-how-we-calculate.md: 32 distinct keys, undefined: none
+04-lawyer-brief.md: 59 distinct keys, undefined: none
+05-tool-descriptions.md: 10 distinct keys, undefined: none
+06-how-we-calculate.md: 30 distinct keys, undefined: none
 README.md: 9 distinct keys, undefined: none
 SOURCES.md: 1 distinct keys, undefined: none
 live tools: 19; drafted: 19; same order: True

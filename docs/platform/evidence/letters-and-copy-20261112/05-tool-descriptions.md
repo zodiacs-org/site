@@ -129,8 +129,9 @@ tool they apply to.
   zone its times are in UTC. `[L-TOOLS]` Its times for a slow planet's sign
   change come from the engine and can differ from NASA JPL Horizons by
   hours: for Neptune entering Aries on 26 January 2026 the tool gives
-  14:31:41 UTC and Horizons gives 17:35 UTC. `[J2-ACC]` (A10) `[J2-SIGN]`
-  (line 25) `[L-METH]` (line 47)
+  14:31:41 UTC and Horizons gives 17:35 UTC. `[J2-BREAKER]` (N4: the tool
+  returned `2026-01-26T14:31:41.087Z`) `[L-METH]` (line 47, for the Horizons
+  time)
 
 ### 4. `check_sky_fact` (Check a sky fact)
 
