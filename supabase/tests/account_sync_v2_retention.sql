@@ -534,3 +534,160 @@ select pg_temp.assert_true(
   'the retention pass must be idempotent and bounded'
 );
 reset role;
+
+-- 7. Key rotation RPCs ---------------------------------------------------------
+
+select pg_temp.assert_true(
+  not exists (
+    select 1
+    from (values
+      ('public.account_v2_key_version_inventory()'),
+      ('public.account_v2_rewrap_candidates(text,integer,integer)'),
+      ('public.account_v2_rewrap_apply(text,jsonb)')
+    ) as rpc(signature)
+    where has_function_privilege('anon', rpc.signature, 'execute')
+       or has_function_privilege('authenticated', rpc.signature, 'execute')
+       or not has_function_privilege('service_role', rpc.signature, 'execute')
+       or (select prosecdef from pg_catalog.pg_proc where oid = rpc.signature::regprocedure)
+  ),
+  'rewrap RPCs must be service-only SECURITY INVOKER functions'
+);
+
+insert into auth.users (id) values ('81000000-0000-4000-8000-000000000006')
+on conflict (id) do nothing;
+insert into private.account_states (user_id)
+values ('81000000-0000-4000-8000-000000000006');
+insert into private.account_chart_records (
+  user_id, chart_id, subject_kind, subject_attestation, revision
+) values (
+  '81000000-0000-4000-8000-000000000006',
+  '87000000-0000-4000-8000-000000000006',
+  'self',
+  'self_declared_v1',
+  3
+);
+insert into private.account_chart_secret_envelopes (
+  user_id, chart_id, revision, ciphertext, nonce, encryption_format,
+  key_scope, key_version, wrapped_key
+) values (
+  '81000000-0000-4000-8000-000000000006',
+  '87000000-0000-4000-8000-000000000006',
+  3,
+  decode(repeat('ab', 40), 'hex'),
+  decode(repeat('cd', 12), 'hex'),
+  'opaque_v1',
+  'service',
+  1,
+  decode(repeat('01', 68), 'hex')
+);
+insert into private.account_daily_sun_recipient_aliases (
+  user_id, recipient_hash, locator_ciphertext, locator_nonce,
+  locator_encryption_format, locator_key_scope, locator_key_version,
+  locator_wrapped_key
+) values (
+  '81000000-0000-4000-8000-000000000006',
+  repeat('4', 64),
+  decode(repeat('ef', 40), 'hex'),
+  decode(repeat('12', 12), 'hex'),
+  'opaque_v1',
+  'service',
+  1,
+  decode(repeat('02', 68), 'hex')
+);
+
+set role service_role;
+
+insert into retention_results values (
+  'rewrap_candidates',
+  public.account_v2_rewrap_candidates('chart', 1, 500)
+);
+
+select pg_temp.assert_true(
+  (select value->>'outcome' = 'ready'
+     and value->'rows' @> jsonb_build_array(jsonb_build_object(
+       'user_id', '81000000-0000-4000-8000-000000000006',
+       'chart_id', '87000000-0000-4000-8000-000000000006',
+       'revision', 3,
+       'key_version', 1,
+       'wrapped_key', encode(decode(repeat('01', 68), 'hex'), 'base64')
+     ))
+     and not (value::text like '%ciphertext%')
+   from retention_results where key = 'rewrap_candidates')
+    and public.account_v2_rewrap_candidates('alias', 1, 500)->'rows' @> jsonb_build_array(
+      jsonb_build_object(
+        'user_id', '81000000-0000-4000-8000-000000000006',
+        'recipient_hash', repeat('4', 64),
+        'key_version', 1
+      )
+    )
+    and public.account_v2_rewrap_candidates('chart', 1, 0) = '{"outcome":"invalid"}'::jsonb
+    and public.account_v2_rewrap_candidates('secret', 1, 10) = '{"outcome":"invalid"}'::jsonb
+    and public.account_v2_key_version_inventory() @> '[{"kind":"chart","key_version":1},{"kind":"alias","key_version":1}]'::jsonb,
+  'rewrap candidates must list ids, context and the wrapped key only'
+);
+
+create or replace function pg_temp.rewrap_chart_row(old_fill text, new_fill text, revision integer)
+returns jsonb
+language sql
+immutable
+as $$
+  select jsonb_build_array(jsonb_build_object(
+    'user_id', '81000000-0000-4000-8000-000000000006',
+    'chart_id', '87000000-0000-4000-8000-000000000006',
+    'revision', revision,
+    'old_key_version', 1,
+    'old_wrapped_key', encode(decode(repeat(old_fill, 68), 'hex'), 'base64'),
+    'new_key_version', 2,
+    'new_wrapped_key', encode(decode(repeat(new_fill, 68), 'hex'), 'base64')
+  ));
+$$;
+
+select pg_temp.assert_true(
+  public.account_v2_rewrap_apply('chart', pg_temp.rewrap_chart_row('09', '03', 3))
+    = '{"outcome":"applied","updated":0,"skipped":1}'::jsonb
+    and public.account_v2_rewrap_apply('chart', pg_temp.rewrap_chart_row('01', '03', 4))
+      = '{"outcome":"applied","updated":0,"skipped":1}'::jsonb
+    and public.account_v2_rewrap_apply('chart', pg_temp.rewrap_chart_row('01', '03', 3))
+      = '{"outcome":"applied","updated":1,"skipped":0}'::jsonb
+    and public.account_v2_rewrap_apply('chart', pg_temp.rewrap_chart_row('01', '03', 3))
+      = '{"outcome":"applied","updated":0,"skipped":1}'::jsonb
+    and public.account_v2_rewrap_apply('chart', '[]'::jsonb) = '{"outcome":"invalid"}'::jsonb
+    and public.account_v2_rewrap_apply('alias', jsonb_build_array(jsonb_build_object(
+      'user_id', '81000000-0000-4000-8000-000000000006',
+      'recipient_hash', repeat('4', 64),
+      'old_key_version', 1,
+      'old_wrapped_key', encode(decode(repeat('02', 68), 'hex'), 'base64'),
+      'new_key_version', 1,
+      'new_wrapped_key', encode(decode(repeat('05', 68), 'hex'), 'base64')
+    ))) = '{"outcome":"invalid"}'::jsonb
+    and public.account_v2_rewrap_apply('alias', jsonb_build_array(jsonb_build_object(
+      'user_id', '81000000-0000-4000-8000-000000000006',
+      'recipient_hash', repeat('4', 64),
+      'old_key_version', 1,
+      'old_wrapped_key', encode(decode(repeat('02', 68), 'hex'), 'base64'),
+      'new_key_version', 2,
+      'new_wrapped_key', encode(decode(repeat('05', 68), 'hex'), 'base64')
+    ))) = '{"outcome":"applied","updated":1,"skipped":0}'::jsonb,
+  'rewrap apply must be a compare-and-swap that skips changed rows and replays'
+);
+
+reset role;
+
+select pg_temp.assert_true(
+  exists (
+    select 1 from private.account_chart_secret_envelopes
+    where user_id = '81000000-0000-4000-8000-000000000006'
+      and key_version = 2
+      and wrapped_key = decode(repeat('03', 68), 'hex')
+      and ciphertext = decode(repeat('ab', 40), 'hex')
+      and nonce = decode(repeat('cd', 12), 'hex')
+  )
+    and exists (
+      select 1 from private.account_daily_sun_recipient_aliases
+      where user_id = '81000000-0000-4000-8000-000000000006'
+        and locator_key_version = 2
+        and locator_wrapped_key = decode(repeat('05', 68), 'hex')
+        and locator_ciphertext = decode(repeat('ef', 40), 'hex')
+    ),
+  'rewrap must change only the key version and wrapped key'
+);

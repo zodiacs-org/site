@@ -30,6 +30,9 @@
 -- 5. Cadence. When pg_cron is installed (production), the retention pass is
 --    scheduled hourly as `account-v2-retention`. The GitHub workflow stays as
 --    a backup. Without pg_cron (the portable SQL tests) the schedule is skipped.
+-- 6. Key rotation. Service-only RPCs list rows still wrapped under an old key
+--    version and swap in re-wrapped data keys, for
+--    scripts/account-sync-v2-rewrap.ts. They never read or write ciphertext.
 --
 -- Replay-safe: every statement can run again without change. UTC filename.
 
@@ -678,3 +681,226 @@ begin
   end if;
 end;
 $$;
+
+-- 6. Key rotation support ------------------------------------------------------
+--
+-- Service-only RPCs for scripts/account-sync-v2-rewrap.ts. Envelope AEAD binds
+-- the key version only in the data-key wrap, so a rotation re-wraps the data
+-- key and leaves ciphertext and nonce untouched. Nothing here returns or
+-- accepts ciphertext. See docs/ACCOUNT-SYNC-V2-KEY-ROTATION.md.
+
+-- Rows per kind and key version: the evidence that an old version is unused.
+create or replace function public.account_v2_key_version_inventory()
+returns jsonb
+language sql
+stable
+security invoker
+set search_path = pg_catalog
+as $$
+  select coalesce(jsonb_agg(jsonb_build_object(
+    'kind', inventory.kind,
+    'key_version', inventory.key_version,
+    'rows', inventory.row_count
+  ) order by inventory.kind, inventory.key_version), '[]'::jsonb)
+  from (
+    select 'chart' as kind, key_version, count(*) as row_count
+    from private.account_chart_secret_envelopes
+    group by key_version
+    union all
+    select 'alias', locator_key_version, count(*)
+    from private.account_daily_sun_recipient_aliases
+    where locator_key_version is not null
+    group by locator_key_version
+    union all
+    select 'provider', payload_key_version, count(*)
+    from private.account_deletion_provider_cleanup
+    where payload_key_version is not null
+    group by payload_key_version
+  ) as inventory;
+$$;
+
+revoke all on function public.account_v2_key_version_inventory()
+  from public, anon, authenticated;
+grant execute on function public.account_v2_key_version_inventory()
+  to service_role;
+
+-- One ordered page of rows still wrapped under candidate_key_version, with
+-- only the ids, the AEAD context and the wrapped data key.
+create or replace function public.account_v2_rewrap_candidates(
+  candidate_kind text,
+  candidate_key_version integer,
+  candidate_limit integer
+)
+returns jsonb
+language plpgsql
+stable
+security invoker
+set search_path = pg_catalog
+as $$
+declare
+  result_rows jsonb;
+begin
+  if candidate_kind is null
+    or candidate_kind not in ('chart', 'alias', 'provider')
+    or candidate_key_version is null
+    or candidate_key_version not between 1 and 1000000
+    or candidate_limit is null
+    or candidate_limit not between 1 and 500
+  then
+    return jsonb_build_object('outcome', 'invalid');
+  end if;
+
+  if candidate_kind = 'chart' then
+    select coalesce(jsonb_agg(page.row_value order by page.user_id, page.chart_id), '[]'::jsonb)
+    into result_rows
+    from (
+      select user_id, chart_id, jsonb_build_object(
+        'user_id', user_id,
+        'chart_id', chart_id,
+        'revision', revision,
+        'key_version', key_version,
+        'wrapped_key', encode(wrapped_key, 'base64')
+      ) as row_value
+      from private.account_chart_secret_envelopes
+      where key_version = candidate_key_version
+      order by user_id, chart_id
+      limit candidate_limit
+    ) as page;
+  elsif candidate_kind = 'alias' then
+    select coalesce(jsonb_agg(page.row_value order by page.user_id, page.recipient_hash), '[]'::jsonb)
+    into result_rows
+    from (
+      select user_id, recipient_hash, jsonb_build_object(
+        'user_id', user_id,
+        'recipient_hash', recipient_hash,
+        'key_version', locator_key_version,
+        'wrapped_key', encode(locator_wrapped_key, 'base64')
+      ) as row_value
+      from private.account_daily_sun_recipient_aliases
+      where locator_key_version = candidate_key_version
+      order by user_id, recipient_hash
+      limit candidate_limit
+    ) as page;
+  else
+    select coalesce(jsonb_agg(page.row_value order by page.request_id, page.recipient_hash), '[]'::jsonb)
+    into result_rows
+    from (
+      select request_id, recipient_hash, jsonb_build_object(
+        'request_id', request_id,
+        'recipient_hash', recipient_hash,
+        'key_version', payload_key_version,
+        'wrapped_key', encode(payload_wrapped_key, 'base64')
+      ) as row_value
+      from private.account_deletion_provider_cleanup
+      where payload_key_version = candidate_key_version
+      order by request_id, recipient_hash
+      limit candidate_limit
+    ) as page;
+  end if;
+
+  return jsonb_build_object('outcome', 'ready', 'rows', result_rows);
+end;
+$$;
+
+revoke all on function public.account_v2_rewrap_candidates(text, integer, integer)
+  from public, anon, authenticated;
+grant execute on function public.account_v2_rewrap_candidates(text, integer, integer)
+  to service_role;
+
+-- Applies re-wrapped data keys. Each row is a compare-and-swap on its ids, its
+-- old key version and old wrapped key (and, for a chart, its revision): a row
+-- that changed since it was listed is skipped, so the call is idempotent and
+-- never overwrites a newer write.
+create or replace function public.account_v2_rewrap_apply(
+  candidate_kind text,
+  candidate_rows jsonb
+)
+returns jsonb
+language plpgsql
+security invoker
+set search_path = pg_catalog
+as $$
+declare
+  row_value jsonb;
+  new_wrapped bytea;
+  old_wrapped bytea;
+  new_version integer;
+  old_version integer;
+  changed integer;
+  updated_count integer := 0;
+  skipped_count integer := 0;
+begin
+  if candidate_kind is null
+    or candidate_kind not in ('chart', 'alias', 'provider')
+    or jsonb_typeof(candidate_rows) <> 'array'
+    or jsonb_array_length(candidate_rows) not between 1 and 500
+  then
+    return jsonb_build_object('outcome', 'invalid');
+  end if;
+
+  for row_value in select value from jsonb_array_elements(candidate_rows)
+  loop
+    begin
+      old_version := (row_value->>'old_key_version')::integer;
+      new_version := (row_value->>'new_key_version')::integer;
+      old_wrapped := decode(row_value->>'old_wrapped_key', 'base64');
+      new_wrapped := decode(row_value->>'new_wrapped_key', 'base64');
+    exception
+      when others then
+        return jsonb_build_object('outcome', 'invalid');
+    end;
+    if old_version is null or new_version is null
+      or old_version = new_version
+      or new_version not between 1 and 1000000
+      or octet_length(old_wrapped) <> 68
+      or octet_length(new_wrapped) <> 68
+    then
+      return jsonb_build_object('outcome', 'invalid');
+    end if;
+
+    if candidate_kind = 'chart' then
+      update private.account_chart_secret_envelopes
+      set key_version = new_version,
+          wrapped_key = new_wrapped
+      where user_id = (row_value->>'user_id')::uuid
+        and chart_id = (row_value->>'chart_id')::uuid
+        and revision = (row_value->>'revision')::bigint
+        and key_version = old_version
+        and wrapped_key = old_wrapped;
+    elsif candidate_kind = 'alias' then
+      update private.account_daily_sun_recipient_aliases
+      set locator_key_version = new_version,
+          locator_wrapped_key = new_wrapped
+      where user_id = (row_value->>'user_id')::uuid
+        and recipient_hash = row_value->>'recipient_hash'
+        and locator_key_version = old_version
+        and locator_wrapped_key = old_wrapped;
+    else
+      update private.account_deletion_provider_cleanup
+      set payload_key_version = new_version,
+          payload_wrapped_key = new_wrapped
+      where request_id = (row_value->>'request_id')::uuid
+        and recipient_hash = row_value->>'recipient_hash'
+        and payload_key_version = old_version
+        and payload_wrapped_key = old_wrapped;
+    end if;
+    get diagnostics changed = row_count;
+    if changed = 1 then
+      updated_count := updated_count + 1;
+    else
+      skipped_count := skipped_count + 1;
+    end if;
+  end loop;
+
+  return jsonb_build_object(
+    'outcome', 'applied',
+    'updated', updated_count,
+    'skipped', skipped_count
+  );
+end;
+$$;
+
+revoke all on function public.account_v2_rewrap_apply(text, jsonb)
+  from public, anon, authenticated;
+grant execute on function public.account_v2_rewrap_apply(text, jsonb)
+  to service_role;
