@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_personal_transits","arguments":{"birthDate":"1990-05-03","currentZone":"Europe/Madrid"}}}
