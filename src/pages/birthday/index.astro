@@ -62,7 +62,7 @@ const faq = [
   },
   {
     q: 'What does the birthday alone not tell me?',
-    a: 'The Moon sign needs the birth year, because the Moon changes sign every two to three days. The rising sign and the houses need the birth time and place. The birth chart calculator takes all three.',
+    a: 'The Moon sign needs the full date and often the birth time, because the Moon changes sign every two to three days. The rising sign and the houses need the birth time and place. The birth chart calculator takes all three.',
   },
 ];
 
@@ -163,8 +163,8 @@ const jsonLd = [
     <section class="bday-hub__faq reveal" aria-labelledby="bday-hub-faq">
       <h2 id="bday-hub-faq">Questions</h2>
       <p class="bday-hub__check">
-        The Sun's positions come from our own engine, which is tested against NASA JPL Horizons reference data
-        whenever the engine changes. <a href="/methodology/">How the positions are calculated</a>
+        The Sun's positions are calculated with Astronomy Engine, and our November 2026 audit checked the sign and
+        degrees on every birthday page against NASA JPL Horizons. <a href="/methodology/">How the positions are calculated</a>
       </p>
       {faq.map(({ q, a }) => (
         <details class="bday-hub__faq-item">

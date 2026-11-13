@@ -130,7 +130,7 @@ if (sign) {
   const [from, to] = [new Date(season.from), new Date(season.to)];
   faq.push({
     q: `When is ${sign.name} season in ${SEASON_YEAR}?`,
-    a: `The ${sign.name} season that holds ${label}, ${SEASON_YEAR} runs from ${utcDay(from)} at ${utcClock(from)} UTC to ${utcDay(to)} at ${utcClock(to)} UTC. ${label} falls inside ${sign.name} season in every year from ${yearFrom} to ${yearTo}.`,
+    a: `The ${sign.name} season that holds ${label}, ${SEASON_YEAR} runs from ${utcDay(from)} at ${utcClock(from)} UTC to ${utcDay(to)} at ${utcClock(to)} UTC. ${label} falls inside ${sign.name} season on the UTC calendar in every year from ${yearFrom} to ${yearTo}.`,
   });
 } else if (cusp) {
   const ingress = sunWindows.find((w) => w.sign === cusp.b.slug && w.from.startsWith(`${SEASON_YEAR}-`));
@@ -507,8 +507,8 @@ const jsonLd = [
       <div>
         <h2 class="h-2" id="bday-questions-title">The date, answered</h2>
         <p>
-          Short answers to what people ask about a {label} birthday. The Sun's positions come from our own engine, which
-          is tested against NASA JPL Horizons reference data whenever the engine changes. <a href="/methodology/">How the positions are calculated</a>.
+          Short answers to what people ask about a {label} birthday. The Sun's positions are calculated with Astronomy
+          Engine, and our November 2026 audit checked the sign and degrees on every birthday page against NASA JPL Horizons. <a href="/methodology/">How the positions are calculated</a>.
         </p>
       </div>
       <div class="kfaq">

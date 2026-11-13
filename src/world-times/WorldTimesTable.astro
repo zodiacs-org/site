@@ -74,5 +74,7 @@ const read = rows.map((row) => ({ ...row, times: worldTimes(row.at) }));
   @media (max-width: 560px) {
     .wt-cell time { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; align-items: baseline; gap: 0 8px; }
     .wt-cell__day { font-size: var(--text-sm); color: var(--text-2); }
+    .wt-table tbody th { display: block; text-align: left; }
+    .wt-table tbody th::before { content: none; }
   }
 </style>
