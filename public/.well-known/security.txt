@@ -1,0 +1,7 @@
+# How to report a security problem in zodiacs.org (RFC 9116). The same
+# contact is in SECURITY.md in the site's repository.
+Contact: mailto:admin@zodiacs.org
+Expires: 2027-11-13T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://zodiacs.org/.well-known/security.txt
+Policy: https://github.com/zodiacs-org/site/security/policy

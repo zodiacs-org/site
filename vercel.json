@@ -234,6 +234,41 @@
       "source": "/people/b-f-skinner/",
       "destination": "/corrections/",
       "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/feed",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
+    },
+    {
+      "source": "/feed/",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
+    },
+    {
+      "source": "/feed.xml",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
+    },
+    {
+      "source": "/atom.xml",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
+    },
+    {
+      "source": "/index.xml",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
+    },
+    {
+      "source": "/feeds/all.atom.xml",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
     }
   ],
   "rewrites": [
