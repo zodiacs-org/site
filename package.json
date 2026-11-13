@@ -59,7 +59,6 @@
     "data:astrofolio-identity:verify": "node scripts/verify-astrofolio-identity.mjs",
     "data:astrofolio-share-card": "node scripts/build-astrofolio-share-card.mjs",
     "data:end-card": "node scripts/build-end-card.mjs",
-    "data:thesis-film": "node scripts/build-thesis-film.mjs",
     "data:shorts": "node scripts/build-daily-shorts.mjs",
     "data:event-shorts": "vite-node --script scripts/build-event-shorts.ts",
     "data:widgets": "node scripts/build-widget-loader.mjs",

@@ -14,7 +14,7 @@
  *   6. there will only ever be twelve; each has had a coin since July 2024
  *   7. which one is yours, and one line on the risk
  *
- *   npm run data:thesis-film
+ *   node scripts/build-thesis-film.mjs
  *
  * Every number on screen is read from public/thesis/thesis-charts.json and
  * public/thesis/thesis-seasons.json, the files the page's figures are stamped
