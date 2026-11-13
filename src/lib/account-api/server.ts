@@ -773,6 +773,47 @@ async function fetchLegacyInviteExport(
   return body as Record<string, unknown>[];
 }
 
+const SAVED_PAGES_EXPORT_LIMIT = 100;
+const LIVING_CHART_MOMENTS_EXPORT_LIMIT = 1_000;
+
+/**
+ * Saved pages and Living Chart moments through one RPC that reads only the
+ * tables and columns the database has (production has saved_pages without the
+ * assistant columns and no Living Chart yet). Each list may come back one row
+ * past its limit, which fails the export closed, as the paged reads did.
+ */
+async function fetchLaterTablesExport(
+  userId: string,
+  env: Environment,
+  fetcher: Fetch,
+): Promise<{ savedPages: Record<string, unknown>[]; livingChartMoments: Record<string, unknown>[] }> {
+  const response = await fetcher(
+    `${accountSupabaseOrigin(env)}/rest/v1/rpc/account_v2_export_later_tables`,
+    {
+      method: 'POST',
+      headers: serviceHeaders(env),
+      body: JSON.stringify({ candidate_user_id: userId }),
+    },
+  );
+  if (!response.ok) throw new AccountServerFailure('export_unavailable');
+  const body = await responseJson(response, 'export_unavailable');
+  if (!isRecord(body)
+    || !hasExactKeys(body, ['outcome', 'saved_pages', 'living_chart_moments'])
+    || body.outcome !== 'ready'
+    || !Array.isArray(body.saved_pages)
+    || !Array.isArray(body.living_chart_moments)
+    || body.saved_pages.length > SAVED_PAGES_EXPORT_LIMIT
+    || body.living_chart_moments.length > LIVING_CHART_MOMENTS_EXPORT_LIMIT
+    || body.saved_pages.some((row) => !isRecord(row))
+    || body.living_chart_moments.some((row) => !isRecord(row))) {
+    throw new AccountServerFailure('export_unavailable');
+  }
+  return {
+    savedPages: body.saved_pages as Record<string, unknown>[],
+    livingChartMoments: body.living_chart_moments as Record<string, unknown>[],
+  };
+}
+
 export async function buildAccountExport(
   user: AuthenticatedEmailUser,
   env: Environment = process.env,
@@ -801,16 +842,7 @@ export async function buildAccountExport(
     fetchLegacyInviteExport(user.id, env, fetcher),
     fetchV2Export(user.id, env, fetcher),
   ]);
-  const [savedPages, livingChartMoments] = await Promise.all([
-    fetchRows({
-      table: 'saved_pages', select: 'id,kind,title,href,source,summary,detail,saved_at', filters: { user_id: userFilter },
-      order: 'saved_at.asc,id.asc', pageSize: 100, maximumRows: 100,
-    }, env, fetcher),
-    fetchRows({
-      table: 'living_chart_moments', select: 'moment_id,consent_epoch,revision,payload,created_at,updated_at,deleted_at',
-      filters: { user_id: userFilter }, order: 'created_at.asc,moment_id.asc', pageSize: 250, maximumRows: 1_000,
-    }, env, fetcher),
-  ]);
+  const { savedPages, livingChartMoments } = await fetchLaterTablesExport(user.id, env, fetcher);
 
   const result: ZodiacsAccountExportV1 = {
     schema: ACCOUNT_EXPORT_SCHEMA,
@@ -1266,9 +1298,10 @@ export interface AccountRetentionResult {
 }
 
 /**
- * One bounded retention pass (account_v2_run_retention, also scheduled hourly
- * inside the database): finishes deletions whose seven day window passed with
- * no live receipt, then removes expired receipts that are complete.
+ * One bounded retention pass (account_v2_run_retention; also scheduled hourly
+ * inside the database where pg_cron is installed, which production is not):
+ * finishes deletions whose seven day window passed with no live receipt, then
+ * removes expired receipts that are complete.
  */
 export async function cleanupExpiredAccountDeletionReceipts(
   limit = 256,

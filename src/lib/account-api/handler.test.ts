@@ -178,13 +178,9 @@ function exportFetcher(
       }]);
     }
     if (url.pathname === '/rest/v1/rpc/account_v2_export') return json(v2Export);
-    if (url.pathname === '/rest/v1/saved_pages') {
-      expect(url.searchParams.get('user_id')).toBe(`eq.${USER_ID}`);
-      return json(savedPages);
-    }
-    if (url.pathname === '/rest/v1/living_chart_moments') {
-      expect(url.searchParams.get('user_id')).toBe(`eq.${USER_ID}`);
-      return json(livingMoments);
+    if (url.pathname === '/rest/v1/rpc/account_v2_export_later_tables') {
+      expect(JSON.parse(String(_init?.body))).toEqual({ candidate_user_id: USER_ID });
+      return json({ outcome: 'ready', saved_pages: savedPages, living_chart_moments: livingMoments });
     }
     throw new Error(`Unexpected fetch ${url}`);
   });
@@ -365,6 +361,7 @@ describe('account lifecycle API foundation', () => {
     expect(calls.filter(({ method }) => method !== 'GET').map(({ url }) => url).sort())
       .toEqual([
         '/rest/v1/rpc/account_v2_export',
+        '/rest/v1/rpc/account_v2_export_later_tables',
         '/rest/v1/rpc/account_v2_export_legacy_invites',
       ]);
   });
@@ -599,6 +596,42 @@ describe('account lifecycle API foundation', () => {
       expect(response.statusCode).toBe(503);
       expect(JSON.parse(response.body)).toEqual({ error: 'export_unavailable' });
     }
+  });
+
+  it('reads saved pages and Living Chart moments through one RPC and refuses its widened or over-limit answers', async () => {
+    const [site] = SAVED_PAGE_ROWS;
+    const [live] = LIVING_MOMENT_ROWS;
+    const answers: unknown[] = [
+      { outcome: 'ready', saved_pages: [], living_chart_moments: [], extra: [] },
+      { outcome: 'invalid' },
+      { outcome: 'ready', saved_pages: null, living_chart_moments: [] },
+      { outcome: 'ready', saved_pages: [], living_chart_moments: {} },
+      { outcome: 'ready', saved_pages: ['row'], living_chart_moments: [] },
+      { outcome: 'ready', saved_pages: Array.from({ length: 101 }, () => site), living_chart_moments: [] },
+      { outcome: 'ready', saved_pages: [], living_chart_moments: Array.from({ length: 1_001 }, () => live) },
+      [],
+    ];
+    for (const answer of answers) {
+      const fetcher = exportFetcher();
+      fetcher.mockImplementation(async (input: string | URL | Request, init?: RequestInit) => {
+        const url = new URL(String(input));
+        if (url.pathname === '/rest/v1/rpc/account_v2_export_later_tables') return json(answer);
+        return exportFetcher()(input, init);
+      });
+      const response = responseRecorder();
+      await handleAccountApi(request('export'), response, { env: ENV, fetcher, now: () => NOW });
+      expect(response.statusCode).toBe(503);
+      expect(JSON.parse(response.body)).toEqual({ error: 'export_unavailable' });
+    }
+
+    const empty = responseRecorder();
+    await handleAccountApi(request('export'), empty, {
+      env: ENV, fetcher: exportFetcher(EMPTY_V2_RPC_EXPORT, [], []), now: () => NOW,
+    });
+    expect(empty.statusCode).toBe(200);
+    const body = JSON.parse(empty.body);
+    expect(body.cloud.savedPages).toEqual([]);
+    expect(body.cloud.livingChartMoments).toEqual([]);
   });
 
   it('fails the export closed when the private export shape widens unexpectedly', async () => {
