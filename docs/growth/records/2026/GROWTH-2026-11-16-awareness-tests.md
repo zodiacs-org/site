@@ -48,7 +48,7 @@ is stored to read it.
 | --- | --- | --- |
 | Vercel logs | Googlebot requests, all paths, 1 to 12 Nov | 543 |
 | Vercel logs | Bingbot requests, 1 to 12 Nov | 3,786 |
-| Vercel logs | Requests from Claude users (`bot_name` claude-user), 6 to 12 Nov | about 5,200 (own testing included, share unknown) |
+| Vercel logs | Requests from Claude users (`bot_name` claude-user), 6 to 12 Nov | about 5,200 (own testing included, share unknown, so an upper bound on outside requests) |
 | Vercel logs | Claude user requests a day | about 60 (1 to 4 Nov), about 1,000 (10 to 12 Nov) |
 | npm | Downloads in the month to 11 Nov | engine 675, sdk 564 |
 | GitHub | zodiacs-org/engine stars, 13 Nov | 0 |
@@ -92,16 +92,20 @@ assistant visitors subscribe is T8's question, not this one.
 
 **Read.** Week 4 is 7 to 13 Dec, read on 14 Dec.
 
-Rows are checked in order; the first that holds is the result. The fail line
-sits at the 6 to 12 Nov baseline, which still includes our own testing, so it
-is a cautious line: falling below it even after our calls are taken out is a
-clear miss.
+Rows are checked in order; the first that holds is the result. The 6 to 12 Nov
+baseline (about 5,200) still includes our own testing in an unknown share, so
+it is only an upper bound on outside requests. The pass line is set well above
+it, so passing means outside reach grew whatever that share was. The fail line
+cannot use it: week 4 is counted with our calls taken out, and comparing that
+with a count that still holds them could call real growth a miss. So the fail
+line compares like with like: week 1 (16 to 22 Nov, read on 23 Nov), the first
+week our test calls are logged, counted the same way.
 
 | Result | Condition |
 | --- | --- |
-| Not measurable | Week 4 holds a large burst of Claude user requests in an hour no log line covers |
+| Not measurable | Week 1 or week 4 holds a large burst of Claude user requests in an hour no log line covers |
 | Pass | At least 8,000 Claude user requests in week 4, after taking out our own tests |
-| Fail | Under 5,200 in week 4, after taking out our own tests |
+| Fail | Week 4 is lower than week 1, both after taking out our own tests |
 | Too early | Anything else |
 
 **Our own test calls.** The logs cannot tell our calls from anyone else's:
