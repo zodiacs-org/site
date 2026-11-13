@@ -103,6 +103,20 @@ describe('the session handoff', () => {
     expect(takeChartHandoff(`#${fragment}`)).toEqual({ kind: 'chart', input: PERSON, mine: MINE });
   });
 
+  it('carries profile origin in the session entry, not in the fragment', () => {
+    const fragment = stashChartHandoff(PERSON, { profileOrigin: true })!;
+    expect([...new URLSearchParams(fragment).keys()]).toEqual(['h']);
+    const key = new URLSearchParams(fragment).get('h')!;
+    const stored = JSON.parse(storage.getItem(`${HANDOFF_STORAGE_PREFIX}${key}`)!);
+    expect(stored.p).toBe(true);
+    expect(takeChartHandoff(`#${fragment}`)).toEqual({
+      kind: 'chart', input: PERSON, mine: null, profileOrigin: true,
+    });
+    expect(takeChartHandoff(`#${stashChartHandoff(PERSON)!}`)).toEqual({
+      kind: 'chart', input: PERSON, mine: null,
+    });
+  });
+
   it('keeps an opaque saved "mine" id and its profile provenance', () => {
     const profileMine = stashChartHandoff(PERSON, {
       mine: { kind: 'saved', id: PROFILE_CHART_ID },
@@ -323,6 +337,7 @@ describe('no exported function writes birth details into a string', () => {
     [FIXTURE, { subjectMode: 'other' }],
     [FIXTURE, { subjectMode: 'other', mine: { kind: 'input', input: OTHER } }],
     [FIXTURE, { mine: { kind: 'saved', id: PROFILE_CHART_ID }, mineProfileOrigin: true }],
+    [FIXTURE, { profileOrigin: true }],
     [FIXTURE, { kind: 'input', input: OTHER }],
     [FIXTURE, { kind: 'saved', id: PROFILE_CHART_ID }],
     [FIXTURE, null],

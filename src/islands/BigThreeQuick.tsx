@@ -440,7 +440,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
               onClick={(event) => followWithHandoff(event, () => {
                 const fragment = profileChartIdRef.current
                   ? profileChartHandoffFragment(profileChartIdRef.current)
-                  : stashChartHandoff(handoff);
+                  : stashChartHandoff(handoff, { profileOrigin: profileOriginRef.current });
                 return fragment ? `${localizePath(locale, '/birth-chart/')}#${fragment}` : null;
               })}
               data-big-three-full

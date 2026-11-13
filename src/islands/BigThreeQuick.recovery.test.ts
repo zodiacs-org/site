@@ -445,5 +445,23 @@ describe('Big Three saved-chart provenance', () => {
     expect(alerts()).toContain('This saved chart has no birthplace');
     expect(find('data-big-three-result')).toBeUndefined();
   });
+
+  it('hands an edited saved chart to the full chart with profile origin, then a revoke still has a flag to honour', async () => {
+    await openSavedChart();
+    const fields = nodes(render()).find((node) => node.type === BirthFields)!;
+    fields.props.onDateChange('1990-01-01');
+    await submit();
+    await settle();
+    const event = { defaultPrevented: false, button: 0, preventDefault: vi.fn() };
+    find('data-big-three-full').props.onClick(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+    const href = String((window.location.assign as ReturnType<typeof vi.fn>).mock.calls.at(-1)?.[0] ?? '');
+    expect(href).toMatch(/^\/birth-chart\/#h=[0-9a-f]{32}$/);
+    expect(href).not.toContain('profileChartId');
+    const key = href.slice(href.indexOf('h=') + 2);
+    const stored = JSON.parse(sessionStorage.getItem(`zodiacs.handoff.${key}`)!);
+    expect(stored.p).toBe(true);
+    expect(stored.k).toBe('chart');
+  });
 });
 

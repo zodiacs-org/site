@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import ts from 'typescript';
-import { describe, expect, it } from 'vitest';
-import { hasHandoffOrLegacyDetails, takeChartHandoff } from '../lib/chart-handoff';
+import { describe, expect, it, vi } from 'vitest';
+import { hasHandoffOrLegacyDetails, stashChartHandoff, takeChartHandoff } from '../lib/chart-handoff';
 import { UNDER_13_SENTENCE, birthDateRefusal, birthDateRefusalText } from '../lib/birth-date-policy';
 
 // Execute the actual component's ownership functions with controlled async
@@ -289,5 +289,42 @@ describe('ChartCalculator result ownership', () => {
     let scrolled = false; h.context.resultRef.current = { scrollIntoView: () => { scrolled = true; } };
     await h.context.runChart(input(), true); await flush(); for (const frame of h.frames) frame();
     expectEmpty(h.context); expect(scrolled).toBe(false);
+  });
+
+  it('keeps profile origin on an unsaved handoff and scrubs it after revoke', async () => {
+    const items = new Map<string, string>();
+    const storage = {
+      get length() { return items.size; },
+      key: (index: number) => [...items.keys()][index] ?? null,
+      getItem: (key: string) => items.get(key) ?? null,
+      setItem: (key: string, value: string) => { items.set(key, String(value)); },
+      removeItem: (key: string) => { items.delete(key); },
+      clear: () => items.clear(),
+    };
+    vi.stubGlobal('sessionStorage', storage);
+    try {
+      const fragment = stashChartHandoff({
+        date: '1990-06-15', time: '14:30', timeKnown: true,
+        lat: 0, lon: 0, tz: 'UTC', place: 'Synthetic place', houseSystem: 'whole',
+      }, { profileOrigin: true })!;
+      const h = harness();
+      h.context.window.location.hash = `#${fragment}`;
+      h.context.initialize();
+      await flush();
+      expect(h.context.primaryProfileOriginRef.current).toBe(true);
+      expect(h.context.date).toBe('1990-06-15');
+      expect(h.context.city?.name).toBe('Synthetic place');
+      expect(h.context.chart).not.toBeNull();
+      h.context.allowed = false;
+      h.context.profileAccessGeneration.current += 1;
+      h.context.revoke();
+      expect(h.context.primaryProfileOriginRef.current).toBe(false);
+      expect(h.context.date).toBe('');
+      expect(h.context.time).toBe('');
+      expect(h.context.city).toBeNull();
+      expectEmpty(h.context);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

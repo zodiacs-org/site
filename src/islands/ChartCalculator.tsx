@@ -1107,6 +1107,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       decoded: ShareChartInput,
       mine: MineHandoff | null,
       source: ChartComputedSource,
+      profileOrigin = false,
     ) => {
       const linkCity: City = {
         name: decoded.place ?? (russianCopy?.chart.sharedBirthplace ?? 'Shared birthplace'),
@@ -1123,7 +1124,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       setFromLink(true);
       setLinkName(decoded.name ?? null);
       setPositionsOnly(null);
-      primaryProfileOriginRef.current = false;
+      primaryProfileOriginRef.current = profileOrigin;
       primaryProfileChartIdRef.current = null;
       mineProfileOriginRef.current = handoffOrigins.mine && mine !== null;
       clearFragment();
@@ -1142,7 +1143,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       const taken = takeChartHandoff(hash);
       if (taken?.kind === 'date') openDate(taken);
       else if (taken?.kind === 'chart') {
-        openDetails(taken.input, taken.mine ? { kind: 'input', input: taken.mine } : nextMineHandoff, 'fresh');
+        openDetails(taken.input, taken.mine ? { kind: 'input', input: taken.mine } : nextMineHandoff, 'fresh', taken.profileOrigin === true);
       }
       return;
     }

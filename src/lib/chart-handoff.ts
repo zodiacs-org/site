@@ -34,12 +34,14 @@ export interface ChartHandoffOptions {
   mine?: MineHandoff | null;
   /** The optional "mine" context came from the guarded saved-chart library. */
   mineProfileOrigin?: boolean;
+  /** The chart itself came from a guarded saved-chart session (possibly after an edit). */
+  profileOrigin?: boolean;
 }
 
 /** What a session handoff carries, once read. */
 export type ChartHandoff =
   /** A chart to open on the birth chart page, with the visitor's own unsaved chart when known. */
-  | { kind: 'chart'; input: ShareChartInput; mine: ShareChartInput | null }
+  | { kind: 'chart'; input: ShareChartInput; mine: ShareChartInput | null; profileOrigin?: boolean }
   /** A date and optional time without a place (the Moon lookup, a birthday page). */
   | { kind: 'date'; date: string; time: string | null }
   /** The visitor's own unsaved chart, carried to the someone-else page. */
@@ -49,7 +51,7 @@ export type ChartHandoff =
 
 /** The wire form kept in sessionStorage. Charts are stored as v1 tokens so the reader reuses decodeChartLink's checks. */
 type StoredHandoff =
-  | { k: 'chart'; c: string; m?: string }
+  | { k: 'chart'; c: string; m?: string; p?: true }
   | { k: 'date'; d: string; t: string | null }
   | { k: 'mine'; c: string }
   | { k: 'pair'; a?: string; b?: string };
@@ -184,6 +186,7 @@ export function stashChartHandoff(
 ): string | null {
   const entry: StoredHandoff = { k: 'chart', c: encodeChartLink(input) };
   if (options.mine?.kind === 'input') entry.m = encodeChartLink(options.mine.input);
+  if (options.profileOrigin) entry.p = true;
   const params = new URLSearchParams();
   if (options.mine?.kind === 'saved') {
     if (options.mineProfileOrigin) {
@@ -280,7 +283,10 @@ function readStored(value: unknown): ChartHandoff | null {
   if (entry.k === 'chart') {
     const input = typeof entry.c === 'string' ? decodeChartLink(entry.c) : null;
     const mine = decodeOptional(entry.m);
-    return input && mine !== undefined ? { kind: 'chart', input, mine } : null;
+    if (!input || mine === undefined) return null;
+    return entry.p === true
+      ? { kind: 'chart', input, mine, profileOrigin: true }
+      : { kind: 'chart', input, mine };
   }
   if (entry.k === 'date') {
     const { d, t } = entry;
