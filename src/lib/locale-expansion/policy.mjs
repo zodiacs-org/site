@@ -17,8 +17,14 @@ const SIGNS = 'aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|ca
 
 export const HOROSCOPE_PERIODS = ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2026', '2027'];
 
+// The top-level values below are marked pure: nothing here runs for its side
+// effects, so a browser bundle that never uses the policy drops the module.
+
 /** English canonical path patterns, one per family. The first match wins. */
-export const EXPANSION_FAMILIES = [
+export const EXPANSION_FAMILIES = /* @__PURE__ */ buildFamilies();
+
+function buildFamilies() {
+  return [
   ['horoscope-daily', new RegExp(`^/horoscopes/(?:(?:${SIGNS})/)?$`)],
   ['today', /^\/today\/$/],
   ...HOROSCOPE_PERIODS.map((period) => [`horoscope-${period}`, new RegExp(`^/horoscopes/(?:${SIGNS})/${period}/$`)]),
@@ -30,9 +36,10 @@ export const EXPANSION_FAMILIES = [
   ['sign-guide', new RegExp(`^/(?:${SIGNS})/$`)],
   ['rising-profile', new RegExp(`^/rising-sign/(?:${SIGNS})/$`)],
   ['compatibility-pair', new RegExp(`^/compatibility/(?:${SIGNS})-(?:${SIGNS})/$`)],
-];
+  ];
+}
 
-export const EXPANSION_FAMILY_IDS = EXPANSION_FAMILIES.map(([id]) => id);
+export const EXPANSION_FAMILY_IDS = /* @__PURE__ */ EXPANSION_FAMILIES.map(([id]) => id);
 
 export function familyForPath(canonicalPath) {
   return EXPANSION_FAMILIES.find(([, pattern]) => pattern.test(canonicalPath))?.[0];
@@ -75,25 +82,30 @@ export function expansionState(record = publication, env = readEnv()) {
   return { preview, rows };
 }
 
-const STATE = expansionState();
-
-export const localeExpansionPreview = STATE.preview;
+// Computed on first use, not at import: the module then has no top-level side
+// effect, so a browser bundle that imports src/lib/i18n never carries the
+// record (the expansion hook there runs only on the server).
+let STATE;
+function currentState() {
+  STATE ??= expansionState();
+  return STATE;
+}
 
 /** Locales whose copy of this family is published (indexable, in sitemaps and hreflang). */
-export function publishedExpansionLocales(family, state = STATE) {
+export function publishedExpansionLocales(family, state = currentState()) {
   return state.rows.filter((row) => row.family === family && row.published).map((row) => row.locale);
 }
 
 /** Locales whose copy of this family is built: published, or held under the preview flag. */
-export function enabledExpansionLocales(family, state = STATE) {
+export function enabledExpansionLocales(family, state = currentState()) {
   return state.rows.filter((row) => row.family === family && row.enabled).map((row) => row.locale);
 }
 
-export function isExpansionPublished(locale, family, state = STATE) {
+export function isExpansionPublished(locale, family, state = currentState()) {
   return state.rows.some((row) => row.locale === locale && row.family === family && row.published);
 }
 
-export function isExpansionEnabled(locale, family, state = STATE) {
+export function isExpansionEnabled(locale, family, state = currentState()) {
   return state.rows.some((row) => row.locale === locale && row.family === family && row.enabled);
 }
 
@@ -101,30 +113,34 @@ const publishedFor = (row, path) => row.published && (!row.paths || row.paths.ha
 const enabledFor = (row, path) => row.preview || publishedFor(row, path);
 
 /** Extra discovery locales for an English canonical path, beyond the base route policy. */
-export function publishedLocalesForPath(canonicalPath, state = STATE) {
+export function publishedLocalesForPath(canonicalPath, state = currentState()) {
   const family = familyForPath(canonicalPath);
   if (!family) return [];
   return state.rows.filter((row) => row.family === family && publishedFor(row, canonicalPath)).map((row) => row.locale);
 }
 
 /** Extra renderable locales for an English canonical path (published or previewed). */
-export function enabledLocalesForPath(canonicalPath, state = STATE) {
+export function enabledLocalesForPath(canonicalPath, state = currentState()) {
   const family = familyForPath(canonicalPath);
   if (!family) return [];
   return state.rows.filter((row) => row.family === family && enabledFor(row, canonicalPath)).map((row) => row.locale);
 }
 
 /** Whether this locale's copy of an English path is built. */
-export function isPathEnabled(locale, canonicalPath, state = STATE) {
+export function isPathEnabled(locale, canonicalPath, state = currentState()) {
   return enabledLocalesForPath(canonicalPath, state).includes(locale);
 }
 
 /** True when this localized copy is built only for review: it must be noindex. */
-export function isHeldPreview(locale, canonicalPath, state = STATE) {
+export function isHeldPreview(locale, canonicalPath, state = currentState()) {
   return isPathEnabled(locale, canonicalPath, state) && !publishedLocalesForPath(canonicalPath, state).includes(locale);
 }
 
-export const LOCALE_EXPANSION_UPDATED = publication.updated;
+export const LOCALE_EXPANSION_UPDATED = /* @__PURE__ */ readUpdated();
+
+function readUpdated() {
+  return publication.updated;
+}
 
 // ── Routes ──
 // The pages live outside src/pages (the Phase 1 freeze covers the locale
@@ -134,7 +150,7 @@ const ENTRY = './src/locale-pages';
 export const EXPANSION_ROUTES = [
   { families: ['horoscope-daily'], pattern: '/horoscopes/', file: 'horoscope-hub' },
   { families: ['horoscope-daily'], pattern: '/horoscopes/[sign]/', file: 'horoscope-daily' },
-  { families: HOROSCOPE_PERIODS.map((period) => `horoscope-${period}`), pattern: '/horoscopes/[sign]/[period]/', file: 'horoscope-period' },
+  { families: /* @__PURE__ */ HOROSCOPE_PERIODS.map((period) => `horoscope-${period}`), pattern: '/horoscopes/[sign]/[period]/', file: 'horoscope-period' },
   { families: ['today'], pattern: '/today/', file: 'today' },
   { families: ['full-moon'], pattern: '/full-moon/[date]/', file: 'full-moon' },
   { families: ['new-moon'], pattern: '/new-moon/[date]/', file: 'new-moon' },
@@ -143,7 +159,7 @@ export const EXPANSION_ROUTES = [
   { families: ['compatibility-pair'], pattern: '/compatibility/[pair]/', file: 'compatibility-pair' },
 ];
 
-export function localeExpansionRoutes(state = STATE) {
+export function localeExpansionRoutes(state = currentState()) {
   return {
     name: 'locale-expansion-publication',
     hooks: {

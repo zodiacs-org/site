@@ -102,7 +102,7 @@ export const fr: LunationCopy = {
   moonPhaseLink: 'La phase de la Lune aujourd’hui',
   horoscopesLink: 'Horoscopes',
   confidence: (value) => `Confiance de lecture ${value} %`,
-  confidenceNote: 'Le chiffre dit à quel point les données de la lecture sont précises (ici, le signe solaire seul), pas la probabilité que quelque chose arrive.',
+  confidenceNote: 'Le chiffre dit à quel point les données de la lecture sont spécifiques (ici, le signe solaire seul), pas la probabilité que quelque chose arrive.',
   method: 'Le moment exact et la position sont calculés par le moteur astronomique du site. Les heures sont en UTC.',
   faqHeading: 'Questions fréquentes',
   faq: (f) => [
