@@ -1,0 +1,339 @@
+== 10-get_capabilities | HTTP 200
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/privacy/ 
+   words[betting]: odds
+   words[health]: health, medical
+   words[romance]: love
+== 11-get_sky | HTTP 200
+   url: https://zodiacs.org/developers/compute/?ref=assistant#positions 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/moon-phase/?ref=assistant 
+   url: https://zodiacs.org/sky-calendar/?ref=assistant 
+== 12-get_upcoming_events | HTTP 200
+   url: https://zodiacs.org/developers/compute/?ref=assistant#events 
+   url: https://zodiacs.org/full-moon-calendar/?ref=assistant 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/retrogrades/?ref=assistant 
+   url: https://zodiacs.org/sky-calendar/?ref=assistant 
+   words[promotion]: subscribe
+== 13-check_sky_fact-retrograde | HTTP 200
+   url: https://zodiacs.org/developers/compute/?ref=assistant#sky-fact 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/sky-calendar/?ref=assistant 
+== 14-check_sky_fact-neptune-aries | HTTP 200
+   url: https://zodiacs.org/developers/compute/?ref=assistant#sky-fact 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/sky-calendar/?ref=assistant 
+== 15-get_horoscope-general | HTTP 200
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant 
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-11&ref=assistant 
+   words[romance]: love, romance
+   words[promotion]: by email
+== 16-get_horoscope-career | HTTP 200
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant 
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-11&f=career&ref=assistant 
+   words[romance]: love
+   words[promotion]: by email
+== 17-get_horoscope-love-adult | HTTP 200
+   url: https://zodiacs.org/horoscopes/taurus/?ref=assistant 
+   url: https://zodiacs.org/horoscopes/taurus/?ref=assistant#daily-email 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-11&f=love&ref=assistant 
+   words[health]: health
+   words[romance]: love
+   words[promotion]: by email
+== 18-open_chart_studio | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+== 19-get_occasion_sky-wedding | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/occasions/?ref=assistant 
+   url: https://zodiacs.org/occasions/?ref=assistant#o=wedding&d=2027-06-12&t=19%3A00&tz=Europe%2FRome&lat=43.77&lon=11.25   <-- CARRIES date 2027-06-12; latitude 43.77; longitude 11.25; time 19:00
+   url: https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-12&sun=gemini&moon=libra&score=69&v=good&c=70&ref=assistant   <-- CARRIES date 2027-06-12
+   url: https://zodiacs.org/today/?ref=assistant 
+== 20-get_occasion_sky-search | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/occasions/?ref=assistant 
+   url: https://zodiacs.org/occasions/?ref=assistant#o=wedding&d=2027-06-06 
+   url: https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-06&sun=gemini&moon=cancer&score=86&v=excellent&c=55&ref=assistant 
+   url: https://zodiacs.org/today/?ref=assistant 
+   words[romance]: love, romance
+== 21-get_life_milestones | HTTP 200
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/occasions/milestones/?ref=assistant 
+   url: https://zodiacs.org/saturn-return/?ref=assistant 
+   url: https://zodiacs.org/share/milestone/?k=uranus-opposition&i=1&a=44&ref=assistant 
+== 22-get_compatibility | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/compatibility/?ref=assistant 
+   url: https://zodiacs.org/compatibility/taurus-sagittarius/?ref=assistant 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/share/compatibility/?as=taurus&bs=sagittarius&score=63&attraction=68&communication=63&stability=58&v=good&c=60&ref=assistant 
+   url: https://zodiacs.org/share/invite/?s=taurus&p=sagittarius&ref=assistant 
+   words[romance]: attraction
+   words[promotion]: invite your
+== 23-get_compatibility-famous | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/compatibility/?ref=assistant 
+   url: https://zodiacs.org/compatibility/taurus-sagittarius/?ref=assistant 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/people/ada-lovelace/?ref=assistant   <-- CARRIES famous "Ada"; famous "Lovelace"
+   url: https://zodiacs.org/share/compatibility/?as=taurus&bs=sagittarius&score=60&attraction=62&communication=73&stability=48&v=good&c=55&ref=assistant 
+   words[romance]: attraction
+== 24-find_chart_twins | HTTP 200
+   url: https://zodiacs.org/chart-twins/?ref=assistant 
+   url: https://zodiacs.org/people/?ref=assistant 
+   url: https://zodiacs.org/people/audrey-hepburn/?ref=assistant 
+   url: https://zodiacs.org/people/bertrand-russell/?ref=assistant 
+   url: https://zodiacs.org/people/charlotte-bronte/?ref=assistant 
+   url: https://zodiacs.org/people/ella-fitzgerald/?ref=assistant 
+   url: https://zodiacs.org/people/eva-peron/?ref=assistant 
+   url: https://zodiacs.org/people/florence-nightingale/?ref=assistant 
+   url: https://zodiacs.org/people/immanuel-kant/?ref=assistant 
+   url: https://zodiacs.org/people/johan-cruyff/?ref=assistant 
+   url: https://zodiacs.org/people/karen-carpenter/?ref=assistant 
+   url: https://zodiacs.org/people/karl-marx/?ref=assistant 
+   url: https://zodiacs.org/people/katharine-hepburn/?ref=assistant 
+   url: https://zodiacs.org/people/mahatma-gandhi/?ref=assistant 
+   url: https://zodiacs.org/share/chart-twins/?s=taurus&m=leo&ref=assistant 
+   words[investment]: shares
+== 25-get_famous_chart | HTTP 200
+   url: https://zodiacs.org/birthday/december-10/?ref=assistant 
+   url: https://zodiacs.org/people/?ref=assistant 
+   url: https://zodiacs.org/people/ada-lovelace/?ref=assistant   <-- CARRIES name "Ada"; name "Lovelace"
+   url: https://zodiacs.org/share/famous-chart/?p=ada-lovelace&ref=assistant   <-- CARRIES name "Ada"; name "Lovelace"
+== 26-get_famous_chart-unknown | HTTP 200
+   url: https://zodiacs.org/people/?ref=assistant 
+== 27-get_birthday-monthday | HTTP 200
+   url: https://zodiacs.org/birthday/may-3/?ref=assistant 
+   url: https://zodiacs.org/share/birthday/?d=05-03&ref=assistant   <-- CARRIES date 05-03
+== 28-get_birthday-full | HTTP 200
+   url: https://zodiacs.org/birthday/may-3/?ref=assistant 
+   url: https://zodiacs.org/share/birthday/?d=05-03&ref=assistant 
+   url: https://zodiacs.org/solar-return/?ref=assistant 
+== 29-get_sky_calendar | HTTP 200
+   url: https://zodiacs.org/share/sky-calendar/?k=full-moon&d=2026-11-24&ref=assistant 
+   url: https://zodiacs.org/sky-calendar.ics 
+   url: https://zodiacs.org/sky-calendar/?ref=assistant 
+   words[promotion]: subscribe
+== 30-get_natal_chart | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/learn/how-to-read-a-birth-chart/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/jupiter-in-cancer/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/mars-in-pisces/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/mercury-in-taurus/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/moon-in-leo/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/neptune-in-capricorn/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/pluto-in-scorpio/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/saturn-in-capricorn/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/sun-in-taurus/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/uranus-in-capricorn/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/venus-in-pisces/?ref=assistant 
+   url: https://zodiacs.org/rising-sign/gemini/?ref=assistant 
+   url: https://zodiacs.org/taurus/?ref=assistant 
+== 31-get_horoscope_period-month | HTTP 200
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email 
+   url: https://zodiacs.org/horoscopes/leo/monthly/?ref=assistant 
+   url: https://zodiacs.org/transits/?ref=assistant 
+   words[romance]: romance
+   words[promotion]: by email
+== 32-get_horoscope_period-week-love | HTTP 200
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email 
+   url: https://zodiacs.org/horoscopes/leo/love/?ref=assistant 
+   url: https://zodiacs.org/transits/?ref=assistant 
+   words[romance]: attraction, love, romance
+   words[promotion]: by email, invitation
+== 33-get_horoscope_period-year | HTTP 200
+   url: https://zodiacs.org/horoscopes/leo/2026/?ref=assistant 
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email 
+   url: https://zodiacs.org/transits/?ref=assistant 
+   words[romance]: love
+   words[promotion]: by email
+== 34-get_chinese_zodiac | HTTP 200
+   url: https://zodiacs.org/learn/chinese-zodiac/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/monkey/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/ox/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/pig/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/rooster/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/snake/?ref=assistant 
+== 35-get_personal_transits | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/transits/?ref=assistant 
+   words[health]: health
+== 36-get_personal_transits-year | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/transits/?ref=assistant 
+   words[health]: health
+== 37-explain_astrology-pair | HTTP 200
+   url: https://zodiacs.org/compatibility/?ref=assistant 
+   url: https://zodiacs.org/compatibility/leo-scorpio/?ref=assistant 
+   words[romance]: attraction, love, romance
+== 38-explain_astrology-tarot | HTTP 200
+   url: https://zodiacs.org/learn/?ref=assistant 
+   url: https://zodiacs.org/learn/glossary/?ref=assistant 
+== 39-find_birthplace | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+== 40-u18-get_horoscope-love-15 | HTTP 200
+   url: https://zodiacs.org/horoscopes/gemini/?ref=assistant 
+   url: https://zodiacs.org/horoscopes/gemini/?ref=assistant#daily-email 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-11&f=love&ref=assistant 
+   words[romance]: attraction, love, romance, romantic
+   words[promotion]: by email
+== 41-u18-get_horoscope-love-17 | HTTP 200
+   url: https://zodiacs.org/horoscopes/gemini/?ref=assistant 
+   url: https://zodiacs.org/horoscopes/gemini/?ref=assistant#daily-email 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-11&f=love&ref=assistant 
+   words[romance]: attraction, love, romance, romantic
+   words[promotion]: by email
+== 42-u18-get_horoscope-general-15 | HTTP 200
+   url: https://zodiacs.org/horoscopes/gemini/?ref=assistant 
+   url: https://zodiacs.org/horoscopes/gemini/?ref=assistant#daily-email 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-11&ref=assistant 
+   words[romance]: attraction, love, romantic
+   words[promotion]: by email
+== 43-u18-get_compatibility-both | HTTP 200
+   refused or error (isError true): Compatibility readings are for two adults. For anyone under 18, ask explain_astrology about the two Sun signs for a friendship reading.
+== 44-u18-get_compatibility-adult-minor | HTTP 200
+   refused or error (isError true): Compatibility readings are for two adults. For anyone under 18, ask explain_astrology about the two Sun signs for a friendship reading.
+== 45-u18-get_natal_chart | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/learn/how-to-read-a-birth-chart/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/jupiter-in-pisces/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/mars-in-leo/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/mercury-in-pisces/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/neptune-in-aquarius/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/pluto-in-capricorn/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/saturn-in-libra/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/sun-in-pisces/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/uranus-in-pisces/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/venus-in-aries/?ref=assistant 
+   url: https://zodiacs.org/pisces/?ref=assistant 
+   words[romance]: attraction, romantic
+== 46-u18-get_personal_transits | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/transits/?ref=assistant 
+   words[health]: health
+   words[romance]: attraction, romantic
+== 47-u18-get_compatibility-famous | HTTP 200
+   refused or error (isError true): Compatibility readings are for two adults. For anyone under 18, ask explain_astrology about the two Sun signs for a friendship reading.
+== 48-u18-get_personal_transits-year | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/transits/?ref=assistant 
+   words[health]: health
+   words[romance]: attraction, romantic
+== 50-u13-get_natal_chart | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 51-u13-get_horoscope | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 52-u13-get_compatibility | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 53-u13-get_life_milestones | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 54-u13-find_chart_twins | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 55-u13-get_birthday | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 56-u13-get_chinese_zodiac | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 57-u13-get_personal_transits | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 58-u13-boundary-12y364d | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 59-u13-boundary-13y | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/learn/how-to-read-a-birth-chart/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/jupiter-in-cancer/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/mars-in-virgo/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/mercury-in-scorpio/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/neptune-in-pisces/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/pluto-in-capricorn/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/saturn-in-scorpio/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/sun-in-scorpio/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/uranus-in-aries/?ref=assistant 
+   url: https://zodiacs.org/learn/placements/venus-in-capricorn/?ref=assistant 
+   url: https://zodiacs.org/scorpio/?ref=assistant 
+   words[romance]: attraction, romantic
+== 60-u13-get_occasion_sky-birthday | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 61-u13-get_chinese_zodiac-year | HTTP 200
+   url: https://zodiacs.org/learn/chinese-zodiac/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/dragon/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/monkey/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/ox/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/pig/?ref=assistant 
+   url: https://zodiacs.org/learn/chinese-zodiac/rat/?ref=assistant 
+== 62-u13-get_occasion_sky-pet | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/occasions/?ref=assistant 
+   url: https://zodiacs.org/occasions/?ref=assistant#o=pet&d=2024-08-01   <-- CARRIES date 2024-08-01
+   url: https://zodiacs.org/share/occasion/?o=pet&d=2024-08-01&sun=leo&moon=cancer&score=68&v=good&c=55&ref=assistant   <-- CARRIES date 2024-08-01
+   url: https://zodiacs.org/today/?ref=assistant 
+== 65-now-get_natal_chart-today | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 66-now-get_natal_chart-2020 | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 67-now-get_sky-instant | HTTP 200
+   url: https://zodiacs.org/developers/compute/?ref=assistant#positions 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   url: https://zodiacs.org/moon-phase/?ref=assistant 
+   url: https://zodiacs.org/sky-calendar/?ref=assistant 
+== 68-now-get_personal_transits-today | HTTP 200
+   refused or error (isError true): Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.
+== 70-err-invalid-date | HTTP 200
+   refused or error (isError true): birthDate must be a real date from 1800 to 2199.
+== 71-err-time-without-zone | HTTP 200
+   refused or error (isError true): A birth time or a place needs its time zone.
+== 72-err-missing-required | HTTP 200
+   refused or error (isError true): birthDate is required.
+== 73-err-bad-sign | HTTP 200
+   refused or error (isError true): sign must be one of: aries, taurus, gemini, cancer, leo, virgo, libra, scorpio, sagittarius, capricorn, aquarius, pisces.
+== 74-err-unknown-tool | HTTP 200
+   JSON-RPC error: {"code": -32602, "message": "The MCP request does not match a supported operation or schema."}
+== 75-err-extra-field | HTTP 200
+   refused or error (isError true): The arguments include a field this tool does not accept; call tools/list for its fields.
+== 76-err-window-too-long | HTTP 200
+   refused or error (isError true): An events window is at most 92 days long.
+== 77-err-year-out-of-range | HTTP 200
+   refused or error (isError true): instants[0] must fall from 1800-01-01T00:00:00.000Z to 2199-12-31T23:59:59.999Z.
+== 78-err-unknown-place | HTTP 200
+   url: https://zodiacs.org/birth-chart/?ref=assistant 
+== 79-err-famous-unknown | HTTP 200
+   url: https://zodiacs.org/people/?ref=assistant 
+== 80-err-fact-missing-body | HTTP 200
+   refused or error (isError true): body is required.
+== 81-err-horoscope-old-date | HTTP 200
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant 
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email 
+   url: https://zodiacs.org/methodology/?ref=assistant 
+   words[romance]: love
+   words[promotion]: by email
+== 82-err-period-unpublished | HTTP 200
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant 
+   url: https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email 
+   url: https://zodiacs.org/transits/?ref=assistant 
+   words[promotion]: by email
+== 83-err-bad-zone | HTTP 200
+   refused or error (isError true): zone must be a time zone name the server's time zone data includes.
+== 84-err-transits-window-before-birth | HTTP 200
+   refused or error (isError true): The window starts before the birth date; give a from date on or after the birth date.
+== 90-rpc-unknown-method | HTTP 200
+   JSON-RPC error: {"code": -32601, "message": "This MCP operation is not supported."}
+== 91-rpc-malformed-json | HTTP 400
+   JSON-RPC error: {"code": -32700, "message": "Parse error: the body is not valid JSON.", "data": {"code": "invalid-json"}}
+== 92-http-get | HTTP 405
+   JSON-RPC error: {"code": "method-not-allowed", "message": "Zodiacs could not accept this request."}
+== 93-resources-list | HTTP 200
+   url: https://zodiacs.org 
+== 94-prompts-list | HTTP 200
+   JSON-RPC error: {"code": -32601, "message": "This MCP operation is not supported."}

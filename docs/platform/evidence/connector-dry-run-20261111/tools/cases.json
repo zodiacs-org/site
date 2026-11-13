@@ -1,0 +1,699 @@
+[
+ {
+  "id": "10-get_capabilities",
+  "tool": "get_capabilities",
+  "args": {},
+  "why": "valid call"
+ },
+ {
+  "id": "11-get_sky",
+  "tool": "get_sky",
+  "args": {
+   "zone": "Asia/Bangkok"
+  },
+  "why": "valid call, sky right now"
+ },
+ {
+  "id": "12-get_upcoming_events",
+  "tool": "get_upcoming_events",
+  "args": {},
+  "why": "valid call, no arguments"
+ },
+ {
+  "id": "13-check_sky_fact-retrograde",
+  "tool": "check_sky_fact",
+  "args": {
+   "kind": "retrograde",
+   "body": "Mercury",
+   "date": "2026-11-11",
+   "zone": "Asia/Bangkok"
+  },
+  "why": "valid call"
+ },
+ {
+  "id": "14-check_sky_fact-neptune-aries",
+  "tool": "check_sky_fact",
+  "args": {
+   "kind": "ingress",
+   "body": "Neptune",
+   "sign": "aries",
+   "date": "2026-01-26"
+  },
+  "why": "ZOD-63: which time the connector gives for Neptune into Aries"
+ },
+ {
+  "id": "15-get_horoscope-general",
+  "tool": "get_horoscope",
+  "args": {
+   "sign": "leo",
+   "zone": "Asia/Bangkok"
+  },
+  "why": "valid call; scan for health, money, betting wording"
+ },
+ {
+  "id": "16-get_horoscope-career",
+  "tool": "get_horoscope",
+  "args": {
+   "sign": "leo",
+   "focus": "career",
+   "zone": "Asia/Bangkok"
+  },
+  "why": "valid call; scan for investment wording"
+ },
+ {
+  "id": "17-get_horoscope-love-adult",
+  "tool": "get_horoscope",
+  "args": {
+   "sign": "taurus",
+   "focus": "love",
+   "zone": "Asia/Bangkok",
+   "birthDate": "1990-05-03"
+  },
+  "why": "adult control for the under-18 love test"
+ },
+ {
+  "id": "18-open_chart_studio",
+  "tool": "open_chart_studio",
+  "args": {},
+  "why": "valid call"
+ },
+ {
+  "id": "19-get_occasion_sky-wedding",
+  "tool": "get_occasion_sky",
+  "args": {
+   "occasion": "wedding",
+   "date": "2027-06-12",
+   "time": "19:00",
+   "zone": "Europe/Rome",
+   "latitude": 43.77,
+   "longitude": 11.25,
+   "place": "Florence, Italy",
+   "names": "Ana and Ben"
+  },
+  "why": "valid call with names and place; D3 link check"
+ },
+ {
+  "id": "20-get_occasion_sky-search",
+  "tool": "get_occasion_sky",
+  "args": {
+   "occasion": "wedding",
+   "searchFrom": "2027-06-01",
+   "searchTo": "2027-06-30"
+  },
+  "why": "valid call, best days in a window"
+ },
+ {
+  "id": "21-get_life_milestones",
+  "tool": "get_life_milestones",
+  "args": {
+   "birthDate": "1990-05-03"
+  },
+  "why": "valid call; D3 link check"
+ },
+ {
+  "id": "22-get_compatibility",
+  "tool": "get_compatibility",
+  "args": {
+   "a": {
+    "birthDate": "1990-05-03",
+    "time": "08:30",
+    "zone": "Europe/Madrid",
+    "latitude": 40.42,
+    "longitude": -3.7,
+    "place": "Madrid, Spain",
+    "name": "Ana"
+   },
+   "b": {
+    "name": "Ben",
+    "birthDate": "1988-11-23"
+   }
+  },
+  "why": "valid call with names and place; D3 link check"
+ },
+ {
+  "id": "23-get_compatibility-famous",
+  "tool": "get_compatibility",
+  "args": {
+   "a": {
+    "birthDate": "1990-05-03"
+   },
+   "b": {
+    "famous": "Ada Lovelace"
+   }
+  },
+  "why": "valid call, published famous chart"
+ },
+ {
+  "id": "24-find_chart_twins",
+  "tool": "find_chart_twins",
+  "args": {
+   "birthDate": "1990-05-03",
+   "time": "08:30",
+   "zone": "Europe/Madrid"
+  },
+  "why": "valid call; D3 link check"
+ },
+ {
+  "id": "25-get_famous_chart",
+  "tool": "get_famous_chart",
+  "args": {
+   "name": "Ada Lovelace"
+  },
+  "why": "valid call"
+ },
+ {
+  "id": "26-get_famous_chart-unknown",
+  "tool": "get_famous_chart",
+  "args": {
+   "name": "Zzyx Nobody"
+  },
+  "why": "not-found answer"
+ },
+ {
+  "id": "27-get_birthday-monthday",
+  "tool": "get_birthday",
+  "args": {
+   "date": "05-03"
+  },
+  "why": "valid call"
+ },
+ {
+  "id": "28-get_birthday-full",
+  "tool": "get_birthday",
+  "args": {
+   "birthDate": "1990-05-03",
+   "time": "08:30",
+   "zone": "Europe/Madrid"
+  },
+  "why": "valid call, solar return; D3 link check"
+ },
+ {
+  "id": "29-get_sky_calendar",
+  "tool": "get_sky_calendar",
+  "args": {},
+  "why": "valid call"
+ },
+ {
+  "id": "30-get_natal_chart",
+  "tool": "get_natal_chart",
+  "args": {
+   "birthDate": "1990-05-03",
+   "time": "08:30",
+   "zone": "Europe/Madrid",
+   "latitude": 40.42,
+   "longitude": -3.7,
+   "place": "Madrid, Spain"
+  },
+  "why": "valid call with time and place; D3 link check"
+ },
+ {
+  "id": "31-get_horoscope_period-month",
+  "tool": "get_horoscope_period",
+  "args": {
+   "sign": "leo",
+   "period": "month",
+   "zone": "Asia/Bangkok"
+  },
+  "why": "valid call"
+ },
+ {
+  "id": "32-get_horoscope_period-week-love",
+  "tool": "get_horoscope_period",
+  "args": {
+   "sign": "leo",
+   "period": "week",
+   "focus": "love",
+   "zone": "Asia/Bangkok"
+  },
+  "why": "valid call"
+ },
+ {
+  "id": "33-get_horoscope_period-year",
+  "tool": "get_horoscope_period",
+  "args": {
+   "sign": "leo",
+   "period": "year",
+   "zone": "Asia/Bangkok"
+  },
+  "why": "valid call"
+ },
+ {
+  "id": "34-get_chinese_zodiac",
+  "tool": "get_chinese_zodiac",
+  "args": {
+   "birthDate": "1990-01-20",
+   "zone": "Asia/Singapore"
+  },
+  "why": "valid call"
+ },
+ {
+  "id": "35-get_personal_transits",
+  "tool": "get_personal_transits",
+  "args": {
+   "birthDate": "1990-05-03",
+   "time": "08:30",
+   "zone": "Europe/Madrid",
+   "latitude": 40.42,
+   "longitude": -3.7,
+   "currentZone": "Asia/Bangkok"
+  },
+  "why": "valid call; D3 link check; scan for health or money wording"
+ },
+ {
+  "id": "36-get_personal_transits-year",
+  "tool": "get_personal_transits",
+  "args": {
+   "birthDate": "1990-05-03",
+   "mode": "year-ahead"
+  },
+  "why": "valid call, year ahead"
+ },
+ {
+  "id": "37-explain_astrology-pair",
+  "tool": "explain_astrology",
+  "args": {
+   "topic": "Leo and Scorpio compatibility"
+  },
+  "why": "valid call"
+ },
+ {
+  "id": "38-explain_astrology-tarot",
+  "tool": "explain_astrology",
+  "args": {
+   "topic": "tarot"
+  },
+  "why": "not-covered answer"
+ },
+ {
+  "id": "39-find_birthplace",
+  "tool": "find_birthplace",
+  "args": {
+   "place": "Madrid",
+   "country": "Spain",
+   "date": "1990-05-03"
+  },
+  "why": "valid call"
+ },
+ {
+  "id": "40-u18-get_horoscope-love-15",
+  "tool": "get_horoscope",
+  "args": {
+   "sign": "gemini",
+   "focus": "love",
+   "zone": "Asia/Bangkok",
+   "birthDate": "2011-06-15"
+  },
+  "why": "D2: the 10 Nov finding, love reading for a 15-year-old's birth date"
+ },
+ {
+  "id": "41-u18-get_horoscope-love-17",
+  "tool": "get_horoscope",
+  "args": {
+   "sign": "gemini",
+   "focus": "love",
+   "zone": "Asia/Bangkok",
+   "birthDate": "2009-06-15"
+  },
+  "why": "D2: love reading for a 17-year-old's birth date"
+ },
+ {
+  "id": "42-u18-get_horoscope-general-15",
+  "tool": "get_horoscope",
+  "args": {
+   "sign": "gemini",
+   "zone": "Asia/Bangkok",
+   "birthDate": "2011-06-15"
+  },
+  "why": "D2: general reading and personal forecast for a 15-year-old"
+ },
+ {
+  "id": "43-u18-get_compatibility-both",
+  "tool": "get_compatibility",
+  "args": {
+   "a": {
+    "birthDate": "2010-03-15"
+   },
+   "b": {
+    "birthDate": "2010-09-20"
+   }
+  },
+  "why": "D2: two 16-year-olds"
+ },
+ {
+  "id": "44-u18-get_compatibility-adult-minor",
+  "tool": "get_compatibility",
+  "args": {
+   "a": {
+    "birthDate": "1990-05-03"
+   },
+   "b": {
+    "birthDate": "2010-09-20"
+   }
+  },
+  "why": "D2: adult with a 16-year-old"
+ },
+ {
+  "id": "45-u18-get_natal_chart",
+  "tool": "get_natal_chart",
+  "args": {
+   "birthDate": "2010-03-15"
+  },
+  "why": "D2: chart for a 16-year-old"
+ },
+ {
+  "id": "46-u18-get_personal_transits",
+  "tool": "get_personal_transits",
+  "args": {
+   "birthDate": "2010-03-15"
+  },
+  "why": "D2: transits for a 16-year-old"
+ },
+ {
+  "id": "47-u18-get_compatibility-famous",
+  "tool": "get_compatibility",
+  "args": {
+   "a": {
+    "birthDate": "2010-03-15"
+   },
+   "b": {
+    "famous": "Ada Lovelace"
+   }
+  },
+  "why": "D2: 16-year-old with a famous adult"
+ },
+ {
+  "id": "48-u18-get_personal_transits-year",
+  "tool": "get_personal_transits",
+  "args": {
+   "birthDate": "2010-03-15",
+   "mode": "year-ahead"
+  },
+  "why": "D2: year ahead for a 16-year-old"
+ },
+ {
+  "id": "50-u13-get_natal_chart",
+  "tool": "get_natal_chart",
+  "args": {
+   "birthDate": "2016-02-02"
+  },
+  "why": "D4: under-13 refusal"
+ },
+ {
+  "id": "51-u13-get_horoscope",
+  "tool": "get_horoscope",
+  "args": {
+   "sign": "aquarius",
+   "birthDate": "2016-02-02"
+  },
+  "why": "D4: under-13 refusal"
+ },
+ {
+  "id": "52-u13-get_compatibility",
+  "tool": "get_compatibility",
+  "args": {
+   "a": {
+    "birthDate": "1990-05-03"
+   },
+   "b": {
+    "birthDate": "2016-02-02"
+   }
+  },
+  "why": "D4: under-13 refusal"
+ },
+ {
+  "id": "53-u13-get_life_milestones",
+  "tool": "get_life_milestones",
+  "args": {
+   "birthDate": "2016-02-02"
+  },
+  "why": "D4: under-13 refusal"
+ },
+ {
+  "id": "54-u13-find_chart_twins",
+  "tool": "find_chart_twins",
+  "args": {
+   "birthDate": "2016-02-02"
+  },
+  "why": "D4: under-13 refusal"
+ },
+ {
+  "id": "55-u13-get_birthday",
+  "tool": "get_birthday",
+  "args": {
+   "birthDate": "2016-02-02"
+  },
+  "why": "D4: under-13 refusal"
+ },
+ {
+  "id": "56-u13-get_chinese_zodiac",
+  "tool": "get_chinese_zodiac",
+  "args": {
+   "birthDate": "2016-02-02"
+  },
+  "why": "D4: under-13 refusal"
+ },
+ {
+  "id": "57-u13-get_personal_transits",
+  "tool": "get_personal_transits",
+  "args": {
+   "birthDate": "2016-02-02"
+  },
+  "why": "D4: under-13 refusal"
+ },
+ {
+  "id": "58-u13-boundary-12y364d",
+  "tool": "get_natal_chart",
+  "args": {
+   "birthDate": "2013-11-13"
+  },
+  "why": "D4: boundary, one or two days short of 13"
+ },
+ {
+  "id": "59-u13-boundary-13y",
+  "tool": "get_natal_chart",
+  "args": {
+   "birthDate": "2013-11-09"
+  },
+  "why": "D4: boundary, just over 13"
+ },
+ {
+  "id": "60-u13-get_occasion_sky-birthday",
+  "tool": "get_occasion_sky",
+  "args": {
+   "occasion": "birthday",
+   "date": "2020-05-03",
+   "names": "Mia"
+  },
+  "why": "D4: a child's birth date sent as a birthday occasion"
+ },
+ {
+  "id": "61-u13-get_chinese_zodiac-year",
+  "tool": "get_chinese_zodiac",
+  "args": {
+   "year": 2020
+  },
+  "why": "D4: year only, no birth date"
+ },
+ {
+  "id": "62-u13-get_occasion_sky-pet",
+  "tool": "get_occasion_sky",
+  "args": {
+   "occasion": "pet",
+   "date": "2024-08-01"
+  },
+  "why": "D4: a recent date that is not a person's birth"
+ },
+ {
+  "id": "65-now-get_natal_chart-today",
+  "tool": "get_natal_chart",
+  "args": {
+   "birthDate": "2026-11-11",
+   "time": "22:00",
+   "zone": "Asia/Bangkok",
+   "latitude": 13.75,
+   "longitude": 100.5
+  },
+  "why": "ZOD-62: chart for right now through the birth chart tool"
+ },
+ {
+  "id": "66-now-get_natal_chart-2020",
+  "tool": "get_natal_chart",
+  "args": {
+   "birthDate": "2020-01-01",
+   "time": "12:00",
+   "zone": "UTC"
+  },
+  "why": "ZOD-62: chart for a recent moment"
+ },
+ {
+  "id": "67-now-get_sky-instant",
+  "tool": "get_sky",
+  "args": {
+   "instant": "2026-11-11T15:00:00Z",
+   "zone": "Asia/Bangkok"
+  },
+  "why": "ZOD-62: what the sky tool gives for a named moment"
+ },
+ {
+  "id": "68-now-get_personal_transits-today",
+  "tool": "get_personal_transits",
+  "args": {
+   "birthDate": "2026-11-11"
+  },
+  "why": "ZOD-62: transits to a chart of today"
+ },
+ {
+  "id": "70-err-invalid-date",
+  "tool": "get_natal_chart",
+  "args": {
+   "birthDate": "1990-02-30"
+  },
+  "why": "D4: impossible calendar date"
+ },
+ {
+  "id": "71-err-time-without-zone",
+  "tool": "get_natal_chart",
+  "args": {
+   "birthDate": "1990-05-03",
+   "time": "08:30"
+  },
+  "why": "D4: time without zone"
+ },
+ {
+  "id": "72-err-missing-required",
+  "tool": "get_natal_chart",
+  "args": {},
+  "why": "D4: missing required field"
+ },
+ {
+  "id": "73-err-bad-sign",
+  "tool": "get_horoscope",
+  "args": {
+   "sign": "ophiuchus"
+  },
+  "why": "D4: value outside the list"
+ },
+ {
+  "id": "74-err-unknown-tool",
+  "tool": "get_stock_tip",
+  "args": {},
+  "why": "D4: unknown tool"
+ },
+ {
+  "id": "75-err-extra-field",
+  "tool": "get_sky",
+  "args": {
+   "zone": "Asia/Bangkok",
+   "notes": "x"
+  },
+  "why": "D4: unknown argument"
+ },
+ {
+  "id": "76-err-window-too-long",
+  "tool": "get_upcoming_events",
+  "args": {
+   "from": "2026-11-01T00:00:00Z",
+   "to": "2027-06-01T00:00:00Z"
+  },
+  "why": "D4: window over 92 days"
+ },
+ {
+  "id": "77-err-year-out-of-range",
+  "tool": "get_sky",
+  "args": {
+   "instant": "1700-01-01T00:00:00Z"
+  },
+  "why": "D4: year outside 1800 to 2199"
+ },
+ {
+  "id": "78-err-unknown-place",
+  "tool": "find_birthplace",
+  "args": {
+   "place": "Zzzzqqqx"
+  },
+  "why": "D4: place not found"
+ },
+ {
+  "id": "79-err-famous-unknown",
+  "tool": "get_compatibility",
+  "args": {
+   "a": {
+    "birthDate": "1990-05-03"
+   },
+   "b": {
+    "famous": "Zzyx Nobody"
+   }
+  },
+  "why": "D4: famous person not published"
+ },
+ {
+  "id": "80-err-fact-missing-body",
+  "tool": "check_sky_fact",
+  "args": {
+   "kind": "sign"
+  },
+  "why": "D4: kind without its fields"
+ },
+ {
+  "id": "81-err-horoscope-old-date",
+  "tool": "get_horoscope",
+  "args": {
+   "sign": "leo",
+   "date": "2020-01-01"
+  },
+  "why": "D4: a date with no published edition"
+ },
+ {
+  "id": "82-err-period-unpublished",
+  "tool": "get_horoscope_period",
+  "args": {
+   "sign": "leo",
+   "period": "month",
+   "date": "2030-03-01"
+  },
+  "why": "D4: a month with no published reading"
+ },
+ {
+  "id": "83-err-bad-zone",
+  "tool": "get_sky",
+  "args": {
+   "zone": "Mars/Olympus"
+  },
+  "why": "D4: unknown time zone"
+ },
+ {
+  "id": "84-err-transits-window-before-birth",
+  "tool": "get_personal_transits",
+  "args": {
+   "birthDate": "1990-05-03",
+   "from": "1980-01-01",
+   "to": "1980-02-01"
+  },
+  "why": "D4: window before the birth date"
+ },
+ {
+  "id": "90-rpc-unknown-method",
+  "method": "tools/nope",
+  "why": "D4: unknown JSON-RPC method"
+ },
+ {
+  "id": "91-rpc-malformed-json",
+  "raw": "{not json",
+  "why": "D4: malformed body"
+ },
+ {
+  "id": "92-http-get",
+  "http": "GET",
+  "why": "D4: GET on the endpoint"
+ },
+ {
+  "id": "93-resources-list",
+  "method": "resources/list",
+  "why": "record the panels the server declares"
+ },
+ {
+  "id": "94-prompts-list",
+  "method": "prompts/list",
+  "why": "record whether prompts are declared"
+ }
+]

@@ -1,0 +1,127 @@
+{
+ "id": "38-explain_astrology-tarot",
+ "why": "not-covered answer",
+ "sentAtUtc": "2026-11-11T16:01:33+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "explain_astrology",
+   "arguments": {
+    "topic": "tarot"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"explain_astrology\",\"data\":{\"found\":false,\"query\":\"tarot\",\"topic\":null,\"title\":null,\"paragraphs\":[],\"terms\":[],\"pages\":[],\"related\":[],\"topics\":[\"aries\",\"taurus\",\"gemini\",\"cancer\",\"leo\",\"virgo\",\"libra\",\"scorpio\",\"sagittarius\",\"capricorn\",\"aquarius\",\"pisces\",\"sun\",\"moon\",\"mercury\",\"venus\",\"mars\",\"jupiter\",\"saturn\",\"uranus\",\"neptune\",\"pluto\",\"planets\",\"houses\",\"first-house\",\"second-house\",\"third-house\",\"fourth-house\",\"fifth-house\",\"sixth-house\",\"seventh-house\",\"eighth-house\",\"ninth-house\",\"tenth-house\",\"eleventh-house\",\"twelfth-house\",\"aspects\",\"conjunction\",\"sextile\",\"square\",\"trine\",\"opposition\",\"retrogrades\",\"mercury-retrograde\",\"moon-phases\",\"void-of-course-moon\",\"eclipses\",\"rising-sign\",\"midheaven\",\"ic\",\"big-three\",\"sun-sign\",\"moon-sign\",\"birth-chart\",\"cusps\",\"saturn-return\",\"solar-return\",\"elements\",\"modalities\",\"polarity\",\"rulership\",\"transits\",\"synastry\",\"zodiac\",\"lunar-nodes\",\"chinese-zodiac\"],\"message\":\"Zodiacs explains Western tropical astrology and the Chinese zodiac; it does not cover tarot. Say so plainly rather than explaining it from Zodiacs.\",\"note\":\"An introduction to how astrology reads these ideas, not a claim that they determine anything.\"},\"links\":[{\"title\":\"Learn astrology on Zodiacs\",\"url\":\"https://zodiacs.org/learn/?ref=assistant\"},{\"title\":\"Glossary\",\"url\":\"https://zodiacs.org/learn/glossary/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "explain_astrology",
+    "data": {
+     "found": false,
+     "query": "tarot",
+     "topic": null,
+     "title": null,
+     "paragraphs": [],
+     "terms": [],
+     "pages": [],
+     "related": [],
+     "topics": [
+      "aries",
+      "taurus",
+      "gemini",
+      "cancer",
+      "leo",
+      "virgo",
+      "libra",
+      "scorpio",
+      "sagittarius",
+      "capricorn",
+      "aquarius",
+      "pisces",
+      "sun",
+      "moon",
+      "mercury",
+      "venus",
+      "mars",
+      "jupiter",
+      "saturn",
+      "uranus",
+      "neptune",
+      "pluto",
+      "planets",
+      "houses",
+      "first-house",
+      "second-house",
+      "third-house",
+      "fourth-house",
+      "fifth-house",
+      "sixth-house",
+      "seventh-house",
+      "eighth-house",
+      "ninth-house",
+      "tenth-house",
+      "eleventh-house",
+      "twelfth-house",
+      "aspects",
+      "conjunction",
+      "sextile",
+      "square",
+      "trine",
+      "opposition",
+      "retrogrades",
+      "mercury-retrograde",
+      "moon-phases",
+      "void-of-course-moon",
+      "eclipses",
+      "rising-sign",
+      "midheaven",
+      "ic",
+      "big-three",
+      "sun-sign",
+      "moon-sign",
+      "birth-chart",
+      "cusps",
+      "saturn-return",
+      "solar-return",
+      "elements",
+      "modalities",
+      "polarity",
+      "rulership",
+      "transits",
+      "synastry",
+      "zodiac",
+      "lunar-nodes",
+      "chinese-zodiac"
+     ],
+     "message": "Zodiacs explains Western tropical astrology and the Chinese zodiac; it does not cover tarot. Say so plainly rather than explaining it from Zodiacs.",
+     "note": "An introduction to how astrology reads these ideas, not a claim that they determine anything."
+    },
+    "links": [
+     {
+      "title": "Learn astrology on Zodiacs",
+      "url": "https://zodiacs.org/learn/?ref=assistant"
+     },
+     {
+      "title": "Glossary",
+      "url": "https://zodiacs.org/learn/glossary/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

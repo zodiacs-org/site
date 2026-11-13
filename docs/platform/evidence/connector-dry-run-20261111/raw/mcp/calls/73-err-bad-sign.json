@@ -1,0 +1,41 @@
+{
+ "id": "73-err-bad-sign",
+ "why": "D4: value outside the list",
+ "sentAtUtc": "2026-11-11T16:03:41+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_horoscope",
+   "arguments": {
+    "sign": "ophiuchus"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"get_horoscope\",\"error\":{\"code\":\"invalid-arguments\",\"message\":\"sign must be one of: aries, taurus, gemini, cancer, leo, virgo, libra, scorpio, sagittarius, capricorn, aquarius, pisces.\"}}"
+    }
+   ],
+   "isError": true,
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "get_horoscope",
+    "error": {
+     "code": "invalid-arguments",
+     "message": "sign must be one of: aries, taurus, gemini, cancer, leo, virgo, libra, scorpio, sagittarius, capricorn, aquarius, pisces."
+    }
+   }
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

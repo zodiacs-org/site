@@ -1,0 +1,43 @@
+{
+ "id": "66-now-get_natal_chart-2020",
+ "why": "ZOD-62: chart for a recent moment",
+ "sentAtUtc": "2026-11-11T16:03:29+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_natal_chart",
+   "arguments": {
+    "birthDate": "2020-01-01",
+    "time": "12:00",
+    "zone": "UTC"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"get_natal_chart\",\"error\":{\"code\":\"invalid-request\",\"message\":\"Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.\"}}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "get_natal_chart",
+    "error": {
+     "code": "invalid-request",
+     "message": "Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool."
+    }
+   },
+   "isError": true
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

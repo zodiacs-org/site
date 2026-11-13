@@ -1,0 +1,81 @@
+{
+ "id": "29-get_sky_calendar",
+ "why": "valid call",
+ "sentAtUtc": "2026-11-11T16:00:49+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_sky_calendar",
+   "arguments": {}
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_sky_calendar\",\"data\":{\"language\":\"en\",\"feedUrl\":\"https://zodiacs.org/sky-calendar.ics\",\"subscribeUrl\":\"webcal://zodiacs.org/sky-calendar.ics\",\"pageUrl\":\"https://zodiacs.org/sky-calendar/?ref=assistant\",\"shareUrl\":\"https://zodiacs.org/share/sky-calendar/?k=full-moon&d=2026-11-24&ref=assistant\",\"contains\":[\"New moons\",\"Full moons\",\"Solar and lunar eclipse peaks (global, not local visibility)\",\"Retrograde windows for Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto\"],\"covers\":{\"from\":\"2026-01-01T00:00:00.000Z\",\"to\":\"2031-02-25T11:25:06.444Z\"},\"next\":[{\"title\":\"Full moon\",\"start\":\"2026-11-24T14:53:35.120Z\",\"end\":null},{\"title\":\"New moon\",\"start\":\"2026-12-09T00:51:52.151Z\",\"end\":null},{\"title\":\"Jupiter retrograde\",\"start\":\"2026-12-13T00:57:26.191Z\",\"end\":\"2027-04-13T02:08:29.765Z\"}],\"howTo\":{\"google\":\"In Google Calendar on the web, next to Other calendars choose + then From URL, and paste https://zodiacs.org/sky-calendar.ics.\",\"apple\":\"On an iPhone, iPad or Mac, open webcal://zodiacs.org/sky-calendar.ics; or in Calendar on a Mac choose File → New Calendar Subscription and paste https://zodiacs.org/sky-calendar.ics.\",\"outlook\":\"In Outlook, choose Add calendar → Subscribe from web, and paste https://zodiacs.org/sky-calendar.ics.\"},\"note\":\"A public feed of computed sky events; it takes no personal details. Subscribing keeps it up to date, and times show in your calendar's time zone. For a list between two dates, use get_upcoming_events.\"},\"links\":[{\"title\":\"Sky calendar on Zodiacs\",\"url\":\"https://zodiacs.org/sky-calendar/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_sky_calendar",
+    "data": {
+     "language": "en",
+     "feedUrl": "https://zodiacs.org/sky-calendar.ics",
+     "subscribeUrl": "webcal://zodiacs.org/sky-calendar.ics",
+     "pageUrl": "https://zodiacs.org/sky-calendar/?ref=assistant",
+     "shareUrl": "https://zodiacs.org/share/sky-calendar/?k=full-moon&d=2026-11-24&ref=assistant",
+     "contains": [
+      "New moons",
+      "Full moons",
+      "Solar and lunar eclipse peaks (global, not local visibility)",
+      "Retrograde windows for Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto"
+     ],
+     "covers": {
+      "from": "2026-01-01T00:00:00.000Z",
+      "to": "2031-02-25T11:25:06.444Z"
+     },
+     "next": [
+      {
+       "title": "Full moon",
+       "start": "2026-11-24T14:53:35.120Z",
+       "end": null
+      },
+      {
+       "title": "New moon",
+       "start": "2026-12-09T00:51:52.151Z",
+       "end": null
+      },
+      {
+       "title": "Jupiter retrograde",
+       "start": "2026-12-13T00:57:26.191Z",
+       "end": "2027-04-13T02:08:29.765Z"
+      }
+     ],
+     "howTo": {
+      "google": "In Google Calendar on the web, next to Other calendars choose + then From URL, and paste https://zodiacs.org/sky-calendar.ics.",
+      "apple": "On an iPhone, iPad or Mac, open webcal://zodiacs.org/sky-calendar.ics; or in Calendar on a Mac choose File → New Calendar Subscription and paste https://zodiacs.org/sky-calendar.ics.",
+      "outlook": "In Outlook, choose Add calendar → Subscribe from web, and paste https://zodiacs.org/sky-calendar.ics."
+     },
+     "note": "A public feed of computed sky events; it takes no personal details. Subscribing keeps it up to date, and times show in your calendar's time zone. For a list between two dates, use get_upcoming_events."
+    },
+    "links": [
+     {
+      "title": "Sky calendar on Zodiacs",
+      "url": "https://zodiacs.org/sky-calendar/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

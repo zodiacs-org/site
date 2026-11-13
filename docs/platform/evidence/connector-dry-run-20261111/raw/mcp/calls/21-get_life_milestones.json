@@ -1,0 +1,296 @@
+{
+ "id": "21-get_life_milestones",
+ "why": "valid call; D3 link check",
+ "sentAtUtc": "2026-11-11T16:00:20+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_life_milestones",
+   "arguments": {
+    "birthDate": "1990-05-03"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_life_milestones\",\"data\":{\"birthDate\":\"1990-05-03\",\"timeKnown\":false,\"asOf\":\"2026-11-11T16:00:22.496Z\",\"milestones\":[{\"kind\":\"jupiter-return\",\"name\":\"Jupiter return\",\"index\":1,\"age\":11,\"first\":\"2001-08-17T11:36:46.767Z\",\"last\":\"2002-04-03T23:00:28.451Z\",\"passes\":[{\"at\":\"2001-08-17T11:36:46.767Z\",\"retrograde\":false},{\"at\":\"2002-01-27T15:58:15.717Z\",\"retrograde\":true},{\"at\":\"2002-04-03T23:00:28.451Z\",\"retrograde\":false}]},{\"kind\":\"jupiter-return\",\"name\":\"Jupiter return\",\"index\":2,\"age\":23,\"first\":\"2013-07-29T02:36:19.740Z\",\"last\":\"2013-07-29T02:36:19.740Z\",\"passes\":[{\"at\":\"2013-07-29T02:36:19.740Z\",\"retrograde\":false}]},{\"kind\":\"saturn-return\",\"name\":\"Saturn return\",\"index\":1,\"age\":29,\"first\":\"2020-02-03T13:28:54.983Z\",\"last\":\"2020-02-03T13:28:54.983Z\",\"passes\":[{\"at\":\"2020-02-03T13:28:54.983Z\",\"retrograde\":false}]},{\"kind\":\"jupiter-return\",\"name\":\"Jupiter return\",\"index\":3,\"age\":35,\"first\":\"2025-07-12T06:27:01.376Z\",\"last\":\"2025-07-12T06:27:01.376Z\",\"passes\":[{\"at\":\"2025-07-12T06:27:01.376Z\",\"retrograde\":false}]},{\"kind\":\"uranus-opposition\",\"name\":\"Uranus opposition\",\"index\":1,\"age\":44,\"first\":\"2034-08-25T09:26:52.811Z\",\"last\":\"2035-06-10T06:34:44.578Z\",\"passes\":[{\"at\":\"2034-08-25T09:26:52.811Z\",\"retrograde\":false},{\"at\":\"2034-12-08T15:46:08.827Z\",\"retrograde\":true},{\"at\":\"2035-06-10T06:34:44.578Z\",\"retrograde\":false}]},{\"kind\":\"jupiter-return\",\"name\":\"Jupiter return\",\"index\":4,\"age\":47,\"first\":\"2037-06-26T02:11:52.535Z\",\"last\":\"2037-06-26T02:11:52.535Z\",\"passes\":[{\"at\":\"2037-06-26T02:11:52.535Z\",\"retrograde\":false}]},{\"kind\":\"saturn-return\",\"name\":\"Saturn return\",\"index\":2,\"age\":58,\"first\":\"2049-03-16T01:12:44.361Z\",\"last\":\"2049-12-11T19:04:11.118Z\",\"passes\":[{\"at\":\"2049-03-16T01:12:44.361Z\",\"retrograde\":false},{\"at\":\"2049-06-28T19:36:47.522Z\",\"retrograde\":true},{\"at\":\"2049-12-11T19:04:11.118Z\",\"retrograde\":false}]},{\"kind\":\"jupiter-return\",\"name\":\"Jupiter return\",\"index\":5,\"age\":59,\"first\":\"2049-06-09T22:16:20.176Z\",\"last\":\"2049-06-09T22:16:20.176Z\",\"passes\":[{\"at\":\"2049-06-09T22:16:20.176Z\",\"retrograde\":false}]},{\"kind\":\"jupiter-return\",\"name\":\"Jupiter return\",\"index\":6,\"age\":71,\"first\":\"2061-05-23T07:18:04.815Z\",\"last\":\"2061-05-23T07:18:04.815Z\",\"passes\":[{\"at\":\"2061-05-23T07:18:04.815Z\",\"retrograde\":false}]},{\"kind\":\"jupiter-return\",\"name\":\"Jupiter return\",\"index\":7,\"age\":82,\"first\":\"2072-09-10T08:00:20.170Z\",\"last\":\"2073-05-02T15:34:39.933Z\",\"passes\":[{\"at\":\"2072-09-10T08:00:20.170Z\",\"retrograde\":false},{\"at\":\"2072-12-15T00:08:43.512Z\",\"retrograde\":true},{\"at\":\"2073-05-02T15:34:39.933Z\",\"retrograde\":false}]},{\"kind\":\"saturn-return\",\"name\":\"Saturn return\",\"index\":3,\"age\":88,\"first\":\"2079-01-18T00:28:37.909Z\",\"last\":\"2079-01-18T00:28:37.909Z\",\"passes\":[{\"at\":\"2079-01-18T00:28:37.909Z\",\"retrograde\":false}]},{\"kind\":\"jupiter-return\",\"name\":\"Jupiter return\",\"index\":8,\"age\":94,\"first\":\"2084-08-16T20:28:11.777Z\",\"last\":\"2085-04-03T15:00:49.742Z\",\"passes\":[{\"at\":\"2084-08-16T20:28:11.777Z\",\"retrograde\":false},{\"at\":\"2085-01-26T02:05:28.274Z\",\"retrograde\":true},{\"at\":\"2085-04-03T15:00:49.742Z\",\"retrograde\":false}]}],\"next\":{\"kind\":\"uranus-opposition\",\"name\":\"Uranus opposition\",\"index\":1,\"age\":44,\"first\":\"2034-08-25T09:26:52.811Z\",\"last\":\"2035-06-10T06:34:44.578Z\",\"passes\":[{\"at\":\"2034-08-25T09:26:52.811Z\",\"retrograde\":false},{\"at\":\"2034-12-08T15:46:08.827Z\",\"retrograde\":true},{\"at\":\"2035-06-10T06:34:44.578Z\",\"retrograde\":false}]},\"numbers\":{\"fullMoons\":452,\"mercuryRetrogrades\":115,\"jupiterReturns\":3},\"cardUrl\":\"https://zodiacs.org/occasions/milestones/?ref=assistant\",\"shareUrl\":\"https://zodiacs.org/share/milestone/?k=uranus-opposition&i=1&a=44&ref=assistant\",\"note\":\"Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.\"},\"links\":[{\"title\":\"Life milestones on Zodiacs\",\"url\":\"https://zodiacs.org/occasions/milestones/?ref=assistant\"},{\"title\":\"What a Saturn return means (explain_astrology)\",\"url\":\"https://zodiacs.org/saturn-return/?ref=assistant\"},{\"title\":\"How we calculate\",\"url\":\"https://zodiacs.org/methodology/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_life_milestones",
+    "data": {
+     "birthDate": "1990-05-03",
+     "timeKnown": false,
+     "asOf": "2026-11-11T16:00:22.496Z",
+     "milestones": [
+      {
+       "kind": "jupiter-return",
+       "name": "Jupiter return",
+       "index": 1,
+       "age": 11,
+       "first": "2001-08-17T11:36:46.767Z",
+       "last": "2002-04-03T23:00:28.451Z",
+       "passes": [
+        {
+         "at": "2001-08-17T11:36:46.767Z",
+         "retrograde": false
+        },
+        {
+         "at": "2002-01-27T15:58:15.717Z",
+         "retrograde": true
+        },
+        {
+         "at": "2002-04-03T23:00:28.451Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "jupiter-return",
+       "name": "Jupiter return",
+       "index": 2,
+       "age": 23,
+       "first": "2013-07-29T02:36:19.740Z",
+       "last": "2013-07-29T02:36:19.740Z",
+       "passes": [
+        {
+         "at": "2013-07-29T02:36:19.740Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "saturn-return",
+       "name": "Saturn return",
+       "index": 1,
+       "age": 29,
+       "first": "2020-02-03T13:28:54.983Z",
+       "last": "2020-02-03T13:28:54.983Z",
+       "passes": [
+        {
+         "at": "2020-02-03T13:28:54.983Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "jupiter-return",
+       "name": "Jupiter return",
+       "index": 3,
+       "age": 35,
+       "first": "2025-07-12T06:27:01.376Z",
+       "last": "2025-07-12T06:27:01.376Z",
+       "passes": [
+        {
+         "at": "2025-07-12T06:27:01.376Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "uranus-opposition",
+       "name": "Uranus opposition",
+       "index": 1,
+       "age": 44,
+       "first": "2034-08-25T09:26:52.811Z",
+       "last": "2035-06-10T06:34:44.578Z",
+       "passes": [
+        {
+         "at": "2034-08-25T09:26:52.811Z",
+         "retrograde": false
+        },
+        {
+         "at": "2034-12-08T15:46:08.827Z",
+         "retrograde": true
+        },
+        {
+         "at": "2035-06-10T06:34:44.578Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "jupiter-return",
+       "name": "Jupiter return",
+       "index": 4,
+       "age": 47,
+       "first": "2037-06-26T02:11:52.535Z",
+       "last": "2037-06-26T02:11:52.535Z",
+       "passes": [
+        {
+         "at": "2037-06-26T02:11:52.535Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "saturn-return",
+       "name": "Saturn return",
+       "index": 2,
+       "age": 58,
+       "first": "2049-03-16T01:12:44.361Z",
+       "last": "2049-12-11T19:04:11.118Z",
+       "passes": [
+        {
+         "at": "2049-03-16T01:12:44.361Z",
+         "retrograde": false
+        },
+        {
+         "at": "2049-06-28T19:36:47.522Z",
+         "retrograde": true
+        },
+        {
+         "at": "2049-12-11T19:04:11.118Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "jupiter-return",
+       "name": "Jupiter return",
+       "index": 5,
+       "age": 59,
+       "first": "2049-06-09T22:16:20.176Z",
+       "last": "2049-06-09T22:16:20.176Z",
+       "passes": [
+        {
+         "at": "2049-06-09T22:16:20.176Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "jupiter-return",
+       "name": "Jupiter return",
+       "index": 6,
+       "age": 71,
+       "first": "2061-05-23T07:18:04.815Z",
+       "last": "2061-05-23T07:18:04.815Z",
+       "passes": [
+        {
+         "at": "2061-05-23T07:18:04.815Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "jupiter-return",
+       "name": "Jupiter return",
+       "index": 7,
+       "age": 82,
+       "first": "2072-09-10T08:00:20.170Z",
+       "last": "2073-05-02T15:34:39.933Z",
+       "passes": [
+        {
+         "at": "2072-09-10T08:00:20.170Z",
+         "retrograde": false
+        },
+        {
+         "at": "2072-12-15T00:08:43.512Z",
+         "retrograde": true
+        },
+        {
+         "at": "2073-05-02T15:34:39.933Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "saturn-return",
+       "name": "Saturn return",
+       "index": 3,
+       "age": 88,
+       "first": "2079-01-18T00:28:37.909Z",
+       "last": "2079-01-18T00:28:37.909Z",
+       "passes": [
+        {
+         "at": "2079-01-18T00:28:37.909Z",
+         "retrograde": false
+        }
+       ]
+      },
+      {
+       "kind": "jupiter-return",
+       "name": "Jupiter return",
+       "index": 8,
+       "age": 94,
+       "first": "2084-08-16T20:28:11.777Z",
+       "last": "2085-04-03T15:00:49.742Z",
+       "passes": [
+        {
+         "at": "2084-08-16T20:28:11.777Z",
+         "retrograde": false
+        },
+        {
+         "at": "2085-01-26T02:05:28.274Z",
+         "retrograde": true
+        },
+        {
+         "at": "2085-04-03T15:00:49.742Z",
+         "retrograde": false
+        }
+       ]
+      }
+     ],
+     "next": {
+      "kind": "uranus-opposition",
+      "name": "Uranus opposition",
+      "index": 1,
+      "age": 44,
+      "first": "2034-08-25T09:26:52.811Z",
+      "last": "2035-06-10T06:34:44.578Z",
+      "passes": [
+       {
+        "at": "2034-08-25T09:26:52.811Z",
+        "retrograde": false
+       },
+       {
+        "at": "2034-12-08T15:46:08.827Z",
+        "retrograde": true
+       },
+       {
+        "at": "2035-06-10T06:34:44.578Z",
+        "retrograde": false
+       }
+      ]
+     },
+     "numbers": {
+      "fullMoons": 452,
+      "mercuryRetrogrades": 115,
+      "jupiterReturns": 3
+     },
+     "cardUrl": "https://zodiacs.org/occasions/milestones/?ref=assistant",
+     "shareUrl": "https://zodiacs.org/share/milestone/?k=uranus-opposition&i=1&a=44&ref=assistant",
+     "note": "Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day."
+    },
+    "links": [
+     {
+      "title": "Life milestones on Zodiacs",
+      "url": "https://zodiacs.org/occasions/milestones/?ref=assistant"
+     },
+     {
+      "title": "What a Saturn return means (explain_astrology)",
+      "url": "https://zodiacs.org/saturn-return/?ref=assistant"
+     },
+     {
+      "title": "How we calculate",
+      "url": "https://zodiacs.org/methodology/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

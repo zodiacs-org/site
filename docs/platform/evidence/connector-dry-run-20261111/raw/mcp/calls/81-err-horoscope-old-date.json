@@ -1,0 +1,420 @@
+{
+ "id": "81-err-horoscope-old-date",
+ "why": "D4: a date with no published edition",
+ "sentAtUtc": "2026-11-11T16:03:57+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_horoscope",
+   "arguments": {
+    "sign": "leo",
+    "date": "2020-01-01"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "_meta": {
+    "zodiacs/horoscope": {
+     "sign": "leo",
+     "signName": "Leo",
+     "requested": {
+      "period": "day",
+      "focus": "general",
+      "date": "2020-01-01"
+     },
+     "days": [
+      {
+       "date": "2026-11-10",
+       "focuses": {
+        "general": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Today, give play, romance, or creative work a defined place. For Leo, presence is strongest when the point is clearer than the performance. The new moon puts creativity, romance, children, and enjoyment on the day’s agenda."
+          },
+          {
+           "text": "Before agreeing to another plan, check what you need at home and make time for it. In this reading, Mercury retrograde in Scorpio brings attention to home, family, and your private life."
+          },
+          {
+           "text": "Connect creativity, romance, children, and enjoyment with home, family, and your private life; choose the contribution you would still value without applause."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Moon at 1° Sagittarius",
+           "at": "2026-11-10T12:00:00.000Z"
+          },
+          {
+           "text": "Mercury at 5° Scorpio",
+           "at": "2026-11-10T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Moon in Sagittarius: your 5th solar house",
+          "Mercury in Scorpio: your 4th solar house"
+         ],
+         "from": "2026-11-10",
+         "through": "2026-11-10",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-10&ref=assistant"
+        },
+        "love": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Let a specific conversation replace assumptions. For Leo, warmth lands best when admiration travels in both directions. Venus brings messages, errands, siblings, and your local community into the relationship foreground."
+          },
+          {
+           "text": "Allow pleasure and affection to be direct rather than overmanaged. Offer the affection or invitation directly, then let the response set the next pace. The Moon shifts the emotional weather toward creativity, romance, children, and enjoyment."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Venus at 23° Libra",
+           "at": "2026-11-10T12:00:00.000Z"
+          },
+          {
+           "text": "Moon at 1° Sagittarius",
+           "at": "2026-11-10T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Venus in Libra: your 3rd solar house",
+          "Moon in Sagittarius: your 5th solar house"
+         ],
+         "from": "2026-11-10",
+         "through": "2026-11-10",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-10&f=love&ref=assistant"
+        },
+        "career": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Connect the task to training, publishing, travel, or a wider field. For Leo, visibility helps when the work underneath it is ready. Saturn retrograde brings travel, learning, beliefs, and long-term plans into the work picture."
+          },
+          {
+           "text": "Stabilize the private base that supports public work. Choose a work rhythm you can revise without destabilizing the private base beneath it. The Sun widens the frame to home, family, and your private life."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Saturn at 8° Aries",
+           "at": "2026-11-10T12:00:00.000Z"
+          },
+          {
+           "text": "Sun at 18° Scorpio",
+           "at": "2026-11-10T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Saturn in Aries: your 9th solar house",
+          "Sun in Scorpio: your 4th solar house"
+         ],
+         "from": "2026-11-10",
+         "through": "2026-11-10",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-10&f=career&ref=assistant"
+        }
+       }
+      },
+      {
+       "date": "2026-11-11",
+       "focuses": {
+        "general": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Today, give play, romance, or creative work a defined place. For Leo, presence is strongest when the point is clearer than the performance. The waxing crescent Moon puts creativity, romance, children, and enjoyment on the day’s agenda."
+          },
+          {
+           "text": "Before agreeing to another plan, check what you need at home and make time for it. In this reading, Mercury retrograde in Scorpio brings attention to home, family, and your private life."
+          },
+          {
+           "text": "Connect creativity, romance, children, and enjoyment with home, family, and your private life; choose the contribution you would still value without applause."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Moon at 13° Sagittarius",
+           "at": "2026-11-11T12:00:00.000Z"
+          },
+          {
+           "text": "Mercury at 5° Scorpio",
+           "at": "2026-11-11T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Moon in Sagittarius: your 5th solar house",
+          "Mercury in Scorpio: your 4th solar house"
+         ],
+         "from": "2026-11-11",
+         "through": "2026-11-11",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-11&ref=assistant"
+        },
+        "love": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Let a specific conversation replace assumptions. For Leo, warmth lands best when admiration travels in both directions. Venus brings messages, errands, siblings, and your local community into the relationship foreground."
+          },
+          {
+           "text": "Allow pleasure and affection to be direct rather than overmanaged. Offer the affection or invitation directly, then let the response set the next pace. The Moon shifts the emotional weather toward creativity, romance, children, and enjoyment."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Venus at 22° Libra",
+           "at": "2026-11-11T12:00:00.000Z"
+          },
+          {
+           "text": "Moon at 13° Sagittarius",
+           "at": "2026-11-11T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Venus in Libra: your 3rd solar house",
+          "Moon in Sagittarius: your 5th solar house"
+         ],
+         "from": "2026-11-11",
+         "through": "2026-11-11",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-11&f=love&ref=assistant"
+        },
+        "career": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Connect the task to training, publishing, travel, or a wider field. For Leo, visibility helps when the work underneath it is ready. Saturn retrograde brings travel, learning, beliefs, and long-term plans into the work picture."
+          },
+          {
+           "text": "Stabilize the private base that supports public work. Choose a work rhythm you can revise without destabilizing the private base beneath it. The Sun widens the frame to home, family, and your private life."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Saturn at 8° Aries",
+           "at": "2026-11-11T12:00:00.000Z"
+          },
+          {
+           "text": "Sun at 19° Scorpio",
+           "at": "2026-11-11T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Saturn in Aries: your 9th solar house",
+          "Sun in Scorpio: your 4th solar house"
+         ],
+         "from": "2026-11-11",
+         "through": "2026-11-11",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-11&f=career&ref=assistant"
+        }
+       }
+      },
+      {
+       "date": "2026-11-12",
+       "focuses": {
+        "general": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Today, give play, romance, or creative work a defined place. For Leo, presence is strongest when the point is clearer than the performance. The waxing crescent Moon puts creativity, romance, children, and enjoyment on the day’s agenda."
+          },
+          {
+           "text": "Before agreeing to another plan, check what you need at home and make time for it. In this reading, Mercury retrograde in Scorpio brings attention to home, family, and your private life."
+          },
+          {
+           "text": "Connect creativity, romance, children, and enjoyment with home, family, and your private life; choose the contribution you would still value without applause."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Moon at 25° Sagittarius",
+           "at": "2026-11-12T12:00:00.000Z"
+          },
+          {
+           "text": "Mercury at 5° Scorpio",
+           "at": "2026-11-12T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Moon in Sagittarius: your 5th solar house",
+          "Mercury in Scorpio: your 4th solar house"
+         ],
+         "from": "2026-11-12",
+         "through": "2026-11-12",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-12&ref=assistant"
+        },
+        "love": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Let a specific conversation replace assumptions. For Leo, warmth lands best when admiration travels in both directions. Venus brings messages, errands, siblings, and your local community into the relationship foreground."
+          },
+          {
+           "text": "Allow pleasure and affection to be direct rather than overmanaged. Offer the affection or invitation directly, then let the response set the next pace. The Moon shifts the emotional weather toward creativity, romance, children, and enjoyment."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Venus at 22° Libra",
+           "at": "2026-11-12T12:00:00.000Z"
+          },
+          {
+           "text": "Moon at 25° Sagittarius",
+           "at": "2026-11-12T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Venus in Libra: your 3rd solar house",
+          "Moon in Sagittarius: your 5th solar house"
+         ],
+         "from": "2026-11-12",
+         "through": "2026-11-12",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-12&f=love&ref=assistant"
+        },
+        "career": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Connect the task to training, publishing, travel, or a wider field. For Leo, visibility helps when the work underneath it is ready. Saturn retrograde brings travel, learning, beliefs, and long-term plans into the work picture."
+          },
+          {
+           "text": "Stabilize the private base that supports public work. Choose a work rhythm you can revise without destabilizing the private base beneath it. The Sun widens the frame to home, family, and your private life."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Saturn at 8° Aries",
+           "at": "2026-11-12T12:00:00.000Z"
+          },
+          {
+           "text": "Sun at 20° Scorpio",
+           "at": "2026-11-12T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Saturn in Aries: your 9th solar house",
+          "Sun in Scorpio: your 4th solar house"
+         ],
+         "from": "2026-11-12",
+         "through": "2026-11-12",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&d=2026-11-12&f=career&ref=assistant"
+        }
+       }
+      }
+     ],
+     "weeks": [
+      {
+       "status": "available",
+       "paragraphs": [
+        {
+         "text": "Give the week a center without making every moment orbit it. The week opens with home, family, and your private life, moves through creativity, romance, children, and enjoyment by Thursday, and closes on partners and one-to-one relationships. Give home and family the first concrete move instead of asking one choice to settle all three areas at once."
+        },
+        {
+         "text": "Early in the week, turn toward home, family, and your private life: protect the conditions that make home and private life workable, then before agreeing to another plan, check what you need at home and make time for it. Keep the home and family adjustment small enough to see what it changes before adding another."
+        },
+        {
+         "text": "By midweek, attention shifts to creativity, romance, children, and enjoyment: give play, romance, or creative work a defined place, then reserve time for the person, pleasure, or creative draft before the calendar treats it as optional."
+        },
+        {
+         "text": "At the exact contact, check whether the private conditions still support the week outside them. The New Moon in Scorpio brings home, family, and your private life into focus."
+        },
+        {
+         "text": "The week closes with partners and one-to-one relationships: put the agreement or disagreement directly on the table, then state the term that is still vague and give the other person a real chance to answer it. For Leo, the final review is to choose the contribution you would still value without applause."
+        }
+       ],
+       "facts": [
+        {
+         "text": "New Moon in Scorpio at 16.9°",
+         "at": "2026-11-09T07:02:05.269Z"
+        },
+        {
+         "text": "Moon at 19° Scorpio",
+         "at": "2026-11-09T12:00:00.000Z"
+        },
+        {
+         "text": "Moon at 25° Sagittarius",
+         "at": "2026-11-12T12:00:00.000Z"
+        },
+        {
+         "text": "Moon at 1° Aquarius",
+         "at": "2026-11-15T12:00:00.000Z"
+        }
+       ],
+       "houses": [
+        "Moon in Scorpio: your 4th solar house",
+        "Moon in Sagittarius: your 5th solar house",
+        "Moon in Aquarius: your 7th solar house"
+       ],
+       "from": "2026-11-09",
+       "through": "2026-11-15",
+       "shareUrl": "https://zodiacs.org/share/horoscope/?s=leo&w=2026-11-09&ref=assistant"
+      }
+     ],
+     "note": "These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.",
+     "disclosure": "For reflection. Astrology does not establish what will happen in your life."
+    }
+   },
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_horoscope\",\"data\":{\"status\":\"unavailable\",\"sign\":\"leo\",\"signName\":\"Leo\",\"period\":\"day\",\"focus\":\"general\",\"date\":\"2020-01-01\",\"dateLabel\":\"Wednesday 1 January\",\"zone\":\"UTC\",\"zoneLabel\":\"UTC\",\"zoneSource\":\"default\",\"available\":[{\"date\":\"2026-11-10\",\"label\":\"Tuesday 10 November\"},{\"date\":\"2026-11-11\",\"label\":\"Wednesday 11 November\"},{\"date\":\"2026-11-12\",\"label\":\"Thursday 12 November\"}],\"message\":\"The reading for Wednesday 1 January is no longer kept here. Recent readings are on zodiacs.org.\",\"shareUrl\":null,\"disclosure\":\"For reflection. Astrology does not establish what will happen in your life. Reading confidence 40%. For a month, a year, or a love or career week, use get_horoscope_period.\"},\"links\":[{\"title\":\"Leo on Zodiacs\",\"url\":\"https://zodiacs.org/horoscopes/leo/?ref=assistant\"},{\"title\":\"How we calculate\",\"url\":\"https://zodiacs.org/methodology/?ref=assistant\"},{\"title\":\"The Leo horoscope by email each morning\",\"url\":\"https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_horoscope",
+    "data": {
+     "status": "unavailable",
+     "sign": "leo",
+     "signName": "Leo",
+     "period": "day",
+     "focus": "general",
+     "date": "2020-01-01",
+     "dateLabel": "Wednesday 1 January",
+     "zone": "UTC",
+     "zoneLabel": "UTC",
+     "zoneSource": "default",
+     "available": [
+      {
+       "date": "2026-11-10",
+       "label": "Tuesday 10 November"
+      },
+      {
+       "date": "2026-11-11",
+       "label": "Wednesday 11 November"
+      },
+      {
+       "date": "2026-11-12",
+       "label": "Thursday 12 November"
+      }
+     ],
+     "message": "The reading for Wednesday 1 January is no longer kept here. Recent readings are on zodiacs.org.",
+     "shareUrl": null,
+     "disclosure": "For reflection. Astrology does not establish what will happen in your life. Reading confidence 40%. For a month, a year, or a love or career week, use get_horoscope_period."
+    },
+    "links": [
+     {
+      "title": "Leo on Zodiacs",
+      "url": "https://zodiacs.org/horoscopes/leo/?ref=assistant"
+     },
+     {
+      "title": "How we calculate",
+      "url": "https://zodiacs.org/methodology/?ref=assistant"
+     },
+     {
+      "title": "The Leo horoscope by email each morning",
+      "url": "https://zodiacs.org/horoscopes/leo/?ref=assistant#daily-email"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

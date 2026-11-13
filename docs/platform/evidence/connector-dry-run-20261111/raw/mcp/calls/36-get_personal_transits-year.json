@@ -1,0 +1,149 @@
+{
+ "id": "36-get_personal_transits-year",
+ "why": "valid call, year ahead",
+ "sentAtUtc": "2026-11-11T16:01:28+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_personal_transits",
+   "arguments": {
+    "birthDate": "1990-05-03",
+    "mode": "year-ahead"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_personal_transits\",\"data\":{\"mode\":\"year-ahead\",\"birthDate\":\"1990-05-03\",\"timeKnown\":false,\"placed\":false,\"from\":\"2026-11-11\",\"to\":\"2027-11-10\",\"zone\":\"UTC\",\"scanned\":{\"planets\":[\"Jupiter\",\"Saturn\",\"Uranus\",\"Neptune\",\"Pluto\"],\"points\":[\"Sun\",\"Mercury\",\"Venus\",\"Mars\"]},\"contacts\":[],\"found\":0,\"highlights\":[{\"date\":\"Mon 3 May 2027\",\"endDate\":null,\"kind\":\"solar-return\",\"planet\":\"Sun\",\"line\":\"Your solar return: the Sun back on its natal degree, the moment your birthday actually lands. The year resets here. Reading confidence 55%.\",\"confidence\":55,\"confidenceLabel\":\"Reading confidence 55%\",\"house\":null},{\"date\":\"Sun 18 Jul 2027\",\"endDate\":null,\"kind\":\"eclipse\",\"planet\":\"Moon\",\"line\":\"The penumbral lunar eclipse of Jul 18, 2027 (26.0° Capricorn) lands on your Saturn. Eclipses tend to fast-forward whatever house your sense of duty runs. Reading confidence 55%.\",\"confidence\":55,\"confidenceLabel\":\"Reading confidence 55%\",\"house\":null},{\"date\":\"Mon 26 Jul 2027\",\"endDate\":null,\"kind\":\"ingress\",\"planet\":\"Jupiter\",\"line\":\"Jupiter enters Virgo on Jul 26, 2027, about a year of growth pointed there. Reading confidence 55%.\",\"confidence\":55,\"confidenceLabel\":\"Reading confidence 55%\",\"house\":null},{\"date\":\"Mon 9 Aug 2027\",\"endDate\":\"Fri 22 Oct 2027\",\"kind\":\"aspect\",\"planet\":\"Uranus\",\"line\":\"Uranus pushes against your drive: a jolt of disruption that repeats for months, friction that will not resolve on its own. Reading confidence 60%.\",\"confidence\":60,\"confidenceLabel\":\"Reading confidence 60%\",\"house\":null},{\"date\":\"Wed 8 Sept 2027\",\"endDate\":null,\"kind\":\"aspect\",\"planet\":\"Jupiter\",\"line\":\"Jupiter stands opposite your drive: a generous stretch of confidence, a tension best met head-on rather than absorbed. Reading confidence 60%.\",\"confidence\":60,\"confidenceLabel\":\"Reading confidence 60%\",\"house\":null},{\"date\":\"Mon 27 Sept 2027\",\"endDate\":null,\"kind\":\"aspect\",\"planet\":\"Jupiter\",\"line\":\"Jupiter flows through your way of thinking: a generous stretch of confidence, help that arrives without being asked. Reading confidence 60%.\",\"confidence\":60,\"confidenceLabel\":\"Reading confidence 60%\",\"house\":null}],\"limits\":[\"Dates assume UTC because no time zone was given.\",\"No birth time was given, so the Moon, the rising degree and the Midheaven are left out; contacts to the other planets can shift by about a day.\",\"Without a birth time and place, sign changes are not placed in your houses.\"],\"sun\":\"taurus\",\"under18\":false,\"pageUrl\":\"https://zodiacs.org/transits/?ref=assistant\",\"note\":\"Astrology’s reading of the sky meeting your birth chart, for reflection: not a guarantee, and not a forecast of health or money.\"},\"links\":[{\"title\":\"Transits on Zodiacs\",\"url\":\"https://zodiacs.org/transits/?ref=assistant\"},{\"title\":\"Your birth chart on Zodiacs\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"},{\"title\":\"Resolve a town or city (find_birthplace)\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_personal_transits",
+    "data": {
+     "mode": "year-ahead",
+     "birthDate": "1990-05-03",
+     "timeKnown": false,
+     "placed": false,
+     "from": "2026-11-11",
+     "to": "2027-11-10",
+     "zone": "UTC",
+     "scanned": {
+      "planets": [
+       "Jupiter",
+       "Saturn",
+       "Uranus",
+       "Neptune",
+       "Pluto"
+      ],
+      "points": [
+       "Sun",
+       "Mercury",
+       "Venus",
+       "Mars"
+      ]
+     },
+     "contacts": [],
+     "found": 0,
+     "highlights": [
+      {
+       "date": "Mon 3 May 2027",
+       "endDate": null,
+       "kind": "solar-return",
+       "planet": "Sun",
+       "line": "Your solar return: the Sun back on its natal degree, the moment your birthday actually lands. The year resets here. Reading confidence 55%.",
+       "confidence": 55,
+       "confidenceLabel": "Reading confidence 55%",
+       "house": null
+      },
+      {
+       "date": "Sun 18 Jul 2027",
+       "endDate": null,
+       "kind": "eclipse",
+       "planet": "Moon",
+       "line": "The penumbral lunar eclipse of Jul 18, 2027 (26.0° Capricorn) lands on your Saturn. Eclipses tend to fast-forward whatever house your sense of duty runs. Reading confidence 55%.",
+       "confidence": 55,
+       "confidenceLabel": "Reading confidence 55%",
+       "house": null
+      },
+      {
+       "date": "Mon 26 Jul 2027",
+       "endDate": null,
+       "kind": "ingress",
+       "planet": "Jupiter",
+       "line": "Jupiter enters Virgo on Jul 26, 2027, about a year of growth pointed there. Reading confidence 55%.",
+       "confidence": 55,
+       "confidenceLabel": "Reading confidence 55%",
+       "house": null
+      },
+      {
+       "date": "Mon 9 Aug 2027",
+       "endDate": "Fri 22 Oct 2027",
+       "kind": "aspect",
+       "planet": "Uranus",
+       "line": "Uranus pushes against your drive: a jolt of disruption that repeats for months, friction that will not resolve on its own. Reading confidence 60%.",
+       "confidence": 60,
+       "confidenceLabel": "Reading confidence 60%",
+       "house": null
+      },
+      {
+       "date": "Wed 8 Sept 2027",
+       "endDate": null,
+       "kind": "aspect",
+       "planet": "Jupiter",
+       "line": "Jupiter stands opposite your drive: a generous stretch of confidence, a tension best met head-on rather than absorbed. Reading confidence 60%.",
+       "confidence": 60,
+       "confidenceLabel": "Reading confidence 60%",
+       "house": null
+      },
+      {
+       "date": "Mon 27 Sept 2027",
+       "endDate": null,
+       "kind": "aspect",
+       "planet": "Jupiter",
+       "line": "Jupiter flows through your way of thinking: a generous stretch of confidence, help that arrives without being asked. Reading confidence 60%.",
+       "confidence": 60,
+       "confidenceLabel": "Reading confidence 60%",
+       "house": null
+      }
+     ],
+     "limits": [
+      "Dates assume UTC because no time zone was given.",
+      "No birth time was given, so the Moon, the rising degree and the Midheaven are left out; contacts to the other planets can shift by about a day.",
+      "Without a birth time and place, sign changes are not placed in your houses."
+     ],
+     "sun": "taurus",
+     "under18": false,
+     "pageUrl": "https://zodiacs.org/transits/?ref=assistant",
+     "note": "Astrology’s reading of the sky meeting your birth chart, for reflection: not a guarantee, and not a forecast of health or money."
+    },
+    "links": [
+     {
+      "title": "Transits on Zodiacs",
+      "url": "https://zodiacs.org/transits/?ref=assistant"
+     },
+     {
+      "title": "Your birth chart on Zodiacs",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     },
+     {
+      "title": "Resolve a town or city (find_birthplace)",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}
