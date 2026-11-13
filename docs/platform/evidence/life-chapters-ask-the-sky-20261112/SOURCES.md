@@ -4,7 +4,15 @@ Every technique claim in `01-life-chapters-meanings.md` points to a passage
 id below (V1 to V24 for Valens, L1 and L2 for Lilly). Quotations are copied
 from the files named here. Riley prints his own insertions in angle brackets;
 they are shown here in square brackets so that Markdown does not swallow them.
-Where a quotation skips words, the gap is marked with three dots.
+Where a quotation skips words, the gap is marked with three dots. Two things
+are left out of quotations without a mark: Riley's edition marks (`/160K/`,
+`/152P/` and the like, which fall in the middle of sentences) and the page
+furniture where a sentence runs over a page break. No word of the text is
+changed.
+
+Second version, 13 November 2026: V10, V13, V17 and V18 were corrected or
+extended after the second session's review (`BREAKER.md`, S1, S2, S4). No new
+source was opened.
 
 Nothing here comes from a modern calculator, and nothing comes from the
 made-up sample readings on ZOD-60 and ZOD-61.
@@ -100,6 +108,8 @@ ends in Riley with three dots, so it may be incomplete.
 
 "Saturn making the connection from Capricorn and Aquarius to Leo and Cancer indicates that the chronocratorship will be vigorous: it brings matters from darkness into the light"
 
+The same sentence goes on to say that it is most active "depending on the basis of the nativity."
+
 **V11. IV.6, the two signs of Saturn (p. 73).** Chapter title: "6. How Many
 Years Each Sign Allots. The Maximum Years of Each Star."
 
@@ -115,7 +125,10 @@ Years Each Sign Allots. The Maximum Years of Each Star."
 
 "If malefics are in aspect, the influence of the places will be visible in the manner just described, but because of the malefics in aspect, the native will meet with reverses and penalties"
 
-**V13. IV.7, the four kinds of sign when a work period is under strain (p. 74, /166K/).**
+**V13. IV.7, a work period under strain, by the kind of sign its ruling planet is in (p. 74, /166K/).**
+The fiery, airy, earthy or watery sign in this passage is the sign "the star
+controlling" the period is found in, in the person's chart. It is not the
+sign of the period. The first version of the drafts read it the wrong way.
 
 "If a star which is controlling the chronocratorship [of the matters] governed by Daimon [=occupation] is not at an angle and has a malefic in conjunction or in aspect with the houseruler of its sign, the native will act ineffectively"
 
@@ -155,7 +168,7 @@ with hours: Sun 19, 19, 47 1/2, 3 days 23 hours. Moon 25, 25, 62 1/2, 5 days
 
 "If we find a nativity it its 50th or 60th year, we begin the zodiacal vital sector of years from the Lot of Fortune or from Daimon, assigning to each star its period as far as it applies. Then we assign the months, then the day and hours."
 
-(The "it its" is the PDF's own typing.)
+(The "it its" is the PDF's own typing. So is "3 1/3 hours" in the first quotation: a twelfth of 37 1/2 days is 3 days 3 hours, which is what Riley's own table gives for Mars. The drafts use the table.)
 
 ### Books I to III: the Lots, the rising degree, the planets and the signs
 
@@ -164,6 +177,10 @@ with hours: Sun 19, 19, 47 1/2, 3 days 23 hours. Moon 25, 25, 62 1/2, 5 days
 II.3: "it will be necessary (for day nativities) to count accurately the distance from the sun to the moon, then to measure off in the opposite direction an equal distance from the Ascendant"
 
 III.14K;11P: "There are a variety of opinions about this notion. To me it seems best to locate the Lot by determining the distance from the sun to the moon, then counting that distance from the Ascendant"
+
+The sentence ends "for day births", and Valens goes on: "For night births [1] if the moon is above the earth, i.e. until the time it sets, determine the distance from it to the sun, then count that distance from the Ascendant. [2] After the moon has set, determine the distance from the sun to it."
+
+So for the Lot of Fortune the night count is reversed only while the Moon is up.
 
 **V19. II.22K;23P, the Lot of Daimon, with day and night births the other way round (p. 38, /84P/).**
 
@@ -253,6 +270,8 @@ not found. They matter because ZOD-60 uses them.
 **L1. Ch. XIX, "Considerations Before Judgment" (pp. 74 to 75).**
 
 "ALL the ancients that have written of questions do give warning to the astrologer, that before he delivers judgment he well consider whether the figure is radical and capable of judgment"
+
+(The page prints a footnote number after "radical", left out here.)
 
 "when either the first or second degrees of a sign ascend"
 
