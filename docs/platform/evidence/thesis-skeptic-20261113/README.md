@@ -7,9 +7,13 @@ SHA-256 of the capture `6db6abf8...8e1615`; it equals
 `public/thesis/index.html` at `origin/main` `210622bfe` apart from one
 flag-gated link.
 
-This folder is evidence only. Nothing here changes the live page or any
-published thesis file. Suggested wording is a proposal for the owner, not an
-edit.
+Through the rerun and its review this folder was evidence only. **The fix
+round of 13 Nov 2026 (ZOD-219) is different: the same PR now also drafts
+changes to the thesis page copy in `public/thesis/`,** following the owner's
+calls of 13 Nov 2026, 18:09 in Bangkok. The live page is unchanged until a
+merge. `COPYFIX.md` lists every drafted change; the section "Fix round"
+below gives the result. Everything under "Why a rerun" to "Method and
+limits" is the rerun's own account and describes the live page of 13 Nov.
 
 ## Why a rerun
 
@@ -25,8 +29,11 @@ as the record of that page. This folder is pinned to the 13 Nov capture.
 
 | File | What it holds |
 |---|---|
-| `claims.md` | The claim list for the 13 Nov page: 238 live rows, each with a verdict, the source opened in this run and, for every failure, a suggested fix; plus the 17 rows of the old list whose wording is gone, marked GONE. |
-| `sources.md` | Every source opened on 13 Nov (R1 to R21): URL, time, the supporting sentence or figure, the recomputed season table, and what could not be opened. |
+| `claims.md` | The claim list for the 13 Nov page: 262 live rows after the fix round (238 before it), each with a verdict, the source opened and, for every failure, a suggested fix; the 17 rows of the old list whose wording is gone, marked GONE; and 9 rows for the sentences new in the drafted copy. |
+| `sources.md` | Every source opened on 13 Nov (R1 to R17, R20, R21 in the rerun; R22 to R28 in the fix round): URL, time, the supporting sentence or figure, the recomputed season table, and what could not be opened. |
+| `COPYFIX.md` | The fix round: each drafted change to the page, before and after, the Pulse wording choice and the data behind it, and what was left alone. |
+| `BREAKER-RERUN.md` | The second session's review of the rerun. Its blocker B1 and should-fix S1 and S2 are what the fix round answers. |
+| `records/copyfix/` | The fix round's records: Wikimedia responses for both Pulse windows, JPL Horizons answers, the Archive index, the drafted page as rendered, and the scripts. |
 | `records/live-thesis-20261113.html` | The capture. `live-headers.txt` and `live-fetched-at.txt` sit beside it. |
 | `records/live-thesis-extract.txt` | Its text with `aria-label`, `title`, `alt`, `meta` and `ld+json`. |
 | `records/live-thesis-rendered.json`, `rendered-*.png` | What a browser draws by script: the "Today" sentence, the twelve per-sign sentences, the four coin-field readouts. |
@@ -139,26 +146,82 @@ asked for these; they are applied in this folder's `claims.md` only.
 | Item | Change |
 |---|---|
 | F2 | B4 points to "README, decision 5". |
-| F3 | H3's suggested wording is "It is owned and operated by Zodiacs LLC, formed on 11 August 2026." |
+| F3 | H3's suggested wording is "It is owned and operated by Zodiacs LLC, formed on 11 August 2026." (Withdrawn in the fix round: see H3.) |
 | F4 | H4's suggested wording drops "five": the home page lists six languages. |
 | N1 | A4: seven more commits by 11 Jun, not four. |
 | N2 | O4: "independence" appears three times in the evidence file, not once. |
 | N3 | I11: "three captures of this site's home page". |
 | N4 | The four unrowed sentences have rows (Q2, Q7, Q9, Q13), with thirteen others found the same way. |
 
-## Open questions for the owner
+## Fix round, 13 Nov 2026 (ZOD-219)
 
-Unchanged. This run found no new public evidence on any of the three.
+One builder session after the owner's calls. Detail in `COPYFIX.md`.
 
-1. **Who built Zodiacs.org before Zodiacs LLC existed** (11 Aug 2026)? The
-   repository dates from 27 May 2026 and the home page was captured on
-   10 Jun. One wallet (`DUK1VN3W...ed13`) paid for all twelve coin creations
-   (read again today); the appendix implies the operator deployed them and
-   the disclosure page says that is not established (E1, K19, N5, H3).
-2. **What was at zodiacs.org in 2024 and 2025?** The Internet Archive's ten
-   captures from those years are one parked-domain redirect (I11).
-3. **What is "Published 1 Aug 2026" meant to mark?** The page's first commit
-   is 10 Jun 2026 and its first archived capture 13 Jul 2026 (A4, O12).
+| Test | Result |
+|---|---|
+| F1. Rows for the hero season line and the Pulse block | 24 rows, T1 to T24, each checked against a source opened in this round (R22 to R25, R28). 7 PASS, 4 FAIL, 13 NOT VERIFIED. The thirteen are the search figures: Google Trends refused the one request (HTTP 429), so they are checked against the site's data file only. |
+| F2. Pulse wording | "The strongest token article" is dropped. The drafted sentence names the Ethereum article as "the most read of the four token articles compared here", and the note says Bitcoin is not among them and gives its figure. The page and rows T10, T11 and U9 agree. |
+| F3. Season caption | "Aquarius gains the most ... Gemini the least" is gone from the drafted page and from the generator. P23 is FAIL and withdrawn. No other ranking replaces it; the earlier optional rewording is withdrawn too. |
+| F4. History claims | Cut or reworded in the draft: the "Published 1 Aug 2026" date (hero, closing line, both metadata fields), "the community ... built Zodiacs.org", "more than two years making the case", "one published address since the day it was made", the archive row and the two lines above it, and "the operator's existing infrastructure at deployment time". No answer was invented. |
+| F5. Drafts only | The changes are on the branch of draft PR 980. Nothing was merged, deployed or marked ready. The live page had the same SHA-256 at 11:21 UTC as in the rerun. Engine PRs 91 and 92 were not touched. |
+
+Counts after the fix round:
+
+| | Rows | PASS | FAIL | NOT VERIFIED | OPINION |
+|---|---|---|---|---|---|
+| Carried from the 11 Nov list (A to O) | 196 | 85 | 68 | 21 | 22 |
+| New after PR 995 (P) | 25 | 21 | 4 | 0 | 0 |
+| Given a row in the rerun (Q) | 17 | 9 | 1 | 2 | 5 |
+| Hero season line and Pulse block (T) | 24 | 7 | 4 | 13 | 0 |
+| **Live on 13 Nov** | **262** | **122** | **77** | **36** | **27** |
+
+The drafted copy changes the wording behind 14 of the 77 failures (A4, O12,
+G7, H3, H15, I2, I6, I11, N5, P23, T2, T4, T10, T11). The other 63 stand as
+listed under "What still fails" and were not part of this round.
+
+Three things found while writing the new rows, beyond what the review named:
+
+1. **The hero's day count can pass its total** (T2). In 12 of the 24 seasons
+   in the script's table the line reads, for 7 to 11 hours, "day 31 of 30",
+   "day 32 of 31" or "day 30 of 29". Fixed in the draft by rounding the total
+   up.
+2. **"Source: Wikimedia · live" covers figures that are not live** (T4). Only
+   the total is refreshed; the multiples beside it are from the file of
+   9 Nov. Relabelled in the draft.
+3. **The "median sign" is the seventh of twelve values** (T10). The true
+   median gives 1.4×, not 1.5×. Corrected in the draft.
+
+These three are small script fixes inside the two blocks the owner named.
+They go beyond the four calls as written and each can be reverted alone.
+
+## History questions the owner cannot answer
+
+On 13 Nov 2026 the owner said they do not have the answers to the three
+questions the earlier rounds left open. So the draft makes no claim that
+needs one, and none was invented.
+
+1. **Who built Zodiacs.org before Zodiacs LLC existed** (11 Aug 2026). Not on
+   record. The repository dates from 27 May 2026 and the home page was
+   captured on 10 Jun 2026. One wallet (`DUK1VN3W...ed13`) paid for all
+   twelve coin creations. Draft: the sentence saying the community built the
+   site is cut (H3), "more than two years making the case" is reworded (H15)
+   and the clause implying the operator deployed the coins is cut (N5). E1
+   and K19 name nobody and stand.
+2. **What was at zodiacs.org in 2024 and 2025.** Not on record. The Archive
+   gives its ten captures from those years one content digest. Draft: the
+   archive row counts only the three 2026 captures as this site and says the
+   repository's history begins 27 May 2026 (I11); "archive" is taken out of
+   the two summary lines (I2, I6); "one published address since the day it
+   was made" becomes a statement about the address alone (G7).
+3. **What "Published 1 Aug 2026" marks.** Not on record. The page's first
+   commit is 10 Jun 2026 and its first archived capture 13 Jul 2026. Draft:
+   the date is removed from the hero, the closing line and both metadata
+   fields (A4, O12). No other date stands in for it.
+
+Still on other pages, not touched here: the Archive page (`/archive/`) lists
+nine entries dated 2024-01-01 to 2025-10-29, and `thesis-history.json`'s
+`framing-shift` entry says "Both eras archived" with that page as a receipt.
+Those dates lean on the same history.
 
 Other decisions, unchanged:
 
@@ -178,6 +241,12 @@ New, small:
 8. Whether the season chart's headline should carry its basis ("against its
    own typical day") or switch to plain counts, and whether the claims file
    should gain entries for the new figures.
+9. From the fix round: the Registry hub (`src/app.jsx`, built into
+   `public/assets/app.js`) prints the same two Pulse sentences with "the
+   strongest token article" and "Gold line". Not changed here, because the
+   call was about the thesis page.
+10. From the fix round: the date after "Updated" is set to 13 Nov 2026, the
+    day the copy was changed. It should be the merge day if that is later.
 
 ## Method and limits
 

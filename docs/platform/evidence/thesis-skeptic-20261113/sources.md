@@ -358,15 +358,146 @@ Read from the local clone after `git fetch origin main`; `origin/main` was
 - Requests made by the page: its own fonts and three of its JSON files. The
   Pulse block in the drawer was not exercised.
 
+## Sources opened in the fix round (ZOD-219), 13 Nov 2026, 11:15 to 11:26 UTC
+
+R22 to R28 were opened in the fix round, a later session the same day
+(18:15 to 18:26 in Bangkok). Raw records are in `records/copyfix/`; the
+scripts are in `records/copyfix/tools/`.
+
+## R22. Wikimedia, the Pulse block's two windows
+
+- Same endpoint and path as the page and `scripts/build-pulse.mjs`:
+  `wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/<article>/daily/<from>/<to>`.
+  39 articles, two windows, 78 requests, 2026-11-13 from 11:15 UTC. Every raw
+  response is in `records/copyfix/wikimedia/`; times, statuses and SHA-256 in
+  `records/copyfix/wikimedia-fetch-log.tsv`; the table in
+  `records/copyfix/pulse-wikimedia-output.txt`
+  (`tools/pulse_fetch.py`).
+- **Committed window, 10 Oct to 8 Nov 2026** (what `pulse.json` holds): the
+  twelve sign articles 422,675 reads, 14,089 a day. Per sign: Aries 1,112,
+  Taurus 849, Gemini 2,031, Cancer 612, Leo 615, Virgo 859, Libra 1,052,
+  Scorpio 1,740, Sagittarius 2,101, Capricorn 1,245, Aquarius 976, Pisces
+  896. Dogecoin 314, Ethereum 705, `Solana_(blockchain_platform)` 278,
+  `Shiba_Inu_(cryptocurrency)` 70. All as printed. 14,089 divided by each:
+  44.9, 20.0, 50.7, 201.3.
+- **Bitcoin, same window: 97,139 reads, 3,238 a day.** Above every sign
+  article (highest: Sagittarius 2,101). 14,089 / 3,238 = 4.4.
+- Median of the twelve: sixth and seventh values 976 and 1,052, mean 1,014.
+  1,014 / 705 = 1.44; the page's rule takes the seventh, 1,052 / 705 = 1.49.
+  Against Bitcoin: 0.31 to 0.32.
+- Other titles tried, same window, reads a day: Binance 4,968, Satoshi
+  Nakamoto 2,465, Cryptocurrency 1,641, Tether 602, Stablecoin 469, $Trump
+  431, Monero 230, XRP Ledger 158, Litecoin 142, Tron 93, Cardano 67, Bitcoin
+  Cash 66, Avalanche 44, Chainlink 39, Polkadot 34, Memecoin 18, USD Coin 15,
+  Toncoin 1, Pi Network 0 (two days of data). `BNB_(cryptocurrency)`,
+  `Pepe_(cryptocurrency)` and `Hyperliquid` returned HTTP 404 (no article of
+  that title, or no reads).
+- **Live window, 14 Oct to 12 Nov 2026** (what the page's script requests on
+  13 Nov UTC): the twelve 429,109 reads, 14,304 a day ("14.3K"). Dogecoin
+  307, Ethereum 734, Solana 266, Shiba Inu 66, Bitcoin 3,397. Multiples over
+  this window would be 47, 19, 54, 217.
+
+## R23. The Pulse block's script and its committed data
+
+- `public/thesis/index.html` on `origin/main` (the live page's source) and
+  `public/assets/pulse.json`. The live `https://zodiacs.org/assets/pulse.json`,
+  fetched 2026-11-13T11:21:06Z, is byte-identical to the branch's file
+  (SHA-256 `93b471ca...989e57`).
+- `pulse.json`: `capturedAt` 2026-11-09; `wikipedia.from` 20261010, `to`
+  20261108, `twelveAvgDay` 14089, four `comparisons` with `multiple` 45, 20,
+  51, 201; `trends.averages` 64, 7, 36, 44 for horoscope, dogecoin, solana,
+  ethereum; `trendsSigns` anchor "dogecoin", values 0.29 to 0.49.
+- The script: draws the committed values first; a second request fetches the
+  twelve sign articles for the trailing 30 days and replaces only the total
+  and its sparkline, then sets the header to "Source: Wikimedia · live". The
+  "strongest" article is the largest `avgDay` among `comparisons`. The
+  "median" is `sorted[Math.floor(12 / 2)]`, the seventh value.
+- The comparison set is fixed in `scripts/build-pulse.mjs` (`COMPARISONS`:
+  Dogecoin, Ethereum, Solana, Shiba Inu). The same file feeds the twelve
+  Registry sign pages and the Registry hub.
+
+## R24. The hero's season table, the site's table and JPL Horizons
+
+- `records/copyfix/season-clock-output.txt` (`tools/season_clock_check.py`).
+- The script in the page holds 24 sign entries, Aquarius 2026 to Capricorn
+  2027, and an end at 2028-01-20T13:21:47Z. Against
+  `src/data/sun-ingresses.json` the largest difference is 6.9 seconds.
+- NASA JPL Horizons API (`ssd.jpl.nasa.gov/api/horizons.api`), Sun, geocentric,
+  observer ecliptic longitude (quantity 31), one-minute steps, fetched
+  2026-11-13T11:16:55Z; raw answers `records/copyfix/horizons-sun-*.txt`.
+  Crossing of 210 degrees: 2026-10-23 09:37:57 UTC (table 09:38:21). Of 240
+  degrees: 2026-11-22 07:23:21 (table 07:23:27). Of 60 degrees: 2026-05-21
+  00:36:45 (table 00:37:22). Of 90 degrees: 2026-06-21 08:24:31 (table
+  08:25:08). Interpolated between minutes; good to a few seconds.
+- The two rules applied to every season: the day number passes the total in
+  12 of 24 (the table in the output file).
+- A second call to Horizons a minute later ended in a TLS error. It was not
+  needed: the four answers were already saved, and the script now reads saved
+  answers.
+
+## R25. The drafted page as a browser draws it
+
+- `public/` of this branch served on localhost, headless Chromium
+  (Playwright), 1280 by 900, 2026-11-13T11:25:17Z. Record:
+  `records/copyfix/rendered-draft.json` (`tools/render_draft.cjs`). No page
+  errors.
+- Hero: "Updated 13 Nov 2026 / Evidence checked 10 Nov 2026" and "Scorpio
+  season · day 22 of 30". With the clock set to seven other instants: "Aries
+  season · day 31 of 31", "Gemini season · day 32 of 32", "Cancer season ·
+  day 32 of 32", "Libra season · day 31 of 31", "Capricorn season · day 30
+  of 30", "Scorpio season · day 30 of 30", "Sagittarius season · day 1 of
+  30".
+- Pulse, in view, after the live request: "Source: Wikimedia · total live ·
+  comparisons captured 2026-11-09", "14.3K / day", the four cells unchanged,
+  "One on one: the median sign article reads at 1.4× the Ethereum article,
+  the most read of the four token articles compared here.", and the note
+  ending "Bitcoin is not among them: its article had 3,238 reads a day from
+  10 Oct to 8 Nov 2026, more than any single sign article in those 30 days."
+- Season caption, closing line and archive row as quoted in rows U1, U3, U7.
+
+## R26. The Internet Archive, again
+
+- CDX index with digests, 2026-11-13T11:21:08Z, HTTP 200:
+  `records/copyfix/wayback-cdx.json`. Thirteen rows; ten from 2024-07-26 to
+  2025-07-19 with digest `7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ`; then
+  2026-06-10 (`RO4LYAVS...`), 2026-07-10 (`UGAJDNUC...`), 2026-10-11
+  (`IWRNAGWL...`).
+- Captures opened, HTTP 200 both: 20261011021828, a title that begins "Zodiacs.org" and goes on "Free Birth Charts, Sign
+  Guides & Astrology Tools"; 20260610083004, title
+  "Zodiacs · The Twelve." (the read the rerun was refused). Hashes in
+  `records/copyfix/other-fetch-log.txt`; the pages are not committed.
+- No HTTP 429 from the Archive in this round: three requests, spaced.
+
+## R27. The registry file against the ledger record
+
+- `https://zodiacs.org/registry/zodiacs.registry.json`, 2026-11-13T11:21:17Z
+  (the first try ended in a TLS error; one more try succeeded). Byte-identical
+  to the branch's file.
+- Its twelve native Solana addresses equal the twelve mints in
+  `records/onchain.json` (ledger read 2026-11-13T09:02Z in the rerun), each
+  with an origin transaction dated 2024-07-05:
+  `records/copyfix/registry-vs-ledger-output.txt`. The ledger was not read
+  again in the fix round.
+
+## R28. Google Trends
+
+- One request to the Trends explore API for "aries horoscope" against
+  "dogecoin", 2026-11-13T11:25:30Z: HTTP 429. Not retried. Rows M4 and T12
+  to T24 are NOT VERIFIED against Google; the page matches `pulse.json`.
+
+Also reopened in the fix round: the live thesis page at 11:21:05Z (same
+SHA-256 as the capture, so the page had not changed) and `/about/` ("Zodiacs
+LLC owns and operates this website", founding date 2026-08-11).
+
 ## Not opened in this run
 
 | Source | What happened | Effect |
 |---|---|---|
-| Internet Archive captures 20250719223440 and 20260610083004 | HTTP 429 ("flagged as suspected abusive bot traffic"). Not retried. | I11 rests on the index (same digests as before) and on one reopened capture. The title of the 2026-06-10 capture was read in the earlier round, not in this one. |
+| Internet Archive captures 20250719223440 and 20260610083004 | HTTP 429 ("flagged as suspected abusive bot traffic"). Not retried in the rerun. | I11 rests on the index (same digests as before) and on one reopened capture. The 2026-06-10 capture was opened in the fix round (R26); 20250719223440 was not. |
 | Solscan token page | HTTP 200 with an empty application shell, no figures | Holder count from Jupiter (R12); pool burns and top-ten shares stay NOT VERIFIED. |
 | Allied Market Research, Axios | HTTP 403, one attempt each | Not opened. The page prints no figure from them (L6). |
 | `x.com/search?q=astrofolio dead bag` | Needs a login | Not opened. Still the only receipt for the "dead bag" entry. |
-| Google Trends | Not opened | Pulse search figures stay NOT VERIFIED (M4). |
+| Google Trends | Not opened in the rerun; HTTP 429 to one request in the fix round (R28) | Pulse search figures stay NOT VERIFIED (M4, T12 to T24). |
 | Basescan, Wormhole documentation | Not opened | Bridge mechanism stays NOT VERIFIED (K11, Q10). |
 | The web searches behind "no qualifying results" | Not rerun | H11, I3, I4, I8, Q3 stay NOT VERIFIED. |
 | The operator "statement of 10 Nov 2026" named in the claims file | Not published anywhere found | The dated public statements are still 2 Aug and 23 Aug 2026 (R6). |
