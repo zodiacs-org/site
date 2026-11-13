@@ -1095,6 +1095,13 @@ for (const path of sitemapLocs) {
   if (!discoveryDepths.has(path)) fail(`sitemap.xml: no rendered anchor path from homepage to ${path}`);
 }
 console.log(`Indexing discovery: ${[...sitemapLocs].filter((path) => discoveryDepths.has(path)).length}/${sitemapLocs.size} sitemap URLs reachable from home`);
+// Every sitemap page is at most three clicks from the homepage (ZOD-221): a
+// page deeper than that is one Google rarely gets to on a young site.
+const MAX_SITEMAP_DEPTH = 3;
+for (const path of sitemapLocs) {
+  const depth = discoveryDepths.get(path);
+  if (depth > MAX_SITEMAP_DEPTH) fail(`sitemap.xml: ${path} is ${depth} clicks from the homepage; link it within ${MAX_SITEMAP_DEPTH}`);
+}
 for (const block of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
   const loc = block[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '?';
   try {

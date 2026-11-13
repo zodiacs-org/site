@@ -1019,6 +1019,13 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-12');
     }
   }
+  // Every sitemap page within three clicks of home (ZOD-221): the tools hub
+  // links the sign seasons and the Almanac, and the translated homes link
+  // their language's sign seasons. Last, so these win.
+  for (const loc of ['/tools/', '/es/', '/fr/', '/it/', '/pt/']) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-11-13');
+  }
   return [
     ...urls,
     ...localizedUrls,
