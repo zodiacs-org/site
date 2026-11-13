@@ -8,6 +8,7 @@ import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { SIGNS, formatLongitude, signForLongitude, signName } from '../lib/signs';
 import {
   followWithHandoff,
+  profileChartHandoffFragment,
   profileChartIdFromHash,
   sessionHandoffAvailable,
   stashChartHandoff,
@@ -103,9 +104,11 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   // stripped first; the chart is read only behind the profile access guard,
   // and its date passes the same birth date policy as the form.
   const profileOriginRef = useRef(false);
+  const profileChartIdRef = useRef<string | null>(null);
   const profileAccessGeneration = useProfileAccessGeneration(() => {
     if (!profileOriginRef.current) return;
     profileOriginRef.current = false;
+    profileChartIdRef.current = null;
     generation.current += 1;
     cardAttempt.current += 1;
     cardSource.current = null;
@@ -137,10 +140,24 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
       void import('../lib/profile/profile-chart-handoff').then(({ loadProfileChartRunInput }) => {
         resolving = false;
         if (!active || !profileAccessAllowed()) return;
-        if (accessGeneration !== profileAccessGeneration.current) return;
+        if (accessGeneration !== profileAccessGeneration.current) {
+          // Access is still allowed; a refresh just bumped the generation.
+          queueMicrotask(open);
+          return;
+        }
         const saved = loadProfileChartRunInput(chartId);
-        if (!saved) return;
+        if (!saved) {
+          active = false;
+          window.removeEventListener('zodiacs:profile-access', open);
+          return;
+        }
+        // The first successful load is enough; later access grants must not
+        // overwrite a chart the visitor has since entered. Revocation is
+        // handled by useProfileAccessGeneration, not this listener.
+        active = false;
+        window.removeEventListener('zodiacs:profile-access', open);
         profileOriginRef.current = true;
+        profileChartIdRef.current = chartId;
         const from: SavedBirth = { date: saved.date, time: saved.time, city: saved.city };
         setDate(from.date);
         setCalendar('gregorian');
@@ -167,6 +184,8 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
 
   function edit<T>(setter: (value: T) => void, value: T): void {
     generation.current += 1; cardAttempt.current += 1;
+    profileOriginRef.current = false;
+    profileChartIdRef.current = null;
     setter(value); setBusy(false); setPlacements(null); setHandoff(null);
     cardSource.current = null; setCard(null); setCardState('idle'); setCardError(''); setError('');
   }
@@ -394,11 +413,13 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
           </div>
 
           <div class="big-three__next">
-            {handoff && sessionHandoffAvailable() && <a
+            {handoff && (profileChartIdRef.current || sessionHandoffAvailable()) && <a
               class="btn btn--primary"
               href={localizePath(locale, '/birth-chart/')}
               onClick={(event) => followWithHandoff(event, () => {
-                const fragment = stashChartHandoff(handoff);
+                const fragment = profileChartIdRef.current
+                  ? profileChartHandoffFragment(profileChartIdRef.current)
+                  : stashChartHandoff(handoff);
                 return fragment ? `${localizePath(locale, '/birth-chart/')}#${fragment}` : null;
               })}
               data-big-three-full

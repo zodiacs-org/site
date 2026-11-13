@@ -1,5 +1,6 @@
 import { SHARING_COPY } from '../lib/sharing/copy';
 import type { VNode } from 'preact';
+import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { City } from '../lib/geo/search';
 import type { Chart } from '../lib/engine/types';
@@ -17,11 +18,19 @@ const harness = vi.hoisted(() => ({
   prepare: vi.fn(),
   save: vi.fn(),
   track: vi.fn(),
+  loadProfileChartRunInput: vi.fn(),
+  profileAccessAllowed: vi.fn(() => true),
 }));
 
 vi.mock('../lib/geo/search', () => ({ preloadIndex: vi.fn().mockResolvedValue({}) }));
 vi.mock('../lib/hooks/useEngine', () => ({ useEngine: () => harness.loadEngine }));
 vi.mock('../lib/share-card', () => ({ prepareBigThreeCard: harness.prepare, savePreparedChartCard: harness.save }));
+vi.mock('../lib/profile/profile-chart-handoff', () => ({
+  loadProfileChartRunInput: harness.loadProfileChartRunInput,
+}));
+vi.mock('../lib/account-v2/profile-access-reader', () => ({
+  profileAccessAllowed: harness.profileAccessAllowed,
+}));
 vi.mock('../lib/module-load', async (importOriginal) => {
   const original = await importOriginal<typeof import('../lib/module-load')>();
   return { ...original, loadModule: (load: () => Promise<unknown>) => original.loadModule(() => harness.loadCard(load)) };
@@ -116,10 +125,15 @@ beforeEach(() => {
   harness.prepare.mockReset().mockResolvedValue(prepared);
   harness.save.mockReset().mockResolvedValue('shared');
   harness.track.mockReset();
+  harness.loadProfileChartRunInput.mockReset();
+  harness.profileAccessAllowed.mockReset().mockReturnValue(true);
+  vi.stubGlobal('location', { hash: '', pathname: '/big-three/', search: '' });
+  vi.stubGlobal('history', { replaceState: vi.fn() });
   vi.stubGlobal('window', {
     zodiacsAnalytics: { track: harness.track },
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
+    location: { assign: vi.fn() },
   });
   // The full-chart link is offered only where a session handoff can be stashed.
   const session = new Map<string, string>();
@@ -314,3 +328,60 @@ describe('Big Three optional card recovery', () => {
     expect(find('data-big-three-submit').props.disabled).toBe(false);
   });
 });
+
+const PROFILE_CHART_ID = '11111111-1111-4111-8111-111111111111';
+
+describe('Big Three saved-chart provenance', () => {
+  async function openSavedChart() {
+    harness.loadProfileChartRunInput.mockReturnValue({
+      date: '1989-12-20',
+      time: '11:30',
+      timeKnown: true,
+      city: paris,
+      houseSystem: 'whole',
+    });
+    vi.stubGlobal('location', { hash: `#profileChartId=${PROFILE_CHART_ID}`, pathname: '/big-three/', search: '' });
+    render();
+    await settle();
+  }
+
+  it('opens the full chart by the saved chart\'s opaque id, not a session handoff', async () => {
+    await openSavedChart();
+    expect(find('data-big-three-result')).toBeDefined();
+    const link = find('data-big-three-full');
+    expect(link.props.href).toBe('/birth-chart/');
+    const event = { defaultPrevented: false, button: 0, preventDefault: vi.fn() };
+    link.props.onClick(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(window.location.assign).toHaveBeenCalledWith(`/birth-chart/#profileChartId=${PROFILE_CHART_ID}`);
+    expect(sessionStorage.length).toBe(0);
+  });
+
+  it('does not reopen the saved chart after the first successful load', async () => {
+    await openSavedChart();
+    expect(harness.computeChart).toHaveBeenCalledOnce();
+    const added = (window.addEventListener as ReturnType<typeof vi.fn>).mock.calls
+      .filter((call) => call[0] === 'zodiacs:profile-access')
+      .map((call) => call[1]);
+    const removed = (window.removeEventListener as ReturnType<typeof vi.fn>).mock.calls
+      .filter((call) => call[0] === 'zodiacs:profile-access')
+      .map((call) => call[1]);
+    // The load listener is retired; the access-generation hook stays subscribed.
+    expect(removed.length).toBeGreaterThan(0);
+    for (const listener of added) {
+      if (removed.includes(listener)) listener();
+    }
+    await settle();
+    expect(harness.computeChart).toHaveBeenCalledOnce();
+  });
+
+  it('retries a profile handoff invalidated during its import', () => {
+    const source = readFileSync(new URL('./BigThreeQuick.tsx', import.meta.url), 'utf8');
+    const open = source.indexOf("if (!new URLSearchParams(hash.slice(1)).has('profileChartId')) return;");
+    const end = source.indexOf('function edit', open);
+    const branch = source.slice(open, end);
+    expect(branch).toContain('queueMicrotask(open)');
+    expect(branch).toContain('accessGeneration !== profileAccessGeneration.current');
+  });
+});
+
