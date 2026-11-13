@@ -218,4 +218,32 @@ describe('birthplace search recovery and request ownership', () => {
     expect(view.some((node) => node.props.role === 'status')).toBe(false);
     expect(view.some((node) => node.type === 'button' && node.props.role === 'option')).toBe(true);
   });
+
+  it('returns focus to the search field after "Change birthplace" removes the chip', () => {
+    const clear = nodes(render(paris)).find((node) => node.type === 'button' && node.props.class === 'place__clear')!;
+    clear.props.onClick();
+    expect(onSelect).toHaveBeenLastCalledWith(null);
+    const focus = vi.fn();
+    const combobox = nodes(render(null, true)).find((node) => node.props.role === 'combobox')!;
+    (combobox.ref as { current: unknown }).current = { focus };
+    flushEffects();
+    expect(focus).toHaveBeenCalledOnce();
+    // A later render without a clear leaves focus where the reader put it.
+    render(paris);
+    render(null);
+    expect(focus).toHaveBeenCalledOnce();
+  });
+
+  it('reads the help under the field after the pick hint or error, in both states', () => {
+    const describe = (selected: City | null, validationError?: string) => {
+      harness.cursor = 0;
+      harness.effectCursor = 0;
+      const view = nodes(PlaceSearch({ onSelect, selected, id: 'p', describedBy: 'p-help', validationError }));
+      flushEffects();
+      return view.find((node) => node.type === 'input')!.props['aria-describedby'];
+    };
+    expect(describe(null)).toBe('p-help');
+    expect(describe(null, 'Pick your birthplace from the list.')).toBe('p-pick-hint p-help');
+    expect(describe(paris)).toBe('p-help');
+  });
 });

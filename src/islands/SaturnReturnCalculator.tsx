@@ -115,7 +115,7 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
               locale={locale} id="sr-date" date={date} city={showDetail ? city : null}
               onDateChange={(value) => { invalidate(); setDate(value); }} calendar={calendar} onCalendarChange={(value) => { invalidate(); setCalendar(value); }}
               onFocus={() => { void loadReturns(); }}
-              help={<p class="field__help">{t(locale, 'saturnDateHelp')}</p>}
+              help={<p id="sr-date-help" class="field__help">{t(locale, 'saturnDateHelp')}</p>} helpId="sr-date-help"
             />
           </div>
 

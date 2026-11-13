@@ -107,6 +107,8 @@ const es = {
     birthDateRequired: 'Ingresa tu fecha de nacimiento.',
     birthDateRange: 'Elige una fecha de nacimiento entre 1800 y 2199.',
     birthTimeRequired: 'Ingresa tu hora de nacimiento.',
+    dateRequired: 'Ingresa una fecha.',
+    dateRange: 'Elige una fecha entre 1800 y 2199.',
     houseSystem: 'Sistema de casas',
     wholeSignDefault: 'Signos completos (predeterminado)',
     placidus: 'Placidus',

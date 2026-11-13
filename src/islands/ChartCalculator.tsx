@@ -2116,6 +2116,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                 <select
                   id="house-system" class="field__input"
                   value={houseSystem}
+                  aria-describedby={locale === 'en' ? 'house-system-help house-system-help-2' : 'house-system-help'}
                   onChange={(e) => {
                     invalidateProfileHandoff();
                     setHouseSystem((e.target as HTMLSelectElement).value as HouseSystem);
@@ -2127,10 +2128,10 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                 {locale === 'en' ? (
                   <>
                     {/* Keep this sentence aligned with the houseSystemHelp catalog entry. */}
-                    <p class="field__help">
+                    <p id="house-system-help" class="field__help">
                       You can keep the default. Change this only if you prefer another house system.
                     </p>
-                    <p class="field__help">
+                    <p id="house-system-help-2" class="field__help">
                       How the chart divides into twelve areas of life.{' '}
                       <AstroTerm term="whole-sign-houses" label="Whole sign" surface="birth-chart-form" /> gives
                       each sign one house; <AstroTerm term="placidus" label="Placidus" surface="birth-chart-form" />{' '}
@@ -2140,7 +2141,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                     <p class="field__help calc__context-cue">{t(locale, 'contextHelpCue')}</p>
                   </>
                 ) : (
-                  <p class="field__help">{t(locale, 'houseSystemHelp')}</p>
+                  <p id="house-system-help" class="field__help">{t(locale, 'houseSystemHelp')}</p>
                 )}
               </div>
             </details>

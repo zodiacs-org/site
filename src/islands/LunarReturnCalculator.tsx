@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { ComponentType } from 'preact';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import { birthFieldMessages, focusField } from './birth-field-check';
 import PlaceSearch from './PlaceSearch';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
@@ -99,9 +100,22 @@ export default function LunarReturnCalculator() {
   const birthplace = saved ? saved.birth.place : city;
   const completeSaved = saved && saved.birth.date && known && birthplace && Boolean(birthplace.tz);
   const ready = source === 'saved' ? Boolean(completeSaved) : Boolean(date && known && birthplace?.tz);
+  const incomplete = (source === 'saved' && !completeSaved) || (source === 'manual' && !timeKnown);
+  // After a press that could not calculate, each field names what it is missing.
+  const [fieldsChecked, setFieldsChecked] = useState(false);
+  const fieldMessages = () => birthFieldMessages('en', { date: 'lr-date', time: 'lr-time', place: 'lr-place' }, {
+    date, time, timeKnown, requireTime: true, city,
+  });
+  const messages = fieldsChecked && source === 'manual' ? fieldMessages() : {};
+  const castError = fieldsChecked && ready && differentPlace && !castCity ? 'Pick the return location from the list.' : undefined;
 
   async function calculate(event: Event) {
     event.preventDefault();
+    if (mounted.current && !inFlight.current && (!ready || (differentPlace && !castCity))) {
+      setFieldsChecked(true);
+      focusField(ready ? 'lr-cast-place' : incomplete ? 'lr-incomplete' : fieldMessages().first);
+      return;
+    }
     if (!mounted.current || !ready || inFlight.current || (differentPlace && !castCity)) return;
     const input = {
       birthDate: saved?.birth.date ?? date, birthTime: saved?.birth.time ?? (time || null), timeKnown: known,
@@ -145,7 +159,7 @@ export default function LunarReturnCalculator() {
 
   return (
     <div class="calc" data-lunar-return-calculator>
-      <form class="calc__form shell" onSubmit={calculate} aria-busy={busy}>
+      <form class="calc__form shell" onSubmit={calculate} aria-busy={busy} noValidate>
         <div class="core calc__core">
           {profile.charts.length > 0 && <div class="field sr-form__source">
             <label class="field__label" for="lr-source">Chart</label>
@@ -166,10 +180,11 @@ export default function LunarReturnCalculator() {
               onTimeKnownChange={(value) => { invalidateResult(); setTimeKnown(value); setDifferentPlace(false); setCastCity(null); }}
               onCityChange={(value) => { invalidateResult(); setCity(value); }} requireKnownTime
               timeHelp="Use the time from your birth record. A lunar return needs a known birth time."
-              placeHelp="Choose a city so its timezone can be used for your birth time." />
+              placeHelp="Choose a city so its timezone can be used for your birth time."
+              dateError={messages.dateError} timeError={messages.timeError} placeError={messages.placeError} />
           </div>}
-          {((source === 'saved' && !completeSaved) || (source === 'manual' && !timeKnown)) && <div class="lr-input-notice" data-lr-incomplete>
-            <p class="notice">A lunar return needs a known birth time and a birthplace with a timezone. A Moon sign or an incomplete saved chart cannot supply the return time.</p>
+          {incomplete && <div class="lr-input-notice" data-lr-incomplete>
+            <p class="notice" id="lr-incomplete" tabIndex={-1}>A lunar return needs a known birth time and a birthplace with a timezone. A Moon sign or an incomplete saved chart cannot supply the return time.</p>
             {source === 'saved' && <button class="btn btn--ghost" type="button" onClick={() => {
               invalidateResult(); setSource('manual'); setSavedId(''); setDifferentPlace(false); setCastCity(null);
             }}>Enter complete birth details</button>}
@@ -178,10 +193,10 @@ export default function LunarReturnCalculator() {
             <label class="field__toggle sr-form__toggle"><input type="checkbox" checked={differentPlace} onChange={(event) => {
               invalidateResult(); setDifferentPlace(event.currentTarget.checked); setCastCity(null);
             }} />Cast for a different place</label>
-            {differentPlace && <><label class="field__label" for="lr-cast-place">Return location</label><PlaceSearch id="lr-cast-place" selected={castCity} onSelect={(value) => { invalidateResult(); setCastCity(value); }} locale="en" /></>}
+            {differentPlace && <><label class="field__label" for="lr-cast-place">Return location</label><PlaceSearch id="lr-cast-place" selected={castCity} onSelect={(value) => { invalidateResult(); setCastCity(value); }} locale="en" required validationError={castError} /></>}
             <p class="field__help">Defaults to the birthplace. A different place changes the rising sign and houses; the return instant and planets stay the same.</p>
           </div>}
-          <button class="btn btn--primary calc__submit" type="submit" disabled={!ready || busy || (differentPlace && !castCity)}>
+          <button class="btn btn--primary calc__submit" type="submit" disabled={busy}>
             <span>{busy ? 'Calculating…' : error ? 'Try calculation again' : 'Find next lunar return'}</span><span class="orb" aria-hidden="true">↗</span>
           </button>
           <p class="field__help">Finds the next return after the moment you calculate. Each result keeps that reference time.</p>

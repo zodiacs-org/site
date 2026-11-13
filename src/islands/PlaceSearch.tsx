@@ -15,6 +15,8 @@ interface Props {
   validationError?: string;
   selectionHint?: string;
   required?: boolean;
+  /** The id of help text under the field, read after the pick hint or error. */
+  describedBy?: string;
 }
 
 export default function PlaceSearch({
@@ -25,6 +27,7 @@ export default function PlaceSearch({
   validationError,
   selectionHint,
   required = false,
+  describedBy,
 }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<City[]>([]);
@@ -37,6 +40,7 @@ export default function PlaceSearch({
   const inputRef = useRef<HTMLInputElement>(null);
   const chipRef = useRef<HTMLInputElement>(null);
   const focusChip = useRef(false);
+  const focusInput = useRef(false);
 
   // After a keyboard or pointer choice the combobox is replaced by the chip;
   // focus follows to the same field instead of falling back to the body.
@@ -44,6 +48,13 @@ export default function PlaceSearch({
     if (!selected || !focusChip.current) return;
     focusChip.current = false;
     chipRef.current?.focus();
+  }, [selected]);
+  // "Change birthplace" removes the chip and its button; focus goes back to
+  // the search field it is replaced by instead of falling to the page.
+  useEffect(() => {
+    if (selected || !focusInput.current) return;
+    focusInput.current = false;
+    inputRef.current?.focus();
   }, [selected]);
   const pickHint = validationError || (!selected && query.trim() ? selectionHint : '');
 
@@ -123,8 +134,11 @@ export default function PlaceSearch({
     return (
       <div class="place place--selected">
         <span class="place__chip">
-          <input id={id} ref={chipRef} class="place__chip-value" readOnly value={chipValue} />
-          <button type="button" class="place__clear" aria-label={t(locale, 'placeChange')} onClick={() => onSelect(null)}>×</button>
+          <input id={id} ref={chipRef} class="place__chip-value" readOnly value={chipValue} aria-describedby={describedBy} />
+          <button type="button" class="place__clear" aria-label={t(locale, 'placeChange')} onClick={() => {
+            focusInput.current = true;
+            onSelect(null);
+          }}>×</button>
         </span>
       </div>
     );
@@ -148,7 +162,7 @@ export default function PlaceSearch({
         aria-autocomplete="list"
         aria-controls={`${id}-list`}
         aria-activedescendant={open && results[active] ? `${id}-opt-${active}` : undefined}
-        aria-describedby={pickHint ? `${id}-pick-hint` : undefined}
+        aria-describedby={[pickHint ? `${id}-pick-hint` : null, describedBy].filter(Boolean).join(' ') || undefined}
         aria-invalid={validationError ? 'true' : undefined}
         aria-required={required || undefined}
         placeholder={t(locale, 'placePlaceholder')}
