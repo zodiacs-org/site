@@ -99,7 +99,7 @@ try {
     const start = performance.now();
     const result = await client.callTool({ name, arguments: args });
     assert.equal(result.isError, false); assert.equal(result.structuredContent.ok, true);
-    if (name === 'get_capabilities') assert.equal(result.structuredContent.data.version, '0.6.6');
+    if (name === 'get_capabilities') assert.equal(result.structuredContent.data.version, '0.6.7');
     if (name === 'get_horoscope') assert.equal(result.structuredContent.data.status, 'available');
     if (name === 'open_chart_studio') assert.deepEqual(result.structuredContent.data, {
       title: 'Chart Studio', calculation: 'browser-local', initialChart: 'birth-details', sharing: 'user-reviewed-selection-only',
@@ -115,7 +115,7 @@ try {
   record('native calendar resource');
   for (const [current, earlier] of [
     ...['sky-events-v3', 'sky-events-v2', 'sky-events-v1'].map(old => ['sky-events-v4', old]),
-    ...['horoscopes-v5', 'horoscopes-v4', 'horoscopes-v3', 'horoscopes-v2', 'horoscopes-v1'].map(old => ['horoscopes-v6', old]),
+    ...['horoscopes-v6', 'horoscopes-v5', 'horoscopes-v4', 'horoscopes-v3', 'horoscopes-v2', 'horoscopes-v1'].map(old => ['horoscopes-v7', old]),
     ...['chart-studio-v5', 'chart-studio-v4', 'chart-studio-v3', 'chart-studio-v2', 'chart-studio-v1'].map(old => ['chart-studio-v6', old]),
     ...['occasions-v7', 'occasions-v6', 'occasions-v5', 'occasions-v4', 'occasions-v3', 'occasions-v2', 'occasions-v1'].map(old => ['occasions-v8', old]),
   ]) {
@@ -124,7 +124,7 @@ try {
     assert.equal(before.text, now.text, `${earlier} serves the current panel`);
   }
   record('earlier panel addresses serve the current panels');
-  const horoscopes = (await client.readResource({ uri: 'ui://zodiacs/horoscopes-v6.html' })).contents[0];
+  const horoscopes = (await client.readResource({ uri: 'ui://zodiacs/horoscopes-v7.html' })).contents[0];
   assert.equal(horoscopes.mimeType, 'text/html;profile=mcp-app');
   assert.equal(horoscopes.text, HOROSCOPES_HTML);
   assert.deepEqual(horoscopes._meta.ui.csp, { connectDomains: [], resourceDomains: ['https://zodiacs.org'] });

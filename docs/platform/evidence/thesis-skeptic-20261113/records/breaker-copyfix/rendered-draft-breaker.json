@@ -1,0 +1,347 @@
+{
+ "renderedAt": "2026-11-13T11:42:36.972Z",
+ "base": "http://127.0.0.1:18591",
+ "status": 200,
+ "head": {
+  "published": [
+   "article:modified_time=2026-11-13"
+  ],
+  "jsonld": [
+   "\"dateModified\": \"2026-11-13\""
+  ]
+ },
+ "heroMeta": "Updated 13 Nov 2026\nEvidence checked 10 Nov 2026",
+ "heroClock": "Scorpio season · day 22 of 30",
+ "closing": "Evidence checked 10 Nov 2026 · Zodiacs.org · The Registry · An editorial thesis · not advice · Nº 10",
+ "seasonCaption": "Each line is one sign’s English Wikipedia article on a typical day of the year, 2016 to 2025, against that sign’s own typical day. The bright stretch is the sign’s season. The lift shows in 118 of 120 sign-years. This measures curiosity, not demand for the coins.",
+ "seasonReadout": "Today the Sun is in Scorpio. Scorpio’s article is read 61% more in its own season than in the rest of the year.",
+ "pulseLive": true,
+ "pulse": "THE PULSE — ATTENTION, MEASURED\nSOURCE: WIKIMEDIA · TOTAL LIVE · COMPARISONS CAPTURED 2026-11-09\nENCYCLOPEDIA READS · ALL TWELVE SIGNS\n14.1K / day\nTRAILING 30 DAYS · EN.WIKIPEDIA\nVS DOGECOIN\n45×\n314 / DAY · SINGLE ARTICLE\nVS ETHEREUM\n20×\n705 / DAY · SINGLE ARTICLE\nVS SOLANA\n51×\n278 / DAY · SINGLE ARTICLE\nVS SHIBA INU\n201×\n70 / DAY · SINGLE ARTICLE\nONE SIGN AT A TIME\nWIKIMEDIA · SINGLE ARTICLES, SAME WINDOW\n\nOne on one: the median sign article reads at 1.4× the Ethereum article, the most read of the four token articles compared here.\n\nAries\n1.1K\nTaurus\n849\nGemini\n2.0K\nCancer\n612\nLeo\n615\nVirgo\n859\nLibra\n1.1K\nScorpio\n1.7K\nSagittarius\n2.1K\nCapricorn\n1.2K\nAquarius\n976\nPisces\n896\n\nReads per day, one disambiguated article per sign. The line marks the Ethereum article in the same window (705 / day). Token articles compared: Dogecoin 314 · Ethereum 705 · Solana 278 · Shiba Inu 70. Bitcoin is not among them: its article had 3,238 reads a day from 10 Oct to 8 Nov 2026, more than any single sign article in those 30 days.\n\nSEARCHING THE SKY\nSOURCE: GOOGLE TRENDS · CAPTURED 2026-11-09 · 12MO RELATIVE\n“horoscope”\n64\n“dogecoin”\n7\n“solana”\n36\n“ethereum”\n44\nOPEN THE LIVE COMPARISON\n↗\nSEARCHING, SIGN BY SIGN\nGOOGLE TRENDS · CAPTURED 2026-11-09 · “DOGECOIN” = 1\n“aries horoscope”\n0.4×\n“taurus horoscope”\n0.4×\n“gemini horoscope”\n0.4×\n“cancer horoscope”\n0.5×\n“leo horoscope”\n0.4×\n“virgo horoscope”\n0.4×\n“libra horoscope”\n0.4×\n“scorpio horoscope”\n0.4×\n“sagittarius horoscope”\n0.3×\n“capricorn horoscope”\n0.3×\n“aquarius horoscope”\n0.3×\n“pisces horoscope”\n0.4×\n\nBare sign terms are ambiguous in English (cancer the disease, gemini the model), so each bar measures the explicit query, an undercount by design. The reference line is the anchor token's search interest over the same twelve months, set to 1.\n\nACROSS THE FEEDS · EDITORIAL ESTIMATES\nESTIMATES · 2026-06\n\nPlatform figures are editorial estimates from public cumulative hashtag and search-volume data — directional, not measured. Encyclopedia figures are measured; search figures are Google Trends relative interest.\n\nX EST.\n≈250K\nASTROLOGY POSTS / DAY\nINSTAGRAM EST.\n≈80K\nSIGN-TAGGED POSTS / DAY\nTIKTOK EST.\n≈100M\nZODIAC-TAG VIEWS / DAY\nGOOGLE EST.\n10M+\n“HOROSCOPE” SEARCHES / MO",
+ "wikimediaAnswers": [
+  {
+   "url": "Taurus_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 30,
+   "last": "2026111200"
+  },
+  {
+   "url": "Aries_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 30,
+   "last": "2026111200"
+  },
+  {
+   "url": "Virgo_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 29,
+   "last": "2026111100"
+  },
+  {
+   "url": "Leo_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 29,
+   "last": "2026111100"
+  },
+  {
+   "url": "Libra_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 30,
+   "last": "2026111200"
+  },
+  {
+   "url": "Pisces_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 29,
+   "last": "2026111100"
+  },
+  {
+   "url": "Cancer_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 29,
+   "last": "2026111100"
+  },
+  {
+   "url": "Gemini_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 30,
+   "last": "2026111200"
+  },
+  {
+   "url": "Aquarius_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 29,
+   "last": "2026111100"
+  },
+  {
+   "url": "Capricorn_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 29,
+   "last": "2026111100"
+  },
+  {
+   "url": "Sagittarius_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 29,
+   "last": "2026111100"
+  },
+  {
+   "url": "Scorpio_(astrology)/daily/20261014/20261112",
+   "status": 200,
+   "days": 30,
+   "last": "2026111200"
+  }
+ ],
+ "bodyHits": {
+  "strongest_text": [],
+  "goldLine": [],
+  "gainsMost": [],
+  "published": [],
+  "datePublished": [],
+  "community": [],
+  "since2024": []
+ },
+ "pageErrors": [],
+ "windowsFound": true,
+ "fakedClock": [
+  {
+   "at": "2026-01-20T01:43:34.379Z",
+   "line": "",
+   "over": null
+  },
+  {
+   "at": "2026-01-20T01:45:34.379Z",
+   "line": "Aquarius season · day 1 of 30",
+   "over": false
+  },
+  {
+   "at": "2026-02-18T15:50:26.627Z",
+   "line": "Aquarius season · day 30 of 30",
+   "over": false
+  },
+  {
+   "at": "2026-02-18T15:52:26.627Z",
+   "line": "Pisces season · day 1 of 30",
+   "over": false
+  },
+  {
+   "at": "2026-03-20T14:44:34.021Z",
+   "line": "Pisces season · day 30 of 30",
+   "over": false
+  },
+  {
+   "at": "2026-03-20T14:46:34.021Z",
+   "line": "Aries season · day 1 of 31",
+   "over": false
+  },
+  {
+   "at": "2026-04-20T01:38:12.143Z",
+   "line": "Aries season · day 31 of 31",
+   "over": false
+  },
+  {
+   "at": "2026-04-20T01:40:12.143Z",
+   "line": "Taurus season · day 1 of 31",
+   "over": false
+  },
+  {
+   "at": "2026-05-21T00:36:22.918Z",
+   "line": "Taurus season · day 31 of 31",
+   "over": false
+  },
+  {
+   "at": "2026-05-21T00:38:22.918Z",
+   "line": "Gemini season · day 1 of 32",
+   "over": false
+  },
+  {
+   "at": "2026-06-21T08:24:08.400Z",
+   "line": "Gemini season · day 32 of 32",
+   "over": false
+  },
+  {
+   "at": "2026-06-21T08:26:08.400Z",
+   "line": "Cancer season · day 1 of 32",
+   "over": false
+  },
+  {
+   "at": "2026-07-22T19:12:26.161Z",
+   "line": "Cancer season · day 32 of 32",
+   "over": false
+  },
+  {
+   "at": "2026-07-22T19:14:26.161Z",
+   "line": "Leo season · day 1 of 32",
+   "over": false
+  },
+  {
+   "at": "2026-08-23T02:18:04.019Z",
+   "line": "Leo season · day 32 of 32",
+   "over": false
+  },
+  {
+   "at": "2026-08-23T02:20:04.019Z",
+   "line": "Virgo season · day 1 of 31",
+   "over": false
+  },
+  {
+   "at": "2026-09-23T00:04:40.402Z",
+   "line": "Virgo season · day 31 of 31",
+   "over": false
+  },
+  {
+   "at": "2026-09-23T00:06:40.402Z",
+   "line": "Libra season · day 1 of 31",
+   "over": false
+  },
+  {
+   "at": "2026-10-23T09:37:21.771Z",
+   "line": "Libra season · day 31 of 31",
+   "over": false
+  },
+  {
+   "at": "2026-10-23T09:39:21.771Z",
+   "line": "Scorpio season · day 1 of 30",
+   "over": false
+  },
+  {
+   "at": "2026-11-22T07:22:27.992Z",
+   "line": "Scorpio season · day 30 of 30",
+   "over": false
+  },
+  {
+   "at": "2026-11-22T07:24:27.992Z",
+   "line": "Sagittarius season · day 1 of 30",
+   "over": false
+  },
+  {
+   "at": "2026-12-21T20:49:14.049Z",
+   "line": "Sagittarius season · day 30 of 30",
+   "over": false
+  },
+  {
+   "at": "2026-12-21T20:51:14.049Z",
+   "line": "Capricorn season · day 1 of 30",
+   "over": false
+  },
+  {
+   "at": "2027-01-20T07:28:54.622Z",
+   "line": "Capricorn season · day 30 of 30",
+   "over": false
+  },
+  {
+   "at": "2027-01-20T07:30:54.622Z",
+   "line": "Aquarius season · day 1 of 30",
+   "over": false
+  },
+  {
+   "at": "2027-02-18T21:32:36.367Z",
+   "line": "Aquarius season · day 30 of 30",
+   "over": false
+  },
+  {
+   "at": "2027-02-18T21:34:36.367Z",
+   "line": "Pisces season · day 1 of 30",
+   "over": false
+  },
+  {
+   "at": "2027-03-20T20:23:41.375Z",
+   "line": "Pisces season · day 30 of 30",
+   "over": false
+  },
+  {
+   "at": "2027-03-20T20:25:41.375Z",
+   "line": "Aries season · day 1 of 31",
+   "over": false
+  },
+  {
+   "at": "2027-04-20T07:16:24.887Z",
+   "line": "Aries season · day 31 of 31",
+   "over": false
+  },
+  {
+   "at": "2027-04-20T07:18:24.887Z",
+   "line": "Taurus season · day 1 of 31",
+   "over": false
+  },
+  {
+   "at": "2027-05-21T06:17:00.373Z",
+   "line": "Taurus season · day 31 of 31",
+   "over": false
+  },
+  {
+   "at": "2027-05-21T06:19:00.373Z",
+   "line": "Gemini season · day 1 of 32",
+   "over": false
+  },
+  {
+   "at": "2027-06-21T14:09:41.847Z",
+   "line": "Gemini season · day 32 of 32",
+   "over": false
+  },
+  {
+   "at": "2027-06-21T14:11:41.847Z",
+   "line": "Cancer season · day 1 of 32",
+   "over": false
+  },
+  {
+   "at": "2027-07-23T01:03:31.814Z",
+   "line": "Cancer season · day 32 of 32",
+   "over": false
+  },
+  {
+   "at": "2027-07-23T01:05:31.814Z",
+   "line": "Leo season · day 1 of 32",
+   "over": false
+  },
+  {
+   "at": "2027-08-23T08:12:59.497Z",
+   "line": "Leo season · day 32 of 32",
+   "over": false
+  },
+  {
+   "at": "2027-08-23T08:14:59.497Z",
+   "line": "Virgo season · day 1 of 31",
+   "over": false
+  },
+  {
+   "at": "2027-09-23T06:00:20.130Z",
+   "line": "Virgo season · day 31 of 31",
+   "over": false
+  },
+  {
+   "at": "2027-09-23T06:02:20.130Z",
+   "line": "Libra season · day 1 of 31",
+   "over": false
+  },
+  {
+   "at": "2027-10-23T15:31:42.212Z",
+   "line": "Libra season · day 31 of 31",
+   "over": false
+  },
+  {
+   "at": "2027-10-23T15:33:42.212Z",
+   "line": "Scorpio season · day 1 of 30",
+   "over": false
+  },
+  {
+   "at": "2027-11-22T13:15:14.602Z",
+   "line": "Scorpio season · day 30 of 30",
+   "over": false
+  },
+  {
+   "at": "2027-11-22T13:17:14.602Z",
+   "line": "Sagittarius season · day 1 of 30",
+   "over": false
+  },
+  {
+   "at": "2027-12-22T02:41:10.520Z",
+   "line": "Sagittarius season · day 30 of 30",
+   "over": false
+  },
+  {
+   "at": "2027-12-22T02:43:10.520Z",
+   "line": "Capricorn season · day 1 of 30",
+   "over": false
+  }
+ ]
+}

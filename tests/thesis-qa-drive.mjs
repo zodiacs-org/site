@@ -626,7 +626,7 @@ try {
   check('the lifespan chart names its source and its caveat',
     /CoinGecko/.test(lifespanText) && /counted trades on Pump\.fun only/.test(lifespanText));
   check('the know-and-believe chart prints both survey figures',
-    /90%[\s\S]*27%/.test(await page.locator('#fig-know svg.bars-chart--wide').textContent() ?? ''));
+    /90%[\s\S]*27%/.test(await page.locator('#fig-know svg.dots-chart--wide').textContent() ?? ''));
   check('plain candidacy snapshot renders', (await page.locator('.human-score__item').count()) === 4);
   check('three-question test renders', (await page.locator('.test-question').count()) === 3);
   check('plain-language instrument renders', (await page.locator('#the-instrument .fact-card:not(#ownership-details .fact-card)').count()) === 6);

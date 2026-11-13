@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { ANALYTICS_EVENT_PROPS, sanitizeAnalyticsProperties, trackAnalytics } from './analytics';
+import {
+  ANALYTICS_EVENT_PROPS,
+  ANALYTICS_EVENT_VALUES,
+  sanitizeAnalyticsProperties,
+  trackAnalytics,
+} from './analytics';
 
 const REQUIRED_EVENTS = [
   'chart_computed',
@@ -43,7 +48,86 @@ const REQUIRED_EVENTS = [
   'living_chart_saved',
   'living_chart_deleted',
   'living_chart_export',
+  'good_day_check',
+  'good_day_calendar_add',
+  'year_score_completed',
+  'year_pack_cta',
+  'year_pack_unlocked',
+  'birthday_card_made',
+  'birthday_card_arrival',
+  'birthday_reminder_added',
+  'birthday_gift_cta',
 ] as const;
+
+// The events the growth tests read (docs/ANALYTICS.md, "Growth test events"),
+// with the two email events whose placements and source they widen.
+const GROWTH_EVENTS = [
+  'email_capture_viewed',
+  'email_subscribed',
+  'good_day_check',
+  'good_day_calendar_add',
+  'year_score_completed',
+  'year_pack_cta',
+  'year_pack_unlocked',
+  'birthday_card_made',
+  'birthday_card_arrival',
+  'birthday_reminder_added',
+  'birthday_gift_cta',
+] as const;
+
+const SIGNS = [
+  'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+  'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
+];
+const ARRIVAL_SOURCES = ['direct', 'video', 'chatgpt', 'assistant', 'card', 'app', 'note'];
+
+// Everything a visitor could be told apart by, or could have typed.
+const PERSONAL_FIELDS = {
+  email: 'visitor@example.com',
+  sign: 'leo',
+  sun: 'leo',
+  sunSign: 'leo',
+  sun_sign: 'leo',
+  moonSign: 'cancer',
+  rising: 'virgo',
+  birthDate: '1990-01-01',
+  birth_date: '1990-01-01',
+  date: '1990-01-01',
+  birthTime: '12:34',
+  time: '12:34',
+  birthPlace: 'Bangkok',
+  place: 'Bangkok',
+  city: 'Bangkok',
+  latitude: 13.75,
+  longitude: 100.5,
+  timeZone: 'Asia/Bangkok',
+  name: 'Ada',
+  firstName: 'Ada',
+  recipient: 'Ada',
+  text: 'anything typed',
+  message: 'anything typed',
+  query: 'anything typed',
+  ref: 'free-string-from-a-link',
+  url: '/birthday/?d=0101',
+  id: 'abc123',
+  visitorId: 'abc123',
+  count: 7,
+};
+
+// Words that would name a property able to hold one of the fields above.
+const PERSONAL_WORDS = new Set([
+  'email', 'mail', 'address', 'sign', 'sun', 'moon', 'rising', 'ascendant', 'zodiac',
+  'birth', 'birthday', 'dob', 'date', 'day', 'month', 'year', 'time', 'hour', 'minute',
+  'place', 'city', 'country', 'location', 'lat', 'latitude', 'lon', 'lng', 'longitude', 'zone', 'tz',
+  'name', 'first', 'last', 'recipient', 'person', 'text', 'message', 'query', 'search', 'note',
+  'url', 'href', 'link', 'ref', 'id', 'uuid', 'visitor', 'user', 'session', 'device', 'token',
+]);
+// Splits a property name into its words: `birth_date`, `birthDate` and `BirthDate` give birth, date.
+const wordsOf = (key: string) => key
+  .replace(/([a-z0-9])([A-Z])/gu, '$1 $2')
+  .split(/[^A-Za-z0-9]+/u)
+  .filter(Boolean)
+  .map((word) => word.toLowerCase());
 
 describe('analytics event contract', () => {
   afterEach(() => vi.unstubAllGlobals());
@@ -274,5 +358,118 @@ describe('analytics event contract', () => {
       surface: 'consumer',
       direction: 'to_pro',
     })).toEqual({});
+  });
+
+  it('accepts the new email placements and a source from the closed arrival list', () => {
+    for (const event of ['email_capture_viewed', 'email_subscribed']) {
+      for (const placement of ['chart', 'horoscopes', 'footer', 'note_page', 'good_days', 'year_score', 'birthday_card']) {
+        for (const source of ARRIVAL_SOURCES) {
+          expect(sanitizeAnalyticsProperties(event, { placement, source })).toEqual({ placement, source });
+        }
+      }
+      expect(sanitizeAnalyticsProperties(event, { placement: 'unknown', source: 'newsletter' })).toEqual({});
+      expect(sanitizeAnalyticsProperties(event, {
+        placement: 'good_days',
+        source: 'video',
+        email: 'visitor@example.com',
+        sign: 'leo',
+      })).toEqual({ placement: 'good_days', source: 'video' });
+    }
+  });
+
+  it('keeps each growth event inside its closed values', () => {
+    expect(sanitizeAnalyticsProperties('good_day_check', { use: 'first', source: 'note' }))
+      .toEqual({ use: 'first', source: 'note' });
+    expect(sanitizeAnalyticsProperties('good_day_check', { use: 'second', source: 'direct' }))
+      .toEqual({ use: 'second', source: 'direct' });
+    expect(sanitizeAnalyticsProperties('good_day_check', { use: 'more', source: 'app' }))
+      .toEqual({ use: 'more', source: 'app' });
+    expect(sanitizeAnalyticsProperties('good_day_check', { use: 3, source: 'tiktok' })).toEqual({});
+    expect(sanitizeAnalyticsProperties('good_day_check', { use: 'fourth' })).toEqual({});
+    expect(sanitizeAnalyticsProperties('good_day_calendar_add', { source: 'card' })).toEqual({ source: 'card' });
+    expect(sanitizeAnalyticsProperties('good_day_calendar_add', { source: 'email' })).toEqual({});
+    expect(sanitizeAnalyticsProperties('year_score_completed', { score: 72, sign: 'leo' })).toEqual({});
+    for (const surface of ['year_score', 'year_sky', 'birthday_report', 'birthday_card']) {
+      expect(sanitizeAnalyticsProperties('year_pack_cta', { surface })).toEqual({ surface });
+    }
+    expect(sanitizeAnalyticsProperties('year_pack_cta', { surface: 'checkout' })).toEqual({});
+    expect(sanitizeAnalyticsProperties('year_pack_unlocked', { kind: 'self' })).toEqual({ kind: 'self' });
+    expect(sanitizeAnalyticsProperties('year_pack_unlocked', { kind: 'gift', price: 9 })).toEqual({ kind: 'gift' });
+    expect(sanitizeAnalyticsProperties('year_pack_unlocked', { kind: 'child' })).toEqual({});
+    expect(sanitizeAnalyticsProperties('birthday_card_made', { source: 'direct' })).toEqual({ source: 'direct' });
+    expect(sanitizeAnalyticsProperties('birthday_card_made', { source: 'card' })).toEqual({ source: 'card' });
+    expect(sanitizeAnalyticsProperties('birthday_card_made', { source: 'video' })).toEqual({});
+    for (const event of ['birthday_card_arrival', 'birthday_reminder_added', 'birthday_gift_cta']) {
+      expect(sanitizeAnalyticsProperties(event, { source: 'card', month: 1, day: 1 })).toEqual({});
+    }
+  });
+
+  it('drops unknown growth events, unknown values and strings over 32 characters', () => {
+    for (const name of ['good_day', 'year_pack_purchased', 'birthday_card_opened', 'good_day_check ']) {
+      expect(sanitizeAnalyticsProperties(name, { use: 'first' })).toBeNull();
+    }
+    const long = 'x'.repeat(33);
+    for (const event of GROWTH_EVENTS) {
+      const props = ANALYTICS_EVENT_PROPS[event];
+      expect(sanitizeAnalyticsProperties(event, Object.fromEntries(props.map((key) => [key, long])))).toEqual({});
+      expect(sanitizeAnalyticsProperties(event, Object.fromEntries(props.map((key) => [key, 'unknown_value'])))).toEqual({});
+      expect(sanitizeAnalyticsProperties(event, Object.fromEntries(props.map((key) => [key, 1])))).toEqual({});
+      expect(sanitizeAnalyticsProperties(event, Object.fromEntries(props.map((key) => [key, true])))).toEqual({});
+    }
+  });
+
+  it('gives no growth event a way to carry an email, a sign, birth details, a name or typed text', () => {
+    for (const event of GROWTH_EVENTS) {
+      const props = ANALYTICS_EVENT_PROPS[event];
+      expect(props, event).toBeDefined();
+      for (const key of props) {
+        // No property is named for anything personal.
+        for (const word of wordsOf(key)) expect(PERSONAL_WORDS.has(word), `${event}.${key}`).toBe(false);
+        // Every property has a closed list, so no free string can pass.
+        const values = ANALYTICS_EVENT_VALUES[event]?.[key];
+        expect(values, `${event}.${key} needs a closed list`).toBeDefined();
+        for (const value of values ?? []) {
+          // No closed value is a sign, a date, a time, an email or long enough to be typed text.
+          expect(SIGNS, `${event}.${key}=${value}`).not.toContain(value.toLowerCase());
+          expect(value, `${event}.${key}`).toMatch(/^[a-z][a-z_]{0,31}$/u);
+          expect(value, `${event}.${key}`).not.toMatch(/@|\d/u);
+        }
+      }
+      // Whatever a page passes, the personal fields never come through.
+      const safe = sanitizeAnalyticsProperties(event, PERSONAL_FIELDS);
+      expect(safe, event).toEqual({});
+    }
+  });
+
+  it('names no property of any event for an email, birth details, a name or typed text', () => {
+    // Some older events carry a page's sign slug (Registry bridge, Race); none
+    // can carry the visitor's own details.
+    const olderCarveOuts = new Set(['sign']);
+    for (const [event, props] of Object.entries(ANALYTICS_EVENT_PROPS)) {
+      for (const key of props) {
+        for (const word of wordsOf(key)) {
+          if (olderCarveOuts.has(word)) continue;
+          expect(PERSONAL_WORDS.has(word), `${event}.${key}`).toBe(false);
+        }
+      }
+    }
+    expect(wordsOf('birthDate')).toEqual(['birth', 'date']);
+    expect(wordsOf('sun_sign')).toEqual(['sun', 'sign']);
+  });
+
+  it('scrubs growth payloads at the actual browser emission boundary', () => {
+    const track = vi.fn();
+    vi.stubGlobal('window', { zodiacsAnalytics: { track } });
+    trackAnalytics('good_day_check', { use: 'second', source: 'video', ...PERSONAL_FIELDS });
+    expect(track).toHaveBeenCalledWith('good_day_check', { use: 'second', source: 'video' });
+    trackAnalytics('birthday_card_made', { source: 'card', ...PERSONAL_FIELDS });
+    expect(track).toHaveBeenCalledWith('birthday_card_made', { source: 'card' });
+    trackAnalytics('birthday_reminder_added', { ...PERSONAL_FIELDS });
+    expect(track).toHaveBeenCalledWith('birthday_reminder_added', {});
+  });
+
+  it('leaves assistant_arrival as it was', () => {
+    expect(ANALYTICS_EVENT_PROPS.assistant_arrival).toEqual(['assistant']);
+    expect(ANALYTICS_EVENT_VALUES.assistant_arrival).toEqual({ assistant: ['chatgpt', 'assistant'] });
   });
 });

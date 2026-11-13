@@ -41,7 +41,7 @@
  * logging. Every value import names its file, so the share function loads
  * this module as it is.
  */
-import { SHARE_SIGNS, type ShareRef, type ShareSign } from '../lib/share-results.js';
+import { readShareRef, SHARE_SIGNS, type ShareRef, type ShareSign } from '../lib/share-results.js';
 import { parseCivilDate } from '../lib/time/civil-date.js';
 import { CHINESE_ZODIAC_ANIMALS, chineseAnimalForCycleYear } from '../data/chinese-zodiac.js';
 
@@ -406,11 +406,6 @@ function strictParams(params: URLSearchParams, allowed: readonly string[]): Map<
   return seen;
 }
 
-function readRef(value: string | undefined): ShareRef | null | undefined {
-  if (value === undefined) return null;
-  return value === 'chatgpt' || value === 'assistant' ? value : undefined;
-}
-
 export function parseBirthdayShare(params: URLSearchParams): BirthdayShare | null {
   const fields = strictParams(params, BIRTHDAY_SHARE_KEYS);
   if (!fields) return null;
@@ -419,7 +414,7 @@ export function parseBirthdayShare(params: URLSearchParams): BirthdayShare | nul
   const [month, day] = [Number(match[1]), Number(match[2])];
   if (!validMonthDay(month, day)) return null;
   const sign = fields.get('s');
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if ((sign !== undefined && !isSign(sign)) || ref === undefined) return null;
   return { month, day, sign: sign ?? null, ref };
 }
@@ -430,7 +425,7 @@ export function parseSkyCalendarShare(params: URLSearchParams): SkyCalendarShare
   const kind = fields.get('k');
   const planet = fields.get('b');
   const date = fields.get('d');
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if (kind === undefined || !(SKY_EVENT_KINDS as readonly string[]).includes(kind) || date === undefined || !validDate(date) || ref === undefined) return null;
   // A retrograde names its planet, and nothing else does.
   if ((kind === 'retrograde') !== (planet !== undefined)) return null;
@@ -447,7 +442,7 @@ export function parseHoroscopeShare(params: URLSearchParams): HoroscopeShare | n
   const sign = fields.get('s');
   const [day, week, month, year] = ['d', 'w', 'm', 'y'].map((key) => fields.get(key));
   const focus = fields.get('f');
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if (!isSign(sign) || ref === undefined) return null;
   // One period: a day's reading, a week's, a month's or a year's; only a day has a focus.
   if ([day, week, month, year].filter((value) => value !== undefined).length !== 1 || (day === undefined && focus !== undefined)) return null;
@@ -464,7 +459,7 @@ export function parseChartTwinsShare(params: URLSearchParams): ChartTwinsShare |
   if (!fields) return null;
   const sun = fields.get('s');
   const moon = fields.get('m');
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if (!isSign(sun) || (moon !== undefined && !isSign(moon)) || ref === undefined) return null;
   return { sun, moon: moon ?? null, ref };
 }
@@ -473,7 +468,7 @@ export function parseFamousChartShare(params: URLSearchParams): FamousChartShare
   const fields = strictParams(params, FAMOUS_CHART_SHARE_KEYS);
   if (!fields) return null;
   const slug = fields.get('p');
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if (slug === undefined || slug.length > SLUG_MAX || !SLUG_RE.test(slug) || ref === undefined) return null;
   return { slug, ref };
 }
@@ -483,7 +478,7 @@ export function parseMilestoneShare(params: URLSearchParams): MilestoneShare | n
   const fields = strictParams(params, MILESTONE_SHARE_KEYS);
   if (!fields) return null;
   const [kind, index, age, first, last] = ['k', 'i', 'a', 'f', 'l'].map((key) => fields.get(key));
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if (kind === undefined || index === undefined || age === undefined || ref === undefined) return null;
   if (!INDEX_RE.test(index) || !AGE_RE.test(age)) return null;
   if ((first === undefined) !== (last === undefined)) return null;
@@ -496,7 +491,7 @@ export function parseBigThreeShare(params: URLSearchParams): BigThreeShare | nul
   const fields = strictParams(params, BIG_THREE_SHARE_KEYS);
   if (!fields) return null;
   const [sun, moon, rising] = ['s', 'm', 'r'].map((key) => fields.get(key));
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if (!isSign(sun) || ref === undefined) return null;
   if ((moon !== undefined && !isSign(moon)) || (rising !== undefined && !isSign(rising))) return null;
   // A known rising sign takes a birth time, and a birth time settles the Moon.
@@ -509,7 +504,7 @@ export function parseChineseZodiacShare(params: URLSearchParams): ChineseZodiacS
   if (!fields) return null;
   const animal = fields.get('a');
   const year = fields.get('y');
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if (animal === undefined || !CHINESE_ANIMALS.includes(animal) || ref === undefined) return null;
   // An older link's year is still checked before it opens, then dropped: the card never names a year.
   if (year !== undefined && !(/^[12][0-9]{3}$/u.test(year) && validChineseYear(Number(year), animal))) return null;
@@ -522,7 +517,7 @@ export function parseInviteShare(params: URLSearchParams): InviteShare | null {
   if (!fields) return null;
   const sun = fields.get('s');
   const partner = fields.get('p');
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if (ref === undefined || (sun === undefined && partner === undefined)) return null;
   if ((sun !== undefined && !isSign(sun)) || (partner !== undefined && !isSign(partner))) return null;
   return { sun: sun ?? null, partner: partner ?? null, ref };
