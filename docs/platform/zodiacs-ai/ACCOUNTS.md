@@ -45,7 +45,7 @@ Kinds and links:
 
 The `#saved=` part is the saved row's own id: a random UUID the server picks for
 the save and the save RPC stores the row under (migration
-`20261113090000_saved_link_row_ids.sql`). Nothing in it is worked out from the
+`20261113091500_saved_link_row_ids.sql`). Nothing in it is worked out from the
 saved result, so it gives back nothing about it; a saved week's result is worked
 out from the birth date, so a digest of it could be used to test guessed dates.
 Until 13 November 2026 the value was the first 16 hex characters of a SHA-256 of

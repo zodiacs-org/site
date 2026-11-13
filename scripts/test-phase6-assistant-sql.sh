@@ -188,10 +188,10 @@ run_phase6_sql_file \
   "${phase6_repo_root}/supabase/tests/saved_link_row_ids_fixture.sql"
 
 run_phase6_sql_file \
-  "${phase6_repo_root}/supabase/migrations/20261113090000_saved_link_row_ids.sql"
+  "${phase6_repo_root}/supabase/migrations/20261113091500_saved_link_row_ids.sql"
 
 run_phase6_sql_file \
-  "${phase6_repo_root}/supabase/migrations/20261113090000_saved_link_row_ids.sql"
+  "${phase6_repo_root}/supabase/migrations/20261113091500_saved_link_row_ids.sql"
 
 run_phase6_sql_file \
   "${phase6_repo_root}/supabase/tests/saved_link_row_ids.sql"

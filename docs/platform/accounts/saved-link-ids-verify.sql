@@ -1,4 +1,4 @@
--- Read-only checks for supabase/migrations/20261113090000_saved_link_row_ids.sql.
+-- Read-only checks for supabase/migrations/20261113091500_saved_link_row_ids.sql.
 -- Run once before applying the migration and once after. Every query returns
 -- counts only: never an href, title, summary, detail, user id or row id.
 --

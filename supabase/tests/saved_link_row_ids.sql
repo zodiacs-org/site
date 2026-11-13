@@ -1,5 +1,5 @@
 -- Disposable PostgreSQL only. Runs after saved_link_row_ids_fixture.sql and a
--- replay of 20261113090000_saved_link_row_ids.sql (as a reviewed SQL Editor retry
+-- replay of 20261113091500_saved_link_row_ids.sql (as a reviewed SQL Editor retry
 -- would): the stored links and the records' copies of them carry their row's own
 -- id, nothing else in a row moved, the old digests match nothing, and the save
 -- RPC stores a saved= link under the random id it carries. Every value is synthetic; the fixture's rows

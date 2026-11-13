@@ -1,5 +1,5 @@
 -- Disposable PostgreSQL only. The saved_pages rows production held before
--- 20261113090000_saved_link_row_ids.sql: assistant links whose saved= value is a
+-- 20261113091500_saved_link_row_ids.sql: assistant links whose saved= value is a
 -- 16 hex digest, one of each kind, beside rows without one. Committed, so the
 -- migration's replay rewrites them; saved_link_row_ids.sql checks the result and
 -- removes them. Every value is synthetic.
