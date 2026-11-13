@@ -123,7 +123,7 @@ export function wingNavHtml({ includeSearch = true } = {}) {
     `</a>`
   )).join('');
   const search = includeSearch
-    ? `<a class="wnav__search" href="/?search=1" aria-label="Search the site">
+    ? `<a class="wnav__search" href="/#search" aria-label="Search the site">
         <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.75" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         <kbd class="wnav__search-kbd" aria-hidden="true">/</kbd>
       </a>`

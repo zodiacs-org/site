@@ -46,6 +46,15 @@ await withPreview({ port: 4403 }, async (baseURL) => {
     check('query parameter is removed without navigation', cleaned.pathname === '/' && !cleaned.searchParams.has('search'), cleaned.href);
     check('query-opened search focuses the input', await input.evaluate((element) => document.activeElement === element));
 
+    // The links other pages carry: /#search, a plain homepage link to crawlers.
+    const hashPage = await browser.newPage({ viewport: { width: 375, height: 812 }, hasTouch: true });
+    await hashPage.goto(`${baseURL}/#search`, { waitUntil: 'networkidle' });
+    await hashPage.locator('.zsearch__input').waitFor({ state: 'visible' });
+    const hashCleaned = new URL(hashPage.url());
+    check('#search opens the search dialog', await hashPage.locator('.zsearch__panel').isVisible());
+    check('#search is removed without navigation', hashCleaned.pathname === '/' && hashCleaned.hash === '', hashCleaned.href);
+    await hashPage.close();
+
     for (const [query, expectedTitle, expectedKind] of queries) {
       await input.fill(query);
       const result = page.locator('.zsearch__opt').filter({
@@ -68,7 +77,7 @@ await withPreview({ port: 4403 }, async (baseURL) => {
     const wing = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
     for (const path of wingPaths) {
       await wing.goto(`${baseURL}${path}`, { waitUntil: 'domcontentloaded' });
-      const searchLinks = wing.locator('a[href="/?search=1"][aria-label="Search the site"]');
+      const searchLinks = wing.locator('a[href="/#search"][aria-label="Search the site"]');
       await searchLinks.first().waitFor({ state: 'visible' });
       check(`${path}: wing nav exposes Search`, await searchLinks.count() >= 1, String(await searchLinks.count()));
     }

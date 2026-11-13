@@ -67,7 +67,7 @@ describe('Zodiacs Registry catalogue hub', () => {
     expect(html).not.toMatch(/api\.(?:dexscreener|geckoterminal)/iu);
     expect(html).not.toMatch(/market-tape|market-board|leaderboard|Buy [A-Z]/u);
     expect(html).toContain('<noscript>');
-    expect(html).toContain('class="wnav__search" href="/?search=1"');
+    expect(html).toContain('class="wnav__search" href="/#search"');
     expect(analyticsBuild).toContain("entry.isFile() && entry.name === 'index.html'");
   });
 
