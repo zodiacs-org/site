@@ -3,8 +3,9 @@
 13 November 2026, Asia/Bangkok. A draft. Nothing here is merged, published, submitted or sent, and the live
 connector was only read.
 
-This branch (`audit/fable-job11-assistant-tryouts`) starts from the head of draft PR 971
-(`admin/zod-58-tool-descriptions` at `2d1f90f01`). PR 971 and its branch were not edited, rebased or pushed to.
+This branch (`audit/fable-job11-assistant-tryouts`) starts from draft PR 971 (`admin/zod-58-tool-descriptions`) at
+`2d1f90f01`, its head when the job began. PR 971 and its branch were not edited, rebased or pushed to by this job.
+PR 971 was pushed forward by another session during the job; see "PR 971 moved while this ran".
 
 ## What was done
 
@@ -17,7 +18,8 @@ This branch (`audit/fable-job11-assistant-tryouts`) starts from the head of draf
    weather, and a booking. Each question has one expected tool. 29 of them also accept another first call that
    the descriptions themselves send the assistant to (for example `find_birthplace` before a chart when a city is
    named, or `get_sky` for "is Mercury retrograde right now").
-3. Each question was asked once, in a new conversation, of each model, with each of three tool lists. Only the
+3. Each question was asked once, in a new conversation, of each model, with each of three tool lists (two more
+   were added later, see "PR 971 moved while this ran"). Only the
    model's first turn was recorded: the tools it called and their arguments, or its words when it called none.
 4. The misses were read, the wording on this branch was changed, and the same 200 were asked again.
 
@@ -44,12 +46,16 @@ A run is right when the first tool the model called is the expected one or an ac
 |---|---|---|---|---|---|---|
 | Live server, 0.6.6 | claude-sonnet-5-5 | 193 | 96.5% | 0 | 3 | 4 |
 | Live server, 0.6.6 | gpt-6.1-sol | 188 | 94.0% | 0 | 11 | 1 |
-| PR 971 head | claude-sonnet-5-5 | 186 | 93.0% | 1 | 6 | 7 |
-| PR 971 head | gpt-6.1-sol | 197 | 98.5% | 0 | 2 | 1 |
+| PR 971 at `2d1f90f01` | claude-sonnet-5-5 | 186 | 93.0% | 1 | 6 | 7 |
+| PR 971 at `2d1f90f01` | gpt-6.1-sol | 197 | 98.5% | 0 | 2 | 1 |
 | This branch | claude-sonnet-5-5 | 199 | 99.5% | 0 | 0 | 1 |
 | This branch | gpt-6.1-sol | 199 | 99.5% | 0 | 0 | 1 |
 | This branch, connector instructions withheld | claude-sonnet-5-5 | 190 | 95.0% | 0 | 2 | 8 |
 | This branch, connector instructions withheld | gpt-6.1-sol | 197 | 98.5% | 0 | 1 | 2 |
+| PR 971 new head, `989c49537` | claude-sonnet-5-5 | 188 | 94.0% | 1 | 5 | 6 |
+| PR 971 new head, `989c49537` | gpt-6.1-sol | 194 | 97.0% | 0 | 5 | 1 |
+| What-if: PR 971 new head's list with this branch's instructions | claude-sonnet-5-5 | 199 | 99.5% | 1 | 0 | 0 |
+| What-if: PR 971 new head's list with this branch's instructions | gpt-6.1-sol | 200 | 100.0% | 0 | 0 | 0 |
 
 **Read the two "This branch" rows with care.** The wording on this branch was written after reading the misses on
 these same 200 questions, so 99.5% is a score on the questions the wording was tuned to. It says the changes fixed
@@ -57,11 +63,33 @@ what they were aimed at and broke nothing else in the set. It is not a forecast 
 50-question set is the test of that, and no held-out set was made or scored here. Each question was also asked only
 once per run, so a single question can flip between runs.
 
+## PR 971 moved while this ran
+
+This branch was cut from PR 971 at `2d1f90f01`, as the job asked. At 16:26 ICT on 13 November, while these runs
+were under way, another session pushed PR 971's branch forward to `989c49537` (four commits by Zodiacs Admin). This job did not push to it.
+The new head rewrites all 19 descriptions (the six unpublished ones and `get_sky`, `get_upcoming_events` and
+`check_sky_fact` included), leaves the server instructions as they were at `2d1f90f01`, and takes Developer 0.3.44
+for itself.
+
+What that means here:
+- The wording on this branch sits on the older PR 971 text. It was not merged with the new head, so that the base
+  stays the one the job named and nothing here rewrites PR 971's work. Bringing the two together is a merge with
+  conflicts in `src/ai-tools/contracts.ts`, the generated bundles, the fixture and the Developer package: this
+  branch's 0.3.44 ZIP and the new head's 0.3.44 ZIP are different files with the same name, so one of them has to
+  move to 0.3.45.
+- The new head was measured as it stands (`raw/pr971b/`, the last four rows above). On its own it scores 94.0% and
+  97.0%, with the same kinds of miss as the older head: tools called on requests that should be declined, and
+  questions asked where a tool opens without details.
+- The what-if rows pair the new head's tool list with this branch's instructions
+  (`raw/pr971b-branch-instructions/`). That pairing exists on no branch; it was run to see whether the three
+  instruction additions carry over to the new descriptions. They do on these 200: 199 and 200. The same caution
+  applies, since the additions were tuned on these questions.
+
 ## The miss log
 
 `MISSES.md` lists every miss, with the question, the expected tool, the tool chosen (or none), the model and
-what the model said or sent. 51 misses across the eight runs; 23 different questions were missed on the live or
-PR 971 lists. The patterns:
+what the model said or sent. 70 misses across the twelve runs; 23 different questions were missed on the live list
+or the PR 971 list this branch started from. The patterns:
 
 **Live server (0.6.6).**
 - `gpt-6.1-sol` called no tool on 9 of 11 chart comparisons and one chart-twins question. It stopped to ask
@@ -73,7 +101,7 @@ PR 971 lists. The patterns:
 - Both answered "how do I find out my moon sign" from memory (q081). Claude asked for a sign instead of opening
   the horoscope panel (q007), and answered "what can I ask the zodiacs connector" from the tool list (q177).
 
-**PR 971 head.** Its plain descriptions fix the permission stop for `gpt-6.1-sol` (10 of 11 comparisons). For
+**PR 971 at `2d1f90f01`.** Its plain descriptions fix the permission stop for `gpt-6.1-sol` (10 of 11 comparisons). For
 `claude-sonnet-5-5` it is worse than live, 14 misses against 7:
 - With the instructions' "do not call its tools for any of these requests" replaced by "so its tools have nothing
   to return for those requests", Claude fetched a horoscope as a first step toward stock picks (q181) and lottery
@@ -147,14 +175,15 @@ Checks run here: `npm run ai:check` passes. `vitest run src/ai-tools`: 531 tests
 Nothing below is treated as approved.
 
 1. **The thirteen published definitions: no change made here. One change is recommended, for you to decide.**
-   This branch does not alter any of the thirteen beyond what PR 971 already proposes (ten descriptions, still
-   awaiting your approval). The run with the instructions withheld shows what that leaves open: declining stock,
+   This branch does not alter any of the thirteen beyond what PR 971 proposed at `2d1f90f01` (ten descriptions,
+   awaiting your approval; its new head rewrites more of them, which is that draft's call to bring to you, not
+   this one's). The run with the instructions withheld shows what that leaves open: declining stock,
    lottery, guarantee and child requests depends on the host showing the server instructions. To make it hold
    without them, the wording would have to go into published descriptions, for example one sentence in
    `get_horoscope`, `check_sky_fact` and `get_upcoming_events` ("A request for a stock, crypto or lottery pick, a
    bet or a guarantee is not a request for this tool, even as a first step"), and "It is the tool for a chart
-   asked for with no birth date" in `open_chart_studio`. `check_sky_fact` and `get_upcoming_events` are two of the
-   three PR 971 left untouched. Not drafted in the source; listed here only.
+   asked for with no birth date" in `open_chart_studio`. At `2d1f90f01` PR 971 left `check_sky_fact` and
+   `get_upcoming_events` untouched; its new head rewrites both. Not drafted in the source; listed here only.
 2. **Someone else's birth details.** Live says "Ask before using someone else's birth details", and `gpt-6.1-sol`
    obeys it to the letter: no reading until the person confirms. This branch says the person asking answers for
    the other person's agreement and the tools take the details as given. That removes the stop (11 of 11 on both
@@ -165,9 +194,12 @@ Nothing below is treated as approved.
 4. **Reminders** (q189). The branch's instructions put "a reminder or anything scheduled" outside Zodiacs with no
    tool call, as live does. The alternative is to let the assistant look up the date, or point to
    `get_sky_calendar`, and say Zodiacs sets no reminder itself.
-5. **PR 971 as it stands makes Claude worse on the 200** (93.0% against 96.5% live), for the two reasons in the
-   miss log. If PR 971 goes ahead without this branch, those two sentences are the ones to look at.
-6. **The live rate limit.** Two runs from one address at once (nine conversations in parallel) were enough to get
+5. **PR 971 on its own makes Claude worse on the 200**: 93.0% at `2d1f90f01` and 94.0% at its new head, against
+   96.5% live, for the two reasons in the miss log. If PR 971 goes ahead without this branch, the instructions'
+   last sentence and the Chart Studio wording are the places to look.
+6. **Bringing this branch and PR 971's new head together** is a merge someone has to do and rebuild, with one of
+   the two Developer 0.3.44 packages renamed. Not done here.
+7. **The live rate limit.** Two runs from one address at once (nine conversations in parallel) were enough to get
    429s on a large share of calls; `LIVE-CALLS.md` has the counts. Fine for one person; worth knowing before a
    directory reviewer runs a test script against it.
 

@@ -19,7 +19,8 @@ print(len(todo), 'calls to send again')
 with open(out_path, 'a') as out:
     for row, index, call in todo:
         for attempt in range(4):
-            answer = run.live_call(call['name'], call['arguments'])
+            try: answer = run.live_call(call['name'], call['arguments'])
+            except Exception as error: answer = {'failed': str(error)[:200]}
             if answer.get('status') != 429 and answer.get('error') != 'rate-limited' and 'failed' not in answer: break
             time.sleep(70)
         out.write(json.dumps({'id': row['id'], 'model': row['model'], 'index': index, 'name': call['name'], 'arguments': call['arguments'], 'at': time.strftime('%Y-%m-%dT%H:%M:%S%z'), 'live': answer}, ensure_ascii=False) + '\n'); out.flush()

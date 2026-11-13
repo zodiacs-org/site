@@ -13,8 +13,10 @@ one picks. Start with `REPORT.md`.
 | `runs/live-replay.jsonl` | The live connector's answers to calls it rate-limited the first time |
 | `LIVE-CALLS.md` | How the live connector answered the calls sent on to it (generated) |
 | `raw/live/` | The live server's `initialize` and `tools/list`, fetched 13 November 2026 (0.6.6, 19 tools) |
-| `raw/pr971/` | The same two answers from PR 971's head, `2d1f90f01` (0.6.7 draft) |
+| `raw/pr971/` | The same two answers from PR 971 at `2d1f90f01` (0.6.7 draft), where this branch started |
 | `raw/branch/` | The same two answers from this branch |
+| `raw/pr971b/` | The same two answers from PR 971's new head, `989c49537`, pushed while this ran |
+| `raw/pr971b-branch-instructions/` | A what-if pairing: the new head's tool list with this branch's instructions. No branch has it |
 | `tools/` | The scripts: `build-questions.py`, `run-tryouts.py`, `stub-mcp.mjs`, `score.py`, `replay-live.py`, `dump-branch-tools.ts`, `live-calls.py` |
 
 To run it again:

@@ -8,9 +8,11 @@ none was expected. Run: python3 tools/score.py"""
 import json, os, glob, collections
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.join(HERE, '..')
 questions = {q['id']: q for q in json.load(open(os.path.join(ROOT, 'questions.json')))}
-SETS = {'live': 'Live server (0.6.6)', 'pr971': 'PR 971 head (2d1f90f01)', 'branch': 'This branch', 'branch-no-instructions': 'This branch, connector instructions withheld'}
+SETS = {'live': 'Live server (0.6.6)', 'pr971': 'PR 971 at 2d1f90f01', 'branch': 'This branch', 'branch-no-instructions': 'This branch, connector instructions withheld',
+        'pr971b': 'PR 971 new head (989c49537)', 'pr971b-branch-instructions': 'What-if: PR 971 new head list with this branch instructions'}
 runs = {}
 for path in sorted(glob.glob(os.path.join(ROOT, 'runs', '*.jsonl'))):
+    if os.path.basename(path) == 'live-replay.jsonl': continue
     tool_set, model = os.path.basename(path)[:-6].split('.', 1)
     runs[(tool_set, model)] = {row['id']: row for row in map(json.loads, open(path))}
 
