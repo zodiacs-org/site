@@ -35,3 +35,11 @@ unchecked 12.
 
 Nothing was published, tagged, released, merged or moved. Only read commands
 were used against GitHub, npm and Zenodo.
+
+## Fix round, 13 November 2026
+
+After the second session's review (`BREAKER.md`) the owner approved one fix
+round, recorded in `FIX-ROUND.md`: the public correction log joins the
+inventory, row S-adopt-06 is settled (four ids found, one not, which joins the
+unsupported list), and the one unsupported line of the first pass has its
+correction note in `integrations/packages/README.md`.

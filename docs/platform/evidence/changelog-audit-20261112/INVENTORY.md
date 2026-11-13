@@ -34,6 +34,8 @@ for this audit. What exists and was checked:
 | 5 | `docs/platform/evidence/site-engine-*/README.md` (15 files, 3,416 lines): rc5, rc6, rc7, rc8, rc9, rc10, rc14, rc15, rc16, rc17, 1-0-0-rc2, 1-0-0, 1-1-0-rc1, 1-1-0-rc2, geo-20261012 | Adoption records of each engine release. Evidence, not changelogs | release-identity statements only, rows S-adopt-01 to 07; about 3,400 lines unchecked |
 | 6 | `integrations/packages/README.md` (102 lines) and `manifest.json` | Release notes of the AI tools packages, the site's only versioned releases of its own | versions, digests, the keep-its-bytes rule and one dated pull request, rows S-pkg-01 to 07; about 70 lines unchecked |
 
+| 7 | `/corrections/`: `src/pages/corrections/index.astro`, data in `src/data/corrections.json` (added in the fix round) | The site's public, dated log of material corrections. One entry, of 2026-07-27, about a People profile | `FIX-ROUND.md`, row F-corr-01: supported. It is a log of content corrections, not of releases, and holds nothing about the engine or the packages. |
+
 Vendored engine archives in `vendor/` (each with its `.sha256`): 0.1.0,
 0.1.1-rc.0, rc.1, rc.5, rc.6, rc.7, rc.8, rc.9, rc.10, rc.14, rc.15, rc.16,
 rc.17, 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1 and 1.1.0-rc.2. Two of them, 0.1.0 and

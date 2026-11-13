@@ -8,6 +8,12 @@ Nothing was changed in any published file. This is a finding for the owner to de
 | ---: | --- | --- | --- | --- |
 | 1 | S-pkg-03 | `integrations/packages/README.md` | lines 18 to 20: "`ai:package` never rewrites an archive that already exists: a change needs a new version, so every earlier ZIP keeps its bytes." | Not true of every earlier ZIP: several were rewritten under the same version, and 0.3.19 was rewritten on the day after the sentence was written. It does hold for every ZIP from Developer 0.3.20 and Zodiacs 0.6.0 on, each of which has a single content in history (pkg-04). Evidence: `git log -- integrations/packages/<zip>` and the blob at each commit: 13 of the 63 ZIPs have had more than one content, among them `zodiacs-developer-0.3.13.zip` (38 different contents, 2026-10-14 to 2026-10-27), `zodiacs-developer-0.3.14.zip` (8, to 2026-11-02), `zodiacs-developer-0.3.19.zip` (5, all on 2026-11-03), `zodiacs-sky-0.5.0.zip` (4) and `zodiacs-sky-0.5.1.zip` (4, to 2026-10-27); the sentence was added on 2026-11-02 (`de7372e6c`) |
 
+| 2 | S-adopt-06 | `docs/platform/evidence/site-engine-rc16/README.md` | line 55: "MCP rc.16 local archive: carrier `03142a4d9a78733876137f611586d7482793bee6`" | The commit it cites cannot be found: it is not an object in the site or engine repositories and GitHub returns none for it in the sdk repository. The other four ids of the first pass's unchecked row are sdk commits and match (see `FIX-ROUND.md`). The line calls the archive "local", so the carrier may be a commit that was never pushed; as cited, it cannot be checked by anyone else. Added in the fix round from the second session's review. Evidence: `git cat-file -t` in site and engine; `gh api repos/zodiacs-org/sdk/commits/03142a4d...`. |
+
+## Fix round, 13 November 2026
+
+Row 2 was added, so the site list is now 2 rows. Row 1 has its correction note in `integrations/packages/README.md` itself, beside the sentence, dated. The adoption record of row 2 is a dated evidence file and was not edited. See `FIX-ROUND.md`.
+
 ## Observations that are not line findings
 
 1. `public/sdk/engine/media/CHANGELOG.md` is served publicly, is titled "Engine changelog" and holds only the 0.1.1-rc.1 entry. It is accurate for what it is (the changelog packed in rc.1, part of the historical reference that the house rules say is never edited), but a reader who lands on it sees a changelog that stops two months and 22 entries short of the engine's.
