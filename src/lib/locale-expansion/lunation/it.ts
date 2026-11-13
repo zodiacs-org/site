@@ -89,8 +89,8 @@ export const it: LunationCopy = {
   calendarLink: 'Calendario delle lune piene',
   moonPhaseLink: 'La fase lunare di oggi',
   horoscopesLink: 'Oroscopi',
-  confidence: (value) => `Affidabilità della lettura ${value}%`,
-  confidenceNote: 'Il numero dice quanto sono specifici i dati della lettura (qui, solo il segno solare), non la probabilità che qualcosa accada.',
+  confidence: () => 'Lettura dal segno solare',
+  confidenceNote: 'Questa lettura usa solo il segno solare, non un tema completo. Non indica la probabilità che qualcosa accada.',
   method: 'Il momento esatto e la posizione sono calcolati con il motore astronomico del sito. Gli orari sono in UTC.',
   faqHeading: 'Domande frequenti',
   faq: (f) => {
