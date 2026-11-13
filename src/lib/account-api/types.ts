@@ -189,6 +189,29 @@ export interface AccountSyncV2ExportV1 {
   }>;
 }
 
+/** One row of public.saved_pages; assistant saves carry their summary and detail. */
+export interface SavedPageExportV1 {
+  id: string;
+  kind: 'compatibility' | 'occasion' | 'chart' | 'week';
+  title: string;
+  href: string;
+  source: 'site' | 'assistant';
+  summary: string | null;
+  detail: Record<string, unknown> | null;
+  savedAt: string;
+}
+
+/** One row of public.living_chart_moments; a deleted moment keeps no payload. */
+export interface LivingChartMomentExportV1 {
+  momentId: string;
+  consentEpoch: number;
+  revision: number;
+  payload: Record<string, unknown> | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
 export interface ZodiacsAccountExportV1 {
   schema: typeof ACCOUNT_EXPORT_SCHEMA;
   exportedAt: string;
@@ -200,5 +223,7 @@ export interface ZodiacsAccountExportV1 {
     dailyChartPreference: DailyChartPreferenceExportV1 | null;
     compatibilityInvites: CompatibilityInviteExportV1[];
     accountSyncV2: AccountSyncV2ExportV1;
+    savedPages: SavedPageExportV1[];
+    livingChartMoments: LivingChartMomentExportV1[];
   };
 }

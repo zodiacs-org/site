@@ -318,6 +318,91 @@ export function decryptAccountPrivatePayload(
   }
 }
 
+/**
+ * Key rotation. The payload AEAD does not bind the key version; only the data
+ * key wrap does. Re-wrapping therefore unwraps the data key with the version it
+ * names and wraps it again under the active version, leaving ciphertext and
+ * nonce as they are. No payload is decrypted. Returns the new key version and
+ * wrapped key, or throws AccountEncryptionFailure (also when the wrapped key is
+ * already under the active version, so a caller cannot mistake a no-op).
+ */
+export interface AccountRewrappedKey {
+  keyVersion: number;
+  wrappedKey: Buffer;
+}
+
+function rewrapDataKey(
+  wrappedKey: Buffer,
+  keyVersion: number,
+  wrapAad: (version: number) => Buffer,
+  env: Environment,
+): AccountRewrappedKey {
+  if (!Number.isSafeInteger(keyVersion) || keyVersion < 1 || keyVersion > MAX_KEY_VERSION
+    || wrappedKey.byteLength !== WRAPPED_KEY_BYTES) {
+    throw new AccountEncryptionFailure();
+  }
+  const keyring = parseKeyring(env);
+  const oldKey = keyring.keys.get(keyVersion);
+  const activeKey = keyring.keys.get(keyring.activeVersion);
+  if (!oldKey || !activeKey || keyVersion === keyring.activeVersion) {
+    throw new AccountEncryptionFailure();
+  }
+  const dataKey = unwrapDataKey(wrappedKey, oldKey, keyVersion, wrapAad(keyVersion));
+  try {
+    return {
+      keyVersion: keyring.activeVersion,
+      wrappedKey: wrapDataKey(
+        dataKey,
+        activeKey,
+        keyring.activeVersion,
+        wrapAad(keyring.activeVersion),
+      ),
+    };
+  } finally {
+    dataKey.fill(0);
+  }
+}
+
+export function rewrapAccountPrivatePayloadKey(
+  wrappedKey: Buffer,
+  keyVersion: number,
+  context: AccountEncryptionContext,
+  env: Environment = process.env,
+): AccountRewrappedKey {
+  if (!validContext(context)) throw new AccountEncryptionFailure();
+  return rewrapDataKey(wrappedKey, keyVersion, (version) => aad('data-key-wrap', context, version), env);
+}
+
+export function rewrapAccountDailySunAliasLocatorKey(
+  wrappedKey: Buffer,
+  keyVersion: number,
+  context: AccountDailySunAliasContext,
+  env: Environment = process.env,
+): AccountRewrappedKey {
+  if (!validAliasContext(context)) throw new AccountEncryptionFailure();
+  return rewrapDataKey(
+    wrappedKey,
+    keyVersion,
+    (version) => providerAad('daily-sun-alias-key-wrap', context, version),
+    env,
+  );
+}
+
+export function rewrapAccountDeletionProviderPayloadKey(
+  wrappedKey: Buffer,
+  keyVersion: number,
+  context: AccountDeletionProviderContext,
+  env: Environment = process.env,
+): AccountRewrappedKey {
+  if (!validDeletionProviderContext(context)) throw new AccountEncryptionFailure();
+  return rewrapDataKey(
+    wrappedKey,
+    keyVersion,
+    (version) => providerAad('deletion-provider-key-wrap', context, version),
+    env,
+  );
+}
+
 function canonicalProviderPayload(email: string): string {
   const normalized = normalizeEmail(email);
   if (!normalized || normalized !== email) {

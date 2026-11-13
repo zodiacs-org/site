@@ -686,8 +686,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // carry and what the growth test events count (approved 12 November), last so
   // this wins.
   ['/privacy/', '2026-11-12'] as const,
-  // The English privacy page says what share pages do with the arrival word and
-  // where assistant visits are counted, 13 November, last so this wins.
+  // The English privacy page says what share pages do with the arrival word,
+  // where assistant visits are counted, and what the account export includes
+  // (saved pages and Living Chart moments), 13 November, last so this wins.
   ['/privacy/', '2026-11-13'] as const,
   // Times in five zones, longer question lists and the accuracy line (ZOD-180). Each page prints the
   // same constant as its "Updated" date and dateModified; last, so these win.
