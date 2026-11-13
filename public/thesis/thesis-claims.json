@@ -1,0 +1,255 @@
+{
+  "$comment": "Every factual or comparative sentence in the essay on /thesis/, with its source. Held to the page by tests/thesis-contract.test.mjs: every sentence in the essay that carries a number has an entry, and every entry's match is printed on the page. Refreshing a checkedAt date is a reviewed action.",
+  "reviewedAt": "2026-11-13",
+  "statuses": [
+    "checked",
+    "listed",
+    "operator-statement",
+    "weak"
+  ],
+  "claims": [
+    {
+      "id": "operator-holds",
+      "match": "We hold some of these coins and take no fee when you buy one",
+      "claim": "The operator holds some of the coins and takes no fee or referral on purchases",
+      "source": "Statement by the operator, 10 Nov 2026",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "operator-statement"
+    },
+    {
+      "id": "thin-and-zero",
+      "match": "They are thinly traded and can fall to zero",
+      "claim": "Daily trading is thin; the coins can lose all their value",
+      "source": "https://zodiacs.org/thesis/thesis-candidacy.json",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "listed"
+    },
+    {
+      "id": "know-sign",
+      "match": "Nine in ten could",
+      "claim": "90% of U.S. adults picked their own sign when shown the twelve",
+      "source": "https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology",
+      "sourceDate": "2022-04-22",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "believe",
+      "match": "only about one in four said they believe in astrology",
+      "claim": "27% of U.S. adults said they believe in astrology",
+      "source": "https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology",
+      "sourceDate": "2022-04-22",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "age-of-signs",
+      "match": "for about 2,400 years",
+      "claim": "The fixed twelve-sign zodiac dates to Babylonian astronomy, about the fifth century BCE",
+      "source": "https://zodiacs.org/thesis/#the-audience",
+      "sourceDate": "2026-07-31",
+      "checkedAt": "2026-11-10",
+      "status": "listed"
+    },
+    {
+      "id": "newspaper-1930",
+      "match": "In 1930 a London newspaper printed a horoscope for the newborn Princess Margaret",
+      "claim": "R. H. Naylor's horoscope for Princess Margaret in the Sunday Express, August 1930, began the newspaper horoscope column",
+      "source": "https://www.smithsonianmag.com/history/how-are-horoscopes-still-thing-180957701/",
+      "sourceDate": "2015-06-24",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "social-media",
+      "match": "today the zodiac is some of the most dependable material on social media",
+      "claim": "No platform count is cited. The sentence prints no number and asks the reader to search their own sign",
+      "source": null,
+      "sourceDate": null,
+      "checkedAt": "2026-11-10",
+      "status": "weak"
+    },
+    {
+      "id": "made-july-2024",
+      "match": "In July 2024 twelve coins appeared on Solana",
+      "claim": "The twelve were created on 5 July 2024",
+      "source": "https://zodiacs.org/disclosure/#origin",
+      "sourceDate": "2024-07-05",
+      "checkedAt": "2026-11-10",
+      "status": "listed"
+    },
+    {
+      "id": "coingecko-sample",
+      "match": "18.7 million coins launched on Pump.fun between January 2024 and June 2026",
+      "claim": "CoinGecko studied 18,675,645 Pump.fun coins launched 14 Jan 2024 to 18 Jun 2026",
+      "source": "https://www.coingecko.com/research/publications/average-lifespan-of-pumpfun-tokens",
+      "sourceDate": "2026-06-23",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "coingecko-day-one",
+      "match": "69% of them traded for the last time on the day they were created",
+      "claim": "68.67% had their last trade on the day of creation",
+      "source": "https://www.coingecko.com/research/publications/average-lifespan-of-pumpfun-tokens",
+      "sourceDate": "2026-06-23",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "coingecko-90-days",
+      "match": "Fewer than one in twenty were still trading ninety days later",
+      "claim": "4.55% lasted 90 days or more; CoinGecko counted trades on Pump.fun only, so this understates survival",
+      "source": "https://www.coingecko.com/research/publications/average-lifespan-of-pumpfun-tokens",
+      "sourceDate": "2026-06-23",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "third-year",
+      "match": "These twelve are in their third year",
+      "claim": "Created 5 July 2024; true from 5 July 2026 to 4 July 2027",
+      "source": "https://zodiacs.org/disclosure/#origin",
+      "sourceDate": "2024-07-05",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "public-list",
+      "match": "any app can recognise the listed Leo without asking us",
+      "claim": "The registry of the twelve addresses is public",
+      "source": "https://zodiacs.org/registry/zodiacs.registry.json",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "listed"
+    },
+    {
+      "id": "one-address",
+      "match": "still has the Solana address it was created with on 5 July 2024",
+      "claim": "For each sign, the native Solana address in the registry is the mint created on 5 July 2024",
+      "source": "https://zodiacs.org/registry/zodiacs.registry.json",
+      "sourceDate": "2026-11-13",
+      "checkedAt": "2026-11-13",
+      "status": "checked"
+    },
+    {
+      "id": "no-more",
+      "match": "nobody can make more of them, including us",
+      "claim": "Mint authority renounced on all twelve, re-read on chain 10 Nov 2026",
+      "source": "https://zodiacs.org/thesis/thesis-disclosure.json",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "listed"
+    },
+    {
+      "id": "portnoy",
+      "match": "Dave Portnoy bought our Libra by mistake",
+      "claim": "His post of 17 Feb 2025 names the registry Libra address and says he bought it by accident",
+      "source": "https://x.com/stoolpresidente/status/1891528769770279114",
+      "sourceDate": "2025-02-17",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "portnoy-views",
+      "match": "seen about three million times",
+      "claim": "3.1 million views on 10 Nov 2026",
+      "source": "https://x.com/stoolpresidente/status/1891528769770279114",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "critics",
+      "match": "the ones who said a few wallets held too much and the ones who called the coins dead",
+      "claim": "The public-history register records the concentration challenge and the \"dead bag\" criticism (the latter by a search link, not a single post)",
+      "source": "https://zodiacs.org/thesis/thesis-history.json",
+      "sourceDate": "2026-07-31",
+      "checkedAt": "2026-07-31",
+      "status": "weak"
+    },
+    {
+      "id": "leo-holders",
+      "match": "about 2,800 wallets hold Leo alone",
+      "claim": "Solscan showed 2,786 Leo holders on 10 Nov 2026",
+      "source": "https://solscan.io/token/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "listed"
+    },
+    {
+      "id": "two-years",
+      "match": "More than two years on",
+      "claim": "Created 5 July 2024",
+      "source": "https://zodiacs.org/disclosure/#origin",
+      "sourceDate": "2024-07-05",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "five-languages",
+      "match": "daily horoscopes in five languages",
+      "claim": "Released locales: English, Spanish, Portuguese, French and Italian",
+      "source": "https://zodiacs.org/",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "chatgpt-claude",
+      "match": "plugins that bring it into",
+      "claim": "zodiacs.org/apps offers connections for ChatGPT and Claude",
+      "source": "https://zodiacs.org/apps/",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "listed"
+    },
+    {
+      "id": "one-link",
+      "match": "The coins sit one labelled link away",
+      "claim": "Consumer pages link to the coins only through the sanctioned, labelled doors",
+      "source": "https://zodiacs.org/astrofolio/",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "listed"
+    },
+    {
+      "id": "go-to-zero",
+      "match": "A memecoin can go to zero, and these can too",
+      "claim": "Portnoy's post: \"It will eventually go to zero.\"",
+      "source": "https://x.com/stoolpresidente/status/1891528769770279114",
+      "sourceDate": "2025-02-17",
+      "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "lunch",
+      "match": "less than the price of a lunch",
+      "claim": "Lowest 24-hour volume among the nine pools Dexscreener returned was $0.88 at the 2026-11-10 capture",
+      "source": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "listed"
+    },
+    {
+      "id": "top-ten",
+      "match": "between 23% and 31% of each coin, a figure that includes the trading pool",
+      "claim": "Top-10 token-account share per sign: lowest 23.0%, highest 30.6%, pool accounts included (not refreshed on 10 Nov 2026: no keyless public RPC answers getTokenLargestAccounts)",
+      "source": "https://zodiacs.org/thesis/thesis-disclosure.json",
+      "sourceDate": "2026-07-14",
+      "checkedAt": "2026-07-14",
+      "status": "listed"
+    },
+    {
+      "id": "no-app",
+      "match": "No outside app has adopted them yet",
+      "claim": "The candidacy scoreboard records no qualifying independent integration",
+      "source": "https://zodiacs.org/thesis/thesis-candidacy.json",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
+      "status": "listed"
+    }
+  ]
+}

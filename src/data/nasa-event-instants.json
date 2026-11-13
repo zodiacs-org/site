@@ -208,8 +208,8 @@
       "count": 101,
       "maxSeconds": 43.6
     },
-    "lunations": "every new and full Moon agrees with NASA to the second (docs/accuracy-audit-2026-11/REPORT.md)",
-    "moonIngresses": "every Moon sign change agrees with NASA to the second (docs/accuracy-audit-2026-11/REPORT.md)"
+    "lunations": "every new and full Moon is within a minute of NASA, and within 6 s from 2026 to 2030; the pages print it to the minute (docs/accuracy-audit-2026-11/REPORT.md, correction of 2026-11-13)",
+    "moonIngresses": "every Moon sign change is within a minute of NASA, and within 6 s from 2026 to 2030; the pages print it to the minute (docs/accuracy-audit-2026-11/REPORT.md, correction of 2026-11-13)"
   },
   "largestCorrectionSeconds": {
     "ingresses": 34562,

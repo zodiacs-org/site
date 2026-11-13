@@ -1,0 +1,48 @@
+/workspace/wt/fable-job4/docs/platform/evidence/thesis-skeptic-20261113/records/breaker-copyfix/tools/pulse_refetch.py:38: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  print('fetched', datetime.datetime.utcnow().isoformat() + 'Z')
+/workspace/wt/fable-job4/docs/platform/evidence/thesis-skeptic-20261113/records/breaker-copyfix/tools/pulse_refetch.py:40: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  end = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+fetched 2026-11-13T11:41:40.395142Z
+== window 20261010 to 20261108 (snapshot)
+Aries        days 30 20261010..20261108 total   33366 avg/day   1112.2 rounded 1112
+Taurus       days 30 20261010..20261108 total   25466 avg/day    848.9 rounded 849
+Gemini       days 30 20261010..20261108 total   60942 avg/day   2031.4 rounded 2031
+Cancer       days 30 20261010..20261108 total   18354 avg/day    611.8 rounded 612
+Leo          days 30 20261010..20261108 total   18453 avg/day    615.1 rounded 615
+Virgo        days 30 20261010..20261108 total   25776 avg/day    859.2 rounded 859
+Libra        days 30 20261010..20261108 total   31569 avg/day   1052.3 rounded 1052
+Scorpio      days 30 20261010..20261108 total   52187 avg/day   1739.6 rounded 1740
+Sagittarius  days 30 20261010..20261108 total   63030 avg/day   2101.0 rounded 2101
+Capricorn    days 30 20261010..20261108 total   37348 avg/day   1244.9 rounded 1245
+Aquarius     days 30 20261010..20261108 total   29291 avg/day    976.4 rounded 976
+Pisces       days 30 20261010..20261108 total   26893 avg/day    896.4 rounded 896
+twelve total 422675 over 30 days: 14089.2 a day (rounded 14089)
+sorted rounded sign averages [612, 615, 849, 859, 896, 976, 1052, 1112, 1245, 1740, 2031, 2101] median 1014.0 seventh value 1052 max 2101 min 612
+Dogecoin                       days 30 total    9409 avg/day    313.6 twelve/this 44.87 median/this 3.229 seventh/this 3.350
+Ethereum                       days 30 total   21143 avg/day    704.8 twelve/this 19.98 median/this 1.438 seventh/this 1.492
+Solana_(blockchain_platform)   days 30 total    8349 avg/day    278.3 twelve/this 50.68 median/this 3.647 seventh/this 3.784
+Shiba_Inu_(cryptocurrency)     days 30 total    2108 avg/day     70.3 twelve/this 201.27 median/this 14.486 seventh/this 15.029
+Bitcoin                        days 30 total   97139 avg/day   3238.0 twelve/this 4.35 median/this 0.313 seventh/this 0.325
+== window 20261014 to 20261112 (live)
+Aries        days 30 20261014..20261112 total   34016 avg/day   1133.9 rounded 1134
+Taurus       days 30 20261014..20261112 total   25808 avg/day    860.3 rounded 860
+Gemini       days 30 20261014..20261112 total   63125 avg/day   2104.2 rounded 2104
+Cancer       days 29 20261014..20261111 total   17786 avg/day    613.3 rounded 613
+Leo          days 30 20261014..20261112 total   18337 avg/day    611.2 rounded 611
+Virgo        days 30 20261014..20261112 total   25606 avg/day    853.5 rounded 854
+Libra        days 30 20261014..20261112 total   29606 avg/day    986.9 rounded 987
+Scorpio      days 30 20261014..20261112 total   54441 avg/day   1814.7 rounded 1815
+Sagittarius  days 30 20261014..20261112 total   64768 avg/day   2158.9 rounded 2159
+Capricorn    days 29 20261014..20261111 total   37081 avg/day   1278.7 rounded 1279
+Aquarius     days 30 20261014..20261112 total   29520 avg/day    984.0 rounded 984
+Pisces       days 30 20261014..20261112 total   27193 avg/day    906.4 rounded 906
+twelve total 427287 over 29 days: 14734.0 a day (rounded 14734)
+sorted rounded sign averages [611, 613, 854, 860, 906, 984, 987, 1134, 1279, 1815, 2104, 2159] median 985.5 seventh value 987 max 2159 min 611
+Dogecoin                       days 30 total    9199 avg/day    306.6 twelve/this 47.99 median/this 3.210 seventh/this 3.215
+Ethereum                       days 30 total   22005 avg/day    733.5 twelve/this 20.07 median/this 1.343 seventh/this 1.345
+Solana_(blockchain_platform)   days 30 total    7978 avg/day    265.9 twelve/this 55.39 median/this 3.705 seventh/this 3.711
+Shiba_Inu_(cryptocurrency)     days 30 total    1994 avg/day     66.5 twelve/this 223.24 median/this 14.932 seventh/this 14.955
+Bitcoin                        days 30 total  101903 avg/day   3396.8 twelve/this 4.34 median/this 0.290 seventh/this 0.291
+== Bitcoin against the most read sign article, day by day, 10 Oct to 8 Nov 2026
+days on which one sign article had more reads than Bitcoin: 2 [('20261018', (1987, 'Gemini'), 1983), ('20261024', (2234, 'Scorpio'), 2012)]
+Bitcoin min day 1983 max single sign day (2586, 'Sagittarius')

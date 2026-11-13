@@ -4,11 +4,19 @@
  * The links are stored with the account (public.saved_pages, owner-only by
  * row-level security), so they open on any device the person signs in on.
  *
+ * The site's own saves carry no birth details: a compatibility reading is
+ * saved as its sign pair page, and an occasion card as the day it is for
+ * (or only the occasions page for a birthday, a baby or a coming of age).
+ * savedPageWriteDraft holds every write to that rule. Rows saved before it
+ * are still listed and removable (parseSavedPageRow does not apply it).
+ *
  * This module is pure and does not load the Supabase library: pages decide
  * what to show from the build flag and from whether a session is stored.
  * The flag is off in the committed state; the table's migration has to be
  * applied in production before it is switched on.
  */
+
+import { isSavedOccasionHref } from '../occasions/saved-path';
 
 export const ACCOUNT_SAVES_PUBLIC_FLAG = 'PUBLIC_ACCOUNT_SAVES_ENABLED';
 
@@ -116,6 +124,21 @@ export function savedPageDraft(raw: unknown, origin?: string, kinds: readonly st
   return title && href ? { kind: record.kind, title, href } : null;
 }
 
+/**
+ * A draft as it may be written (saved, or left waiting for sign-in): the
+ * draft rules, and no birth details. A compatibility link has no fragment and
+ * no query. An occasion link is exactly what the shared occasion rule writes
+ * (src/lib/occasions/saved-path.ts). Used only when writing, never to read
+ * rows, so a page saved before this rule stays visible and removable.
+ */
+export function savedPageWriteDraft(raw: unknown, origin?: string): SavedPageDraft | null {
+  const draft = savedPageDraft(raw, origin);
+  if (!draft) return null;
+  if (draft.kind === 'compatibility' && /[#?]/u.test(draft.href)) return null;
+  if (draft.kind === 'occasion' && !isSavedOccasionHref(draft.href)) return null;
+  return draft;
+}
+
 /** A database row, trusted no further than the draft rules. */
 export function parseSavedPageRow(raw: unknown): SavedPage | null {
   const draft = savedPageDraft(raw, undefined, LISTED_PAGE_KINDS);
@@ -136,7 +159,9 @@ export function parseSavedPageRow(raw: unknown): SavedPage | null {
  * "Sign in to save": the page being saved waits on this device while the
  * person signs in, then the profile saves it. One item, kept for a day.
  */
-export const PENDING_SAVE_KEY = 'zodiacs.account-saves.pending.v1';
+export const PENDING_SAVE_KEY = 'zodiacs.account-saves.pending.v2';
+/** The waiting item's key before the write rule: never read, and removed from the device. */
+export const RETIRED_PENDING_SAVE_KEY = 'zodiacs.account-saves.pending.v1';
 export const PENDING_SAVE_TTL_MS = 24 * 60 * 60 * 1000;
 
 type StorageLike = Pick<Storage, 'getItem' | 'setItem' | 'removeItem' | 'key' | 'length'>;
@@ -149,12 +174,25 @@ function defaultStorage(): StorageLike | null {
   }
 }
 
+/** Removes a waiting item stashed under the retired key, so it is never uploaded. */
+export function dropRetiredPendingSave(storage: Pick<Storage, 'removeItem'> | null = defaultStorage()): void {
+  try {
+    storage?.removeItem(RETIRED_PENDING_SAVE_KEY);
+  } catch {
+    // Storage that cannot be written cannot upload either.
+  }
+}
+
+// On load, wherever this module is loaded (a result page's save line, the profile).
+dropRetiredPendingSave();
+
 export function stashPendingSave(
   draft: SavedPageDraft,
   now: number = Date.now(),
   storage: StorageLike | null = defaultStorage(),
 ): boolean {
-  const clean = savedPageDraft(draft);
+  dropRetiredPendingSave(storage);
+  const clean = savedPageWriteDraft(draft);
   if (!clean || !storage) return false;
   try {
     storage.setItem(PENDING_SAVE_KEY, JSON.stringify({ ...clean, at: now }));
@@ -170,7 +208,7 @@ function readPending(raw: string | null, now: number): SavedPageDraft | null {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
     const at = typeof parsed.at === 'number' ? parsed.at : NaN;
     if (!Number.isFinite(at) || at > now || now - at > PENDING_SAVE_TTL_MS) return null;
-    return savedPageDraft(parsed);
+    return savedPageWriteDraft(parsed);
   } catch {
     return null;
   }
@@ -182,6 +220,7 @@ export function peekPendingSave(
   storage: StorageLike | null = defaultStorage(),
 ): SavedPageDraft | null {
   if (!storage) return null;
+  dropRetiredPendingSave(storage);
   try {
     return readPending(storage.getItem(PENDING_SAVE_KEY), now);
   } catch {
@@ -195,6 +234,7 @@ export function takePendingSave(
   storage: StorageLike | null = defaultStorage(),
 ): SavedPageDraft | null {
   if (!storage) return null;
+  dropRetiredPendingSave(storage);
   let raw: string | null = null;
   try {
     raw = storage.getItem(PENDING_SAVE_KEY);
@@ -247,6 +287,18 @@ export function supabaseAuthStorageKey(url: string | undefined, keys: Iterable<s
     if (SUPABASE_SESSION_ENTRY.exec(key)?.[1] === ref) return key;
   }
   return null;
+}
+
+/**
+ * The exact name Supabase gives this project's browser session entry, built
+ * from the same pattern `supabaseAuthStorageKey` matches. A name only: the
+ * account presence loader compares it with stored key names, never values.
+ */
+export function supabaseAuthStorageKeyName(url: string | undefined): string | null {
+  const ref = supabaseProjectRef(url);
+  if (!ref || !/^[a-z0-9-]+$/u.test(ref)) return null;
+  const name = SUPABASE_SESSION_ENTRY.source.slice(1, -1).replace('([a-z0-9-]+)', ref);
+  return SUPABASE_SESSION_ENTRY.exec(name)?.[1] === ref ? name : null;
 }
 
 function storageKeys(storage: Pick<Storage, 'key' | 'length'>): string[] {

@@ -21,9 +21,11 @@ import { currentHoroscopeMonth, utcMonth } from '../lib/horoscope-month.mjs';
 import { monthLabel } from '../lib/horoscopes';
 import type { HoroscopeProgram } from '../lib/horoscope-program';
 import { signArtSrc, signArtSrcset } from '../lib/sign-art';
+import type { TransitCatalog } from '../lib/today-sky';
 import { SIGNS, signBySlug } from '../lib/signs';
 import { signDateRange } from '../lib/sign-display';
 import {
+  alsoInSkyEvents,
   degreeLabel,
   horoscopeHubTeaser,
   horoscopePageYear,
@@ -37,9 +39,11 @@ interface Props {
   signSlug: string;
   surface: HoroscopeSurface;
   reading: HoroscopeProgramPageReading;
+  /** Set by a route that adds an island reading the saved charts (DailyForYou). */
+  accountSurface?: boolean;
 }
 
-const { signSlug, surface, reading } = Astro.props;
+const { signSlug, surface, reading, accountSurface = false } = Astro.props;
 const sign = signBySlug(signSlug);
 const daily = dailyData as Daily;
 const program = programData as HoroscopeProgram;
@@ -172,9 +176,6 @@ const shortDate = (iso: string) => new Intl.DateTimeFormat('en-US', {
 const longDate = (iso: string) => new Intl.DateTimeFormat('en-US', {
   weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
 }).format(new Date(`${iso}T12:00:00.000Z`));
-const utcClock = (iso: string) => new Intl.DateTimeFormat('en-GB', {
-  hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'UTC',
-}).format(new Date(iso));
 
 // ── The program's own periods, for the switch and the "More for" list ──
 const programSurfaces = ['tomorrow', 'weekly', 'love', 'career', 'year2026', 'year'] as const;
@@ -308,21 +309,19 @@ const moonPhase = daySpan && moonRow ? reading.sky?.find((planet) => planet.id =
 const showPlanets = !pageYear;
 
 // "Also in this sky": the edition's other exact events and the Sun, when
-// the reading itself does not already name them.
+// the reading itself does not already name them. Events are taken by the
+// UTC day of the instant the page prints (NASA's for planet events), as the
+// sky rows are, so an event the reading names is not repeated.
+const transitCatalogs = Object.values(import.meta.glob<{ default: TransitCatalog }>('../data/transits-*.json', { eager: true }))
+  .map((module) => module.default);
 const alsoInSky = surface === 'today'
   ? [
       ...(skyRows.some((row) => row.body === 'Sun')
         ? []
         : daily.bodies.filter((body) => body.body === 'Sun').map((body) => `Sun ${degreeLabel(body.degree)} ${capitalize(body.sign)}`)),
-      ...daily.events
-        .filter((event) => !skyRows.some((row) => row.at === event.at))
-        .map((event) => {
-          const at = `${utcClock(event.at)} UTC`;
-          if (event.kind === 'aspect') return `${event.a} ${event.type} ${event.b}, exact at ${at}`;
-          if (event.kind === 'station') return `${event.planet} stations ${event.type} at ${at}`;
-          if (event.kind === 'ingress') return `${event.planet} enters ${capitalize(event.sign ?? '')} at ${at}`;
-          return `${capitalize(event.type ?? '')} moon in ${capitalize(event.sign ?? '')} at ${at}`;
-        }),
+      ...(daily.eventsCoverage === 'unavailable'
+        ? []
+        : alsoInSkyEvents(transitCatalogs, daily.date, skyRows.map((row) => row.at))),
     ]
   : [];
 
@@ -360,6 +359,7 @@ const ctaLede = edgeMoon && moonHouse
 ---
 <Base
   inlineCriticalCss
+  accountSurface={accountSurface}
   stableTypography
   title={`${sign.name} ${reading.title}, ${reading.label} | Zodiacs.org`}
   description={displayText(reading.description)}

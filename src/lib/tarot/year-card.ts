@@ -44,6 +44,9 @@ export const MAJOR_ARCANA: readonly TarotCard[] = Object.freeze([
   { number: 21, numeral: 'XXI', name: 'The World', keywords: ['completion', 'arrival', 'wholeness'], year: 'A year of completion. Tradition reads the World as a cycle finished well: arrivals, recognition, and the freedom to choose the next journey.' },
 ]);
 
+/** A card's name with its first keyword, so no card stands as a bare name: "Death: change". */
+export const cardTitle = (card: TarotCard): string => card.name + ': ' + card.keywords[0];
+
 const digitSum = (n: number) => String(n).split('').reduce((sum, digit) => sum + Number(digit), 0);
 
 /** The year card for a birthday's month and day in a given year: month + day + year, reduced to 22 or less, 22 read as 0. */

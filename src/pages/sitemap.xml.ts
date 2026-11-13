@@ -28,14 +28,20 @@ import { dailyEditions } from '../lib/return-visits/chart-of-day';
 import { SIGNS } from '../lib/signs';
 import birthdayFactsData from '../data/birthdays.json';
 import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged } from '../lib/birthday-degrees';
+import {
+  BIRTHDAY_DAY_UPDATED, BIRTHDAY_HUB_UPDATED, ECLIPSES_2027_UPDATED, FULL_MOON_CALENDAR_2027_UPDATED,
+  MERCURY_RETROGRADE_2027_UPDATED, updatedIso,
+} from '../world-times/updated';
 import { PEOPLE_DEGREES_MODIFIED_AT, peopleDegreesChanged } from '../lib/people-degrees';
 import daily from '../data/daily.json';
 import developerGuides from '../data/developer-guides.json';
 import horoscopeProgram from '../data/horoscope-program.json';
 import registryResearchPublicationData from '../data/registry-research/publication.json';
+import registryResearchPause from '../data/registry-research/pause.json';
 import { eventsPublication } from '../lib/events/site-publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
+import { isHiddenAlmanacSlug, isHiddenChildPage } from '../data/hidden-child-pages.mjs';
 import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
@@ -45,15 +51,24 @@ type RegistryResearchPublication = {
 };
 const registryResearchPublication = registryResearchPublicationData as unknown as RegistryResearchPublication;
 const birthdayFacts = birthdayFactsData as unknown as { days: Record<string, { cusp?: unknown }> };
-const researchLastmod = terminalResearchLastmod(registryResearchPublication);
+// /terminal/research/ says publishing is paused while
+// src/data/registry-research/pause.json says so; the notice went up on this date.
+const TERMINAL_RESEARCH_PAUSE_LASTMOD = '2026-11-12';
+const researchLastmod = terminalResearchLastmod(
+  registryResearchPublication,
+  registryResearchPause.status === 'paused' ? TERMINAL_RESEARCH_PAUSE_LASTMOD : undefined,
+);
 // Both yearly pages last changed when their planet ingress, station and
 // aspect times were taken from NASA JPL Horizons (src/lib/nasa-instants.ts).
 const YEARLY_HOROSCOPE_LASTMOD = '2026-11-06';
 const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
-const THESIS_LASTMOD = '2026-09-05';
+// The twelve Registry sign pages re-read their mint and freeze authority on chain (thesis evidence refresh).
+const REGISTRY_SIGN_LASTMOD = '2026-11-10';
+const THESIS_LASTMOD = '2026-11-13';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
+const SKY_HEADS_UP_LASTMOD = '2026-11-12';
 // The sign-season pages and their hub were published together.
 const SEASON_PAGES_LASTMOD = '2026-11-05';
 // The sign season pages' year tables run through 2040 from 2026-11-06.
@@ -196,7 +211,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/about/',
   '/almanac/',
   '/ask/',
-  '/baby-zodiac/',
   '/big-three/',
   '/birth-chart/',
   '/birth-chart/someone-else/',
@@ -209,7 +223,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/eclipses/',
   '/eclipses/2027/',
   '/es/',
-  '/es/baby-zodiac/',
   '/es/birth-chart/',
   '/es/chart-of-the-day/',
   '/es/compatibility/',
@@ -226,7 +239,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/events/',
   '/feeds/',
   '/fr/',
-  '/fr/baby-zodiac/',
   '/fr/birth-chart/',
   '/fr/chart-of-the-day/',
   '/fr/compatibility/',
@@ -243,7 +255,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/full-moon-calendar/',
   '/full-moon-calendar/2027/',
   '/it/',
-  '/it/baby-zodiac/',
   '/it/birth-chart/',
   '/it/chart-of-the-day/',
   '/it/compatibility/',
@@ -267,12 +278,10 @@ const DESIGN_SWEEP_ROUTES = [
   '/moon-phase/',
   '/moon-sign/',
   '/occasions/',
-  '/occasions/baby-shower/',
   '/occasions/milestones/',
   '/privacy/',
   '/profile/',
   '/pt/',
-  '/pt/baby-zodiac/',
   '/pt/birth-chart/',
   '/pt/chart-of-the-day/',
   '/pt/compatibility/',
@@ -289,7 +298,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/retrogrades/',
   '/rising-sign/',
   '/ru/',
-  '/ru/baby-zodiac/',
   '/ru/birth-chart/',
   '/ru/chart-of-the-day/',
   '/ru/compatibility/',
@@ -394,6 +402,8 @@ const NASA_WINDOW_PLACEMENTS = [
 // Every event page says where its times come from, and the planets' ingress, station and aspect times are
 // NASA JPL's (src/lib/nasa-instants.ts). Dated here for the same reason as EVENT_WATCH_LASTMOD.
 const EVENT_NASA_TIMES_LASTMOD = '2026-11-06';
+// "Behind this event" prints its instants to the minute, as the rest of each event page does.
+const EVENT_EVIDENCE_MINUTE_LASTMOD = '2026-11-13';
 const ACCURACY_AUDIT_REST_LASTMOD = '2026-11-07';
 const ACCURACY_AUDIT_REST_ROUTES = [
   '/', '/events/', '/moon-phase/', '/tools/',
@@ -417,11 +427,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     '/eclipses/', '/full-moon-calendar/', '/retrogrades/', '/today/', '/learn/', '/tools/',
     '/profile/', '/learn/how-to-read-a-birth-chart/', '/learn/communication/', '/learn/zodiac-dates/', '/learn/glossary/', '/learn/planets/',
     '/learn/houses/', '/learn/aspects/', '/learn/placements/', '/birthday/',
-    '/baby-zodiac/', '/widgets/', '/methodology/', '/about/', '/corrections/', '/privacy/',
+    '/widgets/', '/methodology/', '/about/', '/corrections/', '/privacy/',
     '/terms/', '/feeds/', '/almanac/',
     '/es/', '/es/birth-chart/', '/es/compatibility/', '/es/moon-sign/',
     '/es/rising-sign/', '/es/moon-phase/', '/es/saturn-return/', '/es/transits/',
-    '/es/tools/', '/es/profile/', '/es/baby-zodiac/', '/es/methodology/', '/es/privacy/',
+    '/es/tools/', '/es/profile/', '/es/methodology/', '/es/privacy/',
   ].map((loc) => [
     loc,
     [
@@ -445,10 +455,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
-  // The occasion cards, first published 2026-10-11.
+  // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
-  ['/occasions/baby-shower/', '2026-10-11'] as const,
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
   ['/fomo/', '2026-09-01'] as const,
@@ -467,7 +476,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
     'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
-  ].map((sign) => [`/registry/${sign}/`, AUDIT_REMEDIATION_LASTMOD] as const),
+  ].map((sign) => [`/registry/${sign}/`, REGISTRY_SIGN_LASTMOD] as const),
   ...[
     '/disclosure/',
     ...CHINESE_ZODIAC_PATHS,
@@ -477,7 +486,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/pt/', '/pt/birth-chart/', '/pt/compatibility/', '/pt/moon-sign/',
     '/pt/rising-sign/', '/pt/moon-phase/', '/pt/saturn-return/', '/pt/transits/',
-    '/pt/tools/', '/pt/profile/', '/pt/baby-zodiac/', '/pt/methodology/', '/pt/privacy/',
+    '/pt/tools/', '/pt/profile/', '/pt/methodology/', '/pt/privacy/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
@@ -486,7 +495,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/fr/', '/fr/birth-chart/', '/fr/compatibility/', '/fr/moon-sign/',
     '/fr/rising-sign/', '/fr/moon-phase/', '/fr/saturn-return/', '/fr/transits/',
-    '/fr/tools/', '/fr/profile/', '/fr/baby-zodiac/', '/fr/methodology/', '/fr/privacy/',
+    '/fr/tools/', '/fr/profile/', '/fr/methodology/', '/fr/privacy/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
@@ -495,7 +504,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/it/', '/it/birth-chart/', '/it/compatibility/', '/it/moon-sign/',
     '/it/rising-sign/', '/it/moon-phase/', '/it/saturn-return/', '/it/transits/',
-    '/it/tools/', '/it/profile/', '/it/baby-zodiac/', '/it/methodology/', '/it/privacy/',
+    '/it/tools/', '/it/profile/', '/it/methodology/', '/it/privacy/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
@@ -504,7 +513,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/ru/', '/ru/birth-chart/', '/ru/compatibility/', '/ru/moon-sign/',
     '/ru/rising-sign/', '/ru/moon-phase/', '/ru/saturn-return/', '/ru/transits/',
-    '/ru/tools/', '/ru/profile/', '/ru/baby-zodiac/', '/ru/methodology/',
+    '/ru/tools/', '/ru/profile/', '/ru/methodology/',
     '/ru/privacy/', '/ru/disclosure/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
@@ -608,8 +617,13 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The privacy page's assistant section: what the app's links carry (never a birth year, a birth time, a birthplace
   // or the names you give, and a birthday link only the month and day), worded exactly on 5 November, and the
   // assistants it names, with Gemini added on 6 November, and the occasions it lists with no card link, a birthday
-  // alone from 7 November. The day of the daily edition it was built with.
-  ['/privacy/', '2026-11-07'] as const,
+  // alone from 7 November. On 11 November it described encrypted chart sync, chart emails and the analytics
+  // scope, and the terms the encrypted sync account; after the owner-trust entry so both win. The five translated
+  // privacy pages describe the same with the switch on and print the same date.
+  ['/privacy/', '2026-11-11'] as const,
+  ['/terms/', '2026-11-11'] as const,
+  ...['/es/privacy/', '/fr/privacy/', '/it/privacy/', '/pt/privacy/', '/ru/privacy/']
+    .map((loc) => [loc, '2026-11-11'] as const),
   // The conventions registry's traditional void-of-course bodies (void-of-course-bodies:traditional), which the
   // hosted search_sky_events names. The day of the daily edition it was built with.
   ['/developers/conventions/', '2026-11-04'] as const,
@@ -655,6 +669,32 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // each dated only once its launch switch is on.
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') || launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/tools/', '2026-11-09'] as const] : []),
   ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday/', '2026-11-09'] as const] : []),
+  // Chart sync pause copy on the birth chart page, the privacy page, and the
+  // profile pages (every language). The day of the daily edition they were
+  // built with.
+  ['/birth-chart/', '2026-11-11'] as const,
+  ['/privacy/', '2026-11-11'] as const,
+  ...['/profile/', '/es/profile/', '/fr/profile/', '/it/profile/', '/pt/profile/', '/ru/profile/']
+    .map((loc) => [loc, '2026-11-11'] as const),
+  // The privacy page's encrypted chart sync, chart emails and analytics scope
+  // wording, merged on 12 November after the pause copy above, so this wins.
+  ['/privacy/', '2026-11-12'] as const,
+  // The English /sky-calendar/ page gained the heads-up calendar on 12 November,
+  // after the October design sweep dates above, so this wins.
+  ['/sky-calendar/', SKY_HEADS_UP_LASTMOD] as const,
+  // The privacy page's analytics paragraph names the arrival words a link can
+  // carry and what the growth test events count (approved 12 November), last so
+  // this wins.
+  ['/privacy/', '2026-11-12'] as const,
+  // The English privacy page says what share pages do with the arrival word and
+  // where assistant visits are counted, 13 November, last so this wins.
+  ['/privacy/', '2026-11-13'] as const,
+  // Times in five zones, longer question lists and the accuracy line (ZOD-180). Each page prints the
+  // same constant as its "Updated" date and dateModified; last, so these win.
+  ['/mercury-retrograde/2027/', MERCURY_RETROGRADE_2027_UPDATED] as const,
+  ['/full-moon-calendar/2027/', FULL_MOON_CALENDAR_2027_UPDATED] as const,
+  ['/eclipses/2027/', ECLIPSES_2027_UPDATED] as const,
+  ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -681,7 +721,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const learn = await getCollection('learn', ({ data }) => !data.draft);
   const horoscopes = await getCollection('horoscopes', ({ data }) => !data.draft);
   const birthdays = await getCollection('birthdays', ({ data }) => !data.draft);
-  const almanac = await getCollection('almanac', ({ data }) => !data.draft);
+  // Hidden articles (src/data/hidden-child-pages.mjs) are noindex and stay out of the sitemap.
+  const almanac = await getCollection('almanac', ({ id, data }) => !data.draft && !isHiddenAlmanacSlug(id));
   const latestMonth = currentHoroscopeMonth(horoscopes.map((h) => h.data.month), utcMonth(daily.date));
   const latestMonthlyBySign = new Map(
     horoscopes
@@ -749,10 +790,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/learn/aspects/', priority: 0.7 },
     { loc: '/learn/placements/', priority: 0.7 },
     { loc: '/birthday/', priority: 0.7 },
-    { loc: '/baby-zodiac/', priority: 0.8 },
     { loc: '/occasions/', priority: 0.7 },
     { loc: '/occasions/milestones/', priority: 0.6 },
-    { loc: '/occasions/baby-shower/', priority: 0.6 },
     { loc: '/widgets/', priority: 0.6 },
     { loc: '/developers/', priority: 0.6 },
     { loc: '/developers/support/', priority: 0.6 },
@@ -811,7 +850,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...eventsPublication.pages.map((event) => ({
       loc: event.path,
       priority: 0.64,
-      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVERGREEN_LASTMOD.get(event.path) ?? '']
+      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVENT_EVIDENCE_MINUTE_LASTMOD,
+        EVERGREEN_LASTMOD.get(event.path) ?? '']
         .reduce((latest, date) => (date > latest ? date : latest)),
     })),
     // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
@@ -892,6 +932,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
         ...(peopleForBirthday(`/birthday/${b.id}/`).length > 0 ? [BIRTHDAY_FAMOUS_LINE_MODIFIED_AT] : []),
         // The page began printing its degrees from birthdays-precise.json.
         ...(birthdayDegreesChanged(b.id) ? [BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT] : []),
+        // The season question, the cusp crossing in five time zones and the Updated line.
+        updatedIso(BIRTHDAY_DAY_UPDATED),
       )),
     })),
     ...almanac.map((entry) => ({
@@ -972,10 +1014,23 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
+  // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
+  // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no
+  // longer lists the article on a child's chart.
+  for (const url of urls) {
+    if (url.loc === '/occasions/' || url.loc === '/tools/' || url.loc === '/almanac/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-12');
+    }
+  }
+  // The methodology page gives the Moon's and the Sun's event times to the
+  // precision the pages print, with the range of each figure.
+  for (const url of urls) {
+    if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-13');
+  }
   return [
     ...urls,
     ...localizedUrls,
-  ];
+  ].filter((url) => !isHiddenChildPage(url.loc));
 }
 
 /** A urlset of the given entries, each with its hreflang alternates, lastmod and priority. */
