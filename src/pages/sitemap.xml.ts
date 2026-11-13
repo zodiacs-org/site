@@ -695,6 +695,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/full-moon-calendar/2027/', FULL_MOON_CALENDAR_2027_UPDATED] as const,
   ['/eclipses/2027/', ECLIPSES_2027_UPDATED] as const,
   ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
+  // The Italian season pages' reading-confidence label, 13 November, last so this date wins.
+  ...SIGNS.map((sign) => [`/it/seasons/${sign.slug}/`, '2026-11-13'] as const),
 ]);
 
 function getLastmod(loc: string): string {
