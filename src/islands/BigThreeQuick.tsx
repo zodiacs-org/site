@@ -107,10 +107,12 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   const profileChartIdRef = useRef<string | null>(null);
   const profileHandoffIdRef = useRef(0);
   const profileAccessGeneration = useProfileAccessGeneration(() => {
+    // Always drop a pending saved-chart load, even if the chart has not been
+    // applied yet, so a later grant cannot reopen it.
+    profileHandoffIdRef.current += 1;
     if (!profileOriginRef.current) return;
     profileOriginRef.current = false;
     profileChartIdRef.current = null;
-    profileHandoffIdRef.current += 1;
     generation.current += 1;
     cardAttempt.current += 1;
     cardSource.current = null;

@@ -463,5 +463,31 @@ describe('Big Three saved-chart provenance', () => {
     expect(stored.p).toBe(true);
     expect(stored.k).toBe('chart');
   });
+
+  it('does not reopen a saved chart after a revoke during its import', async () => {
+    harness.loadProfileChartRunInput.mockReturnValue({
+      date: '1989-12-20',
+      time: '11:30',
+      timeKnown: true,
+      city: paris,
+      houseSystem: 'whole',
+    });
+    vi.stubGlobal('location', { hash: `#profileChartId=${PROFILE_CHART_ID}`, pathname: '/big-three/', search: '' });
+    render();
+    const hookListener = (window.addEventListener as ReturnType<typeof vi.fn>).mock.calls
+      .filter((call) => call[0] === 'zodiacs:profile-access')
+      .map((call) => call[1])
+      .find((listener) => !(window.removeEventListener as ReturnType<typeof vi.fn>).mock.calls
+        .some((call) => call[0] === 'zodiacs:profile-access' && call[1] === listener));
+    expect(hookListener).toBeTypeOf('function');
+    harness.profileAccessAllowed.mockReturnValue(false);
+    hookListener();
+    harness.profileAccessAllowed.mockReturnValue(true);
+    hookListener();
+    await settle();
+    expect(harness.computeChart).not.toHaveBeenCalled();
+    const fields = nodes(render()).find((node) => node.type === BirthFields)!;
+    expect(fields.props.date).toBe('');
+  });
 });
 
