@@ -106,11 +106,18 @@ const probes = [
     expectation: 'a non-5xx response',
   },
   {
-    label: 'calendar method guard',
+    // Retired on 2026-10-03: the handler answers 410 to every method, before
+    // any method check, and never reads a token.
+    label: 'calendar feed retired',
     path: '/api/calendar/transits',
-    init: { method: 'POST', headers: sameOriginHeaders },
-    accepts: (status) => status === 405,
-    expectation: 'HTTP 405',
+    init: { method: 'GET', headers: sameOriginHeaders },
+    accepts: (status) => status === 410,
+    expectation: 'HTTP 410 Gone for the retired personal calendar feed',
+    validate: (response, body) => {
+      if ((response.headers.get('cache-control') ?? '') !== 'no-store') return 'the retired feed answer is cacheable';
+      if (!body.includes('Personal calendar feeds are retired.')) return 'the 410 is not the retired feed answer';
+      return null;
+    },
   },
   {
     label: 'assistant method guard',
