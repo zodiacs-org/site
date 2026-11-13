@@ -710,8 +710,8 @@ export const it: HoroscopeLocaleModule = {
     calculator: 'Calcola il tuo tema natale',
     otherSigns: 'Gli altri segni',
     method: 'Le case si contano dal tuo segno solare (case solari a segno intero). Gli orari sono in UTC.',
-    confidence: (value) => `Affidabilità della lettura ${value}%`,
-    confidenceNote: 'Il numero dice quanto sono specifici i dati su cui poggia la lettura (qui, solo il segno solare), non la probabilità che qualcosa accada.',
+    confidence: () => 'Lettura dal segno solare',
+    confidenceNote: 'Questa lettura usa solo il segno solare, non un tema completo. Non indica la probabilità che qualcosa accada.',
     faq: (name, surface) => [
       {
         q: `Da dove nasce l’oroscopo ${prep('di', withArticle(name))}?`,

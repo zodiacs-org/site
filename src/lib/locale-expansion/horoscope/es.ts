@@ -216,7 +216,7 @@ const KIND_WORK: Record<string, string> = {
 
 /** Cuando el aspecto cae entero en una sola casa. */
 const ASPECT_ONE_HOUSE: Record<string, (theme: string) => string> = {
-  conjunction: (theme) => `El efecto se duplica en ${theme}: lo que hagas ahí cuenta el doble.`,
+  conjunction: (theme) => `El efecto se concentra en ${theme}: lo que hagas ahí merece más atención.`,
   sextile: (theme) => `Es una oportunidad tranquila para ${theme}; aprovéchala con un paso pequeño y concreto.`,
   square: (theme) => `Hay fricción dentro de ${theme}; ajusta una cosa antes de forzar otra.`,
   trine: (theme) => `Las cosas fluyen en ${theme}; buen momento para avanzar sin forzar.`,
