@@ -1143,7 +1143,43 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       const taken = takeChartHandoff(hash);
       if (taken?.kind === 'date') openDate(taken);
       else if (taken?.kind === 'chart') {
-        openDetails(taken.input, taken.mine ? { kind: 'input', input: taken.mine } : nextMineHandoff, 'fresh', taken.profileOrigin === true);
+        const mine = taken.mine ? { kind: 'input', input: taken.mine } : nextMineHandoff;
+        const open = () => openDetails(taken.input, mine, 'fresh', taken.profileOrigin === true);
+        // An ordinary unsaved handoff can open at once. A profile-origin one
+        // waits for a current grant, as the saved-chart id path does, so
+        // inherited details are not filled while access is locked.
+        if (!taken.profileOrigin || profileAccessAllowed()) {
+          open();
+          return;
+        }
+        let active = true;
+        let resolving = false;
+        const handoffId = profileHandoffIdRef.current + 1;
+        profileHandoffIdRef.current = handoffId;
+        const handoffIsCurrent = () => active && handoffId === profileHandoffIdRef.current;
+        const resolveProfileOriginHandoff = () => {
+          if (!handoffIsCurrent() || resolving || !profileAccessAllowed()) return;
+          resolving = true;
+          const accessGeneration = profileAccessGeneration.current;
+          queueMicrotask(() => {
+            resolving = false;
+            if (!handoffIsCurrent() || !profileAccessAllowed()) return;
+            if (accessGeneration !== profileAccessGeneration.current) {
+              queueMicrotask(resolveProfileOriginHandoff);
+              return;
+            }
+            active = false;
+            window.removeEventListener('zodiacs:profile-access', onProfileAccess);
+            open();
+          });
+        };
+        const onProfileAccess = () => { queueMicrotask(resolveProfileOriginHandoff); };
+        window.addEventListener('zodiacs:profile-access', onProfileAccess);
+        resolveProfileOriginHandoff();
+        return () => {
+          active = false;
+          window.removeEventListener('zodiacs:profile-access', onProfileAccess);
+        };
       }
       return;
     }

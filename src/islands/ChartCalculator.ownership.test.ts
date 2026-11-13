@@ -327,4 +327,49 @@ describe('ChartCalculator result ownership', () => {
       vi.unstubAllGlobals();
     }
   });
+
+  it('does not apply a profile-origin session handoff until profile access is granted', async () => {
+    const items = new Map<string, string>();
+    const storage = {
+      get length() { return items.size; },
+      key: (index: number) => [...items.keys()][index] ?? null,
+      getItem: (key: string) => items.get(key) ?? null,
+      setItem: (key: string, value: string) => { items.set(key, String(value)); },
+      removeItem: (key: string) => { items.delete(key); },
+      clear: () => items.clear(),
+    };
+    vi.stubGlobal('sessionStorage', storage);
+    try {
+      const fragment = stashChartHandoff({
+        date: '1988-02-03', time: '08:15', timeKnown: true,
+        lat: 1, lon: 2, tz: 'UTC', place: 'Saved place', houseSystem: 'whole',
+      }, { profileOrigin: true })!;
+      const listeners: Array<() => void> = [];
+      const h = harness();
+      h.context.allowed = false;
+      h.context.window.addEventListener = (type: string, fn: () => void) => {
+        if (type === 'zodiacs:profile-access') listeners.push(fn);
+      };
+      h.context.window.removeEventListener = (type: string, fn: () => void) => {
+        const index = listeners.indexOf(fn);
+        if (index >= 0) listeners.splice(index, 1);
+      };
+      h.context.window.location.hash = `#${fragment}`;
+      h.context.initialize();
+      await flush();
+      expect(h.context.primaryProfileOriginRef.current).toBe(false);
+      expect(h.context.date).toBe('1990-06-15');
+      expect(h.context.chart).toBeNull();
+      h.context.allowed = true;
+      h.context.profileAccessGeneration.current += 1;
+      for (const listener of [...listeners]) listener();
+      await flush();
+      expect(h.context.primaryProfileOriginRef.current).toBe(true);
+      expect(h.context.date).toBe('1988-02-03');
+      expect(h.context.city?.name).toBe('Saved place');
+      expect(h.context.chart).not.toBeNull();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
 });
