@@ -31,7 +31,7 @@ for this audit. What exists and was checked:
 | 2 | `docs/platform/evidence/engine-github-release-2026-10-01/README.md` (48 lines) | The record of the engine's one GitHub release and its Zenodo DOI | every line, rows S-ghrel-01 to 10 |
 | 3 | `docs/platform/evidence/engine-release/README.md` (103 lines) | The engine's release state on 16 and 17 September 2026 (rc.6, before any npm publication) | identity and status lines, rows S-engrel-01 to 05; 70 lines unchecked |
 | 4 | `vendor/README.md` (303 lines) | One section per vendored engine archive: identity, publication status, what it added | every identity and status statement, rows S-vendor-01 to 08; about 230 lines of description unchecked |
-| 5 | `docs/platform/evidence/site-engine-*/README.md` (15 files, 3,516 lines): rc5, rc6, rc7, rc8, rc9, rc10, rc14, rc15, rc16, rc17, 1-0-0-rc2, 1-0-0, 1-1-0-rc1, 1-1-0-rc2, geo-20261012 | Adoption records of each engine release. Evidence, not changelogs | release-identity statements only, rows S-adopt-01 to 07; about 3,400 lines unchecked |
+| 5 | `docs/platform/evidence/site-engine-*/README.md` (15 files, 3,416 lines): rc5, rc6, rc7, rc8, rc9, rc10, rc14, rc15, rc16, rc17, 1-0-0-rc2, 1-0-0, 1-1-0-rc1, 1-1-0-rc2, geo-20261012 | Adoption records of each engine release. Evidence, not changelogs | release-identity statements only, rows S-adopt-01 to 07; about 3,400 lines unchecked |
 | 6 | `integrations/packages/README.md` (102 lines) and `manifest.json` | Release notes of the AI tools packages, the site's only versioned releases of its own | versions, digests, the keep-its-bytes rule and one dated pull request, rows S-pkg-01 to 07; about 70 lines unchecked |
 
 Vendored engine archives in `vendor/` (each with its `.sha256`): 0.1.0,

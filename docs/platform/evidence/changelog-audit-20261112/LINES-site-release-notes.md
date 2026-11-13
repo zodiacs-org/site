@@ -66,7 +66,7 @@ Status has three values. **supported**: a source other than the note itself was 
 | S-vendor-07 | the rc.15 and rc.14 sections' silence on npm | unchecked | npm has carried both since 2026-09-30 | Not a wrong statement: these two sections say nothing about npm, while the sections for 1.0.0 and rc.16 do. Recorded as an omission. |
 | S-vendor-08 | the rest of the file: what each release added, blob ids, licence notes, rollback notes, the `(merged by ...)` short ids of the rc.14 and rc.15 sections | unchecked | `93ebae9f` is the engine's rc.15 merge; `8deda244` appears in the rc.14 adoption record | About 230 lines of description not checked line by line; they restate the engine changelog, which is checked in the engine audit. |
 
-## Site adoption records: `docs/platform/evidence/site-engine-*/README.md` (15 files, 3,516 lines). These are evidence records, not changelogs; only their release-identity statements were checked.
+## Site adoption records: `docs/platform/evidence/site-engine-*/README.md` (15 files, 3,416 lines). These are evidence records, not changelogs; only their release-identity statements were checked.
 
 7 rows: supported 5, not supported 0, unchecked 2.
 
