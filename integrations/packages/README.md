@@ -8,8 +8,8 @@ node_modules, personal data, cache or hosting configuration is included.
 
 The sky ZIP is the portable remote-MCP candidate for ChatGPT/Codex review. Its
 production connection is deployed and domain-verified: `https://zodiacs.org/mcp`
-reports 0.6.6 and offers 19 read-only tools (checked against the records on
-11 November 2026). The developer ZIP runs local stdio MCP;
+reports 0.6.7 and offers 19 read-only tools (checked live on 13 November
+2026; 0.6.6 is the version in OpenAI review). The developer ZIP runs local stdio MCP;
 install pinned dependencies after extracting. Public local-MCP directory support
 requires an OpenAI-supported distribution path; the repo marketplace and direct
 local MCP connection are the available development paths.

@@ -6,6 +6,17 @@ brought up to date on 4 November 2026 for 0.6.1 (branch
 the dated sections below, newest first, record what has been since. Every
 step that touches production, the portal or email needs Dias's separate yes.
 
+## 0.6.7 live, 13 November 2026
+
+The hosted server reports 0.6.7 since PR #971 went live on 13 November.
+The thirteen first reviewed tools have plainer descriptions, and
+`get_horoscope`'s panel moved to `ui://zodiacs/horoscopes-v7.html`; no name,
+input, annotation or tool count changed. A love reading asked with a birth
+date under 18 now gives the general reading (PR #970). The portal's copy of
+the tools still holds the 0.6.6 descriptions read on 8 November. A new sync,
+and the note in [REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md), each wait
+for Dias's yes. Nothing was synced, saved or sent on 13 November.
+
 ## Records brought together, 11 November 2026
 
 The current version, tool count and behaviour, and what the reviewers were

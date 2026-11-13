@@ -6,6 +6,19 @@ newest first, record what has been since. Each portal step needs Dias's
 separate yes, and Dias confirms every attestation. The Claude side is
 in `claude-directory/RESYNC-0.6.0.md`.
 
+## Hosted server at 0.6.7, 13 November 2026
+
+PRs #970 and #971 went live on 13 November, and the hosted server now
+reports 0.6.7. The thirteen first reviewed tools have plainer descriptions,
+`get_horoscope`'s panel moved to `ui://zodiacs/horoscopes-v7.html` (the
+earlier addresses are still served), and a love reading asked with a birth
+date under 18 gives the general reading. No name, input, annotation or tool
+count changed. 0.6.6 is still in OpenAI review, and Dias chose to wait until
+that review ends before 0.6.7 goes in. `integrations/packages/zodiacs-sky-0.6.7.zip`
+(220,827 bytes) is built and has not been uploaded. A reviewer testing the
+live server during the 0.6.6 review now sees the 0.6.7 descriptions; if the
+review asks about the difference, this is the answer to give.
+
 ## Children under 13, 8 November 2026
 
 Dias submitted 0.6.6 on 7 November and it is in review. On 8 November, PR

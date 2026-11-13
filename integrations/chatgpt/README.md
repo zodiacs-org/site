@@ -8,6 +8,10 @@ below is out of date on links: since 0.6.1 a link never carries a birth year,
 a birth time, a birthplace or the names you give, and a birthday link carries
 only the month and day.
 
+Note added 13 November 2026: the hosted server now reports 0.6.7. 0.6.6 is
+still the version in OpenAI review, and 0.6.7 goes in only after that review
+ends, with Dias's yes.
+
 The 0.5.0 candidate has thirteen read-only tools. The six released in 0.4.0
 are capabilities, sky positions, events, sky fact checks, horoscopes and Chart
 Studio. The seven new ones share the occasions panel

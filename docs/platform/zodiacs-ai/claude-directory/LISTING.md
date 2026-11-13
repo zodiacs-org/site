@@ -1,6 +1,6 @@
 # Claude directory listing
 
-## Where the listing stands, 11 November 2026
+## Where the listing stands, 13 November 2026
 
 This section is the current state. Everything under it is a dated record,
 newest first, and is left as it was written. Nothing in the portal was
@@ -8,13 +8,23 @@ opened, saved, synced or sent to write this section; it is drawn from the
 records below, from [RESYNC-0.6.0.md](RESYNC-0.6.0.md) and from the code on
 `main`.
 
-**The live server.** `https://zodiacs.org/mcp` reports version 0.6.6
-(`AI_VERSION` in `src/ai-tools/contracts.ts`) and offers 19 read-only tools
+**The live server.** `https://zodiacs.org/mcp` reports version 0.6.7
+(`AI_VERSION` in `src/ai-tools/contracts.ts`; checked with `get_capabilities`
+on 13 November, after PR #971 went live) and offers 19 read-only tools
 with no sign-in: the thirteen first reviewed, then `get_natal_chart`,
 `get_horoscope_period`, `get_chinese_zodiac`, `get_personal_transits`,
 `explain_astrology` and `find_birthplace`. Tools added to the source since
 (`search_sky_events`, `get_year_score`, `get_solar_return`) sit behind their
 own switches and are not part of the 19.
+
+**What 0.6.7 changed.** The thirteen first reviewed tools have new
+descriptions that say only what each tool does, what it fits and its limits
+(PR #971, approved by the owner on 11 and 13 November). No name, title,
+input, annotation or tool count changed. `get_horoscope`'s panel moved to a
+new address, `ui://zodiacs/horoscopes-v7.html`, and the earlier addresses are
+still served. The portal's copy of the tools was last read on 8 November, so
+it still holds the 0.6.6 descriptions until the next sync, which is the
+owner's decision.
 
 **What it does and refuses today.**
 
@@ -25,9 +35,10 @@ own switches and are not part of the 19.
   occasion since 0.6.5.
 - Under 18: no romance, attraction or sexual framing. `get_compatibility`
   gives no reading when either birth date is under 18 and points to a
-  friendship reading of the two Sun signs. A review on 11 November found a
-  gap in this rule for love readings; its fix is in a separate pull request,
-  and this line should be read again once that lands.
+  friendship reading of the two Sun signs. Asked for a love reading with a
+  birth date under 18, `get_horoscope` gives the general reading with a note
+  saying why (PR #970, 13 November), and its panel stays that way when
+  another sign is picked in it (PR #971).
 - Birth details are never stored or logged. Links never carry a birth year, a
   birth time, a birthplace or the names you give; a birthday link carries
   only the month and day. A card link for a wedding or another day that is
@@ -49,7 +60,7 @@ own switches and are not part of the 19.
 
 So a review that reads the email thread alone sees 0.6.5 as the newest
 version, and one that reads the portal sees 0.6.6. Both are true of their
-channel. No email has named 0.6.6, because 0.6.6 changed only the picture and
+channel. Neither names 0.6.7 yet. No email has named 0.6.6, because 0.6.6 changed only the picture and
 the reported version ([RESYNC-0.6.0.md](RESYNC-0.6.0.md), 7 November), and no
 email has described the under-13 refusal of 8 November.
 
