@@ -1016,6 +1016,16 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
+  // The share cards (2026-11-10): each pair page offers its pair's card, and
+  // the big three pages offer one card per sign, in English and translated
+  // (the Russian pages carry no cards yet).
+  const SHARE_CARD_PAGES = new Set(['', '/es', '/pt', '/fr', '/it'].flatMap((prefix) => [
+    `${prefix}/big-three/`,
+    ...pairs.map((pair) => `${prefix}/compatibility/${pair.id}/`),
+  ]));
+  for (const url of [...urls, ...localizedUrls]) {
+    if (SHARE_CARD_PAGES.has(url.loc)) url.lastmod = laterDate(url.lastmod, '2026-11-10');
+  }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
   // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no
   // longer lists the article on a child's chart.

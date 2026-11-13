@@ -1,0 +1,61 @@
+---
+/**
+ * Share one card (src/lib/share-cards/): the device's share sheet with the
+ * card image and the page's own address when it can, otherwise the address
+ * copied and the card offered as a download. Nothing is collected: the card
+ * and the link name sign slugs only.
+ */
+import { CARD_SHARE_LABELS } from '../../lib/share-cards/labels';
+import type { CardLocale } from '../../lib/share-cards/cards';
+
+interface Props { locale: CardLocale; card: string; page: string; title: string; compact?: boolean }
+const { locale, card, page, title, compact = false } = Astro.props;
+const l = CARD_SHARE_LABELS[locale];
+const url = `https://zodiacs.org${page}`;
+const file = card.split('/').pop();
+---
+<div class={`cshare${compact ? ' cshare--compact' : ''}`} data-card-share data-card={card} data-url={url} data-title={title} data-copied={l.copied}>
+  {!compact && <img src={card} width="600" height="315" loading="lazy" decoding="async" alt={l.imageAlt(title)} class="cshare__img" />}
+  <div class="cshare__actions">
+    <button type="button" class="btn btn--sm" data-card-share-button>{compact ? title : l.share}</button>
+    {compact
+      ? <a class="textlink" href={card} download={file} data-card-share-download hidden>{l.download}</a>
+      : <a class="textlink" href={card} download={file}>{l.download}</a>}
+    <span class="cshare__status" aria-live="polite"></span>
+  </div>
+</div>
+<script is:inline>
+(() => {
+  if (window.__cardShare) return;
+  window.__cardShare = true;
+  document.addEventListener('click', async (event) => {
+    const button = event.target instanceof Element && event.target.closest('[data-card-share-button]');
+    if (!button) return;
+    const root = button.closest('[data-card-share]');
+    const { card, url, title, copied } = root.dataset;
+    const status = root.querySelector('.cshare__status');
+    try {
+      const blob = await (await fetch(card)).blob();
+      const file = new File([blob], card.split('/').pop(), { type: 'image/jpeg' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title, url });
+        return;
+      }
+      if (navigator.share) { await navigator.share({ title, url }); return; }
+    } catch (error) {
+      if (error && error.name === 'AbortError') return;
+    }
+    // Without a share sheet the compact row still offers its card: the hidden download link appears.
+    const download = root.querySelector('[data-card-share-download]');
+    if (download) download.hidden = false;
+    try { await navigator.clipboard.writeText(url); if (status) status.textContent = copied; } catch { if (!download) window.open(card, '_blank', 'noopener'); }
+  });
+})();
+</script>
+<style>
+  .cshare { display: grid; gap: 12px; }
+  .cshare__img { width: 100%; max-width: 600px; height: auto; border-radius: 12px; border: 1px solid var(--hair-1, rgba(255,255,255,.1)); }
+  .cshare__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+  .cshare__status { font-size: 14px; color: var(--muted, #A9B0C2); }
+  .cshare--compact .cshare__actions { gap: 8px; }
+</style>
