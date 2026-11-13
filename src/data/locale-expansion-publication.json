@@ -1,0 +1,278 @@
+{
+  "$comment": "Localized pages added by the 2026-11 locale expansion. A family is published only when released is true and reviewer and reviewedAt are set. Held families are not built. PUBLIC_LOCALE_EXPANSION_PREVIEW=1 in the shell builds them as noindex pages outside the sitemaps for review. See docs/visibility/LOCALE-EXPANSION.md.",
+  "updated": "2026-11-08",
+  "entries": {
+    "es": {
+      "horoscope-tomorrow": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-weekly": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-monthly": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-love": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-career": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-2026": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-2027": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "full-moon": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "new-moon": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "zodiac-dates": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      }
+    },
+    "pt": {
+      "horoscope-tomorrow": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-weekly": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-monthly": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-love": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-career": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-2026": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-2027": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "full-moon": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "new-moon": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "zodiac-dates": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      }
+    },
+    "fr": {
+      "horoscope-daily": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "today": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-tomorrow": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-weekly": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-monthly": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-love": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-career": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-2026": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-2027": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "full-moon": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "new-moon": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "zodiac-dates": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      }
+    },
+    "it": {
+      "horoscope-daily": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "today": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-tomorrow": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-weekly": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-monthly": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-love": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-career": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-2026": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "horoscope-2027": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "full-moon": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "new-moon": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      },
+      "zodiac-dates": {
+        "released": false,
+        "reviewer": null,
+        "reviewedAt": null,
+        "holdReason": "Awaiting native review and a release batch within the 10 pages per 7 days cap."
+      }
+    }
+  }
+}

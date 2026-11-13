@@ -1,0 +1,8 @@
+---
+// Generated shape: one thin entry per locale and route (see ../paths.ts).
+import LocalizedLunationPage from '../../components/localized/LocalizedLunationPage.astro';
+import { lunationPaths } from '../paths';
+export function getStaticPaths() { return lunationPaths('fr', 'new'); }
+const { date } = Astro.params as { date: string };
+---
+<LocalizedLunationPage locale="fr" kind="new" date={date} />

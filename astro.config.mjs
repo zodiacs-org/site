@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
 import mdx from '@astrojs/mdx';
 import { natalAspectRoutes } from './scripts/natal-aspects-policy.mjs';
+import { localeExpansionRoutes } from './src/lib/locale-expansion/policy.mjs';
 
 function interactionDirective() {
   return {
@@ -69,7 +70,7 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
-  integrations: [interactionDirective(), paintedDirective(), natalAspectRoutes(), preact(), mdx()],
+  integrations: [interactionDirective(), paintedDirective(), natalAspectRoutes(), localeExpansionRoutes(), preact(), mdx()],
   build: {
     format: 'directory',
     inlineStylesheets: 'auto',

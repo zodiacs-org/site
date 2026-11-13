@@ -1,4 +1,6 @@
 import { readFileSync } from 'node:fs';
+import { EVENT_PUBLICATION_FILES, mergeEventPublications } from '../src/lib/events/merge-publications.mjs';
+import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, familyForPath, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 const approvedDailyDays = JSON.parse(readFileSync(new URL('../src/data/chart-of-the-day.json', import.meta.url), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
 // Each approved edition, plus the chart-of-the-day index once any edition exists, in six languages.
 const dailyBlocks = (approvedDailyDays.length + (approvedDailyDays.length ? 1 : 0)) * 6;
@@ -6,6 +8,50 @@ const dailyBlocks = (approvedDailyDays.length + (approvedDailyDays.length ? 1 : 
  * Hreflang activation is explicit and per locale. Declaring metadata in the
  * TypeScript locale union never changes this release policy.
  */
+const HREFLANG_OF = { en: 'en', es: 'es', pt: 'pt-BR', fr: 'fr', it: 'it', ru: 'ru' };
+const SIGNS_FOR_EXPANSION = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+// Both event receipts, joined as the site reads them (src/lib/events/site-publication.ts).
+const publishedEventPaths = mergeEventPublications(EVENT_PUBLICATION_FILES
+  .map((file) => JSON.parse(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'))))
+  .pages.map((page) => page.path);
+/** Base locales of a family before the expansion: the daily editions already publish es and pt. */
+const EXPANSION_BASE = { 'horoscope-daily': ['en', 'es', 'pt'], today: ['en', 'es', 'pt'] };
+/** English paths per expansion family (src/lib/locale-expansion/policy.mjs). */
+export function expansionFamilyPaths(family) {
+  if (family === 'horoscope-daily') return ['/horoscopes/', ...SIGNS_FOR_EXPANSION.map((slug) => `/horoscopes/${slug}/`)];
+  if (family === 'today') return ['/today/'];
+  if (family === 'zodiac-dates') return ['/learn/zodiac-dates/'];
+  if (family === 'full-moon' || family === 'new-moon') return publishedEventPaths.filter((path) => path.startsWith(`/${family}/`));
+  const period = HOROSCOPE_PERIODS.find((candidate) => family === `horoscope-${candidate}`);
+  return period ? SIGNS_FOR_EXPANSION.map((slug) => `/horoscopes/${slug}/${period}/`) : [];
+}
+/**
+ * Extra sitemap blocks per hreflang from released expansion pages. A path
+ * whose set grows from b to n locales gives each listed locale n blocks
+ * (none while n is 1); the difference from the base is added here. Counted
+ * per path, since a family may be released in batches.
+ */
+export function expansionBlockDeltas(published = publishedLocalesForPath) {
+  const delta = {};
+  for (const family of EXPANSION_FAMILY_IDS) {
+    const base = EXPANSION_BASE[family] ?? ['en'];
+    const before = base.length > 1 ? base.length : 0;
+    for (const path of expansionFamilyPaths(family)) {
+      const added = published(path);
+      if (!added.length) continue;
+      const all = [...new Set([...base, ...added])];
+      for (const locale of all) {
+        const hreflang = HREFLANG_OF[locale];
+        delta[hreflang] = (delta[hreflang] ?? 0) + all.length - (base.includes(locale) ? before : 0);
+      }
+      delta['x-default'] = (delta['x-default'] ?? 0) + all.length - before;
+    }
+  }
+  return delta;
+}
+const EXPANSION_DELTA = expansionBlockDeltas();
+const withExpansion = (entry) => ({ ...entry, expectedBlocks: entry.expectedBlocks + (EXPANSION_DELTA[entry.hreflang] ?? 0) });
+
 export const HREFLANG_LOCALE_POLICY = Object.freeze([
   { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair', 'new-pages'], expectedBlocks: 1224 + dailyBlocks },
   { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair', 'new-pages'], expectedBlocks: 858 + dailyBlocks },
@@ -17,12 +63,12 @@ export const HREFLANG_LOCALE_POLICY = Object.freeze([
   // The Chinese zodiac guide alone: its 13 pages in each of the seven locales that publish it.
   { locale: 'zh-hans', hreflang: 'zh-Hans', indexEligible: true, routeFamilies: ['chinese-zodiac'], expectedBlocks: 91 },
   { locale: 'zh-hant', hreflang: 'zh-Hant', indexEligible: true, routeFamilies: ['chinese-zodiac'], expectedBlocks: 91 },
-]);
+].map(withExpansion));
 
 export const X_DEFAULT_HREFLANG = Object.freeze({
   hreflang: 'x-default',
   locale: 'en',
-  expectedBlocks: 1224 + dailyBlocks,
+  expectedBlocks: 1224 + dailyBlocks + (EXPANSION_DELTA['x-default'] ?? 0),
 });
 
 export const ACTIVE_HREFLANGS = Object.freeze(
@@ -111,6 +157,13 @@ export function hreflangRouteFamily(path) {
 /** Exact expected set for this route family; no global all-locale assumption. */
 export function expectedHreflangsForPath(path) {
   const family = hreflangRouteFamily(path);
+  const added = familyForPath(canonicalPath(path)) ? publishedLocalesForPath(canonicalPath(path)) : [];
+  if (added.length) {
+    const base = family ? [...expectedHreflangsForPath.base(path)] : ['en'];
+    const set = new Set([...base, ...added.map((locale) => HREFLANG_OF[locale])]);
+    set.add(X_DEFAULT_HREFLANG.hreflang);
+    return set;
+  }
   if (!family) return new Set();
   const expected = new Set(HREFLANG_LOCALE_POLICY
     .filter((entry) => entry.routeFamilies.includes(family))
@@ -118,3 +171,9 @@ export function expectedHreflangsForPath(path) {
   if (expected.size) expected.add(X_DEFAULT_HREFLANG.hreflang);
   return expected;
 }
+
+/** The policy's own set for a path, before any expansion family is added. */
+expectedHreflangsForPath.base = (path) => {
+  const family = hreflangRouteFamily(path);
+  return new Set(HREFLANG_LOCALE_POLICY.filter((entry) => entry.routeFamilies.includes(family)).map((entry) => entry.hreflang));
+};

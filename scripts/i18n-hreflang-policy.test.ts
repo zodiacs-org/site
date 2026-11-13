@@ -84,3 +84,28 @@ describe('hreflang release policy', () => {
     }
   });
 });
+
+describe('locale expansion hreflang blocks', async () => {
+  const { expansionBlockDeltas, expansionFamilyPaths } = await import('./i18n-hreflang-policy.mjs');
+
+  it('adds nothing while every expansion family is held', () => {
+    expect(expansionBlockDeltas(() => [])).toEqual({});
+  });
+
+  it('counts each released family from its base set', () => {
+    // French daily: 13 pages go from {en, es, pt} to four locales; Spanish and
+    // Portuguese weeks: 12 English-only pages gain two locales.
+    const delta = expansionBlockDeltas((path: string) => (/^\/horoscopes\/(?:[a-z]+\/)?$/.test(path) ? ['fr'] : /\/weekly\/$/.test(path) ? ['es', 'pt'] : []));
+    expect(delta).toEqual({ en: 13 + 36, es: 13 + 36, 'pt-BR': 13 + 36, fr: 52, 'x-default': 13 + 36 });
+    // A partial release counts only its pages: Spanish weekly for two signs.
+    const partial = expansionBlockDeltas((path: string) => (['/horoscopes/leo/weekly/', '/horoscopes/virgo/weekly/'].includes(path) ? ['es'] : []));
+    expect(partial).toEqual({ en: 4, es: 4, 'x-default': 4 });
+  });
+
+  it('lists the English paths of each family', () => {
+    expect(expansionFamilyPaths('horoscope-daily')).toHaveLength(13);
+    expect(expansionFamilyPaths('horoscope-2027')).toContain('/horoscopes/leo/2027/');
+    expect(expansionFamilyPaths('zodiac-dates')).toEqual(['/learn/zodiac-dates/']);
+    expect(expansionFamilyPaths('full-moon').every((path: string) => /^\/full-moon\/\d{4}-\d{2}-\d{2}\/$/.test(path))).toBe(true);
+  });
+});
