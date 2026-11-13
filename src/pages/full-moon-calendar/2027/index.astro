@@ -6,6 +6,10 @@ import { bodyLongitude } from '../../../lib/engine/full';
 import { formatLongitude, signForLongitude } from '../../../lib/signs';
 import { formatDate, formatTime } from '../../../lib/i18n/dates';
 import { publishedEventById } from '../../../lib/events/site-publication';
+import { moonDistanceLunation, supermoon } from '../../../lib/supermoon';
+import { worldTimes, worldTimesSentence } from '../../../world-times/world-times';
+import { FULL_MOON_CALENDAR_2027_UPDATED as UPDATED, updatedIso, updatedLabel } from '../../../world-times/updated';
+import WorldTimesTable from '../../../world-times/WorldTimesTable.astro';
 
 // The 2027 full moons, cut from the same committed sky data the hub renders,
 // with the Moon's sign computed at each instant — receipts, no client
@@ -46,6 +50,10 @@ const fulls = (sky.moons as { type: string; at: string }[])
       sign: signForLongitude(lon),
       past: date < buildNow,
       path: publishedEventById.get(id)?.path ?? null,
+      supermoon: (() => {
+        const lunation = moonDistanceLunation('full', at);
+        return lunation ? supermoon(lunation) : null;
+      })(),
     };
   });
 
@@ -63,8 +71,21 @@ const blue = fulls.find((f) => f.name === 'Blue');
 const signCounts = new Map<string, number>();
 for (const f of fulls) signCounts.set(f.sign.name, (signCounts.get(f.sign.name) ?? 0) + 1);
 const repeated = [...signCounts.entries()].filter(([, n]) => n > 1).map(([name]) => name);
+const listJoin = (items: string[]) => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+const km = (n: number) => n.toLocaleString('en-US');
 
-const description = `All 12 full moons of 2027 with exact universal time, the Moon's zodiac sign and degree, and the almanac name, plus a calendar file you can subscribe to.`;
+// Full moons whose calendar date differs between two of the five clocks.
+const dateMoves = fulls.filter((f) => new Set(worldTimes(f.at).map((t) => t.ymd)).size > 1);
+const supermoons = fulls.filter((f) => f.supermoon);
+
+// The first full moon after this year, from the same sky data.
+const nextRaw = (sky.moons as { type: string; at: string }[]).find((m) => m.type === 'full' && new Date(m.at).getUTCFullYear() > YEAR);
+if (!nextRaw) throw new Error(`No full moon after ${YEAR} in sky.json`);
+const nextAt = new Date(nextRaw.at);
+const nextSign = signForLongitude(bodyLongitude('Moon', nextAt));
+const nextName = MONTH_NAMES[nextAt.getUTCMonth()];
+
+const description = `All 12 full moons of 2027 with the exact time in UTC, New York, London, Kolkata and Sydney, the Moon's zodiac sign and degree, the almanac name, and a calendar file.`;
 
 const faq = [
   {
@@ -72,12 +93,30 @@ const faq = [
     a: `${fulls.length}, from the ${first.name} Moon on ${fmtMonthDay(first.at)} to the ${last.name} Moon on ${fmtMonthDay(last.at)}.${blue ? ` ${fmtMonthDay(blue.at)} is a blue moon, the second full moon inside one calendar month.` : ' No calendar month holds two, so 2027 has no blue moon by the modern definition.'}`,
   },
   {
-    q: 'Why is the time given in UTC?',
-    a: 'A full moon is one instant for the whole planet, the moment the Moon stands exactly opposite the Sun, so the table lists that instant once, in universal time. Subtract or add your own offset; in the Americas an early-morning UTC time is the previous evening.',
+    q: 'What time is the full moon where I live?',
+    a: `A full moon is one instant for the whole planet, the moment the Moon stands exactly opposite the Sun, so only the clock reading changes. The ${first.name} Moon, for example, is at ${worldTimesSentence(first.at)}. The local times table gives every ${YEAR} full moon on those five clocks, daylight saving included. In ${YEAR}, ${dateMoves.length} of the ${fulls.length} fall on a different calendar date in at least one of those cities.`,
+  },
+  {
+    q: `Which signs are the ${YEAR} full moons in?`,
+    a: `${listJoin(fulls.map((f) => `${fmtMonthDay(f.at)} in ${f.sign.name}`))}. The Sun stands in the opposite sign each time.`,
+  },
+  {
+    q: `Is there a supermoon in ${YEAR}?`,
+    a: supermoons.length > 0
+      ? `${['One', 'Two', 'Three', 'Four'][supermoons.length - 1] ?? String(supermoons.length)} by the rule we use, a full Moon within 10% of its orbit's perigee to apogee range, measured from the perigee: ${listJoin(supermoons.map((f) => `${fmtMonthDay(f.at)}, ${km(f.supermoon!.distanceKm)} km from Earth`))}.`
+      : `None by the rule we use, a full Moon within 10% of its orbit's perigee to apogee range, measured from the perigee.`,
+  },
+  {
+    q: 'How long does a full moon last?',
+    a: 'The full moon itself is an instant, the minute in the table. To the eye the Moon looks full on the night before and the night after as well. Calendars can also disagree by a day for a different reason: each prints the date on its own clock, and the full moon can fall either side of midnight.',
   },
   {
     q: 'How do I add these dates to my calendar?',
     a: `The calendar file linked at the top holds all ${fulls.length} instants as one-minute events with the sign and degree in each description. Most calendar apps open it directly, and it carries no personal data because there is none to carry.`,
+  },
+  {
+    q: `When is the first full moon after ${YEAR}?`,
+    a: `The ${nextName} Moon of ${fmtMonthDay(nextAt)}, ${nextAt.getUTCFullYear()}, in ${nextSign.name}, at ${worldTimesSentence(nextAt)}.`,
   },
 ];
 
@@ -87,6 +126,7 @@ const jsonLd = [
     name: `Full moon calendar ${YEAR}`,
     url: `https://zodiacs.org/full-moon-calendar/${YEAR}/`,
     description,
+    dateModified: updatedIso(UPDATED),
     isPartOf: { '@type': 'WebPage', url: 'https://zodiacs.org/full-moon-calendar/' },
   },
   {
@@ -101,7 +141,7 @@ const jsonLd = [
 ---
 <Base
   title="Full Moon Calendar 2027: Every Date, Time, and Sign | Zodiacs.org"
-  description="All 12 full moons of 2027 with exact universal time, the Moon's zodiac sign and degree, and the almanac name, plus a calendar file you can subscribe to."
+  description="All 12 full moons of 2027 with the exact time in UTC, New York, London, Kolkata and Sydney, the Moon's zodiac sign and degree, the almanac name, and a calendar file."
   path={`/full-moon-calendar/${YEAR}/`}
   image="/assets/og/v2/tool/full-moon-calendar.png"
   imageAlt="Full moon calendar 2027, Zodiacs.org"
@@ -118,6 +158,7 @@ const jsonLd = [
         degree it happens in. {blue ? `The second full moon of ${fmtMonthDay(blue.at).split(' ')[0]} is the year’s blue moon.` : 'No month holds two, so there is no blue moon this year.'}
         {repeated.length > 0 && ` ${repeated.join(' and ')} ${repeated.length > 1 ? 'each host' : 'hosts'} two full moons in ${YEAR}.`}
       </p>
+      <p class="year-page__updated">Updated <time datetime={UPDATED}>{updatedLabel(UPDATED)}</time></p>
     </div>
 
     <div class="rx-now shell tinted reveal" style="--sign:var(--sign-cancer)">
@@ -159,6 +200,24 @@ const jsonLd = [
     </div>
   </section>
 
+  <section class="section--tight container container--narrow" id="local-times">
+    <div class="section-head reveal">
+      <h2>Full moon times in five time zones</h2>
+      <p>The same instants on five clocks. Where the date differs from the UTC date, the table shows it.</p>
+    </div>
+    <div class="reveal">
+      <WorldTimesTable
+        rows={fulls.map((f) => ({ label: f.name === 'Blue' ? 'Blue moon' : `${f.name} Moon`, at: f.at, past: f.past }))}
+        eventLabel="Full moon"
+        caption={`The ${YEAR} full moons in UTC, New York, London, Kolkata and Sydney`}
+      />
+    </div>
+    <p class="year-page__check reveal">
+      Full moon times come from our own engine, and every new and full Moon the site publishes falls within a minute of
+      NASA's. <a href="/methodology/#event-times">How we check event times</a>
+    </p>
+  </section>
+
   <section class="section--tight container container--narrow">
     <div class="prose reveal">
       <h2>Reading the table</h2>
@@ -195,6 +254,9 @@ const jsonLd = [
 
 <style>
   .tool-hero .kicker { display: block; margin-bottom: 10px; }
+  .year-page__updated { margin: 10px 0 0; color: var(--muted); font-size: var(--text-sm); }
+  .year-page__check { margin: 14px 0 0; max-width: 64ch; color: var(--muted); font-size: var(--text-sm); }
+  .year-page__check a { color: var(--text-2); }
   .year-page__links { margin-top: 18px; color: var(--muted); font-size: var(--text-sm); }
   .year-page__links a { color: var(--text-2); }
   .faq-item { border-top: 1px solid var(--hair-1); }
