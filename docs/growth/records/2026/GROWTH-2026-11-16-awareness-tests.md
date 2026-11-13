@@ -26,7 +26,7 @@ related_records:
 evidence_quality: low
 privacy_class: aggregate-only
 decision: pending
-next_action: Dias verifies Search Console and decides each submission and post; read week 4 on Mon 14 Dec 2026
+next_action: Dias verifies Search Console and decides each submission and post; read week 4 on Mon 14 Dec 2026 (Test A on Wed 16 Dec)
 ---
 
 # Awareness tests A, B and C: scoreboard, 16 Nov 2026 to 10 Jan 2027
@@ -62,14 +62,17 @@ several time zones, a visible updated date, a fuller FAQ and its accuracy
 check stated. No new pages. Dias verifies Search Console and submits the
 sitemap.
 
-**Read.** Week 4 is Mon 7 Dec to Sun 13 Dec 2026, read on Mon 14 Dec. Changed
-pages can take 4 to 12 weeks to move in search, so a "too early" result is
-read again on Sun 10 Jan 2027. The rows are checked in order and the first
-that holds is the result.
+**Read.** Week 4 is Mon 7 Dec to Sun 13 Dec 2026, read on Wed 16 Dec.
+Search Console reports about two days late, so the verdict waits until 12 and
+13 Dec are in; a look before then marks impressions as pending and applies no
+row. Changed pages can take 4 to 12 weeks to move in search, so a "too early"
+result is read again on Sun 10 Jan 2027, over the seven days Sat 2 to Fri 8
+Jan, for the same reason. The rows are checked in order and the first that
+holds is the result.
 
 | Result | Condition |
 | --- | --- |
-| Not measurable | Search Console still unverified on 14 Dec (crawls are then reported, with no verdict) |
+| Not measurable | Search Console still unverified on 16 Dec (crawls are then reported, with no verdict) |
 | Pass | At least 1,000 Search Console impressions in week 4 for the four pages together, and at least 1,500 Googlebot requests site-wide in week 4 |
 | Fail | Under 200 impressions for the four pages in week 4, and under 1,000 Googlebot requests site-wide |
 | Too early | Anything else |
@@ -149,7 +152,7 @@ events in the tab, not pageviews. Neither is changed for this test.
 
 ## Readout
 
-- Week 4 read (14 Dec):
+- Week 4 read (14 Dec; Test A 16 Dec):
 - Reread (10 Jan):
 - Decision: keep / change / stop, per test
 - Human decision owner and date:
