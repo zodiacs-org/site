@@ -8,11 +8,11 @@ One-shot run of ZOD-57, with ZOD-55 as context only. Evidence and suggestions. N
 
 ## Headline result
 
-16 readings were scored against 16 rules (256 scores): 93 pass, 90 partial, 39 fail, 34 not applicable.
+16 readings were scored against 16 rules (256 scores): 95 pass, 93 partial, 34 fail, 34 not applicable. These are the figures after the one fix round that followed the review in [BREAKER.md](BREAKER.md); section 10 lists what changed. No finding or suggested fix changed.
 
 1. **No sampled reading ends with a reason to come back.** Rule 3 scores 0 passes out of 16 (11 fails, 5 partials). The daily template has no closing line at all.
 2. **Sky terms are not explained at first use.** Rule 2 scores 0 passes out of 16. "Waxing crescent Moon", "Mercury retrograde", "sextile", "decan" and "exact contact" all appear bare.
-3. **Advice first holds in the English daily program and nowhere else.** The four English dailies and the connector's daily reading lead with advice. The Spanish daily, `/today/`, the birthday page, the monthly reading and the personal transit lines all lead with sky positions.
+3. **Advice first holds in the English daily program and almost nowhere else.** The four English dailies and the connector's daily reading lead with advice, and the compatibility result leads with what to notice. The Spanish daily, `/today/`, the birthday page, the monthly reading and the personal transit lines all lead with sky positions.
 4. **The sky facts are sound.** Every position, phase, station, ingress, eclipse and aspect that was checked recomputes to the printed value. Four real defects were found beside that: a "First Quarter" label two days early on the weekly page, a monthly reading whose dates are off by a day for the time zone the caller asked for, a birth chart that says "no planet in fire" while also saying the Moon may be in Leo, and a result that prints a reading-confidence figure for a reading it did not return.
 5. **The Spanish daily is a different product, not a translation.** It prints four house notes with no advice, uses different planets from the English reading for the same sign and day, and is 65 words.
 
@@ -46,11 +46,11 @@ How the rules were applied:
 - The guide says it covers every reading "wherever a reader meets it", so R1 to R4 and R7 to R13 were applied to every item. R1 and R3 say "today" and "tomorrow or later this week"; on a weekly, monthly, yearly or timeless reading they were read as "open with what to do or notice" and "end with a line that points to what is next in the real sky".
 - R5 and R6 are written for a daily reading. They are scored on the six daily readings and marked not applicable elsewhere, with the word count noted.
 - **Pass**: the rule holds. **Partial**: it holds in part, or holds with a defect worth fixing at the source. **Fail**: it does not hold. **n/a**: the rule has nothing to apply to in this item. Where a missing element is itself a miss (for example no action at all), the rule that asks for the element carries the fail (R1 or R5), and the rule about its quality (R8) is n/a.
-- H1 is scored stricter than R10 on purpose. R10 asks whether a health or money outcome is predicted. H1 follows the issue's "no health wording" reading, so the life-area phrase "health routines" is a partial under H1 even though nothing is predicted.
+- H1 is scored stricter than R10 on purpose. R10 asks whether a health or money outcome is predicted. H1 follows the issue's "no health wording" reading, so the life-area phrase "health routines" is a partial under H1 even though nothing is predicted. H1 also names guarantees, so a line that is partial under R10 for a promised outcome is partial under H1 too.
 
 ## 2. The sample and how it was chosen
 
-The sample was fixed before any text was read, from the live sitemap (`https://zodiacs.org/sitemap.xml`, 1,910 URLs) and the surfaces ZOD-46 lists. The aim was spread across surface, sign, time span and language, not the best pages. No item was dropped after reading it.
+The sample was fixed before any text was read, from the live sitemap (`https://zodiacs.org/sitemap.xml`, 1,910 URLs) and the surfaces ZOD-46 lists. The aim was spread across surface, sign, time span and language, not the best pages. No item was dropped after reading it. The sitemap itself was not saved with the records, so the order of events rests on the fetch log: the whole scored sample was fetched within 36 seconds, and the later probes added nothing to the scored set.
 
 ### Live pages (9 scored)
 
@@ -61,14 +61,14 @@ The sample was fixed before any text was read, from the live sitemap (`https://z
 | P3 | https://zodiacs.org/horoscopes/scorpio/ | Daily. Water sign. The guide's own example is Scorpio on 11 November, so this is the one live reading that can be set beside the guide's model. It is also the sign the Sun and retrograde Mercury are in. |
 | P4 | https://zodiacs.org/horoscopes/capricorn/ | Daily. Earth sign. |
 | P5 | https://zodiacs.org/horoscopes/scorpio/weekly/ | A longer span from the same program, same sign as P3, to see whether the misses are in the daily template only. |
-| P6 | https://zodiacs.org/es/horoscopes/scorpio/ | Translated daily. Spanish and Portuguese are the two locales with live daily horoscopes; Spanish is the first released. Same sign as P3 so the two can be compared line by line. |
+| P6 | https://zodiacs.org/es/horoscopes/scorpio/ | Localized daily, sampled as the nearest live thing to a translated horoscope. No translated horoscope is live: the Spanish and Portuguese pages carry their own four-note reading, not a translation of the English one (see the parity note under P6), and the reviewer found the French and Italian pages answer with a "not yet translated" notice. Spanish is the first released locale. Same sign as P3 so the two can be compared line by line. |
 | P7 | https://zodiacs.org/today/ | Required by the issue. |
-| P8 | https://zodiacs.org/birthday/november-12/ | Feature reading. The birthday pages are the largest reading family in the sitemap (about 1,100 URLs) and ZOD-46 names the birthday report. The date is the run's own date in ICT, picked by rule, not by quality. |
+| P8 | https://zodiacs.org/birthday/november-12/ | Feature reading. The birthday pages are the largest reading family in the sitemap (367 of its 1,910 URLs) and ZOD-46 names the birthday report. The date is the run's own date in ICT, picked by rule, not by quality. |
 | P9 | https://zodiacs.org/your-2027-sky/ | Feature reading. The live page closest to the "Year Ahead" surface, since `/year-ahead/` is 404. Only the shared-sky part is static text; the personal part is worked out in the browser from a birth date and was not driven. |
 
 Each page was fetched once with `curl`, saved, and reduced to the text of its `<main>` region by [tools/extract.py](tools/extract.py). The texts are in [records/pages/](records/pages/); [records/pages/fetch-log.txt](records/pages/fetch-log.txt) has the fetch time, status, SHA-256 and size of each raw HTML file. The raw HTML is kept outside git, with the job's run files.
 
-The saved text is what the server sends. Daily pages run a small script (`src/components/EditionFreshnessGuard.astro`, rules in `src/lib/edition-freshness.ts`) that swaps dated wording for relative wording while the edition is the current UTC day. So the saved "For the November 11, 2026 edition, check the budget…" reads "Today, check the budget…" in a browser on 11 November. No browser was run in this job; that form is taken from the source rule and from the connector's copy of the same program, which opens "Today,".
+The saved text is what the server sends, and `tools/extract.py` keeps text that a browser hides or keeps collapsed (fallback blocks, receipt blocks). Daily pages run a small script (`src/components/EditionFreshnessGuard.astro`, rules in `src/lib/edition-freshness.ts`) that swaps dated wording for relative wording while the edition is the current UTC day. So the saved "For the November 11, 2026 edition, check the budget…" read "Today, check the budget…" in a browser on 11 November. No browser was run in this job, but the form is not a guess: the saved raw HTML carries it in an attribute (`data-edition-current="Today, check the budget of time, attention, and material resources. …"`), the connector's copy of the same program opens "Today,", and the reviewer's Chromium render on the edition day showed it ([BREAKER.md](BREAKER.md), finding 1). Readings are scored on what a reader saw that day; where a quote below is served but hidden, it says so.
 
 ### Connector outputs (7 scored)
 
@@ -90,7 +90,7 @@ One call returned nothing: the first `get_personal_transits` request (`c5-get_pe
 
 - **Not live:** `/year-ahead/` and `/tarot/` are 404. `/year-score/` and `/birthday-report/` answer with a page that redirects to `/404.html`. So the Year Ahead Score, tarot and the birthday report named on ZOD-46 could not be read as pages. This is a limit of the sample.
 - **Zodiacs Astrologer bot:** not sampled. It is not part of the site or the connector endpoint this job was pointed at.
-- **Fetched, not scored:** `/horoscopes/` (a hub of teasers of the same twelve dailies; kept in the records because it shows the same opening line), `/es/today/`, `/solar-return/`, `/occasions/`, `/numerology/` (fetched while looking for live feature URLs).
+- **Fetched, not scored:** `/horoscopes/` (a hub of teasers of the same twelve dailies; kept in the records because it shows the same opening line), `/es/today/`, `/solar-return/`, `/occasions/`, `/numerology/` (fetched while looking for live feature URLs), and `/year/`, which answered with a 304-byte page that redirects to the 404 page.
 - **Not fetched:** love, career, tomorrow, monthly and yearly horoscope pages, Portuguese, French, Italian, Russian and Chinese pages, compatibility pair pages, People pages, and the emails. The thesis page is out of scope (ZOD-47).
 
 ## 3. Score table
@@ -99,24 +99,24 @@ P = pass, Pa = partial, F = fail, n/a = not applicable.
 
 | Reading | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 | R11 | R12 | R13 | H1 | H2 | H3 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P1 Aries daily | Pa | F | F | P | Pa | P | Pa | Pa | F | P | P | P | Pa | P | P | Pa |
-| P2 Gemini daily | Pa | F | F | P | Pa | P | Pa | P | F | P | P | P | Pa | P | P | Pa |
-| P3 Scorpio daily | Pa | F | F | P | Pa | P | Pa | Pa | F | P | P | P | Pa | Pa | P | Pa |
-| P4 Capricorn daily | Pa | F | F | P | Pa | Pa | Pa | Pa | F | P | P | P | Pa | P | P | Pa |
+| P1 Aries daily | P | F | F | P | Pa | P | Pa | Pa | Pa | P | P | P | Pa | P | P | Pa |
+| P2 Gemini daily | P | F | F | P | Pa | P | Pa | P | Pa | P | P | P | Pa | P | P | Pa |
+| P3 Scorpio daily | P | F | F | P | Pa | P | Pa | Pa | Pa | P | P | P | Pa | Pa | P | Pa |
+| P4 Capricorn daily | P | F | F | P | Pa | Pa | Pa | Pa | Pa | P | P | P | Pa | P | P | Pa |
 | P5 Scorpio weekly | Pa | F | F | Pa | n/a | n/a | Pa | Pa | F | P | P | P | Pa | P | P | Pa |
-| P6 Escorpio daily (es) | F | Pa | F | P | F | F | Pa | n/a | P | P | P | Pa | Pa | P | P | n/a |
+| P6 Escorpio daily (es) | F | Pa | F | P | F | F | Pa | n/a | P | P | P | P | Pa | P | P | n/a |
 | P7 /today/ | F | Pa | Pa | P | n/a | n/a | P | n/a | Pa | P | P | Pa | Pa | Pa | P | Pa |
 | P8 Birthday, 12 November | F | F | F | P | n/a | n/a | F | Pa | F | P | P | Pa | Pa | P | P | n/a |
-| P9 Your 2027 sky | Pa | Pa | Pa | P | n/a | n/a | Pa | Pa | P | Pa | P | Pa | P | P | P | Pa |
-| X1 get_horoscope, Leo day | P | F | F | P | Pa | P | Pa | P | F | P | P | P | Pa | P | P | P |
-| X2 get_horoscope, personal week | F | Pa | Pa | P | n/a | n/a | Pa | n/a | Pa | Pa | Pa | Pa | Pa | P | P | Pa |
+| P9 Your 2027 sky | Pa | Pa | Pa | P | n/a | n/a | Pa | Pa | P | Pa | P | Pa | P | Pa | P | Pa |
+| X1 get_horoscope, Leo day | P | F | F | P | Pa | P | Pa | P | Pa | P | P | P | Pa | P | P | P |
+| X2 get_horoscope, personal week | F | Pa | Pa | P | n/a | n/a | Pa | n/a | Pa | Pa | Pa | Pa | Pa | Pa | P | Pa |
 | X3 get_sky | n/a | Pa | Pa | P | n/a | n/a | P | n/a | n/a | P | P | F | n/a | P | P | n/a |
 | X4 get_compatibility | P | Pa | F | P | n/a | n/a | Pa | n/a | P | P | P | Pa | Pa | P | P | P |
-| X5 get_personal_transits | F | Pa | Pa | P | n/a | n/a | Pa | n/a | Pa | Pa | Pa | Pa | Pa | P | P | P |
+| X5 get_personal_transits | F | Pa | Pa | P | n/a | n/a | Pa | n/a | Pa | Pa | Pa | Pa | Pa | Pa | P | P |
 | X6 get_horoscope_period, Pisces month | F | F | F | Pa | n/a | n/a | Pa | n/a | F | Pa | P | F | Pa | Pa | P | P |
 | X7 get_natal_chart | F | Pa | F | Pa | n/a | n/a | Pa | P | Pa | P | P | Pa | Pa | P | P | n/a |
 
-Passes per rule, out of the items the rule applies to: R1 2 of 15, R2 0 of 16, R3 0 of 16, R4 13 of 16, R5 0 of 6, R6 4 of 6, R7 2 of 16, R8 3 of 9, R9 3 of 15, R10 12 of 16, R11 14 of 16, R12 6 of 16, R13 1 of 15, H1 13 of 16, H2 16 of 16, H3 4 of 12.
+Passes per rule, out of the items the rule applies to: R1 6 of 15, R2 0 of 16, R3 0 of 16, R4 13 of 16, R5 0 of 6, R6 4 of 6, R7 2 of 16, R8 3 of 9, R9 3 of 15, R10 12 of 16, R11 14 of 16, R12 7 of 16, R13 1 of 15, H1 10 of 16, H2 16 of 16, H3 4 of 12.
 
 ## 4. Reading by reading
 
@@ -136,7 +136,7 @@ P3, in full, as served:
 
 | Rule | Score | Reason | Fix |
 |---|---|---|---|
-| R1 | Partial, all four | Advice does come first and no sky detail precedes it. But the served text opens with a date clause, "For the November 11, 2026 edition,", and the first sentence leans on abstractions ("test the larger belief against study, distance, or direct experience", P1). In a browser on the edition day the opener is "Today,", which would pass. | S3, S4 |
+| R1 | Pass, all four | Advice comes first and no sky detail precedes it. On the edition day a reader saw "Today, check the budget of time, attention, and material resources." (P3), the same opener X1 passes on. Two notes, neither a fail. The text served without JavaScript, or read after its day, opens with a date clause, "For the November 11, 2026 edition,", which S3 would fix. And some openers lean on abstractions ("test the larger belief against study, distance, or direct experience", P1); that is counted under R8 and R9, as it is for X1. | S3, S4 (notes) |
 | R2 | Fail, all four | "The waxing crescent Moon" and "Mercury retrograde in Scorpio" (P1), "Mars in Leo" (P2), "Saturn retrograde in Aries" (P3), "Venus retrograde in Libra" (P4) appear with no everyday explanation. The guide's own example glosses both ("Mercury, the planet of talking and planning, is moving backward"). | S2 |
 | R3 | Fail, all four | The reading ends on the third section. There is no line about tomorrow or the week. A "Tomorrow" teaser card sits further down under "More for Scorpio", but it is a link to another reading, not a closing line from the sky. | S1 |
 | R4 | Pass, checked | Moon 13.8° Sagittarius, Mercury 5.5° Scorpio retrograde, Mars 23.7° Leo, Saturn 8.7° Aries retrograde, Venus 23.0° Libra retrograde, waxing crescent, 5% lit: all recomputed (section 5). | |
@@ -144,7 +144,7 @@ P3, in full, as served:
 | R6 | Pass for P1 (101 words), P2 (93), P3 (98). Partial for P4 | P4 is 106 words and says the same thing twice: "the useful test is to define the minimum sound structure before adding another duty" closes the first section and "define the minimum sound structure before adding another duty" closes the third. Counts include the four extra words of the dated opener. | S4 |
 | R7 | Partial, all four | "The waxing crescent Moon puts … on the day's agenda" states the reading as fact. "In this reading, …" in the second section is the right move, and the footer says "their meaning is an astrological interpretation". | S5 |
 | R8 | Pass for P2. Partial for P1, P3, P4 | P2 is concrete: "Write the message plainly, confirm the route, and ask the question that would prevent avoidable confusion." The others mix one doable step with ones that are not: "test the larger belief against study, distance, or direct experience" (P1), "ask what is known before assigning meaning to what is concealed" (P3), "Choose the finished work, standard, or responsibility you are prepared to make visible" (P4). | S4 |
-| R9 | Fail, all four | Sentences run to 21 to 25 words and stack abstract nouns: "For Scorpio, depth is useful when it produces a fact, a boundary, or a decision." "Connect travel, learning, beliefs, and long-term plans with shared finances, debts, intimacy, and trust; name the first workable move and leave the grand gesture alone." (P1). A 12-year-old would not follow these. | S4 |
+| R9 | Partial, all four | Most sentences are 8 to 17 words. One sentence in each reading, the third section joined by a semicolon, runs to 25, 21, 24 and 21 words (P1 to P4): "Connect travel, learning, beliefs, and long-term plans with shared finances, debts, intimacy, and trust; name the first workable move and leave the grand gesture alone." (P1). So length alone is not the miss. The miss is abstraction: "For Scorpio, depth is useful when it produces a fact, a boundary, or a decision." and "ask what is known before assigning meaning to what is concealed" are short and still hard for a 12-year-old. That is one reader's judgment, so it is scored partial, not fail. | S4 |
 | R10 | Pass, with a note | Money, debts and health appear only as life areas ("shared finances, debts", "your money, possessions, and priorities", "health routines"). No outcome is predicted. | |
 | R12 | Pass | No degrees, aspect names or house numbers in the reading. They sit in the collapsed "Behind this reading" block as receipts. | |
 | R13 | Partial, all four | Plain enough and never mystical, but the register is a management memo, not a friend: "Follow the consequential thread", "the minimum sound structure", "material resources". | S4 |
@@ -191,7 +191,7 @@ Record: `records/pages/es__horoscopes__scorpio.txt`, lines 11 to 21. 65 words. T
 | R6 | Fail | 65 words. | S9 |
 | R7 | Partial | "Mercurio activa tu primera casa" is stated as fact; the line below says it is an interpretation. | S5, S9 |
 | R8 | n/a | No action is offered. The miss is counted under R1 and R5. | |
-| R12 | Partial | Four house placements in a row, then "Luna 13.8° Sagitario · casa 2" and "℞" directly under them. Each house is explained once. | S9 |
+| R12 | Pass | The reading gives four house numbers, each explained in the same sentence. "Luna 13.8° Sagitario · casa 2" and "℞" sit in a collapsed "Por qué esta lectura" block, the same kind of receipt block that is not counted against P1 to P4. | |
 | R13 | Partial | Plain, but curt: four position lines and nothing to do with them. | S9 |
 | H3 | n/a | No forecast or advice is stated. | |
 | R9, R10, R11, H1, H2 | Pass | Short sentences. "El dinero" as a life area only. No dashes. | |
@@ -212,7 +212,7 @@ Record: `records/pages/today.txt`. Template: `src/pages/today/index.astro`; the 
 | R8 | n/a | No action is offered; counted under R1. | |
 | R9 | Partial | The prose is short and clear. The page is dense with arcminutes and "Rx". | S10 |
 | R12 | Partial | The top strip and the sign tiles stack degrees, "Rx" and house numbers ("Aries 9th house") before any explanation. The aspects section explains each aspect well. | S10 |
-| R13 | Partial | Exact and calm, but it reads as a data desk. System wording reaches the reader in the served HTML: "Your saved-chart comparison is temporarily unavailable. Your Sun-sign baseline is ready below.", twelve "Sun-sign baseline" blocks, and "The November 11, 2026 edition may draw more attention to …". | S10, S3 |
+| R13 | Partial | Exact and calm, but it reads as a data desk: a strip of positions, tables in arcminutes, and sign notes that name a house and a list of themes. For a visitor with no saved chart the visible notes read "Today may draw more attention to …". Served in the HTML but hidden from that visitor: "Your saved-chart comparison is temporarily unavailable. Your Sun-sign baseline is ready below.", twelve "Sun-sign baseline" blocks, and "The November 11, 2026 edition may draw more attention to …". Those reach a crawler or a reader without JavaScript; they are not part of this score. | S10 |
 | H1 | Partial | The Cancer note: "daily work, health routines, and responsibilities". Same phrase as P3. | S6 |
 | H3 | Partial | "Today may draw more attention to …" is a soft forecast with no label. Same open question as the dailies. | S7 |
 | R7 | Pass | The model for this rule: "what their signs have traditionally stood for", "Astrologers have long read these stretches as a time for review", "read as an opportunity". | |
@@ -253,7 +253,8 @@ Record: `records/pages/your-2027-sky.txt`. Copy: `src/lib/year-sky/copy.ts`.
 | R10 | Partial | "Quiet work on foundations pays off later." is a promised outcome, small as it is. | S12 |
 | R12 | Partial | "at 17° Aquarius" on each eclipse and "The shadow runs" on each retrograde, unexplained. | S12 |
 | H3 | Partial | Forecast lines with no label on the shared part. Same open question as the dailies. | S7 |
-| R9, R11, R13, H1, H2 | Pass | The closest item to the guide's voice in the sample: short, plain, dry and kind. No dashes. | |
+| H1 | Partial | "Quiet work on foundations pays off later." is partial under R10 as a promised outcome, and H1 names guarantees, so it is partial here too. | S12 |
+| R9, R11, R13, H2 | Pass | The closest item to the guide's voice in the sample: short, plain, dry and kind. No dashes. | |
 
 Also noted: the dates carry no time zone on the page. The 20 February eclipse peaks at 23:12 UTC, so it falls on 21 February in Asia.
 
@@ -269,7 +270,7 @@ Record: `records/connector/c1-get_horoscope-leo-day.response.json`. 91 words. Sa
 | R4 | Pass, checked | "Moon at 25° Sagittarius" and "Mercury at 5° Scorpio" at 7:00 pm Bangkok on 12 November (noon UTC): 25.81° and 5.16°, printed as whole degrees. | |
 | R5 | Partial | As P1 to P4: no plain "why", no come-back. | S1, S4 |
 | R7 | Partial | As P1 to P4. The `why.note` is good: "These are sky positions we calculate. What they mean is astrological interpretation." | S5 |
-| R9 | Fail | "For Leo, presence is strongest when the point is clearer than the performance." "…choose the contribution you would still value without applause." | S4 |
+| R9 | Partial | As P1 to P4: most sentences are short, one runs to 22 words, and the miss is abstraction, which is a judgment. "For Leo, presence is strongest when the point is clearer than the performance." "…choose the contribution you would still value without applause." | S4 |
 | R13 | Partial | As P1 to P4. | S4 |
 | R6, R8, R10, R11, R12, H1, H2, H3 | Pass | "check what you need at home and make time for it" is small and doable. "Reading confidence 40%" is present. | |
 
@@ -292,7 +293,8 @@ Record: `records/connector/c2-get_horoscope-personal-week.response.json`. The to
 | R12 | Partial | Aspect names in every title. | S13 |
 | R13 | Partial | Curt and repetitive: three of five lines end on the same clause. | S13 |
 | H3 | Partial | Two figures in one result. The personal note says "Reading confidence 55%". The disclosure says "Reading confidence 40%", which belongs to the Sun-sign reading, and no Sun-sign reading was returned. | S14 |
-| H1, H2 | Pass | | |
+| H1 | Partial | The two lines that are partial under R10 promise an outcome, and H1 names guarantees. | S13 |
+| H2 | Pass | | |
 
 ### X3. get_sky
 
@@ -342,7 +344,8 @@ Record: `records/connector/c5b-get_personal_transits-window.response.json`. Nine
 | R11 | Partial | "friction that will not resolve on its own", once. | S13 |
 | R12 | Partial | Aspect names in titles, `pass 3 of 3`, `exactUtc`. | S13 |
 | R13 | Partial | Curt and repetitive. | S13 |
-| H1, H2, H3 | Pass | Each line carries "Reading confidence 60%". | |
+| H1 | Partial | As X2: "help that arrives without being asked", "an opening that rewards you if you take it". | S13 |
+| H2, H3 | Pass | Each line carries "Reading confidence 60%". | |
 
 ### X6. get_horoscope_period, Pisces, November 2026
 
@@ -418,6 +421,15 @@ What kind of check this is: `astronomy-engine` is the ephemeris the site's own e
 | "Venus changed sign that day" | X7 | Venus entered Aries 4 May 1990 03:51 UTC | Checked, **true only west of about UTC−4** |
 | "Earth carries 6 of the ten planets", "There is no planet in fire" | X7 | Holds only if the Moon is in Virgo and Venus in Pisces, which the same result says is unknown | Checked, **contradicts the result's own unknowns** |
 | Two named people's birthdays | P8 | Not a sky fact | **Unchecked** |
+| "The Sun is in the middle third of the sign" | P7 | Sun at 19°06′, between 10° and 20° | Checked, correct |
+| Station degrees printed in "Coming up": Saturn 7°55′ Aries, Neptune 1°36′ Aries | P7 | 7°55′, 1°36′ (in the check output) | Checked, correct |
+| "From Sat 14 Nov" on the Sun and Saturn line | X2 | Not recomputed by the builder. Reviewer: the Sun comes within 3° of the sextile on 14 November at 17:00 UTC | Checked by the reviewer, correct for a 3° orb |
+| `pass 3 of 3` and the `firstPass` dates on seven contacts (6, 8, 8, 11, 11 and 12 October; 3 September), one pass each for the two Sun contacts | X5 | Not recomputed by the builder. Reviewer: same dates, three crossings each | Checked by the reviewer, correct |
+| Element and modality counts for both charts (4, 2, 2, 1 and 4, 3, 2; 1, 3, 4, 1 and 5, 3, 1), Moon left out | X4 | Not recomputed by the builder. Reviewer: same counts | Checked by the reviewer, correct |
+| "29 contacts" and the split by aspect | X4 | Not recomputed by either | **Unchecked** |
+| Latitudes and daily speeds of the twelve bodies | X3 | Only the longitudes, the phase angle and the lit fraction were compared | **Unchecked** |
+
+Rows marked "checked by the reviewer" rest on the second session's recompute in [BREAKER.md](BREAKER.md) (same ephemeris, separate code), not on this job's scripts. The same review also recomputed most rows marked unchecked above and found them correct: the 2026 retrograde starts, "seven within three degrees", Uranus to 12 February 2028, Jupiter in Virgo to 24 August 2028 and all ten shadow ranges. The two birthdays and the NASA magnitude stay unchecked.
 
 ## 6. Suggested fixes, at the source
 
@@ -427,17 +439,17 @@ Suggestions only, for ZOD-48. None is applied on this branch. Each names the fil
 |---|---|---|---|
 | S1 | `src/lib/horoscope-program.ts`, daily builder (about lines 1009 to 1090) and weekly close (line 1250) | Add a closing section built from the event catalog the program already holds: the next Moon sign change, phase, station or sign change inside seven days, said in plain words ("The Moon is half lit on Tuesday. Come back then."). Make the verifier fail a daily or weekly reading without one. The connector reads the same program, so X1 follows. | R3 and R5 on P1 to P5, X1 |
 | S2 | One shared gloss table (a new lexicon beside `HOUSE_THEME`; `/today/` already has a plain phrase per planet) used by `horoscope-program.ts` lines 1024, 1028 and 1086 | First mention of a planet, a phase or "retrograde" in a reading carries its gloss: "Mercury, the planet of talking and planning, appears to move backward". A term with no gloss in the table cannot be printed. | R2 on P1 to P6, P9, X1 |
-| S3 | `src/lib/edition-freshness.ts`, line 54 (`Today,` becomes `For the {date} edition,`) | Keep the verb first in the dated form, for example move the date to the page label that already shows it and drop the clause from the sentence. Line 55 gives "The {date} edition may draw more attention to" on `/today/`; same change. | R1 on P1 to P4, R13 on P7 |
+| S3 | `src/lib/edition-freshness.ts`, line 54 (`Today,` becomes `For the {date} edition,`) | Keep the verb first in the dated form, for example move the date to the page label that already shows it and drop the clause from the sentence. Line 55 gives "The {date} edition may draw more attention to" on `/today/`; same change. This is what a reader without JavaScript, a crawler, or a reader of a past edition gets; on the edition day a browser shows "Today,". | The dated form of P1 to P4 and P7 (a note, not a failing score) |
 | S4 | `src/lib/horoscope-program.ts`: `SIGN_REGISTER`, the sign `profile.daily` lines, `HOUSE_ACTION`, `HOUSE_DECISION`, and the third "Connect X with Y; …" section | Rewrite the tables to one concrete step each, in sentences of about 15 words or fewer, with no semicolons and no lists of four abstract nouns. Replace the third section with the guide's "Try it" and let S1 add "Come back". Stop the similar-reading separator from appending a clause that the third section then repeats (P4). | R1, R5, R6, R8, R9, R13 on P1 to P5, X1 |
 | S5 | The sentence frames in `horoscope-program.ts` ("The {phase} puts {theme} on the day's agenda") and `src/lib/year-sky/copy.ts` | Say who reads it: "Astrologers read {gloss} as a day for {theme}". The second section's "In this reading," already does this; use one frame for all. | R7 on P1 to P6, P9, X1 |
 | S6 | `src/lib/daily.ts`, line 142 (`HOUSE_THEME[6]`: "daily work, health routines, and responsibilities"), and the matching glossary entry | Owner wording call: "daily work, habits, and responsibilities" would drop the word. The same call covers "shared money", "earnings" and "the body" in monthly prose. | H1 on P3, P7, X6 |
 | S7 | The reading footer on horoscope pages ("Written for {sign} as a Sun sign …"), `/today/` sign notes, `src/lib/year-sky/copy.ts`; label from `src/ai-tools/reading-confidence.ts` | Decide once whether a Sun-sign page reading is a forecast. If yes, the page footer prints the same label the connector prints for the same reading. If no, write that down beside the `AGENTS.md` rule so the pages and the connector stop disagreeing. | H3 on P1 to P5, P7, P9 |
 | S8 | `src/data/horoscope-program.json` (from `scripts/build-horoscope-program.ts`) and `horoscope-program.ts` lines 358 to 369 | Name every stored `moonPhase` through `moonPhaseNameFromAngle` in `src/lib/engine/lite.ts` and add a verifier check that a stored name matches it. Replace "At the exact contact" with the event's plain name and date ("When the Moon is new on Monday"), and order the weekly sections by date. | R4, R2, R13 on P5 |
-| S9 | `src/lib/i18n/daily-reading.ts` | Give the localized daily the guide's shape: one advice line first (from the Moon's house), the house notes as the "why", one small step, one closing line. Or translate the English program. Either way, pick the planets by the same rule as the English reading so the two agree. | R1, R2, R3, R5, R6, R7, R12, R13 on P6 |
-| S10 | `src/pages/today/index.astro` and the sign notes in `src/lib/daily-publication.ts` | Put one plain sentence above the strip, drawn from the day's own facts (the Moon's sign and phase and the nearest station). Gloss "retrograde" where it first appears, or link the strip to "What retrograde means". Close "Coming up in the sky" with one plain line about the nearest event. Keep fallback wording ("Sun-sign baseline", "temporarily unavailable") out of the served HTML. | R1, R2, R3, R9, R12, R13 on P7 |
+| S9 | `src/lib/i18n/daily-reading.ts` | Give the localized daily the guide's shape: one advice line first (from the Moon's house), the house notes as the "why", one small step, one closing line. Or translate the English program. Either way, pick the planets by the same rule as the English reading so the two agree. | R1, R2, R3, R5, R6, R7, R13 on P6 |
+| S10 | `src/pages/today/index.astro` and the sign notes in `src/lib/daily-publication.ts` | Put one plain sentence above the strip, drawn from the day's own facts (the Moon's sign and phase and the nearest station). Gloss "retrograde" where it first appears, or link the strip to "What retrograde means". Close "Coming up in the sky" with one plain line about the nearest event. Fallback wording ("Sun-sign baseline", "temporarily unavailable") is hidden from a visitor with no saved chart but is in the served HTML, so a crawler or a reader without JavaScript gets it; keep it out of the served HTML. | R1, R2, R3, R9, R12, R13 on P7 |
 | S11 | The brief or prompt used to write `src/content/birthdays/*.mdx`, the page template's hero line, and `scripts/independent-copy-verifier.ts` | Brief: open with one thing to notice, gloss "decan" and "cusp" where they first appear, sentences a 12-year-old could follow, and one closing line tied to the sky (see Dias call 2). Verifier: reject unsourced population claims such as "Most people born on this date report". Overlaps ZOD-24. | R1, R2, R3, R7, R8, R9, R12, R13 on P8 |
-| S12 | `src/lib/year-sky/copy.ts` | One plain line each for "retrograde" and "shadow" at the top of the section. "pays off later" becomes something read, not promised. One action per entry, as Mercury and Mars already have. A closing line naming the first event ahead. State the time zone of the dates. | R1, R2, R3, R7, R8, R10, R12 on P9 |
-| S13 | `src/lib/transits.ts`, lines 25 to 53 (planet phrase joined to aspect gloss), and `src/ai-tools/features/personal-week.ts` | Glosses that predict ("help that arrives without being asked", "an opening that rewards you if you take it", "friction that will not resolve on its own") become what astrologers read plus one small step. Block joins that contradict (a soft planet phrase with a hard aspect gloss). Add a lead advice sentence and a closing "next" line to the personal week and the transit list. Put the plain gloss in the title. | R1, R2, R3, R7, R9, R10, R11, R12, R13 on X2, X5 |
+| S12 | `src/lib/year-sky/copy.ts` | One plain line each for "retrograde" and "shadow" at the top of the section. "pays off later" becomes something read, not promised. One action per entry, as Mercury and Mars already have. A closing line naming the first event ahead. State the time zone of the dates. | R1, R2, R3, R7, R8, R10, R12, H1 on P9 |
+| S13 | `src/lib/transits.ts`, lines 25 to 53 (planet phrase joined to aspect gloss), and `src/ai-tools/features/personal-week.ts` | Glosses that predict ("help that arrives without being asked", "an opening that rewards you if you take it", "friction that will not resolve on its own") become what astrologers read plus one small step. Block joins that contradict (a soft planet phrase with a hard aspect gloss). Add a lead advice sentence and a closing "next" line to the personal week and the transit list. Put the plain gloss in the title. | R1, R2, R3, R7, R9, R10, R11, R12, R13, H1 on X2, X5 |
 | S14 | The `get_horoscope` result builder in `src/ai-tools/` | When no Sun-sign reading is returned, do not print its confidence figure. Move the routing note ("use get_horoscope_period") out of the reader-facing disclosure. This changes output, not a published tool definition, but check `release-060.test.ts` first. | H3 on X2, R3 on X1 |
 | S15 | The `get_sky` result builder in `src/ai-tools/` | Add a short plain summary and a `next` event the assistant can close with, and keep the receipt out of the text block unless asked. Owner check needed: the published tool definitions must stay byte-identical. | R2, R3, R12 on X3 |
 | S16 | The drafting prompt in `docs/HOROSCOPE-GENERATION.md`, and `src/ai-tools/features/horoscope-period.ts` | Prompt: open with advice, gloss each term at first use, at most a few degrees per reading, say what astrologers read, end with a line about next month's first event, no money or body forecasts. The current prompt asks for the opposite on degrees ("degree when the JSON provides one") and for matching the existing month. Tool: say that the prose is dated in UTC, or stop pairing UTC-dated prose with zone-dated `sky` lines. | R1, R2, R3, R4, R7, R9, R10, R12, R13, H1 on X6 |
@@ -458,7 +470,7 @@ Suggestions only, for ZOD-48. None is applied on this branch. Each names the fil
 ## 8. Limits of this run
 
 - One moment, one edition: 2026-11-11 UTC. A different day could score differently on R8 and R9, which depend on which table rows the day draws.
-- Server text only. No browser was run, so wording that changes in the browser (the "Today," opener, the personal parts of `/today/` and `/your-2027-sky/`) was not captured.
+- Server text only. No browser was run in this job. The saved texts include text a browser hides or keeps collapsed, and wording the browser swaps on the edition day. The reviewer rendered six of the pages in Chromium and found the reading text the same apart from that hidden and swapped text ([BREAKER.md](BREAKER.md)). The personal parts of `/today/` and `/your-2027-sky/` were not captured by either.
 - One reader scored it. R9 and R13 are judgments; the quotes are given so they can be argued with.
 - The sky check is an independent run on the same ephemeris the site uses, not a second ephemeris.
 - Spanish was read by the scorer, not by a native reviewer.
@@ -472,3 +484,20 @@ Suggestions only, for ZOD-48. None is applied on this branch. Each names the fil
 | G3 Suggestions at the source | Met: every partial and fail in section 4 names a fix in section 6, and each fix is a template, table, builder or prompt. |
 | G4 Sky facts | Met: section 5 lists each asserted fact as checked or unchecked. |
 | G5 Nothing published | Met: this branch adds only this folder. No copy, template or prompt is changed. Nothing merged. No weekly editor. No engine branch touched. |
+
+## 10. Changes after review
+
+A second session reviewed this report ([BREAKER.md](BREAKER.md)): no blocker, seven things to fix in the report. All seven are applied here, in the one fix round allowed. Records, checks and tools are unchanged. Totals moved from 93 pass, 90 partial, 39 fail, 34 n/a to 95, 93, 34, 34.
+
+| # | Review finding | Change |
+|---|---|---|
+| 1 | R1 on P1 to P4 was scored on a dated opener readers did not see on the day | P1 to P4 now pass R1, on the same rule as X1 (R1 is 6 of 15). The dated form is kept as a note with S3. |
+| 2 | Hidden and collapsed text quoted as evidence | P7 R13 stays partial on what is visible; the three hidden strings are labelled as served but hidden. P6 R12 is now a pass, by the rule already used for P1 to P4. Sections 2 and 8 say that the saved texts include hidden text. S3 and S10 say who gets that text. |
+| 3 | H1 and R10 disagreed on promised outcomes | P9, X2 and X5 are now partial on H1 (H1 is 10 of 16), and section 1 says why. |
+| 4 | R9 evidence on the dailies overstated | The rows give the real spread of sentence lengths. P1 to P4 and X1 are now partial, not fail, because the miss is abstraction, which is a judgment. |
+| 5 | Sky facts with no check and no mark | Seven rows added to section 5: two checked from this job's own output, three checked by the reviewer, two unchecked ("29 contacts"; the `get_sky` latitudes and speeds). |
+| 6 | Two method statements | The birthday family is 367 of 1,910 sitemap URLs, not about 1,100. `/year/` is listed under fetched, not scored. The report says the sitemap was not kept. |
+| 7 | P6 labelled "Translated daily" | Relabelled: a localized daily, sampled as the nearest live thing. No translated horoscope is live. |
+
+The review's notes 8 to 12 are not acted on and stand as written there: six of the sixteen readings share one template; `get_sky` passes R7, R10 and R11 by having no prose; five event minutes on `/today/` were compared with the page's own data file; the "First Quarter" label may come from an older eight-slice rule; and S11 names a brief without a file.
+
