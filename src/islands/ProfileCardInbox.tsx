@@ -126,14 +126,14 @@ export default function ProfileCardInbox({ accountBound = false }: { accountBoun
     ? {
         cue: 'Your card',
         title: 'This is your own card.',
-        body: 'This is how it opens for the people you send it to, on their own page, not yours.',
+        body: 'This is how it opened for the people you sent it to, on their own page, not yours.',
       }
     : added
       ? {
           cue: 'Added to your people',
           title: result === 'updated' ? `${who} is already with your people` : `${who} is with your people`,
           body: self
-            ? 'Send yours back so they can keep you too.'
+            ? 'You can send them your big three card in return.'
             : 'Next, add your own birth chart below, and you can compare the two.',
         }
       : {

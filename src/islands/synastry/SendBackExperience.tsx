@@ -5,6 +5,7 @@ import type { PositionsShareInput } from '../../lib/share-positions';
 import type { BigThreeCardChart, PreparedChartCard } from '../../lib/share-card';
 import { shareCardText } from '../../lib/share-card-copy';
 import { encodeSynastryLink } from '../../lib/share-synastry';
+import { birthDateRefusal } from '../../lib/birth-date-policy';
 import { onWholeMinute } from '../../lib/share-positions-noon';
 import { loadTimedSharedPositions, loadUntimedSharedPositions } from '../../lib/share-positions-untimed';
 
@@ -47,6 +48,10 @@ const needsShared = (person: SendPerson) => person.untimedDate !== undefined
  * its date, each timed side computed here at its whole UTC minute.
  */
 export async function sendBackToken(a: SendPerson, b: SendPerson): Promise<string | null> {
+  // This card takes no birth date from a form: the comparison that computed
+  // these sides already refused a date under 13 or still to come. A side whose
+  // civil birth date is refused still makes no link.
+  if ([a, b].some((person) => person.untimedDate !== undefined && birthDateRefusal(person.untimedDate) !== null)) return null;
   const side = (person: SendPerson) => (person.untimedDate !== undefined
     ? loadUntimedSharedPositions(person.positions, person.untimedDate)
     : person.utc !== undefined

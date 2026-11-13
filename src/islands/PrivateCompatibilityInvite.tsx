@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { localizePath, type CatalogLocale } from '../lib/i18n';
 import { useEngine } from '../lib/hooks/useEngine';
 import { loadModule } from '../lib/module-load';
-import { calculateEntry, emptyEntry } from '../lib/sharing/chart-entry';
+import { calculateEntry, emptyEntry, entryRefusalMessage } from '../lib/sharing/chart-entry';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
+import { calendarInPlay } from './BirthFields';
 import { sharingText as s } from '../lib/sharing/copy';
 import SharingBirthForm from './SharingBirthForm';
 import CalculationReload, { calculationError } from './CalculationReload';
@@ -22,6 +24,14 @@ export default function PrivateCompatibilityInvite({ locale = 'en' }: { locale?:
   async function compute(event: Event) {
     event.preventDefault();
     const run = ++generation.current;
+    // A birth date under 13 or still to come makes no invitation; nothing loads for it.
+    // calculateEntry checks a Julian entry again once it is Gregorian.
+    const refusal = calendarInPlay(entry.date, entry.calendar) ? null : birthDateRefusal(entry.date);
+    if (refusal) {
+      setBusy(false); setResult(null); setCopyStatus('');
+      setError(birthDateRefusalText(refusal));
+      return;
+    }
     setBusy(true); setError(''); setResult(null); setCopyStatus('');
     try {
       const [mod, invite, trust] = await Promise.all([engine(), loadModule(() => import('../lib/sharing/private-invite')), loadModule(() => import('./ChartTrust'))]);
@@ -30,7 +40,7 @@ export default function PrivateCompatibilityInvite({ locale = 'en' }: { locale?:
       const token = await invite.privateInviteToken({ bodies: chart.bodies, angles: chart.angles, houseSystem: chart.input.houseSystem, engineVersion: chart.engineVersion }, chart.input.timeKnown ? { utc: chart.input.utc } : { birthDate: computed.date });
       if (run === generation.current) setResult({ chart, token, trust });
     } catch (cause) {
-      if (run === generation.current) setError(calculationError(cause, locale, s(locale, 'computeError')));
+      if (run === generation.current) setError(entryRefusalMessage(cause) ?? calculationError(cause, locale, s(locale, 'computeError')));
     } finally { if (run === generation.current) setBusy(false); }
   }
   async function copy() {
@@ -43,7 +53,7 @@ export default function PrivateCompatibilityInvite({ locale = 'en' }: { locale?:
       <SharingBirthForm locale={locale} entry={entry} warm={engine} onChange={(next) => { generation.current++; setEntry((current) => ({ ...current, ...next })); setResult(null); setBusy(false); setError(''); setCopyStatus(''); }} />
       <button class="btn btn--primary" disabled={busy} data-private-invite-create><span>{s(locale, busy ? 'computing' : 'inviteCreate')}</span><span class="orb">↗</span></button>
       <p class="sharing-note">{s(locale, 'privacy')}</p>
-      {error && <p role="alert" class="field__error">{error}</p>}<CalculationReload error={error} locale={locale} />
+      {error && <p role="alert" class="field__error" lang={birthDateRefusalLang(error)}>{error}</p>}<CalculationReload error={error} locale={locale} />
     </form>
     {result && <section class="sharing-result" data-private-invite-result>
       <result.trust.ResultOpening locale={locale} /><result.trust.CheckOurMath utc={result.chart.input.utc} basis={result.chart.input.timeKnown ? 'birth' : 'reference'} locale={locale} />

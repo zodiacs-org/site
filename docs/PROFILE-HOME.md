@@ -21,9 +21,11 @@ and becomes their page:
     whenever the committed edition is not the current UTC day;
   - the site's usual trio of actions: one white primary ("Open my full
     daily brief"), one ghost ("Send your card"), and a quiet link ("Edit
-    your name"). Editing and sending open in place of that row, so the
-    header never shows two primaries. While you type a name, the header
-    shows it and its initial live.
+    your name"). Editing opens in place of that row, so the header never
+    shows two primaries. While you type a name, the header shows it and its
+    initial live. "Send your card" opens the sign-level big three card at
+    `/big-three/` for the chart marked as yours, by its opaque saved-chart id
+    (`#profileChartId=`), never by birth details.
 
   Before hydration, and on any profile without an explicit self chart, it
   renders the page's existing introduction and H1 unchanged. When charts
@@ -52,12 +54,18 @@ and becomes their page:
   Rows are ordered by the next date, and each row's stamp says how far off
   it is ("in 8 days"), brighter within 14 days. That replaces a separate
   "Coming up" list.
-- **Chart cards** (the network, serverless). "Send your card" makes a link,
-  `/profile/#card=c1.…`, from the self chart only. It carries the name the
-  sender chose, their positions, and a time-known bit. The recipient's
-  `/profile/` reads it once, strips it from the address bar, shows the card,
-  and stores it only if they press "Add to your people". The follow-up
-  prompt asks the recipient to send theirs back.
+- **Chart cards** (retired as links on 14 November 2026). Card links are no
+  longer made. A card link, `/profile/#card=c1.…`, carried the name the
+  sender chose and positions that give the birth date and time to the
+  minute, and the 9 November 2026 audit (Decision A) found that links must
+  never carry those. "Send your card", in the header, in Your people and
+  after a received card is added, now opens the sign-level big three card
+  instead. Cards people already sent still open: the recipient's
+  `/profile/` reads one once, strips it from the address bar, shows the card,
+  and stores it only if they press "Add to your people". Cards already kept
+  stay in Your people with Compare, Chart and Remove.
+  `src/lib/profile/card-link-writers.test.ts` keeps any page from calling the
+  card link builder, which stays only to make test fixtures.
 - **Keep it close** (`ProfileKeepClose`). A one-time, dismissible note:
   - browser install when offered;
   - Share → Add to Home Screen on iOS;
@@ -104,8 +112,9 @@ and becomes their page:
     `encodeSharedPositionsLink`, like every other code that does: ASC and MC
     to the whole degree, planets to 0.001°. The decoder refuses a card
     whose angles are any finer.
-  - The planets still give the birth date and time. The share panel and the
-    privacy page say so (claims ledger `priv.chart-cards`).
+  - The planets still give the birth date and time, which is why card
+    links are no longer made. The privacy page says so (claims ledger
+    `priv.chart-cards`).
   - Angles travel only when the birth time is known.
   - An automatic chart name ("Leo Sun · 1990-08-14") contains the birth
     date, so it is never used as a person's name or as a card label.
@@ -149,10 +158,12 @@ and becomes their page:
    the nav initial, and the keep-close note.
 2. Choose "Add your name" (or "Edit your name"). Type a name and watch the
    header's initial follow it; save, reload, and check the nav.
-3. Choose "Send your card" and copy the link. Open it in a private window:
-   the card shows at the top of the page, the address bar loses `#card=`,
-   and "Add to your people" adds it. Open your own link on your device: it reports "This is your own
-   card."
+3. Choose "Send your card": it opens `/big-three/` with your Sun, Moon and
+   rising, and nothing with `card=` reaches the clipboard, a share sheet or
+   the address bar. Open a card link made before the change in a private
+   window: the card shows at the top of the page, the address bar loses
+   `#card=`, and "Add to your people" adds it. Open your own old link on your
+   device: it reports "This is your own card."
 4. On the recipient side, open Compare from the person's row. It lands on
    `/compatibility/?pair=…` and the comparison appears under Saved
    comparisons.

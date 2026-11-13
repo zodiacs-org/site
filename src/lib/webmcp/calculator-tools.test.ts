@@ -288,18 +288,23 @@ describe('refusals', () => {
     const cases: Array<[string, unknown, string]> = [
       ['zodiacs.saturn_return', { date: '1990-06-15', time: '14:30' }, 'TIME_NEEDS_PLACE'],
       ['zodiacs.birth_chart', { date: '2011-12-30', place: { latitude: -13.8333, longitude: -171.7513, timeZone: 'Pacific/Apia' } }, 'LOCAL_DATE_REFERENCE'],
-      ['zodiacs.lunar_return', { birth: { date: '2021-03-28', time: '01:30', place: LONDON } }, 'CLOCK_CHANGE'],
+      ['zodiacs.lunar_return', { birth: { date: '2012-03-25', time: '01:30', place: LONDON } }, 'CLOCK_CHANGE'],
       ['zodiacs.numerology', { birthDate: '1990-06-15', fullName: 'Алекс Синтетический' }, 'UNSUPPORTED_NAME'],
       ['zodiacs.group_chart', { people: [{ name: 'A', birth: BIRTH }, { name: 'a', birth: BIRTH }, { birth: BIRTH }] }, 'DUPLICATE_PERSON'],
       ['zodiacs.birth_chart', { ...BIRTH, place: { ...LONDON, timeZone: 'Mars/Olympus_Mons' } }, 'INVALID_INPUT'],
       ['zodiacs.numerology', { birthDate: '1990-02-30' }, 'INVALID_INPUT'],
       ['zodiacs.moon_phase', { date: '2023-02-29' }, 'INVALID_INPUT'],
       ['zodiacs.unknown', {}, 'UNKNOWN_TOOL'],
+      ['zodiacs.birth_chart', { date: '2020-06-15', time: '14:30', place: LONDON, houseSystem: 'whole' }, 'BIRTH_DATE_UNDER_13'],
+      ['zodiacs.numerology', { birthDate: '2020-06-15' }, 'BIRTH_DATE_UNDER_13'],
+      ['zodiacs.saturn_return', { date: '2020-06-15', time: '14:30', place: LONDON }, 'BIRTH_DATE_UNDER_13'],
+      ['zodiacs.birth_chart', { date: '2199-12-31', place: LONDON, houseSystem: 'whole' }, 'FUTURE_BIRTH_DATE'],
+      ['zodiacs.saturn_return', { date: '2199-12-31', time: '23:59', place: LONDON }, 'FUTURE_BIRTH_DATE'],
     ];
     for (const [name, input, code] of cases) {
       const error = await refusal(name, input);
       expect(error?.code).toBe(code);
-      for (const value of ['1990', '14:30', 'Apia', 'Алекс', 'Olympus', '2021-03-28']) expect(error?.message).not.toContain(value);
+      for (const value of ['1990', '14:30', 'Apia', 'Алекс', 'Olympus', '2012-03-25', '2020', '2199']) expect(error?.message).not.toContain(value);
     }
   });
 

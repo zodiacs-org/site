@@ -3,7 +3,8 @@ import { resolveForm, type SlotState } from '../../../islands/SynastryCalculator
 import * as engine from '../../engine/full';
 import { findInterAspects, summarizePair } from '../../engine/synastry';
 import type { Chart } from '../../engine/types';
-import { calculateEntry, type ChartEntry } from '../../sharing/chart-entry';
+import { calculateEntry, entryRefusalMessage, type ChartEntry } from '../../sharing/chart-entry';
+import { birthDateRefusal, birthDateRefusalText } from '../../birth-date-policy';
 import { sharingText } from '../../sharing/copy';
 import { groupReading, validGroupSize } from '../../sharing/group';
 import { TWIN_DIRECTORY } from '../../sharing/twin-directory';
@@ -21,6 +22,11 @@ import {
 
 // The refused untimed date is a chart-page rule; these pages read local noon without that check.
 const PEOPLE = BIRTHS.filter(([label]) => label !== 'an untimed date the clock skipped');
+
+const COMPUTABLE = PEOPLE.filter(([label]) => label !== 'the last day');
+const LAST_DAY = PEOPLE.find(([label]) => label === 'the last day')![1];
+const FUTURE = birthDateRefusalText('future_birth_date');
+const policy = { birthDateRefusal, birthDateRefusalText, entryRefusalMessage };
 
 const slot = (birth: Birth): SlotState => ({
   source: 'form', savedId: '', name: '', date: birth.date, time: birth.time ?? '', timeKnown: birth.time !== null,
@@ -96,11 +102,12 @@ describe('TransitTracker (/transits/)', () => {
 describe('ChartTwins (/chart-twins/)', () => {
   const compute = islandFunction('ChartTwins.tsx', { function: 'compute' });
 
-  it.each(PEOPLE)('matches the directory as the page does: %s', async (_label, birth) => {
+  it.each(COMPUTABLE)('matches the directory as the page does: %s', async (_label, birth) => {
     const state: { result: { chart: Chart; signs: { sun: string | null; moon: string | null }; matches: TwinMatch[] } | null; error: string } = {
       result: null, error: '',
     };
     await compute({
+      ...policy,
       engine: async () => engine, loadModule: async () => ({}), calculateEntry, entry: entry(birth), locale: 'en',
       directory: TWIN_DIRECTORY, twinSigns, matchTwins, generation: ref(0), resultRef: ref(null),
       setResult: (value: typeof state.result) => { state.result = value; },
@@ -116,6 +123,20 @@ describe('ChartTwins (/chart-twins/)', () => {
       match.count === 2 ? 'sun-and-moon' : match.sun ? 'sun' : 'moon')));
     if (birth.time === null) expect(result.moonSign).toBeNull();
   });
+
+  it('refuses a birth date that has not happened yet', async () => {
+    const state: { result: unknown; error: string } = { result: null, error: '' };
+    await compute({
+      ...policy,
+      engine: async () => engine, loadModule: async () => ({}), calculateEntry, entry: entry(LAST_DAY), locale: 'en',
+      directory: TWIN_DIRECTORY, twinSigns, matchTwins, generation: ref(0), resultRef: ref(null),
+      setResult: (value: unknown) => { state.result = value; },
+      setError: (value: string) => { state.error = value; },
+      requestAnimationFrame: () => 0, calculationError: (_error: unknown, _locale: string, fallback: string) => fallback,
+    }, { preventDefault() {} });
+    expect(state.error).toBe(FUTURE);
+    expect(state.result).toBeNull();
+  });
 });
 
 describe('GroupCharts (/group-charts/)', () => {
@@ -125,6 +146,7 @@ describe('GroupCharts (/group-charts/)', () => {
   it('reads each person\'s role as the page does', async () => {
     const state: { results: Array<{ name: string; reading: ReturnType<typeof groupReading> }> | null; error: string } = { results: null, error: '' };
     await compute({
+      ...policy,
       entries: members.map((member) => entry(member.birth, member.name)), validGroupSize, engine: async () => engine,
       loadModule: async () => ({}), calculateEntry, groupReading, locale: 'en', s: sharingText, generation: ref(0),
       resultRef: ref(null), prepare: async () => undefined,
@@ -147,6 +169,7 @@ describe('GroupCharts (/group-charts/)', () => {
     await expect(groupChartResult(twice)).rejects.toBeInstanceOf(DuplicatePersonError);
     const state = { error: '' };
     await compute({
+      ...policy,
       entries: twice.map((member) => entry(member.birth, member.name)), validGroupSize, engine: async () => engine,
       loadModule: async () => ({}), calculateEntry, groupReading, locale: 'en', s: sharingText, generation: ref(0),
       setError: (value: string) => { state.error = value; },

@@ -375,8 +375,8 @@ try {
         'the positions-only link must be the primary link action');
       assert.equal(await dialog.locator('[data-preview-link]').count(), 0,
         'server preview links must not expose birth placements');
-      assert.equal(await dialog.locator('[data-details-link]').count(), 1,
-        'the v1 birth-details link must remain a labeled secondary action');
+      assert.equal(await dialog.locator('[data-details-link]').count(), 0,
+        'the share dialog offers no link with birth details');
 
 
       await source.waitForFunction(() => (
@@ -438,17 +438,12 @@ try {
           `positions-only link leaked ${privateValue}`);
       }
 
-      await dialog.locator('[data-details-link]').click();
-      await source.waitForFunction(() => globalThis.__t17Clipboard.length === 2, null, { timeout: TIMEOUT });
-      const fullUrl = (await clipboard(source))[1];
-      const fullParsed = new URL(fullUrl);
-      assert.equal(fullParsed.hash.startsWith('#c=1.'), true,
-        'the explicitly labeled full-detail link must preserve v1 #c');
+      assert.equal(await dialog.locator('[data-details-link]').count(), 0,
+        'the share dialog offers no link with birth details');
       assert.deepEqual((await events(source))
         .filter(({ name }) => name === 'chart_share')
         .map(({ name, props }) => ({ name, props })), [
         { name: 'chart_share', props: { variant: 'positions_link' } },
-        { name: 'chart_share', props: { variant: 'details_link' } },
       ], 'link analytics must use only the approved bounded variants');
 
       const fullCardAction = dialog.locator('[data-share-card-action="sheet"]');
@@ -837,13 +832,12 @@ try {
       const failureDialog = preparationFailure.locator('[data-share-dialog]');
       await failureDialog.waitFor({ state: 'visible', timeout: TIMEOUT });
       await failureDialog.locator('[data-positions-link]').click();
-      await failureDialog.locator('[data-details-link]').click();
-      await preparationFailure.waitForFunction(() => globalThis.__t17Clipboard.length === 2, null, { timeout: TIMEOUT });
+      await preparationFailure.waitForFunction(() => globalThis.__t17Clipboard.length === 1, null, { timeout: TIMEOUT });
       const failureLinks = await clipboard(preparationFailure);
       assert.ok(failureLinks[0].includes('#p=2.'),
         'positions-only link must remain usable when every image encoder fails');
-      assert.ok(new URL(failureLinks[1]).hash.startsWith('#c=1.'),
-        'explicit birth-details link must remain usable when every image encoder fails');
+      assert.equal(await failureDialog.locator('[data-details-link]').count(), 0,
+        'the share dialog offers no link with birth details');
       await preparationFailure.waitForFunction(() => (
         document.querySelector('[data-share-card-action="sheet"]')?.disabled
         && document.querySelector('[data-share-card-action="signature"]')?.disabled
@@ -866,8 +860,7 @@ try {
         .filter(({ name }) => name === 'chart_share')
         .map(({ name, props }) => ({ name, props })), [
         { name: 'chart_share', props: { variant: 'positions_link' } },
-        { name: 'chart_share', props: { variant: 'details_link' } },
-      ], 'failed image rendering may record only the two successful bounded link actions');
+      ], 'failed image rendering may record only the successful bounded link action');
       assert.equal(await preparationFailure.evaluate(() => globalThis.__t17DownloadClicks.length), 0,
         'a failed pre-render must not start a download');
       assert.match(
@@ -958,6 +951,19 @@ try {
         'placement-only shares must not invent a birth timestamp');
       assert.equal(receivedText.toLowerCase().includes(`engine v${ENGINE_VERSION}`.toLowerCase()), true,
         'positions result must carry the installed engine version receipt');
+
+      // The share dialog no longer offers a birth-details link, but incoming
+      // legacy #c=1. links still have to open as a receiver. Build that URL
+      // here rather than copying it from a removed control.
+      const fullUrl = `${baseURL}/birth-chart/#c=1.${Buffer.from(JSON.stringify({
+        d: BIRTH.date,
+        t: BIRTH.time,
+        z: 'America/New_York',
+        la: 40.71,
+        lo: -74.01,
+        p: 'New York',
+      })).toString('base64url')}`;
+      const fullParsed = new URL(fullUrl);
 
       const full = await trackedPage();
       await open(full, fullUrl);

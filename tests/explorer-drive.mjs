@@ -599,7 +599,7 @@ try {
       && dock.querySelectorAll('[data-tour-start]').length === 1
       && dock.querySelectorAll('[data-share-card]').length === 1
       && dock.querySelectorAll('[data-read-another-chart]').length === 1
-      && dock.querySelector('[data-read-another-chart]')?.getAttribute('href')?.startsWith('/birth-chart/someone-else/#mine=')
+      && dock.querySelector('[data-read-another-chart]')?.getAttribute('href') === '/birth-chart/someone-else/'
       && document.querySelectorAll('[data-primary-action]').length === 1;
   }));
   check('chart actions: save/guide/share/read-another actions are unique and absent from More ways', await page.evaluate(() =>

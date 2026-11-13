@@ -9,6 +9,7 @@
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import EvidenceDisclosure from './EvidenceDisclosure';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { POSITION_READINGS, type ReadingPosition } from '../data/numerology-readings';
 import StoryCardShare from '../components/StoryCardShare';
 import { numerologyStoryContent, prepareNumerologyStoryCard } from '../lib/numerology/story-card';
@@ -256,6 +257,15 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
     focusAfterComputeRef.current = true;
     setError('');
     setAttempt((n) => n + 1);
+    // Refused before anything is worked out or kept: the typed name and date stay in the form.
+    const refusal = birthDateRefusal(date);
+    if (refusal) {
+      setResult(null);
+      setSubmitted(null);
+      setOverrides([]);
+      setError(birthDateRefusalText(refusal));
+      return;
+    }
     // Y overrides index into one specific name; a different name starts clean.
     const nextOverrides = submitted && submitted.name === name ? overrides : [];
     const input: Submitted = { name, date, today: localIsoDate(new Date()) };
@@ -348,7 +358,7 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
             <span class="orb">↗</span>
           </button>
           <p class="calc__privacy">Private by default. Your name and birth date stay in this browser.</p>
-          {error && <p key={attempt} class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
+          {error && <p key={attempt} class="calc__error" role="alert" tabIndex={-1} ref={errorRef} lang={birthDateRefusalLang(error)}>{error}</p>}
         </div>
       </form>
 

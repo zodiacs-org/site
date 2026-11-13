@@ -12,7 +12,7 @@ const chart = {
 const profile = { version: 1, settings: { houseSystem: 'whole' }, charts: [chart,
   { ...chart, id: 'audit-itinerary-unknown', name: 'Unknown fixture', birth: { ...chart.birth, timeKnown: false, time: null } },
   { ...chart, id: 'audit-itinerary-unverified', name: 'Unverified fixture', birth: { ...chart.birth, place: null } },
-  { ...chart, id: 'audit-itinerary-ambiguous', name: 'Ambiguous fixture', birth: { date: '2025-11-02', time: '01:30', timeKnown: true,
+  { ...chart, id: 'audit-itinerary-ambiguous', name: 'Ambiguous fixture', birth: { date: '2012-11-04', time: '01:30', timeKnown: true,
     place: { name: 'New York', country: 'US', admin1: 'NY', lat: 40.7128, lon: -74.006, tz: 'America/New_York' } } },
 ] };
 

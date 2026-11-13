@@ -7,7 +7,6 @@ import {
   cardMatchesChart,
   cardPositionsForChart,
   cardTokenFromHash,
-  cardUrl,
   decodeCardLink,
   encodeCardLink,
   loadCardPositionsForChart,
@@ -48,6 +47,7 @@ function reencode(wire: unknown): string {
   return `c1.${base64}`;
 }
 
+// No page makes a card link any more; encodeCardLink makes fixture tokens for the reader.
 describe('chart card links', () => {
   it('round-trips a name and positions, and nothing else', () => {
     const chart = savedChart();
@@ -155,7 +155,6 @@ describe('chart card links', () => {
     expect(cardTokenFromHash('#card=c1.abc_-')).toBe('c1.abc_-');
     expect(cardTokenFromHash('#card=c1.abc&x=1')).toBeNull();
     expect(cardTokenFromHash('#p=2.abc')).toBeNull();
-    expect(cardUrl('https://zodiacs.org', 'c1.abc')).toBe('https://zodiacs.org/profile/#card=c1.abc');
   });
 });
 

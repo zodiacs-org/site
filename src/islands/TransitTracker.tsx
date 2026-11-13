@@ -8,6 +8,7 @@ import { CheckOurMath, ResultOpening } from './ChartTrust';
  */
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import type { MinimalBody } from '../lib/engine/synastry';
 import type { Chart } from '../lib/engine/types';
 import type { SavedChart } from '../lib/profile/schema';
@@ -292,6 +293,16 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
         }
         capturedSlot.date = entry.date;
       }
+      // A birth date under 13 or still to come is refused before anything loads (a saved chart's too).
+      const refusal = birthDateRefusal(capturedSlot.source === 'saved'
+        ? capturedChart?.birth.date ?? ''
+        : capturedSlot.date);
+      if (refusal) {
+        setResult(null);
+        setSearchFocus(null);
+        setError(birthDateRefusalText(refusal));
+        return;
+      }
       const [engine, mod] = await Promise.all([
         loadEngine(),
         ringMod ? Promise.resolve(ringMod) : loadModule(() => import('./transit/TransitRing')),
@@ -454,7 +465,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
               <a href={localizePath(locale, '/birth-chart/')}>{t(locale, 'getBirthChart')} →</a>
             </p>
           )}
-          {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
+          {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef} lang={birthDateRefusalLang(error)}>{error}</p>}
           <CalculationReload error={error} locale={locale} />
         </div>
       </form>

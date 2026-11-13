@@ -37,27 +37,24 @@ interface Props {
   card: CardState;
   onCardStateChange: (state: CardState) => void;
   onClose: () => void;
-  detailsUrl?: string;
   receiverPath?: string;
   birthDetails?: ChartSheetBirthDetails;
   preparedPrimary?: PreparedChartCard | null;
   moonAmbiguous?: boolean;
 }
 
+// No link here carries birth details (the 9 November 2026 audit, Decision A):
+// the "Copy link with birth details" button was retired.
 const LINK_COPY = {
-  en: {
-    copied: 'Link copied', details: 'Copy link with birth details',
-    detailsNote: 'Includes your birth details.',
-    sheet: 'Share chart sheet',
-  },
-  es: { copied: 'Enlace copiado', details: 'Copiar enlace con datos de nacimiento', detailsNote: 'Incluye tus datos de nacimiento.', sheet: 'Compartir hoja de la carta' },
-  pt: { copied: 'Link copiado', details: 'Copiar link com dados de nascimento', detailsNote: 'Inclui seus dados de nascimento.', sheet: 'Compartilhar folha do mapa' },
-  fr: { copied: 'Lien copié', details: 'Copier le lien avec données de naissance', detailsNote: 'Inclut tes données de naissance.', sheet: 'Partager la feuille du thème' },
-  it: { copied: 'Link copiato', details: 'Copia il link con dati di nascita', detailsNote: 'Include i tuoi dati di nascita.', sheet: 'Condividi il foglio del tema' },
-  ru: { copied: 'Ссылка скопирована', details: 'Скопировать ссылку с данными рождения', detailsNote: 'Включает ваши данные рождения.', sheet: 'Поделиться листом карты' },
+  en: { copied: 'Link copied', sheet: 'Share chart sheet' },
+  es: { copied: 'Enlace copiado', sheet: 'Compartir hoja de la carta' },
+  pt: { copied: 'Link copiado', sheet: 'Compartilhar folha do mapa' },
+  fr: { copied: 'Lien copié', sheet: 'Partager la feuille du thème' },
+  it: { copied: 'Link copiato', sheet: 'Condividi il foglio del tema' },
+  ru: { copied: 'Ссылка скопирована', sheet: 'Поделиться листом карты' },
 } as const;
 
-function trackShare(variant: 'details_link' | 'positions_link' | 'big_three_card' | 'full_chart_card' | 'signature_card' | 'big_three_story'): void {
+function trackShare(variant: 'positions_link' | 'big_three_card' | 'full_chart_card' | 'signature_card' | 'big_three_story'): void {
   const analytics = (window as Window & {
     zodiacsAnalytics?: { track?: (name: string, props: { variant: string }) => void };
   }).zodiacsAnalytics;
@@ -71,7 +68,6 @@ export default function ChartShareDialog({
   card,
   onCardStateChange,
   onClose,
-  detailsUrl = '',
   receiverPath = '/birth-chart/',
   birthDetails,
   preparedPrimary = null,
@@ -86,8 +82,8 @@ export default function ChartShareDialog({
   const preparationRef = useRef(new Map<Choice, number>());
   const [hideBirthDetails, setHideBirthDetails] = useState(true);
   const [links, setLinks] = useState<{ positions: string } | null>(null);
-  const [linkState, setLinkState] = useState<Record<'positions' | 'details', CopyLinkState>>({
-    positions: 'idle', details: 'idle',
+  const [linkState, setLinkState] = useState<Record<'positions', CopyLinkState>>({
+    positions: 'idle',
   });
   const [prepared, setPrepared] = useState<Partial<Record<Choice, PreparedChartCard>>>({});
   const [states, setStates] = useState<Record<Choice, PreparedState>>({
@@ -354,21 +350,6 @@ export default function ChartShareDialog({
             <p class="calc-share-dialog__note" data-positions-share-note>
               {shareText(locale, chart.input.timeKnown ? 'positionsShareNote' : 'positionsShareNoteNoTime')}
             </p>
-            {mode === 'full' && detailsUrl && (
-              <CopyLinkButton
-                url={detailsUrl}
-                state={linkState.details}
-                onStateChange={(state) => setLinkState((current) => ({ ...current, details: state }))}
-                idleLabel={copy.details}
-                copiedLabel={copy.copied}
-                ariaLabel={copy.details}
-                buttonClass="btn btn--ghost"
-                dataHook="details"
-                onCopied={() => trackShare('details_link')}
-              >
-                <p class="calc-share-dialog__note">{copy.detailsNote}</p>
-              </CopyLinkButton>
-            )}
           </section>
         )}
 

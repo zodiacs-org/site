@@ -88,7 +88,7 @@ describe('an Old Style birth through the birth chart form', () => {
   });
 
   it('sends a date before 1924 through the calendar reader and shows the entered date with the result', () => {
-    const compute = source.slice(source.indexOf('function compute('), source.indexOf('const shareUrl'));
+    const compute = source.slice(source.indexOf('function compute('), source.indexOf('function requestChartControls('));
     expect(compute).toContain('if (!calendarInPlay(date, calendar)) return start({ date });');
     expect(compute).toContain('void birthDateForChart(locale, date, calendar).then((entry) => {');
     expect(compute).toContain('oldStyle: entry.oldStyle,');

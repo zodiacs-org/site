@@ -9,6 +9,7 @@ import type { MilestoneCard } from '../lib/occasions/milestone-card';
 import type { Milestone } from '../lib/occasions/milestones';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import PlaceSearch from './PlaceSearch';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 
 const loadCard = () => Promise.all([import('../lib/occasions/milestone-card'), import('../lib/occasions/site-clock')]);
 const MILESTONE_NAMES: Record<Milestone['kind'], string> = {
@@ -44,6 +45,13 @@ export default function LifeMilestones() {
   const [error, setError] = useState('');
 
   async function compute(next: { birth: string; time: string; city: City | null }) {
+    // Refused before anything is worked out; the typed values stay in the form.
+    const refusal = birthDateRefusal(next.birth);
+    if (refusal) {
+      setCard(null);
+      setError(birthDateRefusalText(refusal));
+      return;
+    }
     setBusy(true);
     setError('');
     try {
@@ -67,6 +75,8 @@ export default function LifeMilestones() {
     const params = new URLSearchParams(window.location.hash.slice(1));
     const linked = params.get('b');
     if (!linked) return;
+    // A birth date does not stay in the address bar: the link is scrubbed before it is read.
+    history.replaceState(null, '', window.location.pathname + window.location.search);
     setBirth(linked);
     void compute({ birth: linked, time: '', city: null });
   }, []);
@@ -107,7 +117,7 @@ export default function LifeMilestones() {
             {busy ? 'Working out the dates…' : 'Show my milestones'}
           </button>
           <p class="calc__privacy">Worked out on your device. Nothing you enter is stored.</p>
-          {error && <p class="calc__error" role="alert">{error}</p>}
+          {error && <p class="calc__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}
         </div>
       </form>
 
