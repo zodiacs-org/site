@@ -2,8 +2,8 @@
 -- safe on production as it is today (no Living Chart, no Sky Watch, no
 -- assistant accounts layer, no pg_cron) and on every later shape.
 --
--- Every statement is a SELECT and returns counts, booleans, names or empty
--- lists only. None returns an email, a payload, a key or birth data. Queries
+-- Every statement is a SELECT and returns counts or booleans only. None
+-- returns a name, an id, an email, a payload, a key or birth data. Queries
 -- that need an optional feature look the object up first and return NULL when
 -- it is missing, so the whole file runs without an error anywhere.
 -- Run as postgres (the SQL editor role).
@@ -20,8 +20,11 @@
 select pg_catalog.has_table_privilege(current_user, 'auth.users', 'DELETE') as can_delete_auth_users;
 
 -- A1. Functions this migration creates or replaces that exist everywhere.
---     Expect 14 rows: definer = true for private.*, false for public.*.
-select n.nspname || '.' || p.proname as function_name, p.prosecdef as definer
+--     Expect functions_present 14 and definer_modes_correct true (SECURITY
+--     DEFINER for private.*, SECURITY INVOKER for public.*).
+select
+  count(*) as functions_present,
+  coalesce(bool_and(p.prosecdef = (n.nspname = 'private')), false) as definer_modes_correct
 from pg_catalog.pg_proc p
 join pg_catalog.pg_namespace n on n.oid = p.pronamespace
 where (n.nspname, p.proname) in (
@@ -39,11 +42,11 @@ where (n.nspname, p.proname) in (
   ('public', 'account_v2_rewrap_candidates'),
   ('public', 'account_v2_rewrap_apply'),
   ('public', 'account_v2_export_later_tables')
-)
-order by 1;
+);
 
--- A2. Service only. Expect zero rows.
-select r.signature
+-- A2. Service only: functions anon or authenticated may run, or the service
+--     role may not. Expect 0.
+select count(*) as functions_not_service_only
 from (values
   ('public.account_v2_run_retention(integer)'),
   ('public.account_v2_cleanup_deletion_receipts(integer)'),
@@ -99,9 +102,16 @@ select
   ) like '%from auth.users%' as owner_lock_helper_checks_auth;
 
 -- A6. The export RPC answers for an account with nothing saved (the nil id
---     matches no one). Expect
---     {"outcome": "ready", "saved_pages": [], "living_chart_moments": []}.
-select public.account_v2_export_later_tables('00000000-0000-0000-0000-000000000000');
+--     matches no one) and refuses a missing id. Only booleans are returned,
+--     never the export itself. Expect four trues.
+select
+  answer->>'outcome' = 'ready' as export_ready,
+  answer->'saved_pages' = '[]'::jsonb as no_saved_pages,
+  answer->'living_chart_moments' = '[]'::jsonb as no_moments,
+  public.account_v2_export_later_tables(null) = '{"outcome":"invalid"}'::jsonb as missing_id_refused
+from (
+  select public.account_v2_export_later_tables('00000000-0000-0000-0000-000000000000') as answer
+) as nil_export;
 
 -- A7. What is installed, and whether the migration's parts for it are in
 --     place. Production today: every column false. After a launch, a feature
@@ -200,8 +210,15 @@ select
   (select count(*) from public.weekly_digest_unsubscribe_tokens t
      join private.account_states s on s.user_id = t.user_id and s.status = 'deleting') as weekly_digest_tokens;
 
--- A12. Key versions in use (rows per kind and version; no key material).
-select public.account_v2_key_version_inventory();
+-- A12. Key versions in use: wrapped rows per kind and the number of key
+--      versions in use (counts only, no key material). Production on
+--      13 Nov 2026: all zero (0 v2 chart records).
+select
+  coalesce(sum((entry->>'rows')::bigint) filter (where entry->>'kind' = 'chart'), 0) as chart_rows,
+  coalesce(sum((entry->>'rows')::bigint) filter (where entry->>'kind' = 'alias'), 0) as alias_rows,
+  coalesce(sum((entry->>'rows')::bigint) filter (where entry->>'kind' = 'provider'), 0) as provider_rows,
+  count(distinct entry->>'key_version') as key_versions_in_use
+from jsonb_array_elements(public.account_v2_key_version_inventory()) as listed(entry);
 
 -- A13. Rewrap candidates carry unbroken base64. Expect zero.
 select count(*) as wrapped_keys_with_line_breaks
