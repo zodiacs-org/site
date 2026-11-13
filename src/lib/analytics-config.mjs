@@ -1,3 +1,5 @@
+import { ARRIVAL_REF_VALUES } from './arrival-refs.mjs';
+
 /** Property allowlist shared by Astro pages and the generated Registry shell. */
 export const ANALYTICS_EVENT_PROPS = Object.freeze({
   chart_computed: ['mode', 'source'],
@@ -104,11 +106,11 @@ const ZODIAC_SIGN_VALUES = Object.freeze([
 /**
  * Which kind of link opened the browser tab. `direct` is the default: no
  * recognised `?ref=` word. The rest are the only `ref` words the site reads
- * (src/lib/arrival-source.ts); any other word is dropped.
+ * (src/lib/arrival-source.ts) and the only ones a share page accepts
+ * (src/lib/share-results.ts); any other word is dropped. The list lives in its
+ * own small module so the share parsers can read it without this whole file.
  */
-export const ARRIVAL_REF_VALUES = Object.freeze([
-  'video', 'chatgpt', 'assistant', 'card', 'app', 'note',
-]);
+export { ARRIVAL_REF_VALUES };
 export const ARRIVAL_SOURCE_VALUES = Object.freeze(['direct', ...ARRIVAL_REF_VALUES]);
 
 /** Where an email sign-up form sits. */

@@ -84,6 +84,12 @@ makes every share link invalid. In the deployed Node entry
 - **Image and story routes refuse** an unknown or repeated key with 400.
 - The birthday report's retired `py` key is refused on both: the image
   answers 400, the page opens without a result.
+- `ref` is one of every route's own keys. One of the six arrival words
+  (`SHARE_REFS` in `src/lib/share-results.ts`, from
+  `src/lib/arrival-refs.mjs`) opens the result and draws the pictures; any
+  other word opens the page without a result, and the pictures answer 400.
+  The page has no script, so `ref` stays in the address it was opened with,
+  and none of its links carry it on (since 13 November 2026).
 
 So a share page will open with any extra key attached, including one that
 someone has added by hand with a birth detail in it. The site does not make

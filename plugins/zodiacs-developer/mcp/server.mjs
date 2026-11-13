@@ -9431,6 +9431,16 @@ function scoreCompatibility(contacts, elements) {
   return { overall, areas, verdict: verdictFor2(overall), headline };
 }
 
+// src/lib/arrival-refs.mjs
+var ARRIVAL_REF_VALUES = Object.freeze([
+  "video",
+  "chatgpt",
+  "assistant",
+  "card",
+  "app",
+  "note"
+]);
+
 // src/lib/occasions/kinds.ts
 var OCCASION_KINDS = [
   "wedding",
@@ -9485,6 +9495,9 @@ var SHARE_SIGNS = [
   "aquarius",
   "pisces"
 ];
+var SHARE_REFS = Object.freeze(
+  ARRIVAL_REF_VALUES.filter((ref3) => ref3 !== "direct")
+);
 var COMPATIBILITY_SHARE_PATH = "/share/compatibility/";
 var OCCASION_SHARE_PATH = "/share/occasion/";
 var COMPATIBILITY_SHARE_KEYS = Object.freeze(["a", "b", "as", "bs", "score", "attraction", "communication", "stability", "v", "c", "ref"]);
