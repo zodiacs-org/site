@@ -25,8 +25,8 @@ const oauthProviders = enabledOAuthProviders({
 });
 const oauthProviderNames = oauthProviders.map((provider) => (provider === 'google' ? 'Google' : 'Apple')).join(' or ');
 const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
-const updated = '11 November 2026';
-const modifiedAt = '2026-11-11T00:00:00.000Z';
+const updated = '13 November 2026';
+const modifiedAt = '2026-11-13T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -653,9 +653,24 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         Aura events carry only allowlisted categories such as an outcome and
         a coarse held-count bucket; other events similarly record “a chart was
         saved,” never whose. Links from the Zodiacs app in ChatGPT or
-        another assistant end in ?ref=chatgpt or ?ref=assistant. The page
-        takes that off its address as it opens, and Plausible counts the
-        visit under that name and nothing else from the link.{accountSyncV2Enabled ? ' No analytics script runs on your profile page, the sign-in page, or any page that can show a chart saved in your browser or synced to your account, such as the home page, the birth chart, Today, transits and the daily horoscope for your sign.' : ''}
+        another assistant end in ?ref=chatgpt or ?ref=assistant. Some of our
+        own links, such as those in our videos, cards, notes and app, can end
+        in ?ref=video, ?ref=card, ?ref=note or ?ref=app. A shared result page,
+        whose address begins with /share/, runs no script: it keeps the word in
+        the address it was opened with, stores and counts nothing from it, and
+        does not pass it on to its links. Our other pages take the word off
+        their address as they open. When the word is one of these six, this
+        browser tab keeps only that word, until the tab is closed, so an event
+        can say which kind of link opened it; any other word is dropped. For
+        an assistant link to one of those pages, Plausible counts the visit
+        under that name and nothing else from the link. Events for sign-ups, good-day checks, the
+        Year Ahead Score and birthday cards carry only fixed categories, such
+        as where a sign-up form sat, which kind of link opened the tab, or
+        whether a good-day check is the first, the second or a later one on
+        this device. For that last one, this browser keeps a count that stops
+        at three and is never sent. These events carry no email address, star
+        sign, birth date, birth time, birthplace, name or anything you
+        type.{accountSyncV2Enabled ? ' No analytics script runs on your profile page, the sign-in page, or any page that can show a chart saved in your browser or synced to your account, such as the home page, the birth chart, Today, transits and the daily horoscope for your sign.' : ''}
       </p>
       {webAnalyticsEnabled && (
         <p>

@@ -1,0 +1,14 @@
+live registry (fetched this round) native Solana address against the mint in records/onchain.json (ledger read 2026-11-13T09:02Z, earlier session the same day)
+aries GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv same {'origin': '{"sig": "5v7R4CzrqvTzBZSrh7DnAqmDWYJhqe818mK37u1eYeeESgiJCGVGPHW1UNYFZ2qEntWsZwAFVPXF3F8apqXHyuMu", "time": "2024-07-05T17:57:25+00:00", "feePayer": "DUK1VN3Wat'}
+taurus EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp same {'origin': '{"sig": "5HjV4Lrp6BVTSNavioaqGX5tniguedTULyNDtTS8KJ4KVYBSukRqwY7fYeGpvJJBwa8v6xRCRxHLm2nzqvD6CCjp", "time": "2024-07-05T18:05:23+00:00", "feePayer": "DUK1VN3Wat'}
+gemini ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc same {'origin': '{"sig": "58Vo9aqtCrjHrny8awbHpE6ssCpa9XJdDLvkoz2we3me5DR7ypnnNh89o81PxyZTTq4vAAFKKduMtApyMTFLziuk", "time": "2024-07-05T18:00:50+00:00", "feePayer": "DUK1VN3Wat'}
+cancer CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ same {'origin': '{"sig": "2wiST7gGN5WmGNPHhvAyJ7MtHhr91VYcUjFkqcesmRtETHqvfVVzRQoFxNxJ7C972DwM5hrzZD6c3x98XRJiHW2H", "time": "2024-07-05T17:58:48+00:00", "feePayer": "DUK1VN3Wat'}
+leo 8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm same {'origin': '{"sig": "3S3sXU7E8oHbpMijHGQvnR858HgQTGgn3CdVH7rvV7xLkQvsp6htbzY6cqxcCHdxYdp9zVjQRbFyhYDUHpvdfDKp", "time": "2024-07-05T18:01:43+00:00", "feePayer": "DUK1VN3Wat'}
+virgo Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso same {'origin': '{"sig": "4Ei66n3t7AdowzDfmUQfxzwg7BN9CQiCZkVArPWHDvqdQmnLdwnUmtC7ayt8JsCAivVVGH6hBSXKHMMLVxpXCdFF", "time": "2024-07-05T18:06:24+00:00", "feePayer": "DUK1VN3Wat'}
+libra 7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe same {'origin': '{"sig": "5JYYmNkViHtaQZ6hJRpaqarPYK6bt4jQBqvVEjsm92vh2p6ETfiTthsBuffyTpCDhZYn4JCcNFjrz35AkqhokfjF", "time": "2024-07-05T18:02:35+00:00", "feePayer": "DUK1VN3Wat'}
+scorpio J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1 same {'origin': '{"sig": "2679DKhAVdEVCpodh5te1zbwPRQfPefnEnSrf1ygaykm8Qura6B7thTKgYPmAZ2MRYa8oS4Jm5dLK7FcCP6HuvBK", "time": "2024-07-05T18:04:35+00:00", "feePayer": "DUK1VN3Wat'}
+sagittarius 8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3 same {'origin': '{"sig": "4Ei8HNCMqA5ih8W4i18obifAmAJtiC55WaVhoeVCaoJGwyfqwCiZz94RRB9tH53j7QW5EhnnK86w28R4JM7h2dA6", "time": "2024-07-05T18:07:58+00:00", "feePayer": "DUK1VN3Wat'}
+capricorn 3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2 same {'origin': '{"sig": "k1f3QRpJeaDFsgTtrXdzaKBqGSBksXcYFDSwHeMeV7N1rGGeYt4idvVyqFzpXepu8WtCJjA69Y1zkYGzroPH4w6", "time": "2024-07-05T18:38:08+00:00", "feePayer": "DUK1VN3WatY'}
+aquarius C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt same {'origin': '{"sig": "3ntKqfqu4LYkSpqJ1DmLNdZHPNgDkkYjdUmZHH3Ejzk8Np6mA8rnaBT3C33dCHeGZhHm6j9sRpJzgtrtcvCWK9jX", "time": "2024-07-05T17:54:34+00:00", "feePayer": "DUK1VN3Wat'}
+pisces 3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE same {'origin': '{"sig": "3qSMX2ADNTZU9LSV5ZmHijPCvLCwJP6cD9w8iZzo7CKrEDwz8RVQxefUcitAAjDVRfNimkXuizTLhRU41BzneDxh", "time": "2024-07-05T18:37:23+00:00", "feePayer": "DUK1VN3Wat'}
+same for 12 of 12

@@ -204,15 +204,17 @@
       ]
     },
     "archiveContinuity": {
-      "definition": "Count, earliest, latest, and largest day-gap of HTTP-200 Internet Archive captures of zodiacs.org since 2024-01-01 (one per day via collapse), plus the repository’s own continuously versioned archive.",
+      "definition": "HTTP-200 Internet Archive captures of zodiacs.org since 2024-01-01 (one per day via collapse), and which of them are counted as this site: count, earliest, latest, and largest day-gap of the counted captures. Plus the date the public repository’s commit history begins.",
       "sourcesSearched": [
         "Wayback CDX API: https://web.archive.org/cdx/search/cdx?url=zodiacs.org&output=json&fl=timestamp,statuscode&filter=statuscode:200&collapse=timestamp:8&from=20240101",
-        "docs/thesis-evidence/2026-11-10/wayback-cdx.json"
+        "docs/thesis-evidence/2026-11-10/wayback-cdx.json",
+        "Wayback CDX API with content digests, read 2026-11-13T11:21:08Z: https://web.archive.org/cdx/search/cdx?url=zodiacs.org&output=json&fl=timestamp,statuscode,digest,length&filter=statuscode:200&collapse=timestamp:8&from=20240101",
+        "Captures 20260610083004 and 20261011021828, opened 2026-11-13: titles \"Zodiacs · The Twelve.\" and one beginning \"Zodiacs.org\" and continuing \"Free Birth Charts, Sign Guides & Astrology Tools\""
       ],
       "method": "One CDX query; the raw response rows are embedded below; the gap statistic is computed from consecutive capture dates.",
       "capturedAtUtc": "2026-11-10T19:27:15.800Z",
-      "exclusions": "Pre-2024 captures of the domain (predate the registry; the domain had unrelated prior history) and non-200 captures.",
-      "result": "13 captures since 2024-01-01; earliest 20240726, latest 20261011; largest gap 326 days (20250719 → 20260610). The repository’s own version archive is continuous and independently verifiable through its public commit history.",
+      "exclusions": "Non-200 captures and captures before 2024. Also the ten captures dated 2024-07-26 to 2025-07-19: the Archive gives all ten the same content digest (7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ), and this register does not establish what the domain served in 2024 and 2025, so they are not counted as this site. They stay in cdxRows below.",
+      "result": "13 captures of the domain since 2024-01-01. Counted as this site: 3, each with its own digest (20260610, 20260710, 20261011); largest gap 93 days (20260710 → 20261011). Not counted: 10 captures from 20240726 to 20250719 that share one digest. The public repository’s commit history begins 2026-05-27 (github.com/zodiacs-org/site, first commit 6370da54). Reworded 2026-11-13: the earlier text counted all 13 captures as this site’s and described the repository archive as continuous since 2024; the CDX rows are unchanged.",
       "verificationUrls": [
         "https://web.archive.org/web/2024*/zodiacs.org",
         "https://web.archive.org/cdx/search/cdx?url=zodiacs.org&output=json&fl=timestamp,statuscode&filter=statuscode:200&collapse=timestamp:8&from=20240101"

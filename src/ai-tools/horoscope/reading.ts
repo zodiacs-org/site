@@ -5,11 +5,12 @@
  */
 import type { HoroscopeEvidenceReceipt, HoroscopeSign } from '../../lib/horoscope-program-types';
 import type { ShareRef } from '../../lib/share-results';
+import { softenMinor } from '../features/reading-guards.js';
 import { horoscopeShareUrl } from '../share-links.js';
 import type { HoroscopeWindow, WindowReading } from './window';
 
-export const HOROSCOPE_URI = 'ui://zodiacs/horoscopes-v6.html';
-export const LEGACY_HOROSCOPE_URIS = ['ui://zodiacs/horoscopes-v5.html', 'ui://zodiacs/horoscopes-v4.html', 'ui://zodiacs/horoscopes-v3.html', 'ui://zodiacs/horoscopes-v2.html', 'ui://zodiacs/horoscopes-v1.html'] as const;
+export const HOROSCOPE_URI = 'ui://zodiacs/horoscopes-v7.html';
+export const LEGACY_HOROSCOPE_URIS = ['ui://zodiacs/horoscopes-v6.html', 'ui://zodiacs/horoscopes-v5.html', 'ui://zodiacs/horoscopes-v4.html', 'ui://zodiacs/horoscopes-v3.html', 'ui://zodiacs/horoscopes-v2.html', 'ui://zodiacs/horoscopes-v1.html'] as const;
 export const HOROSCOPE_SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'] as const satisfies readonly HoroscopeSign[];
 export const HOROSCOPE_FOCUSES = ['general', 'love', 'career'] as const;
 export const HOROSCOPE_PERIODS = ['day', 'week'] as const;
@@ -69,6 +70,8 @@ export interface HoroscopePanelData {
   weeks: PanelReading[];
   note: string;
   disclosure: string;
+  /** Set on a panel for a birth date under 18, so a sign picked inside it stays softened and gets no love reading. */
+  minor?: true;
 }
 
 export const cap = (value: string) => value[0].toUpperCase() + value.slice(1);
@@ -254,5 +257,38 @@ export function horoscopePanel(
     weeks,
     note: WHY_NOTE,
     disclosure: HOROSCOPE_DISCLOSURE,
+  };
+}
+
+const softenParagraphs = (paragraphs: { heading?: string; text: string }[]) =>
+  paragraphs.map((paragraph) => (paragraph.heading ? { heading: softenMinor(paragraph.heading), text: softenMinor(paragraph.text) } : { text: softenMinor(paragraph.text) }));
+
+/**
+ * An answer for a birth date under 18: the reading's wording goes through softenMinor, so no line reads as
+ * romance. The caller asks for the general reading in place of love (../tools.ts) before this.
+ */
+export function softenMinorAnswer(answer: HoroscopeAnswer): HoroscopeAnswer {
+  if (!answer.reading) return answer;
+  return { ...answer, reading: { title: answer.reading.title, paragraphs: softenParagraphs(answer.reading.paragraphs) } };
+}
+
+/**
+ * The panel for a birth date under 18: it holds no love reading to switch to, and the other readings go through
+ * softenMinor. An emptied love reading shows as the panel's own "no love reading here" line.
+ */
+export function softenMinorPanel(panel: HoroscopePanelData): HoroscopePanelData {
+  const soften = (reading: PanelReading): PanelReading => ({ ...reading, paragraphs: softenParagraphs(reading.paragraphs) });
+  return {
+    ...panel,
+    days: panel.days.map((day) => ({
+      date: day.date,
+      focuses: {
+        general: soften(day.focuses.general),
+        love: { status: 'unavailable', paragraphs: [], facts: [], houses: [], from: day.focuses.love.from, through: day.focuses.love.through, shareUrl: null },
+        career: soften(day.focuses.career),
+      },
+    })),
+    weeks: panel.weeks.map(soften),
+    minor: true,
   };
 }

@@ -1,0 +1,38 @@
+table rows in the page script: 24; END 2028-01-20T13:21:47.878Z
+largest difference between the page's table and src/data/sun-ingresses.json: 6.922 s
+
+window            from (UTC)                span days  'of' printed  highest 'day' printed  day can exceed 'of'
+aquarius     2026-01-20 01:44:34    29.588    30    30  no
+pisces       2026-02-18 15:51:26    29.954    30    30  no
+aries        2026-03-20 14:45:34    30.454    30    31  yes: 'day 31 of 30' from 2026-04-19 14:45 to 2026-04-20 01:39 UTC (10.9 h)
+taurus       2026-04-20 01:39:12    30.957    31    31  no
+gemini       2026-05-21 00:37:22    31.325    31    32  yes: 'day 32 of 31' from 2026-06-21 00:37 to 2026-06-21 08:25 UTC (7.8 h)
+cancer       2026-06-21 08:25:08    31.450    31    32  yes: 'day 32 of 31' from 2026-07-22 08:25 to 2026-07-22 19:13 UTC (10.8 h)
+leo          2026-07-22 19:13:26    31.296    31    32  yes: 'day 32 of 31' from 2026-08-22 19:13 to 2026-08-23 02:19 UTC (7.1 h)
+virgo        2026-08-23 02:19:04    30.907    31    31  no
+libra        2026-09-23 00:05:40    30.398    30    31  yes: 'day 31 of 30' from 2026-10-23 00:05 to 2026-10-23 09:38 UTC (9.5 h)
+scorpio      2026-10-23 09:38:21    29.906    30    30  no
+sagittarius  2026-11-22 07:23:27    29.560    30    30  no
+capricorn    2026-12-21 20:50:14    29.444    29    30  yes: 'day 30 of 29' from 2027-01-19 20:50 to 2027-01-20 07:29 UTC (10.7 h)
+aquarius     2027-01-20 07:29:54    29.586    30    30  no
+pisces       2027-02-18 21:33:36    29.952    30    30  no
+aries        2027-03-20 20:24:41    30.453    30    31  yes: 'day 31 of 30' from 2027-04-19 20:24 to 2027-04-20 07:17 UTC (10.9 h)
+taurus       2027-04-20 07:17:24    30.959    31    31  no
+gemini       2027-05-21 06:18:00    31.328    31    32  yes: 'day 32 of 31' from 2027-06-21 06:18 to 2027-06-21 14:10 UTC (7.9 h)
+cancer       2027-06-21 14:10:41    31.454    31    32  yes: 'day 32 of 31' from 2027-07-22 14:10 to 2027-07-23 01:04 UTC (10.9 h)
+leo          2027-07-23 01:04:31    31.298    31    32  yes: 'day 32 of 31' from 2027-08-23 01:04 to 2027-08-23 08:13 UTC (7.2 h)
+virgo        2027-08-23 08:13:59    30.908    31    31  no
+libra        2027-09-23 06:01:20    30.397    30    31  yes: 'day 31 of 30' from 2027-10-23 06:01 to 2027-10-23 15:32 UTC (9.5 h)
+scorpio      2027-10-23 15:32:42    29.905    30    30  no
+sagittarius  2027-11-22 13:16:14    29.560    30    30  no
+capricorn    2027-12-22 02:42:10    29.444    29    30  yes: 'day 30 of 29' from 2028-01-20 02:42 to 2028-01-20 13:21 UTC (10.7 h)
+
+windows where the script can print a day number above the total: 12 of 24
+breaker render 2026-11-13T09:26:07Z: Scorpio season · day 21 of 30
+this run 2026-11-13T11:18:31Z: Scorpio season · day 22 of 30
+
+NASA JPL Horizons, Sun, geocentric, apparent ecliptic longitude of date (quantity 31), 1-minute steps
+scorpio-2026: page table 2026-10-23T09:38:21.771Z; Horizons crossing of 210 deg 2026-10-23T09:37:57Z; difference -24 s
+sagittarius-2026: page table 2026-11-22T07:23:27.992Z; Horizons crossing of 240 deg 2026-11-22T07:23:21Z; difference -6 s
+gemini-2026: page table 2026-05-21T00:37:22.918Z; Horizons crossing of 60 deg 2026-05-21T00:36:45Z; difference -37 s
+cancer-2026: page table 2026-06-21T08:25:08.400Z; Horizons crossing of 90 deg 2026-06-21T08:24:31Z; difference -37 s
