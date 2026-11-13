@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-11-13T16:38:55.601Z",
+  "capturedAt": "2026-11-13T21:39:27.297Z",
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-11-13",
   "publicationCanonicalSha256": "e3fb0742990f3489d96120f024e390f7e82711c5d364af79d4f7d4de745d4dec",
-  "templateSourceSha256": "b664f88072c56d2a1965be2c9d815f7eb1dd02beedf04abfff87f9932151a085",
+  "templateSourceSha256": "a5b9b41bd01b269b0ffb2d8cb49c017f507c5f0cd3e1b644a57963a614cd57cf",
   "renderPayloadSha256": {
     "daily": "4b605ea425d42c8fb15af9f3b9579ce8a25aa464a1b71a5f9fa98719dfd7de33",
     "dailyPublication": "c9c3bd3e082bbe30102cdb7c3b6f9697066895de5b2770ae4e68c92cb66c8ff4",
-    "dailyPublicationManifest": "b069e377ce853546e058957a567ca87abe653dd4d969cd96c1cdfc180c06591d",
+    "dailyPublicationManifest": "b5eaf755ca4008b3a06dc88916d97b6147bcef15a9ab3356261aff1419529311",
     "horoscopeProgram": "e891cf947a2e65bb3f32a453143b2950d5abf8dcb0c95d010e535cd79770aa49"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-11-13T16:38:18.144Z",
-    "templateSourceSha256": "b664f88072c56d2a1965be2c9d815f7eb1dd02beedf04abfff87f9932151a085",
+    "builtAt": "2026-11-13T21:38:45.891Z",
+    "templateSourceSha256": "a5b9b41bd01b269b0ffb2d8cb49c017f507c5f0cd3e1b644a57963a614cd57cf",
     "dailyDate": "2026-11-13",
     "publicationCanonicalSha256": "e3fb0742990f3489d96120f024e390f7e82711c5d364af79d4f7d4de745d4dec",
     "renderPayloadSha256": {
       "daily": "4b605ea425d42c8fb15af9f3b9579ce8a25aa464a1b71a5f9fa98719dfd7de33",
       "dailyPublication": "c9c3bd3e082bbe30102cdb7c3b6f9697066895de5b2770ae4e68c92cb66c8ff4",
-      "dailyPublicationManifest": "b069e377ce853546e058957a567ca87abe653dd4d969cd96c1cdfc180c06591d",
+      "dailyPublicationManifest": "b5eaf755ca4008b3a06dc88916d97b6147bcef15a9ab3356261aff1419529311",
       "horoscopeProgram": "e891cf947a2e65bb3f32a453143b2950d5abf8dcb0c95d010e535cd79770aa49"
     }
   },
