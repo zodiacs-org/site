@@ -90,6 +90,7 @@ const jsonLd = [
   })),
   {
     '@type': 'FAQPage',
+    ...(locale === 'en' ? {} : { inLanguage: locale === 'pt' ? 'pt-BR' : locale }),
     mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
   },
 ];

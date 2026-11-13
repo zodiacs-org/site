@@ -7,7 +7,7 @@
  * page, where the claims ledger reads translated answers.
  */
 import { homeTrustFaq } from '../../lib/home-trust';
-import type { CatalogLocale } from '../../lib/i18n';
+import { LOCALE_META, type CatalogLocale } from '../../lib/i18n/core';
 
 export type HomeLocale = Exclude<CatalogLocale, 'en'>;
 
@@ -466,9 +466,10 @@ export function localizedHomeFaq(locale: HomeLocale, extra: readonly HomeFaqItem
 }
 
 /** FAQPage structured data for exactly the questions the page shows. */
-export function localizedHomeFaqSchema(faq: readonly HomeFaqItem[]) {
+export function localizedHomeFaqSchema(locale: HomeLocale, faq: readonly HomeFaqItem[]) {
   return {
     '@type': 'FAQPage',
+    inLanguage: LOCALE_META[locale].htmlLang,
     mainEntity: faq.map(({ q, a }) => ({
       '@type': 'Question',
       name: q,

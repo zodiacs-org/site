@@ -7,6 +7,7 @@ import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
 import { formatLongitude } from '../../lib/signs';
 import { formatDate, formatShortDate } from '../../lib/i18n/dates';
+import { SKY_EVENT_LOCATION } from '../../lib/sky-event-schema.mjs';
 
 // The years the committed table covers (sky.json runs to the start of its
 // last year plus one), so the copy names the span the table lists.
@@ -94,6 +95,7 @@ const eventNodes = upcomingWindows.map((window) => {
     startDate: from,
     ...(to ? { endDate: to } : {}),
     eventStatus: 'https://schema.org/EventScheduled',
+    location: SKY_EVENT_LOCATION,
     url: `https://zodiacs.org/mercury-retrograde/#${id}`,
   };
 });
