@@ -1,0 +1,128 @@
+YouGov
+  OK   yougov.html :: One in four Americans say they believe in astrology
+  OK   yougov.html :: (27%)
+  OK   yougov.html :: 90% of Americans select one of them
+  OK   yougov.html :: 3,472 U.S. adults
+  OK   yougov.html :: April 21 - 22, 2022
+  CTX  yougov.html :: When asked if they know what their astrological sign is and offered the 12 signs as options, 90% of Americans select one of them, while 10% say they aren't sure what their sign is. Even though adults under 30 are more likely to say they believe in astrology, people in this age group are also less likely to say they know their astrological sign – 82% say they
+  CTX  yougov.html :: andidate who said they were deeply interested in astrology? Methodology : This Daily Agenda survey was conducted by YouGov using a nationally representative sample of 3,472 U.S. adults interviewed online on April 21 - 22, 2022. The samples were weighted to be representative of the U.S. population, based on gender, age,
+  mentions of crosstab between knowing and believing: [' While tens of millions of Americans are themselves believers in astrology, how open are Americans to voting for a political candidate who is a believer? Most often, people say that knowing that a politician deeply believes in astrology would make no difference to them (40% say this).']
+CoinGecko
+  OK   coingecko.html :: The Average Lifespan of Pump.fun Memecoins Is Less Than a Day
+  OK   coingecko.html :: 68.67%
+  OK   coingecko.html :: 80.37%
+  OK   coingecko.html :: 4.55%
+  OK   coingecko.html :: 18.67
+  OK   coingecko.html :: Updated June 23 2026
+  OK   coingecko.html :: January 14, 2024 to June 18, 2026
+  OK   coingecko.html :: bonding curve trades and not external DEX activity
+  OK   coingecko.html :: 18,675,645
+  OK   coingecko.html :: likely understated
+  CTX  coingecko.html :: ed on Google 7 in 10 Pump.fun Tokens are Dead on Launch Day 68.67% (12.8M) of all tokens launched on Pump.fun since January 2024 recorded their last trade on the same day they were created — never surviving beyond a single calendar day of trading activity. We examined over 18.67M tokens launched on the platform, excluding only tokens that had no trading activity at all since inception. O
+  CTX  coingecko.html :: er, same-day and 1-day deaths account for 14.99M tokens, or 80.37% of all launches. A Steep and Consistent Drop-Off Through 90 Days Beyond day one, the survival curve declines stee
+  CTX  coingecko.html :: , it is worth noting that our 90+ days survival figures are likely understated , as we only track Pump.fun bonding curve trades and not external DEX activity such as Raydium. Tokens launched before PumpSwap that graduated and are still actively trading on Raydium would be incorrectly classified into an earlier bucket. Methodology Token creation data was sourced from tokens_solana.transfe
+  CTX  coingecko.html ::  Than a Day 4.6 | by Loke Choon Khei | Edited by Vera Lim - Updated June 23 2026 Make us preferred o
+Smithsonian
+  OK   smithsonian.html :: August 24, 1930
+  OK   smithsonian.html :: the first real newspaper horoscope column, was born
+  OK   smithsonian.html :: By 1937
+  OK   smithsonian.html :: widely credited
+  OK   smithsonian.html :: wasn't the first of its kind
+  OK   smithsonian.html :: Following the interest the public showed
+Disclosure
+  OK   disclosure.html :: Operator update (2026-08-23)
+  OK   disclosure.html :: The operator attests (2026-08-02)
+  OK   disclosure.html :: not enumerated
+  OK   disclosure.html :: All twelve receipts are dated 5 July 2024
+  OK   disclosure.html :: does not connect wallets, request signatures
+  OK   disclosure.html :: astrofolio.xyz redirects to that page
+  OK   disclosure.html :: does not establish who controls token deployment
+  OK   disclosure.html :: Registry classification only
+  OK   disclosure.html :: treasury
+  MISS disclosure.html :: Wormhole
+  MISS disclosure.html :: fees
+  MISS disclosure.html :: confirmation
+  MISS disclosure.html :: 10 Nov 2026
+  MISS disclosure.html :: 2026-11-10
+  CTX  disclosure.html :: tion remains separately dated 2026-08-02. Economic interest The operator attests (2026-08-02) to holding positions in one or more of the twelve Registry assets, and to receiving no referral, platform-fee, liquidity, or marketplace compensation for any trade reached through the site. Operator attested — not independently verified The holdings attestation is the operator's own statement, dated 2026-08-02 and not independently verified; assets, wallets, amounts, and any lockup, 
+Home / apps / about / fomo / astrofolio
+  OK   home.html :: Free birth charts, moon signs, compatibility, and horoscopes
+  OK   home.html :: Official Zodiac token collection
+  hreflang: ['en', 'es', 'fr', 'it', 'pt-BR', 'ru', 'x-default']
+  OK   apps.html :: Made for ChatGPT and Claude
+  OK   apps.html :: Directory listings are currently in review
+  OK   apps.html :: Directory listing in review
+  CTX  apps.html :: rd together. Explore the cards ↓ Watch the 20-second tour → Made for ChatGPT and Claude. Directory listings are currently in review. A card to keep the conversation going. View the full example ↗ Where to find Zodiacs Connection options → ChatGPT Directory lis
+  OK   about.html :: formed on August 11, 2026
+  OK   about.html :: Zodiacs LLC owns and operates this website
+  OK   about.html :: maintained by automated systems
+  OK   about.html :: without a traditional human editorial staff
+  OK   fomo.html :: no referral deal with fomo and earns nothing when you trade there
+  OK   fomo.html :: Zodiacs.org adds nothing and receives nothing
+  OK   astrofolio.html :: may fall to zero
+  OK   astrofolio.html :: Fomo
+  fomo buy links with ref-like params: 13 ['chainId']
+Locale horoscopes
+   hor-fr.html | title: Contenu en anglais | Zodiacs.org | robots: ['noindex, follow, max-image-preview:large'] | h1: Cette page n’est pas encore traduite.
+   hor-it.html | title: Contenuto in inglese | Zodiacs.org | robots: ['noindex, follow, max-image-preview:large'] | h1: Questa pagina non è ancora tradotta.
+   hor-es.html | title: Horóscopos de hoy, 13 de noviembre de 2026 | Zodiacs.org | robots: ['max-image-preview:large'] | h1: Horóscopos de hoy
+   hor-pt.html | title: Horóscopos de hoje, 13 de novembro de 2026 | Zodiacs.org | robots: ['max-image-preview:large'] | h1: Horóscopos de hoje
+   hor-en.html | title: Daily Horoscopes | November 13, 2026, All 12 Signs | Zodiacs.org | robots: ['max-image-preview:large'] | h1: Daily horoscopes
+Data files
+  distribution generatedAt 2026-08-24T07:41:56.396Z capturedAt 2026-08-03
+   [('aries', 29.75, '2026-08-24T07:38:19.731Z'), ('taurus', 25.88, '2026-08-03T00:00:00.000Z'), ('gemini', 22.53, '2026-08-24T07:39:39.770Z'), ('cancer', 25.99, '2026-08-03T00:00:00.000Z'), ('leo', 27.87, '2026-08-24T07:40:37.985Z'), ('virgo', 27.45, '2026-08-03T00:00:00.000Z'), ('libra', 27.16, '2026-08-03T00:00:00.000Z'), ('scorpio', 25.98, '2026-08-03T00:00:00.000Z'), ('sagittarius', 28.11, '2026-08-03T00:00:00.000Z'), ('capricorn', 31.8, '2026-08-24T07:40:58.147Z'), ('aquarius', 25.8, '2026-08-03T00:00:00.000Z'), ('pisces', 28.96, '2026-08-03T00:00:00.000Z')]
+   min 22.53 max 31.8 median 27.305
+   method note has token accounts sentence: True
+  pulse capturedAt 2026-11-09 | keys ['capturedAt', 'wikipedia', 'trends', 'trendsSigns', 'estimates']
+  pulse estimates {"capturedAt": "2026-06", "by": "Editorial estimates from public cumulative hashtag and search-volume figures", "items": [{"k": "X", "v": "\u2248250K", "unit": "astrology posts / day"}, {"k": "Instagram", "v": "\u224880K", "unit": "sign-tagged posts / day"}, {"k": "TikTok", "v": "\u2248100M", "unit": "zodiac-tag views / day"}, {"k": "Google", "v": "10M+", "unit": "\u201choroscope\u201d searches / mo"}]}
+  pulse wikipedia {"rangeDays": 30, "from": "20261010", "to": "20261108", "twelveAvgDay": 14089, "lastDay": 15153, "series": [{"date": "20261010", "views": 13438}, {"date": "20261011", "views": 13285}, {"date": "20261012", "views": 13337}, {"date": "20261013", "views": 13403}, {"date": "20261014", "views": 13498}, {"
+  pulse trends {"capturedAt": "2026-11-09", "terms": ["horoscope", "dogecoin", "solana", "ethereum"], "averages": [64, 7, 36, 44], "points": [{"t": 1762646400, "v": [71, 10, 47, 65]}, {"t": 1763251200, "v": [70, 11, 51, 79]}, {"t": 1763856000, "v": [72, 11, 49, 70]}, {"t": 1764460800, "v": [80, 9, 49, 72]}, {"t": 1765065600, "v": [79, 8, 39, 57]}, {"t": 1765670400, "v": [78, 8, 37, 50]}, {"t": 1766275200, "v": [
+  registry Zodiacs Official Registry 0.2.0 12 assets; leo ['8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm'] libra ['7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe'] base reps 12
+  archive feed entries 9 ['2025-10-29', '2025-02-17', '2025-02-06', '2025-01-27', '2025-01-19', '2024-12-14', '2024-11-22', '2024-08-29', '2024-01-01']
+Solflare title: LEO Price USD | Live Leo Chart &amp; Market Data | Solflare
+USNO [('Equinox', 3, 20, '14:46'), ('Solstice', 6, 21, '08:24'), ('Equinox', 9, 23, '00:05'), ('Solstice', 12, 21, '20:50')]
+Pew
+  OK   pew.html :: at least once or twice a year (28%)
+  OK   pew.html :: Oct. 21 to 27, 2024
+  MISS pew.html :: Oct. 21-27, 2024
+  CTX  pew.html ::  yearly – roughly twice the share among U.S. adults overall (28%). And LGBT women are more likely than LGBT men to consult astrology at least yearly (63% vs. 40%). In addition, 33% of LGBT adults say they consult tarot cards – making them three times as likely
+Unicode
+  OK   unicode-derivedage.txt :: 261A..266F    ; 1.1
+  CTX  unicode-pubdates.html ::  1998 August 2.1.2 1998 May 2.0.0 1996 July 1.1.5 1995 July 1.1.0 1993 June 1.0.1 1992 June 1.0.0 1991 October Version 1
+Sensor Tower
+  OK   sensortower.html :: nearly $40 million
+  CTX  sensortower.html :: 9 The top 10 astrology and zodiac-based apps of 2019 earned nearly $40 million in the U.S. during 2019, Sensor Tower Store Intelligence data reveals. Mobile users in the United Sta
+Wikipedia Zodiac
+  revision 1383120905 2026-11-01T02:25:28Z
+   OK   end of the fifth century BC :: _babylonian-menogies_langdon.pdf  | access-date=2024-01-15 }}</ref>  Around the end of the fifth century BC, [[Babylonia]]n astronomers divided the ecliptic into 12 equal "signs", by analogy to 12 sch
+   OK   409 and 398 BC :: rding to calculations by modern astrophysics, the zodiac was introduced between 409 and 398 BC, during [[Achaemenid Empire|Persian rule]],<ref>{{cite book  | last=Ossendrijver  | first=Mathieu  | date
+   OK   401 BC :: rijver.pdf  | url-status=live  }}</ref> and probably within a very few years of 401 BC.<ref>{{Cite journal | last=Britton | first=John P. | date=2010 | title=Studies in Babylonian lunar theory: part I
+   OK   Dendera zodiac ::  II]], and characterize every Egyptian astrological monument. Both the famous [[Dendera zodiac|zodiacs of Dendera]], dated 50 BC, display their symbols, identified by [[Karl Richard Lepsius]].<ref>{{E
+   MISS c. 50 BC :: 
+npm
+   {"downloads":593,"start":"2026-10-11","end":"2026-11-09","package":"@zodiacs/sdk"} {"downloads":564,"start":"2026-10-13","end":"2026-11-11","package":"@zodiacs/sdk"}
+  created 2026-06-05T12:29:43.261Z versions {'1.0.0-rc.1': '2026-06-05T12:29:43.573Z', '1.0.0': '2026-06-05T18:36:36.392Z', '1.0.1': '2026-06-07T09:15:36.903Z'} maintainers [{'name': 'zodiacs', 'email': 'admin@zodiacs.org'}]
+Wayback
+  rows 13
+    ['20240726200056', '200', '7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ', '536']
+    ['20240803063054', '200', '7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ', '535']
+    ['20240804151146', '200', '7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ', '596']
+    ['20250117023345', '200', '7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ', '542']
+    ['20250425102553', '200', '7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ', '279']
+    ['20250427022514', '200', '7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ', '538']
+    ['20250513055006', '200', '7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ', '539']
+    ['20250615140324', '200', '7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ', '538']
+    ['20250713004034', '200', '7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ', '540']
+    ['20250719223440', '200', '7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ', '287']
+    ['20260610083004', '200', 'RO4LYAVSTCEOAKLUKNIWQ4ABVHBFHRP5', '16351']
+    ['20260710084116', '200', 'UGAJDNUCOM4ERLOFE7OABFITZQAG6SCX', '26463']
+    ['20261011021828', '200', 'IWRNAGWLADKF354XFSTYKKKXXU76QU4Z', '66063']
+  thesis first [['20260713122037', '200', 'ECEMQLLCWFUFEWRKT27EXFJUN4ROVOP4', '35712']]
+Posts
+   tweet-portnoy.json 2025-02-17T16:42:56.000Z @stoolpresidente :: Anybody wanna buy some fake Libra? Warning. This is a meme coin.  I bought it by accident.  It will be volatile.   It will eventually go to zero.  It may rip.   It may tank. Don’t put on more than you can lose!!!  It’s a collectible   7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe https://t.co/DGugLNBz74 | quoted: 
+   tweet-portnoy3.json 2025-02-17T17:54:53.000Z @stoolpresidente :: Or I’m a huge fan of astrology and have always thought our fate was written in the stars.   Feels good to be on the right side of history with this one. | quoted: Did portnoy really ape the wrong libra coin while trying to trade the Milei retweet 😂  Bro pumped the astrofolio libra https://t.co/yUnzaXQUWW
+   tweet-wanton.json 2024-07-14T16:10:51.000Z @wantonwallet :: Bubblemaps is FUD btw. The "97% cluster" is literally false. Bubblemaps does not recognize Raydium Vault Authority #2 by default. Should be very obvious if you know how to use the Solana blockchain. Learn how to actually use Bubblemaps before fudding. https://t.co/rzEY3kD3wF | quoted: 
+   tweet-friggin1.json 2024-07-06T15:30:07.000Z @0xfriggin :: Astrofolio update:   Coins are up about 2x.   $CANCER has emerged as the bluechip seemingly bc it’s cancer, we’re retarded, and the logo is a sideways 69. https://t.co/PN4cdRbRgz | quoted: Dropping this astrofolio in case we bottomed and this becomes a sendooor.   If it sends this is totally my type of meta with plenty of game theory as to which b
+   tweet-friggin2.json 2024-07-08T16:34:06.000Z @0xfriggin :: Astrofolio update:  It’s been quite interesting watching these race back and forth.   Current top mcap signs are:  1) $CANCER - $444k 2) $LEO - $265k  3) $GEMINI - $194k   The rest trade from 160k down to $100k, $88k if you count $ZODIAC   Volatility has been pretty heavy https://t.co/qx4SILmSCI | quoted: Astrofolio update:   Coins are up 3-6x, here are a couple thoughts:  Trading is already astrology for men.   $GEMINI might be the second after $CANCER bc trump 
+  fx views 3140977 created Mon Feb 17 16:42:56 +0000 2025 likes 2792
+Wikimedia Virgo [('20260320', 1095), ('20260321', 1177), ('20260322', 1775), ('20260323', 22543), ('20260324', 5626), ('20260325', 1675)]

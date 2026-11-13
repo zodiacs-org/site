@@ -741,7 +741,7 @@ export const fr: HoroscopeLocaleModule = {
     otherSigns: 'Les autres signes',
     method: 'Les maisons sont comptées depuis ton signe solaire (maisons solaires en signes entiers). Les heures sont en UTC.',
     confidence: (value) => `Confiance de lecture ${value} %`,
-    confidenceNote: 'Le chiffre dit à quel point les données de la lecture sont précises (ici, le signe solaire seul), pas la probabilité que quelque chose arrive.',
+    confidenceNote: 'Le chiffre dit à quel point les données de la lecture sont spécifiques (ici, le signe solaire seul), pas la probabilité que quelque chose arrive.',
     faq: (name, surface) => [
       {
         q: `D’où vient l’horoscope ${of(name)} ?`,
