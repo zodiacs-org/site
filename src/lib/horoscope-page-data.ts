@@ -6,7 +6,7 @@ import type {
   HoroscopeSurface,
 } from './horoscope-program';
 import { signBySlug } from './signs';
-import { exactInstant } from './nasa-instants';
+import { eventsOnUtcDay, exactInstant } from './nasa-instants';
 
 export type HoroscopePageSurface = 'today' | 'tomorrow' | 'weekly' | 'monthly' | 'love' | 'career' | 'year' | 'year2026';
 
@@ -166,7 +166,12 @@ function withNasaInstant(receipt: HoroscopeEvidenceReceipt): HoroscopeEvidenceRe
   return { ...receipt, at, label: receipt.label.replace(RECEIPT_WHEN, ` on ${date} at ${utcClock(at)} UTC`) };
 }
 
-function evidenceMap(program: HoroscopeProgram): Map<string, HoroscopeEvidenceReceipt> {
+/**
+ * The program's receipts as the pages cite them: dated planet events at
+ * NASA's instant (withNasaInstant). Each id still names the committed
+ * engine instant.
+ */
+export function evidenceMap(program: HoroscopeProgram): Map<string, HoroscopeEvidenceReceipt> {
   return new Map(program.evidence.map((receipt) => [receipt.id, withNasaInstant(receipt)]));
 }
 
@@ -233,6 +238,29 @@ const SKY_ROWS_MAX = 4;
 
 function utcShortDate(at: string): string {
   return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(at));
+}
+
+/**
+ * The event part of the today page's "Also in this sky" line: every event
+ * of the edition's UTC day (YYYY-MM-DD), at the instant the page prints
+ * (eventsOnUtcDay, so an event NASA moves across midnight is on its NASA
+ * day), less those the sky rows already show. `shownAt` holds the rows'
+ * instants, which are NASA's for planet events too.
+ */
+export function alsoInSkyEvents(
+  catalogs: Parameters<typeof eventsOnUtcDay>[0],
+  date: string,
+  shownAt: readonly string[],
+): string[] {
+  return eventsOnUtcDay(catalogs, date)
+    .filter((event) => !shownAt.includes(event.at))
+    .map((event) => {
+      const at = `${utcClock(event.at)} UTC`;
+      if (event.kind === 'aspect') return `${event.a} ${event.type} ${event.b}, exact at ${at}`;
+      if (event.kind === 'station') return `${event.planet} stations ${event.type} at ${at}`;
+      if (event.kind === 'ingress') return `${event.planet} enters ${cap(event.sign ?? '')} at ${at}`;
+      return `${cap(event.type ?? '')} moon in ${cap(event.sign ?? '')} at ${at}`;
+    });
 }
 
 function utcClock(at: string): string {
