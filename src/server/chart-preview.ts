@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { h } from 'preact';
 import {
@@ -148,13 +149,16 @@ export async function handleChartLinkRequest(request: Request): Promise<Response
   const description = model.placements.some((placement) => placement.label === 'Rising')
     ? 'Sun, Moon and Rising positions, to the whole degree.'
     : 'Reference Sun and Moon positions, to the whole degree.';
-  const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><meta property="og:title" content="A shared birth chart"><meta property="og:description" content="${description}"><meta property="og:type" content="website"><meta property="og:image" content="${escapedImage}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${escapedImage}"><title>A shared birth chart</title></head><body><p><a href="${escapedReceiver}">Open the shared chart</a></p><script nonce="chart-preview">${redirectScript}</script><noscript><meta http-equiv="refresh" content="0;url=${escapedReceiver}"></noscript></body></html>`;
+  const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><meta property="og:title" content="A shared birth chart"><meta property="og:description" content="${description}"><meta property="og:type" content="website"><meta property="og:image" content="${escapedImage}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${escapedImage}"><title>A shared birth chart</title></head><body><p><a href="${escapedReceiver}">Open the shared chart</a></p><script>${redirectScript}</script><noscript><meta http-equiv="refresh" content="0;url=${escapedReceiver}"></noscript></body></html>`;
+  // The policy allows only this response's one inline script, by the hash of
+  // its exact text: a script injected anywhere else in the page does not run.
+  const scriptHash = createHash('sha256').update(redirectScript, 'utf8').digest('base64');
   return new Response(html, {
     status: 200,
     headers: {
       ...PRIVACY_HEADERS,
       'Content-Type': 'text/html; charset=utf-8',
-      'Content-Security-Policy': "default-src 'none'; img-src 'self'; script-src 'nonce-chart-preview'; style-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'",
+      'Content-Security-Policy': `default-src 'none'; img-src 'self'; script-src 'sha256-${scriptHash}'; style-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'`,
     },
   });
 }

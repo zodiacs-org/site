@@ -70,8 +70,12 @@ const noAnglesToken = encodePositionsLink({
 const PREVIEW_QUERY = 'sun=0&moon=29&rising=359&houses=whole';
 const PREVIEW_IMAGE = '/api/og/chart-image?sun=0&amp;moon=29&amp;rising=359&amp;houses=whole';
 
+function inlineScripts(html: string): string[] {
+  return [...html.matchAll(/<script\b[^>]*>([^<]*)<\/script>/gu)].map((match) => match[1]);
+}
+
 function redirectTarget(html: string, hash: string): string {
-  const script = /<script nonce="chart-preview">([^<]*)<\/script>/u.exec(html)?.[1] ?? '';
+  const script = inlineScripts(html)[0] ?? '';
   let target = '';
   new Function('location', script)({ hash, replace: (url: string) => { target = url; } });
   return target;
@@ -124,6 +128,27 @@ describe('chart preview functions', () => {
     expect(html).toContain(PREVIEW_IMAGE);
     expect(html).toContain('Sun, Moon and Rising positions, to the whole degree.');
     expect(html).not.toMatch(/registry|astrofolio|terminal|wallet|birth date:\s*\d/i);
+  });
+
+  it('allows only the page\'s own redirect script, by its hash, never by a fixed nonce', async () => {
+    const policies: string[] = [];
+    for (const path of [`?${PREVIEW_QUERY}`, `?p=${encodeURIComponent(token)}`]) {
+      const response = await linkHandler(new Request(`https://zodiacs.org/api/og/chart${path}`));
+      const html = await response.text();
+      const policy = response.headers.get('content-security-policy') ?? '';
+      const scripts = inlineScripts(html);
+      expect(scripts).toHaveLength(1);
+      expect(html).not.toMatch(/<script\b[^>]*\bnonce=/iu);
+      expect(policy).not.toMatch(/'nonce-|'unsafe-inline'|'unsafe-eval'|'strict-dynamic'/u);
+      const scriptSrc = /(?:^|;)\s*script-src ([^;]*)/u.exec(policy)?.[1]?.trim();
+      const digest = createHash('sha256').update(scripts[0], 'utf8').digest('base64');
+      expect(scriptSrc).toBe(`'sha256-${digest}'`);
+      expect(policy).toContain("default-src 'none'");
+      policies.push(scriptSrc!);
+    }
+    // The two links run different scripts, so a policy that did not follow the
+    // script it was served with would allow one of them wrongly.
+    expect(new Set(policies).size).toBe(2);
   });
 
   it('keeps the full code in the fragment and sends the preview only whole-degree Sun, Moon and Rising', async () => {
