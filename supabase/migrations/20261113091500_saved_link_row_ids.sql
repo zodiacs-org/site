@@ -14,8 +14,10 @@
 --      stored (account, kind, title, worked-out result and the link apart from its
 --      id) instead of by its link. Lock order is the one every saved_pages insert
 --      uses since 20261113090000_account_sync_v2_retention.sql: the account owner
---      lock (account_v2_terminal_gate) first, then the account's saved pages lock
---      (saved_pages_limit);
+--      lock (account_v2_terminal_gate) first, taken before either path reads,
+--      deletes or inserts a row (as that migration's own version of the function
+--      does, so a site row is never deleted before it), then the account's saved
+--      pages lock (saved_pages_limit);
 --   2. rewrites the old digest links, and only those: a stored href whose `saved=`
 --      value is exactly 16 lowercase hex digits gets the row's own id in its place,
 --      and where the stored record's own copy of the link (detail's href) carries
@@ -65,6 +67,13 @@ begin
   end if;
   if operation = 'oauth' then return to_jsonb(true); end if;
   owner := (input->>'user')::uuid;
+  -- The account owner lock (the one account_v2_terminal_gate takes in every
+  -- saved_pages insert, and deletion prepare takes before it erases saved_pages)
+  -- comes first, before either path below reads, deletes or inserts a row. Taken
+  -- later, the site row replacement would hold the row it deleted while waiting
+  -- on this lock, and deletion prepare would hold the lock while waiting on that
+  -- row: a deadlock.
+  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(owner::text, 7312025));
 
   -- A saved= link: the row is stored under the random id the link carries, and
   -- nothing in the link is worked out from what was saved.
@@ -76,11 +85,10 @@ begin
     -- The same item saved again is one row, left exactly as it was: the same kind,
     -- title and worked-out result, and the same link apart from its id. The
     -- account's saved pages lock (the one saved_pages' limit trigger takes) keeps
-    -- two simultaneous repeats to one row. The account owner lock comes first, as
-    -- in every saved_pages insert (account_v2_terminal_gate, then
+    -- two simultaneous repeats to one row. It comes after the owner lock taken
+    -- above, as in every saved_pages insert (account_v2_terminal_gate, then
     -- saved_pages_limit), so this save and another write for the same account
     -- never wait on each other in opposite orders.
-    perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(owner::text, 7312025));
     perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended('saved_pages:' || owner::text, 0));
     select * into saved from public.saved_pages
       where user_id = owner and source = 'assistant' and kind = input->>'kind' and title = input->>'title'
