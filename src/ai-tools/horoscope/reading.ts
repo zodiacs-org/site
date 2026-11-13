@@ -9,8 +9,8 @@ import { softenMinor } from '../features/reading-guards.js';
 import { horoscopeShareUrl } from '../share-links.js';
 import type { HoroscopeWindow, WindowReading } from './window';
 
-export const HOROSCOPE_URI = 'ui://zodiacs/horoscopes-v6.html';
-export const LEGACY_HOROSCOPE_URIS = ['ui://zodiacs/horoscopes-v5.html', 'ui://zodiacs/horoscopes-v4.html', 'ui://zodiacs/horoscopes-v3.html', 'ui://zodiacs/horoscopes-v2.html', 'ui://zodiacs/horoscopes-v1.html'] as const;
+export const HOROSCOPE_URI = 'ui://zodiacs/horoscopes-v7.html';
+export const LEGACY_HOROSCOPE_URIS = ['ui://zodiacs/horoscopes-v6.html', 'ui://zodiacs/horoscopes-v5.html', 'ui://zodiacs/horoscopes-v4.html', 'ui://zodiacs/horoscopes-v3.html', 'ui://zodiacs/horoscopes-v2.html', 'ui://zodiacs/horoscopes-v1.html'] as const;
 export const HOROSCOPE_SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'] as const satisfies readonly HoroscopeSign[];
 export const HOROSCOPE_FOCUSES = ['general', 'love', 'career'] as const;
 export const HOROSCOPE_PERIODS = ['day', 'week'] as const;
@@ -70,6 +70,8 @@ export interface HoroscopePanelData {
   weeks: PanelReading[];
   note: string;
   disclosure: string;
+  /** Set on a panel for a birth date under 18, so a sign picked inside it stays softened and gets no love reading. */
+  minor?: true;
 }
 
 export const cap = (value: string) => value[0].toUpperCase() + value.slice(1);
@@ -287,5 +289,6 @@ export function softenMinorPanel(panel: HoroscopePanelData): HoroscopePanelData 
       },
     })),
     weeks: panel.weeks.map(soften),
+    minor: true,
   };
 }

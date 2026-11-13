@@ -72,6 +72,8 @@ describe('a love horoscope and a birth date under 18', () => {
     expect(data.message).toBeUndefined();
     expect(JSON.stringify(data.reading)).not.toMatch(ROMANCE);
     expect(context.horoscopePanel!.days.every(day => day.focuses.love.status === 'unavailable')).toBe(true);
+    // Marked, so a sign picked inside the panel (which carries no birth date) stays softened (horoscope/app.tsx).
+    expect(context.horoscopePanel!.minor).toBe(true);
   });
   it('gives the love reading on the 18th birthday, to an adult, and with no birth date', async () => {
     for (const input of [{ birthDate: yearsAgo(18) }, { birthDate: yearsAgo(40) }, {}]) {
@@ -82,6 +84,7 @@ describe('a love horoscope and a birth date under 18', () => {
       expect(data.message).toBeUndefined();
       expect(context.horoscopePanel!.requested.focus).toBe('love');
       expect(context.horoscopePanel!.days.find(day => day.date === centre)!.focuses.love.status).toBe('available');
+      expect(context.horoscopePanel!.minor).toBeUndefined();
     }
   });
   it('keeps 29 February as 29 February: born on 1 March, still under 18 that day', async () => {
