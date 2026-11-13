@@ -6,6 +6,9 @@ import { signBySlug } from '../../../lib/signs';
 import { formatDate, formatTime } from '../../../lib/i18n/dates';
 import { publishedEventById } from '../../../lib/events/site-publication';
 import { isInvisiblePenumbral, lunarTotalityMinutes, penumbralMagnitude } from '../../../lib/nasa-lunar-eclipses';
+import { worldTimesSentence } from '../../../world-times/world-times';
+import { ECLIPSES_2027_UPDATED as UPDATED, updatedIso, updatedLabel } from '../../../world-times/updated';
+import WorldTimesTable from '../../../world-times/WorldTimesTable.astro';
 
 // The 2027 eclipses, from the same committed data the hub renders — receipts,
 // no client ephemeris. A year page so a search for the year lands on the
@@ -75,7 +78,33 @@ const fmtTime = (d: Date) =>
   formatTime('en', d, { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
 const fmtMonthDay = (d: Date) => formatDate('en', d, { month: 'long', day: 'numeric', timeZone: 'UTC' });
 
-const description = `Every solar and lunar eclipse of 2027 with the exact peak in universal time, the eclipse type, and the zodiac sign it falls in, plus a calendar file for the year.`;
+const listJoin = (items: string[]) => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+const numberWord = (n: number) => ['no', 'one', 'two', 'three', 'four', 'five'][n] ?? String(n);
+const fmtMonth = (d: Date) => formatDate('en', d, { month: 'long', timeZone: 'UTC' });
+const kindLabel = (e: { kind: string; type: string }) => `${e.kind === 'annular' ? 'annular' : e.kind} ${e.type}`;
+
+// Eclipse seasons: eclipses less than 40 days apart belong to one season.
+const seasons: (typeof eclipses)[] = [];
+for (const e of eclipses) {
+  const current = seasons.at(-1);
+  if (current && e.at.getTime() - current[current.length - 1].at.getTime() < 40 * 86_400_000) current.push(e);
+  else seasons.push([e]);
+}
+const seasonLine = (season: typeof eclipses) => {
+  const [a, z] = [season[0].at, season[season.length - 1].at];
+  const months = fmtMonth(a) === fmtMonth(z) ? fmtMonth(a) : `${fmtMonth(a)} to ${fmtMonth(z)}`;
+  return `${months} (${listJoin(season.map((e) => `the ${kindLabel(e)} eclipse of ${fmtMonthDay(e.at)}`))})`;
+};
+
+// The first eclipse, and the first total eclipse, after this year.
+const later = (eclipseData.eclipses as EclipseEntry[]).filter((e) => Number(e.peak.slice(0, 4)) > YEAR);
+const nextAny = later[0];
+const nextTotal = later.find((e) => e.kind === 'total');
+if (!nextAny || !nextTotal) throw new Error(`No eclipse after ${YEAR} in eclipses.json`);
+const sentenceFor = (e: EclipseEntry) => `the ${kindLabel(e)} eclipse of ${fmtMonthDay(new Date(e.peak))}, ${e.peak.slice(0, 4)}, in ${signBySlug(e.sign).name}`;
+const totalSolar = eclipses.find((e) => e.type === 'solar' && e.kind === 'total');
+
+const description = `Every solar and lunar eclipse of 2027 with the exact peak in UTC, New York, London, Kolkata and Sydney, the eclipse type, the zodiac sign it falls in, and a calendar file.`;
 
 const faq = [
   {
@@ -84,11 +113,23 @@ const faq = [
   },
   {
     q: 'Which sign does an eclipse belong to?',
-    a: 'The sign holding the Sun at a solar eclipse, or the Moon at a lunar one, at the instant of the peak. Eclipses come in pairs about two weeks apart in opposite signs, so each season marks an axis of your chart rather than one house.',
+    a: 'The sign holding the Sun at a solar eclipse, or the Moon at a lunar one, at the instant of the peak. Eclipses come two or three to a season, about two weeks apart in opposite signs, so each season marks an axis of your chart rather than one house.',
   },
   {
     q: 'Can I see these from where I live?',
     a: `A lunar eclipse is visible from the whole night side of Earth at its peak time; a solar eclipse only along a narrow track, so most people see a partial or nothing. The linked eclipse pages describe the track for each one.${unseen.map((e) => ` The penumbral eclipse on ${fmtMonthDay(e.at)} is the exception: NASA gives it a penumbral magnitude of ${penumbralMagnitude(e.peak)}, so slight that no eye or camera will see it.`).join('')}`,
+  },
+  {
+    q: 'What time is each eclipse where I live?',
+    a: `The peak is one instant for the whole planet; only the clock reading changes.${totalSolar ? ` The total solar eclipse peaks at ${worldTimesSentence(totalSolar.at)}.` : ''} The local times table gives every ${YEAR} peak on those five clocks, daylight saving included. Whether you see an eclipse at that minute depends on where you stand, not on your clock.`,
+  },
+  {
+    q: `When are the eclipse seasons in ${YEAR}?`,
+    a: `${seasons.length === 1 ? 'Once' : seasons.length === 2 ? 'Twice' : `${numberWord(seasons.length).replace(/^./u, (c) => c.toUpperCase())} times`}: ${listJoin(seasons.map(seasonLine))}. A season is the stretch of a few weeks when the Sun is near one of the Moon's nodes, so a new or full Moon falls close enough to the node to eclipse; the eclipses inside one season arrive about two weeks apart.`,
+  },
+  {
+    q: `When is the next eclipse after ${YEAR}?`,
+    a: `The first of ${nextAny.peak.slice(0, 4)} is ${sentenceFor(nextAny)}, peaking at ${worldTimesSentence(new Date(nextAny.peak))}.${nextTotal === nextAny ? '' : ` The next total eclipse is ${sentenceFor(nextTotal)}.`}`,
   },
 ];
 
@@ -98,6 +139,7 @@ const jsonLd = [
     name: `Eclipses ${YEAR}`,
     url: `https://zodiacs.org/eclipses/${YEAR}/`,
     description,
+    dateModified: updatedIso(UPDATED),
     isPartOf: { '@type': 'WebPage', url: 'https://zodiacs.org/eclipses/' },
   },
   {
@@ -112,7 +154,7 @@ const jsonLd = [
 ---
 <Base
   title="Eclipses 2027: Every Solar and Lunar Eclipse, Exact | Zodiacs.org"
-  description="Every solar and lunar eclipse of 2027 with the exact peak in universal time, the eclipse type, and the zodiac sign it falls in, plus a calendar file for the year."
+  description="Every solar and lunar eclipse of 2027 with the exact peak in UTC, New York, London, Kolkata and Sydney, the eclipse type, the zodiac sign it falls in, and a calendar file."
   path={`/eclipses/${YEAR}/`}
   image="/assets/og/v2/tool/eclipses.png"
   imageAlt="Eclipses 2027, Zodiacs.org"
@@ -125,9 +167,10 @@ const jsonLd = [
       <h1 class="display">The eclipses of {YEAR}.</h1>
       <p>
         {solar.length} solar and {lunar.length} lunar, each at its exact peak in universal time, with the{' '}
-        <a href="/learn/glossary/#zodiac-sign">sign</a> it lands in. Eclipse seasons arrive twice a year, and each pairs a
-        solar with a lunar eclipse about two weeks apart.
+        <a href="/learn/glossary/#zodiac-sign">sign</a> it lands in. Eclipse seasons arrive about twice a year, and each holds
+        two or three eclipses about two weeks apart.
       </p>
+      <p class="year-page__updated">Updated <time datetime={UPDATED}>{updatedLabel(UPDATED)}</time></p>
     </div>
 
     <div class="rx-now shell tinted reveal" style="--sign:var(--sign-leo)">
@@ -170,6 +213,25 @@ const jsonLd = [
     </div>
   </section>
 
+  <section class="section--tight container container--narrow" id="local-times">
+    <div class="section-head reveal">
+      <h2>Eclipse peaks in five time zones</h2>
+      <p>The same peaks on five clocks. Where the date differs from the UTC date, the table shows it.</p>
+    </div>
+    <div class="reveal">
+      <WorldTimesTable
+        rows={eclipses.map((e) => ({ label: `${e.label} eclipse in ${e.sign.name}`, at: e.at, past: e.past }))}
+        eventLabel="Eclipse"
+        caption={`The ${YEAR} eclipse peaks in UTC, New York, London, Kolkata and Sydney`}
+      />
+    </div>
+    <p class="year-page__check reveal">
+      Peak times and signs are calculated with Astronomy Engine, and the eclipses are checked against NASA's
+      <em>Five Millennium Canon</em> of eclipses by Fred Espenak and Jean Meeus.
+      <a href="/methodology/#event-times">How we check event times</a>
+    </p>
+  </section>
+
   <section class="section--tight container container--narrow">
     <div class="section-head reveal"><h2>Questions</h2></div>
     <div class="prose reveal">
@@ -189,6 +251,9 @@ const jsonLd = [
 
 <style>
   .tool-hero .kicker { display: block; margin-bottom: 10px; }
+  .year-page__updated { margin: 10px 0 0; color: var(--muted); font-size: var(--text-sm); }
+  .year-page__check { margin: 14px 0 0; max-width: 64ch; color: var(--muted); font-size: var(--text-sm); }
+  .year-page__check a { color: var(--text-2); }
   .year-page__links { margin-top: 18px; color: var(--muted); font-size: var(--text-sm); }
   .year-page__links a { color: var(--text-2); }
   .faq-item { border-top: 1px solid var(--hair-1); }

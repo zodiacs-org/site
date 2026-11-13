@@ -28,6 +28,10 @@ import { dailyEditions } from '../lib/return-visits/chart-of-day';
 import { SIGNS } from '../lib/signs';
 import birthdayFactsData from '../data/birthdays.json';
 import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged } from '../lib/birthday-degrees';
+import {
+  BIRTHDAY_DAY_UPDATED, BIRTHDAY_HUB_UPDATED, ECLIPSES_2027_UPDATED, FULL_MOON_CALENDAR_2027_UPDATED,
+  MERCURY_RETROGRADE_2027_UPDATED, updatedIso,
+} from '../world-times/updated';
 import { PEOPLE_DEGREES_MODIFIED_AT, peopleDegreesChanged } from '../lib/people-degrees';
 import daily from '../data/daily.json';
 import developerGuides from '../data/developer-guides.json';
@@ -683,6 +687,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The English privacy page says what share pages do with the arrival word and
   // where assistant visits are counted, 13 November, last so this wins.
   ['/privacy/', '2026-11-13'] as const,
+  // Times in five zones, longer question lists and the accuracy line (ZOD-180). Each page prints the
+  // same constant as its "Updated" date and dateModified; last, so these win.
+  ['/mercury-retrograde/2027/', MERCURY_RETROGRADE_2027_UPDATED] as const,
+  ['/full-moon-calendar/2027/', FULL_MOON_CALENDAR_2027_UPDATED] as const,
+  ['/eclipses/2027/', ECLIPSES_2027_UPDATED] as const,
+  ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -919,6 +929,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
         ...(peopleForBirthday(`/birthday/${b.id}/`).length > 0 ? [BIRTHDAY_FAMOUS_LINE_MODIFIED_AT] : []),
         // The page began printing its degrees from birthdays-precise.json.
         ...(birthdayDegreesChanged(b.id) ? [BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT] : []),
+        // The season question, the cusp crossing in five time zones and the Updated line.
+        updatedIso(BIRTHDAY_DAY_UPDATED),
       )),
     })),
     ...almanac.map((entry) => ({
