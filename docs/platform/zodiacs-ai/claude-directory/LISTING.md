@@ -1,5 +1,95 @@
 # Claude directory listing
 
+## Where the listing stands, 13 November 2026
+
+This section is the current state. Everything under it is a dated record,
+newest first, and is left as it was written. Nothing in the portal was
+opened, saved, synced or sent to write this section; it is drawn from the
+records below, from [RESYNC-0.6.0.md](RESYNC-0.6.0.md) and from the code on
+`main`.
+
+**The live server.** `https://zodiacs.org/mcp` reports version 0.6.7
+(`AI_VERSION` in `src/ai-tools/contracts.ts`; checked with `get_capabilities`
+on 13 November, after PR #971 went live) and offers 19 read-only tools
+with no sign-in: the thirteen first reviewed, then `get_natal_chart`,
+`get_horoscope_period`, `get_chinese_zodiac`, `get_personal_transits`,
+`explain_astrology` and `find_birthplace`. Tools added to the source since
+(`search_sky_events`, `get_year_score`, `get_solar_return`,
+`get_numerology`) sit behind their
+own switches and are not part of the 19.
+
+**What 0.6.7 changed.** Every one of the 19 tools has a new description
+that says only what the tool does, what it fits and its limits, and the
+server's instructions were reworded so they state facts about Zodiacs rather than orders to the assistant, and say truly what a link can hold
+(PR #971, approved by the owner on 11 and 13 November). No name, title,
+input, annotation or tool count changed. `get_horoscope`'s panel moved to a
+new address, `ui://zodiacs/horoscopes-v7.html`, and the earlier addresses are
+still served. The portal's copy of the tools was last read on 8 November, so
+it still holds the 0.6.6 descriptions until the next sync, which is the
+owner's decision.
+
+**What it does and refuses today.**
+
+- Under 13: any call that carries a birth date less than 13 years ago, or one
+  still to come, is refused before anything is worked out, and so is a
+  birthday card for a day in those years (`UNDER_13_REFUSAL`, PR #915,
+  8 November). `get_occasion_sky` has offered no baby or coming-of-age
+  occasion since 0.6.5.
+- Under 18: no romance, attraction or sexual framing. `get_compatibility`
+  gives no reading when either birth date is under 18 and points to a
+  friendship reading of the two Sun signs. Asked for a love reading with a
+  birth date under 18, `get_horoscope` gives the general reading with a note
+  saying why (PR #970, 13 November), and its panel stays that way when
+  another sign is picked in it (PR #971).
+- Birth details are never stored or logged. Links never carry a birth year, a
+  birth time, a birthplace or the names you give; a birthday link carries
+  only the month and day. A card link for a wedding or another day that is
+  not a birthday carries that day's time, time zone and coordinates rounded
+  to two decimals.
+- No betting tips, sports picks, investment timing, election forecasts or
+  health predictions, and no guarantee of an outcome.
+- Forecasts are stated plainly, each with a label written "Reading
+  confidence NN%": how specific the details were, never the odds that an
+  event happens.
+
+**What the reviewers were last told, by channel.**
+
+| Channel | Last recorded contact | Version named |
+| --- | --- | --- |
+| Reviewer instructions and additional notes in the portal | 8 November, saved with Dias's yes | 0.6.6, with 0.6.5's change to `get_occasion_sky` |
+| The portal's copy of the tools | 8 November, re-read on that save | 19 tools, with a portal note that some items were left out to fit its size limits |
+| Email thread, ticket #145701231 | 7 November, a short note | 0.6.5 |
+
+So a review that reads the email thread alone sees 0.6.5 as the newest
+version, and one that reads the portal sees 0.6.6. Both are true of their
+channel. Neither names 0.6.7 yet. No email has named 0.6.6, because 0.6.6 changed only the picture and
+the reported version ([RESYNC-0.6.0.md](RESYNC-0.6.0.md), 7 November), and no
+email has described the under-13 refusal of 8 November.
+
+**Statements sent earlier that no longer hold.**
+
+- The first note of 15 October said Zodiacs never chooses or ranks dates,
+  scores relationships or predicts outcomes. It was withdrawn the same day.
+- The correction of 15 October, 18:01 UTC, said share links carry first
+  names. Since 0.6.1 they carry none, and no message has withdrawn the older
+  statement. Whether the portal notes of 8 November say links never carry
+  names is not on record here; read them in the portal.
+- The reply of 6 November said the thirteen reviewed tools were unchanged.
+  0.6.5 changed one of them the next day, and the 7 November note said so.
+
+**Gaps in these records.** There is no dated entry for 6 November. That a
+reply went to the ticket that day, and that thirteen numbered prompts were
+pasted into the reviewer instructions, is known only from the 8 November
+entry below and from [RESYNC-0.6.0.md](RESYNC-0.6.0.md); the text of that
+reply is not in the repository. The last recorded listing description is the
+0.5.1 wording saved on 28 October; no entry records the 0.6.1 description in
+RESYNC-0.6.0.md being saved. Check both in the portal before the next save.
+
+**Next note.** One draft that states the current version and behaviour once,
+and names the earlier statements it replaces, is in
+[REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md). It is a draft and has not
+been sent. Sending it is the owner's decision.
+
 ## Icon and reviewer texts, 7 and 8 November 2026
 
 - **7 November, with Dias's yes:** the custom icon URL is now
