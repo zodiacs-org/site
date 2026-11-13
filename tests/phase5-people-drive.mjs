@@ -240,7 +240,13 @@ await withPreview({ port: 4425 }, async (baseURL) => {
       person.displayName.toLowerCase().includes(uniqueNeedle.toLowerCase())
     )).length;
     await directoryPage.locator('#people-name').fill(uniqueNeedle);
-    await directoryPage.waitForTimeout(80);
+    // The page hides cards at once and announces the count one animation frame later, so wait for the count it
+    // announces rather than a fixed delay, which a busy runner can outlast.
+    await directoryPage.waitForFunction(
+      (expected) => (document.querySelector('[data-people-count]')?.textContent ?? '').startsWith(expected),
+      `${expectedMatches} of ${indexablePeople.length}`,
+      { timeout: 3000 },
+    ).catch(() => {});
     check(
       await directoryPage.locator('[data-person-card]:visible').count() === expectedMatches,
       'name search did not narrow to the exact match set',
@@ -250,7 +256,8 @@ await withPreview({ port: 4425 }, async (baseURL) => {
       'name-search result count is not announced',
     );
     await directoryPage.locator('#people-name').fill('not a pilot name');
-    await directoryPage.waitForTimeout(50);
+    // The empty state is set in the same animation frame as the count; wait for it instead of a fixed delay.
+    await directoryPage.locator('.people-empty').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
     check(await directoryPage.locator('.people-empty').isVisible(), 'empty search state did not appear');
     check(directoryErrors.length === 0, `directory browser errors: ${directoryErrors.join(' | ')}`);
     await directoryContext.close();
