@@ -1,7 +1,6 @@
 # Review of the 13 to 17 age signals in the Ask the Sky filter (ZOD-210)
 
-Written 13 November 2026 by a new review session (model `claude-fable-5-2`),
-not the builder. It reviews commit `f98240398` on draft PR 1021, the third
+Written 13 November 2026 by a new review session, not the builder. It reviews commit `f98240398` on draft PR 1021, the third
 version of `02-ask-the-sky-filter.md` and `03-filter-test-set.md`. No draft
 was changed. `BREAKER.md` and `BREAKER-FIX.md` are untouched. This file is
 the only thing this session added.
