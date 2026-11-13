@@ -84,6 +84,13 @@ describe('a love horoscope and a birth date under 18', () => {
       expect(context.horoscopePanel!.days.find(day => day.date === centre)!.focuses.love.status).toBe('available');
     }
   });
+  it('keeps 29 February as 29 February: born on 1 March, still under 18 that day', async () => {
+    const leap = new Date('2028-02-29T12:00:00Z');
+    const result = await executeAiTool('get_horoscope', { sign: 'leo', focus: 'love', birthDate: '2010-03-01', zone: 'UTC' }, { now: () => leap, horoscopeWindow: async () => window }, {});
+    if (!result.ok || result.tool !== 'get_horoscope') throw new Error(JSON.stringify(result));
+    expect(result.data.focus).toBe('general');
+    expect(result.data.message).toContain(MINOR_LOVE_NOTE);
+  });
   it('still refuses a birth date under 13 before any reading', () => {
     const refusal = childBirthDateRefusal('get_horoscope', { sign: 'leo', focus: 'love', birthDate: yearsAgo(12) }, NOW);
     expect(refusal).toMatchObject({ ok: false, tool: 'get_horoscope', error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
