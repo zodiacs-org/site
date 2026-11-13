@@ -166,7 +166,12 @@ function withNasaInstant(receipt: HoroscopeEvidenceReceipt): HoroscopeEvidenceRe
   return { ...receipt, at, label: receipt.label.replace(RECEIPT_WHEN, ` on ${date} at ${utcClock(at)} UTC`) };
 }
 
-function evidenceMap(program: HoroscopeProgram): Map<string, HoroscopeEvidenceReceipt> {
+/**
+ * The program's receipts as the pages cite them: dated planet events at
+ * NASA's instant (withNasaInstant). Each id still names the committed
+ * engine instant.
+ */
+export function evidenceMap(program: HoroscopeProgram): Map<string, HoroscopeEvidenceReceipt> {
   return new Map(program.evidence.map((receipt) => [receipt.id, withNasaInstant(receipt)]));
 }
 

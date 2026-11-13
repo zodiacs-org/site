@@ -113,6 +113,23 @@ export function refineTransitMonth<T extends TransitMonthShape>(month: T): T {
 }
 
 /**
+ * A day's events (src/data/daily.json) with each planet ingress, station and
+ * exact aspect at NASA's instant. Lunations and the Sun keep their instants.
+ * Order is kept: the day's events are already sorted, and the move is minutes.
+ */
+export function refineDailyEvents<E extends { kind: string; at: string; planet?: string; a?: string; b?: string; type?: string }>(events: readonly E[]): E[] {
+  return events.map((event) => {
+    let at = event.at;
+    if ((event.kind === 'ingress' || event.kind === 'station') && event.planet) {
+      at = exactInstant({ kind: event.kind, body: event.planet, at: event.at });
+    } else if (event.kind === 'aspect' && event.a && event.b && event.type) {
+      at = exactInstant({ kind: 'aspect', a: event.a, b: event.b, type: event.type, at: event.at });
+    }
+    return at === event.at ? event : { ...event, at };
+  });
+}
+
+/**
  * Published event pages (src/data/events-publication.json) with each anchor
  * moved to the NASA instant the page prints, so a list that prints NASA's
  * times still finds the page for an event. A retrograde page's anchor is its
