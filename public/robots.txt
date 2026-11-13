@@ -3,6 +3,9 @@ Allow: /
 # Generated engine API reference (TypeDoc): noindex and in no sitemap.
 Disallow: /developers/engine/reference/
 Disallow: /sdk/engine/
+# Terminal Research notes: noindex, follow and in no sitemap. The hub stays.
+Allow: /terminal/research/$
+Disallow: /terminal/research/
 
 User-agent: OAI-SearchBot
 Allow: /
