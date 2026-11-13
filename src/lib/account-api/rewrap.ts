@@ -77,10 +77,18 @@ function exactKeys(input: Record<string, unknown>, keys: readonly string[]): boo
   return actual.length === wanted.length && actual.every((key, index) => key === wanted[index]);
 }
 
-function wrappedKeyBytes(input: unknown): Buffer | null {
-  if (typeof input !== 'string' || !/^[A-Za-z0-9+/]+={0,2}$/u.test(input)) return null;
-  const bytes = Buffer.from(input, 'base64');
-  return bytes.byteLength === 68 && bytes.toString('base64') === input ? bytes : null;
+/**
+ * PostgreSQL's encode(..., 'base64') breaks lines every 76 characters, so a
+ * 68-byte wrapped key arrives as 92 characters with a newline after the 76th
+ * unless the SQL removed it. Line breaks (and only line breaks) are dropped;
+ * what remains must be the key's canonical base64.
+ */
+export function wrappedKeyBytes(input: unknown): Buffer | null {
+  if (typeof input !== 'string') return null;
+  const compact = input.replace(/[\r\n]/gu, '');
+  if (!/^[A-Za-z0-9+/]+={0,2}$/u.test(compact)) return null;
+  const bytes = Buffer.from(compact, 'base64');
+  return bytes.byteLength === 68 && bytes.toString('base64') === compact ? bytes : null;
 }
 
 function version(input: unknown): number | null {
