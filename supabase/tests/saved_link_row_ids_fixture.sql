@@ -1,14 +1,18 @@
 -- Disposable PostgreSQL only. The saved_pages rows production held before
 -- 20261113091500_saved_link_row_ids.sql: assistant links whose saved= value is a
--- 16 hex digest, one of each kind, beside rows without one. Committed, so the
+-- 16 hex digest, one of each kind, beside rows without one, rows whose saved=
+-- value is something else (left alone), one row of an account being deleted, and
+-- two digest rows that a UUID would push past a size limit. Committed, so the
 -- migration's replay rewrites them; saved_link_row_ids.sql checks the result and
 -- removes them. Every value is synthetic.
 \set ON_ERROR_STOP on
 
 -- The old shape predates the check, so it is lifted while the rows are written.
 alter table public.saved_pages drop constraint if exists saved_pages_saved_link_id;
+alter table public.saved_pages drop constraint if exists saved_pages_no_digest_link;
 
-insert into auth.users(id) values ('00000000-0000-4000-8000-00000000f001') on conflict do nothing;
+insert into auth.users(id) values ('00000000-0000-4000-8000-00000000f001'), ('00000000-0000-4000-8000-00000000f002')
+  on conflict do nothing;
 
 insert into public.saved_pages(id, user_id, kind, title, href, source, summary, detail, saved_at) values
   ('00000000-0000-4000-8000-0000000000a1', '00000000-0000-4000-8000-00000000f001', 'chart', 'Birth chart',
@@ -39,4 +43,37 @@ insert into public.saved_pages(id, user_id, kind, title, href, source, summary, 
     '2026-10-25T00:00:00Z'),
   ('00000000-0000-4000-8000-0000000000b2', '00000000-0000-4000-8000-00000000f001', 'occasion', 'Wedding, 2027-06-12',
     '/occasions/#o=wedding&d=2027-06-12', 'site', null, null,
-    '2026-10-26T00:00:00Z');
+    '2026-10-26T00:00:00Z'),
+  -- saved= values that are not an old digest: upper case hex and a word. Left as they are.
+  ('00000000-0000-4000-8000-0000000000b3', '00000000-0000-4000-8000-00000000f001', 'occasion', 'Upper case',
+    '/occasions/#saved=0123456789ABCDEF', 'assistant', 'Good.',
+    '{"schema":"zodiacs.assistant-save.v1","kind":"occasion","data":{},"links":[],"href":"/occasions/#saved=0123456789ABCDEF"}',
+    '2026-10-26T01:00:00Z'),
+  ('00000000-0000-4000-8000-0000000000b4', '00000000-0000-4000-8000-00000000f001', 'occasion', 'A word',
+    '/occasions/#saved=testvalue', 'assistant', 'Good.',
+    '{"schema":"zodiacs.assistant-save.v1","kind":"occasion","data":{},"links":[],"href":"/occasions/#saved=testvalue"}',
+    '2026-10-26T02:00:00Z'),
+  -- A digest row of an account being deleted (marked deleting below).
+  ('00000000-0000-4000-8000-0000000000d1', '00000000-0000-4000-8000-00000000f002', 'chart', 'Birth chart',
+    '/birth-chart/#saved=7777777777777777', 'assistant', 'Sun in Aries.',
+    '{"schema":"zodiacs.assistant-save.v1","kind":"chart","title":"Birth chart","summary":"Sun in Aries.","data":{"sun":"aries"},"links":[],"href":"/birth-chart/#saved=7777777777777777"}',
+    '2026-10-27T00:00:00Z');
+
+-- Two digest rows a UUID would push past a size limit: an href of 2,040 characters
+-- (the limit is 2,048), and a detail 5 bytes under its 16,384 byte limit.
+insert into public.saved_pages(id, user_id, kind, title, href, source, summary, detail, saved_at)
+select '00000000-0000-4000-8000-0000000000e1', '00000000-0000-4000-8000-00000000f001', 'occasion', 'Long link', h, 'assistant', 'Good.',
+  jsonb_build_object('schema', 'zodiacs.assistant-save.v1', 'href', h), '2026-10-28T00:00:00Z'
+from (select '/occasions/#pad=' || repeat('x', 2040 - 16 - 23) || '&saved=8888888888888888' as h) l;
+
+insert into public.saved_pages(id, user_id, kind, title, href, source, summary, detail, saved_at)
+select '00000000-0000-4000-8000-0000000000e2', '00000000-0000-4000-8000-00000000f001', 'occasion', 'Large record', h, 'assistant', 'Good.',
+  base || jsonb_build_object('pad', repeat('x', 16384 - 5 - octet_length((base || jsonb_build_object('pad', ''))::text))), '2026-10-29T00:00:00Z'
+from (select '/occasions/#saved=9999999999999999' as h,
+  jsonb_build_object('schema', 'zodiacs.assistant-save.v1', 'href', '/occasions/#saved=9999999999999999') as base) l;
+
+-- The second account is now being deleted: the deleting gate refuses its writes.
+insert into private.account_states(user_id, status, deletion_request_id, deletion_started_at)
+  values ('00000000-0000-4000-8000-00000000f002', 'deleting', '00000000-0000-4000-8000-00000000f0d2', '2026-11-12T00:00:00Z')
+  on conflict (user_id) do update set status = 'deleting', deletion_request_id = excluded.deletion_request_id,
+    deletion_started_at = excluded.deletion_started_at;

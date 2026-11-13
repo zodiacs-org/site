@@ -12,20 +12,40 @@
 --      it carries (the server sends it as `id`; any other value in the link is
 --      replaced by the row id), and the same item saved again is found by what was
 --      stored (account, kind, title, worked-out result and the link apart from its
---      id) instead of by its link, under the account's own lock;
---   2. rewrites every stored href whose `saved=` value is not its row's own id (the
---      old 16 hex digests) to carry the row id, and where the stored record's own
---      copy of the link (detail's href) still carries an old 16 hex value, sets that
---      copy to the row's href, so no stored link keeps the digest. Nothing else
---      changes: the id, title, summary, source, saved_at and the rest of detail of
---      every row stay exactly as they are. An old digest then matches no row, so
---      its link opens the plain profile page;
---   3. adds a check that any `saved=` value in a stored href is that row's own id.
+--      id) instead of by its link. Lock order is the one every saved_pages insert
+--      uses since 20261113090000_account_sync_v2_retention.sql: the account owner
+--      lock (account_v2_terminal_gate) first, then the account's saved pages lock
+--      (saved_pages_limit);
+--   2. rewrites the old digest links, and only those: a stored href whose `saved=`
+--      value is exactly 16 lowercase hex digits gets the row's own id in its place,
+--      and where the stored record's own copy of the link (detail's href) carries
+--      such a value, that copy is set to the rewritten href. Any other `saved=` value
+--      (a UUID, or anything else) is left exactly as it is. Nothing else changes: the
+--      id, title, summary, source, saved_at and the rest of detail stay as they are.
+--      An old digest then matches no row, so its link opens the plain profile page.
+--      Size limits: a UUID is 20 characters longer than a digest. A row whose
+--      rewritten href would pass 2,048 characters, or whose rewritten detail would
+--      pass 16,384 bytes, is left as it was (nothing is cut short) and shows in the
+--      verify file's `digest_href_too_long` and `digest_detail_too_long` counts.
+--      The deleting gate: account_v2_terminal_gate refuses any write to the rows of
+--      an account being deleted. The rewrite must not skip those rows, so for this
+--      one statement block the gate is switched off on saved_pages only, under an
+--      ACCESS EXCLUSIVE lock on saved_pages that no other session's read or write
+--      can pass until this transaction ends, and switched back on before the block
+--      ends (a failure rolls the whole block back, gate included). The rewrite
+--      changes links in place; it adds and removes no row and touches no other
+--      table;
+--   3. adds check `saved_pages_no_digest_link`: no new or changed row may carry a
+--      16 hex `saved=` value in its href or in detail's href. It is added NOT VALID
+--      (saved_pages rows are inserted and deleted, never updated, so it holds every
+--      new write) and validated straight away when no stored row still has one,
+--      which is every row unless a size limit above held one back.
 --
 -- Count-only checks to run before and after: docs/platform/accounts/saved-link-ids-verify.sql.
 -- Replay-safe: the function is replaced, the rewrites find nothing the second time,
 -- and the check is dropped and added again. Run after
--- 20261015150000_zodiacs_accounts_assistant_saves.sql.
+-- 20261015150000_zodiacs_accounts_assistant_saves.sql and
+-- 20261113090000_account_sync_v2_retention.sql.
 -- UTC filename; not applied to any database until the owner approves it.
 
 -- 1. The server's only entry point, as 20261015150000 left it except for saved= links.
@@ -55,8 +75,12 @@ begin
     if jsonb_typeof(stored) = 'object' and stored ? 'href' then stored := jsonb_set(stored, '{href}', to_jsonb(link)); end if;
     -- The same item saved again is one row, left exactly as it was: the same kind,
     -- title and worked-out result, and the same link apart from its id. The
-    -- account's lock (the one saved_pages' limit trigger takes) keeps two
-    -- simultaneous repeats to one row.
+    -- account's saved pages lock (the one saved_pages' limit trigger takes) keeps
+    -- two simultaneous repeats to one row. The account owner lock comes first, as
+    -- in every saved_pages insert (account_v2_terminal_gate, then
+    -- saved_pages_limit), so this save and another write for the same account
+    -- never wait on each other in opposite orders.
+    perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(owner::text, 7312025));
     perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended('saved_pages:' || owner::text, 0));
     select * into saved from public.saved_pages
       where user_id = owner and source = 'assistant' and kind = input->>'kind' and title = input->>'title'
@@ -106,21 +130,58 @@ $$;
 revoke all on function public.zodiacs_accounts_v1(text, jsonb) from public, anon, authenticated;
 grant execute on function public.zodiacs_accounts_v1(text, jsonb) to service_role;
 
--- 2. Stored links: the saved= value becomes the row's own id. Only href is set here.
-update public.saved_pages
-  set href = regexp_replace(href, '^([^#]*#(?:[^&]*&)*)saved=[^&]*', '\1saved=' || id::text)
-  where href ~ '^[^#]*#([^&]*&)*saved='
-    and substring(href from '^[^#]*#(?:[^&]*&)*saved=([^&]*)') is distinct from id::text;
+-- 2. Stored links: an old digest (exactly 16 lowercase hex digits) becomes the row's
+-- own id, in href and in detail's copy of it. See the header for the gate and limits.
+do $$
+declare
+  digest constant text := '^[^#]*#([^&]*&)*saved=[0-9a-f]{16}(&|$)';
+  gate_on boolean;
+begin
+  lock table public.saved_pages in access exclusive mode;
+  select coalesce(bool_or(tgenabled <> 'D'), false) into gate_on
+    from pg_catalog.pg_trigger
+    where tgrelid = 'public.saved_pages'::regclass and tgname = 'account_v2_terminal_gate' and not tgisinternal;
+  if gate_on then
+    alter table public.saved_pages disable trigger account_v2_terminal_gate;
+  end if;
 
--- The record's copy of the link: where it still carries an old 16 hex saved= value,
--- it becomes the row's href (rewritten above). Only detail's href key is set.
-update public.saved_pages
-  set detail = jsonb_set(detail, '{href}', to_jsonb(href))
-  where jsonb_typeof(detail) = 'object' and detail ? 'href'
-    and detail->>'href' ~ '[#&]saved=[0-9a-f]{16}(&|$)';
+  update public.saved_pages p
+    set href = r.new_href
+    from (
+      select id, regexp_replace(href, '^([^#]*#(?:[^&]*&)*)saved=[0-9a-f]{16}(?=&|$)', '\1saved=' || id::text) as new_href
+      from public.saved_pages
+      where href ~ digest
+    ) r
+    where p.id = r.id and char_length(r.new_href) <= 2048;
 
--- 3. From now on a saved= value in a stored link is that row's own id.
-alter table public.saved_pages drop constraint if exists saved_pages_saved_link_id;
-alter table public.saved_pages add constraint saved_pages_saved_link_id check (
-  href !~ '^[^#]*#([^&]*&)*saved=' or substring(href from '^[^#]*#(?:[^&]*&)*saved=([^&]*)') = id::text
-);
+  update public.saved_pages
+    set detail = jsonb_set(detail, '{href}', to_jsonb(href))
+    where jsonb_typeof(detail) = 'object' and detail ? 'href'
+      and detail->>'href' ~ digest
+      and href !~ digest
+      and octet_length(jsonb_set(detail, '{href}', to_jsonb(href))::text) <= 16384;
+
+  if gate_on then
+    alter table public.saved_pages enable trigger account_v2_terminal_gate;
+  end if;
+end;
+$$;
+
+-- 3. From now on no stored link carries a 16 hex saved= value.
+alter table public.saved_pages drop constraint if exists saved_pages_saved_link_id; -- an earlier draft's name
+alter table public.saved_pages drop constraint if exists saved_pages_no_digest_link;
+alter table public.saved_pages add constraint saved_pages_no_digest_link check (
+  href !~ '^[^#]*#([^&]*&)*saved=[0-9a-f]{16}(&|$)'
+  and coalesce(detail->>'href', '') !~ '^[^#]*#([^&]*&)*saved=[0-9a-f]{16}(&|$)'
+) not valid;
+do $$
+begin
+  if not exists (
+    select 1 from public.saved_pages
+    where href ~ '^[^#]*#([^&]*&)*saved=[0-9a-f]{16}(&|$)'
+      or coalesce(detail->>'href', '') ~ '^[^#]*#([^&]*&)*saved=[0-9a-f]{16}(&|$)'
+  ) then
+    alter table public.saved_pages validate constraint saved_pages_no_digest_link;
+  end if;
+end;
+$$;
