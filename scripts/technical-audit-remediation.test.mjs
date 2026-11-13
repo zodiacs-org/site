@@ -173,7 +173,8 @@ describe('technical audit remediation contracts', () => {
     // and what the app's links carry, on 4 November, worded exactly on 5 November,
     // and the assistants it names, with Gemini added, on 6 November, and the occasions
     // it lists with no card link, a birthday alone, on 7 November.
-    expect(privacy).toContain("const modifiedAt = '2026-11-11T00:00:00.000Z'");
+    expect(privacy).toContain("const modifiedAt = '2026-11-13T00:00:00.000Z'");
+    expect(sitemap).toContain("['/privacy/', '2026-11-13'] as const,");
     expect(sitemap).toContain("['/privacy/', '2026-11-11'] as const,");
     expect(sitemap).toContain("const ASSISTANT_REF_LASTMOD = '2026-10-14'");
     expect(sitemap).toContain("const MCP_HOST_LOGS_LASTMOD = '2026-10-09'");
