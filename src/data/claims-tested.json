@@ -20,10 +20,10 @@
       "kind": "calculation",
       "claim": "The times of the sky events we print agree with NASA.",
       "verdict": "passed-after-correction",
-      "result": "Every sign, date and direction we print agrees with NASA JPL Horizons, and every new and full Moon, eclipse and Moon sign change agrees to the second. Our engine's own times for the slow planets did not: a few arcseconds of error is hours of travel for Pluto, up to 9.6 hours for one sign change.",
+      "result": "Every sign, date and direction we print agrees with NASA JPL Horizons, and every new and full Moon, eclipse and Moon sign change we print is within a minute of NASA's time, the precision the pages show. Our engine's own times for the slow planets did not: a few arcseconds of error is hours of travel for Pluto, up to 9.6 hours for one sign change.",
       "sample": "9,367 sky facts in the published data files, and 533 close calls near a sign boundary or midnight",
       "method": "Each fact was checked against NASA JPL Horizons (DE441) rather than against our own engine.",
-      "whatWeDid": "The pages now print NASA's times for planet sign changes, stations and aspects, and every time a page prints agrees with NASA within a second.",
+      "whatWeDid": "The pages now print NASA's times for planet sign changes, stations and aspects, to the minute.",
       "preregistered": false,
       "tested": "2026-11-07",
       "source": { "label": "The accuracy audit report", "url": "https://github.com/zodiacs-org/site/blob/main/docs/accuracy-audit-2026-11/REPORT.md" }
