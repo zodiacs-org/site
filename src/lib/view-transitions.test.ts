@@ -20,7 +20,9 @@ describe('cross-document view transitions', () => {
     const block = css.lastIndexOf('@media (prefers-reduced-motion: no-preference)', at);
     expect(block).toBeGreaterThan(0);
     expect(css.slice(block, at)).not.toContain('}');
-    expect(css.slice(at)).toMatch(/::view-transition-old\(root\)[\s\S]*?animation-duration:\s*var\(--dur-1\)/u);
+    expect(css.slice(at)).toMatch(/::view-transition-old\(\*\)[\s\S]*?animation-duration:\s*var\(--dur-1\)/u);
+    // The nav group sits above names that exist only on the new page.
+    expect(css.slice(at)).toMatch(/::view-transition-group\(site-nav\)\s*\{[^}]*z-index:\s*1/u);
   });
 
   it('declares each transition name once, on the element the ticket names', async () => {

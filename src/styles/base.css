@@ -1032,11 +1032,15 @@ details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):focus-w
    for reduced motion, load pages exactly as before. */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition { navigation: auto; }
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
     animation-duration: var(--dur-1);
     animation-timing-function: var(--ease);
   }
+  /* The nav holds still: no move or resize, and it stays on top of a hero
+     that only exists on the new page (those are drawn last by default). */
+  ::view-transition-group(site-nav) { z-index: 1; animation: none; }
   ::view-transition-old(site-nav) { animation: none; opacity: 0; }
   ::view-transition-new(site-nav) { animation: none; }
 }
