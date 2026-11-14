@@ -492,6 +492,9 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     <slot name="head" />
   </head>
   <body>
+    {/* iOS Safari applies :active (the press states in base.css) only when a
+         touch listener exists. One empty passive listener turns them on. */}
+    <script is:inline>document.addEventListener('touchstart',function(){},{passive:true});</script>
     {accountAccessEager && <AccountProfileAccessBootstrap client:load />}
     {accountAccessLoader && <script is:inline data-profile-access-loader set:html={accountAccessLoader} />}
     <!-- Keep the route catalog ahead of every island, but out of <head> so

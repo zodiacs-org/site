@@ -220,6 +220,21 @@ main :is(.tools-grid, .learn-grid) > a.shell > .core {
 .btn:active { transform: scale(0.97); }
 .btn:disabled,
 .btn[aria-disabled='true'] { opacity: 0.52; cursor: not-allowed; }
+
+/* Tap feedback on touch screens. Rows, tabs, chips and disclosures dim while
+   pressed, so a tap is felt before the next page or panel arrives; buttons
+   keep their own scale press above. Opacity only, so it is the same with
+   reduced motion and never moves layout. No grey flash, no double-tap zoom
+   delay. */
+:is(.seg > a, .seg > button, .hz-signrail a, a.shell, a.tile, .guide-prompts__chip, .program__more > a,
+  summary, .rx-table a, .mysign button) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+@media (hover: none) {
+  :is(.seg > a, .seg > button, .hz-signrail a, a.shell, a.tile, .guide-prompts__chip, .program__more > a,
+    summary, .rx-table a, .mysign button):active { opacity: 0.72; }
+}
 .btn .orb {
   display: inline-grid;
   place-items: center;
