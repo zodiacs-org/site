@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
@@ -11,6 +11,12 @@ const expectedSigns = [
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
 const failures = [];
+// The page swaps its dated wording for "today's" only when the visitor's clock
+// matches the built edition. Pin the browser clock to that edition's noon so the
+// layout checks below give the same answer whether or not the next day's
+// edition has landed yet (the daily job runs after 00:00 UTC).
+const publication = JSON.parse(await readFile(new URL('../src/data/daily-publication.json', import.meta.url), 'utf8'));
+const EDITION_NOON = new Date(`${publication.date}T12:00:00Z`);
 
 function check(name, ok, detail = '') {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? ` · ${detail}` : ''}`);
@@ -33,6 +39,7 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
       viewport: { width: viewport.width, height: viewport.height },
       hasTouch: viewport.width <= 600,
     });
+    await page.clock.setFixedTime(EDITION_NOON);
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
     await page.goto(`${BASE}/bio/`, { waitUntil: 'networkidle' });
