@@ -72,7 +72,10 @@ describe('watch plans', () => {
     const annular = catalog.byId.get('eclipse-2027-02-06')!;
     const penumbral = catalog.byId.get('eclipse-2027-02-20')!;
     const annularPlan = watchPlan(annular.facts)!;
-    expect(annularPlan.moments[0].at).toBe('2027-02-06T15:59:39.357Z');
+    // The 2027 eclipse pages count down to NASA's peak (src/lib/nasa-event-times-2027.ts);
+    // the engine's peak, 15:59:39.357, still names the page.
+    expect(annularPlan.moments[0].at).toBe('2027-02-06T15:59:38.534Z');
+    expect(annular.facts.committed?.anchor).toBe('2027-02-06T15:59:39.357Z');
     expect(annularPlan.visibility).toMatch(/Chile, Argentina/);
     expect(annularPlan.lookFor.join(' ')).toMatch(/ISO 12312-2/);
     const penumbralPlan = watchPlan(penumbral.facts)!;

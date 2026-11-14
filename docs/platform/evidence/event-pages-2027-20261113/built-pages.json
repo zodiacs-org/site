@@ -1,0 +1,240 @@
+{
+ "what": "The built HTML of the 22 pages, checked against the instants solved on Horizons and against zoneinfo",
+ "tzdata": "the IANA database Python zoneinfo reads on the build machine",
+ "pages": 22,
+ "failures": [],
+ "report": [
+  {
+   "path": "/mars-retrograde/2027-01-10/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2026-11-05T15:33:42.221Z",
+    "2027-01-10T12:59:11.000Z",
+    "2027-04-01T14:08:15.000Z",
+    "2027-06-08T01:58:03.295Z"
+   ],
+   "clockCells": 20,
+   "utcClockTimes": 3,
+   "questions": 7
+  },
+  {
+   "path": "/full-moon/2027-01-22/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-01-22T12:17:23.078Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 6
+  },
+  {
+   "path": "/eclipses/2027-02-06/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-02-06T15:59:38.534Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 7
+  },
+  {
+   "path": "/mercury-retrograde/2027-02-09/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-01-25T18:57:34.102Z",
+    "2027-02-09T17:36:05.000Z",
+    "2027-03-03T12:32:01.000Z",
+    "2027-03-23T14:57:58.377Z"
+   ],
+   "clockCells": 20,
+   "utcClockTimes": 3,
+   "questions": 7
+  },
+  {
+   "path": "/eclipses/2027-02-20/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-02-20T23:12:52.311Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 7
+  },
+  {
+   "path": "/full-moon/2027-02-20/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-02-20T23:23:39.118Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 3,
+   "questions": 6
+  },
+  {
+   "path": "/full-moon/2027-03-22/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-03-22T10:43:47.854Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 6
+  },
+  {
+   "path": "/full-moon/2027-04-20/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-04-20T22:27:09.589Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 6
+  },
+  {
+   "path": "/full-moon/2027-05-20/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-05-20T10:59:01.577Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 6
+  },
+  {
+   "path": "/mercury-retrograde/2027-06-10/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-05-26T06:03:31.036Z",
+    "2027-06-10T18:15:14.000Z",
+    "2027-07-04T19:39:23.000Z",
+    "2027-07-19T08:42:36.279Z"
+   ],
+   "clockCells": 20,
+   "utcClockTimes": 3,
+   "questions": 7
+  },
+  {
+   "path": "/full-moon/2027-06-19/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-06-19T00:44:21.337Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 6
+  },
+  {
+   "path": "/full-moon/2027-07-18/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-07-18T15:44:55.636Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 3,
+   "questions": 6
+  },
+  {
+   "path": "/eclipses/2027-07-18/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-07-18T16:02:59.330Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 7
+  },
+  {
+   "path": "/events/jupiter-enters-virgo-2027-07-26/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-07-26T04:49:16.000Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 1,
+   "questions": 4
+  },
+  {
+   "path": "/eclipses/2027-08-02/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-08-02T10:06:40.967Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 7
+  },
+  {
+   "path": "/eclipses/2027-08-17/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-08-17T07:13:51.409Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 7
+  },
+  {
+   "path": "/full-moon/2027-08-17/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-08-17T07:28:41.718Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 3,
+   "questions": 6
+  },
+  {
+   "path": "/full-moon/2027-09-15/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-09-15T23:03:31.519Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 6
+  },
+  {
+   "path": "/mercury-retrograde/2027-10-07/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-09-17T07:28:53.604Z",
+    "2027-10-07T14:37:04.000Z",
+    "2027-10-28T14:10:38.000Z",
+    "2027-11-13T09:54:39.908Z"
+   ],
+   "clockCells": 20,
+   "utcClockTimes": 3,
+   "questions": 7
+  },
+  {
+   "path": "/full-moon/2027-10-15/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-10-15T13:47:00.606Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 6
+  },
+  {
+   "path": "/full-moon/2027-11-14/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-11-14T03:25:55.948Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 6
+  },
+  {
+   "path": "/full-moon/2027-12-13/",
+   "updated": "2026-11-14",
+   "instants": [
+    "2027-12-13T16:08:48.004Z"
+   ],
+   "clockCells": 5,
+   "utcClockTimes": 2,
+   "questions": 6
+  }
+ ]
+}

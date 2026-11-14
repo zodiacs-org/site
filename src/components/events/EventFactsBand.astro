@@ -12,9 +12,11 @@ import type { EventFacts } from '../../lib/events/types';
 
 interface Props {
   facts: EventFacts;
+  /** Everyday labels, for the pages written to the reading style guide. */
+  plain?: boolean;
 }
 
-const { facts } = Astro.props;
+const { facts, plain = false } = Astro.props;
 const hue = facts.signs[0] ? signBySlug(facts.signs[0]).hue : undefined;
 
 interface Row {
@@ -37,8 +39,11 @@ const signName = (slug: string) => signBySlug(slug).name;
 const OUTER = ['Uranus', 'Neptune', 'Pluto'];
 const outer = facts.bodies.some((body) => OUTER.includes(body));
 let note: string | undefined;
-if (facts.committed && (facts.family === 'retrograde' || facts.family === 'ingress' || facts.family === 'aspect')) {
-  note = `${facts.family === 'retrograde' ? 'The station times are' : 'This time is'} NASA JPL's, from its DE441 ephemeris.`;
+if (facts.committed && (facts.family === 'lunation' || facts.family === 'eclipse')) {
+  // The 2027 full moons and eclipse peaks (src/lib/nasa-event-times-2027.ts).
+  note = 'This time is NASA JPL\'s, from its DE441 ephemeris.';
+} else if (facts.committed && (facts.family === 'retrograde' || facts.family === 'ingress' || facts.family === 'aspect')) {
+  note = `${facts.family === 'retrograde' ? (plain ? 'These times are' : 'The station times are') : 'This time is'} NASA JPL's, from its DE441 ephemeris.`;
 } else if (facts.family === 'retrograde') {
   note = 'A planet at a station is barely moving, so these station times can be off by a few minutes.';
 } else if (facts.family === 'ingress' || facts.family === 'aspect') {
@@ -52,7 +57,9 @@ if (facts.family === 'lunation' || facts.family === 'eclipse') {
   rows.push({ label: facts.family === 'eclipse' ? 'Peak, universal time' : 'Exact, universal time', value: eventClock(facts.at!), mono: true });
   rows.push({ label: 'In the sign', value: signName(facts.signs[0]), sign: facts.signs[0] });
   if (facts.longitude !== undefined) {
-    rows.push({ label: 'The Moon stands at', value: formatLongitude(facts.longitude), mono: true });
+    // eclipses.json keeps the Sun's longitude for a solar eclipse and the Moon's for a lunar one.
+    const solarEclipse = facts.family === 'eclipse' && facts.subtype === 'solar';
+    rows.push({ label: solarEclipse ? 'The Sun stands at' : 'The Moon stands at', value: formatLongitude(facts.longitude), mono: true });
   } else if (facts.degree !== undefined) {
     rows.push({ label: 'Degree in sign', value: `${Math.floor(facts.degree)}°`, mono: true });
   }
@@ -74,26 +81,26 @@ if (facts.family === 'lunation' || facts.family === 'eclipse') {
 if (facts.family === 'retrograde') {
   if (facts.preShadowStart) {
     rows.push({
-      label: 'Pre-shadow begins',
+      label: plain ? 'Shadow begins' : 'Pre-shadow begins',
       value: `${eventDay(facts.preShadowStart)} · ${eventClock(facts.preShadowStart)}`,
       mono: true,
     });
   }
   rows.push({
-    label: 'Stations retrograde',
+    label: plain ? 'Turns retrograde' : 'Stations retrograde',
     value: facts.clamped
       ? 'already retrograde as the catalog opens'
       : `${eventDay(facts.start!)} · ${eventClock(facts.start!)}`,
     mono: !facts.clamped,
   });
   rows.push({
-    label: 'Stations direct',
+    label: plain ? 'Turns direct' : 'Stations direct',
     value: facts.end ? `${eventDay(facts.end)} · ${eventClock(facts.end)}` : 'past the data horizon',
     mono: Boolean(facts.end),
   });
   if (facts.postShadowEnd) {
     rows.push({
-      label: 'Post-shadow ends',
+      label: plain ? 'Shadow ends' : 'Post-shadow ends',
       value: `${eventDay(facts.postShadowEnd)} · ${eventClock(facts.postShadowEnd)}`,
       mono: true,
     });

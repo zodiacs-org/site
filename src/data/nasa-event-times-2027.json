@@ -1,0 +1,146 @@
+{
+ "schema": "zodiacs.nasa-event-times-2027.v1",
+ "what": "The 2027 full Moons, eclipse peaks and retrograde shadow edges, solved on NASA JPL Horizons (DE441); each row keeps the engine instant it replaces",
+ "source": "NASA JPL Horizons API, OBSERVER tables from the geocentre (500@399), apparent ecliptic longitude and latitude of date (QUANTITIES 31; 20 adds range for eclipses), DE441, EXTRA_PREC YES",
+ "timeScale": "UT as Horizons prints it: UTC, with the last announced leap second held for future dates (TT minus UTC = 69.184 s)",
+ "evidence": "docs/platform/evidence/event-pages-2027-20261113/horizons-event-times.json",
+ "lunations": [
+  {
+   "type": "full",
+   "engine": "2027-01-22T12:17:21.585Z",
+   "nasa": "2027-01-22T12:17:23.078Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-02-20T23:23:37.619Z",
+   "nasa": "2027-02-20T23:23:39.118Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-03-22T10:43:48.340Z",
+   "nasa": "2027-03-22T10:43:47.854Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-04-20T22:27:11.909Z",
+   "nasa": "2027-04-20T22:27:09.589Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-05-20T10:59:04.599Z",
+   "nasa": "2027-05-20T10:59:01.577Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-06-19T00:44:24.732Z",
+   "nasa": "2027-06-19T00:44:21.337Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-07-18T15:44:58.351Z",
+   "nasa": "2027-07-18T15:44:55.636Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-08-17T07:28:42.380Z",
+   "nasa": "2027-08-17T07:28:41.718Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-09-15T23:03:33.051Z",
+   "nasa": "2027-09-15T23:03:31.519Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-10-15T13:46:59.502Z",
+   "nasa": "2027-10-15T13:47:00.606Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-11-14T03:25:53.355Z",
+   "nasa": "2027-11-14T03:25:55.948Z"
+  },
+  {
+   "type": "full",
+   "engine": "2027-12-13T16:08:48.111Z",
+   "nasa": "2027-12-13T16:08:48.004Z"
+  }
+ ],
+ "eclipses": [
+  {
+   "type": "solar",
+   "engine": "2027-02-06T15:59:39.357Z",
+   "nasa": "2027-02-06T15:59:38.534Z"
+  },
+  {
+   "type": "lunar",
+   "engine": "2027-02-20T23:12:50.555Z",
+   "nasa": "2027-02-20T23:12:52.311Z"
+  },
+  {
+   "type": "lunar",
+   "engine": "2027-07-18T16:03:01.519Z",
+   "nasa": "2027-07-18T16:02:59.330Z"
+  },
+  {
+   "type": "solar",
+   "engine": "2027-08-02T10:06:41.309Z",
+   "nasa": "2027-08-02T10:06:40.967Z"
+  },
+  {
+   "type": "lunar",
+   "engine": "2027-08-17T07:13:51.637Z",
+   "nasa": "2027-08-17T07:13:51.409Z"
+  }
+ ],
+ "shadows": [
+  {
+   "body": "Mars",
+   "edge": "pre",
+   "engine": "2026-11-05T15:33:33.543Z",
+   "nasa": "2026-11-05T15:33:42.221Z"
+  },
+  {
+   "body": "Mercury",
+   "edge": "pre",
+   "engine": "2027-01-25T18:58:47.021Z",
+   "nasa": "2027-01-25T18:57:34.102Z"
+  },
+  {
+   "body": "Mercury",
+   "edge": "post",
+   "engine": "2027-03-23T15:00:18.372Z",
+   "nasa": "2027-03-23T14:57:58.377Z"
+  },
+  {
+   "body": "Mercury",
+   "edge": "pre",
+   "engine": "2027-05-26T06:04:57.535Z",
+   "nasa": "2027-05-26T06:03:31.036Z"
+  },
+  {
+   "body": "Mars",
+   "edge": "post",
+   "engine": "2027-06-08T01:59:06.494Z",
+   "nasa": "2027-06-08T01:58:03.295Z"
+  },
+  {
+   "body": "Mercury",
+   "edge": "post",
+   "engine": "2027-07-19T08:42:48.547Z",
+   "nasa": "2027-07-19T08:42:36.279Z"
+  },
+  {
+   "body": "Mercury",
+   "edge": "pre",
+   "engine": "2027-09-17T07:28:03.816Z",
+   "nasa": "2027-09-17T07:28:53.604Z"
+  },
+  {
+   "body": "Mercury",
+   "edge": "post",
+   "engine": "2027-11-13T09:55:32.644Z",
+   "nasa": "2027-11-13T09:54:39.908Z"
+  }
+ ]
+}

@@ -99,8 +99,10 @@ describe('heads-up times', () => {
 
   it('gives the Moon distance on lunations only, from moon-distances.json', () => {
     const km = new Map(moonDistances.lunations.map((l) => [l.at, l.distanceKm]));
+    // The distance is listed under the committed instant; a 2027 full moon prints NASA's, seconds away.
+    const committed = new Map(eventsPublication.timeline.map((row) => [row.id, row.anchor]));
     for (const event of json.events) {
-      if (event.family === 'lunation') expect(event.moonDistanceKm, event.id).toBe(km.get(event.at));
+      if (event.family === 'lunation') expect(event.moonDistanceKm, event.id).toBe(km.get(committed.get(event.id)!));
       else expect(event).not.toHaveProperty('moonDistanceKm');
     }
     expect(json.events.find((e) => e.id === 'full-moon-2026-11-24')?.moonDistanceKm).toBe(360764);

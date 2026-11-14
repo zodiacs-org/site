@@ -39,6 +39,7 @@ import horoscopeProgram from '../data/horoscope-program.json';
 import registryResearchPublicationData from '../data/registry-research/publication.json';
 import registryResearchPause from '../data/registry-research/pause.json';
 import { eventsPublication } from '../lib/events/site-publication';
+import { EVENT_READINGS_2027_UPDATED, STYLE_GUIDE_READING_IDS } from '../lib/events/readings-2027';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
 import { isHiddenAlmanacSlug, isHiddenChildPage } from '../data/hidden-child-pages.mjs';
@@ -404,6 +405,7 @@ const NASA_WINDOW_PLACEMENTS = [
 const EVENT_NASA_TIMES_LASTMOD = '2026-11-06';
 // "Behind this event" prints its instants to the minute, as the rest of each event page does.
 const EVENT_EVIDENCE_MINUTE_LASTMOD = '2026-11-13';
+const SOLAR_ECLIPSE_DEGREE_LASTMOD = '2026-11-14';
 const ACCURACY_AUDIT_REST_LASTMOD = '2026-11-07';
 const ACCURACY_AUDIT_REST_ROUTES = [
   '/', '/events/', '/moon-phase/', '/tools/',
@@ -860,8 +862,12 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...eventsPublication.pages.map((event) => ({
       loc: event.path,
       priority: 0.64,
+      // A page written to the reading style guide prints this day as "Updated" and as dateModified (ZOD-211).
       lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVENT_EVIDENCE_MINUTE_LASTMOD,
-        EVERGREEN_LASTMOD.get(event.path) ?? '']
+        EVERGREEN_LASTMOD.get(event.path) ?? '',
+        STYLE_GUIDE_READING_IDS.includes(event.id) ? EVENT_READINGS_2027_UPDATED : '',
+        // A solar eclipse page labels its degree as the Sun's, which is what eclipses.json keeps.
+        event.family === 'eclipse' && event.subtype === 'solar' ? SOLAR_ECLIPSE_DEGREE_LASTMOD : '']
         .reduce((latest, date) => (date > latest ? date : latest)),
     })),
     // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
@@ -1036,6 +1042,11 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   // precision the pages print, with the range of each figure.
   for (const url of urls) {
     if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-13');
+  }
+  // The methodology page says the 2027 full moon and eclipse pages print the
+  // instant solved on NASA JPL Horizons (ZOD-211).
+  for (const url of urls) {
+    if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
   }
   return [
     ...urls,

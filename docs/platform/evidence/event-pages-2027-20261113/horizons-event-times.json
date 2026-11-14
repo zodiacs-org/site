@@ -1,0 +1,1518 @@
+{
+ "what": "Sky events named on the in-scope 2027 event pages, solved on NASA JPL Horizons",
+ "source": "NASA JPL Horizons API, OBSERVER tables from the geocentre (500@399), apparent ecliptic longitude and latitude of date (QUANTITIES 31; 20 adds range for eclipses), DE441, EXTRA_PREC YES",
+ "timeScale": "UT as Horizons prints it: UTC, with the last announced leap second held for future dates (TT minus UTC = 69.184 s)",
+ "queries": "horizons-queries.json lists each query URL, retrieval time, response SHA-256 and Horizons header; an event names its queries by key",
+ "events": {
+  "ingress:Jupiter:leo:2026-06-30T05:56:21.335Z": {
+   "kind": "ingress",
+   "detail": {
+    "body": "Jupiter",
+    "sign": "leo"
+   },
+   "pages": [
+    "jupiter-enters-virgo-2027-07-26"
+   ],
+   "engine": "2026-06-30T05:56:21.335Z",
+   "horizons": "2026-06-30T05:52:26.995Z",
+   "horizonsMinusEngineSeconds": -234.339,
+   "queries": [
+    "ingress-jupiter-leo-20260630T0556-wide",
+    "ingress-jupiter-leo-20260630T0556"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 5.0194582009496086e-08,
+   "crosses": "120 degrees, the start of leo",
+   "motion": "direct"
+  },
+  "eclipse:solar:2026-08-12T17:45:53.037Z": {
+   "kind": "eclipse",
+   "detail": {
+    "type": "solar",
+    "eclipseKind": "total"
+   },
+   "pages": [
+    "eclipse-2027-02-06"
+   ],
+   "engine": "2026-08-12T17:45:53.037Z",
+   "horizons": "2026-08-12T17:45:56.541Z",
+   "horizonsMinusEngineSeconds": 3.505,
+   "moonLongitude": 140.125021,
+   "moonSign": "leo",
+   "sunLongitude": 140.039034,
+   "sunSign": "leo",
+   "queries": [
+    "eclipse-solar-20260812T1745-moon",
+    "eclipse-solar-20260812T1745-sun"
+   ],
+   "stepMinutes": 1,
+   "leastDistanceKm": 5725.9,
+   "leastDistanceOf": "the Moon's shadow axis from the geocentre",
+   "fitResidualKm2": 6.068248461931944
+  },
+  "eclipse:lunar:2026-08-28T04:12:55.340Z": {
+   "kind": "eclipse",
+   "detail": {
+    "type": "lunar",
+    "eclipseKind": "partial"
+   },
+   "pages": [
+    "eclipse-2027-02-20"
+   ],
+   "engine": "2026-08-28T04:12:55.340Z",
+   "horizons": "2026-08-28T04:12:56.335Z",
+   "horizonsMinusEngineSeconds": 0.996,
+   "moonLongitude": 334.852335,
+   "moonSign": "pisces",
+   "sunLongitude": 154.8982,
+   "sunSign": "virgo",
+   "queries": [
+    "eclipse-lunar-20260828T0412-moon",
+    "eclipse-lunar-20260828T0412-sun"
+   ],
+   "stepMinutes": 1,
+   "leastDistanceKm": 3166.2,
+   "leastDistanceOf": "the Moon's centre from the axis of Earth's shadow",
+   "fitResidualKm2": 3.9659938998520374
+  },
+  "station:Mercury:retrograde:2026-10-24T07:14:22.646Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mercury",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2026-10-24T07:14:22.646Z",
+   "horizons": "2026-10-24T07:12:42.298Z",
+   "horizonsMinusEngineSeconds": -100.347,
+   "queries": [
+    "station-mercury-retrograde-20261024T0712"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.821959803142818e-08,
+   "longitude": 230.978976,
+   "sign": "scorpio"
+  },
+  "shadow:Mars:pre:2026-11-05T15:33:33.543Z": {
+   "kind": "shadow",
+   "detail": {
+    "body": "Mars",
+    "edge": "pre",
+    "stationRetrograde": "2027-01-10T13:00:54.491Z",
+    "stationDirect": "2027-04-01T14:11:19.833Z"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2026-11-05T15:33:33.543Z",
+   "horizons": "2026-11-05T15:33:42.221Z",
+   "horizonsMinusEngineSeconds": 8.678,
+   "queries": [
+    "shadow-mars-pre-20261105T1533-wide",
+    "shadow-mars-pre-20261105T1533"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 5.221100953661795e-08,
+   "crosses": "the longitude of the direct station, 140.926593 degrees",
+   "stationKey": "station:Mars:direct:2027-04-01T14:11:19.833Z"
+  },
+  "station:Mercury:direct:2026-11-13T15:53:06.474Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mercury",
+    "direction": "direct"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2026-11-13T15:53:06.474Z",
+   "horizons": "2026-11-13T15:53:52.364Z",
+   "horizonsMinusEngineSeconds": 45.89,
+   "queries": [
+    "station-mercury-direct-20261113T1553"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.5332975534838624e-08,
+   "longitude": 215.033477,
+   "sign": "scorpio"
+  },
+  "lunation:full:2026-12-24T01:28:16.590Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2026-12-24T01:28:16.590Z"
+   },
+   "pages": [
+    "full-moon-2027-01-22"
+   ],
+   "engine": "2026-12-24T01:28:16.590Z",
+   "horizons": "2026-12-24T01:28:14.108Z",
+   "horizonsMinusEngineSeconds": -2.481,
+   "queries": [
+    "lunation-full-20261224T0128-moon",
+    "lunation-full-20261224T0128-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 7.786104472273792e-08,
+   "moonLongitude": 92.232798,
+   "moonSign": "cancer"
+  },
+  "lunation:new:2027-01-07T20:24:26.069Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-01-07T20:24:26.069Z"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2027-01-07T20:24:26.069Z",
+   "horizons": "2027-01-07T20:24:23.225Z",
+   "horizonsMinusEngineSeconds": -2.843,
+   "queries": [
+    "lunation-new-20270107T2024-moon",
+    "lunation-new-20270107T2024-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.05941017534284e-08,
+   "moonLongitude": 287.304302,
+   "moonSign": "capricorn"
+  },
+  "station:Mars:retrograde:2027-01-10T13:00:54.491Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mars",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2027-01-10T13:00:54.491Z",
+   "horizons": "2027-01-10T12:59:11.409Z",
+   "horizonsMinusEngineSeconds": -103.082,
+   "queries": [
+    "station-mars-retrograde-20270110T1259"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.688534088221786e-08,
+   "longitude": 160.428999,
+   "sign": "virgo"
+  },
+  "aspect:Uranus:sextile:Neptune:2027-01-15T07:21:23.862Z": {
+   "kind": "aspect",
+   "detail": {
+    "a": "Uranus",
+    "b": "Neptune",
+    "type": "sextile"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2027-01-15T07:21:23.862Z",
+   "horizons": "2027-01-15T09:26:29.168Z",
+   "horizonsMinusEngineSeconds": 7505.306,
+   "queries": [
+    "aspect-uranus-sextile-neptune-20270115T0721-a",
+    "aspect-uranus-sextile-neptune-20270115T0721-b"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 9.756656119824791e-08,
+   "separationDeg": 60
+  },
+  "lunation:full:2027-01-22T12:17:21.585Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-01-22T12:17:21.585Z"
+   },
+   "pages": [
+    "full-moon-2027-01-22",
+    "full-moon-2027-02-20"
+   ],
+   "engine": "2027-01-22T12:17:21.585Z",
+   "horizons": "2027-01-22T12:17:23.078Z",
+   "horizonsMinusEngineSeconds": 1.494,
+   "queries": [
+    "lunation-full-20270122T1217-moon",
+    "lunation-full-20270122T1217-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 9.741296668613897e-08,
+   "moonLongitude": 122.237789,
+   "moonSign": "leo"
+  },
+  "shadow:Mercury:pre:2027-01-25T18:58:47.021Z": {
+   "kind": "shadow",
+   "detail": {
+    "body": "Mercury",
+    "edge": "pre",
+    "stationRetrograde": "2027-02-09T17:35:41.894Z",
+    "stationDirect": "2027-03-03T12:35:47.606Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2027-01-25T18:58:47.021Z",
+   "horizons": "2027-01-25T18:57:34.102Z",
+   "horizonsMinusEngineSeconds": -72.919,
+   "queries": [
+    "shadow-mercury-pre-20270125T1858-wide",
+    "shadow-mercury-pre-20270125T1858"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 5.364211025371546e-08,
+   "crosses": "the longitude of the direct station, 320.923141 degrees",
+   "stationKey": "station:Mercury:direct:2027-03-03T12:35:47.606Z"
+  },
+  "lunation:new:2027-02-06T15:56:08.653Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-02-06T15:56:08.653Z"
+   },
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2027-02-06T15:56:08.653Z",
+   "horizons": "2027-02-06T15:56:07.250Z",
+   "horizonsMinusEngineSeconds": -1.402,
+   "queries": [
+    "lunation-new-20270206T1556-moon",
+    "lunation-new-20270206T1556-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.709579081556118e-08,
+   "moonLongitude": 317.627099,
+   "moonSign": "aquarius"
+  },
+  "eclipse:solar:2027-02-06T15:59:39.357Z": {
+   "kind": "eclipse",
+   "detail": {
+    "type": "solar",
+    "eclipseKind": "annular"
+   },
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09",
+    "eclipse-2027-08-02"
+   ],
+   "engine": "2027-02-06T15:59:39.357Z",
+   "horizons": "2027-02-06T15:59:38.534Z",
+   "horizonsMinusEngineSeconds": -0.823,
+   "moonLongitude": 317.656464,
+   "moonSign": "aquarius",
+   "sunLongitude": 317.629578,
+   "sunSign": "aquarius",
+   "queries": [
+    "eclipse-solar-20270206T1559-moon",
+    "eclipse-solar-20270206T1559-sun"
+   ],
+   "stepMinutes": 1,
+   "leastDistanceKm": 1882.6,
+   "leastDistanceOf": "the Moon's shadow axis from the geocentre",
+   "fitResidualKm2": 2.839538250118494
+  },
+  "station:Uranus:direct:2027-02-08T12:28:27.274Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Uranus",
+    "direction": "direct"
+   },
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2027-02-08T12:28:27.274Z",
+   "horizons": "2027-02-08T12:29:30.565Z",
+   "horizonsMinusEngineSeconds": 63.291,
+   "queries": [
+    "station-uranus-direct-20270208T1229"
+   ],
+   "stepMinutes": 60,
+   "fitResidualDeg": 7.146693548065741e-08,
+   "longitude": 61.68261,
+   "sign": "gemini"
+  },
+  "station:Mercury:retrograde:2027-02-09T17:35:41.894Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mercury",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10"
+   ],
+   "engine": "2027-02-09T17:35:41.894Z",
+   "horizons": "2027-02-09T17:36:05.026Z",
+   "horizonsMinusEngineSeconds": 23.133,
+   "queries": [
+    "station-mercury-retrograde-20270209T1736"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.3422922974277753e-08,
+   "longitude": 335.981245,
+   "sign": "pisces"
+  },
+  "eclipse:lunar:2027-02-20T23:12:50.555Z": {
+   "kind": "eclipse",
+   "detail": {
+    "type": "lunar",
+    "eclipseKind": "penumbral"
+   },
+   "pages": [
+    "eclipse-2027-02-20",
+    "full-moon-2027-02-20",
+    "eclipse-2027-07-18"
+   ],
+   "engine": "2027-02-20T23:12:50.555Z",
+   "horizons": "2027-02-20T23:12:52.311Z",
+   "horizonsMinusEngineSeconds": 1.756,
+   "moonLongitude": 151.982895,
+   "moonSign": "virgo",
+   "sunLongitude": 332.085555,
+   "sunSign": "pisces",
+   "queries": [
+    "eclipse-lunar-20270220T2312-moon",
+    "eclipse-lunar-20270220T2312-sun"
+   ],
+   "stepMinutes": 1,
+   "leastDistanceKm": 6684.0,
+   "leastDistanceOf": "the Moon's centre from the axis of Earth's shadow",
+   "fitResidualKm2": 6.753348961472511
+  },
+  "lunation:full:2027-02-20T23:23:37.619Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-02-20T23:23:37.619Z"
+   },
+   "pages": [
+    "full-moon-2027-01-22",
+    "eclipse-2027-02-20",
+    "full-moon-2027-02-20",
+    "full-moon-2027-03-22"
+   ],
+   "engine": "2027-02-20T23:23:37.619Z",
+   "horizons": "2027-02-20T23:23:39.118Z",
+   "horizonsMinusEngineSeconds": 1.5,
+   "queries": [
+    "lunation-full-20270220T2323-moon",
+    "lunation-full-20270220T2323-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.453670923003198e-08,
+   "moonLongitude": 152.093098,
+   "moonSign": "virgo"
+  },
+  "station:Mercury:direct:2027-03-03T12:35:47.606Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mercury",
+    "direction": "direct"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10"
+   ],
+   "engine": "2027-03-03T12:35:47.606Z",
+   "horizons": "2027-03-03T12:32:01.268Z",
+   "horizonsMinusEngineSeconds": -226.338,
+   "queries": [
+    "station-mercury-direct-20270303T1232"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.5015846101014176e-08,
+   "longitude": 320.923141,
+   "sign": "aquarius"
+  },
+  "lunation:new:2027-03-08T09:29:31.050Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-03-08T09:29:31.050Z"
+   },
+   "pages": [],
+   "engine": "2027-03-08T09:29:31.050Z",
+   "horizons": "2027-03-08T09:29:28.979Z",
+   "horizonsMinusEngineSeconds": -2.07,
+   "queries": [
+    "lunation-new-20270308T0929-moon",
+    "lunation-new-20270308T0929-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.751010100588319e-08,
+   "moonLongitude": 347.580124,
+   "moonSign": "pisces"
+  },
+  "lunation:full:2027-03-22T10:43:48.340Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-03-22T10:43:48.340Z"
+   },
+   "pages": [
+    "full-moon-2027-02-20",
+    "full-moon-2027-03-22",
+    "full-moon-2027-04-20"
+   ],
+   "engine": "2027-03-22T10:43:48.340Z",
+   "horizons": "2027-03-22T10:43:47.854Z",
+   "horizonsMinusEngineSeconds": -0.486,
+   "queries": [
+    "lunation-full-20270322T1043-moon",
+    "lunation-full-20270322T1043-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.219326137065552e-08,
+   "moonLongitude": 181.585162,
+   "moonSign": "libra"
+  },
+  "shadow:Mercury:post:2027-03-23T15:00:18.372Z": {
+   "kind": "shadow",
+   "detail": {
+    "body": "Mercury",
+    "edge": "post",
+    "stationRetrograde": "2027-02-09T17:35:41.894Z",
+    "stationDirect": "2027-03-03T12:35:47.606Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2027-03-23T15:00:18.372Z",
+   "horizons": "2027-03-23T14:57:58.377Z",
+   "horizonsMinusEngineSeconds": -139.995,
+   "queries": [
+    "shadow-mercury-post-20270323T1500-wide",
+    "shadow-mercury-post-20270323T1500"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 4.997936720735341e-08,
+   "crosses": "the longitude of the retrograde station, 335.981245 degrees",
+   "stationKey": "station:Mercury:retrograde:2027-02-09T17:35:41.894Z"
+  },
+  "station:Mars:direct:2027-04-01T14:11:19.833Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mars",
+    "direction": "direct"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2027-04-01T14:11:19.833Z",
+   "horizons": "2027-04-01T14:08:16.633Z",
+   "horizonsMinusEngineSeconds": -183.199,
+   "queries": [
+    "station-mars-direct-20270401T1408"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.289101068228774e-08,
+   "longitude": 140.926593,
+   "sign": "leo"
+  },
+  "lunation:new:2027-04-06T23:51:12.161Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-04-06T23:51:12.161Z"
+   },
+   "pages": [],
+   "engine": "2027-04-06T23:51:12.161Z",
+   "horizons": "2027-04-06T23:51:09.727Z",
+   "horizonsMinusEngineSeconds": -2.434,
+   "queries": [
+    "lunation-new-20270406T2351-moon",
+    "lunation-new-20270406T2351-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.267545657802966e-08,
+   "moonLongitude": 16.951805,
+   "moonSign": "aries"
+  },
+  "lunation:full:2027-04-20T22:27:11.909Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-04-20T22:27:11.909Z"
+   },
+   "pages": [
+    "full-moon-2027-03-22",
+    "full-moon-2027-04-20",
+    "full-moon-2027-05-20"
+   ],
+   "engine": "2027-04-20T22:27:11.909Z",
+   "horizons": "2027-04-20T22:27:09.589Z",
+   "horizonsMinusEngineSeconds": -2.32,
+   "queries": [
+    "lunation-full-20270420T2227-moon",
+    "lunation-full-20270420T2227-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.704764470346404e-08,
+   "moonLongitude": 210.616508,
+   "moonSign": "scorpio"
+  },
+  "lunation:new:2027-05-06T10:58:40.128Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-05-06T10:58:40.128Z"
+   },
+   "pages": [],
+   "engine": "2027-05-06T10:58:40.128Z",
+   "horizons": "2027-05-06T10:58:38.078Z",
+   "horizonsMinusEngineSeconds": -2.05,
+   "queries": [
+    "lunation-new-20270506T1058-moon",
+    "lunation-new-20270506T1058-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 7.965022194578175e-08,
+   "moonLongitude": 45.708931,
+   "moonSign": "taurus"
+  },
+  "lunation:full:2027-05-20T10:59:04.599Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-05-20T10:59:04.599Z"
+   },
+   "pages": [
+    "full-moon-2027-04-20",
+    "full-moon-2027-05-20",
+    "full-moon-2027-06-19"
+   ],
+   "engine": "2027-05-20T10:59:04.599Z",
+   "horizons": "2027-05-20T10:59:01.577Z",
+   "horizonsMinusEngineSeconds": -3.022,
+   "queries": [
+    "lunation-full-20270520T1059-moon",
+    "lunation-full-20270520T1059-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 1.0204231828958577e-07,
+   "moonLongitude": 239.225509,
+   "moonSign": "scorpio"
+  },
+  "shadow:Mercury:pre:2027-05-26T06:04:57.535Z": {
+   "kind": "shadow",
+   "detail": {
+    "body": "Mercury",
+    "edge": "pre",
+    "stationRetrograde": "2027-06-10T18:19:04.335Z",
+    "stationDirect": "2027-07-04T19:39:55.898Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10"
+   ],
+   "engine": "2027-05-26T06:04:57.535Z",
+   "horizons": "2027-05-26T06:03:31.036Z",
+   "horizonsMinusEngineSeconds": -86.499,
+   "queries": [
+    "shadow-mercury-pre-20270526T0604-wide",
+    "shadow-mercury-pre-20270526T0604"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 5.0659201712016655e-08,
+   "crosses": "the longitude of the direct station, 87.469196 degrees",
+   "stationKey": "station:Mercury:direct:2027-07-04T19:39:55.898Z"
+  },
+  "lunation:new:2027-06-04T19:40:22.676Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-06-04T19:40:22.676Z"
+   },
+   "pages": [],
+   "engine": "2027-06-04T19:40:22.676Z",
+   "horizons": "2027-06-04T19:40:21.110Z",
+   "horizonsMinusEngineSeconds": -1.565,
+   "queries": [
+    "lunation-new-20270604T1940-moon",
+    "lunation-new-20270604T1940-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 1.0046780750914974e-07,
+   "moonLongitude": 73.971962,
+   "moonSign": "gemini"
+  },
+  "aspect:Uranus:sextile:Neptune:2027-06-06T12:03:37.528Z": {
+   "kind": "aspect",
+   "detail": {
+    "a": "Uranus",
+    "b": "Neptune",
+    "type": "sextile"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10"
+   ],
+   "engine": "2027-06-06T12:03:37.528Z",
+   "horizons": "2027-06-06T10:12:08.735Z",
+   "horizonsMinusEngineSeconds": -6688.793,
+   "queries": [
+    "aspect-uranus-sextile-neptune-20270606T1203-a",
+    "aspect-uranus-sextile-neptune-20270606T1203-b"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 1.0222997048892069e-07,
+   "separationDeg": 60
+  },
+  "shadow:Mars:post:2027-06-08T01:59:06.494Z": {
+   "kind": "shadow",
+   "detail": {
+    "body": "Mars",
+    "edge": "post",
+    "stationRetrograde": "2027-01-10T13:00:54.491Z",
+    "stationDirect": "2027-04-01T14:11:19.833Z"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2027-06-08T01:59:06.494Z",
+   "horizons": "2027-06-08T01:58:03.295Z",
+   "horizonsMinusEngineSeconds": -63.199,
+   "queries": [
+    "shadow-mars-post-20270608T0159-wide",
+    "shadow-mars-post-20270608T0159"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 5.4230497172763625e-08,
+   "crosses": "the longitude of the retrograde station, 160.428999 degrees",
+   "stationKey": "station:Mars:retrograde:2027-01-10T13:00:54.491Z"
+  },
+  "station:Mercury:retrograde:2027-06-10T18:19:04.335Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mercury",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-06-10T18:19:04.335Z",
+   "horizons": "2027-06-10T18:15:13.960Z",
+   "horizonsMinusEngineSeconds": -230.375,
+   "queries": [
+    "station-mercury-retrograde-20270610T1815"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.23351388892479e-08,
+   "longitude": 96.361138,
+   "sign": "cancer"
+  },
+  "aspect:Uranus:trine:Pluto:2027-06-15T08:01:32.585Z": {
+   "kind": "aspect",
+   "detail": {
+    "a": "Uranus",
+    "b": "Pluto",
+    "type": "trine"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10",
+    "full-moon-2027-06-19"
+   ],
+   "engine": "2027-06-15T08:01:32.585Z",
+   "horizons": "2027-06-15T08:10:41.240Z",
+   "horizonsMinusEngineSeconds": 548.656,
+   "queries": [
+    "aspect-uranus-trine-pluto-20270615T0801-a",
+    "aspect-uranus-trine-pluto-20270615T0801-b"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 1.0051561080692828e-07,
+   "separationDeg": 120
+  },
+  "lunation:full:2027-06-19T00:44:24.732Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-06-19T00:44:24.732Z"
+   },
+   "pages": [
+    "full-moon-2027-05-20",
+    "full-moon-2027-06-19",
+    "full-moon-2027-07-18"
+   ],
+   "engine": "2027-06-19T00:44:24.732Z",
+   "horizons": "2027-06-19T00:44:21.337Z",
+   "horizonsMinusEngineSeconds": -3.394,
+   "queries": [
+    "lunation-full-20270619T0044-moon",
+    "lunation-full-20270619T0044-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.227636605351307e-08,
+   "moonLongitude": 267.55736,
+   "moonSign": "sagittarius"
+  },
+  "lunation:new:2027-07-04T03:02:05.654Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-07-04T03:02:05.654Z"
+   },
+   "pages": [],
+   "engine": "2027-07-04T03:02:05.654Z",
+   "horizons": "2027-07-04T03:02:05.289Z",
+   "horizonsMinusEngineSeconds": -0.365,
+   "queries": [
+    "lunation-new-20270704T0302-moon",
+    "lunation-new-20270704T0302-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.275473627195051e-08,
+   "moonLongitude": 101.956476,
+   "moonSign": "cancer"
+  },
+  "station:Mercury:direct:2027-07-04T19:39:55.898Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mercury",
+    "direction": "direct"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-07-04T19:39:55.898Z",
+   "horizons": "2027-07-04T19:39:22.422Z",
+   "horizonsMinusEngineSeconds": -33.476,
+   "queries": [
+    "station-mercury-direct-20270704T1939"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.4864855769665155e-08,
+   "longitude": 87.469196,
+   "sign": "gemini"
+  },
+  "lunation:full:2027-07-18T15:44:58.351Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-07-18T15:44:58.351Z"
+   },
+   "pages": [
+    "full-moon-2027-06-19",
+    "full-moon-2027-07-18",
+    "eclipse-2027-07-18",
+    "full-moon-2027-08-17"
+   ],
+   "engine": "2027-07-18T15:44:58.351Z",
+   "horizons": "2027-07-18T15:44:55.636Z",
+   "horizonsMinusEngineSeconds": -2.715,
+   "queries": [
+    "lunation-full-20270718T1544-moon",
+    "lunation-full-20270718T1544-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 9.239095059843105e-08,
+   "moonLongitude": 295.812604,
+   "moonSign": "capricorn"
+  },
+  "eclipse:lunar:2027-07-18T16:03:01.519Z": {
+   "kind": "eclipse",
+   "detail": {
+    "type": "lunar",
+    "eclipseKind": "penumbral"
+   },
+   "pages": [
+    "eclipse-2027-02-20",
+    "full-moon-2027-07-18",
+    "eclipse-2027-07-18",
+    "eclipse-2027-08-17"
+   ],
+   "engine": "2027-07-18T16:03:01.519Z",
+   "horizons": "2027-07-18T16:02:59.330Z",
+   "horizonsMinusEngineSeconds": -2.188,
+   "moonLongitude": 295.960806,
+   "moonSign": "capricorn",
+   "sunLongitude": 115.824568,
+   "sunSign": "cancer",
+   "queries": [
+    "eclipse-lunar-20270718T1603-moon",
+    "eclipse-lunar-20270718T1603-sun"
+   ],
+   "stepMinutes": 1,
+   "leastDistanceKm": 10050.6,
+   "leastDistanceOf": "the Moon's centre from the axis of Earth's shadow",
+   "fitResidualKm2": 10.23394963145256
+  },
+  "shadow:Mercury:post:2027-07-19T08:42:48.547Z": {
+   "kind": "shadow",
+   "detail": {
+    "body": "Mercury",
+    "edge": "post",
+    "stationRetrograde": "2027-06-10T18:19:04.335Z",
+    "stationDirect": "2027-07-04T19:39:55.898Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10"
+   ],
+   "engine": "2027-07-19T08:42:48.547Z",
+   "horizons": "2027-07-19T08:42:36.279Z",
+   "horizonsMinusEngineSeconds": -12.268,
+   "queries": [
+    "shadow-mercury-post-20270719T0842-wide",
+    "shadow-mercury-post-20270719T0842"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 5.701309712530245e-08,
+   "crosses": "the longitude of the retrograde station, 96.361138 degrees",
+   "stationKey": "station:Mercury:retrograde:2027-06-10T18:19:04.335Z"
+  },
+  "ingress:Jupiter:virgo:2027-07-26T04:45:27.093Z": {
+   "kind": "ingress",
+   "detail": {
+    "body": "Jupiter",
+    "sign": "virgo"
+   },
+   "pages": [
+    "jupiter-enters-virgo-2027-07-26"
+   ],
+   "engine": "2027-07-26T04:45:27.093Z",
+   "horizons": "2027-07-26T04:49:15.627Z",
+   "horizonsMinusEngineSeconds": 228.535,
+   "queries": [
+    "ingress-jupiter-virgo-20270726T0445-wide",
+    "ingress-jupiter-virgo-20270726T0445"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 6.168603470819295e-08,
+   "crosses": "150 degrees, the start of virgo",
+   "motion": "direct"
+  },
+  "lunation:new:2027-08-02T10:05:15.113Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-08-02T10:05:15.113Z"
+   },
+   "pages": [
+    "eclipse-2027-08-02"
+   ],
+   "engine": "2027-08-02T10:05:15.113Z",
+   "horizons": "2027-08-02T10:05:14.390Z",
+   "horizonsMinusEngineSeconds": -0.723,
+   "queries": [
+    "lunation-new-20270802T1005-moon",
+    "lunation-new-20270802T1005-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.225058067967694e-08,
+   "moonLongitude": 129.917362,
+   "moonSign": "leo"
+  },
+  "eclipse:solar:2027-08-02T10:06:41.309Z": {
+   "kind": "eclipse",
+   "detail": {
+    "type": "solar",
+    "eclipseKind": "total"
+   },
+   "pages": [
+    "eclipse-2027-02-06",
+    "eclipse-2027-08-02"
+   ],
+   "engine": "2027-08-02T10:06:41.309Z",
+   "horizons": "2027-08-02T10:06:40.967Z",
+   "horizonsMinusEngineSeconds": -0.341,
+   "moonLongitude": 129.932583,
+   "moonSign": "leo",
+   "sunLongitude": 129.918321,
+   "sunSign": "leo",
+   "queries": [
+    "eclipse-solar-20270802T1006-moon",
+    "eclipse-solar-20270802T1006-sun"
+   ],
+   "stepMinutes": 1,
+   "leastDistanceKm": 906.3,
+   "leastDistanceOf": "the Moon's shadow axis from the geocentre",
+   "fitResidualKm2": 1.4024085546843708
+  },
+  "eclipse:lunar:2027-08-17T07:13:51.637Z": {
+   "kind": "eclipse",
+   "detail": {
+    "type": "lunar",
+    "eclipseKind": "penumbral"
+   },
+   "pages": [
+    "eclipse-2027-07-18",
+    "eclipse-2027-08-17",
+    "full-moon-2027-08-17"
+   ],
+   "engine": "2027-08-17T07:13:51.637Z",
+   "horizons": "2027-08-17T07:13:51.409Z",
+   "horizonsMinusEngineSeconds": -0.228,
+   "moonLongitude": 324.074556,
+   "moonSign": "aquarius",
+   "sunLongitude": 144.186931,
+   "sunSign": "leo",
+   "queries": [
+    "eclipse-lunar-20270817T0713-moon",
+    "eclipse-lunar-20270817T0713-sun"
+   ],
+   "stepMinutes": 1,
+   "leastDistanceKm": 8161.8,
+   "leastDistanceOf": "the Moon's centre from the axis of Earth's shadow",
+   "fitResidualKm2": 11.174737587571144
+  },
+  "lunation:full:2027-08-17T07:28:42.380Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-08-17T07:28:42.380Z"
+   },
+   "pages": [
+    "full-moon-2027-07-18",
+    "eclipse-2027-08-17",
+    "full-moon-2027-08-17",
+    "full-moon-2027-09-15"
+   ],
+   "engine": "2027-08-17T07:28:42.380Z",
+   "horizons": "2027-08-17T07:28:41.718Z",
+   "horizonsMinusEngineSeconds": -0.661,
+   "queries": [
+    "lunation-full-20270817T0728-moon",
+    "lunation-full-20270817T0728-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 9.748716495172616e-08,
+   "moonLongitude": 324.196833,
+   "moonSign": "aquarius"
+  },
+  "lunation:new:2027-08-31T17:41:13.048Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-08-31T17:41:13.048Z"
+   },
+   "pages": [],
+   "engine": "2027-08-31T17:41:13.048Z",
+   "horizons": "2027-08-31T17:41:11.260Z",
+   "horizonsMinusEngineSeconds": -1.787,
+   "queries": [
+    "lunation-new-20270831T1741-moon",
+    "lunation-new-20270831T1741-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.448506294556068e-08,
+   "moonLongitude": 158.104298,
+   "moonSign": "virgo"
+  },
+  "station:Uranus:retrograde:2027-09-15T09:10:05.125Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Uranus",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "full-moon-2027-09-15"
+   ],
+   "engine": "2027-09-15T09:10:05.125Z",
+   "horizons": "2027-09-15T09:09:08.686Z",
+   "horizonsMinusEngineSeconds": -56.438,
+   "queries": [
+    "station-uranus-retrograde-20270915T0908"
+   ],
+   "stepMinutes": 60,
+   "fitResidualDeg": 8.076091262410046e-08,
+   "longitude": 69.955678,
+   "sign": "gemini"
+  },
+  "lunation:full:2027-09-15T23:03:33.051Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-09-15T23:03:33.051Z"
+   },
+   "pages": [
+    "full-moon-2027-08-17",
+    "full-moon-2027-09-15",
+    "full-moon-2027-10-15"
+   ],
+   "engine": "2027-09-15T23:03:33.051Z",
+   "horizons": "2027-09-15T23:03:31.519Z",
+   "horizonsMinusEngineSeconds": -1.532,
+   "queries": [
+    "lunation-full-20270915T2303-moon",
+    "lunation-full-20270915T2303-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.809073133442258e-08,
+   "moonLongitude": 352.882769,
+   "moonSign": "pisces"
+  },
+  "shadow:Mercury:pre:2027-09-17T07:28:03.816Z": {
+   "kind": "shadow",
+   "detail": {
+    "body": "Mercury",
+    "edge": "pre",
+    "stationRetrograde": "2027-10-07T14:39:08.875Z",
+    "stationDirect": "2027-10-28T14:11:14.559Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-09-17T07:28:03.816Z",
+   "horizons": "2027-09-17T07:28:53.604Z",
+   "horizonsMinusEngineSeconds": 49.789,
+   "queries": [
+    "shadow-mercury-pre-20270917T0728-wide",
+    "shadow-mercury-pre-20270917T0728"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 5.362604430653173e-08,
+   "crosses": "the longitude of the direct station, 199.312056 degrees",
+   "stationKey": "station:Mercury:direct:2027-10-28T14:11:14.559Z"
+  },
+  "lunation:new:2027-09-30T02:36:05.212Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-09-30T02:36:05.212Z"
+   },
+   "pages": [],
+   "engine": "2027-09-30T02:36:05.212Z",
+   "horizons": "2027-09-30T02:36:04.991Z",
+   "horizonsMinusEngineSeconds": -0.221,
+   "queries": [
+    "lunation-new-20270930T0236-moon",
+    "lunation-new-20270930T0236-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.46461601644588e-08,
+   "moonLongitude": 186.724032,
+   "moonSign": "libra"
+  },
+  "station:Mercury:retrograde:2027-10-07T14:39:08.875Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mercury",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-10-07T14:39:08.875Z",
+   "horizons": "2027-10-07T14:37:03.766Z",
+   "horizonsMinusEngineSeconds": -125.109,
+   "queries": [
+    "station-mercury-retrograde-20271007T1437"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.404615421866765e-08,
+   "longitude": 214.92779,
+   "sign": "scorpio"
+  },
+  "lunation:full:2027-10-15T13:46:59.502Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-10-15T13:46:59.502Z"
+   },
+   "pages": [
+    "full-moon-2027-09-15",
+    "full-moon-2027-10-15",
+    "full-moon-2027-11-14"
+   ],
+   "engine": "2027-10-15T13:46:59.502Z",
+   "horizons": "2027-10-15T13:47:00.606Z",
+   "horizonsMinusEngineSeconds": 1.105,
+   "queries": [
+    "lunation-full-20271015T1346-moon",
+    "lunation-full-20271015T1346-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 6.109171693524651e-08,
+   "moonLongitude": 21.982612,
+   "moonSign": "aries"
+  },
+  "aspect:Neptune:sextile:Pluto:2027-10-16T18:03:57.633Z": {
+   "kind": "aspect",
+   "detail": {
+    "a": "Neptune",
+    "b": "Pluto",
+    "type": "sextile"
+   },
+   "pages": [
+    "full-moon-2027-10-15"
+   ],
+   "engine": "2027-10-16T18:03:57.633Z",
+   "horizons": "2027-10-16T14:39:54.526Z",
+   "horizonsMinusEngineSeconds": -12243.106,
+   "queries": [
+    "aspect-neptune-sextile-pluto-20271016T1803-a",
+    "aspect-neptune-sextile-pluto-20271016T1803-b"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 1.0002245187483438e-07,
+   "separationDeg": 60
+  },
+  "station:Pluto:direct:2027-10-18T03:49:21.034Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Pluto",
+    "direction": "direct"
+   },
+   "pages": [
+    "full-moon-2027-10-15"
+   ],
+   "engine": "2027-10-18T03:49:21.034Z",
+   "horizons": "2027-10-18T03:50:08.553Z",
+   "horizonsMinusEngineSeconds": 47.519,
+   "queries": [
+    "station-pluto-direct-20271018T0350"
+   ],
+   "stepMinutes": 60,
+   "fitResidualDeg": 1.7825016129791038e-07,
+   "longitude": 304.748246,
+   "sign": "aquarius"
+  },
+  "station:Mercury:direct:2027-10-28T14:11:14.559Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mercury",
+    "direction": "direct"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-10-28T14:11:14.559Z",
+   "horizons": "2027-10-28T14:10:37.828Z",
+   "horizonsMinusEngineSeconds": -36.731,
+   "queries": [
+    "station-mercury-direct-20271028T1410"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.290758053888567e-08,
+   "longitude": 199.312056,
+   "sign": "libra"
+  },
+  "lunation:new:2027-10-29T13:36:32.787Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-10-29T13:36:32.787Z"
+   },
+   "pages": [],
+   "engine": "2027-10-29T13:36:32.787Z",
+   "horizons": "2027-10-29T13:36:34.175Z",
+   "horizonsMinusEngineSeconds": 1.388,
+   "queries": [
+    "lunation-new-20271029T1336-moon",
+    "lunation-new-20271029T1336-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 9.370407569320172e-08,
+   "moonLongitude": 215.90362,
+   "moonSign": "scorpio"
+  },
+  "shadow:Mercury:post:2027-11-13T09:55:32.644Z": {
+   "kind": "shadow",
+   "detail": {
+    "body": "Mercury",
+    "edge": "post",
+    "stationRetrograde": "2027-10-07T14:39:08.875Z",
+    "stationDirect": "2027-10-28T14:11:14.559Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-11-13T09:55:32.644Z",
+   "horizons": "2027-11-13T09:54:39.908Z",
+   "horizonsMinusEngineSeconds": -52.736,
+   "queries": [
+    "shadow-mercury-post-20271113T0955-wide",
+    "shadow-mercury-post-20271113T0955"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 6.029441691063342e-08,
+   "crosses": "the longitude of the retrograde station, 214.927790 degrees",
+   "stationKey": "station:Mercury:retrograde:2027-10-07T14:39:08.875Z"
+  },
+  "lunation:full:2027-11-14T03:25:53.355Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-11-14T03:25:53.355Z"
+   },
+   "pages": [
+    "full-moon-2027-10-15",
+    "full-moon-2027-11-14",
+    "full-moon-2027-12-13"
+   ],
+   "engine": "2027-11-14T03:25:53.355Z",
+   "horizons": "2027-11-14T03:25:55.948Z",
+   "horizonsMinusEngineSeconds": 2.594,
+   "queries": [
+    "lunation-full-20271114T0325-moon",
+    "lunation-full-20271114T0325-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.514765903466781e-08,
+   "moonLongitude": 51.521413,
+   "moonSign": "taurus"
+  },
+  "lunation:new:2027-11-28T03:24:24.613Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-11-28T03:24:24.613Z"
+   },
+   "pages": [],
+   "engine": "2027-11-28T03:24:24.613Z",
+   "horizons": "2027-11-28T03:24:26.498Z",
+   "horizonsMinusEngineSeconds": 1.885,
+   "queries": [
+    "lunation-new-20271128T0324-moon",
+    "lunation-new-20271128T0324-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 9.367711932550815e-08,
+   "moonLongitude": 245.653303,
+   "moonSign": "sagittarius"
+  },
+  "lunation:full:2027-12-13T16:08:48.111Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-12-13T16:08:48.111Z"
+   },
+   "pages": [
+    "full-moon-2027-11-14",
+    "full-moon-2027-12-13"
+   ],
+   "engine": "2027-12-13T16:08:48.111Z",
+   "horizons": "2027-12-13T16:08:48.004Z",
+   "horizonsMinusEngineSeconds": -0.107,
+   "queries": [
+    "lunation-full-20271213T1608-moon",
+    "lunation-full-20271213T1608-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 6.856701021545897e-08,
+   "moonLongitude": 81.412849,
+   "moonSign": "gemini"
+  },
+  "station:Neptune:direct:2027-12-15T09:13:20.243Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Neptune",
+    "direction": "direct"
+   },
+   "pages": [
+    "full-moon-2027-12-13"
+   ],
+   "engine": "2027-12-15T09:13:20.243Z",
+   "horizons": "2027-12-15T09:08:28.225Z",
+   "horizonsMinusEngineSeconds": -292.018,
+   "queries": [
+    "station-neptune-direct-20271215T0907"
+   ],
+   "stepMinutes": 60,
+   "fitResidualDeg": 1.2135611693331327e-06,
+   "longitude": 3.852598,
+   "sign": "aries"
+  },
+  "lunation:new:2027-12-27T20:12:18.829Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-12-27T20:12:18.829Z"
+   },
+   "pages": [],
+   "engine": "2027-12-27T20:12:18.829Z",
+   "horizons": "2027-12-27T20:12:19.828Z",
+   "horizonsMinusEngineSeconds": 1.0,
+   "queries": [
+    "lunation-new-20271227T2012-moon",
+    "lunation-new-20271227T2012-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 8.9491927986185e-08,
+   "moonLongitude": 275.838098,
+   "moonSign": "capricorn"
+  },
+  "lunation:full:2028-01-12T04:03:06.410Z": {
+   "kind": "lunation",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2028-01-12T04:03:06.410Z"
+   },
+   "pages": [
+    "full-moon-2027-12-13"
+   ],
+   "engine": "2028-01-12T04:03:06.410Z",
+   "horizons": "2028-01-12T04:03:05.215Z",
+   "horizonsMinusEngineSeconds": -1.195,
+   "queries": [
+    "lunation-full-20280112T0403-moon",
+    "lunation-full-20280112T0403-sun"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 9.408946773092897e-08,
+   "moonLongitude": 111.458775,
+   "moonSign": "cancer"
+  },
+  "eclipse:lunar:2028-01-12T04:13:07.811Z": {
+   "kind": "eclipse",
+   "detail": {
+    "type": "lunar",
+    "eclipseKind": "partial"
+   },
+   "pages": [
+    "eclipse-2027-08-17"
+   ],
+   "engine": "2028-01-12T04:13:07.811Z",
+   "horizons": "2028-01-12T04:13:06.797Z",
+   "horizonsMinusEngineSeconds": -1.013,
+   "moonLongitude": 111.562964,
+   "moonSign": "cancer",
+   "sunLongitude": 291.465867,
+   "sunSign": "capricorn",
+   "queries": [
+    "eclipse-lunar-20280112T0413-moon",
+    "eclipse-lunar-20280112T0413-sun"
+   ],
+   "stepMinutes": 1,
+   "leastDistanceKm": 6261.4,
+   "leastDistanceOf": "the Moon's centre from the axis of Earth's shadow",
+   "fitResidualKm2": 6.333643659949303
+  },
+  "station:Mercury:retrograde:2028-01-24T11:03:29.179Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mercury",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2028-01-24T11:03:29.179Z",
+   "horizons": "2028-01-24T11:02:25.813Z",
+   "horizonsMinusEngineSeconds": -63.365,
+   "queries": [
+    "station-mercury-retrograde-20280124T1102"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.5566488299518824e-08,
+   "longitude": 319.698437,
+   "sign": "aquarius"
+  },
+  "eclipse:solar:2028-01-26T15:07:49.353Z": {
+   "kind": "eclipse",
+   "detail": {
+    "type": "solar",
+    "eclipseKind": "annular"
+   },
+   "pages": [
+    "eclipse-2027-08-02"
+   ],
+   "engine": "2028-01-26T15:07:49.353Z",
+   "horizons": "2028-01-26T15:07:49.563Z",
+   "horizonsMinusEngineSeconds": 0.21,
+   "moonLongitude": 306.145047,
+   "moonSign": "aquarius",
+   "sunLongitude": 306.180411,
+   "sunSign": "aquarius",
+   "queries": [
+    "eclipse-solar-20280126T1507-moon",
+    "eclipse-solar-20280126T1507-sun"
+   ],
+   "stepMinutes": 1,
+   "leastDistanceKm": 2488.4,
+   "leastDistanceOf": "the Moon's shadow axis from the geocentre",
+   "fitResidualKm2": 3.1735769351944327
+  },
+  "station:Mercury:direct:2028-02-14T12:39:33.046Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mercury",
+    "direction": "direct"
+   },
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2028-02-14T12:39:33.046Z",
+   "horizons": "2028-02-14T12:37:47.641Z",
+   "horizonsMinusEngineSeconds": -105.404,
+   "queries": [
+    "station-mercury-direct-20280214T1237"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.4561894557991764e-08,
+   "longitude": 303.985398,
+   "sign": "aquarius"
+  },
+  "ingress:Jupiter:libra:2028-08-24T05:04:19.914Z": {
+   "kind": "ingress",
+   "detail": {
+    "body": "Jupiter",
+    "sign": "libra"
+   },
+   "pages": [
+    "jupiter-enters-virgo-2027-07-26"
+   ],
+   "engine": "2028-08-24T05:04:19.914Z",
+   "horizons": "2028-08-24T05:08:32.719Z",
+   "horizonsMinusEngineSeconds": 252.805,
+   "queries": [
+    "ingress-jupiter-libra-20280824T0504-wide",
+    "ingress-jupiter-libra-20280824T0504"
+   ],
+   "stepMinutes": 1,
+   "fitResidualDeg": 5.0282611089615126e-08,
+   "crosses": "180 degrees, the start of libra",
+   "motion": "direct"
+  },
+  "station:Mars:retrograde:2029-02-14T08:12:52.118Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mars",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2029-02-14T08:12:52.118Z",
+   "horizons": "2029-02-14T08:16:19.131Z",
+   "horizonsMinusEngineSeconds": 207.013,
+   "queries": [
+    "station-mars-retrograde-20290214T0816"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.423180482466705e-08,
+   "longitude": 193.922598,
+   "sign": "libra"
+  },
+  "station:Mars:direct:2029-05-05T18:58:41.337Z": {
+   "kind": "station",
+   "detail": {
+    "body": "Mars",
+    "direction": "direct"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2029-05-05T18:58:41.337Z",
+   "horizons": "2029-05-05T18:59:54.410Z",
+   "horizonsMinusEngineSeconds": 73.073,
+   "queries": [
+    "station-mars-direct-20290505T1859"
+   ],
+   "stepMinutes": 10,
+   "fitResidualDeg": 5.6311620255655725e-08,
+   "longitude": 174.929022,
+   "sign": "virgo"
+  }
+ }
+}
