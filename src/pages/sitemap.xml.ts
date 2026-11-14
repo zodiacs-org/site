@@ -67,7 +67,7 @@ const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 // The twelve Registry sign pages re-read their mint and freeze authority on chain (thesis evidence refresh).
 const REGISTRY_SIGN_LASTMOD = '2026-11-10';
-const THESIS_LASTMOD = '2026-11-13';
+const THESIS_LASTMOD = '2026-11-14';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
 const SKY_HEADS_UP_LASTMOD = '2026-11-12';
@@ -706,6 +706,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/full-moon-calendar/2027/', FULL_MOON_CALENDAR_2027_UPDATED] as const,
   ['/eclipses/2027/', ECLIPSES_2027_UPDATED] as const,
   ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
+  // The Italian season pages' reading-confidence label, 13 November, last so this date wins.
+  ...SIGNS.map((sign) => [`/it/seasons/${sign.slug}/`, '2026-11-13'] as const),
   // The connector page's 19 live tools, limits, troubleshooting and support contact, the support page's
   // connector section and the MCP guides that count its tools (ZOD-58). The day of the daily edition it was
   // built with, last so this date wins.
