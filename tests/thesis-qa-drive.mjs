@@ -245,10 +245,10 @@ try {
       && await page.evaluate(() => performance.getEntriesByType('resource')
         .filter((entry) => new URL(entry.name).pathname === '/assets/site-footer.css').length) === 0);
   // Masthead + footer.
-  check('masthead reads Nº 10 · Why Zodiacs Matter', /Nº 10 · Why Zodiacs Matter/.test(await page.locator('.essay__rail').textContent() ?? ''));
+  check('masthead reads Nº 11 · Why Zodiacs Matter', /Nº 11 · Why Zodiacs Matter/.test(await page.locator('.essay__rail').textContent() ?? ''));
   check('hero keeps one concise consumer subheader',
     (await page.locator('.hero__epi').count()) === 0
-      && /Your sign already shows up in birthday wishes/.test(await page.locator('.hero__sub').textContent() ?? ''));
+      && /You already know your sign\. Now it is also a coin/.test(await page.locator('.hero__sub').textContent() ?? ''));
   const heroVideo = page.locator('.hero video.hero__media');
   check('hero uses one ambient zodiac-clock video', (await heroVideo.count()) === 1);
   const heroVideoStart = await heroVideo.evaluate((video) => ({
@@ -378,13 +378,13 @@ try {
     JSON.stringify(catalogueIcons));
   check('catalogue contains no legacy Astrofolio glyph masks',
     (await page.locator('#the-twelve .af-glyph').count()) === 0);
-  check('essay opens with a familiar sign',
-    /Before you had a username, you had a sign\./.test(await page.locator('#everyone-has-a-sign').textContent() ?? ''));
+  check('essay opens with the twelve signs, which need no explaining',
+    /Show someone a page of crypto coins and they will ask what they are looking at\./.test(await page.locator('#everyone-has-a-sign').textContent() ?? ''));
   check('the note above the essay says who wrote it and that they hold the coins',
     await isVisuallyExposed(page.locator('#who-wrote-this'))
       && /Zodiacs\.org runs Astrofolio and wrote this essay\. We hold some of these coins/.test(await page.locator('#who-wrote-this').textContent() ?? ''));
-  check('the essay says memecoins in its third paragraph',
-    /They are memecoins\./.test(await page.locator('#where-the-signs-come-from').textContent() ?? ''));
+  check('the essay says memecoins in its third paragraph, and says what one is',
+    /They are memecoins\. A memecoin is a coin built around something people recognise\./.test(await page.locator('#everyone-has-a-sign').textContent() ?? ''));
   check('the essay is plain prose: no headings, drawers or asides above the evidence',
     (await page.locator('.essay__body > section h2, .essay__body > section h3, .essay__body > section details, .essay__body > section aside').count()) === 0);
   check('essay closes with a concrete invitation',
@@ -582,7 +582,7 @@ try {
       && await page.locator('#fig-2 template, #fig-2 details').count() === 0);
   check('F3 draws four accessible schematic attention curves',
     (await page.locator('#fig-3 .attention-patterns .fact-card svg[role="img"]').count()) === 4
-      && /Schematic:.*illustrative, not measured coin performance\./s.test(await page.locator('#fig-3 .zfig-cap').textContent() ?? ''));
+      && /A sketch:.*illustrative, not measured coin performance\./s.test(await page.locator('#fig-3 .zfig-cap').textContent() ?? ''));
   check('the keyboard figure identifies twelve Unicode symbols',
     (await page.locator('#fig-keyboard .keyboard-grid svg[role="img"]').count()) === 12
       && /June 1993/.test(await page.locator('#fig-keyboard .zfig-src').textContent() ?? ''));
@@ -660,7 +660,8 @@ try {
 
   // Origin receipts stay linked from the public-history story.
   check('public history links the registry disclosure origin row',
-    (await page.locator('#the-public-record a[href="https://zodiacs.org/disclosure/#origin"]').count()) === 1);
+    (await page.locator('#the-case-against a[href="https://zodiacs.org/disclosure/#origin"]').count()) === 1
+      && (await page.locator('#the-public-record a[href="/disclosure/#origin"]').count()) === 1);
 
   // Evidence shots — desktop.
   await shot(page, '#fig-know', 'thesis-know-desktop.png');

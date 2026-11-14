@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -11,18 +11,19 @@ const MANUSCRIPT = readFileSync(resolve(ROOT, 'zodiacs-thesis-v4.md'), 'utf8');
 const CLAIMS = JSON.parse(readFileSync(resolve(ROOT, 'public/thesis/thesis-claims.json'), 'utf8'));
 const CHARTS = JSON.parse(readFileSync(resolve(ROOT, 'public/thesis/thesis-charts.json'), 'utf8'));
 
-// Edition Nº 10 is one essay in plain prose. Its sections carry no headings;
-// they keep their ids so links published to the earlier editions still land.
+// Edition Nº 11 is one essay in plain prose for everyday readers. Its sections
+// carry no headings; they keep their ids so links published to the earlier
+// editions still land.
 const ESSAY_SECTION_IDS = [
   'everyone-has-a-sign',
-  'where-the-signs-come-from',
   'attention',
+  'where-the-signs-come-from',
   'what-holding-means',
   'the-public-record',
   'the-conclusion',
 ];
 
-const ESSAY_FIGURE_IDS = ['fig-know', 'fig-1', 'fig-lifespan', 'fig-2', 'fig-provenance'];
+const ESSAY_FIGURE_IDS = ['fig-mine', 'fig-know', 'fig-lifespan', 'fig-shelf', 'fig-3', 'fig-2', 'fig-1'];
 
 const SIGNS = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
@@ -30,11 +31,12 @@ const SIGNS = [
 ];
 
 const KEY_COPY = [
-  'Before you had a username, you had a sign.',
-  'Most memecoins do not last a day.',
-  'A meme about a dog is about the dog. A meme about Scorpio is about you',
-  'the copy will have the name without the history',
-  'A memecoin can go to zero, and these can too.',
+  'Show someone a page of crypto coins and they will ask what they are looking at.',
+  'nine in ten could',
+  'There are twelve signs, and there have been twelve for about 2,400 years.',
+  'A joke fades, and the zodiac comes back.',
+  'Nobody owns the zodiac.',
+  'most people who know theirs will never buy a coin',
   'making the case that it should be this set.',
   'Choose the sign you already carry.',
 ];
@@ -128,15 +130,17 @@ function essayProse() {
 
 const sentencesOf = (text) => text.split(/(?<=[.!?])\s+(?=[A-Z“"])/).map((s) => s.trim()).filter(Boolean);
 
-describe('thesis Nº 10 editorial contract', () => {
+describe('thesis Nº 11 editorial contract', () => {
   it('keeps the edition, the essay sections, and the source manuscript intact', () => {
     const htmlText = textOf(HTML).toLowerCase();
     const manuscriptText = MANUSCRIPT.replace(/[*_#>`]/g, ' ').replace(/\s+/g, ' ').toLowerCase();
     const sectionIds = [...essayHtml().matchAll(/<section\b[^>]*\bid=["']([^"']+)["']/gi)].map((m) => m[1]);
 
-    expect(htmlText).toContain('nº 10');
+    expect(htmlText).toContain('nº 11');
+    expect(htmlText).not.toContain('nº 10');
     expect(htmlText).not.toContain('nº 09');
-    expect(manuscriptText).toContain('nº 10');
+    expect(manuscriptText).toContain('nº 11');
+    expect(manuscriptText).not.toContain('nº 10');
     expect(sectionIds).toEqual(ESSAY_SECTION_IDS);
     expect(MANUSCRIPT).not.toMatch(/^##/m);
     for (const phrase of KEY_COPY) {
@@ -184,7 +188,7 @@ describe('thesis publication metadata contract', () => {
     // The hero prints no "Published" date (owner, 2026-11-13): the date the
     // page was first published is not on record, so none is stated.
     expect(dates).toEqual([
-      { datetime: '2026-11-13', label: 'Updated 13 Nov 2026' },
+      { datetime: '2026-11-14', label: 'Updated 14 Nov 2026' },
     ]);
     expect(textOf(hero)).toContain('Evidence checked 10 Nov 2026');
     expect(textOf(HTML)).not.toMatch(/\bPublished \d{1,2} [A-Z][a-z]{2} \d{4}/);
@@ -202,7 +206,7 @@ describe('thesis publication metadata contract', () => {
       '@id': 'https://zodiacs.org/thesis/#article',
       headline: 'Why Zodiacs Matter',
       url: 'https://zodiacs.org/thesis/',
-      dateModified: '2026-11-13',
+      dateModified: '2026-11-14',
     });
     expect(Object.hasOwn(article, 'datePublished')).toBe(false);
   });
@@ -224,7 +228,9 @@ describe('thesis hero icon contract', () => {
       const label = `${slug[0].toUpperCase()}${slug.slice(1)} — digital asset`;
       expect(attrs).toMatch(new RegExp(`\\bhref=["']/registry/${slug}/["']`, 'i'));
       expect(attrs).toContain(`aria-label="${label}"`);
-      expect(inner).toContain(`src="/assets/zodiac-icons/48/${slug}.webp"`);
+      // Each icon arrives after load, so the twelve never compete with the
+      // hero image for the first paint; the link shows its hue until then.
+      expect(inner).toContain(`data-src="/assets/zodiac-icons/48/${slug}.webp"`);
       expect(inner).toMatch(/class="hero__twelve-icon"/);
       expect(inner).toMatch(/\bwidth="24"\s+height="24"/);
       expect(inner).toMatch(/\balt=""/);
@@ -303,7 +309,9 @@ describe('thesis feedback simplification contract', () => {
     const statsAndPulse = audienceEvidence.slice(0, audienceEvidence.indexOf('id="fig-keyboard"'));
     expect(statsAndPulse).not.toMatch(/<details\b/i);
     expect(audienceEvidence).toMatch(/\bid=["']fig-keyboard["']/i);
-    expect(audienceEvidence).toMatch(/\bid=["']fig-3["']/i);
+    // The calendar sketch moved up into the essay in edition Nº 11.
+    expect(audienceEvidence).not.toMatch(/\bid=["']fig-3["']/i);
+    expect(attention).toMatch(/\bid=["']fig-3["']/i);
     expect(textOf(audienceEvidence)).toContain('See the dated historical timeline');
     expect(HTML).not.toMatch(/Co-Star|Statista|Tinder/);
     expect(attention).not.toMatch(/\btruth-panel\b/i);
@@ -323,8 +331,14 @@ describe('thesis feedback simplification contract', () => {
     expect(textOf(fig2)).toContain('curiosity, not demand for the coins');
   });
 
-  it('exposes dated adverse provenance before the complete history drawer', () => {
-    const provenance = sliceElement(publicRecord, /<figure\b[^>]*\bid=["']fig-provenance["'][^>]*>/i, 'figure');
+  it('exposes dated adverse provenance, with the quoted post, at the top of E4', () => {
+    const caseAgainst = sliceElement(vault, /<section\b[^>]*\bid=["']the-case-against["'][^>]*>/i, 'section');
+    const provenance = sliceElement(caseAgainst, /<figure\b[^>]*\bid=["']fig-provenance["'][^>]*>/i, 'figure');
+    // Edition Nº 11 names no one the everyday reader would not know: the post and the cards sit below the essay.
+    expect(caseAgainst).toMatch(/<blockquote\b[^>]*class=["']quote["']/i);
+    expect(textOf(caseAgainst)).toContain('It will eventually go to zero.');
+    expect(caseAgainst.indexOf('<blockquote')).toBeLessThan(caseAgainst.indexOf('id="fig-provenance"'));
+    expect(publicRecord).not.toMatch(/fig-provenance|<blockquote\b/i);
     const grid = sliceElement(provenance, /<div\b[^>]*class=["'][^"']*\bprovenance-grid\b[^"']*["'][^>]*>/i, 'div');
     const links = tagParts(grid, 'a');
     expect(provenance).not.toBe('');
@@ -340,7 +354,6 @@ describe('thesis feedback simplification contract', () => {
     expect(textOf(provenance)).toMatch(/Concentration.*by mistake.*Dead bag/is);
     expect(textOf(provenance)).toContain('search link rather than an individual post receipt');
     // The complete history lives below the essay, in E4.
-    const caseAgainst = sliceElement(vault, /<section\b[^>]*\bid=["']the-case-against["'][^>]*>/i, 'section');
     expect(textOf(caseAgainst)).toContain('See the complete dated history');
     expect(publicRecord).not.toMatch(/<details\b/i);
     expect(HTML).not.toMatch(/\bid=["']fig-4["']/i);
@@ -579,7 +592,7 @@ describe('thesis real-use proof and honest-limitation contract', () => {
   });
 });
 
-describe('thesis schematic curves (E5)', () => {
+describe('thesis schematic curves (fig-3, in the essay)', () => {
   const fig3 = sliceElement(HTML, /<figure\b[^>]*\bid=["']fig-3["'][^>]*>/i, 'figure');
   const patterns = sliceElement(fig3, /<div\b[^>]*class=["'][^"']*\battention-patterns\b[^"']*["'][^>]*>/i, 'div');
 
@@ -592,7 +605,12 @@ describe('thesis schematic curves (E5)', () => {
     }
     expect(textOf(fig3)).toContain('These curves are illustrative, not measured coin performance.');
     expect(fig3).toContain('href="#fig-2"');
-    expect([...charts.at(-1).inner.matchAll(/\bstroke=["']#[a-f0-9]{6}["']/gi)]).toHaveLength(12);
+    // Twelve peaks, drawn twice: the year, then the year starting again.
+    const hues = [...charts.at(-1).inner.matchAll(/\bstroke=["'](#[a-f0-9]{6})["']/gi)].map((m) => m[1].toUpperCase());
+    expect(hues).toHaveLength(24);
+    expect(new Set(hues).size).toBe(12);
+    expect(textOf(fig3)).toContain('The next chart shows the measured version.');
+    expect(textOf(fig3)).not.toMatch(/[→—–]/);
   });
 
   it('has no gold, Bitcoin and Zodiacs comparison anywhere on the page', () => {
@@ -723,7 +741,7 @@ describe('thesis pass bar', () => {
   const count = (text, phrase) => text.split(phrase).length - 1;
 
   it('1. ledger: every sentence with a number has a claim, and every claim is printed', () => {
-    const NUMBER_PHRASES = ['one in four', 'nine in ten', 'one in twenty', 'three million', 'five languages', 'third year', 'two years', 'ninety days'];
+    const NUMBER_PHRASES = ['one in four', 'one in five', 'nine in ten', 'one in twenty', 'three million', 'five languages', 'third year', 'two years', 'ninety days', 'a thousand years', 'more than 600', 'more than 500', 'since 1993'];
     const matches = CLAIMS.claims.map((claim) => claim.match.toLowerCase());
     for (const sentence of sentencesOf(prose)) {
       const lower = sentence.toLowerCase();
@@ -756,19 +774,27 @@ describe('thesis pass bar', () => {
     expect(essayVisible.split(/\s+/).slice(0, 60).join(' ').toLowerCase()).toMatch(/\bcoins?\b/);
   });
 
-  it('5. pure prose: no headings, drawers, asides or lists, one quote, five figures', () => {
-    for (const tag of ['h2', 'h3', 'h4', 'details', 'aside', 'ul', 'ol']) {
+  it('5. pure prose: no headings, drawers, asides, lists or quotes, seven figures', () => {
+    for (const tag of ['h2', 'h3', 'h4', 'details', 'aside', 'ul', 'ol', 'blockquote']) {
       expect(essay, `essay has <${tag}>`).not.toMatch(new RegExp(`<${tag}\\b`, 'i'));
     }
-    expect([...essay.matchAll(/<blockquote\b/gi)]).toHaveLength(1);
     expect([...essay.matchAll(/<figure\b[^>]*\bid=["']([^"']+)["']/gi)].map((m) => m[1])).toEqual(ESSAY_FIGURE_IDS);
   });
 
-  it('6. length: 1,100 words or fewer, not counting the quote and figures', () => {
-    expect(prose.split(/\s+/).length).toBeLessThanOrEqual(1100);
+  it('6. length: 1,150 words or fewer, not counting the figures', () => {
+    expect(prose.split(/\s+/).length).toBeLessThanOrEqual(1150);
   });
 
-  it('7. reading level: Flesch-Kincaid grade 11 or below', () => {
+  it('6b. plain words: no name or term an everyday reader would not know', () => {
+    for (const pattern of [/\bportnoy\b/i, /pump\.fun/i, /\bblockchain\b/i, /\btokens?\b/i, /\bliquidity\b/i, /\bon-chain\b/i, /\bDEX\b/]) {
+      expect(prose, `essay says ${pattern}`).not.toMatch(pattern);
+    }
+    // Two: "on Solana" where the coins are introduced, and the address
+    // sentence the owner chose on 2026-11-13 ("still has the Solana address").
+    expect(count(prose, 'Solana')).toBeLessThanOrEqual(2);
+  });
+
+  it('7. reading level: Flesch-Kincaid grade 8 or below', () => {
     const words = prose.match(/[A-Za-z’']+/g) ?? [];
     const syllables = words.reduce((sum, word) => {
       const w = word.toLowerCase().replace(/[’']/g, '');
@@ -777,7 +803,7 @@ describe('thesis pass bar', () => {
       return sum + Math.max(1, n);
     }, 0);
     const grade = 0.39 * (words.length / sentencesOf(prose).length) + 11.8 * (syllables / words.length) - 15.59;
-    expect(grade, `grade ${grade.toFixed(1)}`).toBeLessThanOrEqual(11);
+    expect(grade, `grade ${grade.toFixed(1)}`).toBeLessThanOrEqual(8);
   });
 
   it('8. fresh: evidence and chart data within 30 days of "Updated"', () => {
@@ -790,7 +816,7 @@ describe('thesis pass bar', () => {
     const evidenceAge = days(new Date(`${checked} UTC`).toISOString().slice(0, 10), updated);
     expect(evidenceAge, `evidence checked ${checked}, updated ${updated}`).toBeGreaterThanOrEqual(0);
     expect(evidenceAge, `evidence checked ${checked}, updated ${updated}`).toBeLessThanOrEqual(30);
-    for (const date of [CHARTS.know.checkedAt, CHARTS.lifespan.checkedAt, CHARTS.twelve.checkedAt].filter(Boolean)) {
+    for (const date of [CHARTS.know.checkedAt, CHARTS.lifespan.checkedAt, CHARTS.twelve.checkedAt, CHARTS.usedCrypto.checkedAt, CHARTS.shelf.checkedAt].filter(Boolean)) {
       expect(Math.abs(days(date, updated)), `chart data checked ${date}`).toBeLessThanOrEqual(30);
     }
   });
@@ -830,7 +856,7 @@ describe('thesis pass bar', () => {
     expect(prose).not.toMatch(/\b(?:honestly|genuinely|literally|fundamentally|crucially)\b/i);
   });
 
-  it('12. the two bar charts match their data file', () => {
+  it('12. the figures match their data file', () => {
     const run = spawnSync(process.execPath, ['scripts/build-thesis-charts.mjs', '--check'], { cwd: ROOT, encoding: 'utf8' });
     expect(run.status, run.stderr).toBe(0);
     const lifespan = sliceElement(HTML, /<figure\b[^>]*\bid=["']fig-lifespan["'][^>]*>/i, 'figure');
@@ -839,5 +865,25 @@ describe('thesis pass bar', () => {
     else expect(Number(shown)).toBe(CHARTS.twelve.tradedInWindow);
     expect(textOf(lifespan)).toContain('counted trades on Pump.fun only');
     expect(textOf(lifespan)).not.toMatch(/\$\d|market cap|price/i);
+    const know = sliceElement(HTML, /<figure\b[^>]*\bid=["']fig-know["'][^>]*>/i, 'figure');
+    expect(textOf(know)).toContain(`${CHARTS.usedCrypto.everUsedPct}%`);
+    const shelf = sliceElement(HTML, /<figure\b[^>]*\bid=["']fig-shelf["'][^>]*>/i, 'figure');
+    for (const category of CHARTS.shelf.categories) expect(textOf(shelf)).toContain(category.count.toLocaleString('en-US'));
+    expect(textOf(shelf)).not.toMatch(/\$\d|market|price|TAM\b/i);
+  });
+
+  it('13. the film loads nothing before play, and the reader\'s pick is never stored', () => {
+    const mine = sliceElement(HTML, /<figure\b[^>]*\bid=["']fig-mine["'][^>]*>/i, 'figure');
+    const video = mine.match(/<video\b[^>]*>/i)?.[0] ?? '';
+    for (const attr of ['muted', 'playsinline', 'preload="none"']) expect(video).toContain(attr);
+    // Controls are switched on when the reader presses play (Lighthouse LCP gate).
+    expect(HTML).toContain('film.controls = true');
+    expect(HTML).toContain('class="film-play"');
+    for (const source of [...mine.matchAll(/<source\b[^>]*src=["']([^"']+)["']/gi)].map((m) => m[1])) {
+      expect(existsSync(resolve(ROOT, `public${source}`)), source).toBe(true);
+    }
+    expect([...mine.matchAll(/<button\b[^>]*class=["']mine-sign["']/gi)]).toHaveLength(12);
+    const motion = HTML.slice(HTML.indexOf('<!-- thesis-motion-figure:begin -->'), HTML.indexOf('<!-- thesis-motion-figure:end -->'));
+    expect(motion).not.toMatch(/localStorage|sessionStorage|document\.cookie|history\.(?:push|replace)State|fetch\(/);
   });
 });

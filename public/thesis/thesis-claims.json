@@ -28,48 +28,30 @@
     },
     {
       "id": "know-sign",
-      "match": "Nine in ten could",
+      "match": "nine in ten could",
       "claim": "90% of U.S. adults picked their own sign when shown the twelve",
       "source": "https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology",
       "sourceDate": "2022-04-22",
-      "checkedAt": "2026-11-10",
+      "checkedAt": "2026-11-13",
       "status": "checked"
     },
     {
       "id": "believe",
-      "match": "only about one in four said they believe in astrology",
+      "match": "Only about one in four said they believe in astrology",
       "claim": "27% of U.S. adults said they believe in astrology",
       "source": "https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology",
       "sourceDate": "2022-04-22",
-      "checkedAt": "2026-11-10",
+      "checkedAt": "2026-11-13",
       "status": "checked"
     },
     {
-      "id": "age-of-signs",
-      "match": "for about 2,400 years",
-      "claim": "The fixed twelve-sign zodiac dates to Babylonian astronomy, about the fifth century BCE",
-      "source": "https://zodiacs.org/thesis/#the-audience",
-      "sourceDate": "2026-07-31",
-      "checkedAt": "2026-11-10",
-      "status": "listed"
-    },
-    {
-      "id": "newspaper-1930",
-      "match": "In 1930 a London newspaper printed a horoscope for the newborn Princess Margaret",
-      "claim": "R. H. Naylor's horoscope for Princess Margaret in the Sunday Express, August 1930, began the newspaper horoscope column",
-      "source": "https://www.smithsonianmag.com/history/how-are-horoscopes-still-thing-180957701/",
-      "sourceDate": "2015-06-24",
-      "checkedAt": "2026-11-10",
+      "id": "used-crypto",
+      "match": "about one in five American adults has ever bought or used any of it",
+      "claim": "19% of U.S. adults say they have ever invested in, traded or used a cryptocurrency (fielded 20 to 26 Jan 2026)",
+      "source": "https://www.pewresearch.org/short-reads/2026/06/08/about-1-in-5-americans-have-used-crypto-republicans-use-has-ticked-up/",
+      "sourceDate": "2026-06-08",
+      "checkedAt": "2026-11-13",
       "status": "checked"
-    },
-    {
-      "id": "social-media",
-      "match": "today the zodiac is some of the most dependable material on social media",
-      "claim": "No platform count is cited. The sentence prints no number and asks the reader to search their own sign",
-      "source": null,
-      "sourceDate": null,
-      "checkedAt": "2026-11-10",
-      "status": "weak"
     },
     {
       "id": "made-july-2024",
@@ -77,16 +59,25 @@
       "claim": "The twelve were created on 5 July 2024",
       "source": "https://zodiacs.org/disclosure/#origin",
       "sourceDate": "2024-07-05",
-      "checkedAt": "2026-11-10",
+      "checkedAt": "2026-11-13",
+      "status": "listed"
+    },
+    {
+      "id": "memecoin-plain",
+      "match": "It has no company behind it and pays you nothing",
+      "claim": "The coins have no issuing company, no dividend and no yield",
+      "source": "/disclosure/",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-13",
       "status": "listed"
     },
     {
       "id": "coingecko-sample",
-      "match": "18.7 million coins launched on Pump.fun between January 2024 and June 2026",
+      "match": "18.7 million coins launched on one popular site between January 2024 and June 2026",
       "claim": "CoinGecko studied 18,675,645 Pump.fun coins launched 14 Jan 2024 to 18 Jun 2026",
       "source": "https://www.coingecko.com/research/publications/average-lifespan-of-pumpfun-tokens",
       "sourceDate": "2026-06-23",
-      "checkedAt": "2026-11-10",
+      "checkedAt": "2026-11-13",
       "status": "checked"
     },
     {
@@ -117,12 +108,66 @@
       "status": "checked"
     },
     {
-      "id": "public-list",
-      "match": "any app can recognise the listed Leo without asking us",
-      "claim": "The registry of the twelve addresses is public",
-      "source": "https://zodiacs.org/registry/zodiacs.registry.json",
-      "sourceDate": "2026-11-10",
+      "id": "dog-coins",
+      "match": "more than 600 dog coins and more than 500 cat coins",
+      "claim": "CoinGecko lists 664 dog-themed and 557 cat-themed coins (and 149 frog-themed) on 13 Nov 2026",
+      "source": "https://www.coingecko.com/en/categories/dog-themed-coins",
+      "sourceDate": "2026-11-13",
+      "checkedAt": "2026-11-13",
+      "status": "checked"
+    },
+    {
+      "id": "age-of-signs",
+      "match": "there have been twelve for about 2,400 years",
+      "claim": "The fixed twelve-sign zodiac dates to Babylonian astronomy, about the fifth century BCE",
+      "source": "https://zodiacs.org/thesis/#the-audience",
+      "sourceDate": "2026-07-31",
+      "checkedAt": "2026-11-13",
+      "status": "listed"
+    },
+    {
+      "id": "newspaper-1930",
+      "match": "In 1930 a London newspaper printed a horoscope for the newborn Princess Margaret",
+      "claim": "R. H. Naylor's horoscope for Princess Margaret in the Sunday Express, August 1930, began the newspaper horoscope column",
+      "source": "https://www.smithsonianmag.com/history/how-are-horoscopes-still-thing-180957701/",
+      "sourceDate": "2015-06-24",
       "checkedAt": "2026-11-10",
+      "status": "checked"
+    },
+    {
+      "id": "keyboard-1993",
+      "match": "Each sign has had its own symbol in the world’s standard character set since 1993",
+      "claim": "U+2648 to U+2653 entered Unicode in version 1.1, June 1993",
+      "source": "https://www.unicode.org/versions/Unicode1.1.0/",
+      "sourceDate": "1993-06-01",
+      "checkedAt": "2026-11-13",
+      "status": "checked"
+    },
+    {
+      "id": "thousand-years",
+      "match": "A child born a thousand years from now will be born under one of the same twelve",
+      "claim": "The signs are twelve equal parts of the Sun’s yearly path counted from the March equinox, so every birth date falls in one of them. A statement about the signs, not the coins.",
+      "source": "/learn/",
+      "sourceDate": "2026-11-13",
+      "checkedAt": "2026-11-13",
+      "status": "listed"
+    },
+    {
+      "id": "nobody-owns",
+      "match": "Nobody owns the zodiac",
+      "claim": "The twelve names and symbols are about 2,400 years old and in the public domain",
+      "source": "/thesis/thesis-history.json",
+      "sourceDate": "2026-11-13",
+      "checkedAt": "2026-11-13",
+      "status": "listed"
+    },
+    {
+      "id": "fomo",
+      "match": "fomo is a separate company for adults, it is not offered everywhere, and it charges its own fees. We earn nothing when you use it.",
+      "claim": "fomo is made by FOMO Labs Inc., rated 18+, may not be available everywhere, charges its own trading fees, and has no referral deal with Zodiacs.org",
+      "source": "/fomo/",
+      "sourceDate": "2026-11-13",
+      "checkedAt": "2026-11-13",
       "status": "listed"
     },
     {
@@ -145,29 +190,29 @@
     },
     {
       "id": "portnoy",
-      "match": "Dave Portnoy bought our Libra by mistake",
-      "claim": "His post of 17 Feb 2025 names the registry Libra address and says he bought it by accident",
+      "match": "the founder of a large American sports site bought our Libra by mistake",
+      "claim": "Dave Portnoy, founder of Barstool Sports, bought the listed Libra by mistake and posted about it on 17 Feb 2025",
       "source": "https://x.com/stoolpresidente/status/1891528769770279114",
       "sourceDate": "2025-02-17",
-      "checkedAt": "2026-11-10",
+      "checkedAt": "2026-11-13",
       "status": "checked"
     },
     {
       "id": "portnoy-views",
-      "match": "seen about three million times",
+      "match": "in a post seen about three million times",
       "claim": "3.1 million views on 10 Nov 2026",
       "source": "https://x.com/stoolpresidente/status/1891528769770279114",
       "sourceDate": "2026-11-10",
-      "checkedAt": "2026-11-10",
+      "checkedAt": "2026-11-13",
       "status": "checked"
     },
     {
       "id": "critics",
-      "match": "the ones who said a few wallets held too much and the ones who called the coins dead",
+      "match": "beside the critics who said a few wallets held too much",
       "claim": "The public-history register records the concentration challenge and the \"dead bag\" criticism (the latter by a search link, not a single post)",
       "source": "https://zodiacs.org/thesis/thesis-history.json",
       "sourceDate": "2026-07-31",
-      "checkedAt": "2026-07-31",
+      "checkedAt": "2026-11-13",
       "status": "weak"
     },
     {
@@ -207,15 +252,6 @@
       "status": "listed"
     },
     {
-      "id": "one-link",
-      "match": "The coins sit one labelled link away",
-      "claim": "Consumer pages link to the coins only through the sanctioned, labelled doors",
-      "source": "https://zodiacs.org/astrofolio/",
-      "sourceDate": "2026-11-10",
-      "checkedAt": "2026-11-10",
-      "status": "listed"
-    },
-    {
       "id": "go-to-zero",
       "match": "A memecoin can go to zero, and these can too",
       "claim": "Portnoy's post: \"It will eventually go to zero.\"",
@@ -249,6 +285,15 @@
       "source": "https://zodiacs.org/thesis/thesis-candidacy.json",
       "sourceDate": "2026-11-10",
       "checkedAt": "2026-11-10",
+      "status": "listed"
+    },
+    {
+      "id": "will-never-buy",
+      "match": "most people who know theirs will never buy a coin",
+      "claim": "90% of U.S. adults know their sign; 19% have ever used any crypto",
+      "source": "https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology",
+      "sourceDate": "2026-11-13",
+      "checkedAt": "2026-11-13",
       "status": "listed"
     }
   ]
