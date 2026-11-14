@@ -228,7 +228,9 @@ describe('thesis hero icon contract', () => {
       const label = `${slug[0].toUpperCase()}${slug.slice(1)} — digital asset`;
       expect(attrs).toMatch(new RegExp(`\\bhref=["']/registry/${slug}/["']`, 'i'));
       expect(attrs).toContain(`aria-label="${label}"`);
-      expect(inner).toContain(`src="/assets/zodiac-icons/48/${slug}.webp"`);
+      // Each icon arrives after load, so the twelve never compete with the
+      // hero image for the first paint; the link shows its hue until then.
+      expect(inner).toContain(`data-src="/assets/zodiac-icons/48/${slug}.webp"`);
       expect(inner).toMatch(/class="hero__twelve-icon"/);
       expect(inner).toMatch(/\bwidth="24"\s+height="24"/);
       expect(inner).toMatch(/\balt=""/);
