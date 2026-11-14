@@ -65,7 +65,7 @@ const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 // The twelve Registry sign pages re-read their mint and freeze authority on chain (thesis evidence refresh).
 const REGISTRY_SIGN_LASTMOD = '2026-11-10';
-const THESIS_LASTMOD = '2026-11-12';
+const THESIS_LASTMOD = '2026-11-13';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
 const SKY_HEADS_UP_LASTMOD = '2026-11-12';
@@ -402,6 +402,8 @@ const NASA_WINDOW_PLACEMENTS = [
 // Every event page says where its times come from, and the planets' ingress, station and aspect times are
 // NASA JPL's (src/lib/nasa-instants.ts). Dated here for the same reason as EVENT_WATCH_LASTMOD.
 const EVENT_NASA_TIMES_LASTMOD = '2026-11-06';
+// "Behind this event" prints its instants to the minute, as the rest of each event page does.
+const EVENT_EVIDENCE_MINUTE_LASTMOD = '2026-11-13';
 const ACCURACY_AUDIT_REST_LASTMOD = '2026-11-07';
 const ACCURACY_AUDIT_REST_ROUTES = [
   '/', '/events/', '/moon-phase/', '/tools/',
@@ -416,6 +418,11 @@ const ENGINE_110_RC2_ROUTES = [
   '/developers/conventions/', '/developers/demo/', '/developers/engine/', '/developers/mcp/',
   '/developers/playground/', '/developers/support/', ...DEVELOPER_GUIDES_ROUTES,
 ];
+
+const CONNECTOR_PAGE_LASTMOD = '2026-11-11';
+const CONNECTOR_PAGE_ROUTES = [
+  '/developers/ai/', '/developers/docs/', '/developers/docs/astrology-mcp-server/', '/developers/support/',
+] as const;
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -684,8 +691,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // carry and what the growth test events count (approved 12 November), last so
   // this wins.
   ['/privacy/', '2026-11-12'] as const,
-  // The English privacy page says what share pages do with the arrival word and
-  // where assistant visits are counted, 13 November, last so this wins.
+  // The English privacy page says what share pages do with the arrival word,
+  // where assistant visits are counted, and what the account export includes
+  // (saved pages and Living Chart moments), 13 November, last so this wins.
   ['/privacy/', '2026-11-13'] as const,
   // Times in five zones, longer question lists and the accuracy line (ZOD-180). Each page prints the
   // same constant as its "Updated" date and dateModified; last, so these win.
@@ -693,6 +701,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/full-moon-calendar/2027/', FULL_MOON_CALENDAR_2027_UPDATED] as const,
   ['/eclipses/2027/', ECLIPSES_2027_UPDATED] as const,
   ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
+  // The connector page's 19 live tools, limits, troubleshooting and support contact, the support page's
+  // connector section and the MCP guides that count its tools (ZOD-58). The day of the daily edition it was
+  // built with, last so this date wins.
+  ...CONNECTOR_PAGE_ROUTES.map((loc) => [loc, CONNECTOR_PAGE_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -848,7 +860,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...eventsPublication.pages.map((event) => ({
       loc: event.path,
       priority: 0.64,
-      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVERGREEN_LASTMOD.get(event.path) ?? '']
+      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVENT_EVIDENCE_MINUTE_LASTMOD,
+        EVERGREEN_LASTMOD.get(event.path) ?? '']
         .reduce((latest, date) => (date > latest ? date : latest)),
     })),
     // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
@@ -1030,6 +1043,11 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   // linking it, since that address redirects back to the log (ZOD-221).
   for (const url of urls) {
     if (url.loc === '/corrections/') url.lastmod = laterDate(url.lastmod, '2026-11-13');
+  }
+  // The methodology page gives the Moon's and the Sun's event times to the
+  // precision the pages print, with the range of each figure.
+  for (const url of urls) {
+    if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-13');
   }
   return [
     ...urls,

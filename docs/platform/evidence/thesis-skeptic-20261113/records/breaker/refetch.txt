@@ -1,0 +1,13 @@
+fetched 2026-11-13T09:23:49Z https://zodiacs.org/thesis/ HTTP 200 422437 bytes
+6db6abf8e088fdba81515fa6140645ea59d3f2bd2db7780922b5ee86c08e1615  live page as refetched by the reviewer
+content-type: text/html; charset=utf-8
+date: Fri, 13 Nov 2026 09:23:51 GMT
+etag: "aaecda93eefc17c1b2f3e4fb07422788"
+x-vercel-id: sin1::vgtl9-1794561830665-497df198bfd4
+
+token articles, en.wikipedia user pageviews, 20261010 to 20261108, mean per day:
+  Bitcoin 30 days 3238
+  Dogecoin 30 days 314
+  Ethereum 30 days 705
+  Shiba_Inu_(cryptocurrency) 30 days 70
+  Solana_(blockchain_platform) 30 days 278

@@ -114,7 +114,11 @@ const EMPTY_V2_EXPORT = {
   encrypted_sources: [],
 };
 
-function exportFetcher(v2Export: unknown = EMPTY_V2_RPC_EXPORT) {
+function exportFetcher(
+  v2Export: unknown = EMPTY_V2_RPC_EXPORT,
+  savedPages: unknown[] = SAVED_PAGE_ROWS,
+  livingMoments: unknown[] = LIVING_MOMENT_ROWS,
+) {
   return vi.fn(async (input: string | URL | Request, _init?: RequestInit) => {
     const url = new URL(String(input));
     if (url.pathname === '/auth/v1/user') {
@@ -174,9 +178,75 @@ function exportFetcher(v2Export: unknown = EMPTY_V2_RPC_EXPORT) {
       }]);
     }
     if (url.pathname === '/rest/v1/rpc/account_v2_export') return json(v2Export);
+    if (url.pathname === '/rest/v1/rpc/account_v2_export_later_tables') {
+      expect(JSON.parse(String(_init?.body))).toEqual({ candidate_user_id: USER_ID });
+      return json({ outcome: 'ready', saved_pages: savedPages, living_chart_moments: livingMoments });
+    }
     throw new Error(`Unexpected fetch ${url}`);
   });
 }
+
+const SAVED_PAGE_ROWS = [{
+  id: '77777777-7777-4777-8777-777777777771',
+  kind: 'occasion',
+  title: 'A saved card',
+  href: '/occasions/example/',
+  source: 'site',
+  summary: null,
+  detail: null,
+  saved_at: '2026-10-16T00:00:00.000Z',
+}, {
+  id: '77777777-7777-4777-8777-777777777772',
+  kind: 'week',
+  title: 'A week ahead',
+  href: '/horoscopes/aries/',
+  source: 'assistant',
+  summary: 'A calm week for plans.',
+  detail: { schema: 'zodiacs.assistant-save.v1', result: { headline: 'Plans' } },
+  saved_at: '2026-10-17T00:00:00.000Z',
+}];
+
+// A payload living_chart_payload_valid accepts (synthetic, no real person).
+const LIVING_MOMENT_PAYLOAD = {
+  schema: 'zodiacs.living-chart.cloud-moment.v1',
+  primaryChartId: '99999999-9999-4999-8999-999999999991',
+  occurredAt: '2026-08-18T09:00:00.000Z',
+  timePrecision: 'exact',
+  category: 'relationships',
+  note: 'A useful conversation.',
+  forecast: {
+    schema: 'zodiacs.living-chart.today-forecast.v1',
+    editionDate: '2026-08-18',
+    chartId: '99999999-9999-4999-8999-999999999991',
+    source: 'personalized',
+    generatorVersion: 'today-1.0.0',
+    capturedAt: '2026-08-18T08:00:00.000Z',
+    lines: [{
+      id: 'transit:mars-moon',
+      text: 'Make room before answering too quickly.',
+      receipt: 'Mars 14.2 degrees Cancer square natal Moon.',
+    }],
+  },
+  reflectionQuestionId: 'reflection:notice',
+};
+
+const LIVING_MOMENT_ROWS = [{
+  moment_id: '88888888-8888-4888-8888-888888888881',
+  consent_epoch: 1,
+  revision: 2,
+  payload: LIVING_MOMENT_PAYLOAD,
+  created_at: '2026-08-20T00:00:00.000Z',
+  updated_at: '2026-08-21T00:00:00.000Z',
+  deleted_at: null,
+}, {
+  moment_id: '88888888-8888-4888-8888-888888888882',
+  consent_epoch: 1,
+  revision: 3,
+  payload: null,
+  created_at: '2026-08-20T00:00:00.000Z',
+  updated_at: '2026-08-22T00:00:00.000Z',
+  deleted_at: '2026-08-22T00:00:00.000Z',
+}];
 
 describe('account lifecycle API foundation', () => {
   it('keeps deletion receipt recovery available while the sync kill switch is disabled', async () => {
@@ -240,6 +310,43 @@ describe('account lifecycle API foundation', () => {
     expect(body.cloud.charts).toHaveLength(1);
     expect(body.cloud.compatibilityInvites).toHaveLength(1);
     expect(body.cloud.accountSyncV2).toEqual(EMPTY_V2_EXPORT);
+    expect(body.cloud.savedPages).toEqual([{
+      id: '77777777-7777-4777-8777-777777777771',
+      kind: 'occasion',
+      title: 'A saved card',
+      href: '/occasions/example/',
+      source: 'site',
+      summary: null,
+      detail: null,
+      savedAt: '2026-10-16T00:00:00.000Z',
+    }, {
+      id: '77777777-7777-4777-8777-777777777772',
+      kind: 'week',
+      title: 'A week ahead',
+      href: '/horoscopes/aries/',
+      source: 'assistant',
+      summary: 'A calm week for plans.',
+      detail: { schema: 'zodiacs.assistant-save.v1', result: { headline: 'Plans' } },
+      savedAt: '2026-10-17T00:00:00.000Z',
+    }]);
+    expect(body.cloud.livingChartMoments).toEqual([{
+      momentId: '88888888-8888-4888-8888-888888888881',
+      consentEpoch: 1,
+      revision: 2,
+      payload: LIVING_MOMENT_PAYLOAD,
+      createdAt: '2026-08-20T00:00:00.000Z',
+      updatedAt: '2026-08-21T00:00:00.000Z',
+      deletedAt: null,
+    }, {
+      momentId: '88888888-8888-4888-8888-888888888882',
+      consentEpoch: 1,
+      revision: 3,
+      payload: null,
+      createdAt: '2026-08-20T00:00:00.000Z',
+      updatedAt: '2026-08-22T00:00:00.000Z',
+      deletedAt: '2026-08-22T00:00:00.000Z',
+    }]);
+    expect(response.body).not.toContain('user_id');
     expect(response.body).not.toContain('operator-secret');
     expect(response.body).not.toContain('private_note');
     expect(response.body).not.toContain('token_hash');
@@ -254,6 +361,7 @@ describe('account lifecycle API foundation', () => {
     expect(calls.filter(({ method }) => method !== 'GET').map(({ url }) => url).sort())
       .toEqual([
         '/rest/v1/rpc/account_v2_export',
+        '/rest/v1/rpc/account_v2_export_later_tables',
         '/rest/v1/rpc/account_v2_export_legacy_invites',
       ]);
   });
@@ -454,6 +562,76 @@ describe('account lifecycle API foundation', () => {
     });
     expect(response.statusCode).toBe(503);
     expect(JSON.parse(response.body)).toEqual({ error: 'export_unavailable' });
+  });
+
+  it('fails the export closed when a saved page or Living Chart moment row is outside its shape', async () => {
+    const [site, assistant] = SAVED_PAGE_ROWS;
+    const [live, deleted] = LIVING_MOMENT_ROWS;
+    for (const [savedPages, livingMoments] of [
+      [[{ ...site, user_id: USER_ID }], []],
+      [[{ ...site, summary: 'site rows carry no summary' }], []],
+      [[{ ...assistant, detail: null }], []],
+      [[{ ...site, href: 'https://example.com/' }], []],
+      [[{ ...site, kind: 'week', href: '/horoscopes/aries/' }], []],
+      [[{ ...site, href: '/compatibility/aries-taurus/' }], []],
+      [[{ ...assistant, detail: {} }], []],
+      [[{ ...assistant, detail: { schema: 'zodiacs.assistant-save.v2' } }], []],
+      [[{ ...assistant, detail: { ...assistant.detail, data: 'x'.repeat(16_400) } }], []],
+      [[{ ...assistant, summary: 'A <b>bold</b> week.' }], []],
+      [[{ ...assistant, summary: '' }], []],
+      [[], [{ ...live, payload: {} }]],
+      [[], [{ ...live, payload: { schema: 'zodiacs.living-chart.cloud-moment.v1', note: 'A useful conversation.' } }]],
+      [[], [{ ...live, payload: { ...LIVING_MOMENT_PAYLOAD, extra: true } }]],
+      [[], [{ ...live, payload: { ...LIVING_MOMENT_PAYLOAD, forecast: { ...LIVING_MOMENT_PAYLOAD.forecast, lines: [] } } }]],
+      [[], [{ ...live, payload: null }]],
+      [[], [{ ...deleted, payload: { note: 'kept after delete' } }]],
+      [[], [{ ...live, user_id: USER_ID }]],
+    ] as const) {
+      const response = responseRecorder();
+      await handleAccountApi(request('export'), response, {
+        env: ENV,
+        fetcher: exportFetcher(EMPTY_V2_RPC_EXPORT, [...savedPages], [...livingMoments]),
+        now: () => NOW,
+      });
+      expect(response.statusCode).toBe(503);
+      expect(JSON.parse(response.body)).toEqual({ error: 'export_unavailable' });
+    }
+  });
+
+  it('reads saved pages and Living Chart moments through one RPC and refuses its widened or over-limit answers', async () => {
+    const [site] = SAVED_PAGE_ROWS;
+    const [live] = LIVING_MOMENT_ROWS;
+    const answers: unknown[] = [
+      { outcome: 'ready', saved_pages: [], living_chart_moments: [], extra: [] },
+      { outcome: 'invalid' },
+      { outcome: 'ready', saved_pages: null, living_chart_moments: [] },
+      { outcome: 'ready', saved_pages: [], living_chart_moments: {} },
+      { outcome: 'ready', saved_pages: ['row'], living_chart_moments: [] },
+      { outcome: 'ready', saved_pages: Array.from({ length: 101 }, () => site), living_chart_moments: [] },
+      { outcome: 'ready', saved_pages: [], living_chart_moments: Array.from({ length: 1_001 }, () => live) },
+      [],
+    ];
+    for (const answer of answers) {
+      const fetcher = exportFetcher();
+      fetcher.mockImplementation(async (input: string | URL | Request, init?: RequestInit) => {
+        const url = new URL(String(input));
+        if (url.pathname === '/rest/v1/rpc/account_v2_export_later_tables') return json(answer);
+        return exportFetcher()(input, init);
+      });
+      const response = responseRecorder();
+      await handleAccountApi(request('export'), response, { env: ENV, fetcher, now: () => NOW });
+      expect(response.statusCode).toBe(503);
+      expect(JSON.parse(response.body)).toEqual({ error: 'export_unavailable' });
+    }
+
+    const empty = responseRecorder();
+    await handleAccountApi(request('export'), empty, {
+      env: ENV, fetcher: exportFetcher(EMPTY_V2_RPC_EXPORT, [], []), now: () => NOW,
+    });
+    expect(empty.statusCode).toBe(200);
+    const body = JSON.parse(empty.body);
+    expect(body.cloud.savedPages).toEqual([]);
+    expect(body.cloud.livingChartMoments).toEqual([]);
   });
 
   it('fails the export closed when the private export shape widens unexpectedly', async () => {
@@ -846,13 +1024,68 @@ describe('account lifecycle API foundation', () => {
     expect(JSON.parse(response.body)).toEqual({ error: 'deletion_blocked' });
   });
 
+  const retention = (overrides: Record<string, unknown> = {}) => ({
+    outcome: 'ready',
+    receipts_removed: 17,
+    leases_removed: 2,
+    reaped: 1,
+    reap_failed: 0,
+    completions_recorded: 0,
+    overdue: 0,
+    ...overrides,
+  });
+
+  it('fails the scheduled caller loudly when a deletion past its window is left unfinished', async () => {
+    const cleanupSecret = 'cleanup-secret-that-is-at-least-thirty-two-characters';
+    const env = { ...ENV, ACCOUNT_SYNC_V2_CLEANUP_SECRET: cleanupSecret };
+    for (const [overrides, reapFailed, overdue] of [
+      [{ reap_failed: 1, overdue: 1 }, 1, 1],
+      [{ overdue: 3 }, 0, 3],
+    ] as const) {
+      const response = responseRecorder();
+      await handleAccountApi(request('cleanup-receipts', {
+        token: null,
+        body: {},
+        headers: { authorization: `Bearer ${cleanupSecret}` },
+      }), response, {
+        env,
+        fetcher: vi.fn(async () => json(retention(overrides))),
+        now: () => NOW,
+      });
+      expect(response.statusCode).toBe(500);
+      expect(JSON.parse(response.body)).toEqual({
+        error: 'retention_incomplete',
+        removed: 17,
+        reaped: 1,
+        limit: 256,
+        reap_failed: reapFailed,
+        overdue,
+      });
+    }
+
+    for (const malformed of [17, retention({ outcome: 'invalid' }), retention({ extra: 1 }), retention({ reaped: -1 })]) {
+      const response = responseRecorder();
+      await handleAccountApi(request('cleanup-receipts', {
+        token: null,
+        body: {},
+        headers: { authorization: `Bearer ${cleanupSecret}` },
+      }), response, {
+        env,
+        fetcher: vi.fn(async () => json(malformed)),
+        now: () => NOW,
+      });
+      expect(response.statusCode).toBe(503);
+      expect(JSON.parse(response.body)).toEqual({ error: 'deletion_unavailable' });
+    }
+  });
+
   it('runs one bounded receipt cleanup batch behind a dedicated secret while flags are off', async () => {
     const cleanupSecret = 'cleanup-secret-that-is-at-least-thirty-two-characters';
     const fetcher = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       const url = new URL(String(input));
-      expect(url.pathname).toBe('/rest/v1/rpc/account_v2_cleanup_deletion_receipts');
+      expect(url.pathname).toBe('/rest/v1/rpc/account_v2_run_retention');
       expect(JSON.parse(String(init?.body))).toEqual({ candidate_limit: 256 });
-      return json(17);
+      return json(retention());
     });
     const response = responseRecorder();
     await handleAccountApi(request('cleanup-receipts', {
@@ -869,7 +1102,7 @@ describe('account lifecycle API foundation', () => {
       now: () => NOW,
     });
     expect(response.statusCode).toBe(200);
-    expect(JSON.parse(response.body)).toEqual({ removed: 17, limit: 256 });
+    expect(JSON.parse(response.body)).toEqual({ removed: 17, reaped: 1, limit: 256 });
     expect(fetcher).toHaveBeenCalledOnce();
 
     const deniedFetcher = vi.fn();

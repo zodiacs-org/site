@@ -310,7 +310,7 @@ await withPreview({ port: 4412 }, async (BASE) => {
       check('full moon: evidence opens by keyboard',
         await page.locator('[data-evidence-disclosure]').evaluate((node) => node.open));
       check('full moon: opened evidence lists the exact instant',
-        (await page.locator('.event-evidence__rows').innerText()).includes('2026-07-29T14:35'));
+        (await page.locator('.event-evidence__rows').innerText()).includes('2026-07-29 14:35 UTC'));
       if (OUT) await page.screenshot({ path: `${OUT}/full-moon-1280-evidence-open.png`, fullPage: true });
       await page.close();
 

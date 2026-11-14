@@ -31,9 +31,19 @@ import {
   type LegacyChartDeletionExportV1,
   type LegacyChartExportV1,
   type LegacyProfileExportV1,
+  type LivingChartMomentExportV1,
+  type SavedPageExportV1,
   type ZodiacsAccountExportV1,
 } from './types.js';
 import { isAccountUuid } from './request.js';
+import {
+  livingChartPayloadValid,
+  savedPageDetailValid,
+  savedPageHrefValid,
+  savedPageSourceKindValid,
+  savedPageSummaryValid,
+  savedPageTitleValid,
+} from './export-shapes.js';
 
 type Environment = Record<string, unknown>;
 type Fetch = typeof fetch;
@@ -380,6 +390,68 @@ function inviteExports(rows: Record<string, unknown>[]): CompatibilityInviteExpo
   });
 }
 
+// Same allowlist rule as the rest of the export: named columns only, no
+// owner id, and any row outside the table's own constraints (export-shapes.ts
+// mirrors them, including the assistant detail's schema) fails closed.
+function savedPageExports(rows: Record<string, unknown>[]): SavedPageExportV1[] {
+  return rows.map((row) => {
+    const savedAt = isoDate(row.saved_at);
+    const site = row.source === 'site';
+    const assistant = row.source === 'assistant';
+    if (!hasExactKeys(row, ['id', 'kind', 'title', 'href', 'source', 'summary', 'detail', 'saved_at'])
+      || !isAccountUuid(row.id)
+      || !savedPageSourceKindValid(row.source, row.kind)
+      || !savedPageTitleValid(row.title)
+      || !savedPageHrefValid(row.href, row.kind)
+      || !savedAt
+      || (site && (row.summary !== null || row.detail !== null))
+      || (assistant && (!savedPageSummaryValid(row.summary) || !savedPageDetailValid(row.detail)))) {
+      throw new AccountServerFailure('export_unavailable');
+    }
+    return {
+      id: row.id.toLowerCase(),
+      kind: row.kind as SavedPageExportV1['kind'],
+      title: row.title,
+      href: row.href,
+      source: site ? 'site' : 'assistant',
+      summary: assistant ? row.summary as string : null,
+      detail: assistant ? row.detail as Record<string, unknown> : null,
+      savedAt,
+    };
+  });
+}
+
+function livingChartMomentExports(rows: Record<string, unknown>[]): LivingChartMomentExportV1[] {
+  return rows.map((row) => {
+    const consentEpoch = safeInteger(row.consent_epoch, 1);
+    const revision = safeInteger(row.revision, 1);
+    const createdAt = isoDate(row.created_at);
+    const updatedAt = isoDate(row.updated_at);
+    const deletedAt = nullableIsoDate(row.deleted_at);
+    if (!hasExactKeys(row, [
+      'moment_id', 'consent_epoch', 'revision', 'payload', 'created_at', 'updated_at', 'deleted_at',
+    ])
+      || !isAccountUuid(row.moment_id)
+      || !consentEpoch
+      || !revision
+      || !createdAt
+      || !updatedAt
+      || deletedAt === undefined
+      || (deletedAt === null ? !livingChartPayloadValid(row.payload) : row.payload !== null)) {
+      throw new AccountServerFailure('export_unavailable');
+    }
+    return {
+      momentId: row.moment_id.toLowerCase(),
+      consentEpoch,
+      revision,
+      payload: row.payload as Record<string, unknown> | null,
+      createdAt,
+      updatedAt,
+      deletedAt,
+    };
+  });
+}
+
 function strictRows<T>(
   input: unknown,
   maximum: number,
@@ -701,6 +773,47 @@ async function fetchLegacyInviteExport(
   return body as Record<string, unknown>[];
 }
 
+const SAVED_PAGES_EXPORT_LIMIT = 100;
+const LIVING_CHART_MOMENTS_EXPORT_LIMIT = 1_000;
+
+/**
+ * Saved pages and Living Chart moments through one RPC that reads only the
+ * tables and columns the database has (production has saved_pages without the
+ * assistant columns and no Living Chart yet). Each list may come back one row
+ * past its limit, which fails the export closed, as the paged reads did.
+ */
+async function fetchLaterTablesExport(
+  userId: string,
+  env: Environment,
+  fetcher: Fetch,
+): Promise<{ savedPages: Record<string, unknown>[]; livingChartMoments: Record<string, unknown>[] }> {
+  const response = await fetcher(
+    `${accountSupabaseOrigin(env)}/rest/v1/rpc/account_v2_export_later_tables`,
+    {
+      method: 'POST',
+      headers: serviceHeaders(env),
+      body: JSON.stringify({ candidate_user_id: userId }),
+    },
+  );
+  if (!response.ok) throw new AccountServerFailure('export_unavailable');
+  const body = await responseJson(response, 'export_unavailable');
+  if (!isRecord(body)
+    || !hasExactKeys(body, ['outcome', 'saved_pages', 'living_chart_moments'])
+    || body.outcome !== 'ready'
+    || !Array.isArray(body.saved_pages)
+    || !Array.isArray(body.living_chart_moments)
+    || body.saved_pages.length > SAVED_PAGES_EXPORT_LIMIT
+    || body.living_chart_moments.length > LIVING_CHART_MOMENTS_EXPORT_LIMIT
+    || body.saved_pages.some((row) => !isRecord(row))
+    || body.living_chart_moments.some((row) => !isRecord(row))) {
+    throw new AccountServerFailure('export_unavailable');
+  }
+  return {
+    savedPages: body.saved_pages as Record<string, unknown>[],
+    livingChartMoments: body.living_chart_moments as Record<string, unknown>[],
+  };
+}
+
 export async function buildAccountExport(
   user: AuthenticatedEmailUser,
   env: Environment = process.env,
@@ -729,6 +842,7 @@ export async function buildAccountExport(
     fetchLegacyInviteExport(user.id, env, fetcher),
     fetchV2Export(user.id, env, fetcher),
   ]);
+  const { savedPages, livingChartMoments } = await fetchLaterTablesExport(user.id, env, fetcher);
 
   const result: ZodiacsAccountExportV1 = {
     schema: ACCOUNT_EXPORT_SCHEMA,
@@ -741,6 +855,8 @@ export async function buildAccountExport(
       dailyChartPreference: dailyPreferenceExport(dailyPreferences),
       compatibilityInvites: inviteExports(invites),
       accountSyncV2,
+      savedPages: savedPageExports(savedPages),
+      livingChartMoments: livingChartMomentExports(livingChartMoments),
     },
   };
   if (Buffer.byteLength(JSON.stringify(result), 'utf8') > MAX_EXPORT_BYTES) {
@@ -1174,22 +1290,47 @@ export async function prepareAccountDeletion(
   return accountDeletionStatus(requestId, recoverySecret, env, fetcher);
 }
 
+export interface AccountRetentionResult {
+  removed: number;
+  reaped: number;
+  reapFailed: number;
+  overdue: number;
+}
+
+/**
+ * One bounded retention pass (account_v2_run_retention; also scheduled hourly
+ * inside the database where pg_cron is installed, which production is not):
+ * finishes deletions whose seven day window passed with no live receipt, then
+ * removes expired receipts that are complete.
+ */
 export async function cleanupExpiredAccountDeletionReceipts(
   limit = 256,
   env: Environment = process.env,
   fetcher: Fetch = fetch,
-): Promise<number> {
+): Promise<AccountRetentionResult> {
   if (!Number.isInteger(limit) || limit < 1 || limit > 1_000) {
     throw new AccountServerFailure('deletion_unavailable');
   }
-  const result = await deletionRpc('account_v2_cleanup_deletion_receipts', {
+  const result = await deletionRpc('account_v2_run_retention', {
     candidate_limit: limit,
   }, env, fetcher);
-  const removed = safeInteger(result);
-  if (removed === null || removed > limit) {
+  if (!isRecord(result)
+    || !hasExactKeys(result, [
+      'outcome', 'receipts_removed', 'leases_removed', 'reaped', 'reap_failed',
+      'completions_recorded', 'overdue',
+    ])
+    || result.outcome !== 'ready') {
     throw new AccountServerFailure('deletion_unavailable');
   }
-  return removed;
+  const removed = safeInteger(result.receipts_removed);
+  const reaped = safeInteger(result.reaped);
+  const reapFailed = safeInteger(result.reap_failed);
+  const overdue = safeInteger(result.overdue);
+  if (removed === null || reaped === null || reapFailed === null || overdue === null
+    || removed > limit || reaped + reapFailed > limit) {
+    throw new AccountServerFailure('deletion_unavailable');
+  }
+  return { removed, reaped, reapFailed, overdue };
 }
 
 export async function accountDeletionStatus(
