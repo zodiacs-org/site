@@ -149,8 +149,9 @@ export function rowsFor(locale) {
   }));
   c.chart.forEach((q) => {
     const [sub, route] = chartTarget(q);
-    // The how-to-read article exists in English only.
-    const has = pub.chart && sub !== 'how-to-read';
+    // The how-to-read article exists in English only, so it covers the
+    // English queries in full and every other locale only partly.
+    const has = pub.chart && (sub !== 'how-to-read' || locale === 'en');
     add('birth-chart', sub, q, has ? `${p}${route}` : route, has ? 'full' : 'partial', has ? '' : 'English page only');
   });
   const skyUrl = { 'moon-phase': '/moon-phase/', 'full-moon': '/full-moon/2026-11-24/', 'new-moon': '/new-moon/2026-11-09/', 'mercury-retrograde': '/mercury-retrograde/', retrogrades: '/retrogrades/', eclipses: '/eclipses/', 'mars-retrograde': '/retrogrades/' };
