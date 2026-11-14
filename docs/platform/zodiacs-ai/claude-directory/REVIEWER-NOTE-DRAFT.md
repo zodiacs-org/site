@@ -1,6 +1,6 @@
 # Note to the directory reviewers: sent 14 November 2026
 
-**Sent on 14 November 2026 with Dias's yes, as a reply on ticket #145701231 from admin@zodiacs.org to mcp-review@anthropic.com, after the portal re-sync that day. The TO CONFIRM line below went out as: "We have re-synced the tools in the directory editor so your copy matches 0.6.7." Kept as the record of what was sent; see [LISTING.md](LISTING.md).**
+**Sent at 13:00 UTC on 14 November 2026 with Dias's yes, as a reply on ticket #145701231 from admin@zodiacs.org to mcp-review@anthropic.com, after the portal re-sync that day. What went out differs from the text below in three ways: the TO CONFIRM line became "We have re-synced the tools in the directory editor so your copy matches 0.6.7.", the sign-off was "Thank you, Dias, Zodiacs LLC", and the reply kept the thread's own subject instead of the Subject line below. Everything under this paragraph was written before sending and is kept as it was; see [LISTING.md](LISTING.md).**
 
 Written 11 November 2026 and brought up to date on 13 November, after 0.6.7
 went live. Nothing in this file has been sent, pasted into the

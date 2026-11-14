@@ -4,7 +4,8 @@
 
 This section is the current state. Everything under it is a dated record,
 newest first, and is left as it was written. It is drawn from the records
-below, from the portal as read on 14 November and from the code on `main`.
+below, from the portal's additional notes, tools copy and listing
+description as read on 14 November, and from the code on `main`.
 
 **The live server.** `https://zodiacs.org/mcp` reports version 0.6.7
 (`AI_VERSION` in `src/ai-tools/contracts.ts`; checked with `get_capabilities`
@@ -22,8 +23,9 @@ server's instructions were reworded so they state facts about Zodiacs rather tha
 (PR #971, approved by the owner on 11 and 13 November). No name, title,
 input, annotation or tool count changed. `get_horoscope`'s panel moved to a
 new address, `ui://zodiacs/horoscopes-v7.html`, and the earlier addresses are
-still served. The portal's copy of the tools was re-read on 14 November, so
-reviewers now see the 0.6.7 descriptions.
+still served. The portal's copy of the tools was re-read from the 0.6.7
+server on 14 November, with the portal's note that some items were left out
+to fit its size limits.
 
 **What it does and refuses today.**
 
@@ -53,11 +55,13 @@ reviewers now see the 0.6.7 descriptions.
 
 | Channel | Last recorded contact | Version named |
 | --- | --- | --- |
-| Reviewer instructions and additional notes in the portal | 14 November, saved with Dias's yes | 0.6.7 |
-| The portal's copy of the tools | 14 November, re-read on that save | 19 tools, with a portal note that some items were left out to fit its size limits |
+| Additional notes in the portal | 14 November, saved with Dias's yes | 0.6.7 |
+| Reviewer instructions in the portal | 8 November; not read or edited on 14 November | Not recorded |
+| The portal's copy of the tools | 14 November, read by Update the copy reviewers see before that save | 19 tools from the 0.6.7 server, with a portal note that some items were left out to fit its size limits |
 | Email thread, ticket #145701231 | 14 November, one summary note | 0.6.7 |
 
-All three channels now name 0.6.7. The 14 November email names the earlier
+The additional notes and the email name 0.6.7, and the tools copy was read
+from the 0.6.7 server. The 14 November email names the earlier
 statements it replaces (15 October twice, 6 and 7 November), including the
 withdrawn sentence that share links carry first names.
 
@@ -65,25 +69,32 @@ withdrawn sentence that share links carry first names.
 reply went to the ticket that day, and that thirteen numbered prompts were
 pasted into the reviewer instructions, is known only from the 8 November
 entry below and from [RESYNC-0.6.0.md](RESYNC-0.6.0.md); the text of that
-reply is not in the repository.
+reply is not in the repository. The last recorded listing description saved
+is the 0.5.1 wording of 28 October. The description read in the portal on
+14 November is a later wording, and no entry records when it was saved.
+The reviewer instructions were not read on 14 November.
 
 ## Portal re-sync and reviewer note, 14 November 2026
 
-With Dias's yes (14 November, item 4 of that day's decision list), in the
+With Dias's yes on 14 November to "sign in to re-sync the directory portal,
+and okay the reviewer note", in the
 portal's full editor: **Update the copy reviewers see** re-read the server
 (19 tools, 0 prompts, with the same portal note that some items were left
 out to fit its size limits; the copy is now dated 14 November), then
-**Sync from server** refreshed the 19 tool names. The additional notes now
+**Sync from server** returned the same 19 tool names. The additional notes now
 open with 0.6.7 and say what 0.6.7 changed and how a love reading for a
 birth date under 18 is answered; the rest of the 8 November text was kept,
-and it already says links never carry names. No other field was changed.
+and it already says links never carry names. No other field was changed, and the reviewer instructions were not
+read.
 Saving showed the listing "updated just now", still in review.
 
-The same day the note in [REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md)
-went from admin@zodiacs.org to mcp-review@anthropic.com as a reply on
-ticket #145701231, unchanged except that its TO CONFIRM line became "We have
+At 13:00 UTC the same day the note in
+[REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md) went from admin@zodiacs.org
+to mcp-review@anthropic.com as a reply on ticket #145701231. Its body was the
+draft's, with three differences: the TO CONFIRM line became "We have
 re-synced the tools in the directory editor so your copy matches 0.6.7.",
-signed Dias, Zodiacs LLC.
+the sign-off was "Thank you, Dias, Zodiacs LLC", and the reply kept the
+thread's own subject instead of the draft's Subject line.
 
 ## Icon and reviewer texts, 7 and 8 November 2026
 
