@@ -98,7 +98,7 @@ describe('get_numerology privacy', () => {
 
 describe('the numerology copy', () => {
   /**
-   * Work, money and wellbeing are allowed as the tradition reads them. Still not allowed: price, stock or coin calls,
+   * Work and wellbeing are allowed as the tradition reads them; money, earnings and promotion wording is not (ZOD-30). Also not allowed: price, stock or coin calls,
    * buy or sell signals, diagnoses or medical timing, death predictions, and saying a legal matter will be won or lost.
    */
   const DISALLOWED = /\b(?:stocks?|share prices?|crypto\w*|tokens?|coins?|bitcoin|price targets?|buy|sell|selling|diagnos\w*|prognos\w*|surgery|death|die|dies|dying|dead|lawsuit|verdict|(?:will|going to) (?:win|lose)|lottery|gambl\w*)\b/iu;
@@ -121,9 +121,11 @@ describe('the numerology copy', () => {
     }
   });
 
-  it('reads work, money and wellbeing where the tradition does', () => {
-    expect(POSITION_READINGS.lifePath[8]).toContain('a strong head for money and business');
-    expect(PERSONAL_YEAR_MEANINGS[8]).toContain('a strong year for earnings and promotion');
+  it('reads work and wellbeing where the tradition does, with no money, earnings or promotion language', () => {
+    const MONEY = /\b(?:money|earn|earns|earned|earner|earners|earning|earnings|promotions?|income|salary|salaries|savings?|wealth\w*|profit\w*|budgets?|financ\w*|riches|prosper\w*)\b/iu;
+    for (const text of texts) expect(text, text).not.toMatch(MONEY);
+    expect(PERSONAL_YEAR_MEANINGS[8]).toContain('A year for results');
+    expect(POSITION_READINGS.lifePath[8]).toContain('authority and results');
     expect(PERSONAL_YEAR_MEANINGS[4]).toContain('health');
   });
 
