@@ -47,6 +47,7 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
     const evidence = await page.evaluate(() => ({
       title: document.title,
       editionDate: document.documentElement.getAttribute('data-edition-date'),
+      editionState: document.documentElement.getAttribute('data-edition-state'),
       displayedEditionDate: document.querySelector('.bio-signs time')?.getAttribute('datetime'),
       canonical: document.querySelector('link[rel="canonical"]')?.href,
       robots: document.querySelector('meta[name="robots"]')?.content,
@@ -91,6 +92,8 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
     check(`${viewport.name}: daily edition metadata and visible date agree`,
       Boolean(evidence.editionDate) && evidence.editionDate === evidence.displayedEditionDate,
       `${evidence.editionDate}/${evidence.displayedEditionDate}`);
+    check(`${viewport.name}: pinned clock shows the built edition as current`,
+      evidence.editionState === 'current', `${evidence.editionState}`);
     check(`${viewport.name}: no horizontal overflow`, evidence.width <= evidence.viewport, `${evidence.width}/${evidence.viewport}`);
     check(`${viewport.name}: canonical nav and footer remain present`, evidence.navCount === 1 && evidence.fullFooterCount === 1);
     check(`${viewport.name}: focused navigation spacing remains present`, evidence.mainPaddingTop === '76px', evidence.mainPaddingTop);
