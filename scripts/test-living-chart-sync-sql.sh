@@ -127,6 +127,10 @@ run_living_sql_file \
   "${living_repo_root}/supabase/migrations/20260818112526_living_chart_sync.sql"
 run_living_sql_file \
   "${living_sync_rls_initplan_migration}"
+# The retention migration gates the Living Chart wrappers; restore it after the
+# retry above so the tests below run against the production definitions.
+run_living_sql_file \
+  "${living_repo_root}/supabase/migrations/20261113090000_account_sync_v2_retention.sql"
 
 run_living_sql_file \
   "${living_repo_root}/supabase/tests/living_chart_sync.sql"
