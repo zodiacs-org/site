@@ -1302,12 +1302,29 @@ const ctaLede = edgeMoon && moonHouse
     .hz-hero__facts > span + span::before { margin-right: 8px; }
     .hz-hero__credit { display: none; }
     /* 44px period links in a 4px-padded, bordered pill: a 54px first row. */
-    .hz-controls { grid-template-rows: 54px calc(44px + 11px * 1.2); gap: 12px; margin-top: 14px; padding: 12px 0 10px; }
+    .hz-controls { grid-template-rows: 54px 96px; gap: 12px; margin-top: 14px; padding: 12px 0 10px; }
     .hz-seg { display: flex; width: 100%; justify-self: stretch; }
     .hz-seg > a { flex: 1; justify-content: center; min-height: 44px; padding-inline: 6px; }
-    .hz-signrail { grid-template-columns: repeat(12, 58px); gap: 0; margin-right: -20px; padding-right: 20px; }
+    /* All twelve signs at once, six by two, with nothing to scroll. The names
+       stay in the accessibility tree; each disc is a 48px-tall tap target. */
+    .hz-signrail {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-rows: 48px 48px;
+      gap: 0;
+      margin-right: 0;
+      padding-right: 0;
+      overflow: visible;
+    }
     .hz-signrail__label { display: none; }
-    .hz-signrail a { width: 58px; }
+    .hz-signrail a { width: auto; grid-template-rows: 32px; align-content: center; padding: 8px 0; }
+    .hz-signrail a > span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
     .hz-reading { gap: 48px; padding-top: var(--s-6); }
     .hz-hide-m { display: none; }
     .hz-note__meta { font-size: 0.8125rem; }
