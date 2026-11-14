@@ -7,8 +7,8 @@ import { configuredWatchOAuth } from '../watch/oauth';
 import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, SKY_EVENTS_TOOL_NAMES } from '../contracts';
 import { COUNTED_TOOL_NAMES } from '../usage';
 import { ACCOUNT_PERMISSION, ACCOUNT_SCOPES, MAX_SAVED_RECORD_BYTES, SAVE_TOOL_NAME, saveInput } from './contracts';
-import { accountsResourceOrigin, configuredAccounts, invalidTokenChallenge, signInChallenge } from './service';
-import { buildSavedRecord, recordDigest, recordProblem, saveToZodiacs, savedOccasionPath, type SavedRecord } from './save';
+import { accountsResourceOrigin, configuredAccounts, invalidTokenChallenge, savedPageRpcArgs, signInChallenge } from './service';
+import { buildSavedRecord, recordProblem, saveToZodiacs, savedOccasionPath, type SavedRecord } from './save';
 import { allowedRedirect, consentKind } from './consent';
 import { CONSENT_HTML, CONSENT_SCRIPT_HASH, CONSENT_STYLE_HASH } from '../../../integrations/generated/accounts-consent.mjs';
 
@@ -148,8 +148,8 @@ describe('what can be saved', () => {
     expect(chart.data).toMatchObject({ sun: 'taurus', timeKnown: true, placed: true, famous: false, url: null });
     expect(chart.title).toBe('Birth chart');
     expect(JSON.stringify(chart)).not.toMatch(/1990|08:30|40\.4|-3\.7|Ana|Madrid/u);
-    // A chart links to the birth chart page with the result's digest, never its birth details; a famous chart to the person's page.
-    expect(chart.href).toMatch(/^\/birth-chart\/#saved=[0-9a-f]{16}$/u);
+    // A chart links to the birth chart page with a random row id, never its birth details; a famous chart to the person's page.
+    expect(chart.href).toMatch(/^\/birth-chart\/#saved=[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
     expect(JSON.stringify([chart.href, chart.links])).not.toMatch(/1990|08:30|40\.4|-3\.7|Ana|Madrid|#c=/u);
     const famous = await buildSavedRecord(saveInput.parse(cases[1]), { now });
     if ('failure' in famous) throw new Error(famous.failure);
@@ -159,7 +159,7 @@ describe('what can be saved', () => {
     expect(famous.data).not.toHaveProperty('birthDate');
     const week = await buildSavedRecord(saveInput.parse(cases[4]), { now });
     if ('failure' in week) throw new Error(week.failure);
-    expect(week.href).toMatch(/^\/horoscopes\/#week=2026-10-1[45]&saved=[0-9a-f]{16}$/u);
+    expect(week.href).toMatch(/^\/horoscopes\/#week=2026-10-1[45]&saved=[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
     expect(Object.keys(week.data).sort()).toEqual(['from', 'items', 'note', 'timeKnown']);
     expect(JSON.stringify(week)).not.toMatch(/1990-05-03|Madrid|Bangkok/u);
     const comparison = await buildSavedRecord(saveInput.parse(cases[2]), { now });
@@ -182,8 +182,8 @@ describe('what can be saved', () => {
     expect(occasion.data).not.toHaveProperty('place');
     const pairOnly = await buildSavedRecord(saveInput.parse(cases[2]), { now });
     if ('failure' in pairOnly) throw new Error(pairOnly.failure);
-    // A famous side has no birth place, so the comparison links to its sign pair with the result's digest.
-    expect(pairOnly.href).toMatch(/^\/compatibility\/[a-z]+-[a-z]+\/#saved=[0-9a-f]{16}$/u);
+    // A famous side has no birth place, so the comparison links to its sign pair with a random row id.
+    expect(pairOnly.href).toMatch(/^\/compatibility\/[a-z]+-[a-z]+\/#saved=[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
   });
 
   it('takes no baby’s arrival and no coming of age to save, as get_occasion_sky takes none', () => {
@@ -202,8 +202,8 @@ describe('what can be saved', () => {
         const record = await buildSavedRecord(saveInput.parse(args), { now });
         if ('failure' in record) throw new Error(record.failure);
         expect(recordProblem(record)).toBeNull();
-        // The page address, with the saved result's digest after the # so two such saves stay two rows.
-        expect(record.href).toMatch(/^\/occasions\/#saved=[0-9a-f]{16}$/u);
+        // The page address, with a random row id after the #; the database tells two such saves apart by what was stored.
+        expect(record.href).toMatch(/^\/occasions\/#saved=[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
         expect(record.links).toEqual([{ title: 'Occasion cards on Zodiacs', url: 'https://zodiacs.org/occasions/' }]);
         const linked = JSON.stringify([record.href, record.links, (record.data as { cardUrl: unknown }).cardUrl]);
         for (const detail of [date, date.slice(5), '08:15', '08%3A15', '51.5', '-0.1', 'London', 'Mia']) expect(linked, detail).not.toContain(detail);
@@ -247,11 +247,33 @@ describe('what can be saved', () => {
     }
   });
 
-  it('identifies the same item by what was worked out, not by its label', () => {
-    const base: SavedRecord = { schema: 'zodiacs.assistant-save.v1', kind: 'occasion', title: 'Wedding', summary: 'A good day.', data: { date: '2027-06-12' }, links: [], href: '/occasions/' };
-    expect(recordDigest({ ...base, title: 'Renamed' })).toBe(recordDigest(base));
-    expect(recordDigest({ ...base, data: { date: '2027-06-13' } })).not.toBe(recordDigest(base));
-    expect(recordDigest(base)).toMatch(/^[0-9a-f]{64}$/u);
+  it('links a saved week by a random id that nothing in the record decides, and sends that id as the row id', async () => {
+    // Synthetic details only. The same week worked out twice is the same record, yet each link carries a fresh id:
+    // the id cannot be recomputed from a guessed birth date. The database finds the repeat by what was stored.
+    const args = saveInput.parse({ kind: 'week', week: { birthDate: '2000-01-01', zone: 'UTC' } });
+    const one = await buildSavedRecord(args, { now });
+    const two = await buildSavedRecord(args, { now });
+    if ('failure' in one || 'failure' in two) throw new Error('week refused');
+    const { href: hrefOne, ...storedOne } = one;
+    const { href: hrefTwo, ...storedTwo } = two;
+    expect(storedOne).toEqual(storedTwo);
+    expect(hrefOne).not.toBe(hrefTwo);
+    const id = /saved=(.*)$/u.exec(hrefOne)?.[1];
+    expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
+    for (const value of [JSON.stringify(storedOne), createHash('sha256').update(JSON.stringify([storedOne.schema, storedOne.kind, storedOne.data])).digest('hex')]) {
+      expect(value).not.toContain(id!.slice(0, 8));
+    }
+    // A chosen id goes into the link as given, and the database is asked to store the row under it.
+    const chosen = '0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d';
+    const fixed = await buildSavedRecord(args, { now, newId: () => chosen });
+    if ('failure' in fixed) throw new Error(fixed.failure);
+    expect(fixed.href).toMatch(new RegExp(`^/horoscopes/#week=\\d{4}-\\d{2}-\\d{2}&saved=${chosen}$`, 'u'));
+    const principal = { user: randomUUID(), session: randomUUID(), client: CLIENT };
+    expect(savedPageRpcArgs(principal, resource, fixed)).toMatchObject({ id: chosen, href: fixed.href, detail: fixed });
+    // A link the page itself reopens carries no saved= value, and no id is sent: the row is found by its link.
+    const people = await buildSavedRecord(saveInput.parse({ kind: 'chart', chart: { famous: 'Frida Kahlo' } }), { now, newId: () => chosen });
+    if ('failure' in people) throw new Error(people.failure);
+    expect(savedPageRpcArgs(principal, resource, people)).not.toHaveProperty('id');
   });
 
   it('returns the saved item, one copy for a repeat, and plain refusals', async () => {

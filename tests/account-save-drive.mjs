@@ -156,8 +156,9 @@ await withPreview({ port: 8791 }, async (base) => {
           && compatRow.title === 'Ana and Ben · compatibility');
 
         // A row the assistant save tool wrote (server-only columns), as the RPC stores it.
-        cloud.rows.push({ id: crypto.randomUUID(), saved_at: '2026-10-14T12:00:00Z', kind: 'week', title: 'Your week from 2026-10-14',
-          href: '/horoscopes/#week=2026-10-14&saved=0123456789abcdef', source: 'assistant', summary: 'Venus meets your Sun. Wed 14 Oct' });
+        const weekId = crypto.randomUUID();
+        cloud.rows.push({ id: weekId, saved_at: '2026-10-14T12:00:00Z', kind: 'week', title: 'Your week from 2026-10-14',
+          href: `/horoscopes/#week=2026-10-14&saved=${weekId}`, source: 'assistant', summary: 'Venus meets your Sun. Wed 14 Oct' });
         await page.goto(`${base}/profile/#saved-pages`, { waitUntil: 'networkidle' });
         const list = page.locator('[data-saved-pages]');
         await list.waitFor();

@@ -44397,7 +44397,7 @@ var SAVE_DESCRIPTION = "Saves something Zodiacs worked out in this conversation 
 var SAVE_NOTE = "Saved to your Zodiacs account. You can see it on your profile and delete it there at any time.";
 
 // src/ai-tools/accounts/save.ts
-import { createHash as createHash3 } from "node:crypto";
+import { randomUUID } from "node:crypto";
 var PAGE_KINDS = { chart: "chart", comparison: "compatibility", occasion: "occasion", week: "week" };
 var PAGE_PATHS = {
   chart: /^\/(?:birth-chart|people)\//u,
@@ -44460,11 +44460,11 @@ function recordProblem(record2) {
   if (!problem && Buffer.byteLength(JSON.stringify(record2)) > MAX_SAVED_RECORD_BYTES) problem = "too-large";
   return problem;
 }
-function recordDigest(record2, label) {
-  return createHash3("sha256").update(JSON.stringify([record2.schema, record2.kind, record2.data, ...label === void 0 ? [] : [label]])).digest("hex");
+function savedLinkId(dependencies = {}) {
+  return (dependencies.newId ?? randomUUID)();
 }
 async function buildSavedRecord(input, dependencies = {}) {
-  const linked = (record2, href) => ({ ...record2, href: href(recordDigest(record2, input.label).slice(0, 16)) });
+  const linked = (record2, href) => ({ ...record2, href: href(savedLinkId(dependencies)) });
   const now = dependencies.now?.() ?? /* @__PURE__ */ new Date();
   const madeBy = { chart: "get_natal_chart", comparison: "get_compatibility", occasion: "get_occasion_sky", week: "get_horoscope" };
   const child2 = childBirthDateRefusal(madeBy[input.kind], input[input.kind], now, dependencies.hostZone);
@@ -44613,8 +44613,18 @@ async function saveToZodiacs(raw, principal, store, dependencies = {}, ref3) {
   });
 }
 
+// src/lib/profile/saved-result-link.ts
+var UUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+var SAVED_ID = new RegExp(`(?:^#|[#&])saved=(${UUID})(?:&|$)`, "u");
+var ANY_SAVED = new RegExp(`(?:^#|[#&])saved=(${UUID}|[0-9a-f]{16})(?:&|$)`, "u");
+var fragmentOf = (fragmentOrHref) => fragmentOrHref.includes("#") ? fragmentOrHref.slice(fragmentOrHref.indexOf("#")) : fragmentOrHref;
+function savedResultId(fragmentOrHref) {
+  return SAVED_ID.exec(fragmentOf(fragmentOrHref))?.[1] ?? null;
+}
+var SAVED_RESULT_FORWARD = `(function () { var saved = /${ANY_SAVED.source}/.exec(location.hash); if (saved) location.replace(saved[1].length === 16 ? '/profile/' : '/profile/#saved=' + saved[1]); })();`;
+
 // src/ai-tools/accounts/service.ts
-var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+var UUID2 = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function accountsEnabled(env) {
   return env[ACCOUNTS_SWITCH_ENV] === "1";
 }
@@ -44653,10 +44663,10 @@ function configuredAccounts(env, rpc) {
   if (env.PUBLIC_ACCOUNT_SAVES_ENABLED !== "1") throw new Error("accounts-unavailable");
   const url = env.PUBLIC_SUPABASE_URL, key2 = env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const clients = (env.ZODIACS_ACCOUNTS_OAUTH_CLIENTS ?? "").split(",").map((value) => value.trim()).filter(Boolean);
-  if (!url || !/^https:\/\/[a-z0-9]+\.supabase\.co$/.test(url) || !key2?.startsWith("sb_publishable_") || !clients.length || clients.length > 8 || clients.some((client) => !UUID.test(client))) throw new Error("accounts-unavailable");
+  if (!url || !/^https:\/\/[a-z0-9]+\.supabase\.co$/.test(url) || !key2?.startsWith("sb_publishable_") || !clients.length || clients.length > 8 || clients.some((client) => !UUID2.test(client))) throw new Error("accounts-unavailable");
   const origin = accountsResourceOrigin(env);
   const previewWatchClients = (env.ZODIACS_ACCOUNTS_PREVIEW_WATCH_CLIENTS ?? "").split(",").map((value) => value.trim()).filter(Boolean);
-  if (previewWatchClients.length && (env.VERCEL_ENV !== "preview" || previewWatchClients.length > 8 || previewWatchClients.some((client) => !UUID.test(client) || clients.some((account) => account.toLowerCase() === client.toLowerCase())))) throw new Error("accounts-unavailable");
+  if (previewWatchClients.length && (env.VERCEL_ENV !== "preview" || previewWatchClients.length > 8 || previewWatchClients.some((client) => !UUID2.test(client) || clients.some((account) => account.toLowerCase() === client.toLowerCase())))) throw new Error("accounts-unavailable");
   const resource = `${origin}/mcp`;
   const call = rpc ?? accountsRpc(env);
   const oauth = supabaseOAuthResource({
@@ -44687,7 +44697,17 @@ function configuredAccounts(env, rpc) {
   };
 }
 function savedPageRpcArgs(principal, resource, record2) {
-  return { ...principal, resource, kind: PAGE_KINDS[record2.kind], title: record2.title, href: record2.href, summary: record2.summary, detail: record2 };
+  const id = savedResultId(record2.href);
+  return {
+    ...principal,
+    resource,
+    kind: PAGE_KINDS[record2.kind],
+    title: record2.title,
+    href: record2.href,
+    summary: record2.summary,
+    detail: record2,
+    ...id ? { id } : {}
+  };
 }
 function invalidTokenChallenge(oauth) {
   return `${oauth.challenge}, error="invalid_token"`;
