@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "indexing-round2-search-href-protected-pages-2026-11-14",
-  "baseCommit": "c74178776b7cd770de31f80810cb05e6e04650c9",
+  "baseCommit": "2d3659a6a231755b258207881d9d74e4578486d1",
   "protectedPaths": [
     "public/registry/aquarius/index.html",
     "public/registry/aries/index.html",
