@@ -109,6 +109,20 @@ export function signDisc(i, cx, cy, r, extra = '') {
 }
 
 /**
+ * A sign as the site's own pastel icon (the 128px disc every sign page and
+ * the navigation use). The hue circle holds the place until the icon is
+ * fetched after load, near the figure, so the twelve never compete with the
+ * hero for the first paint.
+ */
+export const SIGN_ICON = (key) => `/assets/zodiac-icons/128/${key}.webp`;
+export function iconDisc(key, i, cx, cy, r, extra = '') {
+  // The icon's own disc fills about 0.95 of its square; the placeholder sits
+  // just inside it so no rim of it shows once the icon has drawn.
+  return `<g class="disc"${extra}><circle cx="${cx}" cy="${cy}" r="${+(r * 0.93).toFixed(2)}" fill="${SIGN_HUES[i]}"/>`
+    + `<image class="sign-icon" data-href="${SIGN_ICON(key)}" x="${cx - r}" y="${cy - r}" width="${2 * r}" height="${2 * r}"/></g>`;
+}
+
+/**
  * Twelve coin faces with invented marks: no real coin's logo, letter or
  * mascot. They stand for "a page of crypto coins" in general.
  */
@@ -272,7 +286,7 @@ function shelfSvg(data, { small, label }) {
   SIGN_KEYS.forEach((key, i) => {
     const cx = d.x + d.r + (i % d.cols) * d.gap;
     const cy = discTop + d.r + Math.floor(i / d.cols) * d.gap;
-    discs += signDisc(i, cx, cy, d.r, ` data-sign="${key}" style="--i:${i}"`);
+    discs += iconDisc(key, i, cx, cy, d.r, ` data-sign="${key}" style="--i:${i}"`);
   });
   const rowsOfDiscs = Math.ceil(12 / d.cols);
   const twelveY = small ? discTop + rowsOfDiscs * d.gap + 22 : g.base + 40;
@@ -687,6 +701,10 @@ export function motionBlock() {
   var field = document.querySelector('[data-motion="field"]');
   var shelf = document.querySelector('[data-motion="shelf"]');
   var cal = document.querySelector('[data-motion="calendar"]');
+  if (shelf) {
+    var art = function () { [].forEach.call(shelf.querySelectorAll('image[data-href]'), function (im) { im.setAttribute('href', im.getAttribute('data-href')); im.removeAttribute('data-href'); }); };
+    if ('IntersectionObserver' in window) { var near = new IntersectionObserver(function (entries) { if (entries[0].isIntersecting) { near.disconnect(); art(); } }, { rootMargin: '600px 0px' }); near.observe(shelf); } else art();
+  }
   if (field) [].forEach.call(field.querySelectorAll('.tw'), function (el, i) { el.setAttribute('data-sign', Object.keys(NAMES)[i]); });
   document.addEventListener('thesis:sign', function (e) {
     var sign = e.detail.sign;
