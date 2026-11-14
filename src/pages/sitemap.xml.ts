@@ -42,6 +42,7 @@ import { eventsPublication } from '../lib/events/site-publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
 import { isHiddenAlmanacSlug, isHiddenChildPage } from '../data/hidden-child-pages.mjs';
+import { isPastPageHidden } from '../lib/indexing/past-pages-hidden-list';
 import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
@@ -1052,7 +1053,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   return [
     ...urls,
     ...localizedUrls,
-  ].filter((url) => !isHiddenChildPage(url.loc));
+  // A past moon, eclipse or event page on the hidden list leaves the sitemap (ZOD-221, decision J).
+  ].filter((url) => !isHiddenChildPage(url.loc) && !isPastPageHidden(url.loc));
 }
 
 /** A urlset of the given entries, each with its hreflang alternates, lastmod and priority. */

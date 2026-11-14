@@ -36,6 +36,7 @@ import {
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
 import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
+import { pastPagesHidden, pastPagesHiddenFailures } from '../src/lib/indexing/past-pages-hidden.mjs';
 import { TIME_ATLAS_DATA_FILES, TIME_ATLAS_FOLDER, timeAtlasFileProblems, timeAtlasPageProblems } from './check-time-atlas.mjs';
 import {
   ABSENT_LOCALES,
@@ -95,6 +96,10 @@ const publishedEventPaths = new Set([
   ...(eventsPublication.hub?.indexEligible ? [eventsPublication.hub.path] : []),
   ...(eventsPublication.pages ?? []).map((event) => event.path),
 ]);
+// Past moon, eclipse and event pages hidden from search (ZOD-221, decision J):
+// published pages that render noindex and leave the sitemaps and the search index.
+const pastPagesHiddenList = JSON.parse(await readFile(resolve(repo, 'src/data/indexing/past-pages-hidden.json'), 'utf8')).paths;
+const isPastPageHidden = pastPagesHidden(Array.isArray(pastPagesHiddenList) ? pastPagesHiddenList : []);
 const isPhase2EventPath = (path) => (
   path === '/events/'
   || /^\/events\/(?!preview(?:\/|$))[a-z0-9-]+\/$/.test(path)
@@ -1658,7 +1663,7 @@ for (const event of eventsPublication.timeline ?? []) {
   const url = new URL(event.path, SITE_ORIGIN);
   if (publishedEventPaths.has(url.pathname)) continue;
   const target = targetPath(url.pathname);
-  if (!sitemapLocs.has(url.pathname) || !target || !(await exists(target))) {
+  if ((!sitemapLocs.has(url.pathname) && !isPastPageHidden(url.pathname)) || !target || !(await exists(target))) {
     fail(`events-publication: timeline ${event.id} links outside the public index — ${event.path}`);
     continue;
   }
@@ -1672,6 +1677,10 @@ for (const path of publishedEventPaths) {
     fail(`events-publication: published route has no built HTML — ${path}`);
   }
 }
+for (const failure of pastPagesHiddenFailures(pastPagesHiddenList, {
+  today: dailyPublicationManifest.date,
+  publishedPaths: publishedEventPaths,
+})) fail(failure);
 for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const pagePath = htmlFileToPath(relative(root, file));
@@ -1680,7 +1689,15 @@ for (const file of files) {
   const published = publishedEventPaths.has(pagePath);
   const noindex = hasNoindex(html);
   const canonical = canonicalHref(html);
-  if (published) {
+  if (published && isPastPageHidden(pagePath)) {
+    // On the hidden list: still built and self-canonical, out of every discovery surface.
+    if (!noindex) fail(`past-pages-hidden: listed page is still indexable — ${pagePath}`);
+    if (canonical !== `${SITE_ORIGIN}${pagePath}`) {
+      fail(`past-pages-hidden: ${pagePath} is not self-canonical — ${canonical ?? 'missing'}`);
+    }
+    if (sitemapLocs.has(pagePath)) fail(`past-pages-hidden: listed page is still in the sitemap — ${pagePath}`);
+    if (indexedSearchPaths.has(pagePath)) fail(`past-pages-hidden: listed page is still in the search index — ${pagePath}`);
+  } else if (published) {
     if (noindex) fail(`events-publication: published route is noindex — ${pagePath}`);
     if (canonical !== `${SITE_ORIGIN}${pagePath}`) {
       fail(`events-publication: ${pagePath} is not self-canonical — ${canonical ?? 'missing'}`);

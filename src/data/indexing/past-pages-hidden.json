@@ -1,0 +1,4 @@
+{
+  "about": "Past moon, eclipse and event pages hidden from search (Linear ZOD-221, decision J): each address listed here renders noindex and leaves the sitemaps. Only a thin past page with no Search Console impressions in the last 90 days belongs here. The rules are in src/lib/indexing/past-pages-hidden.mjs.",
+  "paths": []
+}

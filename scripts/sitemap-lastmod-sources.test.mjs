@@ -18,6 +18,7 @@ const DATE_SOURCES = [
   ...readdirSync(new URL('src/pages/sitemaps/', root)).map((name) => `src/pages/sitemaps/${name}`),
   'src/lib/seo-lastmod.ts',
   'src/world-times/updated.ts',
+  'src/lib/indexing/past-pages-hidden.mjs',
   'src/lib/horoscope-template-revision.mjs',
 ];
 
