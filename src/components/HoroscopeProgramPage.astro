@@ -1289,8 +1289,10 @@ const ctaLede = edgeMoon && moonHouse
     .hz-hero :global(.hz-hero__art > img) { object-position: 60% 50%; }
     .hz-hero::before {
       background:
-        linear-gradient(0deg, var(--void-1) 0%, var(--void-1) 26%, rgba(10, 12, 17, 0.8) 36%, rgba(10, 12, 17, 0) 54%),
-        linear-gradient(180deg, rgba(10, 12, 17, 0.55) 0%, rgba(10, 12, 17, 0) 24%);
+        /* Stops set for the 336px hero: a two-line title puts the date about
+           half way up, so the shade has to reach that far. */
+        linear-gradient(0deg, var(--void-1) 0%, var(--void-1) 40%, rgba(10, 12, 17, 0.85) 56%, rgba(10, 12, 17, 0) 80%),
+        linear-gradient(180deg, rgba(10, 12, 17, 0.6) 0%, rgba(10, 12, 17, 0) 34%);
     }
     .program__crumbs { top: 80px; left: 20px; }
     .hz-hero__body { left: 20px; right: 20px; bottom: 26px; }
