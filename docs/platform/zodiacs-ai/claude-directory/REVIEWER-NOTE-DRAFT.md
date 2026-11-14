@@ -1,6 +1,6 @@
-# Note to the directory reviewers: draft
+# Note to the directory reviewers: sent 14 November 2026
 
-**Draft, not sent. Sending is the owner's decision.**
+**Sent on 14 November 2026 with Dias's yes, as a reply on ticket #145701231 from admin@zodiacs.org to mcp-review@anthropic.com, after the portal re-sync that day. The TO CONFIRM line below went out as: "We have re-synced the tools in the directory editor so your copy matches 0.6.7." Kept as the record of what was sent; see [LISTING.md](LISTING.md).**
 
 Written 11 November 2026 and brought up to date on 13 November, after 0.6.7
 went live. Nothing in this file has been sent, pasted into the

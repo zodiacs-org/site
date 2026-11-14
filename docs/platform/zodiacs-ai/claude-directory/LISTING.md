@@ -1,12 +1,10 @@
 # Claude directory listing
 
-## Where the listing stands, 13 November 2026
+## Where the listing stands, 14 November 2026
 
 This section is the current state. Everything under it is a dated record,
-newest first, and is left as it was written. Nothing in the portal was
-opened, saved, synced or sent to write this section; it is drawn from the
-records below, from [RESYNC-0.6.0.md](RESYNC-0.6.0.md) and from the code on
-`main`.
+newest first, and is left as it was written. It is drawn from the records
+below, from the portal as read on 14 November and from the code on `main`.
 
 **The live server.** `https://zodiacs.org/mcp` reports version 0.6.7
 (`AI_VERSION` in `src/ai-tools/contracts.ts`; checked with `get_capabilities`
@@ -24,9 +22,8 @@ server's instructions were reworded so they state facts about Zodiacs rather tha
 (PR #971, approved by the owner on 11 and 13 November). No name, title,
 input, annotation or tool count changed. `get_horoscope`'s panel moved to a
 new address, `ui://zodiacs/horoscopes-v7.html`, and the earlier addresses are
-still served. The portal's copy of the tools was last read on 8 November, so
-it still holds the 0.6.6 descriptions until the next sync, which is the
-owner's decision.
+still served. The portal's copy of the tools was re-read on 14 November, so
+reviewers now see the 0.6.7 descriptions.
 
 **What it does and refuses today.**
 
@@ -56,39 +53,37 @@ owner's decision.
 
 | Channel | Last recorded contact | Version named |
 | --- | --- | --- |
-| Reviewer instructions and additional notes in the portal | 8 November, saved with Dias's yes | 0.6.6, with 0.6.5's change to `get_occasion_sky` |
-| The portal's copy of the tools | 8 November, re-read on that save | 19 tools, with a portal note that some items were left out to fit its size limits |
-| Email thread, ticket #145701231 | 7 November, a short note | 0.6.5 |
+| Reviewer instructions and additional notes in the portal | 14 November, saved with Dias's yes | 0.6.7 |
+| The portal's copy of the tools | 14 November, re-read on that save | 19 tools, with a portal note that some items were left out to fit its size limits |
+| Email thread, ticket #145701231 | 14 November, one summary note | 0.6.7 |
 
-So a review that reads the email thread alone sees 0.6.5 as the newest
-version, and one that reads the portal sees 0.6.6. Both are true of their
-channel. Neither names 0.6.7 yet. No email has named 0.6.6, because 0.6.6 changed only the picture and
-the reported version ([RESYNC-0.6.0.md](RESYNC-0.6.0.md), 7 November), and no
-email has described the under-13 refusal of 8 November.
-
-**Statements sent earlier that no longer hold.**
-
-- The first note of 15 October said Zodiacs never chooses or ranks dates,
-  scores relationships or predicts outcomes. It was withdrawn the same day.
-- The correction of 15 October, 18:01 UTC, said share links carry first
-  names. Since 0.6.1 they carry none, and no message has withdrawn the older
-  statement. Whether the portal notes of 8 November say links never carry
-  names is not on record here; read them in the portal.
-- The reply of 6 November said the thirteen reviewed tools were unchanged.
-  0.6.5 changed one of them the next day, and the 7 November note said so.
+All three channels now name 0.6.7. The 14 November email names the earlier
+statements it replaces (15 October twice, 6 and 7 November), including the
+withdrawn sentence that share links carry first names.
 
 **Gaps in these records.** There is no dated entry for 6 November. That a
 reply went to the ticket that day, and that thirteen numbered prompts were
 pasted into the reviewer instructions, is known only from the 8 November
 entry below and from [RESYNC-0.6.0.md](RESYNC-0.6.0.md); the text of that
-reply is not in the repository. The last recorded listing description is the
-0.5.1 wording saved on 28 October; no entry records the 0.6.1 description in
-RESYNC-0.6.0.md being saved. Check both in the portal before the next save.
+reply is not in the repository.
 
-**Next note.** One draft that states the current version and behaviour once,
-and names the earlier statements it replaces, is in
-[REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md). It is a draft and has not
-been sent. Sending it is the owner's decision.
+## Portal re-sync and reviewer note, 14 November 2026
+
+With Dias's yes (14 November, item 4 of that day's decision list), in the
+portal's full editor: **Update the copy reviewers see** re-read the server
+(19 tools, 0 prompts, with the same portal note that some items were left
+out to fit its size limits; the copy is now dated 14 November), then
+**Sync from server** refreshed the 19 tool names. The additional notes now
+open with 0.6.7 and say what 0.6.7 changed and how a love reading for a
+birth date under 18 is answered; the rest of the 8 November text was kept,
+and it already says links never carry names. No other field was changed.
+Saving showed the listing "updated just now", still in review.
+
+The same day the note in [REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md)
+went from admin@zodiacs.org to mcp-review@anthropic.com as a reply on
+ticket #145701231, unchanged except that its TO CONFIRM line became "We have
+re-synced the tools in the directory editor so your copy matches 0.6.7.",
+signed Dias, Zodiacs LLC.
 
 ## Icon and reviewer texts, 7 and 8 November 2026
 
