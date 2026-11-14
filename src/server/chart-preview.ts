@@ -3,7 +3,6 @@ import { h } from 'preact';
 import {
   type ChartPreviewModel,
   previewModel,
-  previewPlacementsFromToken,
 } from './chart-preview-model.js';
 import {
   parsePreviewQuery,
@@ -69,6 +68,38 @@ export function seeOther(location: string): Response {
   return new Response(null, { status: 303, headers: { ...PRIVACY_HEADERS, Location: location } });
 }
 
+/**
+ * The whole answer to a retired chart link (`/api/og/chart?p=<code>`, made before
+ * the code moved to the fragment): a short page that leads to the birth chart
+ * page. It holds nothing from the request.
+ */
+export const RETIRED_CHART_LINK_HTML = '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+  + '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark">'
+  + '<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">'
+  + '<title>This chart link no longer opens</title></head><body>'
+  + '<h1>This chart link no longer opens</h1>'
+  + '<p>Older chart links carried the whole chart in the address, so Zodiacs no longer reads them. '
+  + 'Ask the person who sent it for a new link, or <a href="/birth-chart/">make a birth chart</a>.</p>'
+  + '</body></html>';
+
+/**
+ * A chart link made before the code moved to the fragment carried the full
+ * positions code in its query, and the code leads back to the birth date and
+ * time. Retired as the transit calendar feed was (api/calendar/transits.ts):
+ * 410 Gone, kept by no cache. The code is never decoded, drawn, echoed or
+ * passed on.
+ */
+export function retiredChartLink(): Response {
+  return new Response(RETIRED_CHART_LINK_HTML, {
+    status: 410,
+    headers: {
+      ...PRIVACY_HEADERS,
+      'Content-Type': 'text/html; charset=utf-8',
+      'Content-Security-Policy': "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'",
+    },
+  });
+}
+
 function errorResponse(status: number): Response {
   return new Response('Chart preview unavailable.', {
     status,
@@ -79,22 +110,11 @@ function errorResponse(status: number): Response {
 /** A positions code in the fragment of the receiver, as the chart links write it. */
 const FRAGMENT_CODE = '^#p=2\\.[A-Za-z0-9_-]{1,254}$';
 
-interface PreviewRequest {
-  placements: PreviewPlacements;
-  /** The code of a link made before the code moved to the fragment. */
-  legacyCode: string | null;
-}
-
-function previewRequest(request: Request): PreviewRequest | null {
+/** The whole-degree placements a preview link carries in its query; a positions code (`p`) is never read. */
+function previewRequest(request: Request): PreviewPlacements | null {
   const params = new URL(request.url).searchParams;
-  const keys = [...params.keys()];
-  if (keys.length === 1 && keys[0] === 'p') {
-    const legacyCode = params.get('p') ?? '';
-    const placements = previewPlacementsFromToken(legacyCode);
-    return placements ? { placements, legacyCode } : null;
-  }
-  const placements = parsePreviewQuery(params);
-  return placements ? { placements, legacyCode: null } : null;
+  if (params.has('p')) return null;
+  return parsePreviewQuery(params);
 }
 
 function previewCard(model: ChartPreviewModel) {
@@ -126,25 +146,21 @@ function previewCard(model: ChartPreviewModel) {
 }
 
 export async function handleChartLinkRequest(request: Request): Promise<Response> {
-  if (request.method !== 'GET') return errorResponse(405);
-  const parsed = previewRequest(request);
-  if (!parsed) return errorResponse(400);
-  const model = previewModel(parsed.placements);
-
   const url = new URL(request.url);
-  const receiverBase = `${url.origin}/birth-chart/`;
+  // A link with the full positions code in its query is retired, whatever else it carries.
+  if (url.searchParams.has('p')) return retiredChartLink();
+  if (request.method !== 'GET') return errorResponse(405);
+  const placements = previewRequest(request);
+  if (!placements) return errorResponse(400);
+  const model = previewModel(placements);
+
   // A link with a preview keeps the full code in its fragment, which only the
-  // browser sees; the script hands it to the receiver. An older link carried
-  // the code in the query, and it is handed on the way it always was.
-  const receiver = parsed.legacyCode === null
-    ? receiverBase
-    : `${receiverBase}#p=${encodeURIComponent(parsed.legacyCode)}`;
-  const imageUrl = `${url.origin}/api/og/chart-image?${previewQuery(parsed.placements)}`;
+  // browser sees; the script hands it to the receiver.
+  const receiver = `${url.origin}/birth-chart/`;
+  const imageUrl = `${url.origin}/api/og/chart-image?${previewQuery(placements)}`;
   const escapedReceiver = htmlEscape(receiver);
   const escapedImage = htmlEscape(imageUrl);
-  const redirectScript = parsed.legacyCode === null
-    ? `var h=location.hash;location.replace(${JSON.stringify(receiverBase)}+(new RegExp(${JSON.stringify(FRAGMENT_CODE)}).test(h)?h:''))`
-    : `location.replace(${JSON.stringify(receiver)})`;
+  const redirectScript = `var h=location.hash;location.replace(${JSON.stringify(receiver)}+(new RegExp(${JSON.stringify(FRAGMENT_CODE)}).test(h)?h:''))`;
   const description = model.placements.some((placement) => placement.label === 'Rising')
     ? 'Sun, Moon and Rising positions, to the whole degree.'
     : 'Reference Sun and Moon positions, to the whole degree.';
@@ -165,9 +181,9 @@ export async function handleChartImageRequest(request: Request): Promise<Respons
   // and time. The request is sent to the site's default share picture instead.
   const url = new URL(request.url);
   if (url.searchParams.has('p')) return seeOther(`${url.origin}${DEFAULT_SHARE_IMAGE_PATH}`);
-  const parsed = previewRequest(request);
-  if (!parsed) return errorResponse(400);
-  const model = previewModel(parsed.placements);
+  const placements = previewRequest(request);
+  if (!placements) return errorResponse(400);
+  const model = previewModel(placements);
 
   try {
     const { ImageResponse } = await import('@vercel/og');
@@ -230,10 +246,15 @@ export async function handleChartPreviewNodeRequest(
   res: any,
   route: ChartPreviewRoute,
 ): Promise<void> {
-  // An image asked for with an older link's positions code goes to the default share picture before the query is
-  // checked, so a repeated code or a key added by an app still gets the 303 rather than a refusal.
+  // An older link's positions code is answered before the query is checked, so a repeated code or a key added by
+  // an app gets the same answer rather than a refusal: the link is gone (410), and an image asked for with one goes to
+  // the default share picture.
   const query = req.query && typeof req.query === 'object' ? req.query : {};
   const method = typeof req.method === 'string' ? req.method : 'GET';
+  if (route === 'link' && Object.hasOwn(query, 'p')) {
+    await writeNodeResponse(res, retiredChartLink());
+    return;
+  }
   if (route === 'image' && method === 'GET' && Object.hasOwn(query, 'p')) {
     await writeNodeResponse(res, seeOther(`${requestOrigin(req)}${DEFAULT_SHARE_IMAGE_PATH}`));
     return;

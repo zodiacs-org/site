@@ -50,7 +50,9 @@ const {
   handleChartImageRequest: imageHandler,
   handleChartPreviewNodeRequest,
   PREVIEW_KICKER,
+  RETIRED_CHART_LINK_HTML,
 } = await import('../../src/server/chart-preview');
+const { previewQuery } = await import('../../src/lib/share-preview');
 const { previewModel, previewPlacementsFromToken } = await import('../../src/server/chart-preview-model');
 const { default: compatibilityHandler } = await import('../../api/compatibility');
 
@@ -69,6 +71,17 @@ const noAnglesToken = encodePositionsLink({
 // The same chart as `token`, as the query of a link with a preview carries it.
 const PREVIEW_QUERY = 'sun=0&moon=29&rising=359&houses=whole';
 const PREVIEW_IMAGE = '/api/og/chart-image?sun=0&amp;moon=29&amp;rising=359&amp;houses=whole';
+
+/** A retired link's answer: 410, kept by no cache, the fixed page and nothing from the request. */
+async function expectRetired(response: Response, label: string): Promise<void> {
+  expect(response.status, label).toBe(410);
+  expect(response.headers.get('cache-control'), label).toBe('no-store, max-age=0');
+  expect(response.headers.get('x-robots-tag'), label).toContain('noindex');
+  expect(response.headers.get('referrer-policy'), label).toBe('no-referrer');
+  expect(response.headers.get('content-type'), label).toBe('text/html; charset=utf-8');
+  expect(response.headers.get('location'), label).toBeNull();
+  expect(await response.text(), label).toBe(RETIRED_CHART_LINK_HTML);
+}
 
 function redirectTarget(html: string, hash: string): string {
   const script = /<script nonce="chart-preview">([^<]*)<\/script>/u.exec(html)?.[1] ?? '';
@@ -104,9 +117,10 @@ describe('chart preview functions', () => {
     expect(model?.settings).toBe('Reference positions / No houses / Tropical');
 
     const response = await linkHandler(new Request(
-      `https://zodiacs.org/api/og/chart?p=${encodeURIComponent(noAnglesToken)}`,
+      `https://zodiacs.org/api/og/chart?${previewQuery(previewPlacementsFromToken(noAnglesToken)!)}`,
     ));
     const html = await response.text();
+    expect(response.status).toBe(200);
     expect(html).toContain('Reference Sun and Moon positions');
     expect(html).not.toMatch(/12:00|noon|midday/i);
     expect(html).not.toContain('Sun, Moon and Rising positions');
@@ -137,24 +151,29 @@ describe('chart preview functions', () => {
     }
   });
 
-  it('still opens a link made when the code was in the query, without echoing it any further', async () => {
-    const response = await linkHandler(new Request(`https://zodiacs.org/api/og/chart?p=${encodeURIComponent(token)}`));
-    const html = await response.text();
-    expect(response.status).toBe(200);
-    expect(html).toContain(PREVIEW_IMAGE);
-    expect(html).not.toContain('chart-image?p=');
-    expect(html.split(token).length - 1).toBe(3);
-    expect(redirectTarget(html, '')).toBe(`https://zodiacs.org/birth-chart/#p=${token}`);
+  it('answers a link made when the code was in the query with 410 Gone, never reading, drawing or passing on the code', async () => {
+    imageResponseMock.element.mockClear();
+    for (const [query, method] of [
+      [`p=${token}`, 'GET'], [`p=${encodeURIComponent(token)}`, 'GET'], [`p=${noAnglesToken}`, 'GET'], [`p=${token}&p=${token}`, 'GET'],
+      ['p=bad', 'GET'], ['p=', 'GET'], [`p=${token}&free=text`, 'GET'], [`p=${token}&fbclid=IwAR0`, 'GET'], [`${PREVIEW_QUERY}&p=${token}`, 'GET'],
+      [`p=${token}`, 'POST'], [`p=${token}`, 'HEAD'],
+    ] as const) {
+      await expectRetired(await linkHandler(new Request(`https://zodiacs.org/api/og/chart?${query}`, { method })), `${method} ${query}`);
+    }
+    expect(imageResponseMock.element).not.toHaveBeenCalled();
+    // The page: no code, no degrees, no picture, no script; one way on, to make a new chart.
+    expect(RETIRED_CHART_LINK_HTML).not.toContain(token);
+    expect(RETIRED_CHART_LINK_HTML).not.toMatch(/og:image|chart-image|<script|http-equiv|#p=|\bdeg\b/u);
+    expect(RETIRED_CHART_LINK_HTML.replace(/<[^>]*>/gu, '')).not.toMatch(/\d/u);
+    expect(RETIRED_CHART_LINK_HTML.match(/<a /gu)).toHaveLength(1);
+    expect(RETIRED_CHART_LINK_HTML).toContain('<a href="/birth-chart/">make a birth chart</a>');
+    expect(RETIRED_CHART_LINK_HTML).toContain('<meta name="color-scheme" content="dark">');
+    expect(RETIRED_CHART_LINK_HTML).not.toMatch(/[\u2013\u2014]/u);
   });
 
   it('rejects non-GET, missing, duplicate, invalid, and extra parameters generically', async () => {
     const urls = [
       'https://zodiacs.org/api/og/chart',
-      `https://zodiacs.org/api/og/chart?p=${token}&p=${token}`,
-      'https://zodiacs.org/api/og/chart?p=bad',
-      `https://zodiacs.org/api/og/chart?p=${token}&free=text`,
-      `https://zodiacs.org/api/og/chart?p=${token}&image=1`,
-      `https://zodiacs.org/api/og/chart?${PREVIEW_QUERY}&p=${token}`,
       'https://zodiacs.org/api/og/chart?sun=0',
       'https://zodiacs.org/api/og/chart?sun=0&moon=29&rising=359',
       'https://zodiacs.org/api/og/chart?sun=0&moon=29&houses=whole',
@@ -171,7 +190,7 @@ describe('chart preview functions', () => {
       expect(await response.text()).toBe('Chart preview unavailable.');
     }
     expect((await linkHandler(new Request(
-      `https://zodiacs.org/api/og/chart?p=${token}`,
+      `https://zodiacs.org/api/og/chart?${PREVIEW_QUERY}`,
       { method: 'POST' },
     ))).status).toBe(405);
   });
@@ -291,12 +310,13 @@ describe('chart preview functions', () => {
       query: { [CHART_PREVIEW_ROUTE_KEY]: 'link', p: token },
     }, response);
 
-    expect(response.statusCode).toBe(200);
-    expect(headers.get('content-type')).toContain('text/html');
+    // A link with the code in its query is retired through the deployed route too.
+    expect(response.statusCode).toBe(410);
+    expect(headers.get('content-type')).toBe('text/html; charset=utf-8');
     expect(headers.get('cache-control')).toBe('no-store, max-age=0');
+    expect(headers.has('location')).toBe(false);
     const html = Buffer.from(end.mock.calls[0]?.[0] as Buffer).toString('utf8');
-    expect(html).toContain(`https://zodiacs-preview.vercel.app${PREVIEW_IMAGE}`);
-    expect(html).toContain('https://zodiacs-preview.vercel.app/birth-chart/#p=');
+    expect(html).toBe(RETIRED_CHART_LINK_HTML);
 
     const current = vi.fn();
     await compatibilityHandler({
@@ -312,12 +332,9 @@ describe('chart preview functions', () => {
 
   it('rejects extra or duplicate values before the consolidated route renders', async () => {
     for (const query of [
-      { [CHART_PREVIEW_ROUTE_KEY]: 'link', p: token, extra: 'value' },
-      { [CHART_PREVIEW_ROUTE_KEY]: ['link', 'link'], p: token },
-      { [CHART_PREVIEW_ROUTE_KEY]: 'link', p: [token, token] },
+      { [CHART_PREVIEW_ROUTE_KEY]: ['link', 'link'], sun: '0', moon: '29' },
       { [CHART_PREVIEW_ROUTE_KEY]: 'link', sun: ['0', '1'], moon: '29' },
       { [CHART_PREVIEW_ROUTE_KEY]: 'link', sun: '0', moon: '29', extra: 'value' },
-      { [CHART_PREVIEW_ROUTE_KEY]: 'link', sun: '0', moon: '29', p: token },
       { [CHART_PREVIEW_ROUTE_KEY]: 'image', sun: '0', moon: '29' },
     ]) {
       const end = vi.fn();
@@ -354,10 +371,31 @@ describe('chart preview functions', () => {
       expect(Buffer.from(end.mock.calls[0]?.[0] as Buffer).length).toBe(0);
     }
     expect(imageResponseMock.element).not.toHaveBeenCalled();
-    // The link route keeps its answer: a repeated code there is still refused.
-    const response = { statusCode: 0, setHeader: vi.fn(), end: vi.fn() };
-    await handleChartPreviewNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { [CHART_PREVIEW_ROUTE_KEY]: 'link', p: [token, token] } }, response, 'link');
-    expect(response.statusCode).toBe(400);
+  });
+
+  it('answers every link with a positions code in its query with 410 through the Node route, before the query is checked', async () => {
+    imageResponseMock.element.mockClear();
+    for (const [query, method] of [
+      [{ [CHART_PREVIEW_ROUTE_KEY]: 'link', p: token }, 'GET'],
+      [{ [CHART_PREVIEW_ROUTE_KEY]: 'link', p: [token, token] }, 'GET'],
+      [{ [CHART_PREVIEW_ROUTE_KEY]: 'link', p: token, extra: 'value' }, 'GET'],
+      [{ [CHART_PREVIEW_ROUTE_KEY]: ['link', 'link'], p: token }, 'GET'],
+      [{ [CHART_PREVIEW_ROUTE_KEY]: 'link', p: token, utm_source: 'share' }, 'GET'],
+      [{ [CHART_PREVIEW_ROUTE_KEY]: 'link', sun: '0', moon: '29', p: token }, 'GET'],
+      [{ [CHART_PREVIEW_ROUTE_KEY]: 'link', p: 'bad' }, 'GET'],
+      [{ [CHART_PREVIEW_ROUTE_KEY]: 'link', p: token }, 'POST'],
+    ] as const) {
+      const headers = new Map<string, string>();
+      const end = vi.fn();
+      const response = { statusCode: 0, setHeader: (name: string, value: string) => headers.set(name.toLowerCase(), value), end };
+      await handleChartPreviewNodeRequest({ method, headers: { host: 'zodiacs.org' }, query }, response, 'link');
+      const label = `${method} ${JSON.stringify(query)}`;
+      expect(response.statusCode, label).toBe(410);
+      expect(headers.get('cache-control'), label).toBe('no-store, max-age=0');
+      expect(headers.has('location'), label).toBe(false);
+      expect(Buffer.from(end.mock.calls[0]?.[0] as Buffer).toString('utf8'), label).toBe(RETIRED_CHART_LINK_HTML);
+    }
+    expect(imageResponseMock.element).not.toHaveBeenCalled();
   });
 
   it('returns a generic 503 before committing a streaming renderer failure', async () => {

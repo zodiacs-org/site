@@ -181,6 +181,26 @@ run_phase6_sql_file \
 run_phase6_sql_file \
   "${phase6_repo_root}/supabase/tests/zodiacs_accounts.sql"
 
+# Saved result links carry their row's own id. The replay above put the earlier
+# save RPC back, so the migration is replayed after the old-shape fixture (as a
+# reviewed SQL Editor retry would be), twice, before its test runs.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/saved_link_row_ids_fixture.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261113091500_saved_link_row_ids.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261113091500_saved_link_row_ids.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/saved_link_row_ids.sql"
+
+# A save and an ordinary saved_pages insert for the same account, in two
+# sessions: the account owner lock comes first in both, so neither deadlocks.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/saved_link_lock_order.sql"
+
 # Shared preview hook must replay safely and preserve both original contracts.
 run_phase6_sql_file \
   "${phase6_repo_root}/supabase/migrations/20261016090639_shared_preview_access_token_hook.sql"
