@@ -155,37 +155,7 @@ async function takeSample(route, url, take) {
   return result;
 }
 
-// TEMPORARY DIAGNOSTIC (PR 1033): print where /thesis/ spends its LCP time. Removed before merge.
-function diagnoseThesis(route, lhr, sample) {
-  if (route.name !== 'thesis') return;
-  const a = lhr.audits;
-  const pick = (id) => a[id]?.details?.items ?? [];
-  const out = {
-    sample: sample.index ?? sample.take,
-    status: sample.status,
-    lcp: a['largest-contentful-paint']?.numericValue,
-    fcp: a['first-contentful-paint']?.numericValue,
-    si: a['speed-index']?.numericValue,
-    benchmarkIndex: lhr.environment?.benchmarkIndex,
-    lighthouse: lhr.lighthouseVersion,
-    ua: lhr.environment?.hostUserAgent,
-    lcpElement: pick('largest-contentful-paint-element').map((t) => t.items ?? t),
-    lcpBreakdown: a['lcp-breakdown-insight']?.details ?? a['lcp-phases-insight']?.details ?? null,
-    metrics: pick('metrics')[0] ?? null,
-    renderBlocking: pick('render-blocking-resources').concat(pick('render-blocking-insight')),
-    mainThread: pick('mainthread-work-breakdown'),
-    bootup: pick('bootup-time').slice(0, 8),
-    network: pick('network-requests').slice(0, 40).map((r) => ({
-      url: r.url?.replace(/^https?:\/\/[^/]+/, ''), type: r.resourceType, prio: r.priority,
-      start: Math.round(r.networkRequestTime ?? r.startTime ?? 0), end: Math.round(r.networkEndTime ?? r.endTime ?? 0),
-      bytes: r.transferSize, status: r.statusCode,
-    })),
-  };
-  console.log(`THESIS-DIAG ${JSON.stringify(out)}`);
-}
-
 async function keepSample(route, result, sample) {
-  try { diagnoseThesis(route, result.lhr, sample); } catch (error) { console.log(`THESIS-DIAG error ${error.message}`); }
   // The audit and browser shutdown are complete before diagnostic disk I/O.
   if (sample.status === 'valid') {
     const name = `${route.name}-${sample.index}`;
