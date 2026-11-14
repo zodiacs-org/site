@@ -701,10 +701,7 @@ describe('thesis evidence-vault and sharing contract', () => {
   });
 
   it('opens collapsed evidence for deep links and wires canonical-link copying', () => {
-    // The page's behaviour lives in /thesis/thesis.js, loaded with defer, so
-    // the document the reader waits for stays small.
-    expect(HTML).toContain('<script src="/thesis/thesis.js" defer></script>');
-    const behavior = [{ inner: readFileSync(resolve(ROOT, 'public/thesis/thesis.js'), 'utf8') }]
+    const behavior = tagParts(HTML, 'script')
       .filter(({ inner }) => inner.includes('function exposeHashTarget()'));
 
     expect(behavior).toHaveLength(1);
