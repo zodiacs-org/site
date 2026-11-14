@@ -1,0 +1,1427 @@
+[
+ {
+  "toolSet": "live",
+  "model": "claude-sonnet-5-5",
+  "id": "q007",
+  "question": "Give me my daily horoscope",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "claude-sonnet-5-5",
+  "id": "q081",
+  "question": "how do I find out my moon sign",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio",
+   "explain_astrology"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "claude-sonnet-5-5",
+  "id": "q177",
+  "question": "what can I ask the zodiacs connector",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "claude-sonnet-5-5",
+  "id": "q189",
+  "question": "Set a reminder for the next full moon",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_upcoming_events",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_upcoming_events",
+   "get_sky_calendar"
+  ]
+ },
+ {
+  "toolSet": "live",
+  "model": "claude-sonnet-5-5",
+  "id": "q191",
+  "question": "My daughter is 9, born 17 August 2017. What's her horoscope reading and who is she compatible with?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_horoscope",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_horoscope",
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "live",
+  "model": "claude-sonnet-5-5",
+  "id": "q192",
+  "question": "Guarantee me that my marriage will last. We're both Leos.",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "live",
+  "model": "claude-sonnet-5-5",
+  "id": "q195",
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q081",
+  "question": "how do I find out my moon sign",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio",
+   "explain_astrology"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q093",
+  "question": "Are we compatible? I'm born 4 April 1992 and my boyfriend 19 September 1990.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q094",
+  "question": "Compare my chart with my wife's. Me: 1985-06-15 08:00 Boston. Her: 1986-12-01 22:30 Miami.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility",
+   "find_birthplace"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q095",
+  "question": "synastry for 7 Jan 1994 and 23 July 1993 please",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q097",
+  "question": "My best friend and I: 3 March 1990 and 28 October 1989. How do our charts get along as friends?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q098",
+  "question": "Me (16 Aug 1988) and my sister (2 Feb 1991), do our charts clash?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q099",
+  "question": "Rate our relationship astrologically. Sam 10 May 1987, Alex 30 Nov 1984.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q100",
+  "question": "what's the compatibility score between someone born 25/12/1995 and someone born 01/06/1996",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q102",
+  "question": "Do my business partner and I work well together astrologically? I'm 14 July 1980, she's 5 January 1978.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q103",
+  "question": "My fiancé was born 20 March 1993 at 5am in Lyon, I'm 11 June 1994 at 7pm in Marseille. How do we match?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility",
+   "find_birthplace"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q141",
+  "question": "Celebrity astro twin for someone born 3 Feb 1985?",
+  "expected": "find_chart_twins",
+  "accept": [
+   "find_chart_twins"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "live",
+  "model": "gpt-6.1-sol",
+  "id": "q189",
+  "question": "Set a reminder for the next full moon",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_upcoming_events",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_upcoming_events"
+  ]
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q007",
+  "question": "Give me my daily horoscope",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q076",
+  "question": "Can you make me a natal chart?",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q079",
+  "question": "what's my rising sign?",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q081",
+  "question": "how do I find out my moon sign",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio",
+   "explain_astrology"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q097",
+  "question": "My best friend and I: 3 March 1990 and 28 October 1989. How do our charts get along as friends?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "wrong tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q151",
+  "question": "What zodiac sign is May 3?",
+  "expected": "get_birthday",
+  "accept": [
+   "get_birthday"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q177",
+  "question": "what can I ask the zodiacs connector",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q181",
+  "question": "Which stocks should I buy this week based on my horoscope? I'm a Taurus.",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_horoscope",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_horoscope"
+  ]
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q182",
+  "question": "Is Mercury retrograde a good time to buy Bitcoin?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "check_sky_fact",
+  "kind": "called a tool",
+  "allCalls": [
+   "check_sky_fact"
+  ]
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q189",
+  "question": "Set a reminder for the next full moon",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_upcoming_events",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_upcoming_events",
+   "get_sky_calendar"
+  ]
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q191",
+  "question": "My daughter is 9, born 17 August 2017. What's her horoscope reading and who is she compatible with?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_horoscope",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_horoscope",
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q192",
+  "question": "Guarantee me that my marriage will last. We're both Leos.",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q195",
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "pr971",
+  "model": "claude-sonnet-5-5",
+  "id": "q197",
+  "question": "Give me this week's lottery numbers for a Sagittarius",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_horoscope",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_horoscope"
+  ]
+ },
+ {
+  "toolSet": "pr971",
+  "model": "gpt-6.1-sol",
+  "id": "q081",
+  "question": "how do I find out my moon sign",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio",
+   "explain_astrology"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971",
+  "model": "gpt-6.1-sol",
+  "id": "q103",
+  "question": "My fiancé was born 20 March 1993 at 5am in Lyon, I'm 11 June 1994 at 7pm in Marseille. How do we match?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility",
+   "find_birthplace"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971",
+  "model": "gpt-6.1-sol",
+  "id": "q189",
+  "question": "Set a reminder for the next full moon",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_upcoming_events",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_upcoming_events"
+  ]
+ },
+ {
+  "toolSet": "branch",
+  "model": "claude-sonnet-5-5",
+  "id": "q195",
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_birthday",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_birthday",
+   "get_birthday"
+  ]
+ },
+ {
+  "toolSet": "branch",
+  "model": "gpt-6.1-sol",
+  "id": "q195",
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_compatibility",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_compatibility"
+  ]
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q007",
+  "question": "Give me my daily horoscope",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q177",
+  "question": "what can I ask the zodiacs connector",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q181",
+  "question": "Which stocks should I buy this week based on my horoscope? I'm a Taurus.",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_horoscope",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_horoscope"
+  ]
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q182",
+  "question": "Is Mercury retrograde a good time to buy Bitcoin?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "check_sky_fact",
+  "kind": "called a tool",
+  "allCalls": [
+   "check_sky_fact"
+  ]
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q189",
+  "question": "Set a reminder for the next full moon",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_upcoming_events",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_upcoming_events",
+   "get_sky_calendar"
+  ]
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q190",
+  "question": "My son was born on 4 March 2021 at 2:10am in Leeds. Can you do his birth chart?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "find_birthplace",
+  "kind": "called a tool",
+  "allCalls": [
+   "find_birthplace"
+  ]
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q191",
+  "question": "My daughter is 9, born 17 August 2017. What's her horoscope reading and who is she compatible with?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_horoscope",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_horoscope",
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q192",
+  "question": "Guarantee me that my marriage will last. We're both Leos.",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q195",
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q197",
+  "question": "Give me this week's lottery numbers for a Sagittarius",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_horoscope",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_horoscope"
+  ]
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "gpt-6.1-sol",
+  "id": "q153",
+  "question": "what's special about being born on february 29",
+  "expected": "get_birthday",
+  "accept": [
+   "get_birthday"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "gpt-6.1-sol",
+  "id": "q189",
+  "question": "Set a reminder for the next full moon",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_upcoming_events",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_upcoming_events"
+  ]
+ },
+ {
+  "toolSet": "branch-no-instructions",
+  "model": "gpt-6.1-sol",
+  "id": "q195",
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_compatibility",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_compatibility"
+  ]
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q007",
+  "question": "Give me my daily horoscope",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q076",
+  "question": "Can you make me a natal chart?",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q079",
+  "question": "what's my rising sign?",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q081",
+  "question": "how do I find out my moon sign",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio",
+   "explain_astrology"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q097",
+  "question": "My best friend and I: 3 March 1990 and 28 October 1989. How do our charts get along as friends?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "wrong tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q177",
+  "question": "what can I ask the zodiacs connector",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q181",
+  "question": "Which stocks should I buy this week based on my horoscope? I'm a Taurus.",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_horoscope",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_horoscope"
+  ]
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q182",
+  "question": "Is Mercury retrograde a good time to buy Bitcoin?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "check_sky_fact",
+  "kind": "called a tool",
+  "allCalls": [
+   "check_sky_fact"
+  ]
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q189",
+  "question": "Set a reminder for the next full moon",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_upcoming_events",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_upcoming_events",
+   "get_sky_calendar"
+  ]
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q191",
+  "question": "My daughter is 9, born 17 August 2017. What's her horoscope reading and who is she compatible with?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_horoscope",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_horoscope",
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q192",
+  "question": "Guarantee me that my marriage will last. We're both Leos.",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "claude-sonnet-5-5",
+  "id": "q195",
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "gpt-6.1-sol",
+  "id": "q007",
+  "question": "Give me my daily horoscope",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "gpt-6.1-sol",
+  "id": "q062",
+  "question": "Can you do my birth chart? Born 12 May 1990.",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "gpt-6.1-sol",
+  "id": "q079",
+  "question": "what's my rising sign?",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "gpt-6.1-sol",
+  "id": "q081",
+  "question": "how do I find out my moon sign",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio",
+   "explain_astrology"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "gpt-6.1-sol",
+  "id": "q098",
+  "question": "Me (16 Aug 1988) and my sister (2 Feb 1991), do our charts clash?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "pr971b",
+  "model": "gpt-6.1-sol",
+  "id": "q189",
+  "question": "Set a reminder for the next full moon",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_upcoming_events",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_upcoming_events"
+  ]
+ },
+ {
+  "toolSet": "pr971b-branch-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q009",
+  "question": "I was born 14 March 1991, what's my horoscope for this week?",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "chosen": "get_birthday",
+  "kind": "wrong tool",
+  "allCalls": [
+   "get_birthday"
+  ]
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "claude-sonnet-5-5",
+  "id": "q009",
+  "question": "I was born 14 March 1991, what's my horoscope for this week?",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "chosen": "get_birthday",
+  "kind": "wrong tool",
+  "allCalls": [
+   "get_birthday"
+  ]
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "gpt-6.1-sol",
+  "id": "q093",
+  "question": "Are we compatible? I'm born 4 April 1992 and my boyfriend 19 September 1990.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "gpt-6.1-sol",
+  "id": "q094",
+  "question": "Compare my chart with my wife's. Me: 1985-06-15 08:00 Boston. Her: 1986-12-01 22:30 Miami.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility",
+   "find_birthplace"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "gpt-6.1-sol",
+  "id": "q095",
+  "question": "synastry for 7 Jan 1994 and 23 July 1993 please",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "gpt-6.1-sol",
+  "id": "q097",
+  "question": "My best friend and I: 3 March 1990 and 28 October 1989. How do our charts get along as friends?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "gpt-6.1-sol",
+  "id": "q098",
+  "question": "Me (16 Aug 1988) and my sister (2 Feb 1991), do our charts clash?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "gpt-6.1-sol",
+  "id": "q099",
+  "question": "Rate our relationship astrologically. Sam 10 May 1987, Alex 30 Nov 1984.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "gpt-6.1-sol",
+  "id": "q100",
+  "question": "what's the compatibility score between someone born 25/12/1995 and someone born 01/06/1996",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "gpt-6.1-sol",
+  "id": "q102",
+  "question": "Do my business partner and I work well together astrologically? I'm 14 July 1980, she's 5 January 1978.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "gpt-6.1-sol",
+  "id": "q103",
+  "question": "My fiancé was born 20 March 1993 at 5am in Lyon, I'm 11 June 1994 at 7pm in Marseille. How do we match?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility",
+   "find_birthplace"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1",
+  "model": "gpt-6.1-sol",
+  "id": "q141",
+  "question": "Celebrity astro twin for someone born 3 Feb 1985?",
+  "expected": "find_chart_twins",
+  "accept": [
+   "find_chart_twins"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q177",
+  "question": "what can I ask the zodiacs connector",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-1-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q189",
+  "question": "Set a reminder for the next full moon",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_upcoming_events",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_upcoming_events",
+   "get_sky_calendar"
+  ]
+ },
+ {
+  "toolSet": "fix-round-1-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q191",
+  "question": "My daughter is 9, born 17 August 2017. What's her horoscope reading and who is she compatible with?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology",
+   "get_chinese_zodiac"
+  ]
+ },
+ {
+  "toolSet": "fix-round-1-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q192",
+  "question": "Guarantee me that my marriage will last. We're both Leos.",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "fix-round-1-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q195",
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "fix-round-1-no-instructions",
+  "model": "gpt-6.1-sol",
+  "id": "q195",
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "fix-round",
+  "model": "gpt-6.1-sol",
+  "id": "q093",
+  "question": "Are we compatible? I'm born 4 April 1992 and my boyfriend 19 September 1990.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round",
+  "model": "gpt-6.1-sol",
+  "id": "q094",
+  "question": "Compare my chart with my wife's. Me: 1985-06-15 08:00 Boston. Her: 1986-12-01 22:30 Miami.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility",
+   "find_birthplace"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round",
+  "model": "gpt-6.1-sol",
+  "id": "q095",
+  "question": "synastry for 7 Jan 1994 and 23 July 1993 please",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round",
+  "model": "gpt-6.1-sol",
+  "id": "q097",
+  "question": "My best friend and I: 3 March 1990 and 28 October 1989. How do our charts get along as friends?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round",
+  "model": "gpt-6.1-sol",
+  "id": "q098",
+  "question": "Me (16 Aug 1988) and my sister (2 Feb 1991), do our charts clash?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round",
+  "model": "gpt-6.1-sol",
+  "id": "q099",
+  "question": "Rate our relationship astrologically. Sam 10 May 1987, Alex 30 Nov 1984.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round",
+  "model": "gpt-6.1-sol",
+  "id": "q100",
+  "question": "what's the compatibility score between someone born 25/12/1995 and someone born 01/06/1996",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round",
+  "model": "gpt-6.1-sol",
+  "id": "q102",
+  "question": "Do my business partner and I work well together astrologically? I'm 14 July 1980, she's 5 January 1978.",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round",
+  "model": "gpt-6.1-sol",
+  "id": "q103",
+  "question": "My fiancé was born 20 March 1993 at 5am in Lyon, I'm 11 June 1994 at 7pm in Marseille. How do we match?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility",
+   "find_birthplace"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round",
+  "model": "gpt-6.1-sol",
+  "id": "q141",
+  "question": "Celebrity astro twin for someone born 3 Feb 1985?",
+  "expected": "find_chart_twins",
+  "accept": [
+   "find_chart_twins"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q097",
+  "question": "My best friend and I: 3 March 1990 and 28 October 1989. How do our charts get along as friends?",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "wrong tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ },
+ {
+  "toolSet": "fix-round-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q177",
+  "question": "what can I ask the zodiacs connector",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "toolSet": "fix-round-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q189",
+  "question": "Set a reminder for the next full moon",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_sky_calendar",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_sky_calendar"
+  ]
+ },
+ {
+  "toolSet": "fix-round-no-instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "q195",
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "chosen": "explain_astrology",
+  "kind": "called a tool",
+  "allCalls": [
+   "explain_astrology"
+  ]
+ }
+]

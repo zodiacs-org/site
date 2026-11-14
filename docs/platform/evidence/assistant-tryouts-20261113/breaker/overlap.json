@@ -1,0 +1,302 @@
+[
+ {
+  "id": "f01",
+  "closestOf200": "q081",
+  "charRatio": 0.405,
+  "maxWordJaccard": 0.25
+ },
+ {
+  "id": "f02",
+  "closestOf200": "q013",
+  "charRatio": 0.452,
+  "maxWordJaccard": 0.261
+ },
+ {
+  "id": "f03",
+  "closestOf200": "q001",
+  "charRatio": 0.581,
+  "maxWordJaccard": 0.25
+ },
+ {
+  "id": "f04",
+  "closestOf200": "q054",
+  "charRatio": 0.513,
+  "maxWordJaccard": 0.286
+ },
+ {
+  "id": "f05",
+  "closestOf200": "q128",
+  "charRatio": 0.492,
+  "maxWordJaccard": 0.182
+ },
+ {
+  "id": "f06",
+  "closestOf200": "q028",
+  "charRatio": 0.45,
+  "maxWordJaccard": 0.167
+ },
+ {
+  "id": "f07",
+  "closestOf200": "q050",
+  "charRatio": 0.455,
+  "maxWordJaccard": 0.188
+ },
+ {
+  "id": "f08",
+  "closestOf200": "q034",
+  "charRatio": 0.619,
+  "maxWordJaccard": 0.429
+ },
+ {
+  "id": "f09",
+  "closestOf200": "q063",
+  "charRatio": 0.432,
+  "maxWordJaccard": 0.15
+ },
+ {
+  "id": "f10",
+  "closestOf200": "q052",
+  "charRatio": 0.467,
+  "maxWordJaccard": 0.2
+ },
+ {
+  "id": "f11",
+  "closestOf200": "q041",
+  "charRatio": 0.535,
+  "maxWordJaccard": 0.235
+ },
+ {
+  "id": "f12",
+  "closestOf200": "q057",
+  "charRatio": 0.491,
+  "maxWordJaccard": 0.214
+ },
+ {
+  "id": "f13",
+  "closestOf200": "q163",
+  "charRatio": 0.411,
+  "maxWordJaccard": 0.172
+ },
+ {
+  "id": "f14",
+  "closestOf200": "q067",
+  "charRatio": 0.431,
+  "maxWordJaccard": 0.214
+ },
+ {
+  "id": "f15",
+  "closestOf200": "q074",
+  "charRatio": 0.427,
+  "maxWordJaccard": 0.182
+ },
+ {
+  "id": "f16",
+  "closestOf200": "q192",
+  "charRatio": 0.449,
+  "maxWordJaccard": 0.214
+ },
+ {
+  "id": "f17",
+  "closestOf200": "q074",
+  "charRatio": 0.484,
+  "maxWordJaccard": 0.214
+ },
+ {
+  "id": "f18",
+  "closestOf200": "q168",
+  "charRatio": 0.486,
+  "maxWordJaccard": 0.286
+ },
+ {
+  "id": "f19",
+  "closestOf200": "q186",
+  "charRatio": 0.439,
+  "maxWordJaccard": 0.172
+ },
+ {
+  "id": "f20",
+  "closestOf200": "q022",
+  "charRatio": 0.513,
+  "maxWordJaccard": 0.217
+ },
+ {
+  "id": "f21",
+  "closestOf200": "q063",
+  "charRatio": 0.488,
+  "maxWordJaccard": 0.214
+ },
+ {
+  "id": "f22",
+  "closestOf200": "q101",
+  "charRatio": 0.689,
+  "maxWordJaccard": 0.316
+ },
+ {
+  "id": "f23",
+  "closestOf200": "q098",
+  "charRatio": 0.46,
+  "maxWordJaccard": 0.233
+ },
+ {
+  "id": "f24",
+  "closestOf200": "q074",
+  "charRatio": 0.447,
+  "maxWordJaccard": 0.208
+ },
+ {
+  "id": "f25",
+  "closestOf200": "q103",
+  "charRatio": 0.466,
+  "maxWordJaccard": 0.154
+ },
+ {
+  "id": "f26",
+  "closestOf200": "q130",
+  "charRatio": 0.632,
+  "maxWordJaccard": 0.263
+ },
+ {
+  "id": "f27",
+  "closestOf200": "q079",
+  "charRatio": 0.552,
+  "maxWordJaccard": 0.222
+ },
+ {
+  "id": "f28",
+  "closestOf200": "q013",
+  "charRatio": 0.436,
+  "maxWordJaccard": 0.143
+ },
+ {
+  "id": "f29",
+  "closestOf200": "q118",
+  "charRatio": 0.637,
+  "maxWordJaccard": 0.429
+ },
+ {
+  "id": "f30",
+  "closestOf200": "q122",
+  "charRatio": 0.561,
+  "maxWordJaccard": 0.217
+ },
+ {
+  "id": "f31",
+  "closestOf200": "q123",
+  "charRatio": 0.561,
+  "maxWordJaccard": 0.25
+ },
+ {
+  "id": "f32",
+  "closestOf200": "q140",
+  "charRatio": 0.404,
+  "maxWordJaccard": 0.147
+ },
+ {
+  "id": "f33",
+  "closestOf200": "q132",
+  "charRatio": 0.587,
+  "maxWordJaccard": 0.312
+ },
+ {
+  "id": "f34",
+  "closestOf200": "q137",
+  "charRatio": 0.6,
+  "maxWordJaccard": 0.25
+ },
+ {
+  "id": "f35",
+  "closestOf200": "q015",
+  "charRatio": 0.49,
+  "maxWordJaccard": 0.143
+ },
+ {
+  "id": "f36",
+  "closestOf200": "q118",
+  "charRatio": 0.549,
+  "maxWordJaccard": 0.267
+ },
+ {
+  "id": "f37",
+  "closestOf200": "q113",
+  "charRatio": 0.387,
+  "maxWordJaccard": 0.071
+ },
+ {
+  "id": "f38",
+  "closestOf200": "q159",
+  "charRatio": 0.515,
+  "maxWordJaccard": 0.238
+ },
+ {
+  "id": "f39",
+  "closestOf200": "q152",
+  "charRatio": 0.622,
+  "maxWordJaccard": 0.375
+ },
+ {
+  "id": "f40",
+  "closestOf200": "q159",
+  "charRatio": 0.443,
+  "maxWordJaccard": 0.217
+ },
+ {
+  "id": "f41",
+  "closestOf200": "q078",
+  "charRatio": 0.404,
+  "maxWordJaccard": 0.222
+ },
+ {
+  "id": "f42",
+  "closestOf200": "q055",
+  "charRatio": 0.451,
+  "maxWordJaccard": 0.261
+ },
+ {
+  "id": "f43",
+  "closestOf200": "q055",
+  "charRatio": 0.485,
+  "maxWordJaccard": 0.211
+ },
+ {
+  "id": "f44",
+  "closestOf200": "q041",
+  "charRatio": 0.621,
+  "maxWordJaccard": 0.25
+ },
+ {
+  "id": "f45",
+  "closestOf200": "q071",
+  "charRatio": 0.464,
+  "maxWordJaccard": 0.2
+ },
+ {
+  "id": "f46",
+  "closestOf200": "q128",
+  "charRatio": 0.432,
+  "maxWordJaccard": 0.2
+ },
+ {
+  "id": "f47",
+  "closestOf200": "q041",
+  "charRatio": 0.44,
+  "maxWordJaccard": 0.154
+ },
+ {
+  "id": "f48",
+  "closestOf200": "q009",
+  "charRatio": 0.629,
+  "maxWordJaccard": 0.286
+ },
+ {
+  "id": "f49",
+  "closestOf200": "q006",
+  "charRatio": 0.5,
+  "maxWordJaccard": 0.217
+ },
+ {
+  "id": "f50",
+  "closestOf200": "q062",
+  "charRatio": 0.471,
+  "maxWordJaccard": 0.227
+ }
+]
