@@ -43,6 +43,7 @@ import { eventsPublication } from '../lib/events/site-publication';
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
 import { isHiddenAlmanacSlug, isHiddenChildPage } from '../data/hidden-child-pages.mjs';
 import { isPastPageHidden } from '../lib/indexing/past-pages-hidden-list';
+import { WINDOW_READING_IDS, WINDOW_READINGS_UPDATED } from '../lib/events/window-readings';
 import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
@@ -427,6 +428,9 @@ const CONNECTOR_PAGE_ROUTES = [
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
+  // The moon and alignment pages of the coming twelve months carry fuller readings (ZOD-221, decision J).
+  ...eventsPublication.pages.filter((event) => WINDOW_READING_IDS.includes(event.id))
+    .map((event) => [event.path, WINDOW_READINGS_UPDATED] as const),
   ...[
     '/', '/birth-chart/', '/compatibility/', '/moon-sign/', '/rising-sign/',
     '/moon-phase/', '/saturn-return/', '/solar-return/', '/mercury-retrograde/', '/transits/', '/ask/',
