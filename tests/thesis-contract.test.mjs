@@ -188,7 +188,7 @@ describe('thesis publication metadata contract', () => {
     // The hero prints no "Published" date (owner, 2026-11-13): the date the
     // page was first published is not on record, so none is stated.
     expect(dates).toEqual([
-      { datetime: '2026-11-13', label: 'Updated 13 Nov 2026' },
+      { datetime: '2026-11-14', label: 'Updated 14 Nov 2026' },
     ]);
     expect(textOf(hero)).toContain('Evidence checked 10 Nov 2026');
     expect(textOf(HTML)).not.toMatch(/\bPublished \d{1,2} [A-Z][a-z]{2} \d{4}/);
@@ -206,7 +206,7 @@ describe('thesis publication metadata contract', () => {
       '@id': 'https://zodiacs.org/thesis/#article',
       headline: 'Why Zodiacs Matter',
       url: 'https://zodiacs.org/thesis/',
-      dateModified: '2026-11-13',
+      dateModified: '2026-11-14',
     });
     expect(Object.hasOwn(article, 'datePublished')).toBe(false);
   });
