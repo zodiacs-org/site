@@ -735,7 +735,8 @@ export function motionBlock() {
 
 export function stampCharts(page, data) {
   let next = stamp(stamp(page, 'know', knowFigure(data)), 'lifespan', lifespanFigure(data));
-  next = stamp(next, 'mine', mineFigure());
+  // The film figure (mineFigure) is off the page while the film is reworked
+  // on its own branch; its markers come back with it.
   next = stamp(next, 'shelf', shelfFigure(data));
   next = stamp(next, 'calendar', calendarFigure());
   next = stamp(next, 'motion', motionBlock());
