@@ -1,0 +1,1237 @@
+{
+ "what": "Every sky event the in-scope 2027 event pages name, with the instant the committed data files give it",
+ "scope": "each 2027 full moon, eclipse, Mercury, Venus or Mars retrograde cycle and slow-planet ingress with a page of its own",
+ "pages": [
+  {
+   "id": "mars-retrograde-2027-01-10",
+   "path": "/mars-retrograde/2027-01-10/",
+   "family": "retrograde",
+   "subtype": "cycle",
+   "title": "Mars retrograde, January 2027",
+   "signs": [
+    "leo",
+    "virgo"
+   ],
+   "longitude": 160.4293736337163,
+   "related": [
+    "mars-retrograde-2029-02-14",
+    "new-moon-2027-01-07",
+    "uranus-sextile-neptune-2027-01-15"
+   ]
+  },
+  {
+   "id": "full-moon-2027-01-22",
+   "path": "/full-moon/2027-01-22/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Leo, January 22, 2027",
+   "signs": [
+    "leo"
+   ],
+   "longitude": 122.23773170657029,
+   "related": [
+    "full-moon-2026-12-24",
+    "full-moon-2027-02-20"
+   ]
+  },
+  {
+   "id": "eclipse-2027-02-06",
+   "path": "/eclipses/2027-02-06/",
+   "family": "eclipse",
+   "subtype": "solar",
+   "title": "Annular solar eclipse in Aquarius, February 6, 2027",
+   "signs": [
+    "aquarius"
+   ],
+   "longitude": 317.63,
+   "related": [
+    "eclipse-2026-08-12",
+    "eclipse-2027-08-02",
+    "new-moon-2027-02-06",
+    "uranus-stations-direct-2027-02-08",
+    "mercury-stations-retrograde-2027-02-09"
+   ]
+  },
+  {
+   "id": "mercury-retrograde-2027-02-09",
+   "path": "/mercury-retrograde/2027-02-09/",
+   "family": "retrograde",
+   "subtype": "cycle",
+   "title": "Mercury retrograde, February 2027",
+   "signs": [
+    "aquarius",
+    "pisces"
+   ],
+   "longitude": 335.982581669787,
+   "related": [
+    "mercury-retrograde-2026-10-24",
+    "mercury-retrograde-2027-06-10",
+    "uranus-stations-direct-2027-02-08",
+    "eclipse-2027-02-06",
+    "new-moon-2027-02-06"
+   ]
+  },
+  {
+   "id": "eclipse-2027-02-20",
+   "path": "/eclipses/2027-02-20/",
+   "family": "eclipse",
+   "subtype": "lunar",
+   "title": "Penumbral lunar eclipse in Virgo, February 20, 2027",
+   "signs": [
+    "virgo"
+   ],
+   "longitude": 151.98,
+   "related": [
+    "eclipse-2026-08-28",
+    "eclipse-2027-07-18",
+    "full-moon-2027-02-20"
+   ]
+  },
+  {
+   "id": "full-moon-2027-02-20",
+   "path": "/full-moon/2027-02-20/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Virgo, February 20, 2027",
+   "signs": [
+    "virgo"
+   ],
+   "longitude": 152.0929919732655,
+   "related": [
+    "full-moon-2027-01-22",
+    "full-moon-2027-03-22",
+    "eclipse-2027-02-20"
+   ]
+  },
+  {
+   "id": "full-moon-2027-03-22",
+   "path": "/full-moon/2027-03-22/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Libra, March 22, 2027",
+   "signs": [
+    "libra"
+   ],
+   "longitude": 181.58513846223983,
+   "related": [
+    "full-moon-2027-02-20",
+    "full-moon-2027-04-20"
+   ]
+  },
+  {
+   "id": "full-moon-2027-04-20",
+   "path": "/full-moon/2027-04-20/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Scorpio, April 20, 2027",
+   "signs": [
+    "scorpio"
+   ],
+   "longitude": 210.61661297439926,
+   "related": [
+    "full-moon-2027-03-22",
+    "full-moon-2027-05-20"
+   ]
+  },
+  {
+   "id": "full-moon-2027-05-20",
+   "path": "/full-moon/2027-05-20/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Scorpio, May 20, 2027",
+   "signs": [
+    "scorpio"
+   ],
+   "longitude": 239.22567986172248,
+   "related": [
+    "full-moon-2027-04-20",
+    "full-moon-2027-06-19"
+   ]
+  },
+  {
+   "id": "mercury-retrograde-2027-06-10",
+   "path": "/mercury-retrograde/2027-06-10/",
+   "family": "retrograde",
+   "subtype": "cycle",
+   "title": "Mercury retrograde, June 2027",
+   "signs": [
+    "gemini",
+    "cancer"
+   ],
+   "longitude": 96.36109654432312,
+   "related": [
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-10-07",
+    "uranus-sextile-neptune-2027-06-06",
+    "uranus-trine-pluto-2027-06-15"
+   ]
+  },
+  {
+   "id": "full-moon-2027-06-19",
+   "path": "/full-moon/2027-06-19/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Sagittarius, June 19, 2027",
+   "signs": [
+    "sagittarius"
+   ],
+   "longitude": 267.55750577855997,
+   "related": [
+    "full-moon-2027-05-20",
+    "full-moon-2027-07-18",
+    "uranus-trine-pluto-2027-06-15"
+   ]
+  },
+  {
+   "id": "full-moon-2027-07-18",
+   "path": "/full-moon/2027-07-18/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Capricorn, July 18, 2027",
+   "signs": [
+    "capricorn"
+   ],
+   "longitude": 295.81271683004763,
+   "related": [
+    "full-moon-2027-06-19",
+    "full-moon-2027-08-17",
+    "eclipse-2027-07-18"
+   ]
+  },
+  {
+   "id": "eclipse-2027-07-18",
+   "path": "/eclipses/2027-07-18/",
+   "family": "eclipse",
+   "subtype": "lunar",
+   "title": "Penumbral lunar eclipse in Capricorn, July 18, 2027",
+   "signs": [
+    "capricorn"
+   ],
+   "longitude": 295.96,
+   "related": [
+    "eclipse-2027-02-20",
+    "eclipse-2027-08-17",
+    "full-moon-2027-07-18"
+   ]
+  },
+  {
+   "id": "jupiter-enters-virgo-2027-07-26",
+   "path": "/events/jupiter-enters-virgo-2027-07-26/",
+   "family": "ingress",
+   "subtype": "ingress",
+   "title": "Jupiter enters Virgo, July 26, 2027",
+   "signs": [
+    "virgo"
+   ],
+   "related": [
+    "jupiter-enters-leo-2026-06-30",
+    "jupiter-enters-libra-2028-08-24"
+   ]
+  },
+  {
+   "id": "eclipse-2027-08-02",
+   "path": "/eclipses/2027-08-02/",
+   "family": "eclipse",
+   "subtype": "solar",
+   "title": "Total solar eclipse in Leo, August 2, 2027",
+   "signs": [
+    "leo"
+   ],
+   "longitude": 129.92,
+   "related": [
+    "eclipse-2027-02-06",
+    "eclipse-2028-01-26",
+    "new-moon-2027-08-02"
+   ]
+  },
+  {
+   "id": "eclipse-2027-08-17",
+   "path": "/eclipses/2027-08-17/",
+   "family": "eclipse",
+   "subtype": "lunar",
+   "title": "Penumbral lunar eclipse in Aquarius, August 17, 2027",
+   "signs": [
+    "aquarius"
+   ],
+   "longitude": 324.07,
+   "related": [
+    "eclipse-2027-07-18",
+    "eclipse-2028-01-12",
+    "full-moon-2027-08-17"
+   ]
+  },
+  {
+   "id": "full-moon-2027-08-17",
+   "path": "/full-moon/2027-08-17/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Aquarius, August 17, 2027",
+   "signs": [
+    "aquarius"
+   ],
+   "longitude": 324.19700897779853,
+   "related": [
+    "full-moon-2027-07-18",
+    "full-moon-2027-09-15",
+    "eclipse-2027-08-17"
+   ]
+  },
+  {
+   "id": "full-moon-2027-09-15",
+   "path": "/full-moon/2027-09-15/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Pisces, September 15, 2027",
+   "signs": [
+    "pisces"
+   ],
+   "longitude": 352.88300464419046,
+   "related": [
+    "full-moon-2027-08-17",
+    "full-moon-2027-10-15",
+    "uranus-stations-retrograde-2027-09-15"
+   ]
+  },
+  {
+   "id": "mercury-retrograde-2027-10-07",
+   "path": "/mercury-retrograde/2027-10-07/",
+   "family": "retrograde",
+   "subtype": "cycle",
+   "title": "Mercury retrograde, October 2027",
+   "signs": [
+    "libra",
+    "scorpio"
+   ],
+   "longitude": 214.9283491672589,
+   "related": [
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2028-01-24"
+   ]
+  },
+  {
+   "id": "full-moon-2027-10-15",
+   "path": "/full-moon/2027-10-15/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Aries, October 15, 2027",
+   "signs": [
+    "aries"
+   ],
+   "longitude": 21.982702403826806,
+   "related": [
+    "full-moon-2027-09-15",
+    "full-moon-2027-11-14",
+    "neptune-sextile-pluto-2027-10-16",
+    "pluto-stations-direct-2027-10-18"
+   ]
+  },
+  {
+   "id": "full-moon-2027-11-14",
+   "path": "/full-moon/2027-11-14/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Taurus, November 14, 2027",
+   "signs": [
+    "taurus"
+   ],
+   "longitude": 51.52131058148581,
+   "related": [
+    "full-moon-2027-10-15",
+    "full-moon-2027-12-13"
+   ]
+  },
+  {
+   "id": "full-moon-2027-12-13",
+   "path": "/full-moon/2027-12-13/",
+   "family": "lunation",
+   "subtype": "full",
+   "title": "Full moon in Gemini, December 13, 2027",
+   "signs": [
+    "gemini"
+   ],
+   "longitude": 81.4127179782372,
+   "related": [
+    "full-moon-2027-11-14",
+    "full-moon-2028-01-12",
+    "neptune-stations-direct-2027-12-15"
+   ]
+  }
+ ],
+ "solves": [
+  {
+   "key": "ingress:Jupiter:leo:2026-06-30T05:56:21.335Z",
+   "kind": "ingress",
+   "engine": "2026-06-30T05:56:21.335Z",
+   "detail": {
+    "body": "Jupiter",
+    "sign": "leo"
+   },
+   "pages": [
+    "jupiter-enters-virgo-2027-07-26"
+   ]
+  },
+  {
+   "key": "eclipse:solar:2026-08-12T17:45:53.037Z",
+   "kind": "eclipse",
+   "engine": "2026-08-12T17:45:53.037Z",
+   "detail": {
+    "type": "solar",
+    "eclipseKind": "total"
+   },
+   "pages": [
+    "eclipse-2027-02-06"
+   ]
+  },
+  {
+   "key": "eclipse:lunar:2026-08-28T04:12:55.340Z",
+   "kind": "eclipse",
+   "engine": "2026-08-28T04:12:55.340Z",
+   "detail": {
+    "type": "lunar",
+    "eclipseKind": "partial"
+   },
+   "pages": [
+    "eclipse-2027-02-20"
+   ]
+  },
+  {
+   "key": "station:Mercury:retrograde:2026-10-24T07:14:22.646Z",
+   "kind": "station",
+   "engine": "2026-10-24T07:14:22.646Z",
+   "detail": {
+    "body": "Mercury",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ]
+  },
+  {
+   "key": "shadow:Mars:pre:2026-11-05T15:33:33.543Z",
+   "kind": "shadow",
+   "engine": "2026-11-05T15:33:33.543Z",
+   "detail": {
+    "body": "Mars",
+    "edge": "pre",
+    "stationRetrograde": "2027-01-10T13:00:54.491Z",
+    "stationDirect": "2027-04-01T14:11:19.833Z"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ]
+  },
+  {
+   "key": "station:Mercury:direct:2026-11-13T15:53:06.474Z",
+   "kind": "station",
+   "engine": "2026-11-13T15:53:06.474Z",
+   "detail": {
+    "body": "Mercury",
+    "direction": "direct"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ]
+  },
+  {
+   "key": "lunation:full:2026-12-24T01:28:16.590Z",
+   "kind": "lunation",
+   "engine": "2026-12-24T01:28:16.590Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2026-12-24T01:28:16.590Z"
+   },
+   "pages": [
+    "full-moon-2027-01-22"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-01-07T20:24:26.069Z",
+   "kind": "lunation",
+   "engine": "2027-01-07T20:24:26.069Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-01-07T20:24:26.069Z"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ]
+  },
+  {
+   "key": "station:Mars:retrograde:2027-01-10T13:00:54.491Z",
+   "kind": "station",
+   "engine": "2027-01-10T13:00:54.491Z",
+   "detail": {
+    "body": "Mars",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ]
+  },
+  {
+   "key": "aspect:Uranus:sextile:Neptune:2027-01-15T07:21:23.862Z",
+   "kind": "aspect",
+   "engine": "2027-01-15T07:21:23.862Z",
+   "detail": {
+    "a": "Uranus",
+    "b": "Neptune",
+    "type": "sextile"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ]
+  },
+  {
+   "key": "lunation:full:2027-01-22T12:17:21.585Z",
+   "kind": "lunation",
+   "engine": "2027-01-22T12:17:21.585Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-01-22T12:17:21.585Z"
+   },
+   "pages": [
+    "full-moon-2027-01-22",
+    "full-moon-2027-02-20"
+   ]
+  },
+  {
+   "key": "shadow:Mercury:pre:2027-01-25T18:58:47.021Z",
+   "kind": "shadow",
+   "engine": "2027-01-25T18:58:47.021Z",
+   "detail": {
+    "body": "Mercury",
+    "edge": "pre",
+    "stationRetrograde": "2027-02-09T17:35:41.894Z",
+    "stationDirect": "2027-03-03T12:35:47.606Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-02-06T15:56:08.653Z",
+   "kind": "lunation",
+   "engine": "2027-02-06T15:56:08.653Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-02-06T15:56:08.653Z"
+   },
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09"
+   ]
+  },
+  {
+   "key": "eclipse:solar:2027-02-06T15:59:39.357Z",
+   "kind": "eclipse",
+   "engine": "2027-02-06T15:59:39.357Z",
+   "detail": {
+    "type": "solar",
+    "eclipseKind": "annular"
+   },
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09",
+    "eclipse-2027-08-02"
+   ]
+  },
+  {
+   "key": "station:Uranus:direct:2027-02-08T12:28:27.274Z",
+   "kind": "station",
+   "engine": "2027-02-08T12:28:27.274Z",
+   "detail": {
+    "body": "Uranus",
+    "direction": "direct"
+   },
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09"
+   ]
+  },
+  {
+   "key": "station:Mercury:retrograde:2027-02-09T17:35:41.894Z",
+   "kind": "station",
+   "engine": "2027-02-09T17:35:41.894Z",
+   "detail": {
+    "body": "Mercury",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10"
+   ]
+  },
+  {
+   "key": "eclipse:lunar:2027-02-20T23:12:50.555Z",
+   "kind": "eclipse",
+   "engine": "2027-02-20T23:12:50.555Z",
+   "detail": {
+    "type": "lunar",
+    "eclipseKind": "penumbral"
+   },
+   "pages": [
+    "eclipse-2027-02-20",
+    "full-moon-2027-02-20",
+    "eclipse-2027-07-18"
+   ]
+  },
+  {
+   "key": "lunation:full:2027-02-20T23:23:37.619Z",
+   "kind": "lunation",
+   "engine": "2027-02-20T23:23:37.619Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-02-20T23:23:37.619Z"
+   },
+   "pages": [
+    "full-moon-2027-01-22",
+    "eclipse-2027-02-20",
+    "full-moon-2027-02-20",
+    "full-moon-2027-03-22"
+   ]
+  },
+  {
+   "key": "station:Mercury:direct:2027-03-03T12:35:47.606Z",
+   "kind": "station",
+   "engine": "2027-03-03T12:35:47.606Z",
+   "detail": {
+    "body": "Mercury",
+    "direction": "direct"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-03-08T09:29:31.050Z",
+   "kind": "lunation",
+   "engine": "2027-03-08T09:29:31.050Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-03-08T09:29:31.050Z"
+   },
+   "pages": []
+  },
+  {
+   "key": "lunation:full:2027-03-22T10:43:48.340Z",
+   "kind": "lunation",
+   "engine": "2027-03-22T10:43:48.340Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-03-22T10:43:48.340Z"
+   },
+   "pages": [
+    "full-moon-2027-02-20",
+    "full-moon-2027-03-22",
+    "full-moon-2027-04-20"
+   ]
+  },
+  {
+   "key": "shadow:Mercury:post:2027-03-23T15:00:18.372Z",
+   "kind": "shadow",
+   "engine": "2027-03-23T15:00:18.372Z",
+   "detail": {
+    "body": "Mercury",
+    "edge": "post",
+    "stationRetrograde": "2027-02-09T17:35:41.894Z",
+    "stationDirect": "2027-03-03T12:35:47.606Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ]
+  },
+  {
+   "key": "station:Mars:direct:2027-04-01T14:11:19.833Z",
+   "kind": "station",
+   "engine": "2027-04-01T14:11:19.833Z",
+   "detail": {
+    "body": "Mars",
+    "direction": "direct"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-04-06T23:51:12.161Z",
+   "kind": "lunation",
+   "engine": "2027-04-06T23:51:12.161Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-04-06T23:51:12.161Z"
+   },
+   "pages": []
+  },
+  {
+   "key": "lunation:full:2027-04-20T22:27:11.909Z",
+   "kind": "lunation",
+   "engine": "2027-04-20T22:27:11.909Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-04-20T22:27:11.909Z"
+   },
+   "pages": [
+    "full-moon-2027-03-22",
+    "full-moon-2027-04-20",
+    "full-moon-2027-05-20"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-05-06T10:58:40.128Z",
+   "kind": "lunation",
+   "engine": "2027-05-06T10:58:40.128Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-05-06T10:58:40.128Z"
+   },
+   "pages": []
+  },
+  {
+   "key": "lunation:full:2027-05-20T10:59:04.599Z",
+   "kind": "lunation",
+   "engine": "2027-05-20T10:59:04.599Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-05-20T10:59:04.599Z"
+   },
+   "pages": [
+    "full-moon-2027-04-20",
+    "full-moon-2027-05-20",
+    "full-moon-2027-06-19"
+   ]
+  },
+  {
+   "key": "shadow:Mercury:pre:2027-05-26T06:04:57.535Z",
+   "kind": "shadow",
+   "engine": "2027-05-26T06:04:57.535Z",
+   "detail": {
+    "body": "Mercury",
+    "edge": "pre",
+    "stationRetrograde": "2027-06-10T18:19:04.335Z",
+    "stationDirect": "2027-07-04T19:39:55.898Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-06-04T19:40:22.676Z",
+   "kind": "lunation",
+   "engine": "2027-06-04T19:40:22.676Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-06-04T19:40:22.676Z"
+   },
+   "pages": []
+  },
+  {
+   "key": "aspect:Uranus:sextile:Neptune:2027-06-06T12:03:37.528Z",
+   "kind": "aspect",
+   "engine": "2027-06-06T12:03:37.528Z",
+   "detail": {
+    "a": "Uranus",
+    "b": "Neptune",
+    "type": "sextile"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10"
+   ]
+  },
+  {
+   "key": "shadow:Mars:post:2027-06-08T01:59:06.494Z",
+   "kind": "shadow",
+   "engine": "2027-06-08T01:59:06.494Z",
+   "detail": {
+    "body": "Mars",
+    "edge": "post",
+    "stationRetrograde": "2027-01-10T13:00:54.491Z",
+    "stationDirect": "2027-04-01T14:11:19.833Z"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ]
+  },
+  {
+   "key": "station:Mercury:retrograde:2027-06-10T18:19:04.335Z",
+   "kind": "station",
+   "engine": "2027-06-10T18:19:04.335Z",
+   "detail": {
+    "body": "Mercury",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ]
+  },
+  {
+   "key": "aspect:Uranus:trine:Pluto:2027-06-15T08:01:32.585Z",
+   "kind": "aspect",
+   "engine": "2027-06-15T08:01:32.585Z",
+   "detail": {
+    "a": "Uranus",
+    "b": "Pluto",
+    "type": "trine"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10",
+    "full-moon-2027-06-19"
+   ]
+  },
+  {
+   "key": "lunation:full:2027-06-19T00:44:24.732Z",
+   "kind": "lunation",
+   "engine": "2027-06-19T00:44:24.732Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-06-19T00:44:24.732Z"
+   },
+   "pages": [
+    "full-moon-2027-05-20",
+    "full-moon-2027-06-19",
+    "full-moon-2027-07-18"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-07-04T03:02:05.654Z",
+   "kind": "lunation",
+   "engine": "2027-07-04T03:02:05.654Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-07-04T03:02:05.654Z"
+   },
+   "pages": []
+  },
+  {
+   "key": "station:Mercury:direct:2027-07-04T19:39:55.898Z",
+   "kind": "station",
+   "engine": "2027-07-04T19:39:55.898Z",
+   "detail": {
+    "body": "Mercury",
+    "direction": "direct"
+   },
+   "pages": [
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ]
+  },
+  {
+   "key": "lunation:full:2027-07-18T15:44:58.351Z",
+   "kind": "lunation",
+   "engine": "2027-07-18T15:44:58.351Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-07-18T15:44:58.351Z"
+   },
+   "pages": [
+    "full-moon-2027-06-19",
+    "full-moon-2027-07-18",
+    "eclipse-2027-07-18",
+    "full-moon-2027-08-17"
+   ]
+  },
+  {
+   "key": "eclipse:lunar:2027-07-18T16:03:01.519Z",
+   "kind": "eclipse",
+   "engine": "2027-07-18T16:03:01.519Z",
+   "detail": {
+    "type": "lunar",
+    "eclipseKind": "penumbral"
+   },
+   "pages": [
+    "eclipse-2027-02-20",
+    "full-moon-2027-07-18",
+    "eclipse-2027-07-18",
+    "eclipse-2027-08-17"
+   ]
+  },
+  {
+   "key": "shadow:Mercury:post:2027-07-19T08:42:48.547Z",
+   "kind": "shadow",
+   "engine": "2027-07-19T08:42:48.547Z",
+   "detail": {
+    "body": "Mercury",
+    "edge": "post",
+    "stationRetrograde": "2027-06-10T18:19:04.335Z",
+    "stationDirect": "2027-07-04T19:39:55.898Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10"
+   ]
+  },
+  {
+   "key": "ingress:Jupiter:virgo:2027-07-26T04:45:27.093Z",
+   "kind": "ingress",
+   "engine": "2027-07-26T04:45:27.093Z",
+   "detail": {
+    "body": "Jupiter",
+    "sign": "virgo"
+   },
+   "pages": [
+    "jupiter-enters-virgo-2027-07-26"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-08-02T10:05:15.113Z",
+   "kind": "lunation",
+   "engine": "2027-08-02T10:05:15.113Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-08-02T10:05:15.113Z"
+   },
+   "pages": [
+    "eclipse-2027-08-02"
+   ]
+  },
+  {
+   "key": "eclipse:solar:2027-08-02T10:06:41.309Z",
+   "kind": "eclipse",
+   "engine": "2027-08-02T10:06:41.309Z",
+   "detail": {
+    "type": "solar",
+    "eclipseKind": "total"
+   },
+   "pages": [
+    "eclipse-2027-02-06",
+    "eclipse-2027-08-02"
+   ]
+  },
+  {
+   "key": "eclipse:lunar:2027-08-17T07:13:51.637Z",
+   "kind": "eclipse",
+   "engine": "2027-08-17T07:13:51.637Z",
+   "detail": {
+    "type": "lunar",
+    "eclipseKind": "penumbral"
+   },
+   "pages": [
+    "eclipse-2027-07-18",
+    "eclipse-2027-08-17",
+    "full-moon-2027-08-17"
+   ]
+  },
+  {
+   "key": "lunation:full:2027-08-17T07:28:42.380Z",
+   "kind": "lunation",
+   "engine": "2027-08-17T07:28:42.380Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-08-17T07:28:42.380Z"
+   },
+   "pages": [
+    "full-moon-2027-07-18",
+    "eclipse-2027-08-17",
+    "full-moon-2027-08-17",
+    "full-moon-2027-09-15"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-08-31T17:41:13.048Z",
+   "kind": "lunation",
+   "engine": "2027-08-31T17:41:13.048Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-08-31T17:41:13.048Z"
+   },
+   "pages": []
+  },
+  {
+   "key": "station:Uranus:retrograde:2027-09-15T09:10:05.125Z",
+   "kind": "station",
+   "engine": "2027-09-15T09:10:05.125Z",
+   "detail": {
+    "body": "Uranus",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "full-moon-2027-09-15"
+   ]
+  },
+  {
+   "key": "lunation:full:2027-09-15T23:03:33.051Z",
+   "kind": "lunation",
+   "engine": "2027-09-15T23:03:33.051Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-09-15T23:03:33.051Z"
+   },
+   "pages": [
+    "full-moon-2027-08-17",
+    "full-moon-2027-09-15",
+    "full-moon-2027-10-15"
+   ]
+  },
+  {
+   "key": "shadow:Mercury:pre:2027-09-17T07:28:03.816Z",
+   "kind": "shadow",
+   "engine": "2027-09-17T07:28:03.816Z",
+   "detail": {
+    "body": "Mercury",
+    "edge": "pre",
+    "stationRetrograde": "2027-10-07T14:39:08.875Z",
+    "stationDirect": "2027-10-28T14:11:14.559Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-09-30T02:36:05.212Z",
+   "kind": "lunation",
+   "engine": "2027-09-30T02:36:05.212Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-09-30T02:36:05.212Z"
+   },
+   "pages": []
+  },
+  {
+   "key": "station:Mercury:retrograde:2027-10-07T14:39:08.875Z",
+   "kind": "station",
+   "engine": "2027-10-07T14:39:08.875Z",
+   "detail": {
+    "body": "Mercury",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ]
+  },
+  {
+   "key": "lunation:full:2027-10-15T13:46:59.502Z",
+   "kind": "lunation",
+   "engine": "2027-10-15T13:46:59.502Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-10-15T13:46:59.502Z"
+   },
+   "pages": [
+    "full-moon-2027-09-15",
+    "full-moon-2027-10-15",
+    "full-moon-2027-11-14"
+   ]
+  },
+  {
+   "key": "aspect:Neptune:sextile:Pluto:2027-10-16T18:03:57.633Z",
+   "kind": "aspect",
+   "engine": "2027-10-16T18:03:57.633Z",
+   "detail": {
+    "a": "Neptune",
+    "b": "Pluto",
+    "type": "sextile"
+   },
+   "pages": [
+    "full-moon-2027-10-15"
+   ]
+  },
+  {
+   "key": "station:Pluto:direct:2027-10-18T03:49:21.034Z",
+   "kind": "station",
+   "engine": "2027-10-18T03:49:21.034Z",
+   "detail": {
+    "body": "Pluto",
+    "direction": "direct"
+   },
+   "pages": [
+    "full-moon-2027-10-15"
+   ]
+  },
+  {
+   "key": "station:Mercury:direct:2027-10-28T14:11:14.559Z",
+   "kind": "station",
+   "engine": "2027-10-28T14:11:14.559Z",
+   "detail": {
+    "body": "Mercury",
+    "direction": "direct"
+   },
+   "pages": [
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-10-29T13:36:32.787Z",
+   "kind": "lunation",
+   "engine": "2027-10-29T13:36:32.787Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-10-29T13:36:32.787Z"
+   },
+   "pages": []
+  },
+  {
+   "key": "shadow:Mercury:post:2027-11-13T09:55:32.644Z",
+   "kind": "shadow",
+   "engine": "2027-11-13T09:55:32.644Z",
+   "detail": {
+    "body": "Mercury",
+    "edge": "post",
+    "stationRetrograde": "2027-10-07T14:39:08.875Z",
+    "stationDirect": "2027-10-28T14:11:14.559Z"
+   },
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ]
+  },
+  {
+   "key": "lunation:full:2027-11-14T03:25:53.355Z",
+   "kind": "lunation",
+   "engine": "2027-11-14T03:25:53.355Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-11-14T03:25:53.355Z"
+   },
+   "pages": [
+    "full-moon-2027-10-15",
+    "full-moon-2027-11-14",
+    "full-moon-2027-12-13"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-11-28T03:24:24.613Z",
+   "kind": "lunation",
+   "engine": "2027-11-28T03:24:24.613Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-11-28T03:24:24.613Z"
+   },
+   "pages": []
+  },
+  {
+   "key": "lunation:full:2027-12-13T16:08:48.111Z",
+   "kind": "lunation",
+   "engine": "2027-12-13T16:08:48.111Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2027-12-13T16:08:48.111Z"
+   },
+   "pages": [
+    "full-moon-2027-11-14",
+    "full-moon-2027-12-13"
+   ]
+  },
+  {
+   "key": "station:Neptune:direct:2027-12-15T09:13:20.243Z",
+   "kind": "station",
+   "engine": "2027-12-15T09:13:20.243Z",
+   "detail": {
+    "body": "Neptune",
+    "direction": "direct"
+   },
+   "pages": [
+    "full-moon-2027-12-13"
+   ]
+  },
+  {
+   "key": "lunation:new:2027-12-27T20:12:18.829Z",
+   "kind": "lunation",
+   "engine": "2027-12-27T20:12:18.829Z",
+   "detail": {
+    "type": "new",
+    "catalogAt": "2027-12-27T20:12:18.829Z"
+   },
+   "pages": []
+  },
+  {
+   "key": "lunation:full:2028-01-12T04:03:06.410Z",
+   "kind": "lunation",
+   "engine": "2028-01-12T04:03:06.410Z",
+   "detail": {
+    "type": "full",
+    "catalogAt": "2028-01-12T04:03:06.410Z"
+   },
+   "pages": [
+    "full-moon-2027-12-13"
+   ]
+  },
+  {
+   "key": "eclipse:lunar:2028-01-12T04:13:07.811Z",
+   "kind": "eclipse",
+   "engine": "2028-01-12T04:13:07.811Z",
+   "detail": {
+    "type": "lunar",
+    "eclipseKind": "partial"
+   },
+   "pages": [
+    "eclipse-2027-08-17"
+   ]
+  },
+  {
+   "key": "station:Mercury:retrograde:2028-01-24T11:03:29.179Z",
+   "kind": "station",
+   "engine": "2028-01-24T11:03:29.179Z",
+   "detail": {
+    "body": "Mercury",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ]
+  },
+  {
+   "key": "eclipse:solar:2028-01-26T15:07:49.353Z",
+   "kind": "eclipse",
+   "engine": "2028-01-26T15:07:49.353Z",
+   "detail": {
+    "type": "solar",
+    "eclipseKind": "annular"
+   },
+   "pages": [
+    "eclipse-2027-08-02"
+   ]
+  },
+  {
+   "key": "station:Mercury:direct:2028-02-14T12:39:33.046Z",
+   "kind": "station",
+   "engine": "2028-02-14T12:39:33.046Z",
+   "detail": {
+    "body": "Mercury",
+    "direction": "direct"
+   },
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ]
+  },
+  {
+   "key": "ingress:Jupiter:libra:2028-08-24T05:04:19.914Z",
+   "kind": "ingress",
+   "engine": "2028-08-24T05:04:19.914Z",
+   "detail": {
+    "body": "Jupiter",
+    "sign": "libra"
+   },
+   "pages": [
+    "jupiter-enters-virgo-2027-07-26"
+   ]
+  },
+  {
+   "key": "station:Mars:retrograde:2029-02-14T08:12:52.118Z",
+   "kind": "station",
+   "engine": "2029-02-14T08:12:52.118Z",
+   "detail": {
+    "body": "Mars",
+    "direction": "retrograde"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ]
+  },
+  {
+   "key": "station:Mars:direct:2029-05-05T18:58:41.337Z",
+   "kind": "station",
+   "engine": "2029-05-05T18:58:41.337Z",
+   "detail": {
+    "body": "Mars",
+    "direction": "direct"
+   },
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ]
+  }
+ ]
+}
