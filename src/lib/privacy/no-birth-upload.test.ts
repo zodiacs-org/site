@@ -49,9 +49,9 @@ import { saveSavedPage } from '../profile/saved-pages-cloud';
 import { encodeChartLink } from '../share';
 import { encodePositionsLink, POSITION_BODY_ORDER } from '../share-positions';
 import { saveInput } from '../../ai-tools/accounts/contracts';
-import { buildSavedRecord, recordDigest, type SavedRecord } from '../../ai-tools/accounts/save';
+import { buildSavedRecord } from '../../ai-tools/accounts/save';
 import { savedPageRpcArgs } from '../../ai-tools/accounts/service';
-import { handleChartImageRequest } from '../../server/chart-preview';
+import { handleChartImageRequest, handleChartLinkRequest } from '../../server/chart-preview';
 import {
   handleChineseZodiacImageRequest,
   handleChineseZodiacLinkRequest,
@@ -491,10 +491,12 @@ describe('what an assistant saves', () => {
     const week = record.kind === 'week' ? weekDays(String((record.data as { from: string }).from)) : [];
     expectNoBirthDetails('stored record', record, [...allowedDates, ...week]);
     expectNoBirthDetails('database call', sent, [...allowedDates, ...week]);
-    // The link's fingerprint is the record as stored (and the label), never the call's details.
-    const { href, ...stored } = record as SavedRecord;
-    const saved = /saved=([0-9a-f]{16})/u.exec(href)?.[1];
-    if (saved) expect(saved).toBe(recordDigest(stored, input.label).slice(0, 16));
+    // A saved= link carries a random row id, sent as the row's id: nothing worked out from the record or the call.
+    const saved = /saved=([^&]*)$/u.exec(record.href)?.[1];
+    if (saved) {
+      expect(saved).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
+      expect(sent).toMatchObject({ id: saved });
+    }
   }, 30_000);
 });
 
@@ -541,6 +543,19 @@ describe('retired links', () => {
     const target = new URL(location!);
     for (const key of gone) expect(target.searchParams.has(key), key).toBe(key === 'd' && target.pathname === '/share/birthday/');
     expectNoBirthDetails('redirect body', await response.text());
+  });
+
+  it('answers the chart link with a positions code with 410 Gone, holding none of it and sending it nowhere', async () => {
+    for (const query of [`p=${encodeURIComponent(positionsCode)}`, `p=${positionsCode}&utm_source=share`]) {
+      const response = await handleChartLinkRequest(new Request(`https://zodiacs.org/api/og/chart?${query}`));
+      expect(response.status).toBe(410);
+      expect(response.headers.get('cache-control')).toBe('no-store, max-age=0');
+      expect(response.headers.get('location')).toBeNull();
+      const body = await response.text();
+      expect(body).not.toContain(positionsCode.slice(2, 12));
+      expect(body).not.toContain('chart-image');
+      expectNoBirthDetails('retired chart link page', body);
+    }
   });
 
   it('keeps a birthday’s month and day only', async () => {

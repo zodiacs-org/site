@@ -325,6 +325,15 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   the ring settling into the lockup from `src/lib/brand-lockup.mjs`, and the
   system's ffmpeg encodes it. Not byte-stable, so not in the drift job;
   `scripts/end-card.test.mjs` checks it. Rerun it when the lockup changes)
+- `public/assets/thesis/film/` ← `node scripts/build-thesis-film.mjs` (the thesis's
+  32-second silent film "Why the zodiac lasts", 1280 × 720 in H.264 and AV1
+  with its poster, and a 1080 × 1920 cut ending on the brand end card. Every
+  number on screen is read from `public/thesis/thesis-charts.json` and
+  `thesis-seasons.json` by `filmScript()`, which refuses to render when a
+  sentence stops being true; each scene shows its source. Chromium draws each
+  frame from its time alone and the system's ffmpeg encodes it. Not
+  byte-stable, so not in the drift job; `scripts/thesis-film.test.mjs` checks
+  it. Rerun it when those data files or the sign shapes change)
 - `public/assets/pulse.json` / `distribution.json` ← weekly cron workflows
 - `docs/phase5/people-pilot/index-demand.json` ← `node
   scripts/build-people-index-demand.mjs --refresh` (pinned twelve-month
