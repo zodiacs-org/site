@@ -2010,6 +2010,20 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const CommunicationRead = communicationSurface?.default;
   const PushOptIn = pushOptIn?.default;
   const PwaInstallPrompt = pwaInstallModule?.default;
+  // The opening line, the math receipt and the birth-time window. They follow
+  // the answer (the big three and, in full mode, the wheel), not precede it.
+  const resultContext = chart && (
+    <>
+      <ResultOpening locale={locale} kind={subjectMode === 'other' || personName ? 'other' : 'self'} />
+      <CheckOurMath locale={locale} utc={chart.input.utc} basis={chart.input.timeKnown ? 'birth' : 'reference'} />
+      {locale === 'en' && mode === 'full' && chart.input.timeKnown
+        && !chart.flags.includes('no-time') && computedInput && (
+        <BirthTimeWindowEntry key={String(chartContextIdRef.current)}
+          utc={chart.input.utc} latitude={computedInput.city.lat} longitude={computedInput.city.lon}
+          houseSystem={chart.input.houseSystem} />
+      )}
+    </>
+  );
   const firstReadingPromptVisible = mode === 'full'
     && firstReadingLoaded
     && !tourOpen
@@ -2171,14 +2185,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                 ? t(locale, 'yourRisingSign')
                 : t(locale, 'birthChart')}
           </h2>
-          <ResultOpening locale={locale} kind={subjectMode === 'other' || personName ? 'other' : 'self'} />
-          <CheckOurMath locale={locale} utc={chart.input.utc} basis={chart.input.timeKnown ? 'birth' : 'reference'} />
-          {locale === 'en' && mode === 'full' && chart.input.timeKnown
-            && !chart.flags.includes('no-time') && computedInput && (
-            <BirthTimeWindowEntry key={String(chartContextIdRef.current)}
-              utc={chart.input.utc} latitude={computedInput.city.lat} longitude={computedInput.city.lon}
-              houseSystem={chart.input.houseSystem} />
-          )}
           {/* Notices */}
           {computedInput?.oldStyle && (
             <p class="notice" role="status" data-old-style-date>
@@ -2267,42 +2273,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             })}
           </div>
 
-          {firstReadingPromptVisible && (
-            <aside class="calc__first-reading shell" aria-labelledby="first-reading-title" data-first-reading-prompt>
-              <div class="core calc__first-reading-core">
-                <div class="calc__first-reading-copy">
-                  <span class="mono--label">{t(locale, 'firstReadingLabel')}</span>
-                  <h2 id="first-reading-title">
-                    {firstReading.status === 'in_progress'
-                      ? t(locale, 'firstReadingResumeTitle')
-                      : t(locale, 'firstReadingTitle')}
-                  </h2>
-                  <p>
-                    {firstReading.status === 'in_progress'
-                      ? t(locale, 'firstReadingResumeBody')
-                      : t(locale, 'firstReadingBody')}
-                  </p>
-                  {firstReading.status === 'in_progress' && (
-                    <span class="mono calc__first-reading-progress">
-                      {t(locale, 'firstReadingStep')} {firstReading.step + 1} / 4
-                    </span>
-                  )}
-                </div>
-                <div class="calc__first-reading-actions">
-                  <button class="btn btn--primary" type="button" onClick={startFirstReading} disabled={!chartActionDockModule} data-first-reading-start>
-                    <span>{firstReading.status === 'in_progress'
-                      ? t(locale, 'firstReadingResume')
-                      : t(locale, 'firstReadingStart')}</span>
-                    <span class="orb">→</span>
-                  </button>
-                  <button class="btn btn--ghost" type="button" onClick={dismissFirstReading} data-first-reading-dismiss>
-                    {t(locale, 'firstReadingExplore')}
-                  </button>
-                </div>
-              </div>
-            </aside>
-          )}
-
           {/* Moon-mode extra: phase at the calculated moment */}
           {mode === 'moon' && moonPhase && (
             <p class="calc__phase mono">{t(locale, chart.input.timeKnown ? 'moonPhaseAtBirth' : 'moonPhaseAtReference')}: {moonPhaseLabel(locale, moonPhase)}</p>
@@ -2321,6 +2291,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               </p>
             ) : null;
           })()}
+
+          {/* The answer comes first: the opening line, the math receipt and
+              the birth-time window follow the big three (and, in full mode,
+              the wheel and the first-reading prompt). */}
+          {(mode !== 'full' || !scene) && resultContext}
 
           {/* Wheel + inspector + placements (full mode) — the Chart Explorer */}
           {mode !== 'full' && chart && (
@@ -2610,6 +2585,44 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   <p class="sr-only" role="status">{announce}</p>
                 </div>
               </div>
+
+              {firstReadingPromptVisible && (
+                <aside class="calc__first-reading shell" aria-labelledby="first-reading-title" data-first-reading-prompt>
+                  <div class="core calc__first-reading-core">
+                    <div class="calc__first-reading-copy">
+                      <span class="mono--label">{t(locale, 'firstReadingLabel')}</span>
+                      <h2 id="first-reading-title">
+                        {firstReading.status === 'in_progress'
+                          ? t(locale, 'firstReadingResumeTitle')
+                          : t(locale, 'firstReadingTitle')}
+                      </h2>
+                      <p>
+                        {firstReading.status === 'in_progress'
+                          ? t(locale, 'firstReadingResumeBody')
+                          : t(locale, 'firstReadingBody')}
+                      </p>
+                      {firstReading.status === 'in_progress' && (
+                        <span class="mono calc__first-reading-progress">
+                          {t(locale, 'firstReadingStep')} {firstReading.step + 1} / 4
+                        </span>
+                      )}
+                    </div>
+                    <div class="calc__first-reading-actions">
+                      <button class="btn btn--primary" type="button" onClick={startFirstReading} disabled={!chartActionDockModule} data-first-reading-start>
+                        <span>{firstReading.status === 'in_progress'
+                          ? t(locale, 'firstReadingResume')
+                          : t(locale, 'firstReadingStart')}</span>
+                        <span class="orb">→</span>
+                      </button>
+                      <button class="btn btn--ghost" type="button" onClick={dismissFirstReading} data-first-reading-dismiss>
+                        {t(locale, 'firstReadingExplore')}
+                      </button>
+                    </div>
+                  </div>
+                </aside>
+              )}
+
+              {resultContext}
 
               {mode === 'full' && locale === 'en' && AspectPatternFeature && (
                 <AspectPatternFeature context="natal" points={chart.bodies} aspects={chart.aspects}
