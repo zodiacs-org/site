@@ -38,15 +38,41 @@ Kinds and links:
 
 | tool kind | `saved_pages.kind` | link |
 | --- | --- | --- |
-| `chart` | `chart` | `/people/<slug>/` for a famous chart; otherwise `/birth-chart/#saved=<digest>`, never the birth details |
-| `comparison` | `compatibility` | the sign-pair page with `#saved=<digest>`; `/compatibility/#saved=<digest>` when a Sun sign is not known |
-| `occasion` | `occasion` | the card link `/occasions/#o=…&d=…`, carrying the day and at most its time, zone and coordinates rounded to two decimals, never names or a place name; `/occasions/#saved=<digest>` for a birthday, a baby's arrival or a coming of age |
-| `week` | `week` | `/horoscopes/#week=<date>&saved=<digest>` |
+| `chart` | `chart` | `/people/<slug>/` for a famous chart; otherwise `/birth-chart/#saved=<id>`, never the birth details |
+| `comparison` | `compatibility` | the sign-pair page with `#saved=<id>`; `/compatibility/#saved=<id>` when a Sun sign is not known |
+| `occasion` | `occasion` | the card link `/occasions/#o=…&d=…`, carrying the day and at most its time, zone and coordinates rounded to two decimals, never names or a place name; `/occasions/#saved=<id>` for a birthday, a baby's arrival or a coming of age |
+| `week` | `week` | `/horoscopes/#week=<date>&saved=<id>` |
 
-The `#saved=` part is the first 16 hex characters of a SHA-256 of the worked-out
-result. It keeps different results apart, because `saved_pages` keeps one row per
-account and link, and it carries no birth detail. Every page such a link names
-sends it on to `/profile/#saved=<digest>` before anything paints
+The `#saved=` part is the saved row's own id: a random UUID the server picks for
+the save and the save RPC stores the row under (migration
+`20261113091500_saved_link_row_ids.sql`). Nothing in it is worked out from the
+saved result, so it gives back nothing about it; a saved week's result is worked
+out from the birth date, so a digest of it could be used to test guessed dates.
+Until 13 November 2026 the value was the first 16 hex characters of a SHA-256 of
+the result. That migration rewrote those old values, and only those (exactly 16
+lowercase hex digits), to the row id in the stored link and in the stored
+record's copy of it, rows of accounts being deleted included. The two fields are
+held to their limits separately, and nothing is cut short. When the rewritten
+link would pass the 2,048 character link limit, neither field changes: the link
+and the record's copy both keep the old value. When the link fits but the
+record's rewritten copy would pass the 16,384 byte record limit, the link is
+rewritten and the record's copy keeps the old value. Both cases are counted by
+`docs/platform/accounts/saved-link-ids-verify.sql` (`digest_href_too_long`,
+`digest_detail_too_long`).
+A check (`saved_pages_no_digest_link`) refuses any new 16 hex `saved=` value,
+and an old 16 hex value opens only the plain profile page.
+The migration runs on a database without this accounts layer too (production on
+13 November 2026, where saved_pages has no `source`, `summary` or `detail` and
+there is no save RPC): there it leaves the save RPC to this layer's own
+migration, rewrites links only, and the check covers the link only. When this
+layer reaches such a database, its migration (and the retention migration
+`20261113090000`) puts back a save RPC without row ids, so apply
+`20261113091500_saved_link_row_ids.sql` again right after them; the verify file's
+`accounts_function_row_ids` and `check_covers_detail` show whether that is still
+needed. The save RPC takes
+the account owner lock before the account's saved pages lock, the order every
+saved_pages insert uses. Every page such a link names
+sends it on to `/profile/#saved=<id>` before anything paints
 (`src/lib/profile/saved-result-link.ts`), where the saved list opens that result
 for the signed-in person and asks anyone signed out to sign in. The summary and
 `detail` hold the result; "Explore more on Zodiacs" in the profile opens the
@@ -56,7 +82,10 @@ The `detail` record has schema `zodiacs.assistant-save.v1`. Every string is plai
 text (no control characters, markup, brackets or backticks) and at most 600
 characters. Every link is a zodiacs.org page. The record is at most 8 KB of compact
 JSON. Assistant and site saves share saved_pages' limit of **100 items per
-account**. Saving the same link again keeps one row and changes nothing.
+account**. Saving the same item again keeps one row and changes nothing: a
+`saved=` link is found by what was stored (the kind, the title, the worked-out
+result and the link apart from its id), under the account's lock, and any other
+link by the link itself.
 
 Browsers keep saved_pages' column-limited insert grant (`user_id, kind, title, href`),
 so only the server's RPC can write `source`, `summary` or `detail`. A site row
