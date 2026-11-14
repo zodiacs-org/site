@@ -1,4 +1,30 @@
 {
   "about": "Past moon, eclipse and event pages hidden from search (Linear ZOD-221, decision J): each address listed here renders noindex and leaves the sitemaps. Only a thin past page with no Search Console impressions in the last 90 days belongs here. The rules are in src/lib/indexing/past-pages-hidden.mjs.",
-  "paths": []
+  "paths": [
+    "/eclipses/2026-02-17/",
+    "/eclipses/2026-03-03/",
+    "/events/jupiter-sextile-uranus-2026-07-21/",
+    "/events/jupiter-trine-neptune-2026-07-20/",
+    "/events/neptune-sextile-pluto-2026-07-24/",
+    "/events/saturn-sextile-pluto-2026-03-28/",
+    "/full-moon/2026-01-03/",
+    "/full-moon/2026-02-01/",
+    "/full-moon/2026-03-03/",
+    "/full-moon/2026-04-02/",
+    "/full-moon/2026-05-01/",
+    "/full-moon/2026-05-31/",
+    "/full-moon/2026-06-29/",
+    "/full-moon/2026-08-28/",
+    "/full-moon/2026-09-26/",
+    "/full-moon/2026-10-26/",
+    "/new-moon/2026-01-18/",
+    "/new-moon/2026-02-17/",
+    "/new-moon/2026-03-19/",
+    "/new-moon/2026-04-17/",
+    "/new-moon/2026-05-16/",
+    "/new-moon/2026-06-15/",
+    "/new-moon/2026-07-14/",
+    "/new-moon/2026-10-10/",
+    "/new-moon/2026-11-09/"
+  ]
 }

@@ -100,6 +100,8 @@ const publishedEventPaths = new Set([
 // published pages that render noindex and leave the sitemaps and the search index.
 const pastPagesHiddenList = JSON.parse(await readFile(resolve(repo, 'src/data/indexing/past-pages-hidden.json'), 'utf8')).paths;
 const isPastPageHidden = pastPagesHidden(Array.isArray(pastPagesHiddenList) ? pastPagesHiddenList : []);
+// The published event pages that every discovery surface lists: all of them, less the hidden ones.
+const listedEventPaths = new Set([...publishedEventPaths].filter((path) => !isPastPageHidden(path)));
 const isPhase2EventPath = (path) => (
   path === '/events/'
   || /^\/events\/(?!preview(?:\/|$))[a-z0-9-]+\/$/.test(path)
@@ -992,7 +994,7 @@ if (!(await exists(searchIndexPath))) {
       requireExactSet(
         'search-index Phase 2 event routes',
         new Set([...indexedPaths].filter(isPhase2EventPath)),
-        publishedEventPaths,
+        listedEventPaths,
       );
       for (const file of files) {
         const rel = relative(root, file).split(sep).join('/');
@@ -1403,7 +1405,7 @@ const sitemapPolicy = {
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/).
   total: 1532 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
-    + publishedEventPaths.size + indexablePeoplePaths.size
+    + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
@@ -1416,7 +1418,7 @@ const sitemapPolicy = {
   disclosures: 6,
   extendedHoroscopePages: 84,
   dailyReadingPages: 42,
-  eventPages: publishedEventPaths.size,
+  eventPages: listedEventPaths.size,
   peoplePages: indexablePeoplePaths.size,
   registryResearchPages: indexedRegistryResearchPaths.size,
   translatedBlocks: 641,
@@ -1463,7 +1465,7 @@ const indexedFamilies = [
 requireExactSet(
   'sitemap.xml Phase 2 event routes',
   new Set([...sitemapLocs].filter(isPhase2EventPath)),
-  publishedEventPaths,
+  listedEventPaths,
 );
 requireExactSet(
   'sitemap.xml Russian core routes',
