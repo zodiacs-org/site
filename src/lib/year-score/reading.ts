@@ -3,10 +3,10 @@
  * sentence for each transit driving the number. Engine-free: it phrases a
  * YearScore that core.ts already computed.
  *
- * Copy rules (Dias, 9 November 2026): plain and calm. Money, career,
- * wellbeing and legal themes are read as the tradition reads them (a strong
- * year for earnings, a year to take rest seriously, a good window to sign
- * agreements). Never a price, stock or other trading call, a buy or sell
+ * Copy rules (Dias, 9 November 2026): plain and calm. Career, wellbeing
+ * and legal themes are read as the tradition reads them (a year to take rest
+ * seriously, a good window to sign agreements); no money, earnings or
+ * promotion forecasts (ZOD-30, 13 November 2026). Never a price, stock or other trading call, a buy or sell
  * signal, a diagnosis or medical timing, a death prediction or a legal win or
  * loss. A hard year reads as pressure and the work it asks for, never doom.
  * No em or en dashes. The transit sentences are the site's own (../transits.ts).
