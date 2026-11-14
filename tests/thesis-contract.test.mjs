@@ -23,7 +23,7 @@ const ESSAY_SECTION_IDS = [
   'the-conclusion',
 ];
 
-const ESSAY_FIGURE_IDS = ['fig-mine', 'fig-know', 'fig-lifespan', 'fig-shelf', 'fig-3', 'fig-2', 'fig-1'];
+const ESSAY_FIGURE_IDS = ['fig-know', 'fig-lifespan', 'fig-shelf', 'fig-3', 'fig-2', 'fig-1'];
 
 const SIGNS = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
@@ -872,17 +872,9 @@ describe('thesis pass bar', () => {
     expect(textOf(shelf)).not.toMatch(/\$\d|market|price|TAM\b/i);
   });
 
-  it('13. the film loads nothing before play, and the reader\'s pick is never stored', () => {
-    const mine = sliceElement(HTML, /<figure\b[^>]*\bid=["']fig-mine["'][^>]*>/i, 'figure');
-    const video = mine.match(/<video\b[^>]*>/i)?.[0] ?? '';
-    for (const attr of ['muted', 'playsinline', 'preload="none"']) expect(video).toContain(attr);
-    // Controls are switched on when the reader presses play (Lighthouse LCP gate).
-    expect(HTML).toContain('film.controls = true');
-    expect(HTML).toContain('class="film-play"');
-    for (const source of [...mine.matchAll(/<source\b[^>]*src=["']([^"']+)["']/gi)].map((m) => m[1])) {
-      expect(existsSync(resolve(ROOT, `public${source}`)), source).toBe(true);
-    }
-    expect([...mine.matchAll(/<button\b[^>]*class=["']mine-sign["']/gi)]).toHaveLength(12);
+  it('13. the film figure is off the page while it is reworked, and nothing stores a pick', () => {
+    expect(HTML).not.toMatch(/\bid=["']fig-mine["']/i);
+    expect(HTML).not.toContain('Nobody has to explain the twelve.');
     const motion = HTML.slice(HTML.indexOf('<!-- thesis-motion-figure:begin -->'), HTML.indexOf('<!-- thesis-motion-figure:end -->'));
     expect(motion).not.toMatch(/localStorage|sessionStorage|document\.cookie|history\.(?:push|replace)State|fetch\(/);
   });
