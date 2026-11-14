@@ -17,8 +17,9 @@
 //
 // winnable = monthly volume x (1 - competition) x readiness
 //   readiness: 1 when a page in that language answers the query (we need to
-//   rank it), 0.6 when only the English page exists (a localized page must be
-//   built first), 0.3 when nothing answers it.
+//   rank it) or is built and held for its release batch (coverage "held":
+//   nothing left to build), 0.6 when only the English page exists (a localized
+//   page must be built first), 0.3 when nothing answers it.
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { parseCsv, parseVolume, volumeLabel, volumeOf, VIS_DIR } from './lib.mjs';
@@ -75,7 +76,7 @@ if (opt('volumes')) {
 if (opt('rank')) {
   const compFile = path.join(VIS_DIR, 'competition.json');
   const comp = existsSync(compFile) ? JSON.parse(readFileSync(compFile, 'utf8')) : {};
-  const READY = { full: 1, partial: 0.6, none: 0.3 };
+  const READY = { full: 1, held: 1, partial: 0.6, none: 0.3 };
   const cells = [];
   for (const f of readdirSync(KW).filter((f) => f.endsWith('.csv') && f !== 'all-locales.csv')) {
     const { rows } = readTable(path.join(KW, f));
