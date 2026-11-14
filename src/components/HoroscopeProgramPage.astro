@@ -475,7 +475,7 @@ const ctaLede = edgeMoon && moonHouse
         ))}
       </nav>
       <script is:inline>
-        /* On a phone the row scrolls sideways: start it at the current sign. */
+        /* Between phone and desktop widths the row scrolls sideways: start it at the current sign. */
         (function () {
           var rail = document.currentScript && document.currentScript.previousElementSibling;
           var current = rail && rail.querySelector('[aria-current="page"]');
