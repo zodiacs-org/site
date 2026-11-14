@@ -77,29 +77,9 @@
   <style>
     @font-face { font-family: 'EB Garamond'; src: url('/fonts/eb-garamond-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
     @font-face { font-family: 'EB Garamond'; src: url('/fonts/eb-garamond-latin-500-normal.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
-  </style>
-  <!-- The italic and mono faces only set captions, sources and labels below
-       the first screen. Declaring them once the page has loaded keeps their
-       downloads from competing with the hero poster; without JavaScript the
-       noscript copy declares them as before. -->
-  <style media="print" data-thesis-late-fonts>
     @font-face { font-family: 'EB Garamond'; src: url('/fonts/eb-garamond-latin-400-italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
     @font-face { font-family: 'JetBrains Mono'; src: url('/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations'); font-weight: 300 600; font-style: normal; font-display: swap; }
   </style>
-  <noscript><style>
-    @font-face { font-family: 'EB Garamond'; src: url('/fonts/eb-garamond-latin-400-italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
-    @font-face { font-family: 'JetBrains Mono'; src: url('/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations'); font-weight: 300 600; font-style: normal; font-display: swap; }
-  </style></noscript>
-  <script>
-    (function () {
-      function useLateFonts() {
-        var sheet = document.querySelector('style[data-thesis-late-fonts]');
-        if (sheet) sheet.media = 'all';
-      }
-      if (document.readyState === 'complete') useLateFonts();
-      else window.addEventListener('load', useLateFonts, { once: true });
-    })();
-  </script>
 
   <style>
     :root {
