@@ -303,6 +303,8 @@ const englishOnlyLabel = (href: string, label: string): string | undefined => (
   }
   .nav {
     pointer-events: auto;
+    /* One name per page: the bar holds still across a page change (base.css). */
+    view-transition-name: site-nav;
     /* Reserve the pill and control tracks before streamed children or fonts
        arrive. Text is never allowed to determine the centered shell width. */
     display: grid;
