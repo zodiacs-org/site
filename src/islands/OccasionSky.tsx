@@ -2,7 +2,8 @@
  * "The sky on…": a keepsake card for a wedding, a birthday, a new home or
  * another day, from a date, an optional time and an optional place. Computed
  * on the device behind the lazy engine import; the card's link carries its
- * inputs after the #, so it never reaches the server. A signed-in person
+ * inputs after the #, so it never reaches the server, and a birthday gets no
+ * link at all, since its day can be a birth date (src/lib/occasions/card-link.ts). A signed-in person
  * can save the card to their profile (PUBLIC_ACCOUNT_SAVES_ENABLED): that
  * keeps the day, time, zone and rounded coordinates only, never names or a
  * place, and only the page address for a birthday, a baby or a coming of age
@@ -19,7 +20,8 @@ import type { OccasionCard } from '../lib/occasions/card';
 import PlaceSearch from './PlaceSearch';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import type { SavedPageDraft } from '../lib/profile/saved-pages-config';
-import { occasionSavedPage } from '../lib/occasions/saved-path';
+import { BIRTH_OCCASIONS, occasionSavedPage } from '../lib/occasions/saved-path';
+import { isBirthOccasionLink, occasionCardLink } from '../lib/occasions/card-link';
 import { useAccountSaveModule } from './account-save-loader';
 
 const loadCard = () => Promise.all([import('../lib/occasions/card'), import('../lib/occasions/site-clock')]);
@@ -63,18 +65,12 @@ function readLink(): { occasion: OccasionKind; names: string; date: string; time
   return { occasion, names: (params.get('n') ?? '').slice(0, NAMES_MAX), date, time: params.get('t') ?? '', city };
 }
 
-function cardLink(occasion: OccasionKind, names: string, date: string, time: string, city: City | null): string {
-  const params = new URLSearchParams({ o: occasion, d: date });
-  if (names.trim()) params.set('n', names.trim());
-  if (time) params.set('t', time);
-  if (city) {
-    params.set('tz', city.tz);
-    params.set('lat', city.lat.toFixed(4));
-    params.set('lon', city.lon.toFixed(4));
-    params.set('place', placeLabel(city));
-  }
-  // After the #, so the names, date and place never reach the server.
-  return `${window.location.origin}${window.location.pathname}#${params.toString()}`;
+function cardLink(occasion: OccasionKind, names: string, date: string, time: string, city: City | null): string | null {
+  // After the #, so the names, date and place never reach the server. A birthday gets no link (src/lib/occasions/card-link.ts).
+  return occasionCardLink(`${window.location.origin}${window.location.pathname}`, {
+    occasion, names, date, time,
+    place: city ? { tz: city.tz, lat: city.lat, lon: city.lon, label: placeLabel(city) } : null,
+  });
 }
 
 export default function OccasionSky() {
@@ -126,6 +122,8 @@ export default function OccasionSky() {
     }
     const linked = readLink();
     if (!linked) return;
+    // An older birthday link carried the day, which can be a birth date: the card opens, and the address bar drops it.
+    if (isBirthOccasionLink(window.location.hash)) history.replaceState(history.state, '', `${window.location.pathname}${window.location.search}`);
     setOccasion(linked.occasion);
     setNames(linked.names);
     setDate(linked.date);
@@ -145,9 +143,10 @@ export default function OccasionSky() {
   }
 
   async function copyLink() {
-    if (!shown) return;
+    const link = shown && cardLink(shown.occasion, shown.names, shown.date, shown.time, shown.city);
+    if (!link) return;
     try {
-      await navigator.clipboard.writeText(cardLink(shown.occasion, shown.names, shown.date, shown.time, shown.city));
+      await navigator.clipboard.writeText(link);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -246,8 +245,13 @@ export default function OccasionSky() {
           </div>
           <div class="calc__actions occasion__actions">
             <button type="button" class="btn" onClick={() => window.print()}>Print the card</button>
-            <button type="button" class="btn" onClick={copyLink}>{copied ? 'Link copied' : 'Copy the card’s link'}</button>
+            {shown && !BIRTH_OCCASIONS.has(shown.occasion) && (
+              <button type="button" class="btn" onClick={copyLink}>{copied ? 'Link copied' : 'Copy the card’s link'}</button>
+            )}
           </div>
+          {shown && BIRTH_OCCASIONS.has(shown.occasion) && (
+            <p class="field__help">A birthday card has no link, because its day can be a birth date. Print it to keep or share it.</p>
+          )}
           {card.moonSignChange && (
             <p class="field__help">The Moon changes sign that day. Add the time to pin it down.</p>
           )}
