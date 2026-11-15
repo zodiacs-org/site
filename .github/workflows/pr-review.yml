@@ -22,6 +22,14 @@ name: PR Review
 #
 # The key lives in the pr-review-production environment as ANTHROPIC_API_KEY.
 # Pull requests from forks and from Dependabot get no secrets and are skipped.
+#
+# This repository is public, so the review comment is public. Before it is
+# posted, the job refuses any text that contains the key or anything shaped
+# like an Anthropic or GitHub credential. The reviewer holds the change to the
+# house rules as they are on the base branch, because a pull request can
+# change AGENTS.md and CLAUDE.md themselves. A pull_request run uses the
+# workflow file from the pull request, so anyone who can push a branch here
+# can change this reviewer too: that is the trust the key is given.
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review, labeled]
@@ -87,6 +95,20 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
+      - name: Fetch the house rules from the base branch
+        if: steps.gate.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          dir=".pr-review-base"
+          mkdir -p "$dir"
+          for file in AGENTS.md CLAUDE.md; do
+            gh api -H "Accept: application/vnd.github.raw" \
+              "repos/$REPO/contents/$file?ref=$BASE_SHA" > "$dir/$file"
+          done
+
       - name: Review
         id: review
         if: steps.gate.outputs.run == 'true'
@@ -105,8 +127,11 @@ jobs:
             Read the diff with `gh pr diff ${{ github.event.pull_request.number }}`
             and the description with `gh pr view ${{ github.event.pull_request.number }}`.
             Open the files the diff touches, and the code that calls them, before
-            you judge. AGENTS.md and CLAUDE.md are the house rules; hold the change
-            to them.
+            you judge. The house rules are .pr-review-base/AGENTS.md and
+            .pr-review-base/CLAUDE.md, copied from the base branch; hold the change
+            to them. If the pull request edits AGENTS.md or CLAUDE.md, review that
+            edit against the base copies like any other change. Read only files
+            inside this checkout.
 
             Look hardest for:
             1. Bugs: wrong logic, unhandled cases, broken links or routes, data that
@@ -142,6 +167,7 @@ jobs:
             --json-schema '{"type":"object","additionalProperties":false,"required":["verdict","blockers","review_markdown"],"properties":{"verdict":{"type":"string","enum":["pass","block"]},"blockers":{"type":"array","items":{"type":"string"}},"review_markdown":{"type":"string"}}}'
 
       - name: Post or update the review comment
+        id: post
         if: steps.gate.outputs.run == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -150,6 +176,8 @@ jobs:
           SHA: ${{ github.event.pull_request.head.sha }}
           OUTCOME: ${{ steps.review.outcome }}
           RESULT: ${{ steps.review.outputs.structured_output }}
+          # Only compared against below, never printed. Logs mask it anyway.
+          API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           marker='<!-- zodiacs-pr-review -->'
           body_file="$RUNNER_TEMP/review.md"
@@ -158,6 +186,14 @@ jobs:
           else
             review="The automatic review did not finish on this push, so it has no verdict. Check the run log (for example the API balance or the turn limit)."
             echo "::warning::The review did not produce a result."
+          fi
+          # The comment is public. Never post a credential, whatever the
+          # reviewer was led to write.
+          if { [ -n "$API_KEY" ] && printf '%s' "$review" | grep -qF -- "$API_KEY"; } ||
+             printf '%s' "$review" | grep -qE 'sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}'; then
+            review="The automatic review wrote something shaped like a credential, so its text was not posted. Check the run, and rotate the key if it was the real one."
+            echo "::error::The review text contained something shaped like a credential and was not posted."
+            echo "leaked=true" >> "$GITHUB_OUTPUT"
           fi
           {
             printf '%s\n' "$marker"
@@ -172,6 +208,10 @@ jobs:
             gh api --method POST "repos/$REPO/issues/$PR/comments" -F "body=@$body_file" > /dev/null
           fi
 
+      - name: Stop when the review text held a credential
+        if: steps.post.outputs.leaked == 'true'
+        run: exit 1
+
       - name: Fail on a blocker
         if: steps.gate.outputs.run == 'true' && steps.review.outcome == 'success'
         env:
@@ -179,7 +219,9 @@ jobs:
         run: |
           verdict=$(printf '%s' "$RESULT" | jq -r '.verdict // empty' 2>/dev/null || true)
           if [ "$verdict" = "block" ]; then
-            printf '%s' "$RESULT" | jq -r '.blockers[]? | "::error::" + .'
+            # One line per blocker, so the reviewer's text can never start a
+            # workflow command of its own.
+            printf '%s' "$RESULT" | jq -r '.blockers[]? | gsub("[\\r\\n]+"; " ") | "::error::" + .'
             echo "The review found at least one blocker. See the review comment on the pull request."
             exit 1
           fi
