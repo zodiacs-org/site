@@ -495,6 +495,7 @@ describe('a pull request that rolls the daily edition', () => {
     beforeEach(async () => {
       repo = await mkdtemp(join(tmpdir(), 'sitemap-plan-'));
       execFileSync('git', ['init', '-q'], { cwd: repo });
+      await writeFile(join(repo, '.git/info/exclude'), '/output.txt\n/summary.txt\n/temp/\n');
       await mkdir(join(repo, 'scripts'), { recursive: true });
       for (const file of ['sitemap-daily-allowance.mjs', 'phase1-scope-guard.mjs']) {
         await writeFile(join(repo, 'scripts', file), await readFile(join(root, 'scripts', file)));
@@ -595,10 +596,10 @@ describe('a pull request that rolls the daily edition', () => {
       expect(result.outputs).toEqual({ compare: 'false' });
     });
 
-    it('accepts only an exact, base-pinned allowance beside the generated daily package', async () => {
+    it.each([false, true])('accepts only an exact, base-pinned allowance (existing: %s)', async (existing) => {
       const scope = '.github/phase1-scope-allowance.json';
       const sign = 'public/registry/aries/index.html';
-      const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), [sign]: '<p>old' });
+      const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), [sign]: '<p>old', ...(existing ? { [scope]: '{}' } : {}) });
       const allowance = { version: 1, id: 'daily-test', baseCommit: base, protectedPaths: [sign] };
       const roll = { 'src/data/daily.json': edition('2026-10-15'), [sign]: '<p>new' };
       let head = await commit({ ...roll, [scope]: JSON.stringify(allowance) });
