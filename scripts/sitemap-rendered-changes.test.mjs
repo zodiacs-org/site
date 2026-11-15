@@ -495,6 +495,10 @@ describe('a pull request that rolls the daily edition', () => {
     beforeEach(async () => {
       repo = await mkdtemp(join(tmpdir(), 'sitemap-plan-'));
       execFileSync('git', ['init', '-q'], { cwd: repo });
+      await mkdir(join(repo, 'scripts'), { recursive: true });
+      for (const file of ['sitemap-daily-allowance.mjs', 'phase1-scope-guard.mjs']) {
+        await writeFile(join(repo, 'scripts', file), await readFile(join(root, 'scripts', file)));
+      }
     });
     afterEach(async () => { await rm(repo, { recursive: true, force: true }); });
 
@@ -589,6 +593,38 @@ describe('a pull request that rolls the daily edition', () => {
       result = await plan(base, head);
       expect(result.status).toBe(0);
       expect(result.outputs).toEqual({ compare: 'false' });
+    });
+
+    it('accepts only an exact, base-pinned allowance beside the generated daily package', async () => {
+      const scope = '.github/phase1-scope-allowance.json';
+      const sign = 'public/registry/aries/index.html';
+      const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), [sign]: '<p>old' });
+      const allowance = { version: 1, id: 'daily-test', baseCommit: base, protectedPaths: [sign] };
+      const roll = { 'src/data/daily.json': edition('2026-10-15'), [sign]: '<p>new' };
+      let head = await commit({ ...roll, [scope]: JSON.stringify(allowance) });
+      expect((await plan(base, head)).outputs).toEqual({ compare: 'false' });
+      for (const invalid of [
+        { ...allowance, baseCommit: '0'.repeat(40) },
+        { ...allowance, protectedPaths: [] },
+        { ...allowance, protectedPaths: [sign, sign] },
+        { ...allowance, protectedPaths: ['public/registry/taurus/index.html'] },
+        { ...allowance, version: 2 },
+      ]) {
+        head = await commit({ [scope]: JSON.stringify(invalid) });
+        expect((await plan(base, head)).status).toBe(1);
+      }
+      head = await commit({ [scope]: '{not json' });
+      expect((await plan(base, head)).status).toBe(1);
+      head = await commit({ [scope]: JSON.stringify(allowance), 'src/pages/a.astro': 'unrelated change' });
+      expect((await plan(base, head)).status).toBe(1);
+    });
+
+    it('rejects deleting an allowance alongside a daily roll', async () => {
+      const scope = '.github/phase1-scope-allowance.json';
+      const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), [scope]: '{}' });
+      git('rm', '-q', scope);
+      const head = await commit({ 'src/data/daily.json': edition('2026-10-15') });
+      expect((await plan(base, head)).status).toBe(1);
     });
 
     it('fails a head that rolls the edition and changes anything else', async () => {

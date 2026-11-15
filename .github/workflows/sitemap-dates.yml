@@ -85,7 +85,8 @@ jobs:
       # Its pages take their dates from the edition, and builds of two
       # editions cannot share one clock, so such a pull request has nothing
       # to compare and passes. A head that rolls the edition and changes
-      # anything else fails.
+      # anything else fails, except a base-pinned, exact scope allowance for
+      # the generated sign pages (validated by the existing scope guard).
       - name: Choose the commits and the clock
         id: plan
         env:
@@ -113,6 +114,10 @@ jobs:
           edition=$(edition_of "$head")
           if [ "$(edition_of "$base")" != "$edition" ]; then
             other=$(git diff --name-status --no-renames "$base" "$head" | awk -F '\t' '{ path = $NF; if (path ~ ENVIRON["DAILY_PACKAGE"] && ($1 == "A" || ($1 == "M" && path !~ ENVIRON["DAILY_ADDED_ONLY"]))) next; print path }')
+            if [ "$other" = .github/phase1-scope-allowance.json ]; then
+              node scripts/sitemap-daily-allowance.mjs "$base" "$head"
+              other=""
+            fi
             if [ -z "$other" ]; then
               echo "::notice::The head rolls the daily edition to $edition and changes nothing else, so there is nothing to compare."
               echo "The head rolls the daily edition to $edition and changes nothing else: nothing to compare." >> "$GITHUB_STEP_SUMMARY"
