@@ -8,7 +8,12 @@ name: PR Review
 # Cost control: drafts are skipped (agents open every PR as a draft, so the
 # first review comes when a PR is marked ready). Label a draft `ai-review` to
 # ask for one early. A new push cancels the review still running on the
-# previous push. Each review is capped in turns and minutes.
+# previous push. Each review is capped in turns and minutes, and the whole
+# workflow in reviews per calendar month (PR_REVIEW_MONTHLY_LIMIT, default
+# 300). The reviewer runs on Sonnet unless PR_REVIEW_MODEL says otherwise
+# (for example opus). Both are repository variables, so either can change
+# without a code change. The hard ceiling in dollars is the monthly spend
+# limit on the key's workspace in the Anthropic Console.
 #
 # The reviewer only reads. It has no write tools; the job posts its findings
 # as one comment that each later review replaces. The check fails only on an
@@ -43,23 +48,40 @@ jobs:
       cancel-in-progress: true
     timeout-minutes: 25
     permissions:
+      actions: read
       contents: read
       pull-requests: write
     steps:
-      - name: Check for the API key
-        id: key
+      - name: Check the key and this month's review limit
+        id: gate
         env:
           HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          LIMIT: ${{ vars.PR_REVIEW_MONTHLY_LIMIT || '300' }}
         run: |
-          if [ "$HAS_KEY" = "true" ]; then
-            echo "present=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "present=false" >> "$GITHUB_OUTPUT"
+          if [ "$HAS_KEY" != "true" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
             echo "::warning::ANTHROPIC_API_KEY is not set in the pr-review-production environment, so no review ran."
+            exit 0
+          fi
+          month_start=$(date -u +%Y-%m-01)
+          # A run that lasted over 90 seconds reached the reviewer; a run
+          # stopped here by a missing key or the limit takes a few seconds.
+          used=$(gh api --paginate \
+            "repos/$REPO/actions/workflows/pr-review.yml/runs?event=pull_request&created=%3E%3D$month_start&per_page=100" \
+            --jq ".workflow_runs[] | select(.id != $RUN_ID and .status == \"completed\" and .run_started_at != null) | select(((.updated_at | fromdateiso8601) - (.run_started_at | fromdateiso8601)) > 90) | .id" | wc -l)
+          echo "Reviews this month before this one: $used of $LIMIT"
+          if [ "$used" -ge "$LIMIT" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::This month's limit of $LIMIT reviews is used up, so no review ran. Raise PR_REVIEW_MONTHLY_LIMIT to allow more."
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Checkout the pull request
-        if: steps.key.outputs.present == 'true'
+        if: steps.gate.outputs.run == 'true'
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           fetch-depth: 1
@@ -67,7 +89,7 @@ jobs:
 
       - name: Review
         id: review
-        if: steps.key.outputs.present == 'true'
+        if: steps.gate.outputs.run == 'true'
         continue-on-error: true
         uses: anthropics/claude-code-action@f3b070c88125d33dbae5653df5f143101d4ea9dc # v1.0.276
         with:
@@ -114,13 +136,13 @@ jobs:
             giving the verdict, then list each blocker with its file and line,
             then any short notes. Keep it under 400 words and use no em dashes.
           claude_args: |
-            --model opus
-            --max-turns 30
+            --model ${{ vars.PR_REVIEW_MODEL || 'sonnet' }}
+            --max-turns 25
             --allowedTools "Read,Grep,Glob,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git log:*),Bash(git show:*)"
             --json-schema '{"type":"object","additionalProperties":false,"required":["verdict","blockers","review_markdown"],"properties":{"verdict":{"type":"string","enum":["pass","block"]},"blockers":{"type":"array","items":{"type":"string"}},"review_markdown":{"type":"string"}}}'
 
       - name: Post or update the review comment
-        if: steps.key.outputs.present == 'true'
+        if: steps.gate.outputs.run == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -151,7 +173,7 @@ jobs:
           fi
 
       - name: Fail on a blocker
-        if: steps.key.outputs.present == 'true' && steps.review.outcome == 'success'
+        if: steps.gate.outputs.run == 'true' && steps.review.outcome == 'success'
         env:
           RESULT: ${{ steps.review.outputs.structured_output }}
         run: |
