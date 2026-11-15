@@ -1,4 +1,5 @@
 import { profileAccessAllowed } from '../account-v2/profile-access-reader';
+import { ensureProfileWriteAccess } from '../account-v2/profile-access-request';
 import { ACCOUNT_V2_PROFILE_LEASE_REVOKE_KEY, isAccountV2Id } from '../account-v2/storage-identity';
 import { ACCOUNT_V2_PROFILE_REVOKE_EVENT } from '../account-v2/profile-lease';
 import {
@@ -955,25 +956,38 @@ export function getLivingMoment(
   return defaultStore.get(owner, id);
 }
 
-export function createLivingMoment(
+/**
+ * The three moment edits a person makes wait for this tab's account access
+ * decision first (profile-access-request.ts). The store still refuses unless
+ * access and the owner check pass; a bootstrap that cannot start leaves the
+ * edit unmade, reported like any other failed edit.
+ */
+async function livingChartWriteMayProceed(): Promise<boolean> {
+  return await ensureProfileWriteAccess() !== 'unavailable';
+}
+
+export async function createLivingMoment(
   owner: LivingChartOwnerScope,
   input: CreateLivingMomentInput,
 ): Promise<LivingMomentV1 | null> {
+  if (!await livingChartWriteMayProceed()) return null;
   return defaultStore.create(owner, input);
 }
 
-export function updateLivingMoment(
+export async function updateLivingMoment(
   owner: LivingChartOwnerScope,
   id: string,
   patch: UpdateLivingMomentInput,
 ): Promise<LivingMomentV1 | null> {
+  if (!await livingChartWriteMayProceed()) return null;
   return defaultStore.update(owner, id, patch);
 }
 
-export function deleteLivingMoment(
+export async function deleteLivingMoment(
   owner: LivingChartOwnerScope,
   id: string,
 ): Promise<boolean> {
+  if (!await livingChartWriteMayProceed()) return false;
   return defaultStore.softDelete(owner, id);
 }
 

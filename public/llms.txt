@@ -18,7 +18,6 @@ Free tools:
 - Moon phase (tonight + any date): https://zodiacs.org/moon-phase/
 - Saturn return calculator (exact dates, retrograde passes included): https://zodiacs.org/saturn-return/
 - Transit tracker (today's sky aspected to your birth chart, within 3°): https://zodiacs.org/transits/
-- Baby zodiac (what sign a due date makes likely — sun near-certain, moon shortlist, cusp caveats computed): https://zodiacs.org/baby-zodiac/
 - Mercury retrograde dates 2026–2027 (computed, station to station): https://zodiacs.org/mercury-retrograde/
 - Retrograde windows for all eight planets, 2026–2027: https://zodiacs.org/retrogrades/
 - Full moon calendar 2026–2027 (dates, signs, traditional names, blue moon): https://zodiacs.org/full-moon-calendar/

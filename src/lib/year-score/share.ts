@@ -13,7 +13,7 @@
  * a query with anything else is not a share. Pure: no network, storage or
  * logging.
  */
-import { SHARE_SIGNS, type ShareRef, type ShareSign } from '../share-results.js';
+import { readShareRef, SHARE_SIGNS, type ShareRef, type ShareSign } from '../share-results.js';
 
 export const YEAR_SCORE_SHARE_PATH = '/share/year-score/';
 export const YEAR_SCORE_SHARE_IMAGE_PATH = '/api/og/year-score-image';
@@ -50,9 +50,8 @@ export function parseYearScoreShare(params: URLSearchParams): YearScoreShare | n
     if (!YEAR_SCORE_SHARE_KEYS.includes(key) || fields.has(key)) return null;
     fields.set(key, value);
   }
-  const ref = fields.get('ref');
-  if (ref !== undefined && ref !== 'chatgpt' && ref !== 'assistant') return null;
-  const shareRef = (ref ?? null) as ShareRef | null;
+  const shareRef = readShareRef(fields.get('ref'));
+  if (shareRef === undefined) return null;
   const slug = fields.get('p');
   if (slug !== undefined) {
     // A figure's link carries nothing but the slug: its sign and score come from the server.

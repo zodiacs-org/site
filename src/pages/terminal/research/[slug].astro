@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import publicationJson from '../../../data/registry-research/publication.json';
+import pauseJson from '../../../data/registry-research/pause.json';
 
 type ResearchSection = { heading: string; body: string; evidence: string[] };
 type ResearchItem = {
@@ -37,7 +38,9 @@ const displayDate = (value: string) => new Intl.DateTimeFormat('en-US', {
   month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'UTC', timeZoneName: 'short',
 }).format(new Date(value));
 const sectionList = [item.sections.skyFact, item.sections.traditionalReading, item.sections.marketObservation];
-const scheduled = item.status === 'scheduled' && item.visibleAt > publication.generatedAt;
+const publishingPaused = pauseJson.status === 'paused';
+const scheduled = item.status === 'scheduled'
+  && (publishingPaused || item.visibleAt > publication.generatedAt);
 const jsonUrl = `/assets/data/registry-research/items/${item.id}.json`;
 // Every research note is `noindex, follow` and stays out of the sitemaps (owner decision, 2026-10-26): the notes are
 // generated daily, so only the archive at /terminal/research/ is offered for indexing. The notes stay live and linked,
@@ -64,7 +67,7 @@ const terminalResearchBreadcrumb = {
   stableTypography
   terminalMarketNotice
 >
-  <main class="research-note" data-visible-at={item.visibleAt} data-scheduled={scheduled ? 'true' : undefined}>
+  <main class="research-note" data-visible-at={item.visibleAt} data-scheduled={scheduled ? 'true' : undefined} data-publishing-paused={publishingPaused ? 'true' : undefined}>
     <a class="research-note__back" href="/terminal/research/">← Markets Research</a>
     <div class="research-note__meta">
       <span>{item.kind.replaceAll('-', ' ')}</span>
@@ -80,7 +83,9 @@ const terminalResearchBreadcrumb = {
     {scheduled ? (
       <section class="research-note__scheduled" data-scheduled-message>
         <strong>This edition is approved and scheduled.</strong>
-        <p>It becomes visible at its exact UTC event time. No market outcome has been attached in advance.</p>
+        <p>{publishingPaused
+          ? 'Publishing is paused. This edition stays unpublished until publishing resumes.'
+          : 'It becomes visible at its exact UTC event time. No market outcome has been attached in advance.'}</p>
       </section>
     ) : null}
 
@@ -135,6 +140,7 @@ const terminalResearchBreadcrumb = {
     if (note instanceof HTMLElement) {
       const visibleAt = Date.parse(note.dataset.visibleAt ?? '');
       const reveal = () => {
+        if (note.dataset.publishingPaused === 'true') return;
         if (!Number.isFinite(visibleAt) || Date.now() < visibleAt) return;
         note.querySelector('[data-scheduled-message]')?.remove();
         const body = note.querySelector('[data-research-body]');

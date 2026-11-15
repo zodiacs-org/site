@@ -1,0 +1,70 @@
+0.00	BODY	SCORPIO SEASON · DAY 21 OF 30
+0.00	BODY	Nº 10 · WHY ZODIACS MATTER
+0.40	BODY	They are thinly traded and can fall to zero.
+0.00	BODY	What still has to be earned.
+0.00	BODY	Open the dated candidacy scoreboard
+0.00	BODY	If another set earns stronger independent use, the same evidence should favor it.
+0.00	BODY	If these assets fail to spread beyond their origin, the claim fails with them.
+0.00	BODY	Three questions, one honest test.
+0.11	BODY	The plan needed us to hand out coins, and we never built that.
+0.25	BODY	See the preregistered thresholds and verdict rule
+0.29	BODY	success ≥ 20% of claimants still holding the claimed amount at day 90 as of 2026-07-23
+0.00	BODY	What you would actually hold.
+0.00	BODY	Open the complete sign-by-sign disclosure
+0.00	BODY	SIGN	SUPPLY	MINT AUTHORITY	FREEZE AUTHORITY	TOP-10 HOLDERS	LIQUIDITY	BRIDGE	TREASURY / INSIDER	CONTINUITY
+0.00	BODY	A PUBLIC CROSS-CHECK TODAY
+0.00	BODY	Check one exact mint independently across three public surfaces.
+0.00	BODY	See the supply and ownership records
+0.43	BODY	Astrofolio is the official Zodiacs.org consumer collection experience at zodiacs.org/astrofolio; Astrofolio.xyz redirects there rather than operating as a separate app.
+0.00	BODY	See the complete dated history
+0.00	BODY	The audience and the calendar.
+0.00	BODY	WIKIMEDIA · SINGLE ARTICLES, SAME WINDOW
+0.00	BODY	One on one: the median sign reads at 1.5× the strongest token article.
+0.00	BODY	Reads per day, one disambiguated article per sign.
+0.00	BODY	Gold line: the strongest token article in the same window (Ethereum, 705 / day).
+0.00	BODY	Token articles: Dogecoin 314 · Ethereum 705 · Solana 278 · Shiba Inu 70.
+0.17	BODY	SOURCE: GOOGLE TRENDS · CAPTURED 2026-11-09 · 12MO RELATIVE
+0.20	BODY	GOOGLE TRENDS · CAPTURED 2026-11-09 · “DOGECOIN” = 1
+0.19	BODY	Bare sign terms are ambiguous in English (cancer the disease, gemini the model), so each bar measures the explicit query, an undercount by design.
+0.40	BODY	Unicode character ages · Unicode 1.1 · June 1993
+0.00	BODY	Schematic: attention tied to a person, moment or joke can fade.
+0.00	BODY	The zodiac renews its subject every season.
+0.00	BODY	See the dated historical timeline
+0.00	BODY	Definitions, source methods, and verification paths for the public record.
+0.00	BODY	The column legend for the complete instrument table:
+0.00	BODY	Mint authority — status per sign (retained / renounced), address if retained
+0.00	BODY	Freeze authority — status per sign
+0.29	BODY	Statuses are three-valued and mean what they say: verified (a stranger can check the receipt), operator-attested (the operator states it, dated, not independently verified), pending (neither, and labeled so).
+0.33	BODY	The relevant selection factors are technical and practical: transaction cost, confirmation behavior, consumer wallet availability, existing liquidity venues, and the operator's existing infrastructure at deployment time.
+0.00	BODY	The Base representations trace to the specified Solana mints through those bridge contracts, and their validity depends on the bridge's stated contracts and trust assumptions.
+0.44	BODY	If the bridge fails, the native Solana assets stand unaffected; the bridged representations are conveniences, not the native assets.
+0.00	BODY	See the network definitions and sources
+0.00	BODY	Solana fees · Solana confirmation · Zodiacs registry · disclosures
+0.00	BODY	Explore the artwork for the twelve Zodiac signs.
+0.00	BODY	OPEN A SIGN'S ENTRY — LORE, PROVENANCE & THE LISTED DIGITAL ASSET.
+0.00	content	width=device-width, initial-scale=1, viewport-fit=cover
+0.00	content	https://zodiacs.org/assets/og/v2/thesis.png
+0.00	aria-label	Transits. Explore today’s planets and their connections to your chart.
+0.00	aria-label	Moon sign. How you feel, and what settles you.
+0.00	aria-label	Rising sign. Find the sign people meet first. Birth time helps.
+0.00	aria-label	Moon phase. Tonight’s moon, and the moon of any date you care about.
+0.00	aria-label	Saturn return. When yours hits, exactly, and what it tends to ask.
+0.00	aria-label	Birthday. Find your Sun sign from your birthday, including dates near a sign change.
+0.40	aria-label	Aquarius: read 80% more in its own season
+0.40	aria-label	Pisces: read 76% more in its own season
+0.40	aria-label	Aries: read 51% more in its own season
+0.40	aria-label	Taurus: read 50% more in its own season
+0.40	aria-label	Gemini: read 45% more in its own season
+0.40	aria-label	Cancer: read 53% more in its own season
+0.40	aria-label	Leo: read 71% more in its own season
+0.40	aria-label	Virgo: read 64% more in its own season
+0.40	aria-label	Libra: read 63% more in its own season
+0.40	aria-label	Sagittarius: read 52% more in its own season
+0.20	aria-label	The three questions in the one-tap test
+0.33	aria-label	The one-tap test, commitment card
+0.20	aria-label	Plain-language facts about the twelve digital assets
+0.00	aria-label	Disclosure table — the instrument, per sign
+0.14	aria-label	Schematic attention around a news event peaks sharply, then fades.
+0.17	aria-label	Schematic attention around a joke rises then gradually fades.
+0.00	aria-label	Choose among the twelve Zodiac signs
+0.25	aria-label	Static catalogue of the twelve Zodiac signs

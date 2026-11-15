@@ -23,6 +23,9 @@ import {
 } from './format';
 import { publishedEventById } from './site-publication';
 import { NASA_INSTANT_SOURCE, nasaAspectAt, nasaIngressAt, nasaStationAt } from '../nasa-instants';
+import {
+  NASA_EVENT_TIMES_2027_SOURCE, nasaEclipseAt, nasaLunationAt, nasaShadowAt,
+} from '../nasa-event-times-2027';
 import type { CatalogEvent, EventFacts, EventLink } from './types';
 import { FIXTURE_EVENTS } from './fixtures';
 import { interpretationFor } from './interpretations';
@@ -66,11 +69,12 @@ const anchor = (facts: EventFacts): number =>
 function withCommitted<T extends Omit<EventFacts, 'id' | 'path' | 'title'>>(
   base: T,
   committedBase: T,
+  source: string = NASA_INSTANT_SOURCE,
 ): { base: T; committed?: EventFacts['committed'] } {
   const moved = base.at !== committedBase.at || base.start !== committedBase.start || base.end !== committedBase.end;
   if (!moved) return { base: committedBase };
   const engine = [committedBase.at ?? committedBase.start, committedBase.end].filter(Boolean).join(' and ');
-  const derived = `exact ${base.at ? 'instant' : 'stations'} from ${NASA_INSTANT_SOURCE}; the engine catalog gave ${engine}`;
+  const derived = `exact ${base.at ? 'instant' : 'stations'} from ${source}; the engine catalog gave ${engine}`;
   return {
     base: {
       ...base,
@@ -105,7 +109,7 @@ function lunationFacts(): EventFacts[] {
       moonName = moonNameForDate(at, seenFullMonths.has(monthKey));
       seenFullMonths.add(monthKey);
     }
-    const base = {
+    const committedBase = {
       family: 'lunation' as const,
       subtype: type,
       at: catalog?.record.at ?? at,
@@ -122,11 +126,19 @@ function lunationFacts(): EventFacts[] {
             derived: ['sign and degree read from the engine at the committed instant'],
           },
     };
+    // The 2027 pages print NASA's instant (src/lib/nasa-event-times-2027.ts);
+    // the sign and degree stay as read at the committed instant.
+    const { base, committed } = withCommitted(
+      { ...committedBase, at: nasaLunationAt(type, committedBase.at) ?? committedBase.at },
+      committedBase,
+      NASA_EVENT_TIMES_2027_SOURCE,
+    );
     return {
       ...base,
       id: lunationId(type, at),
       path: lunationPath(type, at),
       title: eventTitle(base),
+      ...(committed ? { committed } : {}),
     };
   });
 }
@@ -136,7 +148,7 @@ function eclipseFacts(): EventFacts[] {
     type: 'solar' | 'lunar'; kind: EventFacts['eclipseKind']; peak: string;
     sign: string; lon: number; degree: number; obscuration: number; totalMinutes?: number;
   }[]).map((eclipse) => {
-    const base = {
+    const committedBase = {
       family: 'eclipse' as const,
       subtype: eclipse.type,
       at: eclipse.peak,
@@ -150,11 +162,17 @@ function eclipseFacts(): EventFacts[] {
       totalMinutes: eclipse.type === 'lunar' ? lunarTotalityMinutes(eclipse.peak, eclipse.totalMinutes) : eclipse.totalMinutes,
       provenance: { source: 'eclipses.json' as const, generatedAt: eclipsesData.generatedAt },
     };
+    const { base, committed } = withCommitted(
+      { ...committedBase, at: nasaEclipseAt(eclipse.type, eclipse.peak) ?? eclipse.peak },
+      committedBase,
+      NASA_EVENT_TIMES_2027_SOURCE,
+    );
     return {
       ...base,
       id: eclipseId(eclipse.peak),
       path: eclipsePath(eclipse.peak),
       title: eventTitle(base),
+      ...(committed ? { committed } : {}),
     };
   });
 }
@@ -226,6 +244,13 @@ function retrogradeFacts(): EventFacts[] {
     }, committedBase);
     return {
       ...base,
+      // The edges of the shadow, where the 2027 pages were solved on NASA's ephemeris.
+      preShadowStart: base.preShadowStart
+        ? nasaShadowAt(window.planet, 'pre', base.preShadowStart) ?? base.preShadowStart
+        : base.preShadowStart,
+      postShadowEnd: base.postShadowEnd
+        ? nasaShadowAt(window.planet, 'post', base.postShadowEnd) ?? base.postShadowEnd
+        : base.postShadowEnd,
       id: retrogradeId(window.planet, window.from),
       path: retroCyclePath(window.planet, window.from),
       title: eventTitle(base),

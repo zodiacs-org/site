@@ -172,6 +172,16 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   for byte into the AI runtime and the published developer plugin, so the
   seasons do not extend it. No timestamp, so `--check` catches drift; the
   site-check drift gate runs it)
+- `src/data/moon-distances.json` ← `node scripts/build-moon-distances.mjs`
+  (each new and full Moon in sky.json with the Moon's geocentric distance in
+  whole km and the perigee and apogee on each side; astronomy-engine with one
+  measured scale factor, held to JPL DE421 and Horizons by
+  `scripts/build-moon-distances.test.mjs` and the fixtures from
+  `scripts/moon-distances-de421.py`. It names no rule about close Moons;
+  the supermoon rule (owner, 2026-11-12: a full Moon within 10% of its
+  orbit's perigee to apogee range from perigee) is `src/lib/supermoon.ts`.
+  sky.json stays untouched. No timestamp, so `--check` catches drift; the
+  site-check drift gate runs it. Rerun it whenever sky.json is rebuilt)
 - `src/data/eclipses.json` ← `node scripts/build-eclipses.mjs` (refresh
   yearly with sky.json)
 - `src/data/birthdays.json` ← `node scripts/build-birthdays.mjs` (the
@@ -315,6 +325,15 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   the ring settling into the lockup from `src/lib/brand-lockup.mjs`, and the
   system's ffmpeg encodes it. Not byte-stable, so not in the drift job;
   `scripts/end-card.test.mjs` checks it. Rerun it when the lockup changes)
+- `public/assets/thesis/film/` ← `node scripts/build-thesis-film.mjs` (the thesis's
+  32-second silent film "Why the zodiac lasts", 1280 × 720 in H.264 and AV1
+  with its poster, and a 1080 × 1920 cut ending on the brand end card. Every
+  number on screen is read from `public/thesis/thesis-charts.json` and
+  `thesis-seasons.json` by `filmScript()`, which refuses to render when a
+  sentence stops being true; each scene shows its source. Chromium draws each
+  frame from its time alone and the system's ffmpeg encodes it. Not
+  byte-stable, so not in the drift job; `scripts/thesis-film.test.mjs` checks
+  it. Rerun it when those data files or the sign shapes change)
 - `public/assets/pulse.json` / `distribution.json` ← weekly cron workflows
 - `docs/phase5/people-pilot/index-demand.json` ← `node
   scripts/build-people-index-demand.mjs --refresh` (pinned twelve-month

@@ -2,6 +2,32 @@
 import Base from '../../../layouts/Base.astro';
 const title = 'Zodiacs AI Integrations | Zodiacs.org';
 const description = 'Connect an AI assistant to the hosted Zodiacs MCP server or the local developer plugin: supported tools, privacy and installation.';
+// The hosted server's tools, in the order it lists them: one plain line each.
+// src/ai-tools/developer-ai-page.test.ts holds this list to the names in src/ai-tools/contracts.ts.
+const skyTools: [string, string][] = [
+  ['get_capabilities', 'Lists what Zodiacs can do, its limits and how it handles privacy.'],
+  ['get_sky', 'Shows where the Sun, Moon and planets are now, or at a moment you name, with the Moon’s phase.'],
+  ['get_upcoming_events', 'Lists planets changing sign, turning retrograde or direct, and new and full Moons, for up to 92 days.'],
+  ['check_sky_fact', 'Checks a claim such as “Is Mercury retrograde today?” and answers yes, no, or that it depends on the time zone.'],
+  ['get_horoscope', 'Shows a Sun-sign horoscope for today (general, love or career) or for this week.'],
+  ['get_famous_chart', 'Looks up the birth chart of a famous person Zodiacs publishes, and says so when it has none.'],
+  ['get_sky_calendar', 'Gives the link to follow the Zodiacs sky calendar in Google Calendar, Apple Calendar or Outlook.'],
+  ['get_horoscope_period', 'Shows a Sun-sign horoscope for a month, a year, or a love or career week.'],
+  ['get_chinese_zodiac', 'Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year.'],
+  ['explain_astrology', 'Explains a basic astrology topic in plain words, with links to the Zodiacs pages it comes from.'],
+  ['open_chart_studio', 'Opens Chart Studio, a birth chart you fill in yourself inside a panel; the assistant sees only what you choose to share.'],
+];
+const birthTools: [string, string][] = [
+  ['get_occasion_sky', 'Describes the sky on a day that matters, such as a wedding, an anniversary or a move, and rates the date from 0 to 100.'],
+  ['get_life_milestones', 'Lists the Jupiter returns, Saturn returns and Uranus opposition that follow from a birth date, with dates and ages.'],
+  ['get_compatibility', 'Compares two people’s birth charts: their signs, the closest contacts between their planets and their elements.'],
+  ['find_chart_twins', 'Finds famous people who share your Sun sign, Moon sign or both.'],
+  ['get_birthday', 'Describes the sky on a birthday: the Sun’s sign, its decan and whether the date falls on a cusp.'],
+  ['get_natal_chart', 'Reads one birth chart in the conversation: Sun, Moon and rising signs, planets, houses, aspects and balance.'],
+  ['get_personal_transits', 'Lists dated transits to your own birth chart, with what astrology traditionally reads into each.'],
+  ['find_birthplace', 'Finds a town or city by name and returns its coordinates and time zone for the chart tools.'],
+];
+const toolCount = skyTools.length + birthTools.length;
 ---
 <Base title={title} description={description} path="/developers/ai/">
   <section class="section container container--narrow ai-page">
@@ -13,10 +39,52 @@ const description = 'Connect an AI assistant to the hosted Zodiacs MCP server or
       <h2>Connect it</h2>
       <p>To use it in Claude, open Customize, then Connectors, add a custom connector and enter <code>https://zodiacs.org/mcp</code>. Other assistants that accept remote MCP connections use the same address. Then ask one of the questions below.</p>
       <h2>The hosted server</h2>
-      <p>The hosted server computes positions at an explicit instant, finds sign ingresses, stations and new/full Moons in a window of up to 92 days, and checks astronomical claims. Answers include UTC, a display timezone, calculation receipts and numerical limits. A date-only claim can return <code>depends</code>. Event-search completeness is tested, not proven.</p>
-      <p>It also serves dated Sun-sign horoscopes from the site's daily edition. It keeps the editions for the day before, the day of and the day after, so a reader in any time zone gets the reading written for their own date. Horoscopes are interpretation, for reflection.</p>
-      <p>Its sky calendar, horoscope panel and Chart Studio declare sidebar and conversation-panel entrypoints. Chart Studio asks for birth details inside its panel and calculates there; the assistant receives only a selection the person reviews and shares. The server offers no birth-chart storage, scheduling, eclipse search or predictions of personal outcomes.</p>
-      <p>Ask “What changes this week in Bangkok?”, “Is Mercury retrograde right now?” or “Show today's horoscope for Leo.” An answer should be useful in the conversation. Links to the <a href="/moon-phase/">Moon tool</a>, <a href="/full-moon-calendar/">lunar calendar</a> and <a href="/methodology/">methodology</a> offer optional further exploration.</p>
+      <p>The hosted server lists {toolCount} tools. It calculates the sky at a moment you name, reads birth charts, compares two charts, and serves the dated Sun-sign horoscopes the site publishes. Answers give times on the person's own clock where a time zone is known. Calculated facts are kept apart from what astrology reads into them, and each reading carries a reading-confidence label that says how specific the details were, never the odds that something happens. Answers include UTC, a display timezone, calculation receipts and numerical limits. Event-search completeness is tested, not proven.</p>
+      <p>The horoscopes come from the site's daily edition. It keeps the editions for the day before, the day of and the day after, so a reader in any time zone gets the reading written for their own date. Horoscopes are interpretation, for reflection.</p>
+      <h3>Tools that need no birth details</h3>
+      <ul class="ai-tools">
+        {skyTools.map(([name, line]) => <li><code>{name}</code> {line}</li>)}
+      </ul>
+      <h3>Tools that take a birth date, a place or another date you give</h3>
+      <ul class="ai-tools">
+        {birthTools.map(([name, line]) => <li><code>{name}</code> {line}</li>)}
+      </ul>
+      <p><code>get_horoscope</code> and <code>get_chinese_zodiac</code> also accept a birth date when you want a personal answer; neither needs one. The sky calendar, the horoscope and Chart Studio can open as a panel from the assistant's sidebar as well as in the conversation. Chart Studio asks for birth details inside its panel and calculates there; the assistant receives only a selection the person reviews and shares.</p>
+      <h2 id="examples">Things to ask</h2>
+      <ul>
+        <li>“What changes in the sky this week in Bangkok?”</li>
+        <li>“Is Mercury retrograde right now?”</li>
+        <li>“Show today's horoscope for Leo.”</li>
+        <li>“I was born on 14 February 1988 at 06:15 in Lisbon. What does my birth chart say?”</li>
+        <li>“What was the sky like on our wedding day, 12 September 2020?”</li>
+        <li>“Add new and full Moons to my Google Calendar.”</li>
+      </ul>
+      <p>An answer should be useful in the conversation. Links to the <a href="/moon-phase/">Moon tool</a>, <a href="/full-moon-calendar/">lunar calendar</a> and <a href="/methodology/">methodology</a> offer optional further exploration.</p>
+      <h2 id="limits">What it will not do</h2>
+      <ul>
+        <li>It gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and it guarantees no outcome. It gives no financial or medical advice.</li>
+        <li>It refuses a birth date less than 13 years ago, and one still to come. Zodiacs is not directed at children under 13, so do not send a child's name, birth date or birthplace.</li>
+        <li>It gives no romance or attraction framing for anyone under 18.</li>
+        <li>Birth details are never stored or logged. A date you give is used for that answer only. No tool listed here saves a chart.</li>
+        <li>Birth details are never put in links. A link never carries a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day.</li>
+        <li>It schedules nothing and sets no reminders. <code>get_sky_calendar</code> hands over a calendar link that you add to your own calendar app yourself.</li>
+        <li><code>get_upcoming_events</code> does not list eclipses or every aspect. Eclipses appear in the sky calendar feed and in the monthly and yearly horoscopes.</li>
+        <li>It never guesses a birth time or a sign, and it tells the assistant to ask before using someone else's birth details.</li>
+      </ul>
+      <p>The server keeps a daily count of how often each tool is used, split only by deployment and by the kind of assistant that called it: ChatGPT, Claude or another. The assistant you use can receive what you send and what comes back, under its own privacy policy. The <a href="/privacy/#ai-integrations">privacy policy</a> has the detail.</p>
+      <h2 id="troubleshooting">Troubleshooting</h2>
+      <ul>
+        <li><strong>A tool refuses a recent birth date.</strong> Any birth date less than 13 years ago, or in the future, gets a fixed refusal and no chart, card or reading. For someone 13 or older, give their own birth date.</li>
+        <li><strong>You do not know the birth time.</strong> Leave it out; never guess it. The chart then has no rising sign and no houses, and where the Moon or a planet changed sign that day it lists both signs.</li>
+        <li><strong>“A birth time or a place needs its time zone.”</strong> Give the birthplace's time zone with the time. <code>find_birthplace</code> returns it for a town or city.</li>
+        <li><strong>Times look wrong for where you are.</strong> Tell the assistant your city or time zone. Without one, the tools that depend on today's date use UTC and say so, and a date-only sky check can answer that it depends on the time zone.</li>
+        <li><strong>A birth time fell on a clock change.</strong> When the local clock skipped that time or showed it twice, the chart says which moment it used. Check the time with the person if it matters.</li>
+        <li><strong>A place is not found.</strong> The index lists towns and cities of 15,000 people or more. Try another spelling, add the country, or give the nearest larger town. A street address is refused.</li>
+        <li><strong>A famous person is not found.</strong> Zodiacs answers only for the people it publishes charts for, and says so when it has none.</li>
+        <li><strong>“Zodiacs is busy. Try again in a minute.”</strong> The server has a shared request limit. Wait a minute and ask again.</li>
+      </ul>
+      <h2 id="support">Support</h2>
+      <p>For help with the connector, email <a href="mailto:admin@zodiacs.org">admin@zodiacs.org</a>. Say which assistant you use, what you asked and what came back. Leave out real names and birth details; a made-up date that shows the same problem is enough. <a href="/developers/support/#connector">Developer support</a> lists the other routes.</p>
       <h2>Build and verify an integration</h2>
       <p>Zodiacs Developer provides skills for building with the engine, checking output and testing an integration. Its local stdio server adds natal-chart calculation and record comparison to the public-sky tools. It opens no listener or outbound connection. The <a href="/developers/mcp/">existing local MCP adapter</a> remains available separately.</p>
       <p>In a checkout, run <code>npm ci</code> and <code>npm test</code> in <code>plugins/zodiacs-developer</code>. The plugin contains pinned dependencies, three skills and runnable synthetic sky/calendar examples. Installation details and review evidence are in the <a href="https://github.com/zodiacs-org/site/tree/main/plugins/zodiacs-developer">plugin directory</a>.</p>
@@ -30,5 +98,7 @@ const description = 'Connect an AI assistant to the hosted Zodiacs MCP server or
 <style>
   .ai-page h1 { margin: var(--s-3) 0 var(--s-6); }
   .ai-page h2 { margin-top: var(--s-10); font-size: var(--text-lg); }
+  .ai-page h3 { margin-top: var(--s-6); font-size: var(--text-base); }
+  .ai-page .ai-tools li { margin-bottom: var(--s-2); }
   .ai-page code { font-family: var(--font-mono); overflow-wrap: anywhere; }
 </style>

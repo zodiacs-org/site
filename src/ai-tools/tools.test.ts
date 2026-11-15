@@ -163,9 +163,9 @@ describe('horoscopes', () => {
     expect(data.zoneLabel).toBe('London');
   });
   it('reports the release version', async () => {
-    expect(AI_VERSION).toBe('0.6.6');
+    expect(AI_VERSION).toBe('0.6.7');
     const result = await executeAiTool('get_capabilities', {}, dependencies);
-    if (result.ok && result.tool === 'get_capabilities') expect(result.data.version).toBe('0.6.6');
+    if (result.ok && result.tool === 'get_capabilities') expect(result.data.version).toBe('0.6.7');
     else expect.unreachable();
   });
   it('names the missing field in a refusal, with the same code', async () => {

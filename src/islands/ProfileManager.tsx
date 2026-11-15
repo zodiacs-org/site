@@ -16,6 +16,8 @@ import { profileChartHandoffFragment } from '../lib/chart-handoff';
 import type { Session } from '@supabase/supabase-js';
 import type * as Sync from '../lib/profile/sync';
 import { localizePath, normalizeCatalogLocale, t, tf, tp, type CatalogLocale as Locale, type UiKey } from '../lib/i18n';
+import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
+import { runAfterProfileAccess } from '../lib/account-v2/profile-access-request';
 import { russianRuntime } from '../lib/i18n/ru-runtime';
 import { formatDate, intlLocale } from '../lib/i18n/dates';
 import {
@@ -257,6 +259,7 @@ export default function ProfileManager({
   const [email, setEmail] = useState('');
   const [syncState, setSyncState] = useState<'idle' | 'sending' | 'sent' | 'syncing' | 'paused' | 'error'>('idle');
   const [syncMessage, setSyncMessage] = useState('');
+  const [writeUnavailable, setWriteUnavailable] = useState(false);
   const [digestMessage, setDigestMessage] = useState('');
   const [digestState, setDigestState] = useState<'idle' | 'saved' | 'error'>('idle');
   const [digestOptIn, setDigestOptInState] = useState(false);
@@ -411,6 +414,13 @@ export default function ProfileManager({
   const visiblePairs = pairs.filter((pair) => sideRestorable(pair.a) && sideRestorable(pair.b));
 
   function onRemovePair(pair: SavedPair, index: number) {
+    runAfterProfileAccess(
+      () => removeStoredPair(pair, index),
+      () => setWriteUnavailable(true),
+    );
+  }
+
+  function removeStoredPair(pair: SavedPair, index: number) {
     if (!deletePair(pair.id)) {
       setPairAnnounce(t(locale, 'chartSaveError'));
       return;
@@ -678,6 +688,15 @@ export default function ProfileManager({
         return;
       }
       setDailyBusy(false);
+    }
+    if (!profileAccessAllowed()) {
+      // Waits for the account access decision; deleteChart still refuses
+      // unless this tab is granted access.
+      const { ensureProfileWriteAccess } = await import('../lib/account-v2/profile-access-request');
+      if (await ensureProfileWriteAccess() === 'unavailable') {
+        setWriteUnavailable(true);
+        return;
+      }
     }
     deleteChart(chart.id);
   }
@@ -969,6 +988,7 @@ export default function ProfileManager({
   return (
     <div class="pf" id="saved-charts" tabIndex={-1}>
       <p class="sr-only" role="status">{pairAnnounce}</p>
+      {writeUnavailable && <p class="calc__error" role="alert">{t(locale, 'profileSaveUnavailable')}</p>}
       <p class="pf-count mono">
         {PF_BOOK_COPY[locale].count(profile.charts.length)}
       </p>
@@ -983,7 +1003,13 @@ export default function ProfileManager({
                     class="pf-chart__rename"
                     onSubmit={(e) => {
                       e.preventDefault();
-                      if (draft.trim()) renameChart(chart.id, draft.trim());
+                      const name = draft.trim();
+                      if (name) {
+                        runAfterProfileAccess(
+                          () => { renameChart(chart.id, name); },
+                          () => setWriteUnavailable(true),
+                        );
+                      }
                       setEditing(null);
                     }}
                   >

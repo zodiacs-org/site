@@ -145,6 +145,7 @@ const en = {
     saveThisChart: 'Save this chart',
     chartSavedStatus: 'Chart saved on this device.',
     chartSaveFull: 'You can save up to 40 charts. Remove one first.',
+    profileSaveUnavailable: "The save couldn't start. Please try again.",
     chartSaveError: "Couldn't save. Your browser may be blocking local storage.",
     chartSavedMessage: 'Saved to your charts. Sign in here when you want them on every device.',
     linkCopied: 'Link copied',

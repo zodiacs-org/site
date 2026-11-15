@@ -31,9 +31,9 @@ import {
 import { SIGN_SLUGS } from '../signs';
 
 describe('i18n helpers', () => {
-  it('keeps every localized UI catalog aligned with all 452 English keys', () => {
+  it('keeps every localized UI catalog aligned with all 453 English keys', () => {
     const englishKeys = Object.keys(UI.en).sort();
-    expect(englishKeys).toHaveLength(452);
+    expect(englishKeys).toHaveLength(453);
     for (const locale of CATALOG_LOCALES) {
       expect(Object.keys(UI[locale]).sort()).toEqual(englishKeys);
     }

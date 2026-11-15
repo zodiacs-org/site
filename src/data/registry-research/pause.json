@@ -1,0 +1,13 @@
+{
+  "schema": "zodiacs.registry-research-pause.v1",
+  "status": "paused",
+  "pausedAt": "2026-11-12T03:15:00.000Z",
+  "pausedAtLocal": "2026-11-12 10:15 Asia/Bangkok",
+  "decidedBy": "Dias, owner",
+  "reason": "Owner decision to pause: a dated sky reading beside each token's market data is hard to square with the 8 October no-market-timing rule.",
+  "scope": [
+    "Registry Research drafts, items, feed entries and RSS entries",
+    "Registry Outlook daily and weekly editions"
+  ],
+  "unpause": "Set status to \"publishing\" and run node scripts/build-registry-outlook.mjs and node scripts/build-registry-research.mjs; nothing else changes."
+}

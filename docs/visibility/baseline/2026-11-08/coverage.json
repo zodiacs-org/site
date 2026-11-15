@@ -1,0 +1,911 @@
+{
+  "label": "2026-11-08",
+  "source": "local build (dist), default feature flags; sitemap entries only",
+  "table": [
+    {
+      "locale": "en",
+      "family": "horoscope",
+      "pages": 97,
+      "sub": {
+        "hub": 1,
+        "daily": 12,
+        "tomorrow": 12,
+        "weekly": 12,
+        "monthly": 12,
+        "love": 12,
+        "career": 12,
+        "yearly": 24
+      },
+      "lastmodOldest": "2026-11-07",
+      "lastmodNewest": "2026-11-08",
+      "medianWords": 1036,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 97,
+      "samples": [
+        {
+          "path": "/horoscopes/",
+          "title": "Daily Horoscopes | November 8, 2026, All 12 Signs | Zodiacs.org"
+        },
+        {
+          "path": "/horoscopes/aries/",
+          "title": "Aries daily horoscope, November 8, 2026 | Zodiacs.org"
+        },
+        {
+          "path": "/horoscopes/aries/tomorrow/",
+          "title": "Aries tomorrow horoscope, November 9, 2026 | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "en",
+      "family": "compatibility",
+      "pages": 80,
+      "sub": {
+        "other": 1,
+        "hub": 1,
+        "pair": 78
+      },
+      "lastmodOldest": "2026-10-03",
+      "lastmodNewest": "2026-10-20",
+      "medianWords": 1264,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 80,
+      "samples": [
+        {
+          "path": "/compatibility/invite/",
+          "title": "Invite a friend to compare charts | Zodiacs.org"
+        },
+        {
+          "path": "/compatibility/",
+          "title": "Compatibility Calculator: Compare Two Birth Charts | Zodiacs.org"
+        },
+        {
+          "path": "/compatibility/aquarius-aquarius/",
+          "title": "Aquarius and Aquarius compatibility"
+        }
+      ]
+    },
+    {
+      "locale": "en",
+      "family": "birth-chart",
+      "pages": 161,
+      "sub": {
+        "birth-chart": 3,
+        "big-three": 1,
+        "moon-sign": 1,
+        "rising-sign": 1,
+        "how-to-read-a-birth-chart": 1,
+        "planets": 11,
+        "houses": 13,
+        "aspects": 9,
+        "placements": 121
+      },
+      "lastmodOldest": "2026-10-16",
+      "lastmodNewest": "2026-11-07",
+      "medianWords": 732,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 161,
+      "samples": [
+        {
+          "path": "/birth-chart/",
+          "title": "Free Birth Chart Calculator: Sun, Moon Rising | Zodiacs.org"
+        },
+        {
+          "path": "/birth-chart/someone-else/",
+          "title": "Someone Else’s Birth Chart | Zodiacs.org"
+        },
+        {
+          "path": "/birth-chart/three-dimensions/",
+          "title": "The Birth Chart in Three Dimensions: Declination, Parallels, Sect | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "en",
+      "family": "sky-events",
+      "pages": 120,
+      "sub": {
+        "sky-calendar": 1,
+        "moon-phase": 1,
+        "void-of-course-moon": 1,
+        "mercury-retrograde": 8,
+        "eclipses": 11,
+        "full-moon-calendar": 2,
+        "retrogrades": 1,
+        "today": 1,
+        "events": 26,
+        "almanac": 3,
+        "seasons": 13,
+        "full-moon": 25,
+        "new-moon": 25,
+        "venus-retrograde": 1,
+        "mars-retrograde": 1
+      },
+      "lastmodOldest": "2026-10-16",
+      "lastmodNewest": "2026-11-08",
+      "medianWords": 705,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 120,
+      "samples": [
+        {
+          "path": "/sky-calendar/",
+          "title": "Subscribe to the sky | Zodiacs.org"
+        },
+        {
+          "path": "/moon-phase/",
+          "title": "Moon Phase Today On Your Birthday | Zodiacs.org"
+        },
+        {
+          "path": "/void-of-course-moon/",
+          "title": "Void-of-Course Moon Calendar: Exact Times This Month and Next | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "en",
+      "family": "signs",
+      "pages": 25,
+      "sub": {
+        "zodiac-dates": 1,
+        "sign-guide": 12,
+        "rising-sign": 12
+      },
+      "lastmodOldest": "2026-10-16",
+      "lastmodNewest": "2026-10-16",
+      "medianWords": 979,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 25,
+      "samples": [
+        {
+          "path": "/learn/zodiac-dates/",
+          "title": "Zodiac Dates 2026 to 2027 | Exact Sun Ingress Times | Zodiacs.org"
+        },
+        {
+          "path": "/aquarius/",
+          "title": "Aquarius: dates, personality, compatibility what the Water-Bearer really means"
+        },
+        {
+          "path": "/aries/",
+          "title": "Aries: dates, personality, compatibility what the Ram really means"
+        }
+      ]
+    },
+    {
+      "locale": "es",
+      "family": "horoscope",
+      "pages": 13,
+      "sub": {
+        "hub": 1,
+        "daily": 12
+      },
+      "lastmodOldest": "2026-11-08",
+      "lastmodNewest": "2026-11-08",
+      "medianWords": 762,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 13,
+      "samples": [
+        {
+          "path": "/es/horoscopes/",
+          "title": "Horóscopos de hoy, 8 de noviembre de 2026 | Zodiacs.org"
+        },
+        {
+          "path": "/es/horoscopes/aries/",
+          "title": "Horóscopo de Aries hoy, 8 de noviembre | Zodiacs.org"
+        },
+        {
+          "path": "/es/horoscopes/taurus/",
+          "title": "Horóscopo de Tauro hoy, 8 de noviembre | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "es",
+      "family": "compatibility",
+      "pages": 80,
+      "sub": {
+        "other": 1,
+        "hub": 1,
+        "pair": 78
+      },
+      "lastmodOldest": "2026-10-03",
+      "lastmodNewest": "2026-10-19",
+      "medianWords": 1165,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 80,
+      "samples": [
+        {
+          "path": "/es/compatibility/invite/",
+          "title": "Invita a un amigo a comparar cartas | Zodiacs.org"
+        },
+        {
+          "path": "/es/compatibility/",
+          "title": "Calculadora de compatibilidad astrológica | Zodiacs.org"
+        },
+        {
+          "path": "/es/compatibility/aquarius-aquarius/",
+          "title": "Compatibilidad entre dos Acuario"
+        }
+      ]
+    },
+    {
+      "locale": "es",
+      "family": "birth-chart",
+      "pages": 4,
+      "sub": {
+        "big-three": 1,
+        "birth-chart": 1,
+        "moon-sign": 1,
+        "rising-sign": 1
+      },
+      "lastmodOldest": "2026-07-10",
+      "lastmodNewest": "2026-10-27",
+      "medianWords": 1401,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 4,
+      "samples": [
+        {
+          "path": "/es/big-three/",
+          "title": "Tu Sol, Luna y ascendente | Zodiacs.org"
+        },
+        {
+          "path": "/es/birth-chart/",
+          "title": "Carta natal gratis: Sol, Luna y ascendente | Zodiacs.org"
+        },
+        {
+          "path": "/es/moon-sign/",
+          "title": "Calculadora de signo lunar gratis | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "es",
+      "family": "sky-events",
+      "pages": 20,
+      "sub": {
+        "sky-calendar": 1,
+        "today": 1,
+        "moon-phase": 1,
+        "mercury-retrograde": 1,
+        "eclipses": 1,
+        "full-moon-calendar": 1,
+        "retrogrades": 1,
+        "seasons": 13
+      },
+      "lastmodOldest": "2026-07-10",
+      "lastmodNewest": "2026-11-08",
+      "medianWords": 1105,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 20,
+      "samples": [
+        {
+          "path": "/es/sky-calendar/",
+          "title": "Suscríbete al cielo | Zodiacs.org"
+        },
+        {
+          "path": "/es/today/",
+          "title": "Hoy, el cielo del 8 de noviembre de 2026 | Zodiacs.org"
+        },
+        {
+          "path": "/es/moon-phase/",
+          "title": "Fase lunar de hoy y de tu cumpleaños | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "es",
+      "family": "signs",
+      "pages": 24,
+      "sub": {
+        "sign-guide": 12,
+        "rising-sign": 12
+      },
+      "lastmodOldest": "2026-10-16",
+      "lastmodNewest": "2026-10-16",
+      "medianWords": 1492,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 24,
+      "samples": [
+        {
+          "path": "/es/aquarius/",
+          "title": "Acuario: fechas, personalidad y compatibilidad | Zodiacs.org"
+        },
+        {
+          "path": "/es/aries/",
+          "title": "Aries: fechas, personalidad y compatibilidad | Zodiacs.org"
+        },
+        {
+          "path": "/es/cancer/",
+          "title": "Cáncer: fechas, personalidad y compatibilidad | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "pt",
+      "family": "horoscope",
+      "pages": 13,
+      "sub": {
+        "hub": 1,
+        "daily": 12
+      },
+      "lastmodOldest": "2026-11-08",
+      "lastmodNewest": "2026-11-08",
+      "medianWords": 775,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 13,
+      "samples": [
+        {
+          "path": "/pt/horoscopes/",
+          "title": "Horóscopos de hoje, 8 de novembro de 2026 | Zodiacs.org"
+        },
+        {
+          "path": "/pt/horoscopes/aries/",
+          "title": "Horóscopo de Áries hoje, 8 de novembro | Zodiacs.org"
+        },
+        {
+          "path": "/pt/horoscopes/taurus/",
+          "title": "Horóscopo de Touro hoje, 8 de novembro | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "pt",
+      "family": "compatibility",
+      "pages": 80,
+      "sub": {
+        "other": 1,
+        "hub": 1,
+        "pair": 78
+      },
+      "lastmodOldest": "2026-10-03",
+      "lastmodNewest": "2026-10-19",
+      "medianWords": 1129,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 80,
+      "samples": [
+        {
+          "path": "/pt/compatibility/invite/",
+          "title": "Convide alguém para comparar mapas | Zodiacs.org"
+        },
+        {
+          "path": "/pt/compatibility/",
+          "title": "Calculadora de compatibilidade astrológica | Zodiacs.org"
+        },
+        {
+          "path": "/pt/compatibility/aquarius-aquarius/",
+          "title": "Compatibilidade entre Aquário e Aquário"
+        }
+      ]
+    },
+    {
+      "locale": "pt",
+      "family": "birth-chart",
+      "pages": 4,
+      "sub": {
+        "big-three": 1,
+        "birth-chart": 1,
+        "moon-sign": 1,
+        "rising-sign": 1
+      },
+      "lastmodOldest": "2026-07-15",
+      "lastmodNewest": "2026-10-27",
+      "medianWords": 1397,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 4,
+      "samples": [
+        {
+          "path": "/pt/big-three/",
+          "title": "Seu Sol, sua Lua e seu ascendente | Zodiacs.org"
+        },
+        {
+          "path": "/pt/birth-chart/",
+          "title": "Mapa astral grátis: Sol, Lua e ascendente | Zodiacs.org"
+        },
+        {
+          "path": "/pt/moon-sign/",
+          "title": "Calculadora de signo lunar grátis | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "pt",
+      "family": "sky-events",
+      "pages": 20,
+      "sub": {
+        "sky-calendar": 1,
+        "today": 1,
+        "moon-phase": 1,
+        "mercury-retrograde": 1,
+        "eclipses": 1,
+        "full-moon-calendar": 1,
+        "retrogrades": 1,
+        "seasons": 13
+      },
+      "lastmodOldest": "2026-07-15",
+      "lastmodNewest": "2026-11-08",
+      "medianWords": 1180,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 20,
+      "samples": [
+        {
+          "path": "/pt/sky-calendar/",
+          "title": "Assine o calendário do céu | Zodiacs.org"
+        },
+        {
+          "path": "/pt/today/",
+          "title": "Hoje, o céu de 8 de novembro de 2026 | Zodiacs.org"
+        },
+        {
+          "path": "/pt/moon-phase/",
+          "title": "Fase da Lua hoje e no seu aniversário | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "pt",
+      "family": "signs",
+      "pages": 24,
+      "sub": {
+        "sign-guide": 12,
+        "rising-sign": 12
+      },
+      "lastmodOldest": "2026-10-16",
+      "lastmodNewest": "2026-10-16",
+      "medianWords": 1500,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 24,
+      "samples": [
+        {
+          "path": "/pt/aquarius/",
+          "title": "Aquário: datas, personalidade e amor | Zodiacs.org"
+        },
+        {
+          "path": "/pt/aries/",
+          "title": "Áries: datas, personalidade e compatibilidade | Zodiacs.org"
+        },
+        {
+          "path": "/pt/cancer/",
+          "title": "Câncer: datas, personalidade e compatibilidade | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "fr",
+      "family": "horoscope",
+      "pages": 0
+    },
+    {
+      "locale": "fr",
+      "family": "compatibility",
+      "pages": 80,
+      "sub": {
+        "other": 1,
+        "hub": 1,
+        "pair": 78
+      },
+      "lastmodOldest": "2026-10-03",
+      "lastmodNewest": "2026-10-19",
+      "medianWords": 1215,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 80,
+      "samples": [
+        {
+          "path": "/fr/compatibility/invite/",
+          "title": "Invite un ami à comparer vos thèmes | Zodiacs.org"
+        },
+        {
+          "path": "/fr/compatibility/",
+          "title": "Calculateur de compatibilité astrologique | Zodiacs.org"
+        },
+        {
+          "path": "/fr/compatibility/aquarius-aquarius/",
+          "title": "Compatibilité Verseau et Verseau"
+        }
+      ]
+    },
+    {
+      "locale": "fr",
+      "family": "birth-chart",
+      "pages": 4,
+      "sub": {
+        "big-three": 1,
+        "birth-chart": 1,
+        "moon-sign": 1,
+        "rising-sign": 1
+      },
+      "lastmodOldest": "2026-07-15",
+      "lastmodNewest": "2026-10-27",
+      "medianWords": 1451,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 4,
+      "samples": [
+        {
+          "path": "/fr/big-three/",
+          "title": "Ton Soleil, ta Lune et ton ascendant | Zodiacs.org"
+        },
+        {
+          "path": "/fr/birth-chart/",
+          "title": "Calcul de thème astral gratuit, avec ascendant | Zodiacs.org"
+        },
+        {
+          "path": "/fr/moon-sign/",
+          "title": "Calculateur gratuit de signe lunaire | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "fr",
+      "family": "sky-events",
+      "pages": 19,
+      "sub": {
+        "sky-calendar": 1,
+        "moon-phase": 1,
+        "mercury-retrograde": 1,
+        "eclipses": 1,
+        "full-moon-calendar": 1,
+        "retrogrades": 1,
+        "seasons": 13
+      },
+      "lastmodOldest": "2026-07-15",
+      "lastmodNewest": "2026-11-07",
+      "medianWords": 1194,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 19,
+      "samples": [
+        {
+          "path": "/fr/sky-calendar/",
+          "title": "Abonne-toi au ciel | Zodiacs.org"
+        },
+        {
+          "path": "/fr/moon-phase/",
+          "title": "Phase de la Lune aujourd’hui et à ta naissance | Zodiacs.org"
+        },
+        {
+          "path": "/fr/mercury-retrograde/",
+          "title": "Mercure rétrograde 2026 à 2030 : dates | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "fr",
+      "family": "signs",
+      "pages": 24,
+      "sub": {
+        "sign-guide": 12,
+        "rising-sign": 12
+      },
+      "lastmodOldest": "2026-10-16",
+      "lastmodNewest": "2026-10-16",
+      "medianWords": 1455,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 24,
+      "samples": [
+        {
+          "path": "/fr/aquarius/",
+          "title": "Verseau : dates, personnalité, compatibilité | Zodiacs.org"
+        },
+        {
+          "path": "/fr/aries/",
+          "title": "Bélier : dates, personnalité, compatibilité | Zodiacs.org"
+        },
+        {
+          "path": "/fr/cancer/",
+          "title": "Cancer : dates, personnalité, compatibilité | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "it",
+      "family": "horoscope",
+      "pages": 0
+    },
+    {
+      "locale": "it",
+      "family": "compatibility",
+      "pages": 80,
+      "sub": {
+        "other": 1,
+        "hub": 1,
+        "pair": 78
+      },
+      "lastmodOldest": "2026-10-03",
+      "lastmodNewest": "2026-10-19",
+      "medianWords": 1149,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 80,
+      "samples": [
+        {
+          "path": "/it/compatibility/invite/",
+          "title": "Invita un amico a confrontare i temi | Zodiacs.org"
+        },
+        {
+          "path": "/it/compatibility/",
+          "title": "Calcolatore di compatibilità astrologica | Zodiacs.org"
+        },
+        {
+          "path": "/it/compatibility/aquarius-aquarius/",
+          "title": "Compatibilità tra Acquario e Acquario"
+        }
+      ]
+    },
+    {
+      "locale": "it",
+      "family": "birth-chart",
+      "pages": 4,
+      "sub": {
+        "big-three": 1,
+        "birth-chart": 1,
+        "moon-sign": 1,
+        "rising-sign": 1
+      },
+      "lastmodOldest": "2026-07-15",
+      "lastmodNewest": "2026-10-27",
+      "medianWords": 1366,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 4,
+      "samples": [
+        {
+          "path": "/it/big-three/",
+          "title": "Il tuo Sole, la tua Luna e l’ascendente | Zodiacs.org"
+        },
+        {
+          "path": "/it/birth-chart/",
+          "title": "Tema natale gratuito: Sole, Luna e ascendente | Zodiacs.org"
+        },
+        {
+          "path": "/it/moon-sign/",
+          "title": "Calcolatore gratuito del segno lunare | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "it",
+      "family": "sky-events",
+      "pages": 19,
+      "sub": {
+        "sky-calendar": 1,
+        "moon-phase": 1,
+        "mercury-retrograde": 1,
+        "eclipses": 1,
+        "full-moon-calendar": 1,
+        "retrogrades": 1,
+        "seasons": 13
+      },
+      "lastmodOldest": "2026-07-15",
+      "lastmodNewest": "2026-11-07",
+      "medianWords": 1152,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 19,
+      "samples": [
+        {
+          "path": "/it/sky-calendar/",
+          "title": "Iscriviti al cielo | Zodiacs.org"
+        },
+        {
+          "path": "/it/moon-phase/",
+          "title": "Fase lunare di oggi e della tua nascita | Zodiacs.org"
+        },
+        {
+          "path": "/it/mercury-retrograde/",
+          "title": "Mercurio retrogrado dal 2026 al 2030: date | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "it",
+      "family": "signs",
+      "pages": 24,
+      "sub": {
+        "sign-guide": 12,
+        "rising-sign": 12
+      },
+      "lastmodOldest": "2026-10-16",
+      "lastmodNewest": "2026-10-16",
+      "medianWords": 1274,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 24,
+      "samples": [
+        {
+          "path": "/it/aquarius/",
+          "title": "Acquario: date, personalità e compatibilità | Zodiacs.org"
+        },
+        {
+          "path": "/it/aries/",
+          "title": "Ariete: date, personalità e compatibilità | Zodiacs.org"
+        },
+        {
+          "path": "/it/cancer/",
+          "title": "Cancro: date, personalità e compatibilità | Zodiacs.org"
+        }
+      ]
+    },
+    {
+      "locale": "ru",
+      "family": "horoscope",
+      "pages": 0
+    },
+    {
+      "locale": "ru",
+      "family": "compatibility",
+      "pages": 2,
+      "sub": {
+        "other": 1,
+        "hub": 1
+      },
+      "lastmodOldest": "2026-10-03",
+      "lastmodNewest": "2026-10-16",
+      "medianWords": 726,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 2,
+      "samples": [
+        {
+          "path": "/ru/compatibility/invite/",
+          "title": "Пригласите друга сравнить карты | Zodiacs.org"
+        },
+        {
+          "path": "/ru/compatibility/",
+          "title": "Совместимость по натальным картам: синастрия онлайн"
+        }
+      ]
+    },
+    {
+      "locale": "ru",
+      "family": "birth-chart",
+      "pages": 4,
+      "sub": {
+        "big-three": 1,
+        "birth-chart": 1,
+        "moon-sign": 1,
+        "rising-sign": 1
+      },
+      "lastmodOldest": "2026-10-03",
+      "lastmodNewest": "2026-10-27",
+      "medianWords": 1109,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 4,
+      "samples": [
+        {
+          "path": "/ru/big-three/",
+          "title": "Ваше Солнце, Луна и асцендент | Zodiacs.org"
+        },
+        {
+          "path": "/ru/birth-chart/",
+          "title": "Натальная карта онлайн бесплатно: Солнце, Луна, асцендент"
+        },
+        {
+          "path": "/ru/moon-sign/",
+          "title": "Лунный знак по дате рождения: рассчитать онлайн"
+        }
+      ]
+    },
+    {
+      "locale": "ru",
+      "family": "sky-events",
+      "pages": 2,
+      "sub": {
+        "sky-calendar": 1,
+        "moon-phase": 1
+      },
+      "lastmodOldest": "2026-10-16",
+      "lastmodNewest": "2026-10-16",
+      "medianWords": 370,
+      "noindex": 0,
+      "dashTitles": 0,
+      "jsonLdPages": 2,
+      "samples": [
+        {
+          "path": "/ru/sky-calendar/",
+          "title": "Подпишитесь на небесный календарь | Zodiacs.org"
+        },
+        {
+          "path": "/ru/moon-phase/",
+          "title": "Фаза Луны сегодня и в день рождения: калькулятор"
+        }
+      ]
+    },
+    {
+      "locale": "ru",
+      "family": "signs",
+      "pages": 0
+    },
+    {
+      "locale": "ar",
+      "family": "horoscope",
+      "pages": 0
+    },
+    {
+      "locale": "ar",
+      "family": "compatibility",
+      "pages": 0
+    },
+    {
+      "locale": "ar",
+      "family": "birth-chart",
+      "pages": 0
+    },
+    {
+      "locale": "ar",
+      "family": "sky-events",
+      "pages": 0
+    },
+    {
+      "locale": "ar",
+      "family": "signs",
+      "pages": 0
+    },
+    {
+      "locale": "zh-hans",
+      "family": "horoscope",
+      "pages": 0
+    },
+    {
+      "locale": "zh-hans",
+      "family": "compatibility",
+      "pages": 0
+    },
+    {
+      "locale": "zh-hans",
+      "family": "birth-chart",
+      "pages": 0
+    },
+    {
+      "locale": "zh-hans",
+      "family": "sky-events",
+      "pages": 0
+    },
+    {
+      "locale": "zh-hans",
+      "family": "signs",
+      "pages": 0
+    },
+    {
+      "locale": "zh-hant",
+      "family": "horoscope",
+      "pages": 0
+    },
+    {
+      "locale": "zh-hant",
+      "family": "compatibility",
+      "pages": 0
+    },
+    {
+      "locale": "zh-hant",
+      "family": "birth-chart",
+      "pages": 0
+    },
+    {
+      "locale": "zh-hant",
+      "family": "sky-events",
+      "pages": 0
+    },
+    {
+      "locale": "zh-hant",
+      "family": "signs",
+      "pages": 0
+    }
+  ]
+}

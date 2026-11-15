@@ -21,6 +21,7 @@ import { useProfile } from '../lib/hooks/useProfile';
 import { useMe } from '../lib/hooks/useMe';
 import { explicitSelfChart } from '../lib/profile/read-store';
 import { markPrimarySelfChart } from '../lib/profile/store';
+import { runAfterProfileAccess } from '../lib/account-v2/profile-access-request';
 import { DEFAULT_ME, DISPLAY_NAME_MAX, cleanDisplayName, resolvedDisplayName, saveMe } from '../lib/profile/me';
 import { OPEN_CARD_EVENT, cardUrl, encodeCardLink, loadCardPositionsForChart } from '../lib/profile/card-link';
 import { chartHandle, personalChartName, savedChartSunHue } from '../lib/profile/your-people';
@@ -77,6 +78,7 @@ function Intro() {
 /** Pick which saved chart is yours, by name only — never birth details beside it. */
 function SelfChooser({ charts }: { charts: SavedChart[] }) {
   const [error, setError] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
   const recent = [...charts].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 6);
   return (
     <section class="pf-choose" aria-labelledby="pf-choose-title">
@@ -91,7 +93,10 @@ function SelfChooser({ charts }: { charts: SavedChart[] }) {
               <Initial name={personalChartName(chart.name)} hue={savedChartSunHue(chart)} size={36} />
               <span class="pf-row__text"><strong>{chartHandle(chart.name)}</strong></span>
               <span class="pf-row__actions">
-                <button class="pf-chart__action" type="button" onClick={() => setError(!markPrimarySelfChart(chart.id))}>
+                <button class="pf-chart__action" type="button" onClick={() => runAfterProfileAccess(
+                  () => { setUnavailable(false); setError(!markPrimarySelfChart(chart.id)); },
+                  () => { setError(false); setUnavailable(true); },
+                )}>
                   Use as my chart
                 </button>
               </span>
@@ -102,6 +107,7 @@ function SelfChooser({ charts }: { charts: SavedChart[] }) {
           <a class="next-action__quiet pf-choose__more" href="#saved-charts">See every saved chart</a>
         )}
         {error && <p class="field__error" role="alert">This browser wouldn’t save that choice. Try again.</p>}
+        {unavailable && <p class="field__error" role="alert">{t('en', 'profileSaveUnavailable')}</p>}
       </div>
     </section>
   );
@@ -303,11 +309,14 @@ function EditPanel({ initialName, initialPhoto, onDraft, onClose }: {
   function onSubmit(event: Event) {
     event.preventDefault();
     if (preparing) return;
-    if (!saveMe({ displayName: cleanDisplayName(draftName), photo })) {
-      setMessage(STORAGE_ERROR);
-      return;
-    }
-    onClose();
+    const patch = { displayName: cleanDisplayName(draftName), photo };
+    runAfterProfileAccess(() => {
+      if (!saveMe(patch)) {
+        setMessage(STORAGE_ERROR);
+        return;
+      }
+      onClose();
+    }, () => setMessage(t('en', 'profileSaveUnavailable')));
   }
 
   return (

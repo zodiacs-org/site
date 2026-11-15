@@ -21,9 +21,10 @@
  *      sitemap-index.xml's section sitemaps list exactly its entries, once.
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
+ *  10. The inline profile access loader names the built bootstrap chunk.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
-import { attr, canonicalHref, renderedLinks, crawlDepths, sitemapCanonicalErrors } from './indexing-consistency.mjs';
+import { attr, canonicalHref, renderedLinks, crawlDepths, isDailyLastmodPath, robotsBlocks, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -34,6 +35,8 @@ import {
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
+import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
+import { pastPagesHidden, pastPagesHiddenFailures } from '../src/lib/indexing/past-pages-hidden.mjs';
 import { TIME_ATLAS_DATA_FILES, TIME_ATLAS_FOLDER, timeAtlasFileProblems, timeAtlasPageProblems } from './check-time-atlas.mjs';
 import {
   ABSENT_LOCALES,
@@ -45,6 +48,7 @@ import {
   hreflangRouteFamily,
 } from './i18n-hreflang-policy.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
+import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
@@ -68,7 +72,7 @@ const RUSSIAN_INDEXED_PATHS = new Set([
   ...(dailyPublishedDays.length ? ['/ru/chart-of-the-day/'] : []),
   '/ru/', '/ru/tools/', '/ru/birth-chart/', '/ru/compatibility/',
   '/ru/moon-sign/', '/ru/rising-sign/', '/ru/moon-phase/',
-  '/ru/saturn-return/', '/ru/transits/', '/ru/baby-zodiac/',
+  '/ru/saturn-return/', '/ru/transits/',
   '/ru/profile/', '/ru/methodology/', '/ru/privacy/', '/ru/disclosure/',
   '/ru/sky-calendar/', '/ru/astrologer-kit/', '/ru/your-sky-wrapped/',
   '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
@@ -92,6 +96,12 @@ const publishedEventPaths = new Set([
   ...(eventsPublication.hub?.indexEligible ? [eventsPublication.hub.path] : []),
   ...(eventsPublication.pages ?? []).map((event) => event.path),
 ]);
+// Past moon, eclipse and event pages hidden from search (ZOD-221, decision J):
+// published pages that render noindex and leave the sitemaps and the search index.
+const pastPagesHiddenList = JSON.parse(await readFile(resolve(repo, 'src/data/indexing/past-pages-hidden.json'), 'utf8')).paths;
+const isPastPageHidden = pastPagesHidden(Array.isArray(pastPagesHiddenList) ? pastPagesHiddenList : []);
+// The published event pages that every discovery surface lists: all of them, less the hidden ones.
+const listedEventPaths = new Set([...publishedEventPaths].filter((path) => !isPastPageHidden(path)));
 const isPhase2EventPath = (path) => (
   path === '/events/'
   || /^\/events\/(?!preview(?:\/|$))[a-z0-9-]+\/$/.test(path)
@@ -984,7 +994,7 @@ if (!(await exists(searchIndexPath))) {
       requireExactSet(
         'search-index Phase 2 event routes',
         new Set([...indexedPaths].filter(isPhase2EventPath)),
-        publishedEventPaths,
+        listedEventPaths,
       );
       for (const file of files) {
         const rel = relative(root, file).split(sep).join('/');
@@ -1092,6 +1102,13 @@ for (const path of sitemapLocs) {
   if (!discoveryDepths.has(path)) fail(`sitemap.xml: no rendered anchor path from homepage to ${path}`);
 }
 console.log(`Indexing discovery: ${[...sitemapLocs].filter((path) => discoveryDepths.has(path)).length}/${sitemapLocs.size} sitemap URLs reachable from home`);
+// Every sitemap page is at most three clicks from the homepage (ZOD-221): a
+// page deeper than that is one Google rarely gets to on a young site.
+const MAX_SITEMAP_DEPTH = 3;
+for (const path of sitemapLocs) {
+  const depth = discoveryDepths.get(path);
+  if (depth > MAX_SITEMAP_DEPTH) fail(`sitemap.xml: ${path} is ${depth} clicks from the homepage; link it within ${MAX_SITEMAP_DEPTH}`);
+}
 for (const block of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
   const loc = block[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '?';
   try {
@@ -1108,6 +1125,35 @@ for (const block of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
   if (!lastmod || !/^\d{4}-\d{2}-\d{2}$/.test(lastmod) || Number.isNaN(Date.parse(`${lastmod}T00:00:00Z`))) {
     fail(`sitemap.xml: ${loc} has invalid or missing lastmod`);
   }
+}
+// A sitemap date says when the page's content last changed (ZOD-221). Only the
+// pages that change with each daily edition (isDailyLastmodPath) carry the
+// edition's date because of it; every other date comes from the page's content
+// in src/pages/sitemap.xml.ts, which reads no clock
+// (scripts/sitemap-lastmod-sources.test.mjs). So no date may be later than the
+// daily edition, and when this check runs on a later day than the edition's,
+// no other page may carry the day it runs. A page that prints an "Updated"
+// date prints its sitemap date.
+{
+  const editionDay = dailyPublicationManifest.date;
+  const checkDay = new Date().toISOString().slice(0, 10);
+  let printed = 0;
+  for (const [path, block] of sitemapBlocksByPath) {
+    const lastmod = block.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
+    if (!lastmod) continue;
+    if (lastmod > editionDay) fail(`sitemap.xml: ${path} lastmod ${lastmod} is later than the daily edition ${editionDay}`);
+    if (!isDailyLastmodPath(path) && checkDay !== editionDay && lastmod === checkDay) {
+      fail(`sitemap.xml: ${path} lastmod ${lastmod} is the build date; date it from its content or list it as daily in scripts/indexing-consistency.mjs`);
+    }
+    const target = targetPath(path);
+    if (!target?.endsWith('.html')) continue;
+    const html = idCache.get(target) ?? (await readFile(target, 'utf8'));
+    for (const [, shown] of html.matchAll(/Updated <time datetime="([^"]+)"/g)) {
+      printed++;
+      if (shown !== lastmod) fail(`sitemap.xml: ${path} prints Updated ${shown} but its lastmod is ${lastmod}`);
+    }
+  }
+  console.log(`Sitemap dates: none after the ${editionDay} edition; ${printed} printed Updated dates match their sitemap dates`);
 }
 for (const match of sitemap.matchAll(/<xhtml:link\b[^>]*>/g)) {
   const href = attr(match[0], 'href');
@@ -1134,7 +1180,7 @@ for (const match of sitemap.matchAll(/<xhtml:link\b[^>]*>/g)) {
     }
   }
 }
-for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.registry.json']) {
+for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.registry.json', '/sky-calendar-heads-up.ics', '/sky-calendar-heads-up.json']) {
   if (sitemapLocs.has(artifact)) fail(`sitemap.xml: machine artifact must not be indexed — ${artifact}`);
   const target = targetPath(artifact);
   if (!target || !(await exists(target))) {
@@ -1355,9 +1401,11 @@ const sitemapPolicy = {
   //     and the twelve /seasons/{sign}/ pages (15 per locale).
   // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
   // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
-  total: 1540 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
+  // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/).
+  total: 1532 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
-    + publishedEventPaths.size + indexablePeoplePaths.size
+    + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
@@ -1370,7 +1418,7 @@ const sitemapPolicy = {
   disclosures: 6,
   extendedHoroscopePages: 84,
   dailyReadingPages: 42,
-  eventPages: publishedEventPaths.size,
+  eventPages: listedEventPaths.size,
   peoplePages: indexablePeoplePaths.size,
   registryResearchPages: indexedRegistryResearchPaths.size,
   translatedBlocks: 641,
@@ -1417,7 +1465,7 @@ const indexedFamilies = [
 requireExactSet(
   'sitemap.xml Phase 2 event routes',
   new Set([...sitemapLocs].filter(isPhase2EventPath)),
-  publishedEventPaths,
+  listedEventPaths,
 );
 requireExactSet(
   'sitemap.xml Russian core routes',
@@ -1573,10 +1621,13 @@ for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const rel = relative(root, file);
   const pagePath = htmlFileToPath(rel.split(sep).join('/'));
+  const hiddenChildPage = isHiddenChildPage(pagePath);
   const russianRouteAvailable = expectedHreflangsForPath(pagePath).has('ru')
-    || LOCALIZED_404_PATHS.has(pagePath);
+    || LOCALIZED_404_PATHS.has(pagePath)
+    || (hiddenChildPage && pagePath.startsWith('/ru/'));
   const russianRouteRenderable = russianRouteAvailable
-    || hreflangRouteFamily(pagePath) === 'sign-guide';
+    || hreflangRouteFamily(pagePath) === 'sign-guide'
+    || hiddenChildPage;
   if (!russianRouteRenderable && /href=["'](?:https:\/\/zodiacs\.org)?\/ru(?:\/|["'#?])/.test(html)) {
     fail(`${rel}: Russian route leaked onto a deferred or programmatic page`);
   }
@@ -1614,7 +1665,7 @@ for (const event of eventsPublication.timeline ?? []) {
   const url = new URL(event.path, SITE_ORIGIN);
   if (publishedEventPaths.has(url.pathname)) continue;
   const target = targetPath(url.pathname);
-  if (!sitemapLocs.has(url.pathname) || !target || !(await exists(target))) {
+  if ((!sitemapLocs.has(url.pathname) && !isPastPageHidden(url.pathname)) || !target || !(await exists(target))) {
     fail(`events-publication: timeline ${event.id} links outside the public index — ${event.path}`);
     continue;
   }
@@ -1628,6 +1679,10 @@ for (const path of publishedEventPaths) {
     fail(`events-publication: published route has no built HTML — ${path}`);
   }
 }
+for (const failure of pastPagesHiddenFailures(pastPagesHiddenList, {
+  today: dailyPublicationManifest.date,
+  publishedPaths: publishedEventPaths,
+})) fail(failure);
 for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const pagePath = htmlFileToPath(relative(root, file));
@@ -1636,7 +1691,15 @@ for (const file of files) {
   const published = publishedEventPaths.has(pagePath);
   const noindex = hasNoindex(html);
   const canonical = canonicalHref(html);
-  if (published) {
+  if (published && isPastPageHidden(pagePath)) {
+    // On the hidden list: still built and self-canonical, out of every discovery surface.
+    if (!noindex) fail(`past-pages-hidden: listed page is still indexable — ${pagePath}`);
+    if (canonical !== `${SITE_ORIGIN}${pagePath}`) {
+      fail(`past-pages-hidden: ${pagePath} is not self-canonical — ${canonical ?? 'missing'}`);
+    }
+    if (sitemapLocs.has(pagePath)) fail(`past-pages-hidden: listed page is still in the sitemap — ${pagePath}`);
+    if (indexedSearchPaths.has(pagePath)) fail(`past-pages-hidden: listed page is still in the search index — ${pagePath}`);
+  } else if (published) {
     if (noindex) fail(`events-publication: published route is noindex — ${pagePath}`);
     if (canonical !== `${SITE_ORIGIN}${pagePath}`) {
       fail(`events-publication: ${pagePath} is not self-canonical — ${canonical ?? 'missing'}`);
@@ -1707,6 +1770,10 @@ for (const file of files) {
       }
       if (!child.startsWith('<?xml') || !/<urlset\b/u.test(child)) fail(`${url.pathname}: not a urlset`);
       const blocks = [...child.matchAll(/<url>([\s\S]*?)<\/url>/g)];
+      // A section's date is the latest date of the pages it lists.
+      const sectionLastmod = index.slice(m.index).match(/<sitemap>[\s\S]*?<\/sitemap>/u)?.[0].match(/<lastmod>([^<]+)<\/lastmod>/u)?.[1];
+      const latest = blocks.map((block) => block[1].match(/<lastmod>([^<]+)<\/lastmod>/)?.[1]).filter(Boolean).sort().at(-1);
+      if (sectionLastmod !== latest) fail(`sitemap-index.xml: ${url.pathname} lastmod ${sectionLastmod ?? 'missing'} is not its latest page date ${latest ?? 'missing'}`);
       if (blocks.length === 0) fail(`${url.pathname}: lists no URLs`);
       if (blocks.length > 50_000) fail(`${url.pathname}: ${blocks.length} URLs, over the 50,000 limit`);
       for (const block of blocks) {
@@ -1726,9 +1793,16 @@ for (const file of files) {
     }
     console.log(`Section sitemaps: ${listed.size} sitemaps, ${sectionPathOf.size}/${sitemapLocs.size} sitemap.xml URLs`);
   }
-  const robots = await readFile(resolve(root, 'robots.txt'), 'utf8').catch(() => '');
-  for (const line of ['Sitemap: https://zodiacs.org/sitemap.xml', 'Sitemap: https://zodiacs.org/sitemap-index.xml']) {
-    if (!robots.split('\n').includes(line)) fail(`robots.txt: missing "${line}"`);
+  // robots.txt names the sitemap index alone (ZOD-221): /sitemap.xml lists the
+  // same pages, still builds for IndexNow and the gates above, and is not
+  // submitted twice. No page a sitemap lists may be blocked from crawling.
+  const robots = robotsRules(await readFile(resolve(root, 'robots.txt'), 'utf8').catch(() => ''));
+  if (robots.sitemaps.join('\n') !== 'https://zodiacs.org/sitemap-index.xml') {
+    fail(`robots.txt: must name exactly one sitemap, https://zodiacs.org/sitemap-index.xml (names ${robots.sitemaps.join(', ') || 'none'})`);
+  }
+  const sectionFiles = (await readdir(resolve(root, 'sitemaps')).catch(() => [])).map((name) => `/sitemaps/${name}`);
+  for (const path of ['/sitemap-index.xml', ...sectionFiles, ...sitemapLocs]) {
+    if (robotsBlocks(robots, path)) fail(`robots.txt: blocks ${path}, which the sitemap index lists`);
   }
 }
 
@@ -1865,6 +1939,17 @@ for (const [file, path] of builtPageByFile) {
     .replace(ENTITIES, (entity) => (/^&(?:nbsp|#160|#x[aA]0);$/u.test(entity) ? ' ' : 'x'));
   const joined = [...html.matchAll(INLINE_JOIN)].length;
   if (joined) fail(`${path}: ${joined} place(s) where text runs into an inline element; end the line with {' '}`);
+}
+
+// ---- Profile access loader ---------------------------------------------------
+// With account sync v2, pages outside the profile and the two main calculators
+// import the access bootstrap through an inline loader whose chunk URL is
+// stamped after the build (scripts/stamp-profile-access-loader.mjs). Every
+// loader must name the one chunk the save path also imports, and that chunk
+// must be imported by the save path; each requirement fails on its own.
+{
+  const { problems } = await verifyProfileAccessLoader(root);
+  for (const problem of problems.slice(0, 20)) fail(`profile access loader: ${problem}`);
 }
 
 // ---- Report ------------------------------------------------------------------

@@ -95,6 +95,10 @@ jobs:
       # must never block the consumer daily publication, so on any failure we
       # fall back to committing the daily package alone (the snapshot
       # workflow's backstop repairs the pairing later, exactly as before).
+      # While Registry Research is paused (src/data/registry-research/pause.json)
+      # the outlook and research builders write nothing, the build's pairing
+      # gate accepts the last published editions, and the consumer daily
+      # publication is unaffected.
       - name: Pair the Registry outlook with today's edition (best effort)
         id: pairing
         continue-on-error: true
@@ -103,31 +107,11 @@ jobs:
           node scripts/build-registry-outlook.mjs
           node scripts/build-registry-research.mjs
           node scripts/build-sign-pages.mjs
-          node --input-type=module <<'NODE'
-          import { readFile } from 'node:fs/promises';
-          const [history, outlook, researchDrafts, researchPublication, researchFeed] = await Promise.all([
-            readFile('public/assets/data/registry-market-history.v1.json', 'utf8').then(JSON.parse),
-            readFile('public/assets/registry-outlook.json', 'utf8').then(JSON.parse),
-            readFile('src/data/registry-research/drafts.json', 'utf8').then(JSON.parse),
-            readFile('src/data/registry-research/publication.json', 'utf8').then(JSON.parse),
-            readFile('public/assets/registry-research-feed.json', 'utf8').then(JSON.parse),
-          ]);
-          const latest = history.snapshots?.at(-1);
-          const dates = {
-            market: latest?.date,
-            marketRead: latest?.source?.readAt?.slice(0, 10),
-            dailyOutlook: outlook.daily?.date,
-            weeklyOutlook: outlook.weekly?.date,
-            researchDrafts: researchDrafts.generatedAt?.slice(0, 10),
-            researchPublication: researchPublication.generatedAt?.slice(0, 10),
-            researchFeed: researchFeed.generatedAt?.slice(0, 10),
-          };
-          for (const [label, date] of Object.entries(dates)) {
-            if (date !== process.env.TARGET_DATE) {
-              throw new Error(`${label} artifact is ${date ?? 'undated'}; expected ${process.env.TARGET_DATE}`);
-            }
-          }
-          NODE
+          # Dated artifact check. While src/data/registry-research/pause.json
+          # says "paused", the outlook and research builders above write
+          # nothing and this check accepts their last published editions; the
+          # market archive and catalogue pages still update.
+          node scripts/check-registry-pairing.mjs
 
       - name: Commit if changed
         id: commit

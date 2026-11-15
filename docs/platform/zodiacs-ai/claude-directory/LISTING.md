@@ -1,5 +1,101 @@
 # Claude directory listing
 
+## Where the listing stands, 14 November 2026
+
+This section is the current state. Everything under it is a dated record,
+newest first, and is left as it was written. It is drawn from the records
+below, from the portal's additional notes, tools copy and listing
+description as read on 14 November, and from the code on `main`.
+
+**The live server.** `https://zodiacs.org/mcp` reports version 0.6.7
+(`AI_VERSION` in `src/ai-tools/contracts.ts`; checked with `get_capabilities`
+on 13 November, after PR #971 went live) and offers 19 read-only tools
+with no sign-in: the thirteen first reviewed, then `get_natal_chart`,
+`get_horoscope_period`, `get_chinese_zodiac`, `get_personal_transits`,
+`explain_astrology` and `find_birthplace`. Tools added to the source since
+(`search_sky_events`, `get_year_score`, `get_solar_return`,
+`get_numerology`) sit behind their
+own switches and are not part of the 19.
+
+**What 0.6.7 changed.** Every one of the 19 tools has a new description
+that says only what the tool does, what it fits and its limits, and the
+server's instructions were reworded so they state facts about Zodiacs rather than orders to the assistant, and say truly what a link can hold
+(PR #971, approved by the owner on 11 and 13 November). No name, title,
+input, annotation or tool count changed. `get_horoscope`'s panel moved to a
+new address, `ui://zodiacs/horoscopes-v7.html`, and the earlier addresses are
+still served. The portal's copy of the tools was re-read from the 0.6.7
+server on 14 November, with the portal's note that some items were left out
+to fit its size limits.
+
+**What it does and refuses today.**
+
+- Under 13: any call that carries a birth date less than 13 years ago, or one
+  still to come, is refused before anything is worked out, and so is a
+  birthday card for a day in those years (`UNDER_13_REFUSAL`, PR #915,
+  8 November). `get_occasion_sky` has offered no baby or coming-of-age
+  occasion since 0.6.5.
+- Under 18: no romance, attraction or sexual framing. `get_compatibility`
+  gives no reading when either birth date is under 18 and points to a
+  friendship reading of the two Sun signs. Asked for a love reading with a
+  birth date under 18, `get_horoscope` gives the general reading with a note
+  saying why (PR #970, 13 November), and its panel stays that way when
+  another sign is picked in it (PR #971).
+- Birth details are never stored or logged. Links never carry a birth year, a
+  birth time, a birthplace or the names you give; a birthday link carries
+  only the month and day. A card link for a wedding or another day that is
+  not a birthday carries that day's time, time zone and coordinates rounded
+  to two decimals.
+- No betting tips, sports picks, investment timing, election forecasts or
+  health predictions, and no guarantee of an outcome.
+- Forecasts are stated plainly, each with a label written "Reading
+  confidence NN%": how specific the details were, never the odds that an
+  event happens.
+
+**What the reviewers were last told, by channel.**
+
+| Channel | Last recorded contact | Version named |
+| --- | --- | --- |
+| Additional notes in the portal | 14 November, saved with Dias's yes | 0.6.7 |
+| Reviewer instructions in the portal | 8 November; not read or edited on 14 November | Not recorded |
+| The portal's copy of the tools | 14 November, read by Update the copy reviewers see before that save | 19 tools from the 0.6.7 server, with a portal note that some items were left out to fit its size limits |
+| Email thread, ticket #145701231 | 14 November, one summary note | 0.6.7 |
+
+The additional notes and the email name 0.6.7, and the tools copy was read
+from the 0.6.7 server. The 14 November email names the earlier
+statements it replaces (15 October twice, 6 and 7 November), including the
+withdrawn sentence that share links carry first names.
+
+**Gaps in these records.** There is no dated entry for 6 November. That a
+reply went to the ticket that day, and that thirteen numbered prompts were
+pasted into the reviewer instructions, is known only from the 8 November
+entry below and from [RESYNC-0.6.0.md](RESYNC-0.6.0.md); the text of that
+reply is not in the repository. The last recorded listing description saved
+is the 0.5.1 wording of 28 October. The description read in the portal on
+14 November is a later wording, and no entry records when it was saved.
+The reviewer instructions were not read on 14 November.
+
+## Portal re-sync and reviewer note, 14 November 2026
+
+With Dias's yes on 14 November to "sign in to re-sync the directory portal,
+and okay the reviewer note", in the
+portal's full editor: **Update the copy reviewers see** re-read the server
+(19 tools, 0 prompts, with the same portal note that some items were left
+out to fit its size limits; the copy is now dated 14 November), then
+**Sync from server** returned the same 19 tool names. The additional notes now
+open with 0.6.7 and say what 0.6.7 changed and how a love reading for a
+birth date under 18 is answered; the rest of the 8 November text was kept,
+and it already says links never carry names. No other field was changed, and the reviewer instructions were not
+read.
+Saving showed the listing "updated just now", still in review.
+
+At 13:00 UTC the same day the note in
+[REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md) went from admin@zodiacs.org
+to mcp-review@anthropic.com as a reply on ticket #145701231. Its body was the
+draft's, with three differences: the TO CONFIRM line became "We have
+re-synced the tools in the directory editor so your copy matches 0.6.7.",
+the sign-off was "Thank you, Dias, Zodiacs LLC", and the reply kept the
+thread's own subject instead of the draft's Subject line.
+
 ## Icon and reviewer texts, 7 and 8 November 2026
 
 - **7 November, with Dias's yes:** the custom icon URL is now

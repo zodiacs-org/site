@@ -22,7 +22,6 @@ const SIGN_NAMES = Object.freeze([
 ]);
 const SIGN_PATTERN = SIGNS.join('|');
 const TOOL_ROOTS = new Set([
-  'baby-zodiac',
   'big-three',
   'group-charts',
   'sky-calendar',
