@@ -7,6 +7,7 @@ import { formatLongitude, signForLongitude } from '../../../lib/signs';
 import { formatDate, formatTime } from '../../../lib/i18n/dates';
 import { publishedEventById } from '../../../lib/events/site-publication';
 import { moonDistanceLunation, supermoon } from '../../../lib/supermoon';
+import { nasaLunationAt } from '../../../lib/nasa-event-times-2027';
 import { worldTimes, worldTimesSentence } from '../../../world-times/world-times';
 import { FULL_MOON_CALENDAR_2027_UPDATED as UPDATED, updatedIso, updatedLabel } from '../../../world-times/updated';
 import WorldTimesTable from '../../../world-times/WorldTimesTable.astro';
@@ -44,7 +45,9 @@ const fulls = (sky.moons as { type: string; at: string }[])
     const id = `full-moon-${at.slice(0, 10)}`;
     return {
       id,
-      at: date,
+      // The instant printed is NASA JPL Horizons' (src/lib/nasa-event-times-2027.ts), as on the
+      // full moon's own page; the id, the sign and the degree keep the committed sky data.
+      at: new Date(nasaLunationAt('full', at) ?? at),
       name: second ? 'Blue' : MONTH_NAMES[date.getUTCMonth()],
       position: formatLongitude(lon),
       sign: signForLongitude(lon),
@@ -213,8 +216,8 @@ const jsonLd = [
       />
     </div>
     <p class="year-page__check reveal">
-      Full moon times come from our own engine, and every new and full Moon the site publishes falls within a minute of
-      NASA's. <a href="/methodology/#event-times">How we check event times</a>
+      Full moon times come from NASA JPL Horizons (the DE441 ephemeris), solved to the second and printed to the minute.
+      The signs and the degrees come from our own engine. <a href="/methodology/#event-times">How we check event times</a>
     </p>
   </section>
 
