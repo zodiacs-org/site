@@ -43,6 +43,8 @@ import { EVENT_READINGS_2027_UPDATED, STYLE_GUIDE_READING_IDS } from '../lib/eve
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
 import { isHiddenAlmanacSlug, isHiddenChildPage } from '../data/hidden-child-pages.mjs';
+import { isPastPageHidden } from '../lib/indexing/past-pages-hidden-list';
+import { WINDOW_READING_IDS, WINDOW_READINGS_UPDATED } from '../lib/events/window-readings';
 import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
@@ -428,6 +430,9 @@ const CONNECTOR_PAGE_ROUTES = [
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
+  // The moon and alignment pages of the coming twelve months carry fuller readings (ZOD-221, decision J).
+  ...eventsPublication.pages.filter((event) => WINDOW_READING_IDS.includes(event.id))
+    .map((event) => [event.path, WINDOW_READINGS_UPDATED] as const),
   ...[
     '/', '/birth-chart/', '/compatibility/', '/moon-sign/', '/rising-sign/',
     '/moon-phase/', '/saturn-return/', '/solar-return/', '/mercury-retrograde/', '/transits/', '/ask/',
@@ -1040,6 +1045,18 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-12');
     }
   }
+  // Every sitemap page within three clicks of home (ZOD-221): the tools hub
+  // links the sign seasons and the Almanac, and the translated homes link
+  // their language's sign seasons. Last, so these win.
+  for (const loc of ['/tools/', '/es/', '/fr/', '/it/', '/pt/']) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-11-13');
+  }
+  // The correction log names the withdrawn B. F. Skinner profile without
+  // linking it, since that address redirects back to the log (ZOD-221).
+  for (const url of urls) {
+    if (url.loc === '/corrections/') url.lastmod = laterDate(url.lastmod, '2026-11-13');
+  }
   // The methodology page gives the Moon's and the Sun's event times to the
   // precision the pages print, with the range of each figure.
   for (const url of urls) {
@@ -1058,7 +1075,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   return [
     ...urls,
     ...localizedUrls,
-  ].filter((url) => !isHiddenChildPage(url.loc));
+  // A past moon, eclipse or event page on the hidden list leaves the sitemap (ZOD-221, decision J).
+  ].filter((url) => !isHiddenChildPage(url.loc) && !isPastPageHidden(url.loc));
 }
 
 /** A urlset of the given entries, each with its hreflang alternates, lastmod and priority. */
