@@ -186,12 +186,12 @@ one page or one day to the next.
 
 ## Retention hook events
 
-**Pending owner approval.** This change adds `rss_subscribe` and gives the
-existing `calendar_subscribe` and `calendar_download` a closed `feed` list, to
-count the site's three retention hooks: the daily horoscope email (already
-counted by `email_subscribed`), the sky calendars and the RSS feeds. The
-owner's dated yes is still to be recorded here, and the privacy page's
-analytics paragraph names the calendar and RSS feed links in the same change.
+**Approved by the owner on 2026-11-15** (11:34 Asia/Bangkok). This change adds
+`rss_subscribe` and gives the existing `calendar_subscribe` and
+`calendar_download` a closed `feed` list, to count the site's three retention
+hooks: the daily horoscope email (already counted by `email_subscribed`), the
+sky calendars and the RSS feeds. The privacy page's analytics paragraph names
+the calendar and RSS feed links in the same change.
 
 | Event | Props and closed values | Fires when |
 | --- | --- | --- |
