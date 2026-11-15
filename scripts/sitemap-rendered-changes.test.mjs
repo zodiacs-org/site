@@ -474,6 +474,7 @@ describe('a pull request that rolls the daily edition', () => {
     }
     for (const path of [
       'src/pages/sitemap.xml.ts', 'src/data/sky.json', 'public/robots.txt', 'src/data/daily.json.bak',
+      '.github/phase1-scope-allowance.json',
       // What else lives in those directories, which the daily publication does not write (Codex's thirteenth finding on #752).
       'public/registry/index.html', 'public/registry/technical/index.html', 'public/registry/registry-meta.json',
       'public/registry/zodiacs.registry.json', 'public/registry/aries/other.html', 'public/registry/aries/index.html.bak',
@@ -553,6 +554,65 @@ describe('a pull request that rolls the daily edition', () => {
       expect(status).toBe(0);
       expect(outputs).toEqual({ compare: 'false' });
       expect(stdout).toContain('rolls the daily edition to 2026-10-15 and changes nothing else');
+    });
+
+    it.each(['added', 'modified'])('passes a daily roll with a one-time allowance that is %s', async (change) => {
+      const path = '.github/phase1-scope-allowance.json';
+      const pages = Object.fromEntries(SIGN_ORDER.map((sign) => [`public/registry/${sign}/index.html`, '<p>old']));
+      const base = await commit({
+        'src/data/daily.json': edition('2026-10-14'), ...pages,
+        ...(change === 'modified' ? { [path]: '{}' } : {}),
+      });
+      const allowance = JSON.stringify({
+        version: 1, id: 'daily-sky-edition-2026-10-15', baseCommit: base,
+        protectedPaths: Object.keys(pages).sort(),
+      });
+      const head = await commit({
+        'src/data/daily.json': edition('2026-10-15'), [path]: allowance,
+        ...Object.fromEntries(Object.keys(pages).map((page) => [page, '<p>new'])),
+      });
+      expect(await plan(base, head)).toMatchObject({ status: 0, outputs: { compare: 'false' } });
+
+      // Accompanying metadata must not hide unrelated changes.
+      const mixed = await commit({ 'src/pages/sitemap.xml.ts': 'unrelated date change' });
+      expect(await plan(base, mixed)).toMatchObject({ status: 1, outputs: {} });
+    });
+
+    it('passes a daily roll that also lands this workflow exception and its tests', async () => {
+      const path = '.github/phase1-scope-allowance.json';
+      const pages = Object.fromEntries(SIGN_ORDER.map((sign) => [`public/registry/${sign}/index.html`, '<p>old']));
+      const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), ...pages });
+      const allowance = JSON.stringify({
+        version: 1, id: 'daily-sky-edition-2026-10-15', baseCommit: base,
+        protectedPaths: Object.keys(pages).sort(),
+      });
+      const head = await commit({
+        'src/data/daily.json': edition('2026-10-15'), [path]: allowance,
+        '.github/workflows/sitemap-dates.yml': 'workflow',
+        'scripts/sitemap-rendered-changes.test.mjs': 'tests',
+        ...Object.fromEntries(Object.keys(pages).map((page) => [page, '<p>new'])),
+      });
+      expect(await plan(base, head)).toMatchObject({ status: 0, outputs: { compare: 'false' } });
+
+      const mixed = await commit({ 'src/pages/sitemap.xml.ts': 'unrelated' });
+      expect(await plan(base, mixed)).toMatchObject({ status: 1, outputs: {} });
+    });
+
+    it('rejects deleting the one-time allowance during a daily roll', async () => {
+      const path = '.github/phase1-scope-allowance.json';
+      const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), [path]: '{}' });
+      git('rm', '-q', path);
+      const head = await commit({ 'src/data/daily.json': edition('2026-10-15') });
+      expect(await plan(base, head)).toMatchObject({ status: 1, outputs: {} });
+    });
+
+    it('still compares one edition when the allowance changes', async () => {
+      const base = await commit({
+        'src/data/daily.json': edition('2026-10-15'),
+        'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '',
+      });
+      const head = await commit({ '.github/phase1-scope-allowance.json': '{}' });
+      expect(await plan(base, head)).toMatchObject({ status: 0, outputs: { compare: 'true' } });
     });
 
     it('fails a head that rolls the edition and changes a file of those directories the publication does not write', async () => {
