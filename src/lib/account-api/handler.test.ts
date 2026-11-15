@@ -366,6 +366,85 @@ describe('account lifecycle API foundation', () => {
       ]);
   });
 
+  it.each(['granted', 'withdrawn'] as const)(
+    'exports chart-email consent and its audit history while %s',
+    async (state) => {
+      const grantedAt = '2026-08-10T00:00:00.000Z';
+      const withdrawnAt = '2026-08-11T00:00:00.000Z';
+      const account = {
+        status: 'active',
+        created_at: '2026-08-01T00:00:00.000Z',
+        updated_at: state === 'granted' ? grantedAt : withdrawnAt,
+        deletion_started_at: null,
+      };
+      const consent = {
+        purpose: 'chart_emails',
+        state,
+        policy_version: 'chart-emails-test-v1',
+        granted_at: state === 'granted' ? grantedAt : null,
+        withdrawn_at: state === 'withdrawn' ? withdrawnAt : null,
+        updated_at: account.updated_at,
+      };
+      const grantEvent = {
+        event_id: 1,
+        purpose: 'chart_emails',
+        decision: 'grant',
+        policy_version: consent.policy_version,
+        source: 'web',
+        occurred_at: grantedAt,
+      };
+      const events = state === 'granted' ? [grantEvent] : [grantEvent, {
+        ...grantEvent, event_id: 2, decision: 'withdraw', occurred_at: withdrawnAt,
+      }];
+      const response = responseRecorder();
+      await handleAccountApi(request('export'), response, {
+        env: ENV,
+        fetcher: exportFetcher({
+          ...EMPTY_V2_RPC_EXPORT, account, consents: [consent], consent_events: events,
+        }),
+        now: () => NOW,
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.headers.get('Content-Disposition')).toContain('zodiacs-account-export.json');
+      expect(JSON.parse(response.body).cloud.accountSyncV2).toEqual({
+        ...EMPTY_V2_EXPORT, account, consents: [consent], consent_events: events,
+      });
+    },
+  );
+
+  it.each(['consents', 'consent_events'] as const)(
+    'still rejects an unknown consent purpose in %s',
+    async (field) => {
+      const timestamp = '2026-08-10T00:00:00.000Z';
+      const row = field === 'consents'
+        ? {
+          purpose: 'unknown_purpose', state: 'granted', policy_version: 'test-v1',
+          granted_at: timestamp, withdrawn_at: null, updated_at: timestamp,
+        }
+        : {
+          event_id: 1, purpose: 'unknown_purpose', decision: 'grant',
+          policy_version: 'test-v1', source: 'web', occurred_at: timestamp,
+        };
+      const response = responseRecorder();
+      await handleAccountApi(request('export'), response, {
+        env: ENV,
+        fetcher: exportFetcher({
+          ...EMPTY_V2_RPC_EXPORT,
+          account: {
+            status: 'active', created_at: timestamp, updated_at: timestamp,
+            deletion_started_at: null,
+          },
+          [field]: [row],
+        }),
+        now: () => NOW,
+      });
+
+      expect(response.statusCode).toBe(503);
+      expect(JSON.parse(response.body)).toEqual({ error: 'export_unavailable' });
+    },
+  );
+
   it('decrypts the combined v2 envelope into a portable owner export without widening routing data', async () => {
     const privatePayload = {
       label: 'My encrypted chart',
