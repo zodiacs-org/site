@@ -212,7 +212,7 @@ const almanac = defineCollection({
  * collection only ever holds translations of entries that exist there.
  */
 const learnLocalized = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './src/content/learn-i18n' }),
+  loader: glob({ pattern: '*/rising/*.mdx', base: './src/content/learn-i18n' }),
   schema: z.object({
     kind: z.literal('rising'),
     sign: signEnum,
@@ -225,6 +225,35 @@ const learnLocalized = defineCollection({
     sources: sourcesSchema,
     draft: z.boolean().default(false),
   }),
+});
+
+/**
+ * Translated Learn articles for planets, houses and placements
+ * (learn-i18n/{locale}/{planets,houses,placements}/{slug}.mdx). Each file
+ * translates the English entry at the same path under `learn`. No route
+ * reads this collection yet: the matching /{locale}/learn/ pages still show
+ * the noindex fallback until a route is added, so entries here change
+ * nothing on the live site. Kept apart from `learnLocalized` so the rising
+ * routes keep their narrower type.
+ */
+const localizedLearnBase = {
+  locale: z.enum(['es', 'pt', 'fr', 'it']),
+  title: z.string().max(60),
+  description: z.string().max(155),
+  faq: faqSchema.min(3),
+  published: z.coerce.date(),
+  updated: z.coerce.date(),
+  sources: sourcesSchema,
+  draft: z.boolean().default(false),
+};
+const planetEnum = z.enum(['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']);
+const learnTopicsLocalized = defineCollection({
+  loader: glob({ pattern: '*/{planets,houses,placements}/*.mdx', base: './src/content/learn-i18n' }),
+  schema: z.discriminatedUnion('kind', [
+    z.object({ kind: z.literal('planet'), planet: planetEnum, role: z.string(), ...localizedLearnBase }),
+    z.object({ kind: z.literal('house'), house: z.number().int().min(1).max(12), theme: z.string(), ...localizedLearnBase }),
+    z.object({ kind: z.literal('placement'), planet: planetEnum, sign: signEnum, ...localizedLearnBase }),
+  ]),
 });
 
 /**
@@ -294,4 +323,4 @@ const natalAspectPairs = defineCollection({
   }),
 });
 
-export const collections = { guides, pairs, pairsLocalized, learn, learnLocalized, horoscopes, birthdays, almanac, natalAspectPairs };
+export const collections = { guides, pairs, pairsLocalized, learn, learnLocalized, learnTopicsLocalized, horoscopes, birthdays, almanac, natalAspectPairs };
