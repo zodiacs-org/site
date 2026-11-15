@@ -1067,6 +1067,11 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   for (const url of urls) {
     if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
   }
+  // The privacy page says the calendar and RSS feed link events carry only
+  // fixed categories.
+  for (const url of urls) {
+    if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
+  }
   return [
     ...urls,
     ...localizedUrls,
