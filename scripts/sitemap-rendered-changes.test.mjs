@@ -513,7 +513,7 @@ describe('a pull request that rolls the daily edition', () => {
       git('-c', 'user.name=t', '-c', 'user.email=t@invalid', 'commit', '-qm', 'c');
       return git('rev-parse', 'HEAD');
     }
-    async function plan(base, head) {
+    async function plan(base, head, event = 'workflow_dispatch') {
       const { script, pattern, addedOnly } = await planStep();
       const output = join(repo, 'output.txt');
       await writeFile(output, '');
@@ -525,7 +525,7 @@ describe('a pull request that rolls the daily edition', () => {
           encoding: 'utf8',
           stdio: ['ignore', 'pipe', 'pipe'],
           env: {
-            ...process.env, EVENT: 'workflow_dispatch', BASE_INPUT: base, HEAD_INPUT: head, DAILY_PACKAGE: pattern, DAILY_ADDED_ONLY: addedOnly,
+            ...process.env, EVENT: event, BASE_INPUT: base, HEAD_INPUT: head, DAILY_PACKAGE: pattern, DAILY_ADDED_ONLY: addedOnly,
             GITHUB_OUTPUT: output, GITHUB_STEP_SUMMARY: join(repo, 'summary.txt'), RUNNER_TEMP: join(repo, 'temp'),
           },
         });
@@ -599,7 +599,7 @@ describe('a pull request that rolls the daily edition', () => {
     it.each([false, true])('accepts only an exact, base-pinned allowance (existing: %s)', async (existing) => {
       const scope = '.github/phase1-scope-allowance.json';
       const sign = 'public/registry/aries/index.html';
-      const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), [sign]: '<p>old', ...(existing ? { [scope]: '{}' } : {}) });
+      const base = await commit({ 'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '', 'src/data/daily.json': edition('2026-10-14'), [sign]: '<p>old', ...(existing ? { [scope]: '{}' } : {}) });
       const allowance = { version: 1, id: 'daily-test', baseCommit: base, protectedPaths: [sign] };
       const roll = { 'src/data/daily.json': edition('2026-10-15'), [sign]: '<p>new' };
       let head = await commit({ ...roll, [scope]: JSON.stringify(allowance) });
@@ -617,6 +617,43 @@ describe('a pull request that rolls the daily edition', () => {
       head = await commit({ [scope]: '{not json' });
       expect((await plan(base, head)).status).toBe(1);
       head = await commit({ [scope]: JSON.stringify(allowance), 'src/pages/a.astro': 'unrelated change' });
+      // There is a verified daily-only ancestor: extra content must be compared, never skipped.
+      expect((await plan(base, head)).outputs.compare).toBe('true');
+    });
+
+    it('compares a mixed recovery against its verified daily-only ancestor, including a PR merge', async () => {
+      const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), 'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '' });
+      const daily = await commit({ 'src/data/daily.json': edition('2026-10-15') });
+      const head = await commit({ 'src/pages/a.astro': 'must be compared' });
+      const result = await plan(base, head);
+      expect(result.status).toBe(0);
+      expect(result.outputs).toMatchObject({ compare: 'true', base: daily, head });
+      // The production event checks the synthetic merge with main as first parent.
+      git('checkout', '-qb', 'pr-base', base);
+      git('-c', 'user.name=t', '-c', 'user.email=t@invalid', 'merge', '--no-ff', '-qm', 'PR merge', head);
+      const merged = git('rev-parse', 'HEAD');
+      const pr = await plan(base, merged, 'pull_request');
+      expect(pr.outputs).toMatchObject({ compare: 'true', base: daily, head: merged });
+    });
+
+    it('rejects a daily ancestor that also changes non-package content or rewrites an immutable item', async () => {
+      for (const extra of ['src/pages/a.astro', 'public/assets/data/registry-research/items/old.json']) {
+        const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), [extra]: 'old' });
+        await commit({ 'src/data/daily.json': edition('2026-10-15'), [extra]: 'new' });
+        const head = await commit({ 'scripts/another.mjs': `code fix for ${extra}` });
+        expect((await plan(base, head)).status).toBe(1);
+      }
+    });
+
+    it('does not use a same-edition commit from a different base or outside head ancestry', async () => {
+      const common = await commit({ 'src/data/daily.json': edition('2026-10-14') });
+      const daily = await commit({ 'src/data/daily.json': edition('2026-10-15') });
+      git('checkout', '-qb', 'different-base', common);
+      const base = await commit({ 'src/pages/base.astro': 'base advanced' });
+      let head = await commit({ 'src/data/daily.json': edition('2026-10-15'), 'src/pages/a.astro': 'mixed' });
+      expect((await plan(base, head)).status).toBe(1);
+      git('-c', 'user.name=t', '-c', 'user.email=t@invalid', 'merge', '--no-ff', '-qm', 'old daily', daily);
+      head = git('rev-parse', 'HEAD');
       expect((await plan(base, head)).status).toBe(1);
     });
 
