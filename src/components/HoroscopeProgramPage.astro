@@ -1283,31 +1283,35 @@ const ctaLede = edgeMoon && moonHouse
     .hz-guide { max-width: 480px; }
   }
   @media (max-width: 760px) {
-    .hz-hero { height: 524px; margin: calc(8px - var(--nav-space, 64px)) 8px 0; border-radius: 24px; }
-    .hz-hero :global(.hz-hero__art) { width: 100%; bottom: auto; height: 70%; }
+    /* Short enough that the reading starts on a phone's first screen. */
+    .hz-hero { height: 336px; margin: calc(8px - var(--nav-space, 64px)) 8px 0; border-radius: 24px; }
+    .hz-hero :global(.hz-hero__art) { width: 100%; bottom: auto; height: 100%; }
     .hz-hero :global(.hz-hero__art > img) { object-position: 60% 50%; }
     .hz-hero::before {
       background:
-        linear-gradient(0deg, var(--void-1) 0%, var(--void-1) 26%, rgba(10, 12, 17, 0.8) 36%, rgba(10, 12, 17, 0) 54%),
-        linear-gradient(180deg, rgba(10, 12, 17, 0.55) 0%, rgba(10, 12, 17, 0) 24%);
+        /* Stops set for the 336px hero: a two-line title puts the date about
+           half way up, so the shade has to reach that far. */
+        linear-gradient(0deg, var(--void-1) 0%, var(--void-1) 40%, rgba(10, 12, 17, 0.85) 56%, rgba(10, 12, 17, 0) 80%),
+        linear-gradient(180deg, rgba(10, 12, 17, 0.6) 0%, rgba(10, 12, 17, 0) 34%);
     }
     .program__crumbs { top: 80px; left: 20px; }
     .hz-hero__body { left: 20px; right: 20px; bottom: 26px; }
-    .hz-hero__title { font-size: 2.75rem; }
+    .hz-hero__title { font-size: var(--text-2xl); line-height: 1.04; letter-spacing: -0.005em; }
     .hz-hero__cap { display: none; }
     .hz-hero__facts { margin-top: 16px; font-size: 12.5px; gap: 4px 8px; }
     .hz-hero__facts > span + span::before { margin-right: 8px; }
     .hz-hero__credit { display: none; }
-    .hz-controls { gap: 12px; margin-top: 14px; padding: 12px 0 10px; }
+    /* 44px period links in a 4px-padded, bordered pill: a 54px first row. */
+    .hz-controls { grid-template-rows: 54px calc(44px + 11px * 1.2); gap: 12px; margin-top: 14px; padding: 12px 0 10px; }
     .hz-seg { display: flex; width: 100%; justify-self: stretch; }
-    .hz-seg > a { flex: 1; justify-content: center; padding-inline: 6px; }
+    .hz-seg > a { flex: 1; justify-content: center; min-height: 44px; padding-inline: 6px; }
     .hz-signrail { grid-template-columns: repeat(12, 58px); gap: 0; margin-right: -20px; padding-right: 20px; }
     .hz-signrail__label { display: none; }
     .hz-signrail a { width: 58px; }
-    .hz-reading { gap: 48px; padding-top: 36px; }
+    .hz-reading { gap: 48px; padding-top: var(--s-6); }
     .hz-hide-m { display: none; }
     .hz-note__meta { font-size: 0.8125rem; }
-    .hz-note__title { margin-top: 14px; font-size: 2.15rem; }
+    .hz-note__title { margin-top: 14px; font-size: var(--text-xl); line-height: 1.15; }
     .hz-note__body { margin-top: 26px; }
     .hz-note__part p,
     .hz-note__prose :global(p) { font-size: 1.2rem; line-height: 1.55; }

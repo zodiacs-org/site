@@ -7,6 +7,7 @@ import { formatDate, formatTime } from '../../../lib/i18n/dates';
 import { publishedEventById } from '../../../lib/events/site-publication';
 import { isInvisiblePenumbral, lunarTotalityMinutes, penumbralMagnitude } from '../../../lib/nasa-lunar-eclipses';
 import { worldTimesSentence } from '../../../world-times/world-times';
+import { nasaEclipseAt } from '../../../lib/nasa-event-times-2027';
 import { ECLIPSES_2027_UPDATED as UPDATED, updatedIso, updatedLabel } from '../../../world-times/updated';
 import WorldTimesTable from '../../../world-times/WorldTimesTable.astro';
 
@@ -34,7 +35,9 @@ interface EclipseEntry {
 const eclipses = (eclipseData.eclipses as EclipseEntry[])
   .filter((e) => e.peak.startsWith(`${YEAR}-`))
   .map((e) => {
-    const at = new Date(e.peak);
+    // The peak printed is solved on NASA JPL Horizons (src/lib/nasa-event-times-2027.ts), as on the
+    // eclipse's own page; the id, the sign and the detail keep the committed data.
+    const at = new Date(nasaEclipseAt(e.type, e.peak) ?? e.peak);
     const publicationId = `eclipse-${e.peak.slice(0, 10)}`;
     const pct = typeof e.obscuration === 'number' ? Math.round(e.obscuration * 100) : null;
     let detail = '';
@@ -226,7 +229,8 @@ const jsonLd = [
       />
     </div>
     <p class="year-page__check reveal">
-      Peak times and signs are calculated with Astronomy Engine, and the eclipses are checked against NASA's
+      Peak times are solved on NASA JPL Horizons (the DE441 ephemeris) and printed to the minute. The signs are
+      calculated with Astronomy Engine, and the eclipses are checked against NASA's
       <em>Five Millennium Canon</em> of eclipses by Fred Espenak and Jean Meeus.
       <a href="/methodology/#event-times">How we check event times</a>
     </p>
