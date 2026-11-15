@@ -10,7 +10,7 @@
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-11-15",
   "publicationCanonicalSha256": "291a73ba5812466793322a7d5a2bcc06be66b6499b56a8c9599b19e174c5d6af",
-  "templateSourceSha256": "bad0d1a398ccc35e158a3660055b7d3ef4454302462bda8513b836076ed31992",
+  "templateSourceSha256": "df5c2ab9f7c2da07f9f0dfe1c82254ace9dc59e895564f7459e9031dbbce93af",
   "renderPayloadSha256": {
     "daily": "f4d734f977fc8cfa113e6e17febb8466dae5e0ab7bba1c86f69f33f04de7e1de",
     "dailyPublication": "b497880d88d96bacb700dd0d590ddf565f1864feaa73487ee5256fb4c7debc5d",
@@ -20,7 +20,7 @@
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
     "builtAt": "2026-11-15T12:00:00.000Z",
-    "templateSourceSha256": "bad0d1a398ccc35e158a3660055b7d3ef4454302462bda8513b836076ed31992",
+    "templateSourceSha256": "df5c2ab9f7c2da07f9f0dfe1c82254ace9dc59e895564f7459e9031dbbce93af",
     "dailyDate": "2026-11-15",
     "publicationCanonicalSha256": "291a73ba5812466793322a7d5a2bcc06be66b6499b56a8c9599b19e174c5d6af",
     "renderPayloadSha256": {
@@ -42,7 +42,7 @@
         "file": "today-360.png",
         "width": 360,
         "height": 11549,
-        "sha256": "ae1f7f15d5ad94ccd59c5f369eb26f338e8dac873d91e6188695b18b12005929"
+        "sha256": "45f923f88fe851dafac448bc4ba522fe228cff145bc1031ccfdeddfc36195ce6"
       },
       "layout": {
         "clientWidth": 360,

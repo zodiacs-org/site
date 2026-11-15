@@ -180,7 +180,7 @@ const jsonLd = [
       <div class="core tinted rx-now__core">
         <span class="mono--label">Calendar file</span>
         <strong class="rx-now__line">
-          <a href={`/eclipses/${YEAR}.ics`}>Add the {YEAR} eclipses to your calendar</a>
+          <a href={`/eclipses/${YEAR}.ics`} data-hook-event="calendar_download" data-hook-feed="eclipses">Add the {YEAR} eclipses to your calendar</a>
         </strong>
         <span class="rx-now__all mono">
           Peak instants in universal time · every year from 2026 on <a href="/eclipses/">the eclipse page</a>
