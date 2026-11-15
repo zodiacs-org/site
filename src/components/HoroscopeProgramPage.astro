@@ -563,7 +563,7 @@ const ctaLede = edgeMoon && moonHouse
             )}
             <div class="program__basis-links">
               <a href="/methodology/">Read our method and sources →</a>
-              <a href={`/feeds/horoscopes/${sign.slug}.xml`} type="application/rss+xml">Follow {sign.name} by RSS →</a>
+              <a href={`/feeds/horoscopes/${sign.slug}.xml`} type="application/rss+xml" data-hook-event="rss_subscribe" data-hook-feed="horoscopes_sign" data-hook-placement="horoscope_page">Follow {sign.name} by RSS →</a>
             </div>
           </div>
         </details>

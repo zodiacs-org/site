@@ -331,8 +331,8 @@ const jsonLd = [
         <a href="/widgets/">embeddable widgets</a> render tonight's moon,
         today's sky, and a mini birth chart inside a sandboxed iframe. Dated
         editorial is available as RSS:{' '}
-        <a href="/feeds/horoscopes.xml">daily horoscopes</a> and{' '}
-        <a href="/feeds/daily-sky.xml">the daily sky</a>. The site-wide guide
+        <a href="/feeds/horoscopes.xml" data-hook-event="rss_subscribe" data-hook-feed="horoscopes" data-hook-placement="developers">daily horoscopes</a> and{' '}
+        <a href="/feeds/daily-sky.xml" data-hook-event="rss_subscribe" data-hook-feed="daily_sky" data-hook-placement="developers">the daily sky</a>. The site-wide guide
         for agents is <a href="/llms.txt">llms.txt</a>.
       </p>
     </div>

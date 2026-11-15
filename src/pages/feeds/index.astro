@@ -5,21 +5,25 @@ import { SIGNS } from '../../lib/signs';
 const feeds = [
   {
     href: '/feeds/events.xml',
+    hook: 'events',
     title: 'Sky events',
     description: 'Full moons, eclipses, stations, sign changes, and rare alignments, with the exact dates ahead.',
   },
   {
     href: '/feeds/daily-sky.xml',
+    hook: 'daily_sky',
     title: 'Daily sky',
     description: 'Today’s Moon phase, planetary positions, retrogrades, and timed sky events in one feed.',
   },
   {
     href: '/feeds/horoscopes.xml',
+    hook: 'horoscopes',
     title: 'Daily horoscopes',
     description: 'A clear daily focus and one useful move for all twelve signs.',
   },
   {
     href: '/feeds/almanac.xml',
+    hook: 'almanac',
     title: 'The Almanac',
     description: 'New long-form essays about the current sky and how astrology reads it.',
   },
@@ -65,7 +69,7 @@ const jsonLd = [
 
     <div class="feeds__list">
       {feeds.map((feed) => (
-        <a class="tile feeds__item" href={feed.href} type="application/rss+xml">
+        <a class="tile feeds__item" href={feed.href} type="application/rss+xml" data-hook-event="rss_subscribe" data-hook-feed={feed.hook} data-hook-placement="feeds_page">
           <span>
             <strong>{feed.title}</strong>
             <p>{feed.description}</p>
@@ -82,7 +86,7 @@ const jsonLd = [
       </div>
       <div class="feeds__sign-grid">
         {signFeeds.map((feed) => (
-          <a class="tile feeds__sign" href={feed.href} type="application/rss+xml">
+          <a class="tile feeds__sign" href={feed.href} type="application/rss+xml" data-hook-event="rss_subscribe" data-hook-feed="horoscopes_sign" data-hook-placement="feeds_page">
             <span>{feed.title}</span>
             <span aria-hidden="true">RSS →</span>
           </a>
