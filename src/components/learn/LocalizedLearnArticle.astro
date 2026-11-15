@@ -1,0 +1,540 @@
+---
+/**
+ * Translated Learn article: a planet, a house or a placement. The body,
+ * title, description and FAQ come from
+ * src/content/learn-i18n/{locale}/{planets,houses,placements}/{slug}.mdx;
+ * this component supplies the page chrome in the same language. The English
+ * pages under src/pages/learn/ are the reference layouts. Only Spanish has
+ * chrome so far; a new locale adds its block to CHROME.
+ */
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Faq from '../Faq.astro';
+import SignIcon from '../SignIcon.astro';
+import PlanetGlyph from '../PlanetGlyph';
+import HouseWheel from '../HouseWheel.astro';
+import { SIGNS, signBySlug, signName, signForLongitude } from '../../lib/signs';
+import { bodyLongitude } from '../../lib/engine/full';
+import type { BodyName } from '../../lib/engine/types';
+import { dignityFor, hasClassicalDignities, type Dignity } from '../../lib/dignities';
+import ingresses from '../../data/ingresses.json';
+import { refineIngressWindows } from '../../lib/nasa-instants';
+import { formatShortDate } from '../../lib/i18n/dates';
+import { planetLabel } from '../../lib/i18n/astrology';
+import { EDITOR_AUTHOR } from '../../lib/editorial';
+
+type ArticleLocale = 'es';
+type Planet = 'Sun' | 'Moon' | 'Mercury' | 'Venus' | 'Mars' | 'Jupiter' | 'Saturn' | 'Uranus' | 'Neptune' | 'Pluto';
+interface Props { entry: CollectionEntry<'learnTopicsLocalized'> }
+
+const PLANET_ORDER: readonly Planet[] = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
+const PLANET_GLYPHS: Record<Planet, string> = {
+  Sun: '☉', Moon: '☽', Mercury: '☿', Venus: '♀', Mars: '♂',
+  Jupiter: '♃', Saturn: '♄', Uranus: '♅', Neptune: '♆', Pluto: '♇',
+};
+const HOUSE_SLUGS = [
+  'first-house', 'second-house', 'third-house', 'fourth-house',
+  'fifth-house', 'sixth-house', 'seventh-house', 'eighth-house',
+  'ninth-house', 'tenth-house', 'eleventh-house', 'twelfth-house',
+] as const;
+const OUTER: readonly Planet[] = ['Uranus', 'Neptune', 'Pluto'];
+
+interface Cta { href: string; label: string; blurb: string }
+interface Chrome {
+  learn: string;
+  planetsHub: string;
+  housesHub: string;
+  placementsHub: string;
+  /** The planet as a sentence subject: "el Sol", "Venus". */
+  planetWithArticle: (p: Planet) => string;
+  rules: (signs: string[]) => string;
+  classicRuler: (signs: string[]) => string;
+  inSignAsOf: (sign: string, date: string) => string;
+  planetFaq: (p: string) => string;
+  planetCtaHeading: (p: string) => string;
+  planetCtaBlurb: string;
+  chartButton: string;
+  throughSigns: (p: string) => string;
+  allPlanets: string;
+  morePlanets: string;
+  house: (n: number) => string;
+  houseOf: (n: number) => string;
+  angle: Partial<Record<number, string>>;
+  wheelTitle: (n: number) => string;
+  faq: string;
+  houseCtaHeading: (n: number) => string;
+  houseCtaBlurb: string;
+  allHouses: string;
+  moreHouses: string;
+  placement: (p: string, s: string) => string;
+  standing: string;
+  dignity: Record<Dignity, { label: string; gloss: string }>;
+  neutral: string;
+  modern: (p: string) => string;
+  rhythm: string;
+  moonRhythm: (s: string) => string;
+  inSignNow: (s: string) => string;
+  then: string;
+  next: string;
+  recentEras: (n: number) => string;
+  window: (from: string, to: string) => string;
+  placementCtaHeading: (p: string) => string;
+  placementCta: Record<Planet, Cta>;
+  related: string;
+  allPlacements: string;
+  moreInSign: (s: string) => string;
+}
+
+const ES_CHART: Omit<Cta, 'blurb'> = { href: '/es/birth-chart/', label: 'Calcula tu carta natal gratis' };
+const ES_OUTER = 'En un planeta generacional, la casa es la que hace el trabajo personal. Mira la tuya.';
+const ES_LIST = (items: string[]) => items.length > 1 ? `${items.slice(0, -1).join(', ')} y ${items[items.length - 1]}` : items[0] ?? '';
+
+const CHROME: Record<ArticleLocale, Chrome> = {
+  es: {
+    learn: 'Aprende',
+    planetsHub: 'Los planetas',
+    housesHub: 'Las casas',
+    placementsHub: 'Posiciones',
+    planetWithArticle: (p) => p === 'Sun' ? 'el Sol' : p === 'Moon' ? 'la Luna' : planetLabel('es', p),
+    rules: (s) => `Rige ${ES_LIST(s)}`,
+    classicRuler: (s) => `regente tradicional de ${ES_LIST(s)}`,
+    inSignAsOf: (s, d) => `en ${s} al ${d}`,
+    planetFaq: (p) => `${p}: preguntas y respuestas`,
+    planetCtaHeading: (p) => `¿Dónde está ${p} en tu carta?`,
+    planetCtaBlurb: 'Signo, casa y aspectos, calculados a partir de tu momento de nacimiento, en tu propio dispositivo.',
+    chartButton: ES_CHART.label,
+    throughSigns: (p) => `${p} por los signos`,
+    allPlanets: 'Todos los planetas',
+    morePlanets: 'Más planetas',
+    house: (n) => `La casa ${n}`,
+    houseOf: (n) => `Casa ${n} de 12`,
+    angle: { 1: 'ángulo del horizonte: ascendente', 7: 'ángulo del horizonte: descendente', 10: 'ángulo asociado: medio cielo (MC)' },
+    wheelTitle: (n) => `Una rueda de carta natal con la casa ${n} resaltada y el ascendente a la izquierda.`,
+    faq: 'Preguntas y respuestas',
+    houseCtaHeading: (n) => `¿Qué cae en tu casa ${n}?`,
+    houseCtaBlurb: 'Las casas salen de tu hora y lugar de nacimiento. La calculadora de la carta calcula las doce y todos los planetas que hay en ellas.',
+    allHouses: 'Todas las casas',
+    moreHouses: 'Más casas',
+    placement: (p, s) => `${p} en ${s}`,
+    standing: 'Posición clásica',
+    dignity: {
+      domicile: { label: 'Domicilio', gloss: 'el planeta en su propio signo, jugando de local' },
+      exaltation: { label: 'Exaltación', gloss: 'el huésped de honor de la tradición, en su mejor forma' },
+      detriment: { label: 'Exilio', gloss: 'el planeta en el signo opuesto a su casa, a contracorriente' },
+      fall: { label: 'Caída', gloss: 'la posición cuesta arriba de la tradición: una fuerza ganada, no regalada' },
+    },
+    neutral: 'neutral, sin una dignidad especial aquí',
+    modern: (p) => `ninguna: ${p} es posterior al sistema clásico de dignidades`,
+    rhythm: 'Ritmo',
+    moonRhythm: (s) => `la Luna pasa unos dos días y medio en ${s} cada mes`,
+    inSignNow: (s) => `En ${s} ahora`,
+    then: 'Después',
+    next: 'Próximamente',
+    recentEras: (n) => n > 1 ? 'Épocas más recientes' : 'Época más reciente',
+    window: (from, to) => `del ${from} al ${to}`,
+    placementCtaHeading: (p) => `¿Es tu ${p}?`,
+    placementCta: {
+      Sun: { ...ES_CHART, blurb: 'Tu Sol es una línea de la carta. Mira las casas y los aspectos que lo hacen tuyo.' },
+      Moon: { href: '/es/moon-sign/', label: 'Encuentra tu signo lunar', blurb: '¿No sabes si esta es tu Luna? La calculadora la lee a partir de tu fecha de nacimiento y te avisa con claridad cuando el día es ambiguo.' },
+      Mercury: { href: '/es/mercury-retrograde/', label: 'Mira el calendario de retrógrados', blurb: 'Las temporadas de revisión de Mercurio, calculadas a la hora, hasta 2030.' },
+      Venus: { href: '/es/compatibility/', label: 'Compara dos cartas', blurb: 'Venus pesa más cuando se comparan dos cartas. Mira cómo la tuya se encuentra con otra.' },
+      Mars: { href: '/es/compatibility/', label: 'Compara dos cartas', blurb: 'Marte pesa más cuando se comparan dos cartas. Mira cómo el tuyo se encuentra con otra.' },
+      Jupiter: { ...ES_CHART, blurb: 'La casa donde está Júpiter dice hacia dónde apunta el apetito. Para eso hace falta tu hora de nacimiento.' },
+      Saturn: { href: '/es/saturn-return/', label: 'Encuentra tu retorno de Saturno', blurb: 'Las fechas del retorno en las que madura esta posición, calculadas con exactitud.' },
+      Uranus: { ...ES_CHART, blurb: ES_OUTER },
+      Neptune: { ...ES_CHART, blurb: ES_OUTER },
+      Pluto: { ...ES_CHART, blurb: ES_OUTER },
+    },
+    related: 'Posiciones relacionadas',
+    allPlacements: 'Todas las posiciones',
+    moreInSign: (s) => `Más en ${s}`,
+  },
+};
+
+const { entry } = Astro.props;
+const data = entry.data;
+const locale = data.locale as ArticleLocale;
+const c = CHROME[locale];
+const prefix = `/${locale}`;
+const fileSlug = entry.id.split('/').pop()!;
+const section = data.kind === 'planet' ? 'planets' : data.kind === 'house' ? 'houses' : 'placements';
+const pagePath = `${prefix}/learn/${section}/${fileSlug}/`;
+const pageUrl = `https://zodiacs.org${pagePath}`;
+const inLanguage = locale;
+const { Content } = await render(entry);
+const buildNow = new Date();
+const fmt = (d: Date | string) => formatShortDate(locale, d);
+const P = (p: Planet) => planetLabel(locale, p);
+
+// ── Planet ────────────────────────────────────────────────────────────
+let heading = '';
+let hubLabel = '';
+let faqHeading = c.faq;
+let image: string | undefined;
+let imageAlt: string | undefined;
+
+type Win = { planet: string; sign: string; from: string; to: string };
+
+const planet = data.kind === 'planet' || data.kind === 'placement' ? (data.planet as Planet) : null;
+const planetName = planet ? P(planet) : '';
+const planetSubject = planet ? c.planetWithArticle(planet) : '';
+
+let planetFacts: string[] = [];
+let prevPlanet: Planet | null = null;
+let nextPlanet: Planet | null = null;
+let planetHue: string | undefined;
+if (data.kind === 'planet' && planet) {
+  heading = planetSubject.charAt(0).toUpperCase() + planetSubject.slice(1);
+  hubLabel = c.planetsHub;
+  faqHeading = c.planetFaq(heading);
+  const rules = SIGNS.filter((s) => s.ruler === planet);
+  const classicRules = SIGNS.filter((s) => s.classicRuler === planet);
+  planetHue = rules[0]?.hue ?? classicRules[0]?.hue;
+  // Build-time position; the Moon moves too fast for a static stamp.
+  const current = planet === 'Moon' ? null : signForLongitude(bodyLongitude(planet as BodyName, buildNow));
+  if (rules.length) planetFacts.push(c.rules(rules.map((s) => signName(s, locale))));
+  if (classicRules.length) planetFacts.push(c.classicRuler(classicRules.map((s) => signName(s, locale))));
+  if (current) planetFacts.push(c.inSignAsOf(signName(current, locale), fmt(buildNow)));
+  const idx = PLANET_ORDER.indexOf(planet);
+  prevPlanet = idx > 0 ? PLANET_ORDER[idx - 1] : null;
+  nextPlanet = idx < PLANET_ORDER.length - 1 ? PLANET_ORDER[idx + 1] : null;
+}
+
+// ── House ─────────────────────────────────────────────────────────────
+const n = data.kind === 'house' ? data.house : 0;
+// The sequential palette keeps the wheel visually indexed; it is not a
+// claim that the nth sign rules the nth house.
+const houseHue = n ? SIGNS[n - 1].hue : '';
+if (data.kind === 'house') {
+  heading = c.house(n);
+  hubLabel = c.housesHub;
+  if (fileSlug !== HOUSE_SLUGS[n - 1]) throw new Error(`House file ${entry.id} declares house ${n}`);
+}
+
+// ── Placement ─────────────────────────────────────────────────────────
+const sign = data.kind === 'placement' ? signBySlug(data.sign) : null;
+const signLabel = sign ? signName(sign, locale) : '';
+let dignity: Dignity | null = null;
+let current: Win | undefined;
+let upcoming: Win[] = [];
+let recentEras: Win[] = [];
+let others: Planet[] = [];
+let prevSign = SIGNS[0];
+let nextSign = SIGNS[0];
+const pl = planet?.toLowerCase() ?? '';
+if (data.kind === 'placement' && planet && sign) {
+  if (fileSlug !== `${pl}-in-${sign.slug}`) throw new Error(`Placement file ${entry.id} declares ${planet}/${sign.slug}`);
+  heading = c.placement(planetName, signLabel);
+  hubLabel = c.placementsHub;
+  image = `/assets/og/v2/placements/${pl}.png`;
+  imageAlt = `${heading}, Zodiacs.org`;
+  dignity = dignityFor(planet, sign.slug);
+  // Window edges print NASA JPL Horizons' instants (src/lib/nasa-instants.ts).
+  const wins = refineIngressWindows(ingresses.windows as Win[]).filter((w) => w.planet === planet && w.sign === sign.slug);
+  current = wins.find((w) => new Date(w.from) <= buildNow && new Date(w.to) >= buildNow);
+  upcoming = wins.filter((w) => new Date(w.from) > buildNow).slice(0, 3);
+  const past = wins.filter((w) => new Date(w.to) < buildNow);
+  recentEras = OUTER.includes(planet) && !current ? past.slice(-3) : [];
+  others = PLANET_ORDER.filter((p) => p !== planet);
+  const signIdx = SIGNS.findIndex((s) => s.slug === sign.slug);
+  prevSign = SIGNS[(signIdx + 11) % 12];
+  nextSign = SIGNS[(signIdx + 1) % 12];
+}
+const windowLabel = (w: Win) => c.window(fmt(w.from), fmt(w.to));
+const cta = planet ? c.placementCta[planet] : null;
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: data.title,
+    description: data.description,
+    url: pageUrl,
+    datePublished: data.published.toISOString(),
+    dateModified: data.updated.toISOString(),
+    author: EDITOR_AUTHOR,
+    publisher: { '@id': 'https://zodiacs.org/#org' },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+    inLanguage,
+    ...(image ? { image: `https://zodiacs.org${image}` } : {}),
+    about: { '@type': 'Thing', name: heading },
+    citation: data.sources.map((source) => source.href
+      ? { '@type': 'CreativeWork', name: source.label, url: source.href }
+      : source.label),
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: `https://zodiacs.org${prefix}/` },
+      { '@type': 'ListItem', position: 2, name: c.learn, item: `https://zodiacs.org${prefix}/learn/` },
+      { '@type': 'ListItem', position: 3, name: hubLabel, item: `https://zodiacs.org${prefix}/learn/${section}/` },
+      { '@type': 'ListItem', position: 4, name: heading, item: pageUrl },
+    ],
+  },
+  {
+    '@type': 'FAQPage',
+    inLanguage,
+    mainEntity: data.faq.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  },
+];
+---
+<Base
+  title={data.title}
+  description={data.description}
+  path={pagePath}
+  locale={locale}
+  image={image}
+  imageAlt={imageAlt}
+  type="article"
+  jsonLd={jsonLd}
+  sources={data.sources}
+>
+  <article class="container container--narrow learn-detail" style={sign ? `--sign:${sign.hue}` : undefined}>
+    {data.kind === 'planet' && planet && (
+      <header class="learn-detail__hero reveal">
+        <a class="crumb" href={`${prefix}/learn/planets/`}><span class="crumb__arrow" aria-hidden="true">←</span>{hubLabel}</a>
+        <PlanetGlyph body={planet} size={34} disc hue={planetHue} class="learn-hero-glyph" />
+        <h1 id={fileSlug} class="display">{heading}</h1>
+        <p class="learn-detail__role">{data.role}</p>
+        <p class="learn-detail__facts mono">{planetFacts.join(' · ')}</p>
+      </header>
+    )}
+
+    {data.kind === 'house' && (
+      <header class="learn-detail__hero learn-detail__hero--figured reveal">
+        <div class="learn-detail__heroText">
+          <a class="crumb" href={`${prefix}/learn/houses/`}><span class="crumb__arrow" aria-hidden="true">←</span>{hubLabel}</a>
+          <span class="learn-hero-glyph house-badge" style={`--sign:${houseHue}`} aria-hidden="true">{n}</span>
+          <h1 id={fileSlug} class="display">{heading}</h1>
+          <p class="learn-detail__role">{data.theme}</p>
+          <p class="learn-detail__facts mono">{[c.houseOf(n), c.angle[n]].filter(Boolean).join(' · ')}</p>
+        </div>
+        <HouseWheel house={n} hue={houseHue} size={232} class="learn-detail__figure" title={c.wheelTitle(n)} />
+      </header>
+    )}
+
+    {data.kind === 'placement' && planet && sign && (
+      <header class="learn-detail__hero reveal">
+        <a class="crumb" href={`${prefix}/learn/placements/`}><span class="crumb__arrow" aria-hidden="true">←</span>{hubLabel}</a>
+        <div class="plc-lockup">
+          <span class="plc-glyph mono">{PLANET_GLYPHS[planet]}</span>
+          <SignIcon sign={sign.slug} size={128} class="plc-disc" />
+          <h1 id={fileSlug} class="display">{heading}</h1>
+        </div>
+        <dl class="plc-panel mono">
+          <div class="plc-panel__row">
+            <dt>{c.standing}</dt>
+            {dignity ? (
+              <dd><strong>{c.dignity[dignity].label}</strong>, {c.dignity[dignity].gloss}</dd>
+            ) : hasClassicalDignities(planet) ? (
+              <dd>{c.neutral}</dd>
+            ) : (
+              <dd>{c.modern(planetName)}</dd>
+            )}
+          </div>
+          {planet === 'Moon' ? (
+            <div class="plc-panel__row">
+              <dt>{c.rhythm}</dt>
+              <dd>{c.moonRhythm(signLabel)}</dd>
+            </div>
+          ) : (
+            <>
+              {current && (
+                <div class="plc-panel__row">
+                  <dt>{c.inSignNow(signLabel)}</dt>
+                  <dd>{windowLabel(current)}</dd>
+                </div>
+              )}
+              {upcoming.length > 0 && (
+                <div class="plc-panel__row">
+                  <dt>{current ? c.then : c.next}</dt>
+                  <dd>{upcoming.map(windowLabel).join(' · ')}</dd>
+                </div>
+              )}
+              {recentEras.length > 0 && (
+                <div class="plc-panel__row">
+                  <dt>{c.recentEras(recentEras.length)}</dt>
+                  <dd>{recentEras.map(windowLabel).join(' · ')}</dd>
+                </div>
+              )}
+            </>
+          )}
+        </dl>
+      </header>
+    )}
+
+    <div class="prose reveal">
+      <Content />
+    </div>
+
+    <section class="reveal">
+      <Faq items={data.faq} heading={faqHeading} />
+    </section>
+
+    {data.kind === 'planet' && (
+      <div class="learn-detail__cta shell tinted reveal">
+        <div class="core tinted learn-detail__cta-core">
+          <strong>{c.planetCtaHeading(planetSubject)}</strong>
+          <p>{c.planetCtaBlurb}</p>
+          <a class="btn btn--primary" href={`${prefix}/birth-chart/`}><span>{c.chartButton}</span><span class="orb">↗</span></a>
+        </div>
+      </div>
+    )}
+    {data.kind === 'house' && (
+      <div class="learn-detail__cta shell tinted reveal">
+        <div class="core tinted learn-detail__cta-core">
+          <strong>{c.houseCtaHeading(n)}</strong>
+          <p>{c.houseCtaBlurb}</p>
+          <a class="btn btn--primary" href={`${prefix}/birth-chart/`}><span>{c.chartButton}</span><span class="orb">↗</span></a>
+        </div>
+      </div>
+    )}
+    {data.kind === 'placement' && cta && (
+      <div class="learn-detail__cta shell tinted reveal">
+        <div class="core tinted learn-detail__cta-core">
+          <strong>{c.placementCtaHeading(planetName)}</strong>
+          <p>{cta.blurb}</p>
+          <a class="btn btn--primary" href={cta.href}><span>{cta.label}</span><span class="orb">↗</span></a>
+        </div>
+      </div>
+    )}
+
+    {data.kind === 'planet' && planet && (
+      <>
+        <nav class="plc-more reveal" aria-label={c.throughSigns(heading)}>
+          <div class="plc-more__col">
+            <span class="plc-more__head">{c.throughSigns(heading)}</span>
+            <div class="plc-more__chips">
+              {SIGNS.map((s) => (
+                <a class="plc-chip plc-chip--icon" href={`${prefix}/learn/placements/${pl}-in-${s.slug}/`} style={`--sign:${s.hue}`}>
+                  <SignIcon sign={s.slug} size={16} class="plc-chip__icon" /> {signName(s, locale)}
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
+        <nav class="learn-detail__nav reveal" aria-label={c.morePlanets}>
+          {prevPlanet ? <a href={`${prefix}/learn/planets/${prevPlanet.toLowerCase()}/`}>← {P(prevPlanet)}</a> : <span />}
+          <a href={`${prefix}/learn/planets/`}>{c.allPlanets}</a>
+          {nextPlanet ? <a href={`${prefix}/learn/planets/${nextPlanet.toLowerCase()}/`}>{P(nextPlanet)} →</a> : <span />}
+        </nav>
+      </>
+    )}
+
+    {data.kind === 'house' && (
+      <nav class="learn-detail__nav reveal" aria-label={c.moreHouses}>
+        {n > 1 ? <a href={`${prefix}/learn/houses/${HOUSE_SLUGS[n - 2]}/`}>← {c.house(n - 1)}</a> : <span />}
+        <a href={`${prefix}/learn/houses/`}>{c.allHouses}</a>
+        {n < 12 ? <a href={`${prefix}/learn/houses/${HOUSE_SLUGS[n]}/`}>{c.house(n + 1)} →</a> : <span />}
+      </nav>
+    )}
+
+    {data.kind === 'placement' && planet && sign && (
+      <nav class="plc-more reveal" aria-label={c.related}>
+        <div class="plc-more__col">
+          <span class="plc-more__head">{c.throughSigns(planetSubject.charAt(0).toUpperCase() + planetSubject.slice(1))}</span>
+          <div class="plc-more__chips">
+            <a class="plc-chip" href={`${prefix}/learn/placements/${pl}-in-${prevSign.slug}/`}>← {signName(prevSign, locale)}</a>
+            <a class="plc-chip" href={`${prefix}/learn/placements/`}>{c.allPlacements}</a>
+            <a class="plc-chip" href={`${prefix}/learn/placements/${pl}-in-${nextSign.slug}/`}>{signName(nextSign, locale)} →</a>
+          </div>
+        </div>
+        <div class="plc-more__col">
+          <span class="plc-more__head">{c.moreInSign(signLabel)}</span>
+          <div class="plc-more__chips">
+            {others.map((p) => (
+              <a class="plc-chip" href={`${prefix}/learn/placements/${p.toLowerCase()}-in-${sign.slug}/`}>{PLANET_GLYPHS[p]} {P(p)}</a>
+            ))}
+          </div>
+        </div>
+      </nav>
+    )}
+  </article>
+</Base>
+
+<style>
+  .learn-detail { display: grid; gap: clamp(28px, 5vw, 44px); padding-block: clamp(24px, 5vw, 56px) clamp(36px, 6vw, 72px); }
+  .learn-detail__hero { display: grid; gap: 12px; justify-items: start; }
+  .learn-detail__hero h1 {
+    margin: 4px 0 0;
+    font-size: clamp(2.2rem, 1.5rem + 3.6vw, 3.8rem);
+    line-height: 1;
+  }
+  .learn-detail__role { margin: 0; font-size: var(--text-lg); color: var(--muted); max-width: 52ch; text-wrap: pretty; }
+  .learn-detail__facts { margin: 2px 0 0; font-family: var(--font-sans); font-size: 14px; color: var(--faint); letter-spacing: 0; font-variant-numeric: tabular-nums; }
+
+  .learn-detail__hero--figured {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(20px, 4vw, 48px);
+  }
+  .learn-detail__heroText { display: grid; gap: 12px; justify-items: start; min-width: 0; }
+  .learn-detail__figure { justify-self: end; }
+  @media (max-width: 720px) {
+    .learn-detail__hero--figured { grid-template-columns: minmax(0, 1fr); }
+    .learn-detail__figure { justify-self: start; margin-top: 4px; }
+  }
+
+  .plc-lockup { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .plc-glyph { font-size: 34px; color: var(--muted); }
+  .plc-lockup :global(.plc-disc) { border-radius: 50%; }
+  .plc-lockup h1 { margin: 0; font-size: clamp(2.1rem, 1.4rem + 3.4vw, 3.6rem); line-height: 1.02; flex-basis: 100%; }
+  @media (min-width: 700px) { .plc-lockup h1 { flex-basis: auto; } }
+
+  .plc-panel { margin: 0; display: grid; width: 100%; max-width: 640px; }
+  .plc-panel__row {
+    display: grid;
+    gap: 2px 20px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--hair-1);
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+  }
+  .plc-panel__row:first-child { border-top: 1px solid var(--hair-1); }
+  @media (min-width: 560px) { .plc-panel__row { grid-template-columns: 170px 1fr; } }
+  .plc-panel__row dt { color: var(--faint); font-family: var(--font-sans); font-size: 12px; letter-spacing: 0; align-self: baseline; }
+  .plc-panel__row dd { margin: 0; color: var(--text-2); }
+  .plc-panel__row strong { color: var(--text); font-weight: 600; }
+
+  .learn-detail__cta-core { padding: clamp(22px, 4vw, 32px); display: grid; gap: 10px; justify-items: start; }
+  .learn-detail__cta-core strong { font-size: var(--text-lg); letter-spacing: -0.01em; }
+  .learn-detail__cta-core p { margin: 0; font-size: var(--text-sm); color: var(--text-2); max-width: 54ch; }
+
+  .learn-detail__nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding-top: 18px;
+    border-top: 1px solid var(--hair-1);
+    font-size: var(--text-sm);
+  }
+  .learn-detail__nav a { color: var(--text-2); text-decoration: none; }
+  .learn-detail__nav a:hover { color: var(--text); }
+
+  .plc-more {
+    display: grid;
+    gap: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--hair-1);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 700px) { .plc-more { grid-template-columns: auto 1fr; gap: 20px 48px; } }
+  .plc-more__col { display: grid; gap: 10px; align-content: start; }
+  .plc-more__head { font-weight: 600; font-size: var(--text-sm); color: var(--text); }
+  .plc-more__chips { display: flex; flex-wrap: wrap; gap: 4px 2px; }
+  .plc-chip {
+    padding: 4px 9px;
+    border-radius: var(--r-full);
+    font-size: 12.5px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+  }
+  .plc-chip:hover { color: var(--text); background: color-mix(in oklab, var(--sign, var(--accent)) 12%, transparent); }
+  .plc-chip--icon { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 5px; }
+  .plc-chip--icon:hover { background: color-mix(in oklab, var(--sign) 12%, transparent); }
+  .plc-chip :global(.plc-chip__icon) { border-radius: 50%; }
+</style>

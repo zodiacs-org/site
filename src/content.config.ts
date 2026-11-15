@@ -230,11 +230,11 @@ const learnLocalized = defineCollection({
 /**
  * Translated Learn articles for planets, houses and placements
  * (learn-i18n/{locale}/{planets,houses,placements}/{slug}.mdx). Each file
- * translates the English entry at the same path under `learn`. No route
- * reads this collection yet: the matching /{locale}/learn/ pages still show
- * the noindex fallback until a route is added, so entries here change
- * nothing on the live site. Kept apart from `learnLocalized` so the rising
- * routes keep their narrower type.
+ * translates the English entry at the same path under `learn`. Published
+ * Spanish entries render at src/pages/es/learn/{planets,houses,placements}/
+ * [slug].astro and must be listed in src/data/learn-translations.json, which
+ * drives hreflang, the sitemap and the fallback exclusions. Kept apart from
+ * `learnLocalized` so the rising routes keep their narrower type.
  */
 const localizedLearnBase = {
   locale: z.enum(['es', 'pt', 'fr', 'it']),
