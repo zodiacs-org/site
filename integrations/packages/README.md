@@ -97,9 +97,9 @@ keeps its bytes. Developer 0.3.38 is rebuilt from the Year Ahead Score's recalib
 
 Developer 0.3.45 is rebuilt from the save tool's source (a saved result's link carries a random id, not a digest of the result) with unchanged tools, and 0.3.44 keeps its bytes.
 
-Developer 0.3.46 is rebuilt from the draft of 13 November 2026 (ZOD-207): server instructions that say what is outside Zodiacs, which tool takes which request, to ask before using someone else's birth details, and that a named child under 13 gets no horoscope, with the same said in seven tool descriptions (four of them published ones, a change the owner approved on 13 November 2026); the reported version stays 0.6.7, tool names and input schemas are unchanged, and 0.3.45 and the Zodiacs 0.6.7 ZIP keep their bytes.
+Developer 0.3.46 is rebuilt from the draft of 13 November 2026 (ZOD-207): server instructions that say what is outside Zodiacs, which tool takes which request, to ask before using someone else's birth details, and that a named child under 13 gets no horoscope, with the same said in seven tool descriptions (four of them published ones, a change the owner approved on 13 November 2026); the reported version stays 0.6.7, tool names and input schemas are unchanged, and 0.3.45 and the Zodiacs 0.6.7 ZIP keep their bytes. Developer 0.3.47 is rebuilt from the Year Ahead Score and tarot year card copy without money, earnings or spending forecasts (ZOD-30) with unchanged tools, and 0.3.46 keeps its bytes. Developer 0.3.48 is rebuilt from the numerology copy without money, earnings or promotion forecasts (ZOD-30) with unchanged tools, and 0.3.47 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.7** and **Zodiacs Developer 0.3.46**;
+Current candidates are **Zodiacs 0.6.7** and **Zodiacs Developer 0.3.48**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

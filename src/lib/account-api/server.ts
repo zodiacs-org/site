@@ -55,6 +55,7 @@ const PROVIDER_DRAIN_BUDGET_MS = 5_000;
 const PROVIDER_REQUEST_TIMEOUT_MS = 2_000;
 const PURPOSES = new Set([
   'chart_sync',
+  'chart_emails',
   'weekly_digest',
   'daily_chart_email',
   'compatibility_invites',

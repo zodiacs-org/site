@@ -152,8 +152,9 @@ Preserve the approved top hero structure:
 2. Large rounded video frame using `/assets/hero/zodiacs-hero.mp4`.
 3. Poster fallback at `/assets/hero/zodiacs-hero-poster.jpg`.
 4. H1: "Explore the stars behind your story."
-5. Caption: "Free birth charts, moon signs, compatibility, and horoscopes —
-   accurate, private, and easy to understand."
+5. Caption: "Free birth charts, moon signs, compatibility, and horoscopes.
+   Precise sky positions, private by default, and readings in plain words."
+   Precision describes the calculated positions only, never the readings.
 6. Primary button to `/birth-chart/`.
 7. Secondary button to `/horoscopes/`.
 8. The sky ticker remains visible immediately after the hero.
