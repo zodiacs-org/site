@@ -39,9 +39,12 @@ import horoscopeProgram from '../data/horoscope-program.json';
 import registryResearchPublicationData from '../data/registry-research/publication.json';
 import registryResearchPause from '../data/registry-research/pause.json';
 import { eventsPublication } from '../lib/events/site-publication';
+import { EVENT_READINGS_2027_UPDATED, STYLE_GUIDE_READING_IDS } from '../lib/events/readings-2027';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
 import { isHiddenAlmanacSlug, isHiddenChildPage } from '../data/hidden-child-pages.mjs';
+import { isPastPageHidden } from '../lib/indexing/past-pages-hidden-list';
+import { WINDOW_READING_IDS, WINDOW_READINGS_UPDATED } from '../lib/events/window-readings';
 import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
@@ -404,6 +407,7 @@ const NASA_WINDOW_PLACEMENTS = [
 const EVENT_NASA_TIMES_LASTMOD = '2026-11-06';
 // "Behind this event" prints its instants to the minute, as the rest of each event page does.
 const EVENT_EVIDENCE_MINUTE_LASTMOD = '2026-11-13';
+const SOLAR_ECLIPSE_DEGREE_LASTMOD = '2026-11-14';
 const ACCURACY_AUDIT_REST_LASTMOD = '2026-11-07';
 const ACCURACY_AUDIT_REST_ROUTES = [
   '/', '/events/', '/moon-phase/', '/tools/',
@@ -426,6 +430,9 @@ const CONNECTOR_PAGE_ROUTES = [
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
+  // The moon and alignment pages of the coming twelve months carry fuller readings (ZOD-221, decision J).
+  ...eventsPublication.pages.filter((event) => WINDOW_READING_IDS.includes(event.id))
+    .map((event) => [event.path, WINDOW_READINGS_UPDATED] as const),
   ...[
     '/', '/birth-chart/', '/compatibility/', '/moon-sign/', '/rising-sign/',
     '/moon-phase/', '/saturn-return/', '/solar-return/', '/mercury-retrograde/', '/transits/', '/ask/',
@@ -701,6 +708,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/full-moon-calendar/2027/', FULL_MOON_CALENDAR_2027_UPDATED] as const,
   ['/eclipses/2027/', ECLIPSES_2027_UPDATED] as const,
   ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
+  // The Italian season pages' reading-confidence label, 13 November, last so this date wins.
+  ...SIGNS.map((sign) => [`/it/seasons/${sign.slug}/`, '2026-11-13'] as const),
   // Someone else's chart: the handoff note no longer says the URL fragment
   // carries their details. Dated the daily edition this change shipped with.
   ['/birth-chart/someone-else/', '2026-11-13'] as const,
@@ -863,8 +872,12 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...eventsPublication.pages.map((event) => ({
       loc: event.path,
       priority: 0.64,
+      // A page written to the reading style guide prints this day as "Updated" and as dateModified (ZOD-211).
       lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVENT_EVIDENCE_MINUTE_LASTMOD,
-        EVERGREEN_LASTMOD.get(event.path) ?? '']
+        EVERGREEN_LASTMOD.get(event.path) ?? '',
+        STYLE_GUIDE_READING_IDS.includes(event.id) ? EVENT_READINGS_2027_UPDATED : '',
+        // A solar eclipse page labels its degree as the Sun's, which is what eclipses.json keeps.
+        event.family === 'eclipse' && event.subtype === 'solar' ? SOLAR_ECLIPSE_DEGREE_LASTMOD : '']
         .reduce((latest, date) => (date > latest ? date : latest)),
     })),
     // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
@@ -1035,15 +1048,33 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-12');
     }
   }
+  // Every sitemap page within three clicks of home (ZOD-221): the tools hub
+  // links the sign seasons and the Almanac, and the translated homes link
+  // their language's sign seasons. Last, so these win.
+  for (const loc of ['/tools/', '/es/', '/fr/', '/it/', '/pt/']) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-11-13');
+  }
+  // The correction log names the withdrawn B. F. Skinner profile without
+  // linking it, since that address redirects back to the log (ZOD-221).
+  for (const url of urls) {
+    if (url.loc === '/corrections/') url.lastmod = laterDate(url.lastmod, '2026-11-13');
+  }
   // The methodology page gives the Moon's and the Sun's event times to the
   // precision the pages print, with the range of each figure.
   for (const url of urls) {
     if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-13');
   }
+  // The methodology page says the 2027 full moon and eclipse pages print the
+  // instant solved on NASA JPL Horizons (ZOD-211).
+  for (const url of urls) {
+    if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
+  }
   return [
     ...urls,
     ...localizedUrls,
-  ].filter((url) => !isHiddenChildPage(url.loc));
+  // A past moon, eclipse or event page on the hidden list leaves the sitemap (ZOD-221, decision J).
+  ].filter((url) => !isHiddenChildPage(url.loc) && !isPastPageHidden(url.loc));
 }
 
 /** A urlset of the given entries, each with its hreflang alternates, lastmod and priority. */
