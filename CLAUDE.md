@@ -136,7 +136,9 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   shell or the Astro/site halves will skew, which `check-dist` fails on).
   The committed state is always flag-OFF (`content="0"`, no entry): the CI
   drift gate regenerates with the flag unset. Never commit flag-on output.
-- `public/assets/og/*.png` ← `node scripts/build-og-cards.mjs` (Playwright)
+- `public/assets/og/*.png` are the frozen legacy gilt cards (see `og/v2/`
+  below). Their generator, `scripts/build-og-cards.mjs`, stays in the repo
+  and is not run
 - `public/assets/zodiac-icons/{48,128,400}/` ← `node scripts/build-icons.mjs`
   (sources in `public/assets/sdk/zodiac-icons/circle/` are SDK-public —
   keep byte-identical)
@@ -390,9 +392,10 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   scripts/build-natal-aspect-examples.mjs` (the natal planet-pair pages'
   evidence: synthetic UTC instants run through the birth chart calculation,
   two worked examples and all five feasible geometries per pair, hourly
-  birth-time spans; `--check` for drift, CI runs it). The pages themselves
-  are held behind `src/data/natal-aspects-publication.json` and
-  `PUBLIC_NATAL_ASPECTS_PREVIEW=1`; see `docs/natal-aspects/RELEASE.md`
+  birth-time spans; `--check` for drift, CI runs it). The pages are released
+  (`src/data/natal-aspects-publication.json`, reviewed 2026-10-25);
+  `PUBLIC_NATAL_ASPECTS_PREVIEW=1` matters only if that record is withheld
+  again; see `docs/natal-aspects/RELEASE.md`
 - `src/data/nasa-event-instants.json` ← `python3
   scripts/build-nasa-event-instants.py` (the planets' sign ingresses,
   stations and the monthly catalogs' exact aspects solved on NASA JPL
@@ -408,8 +411,8 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   whenever a monthly catalog, ingresses.json, sky.json or the horoscope
   program gains an event, and fetch the responses again past 2031-05)
 
-`public/sw.js` is a PWA worker — the owner approved superseding the old
-push-only rule (2026-07-15, WS4 merge decision). Strict invariants: HTML
+`public/sw.js` is a caching PWA worker (owner-approved 2026-07-15, WS4
+merge decision). Strict invariants: HTML
 navigations and wing pages are network-first (a live deploy always wins;
 cache is only the offline fallback); `/registry/**.json` identity data is
 NEVER served from cache — offline is an honest network failure, not an old
