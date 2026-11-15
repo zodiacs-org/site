@@ -139,7 +139,8 @@ describe('the Year Ahead Score switch on', () => {
 describe('getYearScore', () => {
   const clock = createLocalTimeModule();
   afterAll(() => clock.dispose());
-  // Dias, 9 November 2026: money, career, wellbeing and legal themes are allowed as the tradition reads them;
+  // Dias, 9 November 2026: career, wellbeing and legal themes are allowed as the tradition reads them;
+  // no money, earnings or promotion forecasts (ZOD-30, 13 November 2026);
   // price or trading calls, buy or sell signals, diagnoses, death predictions, legal outcomes and doom are not.
   const banned = /\b(?:buy|sell|selling|price targets?|stocks?|crypto\w*|bitcoin|tokens?|diagnos\w*|prognos\w*|death|die|dies|dying|doom\w*|disaster|ruin\w*|catastroph\w*)\b|\byou will (?:win|lose)\b|[–—]/iu;
 
