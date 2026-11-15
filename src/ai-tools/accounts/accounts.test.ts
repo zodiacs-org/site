@@ -147,10 +147,13 @@ describe('what can be saved', () => {
     expect(Object.keys(chart.data).sort()).toEqual(['famous', 'moon', 'placed', 'rising', 'sun', 'timeKnown', 'url']);
     expect(chart.data).toMatchObject({ sun: 'taurus', timeKnown: true, placed: true, famous: false, url: null });
     expect(chart.title).toBe('Birth chart');
-    expect(JSON.stringify(chart)).not.toMatch(/1990|08:30|40\.4|-3\.7|Ana|Madrid/u);
     // A chart links to the birth chart page with a random row id, never its birth details; a famous chart to the person's page.
     expect(chart.href).toMatch(/^\/birth-chart\/#saved=[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
-    expect(JSON.stringify([chart.href, chart.links])).not.toMatch(/1990|08:30|40\.4|-3\.7|Ana|Madrid|#c=/u);
+    // That random id can hold "1990" by chance, so the checks read everything but it.
+    const chartId = chart.href.slice('/birth-chart/#saved='.length);
+    const withoutChartId = (value: unknown) => JSON.stringify(value).replaceAll(chartId, '<id>');
+    expect(withoutChartId(chart)).not.toMatch(/1990|08:30|40\.4|-3\.7|Ana|Madrid/u);
+    expect(withoutChartId([chart.href, chart.links])).not.toMatch(/1990|08:30|40\.4|-3\.7|Ana|Madrid|#c=/u);
     const famous = await buildSavedRecord(saveInput.parse(cases[1]), { now });
     if ('failure' in famous) throw new Error(famous.failure);
     expect(famous.href).toBe('/people/frida-kahlo/');
