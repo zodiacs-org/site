@@ -717,6 +717,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // connector section and the MCP guides that count its tools (ZOD-58). The day of the daily edition it was
   // built with, last so this date wins.
   ...CONNECTOR_PAGE_ROUTES.map((loc) => [loc, CONNECTOR_PAGE_LASTMOD] as const),
+  // The AI developer page's sample question names a neutral city, from 16 November; after the connector pages so it wins.
+  ['/developers/ai/', '2026-11-16'] as const,
   // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
   // the daily edition it was built with, last so this date wins.
   ['/', '2026-11-14'] as const,
