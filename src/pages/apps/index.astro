@@ -86,6 +86,7 @@ const description = 'Explore Zodiacs birth charts, compatibility, occasion cards
         <article><div class="apps-connect__platform"><h3>Claude</h3><p>Directory listing in review</p></div><div><p>The directory listing is awaiting Anthropic’s review. If your Claude account supports custom connectors, you can connect the public server now.</p><details><summary>Connect through a custom connector</summary><ol><li>In Claude, open <strong>Customize</strong>, then <strong>Connectors</strong>.</li><li>Add a custom connector using this server address:<div class="apps-endpoint"><code id="apps-server-address">https://zodiacs.org/mcp</code><button type="button" data-copy-prompt="apps-server-address" aria-label="Copy Zodiacs server address">Copy</button></div></li><li>Enable Zodiacs in a conversation and try an example prompt above.</li></ol><p>Interactive card support depends on the assistant and version you use.</p></details></div></article>
         <article><div class="apps-connect__platform"><h3>Grok</h3><p>Template available</p></div><div><p>Zodiacs Astrologer is a ready-made template for Grok Bot. It reads your birth chart, transits and horoscope from Zodiacs’ live sky calculations, and links every reading to its page on zodiacs.org.</p><a class="textlink" href="https://x.ai/bot/e0DWoivlUkNRrhEcvBX8G" target="_blank" rel="noopener">Preview and add the template <span class="arr" aria-hidden="true">↗</span></a></div></article>
       </div>
+      <nav class="apps-guides" aria-label="Guides for each assistant"><p>A page for each assistant, with its steps and questions:</p><ul><li><a class="textlink" href="/apps/claude/">Zodiacs for Claude <span class="arr" aria-hidden="true">→</span></a></li><li><a class="textlink" href="/apps/chatgpt/">Zodiacs for ChatGPT <span class="arr" aria-hidden="true">→</span></a></li><li><a class="textlink" href="/apps/cursor/">Zodiacs for Cursor <span class="arr" aria-hidden="true">→</span></a></li></ul></nav>
       <div class="apps-privacy"><h3>A little context before you connect.</h3><p>Public sky questions and Sun-sign horoscopes need no birth details. Chart Studio calculates inside its panel and shares only selections you review. Other tools use the dates and optional details you give for the answer; those details pass through your assistant provider.</p><a class="textlink" href="/privacy/#ai-integrations">Read about privacy <span class="arr" aria-hidden="true">→</span></a></div>
       <aside class="apps-developers"><p>Building with Zodiacs?</p><a class="textlink" href="/developers/ai/">Developer plugin and connection documentation <span class="arr" aria-hidden="true">→</span></a></aside>
     </section>
@@ -171,6 +172,10 @@ const description = 'Explore Zodiacs birth charts, compatibility, occasion cards
   .apps-connect li { padding: 6px 0; }
   .apps-endpoint { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-top: 12px; padding: 10px 16px; background: var(--surface); border-radius: 9px; }
   .apps-endpoint code { font-family: var(--font-mono); font-size: .8125rem; overflow-wrap: anywhere; }
+  .apps-guides { padding-top: 32px; }
+  .apps-guides p { margin: 0 0 12px; color: var(--ink-2); font-size: .9375rem; }
+  .apps-guides ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 32px; }
+  .apps-guides a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: .9375rem; }
   .apps-privacy { max-width: 76ch; padding-block: 56px 38px; }
   .apps-privacy h3 { font-size: 1.75rem; }
   .apps-developers { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; border-top: 1px solid var(--hair-2); padding-top: 24px; font-size: .875rem; }
