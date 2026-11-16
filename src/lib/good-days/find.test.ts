@@ -4,7 +4,10 @@ import sky from '../../data/sky.json';
 import { siteVoidOfCourseWindows } from '../../data/void-of-course';
 import { moonPhase } from '@zodiacs/engine';
 import { GOAL_RULES, GOOD_DAYS_NOTE, GOOD_DAY_GOALS, isMedicalGoal } from './goals';
-import { GOOD_DAYS_FIRST, GOOD_DAYS_LAST, UNDER_13_SENTENCE, UNDER_18_PARTNERSHIP_SENTENCE, findGoodDays, goodDaysWindow, phaseBand, voidPeriods } from './find';
+import { moonAspects } from '@zodiacs/engine/techniques';
+import ingressTable from '../../data/aura-moon-ingresses.json';
+import eclipseTable from '../../data/eclipses.json';
+import { GOOD_DAYS_FIRST, GOOD_DAYS_LAST, UNDER_13_SENTENCE, UNDER_18_PARTNERSHIP_SENTENCE, findGoodDays, goodDaysWindow, moonSegmentsFactor, phaseBand, voidPeriods } from './find';
 import { scanTransitContacts, type TransitContact } from '../engine/transit-scan';
 import { UNTIMED_DROPPED_MESSAGE, pairUntimedContacts, personalFactors, preparePersonal, type BirthDetails, type PersonalDay } from './personal';
 
@@ -20,7 +23,7 @@ describe('the void-of-course Moon', { timeout: TIMEOUT }, () => {
   it('gives the site calendar\'s periods to the second (src/data/void-of-course.ts)', () => {
     const from = new Date('2027-01-01T00:00:00Z');
     const to = new Date('2027-04-01T00:00:00Z');
-    const ours = voidPeriods(from, to);
+    const ours = voidPeriods(from, to).periods;
     const site = siteVoidOfCourseWindows(from, to);
     expect(ours.length).toBe(site.length);
     ours.forEach((period, index) => {
@@ -39,8 +42,8 @@ describe('known answers', { timeout: TIMEOUT }, () => {
     expect(mercury).toHaveLength(1);
     // The committed sky data, which the retrogrades page prints: 2027-02-09T17:35Z to 2027-03-03T12:35Z.
     const committed = (sky.retrogrades as { planet: string; from: string; to: string }[]).find((row) => row.planet === 'Mercury' && row.from.startsWith('2027-02'))!;
-    // A day counts as retrograde from the noon on which Mercury is moving backward.
-    expect(mercury[0].from).toBe('2027-02-10');
+    // A retrograde period runs from the local day of the retrograde station to the local day of the direct station.
+    expect(mercury[0].from).toBe('2027-02-09');
     expect(mercury[0].to).toBe('2027-03-03');
     expect(committed.from.slice(0, 10)).toBe('2027-02-09');
     expect(committed.to.slice(0, 10)).toBe('2027-03-03');
@@ -50,13 +53,17 @@ describe('known answers', { timeout: TIMEOUT }, () => {
     for (const day of result.best) expect(day.date < '2027-02-09' || day.date > '2027-03-03').toBe(true);
   });
 
-  it('reads Venus retrograde, 3 October to 13 November 2026, against a wedding', async () => {
+  it('reads Venus retrograde, 3 October to 14 November 2026, against a wedding', async () => {
     const result = await findGoodDays({ goal: 'wedding', from: '2026-09-01', to: '2026-12-31', zone: 'UTC', today: TODAY }, clock);
     const venus = result.periods.find((period) => period.kind === 'venus-retrograde')!;
+    // The station days, as the committed sky data and /retrogrades/ give them: 2026-10-03T07:10Z and 2026-11-14T00:21Z.
+    const committed = (sky.retrogrades as { planet: string; from: string; to: string }[]).find((row) => row.planet === 'Venus' && row.from.startsWith('2026-10'))!;
+    expect(venus.from).toBe(committed.from.slice(0, 10));
+    expect(venus.to).toBe(committed.to.slice(0, 10));
     expect(venus.from).toBe('2026-10-03');
-    expect(venus.to).toBe('2026-11-13');
-    expect(venus.line).toContain('Venus is retrograde from 3 October 2026 to 13 November 2026.');
-    for (const day of result.best) expect(day.date < '2026-10-03' || day.date > '2026-11-13').toBe(true);
+    expect(venus.to).toBe('2026-11-14');
+    expect(venus.line).toContain('Venus is retrograde from 3 October 2026 to 14 November 2026.');
+    for (const day of result.best) expect(day.date < '2026-10-03' || day.date > '2026-11-14').toBe(true);
   });
 
   it('keeps the total solar eclipse of 2 August 2027 off the best days and names it to avoid', async () => {
@@ -64,7 +71,7 @@ describe('known answers', { timeout: TIMEOUT }, () => {
     const eclipseDay = result.avoid.find((day) => day.date === '2027-08-02');
     expect(eclipseDay?.reason).toBe('A total solar eclipse in Leo falls today: tradition keeps important beginnings away from eclipses.');
     for (const day of result.best) expect(daysApart(day.date, '2027-08-02')).toBeGreaterThan(1);
-    expect(result.periods.find((period) => period.kind === 'eclipse' && period.line.includes('2 August'))!.line).toBe('Total solar eclipse in Leo on 2 August 2027: tradition keeps the three days either side clear for beginnings.');
+    expect(result.periods.find((period) => period.kind === 'eclipse' && period.line.includes('2 August'))!.line).toBe('Total solar eclipse in Leo on 2 August 2027: tradition keeps the day itself and the day either side clear for beginnings.');
   });
 
   it('names the Moon\'s phase by its angle: dark, waxing, full and waning', () => {
@@ -81,6 +88,66 @@ describe('known answers', { timeout: TIMEOUT }, () => {
     expect(phaseBand(moonPhase(new Date(at)).angle)).toBe('full');
     expect(phaseBand(moonPhase(new Date(at - 3 * DAY)).angle)).toBe('waxing');
     expect(phaseBand(moonPhase(new Date(at + 3 * DAY)).angle)).toBe('waning');
+  });
+});
+
+describe('the electional rules', { timeout: TIMEOUT }, () => {
+  it('never praises the new Moon as a supportive contact', async () => {
+    // A new Moon that is not an eclipse, from the committed sky data: 2027-03-08 at 09:29 UTC.
+    const newMoon = (sky.moons as { type: string; at: string }[]).find((moon) => moon.type === 'new' && moon.at.startsWith('2027-03'))!;
+    const date = newMoon.at.slice(0, 10);
+    expect((eclipseTable.eclipses as { peak: string }[]).some((row) => row.peak.startsWith(date))).toBe(false);
+    // The engine has the Moon meeting the Sun that day, and the Sun is one of the launch's helpers.
+    expect(moonAspects(new Date(`${date}T00:00:00Z`), new Date(`${date}T23:59:59Z`)).some((row) => row.body === 'Sun' && row.aspect === 'conjunction')).toBe(true);
+    expect(GOAL_RULES.launch.helpers).toContain('Sun');
+    const result = await findGoodDays({ goal: 'launch', from: date, to: date, zone: 'UTC', count: 1, today: TODAY }, clock);
+    expect(result.best[0].date).toBe(date);
+    expect(result.best[0].factors.some((line) => /meets the Sun/u.test(line))).toBe(false);
+    expect(JSON.stringify(result)).not.toMatch(/meets the Sun/u);
+    expect(result.best[0].factors).toContain('The Moon is dark, around the new Moon: tradition waits for the first crescent before a beginning.');
+  });
+
+  it('reads a day the Moon changes sign in the waking hours by both signs, weighed by their hours', async () => {
+    // The Moon leaves Libra for Scorpio at 12:18 UTC on 24 March 2027 (src/data/aura-moon-ingresses.json).
+    const ingress = (ingressTable.ingresses as { sign: string; at: string }[]).find((row) => row.at.startsWith('2027-03-24'))!;
+    expect(ingress.sign).toBe('scorpio');
+    expect(ingress.at.slice(11, 16)).toBe('12:18');
+    const result = await findGoodDays({ goal: 'wedding', from: '2027-03-23', to: '2027-03-25', zone: 'UTC', count: 3, today: TODAY }, clock);
+    const day = result.best.find((row) => row.date === '2027-03-24')!;
+    const lines = day.factors.filter((line) => /until \d\d:\d\d, then in/u.test(line));
+    expect(lines).toEqual(['The Moon is in Libra, a sign tradition reads as tender and celebratory, until 12:18, then in Scorpio, a sign tradition sets aside for a wedding.']);
+    // No line says the Moon is in one sign all day.
+    expect(day.factors.some((line) => /^The Moon is in (?:Libra|Scorpio)[,.]/u.test(line) && !line.includes('until'))).toBe(false);
+
+    // The points: each sign's +8, -6 or 0, weighed by its hours of the twelve waking hours.
+    const at = (time: string) => new Date(`2027-03-24T${time}:00Z`);
+    const change = new Date(ingress.at);
+    const segments = [{ sign: 'libra', from: at('08:00'), to: change }, { sign: 'scorpio', from: change, to: at('20:00') }];
+    const hours = (from: Date, to: Date) => (to.getTime() - from.getTime()) / 3_600_000;
+    const factor = moonSegmentsFactor('wedding', segments, 'UTC', '2027-03-24', 'scorpio')!;
+    expect(factor.points).toBe(Math.round((8 * hours(at('08:00'), change) - 6 * hours(change, at('20:00'))) / 12));
+    expect(factor.points).toBe(-1);
+    expect(factor.text).toBe(lines[0]);
+    expect(factor.clause).toBe('the Moon in Libra until 12:18, then in Scorpio');
+    // One sign all day reads as before; two signs neither tradition rates give no line.
+    expect(moonSegmentsFactor('wedding', [segments[0]], 'UTC', '2027-03-24', 'libra')).toEqual({ points: 8, text: 'The Moon is in Libra, a sign tradition reads as tender and celebratory.', clause: 'the Moon in Libra' });
+    expect(moonSegmentsFactor('wedding', [{ ...segments[0], sign: 'gemini' }, { ...segments[1], sign: 'virgo' }], 'UTC', '2027-03-24', 'gemini')).toBeNull();
+    // A sign change before the rated sign: the word follows the sign it is about.
+    expect(moonSegmentsFactor('wedding', [{ ...segments[0], sign: 'gemini' }, { ...segments[1], sign: 'cancer' }], 'UTC', '2027-03-24', 'cancer')!.text).toBe('The Moon is in Gemini until 12:18, then in Cancer, a sign tradition reads as tender and celebratory.');
+  });
+
+  it('puts a sign change on the local day of the waking hours it falls in, far east and far west, the same each time', async () => {
+    // The Moon enters Gemini at 21:30 UTC on 13 March 2027: 11:30 on the 14th in Kiritimati (UTC+14), 10:30 on the 13th in Pago Pago (UTC-11).
+    const ingress = (ingressTable.ingresses as { sign: string; at: string }[]).find((row) => row.at.startsWith('2027-03-13'))!;
+    expect(ingress).toEqual({ sign: 'gemini', at: expect.stringMatching(/^2027-03-13T21:30/u) });
+    const input = { goal: 'wedding' as const, from: '2027-03-12', to: '2027-03-15', count: 4, today: TODAY };
+    const east = await findGoodDays({ ...input, zone: 'Pacific/Kiritimati' }, clock);
+    expect(JSON.stringify(await findGoodDays({ ...input, zone: 'Pacific/Kiritimati' }, clock))).toBe(JSON.stringify(east));
+    const west = await findGoodDays({ ...input, zone: 'Pacific/Pago_Pago' }, clock);
+    expect(JSON.stringify(await findGoodDays({ ...input, zone: 'Pacific/Pago_Pago' }, clock))).toBe(JSON.stringify(west));
+    const changes = (result: typeof east) => result.best.flatMap((day) => day.factors.filter((line) => /until \d\d:\d\d, then in Gemini/u.test(line)).map((line) => ({ date: day.date, line })));
+    expect(changes(east)).toEqual([{ date: '2027-03-14', line: 'The Moon is in Taurus, a sign tradition reads as tender and celebratory, until 11:30, then in Gemini.' }]);
+    expect(changes(west)).toEqual([{ date: '2027-03-13', line: 'The Moon is in Taurus, a sign tradition reads as tender and celebratory, until 10:30, then in Gemini.' }]);
   });
 });
 

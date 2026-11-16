@@ -42040,7 +42040,7 @@ function voidPeriods(from, to) {
     if (current.at.getTime() <= from.getTime() || current.at.getTime() > to.getTime()) continue;
     out.push({ from: last2 ?? previous.at, to: current.at, sign: previous.sign, nextSign: current.sign });
   }
-  return out;
+  return { periods: out, aspects: aspects2 };
 }
 var retroFlags = (at) => {
   const rows2 = positions(at);
@@ -42103,12 +42103,53 @@ function phaseFactor(goal, day2) {
   if (band === "waxing") return { points: -4, text: `The Moon is waxing (${lit}); tradition prefers a waning Moon ${rule.forWhat}.`, clause: `a waxing Moon (${lit})` };
   return null;
 }
-function moonSignFactor(goal, sign3) {
+function moonSegments(day2, periods) {
+  const wakeFrom = day2.wakeFrom.getTime();
+  const wakeTo = day2.wakeTo.getTime();
+  const current = periods.find((period) => period.to.getTime() > wakeFrom);
+  if (!current) return [{ sign: day2.moonSign, from: day2.wakeFrom, to: day2.wakeTo }];
+  const out = [];
+  let sign3 = current.sign;
+  let cursor = day2.wakeFrom;
+  for (const period of periods) {
+    const at = period.to.getTime();
+    if (at <= wakeFrom || at >= wakeTo) continue;
+    out.push({ sign: sign3, from: cursor, to: period.to });
+    sign3 = period.nextSign;
+    cursor = period.to;
+  }
+  out.push({ sign: sign3, from: cursor, to: day2.wakeTo });
+  return out.filter((segment) => segment.to.getTime() > segment.from.getTime());
+}
+var moonSignPoints = (goal, sign3) => GOAL_RULES[goal].moonGood.includes(sign3) ? 8 : GOAL_RULES[goal].moonPoor.includes(sign3) ? -6 : 0;
+function moonSignWhy(goal, sign3) {
   const rule = GOAL_RULES[goal];
+  if (rule.moonGood.includes(sign3)) return `, a sign ${rule.moonWhy}`;
+  if (rule.moonPoor.includes(sign3)) return `, a sign tradition sets aside ${rule.forWhat}`;
+  return "";
+}
+function moonSignFactor(goal, sign3) {
   const name = signName7(sign3);
-  if (rule.moonGood.includes(sign3)) return { points: 8, text: `The Moon is in ${name}, a sign ${rule.moonWhy}.`, clause: `the Moon in ${name}` };
-  if (rule.moonPoor.includes(sign3)) return { points: -6, text: `The Moon is in ${name}, a sign tradition sets aside ${rule.forWhat}.`, clause: `the Moon in ${name}` };
-  return null;
+  const points = moonSignPoints(goal, sign3);
+  if (!points) return null;
+  return { points, text: `The Moon is in ${name}${moonSignWhy(goal, sign3)}.`, clause: `the Moon in ${name}` };
+}
+function moonSegmentsFactor(goal, segments, zone10, date3, noonSign) {
+  if (segments.length < 2) return moonSignFactor(goal, noonSign);
+  if (segments.every((segment) => moonSignPoints(goal, segment.sign) === 0)) return null;
+  const hours = (segment) => (segment.to.getTime() - segment.from.getTime()) / HOUR7;
+  const total = segments.reduce((sum, segment) => sum + hours(segment), 0);
+  const points = Math.round(segments.reduce((sum, segment) => sum + moonSignPoints(goal, segment.sign) * hours(segment), 0) / total) || 0;
+  const until = (index) => index < segments.length - 1 ? ` until ${clockOn(segments[index].to, zone10, date3)}` : "";
+  const text2 = segments.map((segment, index) => {
+    const why2 = moonSignWhy(goal, segment.sign);
+    return `${signName7(segment.sign)}${why2}${why2 && until(index) ? "," : ""}${until(index)}`;
+  });
+  return {
+    points,
+    text: `The Moon is in ${text2.join(", then in ")}.`,
+    clause: `the Moon in ${segments.map((segment, index) => `${signName7(segment.sign)}${until(index)}`).join(", then in ")}`
+  };
 }
 function eclipseFactor(day2) {
   const within = ECLIPSES2.filter((row) => row.at >= day2.start.getTime() && row.at < day2.end.getTime());
@@ -42156,7 +42197,7 @@ function voidFactor(day2, periods, zone10) {
 function aspectFactors(goal, day2, aspects2, zone10) {
   const rule = GOAL_RULES[goal];
   const inDay = aspects2.filter((row) => row.at.getTime() >= day2.start.getTime() && row.at.getTime() < day2.end.getTime());
-  const good = inDay.filter((row) => HARMONIOUS.has(row.aspect) && rule.helpers.includes(row.body)).slice(0, 2);
+  const good = inDay.filter((row) => HARMONIOUS.has(row.aspect) && rule.helpers.includes(row.body) && !(row.body === "Sun" && row.aspect === "conjunction")).slice(0, 2);
   const hard = inDay.filter((row) => (row.body === "Mars" || row.body === "Saturn") && row.aspect !== "sextile" && row.aspect !== "trine").slice(0, 2);
   return [
     ...good.map((row) => {
@@ -42192,29 +42233,34 @@ function pick(sorted, count) {
   }
   return chosen;
 }
-function retrogradePeriods(goal, skies, from, to) {
+function retrogradePeriods(goal, skies) {
   const rule = GOAL_RULES[goal];
   const out = [];
   for (const planet2 of SIGNIFICATORS) {
     if (rule.retrograde[planet2] === void 0) continue;
     let runStart = null;
-    const flush = (last2) => {
+    let before2 = false;
+    const flush = (last2, after) => {
       if (!runStart) return;
-      const before2 = runStart === from ? " (it began before this window)" : "";
-      const after = last2 === to ? " (it carries on after this window)" : "";
       out.push({
         kind: `${planet2.toLowerCase()}-retrograde`,
         from: runStart,
         to: last2,
-        line: `${planet2} is retrograde from ${longDay2(runStart)}${before2} to ${longDay2(last2)}${after}. ${RETROGRADE_LINE[planet2]}`
+        line: `${planet2} is retrograde from ${longDay2(runStart)}${before2 ? " (it began before this window)" : ""} to ${longDay2(last2)}${after ? " (it carries on after this window)" : ""}. ${RETROGRADE_LINE[planet2]}`
       });
       runStart = null;
+      before2 = false;
     };
     skies.forEach((day2, index) => {
-      if (day2.retrograde[planet2] && runStart === null) runStart = day2.date;
-      if (!day2.retrograde[planet2] && runStart !== null) flush(skies[index - 1].date);
+      const station = day2.stations.find((row) => row.planet === planet2);
+      if (index === 0 && (station ? station.turns === "direct" : day2.retrograde[planet2])) {
+        runStart = day2.date;
+        before2 = true;
+      }
+      if (station?.turns === "retrograde" && runStart === null) runStart = day2.date;
+      if (station?.turns === "direct") flush(day2.date, false);
     });
-    flush(skies.at(-1).date);
+    flush(skies.at(-1).date, true);
   }
   return out;
 }
@@ -42235,9 +42281,13 @@ async function findGoodDays(input, clock2) {
   const skies = await daySkies(from, days, input.zone, clock2);
   const windowStart = skies[0].start;
   const windowEnd2 = skies.at(-1).end;
-  const periods = voidPeriods(new Date(windowStart.getTime() - DAY17), new Date(windowEnd2.getTime() + 3 * DAY17));
-  const aspects2 = moonAspects(windowStart, windowEnd2);
-  const personal2 = chart ? personalFactors(chart, skies.map((day2) => ({ date: day2.date, start: day2.start, end: day2.end, moonSign: day2.moonSign })), input.zone) : null;
+  const scanned = voidPeriods(new Date(windowStart.getTime() - DAY17), new Date(windowEnd2.getTime() + 3 * DAY17));
+  const periods = scanned.periods;
+  const aspects2 = scanned.aspects.filter((row) => row.at.getTime() >= windowStart.getTime() && row.at.getTime() < windowEnd2.getTime());
+  const segments = skies.map((day2) => moonSegments(day2, periods));
+  const length = (segment) => segment.to.getTime() - segment.from.getTime();
+  const moonSigns = skies.map((day2, index) => segments[index].length < 2 ? day2.moonSign : segments[index].reduce((longest, segment) => length(segment) > length(longest) ? segment : longest).sign);
+  const personal2 = chart ? personalFactors(chart, skies.map((day2, index) => ({ date: day2.date, start: day2.start, end: day2.end, moonSign: moonSigns[index] })), input.zone) : null;
   if (personal2?.dropped) messages.push(UNTIMED_DROPPED_MESSAGE);
   const rated = skies.map((day2, index) => {
     const voids = voidFactor(day2, periods, input.zone);
@@ -42245,7 +42295,7 @@ async function findGoodDays(input, clock2) {
       eclipseFactor(day2),
       ...retrogradeFactors(input.goal, day2),
       phaseFactor(input.goal, day2),
-      moonSignFactor(input.goal, day2.moonSign),
+      moonSegmentsFactor(input.goal, segments[index], input.zone, day2.date, day2.moonSign),
       voids.factor,
       ...aspectFactors(input.goal, day2, aspects2, input.zone),
       ...personal2 ? personal2.days[index] : []
@@ -42266,7 +42316,7 @@ async function findGoodDays(input, clock2) {
   const avoid = pick([...rated].filter((row) => row.avoid || row.score < 45).sort((a, b) => Number(b.avoid) - Number(a.avoid) || a.score - b.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), AVOID_COUNT).sort((a, b) => a.day.date.localeCompare(b.day.date)).map((row) => ({ date: row.day.date, label: dayLabel3(row.day.date), score: row.score, reason: oneLine(row.factors, false) }));
   const eclipsePeriods = ECLIPSES2.filter((row) => row.at >= windowStart.getTime() - 3 * DAY17 && row.at < windowEnd2.getTime() + 3 * DAY17).map((row) => {
     const date3 = localParts(new Date(row.at), input.zone).date;
-    return { kind: "eclipse", from: addDays3(date3, -3), to: addDays3(date3, 3), line: `${cap11(row.kind)} ${row.type} eclipse in ${signName7(row.sign)} on ${longDay2(date3)}: tradition keeps the three days either side clear for beginnings.` };
+    return { kind: "eclipse", from: addDays3(date3, -3), to: addDays3(date3, 3), line: `${cap11(row.kind)} ${row.type} eclipse in ${signName7(row.sign)} on ${longDay2(date3)}: tradition keeps the day itself and the day either side clear for beginnings.` };
   });
   if (best.length && best[0].score < 66) messages.push("No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.");
   if (best.length < count) messages.push("Every other day in the window falls on a day tradition would avoid.");
@@ -42280,7 +42330,7 @@ async function findGoodDays(input, clock2) {
     zone: input.zone,
     best,
     avoid,
-    periods: [...retrogradePeriods(input.goal, skies, from, to), ...eclipsePeriods].sort((a, b) => a.from.localeCompare(b.from)),
+    periods: [...retrogradePeriods(input.goal, skies), ...eclipsePeriods].sort((a, b) => a.from.localeCompare(b.from)),
     personal: chart ? { sun: chart.sun, timeKnown: !!input.birth?.time } : null,
     messages,
     care: rule.care,

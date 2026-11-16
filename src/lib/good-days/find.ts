@@ -4,7 +4,8 @@
  * best days ranked and the days to avoid named, each with one plain reason.
  *
  * What it reads, all from the site's own engine and tables:
- * - the Moon's phase and sign at local noon (@zodiacs/engine);
+ * - the Moon's phase at local noon, and its sign through the waking hours,
+ *   weighed by the hours it spends in each when it changes sign (@zodiacs/engine);
  * - void-of-course Moon periods, under the rule of the site's void-of-course
  *   calendar (src/data/void-of-course.ts): from the Moon's last exact major
  *   aspect to the Sun or a planet through Pluto in a sign until it enters the
@@ -210,12 +211,14 @@ const SIGNIFICATORS: readonly Significator[] = ['Mercury', 'Venus', 'Mars'];
 
 /** One void-of-course period: from the Moon's last exact aspect in a sign (or its entry, with none) to its next sign. */
 interface VoidPeriod { from: Date; to: Date; sign: string; nextSign: string }
+type MoonAspect = ReturnType<typeof moonAspects>[number];
 
 /**
  * The void-of-course periods whose ending ingress falls in (from, to], as src/data/void-of-course.ts gives them: the
- * same engine aspects and sign changes, under the same rule (the default modern bodies, Sun through Pluto).
+ * same engine aspects and sign changes, under the same rule (the default modern bodies, Sun through Pluto). The Moon
+ * aspects it scanned, from four days before `from` to `to`, come back with them, so the caller need not scan again.
  */
-export function voidPeriods(from: Date, to: Date): VoidPeriod[] {
+export function voidPeriods(from: Date, to: Date): { periods: VoidPeriod[]; aspects: readonly MoonAspect[] } {
   // The Moon spends at most about two and a half days in a sign, so four days back finds the sign it is in at `from`.
   const lead = new Date(from.getTime() - 4 * DAY);
   const ingresses = moonIngresses(lead, to);
@@ -233,7 +236,7 @@ export function voidPeriods(from: Date, to: Date): VoidPeriod[] {
     if (current.at.getTime() <= from.getTime() || current.at.getTime() > to.getTime()) continue;
     out.push({ from: last ?? previous.at, to: current.at, sign: previous.sign, nextSign: current.sign });
   }
-  return out;
+  return { periods: out, aspects };
 }
 
 interface DaySky {
@@ -313,12 +316,70 @@ function phaseFactor(goal: GoodDayGoal, day: DaySky): Factor | null {
   return null;
 }
 
-function moonSignFactor(goal: GoodDayGoal, sign: string): Factor | null {
+/** One stretch of the waking hours with the Moon in one sign. */
+export interface MoonSegment { sign: string; from: Date; to: Date }
+
+/**
+ * The Moon's signs across a day's waking hours, split at the sign changes (the ends of the void periods). A sign change
+ * exactly at either end of the waking hours leaves no segment of no length.
+ */
+function moonSegments(day: DaySky, periods: readonly VoidPeriod[]): MoonSegment[] {
+  const wakeFrom = day.wakeFrom.getTime();
+  const wakeTo = day.wakeTo.getTime();
+  // The periods come in the order of their ending sign changes.
+  const current = periods.find((period) => period.to.getTime() > wakeFrom);
+  if (!current) return [{ sign: day.moonSign, from: day.wakeFrom, to: day.wakeTo }];
+  const out: MoonSegment[] = [];
+  let sign = current.sign;
+  let cursor = day.wakeFrom;
+  for (const period of periods) {
+    const at = period.to.getTime();
+    if (at <= wakeFrom || at >= wakeTo) continue;
+    out.push({ sign, from: cursor, to: period.to });
+    sign = period.nextSign;
+    cursor = period.to;
+  }
+  out.push({ sign, from: cursor, to: day.wakeTo });
+  return out.filter((segment) => segment.to.getTime() > segment.from.getTime());
+}
+
+const moonSignPoints = (goal: GoodDayGoal, sign: string) => (GOAL_RULES[goal].moonGood.includes(sign) ? 8 : GOAL_RULES[goal].moonPoor.includes(sign) ? -6 : 0);
+/** The tradition's word on a sign, as a clause to follow its name, or nothing for a sign it reads neither way. */
+function moonSignWhy(goal: GoodDayGoal, sign: string): string {
   const rule = GOAL_RULES[goal];
+  if (rule.moonGood.includes(sign)) return `, a sign ${rule.moonWhy}`;
+  if (rule.moonPoor.includes(sign)) return `, a sign tradition sets aside ${rule.forWhat}`;
+  return '';
+}
+
+function moonSignFactor(goal: GoodDayGoal, sign: string): Factor | null {
   const name = signName(sign);
-  if (rule.moonGood.includes(sign)) return { points: 8, text: `The Moon is in ${name}, a sign ${rule.moonWhy}.`, clause: `the Moon in ${name}` };
-  if (rule.moonPoor.includes(sign)) return { points: -6, text: `The Moon is in ${name}, a sign tradition sets aside ${rule.forWhat}.`, clause: `the Moon in ${name}` };
-  return null;
+  const points = moonSignPoints(goal, sign);
+  if (!points) return null;
+  return { points, text: `The Moon is in ${name}${moonSignWhy(goal, sign)}.`, clause: `the Moon in ${name}` };
+}
+
+/**
+ * The Moon's sign through a day's waking hours. In one sign all day it reads by its sign at noon, as before; when it
+ * changes sign, each sign counts for the share of the waking hours it holds, and the line says when it changes.
+ */
+export function moonSegmentsFactor(goal: GoodDayGoal, segments: readonly MoonSegment[], zone: string, date: string, noonSign: string): Factor | null {
+  if (segments.length < 2) return moonSignFactor(goal, noonSign);
+  if (segments.every((segment) => moonSignPoints(goal, segment.sign) === 0)) return null;
+  const hours = (segment: MoonSegment) => (segment.to.getTime() - segment.from.getTime()) / HOUR;
+  const total = segments.reduce((sum, segment) => sum + hours(segment), 0);
+  const points = Math.round(segments.reduce((sum, segment) => sum + moonSignPoints(goal, segment.sign) * hours(segment), 0) / total) || 0;
+  const until = (index: number) => (index < segments.length - 1 ? ` until ${clockOn(segments[index].to, zone, date)}` : '');
+  // A sign before the change gets its word as an aside: "in Libra, a sign tradition reads as ..., until 12:30, then in Scorpio".
+  const text = segments.map((segment, index) => {
+    const why = moonSignWhy(goal, segment.sign);
+    return `${signName(segment.sign)}${why}${why && until(index) ? ',' : ''}${until(index)}`;
+  });
+  return {
+    points,
+    text: `The Moon is in ${text.join(', then in ')}.`,
+    clause: `the Moon in ${segments.map((segment, index) => `${signName(segment.sign)}${until(index)}`).join(', then in ')}`,
+  };
 }
 
 function eclipseFactor(day: DaySky): Factor | null {
@@ -373,7 +434,8 @@ function voidFactor(day: DaySky, periods: readonly VoidPeriod[], zone: string): 
 function aspectFactors(goal: GoodDayGoal, day: DaySky, aspects: readonly { at: Date; body: string; aspect: string }[], zone: string): Factor[] {
   const rule = GOAL_RULES[goal];
   const inDay = aspects.filter((row) => row.at.getTime() >= day.start.getTime() && row.at.getTime() < day.end.getTime());
-  const good = inDay.filter((row) => HARMONIOUS.has(row.aspect) && (rule.helpers as readonly string[]).includes(row.body)).slice(0, 2);
+  // The Moon meeting the Sun is the new Moon, which the dark-Moon band already reads: never a supportive contact.
+  const good = inDay.filter((row) => HARMONIOUS.has(row.aspect) && (rule.helpers as readonly string[]).includes(row.body) && !(row.body === 'Sun' && row.aspect === 'conjunction')).slice(0, 2);
   const hard = inDay.filter((row) => (row.body === 'Mars' || row.body === 'Saturn') && row.aspect !== 'sextile' && row.aspect !== 'trine').slice(0, 2);
   return [
     ...good.map((row) => {
@@ -416,27 +478,37 @@ function pick<T extends { date: string }>(sorted: readonly T[], count: number): 
   return chosen;
 }
 
-function retrogradePeriods(goal: GoodDayGoal, skies: readonly DaySky[], from: string, to: string): GoodDaysPeriod[] {
+/**
+ * Each retrograde period that touches the window, from the local day of the retrograde station to the local day of
+ * the direct station, as /retrogrades/ dates them.
+ */
+function retrogradePeriods(goal: GoodDayGoal, skies: readonly DaySky[]): GoodDaysPeriod[] {
   const rule = GOAL_RULES[goal];
   const out: GoodDaysPeriod[] = [];
   for (const planet of SIGNIFICATORS) {
     if (rule.retrograde[planet] === undefined) continue;
     let runStart: string | null = null;
-    const flush = (last: string) => {
+    let before = false;
+    const flush = (last: string, after: boolean) => {
       if (!runStart) return;
-      const before = runStart === from ? ' (it began before this window)' : '';
-      const after = last === to ? ' (it carries on after this window)' : '';
       out.push({
         kind: `${planet.toLowerCase()}-retrograde` as GoodDaysPeriod['kind'], from: runStart, to: last,
-        line: `${planet} is retrograde from ${longDay(runStart)}${before} to ${longDay(last)}${after}. ${RETROGRADE_LINE[planet]}`,
+        line: `${planet} is retrograde from ${longDay(runStart)}${before ? ' (it began before this window)' : ''} to ${longDay(last)}${after ? ' (it carries on after this window)' : ''}. ${RETROGRADE_LINE[planet]}`,
       });
       runStart = null;
+      before = false;
     };
     skies.forEach((day, index) => {
-      if (day.retrograde[planet] && runStart === null) runStart = day.date;
-      if (!day.retrograde[planet] && runStart !== null) flush(skies[index - 1].date);
+      const station = day.stations.find((row) => row.planet === planet);
+      // Retrograde as the window opens: it turns direct during the first day, or is retrograde all through it.
+      if (index === 0 && (station ? station.turns === 'direct' : day.retrograde[planet])) {
+        runStart = day.date;
+        before = true;
+      }
+      if (station?.turns === 'retrograde' && runStart === null) runStart = day.date;
+      if (station?.turns === 'direct') flush(day.date, false);
     });
-    flush(skies.at(-1)!.date);
+    flush(skies.at(-1)!.date, true);
   }
   return out;
 }
@@ -460,10 +532,16 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
   const skies = await daySkies(from, days, input.zone, clock);
   const windowStart = skies[0].start;
   const windowEnd = skies.at(-1)!.end;
-  // Void periods end at an ingress; scanning three days past the window keeps one that begins inside it.
-  const periods = voidPeriods(new Date(windowStart.getTime() - DAY), new Date(windowEnd.getTime() + 3 * DAY));
-  const aspects = moonAspects(windowStart, windowEnd);
-  const personal = chart ? personalFactors(chart, skies.map((day) => ({ date: day.date, start: day.start, end: day.end, moonSign: day.moonSign })), input.zone) : null;
+  // Void periods end at an ingress; scanning three days past the window keeps one that begins inside it. The same scan's
+  // Moon aspects serve the day's contacts.
+  const scanned = voidPeriods(new Date(windowStart.getTime() - DAY), new Date(windowEnd.getTime() + 3 * DAY));
+  const periods = scanned.periods;
+  const aspects = scanned.aspects.filter((row) => row.at.getTime() >= windowStart.getTime() && row.at.getTime() < windowEnd.getTime());
+  // The Moon's signs through each day's waking hours; a day it changes sign is read by the sign it holds longest.
+  const segments = skies.map((day) => moonSegments(day, periods));
+  const length = (segment: MoonSegment) => segment.to.getTime() - segment.from.getTime();
+  const moonSigns = skies.map((day, index) => (segments[index].length < 2 ? day.moonSign : segments[index].reduce((longest, segment) => (length(segment) > length(longest) ? segment : longest)).sign));
+  const personal = chart ? personalFactors(chart, skies.map((day, index) => ({ date: day.date, start: day.start, end: day.end, moonSign: moonSigns[index] })), input.zone) : null;
   if (personal?.dropped) messages.push(UNTIMED_DROPPED_MESSAGE);
 
   const rated = skies.map((day, index) => {
@@ -472,7 +550,7 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
       eclipseFactor(day),
       ...retrogradeFactors(input.goal, day),
       phaseFactor(input.goal, day),
-      moonSignFactor(input.goal, day.moonSign),
+      moonSegmentsFactor(input.goal, segments[index], input.zone, day.date, day.moonSign),
       voids.factor,
       ...aspectFactors(input.goal, day, aspects, input.zone),
       ...(personal ? personal.days[index] : []),
@@ -493,7 +571,7 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
 
   const eclipsePeriods: GoodDaysPeriod[] = ECLIPSES.filter((row) => row.at >= windowStart.getTime() - 3 * DAY && row.at < windowEnd.getTime() + 3 * DAY).map((row) => {
     const date = localParts(new Date(row.at), input.zone).date;
-    return { kind: 'eclipse', from: addDays(date, -3), to: addDays(date, 3), line: `${cap(row.kind)} ${row.type} eclipse in ${signName(row.sign)} on ${longDay(date)}: tradition keeps the three days either side clear for beginnings.` };
+    return { kind: 'eclipse', from: addDays(date, -3), to: addDays(date, 3), line: `${cap(row.kind)} ${row.type} eclipse in ${signName(row.sign)} on ${longDay(date)}: tradition keeps the day itself and the day either side clear for beginnings.` };
   });
   if (best.length && best[0].score < 66) messages.push('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
   if (best.length < count) messages.push('Every other day in the window falls on a day tradition would avoid.');
@@ -502,7 +580,7 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
   return {
     goal: input.goal, goalLabel: rule.label, from, to, days, zone: input.zone,
     best, avoid,
-    periods: [...retrogradePeriods(input.goal, skies, from, to), ...eclipsePeriods].sort((a, b) => a.from.localeCompare(b.from)),
+    periods: [...retrogradePeriods(input.goal, skies), ...eclipsePeriods].sort((a, b) => a.from.localeCompare(b.from)),
     personal: chart ? { sun: chart.sun, timeKnown: !!input.birth?.time } : null,
     messages, care: rule.care, note: GOOD_DAYS_NOTE,
   };
