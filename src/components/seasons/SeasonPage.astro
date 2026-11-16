@@ -21,6 +21,7 @@ import { seasonLengthDays } from '../../lib/seasons/clock';
 import { seasonWindowsFor, signSeasonFocus } from '../../lib/seasons/windows';
 import { SEASON_READING_CONFIDENCE, seasonAsk, seasonCopy, seasonUi, type SeasonLocale } from '../../lib/seasons/copy';
 import { seasonDate, seasonUtcStamp, seasonUtcTime } from '../../lib/seasons/dates';
+import { SKY_READING_CONFIDENCE_NOTE } from '../../lib/sky-reading-confidence-note';
 
 interface Props { slug: string; locale?: SeasonLocale }
 const { slug, locale = 'en' } = Astro.props;
@@ -170,6 +171,7 @@ const more = [
         );
       })}
     </ul>
+    {locale === 'en' && <p class="season-muted season-confidence-note" data-reading-confidence-note>{SKY_READING_CONFIDENCE_NOTE}</p>}
   </section>
 
   <section class="kwrap season-sec" style={`--sign:${sign.hue}`}>
@@ -234,6 +236,7 @@ const more = [
   .season-h2 { margin: 0 0 14px; font-family: var(--font-serif); font-weight: 500; }
   .season-head { max-width: 62ch; margin-bottom: 20px; }
   .season-head p, .season-muted { margin: 0; color: var(--muted); line-height: 1.6; }
+  .season-confidence-note { margin-top: 16px; font-size: var(--text-sm); }
   .season-prose p { margin: 0 0 14px; color: var(--text-2); font-size: var(--text-lg); line-height: 1.6; max-width: 62ch; }
   .season-asks {
     display: grid;

@@ -27,6 +27,7 @@ import EventSignNotes from './EventSignNotes.astro';
 import EventCountdown from './EventCountdown.astro';
 import EventSkyWatch from './EventSkyWatch.astro';
 import { EVENT_READING_CONFIDENCE, watchPlan } from '../../lib/events/watch';
+import { SKY_READING_CONFIDENCE_NOTE } from '../../lib/sky-reading-confidence-note';
 import { eventsCatalog } from '../../lib/events/catalog';
 import { publishedEventById } from '../../lib/events/site-publication';
 import {
@@ -283,8 +284,9 @@ const sources = [
           Next: <a href={guideNext.facts.path}>{guideNext.facts.title}</a>.
         </p>
         <p class="event-confidence" data-reading-confidence>
-          <strong>{EVENT_READING_CONFIDENCE}</strong>. This reading uses the sky
-          alone. Your own chart, with a birth time and place, makes a reading more specific.
+          <strong>{EVENT_READING_CONFIDENCE}</strong>.{' '}
+          <span data-reading-confidence-note>{SKY_READING_CONFIDENCE_NOTE}</span>{' '}
+          Your own chart, with a birth time and place, makes a reading more specific.
         </p>
       </section>
     )}
@@ -315,8 +317,9 @@ const sources = [
       <section class="event-section prose reveal" data-event-reading>
         {interpretation.body.map((paragraph) => <p>{paragraph}</p>)}
         <p class="event-confidence" data-reading-confidence>
-          <strong>{EVENT_READING_CONFIDENCE}</strong>. This reading uses the sky
-          alone{interpretation.signNotes ? ', and a Sun sign for the notes below' : ''}.
+          <strong>{EVENT_READING_CONFIDENCE}</strong>.{' '}
+          <span data-reading-confidence-note>{SKY_READING_CONFIDENCE_NOTE}</span>{' '}
+          {interpretation.signNotes && 'The notes below add only a Sun sign. '}
           Your own chart, with a birth time and place, makes a reading more specific.
         </p>
       </section>
