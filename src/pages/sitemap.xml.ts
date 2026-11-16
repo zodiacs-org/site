@@ -408,6 +408,9 @@ const EVENT_NASA_TIMES_LASTMOD = '2026-11-06';
 // "Behind this event" prints its instants to the minute, as the rest of each event page does.
 const EVENT_EVIDENCE_MINUTE_LASTMOD = '2026-11-13';
 const SOLAR_ECLIPSE_DEGREE_LASTMOD = '2026-11-14';
+// Every event page and English season page with a reading says what its "Reading confidence 40%" label
+// measures (src/lib/sky-reading-confidence-note.ts). The day of the daily edition it was built with.
+const SKY_READING_CONFIDENCE_NOTE_LASTMOD = '2026-11-16';
 const ACCURACY_AUDIT_REST_LASTMOD = '2026-11-07';
 const ACCURACY_AUDIT_REST_ROUTES = [
   '/', '/events/', '/moon-phase/', '/tools/',
@@ -867,7 +870,11 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ] : []),
     { loc: '/horoscopes/', priority: 0.8, lastmod: horoscopeProgram.anchorDate },
     { loc: '/seasons/', priority: 0.75, lastmod: SEASON_PAGES_LASTMOD },
-    ...SIGNS.map((sign) => ({ loc: `/seasons/${sign.slug}/`, priority: 0.7, lastmod: SEASON_SIGN_PAGES_LASTMOD })),
+    ...SIGNS.map((sign) => ({
+      loc: `/seasons/${sign.slug}/`,
+      priority: 0.7,
+      lastmod: laterDate(SEASON_SIGN_PAGES_LASTMOD, SKY_READING_CONFIDENCE_NOTE_LASTMOD),
+    })),
     // Spanish and Portuguese daily surfaces render the same edition from the
     // same facts; they date with the edition like /today/ does.
     ...(['es', 'pt'] as const).flatMap((locale) => [
@@ -880,7 +887,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       priority: 0.64,
       // A page written to the reading style guide prints this day as "Updated" and as dateModified (ZOD-211).
       lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVENT_EVIDENCE_MINUTE_LASTMOD,
-        EVERGREEN_LASTMOD.get(event.path) ?? '',
+        SKY_READING_CONFIDENCE_NOTE_LASTMOD, EVERGREEN_LASTMOD.get(event.path) ?? '',
         STYLE_GUIDE_READING_IDS.includes(event.id) ? EVENT_READINGS_2027_UPDATED : '',
         // A solar eclipse page labels its degree as the Sun's, which is what eclipses.json keeps.
         event.family === 'eclipse' && event.subtype === 'solar' ? SOLAR_ECLIPSE_DEGREE_LASTMOD : '']
