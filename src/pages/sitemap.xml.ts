@@ -482,7 +482,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...LEGACY_URLS.map((url) => [url.path, '2026-07-10'] as const),
   ['/thesis/', THESIS_LASTMOD],
   // Astrofolio, the Terminal market desk, and the Registry's twelve plain-language token records.
-  ['/astrofolio/', '2026-11-16'],
+  ['/astrofolio/', AUDIT_REMEDIATION_LASTMOD],
   ['/terminal/', AUDIT_REMEDIATION_LASTMOD],
   ['/registry/', AUDIT_REMEDIATION_LASTMOD],
   ...[

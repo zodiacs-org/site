@@ -42,7 +42,13 @@ events, split by `source`.
 Today only the Fomo door can send it. `/astrofolio/` loads the Guide
 assistant, so the build strips analytics from that page
 (`scripts/configure-legacy-analytics.mjs`), and its new link text cannot be
-counted there. Judge the Astrofolio change by the weekly request count above.
+counted there. Judge any Astrofolio change by the weekly request count above.
+
+The Astrofolio link text is not changed yet. The page's copy also lives in
+`src/app.jsx` and is pinned by `scripts/registry-consumer-contract.test.mjs`,
+both under the Phase 1 freeze, so renaming the first link to "How is this
+different from other memecoins?" needs the owner's one-time allowance for
+`src/app.jsx`, `public/assets/app.js` and that test.
 
 ## Limits
 
