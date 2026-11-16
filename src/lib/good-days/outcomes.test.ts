@@ -4,7 +4,7 @@ import { Readable } from 'node:stream';
 import { GOOD_DAY_GOALS } from './goals';
 import { GOOD_DAYS_FIRST, GOOD_DAYS_LAST } from './find';
 import { FOLLOW_UP_DAYS, OUTCOME_FIRST_DAY, OUTCOME_LAST_DAY, OUTCOME_RULES_VERSION, followUpDue, followUpLink, outcomeRecord, readFollowUpLink, scrubNote } from './outcomes';
-import { MEMORY_KEY, duePicks, finishPick, rememberPick } from './outcome-memory';
+import { MEMORY_KEY, REMINDER_KEEP_DAYS, duePicks, finishPick, prunePicks, rememberPick } from './outcome-memory';
 import { pickCalendar } from './calendar';
 import { OUTCOMES_RPC, handleOutcomeRequest, rpcArguments } from './outcome-api';
 
@@ -111,10 +111,45 @@ describe('the reminder kept on the device', () => {
     expect(duePicks(storage, '2027-05-30')).toEqual([]);
   });
 
+  it('removes a reminder once it is answered or dismissed, and drops the key when none is left', () => {
+    const storage = new MemoryStorage() as unknown as Storage;
+    const other = { ...PICK, day: '2027-04-21', score: 72 };
+    rememberPick(storage, PICK);
+    rememberPick(storage, other);
+    finishPick(storage, PICK);
+    expect(JSON.parse((storage as unknown as MemoryStorage).data.get(MEMORY_KEY)!)).toEqual([other]);
+    finishPick(storage, other);
+    expect((storage as unknown as MemoryStorage).data.has(MEMORY_KEY)).toBe(false);
+  });
+
+  it('removes a reminder an earlier build marked done once the cleanup runs', () => {
+    const storage = new MemoryStorage() as unknown as Storage;
+    const open = { ...PICK, day: '2027-04-21' };
+    (storage as unknown as MemoryStorage).data.set(MEMORY_KEY, JSON.stringify([{ ...PICK, done: true }, open]));
+    expect(prunePicks(storage, TODAY)).toEqual([open]);
+    expect(JSON.parse((storage as unknown as MemoryStorage).data.get(MEMORY_KEY)!)).toEqual([open]);
+    // Reading the due reminders runs the same cleanup.
+    (storage as unknown as MemoryStorage).data.set(MEMORY_KEY, JSON.stringify([{ ...PICK, done: true }]));
+    expect(duePicks(storage, TODAY)).toEqual([]);
+    expect((storage as unknown as MemoryStorage).data.has(MEMORY_KEY)).toBe(false);
+  });
+
+  it('removes a reminder whose day is more than 30 days past, answered or not', () => {
+    expect(REMINDER_KEEP_DAYS).toBe(30);
+    const storage = new MemoryStorage() as unknown as Storage;
+    rememberPick(storage, PICK);
+    // 2027-05-19 is exactly 30 days after 2027-04-19: still kept, and still asked.
+    expect(duePicks(storage, '2027-05-19')).toEqual([PICK]);
+    expect(prunePicks(storage, '2027-05-20')).toEqual([]);
+    expect((storage as unknown as MemoryStorage).data.has(MEMORY_KEY)).toBe(false);
+  });
+
   it('keeps no reminder, and throws nothing, where storage is refused', () => {
-    const refusing = { getItem: () => { throw new Error('denied'); }, setItem: () => { throw new Error('denied'); } } as unknown as Storage;
+    const refusing = { getItem: () => { throw new Error('denied'); }, setItem: () => { throw new Error('denied'); }, removeItem: () => { throw new Error('denied'); } } as unknown as Storage;
     expect(rememberPick(refusing, PICK)).toBe(false);
     expect(duePicks(refusing, TODAY)).toEqual([]);
+    expect(prunePicks(refusing, TODAY)).toEqual([]);
+    expect(() => finishPick(refusing, PICK)).not.toThrow();
     expect(rememberPick(undefined, PICK)).toBe(false);
   });
 });

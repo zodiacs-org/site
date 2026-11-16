@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { goodDaysLink, readGoodDaysLink } from '../../islands/GoodDayFinder';
+import { goodDaysLink, readGoodDaysLink, zoneChoices } from '../../islands/GoodDayFinder';
 
 /**
  * The good day finder takes an optional birth date. On the site it is used on the device for one search and kept
@@ -61,7 +61,7 @@ describe('the share link', () => {
     const island = code(SOURCES.island);
     const card = island.slice(island.indexOf('<figure class="good-days-card"'), island.indexOf('</figure>'));
     expect(card).not.toMatch(/birth|personal/iu);
-    expect(island).toContain('void run({ ...shared, birth: null }, false);');
+    expect(island).toContain('void run({ ...shared, zone: deviceZone, birth: null }, false);');
   });
 });
 
@@ -86,5 +86,24 @@ describe('the outcome follow-up', () => {
     expect(memory).not.toMatch(/\bfetch\(|sendBeacon|console\.|birth/iu);
     // The finder island reaches storage only through it.
     expect(code(SOURCES.island)).not.toMatch(/localStorage|sessionStorage/u);
+  });
+});
+
+describe('the time zone picker', () => {
+  it('offers every zone the browser knows, sorted, with the device zone always among them', () => {
+    expect(zoneChoices('Asia/Bangkok', () => ['Europe/Madrid', 'America/New_York', 'Asia/Makassar'])).toEqual(['America/New_York', 'Asia/Bangkok', 'Asia/Makassar', 'Europe/Madrid']);
+    expect(zoneChoices('Asia/Makassar', () => ['Asia/Makassar', 'UTC'])).toEqual(['Asia/Makassar', 'UTC']);
+  });
+
+  it('offers the device zone alone where Intl.supportedValuesOf is missing or throws', () => {
+    expect(zoneChoices('Asia/Bangkok', () => undefined)).toEqual(['Asia/Bangkok']);
+    expect(zoneChoices('Asia/Bangkok', () => { throw new RangeError('unsupported'); })).toEqual(['Asia/Bangkok']);
+  });
+
+  it('runs every search, shared or typed, in a named zone and prints it under the results', () => {
+    const island = code(SOURCES.island);
+    expect(island).toContain('<label class="field__label" for="gd-zone">Time zone for the day</label>');
+    expect(island).toContain('zone: input.zone, today,');
+    expect(island).toContain('Days are counted in {result.zone}.');
   });
 });

@@ -192,6 +192,20 @@ describe('the electional rules', { timeout: TIMEOUT }, () => {
     expect(changes(east)).toEqual([{ date: '2027-03-14', line: 'The Moon is in Taurus until 11:30, then in Gemini: Taurus is a sign tradition reads as tender and celebratory.' }]);
     expect(changes(west)).toEqual([{ date: '2027-03-13', line: 'The Moon is in Taurus until 10:30, then in Gemini: Taurus is a sign tradition reads as tender and celebratory.' }]);
   });
+
+  it('gives a different list of days for the same goal and window in New York and in Bali, which is why the site lets the zone be chosen', async () => {
+    const input = { goal: 'wedding' as const, from: '2027-06-01', to: '2027-06-30', today: TODAY };
+    const newYork = await findGoodDays({ ...input, zone: 'America/New_York' }, clock);
+    const bali = await findGoodDays({ ...input, zone: 'Asia/Makassar' }, clock);
+    expect(newYork.zone).toBe('America/New_York');
+    expect(bali.zone).toBe('Asia/Makassar');
+    const best = (result: typeof bali) => result.best.map((day) => day.date);
+    expect(best(newYork)).not.toEqual(best(bali));
+    // The days to avoid move too: Mercury's retrograde station falls on 10 June in New York and on 11 June in Bali.
+    const station = (result: typeof bali) => result.avoid.filter((day) => day.reason.startsWith('Mercury stands still today')).map((day) => day.date);
+    expect(station(newYork)).toEqual(['2027-06-10']);
+    expect(station(bali)).toEqual(['2027-06-11']);
+  });
 });
 
 describe('the answer', { timeout: TIMEOUT }, () => {

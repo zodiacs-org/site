@@ -8,6 +8,11 @@
  * after the # (which browsers do not send to a server). Opening the link runs
  * the general reading for those dates; a birth date is never in it.
  *
+ * Time zone: the days are counted in the zone chosen under "Time zone for the
+ * day", the device's zone unless the person picks another (the event's zone,
+ * say a wedding abroad). Day boundaries, void-of-course times and waking hours
+ * all follow it.
+ *
  * Privacy: an optional birth date is used for the one search and kept only in
  * this component's memory. Nothing is written to the address bar, to storage
  * or to analytics, and nothing is sent anywhere. A birth date under 13 is
@@ -55,6 +60,16 @@ function browserZone(): string {
   try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch { return 'UTC'; }
 }
 
+/**
+ * The zones the picker offers: every zone the browser knows, sorted, with the device's own zone always among them.
+ * A browser without Intl.supportedValuesOf offers the device's zone alone.
+ */
+export function zoneChoices(deviceZone: string, list: (key: 'timeZone') => string[] | undefined = (key) => (Intl as unknown as { supportedValuesOf?: (key: string) => string[] }).supportedValuesOf?.(key)): string[] {
+  let known: string[] = [];
+  try { known = list('timeZone') ?? []; } catch { known = []; }
+  return [...new Set([deviceZone, ...known])].sort((a, b) => a.localeCompare(b));
+}
+
 /** The share link: the goal and the dates after the #, and nothing else. */
 export function goodDaysLink(origin: string, goal: GoodDayGoal, from: string, to: string): string {
   return `${origin}/good-days/#g=${goal}&f=${from}&t=${to}`;
@@ -74,8 +89,10 @@ export function readGoodDaysLink(hash: string): { goal: GoodDayGoal; from: strin
 
 /** outcomes: the "How did your day go?" follow-up (PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1); off, no pick buttons and no reminder. */
 export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean }) {
-  const [zone] = useState(browserZone);
-  const [today] = useState(() => localToday(browserZone()));
+  const [deviceZone] = useState(browserZone);
+  const [zone, setZone] = useState(deviceZone);
+  const [zones, setZones] = useState<string[]>(() => [deviceZone]);
+  const [today] = useState(() => localToday(deviceZone));
   const [goal, setGoal] = useState<GoodDayGoal>('launch');
   const [from, setFrom] = useState(today);
   const [to, setTo] = useState(addDays(today, 89));
@@ -91,7 +108,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
   const [due, setDue] = useState<PickedDay | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
-  async function run(input: { goal: GoodDayGoal; from: string; to: string; birth: string | null }, focus: boolean) {
+  async function run(input: { goal: GoodDayGoal; from: string; to: string; zone: string; birth: string | null }, focus: boolean) {
     setBusy(true);
     setReserved(true);
     setError(null);
@@ -99,7 +116,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
     await new Promise((resolve) => setTimeout(resolve, 30));
     try {
       const [{ findGoodDays }, { SITE_CLOCK }] = await loadFinder();
-      const found = await findGoodDays({ goal: input.goal, from: input.from, to: input.to, zone, today, birth: input.birth ? { date: input.birth } : null }, SITE_CLOCK);
+      const found = await findGoodDays({ goal: input.goal, from: input.from, to: input.to, zone: input.zone, today, birth: input.birth ? { date: input.birth } : null }, SITE_CLOCK);
       setResult(found);
       if (focus) requestAnimationFrame(() => resultRef.current?.focus({ preventScroll: false }));
     } catch (cause) {
@@ -109,6 +126,9 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
       setBusy(false);
     }
   }
+
+  // The full list fills after first paint; the select's height is the same with one zone or four hundred.
+  useEffect(() => { setZones(zoneChoices(deviceZone)); }, []);
 
   // A reminder the person asked this device to keep: shown as a fixed toast, so it moves nothing on the page.
   useEffect(() => {
@@ -137,12 +157,12 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
     setGoal(shared.goal);
     setFrom(shared.from);
     setTo(shared.to);
-    void run({ ...shared, birth: null }, false);
+    void run({ ...shared, zone: deviceZone, birth: null }, false);
   }, []);
 
   function submit(event: Event) {
     event.preventDefault();
-    void run({ goal, from, to, birth: personal && birthDate ? birthDate : null }, true);
+    void run({ goal, from, to, zone, birth: personal && birthDate ? birthDate : null }, true);
   }
 
   function clearBirth() {
@@ -190,6 +210,13 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
               </div>
               <p class="field__help">Up to twelve months, from 2026 to 2030. A whole year takes a few seconds to work out.</p>
             </div>
+            <div class="field good-days__zone-field">
+              <label class="field__label" for="gd-zone">Time zone for the day</label>
+              <select id="gd-zone" class="field__input" value={zone} onChange={(event) => setZone((event.target as HTMLSelectElement).value)}>
+                {zones.map((name) => <option value={name} key={name}>{name}</option>)}
+              </select>
+              <p class="field__help">Where the day happens. Days, void-of-course times and waking hours follow this zone.</p>
+            </div>
             <div class="field good-days__personal">
               <label class="field__label good-days__check">
                 <input type="checkbox" checked={personal} onChange={(event) => ((event.target as HTMLInputElement).checked ? setPersonal(true) : clearBirth())} />
@@ -208,7 +235,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
           <button class="btn btn--primary calc__submit" type="submit" disabled={busy || !from || !to}>
             {busy ? 'Working out the days' : 'Find good days'}
           </button>
-          <p class="calc__privacy">Worked out on your device. Nothing you enter is stored. Days and times are on your device’s clock.</p>
+          <p class="calc__privacy">Worked out on your device. Nothing you enter is stored. Days and times are in the time zone you choose.</p>
         </div>
       </form>
 
@@ -218,7 +245,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
         {result && (
           <div class="calc__result good-days__result" ref={resultRef} tabIndex={-1} aria-label={`Good days: ${result.goalLabel}`}>
             <h2 class="good-days__title">{result.goalLabel}: the best days</h2>
-            <p class="good-days__sub">{result.days} days read, {shortDay(result.from)} to {shortDay(result.to)}, on {result.zone === 'UTC' ? 'UTC' : `your clock (${result.zone})`}. {CONFIDENCE_LABEL}.</p>
+            <p class="good-days__sub">{result.days} days read, {shortDay(result.from)} to {shortDay(result.to)}. {CONFIDENCE_LABEL}.</p>
             <ol class="good-days__list">
               {result.best.map((day, index) => (
                 <li class="tile good-days__day" key={day.date}>
@@ -235,7 +262,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
                         <button type="button" class="btn btn--sm" onClick={() => keepOnDevice(pickOf(day)!)}>Remind me on this device</button>
                       </div>
                       {kept === `calendar:${day.date}` && <p class="field__help">The calendar file has the day and, a week later, the link to tell us how it went.</p>}
-                      {kept === `device:${day.date}` && <p class="field__help">This browser will ask when you come back a week after the day. It keeps the goal, the day, its score, whether your birth date was used and whether you have answered, nothing else.</p>}
+                      {kept === `device:${day.date}` && <p class="field__help">This browser will ask when you come back a week after the day. It keeps the goal, the day, its score and whether a birth date was used, nothing else.</p>}
                       {kept === `refused:${day.date}` && <p class="field__help">This browser does not keep site data. Add it to your calendar instead.</p>}
                     </div>
                   ) : (
@@ -248,6 +275,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
                 </li>
               ))}
             </ol>
+            <p class="field__help good-days__zone">Days are counted in {result.zone}.</p>
 
             {result.avoid.length > 0 && (
               <>

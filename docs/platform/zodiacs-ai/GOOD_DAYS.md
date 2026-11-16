@@ -44,6 +44,11 @@ No language model is called. Every sentence is pre-written in those two files.
   Copy the link, Share and Print. The link is
   `/good-days/#g=<goal>&f=<from>&t=<to>`: the goal and dates after the #, never
   a birth date or a name; opening it runs the general reading for those dates.
+  "Time zone for the day" (a select of every zone `Intl.supportedValuesOf`
+  lists, set to the device's zone by default; where that call is missing it
+  offers the device's zone alone) sets the zone the days are counted in, so someone planning
+  an event abroad reads day boundaries, void-of-course times and waking hours
+  on the event's clock. The results say "Days are counted in {zone}.".
   The page is on the tools hub ("Through the year", with its own icon) and is
   linked from `/occasions/` and `/void-of-course-moon/`.
 - Launch flag: the page, `/good-days/how-did-it-go/`, the hub card, the two
@@ -118,7 +123,10 @@ and `ZODIACS_GOOD_DAYS_OUTCOMES_ENABLED=1` (the endpoint). Both are unset.
   (an `.ics` made on the device, with the day and, a week later, the follow-up
   link) or "Remind me on this device" (local storage: goal, day, score and
   whether a birth date ranked it, nothing else). A due reminder shows as a
-  fixed toast, so it moves nothing.
+  fixed toast, so it moves nothing. A reminder is removed from local storage
+  once it is answered or dismissed, or once its day is more than 30 days past
+  (`prunePicks` in `src/lib/good-days/outcome-memory.ts`, run whenever a page
+  reads the reminders).
 - `/good-days/how-did-it-go/#g=…&d=…&s=…&p=…` (noindex, no analytics) asks
   for a rating from 1 to 5 and an optional note, and sends it once to
   `POST /api/good-days/outcome`, rewritten into `api/compatibility.ts` so no
@@ -133,6 +141,12 @@ and `ZODIACS_GOOD_DAYS_OUTCOMES_ENABLED=1` (the endpoint). Both are unset.
   caller identifier, and nothing is logged.
 - The finder's rules version (`good-days-1`) is stored with each answer, so a
   later test compares answers against the rules that scored the day.
+- Outcome answers are not evidence that the finder works. They are never cited
+  on /claims-tested/ unless a design with a comparison group is written down
+  before the data is collected. Only best days can be picked, so no low-rated
+  day is ever recorded; the people who answer chose a day the finder called
+  good; and the score, the personal flag and the day come from an editable
+  link. The answers describe how picked days turned out, nothing more.
 
 Recommended order for the owner: apply the migration and publish the Firewall
 rule; set both switches on preview and run `npm run test:good-days:browser`

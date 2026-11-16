@@ -8,9 +8,13 @@
  * small: the goal, the day, the finder's score for it and whether a birth
  * date was used to rank it (never the birth date), the rating, the scrubbed
  * note and the rules version. It holds no name, birth detail, address, IP or
- * account, and the day it was recorded is kept to the day. It is the data for
- * later tests of whether days the finder rated highly went better than days
- * it rated low.
+ * account, and the day it was recorded is kept to the day. The answers are
+ * descriptive: they say how the days people picked turned out. They cannot
+ * compare days the finder rated highly with days it rated low, because only
+ * best days can be picked (no low-rated day is ever recorded), the people who
+ * answer chose a day the finder called good, and the score, the personal flag
+ * and the day come from an editable link. They are never cited as evidence
+ * that the finder works (docs/platform/zodiacs-ai/GOOD_DAYS.md).
  *
  * Shared by the follow-up page, the finder's reminder and the endpoint. Pure.
  */
