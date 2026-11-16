@@ -23,7 +23,7 @@ describe('the sky reading-confidence note', () => {
     expect(LABEL).toBe('Reading confidence 40%');
     expect(EVENT_READING_CONFIDENCE).toBe(LABEL);
     expect(SEASON_READING_CONFIDENCE).toBe(readingConfidence('sign'));
-    expect(SKY_READING_CONFIDENCE_NOTE).toContain(`A ${readingConfidence('sign')}% reading uses the sky alone, with no birth date`);
+    expect(SKY_READING_CONFIDENCE_NOTE).toContain(`A ${readingConfidence('sign')}% reading is written for a Sun sign alone, with no birth date`);
   });
 
   it('says the label is not a probability, in one sentence with plain punctuation', () => {
