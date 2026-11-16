@@ -46,14 +46,22 @@ const CARD_TITLE: Readonly<Record<GoodDayGoal, string>> = {
 };
 
 const DAY = 86_400_000;
-/** Today's date in a zone, YYYY-MM-DD: the picked zone's, so the page and the hosted tool agree on today. */
+/** Today's date in a zone, YYYY-MM-DD. */
 export function localToday(zone: string, now: Date = new Date()): string {
   const parts = new Intl.DateTimeFormat('en-CA', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
   return ['year', 'month', 'day'].map((type) => parts.find((part) => part.type === type)!.value).join('-');
 }
+/**
+ * The today the age checks use: the earliest of the picked zone's, the device's and UTC's, so a zone far east of the
+ * person never lets a birth date through a day early. The hosted tools check against UTC's today, and before the zone
+ * could be picked the page checked against the device's; this is never later than either.
+ */
+export function ageCheckToday(zone: string, deviceZone: string, now: Date = new Date()): string {
+  return [localToday(zone, now), localToday(deviceZone, now), now.toISOString().slice(0, 10)].sort()[0];
+}
 const addDays = (date: string, days: number) => new Date(Date.parse(`${date}T00:00:00Z`) + days * DAY).toISOString().slice(0, 10);
 /** The latest birth date that is 13 today, for the field's max. */
-const thirteenYearsAgo = (today: string) => `${String(Number(today.slice(0, 4)) - 13).padStart(4, '0')}${today.slice(4)}`;
+export const thirteenYearsAgo = (today: string) => `${String(Number(today.slice(0, 4)) - 13).padStart(4, '0')}${today.slice(4)}`;
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const shortDay = (date: string) => `${Number(date.slice(8, 10))} ${MONTHS[Number(date.slice(5, 7)) - 1]} ${date.slice(0, 4)}`;
 
@@ -103,7 +111,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
   const [deviceZone] = useState(browserZone);
   const [zone, setZone] = useState(deviceZone);
   const [zones, setZones] = useState<string[]>(() => [deviceZone]);
-  // Today, the default window and the age gate all follow the picked zone, as the hosted tool's do.
+  // Today and the default window follow the picked zone; the age checks use the earliest of three todays (ageCheckToday).
   const today = localToday(zone);
   const [goal, setGoal] = useState<GoodDayGoal>('launch');
   const [from, setFrom] = useState(today);
@@ -130,7 +138,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
     await new Promise((resolve) => setTimeout(resolve, 30));
     try {
       const [{ findGoodDays }, { SITE_CLOCK }] = await loadFinder();
-      const found = await findGoodDays({ goal: input.goal, from: input.from, to: input.to, zone: input.zone, today: localToday(input.zone), birth: input.birth ? { date: input.birth } : null }, SITE_CLOCK);
+      const found = await findGoodDays({ goal: input.goal, from: input.from, to: input.to, zone: input.zone, today: ageCheckToday(input.zone, deviceZone), birth: input.birth ? { date: input.birth } : null }, SITE_CLOCK);
       setResult(found);
       if (focus) requestAnimationFrame(() => resultRef.current?.focus({ preventScroll: false }));
     } catch (cause) {
@@ -248,7 +256,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
               {personal && (
                 <>
                   <label class="field__label" for="gd-birth">Your birth date</label>
-                  <input id="gd-birth" class="field__input" type="date" min="1800-01-01" max={thirteenYearsAgo(today)} value={birthDate} autocomplete="off"
+                  <input id="gd-birth" class="field__input" type="date" min="1800-01-01" max={thirteenYearsAgo(ageCheckToday(zone, deviceZone))} value={birthDate} autocomplete="off"
                     onInput={(event) => setBirthDate((event.target as HTMLInputElement).value)} />
                   <p class="field__help">Used for this search only, on your device. It is not saved, sent or put in the link. For people 13 and over.</p>
                 </>

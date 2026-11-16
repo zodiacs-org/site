@@ -1,6 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { afterAll, describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { canonicalZone, goodDaysLink, localToday, readGoodDaysLink, zoneChoices } from '../../islands/GoodDayFinder';
+import { ageCheckToday, canonicalZone, goodDaysLink, localToday, readGoodDaysLink, thirteenYearsAgo, zoneChoices } from '../../islands/GoodDayFinder';
+import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
+import { UNDER_13_SENTENCE, findGoodDays } from './find';
+
+const clock = createLocalTimeModule();
+afterAll(() => clock.dispose());
 
 /**
  * The good day finder takes an optional birth date. On the site it is used on the device for one search and kept
@@ -34,7 +39,7 @@ describe('the good day finder keeps birth details to the one request', () => {
     expect(island).not.toMatch(/type="(?:text|time)"/u);
     expect(island).not.toMatch(/PlaceSearch|latitude|longitude/u);
     // The field will not take a date less than 13 years ago, and the finder refuses one anyway.
-    expect(island).toContain('max={thirteenYearsAgo(today)}');
+    expect(island).toContain('max={thirteenYearsAgo(ageCheckToday(zone, deviceZone))}');
   });
 
   it('keeps consumer copy free of en and em dashes', () => {
@@ -111,23 +116,47 @@ describe('the time zone picker', () => {
     expect(zoneChoices('Asia/Bangkok', () => ['Not/AZone'])).toEqual(['Asia/Bangkok']);
   });
 
-  it('counts today in the picked zone, as the hosted tool does', () => {
+  it('counts today and the default window in the picked zone', () => {
     // 20:00 UTC on 16 November 2026 is still the 16th in New York and already the 17th in Bali.
     const instant = new Date('2026-11-16T20:00:00Z');
     expect(localToday('America/New_York', instant)).toBe('2026-11-16');
     expect(localToday('Asia/Makassar', instant)).toBe('2026-11-17');
     const island = code(SOURCES.island);
     expect(island).toContain('const today = localToday(zone);');
-    expect(island).toContain('today: localToday(input.zone),');
-    // The default window moves with the zone until the person sets a date, and the age gate uses the same today.
+    // The default window moves with the zone until the person sets a date.
     expect(island).toContain('if (datesSet) return;');
-    expect(island).toContain('max={thirteenYearsAgo(today)}');
+  });
+
+  it('checks age against the earliest of the picked zone\'s, the device\'s and UTC\'s today, never a day early', () => {
+    // 11:00 UTC on 16 November 2026 is already the 17th in Kiritimati (UTC+14).
+    const instant = new Date('2026-11-16T11:00:00Z');
+    expect(localToday('Pacific/Kiritimati', instant)).toBe('2026-11-17');
+    expect(ageCheckToday('Pacific/Kiritimati', 'Asia/Bangkok', instant)).toBe('2026-11-16');
+    // Even a device in Kiritimati as well: UTC's today still rules, as the hosted tool's check does.
+    expect(ageCheckToday('Pacific/Kiritimati', 'Pacific/Kiritimati', instant)).toBe('2026-11-16');
+    // A zone behind UTC gives its own, earlier today.
+    expect(ageCheckToday('Pacific/Pago_Pago', 'Asia/Bangkok', new Date('2026-11-16T05:00:00Z'))).toBe('2026-11-15');
+    const island = code(SOURCES.island);
+    expect(island).toContain('today: ageCheckToday(input.zone, deviceZone),');
+    expect(island).toContain('max={thirteenYearsAgo(ageCheckToday(zone, deviceZone))}');
+  });
+
+  it('refuses a birth date that turns 13 tomorrow in UTC, with Kiritimati picked', async () => {
+    const instant = new Date('2026-11-16T11:00:00Z');
+    // Born 17 November 2013: 13 in Kiritimati on its 17 November, not yet in UTC or Bangkok.
+    const today = ageCheckToday('Pacific/Kiritimati', 'Asia/Bangkok', instant);
+    await expect(findGoodDays({ goal: 'launch', from: '2027-01-01', to: '2027-01-07', zone: 'Pacific/Kiritimati', today, birth: { date: '2013-11-17' } }, clock))
+      .rejects.toThrow(UNDER_13_SENTENCE);
+    // The birth field's latest date is 16 November 2013, so the date cannot be entered either.
+    expect(thirteenYearsAgo(today)).toBe('2013-11-16');
+    // The picked zone's own today alone would have let it through.
+    expect(localToday('Pacific/Kiritimati', instant)).toBe('2026-11-17');
   });
 
   it('runs every search, shared or typed, in a named zone and prints it under the results', () => {
     const island = code(SOURCES.island);
     expect(island).toContain('<label class="field__label" for="gd-zone">Time zone for the day</label>');
-    expect(island).toContain('zone: input.zone, today: localToday(input.zone),');
+    expect(island).toContain('zone: input.zone, today: ageCheckToday(input.zone, deviceZone),');
     expect(island).toContain('Days are counted in {result.zone}.');
   });
 

@@ -128,8 +128,11 @@ and `ZODIACS_GOOD_DAYS_OUTCOMES_ENABLED=1` (the endpoint). Both are unset.
   (`prunePicks` in `src/lib/good-days/outcome-memory.ts`). The cleanup runs
   only when the finder or the follow-up page reads the reminders, so a stale
   one is removed the next time either page is opened, not on a timer. The
-  finder's today, default window and age gate follow the picked zone, as the
-  hosted tool's do.
+  finder's today and default window follow the picked zone. Its age checks
+  (the birth field's latest date and the finder's under-13 and under-18
+  checks) use the earliest of the picked zone's, the device's and UTC's today,
+  so a zone far to the east never lets a birth date through early; the hosted
+  tool checks against UTC's today.
 - `/good-days/how-did-it-go/#g=…&d=…&s=…&p=…` (noindex, no analytics) asks
   for a rating from 1 to 5 and an optional note, and sends it once to
   `POST /api/good-days/outcome`, rewritten into `api/compatibility.ts` so no
