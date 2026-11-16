@@ -40086,25 +40086,6 @@ var year_people_default = {
       note: null
     },
     {
-      slug: "warren-buffett",
-      name: "Warren Buffett",
-      aliases: [],
-      description: "Chairman of Berkshire Hathaway",
-      category: "investor",
-      birthDate: "1930-08-30",
-      birthTime: null,
-      zone: "America/Chicago",
-      birthplace: "Omaha, Nebraska, United States",
-      sources: [
-        {
-          title: "Britannica: Warren Buffett",
-          url: "https://www.britannica.com/print/article/766234"
-        }
-      ],
-      alternateBirthDates: [],
-      note: null
-    },
-    {
       slug: "larry-ellison",
       name: "Larry Ellison",
       aliases: [],
