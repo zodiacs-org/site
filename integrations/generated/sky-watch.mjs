@@ -41944,8 +41944,27 @@ var LINE_MEANING = {
     IC: "Traditionally a place where family matters come to the surface and old patterns are worked through."
   }
 };
-function lineSentence(body3, angle2) {
-  return `${body3} ${ANGLE_LABEL[angle2]} (${body3} ${ANGLE_NAME[angle2]}), for ${ANGLE_AREA[angle2]}. ${LINE_MEANING[body3][angle2]}`;
+var LINE_MEANING_MINOR = {
+  Venus: {
+    ASC: "Places where ease and warmth come more readily, and you tend to feel at home in yourself.",
+    DSC: "Places where friendships and good company come easily."
+  },
+  Neptune: {
+    DSC: "Places where other people can seem larger than life; keep a clear head about who is who."
+  }
+};
+function lineMeaning(body3, angle2, minor = false) {
+  return (minor ? LINE_MEANING_MINOR[body3]?.[angle2] : void 0) ?? LINE_MEANING[body3][angle2];
+}
+function lineSentence(body3, angle2, minor = false) {
+  return `${body3} ${ANGLE_LABEL[angle2]} (${body3} ${ANGLE_NAME[angle2]}), for ${ANGLE_AREA[angle2]}. ${lineMeaning(body3, angle2, minor)}`;
+}
+var ACG_CONFIDENCE = readingConfidence(readingDetail({ hasDate: true, hasTime: true, hasPlace: true }));
+var ACG_CONFIDENCE_TEXT = readingConfidenceText(ACG_CONFIDENCE);
+var CLOCK_FOLD_LIMIT = "Clocks repeated that hour where you were born. This map uses the earlier pass; the later one would move every line 15 degrees east or west.";
+var CLOCK_GAP_LIMIT = "That clock time did not exist where you were born: clocks jumped forward. This map uses the time one hour later.";
+function clockChangeLimit(flags) {
+  return flags.includes("dst-fold") ? CLOCK_FOLD_LIMIT : flags.includes("dst-gap") ? CLOCK_GAP_LIMIT : null;
 }
 
 // src/lib/astrocartography/share.ts
@@ -41997,14 +42016,17 @@ async function castNatal(args, clock2) {
   const timeKnown = args.time !== void 0;
   const placed = latitude !== void 0 && longitude2 !== void 0;
   let birthUtc;
+  let flags = [];
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
     const time = args.time ?? "12:00";
-    birthUtc = (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+    const resolved = longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone);
+    birthUtc = resolved.utc;
+    flags = [...resolved.flags];
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
   const chart = computeChart3({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags };
 }
 
 // src/ai-tools/personal/astrocartography.ts
@@ -42105,6 +42127,8 @@ async function getAstrocartography(args, context) {
     "Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.",
     `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`
   ];
+  const clockChange = clockChangeLimit(natal.flags);
+  if (clockChange) limits2.push(clockChange);
   if (under18) limits2.push(MINOR_NOTE);
   const asked = args.cities ?? [];
   if (asked.length) {
@@ -42127,12 +42151,12 @@ async function getAstrocartography(args, context) {
         distanceMiles: Math.round(row.km / KM_PER_MILE),
         side: row.side,
         strength: strengthOf(row.km),
-        line: `${guard(lineSentence(row.body, row.angle))} ${confidenceLabel}.`,
+        line: `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
         shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle })
       }));
       const strong = closest.filter((row) => row.strength === "strong");
       const top = closest[0];
-      const summary = strong.length ? `${place2.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(", ")}. ${guard(LINE_MEANING[top.planet][top.angle])}` : `No line runs within ${STRONG_KM} km of ${place2.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString("en-GB")} km ${top.side ?? "away"}, so its pull is ${top.strength === "noticeable" ? "still noticeable there" : "faint there"}.`;
+      const summary = strong.length ? `${place2.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(", ")}. ${guard(lineMeaning(top.planet, top.angle, under18))}` : `No line runs within ${STRONG_KM} km of ${place2.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString("en-GB")} km ${top.side ?? "away"}, so its pull is ${top.strength === "noticeable" ? "still noticeable there" : "faint there"}.`;
       cities.push({ asked: text2, name: place2.name, region: place2.region, country: place2.country, latitude: roundCoordinate(place2.latitude), longitude: roundCoordinate(place2.longitude), closest, summary });
     }
     if (unmatched.length) limits2.push(`Some names matched no town or city of 15,000 people or more in the index: ${unmatched.join(", ")}. Try another spelling, or add the country after a comma.`);

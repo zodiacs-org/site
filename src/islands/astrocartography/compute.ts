@@ -7,7 +7,9 @@
  */
 import { lineDistances, mapLines, type BodyLines, type EquatorialBody, type GeoPoint, type LineDistance } from '../../lib/astrocartography/lines';
 import { equatorialMoment } from '../../lib/astrocartography/positions';
-import { prepareLocalTime, resolveLocalToUtc } from '../../lib/time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc, type LocalTimeResolution } from '../../lib/time/localToUtc';
+
+type LocalTimeFlag = LocalTimeResolution['flags'][number];
 import land from '../../data/astrocartography-land.json';
 
 export interface AcgInput { birthDate: string; birthTime: string; place: { tz: string; lon: number } }
@@ -17,13 +19,16 @@ export interface AcgResult {
   bodies: EquatorialBody[];
   lines: BodyLines[];
   land: { cellDegrees: number; cells: [number, number][] };
+  /** The resolver's flags for the birth time: dst-fold for an hour the clocks repeated, dst-gap for one they skipped. */
+  flags: readonly LocalTimeFlag[];
 }
 
 export async function computeAstrocartography(input: AcgInput): Promise<AcgResult> {
   await prepareLocalTime(input.birthDate, input.place.tz);
-  const utc = resolveLocalToUtc(input.birthDate, input.birthTime, input.place.tz, { longitude: input.place.lon }).utc;
+  const resolved = resolveLocalToUtc(input.birthDate, input.birthTime, input.place.tz, { longitude: input.place.lon });
+  const utc = resolved.utc;
   const { gast, bodies } = equatorialMoment(utc);
-  return { utc, gast, bodies, lines: mapLines(bodies, gast), land: land as unknown as AcgResult["land"] };
+  return { utc, gast, bodies, lines: mapLines(bodies, gast), land: land as unknown as AcgResult["land"], flags: [...resolved.flags] };
 }
 
 export function nearestLines(place: GeoPoint, result: AcgResult): LineDistance[] {

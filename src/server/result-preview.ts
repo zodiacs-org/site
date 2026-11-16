@@ -79,7 +79,7 @@ import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_
 import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
 import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
 import { ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, ASTROCARTOGRAPHY_SHARE_KEYS, ASTROCARTOGRAPHY_SHARE_PATH, ASTROCARTOGRAPHY_SHARE_STORY_PATH, astrocartographyQuery, parseAstrocartographyShare, type AstrocartographyShare } from '../lib/astrocartography/share.js';
-import { ANGLE_AREA, ANGLE_LABEL, ANGLE_NAME, LINE_MEANING } from '../lib/astrocartography/meanings.js';
+import { ACG_CONFIDENCE_TEXT, ANGLE_AREA, ANGLE_LABEL, ANGLE_NAME, LINE_MEANING } from '../lib/astrocartography/meanings.js';
 import type { AcgBody } from '../lib/astrocartography/lines.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
@@ -2101,6 +2101,8 @@ export interface AstrocartographyCardModel {
   /** "Jupiter overhead: work, reputation and your public life." */
   detail: string;
   line: string;
+  /** A birth time and place are always required for a map, so this is always the timed reading's label. */
+  confidence: string;
 }
 
 /** One line of a map, by its planet and angle alone: the card never names a birth detail or a place. */
@@ -2112,6 +2114,7 @@ export function astrocartographyCardModel(share: AstrocartographyShare): Astroca
     title: `My ${share.planet} ${ANGLE_LABEL[share.angle]}`,
     detail: `${share.planet} ${ANGLE_NAME[share.angle]}: ${ANGLE_AREA[share.angle]}.`,
     line: LINE_MEANING[share.planet][share.angle],
+    confidence: ACG_CONFIDENCE_TEXT,
   };
 }
 
@@ -2123,6 +2126,7 @@ export function astrocartographyCard(model: AstrocartographyCardModel, images: M
     hue: model.hue,
     title: [titleBlock(model.title), italicLine(model.detail, 30, 10)],
     line: model.line,
+    confidence: model.confidence,
   }));
 }
 
@@ -2133,6 +2137,7 @@ export function astrocartographyStory(model: AstrocartographyCardModel, images: 
     storyTitle(model.title, storyFit([model.title], 112, 64)),
     h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 46, lineHeight: 1.2, color: INK_SOFT, marginTop: '22px', textAlign: 'center' } }, model.detail),
     storyLine(model.line),
+    ...storyConfidence(model.confidence),
     storyAction('Draw your own map', 'zodiacs.org/astrocartography'),
   ]));
 }

@@ -7,9 +7,17 @@
  *
  * Pre-written, plain, and the same on the page and in the tool. Money, career,
  * wellbeing and legal themes are read as tradition reads them, never as a
- * promise, a price, a diagnosis or a verdict.
+ * promise, a price, a diagnosis or a verdict. For someone under 18 the
+ * lines read as love, attraction or romance have their own readings
+ * (LINE_MEANING_MINOR). The page's words for the map (the line table, a far
+ * place, a clock change and what a picture of the map gives away) are here too.
  */
-import type { AcgAngle, AcgBody } from './lines';
+import { NOTICEABLE_KM, type AcgAngle, type AcgBody, type BodyLines, type LineDistance } from './lines.js';
+import { readingConfidence, readingConfidenceText, readingDetail } from '../../ai-tools/reading-confidence.js';
+import { MINOR_NOTE, isUnder18 } from '../../ai-tools/features/reading-guards.js';
+
+/** The page's under-18 rule and note, the tools' own (pure), passed on so the page imports no AI tool module. */
+export { MINOR_NOTE, isUnder18 };
 
 export const ANGLE_NAME: Record<AcgAngle, string> = {
   ASC: 'rising', DSC: 'setting', MC: 'overhead', IC: 'underfoot',
@@ -87,7 +95,73 @@ export const LINE_MEANING: Record<AcgBody, Record<AcgAngle, string>> = {
   },
 };
 
+/**
+ * The readings that change for someone under 18: no love, attraction or romance. Kept here rather than in the
+ * shared softenMinor, which feeds published tools whose output is frozen.
+ */
+export const LINE_MEANING_MINOR: Partial<Record<AcgBody, Partial<Record<AcgAngle, string>>>> = {
+  Venus: {
+    ASC: 'Places where ease and warmth come more readily, and you tend to feel at home in yourself.',
+    DSC: 'Places where friendships and good company come easily.',
+  },
+  Neptune: {
+    DSC: 'Places where other people can seem larger than life; keep a clear head about who is who.',
+  },
+};
+
+/** What a line is traditionally read as, with the under-18 reading where there is one. */
+export function lineMeaning(body: AcgBody, angle: AcgAngle, minor = false): string {
+  return (minor ? LINE_MEANING_MINOR[body]?.[angle] : undefined) ?? LINE_MEANING[body][angle];
+}
+
 /** One plain sentence for a line, such as "Venus Descendant line (Venus setting): ...". */
-export function lineSentence(body: AcgBody, angle: AcgAngle): string {
-  return `${body} ${ANGLE_LABEL[angle]} (${body} ${ANGLE_NAME[angle]}), for ${ANGLE_AREA[angle]}. ${LINE_MEANING[body][angle]}`;
+export function lineSentence(body: AcgBody, angle: AcgAngle, minor = false): string {
+  return `${body} ${ANGLE_LABEL[angle]} (${body} ${ANGLE_NAME[angle]}), for ${ANGLE_AREA[angle]}. ${lineMeaning(body, angle, minor)}`;
+}
+
+/** A birth time and place are always required here, so every reading of the map carries the same confidence. */
+export const ACG_CONFIDENCE = readingConfidence(readingDetail({ hasDate: true, hasTime: true, hasPlace: true }));
+export const ACG_CONFIDENCE_TEXT = readingConfidenceText(ACG_CONFIDENCE);
+
+/** The sentences for a birth time in an hour the clocks repeated or skipped. */
+export const CLOCK_FOLD_LIMIT = 'Clocks repeated that hour where you were born. This map uses the earlier pass; the later one would move every line 15 degrees east or west.';
+export const CLOCK_GAP_LIMIT = 'That clock time did not exist where you were born: clocks jumped forward. This map uses the time one hour later.';
+
+/** The clock-change sentence for the resolver's flags, or null. */
+export function clockChangeLimit(flags: readonly string[]): string | null {
+  return flags.includes('dst-fold') ? CLOCK_FOLD_LIMIT : flags.includes('dst-gap') ? CLOCK_GAP_LIMIT : null;
+}
+
+/** What a picture of the whole map gives away. */
+export const MAP_PICTURE_HELP = "A picture of this map shows where your lines run, which is enough to work out your birth date and time. To share, use a single line's card instead.";
+
+/** An east longitude as "66.7° E" or "73.9° W". */
+export function formatLongitude(lon: number): string {
+  const tenths = Math.round(Math.abs(lon) * 10) / 10;
+  return `${tenths.toFixed(1)}° ${lon < 0 && tenths > 0 && tenths < 180 ? 'W' : 'E'}`;
+}
+
+/** The map in words: each planet's Midheaven and lower-heaven longitudes, which exist at every latitude. */
+export function lineTable(lines: readonly BodyLines[]): { planet: AcgBody; mc: string; ic: string }[] {
+  return lines.map((line) => ({ planet: line.body, mc: formatLongitude(line.mc), ic: formatLongitude(line.ic) }));
+}
+
+/** A distance as the page prints it: to the nearest 10 km, since 15 minutes of birth time moves a line about 400 km. */
+export function roundedKm(km: number): string {
+  return (Math.round(km / 10) * 10).toLocaleString('en-GB');
+}
+
+/**
+ * What a place card on the page says: the lines it lists, each with its reading (the under-18 one where there is
+ * one), or, when even the nearest line is beyond NOTICEABLE_KM, one sentence naming it without a reading.
+ */
+export function placeLines(lines: readonly LineDistance[], minor = false): { far: string | null; rows: (LineDistance & { title: string; distance: string; meaning: string })[] } {
+  const nearest = lines[0];
+  if (nearest && nearest.km > NOTICEABLE_KM) return { far: `No line within ${NOTICEABLE_KM} km; the nearest is the ${nearest.body} ${ANGLE_LABEL[nearest.angle]}, ${roundedKm(nearest.km)} km.`, rows: [] };
+  return {
+    far: null,
+    rows: lines.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 6).map((row) => ({
+      ...row, title: `${row.body} ${ANGLE_LABEL[row.angle]}`, distance: `${roundedKm(row.km)} km${row.side ? ` ${row.side}` : ''}`, meaning: lineMeaning(row.body, row.angle, minor),
+    })),
+  };
 }

@@ -14,7 +14,7 @@
 import { z } from 'zod';
 import { equatorialMoment } from '../../lib/astrocartography/positions';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, horizonLongitude, lineDistances, mcLongitude, strengthOf, wrapLongitude, type EquatorialBody } from '../../lib/astrocartography/lines';
-import { ANGLE_LABEL, ANGLE_NAME, LINE_MEANING, lineSentence } from '../../lib/astrocartography/meanings';
+import { ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, lineMeaning, lineSentence } from '../../lib/astrocartography/meanings';
 import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
 import { findBirthplace } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
@@ -114,6 +114,7 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
   const bodies = equatorialBodies(utc);
   const gast = greenwichSiderealDegrees(utc);
   const under18 = isUnder18(args.birthDate, dateOn(context.now, 'UTC'));
+  // Under 18 the lines read as love or attraction take their own readings (lineMeaning); softenMinor covers the rest.
   const guard = (text: string) => (under18 ? softenMinor(text) : text);
   // The instant is fixed by the date, time and zone; coordinates change it only on local mean time.
   const detail = readingDetail({ hasDate: true, hasTime: true, hasPlace: true });
@@ -133,6 +134,8 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
     'Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.',
     `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`,
   ];
+  const clockChange = clockChangeLimit(natal.flags);
+  if (clockChange) limits.push(clockChange);
   if (under18) limits.push(MINOR_NOTE);
   const asked = args.cities ?? [];
   if (asked.length) {
@@ -147,13 +150,13 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
       const closest = distances.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 12).map((row) => ({
         planet: row.body, angle: row.angle, title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
         distanceKm: Math.round(row.km), distanceMiles: Math.round(row.km / KM_PER_MILE), side: row.side, strength: strengthOf(row.km),
-        line: `${guard(lineSentence(row.body, row.angle))} ${confidenceLabel}.`,
+        line: `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
         shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }),
       }));
       const strong = closest.filter((row) => row.strength === 'strong');
       const top = closest[0];
       const summary = strong.length
-        ? `${place.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(', ')}. ${guard(LINE_MEANING[top.planet][top.angle])}`
+        ? `${place.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(', ')}. ${guard(lineMeaning(top.planet, top.angle, under18))}`
         : `No line runs within ${STRONG_KM} km of ${place.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString('en-GB')} km ${top.side ?? 'away'}, so its pull is ${top.strength === 'noticeable' ? 'still noticeable there' : 'faint there'}.`;
       cities.push({ asked: text, name: place.name, region: place.region, country: place.country, latitude: roundCoordinate(place.latitude), longitude: roundCoordinate(place.longitude), closest, summary });
     }

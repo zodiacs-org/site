@@ -4,7 +4,7 @@ import PlaceSearch from './PlaceSearch';
 import type { City } from '../lib/geo/search';
 import type { AcgResult } from './astrocartography/compute';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, strengthOf, type AcgAngle, type AcgBody, type GeoPoint, type LineDistance } from '../lib/astrocartography/lines';
-import { ANGLE_AREA, ANGLE_LABEL, ANGLE_NAME, LINE_MEANING } from '../lib/astrocartography/meanings';
+import { ACG_CONFIDENCE_TEXT, ANGLE_AREA, ANGLE_LABEL, ANGLE_NAME, MAP_PICTURE_HELP, MINOR_NOTE, clockChangeLimit, isUnder18, lineTable, placeLines } from '../lib/astrocartography/meanings';
 import { loadModule } from '../lib/module-load';
 import { astrocartographyShareUrl } from '../lib/astrocartography/share';
 import CalculationReload, { calculationError } from './CalculationReload';
@@ -42,12 +42,18 @@ export function under13(birthDate: string, now = new Date()): boolean {
   return birthDate > `${String(now.getFullYear() - 13).padStart(4, '0')}${today.slice(4)}`;
 }
 
+/** A birth date under 18 on this device's clock: the readings leave out love, attraction and romance. */
+export function under18(birthDate: string, now = new Date()): boolean {
+  return isUnder18(birthDate, `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`);
+}
+
 export default function AstrocartographyMap() {
   const [date, setDate] = useState('');
   const [calendar, setCalendar] = useState<CalendarChoice>('gregorian');
   const [time, setTime] = useState('');
   const [city, setCity] = useState<City | null>(null);
   const [result, setResult] = useState<AcgResult | null>(null);
+  const [minor, setMinor] = useState(false);
   const [shown, setShown] = useState<ReadonlySet<AcgBody>>(new Set(ACG_BODIES));
   const [places, setPlaces] = useState<{ city: City; lines: LineDistance[] }[]>([]);
   const [adding, setAdding] = useState<City | null>(null);
@@ -81,6 +87,7 @@ export default function AstrocartographyMap() {
       const drawn = await compute.computeAstrocartography({ birthDate, birthTime: time, place: city });
       if (request !== revision.current) return;
       nearest.current = compute.nearestLines;
+      setMinor(under18(birthDate));
       setResult(drawn);
     } catch (cause) {
       if (request === revision.current) setError(calculationError(cause, 'en', 'The map could not be drawn. Check the details and try again.'));
@@ -95,6 +102,7 @@ export default function AstrocartographyMap() {
     setAdding(null);
   }
 
+  const clockNote = result ? clockChangeLimit(result.flags) : null;
   const toggle = (body: AcgBody) => { const next = new Set(shown); if (next.has(body)) next.delete(body); else next.add(body); setShown(next); };
 
   return (
@@ -130,7 +138,7 @@ export default function AstrocartographyMap() {
           </div>
           <figure class="acg__figure">
             <div class="acg__frame" ref={frame} tabIndex={0} aria-label="World map, scrolls sideways on small screens">
-            <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label="World map with your planetary lines" class="acg__map">
+            <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label="World map with your planetary lines; the table under it lists where each line runs" class="acg__map">
               <rect width={W} height={H} class="acg__sea" />
               <g class="acg__land">
                 {result.land.cells.map(([lat, lon]) => <circle key={`${lat}-${lon}`} cx={x(lon * result.land.cellDegrees - 180 + result.land.cellDegrees / 2)} cy={y(lat * result.land.cellDegrees - 90 + result.land.cellDegrees / 2)} r="1.3" />)}
@@ -141,10 +149,10 @@ export default function AstrocartographyMap() {
               </g>
               {result.lines.filter((line) => shown.has(line.body)).map((line, index) => (
                 <g key={line.body} stroke={HUE[line.body]} class="acg__lines">
-                  <line x1={x(line.mc)} x2={x(line.mc)} y1={y(85)} y2={y(-85)} />
-                  <line x1={x(line.ic)} x2={x(line.ic)} y1={y(85)} y2={y(-85)} stroke-dasharray={DASH.IC} />
-                  {paths(line.asc).map((d) => <path key={`a${d.slice(0, 12)}`} d={d} />)}
-                  {paths(line.dsc).map((d) => <path key={`d${d.slice(0, 12)}`} d={d} stroke-dasharray={DASH.DSC} />)}
+                  <line x1={x(line.mc)} x2={x(line.mc)} y1={y(85)} y2={y(-85)}><title>{line.body} {ANGLE_LABEL.MC}</title></line>
+                  <line x1={x(line.ic)} x2={x(line.ic)} y1={y(85)} y2={y(-85)} stroke-dasharray={DASH.IC}><title>{line.body} {ANGLE_LABEL.IC}</title></line>
+                  {paths(line.asc).map((d) => <path key={`a${d.slice(0, 12)}`} d={d}><title>{line.body} {ANGLE_LABEL.ASC}</title></path>)}
+                  {paths(line.dsc).map((d) => <path key={`d${d.slice(0, 12)}`} d={d} stroke-dasharray={DASH.DSC}><title>{line.body} {ANGLE_LABEL.DSC}</title></path>)}
                   <text x={x(line.mc) + 3} y={y(82 - (index % 3) * 5)} fill={HUE[line.body]} class="acg__label">{line.body}</text>
                 </g>
               ))}
@@ -158,6 +166,17 @@ export default function AstrocartographyMap() {
               <span>Land dots mark towns and cities of 15,000 people or more (GeoNames).</span>
             </figcaption>
           </figure>
+          <p class="field__help">{MAP_PICTURE_HELP}</p>
+          {clockNote && <p class="acg__note" role="note">{clockNote}</p>}
+          {minor && <p class="acg__note" role="note">{MINOR_NOTE}</p>}
+
+          <table class="acg__table">
+            <caption>Where each line runs</caption>
+            <thead><tr><th scope="col">Planet</th><th scope="col">Midheaven (overhead)</th><th scope="col">Lower heaven (underfoot)</th></tr></thead>
+            <tbody>
+              {lineTable(result.lines).map((row) => <tr key={row.planet}><th scope="row">{row.planet}</th><td>{row.mc}</td><td>{row.ic}</td></tr>)}
+            </tbody>
+          </table>
 
           <div class="acg__places">
             <div class="field">
@@ -165,22 +184,27 @@ export default function AstrocartographyMap() {
               <PlaceSearch key={`check-${places.length}`} id="acg-check" selected={adding} onSelect={addPlace} locale="en" />
               <p class="field__help">Up to {MAX_PLACES} places. Lines within about {STRONG_KM} km are read as strong; by about {NOTICEABLE_KM} km they fade.</p>
             </div>
-            {places.map(({ city: place, lines }) => (
+            {places.map(({ city: place, lines }) => {
+              const reading = placeLines(lines, minor);
+              return (
               <article class="tile acg__place-card" key={`${place.name}${place.lat}`}>
                 <h3>{place.name}<span>{place.admin1 ? `${place.admin1}, ` : ''}{place.country}</span></h3>
-                <ul>
-                  {lines.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 6).map((row) => (
+                {reading.far && <p>{reading.far}</p>}
+                {reading.rows.length > 0 && <ul>
+                  {reading.rows.map((row) => (
                     <li key={`${row.body}${row.angle}`}>
-                      <p class="acg__line-head"><span class="acg__swatch" style={{ '--hue': HUE[row.body] }} aria-hidden="true" />{row.body} {ANGLE_LABEL[row.angle]} <span class="acg__dist">{Math.round(row.km).toLocaleString('en-GB')} km{row.side ? ` ${row.side}` : ''}, {strengthOf(row.km)}</span></p>
-                      <p>{LINE_MEANING[row.body][row.angle]}</p>
+                      <p class="acg__line-head"><span class="acg__swatch" style={{ '--hue': HUE[row.body] }} aria-hidden="true" />{row.title} <span class="acg__dist">{row.distance}, {strengthOf(row.km)}</span></p>
+                      <p>{row.meaning}</p>
                       {/* The share link names the line alone: never the birth details or this place. */}
                       <a class="acg__share" href={astrocartographyShareUrl('', { planet: row.body, angle: row.angle })} target="_blank" rel="noopener">Share this line<span aria-hidden="true"> ↗</span></a>
                     </li>
                   ))}
-                </ul>
+                </ul>}
+                <p class="acg__confidence">{ACG_CONFIDENCE_TEXT}</p>
                 <button type="button" class="btn btn--ghost" onClick={() => setPlaces(places.filter((entry) => entry.city !== place))}>Remove</button>
               </article>
-            ))}
+              );
+            })}
           </div>
 
           <div class="acg__angles">
