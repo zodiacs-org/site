@@ -24,7 +24,7 @@ import { z } from 'zod';
 import { findLongitudeCrossings, positions } from '@zodiacs/engine';
 import { SampleBudget, positionsMemo, rowOf, stationCrossings } from '../../lib/compute-api/endpoints';
 import {
-  FOLD_LATER_MS, POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, natalBasis, retrogradeReading, stationHouse,
+  POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, natalBasis, retrogradeReading, stationHouse,
   type RetrogradeLoop, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { RETROGRADE_FOR_YOU_PAGE_PATH, publishedRetrogradeDate, retrogradeForYouShareQuery, retrogradeForYouShareUrl, retrogradeTablePath } from '../../lib/retrograde-for-you/share';
@@ -180,9 +180,9 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     dayEnds = [rows[0], rows[1]];
     sunHeld = rows.every((end) => signIndexForLongitude(end.find((row) => row.body === 'Sun')!.lon) === sunIndex);
   }
-  // A birth time the clocks showed twice: the rising degree at the later pass, an hour on, for the fold limit.
-  const foldAsc = natal.angles && natal.flags.includes('dst-fold')
-    ? computeChart({ utc: new Date(natal.birthUtc.getTime() + FOLD_LATER_MS), latitude: natal.latitude!, longitude: natal.longitude!, houseSystem: 'whole', timeKnown: true }).angles?.asc ?? null
+  // A birth time the clocks showed twice: the rising degree at the later pass, the size of the change on, for the fold limit.
+  const foldAsc = natal.angles && natal.flags.includes('dst-fold') && natal.jumpMinutes
+    ? computeChart({ utc: new Date(natal.birthUtc.getTime() + natal.jumpMinutes * 60_000), latitude: natal.latitude!, longitude: natal.longitude!, houseSystem: 'whole', timeKnown: true }).angles?.asc ?? null
     : null;
   const basis = natalBasis({
     timeKnown: natal.timeKnown, placed: natal.placed, angles: natal.angles, bodies: natal.chart.bodies, sunHeld,

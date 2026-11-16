@@ -10,7 +10,7 @@
 import { bodyLongitude, computeChart } from '../../lib/engine/full';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 import {
-  FOLD_LATER_MS, POINT_NAMES, dateOn, dayLabel, isUnder13, natalBasis, retrogradeReading, stationHouse,
+  POINT_NAMES, dateOn, dayLabel, isUnder13, natalBasis, retrogradeReading, stationHouse,
   type RetrogradePeriod, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
@@ -55,9 +55,9 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
   const birthUtc = resolved.utc;
   const chart = computeChart({ utc: birthUtc, latitude: input.place.lat, longitude: input.place.lon, houseSystem: 'whole', timeKnown });
   const angles = timeKnown && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  // A birth time the clocks showed twice: the rising degree at the later pass, an hour on, for the fold limit.
-  const foldAsc = angles && resolved.flags.includes('dst-fold')
-    ? computeChart({ utc: new Date(birthUtc.getTime() + FOLD_LATER_MS), latitude: input.place.lat, longitude: input.place.lon, houseSystem: 'whole', timeKnown: true }).angles?.asc ?? null
+  // A birth time the clocks showed twice: the rising degree at the later pass, the size of the change on, for the fold limit.
+  const foldAsc = angles && resolved.flags.includes('dst-fold') && resolved.jumpMinutes
+    ? computeChart({ utc: new Date(birthUtc.getTime() + resolved.jumpMinutes * 60_000), latitude: input.place.lat, longitude: input.place.lon, houseSystem: 'whole', timeKnown: true }).angles?.asc ?? null
     : null;
   let sunHeld = true;
   let dayEnds: Parameters<typeof natalBasis>[0]['dayEnds'];

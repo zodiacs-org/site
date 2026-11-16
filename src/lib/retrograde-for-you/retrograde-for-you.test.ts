@@ -170,6 +170,23 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
       expect(same.mcp.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
     }
   });
+
+  it('takes the later pass the real size of the change on: half an hour on Lord Howe Island', async () => {
+    // 15 Mar 1987, 01:30: the clocks went back 30 minutes, and both passes give Capricorn rising. An hour on would give Aquarius.
+    const place = { lat: -31.55, lon: 159.08, tz: 'Australia/Lord_Howe' };
+    const now = new Date('2026-11-09T09:00:00Z');
+    const mcp = (await retrogradeForMe(
+      { birthDate: '1987-03-15', time: '01:30', zone: place.tz, latitude: place.lat, longitude: place.lon, currentZone: 'Europe/Madrid' },
+      { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org' },
+    )).data;
+    await prepareLocalTime('1987-03-15', place.tz);
+    const page = computeRetrogradeForYou({ birthDate: '1987-03-15', birthTime: '01:30', place, planets: ['Mercury', 'Venus', 'Mars'], now, zone: 'Europe/Madrid' });
+    if (page.refused) throw new Error('refused');
+    expect(mcp.periods[0].houses.length).toBeGreaterThan(0);
+    expect(page.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
+    expect(mcp.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
+    expect(page.limits).toEqual(mcp.limits.filter((entry) => !entry.startsWith('Today is read')));
+  });
 });
 
 describe('the retrograde-for-you share link', () => {

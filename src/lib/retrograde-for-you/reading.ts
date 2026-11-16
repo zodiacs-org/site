@@ -162,9 +162,6 @@ export function inLoop(loop: RetrogradeLoop, lon: number): boolean {
   return norm(lon - loop.stationDirect.lon) <= norm(loop.stationRetrograde.lon - loop.stationDirect.lon);
 }
 
-/** An hour the clocks repeated, as a later pass: one hour after the earlier one, which the resolver takes. */
-export const FOLD_LATER_MS = 3_600_000;
-
 /** The limit for a birth time in an hour the clocks repeated, when the two passes give different rising signs. */
 export function foldRisingLimit(earlier: string, later: string): string {
   return `Clocks repeated that hour where you were born. This reading uses the earlier pass, with ${earlier} rising; the later pass would give ${later} rising and change every house.`;
@@ -187,8 +184,9 @@ export function natalBasis(input: {
   /** Without a birth time: the bodies at the start and the end of the birth day. */
   dayEnds?: readonly [readonly { body: string; lon: number }[], readonly { body: string; lon: number }[]];
   /**
-   * When the birth time fell in an hour the clocks repeated: the rising degree at the later pass. The chart uses the
-   * earlier pass; a limit says so only when the rising sign, and so every house, differs between the two.
+   * When the birth time fell in a stretch the clocks repeated: the rising degree at the later pass, the size of the
+   * change after the earlier one. The chart uses the earlier pass; a limit says so only when the rising sign, and so
+   * every house, differs between the two.
    */
   foldAsc?: number | null;
 }): NatalBasis {

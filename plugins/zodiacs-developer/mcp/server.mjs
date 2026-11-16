@@ -43053,7 +43053,6 @@ function loopSigns(loop) {
 function inLoop(loop, lon) {
   return norm2(lon - loop.stationDirect.lon) <= norm2(loop.stationRetrograde.lon - loop.stationDirect.lon);
 }
-var FOLD_LATER_MS = 36e5;
 function foldRisingLimit(earlier, later) {
   return `Clocks repeated that hour where you were born. This reading uses the earlier pass, with ${earlier} rising; the later pass would give ${later} rising and change every house.`;
 }
@@ -43261,16 +43260,18 @@ async function castNatal(args, clock2) {
   const placed = latitude !== void 0 && longitude2 !== void 0;
   let birthUtc;
   let flags = [];
+  let jumpMinutes = null;
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
     const time = args.time ?? "12:00";
     const resolved = longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone);
     birthUtc = resolved.utc;
     flags = [...resolved.flags];
+    if (resolved.jump && resolved.transition) jumpMinutes = Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes);
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
   const chart = computeChart2({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags };
+  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
 }
 async function birthDayEnds2(args, clock2) {
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR6)];
@@ -43415,7 +43416,7 @@ async function retrogradeForMe(args, context) {
     dayEnds = [rows3[0], rows3[1]];
     sunHeld = rows3.every((end) => signIndexForLongitude2(end.find((row) => row.body === "Sun").lon) === sunIndex);
   }
-  const foldAsc = natal.angles && natal.flags.includes("dst-fold") ? computeChart2({ utc: new Date(natal.birthUtc.getTime() + FOLD_LATER_MS), latitude: natal.latitude, longitude: natal.longitude, houseSystem: "whole", timeKnown: true }).angles?.asc ?? null : null;
+  const foldAsc = natal.angles && natal.flags.includes("dst-fold") && natal.jumpMinutes ? computeChart2({ utc: new Date(natal.birthUtc.getTime() + natal.jumpMinutes * 6e4), latitude: natal.latitude, longitude: natal.longitude, houseSystem: "whole", timeKnown: true }).angles?.asc ?? null : null;
   const basis = natalBasis({
     timeKnown: natal.timeKnown,
     placed: natal.placed,
