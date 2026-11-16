@@ -20,6 +20,7 @@ const REQUIRED_EVENTS = [
   'terminal_view_switch',
   'sdk_click',
   'bio_click',
+  'thesis_click',
   'wallet_chart_computed',
   'aura_view',
   'aura_compose',
@@ -205,6 +206,17 @@ describe('analytics event contract', () => {
     expect(sanitizeAnalyticsProperties('bio_click', {
       destination: 'custom-link',
     })).toEqual({});
+  });
+
+  it('keeps thesis door clicks to the two fixed sources', () => {
+    expect(ANALYTICS_EVENT_PROPS.thesis_click).toEqual(['source']);
+    expect(ANALYTICS_EVENT_VALUES.thesis_click).toEqual({ source: ['astrofolio', 'fomo'] });
+    expect(sanitizeAnalyticsProperties('thesis_click', {
+      source: 'fomo',
+      href: '/thesis/',
+      label: 'Not sure about memecoins?',
+    })).toEqual({ source: 'fomo' });
+    expect(sanitizeAnalyticsProperties('thesis_click', { source: 'home' })).toEqual({});
   });
 
   it('keeps beginner-guidance events useful without accepting chart data', () => {

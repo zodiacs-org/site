@@ -623,6 +623,7 @@ const sources = [
           <p>fomo is rated 18+ and may not be available where you live. Read fomo’s terms and fees inside the app, keep your sign-in details private, and take account questions to fomo, not to Zodiacs.org.</p>
         </div>
       </div>
+      <p class="fomo-facts__thesis"><a href="/thesis/" data-thesis-door="fomo">Not sure about memecoins? Read the case for these twelve, and the case against. <span aria-hidden="true">→</span></a></p>
     </section>
 
     <section class="fomo-faq section--tight container container--narrow" aria-labelledby="faq-title">
@@ -673,6 +674,14 @@ const sources = [
   </article>
 
   <script is:inline type="application/json" id="fomo-records" set:html={recordsJson}></script>
+  <script is:inline>
+    document.addEventListener('click', function (event) {
+      var target = event.target;
+      var link = target && target.closest ? target.closest('[data-thesis-door]') : null;
+      if (!link || !window.zodiacsAnalytics) return;
+      window.zodiacsAnalytics.track('thesis_click', { source: 'fomo' });
+    });
+  </script>
 
 <script>
   type FomoRecord = {
@@ -1262,6 +1271,9 @@ const sources = [
   }
   .fomo-web a { color: var(--muted); text-decoration-color: var(--hair-3); text-underline-offset: 4px; }
   .fomo-web a:hover { color: var(--text); }
+  .fomo-facts__thesis { margin: 20px 0 0; color: var(--muted); font-size: var(--text-sm); }
+  .fomo-facts__thesis a { color: var(--muted); text-decoration-color: var(--hair-3); text-underline-offset: 4px; }
+  .fomo-facts__thesis a:hover { color: var(--text); }
 
   /* ── Branded fomo hand-off (the same pill the Astrofolio vitrine uses) ── */
   .fomo-cta {
