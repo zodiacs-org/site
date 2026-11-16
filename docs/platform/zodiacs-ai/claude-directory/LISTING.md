@@ -104,7 +104,7 @@ opening, and the last five are the 0.6.x wording prepared in
 
 The one-liner is 135 characters.
 
-Description (1782 of 2,000 characters):
+Description (1,782 of 2,000 characters):
 
 > Zodiacs works out the sky with its own engine, and every change to that engine is tested against NASA JPL Horizons reference positions.
 >
