@@ -1,7 +1,7 @@
 ---
 /**
  * One sign's horoscope for a longer period (tomorrow, week, month, love,
- * work, 2026, 2027) in es, pt, fr, it or ru. The copy is written per
+ * work, 2027) in es, pt, fr, it or ru. The copy is written per
  * language from the computed facts (src/lib/locale-expansion/horoscope/);
  * the receipts are the English program's, passage for passage.
  *
@@ -27,7 +27,7 @@ import { horoscopeModule } from '../../lib/locale-expansion/horoscope/modules';
 import { dayMonthYear } from '../../lib/locale-expansion/horoscope/format';
 import type { ExpansionLocale, Fact, PeriodSurface } from '../../lib/locale-expansion/horoscope/types';
 
-export type PeriodSlug = 'tomorrow' | 'weekly' | 'monthly' | 'love' | 'career' | '2026' | '2027';
+export type PeriodSlug = 'tomorrow' | 'weekly' | 'monthly' | 'love' | 'career' | '2027';
 
 interface Props {
   locale: ExpansionLocale;
@@ -43,9 +43,9 @@ const name = signName(sign, locale);
 const local = (path: string) => localizePath(locale as Locale, path);
 
 const SURFACE: Record<Exclude<PeriodSlug, 'monthly'>, PeriodSurface> = {
-  tomorrow: 'tomorrow', weekly: 'weekly', love: 'love', career: 'career', '2026': 'yearly-2026', '2027': 'yearly-2027',
+  tomorrow: 'tomorrow', weekly: 'weekly', love: 'love', career: 'career', '2027': 'yearly-2027',
 };
-const ENGLISH_SURFACE = { tomorrow: 'tomorrow', weekly: 'weekly', love: 'love', career: 'career', '2026': 'year2026', '2027': 'year' } as const;
+const ENGLISH_SURFACE = { tomorrow: 'tomorrow', weekly: 'weekly', love: 'love', career: 'career', '2027': 'year' } as const;
 
 let passages: Array<{ heading?: string; text: string }>;
 let facts: Fact[];
@@ -82,13 +82,14 @@ const image = signArtCard(sign.slug, locale === 'ru' ? 'en' : locale);
 const confidence = SUN_SIGN_READING_CONFIDENCE;
 const heroArtSizes = '(min-width: 761px) 440px, calc(100vw - 32px)';
 
-// The switch: every period, in this language when built here, otherwise English with hreflang.
+// The switch: every period, in this language when built here, otherwise English with hreflang
+// (2026 is always the English page).
 const PERIODS = ['today', 'tomorrow', 'weekly', 'monthly', 'love', 'career', 'yearly-2026', 'yearly-2027'] as const;
 const periodPath = (key: (typeof PERIODS)[number]) => {
   const slug = key === 'today' ? '' : key === 'yearly-2026' ? '2026/' : key === 'yearly-2027' ? '2027/' : `${key}/`;
   return `/horoscopes/${sign.slug}/${slug}`;
 };
-const currentKey = period === '2026' ? 'yearly-2026' : period === '2027' ? 'yearly-2027' : period;
+const currentKey = period === '2027' ? 'yearly-2027' : period;
 const switchLinks = PERIODS.map((key) => {
   const english = periodPath(key);
   const href = local(english);

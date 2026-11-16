@@ -12,7 +12,7 @@ per 7 days.
 |---|---|---|---|---|---|
 | Daily horoscope + hub | `/horoscopes/`, `/horoscopes/{sign}/` | live | live | 13 held | 13 held |
 | Today | `/today/` | live | live | 1 held | 1 held |
-| Tomorrow, week, month, love, work, 2026, 2027 | `/horoscopes/{sign}/{period}/` | 84 held | 84 held | 84 held | 84 held |
+| Tomorrow, week, month, love, work, 2027 | `/horoscopes/{sign}/{period}/` | 72 held | 72 held | 72 held | 72 held |
 | Single full Moon | `/full-moon/{date}/` (every date the English publishes) | held | held | held | held |
 | Single new Moon | `/new-moon/{date}/` | held | held | held | held |
 | Zodiac dates | `/learn/zodiac-dates/` | 1 held | 1 held | 1 held | 1 held |

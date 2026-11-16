@@ -15,7 +15,9 @@ export const LOCALE_EXPANSION_PREVIEW_FLAG = 'PUBLIC_LOCALE_EXPANSION_PREVIEW';
 
 const SIGNS = 'aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces';
 
-export const HOROSCOPE_PERIODS = ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2026', '2027'];
+// No 2026: at the release plan's pace of 10 pages a week those pages could
+// not publish before the year is over. The English yearly pages are separate.
+export const HOROSCOPE_PERIODS = ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2027'];
 
 // The top-level values below are marked pure: nothing here runs for its side
 // effects, so a browser bundle that never uses the policy drops the module.

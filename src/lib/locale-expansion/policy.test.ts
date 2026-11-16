@@ -49,6 +49,15 @@ describe('locale expansion publication record', () => {
     expect(publishedLocalesForPath('/horoscopes/leo/weekly/', expansionState(record({ released: true, reviewer: 'R', reviewedAt: '2031-02-01' }), {}))).toEqual(['es']);
   });
 
+  it('has no 2026 yearly family in the expansion, under the preview flag too', () => {
+    expect(EXPANSION_FAMILY_IDS).not.toContain('horoscope-2026');
+    expect(familyForPath('/horoscopes/leo/2026/')).toBeUndefined();
+    for (const families of Object.values(publication.entries)) expect(Object.keys(families)).not.toContain('horoscope-2026');
+    const preview = expansionState(publication, { PUBLIC_LOCALE_EXPANSION_PREVIEW: '1' });
+    expect(enabledLocalesForPath('/horoscopes/leo/2026/', preview)).toEqual([]);
+    expect(enabledLocalesForPath('/horoscopes/leo/2027/', preview)).toEqual(['es', 'pt', 'fr', 'it']);
+  });
+
   it('publishes a reviewed family, and the preview flag only builds held ones', () => {
     const released = expansionState(record({ released: true, reviewer: 'Dias Malayev', reviewedAt: '2026-11-20' }), {});
     expect(publishedLocalesForPath('/horoscopes/leo/weekly/', released)).toEqual(['es']);
