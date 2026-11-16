@@ -21,9 +21,9 @@ const images=[];
 // Every example is synthetic. The comparison and wedding examples carry made-up first names,
 // so the cards show names the way people ask for them instead of Person A and Person B.
 const EXAMPLES={
- comparison:{tool:'get_compatibility',heading:'Lucía and Mateo',arguments:{a:{name:'Lucía',birthDate:'1990-05-03',time:'08:30',zone:'Europe/Madrid',latitude:40.4168,longitude:-3.7038,place:'Madrid, Spain'},b:{name:'Mateo',birthDate:'1992-08-10'}}},
- wedding:{tool:'get_occasion_sky',heading:'Lucía and Mateo',arguments:{occasion:'wedding',date:'2027-06-12',time:'17:00',zone:'Europe/Rome',latitude:43.7696,longitude:11.2558,place:'Florence, Italy',names:'Lucía and Mateo'}},
- horoscope:{tool:'get_horoscope',heading:'Leo',arguments:{sign:'leo',zone:'Asia/Bangkok'}},
+ comparison:{tool:'get_compatibility',heading:'Lucía and Mateo',arguments:{a:{name:'Lucía',birthDate:'1994-05-14',time:'09:15',zone:'Europe/Madrid',latitude:37.3891,longitude:-5.9845,place:'Seville, Spain'},b:{name:'Mateo',birthDate:'1991-08-04'}}},
+ wedding:{tool:'get_occasion_sky',heading:'Lucía and Mateo',arguments:{occasion:'wedding',date:'2027-09-18',time:'16:30',zone:'Europe/Lisbon',latitude:38.7223,longitude:-9.1393,place:'Lisbon, Portugal',names:'Lucía and Mateo'}},
+ horoscope:{tool:'get_horoscope',heading:'Leo',arguments:{sign:'leo',zone:'America/Mexico_City'}},
 };
 const rpc=async(method,params,attempt=1)=>{
  const response=await fetch(source,{method:'POST',signal:AbortSignal.timeout(60_000),headers:{'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2025-06-18'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
@@ -71,7 +71,7 @@ try{
  for(const [name,html,uri] of [['comparison',OCCASIONS_HTML,'ui://zodiacs/occasions-v8.html'],['wedding',OCCASIONS_HTML,'ui://zodiacs/occasions-v8.html'],['chart',STUDIO_HTML,'ui://zodiacs/chart-studio-v6.html'],['horoscope',HOROSCOPES_HTML,'ui://zodiacs/horoscopes-v6.html']]){
   assert.equal(hash(html),hash((await rpc('resources/read',{uri})).contents[0].text),name+' local HTML equals live resource');
   const width=name==='chart'?1000:375;
-  const context=await browser.newContext({viewport:{width,height:900},deviceScaleFactor:2,colorScheme:'dark',reducedMotion:'reduce',timezoneId:'Asia/Bangkok'});
+  const context=await browser.newContext({viewport:{width,height:900},deviceScaleFactor:2,colorScheme:'dark',reducedMotion:'reduce',timezoneId:'America/Mexico_City'});
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.route('https://zodiacs.org/assets/**',async route=>{
    const pathname=new URL(route.request().url()).pathname;

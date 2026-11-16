@@ -433,16 +433,16 @@
   },
   {
     "id": "41",
-    "prompt": "Make a card with the sky on our wedding day in Florence.",
+    "prompt": "Make a card with the sky on our wedding day in Lisbon.",
     "tool": "get_occasion_sky",
     "args": {
       "occasion": "wedding",
-      "date": "2027-06-12",
-      "time": "17:00",
-      "zone": "Europe/Rome",
-      "latitude": 43.7696,
-      "longitude": 11.2558,
-      "place": "Florence, Italy"
+      "date": "2027-09-18",
+      "time": "16:30",
+      "zone": "Europe/Lisbon",
+      "latitude": 38.7223,
+      "longitude": -9.1393,
+      "place": "Lisbon, Portugal"
     },
     "ok": true
   },
@@ -452,8 +452,8 @@
     "tool": "get_occasion_sky",
     "args": {
       "occasion": "wedding",
-      "date": "2027-06-12",
-      "time": "17:00"
+      "date": "2027-09-18",
+      "time": "16:30"
     },
     "ok": false
   },
@@ -462,7 +462,7 @@
     "prompt": "List my life milestones from my birth date.",
     "tool": "get_life_milestones",
     "args": {
-      "birthDate": "1990-05-03"
+      "birthDate": "1994-05-14"
     },
     "ok": true
   },
@@ -471,8 +471,8 @@
     "prompt": "Give a birth time without its time zone.",
     "tool": "get_life_milestones",
     "args": {
-      "birthDate": "1990-05-03",
-      "time": "08:30"
+      "birthDate": "1994-05-14",
+      "time": "09:15"
     },
     "ok": false
   },
@@ -482,29 +482,29 @@
     "tool": "get_compatibility",
     "args": {
       "a": {
-        "birthDate": "1990-05-03"
+        "birthDate": "1994-05-14"
       },
       "b": {
-        "birthDate": "1992-08-10"
+        "birthDate": "1991-08-04"
       }
     },
     "ok": true
   },
   {
     "id": "46",
-    "prompt": "Compare two charts, one with a birth time and place in Madrid.",
+    "prompt": "Compare two charts, one with a birth time and place in Seville.",
     "tool": "get_compatibility",
     "args": {
       "a": {
         "name": "Ana",
-        "birthDate": "1990-05-03",
-        "time": "08:30",
+        "birthDate": "1994-05-14",
+        "time": "09:15",
         "zone": "Europe/Madrid",
-        "latitude": 40.4168,
-        "longitude": -3.7038
+        "latitude": 37.3891,
+        "longitude": -5.9845
       },
       "b": {
-        "birthDate": "1992-08-10"
+        "birthDate": "1991-08-04"
       }
     },
     "ok": true
@@ -518,7 +518,7 @@
         "birthDate": "1990-02-30"
       },
       "b": {
-        "birthDate": "1992-08-10"
+        "birthDate": "1991-08-04"
       }
     },
     "ok": false
@@ -529,7 +529,7 @@
     "tool": "get_compatibility",
     "args": {
       "a": {
-        "birthDate": "1990-05-03"
+        "birthDate": "1994-05-14"
       }
     },
     "ok": false
@@ -539,7 +539,7 @@
     "prompt": "Which famous people share my Sun sign?",
     "tool": "find_chart_twins",
     "args": {
-      "birthDate": "1990-05-03"
+      "birthDate": "1994-05-14"
     },
     "ok": true
   },
@@ -565,10 +565,10 @@
   },
   {
     "id": "52",
-    "prompt": "What is the sky like on 3 May?",
+    "prompt": "What is the sky like on 14 May?",
     "tool": "get_birthday",
     "args": {
-      "date": "05-03"
+      "date": "05-14"
     },
     "ok": true
   },
@@ -577,8 +577,8 @@
     "prompt": "When is my solar return this year?",
     "tool": "get_birthday",
     "args": {
-      "birthDate": "1990-05-03",
-      "time": "08:30",
+      "birthDate": "1994-05-14",
+      "time": "09:15",
       "zone": "Europe/Madrid"
     },
     "ok": true
@@ -592,33 +592,33 @@
   },
   {
     "id": "55",
-    "prompt": "Read my birth chart: born 3 May 1990 at 8:30 in Madrid.",
+    "prompt": "Read my birth chart: born 14 May 1994 at 9:15 in Seville.",
     "tool": "get_natal_chart",
     "args": {
-      "birthDate": "1990-05-03",
-      "time": "08:30",
+      "birthDate": "1994-05-14",
+      "time": "09:15",
       "zone": "Europe/Madrid",
-      "latitude": 40.4168,
-      "longitude": -3.7038,
-      "place": "Madrid, Spain"
+      "latitude": 37.3891,
+      "longitude": -5.9845,
+      "place": "Seville, Spain"
     },
     "ok": true
   },
   {
     "id": "56",
-    "prompt": "What's my chart? I was born on 3 May 1990 but don't know the time.",
+    "prompt": "What's my chart? I was born on 14 May 1994 but don't know the time.",
     "tool": "get_natal_chart",
     "args": {
-      "birthDate": "1990-05-03"
+      "birthDate": "1994-05-14"
     },
     "ok": true
   },
   {
     "id": "57",
-    "prompt": "Read my chart, I was born at 8:30.",
+    "prompt": "Read my chart, I was born at 9:15.",
     "tool": "get_natal_chart",
     "args": {
-      "time": "08:30",
+      "time": "09:15",
       "zone": "Europe/Madrid"
     },
     "ok": false
@@ -692,14 +692,14 @@
   },
   {
     "id": "65",
-    "prompt": "What transits are coming up for me? Born 3 May 1990 at 8:30 in Madrid.",
+    "prompt": "What transits are coming up for me? Born 14 May 1994 at 9:15 in Seville.",
     "tool": "get_personal_transits",
     "args": {
-      "birthDate": "1990-05-03",
-      "time": "08:30",
+      "birthDate": "1994-05-14",
+      "time": "09:15",
       "zone": "Europe/Madrid",
-      "latitude": 40.4168,
-      "longitude": -3.7038
+      "latitude": 37.3891,
+      "longitude": -5.9845
     },
     "ok": true
   },
