@@ -100,7 +100,7 @@ await withPreview({ port: 4371 }, async (base) => {
         check(`${viewport.name}: nothing written to storage or cookies`, !stored.includes('1990') && !stored.includes('good'), stored);
         check(`${viewport.name}: the address bar is unchanged`, tab.url() === urlBefore, tab.url());
         const link = await tab.textContent('.good-days__link code');
-        check(`${viewport.name}: the share link carries only the goal and dates`, /^http:\/\/127\.0\.0\.1:\d+\/good-days\/#g=contract&f=2027-01-01&t=2027-06-30$/u.test(link ?? ''), link ?? '');
+        check(`${viewport.name}: the share link carries only the goal, dates and zone`, /^http:\/\/127\.0\.0\.1:\d+\/good-days\/#g=contract&f=2027-01-01&t=2027-06-30&z=[A-Za-z0-9_+\-/]+$/u.test(link ?? ''), link ?? '');
         const card = await tab.textContent('.good-days-card');
         check(`${viewport.name}: the share card holds no birth detail`, !/1990|05-03|3 May 1990/u.test(card ?? ''), card ?? '');
         const overflow = await tab.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
@@ -112,15 +112,17 @@ await withPreview({ port: 4371 }, async (base) => {
         }
         await context.close();
       }
-      // A shared link opens on its results with no shift.
+      // A shared link opens on its results, in the zone it carries, with no shift.
       {
         const { context, tab, errors } = await page(browser, viewport);
-        await tab.goto(`${base}/good-days/#g=wedding&f=2027-04-01&t=2027-09-30`, { waitUntil: 'networkidle' });
+        await tab.goto(`${base}/good-days/#g=wedding&f=2027-04-01&t=2027-09-30&z=Asia/Makassar`, { waitUntil: 'networkidle' });
         await tab.waitForSelector('.good-days__result', { timeout: 60_000 });
         await settle(tab);
         const shared = await cls(tab);
         check(`${viewport.name}: a shared link opens on its results with zero CLS`, shared.cls === 0, JSON.stringify(shared));
         check(`${viewport.name}: the shared link reads the general sky`, (await tab.textContent('.good-days__title'))?.startsWith('Wedding: the best days') === true);
+        check(`${viewport.name}: the shared link's days are counted in its zone`, (await tab.textContent('.good-days__zone')) === 'Days are counted in Asia/Makassar.', await tab.textContent('.good-days__zone') ?? '');
+        check(`${viewport.name}: the zone picker shows the shared link's zone`, (await tab.inputValue('#gd-zone')) === 'Asia/Makassar');
         check(`${viewport.name}: shared link has no page errors`, errors.length === 0, errors.join('\n'));
         await context.close();
       }

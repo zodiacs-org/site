@@ -42,8 +42,12 @@ No language model is called. Every sentence is pre-written in those two files.
   Results show the ranked days with every reason, the days to avoid, the
   retrograde periods and eclipses, and a share card (the top three days) with
   Copy the link, Share and Print. The link is
-  `/good-days/#g=<goal>&f=<from>&t=<to>`: the goal and dates after the #, never
-  a birth date or a name; opening it runs the general reading for those dates.
+  `/good-days/#g=<goal>&f=<from>&t=<to>&z=<zone>`: the goal, the dates and the
+  zone the days were counted in, after the #, never a birth date, whether one
+  was used, or a name; opening it runs the general reading for those dates in
+  that zone, so the recipient sees the sender's days. A link with no `z`, or
+  one the browser's Intl does not accept, is read in the device's zone, and the
+  results say which zone they used.
   "Time zone for the day" (a select of every zone `Intl.supportedValuesOf`
   lists, set to the device's zone by default; where that call is missing it
   offers the device's zone alone) sets the zone the days are counted in, so someone planning

@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { ageCheckToday, canonicalZone, goodDaysLink, localToday, readGoodDaysLink, thirteenYearsAgo, zoneChoices } from '../../islands/GoodDayFinder';
+import { ageCheckToday, canonicalZone, goodDaysLink, knownZone, localToday, readGoodDaysLink, thirteenYearsAgo, zoneChoices } from '../../islands/GoodDayFinder';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { UNDER_13_SENTENCE, findGoodDays } from './find';
 
@@ -49,24 +49,58 @@ describe('the good day finder keeps birth details to the one request', () => {
 });
 
 describe('the share link', () => {
-  it('carries the goal and the two dates after the #, and nothing else', () => {
-    const link = goodDaysLink('https://zodiacs.org', 'wedding', '2027-05-01', '2027-09-30');
-    expect(link).toBe('https://zodiacs.org/good-days/#g=wedding&f=2027-05-01&t=2027-09-30');
-    expect(readGoodDaysLink(new URL(link).hash)).toEqual({ goal: 'wedding', from: '2027-05-01', to: '2027-09-30' });
+  it('carries the goal, the two dates and the zone after the #, and nothing else', () => {
+    const link = goodDaysLink('https://zodiacs.org', 'wedding', '2027-05-01', '2027-09-30', 'Asia/Makassar');
+    expect(link).toBe('https://zodiacs.org/good-days/#g=wedding&f=2027-05-01&t=2027-09-30&z=Asia/Makassar');
+    // The allowed keys are exactly g, f, t and z.
+    expect(new URL(link).hash.slice(1).split('&').map((part) => part.split('=')[0])).toEqual(['g', 'f', 't', 'z']);
+    expect(readGoodDaysLink(new URL(link).hash)).toEqual({ goal: 'wedding', from: '2027-05-01', to: '2027-09-30', zone: 'Asia/Makassar' });
   });
 
-  it('takes only those three keys from a link, and nothing from a malformed one', () => {
-    expect(readGoodDaysLink('#g=move&f=2027-01-01&t=2027-02-01&b=1990-05-03&n=Ana')).toEqual({ goal: 'move', from: '2027-01-01', to: '2027-02-01' });
+  it('takes only those four keys from a link, and nothing from a malformed one', () => {
+    expect(readGoodDaysLink('#g=move&f=2027-01-01&t=2027-02-01&b=1990-05-03&n=Ana&p=1')).toEqual({ goal: 'move', from: '2027-01-01', to: '2027-02-01' });
+    expect(readGoodDaysLink('#g=move&f=2027-01-01&t=2027-02-01&z=Asia/Makassar&b=1990-05-03')).toEqual({ goal: 'move', from: '2027-01-01', to: '2027-02-01', zone: 'Asia/Makassar' });
     expect(readGoodDaysLink('#g=lottery&f=2027-01-01&t=2027-02-01')).toBeNull();
     expect(readGoodDaysLink('#g=move&f=1990-05-03&t=2027-02-01')).toBeNull();
     expect(readGoodDaysLink('')).toBeNull();
+  });
+
+  it('falls back to the device zone for a link with no zone or one the browser does not know', () => {
+    // No zone in what is read: the island then counts the days in the device's zone.
+    expect(readGoodDaysLink('#g=wedding&f=2027-05-01&t=2027-09-30&z=Not/AZone')).toEqual({ goal: 'wedding', from: '2027-05-01', to: '2027-09-30' });
+    expect(readGoodDaysLink('#g=wedding&f=2027-05-01&t=2027-09-30&z=%3Cscript%3E')).toEqual({ goal: 'wedding', from: '2027-05-01', to: '2027-09-30' });
+    expect(readGoodDaysLink('#g=wedding&f=2027-05-01&t=2027-09-30&z=')).toEqual({ goal: 'wedding', from: '2027-05-01', to: '2027-09-30' });
+    expect(knownZone('Not/AZone')).toBeNull();
+    expect(knownZone('America/Argentina/Buenos_Aires')).toBe(canonicalZone('America/Argentina/Buenos_Aires'));
+    expect(knownZone('America/Argentina/Buenos_Aires')).not.toBeNull();
+    expect(knownZone('Etc/GMT+5')).toBe('Etc/GMT+5');
+  });
+
+  it('normalises the zone: lowercase, an alias and the encoded form all read as the picker lists it', () => {
+    expect(knownZone('asia/makassar')).toBe('Asia/Makassar');
+    expect(knownZone('Asia%2FMakassar')).toBe('Asia/Makassar');
+    expect(knownZone('Asia/Calcutta')).toBe(canonicalZone('Asia/Kolkata'));
+    expect(knownZone('Asia%2')).toBeNull();
+    expect(readGoodDaysLink('#g=wedding&f=2027-05-01&t=2027-09-30&z=Asia%2FMakassar')).toEqual({ goal: 'wedding', from: '2027-05-01', to: '2027-09-30', zone: 'Asia/Makassar' });
+    expect(code(SOURCES.island)).toContain('const sharedZone = shared.zone ?? deviceZone;');
+  });
+
+  it('is read by the page head script with or without a zone', () => {
+    const head = /if \((\/\^#g=.*\$\/)\.test\(location\.hash\)\)/u.exec(read('../../pages/good-days/index.astro'))![1];
+    const pattern = new Function(`return ${head};`)() as RegExp;
+    expect(pattern.test('#g=wedding&f=2027-05-01&t=2027-09-30')).toBe(true);
+    expect(pattern.test('#g=wedding&f=2027-05-01&t=2027-09-30&z=Asia/Makassar')).toBe(true);
+    expect(pattern.test('#g=wedding&f=2027-05-01&t=2027-09-30&z=Etc/GMT+5')).toBe(true);
+    // The encoded form some apps write, so its results reserve their room before first paint too.
+    expect(pattern.test('#g=wedding&f=2027-05-01&t=2027-09-30&z=Asia%2FMakassar')).toBe(true);
+    expect(pattern.test('#g=wedding&f=2027-05-01&t=2027-09-30&b=1990-05-03')).toBe(false);
   });
 
   it('builds the share card from the result alone: no birth date, time or name field reaches it', () => {
     const island = code(SOURCES.island);
     const card = island.slice(island.indexOf('<figure class="good-days-card"'), island.indexOf('</figure>'));
     expect(card).not.toMatch(/birth|personal/iu);
-    expect(island).toContain('void run({ ...shared, zone: deviceZone, birth: null }, false);');
+    expect(island).toContain('void run({ goal: shared.goal, from: shared.from, to: shared.to, zone: sharedZone, birth: null }, false);');
   });
 });
 

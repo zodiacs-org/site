@@ -59,8 +59,8 @@ const jsonLd = [
   imageAlt={OG_EN.goodDays.alt}
   jsonLd={jsonLd}
 >
-  {/* A shared link (#g=…&f=…&t=…) opens on its results: the slot is reserved before first paint so they arrive without moving anything. */}
-  <script slot="head" is:inline>if (/^#g=[a-z]+&f=\d{4}-\d{2}-\d{2}&t=\d{4}-\d{2}-\d{2}$/.test(location.hash)) document.documentElement.classList.add('gd-shared');</script>
+  {/* A shared link (#g=…&f=…&t=…, with &z=… for its time zone, / written as is or as %2F) opens on its results: the slot is reserved before first paint so they arrive without moving anything. */}
+  <script slot="head" is:inline>if (/^#g=[a-z]+&f=\d{4}-\d{2}-\d{2}&t=\d{4}-\d{2}-\d{2}(?:&z=[A-Za-z0-9_+\-\/%]+)?$/.test(location.hash)) document.documentElement.classList.add('gd-shared');</script>
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
       <h1 class="display">Good day finder</h1>
