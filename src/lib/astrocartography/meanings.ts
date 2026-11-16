@@ -143,8 +143,9 @@ export function lineSentence(body: AcgBody, angle: AcgAngle, minor = false): str
 export const ACG_CONFIDENCE = readingConfidence(readingDetail({ hasDate: true, hasTime: true, hasPlace: true }));
 export const ACG_CONFIDENCE_TEXT = readingConfidenceText(ACG_CONFIDENCE);
 
-/** "one hour", "30 minutes": the size of a clock change. */
+/** "one hour", "30 minutes", "one minute": the size of a clock change. */
 function changeLength(minutes: number): string {
+  if (minutes === 1) return 'one minute';
   return minutes === 60 ? 'one hour' : minutes % 60 === 0 ? `${minutes / 60} hours` : `${minutes} minutes`;
 }
 

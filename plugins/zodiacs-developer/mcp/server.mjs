@@ -43219,6 +43219,7 @@ function lineSentence(body3, angle2, minor = false) {
 var ACG_CONFIDENCE = readingConfidence(readingDetail({ hasDate: true, hasTime: true, hasPlace: true }));
 var ACG_CONFIDENCE_TEXT = readingConfidenceText(ACG_CONFIDENCE);
 function changeLength(minutes) {
+  if (minutes === 1) return "one minute";
   return minutes === 60 ? "one hour" : minutes % 60 === 0 ? `${minutes / 60} hours` : `${minutes} minutes`;
 }
 function clockFoldLimit(minutes) {

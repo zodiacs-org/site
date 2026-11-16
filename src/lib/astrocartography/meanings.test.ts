@@ -159,6 +159,13 @@ describe('an astrocartography birth time the clocks repeated or skipped (ZOD-26)
     expect(clockChangeLimit(['dst-fold'], 0.4)).toBeNull();
   });
 
+  it('says "one minute" for a change that rounds to a single minute', () => {
+    // Moscow, 3 July 1916 and St John's, 30 March 1935: offset changes of under 90 seconds.
+    expect(clockGapLimit(1)).toContain('the time one minute later');
+    expect(clockChangeLimit(['dst-gap'], 0.6)).toBe(clockGapLimit(1));
+    expect(clockChangeLimit(['dst-gap'], 1.4)).not.toMatch(/\b1 minutes\b/u);
+  });
+
   it('puts the fold sentence in the tool limits', async () => {
     const fold = await executeAiTool('get_astrocartography', { birthDate: '1990-10-28', time: '01:30', zone: 'America/New_York' }, ON) as { ok: true; data: any };
     expect(fold.data.limits).toContain(CLOCK_FOLD_LIMIT);
