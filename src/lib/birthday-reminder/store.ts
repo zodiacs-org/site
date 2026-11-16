@@ -46,9 +46,9 @@ export function deleteReminder(id: string, env: Environment = process.env, fetch
   return rpc<boolean>('birthday_reminder_delete', { p_id: id }, env, fetcher);
 }
 
-/** Confirmed reminders for these birthdays not sent in the last 300 days. Reads only. */
+/** Confirmed reminders for these birthdays not sent in the last 300 days, with the birthday each one matched. Reads only. */
 export function dueReminders(days: { month: number; day: number }[], env: Environment = process.env, fetcher: Fetch = fetch) {
-  return rpc<{ id: string; email: string }[]>('birthday_reminders_due', { p_days: days }, env, fetcher);
+  return rpc<{ id: string; email: string; month: number; day: number }[]>('birthday_reminders_due', { p_days: days.map(({ month, day }) => ({ month, day })) }, env, fetcher);
 }
 
 /** Deletes unconfirmed requests older than 48 hours. The number deleted. */

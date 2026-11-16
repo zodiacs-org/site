@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { birthdayEmail, birthdaysOn, birthdaysToSend, confirmationEmail, hashToken, newConfirmToken, parseReminderRequest, readUnsubscribeToken, unsubscribeToken } from './core';
+import { birthdayEmail, birthdayEmailKey, birthdaysOn, birthdaysToSend, confirmationEmail, hashToken, newConfirmToken, parseReminderRequest, readUnsubscribeToken, unsubscribeToken } from './core';
 import { birthdayReminderEnabled } from './config';
 
 const SECRET = 'x'.repeat(40);
@@ -49,8 +49,9 @@ describe('the birthday send', () => {
   });
   it('ends the birthday email with the postal address and says nothing false about the solar return', () => {
     const { text } = birthdayEmail('https://zodiacs.org', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u', 'Zodiacs.org, Test Address');
-    expect(text.split('\n').at(-1)).toBe('Zodiacs.org, Test Address');
-    expect(text).toContain('Your solar return falls on or within a day of your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.');
+    expect(text.split('\n').slice(-2)).toEqual(['', 'Zodiacs.org, Test Address']);
+    expect(text).toContain('Your solar return falls around your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.');
+    expect(text).not.toContain('within a day');
     expect(text).not.toContain('has come round');
     expect(text).not.toMatch(/[–—‒―]/u);
   });
@@ -62,6 +63,18 @@ describe('the birthday send', () => {
     expect(key(birthdaysToSend('2027-02-28'))).toEqual(['02-27', '02-28', '02-29']);
     expect(key(birthdaysToSend('2027-01-01'))).toEqual(['01-01', '12-31']);
     expect(key(birthdaysToSend('2026-11-16'))).toEqual(['11-15', '11-16']);
+  });
+  it('keys each email on the birthday it celebrates, so a catch-up across the new year cannot send twice', () => {
+    const id = '0f8fad5b-d9cb-469f-a165-70867728950e';
+    // A 31 December birthday: the run on the day and the 1 January catch-up share one key.
+    expect(birthdayEmailKey(id, '2026-12-31', 12, 31)).toBe(`birthday-reminder/${id}/2026-12-31`);
+    expect(birthdayEmailKey(id, '2027-01-01', 12, 31)).toBe(`birthday-reminder/${id}/2026-12-31`);
+    expect(birthdayEmailKey(id, '2027-01-01', 1, 1)).toBe(`birthday-reminder/${id}/2027-01-01`);
+    // A 29 February birthday in a year without one is celebrated on the 28th, on the day or caught up on 1 March.
+    expect(birthdayEmailKey(id, '2027-02-28', 2, 29)).toBe(`birthday-reminder/${id}/2027-02-28`);
+    expect(birthdayEmailKey(id, '2027-03-01', 2, 29)).toBe(`birthday-reminder/${id}/2027-02-28`);
+    // The next year's birthday is a new key.
+    expect(birthdayEmailKey(id, '2027-12-31', 12, 31)).not.toBe(birthdayEmailKey(id, '2026-12-31', 12, 31));
   });
 });
 

@@ -16,7 +16,8 @@ name: Birthday reminders
 on:
   schedule:
     # 10:07 UTC is 00:07 in Honolulu and 23:07 in Auckland in summer, so the UTC date is the local date
-    # from UTC-10 to UTC+13. The script also sends yesterday's birthdays a skipped run missed.
+    # from UTC-10 to UTC+13. At UTC-11 and UTC-12 the email arrives at about 23:07 the day before the
+    # birthday, and at UTC+14 a day late. The script also sends yesterday's birthdays a skipped run missed.
     - cron: "7 10 * * *" # daily, 10:07 UTC
   workflow_dispatch:
 

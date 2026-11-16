@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
-import { confirmReminder } from './store';
+import { confirmReminder, dueReminders } from './store';
 
 const ENV = { PUBLIC_SUPABASE_URL: 'https://synthetic.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service' };
 const ID = '0f8fad5b-d9cb-469f-a165-70867728950e';
@@ -19,6 +19,13 @@ describe('birthday reminder storage', () => {
     }
   });
 
+  it('asks for due reminders by month and day only', async () => {
+    const fetcher = vi.fn(async () => new Response('[]'));
+    await dueReminders([{ month: 12, day: 31, on: '2026-12-31' } as { month: number; day: number }], ENV, fetcher as unknown as typeof fetch);
+    expect(JSON.parse(String((fetcher.mock.calls[0] as unknown as [string, RequestInit])[1].body))).toEqual({ p_days: [{ month: 12, day: 31 }] });
+    expect(fn('birthday_reminders_due')).toContain('returns table (id uuid, email text, month smallint, day smallint)');
+  });
+
   it('confirms with the row id, so the confirmed page can carry a stop link', () => {
     expect(fn('birthday_reminder_confirm')).toContain('returns uuid');
     expect(fn('birthday_reminder_confirm')).toContain('return found_id;');
@@ -29,8 +36,12 @@ describe('birthday reminder storage', () => {
     expect(migration).toContain('request_count smallint not null default 0');
     expect(migration).toContain('window_started_at timestamptz');
     // The lock comes first, so two requests for one address cannot both pass either cap.
-    expect(request.indexOf('pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_email, 0))')).toBeGreaterThan(0);
+    expect(request.indexOf('pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_email, 7312031))')).toBeGreaterThan(0);
     expect(request.indexOf('pg_advisory_xact_lock')).toBeLessThan(request.indexOf('select requested_at'));
+    // Its seed is its own: no other migration locks on 7312031.
+    const dir = new URL('../../../supabase/migrations/', import.meta.url);
+    const others = readdirSync(dir).filter((name) => name.endsWith('.sql') && name !== '20261112090000_birthday_reminders.sql');
+    expect(others.filter((name) => readFileSync(new URL(name, dir), 'utf8').includes('7312031'))).toEqual([]);
     expect(request).toContain("window_start <= pg_catalog.now() - interval '24 hours'");
     expect(request).toContain("if sent >= 6 then return pg_catalog.jsonb_build_object('outcome', 'capped')");
     expect(request).toContain("interval '60 seconds'");

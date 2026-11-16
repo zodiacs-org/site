@@ -78,7 +78,7 @@ export default async function birthdayReminderHandler(req: any, res: any, deps: 
     // A link opens a page with a button; only the POST acts, so mail scanners that follow links change nothing.
     if (req.method === 'GET') {
       sendHtml(res, 200, confirm
-        ? dailyEmailPage('Confirm your birthday reminder', 'One email a year, on your birthday. We keep only your email address and your birthday’s month and day.', { action: `${PATH}?confirm=${encodeURIComponent(confirm)}`, token: confirm, label: 'Confirm the reminder' })
+        ? dailyEmailPage('Confirm your birthday reminder', 'One email a year, on your birthday. We keep your email address and your birthday’s month and day, and when you asked and confirmed.', { action: `${PATH}?confirm=${encodeURIComponent(confirm)}`, token: confirm, label: 'Confirm the reminder' })
         : dailyEmailPage('Stop birthday reminders', 'This deletes your email address and birthday from the reminder list.', { action: `${PATH}?unsubscribe=${encodeURIComponent(unsubscribe)}`, token: unsubscribe, label: 'Stop and delete' }));
       return;
     }
@@ -87,7 +87,7 @@ export default async function birthdayReminderHandler(req: any, res: any, deps: 
         const id = /^[A-Za-z0-9_-]{43}$/u.test(confirm) ? await confirmReminder(hashToken(confirm), env, fetcher) : null;
         // The confirmed page carries the stop link too, so the reminder can be deleted from the moment it is confirmed.
         sendHtml(res, id ? 200 : 410, id
-          ? dailyEmailPage('Birthday reminder confirmed', 'We will email you on your birthday to score your year ahead again. Every email has a link to stop. Keep this page’s link if you want to stop before your birthday.', { kind: 'link', href: '/', label: 'Return to Zodiacs.org', secondary: { href: `${PATH}?unsubscribe=${encodeURIComponent(unsubscribeToken(id, birthdayReminderSecret(env)))}`, label: 'Stop and delete' } })
+          ? dailyEmailPage('Birthday reminder confirmed', 'We will email you on your birthday to score your year ahead again. Every email has a link to stop. Keep the Stop and delete link, or the confirmation email, if you want to stop before your birthday.', { kind: 'link', href: '/', label: 'Return to Zodiacs.org', secondary: { href: `${PATH}?unsubscribe=${encodeURIComponent(unsubscribeToken(id, birthdayReminderSecret(env)))}`, label: 'Stop and delete' } })
           : dailyEmailPage('This link has expired', 'Confirmation links work for 48 hours. Score your year again to ask for a new one.', { kind: 'link', href: '/year-score/', label: 'Score your year' }));
         return;
       }

@@ -74,15 +74,29 @@ export function birthdaysOn(date: string): { month: number; day: number }[] {
  * next day, a day late rather than a year late; the 300-day rule in
  * birthday_reminders_due keeps the second run from sending again.
  */
-export function birthdaysToSend(date: string): { month: number; day: number }[] {
+export function birthdaysToSend(date: string): { month: number; day: number; on: string }[] {
   const yesterday = new Date(Date.parse(`${date}T00:00:00Z`) - 86_400_000).toISOString().slice(0, 10);
   const seen = new Set<string>();
-  return [...birthdaysOn(yesterday), ...birthdaysOn(date)].filter(({ month, day }) => {
+  return [
+    ...birthdaysOn(yesterday).map((birthday) => ({ ...birthday, on: yesterday })),
+    ...birthdaysOn(date).map((birthday) => ({ ...birthday, on: date })),
+  ].filter(({ month, day }) => {
     const key = `${month}-${day}`;
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
   });
+}
+
+/**
+ * The Resend idempotency key for one birthday email: the reminder and the
+ * birthday it celebrates (the UTC date it falls on), not the run's date or
+ * year. A 31 December birthday sent on the day and caught up on 1 January
+ * gets the same key, so Resend sends it once.
+ */
+export function birthdayEmailKey(id: string, runDate: string, month: number, day: number): string {
+  const on = birthdaysToSend(runDate).find((birthday) => birthday.month === month && birthday.day === day)?.on ?? runDate;
+  return `birthday-reminder/${id}/${on}`;
 }
 
 /** A random confirmation token, and the hash that is stored in its place. */
@@ -140,11 +154,12 @@ export function birthdayEmail(origin: string, unsubscribeUrl: string, postalAddr
     text: [
       'Happy birthday.',
       '',
-      'Your solar return falls on or within a day of your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.',
+      'Your solar return falls around your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.',
       '',
       `Score the twelve months ahead: ${origin}/year-score/`,
       '',
       `Stop these birthday emails: ${unsubscribeUrl}`,
+      '',
       postalAddress,
     ].join('\n'),
   };

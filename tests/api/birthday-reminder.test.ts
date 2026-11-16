@@ -85,7 +85,9 @@ describe('the birthday reminder endpoint', () => {
     expect(String((fetcher.mock.calls[0] as unknown[])[0])).toContain('/rest/v1/rpc/birthday_reminder_confirm');
     expect(res.body).toContain('Stop and delete');
     expect(res.body).toContain(`/api/email/birthday-reminder?unsubscribe=${unsubscribeToken(id, SECRET)}`);
-    expect(res.body).toContain('if you want to stop before your birthday');
+    // The page points to the stop link itself: reopening the confirmation link only shows an expired page.
+    expect(res.body).toContain('Keep the Stop and delete link, or the confirmation email, if you want to stop before your birthday.');
+    expect(res.body).not.toMatch(/this page(?:’|&#39;|')s link/u);
     expect(res.body).not.toMatch(/[–—]/u);
   });
 

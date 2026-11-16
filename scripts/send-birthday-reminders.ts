@@ -19,7 +19,7 @@
  *   npx vite-node --script scripts/send-birthday-reminders.ts [--date YYYY-MM-DD] [--dry-run] [--cleanup-only]
  */
 import { birthdayReminderEnabled, birthdayReminderSecret, birthdayReminderStorageReady } from '../src/lib/birthday-reminder/config';
-import { birthdayEmail, birthdaysToSend, unsubscribeToken } from '../src/lib/birthday-reminder/core';
+import { birthdayEmail, birthdayEmailKey, birthdaysToSend, unsubscribeToken } from '../src/lib/birthday-reminder/core';
 import { sendPlainEmail } from '../src/lib/birthday-reminder/send';
 import { claimReminder, dueReminders, releaseReminder, sweepExpiredRequests } from '../src/lib/birthday-reminder/store';
 
@@ -57,7 +57,7 @@ for (const reminder of due) {
   if (!await claimReminder(reminder.id)) { skipped++; continue; }
   const unsubscribeUrl = `${origin}/api/email/birthday-reminder?unsubscribe=${unsubscribeToken(reminder.id, birthdayReminderSecret())}`;
   try {
-    await sendPlainEmail(reminder.email, birthdayEmail(origin, unsubscribeUrl, postalAddress), process.env, fetch, { 'List-Unsubscribe': `<${unsubscribeUrl}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' }, `birthday-reminder/${reminder.id}/${date.slice(0, 4)}`);
+    await sendPlainEmail(reminder.email, birthdayEmail(origin, unsubscribeUrl, postalAddress), process.env, fetch, { 'List-Unsubscribe': `<${unsubscribeUrl}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' }, birthdayEmailKey(reminder.id, date, reminder.month, reminder.day));
     sent++;
   } catch {
     failed++;

@@ -51,7 +51,7 @@ create or replace function public.birthday_reminder_request(p_email text, p_mont
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare previous timestamptz; confirmed timestamptz; sent smallint; window_start timestamptz; reminder_id uuid;
 begin
-  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_email, 0));
+  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_email, 7312031));
   perform public.birthday_reminders_sweep();
   select requested_at, confirmed_at, request_count, window_started_at into previous, confirmed, sent, window_start
     from zodiacs_reminders_private.birthday_reminders where email = p_email;
@@ -100,11 +100,12 @@ $$;
 -- Reads only: the expired requests are deleted by birthday_reminders_sweep, so a dry run changes nothing.
 -- The daily run asks for today's and yesterday's birthdays, so one skipped run loses nothing. A reminder
 -- counts as sent for 300 days after its email, not until the calendar year ends, so a 31 December
--- birthday sent on the day is not sent again by the 1 January run.
+-- birthday sent on the day is not sent again by the 1 January run. The month and day come back so the
+-- run can key each email on the birthday it celebrates.
 create or replace function public.birthday_reminders_due(p_days jsonb)
-returns table (id uuid, email text) language plpgsql stable security definer set search_path = '' as $$
+returns table (id uuid, email text, month smallint, day smallint) language plpgsql stable security definer set search_path = '' as $$
 begin
-  return query select r.id, r.email from zodiacs_reminders_private.birthday_reminders r
+  return query select r.id, r.email, r.month, r.day from zodiacs_reminders_private.birthday_reminders r
     join pg_catalog.jsonb_to_recordset(p_days) as d(month int, day int) on r.month = d.month and r.day = d.day
     where r.confirmed_at is not null
       and (r.last_sent_on is null or r.last_sent_on < (pg_catalog.now() at time zone 'UTC')::date - 300);
