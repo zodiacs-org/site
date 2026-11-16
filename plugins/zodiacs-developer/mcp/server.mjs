@@ -43095,7 +43095,7 @@ var GOAL_RULES = {
 var PARTNERSHIP_GOALS = /* @__PURE__ */ new Set(["relationship", "wedding"]);
 
 // src/lib/good-days/personal.ts
-var UNTIMED_DROPPED_MESSAGE = "No birth time was given, so contacts that cannot be dated to one day (mostly Jupiter's and Saturn's) are left out.";
+var UNTIMED_DROPPED_MESSAGE = "No birth time was given, so contacts from Venus, Mars, Jupiter and Saturn are counted only on the rare days a birth date alone can date them; most, often all, are left out.";
 var HOUR6 = 36e5;
 var BENEFICS = ["Venus", "Jupiter"];
 var MALEFICS = ["Mars", "Saturn"];

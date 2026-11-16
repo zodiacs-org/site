@@ -47,7 +47,7 @@ export interface PersonalFactors {
   dropped: boolean;
 }
 
-export const UNTIMED_DROPPED_MESSAGE = 'No birth time was given, so contacts that cannot be dated to one day (mostly Jupiter\'s and Saturn\'s) are left out.';
+export const UNTIMED_DROPPED_MESSAGE = 'No birth time was given, so contacts from Venus, Mars, Jupiter and Saturn are counted only on the rare days a birth date alone can date them; most, often all, are left out.';
 
 export interface PersonalDay { date: string; start: Date; end: Date; moonSign: string }
 
