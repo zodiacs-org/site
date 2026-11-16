@@ -49,7 +49,14 @@ export interface PersonalFactors {
 
 export const UNTIMED_DROPPED_MESSAGE = 'No birth time was given, so contacts from Venus, Mars, Jupiter and Saturn are counted only on the rare days a birth date alone can date them; most, often all, are left out.';
 
-export interface PersonalDay { date: string; start: Date; end: Date; moonSign: string }
+export interface PersonalDay {
+  date: string;
+  start: Date;
+  end: Date;
+  moonSign: string;
+  /** On a day the Moon changes sign in the waking hours: when it holds moonSign, the sign it holds longest ("from 12:18"). */
+  moonWhen?: string;
+}
 
 const HOUR = 3_600_000;
 const BENEFICS: readonly TransitBody[] = ['Venus', 'Jupiter'];
@@ -137,8 +144,11 @@ export function personalFactors(chart: PersonalChart, days: readonly PersonalDay
       const gap = (SIGNS.findIndex((sign) => sign.slug === day.moonSign) - sunIndex + 12) % 12;
       const moon = signName(day.moonSign);
       const sun = signName(chart.sun!);
-      if (gap === 0 || gap === 4 || gap === 8) out[index].push({ points: 4, text: `The Moon is in ${moon}, the same element as your ${sun} Sun: a day tradition reads as in step with you.`, clause: `the Moon in step with your ${sun} Sun` });
-      else if (gap === 3 || gap === 6 || gap === 9) out[index].push({ points: -3, text: `The Moon is in ${moon}, square or opposite your ${sun} Sun by sign: a day tradition reads as a little out of step with you.`, clause: `the Moon out of step with your ${sun} Sun` });
+      const when = day.moonWhen ? ` ${day.moonWhen}` : '';
+      // On a sign-change day the clause says which sign it means and when, as the day's own reason does.
+      const which = when ? ` in ${moon}${when},` : '';
+      if (gap === 0 || gap === 4 || gap === 8) out[index].push({ points: 4, text: `The Moon is in ${moon}${when}, the same element as your ${sun} Sun: a day tradition reads as in step with you.`, clause: `the Moon${which} in step with your ${sun} Sun` });
+      else if (gap === 3 || gap === 6 || gap === 9) out[index].push({ points: -3, text: `The Moon is in ${moon}${when}, square or opposite your ${sun} Sun by sign: a day tradition reads as a little out of step with you.`, clause: `the Moon${which} out of step with your ${sun} Sun` });
     });
   }
   const points: NatalPoint[] = ['Sun', 'Venus', ...(chart.timeKnown ? ['Moon' as const] : [])];

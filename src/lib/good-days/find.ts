@@ -28,7 +28,7 @@ import { moonAspects, moonIngresses } from '@zodiacs/engine/techniques';
 import eclipseTable from '../../data/eclipses.json';
 import { SIGNS } from '../signs';
 import { GOAL_RULES, GOOD_DAYS_NOTE, PARTNERSHIP_GOALS, type GoodDayGoal, type Significator } from './goals';
-import { UNTIMED_DROPPED_MESSAGE, personalFactors, preparePersonal, type BirthDetails, type PersonalChart } from './personal';
+import { UNTIMED_DROPPED_MESSAGE, personalFactors, preparePersonal, type BirthDetails, type PersonalChart, type PersonalDay } from './personal';
 import { isUnder13, isUnder18 } from '../../ai-tools/features/reading-guards';
 
 const DAY = 86_400_000;
@@ -316,6 +316,9 @@ function phaseFactor(goal: GoodDayGoal, day: DaySky): Factor | null {
   return null;
 }
 
+/** The shortest stretch of the waking hours a Moon sign is read for: half an hour. */
+const MIN_SEGMENT = 30 * 60_000;
+
 /** One stretch of the waking hours with the Moon in one sign. */
 export interface MoonSegment { sign: string; from: Date; to: Date }
 
@@ -340,15 +343,23 @@ function moonSegments(day: DaySky, periods: readonly VoidPeriod[]): MoonSegment[
     cursor = period.to;
   }
   out.push({ sign, from: cursor, to: day.wakeTo });
-  return out.filter((segment) => segment.to.getTime() > segment.from.getTime());
+  // A sign held for less than half an hour of the waking day is too brief to read: its minutes go to the sign beside it.
+  const merged: MoonSegment[] = [];
+  for (const segment of out) {
+    const previous = merged.at(-1);
+    if (previous && (segment.to.getTime() - segment.from.getTime() < MIN_SEGMENT || previous.to.getTime() - previous.from.getTime() < MIN_SEGMENT)) {
+      merged[merged.length - 1] = segment.to.getTime() - segment.from.getTime() < MIN_SEGMENT ? { ...previous, to: segment.to } : { ...segment, from: previous.from };
+    } else merged.push(segment);
+  }
+  return merged.filter((segment) => segment.to.getTime() > segment.from.getTime());
 }
 
 const moonSignPoints = (goal: GoodDayGoal, sign: string) => (GOAL_RULES[goal].moonGood.includes(sign) ? 8 : GOAL_RULES[goal].moonPoor.includes(sign) ? -6 : 0);
-/** The tradition's word on a sign, as a clause to follow its name, or nothing for a sign it reads neither way. */
+/** The tradition's word on a sign, "a sign tradition ...", or nothing for a sign it reads neither way. */
 function moonSignWhy(goal: GoodDayGoal, sign: string): string {
   const rule = GOAL_RULES[goal];
-  if (rule.moonGood.includes(sign)) return `, a sign ${rule.moonWhy}`;
-  if (rule.moonPoor.includes(sign)) return `, a sign tradition sets aside ${rule.forWhat}`;
+  if (rule.moonGood.includes(sign)) return `a sign ${rule.moonWhy}`;
+  if (rule.moonPoor.includes(sign)) return `a sign tradition sets aside ${rule.forWhat}`;
   return '';
 }
 
@@ -356,7 +367,7 @@ function moonSignFactor(goal: GoodDayGoal, sign: string): Factor | null {
   const name = signName(sign);
   const points = moonSignPoints(goal, sign);
   if (!points) return null;
-  return { points, text: `The Moon is in ${name}${moonSignWhy(goal, sign)}.`, clause: `the Moon in ${name}` };
+  return { points, text: `The Moon is in ${name}, ${moonSignWhy(goal, sign)}.`, clause: `the Moon in ${name}` };
 }
 
 /**
@@ -370,16 +381,13 @@ export function moonSegmentsFactor(goal: GoodDayGoal, segments: readonly MoonSeg
   const total = segments.reduce((sum, segment) => sum + hours(segment), 0);
   const points = Math.round(segments.reduce((sum, segment) => sum + moonSignPoints(goal, segment.sign) * hours(segment), 0) / total) || 0;
   const until = (index: number) => (index < segments.length - 1 ? ` until ${clockOn(segments[index].to, zone, date)}` : '');
-  // A sign before the change gets its word as an aside: "in Libra, a sign tradition reads as ..., until 12:30, then in Scorpio".
-  const text = segments.map((segment, index) => {
-    const why = moonSignWhy(goal, segment.sign);
-    return `${signName(segment.sign)}${why}${why && until(index) ? ',' : ''}${until(index)}`;
-  });
-  return {
-    points,
-    text: `The Moon is in ${text.join(', then in ')}.`,
-    clause: `the Moon in ${segments.map((segment, index) => `${signName(segment.sign)}${until(index)}`).join(', then in ')}`,
-  };
+  const course = segments.map((segment, index) => `${signName(segment.sign)}${until(index)}`).join(', then in ');
+  // Only the last sign rated: its word follows it. Otherwise each rated sign gets its own plain clause after the course.
+  const rated = segments.filter((segment) => moonSignWhy(goal, segment.sign));
+  const words = rated.length === 1 && rated[0] === segments.at(-1)
+    ? `, ${moonSignWhy(goal, rated[0].sign)}`
+    : `: ${rated.map((segment) => `${signName(segment.sign)} is ${moonSignWhy(goal, segment.sign)}`).join(', and ')}`;
+  return { points, text: `The Moon is in ${course}${words}.`, clause: `the Moon in ${course}` };
 }
 
 function eclipseFactor(day: DaySky): Factor | null {
@@ -540,8 +548,16 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
   // The Moon's signs through each day's waking hours; a day it changes sign is read by the sign it holds longest.
   const segments = skies.map((day) => moonSegments(day, periods));
   const length = (segment: MoonSegment) => segment.to.getTime() - segment.from.getTime();
-  const moonSigns = skies.map((day, index) => (segments[index].length < 2 ? day.moonSign : segments[index].reduce((longest, segment) => (length(segment) > length(longest) ? segment : longest)).sign));
-  const personal = chart ? personalFactors(chart, skies.map((day, index) => ({ date: day.date, start: day.start, end: day.end, moonSign: moonSigns[index] })), input.zone) : null;
+  const personalDays = skies.map((day, index): PersonalDay => {
+    const list = segments[index];
+    if (list.length < 2) return { date: day.date, start: day.start, end: day.end, moonSign: day.moonSign };
+    const longest = list.reduce((best, segment) => (length(segment) > length(best) ? segment : best));
+    const at = list.indexOf(longest);
+    // When it holds that sign, said as the day's own Moon line says it: "from 12:18", "until 12:18".
+    const when = [at > 0 ? `from ${clockOn(longest.from, input.zone, day.date)}` : '', at < list.length - 1 ? `until ${clockOn(longest.to, input.zone, day.date)}` : ''].filter(Boolean).join(' ');
+    return { date: day.date, start: day.start, end: day.end, moonSign: longest.sign, moonWhen: when };
+  });
+  const personal = chart ? personalFactors(chart, personalDays, input.zone) : null;
   if (personal?.dropped) messages.push(UNTIMED_DROPPED_MESSAGE);
 
   const rated = skies.map((day, index) => {
@@ -569,10 +585,11 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
     .sort((a, b) => a.day.date.localeCompare(b.day.date))
     .map((row): AvoidDay => ({ date: row.day.date, label: dayLabel(row.day.date), score: row.score, reason: oneLine(row.factors, false) }));
 
-  const eclipsePeriods: GoodDaysPeriod[] = ECLIPSES.filter((row) => row.at >= windowStart.getTime() - 3 * DAY && row.at < windowEnd.getTime() + 3 * DAY).map((row) => {
+  // An eclipse's period is the days the avoid list marks for it, the local day itself and the day either side, when they touch the window.
+  const eclipsePeriods: GoodDaysPeriod[] = ECLIPSES.map((row) => {
     const date = localParts(new Date(row.at), input.zone).date;
-    return { kind: 'eclipse', from: addDays(date, -3), to: addDays(date, 3), line: `${cap(row.kind)} ${row.type} eclipse in ${signName(row.sign)} on ${longDay(date)}: tradition keeps the day itself and the day either side clear for beginnings.` };
-  });
+    return { kind: 'eclipse' as const, from: addDays(date, -1), to: addDays(date, 1), line: `${cap(row.kind)} ${row.type} eclipse in ${signName(row.sign)} on ${longDay(date)}: tradition keeps the day itself and the day either side clear for beginnings.` };
+  }).filter((period) => period.to >= from && period.from <= to);
   if (best.length && best[0].score < 66) messages.push('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
   if (best.length < count) messages.push('Every other day in the window falls on a day tradition would avoid.');
   if (input.zone === 'UTC') messages.push('Days and times are in UTC because no time zone was given.');

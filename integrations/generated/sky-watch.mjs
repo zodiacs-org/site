@@ -41918,8 +41918,10 @@ function personalFactors(chart, days, zone10) {
       const gap = (SIGNS2.findIndex((sign3) => sign3.slug === day2.moonSign) - sunIndex + 12) % 12;
       const moon = signName6(day2.moonSign);
       const sun = signName6(chart.sun);
-      if (gap === 0 || gap === 4 || gap === 8) out[index].push({ points: 4, text: `The Moon is in ${moon}, the same element as your ${sun} Sun: a day tradition reads as in step with you.`, clause: `the Moon in step with your ${sun} Sun` });
-      else if (gap === 3 || gap === 6 || gap === 9) out[index].push({ points: -3, text: `The Moon is in ${moon}, square or opposite your ${sun} Sun by sign: a day tradition reads as a little out of step with you.`, clause: `the Moon out of step with your ${sun} Sun` });
+      const when = day2.moonWhen ? ` ${day2.moonWhen}` : "";
+      const which = when ? ` in ${moon}${when},` : "";
+      if (gap === 0 || gap === 4 || gap === 8) out[index].push({ points: 4, text: `The Moon is in ${moon}${when}, the same element as your ${sun} Sun: a day tradition reads as in step with you.`, clause: `the Moon${which} in step with your ${sun} Sun` });
+      else if (gap === 3 || gap === 6 || gap === 9) out[index].push({ points: -3, text: `The Moon is in ${moon}${when}, square or opposite your ${sun} Sun by sign: a day tradition reads as a little out of step with you.`, clause: `the Moon${which} out of step with your ${sun} Sun` });
     });
   }
   const points = ["Sun", "Venus", ...chart.timeKnown ? ["Moon"] : []];
@@ -42103,6 +42105,7 @@ function phaseFactor(goal, day2) {
   if (band === "waxing") return { points: -4, text: `The Moon is waxing (${lit}); tradition prefers a waning Moon ${rule.forWhat}.`, clause: `a waxing Moon (${lit})` };
   return null;
 }
+var MIN_SEGMENT = 30 * 6e4;
 function moonSegments(day2, periods) {
   const wakeFrom = day2.wakeFrom.getTime();
   const wakeTo = day2.wakeTo.getTime();
@@ -42119,20 +42122,27 @@ function moonSegments(day2, periods) {
     cursor = period.to;
   }
   out.push({ sign: sign3, from: cursor, to: day2.wakeTo });
-  return out.filter((segment) => segment.to.getTime() > segment.from.getTime());
+  const merged = [];
+  for (const segment of out) {
+    const previous = merged.at(-1);
+    if (previous && (segment.to.getTime() - segment.from.getTime() < MIN_SEGMENT || previous.to.getTime() - previous.from.getTime() < MIN_SEGMENT)) {
+      merged[merged.length - 1] = segment.to.getTime() - segment.from.getTime() < MIN_SEGMENT ? { ...previous, to: segment.to } : { ...segment, from: previous.from };
+    } else merged.push(segment);
+  }
+  return merged.filter((segment) => segment.to.getTime() > segment.from.getTime());
 }
 var moonSignPoints = (goal, sign3) => GOAL_RULES[goal].moonGood.includes(sign3) ? 8 : GOAL_RULES[goal].moonPoor.includes(sign3) ? -6 : 0;
 function moonSignWhy(goal, sign3) {
   const rule = GOAL_RULES[goal];
-  if (rule.moonGood.includes(sign3)) return `, a sign ${rule.moonWhy}`;
-  if (rule.moonPoor.includes(sign3)) return `, a sign tradition sets aside ${rule.forWhat}`;
+  if (rule.moonGood.includes(sign3)) return `a sign ${rule.moonWhy}`;
+  if (rule.moonPoor.includes(sign3)) return `a sign tradition sets aside ${rule.forWhat}`;
   return "";
 }
 function moonSignFactor(goal, sign3) {
   const name = signName7(sign3);
   const points = moonSignPoints(goal, sign3);
   if (!points) return null;
-  return { points, text: `The Moon is in ${name}${moonSignWhy(goal, sign3)}.`, clause: `the Moon in ${name}` };
+  return { points, text: `The Moon is in ${name}, ${moonSignWhy(goal, sign3)}.`, clause: `the Moon in ${name}` };
 }
 function moonSegmentsFactor(goal, segments, zone10, date3, noonSign) {
   if (segments.length < 2) return moonSignFactor(goal, noonSign);
@@ -42141,15 +42151,10 @@ function moonSegmentsFactor(goal, segments, zone10, date3, noonSign) {
   const total = segments.reduce((sum, segment) => sum + hours(segment), 0);
   const points = Math.round(segments.reduce((sum, segment) => sum + moonSignPoints(goal, segment.sign) * hours(segment), 0) / total) || 0;
   const until = (index) => index < segments.length - 1 ? ` until ${clockOn(segments[index].to, zone10, date3)}` : "";
-  const text2 = segments.map((segment, index) => {
-    const why2 = moonSignWhy(goal, segment.sign);
-    return `${signName7(segment.sign)}${why2}${why2 && until(index) ? "," : ""}${until(index)}`;
-  });
-  return {
-    points,
-    text: `The Moon is in ${text2.join(", then in ")}.`,
-    clause: `the Moon in ${segments.map((segment, index) => `${signName7(segment.sign)}${until(index)}`).join(", then in ")}`
-  };
+  const course = segments.map((segment, index) => `${signName7(segment.sign)}${until(index)}`).join(", then in ");
+  const rated = segments.filter((segment) => moonSignWhy(goal, segment.sign));
+  const words = rated.length === 1 && rated[0] === segments.at(-1) ? `, ${moonSignWhy(goal, rated[0].sign)}` : `: ${rated.map((segment) => `${signName7(segment.sign)} is ${moonSignWhy(goal, segment.sign)}`).join(", and ")}`;
+  return { points, text: `The Moon is in ${course}${words}.`, clause: `the Moon in ${course}` };
 }
 function eclipseFactor(day2) {
   const within = ECLIPSES2.filter((row) => row.at >= day2.start.getTime() && row.at < day2.end.getTime());
@@ -42286,8 +42291,15 @@ async function findGoodDays(input, clock2) {
   const aspects2 = scanned.aspects.filter((row) => row.at.getTime() >= windowStart.getTime() && row.at.getTime() < windowEnd2.getTime());
   const segments = skies.map((day2) => moonSegments(day2, periods));
   const length = (segment) => segment.to.getTime() - segment.from.getTime();
-  const moonSigns = skies.map((day2, index) => segments[index].length < 2 ? day2.moonSign : segments[index].reduce((longest, segment) => length(segment) > length(longest) ? segment : longest).sign);
-  const personal2 = chart ? personalFactors(chart, skies.map((day2, index) => ({ date: day2.date, start: day2.start, end: day2.end, moonSign: moonSigns[index] })), input.zone) : null;
+  const personalDays = skies.map((day2, index) => {
+    const list3 = segments[index];
+    if (list3.length < 2) return { date: day2.date, start: day2.start, end: day2.end, moonSign: day2.moonSign };
+    const longest = list3.reduce((best2, segment) => length(segment) > length(best2) ? segment : best2);
+    const at = list3.indexOf(longest);
+    const when = [at > 0 ? `from ${clockOn(longest.from, input.zone, day2.date)}` : "", at < list3.length - 1 ? `until ${clockOn(longest.to, input.zone, day2.date)}` : ""].filter(Boolean).join(" ");
+    return { date: day2.date, start: day2.start, end: day2.end, moonSign: longest.sign, moonWhen: when };
+  });
+  const personal2 = chart ? personalFactors(chart, personalDays, input.zone) : null;
   if (personal2?.dropped) messages.push(UNTIMED_DROPPED_MESSAGE);
   const rated = skies.map((day2, index) => {
     const voids = voidFactor(day2, periods, input.zone);
@@ -42314,10 +42326,10 @@ async function findGoodDays(input, clock2) {
     voidOfCourse: row.spans
   }));
   const avoid = pick([...rated].filter((row) => row.avoid || row.score < 45).sort((a, b) => Number(b.avoid) - Number(a.avoid) || a.score - b.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), AVOID_COUNT).sort((a, b) => a.day.date.localeCompare(b.day.date)).map((row) => ({ date: row.day.date, label: dayLabel3(row.day.date), score: row.score, reason: oneLine(row.factors, false) }));
-  const eclipsePeriods = ECLIPSES2.filter((row) => row.at >= windowStart.getTime() - 3 * DAY17 && row.at < windowEnd2.getTime() + 3 * DAY17).map((row) => {
+  const eclipsePeriods = ECLIPSES2.map((row) => {
     const date3 = localParts(new Date(row.at), input.zone).date;
-    return { kind: "eclipse", from: addDays3(date3, -3), to: addDays3(date3, 3), line: `${cap11(row.kind)} ${row.type} eclipse in ${signName7(row.sign)} on ${longDay2(date3)}: tradition keeps the day itself and the day either side clear for beginnings.` };
-  });
+    return { kind: "eclipse", from: addDays3(date3, -1), to: addDays3(date3, 1), line: `${cap11(row.kind)} ${row.type} eclipse in ${signName7(row.sign)} on ${longDay2(date3)}: tradition keeps the day itself and the day either side clear for beginnings.` };
+  }).filter((period) => period.to >= from && period.from <= to);
   if (best.length && best[0].score < 66) messages.push("No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.");
   if (best.length < count) messages.push("Every other day in the window falls on a day tradition would avoid.");
   if (input.zone === "UTC") messages.push("Days and times are in UTC because no time zone was given.");

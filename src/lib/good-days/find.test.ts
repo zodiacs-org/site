@@ -71,7 +71,23 @@ describe('known answers', { timeout: TIMEOUT }, () => {
     const eclipseDay = result.avoid.find((day) => day.date === '2027-08-02');
     expect(eclipseDay?.reason).toBe('A total solar eclipse in Leo falls today: tradition keeps important beginnings away from eclipses.');
     for (const day of result.best) expect(daysApart(day.date, '2027-08-02')).toBeGreaterThan(1);
-    expect(result.periods.find((period) => period.kind === 'eclipse' && period.line.includes('2 August'))!.line).toBe('Total solar eclipse in Leo on 2 August 2027: tradition keeps the day itself and the day either side clear for beginnings.');
+    const period = result.periods.find((row) => row.kind === 'eclipse' && row.line.includes('2 August'))!;
+    expect(period.line).toBe('Total solar eclipse in Leo on 2 August 2027: tradition keeps the day itself and the day either side clear for beginnings.');
+    // The period is the days its line names, which are the days the avoid list marks for it.
+    expect([period.from, period.to]).toEqual(['2027-08-01', '2027-08-03']);
+    const week = await findGoodDays({ goal: 'launch', from: '2027-07-30', to: '2027-08-05', zone: 'Europe/Madrid', count: 7, today: TODAY }, clock);
+    for (const date of ['2027-08-01', '2027-08-02', '2027-08-03']) {
+      expect(week.avoid.map((day) => day.date)).toContain(date);
+      expect(week.best.map((day) => day.date)).not.toContain(date);
+    }
+    for (const date of ['2027-07-31', '2027-08-04']) expect(week.best.map((day) => day.date)).toContain(date);
+  });
+
+  it('lists an eclipse period only when its days touch the window', async () => {
+    // The partial lunar eclipse of 18 July and the total solar eclipse of 2 August 2027, on the Madrid clock.
+    const read = (to: string) => findGoodDays({ goal: 'launch', from: '2027-07-20', to, zone: 'Europe/Madrid', today: TODAY }, clock);
+    expect((await read('2027-07-31')).periods.filter((row) => row.kind === 'eclipse')).toEqual([]);
+    expect((await read('2027-08-01')).periods.filter((row) => row.kind === 'eclipse').map((row) => [row.from, row.to])).toEqual([['2027-08-01', '2027-08-03']]);
   });
 
   it('names the Moon\'s phase by its angle: dark, waxing, full and waning', () => {
@@ -115,7 +131,7 @@ describe('the electional rules', { timeout: TIMEOUT }, () => {
     const result = await findGoodDays({ goal: 'wedding', from: '2027-03-23', to: '2027-03-25', zone: 'UTC', count: 3, today: TODAY }, clock);
     const day = result.best.find((row) => row.date === '2027-03-24')!;
     const lines = day.factors.filter((line) => /until \d\d:\d\d, then in/u.test(line));
-    expect(lines).toEqual(['The Moon is in Libra, a sign tradition reads as tender and celebratory, until 12:18, then in Scorpio, a sign tradition sets aside for a wedding.']);
+    expect(lines).toEqual(['The Moon is in Libra until 12:18, then in Scorpio: Libra is a sign tradition reads as tender and celebratory, and Scorpio is a sign tradition sets aside for a wedding.']);
     // No line says the Moon is in one sign all day.
     expect(day.factors.some((line) => /^The Moon is in (?:Libra|Scorpio)[,.]/u.test(line) && !line.includes('until'))).toBe(false);
 
@@ -134,6 +150,33 @@ describe('the electional rules', { timeout: TIMEOUT }, () => {
     expect(moonSegmentsFactor('wedding', [{ ...segments[0], sign: 'gemini' }, { ...segments[1], sign: 'virgo' }], 'UTC', '2027-03-24', 'gemini')).toBeNull();
     // A sign change before the rated sign: the word follows the sign it is about.
     expect(moonSegmentsFactor('wedding', [{ ...segments[0], sign: 'gemini' }, { ...segments[1], sign: 'cancer' }], 'UTC', '2027-03-24', 'cancer')!.text).toBe('The Moon is in Gemini until 12:18, then in Cancer, a sign tradition reads as tender and celebratory.');
+    // A rated sign before the change: the course first, then the sign's word, with no aside around the time.
+    const move = moonSegmentsFactor('move', [{ ...segments[0], sign: 'taurus' }, { ...segments[1], sign: 'gemini' }], 'UTC', '2027-03-24', 'gemini')!;
+    expect(move.text).toBe('The Moon is in Taurus until 12:18, then in Gemini: Taurus is a sign tradition reads as settled, a sign for staying put.');
+    expect(move.text).not.toMatch(/, until/u);
+  });
+
+  it('reads a sign the Moon holds for under half an hour of the waking day as the sign beside it', async () => {
+    // The Moon enters Libra at 08:01 UTC on 22 March 2027 and Sagittarius at 19:43 UTC on 26 March 2027.
+    const ingresses = ingressTable.ingresses as { sign: string; at: string }[];
+    expect(ingresses.find((row) => row.at.startsWith('2027-03-22'))!.at.slice(11, 16)).toBe('08:01');
+    expect(ingresses.find((row) => row.at.startsWith('2027-03-26'))!.at.slice(11, 16)).toBe('19:43');
+    for (const [date, line] of [['2027-03-22', 'The Moon is in Libra, a sign tradition reads as tender and celebratory.'], ['2027-03-26', 'The Moon is in Scorpio, a sign tradition sets aside for a wedding.']]) {
+      const result = await findGoodDays({ goal: 'wedding', from: date, to: date, zone: 'UTC', count: 1, today: TODAY }, clock);
+      expect(result.best[0].date).toBe(date);
+      expect(result.best[0].factors, date).toContain(line);
+      expect(result.best[0].factors.filter((text) => text.includes('until 08:01') || text.includes('until 19:43') || text.includes('then in')), date).toEqual([]);
+    }
+  });
+
+  it('says on a sign-change day which sign the personal line reads, and when', async () => {
+    // The Moon is in Scorpio from 12:18 UTC on 24 March 2027, most of the waking day: a water sign, as a Cancer Sun is.
+    const result = await findGoodDays({ goal: 'wedding', from: '2027-03-23', to: '2027-03-25', zone: 'UTC', count: 3, birth: { date: '1990-07-10' }, today: TODAY }, clock);
+    expect(result.personal?.sun).toBe('cancer');
+    const day = result.best.find((row) => row.date === '2027-03-24')!;
+    expect(day.factors).toContain('The Moon is in Scorpio from 12:18, the same element as your Cancer Sun: a day tradition reads as in step with you.');
+    // A day in one sign reads as before.
+    expect(result.best.find((row) => row.date === '2027-03-25')!.factors).toContain('The Moon is in Scorpio, the same element as your Cancer Sun: a day tradition reads as in step with you.');
   });
 
   it('puts a sign change on the local day of the waking hours it falls in, far east and far west, the same each time', async () => {
@@ -146,8 +189,8 @@ describe('the electional rules', { timeout: TIMEOUT }, () => {
     const west = await findGoodDays({ ...input, zone: 'Pacific/Pago_Pago' }, clock);
     expect(JSON.stringify(await findGoodDays({ ...input, zone: 'Pacific/Pago_Pago' }, clock))).toBe(JSON.stringify(west));
     const changes = (result: typeof east) => result.best.flatMap((day) => day.factors.filter((line) => /until \d\d:\d\d, then in Gemini/u.test(line)).map((line) => ({ date: day.date, line })));
-    expect(changes(east)).toEqual([{ date: '2027-03-14', line: 'The Moon is in Taurus, a sign tradition reads as tender and celebratory, until 11:30, then in Gemini.' }]);
-    expect(changes(west)).toEqual([{ date: '2027-03-13', line: 'The Moon is in Taurus, a sign tradition reads as tender and celebratory, until 10:30, then in Gemini.' }]);
+    expect(changes(east)).toEqual([{ date: '2027-03-14', line: 'The Moon is in Taurus until 11:30, then in Gemini: Taurus is a sign tradition reads as tender and celebratory.' }]);
+    expect(changes(west)).toEqual([{ date: '2027-03-13', line: 'The Moon is in Taurus until 10:30, then in Gemini: Taurus is a sign tradition reads as tender and celebratory.' }]);
   });
 });
 
