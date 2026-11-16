@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { executeAiTool } from './tools';
-import { localIso, localMinuteIso, minuteUtc, moonCycle, moonDirection, moonPhaseLabel, roundToMinute } from './clear-time';
+import { eventTimes, localIso, localMinuteIso, minuteUtc, moonCycle, moonDirection, moonPhaseLabel, roundToMinute, shownTime, shownUtc } from './clear-time';
 import { calculateWindow } from './watch/worker';
 import { computeEvents } from '../lib/compute-api/endpoints';
 import { parseEventsRequest } from '../lib/compute-api/validate';
+import { EPOCH } from '../lib/compute-api/constants';
 import { moonPhase } from '@zodiacs/engine';
 
 /**
@@ -88,7 +89,72 @@ describe('times an assistant can read one way only', () => {
     for (const event of result.data.events) expect(event.localAt).toBe(`${event.at.slice(0, 19)}+00:00`);
   });
 
-  it('Sky Watch still takes the solved instants, so its event ids do not move', async () => {
+  it('never shows a time outside the window searched: at an edge it rounds toward the inside', () => {
+    const window = { from: '2026-11-10T14:00:00Z', to: '2026-11-10T14:31:45Z' };
+    // 14:31:41 rounds to 14:32, past the end: it shows 14:31.
+    expect(eventTimes('2026-11-10T14:31:41Z', 'UTC', window)).toEqual({ at: '2026-11-10T14:31:00Z', localAt: '2026-11-10T14:31:00+00:00' });
+    expect(eventTimes('2026-11-10T14:31:41Z', 'Asia/Bangkok', window).localAt).toBe('2026-11-10T21:31:00+07:00');
+    // Inside the window the nearest minute is kept, up or down.
+    expect(eventTimes('2026-11-10T14:20:41Z', 'UTC', window).at).toBe('2026-11-10T14:21:00Z');
+    expect(eventTimes('2026-11-10T14:20:21Z', 'UTC', window).at).toBe('2026-11-10T14:20:00Z');
+    // 14:00:10 in a window that starts at 14:00:05 rounds to 14:00, before the start: it shows 14:01.
+    expect(eventTimes('2026-11-10T14:00:10Z', 'UTC', { from: '2026-11-10T14:00:05Z', to: '2026-11-10T15:00:00Z' }).at).toBe('2026-11-10T14:01:00Z');
+    // A window holding no whole minute near the event shows the nearest second inside it, then the instant itself.
+    expect(eventTimes('2026-11-10T14:31:41.400Z', 'UTC', { from: '2026-11-10T14:31:20Z', to: '2026-11-10T14:31:45Z' })).toEqual({ at: '2026-11-10T14:31:41Z', localAt: '2026-11-10T14:31:41+00:00' });
+    expect(eventTimes('2026-11-10T14:31:41.400Z', 'Asia/Bangkok', { from: '2026-11-10T14:31:41.300Z', to: '2026-11-10T14:31:41.500Z' })).toEqual({ at: '2026-11-10T14:31:41.400Z', localAt: '2026-11-10T21:31:41.400+07:00' });
+  });
+
+  it('never shows a time outside the supported range', () => {
+    expect(EPOCH.to).toBe('2199-12-31T23:59:59.999Z');
+    // 23:59:30 on the last day rounds to 2200-01-01, past the range: it shows 23:59.
+    expect(shownUtc(shownTime('2199-12-31T23:59:30Z'))).toBe('2199-12-31T23:59:00Z');
+    expect(eventTimes('2199-12-31T23:59:30Z', 'UTC', { from: '2199-12-31T00:00:00Z', to: EPOCH.to }).at).toBe('2199-12-31T23:59:00Z');
+    expect(shownUtc(shownTime(EPOCH.from))).toBe('1800-01-01T00:00:00Z');
+    expect(shownUtc(shownTime('1800-01-01T00:00:20Z'))).toBe('1800-01-01T00:00:00Z');
+  });
+
+  it('get_upcoming_events keeps a time inside a window that ends just after the event', async () => {
+    // The Moon enters Sagittarius at 20:56:58 UTC on 3 January 2027.
+    const args = { from: '2027-01-03T12:00:00Z', to: '2027-01-03T20:56:59Z', zone: 'Asia/Bangkok', kinds: ['ingress'] };
+    const result = await executeAiTool('get_upcoming_events', args, dependencies);
+    expect(result.ok).toBe(true);
+    if (!result.ok || result.tool !== 'get_upcoming_events') return;
+    const last = result.data.events[result.data.events.length - 1];
+    const solved = (result.data.calculation.result.events as { at: string }[])[result.data.events.length - 1].at;
+    // Solved within milliseconds of 20:56:58.993, so to the nearest minute it is 20:57, after the window ends.
+    expect(solved.slice(0, 19)).toBe('2027-01-03T20:56:58');
+    expect(minuteUtc(solved)).toBe('2027-01-03T20:57:00Z');
+    expect(last.at).toBe('2027-01-03T20:56:00Z');
+    expect(last.localAt).toBe('2027-01-04T03:56:00+07:00');
+    for (const event of result.data.events) {
+      expect(Date.parse(event.at)).toBeGreaterThanOrEqual(Date.parse(args.from));
+      expect(Date.parse(event.at)).toBeLessThanOrEqual(Date.parse(args.to));
+    }
+  });
+
+  it('Sky Watch hashes the same events as main, so its event ids do not move', async () => {
+    // Computed with calculateWindow on main at c87502b72, before the list was rounded. An engine change that moves
+    // WATCH_VERSION moves every id by design; nothing else may.
+    const lunation = await calculateWindow('2026-10-10T00:00:00Z', '2026-10-11T00:00:00Z');
+    expect(lunation.map((event: { eventId: string }) => event.eventId)).toEqual(['evt_7f7b371044b13376bd21158afdf7a127fff7fad6c7aaffba1130d9787d75f9ab']);
+    expect(Object.keys(lunation[0].data.event)).toEqual(['kind', 'at', 'sign', 'type', 'lon', 'degree']);
+    expect(lunation[0].data.event.at).toBe('2026-10-10T15:50:02.099Z');
+    expect(lunation[0].timestamp).toBe('2026-10-10T15:50:02.099Z');
+    const ingress = await calculateWindow('2026-11-01T00:00:00Z', '2026-11-03T00:00:00Z');
+    expect(ingress.map((event: { eventId: string }) => event.eventId)).toEqual(['evt_0e103ebec2d986cfbac2a53c756a8ada213d75572df5cb6c1e330f9cc61d196c']);
+    expect(Object.keys(ingress[0].data.event)).toEqual(['kind', 'at', 'body', 'sign', 'retrograde']);
+    expect(ingress[0].data.event.at).toBe('2026-11-01T04:18:12.545Z');
+    const week = await calculateWindow('2027-01-01T00:00:00Z', '2027-01-08T00:00:00Z');
+    expect(week.map((event: { eventId: string }) => event.eventId)).toEqual([
+      'evt_3323029a012f65209fdcad0ed67ba4517f3819e925d41d035112b6462c3279e1',
+      'evt_44949bd6e6863346c0a37a78b7d987688e9974d60622d5fa8eef70ba5a2c255e',
+      'evt_f1e09269720e5e91c0c7de9bc9f0937aa4aea00bf91ffb9d6ba0080a34de9040',
+      'evt_4d1fa1553133911da0a8d9743bd755625460e118ffc87d385532f1866c6bd5d0',
+      'evt_256d3f375c1ece5e187d464c7a16b8e00804036365182d4a6483e1e2d91f43c4',
+    ]);
+  });
+
+  it('Sky Watch still takes the solved instants', async () => {
     const from = '2026-11-10T00:00:00.000Z', to = '2026-11-11T00:00:00.000Z';
     const exact = computeEvents(parseEventsRequest({ from, to, kinds: ['ingress', 'station', 'lunation'] }));
     const watched = await calculateWindow(from, to);
@@ -99,7 +165,7 @@ describe('times an assistant can read one way only', () => {
 });
 
 describe('a Moon phase that says which way the Moon is going', () => {
-  it('names waxing or waning beside New Moon, Full Moon and the quarters', () => {
+  it('names waxing or waning beside New Moon and Full Moon', () => {
     expect(moonDirection(0)).toBe('waxing');
     expect(moonDirection(179.99)).toBe('waxing');
     expect(moonDirection(180)).toBe('waning');
@@ -110,8 +176,17 @@ describe('a Moon phase that says which way the Moon is going', () => {
     expect(moonPhaseLabel(348)).toBe('New Moon, waning');
     expect(moonPhaseLabel(170)).toBe('Full Moon, waxing');
     expect(moonPhaseLabel(190)).toBe('Full Moon, waning');
-    expect(moonPhaseLabel(90)).toBe('First Quarter, waxing');
-    expect(moonPhaseLabel(270)).toBe('Last Quarter, waning');
+    // The quarters already say which way: the first is always waxing, the last always waning.
+    expect(moonPhaseLabel(90)).toBe('First Quarter');
+    expect(moonPhaseLabel(95)).toBe('First Quarter');
+    expect(moonPhaseLabel(270)).toBe('Last Quarter');
+    expect(moonPhaseLabel(265)).toBe('Last Quarter');
+    // At the exact new or full Moon the Moon is turning: no direction.
+    expect(moonPhaseLabel(0)).toBe('New Moon');
+    expect(moonPhaseLabel(360)).toBe('New Moon');
+    expect(moonPhaseLabel(180)).toBe('Full Moon');
+    expect(moonPhaseLabel(0.01)).toBe('New Moon, waxing');
+    expect(moonPhaseLabel(180.01)).toBe('Full Moon, waning');
     // The other four names already say it.
     expect(moonPhaseLabel(45)).toBe('Waxing Crescent');
     expect(moonPhaseLabel(135)).toBe('Waxing Gibbous');

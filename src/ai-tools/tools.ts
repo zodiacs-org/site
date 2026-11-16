@@ -1,5 +1,5 @@
 import { moonPhase } from '@zodiacs/engine';
-import { localIso, localMinuteIso, minuteUtc, moonPhaseLabel } from './clear-time';
+import { eventTimes, localIso, moonPhaseLabel } from './clear-time';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { ComputeApiError } from '../lib/compute-api/errors';
 import { BUDGETS, EPOCH, EVENT_KINDS } from '../lib/compute-api/constants';
@@ -479,8 +479,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
         const calculation = computeEvents(parsedRequest);
-        data = { from: calculation.result.from, to: calculation.result.to, zone, // Each time to the minute, on the UTC clock and on the zone's; the solved instants stay in calculation, under its receipt.
-          events: calculation.result.events.map(event => ({ ...event, at: minuteUtc(event.at), localAt: localMinuteIso(event.at, zone) })), calculation, completeness: calculation.receipt.search!.completeness };
+        data = { from: calculation.result.from, to: calculation.result.to, zone, // Each time to the minute, inside the window, on the UTC clock and on the zone's; the solved instants stay in calculation, under its receipt.
+          events: calculation.result.events.map(event => ({ ...event, ...eventTimes(event.at, zone, calculation.result) })), calculation, completeness: calculation.receipt.search!.completeness };
         links = [{ title: 'Subscribe to these in your calendar (get_sky_calendar)', url: `${ORIGIN}/sky-calendar/` },
           // With the sky events switch, the tool for one kind of event further ahead.
           ...(skyEvents ? [{ title: 'Eclipses, stations, sign changes and Moons months or years ahead (search_sky_events)', url: `${ORIGIN}/events/` }] : []),

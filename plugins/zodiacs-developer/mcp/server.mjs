@@ -43498,15 +43498,10 @@ import { McpServer } from "@modelcontextprotocol/server";
 
 // src/ai-tools/clear-time.ts
 var MINUTE2 = 6e4;
-function roundToMinute(utc) {
-  return new Date(Math.round(new Date(utc).getTime() / MINUTE2) * MINUTE2);
-}
-function minuteUtc(utc) {
-  return `${roundToMinute(utc).toISOString().slice(0, 16)}:00Z`;
-}
 var two = (value) => String(Math.trunc(Math.abs(value))).padStart(2, "0");
-function localIso(utc, zone9) {
-  const instant2 = new Date(Math.floor(new Date(utc).getTime() / 1e3) * 1e3);
+function localIso(utc, zone9, milliseconds = false) {
+  const exact = new Date(utc).getTime();
+  const instant2 = new Date(Math.floor(exact / 1e3) * 1e3);
   const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: zone9, era: "short", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(instant2).map((part) => [part.type, part.value]));
   const year = Number(parts.year) * (parts.era === "BC" ? -1 : 1) + (parts.era === "BC" ? 1 : 0);
   const wall = /* @__PURE__ */ new Date(0);
@@ -43514,17 +43509,36 @@ function localIso(utc, zone9) {
   wall.setUTCHours(Number(parts.hour), Number(parts.minute), Number(parts.second), 0);
   const offsetMinutes2 = Math.round((wall.getTime() - instant2.getTime()) / MINUTE2);
   const offset = `${offsetMinutes2 < 0 ? "-" : "+"}${two(offsetMinutes2 / 60)}:${two(offsetMinutes2 % 60)}`;
-  return `${wall.toISOString().slice(0, 19)}${offset}`;
+  const fraction = milliseconds ? `.${String(exact - instant2.getTime()).padStart(3, "0")}` : "";
+  return `${wall.toISOString().slice(0, 19)}${fraction}${offset}`;
 }
-function localMinuteIso(utc, zone9) {
-  return localIso(roundToMinute(utc), zone9);
+function shownTime(utc, window) {
+  const time = new Date(utc).getTime();
+  const low = Math.max(Date.parse(EPOCH.from), window ? new Date(window.from).getTime() : -Infinity);
+  const high = Math.min(Date.parse(EPOCH.to), window ? new Date(window.to).getTime() : Infinity);
+  for (const [unit, precision] of [[MINUTE2, "minute"], [1e3, "second"]]) {
+    const nearest = Math.round(time / unit) * unit;
+    const other = nearest > time ? Math.floor(time / unit) * unit : Math.ceil(time / unit) * unit;
+    for (const candidate of [nearest, other]) if (candidate >= low && candidate <= high) return { at: new Date(candidate), precision };
+  }
+  return { at: new Date(time), precision: "millisecond" };
+}
+function shownUtc(shown) {
+  const iso3 = shown.at.toISOString();
+  return shown.precision === "minute" ? `${iso3.slice(0, 16)}:00Z` : shown.precision === "second" ? `${iso3.slice(0, 19)}Z` : iso3;
+}
+function eventTimes(utc, zone9, window) {
+  const shown = shownTime(utc, window);
+  return { at: shownUtc(shown), localAt: localIso(shown.at, zone9, shown.precision === "millisecond") };
 }
 function moonDirection(angle) {
   return angle < 180 ? "waxing" : "waning";
 }
 function moonPhaseLabel(angle) {
   const name = moonPhaseNameFromAngle(angle);
-  return /^Wa(?:x|n)ing /u.test(name) ? name : `${name}, ${moonDirection(angle)}`;
+  if (/^Wa(?:x|n)ing /u.test(name) || name === "First Quarter" || name === "Last Quarter") return name;
+  const turn3 = (angle % 360 + 360) % 360;
+  return turn3 === 0 || turn3 === 180 ? name : `${name}, ${moonDirection(angle)}`;
 }
 
 // api/_compute/local-time.mjs
@@ -44818,8 +44832,8 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           from: calculation.result.from,
           to: calculation.result.to,
           zone: zone9,
-          // Each time to the minute, on the UTC clock and on the zone's; the solved instants stay in calculation, under its receipt.
-          events: calculation.result.events.map((event2) => ({ ...event2, at: minuteUtc(event2.at), localAt: localMinuteIso(event2.at, zone9) })),
+          // Each time to the minute, inside the window, on the UTC clock and on the zone's; the solved instants stay in calculation, under its receipt.
+          events: calculation.result.events.map((event2) => ({ ...event2, ...eventTimes(event2.at, zone9, calculation.result) })),
           calculation,
           completeness: calculation.receipt.search.completeness
         };
