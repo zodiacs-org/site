@@ -5,7 +5,8 @@
  * daily send runs only where its workflow's repository variable
  * BIRTHDAY_REMINDERS_SENDING=1 is set (with BIRTHDAY_REMINDER_ENABLED=1 alone,
  * the workflow only deletes expired unconfirmed requests). All three are off: the owner switches
- * them on. The email links to /year-score/, so sign-ups and sends also need
+ * them on. Sign-ups and sends need the public switch as well as the server one, so the two cannot
+ * skew. The email links to /year-score/, so sign-ups and sends also need
  * that page's switch, PUBLIC_YEAR_SCORE_ENABLED=1 (src/lib/launch-flags.ts).
  */
 import { environmentValue } from '../email/config.js';
@@ -30,9 +31,14 @@ export function birthdayReminderStorageReady(env: Environment = process.env): bo
     && birthdayReminderSecret(env).length >= 32;
 }
 
-/** Sign-ups are open: the switch is exactly '1', the Year Ahead Score the email links to is on, and storage, sending and the token secret are configured. */
+/**
+ * Sign-ups are open: the switch is exactly '1', the public switch that shows the offer and the privacy
+ * page's paragraph about it is on too (so no sign-up is taken while that disclosure is hidden), the Year
+ * Ahead Score the email links to is on, and storage, sending and the token secret are configured.
+ */
 export function birthdayReminderEnabled(env: Environment = process.env): boolean {
   return environmentValue(env, BIRTHDAY_REMINDER_SWITCH) === '1'
+    && env[BIRTHDAY_REMINDER_PUBLIC_SWITCH] === '1'
     && env.PUBLIC_YEAR_SCORE_ENABLED === '1'
     && !!environmentValue(env, 'PUBLIC_SUPABASE_URL')
     && !!environmentValue(env, 'SUPABASE_SERVICE_ROLE_KEY')

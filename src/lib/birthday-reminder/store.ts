@@ -27,17 +27,18 @@ async function rpc<T>(name: string, body: Record<string, unknown>, env: Environm
 
 /**
  * Records a pending reminder. 'requested' with the row id (for the stop link); 'capped' when the same address
- * asked within the last minute; or 'confirmed' when the address already has a confirmed reminder, which a
- * request never changes.
+ * asked within the last minute or has had six confirmation emails in the last 24 hours; or 'confirmed' when
+ * the address already has a confirmed reminder, which a request never changes.
  */
 export type ReminderRequestOutcome = { outcome: 'requested'; id: string } | { outcome: 'capped' | 'confirmed' };
 export function requestReminder(email: string, month: number, day: number, confirmHash: string, env: Environment = process.env, fetcher: Fetch = fetch) {
   return rpc<ReminderRequestOutcome>('birthday_reminder_request', { p_email: email, p_month: month, p_day: day, p_confirm_hash: confirmHash }, env, fetcher);
 }
 
-/** Confirms the reminder a token's hash belongs to, within 48 hours. */
-export function confirmReminder(confirmHash: string, env: Environment = process.env, fetcher: Fetch = fetch) {
-  return rpc<boolean>('birthday_reminder_confirm', { p_confirm_hash: confirmHash }, env, fetcher);
+/** Confirms the reminder a token's hash belongs to, within 48 hours. Its row id (for the stop link), or null. */
+export async function confirmReminder(confirmHash: string, env: Environment = process.env, fetcher: Fetch = fetch): Promise<string | null> {
+  const id = await rpc<unknown>('birthday_reminder_confirm', { p_confirm_hash: confirmHash }, env, fetcher);
+  return typeof id === 'string' && /^[0-9a-f-]{36}$/u.test(id) ? id : null;
 }
 
 /** Deletes the reminder. True when there was one. */
@@ -45,7 +46,7 @@ export function deleteReminder(id: string, env: Environment = process.env, fetch
   return rpc<boolean>('birthday_reminder_delete', { p_id: id }, env, fetcher);
 }
 
-/** Confirmed reminders for these birthdays not yet sent this year. Reads only. */
+/** Confirmed reminders for these birthdays not sent in the last 300 days. Reads only. */
 export function dueReminders(days: { month: number; day: number }[], env: Environment = process.env, fetcher: Fetch = fetch) {
   return rpc<{ id: string; email: string }[]>('birthday_reminders_due', { p_days: days }, env, fetcher);
 }
@@ -55,7 +56,7 @@ export function sweepExpiredRequests(env: Environment = process.env, fetcher: Fe
   return rpc<number>('birthday_reminders_sweep', {}, env, fetcher);
 }
 
-/** Claims this year's email for one reminder before sending it. False when another run has it, it was sent this year, or it was stopped. */
+/** Claims this year's email for one reminder before sending it. False when another run has it, it was sent in the last 300 days, or it was stopped. */
 export function claimReminder(id: string, env: Environment = process.env, fetcher: Fetch = fetch) {
   return rpc<boolean>('birthday_reminder_claim', { p_id: id }, env, fetcher);
 }

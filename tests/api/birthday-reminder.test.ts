@@ -5,7 +5,7 @@ import { unsubscribeToken } from '../../src/lib/birthday-reminder/core';
 import vercel from '../../vercel.json';
 
 const SECRET = 'x'.repeat(40);
-const ENV = { BIRTHDAY_REMINDER_ENABLED: '1', PUBLIC_YEAR_SCORE_ENABLED: '1', PUBLIC_SUPABASE_URL: 'https://synthetic.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service', RESEND_API_KEY: 'resend', RESEND_FROM_EMAIL: 'Zodiacs.org <hello@zodiacs.org>', BIRTHDAY_REMINDER_SECRET: SECRET };
+const ENV = { BIRTHDAY_REMINDER_ENABLED: '1', PUBLIC_BIRTHDAY_REMINDER_ENABLED: '1', PUBLIC_YEAR_SCORE_ENABLED: '1', PUBLIC_SUPABASE_URL: 'https://synthetic.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service', RESEND_API_KEY: 'resend', RESEND_FROM_EMAIL: 'Zodiacs.org <hello@zodiacs.org>', BIRTHDAY_REMINDER_SECRET: SECRET };
 
 function response() {
   const res: any = { headers: {} as Record<string, string>, statusCode: 0, body: '' };
@@ -53,6 +53,49 @@ describe('the birthday reminder endpoint', () => {
     await birthdayReminderHandler(request('POST', { body: { email: 'ana@example.com', month: 6, day: 9, consent: true, adult: true } }), res, { env: ENV, fetcher: fetcher as unknown as typeof fetch, rateLimit: async () => false });
     expect(res.statusCode).toBe(202);
     expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it('sends no email for a capped request, and still answers 202', async () => {
+    const fetcher = vi.fn(async () => new Response('{"outcome":"capped"}'));
+    const res = response();
+    await birthdayReminderHandler(request('POST', { body: { email: 'ana@example.com', month: 6, day: 9, consent: true, adult: true } }), res, { env: ENV, fetcher: fetcher as unknown as typeof fetch, rateLimit: async () => false });
+    expect(res.statusCode).toBe(202);
+    expect(JSON.parse(res.body)).toEqual({ ok: true });
+    const urls = fetcher.mock.calls.map((call) => String((call as unknown[])[0]));
+    expect(urls).toEqual(['https://synthetic.supabase.co/rest/v1/rpc/birthday_reminder_request']);
+    expect(urls.filter((url) => url.includes('resend'))).toHaveLength(0);
+  });
+
+  it('takes no sign-up while the public switch, and with it the privacy page paragraph, is off', async () => {
+    for (const value of ['0', undefined]) {
+      const fetcher = vi.fn();
+      const res = response();
+      await birthdayReminderHandler(request('POST', { body: { email: 'a@b.co', month: 5, day: 3, consent: true, adult: true } }), res, { env: { ...ENV, PUBLIC_BIRTHDAY_REMINDER_ENABLED: value }, fetcher, rateLimit: async () => false });
+      expect(res.statusCode).toBe(404);
+      expect(fetcher).not.toHaveBeenCalled();
+    }
+  });
+
+  it('shows a stop link on the confirmed page, from the moment the reminder is confirmed', async () => {
+    const id = '0f8fad5b-d9cb-469f-a165-70867728950e';
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(id)));
+    const res = response();
+    await birthdayReminderHandler(request('POST', { query: { confirm: 'a'.repeat(43) } }), res, { env: ENV, fetcher: fetcher as unknown as typeof fetch });
+    expect(res.statusCode).toBe(200);
+    expect(String((fetcher.mock.calls[0] as unknown[])[0])).toContain('/rest/v1/rpc/birthday_reminder_confirm');
+    expect(res.body).toContain('Stop and delete');
+    expect(res.body).toContain(`/api/email/birthday-reminder?unsubscribe=${unsubscribeToken(id, SECRET)}`);
+    expect(res.body).toContain('if you want to stop before your birthday');
+    expect(res.body).not.toMatch(/[–—]/u);
+  });
+
+  it('shows the expired page, with no stop link, when the confirmation is unknown, expired or replayed', async () => {
+    const fetcher = vi.fn(async () => new Response('null'));
+    const res = response();
+    await birthdayReminderHandler(request('POST', { query: { confirm: 'a'.repeat(43) } }), res, { env: ENV, fetcher: fetcher as unknown as typeof fetch });
+    expect(res.statusCode).toBe(410);
+    expect(res.body).toContain('This link has expired');
+    expect(res.body).not.toContain('unsubscribe=');
   });
 
   it('fails closed when the rate limiter is missing, broken or unclear', async () => {

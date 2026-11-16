@@ -68,6 +68,23 @@ export function birthdaysOn(date: string): { month: number; day: number }[] {
   return days;
 }
 
+/**
+ * The birthdays the daily run asks for on a UTC date: that date's and the
+ * day before's, without repeats. A run that GitHub skipped is caught up the
+ * next day, a day late rather than a year late; the 300-day rule in
+ * birthday_reminders_due keeps the second run from sending again.
+ */
+export function birthdaysToSend(date: string): { month: number; day: number }[] {
+  const yesterday = new Date(Date.parse(`${date}T00:00:00Z`) - 86_400_000).toISOString().slice(0, 10);
+  const seen = new Set<string>();
+  return [...birthdaysOn(yesterday), ...birthdaysOn(date)].filter(({ month, day }) => {
+    const key = `${month}-${day}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 /** A random confirmation token, and the hash that is stored in its place. */
 export function newConfirmToken(): { token: string; hash: string } {
   const token = randomBytes(32).toString('base64url');
@@ -113,18 +130,22 @@ export function confirmationEmail(confirmUrl: string, stopUrl: string): { subjec
   };
 }
 
-/** The birthday email itself: one line of greeting, the link to score the new year, and the way out. */
-export function birthdayEmail(origin: string, unsubscribeUrl: string): { subject: string; text: string } {
+/**
+ * The birthday email itself: one line of greeting, the link to score the new year, the way out, and the
+ * sender's postal address as the last line, as the daily email carries it.
+ */
+export function birthdayEmail(origin: string, unsubscribeUrl: string, postalAddress: string): { subject: string; text: string } {
   return {
     subject: 'Happy birthday from Zodiacs.org: your new year ahead',
     text: [
       'Happy birthday.',
       '',
-      'Your solar return has come round: the Sun is back where it was when you were born, and a new year of your chart starts here.',
+      'Your solar return falls on or within a day of your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.',
       '',
       `Score the twelve months ahead: ${origin}/year-score/`,
       '',
       `Stop these birthday emails: ${unsubscribeUrl}`,
+      postalAddress,
     ].join('\n'),
   };
 }

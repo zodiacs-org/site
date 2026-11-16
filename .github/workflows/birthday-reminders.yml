@@ -8,12 +8,16 @@ name: Birthday reminders
 # '1' while sign-ups are open and for two days after they close. It sends only
 # with BIRTHDAY_REMINDERS_SENDING at '1', and the script sends nothing unless
 # BIRTHDAY_REMINDER_ENABLED is '1' with its storage, sending and secret
-# configured. All are off until the owner switches them on. The log carries
-# counts only, never an address.
+# configured. All are off until the owner switches them on. A send needs
+# DAILY_EMAIL_POSTAL_ADDRESS, the daily email's postal address, set for the
+# birthday-reminders-production environment: without it the run fails and
+# sends nothing. The log carries counts only, never an address.
 
 on:
   schedule:
-    - cron: "17 7 * * *" # daily, 07:17 UTC
+    # 10:07 UTC is 00:07 in Honolulu and 23:07 in Auckland in summer, so the UTC date is the local date
+    # from UTC-10 to UTC+13. The script also sends yesterday's birthdays a skipped run missed.
+    - cron: "7 10 * * *" # daily, 10:07 UTC
   workflow_dispatch:
 
 permissions:
@@ -44,6 +48,8 @@ jobs:
       - name: Send
         env:
           BIRTHDAY_REMINDER_ENABLED: ${{ vars.BIRTHDAY_REMINDER_ENABLED }}
+          # Sign-ups and sends need the public switch too, so the server and the privacy page cannot skew.
+          PUBLIC_BIRTHDAY_REMINDER_ENABLED: ${{ vars.PUBLIC_BIRTHDAY_REMINDER_ENABLED }}
           # The email links to /year-score/, so the send also needs that page's switch (src/lib/birthday-reminder/config.ts).
           PUBLIC_YEAR_SCORE_ENABLED: ${{ vars.PUBLIC_YEAR_SCORE_ENABLED }}
           BIRTHDAY_REMINDER_SECRET: ${{ secrets.BIRTHDAY_REMINDER_SECRET }}
@@ -52,6 +58,8 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}
           BIRTHDAY_REMINDERS_SENDING: ${{ vars.BIRTHDAY_REMINDERS_SENDING }}
+          # Every birthday email ends with the sender's postal address, as the daily email does.
+          DAILY_EMAIL_POSTAL_ADDRESS: ${{ vars.DAILY_EMAIL_POSTAL_ADDRESS }}
         run: |
           if [ "$BIRTHDAY_REMINDERS_SENDING" = "1" ]; then
             npx vite-node --script scripts/send-birthday-reminders.ts

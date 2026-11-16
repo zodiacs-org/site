@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { birthdayEmail, birthdaysOn, confirmationEmail, hashToken, newConfirmToken, parseReminderRequest, readUnsubscribeToken, unsubscribeToken } from './core';
+import { birthdayEmail, birthdaysOn, birthdaysToSend, confirmationEmail, hashToken, newConfirmToken, parseReminderRequest, readUnsubscribeToken, unsubscribeToken } from './core';
 import { birthdayReminderEnabled } from './config';
 
 const SECRET = 'x'.repeat(40);
-const ENV = { BIRTHDAY_REMINDER_ENABLED: '1', PUBLIC_YEAR_SCORE_ENABLED: '1', PUBLIC_SUPABASE_URL: 'https://synthetic.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service', RESEND_API_KEY: 'resend', RESEND_FROM_EMAIL: 'Zodiacs.org <hello@zodiacs.org>', BIRTHDAY_REMINDER_SECRET: SECRET };
+const ENV = { BIRTHDAY_REMINDER_ENABLED: '1', PUBLIC_BIRTHDAY_REMINDER_ENABLED: '1', PUBLIC_YEAR_SCORE_ENABLED: '1', PUBLIC_SUPABASE_URL: 'https://synthetic.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service', RESEND_API_KEY: 'resend', RESEND_FROM_EMAIL: 'Zodiacs.org <hello@zodiacs.org>', BIRTHDAY_REMINDER_SECRET: SECRET };
 
 describe('a birthday reminder sign-up', () => {
   it('keeps only the email and the birthday’s month and day, with both yeses', () => {
@@ -42,10 +42,26 @@ describe('the birthday send', () => {
     expect(hash).not.toContain(token);
   });
   it('words both emails plainly, with no dashes and no birth details', () => {
-    const texts = [confirmationEmail('https://zodiacs.org/api/email/birthday-reminder?confirm=t', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u'), birthdayEmail('https://zodiacs.org', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u')];
-    for (const email of texts) expect(`${email.subject} ${email.text}`).not.toMatch(/[–—]/u);
+    const texts = [confirmationEmail('https://zodiacs.org/api/email/birthday-reminder?confirm=t', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u'), birthdayEmail('https://zodiacs.org', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u', 'Zodiacs.org, Test Address')];
+    for (const email of texts) expect(`${email.subject} ${email.text}`).not.toMatch(/[–—‒―]/u);
     expect(texts[1].text).toContain('https://zodiacs.org/year-score/');
     expect(texts[1].text).toContain('Stop these birthday emails');
+  });
+  it('ends the birthday email with the postal address and says nothing false about the solar return', () => {
+    const { text } = birthdayEmail('https://zodiacs.org', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u', 'Zodiacs.org, Test Address');
+    expect(text.split('\n').at(-1)).toBe('Zodiacs.org, Test Address');
+    expect(text).toContain('Your solar return falls on or within a day of your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.');
+    expect(text).not.toContain('has come round');
+    expect(text).not.toMatch(/[–—‒―]/u);
+  });
+  it('asks for yesterday’s birthdays too, so a skipped run is caught up the next day', () => {
+    const key = (days: { month: number; day: number }[]) => days.map(({ month, day }) => `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`).sort();
+    // 1 March of a year without a 29th: what 28 February would have sent, the 29th included.
+    expect(key(birthdaysToSend('2027-03-01'))).toEqual(['02-28', '02-29', '03-01']);
+    expect(key(birthdaysToSend('2028-03-01'))).toEqual(['02-29', '03-01']);
+    expect(key(birthdaysToSend('2027-02-28'))).toEqual(['02-27', '02-28', '02-29']);
+    expect(key(birthdaysToSend('2027-01-01'))).toEqual(['01-01', '12-31']);
+    expect(key(birthdaysToSend('2026-11-16'))).toEqual(['11-15', '11-16']);
   });
 });
 

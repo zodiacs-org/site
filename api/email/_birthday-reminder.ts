@@ -84,9 +84,10 @@ export default async function birthdayReminderHandler(req: any, res: any, deps: 
     }
     try {
       if (confirm) {
-        const done = /^[A-Za-z0-9_-]{43}$/u.test(confirm) && await confirmReminder(hashToken(confirm), env, fetcher);
-        sendHtml(res, done ? 200 : 410, done
-          ? dailyEmailPage('Birthday reminder confirmed', 'We will email you on your birthday to score your year ahead again. Every email has a link to stop.')
+        const id = /^[A-Za-z0-9_-]{43}$/u.test(confirm) ? await confirmReminder(hashToken(confirm), env, fetcher) : null;
+        // The confirmed page carries the stop link too, so the reminder can be deleted from the moment it is confirmed.
+        sendHtml(res, id ? 200 : 410, id
+          ? dailyEmailPage('Birthday reminder confirmed', 'We will email you on your birthday to score your year ahead again. Every email has a link to stop. Keep this page’s link if you want to stop before your birthday.', { kind: 'link', href: '/', label: 'Return to Zodiacs.org', secondary: { href: `${PATH}?unsubscribe=${encodeURIComponent(unsubscribeToken(id, birthdayReminderSecret(env)))}`, label: 'Stop and delete' } })
           : dailyEmailPage('This link has expired', 'Confirmation links work for 48 hours. Score your year again to ask for a new one.', { kind: 'link', href: '/year-score/', label: 'Score your year' }));
         return;
       }
@@ -113,7 +114,8 @@ export default async function birthdayReminderHandler(req: any, res: any, deps: 
       const email = confirmationEmail(`${base}?confirm=${token}`, `${base}?unsubscribe=${unsubscribeToken(result.id, birthdayReminderSecret(env))}`);
       await sendPlainEmail(parsed.email, email, env, fetcher);
     }
-    // Capped or not, the answer is the same: a confirmation email is on its way if the address can take one.
+    // Capped (a minute since the last one, or six in 24 hours) or not, the answer is the same: a confirmation
+    // email is on its way if the address can take one. A capped request sends nothing.
     sendJson(res, 202, { ok: true });
   } catch {
     sendJson(res, 502, { error: 'unavailable' });
