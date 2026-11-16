@@ -13,6 +13,7 @@ import ShareRow from '../../components/ShareRow.astro';
 import { figureYearScoreShareUrl } from '../../lib/year-score/share';
 import { rangeWorthShowing } from '../../lib/year-score/range';
 import { launchFlagOn } from '../../lib/launch-flags';
+import { READING_CONFIDENCE_NOTE } from '../../lib/reading-confidence-note';
 
 export function getStaticPaths() {
   // The people pages are built only while PUBLIC_YEAR_PEOPLE_ENABLED (and the score's own switch) is on.
@@ -50,6 +51,7 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
         <p class="ypp__tier">{reading.tier.label}</p>
         <p class="ypp__summary">{theirs(reading.tier.summary)}</p>
         <p class="ypp__meta">{rangeWorthShowing(page.range) && `${reading.score.toFixed(1)}/10 (between ${page.range.low.toFixed(1)} and ${page.range.high.toFixed(1)} without a birth time) · `}{page.sun.name} Sun · {dayName(page.from)} to {dayName(page.to)} · Reading confidence 55%</p>
+        <p class="ypp__confidence-note" data-reading-confidence-note>{READING_CONFIDENCE_NOTE}</p>
       </div>
     </div>
 
@@ -123,6 +125,7 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
   .ypp__tier { margin: 0; font-family: var(--font-serif); font-size: var(--text-xl); }
   .ypp__summary, .ypp__note { margin: 0; color: var(--text-2); }
   .ypp__meta { margin: 4px 0 0; color: var(--muted); font-family: var(--font-mono); font-size: var(--text-xs); }
+  .ypp__confidence-note { margin: 0; color: var(--muted); font-size: var(--text-xs); line-height: 1.5; }
   .ypp__months { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; align-items: end; height: 140px; }
   .ypp__months li { display: grid; grid-template-rows: 1fr auto; height: 100%; align-items: end; text-align: center; }
   .ypp__bar { display: block; height: var(--h); background: var(--sign); opacity: 0.75; border-radius: 3px 3px 0 0; }

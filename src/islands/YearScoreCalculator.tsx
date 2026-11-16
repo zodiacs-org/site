@@ -15,6 +15,7 @@ import { createModuleLoader } from '../lib/module-load';
 import { birthDayEnds, rangeWorthShowing, untimedScoreNote, type ScoreRange } from '../lib/year-score/range';
 import { yearScoreShareUrl } from '../lib/year-score/share';
 import { dayName, shortMonth, yearReading, type YearReading } from '../lib/year-score/reading';
+import { READING_CONFIDENCE_NOTE } from '../lib/reading-confidence-note';
 
 const loadScorer = createModuleLoader(() => import('../lib/year-score/browser'));
 
@@ -23,7 +24,7 @@ const loadScorer = createModuleLoader(() => import('../lib/year-score/browser'))
 const underAge = (birthDate: string, today: string, years: number) => birthDate > `${String(Number(today.slice(0, 4)) - years).padStart(4, '0')}${today.slice(4)}`;
 /** Under 18, the one romantic phrase a slow-planet line can carry (Venus as "way of loving") is left out. */
 const softenMinor = (text: string) => text.replace(/\bway of loving\b/gu, 'way of caring');
-const confidenceLabel = (timed: boolean) => `Reading confidence ${timed ? 70 : 55}%`;
+export const confidenceLabel = (timed: boolean) =>`Reading confidence ${timed ? 70 : 55}%`;
 
 const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no score for a birth date less than 13 years ago.';
 const FUTURE_DATE = 'Enter a birth date in the past.';
@@ -43,6 +44,24 @@ interface Result {
   timeKnown: boolean;
   /** Without a birth time: the lowest and highest score across the birth day. Null with a birth time. */
   range: ScoreRange | null;
+}
+
+/**
+ * The result's meta lines: the Sun sign, the window and the reading-confidence label, with the note that says what
+ * the label measures printed once under it. It renders only with a result, so an error never shows the note alone.
+ */
+export function ScoreMeta({ result }: { result: Pick<Result, 'sign' | 'candidates' | 'from' | 'to' | 'confidence'> }) {
+  return (
+    <>
+      {result.sign
+        ? <p class="ys__meta">{result.sign.name} Sun · {dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
+        : <>
+          <p class="ys__meta" data-ys-sun-unsettled>Your Sun is in {result.candidates[0]} or {result.candidates[1]}: a birth time settles it.</p>
+          <p class="ys__meta">{dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
+        </>}
+      <p class="ys__confidence-note" data-reading-confidence-note>{READING_CONFIDENCE_NOTE}</p>
+    </>
+  );
 }
 
 export default function YearScoreCalculator() {
@@ -176,12 +195,7 @@ export default function YearScoreCalculator() {
                 <p class="ys__range">Without a birth time this could be anywhere from {result.range.low.toFixed(1)} to {result.range.high.toFixed(1)}. Add your birth time and place to settle it.</p>
               )}
               <p class="ys__summary">{result.reading.tier.summary}</p>
-              {result.sign
-                ? <p class="ys__meta">{result.sign.name} Sun · {dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
-                : <>
-                  <p class="ys__meta" data-ys-sun-unsettled>Your Sun is in {result.candidates[0]} or {result.candidates[1]}: a birth time settles it.</p>
-                  <p class="ys__meta">{dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
-                </>}
+              <ScoreMeta result={result} />
             </div>
           </div>
 
