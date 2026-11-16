@@ -30,7 +30,7 @@ function deviceClock(): { zone: string; today: string } {
   }
 }
 
-interface Shown { reading: PersonalDayReading; shareUrl: string | null }
+interface Shown { reading: PersonalDayReading; shareUrl: string | null; timed: boolean }
 
 export default function YourDay() {
   const [date, setDate] = useState('');
@@ -89,7 +89,7 @@ export default function YourDay() {
       });
       if (request !== revision.current) return;
       setDay(target);
-      setShown({ reading, shareUrl: yourDayShareUrl(window.location.origin, { date: reading.date, contact: reading.contacts[0] }) });
+      setShown({ reading, shareUrl: yourDayShareUrl(window.location.origin, { date: reading.date, contact: reading.contacts[0] }), timed: timeKnown });
       if (scroll) requestAnimationFrame(() => resultRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' }));
     } catch (cause) {
       if (request !== revision.current) return;
@@ -165,7 +165,7 @@ export default function YourDay() {
                       </div>
                       <p class="yd__when">
                         {contact.exactLocal ? `Exact at ${contact.exactLocal}` : contact.applying ? 'Applying' : 'Separating'}
-                        <span>{contact.orb.toFixed(2)}° orb at midday</span>
+                        <span>{shown?.timed === false ? `about ${contact.orb.toFixed(1)}° orb at midday` : `${contact.orb.toFixed(2)}° orb at midday`}</span>
                       </p>
                       <p class="yd__line">{contact.line.slice(0, contact.line.length - contact.confidenceLabel.length - 1).trim()}</p>
                       <p class="yd__confidence">{contact.confidenceLabel}</p>
