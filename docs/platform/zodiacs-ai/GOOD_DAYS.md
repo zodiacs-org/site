@@ -125,8 +125,11 @@ and `ZODIACS_GOOD_DAYS_OUTCOMES_ENABLED=1` (the endpoint). Both are unset.
   whether a birth date ranked it, nothing else). A due reminder shows as a
   fixed toast, so it moves nothing. A reminder is removed from local storage
   once it is answered or dismissed, or once its day is more than 30 days past
-  (`prunePicks` in `src/lib/good-days/outcome-memory.ts`, run whenever a page
-  reads the reminders).
+  (`prunePicks` in `src/lib/good-days/outcome-memory.ts`). The cleanup runs
+  only when the finder or the follow-up page reads the reminders, so a stale
+  one is removed the next time either page is opened, not on a timer. The
+  finder's today, default window and age gate follow the picked zone, as the
+  hosted tool's do.
 - `/good-days/how-did-it-go/#g=…&d=…&s=…&p=…` (noindex, no analytics) asks
   for a rating from 1 to 5 and an optional note, and sends it once to
   `POST /api/good-days/outcome`, rewritten into `api/compatibility.ts` so no

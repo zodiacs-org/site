@@ -46,8 +46,9 @@ const CARD_TITLE: Readonly<Record<GoodDayGoal, string>> = {
 };
 
 const DAY = 86_400_000;
-function localToday(zone: string): string {
-  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+/** Today's date in a zone, YYYY-MM-DD: the picked zone's, so the page and the hosted tool agree on today. */
+export function localToday(zone: string, now: Date = new Date()): string {
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
   return ['year', 'month', 'day'].map((type) => parts.find((part) => part.type === type)!.value).join('-');
 }
 const addDays = (date: string, days: number) => new Date(Date.parse(`${date}T00:00:00Z`) + days * DAY).toISOString().slice(0, 10);
@@ -60,14 +61,24 @@ function browserZone(): string {
   try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch { return 'UTC'; }
 }
 
+/** A zone's canonical name as this browser's Intl gives it (Asia/Calcutta and Asia/Kolkata come out the same), or null. */
+export function canonicalZone(zone: string): string | null {
+  try { return new Intl.DateTimeFormat(undefined, { timeZone: zone }).resolvedOptions().timeZone; } catch { return null; }
+}
+
 /**
- * The zones the picker offers: every zone the browser knows, sorted, with the device's own zone always among them.
- * A browser without Intl.supportedValuesOf offers the device's zone alone.
+ * The zones the picker offers: every zone the browser knows, by canonical name, once each, sorted, with the device's
+ * own zone always among them. A browser without Intl.supportedValuesOf offers the device's zone alone.
  */
-export function zoneChoices(deviceZone: string, list: (key: 'timeZone') => string[] | undefined = (key) => (Intl as unknown as { supportedValuesOf?: (key: string) => string[] }).supportedValuesOf?.(key)): string[] {
+export function zoneChoices(
+  deviceZone: string,
+  list: (key: 'timeZone') => string[] | undefined = (key) => (Intl as unknown as { supportedValuesOf?: (key: string) => string[] }).supportedValuesOf?.(key),
+  canonical: (zone: string) => string | null = canonicalZone,
+): string[] {
   let known: string[] = [];
   try { known = list('timeZone') ?? []; } catch { known = []; }
-  return [...new Set([deviceZone, ...known])].sort((a, b) => a.localeCompare(b));
+  const names = [deviceZone, ...known].map((zone) => canonical(zone)).filter((zone): zone is string => !!zone);
+  return [...new Set([canonical(deviceZone) ?? deviceZone, ...names])].sort((a, b) => a.localeCompare(b));
 }
 
 /** The share link: the goal and the dates after the #, and nothing else. */
@@ -92,10 +103,13 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
   const [deviceZone] = useState(browserZone);
   const [zone, setZone] = useState(deviceZone);
   const [zones, setZones] = useState<string[]>(() => [deviceZone]);
-  const [today] = useState(() => localToday(deviceZone));
+  // Today, the default window and the age gate all follow the picked zone, as the hosted tool's do.
+  const today = localToday(zone);
   const [goal, setGoal] = useState<GoodDayGoal>('launch');
   const [from, setFrom] = useState(today);
   const [to, setTo] = useState(addDays(today, 89));
+  // Until the person sets a date (or a shared link does), the window starts on the picked zone's today.
+  const [datesSet, setDatesSet] = useState(false);
   const [personal, setPersonal] = useState(false);
   const [birthDate, setBirthDate] = useState('');
   const [busy, setBusy] = useState(false);
@@ -116,7 +130,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
     await new Promise((resolve) => setTimeout(resolve, 30));
     try {
       const [{ findGoodDays }, { SITE_CLOCK }] = await loadFinder();
-      const found = await findGoodDays({ goal: input.goal, from: input.from, to: input.to, zone: input.zone, today, birth: input.birth ? { date: input.birth } : null }, SITE_CLOCK);
+      const found = await findGoodDays({ goal: input.goal, from: input.from, to: input.to, zone: input.zone, today: localToday(input.zone), birth: input.birth ? { date: input.birth } : null }, SITE_CLOCK);
       setResult(found);
       if (focus) requestAnimationFrame(() => resultRef.current?.focus({ preventScroll: false }));
     } catch (cause) {
@@ -130,10 +144,18 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
   // The full list fills after first paint; the select's height is the same with one zone or four hundred.
   useEffect(() => { setZones(zoneChoices(deviceZone)); }, []);
 
+  // A new zone moves the default window to that zone's today; a date the person set stays.
+  useEffect(() => {
+    if (datesSet) return;
+    setFrom(today);
+    setTo(addDays(today, 89));
+  }, [today]);
+
   // A reminder the person asked this device to keep: shown as a fixed toast, so it moves nothing on the page.
+  // Reminders are kept by the device's own calendar day, whichever zone is picked.
   useEffect(() => {
     if (!outcomes) return;
-    setDue(duePicks(deviceStorage(), today)[0] ?? null);
+    setDue(duePicks(deviceStorage(), localToday(deviceZone))[0] ?? null);
   }, []);
 
   const pickOf = (day: { date: string; score: number }): PickedDay | null => (result ? { goal: result.goal, day: day.date, score: day.score, personal: !!result.personal } : null);
@@ -155,6 +177,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
     const shared = readGoodDaysLink(window.location.hash);
     if (!shared) return;
     setGoal(shared.goal);
+    setDatesSet(true);
     setFrom(shared.from);
     setTo(shared.to);
     void run({ ...shared, zone: deviceZone, birth: null }, false);
@@ -201,12 +224,12 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
               <div class="field">
                 <label class="field__label" for="gd-from">From</label>
                 <input id="gd-from" class="field__input" type="date" required min="2026-01-01" max="2030-12-31" value={from}
-                  onInput={(event) => setFrom((event.target as HTMLInputElement).value)} />
+                  onInput={(event) => { setDatesSet(true); setFrom((event.target as HTMLInputElement).value); }} />
               </div>
               <div class="field">
                 <label class="field__label" for="gd-to">To</label>
                 <input id="gd-to" class="field__input" type="date" required min="2026-01-01" max="2030-12-31" value={to}
-                  onInput={(event) => setTo((event.target as HTMLInputElement).value)} />
+                  onInput={(event) => { setDatesSet(true); setTo((event.target as HTMLInputElement).value); }} />
               </div>
               <p class="field__help">Up to twelve months, from 2026 to 2030. A whole year takes a few seconds to work out.</p>
             </div>
@@ -262,7 +285,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
                         <button type="button" class="btn btn--sm" onClick={() => keepOnDevice(pickOf(day)!)}>Remind me on this device</button>
                       </div>
                       {kept === `calendar:${day.date}` && <p class="field__help">The calendar file has the day and, a week later, the link to tell us how it went.</p>}
-                      {kept === `device:${day.date}` && <p class="field__help">This browser will ask when you come back a week after the day. It keeps the goal, the day, its score and whether a birth date was used, nothing else.</p>}
+                      {kept === `device:${day.date}` && <p class="field__help">This browser will ask when you come back from a week to 30 days after the day. It keeps the goal, the day, its score and whether a birth date was used, nothing else.</p>}
                       {kept === `refused:${day.date}` && <p class="field__help">This browser does not keep site data. Add it to your calendar instead.</p>}
                     </div>
                   ) : (

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { goodDaysLink, readGoodDaysLink, zoneChoices } from '../../islands/GoodDayFinder';
+import { canonicalZone, goodDaysLink, localToday, readGoodDaysLink, zoneChoices } from '../../islands/GoodDayFinder';
 
 /**
  * The good day finder takes an optional birth date. On the site it is used on the device for one search and kept
@@ -100,10 +100,39 @@ describe('the time zone picker', () => {
     expect(zoneChoices('Asia/Bangkok', () => { throw new RangeError('unsupported'); })).toEqual(['Asia/Bangkok']);
   });
 
+  it('lists each zone once, by its canonical name, so Kolkata does not appear twice', () => {
+    const alias = (zone: string) => (zone === 'Asia/Calcutta' ? 'Asia/Kolkata' : zone);
+    expect(zoneChoices('Asia/Calcutta', () => ['Asia/Kolkata', 'Asia/Bangkok'], alias)).toEqual(['Asia/Bangkok', 'Asia/Kolkata']);
+    // With this runtime's own Intl, the two spellings come out as one entry.
+    const both = zoneChoices('Asia/Bangkok', () => ['Asia/Calcutta', 'Asia/Kolkata']);
+    expect(both).toHaveLength(2);
+    expect(canonicalZone('Asia/Calcutta')).toBe(canonicalZone('Asia/Kolkata'));
+    // A name the runtime does not know is dropped rather than offered.
+    expect(zoneChoices('Asia/Bangkok', () => ['Not/AZone'])).toEqual(['Asia/Bangkok']);
+  });
+
+  it('counts today in the picked zone, as the hosted tool does', () => {
+    // 20:00 UTC on 16 November 2026 is still the 16th in New York and already the 17th in Bali.
+    const instant = new Date('2026-11-16T20:00:00Z');
+    expect(localToday('America/New_York', instant)).toBe('2026-11-16');
+    expect(localToday('Asia/Makassar', instant)).toBe('2026-11-17');
+    const island = code(SOURCES.island);
+    expect(island).toContain('const today = localToday(zone);');
+    expect(island).toContain('today: localToday(input.zone),');
+    // The default window moves with the zone until the person sets a date, and the age gate uses the same today.
+    expect(island).toContain('if (datesSet) return;');
+    expect(island).toContain('max={thirteenYearsAgo(today)}');
+  });
+
   it('runs every search, shared or typed, in a named zone and prints it under the results', () => {
     const island = code(SOURCES.island);
     expect(island).toContain('<label class="field__label" for="gd-zone">Time zone for the day</label>');
-    expect(island).toContain('zone: input.zone, today,');
+    expect(island).toContain('zone: input.zone, today: localToday(input.zone),');
     expect(island).toContain('Days are counted in {result.zone}.');
+  });
+
+  it('says truthfully when the device reminder asks and when it is removed', () => {
+    expect(code(SOURCES.island)).toContain('This browser will ask when you come back from a week to 30 days after the day.');
+    expect(read('../../pages/privacy/index.astro')).toContain('or the next time you open the good day finder more than 30 days after the day.');
   });
 });

@@ -2990,7 +2990,7 @@
     {"path":"src/pages/privacy/index.astro","text":"It is not sent anywhere unless you share it or choose to sync it.","claim":"priv.account-sync-v2"},
     {"path":"src/pages/privacy/index.astro","text":"It is not sent anywhere unless you share it.","claim":"priv.local-storage"},
     {"path":"src/pages/privacy/index.astro","text":"It is not transmitted to our servers, logged, or stored by us as part of that calculation.","claim":"priv.on-device"},
-    {"path":"src/pages/privacy/index.astro","text":"It is removed once you answer or dismiss it, or 30 days after the day.","claim":"priv.good-days-outcomes"},
+    {"path":"src/pages/privacy/index.astro","text":"It is removed once you answer or dismiss it, or the next time you open the good day finder more than 30 days after the day.","claim":"priv.good-days-outcomes"},
     {"path":"src/pages/privacy/index.astro","text":"It is used to limit simultaneous requests from one browser, lasts until the browser session ends, and is not stored with your messages.","claim":"priv.cookies"},
     {"path":"src/pages/privacy/index.astro","text":"It leaves the device only if you share a link that carries it or put it in an assistant message.","claim":"priv.on-device"},
     {"path":"src/pages/privacy/index.astro","text":"It leaves your device only inside a chart card you choose to send (below), and clearing your browser's site data removes it.","claim":"priv.chart-cards"},
