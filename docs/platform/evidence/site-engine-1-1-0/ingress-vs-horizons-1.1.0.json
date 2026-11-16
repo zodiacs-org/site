@@ -1,0 +1,4632 @@
+{
+ "engine": "1.1.0",
+ "reference": "src/data/nasa-event-instants.json (Horizons DE441, QUANTITIES 31)",
+ "named": [
+  {
+   "body": "Neptune",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2026-01-26T17:35:23Z",
+   "engine": "2026-01-26T17:34:38.263Z",
+   "seconds": -44.7,
+   "arcseconds": 0.0474
+  },
+  {
+   "body": "Saturn",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2026-02-14T00:11:49Z",
+   "engine": "2026-02-14T00:11:38.911Z",
+   "seconds": -10.1,
+   "arcseconds": 0.0463
+  },
+  {
+   "body": "Uranus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2026-04-26T00:51:53Z",
+   "engine": "2026-04-26T00:51:32.436Z",
+   "seconds": -20.6,
+   "arcseconds": 0.0466
+  },
+  {
+   "body": "Uranus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2025-07-07T07:47:45Z",
+   "engine": "2025-07-07T07:47:19.441Z",
+   "seconds": -25.6,
+   "arcseconds": 0.0476
+  },
+  {
+   "body": "Saturn",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2025-05-25T03:36:08Z",
+   "engine": "2025-05-25T03:35:52.416Z",
+   "seconds": -15.6,
+   "arcseconds": 0.0489
+  },
+  {
+   "body": "Pluto",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2024-11-19T20:40:00Z",
+   "engine": "2024-11-19T20:38:57.321Z",
+   "seconds": -62.7,
+   "arcseconds": 0.0472
+  },
+  {
+   "body": "Pluto",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2024-01-21T00:56:19Z",
+   "engine": "2024-01-21T00:55:46.339Z",
+   "seconds": -32.7,
+   "arcseconds": 0.0443
+  }
+ ],
+ "summary": {
+  "Neptune, before 1962 (UT1)": {
+   "count": 19,
+   "withinOneMinute": 1,
+   "largestSeconds": 399.8,
+   "largestArcseconds": 0.2393,
+   "missing": 0
+  },
+  "Uranus, before 1962 (UT1)": {
+   "count": 23,
+   "withinOneMinute": 7,
+   "largestSeconds": 174.9,
+   "largestArcseconds": 0.2022,
+   "missing": 0
+  },
+  "Pluto, before 1962 (UT1)": {
+   "count": 15,
+   "withinOneMinute": 1,
+   "largestSeconds": 651.9,
+   "largestArcseconds": 0.2039,
+   "missing": 0
+  },
+  "Uranus, 1962 to 2099 (UTC)": {
+   "count": 57,
+   "withinOneMinute": 47,
+   "largestSeconds": 173.3,
+   "largestArcseconds": 0.4164,
+   "missing": 0
+  },
+  "Neptune, 1962 to 2099 (UTC)": {
+   "count": 30,
+   "withinOneMinute": 23,
+   "largestSeconds": -165.8,
+   "largestArcseconds": 0.1771,
+   "missing": 0
+  },
+  "Pluto, 1962 to 2099 (UTC)": {
+   "count": 30,
+   "withinOneMinute": 15,
+   "largestSeconds": -354.9,
+   "largestArcseconds": 0.1766,
+   "missing": 0
+  },
+  "Saturn, 1962 to 2099 (UTC)": {
+   "count": 81,
+   "withinOneMinute": 81,
+   "largestSeconds": -47.9,
+   "largestArcseconds": 0.144,
+   "missing": 0
+  },
+  "Jupiter, 1962 to 2099 (UTC)": {
+   "count": 52,
+   "withinOneMinute": 52,
+   "largestSeconds": -13.5,
+   "largestArcseconds": 0.0515,
+   "missing": 0
+  },
+  "Venus, 1962 to 2099 (UTC)": {
+   "count": 71,
+   "withinOneMinute": 71,
+   "largestSeconds": -2.2,
+   "largestArcseconds": 0.0808,
+   "missing": 0
+  },
+  "Mercury, 1962 to 2099 (UTC)": {
+   "count": 81,
+   "withinOneMinute": 81,
+   "largestSeconds": -2.4,
+   "largestArcseconds": 0.103,
+   "missing": 0
+  },
+  "Mars, 1962 to 2099 (UTC)": {
+   "count": 39,
+   "withinOneMinute": 39,
+   "largestSeconds": -4.2,
+   "largestArcseconds": 0.0667,
+   "missing": 0
+  }
+ },
+ "rows": [
+  {
+   "body": "Neptune",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "1901-07-19T23:57:03Z",
+   "engine": "1901-07-19T23:54:19.725Z",
+   "seconds": -163.3,
+   "arcseconds": 0.2316
+  },
+  {
+   "body": "Neptune",
+   "sign": "gemini",
+   "retrograde": true,
+   "nasa": "1901-12-25T13:29:38Z",
+   "engine": "1901-12-25T13:32:55.543Z",
+   "seconds": 197.5,
+   "arcseconds": 0.2328
+  },
+  {
+   "body": "Neptune",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "1902-05-21T13:35:11Z",
+   "engine": "1902-05-21T13:32:19.995Z",
+   "seconds": -171,
+   "arcseconds": 0.2349
+  },
+  {
+   "body": "Uranus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "1904-12-20T13:32:57Z",
+   "engine": "1904-12-20T13:32:37.122Z",
+   "seconds": -19.9,
+   "arcseconds": 0.05
+  },
+  {
+   "body": "Uranus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "1912-01-30T22:38:43Z",
+   "engine": "1912-01-30T22:37:19.764Z",
+   "seconds": -83.2,
+   "arcseconds": 0.2022
+  },
+  {
+   "body": "Uranus",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "1912-09-04T16:53:40Z",
+   "engine": "1912-09-04T16:56:34.884Z",
+   "seconds": 174.9,
+   "arcseconds": 0.1921
+  },
+  {
+   "body": "Pluto",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "1912-09-10T16:40:52Z",
+   "engine": "1912-09-10T16:30:07.740Z",
+   "seconds": -644.3,
+   "arcseconds": 0.1968
+  },
+  {
+   "body": "Pluto",
+   "sign": "gemini",
+   "retrograde": true,
+   "nasa": "1912-10-20T08:07:11Z",
+   "engine": "1912-10-20T08:18:02.898Z",
+   "seconds": 651.9,
+   "arcseconds": 0.199
+  },
+  {
+   "body": "Uranus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "1912-11-12T08:38:44Z",
+   "engine": "1912-11-12T08:35:54.586Z",
+   "seconds": -169.4,
+   "arcseconds": 0.1984
+  },
+  {
+   "body": "Pluto",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "1913-07-09T22:28:12Z",
+   "engine": "1913-07-09T22:24:45.858Z",
+   "seconds": -206.1,
+   "arcseconds": 0.1994
+  },
+  {
+   "body": "Pluto",
+   "sign": "gemini",
+   "retrograde": true,
+   "nasa": "1913-12-28T04:13:14Z",
+   "engine": "1913-12-28T04:17:18.984Z",
+   "seconds": 245,
+   "arcseconds": 0.203
+  },
+  {
+   "body": "Pluto",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "1914-05-26T20:46:59Z",
+   "engine": "1914-05-26T20:43:18.464Z",
+   "seconds": -220.5,
+   "arcseconds": 0.2039
+  },
+  {
+   "body": "Neptune",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "1914-09-23T20:23:49Z",
+   "engine": "1914-09-23T20:20:19.876Z",
+   "seconds": -209.1,
+   "arcseconds": 0.1891
+  },
+  {
+   "body": "Neptune",
+   "sign": "cancer",
+   "retrograde": true,
+   "nasa": "1914-12-14T20:38:57Z",
+   "engine": "1914-12-14T20:42:44.114Z",
+   "seconds": 227.1,
+   "arcseconds": 0.1973
+  },
+  {
+   "body": "Neptune",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "1915-07-19T13:32:56Z",
+   "engine": "1915-07-19T13:30:20.856Z",
+   "seconds": -155.1,
+   "arcseconds": 0.2393
+  },
+  {
+   "body": "Neptune",
+   "sign": "cancer",
+   "retrograde": true,
+   "nasa": "1916-03-19T15:25:08Z",
+   "engine": "1916-03-19T15:31:47.778Z",
+   "seconds": 399.8,
+   "arcseconds": 0.1977
+  },
+  {
+   "body": "Neptune",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "1916-05-02T10:46:13Z",
+   "engine": "1916-05-02T10:39:35.525Z",
+   "seconds": -397.5,
+   "arcseconds": 0.1987
+  },
+  {
+   "body": "Uranus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "1919-04-01T01:44:29Z",
+   "engine": "1919-04-01T01:42:52.580Z",
+   "seconds": -96.4,
+   "arcseconds": 0.1894
+  },
+  {
+   "body": "Uranus",
+   "sign": "aquarius",
+   "retrograde": true,
+   "nasa": "1919-08-16T22:09:58Z",
+   "engine": "1919-08-16T22:11:44.891Z",
+   "seconds": 106.9,
+   "arcseconds": 0.1759
+  },
+  {
+   "body": "Uranus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "1920-01-22T18:29:35Z",
+   "engine": "1920-01-22T18:28:10.744Z",
+   "seconds": -84.3,
+   "arcseconds": 0.1834
+  },
+  {
+   "body": "Uranus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "1927-03-31T17:23:04Z",
+   "engine": "1927-03-31T17:21:58.175Z",
+   "seconds": -65.8,
+   "arcseconds": 0.1549
+  },
+  {
+   "body": "Uranus",
+   "sign": "pisces",
+   "retrograde": true,
+   "nasa": "1927-11-04T10:35:16Z",
+   "engine": "1927-11-04T10:37:25.447Z",
+   "seconds": 129.4,
+   "arcseconds": 0.1467
+  },
+  {
+   "body": "Uranus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "1928-01-13T08:41:53Z",
+   "engine": "1928-01-13T08:39:47.247Z",
+   "seconds": -125.8,
+   "arcseconds": 0.15
+  },
+  {
+   "body": "Neptune",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "1928-09-21T12:02:37Z",
+   "engine": "1928-09-21T12:00:55.698Z",
+   "seconds": -101.3,
+   "arcseconds": 0.1415
+  },
+  {
+   "body": "Neptune",
+   "sign": "leo",
+   "retrograde": true,
+   "nasa": "1929-02-19T11:25:37Z",
+   "engine": "1929-02-19T11:27:44.814Z",
+   "seconds": 127.8,
+   "arcseconds": 0.1489
+  },
+  {
+   "body": "Neptune",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "1929-07-24T15:02:13Z",
+   "engine": "1929-07-24T15:00:28.912Z",
+   "seconds": -104.1,
+   "arcseconds": 0.1442
+  },
+  {
+   "body": "Uranus",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "1934-06-06T15:37:51Z",
+   "engine": "1934-06-06T15:36:33.140Z",
+   "seconds": -77.9,
+   "arcseconds": 0.1431
+  },
+  {
+   "body": "Uranus",
+   "sign": "aries",
+   "retrograde": true,
+   "nasa": "1934-10-10T00:40:44Z",
+   "engine": "1934-10-10T00:42:05.723Z",
+   "seconds": 81.7,
+   "arcseconds": 0.1341
+  },
+  {
+   "body": "Uranus",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "1935-03-28T02:54:32Z",
+   "engine": "1935-03-28T02:53:28.796Z",
+   "seconds": -63.2,
+   "arcseconds": 0.1416
+  },
+  {
+   "body": "Pluto",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "1937-10-07T12:19:06Z",
+   "engine": "1937-10-07T12:14:17.043Z",
+   "seconds": -289,
+   "arcseconds": 0.1245
+  },
+  {
+   "body": "Pluto",
+   "sign": "cancer",
+   "retrograde": true,
+   "nasa": "1937-11-25T09:01:04Z",
+   "engine": "1937-11-25T09:06:10.462Z",
+   "seconds": 306.5,
+   "arcseconds": 0.1308
+  },
+  {
+   "body": "Pluto",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "1938-08-03T17:59:47Z",
+   "engine": "1938-08-03T17:58:00.450Z",
+   "seconds": -106.5,
+   "arcseconds": 0.1217
+  },
+  {
+   "body": "Pluto",
+   "sign": "cancer",
+   "retrograde": true,
+   "nasa": "1939-02-07T12:53:54Z",
+   "engine": "1939-02-07T12:56:15.338Z",
+   "seconds": 141.3,
+   "arcseconds": 0.1249
+  },
+  {
+   "body": "Pluto",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "1939-06-14T04:50:45Z",
+   "engine": "1939-06-14T04:48:35.080Z",
+   "seconds": -129.9,
+   "arcseconds": 0.1239
+  },
+  {
+   "body": "Uranus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "1941-08-07T15:26:11Z",
+   "engine": "1941-08-07T15:24:25.398Z",
+   "seconds": -105.6,
+   "arcseconds": 0.1051
+  },
+  {
+   "body": "Uranus",
+   "sign": "taurus",
+   "retrograde": true,
+   "nasa": "1941-10-05T02:14:12Z",
+   "engine": "1941-10-05T02:15:56.826Z",
+   "seconds": 104.8,
+   "arcseconds": 0.1024
+  },
+  {
+   "body": "Uranus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "1942-05-15T04:02:19Z",
+   "engine": "1942-05-15T04:01:36.004Z",
+   "seconds": -43,
+   "arcseconds": 0.1042
+  },
+  {
+   "body": "Neptune",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "1942-10-03T16:57:58Z",
+   "engine": "1942-10-03T16:56:53.978Z",
+   "seconds": -64,
+   "arcseconds": 0.0981
+  },
+  {
+   "body": "Neptune",
+   "sign": "virgo",
+   "retrograde": true,
+   "nasa": "1943-04-17T10:59:35Z",
+   "engine": "1943-04-17T11:01:21.108Z",
+   "seconds": 106.1,
+   "arcseconds": 0.1065
+  },
+  {
+   "body": "Neptune",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "1943-08-02T19:06:14Z",
+   "engine": "1943-08-02T19:04:46.021Z",
+   "seconds": -88,
+   "arcseconds": 0.0953
+  },
+  {
+   "body": "Uranus",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "1948-08-30T15:35:55Z",
+   "engine": "1948-08-30T15:34:49.046Z",
+   "seconds": -66,
+   "arcseconds": 0.0845
+  },
+  {
+   "body": "Uranus",
+   "sign": "gemini",
+   "retrograde": true,
+   "nasa": "1948-11-12T13:31:23Z",
+   "engine": "1948-11-12T13:32:35.330Z",
+   "seconds": 72.3,
+   "arcseconds": 0.0899
+  },
+  {
+   "body": "Uranus",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "1949-06-10T04:05:27Z",
+   "engine": "1949-06-10T04:04:48.871Z",
+   "seconds": -38.1,
+   "arcseconds": 0.0938
+  },
+  {
+   "body": "Uranus",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "1955-08-24T18:01:40Z",
+   "engine": "1955-08-24T18:01:08.401Z",
+   "seconds": -31.6,
+   "arcseconds": 0.072
+  },
+  {
+   "body": "Neptune",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "1955-12-24T15:18:19Z",
+   "engine": "1955-12-24T15:16:47.035Z",
+   "seconds": -92,
+   "arcseconds": 0.0809
+  },
+  {
+   "body": "Uranus",
+   "sign": "cancer",
+   "retrograde": true,
+   "nasa": "1956-01-28T01:59:52Z",
+   "engine": "1956-01-28T02:00:34.950Z",
+   "seconds": 43,
+   "arcseconds": 0.0773
+  },
+  {
+   "body": "Neptune",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "1956-03-12T01:57:15Z",
+   "engine": "1956-03-12T01:58:52.940Z",
+   "seconds": 97.9,
+   "arcseconds": 0.081
+  },
+  {
+   "body": "Uranus",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "1956-06-10T01:45:43Z",
+   "engine": "1956-06-10T01:45:04.984Z",
+   "seconds": -38,
+   "arcseconds": 0.079
+  },
+  {
+   "body": "Neptune",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "1956-10-19T09:25:32Z",
+   "engine": "1956-10-19T09:24:46.661Z",
+   "seconds": -45.3,
+   "arcseconds": 0.0704
+  },
+  {
+   "body": "Pluto",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "1956-10-20T06:20:33Z",
+   "engine": "1956-10-20T06:19:07.261Z",
+   "seconds": -85.7,
+   "arcseconds": 0.0726
+  },
+  {
+   "body": "Pluto",
+   "sign": "leo",
+   "retrograde": true,
+   "nasa": "1957-01-15T02:35:16Z",
+   "engine": "1957-01-15T02:36:53.286Z",
+   "seconds": 97.3,
+   "arcseconds": 0.0784
+  },
+  {
+   "body": "Neptune",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "1957-06-15T20:13:21Z",
+   "engine": "1957-06-15T20:15:37.894Z",
+   "seconds": 136.9,
+   "arcseconds": 0.0749
+  },
+  {
+   "body": "Neptune",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "1957-08-06T08:18:57Z",
+   "engine": "1957-08-06T08:17:00.624Z",
+   "seconds": -116.4,
+   "arcseconds": 0.0659
+  },
+  {
+   "body": "Pluto",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "1957-08-19T04:28:25Z",
+   "engine": "1957-08-19T04:27:35.325Z",
+   "seconds": -49.7,
+   "arcseconds": 0.0681
+  },
+  {
+   "body": "Pluto",
+   "sign": "leo",
+   "retrograde": true,
+   "nasa": "1958-04-11T14:45:24Z",
+   "engine": "1958-04-11T14:47:33.550Z",
+   "seconds": 129.6,
+   "arcseconds": 0.0755
+  },
+  {
+   "body": "Pluto",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "1958-06-10T19:01:59Z",
+   "engine": "1958-06-10T18:59:57.428Z",
+   "seconds": -121.6,
+   "arcseconds": 0.0724
+  },
+  {
+   "body": "Uranus",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "1961-11-01T15:57:22Z",
+   "engine": "1961-11-01T15:56:47.862Z",
+   "seconds": -34.1,
+   "arcseconds": 0.0441
+  },
+  {
+   "body": "Uranus",
+   "sign": "leo",
+   "retrograde": true,
+   "nasa": "1962-01-10T05:56:37Z",
+   "engine": "1962-01-10T05:57:15.542Z",
+   "seconds": 38.5,
+   "arcseconds": 0.048
+  },
+  {
+   "body": "Uranus",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "1962-08-10T01:17:15Z",
+   "engine": "1962-08-10T01:16:57.084Z",
+   "seconds": -17.9,
+   "arcseconds": 0.0458
+  },
+  {
+   "body": "Uranus",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "1968-09-28T16:08:19Z",
+   "engine": "1968-09-28T16:08:01.007Z",
+   "seconds": -18,
+   "arcseconds": 0.0472
+  },
+  {
+   "body": "Uranus",
+   "sign": "virgo",
+   "retrograde": true,
+   "nasa": "1969-05-20T20:55:51Z",
+   "engine": "1969-05-20T20:57:06.327Z",
+   "seconds": 75.3,
+   "arcseconds": 0.047
+  },
+  {
+   "body": "Uranus",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "1969-06-24T10:31:06Z",
+   "engine": "1969-06-24T10:29:51.117Z",
+   "seconds": -74.9,
+   "arcseconds": 0.0474
+  },
+  {
+   "body": "Neptune",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "1970-01-04T19:53:38Z",
+   "engine": "1970-01-04T19:52:58.500Z",
+   "seconds": -39.5,
+   "arcseconds": 0.048
+  },
+  {
+   "body": "Neptune",
+   "sign": "scorpio",
+   "retrograde": true,
+   "nasa": "1970-05-03T01:32:27Z",
+   "engine": "1970-05-03T01:33:11.891Z",
+   "seconds": 44.9,
+   "arcseconds": 0.0476
+  },
+  {
+   "body": "Neptune",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "1970-11-06T16:30:45Z",
+   "engine": "1970-11-06T16:30:14.167Z",
+   "seconds": -30.8,
+   "arcseconds": 0.0468
+  },
+  {
+   "body": "Pluto",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "1971-10-05T06:18:24Z",
+   "engine": "1971-10-05T06:17:47.245Z",
+   "seconds": -36.8,
+   "arcseconds": 0.0568
+  },
+  {
+   "body": "Pluto",
+   "sign": "virgo",
+   "retrograde": true,
+   "nasa": "1972-04-17T07:43:04Z",
+   "engine": "1972-04-17T07:44:02.955Z",
+   "seconds": 59,
+   "arcseconds": 0.058
+  },
+  {
+   "body": "Pluto",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "1972-07-30T11:44:27Z",
+   "engine": "1972-07-30T11:43:33.199Z",
+   "seconds": -53.8,
+   "arcseconds": 0.0574
+  },
+  {
+   "body": "Uranus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "1974-11-21T09:30:58Z",
+   "engine": "1974-11-21T09:30:38.121Z",
+   "seconds": -19.9,
+   "arcseconds": 0.0473
+  },
+  {
+   "body": "Uranus",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "1975-05-01T17:47:09Z",
+   "engine": "1975-05-01T17:47:36.113Z",
+   "seconds": 27.1,
+   "arcseconds": 0.0472
+  },
+  {
+   "body": "Uranus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "1975-09-08T05:15:25Z",
+   "engine": "1975-09-08T05:15:01.547Z",
+   "seconds": -23.5,
+   "arcseconds": 0.0475
+  },
+  {
+   "body": "Saturn",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "1980-09-21T10:47:56Z",
+   "engine": "1980-09-21T10:47:47.394Z",
+   "seconds": -8.6,
+   "arcseconds": 0.0445
+  },
+  {
+   "body": "Uranus",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "1981-02-17T09:01:08Z",
+   "engine": "1981-02-17T08:59:45.808Z",
+   "seconds": -82.2,
+   "arcseconds": 0.0487
+  },
+  {
+   "body": "Uranus",
+   "sign": "scorpio",
+   "retrograde": true,
+   "nasa": "1981-03-20T23:16:14Z",
+   "engine": "1981-03-20T23:17:36.181Z",
+   "seconds": 82.2,
+   "arcseconds": 0.0475
+  },
+  {
+   "body": "Uranus",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "1981-11-16T12:04:44Z",
+   "engine": "1981-11-16T12:04:26.639Z",
+   "seconds": -17.4,
+   "arcseconds": 0.0446
+  },
+  {
+   "body": "Saturn",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "1982-11-29T10:28:50Z",
+   "engine": "1982-11-29T10:28:38.768Z",
+   "seconds": -11.2,
+   "arcseconds": 0.0493
+  },
+  {
+   "body": "Saturn",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "1983-05-06T19:29:25Z",
+   "engine": "1983-05-06T19:29:41.860Z",
+   "seconds": 16.9,
+   "arcseconds": 0.0505
+  },
+  {
+   "body": "Saturn",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "1983-08-24T11:53:39Z",
+   "engine": "1983-08-24T11:53:23.529Z",
+   "seconds": -15.5,
+   "arcseconds": 0.0514
+  },
+  {
+   "body": "Pluto",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "1983-11-05T21:09:15Z",
+   "engine": "1983-11-05T21:08:38.503Z",
+   "seconds": -36.5,
+   "arcseconds": 0.0602
+  },
+  {
+   "body": "Neptune",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "1984-01-19T02:55:13Z",
+   "engine": "1984-01-19T02:54:38.794Z",
+   "seconds": -34.2,
+   "arcseconds": 0.0489
+  },
+  {
+   "body": "Pluto",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "1984-05-18T14:31:11Z",
+   "engine": "1984-05-18T14:32:11.902Z",
+   "seconds": 60.9,
+   "arcseconds": 0.061
+  },
+  {
+   "body": "Neptune",
+   "sign": "sagittarius",
+   "retrograde": true,
+   "nasa": "1984-06-23T01:09:31Z",
+   "engine": "1984-06-23T01:10:14.114Z",
+   "seconds": 43.1,
+   "arcseconds": 0.0485
+  },
+  {
+   "body": "Pluto",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "1984-08-28T04:46:50Z",
+   "engine": "1984-08-28T04:45:54.994Z",
+   "seconds": -55,
+   "arcseconds": 0.0607
+  },
+  {
+   "body": "Neptune",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "1984-11-21T13:21:13Z",
+   "engine": "1984-11-21T13:20:38.475Z",
+   "seconds": -34.5,
+   "arcseconds": 0.0483
+  },
+  {
+   "body": "Saturn",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "1985-11-17T02:09:26Z",
+   "engine": "1985-11-17T02:09:15.793Z",
+   "seconds": -10.2,
+   "arcseconds": 0.0505
+  },
+  {
+   "body": "Saturn",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "1988-02-13T23:50:38Z",
+   "engine": "1988-02-13T23:50:24.224Z",
+   "seconds": -13.8,
+   "arcseconds": 0.0484
+  },
+  {
+   "body": "Uranus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "1988-02-15T00:11:01Z",
+   "engine": "1988-02-15T00:10:32.825Z",
+   "seconds": -28.2,
+   "arcseconds": 0.0475
+  },
+  {
+   "body": "Uranus",
+   "sign": "sagittarius",
+   "retrograde": true,
+   "nasa": "1988-05-27T01:16:44Z",
+   "engine": "1988-05-27T01:17:16.026Z",
+   "seconds": 32,
+   "arcseconds": 0.048
+  },
+  {
+   "body": "Saturn",
+   "sign": "sagittarius",
+   "retrograde": true,
+   "nasa": "1988-06-10T05:22:01Z",
+   "engine": "1988-06-10T05:22:16.990Z",
+   "seconds": 16,
+   "arcseconds": 0.048
+  },
+  {
+   "body": "Saturn",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "1988-11-12T09:25:55Z",
+   "engine": "1988-11-12T09:25:43.114Z",
+   "seconds": -11.9,
+   "arcseconds": 0.0494
+  },
+  {
+   "body": "Uranus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "1988-12-02T15:35:38Z",
+   "engine": "1988-12-02T15:35:18.240Z",
+   "seconds": -19.8,
+   "arcseconds": 0.0476
+  },
+  {
+   "body": "Saturn",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "1991-02-06T18:51:23Z",
+   "engine": "1991-02-06T18:51:13.246Z",
+   "seconds": -9.8,
+   "arcseconds": 0.0469
+  },
+  {
+   "body": "Saturn",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "1993-05-21T04:58:36Z",
+   "engine": "1993-05-21T04:58:00.615Z",
+   "seconds": -35.4,
+   "arcseconds": 0.048
+  },
+  {
+   "body": "Saturn",
+   "sign": "aquarius",
+   "retrograde": true,
+   "nasa": "1993-06-30T08:27:57Z",
+   "engine": "1993-06-30T08:28:33.409Z",
+   "seconds": 36.4,
+   "arcseconds": 0.0486
+  },
+  {
+   "body": "Saturn",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "1994-01-28T23:43:08Z",
+   "engine": "1994-01-28T23:42:58.009Z",
+   "seconds": -10,
+   "arcseconds": 0.0483
+  },
+  {
+   "body": "Pluto",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "1995-01-17T09:16:47Z",
+   "engine": "1995-01-17T09:15:53.699Z",
+   "seconds": -53.3,
+   "arcseconds": 0.0567
+  },
+  {
+   "body": "Uranus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "1995-04-01T12:11:59Z",
+   "engine": "1995-04-01T12:11:16.575Z",
+   "seconds": -42.4,
+   "arcseconds": 0.0488
+  },
+  {
+   "body": "Pluto",
+   "sign": "scorpio",
+   "retrograde": true,
+   "nasa": "1995-04-21T02:54:57Z",
+   "engine": "1995-04-21T02:55:57.629Z",
+   "seconds": 60.6,
+   "arcseconds": 0.058
+  },
+  {
+   "body": "Uranus",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "1995-06-09T01:40:47Z",
+   "engine": "1995-06-09T01:41:32.025Z",
+   "seconds": 45,
+   "arcseconds": 0.0489
+  },
+  {
+   "body": "Pluto",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "1995-11-10T19:12:07Z",
+   "engine": "1995-11-10T19:11:32.748Z",
+   "seconds": -34.3,
+   "arcseconds": 0.0558
+  },
+  {
+   "body": "Uranus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "1996-01-12T07:13:44Z",
+   "engine": "1996-01-12T07:13:24.533Z",
+   "seconds": -19.5,
+   "arcseconds": 0.0473
+  },
+  {
+   "body": "Saturn",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "1996-04-07T08:49:06Z",
+   "engine": "1996-04-07T08:48:55.793Z",
+   "seconds": -10.2,
+   "arcseconds": 0.0511
+  },
+  {
+   "body": "Neptune",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "1998-01-29T02:52:36Z",
+   "engine": "1998-01-29T02:52:04.910Z",
+   "seconds": -31.1,
+   "arcseconds": 0.0488
+  },
+  {
+   "body": "Saturn",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "1998-06-09T06:07:08Z",
+   "engine": "1998-06-09T06:06:55.388Z",
+   "seconds": -12.6,
+   "arcseconds": 0.0517
+  },
+  {
+   "body": "Neptune",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "1998-08-23T00:11:52Z",
+   "engine": "1998-08-23T00:12:42.277Z",
+   "seconds": 50.3,
+   "arcseconds": 0.0474
+  },
+  {
+   "body": "Saturn",
+   "sign": "aries",
+   "retrograde": true,
+   "nasa": "1998-10-25T18:40:20Z",
+   "engine": "1998-10-25T18:40:35.593Z",
+   "seconds": 15.6,
+   "arcseconds": 0.0519
+  },
+  {
+   "body": "Neptune",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "1998-11-28T01:20:10Z",
+   "engine": "1998-11-28T01:19:22.430Z",
+   "seconds": -47.6,
+   "arcseconds": 0.0496
+  },
+  {
+   "body": "Saturn",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "1999-03-01T01:25:55Z",
+   "engine": "1999-03-01T01:25:42.017Z",
+   "seconds": -13,
+   "arcseconds": 0.0524
+  },
+  {
+   "body": "Saturn",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2000-08-10T02:26:31Z",
+   "engine": "2000-08-10T02:26:10.380Z",
+   "seconds": -20.6,
+   "arcseconds": 0.049
+  },
+  {
+   "body": "Saturn",
+   "sign": "taurus",
+   "retrograde": true,
+   "nasa": "2000-10-16T00:44:09Z",
+   "engine": "2000-10-16T00:44:30.660Z",
+   "seconds": 21.7,
+   "arcseconds": 0.0504
+  },
+  {
+   "body": "Saturn",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2001-04-20T21:59:19Z",
+   "engine": "2001-04-20T21:59:09.385Z",
+   "seconds": -9.6,
+   "arcseconds": 0.0476
+  },
+  {
+   "body": "Uranus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2003-03-10T20:53:58Z",
+   "engine": "2003-03-10T20:53:37.246Z",
+   "seconds": -20.8,
+   "arcseconds": 0.0477
+  },
+  {
+   "body": "Saturn",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2003-06-04T01:28:03Z",
+   "engine": "2003-06-04T01:27:53.822Z",
+   "seconds": -9.2,
+   "arcseconds": 0.0484
+  },
+  {
+   "body": "Uranus",
+   "sign": "aquarius",
+   "retrograde": true,
+   "nasa": "2003-09-15T03:45:03Z",
+   "engine": "2003-09-15T03:45:34.609Z",
+   "seconds": 31.6,
+   "arcseconds": 0.0475
+  },
+  {
+   "body": "Uranus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2003-12-30T09:15:41Z",
+   "engine": "2003-12-30T09:15:12.608Z",
+   "seconds": -28.4,
+   "arcseconds": 0.0479
+  },
+  {
+   "body": "Saturn",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2005-07-16T12:30:22Z",
+   "engine": "2005-07-16T12:30:12.132Z",
+   "seconds": -9.9,
+   "arcseconds": 0.053
+  },
+  {
+   "body": "Saturn",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2007-09-02T13:48:36Z",
+   "engine": "2007-09-02T13:48:27.034Z",
+   "seconds": -9,
+   "arcseconds": 0.0471
+  },
+  {
+   "body": "Pluto",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2008-01-26T02:38:43Z",
+   "engine": "2008-01-26T02:38:04.643Z",
+   "seconds": -38.4,
+   "arcseconds": 0.0501
+  },
+  {
+   "body": "Pluto",
+   "sign": "sagittarius",
+   "retrograde": true,
+   "nasa": "2008-06-14T05:11:15Z",
+   "engine": "2008-06-14T05:12:00.998Z",
+   "seconds": 46,
+   "arcseconds": 0.0492
+  },
+  {
+   "body": "Pluto",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2008-11-27T01:04:22Z",
+   "engine": "2008-11-27T01:03:46.939Z",
+   "seconds": -35.1,
+   "arcseconds": 0.0496
+  },
+  {
+   "body": "Saturn",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2009-10-29T17:08:45Z",
+   "engine": "2009-10-29T17:08:33.804Z",
+   "seconds": -11.2,
+   "arcseconds": 0.0506
+  },
+  {
+   "body": "Saturn",
+   "sign": "virgo",
+   "retrograde": true,
+   "nasa": "2010-04-07T18:51:14Z",
+   "engine": "2010-04-07T18:51:29.851Z",
+   "seconds": 15.9,
+   "arcseconds": 0.0481
+  },
+  {
+   "body": "Uranus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2010-05-28T01:46:20Z",
+   "engine": "2010-05-28T01:45:41.252Z",
+   "seconds": -38.7,
+   "arcseconds": 0.0483
+  },
+  {
+   "body": "Saturn",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2010-07-21T15:10:08Z",
+   "engine": "2010-07-21T15:09:52.972Z",
+   "seconds": -15,
+   "arcseconds": 0.0495
+  },
+  {
+   "body": "Uranus",
+   "sign": "pisces",
+   "retrograde": true,
+   "nasa": "2010-08-14T03:33:27Z",
+   "engine": "2010-08-14T03:34:06.360Z",
+   "seconds": 39.4,
+   "arcseconds": 0.0467
+  },
+  {
+   "body": "Uranus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2011-03-12T00:50:43Z",
+   "engine": "2011-03-12T00:50:22.380Z",
+   "seconds": -20.6,
+   "arcseconds": 0.0487
+  },
+  {
+   "body": "Neptune",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2011-04-04T13:50:44Z",
+   "engine": "2011-04-04T13:50:04.268Z",
+   "seconds": -39.7,
+   "arcseconds": 0.0484
+  },
+  {
+   "body": "Neptune",
+   "sign": "aquarius",
+   "retrograde": true,
+   "nasa": "2011-08-05T02:53:06Z",
+   "engine": "2011-08-05T02:53:50.613Z",
+   "seconds": 44.6,
+   "arcseconds": 0.0478
+  },
+  {
+   "body": "Neptune",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2012-02-03T19:03:15Z",
+   "engine": "2012-02-03T19:02:43.755Z",
+   "seconds": -31.2,
+   "arcseconds": 0.048
+  },
+  {
+   "body": "Saturn",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2012-10-05T20:34:05Z",
+   "engine": "2012-10-05T20:33:54.901Z",
+   "seconds": -10.1,
+   "arcseconds": 0.0494
+  },
+  {
+   "body": "Jupiter",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2014-07-16T10:30:40Z",
+   "engine": "2014-07-16T10:30:34.783Z",
+   "seconds": -5.2,
+   "arcseconds": 0.0482
+  },
+  {
+   "body": "Saturn",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2014-12-23T16:33:58Z",
+   "engine": "2014-12-23T16:33:46.809Z",
+   "seconds": -11.2,
+   "arcseconds": 0.0501
+  },
+  {
+   "body": "Saturn",
+   "sign": "scorpio",
+   "retrograde": true,
+   "nasa": "2015-06-15T00:35:40Z",
+   "engine": "2015-06-15T00:35:58.209Z",
+   "seconds": 18.2,
+   "arcseconds": 0.0492
+  },
+  {
+   "body": "Jupiter",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2015-08-11T11:11:32Z",
+   "engine": "2015-08-11T11:11:26.309Z",
+   "seconds": -5.7,
+   "arcseconds": 0.0511
+  },
+  {
+   "body": "Saturn",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2015-09-18T02:49:11Z",
+   "engine": "2015-09-18T02:48:54.572Z",
+   "seconds": -16.4,
+   "arcseconds": 0.0482
+  },
+  {
+   "body": "Jupiter",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2016-09-09T11:18:16Z",
+   "engine": "2016-09-09T11:18:10.999Z",
+   "seconds": -5,
+   "arcseconds": 0.0444
+  },
+  {
+   "body": "Jupiter",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2017-10-10T13:20:31Z",
+   "engine": "2017-10-10T13:20:25.659Z",
+   "seconds": -5.3,
+   "arcseconds": 0.0479
+  },
+  {
+   "body": "Saturn",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2017-12-20T04:48:39Z",
+   "engine": "2017-12-20T04:48:42.646Z",
+   "seconds": 3.6,
+   "arcseconds": 0.0179
+  },
+  {
+   "body": "Uranus",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2018-05-15T15:18:15Z",
+   "engine": "2018-05-15T15:17:53.602Z",
+   "seconds": -21.4,
+   "arcseconds": 0.0475
+  },
+  {
+   "body": "Uranus",
+   "sign": "aries",
+   "retrograde": true,
+   "nasa": "2018-11-06T18:56:45Z",
+   "engine": "2018-11-06T18:57:14.946Z",
+   "seconds": 29.9,
+   "arcseconds": 0.0491
+  },
+  {
+   "body": "Jupiter",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2018-11-08T12:38:43Z",
+   "engine": "2018-11-08T12:38:37.577Z",
+   "seconds": -5.4,
+   "arcseconds": 0.0496
+  },
+  {
+   "body": "Uranus",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2019-03-06T08:28:48Z",
+   "engine": "2019-03-06T08:28:22.070Z",
+   "seconds": -25.9,
+   "arcseconds": 0.048
+  },
+  {
+   "body": "Jupiter",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2019-12-02T18:20:25Z",
+   "engine": "2019-12-02T18:20:19.690Z",
+   "seconds": -5.3,
+   "arcseconds": 0.0493
+  },
+  {
+   "body": "Saturn",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2020-03-22T03:58:46Z",
+   "engine": "2020-03-22T03:58:30.782Z",
+   "seconds": -15.2,
+   "arcseconds": 0.0475
+  },
+  {
+   "body": "Saturn",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "2020-07-01T23:36:40Z",
+   "engine": "2020-07-01T23:36:56.551Z",
+   "seconds": 16.6,
+   "arcseconds": 0.0464
+  },
+  {
+   "body": "Saturn",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2020-12-17T05:04:14Z",
+   "engine": "2020-12-17T05:04:03.030Z",
+   "seconds": -11,
+   "arcseconds": 0.0481
+  },
+  {
+   "body": "Jupiter",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2020-12-19T13:07:23Z",
+   "engine": "2020-12-19T13:07:18.056Z",
+   "seconds": -4.9,
+   "arcseconds": 0.0449
+  },
+  {
+   "body": "Jupiter",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2021-05-13T22:36:14Z",
+   "engine": "2021-05-13T22:36:04.107Z",
+   "seconds": -9.9,
+   "arcseconds": 0.0459
+  },
+  {
+   "body": "Jupiter",
+   "sign": "aquarius",
+   "retrograde": true,
+   "nasa": "2021-07-28T12:41:58Z",
+   "engine": "2021-07-28T12:42:08.382Z",
+   "seconds": 10.4,
+   "arcseconds": 0.0466
+  },
+  {
+   "body": "Jupiter",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2021-12-29T04:09:44Z",
+   "engine": "2021-12-29T04:09:38.149Z",
+   "seconds": -5.9,
+   "arcseconds": 0.0465
+  },
+  {
+   "body": "Jupiter",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2022-05-10T23:22:14Z",
+   "engine": "2022-05-10T23:22:07.660Z",
+   "seconds": -6.3,
+   "arcseconds": 0.0515
+  },
+  {
+   "body": "Jupiter",
+   "sign": "pisces",
+   "retrograde": true,
+   "nasa": "2022-10-28T05:09:31Z",
+   "engine": "2022-10-28T05:09:44.250Z",
+   "seconds": 13.3,
+   "arcseconds": 0.0479
+  },
+  {
+   "body": "Jupiter",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2022-12-20T14:32:46Z",
+   "engine": "2022-12-20T14:32:32.455Z",
+   "seconds": -13.5,
+   "arcseconds": 0.0497
+  },
+  {
+   "body": "Saturn",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2023-03-07T13:35:01Z",
+   "engine": "2023-03-07T13:34:51.117Z",
+   "seconds": -9.9,
+   "arcseconds": 0.0484
+  },
+  {
+   "body": "Pluto",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2023-03-23T12:23:43Z",
+   "engine": "2023-03-23T12:22:40.213Z",
+   "seconds": -62.8,
+   "arcseconds": 0.0474
+  },
+  {
+   "body": "Jupiter",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2023-05-16T17:20:11Z",
+   "engine": "2023-05-16T17:20:06.365Z",
+   "seconds": -4.6,
+   "arcseconds": 0.0441
+  },
+  {
+   "body": "Pluto",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "2023-06-11T09:34:50Z",
+   "engine": "2023-06-11T09:35:56.999Z",
+   "seconds": 67,
+   "arcseconds": 0.0472
+  },
+  {
+   "body": "Pluto",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2024-01-21T00:56:19Z",
+   "engine": "2024-01-21T00:55:46.339Z",
+   "seconds": -32.7,
+   "arcseconds": 0.0443
+  },
+  {
+   "body": "Jupiter",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2024-05-25T23:14:55Z",
+   "engine": "2024-05-25T23:14:50.318Z",
+   "seconds": -4.7,
+   "arcseconds": 0.0459
+  },
+  {
+   "body": "Pluto",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "2024-09-01T23:57:09Z",
+   "engine": "2024-09-01T23:58:15.237Z",
+   "seconds": 66.2,
+   "arcseconds": 0.0465
+  },
+  {
+   "body": "Pluto",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2024-11-19T20:40:00Z",
+   "engine": "2024-11-19T20:38:57.321Z",
+   "seconds": -62.7,
+   "arcseconds": 0.0472
+  },
+  {
+   "body": "Neptune",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2025-03-30T11:58:27Z",
+   "engine": "2025-03-30T11:57:56.379Z",
+   "seconds": -30.6,
+   "arcseconds": 0.0478
+  },
+  {
+   "body": "Saturn",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2025-05-25T03:36:08Z",
+   "engine": "2025-05-25T03:35:52.416Z",
+   "seconds": -15.6,
+   "arcseconds": 0.0489
+  },
+  {
+   "body": "Jupiter",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2025-06-09T21:02:15Z",
+   "engine": "2025-06-09T21:02:10.447Z",
+   "seconds": -4.6,
+   "arcseconds": 0.043
+  },
+  {
+   "body": "Uranus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2025-07-07T07:47:45Z",
+   "engine": "2025-07-07T07:47:19.441Z",
+   "seconds": -25.6,
+   "arcseconds": 0.0476
+  },
+  {
+   "body": "Saturn",
+   "sign": "pisces",
+   "retrograde": true,
+   "nasa": "2025-09-01T08:05:45Z",
+   "engine": "2025-09-01T08:06:01.299Z",
+   "seconds": 16.3,
+   "arcseconds": 0.0472
+  },
+  {
+   "body": "Neptune",
+   "sign": "pisces",
+   "retrograde": true,
+   "nasa": "2025-10-22T09:49:55Z",
+   "engine": "2025-10-22T09:50:44.366Z",
+   "seconds": 49.4,
+   "arcseconds": 0.048
+  },
+  {
+   "body": "Venus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2025-11-06T22:39:32Z",
+   "engine": "2025-11-06T22:39:30.841Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0605
+  },
+  {
+   "body": "Uranus",
+   "sign": "taurus",
+   "retrograde": true,
+   "nasa": "2025-11-08T02:19:04Z",
+   "engine": "2025-11-08T02:19:31.258Z",
+   "seconds": 27.3,
+   "arcseconds": 0.0456
+  },
+  {
+   "body": "Mercury",
+   "sign": "scorpio",
+   "retrograde": true,
+   "nasa": "2025-11-19T03:20:17Z",
+   "engine": "2025-11-19T03:20:17.906Z",
+   "seconds": 0.9,
+   "arcseconds": 0.0503
+  },
+  {
+   "body": "Venus",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2025-11-30T20:13:38Z",
+   "engine": "2025-11-30T20:13:36.630Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0718
+  },
+  {
+   "body": "Mercury",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2025-12-11T22:39:43Z",
+   "engine": "2025-12-11T22:39:42.464Z",
+   "seconds": -0.5,
+   "arcseconds": 0.0275
+  },
+  {
+   "body": "Mars",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2025-12-15T07:33:50Z",
+   "engine": "2025-12-15T07:33:48.722Z",
+   "seconds": -1.3,
+   "arcseconds": 0.0402
+  },
+  {
+   "body": "Venus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2025-12-24T16:25:58Z",
+   "engine": "2025-12-24T16:25:57.160Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0441
+  },
+  {
+   "body": "Mercury",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2026-01-01T21:10:43Z",
+   "engine": "2026-01-01T21:10:41.846Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0736
+  },
+  {
+   "body": "Venus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2026-01-17T12:43:25Z",
+   "engine": "2026-01-17T12:43:23.949Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0551
+  },
+  {
+   "body": "Mercury",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2026-01-20T16:41:12Z",
+   "engine": "2026-01-20T16:41:10.856Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0796
+  },
+  {
+   "body": "Mars",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2026-01-23T09:16:47Z",
+   "engine": "2026-01-23T09:16:45.202Z",
+   "seconds": -1.8,
+   "arcseconds": 0.0584
+  },
+  {
+   "body": "Neptune",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2026-01-26T17:35:23Z",
+   "engine": "2026-01-26T17:34:38.263Z",
+   "seconds": -44.7,
+   "arcseconds": 0.0474
+  },
+  {
+   "body": "Mercury",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2026-02-06T22:48:04Z",
+   "engine": "2026-02-06T22:48:03.763Z",
+   "seconds": -0.2,
+   "arcseconds": 0.0173
+  },
+  {
+   "body": "Venus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2026-02-10T10:18:39Z",
+   "engine": "2026-02-10T10:18:38.181Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0428
+  },
+  {
+   "body": "Saturn",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2026-02-14T00:11:49Z",
+   "engine": "2026-02-14T00:11:38.911Z",
+   "seconds": -10.1,
+   "arcseconds": 0.0463
+  },
+  {
+   "body": "Mars",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2026-03-02T14:15:52Z",
+   "engine": "2026-03-02T14:15:50.176Z",
+   "seconds": -1.8,
+   "arcseconds": 0.0599
+  },
+  {
+   "body": "Venus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2026-03-06T10:45:46Z",
+   "engine": "2026-03-06T10:45:45.485Z",
+   "seconds": -0.5,
+   "arcseconds": 0.0267
+  },
+  {
+   "body": "Venus",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2026-03-30T16:00:53Z",
+   "engine": "2026-03-30T16:00:51.949Z",
+   "seconds": -1.1,
+   "arcseconds": 0.054
+  },
+  {
+   "body": "Mars",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2026-04-09T19:36:11Z",
+   "engine": "2026-04-09T19:36:09.197Z",
+   "seconds": -1.8,
+   "arcseconds": 0.0585
+  },
+  {
+   "body": "Mercury",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2026-04-15T03:21:30Z",
+   "engine": "2026-04-15T03:21:29.217Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0459
+  },
+  {
+   "body": "Venus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2026-04-24T04:03:26Z",
+   "engine": "2026-04-24T04:03:25.443Z",
+   "seconds": -0.6,
+   "arcseconds": 0.0282
+  },
+  {
+   "body": "Uranus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2026-04-26T00:51:53Z",
+   "engine": "2026-04-26T00:51:32.436Z",
+   "seconds": -20.6,
+   "arcseconds": 0.0466
+  },
+  {
+   "body": "Mercury",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2026-05-03T02:56:56Z",
+   "engine": "2026-05-03T02:56:55.830Z",
+   "seconds": -0.2,
+   "arcseconds": 0.0137
+  },
+  {
+   "body": "Mercury",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2026-05-17T10:26:24Z",
+   "engine": "2026-05-17T10:26:23.958Z",
+   "seconds": 0,
+   "arcseconds": 0.0038
+  },
+  {
+   "body": "Mars",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2026-05-18T22:25:29Z",
+   "engine": "2026-05-18T22:25:27.758Z",
+   "seconds": -1.2,
+   "arcseconds": 0.039
+  },
+  {
+   "body": "Venus",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2026-05-19T01:05:18Z",
+   "engine": "2026-05-19T01:05:17.119Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0439
+  },
+  {
+   "body": "Mercury",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2026-06-01T11:55:44Z",
+   "engine": "2026-06-01T11:55:43.382Z",
+   "seconds": -0.6,
+   "arcseconds": 0.0437
+  },
+  {
+   "body": "Venus",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2026-06-13T10:46:49Z",
+   "engine": "2026-06-13T10:46:47.594Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0683
+  },
+  {
+   "body": "Mars",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2026-06-28T19:29:16Z",
+   "engine": "2026-06-28T19:29:14.362Z",
+   "seconds": -1.6,
+   "arcseconds": 0.0487
+  },
+  {
+   "body": "Jupiter",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2026-06-30T05:52:27Z",
+   "engine": "2026-06-30T05:52:21.752Z",
+   "seconds": -5.2,
+   "arcseconds": 0.0467
+  },
+  {
+   "body": "Venus",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2026-07-09T17:22:08Z",
+   "engine": "2026-07-09T17:22:07.284Z",
+   "seconds": -0.7,
+   "arcseconds": 0.0332
+  },
+  {
+   "body": "Venus",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2026-08-06T19:12:47Z",
+   "engine": "2026-08-06T19:12:45.578Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0598
+  },
+  {
+   "body": "Mercury",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2026-08-09T16:28:23Z",
+   "engine": "2026-08-09T16:28:22.222Z",
+   "seconds": -0.8,
+   "arcseconds": 0.051
+  },
+  {
+   "body": "Mars",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2026-08-11T08:30:32Z",
+   "engine": "2026-08-11T08:30:30.558Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0398
+  },
+  {
+   "body": "Mercury",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2026-08-25T11:04:14Z",
+   "engine": "2026-08-25T11:04:13.345Z",
+   "seconds": -0.7,
+   "arcseconds": 0.0544
+  },
+  {
+   "body": "Venus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2026-09-10T08:06:51Z",
+   "engine": "2026-09-10T08:06:49.233Z",
+   "seconds": -1.8,
+   "arcseconds": 0.0483
+  },
+  {
+   "body": "Mercury",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2026-09-10T16:20:39Z",
+   "engine": "2026-09-10T16:20:38.551Z",
+   "seconds": -0.4,
+   "arcseconds": 0.0316
+  },
+  {
+   "body": "Mars",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2026-09-28T02:48:54Z",
+   "engine": "2026-09-28T02:48:52.207Z",
+   "seconds": -1.8,
+   "arcseconds": 0.044
+  },
+  {
+   "body": "Mercury",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2026-09-30T11:44:25Z",
+   "engine": "2026-09-30T11:44:24.145Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0476
+  },
+  {
+   "body": "Venus",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "2026-10-25T09:09:46Z",
+   "engine": "2026-10-25T09:09:47.689Z",
+   "seconds": 1.7,
+   "arcseconds": 0.043
+  },
+  {
+   "body": "Mars",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2026-11-25T23:37:08Z",
+   "engine": "2026-11-25T23:37:05.538Z",
+   "seconds": -2.5,
+   "arcseconds": 0.041
+  },
+  {
+   "body": "Venus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2026-12-04T08:12:42Z",
+   "engine": "2026-12-04T08:12:39.842Z",
+   "seconds": -2.2,
+   "arcseconds": 0.0572
+  },
+  {
+   "body": "Mercury",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2026-12-06T08:33:20Z",
+   "engine": "2026-12-06T08:33:19.644Z",
+   "seconds": -0.4,
+   "arcseconds": 0.0224
+  },
+  {
+   "body": "Mercury",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2026-12-25T18:22:30Z",
+   "engine": "2026-12-25T18:22:29.294Z",
+   "seconds": -0.7,
+   "arcseconds": 0.0463
+  },
+  {
+   "body": "Venus",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2027-01-07T08:53:28Z",
+   "engine": "2027-01-07T08:53:26.794Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0524
+  },
+  {
+   "body": "Mercury",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2027-01-13T06:05:52Z",
+   "engine": "2027-01-13T06:05:51.299Z",
+   "seconds": -0.7,
+   "arcseconds": 0.049
+  },
+  {
+   "body": "Mercury",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2027-02-01T01:25:40Z",
+   "engine": "2027-02-01T01:25:39.057Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0487
+  },
+  {
+   "body": "Venus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2027-02-03T14:30:33Z",
+   "engine": "2027-02-03T14:30:31.702Z",
+   "seconds": -1.3,
+   "arcseconds": 0.062
+  },
+  {
+   "body": "Mercury",
+   "sign": "aquarius",
+   "retrograde": true,
+   "nasa": "2027-02-18T12:15:33Z",
+   "engine": "2027-02-18T12:15:33.504Z",
+   "seconds": 0.5,
+   "arcseconds": 0.0236
+  },
+  {
+   "body": "Mars",
+   "sign": "leo",
+   "retrograde": true,
+   "nasa": "2027-02-21T14:13:26Z",
+   "engine": "2027-02-21T14:13:29.089Z",
+   "seconds": 3.1,
+   "arcseconds": 0.0511
+  },
+  {
+   "body": "Venus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2027-03-01T06:32:17Z",
+   "engine": "2027-03-01T06:32:16.407Z",
+   "seconds": -0.6,
+   "arcseconds": 0.0293
+  },
+  {
+   "body": "Mercury",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2027-03-18T10:01:54Z",
+   "engine": "2027-03-18T10:01:53.212Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0345
+  },
+  {
+   "body": "Venus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2027-03-26T08:16:33Z",
+   "engine": "2027-03-26T08:16:31.810Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0597
+  },
+  {
+   "body": "Mercury",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2027-04-08T23:20:10Z",
+   "engine": "2027-04-08T23:20:09.253Z",
+   "seconds": -0.7,
+   "arcseconds": 0.0522
+  },
+  {
+   "body": "Venus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2027-04-20T03:57:06Z",
+   "engine": "2027-04-20T03:57:05.248Z",
+   "seconds": -0.8,
+   "arcseconds": 0.038
+  },
+  {
+   "body": "Mercury",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2027-04-24T22:18:07Z",
+   "engine": "2027-04-24T22:18:06.191Z",
+   "seconds": -0.8,
+   "arcseconds": 0.07
+  },
+  {
+   "body": "Mercury",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2027-05-09T01:57:45Z",
+   "engine": "2027-05-09T01:57:44.546Z",
+   "seconds": -0.5,
+   "arcseconds": 0.0383
+  },
+  {
+   "body": "Mars",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2027-05-14T14:47:28Z",
+   "engine": "2027-05-14T14:47:24.446Z",
+   "seconds": -3.6,
+   "arcseconds": 0.0548
+  },
+  {
+   "body": "Venus",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2027-05-14T21:01:31Z",
+   "engine": "2027-05-14T21:01:29.882Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0566
+  },
+  {
+   "body": "Mercury",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2027-05-28T17:06:36Z",
+   "engine": "2027-05-28T17:06:34.326Z",
+   "seconds": -1.7,
+   "arcseconds": 0.0662
+  },
+  {
+   "body": "Venus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2027-06-08T12:32:33Z",
+   "engine": "2027-06-08T12:32:31.939Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0539
+  },
+  {
+   "body": "Mercury",
+   "sign": "gemini",
+   "retrograde": true,
+   "nasa": "2027-06-26T07:19:11Z",
+   "engine": "2027-06-26T07:19:12.853Z",
+   "seconds": 1.9,
+   "arcseconds": 0.0405
+  },
+  {
+   "body": "Venus",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2027-07-03T02:01:32Z",
+   "engine": "2027-07-03T02:01:30.676Z",
+   "seconds": -1.3,
+   "arcseconds": 0.0676
+  },
+  {
+   "body": "Mercury",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2027-07-12T13:48:00Z",
+   "engine": "2027-07-12T13:47:58.624Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0376
+  },
+  {
+   "body": "Mars",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2027-07-15T05:40:26Z",
+   "engine": "2027-07-15T05:40:24.733Z",
+   "seconds": -1.3,
+   "arcseconds": 0.0301
+  },
+  {
+   "body": "Jupiter",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2027-07-26T04:49:16Z",
+   "engine": "2027-07-26T04:49:10.994Z",
+   "seconds": -5,
+   "arcseconds": 0.0426
+  },
+  {
+   "body": "Venus",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2027-07-27T12:30:58Z",
+   "engine": "2027-07-27T12:30:57.639Z",
+   "seconds": -0.4,
+   "arcseconds": 0.0185
+  },
+  {
+   "body": "Mercury",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2027-08-02T10:52:23Z",
+   "engine": "2027-08-02T10:52:22.665Z",
+   "seconds": -0.3,
+   "arcseconds": 0.0282
+  },
+  {
+   "body": "Mercury",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2027-08-17T04:43:22Z",
+   "engine": "2027-08-17T04:43:21.196Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0647
+  },
+  {
+   "body": "Venus",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2027-08-20T19:42:45Z",
+   "engine": "2027-08-20T19:42:44.294Z",
+   "seconds": -0.7,
+   "arcseconds": 0.0364
+  },
+  {
+   "body": "Mars",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2027-09-02T01:52:11Z",
+   "engine": "2027-09-02T01:52:09.506Z",
+   "seconds": -1.5,
+   "arcseconds": 0.0407
+  },
+  {
+   "body": "Mercury",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2027-09-03T11:36:55Z",
+   "engine": "2027-09-03T11:36:54.227Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0498
+  },
+  {
+   "body": "Venus",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2027-09-14T00:24:44Z",
+   "engine": "2027-09-14T00:24:42.861Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0589
+  },
+  {
+   "body": "Mercury",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2027-09-27T09:09:43Z",
+   "engine": "2027-09-27T09:09:41.558Z",
+   "seconds": -1.4,
+   "arcseconds": 0.051
+  },
+  {
+   "body": "Venus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2027-10-08T03:59:06Z",
+   "engine": "2027-10-08T03:59:04.815Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0614
+  },
+  {
+   "body": "Mars",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2027-10-15T23:13:56Z",
+   "engine": "2027-10-15T23:13:54.511Z",
+   "seconds": -1.5,
+   "arcseconds": 0.0442
+  },
+  {
+   "body": "Mercury",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "2027-10-16T07:36:25Z",
+   "engine": "2027-10-16T07:36:25.520Z",
+   "seconds": 0.5,
+   "arcseconds": 0.0238
+  },
+  {
+   "body": "Venus",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2027-11-01T07:34:34Z",
+   "engine": "2027-11-01T07:34:32.645Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0701
+  },
+  {
+   "body": "Mercury",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2027-11-10T00:26:19Z",
+   "engine": "2027-11-10T00:26:18.392Z",
+   "seconds": -0.6,
+   "arcseconds": 0.0353
+  },
+  {
+   "body": "Venus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2027-11-25T11:59:27Z",
+   "engine": "2027-11-25T11:59:26.036Z",
+   "seconds": -1,
+   "arcseconds": 0.0498
+  },
+  {
+   "body": "Mars",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2027-11-25T18:38:09Z",
+   "engine": "2027-11-25T18:38:07.506Z",
+   "seconds": -1.5,
+   "arcseconds": 0.0471
+  },
+  {
+   "body": "Mercury",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2027-11-29T10:23:36Z",
+   "engine": "2027-11-29T10:23:34.980Z",
+   "seconds": -1,
+   "arcseconds": 0.067
+  },
+  {
+   "body": "Mercury",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2027-12-18T11:58:05Z",
+   "engine": "2027-12-18T11:58:03.897Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0728
+  },
+  {
+   "body": "Venus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2027-12-19T18:40:15Z",
+   "engine": "2027-12-19T18:40:13.769Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0631
+  },
+  {
+   "body": "Mars",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2028-01-03T16:01:39Z",
+   "engine": "2028-01-03T16:01:37.877Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0367
+  },
+  {
+   "body": "Mercury",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2028-01-06T05:57:42Z",
+   "engine": "2028-01-06T05:57:40.820Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0775
+  },
+  {
+   "body": "Venus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2028-01-13T07:20:10Z",
+   "engine": "2028-01-13T07:20:08.506Z",
+   "seconds": -1.5,
+   "arcseconds": 0.0755
+  },
+  {
+   "body": "Venus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2028-02-07T10:01:10Z",
+   "engine": "2028-02-07T10:01:08.697Z",
+   "seconds": -1.3,
+   "arcseconds": 0.0636
+  },
+  {
+   "body": "Mars",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2028-02-10T16:31:50Z",
+   "engine": "2028-02-10T16:31:48.037Z",
+   "seconds": -2,
+   "arcseconds": 0.0647
+  },
+  {
+   "body": "Venus",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2028-03-04T20:00:57Z",
+   "engine": "2028-03-04T20:00:56.206Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0361
+  },
+  {
+   "body": "Mercury",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2028-03-13T07:07:28Z",
+   "engine": "2028-03-13T07:07:26.671Z",
+   "seconds": -1.3,
+   "arcseconds": 0.0802
+  },
+  {
+   "body": "Mars",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2028-03-19T19:35:54Z",
+   "engine": "2028-03-19T19:35:52.120Z",
+   "seconds": -1.9,
+   "arcseconds": 0.0611
+  },
+  {
+   "body": "Mercury",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2028-03-31T12:27:40Z",
+   "engine": "2028-03-31T12:27:39.629Z",
+   "seconds": -0.4,
+   "arcseconds": 0.0286
+  },
+  {
+   "body": "Venus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2028-04-03T20:27:38Z",
+   "engine": "2028-04-03T20:27:36.434Z",
+   "seconds": -1.6,
+   "arcseconds": 0.0572
+  },
+  {
+   "body": "Saturn",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2028-04-13T03:39:54Z",
+   "engine": "2028-04-13T03:39:44.539Z",
+   "seconds": -9.5,
+   "arcseconds": 0.0501
+  },
+  {
+   "body": "Mercury",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2028-04-15T11:48:07Z",
+   "engine": "2028-04-15T11:48:06.541Z",
+   "seconds": -0.5,
+   "arcseconds": 0.0404
+  },
+  {
+   "body": "Mars",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2028-04-27T22:21:22Z",
+   "engine": "2028-04-27T22:21:19.873Z",
+   "seconds": -2.1,
+   "arcseconds": 0.0667
+  },
+  {
+   "body": "Mercury",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2028-05-01T01:42:11Z",
+   "engine": "2028-05-01T01:42:10.325Z",
+   "seconds": -0.7,
+   "arcseconds": 0.0437
+  },
+  {
+   "body": "Mars",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2028-06-07T18:20:20Z",
+   "engine": "2028-06-07T18:20:17.955Z",
+   "seconds": -2,
+   "arcseconds": 0.061
+  },
+  {
+   "body": "Mercury",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2028-07-09T01:37:31Z",
+   "engine": "2028-07-09T01:37:30.361Z",
+   "seconds": -0.6,
+   "arcseconds": 0.0454
+  },
+  {
+   "body": "Mars",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2028-07-20T20:10:01Z",
+   "engine": "2028-07-20T20:09:59.316Z",
+   "seconds": -1.7,
+   "arcseconds": 0.0475
+  },
+  {
+   "body": "Mercury",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2028-07-24T01:50:32Z",
+   "engine": "2028-07-24T01:50:30.836Z",
+   "seconds": -1.2,
+   "arcseconds": 0.103
+  },
+  {
+   "body": "Venus",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2028-08-07T15:26:18Z",
+   "engine": "2028-08-07T15:26:17.248Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0292
+  },
+  {
+   "body": "Mercury",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2028-08-08T05:09:45Z",
+   "engine": "2028-08-08T05:09:44.629Z",
+   "seconds": -0.4,
+   "arcseconds": 0.0278
+  },
+  {
+   "body": "Jupiter",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2028-08-24T05:08:33Z",
+   "engine": "2028-08-24T05:08:28.483Z",
+   "seconds": -4.5,
+   "arcseconds": 0.038
+  },
+  {
+   "body": "Mercury",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2028-08-27T13:07:54Z",
+   "engine": "2028-08-27T13:07:52.872Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0612
+  },
+  {
+   "body": "Mars",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2028-09-04T14:36:16Z",
+   "engine": "2028-09-04T14:36:14.274Z",
+   "seconds": -1.7,
+   "arcseconds": 0.0456
+  },
+  {
+   "body": "Venus",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2028-09-05T23:17:57Z",
+   "engine": "2028-09-05T23:17:55.872Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0514
+  },
+  {
+   "body": "Venus",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2028-10-02T10:08:12Z",
+   "engine": "2028-10-02T10:08:11.361Z",
+   "seconds": -0.6,
+   "arcseconds": 0.0311
+  },
+  {
+   "body": "Mars",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2028-10-24T01:10:30Z",
+   "engine": "2028-10-24T01:10:28.563Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0344
+  },
+  {
+   "body": "Venus",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2028-10-27T13:51:53Z",
+   "engine": "2028-10-27T13:51:52.237Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0385
+  },
+  {
+   "body": "Mercury",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2028-11-02T15:04:14Z",
+   "engine": "2028-11-02T15:04:13.129Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0597
+  },
+  {
+   "body": "Venus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2028-11-21T00:57:58Z",
+   "engine": "2028-11-21T00:57:56.485Z",
+   "seconds": -1.5,
+   "arcseconds": 0.0781
+  },
+  {
+   "body": "Mercury",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2028-11-21T03:59:48Z",
+   "engine": "2028-11-21T03:59:46.882Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0736
+  },
+  {
+   "body": "Mercury",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2028-12-10T09:11:55Z",
+   "engine": "2028-12-10T09:11:54.150Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0549
+  },
+  {
+   "body": "Venus",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2028-12-15T03:39:01Z",
+   "engine": "2028-12-15T03:38:59.583Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0738
+  },
+  {
+   "body": "Mars",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2028-12-21T08:46:27Z",
+   "engine": "2028-12-21T08:46:24.440Z",
+   "seconds": -2.6,
+   "arcseconds": 0.0457
+  },
+  {
+   "body": "Mercury",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2028-12-31T14:49:09Z",
+   "engine": "2028-12-31T14:49:07.563Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0584
+  },
+  {
+   "body": "Venus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2029-01-08T02:47:10Z",
+   "engine": "2029-01-08T02:47:08.964Z",
+   "seconds": -1,
+   "arcseconds": 0.0541
+  },
+  {
+   "body": "Mercury",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "2029-01-13T12:13:30Z",
+   "engine": "2029-01-13T12:13:30.597Z",
+   "seconds": 0.6,
+   "arcseconds": 0.0276
+  },
+  {
+   "body": "Venus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2029-02-01T01:03:19Z",
+   "engine": "2029-02-01T01:03:18.366Z",
+   "seconds": -0.6,
+   "arcseconds": 0.0331
+  },
+  {
+   "body": "Mercury",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2029-02-13T17:52:19Z",
+   "engine": "2029-02-13T17:52:18.067Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0461
+  },
+  {
+   "body": "Venus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2029-02-25T00:03:24Z",
+   "engine": "2029-02-25T00:03:22.830Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0609
+  },
+  {
+   "body": "Mercury",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2029-03-06T18:15:21Z",
+   "engine": "2029-03-06T18:15:19.722Z",
+   "seconds": -1.3,
+   "arcseconds": 0.0868
+  },
+  {
+   "body": "Venus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2029-03-21T01:03:38Z",
+   "engine": "2029-03-21T01:03:36.794Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0626
+  },
+  {
+   "body": "Mercury",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2029-03-23T12:18:36Z",
+   "engine": "2029-03-23T12:18:34.810Z",
+   "seconds": -1.2,
+   "arcseconds": 0.097
+  },
+  {
+   "body": "Mercury",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2029-04-07T08:51:31Z",
+   "engine": "2029-04-07T08:51:30.593Z",
+   "seconds": -0.4,
+   "arcseconds": 0.0331
+  },
+  {
+   "body": "Mars",
+   "sign": "virgo",
+   "retrograde": true,
+   "nasa": "2029-04-07T13:09:17Z",
+   "engine": "2029-04-07T13:09:19.507Z",
+   "seconds": 2.5,
+   "arcseconds": 0.0356
+  },
+  {
+   "body": "Venus",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2029-04-14T05:06:23Z",
+   "engine": "2029-04-14T05:06:21.758Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0641
+  },
+  {
+   "body": "Venus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2029-05-08T12:46:11Z",
+   "engine": "2029-05-08T12:46:10.268Z",
+   "seconds": -0.7,
+   "arcseconds": 0.0375
+  },
+  {
+   "body": "Venus",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2029-06-02T00:10:55Z",
+   "engine": "2029-06-02T00:10:53.413Z",
+   "seconds": -1.6,
+   "arcseconds": 0.0808
+  },
+  {
+   "body": "Mars",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2029-06-05T04:49:11Z",
+   "engine": "2029-06-05T04:49:06.802Z",
+   "seconds": -4.2,
+   "arcseconds": 0.0535
+  },
+  {
+   "body": "Mercury",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2029-06-13T16:46:24Z",
+   "engine": "2029-06-13T16:46:22.552Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0747
+  },
+  {
+   "body": "Venus",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2029-06-26T15:37:25Z",
+   "engine": "2029-06-26T15:37:23.496Z",
+   "seconds": -1.5,
+   "arcseconds": 0.076
+  },
+  {
+   "body": "Mercury",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2029-07-01T12:01:25Z",
+   "engine": "2029-07-01T12:01:24.134Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0748
+  },
+  {
+   "body": "Mercury",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2029-07-15T13:37:00Z",
+   "engine": "2029-07-15T13:36:59.145Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0733
+  },
+  {
+   "body": "Venus",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2029-07-21T12:20:41Z",
+   "engine": "2029-07-21T12:20:40.036Z",
+   "seconds": -1,
+   "arcseconds": 0.0482
+  },
+  {
+   "body": "Mercury",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2029-07-31T23:35:08Z",
+   "engine": "2029-07-31T23:35:07.217Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0519
+  },
+  {
+   "body": "Mars",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2029-08-07T16:02:44Z",
+   "engine": "2029-08-07T16:02:42.187Z",
+   "seconds": -1.8,
+   "arcseconds": 0.0445
+  },
+  {
+   "body": "Venus",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2029-08-15T17:06:25Z",
+   "engine": "2029-08-15T17:06:23.964Z",
+   "seconds": -1,
+   "arcseconds": 0.0509
+  },
+  {
+   "body": "Mercury",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2029-08-27T02:20:54Z",
+   "engine": "2029-08-27T02:20:52.434Z",
+   "seconds": -1.6,
+   "arcseconds": 0.0352
+  },
+  {
+   "body": "Mercury",
+   "sign": "virgo",
+   "retrograde": true,
+   "nasa": "2029-09-08T10:59:28Z",
+   "engine": "2029-09-08T10:59:29.029Z",
+   "seconds": 1,
+   "arcseconds": 0.0266
+  },
+  {
+   "body": "Venus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2029-09-10T10:54:28Z",
+   "engine": "2029-09-10T10:54:27.067Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0447
+  },
+  {
+   "body": "Mars",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2029-09-23T08:14:07Z",
+   "engine": "2029-09-23T08:14:05.316Z",
+   "seconds": -1.7,
+   "arcseconds": 0.0483
+  },
+  {
+   "body": "Jupiter",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2029-09-24T06:24:10Z",
+   "engine": "2029-09-24T06:24:06.266Z",
+   "seconds": -3.7,
+   "arcseconds": 0.0317
+  },
+  {
+   "body": "Venus",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2029-10-07T04:47:24Z",
+   "engine": "2029-10-07T04:47:23.397Z",
+   "seconds": -0.6,
+   "arcseconds": 0.0273
+  },
+  {
+   "body": "Mercury",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2029-10-08T12:40:36Z",
+   "engine": "2029-10-08T12:40:34.830Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0762
+  },
+  {
+   "body": "Mercury",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2029-10-26T06:03:49Z",
+   "engine": "2029-10-26T06:03:47.944Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0738
+  },
+  {
+   "body": "Mars",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2029-11-04T00:32:04Z",
+   "engine": "2029-11-04T00:32:02.624Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0428
+  },
+  {
+   "body": "Venus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2029-11-05T13:38:55Z",
+   "engine": "2029-11-05T13:38:53.537Z",
+   "seconds": -1.5,
+   "arcseconds": 0.0566
+  },
+  {
+   "body": "Mercury",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2029-11-13T22:09:25Z",
+   "engine": "2029-11-13T22:09:24.325Z",
+   "seconds": -0.7,
+   "arcseconds": 0.0436
+  },
+  {
+   "body": "Mercury",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2029-12-03T22:47:09Z",
+   "engine": "2029-12-03T22:47:07.630Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0809
+  },
+  {
+   "body": "Mars",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2029-12-13T05:24:53Z",
+   "engine": "2029-12-13T05:24:51.789Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0393
+  },
+  {
+   "body": "Mars",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2030-01-20T10:27:27Z",
+   "engine": "2030-01-20T10:27:25.408Z",
+   "seconds": -1.6,
+   "arcseconds": 0.0522
+  },
+  {
+   "body": "Mercury",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2030-02-08T14:03:28Z",
+   "engine": "2030-02-08T14:03:27.258Z",
+   "seconds": -0.7,
+   "arcseconds": 0.045
+  },
+  {
+   "body": "Mercury",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2030-02-27T08:59:38Z",
+   "engine": "2030-02-27T08:59:36.645Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0985
+  },
+  {
+   "body": "Mars",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2030-02-27T19:07:20Z",
+   "engine": "2030-02-27T19:07:17.991Z",
+   "seconds": -2,
+   "arcseconds": 0.0648
+  },
+  {
+   "body": "Venus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2030-03-06T12:51:06Z",
+   "engine": "2030-03-06T12:51:04.738Z",
+   "seconds": -1.3,
+   "arcseconds": 0.0472
+  },
+  {
+   "body": "Mercury",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2030-03-15T08:41:46Z",
+   "engine": "2030-03-15T08:41:45.067Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0771
+  },
+  {
+   "body": "Mercury",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2030-04-01T04:46:56Z",
+   "engine": "2030-04-01T04:46:55.160Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0449
+  },
+  {
+   "body": "Venus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2030-04-05T09:18:47Z",
+   "engine": "2030-04-05T09:18:45.295Z",
+   "seconds": -1.7,
+   "arcseconds": 0.0767
+  },
+  {
+   "body": "Mars",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2030-04-08T05:26:55Z",
+   "engine": "2030-04-08T05:26:53.444Z",
+   "seconds": -1.6,
+   "arcseconds": 0.0484
+  },
+  {
+   "body": "Mercury",
+   "sign": "aries",
+   "retrograde": true,
+   "nasa": "2030-04-28T13:44:24Z",
+   "engine": "2030-04-28T13:44:25.611Z",
+   "seconds": 1.6,
+   "arcseconds": 0.0388
+  },
+  {
+   "body": "Venus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2030-05-02T06:37:30Z",
+   "engine": "2030-05-02T06:37:28.594Z",
+   "seconds": -1.4,
+   "arcseconds": 0.067
+  },
+  {
+   "body": "Mercury",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2030-05-15T01:30:11Z",
+   "engine": "2030-05-15T01:30:08.600Z",
+   "seconds": -2.4,
+   "arcseconds": 0.0604
+  },
+  {
+   "body": "Mars",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2030-05-19T09:28:25Z",
+   "engine": "2030-05-19T09:28:23.645Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0402
+  },
+  {
+   "body": "Venus",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2030-05-28T03:32:38Z",
+   "engine": "2030-05-28T03:32:36.861Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0557
+  },
+  {
+   "body": "Saturn",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2030-06-01T02:34:19Z",
+   "engine": "2030-06-01T02:34:11.352Z",
+   "seconds": -7.6,
+   "arcseconds": 0.0408
+  },
+  {
+   "body": "Mercury",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2030-06-08T06:31:20Z",
+   "engine": "2030-06-08T06:31:19.304Z",
+   "seconds": -0.7,
+   "arcseconds": 0.0517
+  },
+  {
+   "body": "Venus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2030-06-22T12:23:30Z",
+   "engine": "2030-06-22T12:23:28.702Z",
+   "seconds": -1.3,
+   "arcseconds": 0.0644
+  },
+  {
+   "body": "Mercury",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2030-06-22T23:56:24Z",
+   "engine": "2030-06-22T23:56:23.021Z",
+   "seconds": -1,
+   "arcseconds": 0.0894
+  },
+  {
+   "body": "Mars",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2030-07-01T15:19:43Z",
+   "engine": "2030-07-01T15:19:40.934Z",
+   "seconds": -2.1,
+   "arcseconds": 0.0583
+  },
+  {
+   "body": "Mercury",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2030-07-07T10:22:42Z",
+   "engine": "2030-07-07T10:22:41.454Z",
+   "seconds": -0.5,
+   "arcseconds": 0.0428
+  },
+  {
+   "body": "Venus",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2030-07-17T12:46:09Z",
+   "engine": "2030-07-17T12:46:08.304Z",
+   "seconds": -0.7,
+   "arcseconds": 0.035
+  },
+  {
+   "body": "Mercury",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2030-07-26T14:53:45Z",
+   "engine": "2030-07-26T14:53:43.650Z",
+   "seconds": -1.3,
+   "arcseconds": 0.0693
+  },
+  {
+   "body": "Venus",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2030-08-11T05:24:01Z",
+   "engine": "2030-08-11T05:23:59.964Z",
+   "seconds": -1,
+   "arcseconds": 0.0528
+  },
+  {
+   "body": "Mars",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2030-08-15T23:56:11Z",
+   "engine": "2030-08-15T23:56:09.207Z",
+   "seconds": -1.8,
+   "arcseconds": 0.0483
+  },
+  {
+   "body": "Venus",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2030-09-04T14:50:27Z",
+   "engine": "2030-09-04T14:50:26.145Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0441
+  },
+  {
+   "body": "Venus",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2030-09-28T18:33:48Z",
+   "engine": "2030-09-28T18:33:46.547Z",
+   "seconds": -1.5,
+   "arcseconds": 0.0755
+  },
+  {
+   "body": "Mercury",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2030-10-01T10:49:49Z",
+   "engine": "2030-10-01T10:49:48.119Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0665
+  },
+  {
+   "body": "Mars",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2030-10-02T09:42:12Z",
+   "engine": "2030-10-02T09:42:10.686Z",
+   "seconds": -1.3,
+   "arcseconds": 0.0339
+  },
+  {
+   "body": "Mercury",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2030-10-18T17:03:17Z",
+   "engine": "2030-10-18T17:03:16.114Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0606
+  },
+  {
+   "body": "Venus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2030-10-22T18:39:44Z",
+   "engine": "2030-10-22T18:39:42.897Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0576
+  },
+  {
+   "body": "Jupiter",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2030-10-22T23:14:24Z",
+   "engine": "2030-10-22T23:14:19.787Z",
+   "seconds": -4.2,
+   "arcseconds": 0.0363
+  },
+  {
+   "body": "Mercury",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2030-11-07T00:30:32Z",
+   "engine": "2030-11-07T00:30:31.495Z",
+   "seconds": -0.5,
+   "arcseconds": 0.031
+  },
+  {
+   "body": "Venus",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2030-11-15T17:00:50Z",
+   "engine": "2030-11-15T17:00:48.815Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0619
+  },
+  {
+   "body": "Mars",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2030-11-21T07:54:43Z",
+   "engine": "2030-11-21T07:54:40.883Z",
+   "seconds": -2.1,
+   "arcseconds": 0.0512
+  },
+  {
+   "body": "Mercury",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2030-12-01T02:27:10Z",
+   "engine": "2030-12-01T02:27:08.640Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0389
+  },
+  {
+   "body": "Venus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2030-12-09T14:51:47Z",
+   "engine": "2030-12-09T14:51:46.093Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0474
+  },
+  {
+   "body": "Mercury",
+   "sign": "sagittarius",
+   "retrograde": true,
+   "nasa": "2030-12-10T15:10:38Z",
+   "engine": "2030-12-10T15:10:38.257Z",
+   "seconds": 0.3,
+   "arcseconds": 0.0089
+  },
+  {
+   "body": "Venus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2031-01-02T13:14:24Z",
+   "engine": "2031-01-02T13:14:22.609Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0726
+  },
+  {
+   "body": "Mercury",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2031-01-12T04:18:36Z",
+   "engine": "2031-01-12T04:18:34.521Z",
+   "seconds": -1.5,
+   "arcseconds": 0.079
+  },
+  {
+   "body": "Mars",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2031-01-15T22:48:02Z",
+   "engine": "2031-01-15T22:47:59.646Z",
+   "seconds": -2.4,
+   "arcseconds": 0.0474
+  },
+  {
+   "body": "Venus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2031-01-26T13:48:43Z",
+   "engine": "2031-01-26T13:48:41.511Z",
+   "seconds": -1.5,
+   "arcseconds": 0.0772
+  },
+  {
+   "body": "Mercury",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2031-02-01T21:14:53Z",
+   "engine": "2031-02-01T21:14:51.480Z",
+   "seconds": -1.5,
+   "arcseconds": 0.0999
+  },
+  {
+   "body": "Mercury",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2031-02-19T15:01:58Z",
+   "engine": "2031-02-19T15:01:57.371Z",
+   "seconds": -0.6,
+   "arcseconds": 0.0476
+  },
+  {
+   "body": "Venus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2031-02-19T19:29:52Z",
+   "engine": "2031-02-19T19:29:50.624Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0705
+  },
+  {
+   "body": "Mercury",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2031-03-07T15:01:29Z",
+   "engine": "2031-03-07T15:01:27.923Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0815
+  },
+  {
+   "body": "Venus",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2031-03-16T10:41:53Z",
+   "engine": "2031-03-16T10:41:51.980Z",
+   "seconds": -1,
+   "arcseconds": 0.0512
+  },
+  {
+   "body": "Venus",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2031-04-10T18:01:23Z",
+   "engine": "2031-04-10T18:01:21.403Z",
+   "seconds": -1.6,
+   "arcseconds": 0.0774
+  },
+  {
+   "body": "Venus",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2031-05-07T06:06:31Z",
+   "engine": "2031-05-07T06:06:29.429Z",
+   "seconds": -1.6,
+   "arcseconds": 0.0715
+  },
+  {
+   "body": "Mercury",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2031-05-14T13:59:55Z",
+   "engine": "2031-05-14T13:59:54.109Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0545
+  },
+  {
+   "body": "Jupiter",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2031-11-15T10:29:38Z",
+   "engine": "2031-11-15T10:29:34.698Z",
+   "seconds": -3.3,
+   "arcseconds": 0.0282
+  },
+  {
+   "body": "Jupiter",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2032-04-12T00:59:01Z",
+   "engine": "2032-04-12T00:58:53.615Z",
+   "seconds": -7.4,
+   "arcseconds": 0.0338
+  },
+  {
+   "body": "Jupiter",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "2032-06-26T12:56:22Z",
+   "engine": "2032-06-26T12:56:27.685Z",
+   "seconds": 5.7,
+   "arcseconds": 0.025
+  },
+  {
+   "body": "Saturn",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2032-07-14T02:16:05Z",
+   "engine": "2032-07-14T02:16:00.159Z",
+   "seconds": -4.8,
+   "arcseconds": 0.025
+  },
+  {
+   "body": "Uranus",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2032-08-03T18:22:52Z",
+   "engine": "2032-08-03T18:22:41.005Z",
+   "seconds": -11,
+   "arcseconds": 0.0219
+  },
+  {
+   "body": "Jupiter",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2032-11-30T03:31:57Z",
+   "engine": "2032-11-30T03:31:53.714Z",
+   "seconds": -3.3,
+   "arcseconds": 0.0258
+  },
+  {
+   "body": "Uranus",
+   "sign": "gemini",
+   "retrograde": true,
+   "nasa": "2032-12-12T06:18:55Z",
+   "engine": "2032-12-12T06:19:07.524Z",
+   "seconds": 12.5,
+   "arcseconds": 0.022
+  },
+  {
+   "body": "Jupiter",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2033-04-14T22:45:00Z",
+   "engine": "2033-04-14T22:44:56.137Z",
+   "seconds": -3.9,
+   "arcseconds": 0.0294
+  },
+  {
+   "body": "Uranus",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2033-05-22T13:17:04Z",
+   "engine": "2033-05-22T13:16:51.501Z",
+   "seconds": -12.5,
+   "arcseconds": 0.0283
+  },
+  {
+   "body": "Jupiter",
+   "sign": "aquarius",
+   "retrograde": true,
+   "nasa": "2033-09-12T22:27:51Z",
+   "engine": "2033-09-12T22:27:51.932Z",
+   "seconds": 0.9,
+   "arcseconds": 0.0045
+  },
+  {
+   "body": "Jupiter",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2033-12-01T22:34:42Z",
+   "engine": "2033-12-01T22:34:38.003Z",
+   "seconds": -4,
+   "arcseconds": 0.0205
+  },
+  {
+   "body": "Jupiter",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2034-04-21T09:39:42Z",
+   "engine": "2034-04-21T09:39:39.419Z",
+   "seconds": -2.6,
+   "arcseconds": 0.0241
+  },
+  {
+   "body": "Saturn",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2034-08-27T02:46:29Z",
+   "engine": "2034-08-27T02:46:27.094Z",
+   "seconds": -1.9,
+   "arcseconds": 0.0091
+  },
+  {
+   "body": "Saturn",
+   "sign": "cancer",
+   "retrograde": true,
+   "nasa": "2035-02-15T19:34:56Z",
+   "engine": "2035-02-15T19:34:58.729Z",
+   "seconds": 2.7,
+   "arcseconds": 0.0078
+  },
+  {
+   "body": "Jupiter",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2035-04-29T18:57:15Z",
+   "engine": "2035-04-29T18:57:12.682Z",
+   "seconds": -2.3,
+   "arcseconds": 0.0231
+  },
+  {
+   "body": "Saturn",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2035-05-11T20:44:48Z",
+   "engine": "2035-05-11T20:44:42.556Z",
+   "seconds": -5.4,
+   "arcseconds": 0.0162
+  },
+  {
+   "body": "Jupiter",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2036-05-09T14:52:08Z",
+   "engine": "2036-05-09T14:52:06.197Z",
+   "seconds": -1.8,
+   "arcseconds": 0.0175
+  },
+  {
+   "body": "Saturn",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2036-10-16T07:34:31Z",
+   "engine": "2036-10-16T07:34:30.387Z",
+   "seconds": -0.6,
+   "arcseconds": 0.0024
+  },
+  {
+   "body": "Saturn",
+   "sign": "leo",
+   "retrograde": true,
+   "nasa": "2037-02-11T06:46:25Z",
+   "engine": "2037-02-11T06:46:24.958Z",
+   "seconds": 0,
+   "arcseconds": 0.0001
+  },
+  {
+   "body": "Jupiter",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2037-05-24T02:12:50Z",
+   "engine": "2037-05-24T02:12:48.326Z",
+   "seconds": -1.7,
+   "arcseconds": 0.015
+  },
+  {
+   "body": "Saturn",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2037-07-07T02:30:52Z",
+   "engine": "2037-07-07T02:30:50.867Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0048
+  },
+  {
+   "body": "Neptune",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2038-05-22T00:13:01Z",
+   "engine": "2038-05-22T00:12:57.863Z",
+   "seconds": -3.1,
+   "arcseconds": 0.0044
+  },
+  {
+   "body": "Jupiter",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2038-06-12T15:25:43Z",
+   "engine": "2038-06-12T15:25:41.903Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0089
+  },
+  {
+   "body": "Neptune",
+   "sign": "aries",
+   "retrograde": true,
+   "nasa": "2038-10-21T12:25:32Z",
+   "engine": "2038-10-21T12:25:24.872Z",
+   "seconds": -7.1,
+   "arcseconds": 0.0083
+  },
+  {
+   "body": "Jupiter",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2038-11-16T21:20:58Z",
+   "engine": "2038-11-16T21:20:57.680Z",
+   "seconds": -0.3,
+   "arcseconds": 0.0012
+  },
+  {
+   "body": "Jupiter",
+   "sign": "leo",
+   "retrograde": true,
+   "nasa": "2039-01-16T14:54:52Z",
+   "engine": "2039-01-16T14:54:50.352Z",
+   "seconds": -1.6,
+   "arcseconds": 0.0063
+  },
+  {
+   "body": "Neptune",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2039-03-23T20:36:32Z",
+   "engine": "2039-03-23T20:36:30.104Z",
+   "seconds": -1.9,
+   "arcseconds": 0.0027
+  },
+  {
+   "body": "Jupiter",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2039-07-08T00:24:33Z",
+   "engine": "2039-07-08T00:24:31.794Z",
+   "seconds": -1.2,
+   "arcseconds": 0.0092
+  },
+  {
+   "body": "Uranus",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2039-08-06T10:02:48Z",
+   "engine": "2039-08-06T10:02:49.869Z",
+   "seconds": 1.9,
+   "arcseconds": 0.0047
+  },
+  {
+   "body": "Saturn",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2039-09-05T15:14:46Z",
+   "engine": "2039-09-05T15:14:46.963Z",
+   "seconds": 1,
+   "arcseconds": 0.0048
+  },
+  {
+   "body": "Jupiter",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2039-12-12T22:05:16Z",
+   "engine": "2039-12-12T22:05:15.150Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0036
+  },
+  {
+   "body": "Jupiter",
+   "sign": "virgo",
+   "retrograde": true,
+   "nasa": "2040-02-20T05:35:25Z",
+   "engine": "2040-02-20T05:35:23.542Z",
+   "seconds": -1.5,
+   "arcseconds": 0.0061
+  },
+  {
+   "body": "Uranus",
+   "sign": "cancer",
+   "retrograde": true,
+   "nasa": "2040-02-25T07:34:06Z",
+   "engine": "2040-02-25T07:34:03.533Z",
+   "seconds": -2.5,
+   "arcseconds": 0.0033
+  },
+  {
+   "body": "Uranus",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2040-05-15T22:17:28Z",
+   "engine": "2040-05-15T22:17:26.197Z",
+   "seconds": -1.8,
+   "arcseconds": 0.0025
+  },
+  {
+   "body": "Jupiter",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2040-08-05T22:03:23Z",
+   "engine": "2040-08-05T22:03:22.309Z",
+   "seconds": -0.7,
+   "arcseconds": 0.0051
+  },
+  {
+   "body": "Jupiter",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2041-01-11T19:33:21Z",
+   "engine": "2041-01-11T19:33:20.459Z",
+   "seconds": -0.5,
+   "arcseconds": 0.0022
+  },
+  {
+   "body": "Jupiter",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "2041-03-21T00:01:21Z",
+   "engine": "2041-03-21T00:01:19.269Z",
+   "seconds": -1.7,
+   "arcseconds": 0.007
+  },
+  {
+   "body": "Jupiter",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2041-09-06T00:12:31Z",
+   "engine": "2041-09-06T00:12:30.701Z",
+   "seconds": -0.3,
+   "arcseconds": 0.0022
+  },
+  {
+   "body": "Saturn",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2041-11-11T10:58:04Z",
+   "engine": "2041-11-11T10:58:03.217Z",
+   "seconds": -0.8,
+   "arcseconds": 0.0038
+  },
+  {
+   "body": "Jupiter",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2042-02-08T23:52:58Z",
+   "engine": "2042-02-08T23:52:56.645Z",
+   "seconds": -1.4,
+   "arcseconds": 0.0061
+  },
+  {
+   "body": "Jupiter",
+   "sign": "scorpio",
+   "retrograde": true,
+   "nasa": "2042-04-24T12:40:32Z",
+   "engine": "2042-04-24T12:40:30.182Z",
+   "seconds": -1.8,
+   "arcseconds": 0.0078
+  },
+  {
+   "body": "Saturn",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "2042-06-21T10:26:15Z",
+   "engine": "2042-06-21T10:26:10.344Z",
+   "seconds": -4.7,
+   "arcseconds": 0.0037
+  },
+  {
+   "body": "Saturn",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2042-07-14T13:59:09Z",
+   "engine": "2042-07-14T13:59:16.802Z",
+   "seconds": 7.8,
+   "arcseconds": 0.0062
+  },
+  {
+   "body": "Jupiter",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2042-10-04T09:59:29Z",
+   "engine": "2042-10-04T09:59:29.252Z",
+   "seconds": 0.3,
+   "arcseconds": 0.0019
+  },
+  {
+   "body": "Jupiter",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2043-03-01T17:06:13Z",
+   "engine": "2043-03-01T17:06:11.928Z",
+   "seconds": -1.1,
+   "arcseconds": 0.0061
+  },
+  {
+   "body": "Pluto",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2043-03-09T01:01:31Z",
+   "engine": "2043-03-09T01:01:28.801Z",
+   "seconds": -2.2,
+   "arcseconds": 0.0025
+  },
+  {
+   "body": "Jupiter",
+   "sign": "sagittarius",
+   "retrograde": true,
+   "nasa": "2043-06-09T21:42:10Z",
+   "engine": "2043-06-09T21:42:07.533Z",
+   "seconds": -2.5,
+   "arcseconds": 0.0126
+  },
+  {
+   "body": "Pluto",
+   "sign": "aquarius",
+   "retrograde": true,
+   "nasa": "2043-09-01T03:12:50Z",
+   "engine": "2043-09-01T03:12:35.678Z",
+   "seconds": -14.3,
+   "arcseconds": 0.0128
+  },
+  {
+   "body": "Jupiter",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2043-10-26T11:30:38Z",
+   "engine": "2043-10-26T11:30:38.159Z",
+   "seconds": 0.2,
+   "arcseconds": 0.0011
+  },
+  {
+   "body": "Pluto",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2044-01-19T09:48:41Z",
+   "engine": "2044-01-19T09:48:41.921Z",
+   "seconds": 0.9,
+   "arcseconds": 0.001
+  },
+  {
+   "body": "Saturn",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2044-02-21T14:21:03Z",
+   "engine": "2044-02-21T14:21:05.667Z",
+   "seconds": 2.7,
+   "arcseconds": 0.0031
+  },
+  {
+   "body": "Jupiter",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2044-03-15T04:27:26Z",
+   "engine": "2044-03-15T04:27:25.098Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0067
+  },
+  {
+   "body": "Saturn",
+   "sign": "scorpio",
+   "retrograde": true,
+   "nasa": "2044-03-25T10:01:45Z",
+   "engine": "2044-03-25T10:01:40.885Z",
+   "seconds": -4.1,
+   "arcseconds": 0.0047
+  },
+  {
+   "body": "Jupiter",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "2044-08-09T12:42:10Z",
+   "engine": "2044-08-09T12:42:04.705Z",
+   "seconds": -5.3,
+   "arcseconds": 0.0259
+  },
+  {
+   "body": "Saturn",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2044-10-31T12:52:25Z",
+   "engine": "2044-10-31T12:52:25.077Z",
+   "seconds": 0.1,
+   "arcseconds": 0.0004
+  },
+  {
+   "body": "Jupiter",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2044-11-04T17:33:01Z",
+   "engine": "2044-11-04T17:33:01.221Z",
+   "seconds": 0.2,
+   "arcseconds": 0.0012
+  },
+  {
+   "body": "Jupiter",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2045-03-26T05:08:22Z",
+   "engine": "2045-03-26T05:08:21.129Z",
+   "seconds": -0.9,
+   "arcseconds": 0.0078
+  },
+  {
+   "body": "Uranus",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2045-10-06T07:14:31Z",
+   "engine": "2045-10-06T07:14:37.282Z",
+   "seconds": 6.3,
+   "arcseconds": 0.0129
+  },
+  {
+   "body": "Uranus",
+   "sign": "leo",
+   "retrograde": true,
+   "nasa": "2046-02-08T18:48:27Z",
+   "engine": "2046-02-08T18:48:19.749Z",
+   "seconds": -7.3,
+   "arcseconds": 0.013
+  },
+  {
+   "body": "Uranus",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2046-07-22T22:33:14Z",
+   "engine": "2046-07-22T22:33:18.912Z",
+   "seconds": 4.9,
+   "arcseconds": 0.0115
+  },
+  {
+   "body": "Saturn",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2047-01-24T15:40:44Z",
+   "engine": "2047-01-24T15:40:45.163Z",
+   "seconds": 1.2,
+   "arcseconds": 0.0051
+  },
+  {
+   "body": "Saturn",
+   "sign": "sagittarius",
+   "retrograde": true,
+   "nasa": "2047-07-11T02:59:00Z",
+   "engine": "2047-07-11T02:58:52.094Z",
+   "seconds": -7.9,
+   "arcseconds": 0.0223
+  },
+  {
+   "body": "Saturn",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2047-10-22T11:09:40Z",
+   "engine": "2047-10-22T11:09:45.046Z",
+   "seconds": 5,
+   "arcseconds": 0.0159
+  },
+  {
+   "body": "Saturn",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2050-01-21T13:16:12Z",
+   "engine": "2050-01-21T13:15:47.172Z",
+   "seconds": -24.8,
+   "arcseconds": 0.1233
+  },
+  {
+   "body": "Neptune",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2051-07-16T11:53:21Z",
+   "engine": "2051-07-16T11:53:52.553Z",
+   "seconds": 31.6,
+   "arcseconds": 0.0325
+  },
+  {
+   "body": "Neptune",
+   "sign": "taurus",
+   "retrograde": true,
+   "nasa": "2051-10-22T23:51:46Z",
+   "engine": "2051-10-22T23:51:03.194Z",
+   "seconds": -42.8,
+   "arcseconds": 0.0417
+  },
+  {
+   "body": "Uranus",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2051-12-08T20:48:30Z",
+   "engine": "2051-12-08T20:49:01.635Z",
+   "seconds": 31.6,
+   "arcseconds": 0.0329
+  },
+  {
+   "body": "Uranus",
+   "sign": "virgo",
+   "retrograde": true,
+   "nasa": "2052-02-01T03:00:59Z",
+   "engine": "2052-02-01T03:00:22.482Z",
+   "seconds": -36.5,
+   "arcseconds": 0.0367
+  },
+  {
+   "body": "Saturn",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2052-04-16T13:54:20Z",
+   "engine": "2052-04-16T13:54:27.534Z",
+   "seconds": 7.5,
+   "arcseconds": 0.026
+  },
+  {
+   "body": "Neptune",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2052-05-12T10:07:53Z",
+   "engine": "2052-05-12T10:08:11.910Z",
+   "seconds": 18.9,
+   "arcseconds": 0.0293
+  },
+  {
+   "body": "Saturn",
+   "sign": "aquarius",
+   "retrograde": true,
+   "nasa": "2052-08-09T03:34:58Z",
+   "engine": "2052-08-09T03:34:40.191Z",
+   "seconds": -17.8,
+   "arcseconds": 0.0539
+  },
+  {
+   "body": "Uranus",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2052-09-11T08:10:01Z",
+   "engine": "2052-09-11T08:10:16.954Z",
+   "seconds": 16,
+   "arcseconds": 0.0414
+  },
+  {
+   "body": "Saturn",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2053-01-11T02:51:39Z",
+   "engine": "2053-01-11T02:51:45.705Z",
+   "seconds": 6.7,
+   "arcseconds": 0.029
+  },
+  {
+   "body": "Saturn",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2055-03-22T18:30:12Z",
+   "engine": "2055-03-22T18:30:19.498Z",
+   "seconds": 7.5,
+   "arcseconds": 0.0388
+  },
+  {
+   "body": "Saturn",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2057-05-20T06:00:23Z",
+   "engine": "2057-05-20T06:00:31.739Z",
+   "seconds": 8.7,
+   "arcseconds": 0.0423
+  },
+  {
+   "body": "Saturn",
+   "sign": "aries",
+   "retrograde": true,
+   "nasa": "2057-11-29T18:50:26Z",
+   "engine": "2057-11-29T18:49:56.635Z",
+   "seconds": -29.4,
+   "arcseconds": 0.0656
+  },
+  {
+   "body": "Saturn",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2058-01-31T09:16:05Z",
+   "engine": "2058-01-31T09:16:26.953Z",
+   "seconds": 22,
+   "arcseconds": 0.0509
+  },
+  {
+   "body": "Uranus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2058-11-03T09:27:09Z",
+   "engine": "2058-11-03T09:27:30.186Z",
+   "seconds": 21.2,
+   "arcseconds": 0.0548
+  },
+  {
+   "body": "Uranus",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "2059-06-01T19:13:59Z",
+   "engine": "2059-06-01T19:13:07.336Z",
+   "seconds": -51.7,
+   "arcseconds": 0.0612
+  },
+  {
+   "body": "Saturn",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2059-07-12T19:58:09Z",
+   "engine": "2059-07-12T19:58:20.782Z",
+   "seconds": 11.8,
+   "arcseconds": 0.0478
+  },
+  {
+   "body": "Uranus",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2059-08-11T18:50:29Z",
+   "engine": "2059-08-11T18:51:19.911Z",
+   "seconds": 50.9,
+   "arcseconds": 0.0632
+  },
+  {
+   "body": "Saturn",
+   "sign": "taurus",
+   "retrograde": true,
+   "nasa": "2059-11-21T10:20:13Z",
+   "engine": "2059-11-21T10:19:51.350Z",
+   "seconds": -21.6,
+   "arcseconds": 0.0736
+  },
+  {
+   "body": "Saturn",
+   "sign": "gemini",
+   "retrograde": false,
+   "nasa": "2060-03-31T11:50:13Z",
+   "engine": "2060-03-31T11:50:23.217Z",
+   "seconds": 10.2,
+   "arcseconds": 0.0427
+  },
+  {
+   "body": "Saturn",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2061-09-01T07:39:00Z",
+   "engine": "2061-09-01T07:39:20.166Z",
+   "seconds": 20.2,
+   "arcseconds": 0.06
+  },
+  {
+   "body": "Saturn",
+   "sign": "gemini",
+   "retrograde": true,
+   "nasa": "2061-11-24T19:04:25Z",
+   "engine": "2061-11-24T19:03:59.436Z",
+   "seconds": -25.6,
+   "arcseconds": 0.0729
+  },
+  {
+   "body": "Saturn",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2062-05-16T10:50:09Z",
+   "engine": "2062-05-16T10:50:17.528Z",
+   "seconds": 8.5,
+   "arcseconds": 0.041
+  },
+  {
+   "body": "Saturn",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2064-06-28T19:26:56Z",
+   "engine": "2064-06-28T19:27:05.238Z",
+   "seconds": 9.2,
+   "arcseconds": 0.0473
+  },
+  {
+   "body": "Uranus",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2065-01-10T19:55:34Z",
+   "engine": "2065-01-10T19:56:07.046Z",
+   "seconds": 33,
+   "arcseconds": 0.0612
+  },
+  {
+   "body": "Uranus",
+   "sign": "scorpio",
+   "retrograde": true,
+   "nasa": "2065-05-01T08:58:51Z",
+   "engine": "2065-05-01T08:58:06.067Z",
+   "seconds": -44.9,
+   "arcseconds": 0.0727
+  },
+  {
+   "body": "Neptune",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2065-07-03T07:09:24Z",
+   "engine": "2065-07-03T07:10:07.423Z",
+   "seconds": 43.4,
+   "arcseconds": 0.0664
+  },
+  {
+   "body": "Uranus",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2065-10-28T21:04:44Z",
+   "engine": "2065-10-28T21:05:10.949Z",
+   "seconds": 26.9,
+   "arcseconds": 0.065
+  },
+  {
+   "body": "Neptune",
+   "sign": "gemini",
+   "retrograde": true,
+   "nasa": "2066-01-14T21:10:52Z",
+   "engine": "2066-01-14T21:09:40.422Z",
+   "seconds": -71.6,
+   "arcseconds": 0.075
+  },
+  {
+   "body": "Neptune",
+   "sign": "cancer",
+   "retrograde": false,
+   "nasa": "2066-05-01T21:41:31Z",
+   "engine": "2066-05-01T21:42:27.323Z",
+   "seconds": 56.3,
+   "arcseconds": 0.0631
+  },
+  {
+   "body": "Pluto",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2066-06-17T15:18:50Z",
+   "engine": "2066-06-17T15:24:17.102Z",
+   "seconds": 327.1,
+   "arcseconds": 0.0623
+  },
+  {
+   "body": "Pluto",
+   "sign": "pisces",
+   "retrograde": true,
+   "nasa": "2066-07-11T22:03:39Z",
+   "engine": "2066-07-11T21:57:44.067Z",
+   "seconds": -354.9,
+   "arcseconds": 0.0674
+  },
+  {
+   "body": "Saturn",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2066-08-16T07:24:57Z",
+   "engine": "2066-08-16T07:25:08.849Z",
+   "seconds": 11.8,
+   "arcseconds": 0.0626
+  },
+  {
+   "body": "Pluto",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2067-04-08T22:01:38Z",
+   "engine": "2067-04-08T22:02:37.073Z",
+   "seconds": 59.1,
+   "arcseconds": 0.0596
+  },
+  {
+   "body": "Pluto",
+   "sign": "pisces",
+   "retrograde": true,
+   "nasa": "2067-09-27T16:48:31Z",
+   "engine": "2067-09-27T16:46:55.089Z",
+   "seconds": -95.9,
+   "arcseconds": 0.0797
+  },
+  {
+   "body": "Pluto",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2068-02-23T13:39:18Z",
+   "engine": "2068-02-23T13:40:25.339Z",
+   "seconds": 67.3,
+   "arcseconds": 0.065
+  },
+  {
+   "body": "Saturn",
+   "sign": "libra",
+   "retrograde": false,
+   "nasa": "2068-10-11T02:55:56Z",
+   "engine": "2068-10-11T02:56:09.647Z",
+   "seconds": 13.6,
+   "arcseconds": 0.0684
+  },
+  {
+   "body": "Saturn",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2070-12-25T20:46:10Z",
+   "engine": "2070-12-25T20:46:35.630Z",
+   "seconds": 25.6,
+   "arcseconds": 0.0786
+  },
+  {
+   "body": "Saturn",
+   "sign": "libra",
+   "retrograde": true,
+   "nasa": "2071-03-27T18:17:00Z",
+   "engine": "2071-03-27T18:16:23.266Z",
+   "seconds": -36.7,
+   "arcseconds": 0.1032
+  },
+  {
+   "body": "Saturn",
+   "sign": "scorpio",
+   "retrograde": false,
+   "nasa": "2071-09-18T17:22:25Z",
+   "engine": "2071-09-18T17:22:44.111Z",
+   "seconds": 19.1,
+   "arcseconds": 0.0851
+  },
+  {
+   "body": "Uranus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2072-01-22T11:29:35Z",
+   "engine": "2072-01-22T11:30:15.621Z",
+   "seconds": 40.6,
+   "arcseconds": 0.0906
+  },
+  {
+   "body": "Uranus",
+   "sign": "sagittarius",
+   "retrograde": true,
+   "nasa": "2072-06-25T10:28:36Z",
+   "engine": "2072-06-25T10:27:28.815Z",
+   "seconds": -67.2,
+   "arcseconds": 0.1138
+  },
+  {
+   "body": "Uranus",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2072-11-12T05:01:24Z",
+   "engine": "2072-11-12T05:02:12.042Z",
+   "seconds": 48,
+   "arcseconds": 0.1
+  },
+  {
+   "body": "Saturn",
+   "sign": "sagittarius",
+   "retrograde": false,
+   "nasa": "2073-12-06T02:56:19Z",
+   "engine": "2073-12-06T02:56:37.287Z",
+   "seconds": 18.3,
+   "arcseconds": 0.0888
+  },
+  {
+   "body": "Saturn",
+   "sign": "capricorn",
+   "retrograde": false,
+   "nasa": "2076-12-03T16:02:53Z",
+   "engine": "2076-12-03T16:03:12.244Z",
+   "seconds": 19.2,
+   "arcseconds": 0.0917
+  },
+  {
+   "body": "Neptune",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2078-09-01T09:28:53Z",
+   "engine": "2078-09-01T09:30:27.767Z",
+   "seconds": 94.8,
+   "arcseconds": 0.1194
+  },
+  {
+   "body": "Neptune",
+   "sign": "cancer",
+   "retrograde": true,
+   "nasa": "2079-01-06T10:08:53Z",
+   "engine": "2079-01-06T10:07:03.880Z",
+   "seconds": -109.1,
+   "arcseconds": 0.124
+  },
+  {
+   "body": "Saturn",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2079-02-28T17:25:47Z",
+   "engine": "2079-02-28T17:26:09.061Z",
+   "seconds": 22.1,
+   "arcseconds": 0.0917
+  },
+  {
+   "body": "Uranus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2079-03-02T17:05:56Z",
+   "engine": "2079-03-02T17:06:49.965Z",
+   "seconds": 54,
+   "arcseconds": 0.1064
+  },
+  {
+   "body": "Neptune",
+   "sign": "leo",
+   "retrograde": false,
+   "nasa": "2079-07-03T05:59:20Z",
+   "engine": "2079-07-03T06:00:35.764Z",
+   "seconds": 75.8,
+   "arcseconds": 0.1121
+  },
+  {
+   "body": "Uranus",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "2079-07-13T12:32:36Z",
+   "engine": "2079-07-13T12:31:15.353Z",
+   "seconds": -80.6,
+   "arcseconds": 0.1324
+  },
+  {
+   "body": "Saturn",
+   "sign": "capricorn",
+   "retrograde": true,
+   "nasa": "2079-08-02T12:26:09Z",
+   "engine": "2079-08-02T12:25:21.085Z",
+   "seconds": -47.9,
+   "arcseconds": 0.144
+  },
+  {
+   "body": "Saturn",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2079-11-27T14:19:47Z",
+   "engine": "2079-11-27T14:20:15.159Z",
+   "seconds": 28.2,
+   "arcseconds": 0.0994
+  },
+  {
+   "body": "Uranus",
+   "sign": "aquarius",
+   "retrograde": false,
+   "nasa": "2079-12-23T06:32:19Z",
+   "engine": "2079-12-23T06:33:06.842Z",
+   "seconds": 47.8,
+   "arcseconds": 0.1067
+  },
+  {
+   "body": "Uranus",
+   "sign": "pisces",
+   "retrograde": false,
+   "nasa": "2087-02-18T22:43:57Z",
+   "engine": "2087-02-18T22:46:50.328Z",
+   "seconds": 173.3,
+   "arcseconds": 0.4164
+  },
+  {
+   "body": "Neptune",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2092-09-04T14:50:46Z",
+   "engine": "2092-09-04T14:52:35.305Z",
+   "seconds": 109.3,
+   "arcseconds": 0.1652
+  },
+  {
+   "body": "Neptune",
+   "sign": "leo",
+   "retrograde": true,
+   "nasa": "2093-03-11T13:33:30Z",
+   "engine": "2093-03-11T13:30:44.154Z",
+   "seconds": -165.8,
+   "arcseconds": 0.1771
+  },
+  {
+   "body": "Neptune",
+   "sign": "virgo",
+   "retrograde": false,
+   "nasa": "2093-07-05T12:47:40Z",
+   "engine": "2093-07-05T12:50:03.041Z",
+   "seconds": 143,
+   "arcseconds": 0.1654
+  },
+  {
+   "body": "Uranus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2094-04-28T18:14:30Z",
+   "engine": "2094-04-28T18:15:47.613Z",
+   "seconds": 77.6,
+   "arcseconds": 0.1529
+  },
+  {
+   "body": "Uranus",
+   "sign": "pisces",
+   "retrograde": true,
+   "nasa": "2094-09-16T16:25:15Z",
+   "engine": "2094-09-16T16:23:16.852Z",
+   "seconds": -118.1,
+   "arcseconds": 0.1962
+  },
+  {
+   "body": "Uranus",
+   "sign": "aries",
+   "retrograde": false,
+   "nasa": "2095-02-19T03:01:26Z",
+   "engine": "2095-02-19T03:02:38.108Z",
+   "seconds": 72.1,
+   "arcseconds": 0.1547
+  },
+  {
+   "body": "Pluto",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2095-06-09T04:48:42Z",
+   "engine": "2095-06-09T04:52:30.441Z",
+   "seconds": 228.4,
+   "arcseconds": 0.1562
+  },
+  {
+   "body": "Pluto",
+   "sign": "aries",
+   "retrograde": true,
+   "nasa": "2095-09-20T22:16:23Z",
+   "engine": "2095-09-20T22:11:51.706Z",
+   "seconds": -271.3,
+   "arcseconds": 0.1766
+  },
+  {
+   "body": "Pluto",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2096-04-22T23:13:18Z",
+   "engine": "2096-04-22T23:15:55.410Z",
+   "seconds": 157.4,
+   "arcseconds": 0.1522
+  },
+  {
+   "body": "Pluto",
+   "sign": "aries",
+   "retrograde": true,
+   "nasa": "2096-11-14T14:41:10Z",
+   "engine": "2096-11-14T14:37:09.018Z",
+   "seconds": -241,
+   "arcseconds": 0.1729
+  },
+  {
+   "body": "Pluto",
+   "sign": "taurus",
+   "retrograde": false,
+   "nasa": "2097-03-10T00:40:18Z",
+   "engine": "2097-03-10T00:43:40.404Z",
+   "seconds": 202.4,
+   "arcseconds": 0.1557
+  }
+ ]
+}

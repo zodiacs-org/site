@@ -36,6 +36,10 @@ import { readingConfidence, readingConfidenceLabel } from '../reading-confidence
 import { horoscopePeriodShareUrl } from '../share-links';
 import type { HoroscopeWindow } from '../horoscope/window';
 import { softenHealth } from './reading-guards';
+import { ENGINE_INGRESS_WINDOW_DAYS, engineIngressInstant } from './engine-ingress';
+import { SIGNS } from '../../lib/signs';
+
+const signIndex = (slug: string) => SIGNS.findIndex((sign) => sign.slug === slug);
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -222,9 +226,20 @@ export async function getHoroscopePeriod(
   type Raw = { kind: 'ingress' | 'station' | 'lunation' | 'eclipse'; at: string; planet: string; sign: string; type?: string };
   let raw: Raw[] = [];
   if (args.period === 'year') {
-    raw = (ingressTable.windows as { planet: string; sign: string; from: string }[])
-      .filter((window) => YEAR_PLANETS.includes(window.planet) && window.from >= fromUtc.toISOString() && window.from < toUtc.toISOString())
-      .map((window) => ({ kind: 'ingress' as const, at: window.from, planet: window.planet, sign: window.sign }));
+    // The table says which sign changes there are; the time is the engine's, as the month and week views give it.
+    const windows = (ingressTable.windows as { planet: string; sign: string; from: string }[]).filter((window) => YEAR_PLANETS.includes(window.planet));
+    const margin = ENGINE_INGRESS_WINDOW_DAYS * 86_400_000;
+    const lastSign = new Map<string, string>();
+    raw = windows.flatMap((window) => {
+      const previous = lastSign.get(window.planet);
+      lastSign.set(window.planet, window.sign);
+      const tableAt = new Date(window.from);
+      if (tableAt.getTime() < fromUtc.getTime() - margin || tableAt.getTime() >= toUtc.getTime() + margin) return [];
+      // A planet that enters the sign before the one it was in is moving backward: a retrograde re-entry.
+      const retrograde = previous !== undefined && signIndex(window.sign) === (signIndex(previous) + 11) % 12;
+      const at = engineIngressInstant(window.planet, window.sign, retrograde, tableAt).toISOString();
+      return at >= fromUtc.toISOString() && at < toUtc.toISOString() ? [{ kind: 'ingress' as const, at, planet: window.planet, sign: window.sign }] : [];
+    });
     const yearsCovered = ingressTable.horizons.filter((horizon) => horizon.planets.some((planet) => YEAR_PLANETS.includes(planet)));
     if (yearsCovered.some((horizon) => to > horizon.to || from < horizon.from)) notes.push('Sign changes are listed only within the years the ingress table covers.');
   } else {

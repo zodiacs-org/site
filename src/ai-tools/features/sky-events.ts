@@ -7,7 +7,8 @@
  *
  * Every event comes from the site's own data or engine, nothing new:
  * - eclipses from src/data/eclipses.json (2026 to 2030, astronomy-engine's eclipse searches);
- * - sign changes of the Sun through Pluto from src/data/ingresses.json, within the dates it covers;
+ * - sign changes of the Sun through Pluto from src/data/ingresses.json, within the dates it covers, each at
+ *   the engine's own instant for it (engine-ingress.ts), as get_upcoming_events gives it;
  * - stations and new and full Moons from the compute API's event searches (the engine's crossing
  *   solver, as get_upcoming_events runs it), over windows of up to two years;
  * - void-of-course Moon periods from src/data/void-of-course.ts, the module the site's own
@@ -32,6 +33,7 @@ import { publishedEventById } from '../../lib/events/publication';
 import { SIGNS, formatLongitude, signIndexForLongitude } from '../../lib/signs';
 import { SITE_VOID_CONVENTION_IDS, siteVoidOfCourseWindows } from '../../data/void-of-course';
 import { chironEvents } from './chiron';
+import { ENGINE_INGRESS_WINDOW_DAYS, engineIngressInstant } from './engine-ingress';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -212,8 +214,11 @@ function pageFor(origin: string, event: Raw): string | null {
       const own = STATION_PAGE_PLANETS.includes(event.planet!) ? published(origin, retrogradeId(event.planet!, window.from)) : null;
       return own ?? `${origin}/retrogrades/#retrograde-${event.planet!.toLowerCase()}-${isoDay(window.from)}`;
     }
-    case 'ingress':
-      return published(origin, ingressId(event.planet!, event.sign, event.at.toISOString())) ?? (event.planet === 'Sun' ? `${origin}/learn/zodiac-dates/` : null);
+    case 'ingress': {
+      // A page is dated by the table's instant, which can fall on the day before or after the engine's.
+      const page = [0, -DAY, DAY].map((shift) => published(origin, ingressId(event.planet!, event.sign, new Date(event.at.getTime() + shift).toISOString()))).find((url) => url !== null);
+      return page ?? (event.planet === 'Sun' ? `${origin}/learn/zodiac-dates/` : null);
+    }
     case 'void-of-course':
       return `${origin}/void-of-course-moon/`;
   }
@@ -325,6 +330,8 @@ export async function searchSkyEvents(args: SkyEventsInput, clock: SkyEventsCloc
   const start = await midnight(from);
   const end = await midnight(addDays(to, 1));
   const inside = (at: Date) => at.getTime() >= start.getTime() && at.getTime() < end.getTime();
+  const margin = ENGINE_INGRESS_WINDOW_DAYS * DAY;
+  const near = (at: Date) => at.getTime() >= start.getTime() - margin && at.getTime() < end.getTime() + margin;
 
   const searches = kinds.some((kind) => kind === 'station' || kind === 'new-moon' || kind === 'full-moon' || kind === 'void-of-course');
   if (searches && options.allowEvents) {
@@ -347,7 +354,12 @@ export async function searchSkyEvents(args: SkyEventsInput, clock: SkyEventsCloc
   if (kinds.includes('ingress')) {
     const outside: string[] = [];
     for (const planet of (planets ?? SKY_EVENT_PLANETS as readonly SkyEventPlanet[]).filter((body): body is TablePlanet => body !== 'Chiron')) {
-      for (const ingress of ingressesOf(planet, rows)) if (inside(ingress.at)) raw.push(ingress);
+      for (const ingress of ingressesOf(planet, rows)) {
+        // The table says which sign changes there are; the time is the engine's, as get_upcoming_events gives it.
+        if (!near(ingress.at)) continue;
+        const at = engineIngressInstant(planet, ingress.sign, ingress.extra?.retrograde ?? false, ingress.at);
+        if (inside(at)) raw.push({ ...ingress, at });
+      }
       const horizon = ingressHorizon(planet);
       if (from < horizon.from || to >= horizon.to) outside.push(planet === 'Sun' ? 'the Sun' : planet);
     }

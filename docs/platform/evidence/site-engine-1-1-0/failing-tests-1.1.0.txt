@@ -1,0 +1,141 @@
+scripts/build-event-horizon.test.mjs > Phase 2 five-year event horizon > regenerates the committed 'src/data/sky.json' byte-for-byte
+scripts/build-transits.test.mjs > Transit fact generation > preserves both Mercury ingresses when a retrograde turn returns across a cusp the same day
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-01.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-02.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-03.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-04.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-05.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-06.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-07.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-08.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-09.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-10.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-11.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2026-12.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-01.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-02.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-03.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-04.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-05.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-06.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-07.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-08.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-09.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-10.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-11.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2027-12.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-01.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-02.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-03.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-04.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-05.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-06.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-07.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-08.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-09.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-10.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-11.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2028-12.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-01.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-02.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-03.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-04.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-05.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-06.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-07.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-08.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-09.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-10.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-11.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2029-12.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-01.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-02.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-03.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-04.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-05.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-06.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-07.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-08.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-09.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-10.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-11.json byte for byte from the site engine
+scripts/build-transits.test.mjs > Transit fact generation > regenerates transits-2030-12.json byte for byte from the site engine
+scripts/claims-bindings.test.mjs > images of one birth shared together > narrow the birthplace about five times with one solar return image, as the privacy page says
+scripts/claims-bindings.test.mjs > the NASA JPL Horizons figure > is the largest residual of the reference values the engine test uses
+scripts/claims-ledger.test.mjs > claims ledger > R3 resolves every claim's evidence
+scripts/claims-ledger.test.mjs > claims ledger > R4 finds every binding in its code or data
+scripts/claims-ledger.test.mjs > claims ledger > R7 matches the conventions and coverage the engine's receipt states
+scripts/daily-fact-audit.test.mjs > independent daily fact audit > authenticates the committed body, lunar, event, and source facts
+scripts/daily-snapshot-lib.test.mjs > daily snapshot source coverage > keeps every Phase 1 astronomy path behind the vendored site engine
+scripts/daily-snapshot-lib.test.mjs > daily snapshot source coverage > matches the site engine and displayed event data for the 29 July 2026 full moon vector
+scripts/developer-demo.test.ts > the developer demo answers > are what the compute API and get_compatibility answer now, but for the runtime that computed them
+scripts/engine-demo.test.mjs > the worked example on the engine page > prints exactly the output printed beside it
+scripts/mcp-artifact.test.mjs > the archive the site distributes > declares the licence of what it bundles and carries the engine NOTICE
+scripts/mcp-artifact.test.mjs > the built server bundle > is what the generator produces from the current source
+scripts/mcp-artifact.test.mjs > the examples in the README > prints, under the chart it asks for, what the tool returns
+scripts/methodology-accuracy-claim.test.mjs > the accuracy claim on /methodology/ > gives the two clocks' difference as statistics over 2100–2199, from the committed run
+scripts/methodology-accuracy-claim.test.mjs > the every-tenth-day comparison, 1800 to 2199 > was measured on the engine the site runs, with every call answered from the Swiss data files
+scripts/phase1-acceptance-evidence.test.mjs > Phase 1 durable acceptance evidence > contains exact 360px and 1280px captures for every new template
+scripts/platform-candidate-docs.test.mjs > developer candidate documentation > identifies the installed public engine and exact archived package
+scripts/sitemap-rendered-changes.test.mjs > a pull request that rolls the daily edition > the plan step > accepts only an exact, base-pinned allowance (existing: false)
+scripts/thesis-film.test.mjs > the thesis film, "Why the zodiac lasts" > runs 32 seconds at 1280 x 720, and the tall cut 2 seconds longer at 1080 x 1920 with the end card
+src/ai-tools/accounts/flag-off.test.ts > the account switch off > leaves initialize, tools/list, resources/list and every account route byte-for-byte as the 0.5.0 server answers them
+src/ai-tools/numerology.test.ts > the numerology switch off > leaves every scenario's initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them
+src/ai-tools/sky-events.test.ts > the sky events switch off > leaves every scenario's initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them
+src/ai-tools/studio/inspect.test.ts > Chart Inspector > refuses an unavailable engine and unsupported required features
+src/ai-tools/tools.test.ts > public AI tools > calculates now rather than the noon daily snapshot with numerical parity
+src/ai-tools/year-score.test.ts > the Year Ahead Score switch off > leaves tools/list and get_capabilities byte for byte as main answers them, and refuses the tool as unknown
+src/islands/MoonPhaseTool.reference.test.ts > Moon phase reference result > agrees with the lite calculation near the January 16 boundary without changing full values
+src/lib/compare/diff.test.ts > regressions an adversarial review found > classifies two real charts a millisecond apart by what they print, not by how far apart they are
+src/lib/compare/diff.test.ts > the convention ids, from engine 1.1.0-rc.1 > reads a record that lists no ids as a difference in how records list them, not in conventions
+src/lib/compare/diff.test.ts > the full-nutation receipt conventions, from engine 0.1.1-rc.16 > identifies both convention changes when reading an rc.15 record
+src/lib/compare/diff.test.ts > the full-nutation receipt conventions, from engine 0.1.1-rc.16 > records full IAU 2000B and the GeoMoon vector reduction explicitly
+src/lib/compare/diff.test.ts > the time basis, which records carry from engine 0.1.1-rc.15 on > reads a record of the rc.8 conventions, which states no scale, as a difference of conventions
+src/lib/compare/diff.test.ts > ΔT, which records carry from engine 0.1.1-rc.8 on > does not call two records the same when only the source of their ΔT differs
+src/lib/engine/grazing-crossings.test.ts > grazing crossing pairs > keeps all three first-return passes for a natal Saturn 0.002° below the 2019 station
+src/lib/engine/package-integration.test.ts > vendored @zodiacs/engine integration > matches both recorded checksums in the repository
+src/lib/engine/package-integration.test.ts > vendored @zodiacs/engine integration > matches the public natal entry point across hemispheres, date line, fallback and unknown time
+src/lib/engine/package-integration.test.ts > vendored @zodiacs/engine integration > preserves the site body shape while using package positions and version
+src/lib/engine/portable.test.ts > optional portable calculation boundary > retains requested houses and the 08:30 reference (time known: false)
+src/lib/engine/portable.test.ts > optional portable calculation boundary > retains requested houses and the 08:30 reference (time known: true)
+src/lib/engine/portable.test.ts > shared compact chart projection > retains the original full.ts input identity and numerical shape
+src/lib/engine/returns.test.ts > natal Saturn direction > is direct just before the chart's station and retrograde just after
+src/lib/engine/server-ephemeris.test.ts > serverless ephemeris boundary > matches it where the time basis changes: leap seconds, 1972, the UT1 table and the ΔT model
+src/lib/engine/server-ephemeris.test.ts > serverless ephemeris boundary > matches the browser SDK for every supported body across pinned instants
+src/lib/engine/server-ephemeris.test.ts > serverless ephemeris boundary > produces the same transit contacts through the server-only graph
+src/lib/engine/transit-scan.test.ts > scanTransitContacts > keeps both close passes around a station instead of cancelling their signs
+src/lib/engine/transit-scan.test.ts > scanTransitContacts > resolves two contacts only seconds apart at the true station extremum
+src/lib/engine/transit-scan.test.ts > scanTransitContacts > retains the three exact Saturn-return passes for the known 1990 chart
+src/lib/engine/void-of-course.test.ts > void-of-course Moon > finds every Moon ingress the committed ingress table lists, to the second
+src/lib/natal-aspect-pairs.test.ts > natal planet-pair evidence > keeps generated evidence deterministic
+src/lib/natal-aspect-pairs.test.ts > natal planet-pair evidence > replays every worked example through the birth chart calculation
+src/lib/profile/polar-repair.test.ts > legacy polar saved-chart repair > matches the current engine on the recorded clock throughout a day at -78.2232°
+src/lib/profile/polar-repair.test.ts > legacy polar saved-chart repair > matches the current engine on the recorded clock throughout a day at 78.2232°
+src/lib/return-image-privacy.test.ts > a solar return image > prints the UTC date of a return without a birth time from the unrounded instant, not the next day
+src/lib/scene/scene.test.ts > buildSceneModel parity > matches the committed Kahlo scene snapshot
+src/lib/wheel/Wheel.crowding.test.ts [ src/lib/wheel/Wheel.crowding.test.ts ]
+src/mcp/outputs.test.ts [ src/mcp/outputs.test.ts ]
+src/mcp/sky-tools.test.ts > refusals are the compute API's own sentences > sends each result unchanged through the SDK's client, which checks it against the advertised schema
+src/mcp/sky-tools.test.ts > the ends of the accepted dates > answers each as the compute API's handler does, flags every fact on a date, and passes every schema and the SDK's client
+src/mcp/sky-tools.test.ts > the three tools are the compute API's calculations > fits the largest positions answer the limits allow inside the result limit, with a tenth to spare
+src/mcp/sky-tools.test.ts > the three tools are the compute API's calculations > holds every result to its output schema, to the JSON Schema a host reads, and to the compute API's OpenAPI response
+src/mcp/tools.test.ts > calculate_natal_chart > computes no chart outside the engine’s reference span, so none carries that flag
+src/mcp/tools.test.ts > get_capabilities > names the engine actually bundled, and labels both releases honestly
+tests/api/compute-api-bundle.test.ts > the compute API's handler bundle > answers every documented example as the source handler does
+tests/api/compute-api-bundle.test.ts > the compute API's handler bundle > is what scripts/build-compute-handler.mjs builds from its sources
+tests/api/compute-api-local-time.test.ts > the compute API's local-time bundle > is what the engine's resolver builds to now, and loads nothing at run time
+tests/api/compute-api-openapi.test.ts > compute API in the OpenAPI document > shows what the handler answers: every example runs through it and the committed responses match
+tests/api/compute-api-playground.test.ts > the playground's browser run > is built from the current sources, and the built file answers as they do
+tests/api/compute-api.test.ts > compute API parity with the engine and the site resolver > events find the stations, lunations and ingresses the site published for 2026, to within minutes
+tests/api/compute-api.test.ts > compute API receipts, backend and citation > gives every success the engine receipt or a compute receipt, the backend, and a four-field cite whose digest is the receipt's
+tests/api/compute-api.test.ts > compute API through the compatibility function > answers every compute route from api/compatibility.ts before any route of its own
+tests/benchmarks/sky-benchmark.test.ts > the sky-fact benchmark, v0 > is what the generator draws, the questions and key byte for byte and check_sky_fact's answers and facts, and with another engine the generator refuses to draw it again
+tests/conventions-registry.test.ts > the conventions registry > finds in each natal receipt the ids that it and its result name, sorted and each once, as the engine lists them
+tests/conventions-registry.test.ts > the conventions registry > holds every id that natal, calc and compute API receipts name
+tests/conventions-registry.test.ts > the conventions registry > holds every value of every natal conventions set, current where 1.1.0-rc.2 writes it and superseded where only earlier versions did
+tests/conventions-registry.test.ts > the conventions registry > holds exactly the convention ids calc receipts write, beside the natal sets' values
+tests/conventions-registry.test.ts > the conventions registry > writes each id as the engine's conventions entry reads it, and names the engine and the suite it follows
+tests/returns-worked-examples.test.ts > C3: the runs reproduce > every development fixture gives its recorded E (regression only, never scored)
+tests/returns-worked-examples.test.ts > C3: the runs reproduce > every scored fixture gives the recorded E to the millisecond, and the recorded agreement
+tests/sky-events-references.test.ts > new and full Moons and the Sun's sign changes against JPL Horizons > puts the Sun on the sign's edge, within the engine's 3 arcseconds of Horizons, at each sign change it lists
+tests/sky-events-references.test.ts > stations and the slow planets' sign changes against JPL Horizons > puts each planet on the sign's edge, within the engine's own bound against Horizons, at the sign changes in the ingress table
