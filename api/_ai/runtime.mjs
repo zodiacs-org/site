@@ -41827,8 +41827,9 @@ function shareContact(contacts) {
 var round2 = (value) => Math.round(value * 100) / 100;
 var signName6 = (slug2) => SIGNS2.find((entry) => entry.slug === slug2).name;
 function minorLeftOut(mover, point2) {
-  return mover === "Venus" || point2 === "Venus" || point2 === "Jupiter";
+  return mover === "Venus" || mover === "Mars" || mover === "Neptune" || point2 === "Venus" || point2 === "Jupiter";
 }
+var MINOR_LEFT_OUT_HOUSES = [5];
 async function startOf(date3, zone9, clock2) {
   await clock2.prepareLocalTime(date3, zone9);
   return clock2.resolveLocalToUtc(date3, "00:00", zone9).utc;
@@ -41900,7 +41901,7 @@ async function readPersonalDay(natal, input, clock2) {
   }
   const risingSign = natal.angles ? SIGNS2[signIndexForLongitude2(natal.angles.asc)].slug : null;
   const houseNumber = risingSign ? wholeSignHouseFromAsc(moonSign, risingSign) : null;
-  const house = houseNumber ? { number: houseNumber, line: guard(`The Moon is passing through your ${ORDINAL7[houseNumber]} house: ${NATAL_HOUSE_THEME[houseNumber]}.`) } : null;
+  const house = houseNumber && !(under18 && MINOR_LEFT_OUT_HOUSES.includes(houseNumber)) ? { number: houseNumber, line: guard(`The Moon is passing through your ${ORDINAL7[houseNumber]} house: ${NATAL_HOUSE_THEME[houseNumber]}.`) } : null;
   const moonLine = [
     !entersSign ? `The Moon is in ${signName6(moonSign)} all day.` : Date.parse(entersSign.atUtc) <= midday.getTime() ? `The Moon enters ${signName6(entersSign.sign)} at ${entersSign.atLocal} and stays there for the rest of the day.` : `The Moon is in ${signName6(moonSign)} until ${entersSign.atLocal}, then enters ${signName6(entersSign.sign)}.`,
     house ? house.line : ""
@@ -41997,16 +41998,18 @@ async function castNatal(args, clock2) {
   const placed = latitude !== void 0 && longitude2 !== void 0;
   let birthUtc;
   let flags = [];
+  let jumpMinutes = null;
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
     const time = args.time ?? "12:00";
     const resolved = longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone);
     birthUtc = resolved.utc;
     flags = [...resolved.flags];
+    if (resolved.jump && resolved.transition) jumpMinutes = Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes);
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
   const chart = computeChart3({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags };
+  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
 }
 async function currentClock(currentZone, birthZone, context) {
   if (currentZone) return { zone: await context.resolveZone(currentZone, "/currentZone"), note: null };
@@ -42077,7 +42080,7 @@ var personalDayData = z16.object({
   })).max(PERSONAL_DAY_LIMIT),
   /** Contacts found before the list was cut to its limit. */
   found: z16.number().int().min(0),
-  /** True when the birth date is under 18 today. Romantic and attraction readings are left out, and so are the contacts to the natal Venus and Jupiter and those of the moving Venus. */
+  /** True when the birth date is under 18 today. Romantic and attraction readings are left out, and so are the contacts to the natal Venus and Jupiter, those of the moving Venus, Mars and Neptune, and the Moon's line in the fifth house. */
   under18: z16.boolean(),
   limits: z16.array(z16.string()),
   pageUrl: z16.url(),

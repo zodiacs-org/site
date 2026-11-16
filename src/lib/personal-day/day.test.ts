@@ -6,13 +6,17 @@ import { forbiddenClaim, type PersonalToolContext } from '../../ai-tools/persona
 import { computeYourDay } from '../../islands/your-day/compute';
 import { PAIR_CONFIDENCES, readingConfidence } from '../../ai-tools/reading-confidence';
 import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
-import { minorLeftOut, shareContact } from './day';
+import { MINOR_LEFT_OUT_HOUSES, minorLeftOut, shareContact } from './day';
+import { NATAL_HOUSE_THEME } from '../natal';
+import { softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { transitLine } from '../transits';
 import { MAJOR_ASPECT_ORDER, TRANSIT_BODY_ORDER } from '../engine/transit-scan-shared';
 import { pointName } from './score';
 import { parseYourDayShare, yourDayQuery, yourDayShareUrl, YOUR_DAY_CONFIDENCES, YOUR_DAY_SHARE_KEYS } from './share';
 
 const NOW = new Date('2026-11-09T09:00:00Z');
+/** The ticket's appetite check, with the longing, heat and pleasure a review found too. */
+const MINOR_CHECK = /loving|appetite|longing|heat|pleasure|romant|attract/iu;
 const context: PersonalToolContext = { now: NOW, localTime: createLocalTimeModule(), resolveZone: async (name) => name, origin: 'https://zodiacs.org' };
 const ADULT = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
 
@@ -64,8 +68,8 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
       for (const reading of [tool, page]) {
         expect(reading.under18).toBe(true);
         expect(reading.limits).toContain(MINOR_NOTE);
-        expect(reading.contacts.some((contact) => contact.planet === 'Venus' || contact.point === 'Venus' || contact.point === 'Jupiter')).toBe(false);
-        expect(JSON.stringify({ ...reading, limits: [] })).not.toMatch(/loving|appetite|romant|attract/iu);
+        expect(reading.contacts.some((contact) => minorLeftOut(contact.planet, contact.point))).toBe(false);
+        expect(JSON.stringify({ ...reading, limits: [] })).not.toMatch(MINOR_CHECK);
       }
       expect(page.contacts).toEqual(tool.contacts);
       expect(page.limits).toEqual(tool.limits);
@@ -75,15 +79,34 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
     expect(adult.under18).toBe(false);
   }, 60_000);
 
-  it('leave out every contact line a minor could see that the ticket\'s appetite check catches', () => {
+  it('leave out every contact and house line a minor could see that the check catches', () => {
     let kept = 0;
     for (const mover of TRANSIT_BODY_ORDER) for (const point of [...TRANSIT_BODY_ORDER, 'ASC', 'MC'] as const) for (const aspect of MAJOR_ASPECT_ORDER) {
       if (minorLeftOut(mover, point)) continue;
       kept += 1;
-      expect(transitLine(mover, aspect, pointName(point)), `${mover} ${aspect} ${point}`).not.toMatch(/loving|appetite/u);
+      expect(softenHealth(softenMinor(transitLine(mover, aspect, pointName(point)))), `${mover} ${aspect} ${point}`).not.toMatch(MINOR_CHECK);
     }
-    expect(kept).toBeGreaterThan(300);
+    expect(kept).toBeGreaterThan(250);
+    for (let house = 1; house <= 12; house += 1) {
+      if (MINOR_LEFT_OUT_HOUSES.includes(house)) continue;
+      expect(softenHealth(softenMinor(NATAL_HOUSE_THEME[house])), `house ${house}`).not.toMatch(MINOR_CHECK);
+    }
   });
+
+  it('leave the Moon\'s fifth-house line out for a minor, on the page and in the tool', async () => {
+    const minor = { birthDate: '2010-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
+    let fifth = 0;
+    for (let day = 1; day <= 30; day += 1) {
+      const date = `2026-11-${String(day).padStart(2, '0')}`;
+      const adult = await computeYourDay({ birthDate: '1990-05-03', time: minor.time, birthZone: minor.zone, latitude: minor.latitude, longitude: minor.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09' });
+      const page = await computeYourDay({ birthDate: minor.birthDate, time: minor.time, birthZone: minor.zone, latitude: minor.latitude, longitude: minor.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09' });
+      const tool = (await personalDay({ ...minor, currentZone: 'Europe/Madrid', date }, context)).data;
+      expect(page.moon).toEqual(tool.moon);
+      expect(page.moon.line).not.toMatch(MINOR_CHECK);
+      if (adult.moon.house?.number === 5) { fifth += 1; expect(page.moon.house).toBeNull(); }
+    }
+    expect(fifth).toBeGreaterThan(0);
+  }, 60_000);
 
   it('never read the sixth house as health', async () => {
     let sixth = 0;

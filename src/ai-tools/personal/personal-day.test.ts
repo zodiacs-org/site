@@ -213,9 +213,10 @@ describe('get_personal_day for someone under 18', () => {
       // Every reading, leaving out the limit that names what was left out.
       expect(JSON.stringify({ ...data, limits: [] })).not.toMatch(ROMANCE);
       expect(forbiddenClaim(text)).toBeNull();
-      if (data.contacts.some((contact) => contact.point === 'Venus') || data.moon.house?.number === 5) touched += 1;
+      // A timed, placed chart always has a Moon house; for a minor it is left out only in the fifth.
+      if (data.moon.house === null) touched += 1;
     }
-    // The month includes days whose adult wording would have named romance or the way of loving.
+    // The month includes days whose adult wording would have named romance or pleasure.
     expect(touched).toBeGreaterThan(0);
   }, 60_000);
 });

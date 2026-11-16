@@ -129,10 +129,17 @@ export function castDayNatal(input: { birthDate: string; time?: string | undefin
   return { bodies: chart.bodies, angles, timeKnown, placed, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
 }
 
-/** Under 18, a contact whose pre-written line reads as love or appetite (src/lib/transits.ts, BODY_ROLE in src/lib/compat.ts). */
+/**
+ * Under 18, a contact whose pre-written line reads as love, appetite, longing or heat (src/lib/transits.ts, BODY_ROLE
+ * in src/lib/compat.ts): the moving Venus ("warmth and appetite"), Mars ("heat and urgency") and Neptune ("longing
+ * and blur"), and the natal Venus ("way of loving") and Jupiter ("appetite for more"). No other words stand in.
+ */
 export function minorLeftOut(mover: TransitBody, point: NatalPoint): boolean {
-  return mover === 'Venus' || point === 'Venus' || point === 'Jupiter';
+  return mover === 'Venus' || mover === 'Mars' || mover === 'Neptune' || point === 'Venus' || point === 'Jupiter';
 }
+
+/** Under 18, the natal houses whose theme the Moon's line would read as pleasure: the fifth. */
+export const MINOR_LEFT_OUT_HOUSES: readonly number[] = [5];
 
 async function startOf(date: string, zone: string, clock: DayClock): Promise<Date> {
   await clock.prepareLocalTime(date, zone);
@@ -170,8 +177,8 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   }
 
   // Age is taken on today, as the published tools take it, not on the day read, which can be up to a year ahead.
-  // For someone under 18 the contacts whose line reads as love or appetite are left out: the natal Venus ("way of
-  // loving"), the natal Jupiter ("appetite for more") and Venus as the moving planet ("warmth and appetite").
+  // For someone under 18 the contacts whose line reads as love, appetite, longing or heat are left out (minorLeftOut),
+  // and so is the Moon's line in the fifth house ("pleasure").
   // softenMinor, shared with published tools whose output is frozen, does not reach them. MINOR_NOTE says so.
   const under18 = isUnder18(input.birthDate, input.today ?? date);
   const guard = (text: string) => softenHealth(under18 ? softenMinor(text) : text);
@@ -219,7 +226,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   }
   const risingSign = natal.angles ? SIGNS[signIndexForLongitude(natal.angles.asc)].slug : null;
   const houseNumber = risingSign ? wholeSignHouseFromAsc(moonSign, risingSign) : null;
-  const house = houseNumber ? { number: houseNumber, line: guard(`The Moon is passing through your ${ORDINAL[houseNumber]} house: ${NATAL_HOUSE_THEME[houseNumber]}.`) } : null;
+  const house = houseNumber && !(under18 && MINOR_LEFT_OUT_HOUSES.includes(houseNumber)) ? { number: houseNumber, line: guard(`The Moon is passing through your ${ORDINAL[houseNumber]} house: ${NATAL_HOUSE_THEME[houseNumber]}.`) } : null;
   const moonLine = [
     !entersSign ? `The Moon is in ${signName(moonSign)} all day.`
       : Date.parse(entersSign.atUtc) <= midday.getTime() ? `The Moon enters ${signName(entersSign.sign)} at ${entersSign.atLocal} and stays there for the rest of the day.`

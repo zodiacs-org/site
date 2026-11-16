@@ -82,7 +82,7 @@ export const personalDayData = z.object({
   })).max(PERSONAL_DAY_LIMIT),
   /** Contacts found before the list was cut to its limit. */
   found: z.number().int().min(0),
-  /** True when the birth date is under 18 today. Romantic and attraction readings are left out, and so are the contacts to the natal Venus and Jupiter and those of the moving Venus. */
+  /** True when the birth date is under 18 today. Romantic and attraction readings are left out, and so are the contacts to the natal Venus and Jupiter, those of the moving Venus, Mars and Neptune, and the Moon's line in the fifth house. */
   under18: z.boolean(),
   limits: z.array(z.string()),
   pageUrl: z.url(),
