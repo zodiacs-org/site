@@ -12,15 +12,16 @@ plugin's installation documentation stays at `/developers/ai/`.
 
 ## Images and movie
 
-`public/assets/ai/showcase/20261109/` is the immutable asset family the page
+`public/assets/ai/showcase/20261116/` is the immutable asset family the page
 uses. All four images are captures of their current live-resource HTML,
 checked byte for byte against the local generated panels: the labelled example
 chart, a synthetic Leo request, and the comparison and wedding examples with
 the made-up first names Lucía and Mateo, so the cards show names the way
 people ask for them instead of Person A and Person B. The horoscope is a dated
 example, not a claim that its pictured reading is always today's. The earlier
-`20261028/` family, whose comparison and wedding images came from the reviewed
-0.5.1 PNGs, stays published and unchanged.
+`20261028/` and `20261109/` families were removed on 16 November on purpose:
+their pictures and tour showed real personal birth and wedding details instead
+of synthetic ones. Every example in `20261116/` is invented.
 
 The page shows a preview of each card and links its complete version. A
 preview is a crop of the same capture: the artwork, sign discs, names and
