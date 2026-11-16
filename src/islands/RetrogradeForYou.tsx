@@ -106,15 +106,13 @@ function PeriodCard({ period, now }: { period: Period; now: number }) {
           </ul>
         </div>
       )}
-      {(period.contacts.length > 0 || period.possibleContacts.length > 0) && (
+      {/* A possible contact is said once, in the reading below, as the tool says it. */}
+      {period.contacts.length > 0 && (
         <div class="rfy__block">
           <h4>Natal points the loop crosses</h4>
-          {period.contacts.length > 0 && (
-            <ul class="rfy__contacts">
-              {period.contacts.map((entry) => <li key={entry.point}><strong>{entry.point}</strong> <span class="rfy__deg">{entry.position}</span></li>)}
-            </ul>
-          )}
-          {period.possibleContacts.map((entry) => <p class="rfy__maybe" key={entry.point}>{entry.line}</p>)}
+          <ul class="rfy__contacts">
+            {period.contacts.map((entry) => <li key={entry.point}><strong>{entry.point}</strong> <span class="rfy__deg">{entry.position}</span></li>)}
+          </ul>
         </div>
       )}
       <p class="rfy__reading">{period.reading}</p>
