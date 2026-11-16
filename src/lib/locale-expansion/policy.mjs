@@ -70,6 +70,11 @@ export function expansionState(record = publication, env = readEnv()) {
       if (entry.released === true && !entryPublished(entry)) {
         throw new Error(`locale-expansion: ${locale}.${family} is released without a reviewer and review date`);
       }
+      // A release dates its review as a plain calendar day, so the year guard
+      // below reads the year a reviewer meant.
+      if (entry.released === true && !/^\d{4}-\d{2}-\d{2}$/.test(String(entry.reviewedAt))) {
+        throw new Error(`locale-expansion: ${locale}.${family} reviewedAt must be a YYYY-MM-DD date`);
+      }
       // A yearly page reviewed after its year ended would publish stale.
       const year = familyYear(family);
       if (entry.released === true && year !== undefined && year < Number(String(entry.reviewedAt).slice(0, 4))) {

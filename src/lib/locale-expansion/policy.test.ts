@@ -30,6 +30,15 @@ describe('locale expansion publication record', () => {
     expect(() => expansionState(record({ released: true, reviewer: null, reviewedAt: null }), {})).toThrow(/reviewer/);
   });
 
+  it('refuses a release whose review date is not a plain YYYY-MM-DD day', () => {
+    for (const reviewedAt of ['04/01/2028', '2027-12-31T23:00:00-05:00', '2027-1-5', ' 2027-01-05', 20270105]) {
+      expect(() => expansionState(record({ released: true, reviewer: 'R', reviewedAt }), {}), String(reviewedAt)).toThrow(/YYYY-MM-DD/);
+    }
+    expect(publishedLocalesForPath('/horoscopes/leo/weekly/', expansionState(record({ released: true, reviewer: 'R', reviewedAt: '2027-01-05' }), {}))).toEqual(['es']);
+    // A held entry may carry any draft value.
+    expect(() => expansionState(record({ released: false, reviewer: null, reviewedAt: '04/01/2028' }), {})).not.toThrow();
+  });
+
   it('refuses a yearly family reviewed after its year ended, and only yearly families', () => {
     const yearly = (reviewedAt: string) => ({ updated: '2026-11-08', entries: { es: { 'horoscope-2027': { released: true, reviewer: 'R', reviewedAt } } } }) as never;
     expect(() => expansionState(yearly('2028-01-04'), {})).toThrow('locale expansion: horoscope-2027 is for a year that ended before its review date');
