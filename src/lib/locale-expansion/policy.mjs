@@ -44,6 +44,12 @@ function entryPublished(entry) {
   return Boolean(entry && entry.released === true && entry.reviewer && entry.reviewedAt);
 }
 
+/** The year a yearly horoscope family covers, or undefined for any other family. */
+function familyYear(family) {
+  const year = /^horoscope-(\d{4})$/.exec(family)?.[1];
+  return year === undefined ? undefined : Number(year);
+}
+
 function readEnv() {
   return typeof process !== 'undefined' && process.env ? process.env : {};
 }
@@ -63,6 +69,11 @@ export function expansionState(record = publication, env = readEnv()) {
       }
       if (entry.released === true && !entryPublished(entry)) {
         throw new Error(`locale-expansion: ${locale}.${family} is released without a reviewer and review date`);
+      }
+      // A yearly page reviewed after its year ended would publish stale.
+      const year = familyYear(family);
+      if (entry.released === true && year !== undefined && year < Number(String(entry.reviewedAt).slice(0, 4))) {
+        throw new Error(`locale expansion: ${family} is for a year that ended before its review date`);
       }
       const published = entryPublished(entry);
       // An optional list of English paths releases part of a family, so a

@@ -30,6 +30,16 @@ describe('locale expansion publication record', () => {
     expect(() => expansionState(record({ released: true, reviewer: null, reviewedAt: null }), {})).toThrow(/reviewer/);
   });
 
+  it('refuses a yearly family reviewed after its year ended, and only yearly families', () => {
+    const yearly = (reviewedAt: string) => ({ updated: '2026-11-08', entries: { es: { 'horoscope-2027': { released: true, reviewer: 'R', reviewedAt } } } }) as never;
+    expect(() => expansionState(yearly('2028-01-04'), {})).toThrow('locale expansion: horoscope-2027 is for a year that ended before its review date');
+    expect(publishedLocalesForPath('/horoscopes/leo/2027/', expansionState(yearly('2027-12-31'), {}))).toEqual(['es']);
+    expect(publishedLocalesForPath('/horoscopes/leo/2027/', expansionState(yearly('2026-11-20'), {}))).toEqual(['es']);
+    // A held yearly entry is never refused, and a non-yearly family reviewed in any year is unaffected.
+    expect(() => expansionState({ updated: '2026-11-08', entries: { es: { 'horoscope-2027': { released: false, reviewer: 'R', reviewedAt: '2030-01-01' } } } } as never, {})).not.toThrow();
+    expect(publishedLocalesForPath('/horoscopes/leo/weekly/', expansionState(record({ released: true, reviewer: 'R', reviewedAt: '2031-02-01' }), {}))).toEqual(['es']);
+  });
+
   it('publishes a reviewed family, and the preview flag only builds held ones', () => {
     const released = expansionState(record({ released: true, reviewer: 'Dias Malayev', reviewedAt: '2026-11-20' }), {});
     expect(publishedLocalesForPath('/horoscopes/leo/weekly/', released)).toEqual(['es']);

@@ -22,6 +22,7 @@
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
  *  10. The inline profile access loader names the built bootstrap chunk.
+ *  11. No browser chunk under _astro/ carries a publication record.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
 import { attr, canonicalHref, renderedLinks, crawlDepths, sitemapCanonicalErrors } from './indexing-consistency.mjs';
@@ -35,6 +36,7 @@ import {
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
+import { PUBLICATION_RECORD_MARKER, chunksWithPublicationRecord } from './publication-record-chunks.mjs';
 import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 import { expansionFamilyPaths } from './i18n-hreflang-policy.mjs';
 import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
@@ -1918,6 +1920,14 @@ for (const [file, path] of builtPageByFile) {
 {
   const { problems } = await verifyProfileAccessLoader(root);
   for (const problem of problems.slice(0, 20)) fail(`profile access loader: ${problem}`);
+}
+
+// ---- Publication records stay out of browser chunks ---------------------------
+// The locale expansion and natal aspect records carry hold reasons and, once
+// released, reviewer names. They are server-only: src/lib/i18n reaches the
+// expansion policy only in its SSR branch, so no island may carry them.
+for (const chunk of await chunksWithPublicationRecord(resolve(root, '_astro'))) {
+  fail(`browser bundle: _astro/${chunk} contains "${PUBLICATION_RECORD_MARKER}", so a publication record reached the browser`);
 }
 
 // ---- Report ------------------------------------------------------------------

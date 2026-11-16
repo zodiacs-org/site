@@ -12,7 +12,7 @@
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../ArtFrame.astro';
 import SignIcon from '../SignIcon.astro';
-import { localizePath } from '../../lib/i18n';
+import { LOCALE_META, localizePath } from '../../lib/i18n';
 import type { Locale } from '../../lib/i18n';
 import { SIGNS, signBySlug, signName } from '../../lib/signs';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
@@ -120,7 +120,7 @@ const jsonLd = [
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
-    inLanguage: locale,
+    inLanguage: LOCALE_META[locale].htmlLang,
     image: `https://zodiacs.org${image}`,
   },
   {

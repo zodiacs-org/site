@@ -68,6 +68,7 @@ at again after the first eight batches; any change to the cap is a change to
 
 ## Gate for each batch
 
+- A release needs a named reviewer who reads the language natively. Whether to pay for that read is the owner's decision.
 - `npx vitest run src/lib/locale-expansion` passes, along with the full CI.
 - For a family's first batch in a language: the independent review notes in
   [samples/REVIEW.md](samples/REVIEW.md) are applied, and the sample sheet is
