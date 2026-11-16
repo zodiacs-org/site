@@ -359,7 +359,7 @@ for (const file of files) {
   while ((m = refRe.exec(html)) !== null) {
     const value = m[1];
     // cursor: is Cursor's MCP install link on /apps/cursor/, handled by the app, not a file in dist.
-    if (/^(https?:|mailto:|tel:|data:|javascript:|cursor:|#|\/\/)/.test(value)) continue;
+    if (/^(https?:|mailto:|tel:|data:|javascript:|cursor:\/\/anysphere\.cursor-deeplink\/|#|\/\/)/.test(value)) continue;
     if (value.includes('${')) continue; // inline-script template, not markup
     let target;
     if (value.startsWith('webcal://')) {
