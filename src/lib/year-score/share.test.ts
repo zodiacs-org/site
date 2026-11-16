@@ -86,6 +86,14 @@ describe('the Year Ahead Score share page and picture', () => {
       expect(await pinned.text()).toContain(`/api/og/year-score-image?p=jensen-huang&amp;m=${month}`);
       expect((await handleYearScoreImageRequest(new Request(`https://zodiacs.org/api/og/year-score-image?p=jensen-huang&m=${month}`))).status).toBe(200);
       expect((await handleYearScoreImageRequest(new Request('https://zodiacs.org/api/og/year-score-image?p=jensen-huang&m=1999-01'))).status).toBe(400);
+      expect((await handleYearScoreLinkRequest(new Request('https://zodiacs.org/share/year-score/?p=jensen-huang&m=1999-01'))).status).toBe(404);
+      const future = new Date();
+      future.setUTCDate(1);
+      future.setUTCMonth(future.getUTCMonth() + 1);
+      const next = future.toISOString().slice(0, 7);
+      expect((await handleYearScoreLinkRequest(new Request(`https://zodiacs.org/share/year-score/?p=jensen-huang&m=${next}`))).status).toBe(404);
+      expect((await handleYearScoreImageRequest(new Request(`https://zodiacs.org/api/og/year-score-image?p=jensen-huang&m=${next}`))).status).toBe(400);
+      expect((await handleYearScoreLinkRequest(new Request(`https://zodiacs.org/share/year-score/?p=jensen-huang&m=${month}&m=${month}`))).status).toBe(404);
       expect((await handleYearScoreLinkRequest(new Request('https://zodiacs.org/share/year-score/?p=changpeng-zhao'))).status).toBe(404);
       expect((await handleYearScoreImageRequest(new Request('https://zodiacs.org/api/og/year-score-image?p=nobody-here'))).status).toBe(400);
     } finally {

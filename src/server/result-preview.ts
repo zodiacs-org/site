@@ -1868,6 +1868,8 @@ export async function handleYearScoreLinkRequest(request: Request): Promise<Resp
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
   const share = parseYearScoreShare(url.searchParams);
+  // A month the parser refused (out of the window, malformed, or on a self share) names no page (ZOD-12).
+  if (!share && url.searchParams.has('m')) return errorResponse(404);
   if (share?.kind === 'figure' && !yearPeopleShareOn()) return errorResponse(404);
   const model = share ? await yearScoreCardModel(share).catch(() => undefined) : null;
   if (share && model === null) return errorResponse(404);
