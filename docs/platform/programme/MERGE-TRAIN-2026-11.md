@@ -5,7 +5,8 @@ one merges, so that no generated bundle is merged by hand, no two branches
 ship the same Developer plugin version, and no model name reaches `main` in a
 commit message. Linear ZOD-9.
 
-The owner decides the order and approves every merge. AGENTS.md still
+The owner decides the order. Merges follow AGENTS.md and the owner's standing
+approval there. AGENTS.md still
 applies: draft PRs, commits as Zodiacs Admin, a merge only when CI is green and
 an independent review finds no blockers, a live check after the merge, and a
 line in the Merge log issue (#879).
@@ -38,26 +39,30 @@ goes first when two are ready.
    signs), #935 (your day), #936 (retrogrades for you). This is the order
    `docs/platform/zodiacs-ai/PERSONAL_TOOLS.md` lists.
 8. #926, the locale expansion, last, as it touches the most shared files.
+   The locale PRs #939 to #942 follow it, each after merging the new `main` in.
 
 ## Catching a branch up
 
 Run this on one branch at a time, in merge order, after `main` moved.
 
-1. `git fetch origin && git merge origin/main` on the PR branch. Never rebase a
-   branch another PR is stacked on.
+1. `git fetch origin && git merge --no-commit origin/main` on the PR branch, so
+   the merge commit gets a written message in step 7. Never rebase a branch
+   another PR is stacked on.
 2. Resolve source conflicts by hand with these fixed rules.
-   - `src/ai-tools/usage.ts`, `COUNTED_TOOL_NAMES`: `EVERY_AI_TOOL_NAME`, sky
-     events, numerology, tarot, good days, year score, solar return, then
-     `SAVE_TOOL_NAME`, keeping only the groups the tree has.
-   - `src/ai-tools/contracts.ts`: keep every branch's `*_TOOL_NAMES` and
-     `*_SWITCH_ENV`. Where both sides define `EVERY_SWITCHED_TOOL`, its value is
-     the released tools, then numerology, tarot, good days, year score and solar
-     return, keeping only the groups present.
+   - `src/ai-tools/contracts.ts`, `EVERY_TOOL_NAME`: keep main's order as it
+     stands (on 16 November: the released tools with sky events, year score,
+     solar return, numerology) and append each new group after it in merge
+     order. `EVERY_SWITCHED_TOOL` stays an alias of `EVERY_TOOL_NAME`. Keep
+     every branch's `*_TOOL_NAMES` and `*_SWITCH_ENV`.
+   - `src/ai-tools/usage.ts`, `COUNTED_TOOL_NAMES`: the same order as
+     `EVERY_TOOL_NAME`, then `SAVE_TOOL_NAME` last. Never move a group main
+     already has, as that reorders `tools/list`.
    - A test that says "my tool is listed last" becomes "comes after every
-     released tool, in the order above".
+     tool already on main, in merge order".
    - `src/ai-tools/personal/registry.ts`: `PERSONAL_TOOLS` is astrocartography,
      Vedic signs, personal day, retrograde, keeping only the tools the tree has.
-   - `tools.ts`, `http.ts`, `explain.ts`, `scripts/serve-hosted-mcp.mjs`: keep
+   - `src/ai-tools/tools.ts`, `src/ai-tools/http.ts`,
+     `src/ai-tools/features/explain.ts`, `scripts/serve-hosted-mcp.mjs`: keep
      both sides' additions. Where one expression picks a message, keep both
      pointers reachable.
    - `RESULT_SHARE_ROUTES` and `ROUTES` in `src/server/result-preview.ts`, the
@@ -71,12 +76,18 @@ Run this on one branch at a time, in merge order, after `main` moved.
    `integrations/generated/sky-watch.mjs`, `plugins/zodiacs-developer/mcp/server.mjs`,
    `plugins/zodiacs-developer/plugin.json`, `integrations/packages/manifest.json`
    and `api/_assistant/context.ts`.
-4. Developer plugin version. `git rm` every
-   `integrations/packages/zodiacs-developer-*.zip` the branch added that `main`
-   does not have. Set the version to main's plus one patch step in
+4. Developer plugin version. For every
+   `integrations/packages/zodiacs-developer-*.zip` the branch added: if `main`
+   has a file of that name, take main's bytes with
+   `git checkout origin/main -- <zip>`; otherwise `git rm` it. Most branch
+   ZIP names (0.3.39 to 0.3.47) are already on `main` with other bytes, so this
+   is the usual case. Then set the version to main's plus one patch step in
    `plugins/zodiacs-developer/.codex-plugin/plugin.json` (the build copies it
-   into `plugin.json`), `package.json`, `package-lock.json` (both version lines)
-   and the two version lines in `plugins/zodiacs-developer/README.md`. Rewrite
+   into `plugins/zodiacs-developer/plugin.json`),
+   `plugins/zodiacs-developer/package.json`,
+   `plugins/zodiacs-developer/package-lock.json` (both version lines) and the
+   two version lines in `plugins/zodiacs-developer/README.md`. The root
+   `package.json` is not the plugin's version. Rewrite
    the branch's own `release_notes` sentence under the new number, and add one
    sentence for it to `integrations/packages/README.md`, updating the "Current
    candidates" line there. A stack keeps its internal sequence: after the
@@ -90,27 +101,32 @@ Run this on one branch at a time, in merge order, after `main` moved.
    npm run ai:package
    npm run ai:check
    npm run build && npm run check && npm test
-   node scripts/check-dist.mjs
    ```
 
 6. `git status` shows exactly one new `zodiacs-developer-<version>.zip` and no
    changed older ZIP. An archive already on `main` keeps its bytes.
 7. Commit as Zodiacs Admin with a plain subject, such as "Merge main,
-   repackage Developer 0.3.50". No trailers.
+   repackage Developer 0.3.49". No trailers. Open PRs that already claim a
+   number (on 16 November: #1068 has 0.3.49, #974 and #975 have 0.3.39) take
+   theirs in turn; never two branches with one number.
 
 ## Commit messages
 
-Every PR is squash-merged with a written message. Before merging, run on the
-branch:
+Every PR is squash-merged with a written message, so only that message
+reaches `main`. Older commits on a branch may carry session trailers or a
+default merge subject; that is expected and is never fixed by rewriting the
+branch. The letters in brackets below keep this file itself free of the names
+it searches for. Check the squash message before merging:
 
 ```bash
-git log origin/main..HEAD --format='%h %s%n%b' | grep -inE 'claude|anthropic|opus|sonnet|fable|co-authored-by|session_' || echo clean
+PATTERN='cl[a]ude|anthr[o]pic|op[u]s|s[o]nnet|f[a]ble|ha[i]ku|co[d]ex|gp[t]|gr[o]k|co-authored-by|session_'
+printf '%s' "$MSG" | grep -inE "$PATTERN" || echo clean
 ```
 
-The squash message must also print `clean` under the same search. After the
-merge, `git log -1 --format='%an <%ae>%n%B' origin/main` shows Zodiacs Admin
-and no match. Branch names such as `claude/...` appear only in the PR, never
-in the squash message.
+It must print `clean`. After the merge, run `git fetch origin` and then
+`git log -1 --format='%an <%ae>%n%B' origin/main | grep -inE "$PATTERN" || echo clean`;
+the author is Zodiacs Admin. Agent branch names appear only in
+the PR, never in the squash message.
 
 ## After each merge
 
@@ -121,7 +137,7 @@ issue (#879), as AGENTS.md says.
 
 - `ai:build` fails on the Chart Studio pin: a shared module the panel imports
   changed in the merge. Read the failure. If the studio's own sources did not
-  change, record the new build in `SOURCE_SHA256` as CLAUDE.md allows and say
+  change, record the new build in `SOURCE_SHA256` as the repository agent notes allow and say
   so in the commit body.
 - `release-060.test.ts` fails: a published tool definition moved. Stop. Do not
   update the fixture. Find what in the merge touched
