@@ -472,7 +472,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/occasions/milestones/', '2026-10-11'] as const,
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
-  ['/fomo/', '2026-09-01'] as const,
+  ['/fomo/', '2026-11-16'] as const,
   // Phase 4 re-exposes the already-reviewed Big Three share card from the
   // birth-chart result sheet.
   ['/birth-chart/', '2026-07-24'],
@@ -482,7 +482,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...LEGACY_URLS.map((url) => [url.path, '2026-07-10'] as const),
   ['/thesis/', THESIS_LASTMOD],
   // Astrofolio, the Terminal market desk, and the Registry's twelve plain-language token records.
-  ['/astrofolio/', AUDIT_REMEDIATION_LASTMOD],
+  ['/astrofolio/', '2026-11-16'],
   ['/terminal/', AUDIT_REMEDIATION_LASTMOD],
   ['/registry/', AUDIT_REMEDIATION_LASTMOD],
   ...[
