@@ -74,6 +74,59 @@ is the 0.5.1 wording of 28 October. The description read in the portal on
 14 November is a later wording, and no entry records when it was saved.
 The reviewer instructions were not read on 14 November.
 
+**Proposed next wording.** A one-liner and description that open with how
+the sky is checked are drafted in the next section (16 November). They have
+not been entered in the portal or sent to anyone.
+
+## Proposed next listing copy, 16 November 2026 (not yet submitted)
+
+**Not submitted.** Nothing below has been typed into the portal, saved or
+sent. Entering it needs Dias's yes, like any other change to the listing.
+
+The listing now opens with "Explore your birth chart". This wording opens
+with how Zodiacs checks the sky instead, then says what you can ask. It
+replaces the one-liner and the description only; every other field stays as
+it is.
+
+Every accuracy sentence restates a claim in `docs/claims/ledger.json`:
+the engine test against NASA JPL Horizons is `acc.jpl-gate` (the
+methodology page, "Every change to the engine runs an automated accuracy
+test"), and the November audit figures are `acc.event-audit-2026-11`. It
+does not say that the connector's own event times come from NASA: the AI
+tools keep the engine's instants (`acc.event-times-nasa`), so only the site's
+event pages print NASA's times. The second paragraph reworks the old
+opening, and the last five are the 0.6.x wording prepared in
+[RESYNC-0.6.0.md](RESYNC-0.6.0.md), unchanged.
+
+| Field | Now | Proposed |
+| --- | --- | --- |
+| One-liner (200 max) | Explore your birth chart, compatibility, horoscopes and the sky on days that matter. | Planet positions tested against NASA JPL Horizons, for your birth chart, compatibility, horoscopes and the sky on the days that matter. |
+
+The one-liner is 135 characters.
+
+Description (1,970 of 2,000 characters):
+
+> Zodiacs works out the sky with its own engine, and every change to that engine is tested against NASA JPL Horizons reference positions. In November 2026 Zodiacs checked 8,891 statements on its English pages against NASA JPL Horizons and NASA's eclipse canon: 8,849 agreed, and most of the other 42 were one arcminute apart.
+>
+> Ask about your birth chart, how compatible you are with someone close to you, your horoscope or the sky on a day that matters, and Zodiacs works out the sky for the date and place you give, then tells you what astrology says about it.
+>
+> Build an interactive birth chart, or get a readout of your chart: Sun, Moon and rising signs, the planets in their signs and houses, the closest aspects and the balance of elements. Compare two charts and get a compatibility score out of 100 for attraction, communication and long-term stability, or compare with a famous person Zodiacs publishes.
+>
+> Read daily, weekly, monthly and yearly Sun-sign horoscopes, see your personal transits and the highlights of your year ahead, follow Moon phases and retrogrades, and subscribe to the sky calendar. Find your Chinese zodiac animal with the Lunar New Year boundary worked out, or ask what Mercury retrograde or the rising sign means.
+>
+> See the sky on your birthday and your solar return, find milestones such as your Saturn return, or make a keepsake card for a wedding or another day that matters, with a rating out of 100 for the date or the best-rated days in a month.
+>
+> Zodiacs gives clear forecasts, scores and ratings, each forecast with a reading confidence, and always shows the astrology behind them. It doesn't pick investments, make health predictions or guarantee how things will turn out. If a birth time or place is missing, it says what can still be worked out instead of guessing.
+>
+> No account is needed. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day.
+
+The plugin packages and the ChatGPT submission copy keep their 0.6.7 About.
+`scripts/check-ai-integrations.mjs` holds the Sky package About equal to
+`integrations/chatgpt/chatgpt-app-submission.json`, and
+`scripts/package-ai-integrations.py --check` refuses new bytes for a version
+already built, so carrying this wording into either one needs a new plugin
+version, which needs Dias's yes.
+
 ## Portal re-sync and reviewer note, 14 November 2026
 
 With Dias's yes on 14 November to "sign in to re-sync the directory portal,
