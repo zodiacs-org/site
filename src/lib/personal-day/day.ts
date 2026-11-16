@@ -8,10 +8,14 @@
  * day (halfway between its two midnights on the person's clock) against the
  * natal Sun to Pluto, the natal Moon only with a birth time, and the rising
  * degree and Midheaven only with a birth time and place. A contact counts
- * when it is within the moving body's orb of a major aspect at midday, or
- * when it is exact at some moment of the local day; the exact moment comes
- * from the transit scanner the /transits/ page and the profile use
- * (src/lib/engine/transit-scan.ts). The ranking is ./score.ts.
+ * when it is within the moving body's orb of a major aspect at midday, or,
+ * with a birth time, when it is exact at some moment of the local day; the
+ * exact moment comes from the transit scanner the /transits/ page and the
+ * profile use (src/lib/engine/transit-scan.ts). Without a birth time the
+ * natal points are known only to within the birth day, so a contact can be
+ * exact a day or more either side of the moment the scanner finds: no exact
+ * time is given, and a contact neither counts nor scores for being exact.
+ * The ranking is ./score.ts.
  *
  * The words are transitLine's (src/lib/transits.ts) and NATAL_HOUSE_THEME's
  * (src/lib/natal.ts); nothing is generated. Pure: no network, storage or
@@ -32,6 +36,8 @@ import { clockTime, dayLabel, nextDate } from './clock';
 import { PERSONAL_DAY_LIMIT, dayScore, maxOrb, orbOf, pointName } from './score';
 
 const HOUR = 3_600_000;
+/** The limit a date-only reading carries; the /your-day/ FAQ says the same. */
+export const UNTIMED_LIMIT = 'No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.';
 const ORDINAL = ['', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth'] as const;
 
 /** The two calls of the site's local-time resolver the day needs (src/lib/time/localToUtc.ts, or the compute API's copy). */
@@ -137,9 +143,9 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   if (natal.angles) { natalLon.set('ASC', natal.angles.asc); natalLon.set('MC', natal.angles.mc); }
   const sky = new Map(computeBodies(midday).map((row) => [row.body, row.lon]));
 
-  // Exact moments inside the local day, from the transit scanner.
+  // Exact moments inside the local day, from the transit scanner: only with a birth time, which fixes the natal points to the minute.
   const exact = new Map<string, Date>();
-  for (const contact of scanTransitContacts({ bodies: natalBodies, angles: natal.angles }, dayStart, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
+  if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles: natal.angles }, dayStart, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
     const at = new Date(contact.exactUtc);
     const held = exact.get(key);
@@ -160,7 +166,8 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
         const at = exact.get(`${mover}|${point}|${aspect}`) ?? null;
         if (orb > maxOrb(mover, aspect) && !at) continue;
         const applying = at ? at.getTime() > midday.getTime() : orbOf(moverLater, pointLon, aspect) < orb;
-        const tight = orb < 1 || at !== null;
+        // A date-only chart is never tight: its contacts carry the plain date-only confidence.
+        const tight = natal.timeKnown && (orb < 1 || at !== null);
         const confidenceLabel = readingConfidenceLabel(natal.detail, tight);
         found.push({
           planet: mover, aspect, point, orb: round2(orb), applying,
@@ -203,13 +210,13 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   const label = dayLabel(midday, zone);
   const isToday = input.today === undefined || input.today === date;
   const theme = top
-    ? `${isToday ? "Today's strongest contact" : `The strongest contact on ${label}`} is ${top.title}, ${top.exactLocal ? `exact at ${top.exactLocal}` : `${top.orb.toFixed(2)} degrees from exact and ${top.applying ? 'applying' : 'separating'}`} (${top.confidenceLabel}).`
+    ? `${isToday ? "Today's strongest contact" : `The strongest contact on ${label}`} is ${top.title}, ${top.exactLocal ? `exact at ${top.exactLocal}` : natal.timeKnown ? `${top.orb.toFixed(2)} degrees from exact and ${top.applying ? 'applying' : 'separating'}` : `about ${top.orb.toFixed(1)} degrees from exact`} (${top.confidenceLabel}).`
     : `No major contact to your chart is within orb ${isToday ? 'today' : 'that day'}, so the Moon in ${signName(moonSign)} sets the tone.`;
 
   const limits: string[] = [];
   if (input.note) limits.push(input.note);
   if (under18) limits.push(MINOR_NOTE);
-  if (!natal.timeKnown) limits.push('No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, and the chart is cast for midday of the birth date; contacts to the other planets can shift by a few hours.');
+  if (!natal.timeKnown) limits.push(UNTIMED_LIMIT);
   else if (!natal.placed) limits.push('No birthplace coordinates were given, so the rising degree, the Midheaven and the Moon\'s house are left out.');
   if (found.length > PERSONAL_DAY_LIMIT) limits.push(`${found.length} contacts were within orb; the ${PERSONAL_DAY_LIMIT} with the highest scores are listed.`);
 

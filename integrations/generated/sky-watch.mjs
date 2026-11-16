@@ -41819,6 +41819,7 @@ var pointName2 = (point2) => POINT_NAME2[point2] ?? point2;
 
 // src/lib/personal-day/day.ts
 var HOUR6 = 36e5;
+var UNTIMED_LIMIT = "No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.";
 var ORDINAL7 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
 var round2 = (value) => Math.round(value * 100) / 100;
 var signName6 = (slug2) => SIGNS2.find((entry) => entry.slug === slug2).name;
@@ -41841,7 +41842,7 @@ async function readPersonalDay(natal, input, clock2) {
   }
   const sky = new Map(computeBodies2(midday).map((row) => [row.body, row.lon]));
   const exact = /* @__PURE__ */ new Map();
-  for (const contact of scanTransitContacts({ bodies: natalBodies, angles: natal.angles }, dayStart2, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
+  if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles: natal.angles }, dayStart2, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key2 = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
     const at = new Date(contact.exactUtc);
     const held = exact.get(key2);
@@ -41860,7 +41861,7 @@ async function readPersonalDay(natal, input, clock2) {
         const at = exact.get(`${mover}|${point2}|${aspect2}`) ?? null;
         if (orb > maxOrb(mover, aspect2) && !at) continue;
         const applying = at ? at.getTime() > midday.getTime() : orbOf(moverLater, pointLon, aspect2) < orb;
-        const tight = orb < 1 || at !== null;
+        const tight = natal.timeKnown && (orb < 1 || at !== null);
         const confidenceLabel = readingConfidenceLabel(natal.detail, tight);
         found.push({
           planet: mover,
@@ -41900,11 +41901,11 @@ async function readPersonalDay(natal, input, clock2) {
   const top = contacts[0];
   const label = dayLabel3(midday, zone9);
   const isToday = input.today === void 0 || input.today === date3;
-  const theme = top ? `${isToday ? "Today's strongest contact" : `The strongest contact on ${label}`} is ${top.title}, ${top.exactLocal ? `exact at ${top.exactLocal}` : `${top.orb.toFixed(2)} degrees from exact and ${top.applying ? "applying" : "separating"}`} (${top.confidenceLabel}).` : `No major contact to your chart is within orb ${isToday ? "today" : "that day"}, so the Moon in ${signName6(moonSign)} sets the tone.`;
+  const theme = top ? `${isToday ? "Today's strongest contact" : `The strongest contact on ${label}`} is ${top.title}, ${top.exactLocal ? `exact at ${top.exactLocal}` : natal.timeKnown ? `${top.orb.toFixed(2)} degrees from exact and ${top.applying ? "applying" : "separating"}` : `about ${top.orb.toFixed(1)} degrees from exact`} (${top.confidenceLabel}).` : `No major contact to your chart is within orb ${isToday ? "today" : "that day"}, so the Moon in ${signName6(moonSign)} sets the tone.`;
   const limits2 = [];
   if (input.note) limits2.push(input.note);
   if (under18) limits2.push(MINOR_NOTE);
-  if (!natal.timeKnown) limits2.push("No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, and the chart is cast for midday of the birth date; contacts to the other planets can shift by a few hours.");
+  if (!natal.timeKnown) limits2.push(UNTIMED_LIMIT);
   else if (!natal.placed) limits2.push("No birthplace coordinates were given, so the rising degree, the Midheaven and the Moon's house are left out.");
   if (found.length > PERSONAL_DAY_LIMIT) limits2.push(`${found.length} contacts were within orb; the ${PERSONAL_DAY_LIMIT} with the highest scores are listed.`);
   return { date: date3, dayLabel: label, zone: zone9, middayUtc: midday.toISOString(), points, theme, moon: { sign: moonSign, entersSign, house, line: moonLine }, contacts, found: found.length, under18, limits: limits2 };
@@ -42013,7 +42014,7 @@ var DAY18 = 864e5;
 var PERSONAL_DAY_MAX_DAYS = 366;
 var personalDayInput = z16.strictObject({
   ...birthFields,
-  time: birthFields.time.describe("The birth time on the local clock, such as 08:30, only if the person knows it. Never guess it. Needs zone. Without it the natal Moon, rising degree and Midheaven are left out."),
+  time: birthFields.time.describe("The birth time on the local clock, such as 08:30, only if the person knows it. Never guess it. Needs zone. Without it the natal Moon, rising degree and Midheaven are left out, and no exact times are given: exact times come only with a birth time."),
   latitude: birthFields.latitude.describe("Optional. The birthplace's latitude; with a birth time it adds the rising degree, the Midheaven and the house the Moon passes through. Give it with longitude and zone. Nothing is stored."),
   currentZone: zoneField.optional().describe("Where the person is now, such as Asia/Bangkok, so the day and its times fall on their own clock. Without it the day is read on the birthplace clock, or UTC, and the answer says which."),
   date: z16.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe(`The day to read, such as 2026-11-12, at most ${PERSONAL_DAY_MAX_DAYS} days from today. Defaults to today on the person's clock.`)
@@ -42108,7 +42109,7 @@ var personalDayTool = definePersonalTool({
   name: "get_personal_day",
   title: "Your day",
   summary: "one day's transits to the person's own chart, ranked, with plain meanings",
-  description: "Gives one day's transits to the person's own birth chart: the moving Moon, Sun and planets in major aspect to their natal planets (and the rising degree and Midheaven with a birth time and place), ranked by strength, each with the exact time when it falls that day, whether it is applying or separating, and what it traditionally means, plus the Moon's sign and the natal house it passes through. Use it for my day, my transits today or what today holds for me, once the person has given a birth date. For dated contacts over weeks or a year use get_personal_transits; for a general Sun-sign horoscope use get_horoscope. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first. Give currentZone for where they are now so the day falls on their clock. Share each reading plainly, with its reading-confidence label.",
+  description: "Gives one day's transits to the person's own birth chart: the moving Moon, Sun and planets in major aspect to their natal planets (and the rising degree and Midheaven with a birth time and place), ranked by strength, each with the exact time when it falls that day (only with a birth time), whether it is applying or separating, and what it traditionally means, plus the Moon's sign and the natal house it passes through. Use it for my day, my transits today or what today holds for me, once the person has given a birth date. For dated contacts over weeks or a year use get_personal_transits; for a general Sun-sign horoscope use get_horoscope. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first. Give currentZone for where they are now so the day falls on their clock. Share each reading plainly, with its reading-confidence label.",
   input: personalDayInput,
   data: personalDayData,
   clockDependent: true,

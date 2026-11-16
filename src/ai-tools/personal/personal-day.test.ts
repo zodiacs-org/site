@@ -5,6 +5,8 @@ import { scanTransitContacts } from '../../lib/engine/transit-scan';
 import { TRANSIT_BODY_ORDER } from '../../lib/engine/transit-scan-shared';
 import { signIndexForLongitude, SIGNS } from '../../lib/signs';
 import { MINOR_NOTE } from '../features/reading-guards';
+import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
+import { maxOrb } from '../../lib/personal-day/score';
 import { executeAiTool } from '../tools';
 import { PERSONAL_DAY_LIMIT, dayScore, personalDay, type PersonalDayData } from './personal-day';
 import { castNatal, dateOn, forbiddenClaim, type PersonalToolContext } from './shared';
@@ -125,6 +127,45 @@ describe('get_personal_day with fewer details', () => {
     // No current zone: today is read on the birthplace clock, and the answer says so.
     expect(data.limits.join(' ')).toContain('birthplace clock (Europe/Madrid)');
     for (const contact of data.contacts) expect(contact.confidence).toBeLessThanOrEqual(60);
+  });
+
+  it('gives no exact time, exact-day bonus or tight-orb confidence without a birth time', async () => {
+    const untimed = { birthDate: '1990-05-03', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, currentZone: 'Europe/Madrid' };
+    const dateOnly = readingConfidence(readingDetail({ hasDate: true, hasTime: false, hasPlace: true }), false);
+    const { natal, scan } = await natalFor(untimed as typeof ADULT);
+    expect(natal.timeKnown).toBe(false);
+    let scannerExact = 0;
+    for (const date of ['2026-11-03', '2026-11-09', '2026-11-16', '2026-11-24', '2026-12-02', '2027-01-15']) {
+      const data = await run({ ...untimed, date });
+      expect(data.contacts.length, date).toBeGreaterThan(0);
+      for (const contact of data.contacts) {
+        expect(contact.exactLocal, date).toBeNull();
+        expect(contact.exactAt, date).toBeNull();
+        expect(contact.confidence, date).toBe(dateOnly);
+        expect(contact.confidenceLabel, date).toBe(readingConfidenceLabel('date', false));
+        // Listed only within orb, and scored without the exact-today bonus.
+        expect(contact.orb, date).toBeLessThanOrEqual(maxOrb(contact.planet, contact.aspect));
+        expect(contact.score, date).toBeCloseTo(dayScore(contact.planet, contact.point, contact.aspect, contact.orb, false), 0);
+        expect(contact.line, date).not.toMatch(/exact at \d/u);
+      }
+      expect(data.theme, date).not.toMatch(/exact at \d/u);
+      expect(data.theme, date).toMatch(/, about \d+\.\d degrees from exact \(/u);
+      expect(data.limits, date).toContain('No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.');
+      // The midday chart alone would have put a contact exact on these days: the test is not empty.
+      const start = new Date(`${date}T00:00:00+01:00`);
+      scannerExact += scanTransitContacts(scan, start, new Date(start.getTime() + 86_400_000 - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: data.points }).length;
+    }
+    expect(scannerExact).toBeGreaterThan(0);
+  });
+
+  it('still gives the exact time with a birth time, on a day the Moon is exact on a natal point', async () => {
+    const { scan } = await natalFor(ADULT);
+    const [moon] = scanTransitContacts(scan, new Date('2026-11-10T00:00:00Z'), new Date('2026-12-10T00:00:00Z'), { transitBodies: ['Moon'], includeMoon: true, natalPoints: ['Moon'], aspects: ['conjunction'] });
+    const date = dateOn(new Date(moon.exactUtc), 'Europe/Madrid');
+    const data = await run({ ...ADULT, date });
+    const contact = data.contacts.find((entry) => entry.title === 'Moon conjunction your Moon');
+    expect(contact?.exactLocal).toBe(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Madrid', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(moon.exactUtc)));
+    expect(data.contacts.some((entry) => entry.exactLocal !== null)).toBe(true);
   });
 
   it('keeps the natal Moon but no angles with a time and no place, and reads UTC with no zone at all', async () => {
