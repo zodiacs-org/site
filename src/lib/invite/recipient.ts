@@ -1,12 +1,12 @@
 /**
  * The invite recipient's side, in the browser: how old the birth date they
- * typed for themselves is, and their request for the opt-in signup. The date
+ * typed for themselves is, and their own daily email opt-in. The date
  * never leaves the page; only the band decides what is offered:
  *
  * - under 13: refused before anything is worked out, and nothing is sent;
  * - 13 to 17: refused the same way, as get_compatibility gives no reading
  *   under 18 (ZOD-22): the synastry result speaks of attraction and romance;
- * - 18 and over: the result, then the opt-in signup if they want it.
+ * - 18 and over: the result, then a separate daily email opt-in if they want it.
  *
  * An invitation opened from a link or pasted positions has no birth date to
  * check, so it asks for the recipient's own date instead.
@@ -51,21 +51,25 @@ export function inviteRecipientGate(ownDate: string | null | undefined, today: s
 
 export const RECIPIENT_CONSENT_LABEL = 'These are my own birth details, and I am 13 or older.';
 
-export type InviteSignupOutcome = 'pending' | 'unavailable' | 'error';
+export type DailySignupOutcome = 'sent' | 'error';
 
-/** Ask for the opt-in signup. The body is the address, their own Sun sign and the two yeses; nothing else. */
-export async function requestInviteSignup(handle: string, email: string, sign: string, fetcher: typeof fetch = fetch): Promise<InviteSignupOutcome> {
-  if (!/^[A-Za-z0-9_-]{22}$/u.test(handle)) return 'unavailable';
+/**
+ * The recipient's own daily horoscope email, after their reading: a plain
+ * opt-in through the same public subscribe route as every daily signup form
+ * on the site (api/email/subscribe.ts), with its own double opt-in. It carries
+ * the address, the sign they chose and the two yeses they ticked; no invite
+ * handle, session or birth detail, so it has no link to the invitation, which
+ * completed when the reading was made.
+ */
+export async function requestDailySignup(email: string, sign: string, fetcher: typeof fetch = fetch): Promise<DailySignupOutcome> {
   try {
-    const response = await fetcher(`/api/compatibility/invite-signup?session=${encodeURIComponent(handle)}`, {
+    const response = await fetcher('/api/email/subscribe', {
       method: 'POST',
       credentials: 'same-origin',
       headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, sign, consent: true, adult: true }),
     });
-    if (!response.ok) return 'error';
-    const value = await response.json() as { outcome?: unknown };
-    return value.outcome === 'pending' ? 'pending' : 'unavailable';
+    return response.ok ? 'sent' : 'error';
   } catch {
     return 'error';
   }

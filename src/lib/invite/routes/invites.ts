@@ -95,8 +95,9 @@ export default async function handler(req: any, res: any): Promise<void> {
       });
       return;
     }
-    // With INVITE_SIGNUP_ENABLED=1, the consent the inviter just gave is recorded against the invite.
-    await recordInviterConsent(created.id, owner.id).catch(() => undefined);
+    // With INVITE_SIGNUP_ENABLED=1, the consent the inviter just gave is recorded against the invite, and only when
+    // their page sent a known version of the text it showed. An unknown or missing version records nothing.
+    if (input.consentVersion) await recordInviterConsent(created.id, owner.id, input.consentVersion).catch(() => undefined);
     const base = compatibilityInviteBaseUrl(process.env);
     sendInviteJson(res, 201, {
       id: created.id,

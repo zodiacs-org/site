@@ -746,9 +746,12 @@ Phase 5 behavior is authorized by this contract.
 ## Amendment, 2026-11-09: invite signups (behind switches)
 
 With `INVITE_SIGNUP_ENABLED=1` and `PUBLIC_INVITE_SIGNUP_ENABLED=1`, an invite
-completes only when its recipient confirms an opt-in daily-email signup, both
-sides' consent is recorded by policy version, and the recipient confirms their
-own details and age before anything is worked out (under 13 refused). Section
-3.2 step 6 and section 7's completion route then apply to a confirmed signup
-instead of the shown result. The design, its decisions and the switch-on
-steps are in `docs/INVITE-SIGNUPS.md`. Off, this contract is unchanged.
+still completes when its recipient's reading is made, exactly as section 3.2
+step 6 and section 7's completion route describe. The recipient confirms their
+own details before anything is worked out; the create and completion requests
+may each carry the version of the consent text the page showed, and the server
+records it by policy version, with no identity, only when the version is known.
+After the reading, an adult recipient may opt in to the daily email through the
+public subscribe route, with no link to the invite (decided 2026-11-10, ZOD-21).
+The design, its decisions and the switch-on steps are in
+`docs/INVITE-SIGNUPS.md`. Off, this contract is unchanged.

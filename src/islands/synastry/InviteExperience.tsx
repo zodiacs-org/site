@@ -7,6 +7,7 @@ import type { InvitePublicPayload } from '../../lib/invite/types';
 import { rememberInviteLink } from '../../lib/invite/local-links';
 import { signIcon } from '../../lib/sign-icon';
 import { accountSyncV2Enabled } from '../../lib/account-v2/feature-flags';
+import { INVITER_CONSENT_VERSION } from '../../lib/invite/consent';
 
 const INVITE_SIGNUP_UI = import.meta.env.PUBLIC_INVITE_SIGNUP_ENABLED === '1';
 
@@ -17,9 +18,9 @@ const COPY = {
   invConsentLabel: "Share this chart's positions with whoever opens the link",
   invTerm1: "The link carries your chart's name or label and its computed positions. It never carries your birth date, time, or place.",
   invTerm2: 'Meant for one person. It closes once their reading is made, and after 14 days at the latest.',
-  // With invite signups on (PUBLIC_INVITE_SIGNUP_ENABLED=1): the chart must be the inviter's own, and an invite closes on the friend's confirmed signup.
+  // With invite signups on (PUBLIC_INVITE_SIGNUP_ENABLED=1): the chart must be the inviter's own. The invite still closes
+  // once the reading is made (invTerm2); this text is consent version INVITER_CONSENT_VERSION (src/lib/invite/consent.ts).
   invConsentLabelSignup: "This is my own chart, and I agree to share its positions with whoever opens the link",
-  invTerm2Signup: 'Meant for one person. They see their reading straight away; the link closes once they confirm a daily email of their own, and after 14 days at the latest. They are never asked for an email before their reading.',
   invTerm3: "You can end it early anytime from your profile, on any device you're signed in to.",
   invNotifyLabel: 'Email me once, when their reading is ready',
   invNotifyNote: "One email for this invitation, to your account address. It isn't a subscription, and it doesn't touch your daily email choices.",
@@ -304,7 +305,10 @@ export function InvitePanel({ enabled, visible, charts }: InvitePanelProps) {
           Authorization: `Bearer ${currentSession.access_token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ chartId: selected, consent: true, notify }),
+        // With signups on, the version of the consent text this panel showed, so the server records only what was seen.
+        body: JSON.stringify(INVITE_SIGNUP_UI
+          ? { chartId: selected, consent: true, notify, consentVersion: INVITER_CONSENT_VERSION }
+          : { chartId: selected, consent: true, notify }),
       });
       if (accessGeneration !== profileAccessGeneration.current || !profileAccessAllowed()) return;
       if (response.status === 429) {
@@ -455,7 +459,7 @@ export function InvitePanel({ enabled, visible, charts }: InvitePanelProps) {
         </label>
         <div class="syn-invite__terms">
           <p>{COPY.invTerm1}</p>
-          <p>{INVITE_SIGNUP_UI ? COPY.invTerm2Signup : COPY.invTerm2}</p>
+          <p>{COPY.invTerm2}</p>
           <p>{COPY.invTerm3}</p>
         </div>
         <label class="syn-invite__check">

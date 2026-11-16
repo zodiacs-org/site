@@ -30,6 +30,7 @@ import { LOCALE_META, localizePath, normalizeCatalogLocale, t, type CatalogLocal
 import { useEngine, type EngineLoader } from '../lib/hooks/useEngine';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { loadModule } from '../lib/module-load';
+import { RECIPIENT_CONSENT_VERSION } from '../lib/invite/consent';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
@@ -93,12 +94,12 @@ const emptySlot = (): SlotState => ({
 const COMPAT_INVITES_UI_ENABLED = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
 /**
  * Invite signups (PUBLIC_INVITE_SIGNUP_ENABLED=1, only with the invites): the recipient confirms the details are their
- * own and that they are 13 or older before anything is worked out; a birth date under 13 is refused; the result is
- * not reported as complete; and someone 18 or older may opt in to their own daily email, whose confirmation completes
- * the invite (src/lib/invite/signup.ts).
+ * own before anything is worked out, and their reading completes the invite as it does with the switch off, sending
+ * the version of the text they confirmed (src/lib/invite/consent.ts). Someone 18 or older may then opt in to their own
+ * daily email, a separate signup with no link to the invite (src/islands/synastry/InviteSignup.tsx).
  */
 const SIGN_ORDER = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'] as const;
-/** The sign of an ecliptic longitude, for the recipient's own daily email. */
+/** The sign of an ecliptic longitude, offered as the starting choice for the recipient's own daily email. */
 const signOfLongitude = (lon: number) => SIGN_ORDER[Math.floor((((lon % 360) + 360) % 360) / 30)];
 const INVITE_SIGNUP_UI_ENABLED = COMPAT_INVITES_UI_ENABLED && import.meta.env.PUBLIC_INVITE_SIGNUP_ENABLED === '1';
 
@@ -833,8 +834,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
   useEffect(() => {
     if (!profileAccessAllowed() || !result || result.source !== 'invite' || arrival.state !== 'ready') return;
     if (inviteCompletionRef.current === result.at) return;
-    // With signups on, an invite completes when the recipient confirms their opt-in, not when the result shows.
-    if (INVITE_SIGNUP_UI_ENABLED) return;
+    // The invite completes when the reading shows, signups on or off. With signups on, the recipient ticked their own
+    // details before anything was worked out, and the completion names the version of that text.
+    const consentVersion = INVITE_SIGNUP_UI_ENABLED && recipientConsent ? RECIPIENT_CONSENT_VERSION : undefined;
     let active = true;
     const request = requestRef.current;
     const access = profileAccessGeneration.current;
@@ -842,7 +844,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
       if (!active || !profileAccessAllowed() || !requestIsCurrent(request, access)) return;
       inviteCompletionRef.current = result.at;
       track('invite_completed');
-      return completeInvite(arrival.handle, arrival.payload.expiresAt);
+      return consentVersion
+        ? completeInvite(arrival.handle, arrival.payload.expiresAt, undefined, consentVersion)
+        : completeInvite(arrival.handle, arrival.payload.expiresAt);
     }).catch(() => {});
     return () => { active = false; };
   }, [result, arrival, accessTick]);
@@ -1648,7 +1652,11 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
                 onReturned={(method) => track('invite_returned', { method })}
               />
               {result.source === 'invite' && inviteSignupActive && recipientBand === 'adult' && signupMod && (
-                <signupMod.InviteSignup handle={arrival.handle} label={result.a.label} sign={signOfLongitude(result.b.bodies.find((body) => body.body === 'Sun')?.lon ?? 0)} />
+                <signupMod.InviteSignup sign={(() => {
+                  // Preselect the recipient's Sun sign only from a timed chart; otherwise they choose it.
+                  const sun = result.b.timeKnown ? result.b.bodies.find((body) => body.body === 'Sun') : undefined;
+                  return sun ? signOfLongitude(sun.lon) : null;
+                })()} />
               )}
               {result.source === 'invite'
                 && (slotB.source === 'form' || slotB.source === 'saved') && (

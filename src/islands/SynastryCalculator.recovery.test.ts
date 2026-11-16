@@ -125,6 +125,11 @@ function deferred<T>() {
   return { promise, resolve, reject };
 }
 function loadDependency(load: () => Promise<unknown>): Promise<unknown> {
+  // The recipient's own birth date gates every invitation (ZOD-22, tested in src/lib/invite/signup.test.ts). These
+  // harness comparisons use pasted positions, which carry no date, so the gate is stood in for by an adult's answer.
+  if (load.toString().includes('invite/recipient')) return Promise.resolve({
+    inviteRecipientGate: () => ({ allowed: true, band: 'adult' }), deviceToday: () => '2026-11-16',
+  });
   if (load.toString().includes('inviteClient')) return Promise.resolve({
     openInviteSession: harness.openSession, completeInvite: harness.complete,
     replayPendingCompletion: harness.replay, beaconPendingCompletion: harness.beacon,
@@ -457,5 +462,39 @@ describe('compatibility optional sharing and invitation recovery', () => {
     pending.resolve({ completeInvite: harness.complete });
     await settle();
     expect(harness.complete).toHaveBeenCalledTimes(boundary === 'grant' ? 1 : 0);
+  });
+});
+
+describe('compatibility invitations with invite signups on (ZOD-21)', () => {
+  beforeAll(async () => {
+    vi.resetModules();
+    vi.stubEnv('PUBLIC_INVITE_SIGNUP_ENABLED', '1');
+    ({ default: SynastryCalculator } = await import('./SynastryCalculator'));
+  });
+
+  it('completes the invite once when the reading shows, naming the text the recipient confirmed', async () => {
+    window.location.hash = `#invite=${handle}`;
+    render();
+    await settle();
+    expect(arrival()?.props.view.state).toBe('ready');
+    const ownDetails = view().find((node) => node.type === 'input' && node.props.type === 'checkbox' && node.props.required);
+    expect(ownDetails).toBeDefined();
+    ownDetails!.props.onChange({ currentTarget: { checked: true } });
+    view().find((node) => node.props.idPrefix === 'syn-b')!.props.setSlot((prior: object) => ({
+      ...prior, source: 'positions', positions: { chart, label: 'Mine' },
+    }));
+    await view().find((node) => node.type === 'form')!.props.onSubmit({ preventDefault: vi.fn() });
+    await settle();
+    expect(result()).toBeDefined();
+    await vi.waitFor(() => expect(harness.complete).toHaveBeenCalledOnce());
+    expect(harness.complete).toHaveBeenCalledWith(handle, payload.expiresAt, undefined, 'invite-recipient-2026-11-16.v1');
+    expect(harness.track).toHaveBeenCalledWith('invite_completed', {});
+    // Later renders do not complete it again.
+    await settle();
+    await settle();
+    expect(harness.complete).toHaveBeenCalledOnce();
+    // The daily email card is a separate opt-in: it gets the sign to offer and nothing about the invitation.
+    const card = view().find((node) => typeof node.type === 'function' && (node.type as Function).name === 'InviteSignup');
+    expect(card?.props).toEqual({ sign: 'taurus' });
   });
 });
