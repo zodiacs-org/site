@@ -126,5 +126,43 @@ export function asPanelV7(tool: Record<string, unknown>): { tool: Record<string,
   return { tool: { ...tool, _meta: { ...meta, ui: { ...meta.ui, resourceUri: to }, 'openai/outputTemplate': to } }, changed: ['get_horoscope._meta.ui.resourceUri', 'get_horoscope._meta.openai/outputTemplate'] };
 }
 
+/**
+ * Invented examples (a draft for developer plugin 0.3.50, not yet approved by the owner): the "such as" examples in
+ * the input schemas named the owner's own birth date, birth time, birthplace, home time zone and wedding. They now
+ * name the invented set the /apps pages use (Lucía, born 14 May 1994 at 09:15 in Seville, Europe/Madrid; a wedding
+ * on 18 September 2027 at 16:30 in Lisbon, Europe/Lisbon; a horoscope reader in America/Mexico_City). Each entry is
+ * a schema field's description, whole, as it now reads; only these eleven fields change, and no name, type,
+ * pattern, enum, title, annotation, _meta or tool description moves. Shipping this changes text every client sees,
+ * so it waits for the owner's yes and goes out with the next directory resubmission.
+ */
+export const INVENTED_EXAMPLES: Record<string, string> = {
+  'get_sky.inputSchema.properties.zone.description': "The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.",
+  'get_upcoming_events.inputSchema.properties.zone.description': "The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.",
+  'check_sky_fact.inputSchema.properties.zone.description': "The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.",
+  'get_horoscope.inputSchema.properties.zone.description': "The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.",
+  'get_occasion_sky.inputSchema.properties.date.description': 'The day, such as 2027-09-18 (years 1800\u20132199). Needed unless searchFrom and searchTo are given.',
+  'get_occasion_sky.inputSchema.properties.zone.description': "The place's time zone, such as Europe/Lisbon. Needed with a time or a place.",
+  'get_occasion_sky.inputSchema.properties.place.description': 'Optional place name printed on the card, such as Lisbon, Portugal. Display only: it is not used in the calculation and is not stored.',
+  'get_compatibility.inputSchema.properties.a.properties.place.description': 'Optional birthplace name, such as Seville, Spain. Display only, not stored.',
+  'get_compatibility.inputSchema.properties.b.properties.place.description': 'Optional birthplace name, such as Seville, Spain. Display only, not stored.',
+  'get_birthday.inputSchema.properties.date.description': 'A birthday without a year, as MM-DD, such as 05-14 for 14 May. This is enough for general birthday facts. Give this or birthDate.',
+  'get_birthday.inputSchema.properties.birthDate.description': 'The full birth date, such as 1994-05-14. Use only for the solar return or to resolve the sign of a cusp date in that birth year.',
+};
+
+/** An entry with the invented examples in its input schema, and the paths that changed. */
+export function asInventedExamples(tool: Record<string, unknown>): { tool: Record<string, unknown>; changed: string[] } {
+  const changed: string[] = [];
+  const walk = (value: unknown, path: string): unknown => {
+    if (Array.isArray(value)) return value.map((item, index) => walk(item, `${path}[${index}]`));
+    if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, walk(item, `${path}.${key}`)]));
+    if (typeof value === 'string' && Object.hasOwn(INVENTED_EXAMPLES, path) && INVENTED_EXAMPLES[path] !== value) {
+      changed.push(path);
+      return INVENTED_EXAMPLES[path];
+    }
+    return value;
+  };
+  return { tool: walk(tool, String(tool.name)) as Record<string, unknown>, changed };
+}
+
 /** The thirteen as this release lists them. */
-export const PUBLISHED_TOOLS = LIVE_TOOLS.map((tool) => asPanelV7(asPlainDescription(as065(tool).tool).tool).tool);
+export const PUBLISHED_TOOLS = LIVE_TOOLS.map((tool) => asInventedExamples(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool);

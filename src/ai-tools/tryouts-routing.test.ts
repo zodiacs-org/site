@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { TOOL_DESCRIPTIONS } from './contracts';
 import { ASK_FIRST, CHILD_HOROSCOPE, OUTSIDE_ZODIACS, WHICH_TOOL } from './server';
 import { executeAiTool } from './tools';
-import { PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, ZOD_207_SENTENCES } from './published-tools';
+import { asInventedExamples, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, ZOD_207_SENTENCES } from './published-tools';
 
 /**
  * ZOD-207 (a draft on top of ZOD-58): the wording added after 200 questions were tried on two assistants
@@ -46,7 +46,8 @@ describe('the routing wording from the assistant tryouts', () => {
       expect(instructions).toContain(CHILD_HOROSCOPE);
       expect(instructions.endsWith(WHICH_TOOL)).toBe(true);
     }
-    expect(JSON.stringify((saved('join', 'tools-list.json').tools as Listed[]).slice(0, 13))).toBe(JSON.stringify(PUBLISHED_TOOLS));
+    // The saved list predates the invented schema examples (src/ai-tools/published-tools.ts), which are put in to compare.
+    expect(JSON.stringify((saved('join', 'tools-list.json').tools as Record<string, unknown>[]).slice(0, 13).map(tool => asInventedExamples(tool).tool))).toBe(JSON.stringify(PUBLISHED_TOOLS));
     // The join moved nothing in the list but get_horoscope's panel address, and one sentence of the instructions.
     const v7 = (text: string) => text.replaceAll('ui://zodiacs/horoscopes-v6.html', 'ui://zodiacs/horoscopes-v7.html');
     expect(v7(JSON.stringify(saved('fix-round', 'tools-list.json')))).toBe(JSON.stringify(saved('join', 'tools-list.json')));
