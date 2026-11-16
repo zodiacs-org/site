@@ -24,10 +24,10 @@ import { z } from 'zod';
 import { findLongitudeCrossings, positions } from '@zodiacs/engine';
 import { SampleBudget, positionsMemo, rowOf, stationCrossings } from '../../lib/compute-api/endpoints';
 import {
-  RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, natalBasis, retrogradeReading, stationHouse,
+  POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, natalBasis, retrogradeReading, stationHouse,
   type RetrogradeLoop, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
-import { RETROGRADE_FOR_YOU_PAGE_PATH, retrogradeForYouShareQuery, retrogradeForYouShareUrl } from '../../lib/retrograde-for-you/share';
+import { RETROGRADE_FOR_YOU_PAGE_PATH, publishedRetrogradeDate, retrogradeForYouShareQuery, retrogradeForYouShareUrl, retrogradeTablePath } from '../../lib/retrograde-for-you/share';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import sky from '../../data/sky.json';
 import { birthDayEnds, birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
@@ -75,7 +75,12 @@ const housePlacement = z.object({
 const contact = z.object({
   point: z.string(),
   sign: signSlug,
+  /** Such as "16°18' Scorpio"; without a birth time, the whole degree, such as "about 16° Scorpio". */
   position: z.string(),
+  line: z.string(),
+});
+const possibleContact = z.object({
+  point: z.string(),
   line: z.string(),
 });
 const period = z.object({
@@ -92,8 +97,12 @@ const period = z.object({
   /** "rising sign" with a birth time and place, "Sun sign" otherwise, null when neither is settled. */
   housesCountedFrom: z.enum(['rising sign', 'Sun sign']).nullable(),
   houses: z.array(housePlacement),
-  /** Natal planets and angles inside the loop's degrees. */
+  /** Natal planets and angles inside the loop's degrees (without a birth time, at both ends of the birth day). */
   contacts: z.array(contact),
+  /** Without a birth time: natal points inside the loop at one end of the birth day and outside it at the other. A birth time settles them. */
+  possibleContacts: z.array(possibleContact),
+  /** In the post-shadow the period is the loop that just ended; this is the next loop's stations, UTC to the minute. Null otherwise. */
+  next: z.object({ stationRetrograde: z.string(), stationDirect: z.string() }).nullable(),
   /** One plain paragraph: when, where, and what it traditionally asks for. */
   reading: z.string(),
   confidence: z.number().int().min(40).max(95),
@@ -156,16 +165,23 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
   const now = context.now;
   const planets = RETROGRADE_PLANETS.filter((planet) => !args.planets || args.planets.includes(planet));
 
-  // The Sun sign counts the houses without a rising sign only if the birth day keeps it.
+  // Without a birth time a placement holds only if it is the same at both ends of the birth day:
+  // the Sun sign counts the houses, and a natal point is a contact, only then.
   let sunHeld = true;
-  if (!natal.angles && !natal.timeKnown) {
+  let dayEnds: Parameters<typeof natalBasis>[0]['dayEnds'];
+  if (!natal.timeKnown) {
     const sunIndex = signIndexForLongitude(natal.chart.bodies.find((row) => row.body === 'Sun')!.lon);
     const ends = await birthDayEnds(args, context.localTime);
-    sunHeld = ends.every((end) => signIndexForLongitude(rowOf(positions(end), 'Sun').lon) === sunIndex);
+    const rows = ends.map((end) => {
+      const at = positions(end);
+      return POINT_NAMES.map((body) => ({ body: body as string, lon: rowOf(at, body).lon }));
+    });
+    dayEnds = [rows[0], rows[1]];
+    sunHeld = rows.every((end) => signIndexForLongitude(end.find((row) => row.body === 'Sun')!.lon) === sunIndex);
   }
   const basis = natalBasis({
     timeKnown: natal.timeKnown, placed: natal.placed, angles: natal.angles, bodies: natal.chart.bodies, sunHeld,
-    birthDate: args.birthDate, today: dateOn(now, clock.zone),
+    birthDate: args.birthDate, today: dateOn(now, clock.zone), dayEnds,
   });
   const rowsAt = positionsMemo();
   const reading = retrogradeReading({
@@ -188,7 +204,7 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     links: [
       { title: 'Retrogrades in your chart on Zodiacs', url: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` },
       { title: 'Retrogrades on Zodiacs', url: `${context.origin}/retrogrades/` },
-      ...planets.map((planet) => ({ title: `${planet} retrograde`, url: `${context.origin}/${planet.toLowerCase()}-retrograde/` })),
+      ...periods.map((period) => ({ title: `${period.planet} retrograde`, url: `${context.origin}${retrogradeTablePath(period.planet, publishedRetrogradeDate(period.planet, period.stationRetrograde.utc, sky.retrogrades))}` })),
       { title: 'Your birth chart on Zodiacs', url: `${context.origin}/birth-chart/` },
     ],
   };

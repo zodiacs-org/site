@@ -78,6 +78,10 @@ export interface RetrogradePeriod {
   housesCountedFrom: HouseBasis | null;
   houses: { house: number; sign: string; theme: string; line: string }[];
   contacts: { point: string; sign: string; position: string; line: string }[];
+  /** Without a birth time: natal points inside the loop at one end of the birth day and outside it at the other. */
+  possibleContacts: { point: string; line: string }[];
+  /** The next loop's stations (UTC, to the minute) while this period is the post-shadow of the loop just ended, else null. */
+  next: { stationRetrograde: string; stationDirect: string } | null;
   reading: string;
   confidence: number;
   confidenceLabel: string;
@@ -87,7 +91,14 @@ export interface RetrogradePeriod {
 export interface NatalBasis {
   countedFrom: HouseBasis | null;
   baseSign: string | null;
-  points: { name: string; lon: number }[];
+  /**
+   * The natal points. Without a birth time `lon` is the noon chart's and
+   * `ends` holds the longitude at each end of the birth day, so a contact is
+   * claimed only when both ends agree.
+   */
+  points: { name: string; lon: number; ends?: readonly [number, number] }[];
+  /** True without a birth time: natal positions are printed in whole degrees, with "about". */
+  approximate: boolean;
   detail: ReadingDetail;
   minor: boolean;
   /** Plain sentences on what the details could not settle, in the order the answer gives them. */
@@ -109,6 +120,12 @@ export function dateOn(at: Date, timeZone: string): string {
 export function dayLabel(at: Date | string, timeZone: string): string {
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone, weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).formatToParts(new Date(at)).map((part) => [part.type, part.value]));
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
+}
+
+/** Such as "about 14° Scorpio", the whole degree, for a natal point without a birth time. */
+export function formatApproximatePosition(lon: number): string {
+  const index = signIndexForLongitude(lon);
+  return `about ${Math.floor(norm(lon) - index * 30)}° ${SIGNS[index].name}`;
 }
 
 /** Such as "20°56' Scorpio", rounded down to the minute of arc, as the sign pages print it. */
@@ -159,6 +176,8 @@ export function natalBasis(input: {
   sunHeld: boolean;
   birthDate: string;
   today: string;
+  /** Without a birth time: the bodies at the start and the end of the birth day. */
+  dayEnds?: readonly [readonly { body: string; lon: number }[], readonly { body: string; lon: number }[]];
 }): NatalBasis {
   const lonOf = (name: string) => input.bodies.find((row) => row.body === name)!.lon;
   const limits: string[] = [];
@@ -176,12 +195,16 @@ export function natalBasis(input: {
   } else limits.push('No birth time was given and the Sun changed sign on the birth day, so there are no houses. A birth time settles it.');
 
   // The Moon only with a birth time (it moves about 13 degrees a day), the angles only with a place too.
-  const points = POINT_NAMES.filter((name) => name !== 'Moon' || input.timeKnown).map((name) => ({ name: name as string, lon: lonOf(name) }));
+  const endLon = (rows: readonly { body: string; lon: number }[], name: string) => rows.find((row) => row.body === name)!.lon;
+  const ends = !input.timeKnown ? input.dayEnds : undefined;
+  const points: NatalBasis['points'] = POINT_NAMES.filter((name) => name !== 'Moon' || input.timeKnown).map((name) => ({
+    name: name as string, lon: lonOf(name), ...(ends ? { ends: [endLon(ends[0], name), endLon(ends[1], name)] as const } : {}),
+  }));
   if (input.angles) points.push({ name: 'Ascendant', lon: input.angles.asc }, { name: 'Midheaven', lon: input.angles.mc });
   if (!input.timeKnown) limits.push('Without a birth time the natal Moon is left out of the points each loop passes over.');
 
   return {
-    countedFrom, baseSign, points,
+    countedFrom, baseSign, points, approximate: !input.timeKnown,
     detail: readingDetail({ hasDate: true, hasTime: input.timeKnown, hasPlace: input.placed }),
     minor: isUnder18(input.birthDate, input.today),
     limits,
@@ -194,45 +217,60 @@ export function retrogradePeriod(planet: RetrogradePlanet, loops: LoopSet, now: 
   const { current: loop, previous, retrogradeNow } = loops;
   const confidence = readingConfidence(basis.detail);
   const confidenceLabel = readingConfidenceLabel(basis.detail);
-  const retro = stationOn(loop.stationRetrograde.at, loop.stationRetrograde.lon, zone);
-  const direct = stationOn(loop.stationDirect.at, loop.stationDirect.lon, zone);
-  const preShadowStart = loop.preShadowStart ? instantOn(loop.preShadowStart, zone) : null;
-  const postShadowEnd = loop.postShadowEnd ? instantOn(loop.postShadowEnd, zone) : null;
   const status: RetrogradeStatus = retrogradeNow ? 'retrograde'
     : previous?.postShadowEnd && previous.postShadowEnd.getTime() > now.getTime() ? 'post-shadow'
       : loop.preShadowStart && loop.preShadowStart.getTime() <= now.getTime() ? 'pre-shadow'
         : 'direct';
-  const signs = loopSigns(loop).map((index) => SIGNS[index].slug);
+  // In the post-shadow the period is the loop that just ended; the next one gets a line of its own.
+  const subject = status === 'post-shadow' && previous ? previous : loop;
+  const afterLoop = subject !== loop;
+  const retro = stationOn(subject.stationRetrograde.at, subject.stationRetrograde.lon, zone);
+  const direct = stationOn(subject.stationDirect.at, subject.stationDirect.lon, zone);
+  const preShadowStart = subject.preShadowStart ? instantOn(subject.preShadowStart, zone) : null;
+  const postShadowEnd = subject.postShadowEnd ? instantOn(subject.postShadowEnd, zone) : null;
+  const next = afterLoop ? { stationRetrograde: instantOn(loop.stationRetrograde.at, zone).utc, stationDirect: instantOn(loop.stationDirect.at, zone).utc } : null;
+  const signs = loopSigns(subject).map((index) => SIGNS[index].slug);
   const houses = basis.baseSign ? signs.map((sign) => {
     const house = wholeSignHouseFromAsc(sign, basis.baseSign!);
     const theme = NATAL_HOUSE_THEME[house];
     const where = basis.countedFrom === 'rising sign' ? `your ${ORDINAL[house]} house` : `the ${ORDINAL[house]} house counted from your Sun sign`;
     return { house, sign, theme: soften(theme), line: soften(`In ${signBySlug(sign).name} it falls in ${where}, which covers ${theme}. There it traditionally asks you to ${RETROGRADE_ASK[planet]}.`) };
   }) : [];
-  const contacts = basis.points.filter((point) => inLoop(loop, point.lon)).map((point) => ({
-    point: point.name, sign: SIGNS[signIndexForLongitude(point.lon)].slug, position: formatPosition(point.lon),
-    line: `The loop passes over your natal ${point.name} at ${formatPosition(point.lon)}: ${CONTACT_LINE}.`,
-  }));
+  const position = basis.approximate ? formatApproximatePosition : formatPosition;
+  const contacts: RetrogradePeriod['contacts'] = [];
+  const possibleContacts: RetrogradePeriod['possibleContacts'] = [];
+  for (const point of basis.points) {
+    const inside = point.ends ? point.ends.map((lon) => inLoop(subject, lon)) : [inLoop(subject, point.lon)];
+    if (inside.every(Boolean)) {
+      contacts.push({
+        point: point.name, sign: SIGNS[signIndexForLongitude(point.lon)].slug, position: position(point.lon),
+        line: `The loop passes over your natal ${point.name} at ${position(point.lon)}: ${CONTACT_LINE}.`,
+      });
+    } else if (inside.some(Boolean)) {
+      possibleContacts.push({ point: point.name, line: `The loop may also pass over your natal ${point.name}; a birth time settles it.` });
+    }
+  }
   const opening = retrogradeNow
     ? `${planet} is retrograde now. It turned retrograde on ${retro.label} at ${retro.position} and turns direct on ${direct.label} at ${direct.position}.`
-    : `${planet} is not retrograde now. It next turns retrograde on ${retro.label} at ${retro.position} and turns direct on ${direct.label} at ${direct.position}.`;
-  const shadowLine = status === 'post-shadow'
-    ? ` It turned direct on ${instantOn(previous!.stationDirect.at, zone).label} and is in the post-shadow of that loop until ${instantOn(previous!.postShadowEnd!, zone).label}, going back over the degrees it covered while retrograde.`
+    : afterLoop
+      ? `${planet} turned direct on ${direct.label} at ${direct.position} and is in the post-shadow until ${postShadowEnd!.label}, going back over the degrees it covered while retrograde.`
+      : `${planet} is not retrograde now. It next turns retrograde on ${retro.label} at ${retro.position} and turns direct on ${direct.label} at ${direct.position}.`;
+  const shadowLine = afterLoop ? ''
     : status === 'pre-shadow' && preShadowStart
       ? ` It is already in the pre-shadow, which began on ${preShadowStart.label}, crossing the degrees the retrograde will revisit.`
       : preShadowStart && !retrogradeNow ? ` Its pre-shadow begins on ${preShadowStart.label}.` : '';
-  const after = postShadowEnd ? ` The post-shadow runs until ${postShadowEnd.label}, when it is back at the degree where it turned retrograde.` : '';
+  const after = postShadowEnd && !afterLoop ? ` The post-shadow runs until ${postShadowEnd.label}, when it is back at the degree where it turned retrograde.` : '';
   const reading = soften([
     `${opening}${shadowLine}${after}`,
     RETROGRADE_LINE[planet],
     ...houses.map((entry) => entry.line),
     ...contacts.map((entry) => entry.line),
-    `${confidenceLabel}.`,
+    ...possibleContacts.map((entry) => entry.line),
   ].join(' '));
   return {
     period: {
       planet, retrogradeNow, status, stationRetrograde: retro, stationDirect: direct, preShadowStart, postShadowEnd, signs,
-      housesCountedFrom: basis.countedFrom, houses, contacts, reading, confidence, confidenceLabel,
+      housesCountedFrom: basis.countedFrom, houses, contacts, possibleContacts, next, reading, confidence, confidenceLabel,
     },
     opening: soften(opening),
   };

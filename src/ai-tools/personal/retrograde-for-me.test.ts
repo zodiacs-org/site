@@ -70,13 +70,18 @@ describe('get_retrograde_for_me against published stations', () => {
     near(retrogradeLoops('Mercury', new Date('2026-06-20T00:00:00Z')).current.stationRetrograde.at.toISOString(), '2026-06-29T17:35:55Z');
   });
 
-  it('reads the post-shadow after a direct station, with the next loop as the period', async () => {
+  it('reads the post-shadow after a direct station from the loop that just ended, with the next loop on a line of its own', async () => {
     const data = await run({ birthDate: '1990-05-03', planets: ['Mercury'], currentZone: 'UTC' }, new Date('2026-11-20T12:00:00Z'));
     expect(data.periods).toHaveLength(1);
     const [mercury] = data.periods;
-    expect(mercury).toMatchObject({ retrogradeNow: false, status: 'post-shadow' });
-    expect(mercury.stationRetrograde.date).toBe('2027-02-09');
-    expect(mercury.reading).toContain('is in the post-shadow of that loop until Mon 30 Nov 2026');
+    expect(mercury).toMatchObject({ retrogradeNow: false, status: 'post-shadow', signs: ['scorpio'] });
+    expect(mercury.stationRetrograde.date).toBe('2026-10-24');
+    expect(mercury.stationDirect.date).toBe('2026-11-13');
+    expect(mercury.next!.stationRetrograde.startsWith('2027-02-09')).toBe(true);
+    expect(mercury.reading).toContain('Mercury turned direct on Fri 13 Nov 2026 at');
+    expect(mercury.reading).toContain('is in the post-shadow until Mon 30 Nov 2026, going back over the degrees it covered while retrograde.');
+    expect(mercury.reading.match(/post-shadow/gu)).toHaveLength(1);
+    expect(mercury.shareUrl).toContain('s=2026-10-24');
   });
 });
 

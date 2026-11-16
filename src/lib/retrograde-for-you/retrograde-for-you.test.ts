@@ -7,13 +7,18 @@ import { computeRetrogradeForYou, prepareLocalTime, type RetrogradeForYouInput }
 import sky from '../../data/sky.json';
 import { CONTACT_LINE, RETROGRADE_ASK, RETROGRADE_LINE } from './reading';
 import { loopsFromSky } from './sky';
-import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery } from './share';
+import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery, retrogradeTablePath } from './share';
 
 const clock = createLocalTimeModule();
 const MINUTES = 60_000;
 const MADRID = { lat: 40.42, lon: -3.7, tz: 'Europe/Madrid' };
 
 async function both(birth: { birthDate: string; time?: string }, now: Date, zone: string) {
+  const { mcp, page } = await bothWithLinks(birth, now, zone);
+  return { mcp: mcp.data, page };
+}
+
+async function bothWithLinks(birth: { birthDate: string; time?: string }, now: Date, zone: string) {
   const mcp = await retrogradeForMe(
     { birthDate: birth.birthDate, ...(birth.time ? { time: birth.time } : {}), zone: MADRID.tz, latitude: MADRID.lat, longitude: MADRID.lon, currentZone: zone },
     { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org' },
@@ -22,7 +27,7 @@ async function both(birth: { birthDate: string; time?: string }, now: Date, zone
   const input: RetrogradeForYouInput = { birthDate: birth.birthDate, birthTime: birth.time ?? null, place: MADRID, planets: ['Mercury', 'Venus', 'Mars'], now, zone };
   const page = computeRetrogradeForYou(input);
   if (page.refused) throw new Error('refused');
-  return { mcp: mcp.data, page };
+  return { mcp, page };
 }
 
 describe('the /retrogrades/for-you/ page and get_retrograde_for_me', () => {
@@ -42,9 +47,14 @@ describe('the /retrogrades/for-you/ page and get_retrograde_for_me', () => {
         }
         expect(ours.stationRetrograde.degree).toBeCloseTo(theirs.stationRetrograde.degree, 1);
         expect(ours.stationDirect.degree).toBeCloseTo(theirs.stationDirect.degree, 1);
-        const same = ({ planet, status, retrogradeNow, signs, housesCountedFrom, houses, contacts, reading, confidenceLabel }: typeof ours | typeof theirs) =>
-          ({ planet, status, retrogradeNow, signs, housesCountedFrom, houses, contacts, reading, confidenceLabel });
+        const same = ({ planet, status, retrogradeNow, signs, housesCountedFrom, houses, contacts, possibleContacts, reading, confidenceLabel }: typeof ours | typeof theirs) =>
+          ({ planet, status, retrogradeNow, signs, housesCountedFrom, houses, contacts, possibleContacts, reading, confidenceLabel });
         expect(same(ours)).toEqual(same(theirs));
+        expect(ours.next === null).toBe(theirs.next === null);
+        if (ours.next && theirs.next) {
+          expect(Math.abs(Date.parse(ours.next.stationRetrograde) - Date.parse(theirs.next.stationRetrograde))).toBeLessThanOrEqual(5 * MINUTES);
+          expect(Math.abs(Date.parse(ours.next.stationDirect) - Date.parse(theirs.next.stationDirect))).toBeLessThanOrEqual(5 * MINUTES);
+        }
         expect(ours.shareQuery).not.toBeNull();
         expect(theirs.shareUrl).toBe(`https://zodiacs.org/share/retrograde-for-you/?${ours.shareQuery}`);
       });
@@ -63,6 +73,75 @@ describe('the /retrogrades/for-you/ page and get_retrograde_for_me', () => {
   it('refuses a birth date less than 13 years ago and computes nothing', async () => {
     await prepareLocalTime('2016-05-03', MADRID.tz);
     expect(computeRetrogradeForYou({ birthDate: '2016-05-03', birthTime: null, place: MADRID, planets: ['Mercury'], now: new Date('2026-11-09T09:00:00Z'), zone: 'UTC' })).toEqual({ refused: 'under-13' });
+  });
+});
+
+describe('a planet in the post-shadow, untimed contacts and links (ZOD-20)', () => {
+  const TIMED = { birthDate: '1990-05-03', time: '08:30' };
+
+  it('builds the Venus card from the loop that just ended while Venus is in its post-shadow, with the next loop on one line', async () => {
+    const { mcp, page } = await both(TIMED, new Date('2026-11-20T12:00:00Z'), 'Europe/Madrid');
+    // The same chart while Venus was still retrograde in that loop.
+    const during = await both(TIMED, new Date('2026-11-09T09:00:00Z'), 'Europe/Madrid');
+    for (const [result, inside] of [[page, during.page], [mcp, during.mcp]] as const) {
+      const venus = result.periods.find((period) => period.planet === 'Venus')!;
+      const loop = inside.periods.find((period) => period.planet === 'Venus')!;
+      expect(venus.status).toBe('post-shadow');
+      expect(venus.retrogradeNow).toBe(false);
+      expect(venus.stationRetrograde.date).toBe('2026-10-03');
+      expect(venus.signs).toEqual(loop.signs);
+      expect(venus.houses).toEqual(loop.houses);
+      expect(venus.contacts).toEqual(loop.contacts);
+      expect(venus.next!.stationRetrograde.startsWith('2028-05-10')).toBe(true);
+      expect(venus.reading.match(/post-shadow/gu)).toHaveLength(1);
+      expect(venus.reading).toContain('Venus turned direct on Sat 14 Nov 2026 at');
+      expect(venus.reading).not.toContain(venus.confidenceLabel);
+    }
+    const venus = page.periods.find((period) => period.planet === 'Venus')!;
+    expect(venus.shareQuery).toContain('s=2026-10-03');
+    expect(venus.nextLine).toMatch(/^Next retrograde: Thu 11 May 2028 to /u);
+  });
+
+  it('leaves a planet inside its retrograde as it was, with no next line', async () => {
+    const { mcp, page } = await both(TIMED, new Date('2026-11-09T09:00:00Z'), 'Europe/Madrid');
+    for (const result of [page, mcp]) {
+      const mercury = result.periods.find((period) => period.planet === 'Mercury')!;
+      expect(mercury).toMatchObject({ status: 'retrograde', retrogradeNow: true, next: null });
+      expect(mercury.stationRetrograde.date).toBe('2026-10-24');
+      expect(mercury.reading.startsWith('Mercury is retrograde now. It turned retrograde on Sat 24 Oct 2026')).toBe(true);
+      expect(mercury.reading).toContain('The post-shadow runs until');
+    }
+    expect(page.periods.find((period) => period.planet === 'Mercury')!.nextLine).toBeNull();
+  });
+
+  it('lists an untimed natal point near a loop’s edge only as a possible contact', async () => {
+    // Natal Mercury for 23 Oct 1964 in Madrid: about 215.16° at noon, 214.35° and 215.97° at the ends of the day,
+    // across the 2026 loop's direct station at about 215.03° (5°02' Scorpio).
+    const { mcp, page } = await both({ birthDate: '1964-10-23' }, new Date('2026-11-09T09:00:00Z'), 'Europe/Madrid');
+    for (const result of [page, mcp]) {
+      const mercury = result.periods.find((period) => period.planet === 'Mercury')!;
+      expect(mercury.contacts.map((entry) => entry.point)).not.toContain('Mercury');
+      expect(mercury.possibleContacts.map((entry) => entry.point)).toContain('Mercury');
+      expect(mercury.reading).toContain('The loop may also pass over your natal Mercury; a birth time settles it.');
+      for (const period of result.periods) {
+        for (const entry of period.contacts) expect(entry.position).toMatch(/^about \d{1,2}° [A-Z][a-z]+$/u);
+      }
+    }
+  });
+
+  it('links Venus and Mars to their row in the retrogrades table, as the page does', async () => {
+    const { mcp, page } = await bothWithLinks(TIMED, new Date('2026-11-20T12:00:00Z'), 'Europe/Madrid');
+    const urls = mcp.links.map((link) => new URL(link.url));
+    for (const planet of ['Venus', 'Mars'] as const) {
+      const link = mcp.links.find((entry) => entry.title === `${planet} retrograde`)!;
+      const url = new URL(link.url);
+      expect(`${url.pathname}${url.hash}`.startsWith('/retrogrades/#retrograde-')).toBe(true);
+      const ours = page.periods.find((period) => period.planet === planet)!;
+      expect(`${url.pathname}${url.hash}`).toBe(retrogradeTablePath(planet, ours.skyDate));
+    }
+    expect(mcp.links.find((entry) => entry.title === 'Venus retrograde')!.url).toBe('https://zodiacs.org/retrogrades/#retrograde-venus-2026-10-03');
+    expect(urls.some((url) => /^\/(?:venus|mars)-retrograde\/$/u.test(url.pathname))).toBe(false);
+    expect(mcp.links.find((entry) => entry.title === 'Mercury retrograde')!.url).toBe('https://zodiacs.org/mercury-retrograde/');
   });
 });
 

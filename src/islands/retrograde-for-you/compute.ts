@@ -10,7 +10,7 @@
 import { bodyLongitude, computeChart } from '../../lib/engine/full';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 import {
-  dateOn, dayLabel, isUnder13, natalBasis, retrogradeReading, stationHouse,
+  POINT_NAMES, dateOn, dayLabel, isUnder13, natalBasis, retrogradeReading, stationHouse,
   type RetrogradePeriod, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
@@ -34,7 +34,7 @@ export type RetrogradeForYouOutcome =
   | { refused: 'under-13' }
   | {
     refused?: undefined;
-    periods: (RetrogradePeriod & { shareQuery: string | null; skyDate: string | null })[];
+    periods: (RetrogradePeriod & { shareQuery: string | null; skyDate: string | null; nextLine: string | null })[];
     /** Planets whose next loop lies past the committed sky data. */
     unavailable: RetrogradePlanet[];
     /** "Thu 1 Jan 2031", the first day the data does not cover. */
@@ -55,14 +55,18 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
   const chart = computeChart({ utc: birthUtc, latitude: input.place.lat, longitude: input.place.lon, houseSystem: 'whole', timeKnown });
   const angles = timeKnown && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   let sunHeld = true;
+  let dayEnds: Parameters<typeof natalBasis>[0]['dayEnds'];
   if (!timeKnown) {
-    // The Sun counts the houses without a birth time only if it kept its sign all the birth day.
+    // Without a birth time a placement holds only if it is the same at both ends of the birth day.
     const dayStart = resolveLocalToUtc(input.birthDate, '00:00', input.place.tz, { longitude: input.place.lon }).utc;
     const dayEnd = resolveLocalToUtc(input.birthDate, '23:59', input.place.tz, { longitude: input.place.lon }).utc;
-    const sign = (at: Date) => Math.floor((((bodyLongitude('Sun', at) % 360) + 360) % 360) / 30);
-    sunHeld = sign(dayStart) === sign(dayEnd);
+    const rows = (at: Date) => POINT_NAMES.map((body) => ({ body, lon: bodyLongitude(body, at) }));
+    dayEnds = [rows(dayStart), rows(dayEnd)];
+    const sign = (lon: number) => Math.floor((((lon % 360) + 360) % 360) / 30);
+    const sunAt = (end: readonly { body: string; lon: number }[]) => sign(end.find((row) => row.body === 'Sun')!.lon);
+    sunHeld = sunAt(dayEnds[0]) === sunAt(dayEnds[1]);
   }
-  const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, today });
+  const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, today, dayEnds });
   const span = sky as SkySpan;
   const reading = retrogradeReading({
     planets: input.planets, now: input.now, zone: input.zone, basis,
@@ -72,6 +76,7 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
     periods: reading.periods.map((period) => ({
       ...period,
       skyDate: publishedRetrogradeDate(period.planet, period.stationRetrograde.utc, span.retrogrades),
+      nextLine: period.next ? `Next retrograde: ${dayLabel(period.next.stationRetrograde, input.zone)} to ${dayLabel(period.next.stationDirect, input.zone)}.` : null,
       shareQuery: retrogradeForYouShareQuery({
         planet: period.planet, stationRetrogradeUtc: period.stationRetrograde.utc, house: stationHouse(period),
         countedFrom: period.housesCountedFrom, confidence: period.confidence,

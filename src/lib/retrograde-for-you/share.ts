@@ -128,3 +128,15 @@ export function retrogradeForYouShareQuery(source: {
 }
 
 export const retrogradeForYouShareUrl = (origin: string, query: string) => `${origin}${RETROGRADE_FOR_YOU_SHARE_PATH}?${query}`;
+
+/**
+ * Where a retrograde is listed in full: Mercury's own page, which dates every
+ * Mercury retrograde, else the window's row on /retrogrades/ by its published
+ * start date (Venus and Mars have no index page of their own). The page and
+ * get_retrograde_for_me both link through this.
+ */
+export function retrogradeTablePath(planet: string, skyDate: string | null): string {
+  const slug = planet.toLowerCase();
+  if (slug === 'mercury') return '/mercury-retrograde/';
+  return skyDate ? `/retrogrades/#retrograde-${slug}-${skyDate}` : '/retrogrades/';
+}

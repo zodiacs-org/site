@@ -3,6 +3,7 @@ import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } f
 import type { City } from '../lib/geo/search';
 import type { RetrogradePlanet, RetrogradeStatus } from '../lib/retrograde-for-you/reading';
 import type { RetrogradeForYouOutcome } from './retrograde-for-you/compute';
+import { retrogradeTablePath } from '../lib/retrograde-for-you/share';
 import { loadModule } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
 
@@ -76,14 +77,14 @@ function ShareButton({ query, planet }: { query: string; planet: RetrogradePlane
 }
 
 function PeriodCard({ period, now }: { period: Period; now: number }) {
-  const next = !period.retrogradeNow;
+  const when = period.retrogradeNow ? 'This retrograde' : period.next ? 'Most recent retrograde' : 'Next retrograde';
   return (
     <article class="rfy__card tile" style={{ '--hue': HUE[period.planet] }} data-planet={period.planet.toLowerCase()}>
       <header class="rfy__head">
         <h3>{period.planet}</h3>
         <span class="rfy__status" data-status={period.status}>{STATUS[period.status]}</span>
       </header>
-      <p class="rfy__when">{next ? 'Next retrograde' : 'This retrograde'}: {period.stationRetrograde.label} to {period.stationDirect.label}</p>
+      <p class="rfy__when">{when}: {period.stationRetrograde.label} to {period.stationDirect.label}</p>
       <Timeline period={period} now={now} />
       <div class="rfy__ticks" aria-hidden="true">
         <span>{period.preShadowStart ? `Shadow from ${period.preShadowStart.label}` : ''}</span>
@@ -105,19 +106,23 @@ function PeriodCard({ period, now }: { period: Period; now: number }) {
           </ul>
         </div>
       )}
-      {period.contacts.length > 0 && (
+      {(period.contacts.length > 0 || period.possibleContacts.length > 0) && (
         <div class="rfy__block">
           <h4>Natal points the loop crosses</h4>
-          <ul class="rfy__contacts">
-            {period.contacts.map((entry) => <li key={entry.point}><strong>{entry.point}</strong> <span class="rfy__deg">{entry.position}</span></li>)}
-          </ul>
+          {period.contacts.length > 0 && (
+            <ul class="rfy__contacts">
+              {period.contacts.map((entry) => <li key={entry.point}><strong>{entry.point}</strong> <span class="rfy__deg">{entry.position}</span></li>)}
+            </ul>
+          )}
+          {period.possibleContacts.map((entry) => <p class="rfy__maybe" key={entry.point}>{entry.line}</p>)}
         </div>
       )}
       <p class="rfy__reading">{period.reading}</p>
       <p class="rfy__confidence">{period.confidenceLabel}</p>
+      {period.nextLine && <p class="rfy__next">{period.nextLine}</p>}
       {period.skyDate && (
         <p class="rfy__more">
-          <a href={period.planet === 'Mercury' ? '/mercury-retrograde/' : `/retrogrades/#retrograde-${period.planet.toLowerCase()}-${period.skyDate}`}>
+          <a href={retrogradeTablePath(period.planet, period.skyDate)}>
             {period.planet === 'Mercury' ? 'Every Mercury retrograde, dated' : `This ${period.planet} retrograde in the full table`}
           </a>
         </p>
