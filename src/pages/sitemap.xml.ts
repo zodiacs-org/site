@@ -623,6 +623,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The showcase's entry links, first published with the showcase.
   ['/tools/', '2026-10-28'] as const,
   ['/developers/ai/', '2026-10-28'] as const,
+  // The AI developer page's sample question names a neutral city, from 16 November.
+  ['/developers/ai/', '2026-11-16'] as const,
   // The developer index that links to the demo. The day of the daily edition it was
   // built with; after the engine 1.1.0-rc.1 entry above so it wins.
   ['/developers/', '2026-10-28'] as const,
