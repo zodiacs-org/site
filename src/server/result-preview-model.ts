@@ -656,7 +656,8 @@ export const RETROGRADE_PLANET_SIGN: Readonly<Record<ShareRetrogradePlanet, Shar
  * What each house covers, as the birth chart says it (NATAL_HOUSE_THEME in
  * src/lib/natal.ts, which a test holds this to), with the fifth house's
  * romance read as play: a card carries no age, so it says what an under-18
- * reading would.
+ * reading would. The sixth house never reads as health (softenHealth), since a
+ * card sits beside dated retrograde windows.
  */
 export const RETROGRADE_CARD_HOUSE_THEME: Readonly<Record<number, string>> = {
   1: 'first impressions, instinct, and the way you arrive',
@@ -664,7 +665,7 @@ export const RETROGRADE_CARD_HOUSE_THEME: Readonly<Record<number, string>> = {
   3: 'language, siblings, short trips, and the everyday mind',
   4: 'home, roots, family, and where you go to be unobserved',
   5: 'pleasure, play, children, and what you make for its own sake',
-  6: 'routines, health, craft, and the daily load',
+  6: 'routines, craft, and the shape of the day',
   7: 'partnership, the people you meet as equals',
   8: 'shared resources, trust, and what gets merged',
   9: 'travel, study, belief, and the long view',

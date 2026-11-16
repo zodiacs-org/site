@@ -43053,6 +43053,10 @@ function loopSigns(loop) {
 function inLoop(loop, lon) {
   return norm2(lon - loop.stationDirect.lon) <= norm2(loop.stationRetrograde.lon - loop.stationDirect.lon);
 }
+var FOLD_LATER_MS = 36e5;
+function foldRisingLimit(earlier, later) {
+  return `Clocks repeated that hour where you were born. This reading uses the earlier pass, with ${earlier} rising; the later pass would give ${later} rising and change every house.`;
+}
 function natalBasis(input) {
   const lonOf2 = (name) => input.bodies.find((row) => row.body === name).lon;
   const limits2 = [];
@@ -43061,6 +43065,8 @@ function natalBasis(input) {
   if (input.angles) {
     countedFrom = "rising sign";
     baseSign = SIGNS2[signIndexForLongitude2(input.angles.asc)].slug;
+    const later = input.foldAsc == null ? null : SIGNS2[signIndexForLongitude2(input.foldAsc)];
+    if (later && later.slug !== baseSign) limits2.push(foldRisingLimit(signBySlug(baseSign).name, later.name));
   } else if (input.sunHeld) {
     countedFrom = "Sun sign";
     baseSign = SIGNS2[signIndexForLongitude2(lonOf2("Sun"))].slug;
@@ -43086,7 +43092,7 @@ function natalBasis(input) {
   };
 }
 function retrogradePeriod(planet2, loops, now, zone9, basis) {
-  const soften = (text2) => basis.minor ? softenMinor(text2) : text2;
+  const soften = (text2) => softenHealth(basis.minor ? softenMinor(text2) : text2);
   const { current: loop, previous, retrogradeNow } = loops;
   const confidence = readingConfidence(basis.detail);
   const confidenceLabel = readingConfidenceLabel(basis.detail);
@@ -43254,14 +43260,17 @@ async function castNatal(args, clock2) {
   const timeKnown = args.time !== void 0;
   const placed = latitude !== void 0 && longitude2 !== void 0;
   let birthUtc;
+  let flags = [];
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
     const time = args.time ?? "12:00";
-    birthUtc = (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+    const resolved = longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone);
+    birthUtc = resolved.utc;
+    flags = [...resolved.flags];
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
   const chart = computeChart2({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags };
 }
 async function birthDayEnds2(args, clock2) {
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR6)];
@@ -43406,6 +43415,7 @@ async function retrogradeForMe(args, context) {
     dayEnds = [rows3[0], rows3[1]];
     sunHeld = rows3.every((end) => signIndexForLongitude2(end.find((row) => row.body === "Sun").lon) === sunIndex);
   }
+  const foldAsc = natal.angles && natal.flags.includes("dst-fold") ? computeChart2({ utc: new Date(natal.birthUtc.getTime() + FOLD_LATER_MS), latitude: natal.latitude, longitude: natal.longitude, houseSystem: "whole", timeKnown: true }).angles?.asc ?? null : null;
   const basis = natalBasis({
     timeKnown: natal.timeKnown,
     placed: natal.placed,
@@ -43414,7 +43424,8 @@ async function retrogradeForMe(args, context) {
     sunHeld,
     birthDate: args.birthDate,
     today: dateOn2(now, clock2.zone),
-    dayEnds
+    dayEnds,
+    foldAsc
   });
   const rowsAt = positionsMemo();
   const reading = retrogradeReading({

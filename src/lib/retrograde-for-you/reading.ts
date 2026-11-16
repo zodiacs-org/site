@@ -17,7 +17,7 @@
 import { wholeSignHouseFromAsc } from '../daily';
 import { NATAL_HOUSE_THEME } from '../natal';
 import { SIGNS, signBySlug, signIndexForLongitude } from '../signs';
-import { MINOR_NOTE, isUnder13, isUnder18, softenMinor } from '../../ai-tools/features/reading-guards';
+import { MINOR_NOTE, isUnder13, isUnder18, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
 
 export { isUnder13, MINOR_NOTE };
@@ -162,6 +162,14 @@ export function inLoop(loop: RetrogradeLoop, lon: number): boolean {
   return norm(lon - loop.stationDirect.lon) <= norm(loop.stationRetrograde.lon - loop.stationDirect.lon);
 }
 
+/** An hour the clocks repeated, as a later pass: one hour after the earlier one, which the resolver takes. */
+export const FOLD_LATER_MS = 3_600_000;
+
+/** The limit for a birth time in an hour the clocks repeated, when the two passes give different rising signs. */
+export function foldRisingLimit(earlier: string, later: string): string {
+  return `Clocks repeated that hour where you were born. This reading uses the earlier pass, with ${earlier} rising; the later pass would give ${later} rising and change every house.`;
+}
+
 /**
  * The house basis and the natal points, from a chart cast with whole-sign
  * houses. `sunHeld` says whether the Sun's sign is the same at both ends of an
@@ -178,6 +186,11 @@ export function natalBasis(input: {
   today: string;
   /** Without a birth time: the bodies at the start and the end of the birth day. */
   dayEnds?: readonly [readonly { body: string; lon: number }[], readonly { body: string; lon: number }[]];
+  /**
+   * When the birth time fell in an hour the clocks repeated: the rising degree at the later pass. The chart uses the
+   * earlier pass; a limit says so only when the rising sign, and so every house, differs between the two.
+   */
+  foldAsc?: number | null;
 }): NatalBasis {
   const lonOf = (name: string) => input.bodies.find((row) => row.body === name)!.lon;
   const limits: string[] = [];
@@ -186,6 +199,8 @@ export function natalBasis(input: {
   if (input.angles) {
     countedFrom = 'rising sign';
     baseSign = SIGNS[signIndexForLongitude(input.angles.asc)].slug;
+    const later = input.foldAsc == null ? null : SIGNS[signIndexForLongitude(input.foldAsc)];
+    if (later && later.slug !== baseSign) limits.push(foldRisingLimit(signBySlug(baseSign).name, later.name));
   } else if (input.sunHeld) {
     countedFrom = 'Sun sign';
     baseSign = SIGNS[signIndexForLongitude(lonOf('Sun'))].slug;
@@ -213,7 +228,8 @@ export function natalBasis(input: {
 
 /** One planet's period: status, stations, shadows, houses, natal points and the reading, on the given clock. */
 export function retrogradePeriod(planet: RetrogradePlanet, loops: LoopSet, now: Date, zone: string, basis: NatalBasis): { period: RetrogradePeriod; opening: string } {
-  const soften = (text: string) => (basis.minor ? softenMinor(text) : text);
+  // The sixth house never reads as health beside a dated window; the romance wording goes for someone under 18.
+  const soften = (text: string) => softenHealth(basis.minor ? softenMinor(text) : text);
   const { current: loop, previous, retrogradeNow } = loops;
   const confidence = readingConfidence(basis.detail);
   const confidenceLabel = readingConfidenceLabel(basis.detail);

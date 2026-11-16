@@ -68,7 +68,7 @@ import {
 } from './result-preview-model';
 import { parseRetrogradeForYouShare } from '../lib/retrograde-for-you/share';
 import { NATAL_HOUSE_THEME } from '../lib/natal';
-import { softenMinor } from '../ai-tools/features/reading-guards';
+import { softenHealth, softenMinor } from '../ai-tools/features/reading-guards';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
@@ -901,7 +901,13 @@ describe('a retrograde in one person’s chart', () => {
   });
 
   it('keeps the birth chart’s house themes, with romance read as play', () => {
-    for (let house = 1; house <= 12; house += 1) expect(RETROGRADE_CARD_HOUSE_THEME[house]).toBe(softenMinor(NATAL_HOUSE_THEME[house]));
+    for (let house = 1; house <= 12; house += 1) expect(RETROGRADE_CARD_HOUSE_THEME[house]).toBe(softenHealth(softenMinor(NATAL_HOUSE_THEME[house])));
+  });
+
+  it('never reads the sixth house as health beside a dated window', () => {
+    const card = retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&h=6&b=rising&c=70'))!, events)!;
+    expect(card.line).toBe('The sixth house covers routines, craft, and the shape of the day.');
+    expect(JSON.stringify(card)).not.toMatch(/health/iu);
   });
 
   it('opens a page whose action leads back to the retrogrades page', async () => {

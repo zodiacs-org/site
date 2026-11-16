@@ -10,7 +10,7 @@
 import { bodyLongitude, computeChart } from '../../lib/engine/full';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 import {
-  POINT_NAMES, dateOn, dayLabel, isUnder13, natalBasis, retrogradeReading, stationHouse,
+  FOLD_LATER_MS, POINT_NAMES, dateOn, dayLabel, isUnder13, natalBasis, retrogradeReading, stationHouse,
   type RetrogradePeriod, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
@@ -51,9 +51,14 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
   const today = dateOn(input.now, input.zone);
   if (isUnder13(input.birthDate, today)) return { refused: 'under-13' };
   const timeKnown = input.birthTime !== null;
-  const birthUtc = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: input.place.lon }).utc;
+  const resolved = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: input.place.lon });
+  const birthUtc = resolved.utc;
   const chart = computeChart({ utc: birthUtc, latitude: input.place.lat, longitude: input.place.lon, houseSystem: 'whole', timeKnown });
   const angles = timeKnown && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
+  // A birth time the clocks showed twice: the rising degree at the later pass, an hour on, for the fold limit.
+  const foldAsc = angles && resolved.flags.includes('dst-fold')
+    ? computeChart({ utc: new Date(birthUtc.getTime() + FOLD_LATER_MS), latitude: input.place.lat, longitude: input.place.lon, houseSystem: 'whole', timeKnown: true }).angles?.asc ?? null
+    : null;
   let sunHeld = true;
   let dayEnds: Parameters<typeof natalBasis>[0]['dayEnds'];
   if (!timeKnown) {
@@ -66,7 +71,7 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
     const sunAt = (end: readonly { body: string; lon: number }[]) => sign(end.find((row) => row.body === 'Sun')!.lon);
     sunHeld = sunAt(dayEnds[0]) === sunAt(dayEnds[1]);
   }
-  const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, today, dayEnds });
+  const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, today, dayEnds, foldAsc });
   const span = sky as SkySpan;
   const reading = retrogradeReading({
     planets: input.planets, now: input.now, zone: input.zone, basis,

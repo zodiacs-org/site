@@ -145,6 +145,33 @@ describe('a planet in the post-shadow, untimed contacts and links (ZOD-20)', () 
   });
 });
 
+describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
+  it('never reads the sixth house as health beside a dated window, on the page or in the tool', async () => {
+    const { mcp, page } = await both({ birthDate: '1990-05-03', time: '08:30' }, new Date('2026-11-09T09:00:00Z'), 'Europe/Madrid');
+    expect(page.periods.some((period) => period.houses.some((entry) => entry.house === 6))).toBe(true);
+    expect(mcp.periods.some((period) => period.houses.some((entry) => entry.house === 6))).toBe(true);
+    expect(JSON.stringify(page)).not.toMatch(/health/iu);
+    expect(JSON.stringify(mcp)).not.toMatch(/health/iu);
+    expect(JSON.stringify(page)).toContain('routines, craft, and the shape of the day');
+  });
+
+  it('adds a limit for a birth time the clocks showed twice only when the rising sign differs between the passes', async () => {
+    const now = new Date('2026-11-09T09:00:00Z');
+    // Madrid, 30 Sep 1990: clocks went back from 03:00 to 02:00. At 02:10 the passes give Cancer and Leo rising.
+    const split = await both({ birthDate: '1990-09-30', time: '02:10' }, now, 'Europe/Madrid');
+    const line = 'Clocks repeated that hour where you were born. This reading uses the earlier pass, with Cancer rising; the later pass would give Leo rising and change every house.';
+    expect(split.page.limits).toContain(line);
+    expect(split.mcp.limits).toContain(line);
+    expect(split.page.limits).toEqual(split.mcp.limits.filter((entry) => !entry.startsWith('Today is read')));
+    // At 02:50 both passes give Leo rising, and an ordinary time is no fold at all: no limit.
+    for (const time of ['02:50', '04:10']) {
+      const same = await both({ birthDate: '1990-09-30', time }, now, 'Europe/Madrid');
+      expect(same.page.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
+      expect(same.mcp.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
+    }
+  });
+});
+
 describe('the retrograde-for-you share link', () => {
   it('carries only the planet, a published start date, the house, its basis and the confidence', () => {
     const share = parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&h=7&b=rising&c=70'));
