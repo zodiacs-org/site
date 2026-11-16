@@ -30,6 +30,16 @@ import { readFileSync } from 'node:fs';
  * Dias on 13 November 2026, 17:12 Asia/Bangkok; ZOD_207_SENTENCES below holds what it added, and
  * src/ai-tools/tryouts-routing.test.ts checks that nothing else in the thirteen moved. Again only the description
  * field changes.
+ *
+ * ZOD-64 (PR 1068, merged 16 November 2026) gives event times to the minute, so get_upcoming_events now shows Neptune
+ * entering Aries on 26 January 2026 at 2026-01-26T14:32:00Z. Its description quoted that time as 14:31:41;
+ * ZOD_64_SENTENCES below changes the quoted time to 14:32 and nothing else in the sentence (the Horizons time of 17:35
+ * stays). check_sky_fact's description keeps 14:31:41: check_sky_fact still gives the solved instant,
+ * 2026-01-26T14:31:41.084Z, to the millisecond. ZOD-64 also adds the last and next new Moon and the last and next full Moon to
+ * get_sky's moonPhase, as four optional fields after the three it has always given (ZOD_64_MOON_CYCLE below). That
+ * changes one place in get_sky: the properties of moonPhase in its output schema. Its required fields, its input
+ * schema and its description stay as published, so an answer that left the four out would still match it.
+ * withoutZod64 takes both back out, for comparing with lists saved before ZOD-64.
  */
 export const LIVE_TOOLS = JSON.parse(readFileSync(new URL('../../docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json', import.meta.url), 'utf8')).result.tools as Record<string, unknown>[];
 
@@ -63,7 +73,7 @@ export function as065(tool: Record<string, unknown>): { tool: Record<string, unk
   return { tool: walk(tool, String(tool.name)) as Record<string, unknown>, changed };
 }
 
-/** ZOD-58: the thirteen published descriptions as plain descriptions, whole; four carry the ZOD-207 sentences the owner approved on 13 November 2026. */
+/** ZOD-58: the thirteen published descriptions as plain descriptions, whole; four carry the ZOD-207 sentences the owner approved on 13 November 2026. ZOD-64 changes one of them after (ZOD_64_SENTENCES). */
 export const PLAIN_DESCRIPTIONS: Record<string, string> = {
   get_capabilities: "Returns a list of what Zodiacs can do, its limits and how it handles privacy. It takes no input and needs no sign-in or birth details. It fits a question about what Zodiacs can do, or about its limits. It describes the service and calculates nothing. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes.",
   get_sky: "Returns where the Sun, the Moon and the planets are now or at a given moment, with the Moon's phase. It fits a question about the sky at one moment, with no person's chart involved. It is astronomy only and makes no personal prediction. Moments run from 1800 to 2199. It takes an optional time zone; without one its times are in UTC. It gives positions for a moment, with no houses or rising sign.",
@@ -126,5 +136,57 @@ export function asPanelV7(tool: Record<string, unknown>): { tool: Record<string,
   return { tool: { ...tool, _meta: { ...meta, ui: { ...meta.ui, resourceUri: to }, 'openai/outputTemplate': to } }, changed: ['get_horoscope._meta.ui.resourceUri', 'get_horoscope._meta.openai/outputTemplate'] };
 }
 
+/**
+ * ZOD-64: each pair is the description text before PR 1068's minute times and what stands in its place. Taking them
+ * back out gives the ZOD-207 description byte for byte.
+ */
+export const ZOD_64_SENTENCES: Record<string, [string, string][]> = {
+  get_upcoming_events: [["for Neptune entering Aries on 26 January 2026 it gives 14:31:41 UTC, where Horizons gives 17:35 UTC.",
+    "for Neptune entering Aries on 26 January 2026 it gives 14:32 UTC, where Horizons gives 17:35 UTC."]],
+};
+
+/** ZOD-64: a new or full Moon in get_sky's moonPhase, UTC to the minute and, when a zone was given, the zone's clock. */
+const LUNATION_SCHEMA = { type: 'object', properties: { at: { type: 'string' }, localAt: { type: 'string' } }, required: ['at'], additionalProperties: false };
+/** ZOD-64: the four optional properties get_sky's moonPhase gains, in order, after name, angle and illumination. */
+export const ZOD_64_MOON_CYCLE: Record<string, unknown> = { lastNewMoon: LUNATION_SCHEMA, nextNewMoon: LUNATION_SCHEMA, lastFullMoon: LUNATION_SCHEMA, nextFullMoon: LUNATION_SCHEMA };
+
+type Schema = { anyOf: { properties: { data: { properties: { moonPhase: { properties: Record<string, unknown>; required: string[] } } } } }[] };
+
+/** An entry with the ZOD-64 changes, and the paths that changed. */
+export function asZod64(tool: Record<string, unknown>): { tool: Record<string, unknown>; changed: string[] } {
+  const name = String(tool.name);
+  if (name === 'get_sky') {
+    const outputSchema = structuredClone(tool.outputSchema) as Schema;
+    const moonPhase = outputSchema.anyOf[0].properties.data.properties.moonPhase;
+    if (JSON.stringify(Object.keys(moonPhase.properties)) !== JSON.stringify(['name', 'angle', 'illumination'])) throw new Error('get_sky moonPhase is no longer as published');
+    moonPhase.properties = { ...moonPhase.properties, ...ZOD_64_MOON_CYCLE };
+    return { tool: { ...tool, outputSchema }, changed: ['get_sky.outputSchema.anyOf[0].properties.data.properties.moonPhase.properties'] };
+  }
+  const pairs = ZOD_64_SENTENCES[name];
+  if (!pairs) return { tool, changed: [] };
+  const description = pairs.reduce((text, [was, now]) => {
+    if (text.split(was).length !== 2) throw new Error(`${name} no longer holds: ${was}`);
+    return text.replace(was, now);
+  }, String(tool.description));
+  return { tool: { ...tool, description }, changed: [`${name}.description`] };
+}
+
+/** An entry as it was listed before ZOD-64: for comparing with the lists saved before it. */
+export function withoutZod64(tool: Record<string, unknown>): Record<string, unknown> {
+  const name = String(tool.name);
+  if (name === 'get_sky') {
+    const outputSchema = structuredClone(tool.outputSchema) as Schema;
+    const moonPhase = outputSchema.anyOf[0].properties.data.properties.moonPhase;
+    moonPhase.properties = Object.fromEntries(Object.entries(moonPhase.properties).filter(([key]) => !(key in ZOD_64_MOON_CYCLE)));
+    return { ...tool, outputSchema };
+  }
+  return { ...tool, description: descriptionWithoutZod64(name, String(tool.description)) };
+}
+
+/** A description as it read before ZOD-64. */
+export function descriptionWithoutZod64(name: string, description: string): string {
+  return (ZOD_64_SENTENCES[name] ?? []).reduce((text, [was, now]) => text.replace(now, was), description);
+}
+
 /** The thirteen as this release lists them. */
-export const PUBLISHED_TOOLS = LIVE_TOOLS.map((tool) => asPanelV7(asPlainDescription(as065(tool).tool).tool).tool);
+export const PUBLISHED_TOOLS = LIVE_TOOLS.map((tool) => asZod64(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool);

@@ -1,5 +1,5 @@
 import { moonPhase } from '@zodiacs/engine';
-import { eventTimes, localIso, moonPhaseLabel } from './clear-time';
+import { eventTimes, localIso, moonCycleTimes, moonPhaseLabel } from './clear-time';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { ComputeApiError } from '../lib/compute-api/errors';
 import { BUDGETS, EPOCH, EVENT_KINDS } from '../lib/compute-api/constants';
@@ -462,7 +462,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const calculation = computePositions(parsePositionsRequest({ instants: [instant], ...(args.bodies ? { bodies: args.bodies } : {}) }));
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = { mode: args.instant ? 'requested-instant' : 'current-instant', time: { utc, zone, display: displayTime(utc, zone) }, calculation, moonPhase: { name: moonPhaseLabel(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: 'Astronomical calculations; no personal prediction is supplied.' };
+        data = { mode: args.instant ? 'requested-instant' : 'current-instant', time: { utc, zone, display: displayTime(utc, zone) }, calculation, // ZOD-64: the last and next new and full Moons follow the three fields get_sky has always given.
+          moonPhase: { name: moonPhaseLabel(phase.angle), angle: phase.angle, illumination: phase.illumination, ...moonCycleTimes(new Date(utc), phase.angle, args.zone ? zone : undefined) }, interpretation: 'Astronomical calculations; no personal prediction is supplied.' };
         links = [moonLink, methodLink, calendarLink];
         break;
       }
