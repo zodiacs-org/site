@@ -22,7 +22,8 @@ import { SIGNS } from '../../lib/signs';
 import { birthDayEnvelope, settledSunSign } from '../../lib/sun-settled';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { scoreYear, type LongitudeAt, type NatalPoints, type SlowPlanet, type YearScore } from '../../lib/year-score/core';
-import { YEAR_PEOPLE, findYearPerson, yearPageStart, yearPersonPath, type YearPerson } from '../../lib/year-score/people';
+import { FIGURE_NOTE, YEAR_PEOPLE, figureDriverTitle, findYearPerson, yearPageStart, yearPersonPath, type YearPerson } from '../../lib/year-score/people';
+import { figureTierSummary } from '../../lib/year-score/tier';
 import { birthDayEnds, birthDayRange, cachedLongitude, untimedScoreNote } from '../../lib/year-score/range';
 import { dayName, yearReading } from '../../lib/year-score/reading';
 import { figureYearScoreShareUrl, yearScoreShareUrl } from '../../lib/year-score/share';
@@ -244,6 +245,7 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
   if (!timeZone && !figure) limits.push('No time zone was given, so the birth is placed at noon UTC.');
   limits.push('The score reads Jupiter, Saturn, Uranus, Neptune and Pluto against the Sun, Moon, Mercury, Venus and Mars. Fast planets and eclipses are left out.');
   if (figure?.note) limits.push(figure.note);
+  if (figure) limits.push(FIGURE_NOTE);
   const alternates = [];
   for (const alternate of figure?.alternateBirthDates ?? []) {
     const altUtc = await birthInstant(alternate.date, null, figure!.zone, clock);
@@ -251,6 +253,9 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
     alternates.push({ birthDate: alternate.date, score: altYear.score, label: yearReading(altYear).tier.label });
   }
   const detail = readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed });
+  // A named figure gets neutral words (ZOD-12): the figure's tier summary, months as numbers only, and drivers by
+  // title and tone with the name in place of "your", never the reader's month and transit sentences.
+  const pick = (month: typeof reading.best) => (month && figure ? { ...month, line: `${month.name}: ${month.score.toFixed(1)}/10.` } : month);
   return {
     data: {
       status: 'found',
@@ -259,12 +264,13 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
       to: year.to,
       score: year.score,
       label: reading.tier.label,
-      summary: guard(reading.tier.summary),
-      best: reading.best,
-      hardest: reading.hardest,
+      summary: figure ? figureTierSummary(reading.tier.key) : guard(reading.tier.summary),
+      best: pick(reading.best),
+      hardest: pick(reading.hardest),
       drivers: reading.drivers.map((driver, index) => ({
         planet: driver.planet, aspect: driver.aspect, point: driver.point, tone: driver.tone, share: driver.share,
-        title: driver.title, line: driver.line,
+        title: figure ? figureDriverTitle(driver.title, figure.name) : driver.title,
+        line: figure ? `${figureDriverTitle(driver.title, figure.name)}: ${driver.tone}.` : driver.line,
         inOrb: driver.inOrbFrom === driver.inOrbTo ? dayName(driver.inOrbFrom) : `${dayName(driver.inOrbFrom)} to ${dayName(driver.inOrbTo)}`,
         exact: exact[index],
       })),
@@ -279,7 +285,7 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
       // A directory figure's own page; a person's own details have no page, so the calculator.
       pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
       // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
-      shareUrl: figure ? (start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null) : yearScoreShareUrl(origin, { sun, score: year.score }),
+      shareUrl: figure ? (start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug, start.slice(0, 7)) : null) : yearScoreShareUrl(origin, { sun, score: year.score }),
     },
     links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links,
   };

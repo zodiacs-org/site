@@ -73,7 +73,8 @@ import {
 } from './result-preview-model.js';
 import { HUES } from './chart-preview-model.js';
 import { YEAR_SCORE_SHARE_IMAGE_PATH, YEAR_SCORE_SHARE_KEYS, YEAR_SCORE_SHARE_PATH, parseYearScoreShare, yearScoreQuery, type YearScoreShare } from '../lib/year-score/share.js';
-import { scoreTier } from '../lib/year-score/tier.js';
+import { figureTierSummary, scoreTier } from '../lib/year-score/tier.js';
+import { FIGURE_NOTE } from '../lib/year-score/people.js';
 import { figureYearScore } from './year-score-figure.js';
 import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
 import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
@@ -664,19 +665,25 @@ export interface YearScoreCardModel {
   /** A directory figure's name and slug; null on a person's own card. */
   name: string | null;
   slug: string | null;
+  /** A directory figure's first scored day (YYYY-MM-DD); null on a person's own card. */
+  from: string | null;
 }
+
+/** "2026-11-01" as "1 Nov 2026", as the figure's page prints it (src/lib/year-score/reading.ts dayName, without loading the transit sentences). */
+const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const figureDay = (day: string) => `${Number(day.slice(8, 10))} ${SHORT_MONTHS[Number(day.slice(5, 7)) - 1]} ${day.slice(0, 4)}`;
 
 const capitalSign = (slug: ShareSign) => slug.charAt(0).toUpperCase() + slug.slice(1);
 
 /** The model for a share: a person's own from the link, a figure's worked out on the server. Null for a figure the directory does not have. */
 export async function yearScoreCardModel(share: YearScoreShare, now = new Date()): Promise<YearScoreCardModel | null> {
   if (share.kind === 'self') {
-    return { sign: { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] }, score: share.score, label: scoreTier(share.score).label, hue: HUES[share.sun], name: null, slug: null };
+    return { sign: { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] }, score: share.score, label: scoreTier(share.score).label, hue: HUES[share.sun], name: null, slug: null, from: null };
   }
-  const figure = await figureYearScore(share.slug, now);
+  const figure = await figureYearScore(share.slug, now, share.month);
   if (!figure) return null;
   const sun = figure.sun as ShareSign;
-  return { sign: { slug: sun, label: `${capitalSign(sun)} Sun`, hue: HUES[sun] }, score: figure.score, label: figure.label, hue: HUES[sun], name: figure.person.name, slug: figure.person.slug };
+  return { sign: { slug: sun, label: `${capitalSign(sun)} Sun`, hue: HUES[sun] }, score: figure.score, label: figure.label, hue: HUES[sun], name: figure.person.name, slug: figure.person.slug, from: figure.from };
 }
 
 /** A Year Ahead Score (A, the number as a trophy): the Sun sign's panel and disc, the score large, its tier, and the Sun sign. */
@@ -687,7 +694,10 @@ export function yearScoreCard(model: YearScoreCardModel, images: Map<ShareSign, 
     hue: model.hue,
     title: [titleLine(`${model.score.toFixed(1)}/10`, 120)],
     // Two runs, as commaLine splits a comma: the renderer would open a wide gap after the full stop.
-    line: [h('span', null, `${model.label}.`), h('span', null, `\u00a0${model.sign.label}.`)],
+    // A figure's card also says when its twelve months start, on a line of its own, so a posted card dates itself.
+    line: model.from
+      ? [h('div', { style: { display: 'flex', flexDirection: 'column' } }, h('div', { style: { display: 'flex' } }, `${model.label}. ${model.sign.label}.`), h('div', { style: { display: 'flex' } }, `From ${figureDay(model.from)}.`))]
+      : [h('span', null, `${model.label}.`), h('span', null, `\u00a0${model.sign.label}.`)],
   }), model.name ? null : model.sign.slug);
 }
 
@@ -1871,7 +1881,8 @@ export async function handleYearScoreLinkRequest(request: Request): Promise<Resp
     imageUrl: `${url.origin}${YEAR_SCORE_SHARE_IMAGE_PATH}?${query}`,
     imageType: 'image/jpeg',
     imageAlt: `${whose} Year Ahead Score: ${model.score.toFixed(1)} out of 10, ${model.label.toLowerCase()}, ${model.sign.label}.`,
-    explanation: `${model.label}. ${scoreTier(model.score).summary}`,
+    // A figure gets the neutral tier words and the fixed sentence on what the number is not (ZOD-12); a person, their own.
+    explanation: model.slug ? `${model.label}. ${figureTierSummary(scoreTier(model.score).key)} ${FIGURE_NOTE}` : `${model.label}. ${scoreTier(model.score).summary}`,
     action: model.slug
       ? { label: `See ${model.name}’s year`, href: `/year/${model.slug}/` }
       : { label: 'Score your own year', href: '/year-score/' },

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { figureYearScoreShareUrl, parseYearScoreShare, yearScoreShareUrl } from './share';
+import { FIGURE_NOTE } from './people';
 import { handleYearScoreImageRequest, handleYearScoreLinkRequest, isResultShareRoute } from '../../server/result-preview';
 import vercel from '../../../vercel.json';
 
@@ -10,6 +11,21 @@ describe('Year Ahead Score share links', () => {
     expect(yearScoreShareUrl('https://zodiacs.org', { sun: 'leo', score: 6.44 })).toBe('https://zodiacs.org/share/year-score/?s=leo&v=6.4');
     expect(yearScoreShareUrl('https://zodiacs.org', { sun: null, score: 6 })).toBeNull();
     expect(figureYearScoreShareUrl('https://zodiacs.org', 'elon-musk')).toBe('https://zodiacs.org/share/year-score/?p=elon-musk');
+    expect(figureYearScoreShareUrl('https://zodiacs.org', 'elon-musk', '2026-11')).toBe('https://zodiacs.org/share/year-score/?p=elon-musk&m=2026-11');
+    expect(figureYearScoreShareUrl('https://zodiacs.org', 'elon-musk', '2026-13')).toBeNull();
+  });
+  it('pin a figure to a start month from 11 months back up to this month, and only with a slug (ZOD-12)', () => {
+    const now = new Date('2026-11-16T12:00:00Z');
+    expect(parseYearScoreShare(params('p=jensen-huang&m=2026-11'), now)).toEqual({ kind: 'figure', slug: 'jensen-huang', month: '2026-11', ref: null });
+    expect(parseYearScoreShare(params('p=jensen-huang&m=2025-12'), now)).toEqual({ kind: 'figure', slug: 'jensen-huang', month: '2025-12', ref: null });
+    expect(parseYearScoreShare(params('p=jensen-huang'), now)).toEqual({ kind: 'figure', slug: 'jensen-huang', month: null, ref: null });
+    // 12 months back, the future, malformed, repeated, and without a slug: not a share.
+    for (const query of ['p=jensen-huang&m=2025-11', 'p=jensen-huang&m=2026-12', 'p=jensen-huang&m=2026-1', 'p=jensen-huang&m=2026-00', 'p=jensen-huang&m=2026-11-01', 'p=jensen-huang&m=2026-11&m=2026-10', 'm=2026-11', 's=leo&v=6.4&m=2026-11']) {
+      expect(parseYearScoreShare(params(query), now), query).toBeNull();
+    }
+    // The window crosses a year end.
+    expect(parseYearScoreShare(params('p=jensen-huang&m=2025-02'), new Date('2026-01-31T23:59:59Z'))).not.toBeNull();
+    expect(parseYearScoreShare(params('p=jensen-huang&m=2025-01'), new Date('2026-01-31T23:59:59Z'))).toBeNull();
   });
   it('refuse a figure link with a score or sign added, unknown keys, repeats and out-of-range scores', () => {
     expect(parseYearScoreShare(params('p=elon-musk&v=9.9'))).toBeNull();
@@ -60,6 +76,16 @@ describe('the Year Ahead Score share page and picture', () => {
       const html = await (await handleYearScoreLinkRequest(new Request('https://zodiacs.org/share/year-score/?p=jensen-huang'))).text();
       expect(html).toMatch(/Jensen Huang’s Year Ahead Score: \d{1,2}\.\d\/10/u);
       expect(html).toContain('href="/year/jensen-huang/"');
+      // Neutral words and the fixed sentence on what the number is not, never the reader's tier summary (ZOD-12).
+      expect(html).toContain(FIGURE_NOTE);
+      expect(html.replaceAll('Score your own year', '')).not.toMatch(/\b(?:earnings|money|spending|agreements|energy|your|you)\b/iu);
+      // A pinned link scores from its own month; a month out of the window is a 404 page and a 400 picture.
+      const month = new Date().toISOString().slice(0, 7);
+      const pinned = await handleYearScoreLinkRequest(new Request(`https://zodiacs.org/share/year-score/?p=jensen-huang&m=${month}`));
+      expect(pinned.status).toBe(200);
+      expect(await pinned.text()).toContain(`/api/og/year-score-image?p=jensen-huang&amp;m=${month}`);
+      expect((await handleYearScoreImageRequest(new Request(`https://zodiacs.org/api/og/year-score-image?p=jensen-huang&m=${month}`))).status).toBe(200);
+      expect((await handleYearScoreImageRequest(new Request('https://zodiacs.org/api/og/year-score-image?p=jensen-huang&m=1999-01'))).status).toBe(400);
       expect((await handleYearScoreLinkRequest(new Request('https://zodiacs.org/share/year-score/?p=changpeng-zhao'))).status).toBe(404);
       expect((await handleYearScoreImageRequest(new Request('https://zodiacs.org/api/og/year-score-image?p=nobody-here'))).status).toBe(400);
     } finally {
