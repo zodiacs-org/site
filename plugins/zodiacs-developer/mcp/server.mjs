@@ -43099,13 +43099,14 @@ async function readPersonalDay(natal, input, clock2) {
     const held = exact.get(key2);
     if (!held || Math.abs(at.getTime() - midday.getTime()) < Math.abs(held.getTime() - midday.getTime())) exact.set(key2, at);
   }
-  const under18 = isUnder18(input.birthDate, date3);
-  const guard = (text2) => under18 ? softenMinor(text2) : text2;
+  const under18 = isUnder18(input.birthDate, input.today ?? date3);
+  const guard = (text2) => softenHealth(under18 ? softenMinor(text2) : text2);
   const found = [];
   for (const mover of TRANSIT_BODY_ORDER) {
     const moverLon = sky.get(mover);
     const moverLater = bodyLongitude2(mover, later);
     for (const point2 of points) {
+      if (under18 && point2 === "Venus") continue;
       const pointLon = natalLon.get(point2);
       for (const aspect2 of MAJOR_ASPECT_ORDER) {
         const orb = orbOf(moverLon, pointLon, aspect2);
@@ -43240,14 +43241,17 @@ async function castNatal(args, clock2) {
   const timeKnown = args.time !== void 0;
   const placed = latitude !== void 0 && longitude2 !== void 0;
   let birthUtc;
+  let flags = [];
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
     const time = args.time ?? "12:00";
-    birthUtc = (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+    const resolved = longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone);
+    birthUtc = resolved.utc;
+    flags = [...resolved.flags];
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
   const chart = computeChart2({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags };
 }
 async function currentClock(currentZone, birthZone, context) {
   if (currentZone) return { zone: await context.resolveZone(currentZone, "/currentZone"), note: null };
@@ -43318,7 +43322,7 @@ var personalDayData = z18.object({
   })).max(PERSONAL_DAY_LIMIT),
   /** Contacts found before the list was cut to its limit. */
   found: z18.number().int().min(0),
-  /** True when the birth date is under 18 on the day read. Romantic and attraction readings are left out. */
+  /** True when the birth date is under 18 today. Romantic and attraction readings, and the contacts to the natal Venus, are left out. */
   under18: z18.boolean(),
   limits: z18.array(z18.string()),
   pageUrl: z18.url(),

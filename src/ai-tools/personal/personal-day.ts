@@ -82,7 +82,7 @@ export const personalDayData = z.object({
   })).max(PERSONAL_DAY_LIMIT),
   /** Contacts found before the list was cut to its limit. */
   found: z.number().int().min(0),
-  /** True when the birth date is under 18 on the day read. Romantic and attraction readings are left out. */
+  /** True when the birth date is under 18 today. Romantic and attraction readings, and the contacts to the natal Venus, are left out. */
   under18: z.boolean(),
   limits: z.array(z.string()),
   pageUrl: z.url(),

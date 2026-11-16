@@ -5,6 +5,7 @@ import { personalDay } from '../../ai-tools/personal/personal-day';
 import { forbiddenClaim, type PersonalToolContext } from '../../ai-tools/personal/shared';
 import { computeYourDay } from '../../islands/your-day/compute';
 import { PAIR_CONFIDENCES, readingConfidence } from '../../ai-tools/reading-confidence';
+import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
 import { shareContact } from './day';
 import { parseYourDayShare, yourDayQuery, yourDayShareUrl, YOUR_DAY_CONFIDENCES, YOUR_DAY_SHARE_KEYS } from './share';
 
@@ -48,6 +49,44 @@ describe('the /your-day/ page and get_personal_day', () => {
     expect(decodeURIComponent(url.href)).not.toMatch(/1990|05-03|08:30|40\.42|3\.7|Madrid/u);
     expect(parseYourDayShare(url.searchParams)).toEqual({ date: '2026-11-09', planet: top.planet, aspect: top.aspect, point: top.point, confidence: top.confidence, ref: null });
   });
+});
+
+describe('the reading guards on the /your-day/ page and get_personal_day', () => {
+  it('take the age on today, not on the day read, and leave the natal Venus out for someone under 18', async () => {
+    // Born 17 years and 6 months before today (2026-11-09), reading a day 7 months ahead, when they are 18.
+    const minor = { birthDate: '2009-05-09', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
+    for (const date of ['2027-06-09', '2027-06-01', '2027-06-17']) {
+      const tool = (await personalDay({ ...minor, currentZone: 'Europe/Madrid', date }, context)).data;
+      const page = await computeYourDay({ birthDate: minor.birthDate, time: minor.time, birthZone: minor.zone, latitude: minor.latitude, longitude: minor.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09' });
+      for (const reading of [tool, page]) {
+        expect(reading.under18).toBe(true);
+        expect(reading.limits).toContain(MINOR_NOTE);
+        expect(reading.contacts.some((contact) => contact.point === 'Venus')).toBe(false);
+        expect(JSON.stringify({ ...reading, limits: [] })).not.toMatch(/loving|romant|attract/iu);
+      }
+      expect(page.contacts).toEqual(tool.contacts);
+      expect(page.limits).toEqual(tool.limits);
+    }
+    // The same day read for an adult still lists the natal Venus when it is touched.
+    const adult = await computeYourDay({ birthDate: '1990-05-03', time: '08:30', birthZone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, date: '2027-06-09', zone: 'Europe/Madrid', today: '2026-11-09' });
+    expect(adult.under18).toBe(false);
+  }, 60_000);
+
+  it('never read the sixth house as health', async () => {
+    let sixth = 0;
+    for (let day = 1; day <= 30; day += 1) {
+      const date = `2026-11-${String(day).padStart(2, '0')}`;
+      const page = await computeYourDay({ birthDate: ADULT.birthDate, time: ADULT.time, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09' });
+      if (page.moon.house?.number !== 6) continue;
+      sixth += 1;
+      const tool = (await personalDay({ ...ADULT, currentZone: 'Europe/Madrid', date }, context)).data;
+      expect(page.moon).toEqual(tool.moon);
+      expect(page.moon.house.line).toBe('The Moon is passing through your sixth house: routines, craft, and the shape of the day.');
+      expect(JSON.stringify(page)).not.toMatch(/health/iu);
+      expect(JSON.stringify(tool)).not.toMatch(/health/iu);
+    }
+    expect(sixth).toBeGreaterThan(0);
+  }, 60_000);
 });
 
 describe('the your-day share link', () => {

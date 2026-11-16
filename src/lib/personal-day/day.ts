@@ -30,7 +30,7 @@ import { wholeSignHouseFromAsc } from '../daily';
 import { NATAL_HOUSE_THEME } from '../natal';
 import { SIGNS, signIndexForLongitude } from '../signs';
 import { transitLine } from '../transits';
-import { MINOR_NOTE, isUnder18, softenMinor } from '../../ai-tools/features/reading-guards';
+import { MINOR_NOTE, isUnder18, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
 import { clockTime, dayLabel, nextDate } from './clock';
 import { PERSONAL_DAY_LIMIT, dayScore, maxOrb, orbOf, pointName } from './score';
@@ -164,13 +164,17 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
     if (!held || Math.abs(at.getTime() - midday.getTime()) < Math.abs(held.getTime() - midday.getTime())) exact.set(key, at);
   }
 
-  const under18 = isUnder18(input.birthDate, date);
-  const guard = (text: string) => (under18 ? softenMinor(text) : text);
+  // Age is taken on today, as the published tools take it, not on the day read, which can be up to a year ahead.
+  // For someone under 18 the contacts to the natal Venus are left out: their lines read as love and appetite, and
+  // softenMinor, shared with published tools whose output is frozen, does not reach them. MINOR_NOTE says so.
+  const under18 = isUnder18(input.birthDate, input.today ?? date);
+  const guard = (text: string) => softenHealth(under18 ? softenMinor(text) : text);
   const found: Omit<DayContact, 'rank'>[] = [];
   for (const mover of TRANSIT_BODY_ORDER) {
     const moverLon = sky.get(mover)!;
     const moverLater = bodyLongitude(mover, later);
     for (const point of points) {
+      if (under18 && point === 'Venus') continue;
       const pointLon = natalLon.get(point)!;
       for (const aspect of MAJOR_ASPECT_ORDER) {
         const orb = orbOf(moverLon, pointLon, aspect);
