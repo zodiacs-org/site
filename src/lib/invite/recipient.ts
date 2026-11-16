@@ -4,8 +4,12 @@
  * never leaves the page; only the band decides what is offered:
  *
  * - under 13: refused before anything is worked out, and nothing is sent;
- * - 13 to 17: the result, and no signup offered;
+ * - 13 to 17: refused the same way, as get_compatibility gives no reading
+ *   under 18 (ZOD-22): the synastry result speaks of attraction and romance;
  * - 18 and over: the result, then the opt-in signup if they want it.
+ *
+ * An invitation opened from a link or pasted positions has no birth date to
+ * check, so it asks for the recipient's own date instead.
  *
  * The same rule as src/ai-tools/features/reading-guards.ts (isUnderAge), kept
  * here because pages may not import the assistant tools.
@@ -28,6 +32,23 @@ export function deviceToday(now: Date = new Date()): string {
 }
 
 export const UNDER_13_INVITE = 'Zodiacs is not directed at children under 13, so this reading is not worked out for a birth date less than 13 years ago. Nothing you typed has been sent anywhere.';
+export const UNDER_18_INVITE = 'Zodiacs does not give compatibility readings for anyone under 18. Nothing you typed has been sent anywhere.';
+export const NO_DATE_INVITE = 'To open this invitation, enter your own birth date rather than a link, so we can check it is for you.';
+/**
+ * Whether an invitation's reading may be worked out for this recipient, from
+ * the birth date they gave for themselves (YYYY-MM-DD, or nothing for a link
+ * or pasted positions) and today on this device. Only an adult gets a reading;
+ * everyone else gets a fixed message and nothing is worked out or sent.
+ */
+export type InviteRecipientGate = { allowed: true; band: 'adult' } | { allowed: false; band: RecipientBand | null; message: string };
+export function inviteRecipientGate(ownDate: string | null | undefined, today: string): InviteRecipientGate {
+  if (typeof ownDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/u.test(ownDate)) return { allowed: false, band: null, message: NO_DATE_INVITE };
+  const band = recipientBand(ownDate, today);
+  if (band === 'under13') return { allowed: false, band, message: UNDER_13_INVITE };
+  if (band === 'minor') return { allowed: false, band, message: UNDER_18_INVITE };
+  return { allowed: true, band };
+}
+
 export const RECIPIENT_CONSENT_LABEL = 'These are my own birth details, and I am 13 or older.';
 
 export type InviteSignupOutcome = 'pending' | 'unavailable' | 'error';

@@ -1042,6 +1042,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
 
   // An invite with signups on asks the recipient to confirm the details are their own, and their age, first.
   const inviteSignupActive = INVITE_SIGNUP_UI_ENABLED && inviteUiActive && arrival.state === 'ready';
+  // Any invitation, signups on or off: the recipient's age decides whether a reading is worked out at all (ZOD-22).
+  const inviteArrivalActive = inviteUiActive && arrival.state === 'ready';
   const canCompare = slotReady(slotA) && slotReady(slotB) && !sameSaved && !busy && (!inviteSignupActive || recipientConsent);
 
   const track = (name: string, props: Record<string, string> = {}) => {
@@ -1339,18 +1341,19 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
         return;
       }
       const [sideA, sideB] = read;
-      if (inviteSignupActive) {
-        // The recipient's own birth date decides what is offered; under 13 nothing is worked out or sent.
-        const { recipientBand: bandOf, deviceToday, UNDER_13_INVITE } = await loadModule(() => import('../lib/invite/recipient'));
-        const ownDate = sideB.source === 'form' ? sideB.date : charts.find((chart) => chart.id === sideB.savedId)?.birth?.date;
-        const band = typeof ownDate === 'string' && /^\d{4}-\d{2}-\d{2}$/u.test(ownDate) ? bandOf(ownDate, deviceToday()) : 'minor';
+      if (inviteArrivalActive) {
+        // The recipient's own birth date, on this device, decides whether anything is worked out. Under 18 nothing is
+        // worked out or sent, as get_compatibility gives no reading under 18; with no date to check, ask for one.
+        const { inviteRecipientGate, deviceToday } = await loadModule(() => import('../lib/invite/recipient'));
+        const ownDate = sideB.source === 'form' ? sideB.date : sideB.source === 'saved' ? charts.find((chart) => chart.id === sideB.savedId)?.birth?.date : undefined;
+        const gate = inviteRecipientGate(ownDate, deviceToday());
         if (!requestIsCurrent(request, accessGeneration)) return;
-        setRecipientBand(band);
-        if (band === 'under13') {
-          setError(UNDER_13_INVITE);
+        setRecipientBand(gate.band);
+        if (!gate.allowed) {
+          setError(gate.message);
           return;
         }
-        if (band === 'adult' && !signupMod) void loadModule(() => import('./synastry/InviteSignup')).then(setSignupMod).catch(() => {});
+        if (inviteSignupActive && !signupMod) void loadModule(() => import('./synastry/InviteSignup')).then(setSignupMod).catch(() => {});
       }
       const resolve = (slot: SlotState, fallback: string) =>
         slot.source === 'saved' ? resolveSaved(charts.find((c) => c.id === slot.savedId)!, loadEngine)
@@ -1646,9 +1649,6 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
               />
               {result.source === 'invite' && inviteSignupActive && recipientBand === 'adult' && signupMod && (
                 <signupMod.InviteSignup handle={arrival.handle} label={result.a.label} sign={signOfLongitude(result.b.bodies.find((body) => body.body === 'Sun')?.lon ?? 0)} />
-              )}
-              {result.source === 'invite' && inviteSignupActive && recipientBand === 'minor' && (
-                <p class="field__help">The daily email is for adults, so nothing more is asked of you here.</p>
               )}
               {result.source === 'invite'
                 && (slotB.source === 'form' || slotB.source === 'saved') && (

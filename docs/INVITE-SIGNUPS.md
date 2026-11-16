@@ -56,7 +56,7 @@ Off, every Phase 4 behaviour is unchanged.
 | 5 | The checkbox is unticked and the button stays disabled until it is ticked. | Opt-in consent must be an affirmative act. |
 | 6 | The recipient confirms "my own birth details" and "13 or older" before any calculation. | Details are never entered on someone else's behalf, and the age gate comes before anything is worked out. |
 | 7 | Under 13: refuse, compute nothing, complete nothing, offer nothing. | Zodiacs is not directed at children under 13 and collects nothing about them. |
-| 8 | 13 to 17: the result, no signup offered. | Consent ages for marketing email reach 16 in parts of the EU, and the site already holds romance framing back under 18; the adult line is the safe one. |
+| 8 | 13 to 17: no reading, as under 13, and no signup. An invitation opened without the recipient's own birth date (a link or pasted positions) asks for the date first. This holds whenever invites are on, with signups on or off (ZOD-22). | The synastry result speaks of attraction and romance, and get_compatibility gives no reading at all under 18; the page now knows the recipient's age, so it holds back the same way. The date is checked on the device and never sent. |
 | 9 | The age is worked out in the browser; only `adult: true` crosses. | The birth date stays on the device, as the Phase 4 contract requires. |
 | 10 | The server keeps a keyed hash of the address, never the address. | The same identity rule the daily email uses; the address lives only with the email provider. |
 | 11 | Consent is recorded per invite and party as a policy version, with no identity. | Shows consent on both sides without storing who the recipient is. |

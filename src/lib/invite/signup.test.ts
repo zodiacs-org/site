@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { INVITER_CONSENT_VERSION, RECIPIENT_CONSENT_VERSION, confirmCompatibilityInviteSignups, inviteSignupEnabled, recordInviterConsent, stageCompatibilityInviteSignup } from './signup';
-import { deviceToday, recipientBand, requestInviteSignup } from './recipient';
+import { NO_DATE_INVITE, UNDER_13_INVITE, UNDER_18_INVITE, deviceToday, inviteRecipientGate, recipientBand, requestInviteSignup } from './recipient';
 import { SIGNUP_ENV } from './signup-fixture';
 
 const ORIGINAL_ENV = { ...process.env };
@@ -92,6 +92,35 @@ describe('the recipient in the browser', () => {
     expect(recipientBand('2015-03-01', '2028-02-29')).toBe('under13');
     expect(recipientBand('2015-02-28', '2028-02-29')).toBe('minor');
     expect(deviceToday(new Date(2026, 10, 9, 23, 59))).toBe('2026-11-09');
+  });
+
+  it('works out a reading for an adult only: under 18 and a missing date get a fixed message (ZOD-22)', () => {
+    expect(recipientBand('2010-06-01', '2026-11-10')).toBe('minor');
+    expect(inviteRecipientGate('1990-05-03', '2026-11-10')).toEqual({ allowed: true, band: 'adult' });
+    expect(inviteRecipientGate('2008-11-10', '2026-11-10')).toEqual({ allowed: true, band: 'adult' });
+    expect(inviteRecipientGate('2008-11-11', '2026-11-10')).toEqual({ allowed: false, band: 'minor', message: UNDER_18_INVITE });
+    expect(inviteRecipientGate('2010-06-01', '2026-11-10')).toEqual({ allowed: false, band: 'minor', message: UNDER_18_INVITE });
+    expect(inviteRecipientGate('2015-06-01', '2026-11-10')).toEqual({ allowed: false, band: 'under13', message: UNDER_13_INVITE });
+    for (const missing of [undefined, null, '', '1990-5-3', 'not a date']) {
+      expect(inviteRecipientGate(missing, '2026-11-10')).toEqual({ allowed: false, band: null, message: NO_DATE_INVITE });
+    }
+    for (const text of [UNDER_18_INVITE, NO_DATE_INVITE]) expect(text).not.toMatch(/[\u2013\u2014]/u);
+  });
+
+  it('checks every invitation in the island before anything is worked out, signups on or off (ZOD-22)', () => {
+    const source = readFileSync(new URL('../../islands/SynastryCalculator.tsx', import.meta.url), 'utf8');
+    const gate = source.indexOf('inviteRecipientGate(ownDate');
+    expect(gate).toBeGreaterThan(-1);
+    // The check sits under the invitation itself, not under the signup switch.
+    const guard = source.lastIndexOf('if (', gate);
+    expect(source.slice(guard, source.indexOf('{', guard))).toBe('if (inviteArrivalActive) ');
+    expect(source).toMatch(/const inviteArrivalActive = inviteUiActive && arrival\.state === 'ready';/u);
+    // A refusal returns before either side is resolved or the engine is loaded.
+    const after = source.slice(gate, source.indexOf('const resolve = (slot', gate));
+    expect(after).toMatch(/if \(!gate\.allowed\) \{\s*setError\(gate\.message\);\s*return;\s*\}/u);
+    expect(after).not.toMatch(/fetch\(|resolveForm|loadEngine/u);
+    // The footer for a 13 to 17 recipient's result is gone: there is no such result.
+    expect(source).not.toContain("recipientBand === 'minor'");
   });
 
   it('sends the address, the sign and the two yeses only, never the birth date', async () => {
