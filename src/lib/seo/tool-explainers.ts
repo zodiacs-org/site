@@ -52,7 +52,7 @@ export const TOOL_EXPLAINERS: Readonly<Record<ToolExplainerKind, ToolExplainer>>
     ],
   },
   day: {
-    title: 'Chart of the Day: Sourced Birth Charts of People in the News | Zodiacs.org',
+    title: 'Chart of the Day: The Sky When Someone in the News Was Born | Zodiacs.org',
     description: 'A public figure in the news, their birth chart, and a clear account of where the birth date comes from and how far it can be trusted.',
     faq: [
       { q: 'How is the chart of the day chosen?', a: 'We pick a public figure who was in the news that week and whose birth date is published by a source we can name. Each edition links the news story and the birth record, says how reliable that record is, and is approved by a person before it goes up.' },
