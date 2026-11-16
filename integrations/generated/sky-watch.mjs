@@ -194,7 +194,7 @@ var COMPUTE_RECEIPT_SCHEMA = "zodiacs.compute-receipt.v1";
 // src/lib/compute-api/handler.ts
 import { checkRateLimit } from "@vercel/firewall";
 
-// node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
 var SIGNS = /* @__PURE__ */ Object.freeze([
   /* @__PURE__ */ Object.freeze({
     slug: "aries",
@@ -310,7 +310,7 @@ function degreeInSign(lon) {
   return normalizeLongitude(lon) % 30;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
 var DEG = Math.PI / 180;
 var RAD = 180 / Math.PI;
 var HOUSE_SYSTEMS = /* @__PURE__ */ Object.freeze([
@@ -625,7 +625,7 @@ function houseOf(longitude2, cusps) {
   return 12;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
 var DEG2 = Math.PI / 180;
 var ARCSEC = DEG2 / 3600;
 var ARGUMENTS = [
@@ -769,7 +769,7 @@ function eclipticOfDate(x, y, z21, tt) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
 var DELTA_T_MODEL = "zodiacs-deltat/1";
 var DELTA_T_TABLE = /* @__PURE__ */ Object.freeze({
   version: "2026-09-24",
@@ -1050,7 +1050,7 @@ function deltaT(ut) {
   return seconds(2e3 + ut / 365.25);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
 var REFERENCE_SPAN = /* @__PURE__ */ Object.freeze({
   from: "1800-01-01T00:00:00.000Z",
   to: "2200-01-01T00:00:00.000Z"
@@ -1259,7 +1259,7 @@ function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
 var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
   "conjunction",
   "sextile",
@@ -1340,7 +1340,7 @@ function findAspects(bodies) {
 var ENGINE_VERSION = "1.1.0-rc.2";
 var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
 
-// node_modules/astronomy-engine/esm/astronomy.js
+// ../site/node_modules/astronomy-engine/esm/astronomy.js
 /**
     @preserve
 
@@ -3279,7 +3279,7 @@ var NodeEventKind;
   NodeEventKind2[NodeEventKind2["Descending"] = -1] = "Descending";
 })(NodeEventKind || (NodeEventKind = {}));
 
-// node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
 var SAFE_MAGNITUDE = 2 ** 1e3;
 var DEG3 = Math.PI / 180;
 var RAD3 = 180 / Math.PI;
@@ -3475,7 +3475,7 @@ function chartAt(input) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
 var ISO_INSTANT = /^(\d{4}|[+-]\d{6})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-](\d{2}):(\d{2})))?$/;
 function validIsoInput(input) {
   const match = ISO_INSTANT.exec(input);
@@ -3507,7 +3507,7 @@ function dateFrom(input, label2) {
   return date3;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
 var DAY3 = 864e5;
 var REFINE_STEPS = 24;
 var EDGE_PROBE_MAX_MS = 6e4;
@@ -3740,7 +3740,7 @@ function searchLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from
   return run(longitudeAt2, body2, targetLongitude, window, maxSamples);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
 var HOUSE_SYSTEM_NAMES2 = [
   "whole",
   "placidus",
@@ -3821,7 +3821,7 @@ function assertDerivedFlags(supplied, actual) {
   }
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
@@ -3909,7 +3909,7 @@ function moonPhase(date3) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
 var NAMESPACE = /^[A-Za-z][A-Za-z0-9-]*$/u;
 var VALUE = /^[^\s\p{Cc}\p{Cf}\p{Cs}]+$/u;
 function conventionId(namespace, value) {
@@ -3946,7 +3946,7 @@ function natalConventionIds(envelope) {
   return [...ids].sort();
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
 var julianLeap = (year) => year % 4 === 0;
 var gregorianLeap = (year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 function parseCalendarDate(value, calendar) {
@@ -3995,7 +3995,7 @@ function julianToGregorian(value) {
   return date3 ? format(civilDateOf(julianDayNumber(date3, "julian"), "gregorian")) : null;
 }
 
-// node_modules/@zodiacs/engine/dist/receipt.js
+// ../site/node_modules/@zodiacs/engine/dist/receipt.js
 var SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 var DIGITS = /^\d+$/;
 function isVersion(value) {
@@ -4849,7 +4849,7 @@ function createNatalEnvelope(chart, context = {}) {
   });
 }
 
-// node_modules/@zodiacs/engine/dist/time.js
+// ../site/node_modules/@zodiacs/engine/dist/time.js
 function timeBasis2(ms, scale2, pin) {
   if (typeof ms !== "number" || !(Math.abs(ms) <= 864e13)) throw new RangeError("ms must be an instant within the range of a Date.");
   if (scale2 !== void 0 && !TIME_SCALE_NAMES.includes(scale2)) throw new RangeError('scale must be "utc", "ut1" or "tt".');
@@ -5272,7 +5272,7 @@ function timeResolutionFacts(module) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/conventions.js
+// ../site/node_modules/@zodiacs/engine/dist/conventions.js
 var CONVENTIONS_REGISTRY = "https://zodiacs.org/developers/conventions/";
 function parseConventionId(id) {
   const colon = typeof id === "string" ? id.indexOf(":") : -1;
@@ -6946,7 +6946,7 @@ var COMPUTE_TAG = Object.freeze({
   description: `Calculations from a POST body, on the vendored @zodiacs/engine. Birth data goes only in the body; any query string is ignored. The function writes nothing from a request or its result to a log, a file or a database, and responses are not cached; the host's request logs keep each request's web address and IP address. The endpoints answer only while their per-address rate limit is in place, and 503 otherwise. A body with a repeated key is read as JSON.parse reads it: the last value wins. Documentation: ${COMPUTE_DOCS_URL}`
 });
 
-// node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
 var DEG4 = Math.PI / 180;
 var ARCSEC3 = DEG4 / 3600;
 function toEquator(m, angle) {
@@ -6988,7 +6988,7 @@ function turn2(m, x, y, z21) {
   return [m[0] * x + m[1] * y + m[2] * z21, m[3] * x + m[4] * y + m[5] * z21, m[6] * x + m[7] * y + m[8] * z21];
 }
 
-// node_modules/@zodiacs/engine/dist/sky.js
+// ../site/node_modules/@zodiacs/engine/dist/sky.js
 function firstMillisecond(reached, estimate) {
   const start = Math.round(estimate);
   let lo = start - 4;
@@ -24950,7 +24950,7 @@ var birthdays_default = {
   }
 };
 
-// node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
 function readOptions(value, allowed, label2) {
   const out = /* @__PURE__ */ Object.create(null);
   if (value === void 0) return out;
@@ -24974,7 +24974,7 @@ function readOptions(value, allowed, label2) {
   return out;
 }
 
-// node_modules/@zodiacs/engine/dist/techniques.js
+// ../site/node_modules/@zodiacs/engine/dist/techniques.js
 function oneOf2(value, allowed, fallback2, label2) {
   if (value === void 0) return fallback2;
   if (typeof value === "string" && allowed.includes(value)) return value;
@@ -41777,7 +41777,7 @@ function getNumerology(args, context) {
 // src/ai-tools/personal/vedic-signs.ts
 import { z as z16 } from "zod";
 
-// node_modules/@zodiacs/engine/dist/chunk-DCDIMC7W.js
+// ../site/node_modules/@zodiacs/engine/dist/chunk-DCDIMC7W.js
 var DEG7 = Math.PI / 180;
 var ARCSEC4 = DEG7 / 3600;
 var MAS = ARCSEC4 / 1e3;
@@ -42111,7 +42111,7 @@ function siderealLongitude(tropicalLongitude, ayanamsa2) {
   });
 }
 
-// node_modules/@zodiacs/engine/dist/vedic.js
+// ../site/node_modules/@zodiacs/engine/dist/vedic.js
 var VIMSHOTTARI_LORDS = Object.freeze([
   "Ketu",
   "Venus",
@@ -42442,9 +42442,10 @@ var nakshatraOrdinal = (n) => ORDINALS[n];
 // src/lib/vedic-signs/reading.ts
 var round2 = (value) => Math.round(value * 100) / 100;
 var label = (index) => `${SIGNS2[index].name} (${RASHIS[index]})`;
-function signOf(point2, line) {
+var listOr = (names) => names.length < 3 ? names.join(" or ") : `${names.slice(0, -1).join(", ")} or ${names[names.length - 1]}`;
+function signOf(point2, line, timeKnown = true) {
   const index = signIndexForLongitude2(point2.lon);
-  return { sign: SIGNS2[index].slug, rashi: RASHIS[index], degree: Math.min(29.99, round2(point2.lon - index * 30)), tropicalSign: SIGNS2[signIndexForLongitude2(point2.tropical)].slug, line };
+  return { sign: SIGNS2[index].slug, rashi: RASHIS[index], degree: timeKnown ? Math.min(29.99, round2(point2.lon - index * 30)) : null, tropicalSign: SIGNS2[signIndexForLongitude2(point2.tropical)].slug, line };
 }
 var sunLine = (index) => `Your Vedic Sun is in ${RASHIS[index]}, ${SIGNS2[index].name} in the sidereal zodiac. In Jyotish the Sun is the soul and the sense of self: ${RASHI_LINE[index]}`;
 var moonLine = (index) => `Your Moon sign (rashi) is ${RASHIS[index]}, ${SIGNS2[index].name}. Vedic astrology reads the Moon sign first, as the mind and the emotional nature: ${RASHI_LINE[index]}`;
@@ -42467,7 +42468,7 @@ function passedThrough(indices, count) {
   const steps = (last2 - first2 + count) % count;
   return Array.from({ length: steps + 1 }, (_, step) => (first2 + step) % count);
 }
-var padaLimit = (nakshatra2, padas) => `The Moon stayed in ${nakshatra2} that day but moved through more than one of its quarters (padas): pada ${padas.slice(0, -1).join(", ")} or ${padas[padas.length - 1]}. A birth time settles it.`;
+var padaLimit = (nakshatra2, padas) => `The Moon stayed in ${nakshatra2} that day but moved through more than one of its quarters (padas): pada ${listOr(padas.map(String))}. A birth time settles it.`;
 function vedicReading(input) {
   const { at, ends } = input;
   const settled = (pick) => {
@@ -42477,8 +42478,8 @@ function vedicReading(input) {
   };
   const sunHold = settled((moment2) => moment2.sun.lon);
   const moonHold = settled((moment2) => moment2.moon.lon);
-  const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude2(at.sun.lon))) : null;
-  const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude2(at.moon.lon))) : null;
+  const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude2(at.sun.lon)), input.timeKnown) : null;
+  const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude2(at.moon.lon)), input.timeKnown) : null;
   const rising = input.timeKnown && input.placed && at.rising ? signOf(at.rising, risingLine(signIndexForLongitude2(at.rising.lon))) : null;
   const nakshatraNames = ends ? passedThrough(ends.map((end) => end.nakshatra.index), 27).map((index) => NAKSHATRA_NAMES[index]) : [];
   const nakshatraHeld = !ends || nakshatraNames.length === 1;
@@ -42486,14 +42487,14 @@ function vedicReading(input) {
   const firstPada = endPadas.length ? Math.min(...endPadas) : 0;
   const lastPada = endPadas.length ? Math.max(...endPadas) : 0;
   const padaCandidates = firstPada !== lastPada ? Array.from({ length: lastPada - firstPada + 1 }, (_, step) => firstPada + step) : [];
-  const moonNakshatra = nakshatraHeld ? { ...nakshatraReading(at.nakshatra), ...padaCandidates.length ? { pada: null } : {} } : null;
+  const moonNakshatra = nakshatraHeld ? { ...nakshatraReading(at.nakshatra), ...input.timeKnown ? {} : { pada: null } } : null;
   const limits2 = [];
   if (!input.timeKnown) {
-    limits2.push("No birth time was given, so there is no rising sign (lagna), and the Moon sign, nakshatra and pada are given only where the whole birth day keeps them.");
-    if (!moonHold.held) limits2.push(`The Moon changed sign that day: it was in ${moonHold.candidates.join(" or ")}. A birth time settles it.`);
-    if (!nakshatraHeld) limits2.push(`The Moon changed nakshatra that day: it was in ${nakshatraNames.join(" or ")}. A birth time settles it.`);
+    limits2.push("No birth time was given, so there is no rising sign (lagna), no degree and no pada, and the Moon sign and nakshatra are given only where the whole birth day keeps them.");
+    if (!moonHold.held) limits2.push(`The Moon changed sign that day: it was in ${listOr(moonHold.candidates)}. A birth time settles it.`);
+    if (!nakshatraHeld) limits2.push(`The Moon changed nakshatra that day: it was in ${listOr(nakshatraNames)}. A birth time settles it.`);
     if (padaCandidates.length) limits2.push(padaLimit(nakshatraNames[0], padaCandidates));
-    if (!sunHold.held) limits2.push(`The Sun changed sign that day: it was in ${sunHold.candidates.join(" or ")}. A birth time settles it.`);
+    if (!sunHold.held) limits2.push(`The Sun changed sign that day: it was in ${listOr(sunHold.candidates)}. A birth time settles it.`);
   } else if (!input.placed) limits2.push("No birthplace coordinates were given, so there is no rising sign (lagna).");
   const parts = [sun?.line, moon?.line, rising?.line, moonNakshatra?.line].filter((line) => !!line);
   const confidence = readingConfidence(input.timeKnown && input.placed ? "timed-place" : "date");
@@ -42652,8 +42653,8 @@ var sign3 = z16.object({
   /** The Western sign name for the sidereal sign, such as aries. */
   sign: z16.enum(SIGNS2.map((entry) => entry.slug)),
   rashi: z16.enum(RASHIS),
-  /** Degrees into the sidereal sign, 0 to 30, to two decimals. */
-  degree: z16.number().min(0).max(30),
+  /** Degrees into the sidereal sign, 0 to 30, to two decimals; null without a birth time. */
+  degree: z16.number().min(0).max(30).nullable(),
   /** The sign the same body is in on the tropical (Western) zodiac. */
   tropicalSign: z16.string(),
   line: z16.string()
@@ -42662,7 +42663,7 @@ var nakshatra = z16.object({
   name: z16.string(),
   /** 1 for Ashwini to 27 for Revati. */
   number: z16.number().int().min(1).max(27),
-  /** The quarter of the nakshatra; null when an untimed birth day leaves it open (see padaCandidates). */
+  /** The quarter of the nakshatra; null without a birth time (see padaCandidates). */
   pada: z16.number().int().min(1).max(4).nullable(),
   /** Its ruling planet in the Vimshottari order. */
   lord: z16.string(),
@@ -42683,7 +42684,7 @@ var vedicSignsData = z16.object({
   rising: sign3.nullable(),
   moonNakshatra: nakshatra.nullable(),
   nakshatraCandidates: z16.array(z16.string()),
-  /** Padas the Moon passed through on an untimed birth day that kept one nakshatra; empty when the pada is settled. */
+  /** Padas the Moon passed through on an untimed birth day that kept one nakshatra; otherwise empty. */
   padaCandidates: z16.array(z16.number().int().min(1).max(4)),
   /** One plain paragraph, built from the lines above. */
   summary: z16.string(),
@@ -42720,7 +42721,7 @@ var vedicSignsTool = definePersonalTool({
   name: "get_vedic_signs",
   title: "Vedic signs",
   summary: "sidereal Sun, Moon and rising signs and the Moon nakshatra, Lahiri by default",
-  description: "Gives the person's Vedic (sidereal) Sun, Moon and rising signs and the nakshatra their Moon was in, with its pada, ruling planet, deity and symbol, and what each is traditionally read as in Jyotish. Use it for my Vedic sign, my sidereal sign, my rashi, my lagna or my nakshatra, once the person has given a birth date. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time there is no rising sign, and the Moon's sign, nakshatra and pada come back only when the whole birth day settles them, otherwise as candidates. When they name a town or city instead of coordinates, use find_birthplace first. The zodiac is Lahiri unless the person asks for raman, krishnamurti, fagan-bradley, yukteswar or true-chitra. For the Western (tropical) chart use get_natal_chart. Share the readings plainly as Vedic astrology's reading, with the reading-confidence label.",
+  description: "Gives the person's Vedic (sidereal) Sun, Moon and rising signs and the nakshatra their Moon was in, with its pada, ruling planet, deity and symbol, and what each is traditionally read as in Jyotish. Use it for my Vedic sign, my sidereal sign, my rashi, my lagna or my nakshatra, once the person has given a birth date. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time there is no rising sign, no degree and no pada, and the Moon's sign and nakshatra come back only when the whole birth day settles them, otherwise as candidates. When they name a town or city instead of coordinates, use find_birthplace first. The zodiac is Lahiri unless the person asks for raman, krishnamurti, fagan-bradley, yukteswar or true-chitra. For the Western (tropical) chart use get_natal_chart. Share the readings plainly as Vedic astrology's reading, with the reading-confidence label.",
   input: vedicSignsInput,
   data: vedicSignsData,
   clockDependent: false,

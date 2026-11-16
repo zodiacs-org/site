@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
 import type { City } from '../lib/geo/search';
 import type { VedicReading, VedicSign } from '../lib/vedic-signs/reading';
-import { UNDER_13_MESSAGE, isUnder13 } from '../lib/vedic-signs/reading';
+import { UNDER_13_MESSAGE, isUnder13, listOr } from '../lib/vedic-signs/reading';
 import { AYANAMSA_NAME, VEDIC_AYANAMSAS, type VedicAyanamsa } from '../lib/vedic-signs/wording';
 import { VEDIC_SIGNS_SHARE_PATH, vedicSignsShareQuery } from '../lib/vedic-signs/share';
 import { SIGNS } from '../lib/signs';
@@ -47,7 +47,7 @@ function Placement({ title, sign, missing }: { title: string; sign: VedicSign | 
       <p class="vedic__body">{title}</p>
       <img class="vedic__disc" src={signIcon(128, sign.sign)} width={56} height={56} alt="" decoding="async" />
       <h3 class="vedic__sign">{sign.rashi} <span>{signName(sign.sign)}</span></h3>
-      <p class="vedic__facts"><span class="mono">{degrees(sign.degree)}</span> in {sign.rashi}. Western sign: {signName(sign.tropicalSign)}.</p>
+      {sign.degree !== null && <p class="vedic__facts"><span class="mono">{degrees(sign.degree)}</span> in {sign.rashi}. Western sign: {signName(sign.tropicalSign)}.</p>}
       <p class="vedic__line">{sign.line.slice(sign.line.indexOf(':') + 2)}</p>
     </article>
   );
@@ -114,7 +114,7 @@ export default function VedicSigns() {
     try { await navigator.clipboard.writeText(shareUrl); setShared('copied'); } catch { setShared('failed'); }
   }
 
-  const unsettledMoon = result && !result.moon ? `The Moon changed sign that day: ${result.moonCandidates.join(' or ')}. A birth time settles it.` : '';
+  const unsettledMoon = result && !result.moon ? `The Moon changed sign that day: ${listOr(result.moonCandidates)}. A birth time settles it.` : '';
 
   return (
     <div class="calc vedic" data-vedic-signs>
@@ -156,7 +156,7 @@ export default function VedicSigns() {
           </div>
 
           <div class="vedic__grid">
-            <Placement title="Sun (soul and self)" sign={result.sun} missing={`The Sun changed sign that day: ${result.sunCandidates.join(' or ')}. A birth time settles it.`} />
+            <Placement title="Sun (soul and self)" sign={result.sun} missing={`The Sun changed sign that day: ${listOr(result.sunCandidates)}. A birth time settles it.`} />
             <Placement title="Moon sign (rashi)" sign={result.moon} missing={unsettledMoon} />
             <Placement title="Rising sign (lagna)" sign={result.rising} missing={result.timeKnown ? 'The rising sign needs the birthplace.' : 'The rising sign needs the birth time: it changes sign about every two hours.'} />
           </div>
@@ -167,7 +167,7 @@ export default function VedicSigns() {
               <>
                 <h3 class="vedic__sign">{result.moonNakshatra.name} <span>nakshatra {result.moonNakshatra.number} of 27</span></h3>
                 <dl class="vedic__facts-list">
-                  <div><dt>Pada</dt><dd class="mono">{result.moonNakshatra.pada !== null ? `${result.moonNakshatra.pada} of 4` : `not settled, ${result.padaCandidates[0]} to ${result.padaCandidates[result.padaCandidates.length - 1]} of 4`}</dd></div>
+                  {result.moonNakshatra.pada !== null && <div><dt>Pada</dt><dd class="mono">{result.moonNakshatra.pada} of 4</dd></div>}
                   <div><dt>Lord</dt><dd>{result.moonNakshatra.lord}</dd></div>
                   <div><dt>Deity</dt><dd>{result.moonNakshatra.deity}</dd></div>
                   <div><dt>Symbol</dt><dd>{result.moonNakshatra.symbol}</dd></div>
@@ -177,7 +177,7 @@ export default function VedicSigns() {
             ) : (
               <>
                 <h3 class="vedic__sign">Not settled</h3>
-                <p class="vedic__line">The Moon changed nakshatra that day: {result.nakshatraCandidates.join(' or ')}. A birth time settles it.</p>
+                <p class="vedic__line">The Moon changed nakshatra that day: {listOr(result.nakshatraCandidates)}. A birth time settles it.</p>
               </>
             )}
           </article>

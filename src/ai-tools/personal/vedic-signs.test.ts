@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { NAKSHATRAS } from '@zodiacs/engine/vedic';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { executeAiTool } from '../tools';
-import { NAKSHATRA_LORE, RASHI_LINE, vedicSigns } from './vedic-signs';
+import { NAKSHATRA_LORE, RASHI_LINE, vedicSigns, vedicSignsData } from './vedic-signs';
 import { forbiddenClaim } from './shared';
 import { computeChart } from '../../lib/engine/full';
 
@@ -90,8 +90,17 @@ describe('get_vedic_signs without a birth time', () => {
 
   it('gives the Sun sign alone when the day keeps it, with no place given', async () => {
     const data = await run({ birthDate: '1990-05-03' });
-    expect(data.sun).toMatchObject({ rashi: 'Mesha', tropicalSign: 'taurus' });
+    expect(data.sun).toMatchObject({ rashi: 'Mesha', tropicalSign: 'taurus', degree: null });
     expect(data.placed).toBe(false);
+    // Without a birth time the output parses with no degree and no pada, and the timed call still prints both.
+    expect(vedicSignsData.safeParse(data).success).toBe(true);
+    const held = await run({ birthDate: '2000-01-05', zone: 'UTC' });
+    expect(held.moon!.degree).toBeNull();
+    expect(held.moonNakshatra!.pada).toBeNull();
+    const timed = await run({ birthDate: '1990-01-18', time: '12:00', zone: 'UTC' });
+    expect(typeof timed.sun!.degree).toBe('number');
+    expect(typeof timed.moon!.degree).toBe('number');
+    expect(typeof timed.moonNakshatra!.pada).toBe('number');
   });
 });
 

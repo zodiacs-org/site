@@ -1,9 +1,9 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { NAKSHATRAS, siderealChart } from '@zodiacs/engine/vedic';
 import { computeVedicSigns } from './compute';
-import { UNDER_13_MESSAGE, isUnder13, passedThrough, vedicReading } from './reading';
+import { UNDER_13_MESSAGE, isUnder13, listOr, passedThrough, vedicReading } from './reading';
 import { parseVedicSignsShare, vedicSignsQuery, vedicSignsShareQuery, vedicSignsShareUrl, VEDIC_SIGNS_SHARE_KEYS } from './share';
-import { AYANAMSA_NAME, NAKSHATRA_LORE, NAKSHATRA_NAMES, RASHI_LINE, VEDIC_AYANAMSAS, VEDIC_NOTE, nakshatraSigns } from './wording';
+import { AYANAMSA_NAME, NAKSHATRA_LORE, NAKSHATRA_NAMES, RASHIS, RASHI_LINE, VEDIC_AYANAMSAS, VEDIC_NOTE, nakshatraSigns } from './wording';
 import { forbiddenClaim } from '../../ai-tools/personal/shared';
 import { softenMinor } from '../../ai-tools/features/reading-guards';
 import { signIndexForLongitude } from '../signs';
@@ -26,10 +26,10 @@ describe('the Vedic signs the page and the tool share', () => {
         expect(Math.abs(ours.ayanamsa.degrees - engine.ayanamsaValue.true), ayanamsa).toBeLessThan(0.0001);
         const sunIndex = signIndexForLongitude(lon('Sun'));
         const moonIndex = signIndexForLongitude(lon('Moon'));
-        expect(angle(sunIndex * 30 + ours.sun!.degree, lon('Sun'))).toBeLessThan(0.01);
-        expect(angle(moonIndex * 30 + ours.moon!.degree, lon('Moon'))).toBeLessThan(0.01);
+        expect(angle(sunIndex * 30 + ours.sun!.degree!, lon('Sun'))).toBeLessThan(0.01);
+        expect(angle(moonIndex * 30 + ours.moon!.degree!, lon('Moon'))).toBeLessThan(0.01);
         const ascIndex = signIndexForLongitude(engine.ascendant!.lon);
-        expect(angle(ascIndex * 30 + ours.rising!.degree, engine.ascendant!.lon)).toBeLessThan(0.01);
+        expect(angle(ascIndex * 30 + ours.rising!.degree!, engine.ascendant!.lon)).toBeLessThan(0.01);
         expect(ours.moonNakshatra!.number).toBe(Math.floor(lon('Moon') / (40 / 3)) + 1);
       }
     }
@@ -103,7 +103,7 @@ describe('the Vedic signs share link', () => {
     ]) expect(ok(bad), bad).toBeNull();
   });
 
-  it('gives a pada only when both ends of an untimed day share it', () => {
+  it('gives no pada for an untimed day, listing the padas the Moon passed through', () => {
     const moment = (moonLon: number, index: number, pada: 1 | 2 | 3 | 4) => ({ ayanamsa: 24, sun: { lon: 100, tropical: 124 }, moon: { lon: moonLon, tropical: moonLon + 24 }, rising: null, nakshatra: { index, pada, lord: 'Mars' } });
     const base = { timeKnown: false, placed: false, ayanamsa: 'lahiri' as const };
     const open = vedicReading({ ...base, at: moment(180, 13, 3), ends: [moment(173.5, 13, 2), moment(183, 13, 4)] });
@@ -111,7 +111,7 @@ describe('the Vedic signs share link', () => {
     expect(open.padaCandidates).toEqual([2, 3, 4]);
     expect(open.limits).toContain('The Moon stayed in Chitra that day but moved through more than one of its quarters (padas): pada 2, 3 or 4. A birth time settles it.');
     const held = vedicReading({ ...base, at: moment(180, 13, 3), ends: [moment(177, 13, 3), moment(179.9, 13, 3)] });
-    expect(held.moonNakshatra!.pada).toBe(3);
+    expect(held.moonNakshatra!.pada).toBeNull();
     expect(held.padaCandidates).toEqual([]);
     const moved = vedicReading({ ...base, at: moment(180, 13, 3), ends: [moment(170, 12, 4), moment(184, 13, 4)] });
     expect(moved.moonNakshatra).toBeNull();
@@ -131,6 +131,43 @@ describe('the Vedic signs share link', () => {
     expect(signs.moonCandidates).toEqual(['Aries (Mesha)', 'Taurus (Vrishabha)', 'Gemini (Mithuna)']);
     expect(passedThrough([26, 1], 27)).toEqual([26, 0, 1]);
     expect(passedThrough([5, 5], 12)).toEqual([5]);
+  });
+
+  it('lists every candidate between the two ends of an untimed day, three or more joined with commas (ZOD-18)', () => {
+    const moment = (moonLon: number, index: number) => ({ ayanamsa: 24, sun: { lon: 100, tropical: 124 }, moon: { lon: moonLon, tropical: moonLon + 24 }, rising: null, nakshatra: { index, pada: 4 as const, lord: 'Ketu' } });
+    const base = { timeKnown: false, placed: false, ayanamsa: 'lahiri' as const };
+    // A fast Moon starting late in Ashwini ends the day in Krittika; it spent most of the day in Bharani.
+    const fast = vedicReading({ ...base, at: moment(20, 1), ends: [moment(12, 0), moment(27.5, 2)] });
+    expect(fast.nakshatraCandidates).toEqual(['Ashwini', 'Bharani', 'Krittika']);
+    expect(fast.limits).toContain('The Moon changed nakshatra that day: it was in Ashwini, Bharani or Krittika. A birth time settles it.');
+    // Across the wrap: Revati to Bharani.
+    const wrap = vedicReading({ ...base, at: moment(5, 0), ends: [moment(358, 26), moment(15, 1)] });
+    expect(wrap.nakshatraCandidates).toEqual(['Revati', 'Ashwini', 'Bharani']);
+    // A Moon sign run from Pisces through Aries into Taurus.
+    const signs = vedicReading({ ...base, at: moment(10, 0), ends: [moment(345, 25), moment(31, 2)] });
+    expect(signs.moonCandidates).toEqual([`Pisces (${RASHIS[11]})`, `Aries (${RASHIS[0]})`, `Taurus (${RASHIS[1]})`]);
+    expect(signs.limits).toContain(`The Moon changed sign that day: it was in Pisces (${RASHIS[11]}), Aries (${RASHIS[0]}) or Taurus (${RASHIS[1]}). A birth time settles it.`);
+    expect(listOr(['A'])).toBe('A');
+    expect(listOr(['A', 'B'])).toBe('A or B');
+    expect(listOr(['A', 'B', 'C', 'D'])).toBe('A, B, C or D');
+  });
+
+  it('prints no degree and no pada without a birth time, and both with one (ZOD-18)', () => {
+    const moment = (moonLon: number, pada: 1 | 2 | 3 | 4) => ({ ayanamsa: 24, sun: { lon: 100, tropical: 124 }, moon: { lon: moonLon, tropical: moonLon + 24 }, rising: null, nakshatra: { index: 14, pada, lord: 'Rahu' } });
+    const untimed = vedicReading({ timeKnown: false, placed: false, ayanamsa: 'lahiri', at: moment(193, 2), ends: [moment(188, 1), moment(198, 4)] });
+    expect(untimed.sun).not.toBeNull();
+    expect(untimed.moon).not.toBeNull();
+    expect(untimed.moonNakshatra).not.toBeNull();
+    expect(untimed.sun!.degree).toBeNull();
+    expect(untimed.moon!.degree).toBeNull();
+    expect(untimed.moonNakshatra!.pada).toBeNull();
+    expect(untimed.limits[0]).toBe('No birth time was given, so there is no rising sign (lagna), no degree and no pada, and the Moon sign and nakshatra are given only where the whole birth day keeps them.');
+    const timed = vedicReading({ timeKnown: true, placed: false, ayanamsa: 'lahiri', at: moment(193, 2), ends: null });
+    expect(typeof timed.sun!.degree).toBe('number');
+    expect(typeof timed.moon!.degree).toBe('number');
+    expect(timed.moon!.degree).toBe(13);
+    expect(timed.sun!.degree).toBe(10);
+    expect(timed.moonNakshatra!.pada).toBe(2);
   });
 
   it('is built from a reading the same way the tool builds it', () => {
