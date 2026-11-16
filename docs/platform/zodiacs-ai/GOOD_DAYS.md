@@ -28,7 +28,10 @@ What a day is read from (`src/lib/good-days/find.ts`):
 - optionally the person's own chart (`src/lib/good-days/personal.ts`): the
   Moon's sign against the natal Sun's, and exact contacts from Venus, Mars,
   Jupiter and Saturn to the natal Sun and Venus (and the Moon with a birth
-  time).
+  time). Without a birth time a contact counts only when the charts cast for
+  the first and the last minute of the birth day put it on the same day, and
+  it is given without a clock time; the rest are left out, with a message
+  (ZOD-17).
 
 No language model is called. Every sentence is pre-written in those two files.
 

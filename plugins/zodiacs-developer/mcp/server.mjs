@@ -43095,6 +43095,7 @@ var GOAL_RULES = {
 var PARTNERSHIP_GOALS = /* @__PURE__ */ new Set(["relationship", "wedding"]);
 
 // src/lib/good-days/personal.ts
+var UNTIMED_DROPPED_MESSAGE = "No birth time was given, so contacts that cannot be dated to one day (mostly Jupiter's and Saturn's) are left out.";
 var HOUR6 = 36e5;
 var BENEFICS = ["Venus", "Jupiter"];
 var MALEFICS = ["Mars", "Saturn"];
@@ -43118,14 +43119,47 @@ async function preparePersonal(birth, clock2) {
   let sun = SIGNS2[signIndex(sunLon)].slug;
   if (!timeKnown) {
     const ends = birth.zone ? [await instant(birth.date, "00:00", birth.zone, clock2), await instant(birth.date, "23:59", birth.zone, clock2)] : [new Date(Date.parse(`${birth.date}T00:00:00Z`) - 14 * HOUR6), new Date(Date.parse(`${birth.date}T23:59:00Z`) + 12 * HOUR6)];
-    const signs = new Set(ends.map((at) => signIndex(computeChart2({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon)));
+    const [early, late] = ends.map((at) => computeChart2({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.map((row) => ({ body: row.body, lon: row.lon })));
+    const signs = new Set([early, late].map((set) => signIndex(set.find((row) => row.body === "Sun").lon)));
     if (signs.size > 1) sun = null;
+    return { bodies, timeKnown, sun, early, late };
   }
   return { bodies, timeKnown, sun };
 }
+var contactKey = (contact) => `${contact.transitBody}|${contact.aspect}|${contact.natalPoint}`;
+var dayIndex = (days, at) => days.findIndex((day2) => at >= day2.start.getTime() && at < day2.end.getTime());
+function pairUntimedContacts(early, late, days) {
+  const groups = /* @__PURE__ */ new Map();
+  for (const [side, list3] of [["early", early], ["late", late]]) {
+    for (const contact of list3) {
+      const group = groups.get(contactKey(contact)) ?? { early: [], late: [] };
+      group[side].push(contact);
+      groups.set(contactKey(contact), group);
+    }
+  }
+  const kept2 = [];
+  let dropped = 0;
+  for (const group of groups.values()) {
+    const candidates = group.early.flatMap((a, i) => group.late.map((b, j) => ({ i, j, gap: Math.abs(Date.parse(a.exactUtc) - Date.parse(b.exactUtc)) }))).sort((x, y) => x.gap - y.gap || x.i - y.i || x.j - y.j);
+    const usedEarly = /* @__PURE__ */ new Set();
+    const usedLate = /* @__PURE__ */ new Set();
+    for (const { i, j } of candidates) {
+      if (usedEarly.has(i) || usedLate.has(j)) continue;
+      usedEarly.add(i);
+      usedLate.add(j);
+      const first2 = dayIndex(days, Date.parse(group.early[i].exactUtc));
+      const second = dayIndex(days, Date.parse(group.late[j].exactUtc));
+      if (first2 !== -1 && first2 === second) kept2.push({ contact: group.early[i], index: first2 });
+      else dropped += 1;
+    }
+    dropped += group.early.length - usedEarly.size + group.late.length - usedLate.size;
+  }
+  kept2.sort((a, b) => Date.parse(a.contact.exactUtc) - Date.parse(b.contact.exactUtc));
+  return { kept: kept2, dropped };
+}
 function personalFactors(chart, days, zone10) {
   const out = days.map(() => []);
-  if (!days.length) return out;
+  if (!days.length) return { days: out, dropped: false };
   if (chart.sun) {
     const sunIndex = SIGNS2.findIndex((sign3) => sign3.slug === chart.sun);
     days.forEach((day2, index) => {
@@ -43137,26 +43171,31 @@ function personalFactors(chart, days, zone10) {
     });
   }
   const points = ["Sun", "Venus", ...chart.timeKnown ? ["Moon"] : []];
-  const contacts = scanTransitContacts({ bodies: chart.bodies, angles: null }, days[0].start, days.at(-1).end, {
+  const scan = (bodies) => scanTransitContacts({ bodies, angles: null }, days[0].start, days.at(-1).end, {
     transitBodies: [...BENEFICS, ...MALEFICS],
     natalPoints: points
-  });
-  const time = (at) => new Intl.DateTimeFormat("en-GB", { timeZone: zone10, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(at);
-  for (const contact of contacts) {
-    const at = new Date(contact.exactUtc);
-    const index = days.findIndex((day2) => at.getTime() >= day2.start.getTime() && at.getTime() < day2.end.getTime());
-    if (index === -1) continue;
-    const harmonious = contact.aspect === "sextile" || contact.aspect === "trine" || contact.aspect === "conjunction";
-    const target = `your natal ${contact.natalPoint}`;
-    if (BENEFICS.includes(contact.transitBody) && harmonious) {
-      const clause = `${contact.transitBody} ${VERB[contact.aspect]} ${target}`;
-      out[index].push({ points: 6, text: `${clause} today (exact at ${time(at)}), a supportive contact in your own chart.`, clause });
-    } else if (MALEFICS.includes(contact.transitBody) && contact.aspect !== "sextile" && contact.aspect !== "trine") {
-      const clause = `${contact.transitBody} ${VERB[contact.aspect]} ${target}`;
-      out[index].push({ points: -6, text: `${clause} today (exact at ${time(at)}), a contact tradition reads as pressure in your own chart.`, clause });
-    }
+  }).filter((contact) => readsAs(contact) !== null);
+  let dated;
+  let dropped = 0;
+  if (chart.timeKnown || !chart.early || !chart.late) {
+    dated = scan(chart.bodies).map((contact) => ({ contact, index: dayIndex(days, Date.parse(contact.exactUtc)) })).filter((row) => row.index !== -1);
+  } else {
+    ({ kept: dated, dropped } = pairUntimedContacts(scan(chart.early), scan(chart.late), days));
   }
-  return out;
+  const time = (at) => new Intl.DateTimeFormat("en-GB", { timeZone: zone10, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(at);
+  for (const { contact, index } of dated) {
+    const when = chart.timeKnown ? ` (exact at ${time(new Date(contact.exactUtc))})` : "";
+    const clause = `${contact.transitBody} ${VERB[contact.aspect]} your natal ${contact.natalPoint}`;
+    if (readsAs(contact) === "support") out[index].push({ points: 6, text: `${clause} today${when}, a supportive contact in your own chart.`, clause });
+    else out[index].push({ points: -6, text: `${clause} today${when}, a contact tradition reads as pressure in your own chart.`, clause });
+  }
+  return { days: out, dropped: dropped > 0 };
+}
+function readsAs(contact) {
+  const harmonious = contact.aspect === "sextile" || contact.aspect === "trine" || contact.aspect === "conjunction";
+  if (BENEFICS.includes(contact.transitBody) && harmonious) return "support";
+  if (MALEFICS.includes(contact.transitBody) && contact.aspect !== "sextile" && contact.aspect !== "trine") return "pressure";
+  return null;
 }
 
 // src/lib/good-days/find.ts
@@ -43447,6 +43486,7 @@ async function findGoodDays(input, clock2) {
   const periods = voidPeriods(new Date(windowStart.getTime() - DAY17), new Date(windowEnd2.getTime() + 3 * DAY17));
   const aspects2 = moonAspects(windowStart, windowEnd2);
   const personal2 = chart ? personalFactors(chart, skies.map((day2) => ({ date: day2.date, start: day2.start, end: day2.end, moonSign: day2.moonSign })), input.zone) : null;
+  if (personal2?.dropped) messages.push(UNTIMED_DROPPED_MESSAGE);
   const rated = skies.map((day2, index) => {
     const voids = voidFactor(day2, periods, input.zone);
     const factors = [
@@ -43456,7 +43496,7 @@ async function findGoodDays(input, clock2) {
       moonSignFactor(input.goal, day2.moonSign),
       voids.factor,
       ...aspectFactors(input.goal, day2, aspects2, input.zone),
-      ...personal2 ? personal2[index] : []
+      ...personal2 ? personal2.days[index] : []
     ].filter((factor) => factor !== null);
     const score2 = Math.max(5, Math.min(98, Math.round(60 + factors.reduce((sum, factor) => sum + factor.points, 0))));
     const ordered = [...factors].sort((a, b) => Math.abs(b.points) - Math.abs(a.points));

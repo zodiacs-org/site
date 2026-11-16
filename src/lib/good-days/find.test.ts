@@ -5,6 +5,8 @@ import { siteVoidOfCourseWindows } from '../../data/void-of-course';
 import { moonPhase } from '@zodiacs/engine';
 import { GOAL_RULES, GOOD_DAYS_NOTE, GOOD_DAY_GOALS, isMedicalGoal } from './goals';
 import { GOOD_DAYS_FIRST, GOOD_DAYS_LAST, UNDER_13_SENTENCE, UNDER_18_PARTNERSHIP_SENTENCE, findGoodDays, goodDaysWindow, phaseBand, voidPeriods } from './find';
+import { scanTransitContacts, type TransitContact } from '../engine/transit-scan';
+import { UNTIMED_DROPPED_MESSAGE, pairUntimedContacts, personalFactors, preparePersonal, type BirthDetails, type PersonalDay } from './personal';
 
 const clock = createLocalTimeModule();
 afterAll(() => clock.dispose());
@@ -152,6 +154,56 @@ describe('birth details', { timeout: TIMEOUT }, () => {
     expect(personal.personal).toEqual({ sun: 'scorpio', timeKnown: false });
     expect(personal.messages).toContain('No birth time was given, so the natal Moon is left out of the personal reading.');
     expect(general.periods).toEqual(personal.periods);
+  });
+
+  it('gives an untimed birth no clock time, and dates a contact only when both ends of the birth day agree on the day', async () => {
+    const untimed = { date: '1985-11-20' };
+    const result = await findGoodDays({ goal: 'launch', from: '2027-04-01', to: '2027-06-30', zone: 'UTC', birth: untimed, today: TODAY }, clock);
+    expect(JSON.stringify(result)).not.toMatch(/exact at/);
+    expect(result.messages).toContain(UNTIMED_DROPPED_MESSAGE);
+    // Every day of the window, not only the days that make the list: with and without a birthplace zone.
+    const days: PersonalDay[] = Array.from({ length: 365 }, (_, index) => {
+      const start = new Date(Date.UTC(2027, 0, 1 + index));
+      return { date: start.toISOString().slice(0, 10), start, end: new Date(start.getTime() + DAY), moonSign: 'aries' };
+    });
+    const bodies = ['Venus', 'Jupiter', 'Mars', 'Saturn'] as const;
+    for (const birth of [untimed, { ...untimed, zone: 'Asia/Bangkok' }] as BirthDetails[]) {
+      const chart = await preparePersonal(birth, clock);
+      const { days: factors, dropped } = personalFactors(chart, days, 'UTC');
+      expect(dropped).toBe(true);
+      const lines = factors.flatMap((list, index) => list.filter((factor) => factor.text.includes('your natal')).map((factor) => ({ index, text: factor.text })));
+      // With a birthplace zone the birth day is 24 hours long and some Venus contacts still fall on one day.
+      if (birth.zone) expect(lines.length).toBeGreaterThan(0);
+      for (const line of lines) expect(line.text).not.toMatch(/exact at/);
+      // A scan of the chart at each end of the birth day, built here by hand: a kept contact is on that day in both.
+      const scan = (set: typeof chart.bodies) => scanTransitContacts({ bodies: set as never, angles: null }, days[0].start, days.at(-1)!.end, { transitBodies: [...bodies], natalPoints: ['Sun', 'Venus'] });
+      const early = scan(chart.early!);
+      const late = scan(chart.late!);
+      const onDay = (list: TransitContact[], text: string, index: number) => list.some((contact) => text.startsWith(`${contact.transitBody} `) && text.includes(`your natal ${contact.natalPoint} `) && Date.parse(contact.exactUtc) >= days[index].start.getTime() && Date.parse(contact.exactUtc) < days[index].end.getTime());
+      for (const line of lines) {
+        expect(onDay(early, line.text, line.index), line.text).toBe(true);
+        expect(onDay(late, line.text, line.index), line.text).toBe(true);
+      }
+      // Jupiter and Saturn move too slowly to be dated to one day from a birth date alone.
+      expect(lines.filter((line) => /^(Jupiter|Saturn) /u.test(line.text))).toEqual([]);
+    }
+  });
+
+  it('pairs the two untimed scans by nearest exact moment and drops a contact they put on different days', () => {
+    const days: PersonalDay[] = Array.from({ length: 30 }, (_, index) => {
+      const start = new Date(Date.UTC(2027, 3, 1 + index));
+      return { date: start.toISOString().slice(0, 10), start, end: new Date(start.getTime() + DAY), moonSign: 'aries' };
+    });
+    const contact = (transitBody: string, exactUtc: string, aspect = 'conjunction', natalPoint = 'Sun') => ({ transitBody, natalPoint, aspect, exactUtc, pass: 1, passCount: 1 }) as TransitContact;
+    // A retrograde triple pass: each pass pairs with its nearest partner; the third falls on another day.
+    const early = [contact('Saturn', '2027-04-02T03:00:00Z'), contact('Saturn', '2027-04-10T12:00:00Z'), contact('Saturn', '2027-04-20T23:00:00Z'), contact('Venus', '2027-04-05T10:00:00Z', 'trine')];
+    const late = [contact('Saturn', '2027-04-21T02:00:00Z'), contact('Saturn', '2027-04-02T20:00:00Z'), contact('Saturn', '2027-04-10T08:00:00Z'), contact('Venus', '2027-04-05T09:00:00Z', 'sextile'), contact('Mars', '2027-04-29T22:00:00Z', 'square')];
+    const { kept, dropped } = pairUntimedContacts(early, late, days);
+    expect(kept.map((row) => [row.contact.transitBody, days[row.index].date])).toEqual([['Saturn', '2027-04-02'], ['Saturn', '2027-04-10']]);
+    // The third Saturn pass, and the Venus trine and sextile and the Mars square with no partner in the other scan.
+    expect(dropped).toBe(4);
+    // A contact the other scan puts past the window's end has no day there, so it goes too.
+    expect(pairUntimedContacts([contact('Mars', '2027-04-30T20:00:00Z')], [contact('Mars', '2027-05-01T02:00:00Z')], days)).toEqual({ kept: [], dropped: 1 });
   });
 
   it('refuses a birth date under 13 before working anything out', async () => {

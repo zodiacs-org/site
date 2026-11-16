@@ -27,7 +27,7 @@ import { moonAspects, moonIngresses } from '@zodiacs/engine/techniques';
 import eclipseTable from '../../data/eclipses.json';
 import { SIGNS } from '../signs';
 import { GOAL_RULES, GOOD_DAYS_NOTE, PARTNERSHIP_GOALS, type GoodDayGoal, type Significator } from './goals';
-import { personalFactors, preparePersonal, type BirthDetails, type PersonalChart } from './personal';
+import { UNTIMED_DROPPED_MESSAGE, personalFactors, preparePersonal, type BirthDetails, type PersonalChart } from './personal';
 import { isUnder13, isUnder18 } from '../../ai-tools/features/reading-guards';
 
 const DAY = 86_400_000;
@@ -464,6 +464,7 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
   const periods = voidPeriods(new Date(windowStart.getTime() - DAY), new Date(windowEnd.getTime() + 3 * DAY));
   const aspects = moonAspects(windowStart, windowEnd);
   const personal = chart ? personalFactors(chart, skies.map((day) => ({ date: day.date, start: day.start, end: day.end, moonSign: day.moonSign })), input.zone) : null;
+  if (personal?.dropped) messages.push(UNTIMED_DROPPED_MESSAGE);
 
   const rated = skies.map((day, index) => {
     const voids = voidFactor(day, periods, input.zone);
@@ -474,7 +475,7 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
       moonSignFactor(input.goal, day.moonSign),
       voids.factor,
       ...aspectFactors(input.goal, day, aspects, input.zone),
-      ...(personal ? personal[index] : []),
+      ...(personal ? personal.days[index] : []),
     ].filter((factor): factor is Factor => factor !== null);
     const score = Math.max(5, Math.min(98, Math.round(60 + factors.reduce((sum, factor) => sum + factor.points, 0))));
     const ordered = [...factors].sort((a, b) => Math.abs(b.points) - Math.abs(a.points));
