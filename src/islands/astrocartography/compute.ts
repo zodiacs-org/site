@@ -21,6 +21,8 @@ export interface AcgResult {
   land: { cellDegrees: number; cells: [number, number][] };
   /** The resolver's flags for the birth time: dst-fold for an hour the clocks repeated, dst-gap for one they skipped. */
   flags: readonly LocalTimeFlag[];
+  /** With dst-fold or dst-gap: the size of the clock change, minutes. */
+  jumpMinutes: number | null;
 }
 
 export async function computeAstrocartography(input: AcgInput): Promise<AcgResult> {
@@ -28,7 +30,7 @@ export async function computeAstrocartography(input: AcgInput): Promise<AcgResul
   const resolved = resolveLocalToUtc(input.birthDate, input.birthTime, input.place.tz, { longitude: input.place.lon });
   const utc = resolved.utc;
   const { gast, bodies } = equatorialMoment(utc);
-  return { utc, gast, bodies, lines: mapLines(bodies, gast), land: land as unknown as AcgResult["land"], flags: [...resolved.flags] };
+  return { utc, gast, bodies, lines: mapLines(bodies, gast), land: land as unknown as AcgResult["land"], flags: [...resolved.flags], jumpMinutes: resolved.jumpMinutes ?? null };
 }
 
 export function nearestLines(place: GeoPoint, result: AcgResult): LineDistance[] {

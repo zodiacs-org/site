@@ -102,7 +102,7 @@ export default function AstrocartographyMap() {
     setAdding(null);
   }
 
-  const clockNote = result ? clockChangeLimit(result.flags) : null;
+  const clockNote = result ? clockChangeLimit(result.flags, result.jumpMinutes) : null;
   const toggle = (body: AcgBody) => { const next = new Set(shown); if (next.has(body)) next.delete(body); else next.add(body); setShown(next); };
 
   return (
@@ -194,7 +194,7 @@ export default function AstrocartographyMap() {
                   {reading.rows.map((row) => (
                     <li key={`${row.body}${row.angle}`}>
                       <p class="acg__line-head"><span class="acg__swatch" style={{ '--hue': HUE[row.body] }} aria-hidden="true" />{row.title} <span class="acg__dist">{row.distance}, {strengthOf(row.km)}</span></p>
-                      <p>{row.meaning}</p>
+                      {row.meaning && <p>{row.meaning}</p>}
                       {/* The share link names the line alone: never the birth details or this place. */}
                       <a class="acg__share" href={astrocartographyShareUrl('', { planet: row.body, angle: row.angle })} target="_blank" rel="noopener">Share this line<span aria-hidden="true"> ↗</span></a>
                     </li>

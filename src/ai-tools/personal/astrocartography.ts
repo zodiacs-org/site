@@ -20,7 +20,7 @@ import { findBirthplace } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
 import { isUnder18, softenMinor, MINOR_NOTE } from '../features/reading-guards';
-import { birthFields, castNatal, dateOn, definePersonalTool, refineBirth, type PersonalToolContext } from './shared';
+import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, zoneField, type PersonalToolContext } from './shared';
 
 export const ACG_MAX_CITIES = 5;
 /** Latitudes the rising and setting lines are listed at in the answer: every 5 degrees from 75 south to 75 north. */
@@ -33,6 +33,7 @@ export const astrocartographyInput = z.strictObject({
   time: birthFields.time.unwrap().describe('The birth time on the local clock, such as 08:30. Required: the lines move about 1 degree of longitude for every 4 minutes of birth time. Never guess it. Needs zone.'),
   zone: birthFields.zone.unwrap().describe("The birthplace's time zone, such as Europe/Madrid. Required."),
   latitude: birthFields.latitude.describe("Optional. The birthplace's latitude, with longitude: it matters only for births on local mean time, before standard time zones. Nothing is stored."),
+  currentZone: zoneField.optional().describe('Where the person is now, such as Asia/Bangkok, so their age is read on their own clock, as get_personal_day reads it.'),
   cities: z.array(z.string().trim().min(2).max(80)).max(ACG_MAX_CITIES).optional().describe(`Optional. Up to ${ACG_MAX_CITIES} towns or cities to check, such as "Lisbon" or "Paris, France" (a country after a comma when several places share the name). Names are matched against the place index bundled with Zodiacs and not sent anywhere or stored.`),
 }).superRefine(refineBirth);
 export type AstrocartographyInput = z.infer<typeof astrocartographyInput>;
@@ -108,12 +109,14 @@ function splitCity(text: string): { place: string; country?: string } {
   return place.length >= 2 && country.length >= 2 ? { place, country } : { place: text.trim() };
 }
 
-export async function getAstrocartography(args: AstrocartographyInput, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'origin' | 'placeTable'>): Promise<{ data: AstrocartographyData; links: { title: string; url: string }[] }> {
+export async function getAstrocartography(args: AstrocartographyInput, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'origin' | 'placeTable' | 'resolveZone' | 'hostZone'>): Promise<{ data: AstrocartographyData; links: { title: string; url: string }[] }> {
   const natal = await castNatal(args, context.localTime);
   const utc = natal.birthUtc;
   const bodies = equatorialBodies(utc);
   const gast = greenwichSiderealDegrees(utc);
-  const under18 = isUnder18(args.birthDate, dateOn(context.now, 'UTC'));
+  // Today on the person's clock, as get_personal_day reads it, so an 18th birthday falls on the same day in both.
+  const { zone: todayZone } = await currentClock(args.currentZone, args.zone, context as PersonalToolContext);
+  const under18 = isUnder18(args.birthDate, dateOn(context.now, todayZone));
   // Under 18 the lines read as love or attraction take their own readings (lineMeaning); softenMinor covers the rest.
   const guard = (text: string) => (under18 ? softenMinor(text) : text);
   // The instant is fixed by the date, time and zone; coordinates change it only on local mean time.
@@ -134,7 +137,7 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
     'Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.',
     `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`,
   ];
-  const clockChange = clockChangeLimit(natal.flags);
+  const clockChange = clockChangeLimit(natal.flags, natal.jumpMinutes);
   if (clockChange) limits.push(clockChange);
   if (under18) limits.push(MINOR_NOTE);
   const asked = args.cities ?? [];
@@ -155,8 +158,9 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
       }));
       const strong = closest.filter((row) => row.strength === 'strong');
       const top = closest[0];
+      const topMeaning = lineMeaning(top.planet, top.angle, under18);
       const summary = strong.length
-        ? `${place.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(', ')}. ${guard(lineMeaning(top.planet, top.angle, under18))}`
+        ? `${place.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(', ')}.${topMeaning ? ` ${guard(topMeaning)}` : ''}`
         : `No line runs within ${STRONG_KM} km of ${place.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString('en-GB')} km ${top.side ?? 'away'}, so its pull is ${top.strength === 'noticeable' ? 'still noticeable there' : 'faint there'}.`;
       cities.push({ asked: text, name: place.name, region: place.region, country: place.country, latitude: roundCoordinate(place.latitude), longitude: roundCoordinate(place.longitude), closest, summary });
     }

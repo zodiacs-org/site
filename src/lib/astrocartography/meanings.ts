@@ -109,27 +109,54 @@ export const LINE_MEANING_MINOR: Partial<Record<AcgBody, Partial<Record<AcgAngle
   },
 };
 
-/** What a line is traditionally read as, with the under-18 reading where there is one. */
-export function lineMeaning(body: AcgBody, angle: AcgAngle, minor = false): string {
-  return (minor ? LINE_MEANING_MINOR[body]?.[angle] : undefined) ?? LINE_MEANING[body][angle];
+/** A reading about love, attraction, romance, relationships or partners, which an under-18 reading leaves out. */
+const MINOR_LEFT_OUT = /love|attract|romant|relationship|partner/iu;
+
+/**
+ * What a line is traditionally read as. Under 18: the under-18 reading where there is one; otherwise none at all
+ * (null) for a reading about love, attraction, romance, relationships or partners, which every Descendant line but
+ * Venus's and Neptune's is. No other words stand in for it.
+ */
+export function lineMeaning(body: AcgBody, angle: AcgAngle, minor: true): string | null;
+export function lineMeaning(body: AcgBody, angle: AcgAngle, minor?: false): string;
+export function lineMeaning(body: AcgBody, angle: AcgAngle, minor?: boolean): string | null;
+export function lineMeaning(body: AcgBody, angle: AcgAngle, minor = false): string | null {
+  if (!minor) return LINE_MEANING[body][angle];
+  const own = LINE_MEANING_MINOR[body]?.[angle];
+  if (own) return own;
+  return MINOR_LEFT_OUT.test(LINE_MEANING[body][angle]) ? null : LINE_MEANING[body][angle];
 }
 
 /** One plain sentence for a line, such as "Venus Descendant line (Venus setting): ...". */
 export function lineSentence(body: AcgBody, angle: AcgAngle, minor = false): string {
-  return `${body} ${ANGLE_LABEL[angle]} (${body} ${ANGLE_NAME[angle]}), for ${ANGLE_AREA[angle]}. ${lineMeaning(body, angle, minor)}`;
+  const meaning = lineMeaning(body, angle, minor);
+  return `${body} ${ANGLE_LABEL[angle]} (${body} ${ANGLE_NAME[angle]}), for ${ANGLE_AREA[angle]}.${meaning ? ` ${meaning}` : ''}`;
 }
 
 /** A birth time and place are always required here, so every reading of the map carries the same confidence. */
 export const ACG_CONFIDENCE = readingConfidence(readingDetail({ hasDate: true, hasTime: true, hasPlace: true }));
 export const ACG_CONFIDENCE_TEXT = readingConfidenceText(ACG_CONFIDENCE);
 
-/** The sentences for a birth time in an hour the clocks repeated or skipped. */
-export const CLOCK_FOLD_LIMIT = 'Clocks repeated that hour where you were born. This map uses the earlier pass; the later one would move every line 15 degrees east or west.';
-export const CLOCK_GAP_LIMIT = 'That clock time did not exist where you were born: clocks jumped forward. This map uses the time one hour later.';
+/** "one hour", "30 minutes": the size of a clock change. */
+function changeLength(minutes: number): string {
+  return minutes === 60 ? 'one hour' : minutes % 60 === 0 ? `${minutes / 60} hours` : `${minutes} minutes`;
+}
 
-/** The clock-change sentence for the resolver's flags, or null. */
-export function clockChangeLimit(flags: readonly string[]): string | null {
-  return flags.includes('dst-fold') ? CLOCK_FOLD_LIMIT : flags.includes('dst-gap') ? CLOCK_GAP_LIMIT : null;
+/**
+ * The sentences for a birth time the clocks repeated or skipped, filled in with the size of the change (an hour for
+ * most daylight saving changes, 30 minutes on Lord Howe Island). Every line moves a degree for each 4 minutes.
+ */
+export function clockFoldLimit(minutes: number): string {
+  return `Clocks repeated that hour where you were born. This map uses the earlier pass; the later one would move every line ${Number((minutes / 4).toFixed(2))} degrees east or west.`;
+}
+export function clockGapLimit(minutes: number): string {
+  return `That clock time did not exist where you were born: clocks jumped forward. This map uses the time ${changeLength(minutes)} later.`;
+}
+
+/** The clock-change sentence for the resolver's flags and the size of the change, or null. Without a size, none. */
+export function clockChangeLimit(flags: readonly string[], jumpMinutes: number | null | undefined): string | null {
+  if (!jumpMinutes) return null;
+  return flags.includes('dst-fold') ? clockFoldLimit(jumpMinutes) : flags.includes('dst-gap') ? clockGapLimit(jumpMinutes) : null;
 }
 
 /** What a picture of the whole map gives away. */
@@ -155,7 +182,7 @@ export function roundedKm(km: number): string {
  * What a place card on the page says: the lines it lists, each with its reading (the under-18 one where there is
  * one), or, when even the nearest line is beyond NOTICEABLE_KM, one sentence naming it without a reading.
  */
-export function placeLines(lines: readonly LineDistance[], minor = false): { far: string | null; rows: (LineDistance & { title: string; distance: string; meaning: string })[] } {
+export function placeLines(lines: readonly LineDistance[], minor = false): { far: string | null; rows: (LineDistance & { title: string; distance: string; meaning: string | null })[] } {
   const nearest = lines[0];
   if (nearest && nearest.km > NOTICEABLE_KM) return { far: `No line within ${NOTICEABLE_KM} km; the nearest is the ${nearest.body} ${ANGLE_LABEL[nearest.angle]}, ${roundedKm(nearest.km)} km.`, rows: [] };
   return {

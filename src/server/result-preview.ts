@@ -79,7 +79,7 @@ import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_
 import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
 import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
 import { ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, ASTROCARTOGRAPHY_SHARE_KEYS, ASTROCARTOGRAPHY_SHARE_PATH, ASTROCARTOGRAPHY_SHARE_STORY_PATH, astrocartographyQuery, parseAstrocartographyShare, type AstrocartographyShare } from '../lib/astrocartography/share.js';
-import { ACG_CONFIDENCE_TEXT, ANGLE_AREA, ANGLE_LABEL, ANGLE_NAME, LINE_MEANING } from '../lib/astrocartography/meanings.js';
+import { ACG_CONFIDENCE_TEXT, ANGLE_AREA, ANGLE_LABEL, ANGLE_NAME, lineMeaning } from '../lib/astrocartography/meanings.js';
 import type { AcgBody } from '../lib/astrocartography/lines.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
@@ -2100,7 +2100,11 @@ export interface AstrocartographyCardModel {
   title: string;
   /** "Jupiter overhead: work, reputation and your public life." */
   detail: string;
-  line: string;
+  /**
+   * What the line is traditionally read as, as an under-18 reading gives it: a card carries no age. Null for a
+   * reading about love or partners, which an under-18 reading leaves out.
+   */
+  line: string | null;
   /** A birth time and place are always required for a map, so this is always the timed reading's label. */
   confidence: string;
 }
@@ -2113,7 +2117,7 @@ export function astrocartographyCardModel(share: AstrocartographyShare): Astroca
     hue: HUES[slug],
     title: `My ${share.planet} ${ANGLE_LABEL[share.angle]}`,
     detail: `${share.planet} ${ANGLE_NAME[share.angle]}: ${ANGLE_AREA[share.angle]}.`,
-    line: LINE_MEANING[share.planet][share.angle],
+    line: lineMeaning(share.planet, share.angle, true),
     confidence: ACG_CONFIDENCE_TEXT,
   };
 }
@@ -2125,7 +2129,7 @@ export function astrocartographyCard(model: AstrocartographyCardModel, images: M
     kicker: 'Astrocartography',
     hue: model.hue,
     title: [titleBlock(model.title), italicLine(model.detail, 30, 10)],
-    line: model.line,
+    line: model.line ?? [],
     confidence: model.confidence,
   }));
 }
@@ -2136,7 +2140,7 @@ export function astrocartographyStory(model: AstrocartographyCardModel, images: 
     storyKicker('Astrocartography', model.hue),
     storyTitle(model.title, storyFit([model.title], 112, 64)),
     h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 46, lineHeight: 1.2, color: INK_SOFT, marginTop: '22px', textAlign: 'center' } }, model.detail),
-    storyLine(model.line),
+    ...(model.line ? [storyLine(model.line)] : []),
     ...storyConfidence(model.confidence),
     storyAction('Draw your own map', 'zodiacs.org/astrocartography'),
   ]));
@@ -2182,13 +2186,13 @@ export async function handleAstrocartographyLinkRequest(request: Request): Promi
   const model = astrocartographyCardModel(share);
   return htmlResponse(sharePageHtml({
     title: `${model.title}: astrocartography on Zodiacs`,
-    description: `${model.detail} ${model.line}`,
+    description: [model.detail, model.line].filter(Boolean).join(' '),
     heading: model.title,
     imageUrl: `${url.origin}${ASTROCARTOGRAPHY_SHARE_IMAGE_PATH}?${astrocartographyQuery(share)}`,
     story: { href: `${ASTROCARTOGRAPHY_SHARE_STORY_PATH}?${astrocartographyQuery(share)}`, filename: `zodiacs-astrocartography-${share.planet.toLowerCase()}-${share.angle.toLowerCase()}-story.jpg` },
     imageType: 'image/jpeg',
-    imageAlt: `${model.title}. ${model.line}`,
-    explanation: `${model.detail} ${model.line} ${ASTROCARTOGRAPHY_ABOUT}`,
+    imageAlt: [`${model.title}.`, model.line].filter(Boolean).join(' '),
+    explanation: [model.detail, model.line, ASTROCARTOGRAPHY_ABOUT].filter(Boolean).join(' '),
     action: { label: 'Draw your own map', href: withRef('/astrocartography/', share.ref) },
     note: SHARE_NOTE,
   }));
