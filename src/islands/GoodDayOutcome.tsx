@@ -122,7 +122,7 @@ export default function GoodDayOutcome() {
               <p class="field__help">Please leave out names, contact details, birth details, ages and anything about children. Dates, times and contact details are taken out before the note is sent.</p>
             </div>
             <button class="btn btn--primary" type="submit" disabled={state === 'sending'}>{state === 'sending' ? 'Sending' : 'Send'}</button>
-            <p class="calc__privacy">Kept anonymously with the goal, the day and the finder’s score for it, to test how well the days it picks go. No name, birth detail or address is kept.</p>
+            <p class="calc__privacy">Kept anonymously with the goal, the day, the finder’s score for it and whether a birth date was used, to see how the days people pick turn out. No name, birth detail or address is kept.</p>
             {error && <p class="calc__error" role="alert">{error}</p>}
           </form>
         )}

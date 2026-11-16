@@ -120,6 +120,13 @@ describe('the outcome follow-up', () => {
     }
   });
 
+  it('says the answers are for seeing how picked days turn out, not for testing the finder', () => {
+    const privacy = read('../../pages/privacy/index.astro');
+    expect(outcome).toContain('Kept anonymously with the goal, the day, the finder’s score for it and whether a birth date was used, to see how the days people pick turn out.');
+    expect(privacy).toContain('We use these answers to see how the days people pick turn out.');
+    for (const text of [outcome, privacy]) expect(text).not.toMatch(/how well the days/u);
+  });
+
   it('keeps the device reminder in one module, which writes only the pick\'s four fields', () => {
     expect(memory).toContain('const kept: Stored = { goal: pick.goal, day: pick.day, score: pick.score, personal: pick.personal };');
     expect(memory).not.toMatch(/\bfetch\(|sendBeacon|console\.|birth/iu);
