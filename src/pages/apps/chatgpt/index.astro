@@ -1,0 +1,46 @@
+---
+import AppLanding from '../_AppLanding.astro';
+
+const title = 'Astrology App for ChatGPT: Zodiacs | Zodiacs.org';
+const description = 'Zodiacs is a ChatGPT app for birth charts, compatibility, occasion cards and horoscopes. It is in review, so here is where it stands and what to use today.';
+const faq = [
+  { q: 'Can I install the Zodiacs app in ChatGPT today?', a: 'Not yet. The submitted app is awaiting OpenAI’s review. An installation link will appear here after approval.' },
+  { q: 'What can I use in the meantime?', a: 'The same tools work in Claude as a custom connector and in Cursor, and the calculators on zodiacs.org need no account.' },
+  { q: 'Do I need a Zodiacs account?', a: 'No. Zodiacs’ public tools need no Zodiacs account. Your assistant’s plan, connection options and regional availability still apply.' },
+  { q: 'What will the app do in ChatGPT?', a: 'It uses the same public server as the Claude connector: birth charts through Chart Studio, compatibility between two people, occasion cards, Sun-sign horoscopes and questions about the sky.' },
+];
+---
+<AppLanding
+  app="ChatGPT"
+  path="/apps/chatgpt/"
+  pageName="Astrology for ChatGPT"
+  title={title}
+  description={description}
+  kicker="Zodiacs for ChatGPT"
+  heading="Astrology for ChatGPT."
+  lede="Zodiacs is built as a ChatGPT app: your birth chart, compatibility between two people, the sky on a day that matters, and your sign’s horoscope, as cards you can explore in the conversation. It is waiting for review, so it cannot be installed yet."
+  facts={[
+    { term: 'Status', detail: 'Directory listing in review' },
+    { term: 'Installation link', detail: 'Not available yet' },
+    { term: 'Zodiacs account', detail: 'Not needed' },
+  ]}
+  faq={faq}
+>
+  <div slot="actions" class="app-actions">
+    <a class="btn btn--lg" href="/tools/">Explore the tools on the site <span class="orb" aria-hidden="true">→</span></a>
+    <a class="textlink" href="/apps/claude/">Use Zodiacs in Claude now <span class="arr" aria-hidden="true">→</span></a>
+  </div>
+  <Fragment slot="connect">
+    <h2 id="connect-title">Where the ChatGPT app stands</h2>
+    <p>The submitted app is awaiting OpenAI’s review. An installation link will appear here after approval.</p>
+    <h3>What to use until then</h3>
+    <ol>
+      <li><strong>Claude.</strong> Add the public server as a custom connector. The <a href="/apps/claude/">Claude steps</a> take four short moves.</li>
+      <li><strong>Cursor.</strong> Add the same server to Cursor’s MCP settings. See <a href="/apps/cursor/">Zodiacs for Cursor</a>.</li>
+      <li><strong>Grok.</strong> Zodiacs Astrologer is a ready-made template for Grok Bot, listed on the <a href="/apps/">apps page</a>.</li>
+      <li><strong>The site itself.</strong> The <a href="/birth-chart/">birth chart calculator</a>, <a href="/compatibility/">compatibility</a>, <a href="/occasions/">occasion cards</a> and <a href="/horoscopes/">daily horoscopes</a> need no account.</li>
+    </ol>
+    <h3>What the app does</h3>
+    <p>The ChatGPT app uses the same public server as the Claude connector. Ask for a birth chart and Chart Studio opens for you to fill in. Ask about two people, a wedding date or your sign, and Zodiacs calculates the sky for those dates and returns a dated reading, often with a card you can explore.</p>
+  </Fragment>
+</AppLanding>

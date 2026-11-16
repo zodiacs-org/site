@@ -2329,6 +2329,8 @@
     {"path":"src/pages/about/index.astro","text":"There are no ads and no cross-site tracking.","claim":"priv.no-ads-tracking"},
     {"path":"src/pages/about/index.astro","text":"Who runs Zodiacs.org and why: a free astrology reference where charts are computed accurately, explained plainly, and kept private on your device.","claim":"acc.qualitative"},
     {"path":"src/pages/about/index.astro","text":"Who runs Zodiacs.org and why: a free astrology reference where charts are computed from real astronomy and kept private on your device.","claim":"acc.qualitative"},
+    {"path":"src/pages/apps/chatgpt/index.astro","text":"The submitted app is awaiting OpenAI’s review.","claim":"product.ai-directory-review"},
+    {"path":"src/pages/apps/claude/index.astro","text":"The directory listing is awaiting Anthropic’s review.","claim":"product.ai-directory-review"},
     {"path":"src/pages/apps/index.astro","text":"The directory listing is awaiting Anthropic’s review.","claim":"product.ai-directory-review"},
     {"path":"src/pages/apps/index.astro","text":"The submitted app is awaiting OpenAI’s review.","claim":"product.ai-directory-review"},
     {"path":"src/pages/ask/index.astro","text":"Each message goes to Anthropic to be answered; signed-out conversations are kept in this browser session and are not stored by Zodiacs.org.","claim":"priv.guide"},

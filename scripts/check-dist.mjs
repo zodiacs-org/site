@@ -358,7 +358,8 @@ for (const file of files) {
   let m;
   while ((m = refRe.exec(html)) !== null) {
     const value = m[1];
-    if (/^(https?:|mailto:|tel:|data:|javascript:|#|\/\/)/.test(value)) continue;
+    // cursor: is Cursor's MCP install link on /apps/cursor/, handled by the app, not a file in dist.
+    if (/^(https?:|mailto:|tel:|data:|javascript:|cursor:|#|\/\/)/.test(value)) continue;
     if (value.includes('${')) continue; // inline-script template, not markup
     let target;
     if (value.startsWith('webcal://')) {
@@ -1392,6 +1393,7 @@ const sitemapPolicy = {
   // Terminal Research adds its archive alone (indexedRegistryResearchPaths): its
   // published notes (227 that day) left the sitemap as noindex pages on 2026-10-26.
   // +1 for /apps/, the English assistant showcase.
+  // +3 for /apps/claude/, /apps/chatgpt/ and /apps/cursor/, the English per-assistant pages.
   // +12 for the English-only 2026 yearly horoscope pages.
   // +1 for /developers/time-atlas/, the time atlas dataset and its comparison with tzdb 2025c.
   // +13 for the English sign-season hub and its twelve season pages.
@@ -1402,8 +1404,9 @@ const sitemapPolicy = {
   // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
   // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
   // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
-  // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/).
-  total: 1532 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/),
+  // and the three per-assistant /apps/ pages joined on 2026-11-16.
+  total: 1535 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
