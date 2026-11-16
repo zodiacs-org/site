@@ -24,7 +24,7 @@ const loadScorer = createModuleLoader(() => import('../lib/year-score/browser'))
 const underAge = (birthDate: string, today: string, years: number) => birthDate > `${String(Number(today.slice(0, 4)) - years).padStart(4, '0')}${today.slice(4)}`;
 /** Under 18, the one romantic phrase a slow-planet line can carry (Venus as "way of loving") is left out. */
 const softenMinor = (text: string) => text.replace(/\bway of loving\b/gu, 'way of caring');
-export const confidenceLabel = (timed: boolean) =>`Reading confidence ${timed ? 70 : 55}%`;
+export const confidenceLabel = (timed: boolean) => `Reading confidence ${timed ? 70 : 55}%`;
 
 const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no score for a birth date less than 13 years ago.';
 const FUTURE_DATE = 'Enter a birth date in the past.';
