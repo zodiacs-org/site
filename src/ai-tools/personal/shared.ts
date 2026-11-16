@@ -14,7 +14,7 @@
  * be imported by contracts without a cycle.
  */
 import { z } from 'zod';
-import type { LocalTimeModule } from '../../lib/compute-api/local-time';
+import type { LocalTimeFlag, LocalTimeModule } from '../../lib/compute-api/local-time';
 import { computeChart } from '../../lib/engine/full.js';
 import type { Chart } from '../../lib/engine/types';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
@@ -119,6 +119,11 @@ export interface NatalCast {
   /** The ascendant and Midheaven, only with a birth time and place. */
   angles: { asc: number; mc: number } | null;
   detail: ReadingDetail;
+  /**
+   * The resolver's flags for the birth's wall time: dst-fold when the clocks showed it twice (the earlier pass is
+   * used), dst-gap when they skipped it (it moved forward by the jump), lmt for local mean time. Empty without a zone.
+   */
+  flags: readonly LocalTimeFlag[];
 }
 
 /**
@@ -136,14 +141,17 @@ export async function castNatal(args: BirthArgs, clock: PersonalToolContext['loc
   const timeKnown = args.time !== undefined;
   const placed = latitude !== undefined && longitude !== undefined;
   let birthUtc: Date;
+  let flags: readonly LocalTimeFlag[] = [];
   if (args.zone) {
     await clock.prepareLocalTime(args.birthDate, args.zone);
     const time = args.time ?? '12:00';
-    birthUtc = (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+    const resolved = longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone);
+    birthUtc = resolved.utc;
+    flags = [...resolved.flags];
   } else birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
   const chart = computeChart({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { birthUtc, chart, timeKnown, placed, latitude, longitude, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+  return { birthUtc, chart, timeKnown, placed, latitude, longitude, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags };
 }
 
 /**
