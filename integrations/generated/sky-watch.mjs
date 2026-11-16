@@ -42139,6 +42139,57 @@ var descriptionFor = (tool, skyEvents2, switches = {}) => (tool === "get_year_sc
 // src/ai-tools/server.ts
 import { McpServer } from "@modelcontextprotocol/server";
 
+// src/ai-tools/clear-time.ts
+var MINUTE2 = 6e4;
+function roundToMinute(utc) {
+  return new Date(Math.round(new Date(utc).getTime() / MINUTE2) * MINUTE2);
+}
+var two = (value) => String(Math.trunc(Math.abs(value))).padStart(2, "0");
+function localIso(utc, zone9, milliseconds = false) {
+  const exact = new Date(utc).getTime();
+  const instant2 = new Date(Math.floor(exact / 1e3) * 1e3);
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: zone9, era: "short", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(instant2).map((part) => [part.type, part.value]));
+  const year = Number(parts.year) * (parts.era === "BC" ? -1 : 1) + (parts.era === "BC" ? 1 : 0);
+  const wall = /* @__PURE__ */ new Date(0);
+  wall.setUTCFullYear(year, Number(parts.month) - 1, Number(parts.day));
+  wall.setUTCHours(Number(parts.hour), Number(parts.minute), Number(parts.second), 0);
+  const offsetMinutes2 = Math.round((wall.getTime() - instant2.getTime()) / MINUTE2);
+  const offset = `${offsetMinutes2 < 0 ? "-" : "+"}${two(offsetMinutes2 / 60)}:${two(offsetMinutes2 % 60)}`;
+  const fraction = milliseconds ? `.${String(exact - instant2.getTime()).padStart(3, "0")}` : "";
+  return `${wall.toISOString().slice(0, 19)}${fraction}${offset}`;
+}
+function localMinuteIso(utc, zone9) {
+  return localIso(roundToMinute(utc), zone9);
+}
+function shownTime(utc, window) {
+  const time = new Date(utc).getTime();
+  const low = Math.max(Date.parse(EPOCH.from), window ? new Date(window.from).getTime() : -Infinity);
+  const high = Math.min(Date.parse(EPOCH.to), window ? new Date(window.to).getTime() : Infinity);
+  for (const [unit, precision] of [[MINUTE2, "minute"], [1e3, "second"]]) {
+    const nearest = Math.round(time / unit) * unit;
+    const other = nearest > time ? Math.floor(time / unit) * unit : Math.ceil(time / unit) * unit;
+    for (const candidate of [nearest, other]) if (candidate >= low && candidate <= high) return { at: new Date(candidate), precision };
+  }
+  return { at: new Date(time), precision: "millisecond" };
+}
+function shownUtc(shown) {
+  const iso3 = shown.at.toISOString();
+  return shown.precision === "minute" ? `${iso3.slice(0, 16)}:00Z` : shown.precision === "second" ? `${iso3.slice(0, 19)}Z` : iso3;
+}
+function eventTimes(utc, zone9, window) {
+  const shown = shownTime(utc, window);
+  return { at: shownUtc(shown), localAt: localIso(shown.at, zone9, shown.precision === "millisecond") };
+}
+function moonDirection(angle) {
+  return angle < 180 ? "waxing" : "waning";
+}
+function moonPhaseLabel(angle) {
+  const name = moonPhaseNameFromAngle(angle);
+  if (/^Wa(?:x|n)ing /u.test(name) || name === "First Quarter" || name === "Last Quarter") return name;
+  const turn3 = (angle % 360 + 360) % 360;
+  return turn3 === 0 || turn3 === 180 ? name : `${name}, ${moonDirection(angle)}`;
+}
+
 // api/_compute/local-time.mjs
 function createLocalTimeModule() {
   "use strict";
@@ -43157,7 +43208,7 @@ function dailyEmailLink(origin, sign3) {
 }
 var LIMITS = { from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS["events.samples"], factSamples: BUDGETS["sky-fact.samples"] };
 function displayTime(utc, zone9) {
-  return new Intl.DateTimeFormat("en-GB", { timeZone: zone9, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", timeZoneName: "shortOffset" }).format(new Date(utc));
+  return localIso(utc, zone9);
 }
 function failure(tool, code, message, retryAfterSeconds) {
   return stripConsumerDashes({ schema: AI_RESULT_SCHEMA, ok: false, tool, error: { code, message, ...retryAfterSeconds === void 0 ? {} : { retryAfterSeconds } } });
@@ -43409,7 +43460,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const calculation = computePositions(parsePositionsRequest({ instants: [instant2], ...args.bodies ? { bodies: args.bodies } : {} }));
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone9, display: displayTime(utc, zone9) }, calculation, moonPhase: { name: moonPhaseNameFromAngle(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
+        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone9, display: displayTime(utc, zone9) }, calculation, moonPhase: { name: moonPhaseLabel(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
         links = [moonLink, methodLink, calendarLink];
         break;
       }
@@ -43426,7 +43477,15 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Zodiacs is busy. Try again in a minute.", verdict === "limited" ? 60 : 300);
         }
         const calculation = computeEvents(parsedRequest);
-        data = { from: calculation.result.from, to: calculation.result.to, zone: zone9, events: calculation.result.events.map((event2) => ({ ...event2, localAt: displayTime(event2.at, zone9) })), calculation, completeness: calculation.receipt.search.completeness };
+        data = {
+          from: calculation.result.from,
+          to: calculation.result.to,
+          zone: zone9,
+          // Each time to the minute, inside the window, on the UTC clock and on the zone's; the solved instants stay in calculation, under its receipt.
+          events: calculation.result.events.map((event2) => ({ ...event2, ...eventTimes(event2.at, zone9, calculation.result) })),
+          calculation,
+          completeness: calculation.receipt.search.completeness
+        };
         links = [
           { title: "Subscribe to these in your calendar (get_sky_calendar)", url: `${ORIGIN}/sky-calendar/` },
           // With the sky events switch, the tool for one kind of event further ahead.
@@ -45303,13 +45362,19 @@ async function calculateWindow(from, to) {
   if (!result.ok || result.tool !== "get_upcoming_events") throw new Error("search-refused");
   const data = result.data;
   if (data.completeness !== "tested-not-proven") throw new Error("search-incomplete");
-  return data.events.map(({ localAt: _localAt, ...event2 }) => ({
-    eventId: `evt_${digest(JSON.stringify([WATCH_VERSION, from, event2]))}`,
-    name: `zodiacs.sky.${event2.kind}`,
-    timestamp: event2.at,
-    data: { event: event2, receipt: data.calculation.receipt },
-    cursor: null
-  }));
+  const solved = data.calculation.result.events;
+  if (solved.length !== data.events.length) throw new Error("search-mismatch");
+  return data.events.map(({ localAt: _localAt, ...listed }, index) => {
+    if (listed.kind !== solved[index].kind) throw new Error("search-mismatch");
+    const event2 = { ...listed, at: solved[index].at };
+    return {
+      eventId: `evt_${digest(JSON.stringify([WATCH_VERSION, from, event2]))}`,
+      name: `zodiacs.sky.${event2.kind}`,
+      timestamp: event2.at,
+      data: { event: event2, receipt: data.calculation.receipt },
+      cursor: null
+    };
+  });
 }
 async function fillWatchLedger(rpc, now = Date.now(), calculate = calculateWindow) {
   let filled = 0;
@@ -45342,7 +45407,7 @@ async function deliverWatchEvents(rpc, vault, post, now = Date.now) {
       const event2 = { ...row.payload, data: {
         ...row.payload.data,
         zone: row.filters.zone,
-        localAt: displayTime(row.payload.timestamp, row.filters.zone),
+        localAt: localMinuteIso(row.payload.timestamp, row.filters.zone),
         methodUrl: "https://zodiacs.org/developers/compute/#events"
       } };
       const body2 = JSON.stringify(event2);
