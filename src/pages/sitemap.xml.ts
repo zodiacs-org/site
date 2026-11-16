@@ -623,8 +623,6 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The showcase's entry links, first published with the showcase.
   ['/tools/', '2026-10-28'] as const,
   ['/developers/ai/', '2026-10-28'] as const,
-  // The AI developer page's sample question names a neutral city, from 16 November.
-  ['/developers/ai/', '2026-11-16'] as const,
   // The developer index that links to the demo. The day of the daily edition it was
   // built with; after the engine 1.1.0-rc.1 entry above so it wins.
   ['/developers/', '2026-10-28'] as const,
@@ -719,6 +717,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // connector section and the MCP guides that count its tools (ZOD-58). The day of the daily edition it was
   // built with, last so this date wins.
   ...CONNECTOR_PAGE_ROUTES.map((loc) => [loc, CONNECTOR_PAGE_LASTMOD] as const),
+  // The AI developer page's sample question names a neutral city, from 16 November; after the connector pages so it wins.
+  ['/developers/ai/', '2026-11-16'] as const,
   // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
   // the daily edition it was built with, last so this date wins.
   ['/', '2026-11-14'] as const,
