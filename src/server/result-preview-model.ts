@@ -669,7 +669,7 @@ export interface YourDayCardModel {
 }
 
 /**
- * A day's strongest contact, as the person shares it: the day, the moving planet, the aspect and the natal point,
+ * A day's shared contact (the strongest one other than the Sun on the natal Sun), as the person shares it: the day, the moving planet, the aspect and the natal point,
  * with the site's transit sentence (src/lib/transits.ts). A shared card cannot know who made it, so its sentence
  * leaves out romantic and attraction wording, as a reading for someone under 18 does.
  */

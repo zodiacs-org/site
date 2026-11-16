@@ -51,13 +51,12 @@ describe('get_personal_day against known answers', () => {
     const date = dateOn(new Date(solarReturn.exactUtc), 'Europe/Madrid');
     const data = await run({ ...ADULT, date });
     expect(data.contacts.some((entry) => entry.planet === 'Sun' && entry.point === 'Sun')).toBe(true);
-    if (data.shareUrl !== null) {
-      const url = new URL(data.shareUrl);
-      expect(url.searchParams.get('day')).toBe(date);
-      expect(url.searchParams.get('p') === 'sun' && url.searchParams.get('n') === 'sun').toBe(false);
-      const shared = data.contacts.find((entry) => !(entry.planet === 'Sun' && entry.point === 'Sun'))!;
-      expect([url.searchParams.get('p'), url.searchParams.get('a'), url.searchParams.get('n')]).toEqual([shared.planet.toLowerCase(), shared.aspect, shared.point.toLowerCase()]);
-    }
+    expect(data.shareUrl).not.toBeNull();
+    const url = new URL(data.shareUrl!);
+    expect(url.searchParams.get('day')).toBe(date);
+    expect(url.searchParams.get('p') === 'sun' && url.searchParams.get('n') === 'sun').toBe(false);
+    const shared = data.contacts.find((entry) => !(entry.planet === 'Sun' && entry.point === 'Sun'))!;
+    expect([url.searchParams.get('p'), url.searchParams.get('a'), url.searchParams.get('n')]).toEqual([shared.planet.toLowerCase(), shared.aspect, shared.point.toLowerCase()]);
   });
 
   it('times an exact Mars contact to the minute, and the engine agrees the aspect is exact then', async () => {

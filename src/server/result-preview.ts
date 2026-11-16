@@ -3,7 +3,7 @@
  * rating, a birthday, the sky calendar's next event, a horoscope (a day, a
  * week, a month or a year), chart twins, a famous chart, a life milestone,
  * the big three, the Chinese zodiac, an invitation to compare charts and a
- * personal day's strongest contact (src/lib/personal-day/share.ts). Each has
+ * personal day's shared contact (src/lib/personal-day/share.ts). Each has
  * a page with the result's picture and a way to try it, the 1200×630
  * preview image link previews show, and a 1080×1920 picture to post as a story. They read only the link's checked query
  * string (src/lib/share-results.ts, src/ai-tools/share-links.ts) and the
