@@ -6,7 +6,10 @@ import { forbiddenClaim, type PersonalToolContext } from '../../ai-tools/persona
 import { computeYourDay } from '../../islands/your-day/compute';
 import { PAIR_CONFIDENCES, readingConfidence } from '../../ai-tools/reading-confidence';
 import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
-import { shareContact } from './day';
+import { minorLeftOut, shareContact } from './day';
+import { transitLine } from '../transits';
+import { MAJOR_ASPECT_ORDER, TRANSIT_BODY_ORDER } from '../engine/transit-scan-shared';
+import { pointName } from './score';
 import { parseYourDayShare, yourDayQuery, yourDayShareUrl, YOUR_DAY_CONFIDENCES, YOUR_DAY_SHARE_KEYS } from './share';
 
 const NOW = new Date('2026-11-09T09:00:00Z');
@@ -61,8 +64,8 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
       for (const reading of [tool, page]) {
         expect(reading.under18).toBe(true);
         expect(reading.limits).toContain(MINOR_NOTE);
-        expect(reading.contacts.some((contact) => contact.point === 'Venus')).toBe(false);
-        expect(JSON.stringify({ ...reading, limits: [] })).not.toMatch(/loving|romant|attract/iu);
+        expect(reading.contacts.some((contact) => contact.planet === 'Venus' || contact.point === 'Venus' || contact.point === 'Jupiter')).toBe(false);
+        expect(JSON.stringify({ ...reading, limits: [] })).not.toMatch(/loving|appetite|romant|attract/iu);
       }
       expect(page.contacts).toEqual(tool.contacts);
       expect(page.limits).toEqual(tool.limits);
@@ -71,6 +74,16 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
     const adult = await computeYourDay({ birthDate: '1990-05-03', time: '08:30', birthZone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, date: '2027-06-09', zone: 'Europe/Madrid', today: '2026-11-09' });
     expect(adult.under18).toBe(false);
   }, 60_000);
+
+  it('leave out every contact line a minor could see that the ticket\'s appetite check catches', () => {
+    let kept = 0;
+    for (const mover of TRANSIT_BODY_ORDER) for (const point of [...TRANSIT_BODY_ORDER, 'ASC', 'MC'] as const) for (const aspect of MAJOR_ASPECT_ORDER) {
+      if (minorLeftOut(mover, point)) continue;
+      kept += 1;
+      expect(transitLine(mover, aspect, pointName(point)), `${mover} ${aspect} ${point}`).not.toMatch(/loving|appetite/u);
+    }
+    expect(kept).toBeGreaterThan(300);
+  });
 
   it('never read the sixth house as health', async () => {
     let sixth = 0;

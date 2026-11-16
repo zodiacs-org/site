@@ -41826,6 +41826,9 @@ function shareContact(contacts) {
 }
 var round2 = (value) => Math.round(value * 100) / 100;
 var signName6 = (slug2) => SIGNS2.find((entry) => entry.slug === slug2).name;
+function minorLeftOut(mover, point2) {
+  return mover === "Venus" || point2 === "Venus" || point2 === "Jupiter";
+}
 async function startOf(date3, zone9, clock2) {
   await clock2.prepareLocalTime(date3, zone9);
   return clock2.resolveLocalToUtc(date3, "00:00", zone9).utc;
@@ -41858,7 +41861,7 @@ async function readPersonalDay(natal, input, clock2) {
     const moverLon = sky.get(mover);
     const moverLater = bodyLongitude2(mover, later);
     for (const point2 of points) {
-      if (under18 && point2 === "Venus") continue;
+      if (under18 && minorLeftOut(mover, point2)) continue;
       const pointLon = natalLon.get(point2);
       for (const aspect2 of MAJOR_ASPECT_ORDER) {
         const orb = orbOf(moverLon, pointLon, aspect2);
@@ -42074,7 +42077,7 @@ var personalDayData = z16.object({
   })).max(PERSONAL_DAY_LIMIT),
   /** Contacts found before the list was cut to its limit. */
   found: z16.number().int().min(0),
-  /** True when the birth date is under 18 today. Romantic and attraction readings, and the contacts to the natal Venus, are left out. */
+  /** True when the birth date is under 18 today. Romantic and attraction readings are left out, and so are the contacts to the natal Venus and Jupiter and those of the moving Venus. */
   under18: z16.boolean(),
   limits: z16.array(z16.string()),
   pageUrl: z16.url(),

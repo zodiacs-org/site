@@ -129,6 +129,11 @@ export function castDayNatal(input: { birthDate: string; time?: string | undefin
   return { bodies: chart.bodies, angles, timeKnown, placed, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
 }
 
+/** Under 18, a contact whose pre-written line reads as love or appetite (src/lib/transits.ts, BODY_ROLE in src/lib/compat.ts). */
+export function minorLeftOut(mover: TransitBody, point: NatalPoint): boolean {
+  return mover === 'Venus' || point === 'Venus' || point === 'Jupiter';
+}
+
 async function startOf(date: string, zone: string, clock: DayClock): Promise<Date> {
   await clock.prepareLocalTime(date, zone);
   return clock.resolveLocalToUtc(date, '00:00', zone).utc;
@@ -165,7 +170,8 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   }
 
   // Age is taken on today, as the published tools take it, not on the day read, which can be up to a year ahead.
-  // For someone under 18 the contacts to the natal Venus are left out: their lines read as love and appetite, and
+  // For someone under 18 the contacts whose line reads as love or appetite are left out: the natal Venus ("way of
+  // loving"), the natal Jupiter ("appetite for more") and Venus as the moving planet ("warmth and appetite").
   // softenMinor, shared with published tools whose output is frozen, does not reach them. MINOR_NOTE says so.
   const under18 = isUnder18(input.birthDate, input.today ?? date);
   const guard = (text: string) => softenHealth(under18 ? softenMinor(text) : text);
@@ -174,7 +180,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
     const moverLon = sky.get(mover)!;
     const moverLater = bodyLongitude(mover, later);
     for (const point of points) {
-      if (under18 && point === 'Venus') continue;
+      if (under18 && minorLeftOut(mover, point)) continue;
       const pointLon = natalLon.get(point)!;
       for (const aspect of MAJOR_ASPECT_ORDER) {
         const orb = orbOf(moverLon, pointLon, aspect);
