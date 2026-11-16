@@ -83,7 +83,7 @@ select pg_temp.assert_true(
   public.record_compatibility_invite_inviter_consent((select open_one from consent_invites), '52000000-0000-4000-8000-000000000001', 'invite-inviter-2026-11-16.v1')->>'outcome' = 'recorded'
     and public.record_compatibility_invite_inviter_consent((select other_owner from consent_invites), '52000000-0000-4000-8000-000000000001', 'invite-inviter-2026-11-16.v1')->>'outcome' = 'unavailable'
     and public.record_compatibility_invite_inviter_consent((select unknown_version from consent_invites), '52000000-0000-4000-8000-000000000001', 'invite-inviter-2026-11-09.v1')->>'outcome' = 'unavailable'
-    and public.record_compatibility_invite_inviter_consent((select unknown_version from consent_invites), '52000000-0000-4000-8000-000000000001', 'invite-recipient-2026-11-16.v1')->>'outcome' = 'unavailable'
+    and public.record_compatibility_invite_inviter_consent((select unknown_version from consent_invites), '52000000-0000-4000-8000-000000000001', 'invite-recipient-2026-11-16.v2')->>'outcome' = 'unavailable'
     and public.record_compatibility_invite_inviter_consent((select unknown_version from consent_invites), '52000000-0000-4000-8000-000000000001', null)->>'outcome' = 'unavailable',
   'an inviter consent row is written only by the owner and for an allowlisted version'
 );
@@ -96,7 +96,7 @@ select pg_temp.assert_true(
 
 -- The recipient's consent waits for the released completion.
 select pg_temp.assert_true(
-  public.record_compatibility_invite_recipient_consent((select open_one from consent_invites), 'invite-recipient-2026-11-16.v1')->>'outcome' = 'unavailable',
+  public.record_compatibility_invite_recipient_consent((select open_one from consent_invites), 'invite-recipient-2026-11-16.v2')->>'outcome' = 'unavailable',
   'no recipient row while the invite is still active'
 );
 
@@ -113,14 +113,15 @@ select pg_temp.assert_true(
 
 select pg_temp.assert_true(
   public.record_compatibility_invite_recipient_consent((select open_one from consent_invites), 'invite-recipient-2026-11-09.v1')->>'outcome' = 'unavailable'
+    and public.record_compatibility_invite_recipient_consent((select open_one from consent_invites), 'invite-recipient-2026-11-16.v1')->>'outcome' = 'unavailable'
     and public.record_compatibility_invite_recipient_consent((select open_one from consent_invites), 'invite-inviter-2026-11-16.v1')->>'outcome' = 'unavailable'
     and public.record_compatibility_invite_recipient_consent((select open_one from consent_invites), null)->>'outcome' = 'unavailable'
-    and public.record_compatibility_invite_recipient_consent((select open_one from consent_invites), 'invite-recipient-2026-11-16.v1')->>'outcome' = 'recorded',
+    and public.record_compatibility_invite_recipient_consent((select open_one from consent_invites), 'invite-recipient-2026-11-16.v2')->>'outcome' = 'recorded',
   'a recipient consent row is written only for an allowlisted version, after completion'
 );
 select pg_temp.assert_true(
   (select count(*) from public.compatibility_invite_consents where party = 'recipient') = 1
-    and exists (select 1 from public.compatibility_invite_consents where invite_id = (select open_one from consent_invites) and party = 'recipient' and policy_version = 'invite-recipient-2026-11-16.v1'),
+    and exists (select 1 from public.compatibility_invite_consents where invite_id = (select open_one from consent_invites) and party = 'recipient' and policy_version = 'invite-recipient-2026-11-16.v2'),
   'one recipient row'
 );
 

@@ -1,6 +1,7 @@
 import type { VNode } from 'preact';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import CalculationReload, { calculationLoadMessage } from './CalculationReload';
+import { UNDER_18_INVITE } from '../lib/invite/recipient';
 
 const harness = vi.hoisted(() => ({
   slots: [] as unknown[], cursor: 0,
@@ -77,6 +78,7 @@ const chart = {
   angles: { asc: 120, mc: 30 }, houseSystem: 'whole', engineVersion: 'test',
 };
 const handle = 'abcdefghijklmnopqrstuv';
+const ADULT_DATE = '1990-05-03';
 const payload = { label: 'Their chart', positions: chart, sunSign: 'taurus', timeKnown: true, expiresAt: '2026-12-01T00:00:00.000Z' };
 const ready = { state: 'ready', handle, payload };
 const unmount = () => harness.effects.forEach((effect) => effect.cleanup?.());
@@ -86,10 +88,11 @@ function revoke() {
   harness.revoke?.();
   window.dispatchEvent(new Event('zodiacs:profile-access'));
 }
+let dailyEmail = false;
 function render() {
   harness.cursor = 0;
   harness.effectCursor = 0;
-  const view = SynastryCalculator({ locale: 'en' });
+  const view = SynastryCalculator({ locale: 'en', dailyEmail });
   harness.pendingEffects.splice(0).forEach((effect) => effect());
   return view;
 }
@@ -125,11 +128,14 @@ function deferred<T>() {
   return { promise, resolve, reject };
 }
 function loadDependency(load: () => Promise<unknown>): Promise<unknown> {
-  // The recipient's own birth date gates every invitation (ZOD-22, tested in src/lib/invite/signup.test.ts). These
-  // harness comparisons use pasted positions, which carry no date, so the gate is stood in for by an adult's answer.
-  if (load.toString().includes('invite/recipient')) return Promise.resolve({
-    inviteRecipientGate: () => ({ allowed: true, band: 'adult' }), deviceToday: () => '2026-11-16',
-  });
+  // The recipient's own birth date gates every invitation (ZOD-22). These harness comparisons mostly use pasted
+  // positions, which carry no date and which production refuses, so the real gate is asked with an adult's date in
+  // their place. A date the recipient typed is passed through unchanged.
+  if (load.toString().includes('invite/recipient')) return (load() as Promise<typeof import('../lib/invite/recipient')>).then((real) => ({
+    ...real,
+    deviceToday: () => '2026-11-16',
+    inviteRecipientGate: (ownDate: string | null | undefined, today: string) => real.inviteRecipientGate(ownDate ?? ADULT_DATE, today),
+  }));
   if (load.toString().includes('inviteClient')) return Promise.resolve({
     openInviteSession: harness.openSession, completeInvite: harness.complete,
     replayPendingCompletion: harness.replay, beaconPendingCompletion: harness.beacon,
@@ -153,6 +159,7 @@ beforeAll(async () => {
 });
 afterAll(() => vi.unstubAllEnvs());
 beforeEach(() => {
+  dailyEmail = false;
   harness.slots = []; harness.cursor = 0; harness.effects = []; harness.effectCursor = 0; harness.pendingEffects = [];
   harness.access.current = 0; harness.revoke = undefined;
   harness.allowed = true;
@@ -472,7 +479,7 @@ describe('compatibility invitations with invite signups on (ZOD-21)', () => {
     ({ default: SynastryCalculator } = await import('./SynastryCalculator'));
   });
 
-  it('completes the invite once when the reading shows, naming the text the recipient confirmed', async () => {
+  async function openAndCompare(side: object): Promise<void> {
     window.location.hash = `#invite=${handle}`;
     render();
     await settle();
@@ -480,21 +487,45 @@ describe('compatibility invitations with invite signups on (ZOD-21)', () => {
     const ownDetails = view().find((node) => node.type === 'input' && node.props.type === 'checkbox' && node.props.required);
     expect(ownDetails).toBeDefined();
     ownDetails!.props.onChange({ currentTarget: { checked: true } });
-    view().find((node) => node.props.idPrefix === 'syn-b')!.props.setSlot((prior: object) => ({
-      ...prior, source: 'positions', positions: { chart, label: 'Mine' },
-    }));
+    view().find((node) => node.props.idPrefix === 'syn-b')!.props.setSlot((prior: object) => ({ ...prior, ...side }));
     await view().find((node) => node.type === 'form')!.props.onSubmit({ preventDefault: vi.fn() });
     await settle();
+  }
+  const signupCard = () => view().find((node) => typeof node.type === 'function' && (node.type as Function).name === 'InviteSignup');
+
+  it('completes the invite once when the reading shows, naming the text the recipient confirmed', async () => {
+    dailyEmail = true;
+    await openAndCompare({ source: 'positions', positions: { chart, label: 'Mine' } });
     expect(result()).toBeDefined();
     await vi.waitFor(() => expect(harness.complete).toHaveBeenCalledOnce());
-    expect(harness.complete).toHaveBeenCalledWith(handle, payload.expiresAt, undefined, 'invite-recipient-2026-11-16.v1');
+    expect(harness.complete).toHaveBeenCalledWith(handle, payload.expiresAt, undefined, 'invite-recipient-2026-11-16.v2');
     expect(harness.track).toHaveBeenCalledWith('invite_completed', {});
     // Later renders do not complete it again.
     await settle();
     await settle();
     expect(harness.complete).toHaveBeenCalledOnce();
     // The daily email card is a separate opt-in: it gets the sign to offer and nothing about the invitation.
-    const card = view().find((node) => typeof node.type === 'function' && (node.type as Function).name === 'InviteSignup');
-    expect(card?.props).toEqual({ sign: 'taurus' });
+    expect(signupCard()?.props).toEqual({ sign: 'taurus' });
+  });
+
+  it('offers no daily email card when the daily email cannot be joined, and still completes the invite', async () => {
+    dailyEmail = false;
+    await openAndCompare({ source: 'positions', positions: { chart, label: 'Mine' } });
+    expect(result()).toBeDefined();
+    await vi.waitFor(() => expect(harness.complete).toHaveBeenCalledOnce());
+    await settle();
+    expect(signupCard()).toBeUndefined();
+    expect(harness.load.mock.calls.some(([load]) => String(load).includes('InviteSignup'))).toBe(false);
+  });
+
+  it('refuses a recipient under 18 from the date they typed: the fixed message, no reading, no completion', async () => {
+    dailyEmail = true;
+    await openAndCompare({ source: 'form', date: '2010-06-01', time: '', timeKnown: false, city: { name: 'Bangkok', lat: 13.75, lon: 100.5, tz: 'Asia/Bangkok' } });
+    expect(view().some((node) => node.props.role === 'alert' && node.props.children === UNDER_18_INVITE)).toBe(true);
+    expect(result()).toBeUndefined();
+    await settle();
+    expect(harness.complete).not.toHaveBeenCalled();
+    expect(harness.track).not.toHaveBeenCalledWith('invite_completed', {});
+    expect(signupCard()).toBeUndefined();
   });
 });

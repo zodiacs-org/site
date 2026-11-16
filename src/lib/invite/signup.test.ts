@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { INVITER_CONSENT_VERSION, RECIPIENT_CONSENT_VERSION, inviteSignupEnabled, recordInviterConsent, recordRecipientConsent } from './signup';
 import { KNOWN_INVITER_CONSENT_VERSIONS, KNOWN_RECIPIENT_CONSENT_VERSIONS, knownConsentVersion } from './consent';
-import { NO_DATE_INVITE, UNDER_13_INVITE, UNDER_18_INVITE, deviceToday, inviteRecipientGate, recipientBand, requestDailySignup } from './recipient';
+import { NO_DATE_INVITE, RECIPIENT_CONSENT_LABEL, UNDER_13_INVITE, UNDER_18_INVITE, deviceToday, inviteRecipientGate, recipientBand, requestDailySignup } from './recipient';
 import { parseCompleteInviteBody, parseCreateInviteBody } from './validate';
 import { SIGNUP_ENV } from './signup-fixture';
 
@@ -29,7 +29,7 @@ describe('consent versions', () => {
     expect(knownConsentVersion('inviter', INVITER_CONSENT_VERSION)).toBe(true);
     expect(knownConsentVersion('recipient', RECIPIENT_CONSENT_VERSION)).toBe(true);
     for (const unknown of [RECIPIENT_CONSENT_VERSION, 'invite-inviter-2026-11-09.v1', '', undefined, null, 1]) expect(knownConsentVersion('inviter', unknown)).toBe(false);
-    for (const unknown of [INVITER_CONSENT_VERSION, 'invite-recipient-2026-11-09.v1', '', undefined, null, 1]) expect(knownConsentVersion('recipient', unknown)).toBe(false);
+    for (const unknown of [INVITER_CONSENT_VERSION, 'invite-recipient-2026-11-09.v1', 'invite-recipient-2026-11-16.v1', '', undefined, null, 1]) expect(knownConsentVersion('recipient', unknown)).toBe(false);
   });
 
   it('lets the create request carry a consent version, and the completion request only that', () => {
@@ -183,5 +183,22 @@ describe('the recipient in the browser', () => {
     // Completion is no longer held back behind the signup switch.
     expect(island).not.toMatch(/if \(INVITE_SIGNUP_UI_ENABLED\) return;/u);
     expect(island).not.toMatch(/InviteSignup handle=/u);
+  });
+
+  it('asks the recipient to confirm they are 18 or older, the age the gate needs, under its own version', () => {
+    expect(RECIPIENT_CONSENT_LABEL).toBe('These are my own birth details, and I am 18 or older.');
+    expect(RECIPIENT_CONSENT_VERSION).toBe('invite-recipient-2026-11-16.v2');
+    const island = readFileSync(new URL('../../islands/SynastryCalculator.tsx', import.meta.url), 'utf8');
+    expect(island).toContain('<span>{RECIPIENT_CONSENT_LABEL}</span>');
+    expect(island).not.toContain('13 or older');
+  });
+
+  it('offers the daily email card only where the daily email can be joined, never the weekly fallback', () => {
+    const page = readFileSync(new URL('../../pages/compatibility/index.astro', import.meta.url), 'utf8');
+    expect(page).toContain('const dailyEmail = dailyEmailFeatureEnabled(process.env) && hasDailySunEmailProvider(process.env);');
+    expect(page).toContain('<SynastryCalculator client:load dailyEmail={dailyEmail} />');
+    const island = readFileSync(new URL('../../islands/SynastryCalculator.tsx', import.meta.url), 'utf8');
+    expect(island).toMatch(/inviteSignupActive && dailyEmail && recipientBand === 'adult' && signupMod/u);
+    expect(island).toMatch(/dailyEmail = false \}/u);
   });
 });

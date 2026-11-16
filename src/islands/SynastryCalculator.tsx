@@ -30,7 +30,7 @@ import { LOCALE_META, localizePath, normalizeCatalogLocale, t, type CatalogLocal
 import { useEngine, type EngineLoader } from '../lib/hooks/useEngine';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { loadModule } from '../lib/module-load';
-import { RECIPIENT_CONSENT_VERSION } from '../lib/invite/consent';
+import { RECIPIENT_CONSENT_LABEL, RECIPIENT_CONSENT_VERSION } from '../lib/invite/consent';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
@@ -529,10 +529,16 @@ function LoadRecovery({ error, onRetry, locale, area, reopenLink = false }: {
   );
 }
 
-export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped = false }: {
+export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped = false, dailyEmail = false }: {
   locale?: Locale;
   /** The host owns .calc so client:visible can observe the boxed form directly. */
   unwrapped?: boolean;
+  /**
+   * The daily Sun-sign email can be joined (DAILY_EMAIL_ENABLED=1 with its provider), decided by the page at build
+   * time as EmailCapture decides it. Without it the public subscribe route falls back to the weekly email, so an
+   * invitation's daily email card is not offered at all.
+   */
+  dailyEmail?: boolean;
 }) {
   const locale = normalizeCatalogLocale(rawLocale);
   const inviteUiActive = COMPAT_INVITES_UI_ENABLED
@@ -1357,7 +1363,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
           setError(gate.message);
           return;
         }
-        if (inviteSignupActive && !signupMod) void loadModule(() => import('./synastry/InviteSignup')).then(setSignupMod).catch(() => {});
+        if (inviteSignupActive && dailyEmail && !signupMod) void loadModule(() => import('./synastry/InviteSignup')).then(setSignupMod).catch(() => {});
       }
       const resolve = (slot: SlotState, fallback: string) =>
         slot.source === 'saved' ? resolveSaved(charts.find((c) => c.id === slot.savedId)!, loadEngine)
@@ -1536,7 +1542,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
           {inviteSignupActive && (
             <label class="field__toggle syn__own-details">
               <input type="checkbox" checked={recipientConsent} required onChange={(event) => setRecipientConsent((event.currentTarget as HTMLInputElement).checked)} />
-              <span>These are my own birth details, and I am 13 or older.</span>
+              <span>{RECIPIENT_CONSENT_LABEL}</span>
             </label>
           )}
           <button class="btn btn--primary calc__submit" type="submit" disabled={!canCompare}>
@@ -1651,7 +1657,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
                 inviterLabel={result.a.label}
                 onReturned={(method) => track('invite_returned', { method })}
               />
-              {result.source === 'invite' && inviteSignupActive && recipientBand === 'adult' && signupMod && (
+              {result.source === 'invite' && inviteSignupActive && dailyEmail && recipientBand === 'adult' && signupMod && (
                 <signupMod.InviteSignup sign={(() => {
                   // Preselect the recipient's Sun sign only from a timed chart; otherwise they choose it.
                   const sun = result.b.timeKnown ? result.b.bodies.find((body) => body.body === 'Sun') : undefined;

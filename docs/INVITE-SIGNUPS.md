@@ -36,7 +36,7 @@ Off, every Phase 4 behaviour is unchanged.
    invite only if it is a version the site has shown
    (`src/lib/invite/consent.ts`; the database keeps the same allowlist).
 2. **Recipient** opens `/c/{token}/` as before. Before anything is worked out
-   they tick "These are my own birth details, and I am 13 or older".
+   they tick "These are my own birth details, and I am 18 or older".
 3. In their browser, their own birth date is checked: under 18 is refused
    with nothing worked out or sent (ZOD-22), and an invitation opened without
    their own date asks for it first. 18 and over gets the result. The date
@@ -44,7 +44,7 @@ Off, every Phase 4 behaviour is unchanged.
 4. **Completion**: when the result shows, the invite completes exactly as the
    released completion does: token and positions destroyed, inviter notified
    if they asked. The completion request carries the version of the text the
-   recipient ticked (`invite-recipient-2026-11-16.v1`), and the server records
+   recipient ticked (`invite-recipient-2026-11-16.v2`), and the server records
    the recipient's consent against the completed invite only for a known
    version.
 5. **Signup**, adults only and only if they want it: their address and a Sun
@@ -67,7 +67,7 @@ Off, every Phase 4 behaviour is unchanged.
 | 3 | The result is never gated behind an email. | The friend came for the reading; gating it would make consent less free and the result less trusted. |
 | 4 | The signup is the existing daily Sun-sign email with its double opt-in, through the public subscribe route. | A real, confirmed subscription with unsubscribe, rate limits and provider gating already in production code; no new list, provider or route. |
 | 5 | The checkbox is unticked and the button stays disabled until it is ticked. | Opt-in consent must be an affirmative act. |
-| 6 | The recipient confirms "my own birth details" before any calculation. | Details are never entered on someone else's behalf, and the age check comes before anything is worked out. |
+| 6 | The recipient confirms "my own birth details" and "18 or older" before any calculation. | Details are never entered on someone else's behalf, and the age check comes before anything is worked out. |
 | 7 | Under 13: refuse, compute nothing, complete nothing, offer nothing. | Zodiacs is not directed at children under 13 and collects nothing about them. |
 | 8 | 13 to 17: no reading, as under 13, and no signup. An invitation opened without the recipient's own birth date (a link or pasted positions) asks for the date first. This holds whenever invites are on, with signups on or off (ZOD-22). With no reading, the invite does not complete; it stays open until it expires or the inviter ends it, as any unread invite does. | The synastry result speaks of attraction and romance, and get_compatibility gives no reading at all under 18; the page now knows the recipient's age, so it holds back the same way. The date is checked on the device and never sent. |
 | 9 | The age is worked out in the browser; only `adult: true` crosses, and only in the signup. | The birth date stays on the device, as the Phase 4 contract requires. |

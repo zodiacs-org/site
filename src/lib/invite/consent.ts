@@ -23,10 +23,13 @@ export const INVITER_CONSENT_VERSION = 'invite-inviter-2026-11-16.v1';
 /**
  * The recipient's check before anything is worked out, with
  * PUBLIC_INVITE_SIGNUP_ENABLED=1 (src/islands/SynastryCalculator.tsx):
- * "These are my own birth details, and I am 13 or older." Recorded when their
- * reading completes the invite. It says nothing about any email.
+ * RECIPIENT_CONSENT_LABEL. Recorded when their reading completes the invite.
+ * It says nothing about any email. v2 says 18, the age the invitation's own
+ * gate needs (ZOD-22); v1 said 13 and was never recorded.
  */
-export const RECIPIENT_CONSENT_VERSION = 'invite-recipient-2026-11-16.v1';
+export const RECIPIENT_CONSENT_VERSION = 'invite-recipient-2026-11-16.v2';
+/** The text RECIPIENT_CONSENT_VERSION names. A change here needs a new version. */
+export const RECIPIENT_CONSENT_LABEL = 'These are my own birth details, and I am 18 or older.';
 
 export const KNOWN_INVITER_CONSENT_VERSIONS: readonly string[] = Object.freeze([INVITER_CONSENT_VERSION]);
 export const KNOWN_RECIPIENT_CONSENT_VERSIONS: readonly string[] = Object.freeze([RECIPIENT_CONSENT_VERSION]);

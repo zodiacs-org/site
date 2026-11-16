@@ -49,7 +49,7 @@ export function inviteRecipientGate(ownDate: string | null | undefined, today: s
   return { allowed: true, band };
 }
 
-export const RECIPIENT_CONSENT_LABEL = 'These are my own birth details, and I am 13 or older.';
+export { RECIPIENT_CONSENT_LABEL } from './consent';
 
 export type DailySignupOutcome = 'sent' | 'error';
 

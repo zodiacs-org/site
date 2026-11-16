@@ -189,7 +189,7 @@ describe('Phase 4 invitation browser boundary', () => {
   });
 
   it('carries the recipient consent version through completion, replay and the page-exit beacon, and nothing else', async () => {
-    const version = 'invite-recipient-2026-11-16.v1';
+    const version = 'invite-recipient-2026-11-16.v2';
     const failing = vi.fn(async (_input: string | URL | Request, _init?: RequestInit) => new Response('{}', { status: 503 }));
     await completeInvite(HANDLE_A, '2099-08-07T00:00:00.000Z', failing as typeof fetch, version);
     expect(JSON.parse(String(failing.mock.calls[0]?.[1]?.body))).toEqual({ consentVersion: version });

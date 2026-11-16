@@ -71,7 +71,7 @@ set search_path = pg_catalog, public
 as $$
 begin
   if candidate_policy_version is null
-    or candidate_policy_version not in ('invite-recipient-2026-11-16.v1')
+    or candidate_policy_version not in ('invite-recipient-2026-11-16.v2')
   then
     return jsonb_build_object('outcome', 'unavailable');
   end if;
