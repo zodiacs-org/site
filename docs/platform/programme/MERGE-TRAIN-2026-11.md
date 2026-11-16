@@ -55,8 +55,9 @@ Run this on one branch at a time, in merge order, after `main` moved.
      order. `EVERY_SWITCHED_TOOL` stays an alias of `EVERY_TOOL_NAME`. Keep
      every branch's `*_TOOL_NAMES` and `*_SWITCH_ENV`.
    - `src/ai-tools/usage.ts`, `COUNTED_TOOL_NAMES`: the same order as
-     `EVERY_TOOL_NAME`, then `SAVE_TOOL_NAME` last. Never move a group main
-     already has, as that reorders `tools/list`.
+     `EVERY_TOOL_NAME`, then `SAVE_TOOL_NAME` last, so the two lists stay in
+     step. Never move a group `main` already has, as that reorders
+     `tools/list`.
    - A test that says "my tool is listed last" becomes "comes after every
      tool already on main, in merge order".
    - `src/ai-tools/personal/registry.ts`: `PERSONAL_TOOLS` is astrocartography,
@@ -106,9 +107,10 @@ Run this on one branch at a time, in merge order, after `main` moved.
 6. `git status` shows exactly one new `zodiacs-developer-<version>.zip` and no
    changed older ZIP. An archive already on `main` keeps its bytes.
 7. Commit as Zodiacs Admin with a plain subject, such as "Merge main,
-   repackage Developer 0.3.49". No trailers. Open PRs that already claim a
-   number (on 16 November: #1068 has 0.3.49, #974 and #975 have 0.3.39) take
-   theirs in turn; never two branches with one number.
+   repackage Developer 0.3.49". No trailers. The number is set at catch-up
+   time from `main`; a number an open PR already carries (on 16 November #1068
+   has 0.3.49) reserves nothing. A branch that loses the race catches up
+   again.
 
 ## Commit messages
 
@@ -120,11 +122,19 @@ it searches for. Check the squash message before merging:
 
 ```bash
 PATTERN='cl[a]ude|anthr[o]pic|op[u]s|s[o]nnet|f[a]ble|ha[i]ku|co[d]ex|gp[t]|gr[o]k|co-authored-by|session_'
-printf '%s' "$MSG" | grep -inE "$PATTERN" || echo clean
+# squash-msg.txt holds the exact squash title and body you will merge with.
+test -s squash-msg.txt || { echo 'squash-msg.txt is empty'; false; }
+grep -inE "$PATTERN" squash-msg.txt || echo clean
 ```
 
-It must print `clean`. After the merge, run `git fetch origin` and then
-`git log -1 --format='%an <%ae>%n%B' origin/main | grep -inE "$PATTERN" || echo clean`;
+It must print `clean`. After the merge, in the same shell:
+
+```bash
+git fetch origin
+git log -1 --format='%an <%ae>%n%B' origin/main | grep -inE "$PATTERN" || echo clean
+```
+
+It must print `clean`, and
 the author is Zodiacs Admin. Agent branch names appear only in
 the PR, never in the squash message.
 
@@ -137,7 +147,7 @@ issue (#879), as AGENTS.md says.
 
 - `ai:build` fails on the Chart Studio pin: a shared module the panel imports
   changed in the merge. Read the failure. If the studio's own sources did not
-  change, record the new build in `SOURCE_SHA256` as the repository agent notes allow and say
+  change, record the new build in `SOURCE_SHA256` as the "Generated vs source" section of the repository agent notes allows and say
   so in the commit body.
 - `release-060.test.ts` fails: a published tool definition moved. Stop. Do not
   update the fixture. Find what in the merge touched
