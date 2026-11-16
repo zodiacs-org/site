@@ -123,8 +123,11 @@ it searches for. Check the squash message before merging:
 ```bash
 PATTERN='cl[a]ude|anthr[o]pic|op[u]s|s[o]nnet|f[a]ble|ha[i]ku|co[d]ex|gp[t]|gr[o]k|co-authored-by|session_'
 # squash-msg.txt holds the exact squash title and body you will merge with.
-test -s squash-msg.txt || { echo 'squash-msg.txt is empty'; false; }
-grep -inE "$PATTERN" squash-msg.txt || echo clean
+if test -s squash-msg.txt; then
+  grep -inE "$PATTERN" squash-msg.txt || echo clean
+else
+  echo 'squash-msg.txt is missing or empty'
+fi
 ```
 
 It must print `clean`. After the merge, in the same shell:
@@ -147,7 +150,8 @@ issue (#879), as AGENTS.md says.
 
 - `ai:build` fails on the Chart Studio pin: a shared module the panel imports
   changed in the merge. Read the failure. If the studio's own sources did not
-  change, record the new build in `SOURCE_SHA256` as the "Generated vs source" section of the repository agent notes allows and say
+  change, record the new build in `SOURCE_SHA256` as the "Generated vs
+  source" section of the repository agent notes allows, and say
   so in the commit body.
 - `release-060.test.ts` fails: a published tool definition moved. Stop. Do not
   update the fixture. Find what in the merge touched
