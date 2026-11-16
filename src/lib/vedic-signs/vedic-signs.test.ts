@@ -103,19 +103,22 @@ describe('the Vedic signs share link', () => {
     ]) expect(ok(bad), bad).toBeNull();
   });
 
-  it('gives no pada for an untimed day, listing the padas the Moon passed through', () => {
+  it('gives no pada and no pada limit for an untimed day, and walks the Western sign over the day', () => {
     const moment = (moonLon: number, index: number, pada: 1 | 2 | 3 | 4) => ({ ayanamsa: 24, sun: { lon: 100, tropical: 124 }, moon: { lon: moonLon, tropical: moonLon + 24 }, rising: null, nakshatra: { index, pada, lord: 'Mars' } });
     const base = { timeKnown: false, placed: false, ayanamsa: 'lahiri' as const };
-    const open = vedicReading({ ...base, at: moment(180, 13, 3), ends: [moment(173.5, 13, 2), moment(183, 13, 4)] });
-    expect(open.moonNakshatra).toMatchObject({ name: 'Chitra', pada: null });
-    expect(open.padaCandidates).toEqual([2, 3, 4]);
-    expect(open.limits).toContain('The Moon stayed in Chitra that day but moved through more than one of its quarters (padas): pada 2, 3 or 4. A birth time settles it.');
-    const held = vedicReading({ ...base, at: moment(180, 13, 3), ends: [moment(177, 13, 3), moment(179.9, 13, 3)] });
-    expect(held.moonNakshatra!.pada).toBeNull();
-    expect(held.padaCandidates).toEqual([]);
-    const moved = vedicReading({ ...base, at: moment(180, 13, 3), ends: [moment(170, 12, 4), moment(184, 13, 4)] });
-    expect(moved.moonNakshatra).toBeNull();
-    expect(moved.padaCandidates).toEqual([]);
+    const open = vedicReading({ ...base, at: moment(193, 14, 2), ends: [moment(188, 14, 1), moment(198, 14, 4)] });
+    expect(open.moonNakshatra).toMatchObject({ name: 'Swati', pada: null });
+    expect(open).not.toHaveProperty('padaCandidates');
+    expect(open.limits.join(' ')).not.toMatch(/quarters|pada \d/u);
+    // Sidereal Libra all day; Western 212 to 222 stays in Scorpio.
+    expect(open.moon).toMatchObject({ sign: 'libra', tropicalSign: 'scorpio', tropicalCandidates: [] });
+    // Sidereal Libra 182 to 194 all day; Western 206 to 218 crosses from Libra into Scorpio, so the noon value is not given.
+    const crossed = vedicReading({ ...base, at: moment(188, 14, 1), ends: [moment(182, 13, 3), moment(194, 14, 2)] });
+    expect(crossed.moon).toMatchObject({ sign: 'libra', tropicalSign: null, tropicalCandidates: ['libra', 'scorpio'] });
+    expect(crossed.sun).toMatchObject({ tropicalSign: 'leo', tropicalCandidates: [] });
+    // With a birth time the noon walk does not apply.
+    const timed = vedicReading({ ...base, timeKnown: true, at: moment(188, 14, 1), ends: null });
+    expect(timed.moon).toMatchObject({ tropicalSign: 'scorpio', tropicalCandidates: [] });
   });
 
   it('lists every nakshatra and sign the Moon passed through, not only those at the ends of the day', () => {

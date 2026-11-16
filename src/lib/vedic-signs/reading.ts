@@ -17,8 +17,10 @@ export interface VedicSign {
   rashi: typeof RASHIS[number];
   /** Degrees into the sidereal sign, 0 to 30, to two decimals; null without a birth time, when the day leaves it open. */
   degree: number | null;
-  /** The sign the same body is in on the tropical (Western) zodiac. */
-  tropicalSign: string;
+  /** The sign the same body is in on the tropical (Western) zodiac; null when an untimed birth day changed it (see tropicalCandidates). */
+  tropicalSign: string | null;
+  /** The Western signs an untimed birth day passed through, in order, when it changed sign that day; otherwise empty. */
+  tropicalCandidates: string[];
   line: string;
 }
 
@@ -26,7 +28,7 @@ export interface VedicNakshatra {
   name: string;
   /** 1 for Ashwini to 27 for Revati. */
   number: number;
-  /** The quarter of the nakshatra, 1 to 4; null without a birth time, since an untimed day never settles it (see padaCandidates). */
+  /** The quarter of the nakshatra, 1 to 4; null without a birth time, since an untimed day never settles it. */
   pada: number | null;
   lord: string;
   deity: string;
@@ -45,8 +47,6 @@ export interface VedicReading {
   rising: VedicSign | null;
   moonNakshatra: VedicNakshatra | null;
   nakshatraCandidates: string[];
-  /** The padas the Moon passed through on an untimed birth day that kept one nakshatra but not one pada; otherwise empty. */
-  padaCandidates: number[];
   summary: string;
   confidence: number;
   confidenceLabel: string;
@@ -72,10 +72,20 @@ export const listOr = (names: readonly string[]) => names.length < 3
   ? names.join(' or ')
   : `${names.slice(0, -1).join(', ')} or ${names[names.length - 1]}`;
 
-/** A sign placement; `timeKnown: false` leaves out the degree, which an untimed day never settles. */
-function signOf(point: SiderealPoint, line: string, timeKnown = true): VedicSign {
+/**
+ * A sign placement. `timeKnown: false` leaves out the degree, which an untimed
+ * day never settles; `tropicalRun` is the Western signs that day passed through,
+ * and more than one leaves the Western sign open, as candidates.
+ */
+function signOf(point: SiderealPoint, line: string, timeKnown = true, tropicalRun: readonly number[] | null = null): VedicSign {
   const index = signIndexForLongitude(point.lon);
-  return { sign: SIGNS[index].slug, rashi: RASHIS[index], degree: timeKnown ? Math.min(29.99, round2(point.lon - index * 30)) : null, tropicalSign: SIGNS[signIndexForLongitude(point.tropical)].slug, line };
+  const tropical = tropicalRun ?? [signIndexForLongitude(point.tropical)];
+  return {
+    sign: SIGNS[index].slug, rashi: RASHIS[index], degree: timeKnown ? Math.min(29.99, round2(point.lon - index * 30)) : null,
+    tropicalSign: tropical.length === 1 ? SIGNS[tropical[0]].slug : null,
+    tropicalCandidates: tropical.length === 1 ? [] : tropical.map((entry) => SIGNS[entry].slug),
+    line,
+  };
 }
 
 export const sunLine = (index: number) => `Your Vedic Sun is in ${RASHIS[index]}, ${SIGNS[index].name} in the sidereal zodiac. In Jyotish the Sun is the soul and the sense of self: ${RASHI_LINE[index]}`;
@@ -102,10 +112,6 @@ export function passedThrough(indices: readonly number[], count: number): number
   return Array.from({ length: steps + 1 }, (_, step) => (first + step) % count);
 }
 
-/** The line for a pada an untimed birth day leaves open, such as padas 1, 2, 3 or 4 of Chitra. */
-export const padaLimit = (nakshatra: string, padas: readonly number[]) =>
-  `The Moon stayed in ${nakshatra} that day but moved through more than one of its quarters (padas): pada ${listOr(padas.map(String))}. A birth time settles it.`;
-
 /** The reading. A placement an untimed day leaves open comes back as candidates, never as a guess. */
 export function vedicReading(input: VedicReadingInput): VedicReading {
   const { at, ends } = input;
@@ -116,16 +122,13 @@ export function vedicReading(input: VedicReadingInput): VedicReading {
   };
   const sunHold = settled((moment) => moment.sun.lon);
   const moonHold = settled((moment) => moment.moon.lon);
-  const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude(at.sun.lon)), input.timeKnown) : null;
-  const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude(at.moon.lon)), input.timeKnown) : null;
+  // The Western sign takes the same forward walk over the day as the sidereal one.
+  const tropicalRun = (pick: (moment: SiderealMoment) => number) => ends ? passedThrough(ends.map((end) => signIndexForLongitude(pick(end))), 12) : null;
+  const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude(at.sun.lon)), input.timeKnown, tropicalRun((moment) => moment.sun.tropical)) : null;
+  const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude(at.moon.lon)), input.timeKnown, tropicalRun((moment) => moment.moon.tropical)) : null;
   const rising = input.timeKnown && input.placed && at.rising ? signOf(at.rising, risingLine(signIndexForLongitude(at.rising.lon))) : null;
   const nakshatraNames = ends ? passedThrough(ends.map((end) => end.nakshatra.index), 27).map((index) => NAKSHATRA_NAMES[index]) : [];
   const nakshatraHeld = !ends || nakshatraNames.length === 1;
-  // The Moon only moves forward, so within one nakshatra the day passed through every pada between the two ends.
-  const endPadas = ends && nakshatraHeld ? ends.map((end) => end.nakshatra.pada) : [];
-  const firstPada = endPadas.length ? Math.min(...endPadas) : 0;
-  const lastPada = endPadas.length ? Math.max(...endPadas) : 0;
-  const padaCandidates = firstPada !== lastPada ? Array.from({ length: lastPada - firstPada + 1 }, (_, step) => firstPada + step) : [];
   // Without a birth time the pada is never settled: the Moon crosses a pada (3 degrees 20 minutes) in about six hours.
   const moonNakshatra = nakshatraHeld ? { ...nakshatraReading(at.nakshatra), ...(input.timeKnown ? {} : { pada: null }) } : null;
   const limits: string[] = [];
@@ -133,7 +136,6 @@ export function vedicReading(input: VedicReadingInput): VedicReading {
     limits.push('No birth time was given, so there is no rising sign (lagna), no degree and no pada, and the Moon sign and nakshatra are given only where the whole birth day keeps them.');
     if (!moonHold.held) limits.push(`The Moon changed sign that day: it was in ${listOr(moonHold.candidates)}. A birth time settles it.`);
     if (!nakshatraHeld) limits.push(`The Moon changed nakshatra that day: it was in ${listOr(nakshatraNames)}. A birth time settles it.`);
-    if (padaCandidates.length) limits.push(padaLimit(nakshatraNames[0], padaCandidates));
     if (!sunHold.held) limits.push(`The Sun changed sign that day: it was in ${listOr(sunHold.candidates)}. A birth time settles it.`);
   } else if (!input.placed) limits.push('No birthplace coordinates were given, so there is no rising sign (lagna).');
   const parts = [sun?.line, moon?.line, rising?.line, moonNakshatra?.line].filter((line): line is string => !!line);
@@ -142,7 +144,7 @@ export function vedicReading(input: VedicReadingInput): VedicReading {
   return {
     timeKnown: input.timeKnown, placed: input.placed,
     ayanamsa: { name: input.ayanamsa, label: AYANAMSA_NAME[input.ayanamsa], degrees: Math.round(at.ayanamsa * 10_000) / 10_000 },
-    sun, sunCandidates: sunHold.candidates, moon, moonCandidates: moonHold.candidates, rising, moonNakshatra, nakshatraCandidates: nakshatraHeld ? [] : nakshatraNames, padaCandidates,
+    sun, sunCandidates: sunHold.candidates, moon, moonCandidates: moonHold.candidates, rising, moonNakshatra, nakshatraCandidates: nakshatraHeld ? [] : nakshatraNames,
     summary: `${parts.join(' ')} ${confidenceLabel}.`.trim(), confidence, confidenceLabel, limits, note: VEDIC_NOTE,
   };
 }

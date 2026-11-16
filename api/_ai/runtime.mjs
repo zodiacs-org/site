@@ -42443,9 +42443,17 @@ var nakshatraOrdinal = (n) => ORDINALS[n];
 var round2 = (value) => Math.round(value * 100) / 100;
 var label = (index) => `${SIGNS2[index].name} (${RASHIS[index]})`;
 var listOr = (names) => names.length < 3 ? names.join(" or ") : `${names.slice(0, -1).join(", ")} or ${names[names.length - 1]}`;
-function signOf(point2, line, timeKnown = true) {
+function signOf(point2, line, timeKnown = true, tropicalRun = null) {
   const index = signIndexForLongitude2(point2.lon);
-  return { sign: SIGNS2[index].slug, rashi: RASHIS[index], degree: timeKnown ? Math.min(29.99, round2(point2.lon - index * 30)) : null, tropicalSign: SIGNS2[signIndexForLongitude2(point2.tropical)].slug, line };
+  const tropical = tropicalRun ?? [signIndexForLongitude2(point2.tropical)];
+  return {
+    sign: SIGNS2[index].slug,
+    rashi: RASHIS[index],
+    degree: timeKnown ? Math.min(29.99, round2(point2.lon - index * 30)) : null,
+    tropicalSign: tropical.length === 1 ? SIGNS2[tropical[0]].slug : null,
+    tropicalCandidates: tropical.length === 1 ? [] : tropical.map((entry) => SIGNS2[entry].slug),
+    line
+  };
 }
 var sunLine = (index) => `Your Vedic Sun is in ${RASHIS[index]}, ${SIGNS2[index].name} in the sidereal zodiac. In Jyotish the Sun is the soul and the sense of self: ${RASHI_LINE[index]}`;
 var moonLine = (index) => `Your Moon sign (rashi) is ${RASHIS[index]}, ${SIGNS2[index].name}. Vedic astrology reads the Moon sign first, as the mind and the emotional nature: ${RASHI_LINE[index]}`;
@@ -42468,7 +42476,6 @@ function passedThrough(indices, count) {
   const steps = (last2 - first2 + count) % count;
   return Array.from({ length: steps + 1 }, (_, step) => (first2 + step) % count);
 }
-var padaLimit = (nakshatra2, padas) => `The Moon stayed in ${nakshatra2} that day but moved through more than one of its quarters (padas): pada ${listOr(padas.map(String))}. A birth time settles it.`;
 function vedicReading(input) {
   const { at, ends } = input;
   const settled = (pick) => {
@@ -42478,22 +42485,18 @@ function vedicReading(input) {
   };
   const sunHold = settled((moment2) => moment2.sun.lon);
   const moonHold = settled((moment2) => moment2.moon.lon);
-  const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude2(at.sun.lon)), input.timeKnown) : null;
-  const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude2(at.moon.lon)), input.timeKnown) : null;
+  const tropicalRun = (pick) => ends ? passedThrough(ends.map((end) => signIndexForLongitude2(pick(end))), 12) : null;
+  const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude2(at.sun.lon)), input.timeKnown, tropicalRun((moment2) => moment2.sun.tropical)) : null;
+  const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude2(at.moon.lon)), input.timeKnown, tropicalRun((moment2) => moment2.moon.tropical)) : null;
   const rising = input.timeKnown && input.placed && at.rising ? signOf(at.rising, risingLine(signIndexForLongitude2(at.rising.lon))) : null;
   const nakshatraNames = ends ? passedThrough(ends.map((end) => end.nakshatra.index), 27).map((index) => NAKSHATRA_NAMES[index]) : [];
   const nakshatraHeld = !ends || nakshatraNames.length === 1;
-  const endPadas = ends && nakshatraHeld ? ends.map((end) => end.nakshatra.pada) : [];
-  const firstPada = endPadas.length ? Math.min(...endPadas) : 0;
-  const lastPada = endPadas.length ? Math.max(...endPadas) : 0;
-  const padaCandidates = firstPada !== lastPada ? Array.from({ length: lastPada - firstPada + 1 }, (_, step) => firstPada + step) : [];
   const moonNakshatra = nakshatraHeld ? { ...nakshatraReading(at.nakshatra), ...input.timeKnown ? {} : { pada: null } } : null;
   const limits2 = [];
   if (!input.timeKnown) {
     limits2.push("No birth time was given, so there is no rising sign (lagna), no degree and no pada, and the Moon sign and nakshatra are given only where the whole birth day keeps them.");
     if (!moonHold.held) limits2.push(`The Moon changed sign that day: it was in ${listOr(moonHold.candidates)}. A birth time settles it.`);
     if (!nakshatraHeld) limits2.push(`The Moon changed nakshatra that day: it was in ${listOr(nakshatraNames)}. A birth time settles it.`);
-    if (padaCandidates.length) limits2.push(padaLimit(nakshatraNames[0], padaCandidates));
     if (!sunHold.held) limits2.push(`The Sun changed sign that day: it was in ${listOr(sunHold.candidates)}. A birth time settles it.`);
   } else if (!input.placed) limits2.push("No birthplace coordinates were given, so there is no rising sign (lagna).");
   const parts = [sun?.line, moon?.line, rising?.line, moonNakshatra?.line].filter((line) => !!line);
@@ -42510,7 +42513,6 @@ function vedicReading(input) {
     rising,
     moonNakshatra,
     nakshatraCandidates: nakshatraHeld ? [] : nakshatraNames,
-    padaCandidates,
     summary: `${parts.join(" ")} ${confidenceLabel}.`.trim(),
     confidence,
     confidenceLabel,
@@ -42655,15 +42657,17 @@ var sign3 = z16.object({
   rashi: z16.enum(RASHIS),
   /** Degrees into the sidereal sign, 0 to 30, to two decimals; null without a birth time. */
   degree: z16.number().min(0).max(30).nullable(),
-  /** The sign the same body is in on the tropical (Western) zodiac. */
-  tropicalSign: z16.string(),
+  /** The sign the same body is in on the tropical (Western) zodiac; null when an untimed birth day changed it. */
+  tropicalSign: z16.string().nullable(),
+  /** The Western signs an untimed birth day passed through, when it changed sign that day; otherwise empty. */
+  tropicalCandidates: z16.array(z16.string()),
   line: z16.string()
 });
 var nakshatra = z16.object({
   name: z16.string(),
   /** 1 for Ashwini to 27 for Revati. */
   number: z16.number().int().min(1).max(27),
-  /** The quarter of the nakshatra; null without a birth time (see padaCandidates). */
+  /** The quarter of the nakshatra; null without a birth time. */
   pada: z16.number().int().min(1).max(4).nullable(),
   /** Its ruling planet in the Vimshottari order. */
   lord: z16.string(),
@@ -42684,8 +42688,6 @@ var vedicSignsData = z16.object({
   rising: sign3.nullable(),
   moonNakshatra: nakshatra.nullable(),
   nakshatraCandidates: z16.array(z16.string()),
-  /** Padas the Moon passed through on an untimed birth day that kept one nakshatra; otherwise empty. */
-  padaCandidates: z16.array(z16.number().int().min(1).max(4)),
   /** One plain paragraph, built from the lines above. */
   summary: z16.string(),
   confidence: z16.number().int().min(40).max(95),
@@ -42721,7 +42723,7 @@ var vedicSignsTool = definePersonalTool({
   name: "get_vedic_signs",
   title: "Vedic signs",
   summary: "sidereal Sun, Moon and rising signs and the Moon nakshatra, Lahiri by default",
-  description: "Gives the person's Vedic (sidereal) Sun, Moon and rising signs and the nakshatra their Moon was in, with its pada, ruling planet, deity and symbol, and what each is traditionally read as in Jyotish. Use it for my Vedic sign, my sidereal sign, my rashi, my lagna or my nakshatra, once the person has given a birth date. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time there is no rising sign, no degree and no pada, and the Moon's sign and nakshatra come back only when the whole birth day settles them, otherwise as candidates. When they name a town or city instead of coordinates, use find_birthplace first. The zodiac is Lahiri unless the person asks for raman, krishnamurti, fagan-bradley, yukteswar or true-chitra. For the Western (tropical) chart use get_natal_chart. Share the readings plainly as Vedic astrology's reading, with the reading-confidence label.",
+  description: "Gives the person's Vedic (sidereal) Sun, Moon and rising signs and the nakshatra their Moon was in, with its pada when a birth time is given, its ruling planet, deity and symbol, and what each is traditionally read as in Jyotish. Use it for my Vedic sign, my sidereal sign, my rashi, my lagna or my nakshatra, once the person has given a birth date. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time there is no rising sign, no degree and no pada, and the Moon's sign and nakshatra come back only when the whole birth day settles them, otherwise as candidates. When they name a town or city instead of coordinates, use find_birthplace first. The zodiac is Lahiri unless the person asks for raman, krishnamurti, fagan-bradley, yukteswar or true-chitra. For the Western (tropical) chart use get_natal_chart. Share the readings plainly as Vedic astrology's reading, with the reading-confidence label.",
   input: vedicSignsInput,
   data: vedicSignsData,
   clockDependent: false,

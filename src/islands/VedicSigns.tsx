@@ -47,7 +47,7 @@ function Placement({ title, sign, missing }: { title: string; sign: VedicSign | 
       <p class="vedic__body">{title}</p>
       <img class="vedic__disc" src={signIcon(128, sign.sign)} width={56} height={56} alt="" decoding="async" />
       <h3 class="vedic__sign">{sign.rashi} <span>{signName(sign.sign)}</span></h3>
-      {sign.degree !== null && <p class="vedic__facts"><span class="mono">{degrees(sign.degree)}</span> in {sign.rashi}. Western sign: {signName(sign.tropicalSign)}.</p>}
+      <p class="vedic__facts">{sign.degree !== null && <><span class="mono">{degrees(sign.degree)}</span> in {sign.rashi}. </>}Western sign: {sign.tropicalSign ? signName(sign.tropicalSign) : listOr(sign.tropicalCandidates.map(signName))}.</p>
       <p class="vedic__line">{sign.line.slice(sign.line.indexOf(':') + 2)}</p>
     </article>
   );
