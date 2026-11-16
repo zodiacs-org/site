@@ -127,10 +127,16 @@ export function lineMeaning(body: AcgBody, angle: AcgAngle, minor = false): stri
   return MINOR_LEFT_OUT.test(LINE_MEANING[body][angle]) ? null : LINE_MEANING[body][angle];
 }
 
+/** What an angle covers. Under 18, none (null) where it is about partners, as the Descendant's is. */
+export function angleArea(angle: AcgAngle, minor = false): string | null {
+  return minor && MINOR_LEFT_OUT.test(ANGLE_AREA[angle]) ? null : ANGLE_AREA[angle];
+}
+
 /** One plain sentence for a line, such as "Venus Descendant line (Venus setting): ...". */
 export function lineSentence(body: AcgBody, angle: AcgAngle, minor = false): string {
   const meaning = lineMeaning(body, angle, minor);
-  return `${body} ${ANGLE_LABEL[angle]} (${body} ${ANGLE_NAME[angle]}), for ${ANGLE_AREA[angle]}.${meaning ? ` ${meaning}` : ''}`;
+  const area = angleArea(angle, minor);
+  return `${body} ${ANGLE_LABEL[angle]} (${body} ${ANGLE_NAME[angle]})${area ? `, for ${area}` : ''}.${meaning ? ` ${meaning}` : ''}`;
 }
 
 /** A birth time and place are always required here, so every reading of the map carries the same confidence. */
@@ -147,16 +153,21 @@ function changeLength(minutes: number): string {
  * most daylight saving changes, 30 minutes on Lord Howe Island). Every line moves a degree for each 4 minutes.
  */
 export function clockFoldLimit(minutes: number): string {
-  return `Clocks repeated that hour where you were born. This map uses the earlier pass; the later one would move every line ${Number((minutes / 4).toFixed(2))} degrees east or west.`;
+  return `Clocks repeated that ${minutes === 60 ? 'hour' : 'time'} where you were born. This map uses the earlier pass; the later one would move every line ${Number((minutes / 4).toFixed(2))} degrees east or west.`;
 }
 export function clockGapLimit(minutes: number): string {
   return `That clock time did not exist where you were born: clocks jumped forward. This map uses the time ${changeLength(minutes)} later.`;
 }
 
-/** The clock-change sentence for the resolver's flags and the size of the change, or null. Without a size, none. */
+/**
+ * The clock-change sentence for the resolver's flags and the size of the change, in whole minutes, or null. None
+ * without a size, or for a change under a minute (such as Amsterdam's 28 seconds on 1 July 1937), which moves no
+ * line by as much as a quarter of a degree.
+ */
 export function clockChangeLimit(flags: readonly string[], jumpMinutes: number | null | undefined): string | null {
-  if (!jumpMinutes) return null;
-  return flags.includes('dst-fold') ? clockFoldLimit(jumpMinutes) : flags.includes('dst-gap') ? clockGapLimit(jumpMinutes) : null;
+  const minutes = Math.round(jumpMinutes ?? 0);
+  if (minutes < 1) return null;
+  return flags.includes('dst-fold') ? clockFoldLimit(minutes) : flags.includes('dst-gap') ? clockGapLimit(minutes) : null;
 }
 
 /** What a picture of the whole map gives away. */

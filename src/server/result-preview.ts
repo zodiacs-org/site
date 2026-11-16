@@ -79,7 +79,7 @@ import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_
 import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
 import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
 import { ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, ASTROCARTOGRAPHY_SHARE_KEYS, ASTROCARTOGRAPHY_SHARE_PATH, ASTROCARTOGRAPHY_SHARE_STORY_PATH, astrocartographyQuery, parseAstrocartographyShare, type AstrocartographyShare } from '../lib/astrocartography/share.js';
-import { ACG_CONFIDENCE_TEXT, ANGLE_AREA, ANGLE_LABEL, ANGLE_NAME, lineMeaning } from '../lib/astrocartography/meanings.js';
+import { ACG_CONFIDENCE_TEXT, ANGLE_LABEL, ANGLE_NAME, angleArea, lineMeaning } from '../lib/astrocartography/meanings.js';
 import type { AcgBody } from '../lib/astrocartography/lines.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
@@ -2098,7 +2098,7 @@ export interface AstrocartographyCardModel {
   hue: string;
   /** "My Jupiter Midheaven line". */
   title: string;
-  /** "Jupiter overhead: work, reputation and your public life." */
+  /** "Jupiter overhead: work, reputation and your public life.", as an under-18 reading gives it. */
   detail: string;
   /**
    * What the line is traditionally read as, as an under-18 reading gives it: a card carries no age. Null for a
@@ -2116,7 +2116,7 @@ export function astrocartographyCardModel(share: AstrocartographyShare): Astroca
     sign: { slug, label: share.planet, hue: HUES[slug] },
     hue: HUES[slug],
     title: `My ${share.planet} ${ANGLE_LABEL[share.angle]}`,
-    detail: `${share.planet} ${ANGLE_NAME[share.angle]}: ${ANGLE_AREA[share.angle]}.`,
+    detail: `${share.planet} ${ANGLE_NAME[share.angle]}${angleArea(share.angle, true) ? `: ${angleArea(share.angle, true)}` : ''}.`,
     line: lineMeaning(share.planet, share.angle, true),
     confidence: ACG_CONFIDENCE_TEXT,
   };

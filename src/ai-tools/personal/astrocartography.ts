@@ -115,7 +115,7 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
   const bodies = equatorialBodies(utc);
   const gast = greenwichSiderealDegrees(utc);
   // Today on the person's clock, as get_personal_day reads it, so an 18th birthday falls on the same day in both.
-  const { zone: todayZone } = await currentClock(args.currentZone, args.zone, context as PersonalToolContext);
+  const { zone: todayZone, note: todayNote } = await currentClock(args.currentZone, args.zone, context as PersonalToolContext);
   const under18 = isUnder18(args.birthDate, dateOn(context.now, todayZone));
   // Under 18 the lines read as love or attraction take their own readings (lineMeaning); softenMinor covers the rest.
   const guard = (text: string) => (under18 ? softenMinor(text) : text);
@@ -134,6 +134,8 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
   const cities: AstrocartographyData['cities'] = [];
   const unmatched: string[] = [];
   const limits: string[] = [
+    // Which clock "today" (and so the age) was read on, when it is not where the person is now.
+    ...(todayNote ? [todayNote] : []),
     'Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.',
     `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`,
   ];
@@ -170,7 +172,7 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
     data: {
       birthDate: args.birthDate, instantUtc: utc.toISOString(), siderealTimeDegrees: Math.round(gast * 10_000) / 10_000,
       lines, cities, unmatched,
-      readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
+      readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
       confidence: readingConfidence(detail), confidenceLabel, limits,
       pageUrl: `${context.origin}/astrocartography/`,
     },

@@ -4,7 +4,7 @@ import PlaceSearch from './PlaceSearch';
 import type { City } from '../lib/geo/search';
 import type { AcgResult } from './astrocartography/compute';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, strengthOf, type AcgAngle, type AcgBody, type GeoPoint, type LineDistance } from '../lib/astrocartography/lines';
-import { ACG_CONFIDENCE_TEXT, ANGLE_AREA, ANGLE_LABEL, ANGLE_NAME, MAP_PICTURE_HELP, MINOR_NOTE, clockChangeLimit, isUnder18, lineTable, placeLines } from '../lib/astrocartography/meanings';
+import { ACG_CONFIDENCE_TEXT, ANGLE_LABEL, angleArea, ANGLE_NAME, MAP_PICTURE_HELP, MINOR_NOTE, clockChangeLimit, isUnder18, lineTable, placeLines } from '../lib/astrocartography/meanings';
 import { loadModule } from '../lib/module-load';
 import { astrocartographyShareUrl } from '../lib/astrocartography/share';
 import CalculationReload, { calculationError } from './CalculationReload';
@@ -208,7 +208,7 @@ export default function AstrocartographyMap() {
           </div>
 
           <div class="acg__angles">
-            {ACG_ANGLES.map((angle) => <p key={angle}><strong>{ANGLE_LABEL[angle]}</strong> (planet {ANGLE_NAME[angle]}): {ANGLE_AREA[angle]}.</p>)}
+            {ACG_ANGLES.map((angle) => { const area = angleArea(angle, minor); return <p key={angle}><strong>{ANGLE_LABEL[angle]}</strong> (planet {ANGLE_NAME[angle]}){area ? `: ${area}` : ''}.</p>; })}
           </div>
         </section>
       )}

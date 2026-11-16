@@ -8,7 +8,7 @@ import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
 import { astrocartographyCardModel } from '../../server/result-preview';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, type LineDistance } from './lines';
 import {
-  ACG_CONFIDENCE_TEXT, ANGLE_AREA, LINE_MEANING, MAP_PICTURE_HELP, clockChangeLimit, clockFoldLimit, clockGapLimit, formatLongitude, lineMeaning,
+  ACG_CONFIDENCE_TEXT, ANGLE_AREA, LINE_MEANING, MAP_PICTURE_HELP, clockChangeLimit, clockFoldLimit, clockGapLimit, formatLongitude, lineMeaning, angleArea,
   lineSentence, lineTable, placeLines,
 } from './meanings';
 
@@ -24,8 +24,7 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
     for (const body of ACG_BODIES) for (const angle of ACG_ANGLES) {
       const meaning = lineMeaning(body, angle, true);
       if (meaning !== null) expect(meaning).not.toMatch(MINOR_CHECK);
-      // The sentence keeps the angle's own area ("partners and close collaborators") and nothing else of that kind.
-      expect(lineSentence(body, angle, true).replace(ANGLE_AREA[angle], '')).not.toMatch(MINOR_CHECK);
+      expect(lineSentence(body, angle, true)).not.toMatch(MINOR_CHECK);
       if (meaning !== null) expect(forbiddenClaim(meaning)).toBeNull();
       // An adult keeps the traditional reading.
       expect(lineMeaning(body, angle)).toBe(LINE_MEANING[body][angle]);
@@ -33,7 +32,11 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
     expect(lineMeaning('Venus', 'DSC', true)).toBe('Places where friendships and good company come easily.');
     // A Descendant reading about partners or relationships is left out, with no words in its place.
     for (const body of ['Sun', 'Moon', 'Mercury', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Pluto'] as const) expect(lineMeaning(body, 'DSC', true), body).toBeNull();
-    expect(lineSentence('Saturn', 'DSC', true)).toBe(`Saturn Descendant line (Saturn setting), for ${ANGLE_AREA.DSC}.`);
+    // The Descendant's own area ("partners and close collaborators") goes too; the other angles keep theirs.
+    expect(lineSentence('Saturn', 'DSC', true)).toBe('Saturn Descendant line (Saturn setting).');
+    expect(lineSentence('Saturn', 'DSC')).toContain(ANGLE_AREA.DSC);
+    expect(angleArea('DSC', true)).toBeNull();
+    expect(angleArea('MC', true)).toBe(ANGLE_AREA.MC);
     const rows: LineDistance[] = [{ body: 'Venus', angle: 'DSC', km: 120, side: 'east' }, { body: 'Neptune', angle: 'DSC', km: 400, side: null }, { body: 'Venus', angle: 'ASC', km: 700, side: 'west' }];
     expect(JSON.stringify(placeLines(rows, true))).not.toMatch(ROMANCE);
     expect(JSON.stringify(placeLines(rows, false))).toMatch(ROMANCE);
@@ -51,7 +54,8 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
   it('show a minor no line text that fails the check, over every place on a 15 degree grid, on the page and in the tool', async () => {
     const result = await executeAiTool('get_astrocartography', { birthDate: '2010-05-03', time: '08:30', zone: 'Europe/London', cities: ['Lisbon', 'Delhi', 'Honolulu', 'Cape Town', 'Nairobi'] }, ON) as { ok: true; data: any };
     const toolText = result.data.cities.flatMap((city: any) => [city.summary, ...city.closest.map((row: any) => row.line)]);
-    for (const text of toolText) expect(text.replaceAll(ANGLE_AREA.DSC, '')).not.toMatch(MINOR_CHECK);
+    for (const text of toolText) expect(text).not.toMatch(MINOR_CHECK);
+    expect(JSON.stringify({ ...result.data, limits: [] })).not.toMatch(MINOR_CHECK);
     const map = await computeAstrocartography({ birthDate: '2010-05-03', birthTime: '08:30', place: { tz: 'Europe/London', lon: -0.13 } });
     let seen = 0;
     for (let lat = -75; lat <= 75; lat += 15) for (let lon = -180; lon < 180; lon += 15) {
@@ -70,6 +74,9 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
     expect(there.data.limits).not.toContain(MINOR_NOTE);
     const home = await executeAiTool('get_astrocartography', args, late) as { ok: true; data: any };
     expect(home.data.limits).toContain(MINOR_NOTE);
+    // Without a current location the answer says which clock today was read on, as get_personal_day does.
+    expect(home.data.limits).toContain('Today is read on the birthplace clock (Europe/London) because no current location was given.');
+    expect(there.data.limits.some((entry: string) => entry.startsWith('Today is read'))).toBe(false);
   });
 
   it('are taken on the page by the device clock', () => {
@@ -105,7 +112,7 @@ describe('the astrocartography map in words (ZOD-26)', () => {
     expect(astrocartographyCardModel({ planet: 'Saturn', angle: 'DSC', ref: null }).line).toBeNull();
     for (const body of ACG_BODIES) for (const angle of ACG_ANGLES) {
       const model = astrocartographyCardModel({ planet: body, angle, ref: null });
-      expect(`${model.title} ${model.line ?? ''}`).not.toMatch(MINOR_CHECK);
+      expect(`${model.title} ${model.detail} ${model.line ?? ''}`).not.toMatch(MINOR_CHECK);
     }
   });
 
@@ -133,10 +140,23 @@ describe('an astrocartography birth time the clocks repeated or skipped (ZOD-26)
     expect(gap.jumpMinutes).toBe(30);
     expect(clockChangeLimit(gap.flags, gap.jumpMinutes)).toBe('That clock time did not exist where you were born: clocks jumped forward. This map uses the time 30 minutes later.');
     const fold = await computeAstrocartography({ birthDate: '1987-03-15', birthTime: '01:30', place: lordHowe });
-    expect(clockChangeLimit(fold.flags, fold.jumpMinutes)).toBe('Clocks repeated that hour where you were born. This map uses the earlier pass; the later one would move every line 7.5 degrees east or west.');
+    expect(clockChangeLimit(fold.flags, fold.jumpMinutes)).toBe('Clocks repeated that time where you were born. This map uses the earlier pass; the later one would move every line 7.5 degrees east or west.');
     const tool = await executeAiTool('get_astrocartography', { birthDate: '1987-03-15', time: '01:30', zone: 'Australia/Lord_Howe' }, ON) as { ok: true; data: any };
     expect(tool.data.limits).toContain(clockFoldLimit(30));
     expect(clockGapLimit(120)).toContain('2 hours later');
+  });
+
+  it('says nothing for a change under a minute, and rounds to whole minutes', async () => {
+    // Amsterdam, 1 July 1937: the offset moved by 28 seconds, flagged as a gap.
+    const amsterdam = await computeAstrocartography({ birthDate: '1937-07-01', birthTime: '00:00', place: { tz: 'Europe/Amsterdam', lon: 4.9 } });
+    expect(amsterdam.flags).toContain('dst-gap');
+    expect(amsterdam.jumpMinutes).toBeLessThan(1);
+    expect(clockChangeLimit(amsterdam.flags, amsterdam.jumpMinutes)).toBeNull();
+    const tool = await executeAiTool('get_astrocartography', { birthDate: '1937-07-01', time: '00:00', zone: 'Europe/Amsterdam' }, ON) as { ok: true; data: any };
+    expect(tool.data.limits.some((entry: string) => /clock time|Clocks repeated|minutes later/u.test(entry))).toBe(false);
+    expect(clockChangeLimit(['dst-gap'], 29.6)).toBe(clockGapLimit(30));
+    expect(clockChangeLimit(['dst-fold'], 60.4)).toBe(clockFoldLimit(60));
+    expect(clockChangeLimit(['dst-fold'], 0.4)).toBeNull();
   });
 
   it('puts the fold sentence in the tool limits', async () => {

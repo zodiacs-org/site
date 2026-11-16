@@ -41960,9 +41960,13 @@ function lineMeaning(body3, angle2, minor = false) {
   if (own) return own;
   return MINOR_LEFT_OUT.test(LINE_MEANING[body3][angle2]) ? null : LINE_MEANING[body3][angle2];
 }
+function angleArea(angle2, minor = false) {
+  return minor && MINOR_LEFT_OUT.test(ANGLE_AREA[angle2]) ? null : ANGLE_AREA[angle2];
+}
 function lineSentence(body3, angle2, minor = false) {
   const meaning = lineMeaning(body3, angle2, minor);
-  return `${body3} ${ANGLE_LABEL[angle2]} (${body3} ${ANGLE_NAME[angle2]}), for ${ANGLE_AREA[angle2]}.${meaning ? ` ${meaning}` : ""}`;
+  const area = angleArea(angle2, minor);
+  return `${body3} ${ANGLE_LABEL[angle2]} (${body3} ${ANGLE_NAME[angle2]})${area ? `, for ${area}` : ""}.${meaning ? ` ${meaning}` : ""}`;
 }
 var ACG_CONFIDENCE = readingConfidence(readingDetail({ hasDate: true, hasTime: true, hasPlace: true }));
 var ACG_CONFIDENCE_TEXT = readingConfidenceText(ACG_CONFIDENCE);
@@ -41970,14 +41974,15 @@ function changeLength(minutes) {
   return minutes === 60 ? "one hour" : minutes % 60 === 0 ? `${minutes / 60} hours` : `${minutes} minutes`;
 }
 function clockFoldLimit(minutes) {
-  return `Clocks repeated that hour where you were born. This map uses the earlier pass; the later one would move every line ${Number((minutes / 4).toFixed(2))} degrees east or west.`;
+  return `Clocks repeated that ${minutes === 60 ? "hour" : "time"} where you were born. This map uses the earlier pass; the later one would move every line ${Number((minutes / 4).toFixed(2))} degrees east or west.`;
 }
 function clockGapLimit(minutes) {
   return `That clock time did not exist where you were born: clocks jumped forward. This map uses the time ${changeLength(minutes)} later.`;
 }
 function clockChangeLimit(flags, jumpMinutes) {
-  if (!jumpMinutes) return null;
-  return flags.includes("dst-fold") ? clockFoldLimit(jumpMinutes) : flags.includes("dst-gap") ? clockGapLimit(jumpMinutes) : null;
+  const minutes = Math.round(jumpMinutes ?? 0);
+  if (minutes < 1) return null;
+  return flags.includes("dst-fold") ? clockFoldLimit(minutes) : flags.includes("dst-gap") ? clockGapLimit(minutes) : null;
 }
 
 // src/lib/astrocartography/share.ts
@@ -42136,7 +42141,7 @@ async function getAstrocartography(args, context) {
   const utc = natal.birthUtc;
   const bodies = equatorialBodies(utc);
   const gast = greenwichSiderealDegrees(utc);
-  const { zone: todayZone } = await currentClock(args.currentZone, args.zone, context);
+  const { zone: todayZone, note: todayNote } = await currentClock(args.currentZone, args.zone, context);
   const under18 = isUnder18(args.birthDate, dateOn(context.now, todayZone));
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
   const detail = readingDetail({ hasDate: true, hasTime: true, hasPlace: true });
@@ -42152,6 +42157,8 @@ async function getAstrocartography(args, context) {
   const cities = [];
   const unmatched = [];
   const limits2 = [
+    // Which clock "today" (and so the age) was read on, when it is not where the person is now.
+    ...todayNote ? [todayNote] : [],
     "Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.",
     `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`
   ];
@@ -42198,7 +42205,7 @@ async function getAstrocartography(args, context) {
       lines,
       cities,
       unmatched,
-      readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
+      readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
       confidence: readingConfidence(detail),
       confidenceLabel,
       limits: limits2,
