@@ -64,6 +64,20 @@ describe('the Vedic signs the page and the tool share', () => {
     expect(reading.moonCandidates.length).toBeGreaterThan(1);
     expect(reading.confidenceLabel).toBe('Reading confidence 55%');
   });
+
+  it('reads the Moon sign and nakshatra first, then the Sun, then the lagna (ZOD-18)', async () => {
+    const timed = await computeVedicSigns({ birthUtc: new Date('2000-01-01T12:00:00Z'), timeKnown: true, latitude: 28.61, longitude: 77.21, ayanamsa: 'lahiri' });
+    const order = [timed.moon!.line, timed.moonNakshatra!.line, timed.sun!.line, timed.rising!.line].map((line) => timed.summary.indexOf(line));
+    expect(order.every((at) => at >= 0)).toBe(true);
+    expect(order).toEqual([...order].sort((a, b) => a - b));
+    expect(timed.summary.startsWith(timed.moon!.line)).toBe(true);
+    // Untimed, with the Moon held all day: still the Moon and its nakshatra before the Sun, and no lagna.
+    const moment = (moonLon: number) => ({ ayanamsa: 24, sun: { lon: 100, tropical: 124 }, moon: { lon: moonLon, tropical: moonLon + 24 }, rising: null, nakshatra: { index: 14, pada: 2 as const, lord: 'Rahu' } });
+    const untimed = vedicReading({ timeKnown: false, placed: false, ayanamsa: 'lahiri', at: moment(193), ends: [moment(188), moment(198)] });
+    expect(untimed.summary.indexOf(untimed.moon!.line)).toBe(0);
+    expect(untimed.summary.indexOf(untimed.moonNakshatra!.line)).toBeLessThan(untimed.summary.indexOf(untimed.sun!.line));
+    expect(untimed.rising).toBeNull();
+  });
 });
 
 describe('the Vedic signs share link', () => {

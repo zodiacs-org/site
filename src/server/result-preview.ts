@@ -2108,12 +2108,12 @@ const VEDIC_SIGNS_NOTE = 'Vedic astrology’s reading of the sidereal zodiac: te
 function defaultVedicSignsPage(origin: string): SharePage {
   return {
     title: 'Vedic signs on Zodiacs',
-    description: 'Your Sun, Moon and rising signs in the sidereal zodiac, and your Moon nakshatra.',
+    description: 'Your Moon sign and Moon nakshatra, then your Sun and rising signs, in the sidereal zodiac.',
     heading: 'Your Vedic signs',
     imageUrl: `${origin}/assets/og/v2/share.png`,
     imageType: 'image/png',
     imageAlt: 'Zodiacs',
-    explanation: 'Zodiacs finds your Sun, Moon and rising signs in the sidereal zodiac of Vedic astrology, and the nakshatra your Moon was in. A birth time is needed for your rising sign.',
+    explanation: 'Zodiacs finds your Moon sign and the nakshatra your Moon was in, which Vedic astrology reads first, then your Sun and rising signs in the sidereal zodiac. A birth time is needed for your rising sign.',
     action: { label: 'Find your Vedic signs', href: VEDIC_SIGNS_PAGE_PATH },
     note: VEDIC_SIGNS_NOTE,
   };

@@ -53,6 +53,46 @@ function Placement({ title, sign, missing }: { title: string; sign: VedicSign | 
   );
 }
 
+/**
+ * The placements, in the order Jyotish reads them (ZOD-18): the Moon sign
+ * (rashi) and the Moon's nakshatra first, as the page's FAQ says, then the Sun,
+ * then the rising sign (lagna).
+ */
+export function VedicPlacements({ result }: { result: VedicReading }) {
+  const unsettledMoon = result.moon ? '' : `The Moon changed sign that day: ${listOr(result.moonCandidates)}. A birth time settles it.`;
+  return (
+    <>
+      <div class="vedic__lead" data-vedic-moon>
+        <Placement title="Moon sign (rashi)" sign={result.moon} missing={unsettledMoon} />
+        <article class="tile vedic__card vedic__nakshatra">
+          <p class="vedic__body">Moon nakshatra (lunar mansion)</p>
+          {result.moonNakshatra ? (
+            <>
+              <h3 class="vedic__sign">{result.moonNakshatra.name} <span>nakshatra {result.moonNakshatra.number} of 27</span></h3>
+              <dl class="vedic__facts-list">
+                {result.moonNakshatra.pada !== null && <div><dt>Pada</dt><dd class="mono">{result.moonNakshatra.pada} of 4</dd></div>}
+                <div><dt>Lord</dt><dd>{result.moonNakshatra.lord}</dd></div>
+                <div><dt>Deity</dt><dd>{result.moonNakshatra.deity}</dd></div>
+                <div><dt>Symbol</dt><dd>{result.moonNakshatra.symbol}</dd></div>
+              </dl>
+              <p class="vedic__line">{result.moonNakshatra.line.slice(result.moonNakshatra.line.indexOf('symbol. ') + 8)}</p>
+            </>
+          ) : (
+            <>
+              <h3 class="vedic__sign">Not settled</h3>
+              <p class="vedic__line">The Moon changed nakshatra that day: {listOr(result.nakshatraCandidates)}. A birth time settles it.</p>
+            </>
+          )}
+        </article>
+      </div>
+      <div class="vedic__grid">
+        <Placement title="Sun (soul and self)" sign={result.sun} missing={`The Sun changed sign that day: ${listOr(result.sunCandidates)}. A birth time settles it.`} />
+        <Placement title="Rising sign (lagna)" sign={result.rising} missing={result.timeKnown ? 'The rising sign needs the birthplace.' : 'The rising sign needs the birth time: it changes sign about every two hours.'} />
+      </div>
+    </>
+  );
+}
+
 export default function VedicSigns() {
   const [date, setDate] = useState('');
   const [calendar, setCalendar] = useState<CalendarChoice>('gregorian');
@@ -107,14 +147,12 @@ export default function VedicSigns() {
   async function share() {
     if (!shareUrl) return;
     if (typeof navigator.share === 'function') {
-      try { await navigator.share({ title: 'My Vedic signs on Zodiacs', text: 'My Sun, Moon and rising signs in the sidereal zodiac.', url: shareUrl }); return; } catch (cause) {
+      try { await navigator.share({ title: 'My Vedic signs on Zodiacs', text: 'My Moon, Sun and rising signs in the sidereal zodiac.', url: shareUrl }); return; } catch (cause) {
         if ((cause as DOMException)?.name === 'AbortError') return;
       }
     }
     try { await navigator.clipboard.writeText(shareUrl); setShared('copied'); } catch { setShared('failed'); }
   }
-
-  const unsettledMoon = result && !result.moon ? `The Moon changed sign that day: ${listOr(result.moonCandidates)}. A birth time settles it.` : '';
 
   return (
     <div class="calc vedic" data-vedic-signs>
@@ -155,32 +193,7 @@ export default function VedicSigns() {
             <p>Read with the {result.ayanamsa.label} ayanamsa: <span class="mono">{result.ayanamsa.degrees.toFixed(4)}°</span> on your birth date. Vedic signs are counted from the stars, which have drifted about 24 degrees from the Western signs since they were last lined up, so each placement usually sits one sign behind its Western sign.</p>
           </div>
 
-          <div class="vedic__grid">
-            <Placement title="Sun (soul and self)" sign={result.sun} missing={`The Sun changed sign that day: ${listOr(result.sunCandidates)}. A birth time settles it.`} />
-            <Placement title="Moon sign (rashi)" sign={result.moon} missing={unsettledMoon} />
-            <Placement title="Rising sign (lagna)" sign={result.rising} missing={result.timeKnown ? 'The rising sign needs the birthplace.' : 'The rising sign needs the birth time: it changes sign about every two hours.'} />
-          </div>
-
-          <article class="tile vedic__card vedic__nakshatra">
-            <p class="vedic__body">Moon nakshatra (lunar mansion)</p>
-            {result.moonNakshatra ? (
-              <>
-                <h3 class="vedic__sign">{result.moonNakshatra.name} <span>nakshatra {result.moonNakshatra.number} of 27</span></h3>
-                <dl class="vedic__facts-list">
-                  {result.moonNakshatra.pada !== null && <div><dt>Pada</dt><dd class="mono">{result.moonNakshatra.pada} of 4</dd></div>}
-                  <div><dt>Lord</dt><dd>{result.moonNakshatra.lord}</dd></div>
-                  <div><dt>Deity</dt><dd>{result.moonNakshatra.deity}</dd></div>
-                  <div><dt>Symbol</dt><dd>{result.moonNakshatra.symbol}</dd></div>
-                </dl>
-                <p class="vedic__line">{result.moonNakshatra.line.slice(result.moonNakshatra.line.indexOf('symbol. ') + 8)}</p>
-              </>
-            ) : (
-              <>
-                <h3 class="vedic__sign">Not settled</h3>
-                <p class="vedic__line">The Moon changed nakshatra that day: {listOr(result.nakshatraCandidates)}. A birth time settles it.</p>
-              </>
-            )}
-          </article>
+          <VedicPlacements result={result} />
 
           {result.limits.length > 0 && (
             <div class="vedic__limits">

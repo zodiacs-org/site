@@ -138,7 +138,8 @@ export function vedicReading(input: VedicReadingInput): VedicReading {
     if (!nakshatraHeld) limits.push(`The Moon changed nakshatra that day: it was in ${listOr(nakshatraNames)}. A birth time settles it.`);
     if (!sunHold.held) limits.push(`The Sun changed sign that day: it was in ${listOr(sunHold.candidates)}. A birth time settles it.`);
   } else if (!input.placed) limits.push('No birthplace coordinates were given, so there is no rising sign (lagna).');
-  const parts = [sun?.line, moon?.line, rising?.line, moonNakshatra?.line].filter((line): line is string => !!line);
+  // Jyotish reads the Moon first (ZOD-18): the Moon sign and its nakshatra, then the Sun, then the lagna, as the page shows them.
+  const parts = [moon?.line, moonNakshatra?.line, sun?.line, rising?.line].filter((line): line is string => !!line);
   const confidence = readingConfidence(input.timeKnown && input.placed ? 'timed-place' : 'date');
   const confidenceLabel = readingConfidenceText(confidence);
   return {

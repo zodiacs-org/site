@@ -43747,7 +43747,7 @@ function vedicReading(input) {
     if (!nakshatraHeld) limits2.push(`The Moon changed nakshatra that day: it was in ${listOr(nakshatraNames)}. A birth time settles it.`);
     if (!sunHold.held) limits2.push(`The Sun changed sign that day: it was in ${listOr(sunHold.candidates)}. A birth time settles it.`);
   } else if (!input.placed) limits2.push("No birthplace coordinates were given, so there is no rising sign (lagna).");
-  const parts = [sun?.line, moon?.line, rising?.line, moonNakshatra?.line].filter((line) => !!line);
+  const parts = [moon?.line, moonNakshatra?.line, sun?.line, rising?.line].filter((line) => !!line);
   const confidence = readingConfidence(input.timeKnown && input.placed ? "timed-place" : "date");
   const confidenceLabel = readingConfidenceText(confidence);
   return {
