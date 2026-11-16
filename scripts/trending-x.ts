@@ -4,8 +4,10 @@
  *
  * - Matches get a Year Ahead Score from get_year_score's own code and one
  *   draft post each, for the marketing team to read, edit and post by hand.
- * - Names the directory does not have are listed for a person to review.
- *   Nothing is added to the directory automatically.
+ * - Every match carries a review checklist: find out why the name is
+ *   trending before posting anything.
+ * - Names the directory does not have are listed only with --list-unmatched
+ *   (the workflow never passes it). Nothing is added to the directory.
  * - Nothing is posted. This script has no code that posts.
  *
  * Input, in this order: --names <file> (one name per line, # for comments),
@@ -20,7 +22,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createLocalTimeModule } from '../api/_compute/local-time.mjs';
 import { getYearScore } from '../src/ai-tools/features/year-score';
-import { draftPost, matchTrends, type TrendInput } from '../src/lib/year-score/trending';
+import { buildTrendingReport, draftPost, matchTrends, type ReportMatch, type TrendInput } from '../src/lib/year-score/trending';
 import { yearPageStart, yearPersonPath } from '../src/lib/year-score/people';
 
 const ORIGIN = 'https://zodiacs.org';
@@ -53,7 +55,7 @@ const today = now.toISOString().slice(0, 10);
 const out = flag('--out') ?? 'trending-report';
 const report = matchTrends(trends);
 const clock = createLocalTimeModule();
-const matches = [];
+const matches: ReportMatch[] = [];
 for (const match of report.matches) {
   // Scored from the same day as the figure's page, so the draft's number is the one the link shows.
   const { data } = await getYearScore({ person: match.person.slug, from: yearPageStart(now) }, now, clock, ORIGIN);
@@ -62,31 +64,9 @@ for (const match of report.matches) {
 }
 clock.dispose();
 
-const lines = [
-  `# Trending on X: ${today}`,
-  '',
-  `Source: ${source}. ${trends.length} names read, ${matches.length} in the Year Ahead directory, ${report.unmatched.length} not in it.`,
-  '',
-  'Nothing here has been posted or published. Drafts are for the marketing team to read, edit and post by hand. Check each draft before posting: no price or trading calls, no diagnoses, no death predictions, no legal outcomes.',
-  '',
-  'Each draft links to the figure\'s /year/ page, which is live only once PUBLIC_YEAR_PEOPLE_ENABLED is on. Open the link before posting.',
-  '',
-  '## Matches and draft posts',
-  '',
-  ...(matches.length ? matches.flatMap((match) => [
-    `### ${match.name} (trend: ${match.trend}${match.volume ? `, ${match.volume} posts` : ''})`,
-    '',
-    match.draft ? ['```text', match.draft, '```'].join('\n') : '_No draft: the score could not be worded within the rules or the length. Write one by hand or skip._',
-    '',
-  ]) : ['None today.', '']),
-  '## Not in the directory (for human review)',
-  '',
-  'Add a person only after checking: an adult public figure known for their work, a public birth date with a cited source, and no dispute between sources. Never a minor.',
-  '',
-  ...(report.unmatched.length ? report.unmatched.map((row) => `- ${row.name}${row.volume ? ` (${row.volume} posts)` : ''}`) : ['None.']),
-  '',
-];
+const listUnmatched = args.includes('--list-unmatched');
+const { markdown, json } = buildTrendingReport({ date: today, source, namesRead: trends.length, matches, unmatched: report.unmatched, listUnmatched });
 mkdirSync(out, { recursive: true });
-writeFileSync(join(out, `trending-${today}.md`), lines.join('\n'));
-writeFileSync(join(out, `trending-${today}.json`), `${JSON.stringify({ schema: 'zodiacs.trending-x.v1', date: today, source, matches, unmatched: report.unmatched, posted: false }, null, 2)}\n`);
-console.log(`Wrote ${join(out, `trending-${today}.md`)}: ${matches.length} matches, ${report.unmatched.length} for review. Nothing was posted.`);
+writeFileSync(join(out, `trending-${today}.md`), markdown);
+writeFileSync(join(out, `trending-${today}.json`), json);
+console.log(`Wrote ${join(out, `trending-${today}.md`)}: ${matches.length} matches${listUnmatched ? `, ${report.unmatched.length} for review` : ''}. Nothing was posted.`);

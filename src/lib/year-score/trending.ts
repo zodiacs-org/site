@@ -1,7 +1,9 @@
 /**
  * Trending on X: match the names people are talking about today to the Year
- * Ahead directory (src/data/year-people.json), list the names it does not have
- * for a person to review, and draft one post per match for the marketing team.
+ * Ahead directory (src/data/year-people.json) and draft one post per match for
+ * the marketing team. Names the directory does not have are left out of the
+ * report unless the run asks for them (--list-unmatched): trending names
+ * include private people, minors and victims.
  *
  * Nothing here publishes anything: it never adds a person to the directory and
  * never posts. Drafts are plain text for a human to read, edit and post by hand.
@@ -74,6 +76,12 @@ export function matchTrends(trends: readonly TrendInput[]): TrendReport {
 export const DRAFT_BANNED = /\b(?:buy|sell|selling|price targets?|stocks?|crypto\w*|bitcoin|btc|tokens?|coins?|diagnos\w*|prognos\w*|surger\w*|surgical|operations?|treatments?|medica\w*|illness\w*|diseases?|cancer|pregnan\w*|recover(?:y|ies)|cure\w*|death|die|dies|dying|doom\w*|disaster|ruin\w*|crash\w*|collapse\w*|catastroph\w*|guarantee\w*)\b|\b(?:will|going to) (?:win|lose)\b|[\u2013\u2014]/iu;
 
 
+/**
+ * The fixed note every draft ends with. A person trends for a reason the draft
+ * cannot see (results day, a final, an arrest), so the draft says what it is.
+ */
+export const DRAFT_NOTE = 'A reading of a public birth date, not of a company, a team or a result.';
+
 /** A draft post for one match, under X's limit with its link counted as 23 characters, or null if it trips the guard. */
 export function draftPost(person: YearPerson, data: DraftScore, url: string): string | null {
   // No score, no wording or no confidence label: no draft, rather than one with a gap in it.
@@ -81,21 +89,85 @@ export function draftPost(person: YearPerson, data: DraftScore, url: string): st
   // The same range, in the same words, as the figure's /year/ page shows beside its score.
   const range = data.scoreRange ?? null;
   const between = rangeWorthShowing(range) ? ` (between ${range.low.toFixed(1)} and ${range.high.toFixed(1)} without a birth time)` : '';
+  const headline = `${person.name}'s next twelve months on the Zodiacs Year Ahead Score: ${data.score.toFixed(1)}/10${between}, ${data.label.charAt(0).toLowerCase()}${data.label.slice(1)}.`;
+  // No month is named, for anyone: next to a person in the news, a best or
+  // hardest month reads as a stock call, a sports pick or worse.
+  const transit = data.drivers[0] ? `Main transit: ${data.drivers[0].title.replace(' your ', ` ${person.name.split(' ')[0]}'s `)}.` : null;
+  const ending = [`${data.confidenceLabel}.`, DRAFT_NOTE];
+  const fits = (text: string) => text.length + 1 + X_LINK_LENGTH <= X_POST_LIMIT;
+  const full = [headline, ...(transit ? [transit] : []), ...ending].join(' ');
+  if (DRAFT_BANNED.test(full)) return null;
+  // Too long: the main transit goes first. The confidence label and the note are never dropped.
+  const text = fits(full) ? full : [headline, ...ending].join(' ');
+  return fits(text) ? `${text}\n${url}` : null;
+}
+
+/** What a reviewer must check before posting any draft. Printed under every match. */
+export const REVIEW_CHECKLIST = [
+  'Before posting, find out why this name is trending.',
+  'Do not post if it is a death, an illness or injury, an arrest, charge or trial, an election,',
+  'company results or a deal, or a match or contest within seven days.',
+] as const;
+
+export interface ReportMatch {
+  trend: string;
+  volume: number | null;
+  slug: string;
+  name: string;
+  score: number | null;
+  label: string | null;
+  url: string;
+  draft: string | null;
+}
+
+export interface ReportInput {
+  date: string;
+  source: string;
+  namesRead: number;
+  matches: readonly ReportMatch[];
+  unmatched: readonly TrendInput[];
+  /** Only with --list-unmatched. Off by default, and the workflow never turns it on. */
+  listUnmatched: boolean;
+}
+
+/** The Markdown and JSON report for one run. Matches only, unless the run asked for the unmatched names. */
+export function buildTrendingReport(input: ReportInput): { markdown: string; json: string } {
+  const { date, source, namesRead, matches, unmatched, listUnmatched } = input;
   const lines = [
-    `${person.name}'s next twelve months on the Zodiacs Year Ahead Score: ${data.score.toFixed(1)}/10${between}, ${data.label.charAt(0).toLowerCase()}${data.label.slice(1)}.`,
+    `# Trending on X: ${date}`,
+    '',
+    `Source: ${source}. ${namesRead} names read, ${matches.length} in the Year Ahead directory${listUnmatched ? `, ${unmatched.length} not in it` : ''}.`,
+    '',
+    'Nothing here has been posted or published. Drafts are for the marketing team to read, edit and post by hand. Check each draft before posting: no price or trading calls, no diagnoses, no death predictions, no legal outcomes.',
+    '',
+    'Each draft links to the figure\'s /year/ page, which is live only once PUBLIC_YEAR_PEOPLE_ENABLED is on. Open the link before posting.',
+    '',
+    '## Matches and draft posts',
+    '',
+    ...(matches.length ? matches.flatMap((match) => [
+      `### ${match.name} (trend: ${match.trend}${match.volume ? `, ${match.volume} posts` : ''})`,
+      '',
+      match.draft ? ['```text', match.draft, '```'].join('\n') : '_No draft: the score could not be worded within the rules or the length. Write one by hand or skip._',
+      '',
+      ...REVIEW_CHECKLIST.map((line) => `> ${line}`),
+      '',
+    ]) : ['None today.', '']),
+    ...(listUnmatched ? [
+      '## Not in the directory (for human review)',
+      '',
+      'Add a person only after checking: an adult public figure known for their work, a public birth date with a cited source, and no dispute between sources. Never a minor.',
+      '',
+      ...(unmatched.length ? unmatched.map((row) => `- ${row.name}${row.volume ? ` (${row.volume} posts)` : ''}`) : ['None.']),
+      '',
+    ] : []),
   ];
-  if (data.best) lines.push(`Strongest month: ${data.best.name}.`);
-  // The hardest month is picked on the month's net balance, not its pressure alone, so it is named as the page heads it.
-  if (data.hardest) lines.push(`Hardest month: ${data.hardest.name}.`);
-  if (data.drivers[0]) lines.push(`Main transit: ${data.drivers[0].title.replace(' your ', ` ${person.name.split(' ')[0]}'s `)}.`);
-  lines.push(`${data.confidenceLabel}.`);
-  let text = lines.join(' ');
-  if (DRAFT_BANNED.test(text)) return null;
-  // Drop the optional lines from the end of the middle until it fits.
-  while (text.length + 1 + X_LINK_LENGTH > X_POST_LIMIT && lines.length > 2) {
-    lines.splice(lines.length - 2, 1);
-    text = lines.join(' ');
-  }
-  if (text.length + 1 + X_LINK_LENGTH > X_POST_LIMIT) return null;
-  return `${text}\n${url}`;
+  const json = {
+    schema: 'zodiacs.trending-x.v1',
+    date,
+    source,
+    matches: matches.map((match) => ({ ...match, matchedTrend: match.trend, reviewRequired: true as const })),
+    ...(listUnmatched ? { unmatched } : {}),
+    posted: false,
+  };
+  return { markdown: lines.join('\n'), json: `${JSON.stringify(json, null, 2)}\n` };
 }

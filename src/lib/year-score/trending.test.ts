@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { DRAFT_BANNED, X_POST_LIMIT, compactKey, draftPost, matchTrends, type DraftScore } from './trending';
+import { DRAFT_BANNED, DRAFT_NOTE, REVIEW_CHECKLIST, X_POST_LIMIT, buildTrendingReport, compactKey, draftPost, matchTrends, type DraftScore, type ReportMatch } from './trending';
+import { YEAR_PEOPLE } from './people';
 import { findYearPerson } from './people';
 
 const score = (overrides: Partial<DraftScore> = {}): DraftScore => ({
@@ -30,8 +31,7 @@ describe('draft posts', () => {
     const draft = draftPost(person, score(), url)!;
     expect(draft.endsWith(`\n${url}`)).toBe(true);
     expect(draft).toContain('6.4/10');
-    expect(draft).toContain('Strongest month: March 2027. Hardest month: October 2026.');
-    expect(draft).toContain('Reading confidence 55%');
+    expect(draft).toContain('Reading confidence 55%. ' + DRAFT_NOTE);
     expect(draft).toContain("Jupiter trine Jensen's Sun");
     expect(draft.length - url.length + 23).toBeLessThanOrEqual(X_POST_LIMIT);
     expect(draft).not.toMatch(DRAFT_BANNED);
@@ -50,5 +50,50 @@ describe('draft posts', () => {
   });
   it('allows money and wellbeing themes read the traditional way', () => {
     expect('a strong year for earnings; take rest seriously; a good window to sign contracts').not.toMatch(DRAFT_BANNED);
+  });
+  it('names no month for anyone, whatever their category', () => {
+    for (const category of ['ceo', 'athlete', 'entertainer', 'founder', 'investor'] as const) {
+      const figure = YEAR_PEOPLE.find((candidate) => candidate.category === category);
+      expect(figure, category).toBeDefined();
+      const draft = draftPost(figure!, score(), url)!;
+      expect(draft, category).not.toBeNull();
+      expect(draft, category).not.toMatch(/Strongest month|Most pressure|Hardest month|March 2027|October 2026/u);
+    }
+  });
+  it('ends every draft with the fixed note, and drops the main transit, never the note, to fit', () => {
+    expect(DRAFT_NOTE).not.toMatch(DRAFT_BANNED);
+    const short = draftPost(person, score(), url)!;
+    expect(short).toContain('Main transit:');
+    expect(short.split('\n')[0].endsWith(DRAFT_NOTE)).toBe(true);
+    const long = draftPost(person, score({ scoreRange: { low: 5.1, high: 7.6 }, label: 'A supportive year with steady momentum' }), url)!;
+    expect(long).not.toBeNull();
+    expect(long).not.toContain('Main transit:');
+    expect(long).toContain('Reading confidence 55%. ' + DRAFT_NOTE);
+    expect(long.length - url.length + 23).toBeLessThanOrEqual(X_POST_LIMIT);
+    // Too long even without the transit: no draft, rather than one without its note.
+    expect(draftPost(person, score({ label: 'A year '.repeat(30).trim() }), url)).toBeNull();
+  });
+});
+
+describe('the report', () => {
+  const match: ReportMatch = { trend: '#JensenHuang', volume: 5000, slug: 'jensen-huang', name: 'Jensen Huang', score: 6.4, label: 'A supportive year', url: 'https://zodiacs.org/year/jensen-huang/', draft: 'draft text' };
+  const base = { date: '2026-11-16', source: 'names given to the run', namesRead: 2, matches: [match], unmatched: [{ name: 'Nobody Real', volume: null }] };
+  it('prints the review checklist under every match, and marks each one for review in the JSON', () => {
+    const { markdown, json } = buildTrendingReport({ ...base, listUnmatched: false });
+    for (const line of REVIEW_CHECKLIST) expect(markdown).toContain(`> ${line}`);
+    expect(markdown).not.toMatch(/[\u2013\u2014]/u);
+    const parsed = JSON.parse(json);
+    expect(parsed.matches[0]).toMatchObject({ reviewRequired: true, matchedTrend: '#JensenHuang' });
+    expect(parsed.posted).toBe(false);
+  });
+  it('leaves the unmatched names out unless the run asks for them', () => {
+    const quiet = buildTrendingReport({ ...base, listUnmatched: false });
+    expect(quiet.markdown).not.toContain('Nobody Real');
+    expect(quiet.markdown).not.toContain('Not in the directory');
+    expect(quiet.json).not.toContain('Nobody Real');
+    expect(JSON.parse(quiet.json)).not.toHaveProperty('unmatched');
+    const listed = buildTrendingReport({ ...base, listUnmatched: true });
+    expect(listed.markdown).toContain('- Nobody Real');
+    expect(JSON.parse(listed.json).unmatched).toEqual([{ name: 'Nobody Real', volume: null }]);
   });
 });
