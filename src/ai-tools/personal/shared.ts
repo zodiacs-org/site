@@ -124,6 +124,8 @@ export interface NatalCast {
    * used), dst-gap when they skipped it (it moved forward by the jump), lmt for local mean time. Empty without a zone.
    */
   flags: readonly LocalTimeFlag[];
+  /** With dst-gap or dst-fold: the size of the clock change, minutes, from the offsets on either side of it. */
+  jumpMinutes: number | null;
 }
 
 /**
@@ -142,16 +144,18 @@ export async function castNatal(args: BirthArgs, clock: PersonalToolContext['loc
   const placed = latitude !== undefined && longitude !== undefined;
   let birthUtc: Date;
   let flags: readonly LocalTimeFlag[] = [];
+  let jumpMinutes: number | null = null;
   if (args.zone) {
     await clock.prepareLocalTime(args.birthDate, args.zone);
     const time = args.time ?? '12:00';
     const resolved = longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone);
     birthUtc = resolved.utc;
     flags = [...resolved.flags];
+    if (resolved.jump && resolved.transition) jumpMinutes = Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes);
   } else birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
   const chart = computeChart({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { birthUtc, chart, timeKnown, placed, latitude, longitude, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags };
+  return { birthUtc, chart, timeKnown, placed, latitude, longitude, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
 }
 
 /**
