@@ -28,7 +28,11 @@ const rollingItemIds = new Set((feed as typeof feed & { rollingItemIds?: string[
 // and lists only what was published before the pause.
 const pauseNotice = registryResearchPauseNotice(pause);
 
+// A JSON Feed 1.1 (https://www.jsonfeed.org/version/1.1/), as /terminal/
+// advertises it (application/feed+json): `version` comes first, and every
+// item has content_text, its summary. Our own fields keep their names.
 export const GET: APIRoute = () => new Response(JSON.stringify({
+  version: 'https://jsonfeed.org/version/1.1',
   schema: 'zodiacs.registry-research-json-feed.v1',
   title: 'Zodiacs.org Markets Research',
   home_page_url: 'https://zodiacs.org/terminal/research/',
@@ -44,6 +48,7 @@ export const GET: APIRoute = () => new Response(JSON.stringify({
       url: `https://zodiacs.org${item.url}`,
       title: item.title,
       summary: item.summary,
+      content_text: item.summary,
       date_published: item.publishedAt,
       date_modified: item.publishedAt,
       tags: item.topics,

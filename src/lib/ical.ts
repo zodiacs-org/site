@@ -181,14 +181,30 @@ export interface SkyCalendarEvent {
   description: string;
   /** Canonical page for the event. */
   url?: string;
+  /**
+   * When the event's information was last revised, if after the data it was
+   * made from: written as LAST-MODIFIED, and the calendar's DTSTAMP is never
+   * earlier than it.
+   */
+  lastModified?: Date | string;
+  /**
+   * RFC 5545 SEQUENCE: how many times the event's time has been revised.
+   * A calendar that merges events by UID takes the higher one.
+   */
+  sequence?: number;
 }
 
 function skyEventLines(event: SkyCalendarEvent, dtstamp: string): string[] {
   const dtstart = formatIcalUtc(event.start);
+  if (event.sequence !== undefined && !(Number.isSafeInteger(event.sequence) && event.sequence >= 0)) {
+    throw new RangeError(`Invalid SEQUENCE for ${event.id}: ${event.sequence}`);
+  }
   return [
     'BEGIN:VEVENT',
     `UID:sky-${slug(event.id)}@zodiacs.org`,
     `DTSTAMP:${dtstamp}`,
+    ...(event.lastModified !== undefined ? [`LAST-MODIFIED:${formatIcalUtc(event.lastModified)}`] : []),
+    ...(event.sequence ? [`SEQUENCE:${event.sequence}`] : []),
     `DTSTART:${dtstart}`,
     event.end ? `DTEND:${formatIcalUtc(event.end)}` : 'DURATION:PT1M',
     'TRANSP:TRANSPARENT',
@@ -199,13 +215,21 @@ function skyEventLines(event: SkyCalendarEvent, dtstamp: string): string[] {
   ];
 }
 
-/** Serialize a public sky-event calendar. Input order does not affect output order or UIDs. */
+/**
+ * Serialize a public sky-event calendar. Input order does not affect output
+ * order or UIDs. With no METHOD, RFC 5545 reads DTSTAMP as the time the
+ * information was last revised, so it is the later of `generatedAt` and the
+ * latest event `lastModified`: a revised event moves the calendar's stamp.
+ */
 export function serializeSkyEvents(
   events: readonly SkyCalendarEvent[],
   options: TransitCalendarOptions,
 ): string {
   if (events.length === 0) throw new RangeError('A sky calendar requires at least one event.');
-  const dtstamp = formatIcalUtc(options.generatedAt);
+  const dtstamp = [options.generatedAt, ...events.flatMap((event) => event.lastModified ?? [])]
+    .map(formatIcalUtc)
+    .sort()
+    .at(-1)!;
   const prepared = events
     .map((event) => ({ event, dtstart: formatIcalUtc(event.start) }))
     .sort((a, b) => a.dtstart.localeCompare(b.dtstart) || a.event.id.localeCompare(b.event.id));
