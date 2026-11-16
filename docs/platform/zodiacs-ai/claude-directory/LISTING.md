@@ -104,9 +104,9 @@ opening, and the last five are the 0.6.x wording prepared in
 
 The one-liner is 135 characters.
 
-Description (1,970 of 2,000 characters):
+Description (1782 of 2,000 characters):
 
-> Zodiacs works out the sky with its own engine, and every change to that engine is tested against NASA JPL Horizons reference positions. In November 2026 Zodiacs checked 8,891 statements on its English pages against NASA JPL Horizons and NASA's eclipse canon: 8,849 agreed, and most of the other 42 were one arcminute apart.
+> Zodiacs works out the sky with its own engine, and every change to that engine is tested against NASA JPL Horizons reference positions.
 >
 > Ask about your birth chart, how compatible you are with someone close to you, your horoscope or the sky on a day that matters, and Zodiacs works out the sky for the date and place you give, then tells you what astrology says about it.
 >
