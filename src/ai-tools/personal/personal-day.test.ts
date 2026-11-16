@@ -45,6 +45,21 @@ describe('get_personal_day against known answers', () => {
     expect(contact.line).toBe('Sun sits on your sense of self: a few days of spotlight, and for a while it colors everything there. Reading confidence 75%.');
   });
 
+  it('on the birthday, lists the Sun on the natal Sun but never shares it', async () => {
+    const { scan } = await natalFor(ADULT);
+    const [solarReturn] = scanTransitContacts(scan, new Date('2026-05-01T00:00:00Z'), new Date('2026-05-06T00:00:00Z'), { transitBodies: ['Sun'], natalPoints: ['Sun'], aspects: ['conjunction'] });
+    const date = dateOn(new Date(solarReturn.exactUtc), 'Europe/Madrid');
+    const data = await run({ ...ADULT, date });
+    expect(data.contacts.some((entry) => entry.planet === 'Sun' && entry.point === 'Sun')).toBe(true);
+    if (data.shareUrl !== null) {
+      const url = new URL(data.shareUrl);
+      expect(url.searchParams.get('day')).toBe(date);
+      expect(url.searchParams.get('p') === 'sun' && url.searchParams.get('n') === 'sun').toBe(false);
+      const shared = data.contacts.find((entry) => !(entry.planet === 'Sun' && entry.point === 'Sun'))!;
+      expect([url.searchParams.get('p'), url.searchParams.get('a'), url.searchParams.get('n')]).toEqual([shared.planet.toLowerCase(), shared.aspect, shared.point.toLowerCase()]);
+    }
+  });
+
   it('times an exact Mars contact to the minute, and the engine agrees the aspect is exact then', async () => {
     const { natal, scan } = await natalFor(ADULT);
     const [contact] = scanTransitContacts(scan, new Date('2026-11-10T00:00:00Z'), new Date('2027-03-01T00:00:00Z'), { transitBodies: ['Mars'], natalPoints: ['Sun', 'Moon', 'ASC', 'MC'] });

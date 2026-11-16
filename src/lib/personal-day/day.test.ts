@@ -5,6 +5,7 @@ import { personalDay } from '../../ai-tools/personal/personal-day';
 import { forbiddenClaim, type PersonalToolContext } from '../../ai-tools/personal/shared';
 import { computeYourDay } from '../../islands/your-day/compute';
 import { PAIR_CONFIDENCES, readingConfidence } from '../../ai-tools/reading-confidence';
+import { shareContact } from './day';
 import { parseYourDayShare, yourDayQuery, yourDayShareUrl, YOUR_DAY_CONFIDENCES, YOUR_DAY_SHARE_KEYS } from './share';
 
 const NOW = new Date('2026-11-09T09:00:00Z');
@@ -36,9 +37,10 @@ describe('the /your-day/ page and get_personal_day', () => {
     expect(today.theme).toMatch(/^Today's strongest contact is /u);
   });
 
-  it('shares the top contact and nothing about the birth', async () => {
+  it('shares the highest ranked contact that is not the Sun on the natal Sun, and nothing about the birth', async () => {
     const tool = (await personalDay({ ...ADULT, currentZone: 'Europe/Madrid', date: '2026-11-09' }, context)).data;
-    const top = tool.contacts[0];
+    const top = shareContact(tool.contacts)!;
+    expect(top).toBe(tool.contacts.find((contact) => !(contact.planet === 'Sun' && contact.point === 'Sun')));
     expect(tool.pageUrl).toBe('https://zodiacs.org/your-day/');
     expect(tool.shareUrl).toBe(`https://zodiacs.org/share/your-day/?day=2026-11-09&p=${top.planet.toLowerCase()}&a=${top.aspect}&n=${top.point.toLowerCase()}&c=${top.confidence}`);
     const url = new URL(tool.shareUrl!);
@@ -56,6 +58,8 @@ describe('the your-day share link', () => {
     for (const bad of [
       { ...ok, day: '2026-02-30' }, { ...ok, day: '1990-5-3' }, { ...ok, p: 'chiron' }, { ...ok, p: 'Mars' }, { ...ok, a: 'quincunx' },
       { ...ok, n: 'north-node' }, { ...ok, c: '80' }, { ...ok, c: '075' }, { ...ok, ref: 'x' }, { ...ok, t: '08:30' }, { ...ok, lat: '40' },
+      // The Sun on the natal Sun, with the day, states the birthday: no aspect of it is a share.
+      { day: '2026-05-03', p: 'sun', a: 'conjunction', n: 'sun', c: '75' }, { ...ok, p: 'sun', n: 'sun' }, { ...ok, p: 'sun', a: 'opposition', n: 'sun' },
     ]) expect(parseYourDayShare(new URLSearchParams(bad)), JSON.stringify(bad)).toBeNull();
     const { c: _c, ...noConfidence } = ok;
     expect(parseYourDayShare(new URLSearchParams(noConfidence))).toBeNull();
@@ -72,6 +76,21 @@ describe('the your-day share link', () => {
     expect(parseYourDayShare(new URLSearchParams(yourDayQuery(share)))).toEqual(share);
     expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-11-09', contact: { planet: 'North Node', aspect: 'square', point: 'Sun', confidence: 70 } })).toBeNull();
     expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-11-09', contact: null })).toBeNull();
+    expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-05-03', contact: { planet: 'Sun', aspect: 'conjunction', point: 'Sun', confidence: 75 } })).toBeNull();
+    expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-05-03', contact: { planet: 'Sun', aspect: 'conjunction', point: 'Moon', confidence: 75 } })).toBe('https://zodiacs.org/share/your-day/?day=2026-05-03&p=sun&a=conjunction&n=moon&c=75');
+  });
+});
+
+describe('shareContact', () => {
+  const contact = (planet: string, point: string) => ({ planet, point });
+  it('skips the Sun on the natal Sun and keeps the ranking otherwise', () => {
+    const sunSun = contact('Sun', 'Sun');
+    const marsSun = contact('Mars', 'Sun');
+    const sunMoon = contact('Sun', 'Moon');
+    expect(shareContact([sunSun, marsSun, sunMoon])).toBe(marsSun);
+    expect(shareContact([sunMoon, sunSun])).toBe(sunMoon);
+    expect(shareContact([sunSun])).toBeNull();
+    expect(shareContact([])).toBeNull();
   });
 });
 

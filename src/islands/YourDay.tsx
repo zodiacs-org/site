@@ -30,7 +30,8 @@ function deviceClock(): { zone: string; today: string } {
   }
 }
 
-interface Shown { reading: PersonalDayReading; shareUrl: string | null; timed: boolean }
+/** The share link names `shared`, which is never the Sun on the natal Sun (shareContact in src/lib/personal-day/day.ts). */
+interface Shown { reading: PersonalDayReading; shared: PersonalDayReading['contacts'][number] | null; shareUrl: string | null; timed: boolean }
 
 export default function YourDay() {
   const [date, setDate] = useState('');
@@ -82,14 +83,15 @@ export default function YourDay() {
       if (under13(birthDate, clock.today)) { setError(UNDER_13); setShown(null); return; }
       if (Math.abs(daysBetween(clock.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
       if (target < birthDate) { setError('Choose a day on or after the birth date.'); setShown(null); return; }
-      const { computeYourDay } = await loadModule(() => import('./your-day/compute'));
+      const { computeYourDay, shareContact } = await loadModule(() => import('./your-day/compute'));
       const reading = await computeYourDay({
         birthDate, time: timeKnown ? time : undefined, birthZone: city.tz, latitude: city.lat, longitude: city.lon,
         date: target, zone: clock.zone, today: clock.today,
       });
       if (request !== revision.current) return;
       setDay(target);
-      setShown({ reading, shareUrl: yourDayShareUrl(window.location.origin, { date: reading.date, contact: reading.contacts[0] }), timed: timeKnown });
+      const shared = shareContact(reading.contacts);
+      setShown({ reading, shared, shareUrl: yourDayShareUrl(window.location.origin, { date: reading.date, contact: shared }), timed: timeKnown });
       if (scroll) requestAnimationFrame(() => resultRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' }));
     } catch (cause) {
       if (request !== revision.current) return;
@@ -102,7 +104,7 @@ export default function YourDay() {
   }
 
   const reading = shown?.reading ?? null;
-  const top = reading?.contacts[0] ?? null;
+  const shared = shown?.shared ?? null;
 
   return (
     <div class="calc yd" data-your-day>
@@ -178,10 +180,10 @@ export default function YourDay() {
                 <ul class="yd__limits">{reading.limits.map((limit) => <li key={limit}>{limit}</li>)}</ul>
               )}
 
-              {shown?.shareUrl && top && (
+              {shown?.shareUrl && shared && (
                 <div class="yd__share">
                   <p class="kicker">Share the day</p>
-                  <p class="field__help">The card shows the day and its strongest contact, {top.planet} {top.aspect} your {pointName(top.point)}. It never shows your birth date, time or place.</p>
+                  <p class="field__help">The card shows the day and {shared === reading.contacts[0] ? 'its strongest contact' : 'one of its contacts'}, {shared.planet} {shared.aspect} your {pointName(shared.point)}. It never shows your birth date, time or place.</p>
                   <div class="yd__share-actions">
                     <a class="btn btn--glass" href={shown.shareUrl} target="_blank" rel="noopener" data-your-day-share><span>Share my day</span><span class="orb" aria-hidden="true">↗</span></a>
                     <CopyLinkButton url={shown.shareUrl} state={copy} onStateChange={setCopy} idleLabel="Copy the link" copiedLabel="Link copied" ariaLabel="Copy the share link" buttonClass="btn btn--ghost" dataHook="share" />

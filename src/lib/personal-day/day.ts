@@ -96,6 +96,17 @@ export interface PersonalDayReading {
 }
 
 export { clockTime, dateOn, dayLabel, nextDate } from './clock';
+
+/**
+ * The contact a share link names: the highest ranked one that is not the Sun
+ * on the natal Sun, in any aspect, or null when there is none. With the day,
+ * that contact states the birthday, so it stays on the page and off the link
+ * (parseYourDayShare refuses it too). The page and get_personal_day both call
+ * this, so they share the same contact.
+ */
+export function shareContact<T extends { planet: string; point: string }>(contacts: readonly T[]): T | null {
+  return contacts.find((contact) => !(contact.planet === 'Sun' && contact.point === 'Sun')) ?? null;
+}
 const round2 = (value: number) => Math.round(value * 100) / 100;
 const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.name;
 

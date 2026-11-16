@@ -11,7 +11,7 @@
  */
 import { z } from 'zod';
 import { MAJOR_ASPECT_ORDER, NATAL_POINT_ORDER, TRANSIT_BODY_ORDER } from '../../lib/engine/transit-scan-shared';
-import { readPersonalDay } from '../../lib/personal-day/day';
+import { readPersonalDay, shareContact } from '../../lib/personal-day/day';
 import { PERSONAL_DAY_LIMIT } from '../../lib/personal-day/score';
 import { YOUR_DAY_PAGE_PATH, yourDayShareUrl } from '../../lib/personal-day/share';
 import { SIGNS } from '../../lib/signs';
@@ -86,7 +86,7 @@ export const personalDayData = z.object({
   under18: z.boolean(),
   limits: z.array(z.string()),
   pageUrl: z.url(),
-  /** The share card for the top contact: the day, the planet, aspect and natal point, and its confidence. Never a birth detail. Null with no contact. */
+  /** The share card for the highest ranked contact that is not the Sun on the natal Sun: the day, the planet, aspect and natal point, and its confidence. Never a birth detail. Null with no such contact. */
   shareUrl: z.url().nullable(),
 });
 export type PersonalDayData = z.infer<typeof personalDayData>;
@@ -114,7 +114,7 @@ export async function personalDay(args: BirthArgs & { currentZone?: string | und
       ...day,
       moon: day.moon as PersonalDayData['moon'],
       pageUrl,
-      shareUrl: yourDayShareUrl(context.origin, { date, contact: day.contacts[0] }),
+      shareUrl: yourDayShareUrl(context.origin, { date, contact: shareContact(day.contacts) }),
     },
     links: [
       { title: 'Your day on Zodiacs', url: pageUrl },

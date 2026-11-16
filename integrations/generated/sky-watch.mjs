@@ -41821,6 +41821,9 @@ var pointName2 = (point2) => POINT_NAME2[point2] ?? point2;
 var HOUR6 = 36e5;
 var UNTIMED_LIMIT = "No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.";
 var ORDINAL7 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
+function shareContact(contacts) {
+  return contacts.find((contact) => !(contact.planet === "Sun" && contact.point === "Sun")) ?? null;
+}
 var round2 = (value) => Math.round(value * 100) / 100;
 var signName6 = (slug2) => SIGNS2.find((entry) => entry.slug === slug2).name;
 async function startOf(date3, zone9, clock2) {
@@ -41948,6 +41951,7 @@ function parseYourDayShare(params) {
   const body2 = planet2 === void 0 ? void 0 : PLANETS4.get(planet2);
   const natal = point2 === void 0 ? void 0 : POINTS.get(point2);
   if (!body2 || !natal || aspect2 === void 0 || !ASPECTS4.has(aspect2)) return null;
+  if (body2 === "Sun" && natal === "Sun") return null;
   if (confidence === void 0 || !/^[1-9][0-9]$/u.test(confidence) || !YOUR_DAY_CONFIDENCES.includes(Number(confidence))) return null;
   if (ref3 !== void 0 && ref3 !== "chatgpt" && ref3 !== "assistant") return null;
   return { date: date3, planet: body2, aspect: aspect2, point: natal, confidence: Number(confidence), ref: ref3 ?? null };
@@ -42070,7 +42074,7 @@ var personalDayData = z16.object({
   under18: z16.boolean(),
   limits: z16.array(z16.string()),
   pageUrl: z16.url(),
-  /** The share card for the top contact: the day, the planet, aspect and natal point, and its confidence. Never a birth detail. Null with no contact. */
+  /** The share card for the highest ranked contact that is not the Sun on the natal Sun: the day, the planet, aspect and natal point, and its confidence. Never a birth detail. Null with no such contact. */
   shareUrl: z16.url().nullable()
 });
 async function personalDay(args, context) {
@@ -42096,7 +42100,7 @@ async function personalDay(args, context) {
       ...day2,
       moon: day2.moon,
       pageUrl,
-      shareUrl: yourDayShareUrl(context.origin, { date: date3, contact: day2.contacts[0] })
+      shareUrl: yourDayShareUrl(context.origin, { date: date3, contact: shareContact(day2.contacts) })
     },
     links: [
       { title: "Your day on Zodiacs", url: pageUrl },

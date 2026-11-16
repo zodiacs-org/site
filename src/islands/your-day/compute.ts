@@ -9,6 +9,7 @@ import { castDayNatal, readPersonalDay, type PersonalDayReading } from '../../li
 import { prepareLocalTime, resolveLocalToUtc } from '../../lib/time/localToUtc';
 
 export { prepareLocalTime };
+export { shareContact } from '../../lib/personal-day/day';
 
 export interface YourDayInput {
   birthDate: string;

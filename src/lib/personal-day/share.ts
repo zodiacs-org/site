@@ -6,7 +6,10 @@
  * pattern, and a query with anything else is not a share:
  *
  * - day: the day read, YYYY-MM-DD (a day of the sky, not a birth detail);
- * - p, a, n: the top contact's moving planet, aspect and natal point;
+ * - p, a, n: the shared contact's moving planet, aspect and natal point
+ *   (shareContact in src/lib/personal-day/day.ts picks it). Never the Sun on
+ *   the natal Sun, in any aspect: with the day, that contact gives away the
+ *   birthday, so a link of that shape is not a share;
  * - c: its reading confidence, one of the values the rule gives a dated chart
  *   with or without a contact under 1 degree.
  *
@@ -60,7 +63,7 @@ export function yourDayQuery(share: Omit<YourDayShare, 'ref'> & { ref?: ShareRef
   return params.toString();
 }
 
-/** The share link for a day's top contact, or null when any value is outside its vocabulary. */
+/** The share link for a day's shared contact, or null when any value is outside its vocabulary or the contact is the Sun on the natal Sun. */
 export function yourDayShareUrl(origin: string, day: { date: string; contact: { planet: string; aspect: string; point: string; confidence: number } | null | undefined }): string | null {
   const contact = day.contact;
   if (!contact) return null;
@@ -80,6 +83,7 @@ export function parseYourDayShare(params: URLSearchParams): YourDayShare | null 
   const body = planet === undefined ? undefined : PLANETS.get(planet);
   const natal = point === undefined ? undefined : POINTS.get(point);
   if (!body || !natal || aspect === undefined || !ASPECTS.has(aspect)) return null;
+  if (body === 'Sun' && natal === 'Sun') return null;
   if (confidence === undefined || !/^[1-9][0-9]$/u.test(confidence) || !YOUR_DAY_CONFIDENCES.includes(Number(confidence))) return null;
   if (ref !== undefined && ref !== 'chatgpt' && ref !== 'assistant') return null;
   return { date, planet: body, aspect: aspect as AspectType, point: natal, confidence: Number(confidence), ref: (ref as ShareRef | undefined) ?? null };
