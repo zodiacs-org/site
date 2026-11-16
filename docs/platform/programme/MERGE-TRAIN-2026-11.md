@@ -81,7 +81,7 @@ Run this on one branch at a time, in merge order, after `main` moved.
    `integrations/packages/zodiacs-developer-*.zip` the branch added: if `main`
    has a file of that name, take main's bytes with
    `git checkout origin/main -- <zip>`; otherwise `git rm` it. Most branch
-   ZIP names (0.3.39 to 0.3.47) are already on `main` with other bytes, so this
+   ZIP names (0.3.42 and up) are already on `main` with other bytes, so this
    is the usual case. Then set the version to main's plus one patch step in
    `plugins/zodiacs-developer/.codex-plugin/plugin.json` (the build copies it
    into `plugins/zodiacs-developer/plugin.json`),
@@ -107,10 +107,10 @@ Run this on one branch at a time, in merge order, after `main` moved.
 6. `git status` shows exactly one new `zodiacs-developer-<version>.zip` and no
    changed older ZIP. An archive already on `main` keeps its bytes.
 7. Commit as Zodiacs Admin with a plain subject, such as "Merge main,
-   repackage Developer 0.3.49". No trailers. The number is set at catch-up
-   time from `main`; a number an open PR already carries (on 16 November #1068
-   has 0.3.49) reserves nothing. A branch that loses the race catches up
-   again.
+   repackage Developer 0.3.50". No trailers. The number is set at catch-up
+   time from `main`; a number an open PR already carries reserves nothing (on
+   16 November #1069 carried 0.3.49, and #1068 took 0.3.49 on `main` first). A
+   branch that loses the race catches up again.
 
 ## Commit messages
 
