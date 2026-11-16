@@ -58,6 +58,7 @@ describe('draft posts', () => {
       const draft = draftPost(figure!, score(), url)!;
       expect(draft, category).not.toBeNull();
       expect(draft, category).not.toMatch(/Strongest month|Most pressure|Hardest month|March 2027|October 2026/u);
+      expect(draft, category).toContain(DRAFT_NOTE);
     }
   });
   it('ends every draft with the fixed note, and drops the main transit, never the note, to fit', () => {
