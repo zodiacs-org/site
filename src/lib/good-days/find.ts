@@ -141,9 +141,12 @@ export const GOOD_DAY_VERDICTS = {
   avoid: 'A day tradition would avoid for it',
 } as const;
 
+/** The highest score that reads as a mixed day. */
+const MIXED_TOP = 65;
+
 export function goodDayVerdict(score: number): string {
   if (score >= 80) return GOOD_DAY_VERDICTS.strong;
-  if (score >= 66) return GOOD_DAY_VERDICTS.good;
+  if (score > MIXED_TOP) return GOOD_DAY_VERDICTS.good;
   if (score >= 48) return GOOD_DAY_VERDICTS.mixed;
   return GOOD_DAY_VERDICTS.avoid;
 }
@@ -165,6 +168,8 @@ export function longDay(date: string): string {
   return `${Number(date.slice(8, 10))} ${MONTHS_LONG[Number(date.slice(5, 7)) - 1]} ${date.slice(0, 4)}`;
 }
 const cap = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+/** Lower-cases a sentence's opening article so it can follow "But"; a planet's name keeps its capital. */
+const lowerFirst = (text: string) => (/^(?:A|An|The)\b/u.test(text) ? text.charAt(0).toLowerCase() + text.slice(1) : text);
 const signName = (slug: string) => SIGNS.find((sign) => sign.slug === slug)?.name ?? cap(slug);
 const signOf = (lon: number) => SIGNS[Math.floor((((lon % 360) + 360) % 360) / 30)].slug;
 
@@ -573,14 +578,24 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
     ].filter((factor): factor is Factor => factor !== null);
     const score = Math.max(5, Math.min(98, Math.round(60 + factors.reduce((sum, factor) => sum + factor.points, 0))));
     const ordered = [...factors].sort((a, b) => Math.abs(b.points) - Math.abs(a.points));
-    return { day, factors, ordered, score, avoid: factors.some((factor) => factor.avoid), spans: voids.spans };
+    // A caution of 10 points or more governs the day: the net score cannot hide it.
+    const governing = factors.filter((factor) => factor.points <= -10);
+    // It ranks as a mixed day too: no higher than the top of the mixed band, so it never sits above a good day.
+    const rank = governing.length ? Math.min(score, MIXED_TOP) : score;
+    return { day, factors, ordered, score, rank, governing, avoid: factors.some((factor) => factor.avoid), spans: voids.spans };
   });
 
-  const best = pick([...rated].filter((row) => !row.avoid).sort((a, b) => b.score - a.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), count)
-    .map((row): GoodDay => ({
-      date: row.day.date, label: dayLabel(row.day.date), score: row.score, verdict: goodDayVerdict(row.score),
-      reason: oneLine(row.factors, true), factors: row.ordered.map((factor) => factor.text), voidOfCourse: row.spans,
-    }));
+  const best = pick([...rated].filter((row) => !row.avoid).sort((a, b) => b.rank - a.rank || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), count)
+    .map((row): GoodDay => {
+      const verdict = goodDayVerdict(row.score);
+      const capped = row.governing.length && (verdict === GOOD_DAY_VERDICTS.strong || verdict === GOOD_DAY_VERDICTS.good) ? GOOD_DAY_VERDICTS.mixed : verdict;
+      const strongest = [...row.factors].sort((a, b) => a.points - b.points)[0];
+      const reason = oneLine(row.factors, true) + (row.governing.length ? ` But ${lowerFirst(strongest.text)}` : '');
+      return {
+        date: row.day.date, label: dayLabel(row.day.date), score: row.score, verdict: capped,
+        reason, factors: row.ordered.map((factor) => factor.text), voidOfCourse: row.spans,
+      };
+    });
   const avoid = pick([...rated].filter((row) => row.avoid || row.score < 45).sort((a, b) => Number(b.avoid) - Number(a.avoid) || a.score - b.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), AVOID_COUNT)
     .sort((a, b) => a.day.date.localeCompare(b.day.date))
     .map((row): AvoidDay => ({ date: row.day.date, label: dayLabel(row.day.date), score: row.score, reason: oneLine(row.factors, false) }));
@@ -590,7 +605,8 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
     const date = localParts(new Date(row.at), input.zone).date;
     return { kind: 'eclipse' as const, from: addDays(date, -1), to: addDays(date, 1), line: `${cap(row.kind)} ${row.type} eclipse in ${signName(row.sign)} on ${longDay(date)}: tradition keeps the day itself and the day either side clear for beginnings.` };
   }).filter((period) => period.to >= from && period.from <= to);
-  if (best.length && best[0].score < 66) messages.push('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
+  const clearlyGood = (day: GoodDay) => day.verdict === GOOD_DAY_VERDICTS.strong || day.verdict === GOOD_DAY_VERDICTS.good;
+  if (best.length && !best.some(clearlyGood)) messages.push('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
   if (best.length < count) messages.push('Every other day in the window falls on a day tradition would avoid.');
   if (input.zone === 'UTC') messages.push('Days and times are in UTC because no time zone was given.');
 

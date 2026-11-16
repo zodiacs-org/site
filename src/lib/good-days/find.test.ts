@@ -7,7 +7,7 @@ import { GOAL_RULES, GOOD_DAYS_NOTE, GOOD_DAY_GOALS, isMedicalGoal } from './goa
 import { moonAspects } from '@zodiacs/engine/techniques';
 import ingressTable from '../../data/aura-moon-ingresses.json';
 import eclipseTable from '../../data/eclipses.json';
-import { GOOD_DAYS_FIRST, GOOD_DAYS_LAST, UNDER_13_SENTENCE, UNDER_18_PARTNERSHIP_SENTENCE, findGoodDays, goodDaysWindow, moonSegmentsFactor, phaseBand, voidPeriods } from './find';
+import { GOOD_DAYS_FIRST, GOOD_DAYS_LAST, GOOD_DAY_VERDICTS, UNDER_13_SENTENCE, UNDER_18_PARTNERSHIP_SENTENCE, findGoodDays, goodDaysWindow, moonSegmentsFactor, phaseBand, voidPeriods } from './find';
 import { scanTransitContacts, type TransitContact } from '../engine/transit-scan';
 import { UNTIMED_DROPPED_MESSAGE, pairUntimedContacts, personalFactors, preparePersonal, type BirthDetails, type PersonalDay } from './personal';
 
@@ -191,6 +191,49 @@ describe('the electional rules', { timeout: TIMEOUT }, () => {
     const changes = (result: typeof east) => result.best.flatMap((day) => day.factors.filter((line) => /until \d\d:\d\d, then in Gemini/u.test(line)).map((line) => ({ date: day.date, line })));
     expect(changes(east)).toEqual([{ date: '2027-03-14', line: 'The Moon is in Taurus until 11:30, then in Gemini: Taurus is a sign tradition reads as tender and celebratory.' }]);
     expect(changes(west)).toEqual([{ date: '2027-03-13', line: 'The Moon is in Taurus until 10:30, then in Gemini: Taurus is a sign tradition reads as tender and celebratory.' }]);
+  });
+
+  it('never calls a day good while a caution of 10 points or more sits on it, and says what it is', async () => {
+    // Mercury retrograde all through the window: a caution of 16 points against a contract on every day.
+    const result = await findGoodDays({ goal: 'contract', from: '2027-02-10', to: '2027-03-02', zone: 'UTC', count: 10, today: TODAY }, clock);
+    expect(result.best.length).toBeGreaterThan(0);
+    for (const day of result.best) {
+      expect([GOOD_DAY_VERDICTS.good, GOOD_DAY_VERDICTS.strong], day.date).not.toContain(day.verdict);
+      expect(day.reason, day.date).toContain('But ');
+      expect(day.reason, day.date).toMatch(/\. But (?:Mercury is retrograde|the Moon is void|a [a-z]+ lunar eclipse)/u);
+    }
+    expect(result.best.find((day) => day.reason.includes('But Mercury is retrograde'))).toBeDefined();
+    expect(result.messages).toContain('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
+    // No best day falls on a day the eclipse line says to keep clear.
+    const eclipse = result.periods.find((period) => period.kind === 'eclipse')!;
+    expect(eclipse.line).toBe('Penumbral lunar eclipse in Virgo on 20 February 2027: tradition keeps the day itself and the day either side clear for beginnings.');
+    for (const day of result.best) expect(daysApart(day.date, '2027-02-20'), day.date).toBeGreaterThan(1);
+  });
+
+  it('reads a day whose net score is good as mixed when a caution of 10 points or more sits on it', async () => {
+    // Moving home on 13 February 2027 nets 71, a good day's score, with Mercury retrograde (a caution of 10 for a move).
+    const result = await findGoodDays({ goal: 'move', from: '2027-02-10', to: '2027-02-16', zone: 'UTC', count: 7, today: TODAY }, clock);
+    const day = result.best.find((row) => row.date === '2027-02-13')!;
+    expect(day.score).toBe(71);
+    expect(day.verdict).toBe(GOOD_DAY_VERDICTS.mixed);
+    expect(day.reason).toMatch(/\. But Mercury is retrograde, which tradition reads as delays and second thoughts in plans, messages and paperwork\.$/u);
+    for (const row of result.best) expect([GOOD_DAY_VERDICTS.good, GOOD_DAY_VERDICTS.strong], row.date).not.toContain(row.verdict);
+    expect(result.messages).toContain('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
+  });
+
+  it('ranks a capped day below a good day, whatever its net score', async () => {
+    // Travel: 11 February 2027 nets 67 under a heavy caution and reads mixed; 2 February nets 66 with none and reads good.
+    const result = await findGoodDays({ goal: 'travel', from: '2027-01-29', to: '2027-02-11', zone: 'UTC', count: 5, today: TODAY }, clock);
+    const capped = result.best.find((row) => row.date === '2027-02-11')!;
+    const good = result.best.find((row) => row.date === '2027-02-02')!;
+    expect([capped.score, capped.verdict]).toEqual([67, GOOD_DAY_VERDICTS.mixed]);
+    expect([good.score, good.verdict]).toEqual([66, GOOD_DAY_VERDICTS.good]);
+    expect(result.best[0].date).toBe('2027-02-02');
+    expect(result.best.indexOf(good)).toBeLessThan(result.best.indexOf(capped));
+    // Verdicts never rise down the list.
+    const tier = [GOOD_DAY_VERDICTS.strong, GOOD_DAY_VERDICTS.good, GOOD_DAY_VERDICTS.mixed, GOOD_DAY_VERDICTS.avoid] as string[];
+    for (let index = 1; index < result.best.length; index += 1) expect(tier.indexOf(result.best[index].verdict)).toBeGreaterThanOrEqual(tier.indexOf(result.best[index - 1].verdict));
+    expect(result.messages.some((line) => line.startsWith('No day in this window reads as clearly good'))).toBe(false);
   });
 });
 

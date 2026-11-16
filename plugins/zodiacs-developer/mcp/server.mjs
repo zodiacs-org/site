@@ -43219,9 +43219,10 @@ var GOOD_DAY_VERDICTS = {
   mixed: "A mixed day",
   avoid: "A day tradition would avoid for it"
 };
+var MIXED_TOP = 65;
 function goodDayVerdict(score2) {
   if (score2 >= 80) return GOOD_DAY_VERDICTS.strong;
-  if (score2 >= 66) return GOOD_DAY_VERDICTS.good;
+  if (score2 > MIXED_TOP) return GOOD_DAY_VERDICTS.good;
   if (score2 >= 48) return GOOD_DAY_VERDICTS.mixed;
   return GOOD_DAY_VERDICTS.avoid;
 }
@@ -43240,6 +43241,7 @@ function longDay2(date3) {
   return `${Number(date3.slice(8, 10))} ${MONTHS_LONG[Number(date3.slice(5, 7)) - 1]} ${date3.slice(0, 4)}`;
 }
 var cap11 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var lowerFirst = (text2) => /^(?:A|An|The)\b/u.test(text2) ? text2.charAt(0).toLowerCase() + text2.slice(1) : text2;
 var signName7 = (slug) => SIGNS2.find((sign3) => sign3.slug === slug)?.name ?? cap11(slug);
 var signOf = (lon) => SIGNS2[Math.floor((lon % 360 + 360) % 360 / 30)].slug;
 function localParts(at, zone10) {
@@ -43562,23 +43564,32 @@ async function findGoodDays(input, clock2) {
     ].filter((factor) => factor !== null);
     const score2 = Math.max(5, Math.min(98, Math.round(60 + factors.reduce((sum, factor) => sum + factor.points, 0))));
     const ordered = [...factors].sort((a, b) => Math.abs(b.points) - Math.abs(a.points));
-    return { day: day2, factors, ordered, score: score2, avoid: factors.some((factor) => factor.avoid), spans: voids.spans };
+    const governing = factors.filter((factor) => factor.points <= -10);
+    const rank = governing.length ? Math.min(score2, MIXED_TOP) : score2;
+    return { day: day2, factors, ordered, score: score2, rank, governing, avoid: factors.some((factor) => factor.avoid), spans: voids.spans };
   });
-  const best = pick([...rated].filter((row) => !row.avoid).sort((a, b) => b.score - a.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), count).map((row) => ({
-    date: row.day.date,
-    label: dayLabel3(row.day.date),
-    score: row.score,
-    verdict: goodDayVerdict(row.score),
-    reason: oneLine(row.factors, true),
-    factors: row.ordered.map((factor) => factor.text),
-    voidOfCourse: row.spans
-  }));
+  const best = pick([...rated].filter((row) => !row.avoid).sort((a, b) => b.rank - a.rank || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), count).map((row) => {
+    const verdict = goodDayVerdict(row.score);
+    const capped = row.governing.length && (verdict === GOOD_DAY_VERDICTS.strong || verdict === GOOD_DAY_VERDICTS.good) ? GOOD_DAY_VERDICTS.mixed : verdict;
+    const strongest = [...row.factors].sort((a, b) => a.points - b.points)[0];
+    const reason = oneLine(row.factors, true) + (row.governing.length ? ` But ${lowerFirst(strongest.text)}` : "");
+    return {
+      date: row.day.date,
+      label: dayLabel3(row.day.date),
+      score: row.score,
+      verdict: capped,
+      reason,
+      factors: row.ordered.map((factor) => factor.text),
+      voidOfCourse: row.spans
+    };
+  });
   const avoid = pick([...rated].filter((row) => row.avoid || row.score < 45).sort((a, b) => Number(b.avoid) - Number(a.avoid) || a.score - b.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), AVOID_COUNT).sort((a, b) => a.day.date.localeCompare(b.day.date)).map((row) => ({ date: row.day.date, label: dayLabel3(row.day.date), score: row.score, reason: oneLine(row.factors, false) }));
   const eclipsePeriods = ECLIPSES2.map((row) => {
     const date3 = localParts(new Date(row.at), input.zone).date;
     return { kind: "eclipse", from: addDays3(date3, -1), to: addDays3(date3, 1), line: `${cap11(row.kind)} ${row.type} eclipse in ${signName7(row.sign)} on ${longDay2(date3)}: tradition keeps the day itself and the day either side clear for beginnings.` };
   }).filter((period) => period.to >= from && period.from <= to);
-  if (best.length && best[0].score < 66) messages.push("No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.");
+  const clearlyGood = (day2) => day2.verdict === GOOD_DAY_VERDICTS.strong || day2.verdict === GOOD_DAY_VERDICTS.good;
+  if (best.length && !best.some(clearlyGood)) messages.push("No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.");
   if (best.length < count) messages.push("Every other day in the window falls on a day tradition would avoid.");
   if (input.zone === "UTC") messages.push("Days and times are in UTC because no time zone was given.");
   return {
