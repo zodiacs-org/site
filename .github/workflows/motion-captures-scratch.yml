@@ -3,28 +3,21 @@ on:
   push:
     branches: [claude/motion-captures]
 permissions:
-  contents: read
+  contents: write
+  actions: read
 jobs:
-  capture:
+  publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npx playwright-core install --with-deps chromium
-      - run: npx astro build
-      - name: Capture
+      - name: Copy the earlier capture artifact onto a scratch branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
         run: |
-          (cd dist && python3 -m http.server 4400 >/dev/null 2>&1 &)
-          sleep 2
-          node scripts/scratch/motion-captures.mjs
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: motion-captures
-          path: captures/
+          gh run download 44093933184 -R "$REPO" -n motion-captures -D out
+          cd out
+          git init -q -b claude/motion-captures-out
+          git -c user.name="Zodiacs Admin" -c user.email=admin@zodiacs.org add -A
+          git -c user.name="Zodiacs Admin" -c user.email=admin@zodiacs.org commit -qm "Scratch: numerology motion captures (not for merge)"
+          git push -f "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" HEAD:claude/motion-captures-out
