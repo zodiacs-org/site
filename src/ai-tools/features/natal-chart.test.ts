@@ -108,9 +108,9 @@ describe('get_natal_chart', () => {
   it('names the birth years it takes when a date falls outside them', async () => {
     for (const tool of ['get_natal_chart', 'get_personal_transits'] as const) {
       for (const birthDate of ['1799-05-03', '2200-01-01']) {
-        expect(await executeAiTool(tool, { birthDate }, on), `${tool} ${birthDate}`).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'birthDate must be a date from 1800 to 2199, such as 1990-05-03.' } });
+        expect(await executeAiTool(tool, { birthDate }, on), `${tool} ${birthDate}`).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'birthDate must be a date from 1800 to 2199, such as 1994-05-14.' } });
       }
-      expect(await executeAiTool(tool, { birthDate: '3 May 1990' }, on)).toMatchObject({ ok: false, error: { message: 'birthDate must be a date such as 1990-05-03.' } });
+      expect(await executeAiTool(tool, { birthDate: '3 May 1990' }, on)).toMatchObject({ ok: false, error: { message: 'birthDate must be a date such as 1994-05-14.' } });
     }
   });
 

@@ -30,13 +30,13 @@ const BODIES = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 
 const zone = z.string().min(1).max(64).regex(ZONE_PATTERN);
 
 export const solarReturnInput = z.strictObject({
-  birthDate: z.string().regex(DATE).describe('The person’s birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link.'),
+  birthDate: z.string().regex(DATE).describe('The person’s birth date, such as 1994-05-14. Used for this answer only; never stored, logged or put in a link.'),
   time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe('The birth time on the local clock, only if known. Never guess it. Needs zone. With latitude and longitude it adds the return’s rising sign and houses.'),
   zone: zone.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude; the return is cast there. Nothing is stored."),
   longitude: z.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
   which: z.enum(['next', 'current']).optional().describe('next (the default): the return at the coming birthday. current: the one that opened the birthday year now running.'),
-  currentZone: zone.optional().describe('Where the person lives now, such as Asia/Bangkok, so the return’s time is on their own clock.'),
+  currentZone: zone.optional().describe('Where the person lives now, such as America/Mexico_City, so the return’s time is on their own clock.'),
 }).superRefine((args, context) => {
   if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
   if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time or a place needs its time zone.' });
@@ -86,7 +86,7 @@ function dateLabel(at: Date): string {
 export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: SolarReturnClock, origin: string, birthdayReportPage = false): Promise<{ data: SolarReturnData; links: { title: string; url: string }[] }> {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError('birthDate must be a real date from 1800 to 2199.');
-  if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
+  if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 09:15.');
   const latitude = args.latitude === undefined ? undefined : roundCoordinate(args.latitude);
   const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
   const timeKnown = args.time !== undefined;

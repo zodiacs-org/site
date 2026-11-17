@@ -74,7 +74,7 @@ describe('get_numerology known answers', () => {
   });
 
   it('refuses unreadable details with fixed sentences that repeat nothing from the request', () => {
-    expect(() => run({ birthDate: '1990-02-30' })).toThrow('birthDate must be a real calendar date, such as 1990-05-03.');
+    expect(() => run({ birthDate: '1990-02-30' })).toThrow('birthDate must be a real calendar date, such as 1994-05-14.');
     let message = '';
     try { run({ birthDate: '1990-11-29', name: 'Ψάπφω' }); } catch (error) { message = (error as Error).message; }
     expect(message).toMatch(/^name can be read only in the Latin alphabet/u);
