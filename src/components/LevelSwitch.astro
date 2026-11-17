@@ -13,7 +13,11 @@
  * Without JavaScript nothing is hidden: every depth shows.
  */
 import Motion from './Motion.astro';
-import '../styles/level.css';
+// Inlined, not bundled: entry pages such as /birth-chart/ load their page
+// stylesheet after first paint, and these rules decide what is shown and how
+// big the question and the switch are, so they must be there from the first
+// frame or the page shifts.
+import levelCss from '../styles/level.css?raw';
 
 interface Props {
   /** Prefix for element ids, so two switches on one page never clash. */
@@ -41,6 +45,7 @@ const options = [
     if (!known && !asked) root.setAttribute('data-level-ask', 'open');
   })();
 </script>
+<style is:inline set:html={levelCss}></style>
 <Motion />
 <div class="level-wrap" data-level-root>
   <section class="level-ask" id={`${idPrefix}-ask`} aria-labelledby={`${idPrefix}-ask-q`} data-level-ask>

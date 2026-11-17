@@ -37,6 +37,10 @@ Beginner is the default. The choice lives in this browser only
 - No layout shift: the saved level and the first visit question are both
   decided by the inline script before paint. Never unhide anything from a
   bundled script on load.
+- `src/styles/level.css` is inlined into the page by `<LevelSwitch />`, never
+  bundled: entry pages like /birth-chart/ load their page stylesheet after
+  first paint, and a late level.css let the question and the switch appear
+  unstyled and then jump (a 0.126 layout shift in Lighthouse).
 - Depth that opens on a switch fades in once, outermost blocks only, 80ms
   apart. It does not rise, because readings stay still (`docs/MOTION.md`), and
   reduced motion shows it at once.

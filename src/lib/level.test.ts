@@ -70,6 +70,11 @@ describe('level rules in the page', () => {
     const inline = component.slice(component.indexOf('<script is:inline>'), component.indexOf('</script>'));
     expect(inline).toContain("setAttribute('data-level-ask', 'open')");
     expect(component).not.toMatch(/ask\.hidden\s*=\s*false/);
+    // The rules ship inline with the switch, so a deferred page stylesheet
+    // can never leave the question unstyled at first paint.
+    expect(component).toContain("import levelCss from '../styles/level.css?raw';");
+    expect(component).toContain('<style is:inline set:html={levelCss}></style>');
+    expect(component).not.toMatch(/^import '\.\.\/styles\/level\.css';/m);
   });
 
   it('leaves the status line empty on load and keeps focus when the question closes', async () => {
