@@ -12,7 +12,7 @@ import EditorialLine from '../components/EditorialLine.astro';
 import GlassDefs from '../components/GlassDefs.astro';
 import EditionFreshnessGuard from '../components/EditionFreshnessGuard.astro';
 import { ANALYTICS_EVENT_PROPS, ANALYTICS_EVENT_VALUES } from '../lib/analytics';
-import { ARRIVAL_REF_VALUES } from '../lib/analytics-config.mjs';
+import { ANALYTICS_HOOK_EVENTS, ARRIVAL_REF_VALUES } from '../lib/analytics-config.mjs';
 import { ARRIVAL_SOURCE_SESSION_KEY } from '../lib/arrival-source';
 import { hasDailyChartEmailProvider } from '../lib/email/daily-config';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
@@ -399,6 +399,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
           guidePrivateSessionKey: GUIDE_PRIVATE_SESSION_KEY,
           analyticsEventProps: ANALYTICS_EVENT_PROPS,
           analyticsEventValues: ANALYTICS_EVENT_VALUES,
+          hookEvents: ANALYTICS_HOOK_EVENTS,
         }}>
           (function () {
             try {
@@ -443,6 +444,15 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
               var target = event.target;
               var link = target && target.closest ? target.closest('a[href]') : null;
               if (!link) return;
+              // A retention hook link names its event and closed values in data-hook-*
+              // attributes; track() above drops any value off the closed lists.
+              var hookEvent = link.getAttribute('data-hook-event');
+              if (hookEvents.indexOf(hookEvent) !== -1) {
+                window.zodiacsAnalytics.track(hookEvent, {
+                  feed: link.getAttribute('data-hook-feed'),
+                  placement: link.getAttribute('data-hook-placement')
+                });
+              }
               var href = link.getAttribute('href') || '';
               var destination = href.indexOf('/sdk/') === 0 ? 'docs'
                 : href.indexOf('npmjs.com/package/@zodiacs/sdk') !== -1 ? 'npm'

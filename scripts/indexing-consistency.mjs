@@ -56,3 +56,72 @@ export function sitemapCanonicalErrors(path, html, redirectSources = new Set()) 
   }
   return errors;
 }
+
+/**
+ * The rules robots.txt gives every crawler (the `User-agent: *` group), and
+ * the sitemaps it names. Groups for named crawlers are left out: no sitemap
+ * page may be blocked for crawlers in general.
+ */
+export function robotsRules(text) {
+  const rules = { allow: [], disallow: [], sitemaps: [] };
+  let agents = [];
+  let inRules = false;
+  for (const raw of text.split(/\r?\n/u)) {
+    const line = raw.replace(/#.*$/u, '').trim();
+    if (!line) continue;
+    const [, field, value] = line.match(/^([A-Za-z-]+)\s*:\s*(.*)$/u) ?? [];
+    if (!field) continue;
+    const key = field.toLowerCase();
+    if (key === 'sitemap') {
+      rules.sitemaps.push(value);
+      continue;
+    }
+    if (key === 'user-agent') {
+      if (inRules) agents = [];
+      inRules = false;
+      agents.push(value);
+      continue;
+    }
+    if (key !== 'allow' && key !== 'disallow') continue;
+    inRules = true;
+    if (!agents.includes('*') || !value) continue;
+    rules[key].push(value);
+  }
+  return rules;
+}
+
+function robotsPatternMatches(pattern, path) {
+  const anchored = pattern.endsWith('$');
+  const body = (anchored ? pattern.slice(0, -1) : pattern)
+    .split('*')
+    .map((part) => part.replace(/[.+?^${}()|[\]\\]/gu, '\\$&'))
+    .join('.*');
+  return new RegExp(`^${body}${anchored ? '$' : ''}`, 'u').test(path);
+}
+
+/** Whether robots.txt blocks a path, as Google reads it: the longest matching rule wins, and Allow wins a tie. */
+export function robotsBlocks(rules, path) {
+  const longest = (patterns) => Math.max(-1, ...patterns.filter((pattern) => robotsPatternMatches(pattern, path)).map((pattern) => pattern.length));
+  const disallow = longest(rules.disallow);
+  return disallow >= 0 && disallow > longest(rules.allow);
+}
+
+/**
+ * Pages whose content changes with every daily edition, so their sitemap date
+ * is the edition's date: Today, the horoscope hubs and each sign's daily,
+ * tomorrow, love and career readings (English, Spanish and Portuguese), and
+ * the chart of the day. Every other page is dated from its content (a
+ * constant or a source date in src/pages/sitemap.xml.ts), never the build.
+ */
+const SIGN = '(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)';
+const DAILY_LASTMOD_PATTERNS = [
+  /^\/(?:(?:es|pt)\/)?today\/$/u,
+  /^\/(?:(?:es|pt)\/)?horoscopes\/$/u,
+  new RegExp(`^/(?:es|pt)/horoscopes/${SIGN}/$`, 'u'),
+  new RegExp(`^/horoscopes/${SIGN}/(?:tomorrow/|love/|career/)?$`, 'u'),
+  /^\/(?:(?:es|pt|fr|it|ru)\/)?chart-of-the-day\/(?:\d{4}-\d{2}-\d{2}\/)?$/u,
+];
+
+export function isDailyLastmodPath(path) {
+  return DAILY_LASTMOD_PATTERNS.some((pattern) => pattern.test(path));
+}

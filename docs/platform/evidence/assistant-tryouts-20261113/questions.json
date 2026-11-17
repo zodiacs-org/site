@@ -1,0 +1,1636 @@
+[
+ {
+  "id": "q001",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "what's my horoscope today? i'm a scorpio"
+ },
+ {
+  "id": "q002",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "Can you pull up today's horoscope for Gemini?"
+ },
+ {
+  "id": "q003",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "horoscope for leo tomorrow pls"
+ },
+ {
+  "id": "q004",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "I'm a Capricorn. How does my week look?"
+ },
+ {
+  "id": "q005",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "whats the love horoscope for pisces today"
+ },
+ {
+  "id": "q006",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "Career horoscope for Virgo for today, I have a big meeting"
+ },
+ {
+  "id": "q007",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "Give me my daily horoscope",
+  "note": "no sign given: the tool opens with a sign picker"
+ },
+ {
+  "id": "q008",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "Aries daily reading please, I'm in Sydney"
+ },
+ {
+  "id": "q009",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "I was born 14 March 1991, what's my horoscope for this week?"
+ },
+ {
+  "id": "q010",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "taurus weekly horoscope"
+ },
+ {
+  "id": "q011",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "Should I expect a good day today? Libra here."
+ },
+ {
+  "id": "q012",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "read me the sagittarius horoscope for today using zodiacs"
+ },
+ {
+  "id": "q013",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "My girlfriend is a Cancer, what does her horoscope say today?"
+ },
+ {
+  "id": "q014",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "What does today hold for Aquarius at work?"
+ },
+ {
+  "id": "q015",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope"
+  ],
+  "question": "horóscopo de hoy para acuario"
+ },
+ {
+  "id": "q016",
+  "expected": "get_horoscope",
+  "accept": [
+   "get_horoscope",
+   "find_birthplace"
+  ],
+  "question": "I'm a Leo born 2 August 1988 at 6:40am in Dublin. Today's horoscope, and anything personal for my week?"
+ },
+ {
+  "id": "q017",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "What's the November horoscope for Scorpio?"
+ },
+ {
+  "id": "q018",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "gemini monthly horoscope"
+ },
+ {
+  "id": "q019",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "How is 2027 looking for Taurus?"
+ },
+ {
+  "id": "q020",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "Give me the Pisces yearly horoscope for 2027"
+ },
+ {
+  "id": "q021",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "love horoscope for libra this week"
+ },
+ {
+  "id": "q022",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "What does this week look like for my career? I'm an Aries."
+ },
+ {
+  "id": "q023",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "December horoscope for Capricorn please"
+ },
+ {
+  "id": "q024",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "I'm a Virgo, what does next month look like for me?"
+ },
+ {
+  "id": "q025",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "Whats the rest of 2026 like for Leo? The yearly one"
+ },
+ {
+  "id": "q026",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "Cancer love forecast for the week ahead"
+ },
+ {
+  "id": "q027",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "sagittarius horoscope for the month"
+ },
+ {
+  "id": "q028",
+  "expected": "get_horoscope_period",
+  "accept": [
+   "get_horoscope_period"
+  ],
+  "question": "Aquarius: my horoscope for the year, please"
+ },
+ {
+  "id": "q029",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "Where are the planets right now?"
+ },
+ {
+  "id": "q030",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "what sign is the moon in right now"
+ },
+ {
+  "id": "q031",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "What phase is the moon tonight? I'm in Toronto"
+ },
+ {
+  "id": "q032",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "Where was Mars on 4 July 2020?"
+ },
+ {
+  "id": "q033",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "what's the sky doing today astrologically"
+ },
+ {
+  "id": "q034",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "Which sign is Venus in at the moment?"
+ },
+ {
+  "id": "q035",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "Show me the positions of the Sun, Moon and Mercury right now"
+ },
+ {
+  "id": "q036",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "What degree is Saturn at today?"
+ },
+ {
+  "id": "q037",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "where were jupiter and saturn on 21 december 2020 at 6pm UTC"
+ },
+ {
+  "id": "q038",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "Current planetary positions please, Berlin time"
+ },
+ {
+  "id": "q039",
+  "expected": "get_sky",
+  "accept": [
+   "get_sky"
+  ],
+  "question": "What was the sky like at noon on 1 January 2000 in New York?"
+ },
+ {
+  "id": "q040",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "When is the next full moon?"
+ },
+ {
+  "id": "q041",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "when does mercury go retrograde next"
+ },
+ {
+  "id": "q042",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "What's happening in the sky this week?"
+ },
+ {
+  "id": "q043",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "Any planets changing signs in the next month?"
+ },
+ {
+  "id": "q044",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "When does Venus leave Scorpio?"
+ },
+ {
+  "id": "q045",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "list the new moons and full moons between now and the end of January"
+ },
+ {
+  "id": "q046",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "When does this Mercury retrograde end?"
+ },
+ {
+  "id": "q047",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "What astrological events are coming up in December? I'm on Pacific time"
+ },
+ {
+  "id": "q048",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "is anything going retrograde or direct in the next two weeks"
+ },
+ {
+  "id": "q049",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "When does Mars enter its next sign?"
+ },
+ {
+  "id": "q050",
+  "expected": "get_upcoming_events",
+  "accept": [
+   "get_upcoming_events"
+  ],
+  "question": "What's the astro weather for the next 7 days?"
+ },
+ {
+  "id": "q051",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact",
+   "get_sky"
+  ],
+  "question": "Is Mercury in retrograde right now?"
+ },
+ {
+  "id": "q052",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact",
+   "get_sky"
+  ],
+  "question": "is it a full moon today?"
+ },
+ {
+  "id": "q053",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact",
+   "get_sky"
+  ],
+  "question": "My coworker says Mars is retrograde. True?"
+ },
+ {
+  "id": "q054",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact",
+   "get_sky"
+  ],
+  "question": "Is the Moon in Taurus today?"
+ },
+ {
+  "id": "q055",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact"
+  ],
+  "question": "Did the Sun enter Sagittarius on November 22 this year?"
+ },
+ {
+  "id": "q056",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact",
+   "get_sky"
+  ],
+  "question": "Was Mercury retrograde on 15 August 2025?"
+ },
+ {
+  "id": "q057",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact",
+   "get_sky"
+  ],
+  "question": "someone on tiktok said venus is in capricorn rn, is that right"
+ },
+ {
+  "id": "q058",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact"
+  ],
+  "question": "Was there a new moon on October 21, 2025?"
+ },
+ {
+  "id": "q059",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact",
+   "get_sky"
+  ],
+  "question": "Is Jupiter in Cancer?"
+ },
+ {
+  "id": "q060",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact"
+  ],
+  "question": "Fact check: Saturn went into Aries on 13 February 2026"
+ },
+ {
+  "id": "q061",
+  "expected": "check_sky_fact",
+  "accept": [
+   "check_sky_fact",
+   "get_sky"
+  ],
+  "question": "is venus retrograde at the moment or am I just unlucky"
+ },
+ {
+  "id": "q062",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart"
+  ],
+  "question": "Can you do my birth chart? Born 12 May 1990."
+ },
+ {
+  "id": "q063",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart",
+   "find_birthplace"
+  ],
+  "question": "I was born on 3 September 1985 at 4:15 pm in Chicago. What's my rising sign?"
+ },
+ {
+  "id": "q064",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart",
+   "find_birthplace"
+  ],
+  "question": "What's my moon sign? Born 21 Jan 1996, 11:30pm, Manchester UK"
+ },
+ {
+  "id": "q065",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart"
+  ],
+  "question": "natal chart for 1978-11-02, time unknown"
+ },
+ {
+  "id": "q066",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart",
+   "find_birthplace"
+  ],
+  "question": "What are my big three? Birthday is July 7 1993, 9:05 in the morning, São Paulo"
+ },
+ {
+  "id": "q067",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart",
+   "find_birthplace"
+  ],
+  "question": "Born 30 April 1982 in Lagos around 2am. Where's my Venus?"
+ },
+ {
+  "id": "q068",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart",
+   "find_birthplace"
+  ],
+  "question": "I'd like a full reading of my chart. 1999-02-17, 07:45, Melbourne, Australia."
+ },
+ {
+  "id": "q069",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart"
+  ],
+  "question": "my bday is 9/9/1989 what planets are in what signs for me"
+ },
+ {
+  "id": "q070",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart",
+   "find_birthplace"
+  ],
+  "question": "What house is my Mars in? 25 December 1994, 18:20, Kraków"
+ },
+ {
+  "id": "q071",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart"
+  ],
+  "question": "Which element dominates my chart? I was born June 1st 1987."
+ },
+ {
+  "id": "q072",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart",
+   "find_birthplace"
+  ],
+  "question": "What aspects do I have in my natal chart? DOB 8 Oct 1975, 5:55am, Denver"
+ },
+ {
+  "id": "q073",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart",
+   "find_birthplace"
+  ],
+  "question": "Here's my friend Tomasz's birth info, he said I could share it: 14 Feb 1991, noon, Warsaw. What does his chart look like?"
+ },
+ {
+  "id": "q074",
+  "expected": "get_natal_chart",
+  "accept": [
+   "get_natal_chart"
+  ],
+  "question": "I was born 1 March 2001 but I don't know what time. What can you tell me from my birth chart?"
+ },
+ {
+  "id": "q075",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "question": "I want to see my birth chart"
+ },
+ {
+  "id": "q076",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "question": "Can you make me a natal chart?"
+ },
+ {
+  "id": "q077",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "question": "open the chart studio"
+ },
+ {
+  "id": "q078",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "question": "I'd rather type my birth details in myself than tell you. Is there a way to do my chart like that?"
+ },
+ {
+  "id": "q079",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "question": "what's my rising sign?",
+  "note": "no birth details given: the description sends this to Chart Studio"
+ },
+ {
+  "id": "q080",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "question": "Let me play around with an interactive birth chart"
+ },
+ {
+  "id": "q081",
+  "expected": "open_chart_studio",
+  "accept": [
+   "open_chart_studio",
+   "explain_astrology"
+  ],
+  "question": "how do I find out my moon sign",
+  "note": "no birth details; an explainer of the Moon sign also answers how"
+ },
+ {
+  "id": "q082",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits"
+  ],
+  "question": "What transits are hitting my chart this month? Born 5 June 1990."
+ },
+ {
+  "id": "q083",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits",
+   "find_birthplace"
+  ],
+  "question": "I was born 22 August 1987, 3:10am, Phoenix. What's coming up for me in the next 30 days?"
+ },
+ {
+  "id": "q084",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits"
+  ],
+  "question": "Give me my year ahead. DOB 11 Nov 1992."
+ },
+ {
+  "id": "q085",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits"
+  ],
+  "question": "born 1984-01-19 — what are my transits for december"
+ },
+ {
+  "id": "q086",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits"
+  ],
+  "question": "Is Saturn doing anything to my natal planets over the next three months? Birthday 2 April 1979."
+ },
+ {
+  "id": "q087",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits",
+   "find_birthplace"
+  ],
+  "question": "What does 2027 look like for me personally, based on my actual chart not just my sign? 6 July 1995, 10pm, Seoul"
+ },
+ {
+  "id": "q088",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits"
+  ],
+  "question": "When is Jupiter next crossing my Sun? I was born 18 October 1989."
+ },
+ {
+  "id": "q089",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits",
+   "find_birthplace"
+  ],
+  "question": "Personal forecast from my birth chart for the next two weeks please: 27 Feb 1998, 14:00, Auckland"
+ },
+ {
+  "id": "q090",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits",
+   "find_birthplace"
+  ],
+  "question": "I live in London now but was born in Mumbai on 9 Dec 1986 at 6:30am. What transits do I have coming this month?"
+ },
+ {
+  "id": "q091",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits"
+  ],
+  "question": "Are there any eclipses near my natal planets in the coming year? Born 13 May 1983."
+ },
+ {
+  "id": "q092",
+  "expected": "get_personal_transits",
+  "accept": [
+   "get_personal_transits"
+  ],
+  "question": "what's pluto doing to my chart next year. 1991-03-30"
+ },
+ {
+  "id": "q093",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "question": "Are we compatible? I'm born 4 April 1992 and my boyfriend 19 September 1990."
+ },
+ {
+  "id": "q094",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility",
+   "find_birthplace"
+  ],
+  "question": "Compare my chart with my wife's. Me: 1985-06-15 08:00 Boston. Her: 1986-12-01 22:30 Miami."
+ },
+ {
+  "id": "q095",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "question": "synastry for 7 Jan 1994 and 23 July 1993 please"
+ },
+ {
+  "id": "q096",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "question": "How compatible would I be with Zendaya? My birthday is 12 Feb 1997."
+ },
+ {
+  "id": "q097",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "question": "My best friend and I: 3 March 1990 and 28 October 1989. How do our charts get along as friends?"
+ },
+ {
+  "id": "q098",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "question": "Me (16 Aug 1988) and my sister (2 Feb 1991), do our charts clash?"
+ },
+ {
+  "id": "q099",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "question": "Rate our relationship astrologically. Sam 10 May 1987, Alex 30 Nov 1984."
+ },
+ {
+  "id": "q100",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "question": "what's the compatibility score between someone born 25/12/1995 and someone born 01/06/1996"
+ },
+ {
+  "id": "q101",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "question": "I was born 9 September 1999. How would I match with Harry Styles?"
+ },
+ {
+  "id": "q102",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility"
+  ],
+  "question": "Do my business partner and I work well together astrologically? I'm 14 July 1980, she's 5 January 1978."
+ },
+ {
+  "id": "q103",
+  "expected": "get_compatibility",
+  "accept": [
+   "get_compatibility",
+   "find_birthplace"
+  ],
+  "question": "My fiancé was born 20 March 1993 at 5am in Lyon, I'm 11 June 1994 at 7pm in Marseille. How do we match?"
+ },
+ {
+  "id": "q104",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "What does it mean to have Venus in Gemini?"
+ },
+ {
+  "id": "q105",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "what is a saturn return"
+ },
+ {
+  "id": "q106",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "Are Leo and Scorpio compatible?"
+ },
+ {
+  "id": "q107",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "Explain the 7th house to me"
+ },
+ {
+  "id": "q108",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "What does Mercury retrograde actually mean?"
+ },
+ {
+  "id": "q109",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "what are aries people like"
+ },
+ {
+  "id": "q110",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "Do Taurus and Aquarius work as friends?"
+ },
+ {
+  "id": "q111",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "What's a void of course moon?"
+ },
+ {
+  "id": "q112",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "What does a square aspect mean?"
+ },
+ {
+  "id": "q113",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "what does my rising sign even mean, like in general"
+ },
+ {
+  "id": "q114",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "Explain the difference between cardinal, fixed and mutable signs"
+ },
+ {
+  "id": "q115",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "What's the midheaven?"
+ },
+ {
+  "id": "q116",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "is a gemini a good match for a sagittarius?"
+ },
+ {
+  "id": "q117",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "What is synastry?"
+ },
+ {
+  "id": "q118",
+  "expected": "explain_astrology",
+  "accept": [
+   "explain_astrology"
+  ],
+  "question": "what does Mars in the 10th house mean"
+ },
+ {
+  "id": "q119",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky"
+  ],
+  "question": "We're getting married on 12 June 2027. What's the sky like that day?"
+ },
+ {
+  "id": "q120",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky"
+  ],
+  "question": "Is 3 April 2027 a good date for our wedding?"
+ },
+ {
+  "id": "q121",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky"
+  ],
+  "question": "What are the best days in May 2027 to get married?"
+ },
+ {
+  "id": "q122",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky"
+  ],
+  "question": "We're moving into our new house on 1 December. How's that date astrologically?"
+ },
+ {
+  "id": "q123",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky"
+  ],
+  "question": "Our anniversary is 18 September. Can I get a sky card for this year's one?"
+ },
+ {
+  "id": "q124",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky"
+  ],
+  "question": "Which is better for my graduation party, 14 June or 21 June 2027?"
+ },
+ {
+  "id": "q125",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky"
+  ],
+  "question": "I start my new job on January 4th 2027, is that a good day?"
+ },
+ {
+  "id": "q126",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky"
+  ],
+  "question": "best date in january to adopt a dog?"
+ },
+ {
+  "id": "q127",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky",
+   "find_birthplace"
+  ],
+  "question": "What will the evening sky look like for our wedding in Santorini on 5 September 2027? Sunset time too."
+ },
+ {
+  "id": "q128",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky"
+  ],
+  "question": "We met on 9 August 2019. What was the sky doing that day? Want to put it on a card."
+ },
+ {
+  "id": "q129",
+  "expected": "get_occasion_sky",
+  "accept": [
+   "get_occasion_sky"
+  ],
+  "question": "Pick the best 3 days for a retirement party between March 1 and April 15 2027"
+ },
+ {
+  "id": "q130",
+  "expected": "get_life_milestones",
+  "accept": [
+   "get_life_milestones"
+  ],
+  "question": "When is my Saturn return? Born 2 March 1997."
+ },
+ {
+  "id": "q131",
+  "expected": "get_life_milestones",
+  "accept": [
+   "get_life_milestones"
+  ],
+  "question": "I was born on 19 July 1984. What are my big astrological life milestones?"
+ },
+ {
+  "id": "q132",
+  "expected": "get_life_milestones",
+  "accept": [
+   "get_life_milestones"
+  ],
+  "question": "when's my next jupiter return, bday 6 nov 1990"
+ },
+ {
+  "id": "q133",
+  "expected": "get_life_milestones",
+  "accept": [
+   "get_life_milestones"
+  ],
+  "question": "Have I had my Uranus opposition yet? Born 23 January 1983."
+ },
+ {
+  "id": "q134",
+  "expected": "get_life_milestones",
+  "accept": [
+   "get_life_milestones"
+  ],
+  "question": "How many Mercury retrogrades have I lived through? DOB 15 April 1994"
+ },
+ {
+  "id": "q135",
+  "expected": "get_life_milestones",
+  "accept": [
+   "get_life_milestones"
+  ],
+  "question": "I'm turning 29 next year (born 8 Aug 1998). Is that the Saturn return thing? When exactly?"
+ },
+ {
+  "id": "q136",
+  "expected": "get_life_milestones",
+  "accept": [
+   "get_life_milestones"
+  ],
+  "question": "How many full moons have there been since I was born on 1 Oct 1972?"
+ },
+ {
+  "id": "q137",
+  "expected": "find_chart_twins",
+  "accept": [
+   "find_chart_twins"
+  ],
+  "question": "Which celebrities have the same sign as me? Born 5 May 1993."
+ },
+ {
+  "id": "q138",
+  "expected": "find_chart_twins",
+  "accept": [
+   "find_chart_twins",
+   "find_birthplace"
+  ],
+  "question": "Who are my chart twins? 17 December 1988, 2:30am, Atlanta"
+ },
+ {
+  "id": "q139",
+  "expected": "find_chart_twins",
+  "accept": [
+   "find_chart_twins"
+  ],
+  "question": "what famous people share my sun and moon sign. dob 29 june 1991 4pm, timezone America/New_York"
+ },
+ {
+  "id": "q140",
+  "expected": "find_chart_twins",
+  "accept": [
+   "find_chart_twins"
+  ],
+  "question": "I was born 10 October 1996. Any famous people with a chart like mine?"
+ },
+ {
+  "id": "q141",
+  "expected": "find_chart_twins",
+  "accept": [
+   "find_chart_twins"
+  ],
+  "question": "Celebrity astro twin for someone born 3 Feb 1985?"
+ },
+ {
+  "id": "q142",
+  "expected": "find_chart_twins",
+  "accept": [
+   "find_chart_twins"
+  ],
+  "question": "which famous people are scorpios like me? my birthday is 30 October 1994"
+ },
+ {
+  "id": "q143",
+  "expected": "get_famous_chart",
+  "accept": [
+   "get_famous_chart"
+  ],
+  "question": "What's Taylor Swift's birth chart?"
+ },
+ {
+  "id": "q144",
+  "expected": "get_famous_chart",
+  "accept": [
+   "get_famous_chart"
+  ],
+  "question": "what sign is Beyoncé"
+ },
+ {
+  "id": "q145",
+  "expected": "get_famous_chart",
+  "accept": [
+   "get_famous_chart"
+  ],
+  "question": "Show me Barack Obama's chart"
+ },
+ {
+  "id": "q146",
+  "expected": "get_famous_chart",
+  "accept": [
+   "get_famous_chart"
+  ],
+  "question": "What's Rihanna's moon sign?"
+ },
+ {
+  "id": "q147",
+  "expected": "get_famous_chart",
+  "accept": [
+   "get_famous_chart"
+  ],
+  "question": "Tell me about Frida Kahlo's natal chart"
+ },
+ {
+  "id": "q148",
+  "expected": "get_famous_chart",
+  "accept": [
+   "get_famous_chart"
+  ],
+  "question": "is keanu reeves a virgo?"
+ },
+ {
+  "id": "q149",
+  "expected": "get_famous_chart",
+  "accept": [
+   "get_famous_chart"
+  ],
+  "question": "Albert Einstein's planets, what signs were they in?"
+ },
+ {
+  "id": "q150",
+  "expected": "get_famous_chart",
+  "accept": [
+   "get_famous_chart"
+  ],
+  "question": "Do you have a chart for Lionel Messi?"
+ },
+ {
+  "id": "q151",
+  "expected": "get_birthday",
+  "accept": [
+   "get_birthday"
+  ],
+  "question": "What zodiac sign is May 3?"
+ },
+ {
+  "id": "q152",
+  "expected": "get_birthday",
+  "accept": [
+   "get_birthday",
+   "get_natal_chart"
+  ],
+  "question": "I was born on October 23, 1995. Am I a Libra or a Scorpio?"
+ },
+ {
+  "id": "q153",
+  "expected": "get_birthday",
+  "accept": [
+   "get_birthday"
+  ],
+  "question": "what's special about being born on february 29"
+ },
+ {
+  "id": "q154",
+  "expected": "get_birthday",
+  "accept": [
+   "get_birthday"
+  ],
+  "question": "My birthday is 21 June. Am I on a cusp?"
+ },
+ {
+  "id": "q155",
+  "expected": "get_birthday",
+  "accept": [
+   "get_birthday",
+   "find_birthplace"
+  ],
+  "question": "When exactly is my solar return in 2027? Born 12 April 1990 at 08:15, Lisbon time."
+ },
+ {
+  "id": "q156",
+  "expected": "get_birthday",
+  "accept": [
+   "get_birthday"
+  ],
+  "question": "Who famous was born on 4 July?"
+ },
+ {
+  "id": "q157",
+  "expected": "get_birthday",
+  "accept": [
+   "get_birthday"
+  ],
+  "question": "What decan is a 15 November birthday?"
+ },
+ {
+  "id": "q158",
+  "expected": "get_birthday",
+  "accept": [
+   "get_birthday"
+  ],
+  "question": "tell me about people born on the 1st of january, astrology wise"
+ },
+ {
+  "id": "q159",
+  "expected": "get_sky_calendar",
+  "accept": [
+   "get_sky_calendar"
+  ],
+  "question": "Can I add the full moons and retrogrades to my Google Calendar?"
+ },
+ {
+  "id": "q160",
+  "expected": "get_sky_calendar",
+  "accept": [
+   "get_sky_calendar"
+  ],
+  "question": "Is there an astrology calendar I can subscribe to on my iPhone?"
+ },
+ {
+  "id": "q161",
+  "expected": "get_sky_calendar",
+  "accept": [
+   "get_sky_calendar"
+  ],
+  "question": "I want moon phases and eclipses to show up in Outlook automatically"
+ },
+ {
+  "id": "q162",
+  "expected": "get_sky_calendar",
+  "accept": [
+   "get_sky_calendar"
+  ],
+  "question": "give me the ics link for the zodiacs sky calendar"
+ },
+ {
+  "id": "q163",
+  "expected": "get_sky_calendar",
+  "accept": [
+   "get_sky_calendar"
+  ],
+  "question": "¿Puedo suscribirme a un calendario de lunas llenas y retrogradaciones en español?"
+ },
+ {
+  "id": "q164",
+  "expected": "get_chinese_zodiac",
+  "accept": [
+   "get_chinese_zodiac"
+  ],
+  "question": "What's my Chinese zodiac animal? Born 1988."
+ },
+ {
+  "id": "q165",
+  "expected": "get_chinese_zodiac",
+  "accept": [
+   "get_chinese_zodiac"
+  ],
+  "question": "I was born on 25 January 1990. Am I a Horse or a Snake in Chinese astrology?"
+ },
+ {
+  "id": "q166",
+  "expected": "get_chinese_zodiac",
+  "accept": [
+   "get_chinese_zodiac"
+  ],
+  "question": "what year of the chinese zodiac is it right now"
+ },
+ {
+  "id": "q167",
+  "expected": "get_chinese_zodiac",
+  "accept": [
+   "get_chinese_zodiac"
+  ],
+  "question": "What animal is 2027 in the Chinese zodiac?"
+ },
+ {
+  "id": "q168",
+  "expected": "get_chinese_zodiac",
+  "accept": [
+   "get_chinese_zodiac"
+  ],
+  "question": "I'm a 1996 baby, what's my Chinese sign and element?"
+ },
+ {
+  "id": "q169",
+  "expected": "get_chinese_zodiac",
+  "accept": [
+   "get_chinese_zodiac"
+  ],
+  "question": "Chinese horoscope animal for 3 February 2000?"
+ },
+ {
+  "id": "q170",
+  "expected": "get_chinese_zodiac",
+  "accept": [
+   "get_chinese_zodiac"
+  ],
+  "question": "Which Chinese zodiac animals get along with the Dragon? I'm born 2 June 1988"
+ },
+ {
+  "id": "q171",
+  "expected": "get_chinese_zodiac",
+  "accept": [
+   "get_chinese_zodiac"
+  ],
+  "question": "am i yin or yang in the chinese zodiac, born 14 sept 1993"
+ },
+ {
+  "id": "q172",
+  "expected": "find_birthplace",
+  "accept": [
+   "find_birthplace"
+  ],
+  "question": "What time zone and coordinates would you use for a birth in Springfield, Illinois?"
+ },
+ {
+  "id": "q173",
+  "expected": "find_birthplace",
+  "accept": [
+   "find_birthplace"
+  ],
+  "question": "Look up Porto, Portugal as a birthplace for a chart"
+ },
+ {
+  "id": "q174",
+  "expected": "find_birthplace",
+  "accept": [
+   "find_birthplace"
+  ],
+  "question": "what was the UTC offset in Buenos Aires on 3 January 1975? need it for a birth chart"
+ },
+ {
+  "id": "q175",
+  "expected": "find_birthplace",
+  "accept": [
+   "find_birthplace"
+  ],
+  "question": "Can Zodiacs find Tbilisi for birthplace coordinates?"
+ },
+ {
+  "id": "q176",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities"
+  ],
+  "question": "What can Zodiacs do?"
+ },
+ {
+  "id": "q177",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities"
+  ],
+  "question": "what can I ask the zodiacs connector"
+ },
+ {
+  "id": "q178",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities",
+   "none"
+  ],
+  "question": "Does Zodiacs store my birth data?",
+  "note": "the server instructions already answer this, so a direct answer is also right"
+ },
+ {
+  "id": "q179",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities"
+  ],
+  "question": "What are the limits of the Zodiacs tools? Like how far ahead can it look"
+ },
+ {
+  "id": "q180",
+  "expected": "get_capabilities",
+  "accept": [
+   "get_capabilities"
+  ],
+  "question": "Which house system and zodiac does Zodiacs use for its calculations?"
+ },
+ {
+  "id": "q181",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Which stocks should I buy this week based on my horoscope? I'm a Taurus."
+ },
+ {
+  "id": "q182",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Is Mercury retrograde a good time to buy Bitcoin?"
+ },
+ {
+  "id": "q183",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Who's going to win the Super Bowl according to astrology?"
+ },
+ {
+  "id": "q184",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "use the stars to give me a parlay for tonight's NBA games"
+ },
+ {
+  "id": "q185",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "According to my chart, will my surgery next week go well? Born 4 May 1970."
+ },
+ {
+  "id": "q186",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Will I get pregnant this year? I'm a Cancer, born 30 June 1993."
+ },
+ {
+  "id": "q187",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "What does astrology say about who wins the next presidential election?"
+ },
+ {
+  "id": "q188",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Send me my horoscope every morning at 7am"
+ },
+ {
+  "id": "q189",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Set a reminder for the next full moon"
+ },
+ {
+  "id": "q190",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "My son was born on 4 March 2021 at 2:10am in Leeds. Can you do his birth chart?"
+ },
+ {
+  "id": "q191",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "My daughter is 9, born 17 August 2017. What's her horoscope reading and who is she compatible with?"
+ },
+ {
+  "id": "q192",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Guarantee me that my marriage will last. We're both Leos."
+ },
+ {
+  "id": "q193",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "When should I sell my house to get the best price, astrologically? Give me the exact month to list it."
+ },
+ {
+  "id": "q194",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Can astrology tell me if this lump is cancer? I'm a Virgo"
+ },
+ {
+  "id": "q195",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "I'm 15 and my crush is 16. Born 3 May 2011 and 9 Jan 2010. Are we romantically compatible?",
+  "note": "romance reading for two people under 18"
+ },
+ {
+  "id": "q196",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "what's the weather in Lisbon tomorrow"
+ },
+ {
+  "id": "q197",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Give me this week's lottery numbers for a Sagittarius"
+ },
+ {
+  "id": "q198",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Should I stop taking my antidepressants while Neptune is transiting my Moon?"
+ },
+ {
+  "id": "q199",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Book me a session with a human astrologer for Friday"
+ },
+ {
+  "id": "q200",
+  "expected": "none",
+  "accept": [
+   "none"
+  ],
+  "question": "Pick the day in December my crypto portfolio will peak, I'm an Aries born 2 April 1990"
+ }
+]
