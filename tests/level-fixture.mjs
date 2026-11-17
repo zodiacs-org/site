@@ -4,8 +4,11 @@
  * view and the details table. Browser drives written for the full chart
  * explorer call withFullLevel() so every page they open starts at Advanced,
  * where the page shows everything, as it did before levels existed. The first
- * visit (Beginner and its question) is covered by the visual baselines and
- * Lighthouse, which never call this.
+ * visit (Beginner and its question) is covered by the consumer experience
+ * drive, the visual baselines and Lighthouse, which never call this.
+ *
+ * The seed runs again on every page load, so a drive that switches level and
+ * then reloads comes back at Advanced. Such a drive should not use this.
  */
 export const LEVEL_STORAGE_KEY = 'zodiacs-level';
 export const LEVEL_ASKED_KEY = 'zodiacs-level-asked';

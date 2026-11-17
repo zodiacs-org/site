@@ -59,6 +59,7 @@ Beginner is the default. The choice lives in this browser only
 - Copy follows the voice guide: plain words, no dashes.
 - Browser drives written for the full chart explorer open pages at Advanced
   with `withFullLevel()` from `tests/level-fixture.mjs`. The first visit at
-  Beginner is covered by the visual baselines and Lighthouse, which never
-  seed a level. A new drive that reads houses, aspects, lenses, the 3D view or
+  Beginner is covered by the consumer experience drive (a new visitor's
+  journey on a phone), the visual baselines and Lighthouse, which never seed
+  a level. A new drive that reads houses, aspects, lenses, the 3D view or
   the details table on /birth-chart/ needs the fixture too.
