@@ -91,5 +91,12 @@ describe('level rules in the page', () => {
     const { readFile } = await import('node:fs/promises');
     const island = await readFile(new URL('../islands/ChartCalculator.tsx', import.meta.url), 'utf8');
     expect(island).toContain("class=\"calc__lens-rail\" role=\"group\" aria-label={lensLabels.rail} data-depth={lens === 'natal' ? 'intermediate' : undefined}");
+    // A hidden button keeps focus until restyle, so the hand-back to the wheel
+    // decides from where focus was before the rail hid, not from <body>.
+    const natal = island.slice(island.indexOf("if (next === 'natal') {"), island.indexOf('const mod = lensMod'));
+    expect(natal.indexOf("closest('.calc__lens-rail')")).toBeGreaterThan(-1);
+    expect(natal.indexOf("closest('.calc__lens-rail')")).toBeLessThan(natal.indexOf('resetLens()'));
+    expect(natal).toContain('rail.getClientRects().length === 0');
+    expect(natal).not.toContain('document.activeElement === document.body');
   });
 });

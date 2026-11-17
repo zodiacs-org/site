@@ -797,13 +797,17 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     if (!owner) return;
     if (next === lens) return;
     if (next === 'natal') {
+      // At Beginner the rail hides again on the natal wheel (docs/LEVELS.md),
+      // taking the focused button with it. A hidden button keeps focus until
+      // the browser restyles, so decide from where focus was, not from body.
+      const rail = (document.activeElement as Element | null)?.closest('.calc__lens-rail') ?? null;
       resetLens();
       track('lens_change', { lens: 'natal' });
-      // At Beginner the rail hides again on the natal wheel (docs/LEVELS.md),
-      // taking the focused button with it, so focus goes to the wheel.
-      requestAnimationFrame(() => {
-        if (document.activeElement === document.body) wheelboxRef.current?.focus();
-      });
+      if (rail) {
+        requestAnimationFrame(() => {
+          if (rail.isConnected && rail.getClientRects().length === 0) wheelboxRef.current?.focus();
+        });
+      }
       return;
     }
     try {
