@@ -55,7 +55,7 @@ monthly, yearly, love, career and their localized versions).
 6. Is it a result the person just asked for, or inside one? If so, stop: it already arrives in 200 ms.
 7. Would the group stagger past 4 steps? The runtime caps it; do not add your own longer delays.
 8. Is the page's main button still on the first phone screen (390 x 844)?
-9. Run `npm run test:motion:evidence` (once that harness has merged) and paste its summary in the PR.
+9. Run `node tests/motion-evidence.mjs --before <url> --after <url> --check` (once that harness has merged) and paste its summary in the PR.
 
 `src/lib/motion-contract.test.ts` enforces the parts of this that can be read
 from the source: the tags that are never marked, no marks on the daily pages
