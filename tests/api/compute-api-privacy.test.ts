@@ -524,8 +524,6 @@ describe('the site and the compute API', () => {
       'src/ai-tools/features/solar-return.ts',
       // The new and full Moons either side of a moment come from the same lunation search, server-side (ZOD-64).
       'src/ai-tools/clear-time.ts', 'src/ai-tools/clear-time.test.ts',
-      // get_sky's last and next new and full Moons, checked against that search and NASA's 2027 full Moons (ZOD-64).
-      'src/ai-tools/moon-cycle.test.ts',
     ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the

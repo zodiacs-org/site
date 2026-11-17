@@ -44,9 +44,8 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * the thirteen published ones, get_horoscope, check_sky_fact, get_upcoming_events and open_chart_studio, which the
  * owner approved on 13 November 2026 (src/ai-tools/published-tools.ts, src/ai-tools/tryouts-routing.test.ts). ZOD-207
  * changes no schema, no panel address and no resources/list.
- * ZOD-64 (PR 1068's minute times, still 0.6.7) changes the time that get_upcoming_events quotes for Neptune entering
- * Aries from 14:31:41 to 14:32 UTC, and adds four optional properties (lastNewMoon, nextNewMoon,
- * lastFullMoon, nextFullMoon) to get_sky's moonPhase in its output schema, in every tools/list
+ * ZOD-64 (PR 1068's minute times, still 0.6.7, approved by Dias on 2026-11-17) changes the time that
+ * get_upcoming_events' description quotes for Neptune entering Aries from 14:31:41 to 14:32 UTC, in every tools/list
  * (src/ai-tools/published-tools.ts). Nothing else in any scenario changes.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);

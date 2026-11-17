@@ -289,8 +289,6 @@ const limits = z.object({
   samples: z.number().int(), factSamples: z.number().int(),
 });
 const localTime = z.object({ utc: z.string(), zone: z.string(), display: z.string() });
-// ZOD-64: a new or full Moon in get_sky's moonPhase, UTC to the minute and, when a zone was given, the zone's clock.
-const lunation = z.object({ at: z.string(), localAt: z.string().optional() });
 const body = z.object({ body: z.string(), lon: z.number(), lat: z.number(), speed: z.number(), retrograde: z.boolean(), sign: z.string(), degree: z.number() });
 const positionResult = z.object({ instants: z.array(z.object({ instant: z.string(), bodies: z.array(body), deltaT: computeValue('DeltaT'), timeScale: computeValue('TimeScale'), flags: z.array(z.string()) })) });
 const event = z.object({ kind: z.enum(EVENT_KINDS), at: z.string(), localAt: z.string(), body: z.string().optional(), sign: z.string(), type: z.string().optional(), retrograde: z.boolean().optional(), lon: z.number().optional(), degree: z.number().optional() });
@@ -362,7 +360,7 @@ export const OCCASION_NOTE = occasionNote;
 const dataSchemas = {
   open_chart_studio: z.object({ title: z.literal('Chart Studio'), calculation: z.literal('browser-local'), initialChart: z.literal('birth-details'), sharing: z.literal('user-reviewed-selection-only') }),
   get_capabilities: z.object({ name: z.literal('Zodiacs'), version: z.string(), engine: computeValue('Backend'), tools: z.array(z.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements, coverage: statements, privacy: z.string(), limitations: z.array(z.string()) }),
-  get_sky: z.object({ mode: z.enum(['current-instant', 'requested-instant']), time: localTime, calculation: calculationOf(positionResult), moonPhase: z.object({ name: z.string(), angle: z.number(), illumination: z.number(), lastNewMoon: lunation.optional(), nextNewMoon: lunation.optional(), lastFullMoon: lunation.optional(), nextFullMoon: lunation.optional() }), interpretation: z.literal('Astronomical calculations; no personal prediction is supplied.') }),
+  get_sky: z.object({ mode: z.enum(['current-instant', 'requested-instant']), time: localTime, calculation: calculationOf(positionResult), moonPhase: z.object({ name: z.string(), angle: z.number(), illumination: z.number() }), interpretation: z.literal('Astronomical calculations; no personal prediction is supplied.') }),
   get_upcoming_events: z.object({ from: z.string(), to: z.string(), zone: z.string(), events: z.array(event), calculation: calculationOf(computeValue('EventsResult')), completeness: z.literal('tested-not-proven') }),
   check_sky_fact: z.object({ answer: z.enum(['true', 'false', 'depends']), calculation: calculationOf(computeValue('SkyFactResult')), interpretation: z.literal('The verdict checks an astronomical proposition, not an astrological prediction.') }),
   get_horoscope: horoscope,

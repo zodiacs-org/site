@@ -48,6 +48,12 @@ describe('the routing wording from the assistant tryouts', () => {
       expect(instructions.endsWith(WHICH_TOOL)).toBe(true);
     }
     expect(JSON.stringify((saved('join', 'tools-list.json').tools as Listed[]).slice(0, 13))).toBe(JSON.stringify(PUBLISHED_TOOLS.map(withoutZod64)));
+    // ZOD-64 (approved by Dias on 2026-11-17) moves only get_upcoming_events' description since the join.
+    const joined = (saved('join', 'tools-list.json').tools as Record<string, unknown>[]).slice(0, 13);
+    const moved = PUBLISHED_TOOLS.filter((tool, index) => JSON.stringify(tool) !== JSON.stringify(joined[index]));
+    expect(moved.map(tool => tool.name)).toEqual(['get_upcoming_events']);
+    const joinedEvents = joined.find(tool => tool.name === 'get_upcoming_events')!;
+    expect(JSON.stringify({ ...moved[0], description: joinedEvents.description })).toBe(JSON.stringify(joinedEvents));
     // The join moved nothing in the list but get_horoscope's panel address, and one sentence of the instructions.
     const v7 = (text: string) => text.replaceAll('ui://zodiacs/horoscopes-v6.html', 'ui://zodiacs/horoscopes-v7.html');
     expect(v7(JSON.stringify(saved('fix-round', 'tools-list.json')))).toBe(JSON.stringify(saved('join', 'tools-list.json')));

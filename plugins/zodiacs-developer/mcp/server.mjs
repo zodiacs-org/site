@@ -43176,7 +43176,6 @@ var limits = z17.object({
   factSamples: z17.number().int()
 });
 var localTime = z17.object({ utc: z17.string(), zone: z17.string(), display: z17.string() });
-var lunation = z17.object({ at: z17.string(), localAt: z17.string().optional() });
 var body = z17.object({ body: z17.string(), lon: z17.number(), lat: z17.number(), speed: z17.number(), retrograde: z17.boolean(), sign: z17.string(), degree: z17.number() });
 var positionResult = z17.object({ instants: z17.array(z17.object({ instant: z17.string(), bodies: z17.array(body), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z17.array(z17.string()) })) });
 var event = z17.object({ kind: z17.enum(EVENT_KINDS), at: z17.string(), localAt: z17.string(), body: z17.string().optional(), sign: z17.string(), type: z17.string().optional(), retrograde: z17.boolean().optional(), lon: z17.number().optional(), degree: z17.number().optional() });
@@ -43266,7 +43265,7 @@ var OCCASION_NOTE = occasionNote;
 var dataSchemas = {
   open_chart_studio: z17.object({ title: z17.literal("Chart Studio"), calculation: z17.literal("browser-local"), initialChart: z17.literal("birth-details"), sharing: z17.literal("user-reviewed-selection-only") }),
   get_capabilities: z17.object({ name: z17.literal("Zodiacs"), version: z17.string(), engine: computeValue("Backend"), tools: z17.array(z17.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z17.string(), limitations: z17.array(z17.string()) }),
-  get_sky: z17.object({ mode: z17.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z17.object({ name: z17.string(), angle: z17.number(), illumination: z17.number(), lastNewMoon: lunation.optional(), nextNewMoon: lunation.optional(), lastFullMoon: lunation.optional(), nextFullMoon: lunation.optional() }), interpretation: z17.literal("Astronomical calculations; no personal prediction is supplied.") }),
+  get_sky: z17.object({ mode: z17.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z17.object({ name: z17.string(), angle: z17.number(), illumination: z17.number() }), interpretation: z17.literal("Astronomical calculations; no personal prediction is supplied.") }),
   get_upcoming_events: z17.object({ from: z17.string(), to: z17.string(), zone: z17.string(), events: z17.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z17.literal("tested-not-proven") }),
   check_sky_fact: z17.object({ answer: z17.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z17.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
   get_horoscope: horoscope,
@@ -43499,13 +43498,6 @@ import { McpServer } from "@modelcontextprotocol/server";
 
 // src/ai-tools/clear-time.ts
 var MINUTE2 = 6e4;
-var DAY17 = 864e5;
-function roundToMinute(utc) {
-  return new Date(Math.round(new Date(utc).getTime() / MINUTE2) * MINUTE2);
-}
-function minuteUtc(utc) {
-  return `${roundToMinute(utc).toISOString().slice(0, 16)}:00Z`;
-}
 var two = (value) => String(Math.trunc(Math.abs(value))).padStart(2, "0");
 function localIso(utc, zone9, milliseconds = false) {
   const exact = new Date(utc).getTime();
@@ -43547,32 +43539,6 @@ function moonPhaseLabel(angle) {
   if (/^Wa(?:x|n)ing /u.test(name) || name === "First Quarter" || name === "Last Quarter") return name;
   const turn3 = (angle % 360 + 360) % 360;
   return turn3 === 0 || turn3 === 180 ? name : `${name}, ${moonDirection(angle)}`;
-}
-function moonCycle(at, angle) {
-  const budget = new SampleBudget("events.samples");
-  const instant2 = at.getTime();
-  const around = (phase) => {
-    const crossings = phaseCrossings(phase, new Date(instant2 - 31 * DAY17), new Date(instant2 + 31 * DAY17), budget).map((crossing) => crossing.at.getTime());
-    const last2 = Math.max(...crossings.filter((time) => time <= instant2));
-    const next = Math.min(...crossings.filter((time) => time > instant2));
-    if (!Number.isFinite(last2) || !Number.isFinite(next)) throw new Error("No lunation either side of the instant.");
-    const lastShown = Math.round(last2 / MINUTE2) * MINUTE2 > instant2 ? Math.floor(last2 / MINUTE2) * MINUTE2 : last2;
-    const nextShown = Math.round(next / MINUTE2) * MINUTE2 <= instant2 ? Math.ceil(next / MINUTE2) * MINUTE2 : next;
-    return [minuteUtc(new Date(lastShown)), minuteUtc(new Date(nextShown))];
-  };
-  const [lastNew, nextNew] = around(PHASES.new);
-  const [lastFull, nextFull] = around(PHASES.full);
-  return { direction: moonDirection(angle), lastNew, nextNew, lastFull, nextFull };
-}
-function moonCycleTimes(at, angle, zone9) {
-  let cycle;
-  try {
-    cycle = moonCycle(at, angle);
-  } catch {
-    return {};
-  }
-  const time = (utc) => zone9 ? { at: utc, localAt: localIso(utc, zone9) } : { at: utc };
-  return { lastNewMoon: time(cycle.lastNew), nextNewMoon: time(cycle.nextNew), lastFullMoon: time(cycle.lastFull), nextFullMoon: time(cycle.nextFull) };
 }
 
 // api/_compute/local-time.mjs
@@ -44041,7 +44007,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const sign3 = match[1] === "-" ? -1 : 1;
       return sign3 * (Number(match[2] ?? 0) * 60 + Number(match[3] ?? 0) + Number(match[4] ?? 0) / 60);
     }
-    var DAY22 = 864e5;
+    var DAY21 = 864e5;
     var PROBE = 36 * 36e5;
     var MAX_DEPARTURE_SECONDS = 180 * 60;
     var FIXED_ZONE = /^(?:etc\/)?(?:utc|uct|gmt|gmt0|gmt[+-]0|greenwich|universal|zulu)$|^etc\/gmt[+-]\d{1,2}$/iu;
@@ -44070,8 +44036,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       if (first2) {
         return second ? { chosen: first2, kind: "fold", at: firstChange(clockAt, first2.utcMs, second.utcMs) } : { chosen: first2, kind: null, at: null };
       }
-      let lo = wallMs - PROBE - DAY22;
-      let hi = wallMs + PROBE + DAY22;
+      let lo = wallMs - PROBE - DAY21;
+      let hi = wallMs + PROBE + DAY21;
       while (hi - lo > 1) {
         const mid = Math.floor((lo + hi) / 2);
         if (mid + clockAt(mid) * 1e3 > wallMs) hi = mid;
@@ -44139,7 +44105,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       wall.setUTCFullYear(civil.year, civil.month - 1, civil.day);
       const wallMs = wall.setUTCHours(Number(hhmm[1]), Number(hhmm[2]));
       const loaded = FIXED_ZONE.test(timeZone) ? null : loadedHistory(timeZone);
-      if (loaded === void 0 && wallMs < DAY22) throw new ZoneHistoryNotLoadedError();
+      if (loaded === void 0 && wallMs < DAY21) throw new ZoneHistoryNotLoadedError();
       const history = loaded ?? null;
       const zoneAt2 = zoneClock(timeZone, history);
       const place2 = longitude2 !== void 0 && history ? birthplaceClock(history, wallMs, longitude2, zoneAt2) : null;
@@ -44309,8 +44275,8 @@ function savedOccasionPath(args, data) {
 }
 
 // src/lib/occasions/milestones.ts
-var DAY18 = 864e5;
-var YEAR2 = 365.25 * DAY18;
+var DAY17 = 864e5;
+var YEAR2 = 365.25 * DAY17;
 var SYNODIC_MONTH = 29.530588;
 var MERCURY_STEP_DAYS = 4;
 function ageAt(birth, at) {
@@ -44338,7 +44304,7 @@ function fullMoonsBetween(from, to) {
   if (!(to.getTime() > from.getTime())) return 0;
   const start = moonPhase(from).angle;
   const end = moonPhase(to).angle;
-  const days = (to.getTime() - from.getTime()) / DAY18;
+  const days = (to.getTime() - from.getTime()) / DAY17;
   const remainder = ((end - start) % 360 + 360) % 360;
   const turns = Math.round((days * 360 / SYNODIC_MONTH - remainder) / 360);
   const gained = turns * 360 + remainder;
@@ -44348,7 +44314,7 @@ function fullMoonsBetween(from, to) {
 function mercuryRetrogradesBetween(from, to) {
   let count = 0;
   let previous = longitudeSpeed2("Mercury", from);
-  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY18; ; t += MERCURY_STEP_DAYS * DAY18) {
+  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY17; ; t += MERCURY_STEP_DAYS * DAY17) {
     const at = Math.min(t, to.getTime());
     const speed = longitudeSpeed2("Mercury", new Date(at));
     if (previous >= 0 && speed < 0) count += 1;
@@ -44406,7 +44372,7 @@ var MILESTONE_WORDS = {
 };
 
 // src/lib/occasions/milestone-card.ts
-var DAY19 = 864e5;
+var DAY18 = 864e5;
 async function milestoneCard(input, asOf, clock2) {
   if (!validOccasionDate(input.birthDate)) throw new RangeError("The birth date must be a real date from 1800 to 2199.");
   if (input.time !== null && !/^([01]\d|2[0-3]):[0-5]\d$/u.test(input.time)) throw new RangeError("The time must be HH:MM.");
@@ -44418,7 +44384,7 @@ async function milestoneCard(input, asOf, clock2) {
     birth = (input.birthplace ? resolveLocalToUtc(input.birthDate, input.time, input.timeZone, { longitude: input.birthplace.lon }) : resolveLocalToUtc(input.birthDate, input.time, input.timeZone)).utc;
   } else {
     const [year, month, day2] = input.birthDate.split("-").map(Number);
-    birth = new Date(Date.UTC(year, month - 1, day2) + DAY19 / 2);
+    birth = new Date(Date.UTC(year, month - 1, day2) + DAY18 / 2);
   }
   if (birth.getTime() > asOf.getTime()) throw new RangeError("The birth date is in the future.");
   return { ...lifeMilestones2(birth, asOf), timeKnown: input.time !== null };
@@ -44428,7 +44394,7 @@ async function milestoneCard(input, asOf, clock2) {
 var WEEK_DAYS = 7;
 var WEEK_ORB = 3;
 var WEEK_LIMIT = 5;
-var DAY20 = 864e5;
+var DAY19 = 864e5;
 var SAMPLE_MS = 6 * 36e5;
 var UNTIMED_LEFT_OUT = ["Moon", "ASC", "MC"];
 function remember(ephemeris) {
@@ -44459,7 +44425,7 @@ function scanYourWeek(request, ephemeris, limit = WEEK_LIMIT) {
   const fromMs = Date.parse(request.fromUtc);
   if (!Number.isFinite(fromMs)) throw new RangeError("The week needs a valid start.");
   if (typeof request.timeKnown !== "boolean") throw new RangeError("Confirm whether the birth time is known.");
-  const toMs = fromMs + WEEK_DAYS * DAY20;
+  const toMs = fromMs + WEEK_DAYS * DAY19;
   const from = new Date(fromMs), to = new Date(toMs);
   const natal = request.timeKnown ? request.natal : { bodies: request.natal.bodies, angles: null };
   const points = natalTransitPoints(natal).filter((point2) => request.timeKnown || !UNTIMED_LEFT_OUT.includes(point2.name));
@@ -44845,14 +44811,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const calculation = computePositions(parsePositionsRequest({ instants: [instant2], ...args.bodies ? { bodies: args.bodies } : {} }));
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = {
-          mode: args.instant ? "requested-instant" : "current-instant",
-          time: { utc, zone: zone9, display: displayTime(utc, zone9) },
-          calculation,
-          // ZOD-64: the last and next new and full Moons follow the three fields get_sky has always given.
-          moonPhase: { name: moonPhaseLabel(phase.angle), angle: phase.angle, illumination: phase.illumination, ...moonCycleTimes(new Date(utc), phase.angle, args.zone ? zone9 : void 0) },
-          interpretation: "Astronomical calculations; no personal prediction is supplied."
-        };
+        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone9, display: displayTime(utc, zone9) }, calculation, moonPhase: { name: moonPhaseLabel(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
         links = [moonLink, methodLink, calendarLink];
         break;
       }

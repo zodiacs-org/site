@@ -117,44 +117,17 @@ export interface MoonCycle {
  * The new and full Moons either side of an instant, from the search behind get_upcoming_events (where the Moon's
  * elongation from the Sun crosses 0 and 180 degrees), rounded to the minute. A lunation at the instant itself counts
  * as the last one. 31 days either side always holds one of each: a lunar month is never longer than 29.9 days.
- * Rounding keeps each on its side of the instant, as the event list keeps a time inside its window: a new Moon at
- * 08:35:40 before an instant of 08:35:46 shows 08:35 as the last one, not 08:36.
  */
 export function moonCycle(at: Date, angle: number): MoonCycle {
   const budget = new SampleBudget('events.samples');
-  const instant = at.getTime();
   const around = (phase: number) => {
-    const crossings = phaseCrossings(phase, new Date(instant - 31 * DAY), new Date(instant + 31 * DAY), budget).map((crossing) => crossing.at.getTime());
-    const last = Math.max(...crossings.filter((time) => time <= instant));
-    const next = Math.min(...crossings.filter((time) => time > instant));
+    const crossings = phaseCrossings(phase, new Date(at.getTime() - 31 * DAY), new Date(at.getTime() + 31 * DAY), budget).map((crossing) => crossing.at.getTime());
+    const last = Math.max(...crossings.filter((time) => time <= at.getTime()));
+    const next = Math.min(...crossings.filter((time) => time > at.getTime()));
     if (!Number.isFinite(last) || !Number.isFinite(next)) throw new Error('No lunation either side of the instant.');
-    const lastShown = Math.round(last / MINUTE) * MINUTE > instant ? Math.floor(last / MINUTE) * MINUTE : last;
-    const nextShown = Math.round(next / MINUTE) * MINUTE <= instant ? Math.ceil(next / MINUTE) * MINUTE : next;
-    return [minuteUtc(new Date(lastShown)), minuteUtc(new Date(nextShown))] as const;
+    return [minuteUtc(new Date(last)), minuteUtc(new Date(next))] as const;
   };
   const [lastNew, nextNew] = around(PHASES.new);
   const [lastFull, nextFull] = around(PHASES.full);
   return { direction: moonDirection(angle), lastNew, nextNew, lastFull, nextFull };
-}
-
-/** A new or full Moon in get_sky's moonPhase: UTC to the minute, and the zone's clock at that minute when a zone was given. */
-export interface LunationTime { at: string; localAt?: string }
-
-export interface MoonCycleTimes { lastNewMoon: LunationTime; nextNewMoon: LunationTime; lastFullMoon: LunationTime; nextFullMoon: LunationTime }
-
-/**
- * The four lunations get_sky adds to its moonPhase (ZOD-64), after the fields it has always given: the last and next
- * new Moon and the last and next full Moon, each from moonCycle. localAt is the same minute on the zone's clock, as
- * ISO 8601 with its offset, and comes only when the request named a zone. Should the search fail, the four are left
- * out and the rest of the answer stands as before.
- */
-export function moonCycleTimes(at: Date, angle: number, zone?: string): MoonCycleTimes | Record<string, never> {
-  let cycle: MoonCycle;
-  try {
-    cycle = moonCycle(at, angle);
-  } catch {
-    return {};
-  }
-  const time = (utc: string): LunationTime => (zone ? { at: utc, localAt: localIso(utc, zone) } : { at: utc });
-  return { lastNewMoon: time(cycle.lastNew), nextNewMoon: time(cycle.nextNew), lastFullMoon: time(cycle.lastFull), nextFullMoon: time(cycle.nextFull) };
 }
