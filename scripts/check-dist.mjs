@@ -1434,7 +1434,10 @@ const sitemapPolicy = {
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
-    + indexedRegistryResearchPaths.size + developerGuidePaths.size,
+    + indexedRegistryResearchPaths.size + developerGuidePaths.size
+    // + one page per translated Learn article per locale (src/data/learn-translations.json).
+    + Object.values(JSON.parse(await readFile(resolve(repo, 'src/data/learn-translations.json'), 'utf8')))
+      .reduce((sum, paths) => sum + paths.length, 0),
   // 78 pairs in English and in es, pt, fr and it.
   compatibilityPairs: 390,
   birthdays: 366,

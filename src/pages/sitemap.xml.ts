@@ -726,6 +726,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The feeds and developer pages list the per-sign and JSON sky-event feeds, 17 November, last so this date wins.
   ['/feeds/', '2026-11-17'] as const,
   ['/developers/', '2026-11-17'] as const,
+  // The Sky calendar pages' Google and Apple Calendar steps (every language), 17 November, last so this date wins.
+  ...['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/sky-calendar/`, '2026-11-17'] as const),
 ]);
 
 function getLastmod(loc: string): string {
