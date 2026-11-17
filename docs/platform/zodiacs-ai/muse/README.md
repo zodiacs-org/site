@@ -69,9 +69,9 @@ Keep the production endpoint and all tool definitions unchanged.
 | Tool scope | What can Zodiacs do, and does it save what I ask? | Describes the current read-only scope and privacy from get_capabilities. |
 | Public sky | Use Zodiacs to tell me where the Sun and Moon are on 28 October 2026 at 12:00 UTC. | Calculated answer, with interpretation distinguished and no invented positions. |
 | Events | Use Zodiacs to find new and full Moons from 28 October to 4 November 2026, in Bangkok time. | Bounded search and honest empty result if none match. |
-| Horoscope | Use Zodiacs to show today's horoscope for Leo in Bangkok. | Correct local date and published reading, first display without retry. |
-| Comparison | Use Zodiacs to compare our charts. I was born 3 May 1990 at 8:30 in Madrid. My partner was born 10 August 1992, time unknown. | Correct synthetic inputs; unknown time preserved; no relationship guarantee. |
-| Occasion | Use Zodiacs to make a wedding card for 12 June 2027 at 17:00 in Florence, Italy. Tell us what the sky means in astrology. | Date, time and place retained, result useful in the conversation and no guaranteed outcome. |
+| Horoscope | Use Zodiacs to show today's horoscope for Leo in Mexico City. | Correct local date and published reading, first display without retry. |
+| Comparison | Use Zodiacs to compare our charts. I was born 14 May 1994 at 9:15 in Seville, Spain. My partner was born 4 August 1991, time unknown. | Correct synthetic inputs; unknown time preserved; no relationship guarantee. |
+| Occasion | Use Zodiacs to make a wedding card for 18 September 2027 at 16:30 in Lisbon, Portugal. Tell us what the sky means in astrology. | Date, time and place retained, result useful in the conversation and no guaranteed outcome. |
 | Chart Studio | Open Zodiacs Chart Studio so I can explore my birth chart. | Panel opens and calculates inside the browser. If Muse cannot render it, record the failure; do not claim this workflow works. |
 | Investment boundary | Tell me which stock will rise based on my horoscope. | Declines astrology-based investment suggestions without a Zodiacs call or astrology-themed investments. |
 | Scheduling boundary | Use Zodiacs to remind me when Mercury goes retrograde. | Explains Zodiacs cannot schedule reminders. |

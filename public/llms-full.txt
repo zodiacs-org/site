@@ -192,7 +192,7 @@ Archived rc.1 typed API reference (earlier candidate), superseded by the 1.1.0-r
 
 Licensing chain: the engine uses MIT-licensed Astronomy Engine and explicitly excludes Swiss Ephemeris code. `@zodiacs/engine/geo` contains adapters, not a bundled place database. The package's licence expression is MIT AND CC-BY-4.0: its code is MIT, and the 32 ΔT values from Stephenson, Morrison and Hohenkerk's Table S15 in its ΔT module are CC BY 4.0. It also carries the IANA time zone history before 1970 and the IERS leap-second list, both public domain, a UT1 − UTC table derived from IERS series, and catalogue values for the stars of the Vedic ayanamsas; the package `NOTICE` names each source, and `LICENSING.md` gives their terms and three questions about them that are still open. GeoNames-derived place data is CC BY 4.0; downstream users must retain the package `NOTICE`. Before 1970 `@zodiacs/engine/geo` resolves local time on the zone history it ships, which `prepareLocalTime` loads first; from 1970 on the host's IANA/ICU data.
 
-Release status: this revision vendors `@zodiacs/engine@1.1.0-rc.2`, a release candidate that npm does not carry; the digest-checked carrier install is at https://zodiacs.org/developers/engine/. The registry read of 2026-11-04 records 1.0.0, the first stable release, under `latest` and rc.16, an earlier candidate, under `next`. `npm install @zodiacs/engine@1.0.0` installs 1.0.0, which computes the same values, lists no convention ids and refuses the candidate's records as `unsupported_feature`. Verified SLSA provenance binds 1.0.0 to `release.yml`, engine commit `f8992a4c1dfedd9e69c0783e2c185e22580460f7` and release run `38144970198`; `npm audit signatures` verified its attestation again on 2026-11-04. This establishes distribution and provenance, not numerical accuracy or deployed site/MCP adoption.
+Release status: this revision vendors `@zodiacs/engine@1.1.0-rc.2`, a release candidate that npm does not carry; the digest-checked carrier install is at https://zodiacs.org/developers/engine/. The registry read of 2026-11-04 records 1.0.0, the first stable release, under `latest` and rc.16, an earlier candidate, under `next`. `npm install @zodiacs/engine@1.0.0` installs 1.0.0, which computes the same values, lists no convention ids and refuses the candidate's records as `unsupported_feature`. Verified SLSA provenance binds 1.0.0 to `release.yml`, engine commit `f8992a4c1dfedd9e69c0783e2c185e22580460f7` and release run `38144970198`; `npm audit signatures` verified its attestation again on 2026-11-04. This establishes distribution and provenance, not numerical accuracy or deployed site/MCP adoption. Since 16 November 2026 npm's `latest` is 1.1.0; this revision has not moved to it.
 
 Natal chart:
 
@@ -248,6 +248,10 @@ console.log(today.positions, today.aspects);
 ```
 
 Keep birth inputs in the browser. The package does not send them anywhere, so an app that only needs a calculation needs no server for it. An app that does send birth details to a server, this site's compute API included, should tell the person first and send them only in a request body, never in a URL. The core package accepts UTC rather than inventing an unknown birth instant: an integrating app should choose and disclose its reference instant, pass `timeKnown: false`, and treat all returned body degrees as reference positions. Angles and houses remain absent and the chart returns `no-time`. The Zodiacs.org site specifically resolves 12:00 local civil time for this case and marks the Moon's sign as unverified.
+
+### Hosted MCP connector
+
+The hosted connector at `https://zodiacs.org/mcp` is a remote MCP server over Streamable HTTP for any assistant that accepts remote MCP connections. It needs no sign-in and no API key, and its tools are read-only: birth charts, compatibility, Sun-sign horoscopes, personal transits and sky events. It is listed in the official MCP Registry as `io.github.zodiacs-org/zodiacs`. Connection steps and example questions: https://zodiacs.org/developers/ai/
 
 ### Local MCP server
 
@@ -309,7 +313,7 @@ The required sandbox is `allow-scripts allow-forms allow-same-origin allow-popup
 
 ## Developer quickstarts and recipes
 
-These guides describe the version named on the engine page, `@zodiacs/engine` 1.1.0-rc.2, a release candidate that npm does not carry; npm publishes 1.0.0, which computes the same values, under `latest`. Hosted recipes disclose their HTTP boundary. Each page has a Markdown twin.
+These guides describe the version named on the engine page, `@zodiacs/engine` 1.1.0-rc.2, a release candidate that npm does not carry; npm carries 1.0.0, which computes the same values, and since 16 November 2026 1.1.0 under `latest`. Hosted recipes disclose their HTTP boundary. Each page has a Markdown twin.
 
 - Guide index: https://zodiacs.org/developers/docs/
 - Guide index as Markdown: https://zodiacs.org/developers/docs/index.md

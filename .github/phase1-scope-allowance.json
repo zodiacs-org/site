@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "spanish-learn-articles-batch1-2026-11-15",
-  "baseCommit": "3f06c2bbdc963924b8b31db57adcc0b6bb10d916",
+  "baseCommit": "76a0d3875eb9f49d12f0a1ae271beffe496c4f0b",
   "protectedPaths": [
     "src/lib/i18n/index.ts",
     "src/pages/es/[...slug].astro",
