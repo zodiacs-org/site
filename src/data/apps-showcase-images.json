@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-09T08:53:37.189Z",
+  "capturedAt": "2026-11-16T16:43:27.930Z",
   "syntheticExamples": true,
   "source": "https://zodiacs.org/mcp",
   "images": [
@@ -8,8 +8,8 @@
       "file": "comparison.webp",
       "width": 750,
       "height": 1984,
-      "bytes": 135972,
-      "sha256": "9879306b86e65e3beeb94ce5225e7a42d0a8d41a819a49c805ffbfe785f67697",
+      "bytes": 134458,
+      "sha256": "831cf059b25814b3f4f8e282a49ea46d94d0b18eac95ae07a33c1b91cbb92041",
       "resourceUri": "ui://zodiacs/occasions-v8.html",
       "htmlSha256": "697936e02db78acbccd2ccdf8697cc13c9624f8b253ca16e81908313c9f0c531",
       "synthetic": true,
@@ -19,15 +19,15 @@
         "file": "comparison-preview.webp",
         "width": 1074,
         "height": 1343,
-        "bytes": 91984,
-        "sha256": "2ea2b2ef639e90188bf51789e0c3166072885b9775ccf9c7e798a7012a5ad7b6"
+        "bytes": 91944,
+        "sha256": "f480c800376c3d69d1507fd60c801b4394f6c3c7424aa18f761937361a0812da"
       },
       "hero": {
         "file": "comparison-hero.webp",
         "width": 908,
         "height": 907,
-        "bytes": 67140,
-        "sha256": "e95e4ac455ba7763ed1e574e2b90375d91930db60b0b96402b4b610f8f818cd3"
+        "bytes": 67048,
+        "sha256": "be2e23da6b419dcc470c555819aad9c1690cace22ff3f40ea0a0eed72a002a8c"
       }
     },
     {
@@ -35,8 +35,8 @@
       "file": "wedding.webp",
       "width": 750,
       "height": 2030,
-      "bytes": 153666,
-      "sha256": "0f69d9259844cd2e2a503568510af538449f7d9af54ccaf0a1f6b49b4b56fe7d",
+      "bytes": 156124,
+      "sha256": "fe7583393a196a728598b4e3de236d7988730a6bd5f513658ee32abb1636b876",
       "resourceUri": "ui://zodiacs/occasions-v8.html",
       "htmlSha256": "697936e02db78acbccd2ccdf8697cc13c9624f8b253ca16e81908313c9f0c531",
       "synthetic": true,
@@ -46,8 +46,8 @@
         "file": "wedding-preview.webp",
         "width": 1144,
         "height": 1431,
-        "bytes": 111978,
-        "sha256": "11e2c9d80d5414330aeab92905d0473d5954344e09b4cac5e275259342b307d1"
+        "bytes": 114098,
+        "sha256": "68d54410a280687336bd1948c0718dd61acd1191307fac26fa88fe3ec757c01c"
       }
     },
     {
@@ -55,8 +55,8 @@
       "file": "chart.webp",
       "width": 1600,
       "height": 2683,
-      "bytes": 186748,
-      "sha256": "c17612d2006f67446516f64a6597334d6f6d05b9480d9679952c47b5ae103310",
+      "bytes": 181186,
+      "sha256": "6bb85f4098c5aac300505165c7bb6c44b9cf134ab45056e8031127aa3765afd6",
       "resourceUri": "ui://zodiacs/chart-studio-v6.html",
       "htmlSha256": "9fef51b4c35b7b9dd9a8b78a654fa222812b5805c5351406ea81d1fb3087d899",
       "synthetic": true,
@@ -66,19 +66,19 @@
         "file": "chart-preview.webp",
         "width": 1200,
         "height": 1501,
-        "bytes": 81586,
-        "sha256": "3a2ba6af05fa1a0cdbd23c89752f7ee27373e2f52226e07f26e5b6b4a2ddc7a5"
+        "bytes": 79112,
+        "sha256": "a3cac0cb551de0bad2f82e5284a8e3253f5414aa2c67f927061c818a70d67f5f"
       }
     },
     {
       "name": "horoscope",
       "file": "horoscope.webp",
       "width": 750,
-      "height": 2942,
-      "bytes": 188644,
-      "sha256": "1c39a076e483b2daee5fb1afe62c2a9c19d1833384f86cd89149cf12f3b7f38c",
+      "height": 2886,
+      "bytes": 182824,
+      "sha256": "e72edacb3ba5e5dcb5a58e2b5b6db9ccf6477c89ee9c5a26012de68d2012afb9",
       "resourceUri": "ui://zodiacs/horoscopes-v6.html",
-      "htmlSha256": "567dc7beec110af087b75107f611c513cdf73b8a910226b83c8d3bab95743458",
+      "htmlSha256": "41c785286b5a8e9979dddfedfc9d559427996ae8ad6a11e828224c203b3dc5cc",
       "synthetic": true,
       "noBrowserErrors": true,
       "noOverflow": true,
@@ -86,8 +86,8 @@
         "file": "horoscope-preview.webp",
         "width": 1096,
         "height": 1369,
-        "bytes": 77816,
-        "sha256": "7a09be52765f8700c5a3ca8a7a2d48dcc5d3b4f8ce62b6e2b2b73e18e97c3676"
+        "bytes": 78216,
+        "sha256": "2b16a42e7c10395778c3da5531bcd58dc2820c2189acd3dc3860b7a760687b6e"
       }
     }
   ]

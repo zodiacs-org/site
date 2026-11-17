@@ -5,7 +5,8 @@
  * Written for Zodiacs, in the register of numerology-meanings.ts: what the
  * tradition associates with a number in that position, as a prompt for
  * the tradition's reading. Numerology is a separate tradition from astrology.
- * Work, money and wellbeing appear where the tradition reads them; there are no
+ * Work and wellbeing appear where the tradition reads them; there is no money,
+ * earnings or promotion language (everyday readings stay off money), no
  * price or investment calls, diagnoses, death predictions or legal verdicts,
  * and no dashes (src/ai-tools/features/numerology.test.ts).
  */
@@ -22,7 +23,7 @@ export const POSITION_READINGS: Readonly<Record<ReadingPosition, Readonly<Record
     5: 'As a Life Path, 5 reads as a road of movement and variety. Change teaches you more than routine does, and the lesson is choosing your commitments freely rather than escaping them.',
     6: 'As a Life Path, 6 reads as a road of responsibility: home, community and the people who rely on you. The lesson that keeps returning is care without control, and taking your own rest and wellbeing as seriously as everyone else\'s.',
     7: 'As a Life Path, 7 reads as a road of study and questions. You trust what you have examined for yourself, and the lesson is letting that understanding take in people as well as ideas.',
-    8: 'As a Life Path, 8 reads as a road of authority and results: organising, leading, and a strong head for money and business. The tradition counts it among the best numbers for earning and building, and the recurring lesson is judging a life by more than what it earned.',
+    8: 'As a Life Path, 8 reads as a road of authority and results: organising, leading, and a head for running things at scale. The tradition counts it among the strongest numbers for building, and the recurring lesson is judging a life by more than what it achieved.',
     9: 'As a Life Path, 9 reads as a road toward the wide view: generosity, causes and finishing things well. The lesson is letting go gracefully, and giving to the people nearest you as well as to the many.',
     11: 'As a Life Path, 11 reads as a road of insight. You pick up what others miss and are drawn to inspire them; the tradition says the work is grounding that sensitivity in plain, everyday steps. On ordinary days it lives as a 2.',
     22: 'As a Life Path, 22 reads as a road of large, practical vision: turning a big idea into something that lasts and that other people can use. The tradition says it asks for patience with scale. On ordinary days it lives as a 4.',
@@ -32,11 +33,11 @@ export const POSITION_READINGS: Readonly<Record<ReadingPosition, Readonly<Record
     1: 'As an Expression number, 1 points to a gift for initiative. You tend to work best when you can set the direction, and careers where you lead or work for yourself suit it well.',
     2: 'As an Expression number, 2 points to a gift for collaboration: mediating, refining an idea someone else started, and noticing the detail that makes a joint effort hold together.',
     3: 'As an Expression number, 3 points to a gift for communication: writing, speaking, performing or teaching, anything that turns an idea into something people enjoy hearing.',
-    4: 'As an Expression number, 4 points to a gift for method: organising, building and finishing. You tend to be the one who turns a rough plan into a schedule that works, and the tradition reads it as a steady earner in any trade.',
+    4: 'As an Expression number, 4 points to a gift for method: organising, building and finishing. You tend to be the one who turns a rough plan into a schedule that works, and the tradition reads it as dependable in any trade.',
     5: 'As an Expression number, 5 points to a gift for adaptability: learning quickly, persuading, and handling the unexpected well. Variety in the work tends to bring out your best.',
     6: 'As an Expression number, 6 points to a gift for care and fairness: teaching, hosting, advising, and making a place feel looked after.',
     7: 'As an Expression number, 7 points to a gift for analysis: research, close reading, and solving the problem other people stopped looking at.',
-    8: 'As an Expression number, 8 points to a gift for organisation at scale: running people, projects and budgets, and seeing a plan through to its end. The tradition ties it to business, management and handling money well.',
+    8: 'As an Expression number, 8 points to a gift for organisation at scale: running people and projects, and seeing a plan through to its end. The tradition ties it to leadership, management and carrying large responsibilities.',
     9: 'As an Expression number, 9 points to a gift for the broad view: understanding many kinds of people, and work that serves a purpose larger than yourself.',
     11: "As an Expression number, 11 points to a gift for inspiration: ideas that arrive whole, and a way of explaining them that moves people. It carries the 2's tact as well.",
     22: "As an Expression number, 22 points to a gift for building on a large scale, pairing a wide vision with the patience to organise the details. It carries the 4's method as well.",
@@ -46,7 +47,7 @@ export const POSITION_READINGS: Readonly<Record<ReadingPosition, Readonly<Record
     1: 'As a Soul Urge, 1 reads as a private wish for independence: to be trusted with your own choices, and to make something that is recognisably yours.',
     2: 'As a Soul Urge, 2 reads as a private wish for closeness and calm, a partnership where you are understood without having to explain everything.',
     3: 'As a Soul Urge, 3 reads as a private wish to be heard and to create: room to play, to make things, and to share what delights you.',
-    4: 'As a Soul Urge, 4 reads as a private wish for steadiness: a settled home, a routine you like, savings you can count on, and work you can trust to hold.',
+    4: 'As a Soul Urge, 4 reads as a private wish for steadiness: a settled home, a routine you like, security you can count on, and work you can trust to hold.',
     5: 'As a Soul Urge, 5 reads as a private wish for freedom: new experiences, room to move, and a life that does not repeat itself.',
     6: 'As a Soul Urge, 6 reads as a private wish to be needed and to make a warm place for other people. Harmony at home matters a great deal.',
     7: 'As a Soul Urge, 7 reads as a private wish for understanding: quiet, time to think, and answers that hold up when you look at them closely.',

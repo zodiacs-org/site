@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { createAiNodeHandler } from './http';
 import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES, WITHDRAWN_OCCASION_REFUSAL } from './contracts';
 import { executeAiTool } from './tools';
-import { as065, asPanelV7, asPlainDescription, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS } from './published-tools';
+import { as065, asPanelV7, asPlainDescription, asZod64, descriptionWithoutZod64, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, withoutZod64, ZOD_64_SENTENCES } from './published-tools';
 import { EXPLAIN_TOPICS } from './features/explain';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac';
 import { SIGNS } from '../lib/signs';
@@ -34,6 +34,9 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * description fields change (src/ai-tools/published-tools.ts pins each in full); every name, title, schema,
  * annotation and _meta comes back as published except get_horoscope's panel address (horoscopes-v7, which keeps a
  * panel for a birth date under 18 softened after a sign switch), and the thirteen keep their names and input schemas byte for byte.
+ * ZOD-64, still 0.6.7, approved by Dias on 2026-11-17, changes the Neptune time quoted in get_upcoming_events'
+ * description from 14:31:41 to 14:32 UTC, as the event list now shows it (check_sky_fact still gives 14:31:41 and
+ * keeps its sentence). That description is the only published change: nothing else in the thirteen moves.
  */
 const root = new URL('../../', import.meta.url);
 const PUBLISHED = PUBLISHED_TOOLS;
@@ -131,12 +134,37 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
       const after = asPlainDescription(before).tool;
       expect(JSON.stringify({ ...after, description: before.description }), String(tool.name)).toBe(JSON.stringify(before));
     }
-    // The server lists exactly the pinned text, and the source of truth it lists from holds the same.
+    // The server lists exactly the pinned text, with ZOD-64's minute time, and the source of truth it lists from holds the same.
     const listed = (await rpc('tools/list', {})).result.tools as { name: string; description: string }[];
     for (const [name, description] of Object.entries(PLAIN_DESCRIPTIONS)) {
-      expect(listed.find(tool => tool.name === name)?.description, name).toBe(description);
-      expect(TOOL_DESCRIPTIONS[name as keyof typeof TOOL_DESCRIPTIONS], name).toBe(description);
+      expect(descriptionWithoutZod64(name, listed.find(tool => tool.name === name)!.description), name).toBe(description);
+      expect(descriptionWithoutZod64(name, TOOL_DESCRIPTIONS[name as keyof typeof TOOL_DESCRIPTIONS]), name).toBe(description);
     }
+  });
+
+  it('changes only the quoted Neptune time in get_upcoming_events\' description (ZOD-64)', async () => {
+    const before = LIVE_TOOLS.map(tool => asPanelV7(asPlainDescription(as065(tool).tool).tool).tool);
+    // The only published path that moves is get_upcoming_events' description.
+    expect(before.flatMap(tool => asZod64(tool).changed)).toEqual(['get_upcoming_events.description']);
+    expect(Object.keys(ZOD_64_SENTENCES)).toEqual(['get_upcoming_events']);
+    for (const [index, tool] of PUBLISHED_TOOLS.entries()) {
+      const name = String(tool.name);
+      if (name === 'get_upcoming_events') expect(JSON.stringify({ ...tool, description: before[index].description }), name).toBe(JSON.stringify(before[index]));
+      else expect(JSON.stringify(tool), name).toBe(JSON.stringify(before[index]));
+      expect(JSON.stringify(withoutZod64(tool)), name).toBe(JSON.stringify(before[index]));
+    }
+    // The description changes only 14:31:41 to 14:32, once; check_sky_fact, which still gives 14:31:41, keeps it.
+    const [[was, now]] = ZOD_64_SENTENCES.get_upcoming_events;
+    expect(now).toBe(was.replace('14:31:41 UTC', '14:32 UTC'));
+    const events = PUBLISHED_TOOLS.find(tool => tool.name === 'get_upcoming_events')!.description as string;
+    expect(events).toBe((before.find(tool => tool.name === 'get_upcoming_events')!.description as string).replace(was, now));
+    expect(events).toContain('it gives 14:32 UTC, where Horizons gives 17:35 UTC.');
+    expect(events).not.toContain('14:31:41');
+    expect(PUBLISHED_TOOLS.find(tool => tool.name === 'check_sky_fact')!.description).toContain('it gives 14:31:41 UTC for Neptune entering Aries on 26 January 2026');
+    // The server lists exactly this, and the source of truth it lists from holds the same.
+    const listed = (await rpc('tools/list', {})).result.tools as Record<string, unknown>[];
+    expect(JSON.stringify(listed.slice(0, 13))).toBe(JSON.stringify(PUBLISHED_TOOLS));
+    expect(TOOL_DESCRIPTIONS.get_upcoming_events).toBe(events);
   });
 
   it('states what each tool does and its limits, with no order to the assistant, no offer of a schedule and no dash', async () => {

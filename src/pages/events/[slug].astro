@@ -7,13 +7,14 @@
  */
 import EventPageLayout from '../../components/events/EventPageLayout.astro';
 import { eventsCatalog } from '../../lib/events/catalog';
+import { pageEvent } from '../../lib/events/page-event';
 
 export async function getStaticPaths() {
   return eventsCatalog().pages
     .filter((event) => event.facts.family === 'ingress' || event.facts.family === 'aspect')
     .map((event) => ({
       params: { slug: event.facts.id },
-      props: { event },
+      props: { event: pageEvent(event) },
     }));
 }
 
