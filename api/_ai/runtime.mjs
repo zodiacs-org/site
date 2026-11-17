@@ -41836,8 +41836,8 @@ var momentChartInput = z15.strictObject({
   date: z15.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe("Instead of instant: the date on the local clock at the place, such as 2026-11-17, with time and zone."),
   time: z15.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("With date: the time on the local clock, such as 21:15."),
   zone: z15.string().min(1).max(64).regex(ZONE_PATTERN12).optional().describe("The place's time zone, such as Asia/Bangkok. Needed with date and time; otherwise it only sets the clock the answer is shown on."),
-  latitude: z15.number().min(-90).max(90).describe("The place's latitude, for the rising sign and the houses. Nothing is stored."),
-  longitude: z15.number().min(-180).max(180).describe("The place's longitude, with latitude. Nothing is stored."),
+  latitude: z15.number().min(-90).max(90).describe("The place's latitude, for the rising sign and the houses."),
+  longitude: z15.number().min(-180).max(180).describe("The place's longitude, with latitude."),
   houseSystem: z15.enum(NATAL_HOUSE_SYSTEMS).optional().describe("Optional: whole-sign (the default) or placidus. Placidus cannot be drawn from about 66.6 degrees latitude north or south; there the chart uses whole-sign houses and houseNote says so.")
 }).superRefine((args, context) => {
   if (args.instant !== void 0 && (args.date !== void 0 || args.time !== void 0)) context.addIssue({ code: "custom", message: "Give either instant, or date and time with zone, not both." });

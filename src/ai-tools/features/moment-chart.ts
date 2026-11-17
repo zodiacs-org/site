@@ -34,8 +34,8 @@ export const momentChartInput = z.strictObject({
   date: z.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe('Instead of instant: the date on the local clock at the place, such as 2026-11-17, with time and zone.'),
   time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe('With date: the time on the local clock, such as 21:15.'),
   zone: z.string().min(1).max(64).regex(ZONE_PATTERN).optional().describe("The place's time zone, such as Asia/Bangkok. Needed with date and time; otherwise it only sets the clock the answer is shown on."),
-  latitude: z.number().min(-90).max(90).describe("The place's latitude, for the rising sign and the houses. Nothing is stored."),
-  longitude: z.number().min(-180).max(180).describe("The place's longitude, with latitude. Nothing is stored."),
+  latitude: z.number().min(-90).max(90).describe("The place's latitude, for the rising sign and the houses."),
+  longitude: z.number().min(-180).max(180).describe("The place's longitude, with latitude."),
   houseSystem: z.enum(NATAL_HOUSE_SYSTEMS).optional().describe('Optional: whole-sign (the default) or placidus. Placidus cannot be drawn from about 66.6 degrees latitude north or south; there the chart uses whole-sign houses and houseNote says so.'),
 }).superRefine((args, context) => {
   if (args.instant !== undefined && (args.date !== undefined || args.time !== undefined)) context.addIssue({ code: 'custom', message: 'Give either instant, or date and time with zone, not both.' });
