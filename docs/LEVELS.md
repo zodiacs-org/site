@@ -8,9 +8,9 @@ HTML, so search engines and readers without JavaScript see every depth.
 
 | Level | Who it is for | What opens |
 | --- | --- | --- |
-| Beginner | "I'm new to it" | Plain words, the key parts first, a "What this means for you" line, tap any term for a one line definition |
-| Intermediate | "I know my big three" | Houses, aspects and transits |
-| Advanced | "I read charts myself" | Exact degrees, the 3D view, the receipt and data links |
+| Beginner | "I'm new to it" | The big three and the wheel with signs and planets, each reading under a "What this means for you" line |
+| Intermediate | "I know my big three" | Houses, aspect lines, the chart lenses (sky now, progressed, year ahead), patterns and context |
+| Advanced | "I read charts myself" | The 3D view, the exact positions table, the receipt and data links |
 
 Beginner is the default. The choice lives in this browser only
 (`localStorage` key `zodiacs-level`), never in a link and never on a server.
@@ -37,8 +37,15 @@ Beginner is the default. The choice lives in this browser only
 - No layout shift: the saved level and the first visit question are both
   decided by the inline script before paint. Never unhide anything from a
   bundled script on load.
-- Depth that opens later rises in through the shared motion module
-  (`docs/MOTION.md`), once, and reduced motion shows it at once.
+- Depth that opens on a switch fades in once, outermost blocks only, 80ms
+  apart. It does not rise, because readings stay still (`docs/MOTION.md`), and
+  reduced motion shows it at once.
+- The status line under the switch fills only when the reader changes level,
+  so it never moves the page on load and screen readers hear it only then.
+- Off the natal chart the lens rail shows at every level, because it is the
+  only way back to the natal wheel.
+- Moving down to Beginner and back up gives the reader back their own house
+  and aspect settings. A shared `?sel=` link keeps what it points at drawn.
 - New English copy lives in `.astro` pages or CSS, not in islands, so
   localized pages are untouched.
 - Copy follows the voice guide: plain words, no dashes.

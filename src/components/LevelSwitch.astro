@@ -23,7 +23,7 @@ const { idPrefix = 'level' } = Astro.props;
 const options = [
   { level: 'beginner', label: 'Beginner', answer: "I'm new to it", hint: 'Plain words, the key parts first' },
   { level: 'intermediate', label: 'Intermediate', answer: 'I know my big three', hint: 'Houses, aspects and transits open' },
-  { level: 'advanced', label: 'Advanced', answer: 'I read charts myself', hint: 'Exact degrees, the 3D view and data' },
+  { level: 'advanced', label: 'Advanced', answer: 'I read charts myself', hint: 'Exact positions, the 3D view and data' },
 ];
 ---
 <script is:inline>
@@ -74,7 +74,7 @@ const options = [
   const STATUS: Record<Level, string> = {
     beginner: 'Showing plain words and the key parts first.',
     intermediate: 'Showing houses, aspects and transits too.',
-    advanced: 'Showing everything, down to exact degrees.',
+    advanced: 'Showing everything, down to exact positions.',
   };
   const MARKED = '[data-depth], [data-depth-only]';
 
@@ -84,40 +84,52 @@ const options = [
   };
   const shown = (el: Element) => el.getClientRects().length > 0;
 
-  function apply(level: Level, opts: { save?: boolean; reveal?: boolean } = {}) {
+  // `initial` applies the level the page already shows: nothing is saved,
+  // announced or animated, and the status line stays empty, so nothing on
+  // the page moves after first paint.
+  function apply(level: Level, opts: { initial?: boolean } = {}) {
     const root = document.documentElement;
     const marked = Array.from(document.querySelectorAll<HTMLElement>(MARKED));
     const before = new Map<Element, boolean>(marked.map((el) => [el, shown(el)]));
     root.setAttribute('data-level', level);
-    if (opts.save !== false) store.set(LEVEL_STORAGE_KEY, level);
+    if (!opts.initial) store.set(LEVEL_STORAGE_KEY, level);
     document.querySelectorAll<HTMLButtonElement>('[data-level-set]').forEach((b) => {
       b.setAttribute('aria-pressed', String(b.dataset.levelSet === level));
     });
-    document.querySelectorAll('[data-level-status]').forEach((s) => { s.textContent = STATUS[level]; });
     window.dispatchEvent(new CustomEvent(LEVEL_EVENT, { detail: { level } }));
-    if (opts.reveal === false) return;
-    // Open the new depth with the shared rise: only the outermost block that
-    // just appeared moves, staggered in reading order.
-    const runtime = (window as unknown as { zodiacsMotion?: { scan(root?: ParentNode): void } }).zodiacsMotion;
-    if (!runtime || root.getAttribute('data-motion') !== 'on') return;
+    if (opts.initial) return;
+    document.querySelectorAll('[data-level-status]').forEach((s) => { s.textContent = STATUS[level]; });
+    // Depth that just opened fades in once, outermost blocks only, in reading
+    // order. It fades without rising, because readings inside stay still
+    // (docs/MOTION.md). Motion is off for reduced motion (html[data-motion]).
+    if (root.getAttribute('data-motion') !== 'on') return;
     let step = 0;
     marked.forEach((el) => {
       if (before.get(el) || !shown(el)) return;
       const parent = el.parentElement?.closest(MARKED);
       if (parent && !before.get(parent)) return;
-      el.classList.remove('is-in', 'is-done');
-      el.setAttribute('data-motion', 'rise');
-      el.style.setProperty('--motion-i', String(Math.min(step++, 8)));
-      runtime.scan(el.parentElement ?? undefined);
+      el.classList.remove('level-open');
+      void el.offsetWidth;
+      el.style.setProperty('--level-i', String(Math.min(step++, 8)));
+      el.classList.add('level-open');
+      el.addEventListener('animationend', () => el.classList.remove('level-open'), { once: true });
     });
   }
 
   function init() {
     const current = pageLevel() ?? DEFAULT_LEVEL;
-    apply(current, { save: false, reveal: false });
+    apply(current, { initial: true });
+    // Closing the question hides the button that has focus, so focus moves to
+    // the switch button for the level now shown.
     const closeAsk = () => {
+      const root = document.documentElement;
+      if (!root.hasAttribute('data-level-ask')) return;
+      const inside = document.activeElement?.closest('[data-level-ask]');
       store.set(LEVEL_ASKED_KEY, '1');
-      document.documentElement.removeAttribute('data-level-ask');
+      root.removeAttribute('data-level-ask');
+      if (inside) {
+        document.querySelector<HTMLButtonElement>(`[data-level-set="${pageLevel() ?? DEFAULT_LEVEL}"]`)?.focus();
+      }
     };
     document.querySelectorAll<HTMLButtonElement>('[data-level-set]').forEach((b) => {
       b.addEventListener('click', () => {
@@ -126,7 +138,7 @@ const options = [
     });
     document.querySelectorAll<HTMLButtonElement>('[data-level-pick]').forEach((b) => {
       b.addEventListener('click', () => {
-        if (isLevel(b.dataset.levelPick)) { closeAsk(); apply(b.dataset.levelPick); }
+        if (isLevel(b.dataset.levelPick)) { apply(b.dataset.levelPick); closeAsk(); }
       });
     });
     document.querySelector('[data-level-skip]')?.addEventListener('click', closeAsk);

@@ -71,4 +71,20 @@ describe('level rules in the page', () => {
     expect(inline).toContain("setAttribute('data-level-ask', 'open')");
     expect(component).not.toMatch(/ask\.hidden\s*=\s*false/);
   });
+
+  it('leaves the status line empty on load and keeps focus when the question closes', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const component = await readFile(new URL('../components/LevelSwitch.astro', import.meta.url), 'utf8');
+    const apply = component.slice(component.indexOf('function apply('), component.indexOf('function init('));
+    // The status is written only after the initial apply has returned.
+    expect(apply.indexOf('if (opts.initial) return;')).toBeGreaterThan(-1);
+    expect(apply.indexOf('if (opts.initial) return;')).toBeLessThan(apply.indexOf('STATUS[level]'));
+    expect(component).toContain('[data-level-set="${pageLevel() ?? DEFAULT_LEVEL}"]`)?.focus()');
+  });
+
+  it('keeps the way back to the natal chart at every level', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const island = await readFile(new URL('../islands/ChartCalculator.tsx', import.meta.url), 'utf8');
+    expect(island).toContain("class=\"calc__lens-rail\" role=\"group\" aria-label={lensLabels.rail} data-depth={lens === 'natal' ? 'intermediate' : undefined}");
+  });
 });

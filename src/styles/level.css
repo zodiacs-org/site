@@ -14,8 +14,9 @@ html[data-level='advanced'] [data-depth-only='beginner'] {
   display: none !important;
 }
 
-/* Beginner: a plain heading over each big-three reading. */
-html[data-level='beginner'] .three-card__read::before {
+/* Beginner: a plain heading over each big-three reading (not over the
+   uncertain Moon's "needs a birth time" note). */
+html[data-level='beginner'] .three-card:not([data-moon-uncertain]) .three-card__read::before {
   content: 'What this means for you';
   display: block;
   margin-bottom: 4px;
@@ -25,7 +26,17 @@ html[data-level='beginner'] .three-card__read::before {
   text-transform: uppercase;
 }
 
+/* Depth that opens on a switch fades in once, 80ms apart in reading order.
+   It does not rise: the readings inside stay still (docs/MOTION.md). */
+@keyframes level-open { from { opacity: 0; } to { opacity: 1; } }
+html[data-motion='on'] .level-open {
+  animation: level-open var(--motion-rise, 440ms) var(--motion-ease, ease) both;
+  animation-delay: calc(var(--level-i, 0) * 80ms);
+}
+
 /* ── The switch ─────────────────────────────────────────────────── */
+/* It works only with JavaScript, which sets html[data-level] before paint. */
+html:not([data-level]) .level-switch { display: none; }
 .level-switch {
   display: flex;
   flex-wrap: wrap;
@@ -58,6 +69,10 @@ html[data-level='beginner'] .three-card__read::before {
   transition: background-color 240ms var(--motion-ease, ease), color 240ms var(--motion-ease, ease);
 }
 .level-switch__btn:hover { color: var(--text); }
+/* The pressed look follows the level from first paint, before the script runs. */
+html[data-level='beginner'] .level-switch__btn[data-level-set='beginner'],
+html[data-level='intermediate'] .level-switch__btn[data-level-set='intermediate'],
+html[data-level='advanced'] .level-switch__btn[data-level-set='advanced'],
 .level-switch__btn[aria-pressed='true'] {
   background: var(--void-3);
   color: var(--text);

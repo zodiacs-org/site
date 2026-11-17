@@ -619,18 +619,27 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   // Reader levels (docs/LEVELS.md): on a page with the level switch, the
   // Beginner wheel keeps to signs and planets; houses and aspect lines come
   // back from Intermediate up. Pages without levels never see a change.
+  // Moving back up restores what the reader had before, and a shared `?sel=`
+  // link keeps the house or aspect it points at drawn.
   useEffect(() => {
     let previous: string | null = null;
+    let kept: { houses: boolean; aspects: AspectType[] } | null = null;
+    const linked = new URLSearchParams(window.location.search).has('sel');
     return onLevel((level) => {
       if (level === null || level === previous) return;
-      if (level === 'beginner') {
-        setShowHouses(false);
-        setAspectTypes([]);
-      } else if (previous === 'beginner' || previous === null) {
-        setShowHouses(true);
-        setAspectTypes(ALL_ASPECT_TYPES);
-      }
+      const first = previous === null;
       previous = level;
+      if (level === 'beginner') {
+        if (first && linked) return;
+        const saved = { houses: true, aspects: ALL_ASPECT_TYPES };
+        setShowHouses((value) => { if (!first) saved.houses = value; return false; });
+        setAspectTypes((value) => { if (!first) saved.aspects = value; return []; });
+        kept = saved;
+      } else if (kept) {
+        setShowHouses(kept.houses);
+        setAspectTypes(kept.aspects);
+        kept = null;
+      }
     });
   }, []);
   const [detailOpen, setDetailOpen] = useState(false);
@@ -2415,7 +2424,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                         )}
                       </div>
                       {!tourOpen && (
-                        <div class="calc__lens-rail" role="group" aria-label={lensLabels.rail} data-depth="intermediate">
+                        <div class="calc__lens-rail" role="group" aria-label={lensLabels.rail} data-depth={lens === 'natal' ? 'intermediate' : undefined}>
                           {(['natal', 'sky', 'progressed', 'return'] as const).map((id) => (
                             <button
                               key={id}
