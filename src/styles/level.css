@@ -29,7 +29,7 @@ html[data-level='beginner'] .three-card:not([data-moon-uncertain]) .three-card__
 /* Depth that opens on a switch fades in once, 80ms apart in reading order.
    It does not rise: the readings inside stay still (docs/MOTION.md). */
 @keyframes level-open { from { opacity: 0; } to { opacity: 1; } }
-html[data-motion='on'] .level-open {
+html[data-entrance='on'] .level-open {
   animation: level-open var(--motion-rise, 440ms) var(--motion-ease, ease) both;
   animation-delay: calc(var(--level-i, 0) * 80ms);
 }

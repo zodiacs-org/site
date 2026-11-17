@@ -21,10 +21,10 @@ export function motionScan(root?: ParentNode): void {
 }
 
 /**
- * Spread onto an element: {...motion('rise')}. Elements that come into view
+ * Spread onto an element in JSX: {...motion('rise')}. Elements that come into view
  * together are staggered in document order by the runtime; set --motion-i
  * yourself only to override that order.
  */
-export function motion(verb: MotionVerb): { 'data-motion': MotionVerb } {
-  return { 'data-motion': verb };
+export function motion(verb: MotionVerb): { 'data-enter': MotionVerb } {
+  return { 'data-enter': verb };
 }

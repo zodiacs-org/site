@@ -106,8 +106,8 @@ const options = [
     document.querySelectorAll('[data-level-status]').forEach((s) => { s.textContent = STATUS[level]; });
     // Depth that just opened fades in once, outermost blocks only, in reading
     // order. It fades without rising, because readings inside stay still
-    // (docs/MOTION.md). Motion is off for reduced motion (html[data-motion]).
-    if (root.getAttribute('data-motion') !== 'on') return;
+    // (docs/MOTION.md). Motion is off for reduced motion (html[data-entrance]).
+    if (root.getAttribute('data-entrance') !== 'on') return;
     let step = 0;
     marked.forEach((el) => {
       if (before.get(el) || !shown(el)) return;
