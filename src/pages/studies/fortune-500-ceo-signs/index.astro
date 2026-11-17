@@ -17,7 +17,11 @@ const ranked = [...bars].sort((a, b) => b.count - a.count || a.sign.name.localeC
 const top = ranked[0], second = ranked[1];
 const fewest = ranked.filter((bar) => bar.count === ranked[ranked.length - 1].count);
 const chanceIn100 = Math.round(study.pValue * 100);
-const description = `We looked up the birthdays of the CEOs on Fortune's 2026 list. ${top.sign.name} leads with ${top.count} of ${n}, but a spread like this is what chance alone produces about ${chanceIn100} times in 100.`;
+// A plain string, so the assistant's site context can read it from this source (scripts/build-assistant-context.mjs).
+const description = "We looked up the birthdays of the CEOs on Fortune's 2026 list. Gemini leads with 9 of 66, but a spread like this is what chance alone produces about 72 times in 100.";
+if (top.sign.slug !== 'gemini' || top.count !== 9 || n !== 66 || chanceIn100 !== 72) {
+  throw new Error('fortune-500-ceo-signs: the meta description no longer matches the study data');
+}
 const rows = study.rows.map((row) => ({ ...row, sign: row.sun ? SIGNS.find((sign) => sign.slug === row.sun) ?? null : null }));
 const sources = [
   { label: 'Fortune 500, 2026 announcement', href: study.listSource },
