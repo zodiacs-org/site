@@ -38,17 +38,14 @@ describe('the website sky calendar feed', () => {
   });
 
   it('changes nothing but the station times, the unseen eclipse line and the own-page links', () => {
-    const differs = (a: string, b: string) => {
-      const la = unfold(a).split('\r\n');
-      const lb = unfold(b).split('\r\n');
-      return la.filter((line) => !lb.includes(line));
-    };
-    const changed = differs(siteSkyCalendar('en'), skyCalendar('en'));
+    const bundled = unfold(skyCalendar('en'));
+    const bundledLines = new Set(bundled.split('\r\n'));
+    const changed = unfold(siteSkyCalendar('en')).split('\r\n').filter((line) => !bundledLines.has(line));
     for (const line of changed) expect(line).toMatch(/^(DTSTART|DTEND|DESCRIPTION|URL):/);
     const withoutLinks = changed
       .filter((line) => line.startsWith('DESCRIPTION:'))
       .map((line) => line.replace(/ https:\/\/zodiacs\.org\/\S+$/, ''))
-      .filter((line) => !unfold(skyCalendar('en')).includes(line));
+      .filter((line) => !bundled.includes(line));
     expect(withoutLinks).toEqual([
       expect.stringContaining('So slight that no eye or camera will see it: NASA gives a penumbral magnitude of 0.0014.'),
     ]);
