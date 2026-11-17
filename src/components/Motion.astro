@@ -121,7 +121,7 @@ import '../styles/motion.css';
         // The parser is still adding elements. Pick them up as they arrive, so
         // marks at the top of the page do not wait for the whole document and
         // its deferred scripts.
-        var poll = window.setInterval(function () { scan(); }, 100);
+        var poll = window.setInterval(function () { scan(); }, 50);
         document.addEventListener('DOMContentLoaded', function () {
           window.clearInterval(poll);
           scan();
