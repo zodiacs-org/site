@@ -2,7 +2,6 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../../components/ArtFrame.astro';
-import Motion from '../../components/Motion.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import SignGuideHero from '../../components/SignGuideHero.astro';
 import SignGuideFacts from '../../components/SignGuideFacts.astro';
@@ -188,9 +187,8 @@ const jsonLd = [
             <div class="guide-history__prose">
               {lore.paragraphs.map((p) => <p>{plainDashes(p)}</p>)}
             </div>
-            <Motion />
             <div class="guide-history__figs">
-              <figure class="guide-history__fig" data-enter="rise">
+              <figure class="guide-history__fig">
                 <ArtFrame
                   sign={sign.slug}
                   class="guide-history__detail"
@@ -200,7 +198,7 @@ const jsonLd = [
                 />
                 <figcaption>{figure}, as the Zodiacs sign art paints it.</figcaption>
               </figure>
-              <figure class="guide-history__fig guide-history__stars" data-enter="rise">
+              <figure class="guide-history__fig guide-history__stars">
                 <div class="guide-history__frame">
                   <img
                     src={`/assets/constellations/${sign.slug}.svg`}
@@ -253,7 +251,7 @@ const jsonLd = [
 
         <nav class="guide-neighbours" aria-label="Neighbouring signs">
           {[{ s: prev, rel: 'prev', kicker: `Before ${sign.name}`, arrow: '←' }, { s: next, rel: 'next', kicker: `After ${sign.name}`, arrow: '→' }].map(({ s, rel, kicker, arrow }) => (
-            <a class="guide-nb" href={`/${s.slug}/`} rel={rel} style={`--sign:${s.hue}`} data-enter="rise">
+            <a class="guide-nb" href={`/${s.slug}/`} rel={rel} style={`--sign:${s.hue}`}>
               <ArtFrame
                 sign={s.slug}
                 class="guide-nb__art"
