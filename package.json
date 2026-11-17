@@ -19,7 +19,6 @@
     "footer:sync": "node scripts/sync-site-footer-css.mjs",
     "footer:check": "node scripts/sync-site-footer-css.mjs --check && node scripts/check-site-footer-standard.mjs",
     "test": "vitest run",
-    "test:motion:evidence": "node tests/motion-evidence.mjs",
     "test:programmatic-uniqueness": "node scripts/check-programmatic-uniqueness.mjs",
     "legacy:app": "node scripts/build-app.mjs",
     "legacy:signs": "node scripts/build-sign-pages.mjs",
