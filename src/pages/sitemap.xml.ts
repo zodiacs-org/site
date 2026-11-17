@@ -723,6 +723,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
   // the daily edition it was built with, last so this date wins.
   ['/', '2026-11-14'] as const,
+  // The feeds and developer pages list the per-sign and JSON sky-event feeds, 17 November, last so this date wins.
+  ['/feeds/', '2026-11-17'] as const,
+  ['/developers/', '2026-11-17'] as const,
 ]);
 
 function getLastmod(loc: string): string {

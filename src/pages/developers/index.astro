@@ -332,7 +332,12 @@ const jsonLd = [
         today's sky, and a mini birth chart inside a sandboxed iframe. Dated
         editorial is available as RSS:{' '}
         <a href="/feeds/horoscopes.xml" data-hook-event="rss_subscribe" data-hook-feed="horoscopes" data-hook-placement="developers">daily horoscopes</a> and{' '}
-        <a href="/feeds/daily-sky.xml" data-hook-event="rss_subscribe" data-hook-feed="daily_sky" data-hook-placement="developers">the daily sky</a>. The site-wide guide
+        <a href="/feeds/daily-sky.xml" data-hook-event="rss_subscribe" data-hook-feed="daily_sky" data-hook-placement="developers">the daily sky</a>.
+        Every published sky event (new and full Moons, eclipses, stations, slow planet sign changes and exact alignments
+        between slow planets) is a feed too: <a href="/feeds/events.xml" data-hook-event="rss_subscribe" data-hook-feed="events" data-hook-placement="developers">RSS</a>,{' '}
+        <a href="/feeds/events.json">JSON Feed</a> with each event’s UTC instant, signs and page under <code>_zodiacs</code>,
+        one feed per sign at <code>{'/feeds/events/{sign}.xml'}</code> and <code>.json</code>, and a{' '}
+        <a href="/sky-calendar/">calendar to subscribe to</a>. The site-wide guide
         for agents is <a href="/llms.txt">llms.txt</a>.
       </p>
     </div>
