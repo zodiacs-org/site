@@ -1,0 +1,36 @@
+---
+/**
+ * A page's own mark: its tool icon beside the hero heading, arriving once
+ * (docs/MOTION.md). Put it as the first child of the block that holds the
+ * h1. It floats right, so the heading and intro wrap around it and no text
+ * sits under it; the block must clear it at its end (a clearfix ::after)
+ * so the form below does not slide up beside it. 72px on phones, 112px from 760px up. A page may
+ * set --tool-hero-mark-size to use a smaller phone size.
+ */
+import ToolIcon from './ToolIcon.astro';
+import type { ToolIconName } from '../lib/tool-icons';
+
+interface Props {
+  name: ToolIconName;
+}
+
+const { name } = Astro.props;
+---
+<div class="tool-hero-mark" aria-hidden="true" data-enter="disc">
+  <ToolIcon name={name} size={72} inset={false} />
+</div>
+
+<style>
+  .tool-hero-mark {
+    --tool-icon-size: var(--tool-hero-mark-size, 72px);
+    float: right;
+    width: var(--tool-icon-size);
+    height: var(--tool-icon-size);
+    margin: 0 0 6px 14px;
+    line-height: 0;
+    pointer-events: none;
+  }
+  @media (min-width: 760px) {
+    .tool-hero-mark { --tool-icon-size: 112px; margin-left: 24px; }
+  }
+</style>

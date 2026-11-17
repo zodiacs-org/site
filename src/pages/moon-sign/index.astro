@@ -1,5 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Motion from '../../components/Motion.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import ChartCalculator from '../../islands/ChartCalculator';
@@ -55,7 +57,9 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
+    <Motion />
     <div class="tool-hero">
+      <ToolHeroMark name="moon-sign" />
       <h1 class="display">Find your moon sign.</h1>
       <p>
         The <a href="/learn/glossary/#moon">Moon</a> rules how you feel: your inner weather, your comforts, the
@@ -160,4 +164,8 @@ const jsonLd = [
   }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* The tool's mark floats beside the heading (ToolHeroMark). Clear it at the
+     hero's end so the form below never slides up beside it; a clearfix rather
+     than flow-root keeps the heading's margins collapsing as before. */
+  .tool-hero::after { content: ''; display: block; clear: right; }
 </style>

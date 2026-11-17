@@ -1,5 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Motion from '../../components/Motion.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import ReturnToolLinks from '../../components/return-visits/ReturnToolLinks.astro';
 import SaturnReturnCalculator from '../../islands/SaturnReturnCalculator';
@@ -58,7 +60,9 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
+    <Motion />
     <div class="tool-hero">
+      <ToolHeroMark name="saturn-return" />
       <h1 class="display">Find your Saturn return.</h1>
       <p>
         Around age 29, <a href="/learn/glossary/#saturn">Saturn</a> finishes its first lap of your chart and comes
@@ -138,4 +142,8 @@ const jsonLd = [
   }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* The tool's mark floats beside the heading (ToolHeroMark). Clear it at the
+     hero's end so the form below never slides up beside it; a clearfix rather
+     than flow-root keeps the heading's margins collapsing as before. */
+  .tool-hero::after { content: ''; display: block; clear: right; }
 </style>
