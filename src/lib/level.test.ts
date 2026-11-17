@@ -87,6 +87,14 @@ describe('level rules in the page', () => {
     expect(component).toContain('[data-level-set="${pageLevel() ?? DEFAULT_LEVEL}"]`)?.focus()');
   });
 
+  it('adds no mono font to first paint', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const css = (await readFile(new URL('../styles/level.css', import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '');
+    const firstPaint = css.split('}').filter((rule) => /\.level-(switch|ask)/.test(rule.split('{')[0]));
+    expect(firstPaint.length).toBeGreaterThan(0);
+    for (const rule of firstPaint) expect(rule).not.toContain('--font-mono');
+  });
+
   it('keeps the way back to the natal chart at every level', async () => {
     const { readFile } = await import('node:fs/promises');
     const island = await readFile(new URL('../islands/ChartCalculator.tsx', import.meta.url), 'utf8');

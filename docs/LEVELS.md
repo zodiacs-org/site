@@ -41,6 +41,9 @@ Beginner is the default. The choice lives in this browser only
   bundled: entry pages like /birth-chart/ load their page stylesheet after
   first paint, and a late level.css let the question and the switch appear
   unstyled and then jump (a 0.126 layout shift in Lighthouse).
+- Nothing that paints with the hero (the question, the switch) uses the mono
+  font. Mono is not otherwise needed above the fold on chart pages, so it
+  would add a font download to the first load and slow the largest paint.
 - Depth that opens on a switch fades in once, outermost blocks only, 80ms
   apart. It does not rise, because readings stay still (`docs/MOTION.md`), and
   reduced motion shows it at once.
