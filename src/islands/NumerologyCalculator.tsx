@@ -147,7 +147,7 @@ function NumberCard({ position, value, chain = '', summary, meta }: CardProps) {
   const meaning = meaningFor(value);
   const label = POSITION_LABEL[position];
   return (
-    <div class="tile num__tile" data-motion="rise" style={`--sign:${hueFor(value)}`}>
+    <div class="tile num__tile" data-enter="rise" style={`--sign:${hueFor(value)}`}>
       <span class="mono--label num__label">{label}</span>
       <div class="num__figure">
         <span class="display num__number">{value}</span>
@@ -366,7 +366,7 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
 
           {result?.nameEmptied && <p class="notice" role="status">{NAME_EMPTIED_NOTE}</p>}
 
-          <div class="num__lead shell tinted" data-motion="rise" style={`--sign:${hueFor(lifePath.value)}`}>
+          <div class="num__lead shell tinted" data-enter="rise" style={`--sign:${hueFor(lifePath.value)}`}>
             <div class="core tinted num__lead-core">
               <span class="mono--label num__label">Life Path</span>
               <div class="num__figure num__figure--lead">
