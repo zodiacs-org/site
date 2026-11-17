@@ -70,7 +70,7 @@ useEffect(() => { if (result) motionScan(containerRef.current ?? undefined); }, 
 - The attribute is `data-enter`, and the page switch is
   `html[data-entrance]`. `data-motion` belongs to `/thesis/` figures and the
   chart explorer, so it is never used for this.
-- A marked element inside another marked element in the same pass takes its
-  parent's step, so a grid staggers by card, not by part.
+- A marked element inside another marked element takes its parent's step
+  (it inherits `--motion-i`), so a grid staggers by card, not by part.
 - `.reveal` in `src/styles/base.css` stays as it is: the small heading
   entrance on pages that already use it.
