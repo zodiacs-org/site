@@ -1,0 +1,88 @@
+---
+/**
+ * The numerology tool's emblem: the twelve core numbers (1 to 9 and the
+ * master numbers 11, 22 and 33) as pastel discs around a drawn ring, in the
+ * hues the result cards use (NUMBER_HUES). Decorative: every number on it is
+ * also in the page's text, so it is hidden from assistive technology.
+ *
+ * With <Motion /> on the page the rings draw on and the discs arrive one by
+ * one; without it, or with reduced motion, it is simply there.
+ */
+import { LIFE_PATH_NUMBERS } from '../data/numerology-pages';
+import { MASTER_NUMBERS, NUMBER_HUES } from '../data/numerology-meanings';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+const C = 120;
+const R_OUT = 96;
+const R_IN = 70;
+const n2 = (n: number) => Math.round(n * 100) / 100;
+const discs = LIFE_PATH_NUMBERS.map((n, i) => {
+  const a = ((-90 + i * 30) * Math.PI) / 180;
+  const master = MASTER_NUMBERS.includes(n);
+  return {
+    n,
+    x: n2(C + R_OUT * Math.cos(a)),
+    y: n2(C + R_OUT * Math.sin(a)),
+    r: master ? 17 : 15,
+    hue: NUMBER_HUES[n],
+    master,
+  };
+});
+// Nine hairline ticks on the inner ring, one for each single digit.
+const ticks = Array.from({ length: 9 }, (_, i) => {
+  const a = ((-90 + i * 40) * Math.PI) / 180;
+  return `M${n2(C + (R_IN - 5) * Math.cos(a))} ${n2(C + (R_IN - 5) * Math.sin(a))}L${n2(C + (R_IN + 5) * Math.cos(a))} ${n2(C + (R_IN + 5) * Math.sin(a))}`;
+}).join('');
+---
+<svg
+  class:list={['num-emblem', className]}
+  viewBox="0 0 240 240"
+  width="240"
+  height="240"
+  aria-hidden="true"
+  focusable="false"
+>
+  <g data-motion="draw" fill="none" stroke-linecap="round">
+    <circle class="motion-stroke num-emblem__ring" cx={C} cy={C} r={R_OUT} pathLength="1" transform={`rotate(-90 ${C} ${C})`} />
+    <circle class="motion-stroke num-emblem__ring num-emblem__ring--in" cx={C} cy={C} r={R_IN} pathLength="1" transform={`rotate(-90 ${C} ${C})`} style="--motion-delay:120ms" />
+    <path class="motion-stroke num-emblem__ticks" d={ticks} pathLength="1" style="--motion-delay:240ms" />
+  </g>
+  <g class="num-emblem__core" data-motion="disc" style="--motion-delay:300ms">
+    <circle cx={C} cy={C} r="30" />
+    <text x={C} y={C} dy="0.35em" text-anchor="middle">N°</text>
+  </g>
+  {discs.map((d, i) => (
+    <g class="num-emblem__disc" data-motion="disc" style={`--motion-i:${i};--motion-delay:360ms;--hue:${d.hue}`}>
+      <circle cx={d.x} cy={d.y} r={d.r} class:list={[d.master && 'is-master']} />
+      <text x={d.x} y={d.y} dy="0.36em" text-anchor="middle">{d.n}</text>
+    </g>
+  ))}
+</svg>
+
+<style>
+  .num-emblem { display: block; width: 100%; height: auto; overflow: visible; }
+  .num-emblem__ring { stroke: var(--hair-3); stroke-width: 1; }
+  .num-emblem__ring--in { stroke: var(--hair-2); }
+  .num-emblem__ticks { stroke: var(--hair-3); stroke-width: 1; }
+  .num-emblem__core circle { fill: var(--void-2); stroke: var(--hair-2); stroke-width: 1; }
+  .num-emblem__core text {
+    fill: var(--ink-1);
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-style: italic;
+  }
+  .num-emblem__disc circle { fill: var(--hue); }
+  .num-emblem__disc circle.is-master { fill: var(--void-1); stroke: var(--hue); stroke-width: 1.5; }
+  .num-emblem__disc text {
+    fill: var(--void-0);
+    font-family: var(--font-serif);
+    font-size: 15px;
+    font-weight: 500;
+    font-variant-numeric: lining-nums;
+  }
+  .num-emblem__disc circle.is-master + text { fill: var(--hue); font-size: 14px; }
+</style>

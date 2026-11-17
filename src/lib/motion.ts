@@ -1,0 +1,30 @@
+/**
+ * Island-side hook into the shared entrance motion (docs/MOTION.md).
+ *
+ * <Motion /> (src/components/Motion.astro) owns the observer. Islands that
+ * render marked nodes after the page has loaded, such as a calculator's
+ * result, call motionScan(container) once those nodes are in the DOM. On a
+ * page without <Motion />, or for readers who ask for reduced motion, this
+ * does nothing and the nodes simply show.
+ */
+
+export type MotionVerb = 'rise' | 'draw' | 'disc';
+
+interface MotionRuntime {
+  scan(root?: ParentNode): void;
+}
+
+export function motionScan(root?: ParentNode): void {
+  if (typeof window === 'undefined') return;
+  const runtime = (window as unknown as { zodiacsMotion?: MotionRuntime }).zodiacsMotion;
+  runtime?.scan(root);
+}
+
+/**
+ * Spread onto an element: {...motion('rise')}. Inside a data-motion-group
+ * parent the runtime numbers the children for the stagger; set --motion-i
+ * yourself only to override that order.
+ */
+export function motion(verb: MotionVerb): { 'data-motion': MotionVerb } {
+  return { 'data-motion': verb };
+}
