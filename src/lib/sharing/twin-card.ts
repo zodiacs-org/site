@@ -1,9 +1,9 @@
 import { localizePath, t } from '../i18n';
 import type { CatalogLocale } from '../i18n/core';
-import { signBySlug, signName } from '../signs';
+import { SIGNS, signBySlug, signName } from '../signs';
 import { sharingText as s } from './copy';
 import { drawShareBrandLockup, withShareBrandIcon } from '../share-card-brand';
-import type { PreparedChartCard } from '../share-card';
+import type { PreparedChartCard } from '../share-card-save';
 
 /**
  * What the chart twin story card may show: one public figure's name and the
@@ -33,6 +33,20 @@ export function twinCardLines(content: TwinCardContent, locale: CatalogLocale) {
     find: s(locale, 'twinsCardFind', { path: `zodiacs.org${localizePath(locale, '/chart-twins/')}` }),
     privacy: s(locale, 'twinsCardPrivacy'),
   };
+}
+
+/**
+ * All twelve 400px discs in zodiac order: fetching only the ones a card shows
+ * would tell our host the visitor's signs. A disc that fails is drawn as a glyph.
+ */
+async function allDiscs(): Promise<Map<string, Blob | null>> {
+  const entries = await Promise.all(SIGNS.map(async ({ slug }) => {
+    try {
+      const res = await fetch(`/assets/zodiac-icons/400/${slug}.webp`);
+      return [slug, res.ok ? await res.blob() : null] as const;
+    } catch { return [slug, null] as const; }
+  }));
+  return new Map(entries);
 }
 
 export async function prepareTwinCard(content: TwinCardContent, locale: CatalogLocale): Promise<PreparedChartCard> {
@@ -71,8 +85,11 @@ export async function prepareTwinCard(content: TwinCardContent, locale: CatalogL
   text(lines.kicker.toUpperCase(), 540, 190, 30, '#8E96AB', body, 900, 500);
   text(lines.lead, 540, 320, 44, '#C6CCDA');
   text(lines.name, 540, 450, 104, '#EEF1F7', serif);
-  const { loadDisc } = await import('../share-card');
-  const discs = await Promise.all(lines.signs.map((sign) => loadDisc(sign.slug)));
+  const blobs = await allDiscs();
+  const discs = await Promise.all(lines.signs.map(async (sign) => {
+    const blob = blobs.get(sign.slug);
+    try { return blob ? await createImageBitmap(blob) : null; } catch { return null; }
+  }));
   const size = lines.signs.length === 2 ? 300 : 380;
   const centres = lines.signs.length === 2 ? [300, 780] : [540];
   lines.signs.forEach((sign, index) => {

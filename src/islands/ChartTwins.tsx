@@ -11,7 +11,7 @@ import SharingBirthForm from './SharingBirthForm';
 import CalculationReload, { calculationError } from './CalculationReload';
 import type { Chart } from '../lib/engine/types';
 import type * as Trust from './ChartTrust';
-import type { PreparedChartCard } from '../lib/share-card';
+import type { PreparedChartCard } from '../lib/share-card-save';
 
 export default function ChartTwins({ locale = 'en', directory }: { locale?: CatalogLocale; directory: TwinPerson[] }) {
   const engine = useEngine();
@@ -23,12 +23,12 @@ export default function ChartTwins({ locale = 'en', directory }: { locale?: Cata
   const [twinSlug, setTwinSlug] = useState('');
   const [card, setCard] = useState<PreparedChartCard | null>(null);
   const [cardState, setCardState] = useState<'idle' | 'preparing' | 'ready' | 'sharing' | 'shared' | 'saved' | 'failed'>('idle');
-  const cardModule = useRef<typeof import('../lib/share-card') | null>(null);
+  const cardModule = useRef<typeof import('../lib/share-card-save') | null>(null);
   /** The story card names one twin and only the signs the visitor shares with them. */
   async function prepareCard(match: TwinMatch, run: number) {
     setCard(null); setCardState('preparing');
     try {
-      const [mod, saveMod] = await Promise.all([loadModule(() => import('../lib/sharing/twin-card')), loadModule(() => import('../lib/share-card'))]);
+      const [mod, saveMod] = await Promise.all([loadModule(() => import('../lib/sharing/twin-card')), loadModule(() => import('../lib/share-card-save'))]);
       const prepared = await mod.prepareTwinCard({ name: match.person.name, sun: match.sun ? match.person.sun : null, moon: match.moon ? match.person.moon : null }, locale);
       if (run === generation.current) { cardModule.current = saveMod; setCard(prepared); setCardState('ready'); }
     } catch { if (run === generation.current) setCardState('failed'); }
@@ -44,7 +44,7 @@ export default function ChartTwins({ locale = 'en', directory }: { locale?: Cata
     if (!card || !cardModule.current) { if (match) void prepareCard(match, run); return; }
     setCardState('sharing');
     // The card is already rendered; call the native share path during this tap.
-    void cardModule.current.savePreparedChartCard(card).then((outcome) => {
+    void cardModule.current.savePngBlob(card.blob, card.filename).then((outcome) => {
       if (run === generation.current) setCardState(outcome === 'downloaded' ? 'saved' : outcome === 'shared' ? 'shared' : 'ready');
     }, () => { if (run === generation.current) setCardState('failed'); });
   }

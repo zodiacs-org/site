@@ -145,6 +145,10 @@ await withPreview({ port: 8791 }, async (base) => {
         const twinShare = page.locator('[data-twins-share]');
         assert(await page.locator('[data-twins-card-pick] option').count() > 0, 'the story card offers the matched twins');
         await page.waitForFunction(() => document.querySelector('[data-twins-share]') && !document.querySelector('[data-twins-share]').disabled);
+        await twinShare.click();
+        const twinCalls = await page.evaluate(() => window.__shareCalls);
+        assert.equal(twinCalls.at(-1).active, true);
+        assert.equal(twinCalls.at(-1).name, 'zodiacs-chart-twin.png');
         if (width === 390 && engine.name === 'chromium') await downloadedCard(page, twinShare, 'twin-card.png');
         await page.locator('#share-person-1-time').locator('..').getByRole('checkbox').check();
         await page.locator('[data-twins-submit]').click();
