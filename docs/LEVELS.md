@@ -45,7 +45,8 @@ Beginner is the default. The choice lives in this browser only
 - Off the natal chart the lens rail shows at every level, because it is the
   only way back to the natal wheel.
 - Moving down to Beginner and back up gives the reader back their own house
-  and aspect settings. A shared `?sel=` link keeps what it points at drawn.
+  and aspect settings. A shared `?sel=` link to a house or an aspect keeps it
+  drawn.
 - New English copy lives in `.astro` pages or CSS, not in islands, so
   localized pages are untouched.
 - Copy follows the voice guide: plain words, no dashes.

@@ -112,7 +112,12 @@ const options = [
       void el.offsetWidth;
       el.style.setProperty('--level-i', String(Math.min(step++, 8)));
       el.classList.add('level-open');
-      el.addEventListener('animationend', () => el.classList.remove('level-open'), { once: true });
+      const done = (event: AnimationEvent) => {
+        if (event.target !== el) return;
+        el.classList.remove('level-open');
+        el.removeEventListener('animationend', done);
+      };
+      el.addEventListener('animationend', done);
     });
   }
 

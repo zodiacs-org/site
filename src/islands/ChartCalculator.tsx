@@ -624,7 +624,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   useEffect(() => {
     let previous: string | null = null;
     let kept: { houses: boolean; aspects: AspectType[] } | null = null;
-    const linked = new URLSearchParams(window.location.search).has('sel');
+    const linkedKind = parseEntityId(new URLSearchParams(window.location.search).get('sel') ?? '')?.kind;
+    const linked = linkedKind === 'house' || linkedKind === 'aspect';
     return onLevel((level) => {
       if (level === null || level === previous) return;
       const first = previous === null;
@@ -798,6 +799,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     if (next === 'natal') {
       resetLens();
       track('lens_change', { lens: 'natal' });
+      // At Beginner the rail hides again on the natal wheel (docs/LEVELS.md),
+      // taking the focused button with it, so focus goes to the wheel.
+      requestAnimationFrame(() => {
+        if (document.activeElement === document.body) wheelboxRef.current?.focus();
+      });
       return;
     }
     try {
