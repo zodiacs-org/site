@@ -152,6 +152,35 @@ describe('database backup and restore contract', () => {
     }
   });
 
+  it('selects PostgreSQL 17 over a newer runner default for this and later steps', async () => {
+    const workflow = await readFile(resolve(root, '.github/workflows/db-backup.yml'), 'utf8');
+    const selection = workflow.slice(workflow.indexOf('          export PATH="/usr/lib/postgresql/17/bin:'), workflow.indexOf('          gpg --version'));
+    expect(selection).toContain('>> "$GITHUB_PATH"');
+    expect(selection).toContain('for client in pg_dump pg_restore psql; do');
+    const directory = await mkdtemp(resolve(tmpdir(), 'zodiacs-pg17-selection-'));
+    const pinned = resolve(directory, 'pg17');
+    const defaults = resolve(directory, 'default');
+    const githubPath = resolve(directory, 'github-path');
+    await mkdir(pinned);
+    await mkdir(defaults);
+    for (const client of ['pg_dump', 'pg_restore', 'psql']) {
+      for (const [bin, version] of [[pinned, '17.12'], [defaults, '18.6']]) {
+        await writeFile(resolve(bin, client), `#!/bin/sh\necho '${client} (PostgreSQL) ${version}'\n`, { mode: 0o700 });
+      }
+    }
+    const env = { PATH: `${defaults}:/usr/bin:/bin`, GITHUB_PATH: githubPath };
+    const result = spawnSync('/bin/bash', ['-euo', 'pipefail', '-c', selection.replaceAll('/usr/lib/postgresql/17/bin', pinned)], { encoding: 'utf8', env });
+    expect(result.status, result.stderr).toBe(0);
+    expect(result.stdout.match(/17\.12/gu)).toHaveLength(3);
+    expect(result.stdout).not.toContain('18.6');
+    expect(await readFile(githubPath, 'utf8')).toBe(`${pinned}\n`);
+    const nextStep = spawnSync('/bin/bash', ['-c', 'pg_dump --version; pg_restore --version; psql --version'], {
+      encoding: 'utf8', env: { PATH: `${(await readFile(githubPath, 'utf8')).trim()}:${env.PATH}` },
+    });
+    expect(nextStep.status, nextStep.stderr).toBe(0);
+    expect(nextStep.stdout.match(/17\.12/gu)).toHaveLength(3);
+  });
+
   it('rejects weak and multiline backup passphrases before any database access', async () => {
     async function runExporter(passphrase) {
       const directory = await mkdtemp(resolve(tmpdir(), 'zodiacs-backup-passphrase-'));

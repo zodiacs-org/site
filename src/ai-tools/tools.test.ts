@@ -40,7 +40,9 @@ describe('public AI tools', () => {
     expect(result.ok).toBe(true);
     if (result.ok && result.tool === 'get_upcoming_events') {
       expect(result.data.calculation).toEqual(expected);
-      expect(result.data.events.map(({ localAt: _local, ...event }) => event)).toEqual(expected.result.events);
+      // The list gives each time to the minute (clear-time.test.ts); everything else is the calculation's own event.
+      expect(result.data.events.map(({ localAt: _local, at: _at, ...event }) => event)).toEqual(expected.result.events.map(({ at: _exact, ...event }) => event));
+      expect(result.data.events.map((event) => Math.abs(Date.parse(event.at) - Date.parse(expected.result.events[result.data.events.indexOf(event)].at)) <= 30_000)).not.toContain(false);
       expect(result.data.completeness).toBe('tested-not-proven');
     }
   });

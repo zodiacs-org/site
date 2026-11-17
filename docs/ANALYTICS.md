@@ -184,6 +184,43 @@ event. No identifier of any kind is created, and the count is never sent.
 Counts are totals per event and value. None of them follows a visitor from
 one page or one day to the next.
 
+## Retention hook events
+
+**Approved by the owner on 2026-11-15** (11:34 Asia/Bangkok). This change adds
+`rss_subscribe` and gives the existing `calendar_subscribe` and
+`calendar_download` a closed `feed` list, to count the site's three retention
+hooks: the daily horoscope email (already counted by `email_subscribed`), the
+sky calendars and the RSS feeds. The privacy page's analytics paragraph names
+the calendar and RSS feed links in the same change.
+
+| Event | Props and closed values | Fires when |
+| --- | --- | --- |
+| `calendar_subscribe` | `feed`: `sky`, `heads_up`, `eclipses`, `full_moons`, `mercury_retrograde`, `transits` | A visitor follows a webcal: subscribe link to a public calendar |
+| `calendar_download` | `feed`, the same list | A visitor follows a public .ics download link, or downloads the transit contacts file built in the browser (`transits`) |
+| `rss_subscribe` | `feed`: `horoscopes`, `horoscopes_sign`, `daily_sky`, `almanac`, `events`; `placement`: `footer`, `horoscope_page`, `feeds_page`, `developers` | A visitor follows a link to one of the site's RSS feeds |
+
+The calendars named are the same files for every visitor (the sky calendar,
+the heads-up calendar and the 2027 eclipse, full moon and Mercury retrograde
+files). `transits` is only the word for the visitor's own transit file
+(`src/islands/CalendarSubscribe.tsx`): nothing from the file is sent. A single
+sign's horoscope feed counts as `horoscopes_sign`, never by its sign. The
+market research feed is not counted.
+
+The links name their event and values in `data-hook-event`,
+`data-hook-feed` and `data-hook-placement` attributes. One click listener in
+the analytics bootstrap in `src/layouts/Base.astro` reads them and calls
+`zodiacsAnalytics.track`, which drops any event outside
+`ANALYTICS_HOOK_EVENTS` in `src/lib/analytics-config.mjs`, any value off the
+closed lists and any other property. It never reads the link's address and
+does not hold up the navigation. `src/lib/analytics.test.ts` and
+`src/lib/hook-analytics-links.test.ts` hold the lists, the marked links and
+the listener to this contract.
+
+`email_subscribed` still fires only after the sign-up endpoint answers with a
+2xx status (`src/lib/email/capture-enhancement.test.ts`). The double opt-in
+confirmation page is server-rendered, noindex and carries the token, so it
+counts nothing.
+
 ## Existing product vocabulary
 
 The established five-locale product events remain allowlisted for continuity.
@@ -209,7 +246,7 @@ New directive code uses the taxonomy above.
 | `assistant_open`, `assistant_reply` | — | Site assistant |
 | `push_prompt`, `push_subscribe` | — | Flag-gated notification scaffold |
 | `today_view` | — | The today brief renders |
-| `calendar_subscribe` | — | A transit calendar is subscribed |
+| `calendar_subscribe`, `calendar_download` | `feed`, `feed` | A calendar is subscribed to or downloaded; the closed values are under "Retention hook events" |
 | `wing_entry` | `source` | Legacy astrology-to-Registry click taxonomy |
 | `registry_bridge_impression` | `sign`, `surface`, `locale` | An eligible chart, birthday, or sign-guide Registry bridge renders. The birth chart's bridge sends no `sign`: it is the visitor's own Sun sign |
 | `registry_bridge_click` | `sign`, `surface`, `locale` | A visitor follows that Registry bridge; again no `sign` from the birth chart |
