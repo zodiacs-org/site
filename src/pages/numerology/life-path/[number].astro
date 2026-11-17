@@ -116,16 +116,16 @@ const jsonLd = [
           </p>
         </div>
         <svg class="lp-seal" viewBox="0 0 160 160" width="160" height="160" aria-hidden="true" focusable="false">
-          <g data-motion="draw" fill="none" stroke-linecap="round">
+          <g data-enter="draw" fill="none" stroke-linecap="round">
             <circle class="motion-stroke lp-seal__ring" cx="80" cy="80" r="74" pathLength="1" transform="rotate(-90 80 80)" />
             <circle class="motion-stroke lp-seal__ring lp-seal__ring--in" cx="80" cy="80" r="62" pathLength="1" transform="rotate(-90 80 80)" style="--motion-delay:120ms" />
           </g>
-          <g class:list={['lp-seal__disc', isMaster && 'is-master']} data-motion="disc" style="--motion-delay:260ms">
+          <g class:list={['lp-seal__disc', isMaster && 'is-master']} data-enter="disc" style="--motion-delay:260ms">
             <circle cx="80" cy="80" r="48" />
             <text x="80" y="80" dy="0.35em" text-anchor="middle">{number}</text>
           </g>
           {isMaster && (
-            <g class="lp-seal__base" data-motion="disc" style="--motion-delay:420ms">
+            <g class="lp-seal__base" data-enter="disc" style="--motion-delay:420ms">
               <circle cx="132.33" cy="132.33" r="13" />
               <text x="132.33" y="132.33" dy="0.36em" text-anchor="middle">{baseDigit(number)}</text>
             </g>
@@ -134,23 +134,23 @@ const jsonLd = [
       </div>
 
       <dl class="plc-panel mono">
-        <div class="plc-panel__row" data-motion="rise">
+        <div class="plc-panel__row" data-enter="rise">
           <dt>Totals that reduce to {number}</dt>
           <dd>{totalsLine}</dd>
         </div>
-        <div class="plc-panel__row" data-motion="rise">
+        <div class="plc-panel__row" data-enter="rise">
           <dt>Share of birth dates, 1900 to 2099</dt>
           <dd>{share}</dd>
         </div>
-        <div class="plc-panel__row" data-motion="rise">
+        <div class="plc-panel__row" data-enter="rise">
           <dt>Master number</dt>
           <dd>{masterLine}</dd>
         </div>
-        <div class="plc-panel__row" data-motion="rise">
+        <div class="plc-panel__row" data-enter="rise">
           <dt>Next birth dates from {asOf}</dt>
           <dd>{nextDatesLine}</dd>
         </div>
-        <div class="plc-panel__row" data-motion="rise">
+        <div class="plc-panel__row" data-enter="rise">
           <dt>Worked example, <time datetime={exampleDate}>{exampleDateLong}</time></dt>
           <dd>{exampleLine}</dd>
         </div>
@@ -185,7 +185,7 @@ const jsonLd = [
       <div class="section-head"><h2>Asked and answered</h2></div>
       <div class="faq">
         {page.faq.map(({ q, a }) => (
-          <details class="faq__item" data-motion="rise">
+          <details class="faq__item">
             <summary>{q}</summary>
             <p>{a}</p>
           </details>
