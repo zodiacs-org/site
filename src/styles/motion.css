@@ -8,16 +8,17 @@
  *   draw   SVG strokes draw on along their length     (1100ms)
  *   disc   a round mark grows from 60% while fading   (440ms, no overshoot)
  *
- * Opt in with data-motion="rise|draw|disc" on an element. Elements that
+ * Opt in with data-enter="rise|draw|disc" on an element. Elements that
  * come into view together are staggered in document order (--motion-i, set
  * by the runtime, capped at 8 steps); set --motion-i or --motion-delay
  * inline to choreograph by hand.
  * Nothing is hidden unless <Motion /> (src/components/Motion.astro) has set
- * html[data-motion="on"], so pages without it, readers without JavaScript and
+ * html[data-entrance="on"], so pages without it, readers without JavaScript and
  * readers who ask for reduced motion always see everything at once.
  *
  * Only opacity, transform and stroke-dashoffset move: no layout shift, and
- * the hero heading (the usual LCP element) is never marked.
+ * the hero heading (the usual LCP element) is never marked. Keyboard readers
+ * never wait: the runtime shows everything at once on the first Tab.
  */
 
 :root {
@@ -31,57 +32,49 @@
 
 /* Entrance timings apply until the runtime marks the element .is-done, so a
    card's own hover transition is never slowed by its stagger delay. */
-html[data-motion='on'] [data-motion]:not(.is-done) {
+html[data-entrance='on'] [data-enter]:not(.is-done) {
   transition-timing-function: var(--motion-ease);
   transition-delay: calc(var(--motion-i, 0) * var(--motion-step) + var(--motion-delay, 0ms));
 }
 
 /* rise */
-html[data-motion='on'] [data-motion='rise']:not(.is-in) {
+html[data-entrance='on'] [data-enter='rise']:not(.is-in) {
   opacity: 0;
   transform: translate3d(0, var(--motion-lift), 0);
 }
-html[data-motion='on'] [data-motion='rise']:not(.is-done) {
+html[data-entrance='on'] [data-enter='rise']:not(.is-done) {
   transition-property: opacity, transform;
   transition-duration: var(--motion-rise);
 }
 
 /* disc */
-html[data-motion='on'] [data-motion='disc']:not(.is-in) {
+html[data-entrance='on'] [data-enter='disc']:not(.is-in) {
   opacity: 0;
   transform: scale(0.6);
 }
-html[data-motion='on'] [data-motion='disc'] {
+html[data-entrance='on'] [data-enter='disc'] {
   transform-origin: 50% 50%;
   transform-box: fill-box;
 }
-html[data-motion='on'] [data-motion='disc']:not(.is-done) {
+html[data-entrance='on'] [data-enter='disc']:not(.is-done) {
   transition-property: opacity, transform;
   transition-duration: var(--motion-disc);
 }
 
 /* draw: give each stroke pathLength="1" and the class motion-stroke */
-html[data-motion='on'] [data-motion='draw'] .motion-stroke {
+html[data-entrance='on'] [data-enter='draw'] .motion-stroke {
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
   transition: stroke-dashoffset var(--motion-draw) var(--motion-ease);
   transition-delay: calc(var(--motion-i, 0) * var(--motion-step) + var(--motion-delay, 0ms));
 }
-html[data-motion='on'] [data-motion='draw']:not(.is-in) .motion-stroke {
+html[data-entrance='on'] [data-enter='draw']:not(.is-in) .motion-stroke {
   stroke-dashoffset: 1;
 }
 
-/* Keyboard readers never wait on an entrance (as with .reveal in base.css). */
-html[data-motion='on'] body:has(:focus-visible) [data-motion],
-html[data-motion='on'] body:has(:focus-visible) [data-motion] .motion-stroke {
-  opacity: 1;
-  transform: none;
-  stroke-dashoffset: 0;
-}
-
 @media print, (prefers-reduced-motion: reduce) {
-  html[data-motion] [data-motion],
-  html[data-motion] [data-motion] .motion-stroke {
+  html[data-entrance] [data-enter],
+  html[data-entrance] [data-enter] .motion-stroke {
     opacity: 1 !important;
     transform: none !important;
     stroke-dashoffset: 0 !important;

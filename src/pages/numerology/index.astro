@@ -119,7 +119,7 @@ const jsonLd = [
       </p>
 
       <h2>How the numbers are computed</h2>
-      <figure class="num-key" data-motion="rise">
+      <figure class="num-key" data-enter="rise">
         <table>
           <caption>Letter values, Pythagorean system</caption>
           <thead>
@@ -181,9 +181,9 @@ const jsonLd = [
           class:list={['tile num-paths__chip', MASTER_NUMBERS.includes(n) && 'num-paths__chip--master']}
           href={`/numerology/life-path/${n}/`}
           style={`--sign:${NUMBER_HUES[n]}`}
-          data-motion="rise"
+          data-enter="rise"
         >
-          <span class="num-paths__disc" aria-hidden="true" data-motion="disc">{n}</span>
+          <span class="num-paths__disc" aria-hidden="true" data-enter="disc">{n}</span>
           <span class="num-paths__text">
             <span class="num-paths__number">Life Path {n}</span>
             <span class="num-paths__name">{NUMBER_MEANINGS[n].name}</span>
@@ -197,7 +197,7 @@ const jsonLd = [
     <div class="section-head"><h2>Questions, answered</h2></div>
     <div class="faq">
       {faq.map(({ q, a }) => (
-        <details class="faq__item" data-motion="rise">
+        <details class="faq__item">
           <summary>{q}</summary>
           <p>{a}</p>
         </details>
@@ -257,7 +257,7 @@ const jsonLd = [
   .num-paths__chip--master .num-paths__disc { background: var(--void-1); color: var(--sign); box-shadow: inset 0 0 0 1.5px var(--sign); font-size: 16px; }
   .num-paths__text { display: grid; gap: 2px; min-width: 0; }
   .num-paths__number { font-size: var(--text-sm); font-weight: 600; }
-  .num-paths__name { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .num-paths__name { font-size: 12px; line-height: 1.35; color: var(--muted); overflow-wrap: anywhere; text-wrap: balance; }
   .faq { display: grid; gap: 8px; }
   .faq__item {
     border: 1px solid var(--hair-1);

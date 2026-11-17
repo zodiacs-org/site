@@ -46,17 +46,17 @@ const ticks = Array.from({ length: 9 }, (_, i) => {
   aria-hidden="true"
   focusable="false"
 >
-  <g data-motion="draw" fill="none" stroke-linecap="round">
+  <g data-enter="draw" fill="none" stroke-linecap="round">
     <circle class="motion-stroke num-emblem__ring" cx={C} cy={C} r={R_OUT} pathLength="1" transform={`rotate(-90 ${C} ${C})`} />
     <circle class="motion-stroke num-emblem__ring num-emblem__ring--in" cx={C} cy={C} r={R_IN} pathLength="1" transform={`rotate(-90 ${C} ${C})`} style="--motion-delay:120ms" />
     <path class="motion-stroke num-emblem__ticks" d={ticks} pathLength="1" style="--motion-delay:240ms" />
   </g>
-  <g class="num-emblem__core" data-motion="disc" style="--motion-delay:300ms">
+  <g class="num-emblem__core" data-enter="disc" style="--motion-delay:300ms">
     <circle cx={C} cy={C} r="30" />
     <text x={C} y={C} dy="0.35em" text-anchor="middle">N°</text>
   </g>
   {discs.map((d, i) => (
-    <g class="num-emblem__disc" data-motion="disc" style={`--motion-i:${i};--motion-delay:360ms;--hue:${d.hue}`}>
+    <g class="num-emblem__disc" data-enter="disc" style={`--motion-i:${i};--motion-delay:360ms;--hue:${d.hue}`}>
       <circle cx={d.x} cy={d.y} r={d.r} class:list={[d.master && 'is-master']} />
       <text x={d.x} y={d.y} dy="0.36em" text-anchor="middle">{d.n}</text>
     </g>

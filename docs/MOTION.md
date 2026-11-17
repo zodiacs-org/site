@@ -21,7 +21,7 @@ cards, discs, figures and rings around them.
 - `src/styles/motion.css`: the timings (`--motion-*` custom properties) and the
   three verbs.
 - `src/components/Motion.astro`: the runtime. Two small inline scripts: one
-  turns motion on (`html[data-motion="on"]`) before marked elements are parsed,
+  turns motion on (`html[data-entrance="on"]`) before marked elements are parsed,
   the other reveals each one once as it scrolls into view.
 - `src/lib/motion.ts`: `motionScan(root)` for islands that render marked nodes
   later, and `motion(verb)` to spread the attribute in JSX.
@@ -34,11 +34,11 @@ import Motion from '../components/Motion.astro';
 ---
 <Base ...>
   <Motion />            <!-- once, before anything marked -->
-  <div data-motion="rise">...</div>
-  <svg data-motion="draw">
+  <div data-enter="rise">...</div>
+  <svg data-enter="draw">
     <circle class="motion-stroke" pathLength="1" ... />
   </svg>
-  <span data-motion="disc">7</span>
+  <span data-enter="disc">7</span>
 </Base>
 ```
 
@@ -54,11 +54,23 @@ useEffect(() => { if (result) motionScan(containerRef.current ?? undefined); }, 
 
 ## Guarantees
 
-- Without `<Motion />`, without JavaScript, with reduced motion, when printing
-  and while a keyboard user has focus visible, everything is simply shown.
+- Without `<Motion />`, without JavaScript, with reduced motion and when
+  printing, everything is simply shown. The first Tab on a page shows every
+  marked element at once, so keyboard readers never wait on an entrance.
+- Elements show as soon as any part of them is on screen (threshold 0, as with
+  `.reveal`), so a tall block never sits blank while someone reads it.
 - Only `opacity`, `transform` and `stroke-dashoffset` change: no layout shift.
-- Never mark the LCP element (the hero heading, hero art or poster).
+- Never mark the LCP element: the hero heading, a hero image or poster.
+  Decorative inline SVG beside the hero heading (an emblem, a seal) may
+  `draw` and `disc`, since it is never the largest paint.
 - After its pass an element is marked `.is-done`, so its own hover transitions
   run without the entrance delay.
+- Move cards, discs, figures and rings. Never mark controls people act on
+  (buttons, form fields, `<details>` summaries): they are there at once.
+- The attribute is `data-enter`, and the page switch is
+  `html[data-entrance]`. `data-motion` belongs to `/thesis/` figures and the
+  chart explorer, so it is never used for this.
+- A marked element inside another marked element in the same pass takes its
+  parent's step, so a grid staggers by card, not by part.
 - `.reveal` in `src/styles/base.css` stays as it is: the small heading
   entrance on pages that already use it.
