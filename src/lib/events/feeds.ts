@@ -125,7 +125,7 @@ export function eventsJsonFeed(sign?: Sign) {
     language: 'en',
     authors: [{ name: 'Zodiacs.org', url: `${SITE}/` }],
     _zodiacs: {
-      about: 'One item per sky event, in time order. date_published and _zodiacs.at_utc are the instant the event’s page prints, in UTC (ISO 8601), not when the item was written, so most items are dated in the future; the page shows the same instant in the reader’s own time zone too. _zodiacs.signs are the signs the event takes place in, as lowercase English slugs. url is the event’s page on zodiacs.org: a dated page for most events, and a place on the retrogrades page for a station of a planet beyond Mars. The times, bodies and signs are computed sky facts; content_text is the page’s one-line summary, and nothing here is a personal forecast.',
+      about: 'One item per sky event, in time order. date_published and _zodiacs.at_utc are the instant the event’s page prints, in UTC (ISO 8601), not when the item was written, so most items are dated in the future; most event pages also show it in the reader’s own time zone. _zodiacs.signs are the signs the event takes place in, as lowercase English slugs. url is the event’s page on zodiacs.org: a dated page for most events, and a place on the retrogrades page for a station of a planet beyond Mars. The times, bodies and signs are computed sky facts; content_text is the page’s one-line summary, and nothing here is a personal forecast.',
       license: 'CC BY 4.0, cite Zodiacs.org and link the event page',
       methodology: `${SITE}/methodology/`,
       calendar: `${SITE}/sky-calendar.ics`,
