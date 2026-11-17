@@ -10,7 +10,7 @@
  *
  * Opt in with data-enter="rise|draw|disc" on an element. Elements that
  * come into view together are staggered in document order (--motion-i, set
- * by the runtime, capped at 8 steps); set --motion-i or --motion-delay
+ * by the runtime, which caps a group at 4 steps); set --motion-i or --motion-delay
  * inline to choreograph by hand.
  * Nothing is hidden unless <Motion /> (src/components/Motion.astro) has set
  * html[data-entrance="on"], so pages without it, readers without JavaScript and
@@ -26,7 +26,7 @@
   --motion-rise: 440ms;
   --motion-draw: 1100ms;
   --motion-disc: 440ms;
-  --motion-step: 70ms;      /* stagger between siblings, 50 to 110ms */
+  --motion-step: 70ms;      /* stagger between siblings; the runtime caps a group at 4 steps */
   --motion-lift: 10px;
 }
 

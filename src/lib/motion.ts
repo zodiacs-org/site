@@ -11,13 +11,13 @@
 export type MotionVerb = 'rise' | 'draw' | 'disc';
 
 interface MotionRuntime {
-  scan(root?: ParentNode): void;
+  scan(root?: ParentNode, instant?: boolean): void;
 }
 
-export function motionScan(root?: ParentNode): void {
+export function motionScan(root?: ParentNode, instant?: boolean): void {
   if (typeof window === 'undefined') return;
   const runtime = (window as unknown as { zodiacsMotion?: MotionRuntime }).zodiacsMotion;
-  runtime?.scan(root);
+  runtime?.scan(root, instant);
 }
 
 /**

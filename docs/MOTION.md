@@ -10,11 +10,48 @@ then still. Every page uses the same module, so nobody tunes timings by hand.
 | `disc` | a round mark grows from 60% to full size, fading in | 440ms, no overshoot     |
 
 Easing is `cubic-bezier(.23, 1, .32, 1)` throughout. Elements that come into
-view together are staggered by 70ms in document order (capped at eight steps).
+view together are staggered by 70ms in document order (capped at four steps).
 
 Never: glows, pulses, bounces, shakes, parallax, infinite loops, or motion on
 text while someone reads it. Paragraphs of reading copy stay still; move the
 cards, discs, figures and rings around them.
+
+## The rule
+
+Marks arrive. Words and controls never wait.
+
+| Thing | Motion |
+| --- | --- |
+| Discs, rings, lines, figures, emblems (not the LCP element) | `draw` or `disc`, once, when first seen |
+| A figure that is a picture, not text (a diagram, a key) | `rise`, once |
+| Headings, paragraphs, question rows, link tiles, cards of text, forms, buttons | None. Present from the first frame |
+| A result the person asked for | The settled 200 ms arrival in base.css, nothing added |
+| Keyboard-driven actions | None |
+| Pages opened daily: Today, horoscope pages, the horoscope hub | No entrance motion |
+| Hero pictures and hero headings (LCP) | None |
+
+## Before you mark anything
+
+1. Is it a mark (disc, ring, line, figure)? If it is words or a control, stop.
+2. Is it the page's largest picture or heading? If so, stop.
+3. Is the page opened daily (Today, horoscopes)? If so, stop.
+4. Does its container already have an entrance (a result block, a disclosure)? If so, stop.
+5. Is the page's main button still on the first phone screen (390 x 844)?
+6. Run `npm run test:motion:evidence` (once that harness has merged) and paste its summary in the PR.
+
+## Not moving, on purpose
+
+- Home hero, sign page mastheads, pair page heroes, horoscope heroes: the picture is the LCP element.
+- Today, the horoscope hub and horoscope pages: opened daily, a reader comes for a line of text.
+- Question rows, "On this page", link tiles, tool cards: words and controls that people scan.
+- Result cards on every calculator: they already arrive in 200 ms; a second layer would be two entrances.
+- Sign discs inside result cards: the card already arrives. One entrance per container.
+- Learn figures (AspectWheel, HouseWheel, ZodiacRing): already draw in view with CSS only; left as they are.
+- Event and sky pages: text only, no marks to move.
+- Place autocomplete, tabs, sign pickers, aspect chips: used many times per visit, or typed.
+- Empty and loading states: calculations finish in under 200 ms.
+- Cross-page view transitions (ZOD-231, not built) must be checked against marked pages, because a page would be snapshotted while its marks are hidden.
+- In a sideways scroller, mark the figure, not its items.
 
 ## Files
 
@@ -23,7 +60,7 @@ cards, discs, figures and rings around them.
 - `src/components/Motion.astro`: the runtime. Two small inline scripts: one
   turns motion on (`html[data-entrance="on"]`) before marked elements are parsed,
   the other reveals each one once as it scrolls into view.
-- `src/lib/motion.ts`: `motionScan(root)` for islands that render marked nodes
+- `src/lib/motion.ts`: `motionScan(root, instant)` for islands that render marked nodes
   later, and `motion(verb)` to spread the attribute in JSX.
 
 ## Using it on a page
@@ -57,6 +94,11 @@ useEffect(() => { if (result) motionScan(containerRef.current ?? undefined); }, 
 - Without `<Motion />`, without JavaScript, with reduced motion and when
   printing, everything is simply shown. The first Tab on a page shows every
   marked element at once, so keyboard readers never wait on an entrance.
+- An element already above the screen (a reload lower down, a link to a
+  section) is shown at once, so scrolling up finds it in place.
+- A group that comes into view together staggers by at most 4 steps, so the
+  last item never waits more than 280ms.
+- If the runtime script fails or never runs, everything is shown after 3 s.
 - Elements show as soon as any part of them is on screen (threshold 0, as with
   `.reveal`), so a tall block never sits blank while someone reads it.
 - Only `opacity`, `transform` and `stroke-dashoffset` change: no layout shift.
