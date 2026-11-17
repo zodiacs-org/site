@@ -1008,9 +1008,6 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   for (const pair of pairs) {
     const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
     if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
-    // The shared entrance motion (basis rows, chart comparison list, other
-    // pairs) came to the English pair template on 17 November.
-    if (url) url.lastmod = laterDate(url.lastmod, '2026-11-17');
   }
   // The natal planet-pair release links each geometry guide to the same
   // angle on the three pair pages.
