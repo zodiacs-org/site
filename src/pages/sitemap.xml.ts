@@ -615,8 +615,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // draw them, so a first paint mid-parse no longer moves them; on the day of the daily edition it was built with.
   ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
     .map((loc) => [loc, '2026-10-27'] as const),
-  // The assistant showcase, which lists the Grok template from the day of the daily edition it was built with.
-  ['/apps/', '2026-11-09'] as const,
+  // The assistant showcase, which lists the Grok template from the day of the daily edition it was built with,
+  // and links the per-assistant pages (three from 16 November, Claude Code from 17 November).
+  ['/apps/', '2026-11-17'] as const,
+  // One landing page per assistant: Claude, ChatGPT and Cursor first published on 16 November, Claude Code on
+  // 17 November, when each page started linking the other three.
+  ...['/apps/claude/', '/apps/chatgpt/', '/apps/cursor/', '/apps/claude-code/'].map((loc) => [loc, '2026-11-17'] as const),
   // The showcase's entry links, first published with the showcase.
   ['/tools/', '2026-10-28'] as const,
   ['/developers/ai/', '2026-10-28'] as const,
@@ -717,6 +721,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // connector section and the MCP guides that count its tools (ZOD-58). The day of the daily edition it was
   // built with, last so this date wins.
   ...CONNECTOR_PAGE_ROUTES.map((loc) => [loc, CONNECTOR_PAGE_LASTMOD] as const),
+  // The AI developer page's sample question names a neutral city, from 16 November; after the connector pages so it wins.
+  ['/developers/ai/', '2026-11-16'] as const,
+  // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
+  // the daily edition it was built with, last so this date wins.
+  ['/', '2026-11-14'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -823,6 +832,10 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/developers/mcp/', priority: 0.6 },
     { loc: '/developers/ai/', priority: 0.6 },
     { loc: '/apps/', priority: 0.7 },
+    { loc: '/apps/claude/', priority: 0.6 },
+    { loc: '/apps/chatgpt/', priority: 0.6 },
+    { loc: '/apps/cursor/', priority: 0.6 },
+    { loc: '/apps/claude-code/', priority: 0.6 },
     { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/developers/conventions/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
