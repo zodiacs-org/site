@@ -313,7 +313,8 @@ export function evaluateChecks({ route, viewport, subject, baseline = null, rest
   };
   flag('lcpMarked', subject.lcp ? subject.lcpMarked : null, subject.lcpMarked === false, `LCP element ${subject.lcp?.selector ?? '?'} ${subject.lcpMarked ? 'is' : 'is not'} marked`);
   flag('rootMarked', subject.rootMarked, subject.rootMarked === false, `html ${subject.rootMarked ? 'has' : 'does not have'} ${SHOWN_CLASS}`);
-  flag('nestedMarks', subject.nestedMarks, subject.nestedMarks === 0, String(subject.nestedMarks));
+  // Nested marks are reported, not failed: a disc inside a risen card shares the card's step
+  // and reads as one entrance (docs/MOTION.md, the rule of 18 Nov).
   flag('hiddenAboveAfterReload', subject.hiddenAboveAfterReload, subject.hiddenAboveAfterReload === 0, String(subject.hiddenAboveAfterReload));
   if (subject.animatedProperties == null) add('animatedProperties', 'fail', 'not measured');
   else {

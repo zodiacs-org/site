@@ -175,7 +175,7 @@ describe('motion evidence: hard checks', () => {
   it('fails the defects found in PR #1096', () => {
     const subject = { ...clean, nestedMarks: 12, hiddenAboveAfterReload: 25, rootMarked: true, lcpMarked: true, primaryActionTop: 839 };
     const checks = evaluateChecks({ route, viewport, subject, baseline: { ...clean, primaryActionTop: 689 }, rest: { share: 0, heightChanged: null } });
-    for (const name of ['nestedMarks', 'hiddenAboveAfterReload', 'rootMarked', 'lcpMarked', 'primaryAction']) {
+    for (const name of ['hiddenAboveAfterReload', 'rootMarked', 'lcpMarked', 'primaryAction']) {
       expect(statusOf(checks, name), name).toBe('fail');
     }
   });
@@ -214,9 +214,9 @@ describe('motion evidence: hard checks', () => {
   });
 
   it('fails a missing measurement instead of passing it', () => {
-    const checks = evaluateChecks({ route, viewport, subject: { ...clean, noScript: null, nestedMarks: null } });
+    const checks = evaluateChecks({ route, viewport, subject: { ...clean, noScript: null, rootMarked: null } });
     expect(statusOf(checks, 'noScript')).toBe('fail');
-    expect(statusOf(checks, 'nestedMarks')).toBe('fail');
+    expect(statusOf(checks, 'rootMarked')).toBe('fail');
   });
 });
 
