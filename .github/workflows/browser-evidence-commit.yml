@@ -1,0 +1,144 @@
+name: Browser Evidence Commit
+
+# Copies a reviewed-head Browser Evidence candidates artifact into a commit
+# (docs/acceptance/phase1, and on request the Linux visual baselines),
+# so agents whose network blocks GitHub's artifact storage can still finish
+# the Phase 1 evidence step (docs/HANDOFF-2026-11-08.md, steps 2 to 4).
+#
+# It never pushes to the pull request branch itself: a push made with
+# GITHUB_TOKEN starts no pull_request checks, so the PR head would carry no
+# Site Check. Instead it pushes the evidence commit, made on top of the
+# current PR head, to evidence/pr-<number>-<short sha>. The PR author then
+# fast-forwards the PR branch to that commit, and that push runs CI as usual.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number
+        required: true
+        type: string
+      run_id:
+        description: Browser Evidence run id that produced the candidates artifact for the PR's current head
+        required: true
+        type: string
+      visual_baselines:
+        description: Also take the artifact's tests/visual/baselines/linux (only when the pixel change was reviewed and is intended)
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: read
+  pull-requests: read
+
+concurrency:
+  group: browser-evidence-commit-${{ inputs.pr }}
+  cancel-in-progress: false
+
+jobs:
+  commit-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Resolve the pull request head
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ inputs.pr }}
+          RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          [[ "$PR" =~ ^[0-9]+$ ]] || { echo "::error::pr must be a number"; exit 1; }
+          [[ "$RUN_ID" =~ ^[0-9]+$ ]] || { echo "::error::run_id must be a number"; exit 1; }
+          info=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR")
+          state=$(jq -r .state <<<"$info")
+          head_repo=$(jq -r .head.repo.full_name <<<"$info")
+          head_ref=$(jq -r .head.ref <<<"$info")
+          head_sha=$(jq -r .head.sha <<<"$info")
+          [[ "$state" == "open" ]] || { echo "::error::PR #$PR is not open"; exit 1; }
+          [[ "$head_repo" == "$GITHUB_REPOSITORY" ]] || { echo "::error::PR #$PR comes from a fork"; exit 1; }
+          run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID")
+          [[ "$(jq -r .path <<<"$run")" == ".github/workflows/browser-evidence.yml" ]] || { echo "::error::run $RUN_ID is not a Browser Evidence run"; exit 1; }
+          [[ "$(jq -r .conclusion <<<"$run")" == "success" ]] || { echo "::error::run $RUN_ID did not succeed"; exit 1; }
+          name="browser-evidence-candidates-${head_sha}-${RUN_ID}"
+          found=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" --jq "[.artifacts[] | select(.name == \"$name\" and .expired == false)] | length")
+          [[ "$found" == "1" ]] || { echo "::error::no live artifact $name; the PR head may have moved since the capture"; exit 1; }
+          {
+            echo "head_ref=$head_ref"
+            echo "head_sha=$head_sha"
+            echo "artifact=$name"
+            echo "branch=evidence/pr-${PR}-${head_sha:0:8}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Checkout the exact PR head
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ steps.pr.outputs.head_sha }}
+          fetch-depth: 1
+
+      - name: Setup Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Download the candidates artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.run_id }}
+          ARTIFACT: ${{ steps.pr.outputs.artifact }}
+        run: gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$ARTIFACT" --dir "$RUNNER_TEMP/candidates"
+
+      - name: Copy only docs/acceptance/phase1
+        run: |
+          set -euo pipefail
+          src="$RUNNER_TEMP/candidates/docs/acceptance/phase1"
+          [[ -f "$src/screenshots/manifest.json" ]] || { echo "::error::artifact has no docs/acceptance/phase1/screenshots/manifest.json"; exit 1; }
+          rm -rf docs/acceptance/phase1/screenshots
+          mkdir -p docs/acceptance/phase1
+          cp -R "$src/." docs/acceptance/phase1/
+
+      - name: Copy reviewed visual baselines
+        if: ${{ inputs.visual_baselines }}
+        run: |
+          set -euo pipefail
+          src="$RUNNER_TEMP/candidates/tests/visual/baselines/linux"
+          [[ -d "$src" ]] || { echo "::error::artifact has no tests/visual/baselines/linux"; exit 1; }
+          mkdir -p tests/visual/baselines/linux
+          cp -R "$src/." tests/visual/baselines/linux/
+
+      - name: Install
+        run: npm ci
+
+      - name: Check the evidence against this head
+        run: npx vitest run scripts/phase1-acceptance-evidence.test.mjs
+
+      - name: Commit and push to the evidence branch
+        env:
+          HEAD_SHA: ${{ steps.pr.outputs.head_sha }}
+          BRANCH: ${{ steps.pr.outputs.branch }}
+          RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          git config user.name "Zodiacs Admin"
+          git config user.email "admin@zodiacs.org"
+          git add docs/acceptance/phase1
+          if [[ "${{ inputs.visual_baselines }}" == "true" ]]; then git add tests/visual/baselines/linux; fi
+          if git diff --cached --quiet; then
+            echo "::notice::Evidence already matches this head; nothing to commit."
+            exit 0
+          fi
+          git commit -m "Phase 1 evidence: commit reviewed-head captures from Browser Evidence run $RUN_ID"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          {
+            echo "### Evidence commit ready"
+            echo
+            echo "Branch \`$BRANCH\` holds one commit on top of \`$HEAD_SHA\`."
+            echo "Fast-forward the PR branch to it from a normal git session so Site Check runs:"
+            echo
+            echo '```'
+            echo "git fetch origin $BRANCH && git push origin FETCH_HEAD:<pr branch>"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
