@@ -8,8 +8,8 @@ const title = 'Astrology MCP Server for Claude Code | Zodiacs.org';
 const description = 'Add the Zodiacs astrology MCP server to Claude Code with one command: charts, compatibility, horoscopes and sky facts from https://zodiacs.org/mcp, no key.';
 const faq = [
   { q: 'Does the Zodiacs MCP server need an API key?', a: 'No. Zodiacs’ public tools need no Zodiacs account, and the command has no key, header or secret in it.' },
-  { q: 'Can I share it with my whole project?', a: 'Claude Code’s documentation describes a project scope, which stores the server in a .mcp.json file you can commit, and a user scope, which makes it available in every project. Add --scope project or --scope user to the command.' },
-  { q: 'Will I see the interactive cards in Claude Code?', a: 'Claude Code works in a terminal, so answers come as text, usually with a link to a page on zodiacs.org where the card opens.' },
+  { q: 'Can I share it with my whole project?', a: 'Claude Code’s documentation describes a project scope, which stores the server in a .mcp.json file you can commit, and a user scope, which makes it available in every project. Add --scope project or --scope user to the command. Without either, Zodiacs is added for you in the current project only.' },
+  { q: 'Will I see the interactive cards in Claude Code?', a: 'Interactive card support depends on the assistant and version you use. In the terminal, answers come as text, usually with a link to a page on zodiacs.org where the card opens.' },
   { q: 'Is there a local server I can run myself?', a: 'Yes, for developers: a separate local MCP server runs the chart engine locally over stdio. Its install steps are on the developer pages.' },
 ];
 ---
@@ -38,7 +38,7 @@ const faq = [
     <p>The steps below follow <a href="https://code.claude.com/docs/en/mcp" rel="noopener">Claude Code’s MCP documentation</a> rather than a run here, so they are not tested claims. If your version of Claude Code differs, its documentation is the guide.</p>
     <ol>
       <li>In your terminal, run this command:<pre tabindex="0" role="region" aria-label="Claude Code command"><code id="claude-code-command">{command}</code></pre><button type="button" data-copy="claude-code-command" aria-label="Copy the command">Copy the command</button></li>
-      <li>Check that it connected with <code>claude mcp list</code> in your terminal, or <code>/mcp</code> inside Claude Code.</li>
+      <li>Check that it connected with <code>claude mcp list</code> in your terminal, or <code>/mcp</code> inside Claude Code. If you already added Zodiacs as a custom connector in Claude, check <code>/mcp</code> first, since it may already be there.</li>
       <li>Ask something from the list below. Claude decides when to call Zodiacs, so naming Zodiacs in the prompt helps.</li>
     </ol>
     <h3>Building with it</h3>
