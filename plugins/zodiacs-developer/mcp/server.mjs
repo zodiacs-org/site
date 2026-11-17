@@ -43078,7 +43078,7 @@ var TOOL_TITLES = {
   get_solar_return: "Your solar return",
   get_numerology: "Numerology numbers"
 };
-var instant = z17.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\u20132199).");
+var instant = z17.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800\u20132199).");
 var ZONE_PATTERN12 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var zone6 = z17.string().min(1).max(64).regex(ZONE_PATTERN12).describe("The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.");
 var date = z17.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
@@ -43094,9 +43094,9 @@ var INPUT_SCHEMAS = {
   get_occasion_sky: z17.strictObject({
     occasion: z17.enum(ASSISTANT_OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering."),
     date: date.optional().describe("The day, such as 2027-09-18 (years 1800\u20132199). Needed unless searchFrom and searchTo are given."),
-    searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo."),
-    searchTo: date.optional().describe("The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
-    time: wallClock.optional().describe("The local clock time, such as 19:00, if the person gives one. Needs zone."),
+    searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-09-01. Give it with searchTo."),
+    searchTo: date.optional().describe("The last day of the window to search, such as 2027-09-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
+    time: wallClock.optional().describe("The local clock time, such as 16:30, if the person gives one. Needs zone."),
     zone: zone6.optional().describe("The place's time zone, such as Europe/Lisbon. Needed with a time or a place."),
     latitude: z17.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
     longitude: z17.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),

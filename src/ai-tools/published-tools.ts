@@ -138,8 +138,9 @@ export function asPanelV7(tool: Record<string, unknown>): { tool: Record<string,
  * Invented examples (developer plugin 0.3.51, on top of ZOD-64): the "such as" examples in
  * the input schemas named the owner's own birth date, birth time, birthplace, home time zone and wedding. They now
  * name the invented set the /apps pages use (Lucía, born 14 May 1994 at 09:15 in Seville, Europe/Madrid; a wedding
- * on 18 September 2027 at 16:30 in Lisbon, Europe/Lisbon; a horoscope reader in America/Mexico_City). Each entry is
- * a schema field's description, whole, as it now reads; only these eleven fields change, and no name, type,
+ * on 18 September 2027 at 16:30 in Lisbon, Europe/Lisbon; a horoscope reader in America/Mexico_City), and the moment,
+ * search window and clock time examples follow them (a -06:00 offset, September 2027, 16:30). Each entry is a schema
+ * field's description, whole, as it now reads; only these eighteen fields change, and no name, type,
  * pattern, enum, title, annotation, _meta or tool description moves. Shipping this changes text every client sees,
  * so it goes out with the next directory resubmission, which the owner approved on 17 November 2026.
  */
@@ -155,6 +156,13 @@ export const INVENTED_EXAMPLES: Record<string, string> = {
   'get_compatibility.inputSchema.properties.b.properties.place.description': 'Optional birthplace name, such as Seville, Spain. Display only, not stored.',
   'get_birthday.inputSchema.properties.date.description': 'A birthday without a year, as MM-DD, such as 05-14 for 14 May. This is enough for general birthday facts. Give this or birthDate.',
   'get_birthday.inputSchema.properties.birthDate.description': 'The full birth date, such as 1994-05-14. Use only for the solar return or to resolve the sign of a cusp date in that birth year.',
+  'get_sky.inputSchema.properties.instant.description': 'A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800\u20132199).',
+  'get_upcoming_events.inputSchema.properties.from.description': 'A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800\u20132199).',
+  'get_upcoming_events.inputSchema.properties.to.description': 'A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800\u20132199).',
+  'check_sky_fact.inputSchema.properties.instant.description': 'A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800\u20132199).',
+  'get_occasion_sky.inputSchema.properties.searchFrom.description': 'To find the best days: the first day of the window to search, such as 2027-09-01. Give it with searchTo.',
+  'get_occasion_sky.inputSchema.properties.searchTo.description': 'The last day of the window to search, such as 2027-09-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back.',
+  'get_occasion_sky.inputSchema.properties.time.description': 'The local clock time, such as 16:30, if the person gives one. Needs zone.',
 };
 
 /** An entry with the invented examples in its input schema, and the paths that changed. */

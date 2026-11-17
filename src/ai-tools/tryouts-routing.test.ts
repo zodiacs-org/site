@@ -52,7 +52,7 @@ describe('the routing wording from the assistant tryouts', () => {
     const joined = (saved('join', 'tools-list.json').tools as Record<string, unknown>[]).slice(0, 13);
     const withExamples = joined.map(tool => asInventedExamples(tool).tool);
     expect(JSON.stringify(withExamples)).toBe(JSON.stringify(PUBLISHED_TOOLS.map(withoutZod64)));
-    // The examples move only the eleven schema descriptions they name.
+    // The examples move only the eighteen schema descriptions they name.
     expect(joined.flatMap(tool => asInventedExamples(tool).changed).sort()).toEqual(Object.keys(INVENTED_EXAMPLES).sort());
     // ZOD-64 (approved by Dias on 2026-11-17) moves only get_upcoming_events' description since the join.
     const moved = PUBLISHED_TOOLS.filter((tool, index) => JSON.stringify(tool) !== JSON.stringify(withExamples[index]));

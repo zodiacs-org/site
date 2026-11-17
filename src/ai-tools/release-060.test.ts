@@ -110,12 +110,12 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect(changes).toEqual(['get_horoscope._meta.ui.resourceUri', 'get_horoscope._meta.openai/outputTemplate']);
   });
 
-  it('changes only the eleven schema field descriptions that held the owner\'s own details, to invented examples (0.3.51)', async () => {
+  it('changes only the eighteen schema field descriptions that held the owner\'s own details, to invented examples (0.3.51)', async () => {
     const before = LIVE_TOOLS.map(tool => asZod64(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool);
     const changes = before.flatMap(tool => asInventedExamples(tool).changed);
     expect([...changes].sort()).toEqual(Object.keys(INVENTED_EXAMPLES).sort());
     expect(changes.every(path => /\.inputSchema\.properties\.(?:[a-z]+\.properties\.)?[A-Za-z]+\.description$/u.test(path))).toBe(true);
-    // Every other byte, the tool descriptions included, is the ZOD-58 entry: put the eleven back and nothing differs.
+    // Every other byte, the tool descriptions included, is the ZOD-58 entry: put the eighteen back and nothing differs.
     const at = (node: unknown, keys: string[]) => keys.reduce<unknown>((item, key) => (item as Record<string, unknown>)[key], node);
     for (const tool of before) {
       const { tool: after, changed } = asInventedExamples(tool);
