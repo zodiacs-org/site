@@ -5,7 +5,7 @@ import { ComputeApiError } from '../lib/compute-api/errors';
 import { BUDGETS, EPOCH, EVENT_KINDS } from '../lib/compute-api/constants';
 import { computeEvents, computePositions, computeSkyFact } from '../lib/compute-api/endpoints';
 import { BACKEND, engineStatements } from '../lib/compute-api/receipt';
-import { parseEventsRequest, parsePositionsRequest, parseSkyFactRequest, zoneAt } from '../lib/compute-api/validate';
+import { instantAt, parseEventsRequest, parsePositionsRequest, parseSkyFactRequest, zoneAt } from '../lib/compute-api/validate';
 import type { LocalTimeModule } from '../lib/compute-api/local-time';
 import { occasionCard } from '../lib/occasions/card';
 import { BIRTH_OCCASIONS } from '../lib/occasions/saved-path';
@@ -28,9 +28,10 @@ import { searchSkyEvents } from './features/sky-events';
 import { getYearScore } from './features/year-score';
 import { getSolarReturn } from './features/solar-return';
 import { getNumerology } from './features/numerology';
+import { getMomentChart, type MomentAt } from './features/moment-chart';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
-import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, type AiToolName, type SolarReturnToolName, type CoverageToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
+import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, MOMENT_CHART_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, type AiToolName, type SolarReturnToolName, type CoverageToolName, type NumerologyToolName, type MomentChartToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
 import { MINOR_LOVE_NOTE, isUnder13, isUnderAge } from './features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
@@ -69,6 +70,11 @@ export interface AiDependencies {
    * Numerology is a separate tradition from astrology.
    */
   numerology?: boolean;
+  /**
+   * get_moment_chart (ZODIACS_MOMENT_CHART_ENABLED=1), in effect only with the coverage and occasion tools (momentChartOn).
+   * A chart for a moment, never for a person's birth.
+   */
+  momentChart?: boolean;
   /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
   horoscopeMonths?: () => Promise<HoroscopeMonths>;
   /** The committed horoscope program (src/data/horoscope-program.json), for the yearly readings. */
@@ -154,6 +160,11 @@ export function numerologyOn(dependencies: AiDependencies): boolean {
   return !!(dependencies.occasions && dependencies.coverage && dependencies.numerology);
 }
 
+/** Whether get_moment_chart is offered: like numerology, it joins the occasion and coverage switches, and alone changes nothing. */
+export function momentChartOn(dependencies: AiDependencies): boolean {
+  return !!(dependencies.occasions && dependencies.coverage && dependencies.momentChart);
+}
+
 /** Whether get_year_score takes a public figure: its own switch, in effect only with the Year Ahead Score switch. */
 export function yearScorePeopleOn(dependencies: AiDependencies): boolean {
   return yearScoreOn(dependencies) && !!dependencies.yearScorePeople;
@@ -174,7 +185,8 @@ export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   // search_sky_events comes last, so the nineteen entries before it keep their places.
   // get_year_score comes after everything else, so every entry before it keeps its place.
   // get_numerology comes after get_solar_return, so every entry before it keeps its place.
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : [])];
+  // get_moment_chart comes last of all, so every entry before it keeps its place.
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : []), ...(momentChartOn(dependencies) ? MOMENT_CHART_TOOL_NAMES : [])];
 }
 
 const isCoverageTool = (tool: string): tool is CoverageToolName => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool);
@@ -183,6 +195,7 @@ export const isSkyEventsTool = (tool: string): tool is SkyEventsToolName => (SKY
 export const isYearScoreTool = (tool: string): tool is YearScoreToolName => (YEAR_SCORE_TOOL_NAMES as readonly string[]).includes(tool);
 export const isSolarReturnTool = (tool: string): tool is SolarReturnToolName => (SOLAR_RETURN_TOOL_NAMES as readonly string[]).includes(tool);
 export const isNumerologyTool = (tool: string): tool is NumerologyToolName => (NUMEROLOGY_TOOL_NAMES as readonly string[]).includes(tool);
+export const isMomentChartTool = (tool: string): tool is MomentChartToolName => (MOMENT_CHART_TOOL_NAMES as readonly string[]).includes(tool);
 /** What search_sky_events does, for get_capabilities. */
 const SKY_EVENTS_TOOL_SUMMARY: Record<SkyEventsToolName, string> = {
   search_sky_events: 'eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods, months or years ahead',
@@ -198,12 +211,12 @@ const COVERAGE_TOOL_SUMMARY: Record<CoverageToolName, string> = {
 
 /** What a field must look like, for refusals that say how to fix it. */
 const FIELD_FORMAT: Record<string, string> = {
-  birthDate: 'a date such as 1990-05-03', date: 'a date such as 2026-12-01', from: 'a date such as 2026-11-01', to: 'a date such as 2026-12-01',
+  birthDate: 'a date such as 1990-05-03', date: 'a date such as 2026-12-01', instant: 'an ISO 8601 time with Z or an offset, such as 2026-11-17T09:30:00Z', from: 'a date such as 2026-11-01', to: 'a date such as 2026-12-01',
   time: 'a time such as 08:30', zone: 'a time zone name such as Europe/London', currentZone: 'a time zone name such as Asia/Bangkok', place: 'plain text',
 };
 
 /** The birth years a tool takes, named when a date in the right form falls outside them (1799-05-03). */
-const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName, string>> = {
+const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | MomentChartToolName, string>> = {
   get_natal_chart: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_personal_transits: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_year_score: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
@@ -217,7 +230,7 @@ const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsTo
  * values; nothing from the request is repeated, so an unknown property's name never comes back. `schema` is the
  * tool's input schema in effect, its sky events form while that switch is on; an array item is named as kinds[0].
  */
-export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName, input: unknown, schema: z.ZodType = INPUT_SCHEMAS[tool]) {
+export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | MomentChartToolName, input: unknown, schema: z.ZodType = INPUT_SCHEMAS[tool]) {
   const parsed = schema.safeParse(input ?? {});
   if (parsed.success) return null;
   const record = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
@@ -386,10 +399,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
   const resolveZone = (name: string) => localTime().canonicalZoneName(name);
   try {
     if ((OCCASION_TOOL_NAMES as readonly string[]).includes(tool) && !dependencies.occasions) return failure(tool, 'unavailable', 'This tool is not offered here.');
-    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
+    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isMomentChartTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
     // get_year_score takes a public figure only with its people switch (contracts.ts, YEAR_SCORE_PEOPLE_INPUT).
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
-    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
+    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isMomentChartTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
     const parsed = inputSchemaFor(tool, skyEvents, switches).safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');
     let data: unknown;
@@ -424,6 +437,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           capabilities.privacy += ' The natal chart, personal transit and Chinese zodiac tools take a birth date, with an optional time, time zone and coordinates for the first two, for that call only and save none of it; the period horoscope and explainer tools take no personal details.';
           if (skyEvents) capabilities.privacy += ' The sky events search takes no personal details.';
           if (numerologyOn(dependencies)) capabilities.privacy += ' The numerology tool takes a birth date and, if given, a name, for that call only: it returns neither, puts neither in a link and saves neither.';
+          if (momentChartOn(dependencies)) capabilities.privacy += ' The moment chart tool takes a moment and a place\'s coordinates, and no name or birth date, for that call only: it puts neither in a link and saves neither.';
           // The tools field's enum is the thirteen published names, so the 0.6.0 tools are named here, by their tools/list names.
           const added = [
             ...offeredTools(dependencies).filter(isCoverageTool).map((name) => `${name} (${COVERAGE_TOOL_SUMMARY[name]})`),
@@ -438,6 +452,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           if (skyEvents) capabilities.limitations.push('Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead, such as the next eclipses, a planet\'s next retrograde, when a planet changes sign, every full Moon next year or this week\'s void-of-course Moon periods, search_sky_events; eclipses, retrograde periods and Moons in a calendar app, get_sky_calendar; a yes or no check on one moment or day, check_sky_fact. In a birth chart, get_natal_chart gives the lunar nodes and Chiron, and takes houseSystem placidus for Placidus houses.');
           // Numerology is a separate tradition from astrology, and the line says so.
           if (numerologyOn(dependencies)) capabilities.limitations.push('get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition\'s reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.');
+          // A chart for a moment is not a birth chart, and the line says so.
+          if (momentChartOn(dependencies)) capabilities.limitations.push('get_moment_chart is listed in tools/list too: a chart for a moment, such as an event, a question or the sky now, with each planet\'s sign, degree and house, the rising sign, the house cusps and the aspects, cast from an instant and a place. It is not a birth chart: it takes no name or birth date and gives no reading about a person.');
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
@@ -802,6 +818,18 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           try { currentYear = Number(dateInZone(now, await zoneAt(context.hostZone, '/zone', resolveZone)).slice(0, 4)); currentYearFrom = 'assistant'; } catch { /* keep UTC and say so */ }
         }
         const result = await feature(async () => getNumerology(args, { currentYear, currentYearFrom, origin: ORIGIN }));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        ({ data, links } = result);
+        break;
+      }
+      case 'get_moment_chart': {
+        const args = INPUT_SCHEMAS.get_moment_chart.parse(input);
+        // The zone is read before the moment, so an unknown zone is named whichever way the moment is given.
+        const zone = args.zone ? await zoneAt(args.zone, '/zone', resolveZone) : undefined;
+        const moment: MomentAt = args.date !== undefined && args.time !== undefined
+          ? { basis: 'local-time', date: args.date, time: args.time }
+          : args.instant !== undefined ? { basis: 'instant', utc: instantAt(args.instant, '/instant').date } : { basis: 'now', utc: dependencies.now?.() ?? new Date() };
+        const result = await feature(() => getMomentChart({ ...args, ...(zone ? { zone } : {}) }, moment, localTime(), ORIGIN));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;
