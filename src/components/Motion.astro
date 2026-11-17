@@ -66,13 +66,14 @@ import '../styles/motion.css';
       }
 
       // Elements that come into view together are staggered in document
-      // order. A marked element inside another one in the same batch (a
-      // card's disc) takes its parent's step, so the wave counts cards, not
-      // parts. Threshold 0, as with .reveal: a block shows as soon as any of
-      // it is on screen, however tall it is.
+      // order, so a grid of cards arrives as a wave however far down it sits.
+      // A marked element inside another one (a card's disc) takes no step of
+      // its own: it inherits the parent's --motion-i, so the wave counts
+      // cards, not parts, even when the two arrive in different batches.
+      // Threshold 0, as with .reveal: a block shows as soon as any of it is
+      // on screen, however tall it is.
       var io = on && new IntersectionObserver(function (entries) {
         var step = 0;
-        var steps = new Map();
         for (var i = 0; i < entries.length; i++) {
           var entry = entries[i];
           var el = entry.target;
@@ -83,10 +84,8 @@ import '../styles/motion.css';
             if (entry.boundingClientRect.bottom <= 0) { show(el, true); io.unobserve(el); }
             continue;
           }
-          var parent = el.parentElement && el.parentElement.closest('[data-enter]');
-          var own = parent && steps.has(parent) ? steps.get(parent) : Math.min(step++, MAX_STEP);
-          steps.set(el, own);
-          if (!el.style.getPropertyValue('--motion-i')) el.style.setProperty('--motion-i', String(own));
+          var nested = el.parentElement && el.parentElement.closest('[data-enter]');
+          if (!nested && !el.style.getPropertyValue('--motion-i')) el.style.setProperty('--motion-i', String(Math.min(step++, MAX_STEP)));
           show(el, false);
           io.unobserve(el);
         }
