@@ -428,6 +428,15 @@ const CONNECTOR_PAGE_ROUTES = [
   '/developers/ai/', '/developers/docs/', '/developers/docs/astrology-mcp-server/', '/developers/support/',
 ] as const;
 
+// The tool's icon was added beside the hero heading on these twelve tool pages (rendered content). The day of
+// the daily edition it was built with; listed last in EVERGREEN_LASTMOD so this date wins over older ones.
+const TOOL_MARKS_LASTMOD = '2026-11-17';
+const TOOL_MARKS_ROUTES = [
+  '/big-three/', '/moon-sign/', '/rising-sign/', '/solar-return/', '/lunar-return/', '/saturn-return/',
+  '/transits/', '/eclipses/', '/full-moon-calendar/', '/retrogrades/', '/mercury-retrograde/',
+  '/void-of-course-moon/',
+] as const;
+
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
   // The moon and alignment pages of the coming twelve months carry fuller readings (ZOD-221, decision J).
@@ -725,6 +734,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/', '2026-11-14'] as const,
   // Numerology's visual restyle (emblem, letter key, life path tiles, shared entrance motion), last so it wins.
   ['/numerology/', '2026-11-17'] as const,
+  // The tool's icon was added beside the hero heading (TOOL_MARKS_ROUTES), last so it wins.
+  ...TOOL_MARKS_ROUTES.map((loc) => [loc, TOOL_MARKS_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
