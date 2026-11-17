@@ -115,6 +115,31 @@ import '../styles/motion.css';
           showAll();
         }, true);
       }
+      // A jump can carry an element from below the screen to above it without
+      // it ever being on screen (the browser restoring a scroll position, a
+      // link to a section, the End key). The observer reports nothing then,
+      // so after each scroll anything still waiting above the screen is shown
+      // at once, and scrolling back up finds it in place.
+      var sweeping = false;
+      function sweep() {
+        sweeping = false;
+        var waiting = document.querySelectorAll('[data-enter]:not(.is-in)');
+        for (var w = 0; w < waiting.length; w++) {
+          var box = waiting[w].getBoundingClientRect();
+          // Skip elements with no box (inside a closed disclosure or a hidden tab).
+          if ((box.width || box.height) && box.bottom <= 0) {
+            show(waiting[w], true);
+            if (io) io.unobserve(waiting[w]);
+          }
+        }
+      }
+      if (io) {
+        window.addEventListener('scroll', function () {
+          if (sweeping || keyboard) return;
+          sweeping = true;
+          window.requestAnimationFrame(sweep);
+        }, { passive: true });
+      }
       window.zodiacsMotion = { scan: scan };
       scan();
       if (document.readyState === 'loading') {
