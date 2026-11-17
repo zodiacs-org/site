@@ -45,7 +45,7 @@ const COUNTRY_ALIAS: Record<string, string> = {
 export const birthplaceInput = z.strictObject({
   place: z.string().trim().min(2).max(80).describe('A town or city name, such as London or Almaty. Not a street address. Nothing is stored.'),
   country: z.string().trim().min(2).max(60).optional().describe('Optional country when several places share the name, such as United Kingdom or Kazakhstan.'),
-  date: z.string().regex(DATE).optional().describe('Optional date, such as 1990-05-03 (years 1800 to 2199), for the UTC offset in force that day. Without it, the offset is for today.'),
+  date: z.string().regex(DATE).optional().describe('Optional date, such as 1994-05-14 (years 1800 to 2199), for the UTC offset in force that day. Without it, the offset is for today.'),
 });
 export type BirthplaceInput = z.infer<typeof birthplaceInput>;
 
@@ -137,10 +137,10 @@ export async function findBirthplace(
 ): Promise<{ data: BirthplaceData; links: { title: string; url: string }[] }> {
   const date = args.date ?? todayUtc(now);
   if (Number.isNaN(Date.parse(`${date}T00:00:00Z`)) || new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date) {
-    throw new RangeError('date must be a real date from 1800 to 2199, such as 1990-05-03.');
+    throw new RangeError('date must be a real date from 1800 to 2199, such as 1994-05-14.');
   }
   const year = Number(date.slice(0, 4));
-  if (year < 1800 || year > 2199) throw new RangeError('date must be a real date from 1800 to 2199, such as 1990-05-03.');
+  if (year < 1800 || year > 2199) throw new RangeError('date must be a real date from 1800 to 2199, such as 1994-05-14.');
   const ranked = rankPlaces(table, queryVariants(args.place));
   const matched = args.country ? ranked.filter((city) => countryMatches(city.country, args.country!)) : ranked;
   if (!matched.length && HOUSE_NUMBER.test(args.place)) throw new RangeError('Give a town or city name, not a street address.');

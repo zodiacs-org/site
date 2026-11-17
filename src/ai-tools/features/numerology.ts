@@ -20,7 +20,7 @@ export const NUMEROLOGY_MAX_YEAR = 2199;
 
 export const numerologyInput = z.strictObject({
   birthDate: z.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/)
-    .describe('The birth date, such as 1990-05-03. Gives the Life Path and the Personal Year.'),
+    .describe('The birth date, such as 1994-05-14. Gives the Life Path and the Personal Year.'),
   name: z.string().min(1).max(120).optional()
     .describe('Optional: the full name at birth, such as it appears on a birth certificate, for the Expression, Soul Urge and Personality numbers. Only if the person gives it for this reading. Latin letters; accents are folded. Used for this answer only: it is not returned, put in a link or stored.'),
   year: z.number().int().min(NUMEROLOGY_MIN_YEAR).max(NUMEROLOGY_MAX_YEAR).optional()
@@ -79,7 +79,7 @@ export const NUMEROLOGY_METHOD = 'Pythagorean letter values (A to I are 1 to 9, 
 export const NUMEROLOGY_NOTE = 'The arithmetic is exact and repeatable. The meanings are the ones the numerology tradition gives each number, in Zodiacs\' own words.';
 /** Fixed refusals: the engine's own message can name the letter it could not read, which is part of the name. */
 const REFUSALS: Record<NumerologyInputError['code'], string> = {
-  'invalid-date': 'birthDate must be a real calendar date, such as 1990-05-03.',
+  'invalid-date': 'birthDate must be a real calendar date, such as 1994-05-14.',
   'empty-name': 'name must contain at least one letter. Leave it out for the birth date numbers alone.',
   'unsupported-letters': 'name can be read only in the Latin alphabet, A to Z (accents are fine). Leave it out for the birth date numbers alone, or give the name as it is written in Latin letters.',
 };
