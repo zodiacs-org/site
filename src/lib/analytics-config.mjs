@@ -146,10 +146,10 @@ export const CALENDAR_FEED_VALUES = Object.freeze([
 
 /**
  * The site's public RSS feeds (src/pages/feeds/). A single sign's feed counts
- * as `horoscopes_sign`, never by its sign. The market research feed is not here.
+ * as `horoscopes_sign` or `events_sign`, never by its sign. The market research feed is not here.
  */
 export const RSS_FEED_VALUES = Object.freeze([
-  'horoscopes', 'horoscopes_sign', 'daily_sky', 'almanac', 'events',
+  'horoscopes', 'horoscopes_sign', 'daily_sky', 'almanac', 'events', 'events_sign',
 ]);
 
 /** Where the RSS link sat. */

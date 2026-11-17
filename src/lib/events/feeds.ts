@@ -11,6 +11,8 @@
  * is the same for every reader and carries no personal data.
  */
 import { eventsPublication, type PublishedEventDescriptor } from './site-publication';
+import { refinePublishedAnchors } from '../nasa-instants';
+import { pageInstant } from '../sky-heads-up';
 import { SIGNS, type Sign } from '../signs';
 
 export const SITE = 'https://zodiacs.org';
@@ -27,13 +29,34 @@ export function signForSlug(slug: string | undefined): Sign {
   return sign;
 }
 
-/** The timeline in time order, or the part of it that takes place in one sign. */
+let instants: Map<string, string> | undefined;
+
+/**
+ * The instant each event's page prints, ISO UTC, by event id: NASA JPL
+ * Horizons' instant for stations, ingresses and aspects, the committed anchor
+ * for lunations and eclipses (the same rule as /sky-calendar-heads-up.json).
+ * The id and the page address keep the stored anchor's date.
+ */
+export function eventInstant(event: PublishedEventDescriptor): string {
+  if (!instants) {
+    const timeline = eventsPublication.timeline;
+    const refined = refinePublishedAnchors(timeline);
+    instants = new Map(timeline.map((row, index) => [row.id, pageInstant(row, refined[index]!)]));
+  }
+  const at = instants.get(event.id);
+  if (!at) throw new Error(`events feed: no page instant for ${event.id}`);
+  return at;
+}
+
+/** The timeline in the order its pages' times fall, or the part of it that takes place in one sign. */
 export function feedEvents(sign?: string): PublishedEventDescriptor[] {
   return eventsPublication.timeline
     .filter((event) => !sign || event.signs.includes(sign))
     .slice()
-    .sort((a, b) => a.anchor.localeCompare(b.anchor) || a.id.localeCompare(b.id));
+    .sort((a, b) => eventInstant(a).localeCompare(eventInstant(b)) || a.id.localeCompare(b.id));
 }
+
+const uniqueSigns = (event: PublishedEventDescriptor) => [...new Set(event.signs)];
 
 const lastBuild = () => new Date(`${eventsPublication.lastModified}T00:00:00.000Z`);
 
@@ -44,7 +67,7 @@ export function signEventsRss(sign: Sign): string {
       <title>${esc(event.title)}</title>
       <link>${SITE}${event.path}</link>
       <guid isPermaLink="false">${SITE}/feeds/events/${esc(event.id)}</guid>
-      <pubDate>${new Date(event.anchor).toUTCString()}</pubDate>
+      <pubDate>${new Date(eventInstant(event)).toUTCString()}</pubDate>
       <description>${esc(event.summary)}</description>
     </item>`).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -73,17 +96,17 @@ function jsonItem(event: PublishedEventDescriptor) {
     url: `${SITE}${event.path}`,
     title: event.title,
     content_text: event.summary,
-    date_published: event.anchor,
+    date_published: eventInstant(event),
     date_modified: `${event.lastModified}T00:00:00.000Z`,
-    tags: [event.family, event.subtype, ...event.signs],
+    tags: [...new Set([event.family, event.subtype, ...event.signs])],
     ...(event.card ? { image: `${SITE}${event.card}` } : {}),
     _zodiacs: {
       event_id: event.id,
-      at_utc: event.anchor,
+      at_utc: eventInstant(event),
       family: event.family,
       subtype: event.subtype,
       bodies: event.bodies,
-      signs: event.signs,
+      signs: uniqueSigns(event),
     },
   };
 }
@@ -102,7 +125,7 @@ export function eventsJsonFeed(sign?: Sign) {
     language: 'en',
     authors: [{ name: 'Zodiacs.org', url: `${SITE}/` }],
     _zodiacs: {
-      about: 'One item per sky event, in time order. date_published and _zodiacs.at_utc are the exact instant of the event in UTC (ISO 8601), not when the item was written; the event page shows it in the reader’s own time zone too. _zodiacs.signs are the signs the event takes place in, as lowercase English slugs. url is the event’s page on zodiacs.org. Astronomy facts only: the pages keep what the event means in astrology separate from the computed facts, and nothing here is a personal forecast.',
+      about: 'One item per sky event, in time order. date_published and _zodiacs.at_utc are the instant the event’s page prints, in UTC (ISO 8601), not when the item was written, so most items are dated in the future; the page shows the same instant in the reader’s own time zone too. _zodiacs.signs are the signs the event takes place in, as lowercase English slugs. url is the event’s page on zodiacs.org: a dated page for most events, and a place on the retrogrades page for a station of a planet beyond Mars. The times, bodies and signs are computed sky facts; content_text is the page’s one-line summary, and nothing here is a personal forecast.',
       license: 'CC BY 4.0, cite Zodiacs.org and link the event page',
       methodology: `${SITE}/methodology/`,
       calendar: `${SITE}/sky-calendar.ics`,

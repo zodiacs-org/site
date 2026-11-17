@@ -78,7 +78,7 @@ const GROWTH_EVENTS = [
 // The retention hooks (docs/ANALYTICS.md, "Retention hook events").
 const HOOK_EVENTS = ['calendar_subscribe', 'calendar_download', 'rss_subscribe'] as const;
 const CALENDAR_FEEDS = ['sky', 'heads_up', 'eclipses', 'full_moons', 'mercury_retrograde', 'transits'];
-const RSS_FEEDS = ['horoscopes', 'horoscopes_sign', 'daily_sky', 'almanac', 'events'];
+const RSS_FEEDS = ['horoscopes', 'horoscopes_sign', 'daily_sky', 'almanac', 'events', 'events_sign'];
 const RSS_PLACEMENTS = ['footer', 'horoscope_page', 'feeds_page', 'developers'];
 
 const SIGNS = [

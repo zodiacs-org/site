@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { SIGNS } from '../signs';
 import { eventsPublication } from './site-publication';
 import { eventsJsonFeed, feedEvents, signEventsRss } from './feeds';
+import { headsUpFeed } from '../sky-heads-up';
 
 describe('the sky-event feeds', () => {
   it('splits the timeline by the signs each event takes place in, losing none', () => {
@@ -53,6 +54,27 @@ describe('the sky-event feeds', () => {
       expect(feed.feed_url).toBe(`https://zodiacs.org/feeds/events/${sign.slug}.json`);
       expect(feed.items.map((item) => item._zodiacs.event_id)).toEqual(feedEvents(sign.slug).map((event) => event.id));
       expect('per_sign' in feed._zodiacs).toBe(false);
+    }
+  });
+
+  it('dates each item at the instant its page prints, as the heads-up calendar does', () => {
+    const pageTimes = new Map(headsUpFeed(new Date('2026-01-01T00:00:00Z')).events.map((event) => [event.id, event.at]));
+    const feed = eventsJsonFeed();
+    let compared = 0;
+    for (const item of feed.items) {
+      const at = pageTimes.get(item._zodiacs.event_id);
+      if (!at) continue;
+      expect(item._zodiacs.at_utc, item._zodiacs.event_id).toBe(at);
+      compared += 1;
+    }
+    expect(compared).toBeGreaterThan(200);
+    expect(feed.items.find((item) => item._zodiacs.event_id === 'neptune-sextile-pluto-2026-07-24')?._zodiacs.at_utc.slice(0, 10)).toBe('2026-07-25');
+  });
+
+  it('lists each sign once per item', () => {
+    for (const item of eventsJsonFeed().items) {
+      expect(new Set(item._zodiacs.signs).size).toBe(item._zodiacs.signs.length);
+      expect(new Set(item.tags).size).toBe(item.tags.length);
     }
   });
 
