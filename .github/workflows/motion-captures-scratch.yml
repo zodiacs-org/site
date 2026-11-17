@@ -15,9 +15,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
-          gh run download 44093933184 -R "$REPO" -n motion-captures -D out
+          gh run download 44102657025 -R "$REPO" -n browser-evidence-candidates-cf25f3ff332a1a65dd461b6b01ef8d6bce5068bf-44102657025 -D out
           cd out
           git init -q -b claude/motion-captures-out
           git -c user.name="Zodiacs Admin" -c user.email=admin@zodiacs.org add -A
-          git -c user.name="Zodiacs Admin" -c user.email=admin@zodiacs.org commit -qm "Scratch: numerology motion captures (not for merge)"
-          git push -f "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" HEAD:claude/motion-captures-out
+          git -c user.name="Zodiacs Admin" -c user.email=admin@zodiacs.org commit -qm "Scratch: phase 1 evidence candidates (not for merge)"
+          git push -f "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" HEAD:claude/motion-evidence-out
