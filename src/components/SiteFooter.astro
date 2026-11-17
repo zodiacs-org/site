@@ -206,7 +206,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
         <div class="zfooter__meta-links">
           <a href="/developers/" hreflang={englishHreflang} title={englishOnlyAria}>{FOOTER_COPY[locale].developers}{englishSuffix}</a>
           <a href="/widgets/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerWidgets')}{englishSuffix}</a>
-          <a href="/feeds/horoscopes.xml" hreflang={englishHreflang} title={englishOnlyAria}>RSS{englishSuffix}</a>
+          <a href="/feeds/horoscopes.xml" hreflang={englishHreflang} title={englishOnlyAria} data-hook-event="rss_subscribe" data-hook-feed="horoscopes" data-hook-placement="footer">RSS{englishSuffix}</a>
         </div>
       </nav>
 

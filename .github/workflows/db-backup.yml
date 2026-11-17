@@ -82,14 +82,20 @@ jobs:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
 
-      # The production project runs PostgreSQL 17; the runner image ships
-      # client 16, and pg_dump refuses servers newer than itself.
+      # The production project and audited exporter require PostgreSQL 17.
+      # Runner defaults can change independently of the installed client.
       - name: Install PostgreSQL 17 and GnuPG clients
         run: |
           set -euo pipefail
           sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
           sudo apt-get install -y --no-install-recommends postgresql-client-17 gnupg
-          pg_dump --version
+          # Bypass pg_wrapper's newest-installed-major selection, in this
+          # step and in later steps (GITHUB_PATH takes effect next step).
+          export PATH="/usr/lib/postgresql/17/bin:$PATH"
+          printf '%s\n' '/usr/lib/postgresql/17/bin' >> "$GITHUB_PATH"
+          for client in pg_dump pg_restore psql; do
+            "$client" --version | grep -E '^.*\(PostgreSQL\) 17\.'
+          done
           gpg --version
 
       - name: Dump, compress, encrypt

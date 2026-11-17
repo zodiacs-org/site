@@ -31,7 +31,7 @@ const jsonLd = kind === 'calendar' ? [] : [{ '@type': 'WebApplication', name: s(
     {kind === 'calendar' ? <div class="return-panel">
       <HeroCrop crop="sun-moon" locale={locale} />
       <p>{s(locale, 'calendarRange')}</p>
-      <div class="return-actions"><a class="btn btn--primary" href={feed.replace('https:', 'webcal:')}>{s(locale, 'subscribe')}</a><a class="btn btn--ghost" href={feed} download={`zodiacs-sky-${locale}.ics`}>{s(locale, 'downloadCalendar')}</a></div>
+      <div class="return-actions"><a class="btn btn--primary" href={feed.replace('https:', 'webcal:')} data-hook-event="calendar_subscribe" data-hook-feed="sky">{s(locale, 'subscribe')}</a><a class="btn btn--ghost" href={feed} download={`zodiacs-sky-${locale}.ics`} data-hook-event="calendar_download" data-hook-feed="sky">{s(locale, 'downloadCalendar')}</a></div>
       <h2>{s(locale, 'calendarUrl')}</h2><a class="return-url mono" href={feed}>{feed}</a>
       <p>{s(locale, 'calendarHelp')}</p><p class="sharing-note">{s(locale, 'calendarPrivacy')}</p><p class="sharing-note">{s(locale, 'eclipseNote')}</p>
       <a href={localizePath(locale, '/methodology/')}>{s(locale, 'accuracy')} →</a>
@@ -44,7 +44,7 @@ const jsonLd = kind === 'calendar' ? [] : [{ '@type': 'WebApplication', name: s(
       <p>{h('headsUpLede')}</p>
       <p>{h('headsUpAhead')}</p>
       <p>{h('headsUpSupermoonRule')}</p>
-      <div class="return-actions"><a class="btn btn--primary" href={headsUp.replace('https:', 'webcal:')}>{h('headsUpSubscribe')}</a><a class="btn btn--ghost" href={HEADS_UP_ICS_PATH} download="zodiacs-sky-heads-up.ics">{h('headsUpDownload')}</a></div>
+      <div class="return-actions"><a class="btn btn--primary" href={headsUp.replace('https:', 'webcal:')} data-hook-event="calendar_subscribe" data-hook-feed="heads_up">{h('headsUpSubscribe')}</a><a class="btn btn--ghost" href={HEADS_UP_ICS_PATH} download="zodiacs-sky-heads-up.ics" data-hook-event="calendar_download" data-hook-feed="heads_up">{h('headsUpDownload')}</a></div>
       <p>{h('headsUpUrl')}</p><a class="return-url mono" href={headsUp}>{headsUp}</a>
       <p>{h('headsUpRange')}</p><p class="sharing-note">{h('headsUpSeparate')}</p>
       <a href={HEADS_UP_JSON_PATH}>{h('headsUpJson')}</a>

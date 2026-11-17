@@ -114,9 +114,10 @@ describe('the numerology switch on', () => {
     expect(tool._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
     expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'name', 'year', 'zone']);
     expect(tool.inputSchema.required).toEqual(['birthDate']);
-    // Labelled as separate from astrology; work, money and wellbeing allowed as the tradition reads them, with the lines it may not cross.
+    // Labelled as separate from astrology; work and wellbeing allowed as the tradition reads them, no money forecasts (ZOD-30), with the lines it may not cross.
     expect(tool.description).toContain('Numerology is a separate tradition from astrology');
-    expect(tool.description).toContain('including work, money and wellbeing where the tradition speaks to them');
+    expect(tool.description).toContain('including work and wellbeing where the tradition speaks to them, with no money, earnings or promotion forecasts.');
+    expect(tool.description).not.toMatch(/strong year for earnings/u);
     expect(tool.description).toContain('Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.');
     expect(tool.description).not.toMatch(/reflection/u);
     expect(tool.description).toContain('not returned, stored or put in a link');
