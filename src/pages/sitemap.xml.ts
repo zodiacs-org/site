@@ -428,6 +428,9 @@ const CONNECTOR_PAGE_ROUTES = [
   '/developers/ai/', '/developers/docs/', '/developers/docs/astrology-mcp-server/', '/developers/support/',
 ] as const;
 
+// The /people/ hub began linking the Fortune 500 CEO sign study; the hub alone, not each person page.
+const PEOPLE_HUB_MODIFIED_AT = '2026-11-17T00:00:00.000Z';
+
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
   // The moon and alignment pages of the coming twelve months carry fuller readings (ZOD-221, decision J).
@@ -900,6 +903,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       priority: 0.7,
       lastmod: lastmodDate(latestModifiedAt(
         PEOPLE_TEMPLATE_MODIFIED_AT,
+        PEOPLE_HUB_MODIFIED_AT,
         ...INDEXABLE_PEOPLE.map((person) => person.reviewedAtUtc),
       )),
     }] : []),
