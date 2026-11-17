@@ -6,7 +6,7 @@ import { EDITOR_AUTHOR } from '../../../lib/editorial';
 import { SIGNS } from '../../../lib/signs';
 import study from '../../../data/studies/fortune-500-ceo-signs.json';
 
-const PAGE_URL = 'https://zodiacs.org/learn/fortune-500-ceo-signs/';
+const PAGE_URL = 'https://zodiacs.org/studies/fortune-500-ceo-signs/';
 const PAGE_DATE = '2026-11-17';
 const headline = 'Which sign runs the Fortune 500?';
 const observed = study.observed as Record<string, number>;
@@ -42,8 +42,7 @@ const jsonLd = [
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },
-      { '@type': 'ListItem', position: 2, name: 'Learn', item: 'https://zodiacs.org/learn/' },
-      { '@type': 'ListItem', position: 3, name: headline, item: PAGE_URL },
+      { '@type': 'ListItem', position: 2, name: headline, item: PAGE_URL },
     ],
   },
 ];
@@ -56,7 +55,7 @@ const fmt = (value: number) => value.toFixed(1);
 <Base
   title="Which Zodiac Sign Runs the Fortune 500? CEO Sun Signs, 2026 | Zodiacs.org"
   description={description}
-  path="/learn/fortune-500-ceo-signs/"
+  path="/studies/fortune-500-ceo-signs/"
   type="article"
   image="/assets/og/v2/tool/learn.png"
   imageAlt="Which sign runs the Fortune 500? Zodiacs.org"
