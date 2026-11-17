@@ -725,8 +725,6 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/', '2026-11-14'] as const,
   // Numerology's visual restyle (emblem, letter key, life path tiles, shared entrance motion), last so it wins.
   ['/numerology/', '2026-11-17'] as const,
-  // The tools hub's shared entrance motion (rows and chapter heads rise in once), last so it wins.
-  ['/tools/', '2026-11-17'] as const,
 ]);
 
 function getLastmod(loc: string): string {
