@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import ChartCalculator from '../../islands/ChartCalculator';
+import LevelSwitch from '../../components/LevelSwitch.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import '../../styles/calculator.css';
 
@@ -61,12 +62,18 @@ const jsonLd = [
         The <a href="/learn/glossary/#moon">Moon</a> rules how you feel: your inner weather, your comforts, the
         way you settle yourself. Here is how to find yours.
       </p>
+      <LevelSwitch idPrefix="ms-level" />
     </div>
 
     <ChartCalculator mode="moon" client:load />
     <noscript>
       <p>This Moon sign calculator needs JavaScript. Enable it and reload to calculate your Moon sign from your birth details in your browser.</p>
     </noscript>
+    <nav class="level-data" data-depth="advanced" aria-label="Data for chart readers">
+      <span class="level-data__cap">For chart readers</span>
+      <a href="/methodology/">How we calculate</a>
+      <a href="/developers/">Chart data API</a>
+    </nav>
   </section>
 
   <section class="section--tight container container--narrow">
@@ -85,6 +92,7 @@ const jsonLd = [
         <a href="/birth-chart/">get your birth chart</a>: sun, moon, and rising
         together are the real summary of you.
       </p>
+      <div data-depth="intermediate">
       <EvidenceDisclosure
         label="Why birth time can change the answer"
         description="Moon speed and historical clock changes"
@@ -96,6 +104,7 @@ const jsonLd = [
           of the birthplace.
         </p>
       </EvidenceDisclosure>
+      </div>
     </div>
   </section>
 
