@@ -1,0 +1,137 @@
+---
+/**
+ * Reader levels (docs/LEVELS.md): the first-visit question and the level
+ * switch. Put it once, above anything marked with data-depth. It:
+ *
+ *   1. applies the reader's saved level (html[data-level]) before the marked
+ *      content is parsed, so nothing flashes open and then closes;
+ *   2. asks "How well do you know astrology?" once, on a first visit, with no
+ *      sign-up: the answer stays in this browser;
+ *   3. lets the reader switch anytime, and opens the new depth with the
+ *      shared entrance motion (docs/MOTION.md).
+ *
+ * Without JavaScript nothing is hidden: every depth shows.
+ */
+import Motion from './Motion.astro';
+import '../styles/level.css';
+
+interface Props {
+  /** Prefix for element ids, so two switches on one page never clash. */
+  idPrefix?: string;
+}
+const { idPrefix = 'level' } = Astro.props;
+const options = [
+  { level: 'beginner', label: 'Beginner', answer: "I'm new to it", hint: 'Plain words, the key parts first' },
+  { level: 'intermediate', label: 'Intermediate', answer: 'I know my big three', hint: 'Houses, aspects and transits open' },
+  { level: 'advanced', label: 'Advanced', answer: 'I read charts myself', hint: 'Exact degrees, the 3D view and data' },
+];
+---
+<script is:inline>
+  (function () {
+    var root = document.documentElement;
+    var levels = ['beginner', 'intermediate', 'advanced'];
+    var saved = null, asked = null;
+    try {
+      saved = window.localStorage.getItem('zodiacs-level');
+      asked = window.localStorage.getItem('zodiacs-level-asked');
+    } catch (e) {}
+    var known = levels.indexOf(saved) >= 0;
+    root.setAttribute('data-level', known ? saved : 'beginner');
+    // Decided before the question is parsed, so it never pushes the page down.
+    if (!known && !asked) root.setAttribute('data-level-ask', 'open');
+  })();
+</script>
+<Motion />
+<div class="level-wrap" data-level-root>
+  <section class="level-ask" id={`${idPrefix}-ask`} aria-labelledby={`${idPrefix}-ask-q`} data-level-ask>
+    <p class="level-ask__q" id={`${idPrefix}-ask-q`}>How well do you know astrology?</p>
+    <div class="level-ask__opts">
+      {options.map((o) => (
+        <button type="button" class="level-ask__opt" data-level-pick={o.level}>
+          <b>{o.answer}</b><span>{o.hint}</span>
+        </button>
+      ))}
+    </div>
+    <div class="level-ask__foot">
+      <span>No sign-up. Your answer stays in this browser, and you can switch anytime.</span>
+      <button type="button" class="level-ask__skip" data-level-skip>Not now</button>
+    </div>
+  </section>
+  <div class="level-switch" role="group" aria-label="How much detail to show">
+    <span class="level-switch__cap" aria-hidden="true">Your level</span>
+    <div class="level-switch__seg">
+      {options.map((o) => (
+        <button type="button" class="level-switch__btn" data-level-set={o.level} aria-pressed="false">{o.label}</button>
+      ))}
+    </div>
+    <p class="level-switch__status" data-level-status aria-live="polite"></p>
+  </div>
+</div>
+
+<script>
+  import { DEFAULT_LEVEL, LEVEL_ASKED_KEY, LEVEL_EVENT, LEVEL_STORAGE_KEY, isLevel, pageLevel, type Level } from '../lib/level';
+
+  const STATUS: Record<Level, string> = {
+    beginner: 'Showing plain words and the key parts first.',
+    intermediate: 'Showing houses, aspects and transits too.',
+    advanced: 'Showing everything, down to exact degrees.',
+  };
+  const MARKED = '[data-depth], [data-depth-only]';
+
+  const store = {
+    get(key: string): string | null { try { return window.localStorage.getItem(key); } catch { return null; } },
+    set(key: string, value: string): void { try { window.localStorage.setItem(key, value); } catch { /* private window */ } },
+  };
+  const shown = (el: Element) => el.getClientRects().length > 0;
+
+  function apply(level: Level, opts: { save?: boolean; reveal?: boolean } = {}) {
+    const root = document.documentElement;
+    const marked = Array.from(document.querySelectorAll<HTMLElement>(MARKED));
+    const before = new Map<Element, boolean>(marked.map((el) => [el, shown(el)]));
+    root.setAttribute('data-level', level);
+    if (opts.save !== false) store.set(LEVEL_STORAGE_KEY, level);
+    document.querySelectorAll<HTMLButtonElement>('[data-level-set]').forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.dataset.levelSet === level));
+    });
+    document.querySelectorAll('[data-level-status]').forEach((s) => { s.textContent = STATUS[level]; });
+    window.dispatchEvent(new CustomEvent(LEVEL_EVENT, { detail: { level } }));
+    if (opts.reveal === false) return;
+    // Open the new depth with the shared rise: only the outermost block that
+    // just appeared moves, staggered in reading order.
+    const runtime = (window as unknown as { zodiacsMotion?: { scan(root?: ParentNode): void } }).zodiacsMotion;
+    if (!runtime || root.getAttribute('data-motion') !== 'on') return;
+    let step = 0;
+    marked.forEach((el) => {
+      if (before.get(el) || !shown(el)) return;
+      const parent = el.parentElement?.closest(MARKED);
+      if (parent && !before.get(parent)) return;
+      el.classList.remove('is-in', 'is-done');
+      el.setAttribute('data-motion', 'rise');
+      el.style.setProperty('--motion-i', String(Math.min(step++, 8)));
+      runtime.scan(el.parentElement ?? undefined);
+    });
+  }
+
+  function init() {
+    const current = pageLevel() ?? DEFAULT_LEVEL;
+    apply(current, { save: false, reveal: false });
+    const closeAsk = () => {
+      store.set(LEVEL_ASKED_KEY, '1');
+      document.documentElement.removeAttribute('data-level-ask');
+    };
+    document.querySelectorAll<HTMLButtonElement>('[data-level-set]').forEach((b) => {
+      b.addEventListener('click', () => {
+        if (isLevel(b.dataset.levelSet)) { closeAsk(); apply(b.dataset.levelSet); }
+      });
+    });
+    document.querySelectorAll<HTMLButtonElement>('[data-level-pick]').forEach((b) => {
+      b.addEventListener('click', () => {
+        if (isLevel(b.dataset.levelPick)) { closeAsk(); apply(b.dataset.levelPick); }
+      });
+    });
+    document.querySelector('[data-level-skip]')?.addEventListener('click', closeAsk);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+</script>

@@ -1,0 +1,63 @@
+---
+/**
+ * The site's shared entrance motion (docs/MOTION.md). Put <Motion /> once,
+ * near the top of a page's content and before anything marked with
+ * data-motion. It:
+ *
+ *   1. turns motion on (html[data-motion="on"]) before the marked elements
+ *      are parsed, unless the reader asks for reduced motion, so nothing
+ *      flashes visible and then disappears;
+ *   2. reveals each marked element once, as it scrolls into view, and never
+ *      again (one calm pass, then still);
+ *   3. exposes window.zodiacsMotion.scan(root) so islands that render later
+ *      (a calculator's result, say) can hand their new nodes over. From an
+ *      island, import { motionScan } from '../lib/motion'.
+ *
+ * Both scripts are inline and small: no extra request, nothing in the way of
+ * the first paint. The timings live in src/styles/motion.css.
+ */
+import '../styles/motion.css';
+---
+<script is:inline>
+  (function () {
+    var root = document.documentElement;
+    if (root.hasAttribute('data-motion')) return;
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    root.setAttribute('data-motion', still || !('IntersectionObserver' in window) ? 'off' : 'on');
+  })();
+</script>
+<script is:inline>
+  (function () {
+    if (window.zodiacsMotion) return;
+    var on = document.documentElement.getAttribute('data-motion') === 'on';
+    // Elements that come into view together are staggered in document
+    // order, so a grid of cards arrives as a wave however far down it sits.
+    var io = on && new IntersectionObserver(function (entries) {
+      var step = 0;
+      for (var i = 0; i < entries.length; i++) {
+        var el = entries[i].target;
+        if (!entries[i].isIntersecting) continue;
+        if (!el.style.getPropertyValue('--motion-i')) el.style.setProperty('--motion-i', String(Math.min(step, 8)));
+        step++;
+        el.classList.add('is-in');
+        io.unobserve(el);
+        settle(el);
+      }
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.12 });
+    // Once the pass is over the element is left alone (.is-done), so its own
+    // transitions, such as a card's hover, run without the entrance delay.
+    function settle(el) {
+      window.setTimeout(function () { el.classList.add('is-done'); }, 2600);
+    }
+    function scan(scope) {
+      var marked = (scope || document).querySelectorAll('[data-motion]:not(.is-in)');
+      for (var m = 0; m < marked.length; m++) {
+        if (io) io.observe(marked[m]);
+        else marked[m].classList.add('is-in');
+      }
+    }
+    window.zodiacsMotion = { scan: scan };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { scan(); }, { once: true });
+    else scan();
+  })();
+</script>

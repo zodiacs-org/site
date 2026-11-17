@@ -18,6 +18,7 @@ import PlanetGlyph from '../components/PlanetGlyph';
 import AspectGlyph from '../components/AspectGlyph';
 import Wheel from '../lib/wheel/Wheel';
 import LayerChips from './explorer/LayerChips';
+import { onLevel } from '../lib/level';
 import { moonCandidates, moonIsUncertain, moonLabel } from '../lib/moon-certainty';
 import { createModuleLoader } from '../lib/module-load';
 import { downloadCalculationReceipt } from '../lib/receipt-download';
@@ -615,6 +616,23 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const [selection, setSelection] = useState<EntityRef | null>(null);
   const [aspectTypes, setAspectTypes] = useState<AspectType[]>(ALL_ASPECT_TYPES);
   const [showHouses, setShowHouses] = useState(true);
+  // Reader levels (docs/LEVELS.md): on a page with the level switch, the
+  // Beginner wheel keeps to signs and planets; houses and aspect lines come
+  // back from Intermediate up. Pages without levels never see a change.
+  useEffect(() => {
+    let previous: string | null = null;
+    return onLevel((level) => {
+      if (level === null || level === previous) return;
+      if (level === 'beginner') {
+        setShowHouses(false);
+        setAspectTypes([]);
+      } else if (previous === 'beginner' || previous === null) {
+        setShowHouses(true);
+        setAspectTypes(ALL_ASPECT_TYPES);
+      }
+      previous = level;
+    });
+  }, []);
   const [detailOpen, setDetailOpen] = useState(false);
   const [announce, setAnnounce] = useState('');
   const [spotlight, setSpotlight] = useState<ChartSpotlight | null>(null);
@@ -2397,7 +2415,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                         )}
                       </div>
                       {!tourOpen && (
-                        <div class="calc__lens-rail" role="group" aria-label={lensLabels.rail}>
+                        <div class="calc__lens-rail" role="group" aria-label={lensLabels.rail} data-depth="intermediate">
                           {(['natal', 'sky', 'progressed', 'return'] as const).map((id) => (
                             <button
                               key={id}
@@ -2412,6 +2430,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                           ))}
                         </div>
                       )}
+                      <div data-depth="intermediate">
                       <LayerChips
                         aspectTypes={aspectTypes}
                         onAspectTypes={setAspectTypes}
@@ -2420,6 +2439,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                         hasHouses={chart.houses != null}
                         locale={locale}
                       />
+                      </div>
+                      <div data-depth="intermediate">
                       {EntityPicker ? <EntityPicker
                         scene={scene}
                         selection={selection}
@@ -2442,7 +2463,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                           </>}
                         </div>
                       )}
-                      <div class="calc__depth">
+                      </div>
+                      <div class="calc__depth" data-depth="advanced">
                         <button
                           type="button"
                           class="calc__depth-btn"
@@ -2612,11 +2634,13 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               </div>
 
               {mode === 'full' && locale === 'en' && AspectPatternFeature && (
+                <div data-depth="intermediate">
                 <AspectPatternFeature context="natal" points={chart.bodies} aspects={chart.aspects}
                   imageOf={{ chart, birthDate: computedInput?.date }}
                   timeKnown={chart.input.timeKnown && !chart.flags.includes('no-time')}
                   sourceKey={String(chartContextIdRef.current)}
                   onSelectBody={(body) => showOnChartFromReading({ kind: 'body', body }, 'instant')} />
+                </div>
               )}
 
               {/* A visual story leads; exact data remains available below. */}
@@ -2644,12 +2668,14 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               )}
 
               {mode === 'full' && ChartContext && (
+                <div data-depth="intermediate">
                 <ChartContext input={{ bodies: chart.bodies, timeKnown: chart.input.timeKnown,
                   moonSignCandidates: chart.moonSignCandidates, angles: chart.angles, houses: chart.houses }}
                   imageOf={{ chart, birthDate: computedInput?.date }}
                   locale={locale} inputRevision={inputRevision}
                   isInputCurrent={(revision) => inputRevisionRef.current === revision}
                   selection={selection} onShowOnChart={showOnChartFromReading} />
+                </div>
               )}
 
               {mode === 'full' && showsEnglishInterpretation && ApproachRead && (
@@ -2850,6 +2876,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           {mode === 'full' && scene && (
             <details
               class="calc__detail"
+              data-depth="advanced"
               data-detail
               data-evidence-disclosure
               open={detailOpen}
