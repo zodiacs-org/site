@@ -42090,7 +42090,7 @@ var TOOL_DESCRIPTIONS = {
   open_chart_studio: "Opens Chart Studio, an interactive birth chart that the person fills in themselves with a birth date, a place and, if known, a time. The chart is calculated inside the panel. It takes no input, so it opens before any birth detail is given. It fits a request for a birth chart, a rising sign or a Moon sign when no birth date is in the conversation, and someone who wants to explore their own chart: the person enters the details in the panel, so nothing has to be asked for beforehand. The assistant sees only the parts of the chart the person chooses to share.",
   get_capabilities: "Returns a list of what Zodiacs can do, its limits and how it handles privacy. It takes no input and needs no sign-in or birth details. It fits a question about what Zodiacs can do, or about its limits. It describes the service and calculates nothing. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes.",
   get_sky: "Returns where the Sun, the Moon and the planets are now or at a given moment, with the Moon's phase. It fits a question about the sky at one moment, with no person's chart involved. It is astronomy only and makes no personal prediction. Moments run from 1800 to 2199. It takes an optional time zone; without one its times are in UTC. It gives positions for a moment, with no houses or rising sign.",
-  get_upcoming_events: "Lists changes in the sky over a window of up to 92 days: planets changing sign, planets turning retrograde or direct, and new and full Moons. With no input it covers the next seven days. It fits a question about what is coming up in the sky over the next days or weeks. It does not list eclipses or every aspect. It lists dates and makes no prediction. A request to set a reminder or an alert, or to schedule anything, is not a request for this tool, not even to look the date up first: Zodiacs sets no reminders and schedules nothing. Nor is a stock or lottery pick, an investment call, a bet, an election or health forecast, or a guarantee. The window is at most 92 days, within 1800 to 2199. Without a time zone its times are in UTC. Its times for a slow planet's sign change come from the engine and can differ from NASA JPL Horizons by hours: for Neptune entering Aries on 26 January 2026 it gives 14:31:41 UTC, where Horizons gives 17:35 UTC.",
+  get_upcoming_events: "Lists changes in the sky over a window of up to 92 days: planets changing sign, planets turning retrograde or direct, and new and full Moons. With no input it covers the next seven days. It fits a question about what is coming up in the sky over the next days or weeks. It does not list eclipses or every aspect. It lists dates and makes no prediction. A request to set a reminder or an alert, or to schedule anything, is not a request for this tool, not even to look the date up first: Zodiacs sets no reminders and schedules nothing. Nor is a stock or lottery pick, an investment call, a bet, an election or health forecast, or a guarantee. The window is at most 92 days, within 1800 to 2199. Without a time zone its times are in UTC. Its times for a slow planet's sign change come from the engine and can differ from NASA JPL Horizons by hours: for Neptune entering Aries on 26 January 2026 it gives 14:32 UTC, where Horizons gives 17:35 UTC.",
   check_sky_fact: "Checks one claim about the sky and answers yes, no, or that it depends on the time zone when the answer changes during that day. It checks four kinds of claim: a body's sign, whether a planet is retrograde, a sign change on a date, and a Moon phase on a date. It fits a question such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?'. It is astronomy only and cannot check a prediction. Whether a retrograde, a sign or a Moon phase makes a good time to buy, sell, bet or invest is not a claim about the sky. A request for a stock or lottery pick, an investment call, a bet, an election or health forecast, or a guarantee is not a request for this tool, not even as a first step: Zodiacs does not do this, and no sky fact is checked for it. Dates run from 1800 to 2199. Its times for a slow planet's sign change carry the same limit as get_upcoming_events: it gives 14:31:41 UTC for Neptune entering Aries on 26 January 2026, where NASA JPL Horizons gives 17:35 UTC. API documentation: https://zodiacs.org/developers/compute/.",
   get_horoscope: `Returns the Sun-sign horoscope Zodiacs publishes for a date: general, love or career for a day, or general for the week. With a birth date it adds a personal forecast for the week from that person's own chart, in dated lines. Each reading is dated and carries a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing the reading. It fits a request for a daily or weekly horoscope or a reflective reading for a sign. A horoscope asked for with no sign named still belongs here: it opens with the sign left for the person to choose. Daily readings exist for the day before, the day of and the day after the current edition. Limits: no betting tips, sports picks, stock picks, investment timing, financial forecasts, election forecasts, health predictions or guaranteed outcomes, including when such a request mentions a horoscope. A request for one of those is not a request for this tool, not even as a first step: Zodiacs does not do this, and no horoscope is fetched for it. For a birth date under 18 there is no love or romance reading: the general reading stands in, with a note that says so. With no birth date it has no way to know the reader's age. It refuses a birth date less than 13 years ago. There is no horoscope for a named child under 13, meaning a particular child the request names or points to, such as someone's nine-year-old daughter, whatever the sign and with or without a birth date. A Sun sign on its own, with no name and no birth date, gets the general horoscope for that sign. Birth details are used for this answer only: never stored, logged or put in a link. Zodiacs sends no notifications and schedules nothing, so a reminder or a horoscope on a schedule is not a request for this tool either. Its results include a link to the sign-up page for the daily email.`,
   get_occasion_sky: `Describes the sky on a day that matters to someone: the Sun and Moon signs, the Moon's phase and any retrograde planets, with a card title and short lines. With a place it adds sunset, golden hour, dusk, the Moon and the planets visible that evening. It rates the date from 0 to 100 with a verdict, the astrological reasons (Venus, the Moon's phase and sign, retrograde planets) and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. Given a window of up to 92 days as searchFrom and searchTo it rates every day and returns the three best-rated days. It rates one date per call. cardUrl is the complete link to the printable card, including every field after #; when cardUrl is null, the returned page link takes its place. shareUrl is the link for sharing the rating. It fits a wedding, an anniversary, the day two people met, a birthday, a pet, a new home, a job, a graduation, a retirement or a gathering. The rating is astrology's traditional reading; it never guarantees how the day will go. A birthday card for a day in the last 13 years is refused. A card's link carries the occasion's own day, time, zone and rounded coordinates, and no name. The place name and first names are printed on the card only and are not used in the calculation.`,
@@ -42134,6 +42134,57 @@ var descriptionFor = (tool, skyEvents2, switches = {}) => (tool === "get_year_sc
 
 // src/ai-tools/server.ts
 import { McpServer } from "@modelcontextprotocol/server";
+
+// src/ai-tools/clear-time.ts
+var MINUTE2 = 6e4;
+function roundToMinute(utc) {
+  return new Date(Math.round(new Date(utc).getTime() / MINUTE2) * MINUTE2);
+}
+var two = (value) => String(Math.trunc(Math.abs(value))).padStart(2, "0");
+function localIso(utc, zone9, milliseconds = false) {
+  const exact = new Date(utc).getTime();
+  const instant2 = new Date(Math.floor(exact / 1e3) * 1e3);
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: zone9, era: "short", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(instant2).map((part) => [part.type, part.value]));
+  const year = Number(parts.year) * (parts.era === "BC" ? -1 : 1) + (parts.era === "BC" ? 1 : 0);
+  const wall = /* @__PURE__ */ new Date(0);
+  wall.setUTCFullYear(year, Number(parts.month) - 1, Number(parts.day));
+  wall.setUTCHours(Number(parts.hour), Number(parts.minute), Number(parts.second), 0);
+  const offsetMinutes2 = Math.round((wall.getTime() - instant2.getTime()) / MINUTE2);
+  const offset = `${offsetMinutes2 < 0 ? "-" : "+"}${two(offsetMinutes2 / 60)}:${two(offsetMinutes2 % 60)}`;
+  const fraction = milliseconds ? `.${String(exact - instant2.getTime()).padStart(3, "0")}` : "";
+  return `${wall.toISOString().slice(0, 19)}${fraction}${offset}`;
+}
+function localMinuteIso(utc, zone9) {
+  return localIso(roundToMinute(utc), zone9);
+}
+function shownTime(utc, window) {
+  const time = new Date(utc).getTime();
+  const low = Math.max(Date.parse(EPOCH.from), window ? new Date(window.from).getTime() : -Infinity);
+  const high = Math.min(Date.parse(EPOCH.to), window ? new Date(window.to).getTime() : Infinity);
+  for (const [unit, precision] of [[MINUTE2, "minute"], [1e3, "second"]]) {
+    const nearest = Math.round(time / unit) * unit;
+    const other = nearest > time ? Math.floor(time / unit) * unit : Math.ceil(time / unit) * unit;
+    for (const candidate of [nearest, other]) if (candidate >= low && candidate <= high) return { at: new Date(candidate), precision };
+  }
+  return { at: new Date(time), precision: "millisecond" };
+}
+function shownUtc(shown) {
+  const iso3 = shown.at.toISOString();
+  return shown.precision === "minute" ? `${iso3.slice(0, 16)}:00Z` : shown.precision === "second" ? `${iso3.slice(0, 19)}Z` : iso3;
+}
+function eventTimes(utc, zone9, window) {
+  const shown = shownTime(utc, window);
+  return { at: shownUtc(shown), localAt: localIso(shown.at, zone9, shown.precision === "millisecond") };
+}
+function moonDirection(angle) {
+  return angle < 180 ? "waxing" : "waning";
+}
+function moonPhaseLabel(angle) {
+  const name = moonPhaseNameFromAngle(angle);
+  if (/^Wa(?:x|n)ing /u.test(name) || name === "First Quarter" || name === "Last Quarter") return name;
+  const turn3 = (angle % 360 + 360) % 360;
+  return turn3 === 0 || turn3 === 180 ? name : `${name}, ${moonDirection(angle)}`;
+}
 
 // api/_compute/local-time.mjs
 function createLocalTimeModule() {
@@ -43153,7 +43204,7 @@ function dailyEmailLink(origin, sign3) {
 }
 var LIMITS = { from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS["events.samples"], factSamples: BUDGETS["sky-fact.samples"] };
 function displayTime(utc, zone9) {
-  return new Intl.DateTimeFormat("en-GB", { timeZone: zone9, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", timeZoneName: "shortOffset" }).format(new Date(utc));
+  return localIso(utc, zone9);
 }
 function failure(tool, code, message, retryAfterSeconds) {
   return stripConsumerDashes({ schema: AI_RESULT_SCHEMA, ok: false, tool, error: { code, message, ...retryAfterSeconds === void 0 ? {} : { retryAfterSeconds } } });
@@ -43405,7 +43456,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const calculation = computePositions(parsePositionsRequest({ instants: [instant2], ...args.bodies ? { bodies: args.bodies } : {} }));
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone9, display: displayTime(utc, zone9) }, calculation, moonPhase: { name: moonPhaseNameFromAngle(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
+        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone9, display: displayTime(utc, zone9) }, calculation, moonPhase: { name: moonPhaseLabel(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
         links = [moonLink, methodLink, calendarLink];
         break;
       }
@@ -43422,7 +43473,15 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Zodiacs is busy. Try again in a minute.", verdict === "limited" ? 60 : 300);
         }
         const calculation = computeEvents(parsedRequest);
-        data = { from: calculation.result.from, to: calculation.result.to, zone: zone9, events: calculation.result.events.map((event2) => ({ ...event2, localAt: displayTime(event2.at, zone9) })), calculation, completeness: calculation.receipt.search.completeness };
+        data = {
+          from: calculation.result.from,
+          to: calculation.result.to,
+          zone: zone9,
+          // Each time to the minute, inside the window, on the UTC clock and on the zone's; the solved instants stay in calculation, under its receipt.
+          events: calculation.result.events.map((event2) => ({ ...event2, ...eventTimes(event2.at, zone9, calculation.result) })),
+          calculation,
+          completeness: calculation.receipt.search.completeness
+        };
         links = [
           { title: "Subscribe to these in your calendar (get_sky_calendar)", url: `${ORIGIN}/sky-calendar/` },
           // With the sky events switch, the tool for one kind of event further ahead.
@@ -45299,13 +45358,19 @@ async function calculateWindow(from, to) {
   if (!result.ok || result.tool !== "get_upcoming_events") throw new Error("search-refused");
   const data = result.data;
   if (data.completeness !== "tested-not-proven") throw new Error("search-incomplete");
-  return data.events.map(({ localAt: _localAt, ...event2 }) => ({
-    eventId: `evt_${digest(JSON.stringify([WATCH_VERSION, from, event2]))}`,
-    name: `zodiacs.sky.${event2.kind}`,
-    timestamp: event2.at,
-    data: { event: event2, receipt: data.calculation.receipt },
-    cursor: null
-  }));
+  const solved = data.calculation.result.events;
+  if (solved.length !== data.events.length) throw new Error("search-mismatch");
+  return data.events.map(({ localAt: _localAt, ...listed }, index) => {
+    if (listed.kind !== solved[index].kind) throw new Error("search-mismatch");
+    const event2 = { ...listed, at: solved[index].at };
+    return {
+      eventId: `evt_${digest(JSON.stringify([WATCH_VERSION, from, event2]))}`,
+      name: `zodiacs.sky.${event2.kind}`,
+      timestamp: event2.at,
+      data: { event: event2, receipt: data.calculation.receipt },
+      cursor: null
+    };
+  });
 }
 async function fillWatchLedger(rpc, now = Date.now(), calculate = calculateWindow) {
   let filled = 0;
@@ -45338,7 +45403,7 @@ async function deliverWatchEvents(rpc, vault, post, now = Date.now) {
       const event2 = { ...row.payload, data: {
         ...row.payload.data,
         zone: row.filters.zone,
-        localAt: displayTime(row.payload.timestamp, row.filters.zone),
+        localAt: localMinuteIso(row.payload.timestamp, row.filters.zone),
         methodUrl: "https://zodiacs.org/developers/compute/#events"
       } };
       const body2 = JSON.stringify(event2);
