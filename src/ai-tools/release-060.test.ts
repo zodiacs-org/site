@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { createAiNodeHandler } from './http';
 import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES, WITHDRAWN_OCCASION_REFUSAL } from './contracts';
 import { executeAiTool } from './tools';
-import { as065, asPanelV7, asPlainDescription, asZod64, descriptionWithoutZod64, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, withoutZod64, ZOD_64_SENTENCES } from './published-tools';
+import { as065, asInventedExamples, asPanelV7, asPlainDescription, asZod64, descriptionWithoutZod64, INVENTED_EXAMPLES, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, withoutZod64, ZOD_64_SENTENCES } from './published-tools';
 import { EXPLAIN_TOPICS } from './features/explain';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac';
 import { SIGNS } from '../lib/signs';
@@ -110,6 +110,29 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect(changes).toEqual(['get_horoscope._meta.ui.resourceUri', 'get_horoscope._meta.openai/outputTemplate']);
   });
 
+  it('changes only the eighteen schema field descriptions that held the owner\'s own details, to invented examples (0.3.51)', async () => {
+    const before = LIVE_TOOLS.map(tool => asZod64(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool);
+    const changes = before.flatMap(tool => asInventedExamples(tool).changed);
+    expect([...changes].sort()).toEqual(Object.keys(INVENTED_EXAMPLES).sort());
+    expect(changes.every(path => /\.inputSchema\.properties\.(?:[a-z]+\.properties\.)?[A-Za-z]+\.description$/u.test(path))).toBe(true);
+    // Every other byte, the tool descriptions included, is the ZOD-58 entry: put the eighteen back and nothing differs.
+    const at = (node: unknown, keys: string[]) => keys.reduce<unknown>((item, key) => (item as Record<string, unknown>)[key], node);
+    for (const tool of before) {
+      const { tool: after, changed } = asInventedExamples(tool);
+      const restored = JSON.parse(JSON.stringify(after)) as Record<string, unknown>;
+      for (const path of changed) {
+        const keys = path.split('.').slice(1);
+        (at(restored, keys.slice(0, -1)) as Record<string, unknown>)[keys.at(-1)!] = at(tool, keys);
+      }
+      expect(JSON.stringify(restored), String(tool.name)).toBe(JSON.stringify(tool));
+    }
+    const listed = (await rpc('tools/list', {})).result.tools as Record<string, unknown>[];
+    for (const path of Object.keys(INVENTED_EXAMPLES)) {
+      const [name, ...keys] = path.split('.');
+      expect(at(listed.find(tool => tool.name === name), keys), path).toBe(INVENTED_EXAMPLES[path]);
+    }
+  });
+
   it('changes only the description of the thirteen published tools, to describe each tool instead of directing the assistant (ZOD-58)', async () => {
     const changes = LIVE_TOOLS.flatMap(tool => asPlainDescription(as065(tool).tool).changed);
     expect([...changes].sort()).toEqual([
@@ -143,7 +166,8 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
   });
 
   it('changes only the quoted Neptune time in get_upcoming_events\' description (ZOD-64)', async () => {
-    const before = LIVE_TOOLS.map(tool => asPanelV7(asPlainDescription(as065(tool).tool).tool).tool);
+    // With the invented schema examples in place, which the test above accounts for.
+    const before = LIVE_TOOLS.map(tool => asInventedExamples(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool);
     // The only published path that moves is get_upcoming_events' description.
     expect(before.flatMap(tool => asZod64(tool).changed)).toEqual(['get_upcoming_events.description']);
     expect(Object.keys(ZOD_64_SENTENCES)).toEqual(['get_upcoming_events']);
@@ -278,7 +302,7 @@ describe('the five 0.6.0 tools', () => {
     expect(JSON.parse(natal.content[0].text)).toEqual(natal.structuredContent);
     expect((await call('get_horoscope_period', { sign: 'leo' })).structuredContent.error.message).toBe('period is required.');
     expect((await call('get_horoscope_period', { sign: 'lion', period: 'month' })).structuredContent.error.message).toBe(`sign must be one of: ${HOROSCOPE_SIGNS.join(', ')}.`);
-    expect((await call('get_personal_transits', { birthDate: '3 May 1990' })).structuredContent.error.message).toBe('birthDate must be a date such as 1990-05-03.');
+    expect((await call('get_personal_transits', { birthDate: '3 May 1990' })).structuredContent.error.message).toBe('birthDate must be a date such as 1994-05-14.');
     expect((await call('get_chinese_zodiac', { year: 1890 })).structuredContent.error.message).toBe('year must be at least 1901.');
     expect((await call('explain_astrology', {})).structuredContent.error.message).toBe('topic is required.');
     const unknown = await call('get_natal_chart', { birthDate: '1990-05-03', secretPassword: 'x' });
