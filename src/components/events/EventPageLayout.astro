@@ -26,6 +26,7 @@ import EventRelated from './EventRelated.astro';
 import EventSignNotes from './EventSignNotes.astro';
 import EventCountdown from './EventCountdown.astro';
 import EventSkyWatch from './EventSkyWatch.astro';
+import Motion from '../Motion.astro';
 import { EVENT_READING_CONFIDENCE, watchPlan } from '../../lib/events/watch';
 import { eventsCatalog } from '../../lib/events/catalog';
 import { publishedEventById } from '../../lib/events/site-publication';
@@ -240,6 +241,8 @@ const sources = [
   </noscript>
 
   <article class="section--tight container container--narrow">
+    <!-- Inside the article, so it stays main's first section and keeps its top padding. -->
+    <Motion />
     {event.fixture && (
       <p class="event-sample" data-event-sample>
         Sample page for template review. The dates and figures here are
@@ -343,7 +346,7 @@ const sources = [
 
     {plan && <EventSkyWatch plan={plan} hue={hue} />}
 
-    <aside class="next-action shell tinted reveal" style={hue ? `--sign:${hue}` : undefined}>
+    <aside class="next-action shell tinted reveal" data-enter="rise" style={hue ? `--sign:${hue}` : undefined}>
       <div class="next-action__core core tinted">
         <div class="next-action__copy">
           <h2 class="next-action__title">Compare this sky with your chart</h2>
