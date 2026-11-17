@@ -1101,6 +1101,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       setCalendar('gregorian');
       setTime(handoff.time ?? '');
       setTimeKnown(handoff.time !== null);
+      // A refused date says so on arrival, not only after a birthplace is typed.
+      const refusal = birthDateRefusal(handoff.date);
+      if (refusal) {
+        setError(birthDateRefusalText(refusal));
+        return;
+      }
       queueMicrotask(() => formRef.current?.querySelector<HTMLElement>('#place')?.focus());
     };
 
