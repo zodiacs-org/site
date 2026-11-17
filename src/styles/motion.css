@@ -65,6 +65,8 @@ html[data-entrance='on'] [data-enter='disc']:not(.is-done) {
 html[data-entrance='on'] [data-enter='draw'] .motion-stroke {
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
+}
+html[data-entrance='on'] [data-enter='draw']:not(.is-done) .motion-stroke {
   transition: stroke-dashoffset var(--motion-draw) var(--motion-ease);
   transition-delay: calc(var(--motion-i, 0) * var(--motion-step) + var(--motion-delay, 0ms));
 }
