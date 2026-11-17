@@ -616,10 +616,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
     .map((loc) => [loc, '2026-10-27'] as const),
   // The assistant showcase, which lists the Grok template from the day of the daily edition it was built with,
-  // and links the three per-assistant pages from 16 November.
-  ['/apps/', '2026-11-16'] as const,
-  // One landing page per assistant (Claude, ChatGPT, Cursor), first published on 16 November.
-  ...['/apps/claude/', '/apps/chatgpt/', '/apps/cursor/'].map((loc) => [loc, '2026-11-16'] as const),
+  // and links the per-assistant pages (three from 16 November, Claude Code from 17 November).
+  ['/apps/', '2026-11-17'] as const,
+  // One landing page per assistant: Claude, ChatGPT and Cursor first published on 16 November, Claude Code on
+  // 17 November, when each page started linking the other three.
+  ...['/apps/claude/', '/apps/chatgpt/', '/apps/cursor/', '/apps/claude-code/'].map((loc) => [loc, '2026-11-17'] as const),
   // The showcase's entry links, first published with the showcase.
   ['/tools/', '2026-10-28'] as const,
   ['/developers/ai/', '2026-10-28'] as const,
@@ -831,6 +832,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/apps/claude/', priority: 0.6 },
     { loc: '/apps/chatgpt/', priority: 0.6 },
     { loc: '/apps/cursor/', priority: 0.6 },
+    { loc: '/apps/claude-code/', priority: 0.6 },
     { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/developers/conventions/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
