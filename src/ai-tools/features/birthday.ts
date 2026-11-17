@@ -39,9 +39,9 @@ const zone = z.string().min(1).max(64).regex(ZONE_PATTERN);
 
 export const birthdayInput = z.strictObject({
   date: z.string().regex(/^\d{2}-\d{2}$/).optional()
-    .describe('A birthday without a year, as MM-DD, such as 05-03 for 3 May. This is enough for general birthday facts. Give this or birthDate.'),
+    .describe('A birthday without a year, as MM-DD, such as 05-14 for 14 May. This is enough for general birthday facts. Give this or birthDate.'),
   birthDate: z.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional()
-    .describe('The full birth date, such as 1997-05-03. Use only for the solar return or to resolve the sign of a cusp date in that birth year.'),
+    .describe('The full birth date, such as 1994-05-14. Use only for the solar return or to resolve the sign of a cusp date in that birth year.'),
   time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional()
     .describe('The birth time on the local clock, if known. Needs zone.'),
   zone: zone.optional().describe("The birthplace's time zone, such as Europe/London."),
@@ -144,7 +144,7 @@ function signRow(sign: Sign): z.infer<typeof signFacts> {
 
 function parseMonthDay(month: number, day: number): void {
   if (!(month >= 1 && month <= 12) || !(day >= 1 && day <= DAYS_IN_MONTH[month - 1])) {
-    throw new RangeError('That is not a calendar date. Give a real month and day, such as 05-03 for 3 May.');
+    throw new RangeError('That is not a calendar date. Give a real month and day, such as 05-14 for 14 May.');
   }
 }
 

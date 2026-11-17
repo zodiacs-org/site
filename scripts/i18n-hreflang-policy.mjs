@@ -2,13 +2,24 @@ import { readFileSync } from 'node:fs';
 const approvedDailyDays = JSON.parse(readFileSync(new URL('../src/data/chart-of-the-day.json', import.meta.url), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
 // Each approved edition, plus the chart-of-the-day index once any edition exists, in six languages.
 const dailyBlocks = (approvedDailyDays.length + (approvedDailyDays.length ? 1 : 0)) * 6;
+// Learn articles translated one language at a time (src/data/learn-translations.json).
+// Each English article with N translations carries N + 1 alternates, on N + 1 pages.
+const learnTranslations = JSON.parse(readFileSync(new URL('../src/data/learn-translations.json', import.meta.url), 'utf8'));
+const learnPaths = new Map();
+for (const [locale, paths] of Object.entries(learnTranslations)) {
+  for (const path of paths) learnPaths.set(path, [...(learnPaths.get(path) ?? []), locale]);
+}
+const learnPagesFor = (locale) => [...learnPaths.values()]
+  .filter((locales) => locale === 'en' || locales.includes(locale))
+  .reduce((sum, locales) => sum + locales.length + 1, 0);
+export const LEARN_ARTICLE_LOCALES = learnPaths;
 /**
  * Hreflang activation is explicit and per locale. Declaring metadata in the
  * TypeScript locale union never changes this release policy.
  */
 export const HREFLANG_LOCALE_POLICY = Object.freeze([
-  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair', 'new-pages'], expectedBlocks: 1224 + dailyBlocks },
-  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair', 'new-pages'], expectedBlocks: 858 + dailyBlocks },
+  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair', 'new-pages'], expectedBlocks: 1224 + dailyBlocks + learnPagesFor('en') },
+  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair', 'new-pages'], expectedBlocks: 858 + dailyBlocks + learnPagesFor('es') },
   { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair', 'new-pages'], expectedBlocks: 858 + dailyBlocks },
   { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair', 'new-pages'], expectedBlocks: 816 + dailyBlocks },
   { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair', 'new-pages'], expectedBlocks: 816 + dailyBlocks },
@@ -22,7 +33,7 @@ export const HREFLANG_LOCALE_POLICY = Object.freeze([
 export const X_DEFAULT_HREFLANG = Object.freeze({
   hreflang: 'x-default',
   locale: 'en',
-  expectedBlocks: 1224 + dailyBlocks,
+  expectedBlocks: 1224 + dailyBlocks + learnPagesFor('en'),
 });
 
 export const ACTIVE_HREFLANGS = Object.freeze(
@@ -97,6 +108,7 @@ export function hreflangRouteFamily(path) {
   if (COMPATIBILITY_PAIR_PATHS.has(clean)) return 'compatibility-pair';
   if (DAILY_READING_PATHS.has(clean)) return 'daily-reading';
   if (NEW_PAGE_PATHS.has(clean)) return 'new-pages';
+  if (learnPaths.has(clean)) return 'learn-article';
   if (clean === '/learn/chinese-zodiac/') return 'chinese-zodiac';
   const animal = clean.match(/^\/learn\/chinese-zodiac\/([a-z]+)\/$/)?.[1];
   if (animal && ANIMALS.has(animal)) return 'chinese-zodiac';
@@ -112,6 +124,13 @@ export function hreflangRouteFamily(path) {
 export function expectedHreflangsForPath(path) {
   const family = hreflangRouteFamily(path);
   if (!family) return new Set();
+  if (family === 'learn-article') {
+    const locales = ['en', ...learnPaths.get(canonicalPath(path))];
+    return new Set([
+      ...HREFLANG_LOCALE_POLICY.filter((entry) => locales.includes(entry.locale)).map((entry) => entry.hreflang),
+      X_DEFAULT_HREFLANG.hreflang,
+    ]);
+  }
   const expected = new Set(HREFLANG_LOCALE_POLICY
     .filter((entry) => entry.routeFamilies.includes(family))
     .map((entry) => entry.hreflang));
