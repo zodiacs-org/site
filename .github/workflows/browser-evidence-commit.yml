@@ -77,6 +77,9 @@ jobs:
         with:
           ref: ${{ steps.pr.outputs.head_sha }}
           fetch-depth: 1
+          # npm ci and vitest run the PR's own code; keep the write token out
+          # of .git/config and hand it to the push step alone.
+          persist-credentials: false
 
       - name: Setup Node 22
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -117,6 +120,7 @@ jobs:
 
       - name: Commit and push to the evidence branch
         env:
+          PUSH_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ steps.pr.outputs.head_sha }}
           BRANCH: ${{ steps.pr.outputs.branch }}
           RUN_ID: ${{ inputs.run_id }}
@@ -131,7 +135,12 @@ jobs:
             exit 0
           fi
           git commit -m "Phase 1 evidence: commit reviewed-head captures from Browser Evidence run $RUN_ID"
-          git push origin "HEAD:refs/heads/$BRANCH"
+          # evidence/* branches belong to this workflow; a second run for the
+          # same head replaces the earlier evidence commit.
+          auth=$(printf 'x-access-token:%s' "$PUSH_TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" \
+            push --force origin "HEAD:refs/heads/$BRANCH"
           {
             echo "### Evidence commit ready"
             echo
