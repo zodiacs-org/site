@@ -13,6 +13,7 @@ import { chromium, webkit } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { runPersonalChartHandoff } from './personal-chart-handoff.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 
 const engines = (process.env.CONSUMER_TEST_ENGINES ?? 'chromium').split(',');
 const out = process.env.OUT_DIR;
@@ -132,8 +133,8 @@ async function guide(page, engine) {
 try { await withPreview({ port: 8784 }, async baseURL => {
   for (const engine of engines) {
     assert.ok(['chromium', 'webkit'].includes(engine), `Unsupported engine ${engine}`);
-    const browser = engine === 'webkit' ? await webkit.launch({ headless: true })
-      : await chromium.launch({ executablePath: await findChromium(), headless: true, args: STABLE_CHROMIUM_ARGS });
+    const browser = withFullLevel(engine === 'webkit' ? await webkit.launch({ headless: true })
+      : await chromium.launch({ executablePath: await findChromium(), headless: true, args: STABLE_CHROMIUM_ARGS }));
     const journey = async (name, task) => {
       const context = await browser.newContext(mobile);
       const page = await context.newPage();

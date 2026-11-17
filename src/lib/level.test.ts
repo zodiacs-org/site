@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { LEVEL_EVENT, atLeast, isLevel, onLevel, pageLevel } from './level';
+import { LEVEL_ASKED_KEY, LEVEL_EVENT, LEVEL_STORAGE_KEY, atLeast, isLevel, onLevel, pageLevel } from './level';
 
 // A small stand-in for the page: just the root element's attributes and window events.
 beforeEach(() => {
@@ -85,6 +85,18 @@ describe('level rules in the page', () => {
     expect(apply.indexOf('if (opts.initial) return;')).toBeGreaterThan(-1);
     expect(apply.indexOf('if (opts.initial) return;')).toBeLessThan(apply.indexOf('STATUS[level]'));
     expect(component).toContain('[data-level-set="${pageLevel() ?? DEFAULT_LEVEL}"]`)?.focus()');
+  });
+
+  it('keeps the browser drives\' Advanced seed on the real storage keys', async () => {
+    const fixture = await import('../../tests/level-fixture.mjs');
+    expect(fixture.LEVEL_STORAGE_KEY).toBe(LEVEL_STORAGE_KEY);
+    expect(fixture.LEVEL_ASKED_KEY).toBe(LEVEL_ASKED_KEY);
+    const store = new Map<string, string>();
+    vi.stubGlobal('window', { localStorage: { setItem: (k: string, v: string) => store.set(k, v) } });
+    fixture.seedFullLevel();
+    expect(store.get(LEVEL_STORAGE_KEY)).toBe('advanced');
+    expect(store.get(LEVEL_ASKED_KEY)).toBe('1');
+    vi.unstubAllGlobals();
   });
 
   it('adds no mono font to first paint', async () => {
