@@ -10,7 +10,7 @@ import { AI_RESULT_SCHEMA, INPUT_SCHEMAS, WITHDRAWN_OCCASION_REFUSAL, WITHDRAWN_
 type Shape = Record<string, z.ZodType>;
 const shapeOf = (schema: any): Shape | undefined => schema?.shape ?? schema?._zod?.def?.shape ?? (schema?._zod?.def?.innerType ? shapeOf(schema._zod.def.innerType) : schema?._zod?.def?.in ? shapeOf(schema._zod.def.in) : undefined);
 const unwrap = (schema: any): any => { let s = schema; for (let i = 0; i < 6 && s?._zod?.def?.innerType; i++) s = s._zod.def.innerType; return s; };
-const ISO_HINT = ' Use an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00, not a plain date.';
+const ISO_HINT = ' Use an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00, not a plain date.';
 
 function fieldAt(schema: any, path: readonly PropertyKey[]): { name: string; field: any } | undefined {
   let current = schema; const names: string[] = [];

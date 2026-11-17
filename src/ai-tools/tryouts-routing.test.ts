@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { TOOL_DESCRIPTIONS } from './contracts';
 import { ASK_FIRST, CHILD_HOROSCOPE, OUTSIDE_ZODIACS, WHICH_TOOL } from './server';
 import { executeAiTool } from './tools';
-import { descriptionWithoutZod64, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, withoutZod64, ZOD_207_SENTENCES } from './published-tools';
+import { asInventedExamples, descriptionWithoutZod64, INVENTED_EXAMPLES, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, withoutZod64, ZOD_207_SENTENCES } from './published-tools';
 
 /**
  * ZOD-207 (a draft on top of ZOD-58): the wording added after 200 questions were tried on two assistants
@@ -47,12 +47,17 @@ describe('the routing wording from the assistant tryouts', () => {
       expect(instructions).toContain(CHILD_HOROSCOPE);
       expect(instructions.endsWith(WHICH_TOOL)).toBe(true);
     }
-    expect(JSON.stringify((saved('join', 'tools-list.json').tools as Listed[]).slice(0, 13))).toBe(JSON.stringify(PUBLISHED_TOOLS.map(withoutZod64)));
-    // ZOD-64 (approved by Dias on 2026-11-17) moves only get_upcoming_events' description since the join.
+    // The saved list predates ZOD-64 and the invented schema examples (src/ai-tools/published-tools.ts): with the
+    // examples put in and ZOD-64 taken out, it is the list this release publishes.
     const joined = (saved('join', 'tools-list.json').tools as Record<string, unknown>[]).slice(0, 13);
-    const moved = PUBLISHED_TOOLS.filter((tool, index) => JSON.stringify(tool) !== JSON.stringify(joined[index]));
+    const withExamples = joined.map(tool => asInventedExamples(tool).tool);
+    expect(JSON.stringify(withExamples)).toBe(JSON.stringify(PUBLISHED_TOOLS.map(withoutZod64)));
+    // The examples move only the eighteen schema descriptions they name.
+    expect(joined.flatMap(tool => asInventedExamples(tool).changed).sort()).toEqual(Object.keys(INVENTED_EXAMPLES).sort());
+    // ZOD-64 (approved by Dias on 2026-11-17) moves only get_upcoming_events' description since the join.
+    const moved = PUBLISHED_TOOLS.filter((tool, index) => JSON.stringify(tool) !== JSON.stringify(withExamples[index]));
     expect(moved.map(tool => tool.name)).toEqual(['get_upcoming_events']);
-    const joinedEvents = joined.find(tool => tool.name === 'get_upcoming_events')!;
+    const joinedEvents = withExamples.find(tool => tool.name === 'get_upcoming_events')!;
     expect(JSON.stringify({ ...moved[0], description: joinedEvents.description })).toBe(JSON.stringify(joinedEvents));
     // The join moved nothing in the list but get_horoscope's panel address, and one sentence of the instructions.
     const v7 = (text: string) => text.replaceAll('ui://zodiacs/horoscopes-v6.html', 'ui://zodiacs/horoscopes-v7.html');
