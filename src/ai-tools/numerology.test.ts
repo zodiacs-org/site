@@ -68,6 +68,8 @@ const REQUESTS: Record<string, [unknown, Record<string, string>?]> = {
 };
 const SCENARIOS = { released: {}, occasions: { ZODIACS_OCCASIONS_ENABLED: '1' }, coverage: { ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1' } } as const;
 const ON = { ...SCENARIOS.coverage, ZODIACS_NUMEROLOGY_ENABLED: '1' };
+/** Every switched tool but get_moment_chart (ZOD-62), whose own switch comes after numerology's (src/ai-tools/moment-chart.test.ts). */
+const RELEASED_SWITCHED = EVERY_SWITCHED_TOOL.filter((name) => name !== 'get_moment_chart');
 const call = async (host: string, name: string, args: unknown, meta?: unknown) => message((await post(host, rpc('tools/call', { name, arguments: args, ...(meta ? { _meta: meta } : {}) }))).text).result;
 
 describe('the numerology switch off', () => {
@@ -104,7 +106,7 @@ describe('the numerology switch on', () => {
     const tools = message((await post(host, rpc('tools/list'))).text).result.tools as Record<string, any>[];
     const before = message(FIXTURE.coverage.toolsList.text).result.tools as Record<string, any>[];
     expect(tools.map((tool) => tool.name)).toEqual([...EVERY_AI_TOOL_NAME, 'get_numerology']);
-    expect(EVERY_SWITCHED_TOOL.at(-1)).toBe('get_numerology');
+    expect(RELEASED_SWITCHED.at(-1)).toBe('get_numerology');
     expect(PUBLISHED_TOOLS.map((tool) => tool.name)).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(JSON.stringify(tools.slice(0, 13))).toBe(JSON.stringify(PUBLISHED_TOOLS));
     expect(JSON.stringify(tools.slice(0, -1))).toBe(JSON.stringify(before));
@@ -141,7 +143,7 @@ describe('the numerology switch on', () => {
       ZODIACS_NUMEROLOGY_ENABLED: '1',
     });
     const names = (message((await post(host, rpc('tools/list'))).text).result.tools as { name: string }[]).map((tool) => tool.name);
-    expect(names).toEqual([...EVERY_SWITCHED_TOOL]);
+    expect(names).toEqual([...RELEASED_SWITCHED]);
     const numerology = names.indexOf('get_numerology');
     expect(numerology).toBeGreaterThan(names.indexOf('search_sky_events'));
     expect(numerology).toBeGreaterThan(names.indexOf('get_year_score'));
