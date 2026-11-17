@@ -1,5 +1,5 @@
 ---
-// The shared frame of the per-assistant landing pages (/apps/claude/, /apps/chatgpt/, /apps/cursor/).
+// The shared frame of the per-assistant landing pages (/apps/claude/, /apps/chatgpt/, /apps/cursor/, /apps/claude-code/).
 // Every word a reader needs is in the HTML; the one script only copies text to the clipboard.
 import Base from '../../layouts/Base.astro';
 
@@ -30,6 +30,7 @@ const others = [
   { href: '/apps/claude/', name: 'Claude' },
   { href: '/apps/chatgpt/', name: 'ChatGPT' },
   { href: '/apps/cursor/', name: 'Cursor' },
+  { href: '/apps/claude-code/', name: 'Claude Code' },
 ].filter((entry) => entry.href !== path);
 const jsonLd = [
   {
@@ -108,7 +109,7 @@ const jsonLd = [
     </section>
 
     <nav class="app-section app-more kwrap" aria-label="More ways to use Zodiacs">
-      <p>Zodiacs in other assistants: {others.map((entry, index) => <>{index > 0 && ' and '}<a href={entry.href}>{entry.name}</a></>)}. All of them, with real card examples and a short tour, are on the <a href="/apps/">apps page</a>. You can also use every calculator <a href="/tools/">on the site</a>.</p>
+      <p>Zodiacs in other assistants: {others.map((entry, index) => <>{index > 0 && (index === others.length - 1 ? ' and ' : ', ')}<a href={entry.href}>{entry.name}</a></>)}. All of them, with real card examples and a short tour, are on the <a href="/apps/">apps page</a>. You can also use every calculator <a href="/tools/">on the site</a>.</p>
     </nav>
   </div>
 </Base>

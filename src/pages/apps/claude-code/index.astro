@@ -1,0 +1,47 @@
+---
+import AppLanding from '../_AppLanding.astro';
+
+const server = 'https://zodiacs.org/mcp';
+// The command format is from Claude Code's MCP documentation (https://code.claude.com/docs/en/mcp).
+const command = `claude mcp add --transport http zodiacs ${server}`;
+const title = 'Astrology MCP Server for Claude Code | Zodiacs.org';
+const description = 'Add the Zodiacs astrology MCP server to Claude Code with one command: charts, compatibility, horoscopes and sky facts from https://zodiacs.org/mcp, no key.';
+const faq = [
+  { q: 'Does the Zodiacs MCP server need an API key?', a: 'No. Zodiacs’ public tools need no Zodiacs account, and the command has no key, header or secret in it.' },
+  { q: 'Can I share it with my whole project?', a: 'Claude Code’s documentation describes a project scope, which stores the server in a .mcp.json file you can commit, and a user scope, which makes it available in every project. Add --scope project or --scope user to the command.' },
+  { q: 'Will I see the interactive cards in Claude Code?', a: 'Claude Code works in a terminal, so answers come as text, usually with a link to a page on zodiacs.org where the card opens.' },
+  { q: 'Is there a local server I can run myself?', a: 'Yes, for developers: a separate local MCP server runs the chart engine locally over stdio. Its install steps are on the developer pages.' },
+];
+---
+<AppLanding
+  app="Claude Code"
+  path="/apps/claude-code/"
+  pageName="Astrology MCP server for Claude Code"
+  title={title}
+  description={description}
+  kicker="Zodiacs for Claude Code"
+  heading="An astrology MCP server for Claude Code."
+  lede="Zodiacs is a public MCP server for astrology: birth charts, compatibility between two people, the sky on any day that matters, Sun-sign horoscopes and plain sky facts, like whether Mercury is retrograde. Add it to Claude Code with one command and ask."
+  facts={[
+    { term: 'Server address', detail: server },
+    { term: 'Transport', detail: 'Remote, over HTTP' },
+    { term: 'API key', detail: 'Not needed' },
+  ]}
+  faq={faq}
+>
+  <div slot="actions" class="app-actions">
+    <a class="btn btn--lg" href="#connect">See the command <span class="orb" aria-hidden="true">↓</span></a>
+    <a class="textlink" href="#ask">Things you can ask <span class="arr" aria-hidden="true">→</span></a>
+  </div>
+  <Fragment slot="connect">
+    <h2 id="connect-title">Add Zodiacs to Claude Code</h2>
+    <p>The steps below follow <a href="https://code.claude.com/docs/en/mcp" rel="noopener">Claude Code’s MCP documentation</a> rather than a run here, so they are not tested claims. If your version of Claude Code differs, its documentation is the guide.</p>
+    <ol>
+      <li>In your terminal, run this command:<pre tabindex="0" role="region" aria-label="Claude Code command"><code id="claude-code-command">{command}</code></pre><button type="button" data-copy="claude-code-command" aria-label="Copy the command">Copy the command</button></li>
+      <li>Check that it connected with <code>claude mcp list</code> in your terminal, or <code>/mcp</code> inside Claude Code.</li>
+      <li>Ask something from the list below. Claude decides when to call Zodiacs, so naming Zodiacs in the prompt helps.</li>
+    </ol>
+    <h3>Building with it</h3>
+    <p>If you want the sky inside your own code rather than in a chat, the <a href="/developers/ai/">developer plugin and connection documentation</a> covers the hosted tools, and the <a href="/developers/mcp/">local MCP server</a> runs the chart engine locally.</p>
+  </Fragment>
+</AppLanding>
