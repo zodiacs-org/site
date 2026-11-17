@@ -76,8 +76,9 @@ const jsonLd = [
   path="/numerology/"
   jsonLd={jsonLd}
 >
-  <Motion />
   <section class="section--tight container">
+    <!-- Inside the section, so the section stays main's first child and keeps its top padding. -->
+    <Motion />
     <div class="num-hero">
       <div class="tool-hero">
         <em class="kicker">Numerology</em>
@@ -181,7 +182,6 @@ const jsonLd = [
           class:list={['tile num-paths__chip', MASTER_NUMBERS.includes(n) && 'num-paths__chip--master']}
           href={`/numerology/life-path/${n}/`}
           style={`--sign:${NUMBER_HUES[n]}`}
-          data-enter="rise"
         >
           <span class="num-paths__disc" aria-hidden="true" data-enter="disc">{n}</span>
           <span class="num-paths__text">
@@ -220,12 +220,15 @@ const jsonLd = [
     text-wrap: balance;
   }
   .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
-  .num-hero { display: grid; gap: 8px; align-items: center; }
-  .num-hero__art { width: 120px; aspect-ratio: 1; order: -1; margin: 0 0 2px -4px; }
+  .num-hero { position: relative; display: grid; gap: 8px; align-items: center; }
+  /* Phones: the emblem sits beside the heading, so the form stays on the first screen. */
+  .num-hero__art { position: absolute; top: 0; right: 0; width: 72px; aspect-ratio: 1; }
+  .num-hero .tool-hero :is(.kicker, h1) { padding-right: 84px; }
   @media (min-width: 760px) {
     .num-hero { grid-template-columns: minmax(0, 1fr) auto; gap: clamp(24px, 5vw, 64px); margin-bottom: clamp(28px, 5vw, 44px); }
     .num-hero .tool-hero { margin-bottom: 0; }
-    .num-hero__art { width: clamp(200px, 22vw, 248px); order: 0; margin: 0; }
+    .num-hero__art { position: static; width: clamp(200px, 22vw, 248px); order: 0; margin: 0; }
+    .num-hero .tool-hero :is(.kicker, h1) { padding-right: 0; }
   }
 
   .num-key { margin: 6px 0 22px; padding: 14px 14px 12px; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); overflow-x: auto; }

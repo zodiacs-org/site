@@ -51,7 +51,16 @@ describe('entrance motion contract', () => {
     }
   });
 
-  it.todo('marks only discs, rings, lines and figures, never words or controls');
+  it('marks only discs, rings, lines and figures, never words or controls', async () => {
+    const offenders: string[] = [];
+    for (const file of await markupFiles()) {
+      const text = await readFile(`${srcDir}${file}`, 'utf8');
+      for (const match of text.matchAll(/<([A-Za-z][\w.]*)\b[^<>]*?\bdata-enter=/gs)) {
+        if (!MARK_TAGS.has(match[1])) offenders.push(`${file}: <${match[1]}>`);
+      }
+    }
+    expect(offenders, RULE).toEqual([]);
+  });
 
   it('never spreads motion() into JSX', async () => {
     for (const file of await markupFiles()) {

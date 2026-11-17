@@ -60,8 +60,6 @@ Marks arrive. Words and controls never wait.
 - `src/components/Motion.astro`: the runtime. Two small inline scripts: one
   turns motion on (`html[data-entrance="on"]`) before marked elements are parsed,
   the other reveals each one once as it scrolls into view.
-- `src/lib/motion.ts`: `motionScan(root, instant)` for islands that render marked nodes
-  later, and `motion(verb)` to spread the attribute in JSX.
 
 ## Using it on a page
 
@@ -71,7 +69,7 @@ import Motion from '../components/Motion.astro';
 ---
 <Base ...>
   <Motion />            <!-- once, before anything marked -->
-  <div data-enter="rise">...</div>
+  <figure data-enter="rise">...</figure>
   <svg data-enter="draw">
     <circle class="motion-stroke" pathLength="1" ... />
   </svg>
@@ -82,12 +80,6 @@ import Motion from '../components/Motion.astro';
 - `draw` needs `pathLength="1"` and `class="motion-stroke"` on each stroke.
 - Choreograph by hand with inline `--motion-i` (step index) or
   `--motion-delay` (extra delay).
-- From an island, after the result is in the DOM:
-
-```tsx
-import { motionScan } from '../lib/motion';
-useEffect(() => { if (result) motionScan(containerRef.current ?? undefined); }, [result]);
-```
 
 ## Guarantees
 
