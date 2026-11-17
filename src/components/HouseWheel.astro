@@ -16,9 +16,11 @@ interface Props {
   hue: string;
   size?: number;
   class?: string;
+  /** Accessible name; translated pages pass their own. */
+  title?: string;
 }
 
-const { house, hue, size = 200, class: className } = Astro.props;
+const { house, hue, size = 200, class: className, title } = Astro.props;
 
 const CX = 100;
 const CY = 100;
@@ -80,7 +82,7 @@ const uid = `hw${house}`;
 <figure class:list={['house-wheel', className]} style={`--size:${size}px;--lit:${hue}`}>
   <svg viewBox="0 0 200 200" width={size} height={size} role="img" aria-labelledby={`${uid}-t`}>
     <title id={`${uid}-t`}>
-      A chart wheel with the {house === 1 ? 'first' : `${house}th`} house sector highlighted, ascendant on the left.
+      {title ?? `A chart wheel with the ${house === 1 ? 'first' : `${house}th`} house sector highlighted, ascendant on the left.`}
     </title>
 
     <path class="hw-wedge" d={wedge} />
