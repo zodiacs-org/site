@@ -99,7 +99,7 @@ const jsonLd = [
       <p class="tools-toc__label">Or go straight to what you want to know</p>
       <ul class="tools-toc__list">
         {chapters.map((chapter) => (
-          <li data-enter="rise">
+          <li>
             <a class="tools-toc__row" href={`#${chapter.id}`}>
               <span class="tools-stack">
                 {chapter.tools.slice(0, 3).map((tool) => <ToolIcon name={tool.icon} size={34} inset={false} />)}
