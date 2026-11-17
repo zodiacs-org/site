@@ -722,6 +722,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/ai/', '2026-11-16'] as const,
   // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
   // the daily edition it was built with, last so this date wins.
+  // The Fortune 500 CEO Sun sign study, first published 17 November.
+  ['/learn/fortune-500-ceo-signs/', '2026-11-17'] as const,
   ['/', '2026-11-14'] as const,
 ]);
 
@@ -812,6 +814,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/learn/how-to-read-a-birth-chart/', priority: 0.8 },
     { loc: '/learn/communication/', priority: 0.8 },
     { loc: '/learn/zodiac-dates/', priority: 0.8 },
+    { loc: '/learn/fortune-500-ceo-signs/', priority: 0.7 },
     { loc: '/learn/glossary/', priority: 0.8 },
     { loc: '/learn/planets/', priority: 0.7 },
     { loc: '/learn/houses/', priority: 0.7 },

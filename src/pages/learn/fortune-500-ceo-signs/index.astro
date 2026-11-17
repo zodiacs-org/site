@@ -1,0 +1,150 @@
+---
+import Base from '../../../layouts/Base.astro';
+import SignIcon from '../../../components/SignIcon.astro';
+import '../../../styles/rx-table.css';
+import { EDITOR_AUTHOR } from '../../../lib/editorial';
+import { SIGNS } from '../../../lib/signs';
+import study from '../../../data/studies/fortune-500-ceo-signs.json';
+
+const PAGE_URL = 'https://zodiacs.org/learn/fortune-500-ceo-signs/';
+const PAGE_DATE = '2026-11-17';
+const headline = 'Which sign runs the Fortune 500?';
+const observed = study.observed as Record<string, number>;
+const share = study.expectedShare as Record<string, number>;
+const n = study.counted;
+const bars = SIGNS.map((sign) => ({ sign, count: observed[sign.slug] ?? 0, expected: n * share[sign.slug] }));
+const ranked = [...bars].sort((a, b) => b.count - a.count || a.sign.name.localeCompare(b.sign.name));
+const top = ranked[0], second = ranked[1];
+const fewest = ranked.filter((bar) => bar.count === ranked[ranked.length - 1].count);
+const chanceIn100 = Math.round(study.pValue * 100);
+const description = `We looked up the birthdays of the CEOs on Fortune's 2026 list. ${top.sign.name} leads with ${top.count} of ${n}, but a spread like this is what chance alone produces about ${chanceIn100} times in 100.`;
+const rows = study.rows.map((row) => ({ ...row, sign: row.sun ? SIGNS.find((sign) => sign.slug === row.sun) ?? null : null }));
+const sources = [
+  { label: 'Fortune 500, 2026 announcement', href: study.listSource },
+  { label: 'Calculation methodology', href: 'https://zodiacs.org/methodology/' },
+];
+const citations = sources.map((source) => ({ '@type': 'CreativeWork', name: source.label, url: source.href }));
+const jsonLd = [
+  {
+    '@type': 'Article', '@id': PAGE_URL + '#article', headline, description, url: PAGE_URL,
+    datePublished: PAGE_DATE, dateModified: PAGE_DATE, author: EDITOR_AUTHOR,
+    publisher: { '@id': 'https://zodiacs.org/#org' }, mainEntityOfPage: { '@type': 'WebPage', '@id': PAGE_URL },
+    mainEntity: { '@id': PAGE_URL + '#dataset' }, inLanguage: 'en', isAccessibleForFree: true, citation: citations,
+  },
+  {
+    '@type': 'Dataset', '@id': PAGE_URL + '#dataset', name: study.title, description, url: PAGE_URL,
+    creator: { '@id': 'https://zodiacs.org/#org' }, publisher: { '@id': 'https://zodiacs.org/#org' },
+    datePublished: PAGE_DATE, dateModified: PAGE_DATE, inLanguage: 'en', isAccessibleForFree: true,
+    variableMeasured: ['company', 'Fortune 500 rank', 'chief executive', 'tropical Sun sign'],
+    measurementTechnique: study.method, citation: citations,
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },
+      { '@type': 'ListItem', position: 2, name: 'Learn', item: 'https://zodiacs.org/learn/' },
+      { '@type': 'ListItem', position: 3, name: headline, item: PAGE_URL },
+    ],
+  },
+];
+// Chart geometry: one row per sign, a bar for the count and a tick for what chance would give.
+const W = 720, rowH = 40, left = 150, right = 70, maxCount = Math.max(...bars.map((bar) => Math.max(bar.count, bar.expected)), 1);
+const scale = (value: number) => (value / maxCount) * (W - left - right);
+const H = bars.length * rowH + 44;
+const fmt = (value: number) => value.toFixed(1);
+---
+<Base
+  title="Which Zodiac Sign Runs the Fortune 500? CEO Sun Signs, 2026 | Zodiacs.org"
+  description={description}
+  path="/learn/fortune-500-ceo-signs/"
+  type="article"
+  image="/assets/og/v2/tool/learn.png"
+  imageAlt="Which sign runs the Fortune 500? Zodiacs.org"
+  jsonLd={jsonLd}
+  sources={sources}
+>
+  <article class="ceo-study">
+    <header class="container container--narrow study-hero">
+      <p class="kicker">A small data story</p>
+      <h1 class="display">{headline}</h1>
+      <p class="study-lede">
+        We looked up the birthdays of the chief executives on Fortune's 2026 list. {study.withFullBirthDate} of the {study.companies} have a full birth date in a public source.
+        {top.sign.name} comes first with {top.count}, then {second.sign.name} with {second.count}. {fewest.map((bar) => bar.sign.name).join(' and ')} {fewest.length > 1 ? 'have' : 'has'} {fewest[0].count} {fewest.length > 1 ? 'each' : ''}.
+      </p>
+      <p class="study-answer"><strong>The honest answer: no sign runs it.</strong> If signs had nothing to do with who becomes a CEO, a spread at least this uneven would still turn up about {chanceIn100} times in 100.</p>
+    </header>
+
+    <section class="container container--narrow" aria-labelledby="chart-head">
+      <h2 id="chart-head">CEOs by Sun sign</h2>
+      <p>Bars show the {n} CEOs we could place. The thin line on each row is what you would expect by chance, given how many days the Sun spends in each sign.</p>
+      <figure class="study-chart">
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="chart-title chart-desc">
+          <title id="chart-title">Fortune 500 CEOs by Sun sign</title>
+          <desc id="chart-desc">{bars.map((bar) => `${bar.sign.name} ${bar.count}, expected ${fmt(bar.expected)}`).join('; ')}</desc>
+          {bars.map((bar, index) => {
+            const y = 10 + index * rowH;
+            return <g>
+              <text x={left - 14} y={y + rowH / 2} text-anchor="end" dominant-baseline="middle" class="chart-label">{bar.sign.name}</text>
+              <rect x={left} y={y + 8} width={Math.max(scale(bar.count), 2)} height={rowH - 16} rx="4" fill={bar.sign.hue} />
+              <line x1={left + scale(bar.expected)} x2={left + scale(bar.expected)} y1={y + 3} y2={y + rowH - 3} class="chart-expected" />
+              <text x={left + scale(Math.max(bar.count, bar.expected)) + 10} y={y + rowH / 2} dominant-baseline="middle" class="chart-count">{bar.count}</text>
+            </g>;
+          })}
+          <text x={left} y={H - 6} class="chart-note">Line: expected by chance ({fmt(n / 12)} per sign on average)</text>
+        </svg>
+      </figure>
+    </section>
+
+    <section class="container container--narrow" aria-labelledby="caveats-head">
+      <h2 id="caveats-head">Why we would not bet on this</h2>
+      <ul class="study-caveats">
+        <li><strong>Small sample.</strong> Only {study.withFullBirthDate} of {study.companies} CEOs have a published birth date we could source. With about {Math.round(n / 12)} people per sign, one or two birthdays move a sign from first to middle.</li>
+        <li><strong>Who gets a biography is not random.</strong> Leaders of the biggest and best-known companies are more likely to have a public birth date, so this is not a random draw of the 500.</li>
+        <li><strong>Cusp birthdays are left out.</strong> {study.cuspExcluded} CEOs were born on a day when the Sun changed sign. Without a birth time we cannot say which sign, so they are not counted.</li>
+        <li><strong>Births are not spread evenly.</strong> Our chance line assumes birthdays fall evenly through the year. In real life more babies are born in some months than others, which nudges every sign a little.</li>
+        <li><strong>A sign is not a job offer.</strong> Astrology describes temperament, not destiny. Nothing here says a sign makes anyone more likely to run a company, and the numbers do not show it either.</li>
+      </ul>
+      <details class="study-method">
+        <summary>How we did it</summary>
+        <p>The company list is Fortune's 2026 Fortune 500. CEOs are as of {study.ceoAsOf}, including recent changes since the list came out. Each birth date comes from the source linked in the table; we do not reprint the dates here. {study.method}</p>
+        <p>The chance line uses the share of days the Sun spent in each sign from 1937 to 1984, the span in which these CEOs were born. A chi-square test of the {n} counts against that line gives {study.chiSquare} on {study.degreesOfFreedom} degrees of freedom, p ≈ {study.pValue}.</p>
+      </details>
+    </section>
+
+    <section class="container" aria-labelledby="table-head">
+      <h2 id="table-head" class="container--narrow">All {study.withFullBirthDate} CEOs we could place</h2>
+      <div class="table-wrap">
+        <table class="rx-table">
+          <caption>Fortune 500 (2026) chief executives with a sourced birth date, by rank</caption>
+          <thead><tr><th scope="col">Rank</th><th scope="col">Company</th><th scope="col">CEO</th><th scope="col">Sun sign</th><th scope="col">Source</th></tr></thead>
+          <tbody>
+            {rows.map((row) => <tr>
+              <td class="mono" data-label="Rank">{row.rank}</td>
+              <td data-label="Company">{row.company}</td>
+              <th scope="row" data-label="CEO">{row.ceo}</th>
+              <td data-label="Sun sign">{row.sign ? <a class="sign-link" href={`/${row.sign.slug}/`}><SignIcon sign={row.sign.slug} size={20} /> <span>{row.sign.name}</span></a> : <span class="muted">Cusp day, not counted</span>}</td>
+              <td data-label="Source"><a href={row.source} rel="nofollow noopener" target="_blank">Source</a></td>
+            </tr>)}
+          </tbody>
+        </table>
+      </div>
+      <p class="container--narrow study-cta">Curious who shares your signs? <a href="/chart-twins/">Find your chart twins</a>.</p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .ceo-study { padding-bottom: 72px; }
+  .study-hero { padding-top: 56px; }
+  .study-lede { font-size: 1.15rem; }
+  .study-answer { margin-top: 18px; }
+  .study-chart { margin: 24px 0 8px; }
+  .study-chart svg { width: 100%; height: auto; display: block; }
+  .chart-label, .chart-count, .chart-note { fill: var(--text); font-size: 15px; font-family: var(--font-sans, inherit); }
+  .chart-note { fill: var(--muted); font-size: 13px; }
+  .chart-expected { stroke: var(--text); stroke-width: 2; opacity: .7; }
+  .study-caveats { display: grid; gap: 12px; padding-inline-start: 20px; }
+  .study-method { margin-top: 20px; }
+  .study-cta { margin-top: 24px; }
+  .muted { color: var(--muted); }
+</style>
