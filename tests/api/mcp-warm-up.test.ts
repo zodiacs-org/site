@@ -10,13 +10,13 @@ describe('the /mcp warm-up', () => {
     vi.stubEnv('NODE_ENV', 'production');
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('the warm-up must not fetch'));
     const { warmUp } = await import('../../api/_ai/handler.js');
-    await expect(warmUp()).resolves.toBeUndefined();
+    await expect(warmUp()).resolves.toEqual([200, 200]);
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it('resolves, without throwing, while the server is switched off', async () => {
     vi.stubEnv('ZODIACS_MCP_ENABLED', '0');
     const { warmUp } = await import('../../api/_ai/handler.js');
-    await expect(warmUp()).resolves.toBeUndefined();
+    await expect(warmUp()).resolves.toEqual([503, 503]);
   });
 });

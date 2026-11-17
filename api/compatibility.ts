@@ -34,7 +34,14 @@ function loadAiHandler(): Promise<typeof import('./_ai/handler.js')> {
   });
   return aiHandler;
 }
-if (process.env.VERCEL_ENV) await loadAiHandler().then((ai) => ai.warmUp()).catch(() => undefined);
+// Start-up waits two seconds at most: a load or warm-up that has not finished by then goes on in the background.
+const WARM_UP_WAIT_MS = 2000;
+if (process.env.VERCEL_ENV) {
+  await Promise.race([
+    loadAiHandler().then((ai) => ai.warmUp()).catch(() => undefined),
+    new Promise<void>((resolve) => setTimeout(resolve, WARM_UP_WAIT_MS).unref()),
+  ]);
+}
 
 export const COMPATIBILITY_INVITE_ACTIONS = [
   'invites',

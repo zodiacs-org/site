@@ -29,9 +29,9 @@ const WARM_UP_CALLS = [
  * its first real request at the speed of later ones: the first pass through the protocol code and the tool schemas
  * costs several times what later passes cost. Nothing leaves the instance: the address limit, the service budget
  * and the usage count are stand-ins that allow and count nothing, no request reaches the Firewall or the database,
- * and the replies go nowhere. It changes no answer: the handler it warms is built the same way, per request, either way.
+ * and the replies go nowhere; only their status codes come back, so a test can tell a warm-up from one that did nothing. It changes no answer: the handler it warms is built the same way, per request, either way.
  */
-export async function warmUp(): Promise<void> {
+export async function warmUp(): Promise<number[]> {
   const handle = createAiNodeHandler({
     dependencies,
     consentPage,
@@ -39,6 +39,7 @@ export async function warmUp(): Promise<void> {
     atomicQuota: async () => 'allowed',
     countUsage: async () => undefined,
   });
+  const statuses: number[] = [];
   for (const call of WARM_UP_CALLS) {
     const res = { statusCode: 200, headersSent: false, setHeader() {}, getHeader() { return undefined; }, write() { return true; }, end() { this.headersSent = true; } };
     await handle({
@@ -48,5 +49,7 @@ export async function warmUp(): Promise<void> {
       headers: { host: 'zodiacs.org', 'content-type': 'application/json', accept: 'application/json, text/event-stream' },
       body: JSON.stringify(call),
     }, res);
+    statuses.push(res.statusCode);
   }
+  return statuses;
 }
