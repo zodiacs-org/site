@@ -18,11 +18,14 @@ type InviteHandler = (req: any, res: any) => Promise<void>;
 // it loads when one is asked for and a cold start for /mcp, nearly all of this function's traffic, skips it.
 export const COMPATIBILITY_SHARE_ROUTE_KEY = '__zodiacs_share';
 
-// /mcp is nearly all of this function's traffic. On Vercel (VERCEL_ENV is set) the AI runtime starts loading while the instance
-// starts, so a prewarmed instance answers its first /mcp call with the runtime already loaded instead of
-// loading it then. Every cold start pays for it, including the few for other routes, which /mcp's share
-// of the traffic outweighs. Elsewhere (tests, local tools) it loads on first use, as before. A failed
-// load is not kept: the next /mcp call tries again (Node itself keeps an error thrown while the module ran).
+// /mcp is nearly all of this function's traffic. On Vercel (VERCEL_ENV is set) the AI runtime loads, and answers
+// initialize and tools/list once inside the instance (warmUp), while the instance starts, so a prewarmed instance
+// answers its first /mcp call at warm speed instead of loading and warming then. This module awaits both: a
+// promise left running would not be waited for when the instance is prewarmed, and could still be loading when
+// the first call arrives. Every cold start pays for it, including the few for other routes, which /mcp's share
+// of the traffic outweighs. Elsewhere (tests, local tools) it loads on first use, as before. A failed load is not
+// kept: the next /mcp call tries again (Node itself keeps an error thrown while the module ran), and a failed
+// warm-up changes nothing, so neither can stop this function from starting.
 let aiHandler: Promise<typeof import('./_ai/handler.js')> | undefined;
 function loadAiHandler(): Promise<typeof import('./_ai/handler.js')> {
   aiHandler ??= import('./_ai/handler.js').catch((error: unknown) => {
@@ -31,7 +34,14 @@ function loadAiHandler(): Promise<typeof import('./_ai/handler.js')> {
   });
   return aiHandler;
 }
-if (process.env.VERCEL_ENV) loadAiHandler().catch(() => undefined);
+// Start-up waits two seconds at most: a load or warm-up that has not finished by then goes on in the background.
+const WARM_UP_WAIT_MS = 2000;
+if (process.env.VERCEL_ENV) {
+  await Promise.race([
+    loadAiHandler().then((ai) => ai.warmUp()).catch(() => undefined),
+    new Promise<void>((resolve) => setTimeout(resolve, WARM_UP_WAIT_MS).unref()),
+  ]);
+}
 
 export const COMPATIBILITY_INVITE_ACTIONS = [
   'invites',
