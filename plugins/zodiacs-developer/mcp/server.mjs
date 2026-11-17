@@ -43140,7 +43140,7 @@ async function getMomentChart(args, moment2, clock2, origin = DEFAULT_ORIGIN6) {
     if (!date3 || date3.year < NATAL_MIN_YEAR || date3.year > NATAL_MAX_YEAR) throw new RangeError(`date must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
     if (!parseCivilTime(moment2.time)) throw new RangeError("time must be HH:MM, such as 21:15.");
     await clock2.prepareLocalTime(moment2.date, args.zone);
-    const resolved = clock2.resolveLocalToUtc(moment2.date, moment2.time, args.zone);
+    const resolved = clock2.resolveLocalToUtc(moment2.date, moment2.time, args.zone, { longitude: roundCoordinate(args.longitude) });
     utc = resolved.utc;
     timeNote = momentTimeNote(moment2.time, resolved.flags, utc, args.zone);
   } else {

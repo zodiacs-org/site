@@ -203,6 +203,19 @@ describe('the moment chart switch on', () => {
       .toEqual(natal.planets.map((planet: Record<string, unknown>) => [planet.body, planet.sign, planet.position, planet.retrograde, planet.house]));
   });
 
+  it('reads a clock from before standard time as the place\'s own mean time, as the birth chart does', async () => {
+    const host = await serve(ON, [], NOW);
+    // Columbus, Ohio in 1850 kept its own mean time, about 36 minutes off New York's.
+    const at = { time: '12:00', zone: 'America/New_York', latitude: 39.96, longitude: -82.99 };
+    const natal = (await call(host, 'get_natal_chart', { birthDate: '1850-06-01', ...at })).structuredContent.data;
+    const moment = (await call(host, 'get_moment_chart', { date: '1850-06-01', ...at })).structuredContent.data;
+    expect(moment.castFor.utc).toBe(natal.castFor.utc);
+    expect(moment.rising.position).toBe(natal.angles.ascendant);
+    expect(moment.midheaven.position).toBe(natal.angles.midheaven);
+    expect(moment.planets.map((planet: Record<string, unknown>) => [planet.body, planet.position, planet.house]))
+      .toEqual(natal.planets.map((planet: Record<string, unknown>) => [planet.body, planet.position, planet.house]));
+  });
+
   it('takes no name or birth date, and get_natal_chart keeps the under-13 refusal', async () => {
     const host = await serve(ON, [], NOW);
     const named = await call(host, 'get_moment_chart', { ...BANGKOK, name: 'Small Child' });
