@@ -211,8 +211,8 @@ the hosted server reports 0.6.6, and it offers 19 tools.
 
 | Prompt | Tool | Expected |
 | --- | --- | --- |
-| Read my birth chart: born 3 May 1990 at 8:30 in Madrid. | `get_natal_chart` | Taurus Sun, Leo Moon, Gemini rising; planets in signs and houses, closest aspects, element balance, as astrology's reading. |
-| What's my chart? I was born on 3 May 1990 but don't know the time. | `get_natal_chart` | No rising sign or houses; says the Moon was in Leo or Virgo that day; does not guess a time. |
+| Read my birth chart: born 14 May 1994 at 9:15 in Seville. | `get_natal_chart` | Taurus Sun, Cancer Moon, Gemini rising; planets in signs and houses, closest aspects, element balance, as astrology's reading. |
+| What's my chart? I was born on 14 May 1994 but don't know the time. | `get_natal_chart` | No rising sign or houses; says the Moon was in Gemini or Cancer that day; does not guess a time. |
 | What's my Chinese zodiac sign? I was born 20 January 1990. | `get_chinese_zodiac` | Earth Snake: born before the Lunar New Year of 27 January 1990. |
 | What's the monthly horoscope for Leo? | `get_horoscope_period` | The published reading for the current month as written, with the month's sky. |
 | What does Mercury retrograde mean? | `explain_astrology` | A short explainer with links to zodiacs.org's retrograde pages. |
