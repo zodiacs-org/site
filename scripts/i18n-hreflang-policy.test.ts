@@ -43,7 +43,7 @@ describe('hreflang release policy', () => {
     expect(hreflangRouteFamily('/es/compatibility/aries-leo/')).toBe('compatibility-pair');
     expect(hreflangRouteFamily('/compatibility/leo-aries/')).toBe(null);
     expect(hreflangRouteFamily('/es/learn/planets/sun/')).toBe('learn-article');
-    expect(hreflangRouteFamily('/learn/planets/mars/')).toBe(null);
+    expect(hreflangRouteFamily('/learn/planets/neptune/')).toBe(null);
     expect(expectedHreflangsForPath('/learn/planets/sun/')).toEqual(new Set(['en', 'es', 'x-default']));
     expect(hreflangRouteFamily('/compatibility/invite/')).toBe('core');
     // Your 2027 sky, the Moon journal and the sign seasons: es, pt, fr and it; Russian links to the English pages.
