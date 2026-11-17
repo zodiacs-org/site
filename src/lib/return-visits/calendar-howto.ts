@@ -29,7 +29,7 @@ const HOWTO: Record<CatalogLocale, CalendarHowto> = {
     apple: {
       name: 'Apple Calendar',
       steps: [
-        'On an iPhone or iPad, tap “Subscribe to calendar” above, then “Subscribe” in the box that opens.',
+        'On an iPhone or iPad, open this page in Safari, tap “Subscribe to calendar” above, then “Subscribe” in the box that opens, then “Add”.',
         'On a Mac, open Calendar, choose File, then “New Calendar Subscription”, paste the address and press “Subscribe”.',
       ],
     },
@@ -48,7 +48,7 @@ const HOWTO: Record<CatalogLocale, CalendarHowto> = {
     apple: {
       name: 'Calendario de Apple',
       steps: [
-        'En un iPhone o iPad, toca “Suscribirse al calendario” arriba y luego “Suscribirse” en el cuadro que se abre.',
+        'En un iPhone o iPad, abre esta página en Safari, toca “Suscribirse al calendario” arriba, luego “Suscribirse” en el cuadro que se abre y después “Añadir”.',
         'En un Mac, abre Calendario, elige Archivo y luego “Nueva suscripción a calendario”, pega la dirección y pulsa “Suscribirse”.',
       ],
     },
@@ -67,27 +67,27 @@ const HOWTO: Record<CatalogLocale, CalendarHowto> = {
     apple: {
       name: 'Calendário da Apple',
       steps: [
-        'Em um iPhone ou iPad, toque em “Assinar calendário” acima e depois em “Assinar” na caixa que se abre.',
+        'Em um iPhone ou iPad, abra esta página no Safari, toque em “Assinar calendário” acima, depois em “Assinar” na caixa que se abre e então em “Adicionar”.',
         'Em um Mac, abra o Calendário, escolha Arquivo e depois “Nova Assinatura de Calendário”, cole o endereço e clique em “Assinar”.',
       ],
     },
   },
   fr: {
-    title: 'Ajoutez-le à votre agenda',
+    title: 'Ajoute-le à ton agenda',
     google: {
       name: 'Google Agenda',
       steps: [
-        'Copiez l’adresse de l’agenda indiquée plus haut.',
-        'Sur un ordinateur, ouvrez calendar.google.com. À côté de « Autres agendas », cliquez sur + puis sur « À partir de l’URL ».',
-        'Collez l’adresse et cliquez sur « Ajouter un agenda ».',
+        'Copie l’adresse de l’agenda indiquée plus haut.',
+        'Sur un ordinateur, ouvre calendar.google.com. À côté de « Autres agendas », clique sur + puis sur « À partir de l’URL ».',
+        'Colle l’adresse et clique sur « Ajouter un agenda ».',
       ],
-      note: 'Google n’ajoute un agenda par adresse que sur le web, mais les événements apparaissent ensuite aussi sur votre téléphone. Google cherche les nouveaux événements à son propre rythme, souvent une fois par jour.',
+      note: 'Google n’ajoute un agenda par adresse que sur le web, mais les événements apparaissent ensuite aussi sur ton téléphone. Google cherche les nouveaux événements à son propre rythme, souvent une fois par jour.',
     },
     apple: {
       name: 'Calendrier d’Apple',
       steps: [
-        'Sur un iPhone ou un iPad, touchez « S’abonner au calendrier » plus haut, puis « S’abonner » dans la fenêtre qui s’ouvre.',
-        'Sur un Mac, ouvrez Calendrier, choisissez Fichier puis « Nouvel abonnement à un calendrier », collez l’adresse et cliquez sur « S’abonner ».',
+        'Sur un iPhone ou un iPad, ouvre cette page dans Safari, touche « S’abonner au calendrier » plus haut, puis « S’abonner » dans la fenêtre qui s’ouvre, puis « Ajouter ».',
+        'Sur un Mac, ouvre Calendrier, choisis Fichier puis « Nouvel abonnement à un calendrier », colle l’adresse et clique sur « S’abonner ».',
       ],
     },
   },
@@ -105,7 +105,7 @@ const HOWTO: Record<CatalogLocale, CalendarHowto> = {
     apple: {
       name: 'Calendario di Apple',
       steps: [
-        'Su un iPhone o un iPad, tocca “Iscriviti al calendario” qui sopra, poi “Iscriviti” nella finestra che si apre.',
+        'Su un iPhone o un iPad, apri questa pagina in Safari, tocca “Iscriviti al calendario” qui sopra, poi “Iscriviti” nella finestra che si apre, poi “Aggiungi”.',
         'Su un Mac, apri Calendario, scegli Archivio e poi “Nuova iscrizione a calendario”, incolla l’indirizzo e premi “Iscriviti”.',
       ],
     },
@@ -116,7 +116,7 @@ const HOWTO: Record<CatalogLocale, CalendarHowto> = {
       name: 'Google Календарь',
       steps: [
         'Скопируйте адрес календаря, указанный выше.',
-        'На компьютере откройте calendar.google.com. Рядом с «Другие календари» нажмите + и выберите «Добавить по URL».',
+        'На компьютере откройте calendar.google.com. Рядом с разделом «Другие календари» нажмите + и выберите «Добавить по URL».',
         'Вставьте адрес и нажмите «Добавить календарь».',
       ],
       note: 'Google добавляет календарь по адресу только в веб-версии, но затем события появляются и на телефоне. Google проверяет новые события по своему расписанию, часто раз в день.',
@@ -124,7 +124,7 @@ const HOWTO: Record<CatalogLocale, CalendarHowto> = {
     apple: {
       name: 'Календарь Apple',
       steps: [
-        'На iPhone или iPad нажмите «Подписаться на календарь» выше, затем «Подписаться» в открывшемся окне.',
+        'На iPhone или iPad откройте эту страницу в Safari, нажмите «Подписаться на календарь» выше, затем «Подписаться» в открывшемся окне и «Добавить».',
         'На Mac откройте Календарь, выберите «Файл», затем «Новая подписка на календарь», вставьте адрес и нажмите «Подписаться».',
       ],
     },
