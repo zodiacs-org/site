@@ -4,7 +4,7 @@ record_type: experiment
 status: approved
 owner: site owner (Dias)
 created: 2026-11-13
-updated: 2026-11-13
+updated: 2026-11-16
 decision_due: 2026-12-14
 source_window: 2026-11-01..2026-11-12
 source_locations:
@@ -12,7 +12,7 @@ source_locations:
   - npm downloads API, @zodiacs/engine and @zodiacs/sdk
   - GitHub, zodiacs-org/engine stars
   - GitHub Insights, Traffic (zodiacs-org/engine referring sites and views)
-  - Google Search Console (once verified)
+  - Google Search Console
 related_urls:
   - https://zodiacs.org/mercury-retrograde/2027/
   - https://zodiacs.org/full-moon-calendar/2027/
@@ -26,7 +26,7 @@ related_records:
 evidence_quality: low
 privacy_class: aggregate-only
 decision: pending
-next_action: Dias verifies Search Console and decides each submission and post; read week 4 on Mon 14 Dec 2026 (Test A on Wed 16 Dec)
+next_action: Test A started 16 Nov 2026; read week 4 on Mon 14 Dec 2026 (Test A on Wed 16 Dec)
 ---
 
 # Awareness tests A, B and C: scoreboard, 16 Nov 2026 to 10 Jan 2027
@@ -52,15 +52,15 @@ is stored to read it.
 | Vercel logs | Claude user requests a day | about 60 (1 to 4 Nov), about 1,000 (10 to 12 Nov) |
 | npm | Downloads in the month to 11 Nov | engine 675, sdk 564 |
 | GitHub | zodiacs-org/engine stars, 13 Nov | 0 |
-| Search Console | Impressions | not available (not verified) |
+| Search Console | Impressions, 11 Aug to 10 Nov, site-wide | 413 across 28 pages (pulled by Grok Bot on 14 Nov) |
 
 ## Test A: Google search
 
 **Change.** Four existing pages upgraded: Mercury retrograde 2027, full moon
 calendar 2027, eclipses 2027 and the birthday pages. Each gets event times in
 several time zones, a visible updated date, a fuller FAQ and its accuracy
-check stated. No new pages. Dias verifies Search Console and submits the
-sitemap.
+check stated. No new pages. Search Console is verified and the sitemap index
+is submitted (done by 15 Nov).
 
 **Read.** Week 4 is Mon 7 Dec to Sun 13 Dec 2026, read on Wed 16 Dec.
 Search Console reports about two days late, so the verdict waits until 12 and
@@ -83,6 +83,21 @@ re-dates about 370 sitemap entries, which alone can raise crawling.
 **Query.** Vercel observability, `vercel.request.count`, project
 `prj_nRTO3q3aNYLfaM3dotAowOc028fO`, grouped by `bot_name`, daily, summed over
 the week. Search Console: Performance, Pages, filtered to the four paths.
+
+**Starting point, recorded Mon 16 Nov 2026.**
+
+| What | Value | Source |
+| --- | --- | --- |
+| Googlebot requests site-wide, 9 to 15 Nov (Bangkok days) | 677 | Vercel logs |
+| Googlebot requests to the four test pages, same week | 7, all on 15 Nov after indexing was requested; none to the full moon calendar or the 366 birthday day pages | Vercel logs |
+| Pages Google had indexed, 9 Nov | 21 of about 1,900 | Search Console, as quoted in PR #1027 |
+| Priority pages indexed before the 15 Nov requests | 3 of 15 (`/`, `/horoscopes/`, `/today/`) | Search Console, as reported by Grok Bot on 15 Nov |
+
+Two other changes landed just before the start and also feed Test A: PR #1027
+(one sitemap index, fewer crawl dead ends, 25 thin past pages hidden) went
+live on 15 Nov, and indexing was requested that day for 15 priority pages,
+including all four test pages. A rise in crawls or impressions can't be
+credited to the four page upgrades alone.
 
 ## Test B: AI assistants (reach only)
 

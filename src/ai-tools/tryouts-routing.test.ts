@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { TOOL_DESCRIPTIONS } from './contracts';
 import { ASK_FIRST, CHILD_HOROSCOPE, OUTSIDE_ZODIACS, WHICH_TOOL } from './server';
 import { executeAiTool } from './tools';
-import { asInventedExamples, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, ZOD_207_SENTENCES } from './published-tools';
+import { asInventedExamples, descriptionWithoutZod64, INVENTED_EXAMPLES, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, withoutZod64, ZOD_207_SENTENCES } from './published-tools';
 
 /**
  * ZOD-207 (a draft on top of ZOD-58): the wording added after 200 questions were tried on two assistants
@@ -39,15 +39,26 @@ describe('the routing wording from the assistant tryouts', () => {
   it('is the saved tools/list and instructions of the fix round, and of the join with main', () => {
     for (const folder of ['fix-round', 'join']) {
       const listed = saved(folder, 'tools-list.json').tools as Listed[];
-      for (const { name, description } of listed) expect(description, `${folder} ${name}`).toBe(TOOL_DESCRIPTIONS[name as keyof typeof TOOL_DESCRIPTIONS]);
+      // Saved before ZOD-64, so compared with today's descriptions as they read before its minute time.
+      for (const { name, description } of listed) expect(description, `${folder} ${name}`).toBe(descriptionWithoutZod64(name, TOOL_DESCRIPTIONS[name as keyof typeof TOOL_DESCRIPTIONS]));
       const instructions = saved(folder, 'initialize.json').instructions as string;
       expect(instructions).toContain(ASK_FIRST);
       expect(instructions).toContain(OUTSIDE_ZODIACS);
       expect(instructions).toContain(CHILD_HOROSCOPE);
       expect(instructions.endsWith(WHICH_TOOL)).toBe(true);
     }
-    // The saved list predates the invented schema examples (src/ai-tools/published-tools.ts), which are put in to compare.
-    expect(JSON.stringify((saved('join', 'tools-list.json').tools as Record<string, unknown>[]).slice(0, 13).map(tool => asInventedExamples(tool).tool))).toBe(JSON.stringify(PUBLISHED_TOOLS));
+    // The saved list predates ZOD-64 and the invented schema examples (src/ai-tools/published-tools.ts): with the
+    // examples put in and ZOD-64 taken out, it is the list this release publishes.
+    const joined = (saved('join', 'tools-list.json').tools as Record<string, unknown>[]).slice(0, 13);
+    const withExamples = joined.map(tool => asInventedExamples(tool).tool);
+    expect(JSON.stringify(withExamples)).toBe(JSON.stringify(PUBLISHED_TOOLS.map(withoutZod64)));
+    // The examples move only the eleven schema descriptions they name.
+    expect(joined.flatMap(tool => asInventedExamples(tool).changed).sort()).toEqual(Object.keys(INVENTED_EXAMPLES).sort());
+    // ZOD-64 (approved by Dias on 2026-11-17) moves only get_upcoming_events' description since the join.
+    const moved = PUBLISHED_TOOLS.filter((tool, index) => JSON.stringify(tool) !== JSON.stringify(withExamples[index]));
+    expect(moved.map(tool => tool.name)).toEqual(['get_upcoming_events']);
+    const joinedEvents = withExamples.find(tool => tool.name === 'get_upcoming_events')!;
+    expect(JSON.stringify({ ...moved[0], description: joinedEvents.description })).toBe(JSON.stringify(joinedEvents));
     // The join moved nothing in the list but get_horoscope's panel address, and one sentence of the instructions.
     const v7 = (text: string) => text.replaceAll('ui://zodiacs/horoscopes-v6.html', 'ui://zodiacs/horoscopes-v7.html');
     expect(v7(JSON.stringify(saved('fix-round', 'tools-list.json')))).toBe(JSON.stringify(saved('join', 'tools-list.json')));

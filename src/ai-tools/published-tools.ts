@@ -30,6 +30,14 @@ import { readFileSync } from 'node:fs';
  * Dias on 13 November 2026, 17:12 Asia/Bangkok; ZOD_207_SENTENCES below holds what it added, and
  * src/ai-tools/tryouts-routing.test.ts checks that nothing else in the thirteen moved. Again only the description
  * field changes.
+ *
+ * ZOD-64: PR 1068 (merged 16 November 2026) gives event times to the minute, so get_upcoming_events now shows Neptune
+ * entering Aries on 26 January 2026 at 2026-01-26T14:32:00Z, while its description still quoted 14:31:41.
+ * ZOD_64_SENTENCES below changes the quoted time to 14:32 UTC and nothing else in the sentence (the Horizons time of
+ * 17:35 stays). This change to the published definitions was approved by Dias on 2026-11-17, and it is the
+ * description of get_upcoming_events only: no other tool, field, schema, annotation or _meta moves.
+ * check_sky_fact's description keeps 14:31:41, because check_sky_fact still gives the solved instant,
+ * 2026-01-26T14:31:41.084Z. withoutZod64 takes the change back out, for comparing with lists saved before ZOD-64.
  */
 export const LIVE_TOOLS = JSON.parse(readFileSync(new URL('../../docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json', import.meta.url), 'utf8')).result.tools as Record<string, unknown>[];
 
@@ -63,7 +71,7 @@ export function as065(tool: Record<string, unknown>): { tool: Record<string, unk
   return { tool: walk(tool, String(tool.name)) as Record<string, unknown>, changed };
 }
 
-/** ZOD-58: the thirteen published descriptions as plain descriptions, whole; four carry the ZOD-207 sentences the owner approved on 13 November 2026. */
+/** ZOD-58: the thirteen published descriptions as plain descriptions, whole; four carry the ZOD-207 sentences the owner approved on 13 November 2026. ZOD-64 changes one of them after (ZOD_64_SENTENCES). */
 export const PLAIN_DESCRIPTIONS: Record<string, string> = {
   get_capabilities: "Returns a list of what Zodiacs can do, its limits and how it handles privacy. It takes no input and needs no sign-in or birth details. It fits a question about what Zodiacs can do, or about its limits. It describes the service and calculates nothing. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes.",
   get_sky: "Returns where the Sun, the Moon and the planets are now or at a given moment, with the Moon's phase. It fits a question about the sky at one moment, with no person's chart involved. It is astronomy only and makes no personal prediction. Moments run from 1800 to 2199. It takes an optional time zone; without one its times are in UTC. It gives positions for a moment, with no houses or rising sign.",
@@ -127,13 +135,13 @@ export function asPanelV7(tool: Record<string, unknown>): { tool: Record<string,
 }
 
 /**
- * Invented examples (a draft for developer plugin 0.3.50, not yet approved by the owner): the "such as" examples in
+ * Invented examples (developer plugin 0.3.51, on top of ZOD-64): the "such as" examples in
  * the input schemas named the owner's own birth date, birth time, birthplace, home time zone and wedding. They now
  * name the invented set the /apps pages use (Lucía, born 14 May 1994 at 09:15 in Seville, Europe/Madrid; a wedding
  * on 18 September 2027 at 16:30 in Lisbon, Europe/Lisbon; a horoscope reader in America/Mexico_City). Each entry is
  * a schema field's description, whole, as it now reads; only these eleven fields change, and no name, type,
  * pattern, enum, title, annotation, _meta or tool description moves. Shipping this changes text every client sees,
- * so it waits for the owner's yes and goes out with the next directory resubmission.
+ * so it goes out with the next directory resubmission, which the owner approved on 17 November 2026.
  */
 export const INVENTED_EXAMPLES: Record<string, string> = {
   'get_sky.inputSchema.properties.zone.description': "The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.",
@@ -164,5 +172,39 @@ export function asInventedExamples(tool: Record<string, unknown>): { tool: Recor
   return { tool: walk(tool, String(tool.name)) as Record<string, unknown>, changed };
 }
 
-/** The thirteen as this release lists them. */
-export const PUBLISHED_TOOLS = LIVE_TOOLS.map((tool) => asInventedExamples(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool);
+
+/**
+ * ZOD-64, approved by Dias on 2026-11-17, get_upcoming_events description only: each pair is the description text
+ * before PR 1068's minute times and what stands in its place. Taking them back out gives the ZOD-207 description byte
+ * for byte.
+ */
+export const ZOD_64_SENTENCES: Record<string, [string, string][]> = {
+  get_upcoming_events: [["for Neptune entering Aries on 26 January 2026 it gives 14:31:41 UTC, where Horizons gives 17:35 UTC.",
+    "for Neptune entering Aries on 26 January 2026 it gives 14:32 UTC, where Horizons gives 17:35 UTC."]],
+};
+
+/** An entry with the ZOD-64 description, and the paths that changed. */
+export function asZod64(tool: Record<string, unknown>): { tool: Record<string, unknown>; changed: string[] } {
+  const name = String(tool.name);
+  const pairs = ZOD_64_SENTENCES[name];
+  if (!pairs) return { tool, changed: [] };
+  const description = pairs.reduce((text, [was, now]) => {
+    if (text.split(was).length !== 2) throw new Error(`${name} no longer holds: ${was}`);
+    return text.replace(was, now);
+  }, String(tool.description));
+  return { tool: { ...tool, description }, changed: [`${name}.description`] };
+}
+
+/** A description as it read before ZOD-64. */
+export function descriptionWithoutZod64(name: string, description: string): string {
+  return (ZOD_64_SENTENCES[name] ?? []).reduce((text, [was, now]) => text.replace(now, was), description);
+}
+
+/** An entry as it was listed before ZOD-64: for comparing with the lists saved before it. */
+export function withoutZod64(tool: Record<string, unknown>): Record<string, unknown> {
+  if (!ZOD_64_SENTENCES[String(tool.name)]) return tool;
+  return { ...tool, description: descriptionWithoutZod64(String(tool.name), String(tool.description)) };
+}
+
+/** The thirteen as this release lists them: ZOD-64's description, then the invented schema examples. */
+export const PUBLISHED_TOOLS = LIVE_TOOLS.map((tool) => asInventedExamples(asZod64(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool).tool);
