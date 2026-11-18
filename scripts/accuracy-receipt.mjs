@@ -33,7 +33,8 @@ const DAY_MS = 86400000;
 const CUTOFF = '2026-09-22';
 const LIMIT = 1;
 const MAX_REQUESTS = 40;
-const CHECKSUMS = 'SHA256SUMS';
+const SUITE_CHECKSUMS = 'SHA256SUMS';
+const ROLLING_CHECKSUMS = 'SHA256SUMS.txt';
 const AUDIT_ROOT = join(process.env.RUNNER_TEMP ?? tmpdir(), 'zodiacs-accuracy-audit');
 const SOURCES = join(ROOT, 'suite');
 const CHECKSUM_LINE = /^([a-f0-9]{64})  ([\w.-]+\.txt)$/u;
@@ -289,15 +290,15 @@ function checkHistory(latest, history) {
     'Accuracy latest.json and history.json do not agree');
 }
 
-async function readChecksums(directory) {
-  const manifest = await maybeRead(join(directory, CHECKSUMS));
+async function readChecksums(directory, checksumFile) {
+  const manifest = await maybeRead(join(directory, checksumFile));
   const entries = new Map();
   for (const line of (manifest?.toString().trimEnd() ?? '').split('\n').filter(Boolean)) {
     const match = CHECKSUM_LINE.exec(line);
-    assert(match && !entries.has(match[2]), `Invalid ${CHECKSUMS} in ${directory}`);
+    assert(match && !entries.has(match[2]), `Invalid ${checksumFile} in ${directory}`);
     entries.set(match[2], match[1]);
   }
-  const files = (await readdir(directory)).filter((file) => file !== CHECKSUMS);
+  const files = (await readdir(directory)).filter((file) => file !== checksumFile);
   assert(files.length === entries.size, `Unlisted raw files in ${directory}`);
   for (const file of files) {
     assert(sha256(await readFile(join(directory, file))) === entries.get(file), `Raw SHA-256 mismatch: ${file}`);
@@ -310,7 +311,7 @@ export async function verifyRaw(root, latest, history = []) {
   const manifests = new Map();
   for (const date of directories) {
     assert(/^\d{4}-\d{2}-\d{2}$/u.test(date), `Invalid raw directory: ${date}`);
-    manifests.set(date, await readChecksums(join(root, 'raw', date)));
+    manifests.set(date, await readChecksums(join(root, 'raw', date), ROLLING_CHECKSUMS));
   }
   for (const { date } of history) {
     assert(manifests.get(date)?.size, `Missing raw responses for ${date}`);
@@ -384,9 +385,9 @@ export async function collectReceipt({
     const prefix = `${date.toISOString().replace(/[^0-9]/gu, '')}-${randomUUID().slice(0, 8)}`;
     let requests = 0;
 
-    async function batch(name, instants, directory) {
+    async function batch(name, instants, directory, checksumFile) {
       await mkdir(directory, { recursive: true });
-      const sums = await readChecksums(directory);
+      const sums = await readChecksums(directory, checksumFile);
       const result = new Map();
       for (const [body, naif] of BODIES) {
         for (let attempt = 1; attempt <= 3; attempt++) {
@@ -411,7 +412,7 @@ export async function collectReceipt({
             const hash = sha256(bytes);
             await writeFile(join(directory, file), bytes, { flag: 'wx' });
             sums.set(file, hash);
-            await writeAtomic(join(directory, CHECKSUMS),
+            await writeAtomic(join(directory, checksumFile),
               [...sums].map(([path, digest]) => `${digest}  ${path}\n`).join(''));
             raw.push({ file, sha256: hash, set: name, body, attempt, status: response.status });
             try {
@@ -430,10 +431,10 @@ export async function collectReceipt({
       return result;
     }
 
-    const fresh = await batch('suite', suite.instants, suiteRaw);
+    const fresh = await batch('suite', suite.instants, suiteRaw, SUITE_CHECKSUMS);
     const nasaCheck = selfCheck(suite, fresh);
-    await readChecksums(suiteRaw);
-    const answers = await batch('rolling', rolling, rollingRaw);
+    await readChecksums(suiteRaw, SUITE_CHECKSUMS);
+    const answers = await batch('rolling', rolling, rollingRaw, ROLLING_CHECKSUMS);
     const receipt = buildReceipt({ suite, rolling, answers, nasaCheck, date, engine, raw, auditUrl });
     await snapshot(root, receipt, [...history, historyRow(receipt)]);
     return receipt;

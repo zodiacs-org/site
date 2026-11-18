@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import * as vendor from '@zodiacs/engine';
-import { ACCURACY_PATH, accuracyRobots, accuracyRoutes } from '../src/accuracy/publication.mjs';
+import { ACCURACY_PATH, accuracyRobots } from '../src/accuracy/publication.mjs';
 import {
   BODIES, buildReceipt, collectReceipt, difference, horizonsUrl, loadSuite, rollingInstants, selfCheck, verifyRaw,
 } from './accuracy-receipt.mjs';
@@ -151,23 +151,16 @@ function recordedAnswer(url) {
 }
 
 describe('NASA accuracy receipts', () => {
-  it('registers the receipt and downloads only when published', () => {
-    const injectRoute = vi.fn();
-    accuracyRoutes(false).hooks['astro:config:setup']({ injectRoute });
-    expect(injectRoute).not.toHaveBeenCalled();
-    accuracyRoutes(true).hooks['astro:config:setup']({ injectRoute });
-    expect(injectRoute.mock.calls).toEqual([
-      [{ pattern: ACCURACY_PATH, entrypoint: './src/accuracy/page.astro' }],
-      [{ pattern: `${ACCURACY_PATH}raw/[date]/[file]`, entrypoint: './src/accuracy/raw.ts' }],
-    ]);
-  });
-
   it('blocks the withheld receipt for every crawler group', async () => {
     const rules = await readFile('src/robots.txt', 'utf8');
     expect(accuracyRobots(rules, true)).toBe(rules);
     const crawlerGroups = accuracyRobots(rules, false).split('\n\n').filter((group) => group.startsWith('User-agent:'));
+    expect(crawlerGroups).not.toHaveLength(0);
     for (const group of crawlerGroups) {
-      expect(group).toContain(`Disallow: ${ACCURACY_PATH.slice(0, -1)}$\nDisallow: ${ACCURACY_PATH}\n`);
+      expect(group.split('\n')).toEqual(expect.arrayContaining([
+        `Disallow: ${ACCURACY_PATH.slice(0, -1)}$`,
+        `Disallow: ${ACCURACY_PATH}`,
+      ]));
     }
   });
 

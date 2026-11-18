@@ -2,7 +2,6 @@ import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
 import mdx from '@astrojs/mdx';
 import { natalAspectRoutes } from './scripts/natal-aspects-policy.mjs';
-import { accuracyRoutes } from './src/accuracy/publication.mjs';
 
 function interactionDirective() {
   return {
@@ -70,7 +69,7 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
-  integrations: [interactionDirective(), paintedDirective(), natalAspectRoutes(), accuracyRoutes(), preact(), mdx()],
+  integrations: [interactionDirective(), paintedDirective(), natalAspectRoutes(), preact(), mdx()],
   build: {
     format: 'directory',
     inlineStylesheets: 'auto',

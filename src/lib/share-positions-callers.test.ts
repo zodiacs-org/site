@@ -303,7 +303,6 @@ const CODE = /\.(?:ts|tsx|mts|cts|js|jsx|mjs|cjs|astro|mdx)$/u;
 const NOT_PRODUCTION = /\.(?:test|spec)\.[cm]?[jt]sx?$|\.d\.[cm]?ts$/u;
 /** Files that hold no code: data, styles, fonts, images, prose and test snapshots. */
 const NOT_CODE = /\.(?:json|css|snap|woff2?|ttf|otf|svg|png|jpe?g|webp|avif|gif|ico|md|txt|html|xml|yaml|yml|csv|wasm)$/u;
-const ACCURACY_CHECKSUM_MANIFEST = /^src\/data\/accuracy\/raw\/\d{4}-\d{2}-\d{2}\/SHA256SUMS$/u;
 /** Package names the builds map to repository files (scripts/build-precision-preview.mjs). */
 const ALIASES: Record<string, string> = {
   '@zodiacs/precision-alpha/browser': 'examples/precision-alpha/src/browser.mjs',
@@ -327,7 +326,7 @@ function productionFiles(): { files: Files; others: string[] } {
   for (const path of ROOTS.flatMap(walk)) {
     if (CODE.test(path)) {
       if (!NOT_PRODUCTION.test(path)) files.set(path, readFileSync(resolve(root, path), 'utf8'));
-    } else if (!NOT_CODE.test(path) && !ACCURACY_CHECKSUM_MANIFEST.test(path)) others.push(path);
+    } else if (!NOT_CODE.test(path)) others.push(path);
   }
   return { files, others };
 }

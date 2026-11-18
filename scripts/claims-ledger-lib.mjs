@@ -141,8 +141,6 @@ export const SCOPE_ADD = Object.freeze([
   'public/llms-full.txt',
   'scripts/build-assistant-context.mjs',
   'src/accuracy/AccuracyReceipt.astro',
-  'src/accuracy/page.astro',
-  'src/accuracy/raw.ts',
 ]);
 
 /**
@@ -225,7 +223,6 @@ export const TRUST_PATTERNS = Object.freeze([
   /^src\/pages\/terms\/index\.astro$/u,
   /^src\/pages\/birth-chart\/index\.astro$/u,
   /^src\/pages\/developers\//u,
-  /^src\/accuracy\/(?:page\.astro|raw\.ts)$/u,
   /^src\/data\/developer-guides\.json$/u,
   /^(?:examples|plugins)\/[^/]+\/README\.md$/u,
   /^plugins\/[^/]+\/skills\/[^/]+\/SKILL\.md$/u,

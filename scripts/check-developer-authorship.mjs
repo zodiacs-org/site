@@ -29,6 +29,7 @@ if (!Array.isArray(timeAtlasIndex.files)
   throw new Error('Invalid time atlas file index');
 }
 export const generatedDeveloperDocuments = Object.freeze({
+  'accuracy/[...page].astro': accuracyPublished ? [`${ACCURACY_PATH.slice(1)}index.html`] : [],
   'docs/[...guide].astro': [
     'developers/docs/index.html',
     ...developerGuides.map((guide) => `developers/docs/${guide.slug}/index.html`),
@@ -45,7 +46,6 @@ export const generatedDeveloperDocuments = Object.freeze({
 
 export const requiredDocuments = [
   ...Object.values(generatedDeveloperDocuments).flat(),
-  ...(accuracyPublished ? [`${ACCURACY_PATH.slice(1)}index.html`] : []),
   ...['', 'ai/', 'compare/', 'compute/', 'conformance/', 'conventions/', 'demo/', 'engine/', 'examples/',
     'mcp/', 'playground/', 'precision-preview/', 'sky-benchmark/', 'support/', 'time-atlas/'].map((route) => `developers/${route}index.html`),
   'developers/engine/reference/index.html', 'developers/engine/reference/modules.html',
