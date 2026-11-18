@@ -27,7 +27,7 @@ async function rpc(body: Record<string, unknown>) {
 }
 async function call(name: string, args: Record<string, unknown>) {
   const reply = await rpc({ jsonrpc: '2.0', id: Date.now(), method: 'tools/call', params: { name, arguments: args } });
-  assert.ok(reply?.result?.structuredContent?.ok, `${name} answered`);
+  assert.ok(reply?.result?.structuredContent?.ok, `${name} answered: ${JSON.stringify(reply?.error ?? reply?.result?.content ?? reply).slice(0, 600)}`);
   return { structuredContent: reply.result.structuredContent, _meta: reply.result._meta };
 }
 async function host(page: Page, result: { structuredContent: unknown; _meta?: unknown }) {
