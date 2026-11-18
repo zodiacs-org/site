@@ -37,6 +37,22 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * texts too (src/ai-tools/published-tools.ts). Every schema keeps its bytes. The horoscope panel moves to
  * horoscopes-v7, so a panel opened for a birth date under 18 stays softened when another sign is picked in it: get_horoscope's
  * panel address changes in every tools/list, and each resources/list gains v7, with v6 kept under a legacy name.
+ * ZOD-207 (a draft on top of ZOD-58, still 0.6.7) adds to the server instructions what is outside Zodiacs, that a
+ * named child under 13 gets no horoscope and, in the coverage scenario, which tool takes which request; it says "Ask
+ * before using someone else's birth details" there in the words get_capabilities uses; and it adds routing and
+ * declining sentences to the get_natal_chart, explain_astrology and get_horoscope_period descriptions and to four of
+ * the thirteen published ones, get_horoscope, check_sky_fact, get_upcoming_events and open_chart_studio, which the
+ * owner approved on 13 November 2026 (src/ai-tools/published-tools.ts, src/ai-tools/tryouts-routing.test.ts). ZOD-207
+ * changes no schema, no panel address and no resources/list.
+ * ZOD-64 (PR 1068's minute times, still 0.6.7, approved by Dias on 2026-11-17) changes the time that
+ * get_upcoming_events' description quotes for Neptune entering Aries from 14:31:41 to 14:32 UTC, in every tools/list
+ * (src/ai-tools/published-tools.ts). Nothing else in any scenario changes.
+ * Developer 0.3.51 (still 0.6.7, owner approved on 17 November 2026 for the next directory resubmission) puts invented
+ * examples in eighteen input schema field descriptions of the published tools and the same examples in the later
+ * tools, so every scenario's tools/list changes in that example text only (INVENTED_EXAMPLES in
+ * src/ai-tools/published-tools.ts). No name, schema shape, annotation or resources/list changes.
+ * 0.6.8 changes only the reported version, in every scenario, to ship those invented examples for the directory
+ * resubmission.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

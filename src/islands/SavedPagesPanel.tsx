@@ -3,7 +3,7 @@
  * occasion cards a signed-in person saved, each a link back to its page.
  * A page someone chose to save before signing in is saved here once the
  * session arrives. Renders nothing unless PUBLIC_ACCOUNT_SAVES_ENABLED is on.
- * A link to one saved result (/profile/#saved=<digest>, where the pages a
+ * A link to one saved result (/profile/#saved=<id>, where the pages a
  * saved link names send it) opens that result's saved reading.
  */
 import { useEffect, useState } from 'preact/hooks';
@@ -15,7 +15,7 @@ import {
   type SavedPageDraft,
 } from '../lib/profile/saved-pages-config';
 import { assistantSavedReading, type SavedReading } from '../lib/profile/assistant-saved-reading';
-import { savedResultDigest, savedResultExploreHref } from '../lib/profile/saved-result-link';
+import { savedResultExploreHref, savedResultId } from '../lib/profile/saved-result-link';
 import '../styles/account.css';
 
 interface Props {
@@ -53,9 +53,9 @@ export default function SavedPagesPanel({ enabled }: Props) {
   const [pages, setPages] = useState<SavedPage[]>([]);
   const [pending, setPending] = useState<SavedPageDraft | null>(null);
   const [status, setStatus] = useState<{ text: string; error?: boolean } | null>(null);
-  // The saved result a /profile/#saved=<digest> link asks for, read once.
-  const [linked] = useState(() => (typeof window === 'undefined' ? null : savedResultDigest(window.location.hash)));
-  const openId = linked ? pages.find((page) => savedResultDigest(page.href) === linked)?.id ?? null : null;
+  // The saved result a /profile/#saved=<id> link asks for, read once: the row whose stored link carries that id.
+  const [linked] = useState(() => (typeof window === 'undefined' ? null : savedResultId(window.location.hash)));
+  const openId = linked ? pages.find((page) => savedResultId(page.href) === linked)?.id ?? null : null;
   useEffect(() => {
     if (load !== 'ready' || !linked) return;
     if (!openId) { setStatus({ text: COPY.savedMissing, error: true }); return; }

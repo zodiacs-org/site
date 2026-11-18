@@ -94,8 +94,10 @@ const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
 // through the share control), so the count per pair page is derived from the
 // page's own links instead of being fixed.
 const pairRequiredInlined = [/^Base\.[A-Za-z0-9_-]+\.css$/u, /^pair-page\.[A-Za-z0-9_-]+\.css$/u];
-// 115 entry pages carry 228 inlined stylesheets; feature flags do not change it.
-const entryInlinedStylesheets = 228;
+// 115 entry pages carry 229 inlined stylesheets; feature flags do not change it.
+// (229 since numerology's restyle: its own page styles passed Astro's 4 KB
+// inline limit, so they arrive as a stylesheet that this script inlines.)
+const entryInlinedStylesheets = 229;
 const targetPaths = [
   // The EN homepage keeps only Base plus its route-owned first-paint geometry
   // on the render path. The complete route bundle still loads after first

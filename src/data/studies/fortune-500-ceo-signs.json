@@ -1,0 +1,563 @@
+{
+ "title": "Sun signs of Fortune 500 CEOs",
+ "list": "Fortune 500, 2026 edition (published 2026-06-03)",
+ "listSource": "https://fortunemedia.mediaroom.com/2026-06-03-Amazon-Claims-No-1-Spot-on-the-Fortune-500",
+ "ceoAsOf": "2026-11-17",
+ "companies": 500,
+ "withFullBirthDate": 74,
+ "cuspExcluded": 8,
+ "counted": 66,
+ "expectedShare": {
+  "aries": 0.08345,
+  "taurus": 0.08476,
+  "gemini": 0.0859,
+  "cancer": 0.08607,
+  "leo": 0.08567,
+  "virgo": 0.08453,
+  "libra": 0.08328,
+  "scorpio": 0.08174,
+  "sagittarius": 0.08088,
+  "capricorn": 0.08065,
+  "aquarius": 0.08105,
+  "pisces": 0.08202
+ },
+ "expectedShareBasis": "Share of days the Sun spent in each sign, 1937 to 1984 (the counted CEOs were born 1937 to 1984), from the zodiacs.org engine at 12:00 UTC each day.",
+ "observed": {
+  "aries": 2,
+  "taurus": 6,
+  "gemini": 9,
+  "cancer": 6,
+  "leo": 6,
+  "virgo": 6,
+  "libra": 5,
+  "scorpio": 5,
+  "sagittarius": 2,
+  "capricorn": 8,
+  "aquarius": 6,
+  "pisces": 5
+ },
+ "chiSquare": 7.91,
+ "degreesOfFreedom": 11,
+ "pValue": 0.72,
+ "method": "Sun sign from the published birth date with no birth time: a sign counts only when the Sun stayed in it for the whole date anywhere on Earth (00:00 at UTC+14 to 24:00 at UTC-12). Birth dates are not republished here; each row links its source.",
+ "rows": [
+  {
+   "rank": 1,
+   "company": "Amazon",
+   "ceo": "Andy Jassy",
+   "sun": "capricorn",
+   "source": "https://en.wikipedia.org/wiki/Andy_Jassy"
+  },
+  {
+   "rank": 3,
+   "company": "UnitedHealth Group",
+   "ceo": "Stephen J. Hemsley",
+   "sun": "gemini",
+   "source": "https://en.wikipedia.org/wiki/Stephen_J._Hemsley"
+  },
+  {
+   "rank": 5,
+   "company": "Alphabet",
+   "ceo": "Sundar Pichai",
+   "sun": "gemini",
+   "source": "https://en.wikipedia.org/wiki/Sundar_Pichai"
+  },
+  {
+   "rank": 7,
+   "company": "Berkshire Hathaway",
+   "ceo": "Greg Abel",
+   "sun": "gemini",
+   "source": "https://en.wikipedia.org/wiki/Greg_Abel"
+  },
+  {
+   "rank": 9,
+   "company": "Exxon Mobil",
+   "ceo": "Darren Woods",
+   "sun": "sagittarius",
+   "source": "https://en.wikipedia.org/wiki/Darren_Woods"
+  },
+  {
+   "rank": 11,
+   "company": "Microsoft",
+   "ceo": "Satya Nadella",
+   "sun": "leo",
+   "source": "https://en.wikipedia.org/wiki/Satya_Nadella"
+  },
+  {
+   "rank": 12,
+   "company": "JPMorgan Chase",
+   "ceo": "Jamie Dimon",
+   "sun": "pisces",
+   "source": "https://en.wikipedia.org/wiki/Jamie_Dimon"
+  },
+  {
+   "rank": 16,
+   "company": "Nvidia",
+   "ceo": "Jensen Huang",
+   "sun": "aquarius",
+   "source": "https://en.wikipedia.org/wiki/Jensen_Huang"
+  },
+  {
+   "rank": 17,
+   "company": "Meta Platforms",
+   "ceo": "Mark Zuckerberg",
+   "sun": "taurus",
+   "source": "https://en.wikipedia.org/wiki/Mark_Zuckerberg"
+  },
+  {
+   "rank": 21,
+   "company": "Chevron",
+   "ceo": "Mike Wirth",
+   "sun": "libra",
+   "source": "https://en.wikipedia.org/wiki/Michael_Wirth"
+  },
+  {
+   "rank": 22,
+   "company": "Ford Motor",
+   "ceo": "Jim Farley",
+   "sun": "gemini",
+   "source": "https://en.wikipedia.org/wiki/Jim_Farley_(businessman)"
+  },
+  {
+   "rank": 23,
+   "company": "General Motors",
+   "ceo": "Mary Barra",
+   "sun": "capricorn",
+   "source": "https://en.wikipedia.org/wiki/Mary_Barra"
+  },
+  {
+   "rank": 24,
+   "company": "Citigroup",
+   "ceo": "Jane Fraser",
+   "sun": "cancer",
+   "source": "https://en.wikipedia.org/wiki/Jane_Fraser_(executive)"
+  },
+  {
+   "rank": 27,
+   "company": "Kroger",
+   "ceo": "Greg Foran",
+   "sun": null,
+   "source": "https://en.wikipedia.org/wiki/Greg_Foran"
+  },
+  {
+   "rank": 28,
+   "company": "Verizon Communications",
+   "ceo": "Dan Schulman",
+   "sun": "capricorn",
+   "source": "https://en.wikipedia.org/wiki/Dan_Schulman"
+  },
+  {
+   "rank": 36,
+   "company": "Goldman Sachs Group",
+   "ceo": "David Solomon",
+   "sun": "capricorn",
+   "source": "https://en.wikipedia.org/wiki/David_M._Solomon"
+  },
+  {
+   "rank": 37,
+   "company": "Comcast",
+   "ceo": "Brian Roberts",
+   "sun": "cancer",
+   "source": "https://en.wikipedia.org/wiki/Brian_L._Roberts"
+  },
+  {
+   "rank": 38,
+   "company": "Wells Fargo",
+   "ceo": "Charles Scharf",
+   "sun": "taurus",
+   "source": "https://en.wikipedia.org/wiki/Charles_Scharf"
+  },
+  {
+   "rank": 39,
+   "company": "Morgan Stanley",
+   "ceo": "Ted Pick",
+   "sun": "scorpio",
+   "source": "https://en.wikipedia.org/wiki/Ted_Pick"
+  },
+  {
+   "rank": 41,
+   "company": "Dell Technologies",
+   "ceo": "Michael Dell",
+   "sun": "pisces",
+   "source": "https://en.wikipedia.org/wiki/Michael_Dell"
+  },
+  {
+   "rank": 43,
+   "company": "Tesla",
+   "ceo": "Elon Musk",
+   "sun": "cancer",
+   "source": "https://en.wikipedia.org/wiki/Elon_Musk"
+  },
+  {
+   "rank": 44,
+   "company": "Walt Disney",
+   "ceo": "Josh D'Amaro",
+   "sun": "aquarius",
+   "source": "https://en.wikipedia.org/wiki/Josh_D%27Amaro"
+  },
+  {
+   "rank": 48,
+   "company": "UPS",
+   "ceo": "Carol Tomé",
+   "sun": "capricorn",
+   "source": "https://en.wikipedia.org/wiki/Carol_Tom%C3%A9"
+  },
+  {
+   "rank": 50,
+   "company": "FedEx",
+   "ceo": "Raj Subramaniam",
+   "sun": "virgo",
+   "source": "https://en.wikipedia.org/wiki/Raj_Subramaniam"
+  },
+  {
+   "rank": 61,
+   "company": "Lockheed Martin",
+   "ceo": "James Taiclet",
+   "sun": "taurus",
+   "source": "https://en.wikipedia.org/wiki/James_Taiclet"
+  },
+  {
+   "rank": 63,
+   "company": "Capital One Financial",
+   "ceo": "Richard Fairbank",
+   "sun": "virgo",
+   "source": "https://en.wikipedia.org/wiki/Richard_Fairbank"
+  },
+  {
+   "rank": 66,
+   "company": "IBM",
+   "ceo": "Arvind Krishna",
+   "sun": null,
+   "source": "https://en.wikipedia.org/wiki/Arvind_Krishna"
+  },
+  {
+   "rank": 71,
+   "company": "Delta Air Lines",
+   "ceo": "Ed Bastian",
+   "sun": "gemini",
+   "source": "https://en.wikipedia.org/wiki/Ed_Bastian"
+  },
+  {
+   "rank": 73,
+   "company": "Pfizer",
+   "ceo": "Albert Bourla",
+   "sun": "libra",
+   "source": "https://en.wikipedia.org/wiki/Albert_Bourla"
+  },
+  {
+   "rank": 75,
+   "company": "ConocoPhillips",
+   "ceo": "Ryan Lance",
+   "sun": null,
+   "source": "https://en.wikipedia.org/wiki/Ryan_Lance"
+  },
+  {
+   "rank": 76,
+   "company": "Galaxy Digital",
+   "ceo": "Mike Novogratz",
+   "sun": "sagittarius",
+   "source": "https://en.wikipedia.org/wiki/Mike_Novogratz"
+  },
+  {
+   "rank": 81,
+   "company": "United Airlines Holdings",
+   "ceo": "Scott Kirby",
+   "sun": "leo",
+   "source": "https://en.wikipedia.org/wiki/Scott_Kirby"
+  },
+  {
+   "rank": 88,
+   "company": "Intel",
+   "ceo": "Lip-Bu Tan",
+   "sun": "scorpio",
+   "source": "https://en.wikipedia.org/wiki/Lip-Bu_Tan"
+  },
+  {
+   "rank": 92,
+   "company": "Uber Technologies",
+   "ceo": "Dara Khosrowshahi",
+   "sun": "gemini",
+   "source": "https://en.wikipedia.org/wiki/Dara_Khosrowshahi"
+  },
+  {
+   "rank": 94,
+   "company": "TIAA",
+   "ceo": "Thasunda Brown Duckett",
+   "sun": null,
+   "source": "https://en.wikipedia.org/wiki/Thasunda_Brown_Duckett"
+  },
+  {
+   "rank": 99,
+   "company": "Nike",
+   "ceo": "Elliott Hill",
+   "sun": "libra",
+   "source": "https://en.wikipedia.org/wiki/Elliott_Hill"
+  },
+  {
+   "rank": 105,
+   "company": "Netflix",
+   "ceo": "Ted Sarandos (co-CEO with Greg Peters)",
+   "sun": "leo",
+   "source": "https://en.wikipedia.org/wiki/Ted_Sarandos"
+  },
+  {
+   "rank": 108,
+   "company": "Qualcomm",
+   "ceo": "Cristiano Amon",
+   "sun": null,
+   "source": "https://en.wikipedia.org/wiki/Cristiano_Amon"
+  },
+  {
+   "rank": 114,
+   "company": "Salesforce",
+   "ceo": "Marc Benioff",
+   "sun": "libra",
+   "source": "https://en.wikipedia.org/wiki/Marc_Benioff"
+  },
+  {
+   "rank": 117,
+   "company": "Philip Morris International",
+   "ceo": "Jacek Olczak",
+   "sun": "aquarius",
+   "source": "https://en.wikipedia.org/wiki/Jacek_Olczak"
+  },
+  {
+   "rank": 122,
+   "company": "Mondelez International",
+   "ceo": "Dirk Van de Put",
+   "sun": "taurus",
+   "source": "https://en.wikipedia.org/wiki/Dirk_Van_de_Put"
+  },
+  {
+   "rank": 125,
+   "company": "Micron Technology",
+   "ceo": "Sanjay Mehrotra",
+   "sun": "cancer",
+   "source": "https://en.wikipedia.org/wiki/Sanjay_Mehrotra"
+  },
+  {
+   "rank": 126,
+   "company": "Warner Bros. Discovery",
+   "ceo": "David Zaslav",
+   "sun": "capricorn",
+   "source": "https://en.wikipedia.org/wiki/David_Zaslav"
+  },
+  {
+   "rank": 131,
+   "company": "Advanced Micro Devices",
+   "ceo": "Lisa Su",
+   "sun": "scorpio",
+   "source": "https://en.wikipedia.org/wiki/Lisa_Su"
+  },
+  {
+   "rank": 132,
+   "company": "Coupang",
+   "ceo": "Bom Kim",
+   "sun": "libra",
+   "source": "https://en.wikipedia.org/wiki/Bom_Kim"
+  },
+  {
+   "rank": 133,
+   "company": "Hewlett Packard Enterprise",
+   "ceo": "Antonio Neri",
+   "sun": "taurus",
+   "source": "https://en.wikipedia.org/wiki/Antonio_Neri_(businessman)"
+  },
+  {
+   "rank": 136,
+   "company": "PNC Financial Services Group",
+   "ceo": "William Demchak",
+   "sun": null,
+   "source": "https://en.wikipedia.org/wiki/William_S._Demchak"
+  },
+  {
+   "rank": 144,
+   "company": "Penske Automotive Group",
+   "ceo": "Roger Penske",
+   "sun": "pisces",
+   "source": "https://en.wikipedia.org/wiki/Roger_Penske"
+  },
+  {
+   "rank": 155,
+   "company": "Paramount Skydance",
+   "ceo": "David Ellison",
+   "sun": "capricorn",
+   "source": "https://en.wikipedia.org/wiki/David_Ellison"
+  },
+  {
+   "rank": 162,
+   "company": "CarMax",
+   "ceo": "Keith Barr",
+   "sun": "cancer",
+   "source": "https://en.wikipedia.org/wiki/Keith_Barr_(businessman)"
+  },
+  {
+   "rank": 180,
+   "company": "Live Nation Entertainment",
+   "ceo": "Michael Rapino",
+   "sun": "taurus",
+   "source": "https://en.wikipedia.org/wiki/Michael_Rapino"
+  },
+  {
+   "rank": 190,
+   "company": "BlackRock",
+   "ceo": "Larry Fink",
+   "sun": "scorpio",
+   "source": "https://en.wikipedia.org/wiki/Larry_Fink"
+  },
+  {
+   "rank": 191,
+   "company": "Block",
+   "ceo": "Jack Dorsey",
+   "sun": "scorpio",
+   "source": "https://en.wikipedia.org/wiki/Jack_Dorsey"
+  },
+  {
+   "rank": 192,
+   "company": "Adobe",
+   "ceo": "Shantanu Narayen",
+   "sun": "gemini",
+   "source": "https://en.wikipedia.org/wiki/Shantanu_Narayen"
+  },
+  {
+   "rank": 249,
+   "company": "Jones Financial (Edward Jones)",
+   "ceo": "Penny Pennington",
+   "sun": null,
+   "source": "https://en.wikipedia.org/wiki/Penny_Pennington"
+  },
+  {
+   "rank": 253,
+   "company": "MGM Resorts International",
+   "ceo": "William Hornbuckle",
+   "sun": "virgo",
+   "source": "https://en.wikipedia.org/wiki/Bill_Hornbuckle"
+  },
+  {
+   "rank": 258,
+   "company": "Dick's Sporting Goods",
+   "ceo": "Lauren Hobart",
+   "sun": "leo",
+   "source": "https://en.wikipedia.org/wiki/Lauren_Hobart"
+  },
+  {
+   "rank": 261,
+   "company": "Aflac",
+   "ceo": "Daniel Amos",
+   "sun": "leo",
+   "source": "https://en.wikipedia.org/wiki/Daniel_P._Amos"
+  },
+  {
+   "rank": 275,
+   "company": "Fox",
+   "ceo": "Lachlan Murdoch",
+   "sun": "virgo",
+   "source": "https://en.wikipedia.org/wiki/Lachlan_Murdoch"
+  },
+  {
+   "rank": 310,
+   "company": "Blackstone",
+   "ceo": "Stephen Schwarzman",
+   "sun": "aquarius",
+   "source": "https://en.wikipedia.org/wiki/Stephen_A._Schwarzman"
+  },
+  {
+   "rank": 333,
+   "company": "ServiceNow",
+   "ceo": "Bill McDermott",
+   "sun": "leo",
+   "source": "https://en.wikipedia.org/wiki/Bill_McDermott"
+  },
+  {
+   "rank": 347,
+   "company": "Intercontinental Exchange",
+   "ceo": "Jeffrey Sprecher",
+   "sun": "pisces",
+   "source": "https://en.wikipedia.org/wiki/Jeffrey_Sprecher"
+  },
+  {
+   "rank": 357,
+   "company": "Airbnb",
+   "ceo": "Brian Chesky",
+   "sun": "virgo",
+   "source": "https://en.wikipedia.org/wiki/Brian_Chesky"
+  },
+  {
+   "rank": 375,
+   "company": "Yum China Holdings",
+   "ceo": "Joey Wat",
+   "sun": "cancer",
+   "source": "https://en.wikipedia.org/wiki/Joey_Wat"
+  },
+  {
+   "rank": 376,
+   "company": "Oscar Health",
+   "ceo": "Mark Bertolini",
+   "sun": "gemini",
+   "source": "https://en.wikipedia.org/wiki/Mark_Bertolini"
+  },
+  {
+   "rank": 402,
+   "company": "Jefferies Financial Group",
+   "ceo": "Richard Handler",
+   "sun": "gemini",
+   "source": "https://en.wikipedia.org/wiki/Richard_Handler"
+  },
+  {
+   "rank": 404,
+   "company": "Mohawk Industries",
+   "ceo": "Jeff Lorberbaum",
+   "sun": null,
+   "source": "https://en.wikipedia.org/wiki/Jeffrey_Lorberbaum"
+  },
+  {
+   "rank": 421,
+   "company": "Biogen",
+   "ceo": "Christopher Viehbacher",
+   "sun": "aries",
+   "source": "https://en.wikipedia.org/wiki/Chris_Viehbacher"
+  },
+  {
+   "rank": 422,
+   "company": "News Corp.",
+   "ceo": "Robert Thomson",
+   "sun": "pisces",
+   "source": "https://en.wikipedia.org/wiki/Robert_Thomson_(journalist)"
+  },
+  {
+   "rank": 430,
+   "company": "Workday",
+   "ceo": "Aneel Bhusri",
+   "sun": "aquarius",
+   "source": "https://en.wikipedia.org/wiki/Aneel_Bhusri"
+  },
+  {
+   "rank": 437,
+   "company": "Palo Alto Networks",
+   "ceo": "Nikesh Arora",
+   "sun": "aquarius",
+   "source": "https://en.wikipedia.org/wiki/Nikesh_Arora"
+  },
+  {
+   "rank": 444,
+   "company": "Arista Networks",
+   "ceo": "Jayshree Ullal",
+   "sun": "aries",
+   "source": "https://en.wikipedia.org/wiki/Jayshree_Ullal"
+  },
+  {
+   "rank": 451,
+   "company": "Prologis",
+   "ceo": "Hamid Moghadam",
+   "sun": "virgo",
+   "source": "https://en.wikipedia.org/wiki/Hamid_Moghadam"
+  },
+  {
+   "rank": 456,
+   "company": "J.M. Smucker",
+   "ceo": "Mark Smucker",
+   "sun": "capricorn",
+   "source": "https://en.wikipedia.org/wiki/Mark_Smucker"
+  }
+ ]
+}

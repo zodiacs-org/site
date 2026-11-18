@@ -132,6 +132,7 @@ export async function reduce() {
       : [[days[0], days.at(-1) + 1]];
   });
   const lifts = signs.map((x) => x.lift);
+  const totalReads = SIGNS.reduce((sum, key) => sum + raw.signs[key].views.reduce((n, v) => n + (v ?? 0), 0), 0);
   return {
     $comment: 'Reduced from the raw per-sign pageviews named in `raw` by scripts/build-thesis-figures.mjs --reduce. Each curve is one sign article on a typical day of the year (median across the years of views divided by that sign-year median day), in 73 five-day bins from 1 January. lift compares the mean of that ratio inside the sign\'s own season with the rest of the year; seasons are the Sun\'s solved sign entries each year (astronomy-engine), taken at noon UTC.',
     source: raw.source,
@@ -141,12 +142,29 @@ export async function reduce() {
     signYears,
     liftedYears,
     liftRange: [Math.min(...lifts), Math.max(...lifts)],
+    reads: { total: totalReads, from: raw.from, to: raw.to },
     signs,
   };
 }
 
 const MONTH_START = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
 const fmt = (n) => (Math.round(n * 10) / 10).toString();
+// A polyline in tenths: an absolute start, then relative steps. Each step is
+// the difference of two rounded points, so the drawn line is exactly the one
+// absolute coordinates would draw, in about half the bytes of the page.
+const tenths = (n) => Math.round(n * 10);
+const num = (t) => (t / 10).toString();
+function poly(points) {
+  let [px, py] = points[0].map(tenths);
+  let d = `M${num(px)} ${num(py)}l`;
+  points.slice(1).forEach(([x, y], i) => {
+    const tx = tenths(x), ty = tenths(y);
+    const dx = num(tx - px), dy = num(ty - py);
+    d += (i ? (dx.startsWith('-') ? '' : ' ') : '') + dx + (dy.startsWith('-') ? '' : ' ') + dy;
+    px = tx; py = ty;
+  });
+  return d;
+}
 
 function mix(hex, amount) {
   const base = [15, 18, 26]; // --surface #0F121A
@@ -176,14 +194,14 @@ function render(data, small) {
     const sign = data.signs[si];
     const base = top + row * rowGap;
     const pts = sign.curve.map((r, b) => [xOf(b * BIN + BIN / 2), yOf(base, r)]);
-    const line = `M${fmt(x0)} ${fmt(pts[0][1])}` + pts.map(([x, y]) => `L${fmt(x)} ${fmt(y)}`).join('') + `L${fmt(x1)} ${fmt(pts.at(-1)[1])}`;
-    const area = `${line}L${fmt(x1)} ${base}L${fmt(x0)} ${base}Z`;
+    const line = poly([[x0, pts[0][1]], ...pts, [x1, pts.at(-1)[1]]]);
+    const area = `${line}V${base}H${fmt(x0)}Z`;
     const hue = HUES[si];
     let hot = '';
     for (const [a, b] of sign.season) {
       const seg = pts.filter(([x]) => x >= xOf(a) - 0.01 && x <= xOf(b) + 0.01);
       if (seg.length < 2) continue;
-      hot += `M${fmt(seg[0][0])} ${fmt(seg[0][1])}` + seg.slice(1).map(([x, y]) => `L${fmt(x)} ${fmt(y)}`).join('');
+      hot += poly(seg);
     }
     s += `<g class="ridge" data-sign="${sign.sign}" data-lift="${sign.lift}" style="--r:${row}" tabindex="0" role="button" aria-label="${NAMES[si]}: read ${sign.lift}% more in its own season">`
       + `<path d="${area}" fill="${mix(hue, 0.16)}"/>`
@@ -279,7 +297,9 @@ export function seasonMotion() {
     g.addEventListener('click', pick);
     g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
   });
-  function settle() { if (current) focus(current, 'Today the Sun is in ' + names[current] + '. '); }
+  function picked() { return document.documentElement.dataset.mySign || ''; }
+  function settle() { var mine = picked(); if (mine) { focus(mine, ''); return; } if (current) focus(current, 'Today the Sun is in ' + names[current] + '. '); }
+  document.addEventListener('thesis:sign', function (e) { fig.setAttribute('data-picked', e.detail.sign || ''); if (e.detail.sign) focus(e.detail.sign, ''); else { focus(null, ''); settle(); } });
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduce || !('IntersectionObserver' in window) || fig.getBoundingClientRect().top < window.innerHeight * 0.9) { settle(); return; }
   fig.classList.add('is-armed');

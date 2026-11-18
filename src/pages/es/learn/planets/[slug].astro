@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import LocalizedLearnArticle from '../../../../components/learn/LocalizedLearnArticle.astro';
+import learnTranslations from '../../../../data/learn-translations.json';
+
+export async function getStaticPaths() {
+  const entries = await getCollection(
+    'learnTopicsLocalized',
+    (e) => e.data.locale === 'es' && e.data.kind === 'planet' && !e.data.draft,
+  );
+  // Every published translation is listed in learn-translations.json (which
+  // drives hreflang, the sitemap and the fallback exclusions), and vice versa.
+  const listed = learnTranslations.es.filter((p) => p.startsWith('/learn/planets/'));
+  const built = entries.map((e) => `/learn/planets/${e.id.split('/').pop()}/`);
+  for (const p of listed) if (!built.includes(p)) throw new Error(`learn-translations.json lists ${p} but no published es file exists`);
+  for (const p of built) if (!listed.includes(p)) throw new Error(`Published es file ${p} is missing from learn-translations.json`);
+  return entries.map((entry) => ({
+    params: { slug: entry.id.split('/').pop()! },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+---
+<LocalizedLearnArticle entry={entry} />

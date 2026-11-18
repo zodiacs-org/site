@@ -105,7 +105,7 @@ await withPreview({ port: 4412 }, async (baseURL) => {
     const search = await browser.newPage();
     await search.goto(`${baseURL}/registry/`, { waitUntil: 'domcontentloaded' });
     const searchHref = await search.locator('.wnav__search').getAttribute('href');
-    check('search remains a same-origin navigation under the no-connect CSP', searchHref === '/?search=1', searchHref ?? 'missing');
+    check('search remains a same-origin navigation under the no-connect CSP', searchHref === '/#search', searchHref ?? 'missing');
     await search.close();
   } finally {
     await browser.close();

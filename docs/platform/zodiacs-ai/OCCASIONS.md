@@ -202,11 +202,11 @@ last, after the owner has read its wording; it is not in 0.5.0.
 
 ## Samples (real computed facts)
 
-**Wedding, Florence, 12 June 2027, 19:00.** Sun in Gemini, Moon in Libra,
-first-quarter Moon 64% lit. Venus in Gemini; Mercury is retrograde in Cancer
-that day. Golden hour 20:13–20:57, sunset 20:57, civil dusk 21:33. The Moon
-rose at 14:25 and is highest at 20:14, so it stands over the evening.
-Jupiter (in Leo) and Mars (in Virgo) are up after dark; Venus has set (19:31).
+**Wedding, Lisbon, 18 September 2027, 16:30.** Sun in Virgo, Moon in Aries,
+waning gibbous Moon 93% lit. Venus in Libra; Saturn is retrograde in Aries
+that day. Golden hour 19:05 to 19:40, sunset 19:40, civil dusk 20:07. The
+Moon rises at 20:34, after dusk. Venus, Mars (in Scorpio) and Saturn (in
+Aries) are up after dark. Rated 70 out of 100, "A good day for it".
 
 **Saturn-return birthday, born 15 March 1997.** Sun in Pisces. Saturn returns
 to its birth position on 23 April 2026, passes back over it on 19 November

@@ -22,6 +22,7 @@
  * table is about 200 KB).
  */
 import table from '../data/nasa-event-instants.json';
+import { nasaEclipseAt, nasaLunationAt } from './nasa-event-times-2027';
 
 interface IngressRow { body: string; sign: string; retrograde: boolean; nasa: string; engine: string[] }
 interface StationRow { body: string; type: string; sign: string; nasa: string; engine: string[] }
@@ -191,7 +192,8 @@ export function eventsOnUtcDay(catalogs: readonly TransitCatalogShape[], date: s
  * Published event pages (src/data/events-publication.json) with each anchor
  * moved to the NASA instant the page prints, so a list that prints NASA's
  * times still finds the page for an event. A retrograde page's anchor is its
- * retrograde station.
+ * retrograde station. The 2027 full moons and eclipses move to the instant
+ * their pages print too.
  */
 export function refinePublishedAnchors<P extends { family: string; anchor: string; bodies?: string[]; subtype?: string }>(pages: readonly P[]): P[] {
   return pages.map((page) => {
@@ -200,6 +202,9 @@ export function refinePublishedAnchors<P extends { family: string; anchor: strin
     if (page.family === 'ingress' && a) anchor = nasaIngressAt(a, page.anchor);
     else if (page.family === 'aspect' && a && b && page.subtype) anchor = nasaAspectAt(a, b, page.subtype, page.anchor);
     else if (page.family === 'retrograde' && a) anchor = nasaStationAt(a, page.anchor);
+    // The 2027 full moons and eclipse peaks (src/lib/nasa-event-times-2027.ts).
+    else if (page.family === 'lunation' && page.subtype) anchor = nasaLunationAt(page.subtype, page.anchor);
+    else if (page.family === 'eclipse' && page.subtype) anchor = nasaEclipseAt(page.subtype, page.anchor);
     return anchor ? { ...page, anchor } : page;
   });
 }

@@ -1,12 +1,24 @@
 # Claude directory listing
 
-## Where the listing stands, 13 November 2026
+## Prepared for resubmission, 18 November 2026
+
+Zodiacs 0.6.8 is the version prepared for the Claude directory
+resubmission. It reports 0.6.8, ships the invented examples in the tools'
+field descriptions (approved by Dias on 17 November), and its review cases
+use invented details: the Mercury question comes from a reader in Mexico City,
+and the wedding card is for 18 September 2027 at 16:30 in Lisbon, Portugal.
+No tool name, input, annotation, behaviour or tool count changes. Nothing has
+been submitted, and the portal's notes and tools copy still name 0.6.7 until
+the resubmission, which waits for Dias's yes. The live server reports 0.6.8
+only once this change is merged and deployed; until then the section below
+stays the state of the live listing.
+
+## Where the listing stands, 14 November 2026
 
 This section is the current state. Everything under it is a dated record,
-newest first, and is left as it was written. Nothing in the portal was
-opened, saved, synced or sent to write this section; it is drawn from the
-records below, from [RESYNC-0.6.0.md](RESYNC-0.6.0.md) and from the code on
-`main`.
+newest first, and is left as it was written. It is drawn from the records
+below, from the portal's additional notes, tools copy and listing
+description as read on 14 November, and from the code on `main`.
 
 **The live server.** `https://zodiacs.org/mcp` reports version 0.6.7
 (`AI_VERSION` in `src/ai-tools/contracts.ts`; checked with `get_capabilities`
@@ -24,9 +36,9 @@ server's instructions were reworded so they state facts about Zodiacs rather tha
 (PR #971, approved by the owner on 11 and 13 November). No name, title,
 input, annotation or tool count changed. `get_horoscope`'s panel moved to a
 new address, `ui://zodiacs/horoscopes-v7.html`, and the earlier addresses are
-still served. The portal's copy of the tools was last read on 8 November, so
-it still holds the 0.6.6 descriptions until the next sync, which is the
-owner's decision.
+still served. The portal's copy of the tools was re-read from the 0.6.7
+server on 14 November, with the portal's note that some items were left out
+to fit its size limits.
 
 **What it does and refuses today.**
 
@@ -56,39 +68,99 @@ owner's decision.
 
 | Channel | Last recorded contact | Version named |
 | --- | --- | --- |
-| Reviewer instructions and additional notes in the portal | 8 November, saved with Dias's yes | 0.6.6, with 0.6.5's change to `get_occasion_sky` |
-| The portal's copy of the tools | 8 November, re-read on that save | 19 tools, with a portal note that some items were left out to fit its size limits |
-| Email thread, ticket #145701231 | 7 November, a short note | 0.6.5 |
+| Additional notes in the portal | 14 November, saved with Dias's yes | 0.6.7 |
+| Reviewer instructions in the portal | 8 November; not read or edited on 14 November | Not recorded |
+| The portal's copy of the tools | 14 November, read by Update the copy reviewers see before that save | 19 tools from the 0.6.7 server, with a portal note that some items were left out to fit its size limits |
+| Email thread, ticket #145701231 | 14 November, one summary note | 0.6.7 |
 
-So a review that reads the email thread alone sees 0.6.5 as the newest
-version, and one that reads the portal sees 0.6.6. Both are true of their
-channel. Neither names 0.6.7 yet. No email has named 0.6.6, because 0.6.6 changed only the picture and
-the reported version ([RESYNC-0.6.0.md](RESYNC-0.6.0.md), 7 November), and no
-email has described the under-13 refusal of 8 November.
-
-**Statements sent earlier that no longer hold.**
-
-- The first note of 15 October said Zodiacs never chooses or ranks dates,
-  scores relationships or predicts outcomes. It was withdrawn the same day.
-- The correction of 15 October, 18:01 UTC, said share links carry first
-  names. Since 0.6.1 they carry none, and no message has withdrawn the older
-  statement. Whether the portal notes of 8 November say links never carry
-  names is not on record here; read them in the portal.
-- The reply of 6 November said the thirteen reviewed tools were unchanged.
-  0.6.5 changed one of them the next day, and the 7 November note said so.
+The additional notes and the email name 0.6.7, and the tools copy was read
+from the 0.6.7 server. The 14 November email names the earlier
+statements it replaces (15 October twice, 6 and 7 November), including the
+withdrawn sentence that share links carry first names.
 
 **Gaps in these records.** There is no dated entry for 6 November. That a
 reply went to the ticket that day, and that thirteen numbered prompts were
 pasted into the reviewer instructions, is known only from the 8 November
 entry below and from [RESYNC-0.6.0.md](RESYNC-0.6.0.md); the text of that
-reply is not in the repository. The last recorded listing description is the
-0.5.1 wording saved on 28 October; no entry records the 0.6.1 description in
-RESYNC-0.6.0.md being saved. Check both in the portal before the next save.
+reply is not in the repository. The last recorded listing description saved
+is the 0.5.1 wording of 28 October. The description read in the portal on
+14 November is a later wording, and no entry records when it was saved.
+The reviewer instructions were not read on 14 November.
 
-**Next note.** One draft that states the current version and behaviour once,
-and names the earlier statements it replaces, is in
-[REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md). It is a draft and has not
-been sent. Sending it is the owner's decision.
+**Proposed next wording.** A one-liner and description that open with how
+the sky is checked are drafted in the next section (16 November). They have
+not been entered in the portal or sent to anyone.
+
+## Proposed next listing copy, 16 November 2026 (not yet submitted)
+
+**Not submitted.** Nothing below has been typed into the portal, saved or
+sent. Entering it needs Dias's yes, like any other change to the listing.
+
+The listing now opens with "Explore your birth chart". This wording opens
+with how Zodiacs checks the sky instead, then says what you can ask. It
+replaces the one-liner and the description only; every other field stays as
+it is.
+
+Every accuracy sentence restates a claim in `docs/claims/ledger.json`:
+the engine test against NASA JPL Horizons is `acc.jpl-gate` (the
+methodology page, "Every change to the engine runs an automated accuracy
+test"), and the November audit figures are `acc.event-audit-2026-11`. It
+does not say that the connector's own event times come from NASA: the AI
+tools keep the engine's instants (`acc.event-times-nasa`), so only the site's
+event pages print NASA's times. The second paragraph reworks the old
+opening, and the last five are the 0.6.x wording prepared in
+[RESYNC-0.6.0.md](RESYNC-0.6.0.md), unchanged.
+
+| Field | Now | Proposed |
+| --- | --- | --- |
+| One-liner (200 max) | Explore your birth chart, compatibility, horoscopes and the sky on days that matter. | Planet positions tested against NASA JPL Horizons, for your birth chart, compatibility, horoscopes and the sky on the days that matter. |
+
+The one-liner is 135 characters.
+
+Description (1,782 of 2,000 characters):
+
+> Zodiacs works out the sky with its own engine, and every change to that engine is tested against NASA JPL Horizons reference positions.
+>
+> Ask about your birth chart, how compatible you are with someone close to you, your horoscope or the sky on a day that matters, and Zodiacs works out the sky for the date and place you give, then tells you what astrology says about it.
+>
+> Build an interactive birth chart, or get a readout of your chart: Sun, Moon and rising signs, the planets in their signs and houses, the closest aspects and the balance of elements. Compare two charts and get a compatibility score out of 100 for attraction, communication and long-term stability, or compare with a famous person Zodiacs publishes.
+>
+> Read daily, weekly, monthly and yearly Sun-sign horoscopes, see your personal transits and the highlights of your year ahead, follow Moon phases and retrogrades, and subscribe to the sky calendar. Find your Chinese zodiac animal with the Lunar New Year boundary worked out, or ask what Mercury retrograde or the rising sign means.
+>
+> See the sky on your birthday and your solar return, find milestones such as your Saturn return, or make a keepsake card for a wedding or another day that matters, with a rating out of 100 for the date or the best-rated days in a month.
+>
+> Zodiacs gives clear forecasts, scores and ratings, each forecast with a reading confidence, and always shows the astrology behind them. It doesn't pick investments, make health predictions or guarantee how things will turn out. If a birth time or place is missing, it says what can still be worked out instead of guessing.
+>
+> No account is needed. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day.
+
+The plugin packages and the ChatGPT submission copy keep their 0.6.7 About.
+`scripts/check-ai-integrations.mjs` holds the Sky package About equal to
+`integrations/chatgpt/chatgpt-app-submission.json`, and
+`scripts/package-ai-integrations.py --check` refuses new bytes for a version
+already built, so carrying this wording into either one needs a new plugin
+version, which needs Dias's yes.
+
+## Portal re-sync and reviewer note, 14 November 2026
+
+With Dias's yes on 14 November to "sign in to re-sync the directory portal,
+and okay the reviewer note", in the
+portal's full editor: **Update the copy reviewers see** re-read the server
+(19 tools, 0 prompts, with the same portal note that some items were left
+out to fit its size limits; the copy is now dated 14 November), then
+**Sync from server** returned the same 19 tool names. The additional notes now
+open with 0.6.7 and say what 0.6.7 changed and how a love reading for a
+birth date under 18 is answered; the rest of the 8 November text was kept,
+and it already says links never carry names. No other field was changed, and the reviewer instructions were not
+read.
+Saving showed the listing "updated just now", still in review.
+
+At 13:00 UTC the same day the note in
+[REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md) went from admin@zodiacs.org
+to mcp-review@anthropic.com as a reply on ticket #145701231. Its body was the
+draft's, with three differences: the TO CONFIRM line became "We have
+re-synced the tools in the directory editor so your copy matches 0.6.7.",
+the sign-off was "Thank you, Dias, Zodiacs LLC", and the reply kept the
+thread's own subject instead of the draft's Subject line.
 
 ## Icon and reviewer texts, 7 and 8 November 2026
 
@@ -377,19 +449,20 @@ ChatGPT profile. Anthropic can't edit it after submission.
 ## Carousel screenshots
 
 Seven PNGs in this folder, made by `tests/claude-directory-shots.ts` from this
-branch's panels with live answers from the server: dark theme, Bangkok time,
-1,440–1,520 pixels wide, the app only, no prompt in the image. The birth date
-in 05 and the details in 06 and 07 are synthetic examples.
+branch's panels with live answers from the server: dark theme, Mexico City
+time, 1,440 to 1,520 pixels wide, the app only, no prompt in the image. The
+birth date in 05 and the details in 06 and 07 are invented examples, the same
+set the /apps/ pages and the 0.6.8 review cases use.
 
 | File | Paired prompt |
 | --- | --- |
 | `01-choose-your-sign.png` | Show my horoscope for today |
 | `02-leo-today.png` | Show today's horoscope for Leo. |
-| `03-sky-this-week.png` | Use Zodiacs to show this week's sky calendar for Bangkok. |
+| `03-sky-this-week.png` | Use Zodiacs to show this week's sky calendar for Mexico City. |
 | `04-chart-studio-start.png` | Help me read my birth chart. |
 | `05-chart-without-birth-time.png` | Help me read my birth chart. I don't know my birth time. |
-| `06-comparison-card.png` | Compare my chart with my partner's and tell us how compatible we are: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992. |
-| `07-wedding-card.png` | We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day. |
+| `06-comparison-card.png` | Compare my chart with my partner's and tell us how compatible we are: I was born 14 May 1994 at 9:15 in Seville, Spain, and my partner was born 4 August 1991. |
+| `07-wedding-card.png` | We're getting married on 18 September 2027 at 16:30 in Lisbon. Is it a good day for it? Make us a card with the sky for that day. |
 
 Re-run the script just before submitting so the readings and dates are current.
 
