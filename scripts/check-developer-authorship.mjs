@@ -44,7 +44,7 @@ export const generatedDeveloperDocuments = Object.freeze({
 
 export const requiredDocuments = [
   ...Object.values(generatedDeveloperDocuments).flat(),
-  ...['', 'ai/', 'compare/', 'compute/', 'conformance/', 'conventions/', 'demo/', 'engine/', 'examples/',
+  ...['', 'accuracy/', 'ai/', 'compare/', 'compute/', 'conformance/', 'conventions/', 'demo/', 'engine/', 'examples/',
     'mcp/', 'playground/', 'precision-preview/', 'sky-benchmark/', 'support/', 'time-atlas/'].map((route) => `developers/${route}index.html`),
   'developers/engine/reference/index.html', 'developers/engine/reference/modules.html',
   'developers/engine/reference/provenance.json',

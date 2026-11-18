@@ -1,4 +1,5 @@
 ---
+import { ACCURACY_PATH, accuracyDiscoverable } from '../../../accuracy/publication.mjs';
 import packageDocument from '../../../../package.json';
 import Base from '../../../layouts/Base.astro';
 import summary from '../../../data/conformance/summary.json';
@@ -126,6 +127,7 @@ const jsonLd = [
         such as <code>kind:houses.cusps</code>, and from version 0.2.0 each vector
         lists those two ids in its <code>conventionIds</code>.
       </p>
+      {accuracyDiscoverable && <p><a href={ACCURACY_PATH}>See the latest NASA accuracy receipt</a>.</p>}
     </div>
 
     <h2 id="vectors">What it checks</h2>

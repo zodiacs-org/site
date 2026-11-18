@@ -8,6 +8,10 @@ import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-p
 import natalAspectsPublication from '../data/natal-aspects-publication.json';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
 import type { APIRoute } from 'astro';
+import { ACCURACY_PATH, accuracyDiscoverable } from '../accuracy/publication.mjs';
+import accuracyReceipt from '../data/accuracy/latest.json';
+import accuracyHistory from '../data/accuracy/history.json';
+import type { Receipt, ReceiptHistory } from '../accuracy/receipt';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES } from '../data/numerology-pages';
 import { getCollection } from 'astro:content';
 import { LEGACY_URLS } from '../lib/legacy/urls';
@@ -778,6 +782,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const gamesEnabled = (import.meta.env.PUBLIC_ZODIAC_GAMES_ENABLED
     ?? process.env.PUBLIC_ZODIAC_GAMES_ENABLED) === '1';
 
+  const firstAccuracyDate = (accuracyHistory as ReceiptHistory[])[0]?.date;
   const evergreenUrls = [
     { loc: '/', priority: 1.0 },
     { loc: '/birth-chart/', priority: 0.95 },
@@ -867,13 +872,19 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/terms/', priority: 0.4 },
     { loc: '/feeds/', priority: 0.55 },
     { loc: '/almanac/', priority: 0.75 },
-  ].map((url) => ({
-    ...url,
-    lastmod: url.loc === '/today/' ? daily.date : getLastmod(url.loc),
-  }));
+  ].map((url) => {
+    let date = url.loc === '/today/' ? daily.date : getLastmod(url.loc);
+    if (accuracyDiscoverable && firstAccuracyDate && (url.loc === '/developers/' || url.loc === '/developers/conformance/')) {
+      date = laterDate(date, firstAccuracyDate);
+    }
+    return { ...url, lastmod: date };
+  });
 
   const urls: { loc: string; priority: number; lastmod?: string }[] = [
     ...evergreenUrls,
+    ...(accuracyDiscoverable
+      ? [{ loc: ACCURACY_PATH, priority: 0.6, lastmod: (accuracyReceipt as Receipt | null)?.date }]
+      : []),
     ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: EVERGREEN_LASTMOD.get(loc) ?? DEVELOPER_GUIDES_LASTMOD })),
     ...(registryAuraEntry ? [registryAuraEntry] : []),
     ...(gamesEnabled ? [
