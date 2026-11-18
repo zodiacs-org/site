@@ -11,12 +11,12 @@
   "sourceCommit": "2496c28f273e1e99526490e857332fae44473367",
   "sourcePackagePath": "",
   "evidenceRepository": "https://github.com/zodiacs-org/site",
-  "evidenceCommit": "66effec53f34c349265665be0a00511d58b435e7",
+  "evidenceCommit": "9fd2a66b2f6f30deebec2676e9976e817c196678",
   "evidencePaths": {
-    "ledger": "docs/platform/evidence/site-engine-1-1-0-rc2/ARTIFACT-IDENTITY.md",
-    "node22": "docs/platform/evidence/site-engine-1-1-0-rc2/node22-parity.json",
-    "node24": "docs/platform/evidence/site-engine-1-1-0-rc2/node24-parity.json",
-    "publicConsumer": "docs/platform/evidence/site-engine-1-1-0-rc2/public-consumer.log"
+    "ledger": "docs/platform/evidence/site-engine-1-1-0/ARTIFACT-IDENTITY.md",
+    "node22": "docs/platform/evidence/site-engine-1-1-0/node22-parity.json",
+    "node24": "docs/platform/evidence/site-engine-1-1-0/node24-parity.json",
+    "publicConsumer": "docs/platform/evidence/site-engine-1-1-0/public-consumer.log"
   },
   "artifactRepository": "https://github.com/zodiacs-org/engine",
   "artifactCommit": "d82d2410835b18d52eecc8a97d02ee87a5b14012",

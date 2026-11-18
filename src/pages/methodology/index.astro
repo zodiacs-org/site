@@ -210,23 +210,15 @@ const jsonLd = [
 
       <h2 id="event-times">How we check event times</h2>
       <p>
-        The dates and times printed for sky events are held to NASA, not
-        only to our own engine. The times of the planets' sign changes,
-        stations and exact aspects from November 2025 to May 2031 are read
-        from <strong>NASA JPL Horizons</strong> (the DE441 ephemeris), solved
-        to the second. For a slow planet this matters: Neptune moves so little
-        in a day that a position a few arcseconds off moves its sign change by
-        hours. By NASA, Neptune entered Aries at 17:35 UTC on January 26, 2026,
-        about three hours later than the engine alone puts it.
+        The sky catalogs use the engine's DE440 ephemeris. The site also
+        keeps comparisons with <strong>NASA JPL Horizons</strong> using DE441.
+        On January 26, 2026, the engine puts Neptune's entry into Aries at
+        17:34:38 UTC. Horizons gives 17:35:23 UTC.
       </p>
       <p>
-        New and full Moons and the Moon's sign changes keep the engine's
-        times, which fall within 6 seconds of NASA's from 2026 to 2030; the
-        pages print them to the minute. The Sun's sign changes keep the
-        engine's times too: within 44 seconds of NASA's from 2026 to 2030,
-        and up to 50.3 seconds from 1900 to 2050. Eclipses are checked
-        against NASA's <em>Five Millennium Canon</em> of eclipses by Fred
-        Espenak and Jean Meeus.
+        The archived comparison records the earlier calculations for the Moon
+        and the Sun. Eclipses are checked against NASA's <em>Five Millennium
+        Canon</em> of eclipses by Fred Espenak and Jean Meeus.
       </p>
       <p>
         A few seconds can still move a printed minute, so the pages for the
