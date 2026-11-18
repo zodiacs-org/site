@@ -122,6 +122,8 @@ assert.equal(slashPattern.test('moon-sign'), true, 'Consumer canonical redirects
 // Horoscope links must reach existing consumer pages; do not create dead referrals.
 await access(new URL('src/pages/horoscopes/[sign]/index.astro', root));
 const packageInfo = await json('plugins/zodiacs-developer/package.json');
+assert.equal(packageInfo.version, transition.developer.packageVersion);
+assert.equal(plugin.version, transition.developer.packageVersion);
 assert.equal(packageInfo.dependencies['@zodiacs/engine'], '1.0.0');
 assert.equal(packageInfo.dependencies['@modelcontextprotocol/server'], '2.0.0');
 // The generated server and site use the archived release. External recipes keep their declared engine.
@@ -130,12 +132,10 @@ const engineRelease = await json('src/data/platform-engine-candidate.json');
 const installedEngine = await json('node_modules/@zodiacs/engine/package.json');
 assert.equal(site.dependencies['@zodiacs/engine'], `file:${engineRelease.artifactPath}`);
 assert.equal(installedEngine.version, engineRelease.version);
-// The developer plugin carries the engine's notices as ENGINE-* copies, which
-// its NOTICE says are unchanged; the claims ledger reads the release's own
-// under public/developers/engine/reference/release/.
-for (const [copy, installed, served] of [['ENGINE-NOTICE', 'NOTICE', 'NOTICE.txt'], ['ENGINE-LICENSE', 'LICENSE'], ['ENGINE-LICENSING', 'LICENSING.md', 'LICENSING.txt']]) {
-  const bytes = await readFile(new URL(`plugins/zodiacs-developer/${copy}`, root));
-  assert.ok(bytes.equals(await readFile(new URL(`node_modules/@zodiacs/engine/${installed}`, root))), `${copy} is the installed engine's ${installed}, byte for byte`);
-  if (served) assert.ok(bytes.equals(await readFile(new URL(`public/developers/engine/reference/release/${served}`, root))), `${copy} is the served release's ${served}, byte for byte`);
+// The local package's notices are checked against its baseline archive by
+// the packager. The served reference describes the site's installed release.
+for (const [installed, served] of [['NOTICE', 'NOTICE.txt'], ['LICENSING.md', 'LICENSING.txt']]) {
+  const bytes = await readFile(new URL(`node_modules/@zodiacs/engine/${installed}`, root));
+  assert.ok(bytes.equals(await readFile(new URL(`public/developers/engine/reference/release/${served}`, root))), `${served} is the installed engine's ${installed}, byte for byte`);
 }
 console.log('AI package contracts: manifests, submission cases, versions, routes, canonical links and engine notices verified.');

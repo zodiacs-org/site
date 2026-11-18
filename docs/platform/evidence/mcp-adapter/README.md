@@ -60,8 +60,9 @@ That guard protected the *run* and not the *record*, which an AI review caught:
 `protocol-drive.json` was committed naming a superseded artifact while this page
 quoted its result as established for the current one. `scripts/mcp-artifact.test.mjs`
 now asserts that all three records name the bundle that ships, so the same
-mistake fails the suite instead of reaching a reader. All three have been
-re-measured against the shipped bundle.
+mistake fails the suite instead of reaching a reader. The named-host receipt
+for the current bundle is pending. The required host CLI is unavailable in
+this environment, and `host-drive.json` still records the older bundle.
 
 ## Versions, pinned and recorded
 
@@ -408,7 +409,7 @@ The records, each against this bundle (`server.mjs` SHA-256 `b061f266…`):
 | record | result |
 | --- | --- |
 | `protocol-drive.json` | 95/95 checks, including the output schemas, the citations and the two resources |
-| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `host-drive.json` | 7/7 checks in the archived named-host run |
 | `benchmark.json` | 18/18 scenarios, 112/112 assertions |
 | a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 18 checks |
 
@@ -511,7 +512,7 @@ The records, each against this bundle (`server.mjs` SHA-256 `7209455d…`):
 | record | result |
 | --- | --- |
 | `protocol-drive.json` | 106/106 checks, including each new tool's result and citation against its schema, the zone refusal, and refusals in the compute API's words |
-| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `host-drive.json` | 7/7 checks in the archived named-host run |
 | `benchmark.json` | 18/18 scenarios, 112/112 assertions |
 | a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 21 checks |
 
@@ -572,7 +573,7 @@ The records, each against this bundle (`server.mjs` SHA-256 `a59382d0…`):
 | record | result |
 | --- | --- |
 | `protocol-drive.json` | 106/106 checks |
-| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `host-drive.json` | 7/7 checks in the archived named-host run |
 | `benchmark.json` | 18/18 scenarios, 112/112 assertions |
 | a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 21 checks |
 
@@ -616,7 +617,7 @@ The records, each against this bundle (`server.mjs` SHA-256 `0c3e739c…`):
 | record | result |
 | --- | --- |
 | `protocol-drive.json` | 106/106 checks |
-| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `host-drive.json` | 7/7 checks in the archived named-host run |
 | `benchmark.json` | 18/18 scenarios, 112/112 assertions |
 | a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 21 checks |
 
