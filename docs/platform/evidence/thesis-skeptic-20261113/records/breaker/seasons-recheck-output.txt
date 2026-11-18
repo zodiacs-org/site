@@ -1,0 +1,17 @@
+Aquarius live days 3653 mismatches vs committed raw 0
+Gemini live days 3653 mismatches vs committed raw 0
+Capricorn live days 3653 mismatches vs committed raw 0
+Aries live days 3653 mismatches vs committed raw 0
+aries        lift  51.04 plain  48.15 trimmed1%  50.75 yrsLifted 9 per-year [23, 59, 46, 38, -15, 83, 47, 81, 46, 91] min/med/max -15/46.5/91
+taurus       lift  49.81 plain  47.62 trimmed1%  49.16 yrsLifted 10 per-year [35, 35, 45, 50, 57, 41, 16, 74, 56, 83] min/med/max 16/47.5/83
+gemini       lift  45.19 plain  44.17 trimmed1%  46.01 yrsLifted 10 per-year [39, 43, 50, 63, 53, 31, 40, 49, 33, 50] min/med/max 31/46.0/63
+cancer       lift  52.95 plain  54.11 trimmed1%  52.67 yrsLifted 10 per-year [48, 48, 70, 57, 84, 60, 57, 22, 42, 42] min/med/max 22/52.5/84
+leo          lift  70.93 plain  69.95 trimmed1%  71.39 yrsLifted 10 per-year [97, 87, 111, 66, 98, 67, 33, 58, 41, 50] min/med/max 33/66.5/111
+virgo        lift  64.10 plain  66.11 trimmed1%  63.84 yrsLifted 10 per-year [110, 71, 58, 57, 107, 62, 67, 27, 54, 31] min/med/max 27/60.0/110
+libra        lift  62.84 plain  64.90 trimmed1%  63.40 yrsLifted 10 per-year [133, 50, 61, 55, 102, 57, 59, 45, 35, 39] min/med/max 35/56.0/133
+scorpio      lift  60.68 plain  61.46 trimmed1%  61.08 yrsLifted 10 per-year [104, 63, 22, 58, 96, 45, 77, 43, 47, 51] min/med/max 22/54.5/104
+sagittarius  lift  52.13 plain  53.41 trimmed1%  53.83 yrsLifted 10 per-year [45, 52, 65, 38, 109, 27, 37, 35, 70, 44] min/med/max 27/44.5/109
+capricorn    lift  77.01 plain  72.15 trimmed1%  77.44 yrsLifted 10 per-year [68, 73, 73, 67, 45, 51, 123, 60, 70, 137] min/med/max 45/69.0/137
+aquarius     lift  80.15 plain  71.53 trimmed1%  80.94 yrsLifted 9 per-year [1, 56, 71, 91, 33, 70, 113, 90, 49, 201] min/med/max 1/70.5/201
+pisces       lift  75.66 plain  67.00 trimmed1%  76.05 yrsLifted 10 per-year [21, 81, 82, 59, 12, 78, 71, 121, 51, 167] min/med/max 12/74.5/167
+lifted sign-years 118

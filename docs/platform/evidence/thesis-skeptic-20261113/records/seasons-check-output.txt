@@ -1,0 +1,42 @@
+raw file fetchedAt 2026-11-12T14:17:37.367Z from 20160101 to 20261111
+days 2016-2025 compared against committed raw: 43836, mismatches: 0
+missing days per sign 2016-2025: {'aries': 0, 'taurus': 0, 'gemini': 0, 'cancer': 0, 'leo': 0, 'virgo': 0, 'libra': 0, 'scorpio': 0, 'sagittarius': 0, 'capricorn': 0, 'aquarius': 0, 'pisces': 0}
+
+sign        live  mine(norm-mean)  raw-mean  median  yrsLifted(live) yrs(median) yrs(mean)  ownSeasonRank  peakDay inSeason  failing years (median rule)
+aries         51     51.04         48.15   47.40     9              9          9         1            03-21  True   [(2020, 3691, 4802)]
+taurus        50     49.81         47.62   48.66    10             10         10         1            04-20  True   []
+gemini        45     45.19         44.17   42.44    10             10         10         1            05-21  True   []
+cancer        53     52.95         54.11   49.17    10             10         10         1            06-21  True   []
+leo           71     70.93         69.95   74.95    10             10         10         1            07-23  True   []
+virgo         64     64.10         66.11   61.09    10             10         10         1            08-23  True   []
+libra         63     62.84         64.90   58.48    10             10         10         1            09-23  True   []
+scorpio       61     60.68         61.46   59.53    10             10         10         1            10-23  True   []
+sagittarius   52     52.13         53.41   50.79    10             10         10         1            11-22  True   []
+capricorn     77     77.01         72.15   72.10    10             10         10         1            12-22  True   []
+aquarius      80     80.15         71.53   73.55     9              9         10         1            01-20  True   [(2016, 2804, 2928)]
+pisces        76     75.66         67.00   74.48    10             10         10         1            02-19  True   []
+sign-years lifted, median rule: 118 of 120 | mean rule: 119 | live file: 118 of 120
+rounded lifts match live: True | range 45 80
+
+2026 sun entries by the Meeus formula (UTC), against the page script:
+aquarius     page 2026-01-20T01:44Z  formula 01:41
+aries        page 2026-03-20T14:45Z  formula 14:37
+cancer       page 2026-06-21T08:25Z  formula 08:20
+libra        page 2026-09-23T00:05Z  formula 00:09
+scorpio      page 2026-10-23T09:38Z  formula 09:40
+sagittarius  page 2026-11-22T07:23Z  formula 07:23
+capricorn    page 2026-12-21T20:50Z  formula 20:49
+
+curve check (73 five-day bins): max abs difference from the live file, peak bin, season span in the live file
+aries       maxdiff 0.000  peak bin 15 (days 75-79, value 1.83)  days of peak bin inside season: 2/5  live span [[78, 109]]  formula 2025 span first/last day 78..108
+taurus      maxdiff 0.000  peak bin 22 (days 110-114, value 1.71)  days of peak bin inside season: 5/5  live span [[109, 140]]  formula 2025 span first/last day 109..139
+gemini      maxdiff 0.000  peak bin 28 (days 140-144, value 1.81)  days of peak bin inside season: 5/5  live span [[140, 171]]  formula 2025 span first/last day 140..170
+cancer      maxdiff 0.000  peak bin 34 (days 170-174, value 2.04)  days of peak bin inside season: 4/5  live span [[171, 203]]  formula 2025 span first/last day 171..202
+leo         maxdiff 0.000  peak bin 40 (days 200-204, value 2.28)  days of peak bin inside season: 2/5  live span [[203, 234]]  formula 2025 span first/last day 203..233
+virgo       maxdiff 0.000  peak bin 47 (days 235-239, value 1.87)  days of peak bin inside season: 5/5  live span [[234, 265]]  formula 2025 span first/last day 234..264
+libra       maxdiff 0.000  peak bin 53 (days 265-269, value 1.82)  days of peak bin inside season: 5/5  live span [[265, 295]]  formula 2025 span first/last day 265..294
+scorpio     maxdiff 0.000  peak bin 59 (days 295-299, value 1.97)  days of peak bin inside season: 5/5  live span [[295, 325]]  formula 2025 span first/last day 295..324
+sagittarius maxdiff 0.000  peak bin 65 (days 325-329, value 1.84)  days of peak bin inside season: 5/5  live span [[325, 355]]  formula 2025 span first/last day 325..354
+capricorn   maxdiff 0.000  peak bin 2 (days 10-14, value 1.77)  days of peak bin inside season: 5/5  live span [[355, 365], [0, 19]]  formula 2025 span first/last day [0, 355]..364
+aquarius    maxdiff 0.000  peak bin 4 (days 20-24, value 2.07)  days of peak bin inside season: 5/5  live span [[19, 48]]  formula 2025 span first/last day 19..47
+pisces      maxdiff 0.000  peak bin 10 (days 50-54, value 2.1)  days of peak bin inside season: 5/5  live span [[48, 78]]  formula 2025 span first/last day 48..77

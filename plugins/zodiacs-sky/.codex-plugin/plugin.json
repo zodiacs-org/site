@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-sky",
-  "version": "0.6.6",
+  "version": "0.6.8",
   "description": "Check what's happening in the sky, read daily to yearly horoscopes for your sign, explore your own birth chart and transits, compare two charts, find your Chinese zodiac animal and see the sky on the days that matter.",
   "author": {
     "name": "Zodiacs LLC",
@@ -60,9 +60,9 @@
           "positive": [
             {
               "description": "A yes-or-no sky question and what changes this week, in the person's time zone. No personal details needed.",
-              "prompt": "Is Mercury retrograde right now, and what else changes in the sky this week? I'm in Bangkok.",
+              "prompt": "Is Mercury retrograde right now, and what else changes in the sky this week? I'm in Mexico City.",
               "tools_triggered": "check_sky_fact, get_upcoming_events",
-              "expected_behavior": "Answers yes or no about Mercury, then lists this week's sign changes, retrograde or direct turns and new or full Moons with times in Bangkok, in plain words, and renders the sky calendar. Keeps astronomy separate from astrological meaning."
+              "expected_behavior": "Answers yes or no about Mercury, then lists this week's sign changes, retrograde or direct turns and new or full Moons with times in Mexico City, in plain words, and renders the sky calendar. Keeps astronomy separate from astrological meaning."
             },
             {
               "description": "A dated Sun-sign horoscope for the person's own day. No personal details needed.",
@@ -78,9 +78,9 @@
             },
             {
               "description": "Rate a day that matters and make a card with its sky. Needs no birth date.",
-              "prompt": "We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day.",
+              "prompt": "We're getting married on 18 September 2027 at 16:30 in Lisbon, Portugal. Is it a good day for it? Make us a card with the sky for that day.",
               "tools_triggered": "find_birthplace, get_occasion_sky",
-              "expected_behavior": "Finds Florence's coordinates and time zone itself instead of asking for them, then renders a wedding card that rates the date out of 100 with a verdict, its astrological reasons and a Reading confidence label, plus the Sun and Moon signs, sunset, golden hour and the planets visible at 17:00 in Florence. Does not guarantee how the day will go. A share link carries only the day, the Sun and Moon signs and the rating."
+              "expected_behavior": "Finds Lisbon's coordinates and time zone itself instead of asking for them, then renders a wedding card that rates the date out of 100 with a verdict, its astrological reasons and a Reading confidence label, plus the Sun and Moon signs, sunset, golden hour and the planets visible after dusk in Lisbon. Does not guarantee how the day will go. A share link carries only the day, the Sun and Moon signs and the rating."
             },
             {
               "description": "Compare two famous people's published charts and score their compatibility. No personal details needed.",
@@ -112,7 +112,7 @@
         "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.1.mp4"
       },
       "publication": {
-        "release_notes": "0.6.6: The plugin's picture is now the twelve sign glyphs in coloured circles. 0.6.5: The sky on a day no longer offers a baby's arrival or a coming of age as an occasion. 0.6.4: Says exactly what links leave out: a birth year, a birth time, a birthplace and the names you give. 0.6.3: The listing's category is now Entertainment. 0.6.2: The About, starter prompts and test cases now lead with the tools that need no personal details. 0.6.1: The five tools from 0.6.0 open an inline readings panel, with no sidebar launch, and find_birthplace turns a town or city name into coordinates and a time zone for the chart tools. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day. Forecasts carry a reading-confidence label, readings for anyone under 18 leave out romance and attraction, and compatibility is for two adults. The thirteen published tools are unchanged. 0.6.0: Adds five read-only tools with no sign-in: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac with the Lunar New Year boundary, dated personal transits and the year ahead, and explainers of astrology basics. The thirteen existing tools are unchanged. The About now names the compatibility score and the date rating out of 100 and the new features."
+        "release_notes": "0.6.8: The example text in the tools' field descriptions and two of the review cases now use invented details. No tool, input or behaviour changes. 0.6.7: Tool descriptions and the server's instructions now say plainly what each tool does, when to use it, what it returns and its limits. Tool names and inputs are unchanged. 0.6.6: The plugin's picture is now the twelve sign glyphs in coloured circles. 0.6.5: The sky on a day no longer offers a baby's arrival or a coming of age as an occasion. 0.6.4: Says exactly what links leave out: a birth year, a birth time, a birthplace and the names you give. 0.6.3: The listing's category is now Entertainment. 0.6.2: The About, starter prompts and test cases now lead with the tools that need no personal details. 0.6.1: The five tools from 0.6.0 open an inline readings panel, with no sidebar launch, and find_birthplace turns a town or city name into coordinates and a time zone for the chart tools. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day. Forecasts carry a reading-confidence label, readings for anyone under 18 leave out romance and attraction, and compatibility is for two adults. The thirteen published tools are unchanged. 0.6.0: Adds five read-only tools with no sign-in: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac with the Lunar New Year boundary, dated personal transits and the year ahead, and explainers of astrology basics. The thirteen existing tools are unchanged. The About now names the compatibility score and the date rating out of 100 and the new features."
       },
       "onboardingSkill": "./skills/explore-the-sky/SKILL.md"
     }

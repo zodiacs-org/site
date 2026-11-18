@@ -6,6 +6,40 @@ brought up to date on 4 November 2026 for 0.6.1 (branch
 the dated sections below, newest first, record what has been since. Every
 step that touches production, the portal or email needs Dias's separate yes.
 
+## 0.6.8 prepared, 18 November 2026
+
+Zodiacs 0.6.8 is the version prepared for the resubmission. It reports 0.6.8
+and ships invented examples in the tools' field descriptions, and two review
+cases now use invented details (a reader in Mexico City, and a wedding in
+Lisbon on 18 September 2027 at 16:30). No tool name, input, annotation,
+behaviour or tool count changes. The tools copy in the portal can be re-read
+from the server once 0.6.8 is merged and deployed. Nothing was synced, saved,
+sent or submitted on 18 November; each step waits for Dias's yes.
+
+## 0.6.7 live, 13 November 2026
+
+The hosted server reports 0.6.7 since PR #971 went live on 13 November.
+Every one of the 19 tools has a plainer description, the server's
+instructions were reworded so they state facts about Zodiacs rather than orders to the assistant, and say truly what a link can hold, and
+`get_horoscope`'s panel moved to `ui://zodiacs/horoscopes-v7.html`; no name,
+input, annotation or tool count changed. A love reading asked with a birth
+date under 18 now gives the general reading (PR #970). The portal's copy of
+the tools still holds the 0.6.6 descriptions read on 8 November. A new sync,
+and the note in [REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md), each wait
+for Dias's yes. Nothing was synced, saved or sent on 13 November.
+
+## Records brought together, 11 November 2026
+
+The current version, tool count and behaviour, and what the reviewers were
+last told on each channel, are now stated once at the top of
+[LISTING.md](LISTING.md). The hosted server reports 0.6.6 and offers 19
+tools. The sections below stay as dated records: where one says the server
+reports 0.6.0, 0.6.1 or 0.6.5, that was true on its date.
+
+The draft email at the end of this file was written for 0.6.1 and is
+replaced by [REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md), a draft that
+has not been sent. Nothing was synced, saved or sent on 11 November.
+
 ## Children under 13, 8 November 2026
 
 Asked in Claude on 7 November for a card with the sky on the day a baby was
@@ -218,7 +252,7 @@ screen names below are the ones recorded in `LISTING.md` on 28 October.
 
 4. **Additional notes for reviewers**: add
 
-   > 0.6.1 offers six read-only tools beyond the thirteen in review, with no sign-in: get_natal_chart, get_horoscope_period, get_chinese_zodiac, get_personal_transits and explain_astrology, which open an inline readings panel with no sidebar launch, and find_birthplace, which turns a town or city name into coordinates and a time zone. The thirteen earlier tools are unchanged. Forecasts carry a label such as "Reading confidence 55%", which says how specific the details were, never the odds that something happens. Readings for anyone under 18 leave out romance and attraction. The natal chart, transit and Chinese zodiac tools use a birth date (and optional time, time zone and coordinates) for that answer only. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day. Try: "Read my birth chart: born 3 May 1990 at 8:30 in Madrid." / "What's the monthly horoscope for Leo?" / "What's my Chinese zodiac sign? I was born 20 January 1990." / "What transits are coming up for me? Born 3 May 1990." / "Are Leo and Scorpio compatible?"
+   > 0.6.1 offers six read-only tools beyond the thirteen in review, with no sign-in: get_natal_chart, get_horoscope_period, get_chinese_zodiac, get_personal_transits and explain_astrology, which open an inline readings panel with no sidebar launch, and find_birthplace, which turns a town or city name into coordinates and a time zone. The thirteen earlier tools are unchanged. Forecasts carry a label such as "Reading confidence 55%", which says how specific the details were, never the odds that something happens. Readings for anyone under 18 leave out romance and attraction. The natal chart, transit and Chinese zodiac tools use a birth date (and optional time, time zone and coordinates) for that answer only. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day. Try: "Read my birth chart: born 14 May 1994 at 9:15 in Seville." / "What's the monthly horoscope for Leo?" / "What's my Chinese zodiac sign? I was born 20 January 1990." / "What transits are coming up for me? Born 14 May 1994." / "Are Leo and Scorpio compatible?"
 
 5. Leave the one-liner, categories, carousel and the **Self-tested** box as
    they are, unless Dias has run all nineteen tools in Claude.
@@ -228,6 +262,11 @@ screen names below are the ones recorded in `LISTING.md` on 28 October.
 7. Add a dated entry to `LISTING.md` with what was synced, saved and sent.
 
 ## Draft update note to mcp-review@anthropic.com
+
+Replaced on 11 November 2026 by [REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md).
+The text below is kept as the 0.6.1 draft of 4 November; do not send it. It
+names 0.6.1 and says the thirteen earlier tools are unchanged, and neither
+holds since 0.6.5.
 
 `LISTING.md` records that a correction of the 15 October note was already sent
 that day at 18:01 UTC as a reply on ticket #145701231. This draft restates
