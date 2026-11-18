@@ -52,7 +52,10 @@ Beginner is the default. The choice lives in this browser only
   first-load script budget. A press made while it loads is replayed once it
   is in. The button for the opening level is marked by a small inline
   script before paint, so the bundled loader only schedules the wiring.
-  Only `src/lib/level.ts`, which islands share, loads up front.
+  Islands that follow the level, like the chart calculator, read
+  `html[data-level]` and listen for `zodiacs:level` directly instead of
+  importing `src/lib/level.ts`, so the shared level code loads only with the
+  wiring.
 - The status line under the switch fills only when the reader changes level,
   so it never moves the page on load and screen readers hear it only then.
 - Off the natal chart the lens rail shows at every level, because it is the

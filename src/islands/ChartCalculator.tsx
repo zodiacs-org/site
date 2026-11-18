@@ -18,7 +18,6 @@ import PlanetGlyph from '../components/PlanetGlyph';
 import AspectGlyph from '../components/AspectGlyph';
 import Wheel from '../lib/wheel/Wheel';
 import LayerChips from './explorer/LayerChips';
-import { onLevel } from '../lib/level';
 import { moonCandidates, moonIsUncertain, moonLabel } from '../lib/moon-certainty';
 import { createModuleLoader } from '../lib/module-load';
 import { downloadCalculationReceipt } from '../lib/receipt-download';
@@ -634,8 +633,13 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     let kept: { houses: boolean; aspects: AspectType[] } | null = null;
     const linkedKind = parseEntityId(new URLSearchParams(window.location.search).get('sel') ?? '')?.kind;
     const linked = linkedKind === 'house' || linkedKind === 'aspect';
-    return onLevel((level) => {
-      if (level === null || level === previous) return;
+    // The island reads html[data-level] and the switch's change event
+    // directly rather than importing src/lib/level.ts, so the shared level
+    // code stays out of this page's first-load scripts. The switch sets the
+    // attribute before it sends the event (src/lib/level-switch.ts).
+    const sync = () => {
+      const level = document.documentElement.getAttribute('data-level');
+      if (!level || level === previous) return;
       const first = previous === null;
       previous = level;
       if (level === 'beginner') {
@@ -649,7 +653,10 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         setAspectTypes(kept.aspects);
         kept = null;
       }
-    });
+    };
+    sync();
+    window.addEventListener('zodiacs:level', sync);
+    return () => window.removeEventListener('zodiacs:level', sync);
   }, []);
   const [detailOpen, setDetailOpen] = useState(false);
   const [announce, setAnnounce] = useState('');

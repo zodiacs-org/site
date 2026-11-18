@@ -94,6 +94,14 @@ describe('level rules in the page', () => {
     expect(wiring).toContain('[data-level-set="${pageLevel() ?? DEFAULT_LEVEL}"]`)?.focus()');
   });
 
+  it('lets the chart island follow the level without loading the shared level code', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const island = await readFile(new URL('../islands/ChartCalculator.tsx', import.meta.url), 'utf8');
+    expect(island).not.toMatch(/from '\.\.\/lib\/level'/);
+    expect(island).toContain(`'${LEVEL_EVENT}'`);
+    expect(island).toContain("getAttribute('data-level')");
+  });
+
   it('keeps the switch wiring out of the first-load scripts and replays an early press', async () => {
     const { readFile } = await import('node:fs/promises');
     const component = await readFile(new URL('../components/LevelSwitch.astro', import.meta.url), 'utf8');
