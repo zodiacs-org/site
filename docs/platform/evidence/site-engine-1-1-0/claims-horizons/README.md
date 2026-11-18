@@ -30,3 +30,25 @@ The fresh solar eclipse vector comparison is pending. The eclipse check
 continues to use its earlier evidence. The Moon ingress result applies to
 sign crossings, where the void ends. The event comparison treats slow planet
 crossings separately.
+
+## Replay offline
+
+`horizons-values.json.gz` holds the Julian day and the Horizons fields used
+for each row of the position, clock and lunar ingress comparisons. The
+compressed file contains apparent longitudes, clock offsets and lunar state
+vectors, with the original numerical precision. The acquisition receipts in
+`requests.json` identify the raw responses.
+
+With the locked Node dependencies and the same Python dependencies as the
+independent reference rebuild installed, run this command from the site root.
+
+```sh
+python3 docs/platform/evidence/site-engine-1-1-0/claims-horizons/comparison.py --check
+```
+
+The replay evaluates the vendored engine again, applies the matched TT
+interpolation and ERFA node rotation, solves each Moon crossing, then checks
+`results.json` and the figures printed on the methodology and void-of-course
+pages. Use `--extract-raw DIRECTORY` to regenerate the compact file from the
+original responses if they are available. The parser verifies each response
+digest before retaining its fields.

@@ -46,8 +46,9 @@ export const CLAIM_TOPICS = Object.freeze(['accuracy', 'privacy', 'product', 'ti
  * supported: the evidence bears the claim out as worded. overstated: true in
  * part, or truer than the evidence shows; open until its resolution lands.
  * false: untrue as worded. stale: a translation the English has moved past.
+ * historical: a result retained in the validation record for an earlier engine.
  */
-export const CLAIM_STATUSES = Object.freeze(['supported', 'overstated', 'false', 'stale']);
+export const CLAIM_STATUSES = Object.freeze(['supported', 'overstated', 'false', 'stale', 'historical']);
 
 /** Why a selected sentence makes no claim; a closed list. */
 export const EXEMPT_REASONS = Object.freeze([

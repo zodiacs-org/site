@@ -4,6 +4,7 @@
   "archiveSha256": "4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac",
   "deltaTTableDigest": "6371988c510a1c6c",
   "reference": "NASA JPL Horizons DE441",
+  "referenceValuesSha256": "d5f51e3f0e90e50bf081ce705e00ab0494b307afb489618b19f1c46908bf0f9d",
   "stratified": {
     "within": {
       "n": 160,
