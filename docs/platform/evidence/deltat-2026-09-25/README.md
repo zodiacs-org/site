@@ -469,3 +469,27 @@ On 2026-10-12 the Swiss figures this README still quoted from the file (its
 1000) were taken out of the text as well (F-90). Commit `2ca93d41` still has it whole, the file records the SHA-256
 of what it lost under `swissOutputRemoved`, and `tools/moon/swiss_deltat.py`
 regenerates it. The record of everything removed is [`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).
+
+## 11. Monitor rules added 2026-11-18
+
+The weekly monitor also compares UT1 minus UTC at midnight UTC across the
+days when both IERS and the engine carry a prediction. The span rule reports
+how many days overlapped and the largest absolute difference, its date and
+the engine's uncertainty on that day. A difference above 0.1 s triggers the
+existing “ΔT table needs a refresh” issue. The two rules in section 6 still
+apply. [Monitor source](../../../../scripts/deltat-monitor.mjs)
+
+For the 2026-11-13 replay of Bulletin A, the overlap covered 324 days. The
+largest difference was 0.078009 s on 2027-10-01, with an engine uncertainty of
+0.026148 s. The span rule stayed quiet. The recorded rows, retrieval details
+and replay assertions are committed with the monitor.
+[Fixture provenance](../../../../scripts/fixtures/README.md) ·
+[Replay test](../../../../scripts/deltat-monitor.test.mjs)
+
+The same run compares IANA's release year and letter with the version the
+engine ships. A newer release triggers “Time zone data needs a refresh” with
+the summary and the past and future timestamp changes for each newer release.
+If the release version or the required notes cannot be read, the rule records
+the error and the workflow fails. Both issues request a review of the data.
+[Workflow](../../../../.github/workflows/deltat-monitor.yml) ·
+[Recorded IANA notes](../../../../scripts/fixtures/tzdb-NEWS-2026f.txt)
