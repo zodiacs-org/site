@@ -105,14 +105,14 @@ Report to them in plain words, and never ask them to watch CI.
    - **ChatGPT web and mobile:** use the private Zodiacs Preview plugin.
    - **Claude:** use a custom connector to the staging URL.
    - **Prompts to try:**
-     - "Compare my chart with my partner's. I was born 3 May 1990 at 8:30 in
-       Madrid; he was born 10 August 1992."
-     - "Which famous people share my Sun sign? I was born 3 May 1990." Then
+     - "Compare my chart with my partner's. I was born 14 May 1994 at 9:15 in
+       Seville; he was born 4 August 1991."
+     - "Which famous people share my Sun sign? I was born 14 May 1994." Then
        "Show me Frida Kahlo's chart."
      - "Show me Ada Nobody's birth chart." Zodiacs must say it has no chart.
-     - "What does the sky say about my birthday, 3 May 1990, and when is my
+     - "What does the sky say about my birthday, 14 May 1994, and when is my
        solar return this year?"
-     - "We're getting married on 12 June 2027 at 17:00 in Florence. What's the
+     - "We're getting married on 18 September 2027 at 16:30 in Lisbon. What's the
        sky like?"
      - "Put the full moons and retrogrades in my calendar."
      - "Rate how compatible we are out of 100." It must not give a score.

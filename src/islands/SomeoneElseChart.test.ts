@@ -97,7 +97,11 @@ describe('someone-else private mine handoff', () => {
     expect(revoke).toContain('if (!currentMineProfileOrigin.current) return;');
     expect(revoke).toContain('currentMineProfileOrigin.current = false;');
     expect(revoke).toContain('setCurrentMine(null);');
-    expect(source).toContain('const profileOrigin = profileHandoffOriginsFromHash(window.location.hash).mine;');
+    expect(source).toContain('const profileOrigin = profileHandoffOriginsFromHash(hash).mine;');
+    // The fragment leaves the address bar before the handoff is read.
+    const reader = source.slice(source.indexOf('const hash = window.location.hash;'), source.indexOf('const mine = mineHandoffFromHash(hash);'));
+    expect(reader.indexOf('history.replaceState(')).toBeGreaterThan(-1);
+    expect(reader.indexOf('history.replaceState(')).toBeLessThan(reader.indexOf('takeChartHandoff(hash)'));
     expect(source).toContain('setPendingProfileMineId(mine.id);');
     expect(source).toContain('if (!profile.charts.some((chart) => chart.id === id)) return;');
     expect(source).toContain('mineProfileOrigin: comparisonMineProfileOrigin');
