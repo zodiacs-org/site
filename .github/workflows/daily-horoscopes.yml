@@ -28,8 +28,10 @@ jobs:
     name: Compute today's sky
     runs-on: ubuntu-latest
     # Long enough to wait for the required checks on a publication pull
-    # request (scripts/publish-through-pr.sh); Build & Check alone runs ~1h.
-    timeout-minutes: 120
+    # request (scripts/publish-through-pr.sh): up to 100 minutes of checks
+    # (Build & Check alone runs ~1h) after ~25 minutes of building, then the
+    # live check.
+    timeout-minutes: 150
     permissions:
       contents: write
       issues: write

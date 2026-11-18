@@ -45,6 +45,9 @@ if [ "$allowance" = "written" ]; then
   echo "publish-through-pr: added the one-time scope allowance for the generated sign pages"
 elif [ "$allowance" = "refused" ]; then
   echo "::warning title=Protected paths beyond the sign pages::This publication changes protected paths other than the generated sign pages, so no scope allowance is added and Build & Check will hold the pull request for a person." >&2
+elif [ "$allowance" != "none" ]; then
+  echo "publish-through-pr: the scope allowance writer gave no verdict (\"$allowance\"); nothing was published" >&2
+  exit 1
 fi
 
 git push origin "HEAD:refs/heads/$branch"
@@ -71,7 +74,8 @@ head_sha=$(git rev-parse HEAD)
 required=()
 while IFS= read -r context; do
   if [ -n "$context" ]; then required+=("$context"); fi
-done < <(gh api "repos/{owner}/{repo}/branches/$base" --jq '.protection.required_status_checks.contexts[]?' 2>/dev/null || true)
+done < <(gh api "repos/{owner}/{repo}/branches/$base" --jq '.protection.required_status_checks.contexts[]?' 2>"$tmp/publish-protection.err" \
+  || echo "::warning title=Required checks unknown::Could not read the protection summary of $base ($(tr '\n' ' ' <"$tmp/publish-protection.err")); merging without waiting, which the rule will refuse if it requires checks." >&2)
 
 if [ "${#required[@]}" -gt 0 ]; then
   echo "publish-through-pr: $base requires: $(printf '"%s" ' "${required[@]}")"
@@ -85,8 +89,17 @@ if [ "${#required[@]}" -gt 0 ]; then
 
   deadline=$(( $(date +%s) + ${PUBLISH_CHECKS_TIMEOUT_MINUTES:-100} * 60 ))
   while :; do
-    runs=$(gh api --paginate "repos/{owner}/{repo}/commits/$head_sha/check-runs?per_page=100" \
-      --jq '.check_runs[] | {id, name, status, conclusion, html_url}' | jq -s '.')
+    # One failed read must not end an hour-long wait: retry until the deadline.
+    if ! runs=$(gh api --paginate "repos/{owner}/{repo}/commits/$head_sha/check-runs?per_page=100" \
+      --jq '.check_runs[] | {id, name, status, conclusion, html_url}' | jq -s '.'); then
+      if [ "$(date +%s)" -ge "$deadline" ]; then
+        echo "::error title=Required checks could not be read::$pr_url stays open for a person." >&2
+        exit 1
+      fi
+      echo "publish-through-pr: reading the check runs failed; retrying" >&2
+      sleep 30
+      continue
+    fi
     waiting=()
     failed=()
     for context in "${required[@]}"; do
@@ -113,6 +126,14 @@ if [ "${#required[@]}" -gt 0 ]; then
     sleep 30
   done
   echo "publish-through-pr: all required checks passed on $head_sha"
+
+  # The wait took about an hour. The artifacts were verified against one exact
+  # base revision, so never squash them onto a base that moved meanwhile.
+  git fetch origin "$base"
+  if [ "$(git rev-parse "origin/$base")" != "$verified" ]; then
+    echo "::error title=The base moved while the checks ran::$base advanced after verification; $pr_url stays open and the complete workflow must run again (the next scheduled backstop does)." >&2
+    exit 1
+  fi
 fi
 
 # GitHub computes mergeability asynchronously after creation; a brand-new

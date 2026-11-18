@@ -160,7 +160,7 @@ describe('daily publication operations', () => {
 
     // Room for the required checks the publisher waits on (Build & Check alone
     // runs about an hour) before it may merge its own pull request.
-    expect(workflow).toContain('timeout-minutes: 120');
+    expect(workflow).toContain('timeout-minutes: 150');
     expect(workflow).toContain('signal: AbortSignal.timeout(15_000)');
     expect(liveVerifier).toContain('signal: AbortSignal.timeout(15_000)');
     expect(workflow).toContain("schema: 'zodiacs.daily-operation-receipt.v2'");

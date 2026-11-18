@@ -17,7 +17,9 @@
  * "refused" when other protected paths changed.
  */
 import { execFileSync } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { oneTimeAllowancePath, parseNameStatus, protectedPathLabels, resolveOneTimeAllowance } from './phase1-scope-guard.mjs';
 
 export const signPage = /^public\/registry\/(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/index\.html$/u;
@@ -43,8 +45,11 @@ function main() {
   if (allowance === false) return console.log('refused');
   // Prove the guard will accept it before writing anything.
   resolveOneTimeAllowance({ allowance, baseCommit, changed: [...changed, oneTimeAllowancePath] });
+  mkdirSync(dirname(oneTimeAllowancePath), { recursive: true });
   writeFileSync(oneTimeAllowancePath, `${JSON.stringify(allowance, null, 2)}\n`);
   console.log('written');
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+const directInvocation = process.argv[1]
+  && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
+if (directInvocation) main();

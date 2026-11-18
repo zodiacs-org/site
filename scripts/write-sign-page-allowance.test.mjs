@@ -30,3 +30,30 @@ describe('the publication scope allowance for generated sign pages', () => {
     }
   });
 });
+
+describe('the allowance writer as a command', () => {
+  it('runs from a path with a space and prints its verdict', async () => {
+    const { execFileSync } = await import('node:child_process');
+    const { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, readFileSync } = await import('node:fs');
+    const { tmpdir } = await import('node:os');
+    const { join } = await import('node:path');
+    const dir = mkdtempSync(join(tmpdir(), 'allowance writer '));
+    const run = (...args) => execFileSync(args[0], args.slice(1), { cwd: dir, encoding: 'utf8' }).trim();
+    mkdirSync(join(dir, 'scripts'));
+    mkdirSync(join(dir, 'public/registry/leo'), { recursive: true });
+    copyFileSync(new URL('./phase1-scope-guard.mjs', import.meta.url), join(dir, 'scripts/phase1-scope-guard.mjs'));
+    copyFileSync(new URL('./write-sign-page-allowance.mjs', import.meta.url), join(dir, 'scripts/write-sign-page-allowance.mjs'));
+    writeFileSync(join(dir, 'public/registry/leo/index.html'), 'old');
+    run('git', 'init', '-q');
+    run('git', 'add', '-A');
+    run('git', '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'base');
+    const base = run('git', 'rev-parse', 'HEAD');
+    expect(run('node', 'scripts/write-sign-page-allowance.mjs', base)).toBe('none');
+    writeFileSync(join(dir, 'public/registry/leo/index.html'), 'new');
+    run('git', '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-am', 'daily');
+    expect(run('node', 'scripts/write-sign-page-allowance.mjs', base)).toBe('written');
+    const allowance = JSON.parse(readFileSync(join(dir, '.github/phase1-scope-allowance.json'), 'utf8'));
+    expect(allowance.protectedPaths).toEqual(['public/registry/leo/index.html']);
+    expect(allowance.baseCommit).toBe(base);
+  });
+});
