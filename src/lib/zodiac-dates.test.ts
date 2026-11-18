@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import sunIngresses from '../data/sun-ingresses.json';
+import ingresses from '../data/ingresses.json';
 import {
   INGRESS_GENERATED_AT,
   INGRESS_YEARS,
@@ -10,7 +10,7 @@ import {
 
 describe('living correspondence chart data', () => {
   it('derives the current and next publication years from the committed receipt', () => {
-    expect(INGRESS_GENERATED_AT).toBe(sunIngresses.generatedAt);
+    expect(INGRESS_GENERATED_AT).toBe(ingresses.generatedAt);
     expect(INGRESS_YEARS).toEqual([2026, 2027]);
   });
 
