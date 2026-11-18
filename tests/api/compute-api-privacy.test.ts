@@ -504,6 +504,8 @@ describe('the site and the compute API', () => {
       // Server-only AI adapters reuse pure compute operations. They do not
       // send browser calculations to the hosted compute API.
       'src/ai-tools/contracts.ts', 'src/ai-tools/http.ts', 'src/ai-tools/local.ts', 'src/ai-tools/tools.ts',
+      // The DE440 connector reads schema definitions; the worker imports the event type only.
+      'src/ai-tools/de440-contract.ts', 'src/ai-tools/watch/worker.ts',
       'src/ai-tools/http.test.ts', 'src/ai-tools/tools.test.ts',
       // It holds the tools' schemas to the compute API's documented ones and calls the tools across its span.
       'src/ai-tools/schema-types.test.ts',

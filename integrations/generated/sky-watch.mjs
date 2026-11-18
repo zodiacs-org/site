@@ -45216,6 +45216,7 @@ async function verifyCallback(url, secret, id, post, now) {
 import { z as z16 } from "zod";
 var WATCH_VERSION = `sky-watch-v1:${ENGINE_VERSION}`;
 var DAY21 = 864e5;
+var WATCH_MATCH_DAYS = 2;
 var BODIES5 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var NAMES = ["zodiacs.sky.ingress", "zodiacs.sky.station", "zodiacs.sky.lunation"];
 var zone7 = z16.string().max(80).default("UTC").refine((value) => {
@@ -45272,7 +45273,8 @@ function watchRpc(env, fetcher = fetch) {
   const headers = { apikey: key2, "Content-Type": "application/json", "Cache-Control": "no-store" };
   if (!key2.startsWith("sb_secret_")) headers.Authorization = `Bearer ${key2}`;
   return async (operation, input = {}) => {
-    const response = await fetcher(`${url}/rest/v1/rpc/zodiacs_sky_watch_v1`, {
+    const procedure = operation === "timingwindow" || operation === "timingingest" ? "zodiacs_sky_watch_timing_v1" : "zodiacs_sky_watch_v1";
+    const response = await fetcher(`${url}/rest/v1/rpc/${procedure}`, {
       method: "POST",
       headers,
       cache: "no-store",
@@ -45950,6 +45952,26 @@ function registerSaveTool(server, dependencies, account) {
   });
 }
 
+// src/ai-tools/de440-contract.ts
+function de440OutputSchema(schema) {
+  if (Array.isArray(schema)) return schema.map(de440OutputSchema);
+  if (!schema || typeof schema !== "object") return schema;
+  const node = schema;
+  const properties = node.properties;
+  if (properties?.name?.const === "@zodiacs/engine" && properties.ephemeris) {
+    return COMPUTE_SCHEMAS.Backend;
+  }
+  return Object.fromEntries(Object.entries(node).map(([key2, value]) => [key2, de440OutputSchema(value)]));
+}
+function describeDe440Tools(result) {
+  if (!Array.isArray(result?.tools)) return;
+  for (const tool of result.tools) {
+    if (tool.outputSchema) tool.outputSchema = de440OutputSchema(tool.outputSchema);
+    if (typeof tool.description !== "string") continue;
+    tool.description = tool.description.replace(/ Its times for a slow planet's sign change [^.]+\./u, " Sign change times use DE440.");
+  }
+}
+
 // src/ai-tools/sanitize.ts
 function sanitizeProtocolMessage(message, refusal) {
   if (message.error) message.error = {
@@ -46170,7 +46192,8 @@ function createAiNodeHandler(options = {}) {
       const allowedKey = (key2) => key2 === AI_ROUTE_PARAM || extraKeys.includes(key2);
       if ([...rawQuery.keys()].some((key2) => !allowedKey(key2)) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1 || extraKeys.some((key2) => rawQuery.getAll(key2).length > 1)) return send(res, 400, "invalid-query");
       const query = req.query ?? Object.fromEntries(rawQuery);
-      if (Object.keys(query).some((key2) => !allowedKey(key2)) || query[AI_ROUTE_PARAM] !== void 0 && !["1", "health", ...accountsOn ? ACCOUNT_ROUTES : []].includes(query[AI_ROUTE_PARAM])) return send(res, 400, "invalid-query");
+      const protocolRoutes = options.de440 ? ["1", "de440", "health"] : ["1", "health"];
+      if (Object.keys(query).some((key2) => !allowedKey(key2)) || query[AI_ROUTE_PARAM] !== void 0 && ![...protocolRoutes, ...accountsOn ? ACCOUNT_ROUTES : []].includes(query[AI_ROUTE_PARAM])) return send(res, 400, "invalid-query");
       if (query.authorization_id !== void 0 && (typeof query.authorization_id !== "string" || !/^[A-Za-z0-9_-]{8,256}$/.test(query.authorization_id))) return send(res, 400, "invalid-query");
       const accountRoute = accountsOn && ACCOUNT_ROUTES.includes(query[AI_ROUTE_PARAM]);
       if (accountRoute && method !== "GET") {
@@ -46329,6 +46352,9 @@ function createAiNodeHandler(options = {}) {
         if (response.body) {
           let sanitize2 = function(text3) {
             const parsed2 = JSON.parse(text3);
+            if (options.de440 && (message.method === "tools/list" || message.method === "server/discover")) {
+              describeDe440Tools(parsed2.result);
+            }
             const named2 = calledTool && (COVERAGE_TOOL_NAMES.includes(calledTool) || PLACE_TOOL_NAMES.includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool)) && parsed2.result?.isError && !parsed2.result?.structuredContent ? coverageInputRefusal(calledTool, message.params.arguments, inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : null;
             if (named2) return JSON.stringify({ ...parsed2, result: { isError: true, content: [{ type: "text", text: JSON.stringify(named2) }], structuredContent: named2 } });
             return JSON.stringify(sanitizeProtocolMessage(parsed2, refusal));
@@ -46396,7 +46422,20 @@ async function serveAccountRoute(res, route, options, env) {
 }
 
 // src/ai-tools/watch/worker.ts
-async function calculateWindow(from, to) {
+var timingVersion = WATCH_VERSION.replace("sky-watch-v1:", "sky-watch-v2:");
+function eventSignature(name, event2) {
+  switch (name) {
+    case "zodiacs.sky.ingress":
+      return JSON.stringify([name, event2.body, event2.sign, event2.retrograde]);
+    case "zodiacs.sky.station":
+      return JSON.stringify([name, event2.body, event2.type]);
+    case "zodiacs.sky.lunation":
+      return JSON.stringify([name, event2.type]);
+    default:
+      throw new Error("unknown-watch-event");
+  }
+}
+async function calculateWindow(from, to, existing = []) {
   from = new Date(from).toISOString();
   to = new Date(to).toISOString();
   const result = await executeAiTool("get_upcoming_events", { from, to, zone: "UTC", kinds: ["ingress", "station", "lunation"] }, {});
@@ -46405,26 +46444,42 @@ async function calculateWindow(from, to) {
   if (data.completeness !== "tested-not-proven") throw new Error("search-incomplete");
   const solved = data.calculation.result.events;
   if (solved.length !== data.events.length) throw new Error("search-mismatch");
-  return data.events.map(({ localAt: _localAt, ...listed }, index) => {
+  return reconcileWatchEvents(data.events.map(({ localAt: _localAt, ...listed }, index) => {
     if (listed.kind !== solved[index].kind) throw new Error("search-mismatch");
     const event2 = { ...listed, at: solved[index].at };
-    return {
-      eventId: `evt_${digest(JSON.stringify([WATCH_VERSION, from, event2]))}`,
-      name: `zodiacs.sky.${event2.kind}`,
-      timestamp: event2.at,
-      data: { event: event2, receipt: data.calculation.receipt },
-      cursor: null
-    };
+    const name = `zodiacs.sky.${event2.kind}`;
+    return { name, timestamp: event2.at, data: { event: event2, receipt: data.calculation.receipt }, cursor: null };
+  }), existing);
+}
+function reconcileWatchEvents(events, existing) {
+  const candidates = existing.map(({ eventId, name, timestamp, data }) => ({
+    eventId,
+    at: Date.parse(timestamp),
+    signature: eventSignature(name, data.event)
+  }));
+  const used = /* @__PURE__ */ new Set();
+  return events.map((event2) => {
+    const signature2 = eventSignature(event2.name, event2.data.event);
+    const at = Date.parse(event2.timestamp);
+    const matches = candidates.filter((candidate) => candidate.signature === signature2 && Math.abs(candidate.at - at) <= WATCH_MATCH_DAYS * DAY21);
+    if (matches.length > 1) throw new Error("ambiguous-watch-event");
+    const eventId = matches[0]?.eventId ?? `evt_${digest(JSON.stringify(["sky-watch-event-v2", signature2, event2.timestamp]))}`;
+    if (used.has(eventId)) throw new Error("duplicate-watch-event");
+    used.add(eventId);
+    return { eventId, ...event2 };
   });
 }
 async function fillWatchLedger(rpc, now = Date.now(), calculate = calculateWindow) {
   let filled = 0;
   for (; filled < 3; filled++) {
-    const from = await rpc("window", { version: WATCH_VERSION, start: new Date(Math.floor(now / DAY21) * DAY21).toISOString() });
+    const { from, existing } = await rpc("timingwindow", {
+      version: timingVersion,
+      start: new Date(Math.floor(now / DAY21) * DAY21).toISOString()
+    });
     if (Date.parse(from) >= Math.floor(now / DAY21) * DAY21 + 2 * DAY21) break;
     const to = new Date(Date.parse(from) + DAY21).toISOString();
-    const events = await calculate(from, to);
-    await rpc("ingest", { version: WATCH_VERSION, from, to, events });
+    const events = await calculate(from, to, existing);
+    if (!await rpc("timingingest", { version: timingVersion, from, to, events })) break;
   }
   await rpc("enqueue");
   return filled;

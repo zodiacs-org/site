@@ -45266,7 +45266,8 @@ function watchRpc(env, fetcher = fetch) {
   const headers = { apikey: key2, "Content-Type": "application/json", "Cache-Control": "no-store" };
   if (!key2.startsWith("sb_secret_")) headers.Authorization = `Bearer ${key2}`;
   return async (operation, input = {}) => {
-    const response = await fetcher(`${url}/rest/v1/rpc/zodiacs_sky_watch_v1`, {
+    const procedure = operation === "timingwindow" || operation === "timingingest" ? "zodiacs_sky_watch_timing_v1" : "zodiacs_sky_watch_v1";
+    const response = await fetcher(`${url}/rest/v1/rpc/${procedure}`, {
       method: "POST",
       headers,
       cache: "no-store",
@@ -45944,6 +45945,26 @@ function registerSaveTool(server, dependencies, account) {
   });
 }
 
+// src/ai-tools/de440-contract.ts
+function de440OutputSchema(schema) {
+  if (Array.isArray(schema)) return schema.map(de440OutputSchema);
+  if (!schema || typeof schema !== "object") return schema;
+  const node = schema;
+  const properties = node.properties;
+  if (properties?.name?.const === "@zodiacs/engine" && properties.ephemeris) {
+    return COMPUTE_SCHEMAS.Backend;
+  }
+  return Object.fromEntries(Object.entries(node).map(([key2, value]) => [key2, de440OutputSchema(value)]));
+}
+function describeDe440Tools(result) {
+  if (!Array.isArray(result?.tools)) return;
+  for (const tool of result.tools) {
+    if (tool.outputSchema) tool.outputSchema = de440OutputSchema(tool.outputSchema);
+    if (typeof tool.description !== "string") continue;
+    tool.description = tool.description.replace(/ Its times for a slow planet's sign change [^.]+\./u, " Sign change times use DE440.");
+  }
+}
+
 // src/ai-tools/sanitize.ts
 function sanitizeProtocolMessage(message, refusal) {
   if (message.error) message.error = {
@@ -46164,7 +46185,8 @@ function createAiNodeHandler(options = {}) {
       const allowedKey = (key2) => key2 === AI_ROUTE_PARAM || extraKeys.includes(key2);
       if ([...rawQuery.keys()].some((key2) => !allowedKey(key2)) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1 || extraKeys.some((key2) => rawQuery.getAll(key2).length > 1)) return send(res, 400, "invalid-query");
       const query = req.query ?? Object.fromEntries(rawQuery);
-      if (Object.keys(query).some((key2) => !allowedKey(key2)) || query[AI_ROUTE_PARAM] !== void 0 && !["1", "health", ...accountsOn ? ACCOUNT_ROUTES : []].includes(query[AI_ROUTE_PARAM])) return send(res, 400, "invalid-query");
+      const protocolRoutes = options.de440 ? ["1", "de440", "health"] : ["1", "health"];
+      if (Object.keys(query).some((key2) => !allowedKey(key2)) || query[AI_ROUTE_PARAM] !== void 0 && ![...protocolRoutes, ...accountsOn ? ACCOUNT_ROUTES : []].includes(query[AI_ROUTE_PARAM])) return send(res, 400, "invalid-query");
       if (query.authorization_id !== void 0 && (typeof query.authorization_id !== "string" || !/^[A-Za-z0-9_-]{8,256}$/.test(query.authorization_id))) return send(res, 400, "invalid-query");
       const accountRoute = accountsOn && ACCOUNT_ROUTES.includes(query[AI_ROUTE_PARAM]);
       if (accountRoute && method !== "GET") {
@@ -46323,6 +46345,9 @@ function createAiNodeHandler(options = {}) {
         if (response.body) {
           let sanitize2 = function(text3) {
             const parsed2 = JSON.parse(text3);
+            if (options.de440 && (message.method === "tools/list" || message.method === "server/discover")) {
+              describeDe440Tools(parsed2.result);
+            }
             const named2 = calledTool && (COVERAGE_TOOL_NAMES.includes(calledTool) || PLACE_TOOL_NAMES.includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool)) && parsed2.result?.isError && !parsed2.result?.structuredContent ? coverageInputRefusal(calledTool, message.params.arguments, inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : null;
             if (named2) return JSON.stringify({ ...parsed2, result: { isError: true, content: [{ type: "text", text: JSON.stringify(named2) }], structuredContent: named2 } });
             return JSON.stringify(sanitizeProtocolMessage(parsed2, refusal));

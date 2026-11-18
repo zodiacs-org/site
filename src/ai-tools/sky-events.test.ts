@@ -29,14 +29,14 @@ const LIVE = PUBLISHED_TOOLS;
 const servers: Server[] = [];
 afterAll(async () => { await Promise.all(servers.map((server) => new Promise<void>((resolve) => server.close(() => resolve())))); });
 
-async function serve(env: Record<string, string | undefined>, counted: string[] = []) {
+async function serve(env: Record<string, string | undefined>, counted: string[] = [], de440 = false) {
   let handle: (req: unknown, res: unknown) => Promise<void> = async () => {};
   const server = createServer((req, res) => { void handle(req, res); });
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
   servers.push(server);
   const host = `127.0.0.1:${(server.address() as { port: number }).port}`;
   // As api/_ai/handler.ts supplies them, and as the flag-off fixture was captured.
-  handle = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ...env }, allowedHosts: [host], rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed',
+  handle = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ...env }, de440, allowedHosts: [host], rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed',
     countUsage: async (tool) => { counted.push(tool); }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow,
       horoscopeMonths: async () => committedMonths, horoscopeProgram: async () => committedProgram as unknown as HoroscopeProgram } });
   return host;
@@ -181,7 +181,7 @@ describe('the sky events switch on', () => {
   });
 
   it('answers with results that validate against the output schemas tools/list advertises, as a client checks them', async () => {
-    const host = await serve(env);
+    const host = await serve(env, [], true);
     const tools = message((await post(host, rpc('tools/list'))).text).result.tools as { name: string; outputSchema: object }[];
     const ajv = new Ajv2020({ strict: false, allErrors: true });
     addFormats(ajv);

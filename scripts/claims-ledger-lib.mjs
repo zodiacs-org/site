@@ -185,6 +185,7 @@ export const SCOPE_DROP = Object.freeze([
   { pattern: /^api\/_compute\/local-time\.mjs$/u, reason: 'generated from @zodiacs/engine/geo and src/lib/time/zone-names.ts, which is read instead' },
   { pattern: /^api\/_compute\/compute\.mjs$/u, reason: 'generated from src/lib/compute-api/ and the vendored engine, which are read instead' },
   { pattern: /^api\/_ai\/runtime\.mjs$/u, reason: 'generated from src/ai-tools, src/lib/compute-api and the vendored engine; the source adapters are read instead' },
+  { pattern: /^api\/_ai\/published\/runtime\.mjs$/u, reason: 'the unchanged generated published connector; check-ai-integrations verifies its pinned release digest' },
   { pattern: /^src\/data\/(?:sky|ingresses|eclipses|birthdays)\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/transits-\d{4}-\d{2}\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/time-atlas\//u, reason: 'the engine repository\'s time atlas, copied byte for byte at a pinned commit and held to its digests: its statements are the atlas\'s own, each rule cited to primary sources and checked by the atlas\'s checks (B3.a)' },
