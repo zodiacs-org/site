@@ -266,23 +266,14 @@ const jsonLd = [
       <p>
         In the browser engine's comparison with NASA JPL Horizons at two dates,
         1907 and 2020, the largest difference is 14.8 arcseconds (Neptune, 2020).
-        Separately, the engine was measured against Swiss Ephemeris 2.10.03
-        over a stratified set of dates written down beforehand, on 20
-        September 2026 and again on 25 September: across the 160 measurements
-        from 1801 to 2026 the median disagreement in ecliptic longitude is{' '}
-        <strong>1.6 arcseconds</strong> and the largest is{' '}
-        <strong>18.6 arcseconds</strong>. Compared every tenth day from 1800
-        to 2026 instead, for the ten bodies and the North Node, the median is
-        2.0 arcseconds and the largest <strong>22.9 arcseconds</strong>{' '}
-        (Venus, 1878).
-      </p>
-      <p>
-        Three caveats that matter more than the number.{' '}
-        <a href="/methodology/#swiss-comparison">Swiss Ephemeris and this
-        engine's planetary series both descend from JPL development
-        ephemerides</a>, and the engine's Moon comes from an older lunar theory,
-        so that is two implementations agreeing rather than a check against
-        observation.
+        The default DE440 calculation was compared with live NASA JPL
+        Horizons DE441. Across the 160 measurements from 1801 to 2026, the
+        median disagreement in ecliptic longitude was <strong>0.05 arcseconds</strong>
+        and the largest was <strong>0.53 arcseconds</strong>. Across 91,201
+        comparisons sampled every tenth day through 2026, the median was
+        0.16 arcseconds and the largest was <strong>0.55 arcseconds</strong>
+        (the Moon in 1800). The <a href="/methodology/#horizons-comparison">methodology</a>
+        describes the sample and the time scales.
       </p>
       <p>
         Up to the present the clock is observed. Since 0.1.1-rc.15 the engine
@@ -296,14 +287,13 @@ const jsonLd = [
         IERS records after it, and the IERS predictions; from 1962 on it is
         within 0.09 seconds of the IERS value on every day. Every chart
         returns the ΔT it used with its one-sigma uncertainty, and says which
-        way it read its instant. Past the predictions both programs
-        extrapolate: from 2100 to 2199 their ΔT values differ by 14.3 to
-        36.7 seconds, which alone moves the Moon by{' '}
-        <strong>7.0 to 23.4 arcseconds</strong>; at the same instant of
-        Terrestrial Time, which takes the clock out, it stays within 7.2
-        arcseconds from 2150 to 2199. Until rc.8 the clock was a fixed
-        formula: on 22 September 2026 it read 75.5 seconds where the IERS
-        value is 69.2, which on its own moved the Moon about 3.5 arcseconds.
+        way it read its instant. From 2100 to 2199, the engine's clock and
+        Horizons' fixed future UTC offset put the same calendar labels
+        9.7 to 57.1 seconds apart. From 2150 to 2199 the maximum Moon difference
+        was 0.53 arcseconds at matched Terrestrial Time and 35.65 arcseconds
+        at the same input time. Until rc.8 the clock was a fixed formula.
+        On 22 September 2026 it read 75.5 seconds where the IERS value is 69.2,
+        which on its own moved the Moon about 3.5 arcseconds.
       </p>
       <p>
         And the engine bounds its input date only where its ephemeris ends:
