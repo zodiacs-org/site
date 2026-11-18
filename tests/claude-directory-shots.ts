@@ -61,10 +61,15 @@ await mkdir(hostedOut, { recursive: true });
 const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS, headless: true });
 const shots: { file: string; prompt: string }[] = [];
 try {
-  const context = await browser.newContext({ viewport: { width: 760, height: 900 }, deviceScaleFactor: 2, colorScheme: 'dark', timezoneId: 'America/Mexico_City' });
+  const context = await browser.newContext({ viewport: { width: 760, height: 900 }, deviceScaleFactor: 2, colorScheme: 'dark', reducedMotion: 'reduce', timezoneId: 'America/Mexico_City' });
   const page = await context.newPage();
   // Size the page to its content, as an MCP Apps host does from the panel's size reports.
   const save = async (file: string, prompt: string, part?: ReturnType<Page['locator']>) => {
+    // Wait for the fonts and every shown artwork image, so no picture is captured blank.
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForFunction(() => [...document.images].filter(image => image.getClientRects().length).every(image => image.complete && image.naturalWidth > 0), undefined, { timeout: 30000 });
+    await page.evaluate(() => Promise.all([...document.images].filter(image => image.getClientRects().length).map(image => image.decode())));
+    await page.waitForTimeout(500);
     const height = await page.evaluate(() => {
       const root = document.documentElement, previous = root.style.height;
       root.style.height = 'max-content';
