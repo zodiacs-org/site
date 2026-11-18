@@ -16,6 +16,8 @@ const bars = SIGNS.map((sign) => ({ sign, count: observed[sign.slug] ?? 0, expec
 const ranked = [...bars].sort((a, b) => b.count - a.count || a.sign.name.localeCompare(b.sign.name));
 const top = ranked[0], second = ranked[1];
 const fewest = ranked.filter((bar) => bar.count === ranked[ranked.length - 1].count);
+const fewestNames = fewest.map((bar) => bar.sign.name).join(' and ');
+const fewestLine = fewest.length > 1 ? `${fewestNames} have ${fewest[0].count} each` : `${fewestNames} has ${fewest[0].count}`;
 const chanceIn100 = Math.round(study.pValue * 100);
 // A plain string, so the assistant's site context can read it from this source (scripts/build-assistant-context.mjs).
 const description = "We looked up the birthdays of the CEOs on Fortune's 2026 list. Gemini leads with 9 of 66, but a spread like this is what chance alone produces about 72 times in 100.";
@@ -71,8 +73,7 @@ const fmt = (value: number) => value.toFixed(1);
       <p class="kicker">A small data story</p>
       <h1 class="display">{headline}</h1>
       <p class="study-lede">
-        We looked up the birthdays of the chief executives on Fortune's 2026 list. {study.withFullBirthDate} of the {study.companies} have a full birth date in a public source.
-        {top.sign.name} comes first with {top.count}, then {second.sign.name} with {second.count}. {fewest.map((bar) => bar.sign.name).join(' and ')} {fewest.length > 1 ? 'have' : 'has'} {fewest[0].count} {fewest.length > 1 ? 'each' : ''}.
+        {`We looked up the birthdays of the chief executives on Fortune's 2026 list and could find a full birth date for ${study.withFullBirthDate} of the ${study.companies}. ${top.sign.name} comes first with ${top.count}, then ${second.sign.name} with ${second.count}. ${fewestLine}.`}
       </p>
       <p class="study-answer"><strong>The honest answer: no sign runs it.</strong> If signs had nothing to do with who becomes a CEO, a spread at least this uneven would still turn up about {chanceIn100} times in 100.</p>
     </header>
@@ -103,7 +104,7 @@ const fmt = (value: number) => value.toFixed(1);
       <ul class="study-caveats">
         <li><strong>Small sample.</strong> Only {study.withFullBirthDate} of {study.companies} CEOs have a published birth date we could source. With about {Math.round(n / 12)} people per sign, one or two birthdays move a sign from first to middle.</li>
         <li><strong>Who gets a biography is not random.</strong> Leaders of the biggest and best-known companies are more likely to have a public birth date, so this is not a random draw of the 500.</li>
-        <li><strong>Cusp birthdays are left out.</strong> {study.cuspExcluded} CEOs were born on a day when the Sun changed sign. Without a birth time we cannot say which sign, so they are not counted.</li>
+        <li><strong>Cusp birthdays are left out.</strong> {study.cuspExcluded} CEOs were born on a day when the Sun changed sign. Without a birth time and place we cannot say which sign, so they are not counted.</li>
         <li><strong>Births are not spread evenly.</strong> Our chance line assumes birthdays fall evenly through the year. In real life more babies are born in some months than others, which nudges every sign a little.</li>
         <li><strong>A sign is not a job offer.</strong> Astrology describes temperament, not destiny. Nothing here says a sign makes anyone more likely to run a company, and the numbers do not show it either.</li>
       </ul>
