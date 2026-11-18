@@ -22,7 +22,7 @@ The change keeps the existing numerical tolerances.
 | `src/lib/engine/transit-scan.test.ts` | Runs the browser transit contact vectors with the site browser ephemeris. |
 | `src/lib/profile/polar-repair.test.ts` | Compares the archived browser chart repair with its astronomy engine source. |
 | `src/lib/return-image-privacy.test.ts` | Replays the browser's return image vectors with their browser ephemeris. |
-| `src/lib/scene/scene.test.ts` | Replays the existing wheel snapshot with the same browser ephemeris as the snapshot. |
+| `src/lib/scene/scene.test.ts` | Replays the existing wheel snapshot with its browser ephemeris. The version field is checked against the installed engine before comparing the historical snapshot. |
 | `src/lib/wheel/Wheel.crowding.test.ts` | Builds the browser wheel fixtures with the browser ephemeris used for the stored placements. |
 | `src/mcp/tools.test.ts` | At the supported date boundaries, checks successful responses and compares result flags with DE440's actual chart flags. |
 | `tests/api/compute-api-playground.test.ts` | Compares the browser bundle against the same calculation code on the same ephemeris. It still checks the bundle's size, bytes, and citations. |

@@ -12,6 +12,7 @@
 import { useBrowserEphemeris } from '../../../tests/helpers/browser-ephemeris';
 import { describe, expect, it } from 'vitest';
 import { createRequire } from 'node:module';
+import { ENGINE_VERSION } from '@zodiacs/engine';
 import { computeChart } from '../engine/full';
 import { buildSceneModel } from './build';
 import { technicalCollisionFan } from '../wheel/technical-layout';
@@ -102,6 +103,8 @@ describe('buildSceneModel parity', () => {
       ['buildSceneModel parity > matches the committed Kahlo scene snapshot 1'];
     const reference = JSON.parse(frozen.replace(/,\s*([}\]])/g, '$1'));
     const snapshot = stableSnapshot(scene);
+    expect(snapshot.engineVersion).toBe(ENGINE_VERSION);
+    snapshot.engineVersion = reference.engineVersion;
     // Central differences magnify last-place libm bits in nodal velocity.
     // Enforce the existing 1e-7 deg/day bound before canonicalizing those two
     // fields; all geometry and other speeds keep the original exact snapshot.
