@@ -77,4 +77,16 @@ describe('account mutation fingerprint v1', () => {
       policyVersion: 'must-be-ignored',
     })).not.toContain('policy_version');
   });
+  it('keeps the chart_sync consent preimage unchanged and separates chart_emails', () => {
+    expect(consentMutationPreimageV1({ decision: 'grant', policyVersion: POLICY_VERSION }))
+      .toBe(consentMutationPreimageV1({ decision: 'grant', policyVersion: POLICY_VERSION, purpose: 'chart_sync' }));
+    expect(consentMutationPreimageV1({ decision: 'withdraw', purpose: 'chart_emails' })).toBe([
+      'zodiacs.account-sync-v2.mutation.v1',
+      'operation=consent',
+      'purpose=chart_emails',
+      'decision=withdraw',
+    ].join('\n'));
+    expect(consentMutationPreimageV1({ decision: 'withdraw', purpose: 'chart_emails' }))
+      .not.toBe(consentMutationPreimageV1({ decision: 'withdraw' }));
+  });
 });

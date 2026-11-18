@@ -213,3 +213,32 @@ describe('the superseding 2026-08-16 no-venue catalogue decision', () => {
     expect(text).toContain('plain-language, separation, risk, and no-compensation commitments');
   });
 });
+
+describe('the sign-page trade panel pin (12 November 2026)', () => {
+  it('keeps the panel off even when PUBLIC_REGISTRY_TRADE_ENABLED=1 is set', async () => {
+    const {
+      REGISTRY_TRADE_FLAG,
+      REGISTRY_TRADE_META,
+      REGISTRY_TRADE_PINNED_OFF,
+      injectRegistryTradeLanding,
+      registryTradeEnabled,
+    } = await import('../src/trade/entry.mjs');
+    expect(REGISTRY_TRADE_FLAG).toBe('PUBLIC_REGISTRY_TRADE_ENABLED');
+    expect(REGISTRY_TRADE_PINNED_OFF).toBe(true);
+    expect(registryTradeEnabled({ PUBLIC_REGISTRY_TRADE_ENABLED: '1' })).toBe(false);
+    expect(registryTradeEnabled({ ...process.env, PUBLIC_REGISTRY_TRADE_ENABLED: '1' })).toBe(false);
+    expect(registryTradeEnabled()).toBe(false);
+
+    const landing = `<head><meta name="${REGISTRY_TRADE_META}" content="1" /></head>`;
+    const stamped = injectRegistryTradeLanding(landing, { PUBLIC_REGISTRY_TRADE_ENABLED: '1' });
+    expect(stamped.enabled).toBe(false);
+    expect(stamped.output).toContain(`<meta name="${REGISTRY_TRADE_META}" content="0" />`);
+  });
+
+  it('is a reversible pin, not deleted code: the flag check stays behind it', async () => {
+    const source = await readFile(resolve(root, 'src/trade/entry.mjs'), 'utf8');
+    expect(source).toContain('export const REGISTRY_TRADE_PINNED_OFF = true;');
+    expect(source).toContain('if (REGISTRY_TRADE_PINNED_OFF) return false;');
+    expect(source).toContain("return env?.[REGISTRY_TRADE_FLAG] === '1';");
+  });
+});

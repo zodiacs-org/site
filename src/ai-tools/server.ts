@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
-import { SAVED_PAGE_EXCEPTION, childBirthDateRefusal, executeAiTool, offeredTools, skyEventsOn, type AiCallContext, type AiDependencies } from './tools';
+import { SAVED_PAGE_EXCEPTION, childBirthDateRefusal, executeAiTool, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
@@ -15,13 +15,31 @@ import { saveToZodiacs, type AccountPrincipal } from './accounts/save';
 import { signInChallenge, type AccountsService } from './accounts/service';
 
 /**
- * What every assistant reads first. With saving switched on, the privacy sentences name the one exception, the
+ * What every assistant reads first: what the server does, what its results hold and its limits, stated as facts
+ * about Zodiacs rather than as orders to the assistant (ZOD-58). With saving switched on, the privacy sentences name the one exception, the
  * person's own saved page. With the birth-date tools offered, it says that Zodiacs is not for children under 13,
  * so a child's details are not sent at all; the tools refuse them anyway (childBirthDateRefusal).
  */
 export const UNDER_13_INSTRUCTION = 'Zodiacs is not directed at children under 13, so do not send a child\'s name, birth date or birthplace to its tools; they refuse a birth date less than 13 years ago.';
-function instructions(accounts: boolean, occasions: boolean): string {
-  return 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never put a birth date, birth time, birthplace, coordinates or place name into a link you write. Never guess a birth time or a sign. Ask before using someone else\'s birth details. Zodiacs never stores or logs birth details. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day.' + (accounts ? ` ${SAVED_PAGE_EXCEPTION}` : '') + (occasions ? ` ${UNDER_13_INSTRUCTION}` : '') + ' If a person or a birth date is under 18, do not frame the reading as romance, attraction or a sexual relationship, and say that Zodiacs does not give that framing for anyone under 18. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology’s reading, with each reading-confidence label a tool returns: it says how specific the details were, never the odds that an event happens. Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome. It does not schedule anything, pick investments or give financial or medical advice; do not call its tools for any of these requests, and say plainly that it cannot.';
+/**
+ * ZOD-207 (a draft, waiting for the owner's approval): what the tryouts showed assistants getting wrong, said as
+ * facts about Zodiacs. Without the first, an assistant fetched a horoscope or a retrograde check as a first step
+ * toward a stock pick, a lottery number or a guarantee. Without the second, it asked for a sign or for birth details
+ * where a tool opens without them, answered a date's sign from memory, and sent two friends' birth dates to the
+ * Sun-sign explainer. docs/platform/evidence/assistant-tryouts-20261113/ has the runs.
+ */
+export const OUTSIDE_ZODIACS = 'A request for one of those is outside Zodiacs even when it names a sign, a planet, a retrograde, a birth date or a horoscope: a stock or lottery pick, an investment call, a bet, an election or a medical outcome, a guarantee, a reminder or anything scheduled. No Zodiacs tool is for such a request, not even as a first step; the answer is that Zodiacs does not do this, with no tool call.';
+export const WHICH_TOOL = 'Which tool: a horoscope goes to get_horoscope even with no sign given, since the person picks the sign in its panel; a birth chart, rising sign or Moon sign asked for with no birth date in the conversation goes to open_chart_studio, which opens with no details and takes them from the person there, and to get_natal_chart once a birth date is given; two people with birth dates go to get_compatibility, as partners, friends, family or colleagues, and two Sun signs alone go to explain_astrology; the sign, decan or cusp of a calendar date goes to get_birthday; what Zodiacs can do, what can be asked of it and how it handles privacy goes to get_capabilities. Signs, dates and positions come from the tools, the well-known ones too, not from memory.';
+/**
+ * The owner's answers of 13 November 2026, 17:12 Asia/Bangkok (ZOD-207). Someone else's birth details: ask first, in
+ * the words get_capabilities uses. A named child under 13 gets no horoscope; a Sun sign alone still gets its general
+ * one. The horoscope tools take no name, so they cannot refuse a named child themselves: this sentence and the two
+ * horoscope descriptions carry it, and a birth date less than 13 years ago is still refused by the tools.
+ */
+export const ASK_FIRST = 'Ask before using someone else\'s birth details.';
+export const CHILD_HOROSCOPE = 'There is no horoscope for a named child under 13, meaning a particular child the request names or points to, such as someone\'s nine-year-old daughter: not by sign, and not for a day, a week, a month or a year. A Sun sign on its own, with no name and no birth date, gets the general horoscope for that sign.';
+function instructions(accounts: boolean, occasions: boolean, coverage: boolean): string {
+  return 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Its results keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Calculation details such as versions, receipts and UTC are there for questions about how something was calculated. A URL in a result is complete as returned, including the query and the whole fragment after #, and a card link works only unchanged; where no card URL is returned, the returned page link takes its place. No Zodiacs link holds a birth date, birth time, birthplace or place name' + (occasions ? '; an occasion card link can hold coordinates rounded to two decimals.' : ', or coordinates.') + ' A birth time and a sign are taken as the person gives them, never guessed. ' + ASK_FIRST + ' Zodiacs never stores or logs birth details. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day.' + (accounts ? ` ${SAVED_PAGE_EXCEPTION}` : '') + (occasions ? ` ${UNDER_13_INSTRUCTION}` : '') + ` ${CHILD_HOROSCOPE}` + ' If a person or a birth date is under 18, Zodiacs gives no reading framed as romance, attraction or a sexual relationship. Scores, ratings and astrological forecasts are astrology\'s reading, and each comes with a "Reading confidence NN%" label: it says how specific the details were, never the odds that an event happens. Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome. It does not schedule anything, pick investments or give financial or medical advice. ' + OUTSIDE_ZODIACS + (occasions && coverage ? ` ${WHICH_TOOL}` : '');
 }
 
 const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
@@ -43,7 +61,7 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
 };
 
 /** Tools whose answer moves with the server's clock (today, this week, the current year), so a repeat call can differ. */
-const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events']);
+const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', 'get_year_score', 'get_solar_return']);
 
 const artResourceDomains = ['https://zodiacs.org'];
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
@@ -77,7 +95,7 @@ export interface AccountContext { service: AccountsService; principal: AccountPr
 export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }, account?: AccountContext) {
   const server = new McpServer({ name: 'zodiacs', version: AI_VERSION }, {
     capabilities: { tools: {}, resources: {}, ...(watch ? { events: {} } : {}) },
-    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions),
+    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage),
   });
   // The current URI first; each earlier one is registered under its own name and serves the same panel.
   const versions = (name: string, uris: readonly string[]) => uris.map((uri, index) => ({ uri, name: index === 0 ? name : `${name}-legacy${uris.length > 2 ? `-${uri.match(/-v(\d+)\.html$/u)?.[1]}` : ''}` }));
@@ -90,6 +108,8 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation.' },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: STUDIO_HTML, _meta: panelMeta('fullscreen') }] }));
   const tools = offeredTools(dependencies);
+  // get_year_score's definition takes a public figure only with its people switch.
+  const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
   // With the sky events switch on, the natal chart and the explainer register their wider forms; off, every definition is the published one.
   const skyEvents = skyEventsOn(dependencies);
   // With it on, the natal chart's panel is the one that lists the lunar nodes; the other readings keep theirs.
@@ -115,9 +135,9 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
   for (const tool of tools) {
     const panel = panelFor(tool);
     server.registerTool(tool, {
-      title: TOOL_TITLES[tool], description: descriptionFor(tool, skyEvents),
+      title: TOOL_TITLES[tool], description: descriptionFor(tool, skyEvents, switches),
       ...(panel ? { icons: [{ src: `https://zodiacs.org/assets/ai/${panel.icon}.svg`, mimeType: 'image/svg+xml', sizes: ['20x20'] }] } : {}),
-      inputSchema: inputSchemaFor(tool, skyEvents), outputSchema: outputSchemaFor(tool, skyEvents),
+      inputSchema: inputSchemaFor(tool, skyEvents, switches), outputSchema: outputSchemaFor(tool, skyEvents),
       annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: !CLOCK_DEPENDENT.has(tool) },
       _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: readingsPanel(panel.uri) ? [{ type: 'thread' }] : [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
     }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {

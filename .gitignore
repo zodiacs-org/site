@@ -13,6 +13,8 @@ build/
 .cache/
 supabase/.temp/
 .email-preview/
+# Monday Note drafts (npm run note:build): pasted into the provider by hand, never committed.
+.monday-note/
 
 # Scratch checkouts the agent harness creates for isolated subagents.
 .claude/worktrees/

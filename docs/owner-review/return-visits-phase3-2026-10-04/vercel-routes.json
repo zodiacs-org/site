@@ -22,6 +22,14 @@
       "src": "^/\\.well-known/openai-apps-challenge$"
     },
     {
+      "source": "/feeds/events.json",
+      "src": "^/feeds/events\\.json$"
+    },
+    {
+      "source": "/feeds/events/:sign([a-z]+).json",
+      "src": "^/feeds/events(?:/([a-z]+))\\.json$"
+    },
+    {
       "source": "/sky-calendar.ics",
       "src": "^/sky-calendar\\.ics$"
     },
@@ -36,6 +44,10 @@
     {
       "source": "/c/(.*)",
       "src": "^/c(?:/(.*))$"
+    },
+    {
+      "source": "/year/(.*)",
+      "src": "^/year(?:/(.*))$"
     },
     {
       "source": "/people/rigoberta-menchu/",

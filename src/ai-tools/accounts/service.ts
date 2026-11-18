@@ -1,6 +1,7 @@
 import { supabaseOAuthResource, type OAuthResource } from '../auth/oauth';
 import { ORIGIN } from '../contracts';
 import { ACCOUNT_PERMISSION, ACCOUNT_SCOPES, ACCOUNTS_SWITCH_ENV } from './contracts';
+import { savedResultId } from '../../lib/profile/saved-result-link';
 import { PAGE_KINDS, type AccountPrincipal, type SavedRecord, type SaveStore, type StoredSave } from './save';
 
 type Environment = Readonly<Record<string, string | undefined>>;
@@ -86,9 +87,19 @@ export function configuredAccounts(env: Environment, rpc?: AccountsRpc): Account
   });
   // One row in the site's public.saved_pages, listed and removed on the profile with everything else saved there.
   const save: SaveStore = async (principal: AccountPrincipal, record: SavedRecord) =>
-    call<StoredSave | 'full' | null>('save', { ...principal, resource, kind: PAGE_KINDS[record.kind], title: record.title, href: record.href, summary: record.summary, detail: record });
+    call<StoredSave | 'full' | null>('save', savedPageRpcArgs(principal, resource, record));
   return { oauth, save, clients, supabaseUrl: url, publishableKey: key,
     ...(previewWatchClients.length ? { previewWatchClients } : {}) };
+}
+
+/**
+ * Exactly what one save sends to the database (public.zodiacs_accounts_v1 'save'): the stored record and its row
+ * fields, and for a `saved=` link the random id it carries, which the row is stored under.
+ */
+export function savedPageRpcArgs(principal: AccountPrincipal, resource: string, record: SavedRecord) {
+  const id = savedResultId(record.href);
+  return { ...principal, resource, kind: PAGE_KINDS[record.kind], title: record.title, href: record.href, summary: record.summary, detail: record,
+    ...(id ? { id } : {}) };
 }
 
 /** The WWW-Authenticate value for a token that was present but is no longer usable. */

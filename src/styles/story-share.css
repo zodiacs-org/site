@@ -1,0 +1,35 @@
+/* The share card block (src/components/StoryCardShare.tsx), after the season story card. Fixed sizes in every state. */
+.story-share {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: clamp(18px, 4vw, 36px);
+  align-items: start;
+  padding: clamp(20px, 4vw, 32px);
+  border-radius: var(--r-xl);
+}
+.story-share__preview {
+  width: 180px;
+  height: 320px;
+  overflow: hidden;
+  border: 1px solid var(--hair-2);
+  border-radius: 14px;
+  background: var(--void-0);
+}
+.story-share__placeholder { display: grid; place-items: center; height: 100%; color: var(--sign, var(--muted)); opacity: 0.8; }
+.story-share__preview img { display: block; width: 180px; height: 320px; }
+.story-share__body { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.story-share__title { margin: 0; font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; line-height: 1.1; }
+.story-share__lede { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.6; }
+.story-share__actions { display: grid; grid-template-columns: repeat(3, max-content); gap: 8px; }
+.story-share__actions .btn { white-space: nowrap; }
+.story-share__swap { display: inline-grid; }
+.story-share__swap > * { grid-area: 1 / 1; }
+.story-share__ghost { visibility: hidden; }
+.story-share__orb { display: inline-grid; place-items: center; }
+.story-share__status { margin: 0; min-height: 3.2em; color: var(--faint); font-size: var(--text-sm); line-height: 1.6; overflow-wrap: anywhere; }
+@media (max-width: 560px) {
+  .story-share { grid-template-columns: 1fr; }
+  .story-share__preview { margin-inline: auto; }
+  .story-share__actions { grid-template-columns: 1fr 1fr; }
+  .story-share__actions .btn:first-child { grid-column: 1 / -1; }
+}

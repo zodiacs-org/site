@@ -82,6 +82,15 @@ beforeEach(() => {
 afterEach(() => { unmount(); vi.restoreAllMocks(); });
 
 describe('Solar Return optional export lifecycle', () => {
+  it('says the image and calendar give a date, not a clock time, without a birth time', () => {
+    const help = (current: SolarReturnExportModel) => render(current).filter((node) => node.props.class === 'field__help').map((node) => String(node.props.children));
+    const untimed = help({ ...model, noTime: true });
+    expect(untimed).toContain('The image shows this return chart and reading, with the date of the return. The calendar marks that day. Birth details and names are left out.');
+    expect(untimed.join(' ')).not.toContain('whole minute');
+    unmount(); harness.slots = []; harness.effects = [];
+    expect(help(model)).toContain('The image shows this return chart and reading, with the return to the whole minute, the angles to the whole degree and no Placidus houses. The calendar marks the return to the whole minute. Birth details and names are left out.');
+  });
+
   it('keeps the calendar usable while image preparation is pending', async () => {
     let resolve!: (value: unknown) => void;
     harness.prepare.mockReturnValue(new Promise((done) => { resolve = done; }));

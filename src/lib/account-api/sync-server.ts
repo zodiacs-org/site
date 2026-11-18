@@ -7,7 +7,6 @@ import {
   deleteChartMutationPreimageV1,
   putChartMutationPreimageV1,
 } from '../account-v2/mutation-fingerprint.js';
-import { ACCOUNT_SYNC_V2_CHART_SYNC_POLICY_VERSION } from '../account-v2/policy.js';
 import {
   ACCOUNT_SYNC_V2_ENCRYPTION_FORMAT,
   ACCOUNT_SYNC_V2_KEY_SCOPE,
@@ -18,6 +17,10 @@ import {
   type AccountEncryptedEnvelope,
 } from './encryption.js';
 import { accountMutationRequestVerifiers } from './mutation-verifier.js';
+import {
+  accountConsentPolicyVersion,
+  type AccountConsentPurpose,
+} from '../account-v2/policy.js';
 import { isAccountUuid } from './request.js';
 import {
   ACCOUNT_SYNC_V2_MINIMUM_AGE,
@@ -161,29 +164,6 @@ async function rpc(
   return responseJson(response);
 }
 
-async function hasLegacyChart(
-  userId: string,
-  env: Environment,
-  fetcher: Fetch,
-): Promise<boolean> {
-  const query = new URLSearchParams({
-    select: 'id',
-    user_id: `eq.${userId}`,
-    limit: '1',
-  });
-  const response = await fetcher(`${supabaseOrigin(env)}/rest/v1/charts?${query}`, {
-    headers: serviceHeaders(env),
-  });
-  if (!response.ok) throw new AccountSyncServerFailure();
-  const body = await responseJson(response);
-  if (!Array.isArray(body)
-    || body.length > 1
-    || body.some((row) => !isRecord(row)
-      || !hasExactKeys(row, ['id'])
-      || !isAccountUuid(row.id))) throw new AccountSyncServerFailure();
-  return body.length === 1;
-}
-
 function oneKeyOutcome(input: unknown, allowed: readonly string[]): Record<string, unknown> | null {
   return isRecord(input)
     && hasExactKeys(input, ['outcome'])
@@ -193,22 +173,39 @@ function oneKeyOutcome(input: unknown, allowed: readonly string[]): Record<strin
     : null;
 }
 
+const CONSENT_STATES = ['pending', 'granted', 'withdrawn'];
+
 function parseBootstrap(input: unknown): Record<string, unknown> | null {
   const simple = oneKeyOutcome(input, [
     'invalid', 'deleting', 'device_revoked', 'device_limit_reached',
     'legacy_migration_required', 'user_not_found',
   ]);
   if (simple) return simple;
+  // Before 20261111170000 the ready shape had no chart_emails_consent; it then
+  // reads as pending, which is the default for that purpose anyway.
   if (!isRecord(input)
-    || !hasExactKeys(input, ['outcome', 'account_state', 'chart_sync_consent', 'cursor'])
+    || !(hasExactKeys(input, ['outcome', 'account_state', 'chart_sync_consent', 'cursor'])
+      || hasExactKeys(input, [
+        'outcome', 'account_state', 'chart_sync_consent', 'chart_emails_consent', 'cursor',
+      ]))
     || input.outcome !== 'ready'
     || input.account_state !== 'active'
-    || !['pending', 'granted', 'withdrawn'].includes(String(input.chart_sync_consent))) return null;
+    || !CONSENT_STATES.includes(String(input.chart_sync_consent))
+    || (input.chart_emails_consent !== undefined
+      && !CONSENT_STATES.includes(String(input.chart_emails_consent)))) return null;
   const cursor = safeCounter(input.cursor);
-  return cursor === null ? null : { ...input, cursor };
+  return cursor === null
+    ? null
+    : {
+        outcome: 'ready',
+        account_state: 'active',
+        chart_sync_consent: input.chart_sync_consent,
+        chart_emails_consent: input.chart_emails_consent ?? 'pending',
+        cursor,
+      };
 }
 
-function parseConsent(input: unknown): Record<string, unknown> | null {
+function parseConsent(input: unknown, purpose: AccountConsentPurpose): Record<string, unknown> | null {
   const simple = oneKeyOutcome(input, [
     'invalid', 'not_bootstrapped', 'deleting', 'user_not_found', 'mutation_conflict',
   ]);
@@ -216,9 +213,9 @@ function parseConsent(input: unknown): Record<string, unknown> | null {
   if (!isRecord(input)
     || !hasExactKeys(input, ['outcome', 'purpose', 'event_id'])
     || (input.outcome !== 'granted' && input.outcome !== 'withdrawn')
-    || input.purpose !== 'chart_sync') return null;
+    || input.purpose !== purpose) return null;
   const eventId = safeCounter(input.event_id, 1);
-  return eventId === null ? null : { outcome: input.outcome, purpose: 'chart_sync', event_id: eventId };
+  return eventId === null ? null : { outcome: input.outcome, purpose, event_id: eventId };
 }
 
 function parseConflict(input: unknown): Record<string, unknown> | null {
@@ -417,24 +414,22 @@ async function consent(
   env: Environment,
   fetcher: Fetch,
 ): Promise<Record<string, unknown>> {
+  const policyVersion = accountConsentPolicyVersion(input.purpose);
   const requestFingerprints = accountMutationRequestVerifiers(consentMutationPreimageV1({
     decision: input.decision,
-    ...(input.decision === 'grant'
-      ? { policyVersion: ACCOUNT_SYNC_V2_CHART_SYNC_POLICY_VERSION }
-      : {}),
+    purpose: input.purpose,
+    ...(input.decision === 'grant' ? { policyVersion } : {}),
   }), env);
   const result = await rpc('account_v2_record_consent', {
     candidate_user_id: userId,
-    candidate_purpose: 'chart_sync',
+    candidate_purpose: input.purpose,
     candidate_decision: input.decision,
-    candidate_policy_version: input.decision === 'grant'
-      ? ACCOUNT_SYNC_V2_CHART_SYNC_POLICY_VERSION
-      : null,
+    candidate_policy_version: input.decision === 'grant' ? policyVersion : null,
     candidate_source: 'web',
     candidate_mutation_id: input.mutationId,
     candidate_request_fingerprints: requestFingerprints,
   }, env, fetcher);
-  const parsed = parseConsent(result);
+  const parsed = parseConsent(result, input.purpose);
   if (!parsed) throw new AccountSyncServerFailure();
   return parsed;
 }
@@ -584,9 +579,8 @@ export async function executeAccountSync(
   if (!isAccountUuid(user.id)) throw new AccountSyncServerFailure();
   const userId = user.id.toLowerCase();
   if (input.action === 'bootstrap') {
-    if (await hasLegacyChart(userId, env, fetcher)) {
-      return { outcome: 'legacy_migration_required' };
-    }
+    // No v1 chart lookup: v1 cloud charts are retired and never block or
+    // feed the v2 account (20261111170000).
     const recipientHash = dailySunRecipientHash(user.email, env);
     let encryptedLocator: AccountEncryptedEnvelope;
     try {

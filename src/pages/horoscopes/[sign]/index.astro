@@ -29,7 +29,7 @@ const labels = {
   allTransits: UI.en.allTransits,
 };
 ---
-<HoroscopeProgramPage signSlug={sign.slug} surface="today" reading={reading}>
+<HoroscopeProgramPage signSlug={sign.slug} surface="today" reading={reading} accountSurface>
   <RememberMySign slot="enhancement" client:painted sign={sign.slug} name={sign.name} />
   <DailyForYou slot="enhancement" client:visible sign={sign.slug} labels={labels} />
 </HoroscopeProgramPage>

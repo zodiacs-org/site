@@ -1,3 +1,10 @@
+import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
+import {
+  accountChartBodies,
+  decryptAccountChartSource,
+  loadOwnerSelfChartSource,
+} from '../account-api/chart-sources.js';
+import { isAdultAccountBirthDate } from '../account-api/sync-wire.js';
 import type { AuthenticatedEmailUser } from '../email/daily-server.js';
 import type { InviteDerivedChart } from './validate.js';
 import { cleanInviteLabel, parseInvitePublicPayload } from './validate.js';
@@ -52,27 +59,60 @@ async function rpc(
   return result as Record<string, unknown>;
 }
 
+/**
+ * The invitation's source chart: the owner's one encrypted v2 self chart,
+ * decrypted on the server during the owner's own authenticated request and
+ * only when its id is the one the owner chose. public.charts is never read.
+ * The account must hold chart_sync, the chart is self-attested, and its birth
+ * date must still pass the 18+ gate (which also refuses every under-13
+ * chart). The return value is the minimal saved-chart shape the existing
+ * derivation reads; it is used in memory and never stored or logged. Only
+ * the derived positions and a bounded label reach the invitation.
+ */
 export async function getOwnedSyncedChartPayload(
   userId: string,
   chartId: string,
   env: Environment = process.env,
   fetcher: Fetch = fetch,
+  nowMs: number = Date.now(),
 ): Promise<unknown | null> {
   if (!UUID.test(userId) || !UUID.test(chartId)) return null;
-  const query = new URLSearchParams({
-    select: 'id,payload',
-    user_id: `eq.${userId}`,
-    id: `eq.${chartId}`,
-    limit: '1',
+  const source = await loadOwnerSelfChartSource(userId, {
+    supabaseUrl: value(env, 'PUBLIC_SUPABASE_URL'),
+    serviceKey: value(env, 'SUPABASE_SERVICE_ROLE_KEY'),
+    fetcher,
   });
-  const response = await fetcher(`${supabaseOrigin(env)}/rest/v1/charts?${query}`, {
-    headers: serviceHeaders(env),
-  });
-  if (!response.ok) throw new Error(`Compatibility chart ownership lookup failed (${response.status})`);
-  const rows = await response.json() as unknown;
-  if (!Array.isArray(rows) || rows.length !== 1) return null;
-  const row = rows[0] as { id?: unknown; payload?: unknown };
-  return row.id === chartId ? row.payload ?? null : null;
+  if (!source || source.chartId !== chartId.toLowerCase()) return null;
+  const payload = decryptAccountChartSource(source, env);
+  if (!payload || !isAdultAccountBirthDate(payload.birth.date, nowMs)) return null;
+  const { birth, derived } = payload;
+  let utcISO = '';
+  if (birth.timeKnown) {
+    // A timed chart needs its instant; without a birthplace there is none.
+    if (!birth.place || !birth.time) return null;
+    const clock = createLocalTimeModule();
+    try {
+      await clock.prepareLocalTime(birth.date, birth.place.tz);
+      utcISO = clock.resolveLocalToUtc(birth.date, birth.time, birth.place.tz, {
+        longitude: birth.place.lon,
+      }).utc.toISOString();
+    } finally {
+      clock.dispose();
+    }
+  }
+  return {
+    name: payload.label,
+    birth: { date: birth.date, timeKnown: birth.timeKnown },
+    summary: {
+      engineVersion: derived.engineVersion,
+      houseSystem: derived.houseSystem,
+      utcISO,
+      bodies: accountChartBodies(payload),
+      angles: derived.positions.a
+        ? { asc: derived.positions.a[0], mc: derived.positions.a[1] }
+        : null,
+    },
+  };
 }
 
 export type CreateInviteRpcResult =

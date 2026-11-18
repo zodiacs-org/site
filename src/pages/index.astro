@@ -102,6 +102,7 @@ const editionStamp = `${formatDate('en', `${daily.date}T12:00:00Z`, {
 const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · ');
 ---
 <Base
+  accountSurface
   inlineCriticalCss
   stableTypography
   localTypography
@@ -224,7 +225,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
       <div class="hero__scrim" aria-hidden="true"></div>
       <div class="hero__content">
         <h1 class="hero__title">Explore the stars behind your story.</h1>
-        <p class="hero__sub">Free birth charts, moon signs, compatibility, and horoscopes: accurate, private, and easy to understand.</p>
+        <p class="hero__sub">Free birth charts, moon signs, compatibility, and horoscopes. Precise sky positions, private by default, and readings in plain words.</p>
         <div class="hero__ctas">
           <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
           <a class="btn btn--ghost hero__ghost" href="/horoscopes/"><span>See your horoscope</span></a>

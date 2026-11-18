@@ -1,0 +1,513 @@
+{
+  "lastMonth": {
+    "url": "https://api.npmjs.org/downloads/point/last-month/@zodiacs/sdk",
+    "status": 200,
+    "fetchedAt": "2026-11-10T19:27:14.195Z",
+    "body": {
+      "downloads": 593,
+      "start": "2026-10-11",
+      "end": "2026-11-09",
+      "package": "@zodiacs/sdk"
+    }
+  },
+  "registry": {
+    "url": "https://registry.npmjs.org/@zodiacs/sdk",
+    "status": 200,
+    "fetchedAt": "2026-11-10T19:27:14.612Z",
+    "body": {
+      "_id": "@zodiacs/sdk",
+      "_rev": "3-0c5992f8b0f74a5ad45fb2fe68e45886",
+      "name": "@zodiacs/sdk",
+      "dist-tags": {
+        "rc": "1.0.0-rc.1",
+        "latest": "1.0.1"
+      },
+      "versions": {
+        "1.0.0-rc.1": {
+          "name": "@zodiacs/sdk",
+          "version": "1.0.0-rc.1",
+          "keywords": [
+            "zodiacs",
+            "zodiacs-org",
+            "sdk",
+            "solana",
+            "spl",
+            "base",
+            "bridged-assets",
+            "wormhole",
+            "canonical-registry",
+            "cultural-assets",
+            "identity",
+            "react",
+            "typescript",
+            "read-only"
+          ],
+          "license": "MIT",
+          "_id": "@zodiacs/sdk@1.0.0-rc.1",
+          "maintainers": [
+            {
+              "name": "zodiacs",
+              "email": "admin@zodiacs.org"
+            }
+          ],
+          "homepage": "https://zodiacs.org/sdk",
+          "bugs": {
+            "url": "https://github.com/ZodiacsOfficial/sdk/issues"
+          },
+          "dist": {
+            "shasum": "731f508ad5cbcdffedac569c5f004710e72edae2",
+            "tarball": "https://registry.npmjs.org/@zodiacs/sdk/-/sdk-1.0.0-rc.1.tgz",
+            "fileCount": 41,
+            "integrity": "sha512-kxaNVYgou+Nx2UhARy08wobRTO3ff6AN9Qu/q+EKtqbBZ9aCx0PFdfQRvV7LcBurAucjkraFS/y7BfXc48iZcw==",
+            "signatures": [
+              {
+                "sig": "MEYCIQChLeBDXY1UO8kYfNptA/vK4KXOFh8dbPbNS9zAtgOzqwIhAN9tGS4fnJbhzG63xicQK12sN4xeRrPuRVkU9G18CdVf",
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+              }
+            ],
+            "unpackedSize": 284250
+          },
+          "main": "./dist/index.js",
+          "type": "module",
+          "types": "./dist/index.d.ts",
+          "engines": {
+            "node": ">=18"
+          },
+          "exports": {
+            ".": {
+              "types": "./dist/index.d.ts",
+              "import": "./dist/index.js"
+            },
+            "./ui": {
+              "types": "./dist/ui.d.ts",
+              "import": "./dist/ui.js"
+            },
+            "./base": {
+              "types": "./dist/base.d.ts",
+              "import": "./dist/base.js"
+            },
+            "./core": {
+              "types": "./dist/core.d.ts",
+              "import": "./dist/core.js"
+            },
+            "./react": {
+              "types": "./dist/react.d.ts",
+              "import": "./dist/react.js"
+            },
+            "./market": {
+              "types": "./dist/market.d.ts",
+              "import": "./dist/market.js"
+            },
+            "./solana": {
+              "types": "./dist/solana.d.ts",
+              "import": "./dist/solana.js"
+            },
+            "./testing": {
+              "types": "./dist/testing.d.ts",
+              "import": "./dist/testing.js"
+            },
+            "./identity": {
+              "types": "./dist/identity.d.ts",
+              "import": "./dist/identity.js"
+            },
+            "./registry": {
+              "types": "./dist/registry.d.ts",
+              "import": "./dist/registry.js"
+            },
+            "./registry/zodiacs.registry.json": {
+              "default": "./registry/zodiacs.registry.json"
+            }
+          },
+          "gitHead": "fcb2e58b182771d69e3edecd652184d502fe835f",
+          "scripts": {
+            "test": "vitest run src/**/*.test.ts src/**/*.test.tsx",
+            "build": "tsup src/index.ts src/core.ts src/market.ts src/registry.ts src/base.ts src/solana.ts src/identity.ts src/react.ts src/ui.ts src/testing.ts --format esm --dts --clean --tsconfig tsconfig.build.json --external react --external react/jsx-runtime --external @solana/web3.js --external viem",
+            "prepack": "npm run build",
+            "typecheck": "tsc -p tsconfig.typecheck.json --pretty false",
+            "exports:smoke": "node scripts/module-resolution-smoke.mjs",
+            "neutrality:guard": "node scripts/neutrality-guard.mjs",
+            "package:contents": "node scripts/verify-package-contents.mjs",
+            "registry:checksum": "node scripts/registry-checksum.mjs --check"
+          },
+          "_npmUser": {
+            "name": "zodiacs",
+            "email": "admin@zodiacs.org"
+          },
+          "repository": {
+            "url": "git+https://github.com/ZodiacsOfficial/sdk.git",
+            "type": "git"
+          },
+          "_npmVersion": "11.6.2",
+          "description": "Official read-only TypeScript SDK for the canonical Zodiacs.org registry, native Solana Zodiacs assets, and official bridged Base representations.",
+          "directories": {},
+          "sideEffects": false,
+          "_nodeVersion": "24.13.0",
+          "dependencies": {
+            "viem": "^2.45.0",
+            "@solana/web3.js": "^1.98.0"
+          },
+          "publishConfig": {
+            "access": "public"
+          },
+          "_hasShrinkwrap": false,
+          "devDependencies": {
+            "react": "^18.3.1",
+            "react-dom": "^18.3.1",
+            "@types/react": "^18.3.12",
+            "@types/react-dom": "^18.3.1"
+          },
+          "peerDependencies": {
+            "react": ">=18.2.0"
+          },
+          "peerDependenciesMeta": {
+            "react": {
+              "optional": true
+            }
+          },
+          "_npmOperationalInternal": {
+            "tmp": "tmp/sdk_1.0.0-rc.1_1780662583432_0.1411543394195145",
+            "host": "s3://npm-registry-packages-npm-production"
+          }
+        },
+        "1.0.0": {
+          "name": "@zodiacs/sdk",
+          "version": "1.0.0",
+          "keywords": [
+            "zodiacs",
+            "zodiacs-org",
+            "sdk",
+            "solana",
+            "spl",
+            "base",
+            "bridged-assets",
+            "wormhole",
+            "canonical-registry",
+            "cultural-assets",
+            "identity",
+            "react",
+            "typescript",
+            "read-only"
+          ],
+          "license": "MIT",
+          "_id": "@zodiacs/sdk@1.0.0",
+          "maintainers": [
+            {
+              "name": "zodiacs",
+              "email": "admin@zodiacs.org"
+            }
+          ],
+          "homepage": "https://zodiacs.org/sdk",
+          "bugs": {
+            "url": "https://github.com/ZodiacsOfficial/sdk/issues"
+          },
+          "dist": {
+            "shasum": "e4c6b8634c01d0ab09132ea13976cf984fdd9487",
+            "tarball": "https://registry.npmjs.org/@zodiacs/sdk/-/sdk-1.0.0.tgz",
+            "fileCount": 41,
+            "integrity": "sha512-79VubDvr3RI7iUuD5Q9oFxl3OuwSo25igQLXw8C/ehPWGLVZDc/KLI9ytBDu/R0bVMgdHwp21L3j9Xku5BiZ7g==",
+            "signatures": [
+              {
+                "sig": "MEUCIExEHb1U5z0oRnJkPk79uruwDGLkkKqqf8OY5WO82ZLmAiEAmHvYzqFqAM6RXIy0IPkiIHy5GD7QhP6Gl5KnBClf8LQ=",
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+              }
+            ],
+            "unpackedSize": 286529
+          },
+          "main": "./dist/index.js",
+          "type": "module",
+          "types": "./dist/index.d.ts",
+          "engines": {
+            "node": ">=18"
+          },
+          "exports": {
+            ".": {
+              "types": "./dist/index.d.ts",
+              "import": "./dist/index.js"
+            },
+            "./ui": {
+              "types": "./dist/ui.d.ts",
+              "import": "./dist/ui.js"
+            },
+            "./base": {
+              "types": "./dist/base.d.ts",
+              "import": "./dist/base.js"
+            },
+            "./core": {
+              "types": "./dist/core.d.ts",
+              "import": "./dist/core.js"
+            },
+            "./react": {
+              "types": "./dist/react.d.ts",
+              "import": "./dist/react.js"
+            },
+            "./market": {
+              "types": "./dist/market.d.ts",
+              "import": "./dist/market.js"
+            },
+            "./solana": {
+              "types": "./dist/solana.d.ts",
+              "import": "./dist/solana.js"
+            },
+            "./testing": {
+              "types": "./dist/testing.d.ts",
+              "import": "./dist/testing.js"
+            },
+            "./identity": {
+              "types": "./dist/identity.d.ts",
+              "import": "./dist/identity.js"
+            },
+            "./registry": {
+              "types": "./dist/registry.d.ts",
+              "import": "./dist/registry.js"
+            },
+            "./registry/zodiacs.registry.json": {
+              "default": "./registry/zodiacs.registry.json"
+            }
+          },
+          "gitHead": "5809ce3d9cbb760ae6aea8a5c18ceafa5460b1dc",
+          "scripts": {
+            "test": "vitest run src/**/*.test.ts src/**/*.test.tsx",
+            "build": "tsup src/index.ts src/core.ts src/market.ts src/registry.ts src/base.ts src/solana.ts src/identity.ts src/react.ts src/ui.ts src/testing.ts --format esm --dts --clean --tsconfig tsconfig.build.json --external react --external react/jsx-runtime --external viem",
+            "prepack": "npm run build",
+            "typecheck": "tsc -p tsconfig.typecheck.json --pretty false",
+            "exports:smoke": "node scripts/module-resolution-smoke.mjs",
+            "neutrality:guard": "node scripts/neutrality-guard.mjs",
+            "package:contents": "node scripts/verify-package-contents.mjs",
+            "registry:checksum": "node scripts/registry-checksum.mjs --check"
+          },
+          "_npmUser": {
+            "name": "zodiacs",
+            "email": "admin@zodiacs.org"
+          },
+          "repository": {
+            "url": "git+https://github.com/ZodiacsOfficial/sdk.git",
+            "type": "git"
+          },
+          "_npmVersion": "11.6.2",
+          "description": "Official read-only TypeScript SDK for the canonical Zodiacs.org registry, native Solana Zodiacs assets, and official bridged Base representations.",
+          "directories": {},
+          "sideEffects": false,
+          "_nodeVersion": "24.13.0",
+          "dependencies": {
+            "viem": "^2.45.0"
+          },
+          "publishConfig": {
+            "access": "public"
+          },
+          "_hasShrinkwrap": false,
+          "devDependencies": {
+            "react": "^18.3.1",
+            "react-dom": "^18.3.1",
+            "@types/node": "^22.10.1",
+            "@types/react": "^18.3.12",
+            "@types/react-dom": "^18.3.1"
+          },
+          "peerDependencies": {
+            "react": ">=18.2.0"
+          },
+          "peerDependenciesMeta": {
+            "react": {
+              "optional": true
+            }
+          },
+          "_npmOperationalInternal": {
+            "tmp": "tmp/sdk_1.0.0_1780684596255_0.7951755609032887",
+            "host": "s3://npm-registry-packages-npm-production"
+          }
+        },
+        "1.0.1": {
+          "name": "@zodiacs/sdk",
+          "version": "1.0.1",
+          "description": "Official read-only TypeScript SDK for the canonical Zodiacs.org registry, native Solana Zodiacs assets, and official bridged Base representations.",
+          "license": "MIT",
+          "keywords": [
+            "zodiacs",
+            "zodiacs-org",
+            "sdk",
+            "solana",
+            "spl",
+            "base",
+            "bridged-assets",
+            "wormhole",
+            "canonical-registry",
+            "cultural-assets",
+            "identity",
+            "react",
+            "typescript",
+            "read-only"
+          ],
+          "homepage": "https://zodiacs.org/sdk",
+          "bugs": {
+            "url": "https://github.com/ZodiacsOfficial/sdk/issues"
+          },
+          "repository": {
+            "type": "git",
+            "url": "git+https://github.com/ZodiacsOfficial/sdk.git"
+          },
+          "type": "module",
+          "sideEffects": false,
+          "main": "./dist/index.js",
+          "types": "./dist/index.d.ts",
+          "exports": {
+            ".": {
+              "types": "./dist/index.d.ts",
+              "import": "./dist/index.js"
+            },
+            "./core": {
+              "types": "./dist/core.d.ts",
+              "import": "./dist/core.js"
+            },
+            "./market": {
+              "types": "./dist/market.d.ts",
+              "import": "./dist/market.js"
+            },
+            "./registry": {
+              "types": "./dist/registry.d.ts",
+              "import": "./dist/registry.js"
+            },
+            "./base": {
+              "types": "./dist/base.d.ts",
+              "import": "./dist/base.js"
+            },
+            "./solana": {
+              "types": "./dist/solana.d.ts",
+              "import": "./dist/solana.js"
+            },
+            "./identity": {
+              "types": "./dist/identity.d.ts",
+              "import": "./dist/identity.js"
+            },
+            "./react": {
+              "types": "./dist/react.d.ts",
+              "import": "./dist/react.js"
+            },
+            "./ui": {
+              "types": "./dist/ui.d.ts",
+              "import": "./dist/ui.js"
+            },
+            "./testing": {
+              "types": "./dist/testing.d.ts",
+              "import": "./dist/testing.js"
+            },
+            "./assets": {
+              "types": "./dist/assets.d.ts",
+              "import": "./dist/assets.js"
+            },
+            "./assets/zodiac-icons/circle/*.png": "./assets/zodiac-icons/circle/*.png",
+            "./registry/zodiacs.registry.json": {
+              "default": "./registry/zodiacs.registry.json"
+            }
+          },
+          "engines": {
+            "node": ">=18"
+          },
+          "publishConfig": {
+            "access": "public"
+          },
+          "scripts": {
+            "build": "tsup src/index.ts src/core.ts src/market.ts src/registry.ts src/base.ts src/solana.ts src/identity.ts src/react.ts src/ui.ts src/testing.ts src/assets.ts --format esm --dts --clean --tsconfig tsconfig.build.json --external react --external react/jsx-runtime --external viem",
+            "exports:smoke": "node scripts/module-resolution-smoke.mjs",
+            "neutrality:guard": "node scripts/neutrality-guard.mjs",
+            "package:contents": "node scripts/verify-package-contents.mjs",
+            "prepack": "npm run build",
+            "registry:checksum": "node scripts/registry-checksum.mjs --check",
+            "typecheck": "tsc -p tsconfig.typecheck.json --pretty false",
+            "test": "vitest run src/**/*.test.ts src/**/*.test.tsx"
+          },
+          "dependencies": {
+            "viem": "^2.45.0"
+          },
+          "peerDependencies": {
+            "react": ">=18.2.0"
+          },
+          "peerDependenciesMeta": {
+            "react": {
+              "optional": true
+            }
+          },
+          "devDependencies": {
+            "@types/node": "^22.10.1",
+            "@types/react": "^18.3.12",
+            "@types/react-dom": "^18.3.1",
+            "react": "^18.3.1",
+            "react-dom": "^18.3.1"
+          },
+          "gitHead": "ec0ea3a7f4a2e48c3feccdfb8de9b377f34bf17a",
+          "_id": "@zodiacs/sdk@1.0.1",
+          "_nodeVersion": "24.13.0",
+          "_npmVersion": "11.6.2",
+          "dist": {
+            "integrity": "sha512-BqU6/3UULkxg9T563f7nT8GyrzvlnzASw3zwF5QdQTaIcDzG0yA0qk5KwdtsJBe8DS7uotVXxSWaeUhBQOVXdQ==",
+            "shasum": "18cfdbed1a64ddf8bf42a14465ea6c7b0ea27eed",
+            "tarball": "https://registry.npmjs.org/@zodiacs/sdk/-/sdk-1.0.1.tgz",
+            "fileCount": 55,
+            "unpackedSize": 953520,
+            "signatures": [
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEUCIFut7RfUzad6vy7+223ctq5GhVysRDmHKu5yamBwEft+AiEAoAL+v0NIwZ0Fi+OFgo/cekzAp9uH+yF2rQEk3Oh0fyw="
+              }
+            ]
+          },
+          "_npmUser": {
+            "name": "zodiacs",
+            "email": "admin@zodiacs.org"
+          },
+          "directories": {},
+          "maintainers": [
+            {
+              "name": "zodiacs",
+              "email": "admin@zodiacs.org"
+            }
+          ],
+          "_npmOperationalInternal": {
+            "host": "s3://npm-registry-packages-npm-production",
+            "tmp": "tmp/sdk_1.0.1_1780823736752_0.2740557577648193"
+          },
+          "_hasShrinkwrap": false
+        }
+      },
+      "time": {
+        "created": "2026-06-05T12:29:43.261Z",
+        "modified": "2026-06-07T09:15:36.993Z",
+        "1.0.0-rc.1": "2026-06-05T12:29:43.573Z",
+        "1.0.0": "2026-06-05T18:36:36.392Z",
+        "1.0.1": "2026-06-07T09:15:36.903Z"
+      },
+      "bugs": {
+        "url": "https://github.com/ZodiacsOfficial/sdk/issues"
+      },
+      "license": "MIT",
+      "homepage": "https://zodiacs.org/sdk",
+      "keywords": [
+        "zodiacs",
+        "zodiacs-org",
+        "sdk",
+        "solana",
+        "spl",
+        "base",
+        "bridged-assets",
+        "wormhole",
+        "canonical-registry",
+        "cultural-assets",
+        "identity",
+        "react",
+        "typescript",
+        "read-only"
+      ],
+      "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ZodiacsOfficial/sdk.git"
+      },
+      "description": "Official read-only TypeScript SDK for the canonical Zodiacs.org registry, native Solana Zodiacs assets, and official bridged Base representations.",
+      "maintainers": [
+        {
+          "name": "zodiacs",
+          "email": "admin@zodiacs.org"
+        }
+      ],
+      "readme": "# Zodiacs SDK\n\n[![SDK version](https://img.shields.io/badge/sdk-1.0.1-blue)](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/package.json)\n[![Registry version](https://img.shields.io/badge/registry-0.2.0-6f42c1)](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/registry/zodiacs.registry.json)\n[![React peer](https://img.shields.io/badge/react-optional%20peer-61dafb)](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/package.json)\n[![Posture](https://img.shields.io/badge/posture-read--only-2ea44f)](https://github.com/ZodiacsOfficial/sdk#security-posture)\n\nOfficial read-only TypeScript SDK for the canonical Zodiacs.org registry,\nnative Solana SPL Zodiacs assets, and official bridged Base ERC-20\nrepresentations.\n\n```sh\npnpm add @zodiacs/sdk\n```\n\n## Entry Points\n\nThe package ships granular entry points. React and UI code load only from their\nexplicit subpaths:\n\n- `@zodiacs/sdk` — registry, reads, and identity helpers (no React)\n- `@zodiacs/sdk/core` — core registry, verification, reads, and identity helpers (no React)\n- `@zodiacs/sdk/registry` — registry artifact helpers (no React)\n- `@zodiacs/sdk/base` — Base public ownership reads (no React)\n- `@zodiacs/sdk/solana` — Solana public ownership reads (no React)\n- `@zodiacs/sdk/identity` — symbolic identity context helpers (no React)\n- `@zodiacs/sdk/testing` — typed fixtures for downstream tests (no React)\n- `@zodiacs/sdk/market` — optional market adapters (no React)\n- `@zodiacs/sdk/react` — React hooks and `ZodiacsProvider`\n- `@zodiacs/sdk/ui` — React UI components\n- `@zodiacs/sdk/assets` — official display asset metadata and packaged icon paths\n\n`react` is an optional peer dependency that is required only when importing\n`@zodiacs/sdk/react` or `@zodiacs/sdk/ui`.\n\nCore-only consumers do not need to install React. `viem` ships as a regular SDK\ndependency because Base read helpers use public clients from that ecosystem.\nSolana RPC URL reads use the SDK's internal read-only JSON-RPC adapter.\n\nMarket adapters require explicit import from `@zodiacs/sdk/market`; they are\nnot exported from the root package.\n\n## Resources\n\n- Registry JSON package subpath: `@zodiacs/sdk/registry/zodiacs.registry.json`\n- Registry JSON source: [packages/sdk/registry/zodiacs.registry.json](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/registry/zodiacs.registry.json)\n- GitHub repository: [ZodiacsOfficial/sdk](https://github.com/ZodiacsOfficial/sdk)\n- Next.js example app: [examples/nextjs](https://github.com/ZodiacsOfficial/sdk/tree/main/examples/nextjs)\n\n## Common Core APIs\n\n| Need                        | Start with                                                                |\n| --------------------------- | ------------------------------------------------------------------------- |\n| Verify an official address  | `isOfficialZodiacAddress`, `getRepresentationByAddress`                   |\n| Load sign metadata          | `getZodiacAsset`, `getZodiacMetadata`, `listZodiacMetadata`               |\n| Read Solana holdings        | `getSolanaZodiacsOwnership`, `getSolanaZodiacBalance`                     |\n| Read Base holdings          | `getBaseZodiacsOwnership`, `getBaseZodiacBalance`                         |\n| Build a cross-chain shelf   | `getCrossChainZodiacsOwnership`, `getUnifiedZodiacShelf`                  |\n| Build identity surfaces     | `getZodiacIdentityContext`, `getIdentityReceiptData`                      |\n| Show season context         | `getCurrentZodiacSeason`, `getZodiacSeasonProgress`                       |\n| Format balances safely      | `formatTokenAmount`, `formatZodiacBalance`                                |\n| Show official icons         | `getZodiacIconAsset`, `getAllZodiacIconAssets` from `@zodiacs/sdk/assets` |\n| Add optional market context | import `getZodiacMarketByRepresentation` from `@zodiacs/sdk/market`       |\n\nFull export maps live in the source barrels:\n[root](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/src/index.ts),\n[core](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/src/core/index.ts),\n[registry](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/src/registry.ts),\n[base](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/src/base.ts),\n[solana](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/src/solana.ts),\n[identity](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/src/identity.ts),\n[assets](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/src/assets.ts),\n[market](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/src/market/index.ts),\n[react](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/src/react/index.ts), and\n[ui](https://github.com/ZodiacsOfficial/sdk/blob/main/packages/sdk/src/ui/index.ts).\n\n```ts\nimport { getZodiacIdentityContext } from \"@zodiacs/sdk/core\";\nimport { getBaseZodiacsOwnership } from \"@zodiacs/sdk/base\";\nimport { getSolanaZodiacsOwnership } from \"@zodiacs/sdk/solana\";\n```\n\n```ts\nimport { getZodiacIconAsset } from \"@zodiacs/sdk/assets\";\n\nconst leoIcon = getZodiacIconAsset(\"leo\");\nconsole.log(leoIcon.packagePath);\n```\n\n```ts\nimport {\n  getBaseZodiacRepresentation,\n  getRepresentationByAddress,\n  getSolanaZodiacRepresentation\n} from \"@zodiacs/sdk/core\";\n\nconst representation = getRepresentationByAddress(\"0x3ffB5282F5891Dd8c813E64059EdB0607537eC91\");\n\nconsole.log(representation?.kind); // \"bridged\"\nconsole.log(getSolanaZodiacRepresentation(\"aries\").chain); // \"solana\"\nconsole.log(getBaseZodiacRepresentation(\"aries\").originChain); // \"solana\"\n```\n\nThe address above is the official bridged Base representation for Aries.\n\nIdentity context helpers provide computed symbolic context from registry\nmetadata and public ownership state:\n\n```ts\nimport { getCurrentZodiacSeason, getZodiacIdentityContext } from \"@zodiacs/sdk/identity\";\n\nconst season = getCurrentZodiacSeason();\nconst context = getZodiacIdentityContext(ownership, {\n  sunSign: \"aries\"\n});\n\nconsole.log(season.displayName);\nconsole.log(context.heldSigns);\nconsole.log(context.currentSeasonHeld);\n```\n\nThe SDK is read-only. The root and core entrypoints provide registry\nverification, public balance reads, metadata, and computed symbolic context.\nReact hooks and UI components are optional through `@zodiacs/sdk/react` and\n`@zodiacs/sdk/ui`. Market context remains explicit through\n`@zodiacs/sdk/market`.\n\nThe SDK does not request private keys, sign messages, submit transactions,\nprovide custody, or provide transaction approval helpers. It does not generate\nhoroscopes or recommend asset acquisition, disposal, exchange, or retention.\n\nFormatting helpers preserve raw-token precision. `formatTokenAmount` truncates\nwhen `maximumFractionDigits` is set unless `roundingMode: \"round\"` is passed.\n\nAlways verify official addresses against the published Zodiacs.org registry.\nThe SDK exposes the official registry for apps and clients, but downstream\ninterfaces should display chain and representation provenance clearly.\n",
+      "readmeFilename": "README.md"
+    }
+  }
+}

@@ -844,6 +844,7 @@
     "tool/baby-zodiac.png",
     "tool/big-three.png",
     "tool/birth-chart.png",
+    "tool/birthday-report.png",
     "tool/birthday.png",
     "tool/chart-of-the-day.png",
     "tool/chart-twins.png",
@@ -863,9 +864,11 @@
     "tool/rising-sign.png",
     "tool/saturn-return.png",
     "tool/sky-calendar.png",
+    "tool/solar-return.png",
     "tool/today.png",
     "tool/tools.png",
     "tool/transits.png",
+    "tool/year-score.png",
     "tool/your-sky-wrapped.png"
   ]
 }

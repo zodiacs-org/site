@@ -119,6 +119,11 @@ describe('anonymous daily usage RPC', () => {
     expect(lists(widened[0]).filter(list => list.includes('chatgpt'))).toHaveLength(1);
     expect(USAGE_TIMEOUT_MS).toBeLessThanOrEqual(1500);
   });
+  it('gives every migration its own version', () => {
+    const versions = readdirSync(`${root}supabase/migrations`).filter(name => name.endsWith('.sql')).map(name => name.slice(0, 14));
+    for (const version of versions) expect(version).toMatch(/^\d{14}$/);
+    expect(new Set(versions).size).toBe(versions.length);
+  });
 });
 
 describe('counting hosted tool calls', () => {

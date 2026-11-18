@@ -234,6 +234,41 @@
       "source": "/people/b-f-skinner/",
       "destination": "/corrections/",
       "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/feed",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
+    },
+    {
+      "source": "/feed/",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
+    },
+    {
+      "source": "/feed.xml",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
+    },
+    {
+      "source": "/atom.xml",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
+    },
+    {
+      "source": "/index.xml",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
+    },
+    {
+      "source": "/feeds/all.atom.xml",
+      "destination": "/feeds/daily-sky.xml",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -328,6 +363,30 @@
     {
       "source": "/api/og/famous-chart-story",
       "destination": "/api/compatibility?__zodiacs_share=famous-chart-story"
+    },
+    {
+      "source": "/share/year-score/",
+      "destination": "/api/compatibility?__zodiacs_share=year-score-link"
+    },
+    {
+      "source": "/api/og/year-score-image",
+      "destination": "/api/compatibility?__zodiacs_share=year-score-image"
+    },
+    {
+      "source": "/share/birthday-report/",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-report-link"
+    },
+    {
+      "source": "/api/og/birthday-report-image",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-report-image"
+    },
+    {
+      "source": "/share/solar-return/",
+      "destination": "/api/compatibility?__zodiacs_share=solar-return-link"
+    },
+    {
+      "source": "/api/og/solar-return-image",
+      "destination": "/api/compatibility?__zodiacs_share=solar-return-image"
     },
     {
       "source": "/share/milestone/",
@@ -489,6 +548,22 @@
       ]
     },
     {
+      "source": "/feeds/events.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/feed+json; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
+      ]
+    },
+    {
+      "source": "/feeds/events/:sign([a-z]+).json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/feed+json; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
+      ]
+    },
+    {
       "source": "/sky-calendar.ics",
       "headers": [
         { "key": "Content-Type", "value": "text/calendar; charset=utf-8" },
@@ -550,6 +625,15 @@
           "key": "Referrer-Policy",
           "value": "no-referrer"
         },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/year/(.*)",
+      "headers": [
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow, noarchive"

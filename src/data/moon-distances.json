@@ -1,0 +1,3107 @@
+{
+  "source": "scripts/build-moon-distances.mjs",
+  "catalog": "src/data/sky.json",
+  "distance": "geocentric, centre of the Earth to centre of the Moon, geometric, whole km",
+  "lunations": [
+    {
+      "type": "full",
+      "at": "2026-01-03T10:02:55.863Z",
+      "distanceKm": 362310,
+      "perigee": {
+        "before": {
+          "at": "2026-01-01T21:45Z",
+          "distanceKm": 360346
+        },
+        "after": {
+          "at": "2026-01-29T21:48Z",
+          "distanceKm": 365870
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2025-12-17T06:10Z",
+          "distanceKm": 406323
+        },
+        "after": {
+          "at": "2026-01-13T20:47Z",
+          "distanceKm": 405439
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-01-18T19:52:01.736Z",
+      "distanceKm": 395419,
+      "perigee": {
+        "before": {
+          "at": "2026-01-01T21:45Z",
+          "distanceKm": 360346
+        },
+        "after": {
+          "at": "2026-01-29T21:48Z",
+          "distanceKm": 365870
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-01-13T20:47Z",
+          "distanceKm": 405439
+        },
+        "after": {
+          "at": "2026-02-10T16:53Z",
+          "distanceKm": 404578
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-02-01T22:09:17.527Z",
+      "distanceKm": 371384,
+      "perigee": {
+        "before": {
+          "at": "2026-01-29T21:48Z",
+          "distanceKm": 365870
+        },
+        "after": {
+          "at": "2026-02-24T23:12Z",
+          "distanceKm": 370135
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-01-13T20:47Z",
+          "distanceKm": 405439
+        },
+        "after": {
+          "at": "2026-02-10T16:53Z",
+          "distanceKm": 404578
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-02-17T12:01:12.344Z",
+      "distanceKm": 384493,
+      "perigee": {
+        "before": {
+          "at": "2026-01-29T21:48Z",
+          "distanceKm": 365870
+        },
+        "after": {
+          "at": "2026-02-24T23:12Z",
+          "distanceKm": 370135
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-02-10T16:53Z",
+          "distanceKm": 404578
+        },
+        "after": {
+          "at": "2026-03-10T13:44Z",
+          "distanceKm": 404384
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-03-03T11:37:57.684Z",
+      "distanceKm": 382611,
+      "perigee": {
+        "before": {
+          "at": "2026-02-24T23:12Z",
+          "distanceKm": 370135
+        },
+        "after": {
+          "at": "2026-03-22T11:39Z",
+          "distanceKm": 366855
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-02-10T16:53Z",
+          "distanceKm": 404578
+        },
+        "after": {
+          "at": "2026-03-10T13:44Z",
+          "distanceKm": 404384
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-03-19T01:23:33.883Z",
+      "distanceKm": 373320,
+      "perigee": {
+        "before": {
+          "at": "2026-02-24T23:12Z",
+          "distanceKm": 370135
+        },
+        "after": {
+          "at": "2026-03-22T11:39Z",
+          "distanceKm": 366855
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-03-10T13:44Z",
+          "distanceKm": 404384
+        },
+        "after": {
+          "at": "2026-04-07T08:32Z",
+          "distanceKm": 404970
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-04-02T02:12:00.538Z",
+      "distanceKm": 393594,
+      "perigee": {
+        "before": {
+          "at": "2026-03-22T11:39Z",
+          "distanceKm": 366855
+        },
+        "after": {
+          "at": "2026-04-19T06:56Z",
+          "distanceKm": 361628
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-03-10T13:44Z",
+          "distanceKm": 404384
+        },
+        "after": {
+          "at": "2026-04-07T08:32Z",
+          "distanceKm": 404970
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-04-17T11:51:52.041Z",
+      "distanceKm": 364189,
+      "perigee": {
+        "before": {
+          "at": "2026-03-22T11:39Z",
+          "distanceKm": 366855
+        },
+        "after": {
+          "at": "2026-04-19T06:56Z",
+          "distanceKm": 361628
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-04-07T08:32Z",
+          "distanceKm": 404970
+        },
+        "after": {
+          "at": "2026-05-04T22:32Z",
+          "distanceKm": 405839
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-05-01T17:23:09.934Z",
+      "distanceKm": 402000,
+      "perigee": {
+        "before": {
+          "at": "2026-04-19T06:56Z",
+          "distanceKm": 361628
+        },
+        "after": {
+          "at": "2026-05-17T13:45Z",
+          "distanceKm": 358074
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-04-07T08:32Z",
+          "distanceKm": 404970
+        },
+        "after": {
+          "at": "2026-05-04T22:32Z",
+          "distanceKm": 405839
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-05-16T20:01:04.323Z",
+      "distanceKm": 358590,
+      "perigee": {
+        "before": {
+          "at": "2026-04-19T06:56Z",
+          "distanceKm": 361628
+        },
+        "after": {
+          "at": "2026-05-17T13:45Z",
+          "distanceKm": 358074
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-05-04T22:32Z",
+          "distanceKm": 405839
+        },
+        "after": {
+          "at": "2026-06-01T04:31Z",
+          "distanceKm": 406367
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-05-31T08:45:10.106Z",
+      "distanceKm": 406137,
+      "perigee": {
+        "before": {
+          "at": "2026-05-17T13:45Z",
+          "distanceKm": 358074
+        },
+        "after": {
+          "at": "2026-06-14T23:20Z",
+          "distanceKm": 357196
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-05-04T22:32Z",
+          "distanceKm": 405839
+        },
+        "after": {
+          "at": "2026-06-01T04:31Z",
+          "distanceKm": 406367
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-06-15T02:54:11.458Z",
+      "distanceKm": 357218,
+      "perigee": {
+        "before": {
+          "at": "2026-06-14T23:20Z",
+          "distanceKm": 357196
+        },
+        "after": {
+          "at": "2026-07-13T07:57Z",
+          "distanceKm": 359112
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-06-01T04:31Z",
+          "distanceKm": 406367
+        },
+        "after": {
+          "at": "2026-06-28T07:11Z",
+          "distanceKm": 406267
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-06-29T23:56:39.855Z",
+      "distanceKm": 405256,
+      "perigee": {
+        "before": {
+          "at": "2026-06-14T23:20Z",
+          "distanceKm": 357196
+        },
+        "after": {
+          "at": "2026-07-13T07:57Z",
+          "distanceKm": 359112
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-06-28T07:11Z",
+          "distanceKm": 406267
+        },
+        "after": {
+          "at": "2026-07-25T16:45Z",
+          "distanceKm": 405548
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-07-14T09:43:36.119Z",
+      "distanceKm": 360150,
+      "perigee": {
+        "before": {
+          "at": "2026-07-13T07:57Z",
+          "distanceKm": 359112
+        },
+        "after": {
+          "at": "2026-08-10T11:18Z",
+          "distanceKm": 363283
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-06-28T07:11Z",
+          "distanceKm": 406267
+        },
+        "after": {
+          "at": "2026-07-25T16:45Z",
+          "distanceKm": 405548
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-07-29T14:35:42.223Z",
+      "distanceKm": 399617,
+      "perigee": {
+        "before": {
+          "at": "2026-07-13T07:57Z",
+          "distanceKm": 359112
+        },
+        "after": {
+          "at": "2026-08-10T11:18Z",
+          "distanceKm": 363283
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-07-25T16:45Z",
+          "distanceKm": 405548
+        },
+        "after": {
+          "at": "2026-08-22T08:21Z",
+          "distanceKm": 404643
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-08-12T17:36:41.548Z",
+      "distanceKm": 366954,
+      "perigee": {
+        "before": {
+          "at": "2026-08-10T11:18Z",
+          "distanceKm": 363283
+        },
+        "after": {
+          "at": "2026-09-06T20:44Z",
+          "distanceKm": 368258
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-07-25T16:45Z",
+          "distanceKm": 405548
+        },
+        "after": {
+          "at": "2026-08-22T08:21Z",
+          "distanceKm": 404643
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-08-28T04:18:31.156Z",
+      "distanceKm": 390397,
+      "perigee": {
+        "before": {
+          "at": "2026-08-10T11:18Z",
+          "distanceKm": 363283
+        },
+        "after": {
+          "at": "2026-09-06T20:44Z",
+          "distanceKm": 368258
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-08-22T08:21Z",
+          "distanceKm": 404643
+        },
+        "after": {
+          "at": "2026-09-19T03:00Z",
+          "distanceKm": 404221
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-09-11T03:26:56.471Z",
+      "distanceKm": 376650,
+      "perigee": {
+        "before": {
+          "at": "2026-09-06T20:44Z",
+          "distanceKm": 368258
+        },
+        "after": {
+          "at": "2026-10-01T20:52Z",
+          "distanceKm": 369334
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-08-22T08:21Z",
+          "distanceKm": 404643
+        },
+        "after": {
+          "at": "2026-09-19T03:00Z",
+          "distanceKm": 404221
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-09-26T16:48:59.556Z",
+      "distanceKm": 379435,
+      "perigee": {
+        "before": {
+          "at": "2026-09-06T20:44Z",
+          "distanceKm": 368258
+        },
+        "after": {
+          "at": "2026-10-01T20:52Z",
+          "distanceKm": 369334
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-09-19T03:00Z",
+          "distanceKm": 404221
+        },
+        "after": {
+          "at": "2026-10-16T22:54Z",
+          "distanceKm": 404643
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-10-10T15:50:02.149Z",
+      "distanceKm": 387640,
+      "perigee": {
+        "before": {
+          "at": "2026-10-01T20:52Z",
+          "distanceKm": 369334
+        },
+        "after": {
+          "at": "2026-10-28T18:04Z",
+          "distanceKm": 364406
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-09-19T03:00Z",
+          "distanceKm": 404221
+        },
+        "after": {
+          "at": "2026-10-16T22:54Z",
+          "distanceKm": 404643
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-10-26T04:11:45.019Z",
+      "distanceKm": 368870,
+      "perigee": {
+        "before": {
+          "at": "2026-10-01T20:52Z",
+          "distanceKm": 369334
+        },
+        "after": {
+          "at": "2026-10-28T18:04Z",
+          "distanceKm": 364406
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-10-16T22:54Z",
+          "distanceKm": 404643
+        },
+        "after": {
+          "at": "2026-11-13T17:51Z",
+          "distanceKm": 405618
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-11-09T07:02:05.269Z",
+      "distanceKm": 397771,
+      "perigee": {
+        "before": {
+          "at": "2026-10-28T18:04Z",
+          "distanceKm": 364406
+        },
+        "after": {
+          "at": "2026-11-25T21:02Z",
+          "distanceKm": 359345
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-10-16T22:54Z",
+          "distanceKm": 404643
+        },
+        "after": {
+          "at": "2026-11-13T17:51Z",
+          "distanceKm": 405618
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-11-24T14:53:35.120Z",
+      "distanceKm": 360764,
+      "perigee": {
+        "before": {
+          "at": "2026-10-28T18:04Z",
+          "distanceKm": 364406
+        },
+        "after": {
+          "at": "2026-11-25T21:02Z",
+          "distanceKm": 359345
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-11-13T17:51Z",
+          "distanceKm": 405618
+        },
+        "after": {
+          "at": "2026-12-11T06:44Z",
+          "distanceKm": 406418
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2026-12-09T00:51:52.151Z",
+      "distanceKm": 404688,
+      "perigee": {
+        "before": {
+          "at": "2026-11-25T21:02Z",
+          "distanceKm": 359345
+        },
+        "after": {
+          "at": "2026-12-24T08:32Z",
+          "distanceKm": 356650
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-11-13T17:51Z",
+          "distanceKm": 405618
+        },
+        "after": {
+          "at": "2026-12-11T06:44Z",
+          "distanceKm": 406418
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2026-12-24T01:28:16.590Z",
+      "distanceKm": 356739,
+      "perigee": {
+        "before": {
+          "at": "2026-11-25T21:02Z",
+          "distanceKm": 359345
+        },
+        "after": {
+          "at": "2026-12-24T08:32Z",
+          "distanceKm": 356650
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2026-12-11T06:44Z",
+          "distanceKm": 406418
+        },
+        "after": {
+          "at": "2027-01-07T08:09Z",
+          "distanceKm": 406608
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-01-07T20:24:26.069Z",
+      "distanceKm": 406525,
+      "perigee": {
+        "before": {
+          "at": "2026-12-24T08:32Z",
+          "distanceKm": 356650
+        },
+        "after": {
+          "at": "2027-01-21T21:47Z",
+          "distanceKm": 357282
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-01-07T08:09Z",
+          "distanceKm": 406608
+        },
+        "after": {
+          "at": "2027-02-03T13:31Z",
+          "distanceKm": 406189
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-01-22T12:17:21.585Z",
+      "distanceKm": 357644,
+      "perigee": {
+        "before": {
+          "at": "2027-01-21T21:47Z",
+          "distanceKm": 357282
+        },
+        "after": {
+          "at": "2027-02-19T07:30Z",
+          "distanceKm": 361014
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-01-07T08:09Z",
+          "distanceKm": 406608
+        },
+        "after": {
+          "at": "2027-02-03T13:31Z",
+          "distanceKm": 406189
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-02-06T15:56:08.653Z",
+      "distanceKm": 402711,
+      "perigee": {
+        "before": {
+          "at": "2027-01-21T21:47Z",
+          "distanceKm": 357282
+        },
+        "after": {
+          "at": "2027-02-19T07:30Z",
+          "distanceKm": 361014
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-02-03T13:31Z",
+          "distanceKm": 406189
+        },
+        "after": {
+          "at": "2027-03-03T05:40Z",
+          "distanceKm": 405217
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-02-20T23:23:37.619Z",
+      "distanceKm": 363305,
+      "perigee": {
+        "before": {
+          "at": "2027-02-19T07:30Z",
+          "distanceKm": 361014
+        },
+        "after": {
+          "at": "2027-03-19T04:29Z",
+          "distanceKm": 366436
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-02-03T13:31Z",
+          "distanceKm": 406189
+        },
+        "after": {
+          "at": "2027-03-03T05:40Z",
+          "distanceKm": 405217
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-03-08T09:29:31.050Z",
+      "distanceKm": 394342,
+      "perigee": {
+        "before": {
+          "at": "2027-02-19T07:30Z",
+          "distanceKm": 361014
+        },
+        "after": {
+          "at": "2027-03-19T04:29Z",
+          "distanceKm": 366436
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-03-03T05:40Z",
+          "distanceKm": 405217
+        },
+        "after": {
+          "at": "2027-03-31T01:34Z",
+          "distanceKm": 404326
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-03-22T10:43:48.340Z",
+      "distanceKm": 372527,
+      "perigee": {
+        "before": {
+          "at": "2027-03-19T04:29Z",
+          "distanceKm": 366436
+        },
+        "after": {
+          "at": "2027-04-14T00:37Z",
+          "distanceKm": 370004
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-03-03T05:40Z",
+          "distanceKm": 405217
+        },
+        "after": {
+          "at": "2027-03-31T01:34Z",
+          "distanceKm": 404326
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-04-06T23:51:12.161Z",
+      "distanceKm": 383640,
+      "perigee": {
+        "before": {
+          "at": "2027-03-19T04:29Z",
+          "distanceKm": 366436
+        },
+        "after": {
+          "at": "2027-04-14T00:37Z",
+          "distanceKm": 370004
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-03-31T01:34Z",
+          "distanceKm": 404326
+        },
+        "after": {
+          "at": "2027-04-27T21:21Z",
+          "distanceKm": 404168
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-04-20T22:27:11.909Z",
+      "distanceKm": 383429,
+      "perigee": {
+        "before": {
+          "at": "2027-04-14T00:37Z",
+          "distanceKm": 370004
+        },
+        "after": {
+          "at": "2027-05-09T20:07Z",
+          "distanceKm": 366631
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-03-31T01:34Z",
+          "distanceKm": 404326
+        },
+        "after": {
+          "at": "2027-04-27T21:21Z",
+          "distanceKm": 404168
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-05-06T10:58:40.128Z",
+      "distanceKm": 372976,
+      "perigee": {
+        "before": {
+          "at": "2027-04-14T00:37Z",
+          "distanceKm": 370004
+        },
+        "after": {
+          "at": "2027-05-09T20:07Z",
+          "distanceKm": 366631
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-04-27T21:21Z",
+          "distanceKm": 404168
+        },
+        "after": {
+          "at": "2027-05-25T15:14Z",
+          "distanceKm": 404800
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-05-20T10:59:04.599Z",
+      "distanceKm": 393902,
+      "perigee": {
+        "before": {
+          "at": "2027-05-09T20:07Z",
+          "distanceKm": 366631
+        },
+        "after": {
+          "at": "2027-06-06T14:53Z",
+          "distanceKm": 361701
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-04-27T21:21Z",
+          "distanceKm": 404168
+        },
+        "after": {
+          "at": "2027-05-25T15:14Z",
+          "distanceKm": 404800
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-06-04T19:40:22.676Z",
+      "distanceKm": 364258,
+      "perigee": {
+        "before": {
+          "at": "2027-05-09T20:07Z",
+          "distanceKm": 366631
+        },
+        "after": {
+          "at": "2027-06-06T14:53Z",
+          "distanceKm": 361701
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-05-25T15:14Z",
+          "distanceKm": 404800
+        },
+        "after": {
+          "at": "2027-06-22T05:07Z",
+          "distanceKm": 405697
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-06-19T00:44:24.732Z",
+      "distanceKm": 401952,
+      "perigee": {
+        "before": {
+          "at": "2027-06-06T14:53Z",
+          "distanceKm": 361701
+        },
+        "after": {
+          "at": "2027-07-04T20:55Z",
+          "distanceKm": 358283
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-05-25T15:14Z",
+          "distanceKm": 404800
+        },
+        "after": {
+          "at": "2027-06-22T05:07Z",
+          "distanceKm": 405697
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-07-04T03:02:05.654Z",
+      "distanceKm": 358803,
+      "perigee": {
+        "before": {
+          "at": "2027-06-06T14:53Z",
+          "distanceKm": 361701
+        },
+        "after": {
+          "at": "2027-07-04T20:55Z",
+          "distanceKm": 358283
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-06-22T05:07Z",
+          "distanceKm": 405697
+        },
+        "after": {
+          "at": "2027-07-19T11:52Z",
+          "distanceKm": 406215
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-07-18T15:44:58.351Z",
+      "distanceKm": 405979,
+      "perigee": {
+        "before": {
+          "at": "2027-07-04T20:55Z",
+          "distanceKm": 358283
+        },
+        "after": {
+          "at": "2027-08-02T06:25Z",
+          "distanceKm": 357361
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-06-22T05:07Z",
+          "distanceKm": 405697
+        },
+        "after": {
+          "at": "2027-07-19T11:52Z",
+          "distanceKm": 406215
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-08-02T10:05:15.113Z",
+      "distanceKm": 357384,
+      "perigee": {
+        "before": {
+          "at": "2027-08-02T06:25Z",
+          "distanceKm": 357361
+        },
+        "after": {
+          "at": "2027-08-30T15:42Z",
+          "distanceKm": 359205
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-07-19T11:52Z",
+          "distanceKm": 406215
+        },
+        "after": {
+          "at": "2027-08-15T14:24Z",
+          "distanceKm": 406084
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-08-17T07:28:42.380Z",
+      "distanceKm": 405080,
+      "perigee": {
+        "before": {
+          "at": "2027-08-02T06:25Z",
+          "distanceKm": 357361
+        },
+        "after": {
+          "at": "2027-08-30T15:42Z",
+          "distanceKm": 359205
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-08-15T14:24Z",
+          "distanceKm": 406084
+        },
+        "after": {
+          "at": "2027-09-11T23:36Z",
+          "distanceKm": 405382
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-08-31T17:41:13.048Z",
+      "distanceKm": 360262,
+      "perigee": {
+        "before": {
+          "at": "2027-08-30T15:42Z",
+          "distanceKm": 359205
+        },
+        "after": {
+          "at": "2027-09-27T20:12Z",
+          "distanceKm": 363451
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-08-15T14:24Z",
+          "distanceKm": 406084
+        },
+        "after": {
+          "at": "2027-09-11T23:36Z",
+          "distanceKm": 405382
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-09-15T23:03:33.051Z",
+      "distanceKm": 399353,
+      "perigee": {
+        "before": {
+          "at": "2027-08-30T15:42Z",
+          "distanceKm": 359205
+        },
+        "after": {
+          "at": "2027-09-27T20:12Z",
+          "distanceKm": 363451
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-09-11T23:36Z",
+          "distanceKm": 405382
+        },
+        "after": {
+          "at": "2027-10-09T15:47Z",
+          "distanceKm": 404530
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-09-30T02:36:05.212Z",
+      "distanceKm": 367134,
+      "perigee": {
+        "before": {
+          "at": "2027-09-27T20:12Z",
+          "distanceKm": 363451
+        },
+        "after": {
+          "at": "2027-10-25T05:37Z",
+          "distanceKm": 368651
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-09-11T23:36Z",
+          "distanceKm": 405382
+        },
+        "after": {
+          "at": "2027-10-09T15:47Z",
+          "distanceKm": 404530
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-10-15T13:46:59.502Z",
+      "distanceKm": 389938,
+      "perigee": {
+        "before": {
+          "at": "2027-09-27T20:12Z",
+          "distanceKm": 363451
+        },
+        "after": {
+          "at": "2027-10-25T05:37Z",
+          "distanceKm": 368651
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-10-09T15:47Z",
+          "distanceKm": 404530
+        },
+        "after": {
+          "at": "2027-11-06T11:37Z",
+          "distanceKm": 404180
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-10-29T13:36:32.787Z",
+      "distanceKm": 377029,
+      "perigee": {
+        "before": {
+          "at": "2027-10-25T05:37Z",
+          "distanceKm": 368651
+        },
+        "after": {
+          "at": "2027-11-19T00:12Z",
+          "distanceKm": 369363
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-10-09T15:47Z",
+          "distanceKm": 404530
+        },
+        "after": {
+          "at": "2027-11-06T11:37Z",
+          "distanceKm": 404180
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-11-14T03:25:53.355Z",
+      "distanceKm": 378766,
+      "perigee": {
+        "before": {
+          "at": "2027-10-25T05:37Z",
+          "distanceKm": 368651
+        },
+        "after": {
+          "at": "2027-11-19T00:12Z",
+          "distanceKm": 369363
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-11-06T11:37Z",
+          "distanceKm": 404180
+        },
+        "after": {
+          "at": "2027-12-04T08:41Z",
+          "distanceKm": 404660
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-11-28T03:24:24.613Z",
+      "distanceKm": 388236,
+      "perigee": {
+        "before": {
+          "at": "2027-11-19T00:12Z",
+          "distanceKm": 369363
+        },
+        "after": {
+          "at": "2027-12-16T02:25Z",
+          "distanceKm": 364027
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-11-06T11:37Z",
+          "distanceKm": 404180
+        },
+        "after": {
+          "at": "2027-12-04T08:41Z",
+          "distanceKm": 404660
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2027-12-13T16:08:48.111Z",
+      "distanceKm": 368142,
+      "perigee": {
+        "before": {
+          "at": "2027-11-19T00:12Z",
+          "distanceKm": 369363
+        },
+        "after": {
+          "at": "2027-12-16T02:25Z",
+          "distanceKm": 364027
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-12-04T08:41Z",
+          "distanceKm": 404660
+        },
+        "after": {
+          "at": "2028-01-01T03:53Z",
+          "distanceKm": 405632
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2027-12-27T20:12:18.829Z",
+      "distanceKm": 398403,
+      "perigee": {
+        "before": {
+          "at": "2027-12-16T02:25Z",
+          "distanceKm": 364027
+        },
+        "after": {
+          "at": "2028-01-13T07:46Z",
+          "distanceKm": 359045
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2027-12-04T08:41Z",
+          "distanceKm": 404660
+        },
+        "after": {
+          "at": "2028-01-01T03:53Z",
+          "distanceKm": 405632
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-01-12T04:03:06.410Z",
+      "distanceKm": 360268,
+      "perigee": {
+        "before": {
+          "at": "2027-12-16T02:25Z",
+          "distanceKm": 364027
+        },
+        "after": {
+          "at": "2028-01-13T07:46Z",
+          "distanceKm": 359045
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-01-01T03:53Z",
+          "distanceKm": 405632
+        },
+        "after": {
+          "at": "2028-01-28T15:31Z",
+          "distanceKm": 406388
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-01-26T15:12:30.887Z",
+      "distanceKm": 405025,
+      "perigee": {
+        "before": {
+          "at": "2028-01-13T07:46Z",
+          "distanceKm": 359045
+        },
+        "after": {
+          "at": "2028-02-10T19:54Z",
+          "distanceKm": 356679
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-01-01T03:53Z",
+          "distanceKm": 405632
+        },
+        "after": {
+          "at": "2028-01-28T15:31Z",
+          "distanceKm": 406388
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-02-10T15:03:46.014Z",
+      "distanceKm": 356721,
+      "perigee": {
+        "before": {
+          "at": "2028-01-13T07:46Z",
+          "distanceKm": 359045
+        },
+        "after": {
+          "at": "2028-02-10T19:54Z",
+          "distanceKm": 356679
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-01-28T15:31Z",
+          "distanceKm": 406388
+        },
+        "after": {
+          "at": "2028-02-24T16:31Z",
+          "distanceKm": 406560
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-02-25T10:37:24.945Z",
+      "distanceKm": 406376,
+      "perigee": {
+        "before": {
+          "at": "2028-02-10T19:54Z",
+          "distanceKm": 356679
+        },
+        "after": {
+          "at": "2028-03-10T08:20Z",
+          "distanceKm": 357596
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-02-24T16:31Z",
+          "distanceKm": 406560
+        },
+        "after": {
+          "at": "2028-03-22T23:23Z",
+          "distanceKm": 406091
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-03-11T01:06:03.070Z",
+      "distanceKm": 358070,
+      "perigee": {
+        "before": {
+          "at": "2028-03-10T08:20Z",
+          "distanceKm": 357596
+        },
+        "after": {
+          "at": "2028-04-07T16:07Z",
+          "distanceKm": 361358
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-02-24T16:31Z",
+          "distanceKm": 406560
+        },
+        "after": {
+          "at": "2028-03-22T23:23Z",
+          "distanceKm": 406091
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-03-26T04:31:20.913Z",
+      "distanceKm": 402274,
+      "perigee": {
+        "before": {
+          "at": "2028-03-10T08:20Z",
+          "distanceKm": 357596
+        },
+        "after": {
+          "at": "2028-04-07T16:07Z",
+          "distanceKm": 361358
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-03-22T23:23Z",
+          "distanceKm": 406091
+        },
+        "after": {
+          "at": "2028-04-19T15:14Z",
+          "distanceKm": 405102
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-04-09T10:26:36.972Z",
+      "distanceKm": 363864,
+      "perigee": {
+        "before": {
+          "at": "2028-04-07T16:07Z",
+          "distanceKm": 361358
+        },
+        "after": {
+          "at": "2028-05-05T10:32Z",
+          "distanceKm": 366530
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-03-22T23:23Z",
+          "distanceKm": 406091
+        },
+        "after": {
+          "at": "2028-04-19T15:14Z",
+          "distanceKm": 405102
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-04-24T19:46:56.371Z",
+      "distanceKm": 393992,
+      "perigee": {
+        "before": {
+          "at": "2028-04-07T16:07Z",
+          "distanceKm": 361358
+        },
+        "after": {
+          "at": "2028-05-05T10:32Z",
+          "distanceKm": 366530
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-04-19T15:14Z",
+          "distanceKm": 405102
+        },
+        "after": {
+          "at": "2028-05-17T09:56Z",
+          "distanceKm": 404279
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-05-08T19:48:57.413Z",
+      "distanceKm": 372911,
+      "perigee": {
+        "before": {
+          "at": "2028-05-05T10:32Z",
+          "distanceKm": 366530
+        },
+        "after": {
+          "at": "2028-05-31T06:39Z",
+          "distanceKm": 369761
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-04-19T15:14Z",
+          "distanceKm": 405102
+        },
+        "after": {
+          "at": "2028-05-17T09:56Z",
+          "distanceKm": 404279
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-05-24T08:16:19.018Z",
+      "distanceKm": 383536,
+      "perigee": {
+        "before": {
+          "at": "2028-05-05T10:32Z",
+          "distanceKm": 366530
+        },
+        "after": {
+          "at": "2028-05-31T06:39Z",
+          "distanceKm": 369761
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-05-17T09:56Z",
+          "distanceKm": 404279
+        },
+        "after": {
+          "at": "2028-06-14T04:46Z",
+          "distanceKm": 404222
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-06-07T06:08:49.814Z",
+      "distanceKm": 383574,
+      "perigee": {
+        "before": {
+          "at": "2028-05-31T06:39Z",
+          "distanceKm": 369761
+        },
+        "after": {
+          "at": "2028-06-26T04:23Z",
+          "distanceKm": 366528
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-05-17T09:56Z",
+          "distanceKm": 404279
+        },
+        "after": {
+          "at": "2028-06-14T04:46Z",
+          "distanceKm": 404222
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-06-22T18:27:35.529Z",
+      "distanceKm": 372997,
+      "perigee": {
+        "before": {
+          "at": "2028-05-31T06:39Z",
+          "distanceKm": 369761
+        },
+        "after": {
+          "at": "2028-06-26T04:23Z",
+          "distanceKm": 366528
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-06-14T04:46Z",
+          "distanceKm": 404222
+        },
+        "after": {
+          "at": "2028-07-11T22:26Z",
+          "distanceKm": 404944
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-07-06T18:10:50.114Z",
+      "distanceKm": 393953,
+      "perigee": {
+        "before": {
+          "at": "2028-06-26T04:23Z",
+          "distanceKm": 366528
+        },
+        "after": {
+          "at": "2028-07-23T22:18Z",
+          "distanceKm": 361634
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-06-14T04:46Z",
+          "distanceKm": 404222
+        },
+        "after": {
+          "at": "2028-07-11T22:26Z",
+          "distanceKm": 404944
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-07-22T03:01:44.808Z",
+      "distanceKm": 364203,
+      "perigee": {
+        "before": {
+          "at": "2028-06-26T04:23Z",
+          "distanceKm": 366528
+        },
+        "after": {
+          "at": "2028-07-23T22:18Z",
+          "distanceKm": 361634
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-07-11T22:26Z",
+          "distanceKm": 404944
+        },
+        "after": {
+          "at": "2028-08-08T12:54Z",
+          "distanceKm": 405894
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-08-05T08:09:49.030Z",
+      "distanceKm": 402067,
+      "perigee": {
+        "before": {
+          "at": "2028-07-23T22:18Z",
+          "distanceKm": 361634
+        },
+        "after": {
+          "at": "2028-08-21T04:13Z",
+          "distanceKm": 358075
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-07-11T22:26Z",
+          "distanceKm": 404944
+        },
+        "after": {
+          "at": "2028-08-08T12:54Z",
+          "distanceKm": 405894
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-08-20T10:43:51.966Z",
+      "distanceKm": 358577,
+      "perigee": {
+        "before": {
+          "at": "2028-07-23T22:18Z",
+          "distanceKm": 361634
+        },
+        "after": {
+          "at": "2028-08-21T04:13Z",
+          "distanceKm": 358075
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-08-08T12:54Z",
+          "distanceKm": 405894
+        },
+        "after": {
+          "at": "2028-09-04T20:04Z",
+          "distanceKm": 406399
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-09-03T23:47:35.454Z",
+      "distanceKm": 406159,
+      "perigee": {
+        "before": {
+          "at": "2028-08-21T04:13Z",
+          "distanceKm": 358075
+        },
+        "after": {
+          "at": "2028-09-18T14:20Z",
+          "distanceKm": 357045
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-08-08T12:54Z",
+          "distanceKm": 405894
+        },
+        "after": {
+          "at": "2028-09-04T20:04Z",
+          "distanceKm": 406399
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-09-18T18:23:45.722Z",
+      "distanceKm": 357073,
+      "perigee": {
+        "before": {
+          "at": "2028-09-18T14:20Z",
+          "distanceKm": 357045
+        },
+        "after": {
+          "at": "2028-10-17T00:40Z",
+          "distanceKm": 359011
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-09-04T20:04Z",
+          "distanceKm": 406399
+        },
+        "after": {
+          "at": "2028-10-01T21:39Z",
+          "distanceKm": 406242
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-10-03T16:25:01.142Z",
+      "distanceKm": 405158,
+      "perigee": {
+        "before": {
+          "at": "2028-09-18T14:20Z",
+          "distanceKm": 357045
+        },
+        "after": {
+          "at": "2028-10-17T00:40Z",
+          "distanceKm": 359011
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-10-01T21:39Z",
+          "distanceKm": 406242
+        },
+        "after": {
+          "at": "2028-10-29T06:54Z",
+          "distanceKm": 405554
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-10-18T02:56:48.672Z",
+      "distanceKm": 360105,
+      "perigee": {
+        "before": {
+          "at": "2028-10-17T00:40Z",
+          "distanceKm": 359011
+        },
+        "after": {
+          "at": "2028-11-14T05:54Z",
+          "distanceKm": 363611
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-10-01T21:39Z",
+          "distanceKm": 406242
+        },
+        "after": {
+          "at": "2028-10-29T06:54Z",
+          "distanceKm": 405554
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-11-02T09:17:21.255Z",
+      "distanceKm": 399077,
+      "perigee": {
+        "before": {
+          "at": "2028-10-17T00:40Z",
+          "distanceKm": 359011
+        },
+        "after": {
+          "at": "2028-11-14T05:54Z",
+          "distanceKm": 363611
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-10-29T06:54Z",
+          "distanceKm": 405554
+        },
+        "after": {
+          "at": "2028-11-26T00:09Z",
+          "distanceKm": 404729
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-11-16T13:17:59.597Z",
+      "distanceKm": 367415,
+      "perigee": {
+        "before": {
+          "at": "2028-11-14T05:54Z",
+          "distanceKm": 363611
+        },
+        "after": {
+          "at": "2028-12-11T12:32Z",
+          "distanceKm": 369049
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-10-29T06:54Z",
+          "distanceKm": 405554
+        },
+        "after": {
+          "at": "2028-11-26T00:09Z",
+          "distanceKm": 404729
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-12-02T01:40:10.975Z",
+      "distanceKm": 389149,
+      "perigee": {
+        "before": {
+          "at": "2028-11-14T05:54Z",
+          "distanceKm": 363611
+        },
+        "after": {
+          "at": "2028-12-11T12:32Z",
+          "distanceKm": 369049
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-11-26T00:09Z",
+          "distanceKm": 404729
+        },
+        "after": {
+          "at": "2028-12-23T21:00Z",
+          "distanceKm": 404407
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2028-12-16T02:06:16.774Z",
+      "distanceKm": 377877,
+      "perigee": {
+        "before": {
+          "at": "2028-12-11T12:32Z",
+          "distanceKm": 369049
+        },
+        "after": {
+          "at": "2029-01-05T04:17Z",
+          "distanceKm": 368919
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-11-26T00:09Z",
+          "distanceKm": 404729
+        },
+        "after": {
+          "at": "2028-12-23T21:00Z",
+          "distanceKm": 404407
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2028-12-31T16:48:27.585Z",
+      "distanceKm": 377604,
+      "perigee": {
+        "before": {
+          "at": "2028-12-11T12:32Z",
+          "distanceKm": 369049
+        },
+        "after": {
+          "at": "2029-01-05T04:17Z",
+          "distanceKm": 368919
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-12-23T21:00Z",
+          "distanceKm": 404407
+        },
+        "after": {
+          "at": "2029-01-20T18:08Z",
+          "distanceKm": 404885
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-01-14T17:24:29.613Z",
+      "distanceKm": 389428,
+      "perigee": {
+        "before": {
+          "at": "2029-01-05T04:17Z",
+          "distanceKm": 368919
+        },
+        "after": {
+          "at": "2029-02-01T12:19Z",
+          "distanceKm": 363334
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2028-12-23T21:00Z",
+          "distanceKm": 404407
+        },
+        "after": {
+          "at": "2029-01-20T18:08Z",
+          "distanceKm": 404885
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-01-30T06:03:35.385Z",
+      "distanceKm": 367047,
+      "perigee": {
+        "before": {
+          "at": "2029-01-05T04:17Z",
+          "distanceKm": 368919
+        },
+        "after": {
+          "at": "2029-02-01T12:19Z",
+          "distanceKm": 363334
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-01-20T18:08Z",
+          "distanceKm": 404885
+        },
+        "after": {
+          "at": "2029-02-17T11:58Z",
+          "distanceKm": 405813
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-02-13T10:31:30.883Z",
+      "distanceKm": 399436,
+      "perigee": {
+        "before": {
+          "at": "2029-02-01T12:19Z",
+          "distanceKm": 363334
+        },
+        "after": {
+          "at": "2029-03-01T18:28Z",
+          "distanceKm": 358627
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-01-20T18:08Z",
+          "distanceKm": 404885
+        },
+        "after": {
+          "at": "2029-02-17T11:58Z",
+          "distanceKm": 405813
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-02-28T17:10:13.915Z",
+      "distanceKm": 359658,
+      "perigee": {
+        "before": {
+          "at": "2029-02-01T12:19Z",
+          "distanceKm": 363334
+        },
+        "after": {
+          "at": "2029-03-01T18:28Z",
+          "distanceKm": 358627
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-02-17T11:58Z",
+          "distanceKm": 405813
+        },
+        "after": {
+          "at": "2029-03-16T21:34Z",
+          "distanceKm": 406529
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-03-15T04:19:15.732Z",
+      "distanceKm": 405520,
+      "perigee": {
+        "before": {
+          "at": "2029-03-01T18:28Z",
+          "distanceKm": 358627
+        },
+        "after": {
+          "at": "2029-03-30T05:39Z",
+          "distanceKm": 356662
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-02-17T11:58Z",
+          "distanceKm": 405813
+        },
+        "after": {
+          "at": "2029-03-16T21:34Z",
+          "distanceKm": 406529
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-03-30T02:26:25.051Z",
+      "distanceKm": 356680,
+      "perigee": {
+        "before": {
+          "at": "2029-03-01T18:28Z",
+          "distanceKm": 358627
+        },
+        "after": {
+          "at": "2029-03-30T05:39Z",
+          "distanceKm": 356662
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-03-16T21:34Z",
+          "distanceKm": 406529
+        },
+        "after": {
+          "at": "2029-04-12T23:07Z",
+          "distanceKm": 406671
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-04-13T21:40:11.937Z",
+      "distanceKm": 406372,
+      "perigee": {
+        "before": {
+          "at": "2029-03-30T05:39Z",
+          "distanceKm": 356662
+        },
+        "after": {
+          "at": "2029-04-27T16:23Z",
+          "distanceKm": 357828
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-04-12T23:07Z",
+          "distanceKm": 406671
+        },
+        "after": {
+          "at": "2029-05-10T06:59Z",
+          "distanceKm": 406123
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-04-28T10:36:51.574Z",
+      "distanceKm": 358379,
+      "perigee": {
+        "before": {
+          "at": "2029-04-27T16:23Z",
+          "distanceKm": 357828
+        },
+        "after": {
+          "at": "2029-05-25T22:26Z",
+          "distanceKm": 361586
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-04-12T23:07Z",
+          "distanceKm": 406671
+        },
+        "after": {
+          "at": "2029-05-10T06:59Z",
+          "distanceKm": 406123
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-05-13T13:42:09.298Z",
+      "distanceKm": 402040,
+      "perigee": {
+        "before": {
+          "at": "2029-04-27T16:23Z",
+          "distanceKm": 357828
+        },
+        "after": {
+          "at": "2029-05-25T22:26Z",
+          "distanceKm": 361586
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-05-10T06:59Z",
+          "distanceKm": 406123
+        },
+        "after": {
+          "at": "2029-06-06T22:09Z",
+          "distanceKm": 405103
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-05-27T18:37:33.321Z",
+      "distanceKm": 364262,
+      "perigee": {
+        "before": {
+          "at": "2029-05-25T22:26Z",
+          "distanceKm": 361586
+        },
+        "after": {
+          "at": "2029-06-22T15:34Z",
+          "distanceKm": 366593
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-05-10T06:59Z",
+          "distanceKm": 406123
+        },
+        "after": {
+          "at": "2029-06-06T22:09Z",
+          "distanceKm": 405103
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-06-12T03:50:32.472Z",
+      "distanceKm": 393712,
+      "perigee": {
+        "before": {
+          "at": "2029-05-25T22:26Z",
+          "distanceKm": 361586
+        },
+        "after": {
+          "at": "2029-06-22T15:34Z",
+          "distanceKm": 366593
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-06-06T22:09Z",
+          "distanceKm": 405103
+        },
+        "after": {
+          "at": "2029-07-04T16:05Z",
+          "distanceKm": 404313
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-06-26T03:22:22.748Z",
+      "distanceKm": 373271,
+      "perigee": {
+        "before": {
+          "at": "2029-06-22T15:34Z",
+          "distanceKm": 366593
+        },
+        "after": {
+          "at": "2029-07-18T11:21Z",
+          "distanceKm": 369670
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-06-06T22:09Z",
+          "distanceKm": 405103
+        },
+        "after": {
+          "at": "2029-07-04T16:05Z",
+          "distanceKm": 404313
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-07-11T15:51:06.420Z",
+      "distanceKm": 383240,
+      "perigee": {
+        "before": {
+          "at": "2029-06-22T15:34Z",
+          "distanceKm": 366593
+        },
+        "after": {
+          "at": "2029-07-18T11:21Z",
+          "distanceKm": 369670
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-07-04T16:05Z",
+          "distanceKm": 404313
+        },
+        "after": {
+          "at": "2029-08-01T10:41Z",
+          "distanceKm": 404308
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-07-25T13:35:49.199Z",
+      "distanceKm": 383897,
+      "perigee": {
+        "before": {
+          "at": "2029-07-18T11:21Z",
+          "distanceKm": 369670
+        },
+        "after": {
+          "at": "2029-08-13T10:03Z",
+          "distanceKm": 366371
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-07-04T16:05Z",
+          "distanceKm": 404313
+        },
+        "after": {
+          "at": "2029-08-01T10:41Z",
+          "distanceKm": 404308
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-08-10T01:55:51.378Z",
+      "distanceKm": 372644,
+      "perigee": {
+        "before": {
+          "at": "2029-07-18T11:21Z",
+          "distanceKm": 369670
+        },
+        "after": {
+          "at": "2029-08-13T10:03Z",
+          "distanceKm": 366371
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-08-01T10:41Z",
+          "distanceKm": 404308
+        },
+        "after": {
+          "at": "2029-08-29T04:44Z",
+          "distanceKm": 405068
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-08-24T01:51:18.312Z",
+      "distanceKm": 394276,
+      "perigee": {
+        "before": {
+          "at": "2029-08-13T10:03Z",
+          "distanceKm": 366371
+        },
+        "after": {
+          "at": "2029-09-10T04:28Z",
+          "distanceKm": 361349
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-08-01T10:41Z",
+          "distanceKm": 404308
+        },
+        "after": {
+          "at": "2029-08-29T04:44Z",
+          "distanceKm": 405068
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-09-08T10:44:25.996Z",
+      "distanceKm": 363781,
+      "perigee": {
+        "before": {
+          "at": "2029-08-13T10:03Z",
+          "distanceKm": 366371
+        },
+        "after": {
+          "at": "2029-09-10T04:28Z",
+          "distanceKm": 361349
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-08-29T04:44Z",
+          "distanceKm": 405068
+        },
+        "after": {
+          "at": "2029-09-25T19:42Z",
+          "distanceKm": 406000
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-09-22T16:29:22.920Z",
+      "distanceKm": 402365,
+      "perigee": {
+        "before": {
+          "at": "2029-09-10T04:28Z",
+          "distanceKm": 361349
+        },
+        "after": {
+          "at": "2029-10-08T11:32Z",
+          "distanceKm": 357740
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-08-29T04:44Z",
+          "distanceKm": 405068
+        },
+        "after": {
+          "at": "2029-09-25T19:42Z",
+          "distanceKm": 406000
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-10-07T19:14:36.818Z",
+      "distanceKm": 358184,
+      "perigee": {
+        "before": {
+          "at": "2029-09-10T04:28Z",
+          "distanceKm": 361349
+        },
+        "after": {
+          "at": "2029-10-08T11:32Z",
+          "distanceKm": 357740
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-09-25T19:42Z",
+          "distanceKm": 406000
+        },
+        "after": {
+          "at": "2029-10-23T02:02Z",
+          "distanceKm": 406432
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-10-22T09:27:39.318Z",
+      "distanceKm": 406276,
+      "perigee": {
+        "before": {
+          "at": "2029-10-08T11:32Z",
+          "distanceKm": 357740
+        },
+        "after": {
+          "at": "2029-11-05T23:08Z",
+          "distanceKm": 356901
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-09-25T19:42Z",
+          "distanceKm": 406000
+        },
+        "after": {
+          "at": "2029-10-23T02:02Z",
+          "distanceKm": 406432
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-11-06T04:24:09.562Z",
+      "distanceKm": 356949,
+      "perigee": {
+        "before": {
+          "at": "2029-11-05T23:08Z",
+          "distanceKm": 356901
+        },
+        "after": {
+          "at": "2029-12-04T10:38Z",
+          "distanceKm": 359274
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-10-23T02:02Z",
+          "distanceKm": 406432
+        },
+        "after": {
+          "at": "2029-11-19T02:54Z",
+          "distanceKm": 406241
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-11-21T04:03:01.383Z",
+      "distanceKm": 404821,
+      "perigee": {
+        "before": {
+          "at": "2029-11-05T23:08Z",
+          "distanceKm": 356901
+        },
+        "after": {
+          "at": "2029-12-04T10:38Z",
+          "distanceKm": 359274
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-11-19T02:54Z",
+          "distanceKm": 406241
+        },
+        "after": {
+          "at": "2029-12-16T13:58Z",
+          "distanceKm": 405520
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2029-12-05T14:52:07.613Z",
+      "distanceKm": 360530,
+      "perigee": {
+        "before": {
+          "at": "2029-12-04T10:38Z",
+          "distanceKm": 359274
+        },
+        "after": {
+          "at": "2030-01-01T15:33Z",
+          "distanceKm": 364249
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-11-19T02:54Z",
+          "distanceKm": 406241
+        },
+        "after": {
+          "at": "2029-12-16T13:58Z",
+          "distanceKm": 405520
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2029-12-20T22:46:30.746Z",
+      "distanceKm": 398122,
+      "perigee": {
+        "before": {
+          "at": "2029-12-04T10:38Z",
+          "distanceKm": 359274
+        },
+        "after": {
+          "at": "2030-01-01T15:33Z",
+          "distanceKm": 364249
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-12-16T13:58Z",
+          "distanceKm": 405520
+        },
+        "after": {
+          "at": "2030-01-13T08:51Z",
+          "distanceKm": 404645
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-01-04T02:49:33.778Z",
+      "distanceKm": 368458,
+      "perigee": {
+        "before": {
+          "at": "2030-01-01T15:33Z",
+          "distanceKm": 364249
+        },
+        "after": {
+          "at": "2030-01-28T15:59Z",
+          "distanceKm": 369544
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2029-12-16T13:58Z",
+          "distanceKm": 405520
+        },
+        "after": {
+          "at": "2030-01-13T08:51Z",
+          "distanceKm": 404645
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-01-19T15:54:21.949Z",
+      "distanceKm": 387811,
+      "perigee": {
+        "before": {
+          "at": "2030-01-01T15:33Z",
+          "distanceKm": 364249
+        },
+        "after": {
+          "at": "2030-01-28T15:59Z",
+          "distanceKm": 369544
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-01-13T08:51Z",
+          "distanceKm": 404645
+        },
+        "after": {
+          "at": "2030-02-10T06:06Z",
+          "distanceKm": 404289
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-02-02T16:07:33.295Z",
+      "distanceKm": 379216,
+      "perigee": {
+        "before": {
+          "at": "2030-01-28T15:59Z",
+          "distanceKm": 369544
+        },
+        "after": {
+          "at": "2030-02-22T10:11Z",
+          "distanceKm": 368404
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-01-13T08:51Z",
+          "distanceKm": 404645
+        },
+        "after": {
+          "at": "2030-02-10T06:06Z",
+          "distanceKm": 404289
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-02-18T06:19:50.394Z",
+      "distanceKm": 376426,
+      "perigee": {
+        "before": {
+          "at": "2030-01-28T15:59Z",
+          "distanceKm": 369544
+        },
+        "after": {
+          "at": "2030-02-22T10:11Z",
+          "distanceKm": 368404
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-02-10T06:06Z",
+          "distanceKm": 404289
+        },
+        "after": {
+          "at": "2030-03-10T02:23Z",
+          "distanceKm": 404746
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-03-04T06:34:43.583Z",
+      "distanceKm": 390532,
+      "perigee": {
+        "before": {
+          "at": "2030-02-22T10:11Z",
+          "distanceKm": 368404
+        },
+        "after": {
+          "at": "2030-03-21T22:00Z",
+          "distanceKm": 362974
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-02-10T06:06Z",
+          "distanceKm": 404289
+        },
+        "after": {
+          "at": "2030-03-10T02:23Z",
+          "distanceKm": 404746
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-03-19T17:56:32.851Z",
+      "distanceKm": 366445,
+      "perigee": {
+        "before": {
+          "at": "2030-02-22T10:11Z",
+          "distanceKm": 368404
+        },
+        "after": {
+          "at": "2030-03-21T22:00Z",
+          "distanceKm": 362974
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-03-10T02:23Z",
+          "distanceKm": 404746
+        },
+        "after": {
+          "at": "2030-04-06T18:46Z",
+          "distanceKm": 405657
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-04-02T22:02:36.087Z",
+      "distanceKm": 399968,
+      "perigee": {
+        "before": {
+          "at": "2030-03-21T22:00Z",
+          "distanceKm": 362974
+        },
+        "after": {
+          "at": "2030-04-19T03:45Z",
+          "distanceKm": 358705
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-03-10T02:23Z",
+          "distanceKm": 404746
+        },
+        "after": {
+          "at": "2030-04-06T18:46Z",
+          "distanceKm": 405657
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-04-18T03:20:03.661Z",
+      "distanceKm": 359658,
+      "perigee": {
+        "before": {
+          "at": "2030-03-21T22:00Z",
+          "distanceKm": 362974
+        },
+        "after": {
+          "at": "2030-04-19T03:45Z",
+          "distanceKm": 358705
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-04-06T18:46Z",
+          "distanceKm": 405657
+        },
+        "after": {
+          "at": "2030-05-04T03:37Z",
+          "distanceKm": 406362
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-05-02T14:12:15.039Z",
+      "distanceKm": 405531,
+      "perigee": {
+        "before": {
+          "at": "2030-04-19T03:45Z",
+          "distanceKm": 358705
+        },
+        "after": {
+          "at": "2030-05-17T13:47Z",
+          "distanceKm": 357018
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-04-06T18:46Z",
+          "distanceKm": 405657
+        },
+        "after": {
+          "at": "2030-05-04T03:37Z",
+          "distanceKm": 406362
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-05-17T11:19:09.663Z",
+      "distanceKm": 357029,
+      "perigee": {
+        "before": {
+          "at": "2030-04-19T03:45Z",
+          "distanceKm": 358705
+        },
+        "after": {
+          "at": "2030-05-17T13:47Z",
+          "distanceKm": 357018
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-05-04T03:37Z",
+          "distanceKm": 406362
+        },
+        "after": {
+          "at": "2030-05-31T06:15Z",
+          "distanceKm": 406467
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-06-01T06:21:24.327Z",
+      "distanceKm": 406124,
+      "perigee": {
+        "before": {
+          "at": "2030-05-17T13:47Z",
+          "distanceKm": 357018
+        },
+        "after": {
+          "at": "2030-06-14T23:33Z",
+          "distanceKm": 358184
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-05-31T06:15Z",
+          "distanceKm": 406467
+        },
+        "after": {
+          "at": "2030-06-27T14:16Z",
+          "distanceKm": 405877
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-06-15T18:41:01.292Z",
+      "distanceKm": 358781,
+      "perigee": {
+        "before": {
+          "at": "2030-06-14T23:33Z",
+          "distanceKm": 358184
+        },
+        "after": {
+          "at": "2030-07-13T05:14Z",
+          "distanceKm": 361794
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-05-31T06:15Z",
+          "distanceKm": 406467
+        },
+        "after": {
+          "at": "2030-06-27T14:16Z",
+          "distanceKm": 405877
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-06-30T21:34:28.587Z",
+      "distanceKm": 401773,
+      "perigee": {
+        "before": {
+          "at": "2030-06-14T23:33Z",
+          "distanceKm": 358184
+        },
+        "after": {
+          "at": "2030-07-13T05:14Z",
+          "distanceKm": 361794
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-06-27T14:16Z",
+          "distanceKm": 405877
+        },
+        "after": {
+          "at": "2030-07-25T04:55Z",
+          "distanceKm": 404886
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-07-15T02:11:59.795Z",
+      "distanceKm": 364535,
+      "perigee": {
+        "before": {
+          "at": "2030-07-13T05:14Z",
+          "distanceKm": 361794
+        },
+        "after": {
+          "at": "2030-08-09T22:46Z",
+          "distanceKm": 366738
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-06-27T14:16Z",
+          "distanceKm": 405877
+        },
+        "after": {
+          "at": "2030-07-25T04:55Z",
+          "distanceKm": 404886
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-07-30T11:11:00.057Z",
+      "distanceKm": 393527,
+      "perigee": {
+        "before": {
+          "at": "2030-07-13T05:14Z",
+          "distanceKm": 361794
+        },
+        "after": {
+          "at": "2030-08-09T22:46Z",
+          "distanceKm": 366738
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-07-25T04:55Z",
+          "distanceKm": 404886
+        },
+        "after": {
+          "at": "2030-08-21T22:50Z",
+          "distanceKm": 404171
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-08-13T10:44:25.502Z",
+      "distanceKm": 373398,
+      "perigee": {
+        "before": {
+          "at": "2030-08-09T22:46Z",
+          "distanceKm": 366738
+        },
+        "after": {
+          "at": "2030-09-04T16:59Z",
+          "distanceKm": 369880
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-07-25T04:55Z",
+          "distanceKm": 404886
+        },
+        "after": {
+          "at": "2030-08-21T22:50Z",
+          "distanceKm": 404171
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-08-28T23:07:21.869Z",
+      "distanceKm": 383076,
+      "perigee": {
+        "before": {
+          "at": "2030-08-09T22:46Z",
+          "distanceKm": 366738
+        },
+        "after": {
+          "at": "2030-09-04T16:59Z",
+          "distanceKm": 369880
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-08-21T22:50Z",
+          "distanceKm": 404171
+        },
+        "after": {
+          "at": "2030-09-18T18:09Z",
+          "distanceKm": 404254
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-09-11T21:17:57.675Z",
+      "distanceKm": 383997,
+      "perigee": {
+        "before": {
+          "at": "2030-09-04T16:59Z",
+          "distanceKm": 369880
+        },
+        "after": {
+          "at": "2030-09-30T15:36Z",
+          "distanceKm": 366351
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-08-21T22:50Z",
+          "distanceKm": 404171
+        },
+        "after": {
+          "at": "2030-09-18T18:09Z",
+          "distanceKm": 404254
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-09-27T09:54:40.078Z",
+      "distanceKm": 372372,
+      "perigee": {
+        "before": {
+          "at": "2030-09-04T16:59Z",
+          "distanceKm": 369880
+        },
+        "after": {
+          "at": "2030-09-30T15:36Z",
+          "distanceKm": 366351
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-09-18T18:09Z",
+          "distanceKm": 404254
+        },
+        "after": {
+          "at": "2030-10-16T13:22Z",
+          "distanceKm": 405077
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-10-11T10:46:51.181Z",
+      "distanceKm": 394481,
+      "perigee": {
+        "before": {
+          "at": "2030-09-30T15:36Z",
+          "distanceKm": 366351
+        },
+        "after": {
+          "at": "2030-10-28T12:04Z",
+          "distanceKm": 361122
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-09-18T18:09Z",
+          "distanceKm": 404254
+        },
+        "after": {
+          "at": "2030-10-16T13:22Z",
+          "distanceKm": 405077
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-10-26T20:16:58.897Z",
+      "distanceKm": 363387,
+      "perigee": {
+        "before": {
+          "at": "2030-09-30T15:36Z",
+          "distanceKm": 366351
+        },
+        "after": {
+          "at": "2030-10-28T12:04Z",
+          "distanceKm": 361122
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-10-16T13:22Z",
+          "distanceKm": 405077
+        },
+        "after": {
+          "at": "2030-11-13T05:00Z",
+          "distanceKm": 405994
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-11-10T03:30:19.664Z",
+      "distanceKm": 402625,
+      "perigee": {
+        "before": {
+          "at": "2030-10-28T12:04Z",
+          "distanceKm": 361122
+        },
+        "after": {
+          "at": "2030-11-25T21:10Z",
+          "distanceKm": 357519
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-10-16T13:22Z",
+          "distanceKm": 405077
+        },
+        "after": {
+          "at": "2030-11-13T05:00Z",
+          "distanceKm": 405994
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-11-25T06:46:30.636Z",
+      "distanceKm": 357873,
+      "perigee": {
+        "before": {
+          "at": "2030-10-28T12:04Z",
+          "distanceKm": 361122
+        },
+        "after": {
+          "at": "2030-11-25T21:10Z",
+          "distanceKm": 357519
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-11-13T05:00Z",
+          "distanceKm": 405994
+        },
+        "after": {
+          "at": "2030-12-10T10:04Z",
+          "distanceKm": 406370
+        }
+      }
+    },
+    {
+      "type": "full",
+      "at": "2030-12-09T22:40:28.279Z",
+      "distanceKm": 406299,
+      "perigee": {
+        "before": {
+          "at": "2030-11-25T21:10Z",
+          "distanceKm": 357519
+        },
+        "after": {
+          "at": "2030-12-24T10:09Z",
+          "distanceKm": 356928
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-11-13T05:00Z",
+          "distanceKm": 405994
+        },
+        "after": {
+          "at": "2030-12-10T10:04Z",
+          "distanceKm": 406370
+        }
+      }
+    },
+    {
+      "type": "new",
+      "at": "2030-12-24T17:32:15.075Z",
+      "distanceKm": 357024,
+      "perigee": {
+        "before": {
+          "at": "2030-12-24T10:09Z",
+          "distanceKm": 356928
+        },
+        "after": {
+          "at": "2031-01-21T21:43Z",
+          "distanceKm": 359636
+        }
+      },
+      "apogee": {
+        "before": {
+          "at": "2030-12-10T10:04Z",
+          "distanceKm": 406370
+        },
+        "after": {
+          "at": "2031-01-06T11:00Z",
+          "distanceKm": 406167
+        }
+      }
+    }
+  ]
+}

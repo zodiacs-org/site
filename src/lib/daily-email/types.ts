@@ -18,6 +18,8 @@ export interface ChartRecipient extends RecipientBase {
   tier: 'chart';
   userId: string;
   chartId: string;
+  /** The encrypted chart's revision this edition was decrypted from. */
+  revision: number;
   chart: SavedChart;
 }
 
@@ -38,4 +40,8 @@ export interface DeliveryReport {
   failed: number;
   duplicate: number;
   dryRun: number;
+  /** Chart recipients no longer eligible at dispatch who got the Sun edition instead. */
+  fellBack: number;
+  /** Chart recipients no longer eligible at dispatch with no Sun edition to fall back to. */
+  withdrawn: number;
 }

@@ -9,6 +9,8 @@ export const REGISTRY_RESEARCH_GENERATOR = 'zodiacs.registry-research.determinis
 export const REGISTRY_RESEARCH_PUBLISHER = 'Zodiacs.org Research System';
 export const REGISTRY_RESEARCH_RISK = 'Symbolic research—not investment advice. Market observations never alter the sky score.';
 export const REGISTRY_RESEARCH_SCIENCE_NOTE = 'Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.';
+export const REGISTRY_RESEARCH_PAUSE_SCHEMA = 'zodiacs.registry-research-pause.v1';
+export const REGISTRY_RESEARCH_PAUSE_STATUSES = Object.freeze(['paused', 'publishing']);
 
 const SITE = 'https://zodiacs.org';
 const DAY_MS = 86_400_000;
@@ -103,6 +105,44 @@ function assertDate(value, label) {
 
 function assertSign(sign, label) {
   if (!SIGN_ORDER.includes(sign)) throw new Error(`${label} contains unknown sign ${sign}`);
+}
+
+// The committed pause record, src/data/registry-research/pause.json. While its
+// status is "paused", no new draft, item, feed entry, RSS entry or outlook
+// edition is produced: the committed ledger and publication are kept exactly
+// as they stand. Setting the status back to "publishing" resumes the normal
+// lifecycle with no other change.
+export function validateRegistryResearchPause(pause) {
+  if (!isRecord(pause) || pause.schema !== REGISTRY_RESEARCH_PAUSE_SCHEMA) {
+    throw new Error(`pause record must use ${REGISTRY_RESEARCH_PAUSE_SCHEMA}`);
+  }
+  if (!REGISTRY_RESEARCH_PAUSE_STATUSES.includes(pause.status)) {
+    throw new Error(`pause.status must be one of ${REGISTRY_RESEARCH_PAUSE_STATUSES.join(', ')}`);
+  }
+  if (pause.status === 'paused') {
+    assertCanonicalInstant(pause.pausedAt, 'pause.pausedAt');
+    if (typeof pause.reason !== 'string' || pause.reason.trim().length < 10) {
+      throw new Error('pause.reason must say why publishing is paused');
+    }
+  }
+}
+
+export function registryResearchIsPaused(pause) {
+  if (pause === null || pause === undefined) return false;
+  validateRegistryResearchPause(pause);
+  return pause.status === 'paused';
+}
+
+function pauseDateLabel(pause) {
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  }).format(new Date(pause.pausedAt));
+}
+
+/** One plain sentence pair for the archive and the feeds, or null when publishing. */
+export function registryResearchPauseNotice(pause) {
+  if (!registryResearchIsPaused(pause)) return null;
+  return `Publishing has been paused since ${pauseDateLabel(pause)}. No new notes are being added; the notes listed here stay as an archive, as they were published.`;
 }
 
 function compactNumber(value) {
@@ -669,12 +709,21 @@ export function buildRegistryResearchLedger({
   marketHistory,
   existingLedger = null,
   approvalManifest,
+  pause = null,
 }) {
   const existingItems = existingLedger?.items ?? [];
   if (existingLedger && existingLedger.schema !== REGISTRY_RESEARCH_LEDGER_SCHEMA) {
     throw new Error(`existingLedger must use ${REGISTRY_RESEARCH_LEDGER_SCHEMA}`);
   }
   existingItems.forEach((item) => validateRegistryResearchItem(item));
+  if (registryResearchIsPaused(pause)) {
+    // Paused: the committed ledger stands as it is. No draft is generated,
+    // regenerated or dropped, and today's sky and market inputs are not read,
+    // so nothing new can reach a feed and no pairing with today is required.
+    if (!existingLedger) throw new Error('Registry Research is paused and there is no committed ledger to keep');
+    validateRegistryResearchApprovalManifest(approvalManifest);
+    return existingLedger;
+  }
   const approvals = approvalByItem(approvalManifest);
   const generationWindowStart = `${daily.date}T00:00:00.000Z`;
   // A published item is frozen. During the pilot that means an exact-hash
@@ -776,9 +825,21 @@ export function compactRegistryResearchItem(item) {
   };
 }
 
-export function publishRegistryResearch({ ledger, approvalManifest }) {
+// While paused, an approval recorded after the pause publishes nothing and
+// cannot move the publication clock, so a scheduled item is not revealed.
+function approvalsInForce(approvalManifest, pause) {
+  validateRegistryResearchApprovalManifest(approvalManifest);
+  if (!registryResearchIsPaused(pause)) return approvalManifest;
+  return {
+    ...approvalManifest,
+    approvals: approvalManifest.approvals.filter((approval) => approval.reviewedAt <= pause.pausedAt),
+  };
+}
+
+export function publishRegistryResearch({ ledger, approvalManifest: manifest, pause = null }) {
   if (ledger?.schema !== REGISTRY_RESEARCH_LEDGER_SCHEMA) throw new Error(`ledger must use ${REGISTRY_RESEARCH_LEDGER_SCHEMA}`);
   assertCanonicalInstant(ledger.generatedAt, 'ledger.generatedAt');
+  const approvalManifest = approvalsInForce(manifest, pause);
   const approvals = approvalByItem(approvalManifest);
   const publicationGeneratedAt = [...approvals.values()].reduce(
     (latest, approval) => approval.reviewedAt > latest ? approval.reviewedAt : latest,
@@ -908,8 +969,17 @@ function xmlEscape(value) {
     .replaceAll("'", '&apos;');
 }
 
-export function registryResearchRss(feed) {
+export const REGISTRY_RESEARCH_FEED_DESCRIPTION = 'Deterministic symbolic research and separately timestamped Zodiac market observations.';
+
+/**
+ * @param {object} feed
+ * @param {{ pause?: object | null }} [options]
+ * @returns {string}
+ */
+export function registryResearchRss(feed, { pause = null } = {}) {
   if (feed?.schema !== REGISTRY_RESEARCH_FEED_SCHEMA) throw new Error(`feed must use ${REGISTRY_RESEARCH_FEED_SCHEMA}`);
+  const pauseNotice = registryResearchPauseNotice(pause);
+  const description = pauseNotice ? `${pauseNotice} ${REGISTRY_RESEARCH_FEED_DESCRIPTION}` : REGISTRY_RESEARCH_FEED_DESCRIPTION;
   const visibleItems = feed.items.filter((item) => item.status === 'published' && item.visibleAt <= feed.generatedAt);
   const items = visibleItems.map((item) => `    <item>
       <title>${xmlEscape(item.title)}</title>
@@ -925,7 +995,7 @@ export function registryResearchRss(feed) {
     <title>Zodiacs.org Markets Research</title>
     <link>${SITE}/terminal/research/</link>
     <atom:link href="${SITE}/feeds/market-research.xml" rel="self" type="application/rss+xml" />
-    <description>Deterministic symbolic research and separately timestamped Zodiac market observations.</description>
+    <description>${xmlEscape(description)}</description>
     <language>en</language>
     <lastBuildDate>${new Date(feed.generatedAt).toUTCString()}</lastBuildDate>
 ${items}

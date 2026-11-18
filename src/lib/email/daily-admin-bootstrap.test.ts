@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import adminBootstrapHandler from '../../../api/email/admin-bootstrap';
@@ -88,6 +89,22 @@ function chartRequest(
     },
     body,
   };
+}
+
+
+/** One eligible v2 chart source: account_v2_chart_email_sources answers ids and an envelope only. */
+function chartEmailSourceRows(userId: string, chartId: string): Array<Record<string, unknown>> {
+  return [{
+    user_id: userId,
+    chart_id: chartId,
+    revision: 1,
+    ciphertext: Buffer.alloc(32, 1).toString('base64'),
+    nonce: Buffer.alloc(12, 2).toString('base64'),
+    format: 'opaque_v1',
+    key_scope: 'service',
+    key_version: 1,
+    wrapped_key: Buffer.alloc(68, 3).toString('base64'),
+  }];
 }
 
 describe('admin-only daily email bootstrap', () => {
@@ -351,14 +368,14 @@ describe('admin-only chart daily canary bootstrap', () => {
     expect(String(fetcher.mock.calls[0]?.[0])).toBe('https://project.supabase.co/auth/v1/user');
   });
 
-  it('requires the selected chart to be synced and owned by the authenticated admin', async () => {
+  it('requires the selected chart to be the admin\'s v2 chart with chart emails on', async () => {
     configureBootstrap();
     const fetcher = vi.fn(async (input: string | URL | Request) => {
       const url = String(input);
       if (url.endsWith('/auth/v1/user')) {
         return json({ id: ADMIN_USER_ID, email: ADMIN_EMAIL });
       }
-      if (url.includes('/rest/v1/charts?')) return json([]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) return json([]);
       throw new Error(`Unexpected request: ${url}`);
     });
     vi.stubGlobal('fetch', fetcher);
@@ -369,7 +386,7 @@ describe('admin-only chart daily canary bootstrap', () => {
     expect(response.statusCode).toBe(404);
     expect(JSON.parse(response.body)).toEqual({ error: 'chart_not_found' });
     expect(fetcher).toHaveBeenCalledTimes(2);
-    expect(fetcher.mock.calls.some(([url]) => String(url).includes('/rpc/'))).toBe(false);
+    expect(fetcher.mock.calls.some(([url]) => String(url).includes('/rpc/claim_daily_chart_confirmation_send'))).toBe(false);
     expect(fetcher.mock.calls.some(([url]) => String(url).startsWith('https://api.resend.com'))).toBe(false);
   });
 
@@ -383,8 +400,8 @@ describe('admin-only chart daily canary bootstrap', () => {
       if (url.endsWith('/auth/v1/user')) {
         return json({ id: ADMIN_USER_ID, email: ADMIN_EMAIL });
       }
-      if (url.includes('/rest/v1/charts?')) {
-        return json([{ id: CHART_ID, payload: { name: 'Canary chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(ADMIN_USER_ID, CHART_ID));
       }
       if (url.includes('/rest/v1/daily_chart_preferences?') && !init?.method) return json([]);
       if (url.endsWith('/rest/v1/rpc/claim_daily_chart_confirmation_send')) {
@@ -462,8 +479,8 @@ describe('admin-only chart daily canary bootstrap', () => {
           confirmed_at: confirmedAt,
         }]);
       }
-      if (url.includes('/rest/v1/charts?')) {
-        return json([{ id: CHART_ID, payload: { name: 'Canary chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(ADMIN_USER_ID, CHART_ID));
       }
       if (url.includes(`/auth/v1/admin/users/${ADMIN_USER_ID}`)) {
         return json({ id: ADMIN_USER_ID, email: ADMIN_EMAIL });
@@ -544,8 +561,8 @@ describe('admin-only chart daily canary bootstrap', () => {
           confirmed_at: null,
         }]);
       }
-      if (url.includes('/rest/v1/charts?')) {
-        return json([{ id: CHART_ID, payload: { name: 'Canary chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(ADMIN_USER_ID, CHART_ID));
       }
       if (url.includes(`/auth/v1/admin/users/${ADMIN_USER_ID}`)) {
         return json({ id: ADMIN_USER_ID, email: 'reader@example.com' });

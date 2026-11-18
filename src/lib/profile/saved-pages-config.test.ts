@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   PENDING_SAVE_KEY,
   PENDING_SAVE_TTL_MS,
+  RETIRED_PENDING_SAVE_KEY,
   SAVED_PAGE_HREF_MAX,
   SAVED_PAGE_TITLE_MAX,
   accountSavesEnabled,
@@ -12,6 +13,7 @@ import {
   settlePendingSave,
   savedPageDraft,
   savedPageHref,
+  savedPageWriteDraft,
   stashPendingSave,
   supabaseAuthStorageKey,
   takePendingSave,
@@ -146,6 +148,66 @@ describe('pending save', () => {
 
   it('refuses to stash an invalid draft', () => {
     expect(stashPendingSave({ ...occasion, href: 'https://evil.example/' }, 1, memoryStorage())).toBe(false);
+  });
+});
+
+describe('the write rule: no birth details in a new save', () => {
+  const compatibility = { kind: 'compatibility' as const, title: 'Leo and Aries · compatibility', href: '/compatibility/aries-leo/' };
+
+  it('accepts the sign pair page and the occasion rule exactly', () => {
+    expect(savedPageWriteDraft(compatibility)).toEqual(compatibility);
+    expect(savedPageWriteDraft({ ...compatibility, href: '/compatibility/' })).toMatchObject({ href: '/compatibility/' });
+    expect(savedPageWriteDraft(occasion)).toEqual(occasion);
+    for (const href of [
+      '/occasions/',
+      '/occasions/#o=wedding&d=2027-06-12&t=16%3A30',
+      '/occasions/#o=wedding&d=2027-06-12&t=16%3A30&tz=Europe%2FRome&lat=43.77&lon=11.25',
+      '/occasions/#o=home&d=2027-06-12&tz=Asia%2FAlmaty&lat=-43.26&lon=-76.93',
+    ]) expect(savedPageWriteDraft({ ...occasion, href }), href).not.toBeNull();
+  });
+
+  it.each([
+    ['compatibility', '/compatibility/#a=1.eyJkIjoiMTk4Ny0wMy0xNCJ9&b=1.x'],
+    ['compatibility', '/compatibility/?a=Qwertina'],
+    ['compatibility', '/compatibility/aries-leo/#saved=0123456789abcdef'],
+    ['occasion', '/occasions/#o=birthday&d=1987-03-14'],
+    ['occasion', '/occasions/#o=baby&d=2026-03-14'],
+    ['occasion', '/occasions/#o=coming-of-age&d=2008-03-14'],
+    ['occasion', '/occasions/#o=wedding&d=2027-06-12&n=Qwertina'],
+    ['occasion', '/occasions/#o=wedding&d=2027-06-12&tz=Asia%2FAlmaty&lat=43.2567&lon=76.9286'],
+    ['occasion', '/occasions/#o=wedding&d=2027-06-12&tz=Asia%2FAlmaty&lat=43.26&lon=76.93&place=Zzyzx+Canary'],
+    ['occasion', '/occasions/#o=wedding&d=2027-06-12&tz=Asia%2FAlmaty'],
+    ['occasion', '/occasions/#d=2027-06-12'],
+    ['occasion', '/occasions/#o=wedding&o=wedding&d=2027-06-12'],
+    ['occasion', '/occasions/?o=wedding&d=2027-06-12'],
+    ['occasion', '/occasions/#saved=0123456789abcdef'],
+  ] as const)('refuses to write %s %s', (kind, href) => {
+    const draft = { kind, title: 'A save', href };
+    expect(savedPageDraft(draft)).not.toBeNull();
+    expect(savedPageWriteDraft(draft)).toBeNull();
+    const storage = memoryStorage();
+    expect(stashPendingSave(draft, 1, storage)).toBe(false);
+    expect(storage.map.size).toBe(0);
+  });
+
+  it('still lists and removes rows saved before the rule', () => {
+    const row = { id: '6b3a3f0e-1c2d-4e5f-8a9b-0c1d2e3f4a5b', saved_at: '2026-10-15T09:00:00+00:00', kind: 'compatibility', title: 'Ana and Ben · compatibility', href: '/compatibility/#a=1.x&b=1.y' };
+    expect(parseSavedPageRow(row)).toMatchObject({ href: row.href, source: 'site' });
+  });
+
+  it('never reads a waiting item stashed in the old form, and drops one already waiting', () => {
+    const legacy = JSON.stringify({ ...occasion, href: '/occasions/#o=birthday&d=1987-03-14&n=Qwertina', at: 1_000 });
+    expect(PENDING_SAVE_KEY).toBe('zodiacs.account-saves.pending.v2');
+    expect(RETIRED_PENDING_SAVE_KEY).toBe('zodiacs.account-saves.pending.v1');
+    const peeked = memoryStorage({ [RETIRED_PENDING_SAVE_KEY]: legacy });
+    expect(peekPendingSave(2_000, peeked)).toBeNull();
+    expect(peeked.map.has(RETIRED_PENDING_SAVE_KEY)).toBe(false);
+    const taken = memoryStorage({ [RETIRED_PENDING_SAVE_KEY]: legacy });
+    expect(takePendingSave(2_000, taken)).toBeNull();
+    expect(taken.map.has(RETIRED_PENDING_SAVE_KEY)).toBe(false);
+    // An old-form draft under the new key is refused too.
+    const current = memoryStorage({ [PENDING_SAVE_KEY]: legacy });
+    expect(peekPendingSave(2_000, current)).toBeNull();
   });
 });
 

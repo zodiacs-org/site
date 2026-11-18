@@ -8,7 +8,6 @@ import { configuredWalletChains } from '../../../lib/wallet/config';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
 const weeklyDigestEnabled = weeklyDigestSignupEnabled();
 const webPushEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
@@ -17,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '3 octobre 2026';
-const modifiedAt = '2026-10-03T00:00:00.000Z';
+const updated = '11 novembre 2026';
+const modifiedAt = '2026-11-11T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -277,10 +276,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         <>
           <p>
             Les comptes restent facultatifs. Les calculateurs sans compte et
-            l’enregistrement local des thèmes fonctionnent sans connexion. La
-            version pilote de la synchronisation chiffrée accepte au plus un
-            thème, dont tu confirmes explicitement qu’il est le tien. La
-            préversion est réservée aux adultes de 18 ans ou plus.
+            l’enregistrement local des thèmes fonctionnent sans connexion. La synchronisation chiffrée conserve au plus un thème, dont tu confirmes explicitement qu’il est le tien, et elle est réservée aux adultes de 18 ans ou plus.
           </p>
           <ul>
             <li>
@@ -300,8 +296,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
               enregistrement. Cette clé est encapsulée par une clé de service
               conservée hors de la base de données. Il s’agit d’un chiffrement
               géré par le service, et non d’un chiffrement de bout en bout :
-              Zodiacs peut donc déchiffrer l’enregistrement quand tu le restaures
-              sur un autre appareil connecté.
+              Zodiacs peut donc déchiffrer l’enregistrement quand tu le restaures sur un autre appareil connecté, quand tu crées une invitation à partir de lui et, si tu actives les e-mails avec ton thème, quand tes e-mails sont rédigés.
             </li>
             <li>
               La base de données reçoit une enveloppe de thème chiffrée, ainsi que
@@ -345,12 +340,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
               l’e-mail ou de contacter l’assistance.
             </li>
             <li>
-              Les comptes contenant des thèmes de l’ancien système de
-              synchronisation dans le cloud ne sont pas migrés en silence. La
-              version pilote se met en pause et propose l’export jusqu’à ce qu’un
-              examen explicite de la migration, thème par thème, soit
-              disponible ; la suppression définitive du compte retire aussi ces
-              anciens enregistrements.
+              Les thèmes de l’ancien système de synchronisation dans le cloud ne sont jamais transférés dans la synchronisation chiffrée. Jusqu’à ce que nous les supprimions de notre base de données, l’export du compte les inclut et la suppression définitive du compte les retire.
+            </li>
+            <li>
+              « Utiliser mon thème pour mes e-mails » est un choix distinct dans ton profil, désactivé par défaut, qui nécessite ton thème synchronisé. Tant qu’il est activé, l’e-mail quotidien de thème que tu confirmes et, si tu le reçois, le résumé hebdomadaire sont rédigés à partir de ce thème : le traitement d’envoi le déchiffre uniquement pour rédiger ton e-mail. Un e-mail quotidien de thème indique le nom du thème, la date, l’heure et le lieu de naissance, comme ton profil, et il est envoyé à l’adresse de ton compte via Resend. Tant qu’il est désactivé, aucun e-mail n’utilise ton thème.
             </li>
           </ul>
         </>
@@ -397,10 +390,20 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       )}
 
       <h2>E-mail</h2>
-      {weeklyDigestEnabled && (
+      {weeklyDigestEnabled && !accountSyncV2Enabled && (
         <p>
           Les titulaires d’un compte peuvent s’inscrire à un e-mail hebdomadaire
           qui résume le ciel de la semaine à venir pour leurs thèmes enregistrés.
+          L’option est décochée par défaut. Si tu t’inscris, nous conservons cette
+          préférence et envoyons l’e-mail par l’intermédiaire de notre
+          fournisseur d’e-mail, <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
+          Chaque e-mail comporte un lien de désabonnement en un clic, et tu peux
+          le désactiver depuis ton profil à tout moment.
+        </p>
+      )}
+      {weeklyDigestEnabled && accountSyncV2Enabled && (
+        <p>
+          Les titulaires d’un compte peuvent s’inscrire à un e-mail hebdomadaire qui résume le ciel de la semaine à venir. Quand « Utiliser mon thème pour mes e-mails » est activé, il est rédigé à partir de ton thème synchronisé ; sinon, il liste les événements marquants du ciel de la semaine et n’utilise aucun thème.
           L’option est décochée par défaut. Si tu t’inscris, nous conservons cette
           préférence et envoyons l’e-mail par l’intermédiaire de notre
           fournisseur d’e-mail, <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
@@ -481,32 +484,23 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 
       <h2>Hébergement, journaux et analyse d’audience</h2>
       <p> Le site est hébergé par <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>. Comme chez tout hébergeur web, ses serveurs traitent les requêtes de ton navigateur et peuvent conserver de brefs journaux techniques (comme l’adresse IP et le type de navigateur) pour servir le site et le protéger contre les abus. Nous ne diffusons pas de publicité et n’utilisons ni cookies de suivi intersite ni pixels marketing tiers. </p>
-      {accountSyncV2Enabled ? (
-        <p>
-          Les outils d’analyse d’audience tiers sont désactivés pendant toute la
-          préversion à accès contrôlé de la synchronisation chiffrée. Cela empêche
-          un script d’analyse de partager le même contexte de page que le stockage
-          privé des thèmes dans le navigateur.
-        </p>
-      ) : (
-        <p>
-          Nous comptons les pages vues et l’usage anonyme des fonctions avec
-          Plausible, un service d’analyse d’audience sans cookies. Pour ne pas
-          compter plusieurs fois le même appareil au cours d’une journée,
-          Plausible traite brièvement l’adresse IP et l’agent utilisateur afin de
-          dériver un identifiant limité à ce site, cet appareil et ce jour.
-          L’adresse IP et l’agent utilisateur bruts ne sont pas conservés ; le sel
-          utilisé pour cet identifiant change et est supprimé toutes les
-          24 heures. Plausible ne reçoit ni données de naissance, ni adresse
-          publique, ni identifiant de thème, ni identifiant de compte connecté, ni
-          liste exacte des signes détenus. Il ne reçoit pas non plus d’identifiant
-          intersite. Les événements Aura ne contiennent que des catégories
-          autorisées, comme un résultat et une tranche approximative du nombre de
-          signes détenus ; de même, les autres événements enregistrent « un thème
-          a été enregistré », jamais à qui il appartient.
-        </p>
-      )}
-      {webAnalyticsEnabled && !accountSyncV2Enabled && (
+      <p>
+        Nous comptons les pages vues et l’usage anonyme des fonctions avec
+        Plausible, un service d’analyse d’audience sans cookies. Pour ne pas
+        compter plusieurs fois le même appareil au cours d’une journée,
+        Plausible traite brièvement l’adresse IP et l’agent utilisateur afin de
+        dériver un identifiant limité à ce site, cet appareil et ce jour.
+        L’adresse IP et l’agent utilisateur bruts ne sont pas conservés ; le sel
+        utilisé pour cet identifiant change et est supprimé toutes les
+        24 heures. Plausible ne reçoit ni données de naissance, ni adresse
+        publique, ni identifiant de thème, ni identifiant de compte connecté, ni
+        liste exacte des signes détenus. Il ne reçoit pas non plus d’identifiant
+        intersite. Les événements Aura ne contiennent que des catégories
+        autorisées, comme un résultat et une tranche approximative du nombre de
+        signes détenus ; de même, les autres événements enregistrent « un thème
+        a été enregistré », jamais à qui il appartient.{accountSyncV2Enabled ? ' Aucun script d’analyse ne s’exécute sur ta page de profil, sur la page de connexion, ni sur aucune page qui peut afficher un thème enregistré dans ton navigateur ou synchronisé avec ton compte, comme la page d’accueil, le thème natal ou les transits.' : ''}
+      </p>
+      {webAnalyticsEnabled && (
         <p>
           Nous comptons aussi les pages vues avec Vercel Web Analytics, le
           compteur sans cookies intégré à notre plateforme d’hébergement. Il
@@ -555,6 +549,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         {accountSyncV2Enabled
           ? <li>Exporter ou supprimer un compte depuis la page de profil ; choisir séparément d’effacer ou non ce navigateur.</li>
           : <li>Faire supprimer un compte et ses données synchronisées en nous écrivant.</li>}
+        {accountSyncV2Enabled && <li>Désactiver « Utiliser mon thème pour mes e-mails » ou retirer la synchronisation des thèmes depuis ton profil, à tout moment.</li>}
         {weeklyDigestEnabled && <li>Désactiver l’e-mail hebdomadaire en un clic, à tout moment.</li>}
         <li>Retirer une invitation de compatibilité depuis ton profil avant qu’elle soit utilisée.</li>
         <li>Demander la correction, la non-publication ou la suppression d’un profil People.</li>

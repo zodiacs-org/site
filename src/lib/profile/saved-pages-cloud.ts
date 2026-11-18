@@ -8,7 +8,7 @@ import { getSupabaseClient } from '../supabase/client';
 import {
   MAX_SAVED_PAGES,
   parseSavedPageRow,
-  savedPageDraft,
+  savedPageWriteDraft,
   type SavedPage,
   type SavedPageDraft,
 } from './saved-pages-config';
@@ -38,8 +38,9 @@ export async function listSavedPages(client = getSupabaseClient()): Promise<Save
   return ((data ?? []) as unknown[]).map(parseSavedPageRow).filter((row): row is SavedPage => row !== null);
 }
 
+/** Saves a draft that passes the write rule (no birth details); anything else is refused here, before any request. */
 export async function saveSavedPage(draft: SavedPageDraft, client = getSupabaseClient()): Promise<SaveOutcome> {
-  const clean = savedPageDraft(draft);
+  const clean = savedPageWriteDraft(draft);
   if (!clean) return 'error';
   const session = await signedIn(client);
   if (!session) return 'signed-out';

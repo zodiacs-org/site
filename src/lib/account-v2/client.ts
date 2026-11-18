@@ -1,5 +1,8 @@
 import type { SelfChartPutWire } from './chart-wire';
-import { ACCOUNT_SYNC_V2_CHART_SYNC_POLICY_VERSION } from './policy';
+import {
+  ACCOUNT_SYNC_V2_CHART_EMAILS_POLICY_VERSION,
+  ACCOUNT_SYNC_V2_CHART_SYNC_POLICY_VERSION,
+} from './policy';
 
 const MAX_RESPONSE_BYTES = 10 * 1024 * 1024;
 const ACCESS_TOKEN = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/u;
@@ -7,6 +10,7 @@ const ACCOUNT_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3
 const DELETION_RECOVERY_SECRET = /^[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]$/u;
 
 export const CHART_SYNC_POLICY_VERSION = ACCOUNT_SYNC_V2_CHART_SYNC_POLICY_VERSION;
+export const CHART_EMAILS_POLICY_VERSION = ACCOUNT_SYNC_V2_CHART_EMAILS_POLICY_VERSION;
 
 export type AccountV2Outcome = Record<string, unknown> & { outcome: string };
 
@@ -75,6 +79,22 @@ export async function recordChartSyncConsent(
   // Withdrawal is intentionally independent of whatever policy version a
   // stale client remembers. Only a grant asserts the policy being accepted.
   if (decision === 'grant') body.policyVersion = CHART_SYNC_POLICY_VERSION;
+  return postAction('consent', accessToken, body, fetcher);
+}
+
+/** "Use my chart for my emails". Independent of chart_sync, off by default. */
+export async function recordChartEmailsConsent(
+  accessToken: string,
+  decision: 'grant' | 'withdraw',
+  mutationId: string,
+  fetcher: Fetcher = fetch,
+): Promise<AccountV2Outcome> {
+  const body: Record<string, unknown> = {
+    mutationId,
+    decision,
+    purpose: 'chart_emails',
+  };
+  if (decision === 'grant') body.policyVersion = CHART_EMAILS_POLICY_VERSION;
   return postAction('consent', accessToken, body, fetcher);
 }
 

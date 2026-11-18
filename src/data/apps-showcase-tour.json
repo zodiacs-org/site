@@ -1,47 +1,47 @@
 {
-  "recordedAt": "2026-11-09T08:59:59.803Z",
+  "recordedAt": "2026-11-16T16:44:19.617Z",
   "syntheticExamples": true,
   "source": "https://zodiacs.org/mcp",
   "file": "tour.mp4",
   "width": 1080,
   "height": 1350,
   "fps": 30,
-  "frames": 599,
-  "seconds": 19.967,
-  "bytes": 2950668,
-  "sha256": "66969abf34aa7544fb9cdeba919daf7144efa95e47749c5e0575cd0621f23cca",
+  "frames": 603,
+  "seconds": 20.1,
+  "bytes": 1994964,
+  "sha256": "a574dc1ea1969dcc63458d7afd19ffc473fc22015f84108799810d6eeff4b436",
   "poster": {
     "file": "demo-poster.webp",
     "width": 648,
     "height": 810,
-    "bytes": 41664,
-    "sha256": "dcbaed68882fedcb6aa3c977261c63e0d560f03a1855136b3e3d91b5c55873b6",
-    "frame": 39
+    "bytes": 41360,
+    "sha256": "78a9c073ba5ee590ad38257e30ae84a1057c3c590ef87533d0bee26c3f8fa82c",
+    "frame": 41
   },
   "scenes": [
     {
       "name": "comparison",
       "resourceUri": "ui://zodiacs/occasions-v8.html",
       "htmlSha256": "697936e02db78acbccd2ccdf8697cc13c9624f8b253ca16e81908313c9f0c531",
-      "endFrame": 172
+      "endFrame": 174
     },
     {
       "name": "wedding",
       "resourceUri": "ui://zodiacs/occasions-v8.html",
       "htmlSha256": "697936e02db78acbccd2ccdf8697cc13c9624f8b253ca16e81908313c9f0c531",
-      "endFrame": 272
+      "endFrame": 276
     },
     {
       "name": "horoscope",
       "resourceUri": "ui://zodiacs/horoscopes-v6.html",
-      "htmlSha256": "567dc7beec110af087b75107f611c513cdf73b8a910226b83c8d3bab95743458",
-      "endFrame": 399
+      "htmlSha256": "41c785286b5a8e9979dddfedfc9d559427996ae8ad6a11e828224c203b3dc5cc",
+      "endFrame": 403
     },
     {
       "name": "chart",
       "resourceUri": "ui://zodiacs/chart-studio-v6.html",
       "htmlSha256": "9fef51b4c35b7b9dd9a8b78a654fa222812b5805c5351406ea81d1fb3087d899",
-      "endFrame": 541
+      "endFrame": 545
     }
   ]
 }

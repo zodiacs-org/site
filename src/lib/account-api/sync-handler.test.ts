@@ -21,7 +21,6 @@ const ENV = {
   ACCOUNT_SYNC_V2_FINGERPRINT_KEYS: JSON.stringify({ 3: FINGERPRINT_KEY }),
   ACCOUNT_SYNC_V2_ACTIVE_FINGERPRINT_KEY_VERSION: '3',
   DAILY_EMAIL_RECIPIENT_HASH_SECRET: 'daily-email-recipient-hash-test-secret-2026',
-  ACCOUNT_SYNC_V2_CANARY_USER_IDS: USER_ID,
 };
 
 const birth = {
@@ -96,7 +95,6 @@ function authenticatedFetcher(rpcResponse: unknown) {
   return vi.fn(async (input: string | URL | Request, _init?: RequestInit) => {
     const url = new URL(String(input));
     if (url.pathname === '/auth/v1/user') return json({ id: USER_ID, email: 'person@example.com' });
-    if (url.pathname === '/rest/v1/charts') return json([]);
     if (url.pathname.startsWith('/rest/v1/rpc/')) return json(rpcResponse);
     throw new Error(`Unexpected fetch ${url}`);
   });
@@ -123,7 +121,7 @@ function hexToBase64(value: unknown): string {
 }
 
 describe('dormant account chart-sync API', () => {
-  it('fails closed for authenticated users outside the server-side canary allowlist', async () => {
+  it('admits any signed-in account without an allowlist and ignores a retired canary list', async () => {
     const fetcher = authenticatedFetcher({
       outcome: 'ready',
       account_state: 'active',
@@ -131,28 +129,28 @@ describe('dormant account chart-sync API', () => {
       cursor: 0,
     });
     const response = responseRecorder();
-    const { ACCOUNT_SYNC_V2_CANARY_USER_IDS: _allowlist, ...envWithoutAllowlist } = ENV;
     await handleAccountApi(request('bootstrap', {
       deviceId: DEVICE_ID,
       platform: 'web',
-    }), response, { env: envWithoutAllowlist, fetcher });
+    }), response, {
+      env: { ...ENV, ACCOUNT_SYNC_V2_CANARY_USER_IDS: '99999999-9999-4999-8999-999999999999' },
+      fetcher,
+    });
 
-    expect(response.statusCode).toBe(403);
-    expect(JSON.parse(response.body)).toEqual({ error: 'canary_not_allowed' });
-    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body)).toMatchObject({ outcome: 'ready', chart_sync_consent: 'pending' });
   });
 
-  it('keeps granular consent withdrawal available after canary admission is removed', async () => {
+  it('keeps granular consent withdrawal available', async () => {
     const fetcher = authenticatedFetcher({
       outcome: 'withdrawn', purpose: 'chart_sync', event_id: 10,
     });
     const response = responseRecorder();
-    const { ACCOUNT_SYNC_V2_CANARY_USER_IDS: _allowlist, ...envWithoutAllowlist } = ENV;
     await handleAccountApi(request('consent', {
       mutationId: MUTATION_ID,
       decision: 'withdraw',
       policyVersion: 'chart-sync-2026-08-12.v1',
-    }), response, { env: envWithoutAllowlist, fetcher });
+    }), response, { env: ENV, fetcher });
 
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body)).toEqual({
@@ -196,18 +194,17 @@ describe('dormant account chart-sync API', () => {
     expect(bootstrapFetcher).not.toHaveBeenCalled();
   });
 
-  it('keeps deletion of an existing remote chart available after canary admission is removed', async () => {
+  it('keeps deletion of an existing remote chart available', async () => {
     const fetcher = authenticatedFetcher({
       outcome: 'already_deleted', chart_id: CHART_ID, revision: 2,
     });
     const response = responseRecorder();
-    const { ACCOUNT_SYNC_V2_CANARY_USER_IDS: _allowlist, ...envWithoutAllowlist } = ENV;
     await handleAccountApi(request('chart-delete', {
       deviceId: DEVICE_ID,
       chartId: CHART_ID,
       baseRevision: 2,
       mutationId: MUTATION_ID,
-    }), response, { env: envWithoutAllowlist, fetcher });
+    }), response, { env: ENV, fetcher });
 
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body)).toEqual({
@@ -285,21 +282,20 @@ describe('dormant account chart-sync API', () => {
     expect(JSON.parse(response.body)).toEqual({ outcome: 'legacy_migration_required' });
   });
 
-  it('blocks v2 bootstrap when an ID-only check finds a legacy plaintext cloud chart', async () => {
-    const fetcher = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
+  it('never reads the v1 chart table during bootstrap and reports chart_emails', async () => {
+    const fetcher = vi.fn(async (input: string | URL | Request) => {
       const url = new URL(String(input));
       if (url.pathname === '/auth/v1/user') return json({ id: USER_ID, email: 'person@example.com' });
-      if (url.pathname === '/rest/v1/charts') {
-        expect(url.searchParams.get('select')).toBe('id');
-        expect(url.searchParams.get('user_id')).toBe(`eq.${USER_ID}`);
-        expect(url.searchParams.get('limit')).toBe('1');
-        expect(url.search).not.toContain('payload');
-        expect(init?.headers).toEqual(expect.objectContaining({
-          Authorization: `Bearer ${SERVICE_KEY}`,
-        }));
-        return json([{ id: CHART_ID }]);
+      if (url.pathname === '/rest/v1/rpc/account_v2_bootstrap') {
+        return json({
+          outcome: 'ready',
+          account_state: 'active',
+          chart_sync_consent: 'granted',
+          chart_emails_consent: 'withdrawn',
+          cursor: 4,
+        });
       }
-      throw new Error(`Bootstrap must not continue after legacy chart detection: ${url}`);
+      throw new Error(`Unexpected fetch ${url}`);
     });
     const response = responseRecorder();
     await handleAccountApi(request('bootstrap', { deviceId: DEVICE_ID, platform: 'web' }), response, {
@@ -308,8 +304,102 @@ describe('dormant account chart-sync API', () => {
     });
 
     expect(response.statusCode).toBe(200);
-    expect(JSON.parse(response.body)).toEqual({ outcome: 'legacy_migration_required' });
-    expect(fetcher.mock.calls.some(([input]) => String(input).includes('/rpc/account_v2_bootstrap'))).toBe(false);
+    expect(JSON.parse(response.body)).toEqual({
+      outcome: 'ready',
+      account_state: 'active',
+      chart_sync_consent: 'granted',
+      chart_emails_consent: 'withdrawn',
+      cursor: 4,
+    });
+    expect(fetcher.mock.calls.some(([input]) => String(input).includes('/rest/v1/charts'))).toBe(false);
+  });
+
+  it('reads a bootstrap from before the chart_emails migration as pending', async () => {
+    const fetcher = authenticatedFetcher({
+      outcome: 'ready',
+      account_state: 'active',
+      chart_sync_consent: 'pending',
+      cursor: 0,
+    });
+    const response = responseRecorder();
+    await handleAccountApi(request('bootstrap', { deviceId: DEVICE_ID, platform: 'web' }), response, {
+      env: ENV,
+      fetcher,
+    });
+    expect(JSON.parse(response.body)).toEqual({
+      outcome: 'ready',
+      account_state: 'active',
+      chart_sync_consent: 'pending',
+      chart_emails_consent: 'pending',
+      cursor: 0,
+    });
+  });
+
+  it('records the chart_emails purpose with its own policy version', async () => {
+    const fetcher = authenticatedFetcher({ outcome: 'granted', purpose: 'chart_emails', event_id: 21 });
+    const response = responseRecorder();
+    await handleAccountApi(request('consent', {
+      mutationId: MUTATION_ID,
+      decision: 'grant',
+      purpose: 'chart_emails',
+      policyVersion: 'chart-emails-2026-11-11.v1',
+    }), response, { env: ENV, fetcher });
+
+    expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body)).toEqual({ outcome: 'granted', purpose: 'chart_emails', event_id: 21 });
+    expect(JSON.parse(String(rpcInit(fetcher, 'account_v2_record_consent').body))).toEqual({
+      candidate_user_id: USER_ID,
+      candidate_purpose: 'chart_emails',
+      candidate_decision: 'grant',
+      candidate_policy_version: 'chart-emails-2026-11-11.v1',
+      candidate_source: 'web',
+      candidate_mutation_id: MUTATION_ID,
+      candidate_request_fingerprints: [expect.stringMatching(/^3:[0-9a-f]{64}$/u)],
+    });
+  });
+
+  it('refuses a chart_emails grant with the chart_sync policy version or an unknown purpose', async () => {
+    for (const body of [
+      { mutationId: MUTATION_ID, decision: 'grant', purpose: 'chart_emails', policyVersion: 'chart-sync-2026-08-12.v1' },
+      { mutationId: MUTATION_ID, decision: 'grant', purpose: 'ai_memory', policyVersion: 'ai-memory-2026-08-12.v1' },
+      { mutationId: MUTATION_ID, decision: 'withdraw', purpose: 'weekly_digest' },
+    ]) {
+      const fetcher = vi.fn();
+      const response = responseRecorder();
+      await handleAccountApi(request('consent', body), response, { env: ENV, fetcher });
+      expect(response.statusCode).toBe(400);
+      expect(fetcher).not.toHaveBeenCalled();
+    }
+  });
+
+  it('keeps chart_emails withdrawal available while the kill switch is off', async () => {
+    const fetcher = authenticatedFetcher({ outcome: 'withdrawn', purpose: 'chart_emails', event_id: 22 });
+    const response = responseRecorder();
+    await handleAccountApi(request('consent', {
+      mutationId: MUTATION_ID,
+      decision: 'withdraw',
+      purpose: 'chart_emails',
+    }), response, { env: { ...ENV, ACCOUNT_SYNC_V2_API_ENABLED: '0' }, fetcher });
+
+    expect(response.statusCode).toBe(200);
+    expect(JSON.parse(String(rpcInit(fetcher, 'account_v2_record_consent').body)))
+      .toEqual(expect.objectContaining({
+        candidate_purpose: 'chart_emails',
+        candidate_decision: 'withdraw',
+        candidate_policy_version: null,
+      }));
+  });
+
+  it('fails closed when the database answers a consent for another purpose', async () => {
+    const fetcher = authenticatedFetcher({ outcome: 'granted', purpose: 'chart_sync', event_id: 23 });
+    const response = responseRecorder();
+    await handleAccountApi(request('consent', {
+      mutationId: MUTATION_ID,
+      decision: 'grant',
+      purpose: 'chart_emails',
+      policyVersion: 'chart-emails-2026-11-11.v1',
+    }), response, { env: ENV, fetcher });
+    expect(response.statusCode).toBe(503);
   });
 
   it('hardcodes chart-sync consent purpose and web source', async () => {

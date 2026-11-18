@@ -21,6 +21,13 @@ requires `RESEND_SEGMENT_ID`. Leave the release flag unset: no sender and
 complete unsubscribe lifecycle have been accepted, and this remediation does
 not authorize creating or enabling either one.
 
+The chosen sender for this list (the Monday Note) is the provider's own
+broadcast tool, sent by hand: a Resend Broadcast to the weekly Segment, with
+Resend's unsubscribe link and suppression. No new sending code is planned.
+`docs/MONDAY-NOTE-RELEASE.md` turns the gate below into an ordered procedure
+with who, where and what proof for each step, plus the weekly routine. It has
+not been run; the flag stays unset until it is, with the owner's yes.
+
 The birth-chart placement has an additional client-side reveal condition after
 a chart is computed, but that is not a substitute for the server-side release
 gate.

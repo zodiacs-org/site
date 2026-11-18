@@ -134,6 +134,20 @@ describe('a solar return image', () => {
     }, NOW)).toThrow('calendar date');
   });
 
+  it('prints the UTC date of a return without a birth time from the unrounded instant, not the next day', () => {
+    // Birth date 1995-09-28, no time: the 2026 return falls at 23:59:51 UTC on 27 September.
+    const result = computeSolarReturn({
+      birthDate: '1995-09-28', birthTime: null, timeKnown: false, birthplace: null, savedSunLon: null,
+      houseSystem: 'whole', castLocation: null, year: 2026,
+    }, NOW);
+    const exact = (result.shared ?? result.chart).input.utc.toISOString();
+    expect(exact.slice(0, 19)).toBe('2026-09-27T23:59:51');
+    const image = solarImage(result);
+    expect(image.noTime).toBe(true);
+    expect(image.instantUtc.slice(0, 10)).toBe('2026-09-27');
+    expect(image.instantUtc.slice(0, 10)).toBe(exact.slice(0, 10));
+  });
+
   it('leaves out Placidus houses and the house they put the Sun in, and says so', () => {
     const b = births[0];
     const result = computeSolarReturn({

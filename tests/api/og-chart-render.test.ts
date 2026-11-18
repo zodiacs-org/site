@@ -21,8 +21,11 @@ describe('chart preview renderer', () => {
       engineVersion: '1.2.3',
     })!;
 
+    const { previewQuery } = await import('../../src/lib/share-preview');
+    const { previewPlacementsFromToken } = await import('../../src/server/chart-preview-model');
+    // The whole-degree preview query a link carries; an older link's full code is no longer drawn.
     const response = await handleChartImageRequest(new Request(
-      `https://zodiacs.org/api/og/chart-image?p=${encodeURIComponent(token)}`,
+      `https://zodiacs.org/api/og/chart-image?${previewQuery(previewPlacementsFromToken(token)!)}`,
     ));
     const png = Buffer.from(await response.arrayBuffer());
 

@@ -17,22 +17,43 @@ interface RemoteDeletionDbRow {
   deleted_at: string | null;
 }
 
-interface RemoteDigestPreferenceRow {
-  digest_opt_in: boolean | null;
-}
-
 let timer: number | undefined;
+/** Chart ids the last successful read found in the account; null before any read. */
+let accountChartIds: ReadonlySet<string> | null = null;
 let inFlight: Promise<boolean> | null = null;
 const ACCOUNT_SYNC_V2_ENABLED = accountSyncV2Enabled();
 
 export { isSupabaseConfigured };
 
-export type ChartSaveStatus = 'local' | 'syncing' | 'synced' | 'error';
+/**
+ * Chart sync is paused: this module reads the charts an account already
+ * holds, merges them into the device, and carries removals (chart ids and
+ * times only) to the account. It never sends a chart's contents. Charts
+ * saved after the pause stay on the device.
+ */
+export const CHART_UPLOAD_PAUSED = true;
+
+/** 'paused': the last read-and-delete pass succeeded; nothing was uploaded. */
+export type ChartSaveStatus = 'local' | 'syncing' | 'synced' | 'paused' | 'error';
 let chartSaveStatus: ChartSaveStatus = 'local';
 export function getChartSaveStatus(): ChartSaveStatus { return chartSaveStatus; }
 function announceSaveStatus(status: ChartSaveStatus): void {
   chartSaveStatus = status;
   if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('zodiacs:chart-save-status', { detail: status }));
+}
+
+/**
+ * Whether the last successful read found this chart in the account. Features
+ * that need a chart row in the account (the daily chart email, invitations)
+ * are offered only for such a chart while chart sync is paused.
+ */
+export function chartFoundInAccount(id: string): boolean {
+  return accountChartIds?.has(id) ?? false;
+}
+
+/** The chart ids the last successful read found in the account (empty before any read). */
+export function accountChartIdsFromLastRead(): string[] {
+  return accountChartIds ? [...accountChartIds] : [];
 }
 
 export async function getSyncSession(): Promise<Session | null> {
@@ -47,6 +68,7 @@ export function onSyncAuthChange(callback: (session: Session | null) => void): (
   const client = getSupabaseClient();
   if (!client) return () => {};
   const { data } = client.auth.onAuthStateChange((_event, session) => {
+    if (!session) accountChartIds = null;
     callback(session);
     if (session && !ACCOUNT_SYNC_V2_ENABLED) scheduleCloudSync(0);
   });
@@ -73,6 +95,7 @@ export async function signOutOfSync(): Promise<void> {
   if (!client) return;
   const { error } = await client.auth.signOut();
   if (error) throw error;
+  accountChartIds = null;
 }
 
 /** Removes only this browser session; other signed-in devices remain active. */
@@ -81,46 +104,10 @@ export async function signOutOfSyncLocal(): Promise<void> {
   if (!client) return;
   const { error } = await client.auth.signOut({ scope: 'local' });
   if (error) throw error;
+  accountChartIds = null;
 }
 
-export async function getDigestOptIn(): Promise<boolean> {
-  const client = getSupabaseClient();
-  if (!client) return false;
-
-  const { data: userData, error: userError } = await client.auth.getUser();
-  if (userError || !userData.user) return false;
-
-  const { data, error } = await client
-    .from('profiles')
-    .select('digest_opt_in')
-    .eq('user_id', userData.user.id)
-    .maybeSingle<RemoteDigestPreferenceRow>();
-  if (error) throw error;
-
-  return data?.digest_opt_in === true;
-}
-
-export async function setDigestOptIn(digestOptIn: boolean): Promise<boolean> {
-  const client = getSupabaseClient();
-  if (!client) return false;
-
-  const { data: userData, error: userError } = await client.auth.getUser();
-  if (userError || !userData.user) return false;
-
-  // Write only the digest column. On conflict this leaves `settings`
-  // untouched (the main sync path owns it); a stale local profile can no
-  // longer clobber the synced settings. On insert, `settings` takes its
-  // column default and the trigger stamps updated_at.
-  const { error } = await client
-    .from('profiles')
-    .upsert({
-      user_id: userData.user.id,
-      digest_opt_in: digestOptIn,
-    }, { onConflict: 'user_id' });
-  if (error) throw error;
-
-  return true;
-}
+export { getDigestOptIn, setDigestOptIn } from './digest-preference';
 
 export function scheduleCloudSync(delay = 500): void {
   if (ACCOUNT_SYNC_V2_ENABLED) return;
@@ -142,7 +129,7 @@ export async function syncNow(): Promise<boolean> {
   if (inFlight) return inFlight;
   announceSaveStatus('syncing');
   inFlight = syncProfile().then(ok => {
-    announceSaveStatus(ok ? 'synced' : 'local');
+    announceSaveStatus(ok ? 'paused' : 'local');
     return ok;
   }).catch(error => {
     announceSaveStatus('error');
@@ -201,17 +188,8 @@ async function syncProfile(): Promise<boolean> {
     }, { onConflict: 'user_id' });
   if (upsertProfileError) throw upsertProfileError;
 
-  if (merged.profile.charts.length > 0) {
-    const { error: upsertChartsError } = await client
-      .from('charts')
-      .upsert(merged.profile.charts.map((chart) => ({
-        id: chart.id,
-        user_id: userData.user.id,
-        payload: chart,
-        updated_at: chart.updatedAt,
-      })), { onConflict: 'id' });
-    if (upsertChartsError) throw upsertChartsError;
-  }
+  // Chart sync is paused (CHART_UPLOAD_PAUSED): no chart contents are sent.
+  // Charts stay on this device; the account keeps only what it held before.
 
   if (merged.deletions.length > 0) {
     const { error: upsertDeletionsError } = await client
@@ -233,9 +211,13 @@ async function syncProfile(): Promise<boolean> {
     if (deleteChartsError) throw deleteChartsError;
   }
 
-  // Data-free completion signal for optional account-aware surfaces. Local
-  // profile writes fire before their cloud upsert; consumers that require
-  // proven RLS ownership must re-read only after the sync has fully succeeded.
+  const removed = new Set(merged.deletedChartIds);
+  accountChartIds = new Set((remoteCharts ?? [])
+    .map((row) => (row as RemoteChartDbRow).id)
+    .filter((id): id is string => typeof id === 'string' && !removed.has(id)));
+
+  // Data-free completion signal for optional account-aware surfaces. They
+  // must re-read the account only after the pass has fully succeeded.
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new Event('zodiacs:profile-synced'));
   }

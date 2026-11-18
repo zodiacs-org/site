@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'preact/hooks';
 import { markPrimarySelfChart } from '../../lib/profile/store';
+import { runAfterProfileAccess } from '../../lib/account-v2/profile-access-request';
+import { t } from '../../lib/i18n';
 import type { SavedChart } from '../../lib/profile/schema';
 
 interface Props {
@@ -22,11 +24,18 @@ export default function LivingSelfChartChooser({ charts }: Props) {
   if (choices.length === 0) return null;
 
   const choose = () => {
-    if (!selected || !markPrimarySelfChart(selected)) {
+    if (!selected) {
       setMessage('That chart could not be selected. Try again.');
       return;
     }
-    setMessage('Opening your personal forecast…');
+    const chartId = selected;
+    runAfterProfileAccess(() => {
+      if (!markPrimarySelfChart(chartId)) {
+        setMessage('That chart could not be selected. Try again.');
+        return;
+      }
+      setMessage('Opening your personal forecast…');
+    }, () => setMessage(t('en', 'profileSaveUnavailable')));
   };
 
   return (

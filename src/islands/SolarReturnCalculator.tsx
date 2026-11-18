@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { ComponentType } from 'preact';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
 import PlaceSearch from './PlaceSearch';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { loadProfile } from '../lib/profile/read-store';
@@ -15,6 +16,7 @@ import { loadModule } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
 
 type ResultComponent = ComponentType<SolarReturnResultProps>;
+type SolarReturnLaunch = Pick<SolarReturnResultProps, 'themes' | 'yearScoreLink' | 'birthdayReportLink'>;
 
 function profileInputKey(profile: Profile, source: 'saved' | 'manual', savedId: string): string {
   if (source === 'manual') return JSON.stringify(profile.settings.houseSystem);
@@ -29,7 +31,8 @@ function profileInputKey(profile: Profile, source: 'saved' | 'manual', savedId: 
   });
 }
 
-export default function SolarReturnCalculator() {
+/** The launch switches the page reads at build time (src/lib/launch-flags.ts), passed on to the result. */
+export default function SolarReturnCalculator({ themes = false, yearScoreLink = false, birthdayReportLink = false }: SolarReturnLaunch = {}) {
   const { profile, ready: profileReady } = useProfile();
   const [source, setSource] = useState<'saved' | 'manual'>('manual');
   const [savedId, setSavedId] = useState('');
@@ -146,6 +149,17 @@ export default function SolarReturnCalculator() {
       year: yearMode === 'current' ? 'current' as const : Number(customYear),
     };
     if (input.castLocation) input.castLocation = { ...input.castLocation };
+    // A birth date under 13 or still to come (a saved chart's too) is refused before anything loads.
+    // A date read in the Julian calendar is checked again once it is Gregorian.
+    const earlyRefusal = selected || !calendarInPlay(input.birthDate, calendar)
+      ? birthDateRefusal(input.birthDate)
+      : null;
+    if (earlyRefusal) {
+      revision.current += 1;
+      setResult(null);
+      setError(birthDateRefusalText(earlyRefusal));
+      return;
+    }
     const request = ++revision.current;
     inFlight.current = true;
     setResult(null);
@@ -169,6 +183,11 @@ export default function SolarReturnCalculator() {
           return;
         }
         input.birthDate = entry.date;
+        const refusal = birthDateRefusal(input.birthDate);
+        if (refusal) {
+          setError(birthDateRefusalText(refusal));
+          return;
+        }
       }
       await prepareLocalTime(input.birthDate, input.birthplace?.tz ?? 'UTC');
       if (!isCurrent()) return;
@@ -256,11 +275,11 @@ export default function SolarReturnCalculator() {
 
           <button class="btn btn--primary calc__submit" type="submit" disabled={!ready || busy || (differentPlace && effectiveTimeKnown && !(saved && !saved.birth.place) && !castCity)}><span>{busy ? 'Computing…' : 'Find my solar return'}</span><span class="orb" aria-hidden="true">↗</span></button>
           <p class="calc__privacy"><strong>Private by default.</strong> The chart is calculated on this device; nothing is uploaded.</p>
-          {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
+          {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef} lang={birthDateRefusalLang(error)}>{error}</p>}
           <CalculationReload error={error} locale="en" />
         </div>
       </form>
-      {result && ResultView && WheelView && <ResultView key={result.revision} result={result.data} Wheel={WheelView} />}
+      {result && ResultView && WheelView && <ResultView key={result.revision} result={result.data} Wheel={WheelView} themes={themes} yearScoreLink={yearScoreLink} birthdayReportLink={birthdayReportLink} />}
     </div>
   );
 }

@@ -1,11 +1,13 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import Motion from '../../../components/Motion.astro';
 import NumerologyCalculator from '../../../islands/NumerologyCalculator';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES, type LifePathPage } from '../../../data/numerology-pages';
-import { baseDigit, MASTER_NUMBERS, NUMBER_MEANINGS, type CoreNumber } from '../../../data/numerology-meanings';
+import { baseDigit, MASTER_NUMBERS, NUMBER_HUES, NUMBER_MEANINGS, type CoreNumber } from '../../../data/numerology-meanings';
 import { lifePathDistribution, lifePathExample, nextDatesWithLifePath, reduceKeepingMasters } from '../../../lib/numerology';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
 import { HOME_ART_CARD } from '../../../lib/og-art-cards.mjs';
+import { launchFlagOn } from '../../../lib/launch-flags';
 import '../../../styles/calculator.css';
 
 export function getStaticPaths() {
@@ -102,32 +104,53 @@ const jsonLd = [
   type="article"
   jsonLd={jsonLd}
 >
-  <article class="container container--narrow lp-page">
+  <Motion />
+  <article class="container container--narrow lp-page" style={`--lp-hue:${NUMBER_HUES[number]}`}>
     <header class="lp-hero">
-      <a class="crumb" href="/numerology/"><span class="crumb__arrow" aria-hidden="true">←</span>Life path numbers</a>
-      <h1 class="display">Life Path {number}</h1>
-      <p class="lp-lead">
-        <strong>{meaning.name}.</strong> {meaning.keywords.join(', ')}.
-      </p>
+      <div class="lp-hero__top">
+        <div class="lp-hero__text">
+          <a class="crumb" href="/numerology/"><span class="crumb__arrow" aria-hidden="true">←</span>Life path numbers</a>
+          <h1 class="display">Life Path {number}</h1>
+          <p class="lp-lead">
+            <strong>{meaning.name}.</strong> {meaning.keywords.join(', ')}.
+          </p>
+        </div>
+        <svg class="lp-seal" viewBox="0 0 160 160" width="160" height="160" aria-hidden="true" focusable="false">
+          <g data-enter="draw" fill="none" stroke-linecap="round">
+            <circle class="motion-stroke lp-seal__ring" cx="80" cy="80" r="74" pathLength="1" transform="rotate(-90 80 80)" />
+            <circle class="motion-stroke lp-seal__ring lp-seal__ring--in" cx="80" cy="80" r="62" pathLength="1" transform="rotate(-90 80 80)" style="--motion-delay:120ms" />
+          </g>
+          <g class:list={['lp-seal__disc', isMaster && 'is-master']} data-enter="disc" style="--motion-delay:260ms">
+            <circle cx="80" cy="80" r="48" />
+            <text x="80" y="80" dy="0.35em" text-anchor="middle">{number}</text>
+          </g>
+          {isMaster && (
+            <g class="lp-seal__base" data-enter="disc" style="--motion-delay:420ms">
+              <circle cx="132.33" cy="132.33" r="13" />
+              <text x="132.33" y="132.33" dy="0.36em" text-anchor="middle">{baseDigit(number)}</text>
+            </g>
+          )}
+        </svg>
+      </div>
 
       <dl class="plc-panel mono">
-        <div class="plc-panel__row">
+        <div class="plc-panel__row" data-enter="rise">
           <dt>Totals that reduce to {number}</dt>
           <dd>{totalsLine}</dd>
         </div>
-        <div class="plc-panel__row">
+        <div class="plc-panel__row" data-enter="rise">
           <dt>Share of birth dates, 1900 to 2099</dt>
           <dd>{share}</dd>
         </div>
-        <div class="plc-panel__row">
+        <div class="plc-panel__row" data-enter="rise">
           <dt>Master number</dt>
           <dd>{masterLine}</dd>
         </div>
-        <div class="plc-panel__row">
+        <div class="plc-panel__row" data-enter="rise">
           <dt>Next birth dates from {asOf}</dt>
           <dd>{nextDatesLine}</dd>
         </div>
-        <div class="plc-panel__row">
+        <div class="plc-panel__row" data-enter="rise">
           <dt>Worked example, <time datetime={exampleDate}>{exampleDateLong}</time></dt>
           <dd>{exampleLine}</dd>
         </div>
@@ -152,7 +175,7 @@ const jsonLd = [
           Computed on your device; nothing is sent anywhere.
         </p>
       </div>
-      <NumerologyCalculator client:visible currentLifePath={number} />
+      <NumerologyCalculator client:visible currentLifePath={number} share={launchFlagOn('PUBLIC_NUMEROLOGY_SHARE_ENABLED')} />
       <noscript>
         <p>This numerology calculator needs JavaScript. Enable it and reload to compute your Life Path and name numbers from your birth date and full name.</p>
       </noscript>
@@ -181,11 +204,11 @@ const jsonLd = [
       <div class="plc-more__col">
         <span class="plc-more__head">Other life paths</span>
         <div class="plc-more__chips">
-          <a class="plc-chip" href={`/numerology/life-path/${prevNumber}/`}>← Life Path {prevNumber}</a>
+          <a class="plc-chip" href={`/numerology/life-path/${prevNumber}/`} style={`--chip-hue:${NUMBER_HUES[prevNumber]}`}>← Life Path {prevNumber}</a>
           {LIFE_PATH_NUMBERS.filter((n) => n !== prevNumber && n !== nextNumber).map((n) => (
-            <a class="plc-chip" href={`/numerology/life-path/${n}/`} aria-current={n === number ? 'page' : undefined}>Life Path {n}</a>
+            <a class="plc-chip" href={`/numerology/life-path/${n}/`} aria-current={n === number ? 'page' : undefined} style={`--chip-hue:${NUMBER_HUES[n]}`}>Life Path {n}</a>
           ))}
-          <a class="plc-chip" href={`/numerology/life-path/${nextNumber}/`}>Life Path {nextNumber} →</a>
+          <a class="plc-chip" href={`/numerology/life-path/${nextNumber}/`} style={`--chip-hue:${NUMBER_HUES[nextNumber]}`}>Life Path {nextNumber} →</a>
         </div>
       </div>
     </nav>
@@ -195,6 +218,29 @@ const jsonLd = [
 <style>
   .lp-page { display: grid; gap: clamp(28px, 5vw, 44px); padding-block: clamp(24px, 5vw, 56px) clamp(36px, 6vw, 72px); }
   .lp-hero { display: grid; gap: 18px; justify-items: start; }
+  .lp-hero__top { display: grid; gap: 18px; width: 100%; align-items: center; }
+  .lp-hero__text { display: grid; gap: 18px; justify-items: start; min-width: 0; }
+  /* The seal sits above the text on phones (small, so the panel stays high)
+     and beside it from 640px. Decorative: the number is in the heading. */
+  .lp-seal { order: -1; display: block; width: 88px; height: auto; overflow: visible; }
+  @media (min-width: 640px) {
+    .lp-hero__top { grid-template-columns: 1fr auto; gap: 32px; }
+    .lp-seal { order: 0; width: clamp(128px, 16vw, 160px); }
+  }
+  .lp-seal__ring { stroke: var(--hair-3); stroke-width: 1; }
+  .lp-seal__ring--in { stroke: var(--hair-2); }
+  .lp-seal__disc circle { fill: var(--lp-hue); }
+  .lp-seal__disc text {
+    fill: var(--void-0);
+    font-family: var(--font-serif);
+    font-size: 46px;
+    font-weight: 500;
+    font-variant-numeric: lining-nums;
+  }
+  .lp-seal__disc.is-master circle { fill: var(--void-1); stroke: var(--lp-hue); stroke-width: 2; }
+  .lp-seal__disc.is-master text { fill: var(--lp-hue); font-size: 40px; }
+  .lp-seal__base circle { fill: var(--lp-hue); }
+  .lp-seal__base text { fill: var(--void-0); font-family: var(--font-serif); font-size: 14px; font-weight: 500; }
   .lp-hero h1 {
     margin: 0;
     font-size: clamp(2.1rem, 1.4rem + 3.4vw, 3.6rem);
@@ -250,6 +296,16 @@ const jsonLd = [
     transition: color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
   }
   .plc-chip:hover { color: var(--text); background: rgba(198, 204, 218, 0.09); }
+  .plc-chip[style*='--chip-hue']::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 7px;
+    border-radius: 50%;
+    background: var(--chip-hue);
+    vertical-align: 0.06em;
+  }
   .plc-chip[aria-current='page'] { color: var(--text); box-shadow: inset 0 0 0 1px var(--hair-2); }
   @media (prefers-reduced-motion: reduce) { .plc-chip { transition: none; } }
 </style>

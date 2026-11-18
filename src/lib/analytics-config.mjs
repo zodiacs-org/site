@@ -1,9 +1,11 @@
+import { ARRIVAL_REF_VALUES } from './arrival-refs.mjs';
+
 /** Property allowlist shared by Astro pages and the generated Registry shell. */
 export const ANALYTICS_EVENT_PROPS = Object.freeze({
   chart_computed: ['mode', 'source'],
   chart_saved: ['source'],
   compat_computed: ['source'],
-  email_subscribed: ['placement'],
+  email_subscribed: ['placement', 'source'],
   share_card_downloaded: ['variant'],
   widget_embed_copied: ['widget', 'mode'],
   registry_visit: [],
@@ -44,6 +46,19 @@ export const ANALYTICS_EVENT_PROPS = Object.freeze({
   invite_converted: ['action'],
   invite_revoked: [],
 
+  // The growth tests' counts (docs/ANALYTICS.md, "Growth test events"). Every
+  // property here has a closed list below; none can carry an email address, a
+  // sign, a birth date, time or place, a name or anything typed.
+  good_day_check: ['use', 'source'],
+  good_day_calendar_add: ['source'],
+  year_score_completed: [],
+  year_pack_cta: ['surface'],
+  year_pack_unlocked: ['kind'],
+  birthday_card_made: ['source'],
+  birthday_card_arrival: [],
+  birthday_reminder_added: [],
+  birthday_gift_cta: [],
+
   // Existing event names remain accepted so historical funnels do not break.
   result_rendered: ['mode'],
   explorer_interaction: ['mode', 'source'],
@@ -55,7 +70,7 @@ export const ANALYTICS_EVENT_PROPS = Object.freeze({
   first_reading_step: ['step'],
   first_reading_completed: [],
   next_action_clicked: ['state', 'action'],
-  email_capture_viewed: ['placement'],
+  email_capture_viewed: ['placement', 'source'],
   search_open: [],
   search_go: ['kind'],
   assistant_open: [],
@@ -67,8 +82,11 @@ export const ANALYTICS_EVENT_PROPS = Object.freeze({
   living_chart_saved: ['mode'],
   living_chart_deleted: [],
   living_chart_export: ['format'],
-  calendar_subscribe: [],
-  calendar_download: [],
+  // The retention hooks (docs/ANALYTICS.md, "Retention hook events"): which
+  // calendar or feed was chosen, from closed lists below, and nothing else.
+  calendar_subscribe: ['feed'],
+  calendar_download: ['feed'],
+  rss_subscribe: ['feed', 'placement'],
   chart_save: ['source'],
   chart_share: ['variant'],
   wing_entry: ['source'],
@@ -88,6 +106,57 @@ const ZODIAC_SIGN_VALUES = Object.freeze([
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ]);
 
+/**
+ * Which kind of link opened the browser tab. `direct` is the default: no
+ * recognised `?ref=` word. The rest are the only `ref` words the site reads
+ * (src/lib/arrival-source.ts) and the only ones a share page accepts
+ * (src/lib/share-results.ts); any other word is dropped. The list lives in its
+ * own small module so the share parsers can read it without this whole file.
+ */
+export { ARRIVAL_REF_VALUES };
+export const ARRIVAL_SOURCE_VALUES = Object.freeze(['direct', ...ARRIVAL_REF_VALUES]);
+
+/** Where an email sign-up form sits. */
+export const EMAIL_CAPTURE_PLACEMENT_VALUES = Object.freeze([
+  'chart', 'horoscopes', 'footer', 'note_page', 'good_days', 'year_score', 'birthday_card',
+]);
+
+/** First, second or a later use on this device (src/lib/use-count.ts). */
+export const USE_BUCKET_VALUES = Object.freeze(['first', 'second', 'more']);
+
+/**
+ * The only events a link may name in its `data-hook-event` attribute. The
+ * analytics bootstrap in src/layouts/Base.astro tracks a click on such a link
+ * with its `data-hook-feed` and `data-hook-placement` values, and the shim
+ * drops any value that is not on the closed lists below.
+ */
+export const ANALYTICS_HOOK_EVENTS = Object.freeze([
+  'calendar_subscribe', 'calendar_download', 'rss_subscribe',
+]);
+
+/**
+ * Which calendar a visitor subscribed to or downloaded. All but `transits`
+ * are the site's public .ics files, the same for every visitor; `transits` is
+ * the file of a visitor's own transit contacts built in the browser
+ * (src/islands/CalendarSubscribe.tsx), counted by that word alone.
+ */
+export const CALENDAR_FEED_VALUES = Object.freeze([
+  'sky', 'heads_up', 'eclipses', 'full_moons', 'mercury_retrograde', 'transits',
+]);
+
+/**
+ * The site's public RSS feeds (src/pages/feeds/). A single sign's feed counts
+ * as `horoscopes_sign` or `events_sign`, never by its sign. The market research feed is not here.
+ */
+export const RSS_FEED_VALUES = Object.freeze([
+  'horoscopes', 'horoscopes_sign', 'daily_sky', 'almanac', 'events', 'events_sign',
+]);
+
+/** Where the RSS link sat. */
+export const RSS_PLACEMENT_VALUES = Object.freeze([
+  'footer', 'horoscope_page', 'feeds_page', 'developers',
+]);
+
 const REGISTRY_BRIDGE_SURFACE_VALUES = Object.freeze([
   'birth_chart', 'birthday', 'sign_guide',
 ]);
@@ -98,6 +167,30 @@ const REGISTRY_BRIDGE_LOCALE_VALUES = Object.freeze([
 
 /** Closed-value contracts for non-identifying product dimensions. */
 export const ANALYTICS_EVENT_VALUES = Object.freeze({
+  email_capture_viewed: Object.freeze({
+    placement: EMAIL_CAPTURE_PLACEMENT_VALUES,
+    source: ARRIVAL_SOURCE_VALUES,
+  }),
+  email_subscribed: Object.freeze({
+    placement: EMAIL_CAPTURE_PLACEMENT_VALUES,
+    source: ARRIVAL_SOURCE_VALUES,
+  }),
+  good_day_check: Object.freeze({
+    use: USE_BUCKET_VALUES,
+    source: ARRIVAL_SOURCE_VALUES,
+  }),
+  good_day_calendar_add: Object.freeze({ source: ARRIVAL_SOURCE_VALUES }),
+  calendar_subscribe: Object.freeze({ feed: CALENDAR_FEED_VALUES }),
+  calendar_download: Object.freeze({ feed: CALENDAR_FEED_VALUES }),
+  rss_subscribe: Object.freeze({
+    feed: RSS_FEED_VALUES,
+    placement: RSS_PLACEMENT_VALUES,
+  }),
+  year_pack_cta: Object.freeze({
+    surface: Object.freeze(['year_score', 'year_sky', 'birthday_report', 'birthday_card']),
+  }),
+  year_pack_unlocked: Object.freeze({ kind: Object.freeze(['self', 'gift']) }),
+  birthday_card_made: Object.freeze({ source: Object.freeze(['direct', 'card']) }),
   assistant_arrival: Object.freeze({
     assistant: Object.freeze(['chatgpt', 'assistant']),
   }),

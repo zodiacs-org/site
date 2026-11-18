@@ -3,16 +3,27 @@ import { useEffect, useMemo, useRef } from 'preact/hooks';
 import type { ComponentType } from 'preact';
 import type { WheelProps } from '../../lib/wheel/Wheel';
 import { houseOf } from '../../lib/engine/houses';
-import { formatLongitude, signForLongitude } from '../../lib/signs';
+import { SIGNS, formatLongitude, signForLongitude } from '../../lib/signs';
 import type { SolarReturnResultData } from './compute';
 import { SR_COPY } from './copy';
 import { solarReturnExportModel } from './export-model';
 import SolarReturnActions from './SolarReturnActions';
 import EvidenceDisclosure from '../EvidenceDisclosure';
+import { solarReturnThemes } from '../../lib/solar-return/themes';
+import { solarReturnShareUrl } from '../../lib/solar-return/share';
 
-export interface SolarReturnResultProps { result: SolarReturnResultData; Wheel: ComponentType<WheelProps> }
+export interface SolarReturnResultProps {
+  result: SolarReturnResultData;
+  Wheel: ComponentType<WheelProps>;
+  /** The themes block and share link, behind PUBLIC_SOLAR_RETURN_SHARE_ENABLED (src/lib/launch-flags.ts). */
+  themes?: boolean;
+  /** The button to /year-score/, behind PUBLIC_YEAR_SCORE_ENABLED. */
+  yearScoreLink?: boolean;
+  /** The button to /birthday-report/, behind PUBLIC_BIRTHDAY_REPORT_ENABLED. */
+  birthdayReportLink?: boolean;
+}
 
-export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
+export function SolarReturnResult({ result, Wheel, themes: themesOn = false, yearScoreLink = false, birthdayReportLink = false }: SolarReturnResultProps) {
   const { chart } = result;
   const model = useMemo(() => solarReturnExportModel(result), [result]);
   // Images and calendar files start from the natal Sun at the whole minute.
@@ -21,6 +32,22 @@ export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
   const sun = chart.bodies.find((body) => body.body === 'Sun')!;
   const planetsOnly = model.reading[0]?.kind === 'planets-only';
   const headingRef = useRef<HTMLHeadingElement>(null);
+  // The year's main themes, from the same reading as the get_solar_return tool (src/lib/solar-return/themes.ts).
+  // The rising sign and the Sun's house are already in the opening, so the list adds the rest.
+  const themes = useMemo(() => solarReturnThemes({
+    bodies: chart.bodies, aspects: chart.aspects,
+    asc: wheel.angles?.asc ?? null, cusps: wheel.houses?.cusps ?? null, timeKnown: !result.noTime,
+  }).filter((theme) => theme.kind !== 'rising' && theme.kind !== 'sun-house' && !(planetsOnly && theme.kind === 'aspect')), [chart, wheel, result.noTime, planetsOnly]);
+  // The share link carries the Sun sign, the year and the rising and Jupiter signs only, never a birth detail.
+  // Without a birth time, only when the birth day settles the Sun sign (result.sunSign); no sign is guessed.
+  const sunSlug = result.noTime ? (typeof result.sunSign === 'number' ? SIGNS[result.sunSign].slug : null) : signForLongitude(sun.lon).slug;
+  const shareUrl = useMemo(() => {
+    const jupiter = chart.bodies.find((body) => body.body === 'Jupiter');
+    return jupiter && sunSlug ? solarReturnShareUrl(location.origin, {
+      sun: sunSlug, year: result.returnYear,
+      rising: wheel.angles ? signForLongitude(wheel.angles.asc).slug : null, jupiter: signForLongitude(jupiter.lon).slug,
+    }) : null;
+  }, [chart, sunSlug, result.returnYear, wheel.angles]);
 
   useEffect(() => {
     (window as typeof window & {
@@ -59,9 +86,30 @@ export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
         </div>
       </section>
 
+      {themesOn && themes.length > 0 && (
+        <section class="sr-themes" aria-labelledby="solar-return-themes-title">
+          {/* Without house cusps the themes read the planets by sign, the same for everyone with a birthday near this one. */}
+          {wheel.houses?.cusps ? <h2 id="solar-return-themes-title">The year’s main themes</h2> : <>
+            <h2 id="solar-return-themes-title">This birthday season's sky</h2>
+            <p data-sr-themes-shared>Shared by everyone with a birthday near yours. A birth time and place make it yours.</p>
+          </>}
+          <ul class="sr-themes__list">
+            {themes.map((theme) => (
+              <li key={theme.kind} class="tile sr-themes__item" data-sr-theme={theme.kind}>
+                <h3>{theme.title}</h3>
+                <p>{theme.line}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <SolarReturnActions model={shared} />
 
       <div class="calc__actions">
+        {themesOn && shareUrl && <a class="btn btn--primary" href={shareUrl} data-sr-share-link>Share your solar return ↗</a>}
+        {yearScoreLink && <a class="btn btn--ghost" href="/year-score/">Score the year ahead →</a>}
+        {birthdayReportLink && <a class="btn btn--ghost" href="/birthday-report/">Your birthday report →</a>}
         <a class="btn btn--ghost" href="/birth-chart/">Open your full birth chart →</a>
         <a class="btn btn--ghost" href="/transits/">See today’s transits →</a>
       </div>
@@ -70,10 +118,13 @@ export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
         <div class="sr-result__details-content">
           <p class="sr-result__instant mono" data-return-instant>
             Sun · {formatLongitude(sun.lon)}
-            <br />UTC · {chart.input.utc.toISOString().slice(0, 19).replace('T', ' · ')}
-            <br />Your time · {chart.input.utc.toLocaleString(undefined, {
-              year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short',
-            })}
+            {/* Without a birth time the return is a date, a day either side, never a clock time. */}
+            {result.noTime ? <><br />UTC date · {chart.input.utc.toISOString().slice(0, 10)}</> : <>
+              <br />UTC · {chart.input.utc.toISOString().slice(0, 19).replace('T', ' · ')}
+              <br />Your time · {chart.input.utc.toLocaleString(undefined, {
+                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short',
+              })}
+            </>}
           </p>
           {planetsOnly && (
             <p class="sr-result__instant mono" data-sr-planets-only-receipt>

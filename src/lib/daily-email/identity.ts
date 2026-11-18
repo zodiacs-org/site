@@ -42,9 +42,3 @@ export function dailyDeliveryIdempotencyKey(
   return `zodiacs-daily/${editionDate}/${digest}`;
 }
 
-export function maskDailyEmail(email: string): string {
-  const normalized = normalizeEmail(email);
-  if (!normalized) return '[email hidden]';
-  const [local, domain] = normalized.split('@');
-  return `${local.slice(0, 2)}***@${domain}`;
-}

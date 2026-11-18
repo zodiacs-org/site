@@ -40,9 +40,10 @@ describe('AccountSaveAction', () => {
     expect(render(<AccountSaveAction kind="page" noun="reading" draft={null} />)).toBe('');
   });
 
-  it('tells a signed-out chart reader that sign-in keeps saved charts on every device', () => {
+  it('tells a signed-out chart reader that saved charts stay in this browser while chart sync is paused', () => {
     const html = render(<AccountSaveAction kind="chart" />);
-    expect(html).toContain('Saved charts stay in this browser until you sign in');
-    expect(html).toContain('Sign in to save');
+    expect(html).toContain('Saved charts stay in this browser. Chart sync is paused for now.');
+    // Signing in sends no chart, so the line offers no sign-in.
+    expect(html).not.toContain('Sign in to save');
   });
 });

@@ -12,6 +12,8 @@ import EditorialLine from '../components/EditorialLine.astro';
 import GlassDefs from '../components/GlassDefs.astro';
 import EditionFreshnessGuard from '../components/EditionFreshnessGuard.astro';
 import { ANALYTICS_EVENT_PROPS, ANALYTICS_EVENT_VALUES } from '../lib/analytics';
+import { ANALYTICS_HOOK_EVENTS, ARRIVAL_REF_VALUES } from '../lib/analytics-config.mjs';
+import { ARRIVAL_SOURCE_SESSION_KEY } from '../lib/arrival-source';
 import { hasDailyChartEmailProvider } from '../lib/email/daily-config';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import { LOCALE_META, UI, isSectionLocale, normalizePageLocale, t, type PageLocale as Locale } from '../lib/i18n';
@@ -19,6 +21,16 @@ import { RUSSIAN_RUNTIME } from '../lib/i18n/ru-runtime/server';
 import AccountProfileAccessBootstrap from '../islands/AccountProfileAccessBootstrap';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../lib/account-v2/feature-flags';
 import { ACCOUNT_V2_PROFILE_ACCESS_KEY } from '../lib/account-v2/profile-access';
+import { ACCOUNT_BOUNDARY_PROFILE_KEYS } from '../lib/account-v2/profile-boundary';
+import {
+  PROFILE_ACCESS_CHUNK_PLACEHOLDER,
+  PROFILE_ACCESS_DEV_ENTRY,
+  profileAccessBootstrapEager,
+  profileAccessLoaderScript,
+  profileAccessMarkerKeys,
+} from '../lib/account-v2/profile-access-loader.mjs';
+import { PROFILE_SUN_SIGN_KEY } from '../lib/profile/store';
+import { supabaseAuthStorageKeyName } from '../lib/profile/saved-pages-config';
 import { GUIDE_PRIVATE_SESSION_KEY } from '../lib/assistant/guide-loader.mjs';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../lib/web-analytics.mjs';
 import { calculatorToolForPath } from '../lib/webmcp/calculator-tools';
@@ -70,6 +82,14 @@ interface Props {
   /** Suppress third-party runtime scripts on pages handling private account data. */
   privateSurface?: boolean;
   /**
+   * This page reads the browser's saved charts or account (the local profile
+   * store, the living chart, or a chart restored from account sync v2) and can
+   * render them. While account sync v2 is on, remote analytics stay off here,
+   * exactly as on a privateSurface page. `tests/analytics-account-surfaces.test.ts`
+   * finds every such page through its imports and fails if one is missing.
+   */
+  accountSurface?: boolean;
+  /**
    * Do not register the PWA worker on this route.
    *
    * For a surface that must be able to say it stores nothing: the worker's
@@ -102,15 +122,15 @@ const locale = normalizePageLocale(props.locale);
 const webMcpSearch = locale === 'en';
 const webMcpCalculator = calculatorToolForPath(Astro.url.pathname) !== null;
 // The daily-sky feed is English; its link title is localized so feed readers list it in the page's language.
-const FEED_TITLES: Record<typeof locale, { sky: string; horoscopes: string; almanac: string }> = {
-  en: { sky: 'Zodiacs.org | the sky, daily', horoscopes: 'Zodiacs.org daily horoscopes', almanac: 'The Zodiacs.org Almanac' },
-  es: { sky: 'Zodiacs.org | el cielo, cada día (en inglés)', horoscopes: 'Horóscopos diarios de Zodiacs.org (en inglés)', almanac: 'Almanaque de Zodiacs.org (en inglés)' },
-  pt: { sky: 'Zodiacs.org | o céu, todo dia (em inglês)', horoscopes: 'Horóscopos diários do Zodiacs.org (em inglês)', almanac: 'Almanaque do Zodiacs.org (em inglês)' },
-  fr: { sky: 'Zodiacs.org | le ciel, chaque jour (en anglais)', horoscopes: 'Horoscopes quotidiens de Zodiacs.org (en anglais)', almanac: 'Almanach de Zodiacs.org (en anglais)' },
-  it: { sky: 'Zodiacs.org | il cielo, ogni giorno (in inglese)', horoscopes: 'Oroscopi quotidiani di Zodiacs.org (in inglese)', almanac: 'Almanacco di Zodiacs.org (in inglese)' },
-  ru: { sky: 'Zodiacs.org | небо каждый день (по-английски)', horoscopes: 'Ежедневные гороскопы Zodiacs.org (по-английски)', almanac: 'Альманах Zodiacs.org (по-английски)' },
-  'zh-hans': { sky: 'Zodiacs.org 每日星空（英文）', horoscopes: 'Zodiacs.org 每日星座解读（英文）', almanac: 'Zodiacs.org 天文年历（英文）' },
-  'zh-hant': { sky: 'Zodiacs.org 每日星空（英文）', horoscopes: 'Zodiacs.org 每日星座解讀（英文）', almanac: 'Zodiacs.org 天文年曆（英文）' },
+const FEED_TITLES: Record<typeof locale, { sky: string; events: string; horoscopes: string; almanac: string }> = {
+  en: { sky: 'Zodiacs.org | the sky, daily', events: 'Zodiacs.org | sky events', horoscopes: 'Zodiacs.org daily horoscopes', almanac: 'The Zodiacs.org Almanac' },
+  es: { sky: 'Zodiacs.org | el cielo, cada día (en inglés)', events: 'Zodiacs.org | eventos del cielo (en inglés)', horoscopes: 'Horóscopos diarios de Zodiacs.org (en inglés)', almanac: 'Almanaque de Zodiacs.org (en inglés)' },
+  pt: { sky: 'Zodiacs.org | o céu, todo dia (em inglês)', events: 'Zodiacs.org | eventos do céu (em inglês)', horoscopes: 'Horóscopos diários do Zodiacs.org (em inglês)', almanac: 'Almanaque do Zodiacs.org (em inglês)' },
+  fr: { sky: 'Zodiacs.org | le ciel, chaque jour (en anglais)', events: 'Zodiacs.org | événements du ciel (en anglais)', horoscopes: 'Horoscopes quotidiens de Zodiacs.org (en anglais)', almanac: 'Almanach de Zodiacs.org (en anglais)' },
+  it: { sky: 'Zodiacs.org | il cielo, ogni giorno (in inglese)', events: 'Zodiacs.org | eventi del cielo (in inglese)', horoscopes: 'Oroscopi quotidiani di Zodiacs.org (in inglese)', almanac: 'Almanacco di Zodiacs.org (in inglese)' },
+  ru: { sky: 'Zodiacs.org | небо каждый день (по-английски)', events: 'Zodiacs.org | события на небе (по-английски)', horoscopes: 'Ежедневные гороскопы Zodiacs.org (по-английски)', almanac: 'Альманах Zodiacs.org (по-английски)' },
+  'zh-hans': { sky: 'Zodiacs.org 每日星空（英文）', events: 'Zodiacs.org 天象事件（英文）', horoscopes: 'Zodiacs.org 每日星座解读（英文）', almanac: 'Zodiacs.org 天文年历（英文）' },
+  'zh-hant': { sky: 'Zodiacs.org 每日星空（英文）', events: 'Zodiacs.org 天象事件（英文）', horoscopes: 'Zodiacs.org 每日星座解讀（英文）', almanac: 'Zodiacs.org 天文年曆（英文）' },
 };
 // Section locales carry a chrome-only catalog, which is never embedded for islands.
 if (props.clientUi && isSectionLocale(locale)) throw new Error(`${locale} pages cannot hydrate UI islands`);
@@ -121,16 +141,43 @@ const plausibleEndpoint = import.meta.env.PUBLIC_PLAUSIBLE_ENDPOINT?.trim() ?? '
 const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN?.trim() ?? '';
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
+// Remote analytics never run on a privateSurface page. The account, sync and
+// profile surfaces (profile in every locale, the auth callback) are private
+// whenever account sync v2 is on, and so is every accountSurface page: each
+// page that reads the saved charts or the account and can render them (the
+// birth chart, Today, transits, the homepages' welcome back, the chart tools).
+// A saved or synced chart and its consents therefore never share a page with
+// an analytics script. The access-controlled preview turned analytics off on
+// every page; since launch ordinary content pages keep the same
+// privacy-scoped analytics they had with the v1 client
+// (docs/ACCOUNT-SYNC-V2-TECHNICAL-CONTRACT.md).
+const analyticsExcluded = Boolean(
+  props.privateSurface || (props.accountSurface && accountSyncV2Enabled),
+);
 const plausibleEnabled = Boolean(
-  plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface
-  && !accountSyncV2Enabled,
+  plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded,
 );
 const webAnalyticsEnabled = Boolean(
-  vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface
-  && !accountSyncV2Enabled,
+  vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded,
 );
+// With account sync v2, only the profile pages and the two main calculators
+// hydrate the access bootstrap at load. Every other page carries the small
+// presence loader, which imports the same bootstrap only for a visitor who
+// already keeps something on this device, opens the account entry point, or
+// saves (src/lib/account-v2/profile-access-loader.mjs).
+const accountAccessEager = accountSyncV2Enabled && profileAccessBootstrapEager(props.path);
+const accountAccessLoader = accountSyncV2Enabled && !accountAccessEager
+  ? profileAccessLoaderScript({
+    src: import.meta.env.DEV ? PROFILE_ACCESS_DEV_ENTRY : PROFILE_ACCESS_CHUNK_PLACEHOLDER,
+    keys: profileAccessMarkerKeys({
+      supabaseAuthKey: supabaseAuthStorageKeyName(import.meta.env.PUBLIC_SUPABASE_URL),
+      ownerKey: ACCOUNT_V2_LOCAL_OWNER_KEY,
+      retainedOwnerKey: ACCOUNT_V2_RETAINED_OWNER_KEY,
+      profileKeys: [...ACCOUNT_BOUNDARY_PROFILE_KEYS, PROFILE_SUN_SIGN_KEY],
+    }),
+  })
+  : null;
 const dailyEmailLifecycleEnabled = hasDailyChartEmailProvider(process.env);
 const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ? direction : undefined;
 
@@ -228,6 +275,27 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         window.dispatchEvent(new Event('zodiacs:install-prompt-ready'));
       });
     </script>
+    <script is:inline>
+      // Pages crossfade with CSS view transitions (base.css). When the browser
+      // skips one, for a slow page or a hidden tab, it rejects that
+      // transition's promises. Nothing waits on them, so mark them handled
+      // and keep a skipped crossfade out of the page's error log. Chromium
+      // can skip before the page sees the transition at all, so a skipped
+      // crossfade's rejection is also marked handled when it surfaces.
+      window.addEventListener('unhandledrejection', function (event) {
+        var reason = event.reason;
+        if (reason && reason.name === 'AbortError' && reason.message === 'Transition was skipped') event.preventDefault();
+      });
+      ['pageswap', 'pagereveal'].forEach(function (type) {
+        window.addEventListener(type, function (event) {
+          var transition = event.viewTransition;
+          if (!transition) return;
+          [transition.ready, transition.finished, transition.updateCallbackDone].forEach(function (promise) {
+            if (promise) promise.catch(function () {});
+          });
+        });
+      });
+    </script>
     <link rel="icon" type="image/svg+xml" sizes="any" href={BRAND_ICON_PATHS.faviconSvg} />
     <link rel="icon" type="image/png" sizes="16x16" href={BRAND_ICON_PATHS.favicon16} />
     <link rel="icon" type="image/png" sizes="32x32" href={BRAND_ICON_PATHS.favicon32} />
@@ -235,6 +303,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     <link rel="apple-touch-icon" sizes="180x180" href={BRAND_ICON_PATHS.appleTouch} />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="alternate" type="application/rss+xml" title={FEED_TITLES[locale].sky} href="/feeds/daily-sky.xml" />
+    {props.rssFeed?.href !== '/feeds/events.xml' && <link rel="alternate" type="application/rss+xml" title={FEED_TITLES[locale].events} href="/feeds/events.xml" />}
     <link rel="alternate" type="application/rss+xml" title={FEED_TITLES[locale].horoscopes} href="/feeds/horoscopes.xml" />
     <link rel="alternate" type="application/rss+xml" title={FEED_TITLES[locale].almanac} href="/feeds/almanac.xml" />
     {props.rssFeed && (
@@ -324,15 +393,20 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         })();
       </script>
     )}
-    <script is:inline>window.zodiacsAnalytics = window.zodiacsAnalytics || Object.freeze({ track: function () {} });
+    <script is:inline define:vars={{ arrivalRefs: ARRIVAL_REF_VALUES, arrivalSessionKey: ARRIVAL_SOURCE_SESSION_KEY }}>window.zodiacsAnalytics = window.zodiacsAnalytics || Object.freeze({ track: function () {} });
       // Links from the Zodiacs app in an assistant carry ?ref=chatgpt or ?ref=assistant. Note which,
       // then take it out of the address so it is not copied into links people share.
+      // A word on the closed arrival list is also kept for this tab only (src/lib/arrival-source.ts);
+      // any other word is dropped, never stored.
       (function () {
         try {
           var url = new URL(location.href);
           var ref = url.searchParams.get('ref');
           if (ref === null) return;
           window.zodiacsArrival = ref === 'chatgpt' || ref === 'assistant' ? ref : null;
+          if (arrivalRefs.indexOf(ref) !== -1) {
+            try { sessionStorage.setItem(arrivalSessionKey, ref); } catch (error) {}
+          }
           url.searchParams.delete('ref');
           history.replaceState(history.state, '', url.pathname + url.search + url.hash);
         } catch (error) {}
@@ -347,6 +421,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
           guidePrivateSessionKey: GUIDE_PRIVATE_SESSION_KEY,
           analyticsEventProps: ANALYTICS_EVENT_PROPS,
           analyticsEventValues: ANALYTICS_EVENT_VALUES,
+          hookEvents: ANALYTICS_HOOK_EVENTS,
         }}>
           (function () {
             try {
@@ -391,6 +466,15 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
               var target = event.target;
               var link = target && target.closest ? target.closest('a[href]') : null;
               if (!link) return;
+              // A retention hook link names its event and closed values in data-hook-*
+              // attributes; track() above drops any value off the closed lists.
+              var hookEvent = link.getAttribute('data-hook-event');
+              if (hookEvents.indexOf(hookEvent) !== -1) {
+                window.zodiacsAnalytics.track(hookEvent, {
+                  feed: link.getAttribute('data-hook-feed'),
+                  placement: link.getAttribute('data-hook-placement')
+                });
+              }
               var href = link.getAttribute('href') || '';
               var destination = href.indexOf('/sdk/') === 0 ? 'docs'
                 : href.indexOf('npmjs.com/package/@zodiacs/sdk') !== -1 ? 'npm'
@@ -440,7 +524,8 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     <slot name="head" />
   </head>
   <body>
-    {accountSyncV2Enabled && <AccountProfileAccessBootstrap client:load />}
+    {accountAccessEager && <AccountProfileAccessBootstrap client:load />}
+    {accountAccessLoader && <script is:inline data-profile-access-loader set:html={accountAccessLoader} />}
     <!-- Keep the route catalog ahead of every island, but out of <head> so
          its ~20KB inline payload cannot delay CSS and LCP-font discovery. -->
     {clientUi && (

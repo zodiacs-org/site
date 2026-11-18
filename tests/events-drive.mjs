@@ -18,6 +18,7 @@ import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { readEventsPublication } from '../scripts/lib/events-publications.mjs';
+import { pastPagesHidden, pastPagesHiddenFailures } from '../src/lib/indexing/past-pages-hidden.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const CHROMIUM = await findChromium();
@@ -36,6 +37,28 @@ const publishedPaths = new Set([
   ...(eventsPublication.hub.indexEligible ? [eventsPublication.hub.path] : []),
   ...eventsPublication.pages.map((event) => event.path),
 ]);
+// Past pages hidden from search (ZOD-221, decision J): the list the pages and
+// the sitemap read. A listed page stays in the receipt, built and linked; it
+// renders noindex and leaves the sitemap and the search index.
+const hiddenPastPaths = JSON.parse(await readFile(
+  new URL('../src/data/indexing/past-pages-hidden.json', import.meta.url),
+  'utf8',
+)).paths;
+const isHiddenPastPage = pastPagesHidden(hiddenPastPaths);
+const hiddenListFailures = pastPagesHiddenFailures(hiddenPastPaths, {
+  today: new Date().toISOString().slice(0, 10),
+  publishedPaths,
+});
+check('hidden past pages: every listed page is a past page in the publication receipt',
+  hiddenListFailures.length === 0, hiddenListFailures.join('; '));
+// What search may list: the receipt's pages less the hidden ones.
+const indexedPaths = new Set([...publishedPaths].filter((path) => !isHiddenPastPage(path)));
+check('hidden past pages: the indexed set is the receipt less the list',
+  indexedPaths.size === publishedPaths.size - new Set(hiddenPastPaths).size,
+  `indexed=${indexedPaths.size} receipt=${publishedPaths.size} hidden=${hiddenPastPaths.length}`);
+const robotsOf = (html) => /<meta\s+name="robots"\s+content="([^"]*)"/u.exec(html)?.[1]
+  ?? /<meta\s+content="([^"]*)"\s+name="robots"/u.exec(html)?.[1]
+  ?? null;
 const isPhase2EventPath = (path) => (
   path === '/events/'
   || /^\/events\/(?!preview(?:\/|$))[a-z0-9-]+\/$/.test(path)
@@ -255,6 +278,9 @@ await withPreview({ port: 4412 }, async (BASE) => {
       check(`${route}: evidence disclosure closed by default`,
         await disclosure.count() === 1 && !(await disclosure.evaluate((node) => node.open)));
       check(`${route}: included in the publication receipt`, publishedPaths.has(route));
+      // The routes this drive opens are pages search may list. One that joins
+      // the hidden list must leave EVENT_PAGES for a page that is still listed.
+      check(`${route}: not on the hidden past pages list`, !isHiddenPastPage(route));
       check(`${route}: published page is indexable`,
         !(await page.locator('meta[name="robots"]').getAttribute('content'))?.includes('noindex'));
       check(`${route}: self-canonical URL`,
@@ -312,7 +338,7 @@ await withPreview({ port: 4412 }, async (BASE) => {
       check('full moon: evidence opens by keyboard',
         await page.locator('[data-evidence-disclosure]').evaluate((node) => node.open));
       check('full moon: opened evidence lists the exact instant',
-        (await page.locator('.event-evidence__rows').innerText()).includes('2026-07-29T14:35'));
+        (await page.locator('.event-evidence__rows').innerText()).includes('2026-07-29 14:35 UTC'));
       if (OUT) await page.screenshot({ path: `${OUT}/full-moon-1280-evidence-open.png`, fullPage: true });
       await page.close();
 
@@ -402,9 +428,11 @@ await withPreview({ port: 4412 }, async (BASE) => {
       );
       check(
         'sitemap: exact publication allowlist',
-        exactSet(sitemapEventPaths, publishedPaths),
-        `actual=${sitemapEventPaths.size} expected=${publishedPaths.size}`,
+        exactSet(sitemapEventPaths, indexedPaths),
+        `actual=${sitemapEventPaths.size} expected=${indexedPaths.size}`,
       );
+      const hiddenInSitemap = hiddenPastPaths.filter((path) => sitemapEventPaths.has(path));
+      check('sitemap: no hidden past page', hiddenInSitemap.length === 0, hiddenInSitemap.join(', '));
 
       const searchIndex = await (await fetch(`${BASE}/search-index.json`)).json();
       const searchEventPaths = new Set(searchIndex
@@ -412,9 +440,25 @@ await withPreview({ port: 4412 }, async (BASE) => {
         .filter((path) => !path.includes('#') && isPhase2EventPath(path)));
       check(
         'search index: exact publication allowlist',
-        exactSet(searchEventPaths, publishedPaths),
-        `actual=${searchEventPaths.size} expected=${publishedPaths.size}`,
+        exactSet(searchEventPaths, indexedPaths),
+        `actual=${searchEventPaths.size} expected=${indexedPaths.size}`,
       );
+      const hiddenInSearch = hiddenPastPaths.filter((path) => searchEventPaths.has(path));
+      check('search index: no hidden past page', hiddenInSearch.length === 0, hiddenInSearch.join(', '));
+
+      // Every hidden page is still served at its own address, and tells
+      // search to leave it out while following its links.
+      for (const path of hiddenPastPaths) {
+        const response = await fetch(`${BASE}${path}`);
+        const html = await response.text();
+        const robots = robotsOf(html);
+        check(`${path}: hidden past page is served, noindex and self-canonical`,
+          response.status === 200
+          && robots?.includes('noindex') === true
+          && robots.includes('follow') && !robots.includes('nofollow')
+          && html.includes(`<link rel="canonical" href="https://zodiacs.org${path}"`),
+          `status=${response.status} robots=${robots}`);
+      }
 
       const eventsFeed = await (await fetch(`${BASE}/feeds/events.xml`)).text();
       const feedIds = new Set(

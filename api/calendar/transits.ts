@@ -120,7 +120,8 @@ export async function handleTransitCalendar(
       send(res, 400, 'text/plain', 'Invalid positions-only chart token.', 'no-store');
       return;
     }
-    console.error(error);
+    // A fixed code only: never the error, the request address or the token, which carries chart positions.
+    console.error('transit-calendar: build-failed');
     send(res, 500, 'text/plain', 'Could not build the transit calendar.', 'no-store');
   }
 }

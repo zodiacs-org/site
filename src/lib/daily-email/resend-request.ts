@@ -3,7 +3,40 @@ export const RESEND_MIN_INTERVAL_MS = 250;
 export const RESEND_MAX_RETRIES = 3;
 export const RESEND_MAX_RETRY_AFTER_MS = 10_000;
 
-export type ResendRequest = (input: string | URL, init?: RequestInit) => Promise<Response>;
+/**
+ * Called by the queue after pacing (and after any 429 backoff), immediately
+ * before each provider attempt, with the attempt number (0 for the first).
+ * Returning false sends nothing more: the request rejects with
+ * ResendRequestWithdrawnError. A guard that throws also sends nothing; the
+ * request rejects with what it threw.
+ */
+export type ResendAttemptGuard = (attempt: number) => Promise<boolean>;
+
+export interface ResendRequestControl {
+  beforeAttempt?: ResendAttemptGuard;
+}
+
+export type ResendRequest = (
+  input: string | URL,
+  init?: RequestInit,
+  control?: ResendRequestControl,
+) => Promise<Response>;
+
+/**
+ * The request's beforeAttempt guard declined an attempt. Every earlier
+ * attempt of this request, if any, was an explicit 429 rejection, so the
+ * provider accepted nothing under it.
+ */
+export class ResendRequestWithdrawnError extends Error {
+  readonly outcome = 'withdrawn' as const;
+  readonly attempt: number;
+
+  constructor(attempt: number) {
+    super('Provider request withdrawn before an attempt; nothing was sent.');
+    this.name = 'ResendRequestWithdrawnError';
+    this.attempt = attempt;
+  }
+}
 
 interface RateLimitedRequestOptions {
   minIntervalMs?: number;
@@ -30,7 +63,8 @@ function retryAfterMs(response: Response, now: number, maximum: number): number 
 /**
  * A single serialized queue stays below Resend's team-wide request rate and
  * retries only explicit 429 responses. Retry-After is honored with a hard cap
- * so a workflow can never hang indefinitely.
+ * so a workflow can never hang indefinitely. An optional per-request
+ * beforeAttempt guard is consulted immediately before every attempt.
  */
 export function createRateLimitedResendRequest(
   fetchImpl: typeof fetch,
@@ -44,10 +78,19 @@ export function createRateLimitedResendRequest(
   let nextRequestAt = 0;
   let queue: Promise<void> = Promise.resolve();
 
-  const execute = async (input: string | URL, init?: RequestInit): Promise<Response> => {
+  const execute = async (
+    input: string | URL,
+    init?: RequestInit,
+    control?: ResendRequestControl,
+  ): Promise<Response> => {
     for (let attempt = 0; ; attempt += 1) {
       const pacingDelay = Math.max(0, nextRequestAt - now());
       if (pacingDelay > 0) await sleep(pacingDelay);
+      // The guard runs after every wait, so a state change during pacing or
+      // a 429 backoff is seen before the next POST, not after it.
+      if (control?.beforeAttempt && !await control.beforeAttempt(attempt)) {
+        throw new ResendRequestWithdrawnError(attempt);
+      }
       const headers = new Headers(init?.headers);
       headers.set('User-Agent', DAILY_EMAIL_USER_AGENT);
       const response = await fetchImpl(input, { ...init, headers });
@@ -64,8 +107,8 @@ export function createRateLimitedResendRequest(
     }
   };
 
-  return (input, init) => {
-    const request = queue.then(() => execute(input, init));
+  return (input, init, control) => {
+    const request = queue.then(() => execute(input, init, control));
     queue = request.then(() => undefined, () => undefined);
     return request;
   };

@@ -352,6 +352,11 @@
   justify-content: flex-start;
 }
 .pf-sync__form .btn { justify-content: space-between; }
+.pf-sync__chip {
+  align-self: center;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
 .pf-account-v2 { margin-top: 16px; }
 .pf-account-v2 .pf-sync__core { align-items: start; }
 .pf-account-v2__intro { min-width: 0; }
