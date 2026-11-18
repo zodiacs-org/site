@@ -33,7 +33,11 @@ const signFeeds = SIGNS.map((sign) => ({
   href: `/feeds/horoscopes/${sign.slug}.xml`,
   title: `${sign.name} horoscope`,
 }));
-const allFeeds = [...feeds, ...signFeeds];
+const signEventFeeds = SIGNS.map((sign) => ({
+  href: `/feeds/events/${sign.slug}.xml`,
+  title: `${sign.name} sky events`,
+}));
+const allFeeds = [...feeds, ...signFeeds, ...signEventFeeds];
 
 const jsonLd = [
   {
@@ -54,7 +58,7 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="RSS Feeds: Daily Sky, Horoscopes & Almanac | Zodiacs.org"
+  title="RSS Feeds: Sky Events, Daily Sky, Horoscopes & Almanac | Zodiacs.org"
   description="Follow daily horoscopes, the current sky, and new long-form Almanac essays through Zodiacs.org RSS feeds."
   path="/feeds/"
   jsonLd={jsonLd}
@@ -81,6 +85,21 @@ const jsonLd = [
 
     <div class="feeds__signs">
       <div class="feeds__signs-head">
+        <h2 class="list-heading">Sky events in one sign</h2>
+        <p>Only the new and full Moons, eclipses, stations, sign changes and alignments that take place in your sign.</p>
+      </div>
+      <div class="feeds__sign-grid">
+        {signEventFeeds.map((feed) => (
+          <a class="tile feeds__sign" href={feed.href} type="application/rss+xml" data-hook-event="rss_subscribe" data-hook-feed="events_sign" data-hook-placement="feeds_page">
+            <span>{feed.title}</span>
+            <span aria-hidden="true">RSS →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="feeds__signs">
+      <div class="feeds__signs-head">
         <h2 class="list-heading">One sign only</h2>
         <p>Choose a sun sign for a quieter, single-item daily feed.</p>
       </div>
@@ -91,6 +110,18 @@ const jsonLd = [
             <span aria-hidden="true">RSS →</span>
           </a>
         ))}
+      </div>
+    </div>
+
+    <div class="feeds__signs">
+      <div class="feeds__signs-head">
+        <h2 class="list-heading">For apps and AI tools</h2>
+        <p>
+          The same sky events as <a href="/feeds/events.json">JSON Feed</a>, with the time each event’s
+          page prints, in UTC, its signs and its page, and one file per sign
+          (for example <a href="/feeds/events/aries.json">Aries</a>). To see the events in your
+          calendar instead, use the <a href="/sky-calendar/">Sky calendar</a>.
+        </p>
       </div>
     </div>
   </section>
