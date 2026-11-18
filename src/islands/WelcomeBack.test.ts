@@ -40,6 +40,37 @@ describe('homepage personal daily handoff', () => {
     harness.charts = [saved('Friend', 'other'), saved('Owner', 'self')];
     expect(card().title).toContain('Friend');
   });
+  it('opens a saved chart by its opaque id only, never with birth details in the link', () => {
+    harness.enabled = true;
+    const id = '22222222-2222-4222-8222-222222222222';
+    const placed = (chartId: string): SavedChart => ({
+      ...saved(chartId, 'self'),
+      name: 'Fixture owner',
+      birth: { date: '1990-01-01', time: '08:15', timeKnown: true, place: { name: 'Fixtureville', admin1: '', country: '', lat: 12.3456, lon: 65.4321, tz: 'Etc/UTC' } },
+    });
+    const hrefs = (charts: SavedChart[]) => {
+      harness.charts = charts;
+      const found: string[] = [];
+      const visit = (node: unknown) => {
+        if (Array.isArray(node)) { node.forEach(visit); return; }
+        if (!node || typeof node !== 'object' || !('props' in node)) return;
+        const props = (node as VNode<Record<string, any>>).props;
+        if (typeof props.href === 'string') found.push(props.href);
+        visit(props.children);
+      };
+      const props = card();
+      visit([props.primary, props.secondary]);
+      return found;
+    };
+    const links = hrefs([placed(id)]);
+    expect(links).toContain(`/birth-chart/#profileChartId=${id}`);
+    for (const href of links) {
+      expect(href).not.toMatch(/[#&]c=|1990|08:15|Fixture|12\.3456/u);
+    }
+    // An id that is not an opaque profile id renders no "Open saved chart" link at all.
+    expect(hrefs([placed('Owner')]).some((href) => href.startsWith('/birth-chart/'))).toBe(false);
+  });
+
   it('does not add a returning-user card for an empty profile', () => {
     harness.enabled = true;
     harness.charts = [];

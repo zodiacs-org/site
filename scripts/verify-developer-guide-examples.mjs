@@ -254,13 +254,11 @@ await import(process.env.GUIDE_FILE);
       }
     }
   }
-  // The MCP query guide: its snippet, with the official SDK client, against the hosted server's own handler
-  // (src/ai-tools/http.ts) served here, fetch pointed at it as above. The guide names the tools the server lists.
-  await build({ entryPoints: [resolve(root, 'src/ai-tools/http.ts')], outfile: join(scratch, 'mcp-http.mjs'),
-    bundle: true, platform: 'node', format: 'esm', logLevel: 'silent',
-    banner: { js: "import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);" } });
+  // Exercise the runtime used by the public /mcp route. The DE440 opt-in
+  // serves a different schema and the guide targets the published address.
   command('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '@modelcontextprotocol/client@2.3.1']);
-  const { createAiNodeHandler } = await import(pathToFileURL(join(scratch, 'mcp-http.mjs')).href);
+  const publishedRuntime = resolve(root, 'api/_ai/published/runtime.mjs');
+  const { createAiNodeHandler } = await import(pathToFileURL(publishedRuntime).href);
   // The committed horoscope window, as the hosted handler's own tests inject it, so all six tools are listed.
   const horoscopeWindow = JSON.parse(await readFile(resolve(root, 'src/data/horoscope-window.json'), 'utf8'));
   let mcpHost = '';

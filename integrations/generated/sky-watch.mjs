@@ -40905,7 +40905,7 @@ var year_people_default = {
       aliases: [
         "saylor"
       ],
-      description: "Business executive, co-founder and executive chairman of Strategy",
+      description: "Business executive",
       category: "founder",
       birthDate: "1965-02-04",
       birthTime: null,
@@ -41114,25 +41114,6 @@ var year_people_default = {
       note: null
     },
     {
-      slug: "warren-buffett",
-      name: "Warren Buffett",
-      aliases: [],
-      description: "Chairman of Berkshire Hathaway",
-      category: "investor",
-      birthDate: "1930-08-30",
-      birthTime: null,
-      zone: "America/Chicago",
-      birthplace: "Omaha, Nebraska, United States",
-      sources: [
-        {
-          title: "Britannica: Warren Buffett",
-          url: "https://www.britannica.com/print/article/766234"
-        }
-      ],
-      alternateBirthDates: [],
-      note: null
-    },
-    {
       slug: "larry-ellison",
       name: "Larry Ellison",
       aliases: [],
@@ -41214,7 +41195,7 @@ var year_people_default = {
       aliases: [
         "VitalikButerin"
       ],
-      description: "Programmer, co-founder of Ethereum",
+      description: "Programmer and writer",
       category: "founder",
       birthDate: "1994-01-31",
       birthTime: null,
@@ -41533,9 +41514,28 @@ function findYearPerson(query) {
   return BY_KEY.get(personKey(query));
 }
 var yearPersonPath = (slug) => `/year/${slug}/`;
+var FIGURE_NOTE = "This reads a public birth date against the slow planets. It says nothing about a company, a team, a result or a share price.";
+var figureDriverTitle = (title, name) => title.replace(/\byour\b/u, `${name}'s`);
 function yearPageStart(now) {
   return `${now.toISOString().slice(0, 7)}-01`;
 }
+
+// src/lib/year-score/tier.ts
+function scoreTier(score2) {
+  if (score2 >= 8) return { key: "open", label: "A wide open year", summary: "The slow planets mostly help. Tradition reads a year like this as strong for career growth, and a good window to start things and sign agreements." };
+  if (score2 >= 6.5) return { key: "supportive", label: "A supportive year", summary: "More of the slow-planet weather helps than presses. A good year to build on what already works, in your work and at home." };
+  if (score2 >= 3.5) return { key: "balanced", label: "A balanced year", summary: "Support and pressure arrive in about equal measure. The months below show when each one leads." };
+  if (score2 >= 2) return { key: "pressure", label: "A year of steady pressure", summary: "The slow planets ask more than they give. Astrology reads this as a year for patience and follow through: steady work, keeping things simple and taking rest seriously." };
+  return { key: "heavy-pressure", label: "A year of heavy pressure", summary: "The slow planets press hard on the chart. Tradition reads this as a demanding year: keep commitments clear, look after your energy and let patient work do the building." };
+}
+var FIGURE_SUMMARY = {
+  open: "The slow planets mostly help this chart over these twelve months.",
+  supportive: "More of the slow-planet weather helps this chart than presses on it.",
+  balanced: "Support and pressure arrive in about equal measure. The months below show when each one leads.",
+  pressure: "The slow planets press on this chart more than they help it.",
+  "heavy-pressure": "The slow planets press hard on this chart over these twelve months."
+};
+var figureTierSummary = (key2) => FIGURE_SUMMARY[key2];
 
 // src/lib/year-score/range.ts
 var HOUR5 = 36e5;
@@ -41574,15 +41574,6 @@ var UNTIMED_NOTE_WITH_RANGE = "No birth time was given, so the chart is cast for
 var UNTIMED_NOTE = "No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time.";
 function untimedScoreNote(range) {
   return rangeWorthShowing(range) ? UNTIMED_NOTE_WITH_RANGE : UNTIMED_NOTE;
-}
-
-// src/lib/year-score/tier.ts
-function scoreTier(score2) {
-  if (score2 >= 8) return { key: "open", label: "A wide open year", summary: "The slow planets mostly help. Tradition reads a year like this as strong for career growth, and a good window to start things and sign agreements." };
-  if (score2 >= 6.5) return { key: "supportive", label: "A supportive year", summary: "More of the slow-planet weather helps than presses. A good year to build on what already works, in your work and at home." };
-  if (score2 >= 3.5) return { key: "balanced", label: "A balanced year", summary: "Support and pressure arrive in about equal measure. The months below show when each one leads." };
-  if (score2 >= 2) return { key: "pressure", label: "A year of steady pressure", summary: "The slow planets ask more than they give. Astrology reads this as a year for patience and follow through: steady work, keeping things simple and taking rest seriously." };
-  return { key: "heavy-pressure", label: "A year of heavy pressure", summary: "The slow planets press hard on the chart. Tradition reads this as a demanding year: keep commitments clear, look after your energy and let patient work do the building." };
 }
 
 // src/lib/year-score/reading.ts
@@ -41665,11 +41656,13 @@ function yearReading(year, guard = (text2) => text2) {
 
 // src/lib/year-score/share.ts
 var YEAR_SCORE_SHARE_PATH = "/share/year-score/";
-var YEAR_SCORE_SHARE_KEYS = Object.freeze(["s", "v", "p", "ref"]);
+var YEAR_SCORE_SHARE_KEYS = Object.freeze(["s", "v", "p", "m", "ref"]);
 var SLUG_RE2 = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
+var MONTH_RE = /^\d{4}-(?:0[1-9]|1[0-2])$/u;
 var isSign3 = (value) => typeof value === "string" && SHARE_SIGNS.includes(value);
 function yearScoreQuery(share, withRef2 = false) {
   const params = share.kind === "self" ? new URLSearchParams({ s: share.sun, v: share.score.toFixed(1) }) : new URLSearchParams({ p: share.slug });
+  if (share.kind === "figure" && share.month) params.set("m", share.month);
   if (withRef2 && share.ref) params.set("ref", share.ref);
   return params.toString();
 }
@@ -41677,8 +41670,9 @@ function yearScoreShareUrl(origin, you) {
   if (!isSign3(you.sun) || !Number.isFinite(you.score) || you.score < 0 || you.score > 10) return null;
   return `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "self", sun: you.sun, score: Math.round(you.score * 10) / 10, ref: null })}`;
 }
-function figureYearScoreShareUrl(origin, slug) {
-  return SLUG_RE2.test(slug) && slug.length <= 64 ? `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "figure", slug, ref: null })}` : null;
+function figureYearScoreShareUrl(origin, slug, month) {
+  if (!SLUG_RE2.test(slug) || slug.length > 64 || month !== void 0 && !MONTH_RE.test(month)) return null;
+  return `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "figure", slug, month: month ?? null, ref: null })}`;
 }
 
 // src/ai-tools/features/year-score.ts
@@ -41856,6 +41850,7 @@ async function getYearScore(args, now, clock2, origin) {
   if (!timeZone && !figure) limits2.push("No time zone was given, so the birth is placed at noon UTC.");
   limits2.push("The score reads Jupiter, Saturn, Uranus, Neptune and Pluto against the Sun, Moon, Mercury, Venus and Mars. Fast planets and eclipses are left out.");
   if (figure?.note) limits2.push(figure.note);
+  if (figure) limits2.push(FIGURE_NOTE);
   const alternates = [];
   for (const alternate of figure?.alternateBirthDates ?? []) {
     const altUtc = await birthInstant3(alternate.date, null, figure.zone, clock2);
@@ -41863,6 +41858,7 @@ async function getYearScore(args, now, clock2, origin) {
     alternates.push({ birthDate: alternate.date, score: altYear.score, label: yearReading(altYear).tier.label });
   }
   const detail = readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed });
+  const pick = (month) => month && figure ? { ...month, line: `${month.name}: ${month.score.toFixed(1)}/10.` } : month;
   return {
     data: {
       status: "found",
@@ -41871,17 +41867,17 @@ async function getYearScore(args, now, clock2, origin) {
       to: year.to,
       score: year.score,
       label: reading.tier.label,
-      summary: guard(reading.tier.summary),
-      best: reading.best,
-      hardest: reading.hardest,
+      summary: figure ? figureTierSummary(reading.tier.key) : guard(reading.tier.summary),
+      best: pick(reading.best),
+      hardest: pick(reading.hardest),
       drivers: reading.drivers.map((driver, index) => ({
         planet: driver.planet,
         aspect: driver.aspect,
         point: driver.point,
         tone: driver.tone,
         share: driver.share,
-        title: driver.title,
-        line: driver.line,
+        title: figure ? figureDriverTitle(driver.title, figure.name) : driver.title,
+        line: figure ? `${figureDriverTitle(driver.title, figure.name)}: ${driver.tone}.` : driver.line,
         inOrb: driver.inOrbFrom === driver.inOrbTo ? dayName(driver.inOrbFrom) : `${dayName(driver.inOrbFrom)} to ${dayName(driver.inOrbTo)}`,
         exact: exact[index]
       })),
@@ -41896,7 +41892,7 @@ async function getYearScore(args, now, clock2, origin) {
       // A directory figure's own page; a person's own details have no page, so the calculator.
       pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
       // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
-      shareUrl: figure ? start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null : yearScoreShareUrl(origin, { sun, score: year.score })
+      shareUrl: figure ? start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug, start.slice(0, 7)) : null : yearScoreShareUrl(origin, { sun, score: year.score })
     },
     links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links
   };

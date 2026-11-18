@@ -3,7 +3,8 @@ import { t, type CatalogLocale } from '../lib/i18n';
 import { englishOnlyCue } from '../lib/i18n/english-only';
 import { useEngine } from '../lib/hooks/useEngine';
 import { loadModule } from '../lib/module-load';
-import { calculateEntry, emptyEntry } from '../lib/sharing/chart-entry';
+import { calculateEntry, emptyEntry, entryRefusalMessage } from '../lib/sharing/chart-entry';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { sharingText as s } from '../lib/sharing/copy';
 import { matchTwins, twinSigns, type TwinMatch, type TwinPerson } from '../lib/sharing/twins';
 import { signBySlug, signName } from '../lib/signs';
@@ -51,7 +52,11 @@ export default function ChartTwins({ locale = 'en', directory }: { locale?: Cata
   useEffect(() => () => { generation.current++; }, []);
   async function compute(event: Event) {
     event.preventDefault(); const run = ++generation.current;
-    setBusy(true); setError(''); setResult(null); setCard(null); setCardState('idle'); setTwinSlug('');
+    setError(''); setResult(null); setCard(null); setCardState('idle'); setTwinSlug('');
+    // Refused before the engine loads: nothing is computed for a date under 13 or still to come.
+    const refusal = birthDateRefusal(entry.date);
+    if (refusal) { setBusy(false); setError(birthDateRefusalText(refusal)); return; }
+    setBusy(true);
     try {
       const [mod, trust] = await Promise.all([engine(), loadModule(() => import('./ChartTrust'))]);
       const { chart } = await calculateEntry(entry, mod, locale);
@@ -61,7 +66,7 @@ export default function ChartTwins({ locale = 'en', directory }: { locale?: Cata
       setResult({ chart, signs, matches, trust });
       if (matches[0]) { setTwinSlug(matches[0].person.slug); void prepareCard(matches[0], run); }
       requestAnimationFrame(() => { if (run === generation.current) { resultRef.current?.focus({ preventScroll: true }); resultRef.current?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); } });
-    } catch (cause) { if (run === generation.current) setError(calculationError(cause, locale, s(locale, 'computeError'))); }
+    } catch (cause) { if (run === generation.current) setError(entryRefusalMessage(cause) ?? calculationError(cause, locale, s(locale, 'computeError'))); }
     finally { if (run === generation.current) setBusy(false); }
   }
   const both = result?.matches.filter((match) => match.count === 2) ?? [];
@@ -78,7 +83,7 @@ export default function ChartTwins({ locale = 'en', directory }: { locale?: Cata
     <form class="sharing-form" onSubmit={compute}>
       <SharingBirthForm locale={locale} entry={entry} warm={engine} onChange={(next) => { generation.current++; setEntry((current) => ({ ...current, ...next })); setResult(null); setCard(null); setCardState('idle'); setTwinSlug(''); setBusy(false); setError(''); }} />
       <button class="btn btn--primary" disabled={busy} data-twins-submit><span>{s(locale, busy ? 'computing' : 'twinsSubmit')}</span><span class="orb">↗</span></button>
-      <p class="sharing-note">{s(locale, 'privacy')}</p>{error && <p class="field__error" role="alert">{error}</p>}<CalculationReload error={error} locale={locale} />
+      <p class="sharing-note">{s(locale, 'privacy')}</p>{error && <p class="field__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}<CalculationReload error={error} locale={locale} />
     </form>
     {result && <section class="sharing-result" tabIndex={-1} ref={resultRef} aria-label={s(locale, 'twinsTitle')} data-twins-result>
       <p data-result-opening>{s(locale, 'twinsOpening')}</p>

@@ -102,10 +102,10 @@ Developer 0.3.46 is rebuilt from the draft of 13 November 2026 (ZOD-207): server
 
 Zodiacs 0.6.8, prepared on 18 November 2026 for the directory resubmission, reports 0.6.8 and ships those invented examples to the directories; two of its review cases also use invented details now (a reader in Mexico City, and a wedding in Lisbon on 18 September 2027 at 16:30). No tool, schema or behaviour changes, and the Zodiacs 0.6.7 ZIP keeps its bytes. Developer 0.3.52 is rebuilt from that source with unchanged tools, and 0.3.51 keeps its bytes.
 
-Developer 0.3.53 uses the published engine 1.1.0 and DE440 for local calculations.
+Developer 0.3.54 uses the published engine 1.1.0 and DE440 for local calculations.
 The 0.3.52 ZIP keeps its existing bytes.
 
-Current candidates are **Zodiacs 0.6.8** and **Zodiacs Developer 0.3.53**;
+Current candidates are **Zodiacs 0.6.8** and **Zodiacs Developer 0.3.54**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

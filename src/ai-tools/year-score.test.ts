@@ -6,6 +6,8 @@ import { EVERY_AI_TOOL_NAME, UNDER_13_REFUSAL, YEAR_SCORE_SWITCH_ENV } from './c
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { getYearScore } from './features/year-score';
 import { rangeWorthShowing } from '../lib/year-score/range';
+import { FIGURE_NOTE } from '../lib/year-score/people';
+import { figureTierSummary, scoreTier } from '../lib/year-score/tier';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
 import committedProgram from '../data/horoscope-program.json';
@@ -224,11 +226,34 @@ describe('get_year_score share links', () => {
     expect(tokyo.data.subject?.sun).toBe('pisces');
     expect(tokyo.data.shareUrl).toContain('s=pisces');
   });
-  it('gives a figure the slug alone, scored from the first of the month like its page and card', async () => {
+  it('gives a figure the slug and its start month, scored from the first of the month like its page and card', async () => {
     const { data } = await getYearScore({ person: 'Jensen Huang' }, NOW, clock, 'https://zodiacs.org');
     expect(data.from).toBe('2026-11-01');
-    expect(data.shareUrl).toBe('https://zodiacs.org/share/year-score/?p=jensen-huang');
+    expect(data.shareUrl).toBe('https://zodiacs.org/share/year-score/?p=jensen-huang&m=2026-11');
     const backtest = await getYearScore({ person: 'Jensen Huang', from: '2026-07-17' }, NOW, clock, 'https://zodiacs.org');
     expect(backtest.data.shareUrl).toBeNull();
+  });
+});
+
+describe('get_year_score for a named figure (ZOD-12)', () => {
+  const clock = createLocalTimeModule();
+  afterAll(() => clock.dispose());
+  const reader = /\b(?:earnings?|money|spending|agreements?|energy|you|your|yourself|way of loving|emotional life|career|work)\b/iu;
+  it('uses neutral words for the summary, the months and the drivers, and says what the number is not', async () => {
+    for (const person of ['Jensen Huang', 'Taylor Swift', 'Lionel Messi']) {
+      const { data } = await getYearScore({ person }, NOW, clock, 'https://zodiacs.org');
+      expect(data.status).toBe('found');
+      expect(data.summary, person).toBe(figureTierSummary(scoreTier(data.score!).key));
+      expect(data.limits, person).toContain(FIGURE_NOTE);
+      const words = [data.summary, data.best?.line, data.hardest?.line, ...data.drivers.flatMap((driver) => [driver.title, driver.line])].filter(Boolean).join(' ');
+      expect(words, person).not.toMatch(reader);
+      for (const month of [data.best, data.hardest]) if (month) expect(month.line).toMatch(/^[A-Z][a-z]+ \d{4}: \d{1,2}\.\d\/10\.$/u);
+      for (const driver of data.drivers) expect(driver.title).toContain(`${person}'s`);
+    }
+  });
+  it('keeps a person’s own reading in the reader’s words', async () => {
+    const { data } = await getYearScore({ birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }, NOW, clock, 'https://zodiacs.org');
+    expect(data.summary).toBe(scoreTier(data.score!).summary);
+    expect(data.limits).not.toContain(FIGURE_NOTE);
   });
 });

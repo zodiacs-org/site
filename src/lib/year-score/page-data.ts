@@ -10,6 +10,7 @@ import { scoreBirth } from './browser';
 import { YEAR_PEOPLE, yearPageStart, type YearPerson } from './people';
 import { birthDayEnds, type ScoreRange } from './range';
 import { yearReading, type YearReading } from './reading';
+import { readingConfidenceLabel, readingDetail } from '../../ai-tools/reading-confidence';
 
 export interface YearPage {
   person: YearPerson;
@@ -20,6 +21,8 @@ export interface YearPage {
   alternates: { birthDate: string; score: number; label: string }[];
   /** For a noon chart (no published birth time): the lowest and highest score across the birth day on the birthplace clock. Null with a birth time. */
   range: ScoreRange | null;
+  /** "Reading confidence NN%", by the same rule get_year_score uses for a figure: the directory gives a date and at most a clock time, never coordinates. */
+  confidenceLabel: string;
 }
 
 async function birthUtc(date: string, time: string | null, zone: string): Promise<Date> {
@@ -50,7 +53,7 @@ export async function yearPage(person: YearPerson, now = new Date()): Promise<Ye
     alternates.push({ birthDate: alternate.date, score: alt.score, label: yearReading(alt).tier.label });
   }
   const sign = signForLongitude(sunLon);
-  return { person, reading: yearReading(year), from: year.from, to: year.to, sun: { name: sign.name, slug: sign.slug, hue: sign.hue }, alternates, range };
+  return { person, reading: yearReading(year), from: year.from, to: year.to, sun: { name: sign.name, slug: sign.slug, hue: sign.hue }, alternates, range, confidenceLabel: readingConfidenceLabel(readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: false })) };
 }
 
 export async function allYearPages(now = new Date()): Promise<YearPage[]> {
