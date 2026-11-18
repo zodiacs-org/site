@@ -4,7 +4,8 @@ import { planetLabel } from '../lib/i18n/astrology';
 import { signBySlug, signName } from '../lib/signs';
 import { useEngine } from '../lib/hooks/useEngine';
 import { loadModule } from '../lib/module-load';
-import { calculateEntry, emptyEntry, type ChartEntry } from '../lib/sharing/chart-entry';
+import { calculateEntry, emptyEntry, entryRefusalMessage, type ChartEntry } from '../lib/sharing/chart-entry';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { sharingText as s } from '../lib/sharing/copy';
 import { groupReading, validGroupSize, ROLE_HUES, ROLE_KEYS, ROLE_READ_KEYS, type GroupReading } from '../lib/sharing/group';
 import SharingBirthForm from './SharingBirthForm';
@@ -38,7 +39,11 @@ export default function GroupCharts({ locale = 'en' }: { locale?: CatalogLocale 
   async function compute(event: Event) {
     event.preventDefault();
     const run = ++generation.current;
-    setBusy(true); setError(''); setResults(null); setCard(null); setCardState('idle');
+    setError(''); setResults(null); setCard(null); setCardState('idle');
+    // Refused before the engine loads: no one in the group is read while any birth date is under 13 or still to come.
+    const refusal = entries.map((entry) => birthDateRefusal(entry.date)).find((code) => code !== null) ?? null;
+    if (refusal) { setBusy(false); setError(birthDateRefusalText(refusal)); return; }
+    setBusy(true);
     try {
       if (!validGroupSize(entries.length)) throw new RangeError('group size');
       const [mod, trustMod] = await Promise.all([engine(), loadModule(() => import('./ChartTrust'))]);
@@ -58,7 +63,7 @@ export default function GroupCharts({ locale = 'en' }: { locale?: CatalogLocale 
       setTrust(trustMod); setResults(rows);
       requestAnimationFrame(() => { if (run === generation.current) { resultRef.current?.focus({ preventScroll: true }); resultRef.current?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } });
       void prepare(rows, run);
-    } catch (cause) { if (run === generation.current) setError(calculationError(cause, locale, s(locale, 'groupError'))); }
+    } catch (cause) { if (run === generation.current) setError(entryRefusalMessage(cause) ?? calculationError(cause, locale, s(locale, 'groupError'))); }
     finally { if (run === generation.current) setBusy(false); }
   }
   function share() {
@@ -80,7 +85,7 @@ export default function GroupCharts({ locale = 'en' }: { locale?: CatalogLocale 
       <div class="sharing-actions"><button type="button" class="btn btn--ghost" data-group-add disabled={entries.length >= 8} onClick={() => { const id = nextId.current++; change((current) => current.length < 8 ? [...current, emptyEntry(id)] : current); }}>{s(locale, 'addPerson')}</button>
         <button type="submit" class="btn btn--primary" disabled={busy} data-group-submit><span>{s(locale, busy ? 'computing' : 'groupSubmit')}</span><span class="orb">↗</span></button></div>
       <p class="sharing-note">{s(locale, 'privacy')}</p>
-      {error && <p role="alert" class="field__error">{error}</p>}<CalculationReload error={error} locale={locale} />
+      {error && <p role="alert" class="field__error" lang={birthDateRefusalLang(error)}>{error}</p>}<CalculationReload error={error} locale={locale} />
     </form>
     {results && trust && <section class="sharing-result" tabIndex={-1} ref={resultRef} aria-label={s(locale, 'groupTitle')} data-group-result>
       <p data-result-opening>{s(locale, 'groupOpening')}</p>

@@ -1,16 +1,20 @@
 ---
 /**
- * The birth chart, started from the birthday. The calculator accepts a date
- * (and an optional time) in its URL fragment, the same hand-off the Moon
- * phase tool uses (src/lib/chart-handoff.ts dateHandoffFragment): this form
- * adds the reader's year to the page's month and day and opens
- * /birth-chart/#date=YYYY-MM-DD&time=HH:MM (or time=unknown), where the
- * birthplace field takes focus. The fields have no names, so without
- * JavaScript the button opens the empty calculator and no birth detail ever
- * reaches a URL query or a server.
+ * The birth chart, started from the birthday. This form adds the reader's
+ * year to the page's month and day and hands the date (and an optional time)
+ * to the calculator the way the Moon phase tool does
+ * (src/lib/chart-handoff.ts stashDateHandoff): the date is stored in this
+ * tab's sessionStorage under zodiacs.handoff.<32 random hex digits>, in the
+ * same format, and the calculator opens at /birth-chart/#h=<that key>, reads
+ * the entry once, deletes it and focuses the birthplace field. A birth year
+ * and time never go into a link. Without sessionStorage the button opens the
+ * empty calculator. The fields have no names, so without JavaScript the
+ * button opens the empty calculator too and no birth detail ever reaches a
+ * URL or a server.
  */
 import ArtFrame from '../ArtFrame.astro';
 import { ART, artSrc, artSrcset } from '../../lib/art';
+import { FUTURE_BIRTH_DATE_SENTENCE, UNDER_13_SENTENCE } from '../../lib/birth-date-policy';
 
 interface Props {
   month: number;
@@ -22,7 +26,7 @@ const { month, day, label } = Astro.props;
 const mm = String(month).padStart(2, '0');
 const dd = String(day).padStart(2, '0');
 ---
-<form class="kpanel bday-form" action="/birth-chart/" method="get" data-bday-handoff data-month={mm} data-day={dd} novalidate>
+<form class="kpanel bday-form" action="/birth-chart/" method="get" data-bday-handoff data-month={mm} data-day={dd} data-under13={UNDER_13_SENTENCE} data-future={FUTURE_BIRTH_DATE_SENTENCE} novalidate>
   <ArtFrame
     src={artSrc('birthday-sundial')}
     srcset={artSrcset('birthday-sundial')}
@@ -67,9 +71,11 @@ const dd = String(day).padStart(2, '0');
     var time = form.querySelector('#bday-time');
     var unknown = form.querySelector('#bday-time-unknown');
     var error = form.querySelector('#bday-form-error');
-    var say = function (message) {
+    var say = function (message, english) {
       error.textContent = message;
       error.hidden = !message;
+      if (english) error.setAttribute('lang', 'en');
+      else error.removeAttribute('lang');
       if (message) year.focus();
     };
     unknown.addEventListener('change', function () {
@@ -91,12 +97,43 @@ const dd = String(day).padStart(2, '0');
         say(value + ' had no February 29. Check the year.');
         return;
       }
+      // The site's birth date policy (src/lib/birth-date-policy.ts): a date
+      // still to come after the calendar date at UTC+14, or less than 13
+      // years before the calendar date at UTC-12, is refused here, so it is
+      // never handed to the chart page.
+      var birth = value + '-' + month + '-' + day;
+      var now = Date.now();
+      var latest = new Date(now + 14 * 3600000).toISOString().slice(0, 10);
+      var earliest = new Date(now - 12 * 3600000).toISOString().slice(0, 10);
+      var limit = String(Number(earliest.slice(0, 4)) - 13).padStart(4, '0') + earliest.slice(4);
+      if (birth > latest) {
+        say(form.dataset.future, true);
+        return;
+      }
+      if (birth > limit) {
+        say(form.dataset.under13, true);
+        return;
+      }
       say('');
-      var clock = !unknown.checked && /^\d{2}:\d{2}$/.test(time.value) ? time.value : 'unknown';
-      var params = new URLSearchParams();
-      params.set('date', value + '-' + month + '-' + day);
-      params.set('time', clock);
-      window.location.assign(form.getAttribute('action') + '#' + params.toString());
+      var clock = !unknown.checked && /^\d{2}:\d{2}$/.test(time.value) ? time.value : null;
+      var action = form.getAttribute('action');
+      var key = null;
+      try {
+        var bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);
+        key = Array.prototype.map.call(bytes, function (b) { return (b < 16 ? '0' : '') + b.toString(16); }).join('');
+        var prefix = 'zodiacs.handoff.';
+        var stale = [];
+        for (var i = 0; i < sessionStorage.length; i += 1) {
+          var name = sessionStorage.key(i);
+          if (name && name.indexOf(prefix) === 0) stale.push(name);
+        }
+        stale.forEach(function (name) { sessionStorage.removeItem(name); });
+        sessionStorage.setItem(prefix + key, JSON.stringify({ k: 'date', d: birth, t: clock }));
+      } catch (e) {
+        key = null;
+      }
+      window.location.assign(key ? action + '#h=' + key : action);
     });
   })();
 </script>
