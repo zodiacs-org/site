@@ -1,27 +1,9 @@
 {
   "version": 1,
-<<<<<<< HEAD
   "id": "sign-guide-and-learn-hub-entrance-motion-2026-11-18",
   "baseCommit": "0c6702d58e79fab699e0bcde229a19aca978ac12",
   "protectedPaths": [
     "src/pages/[sign]/index.astro",
     "src/pages/learn/index.astro"
-=======
-  "id": "daily-sky-edition-2026-11-18",
-  "baseCommit": "0c6702d58e79fab699e0bcde229a19aca978ac12",
-  "protectedPaths": [
-    "public/registry/aquarius/index.html",
-    "public/registry/aries/index.html",
-    "public/registry/cancer/index.html",
-    "public/registry/capricorn/index.html",
-    "public/registry/gemini/index.html",
-    "public/registry/leo/index.html",
-    "public/registry/libra/index.html",
-    "public/registry/pisces/index.html",
-    "public/registry/sagittarius/index.html",
-    "public/registry/scorpio/index.html",
-    "public/registry/taurus/index.html",
-    "public/registry/virgo/index.html"
->>>>>>> motion/home-signs-learn
   ]
 }
