@@ -11,12 +11,26 @@
   "nativeWarmUp": {
     "importMilliseconds": 639,
     "totalMilliseconds": 725,
-    "enabledStatusCodes": [200, 200],
-    "disabledStatusCodes": [503, 503],
+    "enabledStatusCodes": [
+      200,
+      200
+    ],
+    "disabledStatusCodes": [
+      503,
+      503
+    ],
     "networkRequests": 0
   },
   "laterFullRunWorkerTimeouts": 2,
   "almanacFollowUp": {
     "passed": 3
+  },
+  "mainIsolatedRerun": {
+    "files": "scripts/home-first-paint.test.mjs, scripts/registry-research-pause.test.mjs",
+    "passed": 27
+  },
+  "warmUpIsolatedRerun": {
+    "file": "tests/api/mcp-warm-up.test.ts",
+    "passed": 2
   }
 }
