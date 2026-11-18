@@ -37,9 +37,11 @@ The change keeps the existing numerical tolerances.
 | `src/lib/supermoon.test.ts` | Pins the regenerated full Moon time with the same distance and classification checks. |
 | `src/lib/year-sky/year-sky.test.ts` | Pins the DE440 Jupiter direct station carried across the year boundary. |
 | `src/lib/zodiac-dates.test.ts` | Checks the receipt timestamp against the regenerated file and retains the exact public ingress minute assertions. |
+| `src/lib/today-sky.test.ts` | Matches publication links by event identity. DE440 can move the event time while the link and its original publication anchor stay stable. The separate exhaustive link and ordering assertions stay in place. |
 | `src/mcp/outputs.test.ts` | Builds the historical receipt on its original astronomy engine ephemeris, checks the current DE440 receipt and both current convention sets, and checks all fallback flag descriptions. |
 | `tests/api/compute-api-private-state.test.ts` | Proves the unwrapped handler retains decoded DE440 state. Inspects cleared DE440 and astronomy engine state following live requests, failures, refusals, concurrent resolver cases and fresh process comparisons. |
 | `tests/mcp-protocol-drive.mjs` | Compares the live convention resources to every installed set and to the current set written in the returned record. |
+| `scripts/registry-outlook.test.mjs` | Pins the regenerated Mercury ingress in the offline output test. The site's published edition stays paused. |
 | `docs/platform/evidence/mcp-adapter/benchmark-expectations.json` | Changes the synthetic display rounding pair to the DE440 instants recorded in the benchmark. The strict inequality and six millisecond separation stay in the test. |
 
 Timestamp and numerical changes are recorded in `de440-regression-values.json`.
