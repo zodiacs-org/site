@@ -108,6 +108,9 @@ export function picomatchExceptionBlocker(policy, report, { latest, today }) {
   }
   const vulnerabilities = report && typeof report === 'object' && !Array.isArray(report)
     ? report.vulnerabilities : undefined;
+  if (report && typeof report === 'object' && Object.hasOwn(report, 'error')) {
+    return 'the audit report contains an error';
+  }
   if (!vulnerabilities || typeof vulnerabilities !== 'object' || Array.isArray(vulnerabilities)) {
     return 'unreadable audit report';
   }
@@ -181,7 +184,11 @@ function applyPicomatchException(policy, failureStatus, { executeJson, latestPic
   let report;
   try {
     const result = executeJson([policy]);
-    if (result.error || result.signal || !result.stdout) {
+    // Only npm's ordinary findings exit is eligible. A mixed error/report,
+    // contradictory success, or diagnostic on stderr cannot prove that the
+    // audit completed; never turn those outcomes into an exception pass.
+    if (result.status !== 1 || result.error || result.signal || !result.stdout
+      || (result.stderr ?? '').trim()) {
       stderr('picomatch exception not applied: the JSON audit did not complete.\n');
       return failureStatus;
     }
