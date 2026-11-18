@@ -7,10 +7,10 @@ skills, icons, notices and the developer's pinned runtime/recipes; no credential
 node_modules, personal data, cache or hosting configuration is included.
 
 The sky ZIP is the portable remote-MCP candidate for ChatGPT/Codex review. Its
-production connection is already deployed and domain-verified. The 0.5.0
-candidate still needs the occasion tools switched on (`ZODIACS_OCCASIONS_ENABLED=1`),
-its own preview acceptance, real-host checks and a reviewer walkthrough that
-shows the occasions panel. The developer ZIP runs local stdio MCP;
+production connection is deployed and domain-verified: `https://zodiacs.org/mcp`
+reports 0.6.7 and offers 19 read-only tools (checked live on 13 November
+2026; 0.6.6 is the version in OpenAI review). Zodiacs 0.6.8 is the version
+prepared for the resubmission; the server reports it once that change is merged and deployed. The developer ZIP runs local stdio MCP;
 install pinned dependencies after extracting. Public local-MCP directory support
 requires an OpenAI-supported distribution path; the repo marketplace and direct
 local MCP connection are the available development paths.
@@ -96,13 +96,18 @@ no tool definition changes and the Zodiacs 0.6.6 ZIP keeps its bytes.
 Developer 0.3.37 is rebuilt from that source with unchanged tools, and 0.3.36
 keeps its bytes. Developer 0.3.38 is rebuilt from the Year Ahead Score's recalibration (its own curve for a chart with a birth time, and tiers cut at 2, 3.5, 6.5 and 8) with unchanged tools, and 0.3.37 keeps its bytes. Developer 0.3.39 is rebuilt from the Year Ahead Score's birth-day range (an untimed score's lowest and highest across the birth day) with unchanged tools, and 0.3.38 keeps its bytes. Developer 0.3.40 is rebuilt from the solar return and Year Ahead Score tools' source (a birth without a time is cast from 12:00 UTC, and its Sun sign is named only when the birth day settles it) with unchanged tools, and 0.3.39 keeps its bytes. Developer 0.3.41 is rebuilt from the Year Ahead Score's reading (Jupiter's hard aspects read as mixed, and month lines that match their headings) with unchanged tools, and 0.3.40 keeps its bytes. Developer 0.3.42 is rebuilt from the share link readers' source (one list of six ref words, the ones the site counts visits by) with unchanged tools, and 0.3.41 keeps its bytes. Developer 0.3.43 is rebuilt from the under-18 love reading fix (get_horoscope gives no love reading for a birth date under 18) with unchanged tool definitions, and 0.3.42 keeps its bytes. Zodiacs 0.6.7 (ZOD-58) rewrites all nineteen tool descriptions and the server instructions in plain words and reports 0.6.7; tool names and input schemas are unchanged, and the Zodiacs 0.6.6 ZIP keeps its bytes. Developer 0.3.44 is rebuilt from that source, with tool names and input schemas unchanged, and 0.3.43 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.7** and **Zodiacs Developer 0.3.44**;
+Developer 0.3.45 is rebuilt from the save tool's source (a saved result's link carries a random id, not a digest of the result) with unchanged tools, and 0.3.44 keeps its bytes.
+
+Developer 0.3.46 is rebuilt from the draft of 13 November 2026 (ZOD-207): server instructions that say what is outside Zodiacs, which tool takes which request, to ask before using someone else's birth details, and that a named child under 13 gets no horoscope, with the same said in seven tool descriptions (four of them published ones, a change the owner approved on 13 November 2026); the reported version stays 0.6.7, tool names and input schemas are unchanged, and 0.3.45 and the Zodiacs 0.6.7 ZIP keep their bytes. Developer 0.3.47 is rebuilt from the Year Ahead Score and tarot year card copy without money, earnings or spending forecasts (ZOD-30) with unchanged tools, and 0.3.46 keeps its bytes. Developer 0.3.48 is rebuilt from the numerology copy without money, earnings or promotion forecasts (ZOD-30) with unchanged tools, and 0.3.47 keeps its bytes. Developer 0.3.49 is rebuilt from the clear times change (ZOD-64: get_upcoming_events and get_sky write event times, local times and the Moon's phase more plainly) with unchanged tool definitions, and 0.3.48 keeps its bytes. Developer 0.3.50 is rebuilt from the hosted server's source of 17 November 2026 (ZOD-64): get_upcoming_events' description quotes Neptune's entry into Aries as 14:32 UTC instead of 14:31:41, as the list has shown it since PR 1068, a change to the published definitions approved by Dias on 2026-11-17. That description is the only change to the published definitions; the reported version stays 0.6.7, tool names and schemas are unchanged, and 0.3.49 and the Zodiacs 0.6.7 ZIP keep their bytes. Developer 0.3.51 is rebuilt from the invented schema examples on top of ZOD-64 (eighteen input schema field descriptions of the thirteen published tools, and the same examples in the later tools and their refusal messages, now name an invented birth, place and wedding in place of earlier examples); it ships with the next directory resubmission, which the owner approved on 17 November 2026, the reported version stays 0.6.7, tool names, types and descriptions are unchanged, and 0.3.50 and the Zodiacs 0.6.7 ZIP keep their bytes.
+
+Zodiacs 0.6.8, prepared on 18 November 2026 for the directory resubmission, reports 0.6.8 and ships those invented examples to the directories; two of its review cases also use invented details now (a reader in Mexico City, and a wedding in Lisbon on 18 September 2027 at 16:30). No tool, schema or behaviour changes, and the Zodiacs 0.6.7 ZIP keeps its bytes. Developer 0.3.52 is rebuilt from that source with unchanged tools, and 0.3.51 keeps its bytes. Developer 0.3.53 is rebuilt from the public-figure Year Ahead copy (ZOD-12): get_year_score for a named person, offered only with its people switch, uses neutral words and a fixed sentence, and the directory drops one investor; the published definitions are unchanged, and 0.3.52 keeps its bytes.
+
+Current candidates are **Zodiacs 0.6.8** and **Zodiacs Developer 0.3.53**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production
-MCP URL remains unchanged. Zodiacs 0.5.0 adds seven tools that share the
-occasions panel; the developer ZIP's local server keeps its eight tools and
-reports the 0.5.0 source. See [the 0.4.0 audit](../../docs/platform/zodiacs-ai/AUDIT-0.4.0.md)
+MCP URL remains unchanged. Zodiacs 0.5.0 added seven tools that share the
+occasions panel, and 0.6.0 and 0.6.1 added six more, for 19. See [the 0.4.0 audit](../../docs/platform/zodiacs-ai/AUDIT-0.4.0.md)
 for the last audited acceptance evidence and outstanding release gates.
 
 The October 8 integration retains main's developer 0.3.3 ZIP at its existing path. The earlier PR-carried 0.3.3 bytes are also retained at `history/zodiacs-developer-0.3.3-before-20261008-main.zip`; those two inherited variants have different digests. New combined developer sources used 0.3.6, preserving both inherited byte sequences. Developer 0.3.7 bundles engine 1.0.0, published on npm, and its recipes install 1.0.0 from npm; 0.3.6 and earlier ZIPs keep their bytes. Developer 0.3.14 bundles engine 1.1.0-rc.1, a vendored candidate not on npm, and its recipes still install 1.0.0 from npm; 0.3.13 and earlier ZIPs keep their bytes.

@@ -14,7 +14,7 @@ import type { HoroscopeSign } from '../../horoscope-program-types';
 
 export type ExpansionLocale = 'es' | 'pt' | 'fr' | 'it' | 'ru';
 
-export type PeriodSurface = 'tomorrow' | 'weekly' | 'love' | 'career' | 'yearly-2026' | 'yearly-2027';
+export type PeriodSurface = 'tomorrow' | 'weekly' | 'love' | 'career' | 'yearly-2027';
 
 /** A body's place on one day (noon UTC), counted from the reader's Sun sign. */
 export interface PositionFact {
@@ -82,7 +82,7 @@ export interface PeriodChrome {
   title(signName: string, ctx: { surface: PeriodSurface | 'monthly'; from: string; through: string; month?: string }): string;
   h1(signName: string, ctx: { surface: PeriodSurface | 'monthly'; from: string; through: string; month?: string }): string;
   description(signName: string, ctx: { surface: PeriodSurface | 'monthly'; from: string; through: string; month?: string }): string;
-  /** The period switch, in reading order. */
+  /** The period switch, in reading order. 'yearly-2026' labels the link to the English 2026 page. */
   periodLabel: Record<'today' | 'tomorrow' | 'weekly' | 'monthly' | 'love' | 'career' | 'yearly-2026' | 'yearly-2027', string>;
   /** Breadcrumb root ("Horóscopos"). */
   crumbs: string;
