@@ -12,6 +12,7 @@ import SharingBirthForm from './SharingBirthForm';
 import CalculationReload, { calculationError } from './CalculationReload';
 import type { Chart } from '../lib/engine/types';
 import type * as Trust from './ChartTrust';
+import type { PreparedChartCard } from '../lib/share-card-save';
 
 export default function ChartTwins({ locale = 'en', directory }: { locale?: CatalogLocale; directory: TwinPerson[] }) {
   const engine = useEngine();
@@ -20,10 +21,38 @@ export default function ChartTwins({ locale = 'en', directory }: { locale?: Cata
   const [busy, setBusy] = useState(false), [error, setError] = useState('');
   const [result, setResult] = useState<{ chart: Chart; signs: ReturnType<typeof twinSigns>; matches: TwinMatch[]; trust: typeof Trust } | null>(null);
   const generation = useRef(0), resultRef = useRef<HTMLElement>(null);
+  const [twinSlug, setTwinSlug] = useState('');
+  const [card, setCard] = useState<PreparedChartCard | null>(null);
+  const [cardState, setCardState] = useState<'idle' | 'preparing' | 'ready' | 'sharing' | 'shared' | 'saved' | 'failed'>('idle');
+  const cardModule = useRef<typeof import('../lib/share-card-save') | null>(null);
+  /** The story card names one twin and only the signs the visitor shares with them. */
+  async function prepareCard(match: TwinMatch, run: number) {
+    setCard(null); setCardState('preparing');
+    try {
+      const [mod, saveMod] = await Promise.all([loadModule(() => import('../lib/sharing/twin-card')), loadModule(() => import('../lib/share-card-save'))]);
+      const prepared = await mod.prepareTwinCard({ name: match.person.name, sun: match.sun ? match.person.sun : null, moon: match.moon ? match.person.moon : null }, locale);
+      if (run === generation.current) { cardModule.current = saveMod; setCard(prepared); setCardState('ready'); }
+    } catch { if (run === generation.current) setCardState('failed'); }
+  }
+  function chooseTwin(slug: string) {
+    const match = result?.matches.find((item) => item.person.slug === slug);
+    if (!match) return;
+    const run = ++generation.current; setTwinSlug(slug); void prepareCard(match, run);
+  }
+  function share() {
+    const run = generation.current;
+    const match = result?.matches.find((item) => item.person.slug === twinSlug);
+    if (!card || !cardModule.current) { if (match) void prepareCard(match, run); return; }
+    setCardState('sharing');
+    // The card is already rendered; call the native share path during this tap.
+    void cardModule.current.savePngBlob(card.blob, card.filename).then((outcome) => {
+      if (run === generation.current) setCardState(outcome === 'downloaded' ? 'saved' : outcome === 'shared' ? 'shared' : 'ready');
+    }, () => { if (run === generation.current) setCardState('failed'); });
+  }
   useEffect(() => () => { generation.current++; }, []);
   async function compute(event: Event) {
     event.preventDefault(); const run = ++generation.current;
-    setError(''); setResult(null);
+    setError(''); setResult(null); setCard(null); setCardState('idle'); setTwinSlug('');
     // Refused before the engine loads: nothing is computed for a date under 13 or still to come.
     const refusal = birthDateRefusal(entry.date);
     if (refusal) { setBusy(false); setError(birthDateRefusalText(refusal)); return; }
@@ -33,7 +62,9 @@ export default function ChartTwins({ locale = 'en', directory }: { locale?: Cata
       const { chart } = await calculateEntry(entry, mod, locale);
       if (run !== generation.current) return;
       const signs = twinSigns(chart);
-      setResult({ chart, signs, matches: matchTwins(signs, directory), trust });
+      const matches = matchTwins(signs, directory);
+      setResult({ chart, signs, matches, trust });
+      if (matches[0]) { setTwinSlug(matches[0].person.slug); void prepareCard(matches[0], run); }
       requestAnimationFrame(() => { if (run === generation.current) { resultRef.current?.focus({ preventScroll: true }); resultRef.current?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); } });
     } catch (cause) { if (run === generation.current) setError(entryRefusalMessage(cause) ?? calculationError(cause, locale, s(locale, 'computeError'))); }
     finally { if (run === generation.current) setBusy(false); }
@@ -50,7 +81,7 @@ export default function ChartTwins({ locale = 'en', directory }: { locale?: Cata
   return <div class="sharing-tool">
     <p class="notice">{s(locale, 'twinsLimit')}</p>
     <form class="sharing-form" onSubmit={compute}>
-      <SharingBirthForm locale={locale} entry={entry} warm={engine} onChange={(next) => { generation.current++; setEntry((current) => ({ ...current, ...next })); setResult(null); setBusy(false); setError(''); }} />
+      <SharingBirthForm locale={locale} entry={entry} warm={engine} onChange={(next) => { generation.current++; setEntry((current) => ({ ...current, ...next })); setResult(null); setCard(null); setCardState('idle'); setTwinSlug(''); setBusy(false); setError(''); }} />
       <button class="btn btn--primary" disabled={busy} data-twins-submit><span>{s(locale, busy ? 'computing' : 'twinsSubmit')}</span><span class="orb">↗</span></button>
       <p class="sharing-note">{s(locale, 'privacy')}</p>{error && <p class="field__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}<CalculationReload error={error} locale={locale} />
     </form>
@@ -63,6 +94,15 @@ export default function ChartTwins({ locale = 'en', directory }: { locale?: Cata
       {partial.length > 0 && (result.signs.moon
         ? <details class="sharing-method"><summary>{s(locale, 'twinsPartial')} ({partial.length})</summary>{cards(partial)}</details>
         : <><h2>{s(locale, 'twinsSun')}</h2><p>{s(locale, 'twinsCount', { n: partial.length })}</p>{cards(partial)}</>)}
+      {result.matches.length > 0 && <div class="twin-card-share" data-twins-card>
+        <div class="field"><label class="field__label" for="twin-card-pick">{s(locale, 'twinsCardPick')}</label>
+          <select id="twin-card-pick" class="field__input" value={twinSlug} onChange={(event) => chooseTwin((event.currentTarget as HTMLSelectElement).value)} data-twins-card-pick>
+            {result.matches.slice(0, 40).map((match) => <option value={match.person.slug} key={match.person.slug}>{match.person.name} · {s(locale, match.count === 2 ? 'twinsBoth' : match.sun ? 'twinsSun' : 'twinsMoon')}</option>)}
+          </select></div>
+        <button class="btn btn--glass" type="button" onClick={share} disabled={cardState === 'preparing' || cardState === 'sharing'} data-twins-share><span>{s(locale, cardState === 'preparing' ? 'cardPreparing' : cardState === 'sharing' ? 'sharing' : cardState === 'shared' ? 'shared' : cardState === 'saved' ? 'saved' : cardState === 'failed' ? 'retry' : 'twinsShare')}</span><span class="orb">↑</span></button>
+        {cardState === 'failed' && <p class="field__error" role="alert">{s(locale, 'cardError')}</p>}
+        <p class="sharing-note">{s(locale, 'twinsCardNote')}</p>
+      </div>}
       <a href="/people/" hrefLang="en">{s(locale, 'directory')}{englishCue?.suffix} →</a>
     </section>}
   </div>;
