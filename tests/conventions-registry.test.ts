@@ -31,6 +31,23 @@ function dashedStrings(value: unknown, path = 'registry'): string[] {
 }
 
 // The engine versions that wrote each natal conventions set, newest first (src/receipt.ts).
+// Conformance releases after the one whose results the site carries (src/data/conformance/summary.json,
+// which stays at its release until its results are refreshed): each new level's file, its kinds and its
+// arbiters, as the engine repository's vector file and SPEC.md give them. The registry follows the latest.
+const LATER_RELEASES = [
+  {
+    suiteVersion: '0.3.0',
+    commit: 'fd8c11d07505904aa025a24c8ee904de00761682',
+    levels: [{
+      level: 'L4', title: 'Event times', file: 'vectors/0.3.0/L4-events.json',
+      sha256: '4c153d887f993536549432213e81648e9d0b4fc940eb1f116c4aa732dba6e25f',
+      kinds: ['event.ingress', 'event.station', 'event.lunation'],
+      arbiters: [{ id: 'l4-de440s-events', name: 'NASA JPL DE440s reduced to apparent geocentric longitudes in the IAU 2006/2000A true ecliptic and equinox of date, with event instants solved by bisection' }],
+    }],
+  },
+] as const;
+const latestRelease = LATER_RELEASES.at(-1);
+
 const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
 
 /** The ids a natal receipt names: each field's namespace and value, as the registry's usedIn lists them. */
@@ -290,12 +307,30 @@ describe('the conventions registry', () => {
   });
 
   it('holds exactly the kinds and arbiters of the conformance vectors, tied to their vector files', () => {
-    const levelKinds = summary.levels.flatMap((level) => level.kinds.map((kind) => [kind.kind, level] as const));
-    const levelArbiters = summary.levels.flatMap((level) => level.arbiters.map((arbiter) => [arbiter, level] as const));
+    const later = LATER_RELEASES.flatMap((release) => release.levels);
+    const levelKinds = [
+      ...summary.levels.flatMap((level) => level.kinds.map((kind) => [kind.kind, level] as const)),
+      ...later.flatMap((level) => level.kinds.map((kind) => [kind, level] as const)),
+    ];
+    const levelArbiters = [
+      ...summary.levels.flatMap((level) => level.arbiters.map((arbiter) => [arbiter, level] as const)),
+      ...later.flatMap((level) => level.arbiters.map((arbiter) => [arbiter, level] as const)),
+    ];
     expect(values('kind')).toEqual(levelKinds.map(([kind]) => kind));
     expect(values('arbiter')).toEqual(levelArbiters.map(([arbiter]) => arbiter.id));
     for (const [kind, level] of levelKinds) {
       expect(entries.find((entry) => entry.id === `kind:${kind}`)!.sources[0].title).toContain(level.sha256);
+    }
+    for (const release of LATER_RELEASES) {
+      for (const level of release.levels) {
+        for (const id of [...level.kinds.map((kind) => `kind:${kind}`), ...level.arbiters.map((arbiter) => `arbiter:${arbiter.id}`)]) {
+          const entry = entries.find((candidate) => candidate.id === id)!;
+          expect(entry.sources[0].title, id).toBe(`Conformance suite ${release.suiteVersion}, ${level.file} (${level.level}, ${level.title}; sha256 ${level.sha256})`);
+          expect(entry.sources[0].url, id).toBe(`https://github.com/zodiacs-org/engine/blob/${release.commit}/conformance/${level.file}`);
+          expect(entry.sources[1].url, id).toBe(`https://github.com/zodiacs-org/engine/blob/${release.commit}/conformance/SPEC.md`);
+          expect(entry.status, id).toBe('current');
+        }
+      }
     }
     for (const [arbiter, level] of levelArbiters) {
       const entry = entries.find((candidate) => candidate.id === `arbiter:${arbiter.id}`)!;
@@ -311,8 +346,8 @@ describe('the conventions registry', () => {
       expect(conventionId(entry.namespace, entry.value), entry.id).toBe(entry.id);
     }
     expect(registry.engine).toMatchObject({ package: '@zodiacs/engine', version: ENGINE_VERSION });
-    expect(registry.conformance.suiteVersion).toBe(summary.suiteVersion);
-    expect(registry.conformance.commit).toBe(source.commit);
+    expect(registry.conformance.suiteVersion).toBe(latestRelease?.suiteVersion ?? summary.suiteVersion);
+    expect(registry.conformance.commit).toBe(latestRelease?.commit ?? source.commit);
   });
 
   it('is served as JSON with the address of each id on the registry page', async () => {
