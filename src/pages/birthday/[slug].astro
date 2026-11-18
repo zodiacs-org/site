@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../../components/ArtFrame.astro';
+import Motion from '../../components/Motion.astro';
 import ShareRow from '../../components/ShareRow.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import CollectBand from '../../components/CollectBand.astro';
@@ -266,6 +267,7 @@ const jsonLd = [
       fetchpriority="high"
     />
   )}
+  <Motion />
   <article class="bday" style={`--sign:${hue};--hue:${hue}`}>
     {/* 1. The answer first, the sign art in the light. */}
     <BirthdayHero
@@ -304,7 +306,7 @@ const jsonLd = [
     {/* 2. Where the Sun stands, open by default. */}
     <section class="kwrap bday-measure" id="measure" aria-labelledby="bday-measure-title">
       <div class="bday-measure__dial">
-        <BirthdayDial label={label} lonMin={data.lonMin} lonMax={data.lonMax} sign={sign} cusp={cusp} decan={decan} />
+        <div data-enter="rise"><BirthdayDial label={label} lonMin={data.lonMin} lonMax={data.lonMax} sign={sign} cusp={cusp} decan={decan} /></div>
       </div>
       <div class="bday-measure__head">
         <span class="kicker">Exact date and cusp check</span>
@@ -554,17 +556,17 @@ const jsonLd = [
           </div>
         </div>
         <div class="grid-3 bday-deeper__grid">
-          <a class="bday-dcard" href={`/${heroSign.slug}/`}>
+          <a data-enter="rise" class="bday-dcard" href={`/${heroSign.slug}/`}>
             <ArtFrame sign={heroSign.slug} src={signArtSrc(heroSign.slug, 720)} width={720} height={480} alt="" class="bday-dcard__art" />
             <span class="bday-dcard__row"><SignIcon sign={heroSign.slug} size={26} /><span class="h-4">{heroSign.name} guide</span></span>
             <span class="bday-dcard__text">Character, relationships, history, and what the sign means across a chart.</span>
           </a>
-          <a class="bday-dcard" href={`/learn/placements/sun-in-${heroSign.slug}/`}>
+          <a data-enter="rise" class="bday-dcard" href={`/learn/placements/sun-in-${heroSign.slug}/`}>
             <ArtFrame src={heroCropSrc('sign-ring', 560)} srcset={heroCropSrcset('sign-ring')} sizes="(min-width: 960px) 380px, 112px" width={HERO_CROP_SIZE.width} height={HERO_CROP_SIZE.height} alt="" class="bday-dcard__art" />
             <span class="bday-dcard__row"><span class="bday-dcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7.4" /><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" /></svg></span><span class="h-4">Sun in {heroSign.name}</span></span>
             <span class="bday-dcard__text">What the Sun in {heroSign.name} means in any chart, for every {heroSign.name} birthday.</span>
           </a>
-          <a class="bday-dcard" href={`/horoscopes/${heroSign.slug}/`}>
+          <a data-enter="rise" class="bday-dcard" href={`/horoscopes/${heroSign.slug}/`}>
             <ArtFrame src={heroCropSrc('zodiac-figures', 560)} srcset={heroCropSrcset('zodiac-figures')} sizes="(min-width: 960px) 380px, 112px" width={HERO_CROP_SIZE.width} height={HERO_CROP_SIZE.height} alt="" class="bday-dcard__art" spot="30% 70%" />
             <span class="bday-dcard__row"><SignIcon sign={heroSign.slug} size={26} /><span class="h-4">{heroSign.name} horoscope</span></span>
             <span class="bday-dcard__text">The daily reading for {heroSign.name}, for reflection.</span>
