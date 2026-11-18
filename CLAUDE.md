@@ -136,7 +136,9 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   shell or the Astro/site halves will skew, which `check-dist` fails on).
   The committed state is always flag-OFF (`content="0"`, no entry): the CI
   drift gate regenerates with the flag unset. Never commit flag-on output.
-- `public/assets/og/*.png` ← `node scripts/build-og-cards.mjs` (Playwright)
+- `public/assets/og/*.png` are the frozen legacy gilt cards (see `og/v2/`
+  below). Their generator, `scripts/build-og-cards.mjs`, stays in the repo
+  and is not run
 - `public/assets/zodiac-icons/{48,128,400}/` ← `node scripts/build-icons.mjs`
   (sources in `public/assets/sdk/zodiac-icons/circle/` are SDK-public —
   keep byte-identical)
@@ -180,7 +182,9 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   whole km and the perigee and apogee on each side; astronomy-engine with one
   measured scale factor, held to JPL DE421 and Horizons by
   `scripts/build-moon-distances.test.mjs` and the fixtures from
-  `scripts/moon-distances-de421.py`. It names no rule about close Moons.
+  `scripts/moon-distances-de421.py`. It names no rule about close Moons;
+  the supermoon rule (owner, 2026-11-12: a full Moon within 10% of its
+  orbit's perigee to apogee range from perigee) is `src/lib/supermoon.ts`.
   sky.json stays untouched. No timestamp, so `--check` catches drift; the
   site-check drift gate runs it. Rerun it whenever sky.json is rebuilt)
 - `src/data/eclipses.json` ← `node scripts/build-eclipses.mjs` (refresh
@@ -326,6 +330,15 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   the ring settling into the lockup from `src/lib/brand-lockup.mjs`, and the
   system's ffmpeg encodes it. Not byte-stable, so not in the drift job;
   `scripts/end-card.test.mjs` checks it. Rerun it when the lockup changes)
+- `public/assets/thesis/film/` ← `node scripts/build-thesis-film.mjs` (the thesis's
+  32-second silent film "Why the zodiac lasts", 1280 × 720 in H.264 and AV1
+  with its poster, and a 1080 × 1920 cut ending on the brand end card. Every
+  number on screen is read from `public/thesis/thesis-charts.json` and
+  `thesis-seasons.json` by `filmScript()`, which refuses to render when a
+  sentence stops being true; each scene shows its source. Chromium draws each
+  frame from its time alone and the system's ffmpeg encodes it. Not
+  byte-stable, so not in the drift job; `scripts/thesis-film.test.mjs` checks
+  it. Rerun it when those data files or the sign shapes change)
 - `public/assets/pulse.json` / `distribution.json` ← weekly cron workflows
 - `docs/phase5/people-pilot/index-demand.json` ← `node
   scripts/build-people-index-demand.mjs --refresh` (pinned twelve-month
@@ -382,9 +395,10 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   scripts/build-natal-aspect-examples.mjs` (the natal planet-pair pages'
   evidence: synthetic UTC instants run through the birth chart calculation,
   two worked examples and all five feasible geometries per pair, hourly
-  birth-time spans; `--check` for drift, CI runs it). The pages themselves
-  are held behind `src/data/natal-aspects-publication.json` and
-  `PUBLIC_NATAL_ASPECTS_PREVIEW=1`; see `docs/natal-aspects/RELEASE.md`
+  birth-time spans; `--check` for drift, CI runs it). The pages are released
+  (`src/data/natal-aspects-publication.json`, reviewed 2026-10-25);
+  `PUBLIC_NATAL_ASPECTS_PREVIEW=1` matters only if that record is withheld
+  again; see `docs/natal-aspects/RELEASE.md`
 - `src/data/nasa-event-instants.json` ← `python3
   scripts/build-nasa-event-instants.py` (the planets' sign ingresses,
   stations and the monthly catalogs' exact aspects solved on NASA JPL
@@ -400,8 +414,8 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   whenever a monthly catalog, ingresses.json, sky.json or the horoscope
   program gains an event, and fetch the responses again past 2031-05)
 
-`public/sw.js` is a PWA worker — the owner approved superseding the old
-push-only rule (2026-07-15, WS4 merge decision). Strict invariants: HTML
+`public/sw.js` is a caching PWA worker (owner-approved 2026-07-15, WS4
+merge decision). Strict invariants: HTML
 navigations and wing pages are network-first (a live deploy always wins;
 cache is only the offline fallback); `/registry/**.json` identity data is
 NEVER served from cache — offline is an honest network failure, not an old

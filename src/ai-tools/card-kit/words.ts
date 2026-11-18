@@ -28,7 +28,7 @@ const FULL = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', y
 const SHORT = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 const civil = (date: string) => new Date(`${date.slice(0, 10)}T12:00:00Z`);
 
-/** "Saturday, 12 June 2027", from parts so every runtime puts the comma in the same place. */
+/** "Saturday, 18 September 2027", from parts so every runtime puts the comma in the same place. */
 export function longDate(date: string): string {
   const parts = Object.fromEntries(LONG.formatToParts(civil(date)).map((part) => [part.type, part.value]));
   return `${parts.weekday}, ${parts.day} ${parts.month} ${parts.year}`;

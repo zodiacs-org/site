@@ -73,7 +73,8 @@ import {
 } from './result-preview-model.js';
 import { HUES } from './chart-preview-model.js';
 import { YEAR_SCORE_SHARE_IMAGE_PATH, YEAR_SCORE_SHARE_KEYS, YEAR_SCORE_SHARE_PATH, parseYearScoreShare, yearScoreQuery, type YearScoreShare } from '../lib/year-score/share.js';
-import { scoreTier } from '../lib/year-score/tier.js';
+import { figureTierSummary, scoreTier } from '../lib/year-score/tier.js';
+import { FIGURE_NOTE } from '../lib/year-score/people.js';
 import { figureYearScore } from './year-score-figure.js';
 import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
 import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
@@ -147,7 +148,6 @@ import {
   parseOccasionShare,
   type CompatibilityShare,
   type OccasionShare,
-  type ShareRef,
   type ShareSign,
 } from '../lib/share-results.js';
 
@@ -669,19 +669,25 @@ export interface YearScoreCardModel {
   /** A directory figure's name and slug; null on a person's own card. */
   name: string | null;
   slug: string | null;
+  /** A directory figure's first scored day (YYYY-MM-DD); null on a person's own card. */
+  from: string | null;
 }
+
+/** "2026-11-01" as "1 Nov 2026", as the figure's page prints it (src/lib/year-score/reading.ts dayName, without loading the transit sentences). */
+const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const figureDay = (day: string) => `${Number(day.slice(8, 10))} ${SHORT_MONTHS[Number(day.slice(5, 7)) - 1]} ${day.slice(0, 4)}`;
 
 const capitalSign = (slug: ShareSign) => slug.charAt(0).toUpperCase() + slug.slice(1);
 
 /** The model for a share: a person's own from the link, a figure's worked out on the server. Null for a figure the directory does not have. */
 export async function yearScoreCardModel(share: YearScoreShare, now = new Date()): Promise<YearScoreCardModel | null> {
   if (share.kind === 'self') {
-    return { sign: { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] }, score: share.score, label: scoreTier(share.score).label, hue: HUES[share.sun], name: null, slug: null };
+    return { sign: { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] }, score: share.score, label: scoreTier(share.score).label, hue: HUES[share.sun], name: null, slug: null, from: null };
   }
-  const figure = await figureYearScore(share.slug, now);
+  const figure = await figureYearScore(share.slug, now, share.month);
   if (!figure) return null;
   const sun = figure.sun as ShareSign;
-  return { sign: { slug: sun, label: `${capitalSign(sun)} Sun`, hue: HUES[sun] }, score: figure.score, label: figure.label, hue: HUES[sun], name: figure.person.name, slug: figure.person.slug };
+  return { sign: { slug: sun, label: `${capitalSign(sun)} Sun`, hue: HUES[sun] }, score: figure.score, label: figure.label, hue: HUES[sun], name: figure.person.name, slug: figure.person.slug, from: figure.from };
 }
 
 /** A Year Ahead Score (A, the number as a trophy): the Sun sign's panel and disc, the score large, its tier, and the Sun sign. */
@@ -692,7 +698,10 @@ export function yearScoreCard(model: YearScoreCardModel, images: Map<ShareSign, 
     hue: model.hue,
     title: [titleLine(`${model.score.toFixed(1)}/10`, 120)],
     // Two runs, as commaLine splits a comma: the renderer would open a wide gap after the full stop.
-    line: [h('span', null, `${model.label}.`), h('span', null, `\u00a0${model.sign.label}.`)],
+    // A figure's card also says when its twelve months start, on a line of its own, so a posted card dates itself.
+    line: model.from
+      ? [h('div', { style: { display: 'flex', flexDirection: 'column' } }, h('div', { style: { display: 'flex' } }, `${model.label}. ${model.sign.label}.`), h('div', { style: { display: 'flex' } }, `From ${figureDay(model.from)}.`))]
+      : [h('span', null, `${model.label}.`), h('span', null, `\u00a0${model.sign.label}.`)],
   }), model.name ? null : model.sign.slug);
 }
 
@@ -1548,8 +1557,9 @@ function htmlResponse(html: string): Response {
   });
 }
 
-const withRef = (path: string, ref: ShareRef | null) => (ref ? `${path}?ref=${ref}` : path);
-
+// A share page has no script, so its own address keeps the link's ref word; its links never carry it on
+// (privacy page, "Hosting, logs, and analytics"). The page after it arrives without ref, so Base.astro
+// keeps whatever listed word the tab already holds, and counts the visit as direct only when it holds none.
 export const SHARE_NOTE = 'Astrology’s reading, for insight and fun, not a guarantee of how things will turn out.';
 
 /** A link whose query is not a share query opens the plain page, with the site's own card. */
@@ -1644,8 +1654,8 @@ export async function handleBirthdayLinkRequest(request: Request): Promise<Respo
     imageType: 'image/jpeg',
     imageAlt: `${model.title}: ${model.line}.`,
     explanation: model.about,
-    action: { label: 'Find your own birthday', href: withRef('/birthday/', share.ref) },
-    ...(model.famous ? { more: { label: `${model.famous.name}’s chart`, href: withRef(`/people/${model.famous.slug}/`, share.ref) } } : {}),
+    action: { label: 'Find your own birthday', href: '/birthday/' },
+    ...(model.famous ? { more: { label: `${model.famous.name}’s chart`, href: `/people/${model.famous.slug}/` } } : {}),
     note: BIRTHDAY_NOTE,
   }));
 }
@@ -1665,15 +1675,15 @@ export async function handleSkyCalendarLinkRequest(request: Request): Promise<Re
     imageType: 'image/jpeg',
     imageAlt: `The sky in your calendar: ${model.title}, ${model.spanLong}.`,
     explanation: `${model.title}: ${model.spanLong}. ${SKY_CALENDAR_ABOUT}`,
-    action: { label: 'Add it to your calendar', href: withRef('/sky-calendar/', share.ref) },
+    action: { label: 'Add it to your calendar', href: '/sky-calendar/' },
     note: SKY_CALENDAR_NOTE,
   }));
 }
 
 /** A month's or year's own page on the site, beside the way to read your own. */
 function periodPage(share: HoroscopeShare, signName: string): SharePage['more'] {
-  if (share.period === 'month') return { label: `${signName}’s monthly horoscope`, href: withRef(`/horoscopes/${share.sign}/monthly/`, share.ref) };
-  if (share.period === 'year') return { label: `${signName}’s ${share.date.slice(0, 4)} horoscope`, href: withRef(`/horoscopes/${share.sign}/${share.date.slice(0, 4)}/`, share.ref) };
+  if (share.period === 'month') return { label: `${signName}’s monthly horoscope`, href: `/horoscopes/${share.sign}/monthly/` };
+  if (share.period === 'year') return { label: `${signName}’s ${share.date.slice(0, 4)} horoscope`, href: `/horoscopes/${share.sign}/${share.date.slice(0, 4)}/` };
   return undefined;
 }
 
@@ -1695,7 +1705,7 @@ export async function handleHoroscopeLinkRequest(request: Request): Promise<Resp
     imageType: 'image/jpeg',
     imageAlt: `${model.heading}: ${model.line}${confidence}`,
     explanation: model.passage ? `${model.passage}${confidence}` : 'Zodiacs writes a horoscope for each Sun sign every day, from that day’s sky. This one is no longer kept here; today’s are on zodiacs.org.',
-    action: { label: 'Read your own horoscope', href: withRef('/horoscopes/', share.ref) },
+    action: { label: 'Read your own horoscope', href: '/horoscopes/' },
     ...(more ? { more } : {}),
     note: HOROSCOPE_DISCLOSURE,
   }));
@@ -1718,7 +1728,7 @@ export async function handleCompatibilityLinkRequest(request: Request): Promise<
     imageType: 'image/jpeg',
     imageAlt: `${model.first} and ${model.second}, ${model.score} out of 100. ${model.summary}${model.confidence ? ` ${model.confidence}.` : ''}`,
     explanation: `${model.first} and ${model.second} compared their birth charts on Zodiacs: ${model.score} out of 100, ${model.verdict.charAt(0).toLowerCase()}${model.verdict.slice(1)}. The score reads the contacts between the two charts and their Sun signs’ elements.${model.confidence ? ` ${model.confidence}.` : ''}`,
-    action: { label: 'Check your own compatibility', href: withRef('/compatibility/', share.ref) },
+    action: { label: 'Check your own compatibility', href: '/compatibility/' },
     note: SHARE_NOTE,
   }));
 }
@@ -1740,7 +1750,7 @@ export async function handleOccasionLinkRequest(request: Request): Promise<Respo
     imageType: 'image/jpeg',
     imageAlt: `${model.headline}, ${model.when}: ${model.score} out of 100. ${model.verdict}.${model.confidence ? ` ${model.confidence}.` : ''}`,
     explanation: `Zodiacs rated this date ${model.score} out of 100 from the sky that day: the Moon’s phase and sign, Venus, and any planets in retrograde.${model.confidence ? ` ${model.confidence}.` : ''}`,
-    action: { label: 'Rate your own date', href: withRef('/occasions/', share.ref) },
+    action: { label: 'Rate your own date', href: '/occasions/' },
     note: SHARE_NOTE,
   }));
 }
@@ -1811,8 +1821,8 @@ export async function handleChartTwinsLinkRequest(request: Request): Promise<Res
     imageType: 'image/jpeg',
     imageAlt: `Chart twins: ${model.quote}. ${model.count}.`,
     explanation: `${model.count}. ${TWINS_ABOUT}`,
-    action: { label: 'Find your chart twins', href: withRef('/chart-twins/', share.ref) },
-    more: { label: `${model.first.name}’s chart`, href: withRef(`/people/${model.first.slug}/`, share.ref) },
+    action: { label: 'Find your chart twins', href: '/chart-twins/' },
+    more: { label: `${model.first.name}’s chart`, href: `/people/${model.first.slug}/` },
     note: TWINS_NOTE,
   }));
 }
@@ -1835,8 +1845,8 @@ export async function handleFamousChartLinkRequest(request: Request): Promise<Re
     imageType: 'image/jpeg',
     imageAlt: `A famous birth chart: ${model.name}, ${model.sunLine}.`,
     explanation: `${model.sunLine}. ${model.lede}`,
-    action: { label: `Open ${model.name}’s chart`, href: withRef(`/people/${model.slug}/`, share.ref) },
-    more: { label: 'Find your chart twins', href: withRef('/chart-twins/', share.ref) },
+    action: { label: `Open ${model.name}’s chart`, href: `/people/${model.slug}/` },
+    more: { label: 'Find your chart twins', href: '/chart-twins/' },
     note: noonNote(person.birthplace),
   }));
 }
@@ -1862,6 +1872,8 @@ export async function handleYearScoreLinkRequest(request: Request): Promise<Resp
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
   const share = parseYearScoreShare(url.searchParams);
+  // A month the parser refused (out of the window, malformed, or on a self share) names no page (ZOD-12).
+  if (!share && url.searchParams.has('m')) return errorResponse(404);
   if (share?.kind === 'figure' && !yearPeopleShareOn()) return errorResponse(404);
   const model = share ? await yearScoreCardModel(share).catch(() => undefined) : null;
   if (share && model === null) return errorResponse(404);
@@ -1875,11 +1887,12 @@ export async function handleYearScoreLinkRequest(request: Request): Promise<Resp
     imageUrl: `${url.origin}${YEAR_SCORE_SHARE_IMAGE_PATH}?${query}`,
     imageType: 'image/jpeg',
     imageAlt: `${whose} Year Ahead Score: ${model.score.toFixed(1)} out of 10, ${model.label.toLowerCase()}, ${model.sign.label}.`,
-    explanation: `${model.label}. ${scoreTier(model.score).summary}`,
+    // A figure gets the neutral tier words and the fixed sentence on what the number is not (ZOD-12); a person, their own.
+    explanation: model.slug ? `${model.label}. ${figureTierSummary(scoreTier(model.score).key)} ${FIGURE_NOTE}` : `${model.label}. ${scoreTier(model.score).summary}`,
     action: model.slug
-      ? { label: `See ${model.name}’s year`, href: withRef(`/year/${model.slug}/`, share.ref) }
-      : { label: 'Score your own year', href: withRef('/year-score/', share.ref) },
-    ...(model.slug ? { more: { label: 'Score your own year', href: withRef('/year-score/', share.ref) } } : {}),
+      ? { label: `See ${model.name}’s year`, href: `/year/${model.slug}/` }
+      : { label: 'Score your own year', href: '/year-score/' },
+    ...(model.slug ? { more: { label: 'Score your own year', href: '/year-score/' } } : {}),
     note: YEAR_SCORE_SHARE_NOTE,
   }));
 }
@@ -1888,7 +1901,7 @@ export async function handleBirthdayReportLinkRequest(request: Request): Promise
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
   const share = parseBirthdayReportShare(url.searchParams);
-  const action = { label: 'Make your own birthday report', href: withRef('/birthday-report/', share?.ref ?? null) };
+  const action = { label: 'Make your own birthday report', href: '/birthday-report/' };
   if (!share) {
     return htmlResponse(sharePageHtml({
       title: 'Birthday report on Zodiacs', description: 'Your solar return, Year Ahead Score, Personal Year and tarot year card, on one page.',
@@ -1921,7 +1934,7 @@ export async function handleSolarReturnLinkRequest(request: Request): Promise<Re
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
   const share = parseSolarReturnShare(url.searchParams);
-  const action = { label: 'Cast your own solar return', href: withRef('/solar-return/', share?.ref ?? null) };
+  const action = { label: 'Cast your own solar return', href: '/solar-return/' };
   if (!share) {
     return htmlResponse(sharePageHtml({
       title: 'Solar return on Zodiacs', description: 'The chart of your next birthday, and the year’s main themes.',
@@ -1941,7 +1954,7 @@ export async function handleSolarReturnLinkRequest(request: Request): Promise<Re
     explanation: `${share.rising ? `${lines.title}: the sign rising when the Sun came back sets the tone of the year. ` : ''}Jupiter in ${capitalSign(share.jupiter)} shows where the year’s growth is.`,
     action,
     // The Year Ahead Score has its own launch switch; the link waits for it.
-    ...(process.env.PUBLIC_YEAR_SCORE_ENABLED === '1' ? { more: { label: 'Score the year ahead', href: withRef('/year-score/', share.ref) } } : {}),
+    ...(process.env.PUBLIC_YEAR_SCORE_ENABLED === '1' ? { more: { label: 'Score the year ahead', href: '/year-score/' } } : {}),
     note: SOLAR_RETURN_SHARE_NOTE,
   }));
 }
@@ -1966,7 +1979,7 @@ export async function handleMilestoneLinkRequest(request: Request): Promise<Resp
     imageType: 'image/jpeg',
     imageAlt: `${model.heading}. ${model.line}.`,
     explanation: model.about,
-    action: { label: 'Find your own milestones', href: withRef('/occasions/milestones/', share.ref) },
+    action: { label: 'Find your own milestones', href: '/occasions/milestones/' },
     note: MILESTONE_NOTE,
   }));
 }
@@ -2035,8 +2048,8 @@ export async function handleBigThreeLinkRequest(request: Request): Promise<Respo
     imageType: 'image/jpeg',
     imageAlt: `The big three: ${model.title}.`,
     explanation: model.about,
-    action: { label: 'Find your big three', href: withRef('/big-three/', share.ref) },
-    more: { label: 'Open the birth chart page', href: withRef('/birth-chart/', share.ref) },
+    action: { label: 'Find your big three', href: '/big-three/' },
+    more: { label: 'Open the birth chart page', href: '/birth-chart/' },
     note: BIG_THREE_NOTE,
   }));
 }
@@ -2058,8 +2071,8 @@ export async function handleChineseZodiacLinkRequest(request: Request): Promise<
     imageType: 'image/jpeg',
     imageAlt: `The Chinese zodiac: ${model.title}. ${model.detail}.`,
     explanation: `${model.detail}. ${model.element.charAt(0).toUpperCase()}${model.element.slice(1)} is the ${model.name}’s own element, from its Earthly Branch ${model.branch}, whatever the year. ${model.association} ${model.context}`,
-    action: { label: `Read about the ${model.name}`, href: withRef(`/learn/chinese-zodiac/${model.slug}/`, share.ref) },
-    more: { label: 'All twelve animals', href: withRef('/learn/chinese-zodiac/', share.ref) },
+    action: { label: `Read about the ${model.name}`, href: `/learn/chinese-zodiac/${model.slug}/` },
+    more: { label: 'All twelve animals', href: '/learn/chinese-zodiac/' },
     note: CHINESE_ZODIAC_NOTE,
   }));
 }
@@ -2079,8 +2092,8 @@ export async function handleInviteLinkRequest(request: Request): Promise<Respons
     imageType: 'image/jpeg',
     imageAlt: `An invitation to compare charts: ${model.line}`,
     explanation: `${model.line} ${INVITE_ABOUT}`,
-    action: { label: 'Make an invite link', href: withRef('/compatibility/invite/', share.ref) },
-    more: { label: 'Compare two charts now', href: withRef('/compatibility/', share.ref) },
+    action: { label: 'Make an invite link', href: '/compatibility/invite/' },
+    more: { label: 'Compare two charts now', href: '/compatibility/' },
     note: SHARE_NOTE,
   }));
 }
@@ -2193,7 +2206,7 @@ export async function handleAstrocartographyLinkRequest(request: Request): Promi
     imageType: 'image/jpeg',
     imageAlt: [`${model.title}.`, model.line].filter(Boolean).join(' '),
     explanation: [model.detail, model.line, ASTROCARTOGRAPHY_ABOUT].filter(Boolean).join(' '),
-    action: { label: 'Draw your own map', href: withRef('/astrocartography/', share.ref) },
+    action: { label: 'Draw your own map', href: '/astrocartography/' },
     note: SHARE_NOTE,
   }));
 }

@@ -524,6 +524,8 @@ describe('the site and the compute API', () => {
       'src/ai-tools/features/solar-return.ts',
       // The personal tools (ZODIACS_PERSONAL_TOOLS_ENABLED=1) resolve a birth's local time with the same operations, server-side.
       'src/ai-tools/personal/shared.ts',
+      // The new and full Moons either side of a moment come from the same lunation search, server-side (ZOD-64).
+      'src/ai-tools/clear-time.ts', 'src/ai-tools/clear-time.test.ts',
     ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the

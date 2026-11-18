@@ -46,7 +46,10 @@ invoker triggers therefore maintain essential authorization facts in a private
 table in the same transaction as Auth updates. Only Auth writes these facts;
 the worker has read access. No email, password or token is copied. Consent
 revocation, session deletion/expiry, user suspension and client disablement stop
-access. The account page exposes Disconnect. Signing out of that page does not
+access. Account deletion erases the account's OAuth principals, with their
+subscriptions and outbox rows, and the watch refuses to create or use one while
+the account is deleting (migration `20261113090000_account_sync_v2_retention`).
+The account page exposes Disconnect. Signing out of that page does not
 disconnect the application; the page explains this distinction.
 
 The loopback operator runner retains seven-day synthetic bearer grants for
