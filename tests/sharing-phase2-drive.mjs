@@ -142,6 +142,14 @@ await withPreview({ port: 8791 }, async (base) => {
         assert.match(await page.locator('.sharing-tool > .notice').innerText(), /Rising signs are not compared/i);
         await overflow(page);
         await page.screenshot({ path: resolve(out, `twins-${engine.name}-${width}.png`), fullPage: true });
+        const twinShare = page.locator('[data-twins-share]');
+        assert(await page.locator('[data-twins-card-pick] option').count() > 0, 'the story card offers the matched twins');
+        await page.waitForFunction(() => document.querySelector('[data-twins-share]') && !document.querySelector('[data-twins-share]').disabled);
+        await twinShare.click();
+        const twinCalls = await page.evaluate(() => window.__shareCalls);
+        assert.equal(twinCalls.at(-1).active, true);
+        assert.equal(twinCalls.at(-1).name, 'zodiacs-chart-twin.png');
+        if (width === 390 && engine.name === 'chromium') await downloadedCard(page, twinShare, 'twin-card.png');
         await page.locator('#share-person-1-time').locator('..').getByRole('checkbox').check();
         await page.locator('[data-twins-submit]').click();
         await page.locator('[data-twins-result]').waitFor();
