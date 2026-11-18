@@ -80,11 +80,30 @@ describe('level rules in the page', () => {
   it('leaves the status line empty on load and keeps focus when the question closes', async () => {
     const { readFile } = await import('node:fs/promises');
     const component = await readFile(new URL('../components/LevelSwitch.astro', import.meta.url), 'utf8');
-    const apply = component.slice(component.indexOf('function apply('), component.indexOf('function init('));
-    // The status is written only after the initial apply has returned.
-    expect(apply.indexOf('if (opts.initial) return;')).toBeGreaterThan(-1);
-    expect(apply.indexOf('if (opts.initial) return;')).toBeLessThan(apply.indexOf('STATUS[level]'));
-    expect(component).toContain('[data-level-set="${pageLevel() ?? DEFAULT_LEVEL}"]`)?.focus()');
+    const wiring = await readFile(new URL('./level-switch.ts', import.meta.url), 'utf8');
+    // On load only the pressed button is marked: nothing is saved, announced
+    // or animated, and the status line is written only by a reader's change.
+    const loader = component.slice(component.lastIndexOf('<script>'));
+    expect(loader).not.toContain('data-level-status');
+    expect(loader).not.toContain('localStorage');
+    expect(loader).not.toContain('dispatchEvent');
+    // The pressed button is marked inline, right after the switch, before paint.
+    const pressedInline = component.slice(component.indexOf('</div>\n</div>\n<script is:inline>'));
+    expect(pressedInline).toContain("setAttribute('aria-pressed'");
+    expect(wiring.slice(wiring.indexOf('function apply('))).toContain('STATUS[level]');
+    expect(wiring).toContain('[data-level-set="${pageLevel() ?? DEFAULT_LEVEL}"]`)?.focus()');
+  });
+
+  it('keeps the switch wiring out of the first-load scripts and replays an early press', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const component = await readFile(new URL('../components/LevelSwitch.astro', import.meta.url), 'utf8');
+    const loader = component.slice(component.lastIndexOf('<script>'));
+    // Dynamic, so scripts/report-bundles.mjs leaves it outside the route budget.
+    expect(loader).toContain("import('../lib/level-switch')");
+    expect(loader).not.toMatch(/from '\.\.\/lib\/level-switch'/);
+    expect(loader).toContain('requestIdleCallback');
+    expect(loader).toMatch(/addEventListener\('click', early, true\)/);
+    expect(loader).toContain('button?.click()');
   });
 
   it('keeps the browser drives\' Advanced seed on the real storage keys', async () => {

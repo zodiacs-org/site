@@ -47,6 +47,12 @@ Beginner is the default. The choice lives in this browser only
 - Depth that opens on a switch fades in once, outermost blocks only, 80ms
   apart. It does not rise, because readings stay still (`docs/MOTION.md`), and
   reduced motion shows it at once.
+- The switch's wiring (`src/lib/level-switch.ts`) loads on idle or on the
+  reader's first touch of the switch, so it stays outside the page's
+  first-load script budget. A press made while it loads is replayed once it
+  is in. The button for the opening level is marked by a small inline
+  script before paint, so the bundled loader only schedules the wiring.
+  Only `src/lib/level.ts`, which islands share, loads up front.
 - The status line under the switch fills only when the reader changes level,
   so it never moves the page on load and screen readers hear it only then.
 - Off the natal chart the lens rail shows at every level, because it is the

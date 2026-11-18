@@ -72,88 +72,51 @@ const options = [
     <p class="level-switch__status" data-level-status aria-live="polite"></p>
   </div>
 </div>
+<script is:inline>
+  // Mark the button for the level the page opened at, before paint. The
+  // inline script above already set html[data-level].
+  (function () {
+    var level = document.documentElement.getAttribute('data-level');
+    document.querySelectorAll('[data-level-set]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-level-set') === level));
+    });
+  })();
+</script>
 
 <script>
-  import { DEFAULT_LEVEL, LEVEL_ASKED_KEY, LEVEL_EVENT, LEVEL_STORAGE_KEY, isLevel, pageLevel, type Level } from '../lib/level';
-
-  const STATUS: Record<Level, string> = {
-    beginner: 'Showing plain words and the key parts first.',
-    intermediate: 'Showing houses, aspects and transits too.',
-    advanced: 'Showing everything, down to exact positions.',
-  };
-  const MARKED = '[data-depth], [data-depth-only]';
-
-  const store = {
-    get(key: string): string | null { try { return window.localStorage.getItem(key); } catch { return null; } },
-    set(key: string, value: string): void { try { window.localStorage.setItem(key, value); } catch { /* private window */ } },
-  };
-  const shown = (el: Element) => el.getClientRects().length > 0;
-
-  // `initial` applies the level the page already shows: nothing is saved,
-  // announced or animated, and the status line stays empty, so nothing on
-  // the page moves after first paint.
-  function apply(level: Level, opts: { initial?: boolean } = {}) {
-    const root = document.documentElement;
-    const marked = Array.from(document.querySelectorAll<HTMLElement>(MARKED));
-    const before = new Map<Element, boolean>(marked.map((el) => [el, shown(el)]));
-    root.setAttribute('data-level', level);
-    if (!opts.initial) store.set(LEVEL_STORAGE_KEY, level);
-    document.querySelectorAll<HTMLButtonElement>('[data-level-set]').forEach((b) => {
-      b.setAttribute('aria-pressed', String(b.dataset.levelSet === level));
-    });
-    window.dispatchEvent(new CustomEvent(LEVEL_EVENT, { detail: { level } }));
-    if (opts.initial) return;
-    document.querySelectorAll('[data-level-status]').forEach((s) => { s.textContent = STATUS[level]; });
-    // Depth that just opened fades in once, outermost blocks only, in reading
-    // order. It fades without rising, because readings inside stay still
-    // (docs/MOTION.md). Motion is off for reduced motion (html[data-entrance]).
-    if (root.getAttribute('data-entrance') !== 'on') return;
-    let step = 0;
-    marked.forEach((el) => {
-      if (before.get(el) || !shown(el)) return;
-      const parent = el.parentElement?.closest(MARKED);
-      if (parent && !before.get(parent)) return;
-      el.classList.remove('level-open');
-      void el.offsetWidth;
-      el.style.setProperty('--level-i', String(Math.min(step++, 8)));
-      el.classList.add('level-open');
-      const done = (event: AnimationEvent) => {
-        if (event.target !== el) return;
-        el.classList.remove('level-open');
-        el.removeEventListener('animationend', done);
-      };
-      el.addEventListener('animationend', done);
-    });
-  }
-
-  function init() {
-    const current = pageLevel() ?? DEFAULT_LEVEL;
-    apply(current, { initial: true });
-    // Closing the question hides the button that has focus, so focus moves to
-    // the switch button for the level now shown.
-    const closeAsk = () => {
-      const root = document.documentElement;
-      if (!root.hasAttribute('data-level-ask')) return;
-      const inside = document.activeElement?.closest('[data-level-ask]');
-      store.set(LEVEL_ASKED_KEY, '1');
-      root.removeAttribute('data-level-ask');
-      if (inside) {
-        document.querySelector<HTMLButtonElement>(`[data-level-set="${pageLevel() ?? DEFAULT_LEVEL}"]`)?.focus();
-      }
+  // The switch's wiring loads on idle or on the reader's first touch of it,
+  // outside the page's first-load script budget (docs/LEVELS.md). The level
+  // and the pressed button are already set before paint by the inline scripts.
+  function start() {
+    const root = document.querySelector<HTMLElement>('[data-level-root]');
+    if (!root) return;
+    let wiring: Promise<void> | null = null;
+    let pressed: HTMLButtonElement | null = null;
+    const load = () => {
+      wiring ??= import('../lib/level-switch').then(({ wireLevelSwitch }) => {
+        wireLevelSwitch();
+        root.removeEventListener('click', early, true);
+        // A press made while the wiring loaded counts once it is in.
+        const button = pressed;
+        pressed = null;
+        button?.click();
+      });
+      return wiring;
     };
-    document.querySelectorAll<HTMLButtonElement>('[data-level-set]').forEach((b) => {
-      b.addEventListener('click', () => {
-        if (isLevel(b.dataset.levelSet)) { closeAsk(); apply(b.dataset.levelSet); }
-      });
-    });
-    document.querySelectorAll<HTMLButtonElement>('[data-level-pick]').forEach((b) => {
-      b.addEventListener('click', () => {
-        if (isLevel(b.dataset.levelPick)) { apply(b.dataset.levelPick); closeAsk(); }
-      });
-    });
-    document.querySelector('[data-level-skip]')?.addEventListener('click', closeAsk);
+    // A press that comes before the wiring is held, then replayed.
+    const early = (event: Event) => {
+      const button = (event.target as Element | null)?.closest<HTMLButtonElement>('button');
+      if (!button) return;
+      pressed = button;
+      void load();
+    };
+    root.addEventListener('click', early, true);
+    root.addEventListener('pointerdown', load, { once: true, capture: true });
+    root.addEventListener('focusin', load, { once: true });
+    if ('requestIdleCallback' in window) window.requestIdleCallback(() => void load(), { timeout: 3000 });
+    else window.setTimeout(() => void load(), 1500);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
-  else init();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+  else start();
 </script>
