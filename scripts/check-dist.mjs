@@ -1583,7 +1583,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?numerology\/$/u.test(path))),
   new Set(['/numerology/']),
 );
-if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-09-07</lastmod>')) {
+// Re-dated 2026-11-17: the restyle added the letter key and the emblem (rendered content).
+if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-17</lastmod>')) {
   fail('sitemap.xml: numerology modification date must match the reviewed source revision');
 }
 requireExactSet(
