@@ -57,6 +57,9 @@ useEffect(() => { if (result) motionScan(containerRef.current ?? undefined); }, 
 - Without `<Motion />`, without JavaScript, with reduced motion and when
   printing, everything is simply shown. The first Tab on a page shows every
   marked element at once, so keyboard readers never wait on an entrance.
+  The same goes for a reader who jumps within the page: an address with a
+  `#`, a link to a section on the same page, or Back to one shows every marked
+  element at once, so an in-page link always lands on content that is there.
 - Elements show as soon as any part of them is on screen (threshold 0, as with
   `.reveal`), so a tall block never sits blank while someone reads it.
 - Only `opacity`, `transform` and `stroke-dashoffset` change: no layout shift.
