@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import corrections from '../../data/corrections.json';
+import vercel from '../../../vercel.json';
 
 interface CorrectionEntry {
   id: string;
@@ -13,6 +14,19 @@ interface CorrectionEntry {
 }
 
 const entries = corrections.entries as CorrectionEntry[];
+
+// A withdrawn page redirects (vercel.json), sometimes to this log itself. Link
+// where the redirect lands, and name a page that lands here without linking
+// it, so the log never sends a reader or a crawler through a redirect.
+const redirects = new Map(
+  (vercel.redirects as { source: string; destination: string; has?: unknown }[])
+    .filter((rule) => !rule.has)
+    .map((rule) => [rule.source, rule.destination]),
+);
+const pageLink = (page: string): string | null => {
+  const target = redirects.get(page) ?? page;
+  return target === '/corrections/' ? null : target;
+};
 
 const jsonLd = [
   {
@@ -57,7 +71,7 @@ const jsonLd = [
               <h2>{entry.summary}</h2>
               <p class="mono">
                 Corrected <time datetime={entry.correctedAt}>{entry.correctedAt.slice(0, 10)}</time>
-                {' · '}<a href={entry.page}>{entry.page}</a>
+                {' · '}{pageLink(entry.page) ? <a href={pageLink(entry.page)}>{entry.page}</a> : <span>{entry.page} (withdrawn)</span>}
                 {entry.editionDate ? ` · edition ${entry.editionDate}` : ''}
               </p>
               <p><strong>Before:</strong> {entry.before}</p>

@@ -35,6 +35,7 @@ import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
 import { ensureProfileWriteAccess, runAfterProfileAccess } from '../lib/account-v2/profile-access-request';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 
 export interface SlotState {
   source: 'saved' | 'form' | 'link' | 'positions';
@@ -383,8 +384,30 @@ function resolvePositions(
   };
 }
 
+/**
+ * The Gregorian birth date a side would be computed from: a form side after
+ * readSlotDates, a saved chart, or a received link. A positions-only side
+ * carries no birth date.
+ */
+export function slotBirthDate(slot: SlotState, charts: SavedChart[]): string | null {
+  if (slot.source === 'form') return slot.date || null;
+  if (slot.source === 'saved') return charts.find((c) => c.id === slot.savedId)?.birth.date ?? null;
+  if (slot.source === 'link') return slot.link?.input.date ?? null;
+  return null;
+}
+
+/** The refusal sentence shown under one person, in the side's own error area. */
+function SlotRefusal({ idPrefix, message }: { idPrefix: string; message: string }) {
+  if (!message) return null;
+  return (
+    <p class="calc__error" role="alert" tabIndex={-1} id={`${idPrefix}-refusal`} lang={birthDateRefusalLang(message)} data-syn-refusal>
+      {message}
+    </p>
+  );
+}
+
 function SlotForm({
-  slot, setSlot, charts, idPrefix, fallbackLabel, locale, loadEngine,
+  slot, setSlot, charts, idPrefix, fallbackLabel, locale, loadEngine, refusal = '',
 }: {
   slot: SlotState;
   setSlot: (updater: (s: SlotState) => SlotState) => void;
@@ -393,6 +416,8 @@ function SlotForm({
   fallbackLabel: string;
   locale: Locale;
   loadEngine: EngineLoader;
+  /** Why this person's birth date is refused, or ''. */
+  refusal?: string;
 }) {
   if (slot.source === 'positions' && slot.positions) {
     return (
@@ -440,6 +465,7 @@ function SlotForm({
           </span>
           <p class="field__help">{received ? t(locale, 'sharedSideHelp') : pc(locale, 'restoredSideHelp')}</p>
         </div>
+        <SlotRefusal idPrefix={idPrefix} message={refusal} />
       </div>
     );
   }
@@ -496,6 +522,7 @@ function SlotForm({
           />
         </>
       )}
+      <SlotRefusal idPrefix={idPrefix} message={refusal} />
     </div>
   );
 }
@@ -590,6 +617,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
   const [pairAnnounce, setPairAnnounce] = useState('');
   const [restoreTick, setRestoreTick] = useState(0);
   const [quickFillDismissed, setQuickFillDismissed] = useState(false);
+  // Under 13 or not yet born, per person: [A, B].
+  const [refusals, setRefusals] = useState<[string, string]>(['', '']);
   const compareInFlightRef = useRef(false);
   const resultHeadingRef = useRef<HTMLHeadingElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -944,12 +973,46 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
       }
       if (linked === 2) setAutoRan(true);
     }
-    // #a= / #b= fragments carry one or both charts by value. This supports
-    // an invite with one open side and the permission-first other-person
-    // flow with both sides ready. Details and labels never enter the query.
-    const fragment = new URLSearchParams(window.location.hash.slice(1));
+    // Charts by value arrive as a session handoff (#h=<random key>, from the
+    // other-person flow) or, from links made before the handoff existed, as
+    // #a= / #b= tokens. Either way the fragment leaves the address bar before
+    // it is read. Details and labels never enter the query.
+    const hash = window.location.hash;
+    const fragment = new URLSearchParams(hash.slice(1));
     if (fragment.has('p')) {
-      void openPrivateInvite(window.location.hash, () => active);
+      void openPrivateInvite(hash, () => active);
+      return () => { active = false; };
+    }
+    const fill = (decodedA: ShareChartInput | null, decodedB: ShareChartInput | null) => {
+      if (decodedA) {
+        setSlotA({
+          ...emptySlot(),
+          source: 'link',
+          link: { input: decodedA, label: decodedA.name ?? t(locale, 'personA'), received: true },
+        });
+      }
+      if (decodedB) {
+        setSlotB({
+          ...emptySlot(),
+          source: 'link',
+          link: { input: decodedB, label: decodedB.name ?? t(locale, 'personB'), received: true },
+        });
+      }
+      if ((savedA || decodedA) && (savedB || decodedB)) setAutoRan(true);
+    };
+    // This effect reads the fragment once (profileLinksReadRef), so a stripped
+    // handoff is still applied if the effect re-runs before the import lands.
+    if (fragment.has('h')) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      const request = requestRef.current;
+      void import('../lib/chart-handoff').then((module) => {
+        // Consume the one-time entry even after a revoke. Fill only when
+        // this read is still current; a revoke advances requestRef, so a
+        // later grant cannot restore the previous session's details.
+        const taken = module.takeChartHandoff(hash);
+        if (!activeRef.current || request !== requestRef.current) return;
+        if (taken?.kind === 'pair') fill(taken.a, taken.b);
+      }).catch(() => {});
       return () => { active = false; };
     }
     const valuesA = fragment.getAll('a');
@@ -957,26 +1020,11 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     const tokenA = valuesA.length === 1 ? valuesA[0] : null;
     const tokenB = valuesB.length === 1 ? valuesB[0] : null;
     if (fragment.has('a') || fragment.has('b')) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      const request = requestRef.current;
       void import('../lib/share').then((module) => {
-        if (!active) return;
-        const decodedA = tokenA ? module.decodeChartLink(tokenA) : null;
-        const decodedB = tokenB ? module.decodeChartLink(tokenB) : null;
-        if (decodedA) {
-          setSlotA({
-            ...emptySlot(),
-            source: 'link',
-            link: { input: decodedA, label: decodedA.name ?? t(locale, 'personA'), received: true },
-          });
-        }
-        if (decodedB) {
-          setSlotB({
-            ...emptySlot(),
-            source: 'link',
-            link: { input: decodedB, label: decodedB.name ?? t(locale, 'personB'), received: true },
-          });
-        }
-        if ((savedA || decodedA) && (savedB || decodedB)) setAutoRan(true);
-        history.replaceState(null, '', window.location.pathname + window.location.search);
+        if (!activeRef.current || request !== requestRef.current) return;
+        fill(tokenA ? module.decodeChartLink(tokenA) : null, tokenB ? module.decodeChartLink(tokenB) : null);
       }).catch(() => {});
     }
     return () => { active = false; };
@@ -1339,6 +1387,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     focusAfterComputeRef.current = e !== undefined;
     setBusy(true);
     setError('');
+    setRefusals(['', '']);
     const accessGeneration = profileAccessGeneration.current;
     try {
       const read = await readSlotDates([
@@ -1351,6 +1400,23 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
         return;
       }
       const [sideA, sideB] = read;
+      // Each person's Gregorian birth date (typed, saved or received) is checked
+      // before anything is computed or counted; the sentence shows under them.
+      const refusedA = birthDateRefusal(slotBirthDate(sideA, charts) ?? '');
+      const refusedB = birthDateRefusal(slotBirthDate(sideB, charts) ?? '');
+      if (refusedA || refusedB) {
+        setResult(null);
+        setRefusals([
+          refusedA ? birthDateRefusalText(refusedA) : '',
+          refusedB ? birthDateRefusalText(refusedB) : '',
+        ]);
+        if (focusAfterComputeRef.current) {
+          focusAfterComputeRef.current = false;
+          const first = refusedA ? 'syn-a' : 'syn-b';
+          requestAnimationFrame(() => document.getElementById(`${first}-refusal`)?.focus());
+        }
+        return;
+      }
       if (inviteArrivalActive) {
         // The recipient's own birth date, on this device, decides whether anything is worked out. Under 18 nothing is
         // worked out or sent, as get_compatibility gives no reading under 18; with no date to check, ask for one.
@@ -1408,6 +1474,11 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
       setBusy(false);
     }
   }
+
+  // A refusal belongs to the dates it was given for; an edit clears it.
+  useEffect(() => {
+    setRefusals((current) => (current[0] || current[1] ? ['', ''] : current));
+  }, [slotA, slotB]);
 
   // Deep-linked pairs run themselves — the saved path is pure math.
   useEffect(() => {
@@ -1535,8 +1606,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
               fallbackLabel={t(locale, 'personA')}
               locale={locale}
               loadEngine={loadEngine}
+              refusal={refusals[0]}
             />
-            <SlotForm slot={slotB} setSlot={(u) => setSlotB(u)} charts={charts} idPrefix="syn-b" fallbackLabel={t(locale, 'personB')} locale={locale} loadEngine={loadEngine} />
+            <SlotForm slot={slotB} setSlot={(u) => setSlotB(u)} charts={charts} idPrefix="syn-b" fallbackLabel={t(locale, 'personB')} locale={locale} loadEngine={loadEngine} refusal={refusals[1]} />
           </div>
 
           {inviteSignupActive && (

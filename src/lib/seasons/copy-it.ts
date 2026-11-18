@@ -78,7 +78,7 @@ export const SEASON_UI_IT: SeasonUi = {
   eventName: (title, year) => `${title} ${year}`,
   eventDescription: (sign, start, end) => `Il Sole è ${into(sign)} ${dal(start)} ${al(end)}.`,
   forSign: (sign) => `Per ${the(sign)}`,
-  confidence: (value) => `Affidabilità della lettura ${value}%`,
+  confidence: (value) => `Fiducia della lettura ${value}%`,
   hubTitle: 'Stagioni dei segni',
   hubLede: 'Il Sole passa circa un mese in ogni segno. Ogni stagione ha il suo ritmo, e ciascuna chiede qualcosa di diverso a ogni segno. Ecco quando comincia e finisce ciascuna.',
   hubNow: 'Adesso',

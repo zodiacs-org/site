@@ -553,7 +553,10 @@ export const HEADS_UP_EN = {
   "headsUpInThreeDays": "In 3 days: {title}",
   "headsUpTomorrow": "Tomorrow: {title}",
   "headsUpWhen": "Exact time: {time} UTC.",
-  "headsUpMoonDistance": "The Moon is {km} km from the center of the Earth.",
+  "headsUpMoonDistance": "The Moon is {km} km from Earth, center to center.",
+  "headsUpSupermoonTitle": "{title} (supermoon)",
+  "headsUpSupermoon": "It counts as a supermoon because it is full within 10% of the way from this orbit’s closest point (perigee) to its farthest (apogee).",
+  "headsUpSupermoonRule": "A full moon is marked supermoon when the Moon is within 10% of the way from that orbit’s closest point (perigee) to its farthest (apogee); every moon entry gives its distance in km.",
 } as const;
 export type HeadsUpKey = keyof typeof HEADS_UP_EN;
 export function headsUpText(key: HeadsUpKey, values: Record<string, string | number> = {}): string {

@@ -33,7 +33,7 @@ const zone = z.string().min(1).max(64).regex(ZONE_PATTERN);
 
 /** The personal-week details get_horoscope takes for a forecast of the person's week. */
 export const weekInput = z.strictObject({
-  birthDate: date.describe('The birth date given to get_horoscope, such as 1990-05-03.'),
+  birthDate: date.describe('The birth date given to get_horoscope, such as 1994-05-14.'),
   birthTime: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe('The birth time, if one was given; needs birthZone.'),
   birthZone: zone.optional().describe("The birthplace's time zone, needed with birthTime."),
   zone: zone.optional().describe("The person's own time zone, for the dates of the week."),

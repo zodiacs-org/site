@@ -117,7 +117,7 @@ describe('the sky events switch on', () => {
       const tool = tools.find((entry) => entry.name === name)!;
       const was = before.find((entry) => entry.name === name)!;
       expect(tool.description.startsWith(was.description), name).toBe(true);
-      expect(tool.description, name).toContain('give them the returned shareUrl exactly');
+      expect(tool.description, name).toContain('shareUrl is the link for sharing');
       expect(JSON.stringify(tool.inputSchema), name).toBe(JSON.stringify(was.inputSchema));
       expect(tool._meta, name).toEqual(was._meta);
       expect(tool.outputSchema.anyOf[0].properties.data.properties.shareUrl, name).toEqual({ anyOf: [{ type: 'string', format: 'uri' }, { type: 'null' }] });
@@ -134,12 +134,12 @@ describe('the sky events switch on', () => {
     expect(natal.description).toContain('and Chiron, from NASA JPL Horizons positions for 1800 to 2199');
     expect(JSON.stringify(natal.outputSchema)).toContain('"chiron"');
     expect(natal.outputSchema.anyOf[0].properties.data.properties.shareUrl).toEqual({ anyOf: [{ type: 'string', format: 'uri' }, { type: 'null' }] });
-    expect(natal.description).toContain('If they want to share their big three, give them the returned shareUrl exactly');
+    expect(natal.description).toContain('shareUrl is the link for sharing the big three; it carries the Sun, Moon and rising signs, never the birth date.');
     // Its panel is the one that lists the lunar nodes; every other part of its _meta is as main has it.
     expect(natalBefore._meta.ui.resourceUri).toBe(READINGS_URI);
     expect(natal._meta).toEqual({ ...natalBefore._meta, ui: { ...natalBefore._meta.ui, resourceUri: READINGS_SKY_EVENTS_URI }, 'openai/outputTemplate': READINGS_SKY_EVENTS_URI });
     const explain = tools.find((tool) => tool.name === 'explain_astrology')!;
-    expect(explain.description).toContain('use search_sky_events');
+    expect(explain.description).toContain('come from search_sky_events');
     expect(explain.inputSchema.properties.topic.description).toContain('the lunar nodes');
     expect(explain.inputSchema.properties.topic.description).toContain('Chiron or Chiron in a sign or house');
     expect(JSON.stringify(explain.outputSchema)).toBe(JSON.stringify(before.find((tool) => tool.name === 'explain_astrology')!.outputSchema));

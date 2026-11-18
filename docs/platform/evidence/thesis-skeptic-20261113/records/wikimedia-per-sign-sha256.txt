@@ -1,0 +1,26 @@
+5a24e386ecafffd657420d814d620f88032400a87d14b7e04f28bff2bd2555e9  Aquarius.json
+006e7de1de6b2f01e34df7a0171ee6edd6e802dd39de65516e463f715d59dd03  Aries.json
+56488a554514b03838d5c910ff9cc38504104da68b5e2853c46bc9fe6f99947f  Cancer.json
+6da1f8a162a5d3151920cfed4009b2043c5f1e24c11d23dc64f59f79648efe28  Capricorn.json
+d8a0ab9b2ed03e5bdb99094447940e99832eb876a1e668166dfcd1596ca93731  Gemini.json
+447d87a1749e1af93489243c6e42f9472108680ce71c14559686555e11b02fe5  Leo.json
+79c9e12971a75cfeefd27a87fe5d5b3c074e9afa36d6da6dcf67f66198d327fc  Libra.json
+8555b5b57f0879e107ddd04af81fa544927d948abe03803fd49acfc6fc9734f6  Pisces.json
+84a20689b1dd7d343f5cacc8aff1a9642fb4c84c4e4e2b8ea27dd98a48bba88e  Sagittarius.json
+853ce26be88073b5d738f62190d94ce4f47ffc5c58fddc7e1b0426f3782fecb2  Scorpio.json
+122df6edc99a405dd44fb685a02ba5d3307468fa02c739e81b15f2786297ad58  Taurus.json
+c5c3e801307181fe9545e8d1c38117c2fbedbd50edc44de6bac406ed95ef5366  Virgo.json
+# bytes  623141 Aquarius.json
+# bytes  611239 Aries.json
+# bytes  614975 Cancer.json
+# bytes  627142 Capricorn.json
+# bytes  615212 Gemini.json
+# bytes  603046 Leo.json
+# bytes  611211 Libra.json
+# bytes  615151 Pisces.json
+# bytes  635100 Sagittarius.json
+# bytes  619182 Scorpio.json
+# bytes  615158 Taurus.json
+# bytes  611199 Virgo.json
+# bytes 7401756 total
+# fetched 2026-11-13T08:57:11Z, https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/<Sign>_%28astrology%29/daily/2016010100/2026111200

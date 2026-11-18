@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import learnTranslations from '../../data/learn-translations.json';
 
 export async function getStaticPaths() {
   const learn = await getCollection('learn', ({ data }) => !data.draft);
@@ -16,7 +17,10 @@ export async function getStaticPaths() {
   const dynamicSlugs = [
     // Compatibility pairs are translated: src/pages/es/compatibility/[pair]/index.astro.
     // Rising-sign profiles are translated: src/pages/es/rising-sign/[sign].astro.
-    ...learn.filter((l) => l.data.kind !== 'rising').map((l) => ['learn', ...l.id.split('/')]),
+    // Translated Learn articles: src/pages/es/learn/{planets,houses,placements}/[slug].astro.
+    ...learn
+      .filter((l) => l.data.kind !== 'rising' && !learnTranslations.es.includes(`/learn/${l.id}/`))
+      .map((l) => ['learn', ...l.id.split('/')]),
   ];
 
   return [...staticSlugs, ...dynamicSlugs].map((slug) => ({ params: { slug: slug.join('/') } }));
