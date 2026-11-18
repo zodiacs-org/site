@@ -100,6 +100,10 @@ const options = [
         const button = pressed;
         pressed = null;
         button?.click();
+      }).catch(() => {
+        // A failed load (say, a dropped connection) may be tried again on
+        // the reader's next touch of the switch.
+        wiring = null;
       });
       return wiring;
     };
@@ -114,7 +118,7 @@ const options = [
     root.addEventListener('pointerdown', load, { once: true, capture: true });
     root.addEventListener('focusin', load, { once: true });
     if ('requestIdleCallback' in window) window.requestIdleCallback(() => void load(), { timeout: 3000 });
-    else window.setTimeout(() => void load(), 1500);
+    else setTimeout(() => void load(), 1500);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
