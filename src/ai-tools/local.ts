@@ -6,6 +6,7 @@ import { StdioServerTransport, serveStdio } from '@modelcontextprotocol/server/s
 import { LIMITS } from '../mcp/bounds';
 import { CAPABILITIES_INPUT, COMPARE_INPUT, NATAL_INPUT, PRIVACY, calculateNatalChart, compareCalculationRecords, describeLocalChartCapabilities, type ToolOutcome } from '../mcp/tools';
 import { AI_VERSION, READ_ONLY } from './contracts';
+import { describeDe440Tools } from './de440-contract';
 import { loadPlaceTable } from './features/place-table';
 import { createAiServer } from './server';
 import { normaliseCoverageCall } from './tools';
@@ -62,7 +63,11 @@ const safeOutput = new Transform({ transform(chunk, _encoding, done) {
   let newline: number;
   while ((newline = output.indexOf('\n')) >= 0) {
     const line = output.slice(0, newline); output = output.slice(newline + 1);
-    try { this.push(JSON.stringify(sanitizeProtocolMessage(JSON.parse(line))) + '\n'); }
+    try {
+      const message = JSON.parse(line);
+      describeDe440Tools(message.result);
+      this.push(JSON.stringify(sanitizeProtocolMessage(message)) + '\n');
+    }
     catch { /* Never send non-protocol diagnostics on stdout. */ }
   }
   done();

@@ -36,8 +36,14 @@ try {
   assert.equal(panel.contents[0].mimeType, 'text/html;profile=mcp-app');
   assert.ok(panel.contents[0].text.includes('Chart Studio'));
   assert.ok(panel.contents[0].text.length > 100_000);
-  await call('get_capabilities'); const local = await call('get_local_chart_capabilities'); assert.equal(local.engine.releaseStatus, 'unpublished-candidate'); assert.equal(local.engine.registry, undefined);
-  const sky = await call('get_sky', { instant: '2026-10-01T06:00:00Z' }); assert.equal(sky.data.calculation.cite.version, '1.1.0-rc.2');
+  const capabilities = await call('get_capabilities');
+  assert.equal(capabilities.data.engine.ephemeris.name, 'jpl-de440');
+  const local = await call('get_local_chart_capabilities');
+  assert.deepEqual(local.engine, { name: '@zodiacs/engine', version: '1.1.0', releaseStatus: 'published', registry: 'npm' });
+  assert.equal(local.adapter.releaseStatus, 'unpublished-candidate');
+  const sky = await call('get_sky', { instant: '2026-10-01T06:00:00Z' });
+  assert.equal(sky.data.calculation.cite.version, '1.1.0');
+  assert.equal(sky.data.calculation.backend.ephemeris.name, 'jpl-de440');
   await call('get_upcoming_events', { from: '2026-10-01T00:00:00Z', to: '2026-10-08T00:00:00Z', kinds: ['lunation'] });
   const opened = await call('get_upcoming_events'); assert.equal(opened.data.zone, 'UTC');
   await call('check_sky_fact', { kind: 'retrograde', body: 'Mercury', instant: '2026-10-01T00:00:00Z' });
