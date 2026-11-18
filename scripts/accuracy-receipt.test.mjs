@@ -163,7 +163,7 @@ describe('NASA accuracy receipts', () => {
   });
 
   it('blocks the withheld receipt for every crawler group', async () => {
-    const rules = await readFile('src/data/robots.txt', 'utf8');
+    const rules = await readFile('src/robots.txt', 'utf8');
     expect(accuracyRobots(rules, true)).toBe(rules);
     const crawlerGroups = accuracyRobots(rules, false).split('\n\n').filter((group) => group.startsWith('User-agent:'));
     for (const group of crawlerGroups) {

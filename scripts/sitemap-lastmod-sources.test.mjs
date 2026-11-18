@@ -48,7 +48,7 @@ describe('sitemap dates', () => {
   });
 
   it('robots.txt sends crawlers to the sitemap index alone', () => {
-    const sitemaps = accuracyRobots(read('src/data/robots.txt')).split('\n').filter((line) => /^sitemap\s*:/iu.test(line));
+    const sitemaps = accuracyRobots(read('src/robots.txt')).split('\n').filter((line) => /^sitemap\s*:/iu.test(line));
     expect(sitemaps).toEqual(['Sitemap: https://zodiacs.org/sitemap-index.xml']);
   });
 });

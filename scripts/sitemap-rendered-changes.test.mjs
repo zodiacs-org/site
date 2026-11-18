@@ -473,7 +473,7 @@ describe('a pull request that rolls the daily edition', () => {
       for (const file of files) expect(regex.test(file), file).toBe(true);
     }
     for (const path of [
-      'src/pages/sitemap.xml.ts', 'src/data/sky.json', 'src/data/robots.txt', 'src/pages/robots.txt.ts', 'src/data/daily.json.bak',
+      'src/pages/sitemap.xml.ts', 'src/data/sky.json', 'src/robots.txt', 'src/pages/robots.txt.ts', 'src/data/daily.json.bak',
       // What else lives in those directories, which the daily publication does not write (Codex's thirteenth finding on #752).
       'public/registry/index.html', 'public/registry/technical/index.html', 'public/registry/registry-meta.json',
       'public/registry/zodiacs.registry.json', 'public/registry/aries/other.html', 'public/registry/aries/index.html.bak',
