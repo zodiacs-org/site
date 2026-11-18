@@ -138,7 +138,7 @@ describe('Russian chart-result seams', () => {
     expect(source).toMatch(/onDateChange=\{\(value\) => \{[\s\S]*?invalidateProfileHandoff\(\);[\s\S]*?setDate\(value\);/u);
     expect(source).toMatch(/onCityChange=\{\(value\) => \{[\s\S]*?invalidateProfileHandoff\(\);[\s\S]*?setCity\(value\);/u);
 
-    const compute = source.slice(source.indexOf('function compute('), source.indexOf('const shareUrl'));
+    const compute = source.slice(source.indexOf('function compute('), source.indexOf('function requestChartControls('));
     expect(compute).toContain('invalidateProfileHandoff();');
 
     const another = source.slice(
@@ -147,7 +147,9 @@ describe('Russian chart-result seams', () => {
     );
     expect(another).toContain('primaryProfileOriginRef.current');
     expect(another).toContain("'/birth-chart/someone-else/'");
-    expect(another).toContain('someoneElseHandoffPath(shareInput)');
+    // An unsaved chart goes through the session handoff on a plain click; the href stays plain.
+    expect(another).toContain('followWithHandoff(event, () => someoneElseHandoffPath(shareInput))');
+    expect(source).not.toContain(': someoneElseHandoffPath(shareInput)');
   });
 
   it('never persists exact chart identity in first-reading progress', async () => {
@@ -162,7 +164,7 @@ describe('Russian chart-result seams', () => {
       readFile(new URL('./ChartCalculator.tsx', import.meta.url), 'utf8'),
       readFile(new URL('./PlaceSearch.tsx', import.meta.url), 'utf8'),
     ]);
-    const compute = source.slice(source.indexOf('function compute('), source.indexOf('const shareUrl'));
+    const compute = source.slice(source.indexOf('function compute('), source.indexOf('function requestChartControls('));
     expect(source).toContain('disabled={busy}');
     expect(source).not.toContain('disabled={!canCompute || busy}');
     expect(source).toContain('aria-busy={busy} noValidate');
