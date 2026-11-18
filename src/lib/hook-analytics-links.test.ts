@@ -78,11 +78,11 @@ describe('retention hook links', () => {
         .toEqual([['calendar_download', feed]]);
     }
     const feedsPage = read('src/pages/feeds/index.astro');
-    expect(hookLinks(feedsPage)).toHaveLength(2);
+    expect(hookLinks(feedsPage)).toHaveLength(3);
     expect([...feedsPage.matchAll(/hook: '([a-z_]+)'/gu)].map((match) => match[1]))
       .toEqual(['events', 'daily_sky', 'horoscopes', 'almanac']);
     expect(hookLinks(read('src/pages/developers/index.astro')).map((link) => attr(link, 'data-hook-feed')))
-      .toEqual(['horoscopes', 'daily_sky']);
+      .toEqual(['horoscopes', 'daily_sky', 'events']);
   });
 
   it('uses only listed events and closed values in every hook link', () => {

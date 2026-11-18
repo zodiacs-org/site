@@ -428,6 +428,9 @@ const CONNECTOR_PAGE_ROUTES = [
   '/developers/ai/', '/developers/docs/', '/developers/docs/astrology-mcp-server/', '/developers/support/',
 ] as const;
 
+// The /people/ hub began linking the Fortune 500 CEO sign study; the hub alone, not each person page.
+const PEOPLE_HUB_MODIFIED_AT = '2026-11-17T00:00:00.000Z';
+
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
   // The moon and alignment pages of the coming twelve months carry fuller readings (ZOD-221, decision J).
@@ -722,7 +725,14 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/ai/', '2026-11-16'] as const,
   // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
   // the daily edition it was built with, last so this date wins.
+  // The Fortune 500 CEO Sun sign study, first published 17 November.
+  ['/studies/fortune-500-ceo-signs/', '2026-11-17'] as const,
   ['/', '2026-11-14'] as const,
+  // The feeds and developer pages list the per-sign and JSON sky-event feeds, 17 November, last so this date wins.
+  ['/feeds/', '2026-11-17'] as const,
+  ['/developers/', '2026-11-17'] as const,
+  // The Sky calendar pages' Google and Apple Calendar steps (every language), 17 November, last so this date wins.
+  ...['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/sky-calendar/`, '2026-11-17'] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -812,6 +822,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/learn/how-to-read-a-birth-chart/', priority: 0.8 },
     { loc: '/learn/communication/', priority: 0.8 },
     { loc: '/learn/zodiac-dates/', priority: 0.8 },
+    { loc: '/studies/fortune-500-ceo-signs/', priority: 0.7 },
     { loc: '/learn/glossary/', priority: 0.8 },
     { loc: '/learn/planets/', priority: 0.7 },
     { loc: '/learn/houses/', priority: 0.7 },
@@ -897,6 +908,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       priority: 0.7,
       lastmod: lastmodDate(latestModifiedAt(
         PEOPLE_TEMPLATE_MODIFIED_AT,
+        PEOPLE_HUB_MODIFIED_AT,
         ...INDEXABLE_PEOPLE.map((person) => person.reviewedAtUtc),
       )),
     }] : []),
