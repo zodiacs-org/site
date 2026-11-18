@@ -41,7 +41,7 @@ export const YEAR_SCORE_START_MAX = '2099-12-31';
 const zone = z.string().min(1).max(64).regex(ZONE_PATTERN);
 export const yearScoreInput = z.strictObject({
   person: z.string().min(2).max(80).optional().describe('A public figure from the Zodiacs Year Ahead directory, by full name, such as Jensen Huang. Use instead of birth details. A name the directory does not have is answered plainly, with no score.'),
-  birthDate: z.string().regex(DATE).optional().describe('The person’s own birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link.'),
+  birthDate: z.string().regex(DATE).optional().describe('The person’s own birth date, such as 1994-05-14. Used for this answer only; never stored, logged or put in a link.'),
   time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe('The birth time on the local clock, only if known. Never guess it. Needs zone. Without it the Moon is left out.'),
   zone: zone.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
   latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
@@ -61,7 +61,7 @@ export type YearScoreInput = z.infer<typeof yearScoreInput>;
  * The site's pages and the scripts keep public-figure scoring (getYearScore takes both).
  */
 export const yearScoreSelfInput = z.strictObject({
-  birthDate: z.string().regex(DATE).describe('The person’s own birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link.'),
+  birthDate: z.string().regex(DATE).describe('The person’s own birth date, such as 1994-05-14. Used for this answer only; never stored, logged or put in a link.'),
   time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe('The birth time on the local clock, only if known. Never guess it. Needs zone. Without it the Moon is left out.'),
   zone: zone.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
   latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
@@ -221,7 +221,7 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
     birthDate = args.birthDate!;
     const parsed = parseCivilDate(birthDate);
     if (!parsed || parsed.year < 1800 || parsed.year > 2199) throw new RangeError('birthDate must be a real date from 1800 to 2199.');
-    if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
+    if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 09:15.');
     time = args.time ?? null;
     timeZone = args.zone ?? null;
     longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);

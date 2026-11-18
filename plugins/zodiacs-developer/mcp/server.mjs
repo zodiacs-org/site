@@ -18704,7 +18704,7 @@ var compatibilityPerson = z4.strictObject({
   zone: z4.string().min(1).max(64).regex(ZONE_PATTERN2).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z4.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign. Give it with longitude and zone. Nothing is stored."),
   longitude: z4.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
-  place: plainText(80).optional().describe("Optional birthplace name, such as Madrid, Spain. Display only, not stored.")
+  place: plainText(80).optional().describe("Optional birthplace name, such as Seville, Spain. Display only, not stored.")
 }).superRefine((args, context) => {
   if (args.famous !== void 0) {
     if (Object.keys(args).length !== 1) context.addIssue({ code: "custom", message: "Give a famous person alone, without birth details." });
@@ -28153,8 +28153,8 @@ var DAYS = birthdays_default.days;
 var [YEAR_FROM, YEAR_TO] = birthdays_default.yearRange;
 var zone2 = z5.string().min(1).max(64).regex(ZONE_PATTERN3);
 var birthdayInput = z5.strictObject({
-  date: z5.string().regex(/^\d{2}-\d{2}$/).optional().describe("A birthday without a year, as MM-DD, such as 05-03 for 3 May. This is enough for general birthday facts. Give this or birthDate."),
-  birthDate: z5.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe("The full birth date, such as 1997-05-03. Use only for the solar return or to resolve the sign of a cusp date in that birth year."),
+  date: z5.string().regex(/^\d{2}-\d{2}$/).optional().describe("A birthday without a year, as MM-DD, such as 05-14 for 14 May. This is enough for general birthday facts. Give this or birthDate."),
+  birthDate: z5.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe("The full birth date, such as 1994-05-14. Use only for the solar return or to resolve the sign of a cusp date in that birth year."),
   time: z5.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, if known. Needs zone."),
   zone: zone2.optional().describe("The birthplace's time zone, such as Europe/London."),
   longitude: z5.number().min(-180).max(180).optional().describe("Use only for historical birth dates when the birthplace used local mean time, to convert its clock to UTC. Needs zone. Do not request coordinates for modern birthdays."),
@@ -28259,7 +28259,7 @@ function signRow(sign3) {
 }
 function parseMonthDay(month, day2) {
   if (!(month >= 1 && month <= 12) || !(day2 >= 1 && day2 <= DAYS_IN_MONTH2[month - 1])) {
-    throw new RangeError("That is not a calendar date. Give a real month and day, such as 05-03 for 3 May.");
+    throw new RangeError("That is not a calendar date. Give a real month and day, such as 05-14 for 14 May.");
   }
 }
 function isLeapYear(year) {
@@ -29168,12 +29168,12 @@ var NATAL_TOP_ASPECTS = 8;
 var NATAL_NOTE = "Astrology\u2019s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny.";
 var PLANETS2 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var natalChartFields = {
-  birthDate: z6.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1990-05-03 (years 1800 to 2199)."),
-  time: z6.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, such as 08:30, only if the person knows it. Never guess it. Needs zone."),
+  birthDate: z6.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1994-05-14 (years 1800 to 2199)."),
+  time: z6.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, such as 09:15, only if the person knows it. Never guess it. Needs zone."),
   zone: z6.string().min(1).max(64).regex(ZONE_PATTERN4).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z6.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign and the houses. Give it with longitude and zone. Nothing is stored."),
   longitude: z6.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
-  place: z6.string().trim().min(1).max(80).regex(PLAIN_TEXT2).optional().describe("Optional birthplace name, such as Madrid, Spain. Display only: it is not used in the calculation and is not stored.")
+  place: z6.string().trim().min(1).max(80).regex(PLAIN_TEXT2).optional().describe("Optional birthplace name, such as Seville, Spain. Display only: it is not used in the calculation and is not stored.")
 };
 function natalChartRules(args, context) {
   if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
@@ -29337,7 +29337,7 @@ var placementUrl = (origin, body2, slug) => `${origin}/learn/placements/${body2.
 async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today2 = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), options = {}) {
   const date3 = parseCivilDate(args.birthDate);
   if (!date3 || date3.year < NATAL_MIN_YEAR || date3.year > NATAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
-  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
+  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 09:15.");
   const timeKnown = args.time !== void 0;
   const latitude = args.latitude === void 0 ? void 0 : roundCoordinate(args.latitude);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
@@ -33514,7 +33514,7 @@ var TRANSITS_NOTE = "Astrology\u2019s reading of the sky meeting your birth char
 var ORDINAL6 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
 var zone3 = z9.string().min(1).max(64).regex(ZONE_PATTERN7);
 var personalTransitsInput = z9.strictObject({
-  birthDate: z9.string().regex(DATE2).describe("The birth date, such as 1990-05-03 (years 1800 to 2199)."),
+  birthDate: z9.string().regex(DATE2).describe("The birth date, such as 1994-05-14 (years 1800 to 2199)."),
   time: z9.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, only if the person knows it. Never guess it. Needs zone. Without it the Moon, rising degree and Midheaven are left out."),
   zone: zone3.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z9.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising degree and Midheaven. Give it with longitude and zone. Nothing is stored."),
@@ -33522,7 +33522,7 @@ var personalTransitsInput = z9.strictObject({
   mode: z9.enum(["window", "year-ahead"]).optional().describe("window (the default): every exact contact between from and to. year-ahead: the year from today, with Jupiter and Saturn, the solar return, a Saturn return, sign changes and eclipses near the chart."),
   from: z9.string().regex(DATE2).optional().describe("For window: the first day, such as 2026-11-01. Defaults to today."),
   to: z9.string().regex(DATE2).optional().describe(`For window: the last day, at most ${TRANSITS_MAX_DAYS} days after from. Defaults to a ${TRANSITS_DEFAULT_DAYS}-day window, from included.`),
-  currentZone: zone3.optional().describe("Where the person lives now, such as Asia/Bangkok, so dates fall on their own clock. Without it, dates use the birthplace clock, or UTC if that is missing too, and the answer says which.")
+  currentZone: zone3.optional().describe("Where the person lives now, such as America/Mexico_City, so dates fall on their own clock. Without it, dates use the birthplace clock, or UTC if that is missing too, and the answer says which.")
 }).superRefine((args, context) => {
   if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
   if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A birth time or a place needs its time zone." });
@@ -33681,7 +33681,7 @@ async function startOfDay(date3, timeZone, clock2) {
 async function getPersonalTransits(args, now, clock2, origin) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
-  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
+  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 09:15.");
   const latitude = args.latitude === void 0 ? void 0 : roundCoordinate(args.latitude);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
   const timeKnown = args.time !== void 0;
@@ -36770,7 +36770,7 @@ var COUNTRY_ALIAS = {
 var birthplaceInput = z11.strictObject({
   place: z11.string().trim().min(2).max(80).describe("A town or city name, such as London or Almaty. Not a street address. Nothing is stored."),
   country: z11.string().trim().min(2).max(60).optional().describe("Optional country when several places share the name, such as United Kingdom or Kazakhstan."),
-  date: z11.string().regex(DATE3).optional().describe("Optional date, such as 1990-05-03 (years 1800 to 2199), for the UTC offset in force that day. Without it, the offset is for today.")
+  date: z11.string().regex(DATE3).optional().describe("Optional date, such as 1994-05-14 (years 1800 to 2199), for the UTC offset in force that day. Without it, the offset is for today.")
 });
 var placeRow = z11.object({
   name: z11.string(),
@@ -36835,10 +36835,10 @@ function todayUtc(now) {
 async function findBirthplace(args, now, clock2, table) {
   const date3 = args.date ?? todayUtc(now);
   if (Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) || (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) !== date3) {
-    throw new RangeError("date must be a real date from 1800 to 2199, such as 1990-05-03.");
+    throw new RangeError("date must be a real date from 1800 to 2199, such as 1994-05-14.");
   }
   const year = Number(date3.slice(0, 4));
-  if (year < 1800 || year > 2199) throw new RangeError("date must be a real date from 1800 to 2199, such as 1990-05-03.");
+  if (year < 1800 || year > 2199) throw new RangeError("date must be a real date from 1800 to 2199, such as 1994-05-14.");
   const ranked = rankPlaces(table, queryVariants(args.place));
   const matched = args.country ? ranked.filter((city) => countryMatches(city.country, args.country)) : ranked;
   if (!matched.length && HOUSE_NUMBER.test(args.place)) throw new RangeError("Give a town or city name, not a street address.");
@@ -41904,7 +41904,7 @@ var YEAR_SCORE_START_MAX = "2099-12-31";
 var zone4 = z14.string().min(1).max(64).regex(ZONE_PATTERN9);
 var yearScoreInput = z14.strictObject({
   person: z14.string().min(2).max(80).optional().describe("A public figure from the Zodiacs Year Ahead directory, by full name, such as Jensen Huang. Use instead of birth details. A name the directory does not have is answered plainly, with no score."),
-  birthDate: z14.string().regex(DATE5).optional().describe("The person\u2019s own birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link."),
+  birthDate: z14.string().regex(DATE5).optional().describe("The person\u2019s own birth date, such as 1994-05-14. Used for this answer only; never stored, logged or put in a link."),
   time: z14.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, only if known. Never guess it. Needs zone. Without it the Moon is left out."),
   zone: zone4.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
   latitude: z14.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
@@ -41917,7 +41917,7 @@ var yearScoreInput = z14.strictObject({
   if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A birth time or a place needs its time zone." });
 });
 var yearScoreSelfInput = z14.strictObject({
-  birthDate: z14.string().regex(DATE5).describe("The person\u2019s own birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link."),
+  birthDate: z14.string().regex(DATE5).describe("The person\u2019s own birth date, such as 1994-05-14. Used for this answer only; never stored, logged or put in a link."),
   time: z14.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, only if known. Never guess it. Needs zone. Without it the Moon is left out."),
   zone: zone4.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
   latitude: z14.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
@@ -42047,7 +42047,7 @@ async function getYearScore(args, now, clock2, origin) {
     birthDate = args.birthDate;
     const parsed2 = parseCivilDate(birthDate);
     if (!parsed2 || parsed2.year < 1800 || parsed2.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
-    if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
+    if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 09:15.");
     time = args.time ?? null;
     timeZone = args.zone ?? null;
     longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
@@ -42294,13 +42294,13 @@ var DATE6 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 var BODIES4 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var zone5 = z15.string().min(1).max(64).regex(ZONE_PATTERN10);
 var solarReturnInput = z15.strictObject({
-  birthDate: z15.string().regex(DATE6).describe("The person\u2019s birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link."),
+  birthDate: z15.string().regex(DATE6).describe("The person\u2019s birth date, such as 1994-05-14. Used for this answer only; never stored, logged or put in a link."),
   time: z15.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, only if known. Never guess it. Needs zone. With latitude and longitude it adds the return\u2019s rising sign and houses."),
   zone: zone5.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z15.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude; the return is cast there. Nothing is stored."),
   longitude: z15.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
   which: z15.enum(["next", "current"]).optional().describe("next (the default): the return at the coming birthday. current: the one that opened the birthday year now running."),
-  currentZone: zone5.optional().describe("Where the person lives now, such as Asia/Bangkok, so the return\u2019s time is on their own clock.")
+  currentZone: zone5.optional().describe("Where the person lives now, such as America/Mexico_City, so the return\u2019s time is on their own clock.")
 }).superRefine((args, context) => {
   if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
   if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A birth time or a place needs its time zone." });
@@ -42340,7 +42340,7 @@ function dateLabel(at) {
 async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = false) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
-  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
+  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 09:15.");
   const latitude = args.latitude === void 0 ? void 0 : roundCoordinate(args.latitude);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
   const timeKnown = args.time !== void 0;
@@ -42946,7 +42946,7 @@ var ZONE_PATTERN11 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var NUMEROLOGY_MIN_YEAR = 1800;
 var NUMEROLOGY_MAX_YEAR = 2199;
 var numerologyInput = z16.strictObject({
-  birthDate: z16.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1990-05-03. Gives the Life Path and the Personal Year."),
+  birthDate: z16.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1994-05-14. Gives the Life Path and the Personal Year."),
   name: z16.string().min(1).max(120).optional().describe("Optional: the full name at birth, such as it appears on a birth certificate, for the Expression, Soul Urge and Personality numbers. Only if the person gives it for this reading. Latin letters; accents are folded. Used for this answer only: it is not returned, put in a link or stored."),
   year: z16.number().int().min(NUMEROLOGY_MIN_YEAR).max(NUMEROLOGY_MAX_YEAR).optional().describe("Optional: the calendar year for the Personal Year, such as 2027. Without it, the current year where the person is."),
   zone: z16.string().min(1).max(64).regex(ZONE_PATTERN11).optional().describe("Optional: the person's time zone, such as Europe/Paris, so the current year is their own. Without it, the assistant's time zone or UTC.")
@@ -42996,7 +42996,7 @@ var numerologyData = z16.object({
 var NUMEROLOGY_METHOD = "Pythagorean letter values (A to I are 1 to 9, J to R are 1 to 9, S to Z are 1 to 8). The birth month, day and year are each reduced, then added and reduced again; each part of the name is reduced on its own before the parts are added. 11, 22 and 33 are kept as master numbers in the core numbers. Y is a vowel unless it follows A, E, I, O or U, or opens a name before one. The Personal Year adds the birth month and day to the calendar year and reduces to one digit. The same rules as the calculator at zodiacs.org/numerology/.";
 var NUMEROLOGY_NOTE = "The arithmetic is exact and repeatable. The meanings are the ones the numerology tradition gives each number, in Zodiacs' own words.";
 var REFUSALS = {
-  "invalid-date": "birthDate must be a real calendar date, such as 1990-05-03.",
+  "invalid-date": "birthDate must be a real calendar date, such as 1994-05-14.",
   "empty-name": "name must contain at least one letter. Leave it out for the birth date numbers alone.",
   "unsupported-letters": "name can be read only in the Latin alphabet, A to Z (accents are fine). Leave it out for the birth date numbers alone, or give the name as it is written in Latin letters."
 };
@@ -43074,9 +43074,9 @@ var TOOL_TITLES = {
   get_solar_return: "Your solar return",
   get_numerology: "Numerology numbers"
 };
-var instant = z17.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\u20132199).");
+var instant = z17.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800\u20132199).");
 var ZONE_PATTERN12 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
-var zone6 = z17.string().min(1).max(64).regex(ZONE_PATTERN12).describe("The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.");
+var zone6 = z17.string().min(1).max(64).regex(ZONE_PATTERN12).describe("The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.");
 var date = z17.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
 var wallClock = z17.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
 var INPUT_SCHEMAS = {
@@ -43089,14 +43089,14 @@ var INPUT_SCHEMAS = {
   check_sky_fact: z17.strictObject({ kind: z17.enum(["sign", "retrograde", "ingress", "phase"]), body: z17.enum(EVENT_BODIES).optional(), sign: z17.enum(SIGN_SLUGS2).optional(), phase: z17.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone6.optional() }),
   get_occasion_sky: z17.strictObject({
     occasion: z17.enum(ASSISTANT_OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering."),
-    date: date.optional().describe("The day, such as 2027-06-12 (years 1800\u20132199). Needed unless searchFrom and searchTo are given."),
-    searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo."),
-    searchTo: date.optional().describe("The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
-    time: wallClock.optional().describe("The local clock time, such as 19:00, if the person gives one. Needs zone."),
-    zone: zone6.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
+    date: date.optional().describe("The day, such as 2027-09-18 (years 1800\u20132199). Needed unless searchFrom and searchTo are given."),
+    searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-09-01. Give it with searchTo."),
+    searchTo: date.optional().describe("The last day of the window to search, such as 2027-09-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
+    time: wallClock.optional().describe("The local clock time, such as 16:30, if the person gives one. Needs zone."),
+    zone: zone6.optional().describe("The place's time zone, such as Europe/Lisbon. Needed with a time or a place."),
     latitude: z17.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
     longitude: z17.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
-    place: z17.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored."),
+    place: z17.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Lisbon, Portugal. Display only: it is not used in the calculation and is not stored."),
     names: z17.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
   }).superRefine((args, context) => {
     if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
@@ -44610,13 +44610,13 @@ var COVERAGE_TOOL_SUMMARY = {
   explain_astrology: "explainers of astrology basics"
 };
 var FIELD_FORMAT = {
-  birthDate: "a date such as 1990-05-03",
+  birthDate: "a date such as 1994-05-14",
   date: "a date such as 2026-12-01",
   from: "a date such as 2026-11-01",
   to: "a date such as 2026-12-01",
-  time: "a time such as 08:30",
+  time: "a time such as 09:15",
   zone: "a time zone name such as Europe/London",
-  currentZone: "a time zone name such as Asia/Bangkok",
+  currentZone: "a time zone name such as America/Mexico_City",
   place: "plain text"
 };
 var BIRTH_YEARS = {
@@ -44640,7 +44640,7 @@ function coverageInputRefusal(tool, input, schema = INPUT_SCHEMAS[tool]) {
     if (issue.code === "too_big" && "maximum" in issue && issue.origin === "number") return `${field} must be at most ${String(issue.maximum)}.`;
     if (issue.code === "invalid_type" && issue.expected === "number") return `${field} must be a number.`;
     if (issue.code === "invalid_type" && issue.expected === "int") return `${field} must be a whole number.`;
-    if (field === "birthDate" && BIRTH_YEARS[tool] && typeof record2.birthDate === "string" && /^\d{4}-\d{2}-\d{2}$/u.test(record2.birthDate)) return `birthDate must be a date from ${BIRTH_YEARS[tool]}, such as 1990-05-03.`;
+    if (field === "birthDate" && BIRTH_YEARS[tool] && typeof record2.birthDate === "string" && /^\d{4}-\d{2}-\d{2}$/u.test(record2.birthDate)) return `birthDate must be a date from ${BIRTH_YEARS[tool]}, such as 1994-05-14.`;
     return `${field} must be ${FIELD_FORMAT[field] ?? "in the documented form"}.`;
   });
   return failure(tool, "invalid-request", [...new Set(sentences)].slice(0, 3).join(" "));
@@ -44867,7 +44867,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             zone9 = await zoneAt(args.zone, "/zone", resolveZone);
             zoneSource = "request";
           } catch {
-            return failure(tool, "invalid-timezone", "Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+            return failure(tool, "invalid-timezone", "Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City.");
           }
         } else if (context.hostZone) {
           try {
@@ -45078,7 +45078,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             zone9 = await zoneAt(args.zone, "/zone", resolveZone);
             zoneSource = "request";
           } catch {
-            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City.");
           }
         } else if (context.hostZone) {
           try {
@@ -45149,7 +45149,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             zone9 = await zoneAt(args.zone, "/zone", resolveZone);
             zoneSource = "request";
           } catch {
-            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City.");
           }
         } else if (context.hostZone) {
           try {
@@ -45207,7 +45207,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             currentYear = Number(dateInZone(now, await zoneAt(args.zone, "/zone", resolveZone)).slice(0, 4));
             currentYearFrom = "zone";
           } catch {
-            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City.");
           }
         } else if (context.hostZone) {
           try {
@@ -45500,7 +45500,7 @@ var plainText2 = (max) => z20.string().trim().min(1).max(max).regex(PLAIN_TEXT3,
 var date2 = z20.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
 var zone8 = z20.string().min(1).max(64).regex(ZONE_PATTERN12);
 var weekInput = z20.strictObject({
-  birthDate: date2.describe("The birth date given to get_horoscope, such as 1990-05-03."),
+  birthDate: date2.describe("The birth date given to get_horoscope, such as 1994-05-14."),
   birthTime: z20.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("The birth time, if one was given; needs birthZone."),
   birthZone: zone8.optional().describe("The birthplace's time zone, needed with birthTime."),
   zone: zone8.optional().describe("The person's own time zone, for the dates of the week.")
