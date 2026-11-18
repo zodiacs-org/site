@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "date": "2026-11-18",
+    "label": "18 November 2026",
+    "checkedAt": "2026-11-18T14:11:50.523Z",
+    "engine": {
+      "version": "1.1.0-rc.2",
+      "ephemerides": [
+        {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      ]
+    },
+    "suite": {
+      "total": 240,
+      "within": 48,
+      "largest": 19.028118602
+    },
+    "rolling": {
+      "total": 120,
+      "within": 35,
+      "largest": 12.0037931564
+    }
+  }
+]
