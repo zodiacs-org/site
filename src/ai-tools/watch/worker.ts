@@ -1,4 +1,5 @@
-import { executeAiTool, displayTime } from '../tools';
+import { executeAiTool } from '../tools';
+import { localMinuteIso } from '../clear-time';
 import { DAY, WATCH_VERSION, type Delivery, type Rpc } from './contracts';
 import { digest, type destinationVault } from './crypto';
 import { signedHeaders, type CallbackPost } from './callback';
@@ -9,10 +10,19 @@ export async function calculateWindow(from: string, to: string) {
   if (!result.ok || result.tool !== 'get_upcoming_events') throw new Error('search-refused');
   const data = result.data as any;
   if (data.completeness !== 'tested-not-proven') throw new Error('search-incomplete');
-  return data.events.map(({ localAt: _localAt, ...event }: any) => ({
-    eventId: `evt_${digest(JSON.stringify([WATCH_VERSION, from, event]))}`,
-    name: `zodiacs.sky.${event.kind}`, timestamp: event.at, data: { event, receipt: data.calculation.receipt }, cursor: null,
-  }));
+  // The id hashes each event as the tool's list gives it, in the contract's key order (kind, at, body, ...), with
+  // the solved instant the receipt covers. The list shows each time to the minute, so the exact instant goes back
+  // into the same place: the event, and so its id, stays what it was before the list was rounded.
+  const solved = data.calculation.result.events;
+  if (solved.length !== data.events.length) throw new Error('search-mismatch');
+  return data.events.map(({ localAt: _localAt, ...listed }: any, index: number) => {
+    if (listed.kind !== solved[index].kind) throw new Error('search-mismatch');
+    const event = { ...listed, at: solved[index].at };
+    return {
+      eventId: `evt_${digest(JSON.stringify([WATCH_VERSION, from, event]))}`,
+      name: `zodiacs.sky.${event.kind}`, timestamp: event.at, data: { event, receipt: data.calculation.receipt }, cursor: null,
+    };
+  });
 }
 
 /** Fixed UTC-day partitions, persisted cursor, compare-and-swap ingestion and bounded catch-up.
@@ -52,7 +62,7 @@ export async function deliverWatchEvents(rpc: Rpc, vault: ReturnType<typeof dest
       const destination = vault.open(row.sealed, row.subscription_id);
       const previous = row.previous_sealed && Date.parse(row.rotate_until ?? '') > now() ? vault.open(row.previous_sealed, row.subscription_id).secret : undefined;
       const event = { ...row.payload, data: { ...row.payload.data, zone: row.filters.zone,
-        localAt: displayTime(row.payload.timestamp, row.filters.zone), methodUrl: 'https://zodiacs.org/developers/compute/#events' } };
+        localAt: localMinuteIso(row.payload.timestamp, row.filters.zone), methodUrl: 'https://zodiacs.org/developers/compute/#events' } };
       const body = JSON.stringify(event);
       if (Buffer.byteLength(body) > 262_144) status = 413;
       else status = (await post(destination.url, signedHeaders(destination.secret, row.event_id, row.subscription_id, body, now(), previous), body)).status;

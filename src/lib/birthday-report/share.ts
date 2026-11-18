@@ -5,7 +5,7 @@
  * date, a time, a place or a name. Each key once, each value from a fixed
  * pattern. Pure.
  */
-import { SHARE_SIGNS, type ShareRef, type ShareSign } from '../share-results.js';
+import { readShareRef, SHARE_SIGNS, type ShareRef, type ShareSign } from '../share-results.js';
 
 export const BIRTHDAY_REPORT_SHARE_PATH = '/share/birthday-report/';
 export const BIRTHDAY_REPORT_SHARE_IMAGE_PATH = '/api/og/birthday-report-image';
@@ -34,6 +34,7 @@ export function parseBirthdayReportShare(params: URLSearchParams): BirthdayRepor
   }
   const [sun, score, card, ref] = ['s', 'v', 't', 'ref'].map((key) => fields.get(key));
   if (!isSign(sun) || !score || !/^(?:10\.0|\d\.\d)$/u.test(score) || !card || !/^(?:1?\d|2[01])$/u.test(card)) return null;
-  if (ref !== undefined && ref !== 'chatgpt' && ref !== 'assistant') return null;
-  return { sun, score: Number(score), card: Number(card), ref: (ref ?? null) as ShareRef | null };
+  const shareRef = readShareRef(ref);
+  if (shareRef === undefined) return null;
+  return { sun, score: Number(score), card: Number(card), ref: shareRef };
 }

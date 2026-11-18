@@ -18,7 +18,8 @@ import { useEngine } from '../lib/hooks/useEngine';
 import { useProfile } from '../lib/hooks/useProfile';
 import { explicitSelfChart, loadProfile } from '../lib/profile/read-store';
 import type { SavedChart } from '../lib/profile/schema';
-import { calculateEntry, emptyEntry } from '../lib/sharing/chart-entry';
+import { calculateEntry, emptyEntry, entryRefusalMessage } from '../lib/sharing/chart-entry';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { createModuleLoader } from '../lib/module-load';
 import { ringFront } from '../lib/ring-front';
 import { yearSkyWords } from '../lib/year-sky/copy';
@@ -141,6 +142,9 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
     clear();
     const run = generation.current;
     const fromSaved = !entering && chosen ? chosen : null;
+    // A typed date or a saved chart is refused before the engine loads or the worker starts; the saved chart is left as it is.
+    const refusal = birthDateRefusal(fromSaved ? fromSaved.birth.date : entry.date);
+    if (refusal) { setError(birthDateRefusalText(refusal)); return; }
     setBusy(true);
     try {
       let natal: YearSkyNatal;
@@ -191,7 +195,7 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
       await loadSaver();
       if (run === generation.current) setCards(prepared);
     } catch (cause) {
-      if (run === generation.current) setError(calculationError(cause, locale, w.error));
+      if (run === generation.current) setError(entryRefusalMessage(cause) ?? calculationError(cause, locale, w.error));
     } finally {
       if (run === generation.current) setBusy(false);
     }
@@ -250,7 +254,7 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
         {charts.length === 0 && <p class="sharing-note">{w.saveHint} <a href={localizePath(locale, '/birth-chart/')}>{w.saveChart} →</a></p>}
       </>}
       <p class="sharing-note ys-chooser__privacy">{w.privacy}</p>
-      {error && <p class="field__error" role="alert">{error}</p>}
+      {error && <p class="field__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}
       <CalculationReload error={error} locale={locale} />
     </form>
 

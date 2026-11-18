@@ -26,9 +26,9 @@
       "verifyUrl": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json"
     },
     "archiveContinuity": {
-      "value": "own version archive continuous in the public repository since 2024 · Internet Archive: 13 captures since 2024-01-01, latest 2026-10-11, largest gap 326 days",
+      "value": "public repository history begins 2026-05-27 · Internet Archive: 13 captures of the domain since 2024-01-01, of which the 3 from 2026 are counted as this site (first 2026-06-10, latest 2026-10-11, largest gap 93 days) · the 10 from 2024 and 2025 share one content digest and are not counted",
       "status": "filled",
-      "asOf": "2026-11-10",
+      "asOf": "2026-11-13",
       "verifyUrl": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json"
     }
   }

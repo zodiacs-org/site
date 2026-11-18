@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { createAiNodeHandler } from './http';
 import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES, WITHDRAWN_OCCASION_REFUSAL } from './contracts';
 import { executeAiTool } from './tools';
-import { as065, LIVE_TOOLS, PUBLISHED_TOOLS } from './published-tools';
+import { as065, asInventedExamples, asPanelV7, asPlainDescription, asZod64, descriptionWithoutZod64, INVENTED_EXAMPLES, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, withoutZod64, ZOD_64_SENTENCES } from './published-tools';
 import { EXPLAIN_TOPICS } from './features/explain';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac';
 import { SIGNS } from '../lib/signs';
@@ -28,6 +28,17 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * That touches four places, all in get_occasion_sky: its description, its occasion field's description and the
  * occasion enum in its input and output schemas. Every other byte of the thirteen comes back as published.
  * 0.6.6 changes only the reported version and the plugin's picture.
+ * 0.6.7 (ZOD-58) changes the reported version and rewrites the description of all thirteen as
+ * plain descriptions: what the tool does, when to use it, what it returns and its limits, with no
+ * sentence that tells the assistant how to behave, offers a schedule or promotes anything. Only those thirteen
+ * description fields change (src/ai-tools/published-tools.ts pins each in full); every name, title, schema,
+ * annotation and _meta comes back as published except get_horoscope's panel address (horoscopes-v7, which keeps a
+ * panel for a birth date under 18 softened after a sign switch), and the thirteen keep their names and input schemas byte for byte.
+ * ZOD-64, still 0.6.7, approved by Dias on 2026-11-17, changes the Neptune time quoted in get_upcoming_events'
+ * description from 14:31:41 to 14:32 UTC, as the event list now shows it (check_sky_fact still gives 14:31:41 and
+ * keeps its sentence). That description is the only published change: nothing else in the thirteen moves.
+ * 0.6.8 changes only the reported version: it ships the invented examples of Developer 0.3.51 (INVENTED_EXAMPLES in
+ * src/ai-tools/published-tools.ts, approved by Dias on 17 November 2026) for the directory resubmission.
  */
 const root = new URL('../../', import.meta.url);
 const PUBLISHED = PUBLISHED_TOOLS;
@@ -96,6 +107,112 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect(JSON.stringify(PUBLISHED)).not.toMatch(/baby|coming-of-age/u);
   });
 
+  it('moves only get_horoscope\'s panel address, to horoscopes-v7 (ZOD-58)', () => {
+    const changes = LIVE_TOOLS.flatMap(tool => asPanelV7(asPlainDescription(as065(tool).tool).tool).changed);
+    expect(changes).toEqual(['get_horoscope._meta.ui.resourceUri', 'get_horoscope._meta.openai/outputTemplate']);
+  });
+
+  it('changes only the eighteen schema field descriptions that held the owner\'s own details, to invented examples (0.3.51)', async () => {
+    const before = LIVE_TOOLS.map(tool => asZod64(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool);
+    const changes = before.flatMap(tool => asInventedExamples(tool).changed);
+    expect([...changes].sort()).toEqual(Object.keys(INVENTED_EXAMPLES).sort());
+    expect(changes.every(path => /\.inputSchema\.properties\.(?:[a-z]+\.properties\.)?[A-Za-z]+\.description$/u.test(path))).toBe(true);
+    // Every other byte, the tool descriptions included, is the ZOD-58 entry: put the eighteen back and nothing differs.
+    const at = (node: unknown, keys: string[]) => keys.reduce<unknown>((item, key) => (item as Record<string, unknown>)[key], node);
+    for (const tool of before) {
+      const { tool: after, changed } = asInventedExamples(tool);
+      const restored = JSON.parse(JSON.stringify(after)) as Record<string, unknown>;
+      for (const path of changed) {
+        const keys = path.split('.').slice(1);
+        (at(restored, keys.slice(0, -1)) as Record<string, unknown>)[keys.at(-1)!] = at(tool, keys);
+      }
+      expect(JSON.stringify(restored), String(tool.name)).toBe(JSON.stringify(tool));
+    }
+    const listed = (await rpc('tools/list', {})).result.tools as Record<string, unknown>[];
+    for (const path of Object.keys(INVENTED_EXAMPLES)) {
+      const [name, ...keys] = path.split('.');
+      expect(at(listed.find(tool => tool.name === name), keys), path).toBe(INVENTED_EXAMPLES[path]);
+    }
+  });
+
+  it('changes only the description of the thirteen published tools, to describe each tool instead of directing the assistant (ZOD-58)', async () => {
+    const changes = LIVE_TOOLS.flatMap(tool => asPlainDescription(as065(tool).tool).changed);
+    expect([...changes].sort()).toEqual([
+      'check_sky_fact.description',
+      'find_chart_twins.description',
+      'get_birthday.description',
+      'get_capabilities.description',
+      'get_compatibility.description',
+      'get_famous_chart.description',
+      'get_horoscope.description',
+      'get_life_milestones.description',
+      'get_occasion_sky.description',
+      'get_sky.description',
+      'get_sky_calendar.description',
+      'get_upcoming_events.description',
+      'open_chart_studio.description',
+    ].sort());
+    expect(Object.keys(PLAIN_DESCRIPTIONS).sort()).toEqual(changes.map(path => path.split('.')[0]).sort());
+    // Everything but the description is the 0.6.5 entry, byte for byte.
+    for (const tool of LIVE_TOOLS) {
+      const before = as065(tool).tool;
+      const after = asPlainDescription(before).tool;
+      expect(JSON.stringify({ ...after, description: before.description }), String(tool.name)).toBe(JSON.stringify(before));
+    }
+    // The server lists exactly the pinned text, with ZOD-64's minute time, and the source of truth it lists from holds the same.
+    const listed = (await rpc('tools/list', {})).result.tools as { name: string; description: string }[];
+    for (const [name, description] of Object.entries(PLAIN_DESCRIPTIONS)) {
+      expect(descriptionWithoutZod64(name, listed.find(tool => tool.name === name)!.description), name).toBe(description);
+      expect(descriptionWithoutZod64(name, TOOL_DESCRIPTIONS[name as keyof typeof TOOL_DESCRIPTIONS]), name).toBe(description);
+    }
+  });
+
+  it('changes only the quoted Neptune time in get_upcoming_events\' description (ZOD-64)', async () => {
+    // With the invented schema examples in place, which the test above accounts for.
+    const before = LIVE_TOOLS.map(tool => asInventedExamples(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool);
+    // The only published path that moves is get_upcoming_events' description.
+    expect(before.flatMap(tool => asZod64(tool).changed)).toEqual(['get_upcoming_events.description']);
+    expect(Object.keys(ZOD_64_SENTENCES)).toEqual(['get_upcoming_events']);
+    for (const [index, tool] of PUBLISHED_TOOLS.entries()) {
+      const name = String(tool.name);
+      if (name === 'get_upcoming_events') expect(JSON.stringify({ ...tool, description: before[index].description }), name).toBe(JSON.stringify(before[index]));
+      else expect(JSON.stringify(tool), name).toBe(JSON.stringify(before[index]));
+      expect(JSON.stringify(withoutZod64(tool)), name).toBe(JSON.stringify(before[index]));
+    }
+    // The description changes only 14:31:41 to 14:32, once; check_sky_fact, which still gives 14:31:41, keeps it.
+    const [[was, now]] = ZOD_64_SENTENCES.get_upcoming_events;
+    expect(now).toBe(was.replace('14:31:41 UTC', '14:32 UTC'));
+    const events = PUBLISHED_TOOLS.find(tool => tool.name === 'get_upcoming_events')!.description as string;
+    expect(events).toBe((before.find(tool => tool.name === 'get_upcoming_events')!.description as string).replace(was, now));
+    expect(events).toContain('it gives 14:32 UTC, where Horizons gives 17:35 UTC.');
+    expect(events).not.toContain('14:31:41');
+    expect(PUBLISHED_TOOLS.find(tool => tool.name === 'check_sky_fact')!.description).toContain('it gives 14:31:41 UTC for Neptune entering Aries on 26 January 2026');
+    // The server lists exactly this, and the source of truth it lists from holds the same.
+    const listed = (await rpc('tools/list', {})).result.tools as Record<string, unknown>[];
+    expect(JSON.stringify(listed.slice(0, 13))).toBe(JSON.stringify(PUBLISHED_TOOLS));
+    expect(TOOL_DESCRIPTIONS.get_upcoming_events).toBe(events);
+  });
+
+  it('states what each tool does and its limits, with no order to the assistant, no offer of a schedule and no dash', async () => {
+    const listed = (await rpc('tools/list', {})).result.tools as { name: string; description: string }[];
+    for (const { name, description } of listed) {
+      expect(description, name).not.toMatch(/offer once|every morning|plainly and confidently|\blead with\b|give them the returned|share the (?:score|themes|forecast|reading|rating)|tell the person|do not frame|describe it as|never make one up|\buse it\b|\bpass (?:the|its)\b|\bsupply\b|never guess|\bask (?:the|them)\b|[\u2013\u2014]/iu);
+    }
+    const horoscope = listed.find(tool => tool.name === 'get_horoscope')!.description;
+    expect(horoscope).toContain('"Reading confidence NN%" label');
+    expect(horoscope).toContain('For a birth date under 18 there is no love or romance reading: the general reading stands in, with a note that says so.');
+    expect(horoscope).toContain('It refuses a birth date less than 13 years ago.');
+    expect(horoscope).toContain('never stored, logged or put in a link');
+    expect(horoscope).toMatch(/no betting tips, sports picks, stock picks, investment timing, financial forecasts, election forecasts, health predictions or guaranteed outcomes/u);
+    for (const name of ['get_compatibility', 'get_horoscope_period', 'explain_astrology']) {
+      expect(listed.find(tool => tool.name === name)!.description, name).toContain('under 18 there is no love or romance reading');
+    }
+    const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
+    expect(init.instructions).not.toMatch(/plainly and confidently|Answer in plain words first|do not call its tools|[\u2013\u2014\u2019]/u);
+    expect(init.instructions).toContain('each comes with a "Reading confidence NN%" label');
+    expect(init.instructions).toContain('Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome.');
+  });
+
   it('answers a withdrawn occasion with its fixed sentence, echoing none of the request', async () => {
     for (const occasion of ['baby', 'coming-of-age', 'Baby', 'coming of age', 'newborn', 'Quinceañera']) {
       const answer = (await rpc('tools/call', { name: 'get_occasion_sky', arguments: { occasion, date: '2026-05-03', names: 'Mia', place: 'London', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278 } })).result;
@@ -108,11 +225,11 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect(other.structuredContent.error.message).toBe('occasion must be one of: wedding, anniversary, met, birthday, pet, home, job, graduation, retirement, gathering.');
   });
 
-  it('reports 0.6.6 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
+  it('reports 0.6.8 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
     const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
-    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.6' });
+    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.8' });
     const capabilities = (await rpc('tools/call', { name: 'get_capabilities', arguments: {} })).result.structuredContent;
-    expect(capabilities.data.version).toBe('0.6.6');
+    expect(capabilities.data.version).toBe('0.6.8');
     expect(capabilities.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(capabilities.data.limitations.join(' ')).toContain('Version 0.6.0 adds tools listed in tools/list');
   });
@@ -187,7 +304,7 @@ describe('the five 0.6.0 tools', () => {
     expect(JSON.parse(natal.content[0].text)).toEqual(natal.structuredContent);
     expect((await call('get_horoscope_period', { sign: 'leo' })).structuredContent.error.message).toBe('period is required.');
     expect((await call('get_horoscope_period', { sign: 'lion', period: 'month' })).structuredContent.error.message).toBe(`sign must be one of: ${HOROSCOPE_SIGNS.join(', ')}.`);
-    expect((await call('get_personal_transits', { birthDate: '3 May 1990' })).structuredContent.error.message).toBe('birthDate must be a date such as 1990-05-03.');
+    expect((await call('get_personal_transits', { birthDate: '3 May 1990' })).structuredContent.error.message).toBe('birthDate must be a date such as 1994-05-14.');
     expect((await call('get_chinese_zodiac', { year: 1890 })).structuredContent.error.message).toBe('year must be at least 1901.');
     expect((await call('explain_astrology', {})).structuredContent.error.message).toBe('topic is required.');
     const unknown = await call('get_natal_chart', { birthDate: '1990-05-03', secretPassword: 'x' });
