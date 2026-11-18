@@ -738,6 +738,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/sky-calendar/`, '2026-11-17'] as const),
   // Numerology's visual restyle (emblem, letter key, life path tiles, shared entrance motion), last so it wins.
   ['/numerology/', '2026-11-17'] as const,
+  // The life path pages' seal, hued chips and entrance motion, last so it wins.
+  ...LIFE_PATH_NUMBERS.map((n) => [`/numerology/life-path/${n}/`, '2026-11-17'] as const),
 ]);
 
 function getLastmod(loc: string): string {
