@@ -11,6 +11,59 @@ few serverless functions under `api/`.
 This repository is public so that its work can be read and checked. It is not
 open source: all rights are reserved (see [LICENSE](LICENSE)).
 
+## Connect an AI assistant (MCP)
+
+The hosted [Model Context Protocol](https://modelcontextprotocol.io/) server
+provides read-only tools for birth charts, chart compatibility, dated Sun-sign
+horoscopes and public sky events. It keeps calculated astronomical facts
+separate from astrological interpretation; readings are for reflection, not
+guarantees.
+
+- **Endpoint:** `https://zodiacs.org/mcp`
+- **Transport:** Streamable HTTP.
+- **Authentication:** no account, API key or sign-in is required.
+- **Installation:** no local runtime is needed for the hosted server. Add the
+  endpoint as an HTTP MCP server in an assistant that supports remote MCP.
+
+For Copilot, this portable configuration can go in the workspace's `.mcp.json`
+or the user's `~/.copilot/mcp-config.json` (see the
+[configuration reference](https://code.visualstudio.com/docs/agents/reference/mcp-configuration)
+for other destinations and remote workspaces). Merge the entry into an existing
+configuration rather than replacing other servers:
+
+```json
+{
+  "mcpServers": {
+    "zodiacs": {
+      "type": "http",
+      "url": "https://zodiacs.org/mcp",
+      "tools": ["*"]
+    }
+  }
+}
+```
+
+Review the assistant's server-trust prompt, then use `get_capabilities` to
+check the connection and available tools. Examples to ask:
+
+- "What changes in the sky this week in Europe/London?"
+- "Is Mercury retrograde right now?"
+- "Show today's horoscope for Leo."
+
+Public-sky questions need no birth details. Hosted tool arguments and results
+pass through the assistant and Zodiacs; this is not the browser-only calculation
+described above. Do not send birth details for children under 13. See the
+[tool list, examples and limits](https://zodiacs.org/developers/ai/) and
+[AI integration privacy policy](https://zodiacs.org/privacy/#ai-integrations)
+before connecting personal records. The server gives no financial or medical
+advice and schedules nothing.
+
+The repository-linked official MCP Registry listing is
+[`org.zodiacs/astrology`](https://registry.modelcontextprotocol.io/v0.1/servers/org.zodiacs%2Fastrology/versions/latest).
+The older `io.github.zodiacs-org/zodiacs` listing points to the same endpoint;
+the two names are registry records, not separate servers. Registry metadata
+versions are separate from the runtime version returned by MCP initialization.
+
 ## What is where
 
 - **The astrology site** is everything Astro builds from `src/`: the sign

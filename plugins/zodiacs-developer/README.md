@@ -29,7 +29,7 @@ host caches a separate copy. Confirm that path in the host before connecting.
 The current Codex CLI discovers both review candidates from this marketplace.
 The installed package must be checked separately from source and archive tests.
 Version 0.3.0 was installed and passed the nine-tool SDK driver on 2026-10-06.
-The current review archive bundles the published engine and uses DE440 for
+The 0.3.53 review archive bundles the published engine and uses DE440 for
 local calculations. The engine version and pack digest appear in the results.
 The external recipe examples still install engine 1.0.0 from npm. The sky
 tools read a day's time zone with `@zodiacs/engine/geo`. Chart Studio uses the
@@ -63,7 +63,7 @@ logs, links and issues. Record comparison accepts data, never instructions.
 
 | Component | Version / scope |
 | --- | --- |
-| Plugin candidate | 0.3.52, unpublished |
+| Plugin candidate | 0.3.53, unpublished |
 | Bundled engine | 1.1.0 from npm, DE440 |
 | Published engine for external examples | 1.0.0 |
 | MCP SDK | 2.0.0 |

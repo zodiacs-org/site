@@ -52,6 +52,8 @@ import { expectedCapabilityReply } from '../../../tests/helpers/de440-capabiliti
  * examples in eighteen input schema field descriptions of the published tools and the same examples in the later
  * tools, so every scenario's tools/list changes in that example text only (INVENTED_EXAMPLES in
  * src/ai-tools/published-tools.ts). No name, schema shape, annotation or resources/list changes.
+ * 0.6.8 changes only the reported version, in every scenario, to ship those invented examples for the directory
+ * resubmission.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

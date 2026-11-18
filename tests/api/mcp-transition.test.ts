@@ -36,6 +36,7 @@ it('keeps the published connector reply while a separate route advertises and re
       const client = new Client({ name: 'transition-test', version: '1' });
       clients.push(client);
       await client.connect(new StreamableHTTPClientTransport(new URL(path, base)));
+      expect(client.getServerVersion()?.version).toBe(expected.serverVersion);
       const list = await client.listTools();
       expect(list.tools.find(tool => tool.name === 'get_upcoming_events')?.description).toContain(expected.description);
       const call = { name: 'get_upcoming_events', arguments: { from: '2026-01-26', to: '2026-01-27', bodies: ['Neptune'], kinds: ['ingress'] } };
