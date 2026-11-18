@@ -1,11 +1,11 @@
 ---
-import Base from '../../../layouts/Base.astro';
-import latest from '../../../data/accuracy/latest.json';
-import entries from '../../../data/accuracy/history.json';
-import { ACCURACY_PATH, accuracyDiscoverable } from '../../../accuracy/publication.mjs';
-import type { Receipt as ReceiptData, ReceiptHistory } from '../../../accuracy/receipt';
-import { ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
-import Receipt from '../../../accuracy/AccuracyReceipt.astro';
+import Base from '../layouts/Base.astro';
+import latest from '../data/accuracy/latest.json';
+import entries from '../data/accuracy/history.json';
+import { ACCURACY_PATH } from './publication.mjs';
+import type { Receipt as ReceiptData, ReceiptHistory } from './receipt';
+import { ORGANIZATION, developerBreadcrumb } from '../lib/developer-structured-data.mjs';
+import Receipt from './AccuracyReceipt.astro';
 
 const receipt = latest as ReceiptData | null;
 const history = entries as ReceiptHistory[];
@@ -32,6 +32,6 @@ const jsonLd = receipt ? [
   developerBreadcrumb(ACCURACY_PATH, 'Accuracy receipts'),
 ] : [];
 ---
-<Base title={title} description={description} path={ACCURACY_PATH} jsonLd={jsonLd} noindex={!accuracyDiscoverable}>
+<Base title={title} description={description} path={ACCURACY_PATH} jsonLd={jsonLd}>
   <Receipt receipt={receipt} history={history} />
 </Base>

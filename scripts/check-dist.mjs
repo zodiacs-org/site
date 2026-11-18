@@ -49,6 +49,7 @@ import {
 } from './i18n-hreflang-policy.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
 import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
+import { ACCURACY_PATH, accuracyPublished } from '../src/accuracy/publication.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
@@ -1826,6 +1827,13 @@ for (const file of files) {
   // same pages, still builds for IndexNow and the gates above, and is not
   // submitted twice. No page a sitemap lists may be blocked from crawling.
   const robots = robotsRules(await readFile(resolve(root, 'robots.txt'), 'utf8').catch(() => ''));
+  if (!accuracyPublished) {
+    if (await exists(resolve(root, `.${ACCURACY_PATH}`))) fail('accuracy: withheld receipt or downloads are in the build');
+    if (sitemapLocs.has(ACCURACY_PATH)) fail('accuracy: withheld receipt is in the sitemap');
+    if (![ACCURACY_PATH.slice(0, -1), ACCURACY_PATH, `${ACCURACY_PATH}raw/`].every((path) => robotsBlocks(robots, path))) {
+      fail('accuracy: robots.txt must block the withheld receipt and downloads');
+    }
+  }
   if (robots.sitemaps.join('\n') !== 'https://zodiacs.org/sitemap-index.xml') {
     fail(`robots.txt: must name exactly one sitemap, https://zodiacs.org/sitemap-index.xml (names ${robots.sitemaps.join(', ') || 'none'})`);
   }

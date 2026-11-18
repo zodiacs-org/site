@@ -36,7 +36,7 @@ const sets = receipt ? [
   {receipt && suite && rolling && <>
     <div class="prose">
       <p>
-        Engine <code>{receipt.engine.version}</code> read
+        Engine <code>{receipt.engine.version}</code> read{' '}
         {receipt.engine.ephemerides.map(({ name, version }, index) =>
           <>{index > 0 && ', '}<code>{name} {version}</code></>
         )}. NASA's answers name <code>{receipt.source.ephemeris}</code> as their source.
@@ -44,7 +44,7 @@ const sets = receipt ? [
       <p>
         The suite compares our positions with <a href={`${receipt.source.repository}/tree/${receipt.source.commit}/conformance`}>NASA's recorded positions</a>
         carried into <code>{receipt.frames.suite}</code>. The rolling check uses midnight Terrestrial Time on the
-        first of each coming month and compares directly with <a href={receipt.source.horizons}>Horizons</a> in its
+        first of each coming month and compares directly with <a href={receipt.source.horizons}>Horizons</a> in its{' '}
         <code>{receipt.frames.rolling}</code> frame. The rolling differences include the change of frame.
       </p>
       <p>
@@ -53,7 +53,7 @@ const sets = receipt ? [
         This is the recorded Horizons longitude less the same longitude carried into the suite frame, averaged over the bodies.
       </p>
       <p>
-        NASA's fresh and recorded answers agreed within the self check tolerance for
+        NASA's fresh and recorded answers agreed within the self check tolerance for{' '}
         {receipt.nasaCheck.total} positions. Each position is within the limit when both longitude and latitude are within {receipt.threshold}″.
       </p>
     </div>

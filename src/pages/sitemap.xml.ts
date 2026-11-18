@@ -8,7 +8,7 @@ import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-p
 import natalAspectsPublication from '../data/natal-aspects-publication.json';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
 import type { APIRoute } from 'astro';
-import { ACCURACY_PATH, accuracyDiscoverable } from '../accuracy/publication.mjs';
+import { ACCURACY_PATH, accuracyPublished } from '../accuracy/publication.mjs';
 import accuracyReceipt from '../data/accuracy/latest.json';
 import accuracyHistory from '../data/accuracy/history.json';
 import type { Receipt, ReceiptHistory } from '../accuracy/receipt';
@@ -874,7 +874,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/almanac/', priority: 0.75 },
   ].map((url) => {
     let date = url.loc === '/today/' ? daily.date : getLastmod(url.loc);
-    if (accuracyDiscoverable && firstAccuracyDate && (url.loc === '/developers/' || url.loc === '/developers/conformance/')) {
+    if (accuracyPublished && firstAccuracyDate && (url.loc === '/developers/' || url.loc === '/developers/conformance/')) {
       date = laterDate(date, firstAccuracyDate);
     }
     return { ...url, lastmod: date };
@@ -882,7 +882,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
 
   const urls: { loc: string; priority: number; lastmod?: string }[] = [
     ...evergreenUrls,
-    ...(accuracyDiscoverable
+    ...(accuracyPublished
       ? [{ loc: ACCURACY_PATH, priority: 0.6, lastmod: (accuracyReceipt as Receipt | null)?.date }]
       : []),
     ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: EVERGREEN_LASTMOD.get(loc) ?? DEVELOPER_GUIDES_LASTMOD })),

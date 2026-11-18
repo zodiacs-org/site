@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import * as vendor from '@zodiacs/engine';
-import { accuracyEngineEligible } from '../src/accuracy/publication.mjs';
+import { ACCURACY_PATH, accuracyRobots, accuracyRoutes } from '../src/accuracy/publication.mjs';
 import {
   BODIES, buildReceipt, collectReceipt, difference, horizonsUrl, loadSuite, rollingInstants, selfCheck, verifyRaw,
 } from './accuracy-receipt.mjs';
@@ -151,11 +151,24 @@ function recordedAnswer(url) {
 }
 
 describe('NASA accuracy receipts', () => {
-  it('uses SemVer precedence for both discovery links and sitemaps', () => {
-    expect(['1.1.0-rc.2', '1.0.9', '1.1.0-01', '1.1.0\n', 'broken'].map(accuracyEngineEligible))
-      .toEqual([false, false, false, false, false]);
-    expect(['1.1.0', '1.1.1', '1.2.0-rc.1', '2.0.0-alpha', '1.1.0+build'].map(accuracyEngineEligible))
-      .toEqual([true, true, true, true, true]);
+  it('registers the receipt and downloads only when published', () => {
+    const injectRoute = vi.fn();
+    accuracyRoutes(false).hooks['astro:config:setup']({ injectRoute });
+    expect(injectRoute).not.toHaveBeenCalled();
+    accuracyRoutes(true).hooks['astro:config:setup']({ injectRoute });
+    expect(injectRoute.mock.calls).toEqual([
+      [{ pattern: ACCURACY_PATH, entrypoint: './src/accuracy/page.astro' }],
+      [{ pattern: `${ACCURACY_PATH}raw/[date]/[file]`, entrypoint: './src/accuracy/raw.ts' }],
+    ]);
+  });
+
+  it('blocks the withheld receipt for every crawler group', async () => {
+    const rules = await readFile('src/data/robots.txt', 'utf8');
+    expect(accuracyRobots(rules, true)).toBe(rules);
+    const crawlerGroups = accuracyRobots(rules, false).split('\n\n').filter((group) => group.startsWith('User-agent:'));
+    for (const group of crawlerGroups) {
+      expect(group).toContain(`Disallow: ${ACCURACY_PATH.slice(0, -1)}$\nDisallow: ${ACCURACY_PATH}\n`);
+    }
   });
 
   it('renders fixture values directly and shows the same headline for a failure', async () => {
@@ -168,6 +181,10 @@ describe('NASA accuracy receipts', () => {
     expect(numbers(text).filter((number) => !values.has(number))).toEqual([]);
     expect(text).toContain(`Checked against NASA on ${receipt.label}: 240 of 240 positions within 1″`);
     expect(html).toContain(receipt.raw[0].sha256);
+    const inlineText = html.replace(/<[^>]+>/gu, '').replace(/\s+/gu, ' ');
+    expect(inlineText).toContain(`read ${receipt.engine.ephemerides[0].name}`);
+    expect(inlineText).toContain(`in its ${receipt.frames.rolling} frame`);
+    expect(inlineText).toContain(`tolerance for ${receipt.nasaCheck.total} positions`);
 
     const first = receipt.sets.suite.positions[0];
     const engine = previewEngine((value, id) => value.body === first.body && id === first.id

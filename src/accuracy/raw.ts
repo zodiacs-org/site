@@ -2,8 +2,8 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import type { APIRoute, GetStaticPaths } from 'astro';
-import history from '../../../../../data/accuracy/history.json';
-import type { ReceiptHistory } from '../../../../../accuracy/receipt';
+import history from '../data/accuracy/history.json';
+import type { ReceiptHistory } from './receipt';
 
 const root = resolve('src/data/accuracy/raw');
 
