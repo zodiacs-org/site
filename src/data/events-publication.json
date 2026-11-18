@@ -17,7 +17,7 @@
       "id": "full-moon-2026-01-03",
       "path": "/full-moon/2026-01-03/",
       "title": "Full moon in Cancer, January 3, 2026",
-      "anchor": "2026-01-03T10:02:55.863Z",
+      "anchor": "2026-01-03T10:02:54.544Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -35,7 +35,7 @@
       "id": "new-moon-2026-01-18",
       "path": "/new-moon/2026-01-18/",
       "title": "New moon in Capricorn, January 18, 2026",
-      "anchor": "2026-01-18T19:52:01.736Z",
+      "anchor": "2026-01-18T19:51:58.935Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -72,7 +72,7 @@
       "id": "neptune-enters-aries-2026-01-26",
       "path": "/events/neptune-enters-aries-2026-01-26/",
       "title": "Neptune enters Aries, January 26, 2026",
-      "anchor": "2026-01-26T14:30:44.561Z",
+      "anchor": "2026-01-26T17:34:38.262Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -89,7 +89,7 @@
       "id": "full-moon-2026-02-01",
       "path": "/full-moon/2026-02-01/",
       "title": "Full moon in Leo, February 1, 2026",
-      "anchor": "2026-02-01T22:09:17.527Z",
+      "anchor": "2026-02-01T22:09:14.725Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -107,7 +107,7 @@
       "id": "saturn-enters-aries-2026-02-14",
       "path": "/events/saturn-enters-aries-2026-02-14/",
       "title": "Saturn enters Aries, February 14, 2026",
-      "anchor": "2026-02-14T00:39:37.844Z",
+      "anchor": "2026-02-14T00:11:38.913Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -124,7 +124,7 @@
       "id": "new-moon-2026-02-17",
       "path": "/new-moon/2026-02-17/",
       "title": "New moon in Aquarius, February 17, 2026",
-      "anchor": "2026-02-17T12:01:12.344Z",
+      "anchor": "2026-02-17T12:01:09.130Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -179,7 +179,7 @@
       "id": "mercury-retrograde-2026-02-26",
       "path": "/mercury-retrograde/2026-02-26/",
       "title": "Mercury retrograde, February 2026",
-      "anchor": "2026-02-26T06:47:25.019Z",
+      "anchor": "2026-02-26T06:48:20.390Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -214,7 +214,7 @@
       "id": "full-moon-2026-03-03",
       "path": "/full-moon/2026-03-03/",
       "title": "Full moon in Virgo, March 3, 2026",
-      "anchor": "2026-03-03T11:37:57.684Z",
+      "anchor": "2026-03-03T11:37:53.811Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -232,7 +232,7 @@
       "id": "new-moon-2026-03-19",
       "path": "/new-moon/2026-03-19/",
       "title": "New moon in Pisces, March 19, 2026",
-      "anchor": "2026-03-19T01:23:33.883Z",
+      "anchor": "2026-03-19T01:23:28.775Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -269,7 +269,7 @@
       "id": "full-moon-2026-04-02",
       "path": "/full-moon/2026-04-02/",
       "title": "Full moon in Libra, April 2, 2026",
-      "anchor": "2026-04-02T02:12:00.538Z",
+      "anchor": "2026-04-02T02:11:58.066Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -287,7 +287,7 @@
       "id": "new-moon-2026-04-17",
       "path": "/new-moon/2026-04-17/",
       "title": "New moon in Aries, April 17, 2026",
-      "anchor": "2026-04-17T11:51:52.041Z",
+      "anchor": "2026-04-17T11:51:48.250Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -305,7 +305,7 @@
       "id": "uranus-enters-gemini-2026-04-26",
       "path": "/events/uranus-enters-gemini-2026-04-26/",
       "title": "Uranus enters Gemini, April 26, 2026",
-      "anchor": "2026-04-26T01:01:21.002Z",
+      "anchor": "2026-04-26T00:51:32.436Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -322,7 +322,7 @@
       "id": "full-moon-2026-05-01",
       "path": "/full-moon/2026-05-01/",
       "title": "Full moon in Scorpio, May 1, 2026",
-      "anchor": "2026-05-01T17:23:09.934Z",
+      "anchor": "2026-05-01T17:23:10.758Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -340,7 +340,7 @@
       "id": "new-moon-2026-05-16",
       "path": "/new-moon/2026-05-16/",
       "title": "New moon in Taurus, May 16, 2026",
-      "anchor": "2026-05-16T20:01:04.323Z",
+      "anchor": "2026-05-16T20:01:02.841Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -358,7 +358,7 @@
       "id": "full-moon-2026-05-31",
       "path": "/full-moon/2026-05-31/",
       "title": "Full moon in Sagittarius, May 31, 2026",
-      "anchor": "2026-05-31T08:45:10.106Z",
+      "anchor": "2026-05-31T08:45:12.495Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -376,7 +376,7 @@
       "id": "new-moon-2026-06-15",
       "path": "/new-moon/2026-06-15/",
       "title": "New moon in Gemini, June 15, 2026",
-      "anchor": "2026-06-15T02:54:11.458Z",
+      "anchor": "2026-06-15T02:54:10.139Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -394,7 +394,7 @@
       "id": "mercury-retrograde-2026-06-29",
       "path": "/mercury-retrograde/2026-06-29/",
       "title": "Mercury retrograde, June 2026",
-      "anchor": "2026-06-29T17:37:11.542Z",
+      "anchor": "2026-06-29T17:36:00.351Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -411,7 +411,7 @@
       "id": "full-moon-2026-06-29",
       "path": "/full-moon/2026-06-29/",
       "title": "Full moon in Capricorn, June 29, 2026",
-      "anchor": "2026-06-29T23:56:39.855Z",
+      "anchor": "2026-06-29T23:56:41.256Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -429,7 +429,7 @@
       "id": "jupiter-enters-leo-2026-06-30",
       "path": "/events/jupiter-enters-leo-2026-06-30/",
       "title": "Jupiter enters Leo, June 30, 2026",
-      "anchor": "2026-06-30T05:56:21.335Z",
+      "anchor": "2026-06-30T05:52:21.765Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -446,7 +446,7 @@
       "id": "new-moon-2026-07-14",
       "path": "/new-moon/2026-07-14/",
       "title": "New moon in Cancer, July 14, 2026",
-      "anchor": "2026-07-14T09:43:36.119Z",
+      "anchor": "2026-07-14T09:43:36.943Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -578,7 +578,7 @@
       "id": "full-moon-2026-07-29",
       "path": "/full-moon/2026-07-29/",
       "title": "Full moon in Aquarius, July 29, 2026",
-      "anchor": "2026-07-29T14:35:42.223Z",
+      "anchor": "2026-07-29T14:35:43.458Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -596,7 +596,7 @@
       "id": "new-moon-2026-08-12",
       "path": "/new-moon/2026-08-12/",
       "title": "New moon in Leo, August 12, 2026",
-      "anchor": "2026-08-12T17:36:41.548Z",
+      "anchor": "2026-08-12T17:36:45.010Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -650,7 +650,7 @@
       "id": "full-moon-2026-08-28",
       "path": "/full-moon/2026-08-28/",
       "title": "Full moon in Pisces, August 28, 2026",
-      "anchor": "2026-08-28T04:18:31.156Z",
+      "anchor": "2026-08-28T04:18:32.062Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -687,7 +687,7 @@
       "id": "new-moon-2026-09-11",
       "path": "/new-moon/2026-09-11/",
       "title": "New moon in Virgo, September 11, 2026",
-      "anchor": "2026-09-11T03:26:56.471Z",
+      "anchor": "2026-09-11T03:26:59.932Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -724,7 +724,7 @@
       "id": "full-moon-2026-09-26",
       "path": "/full-moon/2026-09-26/",
       "title": "Full moon in Aries, September 26, 2026",
-      "anchor": "2026-09-26T16:48:59.556Z",
+      "anchor": "2026-09-26T16:49:02.439Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -742,7 +742,7 @@
       "id": "venus-retrograde-2026-10-03",
       "path": "/venus-retrograde/2026-10-03/",
       "title": "Venus retrograde, October 2026",
-      "anchor": "2026-10-03T07:10:25.341Z",
+      "anchor": "2026-10-03T07:15:41.747Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -760,7 +760,7 @@
       "id": "new-moon-2026-10-10",
       "path": "/new-moon/2026-10-10/",
       "title": "New moon in Libra, October 10, 2026",
-      "anchor": "2026-10-10T15:50:02.149Z",
+      "anchor": "2026-10-10T15:50:05.116Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -778,7 +778,7 @@
       "id": "mercury-retrograde-2026-10-24",
       "path": "/mercury-retrograde/2026-10-24/",
       "title": "Mercury retrograde, October 2026",
-      "anchor": "2026-10-24T07:14:22.646Z",
+      "anchor": "2026-10-24T07:11:41.806Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -795,7 +795,7 @@
       "id": "full-moon-2026-10-26",
       "path": "/full-moon/2026-10-26/",
       "title": "Full moon in Taurus, October 26, 2026",
-      "anchor": "2026-10-26T04:11:45.019Z",
+      "anchor": "2026-10-26T04:11:48.809Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -813,7 +813,7 @@
       "id": "new-moon-2026-11-09",
       "path": "/new-moon/2026-11-09/",
       "title": "New moon in Scorpio, November 9, 2026",
-      "anchor": "2026-11-09T07:02:05.269Z",
+      "anchor": "2026-11-09T07:02:07.000Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -831,7 +831,7 @@
       "id": "full-moon-2026-11-24",
       "path": "/full-moon/2026-11-24/",
       "title": "Full moon in Gemini, November 24, 2026",
-      "anchor": "2026-11-24T14:53:35.120Z",
+      "anchor": "2026-11-24T14:53:33.719Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -868,7 +868,7 @@
       "id": "new-moon-2026-12-09",
       "path": "/new-moon/2026-12-09/",
       "title": "New moon in Sagittarius, December 9, 2026",
-      "anchor": "2026-12-09T00:51:52.151Z",
+      "anchor": "2026-12-09T00:51:51.163Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -886,7 +886,7 @@
       "id": "full-moon-2026-12-24",
       "path": "/full-moon/2026-12-24/",
       "title": "Full moon in Cancer, December 24, 2026",
-      "anchor": "2026-12-24T01:28:16.590Z",
+      "anchor": "2026-12-24T01:28:14.118Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -904,7 +904,7 @@
       "id": "new-moon-2027-01-07",
       "path": "/new-moon/2027-01-07/",
       "title": "New moon in Capricorn, January 7, 2027",
-      "anchor": "2027-01-07T20:24:26.069Z",
+      "anchor": "2027-01-07T20:24:23.267Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -922,7 +922,7 @@
       "id": "mars-retrograde-2027-01-10",
       "path": "/mars-retrograde/2027-01-10/",
       "title": "Mars retrograde, January 2027",
-      "anchor": "2027-01-10T13:00:54.491Z",
+      "anchor": "2027-01-10T12:59:03.750Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -959,7 +959,7 @@
       "id": "full-moon-2027-01-22",
       "path": "/full-moon/2027-01-22/",
       "title": "Full moon in Leo, January 22, 2027",
-      "anchor": "2027-01-22T12:17:21.585Z",
+      "anchor": "2027-01-22T12:17:23.150Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -977,7 +977,7 @@
       "id": "new-moon-2027-02-06",
       "path": "/new-moon/2027-02-06/",
       "title": "New moon in Aquarius, February 6, 2027",
-      "anchor": "2027-02-06T15:56:08.653Z",
+      "anchor": "2027-02-06T15:56:07.335Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1013,7 +1013,7 @@
       "id": "mercury-retrograde-2027-02-09",
       "path": "/mercury-retrograde/2027-02-09/",
       "title": "Mercury retrograde, February 2027",
-      "anchor": "2027-02-09T17:35:41.894Z",
+      "anchor": "2027-02-09T17:35:59.032Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -1049,7 +1049,7 @@
       "id": "full-moon-2027-02-20",
       "path": "/full-moon/2027-02-20/",
       "title": "Full moon in Virgo, February 20, 2027",
-      "anchor": "2027-02-20T23:23:37.619Z",
+      "anchor": "2027-02-20T23:23:39.184Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1067,7 +1067,7 @@
       "id": "new-moon-2027-03-08",
       "path": "/new-moon/2027-03-08/",
       "title": "New moon in Pisces, March 8, 2027",
-      "anchor": "2027-03-08T09:29:31.050Z",
+      "anchor": "2027-03-08T09:29:28.990Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1085,7 +1085,7 @@
       "id": "full-moon-2027-03-22",
       "path": "/full-moon/2027-03-22/",
       "title": "Full moon in Libra, March 22, 2027",
-      "anchor": "2027-03-22T10:43:48.340Z",
+      "anchor": "2027-03-22T10:43:47.929Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1122,7 +1122,7 @@
       "id": "new-moon-2027-04-06",
       "path": "/new-moon/2027-04-06/",
       "title": "New moon in Aries, April 6, 2027",
-      "anchor": "2027-04-06T23:51:12.161Z",
+      "anchor": "2027-04-06T23:51:09.771Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1140,7 +1140,7 @@
       "id": "full-moon-2027-04-20",
       "path": "/full-moon/2027-04-20/",
       "title": "Full moon in Scorpio, April 20, 2027",
-      "anchor": "2027-04-20T22:27:11.909Z",
+      "anchor": "2027-04-20T22:27:09.601Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1158,7 +1158,7 @@
       "id": "new-moon-2027-05-06",
       "path": "/new-moon/2027-05-06/",
       "title": "New moon in Taurus, May 6, 2027",
-      "anchor": "2027-05-06T10:58:40.128Z",
+      "anchor": "2027-05-06T10:58:38.150Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1176,7 +1176,7 @@
       "id": "full-moon-2027-05-20",
       "path": "/full-moon/2027-05-20/",
       "title": "Full moon in Scorpio, May 20, 2027",
-      "anchor": "2027-05-20T10:59:04.599Z",
+      "anchor": "2027-05-20T10:59:01.634Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1194,7 +1194,7 @@
       "id": "new-moon-2027-06-04",
       "path": "/new-moon/2027-06-04/",
       "title": "New moon in Gemini, June 4, 2027",
-      "anchor": "2027-06-04T19:40:22.676Z",
+      "anchor": "2027-06-04T19:40:21.192Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1231,7 +1231,7 @@
       "id": "mercury-retrograde-2027-06-10",
       "path": "/mercury-retrograde/2027-06-10/",
       "title": "Mercury retrograde, June 2027",
-      "anchor": "2027-06-10T18:19:04.335Z",
+      "anchor": "2027-06-10T18:15:29.443Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -1268,7 +1268,7 @@
       "id": "full-moon-2027-06-19",
       "path": "/full-moon/2027-06-19/",
       "title": "Full moon in Sagittarius, June 19, 2027",
-      "anchor": "2027-06-19T00:44:24.732Z",
+      "anchor": "2027-06-19T00:44:21.353Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1305,7 +1305,7 @@
       "id": "new-moon-2027-07-04",
       "path": "/new-moon/2027-07-04/",
       "title": "New moon in Cancer, July 4, 2027",
-      "anchor": "2027-07-04T03:02:05.654Z",
+      "anchor": "2027-07-04T03:02:05.325Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1342,7 +1342,7 @@
       "id": "full-moon-2027-07-18",
       "path": "/full-moon/2027-07-18/",
       "title": "Full moon in Capricorn, July 18, 2027",
-      "anchor": "2027-07-18T15:44:58.351Z",
+      "anchor": "2027-07-18T15:44:55.714Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1378,7 +1378,7 @@
       "id": "jupiter-enters-virgo-2027-07-26",
       "path": "/events/jupiter-enters-virgo-2027-07-26/",
       "title": "Jupiter enters Virgo, July 26, 2027",
-      "anchor": "2027-07-26T04:45:27.093Z",
+      "anchor": "2027-07-26T04:49:11.009Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -1395,7 +1395,7 @@
       "id": "new-moon-2027-08-02",
       "path": "/new-moon/2027-08-02/",
       "title": "New moon in Leo, August 2, 2027",
-      "anchor": "2027-08-02T10:05:15.113Z",
+      "anchor": "2027-08-02T10:05:14.454Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1449,7 +1449,7 @@
       "id": "full-moon-2027-08-17",
       "path": "/full-moon/2027-08-17/",
       "title": "Full moon in Aquarius, August 17, 2027",
-      "anchor": "2027-08-17T07:28:42.380Z",
+      "anchor": "2027-08-17T07:28:41.803Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1467,7 +1467,7 @@
       "id": "new-moon-2027-08-31",
       "path": "/new-moon/2027-08-31/",
       "title": "New moon in Virgo, August 31, 2027",
-      "anchor": "2027-08-31T17:41:13.048Z",
+      "anchor": "2027-08-31T17:41:11.319Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1504,7 +1504,7 @@
       "id": "full-moon-2027-09-15",
       "path": "/full-moon/2027-09-15/",
       "title": "Full moon in Pisces, September 15, 2027",
-      "anchor": "2027-09-15T23:03:33.051Z",
+      "anchor": "2027-09-15T23:03:31.568Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1522,7 +1522,7 @@
       "id": "new-moon-2027-09-30",
       "path": "/new-moon/2027-09-30/",
       "title": "New moon in Libra, September 30, 2027",
-      "anchor": "2027-09-30T02:36:05.212Z",
+      "anchor": "2027-09-30T02:36:05.047Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1540,7 +1540,7 @@
       "id": "mercury-retrograde-2027-10-07",
       "path": "/mercury-retrograde/2027-10-07/",
       "title": "Mercury retrograde, October 2027",
-      "anchor": "2027-10-07T14:39:08.875Z",
+      "anchor": "2027-10-07T14:36:09.579Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -1558,7 +1558,7 @@
       "id": "full-moon-2027-10-15",
       "path": "/full-moon/2027-10-15/",
       "title": "Full moon in Aries, October 15, 2027",
-      "anchor": "2027-10-15T13:46:59.502Z",
+      "anchor": "2027-10-15T13:47:00.491Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1595,7 +1595,7 @@
       "id": "new-moon-2027-10-29",
       "path": "/new-moon/2027-10-29/",
       "title": "New moon in Scorpio, October 29, 2027",
-      "anchor": "2027-10-29T13:36:32.787Z",
+      "anchor": "2027-10-29T13:36:34.105Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1613,7 +1613,7 @@
       "id": "full-moon-2027-11-14",
       "path": "/full-moon/2027-11-14/",
       "title": "Full moon in Taurus, November 14, 2027",
-      "anchor": "2027-11-14T03:25:53.355Z",
+      "anchor": "2027-11-14T03:25:55.827Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1631,7 +1631,7 @@
       "id": "new-moon-2027-11-28",
       "path": "/new-moon/2027-11-28/",
       "title": "New moon in Sagittarius, November 28, 2027",
-      "anchor": "2027-11-28T03:24:24.613Z",
+      "anchor": "2027-11-28T03:24:26.344Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1649,7 +1649,7 @@
       "id": "full-moon-2027-12-13",
       "path": "/full-moon/2027-12-13/",
       "title": "Full moon in Gemini, December 13, 2027",
-      "anchor": "2027-12-13T16:08:48.111Z",
+      "anchor": "2027-12-13T16:08:47.864Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1667,7 +1667,7 @@
       "id": "new-moon-2027-12-27",
       "path": "/new-moon/2027-12-27/",
       "title": "New moon in Capricorn, December 27, 2027",
-      "anchor": "2027-12-27T20:12:18.829Z",
+      "anchor": "2027-12-27T20:12:19.735Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1687,7 +1687,7 @@
       "id": "full-moon-2026-01-03",
       "path": "/full-moon/2026-01-03/",
       "title": "Full moon in Cancer, January 3, 2026",
-      "anchor": "2026-01-03T10:02:55.863Z",
+      "anchor": "2026-01-03T10:02:54.544Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1704,7 +1704,7 @@
       "id": "new-moon-2026-01-18",
       "path": "/new-moon/2026-01-18/",
       "title": "New moon in Capricorn, January 18, 2026",
-      "anchor": "2026-01-18T19:52:01.736Z",
+      "anchor": "2026-01-18T19:51:58.935Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1739,7 +1739,7 @@
       "id": "neptune-enters-aries-2026-01-26",
       "path": "/events/neptune-enters-aries-2026-01-26/",
       "title": "Neptune enters Aries, January 26, 2026",
-      "anchor": "2026-01-26T14:30:44.561Z",
+      "anchor": "2026-01-26T17:34:38.262Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -1755,7 +1755,7 @@
       "id": "full-moon-2026-02-01",
       "path": "/full-moon/2026-02-01/",
       "title": "Full moon in Leo, February 1, 2026",
-      "anchor": "2026-02-01T22:09:17.527Z",
+      "anchor": "2026-02-01T22:09:14.725Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1772,7 +1772,7 @@
       "id": "uranus-stations-direct-2026-02-04",
       "path": "/retrogrades/#retrograde-uranus-2026-01-01",
       "title": "Uranus stations direct, February 4, 2026",
-      "anchor": "2026-02-04T02:32:26.776Z",
+      "anchor": "2026-02-04T02:33:06.328Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -1788,7 +1788,7 @@
       "id": "saturn-enters-aries-2026-02-14",
       "path": "/events/saturn-enters-aries-2026-02-14/",
       "title": "Saturn enters Aries, February 14, 2026",
-      "anchor": "2026-02-14T00:39:37.844Z",
+      "anchor": "2026-02-14T00:11:38.913Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -1804,7 +1804,7 @@
       "id": "new-moon-2026-02-17",
       "path": "/new-moon/2026-02-17/",
       "title": "New moon in Aquarius, February 17, 2026",
-      "anchor": "2026-02-17T12:01:12.344Z",
+      "anchor": "2026-02-17T12:01:09.130Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1856,7 +1856,7 @@
       "id": "mercury-stations-retrograde-2026-02-26",
       "path": "/mercury-retrograde/2026-02-26/",
       "title": "Mercury stations retrograde, February 26, 2026",
-      "anchor": "2026-02-26T06:47:25.019Z",
+      "anchor": "2026-02-26T06:48:20.390Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -1889,7 +1889,7 @@
       "id": "full-moon-2026-03-03",
       "path": "/full-moon/2026-03-03/",
       "title": "Full moon in Virgo, March 3, 2026",
-      "anchor": "2026-03-03T11:37:57.684Z",
+      "anchor": "2026-03-03T11:37:53.811Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1906,7 +1906,7 @@
       "id": "jupiter-stations-direct-2026-03-11",
       "path": "/retrogrades/#retrograde-jupiter-2026-01-01",
       "title": "Jupiter stations direct, March 11, 2026",
-      "anchor": "2026-03-11T03:29:02.870Z",
+      "anchor": "2026-03-11T03:29:52.968Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -1922,7 +1922,7 @@
       "id": "new-moon-2026-03-19",
       "path": "/new-moon/2026-03-19/",
       "title": "New moon in Pisces, March 19, 2026",
-      "anchor": "2026-03-19T01:23:33.883Z",
+      "anchor": "2026-03-19T01:23:28.775Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1939,7 +1939,7 @@
       "id": "mercury-stations-direct-2026-03-20",
       "path": "/mercury-retrograde/2026-02-26/",
       "title": "Mercury stations direct, March 20, 2026",
-      "anchor": "2026-03-20T19:35:04.540Z",
+      "anchor": "2026-03-20T19:33:23.026Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -1973,7 +1973,7 @@
       "id": "full-moon-2026-04-02",
       "path": "/full-moon/2026-04-02/",
       "title": "Full moon in Libra, April 2, 2026",
-      "anchor": "2026-04-02T02:12:00.538Z",
+      "anchor": "2026-04-02T02:11:58.066Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1990,7 +1990,7 @@
       "id": "new-moon-2026-04-17",
       "path": "/new-moon/2026-04-17/",
       "title": "New moon in Aries, April 17, 2026",
-      "anchor": "2026-04-17T11:51:52.041Z",
+      "anchor": "2026-04-17T11:51:48.250Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2007,7 +2007,7 @@
       "id": "uranus-enters-gemini-2026-04-26",
       "path": "/events/uranus-enters-gemini-2026-04-26/",
       "title": "Uranus enters Gemini, April 26, 2026",
-      "anchor": "2026-04-26T01:01:21.002Z",
+      "anchor": "2026-04-26T00:51:32.436Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -2023,7 +2023,7 @@
       "id": "full-moon-2026-05-01",
       "path": "/full-moon/2026-05-01/",
       "title": "Full moon in Scorpio, May 1, 2026",
-      "anchor": "2026-05-01T17:23:09.934Z",
+      "anchor": "2026-05-01T17:23:10.758Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2056,7 +2056,7 @@
       "id": "new-moon-2026-05-16",
       "path": "/new-moon/2026-05-16/",
       "title": "New moon in Taurus, May 16, 2026",
-      "anchor": "2026-05-16T20:01:04.323Z",
+      "anchor": "2026-05-16T20:01:02.841Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2073,7 +2073,7 @@
       "id": "full-moon-2026-05-31",
       "path": "/full-moon/2026-05-31/",
       "title": "Full moon in Sagittarius, May 31, 2026",
-      "anchor": "2026-05-31T08:45:10.106Z",
+      "anchor": "2026-05-31T08:45:12.495Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2090,7 +2090,7 @@
       "id": "new-moon-2026-06-15",
       "path": "/new-moon/2026-06-15/",
       "title": "New moon in Gemini, June 15, 2026",
-      "anchor": "2026-06-15T02:54:11.458Z",
+      "anchor": "2026-06-15T02:54:10.139Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2107,7 +2107,7 @@
       "id": "mercury-stations-retrograde-2026-06-29",
       "path": "/mercury-retrograde/2026-06-29/",
       "title": "Mercury stations retrograde, June 29, 2026",
-      "anchor": "2026-06-29T17:37:11.542Z",
+      "anchor": "2026-06-29T17:36:00.351Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2123,7 +2123,7 @@
       "id": "full-moon-2026-06-29",
       "path": "/full-moon/2026-06-29/",
       "title": "Full moon in Capricorn, June 29, 2026",
-      "anchor": "2026-06-29T23:56:39.855Z",
+      "anchor": "2026-06-29T23:56:41.256Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2140,7 +2140,7 @@
       "id": "jupiter-enters-leo-2026-06-30",
       "path": "/events/jupiter-enters-leo-2026-06-30/",
       "title": "Jupiter enters Leo, June 30, 2026",
-      "anchor": "2026-06-30T05:56:21.335Z",
+      "anchor": "2026-06-30T05:52:21.765Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -2156,7 +2156,7 @@
       "id": "neptune-stations-retrograde-2026-07-07",
       "path": "/retrogrades/#retrograde-neptune-2026-07-07",
       "title": "Neptune stations retrograde, July 7, 2026",
-      "anchor": "2026-07-07T11:01:01.523Z",
+      "anchor": "2026-07-07T10:55:08.203Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2172,7 +2172,7 @@
       "id": "new-moon-2026-07-14",
       "path": "/new-moon/2026-07-14/",
       "title": "New moon in Cancer, July 14, 2026",
-      "anchor": "2026-07-14T09:43:36.119Z",
+      "anchor": "2026-07-14T09:43:36.943Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2279,7 +2279,7 @@
       "id": "mercury-stations-direct-2026-07-23",
       "path": "/mercury-retrograde/2026-06-29/",
       "title": "Mercury stations direct, July 23, 2026",
-      "anchor": "2026-07-23T22:56:24.667Z",
+      "anchor": "2026-07-23T22:57:22.675Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2313,7 +2313,7 @@
       "id": "saturn-stations-retrograde-2026-07-26",
       "path": "/retrogrades/#retrograde-saturn-2026-07-26",
       "title": "Saturn stations retrograde, July 26, 2026",
-      "anchor": "2026-07-26T19:53:13.505Z",
+      "anchor": "2026-07-26T19:56:14.120Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2329,7 +2329,7 @@
       "id": "full-moon-2026-07-29",
       "path": "/full-moon/2026-07-29/",
       "title": "Full moon in Aquarius, July 29, 2026",
-      "anchor": "2026-07-29T14:35:42.223Z",
+      "anchor": "2026-07-29T14:35:43.458Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2346,7 +2346,7 @@
       "id": "new-moon-2026-08-12",
       "path": "/new-moon/2026-08-12/",
       "title": "New moon in Leo, August 12, 2026",
-      "anchor": "2026-08-12T17:36:41.548Z",
+      "anchor": "2026-08-12T17:36:45.010Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2397,7 +2397,7 @@
       "id": "full-moon-2026-08-28",
       "path": "/full-moon/2026-08-28/",
       "title": "Full moon in Pisces, August 28, 2026",
-      "anchor": "2026-08-28T04:18:31.156Z",
+      "anchor": "2026-08-28T04:18:32.062Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2432,7 +2432,7 @@
       "id": "uranus-stations-retrograde-2026-09-10",
       "path": "/retrogrades/#retrograde-uranus-2026-09-10",
       "title": "Uranus stations retrograde, September 10, 2026",
-      "anchor": "2026-09-10T18:28:28.593Z",
+      "anchor": "2026-09-10T18:27:21.356Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2448,7 +2448,7 @@
       "id": "new-moon-2026-09-11",
       "path": "/new-moon/2026-09-11/",
       "title": "New moon in Virgo, September 11, 2026",
-      "anchor": "2026-09-11T03:26:56.471Z",
+      "anchor": "2026-09-11T03:26:59.932Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2483,7 +2483,7 @@
       "id": "full-moon-2026-09-26",
       "path": "/full-moon/2026-09-26/",
       "title": "Full moon in Aries, September 26, 2026",
-      "anchor": "2026-09-26T16:48:59.556Z",
+      "anchor": "2026-09-26T16:49:02.439Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2500,7 +2500,7 @@
       "id": "venus-stations-retrograde-2026-10-03",
       "path": "/venus-retrograde/2026-10-03/",
       "title": "Venus stations retrograde, October 3, 2026",
-      "anchor": "2026-10-03T07:10:25.341Z",
+      "anchor": "2026-10-03T07:15:41.747Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2516,7 +2516,7 @@
       "id": "new-moon-2026-10-10",
       "path": "/new-moon/2026-10-10/",
       "title": "New moon in Libra, October 10, 2026",
-      "anchor": "2026-10-10T15:50:02.149Z",
+      "anchor": "2026-10-10T15:50:05.116Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2533,7 +2533,7 @@
       "id": "pluto-stations-direct-2026-10-16",
       "path": "/retrogrades/#retrograde-pluto-2026-05-06",
       "title": "Pluto stations direct, October 16, 2026",
-      "anchor": "2026-10-16T02:39:22.059Z",
+      "anchor": "2026-10-16T02:39:44.472Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2549,7 +2549,7 @@
       "id": "mercury-stations-retrograde-2026-10-24",
       "path": "/mercury-retrograde/2026-10-24/",
       "title": "Mercury stations retrograde, October 24, 2026",
-      "anchor": "2026-10-24T07:14:22.646Z",
+      "anchor": "2026-10-24T07:11:41.806Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2565,7 +2565,7 @@
       "id": "full-moon-2026-10-26",
       "path": "/full-moon/2026-10-26/",
       "title": "Full moon in Taurus, October 26, 2026",
-      "anchor": "2026-10-26T04:11:45.019Z",
+      "anchor": "2026-10-26T04:11:48.809Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2582,7 +2582,7 @@
       "id": "new-moon-2026-11-09",
       "path": "/new-moon/2026-11-09/",
       "title": "New moon in Scorpio, November 9, 2026",
-      "anchor": "2026-11-09T07:02:05.269Z",
+      "anchor": "2026-11-09T07:02:07.000Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2599,7 +2599,7 @@
       "id": "mercury-stations-direct-2026-11-13",
       "path": "/mercury-retrograde/2026-10-24/",
       "title": "Mercury stations direct, November 13, 2026",
-      "anchor": "2026-11-13T15:53:06.474Z",
+      "anchor": "2026-11-13T15:54:37.441Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2615,7 +2615,7 @@
       "id": "venus-stations-direct-2026-11-14",
       "path": "/venus-retrograde/2026-10-03/",
       "title": "Venus stations direct, November 14, 2026",
-      "anchor": "2026-11-14T00:21:21.444Z",
+      "anchor": "2026-11-14T00:27:39.813Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2631,7 +2631,7 @@
       "id": "full-moon-2026-11-24",
       "path": "/full-moon/2026-11-24/",
       "title": "Full moon in Gemini, November 24, 2026",
-      "anchor": "2026-11-24T14:53:35.120Z",
+      "anchor": "2026-11-24T14:53:33.719Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2666,7 +2666,7 @@
       "id": "new-moon-2026-12-09",
       "path": "/new-moon/2026-12-09/",
       "title": "New moon in Sagittarius, December 9, 2026",
-      "anchor": "2026-12-09T00:51:52.151Z",
+      "anchor": "2026-12-09T00:51:51.163Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2683,7 +2683,7 @@
       "id": "saturn-stations-direct-2026-12-10",
       "path": "/retrogrades/#retrograde-saturn-2026-07-26",
       "title": "Saturn stations direct, December 10, 2026",
-      "anchor": "2026-12-10T23:28:30.790Z",
+      "anchor": "2026-12-10T23:31:12.948Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2699,7 +2699,7 @@
       "id": "neptune-stations-direct-2026-12-12",
       "path": "/retrogrades/#retrograde-neptune-2026-07-07",
       "title": "Neptune stations direct, December 12, 2026",
-      "anchor": "2026-12-12T22:23:17.899Z",
+      "anchor": "2026-12-12T22:18:04.130Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2715,7 +2715,7 @@
       "id": "jupiter-stations-retrograde-2026-12-13",
       "path": "/retrogrades/#retrograde-jupiter-2026-12-13",
       "title": "Jupiter stations retrograde, December 13, 2026",
-      "anchor": "2026-12-13T00:57:26.191Z",
+      "anchor": "2026-12-13T00:56:36.093Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2731,7 +2731,7 @@
       "id": "full-moon-2026-12-24",
       "path": "/full-moon/2026-12-24/",
       "title": "Full moon in Cancer, December 24, 2026",
-      "anchor": "2026-12-24T01:28:16.590Z",
+      "anchor": "2026-12-24T01:28:14.118Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2748,7 +2748,7 @@
       "id": "new-moon-2027-01-07",
       "path": "/new-moon/2027-01-07/",
       "title": "New moon in Capricorn, January 7, 2027",
-      "anchor": "2027-01-07T20:24:26.069Z",
+      "anchor": "2027-01-07T20:24:23.267Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2765,7 +2765,7 @@
       "id": "mars-stations-retrograde-2027-01-10",
       "path": "/mars-retrograde/2027-01-10/",
       "title": "Mars stations retrograde, January 10, 2027",
-      "anchor": "2027-01-10T13:00:54.491Z",
+      "anchor": "2027-01-10T12:59:03.750Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2799,7 +2799,7 @@
       "id": "full-moon-2027-01-22",
       "path": "/full-moon/2027-01-22/",
       "title": "Full moon in Leo, January 22, 2027",
-      "anchor": "2027-01-22T12:17:21.585Z",
+      "anchor": "2027-01-22T12:17:23.150Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2816,7 +2816,7 @@
       "id": "new-moon-2027-02-06",
       "path": "/new-moon/2027-02-06/",
       "title": "New moon in Aquarius, February 6, 2027",
-      "anchor": "2027-02-06T15:56:08.653Z",
+      "anchor": "2027-02-06T15:56:07.335Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2850,7 +2850,7 @@
       "id": "uranus-stations-direct-2027-02-08",
       "path": "/retrogrades/#retrograde-uranus-2026-09-10",
       "title": "Uranus stations direct, February 8, 2027",
-      "anchor": "2027-02-08T12:28:27.274Z",
+      "anchor": "2027-02-08T12:29:26.601Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2866,7 +2866,7 @@
       "id": "mercury-stations-retrograde-2027-02-09",
       "path": "/mercury-retrograde/2027-02-09/",
       "title": "Mercury stations retrograde, February 9, 2027",
-      "anchor": "2027-02-09T17:35:41.894Z",
+      "anchor": "2027-02-09T17:35:59.032Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2899,7 +2899,7 @@
       "id": "full-moon-2027-02-20",
       "path": "/full-moon/2027-02-20/",
       "title": "Full moon in Virgo, February 20, 2027",
-      "anchor": "2027-02-20T23:23:37.619Z",
+      "anchor": "2027-02-20T23:23:39.184Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2916,7 +2916,7 @@
       "id": "mercury-stations-direct-2027-03-03",
       "path": "/mercury-retrograde/2027-02-09/",
       "title": "Mercury stations direct, March 3, 2027",
-      "anchor": "2027-03-03T12:35:47.606Z",
+      "anchor": "2027-03-03T12:32:45.672Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2932,7 +2932,7 @@
       "id": "new-moon-2027-03-08",
       "path": "/new-moon/2027-03-08/",
       "title": "New moon in Pisces, March 8, 2027",
-      "anchor": "2027-03-08T09:29:31.050Z",
+      "anchor": "2027-03-08T09:29:28.990Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2949,7 +2949,7 @@
       "id": "full-moon-2027-03-22",
       "path": "/full-moon/2027-03-22/",
       "title": "Full moon in Libra, March 22, 2027",
-      "anchor": "2027-03-22T10:43:48.340Z",
+      "anchor": "2027-03-22T10:43:47.929Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2966,7 +2966,7 @@
       "id": "mars-stations-direct-2027-04-01",
       "path": "/mars-retrograde/2027-01-10/",
       "title": "Mars stations direct, April 1, 2027",
-      "anchor": "2027-04-01T14:11:19.833Z",
+      "anchor": "2027-04-01T14:08:27.128Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3000,7 +3000,7 @@
       "id": "new-moon-2027-04-06",
       "path": "/new-moon/2027-04-06/",
       "title": "New moon in Aries, April 6, 2027",
-      "anchor": "2027-04-06T23:51:12.161Z",
+      "anchor": "2027-04-06T23:51:09.771Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3017,7 +3017,7 @@
       "id": "jupiter-stations-direct-2027-04-13",
       "path": "/retrogrades/#retrograde-jupiter-2026-12-13",
       "title": "Jupiter stations direct, April 13, 2027",
-      "anchor": "2027-04-13T02:08:29.765Z",
+      "anchor": "2027-04-13T02:11:31.698Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3033,7 +3033,7 @@
       "id": "full-moon-2027-04-20",
       "path": "/full-moon/2027-04-20/",
       "title": "Full moon in Scorpio, April 20, 2027",
-      "anchor": "2027-04-20T22:27:11.909Z",
+      "anchor": "2027-04-20T22:27:09.601Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3050,7 +3050,7 @@
       "id": "new-moon-2027-05-06",
       "path": "/new-moon/2027-05-06/",
       "title": "New moon in Taurus, May 6, 2027",
-      "anchor": "2027-05-06T10:58:40.128Z",
+      "anchor": "2027-05-06T10:58:38.150Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3067,7 +3067,7 @@
       "id": "pluto-stations-retrograde-2027-05-08",
       "path": "/retrogrades/#retrograde-pluto-2027-05-08",
       "title": "Pluto stations retrograde, May 8, 2027",
-      "anchor": "2027-05-08T12:55:38.085Z",
+      "anchor": "2027-05-08T12:55:59.179Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3083,7 +3083,7 @@
       "id": "full-moon-2027-05-20",
       "path": "/full-moon/2027-05-20/",
       "title": "Full moon in Scorpio, May 20, 2027",
-      "anchor": "2027-05-20T10:59:04.599Z",
+      "anchor": "2027-05-20T10:59:01.634Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3100,7 +3100,7 @@
       "id": "new-moon-2027-06-04",
       "path": "/new-moon/2027-06-04/",
       "title": "New moon in Gemini, June 4, 2027",
-      "anchor": "2027-06-04T19:40:22.676Z",
+      "anchor": "2027-06-04T19:40:21.192Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3135,7 +3135,7 @@
       "id": "mercury-stations-retrograde-2027-06-10",
       "path": "/mercury-retrograde/2027-06-10/",
       "title": "Mercury stations retrograde, June 10, 2027",
-      "anchor": "2027-06-10T18:19:04.335Z",
+      "anchor": "2027-06-10T18:15:29.443Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3169,7 +3169,7 @@
       "id": "full-moon-2027-06-19",
       "path": "/full-moon/2027-06-19/",
       "title": "Full moon in Sagittarius, June 19, 2027",
-      "anchor": "2027-06-19T00:44:24.732Z",
+      "anchor": "2027-06-19T00:44:21.353Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3204,7 +3204,7 @@
       "id": "new-moon-2027-07-04",
       "path": "/new-moon/2027-07-04/",
       "title": "New moon in Cancer, July 4, 2027",
-      "anchor": "2027-07-04T03:02:05.654Z",
+      "anchor": "2027-07-04T03:02:05.325Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3221,7 +3221,7 @@
       "id": "mercury-stations-direct-2027-07-04",
       "path": "/mercury-retrograde/2027-06-10/",
       "title": "Mercury stations direct, July 4, 2027",
-      "anchor": "2027-07-04T19:39:55.898Z",
+      "anchor": "2027-07-04T19:38:57.890Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3237,7 +3237,7 @@
       "id": "neptune-stations-retrograde-2027-07-09",
       "path": "/retrogrades/#retrograde-neptune-2027-07-09",
       "title": "Neptune stations retrograde, July 9, 2027",
-      "anchor": "2027-07-09T22:44:01.113Z",
+      "anchor": "2027-07-09T22:41:42.684Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3271,7 +3271,7 @@
       "id": "full-moon-2027-07-18",
       "path": "/full-moon/2027-07-18/",
       "title": "Full moon in Capricorn, July 18, 2027",
-      "anchor": "2027-07-18T15:44:58.351Z",
+      "anchor": "2027-07-18T15:44:55.714Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3305,7 +3305,7 @@
       "id": "jupiter-enters-virgo-2027-07-26",
       "path": "/events/jupiter-enters-virgo-2027-07-26/",
       "title": "Jupiter enters Virgo, July 26, 2027",
-      "anchor": "2027-07-26T04:45:27.093Z",
+      "anchor": "2027-07-26T04:49:11.009Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -3321,7 +3321,7 @@
       "id": "new-moon-2027-08-02",
       "path": "/new-moon/2027-08-02/",
       "title": "New moon in Leo, August 2, 2027",
-      "anchor": "2027-08-02T10:05:15.113Z",
+      "anchor": "2027-08-02T10:05:14.454Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3355,7 +3355,7 @@
       "id": "saturn-stations-retrograde-2027-08-09",
       "path": "/retrogrades/#retrograde-saturn-2027-08-09",
       "title": "Saturn stations retrograde, August 9, 2027",
-      "anchor": "2027-08-09T18:00:44.823Z",
+      "anchor": "2027-08-09T18:06:09.140Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3388,7 +3388,7 @@
       "id": "full-moon-2027-08-17",
       "path": "/full-moon/2027-08-17/",
       "title": "Full moon in Aquarius, August 17, 2027",
-      "anchor": "2027-08-17T07:28:42.380Z",
+      "anchor": "2027-08-17T07:28:41.803Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3405,7 +3405,7 @@
       "id": "new-moon-2027-08-31",
       "path": "/new-moon/2027-08-31/",
       "title": "New moon in Virgo, August 31, 2027",
-      "anchor": "2027-08-31T17:41:13.048Z",
+      "anchor": "2027-08-31T17:41:11.319Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3440,7 +3440,7 @@
       "id": "uranus-stations-retrograde-2027-09-15",
       "path": "/retrogrades/#retrograde-uranus-2027-09-15",
       "title": "Uranus stations retrograde, September 15, 2027",
-      "anchor": "2027-09-15T09:10:05.125Z",
+      "anchor": "2027-09-15T09:09:17.665Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3456,7 +3456,7 @@
       "id": "full-moon-2027-09-15",
       "path": "/full-moon/2027-09-15/",
       "title": "Full moon in Pisces, September 15, 2027",
-      "anchor": "2027-09-15T23:03:33.051Z",
+      "anchor": "2027-09-15T23:03:31.568Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3473,7 +3473,7 @@
       "id": "new-moon-2027-09-30",
       "path": "/new-moon/2027-09-30/",
       "title": "New moon in Libra, September 30, 2027",
-      "anchor": "2027-09-30T02:36:05.212Z",
+      "anchor": "2027-09-30T02:36:05.047Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3490,7 +3490,7 @@
       "id": "mercury-stations-retrograde-2027-10-07",
       "path": "/mercury-retrograde/2027-10-07/",
       "title": "Mercury stations retrograde, October 7, 2027",
-      "anchor": "2027-10-07T14:39:08.875Z",
+      "anchor": "2027-10-07T14:36:09.579Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3506,7 +3506,7 @@
       "id": "full-moon-2027-10-15",
       "path": "/full-moon/2027-10-15/",
       "title": "Full moon in Aries, October 15, 2027",
-      "anchor": "2027-10-15T13:46:59.502Z",
+      "anchor": "2027-10-15T13:47:00.491Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3541,7 +3541,7 @@
       "id": "pluto-stations-direct-2027-10-18",
       "path": "/retrogrades/#retrograde-pluto-2027-05-08",
       "title": "Pluto stations direct, October 18, 2027",
-      "anchor": "2027-10-18T03:49:21.034Z",
+      "anchor": "2027-10-18T03:49:59.266Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3557,7 +3557,7 @@
       "id": "mercury-stations-direct-2027-10-28",
       "path": "/mercury-retrograde/2027-10-07/",
       "title": "Mercury stations direct, October 28, 2027",
-      "anchor": "2027-10-28T14:11:14.559Z",
+      "anchor": "2027-10-28T14:11:06.649Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3573,7 +3573,7 @@
       "id": "new-moon-2027-10-29",
       "path": "/new-moon/2027-10-29/",
       "title": "New moon in Scorpio, October 29, 2027",
-      "anchor": "2027-10-29T13:36:32.787Z",
+      "anchor": "2027-10-29T13:36:34.105Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3590,7 +3590,7 @@
       "id": "full-moon-2027-11-14",
       "path": "/full-moon/2027-11-14/",
       "title": "Full moon in Taurus, November 14, 2027",
-      "anchor": "2027-11-14T03:25:53.355Z",
+      "anchor": "2027-11-14T03:25:55.827Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3607,7 +3607,7 @@
       "id": "new-moon-2027-11-28",
       "path": "/new-moon/2027-11-28/",
       "title": "New moon in Sagittarius, November 28, 2027",
-      "anchor": "2027-11-28T03:24:24.613Z",
+      "anchor": "2027-11-28T03:24:26.344Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3624,7 +3624,7 @@
       "id": "full-moon-2027-12-13",
       "path": "/full-moon/2027-12-13/",
       "title": "Full moon in Gemini, December 13, 2027",
-      "anchor": "2027-12-13T16:08:48.111Z",
+      "anchor": "2027-12-13T16:08:47.864Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3641,7 +3641,7 @@
       "id": "neptune-stations-direct-2027-12-15",
       "path": "/retrogrades/#retrograde-neptune-2027-07-09",
       "title": "Neptune stations direct, December 15, 2027",
-      "anchor": "2027-12-15T09:13:20.243Z",
+      "anchor": "2027-12-15T09:07:05.829Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3657,7 +3657,7 @@
       "id": "saturn-stations-direct-2027-12-24",
       "path": "/retrogrades/#retrograde-saturn-2027-08-09",
       "title": "Saturn stations direct, December 24, 2027",
-      "anchor": "2027-12-24T02:41:54.989Z",
+      "anchor": "2027-12-24T02:46:31.844Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3673,7 +3673,7 @@
       "id": "new-moon-2027-12-27",
       "path": "/new-moon/2027-12-27/",
       "title": "New moon in Capricorn, December 27, 2027",
-      "anchor": "2027-12-27T20:12:18.829Z",
+      "anchor": "2027-12-27T20:12:19.735Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [

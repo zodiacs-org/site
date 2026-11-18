@@ -50,7 +50,8 @@ describe('developer candidate documentation', () => {
     expect(lock.packages[`node_modules/${candidate.name}`].integrity)
       .toBe(`sha512-${createHash('sha512').update(archive).digest('base64')}`);
     const files = readPackageArchive(archive);
-    expect(files.size).toBe(90);
+    const pack = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0/npm-pack.json'));
+    expect(files.size).toBe(pack.entryCount);
     for (const [path, bytes] of files) {
       // Buffer.equals checks length and every byte without walking a large
       // archive member through the assertion library's generic object comparer.

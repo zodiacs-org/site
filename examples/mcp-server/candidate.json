@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.26",
+  "version": "0.1.0-rc.27",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -43,18 +43,18 @@
     "scripts/build-mcp-server.mjs"
   ],
   "bundled": {
-    "note": "Engine 1.1.0-rc.2 and the site comparison are inlined into server.mjs. The engine is an unpublished candidate: npm serves 1.0.0 under the latest tag, which computes the same values, and the bundle is built from the candidate's archive, whose SHA-256 is below. The adapter is an unpublished candidate. Bundling keeps one copy of the comparison rules.",
+    "note": "The published engine and site comparison are inlined into server.mjs. Planet positions default to DE440.",
     "engine": {
       "package": "@zodiacs/engine",
-      "version": "1.1.0-rc.2",
-      "releaseStatus": "unpublished-candidate",
+      "version": "1.1.0",
+      "releaseStatus": "published",
       "sourceRepository": "https://github.com/zodiacs-org/engine",
       "sourcePackagePath": "",
-      "artifactSha256": "c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c"
+      "artifactSha256": "4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac"
     },
     "ephemeris": {
-      "name": "astronomy-engine",
-      "version": "2.1.19"
+      "name": "jpl-de440",
+      "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
     },
     "comparison": {
       "module": "src/lib/compare/diff.ts",
@@ -114,6 +114,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.25",
-  "changedSince": "0.1.0-rc.26 bundles engine 1.1.0-rc.2, an unpublished candidate, in place of 1.1.0-rc.1. The engine's time basis, which server.mjs inlines for get_positions, find_events, check_sky_fact and resolve_birth_time, now comes from the engine's own @zodiacs/engine/time entry in place of the site's bundled copy of it, which the site deleted; the two give the same values (the site's F-53 parity checks). Records and receipts name the new engine version; the tools, their arguments and their results are otherwise rc.25's. The archive's NOTICE carries the engine's 1.1.0-rc.2 notice. Older archives remain unchanged. The adapter itself is still not on npm."
+  "supersedes": "0.1.0-rc.26",
+  "changedSince": "Uses the published Zodiacs engine with DE440 for supported dates. The adapter remains a review candidate."
 }

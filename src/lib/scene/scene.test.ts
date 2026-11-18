@@ -9,6 +9,7 @@
  *  3. entityId/parseEntityId round-trips (the ?sel= deep-link codec).
  *  4. emphasisFor's one lighting rule.
  */
+import { useBrowserEphemeris } from '../../../tests/helpers/browser-ephemeris';
 import { describe, expect, it } from 'vitest';
 import { createRequire } from 'node:module';
 import { computeChart } from '../engine/full';
@@ -16,6 +17,8 @@ import { buildSceneModel } from './build';
 import { technicalCollisionFan } from '../wheel/technical-layout';
 import { emphasisFor, emphasisOpacity } from './emphasis';
 import { entityId, parseEntityId, type EntityRef } from './types';
+
+useBrowserEphemeris();
 
 // Frida Kahlo at Coyoacán, 1907-07-06 15:06:36Z: 8:30 on Mexico City's mean
 // time, the instant the homepage demo used before it moved to Coyoacán's own

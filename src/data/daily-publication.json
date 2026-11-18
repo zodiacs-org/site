@@ -343,8 +343,8 @@
       "body": "Jupiter",
       "sign": "leo",
       "at": "2026-11-18T12:00:00.000Z",
-      "longitude": 146.06563318989072,
-      "degree": 26.06563318989072,
+      "longitude": 146.06616532540968,
+      "degree": 26.066165325409656,
       "retrograde": false
     },
     {
@@ -353,8 +353,8 @@
       "body": "Mars",
       "sign": "leo",
       "at": "2026-11-18T12:00:00.000Z",
-      "longitude": 146.87302905232502,
-      "degree": 26.873029052325023,
+      "longitude": 146.87317183861578,
+      "degree": 26.873171838615804,
       "retrograde": false
     },
     {
@@ -363,8 +363,8 @@
       "body": "Mercury",
       "sign": "scorpio",
       "at": "2026-11-18T12:00:00.000Z",
-      "longitude": 216.9814741310715,
-      "degree": 6.981474131071536,
+      "longitude": 216.98107515118312,
+      "degree": 6.981075151183177,
       "retrograde": false
     },
     {
@@ -373,8 +373,8 @@
       "body": "Moon",
       "sign": "pisces",
       "at": "2026-11-18T12:00:00.000Z",
-      "longitude": 337.5802299596822,
-      "degree": 7.5802299596821285,
+      "longitude": 337.5801740553101,
+      "degree": 7.580174055310181,
       "retrograde": false
     },
     {
@@ -383,8 +383,8 @@
       "body": "Neptune",
       "sign": "aries",
       "at": "2026-11-18T12:00:00.000Z",
-      "longitude": 1.7837560332845896,
-      "degree": 1.7837560332845896,
+      "longitude": 1.7804120899335107,
+      "degree": 1.7804120899335203,
       "retrograde": true
     },
     {
@@ -393,8 +393,8 @@
       "body": "Pluto",
       "sign": "aquarius",
       "at": "2026-11-18T12:00:00.000Z",
-      "longitude": 303.33126919152704,
-      "degree": 3.331269191527099,
+      "longitude": 303.3316504762167,
+      "degree": 3.331650476216737,
       "retrograde": false
     },
     {
@@ -403,8 +403,8 @@
       "body": "Saturn",
       "sign": "aries",
       "at": "2026-11-18T12:00:00.000Z",
-      "longitude": 8.37823070247316,
-      "degree": 8.37823070247316,
+      "longitude": 8.38107111836704,
+      "degree": 8.38107111836706,
       "retrograde": true
     },
     {
@@ -413,8 +413,8 @@
       "body": "Sun",
       "sign": "scorpio",
       "at": "2026-11-18T12:00:00.000Z",
-      "longitude": 236.15748983747625,
-      "degree": 26.157489837476305,
+      "longitude": 236.1577055612816,
+      "degree": 26.157705561281546,
       "retrograde": false
     },
     {
@@ -423,8 +423,8 @@
       "body": "Uranus",
       "sign": "gemini",
       "at": "2026-11-18T12:00:00.000Z",
-      "longitude": 63.98670209634213,
-      "degree": 3.9867020963421282,
+      "longitude": 63.986890870958945,
+      "degree": 3.986890870958973,
       "retrograde": true
     },
     {
@@ -433,23 +433,23 @@
       "body": "Venus",
       "sign": "libra",
       "at": "2026-11-18T12:00:00.000Z",
-      "longitude": 203.2553916496038,
-      "degree": 23.25539164960378,
+      "longitude": 203.25766613108505,
+      "degree": 23.25766613108499,
       "retrograde": false
     },
     {
-      "id": "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter",
+      "id": "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter",
       "kind": "sky-event",
       "eventKind": "aspect",
       "body": "Sun",
-      "at": "2026-11-18T09:38:05.539Z",
+      "at": "2026-11-18T09:38:34.955Z",
       "eventType": "square",
       "a": "Sun",
       "b": "Jupiter",
       "aSign": "scorpio",
-      "aDegree": 26.058119755236135,
+      "aDegree": 26.058678140545112,
       "bSign": "leo",
-      "bDegree": 26.05811899738569,
+      "bDegree": 26.05867733451555,
       "orb": 0
     }
   ],
@@ -465,7 +465,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -532,7 +532,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -599,7 +599,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -666,7 +666,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -733,7 +733,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -800,7 +800,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -867,7 +867,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -934,7 +934,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -1001,7 +1001,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -1068,7 +1068,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -1135,7 +1135,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {
@@ -1202,7 +1202,7 @@
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-11-18:event:aspect:2026-11-18T09:38:05.539Z:sun-square-jupiter"
+            "fact:2026-11-18:event:aspect:2026-11-18T09:38:34.955Z:sun-square-jupiter"
           ]
         },
         {

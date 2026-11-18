@@ -59,7 +59,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.26.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.27.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -505,7 +505,7 @@ are separate fields, so a fallback is visible rather than silent.
   "receipt": {
     "schema": "zodiacs.mcp-receipt.v1",
     "tool": "compare_calculation_records",
-    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.26" },
+    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.27" },
     "engine": {
       "name": "@zodiacs/engine",
       "version": "1.1.0-rc.2",
@@ -592,7 +592,7 @@ request.
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.26`, unpublished candidate |
+| adapter | `0.1.0-rc.27`, unpublished candidate |
 | engine | `@zodiacs/engine` `1.1.0-rc.2`, unpublished candidate, bundled into `server.mjs`; npm serves `1.0.0` under `latest` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |

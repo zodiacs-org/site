@@ -274,6 +274,8 @@ for (const [route, limit] of routeBudgets) {
 const chunkRows = [...chunks.entries()]
   .map(([path, data]) => ({ ...data, path }))
   .sort((a, b) => b.gzip - a.gzip);
+const bundledPack = chunkRows.find(({ source }) => source.includes('Wk9ERVBIMDK6TgAA'));
+if (bundledPack) fail(`DE440 pack found in browser bundle: ${bundledPack.path}`);
 const largestChunk = chunkRows[0];
 if (largestChunk && largestChunk.gzip > budgets['chunk-max'] * 1024) {
   fail(`chunk-max: ${largestChunk.path} is ${kb(largestChunk.gzip)} KB gz (limit ${budgets['chunk-max']} KB)`);
