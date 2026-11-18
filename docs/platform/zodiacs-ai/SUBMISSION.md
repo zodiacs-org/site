@@ -11,6 +11,13 @@ plainer descriptions for all 19 tools. 0.6.6 stays the
 version in OpenAI review; 0.6.7 goes to OpenAI only after that review ends,
 and only with Dias's yes (`RESUBMISSION-0.6.0.md`).
 
+Note added 18 November 2026: Zodiacs 0.6.8 is now the version prepared for
+the resubmission to both directories
+(`integrations/packages/zodiacs-sky-0.6.8.zip`). It carries the invented
+examples in the tools' field descriptions and two review cases with invented
+details (a reader in Mexico City, and a wedding in Lisbon on 18 September 2027
+at 16:30). No tool, schema or behaviour changes. It has not been submitted.
+
 ## Current release packet — 15 October 2026
 
 The consumer listing is **Zodiacs — Birth charts & horoscopes**.

@@ -1,5 +1,18 @@
 # Claude directory listing
 
+## Prepared for resubmission, 18 November 2026
+
+Zodiacs 0.6.8 is the version prepared for the Claude directory
+resubmission. It reports 0.6.8, ships the invented examples in the tools'
+field descriptions (approved by Dias on 17 November), and its review cases
+use invented details: the Mercury question comes from a reader in Mexico City,
+and the wedding card is for 18 September 2027 at 16:30 in Lisbon, Portugal.
+No tool name, input, annotation, behaviour or tool count changes. Nothing has
+been submitted, and the portal's notes and tools copy still name 0.6.7 until
+the resubmission, which waits for Dias's yes. The live server reports 0.6.8
+only once this change is merged and deployed; until then the section below
+stays the state of the live listing.
+
 ## Where the listing stands, 14 November 2026
 
 This section is the current state. Everything under it is a dated record,
@@ -436,19 +449,20 @@ ChatGPT profile. Anthropic can't edit it after submission.
 ## Carousel screenshots
 
 Seven PNGs in this folder, made by `tests/claude-directory-shots.ts` from this
-branch's panels with live answers from the server: dark theme, Bangkok time,
-1,440–1,520 pixels wide, the app only, no prompt in the image. The birth date
-in 05 and the details in 06 and 07 are synthetic examples.
+branch's panels with live answers from the server: dark theme, Mexico City
+time, 1,440 to 1,520 pixels wide, the app only, no prompt in the image. The
+birth date in 05 and the details in 06 and 07 are invented examples, the same
+set the /apps/ pages and the 0.6.8 review cases use.
 
 | File | Paired prompt |
 | --- | --- |
 | `01-choose-your-sign.png` | Show my horoscope for today |
 | `02-leo-today.png` | Show today's horoscope for Leo. |
-| `03-sky-this-week.png` | Use Zodiacs to show this week's sky calendar for Bangkok. |
+| `03-sky-this-week.png` | Use Zodiacs to show this week's sky calendar for Mexico City. |
 | `04-chart-studio-start.png` | Help me read my birth chart. |
 | `05-chart-without-birth-time.png` | Help me read my birth chart. I don't know my birth time. |
-| `06-comparison-card.png` | Compare my chart with my partner's and tell us how compatible we are: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992. |
-| `07-wedding-card.png` | We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day. |
+| `06-comparison-card.png` | Compare my chart with my partner's and tell us how compatible we are: I was born 14 May 1994 at 9:15 in Seville, Spain, and my partner was born 4 August 1991. |
+| `07-wedding-card.png` | We're getting married on 18 September 2027 at 16:30 in Lisbon. Is it a good day for it? Make us a card with the sky for that day. |
 
 Re-run the script just before submitting so the readings and dates are current.
 
