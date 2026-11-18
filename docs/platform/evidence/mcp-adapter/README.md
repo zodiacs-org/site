@@ -60,9 +60,9 @@ That guard protected the *run* and not the *record*, which an AI review caught:
 `protocol-drive.json` was committed naming a superseded artifact while this page
 quoted its result as established for the current one. `scripts/mcp-artifact.test.mjs`
 now asserts that all three records name the bundle that ships, so the same
-mistake fails the suite instead of reaching a reader. The named-host receipt
-for the current bundle is pending. The required host CLI is unavailable in
-this environment, and `host-drive.json` still records the older bundle.
+mistake fails the suite instead of reaching a reader. `host-drive.json`
+records the current bundle: the Claude Code CLI 2.1.327 on Linux launched it
+and reported it connected, 7 of 7 checks, on 18 November 2026.
 
 ## Versions, pinned and recorded
 
