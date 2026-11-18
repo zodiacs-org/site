@@ -6,6 +6,7 @@
 import first from '../../data/events-publication.json';
 import extension from '../../data/events-publication-2028-2030.json';
 import { mergeEventPublications } from './merge-publications.mjs';
+import { aspectId } from './format';
 import {
   futurePublishedEvents as futureIn,
   upcomingPublishedEvents as upcomingIn,
@@ -24,6 +25,15 @@ export const publishedEventPages = eventsPublication.pages;
 export const publishedEventById = new Map(
   publishedEventPages.map((event) => [event.id, event] as const),
 );
+
+/** Keep the published address when a recalculation moves an aspect across midnight. */
+export function publishedAspectPage(a: string, type: string, b: string, at: string) {
+  const instant = Date.parse(at);
+  return publishedEventById.get(aspectId(a, type, b, at)) ?? publishedEventPages.find((page) =>
+    page.family === 'aspect' && page.subtype === type &&
+    page.bodies[0] === a && page.bodies[1] === b &&
+    Math.abs(Date.parse(page.anchor) - instant) < 86_400_000);
+}
 
 /** Standalone, approved event pages from today through five calendar days out. */
 export function upcomingPublishedEvents(

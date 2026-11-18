@@ -50,7 +50,8 @@
       "releaseStatus": "published",
       "sourceRepository": "https://github.com/zodiacs-org/engine",
       "sourcePackagePath": "",
-      "artifactSha256": "4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac"
+      "artifactSha256": "4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac",
+      "registry": "npm"
     },
     "ephemeris": {
       "name": "jpl-de440",

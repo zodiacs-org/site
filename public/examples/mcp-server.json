@@ -4,9 +4,9 @@
   "version": "0.1.0-rc.27",
   "releaseStatus": "unpublished-candidate",
   "file": "zodiacs-mcp-server-0.1.0-rc.27.tgz",
-  "bytes": 3277977,
-  "sha256": "a051568cfcc6decf1998505cc8a6d832541548391ff2a5be64481c4f7f81cee3",
-  "artifactCommit": "9fd2a66b2f6f30deebec2676e9976e817c196678",
+  "bytes": 3278032,
+  "sha256": "af7b83534d9a52b9aeffae0ec26122b42a7e0f7fbc7b0d52ca832bcfd80c0cf1",
+  "artifactCommit": "0000000000000000000000000000000000000000",
   "artifactRepository": "https://github.com/zodiacs-org/site",
   "artifactPath": "public/examples/zodiacs-mcp-server-0.1.0-rc.27.tgz",
   "engine": {

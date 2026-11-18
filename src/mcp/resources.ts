@@ -5,7 +5,7 @@
  * makes no request.
  *
  * The vocabulary is the engine's own data. `NATAL_RECEIPT_CONVENTION_SETS` is
- * every conventions set a record may carry, the current one first. The engine
+ * every conventions set a record may carry, in the engine's order. The engine
  * does not export its coverage statement, so it is read from a receipt the
  * engine writes for a fixed instant, as the compute API reads it. What is written
  * here is only what the engine leaves to its documentation: which versions
@@ -26,7 +26,7 @@ export const VOCABULARY_SCHEMA = 'zodiacs.conventions-vocabulary.v1';
 /**
  * The engine versions that wrote each set of `NATAL_RECEIPT_CONVENTION_SETS`,
  * in its order, as the engine's declarations document them. `to: null` is the
- * current set.
+ * current set for its ephemeris.
  */
 export const SET_WRITERS = Object.freeze([
   { from: '1.1.0-rc.1', to: null },
@@ -65,6 +65,9 @@ export const FLAG_MEANINGS: Readonly<Record<string, string>> = Object.freeze({
   'no-time': 'No birth time was known: the instant is a reference, and angles and houses are absent.',
   'polar-fallback': 'The house system requested is undefined at this latitude, so whole sign was used.',
   'outside-reference-span': 'The instant falls outside the engine\'s reference span, 1800 to 2200.',
+  'delta-t-extrapolated': 'The result uses a time correction extrapolated beyond the table of observations.',
+  'de440-unavailable': 'The engine could not open the DE440 pack and used astronomy engine.',
+  'outside-de440-span': 'The instant falls outside the DE440 coverage and the engine used astronomy engine.',
 });
 
 export function conventionsVocabulary() {
@@ -74,8 +77,9 @@ export function conventionsVocabulary() {
     conventions,
   }));
   const keys = Object.fromEntries(Object.entries(CONVENTION_KEYS).map(([key, covers]) => {
-    // The earliest set carrying the key: the sets run from the current one back.
-    const earliest = [...sets].reverse().find((set) => key in set.conventions);
+    // The engine keeps the astronomy engine history in reverse order and appends DE440.
+    const earliest = sets.slice(0, -1).findLast((set) => key in set.conventions)
+      ?? sets.find((set) => key in set.conventions);
     return [key, { covers, recordedFrom: earliest?.writtenBy.from ?? null }];
   }));
   return {

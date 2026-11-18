@@ -8712,7 +8712,10 @@ var FLAG_MEANINGS = Object.freeze({
   lmt: "The local time given was read on a local mean time: the birthplace's own, from its longitude, where the record has one, otherwise the time zone's.",
   "no-time": "No birth time was known: the instant is a reference, and angles and houses are absent.",
   "polar-fallback": "The house system requested is undefined at this latitude, so whole sign was used.",
-  "outside-reference-span": "The instant falls outside the engine's reference span, 1800 to 2200."
+  "outside-reference-span": "The instant falls outside the engine's reference span, 1800 to 2200.",
+  "delta-t-extrapolated": "The result uses a time correction extrapolated beyond the table of observations.",
+  "de440-unavailable": "The engine could not open the DE440 pack and used astronomy engine.",
+  "outside-de440-span": "The instant falls outside the DE440 coverage and the engine used astronomy engine."
 });
 function conventionsVocabulary() {
   const sets = NATAL_RECEIPT_CONVENTION_SETS.map((conventions, index) => ({
@@ -8721,7 +8724,7 @@ function conventionsVocabulary() {
     conventions
   }));
   const keys = Object.fromEntries(Object.entries(CONVENTION_KEYS).map(([key, covers]) => {
-    const earliest = [...sets].reverse().find((set) => key in set.conventions);
+    const earliest = sets.slice(0, -1).findLast((set) => key in set.conventions) ?? sets.find((set) => key in set.conventions);
     return [key, { covers, recordedFrom: earliest?.writtenBy.from ?? null }];
   }));
   return {

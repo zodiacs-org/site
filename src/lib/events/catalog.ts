@@ -21,7 +21,7 @@ import {
   ingressId, ingressPath, isoDay, lunationId, lunationPath,
   moonNameForDate, retrogradeId, retrogradePath, stationId,
 } from './format';
-import { publishedEventById, publishedEventPages } from './site-publication';
+import { publishedAspectPage, publishedEventById } from './site-publication';
 import { NASA_INSTANT_SOURCE, nasaAspectAt, nasaIngressAt, nasaStationAt } from '../nasa-instants';
 import {
   NASA_EVENT_TIMES_2027_SOURCE, nasaEclipseAt, nasaLunationAt, nasaShadowAt,
@@ -376,11 +376,7 @@ function aspectFacts(): EventFacts[] {
       if (!slow.has(aspect.a) || !slow.has(aspect.b)) continue;
       if (aspect.orb !== 0) continue;
       const id = aspectId(aspect.a, aspect.type, aspect.b, aspect.at);
-      // A change of ephemeris can move a contact across midnight. Keep the existing page address.
-      const published = publishedEventById.get(id) ?? publishedEventPages.find((page) =>
-        page.family === 'aspect' && page.subtype === aspect.type &&
-        page.bodies[0] === aspect.a && page.bodies[1] === aspect.b &&
-        Math.abs(Date.parse(page.anchor) - Date.parse(aspect.at)) < DAY_MS);
+      const published = publishedAspectPage(aspect.a, aspect.type, aspect.b, aspect.at);
       const anchor = published?.anchor ?? aspect.at;
       const committedBase = {
         family: 'aspect' as const,

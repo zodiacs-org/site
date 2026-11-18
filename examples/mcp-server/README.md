@@ -347,12 +347,12 @@ request. GeoNames data is CC BY 4.0; credit GeoNames where you show its places.
 ```json
 {
   "engine": {
-    "ephemeris": {
-      "name": "astronomy-engine",
-      "version": "2.1.19"
-    },
     "name": "@zodiacs/engine",
-    "version": "1.1.0-rc.2"
+    "version": "1.1.0",
+    "ephemeris": {
+      "name": "jpl-de440",
+      "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
+    }
   },
   "timeKnown": true,
   "houses": {
@@ -365,14 +365,22 @@ request. GeoNames data is CC BY 4.0; credit GeoNames where you show its places.
   "bodies": [
     {
       "body": "Sun",
-      "degree": 24.189077046148668,
-      "lat": -0.000018285232619282298,
-      "lon": 84.18907704614867,
+      "degree": 24.18924940760587,
+      "lat": 0.00012106432355840252,
+      "lon": 84.1892494076059,
       "retrograde": false,
       "sign": "gemini",
-      "speed": 0.95512655695984
+      "speed": 0.9550960040911605
     },
-    "…11 more"
+    {
+      "body": "Moon",
+      "degree": 16.193852070518574,
+      "lat": 3.1896952415129896,
+      "lon": 346.1938520705186,
+      "retrograde": false,
+      "sign": "pisces",
+      "speed": 13.384141951803485
+    }
   ],
   "angles": {
     "asc": 191.23954148521,
@@ -383,23 +391,29 @@ request. GeoNames data is CC BY 4.0; credit GeoNames where you show its places.
   "cusps": [
     191.23954148521,
     216.40903277974905,
-    "…10 more"
+    247.7692743485036
   ],
   "aspects": [
     {
       "a": "Moon",
       "applying": false,
       "b": "Jupiter",
-      "orb": 0.29106046772676564,
+      "orb": 0.2908247113836069,
       "type": "trine"
     },
-    "…16 more"
+    {
+      "a": "Jupiter",
+      "applying": false,
+      "b": "Pluto",
+      "orb": 0.5027815651115191,
+      "type": "trine"
+    }
   ],
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
-    "receipt": "sha256:76d953cb7a695181809da13b2b4f2cf817d81a3101b1dc076fda58176fc1f1be",
+    "receipt": "sha256:2f73d92a68dac107f1ff6608c68c7f3460680ddd35d6c1675c397ff10bf17ab4",
     "engine": "@zodiacs/engine",
-    "version": "1.1.0-rc.2"
+    "version": "1.1.0"
   }
 }
 ```
@@ -427,10 +441,10 @@ are separate fields, so a fallback is visible rather than silent.
 {
   "identical": false,
   "counts": {
-    "differences": 15,
-    "substantive": 15,
+    "differences": 2,
+    "substantive": 2,
     "displayOnly": 0,
-    "explanations": 1
+    "explanations": 2
   },
   "output": "summary",
   "differences": [
@@ -444,80 +458,51 @@ are separate fields, so a fallback is visible rather than silent.
       "kind": "metadata"
     },
     {
-      "id": "houses-actual",
-      "area": "Houses",
-      "label": "House system actually used",
-      "left": "placidus",
-      "right": "whole",
+      "id": "result-flags",
+      "area": "Provenance",
+      "label": "Result flags",
+      "left": "[\"polar-fallback\"]",
+      "right": "[]",
       "delta": null,
       "kind": "metadata"
-    },
-    {
-      "id": "houses-system",
-      "area": "Houses",
-      "label": "House system in the result",
-      "left": "placidus",
-      "right": "whole",
-      "delta": null,
-      "kind": "metadata"
-    },
-    {
-      "id": "cusp-1",
-      "area": "Houses",
-      "label": "House 1 cusp",
-      "delta": -11.239541485209998,
-      "kind": "numeric",
-      "valuesWithheld": true
-    },
-    "…cusp-2 through cusp-12"
+    }
   ],
   "explanations": [
     {
       "id": "house-system",
-      "evidence": "reproduced",
-      "statement": "The different house system accounts for the house cusps.",
+      "evidence": "reported",
+      "statement": "The two charts asked for different house systems.",
       "covers": [
-        "cusp-1",
-        "cusp-2",
-        "cusp-3",
-        "cusp-4",
-        "cusp-5",
-        "cusp-6",
-        "cusp-7",
-        "cusp-8",
-        "cusp-9",
-        "cusp-10",
-        "cusp-11",
-        "cusp-12",
-        "houses-requested",
-        "houses-actual",
-        "houses-system"
+        "houses-requested"
       ],
-      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 1.1.0-rc.2, and changing only the house system turns each one into the other, in both directions."
+      "detail": "The cusps are the same in both files, so this difference changed nothing that was computed."
     }
   ],
-  "limits": [
-    "Only the house system is re-run here. A different moment or place is never promoted past a hypothesis, even when both records name the same engine.",
-    "Both receipts name the same engine, so agreement between them would show consistency, not independent astronomical accuracy."
-  ],
+  "limits": [],
   "disclosure": "A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.",
   "withheld": "By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: \"full\" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments.",
   "receipt": {
     "schema": "zodiacs.mcp-receipt.v1",
     "tool": "compare_calculation_records",
-    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.27" },
+    "adapter": {
+      "name": "zodiacs-mcp-server",
+      "version": "0.1.0-rc.27"
+    },
     "engine": {
       "name": "@zodiacs/engine",
-      "version": "1.1.0-rc.2",
-      "ephemeris": { "name": "astronomy-engine", "version": "2.1.19" }
+      "version": "1.1.0",
+      "ephemeris": {
+        "name": "jpl-de440",
+        "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
+      }
     },
     "output": "summary"
   },
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
-    "receipt": "sha256:cb5c82d0a8bfed9561188a37f274faa303526f4a82bd89857e7e075c3abc53cd",
+    "receipt": "sha256:e7b00b203ba89097ad7d50738b5670c4a866f94feead3aa8c35cde338107f1e5",
     "engine": "@zodiacs/engine",
-    "version": "1.1.0-rc.2"
+    "version": "1.1.0"
   }
 }
 ```
@@ -593,7 +578,7 @@ request.
 | | |
 | --- | --- |
 | adapter | `0.1.0-rc.27`, unpublished candidate |
-| engine | `@zodiacs/engine` `1.1.0-rc.2`, unpublished candidate, bundled into `server.mjs`; npm serves `1.0.0` under `latest` |
+| engine | `@zodiacs/engine` `1.1.0`, available on npm and bundled into `server.mjs`. It uses DE440 by default. |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
 | validation | `zod` 4.6.5, pinned exactly |

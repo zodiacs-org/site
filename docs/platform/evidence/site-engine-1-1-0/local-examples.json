@@ -1,0 +1,140 @@
+{
+  "chart": {
+    "engine": {
+      "name": "@zodiacs/engine",
+      "version": "1.1.0",
+      "ephemeris": {
+        "name": "jpl-de440",
+        "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
+      }
+    },
+    "timeKnown": true,
+    "houses": {
+      "absenceReason": null,
+      "actual": "placidus",
+      "requested": "placidus"
+    },
+    "inputFlags": [],
+    "resultFlags": [],
+    "bodies": [
+      {
+        "body": "Sun",
+        "degree": 24.18924940760587,
+        "lat": 0.00012106432355840252,
+        "lon": 84.1892494076059,
+        "retrograde": false,
+        "sign": "gemini",
+        "speed": 0.9550960040911605
+      },
+      {
+        "body": "Moon",
+        "degree": 16.193852070518574,
+        "lat": 3.1896952415129896,
+        "lon": 346.1938520705186,
+        "retrograde": false,
+        "sign": "pisces",
+        "speed": 13.384141951803485
+      }
+    ],
+    "angles": {
+      "asc": 191.23954148521,
+      "dsc": 11.239541485209998,
+      "ic": 284.68848532286995,
+      "mc": 104.68848532286995
+    },
+    "cusps": [
+      191.23954148521,
+      216.40903277974905,
+      247.7692743485036
+    ],
+    "aspects": [
+      {
+        "a": "Moon",
+        "applying": false,
+        "b": "Jupiter",
+        "orb": 0.2908247113836069,
+        "type": "trine"
+      },
+      {
+        "a": "Jupiter",
+        "applying": false,
+        "b": "Pluto",
+        "orb": 0.5027815651115191,
+        "type": "trine"
+      }
+    ],
+    "cite": {
+      "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
+      "receipt": "sha256:2f73d92a68dac107f1ff6608c68c7f3460680ddd35d6c1675c397ff10bf17ab4",
+      "engine": "@zodiacs/engine",
+      "version": "1.1.0"
+    }
+  },
+  "compare": {
+    "identical": false,
+    "counts": {
+      "differences": 2,
+      "substantive": 2,
+      "displayOnly": 0,
+      "explanations": 2
+    },
+    "output": "summary",
+    "differences": [
+      {
+        "id": "houses-requested",
+        "area": "Houses",
+        "label": "House system requested",
+        "left": "placidus",
+        "right": "whole",
+        "delta": null,
+        "kind": "metadata"
+      },
+      {
+        "id": "result-flags",
+        "area": "Provenance",
+        "label": "Result flags",
+        "left": "[\"polar-fallback\"]",
+        "right": "[]",
+        "delta": null,
+        "kind": "metadata"
+      }
+    ],
+    "explanations": [
+      {
+        "id": "house-system",
+        "evidence": "reported",
+        "statement": "The two charts asked for different house systems.",
+        "covers": [
+          "houses-requested"
+        ],
+        "detail": "The cusps are the same in both files, so this difference changed nothing that was computed."
+      }
+    ],
+    "limits": [],
+    "disclosure": "A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.",
+    "withheld": "By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: \"full\" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments.",
+    "receipt": {
+      "schema": "zodiacs.mcp-receipt.v1",
+      "tool": "compare_calculation_records",
+      "adapter": {
+        "name": "zodiacs-mcp-server",
+        "version": "0.1.0-rc.27"
+      },
+      "engine": {
+        "name": "@zodiacs/engine",
+        "version": "1.1.0",
+        "ephemeris": {
+          "name": "jpl-de440",
+          "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
+        }
+      },
+      "output": "summary"
+    },
+    "cite": {
+      "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
+      "receipt": "sha256:e7b00b203ba89097ad7d50738b5670c4a866f94feead3aa8c35cde338107f1e5",
+      "engine": "@zodiacs/engine",
+      "version": "1.1.0"
+    }
+  }
+}

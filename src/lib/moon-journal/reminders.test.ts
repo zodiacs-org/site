@@ -21,7 +21,7 @@ describe('Moon journal reminder scheduling', () => {
   it('finds the lunation only on its own UTC day', () => {
     expect(lunationOnUtcDay(moons, new Date('2026-11-09T07:00:00.000Z'))).toEqual({
       type: 'new',
-      at: '2026-11-09T07:02:05.269Z',
+      at: '2026-11-09T07:02:07.000Z',
     });
     // Before the exact instant, the same UTC day still counts.
     expect(lunationOnUtcDay(moons, new Date('2026-11-09T00:00:00.000Z'))?.type).toBe('new');
