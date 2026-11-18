@@ -1,6 +1,7 @@
 import { lstat, readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ACCURACY_PATH, accuracyPublished } from '../src/accuracy/publication.mjs';
 
 // Served documentation only: never walk repository docs/evidence or archives.
 // /developers/ and both llms files link the SDK and the static sky API,
@@ -44,7 +45,8 @@ export const generatedDeveloperDocuments = Object.freeze({
 
 export const requiredDocuments = [
   ...Object.values(generatedDeveloperDocuments).flat(),
-  ...['', 'accuracy/', 'ai/', 'compare/', 'compute/', 'conformance/', 'conventions/', 'demo/', 'engine/', 'examples/',
+  ...(accuracyPublished ? [`${ACCURACY_PATH.slice(1)}index.html`] : []),
+  ...['', 'ai/', 'compare/', 'compute/', 'conformance/', 'conventions/', 'demo/', 'engine/', 'examples/',
     'mcp/', 'playground/', 'precision-preview/', 'sky-benchmark/', 'support/', 'time-atlas/'].map((route) => `developers/${route}index.html`),
   'developers/engine/reference/index.html', 'developers/engine/reference/modules.html',
   'developers/engine/reference/provenance.json',
