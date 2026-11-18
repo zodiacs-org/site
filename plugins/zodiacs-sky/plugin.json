@@ -79,7 +79,7 @@
               "description": "Rate a day that matters and make a card with its sky. Needs no birth date.",
               "prompt": "We're getting married on 18 September 2027 at 16:30 in Lisbon, Portugal. Is it a good day for it? Make us a card with the sky for that day.",
               "tools_triggered": "find_birthplace, get_occasion_sky",
-              "expected_behavior": "Finds Lisbon's coordinates and time zone itself instead of asking for them, then renders a wedding card that rates the date out of 100 with a verdict, its astrological reasons and a Reading confidence label, plus the Sun and Moon signs, sunset, golden hour and the planets visible at 16:30 in Lisbon. Does not guarantee how the day will go. A share link carries only the day, the Sun and Moon signs and the rating."
+              "expected_behavior": "Finds Lisbon's coordinates and time zone itself instead of asking for them, then renders a wedding card that rates the date out of 100 with a verdict, its astrological reasons and a Reading confidence label, plus the Sun and Moon signs, sunset, golden hour and the planets visible after dusk in Lisbon. Does not guarantee how the day will go. A share link carries only the day, the Sun and Moon signs and the rating."
             },
             {
               "description": "Compare two famous people's published charts and score their compatibility. No personal details needed.",
