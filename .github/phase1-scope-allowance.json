@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "zod-63-de440-registry-timing",
-  "baseCommit": "3d5845793f215ce32e0bd41df735bdd3b9f8dfea",
+  "baseCommit": "ad3b9679480b01dede5ac788367ebd402e3659e7",
   "protectedPaths": [
     "scripts/build-aura-moon-ingresses.mjs",
     "scripts/registry-outlook.test.mjs",
