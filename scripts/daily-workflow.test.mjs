@@ -121,6 +121,8 @@ describe('daily publication operations', () => {
     // publisher dispatches them on its own branch and merges only when every
     // required check on that exact head has passed.
     expect(publisher).toContain(".protection.required_status_checks.contexts[]?");
+    expect(publisher).toContain('node scripts/write-sign-page-allowance.mjs "$verified"');
+    expect(publisher.indexOf('write-sign-page-allowance.mjs')).toBeLessThan(publisher.indexOf('git push origin "HEAD:refs/heads/$branch"'));
     expect(publisher).toContain('gh workflow run site-check.yml --ref "$branch" -f "scope_base=$verified"');
     expect(publisher).toContain('gh workflow run sitemap-dates.yml --ref "$branch" -f "base=$verified" -f "head=$head_sha"');
     expect(publisher).toContain('commits/$head_sha/check-runs');

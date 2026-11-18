@@ -34,6 +34,19 @@ if [ "$(git rev-parse "origin/$base")" != "$verified" ]; then
   exit 1
 fi
 
+# Build & Check's protected-scope guard now runs on this pull request. When
+# the only protected paths changed are the generated sign pages, carry the
+# base-pinned one-time allowance a hand-carried edition carries; any other
+# protected change gets none, and the guard holds the pull request for a person.
+allowance=$(node scripts/write-sign-page-allowance.mjs "$verified")
+if [ "$allowance" = "written" ]; then
+  git add .github/phase1-scope-allowance.json
+  git commit -q -m "Phase 1 scope: one-time allowance for the generated sign pages"
+  echo "publish-through-pr: added the one-time scope allowance for the generated sign pages"
+elif [ "$allowance" = "refused" ]; then
+  echo "::warning title=Protected paths beyond the sign pages::This publication changes protected paths other than the generated sign pages, so no scope allowance is added and Build & Check will hold the pull request for a person." >&2
+fi
+
 git push origin "HEAD:refs/heads/$branch"
 
 if ! pr_url=$(gh pr create --base "$base" --head "$branch" --title "$title" --body "$body" 2>"$tmp/publish-pr-create.err"); then
