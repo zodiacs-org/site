@@ -73,15 +73,15 @@
     },
     {
       "name": "zodiacs-developer",
-      "version": "0.3.52",
-      "file": "zodiacs-developer-0.3.52.zip",
-      "bytes": 6727808,
-      "sha256": "4289351a60823daf1f0f5a9c75080021f642a4f12de72edd324e1ba869c9585b",
+      "version": "0.3.53",
+      "file": "zodiacs-developer-0.3.53.zip",
+      "bytes": 6729423,
+      "sha256": "950940f3721ad0ebce3fe38e8319a37c54964d1211bf6a722c5af4eedab1afa4",
       "members": [
         {
           "path": ".codex-plugin/plugin.json",
-          "bytes": 13540,
-          "sha256": "b7695ff7c0f88c8e9407c692e03dbff978da040c5d4eca769a1299e4acbee989"
+          "bytes": 13969,
+          "sha256": "002b97f3832c047ff04749877fce57f62bac9dc72b64b1dac25a88d166c2e336"
         },
         {
           "path": ".mcp.json",
@@ -116,7 +116,7 @@
         {
           "path": "README.md",
           "bytes": 6203,
-          "sha256": "0f5dbd9c49b0d5b514e0ac2c555cc844651d864e1413977730e68c454ba3d880"
+          "sha256": "7abaa0d1a90547c61bfe983e316d659c32c9e135295f4ae32fc2a255143a72bb"
         },
         {
           "path": "assets/icon.png",
@@ -145,23 +145,23 @@
         },
         {
           "path": "mcp/server.mjs",
-          "bytes": 6592607,
-          "sha256": "f837efbd0396630f433665141c05df033c4424bb2180f10b80651d64a51ab4a5"
+          "bytes": 6593364,
+          "sha256": "ab423684e3fd8a22dae6dc181eb8c6dd91a387098ad17a64fe2870c0c92fe69e"
         },
         {
           "path": "package-lock.json",
           "bytes": 2444,
-          "sha256": "4b572c265b1608662f001c9a5637b1f44f5a181e6aafd0c8989354c6e08da5b5"
+          "sha256": "64d92e47f5c9bb2c2ab1ab35d7dbba0f16e0e31ba4826be7b454a28587ba2a6c"
         },
         {
           "path": "package.json",
           "bytes": 424,
-          "sha256": "6caa85ca47eae76bb340de5bb7dcfd8b1d44e2202e5e8cdc1c2270ff051e839a"
+          "sha256": "55fa2a7791aa8bed3a3735e13daefcf8efc25126daf39335158d476b61a6bc81"
         },
         {
           "path": "plugin.json",
-          "bytes": 13651,
-          "sha256": "be376e1cf689169dff87d4bf11bd5f54999a10b238add0fbfd76a81af1460a66"
+          "bytes": 14080,
+          "sha256": "5ad49dc3490bd9661c8ddfc56532c3f7964586fdf6185c4f6833edda8f032f88"
         },
         {
           "path": "skills/build-with-zodiacs/SKILL.md",
