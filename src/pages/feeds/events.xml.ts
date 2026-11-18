@@ -1,6 +1,7 @@
 /** RSS 2.0 calendar of the approved public sky-event window. */
 import type { APIRoute } from 'astro';
 import { eventsPublication } from '../../lib/events/site-publication';
+import { eventInstant } from '../../lib/events/feeds';
 
 const SITE = 'https://zodiacs.org';
 const esc = (value: string) => value
@@ -16,7 +17,7 @@ export const GET: APIRoute = () => {
       <title>${esc(event.title)}</title>
       <link>${url}</link>
       <guid isPermaLink="false">${SITE}/feeds/events/${esc(event.id)}</guid>
-      <pubDate>${new Date(event.anchor).toUTCString()}</pubDate>
+      <pubDate>${new Date(eventInstant(event)).toUTCString()}</pubDate>
       <description>${esc(event.summary)}</description>
     </item>`;
   }).join('\n');

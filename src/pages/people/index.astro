@@ -10,7 +10,6 @@ import {
   peopleDisciplineGroups,
 } from '../../lib/people';
 import { SIGNS } from '../../lib/signs';
-import { PEOPLE_TEMPLATE_MODIFIED_AT } from '../../lib/seo-lastmod';
 
 const disciplines = PEOPLE_DISCIPLINE_FILTERS.map((discipline) => ({
   ...discipline,
@@ -45,7 +44,8 @@ const jsonLd = [
     url: 'https://zodiacs.org/people/',
     name: 'People',
     description: 'Sourced, time-honest astrology charts for people in the public record.',
-    dateModified: PEOPLE_TEMPLATE_MODIFIED_AT,
+    // The hub began linking the Fortune 500 CEO sign study (matches its sitemap date).
+    dateModified: '2026-11-17T00:00:00.000Z',
     mainEntity: { '@id': 'https://zodiacs.org/people/#list' },
     isPartOf: { '@id': 'https://zodiacs.org/#site' },
   },
@@ -79,6 +79,9 @@ const jsonLd = [
       <p class="people-page__lede">
         Charts for people whose birth dates are a matter of public record. Each one is computed here,
         from a sourced date, with the parts we cannot know left visibly empty.
+      </p>
+      <p class="people-page__story">
+        Data story: <a href="/studies/fortune-500-ceo-signs/">Which sign runs the Fortune 500?</a>
       </p>
     </header>
 

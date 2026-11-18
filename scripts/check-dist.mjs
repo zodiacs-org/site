@@ -219,6 +219,7 @@ for (const { file, minItems } of [
   { file: 'feeds/daily-sky.xml', minItems: 1 },
   { file: 'feeds/almanac.xml', minItems: 1 },
   { file: 'feeds/events.xml', minItems: eventsPublication.timeline?.length ?? 0 },
+  ...ZODIAC_SIGN_SLUGS.map((sign) => ({ file: `feeds/events/${sign}.xml`, minItems: 1 })),
 ]) {
   const path = resolve(root, file);
   if (!(await exists(path))) {
@@ -255,6 +256,27 @@ for (const { file, minItems } of [
   }
   for (const m of xml.matchAll(/<pubDate>([^<]+)<\/pubDate>/g)) {
     if (Number.isNaN(Date.parse(m[1]))) fail(`${file}: bad pubDate ${m[1]}`);
+  }
+}
+
+// ---- 3c. Sky-event JSON feeds (JSON Feed 1.1) ---------------------------------
+for (const file of ['feeds/events.json', ...ZODIAC_SIGN_SLUGS.map((sign) => `feeds/events/${sign}.json`)]) {
+  const path = resolve(root, file);
+  if (!(await exists(path))) {
+    fail(`${file}: missing`);
+    continue;
+  }
+  let feed;
+  try { feed = JSON.parse(await readFile(path, 'utf8')); } catch { fail(`${file}: not JSON`); continue; }
+  if (feed.version !== 'https://jsonfeed.org/version/1.1') fail(`${file}: not JSON Feed 1.1`);
+  if (feed.feed_url !== `https://zodiacs.org/${file}`) fail(`${file}: feed_url ${feed.feed_url}`);
+  if (!Array.isArray(feed.items) || feed.items.length === 0) fail(`${file}: no items`);
+  if (file === 'feeds/events.json' && feed.items?.length !== (eventsPublication.timeline?.length ?? 0)) {
+    fail(`${file}: ${feed.items?.length} items vs publication receipt ${eventsPublication.timeline?.length ?? 0}`);
+  }
+  for (const item of feed.items ?? []) {
+    if (!String(item.url).startsWith('https://zodiacs.org/')) fail(`${file}: non-absolute url ${item.url}`);
+    if (Number.isNaN(Date.parse(item.date_published))) fail(`${file}: bad date_published ${item.date_published}`);
   }
 }
 
@@ -1406,7 +1428,9 @@ const sitemapPolicy = {
   // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/),
   // the three per-assistant /apps/ pages joined on 2026-11-16, and /apps/claude-code/ on 2026-11-17.
-  total: 1536 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /studies/fortune-500-ceo-signs/, the CEO Sun sign data story, linked from /people/.
+  // +1 for /almanac/sky-this-week-2026-11-23/, the first "Your sky this week" article.
+  total: 1538 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.

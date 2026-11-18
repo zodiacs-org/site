@@ -428,6 +428,9 @@ const CONNECTOR_PAGE_ROUTES = [
   '/developers/ai/', '/developers/docs/', '/developers/docs/astrology-mcp-server/', '/developers/support/',
 ] as const;
 
+// The /people/ hub began linking the Fortune 500 CEO sign study; the hub alone, not each person page.
+const PEOPLE_HUB_MODIFIED_AT = '2026-11-17T00:00:00.000Z';
+
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
   // The moon and alignment pages of the coming twelve months carry fuller readings (ZOD-221, decision J).
@@ -714,6 +717,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
   // The Italian season pages' reading-confidence label, 13 November, last so this date wins.
   ...SIGNS.map((sign) => [`/it/seasons/${sign.slug}/`, '2026-11-13'] as const),
+  // Someone else's chart: the handoff note no longer says the URL fragment
+  // carries their details. Dated the daily edition this change shipped with.
+  ['/birth-chart/someone-else/', '2026-11-13'] as const,
   // The connector page's 19 live tools, limits, troubleshooting and support contact, the support page's
   // connector section and the MCP guides that count its tools (ZOD-58). The day of the daily edition it was
   // built with, last so this date wins.
@@ -722,11 +728,18 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/ai/', '2026-11-16'] as const,
   // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
   // the daily edition it was built with, last so this date wins.
+  // The Fortune 500 CEO Sun sign study, first published 17 November.
+  ['/studies/fortune-500-ceo-signs/', '2026-11-17'] as const,
   ['/', '2026-11-14'] as const,
+  // The feeds and developer pages list the per-sign and JSON sky-event feeds, 17 November, last so this date wins.
+  ['/feeds/', '2026-11-17'] as const,
+  ['/developers/', '2026-11-17'] as const,
+  // The Sky calendar pages' Google and Apple Calendar steps (every language), 17 November, last so this date wins.
+  ...['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/sky-calendar/`, '2026-11-17'] as const),
   // Reader levels on the birth chart page: the first visit question, the level switch and the
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
-  ['/birth-chart/', '2026-11-17'] as const,
+  ['/birth-chart/', '2026-11-18'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -816,6 +829,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/learn/how-to-read-a-birth-chart/', priority: 0.8 },
     { loc: '/learn/communication/', priority: 0.8 },
     { loc: '/learn/zodiac-dates/', priority: 0.8 },
+    { loc: '/studies/fortune-500-ceo-signs/', priority: 0.7 },
     { loc: '/learn/glossary/', priority: 0.8 },
     { loc: '/learn/planets/', priority: 0.7 },
     { loc: '/learn/houses/', priority: 0.7 },
@@ -901,6 +915,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       priority: 0.7,
       lastmod: lastmodDate(latestModifiedAt(
         PEOPLE_TEMPLATE_MODIFIED_AT,
+        PEOPLE_HUB_MODIFIED_AT,
         ...INDEXABLE_PEOPLE.map((person) => person.reviewedAtUtc),
       )),
     }] : []),
@@ -1061,6 +1076,10 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     if (url.loc === '/occasions/' || url.loc === '/tools/' || url.loc === '/almanac/') {
       url.lastmod = laterDate(url.lastmod, '2026-11-12');
     }
+  }
+  // The Almanac lists its first "Your sky this week" article.
+  for (const url of urls) {
+    if (url.loc === '/almanac/') url.lastmod = laterDate(url.lastmod, '2026-11-18');
   }
   // Every sitemap page within three clicks of home (ZOD-221): the tools hub
   // links the sign seasons and the Almanac, and the translated homes link

@@ -7,7 +7,7 @@
  */
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
-import { YEAR_PERSON_CATEGORIES } from '../../lib/year-score/people';
+import { YEAR_PEOPLE, YEAR_PERSON_CATEGORIES } from '../../lib/year-score/people';
 import { allYearPages } from '../../lib/year-score/page-data';
 import { dayName } from '../../lib/year-score/reading';
 import { rangeWorthShowing } from '../../lib/year-score/range';
@@ -26,6 +26,8 @@ const groups = YEAR_PERSON_CATEGORIES
   .map((category) => ({ title: GROUP[category], pages: pages.filter((page) => page.person.category === category).sort((a, b) => a.person.name.localeCompare(b.person.name)) }))
   .filter((group) => group.pages.length > 0);
 const from = pages[0]?.from;
+// Said only while it is true of every entry (ZOD-12).
+const noneTimed = YEAR_PEOPLE.every((person) => person.birthTime === null);
 ---
 <Base
   title="Year Ahead Scores for Well-Known People | Zodiacs.org"
@@ -41,7 +43,7 @@ const from = pages[0]?.from;
       <h1 class="display">The year ahead, for well-known people.</h1>
       <p>
         Each score reads the twelve months from {from ? dayName(from) : 'the start of this month'} from a public birth date.
-        No birth time is published for any of them, so every chart is cast for noon.{' '}
+        {noneTimed ? 'No birth time is published for any of them, so every chart is cast for noon.' : 'Scores without a birth time are noon charts.'}{' '}
         <a href="/year-score/">Score your own year</a>.
       </p>
     </div>
