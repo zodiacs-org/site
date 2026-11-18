@@ -1,12 +1,10 @@
 {
   "version": 1,
-  "id": "spanish-learn-articles-batch1-2026-11-15",
-  "baseCommit": "76a0d3875eb9f49d12f0a1ae271beffe496c4f0b",
+  "id": "sign-guide-and-learn-hub-entrance-motion-2026-11-18",
+  "baseCommit": "origin/motion/home-signs-learn
+2814b587ce6ed7562d8a2c906860a6561eb8e002",
   "protectedPaths": [
-    "src/lib/i18n/index.ts",
-    "src/pages/es/[...slug].astro",
-    "src/pages/es/learn/houses/[slug].astro",
-    "src/pages/es/learn/placements/[slug].astro",
-    "src/pages/es/learn/planets/[slug].astro"
+    "src/pages/[sign]/index.astro",
+    "src/pages/learn/index.astro"
   ]
 }
