@@ -57,6 +57,13 @@ describe('cross-document view transitions', () => {
     }
   });
 
+  it('marks a skipped transition handled, on the page it leaves and the one it opens', async () => {
+    const base = await read('src/layouts/Base.astro');
+    expect(base).toMatch(/\['pageswap', 'pagereveal'\]\.forEach/u);
+    expect(base).toMatch(/transition\.ready, transition\.finished, transition\.updateCallbackDone/u);
+    expect(base).toMatch(/promise\.catch\(function \(\) \{\}\)/u);
+  });
+
   it('uses no client router, prefetch rules or render-blocking hints', async () => {
     for (const file of sourceFiles()) {
       const text = await read(file);

@@ -275,6 +275,21 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         window.dispatchEvent(new Event('zodiacs:install-prompt-ready'));
       });
     </script>
+    <script is:inline>
+      // Pages crossfade with CSS view transitions (base.css). When the browser
+      // skips one, for a slow page or a hidden tab, it rejects that
+      // transition's promises. Nothing waits on them, so mark them handled
+      // and keep a skipped crossfade out of the page's error log.
+      ['pageswap', 'pagereveal'].forEach(function (type) {
+        window.addEventListener(type, function (event) {
+          var transition = event.viewTransition;
+          if (!transition) return;
+          [transition.ready, transition.finished, transition.updateCallbackDone].forEach(function (promise) {
+            if (promise) promise.catch(function () {});
+          });
+        });
+      });
+    </script>
     <link rel="icon" type="image/svg+xml" sizes="any" href={BRAND_ICON_PATHS.faviconSvg} />
     <link rel="icon" type="image/png" sizes="16x16" href={BRAND_ICON_PATHS.favicon16} />
     <link rel="icon" type="image/png" sizes="32x32" href={BRAND_ICON_PATHS.favicon32} />
