@@ -129,7 +129,12 @@ const gap = later.minutes - example.minutes;
         <nav class="rs-crumbs" aria-label="Breadcrumb"><a href="/tools/">Tools</a><span aria-hidden="true">/</span><span aria-current="page">Rising sign</span></nav>
         <h1 class="rs-title">Find your rising sign.</h1>
         <p class="klede rs-lede">The sign that was coming up on the eastern horizon the moment you were born. It describes how people first meet you, and it sets the shape of your whole chart.</p>
-        <LevelSwitch idPrefix="rs-level" />
+        <LevelSwitch idPrefix="rs-level" words={{
+          intermediate: { hint: 'Your chart ruler and a day of rising signs open',
+            status: 'Showing the chart ruler and a day of rising signs too.' },
+          advanced: { hint: 'Plus how we calculate and the chart data',
+            status: 'Showing everything, with how we calculate and the chart data.' },
+        }} />
 
         <ChartCalculator mode="rising" client:load />
         <noscript>

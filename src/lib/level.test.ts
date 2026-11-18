@@ -83,7 +83,7 @@ describe('level rules in the page', () => {
     const apply = component.slice(component.indexOf('function apply('), component.indexOf('function init('));
     // The status is written only after the initial apply has returned.
     expect(apply.indexOf('if (opts.initial) return;')).toBeGreaterThan(-1);
-    expect(apply.indexOf('if (opts.initial) return;')).toBeLessThan(apply.indexOf('STATUS[level]'));
+    expect(apply.indexOf('if (opts.initial) return;')).toBeLessThan(apply.indexOf('data-status-${level}'));
     expect(component).toContain('[data-level-set="${pageLevel() ?? DEFAULT_LEVEL}"]`)?.focus()');
   });
 
@@ -102,9 +102,25 @@ describe('level rules in the page', () => {
   it('adds no mono font to first paint', async () => {
     const { readFile } = await import('node:fs/promises');
     const css = (await readFile(new URL('../styles/level.css', import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '');
-    const firstPaint = css.split('}').filter((rule) => /\.level-(switch|ask)/.test(rule.split('{')[0]));
+    const firstPaint = css.split('}').filter((rule) => /\.level-(switch|ask|data)/.test(rule.split('{')[0]));
     expect(firstPaint.length).toBeGreaterThan(0);
     for (const rule of firstPaint) expect(rule).not.toContain('--font-mono');
+  });
+
+  it('takes each page\'s own wording for the question and the status line', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const read = (path: string) => readFile(new URL(path, import.meta.url), 'utf8');
+    const component = await read('../components/LevelSwitch.astro');
+    // The status line reads the words its own switch carries, not a fixed list.
+    expect(component).toContain('data-status-${level}');
+    expect(component).not.toMatch(/const STATUS\b/);
+    // Pages that open less than the birth chart never promise its 3D view.
+    for (const page of ['../pages/rising-sign/index.astro', '../pages/moon-sign/index.astro']) {
+      const source = await read(page);
+      expect(source).toMatch(/<LevelSwitch[^>]*words=\{\{[\s\S]*intermediate:[\s\S]*advanced:/);
+      const tag = source.slice(source.indexOf('<LevelSwitch'), source.indexOf('/>', source.indexOf('<LevelSwitch')));
+      expect(tag).not.toContain('3D');
+    }
   });
 
   it('keeps the way back to the natal chart at every level', async () => {

@@ -20,7 +20,10 @@ Beginner is the default. The choice lives in this browser only
 1. Put `<LevelSwitch />` once, above anything marked. It sets
    `html[data-level]` before the marked content is parsed, asks the first
    visit question, and shows the switch. Give it an `idPrefix` if a page could
-   ever hold two.
+   ever hold two. On a page that opens less than the birth chart, pass
+   `words` with each level's own `hint` and `status`, so the question and
+   the status line promise only what that page has. Leave the switch off a
+   page until something on it is marked for Intermediate.
 2. Mark markup:
    - `data-depth="intermediate"`: shown from Intermediate up.
    - `data-depth="advanced"`: Advanced only.
@@ -41,9 +44,10 @@ Beginner is the default. The choice lives in this browser only
   bundled: entry pages like /birth-chart/ load their page stylesheet after
   first paint, and a late level.css let the question and the switch appear
   unstyled and then jump (a 0.126 layout shift in Lighthouse).
-- Nothing that paints with the hero (the question, the switch) uses the mono
-  font. Mono is not otherwise needed above the fold on chart pages, so it
-  would add a font download to the first load and slow the largest paint.
+- Nothing that paints with the hero (the question, the switch, the "For chart
+  readers" links) uses the mono font. Mono is not otherwise needed above the
+  fold on chart pages, so it would add a font download to the first load and
+  slow the largest paint.
 - Depth that opens on a switch fades in once, outermost blocks only, 80ms
   apart. It does not rise, because readings stay still (`docs/MOTION.md`), and
   reduced motion shows it at once.

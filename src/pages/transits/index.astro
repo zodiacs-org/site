@@ -3,7 +3,6 @@ import Base from '../../layouts/Base.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import TransitTracker from '../../islands/TransitTracker.tsx';
-import LevelSwitch from '../../components/LevelSwitch.astro';
 import PlanetGlyph from '../../components/PlanetGlyph';
 import { dayLabel, eventList, transitMonthForEdition, monthLabel } from '../../lib/horoscopes';
 import daily from '../../data/daily.json';
@@ -75,19 +74,11 @@ const jsonLd = [
           <a href="/year-score/">Year Ahead Score</a>.</>
         )}
       </p>
-      <LevelSwitch idPrefix="tr-level" />
     </div>
     <TransitTracker client:load />
     <noscript>
       <p>This transit tracker needs JavaScript. Enable it and reload to watch the sky move over your birth chart in your browser.</p>
     </noscript>
-    <nav class="level-data" data-depth="advanced" aria-label="Data for chart readers">
-      <span class="level-data__cap">For chart readers</span>
-      <a href="/methodology/">How we calculate</a>
-      <a href="/developers/">Chart data API</a>
-      <a href="/sky-calendar-heads-up.json">Sky events JSON feed</a>
-      <a href="/sky-calendar.ics">Sky calendar (.ics)</a>
-    </nav>
   </section>
 
   {month && (

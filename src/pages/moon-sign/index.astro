@@ -62,7 +62,12 @@ const jsonLd = [
         The <a href="/learn/glossary/#moon">Moon</a> rules how you feel: your inner weather, your comforts, the
         way you settle yourself. Here is how to find yours.
       </p>
-      <LevelSwitch idPrefix="ms-level" />
+      <LevelSwitch idPrefix="ms-level" words={{
+        intermediate: { hint: 'Why birth time can change your Moon opens',
+          status: 'Showing why birth time can change your Moon too.' },
+        advanced: { hint: 'Plus how we calculate and the chart data',
+          status: 'Showing everything, with how we calculate and the chart data.' },
+      }} />
     </div>
 
     <ChartCalculator mode="moon" client:load />
