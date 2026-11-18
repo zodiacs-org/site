@@ -1,8 +1,7 @@
 {
   "version": 1,
   "id": "sign-guide-and-learn-hub-entrance-motion-2026-11-18",
-  "baseCommit": "origin/motion/home-signs-learn
-2814b587ce6ed7562d8a2c906860a6561eb8e002",
+  "baseCommit": "2814b587ce6ed7562d8a2c906860a6561eb8e002",
   "protectedPaths": [
     "src/pages/[sign]/index.astro",
     "src/pages/learn/index.astro"
