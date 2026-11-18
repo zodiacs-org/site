@@ -189,7 +189,7 @@ Anatomy, top to bottom (use only the parts a card needs, in this order):
    card's sign hue ("Two charts compared", "Life milestones"), a large serif
    title (names when the person gave them, otherwise the card's own title)
    and one muted meta line. A date, time and place in the meta line read as
-   a sentence ("Saturday, 12 June 2027 at 17:00 in Florence, Italy"), with
+   a sentence ("Saturday, 18 September 2027 at 16:30 in Lisbon, Portugal"), with
    the time and place in ink, exactly as the person gave them. Without a time
    the card says how the sky was read ("No time given, so the sky is read at
    noon UTC."). A card about no sign (life milestones, the sky calendar)

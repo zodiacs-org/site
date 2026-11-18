@@ -6,12 +6,13 @@
  * in vercel.json. Corrections and removals: people@zodiacs.org.
  */
 import Base from '../../layouts/Base.astro';
-import { YEAR_PEOPLE } from '../../lib/year-score/people';
+import { FIGURE_NOTE, YEAR_PEOPLE, figureDriverTitle } from '../../lib/year-score/people';
 import { yearPage } from '../../lib/year-score/page-data';
 import { dayName, shortMonth } from '../../lib/year-score/reading';
 import ShareRow from '../../components/ShareRow.astro';
 import { figureYearScoreShareUrl } from '../../lib/year-score/share';
 import { rangeWorthShowing } from '../../lib/year-score/range';
+import { figureTierSummary } from '../../lib/year-score/tier';
 import { launchFlagOn } from '../../lib/launch-flags';
 import { READING_CONFIDENCE_NOTE } from '../../lib/reading-confidence-note';
 
@@ -24,12 +25,10 @@ export function getStaticPaths() {
 const person = YEAR_PEOPLE.find((entry) => entry.slug === Astro.props.slug)!;
 const page = await yearPage(person);
 const { reading } = page;
-// The month and transit sentences are written to the reader ("your Venus"); on a figure's page they name the figure.
-const first = person.name.split(' ')[0];
-const theirs = (text: string) => text
-  .replace('A month to pace yourself, not to fear.', 'A month for pacing, not for fear.')
-  .replace('an opening that rewards you if you take it', 'an opening that rewards whoever takes it')
-  .replace(/\bYour\b/gu, `${first}'s`).replace(/\byour\b/gu, `${first}'s`);
+// A named person's year in neutral words (ZOD-12): the figure's own tier summary, the month tiles as numbers only,
+// and each driver's title with the name in place of "your". The reader's month and transit sentences are never
+// reused here, so nothing reads as a call on a company, a team, someone's health or their private life.
+const monthTile = (month: { name: string; score: number }) => `${month.name}: ${month.score.toFixed(1)}/10.`;
 const longDate = (iso: string) => new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${iso}T12:00:00Z`));
 const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)}: ${reading.score.toFixed(1)}/10, ${reading.tier.label.toLowerCase()}, from the slow planets' transits to a ${person.birthTime ? 'timed' : 'noon'} chart.`;
 ---
@@ -49,11 +48,12 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
       <div class="core tinted ypp__score-core">
         <p class="ypp__number"><span>{reading.score.toFixed(1)}</span><span class="ypp__outof">/10</span></p>
         <p class="ypp__tier">{reading.tier.label}</p>
-        <p class="ypp__summary">{theirs(reading.tier.summary)}</p>
-        <p class="ypp__meta">{rangeWorthShowing(page.range) && `${reading.score.toFixed(1)}/10 (between ${page.range.low.toFixed(1)} and ${page.range.high.toFixed(1)} without a birth time) · `}{page.sun.name} Sun · {dayName(page.from)} to {dayName(page.to)} · Reading confidence 55%</p>
+        <p class="ypp__summary">{figureTierSummary(reading.tier.key)}</p>
+        <p class="ypp__meta">{rangeWorthShowing(page.range) && `${reading.score.toFixed(1)}/10 (between ${page.range.low.toFixed(1)} and ${page.range.high.toFixed(1)} without a birth time) · `}{page.sun.name} Sun · {dayName(page.from)} to {dayName(page.to)} · {page.confidenceLabel}</p>
         <p class="ypp__confidence-note" data-reading-confidence-note>{READING_CONFIDENCE_NOTE}</p>
       </div>
     </div>
+    <p class="ypp__note">{FIGURE_NOTE}</p>
 
     {page.alternates.map((alternate) => (
       <p class="ypp__note">With the other published birth date, {longDate(alternate.birthDate)}, the score is {alternate.score.toFixed(1)}: {alternate.label.toLowerCase()}.</p>
@@ -70,8 +70,8 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
     </ol>
 
     <div class="ypp__picks">
-      {reading.best && <div class="tile"><h2>Best month</h2><p>{theirs(reading.best.line)}</p></div>}
-      {reading.hardest && <div class="tile"><h2>Hardest month</h2><p>{theirs(reading.hardest.line)}</p></div>}
+      {reading.best && <div class="tile"><h2>Highest-scoring month</h2><p>{monthTile(reading.best)}</p></div>}
+      {reading.hardest && <div class="tile"><h2>Lowest-scoring month</h2><p>{monthTile(reading.hardest)}</p></div>}
     </div>
 
     {reading.drivers.length > 0 && (
@@ -80,9 +80,8 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
         <ul>
           {reading.drivers.map((driver) => (
             <li>
-              <strong>{theirs(driver.title)}</strong>
+              <strong>{figureDriverTitle(driver.title, person.name)}</strong>
               <span class="ypp__tone">{driver.tone}, {Math.round(driver.share * 100)}% of the year</span>
-              <p>{theirs(driver.line)}</p>
               <p class="ypp__when">In orb {dayName(driver.inOrbFrom)} to {dayName(driver.inOrbTo)}, closest {dayName(driver.peak)}</p>
             </li>
           ))}
@@ -111,7 +110,8 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
       <a class="btn btn--ghost" href="/year/" rel="nofollow"><span>All Year Ahead scores</span><span class="orb">→</span></a>
     </p>
     {/* The share link opens the card page, whose picture the server draws from the directory (src/server/result-preview.ts). */}
-    <ShareRow text={`${person.name}'s Year Ahead Score: ${reading.score.toFixed(1)}/10`} url={figureYearScoreShareUrl('https://zodiacs.org', person.slug)!} label="Share this score:" />
+    {/* No number in the post text: the card carries it, pinned to this page's month so it reads the same next month. */}
+    <ShareRow text={`${person.name}'s Year Ahead Score on Zodiacs`} url={figureYearScoreShareUrl('https://zodiacs.org', person.slug, page.from.slice(0, 7))!} label="Share this score:" />
   </section>
 </Base>
 

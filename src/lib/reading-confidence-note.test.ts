@@ -30,11 +30,11 @@ describe('the reading-confidence note', () => {
 
   it('is printed under the label on a figure\'s Year Ahead page, which carries no other values than the date-only one', () => {
     const page = source('../pages/year/[slug].astro');
-    const label = page.indexOf('Reading confidence 55%');
+    // The label is derived from the reading's own detail (page-data.ts), so the note must follow it.
+    const label = page.indexOf('{page.confidenceLabel}');
     const note = page.indexOf('{READING_CONFIDENCE_NOTE}');
     expect(label).toBeGreaterThan(-1);
     expect(note).toBeGreaterThan(label);
     expect(page.split('{READING_CONFIDENCE_NOTE}')).toHaveLength(2);
-    expect(page).toContain(`Reading confidence ${readingConfidence('date')}%`);
   });
 });

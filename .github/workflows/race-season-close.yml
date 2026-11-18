@@ -21,7 +21,7 @@ jobs:
   close:
     name: Engrave a closed season
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 120
     permissions:
       contents: write
       pull-requests: write

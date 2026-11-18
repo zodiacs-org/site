@@ -28,6 +28,7 @@ export const SHARING_EN = {
   twinsOpening: 'You may share a small part of your chart with someone in the public record.', twinsBoth: 'Sun and Moon match', twinsSun: 'Sun matches', twinsMoon: 'Moon matches',
   twinsEmpty: 'No verified Sun and Moon match in this directory yet.', twinsPartial: 'People who share one verified sign',
   twinsNoMoon: 'Your Moon sign is unverified without a birth time, so only your Sun is compared.', twinsCount: 'Matches: {n}',
+  twinsShare: 'Share my twin card', twinsCardPick: 'Twin on your card', twinsCardKicker: 'My chart twin', twinsCardBoth: 'I share a Sun and Moon with', twinsCardSun: 'I share a Sun sign with', twinsCardMoon: 'I share a Moon sign with', twinsCardSign: '{body} in {sign}', twinsCardCaveat: 'A shared sign is a conversation starter, not proof of a similar personality.', twinsCardFind: 'Find yours at {path}', twinsCardPrivacy: 'Signs only. No birth date, time or place on this card.', twinsCardNote: '1080 × 1920 story image. It shows your shared signs and your twin’s name, never your birth date, time or place.',
   unknownTime: 'Birth time unknown', source: 'Birth data and sources', directory: 'Explore the people directory',
   nameHelp: 'Name or nickname', resultChanged: 'Your inputs changed. Calculate again to refresh the result.',
   sharingTools: 'Share and explore together', backCompatibility: 'Open compatibility',

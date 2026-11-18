@@ -219,6 +219,7 @@ for (const { file, minItems } of [
   { file: 'feeds/daily-sky.xml', minItems: 1 },
   { file: 'feeds/almanac.xml', minItems: 1 },
   { file: 'feeds/events.xml', minItems: eventsPublication.timeline?.length ?? 0 },
+  ...ZODIAC_SIGN_SLUGS.map((sign) => ({ file: `feeds/events/${sign}.xml`, minItems: 1 })),
 ]) {
   const path = resolve(root, file);
   if (!(await exists(path))) {
@@ -255,6 +256,27 @@ for (const { file, minItems } of [
   }
   for (const m of xml.matchAll(/<pubDate>([^<]+)<\/pubDate>/g)) {
     if (Number.isNaN(Date.parse(m[1]))) fail(`${file}: bad pubDate ${m[1]}`);
+  }
+}
+
+// ---- 3c. Sky-event JSON feeds (JSON Feed 1.1) ---------------------------------
+for (const file of ['feeds/events.json', ...ZODIAC_SIGN_SLUGS.map((sign) => `feeds/events/${sign}.json`)]) {
+  const path = resolve(root, file);
+  if (!(await exists(path))) {
+    fail(`${file}: missing`);
+    continue;
+  }
+  let feed;
+  try { feed = JSON.parse(await readFile(path, 'utf8')); } catch { fail(`${file}: not JSON`); continue; }
+  if (feed.version !== 'https://jsonfeed.org/version/1.1') fail(`${file}: not JSON Feed 1.1`);
+  if (feed.feed_url !== `https://zodiacs.org/${file}`) fail(`${file}: feed_url ${feed.feed_url}`);
+  if (!Array.isArray(feed.items) || feed.items.length === 0) fail(`${file}: no items`);
+  if (file === 'feeds/events.json' && feed.items?.length !== (eventsPublication.timeline?.length ?? 0)) {
+    fail(`${file}: ${feed.items?.length} items vs publication receipt ${eventsPublication.timeline?.length ?? 0}`);
+  }
+  for (const item of feed.items ?? []) {
+    if (!String(item.url).startsWith('https://zodiacs.org/')) fail(`${file}: non-absolute url ${item.url}`);
+    if (Number.isNaN(Date.parse(item.date_published))) fail(`${file}: bad date_published ${item.date_published}`);
   }
 }
 
@@ -1393,7 +1415,7 @@ const sitemapPolicy = {
   // Terminal Research adds its archive alone (indexedRegistryResearchPaths): its
   // published notes (227 that day) left the sitemap as noindex pages on 2026-10-26.
   // +1 for /apps/, the English assistant showcase.
-  // +3 for /apps/claude/, /apps/chatgpt/ and /apps/cursor/, the English per-assistant pages.
+  // +4 for /apps/claude/, /apps/chatgpt/, /apps/cursor/ and /apps/claude-code/, the English per-assistant pages.
   // +12 for the English-only 2026 yearly horoscope pages.
   // +1 for /developers/time-atlas/, the time atlas dataset and its comparison with tzdb 2025c.
   // +13 for the English sign-season hub and its twelve season pages.
@@ -1405,14 +1427,19 @@ const sitemapPolicy = {
   // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
   // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/),
-  // and the three per-assistant /apps/ pages joined on 2026-11-16.
-  total: 1535 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // the three per-assistant /apps/ pages joined on 2026-11-16, and /apps/claude-code/ on 2026-11-17.
+  // +1 for /studies/fortune-500-ceo-signs/, the CEO Sun sign data story, linked from /people/.
+  // +1 for /almanac/sky-this-week-2026-11-23/, the first "Your sky this week" article.
+  total: 1538 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
-    + indexedRegistryResearchPaths.size + developerGuidePaths.size,
+    + indexedRegistryResearchPaths.size + developerGuidePaths.size
+    // + one page per translated Learn article per locale (src/data/learn-translations.json).
+    + Object.values(JSON.parse(await readFile(resolve(repo, 'src/data/learn-translations.json'), 'utf8')))
+      .reduce((sum, paths) => sum + paths.length, 0),
   // 78 pairs in English and in es, pt, fr and it.
   compatibilityPairs: 390,
   birthdays: 366,
@@ -1556,7 +1583,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?numerology\/$/u.test(path))),
   new Set(['/numerology/']),
 );
-if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-09-07</lastmod>')) {
+// Re-dated 2026-11-17: the restyle added the letter key and the emblem (rendered content).
+if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-17</lastmod>')) {
   fail('sitemap.xml: numerology modification date must match the reviewed source revision');
 }
 requireExactSet(
