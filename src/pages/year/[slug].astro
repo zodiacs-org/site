@@ -68,8 +68,8 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
     </ol>
 
     <div class="ypp__picks">
-      {reading.best && <div class="tile"><h2>Most supported month</h2><p>{monthTile(reading.best)}</p></div>}
-      {reading.hardest && <div class="tile"><h2>Most pressed month</h2><p>{monthTile(reading.hardest)}</p></div>}
+      {reading.best && <div class="tile"><h2>Highest-scoring month</h2><p>{monthTile(reading.best)}</p></div>}
+      {reading.hardest && <div class="tile"><h2>Lowest-scoring month</h2><p>{monthTile(reading.hardest)}</p></div>}
     </div>
 
     {reading.drivers.length > 0 && (
