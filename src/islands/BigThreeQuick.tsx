@@ -6,7 +6,17 @@ import CalculationReload, { calculationError } from './CalculationReload';
 import { createModuleLoader, loadModule } from '../lib/module-load';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { SIGNS, formatLongitude, signForLongitude, signName } from '../lib/signs';
-import { chartHandoffFragment } from '../lib/chart-handoff';
+import {
+  followWithHandoff,
+  profileChartHandoffFragment,
+  profileChartIdFromHash,
+  sessionHandoffAvailable,
+  stashChartHandoff,
+} from '../lib/chart-handoff';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
+import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
+import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
+import type { ShareChartInput } from '../lib/share';
 import type { Chart } from '../lib/engine/types';
 import type { PreparedChartCard } from '../lib/share-card';
 import { formatSharingCopy, type SharingCopy, type SharingKey } from '../lib/sharing/copy-en';
@@ -18,8 +28,18 @@ import { localizePath, t, type CatalogLocale } from '../lib/i18n';
  * whole chart. The ephemeris loads on demand (warmed when the time field is
  * focused) and never enters this route's static bundle; the share card and
  * its renderer load only after a chart exists. Nothing leaves the browser:
- * the hand-off travels in a URL fragment.
+ * the hand-off to the whole chart is stashed in sessionStorage when it is
+ * followed, and its link carries only a random key. A chart saved on this
+ * device can open here by its opaque id (#profileChartId=, the profile's
+ * "Send your card"); the fragment is stripped before anything else.
  */
+
+/** A saved chart's birth details, read on this device only. */
+interface SavedBirth {
+  date: string;
+  time: string;
+  city: City;
+}
 
 type CardModule = typeof import('../lib/share-card');
 const loadReading = createModuleLoader(() => import('../lib/interpretations'));
@@ -64,7 +84,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   const [placements, setPlacements] = useState<Placement[] | null>(null);
   const [resultTrust, setResultTrust] = useState<ResultTrust | null>(null);
   const [resultUtc, setResultUtc] = useState<Date | null>(null);
-  const [handoff, setHandoff] = useState('');
+  const [handoff, setHandoff] = useState<ShareChartInput | null>(null);
   const [card, setCard] = useState<{ module: CardModule; prepared: PreparedChartCard; run: number } | null>(null);
   const [cardState, setCardState] = useState<'idle' | 'preparing' | 'ready' | 'sharing' | 'shared' | 'downloaded' | 'failed'>('idle');
   const [cardError, setCardError] = useState('');
@@ -80,9 +100,116 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
     return () => { generation.current += 1; };
   }, []);
 
+  // A chart saved on this device, opened by its opaque id. The fragment is
+  // stripped first; the chart is read only behind the profile access guard,
+  // and its date passes the same birth date policy as the form.
+  const profileOriginRef = useRef(false);
+  const profileChartIdRef = useRef<string | null>(null);
+  const profileHandoffIdRef = useRef(0);
+  const profileAccessGeneration = useProfileAccessGeneration(() => {
+    // Always drop a pending saved-chart load, even if the chart has not been
+    // applied yet, so a later grant cannot reopen it.
+    profileHandoffIdRef.current += 1;
+    if (!profileOriginRef.current) return;
+    profileOriginRef.current = false;
+    profileChartIdRef.current = null;
+    generation.current += 1;
+    cardAttempt.current += 1;
+    cardSource.current = null;
+    setDate('');
+    setCalendar('gregorian');
+    setTime('');
+    setCity(null);
+    setPlacements(null);
+    setHandoff(null);
+    setCard(null);
+    setCardState('idle');
+    setCardError('');
+    setError('');
+    setBusy(false);
+  });
+
+  useEffect(() => {
+    const hash = typeof location === 'undefined' ? '' : location.hash;
+    if (!new URLSearchParams(hash.slice(1)).has('profileChartId')) return;
+    const chartId = profileChartIdFromHash(hash);
+    history.replaceState(null, '', location.pathname + location.search);
+    if (!chartId) return;
+    let active = true;
+    let resolving = false;
+    const handoffId = ++profileHandoffIdRef.current;
+    const handoffIsCurrent = () => active && handoffId === profileHandoffIdRef.current;
+    const open = () => {
+      if (!handoffIsCurrent() || resolving || !profileAccessAllowed()) return;
+      resolving = true;
+      const accessGeneration = profileAccessGeneration.current;
+      void import('../lib/profile/profile-chart-handoff').then(({ loadProfileChartRunInput, loadProfileChart }) => {
+        resolving = false;
+        if (!handoffIsCurrent() || !profileAccessAllowed()) return;
+        if (accessGeneration !== profileAccessGeneration.current) {
+          // Access is still allowed; a refresh just bumped the generation.
+          queueMicrotask(open);
+          return;
+        }
+        const saved = loadProfileChartRunInput(chartId);
+        const record = saved ? null : loadProfileChart(chartId);
+        if (!saved && !record) {
+          active = false;
+          window.removeEventListener('zodiacs:profile-access', open);
+          return;
+        }
+        // The first successful load is enough; later access grants must not
+        // overwrite a chart the visitor has since entered. Revocation is
+        // handled by useProfileAccessGeneration, not this listener.
+        active = false;
+        window.removeEventListener('zodiacs:profile-access', open);
+        profileOriginRef.current = true;
+        profileChartIdRef.current = chartId;
+        if (!saved) {
+          // A supported saved chart with no birthplace cannot be recomputed
+          // until a place is added. Prefill what we have and say so.
+          setDate(record!.birth.date);
+          setCalendar('gregorian');
+          setTime(record!.birth.time ?? '');
+          setCity(null);
+          setPlacements(null);
+          setHandoff(null);
+          setCard(null);
+          setCardState('idle');
+          setError('This saved chart has no birthplace. The date is filled in. Add a place to see Sun, Moon and Rising.');
+          return;
+        }
+        const from: SavedBirth = { date: saved.date, time: saved.time, city: saved.city };
+        setDate(from.date);
+        setCalendar('gregorian');
+        setTime(from.time);
+        setCity(from.city);
+        if (!saved.timeKnown || !saved.time) {
+          setPlacements(null);
+          setHandoff(null);
+          setCard(null);
+          setCardState('idle');
+          setError('This saved chart has no birth time. The date and place are filled in. Add a time to see Moon and Rising.');
+          return;
+        }
+        void compute(null, from);
+      }).catch(() => { resolving = false; });
+    };
+    window.addEventListener('zodiacs:profile-access', open);
+    open();
+    return () => {
+      active = false;
+      window.removeEventListener('zodiacs:profile-access', open);
+    };
+  }, []);
+
   function edit<T>(setter: (value: T) => void, value: T): void {
     generation.current += 1; cardAttempt.current += 1;
-    setter(value); setBusy(false); setPlacements(null); setHandoff('');
+    // Drop the saved id so a later full-chart link is not the stale chart,
+    // but keep profile origin so a revoke still clears inherited fields.
+    profileHandoffIdRef.current += 1;
+    profileChartIdRef.current = null;
+    setter(value); setBusy(false); setPlacements(null); setHandoff(null);
     cardSource.current = null; setCard(null); setCardState('idle'); setCardError(''); setError('');
   }
 
@@ -111,13 +238,19 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
     }
   }
 
-  async function compute(event: Event): Promise<void> {
-    event.preventDefault();
-    if (!date || !time || !city) {
+  async function compute(event: Event | null, from?: SavedBirth): Promise<void> {
+    event?.preventDefault();
+    // A saved chart opened by id brings its own Gregorian date, time and place.
+    const birthDate = from ? from.date : date;
+    const birthTime = from ? from.time : time;
+    const place = from ? from.city : city;
+    const birthCalendar: CalendarChoice = from ? 'gregorian' : calendar;
+    if (!birthDate || !birthTime || !place) {
       setError(s(locale, 'required'));
       return;
     }
     const run = ++generation.current;
+    const accessGeneration = profileAccessGeneration.current;
     setBusy(true);
     setError('');
     cardSource.current = null;
@@ -125,24 +258,35 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
     setCardState('idle');
     setCardError('');
     try {
-      let day = date;
-      if (calendarInPlay(date, calendar)) {
+      let day = birthDate;
+      if (calendarInPlay(birthDate, birthCalendar)) {
         // A date before 1924 is read in its calendar; the chart and the handoff use the Gregorian date.
-        const entry = await birthDateForChart(locale, date, calendar);
+        const entry = await birthDateForChart(locale, birthDate, birthCalendar);
         if (run !== generation.current) return;
         if ('error' in entry) {
           setError(entry.error);
           setPlacements(null);
-          setHandoff('');
+          setHandoff(null);
           return;
         }
         day = entry.date;
       }
+      // Under 13 or not yet born: nothing is computed, shared or counted.
+      const refusal = birthDateRefusal(day);
+      if (refusal) {
+        setError(birthDateRefusalText(refusal));
+        setPlacements(null);
+        setHandoff(null);
+        return;
+      }
+      const time = birthTime;
+      const city = place;
       await prepareLocalTime(day, city.tz);
       const resolution = resolveLocalToUtc(day, time, city.tz, { longitude: city.lon });
       const [engine, trust, reading] = await Promise.all([loadEngine(), loadResultTrust(), locale === 'en' ? loadReading().catch(() => null) : Promise.resolve(null)]);
       if (run === generation.current) setReadingModule(reading);
       if (run !== generation.current) return;
+      if (profileOriginRef.current && accessGeneration !== profileAccessGeneration.current) return;
       const chart: Chart = engine.computeChart({
         utc: resolution.utc,
         latitude: city.lat,
@@ -164,7 +308,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
         { kind: 'moon', title: t(locale, 'moon'), lon: moon.lon },
         { kind: 'rising', title: t(locale, 'rising'), lon: chart.angles.asc },
       ]);
-      setHandoff(`${localizePath(locale, '/birth-chart/')}#${chartHandoffFragment({
+      setHandoff({
         date: day,
         time,
         timeKnown: true,
@@ -173,7 +317,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
         tz: city.tz,
         place: city.name,
         houseSystem: 'whole',
-      })}`);
+      });
       track('chart_computed', { mode: 'rising', source: 'fresh' });
       track('result_rendered', { mode: 'rising' });
       requestAnimationFrame(() => {
@@ -188,7 +332,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
       if (cause instanceof RangeError) setError(s(locale, 'required'));
       else setError(calculationError(cause, locale, s(locale, 'computeError')));
       setPlacements(null);
-      setHandoff('');
+      setHandoff(null);
       cardSource.current = null;
       setCardState('idle');
       return;
@@ -261,7 +405,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
             <span>{s(locale, busy ? 'computing' : 'bigSubmit')}</span>
             <span class="orb">→</span>
           </button>
-          {error && <p class="field__error big-three__error" role="alert">{error}</p>}
+          {error && <p class="field__error big-three__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}
           <CalculationReload error={error} locale={locale} />
         </div>
       </form>
@@ -292,10 +436,20 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
           </div>
 
           <div class="big-three__next">
-            <a class="btn btn--primary" href={handoff} data-big-three-full>
+            {handoff && (profileChartIdRef.current || sessionHandoffAvailable()) && <a
+              class="btn btn--primary"
+              href={localizePath(locale, '/birth-chart/')}
+              onClick={(event) => followWithHandoff(event, () => {
+                const fragment = profileChartIdRef.current
+                  ? profileChartHandoffFragment(profileChartIdRef.current)
+                  : stashChartHandoff(handoff, { profileOrigin: profileOriginRef.current });
+                return fragment ? `${localizePath(locale, '/birth-chart/')}#${fragment}` : null;
+              })}
+              data-big-three-full
+            >
               <span>{s(locale, 'fullChart')}</span>
               <span class="orb">↗</span>
-            </a>
+            </a>}
             <button
               type="button"
               class="btn btn--glass"

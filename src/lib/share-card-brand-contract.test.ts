@@ -20,6 +20,7 @@ const CLIENT_GENERATORS = [
   "aura-cabinet-card.ts",
   "games/share-card.ts",
   "sharing/group-card.ts",
+  "sharing/twin-card.ts",
   "return-visits/wrapped-card.ts",
   "story-card.ts",
 ] as const;

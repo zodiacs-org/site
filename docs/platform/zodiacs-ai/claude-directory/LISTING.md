@@ -1,5 +1,18 @@
 # Claude directory listing
 
+## Prepared for resubmission, 18 November 2026
+
+Zodiacs 0.6.8 is the version prepared for the Claude directory
+resubmission. It reports 0.6.8, ships the invented examples in the tools'
+field descriptions (approved by Dias on 17 November), and its review cases
+use invented details: the Mercury question comes from a reader in Mexico City,
+and the wedding card is for 18 September 2027 at 16:30 in Lisbon, Portugal.
+No tool name, input, annotation, behaviour or tool count changes. Nothing has
+been submitted, and the portal's notes and tools copy still name 0.6.7 until
+the resubmission, which waits for Dias's yes. The live server reports 0.6.8
+only once this change is merged and deployed; until then the section below
+stays the state of the live listing.
+
 ## Where the listing stands, 14 November 2026
 
 This section is the current state. Everything under it is a dated record,
