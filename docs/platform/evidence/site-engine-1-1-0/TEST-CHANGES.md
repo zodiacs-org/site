@@ -32,6 +32,7 @@ The change keeps the existing numerical tolerances.
 | `tests/returns-worked-examples.test.ts` | Replays the frozen return evidence on the astronomy engine source that produced it. |
 
 | `scripts/build-monday-note.test.ts` | Pins the dates, clock times and degrees printed by the DE440 monthly catalogs. |
+| `scripts/check-ai-integrations.mjs` | Validates the site archive and installed engine against the current release identity. It also checks the exact bundled license copies. |
 | `scripts/engine-reference.test.mjs` | Checks the release identity from the installed package and requires the two published DE440 modules. |
 | `src/ai-tools/lifetime.test.ts` | Inspects the real DE440 record index, coefficient buffers and work vectors before and after request cleanup in the three packaged entry points. Its fault injection now interrupts a DE440 decode. |
 | `src/lib/moon-journal/reminders.test.ts` | Pins the regenerated November new Moon in the UTC day test. |

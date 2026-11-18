@@ -75,8 +75,8 @@
       "name": "zodiacs-developer",
       "version": "0.3.52",
       "file": "zodiacs-developer-0.3.52.zip",
-      "bytes": 10092599,
-      "sha256": "0a11ecbade3b6b09cdfc734c18cf79416d8faab3d839d148e6e838dc1ff9e9e7",
+      "bytes": 10102946,
+      "sha256": "5f3abc62ed23e5343948e5c74abe76b40aa10ee0a026a5a552b206779ad72535",
       "members": [
         {
           "path": ".codex-plugin/plugin.json",
@@ -95,13 +95,13 @@
         },
         {
           "path": "ENGINE-LICENSING",
-          "bytes": 27426,
-          "sha256": "38399534d93270c62637ae7bdd8489766f3d58ea86033edfe68c8c30e80f94e5"
+          "bytes": 35021,
+          "sha256": "0c2de247653d43b1366f39546756afe9d2c168d7996881904861c0bacca827d9"
         },
         {
           "path": "ENGINE-NOTICE",
-          "bytes": 10405,
-          "sha256": "e1d384bd46e0068bf510a2b0ef61e264bf522737d2323fa1c72098898d260f0c"
+          "bytes": 13538,
+          "sha256": "6b8f9885d1f7648cbd28ac0845a835a20e3da4c2700d64ddbc45617ff5d09a0c"
         },
         {
           "path": "LICENSE",
@@ -110,13 +110,13 @@
         },
         {
           "path": "NOTICE",
-          "bytes": 1229,
-          "sha256": "4cc4f094a1787ac108feb1e9210b302c55be5f6bd13b455fb7f7113f0292642b"
+          "bytes": 1214,
+          "sha256": "1eab2af8c8c90e7f8cd886392546c0726331d2a16aeddac70495d108b430ee4b"
         },
         {
           "path": "README.md",
-          "bytes": 6203,
-          "sha256": "f86a58ad881d46da0c173ded1cb60da091f2a6cb2cab64418061a68fc986998b"
+          "bytes": 5837,
+          "sha256": "522c31851e9b793cfeeed516a62a133f3f41f5fd4f39ae0a9321d45a0b848dc2"
         },
         {
           "path": "assets/icon.png",

@@ -119,9 +119,12 @@ await access(new URL('src/pages/horoscopes/[sign]/index.astro', root));
 const packageInfo = await json('plugins/zodiacs-developer/package.json');
 assert.equal(packageInfo.dependencies['@zodiacs/engine'], '1.0.0');
 assert.equal(packageInfo.dependencies['@modelcontextprotocol/server'], '2.0.0');
-// The site/embedded runtime uses the vendored 1.1.0-rc.2 candidate, which npm does not carry; the external
-// recipes keep the published 1.0.0 from npm, which computes the same values.
-const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-1.1.0-rc.2.tgz');
+// The generated server and site use the archived release. External recipes keep their declared engine.
+const site = await json('package.json');
+const engineRelease = await json('src/data/platform-engine-candidate.json');
+const installedEngine = await json('node_modules/@zodiacs/engine/package.json');
+assert.equal(site.dependencies['@zodiacs/engine'], `file:${engineRelease.artifactPath}`);
+assert.equal(installedEngine.version, engineRelease.version);
 // The developer plugin carries the engine's notices as ENGINE-* copies, which
 // its NOTICE says are unchanged; the claims ledger reads the release's own
 // under public/developers/engine/reference/release/.

@@ -427,7 +427,7 @@ dist/sdk/engine/assets/main.js	51129	15621
 dist/sdk/engine/assets/navigation.js	1342	1060
 dist/sdk/engine/assets/search.js	14383	10858
 dist/sdk/engine/assets/style.css	49683	8080
-dist/sw.js	9566	3179
+dist/sw.js	26047	9109
 integrations/generated/chart-studio.mjs	1041150	415935
 integrations/generated/horoscopes.mjs	335628	218543
 integrations/generated/occasions.mjs	340972	219577
