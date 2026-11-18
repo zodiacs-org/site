@@ -139,6 +139,6 @@ html[data-level-ask='open'] .level-ask { display: grid; }
   margin-top: var(--s-3);
   font-size: 13.5px;
 }
-/* Sans, not mono: on the rising sign, Moon sign and transits pages this sits
-   in the hero, and mono would add a font download to the first load. */
+/* Sans, not mono: on the rising sign page this sits in the hero, and mono
+   would add a font download to the first load. */
 .level-data__cap { flex-basis: 100%; color: var(--faint); font: 600 10.5px/1 var(--font-sans); letter-spacing: 0.1em; text-transform: uppercase; }
