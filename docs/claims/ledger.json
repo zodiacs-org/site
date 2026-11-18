@@ -2676,7 +2676,7 @@
     {"path":"src/pages/developers/engine/index.astro","text":"To install the same bytes through its immutable carrier, paste this into a POSIX shell, in your project's directory; it refuses to install anything whose digest does not match.","claim":"product.engine-package"},
     {"path":"src/pages/developers/engine/index.astro","text":"Until rc.8 the clock was a fixed formula.","claim":"acc.deltat-formula"},
     {"path":"src/pages/developers/engine/index.astro","text":"Up to the present the clock is observed.","claim":"acc.deltat"},
-    {"path":"src/pages/developers/engine/index.astro","text":"What it computes, what it costs to bundle, how close it is to Swiss Ephemeris, and an install that verifies the archive digest.","exempt":"not-a-claim"},
+    {"path":"src/pages/developers/engine/index.astro","text":"What it computes, what it costs to bundle, how it compares with NASA JPL Horizons, and an install that verifies the archive digest.","exempt":"not-a-claim"},
     {"path":"src/pages/developers/engine/index.astro","text":"Zodiacs did not write those models; what is ours is the chart on top of them — houses, angles, aspects, the record format and the limits.","claim":"acc.engine-source"},
     {"path":"src/pages/developers/examples/index.astro","text":"A full export includes birth details.","exempt":"limitation"},
     {"path":"src/pages/developers/examples/index.astro","text":"Do not extract or install.'); } console.log('Archive verified'); JS tar -xzf '${…}' cd package npm ci --ignore-scripts --no-audit --no-fund npm test npm run build npm start )","exempt":"not-a-claim"},
