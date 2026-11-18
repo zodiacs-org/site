@@ -6,7 +6,6 @@
  */
 import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-pairs';
 import natalAspectsPublication from '../data/natal-aspects-publication.json';
-import de440SitemapDates from '../data/de440-sitemap-dates.json';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
 import type { APIRoute } from 'astro';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES } from '../data/numerology-pages';
@@ -21,6 +20,7 @@ import {
   BIRTHDAY_CUSP_OG_MODIFIED_AT,
   BIRTHDAY_FAMOUS_LINE_MODIFIED_AT,
   PEOPLE_TEMPLATE_MODIFIED_AT,
+  de440UpdatedDate,
   lastmodDate,
   latestModifiedAt,
   terminalResearchLastmod,
@@ -431,9 +431,6 @@ const CONNECTOR_PAGE_ROUTES = [
 
 // The /people/ hub began linking the Fortune 500 CEO sign study; the hub alone, not each person page.
 const PEOPLE_HUB_MODIFIED_AT = '2026-11-17T00:00:00.000Z';
-
-// Routes with changed content in the pinned-clock comparison for ZOD-63.
-const DE440_UPDATED_PATHS = new Set(de440SitemapDates.paths);
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -1109,9 +1106,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
   }
   for (const url of [...urls, ...localizedUrls]) {
-    if (DE440_UPDATED_PATHS.has(url.loc)) {
-      url.lastmod = laterDate(url.lastmod, de440SitemapDates.date);
-    }
+    const engineUpdated = de440UpdatedDate(url.loc);
+    if (engineUpdated) url.lastmod = laterDate(url.lastmod, engineUpdated);
   }
   return [
     ...urls,

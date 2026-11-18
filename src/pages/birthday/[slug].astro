@@ -26,7 +26,7 @@ import birthdays from '../../data/birthdays.json';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { BIRTHDAY_PEOPLE_VISIBLE, peopleForBirthday } from '../../lib/people';
-import { BIRTHDAY_CUSP_OG_MODIFIED_AT, BIRTHDAY_FAMOUS_LINE_MODIFIED_AT, lastmodDate, latestModifiedAt } from '../../lib/seo-lastmod';
+import { BIRTHDAY_CUSP_OG_MODIFIED_AT, BIRTHDAY_FAMOUS_LINE_MODIFIED_AT, de440UpdatedDate, lastmodDate, latestModifiedAt } from '../../lib/seo-lastmod';
 import { BIRTHDAY_DAY_UPDATED, updatedIso, updatedLabel } from '../../world-times/updated';
 import { worldTimesSentence } from '../../world-times/world-times';
 import { formatDate, formatTime } from '../../lib/i18n/dates';
@@ -203,6 +203,7 @@ const famousParts = famousItems.map((item, index) => ({
 const ogImage = cusp
   ? '/assets/og/v2/tool/birthday.png'
   : signArtCard(heroSign!.slug);
+const engineUpdated = de440UpdatedDate(`/birthday/${slug}/`);
 const pageModifiedAt = latestModifiedAt(
   entry.data.updated,
   ...(cusp ? [BIRTHDAY_CUSP_OG_MODIFIED_AT] : []),
@@ -210,6 +211,7 @@ const pageModifiedAt = latestModifiedAt(
   ...(birthdayDegreesChanged(entry.id) ? [BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT] : []),
   // The season question, the cusp crossing in five time zones and the Updated line.
   updatedIso(BIRTHDAY_DAY_UPDATED),
+  ...(engineUpdated ? [engineUpdated] : []),
 );
 const updatedDay = lastmodDate(pageModifiedAt);
 
