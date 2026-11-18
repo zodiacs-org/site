@@ -377,11 +377,10 @@ function aspectFacts(): EventFacts[] {
       if (aspect.orb !== 0) continue;
       const id = aspectId(aspect.a, aspect.type, aspect.b, aspect.at);
       const published = publishedAspectPage(aspect.a, aspect.type, aspect.b, aspect.at);
-      const anchor = published?.anchor ?? aspect.at;
       const committedBase = {
         family: 'aspect' as const,
         subtype: aspect.type,
-        at: anchor,
+        at: published?.anchor ?? aspect.at,
         bodies: [aspect.a, aspect.b],
         signs: [aspect.aSign, aspect.bSign],
         degree: aspect.aDegree,
@@ -390,7 +389,7 @@ function aspectFacts(): EventFacts[] {
         provenance: { source: transitSource(month.month) },
       };
       const { base, committed } = withCommitted(
-        { ...committedBase, at: nasaAspectAt(aspect.a, aspect.b, aspect.type, anchor) ?? aspect.at },
+        { ...committedBase, at: nasaAspectAt(aspect.a, aspect.b, aspect.type, aspect.at) ?? aspect.at },
         committedBase,
       );
       facts.push({

@@ -10,6 +10,7 @@ import { solarReturnInstant } from '../src/lib/engine/solar-return.ts';
 import { offsetAt, prepareLocalTime, resolveLocalToUtc } from '../src/lib/time/localToUtc.ts';
 import { computeLunarReturn } from '../src/islands/lunar-return/compute.ts';
 import { computeSolarReturn } from '../src/islands/solar-return/compute.ts';
+import { withBrowserEphemeris } from '../tests/helpers/browser-ephemeris.ts';
 
 /*
  * Sentences that state a measured accuracy, held to the measurement behind
@@ -87,7 +88,7 @@ describe('event times against Swiss Ephemeris', () => {
 });
 
 describe('images of one birth shared together', () => {
-  it('narrow the birthplace about five times with one solar return image, as the privacy page says', async () => {
+  it('narrow the birthplace about five times with one solar return image, as the privacy page says', () => withBrowserEphemeris(async () => {
     // A link carries the ascendant and midheaven to the whole degree at the
     // birth minute. A solar or lunar return image cast at the birthplace, as
     // they are by default, draws its own to the whole degree, at an instant
@@ -160,7 +161,7 @@ describe('images of one birth shared together', () => {
     expect(page).toContain('For a birth in Lyon in 1987, a link alone leaves an area of about 19,100 km²;');
     expect(page).toContain('leave about 3,900 km², about five times smaller;');
     expect(page).toContain('a link with two solar return images and four lunar return images leaves about 1,500 km².');
-  }, 120_000);
+  }), 120_000);
 });
 
 describe('the solar return with an unknown birth time', () => {
@@ -187,7 +188,7 @@ describe('the solar return with an unknown birth time', () => {
 });
 
 describe('the NASA JPL Horizons figure', () => {
-  it('is the largest residual of the reference values the engine test uses', () => {
+  it('is the largest residual of the reference values the browser engine test uses', () => withBrowserEphemeris(() => {
     const reference = JSON.parse(read('src/lib/engine/fixtures/horizons-reference.json'));
     const wrap = (d) => ((d + 540) % 360) - 180;
     let largest = { arcseconds: 0, where: '' };
@@ -204,7 +205,7 @@ describe('the NASA JPL Horizons figure', () => {
       expect(read(path), path).toContain('the largest difference is 14.8 arcseconds');
     }
     expect(read('src/pages/developers/index.astro').replace(/\s+/g, ' ')).toContain('the largest difference is 14.8 arcseconds');
-  });
+  }));
 });
 
 describe('how event times are checked, on the methodology page', () => {
