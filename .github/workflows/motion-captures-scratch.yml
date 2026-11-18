@@ -15,7 +15,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
-          gh run download 44241429115 -R "$REPO" -n browser-evidence-candidates-5876ba597186998d68e9441bae26d82ebaa1c6d5-44241429115 -D out
+          gh run download 44256226952 -R "$REPO" -n browser-evidence-candidates-76cdb1d6cfca76817c1d6961759fad435bc1bee4-44256226952 -D out
           cd out
           git init -q -b claude/motion-captures-out
           git -c user.name="Zodiacs Admin" -c user.email=admin@zodiacs.org add -A
