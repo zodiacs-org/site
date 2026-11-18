@@ -6,10 +6,15 @@
  *
  * 13 November 2026: times in five zones, the longer question lists and the
  * line on how the times are checked (Linear ZOD-180).
+ *
+ * 14 November 2026: the full moon and eclipse year pages print the instants
+ * solved on NASA JPL Horizons, as each event's own page does (Linear ZOD-211).
+ * Two printed minutes moved: the full moon of 15 October 2027 reads 13:47 UTC
+ * and the eclipse of 18 July 2027 peaks at 16:02 UTC.
  */
 export const MERCURY_RETROGRADE_2027_UPDATED = '2026-11-13';
-export const FULL_MOON_CALENDAR_2027_UPDATED = '2026-11-13';
-export const ECLIPSES_2027_UPDATED = '2026-11-13';
+export const FULL_MOON_CALENDAR_2027_UPDATED = '2026-11-14';
+export const ECLIPSES_2027_UPDATED = '2026-11-14';
 export const BIRTHDAY_HUB_UPDATED = '2026-11-13';
 /** The template every /birthday/{month}-{day}/ page shares. */
 export const BIRTHDAY_DAY_UPDATED = '2026-11-13';

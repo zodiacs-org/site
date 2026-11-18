@@ -54,6 +54,16 @@ export function findYearPerson(query: string): YearPerson | undefined {
 export const yearPersonPath = (slug: string) => `/year/${slug}/`;
 
 /**
+ * The fixed sentence under a figure's score on their page, their share page
+ * and in get_year_score's limits: what the number is not (ZOD-12).
+ */
+export const FIGURE_NOTE = 'This reads a public birth date against the slow planets. It says nothing about a company, a team, a result or a share price.';
+
+/** "Saturn square your Venus" with the figure's name in place of "your", for a driver's title only. */
+export const figureDriverTitle = (title: string, name: string): string => title.replace(/\byour\b/u, `${name}'s`);
+
+
+/**
  * The start of the twelve months a figure's page is scored for: the first day of
  * the month it is built in (UTC), so a page reads the same all month.
  */

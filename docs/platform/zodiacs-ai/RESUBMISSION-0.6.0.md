@@ -6,6 +6,34 @@ newest first, record what has been since. Each portal step needs Dias's
 separate yes, and Dias confirms every attestation. The Claude side is
 in `claude-directory/RESYNC-0.6.0.md`.
 
+## Zodiacs 0.6.8 prepared, 18 November 2026
+
+Zodiacs 0.6.8 is the version prepared for the resubmission
+(`integrations/packages/zodiacs-sky-0.6.8.zip`, with Developer 0.3.52). Dias
+approved the invented examples on 17 November and the release on 18 November.
+The examples in the tools' field descriptions name an invented birth, place
+and wedding, and two review cases in the sky manifest and
+`integrations/chatgpt/chatgpt-app-submission.json` now use invented details:
+the Mercury question comes from a reader in Mexico City, and the wedding card
+is for 18 September 2027 at 16:30 in Lisbon, Portugal. No tool, schema or
+behaviour changes. Nothing has been uploaded or submitted. The live server
+reports 0.6.8 only once this is merged and deployed, and the upload waits for
+the 0.6.6 review to end and for Dias's yes.
+
+## Hosted server at 0.6.7, 13 November 2026
+
+PRs #970 and #971 went live on 13 November, and the hosted server now
+reports 0.6.7. Every one of the 19 tools has a plainer description, the
+server's instructions were reworded so they state facts about Zodiacs rather than orders to the assistant, and say truly what a link can hold,
+`get_horoscope`'s panel moved to `ui://zodiacs/horoscopes-v7.html` (the
+earlier addresses are still served), and a love reading asked with a birth
+date under 18 gives the general reading. No name, input, annotation or tool
+count changed. 0.6.6 is still in OpenAI review, and Dias chose, in a reply on the ZOD-58 task, to wait until
+that review ends before 0.6.7 goes in. `integrations/packages/zodiacs-sky-0.6.7.zip`
+(220,827 bytes) is built and has not been uploaded. A reviewer testing the
+live server during the 0.6.6 review now sees the 0.6.7 descriptions; if the
+review asks about the difference, this is the answer to give.
+
 ## Children under 13, 8 November 2026
 
 Dias submitted 0.6.6 on 7 November and it is in review. On 8 November, PR
@@ -146,6 +174,10 @@ the test cases are unchanged.
 
 ## Where things stand
 
+Note added 11 November 2026: this section is the 2 November record. Since
+then 0.6.6 was submitted on 7 November and is in review (top of this file),
+the hosted server reports 0.6.6, and it offers 19 tools.
+
 - **0.5.1 is in review.** The latest portal record (`PORTAL_REVIEW.md`, 28
   October) shows the app **In review**, metadata and skills version 0.5.1,
   **Not published**. Earlier entries in `RESUBMISSION-0.5.0.md` describe 0.5.1
@@ -193,8 +225,8 @@ the test cases are unchanged.
 
 | Prompt | Tool | Expected |
 | --- | --- | --- |
-| Read my birth chart: born 3 May 1990 at 8:30 in Madrid. | `get_natal_chart` | Taurus Sun, Leo Moon, Gemini rising; planets in signs and houses, closest aspects, element balance, as astrology's reading. |
-| What's my chart? I was born on 3 May 1990 but don't know the time. | `get_natal_chart` | No rising sign or houses; says the Moon was in Leo or Virgo that day; does not guess a time. |
+| Read my birth chart: born 14 May 1994 at 9:15 in Seville. | `get_natal_chart` | Taurus Sun, Cancer Moon, Gemini rising; planets in signs and houses, closest aspects, element balance, as astrology's reading. |
+| What's my chart? I was born on 14 May 1994 but don't know the time. | `get_natal_chart` | No rising sign or houses; says the Moon was in Gemini or Cancer that day; does not guess a time. |
 | What's my Chinese zodiac sign? I was born 20 January 1990. | `get_chinese_zodiac` | Earth Snake: born before the Lunar New Year of 27 January 1990. |
 | What's the monthly horoscope for Leo? | `get_horoscope_period` | The published reading for the current month as written, with the month's sky. |
 | What does Mercury retrograde mean? | `explain_astrology` | A short explainer with links to zodiacs.org's retrograde pages. |

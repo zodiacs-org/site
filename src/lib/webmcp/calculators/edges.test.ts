@@ -43,12 +43,12 @@ describe('the tools at the extremes their schemas accept', () => {
       const envelope = await runCalculatorTool(name, input);
       const outcome = envelope.ok ? 'ok' : envelope.error.code;
       codes[outcome] = (codes[outcome] ?? 0) + 1;
-      if (!envelope.ok && !['OUTSIDE_REFERENCE_SPAN', 'REFERENCE_BEFORE_BIRTH'].includes(envelope.error.code)) {
+      if (!envelope.ok && !['OUTSIDE_REFERENCE_SPAN', 'REFERENCE_BEFORE_BIRTH', 'FUTURE_BIRTH_DATE'].includes(envelope.error.code)) {
         failed.push(`${name} ${JSON.stringify(input)}: ${envelope.error.code}`);
       }
     }
     expect(failed).toEqual([]);
-    expect(codes.ok).toBeGreaterThan(calls.length / 2);
+    expect((codes.ok ?? 0) + (codes.FUTURE_BIRTH_DATE ?? 0)).toBeGreaterThan(calls.length / 2);
   }, 600_000);
 
   it('say which: a birth outside the span, a return the span cuts off, or a reference before the birth', async () => {
@@ -59,11 +59,13 @@ describe('the tools at the extremes their schemas accept', () => {
       return envelope.ok ? 'ok' : envelope.error.code;
     };
     expect(await code('zodiacs.chart_pdf', tokyo1800)).toBe('OUTSIDE_REFERENCE_SPAN');
-    expect(await code('zodiacs.year_wrapped', { birth: niue2199, year: 2000 })).toBe('OUTSIDE_REFERENCE_SPAN');
+    expect(await code('zodiacs.year_wrapped', { birth: niue2199, year: 2000 })).toBe('FUTURE_BIRTH_DATE');
+    expect(await code('zodiacs.year_wrapped', { birth: tokyo1800, year: 1800 })).toBe('OUTSIDE_REFERENCE_SPAN');
     expect(await code('zodiacs.solar_return', { birth: tokyo1800, year: 1800 })).toBe('OUTSIDE_REFERENCE_SPAN');
     expect(await code('zodiacs.solar_return', { birth: tokyo1800, year: 2000 })).toBe('ok');
     expect(await code('zodiacs.lunar_return', { birth: tokyo1800 })).toBe('OUTSIDE_REFERENCE_SPAN');
-    expect(await code('zodiacs.lunar_return', { birth: { ...niue2199, place: TOKYO } })).toBe('REFERENCE_BEFORE_BIRTH');
+    expect(await code('zodiacs.lunar_return', { birth: { ...niue2199, place: TOKYO } })).toBe('FUTURE_BIRTH_DATE');
+    expect(await code('zodiacs.lunar_return', { birth: { date: '1990-06-15', time: '14:30', place: TOKYO }, after: '1990-06-15T00:00:00Z' })).toBe('REFERENCE_BEFORE_BIRTH');
     expect(await code('zodiacs.birth_chart', tokyo1800)).toBe('ok');
   }, 600_000);
 });

@@ -17456,7 +17456,7 @@ var compatibilityPerson = z2.strictObject({
   zone: z2.string().min(1).max(64).regex(ZONE_PATTERN2).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z2.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign. Give it with longitude and zone. Nothing is stored."),
   longitude: z2.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
-  place: plainText(80).optional().describe("Optional birthplace name, such as Madrid, Spain. Display only, not stored.")
+  place: plainText(80).optional().describe("Optional birthplace name, such as Seville, Spain. Display only, not stored.")
 }).superRefine((args, context) => {
   if (args.famous !== void 0) {
     if (Object.keys(args).length !== 1) context.addIssue({ code: "custom", message: "Give a famous person alone, without birth details." });
@@ -26905,8 +26905,8 @@ var DAYS = birthdays_default.days;
 var [YEAR_FROM, YEAR_TO] = birthdays_default.yearRange;
 var zone2 = z3.string().min(1).max(64).regex(ZONE_PATTERN3);
 var birthdayInput = z3.strictObject({
-  date: z3.string().regex(/^\d{2}-\d{2}$/).optional().describe("A birthday without a year, as MM-DD, such as 05-03 for 3 May. This is enough for general birthday facts. Give this or birthDate."),
-  birthDate: z3.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe("The full birth date, such as 1997-05-03. Use only for the solar return or to resolve the sign of a cusp date in that birth year."),
+  date: z3.string().regex(/^\d{2}-\d{2}$/).optional().describe("A birthday without a year, as MM-DD, such as 05-14 for 14 May. This is enough for general birthday facts. Give this or birthDate."),
+  birthDate: z3.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe("The full birth date, such as 1994-05-14. Use only for the solar return or to resolve the sign of a cusp date in that birth year."),
   time: z3.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, if known. Needs zone."),
   zone: zone2.optional().describe("The birthplace's time zone, such as Europe/London."),
   longitude: z3.number().min(-180).max(180).optional().describe("Use only for historical birth dates when the birthplace used local mean time, to convert its clock to UTC. Needs zone. Do not request coordinates for modern birthdays."),
@@ -27011,7 +27011,7 @@ function signRow(sign3) {
 }
 function parseMonthDay(month, day2) {
   if (!(month >= 1 && month <= 12) || !(day2 >= 1 && day2 <= DAYS_IN_MONTH2[month - 1])) {
-    throw new RangeError("That is not a calendar date. Give a real month and day, such as 05-03 for 3 May.");
+    throw new RangeError("That is not a calendar date. Give a real month and day, such as 05-14 for 14 May.");
   }
 }
 function isLeapYear(year) {
@@ -27920,12 +27920,12 @@ var NATAL_TOP_ASPECTS = 8;
 var NATAL_NOTE = "Astrology\u2019s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny.";
 var PLANETS2 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var natalChartFields = {
-  birthDate: z4.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1990-05-03 (years 1800 to 2199)."),
-  time: z4.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, such as 08:30, only if the person knows it. Never guess it. Needs zone."),
+  birthDate: z4.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1994-05-14 (years 1800 to 2199)."),
+  time: z4.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, such as 09:15, only if the person knows it. Never guess it. Needs zone."),
   zone: z4.string().min(1).max(64).regex(ZONE_PATTERN4).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z4.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign and the houses. Give it with longitude and zone. Nothing is stored."),
   longitude: z4.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
-  place: z4.string().trim().min(1).max(80).regex(PLAIN_TEXT2).optional().describe("Optional birthplace name, such as Madrid, Spain. Display only: it is not used in the calculation and is not stored.")
+  place: z4.string().trim().min(1).max(80).regex(PLAIN_TEXT2).optional().describe("Optional birthplace name, such as Seville, Spain. Display only: it is not used in the calculation and is not stored.")
 };
 function natalChartRules(args, context) {
   if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
@@ -28089,7 +28089,7 @@ var placementUrl = (origin, body2, slug) => `${origin}/learn/placements/${body2.
 async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today2 = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), options = {}) {
   const date3 = parseCivilDate(args.birthDate);
   if (!date3 || date3.year < NATAL_MIN_YEAR || date3.year > NATAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
-  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
+  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 09:15.");
   const timeKnown = args.time !== void 0;
   const latitude = args.latitude === void 0 ? void 0 : roundCoordinate(args.latitude);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
@@ -32266,7 +32266,7 @@ var TRANSITS_NOTE = "Astrology\u2019s reading of the sky meeting your birth char
 var ORDINAL6 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
 var zone3 = z7.string().min(1).max(64).regex(ZONE_PATTERN7);
 var personalTransitsInput = z7.strictObject({
-  birthDate: z7.string().regex(DATE2).describe("The birth date, such as 1990-05-03 (years 1800 to 2199)."),
+  birthDate: z7.string().regex(DATE2).describe("The birth date, such as 1994-05-14 (years 1800 to 2199)."),
   time: z7.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, only if the person knows it. Never guess it. Needs zone. Without it the Moon, rising degree and Midheaven are left out."),
   zone: zone3.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z7.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising degree and Midheaven. Give it with longitude and zone. Nothing is stored."),
@@ -32274,7 +32274,7 @@ var personalTransitsInput = z7.strictObject({
   mode: z7.enum(["window", "year-ahead"]).optional().describe("window (the default): every exact contact between from and to. year-ahead: the year from today, with Jupiter and Saturn, the solar return, a Saturn return, sign changes and eclipses near the chart."),
   from: z7.string().regex(DATE2).optional().describe("For window: the first day, such as 2026-11-01. Defaults to today."),
   to: z7.string().regex(DATE2).optional().describe(`For window: the last day, at most ${TRANSITS_MAX_DAYS} days after from. Defaults to a ${TRANSITS_DEFAULT_DAYS}-day window, from included.`),
-  currentZone: zone3.optional().describe("Where the person lives now, such as Asia/Bangkok, so dates fall on their own clock. Without it, dates use the birthplace clock, or UTC if that is missing too, and the answer says which.")
+  currentZone: zone3.optional().describe("Where the person lives now, such as America/Mexico_City, so dates fall on their own clock. Without it, dates use the birthplace clock, or UTC if that is missing too, and the answer says which.")
 }).superRefine((args, context) => {
   if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
   if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A birth time or a place needs its time zone." });
@@ -32433,7 +32433,7 @@ async function startOfDay(date3, timeZone, clock2) {
 async function getPersonalTransits(args, now, clock2, origin) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
-  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
+  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 09:15.");
   const latitude = args.latitude === void 0 ? void 0 : roundCoordinate(args.latitude);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
   const timeKnown = args.time !== void 0;
@@ -35522,7 +35522,7 @@ var COUNTRY_ALIAS = {
 var birthplaceInput = z9.strictObject({
   place: z9.string().trim().min(2).max(80).describe("A town or city name, such as London or Almaty. Not a street address. Nothing is stored."),
   country: z9.string().trim().min(2).max(60).optional().describe("Optional country when several places share the name, such as United Kingdom or Kazakhstan."),
-  date: z9.string().regex(DATE3).optional().describe("Optional date, such as 1990-05-03 (years 1800 to 2199), for the UTC offset in force that day. Without it, the offset is for today.")
+  date: z9.string().regex(DATE3).optional().describe("Optional date, such as 1994-05-14 (years 1800 to 2199), for the UTC offset in force that day. Without it, the offset is for today.")
 });
 var placeRow = z9.object({
   name: z9.string(),
@@ -35587,10 +35587,10 @@ function todayUtc(now) {
 async function findBirthplace(args, now, clock2, table) {
   const date3 = args.date ?? todayUtc(now);
   if (Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) || (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) !== date3) {
-    throw new RangeError("date must be a real date from 1800 to 2199, such as 1990-05-03.");
+    throw new RangeError("date must be a real date from 1800 to 2199, such as 1994-05-14.");
   }
   const year = Number(date3.slice(0, 4));
-  if (year < 1800 || year > 2199) throw new RangeError("date must be a real date from 1800 to 2199, such as 1990-05-03.");
+  if (year < 1800 || year > 2199) throw new RangeError("date must be a real date from 1800 to 2199, such as 1994-05-14.");
   const ranked = rankPlaces(table, queryVariants(args.place));
   const matched = args.country ? ranked.filter((city) => countryMatches(city.country, args.country)) : ranked;
   if (!matched.length && HOUSE_NUMBER.test(args.place)) throw new RangeError("Give a town or city name, not a street address.");
@@ -39877,7 +39877,7 @@ var year_people_default = {
       aliases: [
         "saylor"
       ],
-      description: "Business executive, co-founder and executive chairman of Strategy",
+      description: "Business executive",
       category: "founder",
       birthDate: "1965-02-04",
       birthTime: null,
@@ -40086,25 +40086,6 @@ var year_people_default = {
       note: null
     },
     {
-      slug: "warren-buffett",
-      name: "Warren Buffett",
-      aliases: [],
-      description: "Chairman of Berkshire Hathaway",
-      category: "investor",
-      birthDate: "1930-08-30",
-      birthTime: null,
-      zone: "America/Chicago",
-      birthplace: "Omaha, Nebraska, United States",
-      sources: [
-        {
-          title: "Britannica: Warren Buffett",
-          url: "https://www.britannica.com/print/article/766234"
-        }
-      ],
-      alternateBirthDates: [],
-      note: null
-    },
-    {
       slug: "larry-ellison",
       name: "Larry Ellison",
       aliases: [],
@@ -40186,7 +40167,7 @@ var year_people_default = {
       aliases: [
         "VitalikButerin"
       ],
-      description: "Programmer, co-founder of Ethereum",
+      description: "Programmer and writer",
       category: "founder",
       birthDate: "1994-01-31",
       birthTime: null,
@@ -40505,9 +40486,28 @@ function findYearPerson(query) {
   return BY_KEY.get(personKey(query));
 }
 var yearPersonPath = (slug) => `/year/${slug}/`;
+var FIGURE_NOTE = "This reads a public birth date against the slow planets. It says nothing about a company, a team, a result or a share price.";
+var figureDriverTitle = (title, name) => title.replace(/\byour\b/u, `${name}'s`);
 function yearPageStart(now) {
   return `${now.toISOString().slice(0, 7)}-01`;
 }
+
+// src/lib/year-score/tier.ts
+function scoreTier(score2) {
+  if (score2 >= 8) return { key: "open", label: "A wide open year", summary: "The slow planets mostly help. Tradition reads a year like this as strong for career growth, and a good window to start things and sign agreements." };
+  if (score2 >= 6.5) return { key: "supportive", label: "A supportive year", summary: "More of the slow-planet weather helps than presses. A good year to build on what already works, in your work and at home." };
+  if (score2 >= 3.5) return { key: "balanced", label: "A balanced year", summary: "Support and pressure arrive in about equal measure. The months below show when each one leads." };
+  if (score2 >= 2) return { key: "pressure", label: "A year of steady pressure", summary: "The slow planets ask more than they give. Astrology reads this as a year for patience and follow through: steady work, keeping things simple and taking rest seriously." };
+  return { key: "heavy-pressure", label: "A year of heavy pressure", summary: "The slow planets press hard on the chart. Tradition reads this as a demanding year: keep commitments clear, look after your energy and let patient work do the building." };
+}
+var FIGURE_SUMMARY = {
+  open: "The slow planets mostly help this chart over these twelve months.",
+  supportive: "More of the slow-planet weather helps this chart than presses on it.",
+  balanced: "Support and pressure arrive in about equal measure. The months below show when each one leads.",
+  pressure: "The slow planets press on this chart more than they help it.",
+  "heavy-pressure": "The slow planets press hard on this chart over these twelve months."
+};
+var figureTierSummary = (key2) => FIGURE_SUMMARY[key2];
 
 // src/lib/year-score/range.ts
 var HOUR5 = 36e5;
@@ -40546,15 +40546,6 @@ var UNTIMED_NOTE_WITH_RANGE = "No birth time was given, so the chart is cast for
 var UNTIMED_NOTE = "No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time.";
 function untimedScoreNote(range) {
   return rangeWorthShowing(range) ? UNTIMED_NOTE_WITH_RANGE : UNTIMED_NOTE;
-}
-
-// src/lib/year-score/tier.ts
-function scoreTier(score2) {
-  if (score2 >= 8) return { key: "open", label: "A wide open year", summary: "The slow planets mostly help. Tradition reads a year like this as strong for career growth and earnings, and a good window to start things and sign agreements." };
-  if (score2 >= 6.5) return { key: "supportive", label: "A supportive year", summary: "More of the slow-planet weather helps than presses. A good year to build on what already works, at work and with money alike." };
-  if (score2 >= 3.5) return { key: "balanced", label: "A balanced year", summary: "Support and pressure arrive in about equal measure. The months below show when each one leads." };
-  if (score2 >= 2) return { key: "pressure", label: "A year of steady pressure", summary: "The slow planets ask more than they give. Astrology reads this as a year for patience and follow through: steady work, careful spending and taking rest seriously." };
-  return { key: "heavy-pressure", label: "A year of heavy pressure", summary: "The slow planets press hard on the chart. Tradition reads this as a demanding year: keep commitments clear, look after your energy and let patient work do the building." };
 }
 
 // src/lib/year-score/reading.ts
@@ -40637,11 +40628,13 @@ function yearReading(year, guard = (text2) => text2) {
 
 // src/lib/year-score/share.ts
 var YEAR_SCORE_SHARE_PATH = "/share/year-score/";
-var YEAR_SCORE_SHARE_KEYS = Object.freeze(["s", "v", "p", "ref"]);
+var YEAR_SCORE_SHARE_KEYS = Object.freeze(["s", "v", "p", "m", "ref"]);
 var SLUG_RE2 = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
+var MONTH_RE = /^\d{4}-(?:0[1-9]|1[0-2])$/u;
 var isSign3 = (value) => typeof value === "string" && SHARE_SIGNS.includes(value);
 function yearScoreQuery(share, withRef2 = false) {
   const params = share.kind === "self" ? new URLSearchParams({ s: share.sun, v: share.score.toFixed(1) }) : new URLSearchParams({ p: share.slug });
+  if (share.kind === "figure" && share.month) params.set("m", share.month);
   if (withRef2 && share.ref) params.set("ref", share.ref);
   return params.toString();
 }
@@ -40649,8 +40642,9 @@ function yearScoreShareUrl(origin, you) {
   if (!isSign3(you.sun) || !Number.isFinite(you.score) || you.score < 0 || you.score > 10) return null;
   return `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "self", sun: you.sun, score: Math.round(you.score * 10) / 10, ref: null })}`;
 }
-function figureYearScoreShareUrl(origin, slug) {
-  return SLUG_RE2.test(slug) && slug.length <= 64 ? `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "figure", slug, ref: null })}` : null;
+function figureYearScoreShareUrl(origin, slug, month) {
+  if (!SLUG_RE2.test(slug) || slug.length > 64 || month !== void 0 && !MONTH_RE.test(month)) return null;
+  return `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "figure", slug, month: month ?? null, ref: null })}`;
 }
 
 // src/ai-tools/features/year-score.ts
@@ -40662,7 +40656,7 @@ var YEAR_SCORE_START_MAX = "2099-12-31";
 var zone4 = z12.string().min(1).max(64).regex(ZONE_PATTERN9);
 var yearScoreInput = z12.strictObject({
   person: z12.string().min(2).max(80).optional().describe("A public figure from the Zodiacs Year Ahead directory, by full name, such as Jensen Huang. Use instead of birth details. A name the directory does not have is answered plainly, with no score."),
-  birthDate: z12.string().regex(DATE5).optional().describe("The person\u2019s own birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link."),
+  birthDate: z12.string().regex(DATE5).optional().describe("The person\u2019s own birth date, such as 1994-05-14. Used for this answer only; never stored, logged or put in a link."),
   time: z12.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, only if known. Never guess it. Needs zone. Without it the Moon is left out."),
   zone: zone4.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
   latitude: z12.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
@@ -40675,7 +40669,7 @@ var yearScoreInput = z12.strictObject({
   if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A birth time or a place needs its time zone." });
 });
 var yearScoreSelfInput = z12.strictObject({
-  birthDate: z12.string().regex(DATE5).describe("The person\u2019s own birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link."),
+  birthDate: z12.string().regex(DATE5).describe("The person\u2019s own birth date, such as 1994-05-14. Used for this answer only; never stored, logged or put in a link."),
   time: z12.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, only if known. Never guess it. Needs zone. Without it the Moon is left out."),
   zone: zone4.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
   latitude: z12.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
@@ -40805,7 +40799,7 @@ async function getYearScore(args, now, clock2, origin) {
     birthDate = args.birthDate;
     const parsed2 = parseCivilDate(birthDate);
     if (!parsed2 || parsed2.year < 1800 || parsed2.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
-    if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
+    if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 09:15.");
     time = args.time ?? null;
     timeZone = args.zone ?? null;
     longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
@@ -40828,6 +40822,7 @@ async function getYearScore(args, now, clock2, origin) {
   if (!timeZone && !figure) limits2.push("No time zone was given, so the birth is placed at noon UTC.");
   limits2.push("The score reads Jupiter, Saturn, Uranus, Neptune and Pluto against the Sun, Moon, Mercury, Venus and Mars. Fast planets and eclipses are left out.");
   if (figure?.note) limits2.push(figure.note);
+  if (figure) limits2.push(FIGURE_NOTE);
   const alternates = [];
   for (const alternate of figure?.alternateBirthDates ?? []) {
     const altUtc = await birthInstant3(alternate.date, null, figure.zone, clock2);
@@ -40835,6 +40830,7 @@ async function getYearScore(args, now, clock2, origin) {
     alternates.push({ birthDate: alternate.date, score: altYear.score, label: yearReading(altYear).tier.label });
   }
   const detail = readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed });
+  const pick = (month) => month && figure ? { ...month, line: `${month.name}: ${month.score.toFixed(1)}/10.` } : month;
   return {
     data: {
       status: "found",
@@ -40843,17 +40839,17 @@ async function getYearScore(args, now, clock2, origin) {
       to: year.to,
       score: year.score,
       label: reading.tier.label,
-      summary: guard(reading.tier.summary),
-      best: reading.best,
-      hardest: reading.hardest,
+      summary: figure ? figureTierSummary(reading.tier.key) : guard(reading.tier.summary),
+      best: pick(reading.best),
+      hardest: pick(reading.hardest),
       drivers: reading.drivers.map((driver, index) => ({
         planet: driver.planet,
         aspect: driver.aspect,
         point: driver.point,
         tone: driver.tone,
         share: driver.share,
-        title: driver.title,
-        line: driver.line,
+        title: figure ? figureDriverTitle(driver.title, figure.name) : driver.title,
+        line: figure ? `${figureDriverTitle(driver.title, figure.name)}: ${driver.tone}.` : driver.line,
         inOrb: driver.inOrbFrom === driver.inOrbTo ? dayName(driver.inOrbFrom) : `${dayName(driver.inOrbFrom)} to ${dayName(driver.inOrbTo)}`,
         exact: exact[index]
       })),
@@ -40868,7 +40864,7 @@ async function getYearScore(args, now, clock2, origin) {
       // A directory figure's own page; a person's own details have no page, so the calculator.
       pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
       // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
-      shareUrl: figure ? start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null : yearScoreShareUrl(origin, { sun, score: year.score })
+      shareUrl: figure ? start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug, start.slice(0, 7)) : null : yearScoreShareUrl(origin, { sun, score: year.score })
     },
     links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links
   };
@@ -41050,13 +41046,13 @@ var DATE6 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 var BODIES4 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var zone5 = z13.string().min(1).max(64).regex(ZONE_PATTERN10);
 var solarReturnInput = z13.strictObject({
-  birthDate: z13.string().regex(DATE6).describe("The person\u2019s birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link."),
+  birthDate: z13.string().regex(DATE6).describe("The person\u2019s birth date, such as 1994-05-14. Used for this answer only; never stored, logged or put in a link."),
   time: z13.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, only if known. Never guess it. Needs zone. With latitude and longitude it adds the return\u2019s rising sign and houses."),
   zone: zone5.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z13.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude; the return is cast there. Nothing is stored."),
   longitude: z13.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
   which: z13.enum(["next", "current"]).optional().describe("next (the default): the return at the coming birthday. current: the one that opened the birthday year now running."),
-  currentZone: zone5.optional().describe("Where the person lives now, such as Asia/Bangkok, so the return\u2019s time is on their own clock.")
+  currentZone: zone5.optional().describe("Where the person lives now, such as America/Mexico_City, so the return\u2019s time is on their own clock.")
 }).superRefine((args, context) => {
   if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
   if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A birth time or a place needs its time zone." });
@@ -41096,7 +41092,7 @@ function dateLabel(at) {
 async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = false) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
-  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
+  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 09:15.");
   const latitude = args.latitude === void 0 ? void 0 : roundCoordinate(args.latitude);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
   const timeKnown = args.time !== void 0;
@@ -41560,7 +41556,7 @@ var PERSONAL_YEAR_MEANINGS = Object.freeze({
   5: "A year for change. Travel, new people, and a restlessness the tradition says is worth following, within reason. Freedom is the theme; discipline is the counterweight.",
   6: "A year for responsibility. Family, home, and the people who depend on you take the foreground. The tradition pairs the care given in this year with care returned in later ones.",
   7: "A year for the inward turn. Study, rest, and questions that need quiet to answer. Less is happening on the surface than underneath.",
-  8: "A year for results. Ambition, authority, money, and what the last seven years of effort add up to; the tradition reads it as a strong year for earnings and promotion. Decisions carry weight; so do their consequences.",
+  8: "A year for results. Ambition, authority, and what the last seven years of effort add up to. Decisions carry weight; so do their consequences.",
   9: "A year for completion. Endings, clearing out, and finishing what the cycle started. The tradition says to let go now so the 1 year that follows starts clear."
 });
 var KARMIC_DEBT_MEANINGS = Object.freeze({
@@ -41594,7 +41590,7 @@ var POSITION_READINGS = Object.freeze({
     5: "As a Life Path, 5 reads as a road of movement and variety. Change teaches you more than routine does, and the lesson is choosing your commitments freely rather than escaping them.",
     6: "As a Life Path, 6 reads as a road of responsibility: home, community and the people who rely on you. The lesson that keeps returning is care without control, and taking your own rest and wellbeing as seriously as everyone else's.",
     7: "As a Life Path, 7 reads as a road of study and questions. You trust what you have examined for yourself, and the lesson is letting that understanding take in people as well as ideas.",
-    8: "As a Life Path, 8 reads as a road of authority and results: organising, leading, and a strong head for money and business. The tradition counts it among the best numbers for earning and building, and the recurring lesson is judging a life by more than what it earned.",
+    8: "As a Life Path, 8 reads as a road of authority and results: organising, leading, and a head for running things at scale. The tradition counts it among the strongest numbers for building, and the recurring lesson is judging a life by more than what it achieved.",
     9: "As a Life Path, 9 reads as a road toward the wide view: generosity, causes and finishing things well. The lesson is letting go gracefully, and giving to the people nearest you as well as to the many.",
     11: "As a Life Path, 11 reads as a road of insight. You pick up what others miss and are drawn to inspire them; the tradition says the work is grounding that sensitivity in plain, everyday steps. On ordinary days it lives as a 2.",
     22: "As a Life Path, 22 reads as a road of large, practical vision: turning a big idea into something that lasts and that other people can use. The tradition says it asks for patience with scale. On ordinary days it lives as a 4.",
@@ -41604,11 +41600,11 @@ var POSITION_READINGS = Object.freeze({
     1: "As an Expression number, 1 points to a gift for initiative. You tend to work best when you can set the direction, and careers where you lead or work for yourself suit it well.",
     2: "As an Expression number, 2 points to a gift for collaboration: mediating, refining an idea someone else started, and noticing the detail that makes a joint effort hold together.",
     3: "As an Expression number, 3 points to a gift for communication: writing, speaking, performing or teaching, anything that turns an idea into something people enjoy hearing.",
-    4: "As an Expression number, 4 points to a gift for method: organising, building and finishing. You tend to be the one who turns a rough plan into a schedule that works, and the tradition reads it as a steady earner in any trade.",
+    4: "As an Expression number, 4 points to a gift for method: organising, building and finishing. You tend to be the one who turns a rough plan into a schedule that works, and the tradition reads it as dependable in any trade.",
     5: "As an Expression number, 5 points to a gift for adaptability: learning quickly, persuading, and handling the unexpected well. Variety in the work tends to bring out your best.",
     6: "As an Expression number, 6 points to a gift for care and fairness: teaching, hosting, advising, and making a place feel looked after.",
     7: "As an Expression number, 7 points to a gift for analysis: research, close reading, and solving the problem other people stopped looking at.",
-    8: "As an Expression number, 8 points to a gift for organisation at scale: running people, projects and budgets, and seeing a plan through to its end. The tradition ties it to business, management and handling money well.",
+    8: "As an Expression number, 8 points to a gift for organisation at scale: running people and projects, and seeing a plan through to its end. The tradition ties it to leadership, management and carrying large responsibilities.",
     9: "As an Expression number, 9 points to a gift for the broad view: understanding many kinds of people, and work that serves a purpose larger than yourself.",
     11: "As an Expression number, 11 points to a gift for inspiration: ideas that arrive whole, and a way of explaining them that moves people. It carries the 2's tact as well.",
     22: "As an Expression number, 22 points to a gift for building on a large scale, pairing a wide vision with the patience to organise the details. It carries the 4's method as well.",
@@ -41618,7 +41614,7 @@ var POSITION_READINGS = Object.freeze({
     1: "As a Soul Urge, 1 reads as a private wish for independence: to be trusted with your own choices, and to make something that is recognisably yours.",
     2: "As a Soul Urge, 2 reads as a private wish for closeness and calm, a partnership where you are understood without having to explain everything.",
     3: "As a Soul Urge, 3 reads as a private wish to be heard and to create: room to play, to make things, and to share what delights you.",
-    4: "As a Soul Urge, 4 reads as a private wish for steadiness: a settled home, a routine you like, savings you can count on, and work you can trust to hold.",
+    4: "As a Soul Urge, 4 reads as a private wish for steadiness: a settled home, a routine you like, security you can count on, and work you can trust to hold.",
     5: "As a Soul Urge, 5 reads as a private wish for freedom: new experiences, room to move, and a life that does not repeat itself.",
     6: "As a Soul Urge, 6 reads as a private wish to be needed and to make a warm place for other people. Harmony at home matters a great deal.",
     7: "As a Soul Urge, 7 reads as a private wish for understanding: quiet, time to think, and answers that hold up when you look at them closely.",
@@ -41702,7 +41698,7 @@ var ZONE_PATTERN11 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var NUMEROLOGY_MIN_YEAR = 1800;
 var NUMEROLOGY_MAX_YEAR = 2199;
 var numerologyInput = z14.strictObject({
-  birthDate: z14.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1990-05-03. Gives the Life Path and the Personal Year."),
+  birthDate: z14.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1994-05-14. Gives the Life Path and the Personal Year."),
   name: z14.string().min(1).max(120).optional().describe("Optional: the full name at birth, such as it appears on a birth certificate, for the Expression, Soul Urge and Personality numbers. Only if the person gives it for this reading. Latin letters; accents are folded. Used for this answer only: it is not returned, put in a link or stored."),
   year: z14.number().int().min(NUMEROLOGY_MIN_YEAR).max(NUMEROLOGY_MAX_YEAR).optional().describe("Optional: the calendar year for the Personal Year, such as 2027. Without it, the current year where the person is."),
   zone: z14.string().min(1).max(64).regex(ZONE_PATTERN11).optional().describe("Optional: the person's time zone, such as Europe/Paris, so the current year is their own. Without it, the assistant's time zone or UTC.")
@@ -41752,7 +41748,7 @@ var numerologyData = z14.object({
 var NUMEROLOGY_METHOD = "Pythagorean letter values (A to I are 1 to 9, J to R are 1 to 9, S to Z are 1 to 8). The birth month, day and year are each reduced, then added and reduced again; each part of the name is reduced on its own before the parts are added. 11, 22 and 33 are kept as master numbers in the core numbers. Y is a vowel unless it follows A, E, I, O or U, or opens a name before one. The Personal Year adds the birth month and day to the calendar year and reduces to one digit. The same rules as the calculator at zodiacs.org/numerology/.";
 var NUMEROLOGY_NOTE = "The arithmetic is exact and repeatable. The meanings are the ones the numerology tradition gives each number, in Zodiacs' own words.";
 var REFUSALS = {
-  "invalid-date": "birthDate must be a real calendar date, such as 1990-05-03.",
+  "invalid-date": "birthDate must be a real calendar date, such as 1994-05-14.",
   "empty-name": "name must contain at least one letter. Leave it out for the birth date numbers alone.",
   "unsupported-letters": "name can be read only in the Latin alphabet, A to Z (accents are fine). Leave it out for the birth date numbers alone, or give the name as it is written in Latin letters."
 };
@@ -41778,7 +41774,7 @@ function getNumerology(args, context) {
 }
 
 // src/ai-tools/contracts.ts
-var AI_VERSION = "0.6.7";
+var AI_VERSION = "0.6.8";
 var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
 var AI_TOOL_NAMES = ["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "get_horoscope", "open_chart_studio"];
 var ASSISTANT_OCCASION_KINDS = ["wedding", "anniversary", "met", "birthday", "pet", "home", "job", "graduation", "retirement", "gathering"];
@@ -41842,9 +41838,9 @@ var TOOL_TITLES = {
   get_solar_return: "Your solar return",
   get_numerology: "Numerology numbers"
 };
-var instant = z15.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\u20132199).");
+var instant = z15.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800\u20132199).");
 var ZONE_PATTERN12 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
-var zone6 = z15.string().min(1).max(64).regex(ZONE_PATTERN12).describe("The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.");
+var zone6 = z15.string().min(1).max(64).regex(ZONE_PATTERN12).describe("The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.");
 var date = z15.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
 var wallClock = z15.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
 var INPUT_SCHEMAS = {
@@ -41857,14 +41853,14 @@ var INPUT_SCHEMAS = {
   check_sky_fact: z15.strictObject({ kind: z15.enum(["sign", "retrograde", "ingress", "phase"]), body: z15.enum(EVENT_BODIES).optional(), sign: z15.enum(SIGN_SLUGS).optional(), phase: z15.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone6.optional() }),
   get_occasion_sky: z15.strictObject({
     occasion: z15.enum(ASSISTANT_OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering."),
-    date: date.optional().describe("The day, such as 2027-06-12 (years 1800\u20132199). Needed unless searchFrom and searchTo are given."),
-    searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo."),
-    searchTo: date.optional().describe("The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
-    time: wallClock.optional().describe("The local clock time, such as 19:00, if the person gives one. Needs zone."),
-    zone: zone6.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
+    date: date.optional().describe("The day, such as 2027-09-18 (years 1800\u20132199). Needed unless searchFrom and searchTo are given."),
+    searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-09-01. Give it with searchTo."),
+    searchTo: date.optional().describe("The last day of the window to search, such as 2027-09-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
+    time: wallClock.optional().describe("The local clock time, such as 16:30, if the person gives one. Needs zone."),
+    zone: zone6.optional().describe("The place's time zone, such as Europe/Lisbon. Needed with a time or a place."),
     latitude: z15.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
     longitude: z15.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
-    place: z15.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored."),
+    place: z15.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Lisbon, Portugal. Display only: it is not used in the calculation and is not stored."),
     names: z15.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
   }).superRefine((args, context) => {
     if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
@@ -42091,12 +42087,12 @@ var OUTPUT_SCHEMAS = {
   get_numerology: outputSchema("get_numerology", dataSchemas.get_numerology)
 };
 var TOOL_DESCRIPTIONS = {
-  open_chart_studio: "Opens Chart Studio, an interactive birth chart that the person fills in themselves with a birth date, a place and, if known, a time. The chart is calculated inside the panel. It takes no input. It fits someone who wants to explore their own chart, or who has not given birth details in the conversation. The assistant sees only the parts of the chart the person chooses to share.",
+  open_chart_studio: "Opens Chart Studio, an interactive birth chart that the person fills in themselves with a birth date, a place and, if known, a time. The chart is calculated inside the panel. It takes no input, so it opens before any birth detail is given. It fits a request for a birth chart, a rising sign or a Moon sign when no birth date is in the conversation, and someone who wants to explore their own chart: the person enters the details in the panel, so nothing has to be asked for beforehand. The assistant sees only the parts of the chart the person chooses to share.",
   get_capabilities: "Returns a list of what Zodiacs can do, its limits and how it handles privacy. It takes no input and needs no sign-in or birth details. It fits a question about what Zodiacs can do, or about its limits. It describes the service and calculates nothing. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes.",
   get_sky: "Returns where the Sun, the Moon and the planets are now or at a given moment, with the Moon's phase. It fits a question about the sky at one moment, with no person's chart involved. It is astronomy only and makes no personal prediction. Moments run from 1800 to 2199. It takes an optional time zone; without one its times are in UTC. It gives positions for a moment, with no houses or rising sign.",
-  get_upcoming_events: "Lists changes in the sky over a window of up to 92 days: planets changing sign, planets turning retrograde or direct, and new and full Moons. With no input it covers the next seven days. It fits a question about what is coming up in the sky over the next days or weeks. It does not list eclipses or every aspect. The window is at most 92 days, within 1800 to 2199. Without a time zone its times are in UTC. Its times for a slow planet's sign change come from the engine and can differ from NASA JPL Horizons by hours: for Neptune entering Aries on 26 January 2026 it gives 14:31:41 UTC, where Horizons gives 17:35 UTC.",
-  check_sky_fact: "Checks one claim about the sky and answers yes, no, or that it depends on the time zone when the answer changes during that day. It checks four kinds of claim: a body's sign, whether a planet is retrograde, a sign change on a date, and a Moon phase on a date. It fits a question such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?'. It is astronomy only and cannot check a prediction. Dates run from 1800 to 2199. Its times for a slow planet's sign change carry the same limit as get_upcoming_events: it gives 14:31:41 UTC for Neptune entering Aries on 26 January 2026, where NASA JPL Horizons gives 17:35 UTC. API documentation: https://zodiacs.org/developers/compute/.",
-  get_horoscope: `Returns the Sun-sign horoscope Zodiacs publishes for a date: general, love or career for a day, or general for the week. With a birth date it adds a personal forecast for the week from that person's own chart, in dated lines. Each reading is dated and carries a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing the reading. It fits a request for a daily or weekly horoscope or a reflective reading for a sign. Daily readings exist for the day before, the day of and the day after the current edition. Limits: no betting tips, sports picks, stock picks, investment timing, financial forecasts, election forecasts, health predictions or guaranteed outcomes, including when such a request mentions a horoscope. For a birth date under 18 there is no love or romance reading: the general reading stands in, with a note that says so. With no birth date it has no way to know the reader's age. It refuses a birth date less than 13 years ago. Birth details are used for this answer only: never stored, logged or put in a link. Zodiacs sends no notifications and schedules nothing. Its results include a link to the sign-up page for the daily email.`,
+  get_upcoming_events: "Lists changes in the sky over a window of up to 92 days: planets changing sign, planets turning retrograde or direct, and new and full Moons. With no input it covers the next seven days. It fits a question about what is coming up in the sky over the next days or weeks. It does not list eclipses or every aspect. It lists dates and makes no prediction. A request to set a reminder or an alert, or to schedule anything, is not a request for this tool, not even to look the date up first: Zodiacs sets no reminders and schedules nothing. Nor is a stock or lottery pick, an investment call, a bet, an election or health forecast, or a guarantee. The window is at most 92 days, within 1800 to 2199. Without a time zone its times are in UTC. Its times for a slow planet's sign change come from the engine and can differ from NASA JPL Horizons by hours: for Neptune entering Aries on 26 January 2026 it gives 14:32 UTC, where Horizons gives 17:35 UTC.",
+  check_sky_fact: "Checks one claim about the sky and answers yes, no, or that it depends on the time zone when the answer changes during that day. It checks four kinds of claim: a body's sign, whether a planet is retrograde, a sign change on a date, and a Moon phase on a date. It fits a question such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?'. It is astronomy only and cannot check a prediction. Whether a retrograde, a sign or a Moon phase makes a good time to buy, sell, bet or invest is not a claim about the sky. A request for a stock or lottery pick, an investment call, a bet, an election or health forecast, or a guarantee is not a request for this tool, not even as a first step: Zodiacs does not do this, and no sky fact is checked for it. Dates run from 1800 to 2199. Its times for a slow planet's sign change carry the same limit as get_upcoming_events: it gives 14:31:41 UTC for Neptune entering Aries on 26 January 2026, where NASA JPL Horizons gives 17:35 UTC. API documentation: https://zodiacs.org/developers/compute/.",
+  get_horoscope: `Returns the Sun-sign horoscope Zodiacs publishes for a date: general, love or career for a day, or general for the week. With a birth date it adds a personal forecast for the week from that person's own chart, in dated lines. Each reading is dated and carries a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing the reading. It fits a request for a daily or weekly horoscope or a reflective reading for a sign. A horoscope asked for with no sign named still belongs here: it opens with the sign left for the person to choose. Daily readings exist for the day before, the day of and the day after the current edition. Limits: no betting tips, sports picks, stock picks, investment timing, financial forecasts, election forecasts, health predictions or guaranteed outcomes, including when such a request mentions a horoscope. A request for one of those is not a request for this tool, not even as a first step: Zodiacs does not do this, and no horoscope is fetched for it. For a birth date under 18 there is no love or romance reading: the general reading stands in, with a note that says so. With no birth date it has no way to know the reader's age. It refuses a birth date less than 13 years ago. There is no horoscope for a named child under 13, meaning a particular child the request names or points to, such as someone's nine-year-old daughter, whatever the sign and with or without a birth date. A Sun sign on its own, with no name and no birth date, gets the general horoscope for that sign. Birth details are used for this answer only: never stored, logged or put in a link. Zodiacs sends no notifications and schedules nothing, so a reminder or a horoscope on a schedule is not a request for this tool either. Its results include a link to the sign-up page for the daily email.`,
   get_occasion_sky: `Describes the sky on a day that matters to someone: the Sun and Moon signs, the Moon's phase and any retrograde planets, with a card title and short lines. With a place it adds sunset, golden hour, dusk, the Moon and the planets visible that evening. It rates the date from 0 to 100 with a verdict, the astrological reasons (Venus, the Moon's phase and sign, retrograde planets) and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. Given a window of up to 92 days as searchFrom and searchTo it rates every day and returns the three best-rated days. It rates one date per call. cardUrl is the complete link to the printable card, including every field after #; when cardUrl is null, the returned page link takes its place. shareUrl is the link for sharing the rating. It fits a wedding, an anniversary, the day two people met, a birthday, a pet, a new home, a job, a graduation, a retirement or a gathering. The rating is astrology's traditional reading; it never guarantees how the day will go. A birthday card for a day in the last 13 years is refused. A card's link carries the occasion's own day, time, zone and rounded coordinates, and no name. The place name and first names are printed on the card only and are not used in the calculation.`,
   get_life_milestones: "Lists astrology's life milestones from a birth date: each Jupiter return (about every 12 years), the Saturn returns (around 29, 58 and 88) and the Uranus opposition (early forties), with dates, ages and every pass of a retrograde loop, the next one coming, and counts of the full Moons and Mercury retrogrades since birth. It fits a question about a Saturn return or another lifetime return, from a known birth date. It makes no prediction. A birth date is enough; a birth time needs the birthplace's time zone. It refuses a birth date less than 13 years ago. Its share link shows the milestone and the age at it, never the birth date.",
   get_compatibility: `Compares two birth charts: the two people's Sun, Moon and rising signs, the closest contacts between their planets with what each traditionally means, and how their elements balance. It returns a score out of 100, scores for attraction, communication and long-term stability, a verdict, a headline and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. One side can be a famous person whose chart Zodiacs publishes. shareUrl is the link for sharing the score. It fits a question about compatibility between two adults, or between a person and a published famous person. The score is astrology's reading of two charts, not a guarantee of how a relationship will go. Limits: it compares two adults, so when either birth date is under 18 there is no love or romance reading and no score. It refuses a birth date less than 13 years ago. Each person needs a birth date; without a birth time and place there is no rising sign. A famous person's chart is for noon on their birth date, with no Moon or rising sign, and an unknown name returns found: false. Birth details are used for this answer only: never stored, logged or put in a link. Its results include a link inviting a partner to compare charts on the site.`,
@@ -42104,16 +42100,16 @@ var TOOL_DESCRIPTIONS = {
   get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. It fits a question about a well-known person's chart or sign. It covers only the people Zodiacs publishes. For anyone else it says it has no chart (found: false) and returns none.",
   get_birthday: "Describes the sky on a birthday: the Sun's sign for the date, its traditional meaning, the decan, and whether the date is on a cusp where the sign depends on the year or time. With a full birth date it resolves a cusp date's sign for that year, or calculates a solar return, the moment the Sun comes back to its birth position. It links to the date's birthday page and names the published famous people born that day. It fits a question about one birthday. It makes no prediction. A month and day is enough for general facts; the full birth date is needed only for a cusp or a solar return. The longitude field is for historical dates when a birthplace kept local mean time, and has no use for a modern birthday. Solar return years run from 1801 to 2199. It refuses a birth date less than 13 years ago. Its share link carries the month and day, never the year.",
   get_sky_calendar: "Returns the link for subscribing to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook, with how to add it and the next few events. The calendar holds new and full Moons, eclipses and retrograde periods and updates itself. It fits someone who wants these events in their own calendar. Event titles come in English, Spanish, Portuguese, French, Italian or Russian. It returns a subscription link; it adds nothing to anyone's calendar itself and schedules nothing.",
-  get_natal_chart: "Reads one person's birth chart in the conversation: the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets, and the balance of elements and modes, each with what astrology traditionally reads into it. It fits someone who has already given their birth date and wants the chart read out; open_chart_studio is the panel for filling one in. Without a birth time it gives no rising sign and no houses, and on a day the Moon changed sign it gives the Moon sign as two possibilities. The rising sign and houses also need the birthplace's latitude, longitude and time zone, which find_birthplace returns for a town or city. When the birth time fell in a skipped or repeated hour of a clock change, timeNote says which instant was used. Birth dates run from 1800 to 2199. It refuses a birth date less than 13 years ago, so it also refuses a chart for today or for a recent moment; for the sky at a moment there is get_sky. For a birth date under 18 romantic and attraction readings are left out and a note says so. chartUrl opens the birth chart page and carries no birth date, time, place or coordinates.",
-  get_horoscope_period: `Returns the Sun-sign reading Zodiacs publishes for a month, a year, or a love or career week, together with that period's sky for the sign: planets changing sign, turning retrograde or direct, new and full Moons and eclipses, placed in the sign's solar houses. A week adds that focus's daily readings. The forecast carries a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. It fits a request for a sign's month or year, or for a love or career week. Monthly readings are published from the first of each month, and yearly readings exist for 2026 and 2027. When a reading is not published it says so and still gives the sky. A month's sky leaves out the Moon's sign changes. A week is for love or career only; a general week and a single day belong to get_horoscope. Limits: focus love is a romance reading for adults, so for anyone under 18 there is no love or romance reading. No betting tips, sports picks, stock picks, investment timing, election forecasts, health predictions or guaranteed outcomes. It takes no birth date, so it cannot know a reader's age. Its results include a link to the sign-up page for the daily email. Its times for a slow planet's sign change carry the same limit as get_upcoming_events.`,
+  get_natal_chart: "Reads one person's birth chart in the conversation: the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets, and the balance of elements and modes, each with what astrology traditionally reads into it. It fits someone who has already given their birth date and wants the chart read out; open_chart_studio is the panel for filling one in. A chart, a rising sign or a Moon sign asked for with no birth date in the conversation belongs to open_chart_studio, which opens with no details: the person enters them there, so nothing has to be asked for first. Without a birth time it gives no rising sign and no houses, and on a day the Moon changed sign it gives the Moon sign as two possibilities. The rising sign and houses also need the birthplace's latitude, longitude and time zone, which find_birthplace returns for a town or city. When the birth time fell in a skipped or repeated hour of a clock change, timeNote says which instant was used. Birth dates run from 1800 to 2199. It refuses a birth date less than 13 years ago, so it also refuses a chart for today or for a recent moment; for the sky at a moment there is get_sky. For a birth date under 18 romantic and attraction readings are left out and a note says so. chartUrl opens the birth chart page and carries no birth date, time, place or coordinates.",
+  get_horoscope_period: `Returns the Sun-sign reading Zodiacs publishes for a month, a year, or a love or career week, together with that period's sky for the sign: planets changing sign, turning retrograde or direct, new and full Moons and eclipses, placed in the sign's solar houses. A week adds that focus's daily readings. The forecast carries a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. It fits a request for a sign's month or year, or for a love or career week. Monthly readings are published from the first of each month, and yearly readings exist for 2026 and 2027. When a reading is not published it says so and still gives the sky. A month's sky leaves out the Moon's sign changes. A week is for love or career only; a general week and a single day belong to get_horoscope. Limits: focus love is a romance reading for adults, so for anyone under 18 there is no love or romance reading. No betting tips, sports picks, stock picks, investment timing, election forecasts, health predictions or guaranteed outcomes. It takes no birth date, so it cannot know a reader's age. There is no horoscope for a named child under 13, meaning a particular child the request names or points to, whatever the sign. A Sun sign on its own, with no name and no birth date, gets the general reading for that sign. Its results include a link to the sign-up page for the daily email. Its times for a slow planet's sign change carry the same limit as get_upcoming_events.`,
   get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. It adds the animal's traditional associations and pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. It fits a question about someone's Chinese zodiac animal, or the animal of a year. A birth date before that year's Lunar New Year belongs to the previous animal year, and the answer gives the Lunar New Year date it used. Years run from 1901 to 2100. Without a time zone the current year is worked out in UTC, and the answer says so. It refuses a full birth date less than 13 years ago; given only a year, it answers.",
   get_personal_transits: `Lists dated transits to one person's birth chart: when the moving planets make exact aspects to the natal planets, and to the rising degree and Midheaven when the birth time and place are known, each with what astrology traditionally reads into it and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. By default it covers the next 30 days. In year-ahead mode it gives the year's highlights: the slow planets on the personal planets, the solar return, a Saturn return, Jupiter and Saturn changing sign, and eclipses near natal planets. It fits "my transits", "what is coming up for me" or "my year ahead", once a birth date has been given; get_horoscope and get_horoscope_period hold the Sun-sign horoscopes. A window is at most 366 days, and a window over 92 days keeps to Jupiter through Pluto. The window cannot start before the birth date. Without a birth time the Moon, the rising degree and the Midheaven are left out. Without currentZone dates use the birthplace's clock, or UTC if that is missing too, and the answer says which. Each line is astrology's reading, not a guarantee, and not health, financial or medical advice. It refuses a birth date less than 13 years ago, so it also refuses transits to a chart of today. For a birth date under 18 romantic and attraction readings are left out and a note says so.`,
-  explain_astrology: `Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. It also answers whether two Sun signs are compatible, from that sign-pair page. It fits a "what does X mean" question: a sign and its traits, a planet, a planet in a sign or a house, the houses, aspects, retrogrades, Moon phases, the void-of-course Moon, eclipses, the rising sign, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. For tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, or when nothing matches, it returns found: false with the topics it does explain. A person's own placements belong to get_natal_chart. A Sun-sign pair is answered as a romance reading for adults unless the topic includes the word friendship; the friendship answer is the element and modality pattern alone, with no romance. For anyone under 18 there is no love or romance reading, and the friendship reading takes its place. It takes no age or birth date, so it cannot know a reader's age.`,
+  explain_astrology: `Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. It also answers whether two Sun signs are compatible, from that sign-pair page. It fits a "what does X mean" question: a sign and its traits, a planet, a planet in a sign or a house, the houses, aspects, retrogrades, Moon phases, the void-of-course Moon, eclipses, the rising sign, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. For tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, or when nothing matches, it returns found: false with the topics it does explain. A person's own placements belong to get_natal_chart. Two people with birth dates belong to get_compatibility, which compares their charts as partners, friends, family or colleagues; this tool takes two Sun signs with no birth dates. The sign of a calendar date belongs to get_birthday. A Sun-sign pair is answered as a romance reading for adults unless the topic includes the word friendship; the friendship answer is the element and modality pattern alone, with no romance. For anyone under 18 there is no love or romance reading, and the friendship reading takes its place. It takes no age or birth date, so it cannot know a reader's age. A guarantee about a relationship or anything else, a reading for a named child under 13, and a stock or lottery pick, an investment call, a bet, or an election or health forecast are not requests for this tool, not even as a first step: Zodiacs does not do these, and no explainer is fetched for them.`,
   find_birthplace: 'Resolves the name of a town or city to a region, a country, coordinates rounded to two decimals, an IANA time zone and the UTC offset for an optional date, historical daylight saving included. get_natal_chart, get_personal_transits, get_compatibility and get_occasion_sky take those coordinates and that time zone. It fits a birthplace or a venue named as a town or city, where a chart tool needs its coordinates and time zone. Public town and city names only; it does not take a street address. It searches the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. An unknown place returns "No town or city matches". A place gives no information about a birth time. Dates for the offset run from 1800 to 2199.',
   search_sky_events: "Finds one kind of sky event months or years ahead: solar and lunar eclipses, planets and Chiron turning retrograde or direct (stations), planets and Chiron changing sign (ingresses), new and full Moons, and void-of-course Moon periods. Use it for questions such as when the next eclipse is, when Mercury next turns retrograde, when Saturn enters Taurus, when Chiron changes sign, every full Moon next year, or when the Moon is void of course this week. Name the kinds, and the planets (or Chiron) for stations and sign changes; give from and to as dates (to at most two years after from, and at most 31 days in all for void-of-course periods), the person's time zone and, if needed, a limit. Each event comes with its time in UTC and on the person's clock, its sign, one plain line and a link to its page on zodiacs.org when there is one. Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, with the same times: from the Moon's last major aspect to the Sun or a planet through Pluto in a sign until it enters the next sign. For everything that changes in the sky over the next days or weeks (up to 92 days), use get_upcoming_events; to follow eclipses, retrogrades and Moons in a calendar app, use get_sky_calendar. These are calculated dates, not forecasts, and carry no astrological reading.",
-  get_year_score: `Gives the Year Ahead Score for the person's own birth chart: a number from 0 to 10 for the twelve months from a date (today by default), the best and hardest months, and the slow-planet transits driving it (Jupiter, Saturn, Uranus, Neptune and Pluto in aspect to the Sun, Moon, Mercury, Venus and Mars). 5 is an ordinary year. Use it when someone asks how their own year ahead looks. Give their birth date, with the time and time zone only if they know them; never guess a time. It scores the person's own chart only; it does not score public figures or other people here. Birth details are used for this answer only: never stored, logged or put in a link. The score comes with its limits and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing it. A low score means pressure, not doom: a demanding year that rewards patience. Money, career, wellbeing and legal themes are read as astrology traditionally reads them, such as a strong year for earnings or a good window to sign agreements; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.`,
+  get_year_score: `Gives the Year Ahead Score for the person's own birth chart: a number from 0 to 10 for the twelve months from a date (today by default), the best and hardest months, and the slow-planet transits driving it (Jupiter, Saturn, Uranus, Neptune and Pluto in aspect to the Sun, Moon, Mercury, Venus and Mars). 5 is an ordinary year. Use it when someone asks how their own year ahead looks. Give their birth date, with the time and time zone only if they know them; never guess a time. It scores the person's own chart only; it does not score public figures or other people here. Birth details are used for this answer only: never stored, logged or put in a link. The score comes with its limits and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing it. A low score means pressure, not doom: a demanding year that rewards patience. Career, wellbeing and legal themes are read as astrology traditionally reads them, such as a good window to sign agreements, with no money, earnings or promotion forecasts; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.`,
   get_solar_return: `Gives the person's solar return: the chart for their next birthday, cast for the instant the Sun returns to its birth degree, with the year's main themes (the return's rising sign and the house of its Sun with a birth time and place, the Moon's sign with a birth time, where Jupiter grows and Saturn builds, and the chart's tightest aspect). Use it for questions such as what my next birthday chart says, or what themes my coming year holds. Give their birth date, with the time, time zone and coordinates only if they know them; never guess a time. which: current gives the return that opened the birthday year now running. Birth details are used for this answer only: never stored, logged or put in a link. The themes come with their limits, the return's time on the person's clock and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing it. Money, career, wellbeing and legal themes are read as astrology traditionally reads them; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.`,
-  get_numerology: "Works out numerology numbers from a birth date and, if the person gives it, their full name at birth: the Life Path, Expression, Soul Urge and Personality numbers (Pythagorean system, with 11, 22 and 33 kept as master numbers) and the Personal Year, each with Zodiacs' own written meaning. Numerology is a separate tradition from astrology, with no planets, signs or sky in it: say so when you share it, and do not present it as part of a birth chart. Use it when someone asks for their life path number or another numerology number. Give the birth date, and the name only as the person gives it for this reading; never guess either. The name and date are used for this answer only: they are not returned, stored or put in a link. Share the meanings plainly as numerology's traditional reading, including work, money and wellbeing where the tradition speaks to them, such as an 8 Personal Year as a strong year for earnings. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter."
+  get_numerology: "Works out numerology numbers from a birth date and, if the person gives it, their full name at birth: the Life Path, Expression, Soul Urge and Personality numbers (Pythagorean system, with 11, 22 and 33 kept as master numbers) and the Personal Year, each with Zodiacs' own written meaning. Numerology is a separate tradition from astrology, with no planets, signs or sky in it: say so when you share it, and do not present it as part of a birth chart. Use it when someone asks for their life path number or another numerology number. Give the birth date, and the name only as the person gives it for this reading; never guess either. The name and date are used for this answer only: they are not returned, stored or put in a link. Share the meanings plainly as numerology's traditional reading, including work and wellbeing where the tradition speaks to them, with no money, earnings or promotion forecasts. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter."
 };
 var SKY_EVENTS_INPUT_SCHEMAS = {
   get_natal_chart: natalChartInputWithHouses,
@@ -42128,16 +42124,67 @@ var SKY_EVENTS_TOOL_DESCRIPTIONS = {
   get_natal_chart: `${TOOL_DESCRIPTIONS.get_natal_chart} Houses are whole-sign unless houseSystem is placidus; Placidus cannot be drawn from about 66.6 degrees latitude, so there the chart uses whole-sign houses and houseNote says so. It also gives the North and South Nodes, the true node rather than the mean node, with their signs and houses, and Chiron, from NASA JPL Horizons positions for 1800 to 2199: its sign, degree, whether it is retrograde, its house when the birth time and place are known, and its aspects to the planets under the chart's own orbs. Outside those years Chiron is left out and unknown says so. shareUrl is the link for sharing the big three; it carries the Sun, Moon and rising signs, never the birth date.`,
   get_chinese_zodiac: `${TOOL_DESCRIPTIONS.get_chinese_zodiac} shareUrl is the link for sharing it; it names the animal alone, never a date or a year.`,
   get_horoscope_period: `${TOOL_DESCRIPTIONS.get_horoscope_period} shareUrl is the link for sharing a month's or a year's published reading.`,
-  explain_astrology: `Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. It also answers whether two Sun signs are compatible, from that sign-pair page. It fits a "what does X mean" question: a sign and its traits, a planet, a planet in a sign or a house, Chiron, the houses or one house, Placidus and whole-sign houses, aspects or one aspect, retrogrades, stations and retrograde loops, Mercury retrograde, Moon phases, new and full Moons, the void-of-course Moon, eclipses, the lunar nodes, ingresses (planets changing sign), the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. For tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, or when nothing matches, it returns found: false with the topics it does explain. A person's own placements belong to get_natal_chart. The dates of eclipses, stations, sign changes, new and full Moons and void-of-course periods, Chiron's included, come from search_sky_events. A Sun-sign pair is answered as a romance reading for adults unless the topic includes the word friendship; the friendship answer is the element and modality pattern alone, with no romance. For anyone under 18 there is no love or romance reading, and the friendship reading takes its place. It takes no age or birth date, so it cannot know a reader's age.`
+  explain_astrology: `Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. It also answers whether two Sun signs are compatible, from that sign-pair page. It fits a "what does X mean" question: a sign and its traits, a planet, a planet in a sign or a house, Chiron, the houses or one house, Placidus and whole-sign houses, aspects or one aspect, retrogrades, stations and retrograde loops, Mercury retrograde, Moon phases, new and full Moons, the void-of-course Moon, eclipses, the lunar nodes, ingresses (planets changing sign), the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. For tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, or when nothing matches, it returns found: false with the topics it does explain. A person's own placements belong to get_natal_chart. Two people with birth dates belong to get_compatibility, which compares their charts as partners, friends, family or colleagues; this tool takes two Sun signs with no birth dates. The sign of a calendar date belongs to get_birthday. The dates of eclipses, stations, sign changes, new and full Moons and void-of-course periods, Chiron's included, come from search_sky_events. A Sun-sign pair is answered as a romance reading for adults unless the topic includes the word friendship; the friendship answer is the element and modality pattern alone, with no romance. For anyone under 18 there is no love or romance reading, and the friendship reading takes its place. It takes no age or birth date, so it cannot know a reader's age. A guarantee about a relationship or anything else, a reading for a named child under 13, and a stock or lottery pick, an investment call, a bet, or an election or health forecast are not requests for this tool, not even as a first step: Zodiacs does not do these, and no explainer is fetched for them.`
 };
 var YEAR_SCORE_PEOPLE_INPUT = yearScoreInput;
-var YEAR_SCORE_PEOPLE_DESCRIPTION = `Gives the Year Ahead Score: a number from 0 to 10 for the twelve months from a date (today by default), the best and hardest months, and the slow-planet transits driving it (Jupiter, Saturn, Uranus, Neptune and Pluto in aspect to the Sun, Moon, Mercury, Venus and Mars). 5 is an ordinary year. Use it when someone asks how their year ahead looks, or how a well-known person's year looks, by name. Give either the person's own birth date (with the time and time zone only if they know them; never guess a time), or person with a public figure's full name from the Zodiacs Year Ahead directory. A name the directory does not have is answered with no score and no estimate. Birth details are used for this answer only: never stored, logged or put in a link. Someone else's private birth details are meant to be given with that person's agreement. The score comes with its limits and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. A low score means pressure, not doom: a demanding year that rewards patience. Money, career, wellbeing and legal themes are read as astrology traditionally reads them, such as a strong year for earnings or a good window to sign agreements; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.`;
+var YEAR_SCORE_PEOPLE_DESCRIPTION = `Gives the Year Ahead Score: a number from 0 to 10 for the twelve months from a date (today by default), the best and hardest months, and the slow-planet transits driving it (Jupiter, Saturn, Uranus, Neptune and Pluto in aspect to the Sun, Moon, Mercury, Venus and Mars). 5 is an ordinary year. Use it when someone asks how their year ahead looks, or how a well-known person's year looks, by name. Give either the person's own birth date (with the time and time zone only if they know them; never guess a time), or person with a public figure's full name from the Zodiacs Year Ahead directory. A name the directory does not have is answered with no score and no estimate. Birth details are used for this answer only: never stored, logged or put in a link. Someone else's private birth details are meant to be given with that person's agreement. The score comes with its limits and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. A low score means pressure, not doom: a demanding year that rewards patience. Career, wellbeing and legal themes are read as astrology traditionally reads them, such as a good window to sign agreements, with no money, earnings or promotion forecasts; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.`;
 var inputSchemaFor = (tool, skyEvents2, switches = {}) => (tool === "get_year_score" && switches.yearScorePeople ? YEAR_SCORE_PEOPLE_INPUT : void 0) ?? (skyEvents2 ? SKY_EVENTS_INPUT_SCHEMAS[tool] : void 0) ?? INPUT_SCHEMAS[tool];
 var outputSchemaFor = (tool, skyEvents2) => (skyEvents2 ? SKY_EVENTS_OUTPUT_SCHEMAS[tool] : void 0) ?? OUTPUT_SCHEMAS[tool];
 var descriptionFor = (tool, skyEvents2, switches = {}) => (tool === "get_year_score" && switches.yearScorePeople ? YEAR_SCORE_PEOPLE_DESCRIPTION : void 0) ?? (skyEvents2 ? SKY_EVENTS_TOOL_DESCRIPTIONS[tool] : void 0) ?? TOOL_DESCRIPTIONS[tool];
 
 // src/ai-tools/server.ts
 import { McpServer } from "@modelcontextprotocol/server";
+
+// src/ai-tools/clear-time.ts
+var MINUTE2 = 6e4;
+function roundToMinute(utc) {
+  return new Date(Math.round(new Date(utc).getTime() / MINUTE2) * MINUTE2);
+}
+var two = (value) => String(Math.trunc(Math.abs(value))).padStart(2, "0");
+function localIso(utc, zone9, milliseconds = false) {
+  const exact = new Date(utc).getTime();
+  const instant2 = new Date(Math.floor(exact / 1e3) * 1e3);
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: zone9, era: "short", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(instant2).map((part) => [part.type, part.value]));
+  const year = Number(parts.year) * (parts.era === "BC" ? -1 : 1) + (parts.era === "BC" ? 1 : 0);
+  const wall = /* @__PURE__ */ new Date(0);
+  wall.setUTCFullYear(year, Number(parts.month) - 1, Number(parts.day));
+  wall.setUTCHours(Number(parts.hour), Number(parts.minute), Number(parts.second), 0);
+  const offsetMinutes2 = Math.round((wall.getTime() - instant2.getTime()) / MINUTE2);
+  const offset = `${offsetMinutes2 < 0 ? "-" : "+"}${two(offsetMinutes2 / 60)}:${two(offsetMinutes2 % 60)}`;
+  const fraction = milliseconds ? `.${String(exact - instant2.getTime()).padStart(3, "0")}` : "";
+  return `${wall.toISOString().slice(0, 19)}${fraction}${offset}`;
+}
+function localMinuteIso(utc, zone9) {
+  return localIso(roundToMinute(utc), zone9);
+}
+function shownTime(utc, window) {
+  const time = new Date(utc).getTime();
+  const low = Math.max(Date.parse(EPOCH.from), window ? new Date(window.from).getTime() : -Infinity);
+  const high = Math.min(Date.parse(EPOCH.to), window ? new Date(window.to).getTime() : Infinity);
+  for (const [unit, precision] of [[MINUTE2, "minute"], [1e3, "second"]]) {
+    const nearest = Math.round(time / unit) * unit;
+    const other = nearest > time ? Math.floor(time / unit) * unit : Math.ceil(time / unit) * unit;
+    for (const candidate of [nearest, other]) if (candidate >= low && candidate <= high) return { at: new Date(candidate), precision };
+  }
+  return { at: new Date(time), precision: "millisecond" };
+}
+function shownUtc(shown) {
+  const iso3 = shown.at.toISOString();
+  return shown.precision === "minute" ? `${iso3.slice(0, 16)}:00Z` : shown.precision === "second" ? `${iso3.slice(0, 19)}Z` : iso3;
+}
+function eventTimes(utc, zone9, window) {
+  const shown = shownTime(utc, window);
+  return { at: shownUtc(shown), localAt: localIso(shown.at, zone9, shown.precision === "millisecond") };
+}
+function moonDirection(angle) {
+  return angle < 180 ? "waxing" : "waning";
+}
+function moonPhaseLabel(angle) {
+  const name = moonPhaseNameFromAngle(angle);
+  if (/^Wa(?:x|n)ing /u.test(name) || name === "First Quarter" || name === "Last Quarter") return name;
+  const turn3 = (angle % 360 + 360) % 360;
+  return turn3 === 0 || turn3 === 180 ? name : `${name}, ${moonDirection(angle)}`;
+}
 
 // api/_compute/local-time.mjs
 function createLocalTimeModule() {
@@ -43157,7 +43204,7 @@ function dailyEmailLink(origin, sign3) {
 }
 var LIMITS = { from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS["events.samples"], factSamples: BUDGETS["sky-fact.samples"] };
 function displayTime(utc, zone9) {
-  return new Intl.DateTimeFormat("en-GB", { timeZone: zone9, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", timeZoneName: "shortOffset" }).format(new Date(utc));
+  return localIso(utc, zone9);
 }
 function failure(tool, code, message, retryAfterSeconds) {
   return stripConsumerDashes({ schema: AI_RESULT_SCHEMA, ok: false, tool, error: { code, message, ...retryAfterSeconds === void 0 ? {} : { retryAfterSeconds } } });
@@ -43212,13 +43259,13 @@ var COVERAGE_TOOL_SUMMARY = {
   explain_astrology: "explainers of astrology basics"
 };
 var FIELD_FORMAT = {
-  birthDate: "a date such as 1990-05-03",
+  birthDate: "a date such as 1994-05-14",
   date: "a date such as 2026-12-01",
   from: "a date such as 2026-11-01",
   to: "a date such as 2026-12-01",
-  time: "a time such as 08:30",
+  time: "a time such as 09:15",
   zone: "a time zone name such as Europe/London",
-  currentZone: "a time zone name such as Asia/Bangkok",
+  currentZone: "a time zone name such as America/Mexico_City",
   place: "plain text"
 };
 var BIRTH_YEARS = {
@@ -43242,7 +43289,7 @@ function coverageInputRefusal(tool, input, schema = INPUT_SCHEMAS[tool]) {
     if (issue.code === "too_big" && "maximum" in issue && issue.origin === "number") return `${field} must be at most ${String(issue.maximum)}.`;
     if (issue.code === "invalid_type" && issue.expected === "number") return `${field} must be a number.`;
     if (issue.code === "invalid_type" && issue.expected === "int") return `${field} must be a whole number.`;
-    if (field === "birthDate" && BIRTH_YEARS[tool] && typeof record2.birthDate === "string" && /^\d{4}-\d{2}-\d{2}$/u.test(record2.birthDate)) return `birthDate must be a date from ${BIRTH_YEARS[tool]}, such as 1990-05-03.`;
+    if (field === "birthDate" && BIRTH_YEARS[tool] && typeof record2.birthDate === "string" && /^\d{4}-\d{2}-\d{2}$/u.test(record2.birthDate)) return `birthDate must be a date from ${BIRTH_YEARS[tool]}, such as 1994-05-14.`;
     return `${field} must be ${FIELD_FORMAT[field] ?? "in the documented form"}.`;
   });
   return failure(tool, "invalid-request", [...new Set(sentences)].slice(0, 3).join(" "));
@@ -43409,7 +43456,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const calculation = computePositions(parsePositionsRequest({ instants: [instant2], ...args.bodies ? { bodies: args.bodies } : {} }));
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone9, display: displayTime(utc, zone9) }, calculation, moonPhase: { name: moonPhaseNameFromAngle(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
+        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone9, display: displayTime(utc, zone9) }, calculation, moonPhase: { name: moonPhaseLabel(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
         links = [moonLink, methodLink, calendarLink];
         break;
       }
@@ -43426,7 +43473,15 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Zodiacs is busy. Try again in a minute.", verdict === "limited" ? 60 : 300);
         }
         const calculation = computeEvents(parsedRequest);
-        data = { from: calculation.result.from, to: calculation.result.to, zone: zone9, events: calculation.result.events.map((event2) => ({ ...event2, localAt: displayTime(event2.at, zone9) })), calculation, completeness: calculation.receipt.search.completeness };
+        data = {
+          from: calculation.result.from,
+          to: calculation.result.to,
+          zone: zone9,
+          // Each time to the minute, inside the window, on the UTC clock and on the zone's; the solved instants stay in calculation, under its receipt.
+          events: calculation.result.events.map((event2) => ({ ...event2, ...eventTimes(event2.at, zone9, calculation.result) })),
+          calculation,
+          completeness: calculation.receipt.search.completeness
+        };
         links = [
           { title: "Subscribe to these in your calendar (get_sky_calendar)", url: `${ORIGIN}/sky-calendar/` },
           // With the sky events switch, the tool for one kind of event further ahead.
@@ -43461,7 +43516,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             zone9 = await zoneAt(args.zone, "/zone", resolveZone);
             zoneSource = "request";
           } catch {
-            return failure(tool, "invalid-timezone", "Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+            return failure(tool, "invalid-timezone", "Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City.");
           }
         } else if (context.hostZone) {
           try {
@@ -43672,7 +43727,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             zone9 = await zoneAt(args.zone, "/zone", resolveZone);
             zoneSource = "request";
           } catch {
-            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City.");
           }
         } else if (context.hostZone) {
           try {
@@ -43743,7 +43798,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             zone9 = await zoneAt(args.zone, "/zone", resolveZone);
             zoneSource = "request";
           } catch {
-            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City.");
           }
         } else if (context.hostZone) {
           try {
@@ -43801,7 +43856,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             currentYear = Number(dateInZone(now, await zoneAt(args.zone, "/zone", resolveZone)).slice(0, 4));
             currentYearFrom = "zone";
           } catch {
-            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City.");
           }
         } else if (context.hostZone) {
           try {
@@ -44351,7 +44406,7 @@ var plainText2 = (max) => z18.string().trim().min(1).max(max).regex(PLAIN_TEXT3,
 var date2 = z18.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
 var zone8 = z18.string().min(1).max(64).regex(ZONE_PATTERN12);
 var weekInput = z18.strictObject({
-  birthDate: date2.describe("The birth date given to get_horoscope, such as 1990-05-03."),
+  birthDate: date2.describe("The birth date given to get_horoscope, such as 1994-05-14."),
   birthTime: z18.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("The birth time, if one was given; needs birthZone."),
   birthZone: zone8.optional().describe("The birthplace's time zone, needed with birthTime."),
   zone: zone8.optional().describe("The person's own time zone, for the dates of the week.")
@@ -44397,7 +44452,7 @@ var SAVE_DESCRIPTION = "Saves something Zodiacs worked out in this conversation 
 var SAVE_NOTE = "Saved to your Zodiacs account. You can see it on your profile and delete it there at any time.";
 
 // src/ai-tools/accounts/save.ts
-import { createHash as createHash3 } from "node:crypto";
+import { randomUUID } from "node:crypto";
 var PAGE_KINDS = { chart: "chart", comparison: "compatibility", occasion: "occasion", week: "week" };
 var PAGE_PATHS = {
   chart: /^\/(?:birth-chart|people)\//u,
@@ -44460,11 +44515,11 @@ function recordProblem(record2) {
   if (!problem && Buffer.byteLength(JSON.stringify(record2)) > MAX_SAVED_RECORD_BYTES) problem = "too-large";
   return problem;
 }
-function recordDigest(record2, label) {
-  return createHash3("sha256").update(JSON.stringify([record2.schema, record2.kind, record2.data, ...label === void 0 ? [] : [label]])).digest("hex");
+function savedLinkId(dependencies = {}) {
+  return (dependencies.newId ?? randomUUID)();
 }
 async function buildSavedRecord(input, dependencies = {}) {
-  const linked = (record2, href) => ({ ...record2, href: href(recordDigest(record2, input.label).slice(0, 16)) });
+  const linked = (record2, href) => ({ ...record2, href: href(savedLinkId(dependencies)) });
   const now = dependencies.now?.() ?? /* @__PURE__ */ new Date();
   const madeBy = { chart: "get_natal_chart", comparison: "get_compatibility", occasion: "get_occasion_sky", week: "get_horoscope" };
   const child2 = childBirthDateRefusal(madeBy[input.kind], input[input.kind], now, dependencies.hostZone);
@@ -44613,8 +44668,18 @@ async function saveToZodiacs(raw, principal, store, dependencies = {}, ref3) {
   });
 }
 
+// src/lib/profile/saved-result-link.ts
+var UUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+var SAVED_ID = new RegExp(`(?:^#|[#&])saved=(${UUID})(?:&|$)`, "u");
+var ANY_SAVED = new RegExp(`(?:^#|[#&])saved=(${UUID}|[0-9a-f]{16})(?:&|$)`, "u");
+var fragmentOf = (fragmentOrHref) => fragmentOrHref.includes("#") ? fragmentOrHref.slice(fragmentOrHref.indexOf("#")) : fragmentOrHref;
+function savedResultId(fragmentOrHref) {
+  return SAVED_ID.exec(fragmentOf(fragmentOrHref))?.[1] ?? null;
+}
+var SAVED_RESULT_FORWARD = `(function () { var saved = /${ANY_SAVED.source}/.exec(location.hash); if (saved) location.replace(saved[1].length === 16 ? '/profile/' : '/profile/#saved=' + saved[1]); })();`;
+
 // src/ai-tools/accounts/service.ts
-var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+var UUID2 = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function accountsEnabled(env) {
   return env[ACCOUNTS_SWITCH_ENV] === "1";
 }
@@ -44653,10 +44718,10 @@ function configuredAccounts(env, rpc) {
   if (env.PUBLIC_ACCOUNT_SAVES_ENABLED !== "1") throw new Error("accounts-unavailable");
   const url = env.PUBLIC_SUPABASE_URL, key2 = env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const clients = (env.ZODIACS_ACCOUNTS_OAUTH_CLIENTS ?? "").split(",").map((value) => value.trim()).filter(Boolean);
-  if (!url || !/^https:\/\/[a-z0-9]+\.supabase\.co$/.test(url) || !key2?.startsWith("sb_publishable_") || !clients.length || clients.length > 8 || clients.some((client) => !UUID.test(client))) throw new Error("accounts-unavailable");
+  if (!url || !/^https:\/\/[a-z0-9]+\.supabase\.co$/.test(url) || !key2?.startsWith("sb_publishable_") || !clients.length || clients.length > 8 || clients.some((client) => !UUID2.test(client))) throw new Error("accounts-unavailable");
   const origin = accountsResourceOrigin(env);
   const previewWatchClients = (env.ZODIACS_ACCOUNTS_PREVIEW_WATCH_CLIENTS ?? "").split(",").map((value) => value.trim()).filter(Boolean);
-  if (previewWatchClients.length && (env.VERCEL_ENV !== "preview" || previewWatchClients.length > 8 || previewWatchClients.some((client) => !UUID.test(client) || clients.some((account) => account.toLowerCase() === client.toLowerCase())))) throw new Error("accounts-unavailable");
+  if (previewWatchClients.length && (env.VERCEL_ENV !== "preview" || previewWatchClients.length > 8 || previewWatchClients.some((client) => !UUID2.test(client) || clients.some((account) => account.toLowerCase() === client.toLowerCase())))) throw new Error("accounts-unavailable");
   const resource = `${origin}/mcp`;
   const call = rpc ?? accountsRpc(env);
   const oauth = supabaseOAuthResource({
@@ -44687,7 +44752,17 @@ function configuredAccounts(env, rpc) {
   };
 }
 function savedPageRpcArgs(principal, resource, record2) {
-  return { ...principal, resource, kind: PAGE_KINDS[record2.kind], title: record2.title, href: record2.href, summary: record2.summary, detail: record2 };
+  const id = savedResultId(record2.href);
+  return {
+    ...principal,
+    resource,
+    kind: PAGE_KINDS[record2.kind],
+    title: record2.title,
+    href: record2.href,
+    summary: record2.summary,
+    detail: record2,
+    ...id ? { id } : {}
+  };
 }
 function invalidTokenChallenge(oauth) {
   return `${oauth.challenge}, error="invalid_token"`;
@@ -44698,8 +44773,12 @@ function signInChallenge(oauth) {
 
 // src/ai-tools/server.ts
 var UNDER_13_INSTRUCTION = "Zodiacs is not directed at children under 13, so do not send a child's name, birth date or birthplace to its tools; they refuse a birth date less than 13 years ago.";
-function instructions(accounts, occasions) {
-  return "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Its results keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Calculation details such as versions, receipts and UTC are there for questions about how something was calculated. A URL in a result is complete as returned, including the query and the whole fragment after #, and a card link works only unchanged; where no card URL is returned, the returned page link takes its place. No Zodiacs link holds a birth date, birth time, birthplace or place name" + (occasions ? "; an occasion card link can hold coordinates rounded to two decimals." : ", or coordinates.") + " A birth time and a sign are taken as the person gives them, never guessed. Ask before using someone else's birth details. Zodiacs never stores or logs birth details. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day." + (accounts ? ` ${SAVED_PAGE_EXCEPTION}` : "") + (occasions ? ` ${UNDER_13_INSTRUCTION}` : "") + ` If a person or a birth date is under 18, Zodiacs gives no reading framed as romance, attraction or a sexual relationship. Scores, ratings and astrological forecasts are astrology's reading, and each comes with a "Reading confidence NN%" label: it says how specific the details were, never the odds that an event happens. Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome. It does not schedule anything, pick investments or give financial or medical advice, so its tools have nothing to return for those requests.`;
+var OUTSIDE_ZODIACS = "A request for one of those is outside Zodiacs even when it names a sign, a planet, a retrograde, a birth date or a horoscope: a stock or lottery pick, an investment call, a bet, an election or a medical outcome, a guarantee, a reminder or anything scheduled. No Zodiacs tool is for such a request, not even as a first step; the answer is that Zodiacs does not do this, with no tool call.";
+var WHICH_TOOL = "Which tool: a horoscope goes to get_horoscope even with no sign given, since the person picks the sign in its panel; a birth chart, rising sign or Moon sign asked for with no birth date in the conversation goes to open_chart_studio, which opens with no details and takes them from the person there, and to get_natal_chart once a birth date is given; two people with birth dates go to get_compatibility, as partners, friends, family or colleagues, and two Sun signs alone go to explain_astrology; the sign, decan or cusp of a calendar date goes to get_birthday; what Zodiacs can do, what can be asked of it and how it handles privacy goes to get_capabilities. Signs, dates and positions come from the tools, the well-known ones too, not from memory.";
+var ASK_FIRST = "Ask before using someone else's birth details.";
+var CHILD_HOROSCOPE = "There is no horoscope for a named child under 13, meaning a particular child the request names or points to, such as someone's nine-year-old daughter: not by sign, and not for a day, a week, a month or a year. A Sun sign on its own, with no name and no birth date, gets the general horoscope for that sign.";
+function instructions(accounts, occasions, coverage) {
+  return "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Its results keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Calculation details such as versions, receipts and UTC are there for questions about how something was calculated. A URL in a result is complete as returned, including the query and the whole fragment after #, and a card link works only unchanged; where no card URL is returned, the returned page link takes its place. No Zodiacs link holds a birth date, birth time, birthplace or place name" + (occasions ? "; an occasion card link can hold coordinates rounded to two decimals." : ", or coordinates.") + " A birth time and a sign are taken as the person gives them, never guessed. " + ASK_FIRST + " Zodiacs never stores or logs birth details. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day." + (accounts ? ` ${SAVED_PAGE_EXCEPTION}` : "") + (occasions ? ` ${UNDER_13_INSTRUCTION}` : "") + ` ${CHILD_HOROSCOPE} If a person or a birth date is under 18, Zodiacs gives no reading framed as romance, attraction or a sexual relationship. Scores, ratings and astrological forecasts are astrology's reading, and each comes with a "Reading confidence NN%" label: it says how specific the details were, never the odds that an event happens. Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome. It does not schedule anything, pick investments or give financial or medical advice. ` + OUTSIDE_ZODIACS + (occasions && coverage ? ` ${WHICH_TOOL}` : "");
 }
 var PANELS = {
   get_upcoming_events: { uri: WIDGET_URI, icon: "sky-calendar" },
@@ -44738,7 +44817,7 @@ function refFrom(meta) {
 function createAiServer(dependencies, watch, account) {
   const server = new McpServer({ name: "zodiacs", version: AI_VERSION }, {
     capabilities: { tools: {}, resources: {}, ...watch ? { events: {} } : {} },
-    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions)
+    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage)
   });
   const versions = (name, uris) => uris.map((uri, index) => ({ uri, name: index === 0 ? name : `${name}-legacy${uris.length > 2 ? `-${uri.match(/-v(\d+)\.html$/u)?.[1]}` : ""}` }));
   for (const { uri, name } of versions("sky-events", [WIDGET_URI, ...LEGACY_WIDGET_URIS])) server.registerResource(name, uri, {
@@ -44849,7 +44928,7 @@ var unwrap = (schema) => {
   for (let i = 0; i < 6 && s?._zod?.def?.innerType; i++) s = s._zod.def.innerType;
   return s;
 };
-var ISO_HINT = " Use an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00, not a plain date.";
+var ISO_HINT = " Use an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00, not a plain date.";
 function fieldAt(schema, path) {
   let current = schema;
   const names = [];
@@ -45279,13 +45358,19 @@ async function calculateWindow(from, to) {
   if (!result.ok || result.tool !== "get_upcoming_events") throw new Error("search-refused");
   const data = result.data;
   if (data.completeness !== "tested-not-proven") throw new Error("search-incomplete");
-  return data.events.map(({ localAt: _localAt, ...event2 }) => ({
-    eventId: `evt_${digest(JSON.stringify([WATCH_VERSION, from, event2]))}`,
-    name: `zodiacs.sky.${event2.kind}`,
-    timestamp: event2.at,
-    data: { event: event2, receipt: data.calculation.receipt },
-    cursor: null
-  }));
+  const solved = data.calculation.result.events;
+  if (solved.length !== data.events.length) throw new Error("search-mismatch");
+  return data.events.map(({ localAt: _localAt, ...listed }, index) => {
+    if (listed.kind !== solved[index].kind) throw new Error("search-mismatch");
+    const event2 = { ...listed, at: solved[index].at };
+    return {
+      eventId: `evt_${digest(JSON.stringify([WATCH_VERSION, from, event2]))}`,
+      name: `zodiacs.sky.${event2.kind}`,
+      timestamp: event2.at,
+      data: { event: event2, receipt: data.calculation.receipt },
+      cursor: null
+    };
+  });
 }
 async function fillWatchLedger(rpc, now = Date.now(), calculate = calculateWindow) {
   let filled = 0;
@@ -45318,7 +45403,7 @@ async function deliverWatchEvents(rpc, vault, post, now = Date.now) {
       const event2 = { ...row.payload, data: {
         ...row.payload.data,
         zone: row.filters.zone,
-        localAt: displayTime(row.payload.timestamp, row.filters.zone),
+        localAt: localMinuteIso(row.payload.timestamp, row.filters.zone),
         methodUrl: "https://zodiacs.org/developers/compute/#events"
       } };
       const body2 = JSON.stringify(event2);
