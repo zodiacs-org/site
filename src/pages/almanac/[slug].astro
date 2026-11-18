@@ -3,6 +3,8 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { isHiddenAlmanacSlug } from '../../data/hidden-child-pages.mjs';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 export async function getStaticPaths() {
   const entries = await getCollection('almanac', ({ data }) => !data.draft);
@@ -15,6 +17,10 @@ const slug = entry.id;
 const path = `/almanac/${slug}/`;
 // An article about children stays built but hidden: noindex and nofollow, out of the Almanac's list, feed and sitemap.
 const hidden = isHiddenAlmanacSlug(slug);
+// Each article's card is drawn by `npm run data:og -- --only-almanac`, which needs Chromium.
+// Until an article's card is drawn, it shares the Almanac's own card rather than a missing image.
+const ownCard = `/assets/og/v2/almanac/${slug}.png`;
+const card = existsSync(join(process.cwd(), 'public', ownCard)) ? ownCard : '/assets/og/v2/almanac/index.png';
 const dateLabel = entry.data.published.toLocaleDateString('en-US', {
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
 });
@@ -49,7 +55,7 @@ const jsonLd = [
   title={`${entry.data.title} | The Almanac`}
   description={entry.data.description}
   path={path}
-  image={`/assets/og/v2/almanac/${slug}.png`}
+  image={card}
   imageAlt={`${entry.data.title}, The Almanac at Zodiacs.org`}
   type="article"
   noindex={hidden}

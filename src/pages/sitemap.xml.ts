@@ -1070,6 +1070,10 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-12');
     }
   }
+  // The Almanac lists its first "Your sky this week" article.
+  for (const url of urls) {
+    if (url.loc === '/almanac/') url.lastmod = laterDate(url.lastmod, '2026-11-18');
+  }
   // Every sitemap page within three clicks of home (ZOD-221): the tools hub
   // links the sign seasons and the Almanac, and the translated homes link
   // their language's sign seasons. Last, so these win.

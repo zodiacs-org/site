@@ -1577,6 +1577,8 @@
     {"path":"src/content/almanac/sky-2026-08.mdx","text":"NASA maps the path of totality across Greenland, Iceland, northern Russia, the Atlantic, Spain, and a small corner of Portugal; a much wider part of the Northern Hemisphere sees a partial eclipse.","exempt":"third-party","source":"https://science.nasa.gov/eclipses/future-eclipses/eclipse-2026-aug-12-total/"},
     {"path":"src/content/almanac/sky-2026-08.mdx","text":"NASA: Eclipses and the Moon","exempt":"navigation"},
     {"path":"src/content/almanac/sky-2026-08.mdx","text":"NASA: Total Solar Eclipse on August 12, 2026","exempt":"navigation"},
+    {"path":"src/content/almanac/sky-this-week-2026-11-23.mdx","text":"NASA JPL Horizons","exempt":"navigation"},
+    {"path":"src/content/almanac/sky-this-week-2026-11-23.mdx","text":"Times and positions come from zodiacs.org's own calculations, checked against NASA JPL Horizons.","claim":"acc.event-times-nasa"},
     {"path":"src/content/birthdays/august-10.mdx","text":"One date, many charts: the Moon shifts signs every couple of days and the rising sign turns over roughly every two hours, so your version of August 10 is specific to the minute.","exempt":"interpretive"},
     {"path":"src/content/birthdays/august-16.mdx","text":"Partners get championed extravagantly and compared against nobody.","exempt":"interpretive"},
     {"path":"src/content/birthdays/august-31.mdx","text":"The Sun's Virgo position is fixed by the date, but the Moon, rising sign, and houses belong to the minute you arrived.","claim":"acc.birthday-signs"},
