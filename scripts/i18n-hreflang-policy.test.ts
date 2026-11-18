@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { LOCALES, LOCALE_META, alternatePathEntries } from '../src/lib/i18n';
 import { SIGN_SLUGS } from '../src/lib/signs';
 import { dailyEditions } from '../src/lib/return-visits/chart-of-day';
+import learnTranslations from '../src/data/learn-translations.json';
+
+// Each Spanish Learn article adds its English and Spanish pages to the en, es and x-default counts.
+const learnEs = learnTranslations.es.length * 2;
 import {
   ABSENT_LOCALES,
   ACTIVE_HREFLANGS,
@@ -26,7 +30,7 @@ describe('hreflang release policy', () => {
     expect(STAGED_NOINDEX_LOCALES).toEqual([]);
     expect(ABSENT_LOCALES).toEqual(['ar']);
     expect(X_DEFAULT_HREFLANG).toEqual({
-      hreflang: 'x-default', locale: 'en', expectedBlocks: 1224 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6,
+      hreflang: 'x-default', locale: 'en', expectedBlocks: 1224 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6 + learnEs,
     });
     expect(hreflangRouteFamily('/fr/tools/')).toBe('core');
     expect(hreflangRouteFamily('/birthday/february-29/')).toBe('birthday');
@@ -38,6 +42,9 @@ describe('hreflang release policy', () => {
     expect(hreflangRouteFamily('/eclipses/2027/')).toBe(null);
     expect(hreflangRouteFamily('/es/compatibility/aries-leo/')).toBe('compatibility-pair');
     expect(hreflangRouteFamily('/compatibility/leo-aries/')).toBe(null);
+    expect(hreflangRouteFamily('/es/learn/planets/sun/')).toBe('learn-article');
+    expect(hreflangRouteFamily('/learn/planets/neptune/')).toBe(null);
+    expect(expectedHreflangsForPath('/learn/planets/sun/')).toEqual(new Set(['en', 'es', 'x-default']));
     expect(hreflangRouteFamily('/compatibility/invite/')).toBe('core');
     // Your 2027 sky, the Moon journal and the sign seasons: es, pt, fr and it; Russian links to the English pages.
     expect(hreflangRouteFamily('/it/seasons/leo/')).toBe('new-pages');
@@ -78,9 +85,8 @@ describe('hreflang release policy', () => {
     // five languages, four sky calendars in five languages, the Chinese zodiac guide's 13 pages in its two
     // Chinese editions, the 15 pages of Your 2027 sky, the Moon journal and the sign seasons in five
     // languages, and owner-approved dated editions.
-    expect(HREFLANG_LOCALE_POLICY.find(({ locale }) => locale === 'en')?.expectedBlocks).toBe(569 + 13 * 2 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + 15 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
-    for (const locale of ['es', 'pt']) {
-      expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === locale)?.expectedBlocks).toBe(203 + 13 * 2 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + 15 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
-    }
+    expect(HREFLANG_LOCALE_POLICY.find(({ locale }) => locale === 'en')?.expectedBlocks).toBe(569 + 13 * 2 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + 15 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6 + learnEs);
+    expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === 'es')?.expectedBlocks).toBe(203 + 13 * 2 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + 15 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6 + learnEs);
+    expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === 'pt')?.expectedBlocks).toBe(203 + 13 * 2 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + 15 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
   });
 });

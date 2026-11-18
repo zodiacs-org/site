@@ -1,6 +1,15 @@
 /**
- * Chart cards: the link a person makes from the chart marked as theirs so
- * someone can keep them on their own profile. The grammar wraps one v2
+ * Chart cards: the link a person used to make from the chart marked as
+ * theirs so someone could keep them on their own profile. Card links are no
+ * longer made (the 9 November 2026 audit, Decision A): a card gives the birth
+ * date and time to the minute, and links never carry those. "Send your card"
+ * now opens the sign-level big three card. The site still reads a card link
+ * someone already sent (ProfileCardInbox strips it from the address bar at
+ * once), and cards already kept stay in "Your people". encodeCardLink stays
+ * only so tests can make fixture tokens for the reader; no page calls it
+ * (card-link-writers.test.ts).
+ *
+ * The grammar wraps one v2
  * positions token (src/lib/share-positions.ts) with the name the sender
  * chose and the time-known bit, and nothing else — it has no field for a
  * birth date, time, place, coordinates, timezone, or account. A card leaves
@@ -71,6 +80,7 @@ function canonicalLabel(value: unknown): string | null {
   return cleaned === value && Array.from(value).length <= DISPLAY_NAME_MAX ? value : null;
 }
 
+/** Test fixtures only: no page makes a card link any more (card-link-writers.test.ts). */
 export function encodeCardLink(input: { chart: PositionsShareInput; label?: string | null }): string | null {
   if (!input?.chart) return null;
   const positions = encodeSharedPositionsLink(input.chart);
@@ -161,11 +171,6 @@ export async function loadCardPositionsForChart(
 export function cardMatchesChart(card: ChartCard, positions: PositionsShareInput | null): boolean {
   const own = positions ? encodeSharedPositionsLink(positions) : null;
   return own !== null && own === encodeSharedPositionsLink(card.chart);
-}
-
-/** The full link for a card, on the profile page of whoever opens it. */
-export function cardUrl(origin: string, token: string): string {
-  return `${origin}/profile/#${CARD_FRAGMENT_KEY}=${token}`;
 }
 
 /** Read a card token from a location hash such as `#card=c1.…`. */

@@ -9,6 +9,7 @@ import { CheckOurMath, ResultOpening } from './ChartTrust';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { BirthDateField, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
 import PlaceSearch from './PlaceSearch';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import SignChip from './SignChip';
 import { SATURN_RETURN } from '../lib/interpretations';
 import { formatLongitude, signForLongitude } from '../lib/signs';
@@ -72,6 +73,14 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
           return;
         }
         day = entry.date;
+      }
+      // A birth date under 13 or still to come is refused before anything loads.
+      const refusal = birthDateRefusal(day);
+      if (refusal) {
+        setResult(null);
+        setResultReceipt(null);
+        setError(birthDateRefusalText(refusal));
+        return;
       }
       const [returns] = await Promise.all([loadReturns(), showDetail && city ? prepareLocalTime(day, city.tz) : null]);
       if (run !== generation.current) return;
@@ -144,7 +153,7 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
             <span class="orb">↗</span>
           </button>
           <p class="calc__privacy">{t(locale, 'privacyDevice')}</p>
-          {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
+          {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef} lang={birthDateRefusalLang(error)}>{error}</p>}
           <CalculationReload error={error} locale={locale} />
         </div>
       </form>
