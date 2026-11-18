@@ -734,8 +734,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The Sky calendar pages' Google and Apple Calendar steps (every language), 17 November, last so this date wins.
   ...['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/sky-calendar/`, '2026-11-17'] as const),
   // The conventions registry's ids for conformance suite 0.3.0 (level L4's event kinds and its arbiter), on the
-  // day of the daily edition it was built with, last so this date wins.
-  ['/developers/conventions/', '2026-11-18'] as const,
+  // day of the daily edition it was built with, last so this date wins. /developers/ prints the registry's date.
+  ...['/developers/', '/developers/conventions/'].map((route) => [route, '2026-11-18'] as const),
 ]);
 
 function getLastmod(loc: string): string {
