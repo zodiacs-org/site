@@ -1,0 +1,92 @@
+{
+  "schema": "zodiacs.phase5.evidence.v1",
+  "slug": "erling-haaland",
+  "qid": "Q28967995",
+  "displayName": "Erling Haaland",
+  "wikidataLabel": "Erling Haaland",
+  "wikidataDescription": "Norwegian footballer (born 2000)",
+  "retrievedAtUtc": "2026-11-18T10:55:24.000Z",
+  "sources": {
+    "wikidata": {
+      "entityUrl": "https://www.wikidata.org/wiki/Q28967995",
+      "propertiesUsed": [
+        "P569",
+        "P19",
+        "P625",
+        "P106",
+        "P18",
+        "P570",
+        "P17",
+        "P131"
+      ],
+      "lastrevid": 2570409841
+    },
+    "wikipedia": {
+      "language": "en",
+      "title": "Erling Haaland",
+      "articleUrl": "https://en.wikipedia.org/wiki/Erling_Haaland",
+      "pageId": 54333646,
+      "revisionId": 1386365109,
+      "revisionTimestamp": "2026-11-18T03:57:04Z"
+    }
+  },
+  "birth": {
+    "claimCount": 1,
+    "distinctDayPrecisionValues": [
+      "+2000-07-21T00:00:00Z|proleptic-gregorian"
+    ],
+    "allValues": [
+      {
+        "time": "+2000-07-21T00:00:00Z",
+        "precision": 11,
+        "calendar": "proleptic-gregorian",
+        "rank": "normal"
+      }
+    ],
+    "time": "+2000-07-21T00:00:00Z",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "timeOfDay": null,
+    "timeOfDayEvidence": "none — Wikidata carries no birth-time claim for this person"
+  },
+  "death": null,
+  "living": true,
+  "birthPlace": {
+    "entity": "Q39121",
+    "label": "Leeds",
+    "entityUrl": "https://www.wikidata.org/wiki/Q39121",
+    "country": {
+      "entity": "Q145",
+      "label": "United Kingdom"
+    },
+    "claimCount": 1,
+    "coordinates": {
+      "sourceEntity": "Q39121",
+      "sourceEntityLabel": "Leeds",
+      "latitude": 53.7975,
+      "longitude": -1.5436111111111,
+      "precision": 0.00027777777777778,
+      "escalationSteps": 0
+    }
+  },
+  "occupations": [
+    {
+      "entity": "Q937857",
+      "label": "association football player"
+    }
+  ],
+  "portrait": {
+    "file": "File:Erling Haaland France v Norway 26 June 26-008 (cropped).jpg",
+    "filePage": "https://commons.wikimedia.org/wiki/File:Erling%20Haaland%20France%20v%20Norway%2026%20June%2026-008%20(cropped).jpg",
+    "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Erling_Haaland_France_v_Norway_26_June_26-008_(cropped).jpg",
+    "width": 2763,
+    "height": 3696,
+    "licenseShortName": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "artist": "Bryan Berlin",
+    "credit": "Own work",
+    "usageTerms": "Creative Commons Attribution-Share Alike 4.0",
+    "attributionRequired": "true",
+    "restrictions": "personality"
+  }
+}

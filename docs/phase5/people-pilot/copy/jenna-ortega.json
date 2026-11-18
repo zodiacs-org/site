@@ -1,0 +1,114 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "jenna-ortega",
+  "seedRound": 0,
+  "qid": "Q21738166",
+  "displayName": "Jenna Ortega",
+  "identity": "Actor · United States · born 2002",
+  "title": "Jenna Ortega's birth chart",
+  "metaDescription": "Jenna Ortega's chart, computed from a sourced birth date: Sun at 4.5° Libra. Birth time unknown, so no houses or rising sign.",
+  "lede": "The chart's headline is a conjunction: the Sun and Mercury within 0.0°, identity wired to thinking. The tradition stops reading a conjunction as two things. It is one appetite with two names, and it moves together or not at all.",
+  "ledeFact": "aspect:Sun:Mercury:conjunction",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:4.49",
+        "decan:libra:first"
+      ],
+      "text": "Measured rather than labelled, the Sun holds 4.5° Libra: the first decan, whose classical sub-ruler is Venus. An air sign, read here in its first face."
+    },
+    {
+      "key": "personal",
+      "title": "Closer to the ground",
+      "facts": [
+        "personal:Mercury:Libra:4.5°",
+        "personal:Venus:Scorpio:12.6°",
+        "personal:Mars:Virgo:18.6°"
+      ],
+      "text": "Mercury holds 4.5° Libra, Venus holds 12.6° Scorpio, Mars holds 18.6° Virgo — in the old shorthand, a mind at home in argument and pattern; taste tuned to mood and undertow; drive that grinds rather than flares."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Sun:Mercury:conjunction:0.04",
+        "aspect:Venus:Jupiter:square:1.04",
+        "aspect:Jupiter:Neptune:opposition:3.24"
+      ],
+      "text": "Nothing in the geometry sits closer than the Sun and Mercury: 0.0° from an exact conjunction. A conjunction concentrates rather than balances — the pair burns one fuel line. Behind it, Venus square Jupiter at 1.0°, and Jupiter opposition Neptune at 3.2° — both still well inside the orbs this site uses. These are the day-proof angles — present at midnight, present at noon, present at the next midnight."
+    },
+    {
+      "key": "figures",
+      "title": "What the angles build",
+      "facts": [
+        "figure:t-square:Jupiter-Neptune:apex-Venus"
+      ],
+      "text": "Jupiter opposes Neptune while both square Venus. Two squares braced against one opposition make a t-square — the chart’s working end, where pressure keeps finding the same outlet."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:Sun:fall",
+        "dignity:Venus:detriment"
+      ],
+      "text": "Two planets here sit in a sign the classical scheme scores. The Sun in Libra at 4.5° is in fall — the tradition’s uphill placement, strength earned rather than given; Venus in Scorpio at 12.6° is in detriment — the planet opposite its home, working against the grain. The old table grades terrain, not talent — a placement in fall works uphill, nothing more."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:air6-fire2-water1-earth1",
+        "modalities:mutable4-fixed4-cardinal2",
+        "settled-signs:10",
+        "retrograde:3"
+      ],
+      "text": "Of the 10 placements whose signs hold for the whole day: 6 in air, 2 in fire, 1 in water, 1 in earth by element, 4 mutable, 4 fixed, 2 cardinal by modality. An air-weighted chart thinks in through-lines; the sentence is how it takes hold of the world. Mercury, Uranus and Neptune were retrograde — the backward drift a body appears to make as the Earth overtakes it, read in the scheme as a function that reviews before it releases."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon, and how far it can move",
+      "facts": [
+        "moon-sign:gemini",
+        "moon-band:12.2"
+      ],
+      "uncertain": false,
+      "text": "The Moon stayed in Gemini for the whole of that day at the birthplace, covering 12.2° between midnight and midnight. Whatever the unrecorded hour was, it happened inside one Moon sign — the degree floats, the sign holds. At the noon reference it stands at 12.4°."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/september-27/",
+    "label": "Everyone born on September 27"
+  },
+  "signLink": {
+    "href": "/libra/",
+    "label": "The Libra guide"
+  },
+  "substantiveFacts": [
+    "aspect:Sun:Mercury:conjunction",
+    "sun-degree:4.49",
+    "decan:libra:first",
+    "personal:Mercury:Libra:4.5°",
+    "personal:Venus:Scorpio:12.6°",
+    "personal:Mars:Virgo:18.6°",
+    "aspect:Sun:Mercury:conjunction:0.04",
+    "aspect:Venus:Jupiter:square:1.04",
+    "aspect:Jupiter:Neptune:opposition:3.24",
+    "figure:t-square:Jupiter-Neptune:apex-Venus",
+    "dignity:Sun:fall",
+    "dignity:Venus:detriment",
+    "elements:air6-fire2-water1-earth1",
+    "modalities:mutable4-fixed4-cardinal2",
+    "settled-signs:10",
+    "retrograde:3",
+    "moon-sign:gemini",
+    "moon-band:12.2"
+  ],
+  "measurements": {
+    "originalWords": 391,
+    "substantiveStatements": 18,
+    "blocks": 7
+  }
+}

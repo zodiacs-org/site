@@ -1,0 +1,116 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "zendaya",
+  "seedRound": 0,
+  "qid": "Q189489",
+  "displayName": "Zendaya",
+  "identity": "Actor and singer · United States · born 1996",
+  "title": "Zendaya's birth chart",
+  "metaDescription": "Zendaya's chart, computed from a sourced birth date: Sun at 9.6° Virgo. Birth time unknown, so no houses or rising sign.",
+  "lede": "Tightest of all, Mars holds an opposition to Neptune at 0.4° — close enough to weld drive to imagination. An opposition is the tradition’s tug of war. Both ends are real, and the work is holding them at once rather than picking a winner.",
+  "ledeFact": "aspect:Mars:Neptune:opposition",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:9.60",
+        "decan:virgo:first"
+      ],
+      "text": "9.6° of Virgo is the Sun's exact seat — first decan, 0°–10°, sub-ruled by Mercury in the old triplicity scheme. The degree is the address; the sign is only the street."
+    },
+    {
+      "key": "personal",
+      "title": "Closer to the ground",
+      "facts": [
+        "personal:Mercury:Libra:3.2°",
+        "personal:Venus:Cancer:24.3°",
+        "personal:Mars:Cancer:24.9°"
+      ],
+      "text": "For the fast movers, Mercury was at 3.2° Libra, Venus was at 24.3° Cancer, Mars was at 24.9° Cancer. Read together: thought that travels by comparison; attraction that works by atmosphere; effort that surges when it matters."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Mars:Neptune:opposition:0.38",
+        "aspect:Venus:Mars:conjunction:0.62",
+        "aspect:Uranus:Pluto:sextile:0.74"
+      ],
+      "text": "Closest first: Mars to Neptune, an opposition with 0.4° of slack. Oppositions are read as full-moon geometry — maximum visibility between two needs that share one spine. Behind it, Venus conjunction Mars at 0.6°, and Uranus sextile Pluto at 0.7° — both still well inside the orbs this site uses. All of it stands whatever the hour was: each angle was tested from midnight to midnight before it was written down."
+    },
+    {
+      "key": "figures",
+      "title": "Figures in the geometry",
+      "facts": [
+        "figure:t-square:Mercury-Saturn:apex-Jupiter",
+        "figure:unaspected:Moon"
+      ],
+      "text": "Mercury opposes Saturn while both square Jupiter. A t-square aims the whole axis at its apex planet; the tradition reads it as the chart’s standing assignment. The Moon makes no major aspect that survives the day; the old reading gives such a planet autonomy — it acts alone, sometimes loudly."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:Mars:fall",
+        "dignity:Jupiter:fall",
+        "dignity:Saturn:fall"
+      ],
+      "text": "Read against the old dignities, three placements stand out. Mars in Cancer at 24.9° is in fall — the tradition’s uphill placement, strength earned rather than given; Jupiter in Capricorn at 7.8° is in fall; Saturn in Aries at 5.8° is in fall. Dignity is a statement about conditions, not about worth."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:earth3-air2-water2-fire2",
+        "modalities:cardinal6-mutable2-fixed1",
+        "settled-signs:9",
+        "retrograde:4"
+      ],
+      "text": "Of the 9 placements whose signs hold for the whole day: 3 in earth, 2 in air, 2 in water, 2 in fire by element, 6 cardinal, 2 mutable, 1 fixed by modality. Earth counts what remains: the built, the kept, the finished. Promise weighs less than delivery. Jupiter, Saturn, Uranus and Neptune were retrograde — the backward drift a body appears to make as the Earth overtakes it, read in the scheme as a function that reviews before it releases."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon is genuinely open",
+      "facts": [
+        "moon-uncertain:aries:taurus"
+      ],
+      "uncertain": true,
+      "text": "The Moon crossed from Aries into Taurus during that day at the birthplace, travelling 13.5° between one midnight and the next. A birth time would settle it in a second; there isn’t one. So the Moon stays unnamed here — the alternative is a guess wearing the clothes of a fact."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/september-1/",
+    "label": "Everyone born on September 1"
+  },
+  "signLink": {
+    "href": "/virgo/",
+    "label": "The Virgo guide"
+  },
+  "substantiveFacts": [
+    "aspect:Mars:Neptune:opposition",
+    "sun-degree:9.60",
+    "decan:virgo:first",
+    "personal:Mercury:Libra:3.2°",
+    "personal:Venus:Cancer:24.3°",
+    "personal:Mars:Cancer:24.9°",
+    "aspect:Mars:Neptune:opposition:0.38",
+    "aspect:Venus:Mars:conjunction:0.62",
+    "aspect:Uranus:Pluto:sextile:0.74",
+    "figure:t-square:Mercury-Saturn:apex-Jupiter",
+    "figure:unaspected:Moon",
+    "dignity:Mars:fall",
+    "dignity:Jupiter:fall",
+    "dignity:Saturn:fall",
+    "elements:earth3-air2-water2-fire2",
+    "modalities:cardinal6-mutable2-fixed1",
+    "settled-signs:9",
+    "retrograde:4",
+    "moon-uncertain:aries:taurus"
+  ],
+  "measurements": {
+    "originalWords": 417,
+    "substantiveStatements": 19,
+    "blocks": 7
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "schema": "zodiacs.phase5.evidence.v1",
+  "slug": "timothee-chalamet",
+  "qid": "Q19877770",
+  "displayName": "Timothée Chalamet",
+  "wikidataLabel": "Timothée Chalamet",
+  "wikidataDescription": "French-American actor (born 1995)",
+  "retrievedAtUtc": "2026-11-18T10:55:24.000Z",
+  "sources": {
+    "wikidata": {
+      "entityUrl": "https://www.wikidata.org/wiki/Q19877770",
+      "propertiesUsed": [
+        "P569",
+        "P19",
+        "P625",
+        "P106",
+        "P18",
+        "P570",
+        "P17",
+        "P131"
+      ],
+      "lastrevid": 2568599429
+    },
+    "wikipedia": {
+      "language": "en",
+      "title": "Timothée Chalamet",
+      "articleUrl": "https://en.wikipedia.org/wiki/Timoth%C3%A9e_Chalamet",
+      "pageId": 46494361,
+      "revisionId": 1384407620,
+      "revisionTimestamp": "2026-11-08T02:41:15Z"
+    }
+  },
+  "birth": {
+    "claimCount": 1,
+    "distinctDayPrecisionValues": [
+      "+1995-12-27T00:00:00Z|proleptic-gregorian"
+    ],
+    "allValues": [
+      {
+        "time": "+1995-12-27T00:00:00Z",
+        "precision": 11,
+        "calendar": "proleptic-gregorian",
+        "rank": "normal"
+      }
+    ],
+    "time": "+1995-12-27T00:00:00Z",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "timeOfDay": null,
+    "timeOfDayEvidence": "none — Wikidata carries no birth-time claim for this person"
+  },
+  "death": null,
+  "living": true,
+  "birthPlace": {
+    "entity": "Q11299",
+    "label": "Manhattan",
+    "entityUrl": "https://www.wikidata.org/wiki/Q11299",
+    "country": {
+      "entity": "Q30",
+      "label": "United States"
+    },
+    "claimCount": 1,
+    "coordinates": {
+      "sourceEntity": "Q11299",
+      "sourceEntityLabel": "Manhattan",
+      "latitude": 40.728333333333,
+      "longitude": -73.994166666667,
+      "precision": 0.00027777777777778,
+      "escalationSteps": 0
+    }
+  },
+  "occupations": [
+    {
+      "entity": "Q33999",
+      "label": "actor"
+    }
+  ],
+  "portrait": {
+    "file": "File:Timothée Chalamet-63541 (cropped).jpg",
+    "filePage": "https://commons.wikimedia.org/wiki/File:Timoth%C3%A9e%20Chalamet-63541%20(cropped).jpg",
+    "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Timoth%C3%A9e_Chalamet-63541_(cropped).jpg",
+    "width": 2641,
+    "height": 3778,
+    "licenseShortName": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "artist": "Harald Krichel",
+    "credit": "Own work",
+    "usageTerms": "Creative Commons Attribution-Share Alike 4.0",
+    "attributionRequired": "true",
+    "restrictions": ""
+  }
+}

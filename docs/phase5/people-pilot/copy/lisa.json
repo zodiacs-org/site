@@ -1,0 +1,118 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "lisa",
+  "seedRound": 0,
+  "qid": "Q26707663",
+  "displayName": "Lisa",
+  "identity": "Singer and rapper · Thailand · born 1997",
+  "title": "Lisa's birth chart",
+  "metaDescription": "Lisa's chart, computed from a sourced birth date: Sun at 6.6° Aries. Birth time unknown, so no houses or rising sign.",
+  "lede": "Four of the ten placements whose signs are settled stand in Aries — the Sun, Mercury, Venus and Saturn. The placements whose signs could change with an unknown hour are not counted. A cluster that size becomes the section the rest of the chart plays around.",
+  "ledeFact": "stellium:aries:4",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:6.57",
+        "decan:aries:first"
+      ],
+      "text": "Aries, but precisely: 6.6°, first decan, 0°–10°, under Mars in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
+    },
+    {
+      "key": "personal",
+      "title": "The fast planets",
+      "facts": [
+        "personal:Mercury:Aries:21.4°",
+        "personal:Venus:Aries:5.0°",
+        "personal:Mars:Virgo:23.0°"
+      ],
+      "text": "Closer in, Mercury stands at 21.4° Aries; Venus stands at 5.0° Aries; Mars stands at 23.0° Virgo. The tradition reads a mind that decides at speaking speed from Mercury, taste that runs toward the vivid and the immediate from Venus, drive that grinds rather than flares from Mars."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Venus:Pluto:trine:0.55",
+        "aspect:Sun:Pluto:trine:1.07",
+        "aspect:Sun:Uranus:sextile:1.21"
+      ],
+      "text": "Closest first: Venus to Pluto, a trine with 0.6° of slack. Trines are read as inheritance rather than achievement: the ease is genuine, and nothing about it was earned. Behind it, the Sun trine Pluto at 1.1°, and the Sun sextile Uranus at 1.2° — both still well inside the orbs this site uses. Each angle here was measured at every hour of the civil day and held; whatever the missing clock said, this geometry was in it."
+    },
+    {
+      "key": "figures",
+      "title": "The standing structure",
+      "facts": [
+        "figure:unaspected:Moon"
+      ],
+      "text": "The Moon stands apart from every major angle the day held — the tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:Sun:exaltation",
+        "dignity:Moon:fall",
+        "dignity:Venus:detriment",
+        "dignity:Saturn:fall"
+      ],
+      "text": "Four planets here sit in a sign the classical scheme scores. The Sun in Aries at 6.6° is in exaltation — the tradition’s honoured-guest placement, working at its best; the Moon in Scorpio at 10.6° is in fall — the tradition’s uphill placement, strength earned rather than given; Venus in Aries at 5.0° is in detriment — the planet opposite its home, working against the grain; Saturn in Aries at 9.8° is in fall. None of these labels is a verdict on a person; they describe how a function is situated, nothing more."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:fire5-earth2-air2-water1",
+        "modalities:cardinal5-fixed3-mutable2",
+        "settled-signs:10",
+        "retrograde:2"
+      ],
+      "text": "Among the 10 placements whose signs hold for the whole day, the elements divide 5 fire, 2 earth, 2 air, 1 water; by modality, 5 cardinal, 3 fixed, 2 mutable. Fire leads with ignition: the first move made early, and certainty arriving ahead of the evidence. Mars and Pluto were retrograde — apparent retreat against the stars, which the old reading takes as a function working from the inside first."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon, and how far it can move",
+      "facts": [
+        "moon-sign:scorpio",
+        "moon-band:12.6"
+      ],
+      "uncertain": false,
+      "text": "The Moon stayed in Scorpio for the whole of that day at the birthplace, covering 12.6° between midnight and midnight. The sign survives the missing hour; the degree does not, and is given as a reference rather than a fact. At the noon reference it stands at 10.6°."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/march-27/",
+    "label": "Everyone born on March 27"
+  },
+  "signLink": {
+    "href": "/aries/",
+    "label": "The Aries guide"
+  },
+  "substantiveFacts": [
+    "stellium:aries:4",
+    "sun-degree:6.57",
+    "decan:aries:first",
+    "personal:Mercury:Aries:21.4°",
+    "personal:Venus:Aries:5.0°",
+    "personal:Mars:Virgo:23.0°",
+    "aspect:Venus:Pluto:trine:0.55",
+    "aspect:Sun:Pluto:trine:1.07",
+    "aspect:Sun:Uranus:sextile:1.21",
+    "figure:unaspected:Moon",
+    "dignity:Sun:exaltation",
+    "dignity:Moon:fall",
+    "dignity:Venus:detriment",
+    "dignity:Saturn:fall",
+    "elements:fire5-earth2-air2-water1",
+    "modalities:cardinal5-fixed3-mutable2",
+    "settled-signs:10",
+    "retrograde:2",
+    "moon-sign:scorpio",
+    "moon-band:12.6"
+  ],
+  "measurements": {
+    "originalWords": 442,
+    "substantiveStatements": 20,
+    "blocks": 7
+  }
+}

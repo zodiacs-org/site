@@ -1,0 +1,112 @@
+{
+  "schema": "zodiacs.phase5.evidence.v1",
+  "slug": "kendrick-lamar",
+  "qid": "Q130798",
+  "displayName": "Kendrick Lamar",
+  "wikidataLabel": null,
+  "wikidataDescription": "American rapper and songwriter (born 1987)",
+  "retrievedAtUtc": "2026-11-18T10:55:24.000Z",
+  "sources": {
+    "wikidata": {
+      "entityUrl": "https://www.wikidata.org/wiki/Q130798",
+      "propertiesUsed": [
+        "P569",
+        "P19",
+        "P625",
+        "P106",
+        "P18",
+        "P570",
+        "P17",
+        "P131"
+      ],
+      "lastrevid": 2569849327
+    },
+    "wikipedia": {
+      "language": "en",
+      "title": "Kendrick Lamar",
+      "articleUrl": "https://en.wikipedia.org/wiki/Kendrick_Lamar",
+      "pageId": 29909823,
+      "revisionId": 1385406569,
+      "revisionTimestamp": "2026-11-13T04:13:06Z"
+    }
+  },
+  "birth": {
+    "claimCount": 1,
+    "distinctDayPrecisionValues": [
+      "+1987-06-17T00:00:00Z|proleptic-gregorian"
+    ],
+    "allValues": [
+      {
+        "time": "+1987-06-17T00:00:00Z",
+        "precision": 11,
+        "calendar": "proleptic-gregorian",
+        "rank": "normal"
+      }
+    ],
+    "time": "+1987-06-17T00:00:00Z",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "timeOfDay": null,
+    "timeOfDayEvidence": "none — Wikidata carries no birth-time claim for this person"
+  },
+  "death": null,
+  "living": true,
+  "birthPlace": {
+    "entity": "Q487119",
+    "label": "Compton",
+    "entityUrl": "https://www.wikidata.org/wiki/Q487119",
+    "country": {
+      "entity": "Q30",
+      "label": "United States"
+    },
+    "claimCount": 1,
+    "coordinates": {
+      "sourceEntity": "Q487119",
+      "sourceEntityLabel": "Compton",
+      "latitude": 33.896666666667,
+      "longitude": -118.225,
+      "precision": 0.00027777777777778,
+      "escalationSteps": 0
+    }
+  },
+  "occupations": [
+    {
+      "entity": "Q177220",
+      "label": "singer"
+    },
+    {
+      "entity": "Q36834",
+      "label": "composer"
+    },
+    {
+      "entity": "Q183945",
+      "label": "record producer"
+    },
+    {
+      "entity": "Q753110",
+      "label": "songwriter"
+    },
+    {
+      "entity": "Q2252262",
+      "label": "rapper"
+    },
+    {
+      "entity": "Q60723829",
+      "label": "pop singer"
+    }
+  ],
+  "portrait": {
+    "file": "File:Pulitzer2018-portraits-kendrick-lamar.jpg",
+    "filePage": "https://commons.wikimedia.org/wiki/File:Pulitzer2018-portraits-kendrick-lamar.jpg",
+    "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Pulitzer2018-portraits-kendrick-lamar.jpg",
+    "width": 1125,
+    "height": 1768,
+    "licenseShortName": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "artist": "Fuzheado",
+    "credit": "Own work",
+    "usageTerms": "Creative Commons Attribution-Share Alike 4.0",
+    "attributionRequired": "true",
+    "restrictions": ""
+  }
+}

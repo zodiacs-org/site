@@ -1,0 +1,124 @@
+{
+  "schema": "zodiacs.phase5.evidence.v1",
+  "slug": "olivia-rodrigo",
+  "qid": "Q63243883",
+  "displayName": "Olivia Rodrigo",
+  "wikidataLabel": null,
+  "wikidataDescription": "American singer-songwriter and actress (born 2003)",
+  "retrievedAtUtc": "2026-11-18T10:55:24.000Z",
+  "sources": {
+    "wikidata": {
+      "entityUrl": "https://www.wikidata.org/wiki/Q63243883",
+      "propertiesUsed": [
+        "P569",
+        "P19",
+        "P625",
+        "P106",
+        "P18",
+        "P570",
+        "P17",
+        "P131"
+      ],
+      "lastrevid": 2568214979
+    },
+    "wikipedia": {
+      "language": "en",
+      "title": "Olivia Rodrigo",
+      "articleUrl": "https://en.wikipedia.org/wiki/Olivia_Rodrigo",
+      "pageId": 53100485,
+      "revisionId": 1385757045,
+      "revisionTimestamp": "2026-11-15T02:24:24Z"
+    }
+  },
+  "birth": {
+    "claimCount": 1,
+    "distinctDayPrecisionValues": [
+      "+2003-02-20T00:00:00Z|proleptic-gregorian"
+    ],
+    "allValues": [
+      {
+        "time": "+2003-02-20T00:00:00Z",
+        "precision": 11,
+        "calendar": "proleptic-gregorian",
+        "rank": "normal"
+      }
+    ],
+    "time": "+2003-02-20T00:00:00Z",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "timeOfDay": null,
+    "timeOfDayEvidence": "none — Wikidata carries no birth-time claim for this person"
+  },
+  "death": null,
+  "living": true,
+  "birthPlace": {
+    "entity": "Q838787",
+    "label": "Murrieta",
+    "entityUrl": "https://www.wikidata.org/wiki/Q838787",
+    "country": {
+      "entity": "Q30",
+      "label": "United States"
+    },
+    "claimCount": 1,
+    "coordinates": {
+      "sourceEntity": "Q838787",
+      "sourceEntityLabel": "Murrieta",
+      "latitude": 33.569444444444,
+      "longitude": -117.2025,
+      "precision": 0.00027777777777778,
+      "escalationSteps": 0
+    }
+  },
+  "occupations": [
+    {
+      "entity": "Q33999",
+      "label": "actor"
+    },
+    {
+      "entity": "Q177220",
+      "label": "singer"
+    },
+    {
+      "entity": "Q36834",
+      "label": "composer"
+    },
+    {
+      "entity": "Q488205",
+      "label": "singer-songwriter"
+    },
+    {
+      "entity": "Q10798782",
+      "label": "television actor"
+    },
+    {
+      "entity": "Q639669",
+      "label": "musician"
+    },
+    {
+      "entity": "Q10800557",
+      "label": "film actor"
+    },
+    {
+      "entity": "Q60723829",
+      "label": "pop singer"
+    },
+    {
+      "entity": "Q104218554",
+      "label": "rock singer"
+    }
+  ],
+  "portrait": {
+    "file": "File:Glasto2025-546 (cropped 2).jpg",
+    "filePage": "https://commons.wikimedia.org/wiki/File:Glasto2025-546%20(cropped%202).jpg",
+    "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Glasto2025-546_(cropped_2).jpg",
+    "width": 1218,
+    "height": 1756,
+    "licenseShortName": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "artist": "Raph_PH",
+    "credit": "https://www.flickr.com/photos/raph_ph/54645719039/",
+    "usageTerms": "Creative Commons Attribution 4.0",
+    "attributionRequired": "true",
+    "restrictions": ""
+  }
+}

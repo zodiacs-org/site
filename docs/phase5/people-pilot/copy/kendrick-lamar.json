@@ -1,0 +1,112 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "kendrick-lamar",
+  "seedRound": 0,
+  "qid": "Q130798",
+  "displayName": "Kendrick Lamar",
+  "identity": "Rapper and songwriter · United States · born 1987",
+  "title": "Kendrick Lamar's birth chart",
+  "metaDescription": "Kendrick Lamar's chart, computed from a sourced birth date: Sun at 26.1° Gemini. Birth time unknown, so no houses or rising sign.",
+  "lede": "Five of the ten placements whose signs are settled fall in mutable signs, the widest weighting the unknown hour leaves certain. The mutable signs hand one season to the next; a chart weighted there is built for transitions.",
+  "ledeFact": "modality:mutable:5",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:26.06",
+        "decan:gemini:third"
+      ],
+      "text": "The Sun sits at 26.1° Gemini — the third decan, 20°–30°, which the tradition sub-rules by Saturn. Degrees matter more than the sign label here: two people born a fortnight apart share Gemini and share almost nothing else about where the Sun actually stood."
+    },
+    {
+      "key": "personal",
+      "title": "Closer to the ground",
+      "facts": [
+        "personal:Mercury:Cancer:16.4°",
+        "personal:Venus:Gemini:8.0°",
+        "personal:Mars:Cancer:17.9°"
+      ],
+      "text": "Closer in, Mercury stands at 16.4° Cancer; Venus stands at 8.0° Gemini; Mars stands at 17.9° Cancer. The tradition reads a mind that absorbs before it argues from Mercury, taste led by wit and proportion from Venus, drive that moves on certainty and current from Mars."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Neptune:Pluto:sextile:0.48",
+        "aspect:Jupiter:Uranus:trine:0.8",
+        "aspect:Sun:Uranus:opposition:1.38"
+      ],
+      "text": "Start where the chart is tightest — Neptune sextile Pluto, 0.5° of separation. Sextiles are read as standing invitations — productive exactly as often as they are accepted. Behind it, Jupiter trine Uranus at 0.8°, and the Sun opposition Uranus at 1.4° — both still well inside the orbs this site uses. These are the day-proof angles — present at midnight, present at noon, present at the next midnight."
+    },
+    {
+      "key": "figures",
+      "title": "Figures in the geometry",
+      "facts": [
+        "figure:unaspected:Venus"
+      ],
+      "text": "Venus stands apart from every major angle the day held — the tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:Mars:fall"
+      ],
+      "text": "Of the seven planets the classical scheme judges, one sits in a sign it has an opinion about. Mars in Cancer at 17.9° is in fall — the tradition’s uphill placement, strength earned rather than given. None of these labels is a verdict on a person; they describe how a function is situated, nothing more."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:water4-fire3-air2-earth1",
+        "modalities:mutable5-cardinal4-fixed1",
+        "settled-signs:10",
+        "retrograde:4"
+      ],
+      "text": "The certain ground: 10 placements whose signs hold for the whole day, dividing 4 water, 3 fire, 2 air, 1 earth by element and 5 mutable, 4 cardinal, 1 fixed by mode. Water reads the room before the room speaks — atmosphere first, analysis later. Saturn, Uranus, Neptune and Pluto were retrograde — the backward drift a body appears to make as the Earth overtakes it, read in the scheme as a function that reviews before it releases."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon, and how far it can move",
+      "facts": [
+        "moon-sign:pisces",
+        "moon-band:13.8"
+      ],
+      "uncertain": false,
+      "text": "The Moon stayed in Pisces for the whole of that day at the birthplace, covering 13.8° between midnight and midnight. Whatever the unrecorded hour was, it happened inside one Moon sign — the degree floats, the sign holds. At the noon reference it stands at 17.6°."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/june-17/",
+    "label": "Everyone born on June 17"
+  },
+  "signLink": {
+    "href": "/gemini/",
+    "label": "The Gemini guide"
+  },
+  "substantiveFacts": [
+    "modality:mutable:5",
+    "sun-degree:26.06",
+    "decan:gemini:third",
+    "personal:Mercury:Cancer:16.4°",
+    "personal:Venus:Gemini:8.0°",
+    "personal:Mars:Cancer:17.9°",
+    "aspect:Neptune:Pluto:sextile:0.48",
+    "aspect:Jupiter:Uranus:trine:0.8",
+    "aspect:Sun:Uranus:opposition:1.38",
+    "figure:unaspected:Venus",
+    "dignity:Mars:fall",
+    "elements:water4-fire3-air2-earth1",
+    "modalities:mutable5-cardinal4-fixed1",
+    "settled-signs:10",
+    "retrograde:4",
+    "moon-sign:pisces",
+    "moon-band:13.8"
+  ],
+  "measurements": {
+    "originalWords": 409,
+    "substantiveStatements": 17,
+    "blocks": 7
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "schema": "zodiacs.phase5.evidence.v1",
+  "slug": "harry-styles",
+  "qid": "Q3626966",
+  "displayName": "Harry Styles",
+  "wikidataLabel": "Harry Styles",
+  "wikidataDescription": "English singer, songwriter and actor",
+  "retrievedAtUtc": "2026-11-18T10:55:24.000Z",
+  "sources": {
+    "wikidata": {
+      "entityUrl": "https://www.wikidata.org/wiki/Q3626966",
+      "propertiesUsed": [
+        "P569",
+        "P19",
+        "P625",
+        "P106",
+        "P18",
+        "P570",
+        "P17",
+        "P131"
+      ],
+      "lastrevid": 2567606830
+    },
+    "wikipedia": {
+      "language": "en",
+      "title": "Harry Styles",
+      "articleUrl": "https://en.wikipedia.org/wiki/Harry_Styles",
+      "pageId": 35459623,
+      "revisionId": 1384871585,
+      "revisionTimestamp": "2026-11-10T14:41:33Z"
+    }
+  },
+  "birth": {
+    "claimCount": 1,
+    "distinctDayPrecisionValues": [
+      "+1994-02-01T00:00:00Z|proleptic-gregorian"
+    ],
+    "allValues": [
+      {
+        "time": "+1994-02-01T00:00:00Z",
+        "precision": 11,
+        "calendar": "proleptic-gregorian",
+        "rank": "normal"
+      }
+    ],
+    "time": "+1994-02-01T00:00:00Z",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "timeOfDay": null,
+    "timeOfDayEvidence": "none — Wikidata carries no birth-time claim for this person"
+  },
+  "death": null,
+  "living": true,
+  "birthPlace": {
+    "entity": "Q865716",
+    "label": "Redditch",
+    "entityUrl": "https://www.wikidata.org/wiki/Q865716",
+    "country": {
+      "entity": "Q145",
+      "label": "United Kingdom"
+    },
+    "claimCount": 1,
+    "coordinates": {
+      "sourceEntity": "Q865716",
+      "sourceEntityLabel": "Redditch",
+      "latitude": 52.306944444444,
+      "longitude": -1.9491666666667,
+      "precision": 0.00027777777777778,
+      "escalationSteps": 0
+    }
+  },
+  "occupations": [
+    {
+      "entity": "Q33999",
+      "label": "actor"
+    },
+    {
+      "entity": "Q488205",
+      "label": "singer-songwriter"
+    },
+    {
+      "entity": "Q639669",
+      "label": "musician"
+    },
+    {
+      "entity": "Q10800557",
+      "label": "film actor"
+    },
+    {
+      "entity": "Q855091",
+      "label": "guitarist"
+    },
+    {
+      "entity": "Q753110",
+      "label": "songwriter"
+    },
+    {
+      "entity": "Q15253558",
+      "label": "activist"
+    },
+    {
+      "entity": "Q22336956",
+      "label": "humanitarian"
+    },
+    {
+      "entity": "Q60723829",
+      "label": "pop singer"
+    }
+  ],
+  "portrait": {
+    "file": "File:HarryStylesWembley170623 (14 of 93) (52982076132) (cropped).jpg",
+    "filePage": "https://commons.wikimedia.org/wiki/File:HarryStylesWembley170623%20(14%20of%2093)%20(52982076132)%20(cropped).jpg",
+    "descriptionUrl": "https://commons.wikimedia.org/wiki/File:HarryStylesWembley170623_(14_of_93)_(52982076132)_(cropped).jpg",
+    "width": 1999,
+    "height": 2809,
+    "licenseShortName": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "artist": "Raph_PH",
+    "credit": "HarryStylesWembley170623 (14 of 93)",
+    "usageTerms": "Creative Commons Attribution 2.0",
+    "attributionRequired": "true",
+    "restrictions": ""
+  }
+}

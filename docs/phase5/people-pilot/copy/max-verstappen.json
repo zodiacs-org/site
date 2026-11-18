@@ -1,0 +1,118 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "max-verstappen",
+  "seedRound": 1,
+  "qid": "Q2239218",
+  "displayName": "Max Verstappen",
+  "identity": "Formula One driver · Belgium · born 1997",
+  "title": "Max Verstappen's birth chart",
+  "metaDescription": "Max Verstappen's chart, computed from a sourced birth date: Sun at 7.3° Libra. Birth time unknown, so no houses or rising sign.",
+  "lede": "Mercury and Neptune sit 0.5° from an exact trine — near enough that the tradition reads thinking and imagination as a single working part. Trines are read as inheritance rather than achievement: the ease is genuine, and nothing about it was earned.",
+  "ledeFact": "aspect:Mercury:Neptune:trine",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:7.28",
+        "decan:libra:first"
+      ],
+      "text": "The Sun's exact place is 7.3° Libra. That falls in the first decan, 0°–10°, sub-ruled by Venus in the classical scheme — an air sign read through a cardinal season."
+    },
+    {
+      "key": "personal",
+      "title": "The fast planets",
+      "facts": [
+        "personal:Mercury:Virgo:26.7°",
+        "personal:Venus:Scorpio:21.1°",
+        "personal:Mars:Sagittarius:1.0°"
+      ],
+      "text": "Day to day the chart speaks through Mercury in Virgo (26.7°), Venus in Scorpio (21.1°), Mars in Sagittarius (1.0°): a mind that trusts the measured and the checked, taste tuned to mood and undertow, drive that ignites on contact."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Mercury:Neptune:trine:0.47",
+        "aspect:Uranus:Pluto:sextile:1.36",
+        "aspect:Mars:Pluto:conjunction:2.42"
+      ],
+      "text": "The day's firmest angle joins Mercury and Neptune — a trine holding at 0.5°. A trine is an open channel. The two cooperate without being asked, which is exactly why it is easy to spend and easy to take for granted. Behind it, Uranus sextile Pluto at 1.4°, and Mars conjunction Pluto at 2.4° — both still well inside the orbs this site uses. These are the day-proof angles — present at midnight, present at noon, present at the next midnight."
+    },
+    {
+      "key": "figures",
+      "title": "What the angles build",
+      "facts": [
+        "figure:unaspected:Venus"
+      ],
+      "text": "Venus stands apart from every major angle the day held — the tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:Sun:fall",
+        "dignity:Mercury:exaltation",
+        "dignity:Venus:detriment",
+        "dignity:Saturn:fall"
+      ],
+      "text": "Of the seven planets the classical scheme judges, four sit in a sign it has an opinion about. The Sun in Libra at 7.3° is in fall — the tradition’s uphill placement, strength earned rather than given; Mercury in Virgo at 26.7° is in exaltation — the tradition’s honoured-guest placement, working at its best; Venus in Scorpio at 21.1° is in detriment — the planet opposite its home, working against the grain; Saturn in Aries at 17.7° is in fall. None of these labels is a verdict on a person; they describe how a function is situated, nothing more."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:air3-earth3-fire3-water1",
+        "modalities:mutable4-cardinal3-fixed3",
+        "settled-signs:10",
+        "retrograde:4"
+      ],
+      "text": "Of the 10 placements whose signs hold for the whole day: 3 in air, 3 in earth, 3 in fire, 1 in water by element, 4 mutable, 3 cardinal, 3 fixed by modality. An air-weighted chart thinks in through-lines; the sentence is how it takes hold of the world. Jupiter, Saturn, Uranus and Neptune were retrograde — the backward drift a body appears to make as the Earth overtakes it, read in the scheme as a function that reviews before it releases."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon, and how far it can move",
+      "facts": [
+        "moon-sign:virgo",
+        "moon-band:11.8"
+      ],
+      "uncertain": false,
+      "text": "The Moon stayed in Virgo for the whole of that day at the birthplace, covering 11.8° between midnight and midnight. The missing clock moves the Moon by half a sign at most here, and the boundary was never close. At the noon reference it stands at 23.4°."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/september-30/",
+    "label": "Everyone born on September 30"
+  },
+  "signLink": {
+    "href": "/libra/",
+    "label": "The Libra guide"
+  },
+  "substantiveFacts": [
+    "aspect:Mercury:Neptune:trine",
+    "sun-degree:7.28",
+    "decan:libra:first",
+    "personal:Mercury:Virgo:26.7°",
+    "personal:Venus:Scorpio:21.1°",
+    "personal:Mars:Sagittarius:1.0°",
+    "aspect:Mercury:Neptune:trine:0.47",
+    "aspect:Uranus:Pluto:sextile:1.36",
+    "aspect:Mars:Pluto:conjunction:2.42",
+    "figure:unaspected:Venus",
+    "dignity:Sun:fall",
+    "dignity:Mercury:exaltation",
+    "dignity:Venus:detriment",
+    "dignity:Saturn:fall",
+    "elements:air3-earth3-fire3-water1",
+    "modalities:mutable4-cardinal3-fixed3",
+    "settled-signs:10",
+    "retrograde:4",
+    "moon-sign:virgo",
+    "moon-band:11.8"
+  ],
+  "measurements": {
+    "originalWords": 453,
+    "substantiveStatements": 20,
+    "blocks": 7
+  }
+}

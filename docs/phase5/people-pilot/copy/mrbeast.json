@@ -1,0 +1,116 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "mrbeast",
+  "seedRound": 0,
+  "qid": "Q57618112",
+  "displayName": "MrBeast",
+  "identity": "YouTuber and entrepreneur · United States · born 1998",
+  "title": "MrBeast's birth chart",
+  "metaDescription": "MrBeast's chart, computed from a sourced birth date: Sun at 16.9° Taurus. Birth time unknown, so no houses or rising sign.",
+  "lede": "Across the nine placements whose signs are settled, fixed leads with four. Fixed signs hold the middle of their seasons, and a fixed-heavy chart is read as one that consolidates and does not easily let go.",
+  "ledeFact": "modality:fixed:4",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:16.93",
+        "decan:taurus:second"
+      ],
+      "text": "The Sun's position resolves to 16.9° Taurus — deep enough in the second decan (10°–20°) that Mercury, its traditional sub-ruler, colours the reading."
+    },
+    {
+      "key": "personal",
+      "title": "The personal registers",
+      "facts": [
+        "personal:Mercury:Aries:20.6°",
+        "personal:Venus:Aries:4.4°",
+        "personal:Mars:Taurus:18.2°"
+      ],
+      "text": "The personal planets sit Mercury at 20.6° Aries, Venus at 4.4° Aries, Mars at 18.2° Taurus. Mercury in a fire sign reads as thought that arrives already in motion; Venus in a fire sign reads as attraction declared rather than implied; Mars in an earth sign reads as effort banked steadily until it tells."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Sun:Mars:conjunction:1.24",
+        "aspect:Venus:Neptune:sextile:2.25",
+        "aspect:Mars:Jupiter:sextile:2.62"
+      ],
+      "text": "The Sun and Mars hold the closest angle here — a conjunction, 1.2° wide. A conjunction is the least negotiable aspect in the scheme — no distance to argue across, so the pair arrives as a single instinct. Behind it, Venus sextile Neptune at 2.3°, and Mars sextile Jupiter at 2.6° — both still well inside the orbs this site uses. The unknown hour cannot unmake any of this: every aspect named survived all twenty-five samples of the day."
+    },
+    {
+      "key": "figures",
+      "title": "Figures in the geometry",
+      "facts": [
+        "figure:none"
+      ],
+      "text": "No closed figure — no grand trine, t-square, or grand cross — holds among the day-stable angles. The chart distributes its tension pair by pair rather than through one standing structure."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:Venus:detriment",
+        "dignity:Mars:detriment",
+        "dignity:Jupiter:domicile",
+        "dignity:Saturn:fall"
+      ],
+      "text": "The dignity table, which predates the outer planets and only ever spoke for seven, marks four placements here. Venus in Aries at 4.4° is in detriment — the planet opposite its home, working against the grain; Mars in Taurus at 18.2° is in detriment; Jupiter in Pisces at 20.8° is in domicile — the planet in its own sign, running on home rules; Saturn in Aries at 26.4° is in fall — the tradition’s uphill placement, strength earned rather than given. Dignity is a statement about conditions, not about worth."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:fire4-earth2-air2-water1",
+        "modalities:fixed4-cardinal3-mutable2",
+        "settled-signs:9",
+        "retrograde:2"
+      ],
+      "text": "Of the 9 placements whose signs hold for the whole day: 4 in fire, 2 in earth, 2 in air, 1 in water by element, 4 fixed, 3 cardinal, 2 mutable by modality. Neptune and Pluto were retrograde — the optical reversal the tradition reads as review — energy turned over before it is turned out."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon is genuinely open",
+      "facts": [
+        "moon-uncertain:virgo:libra"
+      ],
+      "uncertain": true,
+      "text": "The Moon crossed from Virgo into Libra during that day at the birthplace, travelling 11.8° between one midnight and the next. Half the day belongs to each sign, and the split falls at an unrecorded hour — so this page holds the Moon as a genuine unknown."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/may-7/",
+    "label": "Everyone born on May 7"
+  },
+  "signLink": {
+    "href": "/taurus/",
+    "label": "The Taurus guide"
+  },
+  "substantiveFacts": [
+    "modality:fixed:4",
+    "sun-degree:16.93",
+    "decan:taurus:second",
+    "personal:Mercury:Aries:20.6°",
+    "personal:Venus:Aries:4.4°",
+    "personal:Mars:Taurus:18.2°",
+    "aspect:Sun:Mars:conjunction:1.24",
+    "aspect:Venus:Neptune:sextile:2.25",
+    "aspect:Mars:Jupiter:sextile:2.62",
+    "figure:none",
+    "dignity:Venus:detriment",
+    "dignity:Mars:detriment",
+    "dignity:Jupiter:domicile",
+    "dignity:Saturn:fall",
+    "elements:fire4-earth2-air2-water1",
+    "modalities:fixed4-cardinal3-mutable2",
+    "settled-signs:9",
+    "retrograde:2",
+    "moon-uncertain:virgo:libra"
+  ],
+  "measurements": {
+    "originalWords": 416,
+    "substantiveStatements": 19,
+    "blocks": 7
+  }
+}

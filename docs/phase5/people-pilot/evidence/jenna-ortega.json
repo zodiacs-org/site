@@ -1,0 +1,124 @@
+{
+  "schema": "zodiacs.phase5.evidence.v1",
+  "slug": "jenna-ortega",
+  "qid": "Q21738166",
+  "displayName": "Jenna Ortega",
+  "wikidataLabel": "Jenna Ortega",
+  "wikidataDescription": "American actress (born 2002)",
+  "retrievedAtUtc": "2026-11-18T10:55:24.000Z",
+  "sources": {
+    "wikidata": {
+      "entityUrl": "https://www.wikidata.org/wiki/Q21738166",
+      "propertiesUsed": [
+        "P569",
+        "P19",
+        "P625",
+        "P106",
+        "P18",
+        "P570",
+        "P17",
+        "P131"
+      ],
+      "lastrevid": 2570376867
+    },
+    "wikipedia": {
+      "language": "en",
+      "title": "Jenna Ortega",
+      "articleUrl": "https://en.wikipedia.org/wiki/Jenna_Ortega",
+      "pageId": 50229776,
+      "revisionId": 1384370220,
+      "revisionTimestamp": "2026-11-07T22:52:20Z"
+    }
+  },
+  "birth": {
+    "claimCount": 1,
+    "distinctDayPrecisionValues": [
+      "+2002-09-27T00:00:00Z|proleptic-gregorian"
+    ],
+    "allValues": [
+      {
+        "time": "+2002-09-27T00:00:00Z",
+        "precision": 11,
+        "calendar": "proleptic-gregorian",
+        "rank": "normal"
+      }
+    ],
+    "time": "+2002-09-27T00:00:00Z",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "timeOfDay": null,
+    "timeOfDayEvidence": "none — Wikidata carries no birth-time claim for this person"
+  },
+  "death": null,
+  "living": true,
+  "birthPlace": {
+    "entity": "Q399976",
+    "label": "Palm Desert",
+    "entityUrl": "https://www.wikidata.org/wiki/Q399976",
+    "country": {
+      "entity": "Q30",
+      "label": "United States"
+    },
+    "claimCount": 1,
+    "coordinates": {
+      "sourceEntity": "Q399976",
+      "sourceEntityLabel": "Palm Desert",
+      "latitude": 33.725555555556,
+      "longitude": -116.36944444444,
+      "precision": 0.00027777777777778,
+      "escalationSteps": 0
+    }
+  },
+  "occupations": [
+    {
+      "entity": "Q33999",
+      "label": "actor"
+    },
+    {
+      "entity": "Q36180",
+      "label": "writer"
+    },
+    {
+      "entity": "Q578109",
+      "label": "television producer"
+    },
+    {
+      "entity": "Q10798782",
+      "label": "television actor"
+    },
+    {
+      "entity": "Q10800557",
+      "label": "film actor"
+    },
+    {
+      "entity": "Q12362622",
+      "label": "philanthropist"
+    },
+    {
+      "entity": "Q2405480",
+      "label": "voice actor"
+    },
+    {
+      "entity": "Q15253558",
+      "label": "activist"
+    },
+    {
+      "entity": "Q3282637",
+      "label": "film producer"
+    }
+  ],
+  "portrait": {
+    "file": "File:Jenna Ortega 2020 2.jpg",
+    "filePage": "https://commons.wikimedia.org/wiki/File:Jenna%20Ortega%202020%202.jpg",
+    "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Jenna_Ortega_2020_2.jpg",
+    "width": 547,
+    "height": 599,
+    "licenseShortName": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "artist": "ATTN:",
+    "credit": "#BeatTheVirus (ac. 0:02)",
+    "usageTerms": "Creative Commons Attribution 3.0",
+    "attributionRequired": "true",
+    "restrictions": ""
+  }
+}
