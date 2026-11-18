@@ -984,7 +984,7 @@ details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):focus-w
 }
 .bc-main .field__labelrow .field__toggle:has(input:checked)::after { opacity: 1; }
 /* A computed chart's cards arrive in order, on every chart form and the big
-   three; the first-reading prompt under them arrives with the first. The
+   three; the first-reading prompt under the wheel arrives with the first. The
    results of the moon phase, numerology, Saturn and the solar and lunar
    returns settle in as one block on the same step: each lands in view or is
    scrolled to. (The transits' result lands below the fold, where an arrival
