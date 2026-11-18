@@ -1,5 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Motion from '../../components/Motion.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import ArtFrame from '../../components/ArtFrame.astro';
 import HorizonDiagram from '../../components/HorizonDiagram.astro';
 import { ART, artSrc, artSrcset } from '../../lib/art';
@@ -123,9 +125,11 @@ const gap = later.minutes - example.minutes;
 >
   <!-- 01 · The calculator first, with an example of what it gives back. -->
   <section class="rs-tool">
+    <Motion />
     <div class="kwrap rs-grid">
       <div class="rs-main">
         <nav class="rs-crumbs" aria-label="Breadcrumb"><a href="/tools/">Tools</a><span aria-hidden="true">/</span><span aria-current="page">Rising sign</span></nav>
+        <ToolHeroMark name="rising-sign" />
         <h1 class="rs-title">Find your rising sign.</h1>
         <p class="klede rs-lede">The sign that was coming up on the eastern horizon the moment you were born. It describes how people first meet you, and it sets the shape of your whole chart.</p>
 
@@ -408,6 +412,9 @@ const gap = later.minutes - example.minutes;
     text-wrap: balance;
   }
   .rs-lede { margin-top: 16px; }
+  /* The tool's mark floats beside the heading, below the breadcrumb
+     (ToolHeroMark). The calculator clears it, so the form never sits beside it. */
+  .rs-main :global(.calc) { clear: right; }
 
   /* The calculator's form, dressed as the mockup's panel: date and time side
      by side, the time note full width under them, then the birthplace. */

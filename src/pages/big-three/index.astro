@@ -2,6 +2,8 @@
 import SharingToolLinks from '../../components/sharing/SharingToolLinks.astro';
 import { sharingText } from '../../lib/sharing/copy';
 import Base from '../../layouts/Base.astro';
+import Motion from '../../components/Motion.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import { SHARING_COPY } from '../../lib/sharing/copy';
 import BigThreeQuick from '../../islands/BigThreeQuick';
@@ -54,7 +56,9 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
+    <Motion />
     <div class="tool-hero">
+      <ToolHeroMark name="big-three" />
       <h1 class="display">{sharingText('en', 'bigTitle')}</h1>
       <p>
         Three fields, three placements. The <a href="/learn/glossary/#sun">Sun</a> is who you are, the{' '}
@@ -106,4 +110,11 @@ const jsonLd = [
   :global(.big-three__result) { margin-top: clamp(24px, 4vw, 40px); scroll-margin-top: 24px; }
   :global(.big-three__next) { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
   :global(.big-three__note) { margin: 12px 0 0; color: var(--muted); font-size: var(--text-sm); max-width: 62ch; }
+  /* The tool's mark floats beside the heading (ToolHeroMark). Clear it at the
+     hero's end so the form below never slides up beside it; a clearfix rather
+     than flow-root keeps the heading's margins collapsing as before. */
+  .tool-hero::after { content: ''; display: block; clear: right; }
+  /* The clear stops the intro's bottom margin collapsing into the form's own
+     larger top margin, as it did before; drop it so the gap stays the same. */
+  .tool-hero > p { margin-bottom: 0; }
 </style>

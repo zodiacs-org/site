@@ -1,6 +1,8 @@
 ---
 import { phraseUntil, rangeWords, sincePhrase } from '../../lib/range-words';
 import Base from '../../layouts/Base.astro';
+import Motion from '../../components/Motion.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import AskGuideAbout from '../../components/AskGuideAbout.astro';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
@@ -165,7 +167,9 @@ const jsonLd = [
   sources={sources}
 >
   <section class="section--tight container container--narrow">
+    <Motion />
     <div class="tool-hero reveal">
+      <ToolHeroMark name="retrogrades" />
       <h1 class="display">See every retrograde through {lastYear}.</h1>
       <p>See which planets are retrograde now and when each turns next.</p>
     </div>
@@ -323,4 +327,8 @@ const jsonLd = [
   }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* The tool's mark floats beside the heading (ToolHeroMark). Clear it at the
+     hero's end so the form below never slides up beside it; a clearfix rather
+     than flow-root keeps the heading's margins collapsing as before. */
+  .tool-hero::after { content: ''; display: block; clear: right; }
 </style>
