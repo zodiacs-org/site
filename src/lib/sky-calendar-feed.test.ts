@@ -3,7 +3,7 @@ import sky from '../data/sky.json';
 import { CATALOG_LOCALES } from './i18n/core';
 import { nasaStationAt } from './nasa-instants';
 import { skyCalendar, skyCalendarEvents } from './return-visits/sky-calendar';
-import { siteSkyCalendar, siteSkyCalendarEvents } from './sky-calendar-feed';
+import { siteSkyCalendar, siteSkyCalendarEvents, skyCalendarEventPage } from './sky-calendar-feed';
 
 const unfold = (ics: string) => ics.replace(/\r\n /g, '');
 
@@ -37,16 +37,45 @@ describe('the website sky calendar feed', () => {
     expect(refined).toBeGreaterThan(sky.retrogrades.length * 2 - 10);
   });
 
-  it('changes nothing but the station times and the unseen eclipse line', () => {
-    const differs = (a: string, b: string) => {
-      const la = unfold(a).split('\r\n');
-      const lb = unfold(b).split('\r\n');
-      return la.filter((line) => !lb.includes(line));
-    };
-    const changed = differs(siteSkyCalendar('en'), skyCalendar('en'));
-    for (const line of changed) expect(line).toMatch(/^(DTSTART|DTEND|DESCRIPTION):/);
-    expect(changed.filter((line) => line.startsWith('DESCRIPTION:'))).toEqual([
+  it('changes nothing but the station times, the unseen eclipse line and the own-page links', () => {
+    const bundled = unfold(skyCalendar('en'));
+    const bundledLines = new Set(bundled.split('\r\n'));
+    const changed = unfold(siteSkyCalendar('en')).split('\r\n').filter((line) => !bundledLines.has(line));
+    for (const line of changed) expect(line).toMatch(/^(DTSTART|DTEND|DESCRIPTION|URL):/);
+    const withoutLinks = changed
+      .filter((line) => line.startsWith('DESCRIPTION:'))
+      .map((line) => line.replace(/ https:\/\/zodiacs\.org\/\S+$/, ''))
+      .filter((line) => !bundled.includes(line));
+    expect(withoutLinks).toEqual([
       expect.stringContaining('So slight that no eye or camera will see it: NASA gives a penumbral magnitude of 0.0014.'),
     ]);
+  });
+
+  it('links each new and full Moon, eclipse and retrograde station to its own dated page', () => {
+    for (const locale of CATALOG_LOCALES) {
+      const events = siteSkyCalendarEvents(locale);
+      const moons = events.filter((e) => /^(new|full)-moon-/.test(e.id));
+      const eclipses = events.filter((e) => /-eclipse-/.test(e.id));
+      expect(moons.length).toBeGreaterThan(100);
+      for (const event of [...moons, ...eclipses]) {
+        expect(event.url, event.id).toMatch(/^https:\/\/zodiacs\.org\/(new-moon|full-moon|eclipses)\/\d{4}-\d{2}-\d{2}\/$/);
+        expect(event.description.endsWith(` ${event.url}`), event.id).toBe(true);
+      }
+      const windows = events.filter((e) => /-retrograde-/.test(e.id));
+      // Mercury, Venus and Mars stations have dated pages; the outer planets' share the /retrogrades/ hub.
+      const inner = windows.filter((e) => /^(Mercury|Venus|Mars)-retrograde-/.test(e.id));
+      expect(inner.length).toBeGreaterThan(15);
+      for (const event of inner) {
+        expect(event.url, event.id).toMatch(/^https:\/\/zodiacs\.org\/(mercury|venus|mars)-retrograde\/\d{4}-\d{2}-\d{2}\/$/);
+        expect(event.url).toBe(skyCalendarEventPage(event.id));
+      }
+    }
+  });
+
+  it('writes each own page into the calendar file as URL and in the description', () => {
+    const ics = unfold(siteSkyCalendar('en'));
+    const block = ics.split('BEGIN:VEVENT\r\n').find((b) => b.includes('UID:sky-full-moon-2026-01-03'))!;
+    expect(block).toContain('URL:https://zodiacs.org/full-moon/2026-01-03/');
+    expect(block).toMatch(/DESCRIPTION:.* https:\/\/zodiacs\.org\/full-moon\/2026-01-03\//);
   });
 });
