@@ -1,0 +1,22 @@
+{
+  "changedTestsRun": {
+    "passed": 661,
+    "timedOut": 2
+  },
+  "apiAndPlaygroundRerun": {
+    "passed": 46,
+    "timedOut": 1,
+    "remainingTimeout": "tests/api/mcp-warm-up.test.ts"
+  },
+  "nativeWarmUp": {
+    "importMilliseconds": 639,
+    "totalMilliseconds": 725,
+    "enabledStatusCodes": [200, 200],
+    "disabledStatusCodes": [503, 503],
+    "networkRequests": 0
+  },
+  "laterFullRunWorkerTimeouts": 2,
+  "almanacFollowUp": {
+    "passed": 3
+  }
+}

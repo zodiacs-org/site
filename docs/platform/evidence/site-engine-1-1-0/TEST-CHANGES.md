@@ -12,6 +12,7 @@ The change keeps the existing numerical tolerances.
 | `scripts/platform-candidate-docs.test.mjs` | The archive identity test gets its expected file count from the recorded npm pack result. |
 | `src/ai-tools/studio/inspect.test.ts` | Runs the chart inspector's replay cases with the browser ephemeris. |
 | `src/ai-tools/tools.test.ts` | The current sky test compares the existing position fields. The response names the ephemeris once. |
+| `src/data/almanac.test.ts` | Pins the August almanac timestamps and degrees to the regenerated DE440 month. The article prints those same values. |
 | `src/islands/MoonPhaseTool.reference.test.ts` | Runs the browser Moon phase reference tests with the browser ephemeris. |
 | `src/lib/compare/diff.test.ts` | Replays the browser comparison vectors with their original astronomy engine source, including the older receipt shapes. |
 | `src/lib/engine/grazing-crossings.test.ts` | The near station Saturn test pins its DE440 longitude offset. |
