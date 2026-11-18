@@ -190,6 +190,8 @@ function report(extra = {}) {
   return {
     vulnerabilities: {
       picomatch: { name: 'picomatch', severity: 'high', via: [picomatchAdvisory] },
+      fdir: { name: 'fdir', severity: 'high', via: ['picomatch'] },
+      tinyglobby: { name: 'tinyglobby', severity: 'high', via: ['fdir', 'picomatch'] },
       vite: { name: 'vite', severity: 'high', via: ['fdir', 'picomatch', 'tinyglobby'] },
       astro: { name: 'astro', severity: 'high', via: ['picomatch', 'vite'] },
       ...extra,
@@ -221,6 +223,10 @@ describe('temporary picomatch advisory exception', () => {
     expect(picomatchExceptionBlocker(policy, report(), ok)).toBeNull();
   });
 
+  it('still applies on the last allowed day', () => {
+    expect(picomatchExceptionBlocker('--omit=dev', report(), { ...ok, today: '2027-02-18' })).toBeNull();
+  });
+
   it('ignores advisories below the high-only policy but not below the production policy', () => {
     expect(picomatchExceptionBlocker('--audit-level=high', report(vitestModerate), ok)).toBeNull();
     expect(picomatchExceptionBlocker('--omit=dev', report(vitestModerate), ok)).toMatch(/another advisory/u);
@@ -231,10 +237,14 @@ describe('temporary picomatch advisory exception', () => {
     ['the newest release cannot be read', report(), { ...ok, latest: null }, /could not confirm/u],
     ['the backstop date has passed', report(), { ...ok, today: '2027-02-19' }, /expired/u],
     ['the date is missing', report(), { ...ok, today: undefined }, /date/u],
-    ['the advisory range changes', report({ picomatch: { via: [{ ...picomatchAdvisory, range: '<4.0.8' }] } }), ok, /range changed/u],
-    ['another high advisory appears', report({ other: { via: [{ name: 'other', url: 'https://github.com/advisories/GHSA-xxxx', severity: 'critical', range: '*' }] } }), ok, /another advisory/u],
-    ['a different advisory hits picomatch', report({ picomatch: { via: [picomatchAdvisory, { ...picomatchAdvisory, url: 'https://github.com/advisories/GHSA-yyyy' }] } }), ok, /another advisory/u],
-    ['an unknown severity appears', report({ odd: { via: [{ name: 'odd', url: 'u', severity: 'severe', range: '*' }] } }), ok, /unknown severity/u],
+    ['the advisory range changes', report({ picomatch: { severity: 'high', via: [{ ...picomatchAdvisory, range: '<4.0.8' }] } }), ok, /range changed/u],
+    ['another high advisory appears', report({ other: { severity: 'critical', via: [{ name: 'other', url: 'https://github.com/advisories/GHSA-xxxx', severity: 'critical', range: '*' }] } }), ok, /another advisory/u],
+    ['a different advisory hits picomatch', report({ picomatch: { severity: 'high', via: [picomatchAdvisory, { ...picomatchAdvisory, url: 'https://github.com/advisories/GHSA-yyyy' }] } }), ok, /another advisory/u],
+    ['an unknown severity appears', report({ odd: { severity: 'high', via: [{ name: 'odd', url: 'u', severity: 'severe', range: '*' }] } }), ok, /unknown severity/u],
+    ['an inherited name is used as a severity', report({ odd: { severity: 'high', via: [{ name: 'odd', url: 'u', severity: 'toString', range: '*' }] } }), ok, /unknown severity/u],
+    ['an entry has an empty via list', report({ odd: { severity: 'critical', via: [] } }), ok, /unreadable/u],
+    ['an entry points to a package the report does not list', report({ odd: { severity: 'critical', via: ['ghost'] } }), ok, /does not list/u],
+    ['an entry has no known severity of its own', report({ odd: { severity: 'HIGH', via: ['picomatch'] } }), ok, /unknown severity/u],
     ['the report has no vulnerabilities map', {}, ok, /unreadable/u],
     ['an entry has no via list', report({ odd: { name: 'odd' } }), ok, /unreadable/u],
     ['picomatch is not in the report', { vulnerabilities: {} }, ok, /not the failure/u],

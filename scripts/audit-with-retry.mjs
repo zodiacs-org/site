@@ -58,7 +58,7 @@ export function executeAudit(args) {
  * of these is true:
  *   - picomatch publishes a release newer than 4.0.7 (a fix to upgrade to);
  *   - the advisory's affected range is no longer exactly "<=4.0.7";
- *   - the date passes PICOMATCH_EXCEPTION.expires;
+ *   - the UTC date is after PICOMATCH_EXCEPTION.expires (the last allowed day);
  *   - the audit reports any other advisory at the policy's severity.
  */
 export const PICOMATCH_EXCEPTION = Object.freeze({
@@ -114,12 +114,16 @@ export function picomatchExceptionBlocker(policy, report, { latest, today }) {
   const threshold = severityRank[policyThreshold[policy]];
   let sawException = false;
   for (const [name, entry] of Object.entries(vulnerabilities)) {
-    if (!entry || !Array.isArray(entry.via)) return `unreadable entry for ${name}`;
+    if (!entry || !Array.isArray(entry.via) || entry.via.length === 0) return `unreadable entry for ${name}`;
+    if (!Object.hasOwn(severityRank, entry.severity)) return `unknown severity for ${name}`;
     for (const via of entry.via) {
-      if (typeof via === 'string') continue;
+      if (typeof via === 'string') {
+        if (!Object.hasOwn(vulnerabilities, via)) return `${name} points to ${via}, which the report does not list`;
+        continue;
+      }
       if (!via || typeof via !== 'object') return `unreadable advisory under ${name}`;
+      if (!Object.hasOwn(severityRank, via.severity)) return `unknown severity under ${name}`;
       const rank = severityRank[via.severity];
-      if (rank === undefined) return `unknown severity under ${name}`;
       if (rank < threshold) continue;
       if (via.url !== exception.url || via.name !== exception.name || name !== exception.name) {
         return `another advisory: ${via.url ?? via.title ?? name}`;
@@ -192,7 +196,7 @@ function applyPicomatchException(policy, failureStatus, { executeJson, latestPic
     return failureStatus;
   }
   stderr(`Only ${PICOMATCH_EXCEPTION.url} (picomatch ${PICOMATCH_EXCEPTION.range}, no fixed release yet) failed; `
-    + `passing under the temporary exception that ends when a fix ships or on ${PICOMATCH_EXCEPTION.expires}.\n`);
+    + `passing under the temporary exception that ends when a fix ships or after ${PICOMATCH_EXCEPTION.expires} (UTC).\n`);
   return 0;
 }
 
