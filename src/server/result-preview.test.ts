@@ -39,6 +39,7 @@ import {
   handleInviteImageRequest,
   handleInviteLinkRequest,
   handleInviteStoryRequest,
+  RESULT_SHARE_ROUTE_KEY,
   RESULT_SHARE_ROUTES,
 } from './result-preview';
 import {
@@ -604,9 +605,26 @@ describe('the deployed entry', () => {
     const shareRewrites = (vercel.rewrites as { source: string; destination: string }[]).filter((rewrite) => rewrite.destination.includes('__zodiacs_share='));
     expect(shareRewrites.map((rewrite) => rewrite.destination.split('__zodiacs_share=')[1]).sort()).toEqual([...RESULT_SHARE_ROUTES].sort());
     const source = readFileSync(new URL('../../api/compatibility.ts', import.meta.url), 'utf8');
-    expect(source).toContain("from '../src/server/result-preview.js'");
+    expect(source).toContain("import('../src/server/result-preview.js')");
+    // The function reads the share key without loading this module, so its copy of the key must match.
+    expect(source).toContain(`export const COMPATIBILITY_SHARE_ROUTE_KEY = '${RESULT_SHARE_ROUTE_KEY}';`);
   });
 
+
+  it('is reached through the compatibility function, which loads it only for a share link', async () => {
+    const { default: dispatcher } = await import('../../api/compatibility');
+    const query = { __zodiacs_share: 'compatibility-link', ...Object.fromEntries(new URLSearchParams(COMPAT)) };
+    const direct = nodeResponse();
+    await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query }, direct, 'compatibility-link');
+    const routed = nodeResponse();
+    await dispatcher({ method: 'GET', headers: { host: 'zodiacs.org' }, query }, routed);
+    expect(routed.statusCode).toBe(200);
+    expect(routed.body.toString()).toBe(direct.body.toString());
+    // A value that names no share route still falls through to the function's own not-found answer.
+    const unknown = nodeResponse();
+    await dispatcher({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'no-such-route' } }, unknown);
+    expect(unknown.statusCode).toBe(404);
+  });
 
   it('passes on only the route’s own keys, and the image refuses anything else', async () => {
     const res = nodeResponse();

@@ -7,7 +7,7 @@
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../SignIcon.astro';
 import '../../styles/rx-table.css';
-import { localizePath, type Locale } from '../../lib/i18n';
+import { LOCALE_META, localizePath, type Locale } from '../../lib/i18n';
 import { elementLabel, modalityLabel, signName } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
 import { planetLabel } from '../../lib/i18n/astrology';
@@ -39,7 +39,7 @@ const jsonLd = [
   {
     '@type': 'Article', headline: title, description, url, datePublished: PAGE_DATE, dateModified: PAGE_DATE,
     author: EDITOR_AUTHOR, publisher: { '@id': 'https://zodiacs.org/#org' },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': url }, inLanguage: locale,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url }, inLanguage: LOCALE_META[locale].htmlLang,
   },
   {
     '@type': 'BreadcrumbList',

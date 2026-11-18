@@ -27,7 +27,7 @@ import type {
 export const program = programJson as unknown as HoroscopeProgram;
 const evidence = new Map(program.evidence.map((receipt) => [receipt.id, receipt]));
 
-export const PERIOD_SURFACES: readonly PeriodSurface[] = ['tomorrow', 'weekly', 'love', 'career', 'yearly-2026', 'yearly-2027'];
+export const PERIOD_SURFACES: readonly PeriodSurface[] = ['tomorrow', 'weekly', 'love', 'career', 'yearly-2027'];
 
 export function englishReading(sign: HoroscopeSign, surface: PeriodSurface): HoroscopeReading {
   const entry = program.signs.find((candidate) => candidate.sign === sign);

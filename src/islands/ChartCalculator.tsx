@@ -48,18 +48,23 @@ import { moonPhaseNameFromAngle } from '../lib/engine/lite';
 import { decodeChartLink, NAME_MAX } from '../lib/share';
 import type { ShareChartInput } from '../lib/share';
 import {
-  chartHandoffFragment,
   dateHandoffFromHash,
   compatibilityHandoffPath,
+  followWithHandoff,
+  hasHandoffOrLegacyDetails,
   mineHandoffFromHash,
   profileChartIdFromHash,
   profileHandoffOriginsFromHash,
+  sessionHandoffAvailable,
   someoneElseHandoffPath,
   someoneElseProfileHandoffPath,
+  stashChartHandoff,
   subjectModeFromHash,
+  takeChartHandoff,
   type MineHandoff,
   type SubjectMode,
 } from '../lib/chart-handoff';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import type { PositionsShareChart } from '../lib/share-positions';
 import type { TourVisual } from '../lib/scene/chapters';
 import { ENGINE_VERSION } from '../lib/engine/types';
@@ -566,6 +571,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const profileHandoffIdRef = useRef(0);
   const shareRuntimeRef = useRef<ShareRuntime>({});
   const profileAccessGeneration = useProfileAccessGeneration(() => {
+    // Drop a profile-origin session handoff that is still waiting for a grant,
+    // so a later sign-in cannot open the previous visitor's details.
+    profileHandoffIdRef.current += 1;
     savePromptGenerationRef.current += 1;
     setMatchedName(null);
     setSaved('idle');
@@ -1083,18 +1091,114 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     const nextMineHandoff = mineHandoffFromHash(hash);
     const handoffOrigins = profileHandoffOriginsFromHash(hash);
     const clearFragment = () => history.replaceState(null, '', window.location.pathname + window.location.search);
+    // A session handoff key, or a link made before birth details left links
+    // (#c=, #mine=, #date=), leaves the address bar before anything else.
+    if (hasHandoffOrLegacyDetails(hash)) clearFragment();
 
-    // A Moon lookup hands its date (and optional time) here without a place.
-    // The fragment is consumed and cleared; the next needed field takes focus.
-    if (params.has('date')) {
-      const handoff = dateHandoffFromHash(hash);
-      clearFragment();
-      if (!handoff) return;
+    // A Moon lookup or a birthday page hands its date (and optional time)
+    // here without a place; the next needed field takes focus.
+    const openDate = (handoff: { date: string; time: string | null }) => {
       setDate(handoff.date);
       setCalendar('gregorian');
       setTime(handoff.time ?? '');
       setTimeKnown(handoff.time !== null);
+      // A refused date says so on arrival, not only after a birthplace is typed.
+      const refusal = birthDateRefusal(handoff.date);
+      if (refusal) {
+        setError(birthDateRefusalText(refusal));
+        return;
+      }
       queueMicrotask(() => formRef.current?.querySelector<HTMLElement>('#place')?.focus());
+    };
+
+    // A chart by value: a legacy #c= link, or an unsaved chart handed over
+    // through this tab's session storage.
+    const openDetails = (
+      decoded: ShareChartInput,
+      mine: MineHandoff | null,
+      source: ChartComputedSource,
+      profileOrigin = false,
+    ) => {
+      const linkCity: City = {
+        name: decoded.place ?? (russianCopy?.chart.sharedBirthplace ?? 'Shared birthplace'),
+        admin1: '', country: '',
+        lat: decoded.lat, lon: decoded.lon, tz: decoded.tz, pop: 0,
+      };
+      setDate(decoded.date);
+      setCalendar('gregorian');
+      setStoredDate(decoded.date);
+      setTime(decoded.time ?? '');
+      setTimeKnown(decoded.timeKnown);
+      setCity(linkCity);
+      setHouseSystem(decoded.houseSystem);
+      setFromLink(true);
+      setLinkName(decoded.name ?? null);
+      setPositionsOnly(null);
+      primaryProfileOriginRef.current = profileOrigin;
+      primaryProfileChartIdRef.current = null;
+      mineProfileOriginRef.current = handoffOrigins.mine && mine !== null;
+      clearFragment();
+      runChart({
+        date: decoded.date, time: decoded.time ?? '', timeKnown: decoded.timeKnown,
+        city: linkCity, houseSystem: decoded.houseSystem,
+        name: decoded.name,
+        subjectMode: nextSubjectMode,
+        mine,
+      }, false, source);
+    };
+
+    // The entry is read once and deleted; a missing or spent key shows the
+    // normal empty form.
+    if (params.has('h')) {
+      const taken = takeChartHandoff(hash);
+      if (taken?.kind === 'date') openDate(taken);
+      else if (taken?.kind === 'chart') {
+        const mine: MineHandoff | null = taken.mine ? { kind: 'input', input: taken.mine } : nextMineHandoff;
+        const open = () => openDetails(taken.input, mine, 'fresh', taken.profileOrigin === true);
+        // An ordinary unsaved handoff can open at once. A profile-origin one
+        // waits for a current grant, as the saved-chart id path does, so
+        // inherited details are not filled while access is locked.
+        if (!taken.profileOrigin || profileAccessAllowed()) {
+          open();
+          return;
+        }
+        let active = true;
+        let resolving = false;
+        const handoffId = profileHandoffIdRef.current + 1;
+        profileHandoffIdRef.current = handoffId;
+        const handoffIsCurrent = () => active && handoffId === profileHandoffIdRef.current;
+        const resolveProfileOriginHandoff = () => {
+          if (!handoffIsCurrent() || resolving || !profileAccessAllowed()) return;
+          resolving = true;
+          const accessGeneration = profileAccessGeneration.current;
+          queueMicrotask(() => {
+            resolving = false;
+            if (!handoffIsCurrent() || !profileAccessAllowed()) return;
+            if (accessGeneration !== profileAccessGeneration.current) {
+              queueMicrotask(resolveProfileOriginHandoff);
+              return;
+            }
+            active = false;
+            window.removeEventListener('zodiacs:profile-access', onProfileAccess);
+            open();
+          });
+        };
+        const onProfileAccess = () => { queueMicrotask(resolveProfileOriginHandoff); };
+        window.addEventListener('zodiacs:profile-access', onProfileAccess);
+        resolveProfileOriginHandoff();
+        return () => {
+          active = false;
+          window.removeEventListener('zodiacs:profile-access', onProfileAccess);
+        };
+      }
+      return;
+    }
+
+    if (params.has('date')) {
+      const handoff = dateHandoffFromHash(hash);
+      clearFragment();
+      if (!handoff) return;
+      openDate(handoff);
       return;
     }
 
@@ -1211,34 +1315,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
 
     const token = params.get('c');
     if (!token) return;
-    const decoded = decodeChartLink(token);
-    if (!decoded) return;
-    const linkCity: City = {
-      name: decoded.place ?? (russianCopy?.chart.sharedBirthplace ?? 'Shared birthplace'),
-      admin1: '', country: '',
-      lat: decoded.lat, lon: decoded.lon, tz: decoded.tz, pop: 0,
-    };
-    setDate(decoded.date);
-    setCalendar('gregorian');
-    setStoredDate(decoded.date);
-    setTime(decoded.time ?? '');
-    setTimeKnown(decoded.timeKnown);
-    setCity(linkCity);
-    setHouseSystem(decoded.houseSystem);
-    setFromLink(true);
-    setLinkName(decoded.name ?? null);
-    setPositionsOnly(null);
-    primaryProfileOriginRef.current = false;
-    primaryProfileChartIdRef.current = null;
-    mineProfileOriginRef.current = handoffOrigins.mine && nextMineHandoff !== null;
-    clearFragment();
-    runChart({
-      date: decoded.date, time: decoded.time ?? '', timeKnown: decoded.timeKnown,
-      city: linkCity, houseSystem: decoded.houseSystem,
-      name: decoded.name,
-      subjectMode: nextSubjectMode,
-      mine: nextMineHandoff,
-    }, false, 'shared_details');
+    const linked = decodeChartLink(token);
+    if (!linked) return;
+    openDetails(linked, nextMineHandoff, 'shared_details');
   }, []);
 
   useEffect(() => {
@@ -1261,6 +1340,17 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   ) {
     advanceInputRevision();
     clearResult();
+    // A birth date less than 13 years ago, or one still to come, is refused
+    // before anything is loaded or computed: a typed date, a handoff, a
+    // legacy link and a saved chart alike. input.date is the Gregorian date.
+    const refusal = birthDateRefusal(input.date);
+    if (refusal) {
+      runChartIdRef.current += 1;
+      focusAfterComputeRef.current = focusAfterCompute;
+      setBusy(false);
+      setError(birthDateRefusalText(refusal));
+      return;
+    }
     const runInputRevision = inputRevisionRef.current;
     const localDateReferenceFailure = new Error('Could not establish a calculation time within the local date.');
     const signatureModule = mode === 'full' && showsEnglishInterpretation
@@ -1598,11 +1688,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     });
   }
 
-  const shareUrl = () =>
-    `${window.location.origin}${localizePath(locale, '/birth-chart/')}#${chartHandoffFragment(shareInput!, {
-      subjectMode,
-    })}`;
-
   async function openShareOptions() {
     const owner = currentResultOwner();
     if (!owner || !shareInput) return;
@@ -1700,16 +1785,29 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const otherSubjectNotice = personName
     ? otherSubjectCopy.named(personName)
     : otherSubjectCopy.unnamed;
+  // Handoff links point at the plain page. A plain click stashes the chart
+  // in this tab's session storage and opens the page with only its key; a
+  // saved chart goes by its opaque id. No href carries a birth detail.
+  const savedMineId = mineHandoff?.kind === 'saved' ? mineHandoff.id : null;
   const compareWithMineHref = subjectMode === 'other' && shareInput
-    ? compatibilityHandoffPath(shareInput, mineHandoff)
+    && (savedMineId !== null || sessionHandoffAvailable())
+    ? savedMineId !== null
+      ? `/compatibility/?${new URLSearchParams({ a: savedMineId }).toString()}`
+      : '/compatibility/'
+    : undefined;
+  const onCompareWithMineClick = compareWithMineHref && shareInput
+    ? (event: MouseEvent) => followWithHandoff(event, () => compatibilityHandoffPath(shareInput, mineHandoff))
     : undefined;
   const anotherChartHref = subjectMode === 'self' && shareInput
     ? primaryProfileOriginRef.current
       ? primaryProfileChartIdRef.current
         ? someoneElseProfileHandoffPath(primaryProfileChartIdRef.current) ?? '/birth-chart/someone-else/'
         : '/birth-chart/someone-else/'
-      : someoneElseHandoffPath(shareInput)
+      : '/birth-chart/someone-else/'
     : '/birth-chart/someone-else/';
+  const onAnotherChartClick = subjectMode === 'self' && shareInput && !primaryProfileOriginRef.current
+    ? (event: MouseEvent) => followWithHandoff(event, () => someoneElseHandoffPath(shareInput))
+    : undefined;
 
   useEffect(() => {
     const owner = currentResultOwner();
@@ -2012,6 +2110,20 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const CommunicationRead = communicationSurface?.default;
   const PushOptIn = pushOptIn?.default;
   const PwaInstallPrompt = pwaInstallModule?.default;
+  // The opening line, the math receipt and the birth-time window. They follow
+  // the answer (the big three and, in full mode, the wheel), not precede it.
+  const resultContext = chart && (
+    <>
+      <ResultOpening locale={locale} kind={subjectMode === 'other' || personName ? 'other' : 'self'} />
+      <CheckOurMath locale={locale} utc={chart.input.utc} basis={chart.input.timeKnown ? 'birth' : 'reference'} />
+      {locale === 'en' && mode === 'full' && chart.input.timeKnown
+        && !chart.flags.includes('no-time') && computedInput && (
+        <BirthTimeWindowEntry key={String(chartContextIdRef.current)}
+          utc={chart.input.utc} latitude={computedInput.city.lat} longitude={computedInput.city.lon}
+          houseSystem={chart.input.houseSystem} />
+      )}
+    </>
+  );
   const firstReadingPromptVisible = mode === 'full'
     && firstReadingLoaded
     && !tourOpen
@@ -2148,7 +2260,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             </details>
           )}
           {locale === 'en' && <p class="calc__guide">Need a hand? <a href="/ask/" data-assistant-open>Ask Guide</a></p>}
-          {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
+          {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef} lang={birthDateRefusalLang(error)}>{error}</p>}
           <CalculationReload error={error} locale={locale} />
         </div>
       </form>
@@ -2173,14 +2285,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                 ? t(locale, 'yourRisingSign')
                 : t(locale, 'birthChart')}
           </h2>
-          <ResultOpening locale={locale} kind={subjectMode === 'other' || personName ? 'other' : 'self'} />
-          <CheckOurMath locale={locale} utc={chart.input.utc} basis={chart.input.timeKnown ? 'birth' : 'reference'} />
-          {locale === 'en' && mode === 'full' && chart.input.timeKnown
-            && !chart.flags.includes('no-time') && computedInput && (
-            <BirthTimeWindowEntry key={String(chartContextIdRef.current)}
-              utc={chart.input.utc} latitude={computedInput.city.lat} longitude={computedInput.city.lon}
-              houseSystem={chart.input.houseSystem} />
-          )}
           {/* Notices */}
           {computedInput?.oldStyle && (
             <p class="notice" role="status" data-old-style-date>
@@ -2269,42 +2373,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             })}
           </div>
 
-          {firstReadingPromptVisible && (
-            <aside class="calc__first-reading shell" aria-labelledby="first-reading-title" data-first-reading-prompt>
-              <div class="core calc__first-reading-core">
-                <div class="calc__first-reading-copy">
-                  <span class="mono--label">{t(locale, 'firstReadingLabel')}</span>
-                  <h2 id="first-reading-title">
-                    {firstReading.status === 'in_progress'
-                      ? t(locale, 'firstReadingResumeTitle')
-                      : t(locale, 'firstReadingTitle')}
-                  </h2>
-                  <p>
-                    {firstReading.status === 'in_progress'
-                      ? t(locale, 'firstReadingResumeBody')
-                      : t(locale, 'firstReadingBody')}
-                  </p>
-                  {firstReading.status === 'in_progress' && (
-                    <span class="mono calc__first-reading-progress">
-                      {t(locale, 'firstReadingStep')} {firstReading.step + 1} / 4
-                    </span>
-                  )}
-                </div>
-                <div class="calc__first-reading-actions">
-                  <button class="btn btn--primary" type="button" onClick={startFirstReading} disabled={!chartActionDockModule} data-first-reading-start>
-                    <span>{firstReading.status === 'in_progress'
-                      ? t(locale, 'firstReadingResume')
-                      : t(locale, 'firstReadingStart')}</span>
-                    <span class="orb">→</span>
-                  </button>
-                  <button class="btn btn--ghost" type="button" onClick={dismissFirstReading} data-first-reading-dismiss>
-                    {t(locale, 'firstReadingExplore')}
-                  </button>
-                </div>
-              </div>
-            </aside>
-          )}
-
           {/* Moon-mode extra: phase at the calculated moment */}
           {mode === 'moon' && moonPhase && (
             <p class="calc__phase mono">{t(locale, chart.input.timeKnown ? 'moonPhaseAtBirth' : 'moonPhaseAtReference')}: {moonPhaseLabel(locale, moonPhase)}</p>
@@ -2323,6 +2391,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               </p>
             ) : null;
           })()}
+
+          {/* The answer comes first: the opening line, the math receipt and
+              the birth-time window follow the big three (and, in full mode,
+              the wheel and the first-reading prompt). */}
+          {(mode !== 'full' || !scene) && resultContext}
 
           {/* Wheel + inspector + placements (full mode) — the Chart Explorer */}
           {mode !== 'full' && chart && (
@@ -2575,6 +2648,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                                 : wheelActionCopy.compareAdd
                               : undefined}
                             compareHref={compareWithMineHref}
+                            onCompareClick={onCompareWithMineClick}
                             saveLabel={saved === 'saved'
                               ? t(locale, 'chartSavedDevice')
                               : locale === 'en' && subjectMode === 'self'
@@ -2589,6 +2663,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                             }}
                             anotherLabel={wheelActionCopy.another}
                             anotherHref={anotherChartHref}
+                            onAnotherClick={onAnotherChartClick}
                             onGuide={() => {
                               track('next_action_clicked', {
                                 state: firstReading.status === 'complete' ? 'guide_complete' : 'chart_result',
@@ -2612,6 +2687,44 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   <p class="sr-only" role="status">{announce}</p>
                 </div>
               </div>
+
+              {firstReadingPromptVisible && (
+                <aside class="calc__first-reading shell" aria-labelledby="first-reading-title" data-first-reading-prompt>
+                  <div class="core calc__first-reading-core">
+                    <div class="calc__first-reading-copy">
+                      <span class="mono--label">{t(locale, 'firstReadingLabel')}</span>
+                      <h2 id="first-reading-title">
+                        {firstReading.status === 'in_progress'
+                          ? t(locale, 'firstReadingResumeTitle')
+                          : t(locale, 'firstReadingTitle')}
+                      </h2>
+                      <p>
+                        {firstReading.status === 'in_progress'
+                          ? t(locale, 'firstReadingResumeBody')
+                          : t(locale, 'firstReadingBody')}
+                      </p>
+                      {firstReading.status === 'in_progress' && (
+                        <span class="mono calc__first-reading-progress">
+                          {t(locale, 'firstReadingStep')} {firstReading.step + 1} / 4
+                        </span>
+                      )}
+                    </div>
+                    <div class="calc__first-reading-actions">
+                      <button class="btn btn--primary" type="button" onClick={startFirstReading} disabled={!chartActionDockModule} data-first-reading-start>
+                        <span>{firstReading.status === 'in_progress'
+                          ? t(locale, 'firstReadingResume')
+                          : t(locale, 'firstReadingStart')}</span>
+                        <span class="orb">→</span>
+                      </button>
+                      <button class="btn btn--ghost" type="button" onClick={dismissFirstReading} data-first-reading-dismiss>
+                        {t(locale, 'firstReadingExplore')}
+                      </button>
+                    </div>
+                  </div>
+                </aside>
+              )}
+
+              {resultContext}
 
               {mode === 'full' && locale === 'en' && AspectPatternFeature && (
                 <AspectPatternFeature context="natal" points={chart.bodies} aspects={chart.aspects}
@@ -2708,9 +2821,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                 </button>
                 <a
                   class="btn btn--ghost"
-                  href={shareInput
-                    ? `${localizePath(locale, '/birth-chart/')}#${chartHandoffFragment(shareInput, { subjectMode })}`
-                    : localizePath(locale, '/birth-chart/')}
+                  href={localizePath(locale, '/birth-chart/')}
+                  onClick={shareInput ? (event) => followWithHandoff(event, () => {
+                    const fragment = stashChartHandoff(shareInput, { subjectMode });
+                    return fragment ? `${localizePath(locale, '/birth-chart/')}#${fragment}` : null;
+                  }) : undefined}
                   data-birth-chart-handoff
                 ><span>{t(locale, 'getBirthChart')}</span><span class="orb">↗</span></a>
               </>
@@ -2958,7 +3073,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           onClose={() => {
             if (resultIsCurrent(displayedResultOwner)) closeShareDialog();
           }}
-          detailsUrl={shareUrl()}
           receiverPath={localizePath(locale, '/birth-chart/')}
           birthDetails={computedInput ? {
             date: computedInput.date,

@@ -637,7 +637,6 @@ function periodRaw(ctx: PeriodContext): LocalizedPassage[] {
     case 'weekly': return weekly(ctx);
     case 'love': return love(ctx);
     case 'career': return career(ctx);
-    case 'yearly-2026': return yearly(ctx, '2026');
     case 'yearly-2027': return yearly(ctx, '2027');
   }
 }
@@ -691,7 +690,6 @@ function headline(name: string, ctx: ChromeCtx): string {
     case 'monthly': return `Horoscope ${name} de ${monthYear(L, ctx.month!)}`;
     case 'love': return `Horoscope amour ${name} du ${date(ctx.from)}`;
     case 'career': return `Horoscope travail ${name} du ${date(ctx.from)}`;
-    case 'yearly-2026': return `Horoscope ${name} 2026`;
     case 'yearly-2027': return `Horoscope ${name} 2027`;
   }
 }
@@ -708,7 +706,6 @@ export const fr: HoroscopeLocaleModule = {
         case 'monthly': return `Horoscope mensuel ${name}, ${monthYear(L, ctx.month!)}`;
         case 'love': return `Horoscope amour ${name} du jour`;
         case 'career': return `Horoscope travail ${name} du jour`;
-        case 'yearly-2026': return `Horoscope ${name} 2026`;
         case 'yearly-2027': return `Horoscope ${name} 2027`;
       }
     },
@@ -719,7 +716,6 @@ export const fr: HoroscopeLocaleModule = {
         case 'monthly': return `Horoscope ${name} du mois`;
         case 'love': return `Horoscope amour ${name}`;
         case 'career': return `Horoscope travail ${name}`;
-        case 'yearly-2026': return `Horoscope ${name} 2026`;
         case 'yearly-2027': return `Horoscope ${name} 2027`;
       }
     },
@@ -750,13 +746,13 @@ export const fr: HoroscopeLocaleModule = {
       {
         q: surface === 'weekly' ? 'Quelle semaine couvre-t-il ?'
           : surface === 'monthly' ? 'Quel mois couvre-t-il ?'
-            : surface === 'yearly-2026' || surface === 'yearly-2027' ? 'Quelle période couvre-t-il ?'
+            : surface === 'yearly-2027' ? 'Quelle période couvre-t-il ?'
               : 'Quand est-il mis à jour ?',
         a: surface === 'weekly'
           ? 'La semaine va du lundi au dimanche, en heure UTC, et se renouvelle chaque lundi.'
           : surface === 'monthly'
             ? 'Le mois civil, en UTC. Celui du mois suivant paraît le 1er.'
-            : surface === 'yearly-2026' || surface === 'yearly-2027'
+            : surface === 'yearly-2027'
               ? 'L’année civile entière, en UTC, avec la date exacte de chaque événement qui la jalonne.'
               : 'Il est recalculé chaque jour, avec le même ciel que l’édition quotidienne.',
       },

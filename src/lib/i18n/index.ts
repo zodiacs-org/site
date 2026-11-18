@@ -8,6 +8,7 @@ import {
 import { clientUiMessage } from './ui/client';
 import { serverUiMessage } from './ui/server';
 import type { UiKey } from './ui/schema';
+import learnTranslations from '../../data/learn-translations.json';
 
 export {
   DEFAULT_LOCALE,
@@ -217,6 +218,22 @@ function withExpansion(
   return [...(base ?? [DEFAULT_LOCALE]), ...added];
 }
 
+/**
+ * Translated Learn articles (planets, houses, placements), listed per locale in
+ * src/data/learn-translations.json. Unlike the families above, a Learn article
+ * is published one language at a time, so each path carries its own locale
+ * list: English plus every locale that has the translation. The routes under
+ * src/pages/{locale}/learn/ assert the list matches the published entries.
+ * Answered on the server only, like isTranslatedFamilyPath.
+ */
+function translatedLearnLocales(path: string): readonly Locale[] | undefined {
+  if (!import.meta.env.SSR) return undefined;
+  const locales = (Object.entries(learnTranslations) as [Locale, string[]][])
+    .filter(([, paths]) => paths.includes(path))
+    .map(([locale]) => locale);
+  return locales.length ? [DEFAULT_LOCALE, ...locales] : undefined;
+}
+
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
   return withExpansion(canonical, baseAvailableLocalesForPath(canonical), 'published');
@@ -227,6 +244,7 @@ function baseAvailableLocalesForPath(canonical: string): readonly Locale[] | und
   return LOCALIZED_PATHS.get(canonical)
     ?? (isLocalizedChineseZodiacPath(canonical) ? chineseZodiacLocales() : undefined)
     ?? (isTranslatedFamilyPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
+    ?? translatedLearnLocales(canonical)
     ?? (isLocalizedBirthdayPath(canonical) ? [DEFAULT_LOCALE] : undefined);
 }
 
@@ -242,6 +260,8 @@ function baseRenderableLocalesForPath(canonical: string): readonly Locale[] | un
   }
   if (DAILY_READING_PATHS.includes(canonical)) return DAILY_READING_ROUTE_LOCALES;
   if (isLocalizedChineseZodiacPath(canonical)) return chineseZodiacLocales();
+  const learn = translatedLearnLocales(canonical);
+  if (learn) return learn;
   return isLocalizedBirthdayPath(canonical)
     || isTranslatedFamilyPath(canonical)
     ? PROGRAMMATIC_ROUTE_LOCALES

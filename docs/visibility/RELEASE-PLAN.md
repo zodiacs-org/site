@@ -30,7 +30,7 @@ batching. The other two decisions are in the PR description and in
    times, degrees, houses), so a wording slip costs least. The copy rules and
    the independent AI review cover them well.
 2. **Spanish and Portuguese periods next.** The order is week, month,
-   tomorrow, then love, work and the years. This is #924's top cell: the
+   tomorrow, then love, work and 2027. This is #924's top cell: the
    largest family, and the daily pages in these languages already show the
    pipeline works.
 3. **French and Italian daily, then their periods.** These are the biggest
@@ -52,11 +52,19 @@ batching. The other two decisions are in the PR description and in
 | 6 | full Moon 2027-01-22 es, pt; monthly es (gemini to capricorn, 8 signs) | 10 |
 
 From week 7 the order above continues at 10 a week, with 2 slots a week for
-the next Moon page. The whole set is 864 pages: 209 each in Spanish and
-Portuguese, 223 each in French and Italian. Each locale's Moon families
+the next Moon page. The whole set is 816 pages: 197 each in Spanish and
+Portuguese, 211 each in French and Italian. Each locale's Moon families
 follow every full and new Moon the English publishes, 62 of each from 2026
-to 2030. At this pace that is about 87 weeks, and the Moon pages for dates
+to 2030. At this pace that is about 82 weeks, and the Moon pages for dates
 in 2028 to 2030 come due in date order, so they never wait at the back.
+
+## No 2026 yearly pages (ZOD-31)
+
+The localized 2026 yearly horoscopes (12 pages in each of the four
+languages, 48 in all) are out of the set. At 10 pages a week, with the years
+last, they could not publish before 2026 ends, and a new page about a year
+that is over is thin. The English 2026 pages are unchanged. The record
+refuses a yearly family released with a review date after its year.
 
 ## The cap stays at 10 a week (decided 2026-11-10, delegated by Dias)
 
@@ -68,6 +76,7 @@ at again after the first eight batches; any change to the cap is a change to
 
 ## Gate for each batch
 
+- A release needs a named reviewer who reads the language natively. Whether to pay for that read is the owner's decision.
 - `npx vitest run src/lib/locale-expansion` passes, along with the full CI.
 - For a family's first batch in a language: the independent review notes in
   [samples/REVIEW.md](samples/REVIEW.md) are applied, and the sample sheet is
@@ -80,7 +89,7 @@ at again after the first eight batches; any change to the cap is a change to
 
 Russian is released through the same plan, inside the same 10 pages a week,
 and never ahead of the Spanish, Portuguese, French and Italian computed
-batches it would compete with. Its 325 held pages wait behind the first six
+batches it would compete with. Its 313 held pages wait behind the first six
 batches above.
 
 - **Order.** The 12 sign guides first, two a week: they are already built at

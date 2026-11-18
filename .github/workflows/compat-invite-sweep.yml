@@ -23,8 +23,8 @@ jobs:
           COMPAT_INVITE_SWEEP_SECRET: ${{ secrets.COMPAT_INVITE_SWEEP_SECRET }}
         run: |
           if [ -z "$COMPAT_INVITE_SWEEP_SECRET" ]; then
-            echo "Compatibility invitations are not provisioned; no sweep is required."
-            exit 0
+            echo "::error::COMPAT_INVITE_SWEEP_SECRET is not set in the compatibility-invite-production environment; expired invitations were not swept."
+            exit 1
           fi
           curl \
             --fail-with-body \

@@ -136,6 +136,13 @@ export interface EventInterpretation {
   signNotes?: EventSignNote[];
   /** Consequential limitations that must stay visible (not disclosure-only). */
   limitations?: string[];
+  /**
+   * Present when the reading is written to the reading style guide
+   * (src/lib/events/readings-2027.ts). `lead` is then the one sentence of
+   * advice and `body` is the why and the action; the page prints them in the
+   * guide's order, ends on `comeBack` and links the event named in `next`.
+   */
+  styleGuide?: { why: string; tryIt: string; comeBack: string; next: string };
 }
 
 export interface CatalogEvent {

@@ -58,7 +58,7 @@ const ORDINAL = ['', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'se
 
 const zone = z.string().min(1).max(64).regex(ZONE_PATTERN);
 export const personalTransitsInput = z.strictObject({
-  birthDate: z.string().regex(DATE).describe('The birth date, such as 1990-05-03 (years 1800 to 2199).'),
+  birthDate: z.string().regex(DATE).describe('The birth date, such as 1994-05-14 (years 1800 to 2199).'),
   time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe('The birth time on the local clock, only if the person knows it. Never guess it. Needs zone. Without it the Moon, rising degree and Midheaven are left out.'),
   zone: zone.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising degree and Midheaven. Give it with longitude and zone. Nothing is stored."),
@@ -66,7 +66,7 @@ export const personalTransitsInput = z.strictObject({
   mode: z.enum(['window', 'year-ahead']).optional().describe('window (the default): every exact contact between from and to. year-ahead: the year from today, with Jupiter and Saturn, the solar return, a Saturn return, sign changes and eclipses near the chart.'),
   from: z.string().regex(DATE).optional().describe('For window: the first day, such as 2026-11-01. Defaults to today.'),
   to: z.string().regex(DATE).optional().describe(`For window: the last day, at most ${TRANSITS_MAX_DAYS} days after from. Defaults to a ${TRANSITS_DEFAULT_DAYS}-day window, from included.`),
-  currentZone: zone.optional().describe("Where the person lives now, such as Asia/Bangkok, so dates fall on their own clock. Without it, dates use the birthplace clock, or UTC if that is missing too, and the answer says which."),
+  currentZone: zone.optional().describe("Where the person lives now, such as America/Mexico_City, so dates fall on their own clock. Without it, dates use the birthplace clock, or UTC if that is missing too, and the answer says which."),
 }).superRefine((args, context) => {
   if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
   if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time or a place needs its time zone.' });
@@ -256,7 +256,7 @@ async function startOfDay(date: string, timeZone: string, clock: TransitClock): 
 export async function getPersonalTransits(args: PersonalTransitsInput, now: Date, clock: TransitClock, origin: string): Promise<{ data: PersonalTransitsData; links: { title: string; url: string }[] }> {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError('birthDate must be a real date from 1800 to 2199.');
-  if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
+  if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 09:15.');
   const latitude = args.latitude === undefined ? undefined : roundCoordinate(args.latitude);
   const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
   const timeKnown = args.time !== undefined;

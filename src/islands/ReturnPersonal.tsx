@@ -4,7 +4,8 @@ import { planetLabel, aspectLabel } from '../lib/i18n/astrology';
 import { formatShortDate } from '../lib/i18n/dates';
 import { returnText as s } from '../lib/return-visits/copy';
 import { sharingText } from '../lib/sharing/copy';
-import { calculateEntry, emptyEntry, type ChartEntry } from '../lib/sharing/chart-entry';
+import { calculateEntry, emptyEntry, entryRefusalMessage, type ChartEntry } from '../lib/sharing/chart-entry';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { useEngine } from '../lib/hooks/useEngine';
 import { loadProfile } from '../lib/profile/read-store';
 import type { SavedChart } from '../lib/profile/schema';
@@ -52,9 +53,13 @@ export default function ReturnPersonal({ kind, locale }: { kind: 'kit' | 'wrappe
   }
   async function compute(event: Event) {
     event.preventDefault(); if (busy) return;
-    clear(); const run = generation.current; setBusy(true);
+    clear();
     const chosen = kind === 'wrapped' ? loadProfile().charts.find((chart) => chart.id === selected && chart.birth.place) : null;
     const input: ChartEntry = chosen ? { id: 3, name: chosen.name, date: chosen.birth.date, time: chosen.birth.time ?? '', timeKnown: chosen.birth.timeKnown && !!chosen.birth.time, city: chosen.birth.place as ChartEntry['city'], calendar: 'gregorian' } : entry;
+    // A typed date or a saved chart is refused before the engine loads; the saved chart itself is left as it is.
+    const refusal = birthDateRefusal(input.date);
+    if (refusal) { setError(birthDateRefusalText(refusal)); return; }
+    const run = generation.current; setBusy(true);
     try {
       if (kind === 'wrapped' && selected && !chosen) throw new Error('saved chart missing');
       const [mod, trust] = await Promise.all([engine(), loadTrust()]);
@@ -75,7 +80,7 @@ export default function ReturnPersonal({ kind, locale }: { kind: 'kit' | 'wrappe
       if (chosen && JSON.stringify(loadProfile().charts.find((chart) => chart.id === chosen.id)) !== JSON.stringify(chosen)) { setError(s(locale, 'savedRemoved')); return; }
       setResult(next);
       requestAnimationFrame(() => { if (run === generation.current) { resultRef.current?.focus({ preventScroll: true }); resultRef.current?.scrollIntoView({ block: 'start', behavior: 'auto' }); } });
-    } catch (cause) { if (run === generation.current) setError(calculationError(cause, locale, s(locale, 'error'))); }
+    } catch (cause) { if (run === generation.current) setError(entryRefusalMessage(cause) ?? calculationError(cause, locale, s(locale, 'error'))); }
     finally { if (run === generation.current) setBusy(false); }
   }
   function downloadPdf() {
@@ -101,7 +106,7 @@ export default function ReturnPersonal({ kind, locale }: { kind: 'kit' | 'wrappe
       <button class="btn btn--primary" disabled={busy} data-return-submit><span>{s(locale, busy ? 'generating' : kind === 'kit' ? 'makePdf' : 'makeWrapped')}</span><span class="orb">↗</span></button>
       {busy && <button class="btn btn--ghost" type="button" onClick={clear}>{s(locale, 'cancel')}</button>}
       <p class="sharing-note">{sharingText(locale, 'privacy')}</p>
-      {error && <p class="field__error" role="alert">{error}</p>}<CalculationReload error={error} locale={locale} />
+      {error && <p class="field__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}<CalculationReload error={error} locale={locale} />
     </form>
     {result && <section class="return-result" tabIndex={-1} ref={resultRef} aria-label={s(locale, kind === 'kit' ? 'kitTitle' : 'wrappedTitle')} data-return-result>
       <p data-result-opening>{s(locale, kind === 'kit' ? 'opening' : 'wrappedOpening')}</p>

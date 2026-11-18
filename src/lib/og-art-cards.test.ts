@@ -74,7 +74,7 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
   it('takes the homepage headline from the hero, and cuts the poster inside its frame', () => {
     const home = read('src/pages/index.astro');
     expect(home).toContain(`<h1 class="hero__title">${HOME_ART_CARD_COPY.title}</h1>`);
-    expect(home).toContain(`<p class="hero__sub">${HOME_ART_CARD_COPY.subtitle.replace(/\.$/u, ':')}`);
+    expect(home).toContain(`<p class="hero__sub">${HOME_ART_CARD_COPY.subtitle} `);
     for (const words of [HOME_ART_CARD_COPY.title, HOME_ART_CARD_COPY.subtitle, HOME_ART_CARD_ALT]) {
       expect(words).not.toMatch(DASHES);
     }
