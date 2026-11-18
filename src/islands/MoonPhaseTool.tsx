@@ -17,7 +17,7 @@ import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { assessLocalDateReference } from '../lib/time/local-date-reference';
 import type { City } from '../lib/geo/search';
 import { localizePath, normalizeCatalogLocale, t, tf, type CatalogLocale as Locale } from '../lib/i18n';
-import { chartHandoffFragment, dateHandoffFragment } from '../lib/chart-handoff';
+import { followWithHandoff, stashChartHandoff, stashDateHandoff } from '../lib/chart-handoff';
 import { formatDateTime } from '../lib/i18n/dates';
 import { moonPhaseLabel } from '../lib/i18n/astrology';
 import { useEngine } from '../lib/hooks/useEngine';
@@ -76,15 +76,18 @@ interface LookupInputs {
 }
 
 /**
- * Birth details travel in the fragment only: never in a query string, a
- * request, or a log. A known place carries the full details codec.
+ * A looked-up date is often a birthday, so it never goes into a link: when
+ * the birth chart link is followed, the inputs are stashed in this tab's
+ * sessionStorage and the link carries only a random key. A known place hands
+ * over the whole chart; otherwise the date and time alone. Null when nothing
+ * can be stashed, and the plain link then opens the empty calculator.
  */
-function birthChartHandoff(inputs: LookupInputs): string {
+function birthChartHandoff(inputs: LookupInputs): string | null {
   const { date, time, city } = inputs;
   return city
-    ? chartHandoffFragment({ date, time, timeKnown: time !== null, lat: city.lat, lon: city.lon,
+    ? stashChartHandoff({ date, time, timeKnown: time !== null, lat: city.lat, lon: city.lon,
       tz: city.tz, place: city.name.slice(0, 40), houseSystem: 'whole' })
-    : dateHandoffFragment(date, time);
+    : stashDateHandoff(date, time);
 }
 
 export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: Locale }) {
@@ -294,9 +297,12 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
           <div class="calc__actions">
             <a
               class="btn btn--ghost"
-              href={handoffInputsRef.current
-                ? `${localizePath(locale, '/birth-chart/')}#${birthChartHandoff(handoffInputsRef.current)}`
-                : localizePath(locale, '/birth-chart/')}
+              href={localizePath(locale, '/birth-chart/')}
+              onClick={(event) => followWithHandoff(event, () => {
+                const inputs = handoffInputsRef.current;
+                const fragment = inputs ? birthChartHandoff(inputs) : null;
+                return fragment ? `${localizePath(locale, '/birth-chart/')}#${fragment}` : null;
+              })}
               data-birth-chart-handoff
             >
               <span>{t(locale, 'birthChartForDate')}</span><span class="orb">↗</span>

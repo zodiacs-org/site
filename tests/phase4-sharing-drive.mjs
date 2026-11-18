@@ -702,11 +702,11 @@ async function runChartShareExposure(browser, baseURL) {
       && signature instanceof HTMLButtonElement && !signature.disabled;
   }, null, { timeout: 45_000 });
   check('both chart images are prepared before the final user tap', true);
-  check('the dialog keeps the private positions link primary and labels the details link',
+  check('the dialog keeps the private positions link primary and offers no details link',
     await dialog.locator('[data-positions-link].btn--primary').count() === 1
       && await dialog.locator('[data-preview-link]').count() === 0
-      && await dialog.locator('[data-details-link]').count() === 1
-      && /includes your birth details/iu.test(await dialog.textContent() ?? ''));
+      && await dialog.locator('[data-details-link]').count() === 0
+      && !/includes your birth details/iu.test(await dialog.textContent() ?? ''));
   check('chart share sheet never displays fixture birth details',
     !/(1990-06-15|08:30|New York|America\/New_York|40\.7128|74\.006)/u.test(
       await dialog.textContent() ?? '',
