@@ -55,5 +55,7 @@ describe('the allowance writer as a command', () => {
     const allowance = JSON.parse(readFileSync(join(dir, '.github/phase1-scope-allowance.json'), 'utf8'));
     expect(allowance.protectedPaths).toEqual(['public/registry/leo/index.html']);
     expect(allowance.baseCommit).toBe(base);
+    const { rmSync } = await import('node:fs');
+    rmSync(dir, { recursive: true, force: true });
   });
 });

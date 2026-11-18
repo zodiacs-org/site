@@ -75,6 +75,7 @@ required=()
 while IFS= read -r context; do
   if [ -n "$context" ]; then required+=("$context"); fi
 done < <(gh api "repos/{owner}/{repo}/branches/$base" --jq '.protection.required_status_checks.contexts[]?' 2>"$tmp/publish-protection.err" \
+  || { sleep 10; gh api "repos/{owner}/{repo}/branches/$base" --jq '.protection.required_status_checks.contexts[]?' 2>"$tmp/publish-protection.err"; } \
   || echo "::warning title=Required checks unknown::Could not read the protection summary of $base ($(tr '\n' ' ' <"$tmp/publish-protection.err")); merging without waiting, which the rule will refuse if it requires checks." >&2)
 
 if [ "${#required[@]}" -gt 0 ]; then
@@ -131,7 +132,9 @@ if [ "${#required[@]}" -gt 0 ]; then
   # base revision, so never squash them onto a base that moved meanwhile.
   git fetch origin "$base"
   if [ "$(git rev-parse "origin/$base")" != "$verified" ]; then
-    echo "::error title=The base moved while the checks ran::$base advanced after verification; $pr_url stays open and the complete workflow must run again (the next scheduled backstop does)." >&2
+    gh pr close "$pr_url" --comment "Not merged: $base moved while the required checks ran, so this package no longer sits on the base it was verified against. Run the publishing workflow again." >/dev/null 2>&1 || true
+    git push origin --delete "$branch" >/dev/null 2>&1 || true
+    echo "::error title=The base moved while the checks ran::$base advanced after verification, so $pr_url was closed unmerged; run the complete workflow again." >&2
     exit 1
   fi
 fi
