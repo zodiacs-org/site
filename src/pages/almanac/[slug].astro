@@ -20,7 +20,9 @@ const hidden = isHiddenAlmanacSlug(slug);
 // Each article's card is drawn by `npm run data:og -- --only-almanac`, which needs Chromium.
 // Until an article's card is drawn, it shares the Almanac's own card rather than a missing image.
 const ownCard = `/assets/og/v2/almanac/${slug}.png`;
-const card = existsSync(join(process.cwd(), 'public', ownCard)) ? ownCard : '/assets/og/v2/almanac/index.png';
+const hasOwnCard = existsSync(join(process.cwd(), 'public', ownCard));
+const card = hasOwnCard ? ownCard : '/assets/og/v2/almanac/index.png';
+const cardAlt = hasOwnCard ? `${entry.data.title}, The Almanac at Zodiacs.org` : 'The Almanac at Zodiacs.org';
 const dateLabel = entry.data.published.toLocaleDateString('en-US', {
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
 });
@@ -56,7 +58,7 @@ const jsonLd = [
   description={entry.data.description}
   path={path}
   image={card}
-  imageAlt={`${entry.data.title}, The Almanac at Zodiacs.org`}
+  imageAlt={cardAlt}
   type="article"
   noindex={hidden}
   nofollow={hidden}
