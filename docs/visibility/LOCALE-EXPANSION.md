@@ -129,7 +129,7 @@ including three it lacked that es, pt, fr and it already publish:
 | Family | Russian pages |
 |---|---|
 | Daily horoscope + hub, today | 14 |
-| Tomorrow, week, month, love, work, 2026, 2027 | 84 |
+| Tomorrow, week, month, love, work, 2027 | 72 |
 | Full and new Moon pages (2026 to 2030) | 124 |
 | Zodiac dates | 1 |
 | Sign guides (`sign-guide`): already built at `/ru/{sign}/` as noindex; a release makes them indexable | 12 |

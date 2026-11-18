@@ -293,12 +293,6 @@
         "reviewedAt": null,
         "holdReason": "Russian is not a released locale; awaiting Dias's decision on Russian and native review."
       },
-      "horoscope-2026": {
-        "released": false,
-        "reviewer": null,
-        "reviewedAt": null,
-        "holdReason": "Russian is not a released locale; awaiting Dias's decision on Russian and native review."
-      },
       "horoscope-2027": {
         "released": false,
         "reviewer": null,

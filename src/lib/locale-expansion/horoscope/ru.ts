@@ -778,7 +778,6 @@ function periodRaw(ctx: PeriodContext): LocalizedPassage[] {
     case 'weekly': return weekly(ctx);
     case 'love': return love(ctx);
     case 'career': return career(ctx);
-    case 'yearly-2026': return yearly(ctx, '2026');
     case 'yearly-2027': return yearly(ctx, '2027');
   }
 }
@@ -832,7 +831,6 @@ function headline(name: string, ctx: ChromeCtx): string {
     case 'monthly': return `Гороскоп ${forSign} на ${monthYear(ctx.month!)}`;
     case 'love': return `Любовный гороскоп ${forSign} на ${date(ctx.from)}`;
     case 'career': return `Деловой гороскоп ${forSign} на ${date(ctx.from)}`;
-    case 'yearly-2026': return `Гороскоп ${forSign} на 2026 год`;
     case 'yearly-2027': return `Гороскоп ${forSign} на 2027 год`;
   }
 }
@@ -852,7 +850,6 @@ export const ru: HoroscopeLocaleModule = {
         case 'monthly': return `${name}: гороскоп на ${monthYear(ctx.month!)}`;
         case 'love': return `${name}: любовный гороскоп на сегодня`;
         case 'career': return `${name}: деловой гороскоп на сегодня`;
-        case 'yearly-2026': return `${name}: гороскоп на 2026 год`;
         case 'yearly-2027': return `${name}: гороскоп на 2027 год`;
       }
     },
@@ -863,7 +860,6 @@ export const ru: HoroscopeLocaleModule = {
         case 'monthly': return `${name}: гороскоп на месяц`;
         case 'love': return `${name}: любовный гороскоп`;
         case 'career': return `${name}: деловой гороскоп`;
-        case 'yearly-2026': return `${name}: гороскоп на 2026 год`;
         case 'yearly-2027': return `${name}: гороскоп на 2027 год`;
       }
     },
@@ -894,13 +890,13 @@ export const ru: HoroscopeLocaleModule = {
       {
         q: surface === 'weekly' ? 'Какую неделю он охватывает?'
           : surface === 'monthly' ? 'Какой месяц он охватывает?'
-            : surface === 'yearly-2026' || surface === 'yearly-2027' ? 'Какой период он охватывает?'
+            : surface === 'yearly-2027' ? 'Какой период он охватывает?'
               : 'Когда он обновляется?',
         a: surface === 'weekly'
           ? 'Неделя идёт с понедельника по воскресенье по UTC и обновляется каждый понедельник.'
           : surface === 'monthly'
             ? 'Календарный месяц по UTC. Гороскоп на следующий месяц выходит 1-го числа.'
-            : surface === 'yearly-2026' || surface === 'yearly-2027'
+            : surface === 'yearly-2027'
               ? 'Весь календарный год по UTC, с точной датой каждого события, которое его отмечает.'
               : 'Он пересчитывается каждый день по тому же небу, что и ежедневный выпуск.',
       },

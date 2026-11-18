@@ -55,7 +55,7 @@ describe('locale expansion publication record', () => {
     for (const families of Object.values(publication.entries)) expect(Object.keys(families)).not.toContain('horoscope-2026');
     const preview = expansionState(publication, { PUBLIC_LOCALE_EXPANSION_PREVIEW: '1' });
     expect(enabledLocalesForPath('/horoscopes/leo/2026/', preview)).toEqual([]);
-    expect(enabledLocalesForPath('/horoscopes/leo/2027/', preview)).toEqual(['es', 'pt', 'fr', 'it']);
+    expect(enabledLocalesForPath('/horoscopes/leo/2027/', preview)).toEqual(['es', 'pt', 'fr', 'it', 'ru']);
   });
 
   it('publishes a reviewed family, and the preview flag only builds held ones', () => {

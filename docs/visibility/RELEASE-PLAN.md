@@ -89,7 +89,7 @@ at again after the first eight batches; any change to the cap is a change to
 
 Russian is released through the same plan, inside the same 10 pages a week,
 and never ahead of the Spanish, Portuguese, French and Italian computed
-batches it would compete with. Its 325 held pages wait behind the first six
+batches it would compete with. Its 313 held pages wait behind the first six
 batches above.
 
 - **Order.** The 12 sign guides first, two a week: they are already built at
