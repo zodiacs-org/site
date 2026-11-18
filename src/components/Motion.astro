@@ -24,7 +24,10 @@ import '../styles/motion.css';
     var root = document.documentElement;
     if (root.hasAttribute('data-entrance')) return;
     var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    root.setAttribute('data-entrance', still || !('IntersectionObserver' in window) ? 'off' : 'on');
+    // A page opened at a part of itself (an address with #) starts still, so
+    // the reader lands on content that is there from the first paint.
+    var jumped = location.hash.length > 1;
+    root.setAttribute('data-entrance', still || jumped || !('IntersectionObserver' in window) ? 'off' : 'on');
   })();
 </script>
 <script is:inline>
@@ -86,18 +89,14 @@ import '../styles/motion.css';
       document.addEventListener('click', function (event) {
         if (keyboard) return;
         var link = event.target && event.target.closest ? event.target.closest('a[href*="#"]') : null;
-        if (link && link.hash.length > 1 && link.pathname === location.pathname && link.host === location.host) showAll();
+        if (link && typeof link.hash === 'string' && link.hash.length > 1 && link.pathname === location.pathname && link.host === location.host) showAll();
       }, true);
       window.addEventListener('hashchange', function () {
         if (!keyboard && jumping()) showAll();
       });
     }
     window.zodiacsMotion = { scan: scan };
-    function start() {
-      if (io && jumping()) showAll();
-      scan();
-    }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
-    else start();
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { scan(); }, { once: true });
+    else scan();
   })();
 </script>
