@@ -1,0 +1,220 @@
+{
+  "stem": "aries-mobile",
+  "phase": "before",
+  "css": {
+    "faces": [
+      {
+        "family": "Instrument Sans",
+        "style": "normal",
+        "weight": "400 700",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans",
+        "style": "italic",
+        "weight": "400 700",
+        "status": "loaded"
+      },
+      {
+        "family": "JetBrains Mono",
+        "style": "normal",
+        "weight": "300 600",
+        "status": "loaded"
+      },
+      {
+        "family": "Golos Text",
+        "style": "normal",
+        "weight": "400 600",
+        "status": "loaded"
+      },
+      {
+        "family": "Golos Text",
+        "style": "normal",
+        "weight": "400 600",
+        "status": "loaded"
+      },
+      {
+        "family": "EB Garamond Cyrillic",
+        "style": "normal",
+        "weight": "400 500",
+        "status": "loaded"
+      },
+      {
+        "family": "JetBrains Mono Cyrillic",
+        "style": "normal",
+        "weight": "400 500",
+        "status": "loaded"
+      },
+      {
+        "family": "EB Garamond",
+        "style": "normal",
+        "weight": "400",
+        "status": "loaded"
+      },
+      {
+        "family": "EB Garamond",
+        "style": "normal",
+        "weight": "500",
+        "status": "loaded"
+      },
+      {
+        "family": "EB Garamond",
+        "style": "italic",
+        "weight": "400",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans Phase1",
+        "style": "normal",
+        "weight": "400 700",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans Phase1",
+        "style": "italic",
+        "weight": "400 700",
+        "status": "loaded"
+      },
+      {
+        "family": "JetBrains Mono Phase1",
+        "style": "normal",
+        "weight": "300 600",
+        "status": "loaded"
+      },
+      {
+        "family": "EB Garamond Phase1",
+        "style": "normal",
+        "weight": "400",
+        "status": "loaded"
+      },
+      {
+        "family": "EB Garamond Phase1",
+        "style": "normal",
+        "weight": "500",
+        "status": "loaded"
+      },
+      {
+        "family": "EB Garamond Phase1",
+        "style": "italic",
+        "weight": "400",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans Fallback",
+        "style": "normal",
+        "weight": "normal",
+        "status": "loaded"
+      },
+      {
+        "family": "Instrument Sans Fallback Android",
+        "style": "normal",
+        "weight": "normal",
+        "status": "error"
+      },
+      {
+        "family": "EB Garamond Fallback",
+        "style": "normal",
+        "weight": "normal",
+        "status": "error"
+      },
+      {
+        "family": "EB Garamond Fallback Android",
+        "style": "normal",
+        "weight": "normal",
+        "status": "error"
+      },
+      {
+        "family": "EB Garamond Fallback Times",
+        "style": "normal",
+        "weight": "normal",
+        "status": "loaded"
+      },
+      {
+        "family": "ZDX Visual Instrument",
+        "style": "normal",
+        "weight": "400 700",
+        "status": "loaded"
+      },
+      {
+        "family": "ZDX Visual Instrument",
+        "style": "italic",
+        "weight": "400 700",
+        "status": "loaded"
+      },
+      {
+        "family": "ZDX Visual EB Garamond",
+        "style": "normal",
+        "weight": "400",
+        "status": "loaded"
+      },
+      {
+        "family": "ZDX Visual EB Garamond",
+        "style": "normal",
+        "weight": "500",
+        "status": "loaded"
+      },
+      {
+        "family": "ZDX Visual EB Garamond",
+        "style": "italic",
+        "weight": "400",
+        "status": "loaded"
+      },
+      {
+        "family": "ZDX Visual JetBrains Mono",
+        "style": "normal",
+        "weight": "300 600",
+        "status": "loaded"
+      }
+    ],
+    "samples": [
+      {
+        "selector": ".guide-hero__essence",
+        "family": "\"Instrument Sans\", \"Instrument Sans Fallback\", \"Instrument Sans Fallback Android\", system-ui, -apple-system, sans-serif",
+        "weight": "400",
+        "size": "18.56px"
+      },
+      {
+        "selector": ".guide-main .prose p",
+        "family": "\"Instrument Sans\", \"Instrument Sans Fallback\", \"Instrument Sans Fallback Android\", system-ui, -apple-system, sans-serif",
+        "weight": "400",
+        "size": "17px"
+      }
+    ]
+  },
+  "rendered": [
+    {
+      "selector": ".guide-hero__essence",
+      "family": "\"Instrument Sans\", \"Instrument Sans Fallback\", \"Instrument Sans Fallback Android\", system-ui, -apple-system, sans-serif",
+      "weight": "400",
+      "size": "18.56px",
+      "fonts": [
+        {
+          "familyName": "Instrument Sans",
+          "postScriptName": "InstrumentSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 54
+        }
+      ]
+    },
+    {
+      "selector": ".guide-main .prose p",
+      "family": "\"Instrument Sans\", \"Instrument Sans Fallback\", \"Instrument Sans Fallback Android\", system-ui, -apple-system, sans-serif",
+      "weight": "400",
+      "size": "17px",
+      "fonts": [
+        {
+          "familyName": "Instrument Sans",
+          "postScriptName": "InstrumentSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 246
+        },
+        {
+          "familyName": "EB Garamond",
+          "postScriptName": "EBGaramond-Regular",
+          "isCustomFont": true,
+          "glyphCount": 1
+        }
+      ]
+    }
+  ]
+}
