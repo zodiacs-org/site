@@ -15,7 +15,9 @@ export const LOCALE_EXPANSION_PREVIEW_FLAG = 'PUBLIC_LOCALE_EXPANSION_PREVIEW';
 
 const SIGNS = 'aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces';
 
-export const HOROSCOPE_PERIODS = ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2026', '2027'];
+// No 2026: at the release plan's pace of 10 pages a week those pages could
+// not publish before the year is over. The English yearly pages are separate.
+export const HOROSCOPE_PERIODS = ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2027'];
 
 // The top-level values below are marked pure: nothing here runs for its side
 // effects, so a browser bundle that never uses the policy drops the module.
@@ -49,6 +51,12 @@ function entryPublished(entry) {
   return Boolean(entry && entry.released === true && entry.reviewer && entry.reviewedAt);
 }
 
+/** The year a yearly horoscope family covers, or undefined for any other family. */
+function familyYear(family) {
+  const year = /^horoscope-(\d{4})$/.exec(family)?.[1];
+  return year === undefined ? undefined : Number(year);
+}
+
 function readEnv() {
   return typeof process !== 'undefined' && process.env ? process.env : {};
 }
@@ -68,6 +76,16 @@ export function expansionState(record = publication, env = readEnv()) {
       }
       if (entry.released === true && !entryPublished(entry)) {
         throw new Error(`locale-expansion: ${locale}.${family} is released without a reviewer and review date`);
+      }
+      // A release dates its review as a plain calendar day, so the year guard
+      // below reads the year a reviewer meant.
+      if (entry.released === true && !/^\d{4}-\d{2}-\d{2}$/.test(String(entry.reviewedAt))) {
+        throw new Error(`locale-expansion: ${locale}.${family} reviewedAt must be a YYYY-MM-DD date`);
+      }
+      // A yearly page reviewed after its year ended would publish stale.
+      const year = familyYear(family);
+      if (entry.released === true && year !== undefined && year < Number(String(entry.reviewedAt).slice(0, 4))) {
+        throw new Error(`locale expansion: ${family} is for a year that ended before its review date`);
       }
       const published = entryPublished(entry);
       // An optional list of English paths releases part of a family, so a

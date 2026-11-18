@@ -1,0 +1,1431 @@
+{
+ "what": "What the 2027 event pages print, held to the instants solved on NASA JPL Horizons in this job",
+ "events": 69,
+ "heldToTheMinute": 61,
+ "heldToTheDate": 8,
+ "failures": 0,
+ "withinThreeSecondsOfAMinuteLine": [
+  "station:Mercury:direct:2027-03-03T12:35:47.606Z",
+  "shadow:Mercury:post:2027-03-23T15:00:18.372Z",
+  "lunation:full:2027-05-20T10:59:04.599Z",
+  "eclipse:lunar:2027-07-18T16:03:01.519Z",
+  "lunation:full:2027-10-15T13:46:59.502Z"
+ ],
+ "engineMinuteDiffersFromHorizons": [
+  "ingress:Jupiter:leo:2026-06-30T05:56:21.335Z",
+  "station:Mercury:retrograde:2026-10-24T07:14:22.646Z",
+  "station:Mars:retrograde:2027-01-10T13:00:54.491Z",
+  "shadow:Mercury:pre:2027-01-25T18:58:47.021Z",
+  "station:Mercury:retrograde:2027-02-09T17:35:41.894Z",
+  "station:Mercury:direct:2027-03-03T12:35:47.606Z",
+  "shadow:Mercury:post:2027-03-23T15:00:18.372Z",
+  "station:Mars:direct:2027-04-01T14:11:19.833Z",
+  "shadow:Mercury:pre:2027-05-26T06:04:57.535Z",
+  "shadow:Mars:post:2027-06-08T01:59:06.494Z",
+  "station:Mercury:retrograde:2027-06-10T18:19:04.335Z",
+  "eclipse:lunar:2027-07-18T16:03:01.519Z",
+  "ingress:Jupiter:virgo:2027-07-26T04:45:27.093Z",
+  "station:Mercury:retrograde:2027-10-07T14:39:08.875Z",
+  "lunation:full:2027-10-15T13:46:59.502Z",
+  "station:Mercury:direct:2027-10-28T14:11:14.559Z",
+  "shadow:Mercury:post:2027-11-13T09:55:32.644Z",
+  "station:Mercury:retrograde:2028-01-24T11:03:29.179Z",
+  "station:Mercury:direct:2028-02-14T12:39:33.046Z",
+  "ingress:Jupiter:libra:2028-08-24T05:04:19.914Z",
+  "station:Mars:retrograde:2029-02-14T08:12:52.118Z",
+  "station:Mars:direct:2029-05-05T18:58:41.337Z"
+ ],
+ "positions": [
+  {
+   "page": "mars-retrograde-2027-01-10",
+   "what": "the planet at its retrograde station",
+   "printed": "10°25′ Virgo",
+   "horizons": "10°25′ Virgo",
+   "printedMinusHorizonsArcsec": 1.3,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-01-22",
+   "what": "the Moon at the full moon",
+   "printed": "2°14′ Leo",
+   "horizons": "2°14′ Leo",
+   "printedMinusHorizonsArcsec": -0.2,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "eclipse-2027-02-06",
+   "what": "the Sun at the peak",
+   "printed": "17°37′ Aquarius",
+   "horizons": "17°37′ Aquarius",
+   "printedMinusHorizonsArcsec": 1.5,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "mercury-retrograde-2027-02-09",
+   "what": "the planet at its retrograde station",
+   "printed": "5°58′ Pisces",
+   "horizons": "5°58′ Pisces",
+   "printedMinusHorizonsArcsec": 4.8,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "eclipse-2027-02-20",
+   "what": "the Moon at the peak",
+   "printed": "1°58′ Virgo",
+   "horizons": "1°58′ Virgo",
+   "printedMinusHorizonsArcsec": -10.4,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-02-20",
+   "what": "the Moon at the full moon",
+   "printed": "2°05′ Virgo",
+   "horizons": "2°05′ Virgo",
+   "printedMinusHorizonsArcsec": -0.4,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-03-22",
+   "what": "the Moon at the full moon",
+   "printed": "1°35′ Libra",
+   "horizons": "1°35′ Libra",
+   "printedMinusHorizonsArcsec": -0.1,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-04-20",
+   "what": "the Moon at the full moon",
+   "printed": "0°36′ Scorpio",
+   "horizons": "0°36′ Scorpio",
+   "printedMinusHorizonsArcsec": 0.4,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-05-20",
+   "what": "the Moon at the full moon",
+   "printed": "29°13′ Scorpio",
+   "horizons": "29°13′ Scorpio",
+   "printedMinusHorizonsArcsec": 0.6,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "mercury-retrograde-2027-06-10",
+   "what": "the planet at its retrograde station",
+   "printed": "6°21′ Cancer",
+   "horizons": "6°21′ Cancer",
+   "printedMinusHorizonsArcsec": -0.1,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-06-19",
+   "what": "the Moon at the full moon",
+   "printed": "27°33′ Sagittarius",
+   "horizons": "27°33′ Sagittarius",
+   "printedMinusHorizonsArcsec": 0.5,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-07-18",
+   "what": "the Moon at the full moon",
+   "printed": "25°48′ Capricorn",
+   "horizons": "25°48′ Capricorn",
+   "printedMinusHorizonsArcsec": 0.4,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "eclipse-2027-07-18",
+   "what": "the Moon at the peak",
+   "printed": "25°57′ Capricorn",
+   "horizons": "25°57′ Capricorn",
+   "printedMinusHorizonsArcsec": -2.9,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "eclipse-2027-08-02",
+   "what": "the Sun at the peak",
+   "printed": "9°55′ Leo",
+   "horizons": "9°55′ Leo",
+   "printedMinusHorizonsArcsec": 6.0,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "eclipse-2027-08-17",
+   "what": "the Moon at the peak",
+   "printed": "24°04′ Aquarius",
+   "horizons": "24°04′ Aquarius",
+   "printedMinusHorizonsArcsec": -16.4,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-08-17",
+   "what": "the Moon at the full moon",
+   "printed": "24°11′ Aquarius",
+   "horizons": "24°11′ Aquarius",
+   "printedMinusHorizonsArcsec": 0.6,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-09-15",
+   "what": "the Moon at the full moon",
+   "printed": "22°52′ Pisces",
+   "horizons": "22°52′ Pisces",
+   "printedMinusHorizonsArcsec": 0.8,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "mercury-retrograde-2027-10-07",
+   "what": "the planet at its retrograde station",
+   "printed": "4°55′ Scorpio",
+   "horizons": "4°55′ Scorpio",
+   "printedMinusHorizonsArcsec": 2.0,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-10-15",
+   "what": "the Moon at the full moon",
+   "printed": "21°58′ Aries",
+   "horizons": "21°58′ Aries",
+   "printedMinusHorizonsArcsec": 0.3,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-11-14",
+   "what": "the Moon at the full moon",
+   "printed": "21°31′ Taurus",
+   "horizons": "21°31′ Taurus",
+   "printedMinusHorizonsArcsec": -0.4,
+   "sameSign": true,
+   "sameArcminute": true
+  },
+  {
+   "page": "full-moon-2027-12-13",
+   "what": "the Moon at the full moon",
+   "printed": "21°24′ Gemini",
+   "horizons": "21°24′ Gemini",
+   "printedMinusHorizonsArcsec": -0.5,
+   "sameSign": true,
+   "sameArcminute": true
+  }
+ ],
+ "rows": [
+  {
+   "key": "ingress:Jupiter:leo:2026-06-30T05:56:21.335Z",
+   "kind": "ingress",
+   "pages": [
+    "jupiter-enters-virgo-2027-07-26"
+   ],
+   "engine": "2026-06-30T05:56:21.335Z",
+   "printed": "2026-06-30T05:52:27.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2026-06-30T05:52:26.995Z",
+   "printedMinusHorizonsSeconds": 0.005,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 26.995,
+   "ok": true
+  },
+  {
+   "key": "eclipse:solar:2026-08-12T17:45:53.037Z",
+   "kind": "eclipse",
+   "pages": [
+    "eclipse-2027-02-06"
+   ],
+   "engine": "2026-08-12T17:45:53.037Z",
+   "printed": "2026-08-12T17:45:53.037Z",
+   "printedFrom": "engine (eclipses.json)",
+   "horizons": "2026-08-12T17:45:56.541Z",
+   "printedMinusHorizonsSeconds": -3.504,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 3.459,
+   "ok": true
+  },
+  {
+   "key": "eclipse:lunar:2026-08-28T04:12:55.340Z",
+   "kind": "eclipse",
+   "pages": [
+    "eclipse-2027-02-20"
+   ],
+   "engine": "2026-08-28T04:12:55.340Z",
+   "printed": "2026-08-28T04:12:55.340Z",
+   "printedFrom": "engine (eclipses.json)",
+   "horizons": "2026-08-28T04:12:56.335Z",
+   "printedMinusHorizonsSeconds": -0.995,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 3.665,
+   "ok": true
+  },
+  {
+   "key": "station:Mercury:retrograde:2026-10-24T07:14:22.646Z",
+   "kind": "station",
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2026-10-24T07:14:22.646Z",
+   "printed": "2026-10-24T07:12:42.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2026-10-24T07:12:42.298Z",
+   "printedMinusHorizonsSeconds": -0.298,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 17.702,
+   "ok": true
+  },
+  {
+   "key": "shadow:Mars:pre:2026-11-05T15:33:33.543Z",
+   "kind": "shadow",
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2026-11-05T15:33:33.543Z",
+   "printed": "2026-11-05T15:33:42.221Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2026-11-05T15:33:42.221Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 17.779,
+   "ok": true
+  },
+  {
+   "key": "station:Mercury:direct:2026-11-13T15:53:06.474Z",
+   "kind": "station",
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2026-11-13T15:53:06.474Z",
+   "printed": "2026-11-13T15:53:52.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2026-11-13T15:53:52.364Z",
+   "printedMinusHorizonsSeconds": -0.364,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 7.636,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2026-12-24T01:28:16.590Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-01-22"
+   ],
+   "engine": "2026-12-24T01:28:16.590Z",
+   "printed": "2026-12-24T01:28:16.590Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2026-12-24T01:28:14.108Z",
+   "printedMinusHorizonsSeconds": 2.482,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 14.108,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-01-07T20:24:26.069Z",
+   "kind": "lunation",
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2027-01-07T20:24:26.069Z",
+   "printed": "2027-01-07T20:24:26.069Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-01-07T20:24:23.225Z",
+   "printedMinusHorizonsSeconds": 2.844,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 23.225,
+   "ok": true
+  },
+  {
+   "key": "station:Mars:retrograde:2027-01-10T13:00:54.491Z",
+   "kind": "station",
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2027-01-10T13:00:54.491Z",
+   "printed": "2027-01-10T12:59:11.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-01-10T12:59:11.409Z",
+   "printedMinusHorizonsSeconds": -0.409,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 11.409,
+   "ok": true
+  },
+  {
+   "key": "aspect:Uranus:sextile:Neptune:2027-01-15T07:21:23.862Z",
+   "kind": "aspect",
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2027-01-15T07:21:23.862Z",
+   "printed": "2027-01-15T09:26:29.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-01-15T09:26:29.168Z",
+   "printedMinusHorizonsSeconds": -0.168,
+   "held": "date",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 29.168,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-01-22T12:17:21.585Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-01-22",
+    "full-moon-2027-02-20"
+   ],
+   "engine": "2027-01-22T12:17:21.585Z",
+   "printed": "2027-01-22T12:17:23.078Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-01-22T12:17:23.078Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 23.078,
+   "ok": true
+  },
+  {
+   "key": "shadow:Mercury:pre:2027-01-25T18:58:47.021Z",
+   "kind": "shadow",
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2027-01-25T18:58:47.021Z",
+   "printed": "2027-01-25T18:57:34.102Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-01-25T18:57:34.102Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 25.898,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-02-06T15:56:08.653Z",
+   "kind": "lunation",
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2027-02-06T15:56:08.653Z",
+   "printed": "2027-02-06T15:56:08.653Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-02-06T15:56:07.250Z",
+   "printedMinusHorizonsSeconds": 1.403,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 7.25,
+   "ok": true
+  },
+  {
+   "key": "eclipse:solar:2027-02-06T15:59:39.357Z",
+   "kind": "eclipse",
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09",
+    "eclipse-2027-08-02"
+   ],
+   "engine": "2027-02-06T15:59:39.357Z",
+   "printed": "2027-02-06T15:59:38.534Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-02-06T15:59:38.534Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 21.466,
+   "ok": true
+  },
+  {
+   "key": "station:Uranus:direct:2027-02-08T12:28:27.274Z",
+   "kind": "station",
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2027-02-08T12:28:27.274Z",
+   "printed": "2027-02-08T12:29:15.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-02-08T12:29:30.565Z",
+   "printedMinusHorizonsSeconds": -15.565,
+   "held": "date",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 29.435,
+   "ok": true
+  },
+  {
+   "key": "station:Mercury:retrograde:2027-02-09T17:35:41.894Z",
+   "kind": "station",
+   "pages": [
+    "eclipse-2027-02-06",
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10"
+   ],
+   "engine": "2027-02-09T17:35:41.894Z",
+   "printed": "2027-02-09T17:36:05.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-02-09T17:36:05.026Z",
+   "printedMinusHorizonsSeconds": -0.026,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 5.026,
+   "ok": true
+  },
+  {
+   "key": "eclipse:lunar:2027-02-20T23:12:50.555Z",
+   "kind": "eclipse",
+   "pages": [
+    "eclipse-2027-02-20",
+    "full-moon-2027-02-20",
+    "eclipse-2027-07-18"
+   ],
+   "engine": "2027-02-20T23:12:50.555Z",
+   "printed": "2027-02-20T23:12:52.311Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-02-20T23:12:52.311Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 7.689,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-02-20T23:23:37.619Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-01-22",
+    "eclipse-2027-02-20",
+    "full-moon-2027-02-20",
+    "full-moon-2027-03-22"
+   ],
+   "engine": "2027-02-20T23:23:37.619Z",
+   "printed": "2027-02-20T23:23:39.118Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-02-20T23:23:39.118Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 20.882,
+   "ok": true
+  },
+  {
+   "key": "station:Mercury:direct:2027-03-03T12:35:47.606Z",
+   "kind": "station",
+   "pages": [
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10"
+   ],
+   "engine": "2027-03-03T12:35:47.606Z",
+   "printed": "2027-03-03T12:32:01.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-03-03T12:32:01.268Z",
+   "printedMinusHorizonsSeconds": -0.268,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 1.268,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-03-08T09:29:31.050Z",
+   "kind": "lunation",
+   "pages": [],
+   "engine": "2027-03-08T09:29:31.050Z",
+   "printed": "2027-03-08T09:29:31.050Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-03-08T09:29:28.979Z",
+   "printedMinusHorizonsSeconds": 2.071,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 28.979,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-03-22T10:43:48.340Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-02-20",
+    "full-moon-2027-03-22",
+    "full-moon-2027-04-20"
+   ],
+   "engine": "2027-03-22T10:43:48.340Z",
+   "printed": "2027-03-22T10:43:47.854Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-03-22T10:43:47.854Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 12.146,
+   "ok": true
+  },
+  {
+   "key": "shadow:Mercury:post:2027-03-23T15:00:18.372Z",
+   "kind": "shadow",
+   "pages": [
+    "mercury-retrograde-2027-02-09"
+   ],
+   "engine": "2027-03-23T15:00:18.372Z",
+   "printed": "2027-03-23T14:57:58.377Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-03-23T14:57:58.377Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 1.623,
+   "ok": true
+  },
+  {
+   "key": "station:Mars:direct:2027-04-01T14:11:19.833Z",
+   "kind": "station",
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2027-04-01T14:11:19.833Z",
+   "printed": "2027-04-01T14:08:15.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-04-01T14:08:16.633Z",
+   "printedMinusHorizonsSeconds": -1.633,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 16.633,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-04-06T23:51:12.161Z",
+   "kind": "lunation",
+   "pages": [],
+   "engine": "2027-04-06T23:51:12.161Z",
+   "printed": "2027-04-06T23:51:12.161Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-04-06T23:51:09.727Z",
+   "printedMinusHorizonsSeconds": 2.434,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 9.727,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-04-20T22:27:11.909Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-03-22",
+    "full-moon-2027-04-20",
+    "full-moon-2027-05-20"
+   ],
+   "engine": "2027-04-20T22:27:11.909Z",
+   "printed": "2027-04-20T22:27:09.589Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-04-20T22:27:09.589Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 9.589,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-05-06T10:58:40.128Z",
+   "kind": "lunation",
+   "pages": [],
+   "engine": "2027-05-06T10:58:40.128Z",
+   "printed": "2027-05-06T10:58:40.128Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-05-06T10:58:38.078Z",
+   "printedMinusHorizonsSeconds": 2.05,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 21.922,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-05-20T10:59:04.599Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-04-20",
+    "full-moon-2027-05-20",
+    "full-moon-2027-06-19"
+   ],
+   "engine": "2027-05-20T10:59:04.599Z",
+   "printed": "2027-05-20T10:59:01.577Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-05-20T10:59:01.577Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 1.577,
+   "ok": true
+  },
+  {
+   "key": "shadow:Mercury:pre:2027-05-26T06:04:57.535Z",
+   "kind": "shadow",
+   "pages": [
+    "mercury-retrograde-2027-06-10"
+   ],
+   "engine": "2027-05-26T06:04:57.535Z",
+   "printed": "2027-05-26T06:03:31.036Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-05-26T06:03:31.036Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 28.964,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-06-04T19:40:22.676Z",
+   "kind": "lunation",
+   "pages": [],
+   "engine": "2027-06-04T19:40:22.676Z",
+   "printed": "2027-06-04T19:40:22.676Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-06-04T19:40:21.110Z",
+   "printedMinusHorizonsSeconds": 1.566,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 21.11,
+   "ok": true
+  },
+  {
+   "key": "aspect:Uranus:sextile:Neptune:2027-06-06T12:03:37.528Z",
+   "kind": "aspect",
+   "pages": [
+    "mercury-retrograde-2027-06-10"
+   ],
+   "engine": "2027-06-06T12:03:37.528Z",
+   "printed": "2027-06-06T10:12:09.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-06-06T10:12:08.735Z",
+   "printedMinusHorizonsSeconds": 0.265,
+   "held": "date",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 8.735,
+   "ok": true
+  },
+  {
+   "key": "shadow:Mars:post:2027-06-08T01:59:06.494Z",
+   "kind": "shadow",
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2027-06-08T01:59:06.494Z",
+   "printed": "2027-06-08T01:58:03.295Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-06-08T01:58:03.295Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 3.295,
+   "ok": true
+  },
+  {
+   "key": "station:Mercury:retrograde:2027-06-10T18:19:04.335Z",
+   "kind": "station",
+   "pages": [
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-06-10T18:19:04.335Z",
+   "printed": "2027-06-10T18:15:14.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-06-10T18:15:13.960Z",
+   "printedMinusHorizonsSeconds": 0.04,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 13.96,
+   "ok": true
+  },
+  {
+   "key": "aspect:Uranus:trine:Pluto:2027-06-15T08:01:32.585Z",
+   "kind": "aspect",
+   "pages": [
+    "mercury-retrograde-2027-06-10",
+    "full-moon-2027-06-19"
+   ],
+   "engine": "2027-06-15T08:01:32.585Z",
+   "printed": "2027-06-15T08:10:41.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-06-15T08:10:41.240Z",
+   "printedMinusHorizonsSeconds": -0.24,
+   "held": "date",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 18.76,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-06-19T00:44:24.732Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-05-20",
+    "full-moon-2027-06-19",
+    "full-moon-2027-07-18"
+   ],
+   "engine": "2027-06-19T00:44:24.732Z",
+   "printed": "2027-06-19T00:44:21.337Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-06-19T00:44:21.337Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 21.337,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-07-04T03:02:05.654Z",
+   "kind": "lunation",
+   "pages": [],
+   "engine": "2027-07-04T03:02:05.654Z",
+   "printed": "2027-07-04T03:02:05.654Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-07-04T03:02:05.289Z",
+   "printedMinusHorizonsSeconds": 0.365,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 5.289,
+   "ok": true
+  },
+  {
+   "key": "station:Mercury:direct:2027-07-04T19:39:55.898Z",
+   "kind": "station",
+   "pages": [
+    "mercury-retrograde-2027-02-09",
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-07-04T19:39:55.898Z",
+   "printed": "2027-07-04T19:39:23.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-07-04T19:39:22.422Z",
+   "printedMinusHorizonsSeconds": 0.578,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 22.422,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-07-18T15:44:58.351Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-06-19",
+    "full-moon-2027-07-18",
+    "eclipse-2027-07-18",
+    "full-moon-2027-08-17"
+   ],
+   "engine": "2027-07-18T15:44:58.351Z",
+   "printed": "2027-07-18T15:44:55.636Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-07-18T15:44:55.636Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 4.364,
+   "ok": true
+  },
+  {
+   "key": "eclipse:lunar:2027-07-18T16:03:01.519Z",
+   "kind": "eclipse",
+   "pages": [
+    "eclipse-2027-02-20",
+    "full-moon-2027-07-18",
+    "eclipse-2027-07-18",
+    "eclipse-2027-08-17"
+   ],
+   "engine": "2027-07-18T16:03:01.519Z",
+   "printed": "2027-07-18T16:02:59.330Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-07-18T16:02:59.330Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 0.67,
+   "ok": true
+  },
+  {
+   "key": "shadow:Mercury:post:2027-07-19T08:42:48.547Z",
+   "kind": "shadow",
+   "pages": [
+    "mercury-retrograde-2027-06-10"
+   ],
+   "engine": "2027-07-19T08:42:48.547Z",
+   "printed": "2027-07-19T08:42:36.279Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-07-19T08:42:36.279Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 23.721,
+   "ok": true
+  },
+  {
+   "key": "ingress:Jupiter:virgo:2027-07-26T04:45:27.093Z",
+   "kind": "ingress",
+   "pages": [
+    "jupiter-enters-virgo-2027-07-26"
+   ],
+   "engine": "2027-07-26T04:45:27.093Z",
+   "printed": "2027-07-26T04:49:16.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-07-26T04:49:15.627Z",
+   "printedMinusHorizonsSeconds": 0.373,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 15.627,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-08-02T10:05:15.113Z",
+   "kind": "lunation",
+   "pages": [
+    "eclipse-2027-08-02"
+   ],
+   "engine": "2027-08-02T10:05:15.113Z",
+   "printed": "2027-08-02T10:05:15.113Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-08-02T10:05:14.390Z",
+   "printedMinusHorizonsSeconds": 0.723,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 14.39,
+   "ok": true
+  },
+  {
+   "key": "eclipse:solar:2027-08-02T10:06:41.309Z",
+   "kind": "eclipse",
+   "pages": [
+    "eclipse-2027-02-06",
+    "eclipse-2027-08-02"
+   ],
+   "engine": "2027-08-02T10:06:41.309Z",
+   "printed": "2027-08-02T10:06:40.967Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-08-02T10:06:40.967Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 19.033,
+   "ok": true
+  },
+  {
+   "key": "eclipse:lunar:2027-08-17T07:13:51.637Z",
+   "kind": "eclipse",
+   "pages": [
+    "eclipse-2027-07-18",
+    "eclipse-2027-08-17",
+    "full-moon-2027-08-17"
+   ],
+   "engine": "2027-08-17T07:13:51.637Z",
+   "printed": "2027-08-17T07:13:51.409Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-08-17T07:13:51.409Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 8.591,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-08-17T07:28:42.380Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-07-18",
+    "eclipse-2027-08-17",
+    "full-moon-2027-08-17",
+    "full-moon-2027-09-15"
+   ],
+   "engine": "2027-08-17T07:28:42.380Z",
+   "printed": "2027-08-17T07:28:41.718Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-08-17T07:28:41.718Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 18.282,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-08-31T17:41:13.048Z",
+   "kind": "lunation",
+   "pages": [],
+   "engine": "2027-08-31T17:41:13.048Z",
+   "printed": "2027-08-31T17:41:13.048Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-08-31T17:41:11.260Z",
+   "printedMinusHorizonsSeconds": 1.788,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 11.26,
+   "ok": true
+  },
+  {
+   "key": "station:Uranus:retrograde:2027-09-15T09:10:05.125Z",
+   "kind": "station",
+   "pages": [
+    "full-moon-2027-09-15"
+   ],
+   "engine": "2027-09-15T09:10:05.125Z",
+   "printed": "2027-09-15T09:08:51.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-09-15T09:09:08.686Z",
+   "printedMinusHorizonsSeconds": -17.686,
+   "held": "date",
+   "sameMinute": false,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 8.686,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-09-15T23:03:33.051Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-08-17",
+    "full-moon-2027-09-15",
+    "full-moon-2027-10-15"
+   ],
+   "engine": "2027-09-15T23:03:33.051Z",
+   "printed": "2027-09-15T23:03:31.519Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-09-15T23:03:31.519Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 28.481,
+   "ok": true
+  },
+  {
+   "key": "shadow:Mercury:pre:2027-09-17T07:28:03.816Z",
+   "kind": "shadow",
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-09-17T07:28:03.816Z",
+   "printed": "2027-09-17T07:28:53.604Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-09-17T07:28:53.604Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 6.396,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-09-30T02:36:05.212Z",
+   "kind": "lunation",
+   "pages": [],
+   "engine": "2027-09-30T02:36:05.212Z",
+   "printed": "2027-09-30T02:36:05.212Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-09-30T02:36:04.991Z",
+   "printedMinusHorizonsSeconds": 0.221,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 4.991,
+   "ok": true
+  },
+  {
+   "key": "station:Mercury:retrograde:2027-10-07T14:39:08.875Z",
+   "kind": "station",
+   "pages": [
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-10-07T14:39:08.875Z",
+   "printed": "2027-10-07T14:37:04.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-10-07T14:37:03.766Z",
+   "printedMinusHorizonsSeconds": 0.234,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 3.766,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-10-15T13:46:59.502Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-09-15",
+    "full-moon-2027-10-15",
+    "full-moon-2027-11-14"
+   ],
+   "engine": "2027-10-15T13:46:59.502Z",
+   "printed": "2027-10-15T13:47:00.606Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-10-15T13:47:00.606Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 0.606,
+   "ok": true
+  },
+  {
+   "key": "aspect:Neptune:sextile:Pluto:2027-10-16T18:03:57.633Z",
+   "kind": "aspect",
+   "pages": [
+    "full-moon-2027-10-15"
+   ],
+   "engine": "2027-10-16T18:03:57.633Z",
+   "printed": "2027-10-16T14:39:54.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-10-16T14:39:54.526Z",
+   "printedMinusHorizonsSeconds": -0.526,
+   "held": "date",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 5.474,
+   "ok": true
+  },
+  {
+   "key": "station:Pluto:direct:2027-10-18T03:49:21.034Z",
+   "kind": "station",
+   "pages": [
+    "full-moon-2027-10-15"
+   ],
+   "engine": "2027-10-18T03:49:21.034Z",
+   "printed": "2027-10-18T03:50:30.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-10-18T03:50:08.553Z",
+   "printedMinusHorizonsSeconds": 21.447,
+   "held": "date",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 8.553,
+   "ok": true
+  },
+  {
+   "key": "station:Mercury:direct:2027-10-28T14:11:14.559Z",
+   "kind": "station",
+   "pages": [
+    "mercury-retrograde-2027-06-10",
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-10-28T14:11:14.559Z",
+   "printed": "2027-10-28T14:10:38.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-10-28T14:10:37.828Z",
+   "printedMinusHorizonsSeconds": 0.172,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 22.172,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-10-29T13:36:32.787Z",
+   "kind": "lunation",
+   "pages": [],
+   "engine": "2027-10-29T13:36:32.787Z",
+   "printed": "2027-10-29T13:36:32.787Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-10-29T13:36:34.175Z",
+   "printedMinusHorizonsSeconds": -1.388,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 25.825,
+   "ok": true
+  },
+  {
+   "key": "shadow:Mercury:post:2027-11-13T09:55:32.644Z",
+   "kind": "shadow",
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2027-11-13T09:55:32.644Z",
+   "printed": "2027-11-13T09:54:39.908Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-11-13T09:54:39.908Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 20.092,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-11-14T03:25:53.355Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-10-15",
+    "full-moon-2027-11-14",
+    "full-moon-2027-12-13"
+   ],
+   "engine": "2027-11-14T03:25:53.355Z",
+   "printed": "2027-11-14T03:25:55.948Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-11-14T03:25:55.948Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 4.052,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-11-28T03:24:24.613Z",
+   "kind": "lunation",
+   "pages": [],
+   "engine": "2027-11-28T03:24:24.613Z",
+   "printed": "2027-11-28T03:24:24.613Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-11-28T03:24:26.498Z",
+   "printedMinusHorizonsSeconds": -1.885,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 26.498,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2027-12-13T16:08:48.111Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-11-14",
+    "full-moon-2027-12-13"
+   ],
+   "engine": "2027-12-13T16:08:48.111Z",
+   "printed": "2027-12-13T16:08:48.004Z",
+   "printedFrom": "nasa-event-times-2027.json",
+   "horizons": "2027-12-13T16:08:48.004Z",
+   "printedMinusHorizonsSeconds": 0.0,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 11.996,
+   "ok": true
+  },
+  {
+   "key": "station:Neptune:direct:2027-12-15T09:13:20.243Z",
+   "kind": "station",
+   "pages": [
+    "full-moon-2027-12-13"
+   ],
+   "engine": "2027-12-15T09:13:20.243Z",
+   "printed": "2027-12-15T09:07:24.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2027-12-15T09:08:28.225Z",
+   "printedMinusHorizonsSeconds": -64.225,
+   "held": "date",
+   "sameMinute": false,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 28.225,
+   "ok": true
+  },
+  {
+   "key": "lunation:new:2027-12-27T20:12:18.829Z",
+   "kind": "lunation",
+   "pages": [],
+   "engine": "2027-12-27T20:12:18.829Z",
+   "printed": "2027-12-27T20:12:18.829Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2027-12-27T20:12:19.828Z",
+   "printedMinusHorizonsSeconds": -0.999,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 19.828,
+   "ok": true
+  },
+  {
+   "key": "lunation:full:2028-01-12T04:03:06.410Z",
+   "kind": "lunation",
+   "pages": [
+    "full-moon-2027-12-13"
+   ],
+   "engine": "2028-01-12T04:03:06.410Z",
+   "printed": "2028-01-12T04:03:06.410Z",
+   "printedFrom": "engine (sky.json)",
+   "horizons": "2028-01-12T04:03:05.215Z",
+   "printedMinusHorizonsSeconds": 1.195,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 5.215,
+   "ok": true
+  },
+  {
+   "key": "eclipse:lunar:2028-01-12T04:13:07.811Z",
+   "kind": "eclipse",
+   "pages": [
+    "eclipse-2027-08-17"
+   ],
+   "engine": "2028-01-12T04:13:07.811Z",
+   "printed": "2028-01-12T04:13:07.811Z",
+   "printedFrom": "engine (eclipses.json)",
+   "horizons": "2028-01-12T04:13:06.797Z",
+   "printedMinusHorizonsSeconds": 1.014,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 6.797,
+   "ok": true
+  },
+  {
+   "key": "station:Mercury:retrograde:2028-01-24T11:03:29.179Z",
+   "kind": "station",
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2028-01-24T11:03:29.179Z",
+   "printed": "2028-01-24T11:02:26.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2028-01-24T11:02:25.813Z",
+   "printedMinusHorizonsSeconds": 0.187,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 25.813,
+   "ok": true
+  },
+  {
+   "key": "eclipse:solar:2028-01-26T15:07:49.353Z",
+   "kind": "eclipse",
+   "pages": [
+    "eclipse-2027-08-02"
+   ],
+   "engine": "2028-01-26T15:07:49.353Z",
+   "printed": "2028-01-26T15:07:49.353Z",
+   "printedFrom": "engine (eclipses.json)",
+   "horizons": "2028-01-26T15:07:49.563Z",
+   "printedMinusHorizonsSeconds": -0.21,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 10.437,
+   "ok": true
+  },
+  {
+   "key": "station:Mercury:direct:2028-02-14T12:39:33.046Z",
+   "kind": "station",
+   "pages": [
+    "mercury-retrograde-2027-10-07"
+   ],
+   "engine": "2028-02-14T12:39:33.046Z",
+   "printed": "2028-02-14T12:37:48.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2028-02-14T12:37:47.641Z",
+   "printedMinusHorizonsSeconds": 0.359,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 12.359,
+   "ok": true
+  },
+  {
+   "key": "ingress:Jupiter:libra:2028-08-24T05:04:19.914Z",
+   "kind": "ingress",
+   "pages": [
+    "jupiter-enters-virgo-2027-07-26"
+   ],
+   "engine": "2028-08-24T05:04:19.914Z",
+   "printed": "2028-08-24T05:08:33.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2028-08-24T05:08:32.719Z",
+   "printedMinusHorizonsSeconds": 0.281,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 27.281,
+   "ok": true
+  },
+  {
+   "key": "station:Mars:retrograde:2029-02-14T08:12:52.118Z",
+   "kind": "station",
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2029-02-14T08:12:52.118Z",
+   "printed": "2029-02-14T08:16:19.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2029-02-14T08:16:19.131Z",
+   "printedMinusHorizonsSeconds": -0.131,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 19.131,
+   "ok": true
+  },
+  {
+   "key": "station:Mars:direct:2029-05-05T18:58:41.337Z",
+   "kind": "station",
+   "pages": [
+    "mars-retrograde-2027-01-10"
+   ],
+   "engine": "2029-05-05T18:58:41.337Z",
+   "printed": "2029-05-05T18:59:54.000Z",
+   "printedFrom": "nasa-event-instants.json",
+   "horizons": "2029-05-05T18:59:54.410Z",
+   "printedMinusHorizonsSeconds": -0.41,
+   "held": "minute",
+   "sameMinute": true,
+   "sameUtcDate": true,
+   "secondsFromMinuteLine": 5.59,
+   "ok": true
+  }
+ ]
+}

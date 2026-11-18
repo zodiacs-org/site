@@ -26,6 +26,7 @@ import { moonPhaseLabel } from '../../lib/i18n/astrology';
 import { SIGNS, signDates, signForLongitude, signName } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
 import { ALL_TOOLS_LABEL, NAV_MORE } from '../../lib/nav-tools';
+import { SEASON_LOCALES, seasonUi, type SeasonLocale } from '../../lib/seasons/copy';
 import { HOME_COPY, type HomeFaqItem, type HomeLocale } from './home-copy';
 import '../../styles/today.css';
 import './localized-home.css';
@@ -55,6 +56,11 @@ const horoscopes = route('/horoscopes/');
 const today = route('/today/');
 const tools = route('/tools/');
 const methodology = route('/methodology/');
+// The sign-season hub, where this locale has one (not Russian), linked from
+// the signs band so its twelve season pages sit three clicks from home.
+const seasonsHub = (SEASON_LOCALES as readonly string[]).includes(locale)
+  ? { href: localizePath(locale, '/seasons/'), label: seasonUi(locale as SeasonLocale).hubTitle }
+  : null;
 
 const toolCards = [
   { path: '/birth-chart/', icon: 'birth-chart' as const },
@@ -640,6 +646,7 @@ const signTiles = SIGNS.map((sign) => ({
       <h2 class="h-2">{c.signs.title}</h2>
       <p>{c.signs.lede}</p>
     </div>
+    {seasonsHub && <a class="textlink only-desktop" href={seasonsHub.href}>{seasonsHub.label} <span class="arr" aria-hidden="true">→</span></a>}
   </div>
   <ul class="home-signs__row" role="list">
     {SIGNS.map((sign) => (

@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import ts from 'typescript';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { hasHandoffOrLegacyDetails, stashChartHandoff, takeChartHandoff } from '../lib/chart-handoff';
+import { UNDER_13_SENTENCE, birthDateRefusal, birthDateRefusalText } from '../lib/birth-date-policy';
 
 // Execute the actual component's ownership functions with controlled async
 // boundaries. The browser driver separately verifies rendered interactions.
@@ -52,6 +54,7 @@ function harness() {
     navigator: { userAgent: 'Synthetic browser' }, localStorage: {},
     document: { activeElement: null, body: {} }, HTMLElement: class {},
     window: { location: { hash: '', pathname: '/birth-chart/', search: '' }, dispatchEvent: () => { calls.push('computed-event'); }, matchMedia: () => ({ matches: false }), removeEventListener() {} },
+    hasHandoffOrLegacyDetails, takeChartHandoff, birthDateRefusal, birthDateRefusalText,
     history: { replaceState() {} }, subjectModeFromHash: () => 'other', mineHandoffFromHash: () => ({ kind: 'profile', id: 'synthetic-profile-id' }), profileHandoffOriginsFromHash: () => ({ mine: true }),
     NAME_MAX: 24, linkName: null, isAutoName: () => true,
     CustomEvent: class {}, matchMedia: () => ({ matches: true }),
@@ -266,10 +269,151 @@ describe('ChartCalculator result ownership', () => {
     expect(h.context.mineHandoff).toEqual(change === 'unchanged' || change === 'public-mine' ? { kind: 'profile', id: 'synthetic-profile-id' } : null);
   });
 
+  it('refuses a birth date less than 13 years ago before loading or computing anything', async () => {
+    const h = harness(); let loads = 0; let tracked = 0;
+    h.context.loadEngine = () => { loads += 1; return Promise.resolve(h.engine); };
+    h.context.track = () => { tracked += 1; };
+    const recent = new Date(Date.now() - 12 * 365.25 * 86_400_000).toISOString().slice(0, 10);
+    await h.context.runChart(input(recent), true); await flush();
+    expectEmpty(h.context);
+    expect(h.context.error).toBe(UNDER_13_SENTENCE);
+    expect(h.context.busy).toBe(false);
+    expect(h.context.focusAfterComputeRef.current).toBe(true);
+    expect(loads).toBe(0); expect(tracked).toBe(0);
+    expect(h.calls).not.toContain('legacy-natal'); expect(h.calls).not.toContain('portable-natal');
+    expect(h.calls).not.toContain('computed-event');
+  });
+
   it('does not refill share state or scroll after a synchronous result event edits the form', async () => {
     const h = harness(); h.context.window.dispatchEvent = () => h.context.invalidateProfileHandoff();
     let scrolled = false; h.context.resultRef.current = { scrollIntoView: () => { scrolled = true; } };
     await h.context.runChart(input(), true); await flush(); for (const frame of h.frames) frame();
     expectEmpty(h.context); expect(scrolled).toBe(false);
+  });
+
+  it('keeps profile origin on an unsaved handoff and scrubs it after revoke', async () => {
+    const items = new Map<string, string>();
+    const storage = {
+      get length() { return items.size; },
+      key: (index: number) => [...items.keys()][index] ?? null,
+      getItem: (key: string) => items.get(key) ?? null,
+      setItem: (key: string, value: string) => { items.set(key, String(value)); },
+      removeItem: (key: string) => { items.delete(key); },
+      clear: () => items.clear(),
+    };
+    vi.stubGlobal('sessionStorage', storage);
+    try {
+      const fragment = stashChartHandoff({
+        date: '1990-06-15', time: '14:30', timeKnown: true,
+        lat: 0, lon: 0, tz: 'UTC', place: 'Synthetic place', houseSystem: 'whole',
+      }, { profileOrigin: true })!;
+      const h = harness();
+      h.context.window.location.hash = `#${fragment}`;
+      h.context.initialize();
+      await flush();
+      expect(h.context.primaryProfileOriginRef.current).toBe(true);
+      expect(h.context.date).toBe('1990-06-15');
+      expect(h.context.city?.name).toBe('Synthetic place');
+      expect(h.context.chart).not.toBeNull();
+      h.context.allowed = false;
+      h.context.profileAccessGeneration.current += 1;
+      h.context.revoke();
+      expect(h.context.primaryProfileOriginRef.current).toBe(false);
+      expect(h.context.date).toBe('');
+      expect(h.context.time).toBe('');
+      expect(h.context.city).toBeNull();
+      expectEmpty(h.context);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('does not apply a profile-origin session handoff until profile access is granted', async () => {
+    const items = new Map<string, string>();
+    const storage = {
+      get length() { return items.size; },
+      key: (index: number) => [...items.keys()][index] ?? null,
+      getItem: (key: string) => items.get(key) ?? null,
+      setItem: (key: string, value: string) => { items.set(key, String(value)); },
+      removeItem: (key: string) => { items.delete(key); },
+      clear: () => items.clear(),
+    };
+    vi.stubGlobal('sessionStorage', storage);
+    try {
+      const fragment = stashChartHandoff({
+        date: '1988-02-03', time: '08:15', timeKnown: true,
+        lat: 1, lon: 2, tz: 'UTC', place: 'Saved place', houseSystem: 'whole',
+      }, { profileOrigin: true })!;
+      const listeners: Array<() => void> = [];
+      const h = harness();
+      h.context.allowed = false;
+      h.context.window.addEventListener = (type: string, fn: () => void) => {
+        if (type === 'zodiacs:profile-access') listeners.push(fn);
+      };
+      h.context.window.removeEventListener = (type: string, fn: () => void) => {
+        const index = listeners.indexOf(fn);
+        if (index >= 0) listeners.splice(index, 1);
+      };
+      h.context.window.location.hash = `#${fragment}`;
+      h.context.initialize();
+      await flush();
+      expect(h.context.primaryProfileOriginRef.current).toBe(false);
+      expect(h.context.date).toBe('1990-06-15');
+      expect(h.context.chart).toBeNull();
+      h.context.allowed = true;
+      h.context.profileAccessGeneration.current += 1;
+      for (const listener of [...listeners]) listener();
+      await flush();
+      expect(h.context.primaryProfileOriginRef.current).toBe(true);
+      expect(h.context.date).toBe('1988-02-03');
+      expect(h.context.city?.name).toBe('Saved place');
+      expect(h.context.chart).not.toBeNull();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('discards a pending profile-origin handoff if access is revoked before it is granted', async () => {
+    const items = new Map<string, string>();
+    const storage = {
+      get length() { return items.size; },
+      key: (index: number) => [...items.keys()][index] ?? null,
+      getItem: (key: string) => items.get(key) ?? null,
+      setItem: (key: string, value: string) => { items.set(key, String(value)); },
+      removeItem: (key: string) => { items.delete(key); },
+      clear: () => items.clear(),
+    };
+    vi.stubGlobal('sessionStorage', storage);
+    try {
+      const fragment = stashChartHandoff({
+        date: '1988-02-03', time: '08:15', timeKnown: true,
+        lat: 1, lon: 2, tz: 'UTC', place: 'Saved place', houseSystem: 'whole',
+      }, { profileOrigin: true })!;
+      const listeners: Array<() => void> = [];
+      const h = harness();
+      h.context.allowed = false;
+      h.context.window.addEventListener = (type: string, fn: () => void) => {
+        if (type === 'zodiacs:profile-access') listeners.push(fn);
+      };
+      h.context.window.removeEventListener = (type: string, fn: () => void) => {
+        const index = listeners.indexOf(fn);
+        if (index >= 0) listeners.splice(index, 1);
+      };
+      h.context.window.location.hash = `#${fragment}`;
+      h.context.initialize();
+      await flush();
+      expect(h.context.chart).toBeNull();
+      h.context.profileAccessGeneration.current += 1;
+      h.context.revoke();
+      h.context.allowed = true;
+      h.context.profileAccessGeneration.current += 1;
+      for (const listener of [...listeners]) listener();
+      await flush();
+      expect(h.context.primaryProfileOriginRef.current).toBe(false);
+      expect(h.context.date).toBe('1990-06-15');
+      expect(h.context.chart).toBeNull();
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

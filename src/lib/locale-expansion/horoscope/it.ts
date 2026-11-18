@@ -600,7 +600,6 @@ function periodRaw(ctx: PeriodContext): LocalizedPassage[] {
     case 'weekly': return weekly(ctx);
     case 'love': return love(ctx);
     case 'career': return career(ctx);
-    case 'yearly-2026': return yearly(ctx, '2026');
     case 'yearly-2027': return yearly(ctx, '2027');
   }
 }
@@ -653,7 +652,6 @@ function periodPhrase(ctx: ChromeCtx): string {
     case 'monthly': return `di ${monthYear(L, ctx.month!)}`;
     case 'love': return `dell’amore, ${date(ctx.from)},`;
     case 'career': return `del lavoro, ${date(ctx.from)},`;
-    case 'yearly-2026': return 'del 2026';
     case 'yearly-2027': return 'del 2027';
   }
 }
@@ -677,7 +675,6 @@ export const it: HoroscopeLocaleModule = {
         case 'monthly': return `Oroscopo mensile per ${who}: ${monthYear(L, ctx.month!)}`;
         case 'love': return `Oroscopo dell’amore per ${who}, oggi`;
         case 'career': return `Oroscopo del lavoro per ${who}, oggi`;
-        case 'yearly-2026': return `Oroscopo 2026 per ${who}`;
         case 'yearly-2027': return `Oroscopo 2027 per ${who}`;
       }
     },
@@ -689,7 +686,6 @@ export const it: HoroscopeLocaleModule = {
         case 'monthly': return `Oroscopo mensile per ${who}`;
         case 'love': return `Oroscopo dell’amore per ${who}`;
         case 'career': return `Oroscopo del lavoro per ${who}`;
-        case 'yearly-2026': return `Oroscopo 2026 per ${who}`;
         case 'yearly-2027': return `Oroscopo 2027 per ${who}`;
       }
     },

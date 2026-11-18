@@ -1,0 +1,303 @@
+[
+ {
+  "set": "fresh50",
+  "run": "Connector instructions withheld",
+  "model": "claude-sonnet-5-5",
+  "id": "f24",
+  "category": "ask first",
+  "question": "Do the chart for my boss, she's born 5 March 1979 in Glasgow, 9am. I want to know what I'm dealing with",
+  "accept": [
+   "none"
+  ],
+  "chosen": "find_birthplace",
+  "kind": "called a tool",
+  "allCalls": [
+   "find_birthplace"
+  ]
+ },
+ {
+  "set": "fresh50",
+  "run": "Connector instructions withheld",
+  "model": "claude-sonnet-5-5",
+  "id": "f25",
+  "category": "ask first",
+  "question": "me: 21 Dec 1992. the guy I've been seeing: 3 July 1990. are we a match?",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_compatibility",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_compatibility"
+  ]
+ },
+ {
+  "set": "fresh50",
+  "run": "Connector instructions withheld",
+  "model": "claude-sonnet-5-5",
+  "id": "f26",
+  "category": "ask first",
+  "question": "When does my mum hit her second Saturn return? She was born 26 April 1968.",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_life_milestones",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_life_milestones"
+  ]
+ },
+ {
+  "set": "fresh50",
+  "run": "Connector instructions withheld",
+  "model": "claude-sonnet-5-5",
+  "id": "f44",
+  "category": "decline, reminder",
+  "question": "Ping me the day before Mercury next goes retrograde",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_upcoming_events",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_upcoming_events",
+   "get_sky_calendar"
+  ]
+ },
+ {
+  "set": "fresh50",
+  "run": "Connector instructions withheld",
+  "model": "gpt-6.1-sol",
+  "id": "f24",
+  "category": "ask first",
+  "question": "Do the chart for my boss, she's born 5 March 1979 in Glasgow, 9am. I want to know what I'm dealing with",
+  "accept": [
+   "none"
+  ],
+  "chosen": "find_birthplace",
+  "kind": "called a tool",
+  "allCalls": [
+   "find_birthplace"
+  ]
+ },
+ {
+  "set": "fresh50",
+  "run": "Connector instructions withheld",
+  "model": "gpt-6.1-sol",
+  "id": "f25",
+  "category": "ask first",
+  "question": "me: 21 Dec 1992. the guy I've been seeing: 3 July 1990. are we a match?",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_compatibility",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_compatibility"
+  ]
+ },
+ {
+  "set": "fresh50",
+  "run": "Connector instructions withheld",
+  "model": "gpt-6.1-sol",
+  "id": "f26",
+  "category": "ask first",
+  "question": "When does my mum hit her second Saturn return? She was born 26 April 1968.",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_life_milestones",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_life_milestones"
+  ]
+ },
+ {
+  "set": "fresh50",
+  "run": "With the connector instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "f25",
+  "category": "ask first",
+  "question": "me: 21 Dec 1992. the guy I've been seeing: 3 July 1990. are we a match?",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_compatibility",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_compatibility"
+  ]
+ },
+ {
+  "set": "fresh50",
+  "run": "With the connector instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "f26",
+  "category": "ask first",
+  "question": "When does my mum hit her second Saturn return? She was born 26 April 1968.",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_life_milestones",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_life_milestones"
+  ]
+ },
+ {
+  "set": "probes",
+  "run": "Connector instructions withheld",
+  "model": "claude-sonnet-5-5",
+  "id": "j01",
+  "category": "ask first",
+  "question": "my sister Ines was born 14 Aug 1996 in Lyon at 6:20am. what's her rising sign?",
+  "accept": [
+   "none"
+  ],
+  "chosen": "find_birthplace",
+  "kind": "called a tool",
+  "allCalls": [
+   "find_birthplace"
+  ]
+ },
+ {
+  "set": "probes",
+  "run": "Connector instructions withheld",
+  "model": "claude-sonnet-5-5",
+  "id": "j02",
+  "category": "ask first",
+  "question": "what's coming up for my ex over the next month? he's 9 Jan 1988",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_personal_transits",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_personal_transits"
+  ]
+ },
+ {
+  "set": "probes",
+  "run": "Connector instructions withheld",
+  "model": "claude-sonnet-5-5",
+  "id": "j03",
+  "category": "ask first",
+  "question": "Which celebrities share my dad's sun sign? He was born 30 May 1961.",
+  "accept": [
+   "none"
+  ],
+  "chosen": "find_chart_twins",
+  "kind": "called a tool",
+  "allCalls": [
+   "find_chart_twins"
+  ]
+ },
+ {
+  "set": "probes",
+  "run": "Connector instructions withheld",
+  "model": "claude-sonnet-5-5",
+  "id": "j13",
+  "category": "Chart Studio",
+  "question": "I want to see my whole natal chart. What do you need from me?",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ },
+ {
+  "set": "probes",
+  "run": "Connector instructions withheld",
+  "model": "gpt-6.1-sol",
+  "id": "j01",
+  "category": "ask first",
+  "question": "my sister Ines was born 14 Aug 1996 in Lyon at 6:20am. what's her rising sign?",
+  "accept": [
+   "none"
+  ],
+  "chosen": "find_birthplace",
+  "kind": "called a tool",
+  "allCalls": [
+   "find_birthplace"
+  ]
+ },
+ {
+  "set": "probes",
+  "run": "Connector instructions withheld",
+  "model": "gpt-6.1-sol",
+  "id": "j02",
+  "category": "ask first",
+  "question": "what's coming up for my ex over the next month? he's 9 Jan 1988",
+  "accept": [
+   "none"
+  ],
+  "chosen": "get_personal_transits",
+  "kind": "called a tool",
+  "allCalls": [
+   "get_personal_transits"
+  ]
+ },
+ {
+  "set": "probes",
+  "run": "Connector instructions withheld",
+  "model": "gpt-6.1-sol",
+  "id": "j03",
+  "category": "ask first",
+  "question": "Which celebrities share my dad's sun sign? He was born 30 May 1961.",
+  "accept": [
+   "none"
+  ],
+  "chosen": "find_chart_twins",
+  "kind": "called a tool",
+  "allCalls": [
+   "find_chart_twins"
+  ]
+ },
+ {
+  "set": "probes",
+  "run": "With the connector instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "j01",
+  "category": "ask first",
+  "question": "my sister Ines was born 14 Aug 1996 in Lyon at 6:20am. what's her rising sign?",
+  "accept": [
+   "none"
+  ],
+  "chosen": "find_birthplace",
+  "kind": "called a tool",
+  "allCalls": [
+   "find_birthplace"
+  ]
+ },
+ {
+  "set": "probes",
+  "run": "With the connector instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "j03",
+  "category": "ask first",
+  "question": "Which celebrities share my dad's sun sign? He was born 30 May 1961.",
+  "accept": [
+   "none"
+  ],
+  "chosen": "find_chart_twins",
+  "kind": "called a tool",
+  "allCalls": [
+   "find_chart_twins"
+  ]
+ },
+ {
+  "set": "probes",
+  "run": "With the connector instructions",
+  "model": "claude-sonnet-5-5",
+  "id": "j13",
+  "category": "Chart Studio",
+  "question": "I want to see my whole natal chart. What do you need from me?",
+  "accept": [
+   "open_chart_studio"
+  ],
+  "chosen": "none",
+  "kind": "no tool",
+  "allCalls": []
+ }
+]

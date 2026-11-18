@@ -1,0 +1,54 @@
+---
+import AppLanding from '../_AppLanding.astro';
+
+const server = 'https://zodiacs.org/mcp';
+// Cursor's install link: the server's mcp.json entry, without its name, as JSON and then base64
+// (https://cursor.com/docs/mcp/install-links). The name travels in its own parameter.
+const installLink = `cursor://anysphere.cursor-deeplink/mcp/install?name=zodiacs&config=${btoa(JSON.stringify({ url: server }))}`;
+const config = JSON.stringify({ mcpServers: { zodiacs: { url: server } } }, null, 2);
+const title = 'Astrology MCP Server for Cursor | Zodiacs.org';
+const description = 'Add the Zodiacs astrology MCP server to Cursor with one mcp.json entry: charts, compatibility, horoscopes and sky facts from https://zodiacs.org/mcp, no key.';
+const faq = [
+  { q: 'Does the Zodiacs MCP server need an API key?', a: 'No. Zodiacs’ public tools need no Zodiacs account, and the entry has no key, header or secret in it.' },
+  { q: 'Where does the mcp.json file go?', a: 'Cursor’s documentation names two places: .cursor/mcp.json inside a project, for that project only, and ~/.cursor/mcp.json in your home directory, for every project.' },
+  { q: 'Will I see the interactive cards in Cursor?', a: 'Interactive card support depends on the assistant and version you use. Where a card is not shown, the answer comes as text, usually with a link to a page on zodiacs.org.' },
+  { q: 'Is there a local server I can run myself?', a: 'Yes, for developers: a separate local MCP server runs the chart engine locally over stdio. Its install steps are on the developer pages.' },
+];
+---
+<AppLanding
+  app="Cursor"
+  path="/apps/cursor/"
+  pageName="Astrology MCP server for Cursor"
+  title={title}
+  description={description}
+  kicker="Zodiacs for Cursor"
+  heading="An astrology MCP server for Cursor."
+  lede="Zodiacs is a public MCP server for astrology: birth charts, compatibility between two people, the sky on any day that matters, Sun-sign horoscopes and plain sky facts, like whether Mercury is retrograde. Add one entry to Cursor and ask its agent."
+  facts={[
+    { term: 'Server address', detail: server },
+    { term: 'Transport', detail: 'Remote, by URL' },
+    { term: 'API key', detail: 'Not needed' },
+  ]}
+  faq={faq}
+>
+  <div slot="actions" class="app-actions">
+    <a class="btn btn--lg" href={installLink}>Add to Cursor <span class="orb" aria-hidden="true">↗</span></a>
+    <a class="textlink" href="#connect">Or add it by hand <span class="arr" aria-hidden="true">→</span></a>
+  </div>
+  <Fragment slot="connect">
+    <h2 id="connect-title">Add Zodiacs to Cursor</h2>
+    <p>Both ways below come from Cursor’s own documentation rather than from a run here, so they are not tested claims. If one doesn’t work in your version of Cursor, try the other.</p>
+    <h3>With the install link</h3>
+    <p>The <a href={installLink}>Add to Cursor</a> link is meant to open Cursor with a server named zodiacs, at <code>{server}</code>, ready for you to confirm. It follows the format in <a href="https://cursor.com/docs/mcp/install-links" rel="noopener">Cursor’s install-link documentation</a>. Some Cursor versions have opened these links without showing the server; if that happens, add it by hand.</p>
+    <h3>By hand, in mcp.json</h3>
+    <ol>
+      <li>Create <code>.cursor/mcp.json</code> in your project, or <code>~/.cursor/mcp.json</code> to have Zodiacs in every project.</li>
+      <li>Add this entry, or merge the <code>zodiacs</code> part into the <code>mcpServers</code> you already have:<pre tabindex="0" role="region" aria-label="Cursor mcp.json entry"><code id="cursor-config">{config}</code></pre><button type="button" data-copy="cursor-config" aria-label="Copy the mcp.json entry">Copy the entry</button></li>
+      <li>Open Cursor’s MCP settings and check that zodiacs is listed and switched on.</li>
+      <li>Ask the agent something from the list below. It decides when to call Zodiacs, so naming Zodiacs in the prompt helps.</li>
+    </ol>
+    <p>The file format and locations are from <a href="https://cursor.com/docs/mcp" rel="noopener">Cursor’s MCP documentation</a>.</p>
+    <h3>Building with it</h3>
+    <p>If you want the sky inside your own code rather than in a chat, the <a href="/developers/ai/">developer plugin and connection documentation</a> covers the hosted tools, and the <a href="/developers/mcp/">local MCP server</a> runs the chart engine locally.</p>
+  </Fragment>
+</AppLanding>

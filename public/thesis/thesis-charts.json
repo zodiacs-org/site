@@ -57,5 +57,54 @@
       "aquarius": "2026-11-09",
       "pisces": "2026-11-10"
     }
+  },
+  "usedCrypto": {
+    "source": "Pew Research Center",
+    "url": "https://www.pewresearch.org/short-reads/2026/06/08/about-1-in-5-americans-have-used-crypto-republicans-use-has-ticked-up/",
+    "published": "2026-06-08",
+    "fielded": "2026-01",
+    "checkedAt": "2026-11-13",
+    "everUsedPct": 19
+  },
+  "shelf": {
+    "source": "CoinGecko",
+    "checkedAt": "2026-11-13",
+    "categories": [
+      {
+        "key": "dog",
+        "label": "dog coins",
+        "url": "https://www.coingecko.com/en/categories/dog-themed-coins",
+        "count": 664
+      },
+      {
+        "key": "cat",
+        "label": "cat coins",
+        "url": "https://www.coingecko.com/en/categories/cat-themed-coins",
+        "count": 557
+      },
+      {
+        "key": "frog",
+        "label": "frog coins",
+        "url": "https://www.coingecko.com/en/categories/frog-themed-coins",
+        "count": 149
+      }
+    ]
+  },
+  "consult": {
+    "source": "Pew Research Center",
+    "url": "https://www.pewresearch.org/religion/2025/05/21/3-in-10-americans-consult-astrology-tarot-cards-or-fortune-tellers/",
+    "published": "2025-05-21",
+    "fielded": "2024-10",
+    "checkedAt": "2026-11-13",
+    "yearlyPct": 28,
+    "womenUnder50Pct": 46,
+    "sample": 9593
+  },
+  "constellations": {
+    "source": "International Astronomical Union",
+    "url": "https://en.wikipedia.org/wiki/IAU_designated_constellations",
+    "adopted": 1922,
+    "total": 88,
+    "checkedAt": "2026-11-13"
   }
 }

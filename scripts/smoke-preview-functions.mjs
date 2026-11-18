@@ -113,6 +113,20 @@ const probes = [
     expectation: 'HTTP 405',
   },
   {
+    // Retired: a chart link with the positions code in its query. A synthetic code, never decoded.
+    label: 'retired chart link',
+    path: '/api/og/chart?p=2.previewsmoke',
+    init: { method: 'GET', headers: sameOriginHeaders },
+    accepts: (status) => status === 410,
+    expectation: 'HTTP 410',
+    validate: (response, body) => {
+      if (!/no-store/u.test(response.headers.get('cache-control') ?? '')) return 'the retired chart link is not no-store';
+      if (body.includes('previewsmoke') || body.includes('chart-image')) return 'the retired chart link page echoes the code or a preview';
+      if (!body.includes('href="/birth-chart/"')) return 'the retired chart link page does not lead to /birth-chart/';
+      return null;
+    },
+  },
+  {
     label: 'assistant method guard',
     path: '/api/assistant',
     init: { method: 'GET', headers: sameOriginHeaders },

@@ -3,7 +3,9 @@
  * server from the directory (src/data/year-people.json), never read from the
  * link. The same chart and window as the figure's page (src/pages/year/): a
  * noon chart on the birthplace clock, scored for the twelve months from the
- * first day of this month (UTC). The server ephemeris is loaded only on this
+ * first day of the link's month (m=), or of this month (UTC) for a link
+ * without one. Results are kept per figure and month for the life of the
+ * function instance: at most one entry per directory figure per month. The server ephemeris is loaded only on this
  * path, as the invitation route loads it (src/lib/invite/routes/invites.ts).
  */
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
@@ -20,10 +22,25 @@ export interface FigureYearScore {
   from: string;
 }
 
-/** Null for a slug the directory does not have. */
-export async function figureYearScore(slug: string, now: Date): Promise<FigureYearScore | null> {
+const CACHE = new Map<string, Promise<FigureYearScore>>();
+
+/** Null for a slug the directory does not have. `month` (YYYY-MM) pins the start; without it, this month. */
+export async function figureYearScore(slug: string, now: Date, month?: string | null): Promise<FigureYearScore | null> {
   const person = findYearPerson(slug);
   if (!person || person.slug !== slug) return null;
+  const from = month ? `${month}-01` : yearPageStart(now);
+  const key = `${slug}|${from}`;
+  let pending = CACHE.get(key);
+  if (!pending) {
+    pending = scoreFigure(person, from);
+    CACHE.set(key, pending);
+    // A failure is not kept, so the next request tries again.
+    pending.catch(() => CACHE.delete(key));
+  }
+  return pending;
+}
+
+async function scoreFigure(person: YearPerson, from: string): Promise<FigureYearScore> {
   const { bodyLongitude } = await import('../lib/engine/server-ephemeris.js');
   const clock = createLocalTimeModule();
   let utc: Date;
@@ -32,7 +49,6 @@ export async function figureYearScore(slug: string, now: Date): Promise<FigureYe
     utc = clock.resolveLocalToUtc(person.birthDate, person.birthTime ?? '12:00', person.zone).utc;
   } finally { clock.dispose(); }
   const at = (body: 'Sun' | 'Moon' | 'Mercury' | 'Venus' | 'Mars') => bodyLongitude(body, utc);
-  const from = yearPageStart(now);
   const year = scoreYear(
     { Sun: at('Sun'), Moon: person.birthTime ? at('Moon') : null, Mercury: at('Mercury'), Venus: at('Venus'), Mars: at('Mars') },
     (body: SlowPlanet, date: Date) => bodyLongitude(body, date),

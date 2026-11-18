@@ -34,6 +34,22 @@ if [ "$(git rev-parse "origin/$base")" != "$verified" ]; then
   exit 1
 fi
 
+# Build & Check's protected-scope guard now runs on this pull request. When
+# the only protected paths changed are the generated sign pages, carry the
+# base-pinned one-time allowance a hand-carried edition carries; any other
+# protected change gets none, and the guard holds the pull request for a person.
+allowance=$(node scripts/write-sign-page-allowance.mjs "$verified")
+if [ "$allowance" = "written" ]; then
+  git add .github/phase1-scope-allowance.json
+  git commit -q -m "Phase 1 scope: one-time allowance for the generated sign pages"
+  echo "publish-through-pr: added the one-time scope allowance for the generated sign pages"
+elif [ "$allowance" = "refused" ]; then
+  echo "::warning title=Protected paths beyond the sign pages::This publication changes protected paths other than the generated sign pages, so no scope allowance is added and Build & Check will hold the pull request for a person." >&2
+elif [ "$allowance" != "none" ]; then
+  echo "publish-through-pr: the scope allowance writer gave no verdict (\"$allowance\"); nothing was published" >&2
+  exit 1
+fi
+
 git push origin "HEAD:refs/heads/$branch"
 
 if ! pr_url=$(gh pr create --base "$base" --head "$branch" --title "$title" --body "$body" 2>"$tmp/publish-pr-create.err"); then
@@ -45,6 +61,83 @@ if ! pr_url=$(gh pr create --base "$base" --head "$branch" --title "$title" --bo
   exit 1
 fi
 echo "publish-through-pr: opened $pr_url"
+
+# Since 2026-11-15 the protection rule on the base also requires status
+# checks. A pull request opened with the workflow token triggers no
+# pull_request workflows, so those checks never started and every
+# publication pull request sat blocked ("4 of 4 required status checks are
+# expected"). workflow_dispatch is the documented exception: run the same
+# check workflows on the publish branch, wait for every required check on
+# this exact head to finish, and merge only when all of them pass. Nothing
+# is bypassed; a failing or missing check leaves the pull request open.
+head_sha=$(git rev-parse HEAD)
+required=()
+while IFS= read -r context; do
+  if [ -n "$context" ]; then required+=("$context"); fi
+done < <(gh api "repos/{owner}/{repo}/branches/$base" --jq '.protection.required_status_checks.contexts[]?' 2>"$tmp/publish-protection.err" \
+  || { sleep 10; gh api "repos/{owner}/{repo}/branches/$base" --jq '.protection.required_status_checks.contexts[]?' 2>"$tmp/publish-protection.err"; } \
+  || echo "::warning title=Required checks unknown::Could not read the protection summary of $base ($(tr '\n' ' ' <"$tmp/publish-protection.err")); merging without waiting, which the rule will refuse if it requires checks." >&2)
+
+if [ "${#required[@]}" -gt 0 ]; then
+  echo "publish-through-pr: $base requires: $(printf '"%s" ' "${required[@]}")"
+  if ! gh workflow run site-check.yml --ref "$branch" -f "scope_base=$verified" 2>"$tmp/publish-checks.err" \
+    || ! gh workflow run sitemap-dates.yml --ref "$branch" -f "base=$verified" -f "head=$head_sha" 2>>"$tmp/publish-checks.err"; then
+    cat "$tmp/publish-checks.err" >&2
+    echo "::error title=Required checks could not be started::$pr_url stays open for a person; the workflow token could not dispatch the check workflows on $branch (it needs actions: write)." >&2
+    exit 1
+  fi
+  echo "publish-through-pr: dispatched site-check.yml and sitemap-dates.yml on $branch ($head_sha)"
+
+  deadline=$(( $(date +%s) + ${PUBLISH_CHECKS_TIMEOUT_MINUTES:-100} * 60 ))
+  while :; do
+    # One failed read must not end an hour-long wait: retry until the deadline.
+    if ! runs=$(gh api --paginate "repos/{owner}/{repo}/commits/$head_sha/check-runs?per_page=100" \
+      --jq '.check_runs[] | {id, name, status, conclusion, html_url}' | jq -s '.'); then
+      if [ "$(date +%s)" -ge "$deadline" ]; then
+        echo "::error title=Required checks could not be read::$pr_url stays open for a person." >&2
+        exit 1
+      fi
+      echo "publish-through-pr: reading the check runs failed; retrying" >&2
+      sleep 30
+      continue
+    fi
+    waiting=()
+    failed=()
+    for context in "${required[@]}"; do
+      latest=$(jq -c --arg name "$context" '[.[] | select(.name == $name)] | max_by(.id) // empty' <<<"$runs")
+      if [ -z "$latest" ] || [ "$(jq -r .status <<<"$latest")" != "completed" ]; then
+        waiting+=("$context")
+      else
+        case "$(jq -r .conclusion <<<"$latest")" in
+          success|skipped|neutral) ;;
+          *) failed+=("$context ($(jq -r '.conclusion + ": " + .html_url' <<<"$latest"))") ;;
+        esac
+      fi
+    done
+    if [ "${#failed[@]}" -gt 0 ]; then
+      printf 'publish-through-pr: required check failed: %s\n' "${failed[@]}" >&2
+      echo "::error title=A required check failed on the publication pull request::$pr_url stays open for a person. Failed: ${failed[*]}" >&2
+      exit 1
+    fi
+    if [ "${#waiting[@]}" -eq 0 ]; then break; fi
+    if [ "$(date +%s)" -ge "$deadline" ]; then
+      echo "::error title=Required checks did not finish in time::$pr_url stays open for a person; still waiting on: ${waiting[*]}" >&2
+      exit 1
+    fi
+    sleep 30
+  done
+  echo "publish-through-pr: all required checks passed on $head_sha"
+
+  # The wait took about an hour. The artifacts were verified against one exact
+  # base revision, so never squash them onto a base that moved meanwhile.
+  git fetch origin "$base"
+  if [ "$(git rev-parse "origin/$base")" != "$verified" ]; then
+    gh pr close "$pr_url" --comment "Not merged: $base moved while the required checks ran, so this package no longer sits on the base it was verified against. Run the publishing workflow again." >/dev/null 2>&1 || true
+    git push origin --delete "$branch" >/dev/null 2>&1 || true
+    echo "::error title=The base moved while the checks ran::$base advanced after verification, so $pr_url was closed unmerged; run the complete workflow again." >&2
+    exit 1
+  fi
+fi
 
 # GitHub computes mergeability asynchronously after creation; a brand-new
 # pull request with no required checks settles within seconds.

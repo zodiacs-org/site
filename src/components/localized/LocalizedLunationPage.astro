@@ -6,7 +6,7 @@
  */
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../SignIcon.astro';
-import { localizePath, type Locale } from '../../lib/i18n';
+import { LOCALE_META, localizePath, type Locale } from '../../lib/i18n';
 import { SIGNS, signBySlug, signName } from '../../lib/signs';
 import { solarHouse } from '../../lib/daily';
 import { degreeMinutes } from '../../lib/today-sky';
@@ -62,7 +62,7 @@ const jsonLd = [
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
-    inLanguage: locale,
+    inLanguage: LOCALE_META[locale].htmlLang,
     about: { '@type': 'Thing', name: c.h1(facts) },
   },
   {
