@@ -46,6 +46,62 @@ if ! pr_url=$(gh pr create --base "$base" --head "$branch" --title "$title" --bo
 fi
 echo "publish-through-pr: opened $pr_url"
 
+# Since 2026-11-15 the protection rule on the base also requires status
+# checks. A pull request opened with the workflow token triggers no
+# pull_request workflows, so those checks never started and every
+# publication pull request sat blocked ("4 of 4 required status checks are
+# expected"). workflow_dispatch is the documented exception: run the same
+# check workflows on the publish branch, wait for every required check on
+# this exact head to finish, and merge only when all of them pass. Nothing
+# is bypassed; a failing or missing check leaves the pull request open.
+head_sha=$(git rev-parse HEAD)
+required=()
+while IFS= read -r context; do
+  if [ -n "$context" ]; then required+=("$context"); fi
+done < <(gh api "repos/{owner}/{repo}/branches/$base" --jq '.protection.required_status_checks.contexts[]?' 2>/dev/null || true)
+
+if [ "${#required[@]}" -gt 0 ]; then
+  echo "publish-through-pr: $base requires: $(printf '"%s" ' "${required[@]}")"
+  if ! gh workflow run site-check.yml --ref "$branch" -f "scope_base=$verified" 2>"$tmp/publish-checks.err" \
+    || ! gh workflow run sitemap-dates.yml --ref "$branch" -f "base=$verified" -f "head=$head_sha" 2>>"$tmp/publish-checks.err"; then
+    cat "$tmp/publish-checks.err" >&2
+    echo "::error title=Required checks could not be started::$pr_url stays open for a person; the workflow token could not dispatch the check workflows on $branch (it needs actions: write)." >&2
+    exit 1
+  fi
+  echo "publish-through-pr: dispatched site-check.yml and sitemap-dates.yml on $branch ($head_sha)"
+
+  deadline=$(( $(date +%s) + ${PUBLISH_CHECKS_TIMEOUT_MINUTES:-100} * 60 ))
+  while :; do
+    runs=$(gh api --paginate "repos/{owner}/{repo}/commits/$head_sha/check-runs?per_page=100" \
+      --jq '.check_runs[] | {id, name, status, conclusion, html_url}' | jq -s '.')
+    waiting=()
+    failed=()
+    for context in "${required[@]}"; do
+      latest=$(jq -c --arg name "$context" '[.[] | select(.name == $name)] | max_by(.id) // empty' <<<"$runs")
+      if [ -z "$latest" ] || [ "$(jq -r .status <<<"$latest")" != "completed" ]; then
+        waiting+=("$context")
+      else
+        case "$(jq -r .conclusion <<<"$latest")" in
+          success|skipped|neutral) ;;
+          *) failed+=("$context ($(jq -r '.conclusion + ": " + .html_url' <<<"$latest"))") ;;
+        esac
+      fi
+    done
+    if [ "${#failed[@]}" -gt 0 ]; then
+      printf 'publish-through-pr: required check failed: %s\n' "${failed[@]}" >&2
+      echo "::error title=A required check failed on the publication pull request::$pr_url stays open for a person. Failed: ${failed[*]}" >&2
+      exit 1
+    fi
+    if [ "${#waiting[@]}" -eq 0 ]; then break; fi
+    if [ "$(date +%s)" -ge "$deadline" ]; then
+      echo "::error title=Required checks did not finish in time::$pr_url stays open for a person; still waiting on: ${waiting[*]}" >&2
+      exit 1
+    fi
+    sleep 30
+  done
+  echo "publish-through-pr: all required checks passed on $head_sha"
+fi
+
 # GitHub computes mergeability asynchronously after creation; a brand-new
 # pull request with no required checks settles within seconds.
 state=UNKNOWN

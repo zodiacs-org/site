@@ -116,6 +116,15 @@ describe('daily publication operations', () => {
     // A token-made merge triggers no push workflow, so the publisher asks for
     // Site Check on the merged head itself (workflow_dispatch is the exception).
     expect(publisher).toContain('gh workflow run site-check.yml --ref "$base" -f "scope_base=$merged"');
+    // A token-made pull request triggers no pull_request workflows, so the
+    // checks main requires never started (blocked from 2026-11-15). The
+    // publisher dispatches them on its own branch and merges only when every
+    // required check on that exact head has passed.
+    expect(publisher).toContain(".protection.required_status_checks.contexts[]?");
+    expect(publisher).toContain('gh workflow run site-check.yml --ref "$branch" -f "scope_base=$verified"');
+    expect(publisher).toContain('gh workflow run sitemap-dates.yml --ref "$branch" -f "base=$verified" -f "head=$head_sha"');
+    expect(publisher).toContain('commits/$head_sha/check-runs');
+    expect(publisher.indexOf('all required checks passed')).toBeLessThan(publisher.indexOf('gh pr merge "$pr_url" --squash'));
     expect(publisher).toContain('Allow GitHub Actions to create and approve pull requests');
     expect(publisher).not.toContain('--admin');
     expect(publisher).not.toContain('git rebase');
@@ -147,7 +156,9 @@ describe('daily publication operations', () => {
       read('scripts/verify-live-daily.mjs'),
     ]);
 
-    expect(workflow).toContain('timeout-minutes: 25');
+    // Room for the required checks the publisher waits on (Build & Check alone
+    // runs about an hour) before it may merge its own pull request.
+    expect(workflow).toContain('timeout-minutes: 120');
     expect(workflow).toContain('signal: AbortSignal.timeout(15_000)');
     expect(liveVerifier).toContain('signal: AbortSignal.timeout(15_000)');
     expect(workflow).toContain("schema: 'zodiacs.daily-operation-receipt.v2'");
