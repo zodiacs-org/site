@@ -279,7 +279,13 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
       // Pages crossfade with CSS view transitions (base.css). When the browser
       // skips one, for a slow page or a hidden tab, it rejects that
       // transition's promises. Nothing waits on them, so mark them handled
-      // and keep a skipped crossfade out of the page's error log.
+      // and keep a skipped crossfade out of the page's error log. Chromium
+      // can skip before the page sees the transition at all, so a skipped
+      // crossfade's rejection is also marked handled when it surfaces.
+      window.addEventListener('unhandledrejection', function (event) {
+        var reason = event.reason;
+        if (reason && reason.name === 'AbortError' && reason.message === 'Transition was skipped') event.preventDefault();
+      });
       ['pageswap', 'pagereveal'].forEach(function (type) {
         window.addEventListener(type, function (event) {
           var transition = event.viewTransition;

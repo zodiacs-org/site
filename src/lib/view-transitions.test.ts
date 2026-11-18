@@ -62,6 +62,9 @@ describe('cross-document view transitions', () => {
     expect(base).toMatch(/\['pageswap', 'pagereveal'\]\.forEach/u);
     expect(base).toMatch(/transition\.ready, transition\.finished, transition\.updateCallbackDone/u);
     expect(base).toMatch(/promise\.catch\(function \(\) \{\}\)/u);
+    // Only a skipped crossfade is silenced; every other rejection still reports.
+    expect(base).toMatch(/addEventListener\('unhandledrejection'/u);
+    expect(base).toMatch(/reason\.name === 'AbortError' && reason\.message === 'Transition was skipped'\) event\.preventDefault\(\)/u);
   });
 
   it('uses no client router, prefetch rules or render-blocking hints', async () => {
