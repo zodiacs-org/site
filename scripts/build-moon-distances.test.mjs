@@ -79,6 +79,8 @@ describe('moon distances', () => {
     }
   });
 
+  // The data stays rule-free; the site's supermoon rule (owner decision,
+  // 2026-11-12) is applied in src/lib/supermoon.ts and tested there.
   it('names no rule about which Moons count as close', () => {
     expect(committed.toLowerCase()).not.toMatch(/super|micro|rule|nolle/u);
   });

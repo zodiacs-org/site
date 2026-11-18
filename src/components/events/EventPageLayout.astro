@@ -9,6 +9,14 @@
  *
  * Interpretation comes before machinery throughout; the exact numbers live
  * in the closed disclosure and never lead.
+ *
+ * A page whose reading is written to the reading style guide
+ * (src/lib/events/readings-2027.ts) follows the guide's order and the format
+ * of the 2027 year pages instead:
+ *
+ *   title → dateline → one sentence of advice → Updated date → why, try it,
+ *   what is next → facts band → the instants on five clocks and where the
+ *   times come from → … → questions (mirrored in FAQPage data) → …
  */
 import Base from '../../layouts/Base.astro';
 import '../../styles/events.css';
@@ -27,6 +35,12 @@ import {
 import { signBySlug } from '../../lib/signs';
 import type { CatalogEvent } from '../../lib/events/types';
 import { eventTransitHref } from '../../lib/events/transit-link';
+import { EVENT_READINGS_2027_UPDATED } from '../../lib/events/readings-2027';
+import {
+  eventClockHeading, eventClockRows, eventQuestions, eventTimesLine, guideDescription,
+} from '../../lib/events/year-format';
+import { updatedIso, updatedLabel } from '../../world-times/updated';
+import WorldTimesTable from '../../world-times/WorldTimesTable.astro';
 
 interface Props {
   event: CatalogEvent;
@@ -43,6 +57,19 @@ const primarySign = facts.signs[0];
 const hue = primarySign ? signBySlug(primarySign).hue : undefined;
 
 const plan = watchPlan(facts);
+
+// The style-guide pages: the reading's last line names what is next, the
+// instants are read on five clocks, and the questions are answered from the
+// event's own facts.
+const guide = interpretation?.styleGuide;
+const guideNext = guide ? resolve(guide.next) : undefined;
+if (guide && !guideNext) throw new Error(`${facts.id}: the reading points to an unknown event, ${guide.next}`);
+const clockRows = guide ? eventClockRows(facts) : [];
+const clockHeading = guide ? eventClockHeading(facts) : undefined;
+const timesLine = guide ? eventTimesLine(facts) : [];
+const faq = guide ? eventQuestions(event, resolve, catalog.events) : [];
+const buildNow = new Date();
+const description = guide ? guideDescription(facts) : metaDescription(facts);
 
 const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 
@@ -148,14 +175,18 @@ const followLinks: { href: string; label: string }[] = [
 
 const canonicalUrl = `https://zodiacs.org${facts.path}`;
 const articleImage = `https://zodiacs.org${published?.card ?? '/assets/og/v2/share.png'}`;
-const modifiedDate = published
-  ? `${published.lastModified}T00:00:00.000Z`
-  : event.lastModified;
+// A style-guide page dates itself from the day its reading was written: the
+// visible "Updated" line, dateModified and the sitemap share that constant.
+const modifiedDate = guide
+  ? updatedIso(EVENT_READINGS_2027_UPDATED)
+  : published
+    ? `${published.lastModified}T00:00:00.000Z`
+    : event.lastModified;
 const jsonLd = [
   {
     '@type': 'Article',
     headline: facts.title,
-    description: metaDescription(facts),
+    description,
     inLanguage: 'en',
     url: canonicalUrl,
     mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
@@ -173,6 +204,14 @@ const jsonLd = [
       { '@type': 'ListItem', position: 3, name: facts.title, item: canonicalUrl },
     ],
   },
+  ...(faq.length > 0 ? [{
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  }] : []),
 ];
 
 const sources = [
@@ -183,7 +222,7 @@ const sources = [
 <Base
   stableTypography
   title={metaTitle(facts)}
-  description={metaDescription(facts)}
+  description={description}
   path={facts.path}
   image={published?.card}
   imageAlt={`${facts.title} | Zodiacs.org`}
@@ -228,15 +267,51 @@ const sources = [
         )}
       </p>
       <p class="event-hero__lead" data-event-lead>{interpretation?.lead ?? factLead}</p>
+      {guide && (
+        <p class="event-updated" data-event-updated>
+          Updated <time datetime={EVENT_READINGS_2027_UPDATED}>{updatedLabel(EVENT_READINGS_2027_UPDATED)}</time>
+        </p>
+      )}
     </header>
 
+    {guide && guideNext && (
+      <section class="event-section prose reveal" data-event-reading data-event-style-guide>
+        <p data-reading-why><strong>Why:</strong> {guide.why}</p>
+        <p data-reading-try><strong>Try it:</strong> {guide.tryIt}</p>
+        <p data-reading-next>
+          {guide.comeBack}{' '}
+          Next: <a href={guideNext.facts.path}>{guideNext.facts.title}</a>.
+        </p>
+        <p class="event-confidence" data-reading-confidence>
+          <strong>{EVENT_READING_CONFIDENCE}</strong>. This reading uses the sky
+          alone. Your own chart, with a birth time and place, makes a reading more specific.
+        </p>
+      </section>
+    )}
+
     <div class="reveal" data-event-facts>
-      <EventFactsBand facts={facts} />
+      <EventFactsBand facts={facts} plain={Boolean(guide)} />
     </div>
+
+    {guide && clockHeading && clockRows.length > 0 && (
+      <section class="event-section reveal" id="local-times" aria-labelledby="local-times-head" data-event-clocks>
+        <h2 id="local-times-head">{clockHeading.title}</h2>
+        <p class="event-clocks__lead">{clockHeading.lead}</p>
+        <WorldTimesTable
+          rows={clockRows.map((row) => ({ ...row, past: row.at < buildNow }))}
+          eventLabel={clockHeading.eventLabel}
+          caption={clockHeading.caption}
+        />
+        <p class="event-check" data-event-check>
+          {timesLine.join(' ')}{' '}
+          <a href="/methodology/#event-times">How we check event times</a>
+        </p>
+      </section>
+    )}
 
     {plan && plan.moments.length > 0 && <EventCountdown moments={plan.moments} hue={hue} />}
 
-    {interpretation?.body && (
+    {!guide && interpretation?.body && (
       <section class="event-section prose reveal" data-event-reading>
         {interpretation.body.map((paragraph) => <p>{paragraph}</p>)}
         <p class="event-confidence" data-reading-confidence>
@@ -291,6 +366,20 @@ const sources = [
       <EventRelated event={event} resolve={resolve} />
     </section>
 
+    {faq.length > 0 && (
+      <section class="event-section reveal" aria-labelledby="questions-head" data-event-questions>
+        <h2 id="questions-head">Questions</h2>
+        <div class="prose">
+          {faq.map(({ q, a }) => (
+            <details class="faq-item">
+              <summary>{q}</summary>
+              <p>{a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
+
     <section class="event-section reveal" aria-labelledby="follow-head">
       <h2 id="follow-head">Keep following</h2>
       <ul class="event-follow">
@@ -311,3 +400,13 @@ const sources = [
     </div>
   </article>
 </Base>
+
+<style>
+  .event-updated { margin: 10px 0 0; color: var(--muted); font-size: var(--text-sm); }
+  .event-clocks__lead { margin: 0 0 14px; max-width: 64ch; color: var(--muted); }
+  .event-check { margin: 14px 0 0; max-width: 64ch; color: var(--muted); font-size: var(--text-sm); }
+  .event-check a { color: var(--text-2); }
+  .faq-item { border-top: 1px solid var(--hair-1); }
+  .faq-item summary { min-height: 44px; padding: 12px 0; cursor: pointer; color: var(--text); }
+  .faq-item p { margin: 0 0 14px; color: var(--muted); }
+</style>

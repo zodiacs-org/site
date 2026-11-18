@@ -23,6 +23,7 @@ import {
 } from './format';
 import type { EventFacts, EventInterpretation } from './types';
 import { REVISED_EVENT_READINGS } from './revised-readings';
+import { EVENT_READINGS_2027 } from './readings-2027';
 import { lunarTotalityMinutes } from '../nasa-lunar-eclipses';
 
 const INTERPRETATIONS: Record<string, EventInterpretation> = {
@@ -713,6 +714,15 @@ export function interpretationFor(idOrFacts: string | EventFacts): EventInterpre
   if (bespoke) return bespoke;
   const revised = REVISED_EVENT_READINGS[id];
   if (revised) return revised;
+  // The 2027 pages written to the reading style guide: advice, why, action, what is next.
+  const guided = EVENT_READINGS_2027[id];
+  if (guided) {
+    return {
+      lead: guided.hook,
+      body: [guided.why, guided.tryIt],
+      styleGuide: { why: guided.why, tryIt: guided.tryIt, comeBack: guided.comeBack, next: guided.next },
+    };
+  }
   const facts = typeof idOrFacts === 'string' ? EDITORIAL_FACTS.get(id) : idOrFacts;
   return facts ? generatedInterpretation(facts) : undefined;
 }

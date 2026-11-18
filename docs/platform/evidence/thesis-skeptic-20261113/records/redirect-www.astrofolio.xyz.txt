@@ -1,0 +1,9 @@
+HTTP/2 301 
+date: Fri, 13 Nov 2026 09:01:20 GMT
+content-type: text/html; charset=UTF-8
+location: https://zodiacs.org/
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=fblngjq6oOmq49dpKOppW1UesxkuiyDRf6SM3TQ0yzOSN3F8vDL1zhSERUOCFo0BcfCh8yDttiEepJIoI5sFIVFoHF8a7H8GRAzPkCbmRbzu51ypfe%2FupS2uEWB1sirp%2FTCEl0aBTTbuFvShqbC%2BhSE%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a59c97586d951d57-PDX
+

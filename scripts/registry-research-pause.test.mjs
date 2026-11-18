@@ -47,6 +47,11 @@ async function editionInputs() {
     json('src/data/registry-research/approval-manifest.json'),
   ]);
   const date = outlook.daily.date;
+  // The daily job keeps appending market snapshots after the outlook froze.
+  // Keep only what existed on the edition day, so these inputs (and the
+  // ledger's generatedAt, which follows the latest snapshot) don't drift
+  // with the date the suite happens to run.
+  marketHistory.snapshots = marketHistory.snapshots.filter((snapshot) => snapshot.date <= date);
   const transitMonths = await Promise.all(monthsCovering(date, 8).map((month) => json(`src/data/transits-${month}.json`)));
   approvalManifest.approvals = [];
   approvalManifest.pilot.startsOn = date;
@@ -157,6 +162,8 @@ describe('while Registry Research is paused', () => {
     expect(brief).toBeDefined();
 
     const pause = pauseAt(ledger.generatedAt);
+    // The scenario needs the pause to fall before the event it schedules.
+    expect(pause.pausedAt < eventAt).toBe(true);
     const manifest = structuredClone(inputs.approvalManifest);
     // Approved before the pause: the event brief, still scheduled.
     manifest.approvals.push(approvalFor(event, pause.pausedAt));

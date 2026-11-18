@@ -5,7 +5,7 @@ import { plain } from '../card-kit/words';
 import { render } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { HoroscopeBridge, type PanelToolResult } from './bridge';
-import type { HoroscopeAnswer, HoroscopeFocus, HoroscopePanelData, PanelReading } from './reading';
+import { softenMinorPanel, type HoroscopeAnswer, type HoroscopeFocus, type HoroscopePanelData, type PanelReading } from './reading';
 import './style.css';
 
 declare const HOROSCOPE_SIGN_TABLE: { slug: string; name: string; dates: string }[];
@@ -85,8 +85,14 @@ function App() {
   const pick = (value: boolean) => { touched.current = true; setPicking(value); };
   const show = (next: View) => { touched.current = true; setView(next); };
 
+  // A panel opened for a birth date under 18 stays that way: another sign picked here asks for no love reading,
+  // and the panel that comes back is softened the same way, since the sign switch carries no birth date.
+  const minor = useRef(false);
+
   function accept(result: PanelToolResult) {
-    const data = result._meta?.[PANEL_KEY] as HoroscopePanelData | undefined;
+    let data = result._meta?.[PANEL_KEY] as HoroscopePanelData | undefined;
+    if (data?.minor) minor.current = true;
+    if (data && minor.current && !data.minor) data = softenMinorPanel(data);
     const { answer, error } = toolAnswer(result.structuredContent);
     if (data) {
       setPanel(data);
@@ -121,7 +127,8 @@ function App() {
     setBusy(true); setMessage('');
     try {
       const period = panel?.requested.period ?? 'day';
-      const focus = view?.mode === 'day' ? view.focus : 'general';
+      const chosen = view?.mode === 'day' ? view.focus : 'general';
+      const focus = minor.current && chosen === 'love' ? 'general' : chosen;
       accept(await bridge.current.callTool({ sign: slug, period, focus, zone: panel?.requested.zone ?? deviceZone() }));
     } catch {
       setMessage(`That reading could not be opened here. Ask in the chat: “Show the ${name} horoscope”.`);
