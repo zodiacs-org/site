@@ -1,6 +1,6 @@
 {
-  "made": "2026-10-16T16:36:56.385Z",
-  "source": "Real panels from this build with live answers from https://zodiacs.org/mcp; dark theme; Bangkok time zone; personal details in 05–07 are synthetic examples",
+  "made": "2026-11-18T18:20:47.979Z",
+  "source": "Real panels from this build with live answers from https://zodiacs.org/mcp; dark theme; Mexico City time zone; personal details in 05 to 07 are invented examples",
   "screenshots": [
     {
       "file": "01-choose-your-sign.png",
@@ -12,7 +12,7 @@
     },
     {
       "file": "03-sky-this-week.png",
-      "prompt": "Use Zodiacs to show this week's sky calendar for Bangkok."
+      "prompt": "Use Zodiacs to show this week's sky calendar for Mexico City."
     },
     {
       "file": "04-chart-studio-start.png",
@@ -24,11 +24,11 @@
     },
     {
       "file": "06-comparison-card.png",
-      "prompt": "Compare my chart with my partner's and tell us how compatible we are: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992."
+      "prompt": "Compare my chart with my partner's and tell us how compatible we are: I was born 14 May 1994 at 9:15 in Seville, Spain, and my partner was born 4 August 1991."
     },
     {
       "file": "07-wedding-card.png",
-      "prompt": "We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day."
+      "prompt": "We're getting married on 18 September 2027 at 16:30 in Lisbon. Is it a good day for it? Make us a card with the sky for that day."
     }
   ]
 }
