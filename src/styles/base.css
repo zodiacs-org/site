@@ -1024,3 +1024,23 @@ details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):focus-w
   .bc-main .field__labelrow .field__toggle::after { transition: opacity var(--dur-1) var(--ease); }
   .bc-main .field__labelrow .field__toggle:has(input:checked)::before { transition: opacity 0s var(--dur-1); }
 }
+
+/* Pages flow into each other (ZOD-231). Same-site navigations crossfade in
+   180ms; the nav bar and a horoscope's header hold still while the rest of
+   the page changes. CSS only: no script, no client router, no prefetch.
+   Browsers without cross-document view transitions, and anyone who asks
+   for reduced motion, load pages exactly as before. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: var(--dur-1);
+    animation-timing-function: var(--ease);
+  }
+  /* The nav holds still: no move or resize, and it stays on top of a hero
+     that only exists on the new page (those are drawn last by default). */
+  ::view-transition-group(site-nav) { z-index: 1; animation: none; }
+  ::view-transition-old(site-nav) { animation: none; opacity: 0; }
+  ::view-transition-new(site-nav) { animation: none; }
+}
