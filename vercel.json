@@ -548,6 +548,22 @@
       ]
     },
     {
+      "source": "/feeds/events.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/feed+json; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
+      ]
+    },
+    {
+      "source": "/feeds/events/:sign([a-z]+).json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/feed+json; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
+      ]
+    },
+    {
       "source": "/sky-calendar.ics",
       "headers": [
         { "key": "Content-Type", "value": "text/calendar; charset=utf-8" },

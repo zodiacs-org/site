@@ -246,6 +246,8 @@ describe('temporary picomatch advisory exception', () => {
     ['an entry points to a package the report does not list', report({ odd: { severity: 'critical', via: ['ghost'] } }), ok, /does not list/u],
     ['an entry has no known severity of its own', report({ odd: { severity: 'HIGH', via: ['picomatch'] } }), ok, /unknown severity/u],
     ['the report has no vulnerabilities map', {}, ok, /unreadable/u],
+    ['the report also contains an error', { ...report(), error: { code: 'EAUDIT' } }, ok, /contains an error/u],
+    ['the report has an empty error field', { ...report(), error: null }, ok, /contains an error/u],
     ['an entry has no via list', report({ odd: { name: 'odd' } }), ok, /unreadable/u],
     ['picomatch is not in the report', { vulnerabilities: {} }, ok, /not the failure/u],
   ])('fails closed when %s', (_label, auditReport, context, reason) => {
@@ -281,6 +283,58 @@ describe('temporary picomatch advisory exception', () => {
     const run = harness(clean);
     expect(await auditWithRetry(['--omit=dev'], run)).toBe(0);
     expect(run.executeJson).not.toHaveBeenCalled();
+  });
+
+  it.each([0, 2, 7, null, undefined, '1'])(
+    'rejects a JSON findings report with an unexpected exit status: %s', async (status) => {
+      const run = harness(findings);
+      run.executeJson.mockReturnValue({ status, stdout: JSON.stringify(report()), stderr: '' });
+      expect(await auditWithRetry(['--omit=dev'], run)).toBe(1);
+      expect(run.latestPicomatch).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    diagnostic,
+    'npm ERR! audit endpoint returned an error',
+    'npm error code E401',
+    'npm warn audit 503 Service Unavailable',
+    'unfamiliar diagnostic',
+  ])('rejects a JSON findings report accompanied by stderr: %s', async (stderr) => {
+    const run = harness(findings);
+    run.executeJson.mockReturnValue({ status: 1, stdout: JSON.stringify(report()), stderr });
+    expect(await auditWithRetry(['--omit=dev'], run)).toBe(1);
+    expect(run.latestPicomatch).not.toHaveBeenCalled();
+  });
+
+  it.each(['--omit=dev', '--audit-level=high'])(
+    'rejects error-bearing JSON under %s even when the permitted advisory is present', async (policy) => {
+      const run = harness({ ...findings, status: 7 });
+      run.executeJson.mockReturnValue({
+        status: 1,
+        stdout: JSON.stringify({ ...report(), error: { code: 'EAUDIT', summary: 'incomplete audit' } }),
+        stderr: '',
+      });
+      expect(await auditWithRetry([policy], run)).toBe(7);
+      expect(run.stderr).toHaveBeenCalledWith(expect.stringContaining('contains an error'));
+    },
+  );
+
+  it('rejects the reproduced mixed error outcome instead of allowing picomatch to mask it', async () => {
+    const run = harness(findings);
+    run.executeJson.mockReturnValue({
+      status: 2,
+      stdout: JSON.stringify({ ...report(), error: { code: 'EAUDIT' } }),
+      stderr: `${diagnostic}\n`,
+    });
+    expect(await auditWithRetry(['--omit=dev'], run)).toBe(1);
+    expect(run.latestPicomatch).not.toHaveBeenCalled();
+  });
+
+  it('allows an otherwise valid findings report with only whitespace on stderr', async () => {
+    const run = harness(findings);
+    run.executeJson.mockReturnValue({ status: 1, stdout: JSON.stringify(report()), stderr: ' \n\t' });
+    expect(await auditWithRetry(['--omit=dev'], run)).toBe(0);
   });
 
   it('runs the JSON audit with the same policy and no other arguments', () => {
