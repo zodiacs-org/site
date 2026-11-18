@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "registry-younger-faces-2026-11-18",
-  "baseCommit": "99fc9faab570348dfc2624e5afd759e6f8b27dcb",
+  "baseCommit": "462082bd31fd66385ce15cb743e94ac2683792b7",
   "protectedPaths": [
     "public/registry/aquarius/index.html",
     "public/registry/aries/index.html",
