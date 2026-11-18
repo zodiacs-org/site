@@ -41778,7 +41778,7 @@ function getNumerology(args, context) {
 }
 
 // src/ai-tools/contracts.ts
-var AI_VERSION = "0.6.7";
+var AI_VERSION = "0.6.8";
 var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
 var AI_TOOL_NAMES = ["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "get_horoscope", "open_chart_studio"];
 var ASSISTANT_OCCASION_KINDS = ["wedding", "anniversary", "met", "birthday", "pet", "home", "job", "graduation", "retirement", "gathering"];
