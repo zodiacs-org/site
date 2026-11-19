@@ -72,6 +72,24 @@ describe('GitHub Actions trust boundaries', () => {
     }
   });
 
+  it('keeps the PR reviewer off untrusted code, author text and unbounded spend', async () => {
+    const body = (await workflows()).find(({ name }) => name === 'pr-review.yml')?.body ?? '';
+    expect(body).toContain('on:\n  pull_request:\n');
+    expect(body).not.toMatch(/^\s*pull_request_target\s*:/mu);
+    expect(body).toContain('github.event.pull_request.head.repo.full_name == github.repository');
+    expect(body).toContain('persist-credentials: false');
+    // Author-chosen text never reaches a script or the prompt through ${{ }}.
+    expect(body).not.toMatch(/\$\{\{[^}]*(?:pull_request\.(?:title|body|head\.ref|head\.label)|github\.head_ref|label\.name|comment\.body)[^}]*\}\}/u);
+    // No key: warn and stop green before any checkout or API call.
+    expect(body).toMatch(/if \[ "\$HAS_KEY" != "true" \]; then\n\s+echo "run=false" >> "\$GITHUB_OUTPUT"\n.*\n\s+exit 0\n/u);
+    // Spend guard: size skip, output tokens per reply, dollars per review.
+    expect(body).toContain("MAX_LINES: ${{ vars.PR_REVIEW_MAX_LINES || '5000' }}");
+    expect(body).toContain("MAX_FILES: ${{ vars.PR_REVIEW_MAX_FILES || '150' }}");
+    expect(body).toContain("CLAUDE_CODE_MAX_OUTPUT_TOKENS: '16000'");
+    expect(body).toContain("--max-budget-usd ${{ vars.PR_REVIEW_MAX_USD || '3' }}");
+    expect(body).toContain('--max-turns 25');
+  });
+
   it('pins preview probes to the configured project and team hostname family', async () => {
     const smoke = await readFile(resolve(root, 'scripts/smoke-preview-functions.mjs'), 'utf8');
     expect(smoke).toContain('deploymentProjectId !== expectedProjectId');

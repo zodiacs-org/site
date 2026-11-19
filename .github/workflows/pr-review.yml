@@ -15,6 +15,21 @@ name: PR Review
 # without a code change. The hard ceiling in dollars is the monthly spend
 # limit on the key's workspace in the Anthropic Console.
 #
+# Spend guard for each review, before and during the run:
+# - Size: a pull request that changes more than PR_REVIEW_MAX_LINES lines
+#   (additions plus deletions, default 5000) or more than PR_REVIEW_MAX_FILES
+#   files (default 150) is not sent to the reviewer at all. The job stays
+#   green and the review comment says that no review ran, so a large change
+#   is never mistaken for a passed one. Regenerated data files make most of
+#   the very large diffs here, and a reviewer reading them would spend the
+#   most for the least.
+# - Tokens: each reply is capped at 16000 output tokens
+#   (CLAUDE_CODE_MAX_OUTPUT_TOKENS), so with 25 turns a review writes at most
+#   400000 output tokens. Input and output together are capped in dollars by
+#   --max-budget-usd (PR_REVIEW_MAX_USD, default 3): the reviewer CLI counts the
+#   tokens each call uses and stops the review once they cost that much.
+#   A review stopped by any cap posts "no verdict", never a red check.
+#
 # The reviewer only reads. It has no write tools; the job posts its findings
 # as one comment that each later review replaces. The check fails only on an
 # explicit blocker. A missing key, a spent balance or an unfinished review is
@@ -30,6 +45,20 @@ name: PR Review
 # change AGENTS.md and CLAUDE.md themselves. A pull_request run uses the
 # workflow file from the pull request, so anyone who can push a branch here
 # can change this reviewer too: that is the trust the key is given.
+#
+# Safety, for whoever edits this file next:
+# - The trigger is pull_request, never pull_request_target, and the job runs
+#   only for branches in this repository. Fork pull requests get no secrets.
+# - Nothing from the pull request runs. The checkout is read as text; there is
+#   no install, build or test step, and the reviewer's shell is limited to
+#   gh pr diff/view and git log/show. The action restores .claude/, .mcp.json
+#   and CLAUDE.md from the base branch before the reviewer starts, so the pull
+#   request cannot add hooks, MCP servers or settings of its own.
+# - No title, body, branch name or label text is ever put into a script with
+#   ${{ }}. Event values reach shell only through env, and only the pull
+#   request number and the repository name are written into the prompt.
+# - Without ANTHROPIC_API_KEY the job prints a warning and ends green after one
+#   step: no checkout, no API call, no comment.
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review, labeled]
@@ -60,7 +89,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - name: Check the key and this month's review limit
+      - name: Check the key, the size and this month's review limit
         id: gate
         env:
           HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
@@ -68,18 +97,39 @@ jobs:
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
           LIMIT: ${{ vars.PR_REVIEW_MONTHLY_LIMIT || '300' }}
+          # Numbers from the event payload, never text a pull request author
+          # chooses. Missing values count as 0.
+          ADDITIONS: ${{ github.event.pull_request.additions }}
+          DELETIONS: ${{ github.event.pull_request.deletions }}
+          CHANGED_FILES: ${{ github.event.pull_request.changed_files }}
+          MAX_LINES: ${{ vars.PR_REVIEW_MAX_LINES || '5000' }}
+          MAX_FILES: ${{ vars.PR_REVIEW_MAX_FILES || '150' }}
         run: |
           if [ "$HAS_KEY" != "true" ]; then
             echo "run=false" >> "$GITHUB_OUTPUT"
             echo "::warning::ANTHROPIC_API_KEY is not set in the pr-review-production environment, so no review ran."
             exit 0
           fi
+          lines=$(( ${ADDITIONS:-0} + ${DELETIONS:-0} ))
+          files=${CHANGED_FILES:-0}
+          if [ "$lines" -gt "$MAX_LINES" ] || [ "$files" -gt "$MAX_FILES" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "too_big=true" >> "$GITHUB_OUTPUT"
+            echo "size=$lines lines in $files files" >> "$GITHUB_OUTPUT"
+            echo "::warning::This pull request changes $lines lines in $files files, over the review limit of $MAX_LINES lines or $MAX_FILES files, so no review ran."
+            exit 0
+          fi
           month_start=$(date -u +%Y-%m-01)
           # A run that lasted over 90 seconds reached the reviewer; a run
           # stopped here by a missing key or the limit takes a few seconds.
-          used=$(gh api --paginate \
+          # If the count cannot be read, skip rather than spend blind.
+          if ! used=$(gh api --paginate \
             "repos/$REPO/actions/workflows/pr-review.yml/runs?event=pull_request&created=%3E%3D$month_start&per_page=100" \
-            --jq ".workflow_runs[] | select(.id != $RUN_ID and .status == \"completed\" and .run_started_at != null) | select(((.updated_at | fromdateiso8601) - (.run_started_at | fromdateiso8601)) > 90) | .id" | wc -l)
+            --jq ".workflow_runs[] | select(.id != $RUN_ID and .status == \"completed\" and .run_started_at != null) | select(((.updated_at | fromdateiso8601) - (.run_started_at | fromdateiso8601)) > 90) | .id" | wc -l); then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::This month's review count could not be read, so no review ran."
+            exit 0
+          fi
           echo "Reviews this month before this one: $used of $LIMIT"
           if [ "$used" -ge "$LIMIT" ]; then
             echo "run=false" >> "$GITHUB_OUTPUT"
@@ -113,6 +163,9 @@ jobs:
         id: review
         if: steps.gate.outputs.run == 'true'
         continue-on-error: true
+        env:
+          # Output tokens per reply; see the spend guard at the top.
+          CLAUDE_CODE_MAX_OUTPUT_TOKENS: '16000'
         uses: anthropics/claude-code-action@f3b070c88125d33dbae5653df5f143101d4ea9dc # v1.0.276
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -163,12 +216,13 @@ jobs:
           claude_args: |
             --model ${{ vars.PR_REVIEW_MODEL || 'sonnet' }}
             --max-turns 25
+            --max-budget-usd ${{ vars.PR_REVIEW_MAX_USD || '3' }}
             --allowedTools "Read,Grep,Glob,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git log:*),Bash(git show:*)"
             --json-schema '{"type":"object","additionalProperties":false,"required":["verdict","blockers","review_markdown"],"properties":{"verdict":{"type":"string","enum":["pass","block"]},"blockers":{"type":"array","items":{"type":"string"}},"review_markdown":{"type":"string"}}}'
 
       - name: Post or update the review comment
         id: post
-        if: steps.gate.outputs.run == 'true'
+        if: steps.gate.outputs.run == 'true' || steps.gate.outputs.too_big == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -176,21 +230,28 @@ jobs:
           SHA: ${{ github.event.pull_request.head.sha }}
           OUTCOME: ${{ steps.review.outcome }}
           RESULT: ${{ steps.review.outputs.structured_output }}
+          TOO_BIG: ${{ steps.gate.outputs.too_big }}
+          SIZE: ${{ steps.gate.outputs.size }}
           # Only compared against below, never printed. Logs mask it anyway.
           API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           marker='<!-- zodiacs-pr-review -->'
           body_file="$RUNNER_TEMP/review.md"
-          if [ "$OUTCOME" = "success" ] && [ -n "$RESULT" ] && printf '%s' "$RESULT" | jq -e '.review_markdown' > /dev/null 2>&1; then
+          if [ "$TOO_BIG" = "true" ]; then
+            review="No automatic review ran on this push: the pull request changes $SIZE, over the size limit (PR_REVIEW_MAX_LINES, PR_REVIEW_MAX_FILES). It has no verdict and needs a review by hand."
+          elif [ "$OUTCOME" = "success" ] && [ -n "$RESULT" ] && printf '%s' "$RESULT" | jq -e '.review_markdown' > /dev/null 2>&1; then
             review=$(printf '%s' "$RESULT" | jq -r '.review_markdown')
           else
-            review="The automatic review did not finish on this push, so it has no verdict. Check the run log (for example the API balance or the turn limit)."
+            review="The automatic review did not finish on this push, so it has no verdict. Check the run log (for example the API balance, the turn limit or the per-review budget)."
             echo "::warning::The review did not produce a result."
           fi
           # The comment is public. Never post a credential, whatever the
-          # reviewer was led to write.
-          if { [ -n "$API_KEY" ] && printf '%s' "$review" | grep -qF -- "$API_KEY"; } ||
-             printf '%s' "$review" | grep -qE 'sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}'; then
+          # reviewer was led to write. The whole result is checked, blockers
+          # included, because the next step prints the blockers to the log.
+          # The key is matched in bash, so it never appears in a process's
+          # arguments.
+          if { [ -n "$API_KEY" ] && [[ "$review$RESULT" == *"$API_KEY"* ]]; } ||
+             printf '%s\n%s' "$review" "$RESULT" | grep -qE 'sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}'; then
             review="The automatic review wrote something shaped like a credential, so its text was not posted. Check the run, and rotate the key if it was the real one."
             echo "::error::The review text contained something shaped like a credential and was not posted."
             echo "leaked=true" >> "$GITHUB_OUTPUT"
