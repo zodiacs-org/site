@@ -160,7 +160,7 @@ export function retrogradeLoops(planet: RetrogradePlanet, now: Date, rowsAt = po
 }
 
 /** The retrogrades for one person. Throws RangeError for details it cannot use. */
-export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] }> {
+export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin' | 'allowEvents'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
   const natal = await castNatal(args, context.localTime);
   const clock = await currentClock(args.currentZone, args.zone, context as PersonalToolContext);
   const now = context.now;
@@ -188,6 +188,11 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     timeKnown: natal.timeKnown, placed: natal.placed, angles: natal.angles, bodies: natal.chart.bodies, sunHeld,
     birthDate: args.birthDate, today: dateOn(now, clock.zone), dayEnds, foldAsc,
   });
+  // The station and shadow searches count against the hosted event budget, as search_sky_events' do.
+  if (context.allowEvents) {
+    const verdict = await context.allowEvents();
+    if (verdict !== 'allowed') return { refused: verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable' };
+  }
   const rowsAt = positionsMemo();
   const reading = retrogradeReading({
     planets, now, zone: clock.zone, basis,

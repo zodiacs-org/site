@@ -23,6 +23,7 @@ async function bothWithLinks(birth: { birthDate: string; time?: string }, now: D
     { birthDate: birth.birthDate, ...(birth.time ? { time: birth.time } : {}), zone: MADRID.tz, latitude: MADRID.lat, longitude: MADRID.lon, currentZone: zone },
     { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org' },
   );
+  if ('refused' in mcp) throw new Error(mcp.refused);
   await prepareLocalTime(birth.birthDate, MADRID.tz);
   const input: RetrogradeForYouInput = { birthDate: birth.birthDate, birthTime: birth.time ?? null, place: MADRID, planets: ['Mercury', 'Venus', 'Mars'], now, zone };
   const page = computeRetrogradeForYou(input);
@@ -175,10 +176,12 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     // 15 Mar 1987, 01:30: the clocks went back 30 minutes, and both passes give Capricorn rising. An hour on would give Aquarius.
     const place = { lat: -31.55, lon: 159.08, tz: 'Australia/Lord_Howe' };
     const now = new Date('2026-11-09T09:00:00Z');
-    const mcp = (await retrogradeForMe(
+    const result = await retrogradeForMe(
       { birthDate: '1987-03-15', time: '01:30', zone: place.tz, latitude: place.lat, longitude: place.lon, currentZone: 'Europe/Madrid' },
       { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org' },
-    )).data;
+    );
+    if ('refused' in result) throw new Error(result.refused);
+    const mcp = result.data;
     await prepareLocalTime('1987-03-15', place.tz);
     const page = computeRetrogradeForYou({ birthDate: '1987-03-15', birthTime: '01:30', place, planets: ['Mercury', 'Venus', 'Mars'], now, zone: 'Europe/Madrid' });
     if (page.refused) throw new Error('refused');

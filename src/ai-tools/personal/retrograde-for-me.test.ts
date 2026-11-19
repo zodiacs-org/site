@@ -11,7 +11,7 @@ import { castNatal, forbiddenClaim } from './shared';
 const clock = createLocalTimeModule();
 const NOW = new Date('2026-11-09T09:00:00Z');
 const context = (now = NOW) => ({ now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org' });
-const run = (args: Parameters<typeof retrogradeForMe>[0], now = NOW) => retrogradeForMe(args, context(now)).then((result) => result.data);
+const run = (args: Parameters<typeof retrogradeForMe>[0], now = NOW) => retrogradeForMe(args, context(now)).then((result) => { if ('refused' in result) throw new Error(result.refused); return result.data; });
 const ON = { occasions: true, coverage: true, personal: true, now: () => NOW };
 const HOUR = 3_600_000;
 const near = (actual: string, published: string, within = HOUR) => expect(Math.abs(Date.parse(actual) - Date.parse(published)), `${actual} against ${published}`).toBeLessThanOrEqual(within);
@@ -82,6 +82,28 @@ describe('get_retrograde_for_me against published stations', () => {
     expect(mercury.reading).toContain('is in the post-shadow until Mon 30 Nov 2026, going back over the degrees it covered while retrograde.');
     expect(mercury.reading.match(/post-shadow/gu)).toHaveLength(1);
     expect(mercury.shareUrl).toContain('s=2026-10-24');
+  });
+});
+
+describe('get_retrograde_for_me and the hosted event budget', () => {
+  it('asks the event admission guard before its station and shadow searches, and searches nothing when refused', async () => {
+    for (const [verdict, refused] of [['limited', 'rate-limited'], ['unavailable', 'rate-limit-unavailable']] as const) {
+      let asked = 0;
+      const result = await retrogradeForMe({ birthDate: '1990-05-03', currentZone: 'UTC' }, { ...context(), allowEvents: async () => { asked += 1; return verdict; } });
+      expect(asked).toBe(1);
+      expect(result).toEqual({ refused });
+    }
+    let asked = 0;
+    const allowed = await retrogradeForMe({ birthDate: '1990-05-03', currentZone: 'UTC' }, { ...context(), allowEvents: async () => { asked += 1; return 'allowed'; } });
+    expect(asked).toBe(1);
+    if ('refused' in allowed) throw new Error(allowed.refused);
+    expect(allowed.data.periods).toHaveLength(3);
+  });
+
+  it('refuses through the tool call as the other searching tools do', async () => {
+    const result = await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', currentZone: 'UTC' }, { ...ON, allowEvents: async () => 'limited' });
+    expect(result.ok).toBe(false);
+    expect(JSON.stringify(result)).toContain('rate-limited');
   });
 });
 
