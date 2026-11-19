@@ -2,18 +2,18 @@
 // against src/data/people.json by build-sign-pages.mjs before any page is
 // written, so a broken or misclassified profile fails the build.
 export const SIGN_PROFILE_PEOPLE = Object.freeze({
-  aries: ['aretha-franklin', 'maya-angelou', 'charlie-chaplin', 'vincent-van-gogh'],
-  taurus: ['audrey-hepburn', 'ella-fitzgerald', 'karl-marx', 'sigmund-freud'],
-  gemini: ['marilyn-monroe', 'prince', 'judy-garland', 'walt-whitman'],
-  cancer: ['alan-turing', 'frida-kahlo', 'nelson-mandela', 'george-orwell'],
-  leo: ['alfred-hitchcock', 'amelia-earhart', 'andy-warhol', 'coco-chanel'],
-  virgo: ['freddie-mercury', 'amy-winehouse', 'mary-shelley', 'michael-faraday'],
-  libra: ['john-lennon', 'mahatma-gandhi', 'luciano-pavarotti', 'eleanor-roosevelt'],
+  aries: ['aretha-franklin', 'lisa', 'charlie-chaplin', 'vincent-van-gogh'],
+  taurus: ['audrey-hepburn', 'sabrina-carpenter', 'karl-marx', 'mrbeast'],
+  gemini: ['marilyn-monroe', 'prince', 'judy-garland', 'kendrick-lamar'],
+  cancer: ['alan-turing', 'frida-kahlo', 'nelson-mandela', 'erling-haaland'],
+  leo: ['alfred-hitchcock', 'amelia-earhart', 'andy-warhol', 'kylie-jenner'],
+  virgo: ['freddie-mercury', 'amy-winehouse', 'mary-shelley', 'zendaya'],
+  libra: ['john-lennon', 'mahatma-gandhi', 'max-verstappen', 'jenna-ortega'],
   scorpio: ['marie-curie', 'pablo-picasso', 'bill-gates', 'leonardo-dicaprio'],
-  sagittarius: ['bruce-lee', 'jane-austen', 'mark-twain', 'tina-turner'],
-  capricorn: ['david-bowie', 'elvis-presley', 'martin-luther-king-jr', 'stephen-hawking'],
-  aquarius: ['bob-marley', 'charles-darwin', 'rosa-parks', 'wolfgang-amadeus-mozart'],
-  pisces: ['albert-einstein', 'alexander-graham-bell', 'gabriel-garcia-marquez', 'yuri-gagarin'],
+  sagittarius: ['bruce-lee', 'jane-austen', 'taylor-swift', 'tina-turner'],
+  capricorn: ['david-bowie', 'elvis-presley', 'martin-luther-king-jr', 'timothee-chalamet'],
+  aquarius: ['bob-marley', 'harry-styles', 'rosa-parks', 'wolfgang-amadeus-mozart'],
+  pisces: ['albert-einstein', 'rihanna', 'bad-bunny', 'olivia-rodrigo'],
 });
 
 // One short line of sign pride for each Registry profile. These are rally
@@ -59,10 +59,11 @@ export function validateSignProfileRallyLines(signs) {
   return errors;
 }
 
-// Living People profiles are protected by default. These are the only two
-// owner-authorized exceptions, and only as direct nofollow links from the
-// Scorpio Registry profile. The page builder also checks this allowlist
-// against the reviewed People index policy before emitting any page.
+// Living People profiles are protected by default. These are the only
+// owner-authorized exceptions (2026-08-16 and 2026-11-18), each only as a
+// direct nofollow link from its own sign's Registry profile. The page builder
+// also checks this allowlist against the reviewed People index policy before
+// emitting any page.
 export const SIGN_PROFILE_PROTECTED_LINKS = Object.freeze({
   'bill-gates': Object.freeze({
     sign: 'scorpio',
@@ -72,6 +73,81 @@ export const SIGN_PROFILE_PROTECTED_LINKS = Object.freeze({
   'leonardo-dicaprio': Object.freeze({
     sign: 'scorpio',
     surface: '/registry/scorpio/',
+    rel: 'nofollow',
+  }),
+  'lisa': Object.freeze({
+    sign: 'aries',
+    surface: '/registry/aries/',
+    rel: 'nofollow',
+  }),
+  'sabrina-carpenter': Object.freeze({
+    sign: 'taurus',
+    surface: '/registry/taurus/',
+    rel: 'nofollow',
+  }),
+  'mrbeast': Object.freeze({
+    sign: 'taurus',
+    surface: '/registry/taurus/',
+    rel: 'nofollow',
+  }),
+  'kendrick-lamar': Object.freeze({
+    sign: 'gemini',
+    surface: '/registry/gemini/',
+    rel: 'nofollow',
+  }),
+  'erling-haaland': Object.freeze({
+    sign: 'cancer',
+    surface: '/registry/cancer/',
+    rel: 'nofollow',
+  }),
+  'kylie-jenner': Object.freeze({
+    sign: 'leo',
+    surface: '/registry/leo/',
+    rel: 'nofollow',
+  }),
+  'zendaya': Object.freeze({
+    sign: 'virgo',
+    surface: '/registry/virgo/',
+    rel: 'nofollow',
+  }),
+  'max-verstappen': Object.freeze({
+    sign: 'libra',
+    surface: '/registry/libra/',
+    rel: 'nofollow',
+  }),
+  'jenna-ortega': Object.freeze({
+    sign: 'libra',
+    surface: '/registry/libra/',
+    rel: 'nofollow',
+  }),
+  'taylor-swift': Object.freeze({
+    sign: 'sagittarius',
+    surface: '/registry/sagittarius/',
+    rel: 'nofollow',
+  }),
+  'timothee-chalamet': Object.freeze({
+    sign: 'capricorn',
+    surface: '/registry/capricorn/',
+    rel: 'nofollow',
+  }),
+  'harry-styles': Object.freeze({
+    sign: 'aquarius',
+    surface: '/registry/aquarius/',
+    rel: 'nofollow',
+  }),
+  'bad-bunny': Object.freeze({
+    sign: 'pisces',
+    surface: '/registry/pisces/',
+    rel: 'nofollow',
+  }),
+  'rihanna': Object.freeze({
+    sign: 'pisces',
+    surface: '/registry/pisces/',
+    rel: 'nofollow',
+  }),
+  'olivia-rodrigo': Object.freeze({
+    sign: 'pisces',
+    surface: '/registry/pisces/',
     rel: 'nofollow',
   }),
 });
@@ -92,7 +168,7 @@ export function registryProfilePersonLinkRel({ sign, person, policyAuthorization
     || protectedAuthorization.sign !== sign
     || protectedAuthorization.surface !== `/registry/${sign}/`
     || protectedAuthorization.rel !== 'nofollow'
-    || policyAuthorization?.surface !== protectedAuthorization.surface
+    || policyAuthorization?.surfaces?.[person.slug] !== protectedAuthorization.surface
     || !policyProfiles.includes(person.slug)
   ) {
     throw new Error(

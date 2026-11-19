@@ -1,0 +1,122 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "kylie-jenner",
+  "seedRound": 0,
+  "qid": "Q1770624",
+  "displayName": "Kylie Jenner",
+  "identity": "Entrepreneur · United States · born 1997",
+  "title": "Kylie Jenner's birth chart",
+  "metaDescription": "Kylie Jenner's chart, computed from a sourced birth date: Sun at 18.2° Leo. Birth time unknown, so no houses or rising sign.",
+  "lede": "The Sun stands at 18.2° Leo, in domicile (the planet in its own sign, running on home rules). Of everything the chart can be read for without a birth time, that is the loudest single fact in it.",
+  "ledeFact": "dignity:Sun:domicile",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:18.17",
+        "decan:leo:second"
+      ],
+      "text": "Leo, but precisely: 18.2°, second decan, 10° to 20°, under Jupiter in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
+    },
+    {
+      "key": "personal",
+      "title": "The fast planets",
+      "facts": [
+        "personal:Mercury:Virgo:14.2°",
+        "personal:Venus:Virgo:21.9°",
+        "personal:Mars:Libra:27.8°"
+      ],
+      "text": "Closer in, Mercury stands at 14.2° Virgo; Venus stands at 21.9° Virgo; Mars stands at 27.8° Libra. The tradition reads a mind that trusts the measured and the checked from Mercury, taste for the substantial and the lasting from Venus, drive that argues its way forward from Mars."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Mars:Neptune:square:0.21",
+        "aspect:Sun:Jupiter:opposition:1.33",
+        "aspect:Sun:Saturn:trine:2.12"
+      ],
+      "text": "Start where the chart is tightest: Mars square Neptune, 0.2° of separation. Right angles are where the scheme puts its grit. A square asks two functions to work in a mode neither would have chosen. Behind it, the Sun opposition Jupiter at 1.3°, and the Sun trine Saturn at 2.1°, both still well inside the orbs this site uses. These are the day-proof angles: present at midnight, present at noon, present at the next midnight."
+    },
+    {
+      "key": "figures",
+      "title": "What the angles build",
+      "facts": [
+        "figure:unaspected:Moon"
+      ],
+      "text": "The Moon stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:Sun:domicile",
+        "dignity:Moon:fall",
+        "dignity:Mercury:exaltation",
+        "dignity:Venus:fall",
+        "dignity:Mars:detriment",
+        "dignity:Saturn:fall"
+      ],
+      "text": "The classical table has six entries for this chart. The Sun in Leo at 18.2° is in domicile (the planet in its own sign, running on home rules); the Moon in Scorpio at 9.7° is in fall (the tradition’s uphill placement, strength earned rather than given); Mercury in Virgo at 14.2° is in exaltation (the tradition’s honoured-guest placement, working at its best); Venus in Virgo at 21.9° is in fall; Mars in Libra at 27.8° is in detriment (the planet opposite its home, working against the grain); Saturn in Aries at 20.3° is in fall. The old table grades terrain, not talent: a placement in fall works uphill, nothing more."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:fire3-earth3-air3-water1",
+        "modalities:fixed4-mutable3-cardinal3",
+        "settled-signs:10",
+        "retrograde:5"
+      ],
+      "text": "Of the 10 placements whose signs hold for the whole day: 3 in fire, 3 in earth, 3 in air, 1 in water by element, 4 fixed, 3 mutable, 3 cardinal by modality. A fire-weighted chart runs hot at the start line. Initiative is its native language. Jupiter, Saturn, Uranus, Neptune and Pluto were retrograde (motion that reverses only from this vantage point, and which the old reading treats as delay used for revision)."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon, and how far it can move",
+      "facts": [
+        "moon-sign:scorpio",
+        "moon-band:12.3"
+      ],
+      "uncertain": false,
+      "text": "The Moon stayed in Scorpio for the whole of that day at the birthplace, covering 12.3° between midnight and midnight. That is quick enough to make the exact degree a neighbourhood rather than an address, and slow enough to leave the sign settled. At the noon reference it stands at 9.7°."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/august-10/",
+    "label": "Everyone born on August 10"
+  },
+  "signLink": {
+    "href": "/leo/",
+    "label": "The Leo guide"
+  },
+  "substantiveFacts": [
+    "dignity:Sun:domicile",
+    "sun-degree:18.17",
+    "decan:leo:second",
+    "personal:Mercury:Virgo:14.2°",
+    "personal:Venus:Virgo:21.9°",
+    "personal:Mars:Libra:27.8°",
+    "aspect:Mars:Neptune:square:0.21",
+    "aspect:Sun:Jupiter:opposition:1.33",
+    "aspect:Sun:Saturn:trine:2.12",
+    "figure:unaspected:Moon",
+    "dignity:Sun:domicile",
+    "dignity:Moon:fall",
+    "dignity:Mercury:exaltation",
+    "dignity:Venus:fall",
+    "dignity:Mars:detriment",
+    "dignity:Saturn:fall",
+    "elements:fire3-earth3-air3-water1",
+    "modalities:fixed4-mutable3-cardinal3",
+    "settled-signs:10",
+    "retrograde:5",
+    "moon-sign:scorpio",
+    "moon-band:12.3"
+  ],
+  "measurements": {
+    "originalWords": 456,
+    "substantiveStatements": 21,
+    "blocks": 7
+  }
+}

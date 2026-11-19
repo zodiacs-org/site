@@ -337,7 +337,7 @@ describe('the famous-people pages', () => {
           || at(date, '00:00') !== computation.civilDayStartUtc
           || at(next, '00:00') !== computation.civilDayEndUtc) differ.push(slug);
     }
-    expect(people).toHaveLength(501);
+    expect(people).toHaveLength(516);
     expect(differ).toEqual([]);
     const page = read('src/pages/methodology/index.astro').replace(/\s+/g, ' ');
     expect(page).not.toContain('famous-people pages are the exception');

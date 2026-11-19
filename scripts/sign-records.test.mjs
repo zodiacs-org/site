@@ -43,6 +43,24 @@ function priceFormatter(source, name, dependencies = []) {
   return new Function(`${declarations.join('\n')}\nreturn ${name};`)();
 }
 
+const NEW_PROTECTED_SIGNS = Object.freeze({
+  'lisa': 'aries',
+  'sabrina-carpenter': 'taurus',
+  'mrbeast': 'taurus',
+  'kendrick-lamar': 'gemini',
+  'erling-haaland': 'cancer',
+  'kylie-jenner': 'leo',
+  'zendaya': 'virgo',
+  'max-verstappen': 'libra',
+  'jenna-ortega': 'libra',
+  'taylor-swift': 'sagittarius',
+  'timothee-chalamet': 'capricorn',
+  'harry-styles': 'aquarius',
+  'bad-bunny': 'pisces',
+  'rihanna': 'pisces',
+  'olivia-rodrigo': 'pisces',
+});
+
 describe('Zodiac token records', () => {
   it('keeps one validated, sign-specific rally line for every profile', () => {
     expect(Object.keys(SIGN_PROFILE_RALLY_LINES)).toEqual(signs);
@@ -249,11 +267,32 @@ describe('Zodiac token records', () => {
     }
   });
 
-  it('allows only the two owner-authorized protected People links on Scorpio', async () => {
+  it('allows only the owner-authorized protected People links, each on its own sign', async () => {
     const peopleRelease = JSON.parse(await read('src/data/people.json'));
     const indexPolicy = JSON.parse(await read('docs/phase5/people-pilot/index-policy.json'));
     const peopleBySlug = new Map(peopleRelease.people.map((person) => [person.slug, person]));
-    const expectedProtected = ['bill-gates', 'leonardo-dicaprio'];
+    const expectedProtected = [
+      'bad-bunny',
+      'bill-gates',
+      'erling-haaland',
+      'harry-styles',
+      'jenna-ortega',
+      'kendrick-lamar',
+      'kylie-jenner',
+      'leonardo-dicaprio',
+      'lisa',
+      'max-verstappen',
+      'mrbeast',
+      'olivia-rodrigo',
+      'rihanna',
+      'sabrina-carpenter',
+      'taylor-swift',
+      'timothee-chalamet',
+      'zendaya',
+    ];
+    const expectedSign = (personSlug) => (
+      ['bill-gates', 'leonardo-dicaprio'].includes(personSlug) ? 'scorpio' : NEW_PROTECTED_SIGNS[personSlug]
+    );
     const mapped = Object.entries(SIGN_PROFILE_PEOPLE).flatMap(([sign, personSlugs]) => (
       personSlugs.map((personSlug) => ({ sign, personSlug }))
     ));
@@ -262,26 +301,26 @@ describe('Zodiac token records', () => {
     ));
 
     expect(Object.keys(SIGN_PROFILE_PROTECTED_LINKS).sort()).toEqual(expectedProtected);
-    expect(indexPolicy.expansion.personSpecificLinkAuthorization).toMatchObject({
-      profiles: expectedProtected,
-      surface: '/registry/scorpio/',
-    });
-    expect(mappedProtected).toEqual(expectedProtected.map((personSlug) => ({
-      sign: 'scorpio',
-      personSlug,
-    })));
+    const authorization = indexPolicy.expansion.personSpecificLinkAuthorization;
+    expect([...authorization.profiles].sort()).toEqual(expectedProtected);
+    expect(authorization.grants.flatMap((grant) => grant.profiles).sort()).toEqual(expectedProtected);
+    expect(Object.fromEntries(Object.entries(authorization.surfaces).sort())).toEqual(Object.fromEntries(
+      expectedProtected.map((personSlug) => [personSlug, `/registry/${expectedSign(personSlug)}/`]),
+    ));
+    expect([...mappedProtected].sort((a, b) => a.personSlug.localeCompare(b.personSlug)))
+      .toEqual(expectedProtected.map((personSlug) => ({ sign: expectedSign(personSlug), personSlug })));
 
     for (const personSlug of expectedProtected) {
       expect(SIGN_PROFILE_PROTECTED_LINKS[personSlug]).toEqual({
-        sign: 'scorpio',
-        surface: '/registry/scorpio/',
+        sign: expectedSign(personSlug),
+        surface: `/registry/${expectedSign(personSlug)}/`,
         rel: 'nofollow',
       });
       const person = peopleBySlug.get(personSlug);
       expect(person?.living).toBe(true);
       expect(person?.indexEligibility.eligible).toBe(false);
       expect(registryProfilePersonLinkRel({
-        sign: 'scorpio',
+        sign: expectedSign(personSlug),
         person,
         policyAuthorization: indexPolicy.expansion.personSpecificLinkAuthorization,
       })).toBe('nofollow');
@@ -307,9 +346,9 @@ describe('Zodiac token records', () => {
       const html = await read(`public/registry/${sign}/index.html`);
       const peopleMarkup = html.match(/<div class="people-block">([\s\S]*?)<\/div>\s*<\/section>/u)?.[1] ?? '';
       const nofollowLinks = peopleMarkup.match(/<a href="\/people\/[a-z0-9-]+\/" rel="nofollow">/gu) ?? [];
-      expect(nofollowLinks).toHaveLength(sign === 'scorpio' ? 2 : 0);
-      if (sign === 'scorpio') {
-        for (const personSlug of expectedProtected) {
+      expect(nofollowLinks).toHaveLength(expectedProtected.filter((personSlug) => expectedSign(personSlug) === sign).length);
+      for (const personSlug of expectedProtected.filter((slug) => expectedSign(slug) === sign)) {
+        {
           expect(peopleMarkup).toContain(
             `<a href="/people/${personSlug}/" rel="nofollow">`,
           );
