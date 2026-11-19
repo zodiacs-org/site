@@ -93,6 +93,14 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   const cardAttempt = useRef(0);
   const cardSource = useRef<{ chart: Chart; run: number } | null>(null);
 
+  // The cards rise and their sign discs grow in once, as the result first
+  // appears (docs/MOTION.md). This is motionScan from src/lib/motion.ts,
+  // inlined: importing it adds a shared chunk, and /big-three/ sits right
+  // under its first-load budget.
+  useEffect(() => {
+    if (placements) (window as { zodiacsMotion?: { scan(root?: ParentNode): void } }).zodiacsMotion?.scan(resultRef.current ?? undefined);
+  }, [placements]);
+
   useEffect(() => {
     // Warm the same index without placing the search module in the form's
     // initial JavaScript closure; PlaceSearch also warms it on first focus.
@@ -417,11 +425,11 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
             {placements.map(({ kind, title, lon }) => {
               const sign = signForLongitude(lon);
               return (
-                <div class="three-card shell tinted" style={`--sign:${sign.hue}`} key={kind}>
+                <div class="three-card shell tinted" style={`--sign:${sign.hue}`} key={kind} data-enter="rise">
                   <div class="core tinted three-card__core">
                     <span class="mono--label">{title}</span>
                     <span class="three-card__sign">
-                      <picture class="three-card__icon">
+                      <picture class="three-card__icon" data-enter="disc">
                         <img src={`/assets/zodiac-icons/128/${sign.slug}.webp`} width="44" height="44" alt="" decoding="async" />
                       </picture>
                       {signName(sign, locale)}

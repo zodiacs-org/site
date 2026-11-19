@@ -5,8 +5,8 @@
  *   node scripts/build-sun-ingresses.mjs           →  src/data/sun-ingresses.json
  *   node scripts/build-sun-ingresses.mjs --check   (fails when the file is stale)
  *
- * Same calculation as build-ingresses.mjs, Sun only: the engine's ΔT
- * installed in astronomy-engine, the apparent geocentric ecliptic longitude
+ * Same calculation as build-ingresses.mjs, Sun only: the engine's default
+ * DE440 source, the apparent geocentric ecliptic longitude
  * of date, a one-day scan from 2026-01-01 and 22 bisection steps (about
  * 0.02 s) at each sign boundary, so the years both files hold agree to the
  * millisecond. Only closed windows are written: the clamped first window and
@@ -19,11 +19,11 @@
  * the AI runtime and the published developer plugin. This file carries no
  * generation timestamp, so a rebuild is byte-identical and `--check` holds.
  */
-import './lib/deltat-install.mjs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { MakeTime, GeoVector, RotateVector, Rotation_EQJ_ECT, Body } from 'astronomy-engine';
+import { defaultEphemeris } from '@zodiacs/engine';
+import { bodyLongitude } from '@zodiacs/engine/internal';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'src/data/sun-ingresses.json');
@@ -37,16 +37,12 @@ const DAY = 86400_000;
 const FROM = Date.UTC(2026, 0, 1);
 const TO = Date.UTC(2041, 1, 1);
 
-const norm = (x) => ((x % 360) + 360) % 360;
-
-function lonAt(date) {
-  const t = MakeTime(date);
-  const vec = GeoVector(Body.Sun, t, true);
-  const ecl = RotateVector(Rotation_EQJ_ECT(t), vec);
-  return norm((Math.atan2(ecl.y, ecl.x) * 180) / Math.PI);
+const backend = defaultEphemeris();
+if (backend.name !== 'de440' || !backend.de440.opened) {
+  throw new Error('The engine must open its default DE440 pack to build the ingress table.');
 }
 
-const signIndexAt = (date) => Math.floor(lonAt(date) / 30);
+const signIndexAt = (date) => Math.floor(bodyLongitude('Sun', date) / 30);
 
 /** Bisect the boundary where the sign index flips from `prev`. */
 function refine(lo, hi, prev) {

@@ -432,6 +432,9 @@ jobs:
       - name: Reference drift gate
         run: git diff --exit-code -- src/lib/engine/fixtures/ docs/engine-validation/independent-references/
 
+      - name: Replay the Horizons claims offline
+        run: python docs/platform/evidence/site-engine-1-1-0/claims-horizons/comparison.py --check
+
   sky-watch-lifecycle:
     name: Sky Watch subscription lifecycle
     runs-on: ubuntu-latest

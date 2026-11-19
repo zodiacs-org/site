@@ -6,6 +6,7 @@ import Base from '../../layouts/Base.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import { SHARING_COPY } from '../../lib/sharing/copy';
 import BigThreeQuick from '../../islands/BigThreeQuick';
+import Motion from '../../components/Motion.astro';
 import '../../styles/calculator.css';
 
 // The fastest useful summary of a chart: three fields, three placements,
@@ -64,6 +65,7 @@ const jsonLd = [
       </p>
     </div>
 
+    <Motion />
     <BigThreeQuick copy={SHARING_COPY.en} client:load />
     <SharingToolLinks current="/big-three/" />
   </section>
