@@ -21,6 +21,7 @@ import type { Chart } from '../lib/engine/types';
 import type { PreparedChartCard } from '../lib/share-card';
 import { formatSharingCopy, type SharingCopy, type SharingKey } from '../lib/sharing/copy-en';
 import { localizePath, t, type CatalogLocale } from '../lib/i18n';
+import { motion, motionScan } from '../lib/motion';
 
 /**
  * Three fields, one answer: Sun, Moon, and Rising from the same client-side
@@ -92,6 +93,12 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   const generation = useRef(0);
   const cardAttempt = useRef(0);
   const cardSource = useRef<{ chart: Chart; run: number } | null>(null);
+
+  // The cards rise and their sign discs grow in once, as the result first
+  // appears (docs/MOTION.md).
+  useEffect(() => {
+    if (placements) motionScan(resultRef.current ?? undefined);
+  }, [placements]);
 
   useEffect(() => {
     // Warm the same index without placing the search module in the form's
@@ -417,11 +424,11 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
             {placements.map(({ kind, title, lon }) => {
               const sign = signForLongitude(lon);
               return (
-                <div class="three-card shell tinted" style={`--sign:${sign.hue}`} key={kind}>
+                <div class="three-card shell tinted" style={`--sign:${sign.hue}`} key={kind} {...motion('rise')}>
                   <div class="core tinted three-card__core">
                     <span class="mono--label">{title}</span>
                     <span class="three-card__sign">
-                      <picture class="three-card__icon">
+                      <picture class="three-card__icon" {...motion('disc')}>
                         <img src={`/assets/zodiac-icons/128/${sign.slug}.webp`} width="44" height="44" alt="" decoding="async" />
                       </picture>
                       {signName(sign, locale)}
