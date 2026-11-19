@@ -36,7 +36,18 @@ name: PR Review
 # changed files, the description and the commits to files before it starts,
 # and it may only Read, Grep and Glob. Write, shell and web tools are denied,
 # and in dontAsk mode any tool call not on the allowed list is refused, never
-# asked about or approved on its own. The job posts its findings as one comment that each
+# asked about or approved on its own.
+#
+# It reads a copy, never the checkout. The action writes GITHUB_TOKEN into
+# the checkout's .git/config before the reviewer starts, whatever checkout's
+# persist-credentials says, and the reviewer's process holds both keys in its
+# environment. So the job copies the pull request's tracked files (no .git,
+# no symbolic links, no .claude/ folders) and the files above into
+# REVIEW_ROOT, outside the checkout, the runner's home and its temp folder,
+# and the reviewer may read only there: reads outside the working
+# directories are refused, and the checkout (its working directory), .git,
+# the runner's home and temp folder, /proc, /sys, /dev and /etc are denied
+# by name as well. The job posts its findings as one comment that each
 # later review replaces. The check fails only on an
 # explicit blocker. A missing key, a spent balance or an unfinished review is
 # a warning, never a red check, so merges are not held up by billing.
@@ -45,8 +56,10 @@ name: PR Review
 # Pull requests from forks and from Dependabot get no secrets and are skipped.
 #
 # This repository is public, so the review comment is public. Before it is
-# posted, the job refuses any text that contains the key or anything shaped
-# like an Anthropic or GitHub credential. The reviewer holds the change to the
+# posted, the job refuses any text that contains either key, also once
+# everything but letters, digits and underscores is taken out (so a key split
+# across quoted pieces is still caught), or anything shaped like an Anthropic
+# or GitHub credential. The reviewer holds the change to the
 # house rules as they are on the base branch, because a pull request can
 # change AGENTS.md and CLAUDE.md themselves. A pull_request run uses the
 # workflow file from the pull request, so anyone who can push a branch here
@@ -55,7 +68,7 @@ name: PR Review
 # Safety, for whoever edits this file next:
 # - The trigger is pull_request, never pull_request_target, and the job runs
 #   only for branches in this repository. Fork pull requests get no secrets.
-# - Nothing from the pull request runs. The checkout is read as text; there is
+# - Nothing from the pull request runs. Its files are copied as text; there is
 #   no install, build or test step, and the reviewer has no shell at all, so
 #   no argument it chooses can write a file or start a program. The action
 #   restores .claude/, .mcp.json and CLAUDE.md from the base branch before the
@@ -91,6 +104,10 @@ jobs:
       group: pr-review-${{ github.event.pull_request.number }}
       cancel-in-progress: true
     timeout-minutes: 25
+    env:
+      # Everything the reviewer may read, and nothing else: outside the
+      # checkout, the runner's home and RUNNER_TEMP, emptied before each copy.
+      REVIEW_ROOT: /tmp/pr-review
     permissions:
       actions: read
       contents: read
@@ -172,6 +189,26 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
+      - name: Copy the pull request's files for the reviewer
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          # Tracked files only, listed from the index and copied as they
+          # are: no .git (so no token), nothing untracked. Symbolic links are
+          # dropped, since a link could lead back into the checkout or /proc,
+          # and so are .claude/ folders, which the reviewer could otherwise
+          # load as skills or agents; diff.patch still shows their changes.
+          set -o pipefail
+          rm -rf "$REVIEW_ROOT"
+          dir="$REVIEW_ROOT/pr"
+          mkdir -p "$dir"
+          git ls-files -z | tar --null --no-recursion -T - -cf - | tar -xf - -C "$dir"
+          find "$dir" -type l -delete
+          find "$dir" -name .claude -type d -prune -exec rm -rf {} +
+          if [ -n "$(find "$dir" \( -type l -o -name .git -o -name .claude \) -print -quit)" ]; then
+            echo "::error::The reviewer's copy still holds a link, .git or .claude."
+            exit 1
+          fi
+
       - name: Fetch the house rules from the base branch
         if: steps.gate.outputs.run == 'true'
         env:
@@ -179,7 +216,7 @@ jobs:
           REPO: ${{ github.repository }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          dir=".pr-review-base"
+          dir="$REVIEW_ROOT/base"
           rm -rf "$dir"
           mkdir "$dir"
           for file in AGENTS.md CLAUDE.md; do
@@ -197,7 +234,7 @@ jobs:
           # The reviewer has no shell, so everything it would have asked git
           # or gh for is written here first. The directory is emptied first,
           # so a pull request cannot plant files of its own in it.
-          dir=".pr-review-context"
+          dir="$REVIEW_ROOT/context"
           rm -rf "$dir"
           mkdir "$dir"
           gh pr diff "$PR" --repo "$REPO" > "$dir/diff.patch"
@@ -225,15 +262,22 @@ jobs:
             You are an independent reviewer for zodiacs.org. Another agent wrote
             this change. Your job is to try to break it before it merges.
 
-            You have no shell. The pull request is written out for you in
-            .pr-review-context/: diff.patch (the diff), files.txt (the changed
-            files), description.txt (the title and description) and log.txt (the
-            commits, with their authors and messages). Open the files the diff
-            touches, and the code that calls them, before you judge. The house rules are .pr-review-base/AGENTS.md and
-            .pr-review-base/CLAUDE.md, copied from the base branch; hold the change
-            to them. If the pull request edits AGENTS.md or CLAUDE.md, review that
-            edit against the base copies like any other change. Read only files
-            inside this checkout.
+            You have no shell, and you can read only under ${{ env.REVIEW_ROOT }}/.
+            Every other path, your working directory included, is refused, so
+            always pass absolute paths under ${{ env.REVIEW_ROOT }}/ to Read, Grep
+            and Glob.
+
+            The pull request is written out for you in ${{ env.REVIEW_ROOT }}/context/:
+            diff.patch (the diff), files.txt (the changed files), description.txt
+            (the title and description) and log.txt (the commits, with their
+            authors and messages). ${{ env.REVIEW_ROOT }}/pr/ holds the repository's
+            files as of this pull request, without symbolic links or .claude/
+            folders (read those changes in diff.patch). Open the files the diff
+            touches, and the code that calls them, before you judge. The house
+            rules are ${{ env.REVIEW_ROOT }}/base/AGENTS.md and
+            ${{ env.REVIEW_ROOT }}/base/CLAUDE.md, copied from the base branch; hold
+            the change to them. If the pull request edits AGENTS.md or CLAUDE.md,
+            review that edit against the base copies like any other change.
 
             Look hardest for:
             1. Bugs: wrong logic, unhandled cases, broken links or routes, data that
@@ -267,8 +311,10 @@ jobs:
             --max-turns 25
             --max-budget-usd ${{ vars.PR_REVIEW_MAX_USD || '3' }}
             --permission-mode dontAsk
+            --add-dir ${{ env.REVIEW_ROOT }}
+            --settings '{"permissions":{"blockReadsOutsideWorkingDirectories":true}}'
             --allowedTools "Read,Grep,Glob"
-            --disallowedTools "Bash,BashOutput,KillShell,Edit,MultiEdit,Write,NotebookEdit,WebFetch,WebSearch,Task,Agent"
+            --disallowedTools "Bash,BashOutput,KillShell,Edit,MultiEdit,Write,NotebookEdit,WebFetch,WebSearch,Task,Agent,Read(./**),Read(./.git/**),Read(/${{ github.workspace }}),Read(/${{ github.workspace }}/**),Read(/${{ runner.temp }}/**),Read(~/**),Read(//proc/**),Read(//sys/**),Read(//dev/**),Read(//etc/**)"
             --json-schema '{"type":"object","additionalProperties":false,"required":["verdict","blockers","review_markdown"],"properties":{"verdict":{"type":"string","enum":["pass","block"]},"blockers":{"type":"array","items":{"type":"string"}},"review_markdown":{"type":"string"}}}'
 
       - name: Post or update the review comment
@@ -284,6 +330,7 @@ jobs:
           TOO_BIG: ${{ steps.gate.outputs.too_big }}
           SIZE: ${{ steps.gate.outputs.size }}
           # Only compared against below, never printed. Logs mask it anyway.
+          # GH_TOKEN above is checked the same way.
           API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           marker='<!-- zodiacs-pr-review -->'
@@ -303,8 +350,23 @@ jobs:
           # process's arguments, and a pattern check that stops reading at the
           # first match cannot fail the pipe and let the text through.
           cred_re='sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}'
+          # A key split into pieces ("ghs_ab" + "cd...", one character per
+          # line, hyphens in between) passes both checks, so each key is
+          # looked for again with everything but letters, digits and
+          # underscores taken out of the text and the key alike. tr reads
+          # them from stdin, never from its arguments. Keys under 20
+          # characters are not looked for, so an empty one matches nothing.
+          keep='A-Za-z0-9_'
+          squeezed=$(tr -cd "$keep" <<< "$review"$'\n'"$RESULT")
+          split=false
+          for secret in "$API_KEY" "$GH_TOKEN"; do
+            bare=$(tr -cd "$keep" <<< "$secret")
+            if [ "${#bare}" -ge 20 ] && [[ "$squeezed" == *"$bare"* ]]; then
+              split=true
+            fi
+          done
           if { [ -n "$API_KEY" ] && [[ "$review$RESULT" == *"$API_KEY"* ]]; } ||
-             [[ "$review"$'\n'"$RESULT" =~ $cred_re ]]; then
+             [[ "$review"$'\n'"$RESULT" =~ $cred_re ]] || [ "$split" = true ]; then
             review="The automatic review wrote something shaped like a credential, so its text was not posted. Check the run, and rotate the key if it was the real one."
             echo "::error::The review text contained something shaped like a credential and was not posted."
             echo "leaked=true" >> "$GITHUB_OUTPUT"

@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { chmod, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, mkdtemp, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -109,14 +109,103 @@ describe('GitHub Actions trust boundaries', () => {
     }
     // What the shell used to fetch is written out before the reviewer starts,
     // into a directory emptied first so the pull request cannot plant it.
-    const context = body.indexOf('dir=".pr-review-context"');
+    const context = body.indexOf('dir="$REVIEW_ROOT/context"');
     expect(context).toBeGreaterThan(-1);
     expect(context).toBeLessThan(body.indexOf('uses: anthropics/claude-code-action@'));
-    expect(body).toContain('dir=".pr-review-context"\n          rm -rf "$dir"\n          mkdir "$dir"\n');
+    expect(body).toContain('dir="$REVIEW_ROOT/context"\n          rm -rf "$dir"\n          mkdir "$dir"\n');
     for (const file of ['diff.patch', 'files.txt', 'description.txt', 'log.txt']) {
       expect(body, file).toContain(`> "$dir/${file}"`);
     }
     expect(body).not.toMatch(/`(?:gh|git) /u);
+  });
+
+  it('lets the reviewer read only a credential-free copy outside the checkout', async () => {
+    const body = (await workflows()).find(({ name }) => name === 'pr-review.yml')?.body ?? '';
+    // The action writes GITHUB_TOKEN into the checkout's .git/config, and the
+    // reviewer's process environment holds both keys, so the reviewer reads a
+    // copy kept outside the checkout, the runner's home and RUNNER_TEMP.
+    const root = body.match(/^ {6}REVIEW_ROOT: (\S+)$/mu)?.[1] ?? '';
+    expect(root).toBe('/tmp/pr-review');
+    expect(body).not.toMatch(/\.pr-review-(?:context|base)/u);
+    expect(body.match(/--add-dir\b/gu)).toHaveLength(1);
+    expect(body).toContain('--add-dir ${{ env.REVIEW_ROOT }}\n');
+    // Reads outside the working directories are refused in every mode.
+    const settings = JSON.parse(body.match(/--settings '([^']+)'/u)?.[1] ?? '{}');
+    expect(settings).toEqual({ permissions: { blockReadsOutsideWorkingDirectories: true } });
+    // The working directory is the checkout, so it and everything secret on
+    // the runner are denied by name too. The action splits this list on
+    // commas, so no rule may hold one.
+    const denied = body.match(/--disallowedTools "([^"]+)"/u)?.[1].split(',') ?? [];
+    for (const rule of [
+      'Read(./**)',
+      'Read(./.git/**)',
+      'Read(/${{ github.workspace }})',
+      'Read(/${{ github.workspace }}/**)',
+      'Read(/${{ runner.temp }}/**)',
+      'Read(~/**)',
+      'Read(//proc/**)',
+      'Read(//sys/**)',
+      'Read(//dev/**)',
+    ]) {
+      expect(denied, rule).toContain(rule);
+    }
+    for (const rule of denied) expect(rule).toMatch(/^(?:\w+|Read\([^(),]+\))$/u);
+    // Everything the reviewer reads is written under REVIEW_ROOT before it starts.
+    const action = body.indexOf('uses: anthropics/claude-code-action@');
+    for (const dir of ['pr', 'base', 'context']) {
+      const at = body.indexOf(`dir="$REVIEW_ROOT/${dir}"`);
+      expect(at, dir).toBeGreaterThan(-1);
+      expect(at, dir).toBeLessThan(action);
+    }
+    expect(body).not.toMatch(/^\s*(?:working-directory|path):/mu);
+    const prompt = body.match(/\n {10}prompt: \|\n([\s\S]*?)\n {10}claude_args:/u)?.[1] ?? '';
+    for (const path of ['${{ env.REVIEW_ROOT }}/context/', '${{ env.REVIEW_ROOT }}/pr/', '${{ env.REVIEW_ROOT }}/base/AGENTS.md']) {
+      expect(prompt, path).toContain(path);
+    }
+
+    // Run the copy step on a real repository whose .git/config holds a
+    // token, with a tracked link to it, a tracked .claude/ folder and an
+    // untracked file.
+    const step = body.match(/\n {6}- name: Copy the pull request's files for the reviewer\n[\s\S]*?\n {8}run: \|\n([\s\S]*?)\n\n {6}- name:/u)?.[1] ?? '';
+    const script = step.replace(/^ {10}/gmu, '');
+    expect(script).toContain('git ls-files -z');
+    const dir = await mkdtemp(resolve(tmpdir(), 'pr-review-copy-'));
+    try {
+      const repo = resolve(dir, 'checkout');
+      const copy = resolve(dir, 'review');
+      const git = (...args) => {
+        const run = spawnSync('git', ['-C', repo, '-c', 'user.name=t', '-c', 'user.email=t@example.com', ...args], { encoding: 'utf8' });
+        expect(run.status, run.stderr).toBe(0);
+      };
+      await mkdir(resolve(repo, 'src/.claude/agents'), { recursive: true });
+      await mkdir(resolve(repo, '.claude/skills'), { recursive: true });
+      git('init', '-q');
+      git('remote', 'add', 'origin', `https://x-access-token:ghs_${'T'.repeat(36)}@github.com/o/r.git`);
+      await writeFile(resolve(repo, 'src/index.ts'), 'export const a = 1;\n');
+      await writeFile(resolve(repo, 'odd name ü.md'), 'text\n');
+      await writeFile(resolve(repo, '.claude/skills/evil.md'), 'skill\n');
+      await writeFile(resolve(repo, 'src/.claude/agents/evil.md'), 'agent\n');
+      await symlink('.git/config', resolve(repo, 'config-link'));
+      await symlink('/proc/self/environ', resolve(repo, 'src/environ'));
+      git('add', '-A');
+      git('commit', '-q', '-m', 'fixture');
+      await writeFile(resolve(repo, 'untracked.txt'), 'not in git\n');
+      const run = spawnSync('bash', ['-e', '-c', script], {
+        cwd: repo,
+        encoding: 'utf8',
+        env: { PATH: process.env.PATH, REVIEW_ROOT: copy },
+      });
+      expect(run.status, run.stderr).toBe(0);
+      const listed = spawnSync('find', [copy, '-printf', '%y %P\n'], { encoding: 'utf8' }).stdout.trim().split('\n').sort();
+      expect(listed).toEqual(['d ', 'd pr', 'd pr/src', 'f pr/odd name ü.md', 'f pr/src/index.ts']);
+      expect(await readFile(resolve(copy, 'pr/src/index.ts'), 'utf8')).toBe('export const a = 1;\n');
+      // A second run starts from an empty folder.
+      await writeFile(resolve(copy, 'planted.txt'), 'x');
+      expect(spawnSync('bash', ['-e', '-c', script], { cwd: repo, env: { PATH: process.env.PATH, REVIEW_ROOT: copy } }).status).toBe(0);
+      expect(spawnSync('find', [copy, '-name', 'planted.txt'], { encoding: 'utf8' }).stdout).toBe('');
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
   });
 
   it('counts every paid attempt against the monthly limit, re-runs included', async () => {
@@ -204,6 +293,43 @@ describe('GitHub Actions trust boundaries', () => {
     expect(runCheck('ok', `{"blockers":["${padding}","sk-ant-api03-${'b'.repeat(12)}"]}`)).toBe(0);
     expect(runCheck(`github_pat_${'c'.repeat(22)}`, '')).toBe(0);
     expect(runCheck('A clean review.', `{"review_markdown":"${padding}"}`)).toBe(1);
+
+    // The whole check, as the step runs it: a key split across quoted pieces,
+    // lines or hyphens is still refused, and a review that only quotes the
+    // pattern, or a missing key, refuses nothing.
+    const filter = body.match(/\n( {10}cred_re='[\s\S]*?\n {10}fi\n)/u)?.[1].replace(/^ {10}/gmu, '') ?? '';
+    expect(filter).toContain('echo "leaked=true" >> "$GITHUB_OUTPUT"');
+    expect(filter).toMatch(/tr -cd "\$keep" <<< /u);
+    expect(filter).not.toMatch(/(?:printf|echo)[^\n]*\$(?:API_KEY|GH_TOKEN|secret|bare)\b/u);
+    const dir = await mkdtemp(resolve(tmpdir(), 'pr-review-filter-'));
+    try {
+      const apiKey = `sk-ant-api03-${'Kx9_'.repeat(20)}-AA`;
+      const ghToken = `ghs_${'Gt7'.repeat(12)}`;
+      let n = 0;
+      const leaked = async (review, result = '', keys = { API_KEY: apiKey, GH_TOKEN: ghToken }) => {
+        const out = resolve(dir, `out-${n++}`);
+        await writeFile(out, '');
+        const { status } = spawnSync('bash', ['-e', '-c', filter], {
+          env: { PATH: process.env.PATH, GITHUB_OUTPUT: out, review, RESULT: result, ...keys },
+        });
+        expect(status).toBe(0);
+        return (await readFile(out, 'utf8')).includes('leaked=true');
+      };
+      const halves = (key) => [key.slice(0, 9), key.slice(9)];
+      const [g1, g2] = halves(ghToken);
+      const [a1, a2] = halves(apiKey);
+      expect(await leaked(`The value is "${g1}" + "${g2}".`)).toBe(true);
+      expect(await leaked('A clean review.', JSON.stringify({ blockers: [`'${a1}' '${a2}'`] }))).toBe(true);
+      expect(await leaked([...ghToken].join('\n'))).toBe(true);
+      expect(await leaked(apiKey.replace(/-/gu, ' - '))).toBe(true);
+      expect(await leaked(`${g1.split('').join('-')}${g2}`)).toBe(true);
+      expect(await leaked('ok', JSON.stringify({ review_markdown: `${g2} and ${a2}`.toLowerCase() }))).toBe(false);
+      expect(await leaked("The pattern is cred_re='sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}'.")).toBe(false);
+      expect(await leaked('A clean review.', '{"verdict":"pass"}', { API_KEY: '', GH_TOKEN: '' })).toBe(false);
+      expect(await leaked('A clean review.', '{"verdict":"pass"}', { API_KEY: 'short', GH_TOKEN: '_' })).toBe(false);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
   });
 
   it('pins preview probes to the configured project and team hostname family', async () => {
