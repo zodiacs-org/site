@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { defaultEphemeris, setDefaultEphemeris } from '@zodiacs/engine';
 import {
   bodyLongitude as browserBodyLongitude,
   longitudeSpeed as browserLongitudeSpeed,
@@ -17,6 +18,11 @@ const BODIES: BodyName[] = [
 ];
 
 describe('serverless ephemeris boundary', () => {
+  const original = defaultEphemeris().name;
+  // The transit calendar and the chart page use the same astronomy engine.
+  beforeAll(() => setDefaultEphemeris('astronomy-engine'));
+  afterAll(() => setDefaultEphemeris(original));
+
   // Both instances of astronomy-engine run on the engine's clock; were the
   // server's left on the library's own polynomial, the Moon would differ by
   // several arcseconds today and by minutes of arc at the span's ends. Since

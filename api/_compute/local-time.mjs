@@ -307,7 +307,7 @@ var localTimeModule = (() => {
     return `${String(date.year).padStart(4, "0")}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
   }
 
-  // node_modules/@zodiacs/engine/dist/chunk-HTT4HMQ6.js
+  // node_modules/@zodiacs/engine/dist/chunk-7Y2F2IWN.js
   var ROWS = `AT|Austria|Austria|1584-01-17|t|Grotefend 1898: 1583-10-16, with Bavaria. Salzburg 1583-10-16; Styria 1583-12-25.
 BE|Belgium|Brabant, Flanders, Hainaut|1583-01-01|t|Grotefend 1891, 1898: 1582-12-25. Bishopric of Li\xE8ge 1583-02-21.
 CH|Switzerland|Z\xFCrich, Bern, Basel, Schaffhausen|1701-01-12|t18|Also Geneva and Thurgau. Catholic cantons 1584-01-22 (Grotefend 1891: 1584-01-23); Unterwalden June 1584; Glarus, Appenzell, St. Gallen city 1724; Valais 1655 (Grotefend 1898: 1622); Graub\xFCnden 1760-1812 (Grotefend 1898: to 1811); bishopric of Basel 1583-10-31.
@@ -525,7 +525,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
     }
     return hi;
   }
-  function readClock(wallMs, clockAt, samples) {
+  function readClock(wallMs, clockAt, samples, fold) {
     const readings = [];
     for (const offset of new Set(samples.map(clockAt))) {
       const utcMs2 = wallMs - offset * 1e3;
@@ -535,7 +535,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
     }
     const [first, second] = readings.sort((a, b) => a.utcMs - b.utcMs);
     if (first) {
-      return second ? { chosen: first, kind: "fold", at: firstChange(clockAt, first.utcMs, second.utcMs) } : { chosen: first, kind: null, at: null };
+      return second ? { chosen: fold === "later" ? second : first, kind: "fold", at: firstChange(clockAt, first.utcMs, second.utcMs) } : { chosen: first, kind: null, at: null };
     }
     let lo = wallMs - PROBE - DAY;
     let hi = wallMs + PROBE + DAY;
@@ -572,15 +572,14 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       lineEnds: era.slice(0, -1).map(([until]) => until)
     };
   }
-  function readOptions(options) {
-    if (options === void 0) return { calendar: "gregorian" };
+  function readOptions(options = {}) {
     if (!options || typeof options !== "object" || Array.isArray(options)) {
       throw new RangeError("options must be an object.");
     }
     for (const key of Object.getOwnPropertyNames(options)) {
-      if (!["longitude", "calendar", "country"].includes(key)) throw new RangeError(`Unknown local time option "${key}".`);
+      if (!["longitude", "calendar", "country", "fold"].includes(key)) throw new RangeError(`Unknown local time option "${key}".`);
     }
-    const { longitude, calendar = "gregorian", country } = options;
+    const { longitude, calendar = "gregorian", country, fold = "earlier" } = options;
     if (longitude !== void 0 && !(typeof longitude === "number" && Math.abs(longitude) <= 180)) {
       throw new RangeError("longitude must be between -180 and 180 degrees.");
     }
@@ -588,12 +587,13 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
     if (country !== void 0 && (typeof country !== "string" || !country.trim())) {
       throw new RangeError("country must be a nonempty string.");
     }
-    return { longitude, calendar, country };
+    if (fold !== "earlier" && fold !== "later") throw new RangeError('fold must be "earlier" or "later".');
+    return { longitude, calendar, country, fold };
   }
   var pad = (value, width = 2) => String(value).padStart(width, "0");
   function resolveLocalToUtc(date, time, timeZone, options) {
     offsetFormatter(timeZone);
-    const { longitude, calendar, country } = readOptions(options);
+    const { longitude, calendar, country, fold } = readOptions(options);
     const written = parseCalendarDate(date, calendar);
     const hhmm = typeof time === "string" ? /^([01]\d|2[0-3]):([0-5]\d)$/u.exec(time) : null;
     if (!written || !hhmm) {
@@ -612,8 +612,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
     const place = longitude !== void 0 && history ? birthplaceClock(history, wallMs, longitude, zoneAt) : null;
     const samples = [wallMs - PROBE, wallMs, wallMs + PROBE, ...place ? [place.endMs - 1, place.endMs, place.legalFrom] : []];
     const clockAt = place ? place.clockAt : zoneAt;
-    const zoneReading = readClock(wallMs, zoneAt, samples);
-    const reading = place ? readClock(wallMs, clockAt, samples) : zoneReading;
+    const zoneReading = readClock(wallMs, zoneAt, samples, fold);
+    const reading = place ? readClock(wallMs, clockAt, samples, fold) : zoneReading;
     const { chosen, kind } = reading;
     const inEra = !!place && chosen.utcMs < place.endMs;
     const count = history && chosen.utcMs < 0 ? typeIndexAt(history, chosen.utcMs) : -1;
@@ -640,7 +640,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       };
     }
     const lmt = inEra || !place && history?.zoneEraEnd != null && chosen.utcMs < history.zoneEraEnd;
-    const flags = kind ? [kind === "gap" ? "dst-gap" : "dst-fold"] : [];
+    const flags = kind ? [`dst-${kind}`] : [];
     if (lmt) flags.push("lmt");
     const localMeanTime = longitude !== void 0 && place && (inEra || kind === "gap" && reading.at === place.endMs) ? { longitude, zoneOffsetMinutes: zoneReading.chosen.offset / 60 } : null;
     const zone = shipped ? {
@@ -670,7 +670,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
         timeZone,
         offsetMinutes,
         gapShiftMinutes: kind === "gap" && transition ? transition.offsetAfterMinutes - transition.offsetBeforeMinutes : 0,
-        policy: { fold: "earlier", gap: "shift-forward" },
+        policy: { fold: kind === "fold" ? fold : "earlier", gap: "shift-forward" },
         calendar,
         writtenDate: date,
         tzdbVersion: zone.tzdbVersion,

@@ -3,6 +3,7 @@ import preact from '@astrojs/preact';
 import mdx from '@astrojs/mdx';
 import { natalAspectRoutes } from './scripts/natal-aspects-policy.mjs';
 import { localeExpansionRoutes } from './src/lib/locale-expansion/policy.mjs';
+import { browserEngineVite } from './scripts/lib/browser-engine.mjs';
 
 function interactionDirective() {
   return {
@@ -77,9 +78,10 @@ export default defineConfig({
   },
   vite: {
     define: { 'import.meta.env.ZODIACS_BIRTH_WINDOW_WORKER': 'false' },
-    plugins: [birthWindowWorkerBoundary({development:true})],
+    plugins: [birthWindowWorkerBoundary({development:true}), browserEngineVite()],
+    optimizeDeps: { exclude: ['@zodiacs/engine'], include: ['astronomy-engine'] },
     worker: {
-      plugins: () => [birthWindowWorkerBoundary()],
+      plugins: () => [birthWindowWorkerBoundary(), browserEngineVite()],
       rollupOptions: { output: { inlineDynamicImports: true } },
     },
     build: {
