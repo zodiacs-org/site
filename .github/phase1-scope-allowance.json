@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "daily-sky-edition-2026-11-18",
-  "baseCommit": "ac897962d231addfcc3c5bc1786dc28481f65b16",
+  "id": "generated-sign-pages-3d5845793f21",
+  "baseCommit": "3d5845793f215ce32e0bd41df735bdd3b9f8dfea",
   "protectedPaths": [
     "public/registry/aquarius/index.html",
     "public/registry/aries/index.html",
