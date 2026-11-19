@@ -3,6 +3,7 @@ import { phraseUntil, rangeWords, sincePhrase } from '../../lib/range-words';
 import Base from '../../layouts/Base.astro';
 import AskGuideAbout from '../../components/AskGuideAbout.astro';
 import { launchFlagOn } from '../../lib/launch-flags';
+import Motion from '../../components/Motion.astro';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
@@ -190,9 +191,12 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    {/* Each planet's card rises once as it scrolls in (docs/MOTION.md). The hero and the
+        "right now" answer above stay still. */}
+    <Motion />
     <div class="planets reveal">
       {byPlanet.map((p) => (
-        <div class="planet">
+        <div class="planet" data-enter="rise">
           <div class="planet__head">
             <h2 class="planet__name">
               {p.planet}
