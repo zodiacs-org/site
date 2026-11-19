@@ -698,11 +698,12 @@ const ctaLede = edgeMoon && moonHouse
       <nav class="program__signs" aria-label={`Other signs for ${meta.nav.toLowerCase()} horoscopes`}>
         <ul class="signgrid">
           {SIGNS.map((other) => (
-            <li data-enter="rise">
+            <li>
               <a
                 href={surfacePath(other.slug, surface)}
                 aria-current={other.slug === sign.slug ? 'page' : undefined}
                 style={`--sign:${other.hue}`}
+                data-enter="rise"
               >
                 <SignIcon sign={other.slug} size={44} webpOnly enter="disc" />
                 <b>{other.name}</b>
@@ -1047,10 +1048,16 @@ const ctaLede = edgeMoon && moonHouse
     height: 1px;
     background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--sign) 72%, white), transparent);
     content: '';
-    /* A still accent along the card's top edge. It used to drift on a
-       loop; the site's motion is one calm pass, then still (docs/MOTION.md). */
-    opacity: 0.5;
+    opacity: 0.72;
+    transform: translateX(-110%);
+    animation: program-sky-drift 12s linear infinite;
     pointer-events: none;
+  }
+  @keyframes program-sky-drift {
+    0% { opacity: 0; transform: translateX(-110%); }
+    12% { opacity: 0.72; }
+    76% { opacity: 0.72; }
+    100% { opacity: 0; transform: translateX(420%); }
   }
   .hz-sky__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
   .hz-sky__head .mono { color: var(--faint); font-size: 0.75rem; white-space: nowrap; }
@@ -1361,6 +1368,13 @@ const ctaLede = edgeMoon && moonHouse
     .program :global(.dfy:has(.evidence-disclosure[open]) .dfy__body) {
       height: auto;
       min-height: 292px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .program__sky::before {
+      animation: none;
+      opacity: 0.5;
+      transform: none;
     }
   }
 </style>
