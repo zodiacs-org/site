@@ -15,6 +15,7 @@ import committedProgram from '../data/horoscope-program.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import { loadPlaceTable } from './features/place-table';
+import { expectedCapabilityReply } from '../../tests/helpers/de440-capabilities';
 
 /**
  * ZODIACS_PERSONAL_TOOLS_ENABLED stays off in production. Off (unset, empty, '0' or anything but '1'), or on without
@@ -91,7 +92,7 @@ describe('the personal tools switch off', () => {
         const host = await serve({ ...env, ZODIACS_PERSONAL_TOOLS_ENABLED: value });
         for (const [request, [body, headers]] of Object.entries(REQUESTS)) {
           const reply = await post(host, body, headers);
-          expect(reply.text, `${name} ${request} with ZODIACS_PERSONAL_TOOLS_ENABLED=${JSON.stringify(value)}`).toBe(FIXTURE[name][request].text);
+          expect(reply.text, `${name} ${request} with ZODIACS_PERSONAL_TOOLS_ENABLED=${JSON.stringify(value)}`).toBe(request === 'capabilities' ? expectedCapabilityReply(FIXTURE[name][request].text) : FIXTURE[name][request].text);
         }
       }
     }
