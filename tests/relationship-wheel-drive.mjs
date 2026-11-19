@@ -16,6 +16,7 @@ import { setTimeout as wait } from 'node:timers/promises';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { driveLegacyPolarProfile } from './legacy-polar-profile-drive.mjs';
 import { runCompositeBrowserChecks } from './composite-browser-checks.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const PORT = 4399;
@@ -66,10 +67,10 @@ const check = (name, ok, detail = '') => { results.push({ name, ok, detail }); }
 const shot = async (t, p, o = {}) => { if (OUT) await t.screenshot({ path: `${OUT}/${p}`, ...o }).catch(() => {}); };
 
 try {
-  const browser = await chromium.launch({
+  const browser = withFullLevel(await chromium.launch({
     executablePath: await findChromium(),
     args: STABLE_CHROMIUM_ARGS,
-  });
+  }));
   const page = await browser.newPage({ viewport: { width: 1440, height: 1200 }, deviceScaleFactor: 1 });
   await page.addInitScript((prof) => {
     localStorage.setItem('zodiacs.profile.v1', JSON.stringify(prof));
