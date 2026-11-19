@@ -354,8 +354,14 @@ async function render(widget: Widget, mode: Mode, result: unknown, options: { op
     const closed = await measure();
     if (options.screenshot) {
       await mkdir(SCREENSHOT_DIR, { recursive: true });
-      // Cropped to the card: the whole of it on a desktop, the first phone screen of it on a phone.
-      await page.screenshot({ path: join(SCREENSHOT_DIR, options.screenshot), animations: 'disabled', clip: { x: 0, y: 0, width: mode.width, height: mode.mobile ? Math.min(height, 812) : height } });
+      // Cropped to the card: the whole of it, or on a phone the first 900px of a long one, cut under the last
+      // whole line or row that fits so no text is sliced.
+      const cap = 900;
+      const cut = !mode.mobile || height <= cap ? height : await frame.evaluate((limit) => {
+        const bottoms = [...document.querySelectorAll('li, p, h1, h2, h3, form, details, a, button')].map(element => element.getBoundingClientRect().bottom).filter(bottom => bottom > 0 && bottom <= limit - 10);
+        return Math.ceil(Math.max(...bottoms)) + 10;
+      }, cap);
+      await page.screenshot({ path: join(SCREENSHOT_DIR, options.screenshot), animations: 'disabled', clip: { x: 0, y: 0, width: mode.width, height: cut } });
     }
     // Then with every "more" section open, where a wide table would show.
     await frame.evaluate(() => { for (const details of document.querySelectorAll('details')) details.open = true; });
@@ -547,6 +553,9 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
         expect(JSON.stringify(meta), uri).not.toMatch(/frame_?domains/i);
         // The page itself embeds nothing and calls nothing outside those domains.
         expect(content.text, uri).not.toMatch(/<iframe\b/i);
+        // Nor does any string in it, shown yet or not, name the collection, a purchase or a promotion (pictures and fonts set aside).
+        const strings = content.text.replace(/data:[a-z0-9/+.-]+;base64,[A-Za-z0-9+/=]+/g, '');
+        expect(strings.match(/\b(?:astrofolio|wallets?|memecoin|solana|airdrop|cryptocurrenc\w*|buy now|free trial|coupon|sponsor\w*)\b/gi) ?? [], uri).toEqual([]);
         widgets.set(uri, { uri, html: content.text, csp: meta.ui.csp });
       }
       report.widgetBytes = Object.fromEntries([...widgets].map(([uri, widget]) => [uri, Buffer.byteLength(widget.html)]));
@@ -554,6 +563,8 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
 
     it('declares every tool with a name, a title, a description and all four annotations', () => {
       expect(new Set(tools.map(tool => tool.name)).size).toBe(tools.length);
+      // The review cases need the tools production lists today (ZODIACS_OCCASIONS_ENABLED=1 and ZODIACS_COVERAGE_ENABLED=1).
+      for (const name of ['get_natal_chart', 'get_sky', 'get_personal_transits', 'get_compatibility', 'get_upcoming_events', 'get_horoscope_period', 'get_capabilities']) expect(toolsByName.has(name), `the server offers ${name}`).toBe(true);
       for (const tool of tools) {
         expect(tool.name, tool.name).toMatch(/^[a-z]+(?:_[a-z0-9]+)+$/);
         expect(tool.name, tool.name).not.toMatch(/best|official|pick_me|top|pro$/);
@@ -755,6 +766,7 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
         expect(reply.text, `${tool} does not repeat the input`).not.toContain(input);
         if (tool === 'get_natal_chart' && !results.has('refusal')) results.set('refusal', reply.message.result);
       }
+      await paced();
       const broken = await fetch(`${mcpBase}/mcp`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', ...edgeHeaders() }, body: '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{' });
       expect(broken.status).toBe(400);
       expect(await broken.json()).toMatchObject({ jsonrpc: '2.0', error: { code: -32700 } });
