@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { expect, it } from 'vitest';
@@ -101,3 +102,12 @@ it('answers with no credentials while accounts are off: no sign-in challenge, an
     await new Promise<void>(resolve => server.close(() => resolve()));
   }
 }, 20_000);
+
+it('ships a plugin package whose MCP entry has a URL and nothing else: no headers, no keys', async () => {
+  for (const file of ['plugins/zodiacs-sky/mcp.json', 'plugins/zodiacs-sky/.mcp.json']) {
+    const servers = Object.values(JSON.parse(await readFile(new URL(`../../${file}`, import.meta.url), 'utf8')).mcpServers) as Record<string, unknown>[];
+    expect(servers, file).toHaveLength(1);
+    expect(Object.keys(servers[0]).sort(), file).toEqual(['type', 'url']);
+    expect(servers[0].url, file).toBe('https://zodiacs.org/mcp');
+  }
+});
