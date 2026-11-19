@@ -1,0 +1,108 @@
+{
+  "schema": "zodiacs.phase5.evidence.v1",
+  "slug": "kylie-jenner",
+  "qid": "Q1770624",
+  "displayName": "Kylie Jenner",
+  "wikidataLabel": "Kylie Jenner",
+  "wikidataDescription": "American media personality",
+  "retrievedAtUtc": "2026-11-18T10:55:24.000Z",
+  "sources": {
+    "wikidata": {
+      "entityUrl": "https://www.wikidata.org/wiki/Q1770624",
+      "propertiesUsed": [
+        "P569",
+        "P19",
+        "P625",
+        "P106",
+        "P18",
+        "P570",
+        "P17",
+        "P131"
+      ],
+      "lastrevid": 2567373034
+    },
+    "wikipedia": {
+      "language": "en",
+      "title": "Kylie Jenner",
+      "articleUrl": "https://en.wikipedia.org/wiki/Kylie_Jenner",
+      "pageId": 21881809,
+      "revisionId": 1385250687,
+      "revisionTimestamp": "2026-11-12T14:10:58Z"
+    }
+  },
+  "birth": {
+    "claimCount": 1,
+    "distinctDayPrecisionValues": [
+      "+1997-08-10T00:00:00Z|proleptic-gregorian"
+    ],
+    "allValues": [
+      {
+        "time": "+1997-08-10T00:00:00Z",
+        "precision": 11,
+        "calendar": "proleptic-gregorian",
+        "rank": "normal"
+      }
+    ],
+    "time": "+1997-08-10T00:00:00Z",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "timeOfDay": null,
+    "timeOfDayEvidence": "none: Wikidata carries no birth-time claim for this person"
+  },
+  "death": null,
+  "living": true,
+  "birthPlace": {
+    "entity": "Q1052562",
+    "label": "Cedars-Sinai Medical Center",
+    "entityUrl": "https://www.wikidata.org/wiki/Q1052562",
+    "country": {
+      "entity": "Q30",
+      "label": "United States"
+    },
+    "claimCount": 2,
+    "coordinates": {
+      "sourceEntity": "Q1052562",
+      "sourceEntityLabel": "Cedars-Sinai Medical Center",
+      "latitude": 34.075198,
+      "longitude": -118.380676,
+      "precision": 0.00027777777777778,
+      "escalationSteps": 0
+    }
+  },
+  "occupations": [
+    {
+      "entity": "Q3501317",
+      "label": "fashion designer"
+    },
+    {
+      "entity": "Q4610556",
+      "label": "model"
+    },
+    {
+      "entity": "Q131524",
+      "label": "entrepreneur"
+    },
+    {
+      "entity": "Q2906862",
+      "label": "influencer"
+    },
+    {
+      "entity": "Q3243461",
+      "label": "collector"
+    }
+  ],
+  "portrait": {
+    "file": "File:Kylie Jenner1 (cropped).png",
+    "filePage": "https://commons.wikimedia.org/wiki/File:Kylie%20Jenner1%20(cropped).png",
+    "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Kylie_Jenner1_(cropped).png",
+    "width": 485,
+    "height": 647,
+    "licenseShortName": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "artist": "Hayu",
+    "credit": "YouTube: https://www.youtube.com/watch?v=PjLni7RcqDc (view or save archived versions on archive.org)",
+    "usageTerms": "Creative Commons Attribution 3.0",
+    "attributionRequired": "true",
+    "restrictions": ""
+  }
+}

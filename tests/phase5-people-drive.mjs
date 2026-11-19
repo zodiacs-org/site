@@ -193,7 +193,7 @@ await withPreview({ port: 4425 }, async (baseURL) => {
     );
     check(
       protectedLiving.map((person) => person.slug).sort().join(',')
-        === 'bill-gates,leonardo-dicaprio,rigoberta-menchu,serena-williams',
+        === 'bad-bunny,bill-gates,erling-haaland,harry-styles,jenna-ortega,kendrick-lamar,kylie-jenner,leonardo-dicaprio,lisa,max-verstappen,mrbeast,olivia-rodrigo,rigoberta-menchu,rihanna,sabrina-carpenter,serena-williams,taylor-swift,timothee-chalamet,zendaya',
       'protected living-person set drifted',
     );
     await inventoryContext.close();
