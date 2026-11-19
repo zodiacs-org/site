@@ -10,6 +10,7 @@ import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { driveLegacyPolarGuide } from './legacy-polar-guide-drive.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const GUIDE_AVATAR_ONLY = process.env.GUIDE_AVATAR_ONLY === '1';
@@ -146,10 +147,10 @@ async function installGuideRoute(page, requests) {
 }
 
 await withPreview({ port: 4404 }, async (baseURL) => {
-  const browser = await chromium.launch({
+  const browser = withFullLevel(await chromium.launch({
     executablePath: await findChromium(),
     args: STABLE_CHROMIUM_ARGS,
-  });
+  }));
   try {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true });
     await context.addInitScript(({ savedProfile, accountId, chartId }) => {
