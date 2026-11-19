@@ -132,8 +132,6 @@ async function guide(page, engine) {
 try { await withPreview({ port: 8784 }, async baseURL => {
   for (const engine of engines) {
     assert.ok(['chromium', 'webkit'].includes(engine), `Unsupported engine ${engine}`);
-    // No withFullLevel() here: this is the new visitor's journey, so it stays at
-    // Beginner with the first visit question, as a reader first sees it.
     const browser = engine === 'webkit' ? await webkit.launch({ headless: true })
       : await chromium.launch({ executablePath: await findChromium(), headless: true, args: STABLE_CHROMIUM_ARGS });
     const journey = async (name, task) => {
