@@ -77,7 +77,7 @@ function ShareButton({ query, planet }: { query: string; planet: RetrogradePlane
 }
 
 function PeriodCard({ period, now }: { period: Period; now: number }) {
-  const when = period.retrogradeNow ? 'This retrograde' : period.next ? 'Most recent retrograde' : 'Next retrograde';
+  const when = period.retrogradeNow ? 'This retrograde' : period.status === 'post-shadow' || period.next ? 'Most recent retrograde' : 'Next retrograde';
   return (
     <article class="rfy__card tile" style={{ '--hue': HUE[period.planet] }} data-planet={period.planet.toLowerCase()}>
       <header class="rfy__head">
