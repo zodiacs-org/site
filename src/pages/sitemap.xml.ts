@@ -741,9 +741,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/numerology/', '2026-11-17'] as const,
   // The life path pages' seal, hued chips and entrance motion, last so it wins.
   ...LIFE_PATH_NUMBERS.map((n) => [`/numerology/life-path/${n}/`, '2026-11-17'] as const),
-  // The conventions registry's ids for conformance suite 0.3.0 (level L4's event kinds and its arbiter), on the
-  // day of the daily edition it was built with, last so this date wins. /developers/ prints the registry's date.
-  ...['/developers/', '/developers/conventions/'].map((route) => [route, '2026-11-18'] as const),
+  // The conventions registry's ids for conformance suite 0.3.0 (level L4's event kinds and its arbiter), registry
+  // version 2026-11-19, on the day of the daily edition it was built with, last so this date wins. /developers/
+  // prints the registry's version.
+  ...['/developers/', '/developers/conventions/'].map((route) => [route, '2026-11-19'] as const),
 ]);
 
 function getLastmod(loc: string): string {

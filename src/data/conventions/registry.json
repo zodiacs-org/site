@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.conventions-registry.v1",
-  "version": "2026-11-18",
+  "version": "2026-11-19",
   "title": "Conventions registry",
   "base": "https://zodiacs.org/developers/conventions/",
   "license": "CC0-1.0",
