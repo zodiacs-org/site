@@ -18,7 +18,6 @@ import assert from 'node:assert/strict';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
-import { withFullLevel } from './level-fixture.mjs';
 
 const TIMEOUT = 45_000;
 const SIGN_ORDER = [
@@ -136,11 +135,11 @@ function firstRequestOrder(icons) {
   return orders;
 }
 
-const browser = withFullLevel(await chromium.launch({
+const browser = await chromium.launch({
   executablePath: await findChromium(),
   headless: true,
   args: STABLE_CHROMIUM_ARGS,
-}));
+});
 
 try {
   await withPreview({ port: Number(process.env.SIGN_ICON_PORT ?? 4336) }, async (baseURL) => {
