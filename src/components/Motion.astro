@@ -24,7 +24,10 @@ import '../styles/motion.css';
     var root = document.documentElement;
     if (root.hasAttribute('data-entrance')) return;
     var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    root.setAttribute('data-entrance', still || !('IntersectionObserver' in window) ? 'off' : 'on');
+    // A page opened at a part of itself (an address with #) starts still, so
+    // the reader lands on content that is there from the first paint.
+    var jumped = location.hash.length > 1;
+    root.setAttribute('data-entrance', still || jumped || !('IntersectionObserver' in window) ? 'off' : 'on');
   })();
 </script>
 <script is:inline>
@@ -56,7 +59,10 @@ import '../styles/motion.css';
       window.setTimeout(function () { el.classList.add('is-done'); }, 2600);
     }
     // Keyboard readers never wait on an entrance: the first Tab shows
-    // everything at once and the page stays still from then on.
+    // everything at once and the page stays still from then on. A reader who
+    // jumps to a part of the page (an address with #, a link to a section on
+    // the same page, Back to one) never waits either: the place they land on
+    // must already be there, so the jump shows everything at once too.
     var keyboard = false;
     function showAll() {
       keyboard = true;
@@ -71,12 +77,23 @@ import '../styles/motion.css';
         else marked[m].classList.add('is-in', 'is-done');
       }
     }
+    function jumping() {
+      return location.hash.length > 1;
+    }
     if (io) {
       document.addEventListener('keydown', function onKey(event) {
         if (event.key !== 'Tab') return;
         document.removeEventListener('keydown', onKey, true);
         showAll();
       }, true);
+      document.addEventListener('click', function (event) {
+        if (keyboard) return;
+        var link = event.target && event.target.closest ? event.target.closest('a[href*="#"]') : null;
+        if (link && typeof link.hash === 'string' && link.hash.length > 1 && link.pathname === location.pathname && link.host === location.host) showAll();
+      }, true);
+      window.addEventListener('hashchange', function () {
+        if (!keyboard && jumping()) showAll();
+      });
     }
     window.zodiacsMotion = { scan: scan };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { scan(); }, { once: true });
