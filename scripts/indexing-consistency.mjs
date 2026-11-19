@@ -4,17 +4,17 @@ export function attr(tag, name) {
   return tag.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, 'i'))?.slice(1).find((value) => value !== undefined) ?? null;
 }
 
-/** Extract only rendered, followable anchors with exact built URL spelling. */
-export function renderedLinks(path, html) {
+/** Extract rendered anchors with exact built URL spelling. */
+export function renderedLinks(path, html, { discoveryOnly = true } = {}) {
   const links = new Set();
   html = html.replace(/<!--[\s\S]*?-->|<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '');
   for (const [tag] of html.matchAll(/<a\b[^>]*>/gi)) {
-    if ((attr(tag, 'rel') ?? '').toLowerCase().split(/\s+/).includes('nofollow')) continue;
+    if (discoveryOnly && (attr(tag, 'rel') ?? '').toLowerCase().split(/\s+/).includes('nofollow')) continue;
     const href = attr(tag, 'href');
     if (!href) continue;
     try {
       const url = new URL(href.replaceAll('&amp;', '&'), ORIGIN + path);
-      if (url.origin === ORIGIN && !url.search) links.add(url.pathname);
+      if (url.origin === ORIGIN && (!discoveryOnly || !url.search)) links.add(url.pathname);
     } catch { /* Invalid links are checked by the forward resolver. */ }
   }
   return links;
@@ -58,13 +58,13 @@ export function sitemapCanonicalErrors(path, html, redirectSources = new Set()) 
 }
 
 /**
- * The rules robots.txt gives every crawler (the `User-agent: *` group), and
- * the sitemaps it names. Groups for named crawlers are left out: no sitemap
- * page may be blocked for crawlers in general.
+ * Keep each crawler group for group-specific checks. The top-level rules
+ * combine the wildcard groups for sitemap checks against general crawlers.
  */
 export function robotsRules(text) {
-  const rules = { allow: [], disallow: [], sitemaps: [] };
-  let agents = [];
+  const groups = [];
+  const sitemaps = [];
+  let group;
   let inRules = false;
   for (const raw of text.split(/\r?\n/u)) {
     const line = raw.replace(/#.*$/u, '').trim();
@@ -73,21 +73,30 @@ export function robotsRules(text) {
     if (!field) continue;
     const key = field.toLowerCase();
     if (key === 'sitemap') {
-      rules.sitemaps.push(value);
+      sitemaps.push(value);
       continue;
     }
     if (key === 'user-agent') {
-      if (inRules) agents = [];
+      if (!value) continue;
+      if (!group || inRules) {
+        group = { agents: [], allow: [], disallow: [] };
+        groups.push(group);
+      }
       inRules = false;
-      agents.push(value);
+      group.agents.push(value);
       continue;
     }
     if (key !== 'allow' && key !== 'disallow') continue;
     inRules = true;
-    if (!agents.includes('*') || !value) continue;
-    rules[key].push(value);
+    if (group && value) group[key].push(value);
   }
-  return rules;
+  const general = groups.filter(({ agents }) => agents.includes('*'));
+  return {
+    groups,
+    sitemaps,
+    allow: general.flatMap(({ allow }) => allow),
+    disallow: general.flatMap(({ disallow }) => disallow),
+  };
 }
 
 function robotsPatternMatches(pattern, path) {
@@ -104,6 +113,16 @@ export function robotsBlocks(rules, path) {
   const longest = (patterns) => Math.max(-1, ...patterns.filter((pattern) => robotsPatternMatches(pattern, path)).map((pattern) => pattern.length));
   const disallow = longest(rules.disallow);
   return disallow >= 0 && disallow > longest(rules.allow);
+}
+
+export function robotsGroupBlockFailures({ groups }, paths) {
+  const failures = [];
+  for (const group of groups) {
+    for (const path of paths) {
+      if (!robotsBlocks(group, path)) failures.push({ agents: group.agents, path });
+    }
+  }
+  return failures;
 }
 
 /**
