@@ -558,7 +558,7 @@ describe('share link pages', () => {
     const plainDay = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/?day=2026-11-09&p=mars&a=square&n=sun&c=75&t=08:30'))).text();
     expect(plainDay).toContain('<h1>Read your day</h1>');
     expect(plainDay).not.toContain('08:30');
-    for (const page of [big, untimed, chinese, animal, invite, day, venus, plainDay]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
+    for (const page of [big, untimed, chinese, animal, invite, day, venus, plainDay]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[\u2014\u2013]/u);
     // A bare address or a query that is not a share opens the plain page, with the site's own card.
     expect(await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=leo&d=1990-08-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/big-three.png"');
     expect(await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=dragonfly'))).text()).toContain('<h1>The Chinese zodiac</h1>');
