@@ -1189,8 +1189,10 @@
     opacity: 0;
     transform: translate3d(0, var(--motion-lift, 10px), 0);
   }
-  html.js .syn-meet .syn__people,
-  html.js .syn-meet .rwheel {
+  /* Only the way in is animated: a second Compare snaps back to the held
+     state instead of fading out and reversing. */
+  html.js .syn-meet.is-settled .syn__people,
+  html.js .syn-meet.is-settled .rwheel {
     transition:
       opacity var(--motion-rise, 440ms) var(--motion-ease, cubic-bezier(0.23, 1, 0.32, 1)),
       transform var(--motion-rise, 440ms) var(--motion-ease, cubic-bezier(0.23, 1, 0.32, 1));
