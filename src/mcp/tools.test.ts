@@ -66,7 +66,7 @@ describe('get_capabilities', () => {
   })();
 
   it('names the engine actually bundled, and labels both releases honestly', () => {
-    // The engine's label follows the site's candidate record: rc.17 is vendored, not on npm. The adapter is not on npm.
+    // The engine and adapter have separate release records.
     expect(value.engine.version).toBe(ENGINE_VERSION);
     expect(candidate.version).toBe(ENGINE_VERSION);
     const published = candidate.releaseStatus === 'published';
@@ -170,7 +170,10 @@ describe('calculate_natal_chart', () => {
     expect(Date.parse(EPOCH_MAX_UTC)).toBeLessThan(Date.parse(REFERENCE_SPAN.to));
     for (const utc of [EPOCH_MIN_UTC, EPOCH_MAX_UTC]) {
       const outcome = natal({ ...LONDON, utc });
-      expect(outcome.ok ? (outcome.value as Record<string, any>).resultFlags : outcome.refusal, utc).toEqual([]);
+      expect(outcome.ok, utc).toBe(true);
+      if (!outcome.ok) throw new Error(outcome.refusal);
+      expect((outcome.value as Record<string, unknown>).resultFlags, utc)
+        .toEqual(natalChart({ ...LONDON, utc }).flags);
     }
   });
 });

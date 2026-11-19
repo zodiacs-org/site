@@ -262,7 +262,7 @@ function ChartQuestion() {
         <ul>
           <li>Computed by {engineLine(answer.receipt)}, as the answer&rsquo;s receipt names them. The local time was read with {runtimeLine(answer.receipt)}.</li>
           <li>An automated test compares the engine&rsquo;s positions with NASA JPL Horizons at 2020 (ten bodies) and 1907 (Sun, Moon and Mars). The sample maximum difference is 14.8 arcseconds (Neptune, 2020).</li>
-          <li>Compared with Swiss Ephemeris 2.10.03 every tenth day from 1800 to 2026, the sample maximum difference in longitude is 22.9 arcseconds (Venus, 1878).</li>
+          <li>In the DE440 comparison with NASA JPL Horizons, the largest longitude difference was 0.55 arcseconds across 91,201 measurements through 2026.</li>
           <li>A sample maximum is the largest difference found in the cases measured. It is not a bound for every date.</li>
           <li>The answer cites its receipt as <code class="demo__digest">{answer.cite?.receipt}</code>, the SHA-256 of the receipt&rsquo;s canonical JSON, which <a href={PLAYGROUND_PATH}>the playground</a> computes again.</li>
         </ul>
@@ -460,7 +460,7 @@ function CompatibilityQuestion() {
       <section class="demo__checked" aria-labelledby="demo-checked-compatibility">
         <h3 id="demo-checked-compatibility">How this was checked</h3>
         <ul>
-          <li>Both charts come from {engineLine(demo.chart.answer.receipt)}, the engine behind the birth chart question, so their positions carry the same sample maxima: 14.8 arcseconds against NASA JPL Horizons and 22.9 arcseconds against Swiss Ephemeris.</li>
+          <li>Both charts use {engineLine(demo.chart.answer.receipt)}, the engine cited in their records. The <a href="/methodology/">methodology page</a> gives the DE440 sample and its comparison with NASA JPL Horizons.</li>
           <li>The score, the sign pair notes and the contact lines are astrology&rsquo;s reading, in the site&rsquo;s own compatibility wording. No reference can check them, so they are not measured.</li>
         </ul>
       </section>
