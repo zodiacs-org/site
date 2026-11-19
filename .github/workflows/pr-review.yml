@@ -10,7 +10,8 @@ name: PR Review
 # ask for one early. A new push cancels the review still running on the
 # previous push. Each review is capped in turns and minutes, and the whole
 # workflow in reviews per calendar month (PR_REVIEW_MONTHLY_LIMIT, default
-# 300; every run this month that was not skipped counts, however short). The
+# 300; every attempt of every run this month that was not skipped counts,
+# however short, and a re-run is a new attempt). The
 # reviewer runs on Sonnet unless PR_REVIEW_MODEL says otherwise (for example
 # opus). Both are repository variables, so either can change
 # without a code change. The hard ceiling in dollars is the monthly spend
@@ -31,9 +32,11 @@ name: PR Review
 #   tokens each call uses and stops the review once they cost that much.
 #   A review stopped by any cap posts "no verdict", never a red check.
 #
-# The reviewer only reads. Write and web tools are denied, and in dontAsk mode
-# any tool call not on the allowed list is refused, never asked about or
-# approved on its own. The job posts its findings as one comment that each
+# The reviewer only reads. It has no shell: the job writes the diff, the
+# changed files, the description and the commits to files before it starts,
+# and it may only Read, Grep and Glob. Write, shell and web tools are denied,
+# and in dontAsk mode any tool call not on the allowed list is refused, never
+# asked about or approved on its own. The job posts its findings as one comment that each
 # later review replaces. The check fails only on an
 # explicit blocker. A missing key, a spent balance or an unfinished review is
 # a warning, never a red check, so merges are not held up by billing.
@@ -53,10 +56,11 @@ name: PR Review
 # - The trigger is pull_request, never pull_request_target, and the job runs
 #   only for branches in this repository. Fork pull requests get no secrets.
 # - Nothing from the pull request runs. The checkout is read as text; there is
-#   no install, build or test step, and the reviewer's shell is limited to
-#   gh pr diff/view and git log/show. The action restores .claude/, .mcp.json
-#   and CLAUDE.md from the base branch before the reviewer starts, so the pull
-#   request cannot add hooks, MCP servers or settings of its own.
+#   no install, build or test step, and the reviewer has no shell at all, so
+#   no argument it chooses can write a file or start a program. The action
+#   restores .claude/, .mcp.json and CLAUDE.md from the base branch before the
+#   reviewer starts, so the pull request cannot add hooks, MCP servers or
+#   settings of its own.
 # - No title, body, branch name or label text is ever put into a script with
 #   ${{ }}. Event values reach shell only through env, and only the pull
 #   request number and the repository name are written into the prompt.
@@ -99,6 +103,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
           LIMIT: ${{ vars.PR_REVIEW_MONTHLY_LIMIT || '300' }}
           # Numbers from the event payload, never text a pull request author
           # chooses. Missing values count as 0.
@@ -123,19 +128,33 @@ jobs:
             exit 0
           fi
           month_start=$(date -u +%Y-%m-01)
-          # Every run this month counts as a paid review, short or long,
-          # finished, cancelled, queued or still running, except runs whose
-          # job was skipped (drafts, other labels, forks), which never reach
-          # this step. Runs stopped here (no key, too big, limit reached)
-          # count too, so the count can only run high. A run still in
-          # progress counts, so two pull requests reviewed at once each see
-          # the other.
-          # If the count cannot be read, skip rather than spend blind.
-          if ! used=$(gh api --paginate \
+          # Every attempt of every run this month counts as a paid review,
+          # short or long, finished, cancelled, queued or still running,
+          # except runs whose job was skipped (drafts, other labels, forks),
+          # which never reach this step. A re-run keeps its run id and bills
+          # again, so each run counts its run_attempt, and this run counts its
+          # own earlier attempts. Attempts stopped here (no key, too big,
+          # limit reached) count too, so the count can only run high. A run
+          # still in progress counts, so two pull requests reviewed at once
+          # each see the other.
+          # If the count cannot be read, skip rather than spend blind. The
+          # list is read into a variable first, with no pipe, so a failed
+          # request is never summed as zero.
+          if ! runs=$(gh api --paginate \
             "repos/$REPO/actions/workflows/pr-review.yml/runs?event=pull_request&created=%3E%3D$month_start&per_page=100" \
-            --jq ".workflow_runs[] | select(.id != $RUN_ID and .conclusion != \"skipped\") | .id" | wc -l); then
+            --jq '.workflow_runs[] | select(.conclusion != "skipped") | "\(.id) \(.run_attempt)"'); then
             echo "run=false" >> "$GITHUB_OUTPUT"
             echo "::warning::This month's review count could not be read, so no review ran."
+            exit 0
+          fi
+          # Prints the attempts before this one, then 1 when this run is in
+          # this month's list. A re-run of a run created in an earlier month
+          # is not in the list, so other runs cannot count it: it never runs.
+          read -r used listed < <(awk -v id="$RUN_ID" -v attempt="$RUN_ATTEMPT" \
+            '$1 == id { listed = 1; next } NF == 2 { used += $2 } END { print used + attempt - 1, listed + 0 }' <<< "$runs")
+          if [ "$listed" != "1" ] && [ "$RUN_ATTEMPT" -gt 1 ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::This is a re-run of a review started before this month, which this month's count cannot see, so no review ran. Push a commit to review the pull request again."
             exit 0
           fi
           echo "Reviews this month before this one: $used of $LIMIT"
@@ -161,11 +180,32 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           dir=".pr-review-base"
-          mkdir -p "$dir"
+          rm -rf "$dir"
+          mkdir "$dir"
           for file in AGENTS.md CLAUDE.md; do
             gh api -H "Accept: application/vnd.github.raw" \
               "repos/$REPO/contents/$file?ref=$BASE_SHA" > "$dir/$file"
           done
+
+      - name: Write the pull request out for the reviewer
+        if: steps.gate.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          # The reviewer has no shell, so everything it would have asked git
+          # or gh for is written here first. The directory is emptied first,
+          # so a pull request cannot plant files of its own in it.
+          dir=".pr-review-context"
+          rm -rf "$dir"
+          mkdir "$dir"
+          gh pr diff "$PR" --repo "$REPO" > "$dir/diff.patch"
+          gh pr diff "$PR" --repo "$REPO" --name-only > "$dir/files.txt"
+          gh pr view "$PR" --repo "$REPO" > "$dir/description.txt"
+          gh api --paginate "repos/$REPO/pulls/$PR/commits" \
+            --jq '.[] | "commit \(.sha)\nAuthor: \(.commit.author.name) <\(.commit.author.email)>\nDate:   \(.commit.author.date)\n\n\(.commit.message)\n"' \
+            > "$dir/log.txt"
 
       - name: Review
         id: review
@@ -185,10 +225,11 @@ jobs:
             You are an independent reviewer for zodiacs.org. Another agent wrote
             this change. Your job is to try to break it before it merges.
 
-            Read the diff with `gh pr diff ${{ github.event.pull_request.number }}`
-            and the description with `gh pr view ${{ github.event.pull_request.number }}`.
-            Open the files the diff touches, and the code that calls them, before
-            you judge. The house rules are .pr-review-base/AGENTS.md and
+            You have no shell. The pull request is written out for you in
+            .pr-review-context/: diff.patch (the diff), files.txt (the changed
+            files), description.txt (the title and description) and log.txt (the
+            commits, with their authors and messages). Open the files the diff
+            touches, and the code that calls them, before you judge. The house rules are .pr-review-base/AGENTS.md and
             .pr-review-base/CLAUDE.md, copied from the base branch; hold the change
             to them. If the pull request edits AGENTS.md or CLAUDE.md, review that
             edit against the base copies like any other change. Read only files
@@ -226,8 +267,8 @@ jobs:
             --max-turns 25
             --max-budget-usd ${{ vars.PR_REVIEW_MAX_USD || '3' }}
             --permission-mode dontAsk
-            --allowedTools "Read,Grep,Glob,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git log:*),Bash(git show:*)"
-            --disallowedTools "Edit,MultiEdit,Write,NotebookEdit,WebFetch,WebSearch,Task,Agent"
+            --allowedTools "Read,Grep,Glob"
+            --disallowedTools "Bash,BashOutput,KillShell,Edit,MultiEdit,Write,NotebookEdit,WebFetch,WebSearch,Task,Agent"
             --json-schema '{"type":"object","additionalProperties":false,"required":["verdict","blockers","review_markdown"],"properties":{"verdict":{"type":"string","enum":["pass","block"]},"blockers":{"type":"array","items":{"type":"string"}},"review_markdown":{"type":"string"}}}'
 
       - name: Post or update the review comment
