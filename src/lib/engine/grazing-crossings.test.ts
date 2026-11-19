@@ -41,10 +41,11 @@ describe('grazing crossing pairs', () => {
     }
   });
 
-  it('keeps all three first-return passes for a natal Saturn 0.002° below the 2019 station', () => {
+  it('keeps all three first-return passes for a natal Saturn just below the 2019 station', () => {
     const birth = new Date('1990-02-12T20:13:55.742Z');
     const station = stationNear('Saturn', Date.UTC(2019, 3, 1), Date.UTC(2019, 5, 1));
-    expect(station.lon - bodyLongitude('Saturn', birth)).toBeCloseTo(0.002, 6);
+    // DE440 station offset, recorded in the adoption evidence.
+    expect(station.lon - bodyLongitude('Saturn', birth)).toBeCloseTo(0.002816699, 6);
     const { natalLon, seasons } = saturnReturns(birth);
     // A quarter-day scan sees the pair directly; the 5-day scan must agree.
     const reference = findLongitudeCrossingsWith(bodyLongitude, 'Saturn', natalLon,

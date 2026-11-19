@@ -46,8 +46,9 @@ export const CLAIM_TOPICS = Object.freeze(['accuracy', 'privacy', 'product', 'ti
  * supported: the evidence bears the claim out as worded. overstated: true in
  * part, or truer than the evidence shows; open until its resolution lands.
  * false: untrue as worded. stale: a translation the English has moved past.
+ * historical: a result retained in the validation record for an earlier engine.
  */
-export const CLAIM_STATUSES = Object.freeze(['supported', 'overstated', 'false', 'stale']);
+export const CLAIM_STATUSES = Object.freeze(['supported', 'overstated', 'false', 'stale', 'historical']);
 
 /** Why a selected sentence makes no claim; a closed list. */
 export const EXEMPT_REASONS = Object.freeze([
@@ -185,6 +186,7 @@ export const SCOPE_DROP = Object.freeze([
   { pattern: /^api\/_compute\/local-time\.mjs$/u, reason: 'generated from @zodiacs/engine/geo and src/lib/time/zone-names.ts, which is read instead' },
   { pattern: /^api\/_compute\/compute\.mjs$/u, reason: 'generated from src/lib/compute-api/ and the vendored engine, which are read instead' },
   { pattern: /^api\/_ai\/runtime\.mjs$/u, reason: 'generated from src/ai-tools, src/lib/compute-api and the vendored engine; the source adapters are read instead' },
+  { pattern: /^api\/_ai\/published\/runtime\.mjs$/u, reason: 'the unchanged generated published connector; check-ai-integrations verifies its pinned release digest' },
   { pattern: /^src\/data\/(?:sky|ingresses|eclipses|birthdays)\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/transits-\d{4}-\d{2}\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/time-atlas\//u, reason: 'the engine repository\'s time atlas, copied byte for byte at a pinned commit and held to its digests: its statements are the atlas\'s own, each rule cited to primary sources and checked by the atlas\'s checks (B3.a)' },
