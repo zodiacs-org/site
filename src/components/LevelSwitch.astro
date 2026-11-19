@@ -1,0 +1,126 @@
+---
+/**
+ * Reader levels (docs/LEVELS.md): the first-visit question and the level
+ * switch. Put it once, above anything marked with data-depth. It:
+ *
+ *   1. applies the reader's saved level (html[data-level]) before the marked
+ *      content is parsed, so nothing flashes open and then closes;
+ *   2. asks "How well do you know astrology?" once, on a first visit, with no
+ *      sign-up: the answer stays in this browser;
+ *   3. lets the reader switch anytime, and opens the new depth with the
+ *      shared entrance motion (docs/MOTION.md).
+ *
+ * Without JavaScript nothing is hidden: every depth shows.
+ */
+import Motion from './Motion.astro';
+// Inlined, not bundled: entry pages such as /birth-chart/ load their page
+// stylesheet after first paint, and these rules decide what is shown and how
+// big the question and the switch are, so they must be there from the first
+// frame or the page shifts.
+import levelCss from '../styles/level.css?raw';
+
+interface Props {
+  /** Prefix for element ids, so two switches on one page never clash. */
+  idPrefix?: string;
+}
+const { idPrefix = 'level' } = Astro.props;
+const options = [
+  { level: 'beginner', label: 'Beginner', answer: "I'm new to it", hint: 'Plain words, the key parts first' },
+  { level: 'intermediate', label: 'Intermediate', answer: 'I know my big three', hint: 'Houses, aspects and transits open' },
+  { level: 'advanced', label: 'Advanced', answer: 'I read charts myself', hint: 'Exact positions, the 3D view and data' },
+];
+---
+<script is:inline>
+  (function () {
+    var root = document.documentElement;
+    var levels = ['beginner', 'intermediate', 'advanced'];
+    var saved = null, asked = null;
+    try {
+      saved = window.localStorage.getItem('zodiacs-level');
+      asked = window.localStorage.getItem('zodiacs-level-asked');
+    } catch (e) {}
+    var known = levels.indexOf(saved) >= 0;
+    root.setAttribute('data-level', known ? saved : 'beginner');
+    // Decided before the question is parsed, so it never pushes the page down.
+    if (!known && !asked) root.setAttribute('data-level-ask', 'open');
+  })();
+</script>
+<style is:inline set:html={levelCss}></style>
+<Motion />
+<div class="level-wrap" data-level-root>
+  <section class="level-ask" id={`${idPrefix}-ask`} aria-labelledby={`${idPrefix}-ask-q`} data-level-ask>
+    <p class="level-ask__q" id={`${idPrefix}-ask-q`}>How well do you know astrology?</p>
+    <div class="level-ask__opts">
+      {options.map((o) => (
+        <button type="button" class="level-ask__opt" data-level-pick={o.level}>
+          <b>{o.answer}</b><span>{o.hint}</span>
+        </button>
+      ))}
+    </div>
+    <div class="level-ask__foot">
+      <span>No sign-up. Your answer stays in this browser, and you can switch anytime.</span>
+      <button type="button" class="level-ask__skip" data-level-skip>Not now</button>
+    </div>
+  </section>
+  <div class="level-switch" role="group" aria-label="How much detail to show">
+    <span class="level-switch__cap" aria-hidden="true">Your level</span>
+    <div class="level-switch__seg">
+      {options.map((o) => (
+        <button type="button" class="level-switch__btn" data-level-set={o.level} aria-pressed="false">{o.label}</button>
+      ))}
+    </div>
+    <p class="level-switch__status" data-level-status aria-live="polite"></p>
+  </div>
+</div>
+<script is:inline>
+  // Mark the button for the level the page opened at, before paint. The
+  // inline script above already set html[data-level].
+  (function () {
+    var level = document.documentElement.getAttribute('data-level');
+    document.querySelectorAll('[data-level-set]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-level-set') === level));
+    });
+  })();
+</script>
+
+<script>
+  // The switch's wiring loads on idle or on the reader's first touch of it,
+  // outside the page's first-load script budget (docs/LEVELS.md). The level
+  // and the pressed button are already set before paint by the inline scripts.
+  function start() {
+    const root = document.querySelector<HTMLElement>('[data-level-root]');
+    if (!root) return;
+    let wiring: Promise<void> | null = null;
+    let pressed: HTMLButtonElement | null = null;
+    const load = () => {
+      wiring ??= import('../lib/level-switch').then(({ wireLevelSwitch }) => {
+        wireLevelSwitch();
+        root.removeEventListener('click', early, true);
+        // A press made while the wiring loaded counts once it is in.
+        const button = pressed;
+        pressed = null;
+        button?.click();
+      }).catch(() => {
+        // A failed load (say, a dropped connection) may be tried again on
+        // the reader's next touch of the switch.
+        wiring = null;
+      });
+      return wiring;
+    };
+    // A press that comes before the wiring is held, then replayed.
+    const early = (event: Event) => {
+      const button = (event.target as Element | null)?.closest<HTMLButtonElement>('button');
+      if (!button) return;
+      pressed = button;
+      void load();
+    };
+    root.addEventListener('click', early, true);
+    root.addEventListener('pointerdown', load, { once: true, capture: true });
+    root.addEventListener('focusin', load, { once: true });
+    if ('requestIdleCallback' in window) window.requestIdleCallback(() => void load(), { timeout: 3000 });
+    else setTimeout(() => void load(), 1500);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+  else start();
+</script>
