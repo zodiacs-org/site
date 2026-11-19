@@ -4,9 +4,12 @@
  * out on the device behind a lazy import of src/lib/good-days/find.ts, the
  * same module the hosted find_good_days tool runs.
  *
- * Sharing: the share card and its link carry the goal and the two dates only,
- * after the # (which browsers do not send to a server). Opening the link runs
- * the general reading for those dates; a birth date is never in it.
+ * Sharing: the share card and its link carry the goal, the two dates and the
+ * time zone the days were counted in, after the # (which browsers do not send
+ * to a server). Opening the link runs the general reading for those dates in
+ * that zone, so the recipient sees the days the sender saw; a link with no
+ * zone, or one this browser does not know, is read in the device's zone. A
+ * birth date, or whether one was used, is never in it.
  *
  * Time zone: the days are counted in the zone chosen under "Time zone for the
  * day", the device's zone unless the person picks another (the event's zone,
@@ -89,21 +92,38 @@ export function zoneChoices(
   return [...new Set([canonical(deviceZone) ?? deviceZone, ...names])].sort((a, b) => a.localeCompare(b));
 }
 
-/** The share link: the goal and the dates after the #, and nothing else. */
-export function goodDaysLink(origin: string, goal: GoodDayGoal, from: string, to: string): string {
-  return `${origin}/good-days/#g=${goal}&f=${from}&t=${to}`;
+/**
+ * A link's zone, decoded where an app wrote / as %2F, with tzdb's characters only (letters, digits, _ + - and /),
+ * and one this browser's Intl accepts: returned by its canonical name, so lowercase and alias spellings read as the
+ * picker lists them. Null otherwise.
+ */
+export function knownZone(zone: string | undefined): string | null {
+  if (!zone) return null;
+  let name: string;
+  try { name = decodeURIComponent(zone); } catch { return null; }
+  if (!/^[A-Za-z][A-Za-z0-9_+\-/]{0,63}$/u.test(name)) return null;
+  return canonicalZone(name);
 }
 
-/** A shared link's goal and dates, read by hand so nothing but these three keys is ever taken from it. */
-export function readGoodDaysLink(hash: string): { goal: GoodDayGoal; from: string; to: string } | null {
+/** The share link: the goal, the dates and the zone the days were counted in, after the #, and nothing else. */
+export function goodDaysLink(origin: string, goal: GoodDayGoal, from: string, to: string, zone: string): string {
+  return `${origin}/good-days/#g=${goal}&f=${from}&t=${to}&z=${zone}`;
+}
+
+/**
+ * A shared link's goal, dates and zone, read by hand so nothing but these four keys is ever taken from it. The zone
+ * is left out when it is missing or this browser does not know it, and the caller then uses the device's zone.
+ */
+export function readGoodDaysLink(hash: string): { goal: GoodDayGoal; from: string; to: string; zone?: string } | null {
   const fields: Record<string, string> = {};
   for (const part of hash.replace(/^#/u, '').split('&')) {
     const [key, value] = part.split('=');
-    if (key && value !== undefined && (key === 'g' || key === 'f' || key === 't')) fields[key] = value;
+    if (key && value !== undefined && (key === 'g' || key === 'f' || key === 't' || key === 'z')) fields[key] = value;
   }
   const goal = GOOD_DAY_GOALS.find((name) => name === fields.g);
   if (!goal || !DATE.test(fields.f ?? '') || !DATE.test(fields.t ?? '')) return null;
-  return { goal, from: fields.f, to: fields.t };
+  const zone = knownZone(fields.z);
+  return { goal, from: fields.f, to: fields.t, ...(zone ? { zone } : {}) };
 }
 
 /** outcomes: the "How did your day go?" follow-up (PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1); off, no pick buttons and no reminder. */
@@ -188,7 +208,9 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
     setDatesSet(true);
     setFrom(shared.from);
     setTo(shared.to);
-    void run({ ...shared, zone: deviceZone, birth: null }, false);
+    const sharedZone = shared.zone ?? deviceZone;
+    setZone(sharedZone);
+    void run({ goal: shared.goal, from: shared.from, to: shared.to, zone: sharedZone, birth: null }, false);
   }, []);
 
   function submit(event: Event) {
@@ -201,7 +223,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
     setBirthDate('');
   }
 
-  const link = result ? goodDaysLink(window.location.origin, result.goal, result.from, result.to) : '';
+  const link = result ? goodDaysLink(window.location.origin, result.goal, result.from, result.to, result.zone) : '';
   async function copyLink() {
     try {
       await navigator.clipboard.writeText(link);
@@ -244,7 +266,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
             <div class="field good-days__zone-field">
               <label class="field__label" for="gd-zone">Time zone for the day</label>
               <select id="gd-zone" class="field__input" value={zone} onChange={(event) => setZone((event.target as HTMLSelectElement).value)}>
-                {zones.map((name) => <option value={name} key={name}>{name}</option>)}
+                {(zones.includes(zone) ? zones : [zone, ...zones]).map((name) => <option value={name} key={name}>{name}</option>)}
               </select>
               <p class="field__help">Where the day happens. Days, void-of-course times and waking hours follow this zone.</p>
             </div>
@@ -344,7 +366,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
               {canShare && <button type="button" class="btn" onClick={shareLink}>Share</button>}
               <button type="button" class="btn" onClick={() => window.print()}>Print the card</button>
             </div>
-            <p class="field__help">The link opens this page with the same goal and dates, worked out from the sky alone. {result.personal ? 'Your birth date is not in it.' : 'It carries nothing else.'}</p>
+            <p class="field__help">The link opens this page with the same goal, dates and time zone, worked out from the sky alone. {result.personal ? 'Your birth date is not in it.' : 'It carries nothing else.'}</p>
             <p class="good-days__link"><code>{link}</code></p>
           </div>
         )}
