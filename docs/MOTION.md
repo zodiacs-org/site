@@ -52,6 +52,10 @@ import { motionScan } from '../lib/motion';
 useEffect(() => { if (result) motionScan(containerRef.current ?? undefined); }, [result]);
 ```
 
+  An island on a page that sits right under its first-load budget may call
+  `window.zodiacsMotion?.scan(root)` directly instead (BigThreeQuick.tsx does),
+  since importing `src/lib/motion.ts` adds a shared chunk.
+
 ## Guarantees
 
 - Without `<Motion />`, without JavaScript, with reduced motion and when
