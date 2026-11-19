@@ -1,3 +1,5 @@
+import de440SitemapDates from '../data/de440-sitemap-dates.json';
+
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/u;
 
 export const BIRTHDAY_CUSP_OG_MODIFIED_AT = '2026-08-23T00:00:00.000Z';
@@ -5,6 +7,13 @@ export const BIRTHDAY_CUSP_OG_MODIFIED_AT = '2026-08-23T00:00:00.000Z';
 export const BIRTHDAY_FAMOUS_LINE_MODIFIED_AT = '2026-10-19T00:00:00.000Z';
 export const PEOPLE_TEMPLATE_MODIFIED_AT = '2026-10-16T00:00:00.000Z';
 export const TERMINAL_RESEARCH_BASE_LASTMOD = '2026-08-13';
+
+// The routes measured to have changed in the DE440 release builds.
+const de440UpdatedPaths = new Set(de440SitemapDates.paths);
+
+export function de440UpdatedDate(path: string): string | undefined {
+  return de440UpdatedPaths.has(path) ? de440SitemapDates.date : undefined;
+}
 
 type DateInput = string | Date;
 

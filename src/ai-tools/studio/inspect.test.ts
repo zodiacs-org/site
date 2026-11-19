@@ -3,6 +3,9 @@ import { natalChart } from '@zodiacs/engine';
 import { createNatalEnvelope, serializeNatalEnvelope } from '@zodiacs/engine/receipt';
 import { calculateStudio, EXAMPLE, recordText } from './model';
 import { inspectRecords, readStudioRecord, reproduceRecord } from './inspect';
+import { useBrowserEphemeris } from '../../../tests/helpers/browser-ephemeris';
+
+useBrowserEphemeris();
 
 describe('Chart Inspector', () => {
   it('reproduces a downloaded record and a chart with unknown time', () => {

@@ -324,15 +324,15 @@
     {
       "id": "display-rounding",
       "required": "a difference smaller than the printed precision",
-      "purpose": "Two calculations six milliseconds apart. Some values move far enough to print differently at six decimals and some do not, and the smallest real difference is smaller than the largest rounding one \u2014 so no tolerance on distance could separate them, which is why the verdict is decided on what is printed.",
+      "purpose": "Two calculations six milliseconds apart. Some values print differently at six decimals. The smallest real difference is smaller than the largest rounding difference, so the verdict depends on the printed values.",
       "left": {
-        "utc": "1990-06-15T13:30:00.000Z",
+        "utc": "1990-06-15T13:30:00.002Z",
         "latitude": 51.5074,
         "longitude": -0.1278,
         "houseSystem": "placidus"
       },
       "right": {
-        "utc": "1990-06-15T13:30:00.006Z",
+        "utc": "1990-06-15T13:30:00.008Z",
         "latitude": 51.5074,
         "longitude": -0.1278,
         "houseSystem": "placidus"
@@ -669,6 +669,14 @@
       "removed": "right.utc 1990-06-15T13:30:00.010Z",
       "added": "right.utc 1990-06-15T13:30:00.006Z, and \"six milliseconds\" for \"ten\" in the purpose",
       "why": "Engine rc.15 reads 1990 as UTC through the leap seconds and UT1 - UTC, and samples the Moon's velocity on a fixed Delta T, so the digits the two charts print moved. Ten milliseconds apart, the smallest real difference, Venus's longitude at 1.36e-7 degrees, is no longer below the largest rounding one, the Venus-Jupiter sextile's orb at 1.11e-7 degrees, and the scenario no longer shows what it exists to show; the assertion failed as written. Six milliseconds apart it does again: the Venus-Saturn trine's orb differs by 8.6e-8 degrees and prints differently, while the South Node's degree differs by 5.1e-7 and prints the same. The unit test of the same property (src/lib/compare/diff.test.ts) moved to six milliseconds for the same reason. The instant is the only change; the purpose, the other assertions and the rule the scenario tests are unchanged. Recorded rather than quietly edited."
+    },
+    {
+      "date": "2026-11-18",
+      "scenario": "display-rounding",
+      "after": "the local adapter used the published DE440 engine",
+      "removed": "left and right at 13:30:00.000Z and 13:30:00.006Z",
+      "added": "left and right at 13:30:00.002Z and 13:30:00.008Z",
+      "why": "With DE440 the original pair no longer has overlapping numeric and display rounding distances. The new synthetic pair satisfies the same strict inequality, measured in benchmark.json. Both pairs are six milliseconds apart."
     }
   ]
 }

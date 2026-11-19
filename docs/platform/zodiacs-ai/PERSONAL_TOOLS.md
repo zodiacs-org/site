@@ -22,6 +22,19 @@ listed after every other tool, so every earlier entry keeps its place.
 
 Nobody switches it on from a pull request; that is the owner's call.
 
+## Where they are served
+
+Since ZOD-63 (#1120), `/mcp` answers from the frozen published runtime
+(`api/_ai/published/runtime.mjs`, checked against
+`docs/platform/evidence/site-engine-1-1-0/connector-transition.json`) and
+`/mcp/de440` from the current build, `api/_ai/runtime.mjs`. The personal tools
+are in the current build only, so with the switch on they are offered on
+`/mcp/de440`. Offering them on `/mcp` means publishing a new runtime there,
+which changes the bytes the directories reviewed; that is the owner's call. The
+local developer connector keeps its released server too (packaged as 0.3.56),
+so these pull requests package no developer version of their own.
+
+
 ## The pages' switches
 
 Each page has its own build flag: `PUBLIC_VEDIC_SIGNS_ENABLED` for
