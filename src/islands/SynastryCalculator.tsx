@@ -5,7 +5,7 @@
  * the engine the same way the chart calculator does.
  */
 import { Fragment } from 'preact';
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, type CalendarChoice } from './BirthFields';
 import SignChip from './SignChip';
 import { NextActionCard } from '../components/NextActionCard';
@@ -886,7 +886,11 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     return () => { active = false; };
   }, [result, arrival, accessTick]);
 
-  useEffect(() => {
+  // The result's entrance (calculator.css, .syn-meet): hold it before the
+  // first paint, then let it go on the next frame so it rises at once, one
+  // calm pass (docs/MOTION.md). A returned or restored comparison, and
+  // reduced motion, show it still.
+  useLayoutEffect(() => {
     if (!result) return;
     if (result.source === 'returned'
       || result.source === 'invite-restored'
@@ -895,15 +899,10 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
       return;
     }
     setMeetingSettled(false);
-    const settle = () => setMeetingSettled(true);
-    const timer = window.setTimeout(settle, 1_400);
-    window.addEventListener('pointerdown', settle, { once: true });
-    window.addEventListener('keydown', settle, { once: true });
-    return () => {
-      window.clearTimeout(timer);
-      window.removeEventListener('pointerdown', settle);
-      window.removeEventListener('keydown', settle);
-    };
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => setMeetingSettled(true));
+    });
+    return () => cancelAnimationFrame(frame);
   }, [result?.at]);
 
   async function openPrivateInvite(raw: string, stillActive: () => boolean = () => true): Promise<void> {

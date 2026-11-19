@@ -1177,34 +1177,27 @@
   outline-offset: 3px;
 }
 
-/* One orchestrated result entrance: presentation never blocks controls.
-   User input or the 1.4 second timer adds .is-settled. */
+/* One result entrance: presentation never blocks controls. The result is
+   held for its first frame and .is-settled lets it go on the next one, so it
+   moves at once. It speaks the shared entrance motion (docs/MOTION.md,
+   src/styles/motion.css): the two people, then the wheel with its aspects,
+   rise 10px over 440ms and stay still. No tilt and no zoom. The fallbacks
+   repeat motion.css for pages that do not load it. */
 @media (prefers-reduced-motion: no-preference) {
-  html.js .syn-meet:not(.is-settled) .syn__people {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  html.js .syn-meet .syn__people {
-    transition: opacity 420ms var(--ease), transform 420ms var(--ease);
-  }
+  html.js .syn-meet:not(.is-settled) .syn__people,
   html.js .syn-meet:not(.is-settled) .rwheel {
     opacity: 0;
-    transform: scale(0.96) rotate(-4deg);
+    transform: translate3d(0, var(--motion-lift, 10px), 0);
   }
-  html.js .syn-meet .rwheel {
-    transform-origin: 50% 40%;
+  /* Only the way in is animated: a second Compare snaps back to the held
+     state instead of fading out and reversing. */
+  html.js .syn-meet.is-settled .syn__people,
+  html.js .syn-meet.is-settled .rwheel {
     transition:
-      opacity 560ms var(--ease) 120ms,
-      transform 720ms var(--ease) 120ms;
+      opacity var(--motion-rise, 440ms) var(--motion-ease, cubic-bezier(0.23, 1, 0.32, 1)),
+      transform var(--motion-rise, 440ms) var(--motion-ease, cubic-bezier(0.23, 1, 0.32, 1));
   }
-  html.js .syn-meet:not(.is-settled) .syn__aspects,
-  html.js .syn-meet:not(.is-settled) .syn__tally {
-    opacity: 0;
-  }
-  html.js .syn-meet .syn__aspects,
-  html.js .syn-meet .syn__tally {
-    transition: opacity 700ms var(--ease) 700ms;
-  }
+  html.js .syn-meet.is-settled .rwheel { transition-delay: var(--motion-step, 70ms); }
 }
 
 @media (max-width: 520px) {
