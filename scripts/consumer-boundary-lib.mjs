@@ -93,7 +93,10 @@ const SANCTIONED_INTERNAL_LINKS = Object.freeze([
   [/^src\/(?:components\/RaceRamp\.astro|lib\/home-trust\.ts|pages\/race\/index\.astro)$/u, /^\/disclosure\/$/u],
   [/^src\/components\/CollectBand\.astro$/u, /^\/registry\/\$\{…\}\/$/u],
   [/^src\/components\/LocalizedDisclosurePage\.astro$/u, /^\/(?:disclosure|registry)\/$/u],
-  [/^src\/components\/SiteFooter\.astro$/u, /^\/(?:astrofolio|disclosure|registry|sdk)\/$/u],
+  // The footer's Registry column also names the thesis, a plain label with no
+  // acquisition copy. Tool pages render no Registry column, so no calculator
+  // carries it (showsCollectionNavigation, src/lib/trust-boundary.ts).
+  [/^src\/components\/SiteFooter\.astro$/u, /^\/(?:astrofolio|disclosure|registry|sdk|thesis)\/$/u],
   [/^src\/components\/SiteNav\.astro$/u, /^\/astrofolio\/$/u],
   [/^src\/islands\/(?:ChartCalculator|RaceBoard)\.tsx$/u, /^\/registry\/\$\{…\}\/$/u],
   [/^src\/lib\/disclosure\.ts$/u, /^\/(?:astrofolio\/how-to-buy\/|registry\/(?:aries\/|zodiacs\.registry\.json)|sdk\/|thesis\/)$/u],
