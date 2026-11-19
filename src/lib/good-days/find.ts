@@ -584,8 +584,7 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
     return { day, factors, ordered, score, avoid: factors.some((factor) => factor.avoid), spans: voids.spans, strongest };
   });
 
-  const picked = pick([...rated].filter((row) => !row.avoid).sort((a, b) => b.score - a.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), count);
-  const best = picked.map((row): GoodDay => {
+  const best = pick([...rated].filter((row) => !row.avoid).sort((a, b) => b.score - a.score || a.day.date.localeCompare(b.day.date)).map((row) => ({ ...row, date: row.day.date })), count).map((row): GoodDay => {
     // With a governing caution the day reads as mixed at most, and its reason says what holds it back.
     const verdict = goodDayVerdict(row.score);
     const capped = row.strongest && (verdict === GOOD_DAY_VERDICTS.strong || verdict === GOOD_DAY_VERDICTS.good) ? GOOD_DAY_VERDICTS.mixed : verdict;
@@ -604,7 +603,8 @@ export async function findGoodDays(input: GoodDaysInput, clock: GoodDaysClock): 
     const date = localParts(new Date(row.at), input.zone).date;
     return { kind: 'eclipse' as const, from: addDays(date, -1), to: addDays(date, 1), line: `${cap(row.kind)} ${row.type} eclipse in ${signName(row.sign)} on ${longDay(date)}: tradition keeps the day itself and the day either side clear for beginnings.` };
   }).filter((period) => period.to >= from && period.from <= to);
-  if (best.length && (best[0].score < 66 || picked[0].strongest)) messages.push('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
+  // Said when no best day reads as good: below 66, or held back by a heavy caution.
+  if (best.length && !best.some((day) => day.verdict === GOOD_DAY_VERDICTS.good || day.verdict === GOOD_DAY_VERDICTS.strong)) messages.push('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
   if (best.length < count) messages.push('Every other day in the window falls on a day tradition would avoid.');
   if (input.zone === 'UTC') messages.push('Days and times are in UTC because no time zone was given.');
 
