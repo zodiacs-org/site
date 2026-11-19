@@ -3112,7 +3112,7 @@
     {"path":"src/pages/privacy/index.astro","text":"We show no ads and use no cross-site tracking.","claim":"priv.no-ads-tracking"},
     {"path":"src/pages/privacy/index.astro","text":"We store your email address with our database provider, Supabase.","claim":"priv.account-sync"},
     {"path":"src/pages/privacy/index.astro","text":"We take dates, times, email addresses, web addresses and phone numbers out of the note, and we drop a note that mentions a child, a birth or an age.","claim":"priv.good-days-outcomes"},
-    {"path":"src/pages/privacy/index.astro","text":"We use these answers to test how well the days the finder picks go.","claim":"priv.good-days-outcomes"},
+    {"path":"src/pages/privacy/index.astro","text":"We use these answers to see how the days people pick turn out.","claim":"priv.good-days-outcomes"},
     {"path":"src/pages/privacy/index.astro","text":"When Aura is off, the illustrative Shelf makes no address or provider request.","claim":"priv.aura"},
     {"path":"src/pages/privacy/index.astro","text":"When a page shows the signs of a birth chart, it first requests the pictures of all twelve signs, in the same order for every chart, so those requests do not show which signs the chart has.","claim":"priv.on-device"},
     {"path":"src/pages/privacy/index.astro","text":"When a relevant Zodiac Terminal or Registry market panel is displayed, your browser may request public market data from Dex Screener, public chart data from GeckoTerminal, or public attention data from Wikimedia.","claim":"priv.market-data"},
