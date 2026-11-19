@@ -138,7 +138,7 @@ try{
    return {original,rejected,recovered:await data(s)};
   }finally{await s.context.close();}
  });
- const positives=[['ordinary','2000-02-29','UTC',false],['repeated-Apia','1892-07-04','Pacific/Apia',false],['repeated-Kwajalein','1969-09-30','Pacific/Kwajalein',false],['same-date-gap','2024-10-06','Australia/Lord_Howe',false],['known-skipped','2011-12-30','Pacific/Apia',true]];
+ const positives=[['ordinary','2000-02-29','UTC',false],['repeated-Apia','1892-07-04','Pacific/Apia',false],['repeated-Kwajalein','1969-09-30','Pacific/Kwajalein',false],['same-date-gap','2012-10-07','Australia/Lord_Howe',false],['known-skipped','2011-12-30','Pacific/Apia',true]];
  for(const mode of ['chart','moon'])for(const [label,date,zone,known] of positives)await group(mode+' preserved '+label,async()=>{
   const observations={};for(const variant of bundles.keys()){
    const s=await setup(mode,variant);try{await fill(s,date,zone,known);await submit(s);const value=await data(s);assert.equal(value.result,true);assert.deepEqual(s.errors,[]);observations[variant]=value;}finally{await s.context.close();}

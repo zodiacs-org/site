@@ -48,9 +48,9 @@ const COPY = {
 
 function track(name: 'calendar_download'): void {
   const analytics = (window as Window & {
-    zodiacsAnalytics?: { track?: (name: string, props: Record<string, never>) => void };
+    zodiacsAnalytics?: { track?: (name: string, props: { feed: 'transits' }) => void };
   }).zodiacsAnalytics;
-  analytics?.track?.(name, {});
+  analytics?.track?.(name, { feed: 'transits' });
 }
 
 interface CalendarSubscribeProps {

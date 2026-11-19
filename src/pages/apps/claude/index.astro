@@ -1,0 +1,46 @@
+---
+import AppLanding from '../_AppLanding.astro';
+
+const title = 'Astrology for Claude: Connect Zodiacs | Zodiacs.org';
+const description = 'Add Zodiacs to Claude as a custom connector for birth charts, compatibility, occasion cards and horoscopes. The steps, the server address and what to ask.';
+const faq = [
+  { q: 'Is Zodiacs in Claude’s connector directory?', a: 'Not yet. The directory listing is awaiting Anthropic’s review. Until it is approved, you can add the public server yourself as a custom connector, if your Claude account supports custom connectors.' },
+  { q: 'Do I need a Zodiacs account?', a: 'No. Zodiacs’ public tools need no Zodiacs account. Your assistant’s plan, connection options and regional availability still apply.' },
+  { q: 'Will I see the interactive cards?', a: 'Interactive card support depends on the assistant and version you use. Where a card is not shown, the answer comes as text, usually with a link to a page on zodiacs.org.' },
+  { q: 'What if I only know my Sun sign?', a: 'That is enough for the daily and weekly horoscopes and for questions about the sky. A birth chart needs a birth date and place, and the rising sign also needs the birth time.' },
+];
+---
+<AppLanding
+  app="Claude"
+  path="/apps/claude/"
+  pageName="Astrology for Claude"
+  title={title}
+  description={description}
+  kicker="Zodiacs for Claude"
+  heading="Astrology for Claude."
+  lede="Zodiacs brings the sky into your Claude conversations: your birth chart, compatibility between two people, the sky on a day that matters, and your sign’s horoscope. Connect it once, then ask in your own words."
+  facts={[
+    { term: 'Status', detail: 'Directory listing in review' },
+    { term: 'Server address', detail: 'https://zodiacs.org/mcp' },
+    { term: 'Zodiacs account', detail: 'Not needed' },
+  ]}
+  faq={faq}
+>
+  <div slot="actions" class="app-actions">
+    <a class="btn btn--lg" href="#connect">See the steps <span class="orb" aria-hidden="true">↓</span></a>
+    <a class="textlink" href="#ask">Things you can ask <span class="arr" aria-hidden="true">→</span></a>
+  </div>
+  <Fragment slot="connect">
+    <h2 id="connect-title">Connect Zodiacs to Claude</h2>
+    <p>While the directory listing is in review, Zodiacs connects to Claude as a custom connector. You only do it once.</p>
+    <ol>
+      <li>In Claude, open <strong>Customize</strong>, then <strong>Connectors</strong>.</li>
+      <li>Add a custom connector using this server address:<div class="app-endpoint"><code id="claude-server-address">https://zodiacs.org/mcp</code><button type="button" data-copy="claude-server-address" aria-label="Copy Zodiacs server address">Copy</button></div></li>
+      <li>Name it Zodiacs. It needs no sign-in, so leave any authentication settings empty.</li>
+      <li>Enable Zodiacs in a conversation and try one of the prompts below.</li>
+    </ol>
+    <p>Custom connectors are not available on every Claude plan or workspace. If you don’t see the option, your account may not offer it yet, and the directory listing is the other way in once it is approved.</p>
+    <h3>What happens when you ask</h3>
+    <p>Claude decides when to call Zodiacs. Ask for a birth chart without giving a date and Chart Studio opens, so you can type your details into the panel yourself and choose what to share back. Ask about two people, a wedding date or your sign, and Zodiacs calculates the sky for those dates and returns a dated reading, often with a card you can explore and share.</p>
+  </Fragment>
+</AppLanding>

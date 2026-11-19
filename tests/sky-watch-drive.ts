@@ -22,7 +22,8 @@ async function sql(query: string) {
 }
 const rpc: Rpc = async (operation, input = {}) => {
   assert.match(operation, /^[a-z]+$/);
-  const value = await sql(`set role service_role; select public.zodiacs_sky_watch_v1('${operation}',${jsonSql(input)});`);
+  const procedure = ['timingwindow', 'timingingest'].includes(operation) ? 'zodiacs_sky_watch_timing_v1' : 'zodiacs_sky_watch_v1';
+  const value = await sql(`set role service_role; select public.${procedure}('${operation}',${jsonSql(input)});`);
   const payload = value.replace(/^SET\s*/, '');
   return payload ? JSON.parse(payload) : null;
 };
@@ -189,5 +190,29 @@ try {
   assert.equal(await fillWatchLedger(rpc, missedRuns), 1);
   assert.equal(await fillWatchLedger(rpc, missedRuns), 0);
   assert.equal(await sql("select bool_and(payload#>>'{data,receipt,search,completeness}'='tested-not-proven') from sky_watch.ledger;"), 't');
+
+  await sql('truncate sky_watch.outbox, sky_watch.ledger, sky_watch.progress;');
+  const midnight = Math.floor(Date.now() / DAY) * DAY + DAY;
+  const iso = (at: number) => new Date(at).toISOString();
+  const v1 = 'sky-watch-v1:1.1.0-rc.2';
+  const oldAt = iso(midnight + 6 * 60_000);
+  const newAt = iso(midnight - 11 * 60_000);
+  const eventId = `evt_${digest('synthetic-midnight-revision')}`;
+  const legacyEvent = { eventId, name: 'zodiacs.sky.ingress', timestamp: oldAt, cursor: null,
+    data: { event: { kind: 'ingress', body: 'Neptune', sign: 'aries', retrograde: false, at: oldAt }, receipt: {} } };
+  await rpc('window', { version: v1, start: iso(midnight) });
+  await rpc('ingest', { version: v1, from: iso(midnight), to: iso(midnight + DAY), events: [legacyEvent] });
+  await sql(`insert into sky_watch.outbox(subscription_id,event_id,due_at) values('${id}','${eventId}','${oldAt}');`);
+  const timing = WATCH_VERSION.replace('sky-watch-v1:', 'sky-watch-v2:');
+  const window = await rpc('timingwindow', { version: timing, start: iso(midnight) });
+  assert.equal(Date.parse(window.from), midnight - DAY);
+  assert.equal(window.existing[0].eventId, eventId);
+  await assert.rejects(() => rpc('timingwindow', { version: 'sky-watch-v2:other', start: iso(midnight) }));
+  const updated = { ...legacyEvent, timestamp: newAt, data: { ...legacyEvent.data, event: { ...legacyEvent.data.event, at: newAt } } };
+  const update = { version: timing, from: iso(midnight - DAY), to: iso(midnight), events: [updated] };
+  assert.equal(await rpc('timingingest', update), true);
+  assert.equal(await rpc('timingingest', update), false);
+  assert.equal(await sql(`select count(*) from sky_watch.ledger where id='${eventId}' and at='${newAt}';`), '1');
+  assert.equal(await sql(`select count(*) from sky_watch.outbox where event_id='${eventId}' and due_at='${newAt}' and state='pending';`), '1');
   console.log('Sky Watch PostgreSQL + MCP lifecycle passed: auth, discovery, ownership, refresh/rotation, CAS cancellation, replay, leases, retry, filtering, 410/413, expiry, unsubscribe, revocation, real-engine scheduler restart and missed-run recovery. No external notifications sent.');
 } finally { await new Promise<void>(resolve => server.close(() => resolve())); }

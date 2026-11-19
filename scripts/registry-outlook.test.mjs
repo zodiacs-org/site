@@ -73,7 +73,7 @@ describe('Registry symbolic outlook', () => {
         kind: 'ingress',
         label: 'Mercury enters Leo',
         // rc.16 full IAU 2000B shifts this ingress by 130 ms.
-        at: '2026-08-09T16:28:16.438Z',
+        at: '2026-08-09T16:28:22.220Z',
         tonePoints: 0,
         source: 'src/data/transits-2026-08.json',
       }),

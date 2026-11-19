@@ -6,11 +6,14 @@ import { EVERY_AI_TOOL_NAME, UNDER_13_REFUSAL, YEAR_SCORE_SWITCH_ENV } from './c
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { getYearScore } from './features/year-score';
 import { rangeWorthShowing } from '../lib/year-score/range';
+import { FIGURE_NOTE } from '../lib/year-score/people';
+import { figureTierSummary, scoreTier } from '../lib/year-score/tier';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
 import committedProgram from '../data/horoscope-program.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
+import { expectedCapabilityReply } from '../../tests/helpers/de440-capabilities';
 
 /**
  * ZODIACS_YEAR_SCORE_ENABLED stays off until the owner switches it on. Off (unset, '0' or anything but '1'), or on
@@ -50,14 +53,15 @@ const message = (text: string) => JSON.parse(text.includes('\ndata: ') || text.s
 const COVERAGE = { ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1' };
 
 describe('the Year Ahead Score switch off', () => {
-  it('leaves tools/list and get_capabilities byte for byte as main answers them, and refuses the tool as unknown', async () => {
+  it('preserves the tool list, reports DE440 capabilities and refuses the disabled tool as unknown', async () => {
     expect(YEAR_SCORE_SWITCH_ENV).toBe('ZODIACS_YEAR_SCORE_ENABLED');
     for (const [name, env] of [['coverage', COVERAGE], ['occasions', { ZODIACS_OCCASIONS_ENABLED: '1' }]] as const) {
       for (const value of name === 'coverage' ? [undefined, '0', 'true', ' 1'] : ['1']) {
         const counted: string[] = [];
         const host = await serve({ ...env, ZODIACS_YEAR_SCORE_ENABLED: value }, counted);
         expect((await post(host, rpc('tools/list'))).text, `${name} ${String(value)}`).toBe(FIXTURE[name].toolsList.text);
-        expect((await post(host, rpc('tools/call', { name: 'get_capabilities', arguments: {} }))).text).toBe(FIXTURE[name].capabilities.text);
+        expect((await post(host, rpc('tools/call', { name: 'get_capabilities', arguments: {} }))).text)
+          .toBe(expectedCapabilityReply(FIXTURE[name].capabilities.text));
         const refused = await post(host, rpc('tools/call', { name: 'get_year_score', arguments: { person: 'Jensen Huang' } }));
         expect(refused.text).toBe(FIXTURE[name].save.text);
         expect(counted).not.toContain('get_year_score');
@@ -222,11 +226,34 @@ describe('get_year_score share links', () => {
     expect(tokyo.data.subject?.sun).toBe('pisces');
     expect(tokyo.data.shareUrl).toContain('s=pisces');
   });
-  it('gives a figure the slug alone, scored from the first of the month like its page and card', async () => {
+  it('gives a figure the slug and its start month, scored from the first of the month like its page and card', async () => {
     const { data } = await getYearScore({ person: 'Jensen Huang' }, NOW, clock, 'https://zodiacs.org');
     expect(data.from).toBe('2026-11-01');
-    expect(data.shareUrl).toBe('https://zodiacs.org/share/year-score/?p=jensen-huang');
+    expect(data.shareUrl).toBe('https://zodiacs.org/share/year-score/?p=jensen-huang&m=2026-11');
     const backtest = await getYearScore({ person: 'Jensen Huang', from: '2026-07-17' }, NOW, clock, 'https://zodiacs.org');
     expect(backtest.data.shareUrl).toBeNull();
+  });
+});
+
+describe('get_year_score for a named figure (ZOD-12)', () => {
+  const clock = createLocalTimeModule();
+  afterAll(() => clock.dispose());
+  const reader = /\b(?:earnings?|money|spending|agreements?|energy|you|your|yourself|way of loving|emotional life|career|work)\b/iu;
+  it('uses neutral words for the summary, the months and the drivers, and says what the number is not', async () => {
+    for (const person of ['Jensen Huang', 'Taylor Swift', 'Lionel Messi']) {
+      const { data } = await getYearScore({ person }, NOW, clock, 'https://zodiacs.org');
+      expect(data.status).toBe('found');
+      expect(data.summary, person).toBe(figureTierSummary(scoreTier(data.score!).key));
+      expect(data.limits, person).toContain(FIGURE_NOTE);
+      const words = [data.summary, data.best?.line, data.hardest?.line, ...data.drivers.flatMap((driver) => [driver.title, driver.line])].filter(Boolean).join(' ');
+      expect(words, person).not.toMatch(reader);
+      for (const month of [data.best, data.hardest]) if (month) expect(month.line).toMatch(/^[A-Z][a-z]+ \d{4}: \d{1,2}\.\d\/10\.$/u);
+      for (const driver of data.drivers) expect(driver.title).toContain(`${person}'s`);
+    }
+  });
+  it('keeps a person’s own reading in the reader’s words', async () => {
+    const { data } = await getYearScore({ birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }, NOW, clock, 'https://zodiacs.org');
+    expect(data.summary).toBe(scoreTier(data.score!).summary);
+    expect(data.limits).not.toContain(FIGURE_NOTE);
   });
 });

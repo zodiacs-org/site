@@ -220,6 +220,21 @@ main :is(.tools-grid, .learn-grid) > a.shell > .core {
 .btn:active { transform: scale(0.97); }
 .btn:disabled,
 .btn[aria-disabled='true'] { opacity: 0.52; cursor: not-allowed; }
+
+/* Tap feedback on touch screens. Rows, tabs, chips and disclosures dim while
+   pressed, so a tap is felt before the next page or panel arrives; buttons
+   keep their own scale press above. Opacity only, so it is the same with
+   reduced motion and never moves layout. No grey flash, no double-tap zoom
+   delay. */
+:is(.seg > a, .seg > button, .hz-signrail a, a.shell, a.tile, .guide-prompts__chip, .program__more > a,
+  summary, .rx-table a, .mysign button) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+@media (hover: none) {
+  :is(.seg > a, .seg > button, .hz-signrail a, a.shell, a.tile, .guide-prompts__chip, .program__more > a,
+    summary, .rx-table a, .mysign button):active { opacity: 0.72; }
+}
 .btn .orb {
   display: inline-grid;
   place-items: center;
@@ -984,7 +999,7 @@ details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):focus-w
 }
 .bc-main .field__labelrow .field__toggle:has(input:checked)::after { opacity: 1; }
 /* A computed chart's cards arrive in order, on every chart form and the big
-   three; the first-reading prompt under them arrives with the first. The
+   three; the first-reading prompt under the wheel arrives with the first. The
    results of the moon phase, numerology, Saturn and the solar and lunar
    returns settle in as one block on the same step: each lands in view or is
    scrolled to. (The transits' result lands below the fold, where an arrival
@@ -1023,4 +1038,24 @@ details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):focus-w
   .bc-main .field__labelrow .field__toggle::before { transition: opacity 0s; }
   .bc-main .field__labelrow .field__toggle::after { transition: opacity var(--dur-1) var(--ease); }
   .bc-main .field__labelrow .field__toggle:has(input:checked)::before { transition: opacity 0s var(--dur-1); }
+}
+
+/* Pages flow into each other (ZOD-231). Same-site navigations crossfade in
+   180ms; the nav bar and a horoscope's header hold still while the rest of
+   the page changes. CSS only: no script, no client router, no prefetch.
+   Browsers without cross-document view transitions, and anyone who asks
+   for reduced motion, load pages exactly as before. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: var(--dur-1);
+    animation-timing-function: var(--ease);
+  }
+  /* The nav holds still: no move or resize, and it stays on top of a hero
+     that only exists on the new page (those are drawn last by default). */
+  ::view-transition-group(site-nav) { z-index: 1; animation: none; }
+  ::view-transition-old(site-nav) { animation: none; opacity: 0; }
+  ::view-transition-new(site-nav) { animation: none; }
 }

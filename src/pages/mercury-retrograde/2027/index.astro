@@ -29,8 +29,7 @@ const windows = mercuryWindows
     from: new Date(r.from),
     to: r.to ? new Date(r.to) : null,
     fromIso: r.from,
-    // The station instants printed below are NASA JPL Horizons' (src/lib/nasa-instants.ts);
-    // the id, the dates and the degrees keep the committed sky data, as the calendar file does.
+    // Use the Horizons result when the committed lookup matches this calculation.
     rxAt: new Date(nasaStationAt('Mercury', r.from) ?? r.from),
     directAt: r.to ? new Date(nasaStationAt('Mercury', r.to) ?? r.to) : null,
     shadowFrom: r.preShadowStart ? new Date(r.preShadowStart) : null,
@@ -164,7 +163,7 @@ const jsonLd = [
       <div class="core tinted rx-now__core">
         <span class="mono--label">Calendar file</span>
         <strong class="rx-now__line">
-          <a href={`/mercury-retrograde/${YEAR}.ics`}>Add the {YEAR} windows to your calendar</a>
+          <a href={`/mercury-retrograde/${YEAR}.ics`} data-hook-event="calendar_download" data-hook-feed="mercury_retrograde">Add the {YEAR} windows to your calendar</a>
         </strong>
         <span class="rx-now__all mono">
           One event per window, station to station · every year from 2026 on <a href="/mercury-retrograde/">the Mercury retrograde page</a>
@@ -206,8 +205,8 @@ const jsonLd = [
       <WorldTimesTable rows={stationRows} eventLabel="Station" caption={`Mercury's ${YEAR} stations in UTC, New York, London, Kolkata and Sydney`} />
     </div>
     <p class="year-page__check reveal">
-      Station times come from NASA JPL Horizons (the DE441 ephemeris), solved to the second and printed to the minute.
-      The degrees and the shadow dates come from our own engine. <a href="/methodology/#event-times">How we check event times</a>
+      Station times use NASA JPL Horizons where the reference table has a match. The other times, degrees and shadow dates come from our engine.
+      <a href="/methodology/#event-times">How we check event times</a>
     </p>
   </section>
 

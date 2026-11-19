@@ -3,31 +3,31 @@
   "ingresses": [
     {
       "planet": "Mercury",
-      "at": "2026-06-01T11:55:48.415Z",
+      "at": "2026-06-01T11:55:43.382Z",
       "sign": "cancer",
       "retrograde": false
     },
     {
       "planet": "Venus",
-      "at": "2026-06-13T10:47:01.853Z",
+      "at": "2026-06-13T10:46:47.596Z",
       "sign": "leo",
       "retrograde": false
     },
     {
       "planet": "Sun",
-      "at": "2026-06-21T08:25:13.087Z",
+      "at": "2026-06-21T08:24:30.347Z",
       "sign": "cancer",
       "retrograde": false
     },
     {
       "planet": "Mars",
-      "at": "2026-06-28T19:29:43.622Z",
+      "at": "2026-06-28T19:29:14.359Z",
       "sign": "gemini",
       "retrograde": false
     },
     {
       "planet": "Jupiter",
-      "at": "2026-06-30T05:56:23.952Z",
+      "at": "2026-06-30T05:52:21.752Z",
       "sign": "leo",
       "retrograde": false
     }
@@ -35,24 +35,24 @@
   "lunations": [
     {
       "type": "new",
-      "at": "2026-06-15T02:54:11.458Z",
+      "at": "2026-06-15T02:54:10.139Z",
       "sign": "gemini",
-      "degree": 24.049772981953538
+      "degree": 24.050229889904585
     },
     {
       "type": "full",
-      "at": "2026-06-29T23:56:39.855Z",
+      "at": "2026-06-29T23:56:41.256Z",
       "sign": "capricorn",
-      "degree": 8.246890985801997
+      "degree": 8.24738728052921
     }
   ],
   "stations": [
     {
       "planet": "Mercury",
-      "at": "2026-06-29T17:37:11.212Z",
+      "at": "2026-06-29T17:35:59.608Z",
       "type": "retrograde",
       "sign": "cancer",
-      "degree": 26.25786496529207
+      "degree": 26.25735920250753
     }
   ],
   "aspects": [
@@ -61,110 +61,110 @@
       "b": "Saturn",
       "type": "sextile",
       "orb": 0,
-      "at": "2026-06-02T22:45:43.201Z",
+      "at": "2026-06-02T22:48:45.548Z",
       "aSign": "gemini",
-      "aDegree": 12.40445873119171,
+      "aDegree": 12.407044116270754,
       "bSign": "aries",
-      "bDegree": 12.404458474348019
+      "bDegree": 12.407043500600366
     },
     {
       "a": "Mercury",
       "b": "Neptune",
       "type": "square",
       "orb": 0,
-      "at": "2026-06-04T00:21:49.130Z",
+      "at": "2026-06-04T00:18:23.712Z",
       "aSign": "cancer",
-      "aDegree": 4.119509540740921,
+      "aDegree": 4.1162846881201745,
       "bSign": "aries",
-      "bDegree": 4.119509158585913
+      "bDegree": 4.116283464778917
     },
     {
       "a": "Venus",
       "b": "Jupiter",
       "type": "conjunction",
       "orb": 0,
-      "at": "2026-06-09T19:58:36.997Z",
+      "at": "2026-06-09T19:59:12.510Z",
       "aSign": "cancer",
-      "aDegree": 25.7773439230225,
+      "aDegree": 25.77801043665221,
       "bSign": "cancer",
-      "bDegree": 25.777343104984766
+      "bDegree": 25.778010314110077
     },
     {
       "a": "Mercury",
       "b": "Saturn",
       "type": "square",
       "orb": 0,
-      "at": "2026-06-10T05:37:08.246Z",
+      "at": "2026-06-10T05:38:42.179Z",
       "aSign": "cancer",
-      "aDegree": 12.97025552434161,
+      "aDegree": 12.972765688755317,
       "bSign": "aries",
-      "bDegree": 12.970255471139637
+      "bDegree": 12.97276561949485
     },
     {
       "a": "Venus",
       "b": "Uranus",
       "type": "sextile",
       "orb": 0,
-      "at": "2026-06-15T22:52:48.208Z",
+      "at": "2026-06-15T22:52:51.339Z",
       "aSign": "leo",
-      "aDegree": 2.912792629881551,
+      "aDegree": 2.913082336427351,
       "bSign": "gemini",
-      "bDegree": 2.9127920388041844
+      "bDegree": 2.913081494869914
     },
     {
       "a": "Venus",
       "b": "Neptune",
       "type": "trine",
       "orb": 0,
-      "at": "2026-06-17T03:45:22.740Z",
+      "at": "2026-06-17T03:41:00.880Z",
       "aSign": "leo",
-      "aDegree": 4.3090920434148074,
+      "aDegree": 4.305852364561588,
       "bSign": "aries",
-      "bDegree": 4.309091979091193
+      "bDegree": 4.305851652090212
     },
     {
       "a": "Venus",
       "b": "Pluto",
       "type": "opposition",
       "orb": 0,
-      "at": "2026-06-17T20:37:58.178Z",
+      "at": "2026-06-17T20:38:08.807Z",
       "aSign": "leo",
-      "aDegree": 5.124105148021897,
+      "aDegree": 5.124534416916504,
       "bSign": "aquarius",
-      "bDegree": 5.124104553159441
+      "bDegree": 5.12453425339686
     },
     {
       "a": "Venus",
       "b": "Saturn",
       "type": "trine",
       "orb": 0,
-      "at": "2026-06-25T11:58:48.807Z",
+      "at": "2026-06-25T12:01:45.138Z",
       "aSign": "leo",
-      "aDegree": 13.924271492033085,
+      "aDegree": 13.926867103213965,
       "bSign": "aries",
-      "bDegree": 13.924271360242528
+      "bDegree": 13.92686633728556
     },
     {
       "a": "Sun",
       "b": "Neptune",
       "type": "square",
       "orb": 0,
-      "at": "2026-06-25T22:43:55.591Z",
+      "at": "2026-06-25T22:38:24.518Z",
       "aSign": "cancer",
-      "aDegree": 4.384976885969309,
+      "aDegree": 4.381727624588223,
       "bSign": "aries",
-      "bDegree": 4.384976211625087
+      "bDegree": 4.381727510703342
     },
     {
       "a": "Mars",
       "b": "Jupiter",
       "type": "sextile",
       "orb": 0,
-      "at": "2026-06-28T04:49:20.815Z",
+      "at": "2026-06-28T04:50:21.953Z",
       "aSign": "taurus",
-      "aDegree": 29.5636266646452,
+      "aDegree": 29.56436730649284,
       "bSign": "cancer",
-      "bDegree": 29.563626188775288
+      "bDegree": 29.564367252744262
     }
   ]
 }
