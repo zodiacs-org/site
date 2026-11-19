@@ -744,7 +744,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // Reader levels on the birth chart page: the first visit question, the level switch and the
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
-  ['/birth-chart/', '2026-11-18'] as const,
+  ['/birth-chart/', '2026-11-19'] as const,
 ]);
 
 function getLastmod(loc: string): string {
