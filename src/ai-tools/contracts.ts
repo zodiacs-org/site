@@ -18,7 +18,7 @@ import { yearScoreData, yearScoreInput, yearScoreSelfInput } from './features/ye
 import { solarReturnData, solarReturnInput } from './features/solar-return';
 import { numerologyData, numerologyInput } from './features/numerology';
 
-export const AI_VERSION = '0.6.7';
+export const AI_VERSION = '0.6.8';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
 /** The released tools: what the reviewed plugin offers. */
 export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'] as const;
@@ -253,13 +253,28 @@ export const INPUT_SCHEMAS = {
 
 const link = z.object({ title: z.string(), url: z.url() });
 
+// The published connector definitions freeze the ephemeris field separately from the compute API.
+const publishedBackendSchema = {
+  ...COMPUTE_SCHEMAS.Backend,
+  properties: {
+    ...(COMPUTE_SCHEMAS.Backend.properties as Record<string, unknown>),
+    ephemeris: {
+      type: 'object',
+      required: ['name', 'version'],
+      properties: { name: { const: 'astronomy-engine' }, version: { type: 'string' } },
+    },
+  },
+};
+const connectorComputeSchema = (name: string) =>
+  name === 'Backend' ? publishedBackendSchema : COMPUTE_SCHEMAS[name];
+
 /** A compute API schema with its references to other components written out, so it stands alone in a tool's schema. */
 function inlined(schema: unknown): unknown {
   if (Array.isArray(schema)) return schema.map(inlined);
   if (!schema || typeof schema !== 'object') return schema;
   const node = schema as Record<string, unknown>;
   if (typeof node.$ref === 'string') {
-    const component = COMPUTE_SCHEMAS[node.$ref.replace('#/components/schemas/', '')];
+    const component = connectorComputeSchema(node.$ref.replace('#/components/schemas/', ''));
     if (!component) throw new Error(`No compute API component for ${node.$ref}`);
     return inlined(component);
   }
@@ -273,10 +288,11 @@ function inlined(schema: unknown): unknown {
  * the API documents loosely.
  */
 function computeValue(component: string): z.ZodType<Record<string, unknown>> {
-  if (!COMPUTE_SCHEMAS[component]) throw new Error(`No compute API component ${component}`);
+  const schema = connectorComputeSchema(component);
+  if (!schema) throw new Error(`No compute API component ${component}`);
   return z.unknown()
     .refine((value) => typeof value === 'object' && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` })
-    .meta(inlined(COMPUTE_SCHEMAS[component]) as Record<string, unknown>) as z.ZodType<Record<string, unknown>>;
+    .meta(inlined(schema) as Record<string, unknown>) as z.ZodType<Record<string, unknown>>;
 }
 const calculationOf = <R extends z.ZodType>(result: R) => z.object({
   schema: z.string(), result, receipt: computeValue('ComputeReceipt'), backend: computeValue('Backend'),

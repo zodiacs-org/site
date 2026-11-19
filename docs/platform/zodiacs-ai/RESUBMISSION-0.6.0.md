@@ -6,6 +6,20 @@ newest first, record what has been since. Each portal step needs Dias's
 separate yes, and Dias confirms every attestation. The Claude side is
 in `claude-directory/RESYNC-0.6.0.md`.
 
+## Zodiacs 0.6.8 prepared, 18 November 2026
+
+Zodiacs 0.6.8 is the version prepared for the resubmission
+(`integrations/packages/zodiacs-sky-0.6.8.zip`, with Developer 0.3.52). Dias
+approved the invented examples on 17 November and the release on 18 November.
+The examples in the tools' field descriptions name an invented birth, place
+and wedding, and two review cases in the sky manifest and
+`integrations/chatgpt/chatgpt-app-submission.json` now use invented details:
+the Mercury question comes from a reader in Mexico City, and the wedding card
+is for 18 September 2027 at 16:30 in Lisbon, Portugal. No tool, schema or
+behaviour changes. Nothing has been uploaded or submitted. The live server
+reports 0.6.8 only once this is merged and deployed, and the upload waits for
+the 0.6.6 review to end and for Dias's yes.
+
 ## Hosted server at 0.6.7, 13 November 2026
 
 PRs #970 and #971 went live on 13 November, and the hosted server now

@@ -33,6 +33,7 @@ import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
 import { LATEST_PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS } from '@modelcontextprotocol/client';
+import { NATAL_RECEIPT_CONVENTION_SETS } from '@zodiacs/engine/receipt';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const SERVER = resolve(ROOT, 'examples/mcp-server/server.mjs');
@@ -436,10 +437,11 @@ try {
   check('lists the conventions and methodology resources', JSON.stringify(resources.map((row) => row.uri))
     === JSON.stringify(['zodiacs://conventions', 'zodiacs://methodology']), resources.map((row) => row.uri));
   const conventions = JSON.parse((await client.readResource({ uri: 'zodiacs://conventions' })).contents[0]?.text ?? '{}');
+  const recordConventions = canonical(JSON.parse(record.record).receipt.conventions);
   check('the conventions resource is the vocabulary the records carry',
-    canonical(conventions.sets?.[0]?.conventions ?? null) === canonical(JSON.parse(record.record).receipt.conventions)
-    // 1.1.0-rc.1 writes the sixth set, and reads the five before it.
-    && conventions.sets.length === 6, conventions.sets?.map((set) => set.writtenBy));
+    conventions.sets?.some((set) => set.current && canonical(set.conventions) === recordConventions)
+    && canonical(conventions.sets.map((set) => set.conventions)) === canonical(NATAL_RECEIPT_CONVENTION_SETS),
+    conventions.sets?.map((set) => set.writtenBy));
   const methodology = (await client.readResource({ uri: 'zodiacs://methodology' })).contents[0]?.text ?? '';
   check('the methodology resource names the engine and the site\'s methodology page',
     methodology.includes(`@zodiacs/engine ${capabilities.engine.version}`)

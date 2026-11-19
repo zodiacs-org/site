@@ -138,7 +138,7 @@ const controls=[
  ['Juneau','1867-10-18','America/Juneau','1867-10-19T00:31:13Z','cancer'],
  ['ordinary singleton','1990-01-04','Asia/Bangkok'],
  ['ordinary two signs','1990-01-01','Europe/London'],
- ['same-date gap','2024-10-06','Australia/Lord_Howe'],
+ ['same-date gap','2012-10-07','Australia/Lord_Howe'],
  ['repeated Apia','1892-07-04','Pacific/Apia'],
 ];
 try{

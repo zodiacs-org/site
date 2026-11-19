@@ -4,7 +4,8 @@ import { callbackUrl, publicAddress, signedHeaders, verifyCallback } from './cal
 import { destinationVault, signingKey } from './crypto';
 import { FILTERS } from './contracts';
 import { configuredSkyWatch } from './service';
-import { calculateWindow, deliveryOutcome, fillWatchLedger } from './worker';
+import { calculateWindow, deliveryOutcome, fillWatchLedger, reconcileWatchEvents } from './worker';
+import type { WatchIdentity } from './contracts';
 
 describe('Sky Watch safety and event ledger', () => {
   it.each(['http://example.com', 'https://127.1/', 'https://[::1]/', 'https://u:p@example.com', 'https://example.com:444/a', 'https://example.com/#x', 'https://example.com./', 'file:///tmp/callback'])('refuses unsafe callback syntax %s', url => {
@@ -69,20 +70,50 @@ describe('Sky Watch safety and event ledger', () => {
     expect(deliveryOutcome(204, 1).outcome).toBe('sent');
   });
   it('does not advance a failed search; catch-up is bounded and uses fixed UTC partitions', async () => {
-    const rpc = vi.fn(async (_operation: string) => '2026-10-01T00:00:00Z');
+    const rpc = vi.fn(async (operation: string) => operation === 'timingwindow'
+      ? { from: '2026-10-01T00:00:00Z', existing: [] } : true);
     await expect(fillWatchLedger(rpc as any, Date.parse('2026-10-02T12:00:00Z'), async () => { throw new Error('refused'); })).rejects.toThrow();
-    expect(rpc.mock.calls.map(args => args[0])).toEqual(['window']);
+    expect(rpc.mock.calls.map(args => args[0])).toEqual(['timingwindow']);
     rpc.mockClear(); const calculate = vi.fn(async () => []);
     expect(await fillWatchLedger(rpc as any, Date.parse('2026-10-06T12:00:00Z'), calculate)).toBe(3);
-    expect(calculate).toHaveBeenCalledWith('2026-10-01T00:00:00Z', '2026-10-02T00:00:00.000Z');
+    expect(calculate).toHaveBeenCalledWith('2026-10-01T00:00:00Z', '2026-10-02T00:00:00.000Z', []);
   });
   it('reproduces engine event IDs with full receipts and no birth data', async () => {
     const first = await calculateWindow('2026-10-10T00:00:00Z', '2026-10-11T00:00:00Z');
     expect(first.length).toBeGreaterThan(0);
     expect(await calculateWindow('2026-10-10T00:00:00Z', '2026-10-11T00:00:00Z')).toEqual(first);
     for (const event of first) {
-      expect(event.eventId).toMatch(/^evt_[a-f0-9]{64}$/); expect(event.data.receipt.search.completeness).toBe('tested-not-proven');
+      expect(event.eventId).toMatch(/^evt_[a-f0-9]{64}$/); expect(event.data.receipt.search?.completeness).toBe('tested-not-proven');
       expect(event).not.toHaveProperty('type'); expect(event.cursor).toBeNull();
     }
+  });
+
+  it('ingests the corrected time with the existing ID even when the event crosses midnight', async () => {
+    const existing: WatchIdentity = {
+      eventId: 'evt_existing', name: 'zodiacs.sky.ingress', timestamp: '2026-10-02T00:06:00Z',
+      data: { event: { kind: 'ingress', body: 'Neptune', sign: 'aries', retrograde: false } },
+    };
+    const timestamp = '2026-10-01T23:49:00Z';
+    const corrected = { name: existing.name, timestamp, data: { event: { ...existing.data.event, at: timestamp } } };
+    const from = '2026-10-01T00:00:00Z';
+    const rpc = vi.fn(async (operation: string) => operation === 'timingwindow' ? { from, existing: [existing] } : true);
+    const calculate = vi.fn(async (_from: string, _to: string, known: readonly WatchIdentity[]) => reconcileWatchEvents([corrected], known));
+    await fillWatchLedger(rpc as any, Date.parse(from), calculate as unknown as typeof calculateWindow);
+    expect(rpc).toHaveBeenCalledWith('timingingest', expect.objectContaining({
+      from, events: [expect.objectContaining({ eventId: existing.eventId, timestamp })],
+    }));
+  });
+
+  it('reuses a newly allocated ID after a time correction and allocates a different ID for the next occurrence', () => {
+    const make = (timestamp: string) => ({
+      name: 'zodiacs.sky.lunation' as const, timestamp, data: { event: { kind: 'lunation', type: 'new', at: timestamp } },
+    });
+    const initial = make('2027-09-30T23:59:00Z');
+    const corrected = make('2027-10-01T00:01:00Z');
+    const following = make('2027-10-30T00:00:00Z');
+    const [stored] = reconcileWatchEvents([initial], []);
+    const [revised, next] = reconcileWatchEvents([corrected, following], [stored]);
+    expect(revised).toEqual({ eventId: stored.eventId, ...corrected });
+    expect(next.eventId).not.toBe(stored.eventId);
   });
 });
