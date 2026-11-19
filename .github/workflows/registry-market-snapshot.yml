@@ -18,7 +18,7 @@ jobs:
   snapshot:
     name: Archive daily market context
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 150
     permissions:
       contents: write
       pull-requests: write

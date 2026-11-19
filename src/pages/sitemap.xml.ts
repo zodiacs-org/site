@@ -20,6 +20,7 @@ import {
   BIRTHDAY_CUSP_OG_MODIFIED_AT,
   BIRTHDAY_FAMOUS_LINE_MODIFIED_AT,
   PEOPLE_TEMPLATE_MODIFIED_AT,
+  de440UpdatedDate,
   lastmodDate,
   latestModifiedAt,
   terminalResearchLastmod,
@@ -428,6 +429,9 @@ const CONNECTOR_PAGE_ROUTES = [
   '/developers/ai/', '/developers/docs/', '/developers/docs/astrology-mcp-server/', '/developers/support/',
 ] as const;
 
+// The /people/ hub began linking the Fortune 500 CEO sign study; the hub alone, not each person page.
+const PEOPLE_HUB_MODIFIED_AT = '2026-11-17T00:00:00.000Z';
+
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
   // The moon and alignment pages of the coming twelve months carry fuller readings (ZOD-221, decision J).
@@ -615,8 +619,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // draw them, so a first paint mid-parse no longer moves them; on the day of the daily edition it was built with.
   ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
     .map((loc) => [loc, '2026-10-27'] as const),
-  // The assistant showcase, which lists the Grok template from the day of the daily edition it was built with.
-  ['/apps/', '2026-11-09'] as const,
+  // The assistant showcase, which lists the Grok template from the day of the daily edition it was built with,
+  // and links the per-assistant pages (three from 16 November, Claude Code from 17 November).
+  ['/apps/', '2026-11-17'] as const,
+  // One landing page per assistant: Claude, ChatGPT and Cursor first published on 16 November, Claude Code on
+  // 17 November, when each page started linking the other three.
+  ...['/apps/claude/', '/apps/chatgpt/', '/apps/cursor/', '/apps/claude-code/'].map((loc) => [loc, '2026-11-17'] as const),
   // The showcase's entry links, first published with the showcase.
   ['/tools/', '2026-10-28'] as const,
   ['/developers/ai/', '2026-10-28'] as const,
@@ -710,10 +718,29 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
   // The Italian season pages' reading-confidence label, 13 November, last so this date wins.
   ...SIGNS.map((sign) => [`/it/seasons/${sign.slug}/`, '2026-11-13'] as const),
+  // Someone else's chart: the handoff note no longer says the URL fragment
+  // carries their details. Dated the daily edition this change shipped with.
+  ['/birth-chart/someone-else/', '2026-11-13'] as const,
   // The connector page's 19 live tools, limits, troubleshooting and support contact, the support page's
   // connector section and the MCP guides that count its tools (ZOD-58). The day of the daily edition it was
   // built with, last so this date wins.
   ...CONNECTOR_PAGE_ROUTES.map((loc) => [loc, CONNECTOR_PAGE_LASTMOD] as const),
+  // The AI developer page's sample question names a neutral city, from 16 November; after the connector pages so it wins.
+  ['/developers/ai/', '2026-11-16'] as const,
+  // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
+  // the daily edition it was built with, last so this date wins.
+  // The Fortune 500 CEO Sun sign study, first published 17 November.
+  ['/studies/fortune-500-ceo-signs/', '2026-11-17'] as const,
+  ['/', '2026-11-14'] as const,
+  // The feeds and developer pages list the per-sign and JSON sky-event feeds, 17 November, last so this date wins.
+  ['/feeds/', '2026-11-17'] as const,
+  ['/developers/', '2026-11-17'] as const,
+  // The Sky calendar pages' Google and Apple Calendar steps (every language), 17 November, last so this date wins.
+  ...['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/sky-calendar/`, '2026-11-17'] as const),
+  // Numerology's visual restyle (emblem, letter key, life path tiles, shared entrance motion), last so it wins.
+  ['/numerology/', '2026-11-17'] as const,
+  // The life path pages' seal, hued chips and entrance motion, last so it wins.
+  ...LIFE_PATH_NUMBERS.map((n) => [`/numerology/life-path/${n}/`, '2026-11-17'] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -803,6 +830,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/learn/how-to-read-a-birth-chart/', priority: 0.8 },
     { loc: '/learn/communication/', priority: 0.8 },
     { loc: '/learn/zodiac-dates/', priority: 0.8 },
+    { loc: '/studies/fortune-500-ceo-signs/', priority: 0.7 },
     { loc: '/learn/glossary/', priority: 0.8 },
     { loc: '/learn/planets/', priority: 0.7 },
     { loc: '/learn/houses/', priority: 0.7 },
@@ -820,6 +848,10 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/developers/mcp/', priority: 0.6 },
     { loc: '/developers/ai/', priority: 0.6 },
     { loc: '/apps/', priority: 0.7 },
+    { loc: '/apps/claude/', priority: 0.6 },
+    { loc: '/apps/chatgpt/', priority: 0.6 },
+    { loc: '/apps/cursor/', priority: 0.6 },
+    { loc: '/apps/claude-code/', priority: 0.6 },
     { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/developers/conventions/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
@@ -884,6 +916,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       priority: 0.7,
       lastmod: lastmodDate(latestModifiedAt(
         PEOPLE_TEMPLATE_MODIFIED_AT,
+        PEOPLE_HUB_MODIFIED_AT,
         ...INDEXABLE_PEOPLE.map((person) => person.reviewedAtUtc),
       )),
     }] : []),
@@ -1045,6 +1078,10 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-12');
     }
   }
+  // The Almanac lists its first "Your sky this week" article.
+  for (const url of urls) {
+    if (url.loc === '/almanac/') url.lastmod = laterDate(url.lastmod, '2026-11-18');
+  }
   // Every sitemap page within three clicks of home (ZOD-221): the tools hub
   // links the sign seasons and the Almanac, and the translated homes link
   // their language's sign seasons. Last, so these win.
@@ -1066,6 +1103,15 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   // instant solved on NASA JPL Horizons (ZOD-211).
   for (const url of urls) {
     if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
+  }
+  // The privacy page says the calendar and RSS feed link events carry only
+  // fixed categories.
+  for (const url of urls) {
+    if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
+  }
+  for (const url of [...urls, ...localizedUrls]) {
+    const engineUpdated = de440UpdatedDate(url.loc);
+    if (engineUpdated) url.lastmod = laterDate(url.lastmod, engineUpdated);
   }
   return [
     ...urls,

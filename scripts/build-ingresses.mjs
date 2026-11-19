@@ -1,7 +1,8 @@
 /*
  * Computes every sign-occupancy window per planet — when Venus is in
  * Scorpio, when Pluto's Aquarius era runs — into committed JSON the
- * placement pages render as receipts.
+ * placement pages and connector tools read. The engine's default DE440
+ * source supplies apparent geocentric longitude.
  *
  *   npm run data:ingresses   →  src/data/ingresses.json
  *
@@ -21,11 +22,11 @@
  * Refresh yearly alongside sky.json so the fast planets stay ahead of
  * the calendar.
  */
-import './lib/deltat-install.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { MakeTime, GeoVector, RotateVector, Rotation_EQJ_ECT, Body } from 'astronomy-engine';
+import { defaultEphemeris } from '@zodiacs/engine';
+import { bodyLongitude } from '@zodiacs/engine/internal';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'src/data/ingresses.json');
@@ -44,16 +45,12 @@ const GROUPS = [
   { planets: ['Uranus', 'Neptune', 'Pluto'], from: Date.UTC(1900, 0, 1), to: Date.UTC(2100, 0, 1) },
 ];
 
-const norm = (x) => ((x % 360) + 360) % 360;
-
-function lonAt(planet, date) {
-  const t = MakeTime(date);
-  const vec = GeoVector(Body[planet], t, true);
-  const ecl = RotateVector(Rotation_EQJ_ECT(t), vec);
-  return norm((Math.atan2(ecl.y, ecl.x) * 180) / Math.PI);
+const backend = defaultEphemeris();
+if (backend.name !== 'de440' || !backend.de440.opened) {
+  throw new Error('The engine must open its default DE440 pack to build the ingress table.');
 }
 
-const signIndexAt = (planet, date) => Math.floor(lonAt(planet, date) / 30);
+const signIndexAt = (planet, date) => Math.floor(bodyLongitude(planet, date) / 30);
 
 /** Bisect the boundary where signIndex flips from `prev`. */
 function refine(planet, lo, hi, prev) {

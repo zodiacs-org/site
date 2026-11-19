@@ -94,7 +94,7 @@ describe('the 2027 sky everyone shares', () => {
     expect(jupiter.at).toBe('2027-01-01T00:00:00.000Z');
     expect(jupiter.underWay).toBe(true);
     expect(jupiter.detail).toContain('December 13, 2026 to April 13');
-    expect(jupiter.dates).toEqual([{ at: '2027-04-13T02:08:29.765Z', label: 'turns direct' }]);
+    expect(jupiter.dates).toEqual([{ at: '2027-04-13T02:11:31.698Z', label: 'turns direct' }]);
   });
 
   it('has Jupiter entering Virgo on July 26 and the slow planets where they spend the year', () => {
