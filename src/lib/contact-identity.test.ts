@@ -10,7 +10,6 @@ const publicContactPages = [
   'src/pages/corrections/index.astro',
   'src/pages/privacy/index.astro',
   'src/pages/terms/index.astro',
-  'src/pages/support/index.astro',
   'src/pages/es/privacy/index.astro',
   'src/pages/fr/privacy/index.astro',
   'src/pages/pt/privacy/index.astro',
