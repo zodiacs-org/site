@@ -1,0 +1,115 @@
+name: Site Publish
+
+# Lands one verified publication branch on the default branch with the owner's
+# token. The publishing workflows (Daily Sky, Pulse Refresh, Race, Registry
+# Market Snapshot, Transits) build and verify a package, push it to a
+# publish/* branch with the workflow token, and dispatch this workflow.
+#
+# Why a separate workflow: GitHub holds the pull_request checks of a pull
+# request the workflow token opens until a person approves them, and the
+# protection rule on main refuses the merge while they wait (#1128,
+# 2026-11-19). A pull request the owner opens runs its checks normally. The
+# owner's token lives only here, scoped to the protected environment
+# site-publish-production, and is used for nothing but opening that one pull
+# request, waiting for every required check, merging it and deleting the
+# branch. Nothing is bypassed: a failing, missing or slow check leaves the
+# pull request open for a person.
+#
+# Only trusted code runs with the token: the default branch is checked out,
+# the publication branch is only fetched as data, and every input is checked
+# before the token is touched.
+
+run-name: Publish ${{ inputs.branch }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Publication branch to land (publish/...)"
+        required: true
+        type: string
+      verified:
+        description: "Base revision the package was verified against"
+        required: true
+        type: string
+      head:
+        description: "Exact commit of the publication branch"
+        required: true
+        type: string
+      title:
+        description: "Pull request and squash commit title"
+        required: true
+        type: string
+      body:
+        description: "Pull request body"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-publish-${{ inputs.branch }}
+  cancel-in-progress: false
+
+jobs:
+  land:
+    name: Land the publication pull request
+    runs-on: ubuntu-latest
+    environment: site-publish-production
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    timeout-minutes: 110
+    steps:
+      - name: Check that the owner token is saved
+        env:
+          HAS_TOKEN: ${{ secrets.SITE_PUBLISH_TOKEN != '' }}
+        run: |
+          if [ "$HAS_TOKEN" != "true" ]; then
+            echo "::error title=The owner token is not saved::Save a fine-grained token for this repository (Contents, Pull requests and Actions read and write; Checks and Metadata read) as the SITE_PUBLISH_TOKEN secret of the site-publish-production environment. The publishing workflow falls back to its own pull request, which needs a person." >&2
+            exit 1
+          fi
+
+      - name: Check who asked
+        # Only the publishing workflows (the workflow token) or the owner may
+        # hand a branch to the owner's token. Anyone else's run stops here,
+        # and the publishing workflow falls back to its own pull request.
+        env:
+          ASKED_BY: ${{ github.triggering_actor }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          if [ "$ASKED_BY" != "github-actions[bot]" ] && [ "$ASKED_BY" != "$OWNER" ]; then
+            echo "::error title=Not a publishing workflow::Site Publish lands only what a publishing workflow or the owner hands it; $ASKED_BY asked." >&2
+            exit 1
+          fi
+
+      - name: Check the inputs
+        env:
+          BRANCH: ${{ inputs.branch }}
+          VERIFIED: ${{ inputs.verified }}
+          HEAD_SHA: ${{ inputs.head }}
+          TITLE: ${{ inputs.title }}
+        run: |
+          [[ "$BRANCH" =~ ^publish/[a-z0-9-]+$ ]] || { echo "::error::Not a publication branch: $BRANCH" >&2; exit 1; }
+          [[ "$VERIFIED" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::verified is not a commit id" >&2; exit 1; }
+          [[ "$HEAD_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::head is not a commit id" >&2; exit 1; }
+          [ -n "$TITLE" ] || { echo "::error::title is empty" >&2; exit 1; }
+
+      - name: Checkout the trusted default branch
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Open, check and merge the publication pull request
+        env:
+          BASE: ${{ github.event.repository.default_branch }}
+          BRANCH: ${{ inputs.branch }}
+          VERIFIED: ${{ inputs.verified }}
+          HEAD_SHA: ${{ inputs.head }}
+          TITLE: ${{ inputs.title }}
+          BODY: ${{ inputs.body }}
+          GH_TOKEN: ${{ secrets.SITE_PUBLISH_TOKEN }}
+          PUBLISH_LAND_BRANCH: ${{ inputs.branch }}
+          PUBLISH_LAND_HEAD: ${{ inputs.head }}
+        run: bash scripts/publish-through-pr.sh "$BASE" "$VERIFIED" "$TITLE" "$BODY"

@@ -54,9 +54,9 @@ describe('daily publication operations', () => {
     for (const [name, workflow] of Object.entries({ daily, snapshot, transits, seasonClose, weeklyRecap, pulse })) {
       expect(workflow, name).toContain('pull-requests: write');
       expect(workflow, name).toContain('actions: write');
-      // The owner's token, when saved, opens the publication pull request so its
-      // own checks run without waiting for approval (#1128, 2026-11-19).
-      expect(workflow, name).toContain('GH_TOKEN: ${{ secrets.SITE_PUBLISH_TOKEN || github.token }}');
+      expect(workflow, name).toContain('GH_TOKEN: ${{ github.token }}');
+      // The owner's token never reaches a publishing workflow; Site Publish holds it.
+      expect(workflow, name).not.toContain('secrets.');
       expect(workflow, name).toContain('if grep -q "GH006" "$RUNNER_TEMP/publish-push.err"; then');
       expect(workflow, name).toContain('bash scripts/publish-through-pr.sh');
     }
@@ -134,10 +134,27 @@ describe('daily publication operations', () => {
     expect(publisher).toContain('SITE_PUBLISH_TOKEN');
     // Every copy of a required check must pass, and the merge is pinned to the head.
     expect(publisher).toContain('select(.status != "completed")');
-    expect(publisher).toContain('--match-head-commit');
-    // The owner's token reaches only the one publishing step of each workflow.
-    for (const [name, workflow] of Object.entries({ daily, snapshot, transits, seasonClose, weeklyRecap, pulse })) {
-      expect(workflow.split('SITE_PUBLISH_TOKEN').length - 1, name).toBe(1);
+    expect(publisher).toContain('--match-head-commit "$head_sha"');
+    // The landing is handed to Site Publish (#1128, 2026-11-19), and falls back to
+    // the workflow token only when Site Publish stops at one of its two gates.
+    expect(publisher).toContain('gh workflow run site-publish.yml --ref "$default"');
+    expect(publisher).toContain('"Check that the owner token is saved" or .name == "Check who asked"');
+    expect(publisher.indexOf('hand_off()')).toBeLessThan(publisher.indexOf('gh pr create'));
+    // In land mode the branch is data: it must sit at exactly the handed-over commit.
+    expect(publisher).toContain('if [ "$(git rev-parse FETCH_HEAD)" != "$head_sha" ]; then');
+
+    const sitePublish = await read('.github/workflows/site-publish.yml');
+    expect(sitePublish).toContain('environment: site-publish-production');
+    expect(sitePublish).toContain('permissions:\n  contents: read');
+    expect(sitePublish).toContain("if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)");
+    expect(sitePublish).toContain('ref: ${{ github.event.repository.default_branch }}');
+    expect(sitePublish).toContain('persist-credentials: false');
+    expect(sitePublish).toContain('[[ "$BRANCH" =~ ^publish/[a-z0-9-]+$ ]]');
+    // The token appears in exactly two places: the presence check and the landing step.
+    expect(sitePublish.split('secrets.SITE_PUBLISH_TOKEN').length - 1).toBe(2);
+    // No input is expanded straight into a shell line.
+    for (const line of sitePublish.split('\n').filter((l) => /^\s*(run:|\[|if \[)/u.test(l))) {
+      expect(line).not.toContain('${{');
     }
     expect(publisher).toContain('Allow GitHub Actions to create and approve pull requests');
     expect(publisher).not.toContain('--admin');

@@ -86,7 +86,7 @@ jobs:
       - name: Commit if today's observation changed
         env:
           TARGET_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || github.event.repository.default_branch }}
-          GH_TOKEN: ${{ secrets.SITE_PUBLISH_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           FILES="public/assets/data/registry-market-history.v1.json public/assets/registry-outlook.json src/data/registry-research/drafts.json src/data/registry-research/publication.json public/assets/registry-research-feed.json public/assets/data/registry-research public/registry"
           if git diff --quiet -- $FILES; then

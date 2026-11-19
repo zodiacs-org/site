@@ -45,7 +45,7 @@ jobs:
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           ENGRAVED: ${{ steps.close.outputs.engraved }}
-          GH_TOKEN: ${{ secrets.SITE_PUBLISH_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if git diff --quiet -- src/data/games/champions.json; then
             echo "No newly closed season to engrave."
