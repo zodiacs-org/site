@@ -110,6 +110,7 @@
     "test:saved-records:native": "node tests/saved-natal-storage-drive.mjs",
     "test:bio:browser": "node tests/bio-drive.mjs",
     "test:horoscopes:browser": "node tests/horoscope-program-drive.mjs",
+    "test:adversarial-mcp": "ADVERSARIAL_MCP=1 vitest run tests/adversarial-astronomy-mcp.spec.ts --reporter=verbose",
     "test:privacy-leak": "PRIVACY_LEAK=1 PRIVACY_LEAK_BASE_URL=\"${BASE_URL:-}\" vitest run tests/privacy-leak.spec.ts --reporter=verbose",
     "test:phase1:acceptance": "node tests/phase1-acceptance-drive.mjs",
     "test:phase1:evidence": "vitest run scripts/phase1-acceptance-evidence.test.mjs",

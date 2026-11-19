@@ -12,8 +12,15 @@
  *                         deployment's own host, to obtain Vercel's bypass cookie, and
  *                         is never printed or written to the report.
  *   PRIVACY_LEAK_REPORT   where the JSON report goes (default: the system temp directory).
- *   PRIVACY_LEAK_ALLOW_HOSTS   comma-separated hosts other than the site's own that may
- *                         be contacted (none by default). Their requests are scanned too.
+ *   PRIVACY_LEAK_ALLOW_HOSTS   comma-separated hosts other than the site's own that the
+ *                         pages may address (default: plausible.io, the analytics
+ *                         processor the privacy page names). Any other host fails the run.
+ *   PRIVACY_LEAK_THIRD_PARTY   "block" (default): a request to another host is recorded,
+ *                         scanned and then dropped, so the run itself sends nothing to a
+ *                         third party. "allow-get": its GET requests go through (an
+ *                         analytics script then loads and tries to report), while every
+ *                         other method is still recorded, scanned and dropped, so no
+ *                         analytics event is ever written by this test.
  *
  * (The npm script hands BASE_URL over as PRIVACY_LEAK_BASE_URL, because Vitest
  * sets BASE_URL itself inside the test process.)
@@ -58,7 +65,8 @@ const ENABLED = process.env.PRIVACY_LEAK === '1';
 const EXTERNAL = (process.env.PRIVACY_LEAK_BASE_URL ?? '').trim().replace(/\/$/, '');
 const BYPASS = (process.env.VERCEL_BYPASS ?? '').trim();
 const REPORT_PATH = process.env.PRIVACY_LEAK_REPORT ?? join(tmpdir(), 'privacy-leak-report.json');
-const ALLOWED_HOSTS = (process.env.PRIVACY_LEAK_ALLOW_HOSTS ?? '').split(',').map((host) => host.trim().toLowerCase()).filter(Boolean);
+const ALLOWED_HOSTS = (process.env.PRIVACY_LEAK_ALLOW_HOSTS ?? 'plausible.io').split(',').map((host) => host.trim().toLowerCase()).filter(Boolean);
+const THIRD_PARTY = process.env.PRIVACY_LEAK_THIRD_PARTY === 'allow-get' ? 'allow-get' : 'block';
 
 interface Person {
   label: string;
@@ -195,6 +203,8 @@ function scan(recorded: Recorded[], needles: Needle[]): Leak[] {
 
 /** Runs before any site script, in every frame: reports each way a page can send bytes. */
 function installPageHooks(): void {
+  // Analytics scripts stay silent in an automated browser. Here they must behave as they do for a visitor.
+  try { Object.defineProperty(Navigator.prototype, 'webdriver', { configurable: true, get: () => false }); } catch { /* left as it is */ }
   const report = (kind: string, url: unknown, body?: unknown) => {
     let text = '';
     try {
@@ -305,6 +315,18 @@ class Recorder {
   }
 }
 
+/** A dropped connection to a deployment is tried again, twice, a few seconds apart. */
+async function fetchWithRetry(url: string): Promise<Response> {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await fetch(url, BYPASS ? { headers: { 'x-vercel-protection-bypass': BYPASS } } : undefined);
+    } catch (error) {
+      if (attempt === 2) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 3_000));
+    }
+  }
+}
+
 interface FlowResult { name: string; recorder: Recorder; leaks: Leak[]; pageUrl: string; storageKeys: string[]; cookies: number; extra: Record<string, unknown> }
 
 describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browser during a calculation', () => {
@@ -328,7 +350,7 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
 
     // The needles are only as good as the fixture: each city must be in the served file with these coordinates.
     for (const person of [PERSON_A, PERSON_B, PERSON_C]) {
-      const response = await fetch(`${base}/data/cities/${person.typed[0]!.toLowerCase()}.json`, BYPASS ? { headers: { 'x-vercel-protection-bypass': BYPASS } } : undefined);
+      const response = await fetchWithRetry(`${base}/data/cities/${person.typed[0]!.toLowerCase()}.json`);
       expect(response.ok, `city file for ${person.typed}`).toBe(true);
       const rows = await response.json() as [string, string | 0, number, number, number, number, number, number][];
       const row = rows.find((candidate) => candidate[0] === person.city && candidate[4] === person.lat100 && candidate[5] === person.lon100);
@@ -355,6 +377,12 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
           serviceWorkers: flow.recorder.serviceWorkers.map(pathOf),
           hosts: [...new Set(requests.map((entry) => new URL(entry.url).host))],
           notGet: requests.filter((entry) => entry.method !== 'GET').map((entry) => `${entry.method} ${pathOf(entry.url)}`),
+          thirdParty: [...new Set(requests.filter((entry) => new URL(entry.url).host !== new URL(base).host).map((entry) => {
+            let keys = '';
+            try { keys = entry.body ? ` body keys: ${Object.keys(JSON.parse(entry.body) as object).join(',')}; event: ${String((JSON.parse(entry.body) as { n?: unknown }).n ?? '')}; props: ${Object.keys(((JSON.parse(entry.body) as { p?: object }).p) ?? {}).join(',')}` : ''; } catch { keys = ' body: not JSON'; }
+            return `${entry.phase}: ${entry.method} ${new URL(entry.url).host}${pathOf(entry.url)}${keys}`;
+          }))],
+          thirdPartyMode: THIRD_PARTY,
           withQueryString: [...new Set(requests.filter((entry) => new URL(entry.url).search).map((entry) => new URL(entry.url).search.replace(/=.*$/u, '=…')))],
           webSockets: flow.recorder.entries.filter((entry) => entry.method === 'WEBSOCKET').length,
           pageCalls: flow.recorder.entries.filter((entry) => entry.channel === 'page-hook').length,
@@ -380,6 +408,11 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     }
     const recorder = new Recorder();
     await recorder.attach(context);
+    // A request to any other host is recorded (the request event fires first) and then stopped here.
+    const own = new URL(base).host;
+    await context.route((url) => /^https?:$/u.test(url.protocol) && url.host !== own, (route) => (
+      THIRD_PARTY === 'allow-get' && route.request().method() === 'GET' ? route.continue() : route.abort('blockedbyclient')
+    ));
     return { context, recorder };
   }
 
@@ -449,9 +482,18 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     expect(flow.recorder.entries.some((entry) => entry.channel === 'page-hook'), `${flow.name}: the in-page wrappers ran`).toBe(true);
     // The proof: nothing recorded on any channel holds any written form of the birth data.
     expect(flow.leaks, `${flow.name}: leaked birth data`).toEqual([]);
-    // Every request goes to the site's own host.
+    // Requests go to the site's own host, or to a named processor, whose requests were scanned with the rest.
     const foreign = [...new Set(requests.map((entry) => new URL(entry.url).host.toLowerCase()))].filter((host) => host !== new URL(base).host && !ALLOWED_HOSTS.includes(host));
-    expect(foreign, `${flow.name}: hosts other than the site's own`).toEqual([]);
+    expect(foreign, `${flow.name}: hosts other than the site's own and the named processors`).toEqual([]);
+    // What a processor is sent: its own script's address, and events with the page's address and nothing typed.
+    for (const entry of requests.filter((candidate) => new URL(candidate.url).host !== new URL(base).host)) {
+      expect(new URL(entry.url).search, `${flow.name}: query string to ${new URL(entry.url).host}`).toBe('');
+      if (!entry.body) continue;
+      const sent = JSON.parse(entry.body) as Record<string, unknown>;
+      const address = new URL(String(sent.u ?? sent.url ?? origin));
+      expect(`${address.search}${address.hash}`, `${flow.name}: the page address an event carries has no query or fragment`).toBe('');
+      expect(sent.r ?? sent.referrer ?? null, `${flow.name}: an event carries no referrer`).toBeNull();
+    }
     // After the first keystroke the page only downloads files: GET, no body, and no query string a field could ride in.
     const afterTyping = requests.filter((entry) => !entry.serviceWorker && (entry.phase === 'form' || entry.phase === 'submit'));
     expect(afterTyping.filter((entry) => entry.method !== 'GET' || entry.body).map((entry) => `${entry.method} ${entry.url}`), `${flow.name}: writes after typing`).toEqual([]);
