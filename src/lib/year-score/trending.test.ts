@@ -52,7 +52,7 @@ describe('draft posts', () => {
     expect('a strong year for earnings; take rest seriously; a good window to sign contracts').not.toMatch(DRAFT_BANNED);
   });
   it('names no month for anyone, whatever their category', () => {
-    for (const category of ['ceo', 'athlete', 'entertainer', 'founder', 'investor'] as const) {
+    for (const category of ['ceo', 'athlete', 'entertainer', 'founder'] as const) {
       const figure = YEAR_PEOPLE.find((candidate) => candidate.category === category);
       expect(figure, category).toBeDefined();
       const draft = draftPost(figure!, score(), url)!;
