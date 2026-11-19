@@ -53,7 +53,7 @@ const fit = Math.min(1, 9 / [...title].length).toFixed(3);
       </nav>
     )}
     <div class="sg-hero__kicker">
-      <SignIcon sign={slug} size={34} loading="eager" fetchPriority="low" webpOnly class="sg-hero__disc" />
+      <SignIcon sign={slug} size={34} loading="eager" fetchPriority="low" webpOnly class="sg-hero__disc" enter="disc" />
       {kicker && <span class="kicker">{kicker}</span>}
     </div>
     <h1 class="h-hero sg-hero__title">{title}</h1>

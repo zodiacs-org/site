@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../../components/ArtFrame.astro';
 import SignIcon from '../../components/SignIcon.astro';
+import Motion from '../../components/Motion.astro';
 import SignGuideHero from '../../components/SignGuideHero.astro';
 import SignGuideFacts from '../../components/SignGuideFacts.astro';
 import type { SignGuideFact } from '../../components/SignGuideFacts.astro';
@@ -142,7 +143,9 @@ const jsonLd = [
   />
   <article class="guide" style={`--sign:${sign.hue};--hue:${sign.hue}`}>
     {/* No reveal on the masthead: the art is the LCP and must paint before
-        any script runs. */}
+        any script runs. Only the small sign disc beside the kicker grows in
+        (docs/MOTION.md); the art, title and lines stay still. */}
+    <Motion />
     <SignGuideHero
       sign={sign.slug}
       title={sign.name}
@@ -251,7 +254,7 @@ const jsonLd = [
 
         <nav class="guide-neighbours" aria-label="Neighbouring signs">
           {[{ s: prev, rel: 'prev', kicker: `Before ${sign.name}`, arrow: '←' }, { s: next, rel: 'next', kicker: `After ${sign.name}`, arrow: '→' }].map(({ s, rel, kicker, arrow }) => (
-            <a class="guide-nb" href={`/${s.slug}/`} rel={rel} style={`--sign:${s.hue}`}>
+            <a class="guide-nb" href={`/${s.slug}/`} rel={rel} style={`--sign:${s.hue}`} data-enter="rise">
               <ArtFrame
                 sign={s.slug}
                 class="guide-nb__art"

@@ -27,7 +27,7 @@ const { facts, label } = Astro.props;
 ---
 <dl class:list={['sg-facts', facts.length > 4 ? 'sg-facts--wide' : 'sg-facts--short']} aria-label={label}>
   {facts.map((fact) => (
-    <div class="sg-fact">
+    <div class="sg-fact" data-enter="rise">
       <dt>{fact.label}</dt>
       <dd>
         <span class="sg-fact__value">
