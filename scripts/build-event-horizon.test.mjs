@@ -49,17 +49,16 @@ describe('Phase 2 five-year event horizon', () => {
     expect(sky.retrogrades).toHaveLength(47);
     expect(sky.moons.find((moon) => moon.type === 'full' && moon.at.startsWith('2026-07-29'))).toEqual({
       type: 'full',
-      at: '2026-07-29T14:35:42.223Z',
+      at: '2026-07-29T14:35:43.458Z',
     });
-    // rc.16 station-source alignment keeps the same finite-difference/search
-    // contract and changes only the package frame/clock used for its longitude.
+    // The DE440 station and shadow roots are recorded in the adoption evidence.
     expect(sky.retrogrades.find((window) => window.planet === 'Mercury'
       && window.from.startsWith('2026-06-29'))).toEqual({
       planet: 'Mercury',
-      from: '2026-06-29T17:37:11.542Z',
-      to: '2026-07-23T22:56:24.667Z',
-      preShadowStart: '2026-06-13T00:54:42.465Z',
-      postShadowEnd: '2026-08-07T03:37:02.339Z',
+      from: '2026-06-29T17:36:00.351Z',
+      to: '2026-07-23T22:57:22.675Z',
+      preShadowStart: '2026-06-13T00:53:04.247Z',
+      postShadowEnd: '2026-08-07T03:37:01.021Z',
     });
 
     expect({ from: eclipses.from, to: eclipses.to }).toEqual({

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile, access } from 'node:fs/promises';
 import { PLUGIN_AVATAR_PATH } from './build-plugin-avatar.mjs';
 // OpenAI submission-errors reference, verified 2026-10-06. A valid ZIP can
@@ -107,27 +108,34 @@ assert.equal(evaluationCases.length, 70);
 // find_birthplace, listed after them, is in the review cases themselves.
 for (const name of names.slice(13, 18)) assert.ok(evaluationCases.some(entry => entry.tool === name && entry.ok), `An evaluation case runs ${name}`);
 const vercel = await json('vercel.json');
-for (const [source, route] of [['/mcp', '1'], ['/mcp/', '1'], ['/mcp/health', 'health'], ['/mcp/health/', 'health']]) {
+const transition = await json('docs/platform/evidence/site-engine-1-1-0/connector-transition.json');
+for (const [path, sha256] of Object.entries(transition.publishedSha256)) {
+  assert.equal(createHash('sha256').update(await readFile(new URL(path, root))).digest('hex'), sha256, path);
+}
+for (const [source, route] of [['/mcp', '1'], ['/mcp/', '1'], ['/mcp/de440', 'de440'], ['/mcp/de440/', 'de440'], ['/mcp/health', 'health'], ['/mcp/health/', 'health']]) {
   assert.ok(vercel.rewrites.some(entry => entry.source === source && entry.destination === `/api/compatibility?__zodiacs_ai=${route}`));
 }
 const slashRedirect = vercel.redirects.find(entry => entry.destination === '/:path/');
 const slashPattern = new RegExp(`^${slashRedirect.source.slice('/:path('.length, -1)}$`);
-for (const path of ['mcp', 'mcp/health']) assert.equal(slashPattern.test(path), false, `MCP must not redirect: /${path}`);
+for (const path of ['mcp', 'mcp/health', 'mcp/de440']) assert.equal(slashPattern.test(path), false, `MCP must not redirect: /${path}`);
 assert.equal(slashPattern.test('moon-sign'), true, 'Consumer canonical redirects remain active');
 // Horoscope links must reach existing consumer pages; do not create dead referrals.
 await access(new URL('src/pages/horoscopes/[sign]/index.astro', root));
 const packageInfo = await json('plugins/zodiacs-developer/package.json');
+assert.equal(packageInfo.version, transition.developer.packageVersion);
+assert.equal(plugin.version, transition.developer.packageVersion);
 assert.equal(packageInfo.dependencies['@zodiacs/engine'], '1.0.0');
 assert.equal(packageInfo.dependencies['@modelcontextprotocol/server'], '2.0.0');
-// The site/embedded runtime uses the vendored 1.1.0-rc.2 candidate, which npm does not carry; the external
-// recipes keep the published 1.0.0 from npm, which computes the same values.
-const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-1.1.0-rc.2.tgz');
-// The developer plugin carries the engine's notices as ENGINE-* copies, which
-// its NOTICE says are unchanged; the claims ledger reads the release's own
-// under public/developers/engine/reference/release/.
-for (const [copy, installed, served] of [['ENGINE-NOTICE', 'NOTICE', 'NOTICE.txt'], ['ENGINE-LICENSE', 'LICENSE'], ['ENGINE-LICENSING', 'LICENSING.md', 'LICENSING.txt']]) {
-  const bytes = await readFile(new URL(`plugins/zodiacs-developer/${copy}`, root));
-  assert.ok(bytes.equals(await readFile(new URL(`node_modules/@zodiacs/engine/${installed}`, root))), `${copy} is the installed engine's ${installed}, byte for byte`);
-  if (served) assert.ok(bytes.equals(await readFile(new URL(`public/developers/engine/reference/release/${served}`, root))), `${copy} is the served release's ${served}, byte for byte`);
+// The generated server and site use the archived release. External recipes keep their declared engine.
+const site = await json('package.json');
+const engineRelease = await json('src/data/platform-engine-candidate.json');
+const installedEngine = await json('node_modules/@zodiacs/engine/package.json');
+assert.equal(site.dependencies['@zodiacs/engine'], `file:${engineRelease.artifactPath}`);
+assert.equal(installedEngine.version, engineRelease.version);
+// The local package's notices are checked against its baseline archive by
+// the packager. The served reference describes the site's installed release.
+for (const [installed, served] of [['NOTICE', 'NOTICE.txt'], ['LICENSING.md', 'LICENSING.txt']]) {
+  const bytes = await readFile(new URL(`node_modules/@zodiacs/engine/${installed}`, root));
+  assert.ok(bytes.equals(await readFile(new URL(`public/developers/engine/reference/release/${served}`, root))), `${served} is the installed engine's ${installed}, byte for byte`);
 }
 console.log('AI package contracts: manifests, submission cases, versions, routes, canonical links and engine notices verified.');

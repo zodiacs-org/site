@@ -29,7 +29,7 @@ describe('public AI tools', () => {
       expect(result.data.mode).toBe('current-instant');
       expect(result.data.time.utc).toBe('2026-10-01T06:00:00.000Z');
       expect(result.data.time.display).toContain('13:00:00');
-      expect(result.data.calculation.result.instants[0].bodies).toEqual(positions(dependencies.now()));
+      expect(result.data.calculation.result.instants[0].bodies).toEqual(positions(dependencies.now()).map(({ ephemeris: _ephemeris, fallback: _fallback, ...body }) => body));
       expect(result.data.calculation.cite.version).toBe(ENGINE_VERSION);
     }
   });
@@ -165,9 +165,9 @@ describe('horoscopes', () => {
     expect(data.zoneLabel).toBe('London');
   });
   it('reports the release version', async () => {
-    expect(AI_VERSION).toBe('0.6.7');
+    expect(AI_VERSION).toBe('0.6.8');
     const result = await executeAiTool('get_capabilities', {}, dependencies);
-    if (result.ok && result.tool === 'get_capabilities') expect(result.data.version).toBe('0.6.7');
+    if (result.ok && result.tool === 'get_capabilities') expect(result.data.version).toBe('0.6.8');
     else expect.unreachable();
   });
   it('names the missing field in a refusal, with the same code', async () => {

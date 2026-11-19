@@ -17,7 +17,7 @@ let occasionsSwitch: string | undefined;
 let coverageSwitch: string | undefined;
 const env = { get ZODIACS_MCP_ENABLED() { return enabled; }, get ZODIACS_OCCASIONS_ENABLED() { return occasionsSwitch; }, get ZODIACS_COVERAGE_ENABLED() { return coverageSwitch; } };
 beforeAll(async () => {
-  server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); if (kind === 'request' && atomicRequest === 'throw') throw new Error('budget unreachable'); return (kind === 'request' ? atomicRequest : atomicEvent) as 'allowed' | 'limited' | 'unavailable'; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
+  server = createServer((req, res) => { void createAiNodeHandler({ env, de440: true, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); if (kind === 'request' && atomicRequest === 'throw') throw new Error('budget unreachable'); return (kind === 'request' ? atomicRequest : atomicEvent) as 'allowed' | 'limited' | 'unavailable'; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   base = `http://127.0.0.1:${(server.address() as { port: number }).port}/mcp`;
   allowedHost = new URL(base).host;

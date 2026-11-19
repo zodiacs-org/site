@@ -1,0 +1,192 @@
+{
+  "originalMain": {
+    "assets": 434,
+    "largestAstroGzipBytes": 51428,
+    "largestAstroChunk": {
+      "path": "dist/_astro/client.BZc7b1tX.js",
+      "bytes": 202630,
+      "gzipBytes": 51428
+    },
+    "playground": {
+      "path": "dist/developers/playground/engine.mjs",
+      "bytes": 553381,
+      "gzipBytes": 150157
+    },
+    "webmcpCalculators": {
+      "path": "dist/assets/webmcp-calculators.js",
+      "bytes": 410371,
+      "gzipBytes": 125420
+    },
+    "serviceWorker": {
+      "path": "dist/sw.js",
+      "bytes": 26047,
+      "gzipBytes": 9109
+    }
+  },
+  "originalBranch": {
+    "assets": 434,
+    "largestAstroGzipBytes": 51428,
+    "largestAstroChunk": {
+      "path": "dist/_astro/client.BZc7b1tX.js",
+      "bytes": 202630,
+      "gzipBytes": 51428
+    },
+    "playground": {
+      "path": "dist/developers/playground/engine.mjs",
+      "bytes": 561382,
+      "gzipBytes": 153212
+    },
+    "webmcpCalculators": {
+      "path": "dist/assets/webmcp-calculators.js",
+      "bytes": 415317,
+      "gzipBytes": 127370
+    },
+    "serviceWorker": {
+      "path": "dist/sw.js",
+      "bytes": 26047,
+      "gzipBytes": 9098
+    }
+  },
+  "branchAfter": {
+    "assets": 434,
+    "largestAstroGzipBytes": 51428,
+    "largestAstroChunk": {
+      "path": "dist/_astro/client.BZc7b1tX.js",
+      "bytes": 202630,
+      "gzipBytes": 51428
+    },
+    "playground": {
+      "path": "dist/developers/playground/engine.mjs",
+      "bytes": 561382,
+      "gzipBytes": 153212
+    },
+    "webmcpCalculators": {
+      "path": "dist/assets/webmcp-calculators.js",
+      "bytes": 415317,
+      "gzipBytes": 127370
+    },
+    "serviceWorker": {
+      "path": "dist/sw.js",
+      "bytes": 26047,
+      "gzipBytes": 9098
+    }
+  },
+  "matchesPreviousInventory": {
+    "samePaths": 429,
+    "addedPaths": [
+      "dist/assets/assistant-chunks/chunk-PDREAWKM.js",
+      "dist/assets/assistant-chunks/chunk-PSAKYTK6.js",
+      "dist/assets/assistant-chunks/client-ATWBZHFB.js",
+      "dist/assets/assistant-chunks/full-MKAERC6X.js",
+      "dist/assets/assistant-chunks/window-VQJAD2RQ.js"
+    ],
+    "absentPaths": [
+      "dist/assets/assistant-chunks/chunk-3ZFPS5VI.js",
+      "dist/assets/assistant-chunks/chunk-G63ZU5LX.js",
+      "dist/assets/assistant-chunks/client-EVNM5N26.js",
+      "dist/assets/assistant-chunks/full-WQ65F7TY.js",
+      "dist/assets/assistant-chunks/window-ZB7KBA6V.js"
+    ],
+    "changedMatchingSizes": [
+      {
+        "before": {
+          "path": "dist/assets/assistant-drawer.js",
+          "bytes": 89323,
+          "gzipBytes": 27734
+        },
+        "after": {
+          "path": "dist/assets/assistant-drawer.js",
+          "bytes": 89323,
+          "gzipBytes": 27733
+        }
+      }
+    ]
+  },
+  "pages": {
+    "before": 5433,
+    "after": 5466,
+    "matched": 5433,
+    "largestIncreases": [
+      {
+        "path": "developers/conventions/index.html",
+        "bytesBefore": 268777,
+        "bytesAfter": 286730,
+        "difference": 17953,
+        "gzipBefore": 35967,
+        "gzipAfter": 37726
+      },
+      {
+        "path": "developers/engine/reference/modules/engine.html",
+        "bytesBefore": 126525,
+        "bytesAfter": 132132,
+        "difference": 5607,
+        "gzipBefore": 9409,
+        "gzipAfter": 9784
+      },
+      {
+        "path": "developers/engine/reference/modules/techniques.html",
+        "bytesBefore": 70171,
+        "bytesAfter": 75460,
+        "difference": 5289,
+        "gzipBefore": 5925,
+        "gzipAfter": 6243
+      },
+      {
+        "path": "developers/engine/reference/interfaces/techniques.CompositeChart.html",
+        "bytesBefore": 12726,
+        "bytesAfter": 17225,
+        "difference": 4499,
+        "gzipBefore": 2688,
+        "gzipAfter": 3195
+      },
+      {
+        "path": "developers/engine/reference/interfaces/engine.ChartPoints.html",
+        "bytesBefore": 12720,
+        "bytesAfter": 16604,
+        "difference": 3884,
+        "gzipBefore": 2798,
+        "gzipAfter": 3237
+      },
+      {
+        "path": "developers/engine/reference/interfaces/engine.ChartDeclinations.html",
+        "bytesBefore": 21659,
+        "bytesAfter": 25260,
+        "difference": 3601,
+        "gzipBefore": 3639,
+        "gzipAfter": 3992
+      },
+      {
+        "path": "developers/engine/reference/interfaces/techniques.MoonAspect.html",
+        "bytesBefore": 14438,
+        "bytesAfter": 17591,
+        "difference": 3153,
+        "gzipBefore": 2859,
+        "gzipAfter": 3246
+      },
+      {
+        "path": "developers/engine/reference/interfaces/techniques.MoonIngress.html",
+        "bytesBefore": 12115,
+        "bytesAfter": 15268,
+        "difference": 3153,
+        "gzipBefore": 2667,
+        "gzipAfter": 3088
+      },
+      {
+        "path": "developers/engine/reference/interfaces/techniques.VoidOfCourseStatus.html",
+        "bytesBefore": 14971,
+        "bytesAfter": 18124,
+        "difference": 3153,
+        "gzipBefore": 2871,
+        "gzipAfter": 3275
+      },
+      {
+        "path": "developers/engine/reference/interfaces/techniques.VoidOfCourseWindow.html",
+        "bytesBefore": 15973,
+        "bytesAfter": 19126,
+        "difference": 3153,
+        "gzipBefore": 2956,
+        "gzipAfter": 3345
+      }
+    ]
+  }
+}

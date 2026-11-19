@@ -75,8 +75,8 @@ export function compatibilityInviteHandlerForAction(value: unknown): InviteHandl
 
 export default async function handler(req: any, res: any): Promise<void> {
   if (req.query?.__zodiacs_ai !== undefined) {
-    const { default: ai } = await loadAiHandler();
-    await ai(req, res);
+    const ai = await loadAiHandler();
+    await (req.query.__zodiacs_ai === 'de440' ? ai.de440 : ai.default)(req, res);
     return;
   }
   // The compute API (/api/v1/chart and five more) rewrites here (vercel.json)

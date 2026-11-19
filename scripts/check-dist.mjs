@@ -1430,7 +1430,8 @@ const sitemapPolicy = {
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/),
   // the three per-assistant /apps/ pages joined on 2026-11-16, and /apps/claude-code/ on 2026-11-17.
   // +1 for /studies/fortune-500-ceo-signs/, the CEO Sun sign data story, linked from /people/.
-  total: 1537 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /almanac/sky-this-week-2026-11-23/, the first "Your sky this week" article.
+  total: 1538 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
@@ -1583,7 +1584,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?numerology\/$/u.test(path))),
   new Set(['/numerology/']),
 );
-if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-09-07</lastmod>')) {
+// Re-dated 2026-11-17: the restyle added the letter key and the emblem (rendered content).
+if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-17</lastmod>')) {
   fail('sitemap.xml: numerology modification date must match the reviewed source revision');
 }
 requireExactSet(

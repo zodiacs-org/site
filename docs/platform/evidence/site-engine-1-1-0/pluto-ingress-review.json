@@ -1,0 +1,46 @@
+{
+  "body": "Pluto",
+  "signBoundaryDegrees": 300,
+  "toleranceSeconds": 60,
+  "backend": "de440",
+  "sources": {
+    "horizons": "docs/accuracy-audit-2026-11/truth-events.json",
+    "de440": "src/data/ingresses.json",
+    "frameComparison": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/README.md"
+  },
+  "procedure": "Compare the committed Horizons interpolated roots with the published DE440 ingress table. Evaluate the installed engine bodyLongitude at the Horizons root and at the instant 60 seconds from the DE440 root toward Horizons. The angular change between those two evaluations measures only the portion over the time tolerance.",
+  "cases": [
+    {
+      "date": "2023-03-23",
+      "horizonsUtc": "2023-03-23T12:23:42.774Z",
+      "de440Utc": "2023-03-23T12:22:40.216Z",
+      "de440MinusHorizonsSeconds": -62.558,
+      "longitudeFromSignBoundaryArcseconds": 0.047255,
+      "longitudeBeyondTimeToleranceArcseconds": 0.001932
+    },
+    {
+      "date": "2023-06-11",
+      "horizonsUtc": "2023-06-11T09:34:50.350Z",
+      "de440Utc": "2023-06-11T09:35:56.999Z",
+      "de440MinusHorizonsSeconds": 66.649,
+      "longitudeFromSignBoundaryArcseconds": 0.046975,
+      "longitudeBeyondTimeToleranceArcseconds": 0.004687
+    },
+    {
+      "date": "2024-09-01",
+      "horizonsUtc": "2024-09-01T23:57:09.124Z",
+      "de440Utc": "2024-09-01T23:58:15.251Z",
+      "de440MinusHorizonsSeconds": 66.127,
+      "longitudeFromSignBoundaryArcseconds": 0.04638,
+      "longitudeBeyondTimeToleranceArcseconds": 0.004299
+    },
+    {
+      "date": "2024-11-19",
+      "horizonsUtc": "2024-11-19T20:39:59.602Z",
+      "de440Utc": "2024-11-19T20:38:57.340Z",
+      "de440MinusHorizonsSeconds": -62.262,
+      "longitudeFromSignBoundaryArcseconds": 0.046888,
+      "longitudeBeyondTimeToleranceArcseconds": 0.001703
+    }
+  ]
+}

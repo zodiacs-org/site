@@ -24,6 +24,7 @@ import {
   BIRTHDAY_CUSP_OG_MODIFIED_AT,
   BIRTHDAY_FAMOUS_LINE_MODIFIED_AT,
   PEOPLE_TEMPLATE_MODIFIED_AT,
+  de440UpdatedDate,
   lastmodDate,
   latestModifiedAt,
   terminalResearchLastmod,
@@ -721,6 +722,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
   // The Italian season pages' reading-confidence label, 13 November, last so this date wins.
   ...SIGNS.map((sign) => [`/it/seasons/${sign.slug}/`, '2026-11-13'] as const),
+  // Someone else's chart: the handoff note no longer says the URL fragment
+  // carries their details. Dated the daily edition this change shipped with.
+  ['/birth-chart/someone-else/', '2026-11-13'] as const,
   // The connector page's 19 live tools, limits, troubleshooting and support contact, the support page's
   // connector section and the MCP guides that count its tools (ZOD-58). The day of the daily edition it was
   // built with, last so this date wins.
@@ -737,6 +741,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/', '2026-11-17'] as const,
   // The Sky calendar pages' Google and Apple Calendar steps (every language), 17 November, last so this date wins.
   ...['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/sky-calendar/`, '2026-11-17'] as const),
+  // Numerology's visual restyle (emblem, letter key, life path tiles, shared entrance motion), last so it wins.
+  ['/numerology/', '2026-11-17'] as const,
+  // The life path pages' seal, hued chips and entrance motion, last so it wins.
+  ...LIFE_PATH_NUMBERS.map((n) => [`/numerology/life-path/${n}/`, '2026-11-17'] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -1081,6 +1089,10 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-12');
     }
   }
+  // The Almanac lists its first "Your sky this week" article.
+  for (const url of urls) {
+    if (url.loc === '/almanac/') url.lastmod = laterDate(url.lastmod, '2026-11-18');
+  }
   // Every sitemap page within three clicks of home (ZOD-221): the tools hub
   // links the sign seasons and the Almanac, and the translated homes link
   // their language's sign seasons. Last, so these win.
@@ -1107,6 +1119,10 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   // fixed categories.
   for (const url of urls) {
     if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
+  }
+  for (const url of [...urls, ...localizedUrls]) {
+    const engineUpdated = de440UpdatedDate(url.loc);
+    if (engineUpdated) url.lastmod = laterDate(url.lastmod, engineUpdated);
   }
   return [
     ...urls,
