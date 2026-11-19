@@ -59,7 +59,9 @@ if [ -n "${PUBLISH_LAND_BRANCH:-}" ]; then
   fi
   # A publication is one generated commit (plus, at most, the one-time scope
   # allowance) on the verified base, and changes only the generated data the
-  # publishing workflows write. Renames are listed as both paths, so moving
+  # publishing workflows write: JSON and Markdown in their folders, and the
+  # generated sign pages. Code beside that data (JavaScript, TypeScript) is
+  # refused. Renames are listed as both paths, so moving
   # a file out of its place counts as touching it.
   if ! git merge-base --is-ancestor "$verified" "$head_sha" \
     || [ "$(git rev-list --count "$verified..$head_sha")" -gt 2 ]; then
@@ -67,7 +69,7 @@ if [ -n "${PUBLISH_LAND_BRANCH:-}" ]; then
     exit 1
   fi
   outside=$(git diff --no-renames --name-only "$verified" "$head_sha" \
-    | grep -vE '^(src/data/|public/assets/|public/registry/|docs/race-recaps/)' \
+    | grep -vE '^((src/data|public/assets|public/registry|docs/race-recaps)/.*\.(json|md)|public/registry/.*\.html)$' \
     | grep -vx '.github/phase1-scope-allowance.json' || true)
   if [ -n "$outside" ]; then
     echo "::error title=Not a publication::$branch changes files outside the generated publication data ($(tr '\n' ' ' <<<"$outside")); nothing was opened." >&2
