@@ -172,7 +172,7 @@ if ! gh pr merge "$pr_url" --squash --match-head-commit "$(git rev-parse HEAD)" 
     echo "::error title=The pull request's own checks are waiting for approval::$pr_url stays open for a person. GitHub holds its pull_request checks ($gated) for approval because the workflow token opened it, and refuses the merge while they wait. Save a fine-grained token for this repository (Contents, Pull requests and Actions read and write; Checks and Metadata read) as the SITE_PUBLISH_TOKEN Actions secret so publications are opened by the owner, or approve the checks and merge this one by hand." >&2
     exit 1
   fi
-  echo "::error title=The workflow token could not merge its pull request::$pr_url stays open for a person to merge. If $base also requires approvals or status checks, a workflow cannot supply them for its own pull request — relax that requirement for the GitHub Actions app or merge by hand." >&2
+  echo "::error title=The publication pull request could not be merged::$pr_url stays open for a person to merge. Check what the protection rule on $base still requires (the error above says what GitHub refused) and merge by hand." >&2
   exit 1
 fi
 git push origin --delete "$branch" >/dev/null 2>&1 || true
@@ -184,9 +184,10 @@ if [ "$(git rev-parse "origin/$base^{tree}")" != "$(git rev-parse 'HEAD^{tree}')
 fi
 echo "publish-through-pr: merged $pr_url as $merged"
 
-# A merge made with the workflow token does not trigger push workflows (a
-# merge with the owner's token does, and the two runs share one concurrency
-# group), so Site Check would never run on the merged head and a broken deploy on the
+# A merge made with the workflow token does not trigger push workflows, so
+# without this dispatch Site Check would never run on the merged head (a merge
+# with the owner's token does trigger it; the two runs share one concurrency
+# group) and a broken deploy on the
 # base would go unnoticed (the calendar-shaped research tests did exactly
 # that on 2026-09-02). workflow_dispatch is the documented exception, so ask
 # for the run explicitly. The protected-scope guard compares against the
