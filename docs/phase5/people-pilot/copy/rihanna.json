@@ -1,0 +1,114 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "rihanna",
+  "seedRound": 0,
+  "qid": "Q36844",
+  "displayName": "Rihanna",
+  "identity": "Singer and businessperson · Barbados · born 1988",
+  "title": "Rihanna's birth chart",
+  "metaDescription": "Rihanna's chart, computed from a sourced birth date: Sun at 1.2° Pisces. Birth time unknown, so no houses or rising sign.",
+  "lede": "Mercury and Venus sit 0.1° from an exact sextile, near enough that the tradition reads thinking and taste as a single working part. The scheme reads a sextile as a door left unlocked. Useful, and entirely dependent on someone walking through it.",
+  "ledeFact": "aspect:Mercury:Venus:sextile",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:1.24",
+        "decan:pisces:first"
+      ],
+      "text": "Pisces, but precisely: 1.2°, first decan, 0° to 10°, under Jupiter in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
+    },
+    {
+      "key": "personal",
+      "title": "The fast planets",
+      "facts": [
+        "personal:Mercury:Aquarius:13.2°",
+        "personal:Venus:Aries:13.1°",
+        "personal:Mars:Sagittarius:28.8°"
+      ],
+      "text": "The personal planets sit Mercury at 13.2° Aquarius, Venus at 13.1° Aries, Mars at 28.8° Sagittarius. Mercury in an air sign reads as a mind at home in argument and pattern; Venus in a fire sign reads as taste that runs toward the vivid and the immediate; Mars in a fire sign reads as drive that ignites on contact."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Mercury:Venus:sextile:0.15",
+        "aspect:Saturn:Uranus:conjunction:0.32",
+        "aspect:Mercury:Pluto:square:0.66"
+      ],
+      "text": "The day's firmest angle joins Mercury and Venus, a sextile holding at 0.1°. The scheme reads a sextile as a door left unlocked. Useful, and entirely dependent on someone walking through it. Behind it, Saturn conjunction Uranus at 0.3°, and Mercury square Pluto at 0.7°, both still well inside the orbs this site uses. These angles were checked through every hour of that civil day and survive throughout, which is why an unrecorded hour does not disturb them."
+    },
+    {
+      "key": "figures",
+      "title": "What the angles build",
+      "facts": [
+        "figure:none"
+      ],
+      "text": "The day-stable angles form no closed figure. Nothing funnels; each aspect is its own negotiation, which the tradition reads as a chart of separate treaties rather than one campaign."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:Venus:detriment",
+        "dignity:Saturn:domicile"
+      ],
+      "text": "Two planets here sit in a sign the classical scheme scores. Venus in Aries at 13.1° is in detriment (the planet opposite its home, working against the grain); Saturn in Capricorn at 0.5° is in domicile (the planet in its own sign, running on home rules). None of these labels is a verdict on a person; they describe how a function is situated, nothing more."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:fire4-earth3-water2-air1",
+        "modalities:cardinal6-mutable2-fixed2",
+        "settled-signs:10",
+        "retrograde:2"
+      ],
+      "text": "Tallied where the signs are certain (10 placements whose signs hold for the whole day), the chart gives fire 4, earth 3, water 2, air 1, and cardinal 6, mutable 2, fixed 2 across the modes. Mercury and Pluto were retrograde (apparent backward motion from where the Earth sits, which the tradition reads as a function turned inward before it is turned out)."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon, and how far it can move",
+      "facts": [
+        "moon-sign:aries",
+        "moon-band:14.4"
+      ],
+      "uncertain": false,
+      "text": "The Moon stayed in Aries for the whole of that day at the birthplace, covering 14.4° between midnight and midnight. Whatever the unrecorded hour was, it happened inside one Moon sign. The degree floats, but the sign holds. At the noon reference it stands at 13.0°."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/february-20/",
+    "label": "Everyone born on February 20"
+  },
+  "signLink": {
+    "href": "/pisces/",
+    "label": "The Pisces guide"
+  },
+  "substantiveFacts": [
+    "aspect:Mercury:Venus:sextile",
+    "sun-degree:1.24",
+    "decan:pisces:first",
+    "personal:Mercury:Aquarius:13.2°",
+    "personal:Venus:Aries:13.1°",
+    "personal:Mars:Sagittarius:28.8°",
+    "aspect:Mercury:Venus:sextile:0.15",
+    "aspect:Saturn:Uranus:conjunction:0.32",
+    "aspect:Mercury:Pluto:square:0.66",
+    "figure:none",
+    "dignity:Venus:detriment",
+    "dignity:Saturn:domicile",
+    "elements:fire4-earth3-water2-air1",
+    "modalities:cardinal6-mutable2-fixed2",
+    "settled-signs:10",
+    "retrograde:2",
+    "moon-sign:aries",
+    "moon-band:14.4"
+  ],
+  "measurements": {
+    "originalWords": 409,
+    "substantiveStatements": 18,
+    "blocks": 7
+  }
+}
