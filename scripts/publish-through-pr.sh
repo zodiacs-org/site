@@ -155,6 +155,16 @@ fi
 
 if ! gh pr merge "$pr_url" --squash --subject "$title" --body "" 2>"$tmp/publish-pr-merge.err"; then
   cat "$tmp/publish-pr-merge.err" >&2
+  # A pull request opened with the workflow token gets its own pull_request
+  # check runs, and GitHub holds them for a person to approve. While they
+  # wait, the rule refuses the merge even though the dispatched copies of
+  # the same checks passed (2026-11-19, #1128). Say so plainly.
+  gated=$(gh api "repos/{owner}/{repo}/actions/runs?head_sha=$(git rev-parse HEAD)&event=pull_request&per_page=50" \
+    --jq '[.workflow_runs[] | select(.conclusion == "action_required") | .name] | join(", ")' 2>/dev/null || true)
+  if [ -n "$gated" ]; then
+    echo "::error title=The pull request's own checks are waiting for approval::$pr_url stays open for a person. GitHub holds its pull_request checks ($gated) for approval because the workflow token opened it, and refuses the merge while they wait. Save a repository-scoped token as the SITE_PUBLISH_TOKEN Actions secret so publications are opened by the owner, or approve the checks and merge this one by hand." >&2
+    exit 1
+  fi
   echo "::error title=The workflow token could not merge its pull request::$pr_url stays open for a person to merge. If $base also requires approvals or status checks, a workflow cannot supply them for its own pull request — relax that requirement for the GitHub Actions app or merge by hand." >&2
   exit 1
 fi

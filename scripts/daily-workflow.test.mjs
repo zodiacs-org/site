@@ -54,7 +54,9 @@ describe('daily publication operations', () => {
     for (const [name, workflow] of Object.entries({ daily, snapshot, transits, seasonClose, weeklyRecap, pulse })) {
       expect(workflow, name).toContain('pull-requests: write');
       expect(workflow, name).toContain('actions: write');
-      expect(workflow, name).toContain('GH_TOKEN: ${{ github.token }}');
+      // The owner's token, when saved, opens the publication pull request so its
+      // own checks run without waiting for approval (#1128, 2026-11-19).
+      expect(workflow, name).toContain('GH_TOKEN: ${{ secrets.SITE_PUBLISH_TOKEN || github.token }}');
       expect(workflow, name).toContain('if grep -q "GH006" "$RUNNER_TEMP/publish-push.err"; then');
       expect(workflow, name).toContain('bash scripts/publish-through-pr.sh');
     }
@@ -127,6 +129,9 @@ describe('daily publication operations', () => {
     expect(publisher).toContain('gh workflow run sitemap-dates.yml --ref "$branch" -f "base=$verified" -f "head=$head_sha"');
     expect(publisher).toContain('commits/$head_sha/check-runs');
     expect(publisher.indexOf('all required checks passed')).toBeLessThan(publisher.indexOf('gh pr merge "$pr_url" --squash'));
+    // A refused merge whose pull_request checks wait for approval says so.
+    expect(publisher).toContain('select(.conclusion == "action_required")');
+    expect(publisher).toContain('SITE_PUBLISH_TOKEN');
     expect(publisher).toContain('Allow GitHub Actions to create and approve pull requests');
     expect(publisher).not.toContain('--admin');
     expect(publisher).not.toContain('git rebase');

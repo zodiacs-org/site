@@ -52,7 +52,7 @@ jobs:
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           DRAFT_FILE: ${{ steps.draft.outputs.file }}
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.SITE_PUBLISH_TOKEN || github.token }}
         run: |
           VERIFIED_BASE_SHA=$(git rev-parse HEAD)
           git config user.name "zodiacs-recap-bot"

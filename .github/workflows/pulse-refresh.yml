@@ -55,7 +55,7 @@ jobs:
       - name: Commit if changed
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.SITE_PUBLISH_TOKEN || github.token }}
         run: |
           FILES="public/assets/pulse.json public/registry"
           if git diff --quiet -- $FILES; then
