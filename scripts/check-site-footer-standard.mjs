@@ -95,7 +95,7 @@ await requireMarkers('src/components/SiteFooter.astro', [
   '<span class="zfooter__label">{t(locale, \'footerRegistry\')}</span>',
   '<a href="/astrofolio/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, \'navCollect\')}{englishSuffix}</a>',
   // The thesis is reachable from the consumer footer, not only from the wing.
-  '<a href="/thesis/" hreflang={englishHreflang} title={englishOnlyAria}>Thesis{englishSuffix}</a>',
+  '<a href="/thesis/" hreflang={englishHreflang} title={englishOnlyAria}>{thesisLabel}{englishSuffix}</a>',
 ]);
 await requireMarkers('src/app.jsx', [
   'function SiteEnd(',

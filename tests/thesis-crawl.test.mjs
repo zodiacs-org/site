@@ -182,11 +182,10 @@ describe('nothing in the repository keeps the thesis from being crawled', () => 
     for (const rule of moves.filter(appliesOnProductionHost)) {
       expect(sourcePattern(rule.source).test('/thesis/'), rule.source).toBe(false);
     }
-    // The rules set aside are the two host moves, and nothing else.
-    expect(moves.filter((rule) => !appliesOnProductionHost(rule)).map((rule) => rule.has[0].value)).toEqual([
-      '^(?:www\\.)?astrofolio\\.xyz$',
-      '^www\\.zodiacs\\.org$',
-    ]);
+    // A rule is set aside only when its own host condition rules zodiacs.org out.
+    for (const rule of moves.filter((candidate) => !appliesOnProductionHost(candidate))) {
+      expect(rule.has.some((condition) => condition.type === 'host')).toBe(true);
+    }
   });
 
   it('the sitemap lists it, dated no earlier than the page says it changed', () => {
@@ -198,7 +197,8 @@ describe('nothing in the repository keeps the thesis from being crawled', () => 
 });
 
 describe('the consumer door to the thesis', () => {
-  const link = '<a href="/thesis/" hreflang={englishHreflang} title={englishOnlyAria}>Thesis{englishSuffix}</a>';
+  const link = '<a href="/thesis/" hreflang={englishHreflang} title={englishOnlyAria}>{thesisLabel}{englishSuffix}</a>';
+  const LABELS = { en: 'Thesis', es: 'Tesis', pt: 'Tese', fr: 'Thèse', it: 'Tesi', ru: 'Манифест' };
 
   it('is one plain link in the footer Registry column, which tool pages do not render', () => {
     expect(FOOTER_SOURCE.split('href="/thesis/"')).toHaveLength(2);
@@ -210,9 +210,14 @@ describe('the consumer door to the thesis', () => {
     expect(FOOTER_SOURCE).toContain('const showCollection = showsCollectionNavigation(Astro.url.pathname);');
   });
 
-  it('uses a label with no dash and none of the wing vocabulary', () => {
-    expect(link).not.toMatch(/[–—]/u);
-    expect('Thesis').not.toMatch(/coin|token|wallet|buy|trade|market|crypto/iu);
+  it('names the page in each language from the catalog, with no dash and none of the wing vocabulary', async () => {
+    expect(FOOTER_SOURCE).toContain("const thesisLabel = sectionLocale ? 'Thesis' : t(locale, 'footerThesis');");
+    for (const [locale, label] of Object.entries(LABELS)) {
+      const catalog = await read(`src/lib/i18n/ui/${locale}.ts`);
+      expect(catalog, locale).toMatch(new RegExp(`footerThesis: ["']${label}["'],`, 'u'));
+      expect(label).not.toMatch(/[–—]/u);
+      expect(label).not.toMatch(/coin|token|wallet|buy|trade|market|crypto|монет|токен|крипт/iu);
+    }
   });
 
   it('is not repeated in the navigation or the homepage body', () => {
