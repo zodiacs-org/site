@@ -739,7 +739,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // built with, last so this date wins.
   ...CONNECTOR_PAGE_ROUTES.map((loc) => [loc, CONNECTOR_PAGE_LASTMOD] as const),
   // The AI developer page's sample question names a neutral city, from 16 November; after the connector pages so it wins.
-  ['/developers/ai/', '2026-11-16'] as const,
+  // From 19 November it says in words that the hosted server needs no account, sign-in or API key.
+  ['/developers/ai/', '2026-11-19'] as const,
   // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
   // the daily edition it was built with, last so this date wins.
   // The Fortune 500 CEO Sun sign study, first published 17 November.
