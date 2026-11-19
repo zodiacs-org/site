@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.conventions-registry.v1",
-  "version": "2026-11-18",
+  "version": "2026-11-19",
   "title": "Conventions registry",
   "base": "https://zodiacs.org/developers/conventions/",
   "license": "CC0-1.0",
@@ -13,9 +13,9 @@
   },
   "conformance": {
     "suite": "zodiacs-conformance",
-    "suiteVersion": "0.2.0",
+    "suiteVersion": "0.3.0",
     "repository": "https://github.com/zodiacs-org/engine",
-    "commit": "883371f5d592cd952873422f13766038fcfa7b68"
+    "commit": "47eebb83516ad99152dfefb69feff2aea93264b3"
   },
   "groups": [
     {
@@ -3274,6 +3274,57 @@
             }
           ],
           "status": "current"
+        },
+        {
+          "id": "kind:event.ingress",
+          "value": "event.ingress",
+          "title": "Time a body reaches a sign boundary",
+          "definition": "L4 (Event times): 70 vectors, tolerance tt_s ±2 s to ±5250 s, or utc_s ±2 s to ±24 s. The instant in the vector's window at which a body's apparent geocentric ecliptic longitude of date (as in L1) equals longitude_deg, a multiple of 30 degrees, in either direction of motion. Instants are seconds from J2000.0: of TT from 2000-01-01T12:00:00 TT, or of UTC from 2000-01-01T12:00:00 UTC for the vectors tagged utc-input, whose UTC is TT less 69.184 s. The window is open at its start and closed at its end, and holds exactly one such instant. The tolerance is the time the longitude takes to move 1 arcsecond there, at least 1 s.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.3.0, vectors/0.3.0/L4-events.json (L4, Event times; sha256 4c153d887f993536549432213e81648e9d0b4fc940eb1f116c4aa732dba6e25f)",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/vectors/0.3.0/L4-events.json"
+            },
+            {
+              "title": "Conformance suite 0.3.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:event.station",
+          "value": "event.station",
+          "title": "Time a body turns retrograde or direct",
+          "definition": "L4 (Event times): 30 vectors, tolerance tt_s ±6270 s to ±50406 s; direction exact. The instant in the vector's window at which the rate of a body's apparent geocentric ecliptic longitude of date is zero, and its direction: retrograde when the rate turns from positive to negative, direct when it turns from negative to positive. Instants are seconds of TT from 2000-01-01T12:00:00 TT; the window is open at its start and closed at its end, and holds exactly one station. The tolerance is the time the longitude takes to leave its turning value by 1 arcsecond, at least 60 s.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.3.0, vectors/0.3.0/L4-events.json (L4, Event times; sha256 4c153d887f993536549432213e81648e9d0b4fc940eb1f116c4aa732dba6e25f)",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/vectors/0.3.0/L4-events.json"
+            },
+            {
+              "title": "Conformance suite 0.3.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:event.lunation",
+          "value": "event.lunation",
+          "title": "Time of a new or full Moon",
+          "definition": "L4 (Event times): 40 vectors, tolerance tt_s ±2 s to ±3 s, or utc_s ±2 s to ±3 s. The instant in the vector's window at which the Moon's apparent geocentric ecliptic longitude of date minus the Sun's, reduced to 0 to 360 degrees, equals phase_deg: 0 for a new Moon, 180 for a full Moon. Instants are seconds from J2000.0: of TT from 2000-01-01T12:00:00 TT, or of UTC from 2000-01-01T12:00:00 UTC for the vectors tagged utc-input, whose UTC is TT less 69.184 s. The window is open at its start and closed at its end, and holds exactly one such instant. The tolerance is the time that difference takes to move 1 arcsecond there, at least 1 s.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.3.0, vectors/0.3.0/L4-events.json (L4, Event times; sha256 4c153d887f993536549432213e81648e9d0b4fc940eb1f116c4aa732dba6e25f)",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/vectors/0.3.0/L4-events.json"
+            },
+            {
+              "title": "Conformance suite 0.3.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
         }
       ]
     },
@@ -3469,6 +3520,23 @@
             {
               "title": "Conformance suite 0.2.0, SPEC.md",
               "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:l4-de440s-events",
+          "value": "l4-de440s-events",
+          "title": "NASA JPL DE440s reduced to apparent geocentric longitudes in the IAU 2006/2000A true ecliptic and equinox of date, with event instants solved by bisection",
+          "definition": "The independent arbiter of L4 (Event times) vectors. Source: NASA's DE440s kernel (de440s.bsp, sha256 c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2), reduced with ERFA to apparent geocentric longitudes as the L1 arbiter's own check reduces them (light time, deflection by the Sun, annual aberration, IAU 2006/2000A precession and nutation, true obliquity), Mars to Pluto as their system barycentres. Each event is found by sampling at 1 hour steps and solved by bisection to 1 ms. Every solve is repeated with half hour brackets, and every event is cross-checked against JPL Horizons (DE441), whose answers are committed with the suite. The design, instants and tolerance rule were committed before any engine was run against them.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.3.0, vectors/0.3.0/L4-events.json (L4, Event times; sha256 4c153d887f993536549432213e81648e9d0b4fc940eb1f116c4aa732dba6e25f)",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/vectors/0.3.0/L4-events.json"
+            },
+            {
+              "title": "Conformance suite 0.3.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/SPEC.md"
             }
           ],
           "status": "current"

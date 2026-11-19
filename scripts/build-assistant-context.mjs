@@ -98,6 +98,7 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/auth/',
   '/bio/',
   '/developers/precision-preview/',
+  '/developers/accuracy/',
   '/disclosure/',
   '/feeds/market-research',
   '/fomo/',
