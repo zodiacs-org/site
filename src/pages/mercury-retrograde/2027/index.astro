@@ -181,7 +181,7 @@ const jsonLd = [
     </div>
     {/* The two tables rise once as they scroll in (docs/MOTION.md). */}
     <Motion />
-    <div class="table-wrap reveal" data-enter="rise">
+    <div class="table-wrap" data-enter="rise">
       <table class="rx-table">
         <thead>
           <tr><th>Window</th><th>Stations retrograde at</th><th>Stations direct at</th><th></th></tr>
@@ -205,7 +205,7 @@ const jsonLd = [
       <h2>Station times in five time zones</h2>
       <p>Each station at the minute it happens, on five clocks. The date moves with the zone: an evening station in UTC is the next morning in Sydney.</p>
     </div>
-    <div class="reveal" data-enter="rise">
+    <div data-enter="rise">
       <WorldTimesTable rows={stationRows} eventLabel="Station" caption={`Mercury's ${YEAR} stations in UTC, New York, London, Kolkata and Sydney`} />
     </div>
     <p class="year-page__check reveal">

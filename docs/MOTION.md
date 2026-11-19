@@ -61,7 +61,10 @@ useEffect(() => { if (result) motionScan(containerRef.current ?? undefined); }, 
   `#`, a link to a section on the same page, or Back to one shows every marked
   element at once, so an in-page link always lands on content that is there.
   Any `#` in the address, a share link's included, and any script that writes
-  `location.hash`, turns entrances off for the rest of that visit.
+  `location.hash`, turns entrances off for the rest of that visit. So does a
+  page the browser scrolls by itself before the reader has moved it: a search
+  result's text link (`#:~:text=`, which never reaches `location.hash`), or a
+  reload or Back that restores the old position.
 - Elements show as soon as any part of them is on screen (threshold 0, as with
   `.reveal`), so a tall block never sits blank while someone reads it.
 - Only `opacity`, `transform` and `stroke-dashoffset` change: no layout shift.
