@@ -354,7 +354,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       applying: bool,
     },
   },
-  ChartFlag: { enum: ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span'] },
+  ChartFlag: { enum: ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span', 'delta-t-extrapolated', 'de440-unavailable', 'outside-de440-span'] },
   DeltaT: {
     type: 'object',
     required: ['seconds', 'sigma', 'model', 'table', 'tableDigest', 'segment'],
@@ -486,7 +486,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     properties: {
       name: { const: '@zodiacs/engine' },
       version: str,
-      ephemeris: { type: 'object', required: ['name', 'version'], properties: { name: { const: 'astronomy-engine' }, version: str } },
+      ephemeris: { type: 'object', required: ['name', 'version'], properties: { name: { enum: ['jpl-de440', 'astronomy-engine'] }, version: str } },
     },
   },
   Cite: {

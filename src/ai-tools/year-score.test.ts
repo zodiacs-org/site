@@ -13,6 +13,7 @@ import committedMonths from '../data/horoscope-months.json';
 import committedProgram from '../data/horoscope-program.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
+import { expectedCapabilityReply } from '../../tests/helpers/de440-capabilities';
 
 /**
  * ZODIACS_YEAR_SCORE_ENABLED stays off until the owner switches it on. Off (unset, '0' or anything but '1'), or on
@@ -52,14 +53,15 @@ const message = (text: string) => JSON.parse(text.includes('\ndata: ') || text.s
 const COVERAGE = { ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1' };
 
 describe('the Year Ahead Score switch off', () => {
-  it('leaves tools/list and get_capabilities byte for byte as main answers them, and refuses the tool as unknown', async () => {
+  it('preserves the tool list, reports DE440 capabilities and refuses the disabled tool as unknown', async () => {
     expect(YEAR_SCORE_SWITCH_ENV).toBe('ZODIACS_YEAR_SCORE_ENABLED');
     for (const [name, env] of [['coverage', COVERAGE], ['occasions', { ZODIACS_OCCASIONS_ENABLED: '1' }]] as const) {
       for (const value of name === 'coverage' ? [undefined, '0', 'true', ' 1'] : ['1']) {
         const counted: string[] = [];
         const host = await serve({ ...env, ZODIACS_YEAR_SCORE_ENABLED: value }, counted);
         expect((await post(host, rpc('tools/list'))).text, `${name} ${String(value)}`).toBe(FIXTURE[name].toolsList.text);
-        expect((await post(host, rpc('tools/call', { name: 'get_capabilities', arguments: {} }))).text).toBe(FIXTURE[name].capabilities.text);
+        expect((await post(host, rpc('tools/call', { name: 'get_capabilities', arguments: {} }))).text)
+          .toBe(expectedCapabilityReply(FIXTURE[name].capabilities.text));
         const refused = await post(host, rpc('tools/call', { name: 'get_year_score', arguments: { person: 'Jensen Huang' } }));
         expect(refused.text).toBe(FIXTURE[name].save.text);
         expect(counted).not.toContain('get_year_score');

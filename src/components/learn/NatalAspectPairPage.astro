@@ -11,6 +11,7 @@ import Faq from '../Faq.astro';
 import NatalPairDiagram from './NatalPairDiagram.astro';
 import evidence from '../../data/natal-aspect-examples.json';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { de440UpdatedDate, lastmodDate, latestModifiedAt } from '../../lib/seo-lastmod';
 import { NATAL_ASPECT_PAIRS, NATAL_PAIR_SUMMARIES, natalAspectsPublished, natalPairHeading, type NatalAspectPair } from '../../lib/natal-aspect-pairs';
 import styles from '../../styles/natal-aspects.css?raw';
 
@@ -21,6 +22,9 @@ const { pair, bodies, title, description, faq, sources, updated } = entry.data;
 const [a, b] = bodies;
 const name = NATAL_PAIR_SUMMARIES[pair].name;
 const path = `/learn/aspects/${pair}/`;
+const engineUpdated = de440UpdatedDate(path);
+const modifiedDate = engineUpdated ? latestModifiedAt(updated, engineUpdated) : updated.toISOString();
+const updatedDay = lastmodDate(modifiedDate);
 const day = (iso: string) => iso.slice(0, 10);
 const deg = (value: number, digits = 2) => `${value.toFixed(digits)}°`;
 const cap = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
@@ -45,7 +49,7 @@ const others = NATAL_ASPECT_PAIRS.filter((slug) => slug !== pair) as NatalAspect
 const jsonLd = [
   {
     '@type': 'Article', headline: title, description, url: `https://zodiacs.org${path}`,
-    datePublished: entry.data.published.toISOString(), dateModified: updated.toISOString(),
+    datePublished: entry.data.published.toISOString(), dateModified: modifiedDate,
     creativeWorkStatus: natalAspectsPublished ? 'Published' : 'Draft',
     author: EDITOR_AUTHOR, publisher: { '@id': 'https://zodiacs.org/#org' }, inLanguage: 'en',
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org${path}` },
@@ -71,7 +75,7 @@ const jsonLd = [
         <h1 class="display">{name} aspects in a birth chart</h1>
         <p class="natal-ref__lede">{description}</p>
         <p class="natal-ref__context">This page reads {named(a)} and {named(b)} inside one natal chart. Comparing one person's {a} with another person's {b} is a two-chart reading, which the <a href="/compatibility/">compatibility tool</a> calculates.</p>
-        <p class="natal-ref__meta">Updated <time datetime={day(updated.toISOString())}>{day(updated.toISOString())}</time>. {entry.data.reviewer && `Reviewed by ${entry.data.reviewer}.`}</p>
+        <p class="natal-ref__meta">Updated <time datetime={updatedDay}>{updatedDay}</time>. {entry.data.reviewer && `Reviewed by ${entry.data.reviewer}.`}</p>
       </div>
       <NatalPairDiagram a={a} b={b} id={`${pair}-diagram`} hueA={hues[a]} hueB={hues[b]} />
     </header>

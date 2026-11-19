@@ -1,3 +1,5 @@
+import { addDe440Lifetime } from './lib/de440-lifetime.mjs';
+
 /** Mirror main's audited server lifetime policy for each generated AI runtime. */
 export function addAiLifetimeBoundary(generated, local) {
   const tool = 'async function executeAiTool(tool, input, dependencies, context = {}) {';
@@ -6,7 +8,7 @@ export function addAiLifetimeBoundary(generated, local) {
     if (generated.split(marker).length !== 2) throw new Error(`AI private state changed; review cleanup: ${marker}`);
   }
   if (/\b(?:cache_e_tilt|sidereal_time_cache)\b|\bvar last\d+\b/u.test(generated)) throw new Error('Another time cache is bundled; review AI cleanup');
-  let result = generated.replace(tool, 'async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, context = {}) {');
+  let result = addDe440Lifetime(generated).replace(tool, 'async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, context = {}) {');
   if (local) result = result.replace(respond, 'function respondWithoutLifetimeBoundary(run2) {');
   result += `
 // Calculations are synchronous; clearing cannot interrupt another calculation.
@@ -15,6 +17,7 @@ function clearAiEngineState() {
   last = undefined;
   pluto_cache.length = 0;
   CalcMoonCount = 0;
+  clearDe440State();
 }
 async function executeAiTool(tool, input, dependencies, context = {}) {
   try { return await executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, context); }
