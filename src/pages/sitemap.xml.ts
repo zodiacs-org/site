@@ -8,6 +8,10 @@ import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-p
 import natalAspectsPublication from '../data/natal-aspects-publication.json';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
 import type { APIRoute } from 'astro';
+import { ACCURACY_PATH, accuracyPublished } from '../accuracy/publication.mjs';
+import accuracyReceipt from '../data/accuracy/latest.json';
+import accuracyHistory from '../data/accuracy/history.json';
+import type { Receipt, ReceiptHistory } from '../accuracy/receipt';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES } from '../data/numerology-pages';
 import { getCollection } from 'astro:content';
 import { LEGACY_URLS } from '../lib/legacy/urls';
@@ -746,6 +750,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/numerology/', '2026-11-17'] as const,
   // The life path pages' seal, hued chips and entrance motion, last so it wins.
   ...LIFE_PATH_NUMBERS.map((n) => [`/numerology/life-path/${n}/`, '2026-11-17'] as const),
+  // The conventions registry's ids for conformance suite 0.3.0 (level L4's event kinds and its arbiter), registry
+  // version 2026-11-19, on the day of the daily edition it was built with, last so this date wins. /developers/
+  // prints the registry's version.
+  ...['/developers/', '/developers/conventions/'].map((route) => [route, '2026-11-19'] as const),
   // Reader levels on the birth chart page: the first visit question, the level switch and the
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
@@ -795,6 +803,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const gamesEnabled = (import.meta.env.PUBLIC_ZODIAC_GAMES_ENABLED
     ?? process.env.PUBLIC_ZODIAC_GAMES_ENABLED) === '1';
 
+  const firstAccuracyDate = (accuracyHistory as ReceiptHistory[])[0]?.date;
   const evergreenUrls = [
     { loc: '/', priority: 1.0 },
     { loc: '/birth-chart/', priority: 0.95 },
@@ -884,13 +893,19 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/terms/', priority: 0.4 },
     { loc: '/feeds/', priority: 0.55 },
     { loc: '/almanac/', priority: 0.75 },
-  ].map((url) => ({
-    ...url,
-    lastmod: url.loc === '/today/' ? daily.date : getLastmod(url.loc),
-  }));
+  ].map((url) => {
+    let date = url.loc === '/today/' ? daily.date : getLastmod(url.loc);
+    if (accuracyPublished && firstAccuracyDate && (url.loc === '/developers/' || url.loc === '/developers/conformance/')) {
+      date = laterDate(date, firstAccuracyDate);
+    }
+    return { ...url, lastmod: date };
+  });
 
   const urls: { loc: string; priority: number; lastmod?: string }[] = [
     ...evergreenUrls,
+    ...(accuracyPublished
+      ? [{ loc: ACCURACY_PATH, priority: 0.6, lastmod: (accuracyReceipt as Receipt | null)?.date }]
+      : []),
     ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: EVERGREEN_LASTMOD.get(loc) ?? DEVELOPER_GUIDES_LASTMOD })),
     ...(registryAuraEntry ? [registryAuraEntry] : []),
     ...(gamesEnabled ? [
