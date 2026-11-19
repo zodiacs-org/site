@@ -6,6 +6,16 @@ brought up to date on 4 November 2026 for 0.6.1 (branch
 the dated sections below, newest first, record what has been since. Every
 step that touches production, the portal or email needs Dias's separate yes.
 
+## 0.6.8 prepared, 18 November 2026
+
+Zodiacs 0.6.8 is the version prepared for the resubmission. It reports 0.6.8
+and ships invented examples in the tools' field descriptions, and two review
+cases now use invented details (a reader in Mexico City, and a wedding in
+Lisbon on 18 September 2027 at 16:30). No tool name, input, annotation,
+behaviour or tool count changes. The tools copy in the portal can be re-read
+from the server once 0.6.8 is merged and deployed. Nothing was synced, saved,
+sent or submitted on 18 November; each step waits for Dias's yes.
+
 ## 0.6.7 live, 13 November 2026
 
 The hosted server reports 0.6.7 since PR #971 went live on 13 November.

@@ -1,15 +1,14 @@
 /*
- * Builds exact Moon sign ingresses for Registry Collection with the full astronomy
- * engine. The client still uses the lightweight Moon only for the visit-time
+ * Builds exact Moon sign ingresses for Registry Collection with the engine's
+ * default DE440 source. The client still uses the lightweight Moon only for the visit-time
  * sign; this committed file supplies exact future activation timestamps.
  *
  *   npm run data:aura-moon-ingresses
  */
-import './lib/deltat-install.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Body, GeoVector, MakeTime, RotateVector, Rotation_EQJ_ECT } from 'astronomy-engine';
+import { bodyLongitude } from '@zodiacs/engine/internal';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'src/data/aura-moon-ingresses.json');
@@ -21,16 +20,7 @@ const FROM = Date.UTC(2026, 0, 1);
 const TO = Date.UTC(2029, 0, 1);
 const STEP_MS = 2 * 60 * 60 * 1_000;
 
-const norm = (value) => ((value % 360) + 360) % 360;
-
-function moonLongitude(date) {
-  const time = MakeTime(date);
-  const vector = GeoVector(Body.Moon, time, true);
-  const ecliptic = RotateVector(Rotation_EQJ_ECT(time), vector);
-  return norm((Math.atan2(ecliptic.y, ecliptic.x) * 180) / Math.PI);
-}
-
-const signIndexAt = (date) => Math.floor(moonLongitude(date) / 30);
+const signIndexAt = (date) => Math.floor(bodyLongitude('Moon', date) / 30);
 
 function refineBoundary(lowDate, highDate, previousSign) {
   let low = lowDate.getTime();

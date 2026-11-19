@@ -240,10 +240,10 @@
   "test_cases": [
     {
       "description": "A yes-or-no sky question and what changes this week, in the person's time zone. No personal details needed.",
-      "user_prompt": "Is Mercury retrograde right now, and what else changes in the sky this week? I'm in Bangkok.",
+      "user_prompt": "Is Mercury retrograde right now, and what else changes in the sky this week? I'm in Mexico City.",
       "file_attachment_urls": null,
       "tools_triggered": "check_sky_fact, get_upcoming_events",
-      "expected_output": "Answers yes or no about Mercury, then lists this week's sign changes, retrograde or direct turns and new or full Moons with times in Bangkok, in plain words, and renders the sky calendar. Keeps astronomy separate from astrological meaning.",
+      "expected_output": "Answers yes or no about Mercury, then lists this week's sign changes, retrograde or direct turns and new or full Moons with times in Mexico City, in plain words, and renders the sky calendar. Keeps astronomy separate from astrological meaning.",
       "expected_output_url": null
     },
     {
@@ -264,10 +264,10 @@
     },
     {
       "description": "Rate a day that matters and make a card with its sky. Needs no birth date.",
-      "user_prompt": "We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day.",
+      "user_prompt": "We're getting married on 18 September 2027 at 16:30 in Lisbon, Portugal. Is it a good day for it? Make us a card with the sky for that day.",
       "file_attachment_urls": null,
       "tools_triggered": "find_birthplace, get_occasion_sky",
-      "expected_output": "Finds Florence's coordinates and time zone itself instead of asking for them, then renders a wedding card that rates the date out of 100 with a verdict, its astrological reasons and a Reading confidence label, plus the Sun and Moon signs, sunset, golden hour and the planets visible at 17:00 in Florence. Does not guarantee how the day will go. A share link carries only the day, the Sun and Moon signs and the rating.",
+      "expected_output": "Finds Lisbon's coordinates and time zone itself instead of asking for them, then renders a wedding card that rates the date out of 100 with a verdict, its astrological reasons and a Reading confidence label, plus the Sun and Moon signs, sunset, golden hour and the planets visible after dusk in Lisbon. Does not guarantee how the day will go. A share link carries only the day, the Sun and Moon signs and the rating.",
       "expected_output_url": null
     },
     {

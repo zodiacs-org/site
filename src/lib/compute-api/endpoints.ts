@@ -321,7 +321,9 @@ export function computePositions(request: PositionsRequest) {
     const { deltaT, timeScale } = basisOf(instant);
     return {
       instant: iso(instant),
-      bodies: request.bodies ? rows.filter((row) => request.bodies!.includes(row.body)) : rows,
+      // The response identifies the ephemeris once in its backend and receipt.
+      bodies: (request.bodies ? rows.filter((row) => request.bodies!.includes(row.body)) : rows)
+        .map(({ ephemeris: _ephemeris, fallback: _fallback, ...body }) => body),
       deltaT,
       timeScale,
       flags: outsideReferenceSpan(instant) ? ['outside-reference-span' as const] : [],
