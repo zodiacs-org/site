@@ -7,7 +7,7 @@
   "identity": "Actor · United States · born 1995",
   "title": "Timothée Chalamet's birth chart",
   "metaDescription": "Timothée Chalamet's chart, computed from a sourced birth date: Sun at 5.5° Capricorn. Birth time unknown, so no houses or rising sign.",
-  "lede": "Five of the ten placements whose signs are settled stand in Capricorn — the Sun, Mercury, Mars, Uranus and Neptune. The placements whose signs could change with an unknown hour are not counted. A cluster that size becomes the section the rest of the chart plays around.",
+  "lede": "Five of the ten placements whose signs are settled stand in Capricorn: the Sun, Mercury, Mars, Uranus and Neptune. The placements whose signs could change with an unknown hour are not counted. A cluster that size becomes the section the rest of the chart plays around.",
   "ledeFact": "stellium:capricorn:5",
   "blocks": [
     {
@@ -17,7 +17,7 @@
         "sun-degree:5.47",
         "decan:capricorn:first"
       ],
-      "text": "Capricorn, but precisely: 5.5°, first decan, 0°–10°, under Saturn in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
+      "text": "Capricorn, but precisely: 5.5°, first decan, 0° to 10°, under Saturn in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
     },
     {
       "key": "personal",
@@ -37,7 +37,7 @@
         "aspect:Mars:Saturn:sextile:1.71",
         "aspect:Uranus:Pluto:sextile:2.7"
       ],
-      "text": "The day's firmest angle joins Mercury and Neptune — a conjunction holding at 0.9°. A conjunction is the least negotiable aspect in the scheme — no distance to argue across, so the pair arrives as a single instinct. Behind it, Mars sextile Saturn at 1.7°, and Uranus sextile Pluto at 2.7° — both still well inside the orbs this site uses. These angles were checked through every hour of that civil day and survive throughout, which is why an unrecorded hour does not disturb them."
+      "text": "The day's firmest angle joins Mercury and Neptune, a conjunction holding at 0.9°. A conjunction is the least negotiable aspect in the scheme. There is no distance to argue across, so the pair arrives as a single instinct. Behind it, Mars sextile Saturn at 1.7°, and Uranus sextile Pluto at 2.7°, both still well inside the orbs this site uses. These angles were checked through every hour of that civil day and survive throughout, which is why an unrecorded hour does not disturb them."
     },
     {
       "key": "figures",
@@ -45,7 +45,7 @@
       "facts": [
         "figure:unaspected:Venus"
       ],
-      "text": "Venus stands apart from every major angle the day held — the tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+      "text": "Venus stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
     },
     {
       "key": "dignity",
@@ -54,7 +54,7 @@
         "dignity:Mars:exaltation",
         "dignity:Jupiter:domicile"
       ],
-      "text": "Of the seven planets the classical scheme judges, two sit in a sign it has an opinion about. Mars in Capricorn at 20.8° is in exaltation — the tradition’s honoured-guest placement, working at its best; Jupiter in Sagittarius at 28.5° is in domicile — the planet in its own sign, running on home rules. Condition, not character: that is all the dignity table ever measured."
+      "text": "Of the seven planets the classical scheme judges, two sit in a sign it has an opinion about. Mars in Capricorn at 20.8° is in exaltation (the tradition’s honoured-guest placement, working at its best); Jupiter in Sagittarius at 28.5° is in domicile (the planet in its own sign, running on home rules). Condition, not character: that is all the dignity table ever measured."
     },
     {
       "key": "shape",
@@ -75,7 +75,7 @@
         "moon-band:13.5"
       ],
       "uncertain": false,
-      "text": "The Moon stayed in Pisces for the whole of that day at the birthplace, covering 13.5° between midnight and midnight. Whatever the unrecorded hour was, it happened inside one Moon sign — the degree floats, the sign holds. At the noon reference it stands at 22.1°."
+      "text": "The Moon stayed in Pisces for the whole of that day at the birthplace, covering 13.5° between midnight and midnight. Whatever the unrecorded hour was, it happened inside one Moon sign. The degree floats, but the sign holds. At the noon reference it stands at 22.1°."
     }
   ],
   "birthdayLink": {
@@ -107,7 +107,7 @@
     "moon-band:13.5"
   ],
   "measurements": {
-    "originalWords": 417,
+    "originalWords": 414,
     "substantiveStatements": 18,
     "blocks": 7
   }

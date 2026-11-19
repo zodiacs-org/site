@@ -17,7 +17,7 @@
         "sun-degree:16.93",
         "decan:taurus:second"
       ],
-      "text": "The Sun's position resolves to 16.9° Taurus — deep enough in the second decan (10°–20°) that Mercury, its traditional sub-ruler, colours the reading."
+      "text": "The Sun's position resolves to 16.9° Taurus, deep enough in the second decan (10° to 20°) that Mercury, its traditional sub-ruler, colours the reading."
     },
     {
       "key": "personal",
@@ -37,7 +37,7 @@
         "aspect:Venus:Neptune:sextile:2.25",
         "aspect:Mars:Jupiter:sextile:2.62"
       ],
-      "text": "The Sun and Mars hold the closest angle here — a conjunction, 1.2° wide. A conjunction is the least negotiable aspect in the scheme — no distance to argue across, so the pair arrives as a single instinct. Behind it, Venus sextile Neptune at 2.3°, and Mars sextile Jupiter at 2.6° — both still well inside the orbs this site uses. The unknown hour cannot unmake any of this: every aspect named survived all twenty-five samples of the day."
+      "text": "The Sun and Mars hold the closest angle here, a conjunction, 1.2° wide. A conjunction is the least negotiable aspect in the scheme. There is no distance to argue across, so the pair arrives as a single instinct. Behind it, Venus sextile Neptune at 2.3°, and Mars sextile Jupiter at 2.6°, both still well inside the orbs this site uses. The unknown hour cannot unmake any of this: every aspect named survived all twenty-five samples of the day."
     },
     {
       "key": "figures",
@@ -45,7 +45,7 @@
       "facts": [
         "figure:none"
       ],
-      "text": "No closed figure — no grand trine, t-square, or grand cross — holds among the day-stable angles. The chart distributes its tension pair by pair rather than through one standing structure."
+      "text": "No closed figure (no grand trine, t-square, or grand cross) holds among the day-stable angles. The chart distributes its tension pair by pair rather than through one standing structure."
     },
     {
       "key": "dignity",
@@ -56,7 +56,7 @@
         "dignity:Jupiter:domicile",
         "dignity:Saturn:fall"
       ],
-      "text": "The dignity table, which predates the outer planets and only ever spoke for seven, marks four placements here. Venus in Aries at 4.4° is in detriment — the planet opposite its home, working against the grain; Mars in Taurus at 18.2° is in detriment; Jupiter in Pisces at 20.8° is in domicile — the planet in its own sign, running on home rules; Saturn in Aries at 26.4° is in fall — the tradition’s uphill placement, strength earned rather than given. Dignity is a statement about conditions, not about worth."
+      "text": "The dignity table, which predates the outer planets and only ever spoke for seven, marks four placements here. Venus in Aries at 4.4° is in detriment (the planet opposite its home, working against the grain); Mars in Taurus at 18.2° is in detriment; Jupiter in Pisces at 20.8° is in domicile (the planet in its own sign, running on home rules); Saturn in Aries at 26.4° is in fall (the tradition’s uphill placement, strength earned rather than given). Dignity is a statement about conditions, not about worth."
     },
     {
       "key": "shape",
@@ -67,7 +67,7 @@
         "settled-signs:9",
         "retrograde:2"
       ],
-      "text": "Of the 9 placements whose signs hold for the whole day: 4 in fire, 2 in earth, 2 in air, 1 in water by element, 4 fixed, 3 cardinal, 2 mutable by modality. Neptune and Pluto were retrograde — the optical reversal the tradition reads as review — energy turned over before it is turned out."
+      "text": "Of the 9 placements whose signs hold for the whole day: 4 in fire, 2 in earth, 2 in air, 1 in water by element, 4 fixed, 3 cardinal, 2 mutable by modality. Neptune and Pluto were retrograde (the optical reversal the tradition reads as review: energy turned over before it is turned out)."
     },
     {
       "key": "moon",
@@ -76,7 +76,7 @@
         "moon-uncertain:virgo:libra"
       ],
       "uncertain": true,
-      "text": "The Moon crossed from Virgo into Libra during that day at the birthplace, travelling 11.8° between one midnight and the next. Half the day belongs to each sign, and the split falls at an unrecorded hour — so this page holds the Moon as a genuine unknown."
+      "text": "The Moon crossed from Virgo into Libra during that day at the birthplace, travelling 11.8° between one midnight and the next. Half the day belongs to each sign, and the split falls at an unrecorded hour, so this page holds the Moon as a genuine unknown."
     }
   ],
   "birthdayLink": {
@@ -109,7 +109,7 @@
     "moon-uncertain:virgo:libra"
   ],
   "measurements": {
-    "originalWords": 416,
+    "originalWords": 408,
     "substantiveStatements": 19,
     "blocks": 7
   }

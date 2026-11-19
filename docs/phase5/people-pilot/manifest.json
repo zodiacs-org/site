@@ -1,6 +1,6 @@
 {
  "schema": "zodiacs.phase5.people-manifest.v1",
- "status": "Phase 5 complete — 517 reviewed records",
+ "status": "Phase 5 complete: 517 reviewed records",
  "julianRule": "Option A — Julian-dated births are excluded from the Phase 5A pilot",
  "thresholds": {
   "schema": "zodiacs.phase5.thresholds.v1",
@@ -7976,7 +7976,7 @@
     "storedValue": "1994-03-10",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1994-03-10",
     "computedGregorianDate": "1994-03-10",
     "birthdayCrossLinkKey": "1994-03-10",
@@ -7984,7 +7984,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q739675",
     "entityLabel": "Bayamón",
@@ -8095,14 +8095,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 363,
+    "originalWords": 356,
     "substantiveStatements": 16,
     "highestPairwiseSimilarity": 0.1871
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -10564,7 +10564,7 @@
     "storedValue": "1955-10-28",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1955-10-28",
     "computedGregorianDate": "1955-10-28",
     "birthdayCrossLinkKey": "1955-10-28",
@@ -10690,7 +10690,7 @@
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -25429,7 +25429,7 @@
     "storedValue": "2000-07-21",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "2000-07-21",
     "computedGregorianDate": "2000-07-21",
     "birthdayCrossLinkKey": "2000-07-21",
@@ -25437,7 +25437,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q39121",
     "entityLabel": "Leeds",
@@ -25548,14 +25548,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 424,
+    "originalWords": 417,
     "substantiveStatements": 18,
-    "highestPairwiseSimilarity": 0.2619
+    "highestPairwiseSimilarity": 0.2614
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -35939,7 +35939,7 @@
     "storedValue": "1994-02-01",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1994-02-01",
     "computedGregorianDate": "1994-02-01",
     "birthdayCrossLinkKey": "1994-02-01",
@@ -35947,7 +35947,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q865716",
     "entityLabel": "Redditch",
@@ -36058,14 +36058,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 376,
+    "originalWords": 368,
     "substantiveStatements": 17,
-    "highestPairwiseSimilarity": 0.2194
+    "highestPairwiseSimilarity": 0.2189
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -42852,7 +42852,7 @@
     "storedValue": "2002-09-27",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "2002-09-27",
     "computedGregorianDate": "2002-09-27",
     "birthdayCrossLinkKey": "2002-09-27",
@@ -42860,7 +42860,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q399976",
     "entityLabel": "Palm Desert",
@@ -42971,14 +42971,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 391,
+    "originalWords": 382,
     "substantiveStatements": 18,
-    "highestPairwiseSimilarity": 0.204
+    "highestPairwiseSimilarity": 0.1949
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -49129,7 +49129,7 @@
     "storedValue": "1987-06-17",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1987-06-17",
     "computedGregorianDate": "1987-06-17",
     "birthdayCrossLinkKey": "1987-06-17",
@@ -49137,7 +49137,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q487119",
     "entityLabel": "Compton",
@@ -49248,14 +49248,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 409,
+    "originalWords": 402,
     "substantiveStatements": 17,
-    "highestPairwiseSimilarity": 0.263
+    "highestPairwiseSimilarity": 0.2614
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -49919,7 +49919,7 @@
     "storedValue": "1997-08-10",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1997-08-10",
     "computedGregorianDate": "1997-08-10",
     "birthdayCrossLinkKey": "1997-08-10",
@@ -49927,7 +49927,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q1052562",
     "entityLabel": "Cedars-Sinai Medical Center",
@@ -50038,14 +50038,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 466,
+    "originalWords": 456,
     "substantiveStatements": 21,
     "highestPairwiseSimilarity": 0.3057
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -50859,7 +50859,7 @@
     "storedValue": "1974-11-11",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1974-11-11",
     "computedGregorianDate": "1974-11-11",
     "birthdayCrossLinkKey": "1974-11-11",
@@ -50985,7 +50985,7 @@
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -51812,7 +51812,7 @@
     "storedValue": "1997-03-27",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1997-03-27",
     "computedGregorianDate": "1997-03-27",
     "birthdayCrossLinkKey": "1997-03-27",
@@ -51820,7 +51820,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q1026460",
     "entityLabel": "Buri Ram",
@@ -51931,14 +51931,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 442,
+    "originalWords": 437,
     "substantiveStatements": 20,
     "highestPairwiseSimilarity": 0.3002
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -58893,7 +58893,7 @@
     "storedValue": "1997-09-30",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1997-09-30",
     "computedGregorianDate": "1997-09-30",
     "birthdayCrossLinkKey": "1997-09-30",
@@ -58901,7 +58901,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q58780",
     "entityLabel": "Hasselt",
@@ -59012,14 +59012,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 453,
+    "originalWords": 445,
     "substantiveStatements": 20,
     "highestPairwiseSimilarity": 0.2281
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -60820,7 +60820,7 @@
     "storedValue": "1998-05-07",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1998-05-07",
     "computedGregorianDate": "1998-05-07",
     "birthdayCrossLinkKey": "1998-05-07",
@@ -60828,7 +60828,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q49266",
     "entityLabel": "Wichita",
@@ -60939,14 +60939,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 416,
+    "originalWords": 408,
     "substantiveStatements": 19,
-    "highestPairwiseSimilarity": 0.2275
+    "highestPairwiseSimilarity": 0.227
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -63724,7 +63724,7 @@
     "storedValue": "2003-02-20",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "2003-02-20",
     "computedGregorianDate": "2003-02-20",
     "birthdayCrossLinkKey": "2003-02-20",
@@ -63732,7 +63732,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q838787",
     "entityLabel": "Murrieta",
@@ -63843,14 +63843,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 382,
+    "originalWords": 377,
     "substantiveStatements": 16,
     "highestPairwiseSimilarity": 0.2366
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -68539,7 +68539,7 @@
     "storedValue": "1988-02-20",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1988-02-20",
     "computedGregorianDate": "1988-02-20",
     "birthdayCrossLinkKey": "1988-02-20",
@@ -68547,7 +68547,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q819170",
     "entityLabel": "Saint Michael",
@@ -68658,14 +68658,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 415,
+    "originalWords": 409,
     "substantiveStatements": 18,
-    "highestPairwiseSimilarity": 0.2381
+    "highestPairwiseSimilarity": 0.2279
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -71147,7 +71147,7 @@
     "storedValue": "1999-05-11",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1999-05-11",
     "computedGregorianDate": "1999-05-11",
     "birthdayCrossLinkKey": "1999-05-11",
@@ -71155,7 +71155,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q1187391",
     "entityLabel": "Quakertown",
@@ -71266,14 +71266,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 421,
+    "originalWords": 415,
     "substantiveStatements": 16,
     "highestPairwiseSimilarity": 0.2326
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -76322,7 +76322,7 @@
     "storedValue": "1989-12-13",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1989-12-13",
     "computedGregorianDate": "1989-12-13",
     "birthdayCrossLinkKey": "1989-12-13",
@@ -76330,7 +76330,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q16899212",
     "entityLabel": "Reading Hospital",
@@ -76441,14 +76441,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 445,
+    "originalWords": 436,
     "substantiveStatements": 18,
     "highestPairwiseSimilarity": 0.2724
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -77285,7 +77285,7 @@
     "storedValue": "1995-12-27",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1995-12-27",
     "computedGregorianDate": "1995-12-27",
     "birthdayCrossLinkKey": "1995-12-27",
@@ -77293,7 +77293,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q11299",
     "entityLabel": "Manhattan",
@@ -77404,14 +77404,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 417,
+    "originalWords": 414,
     "substantiveStatements": 18,
-    "highestPairwiseSimilarity": 0.2388
+    "highestPairwiseSimilarity": 0.2379
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -82878,7 +82878,7 @@
     "storedValue": "1996-09-01",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1996-09-01",
     "computedGregorianDate": "1996-09-01",
     "birthdayCrossLinkKey": "1996-09-01",
@@ -82886,7 +82886,7 @@
    },
    "birthTime": null,
    "timeQuality": "unknown",
-   "birthTimeEvidence": "none — Wikidata carries no birth-time claim for this person",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
    "birthPlace": {
     "entity": "Q17042",
     "entityLabel": "Oakland",
@@ -82997,14 +82997,14 @@
     "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
    },
    "contentDepth": {
-    "originalWords": 417,
+    "originalWords": 411,
     "substantiveStatements": 19,
     "highestPairwiseSimilarity": 0.2754
    },
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []

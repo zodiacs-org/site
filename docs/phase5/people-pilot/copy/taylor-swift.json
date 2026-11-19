@@ -7,7 +7,7 @@
   "identity": "Singer-songwriter · United States · born 1989",
   "title": "Taylor Swift's birth chart",
   "metaDescription": "Taylor Swift's chart, computed from a sourced birth date: Sun at 21.7° Sagittarius. Birth time unknown, so no houses or rising sign.",
-  "lede": "Four of the nine placements whose signs are settled stand in Capricorn — Mercury, Saturn, Uranus and Neptune. The placements whose signs could change with an unknown hour are not counted. A cluster that size becomes the section the rest of the chart plays around.",
+  "lede": "Four of the nine placements whose signs are settled stand in Capricorn: Mercury, Saturn, Uranus and Neptune. The placements whose signs could change with an unknown hour are not counted. A cluster that size becomes the section the rest of the chart plays around.",
   "ledeFact": "stellium:capricorn:4",
   "blocks": [
     {
@@ -17,7 +17,7 @@
         "sun-degree:21.67",
         "decan:sagittarius:third"
       ],
-      "text": "The Sun sits at 21.7° Sagittarius — the third decan, 20°–30°, which the tradition sub-rules by the Sun. Degrees matter more than the sign label here: two people born a fortnight apart share Sagittarius and share almost nothing else about where the Sun actually stood."
+      "text": "The Sun sits at 21.7° Sagittarius, the third decan, 20° to 30°, which the tradition sub-rules by the Sun. Degrees matter more than the sign label here: two people born a fortnight apart share Sagittarius and share almost nothing else about where the Sun actually stood."
     },
     {
       "key": "personal",
@@ -37,7 +37,7 @@
         "aspect:Saturn:Neptune:conjunction:2.14",
         "aspect:Mercury:Neptune:conjunction:2.3"
       ],
-      "text": "The day's firmest angle joins Mercury and Jupiter — an opposition holding at 1.4°. An opposition puts two needs on opposite shores of the same water. Neither drowns; neither gets the whole beach. Behind it, Saturn conjunction Neptune at 2.1°, and Mercury conjunction Neptune at 2.3° — both still well inside the orbs this site uses. These angles were checked through every hour of that civil day and survive throughout, which is why an unrecorded hour does not disturb them."
+      "text": "The day's firmest angle joins Mercury and Jupiter, an opposition holding at 1.4°. An opposition puts two needs on opposite shores of the same water. Neither drowns; neither gets the whole beach. Behind it, Saturn conjunction Neptune at 2.1°, and Mercury conjunction Neptune at 2.3°, both still well inside the orbs this site uses. These angles were checked through every hour of that civil day and survive throughout, which is why an unrecorded hour does not disturb them."
     },
     {
       "key": "figures",
@@ -45,7 +45,7 @@
       "facts": [
         "figure:unaspected:Sun"
       ],
-      "text": "The Sun stands apart from every major angle the day held — the tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+      "text": "The Sun stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
     },
     {
       "key": "dignity",
@@ -55,7 +55,7 @@
         "dignity:Jupiter:exaltation",
         "dignity:Saturn:domicile"
       ],
-      "text": "Of the seven planets the classical scheme judges, three sit in a sign it has an opinion about. Mars in Scorpio at 26.9° is in domicile — the planet in its own sign, running on home rules; Jupiter in Cancer at 7.7° is in exaltation — the tradition’s honoured-guest placement, working at its best; Saturn in Capricorn at 13.5° is in domicile. Condition, not character: that is all the dignity table ever measured."
+      "text": "Of the seven planets the classical scheme judges, three sit in a sign it has an opinion about. Mars in Scorpio at 26.9° is in domicile (the planet in its own sign, running on home rules); Jupiter in Cancer at 7.7° is in exaltation (the tradition’s honoured-guest placement, working at its best); Saturn in Capricorn at 13.5° is in domicile. Condition, not character: that is all the dignity table ever measured."
     },
     {
       "key": "shape",
@@ -66,7 +66,7 @@
         "settled-signs:9",
         "retrograde:1"
       ],
-      "text": "Tallied where the signs are certain — 9 placements whose signs hold for the whole day — the chart gives earth 4, water 3, fire 1, air 1, and cardinal 5, fixed 3, mutable 1 across the modes. Earth counts what remains: the built, the kept, the finished. Promise weighs less than delivery. Jupiter was retrograde — motion that reverses only from this vantage point, and which the old reading treats as delay used for revision."
+      "text": "Tallied where the signs are certain (9 placements whose signs hold for the whole day), the chart gives earth 4, water 3, fire 1, air 1, and cardinal 5, fixed 3, mutable 1 across the modes. Earth counts what remains: the built, the kept, the finished. Promise weighs less than delivery. Jupiter was retrograde (motion that reverses only from this vantage point, and which the old reading treats as delay used for revision)."
     },
     {
       "key": "moon",
@@ -75,7 +75,7 @@
         "moon-uncertain:gemini:cancer"
       ],
       "uncertain": true,
-      "text": "The Moon crossed from Gemini into Cancer during that day at the birthplace, travelling 14.4° between one midnight and the next. A birth time would settle it in a second; there isn’t one. So the Moon stays unnamed here — the alternative is a guess wearing the clothes of a fact."
+      "text": "The Moon crossed from Gemini into Cancer during that day at the birthplace, travelling 14.4° between one midnight and the next. A birth time would settle it in a second; there isn’t one. So the Moon stays unnamed here. The alternative is a guess wearing the clothes of a fact."
     }
   ],
   "birthdayLink": {
@@ -107,7 +107,7 @@
     "moon-uncertain:gemini:cancer"
   ],
   "measurements": {
-    "originalWords": 445,
+    "originalWords": 436,
     "substantiveStatements": 18,
     "blocks": 7
   }

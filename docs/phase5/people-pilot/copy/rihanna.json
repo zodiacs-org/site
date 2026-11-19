@@ -7,7 +7,7 @@
   "identity": "Singer and businessperson · Barbados · born 1988",
   "title": "Rihanna's birth chart",
   "metaDescription": "Rihanna's chart, computed from a sourced birth date: Sun at 1.2° Pisces. Birth time unknown, so no houses or rising sign.",
-  "lede": "Mercury and Venus sit 0.1° from an exact sextile — near enough that the tradition reads thinking and taste as a single working part. The scheme reads a sextile as a door left unlocked. Useful, and entirely dependent on someone walking through it.",
+  "lede": "Mercury and Venus sit 0.1° from an exact sextile, near enough that the tradition reads thinking and taste as a single working part. The scheme reads a sextile as a door left unlocked. Useful, and entirely dependent on someone walking through it.",
   "ledeFact": "aspect:Mercury:Venus:sextile",
   "blocks": [
     {
@@ -17,7 +17,7 @@
         "sun-degree:1.24",
         "decan:pisces:first"
       ],
-      "text": "Pisces, but precisely: 1.2°, first decan, 0°–10°, under Jupiter in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
+      "text": "Pisces, but precisely: 1.2°, first decan, 0° to 10°, under Jupiter in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
     },
     {
       "key": "personal",
@@ -37,7 +37,7 @@
         "aspect:Saturn:Uranus:conjunction:0.32",
         "aspect:Mercury:Pluto:square:0.66"
       ],
-      "text": "The day's firmest angle joins Mercury and Venus — a sextile holding at 0.1°. The scheme reads a sextile as a door left unlocked. Useful, and entirely dependent on someone walking through it. Behind it, Saturn conjunction Uranus at 0.3°, and Mercury square Pluto at 0.7° — both still well inside the orbs this site uses. These angles were checked through every hour of that civil day and survive throughout, which is why an unrecorded hour does not disturb them."
+      "text": "The day's firmest angle joins Mercury and Venus, a sextile holding at 0.1°. The scheme reads a sextile as a door left unlocked. Useful, and entirely dependent on someone walking through it. Behind it, Saturn conjunction Uranus at 0.3°, and Mercury square Pluto at 0.7°, both still well inside the orbs this site uses. These angles were checked through every hour of that civil day and survive throughout, which is why an unrecorded hour does not disturb them."
     },
     {
       "key": "figures",
@@ -54,7 +54,7 @@
         "dignity:Venus:detriment",
         "dignity:Saturn:domicile"
       ],
-      "text": "Two planets here sit in a sign the classical scheme scores. Venus in Aries at 13.1° is in detriment — the planet opposite its home, working against the grain; Saturn in Capricorn at 0.5° is in domicile — the planet in its own sign, running on home rules. None of these labels is a verdict on a person; they describe how a function is situated, nothing more."
+      "text": "Two planets here sit in a sign the classical scheme scores. Venus in Aries at 13.1° is in detriment (the planet opposite its home, working against the grain); Saturn in Capricorn at 0.5° is in domicile (the planet in its own sign, running on home rules). None of these labels is a verdict on a person; they describe how a function is situated, nothing more."
     },
     {
       "key": "shape",
@@ -65,7 +65,7 @@
         "settled-signs:10",
         "retrograde:2"
       ],
-      "text": "Tallied where the signs are certain — 10 placements whose signs hold for the whole day — the chart gives fire 4, earth 3, water 2, air 1, and cardinal 6, mutable 2, fixed 2 across the modes. Mercury and Pluto were retrograde — apparent backward motion from where the Earth sits, which the tradition reads as a function turned inward before it is turned out."
+      "text": "Tallied where the signs are certain (10 placements whose signs hold for the whole day), the chart gives fire 4, earth 3, water 2, air 1, and cardinal 6, mutable 2, fixed 2 across the modes. Mercury and Pluto were retrograde (apparent backward motion from where the Earth sits, which the tradition reads as a function turned inward before it is turned out)."
     },
     {
       "key": "moon",
@@ -75,7 +75,7 @@
         "moon-band:14.4"
       ],
       "uncertain": false,
-      "text": "The Moon stayed in Aries for the whole of that day at the birthplace, covering 14.4° between midnight and midnight. Whatever the unrecorded hour was, it happened inside one Moon sign — the degree floats, the sign holds. At the noon reference it stands at 13.0°."
+      "text": "The Moon stayed in Aries for the whole of that day at the birthplace, covering 14.4° between midnight and midnight. Whatever the unrecorded hour was, it happened inside one Moon sign. The degree floats, but the sign holds. At the noon reference it stands at 13.0°."
     }
   ],
   "birthdayLink": {
@@ -107,7 +107,7 @@
     "moon-band:14.4"
   ],
   "measurements": {
-    "originalWords": 415,
+    "originalWords": 409,
     "substantiveStatements": 18,
     "blocks": 7
   }

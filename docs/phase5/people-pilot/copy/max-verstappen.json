@@ -7,7 +7,7 @@
   "identity": "Formula One driver · Belgium · born 1997",
   "title": "Max Verstappen's birth chart",
   "metaDescription": "Max Verstappen's chart, computed from a sourced birth date: Sun at 7.3° Libra. Birth time unknown, so no houses or rising sign.",
-  "lede": "Mercury and Neptune sit 0.5° from an exact trine — near enough that the tradition reads thinking and imagination as a single working part. Trines are read as inheritance rather than achievement: the ease is genuine, and nothing about it was earned.",
+  "lede": "Mercury and Neptune sit 0.5° from an exact trine, near enough that the tradition reads thinking and imagination as a single working part. Trines are read as inheritance rather than achievement: the ease is genuine, and nothing about it was earned.",
   "ledeFact": "aspect:Mercury:Neptune:trine",
   "blocks": [
     {
@@ -17,7 +17,7 @@
         "sun-degree:7.28",
         "decan:libra:first"
       ],
-      "text": "The Sun's exact place is 7.3° Libra. That falls in the first decan, 0°–10°, sub-ruled by Venus in the classical scheme — an air sign read through a cardinal season."
+      "text": "The Sun's exact place is 7.3° Libra. That falls in the first decan, 0° to 10°, sub-ruled by Venus in the classical scheme, an air sign read through a cardinal season."
     },
     {
       "key": "personal",
@@ -37,7 +37,7 @@
         "aspect:Uranus:Pluto:sextile:1.36",
         "aspect:Mars:Pluto:conjunction:2.42"
       ],
-      "text": "The day's firmest angle joins Mercury and Neptune — a trine holding at 0.5°. A trine is an open channel. The two cooperate without being asked, which is exactly why it is easy to spend and easy to take for granted. Behind it, Uranus sextile Pluto at 1.4°, and Mars conjunction Pluto at 2.4° — both still well inside the orbs this site uses. These are the day-proof angles — present at midnight, present at noon, present at the next midnight."
+      "text": "The day's firmest angle joins Mercury and Neptune, a trine holding at 0.5°. A trine is an open channel. The two cooperate without being asked, which is exactly why it is easy to spend and easy to take for granted. Behind it, Uranus sextile Pluto at 1.4°, and Mars conjunction Pluto at 2.4°, both still well inside the orbs this site uses. These are the day-proof angles: present at midnight, present at noon, present at the next midnight."
     },
     {
       "key": "figures",
@@ -45,7 +45,7 @@
       "facts": [
         "figure:unaspected:Venus"
       ],
-      "text": "Venus stands apart from every major angle the day held — the tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+      "text": "Venus stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
     },
     {
       "key": "dignity",
@@ -56,7 +56,7 @@
         "dignity:Venus:detriment",
         "dignity:Saturn:fall"
       ],
-      "text": "Of the seven planets the classical scheme judges, four sit in a sign it has an opinion about. The Sun in Libra at 7.3° is in fall — the tradition’s uphill placement, strength earned rather than given; Mercury in Virgo at 26.7° is in exaltation — the tradition’s honoured-guest placement, working at its best; Venus in Scorpio at 21.1° is in detriment — the planet opposite its home, working against the grain; Saturn in Aries at 17.7° is in fall. None of these labels is a verdict on a person; they describe how a function is situated, nothing more."
+      "text": "Of the seven planets the classical scheme judges, four sit in a sign it has an opinion about. The Sun in Libra at 7.3° is in fall (the tradition’s uphill placement, strength earned rather than given); Mercury in Virgo at 26.7° is in exaltation (the tradition’s honoured-guest placement, working at its best); Venus in Scorpio at 21.1° is in detriment (the planet opposite its home, working against the grain); Saturn in Aries at 17.7° is in fall. None of these labels is a verdict on a person; they describe how a function is situated, nothing more."
     },
     {
       "key": "shape",
@@ -67,7 +67,7 @@
         "settled-signs:10",
         "retrograde:4"
       ],
-      "text": "Of the 10 placements whose signs hold for the whole day: 3 in air, 3 in earth, 3 in fire, 1 in water by element, 4 mutable, 3 cardinal, 3 fixed by modality. An air-weighted chart thinks in through-lines; the sentence is how it takes hold of the world. Jupiter, Saturn, Uranus and Neptune were retrograde — the backward drift a body appears to make as the Earth overtakes it, read in the scheme as a function that reviews before it releases."
+      "text": "Of the 10 placements whose signs hold for the whole day: 3 in air, 3 in earth, 3 in fire, 1 in water by element, 4 mutable, 3 cardinal, 3 fixed by modality. An air-weighted chart thinks in through-lines; the sentence is how it takes hold of the world. Jupiter, Saturn, Uranus and Neptune were retrograde (the backward drift a body appears to make as the Earth overtakes it, read in the scheme as a function that reviews before it releases)."
     },
     {
       "key": "moon",
@@ -111,7 +111,7 @@
     "moon-band:11.8"
   ],
   "measurements": {
-    "originalWords": 453,
+    "originalWords": 445,
     "substantiveStatements": 20,
     "blocks": 7
   }

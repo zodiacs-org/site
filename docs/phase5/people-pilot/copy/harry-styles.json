@@ -7,7 +7,7 @@
   "identity": "Singer-songwriter · United Kingdom · born 1994",
   "title": "Harry Styles's birth chart",
   "metaDescription": "Harry Styles's chart, computed from a sourced birth date: Sun at 12.4° Aquarius. Birth time unknown, so no houses or rising sign.",
-  "lede": "Mercury and Saturn sit 0.3° from an exact conjunction — near enough that the tradition reads thinking and structure as a single working part. When two functions occupy one degree, the tradition reads a fusion: neither can act without committing the other.",
+  "lede": "Mercury and Saturn sit 0.3° from an exact conjunction, near enough that the tradition reads thinking and structure as a single working part. When two functions occupy one degree, the tradition reads a fusion: neither can act without committing the other.",
   "ledeFact": "aspect:Mercury:Saturn:conjunction",
   "blocks": [
     {
@@ -17,7 +17,7 @@
         "sun-degree:12.40",
         "decan:aquarius:second"
       ],
-      "text": "Aquarius, but precisely: 12.4°, second decan, 10°–20°, under Mercury in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
+      "text": "Aquarius, but precisely: 12.4°, second decan, 10° to 20°, under Mercury in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
     },
     {
       "key": "personal",
@@ -26,7 +26,7 @@
         "personal:Venus:Aquarius:16.1°",
         "personal:Mars:Aquarius:3.4°"
       ],
-      "text": "Venus holds 16.1° Aquarius, Mars holds 3.4° Aquarius — in the old shorthand, taste led by wit and proportion; drive that argues its way forward."
+      "text": "Venus holds 16.1° Aquarius, Mars holds 3.4° Aquarius, in the old shorthand, taste led by wit and proportion; drive that argues its way forward."
     },
     {
       "key": "geometry",
@@ -36,7 +36,7 @@
         "aspect:Sun:Jupiter:square:1.13",
         "aspect:Uranus:Neptune:conjunction:1.78"
       ],
-      "text": "The day's firmest angle joins Mercury and Saturn — a conjunction holding at 0.3°. A conjunction concentrates rather than balances — the pair burns one fuel line. Behind it, the Sun square Jupiter at 1.1°, and Uranus conjunction Neptune at 1.8° — both still well inside the orbs this site uses. These are the day-proof angles — present at midnight, present at noon, present at the next midnight."
+      "text": "The day's firmest angle joins Mercury and Saturn, a conjunction holding at 0.3°. A conjunction concentrates rather than balances. The pair burns one fuel line. Behind it, the Sun square Jupiter at 1.1°, and Uranus conjunction Neptune at 1.8°, both still well inside the orbs this site uses. These are the day-proof angles: present at midnight, present at noon, present at the next midnight."
     },
     {
       "key": "figures",
@@ -44,7 +44,7 @@
       "facts": [
         "figure:unaspected:Moon"
       ],
-      "text": "The Moon stands apart from every major angle the day held — the tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+      "text": "The Moon stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
     },
     {
       "key": "dignity",
@@ -52,7 +52,7 @@
       "facts": [
         "dignity:Sun:detriment"
       ],
-      "text": "The classical table has one entry for this chart. The Sun in Aquarius at 12.4° is in detriment — the planet opposite its home, working against the grain. The old table grades terrain, not talent — a placement in fall works uphill, nothing more."
+      "text": "The classical table has one entry for this chart. The Sun in Aquarius at 12.4° is in detriment (the planet opposite its home, working against the grain). The old table grades terrain, not talent: a placement in fall works uphill, nothing more."
     },
     {
       "key": "shape",
@@ -64,7 +64,7 @@
         "retrograde:0",
         "sign-uncertain:Mercury:aquarius:pisces"
       ],
-      "text": "The certain ground: 9 placements whose signs hold for the whole day, dividing 4 air, 3 water, 2 earth by element and 5 fixed, 3 cardinal, 1 mutable by mode. An air-weighted chart thinks in through-lines; the sentence is how it takes hold of the world. Mercury crossed from Aquarius into Pisces during that day, so its sign is left open. No settled placement falls in fire — an absence the tradition treats as information, not as a defect. Every body was moving forward that day — no apparent reversals anywhere in the chart."
+      "text": "The certain ground: 9 placements whose signs hold for the whole day, dividing 4 air, 3 water, 2 earth by element and 5 fixed, 3 cardinal, 1 mutable by mode. An air-weighted chart thinks in through-lines; the sentence is how it takes hold of the world. Mercury crossed from Aquarius into Pisces during that day, so its sign is left open. No settled placement falls in fire, an absence the tradition treats as information, not as a defect. Every body was moving forward that day, with no apparent reversals anywhere in the chart."
     },
     {
       "key": "moon",
@@ -105,7 +105,7 @@
     "moon-band:14.3"
   ],
   "measurements": {
-    "originalWords": 376,
+    "originalWords": 368,
     "substantiveStatements": 17,
     "blocks": 7
   }

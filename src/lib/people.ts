@@ -267,7 +267,7 @@ const personSchema = z.object({
 
 const peoplePilotSchema = z.object({
   schema: z.literal('zodiacs.phase5.people.v1'),
-  status: z.string().regex(/^Packet F search-quality release — \d+ indexable deceased records, \d+ deferred deceased records, 19 protected living records, 1 withdrawn$/u),
+  status: z.string().regex(/^Packet F search-quality release: \d+ indexable deceased records, \d+ deferred deceased records, 19 protected living records, 1 withdrawn$/u),
   releaseCounts: z.object({
     indexableDeceased: z.number().int().nonnegative(),
     deferredDeceased: z.number().int().nonnegative(),
@@ -292,7 +292,7 @@ const peoplePilotSchema = z.object({
     protectedLiving: release.people.filter((person) => person.living).length,
     withdrawn: 1,
   };
-  const expectedStatus = `Packet F search-quality release — ${counts.indexableDeceased} indexable deceased records, ${counts.deferredDeceased} deferred deceased records, ${counts.protectedLiving} protected living records, 1 withdrawn`;
+  const expectedStatus = `Packet F search-quality release: ${counts.indexableDeceased} indexable deceased records, ${counts.deferredDeceased} deferred deceased records, ${counts.protectedLiving} protected living records, 1 withdrawn`;
   if (JSON.stringify(release.releaseCounts) !== JSON.stringify(counts)) {
     context.addIssue({ code: 'custom', message: 'People release counts do not match the records' });
   }

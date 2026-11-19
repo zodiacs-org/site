@@ -47,7 +47,7 @@
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
     "timeOfDay": null,
-    "timeOfDayEvidence": "none — Wikidata carries no birth-time claim for this person"
+    "timeOfDayEvidence": "none: Wikidata carries no birth-time claim for this person"
   },
   "death": null,
   "living": true,

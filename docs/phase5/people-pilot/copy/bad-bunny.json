@@ -17,7 +17,7 @@
         "sun-degree:19.85",
         "decan:pisces:second"
       ],
-      "text": "The Sun's position resolves to 19.9° Pisces — deep enough in the second decan (10°–20°) that the Moon, its traditional sub-ruler, colours the reading."
+      "text": "The Sun's position resolves to 19.9° Pisces, deep enough in the second decan (10° to 20°) that the Moon, its traditional sub-ruler, colours the reading."
     },
     {
       "key": "personal",
@@ -37,7 +37,7 @@
         "aspect:Uranus:Neptune:conjunction:2.49",
         "aspect:Uranus:Pluto:sextile:2.78"
       ],
-      "text": "Nothing in the geometry sits closer than Mars and Saturn: 2.4° from an exact conjunction. When two functions occupy one degree, the tradition reads a fusion: neither can act without committing the other. Behind it, Uranus conjunction Neptune at 2.5°, and Uranus sextile Pluto at 2.8° — both still well inside the orbs this site uses. All of it stands whatever the hour was: each angle was tested from midnight to midnight before it was written down."
+      "text": "Nothing in the geometry sits closer than Mars and Saturn: 2.4° from an exact conjunction. When two functions occupy one degree, the tradition reads a fusion: neither can act without committing the other. Behind it, Uranus conjunction Neptune at 2.5°, and Uranus sextile Pluto at 2.8°, both still well inside the orbs this site uses. All of it stands whatever the hour was: each angle was tested from midnight to midnight before it was written down."
     },
     {
       "key": "figures",
@@ -45,7 +45,7 @@
       "facts": [
         "figure:none"
       ],
-      "text": "No closed figure — no grand trine, t-square, or grand cross — holds among the day-stable angles. The chart distributes its tension pair by pair rather than through one standing structure."
+      "text": "No closed figure (no grand trine, t-square, or grand cross) holds among the day-stable angles. The chart distributes its tension pair by pair rather than through one standing structure."
     },
     {
       "key": "dignity",
@@ -53,7 +53,7 @@
       "facts": [
         "dignity:Venus:detriment"
       ],
-      "text": "The dignity table, which predates the outer planets and only ever spoke for seven, marks one placement here. Venus in Aries at 2.6° is in detriment — the planet opposite its home, working against the grain. None of this ranks anyone; dignity describes footing, and footing can be worked with."
+      "text": "The dignity table, which predates the outer planets and only ever spoke for seven, marks one placement here. Venus in Aries at 2.6° is in detriment (the planet opposite its home, working against the grain). None of this ranks anyone; dignity describes footing, and footing can be worked with."
     },
     {
       "key": "shape",
@@ -64,7 +64,7 @@
         "settled-signs:9",
         "retrograde:2"
       ],
-      "text": "Tallied where the signs are certain — 9 placements whose signs hold for the whole day — the chart gives water 5, earth 2, air 1, fire 1, and mutable 3, fixed 3, cardinal 3 across the modes. Jupiter and Pluto were retrograde — motion that reverses only from this vantage point, and which the old reading treats as delay used for revision."
+      "text": "Tallied where the signs are certain (9 placements whose signs hold for the whole day), the chart gives water 5, earth 2, air 1, fire 1, and mutable 3, fixed 3, cardinal 3 across the modes. Jupiter and Pluto were retrograde (motion that reverses only from this vantage point, and which the old reading treats as delay used for revision)."
     },
     {
       "key": "moon",
@@ -73,7 +73,7 @@
         "moon-uncertain:aquarius:pisces"
       ],
       "uncertain": true,
-      "text": "The Moon crossed from Aquarius into Pisces during that day at the birthplace, travelling 12.4° between one midnight and the next. Half the day belongs to each sign, and the split falls at an unrecorded hour — so this page holds the Moon as a genuine unknown."
+      "text": "The Moon crossed from Aquarius into Pisces during that day at the birthplace, travelling 12.4° between one midnight and the next. Half the day belongs to each sign, and the split falls at an unrecorded hour, so this page holds the Moon as a genuine unknown."
     }
   ],
   "birthdayLink": {
@@ -103,7 +103,7 @@
     "moon-uncertain:aquarius:pisces"
   ],
   "measurements": {
-    "originalWords": 363,
+    "originalWords": 356,
     "substantiveStatements": 16,
     "blocks": 7
   }

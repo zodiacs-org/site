@@ -17,7 +17,7 @@
         "sun-degree:28.98",
         "decan:cancer:third"
       ],
-      "text": "The Sun sits at 29.0° Cancer — the third decan, 20°–30°, which the tradition sub-rules by Jupiter. Degrees matter more than the sign label here: two people born a fortnight apart share Cancer and share almost nothing else about where the Sun actually stood."
+      "text": "The Sun sits at 29.0° Cancer, the third decan, 20° to 30°, which the tradition sub-rules by Jupiter. Degrees matter more than the sign label here: two people born a fortnight apart share Cancer and share almost nothing else about where the Sun actually stood."
     },
     {
       "key": "personal",
@@ -37,7 +37,7 @@
         "aspect:Venus:Pluto:trine:0.41",
         "aspect:Jupiter:Neptune:trine:1.22"
       ],
-      "text": "Start where the chart is tightest — the Sun sextile Saturn, 0.4° of separation. A sixth of the circle is close enough for cooperation and far enough that it stays optional. Behind it, Venus trine Pluto at 0.4°, and Jupiter trine Neptune at 1.2° — both still well inside the orbs this site uses. These are the day-proof angles — present at midnight, present at noon, present at the next midnight."
+      "text": "Start where the chart is tightest: the Sun sextile Saturn, 0.4° of separation. A sixth of the circle is close enough for cooperation and far enough that it stays optional. Behind it, Venus trine Pluto at 0.4°, and Jupiter trine Neptune at 1.2°, both still well inside the orbs this site uses. These are the day-proof angles: present at midnight, present at noon, present at the next midnight."
     },
     {
       "key": "figures",
@@ -45,7 +45,7 @@
       "facts": [
         "figure:unaspected:Mercury"
       ],
-      "text": "Mercury stands apart from every major angle the day held — the tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+      "text": "Mercury stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
     },
     {
       "key": "dignity",
@@ -54,7 +54,7 @@
         "dignity:Mars:fall",
         "dignity:Jupiter:detriment"
       ],
-      "text": "Of the seven planets the classical scheme judges, two sit in a sign it has an opinion about. Mars in Cancer at 23.1° is in fall — the tradition’s uphill placement, strength earned rather than given; Jupiter in Gemini at 4.1° is in detriment — the planet opposite its home, working against the grain. The old table grades terrain, not talent — a placement in fall works uphill, nothing more."
+      "text": "Of the seven planets the classical scheme judges, two sit in a sign it has an opinion about. Mars in Cancer at 23.1° is in fall (the tradition’s uphill placement, strength earned rather than given); Jupiter in Gemini at 4.1° is in detriment (the planet opposite its home, working against the grain). The old table grades terrain, not talent: a placement in fall works uphill, nothing more."
     },
     {
       "key": "shape",
@@ -65,7 +65,7 @@
         "settled-signs:10",
         "retrograde:3"
       ],
-      "text": "The certain ground: 10 placements whose signs hold for the whole day, dividing 4 water, 3 air, 2 fire, 1 earth by element and 4 fixed, 3 cardinal, 3 mutable by mode. Water signs hold memory in the scheme, where nothing is quite finished and little is genuinely forgotten. Uranus, Neptune and Pluto were retrograde — apparent retreat against the stars, which the old reading takes as a function working from the inside first."
+      "text": "The certain ground: 10 placements whose signs hold for the whole day, dividing 4 water, 3 air, 2 fire, 1 earth by element and 4 fixed, 3 cardinal, 3 mutable by mode. Water signs hold memory in the scheme, where nothing is quite finished and little is genuinely forgotten. Uranus, Neptune and Pluto were retrograde (apparent retreat against the stars, which the old reading takes as a function working from the inside first)."
     },
     {
       "key": "moon",
@@ -107,7 +107,7 @@
     "moon-band:12.5"
   ],
   "measurements": {
-    "originalWords": 424,
+    "originalWords": 417,
     "substantiveStatements": 18,
     "blocks": 7
   }

@@ -7,7 +7,7 @@
   "identity": "Singer and rapper · Thailand · born 1997",
   "title": "Lisa's birth chart",
   "metaDescription": "Lisa's chart, computed from a sourced birth date: Sun at 6.6° Aries. Birth time unknown, so no houses or rising sign.",
-  "lede": "Four of the ten placements whose signs are settled stand in Aries — the Sun, Mercury, Venus and Saturn. The placements whose signs could change with an unknown hour are not counted. A cluster that size becomes the section the rest of the chart plays around.",
+  "lede": "Four of the ten placements whose signs are settled stand in Aries: the Sun, Mercury, Venus and Saturn. The placements whose signs could change with an unknown hour are not counted. A cluster that size becomes the section the rest of the chart plays around.",
   "ledeFact": "stellium:aries:4",
   "blocks": [
     {
@@ -17,7 +17,7 @@
         "sun-degree:6.57",
         "decan:aries:first"
       ],
-      "text": "Aries, but precisely: 6.6°, first decan, 0°–10°, under Mars in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
+      "text": "Aries, but precisely: 6.6°, first decan, 0° to 10°, under Mars in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
     },
     {
       "key": "personal",
@@ -37,7 +37,7 @@
         "aspect:Sun:Pluto:trine:1.07",
         "aspect:Sun:Uranus:sextile:1.21"
       ],
-      "text": "Closest first: Venus to Pluto, a trine with 0.6° of slack. Trines are read as inheritance rather than achievement: the ease is genuine, and nothing about it was earned. Behind it, the Sun trine Pluto at 1.1°, and the Sun sextile Uranus at 1.2° — both still well inside the orbs this site uses. Each angle here was measured at every hour of the civil day and held; whatever the missing clock said, this geometry was in it."
+      "text": "Closest first: Venus to Pluto, a trine with 0.6° of slack. Trines are read as inheritance rather than achievement: the ease is genuine, and nothing about it was earned. Behind it, the Sun trine Pluto at 1.1°, and the Sun sextile Uranus at 1.2°, both still well inside the orbs this site uses. Each angle here was measured at every hour of the civil day and held; whatever the missing clock said, this geometry was in it."
     },
     {
       "key": "figures",
@@ -45,7 +45,7 @@
       "facts": [
         "figure:unaspected:Moon"
       ],
-      "text": "The Moon stands apart from every major angle the day held — the tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+      "text": "The Moon stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
     },
     {
       "key": "dignity",
@@ -56,7 +56,7 @@
         "dignity:Venus:detriment",
         "dignity:Saturn:fall"
       ],
-      "text": "Four planets here sit in a sign the classical scheme scores. The Sun in Aries at 6.6° is in exaltation — the tradition’s honoured-guest placement, working at its best; the Moon in Scorpio at 10.6° is in fall — the tradition’s uphill placement, strength earned rather than given; Venus in Aries at 5.0° is in detriment — the planet opposite its home, working against the grain; Saturn in Aries at 9.8° is in fall. None of these labels is a verdict on a person; they describe how a function is situated, nothing more."
+      "text": "Four planets here sit in a sign the classical scheme scores. The Sun in Aries at 6.6° is in exaltation (the tradition’s honoured-guest placement, working at its best); the Moon in Scorpio at 10.6° is in fall (the tradition’s uphill placement, strength earned rather than given); Venus in Aries at 5.0° is in detriment (the planet opposite its home, working against the grain); Saturn in Aries at 9.8° is in fall. None of these labels is a verdict on a person; they describe how a function is situated, nothing more."
     },
     {
       "key": "shape",
@@ -67,7 +67,7 @@
         "settled-signs:10",
         "retrograde:2"
       ],
-      "text": "Among the 10 placements whose signs hold for the whole day, the elements divide 5 fire, 2 earth, 2 air, 1 water; by modality, 5 cardinal, 3 fixed, 2 mutable. Fire leads with ignition: the first move made early, and certainty arriving ahead of the evidence. Mars and Pluto were retrograde — apparent retreat against the stars, which the old reading takes as a function working from the inside first."
+      "text": "Among the 10 placements whose signs hold for the whole day, the elements divide 5 fire, 2 earth, 2 air, 1 water; by modality, 5 cardinal, 3 fixed, 2 mutable. Fire leads with ignition: the first move made early, and certainty arriving ahead of the evidence. Mars and Pluto were retrograde (apparent retreat against the stars, which the old reading takes as a function working from the inside first)."
     },
     {
       "key": "moon",
@@ -111,7 +111,7 @@
     "moon-band:12.6"
   ],
   "measurements": {
-    "originalWords": 442,
+    "originalWords": 437,
     "substantiveStatements": 20,
     "blocks": 7
   }

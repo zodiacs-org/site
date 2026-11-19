@@ -47,7 +47,7 @@
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
     "timeOfDay": null,
-    "timeOfDayEvidence": "none — Wikidata carries no birth-time claim for this person"
+    "timeOfDayEvidence": "none: Wikidata carries no birth-time claim for this person"
   },
   "death": null,
   "living": true,
@@ -100,7 +100,7 @@
     "licenseShortName": "CC BY 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
     "artist": "iHeartRadioCA",
-    "credit": "YouTube: #taylorswift on the #vmas pink carpet – View/save archived versions on archive.org(See specific archived version)",
+    "credit": "YouTube: #taylorswift on the #vmas pink carpet (view or save archived versions on archive.org, including the specific archived version)",
     "usageTerms": "Creative Commons Attribution 3.0",
     "attributionRequired": "true",
     "restrictions": ""

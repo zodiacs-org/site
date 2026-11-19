@@ -37,7 +37,7 @@
         "aspect:Mars:Saturn:opposition:0.15",
         "aspect:Mercury:Neptune:conjunction:0.65"
       ],
-      "text": "Mercury and Jupiter hold the closest angle here — an opposition, 0.1° wide. Across the wheel, each body sees the other in full. The old reading is not conflict so much as permanent mutual visibility. Behind it, Mars opposition Saturn at 0.1°, and Mercury conjunction Neptune at 0.7° — both still well inside the orbs this site uses. Each angle here was measured at every hour of the civil day and held; whatever the missing clock said, this geometry was in it."
+      "text": "Mercury and Jupiter hold the closest angle here, an opposition, 0.1° wide. Across the wheel, each body sees the other in full. The old reading is not conflict so much as permanent mutual visibility. Behind it, Mars opposition Saturn at 0.1°, and Mercury conjunction Neptune at 0.7°, both still well inside the orbs this site uses. Each angle here was measured at every hour of the civil day and held; whatever the missing clock said, this geometry was in it."
     },
     {
       "key": "figures",
@@ -45,7 +45,7 @@
       "facts": [
         "figure:unaspected:Moon"
       ],
-      "text": "The Moon stands apart from every major angle the day held — the tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+      "text": "The Moon stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
     },
     {
       "key": "dignity",
@@ -64,7 +64,7 @@
         "settled-signs:9",
         "retrograde:2"
       ],
-      "text": "The honest balance sheet uses the 9 placements whose signs hold for the whole day: air 4, fire 3, water 1, earth 1 across the elements, and mutable 4, fixed 4, cardinal 1 across the modalities. An air emphasis is read as distance for the sake of clarity: the idea gets examined before it gets adopted. Jupiter and Saturn were retrograde — apparent backward motion from where the Earth sits, which the tradition reads as a function turned inward before it is turned out."
+      "text": "The honest balance sheet uses the 9 placements whose signs hold for the whole day: air 4, fire 3, water 1, earth 1 across the elements, and mutable 4, fixed 4, cardinal 1 across the modalities. An air emphasis is read as distance for the sake of clarity: the idea gets examined before it gets adopted. Jupiter and Saturn were retrograde (apparent backward motion from where the Earth sits, which the tradition reads as a function turned inward before it is turned out)."
     },
     {
       "key": "moon",
@@ -73,7 +73,7 @@
         "moon-uncertain:libra:scorpio"
       ],
       "uncertain": true,
-      "text": "The Moon crossed from Libra into Scorpio during that day at the birthplace, travelling 14.5° between one midnight and the next. Half the day belongs to each sign, and the split falls at an unrecorded hour — so this page holds the Moon as a genuine unknown."
+      "text": "The Moon crossed from Libra into Scorpio during that day at the birthplace, travelling 14.5° between one midnight and the next. Half the day belongs to each sign, and the split falls at an unrecorded hour, so this page holds the Moon as a genuine unknown."
     }
   ],
   "birthdayLink": {
@@ -103,7 +103,7 @@
     "moon-uncertain:libra:scorpio"
   ],
   "measurements": {
-    "originalWords": 382,
+    "originalWords": 377,
     "substantiveStatements": 16,
     "blocks": 7
   }
