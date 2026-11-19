@@ -138,7 +138,18 @@ if (check) {
   if (policy.demandPruning?.evidence !== 'docs/phase5/people-pilot/index-demand.json'
       || policy.demandPruning?.rankedTarget !== target
       || policy.demandPruning?.retainReviewedDeceasedRegistryLinks !== true
-      || JSON.stringify(configuredOverrides) !== JSON.stringify(continuityOverrides)
+      // The four Packet F overrides keep their index status after the
+      // 2026-11-18 Registry refresh unlinked them; every currently linked
+      // out-of-cohort profile must still be covered at its ranked position.
+      || configuredOverrides.length !== 4
+      || continuityOverrides.some(({ slug, rank }) => !configuredOverrides.some((entry) => (
+        entry.slug === slug && entry.rank === rank
+      )))
+      || configuredOverrides.some((entry) => (
+        !reviewedDeceased.has(entry.slug)
+        || entry.rank !== evidence.people.find((person) => person.slug === entry.slug)?.rank
+        || entry.rank <= target
+      ))
       || selected.size !== target + 4
       || reviewedDeceased.size !== deceased.length
       || [...reviewedDeceased].some((slug) => !deceasedSlugs.has(slug))
@@ -148,7 +159,7 @@ if (check) {
   }
   console.log(
     `people-index-demand: exact — ${selected.size} indexable`
-    + ` (${target} ranked + ${continuityOverrides.length} link-continuity),`
+    + ` (${target} ranked + ${configuredOverrides.length} link-continuity),`
     + ` ${deceased.length - selected.size} deferred`,
   );
 }
