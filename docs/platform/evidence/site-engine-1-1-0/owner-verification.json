@@ -1,0 +1,240 @@
+{
+  "originalMain": {
+    "passed": 9431,
+    "failed": 2,
+    "skipped": 14,
+    "total": 9447
+  },
+  "originalBranch": {
+    "passed": 9378,
+    "failed": 59,
+    "skipped": 13,
+    "total": 9450
+  },
+  "previousBranch": {
+    "commit": "a3d3610549f1fb97915b621107a01c714b3c8e66",
+    "parent": "3d79629188676ad634ac1f2374720d29f0f7fd7b",
+    "passed": 9426,
+    "failed": 11,
+    "skipped": 13,
+    "total": 9450,
+    "failures": [
+      {
+        "path": "scripts/claims-bindings.test.mjs",
+        "name": "event times against Swiss Ephemeris were measured on the catalog the site publishes now",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "scripts/claims-bindings.test.mjs",
+        "name": "the Moon ingresses on the void-of-course calendar are within about 5 seconds of Swiss Ephemeris, measured on the table the site publishes",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "scripts/mcp-artifact.test.mjs",
+        "name": "the recorded evidence host-drive.json was measured against the bundle that ships",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "scripts/mcp-pack-permissions.test.mjs",
+        "name": "packs the complete npm file selection identically from private and Git checkout permissions",
+        "reason": "Test error"
+      },
+      {
+        "path": "scripts/methodology-accuracy-claim.test.mjs",
+        "name": "the accuracy claim on /methodology/ gives the two clocks' difference as statistics over 2100, 2199, from the committed run",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "scripts/methodology-accuracy-claim.test.mjs",
+        "name": "the every-tenth-day comparison, 1800 to 2199 was measured on the engine the site runs, with every call answered from the Swiss data files",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "src/ai-tools/clear-time.test.ts",
+        "name": "times an assistant can read one way only Sky Watch hashes the same events as main, so its event ids do not move",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "src/ai-tools/http.test.ts",
+        "name": "stateless MCP HTTP boundary works with the official SDK client: list, call, widget read and close",
+        "reason": "Test error"
+      },
+      {
+        "path": "src/ai-tools/schema-types.test.ts",
+        "name": "the tools' schemas give the values the compute API returns exactly the schemas the API documents for them",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "src/ai-tools/schema-types.test.ts",
+        "name": "what the tools return validates against the schemas they advertise, as a client checks it",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "src/ai-tools/sky-events.test.ts",
+        "name": "the sky events switch on answers with results that validate against the output schemas tools/list advertises, as a client checks them",
+        "reason": "Assertion failure"
+      }
+    ],
+    "collectionFailures": []
+  },
+  "comparedMain": {
+    "commit": "2fab4d9cd09c340a10858f2250bc74e4d6a4925d",
+    "passed": 9439,
+    "failed": 0,
+    "skipped": 13,
+    "total": 9452,
+    "failures": [],
+    "collectionFailures": []
+  },
+  "firstOwnerRun": {
+    "passed": 9433,
+    "failed": 7,
+    "skipped": 13,
+    "total": 9453,
+    "failures": [
+      {
+        "path": "scripts/claims-bindings.test.mjs",
+        "test": "event times against Swiss Ephemeris were measured on the catalog the site publishes now"
+      },
+      {
+        "path": "scripts/claims-bindings.test.mjs",
+        "test": "the Moon ingresses on the void-of-course calendar are within about 5 seconds of Swiss Ephemeris, measured on the table the site publishes"
+      },
+      {
+        "path": "scripts/claims-ledger.test.mjs",
+        "test": "claims ledger R1 lists every sentence the extractor selects"
+      },
+      {
+        "path": "scripts/mcp-artifact.test.mjs",
+        "test": "the recorded evidence host-drive.json was measured against the bundle that ships"
+      },
+      {
+        "path": "scripts/methodology-accuracy-claim.test.mjs",
+        "test": "the accuracy claim on /methodology/ gives the two clocks' difference as statistics over 2100 to 2199, from the committed run"
+      },
+      {
+        "path": "scripts/methodology-accuracy-claim.test.mjs",
+        "test": "the every-tenth-day comparison, 1800 to 2199 was measured on the engine the site runs, with every call answered from the Swiss data files"
+      },
+      {
+        "path": "tests/api/compute-api-privacy.test.ts",
+        "test": "the site and the compute API is called by no page, island or script of the site but the developer playground"
+      }
+    ],
+    "collections": []
+  },
+  "ownerBranch": {
+    "passed": 9435,
+    "failed": 5,
+    "skipped": 13,
+    "total": 9453,
+    "failures": [
+      {
+        "path": "scripts/claims-bindings.test.mjs",
+        "test": "event times against Swiss Ephemeris were measured on the catalog the site publishes now"
+      },
+      {
+        "path": "scripts/claims-bindings.test.mjs",
+        "test": "the Moon ingresses on the void-of-course calendar are within about 5 seconds of Swiss Ephemeris, measured on the table the site publishes"
+      },
+      {
+        "path": "scripts/mcp-artifact.test.mjs",
+        "test": "the recorded evidence host-drive.json was measured against the bundle that ships"
+      },
+      {
+        "path": "scripts/methodology-accuracy-claim.test.mjs",
+        "test": "the accuracy claim on /methodology/ gives the two clocks' difference as statistics over 2100 to 2199, from the committed run"
+      },
+      {
+        "path": "scripts/methodology-accuracy-claim.test.mjs",
+        "test": "the every-tenth-day comparison, 1800 to 2199 was measured on the engine the site runs, with every call answered from the Swiss data files"
+      }
+    ],
+    "collections": []
+  },
+  "newTestsOnMain": {
+    "commit": "2fab4d9cd09c340a10858f2250bc74e4d6a4925d",
+    "passed": 0,
+    "failed": 3,
+    "skipped": 37,
+    "total": 40,
+    "failures": [
+      {
+        "path": "tests/api/owner-transition-baseline.test.ts",
+        "test": "keeps the published connector reply while a separate route advertises and returns DE440"
+      },
+      {
+        "path": "src/ai-tools/watch/owner-timing-baseline.test.ts",
+        "test": "Sky Watch safety and event ledger ingests the corrected time with the existing ID even when the event crosses midnight"
+      },
+      {
+        "path": "src/ai-tools/watch/owner-timing-baseline.test.ts",
+        "test": "Sky Watch safety and event ledger reuses a newly allocated ID after a time correction and allocates a different ID for the next occurrence"
+      }
+    ],
+    "collections": []
+  },
+  "focused": {
+    "relatedTests": {
+      "passed": 110,
+      "failed": 0,
+      "skipped": 0,
+      "total": 110,
+      "failures": [],
+      "collections": []
+    },
+    "routeAndWatch": {
+      "passed": 40,
+      "failed": 0,
+      "skipped": 0,
+      "total": 40,
+      "failures": [],
+      "collections": []
+    },
+    "auditScope": {
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "total": 19,
+      "failures": [],
+      "collections": []
+    }
+  },
+  "commands": {
+    "build": "passed",
+    "check": "passed",
+    "integrationBuildCheck": "passed",
+    "cleanNpmCiOffline": "ENOTCACHED; no registry access requested",
+    "databaseLifecycle": "not run; no local PostgreSQL server or installation available"
+  },
+  "bundles": {
+    "before": "bundles-followup.tsv",
+    "after": "bundles-followup.tsv",
+    "identical": true,
+    "beforeSha256": "c8873c4e87e59e53c75f97b0d8cfa9c27dad1a085110abc85e6de55048e1f216",
+    "afterSha256": "c8873c4e87e59e53c75f97b0d8cfa9c27dad1a085110abc85e6de55048e1f216"
+  },
+  "retainedServerBytes": {
+    "runtime.mjs": 4599493,
+    "horoscope-program.json": 1404626,
+    "horoscope-window.json": 333406
+  },
+  "testChanges": {
+    "tests/api/mcp-transition.test.ts": "Adds a side by side client test and byte comparisons for published initialize, tools, resources and capabilities, using the existing fixture.",
+    "src/ai-tools/http.test.ts": "Runs the existing HTTP client assertions against the DE440 route contract. The new transition test verifies the published route separately.",
+    "src/ai-tools/schema-types.test.ts": "Compares the opt-in result schema with the compute API and validates the same synthetic results against it.",
+    "src/ai-tools/sky-events.test.ts": "Runs the existing wire schema validation case with the DE440 contract. The flag-off fixture comparisons keep the previous schema.",
+    "src/ai-tools/clear-time.test.ts": "Replays all original Watch IDs as retained ledger entries and checks the same IDs, key order and live DE440 instants after reconciliation.",
+    "src/ai-tools/watch/watch.test.ts": "Adapts the cursor test to the timing procedures. Adds a cross-midnight replay of an existing ID and a persistent ID check for a newly observed event.",
+    "tests/sky-watch-drive.ts": "Adds a database case for the old cursor, neighboring UTC day, retained ID, pending due time and stale ingest rejection.",
+    "scripts/check-ai-integrations.mjs": "Adds both opt-in rewrites and checks the fingerprints of the published runtime and its retained edition inputs.",
+    "scripts/claims-ledger-lib.mjs": "Keeps the pinned published bundle outside the claims scan. Sources still enter the scan, and the package check verifies the bundle digest.",
+    "tests/api/compute-api-privacy.test.ts": "Includes the two new server-only importers in the exact import inventory. The browser boundary guard remains strict."
+  },
+  "transition": {
+    "published": "/mcp",
+    "optIn": "/mcp/de440",
+    "reviewAfterDays": 30,
+    "clock": "from rollout of the opt-in endpoint"
+  }
+}

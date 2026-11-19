@@ -137,7 +137,8 @@ describe('natal Saturn direction', () => {
   });
 
   it('is direct just before the chart\'s station and retrograde just after', () => {
-    expect(saturnReturns(new Date('2026-07-26T19:53:04.040Z')).natalRetrograde).toBe(false);
-    expect(saturnReturns(new Date('2026-07-26T19:53:24.040Z')).natalRetrograde).toBe(true);
+    // DE440 station from the longitude speed, recorded in the adoption evidence.
+    expect(saturnReturns(new Date('2026-07-26T19:56:05.778Z')).natalRetrograde).toBe(false);
+    expect(saturnReturns(new Date('2026-07-26T19:56:25.778Z')).natalRetrograde).toBe(true);
   });
 });

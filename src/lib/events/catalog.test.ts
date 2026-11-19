@@ -3,10 +3,11 @@ import { bodyLongitude, longitudeSpeed } from '../engine/full';
 import { degreeInSign, signForLongitude } from '../signs';
 import { solarHouse } from '../daily';
 import { eventsCatalog, RETRO_PAGE_PLANETS, SLOW_BODIES } from './catalog';
-import { eventClock, metaDescription, metaTitle, moonNameForDate } from './format';
+import { aspectId, eventClock, metaDescription, metaTitle, moonNameForDate } from './format';
 import { INTERPRETED_IDS, interpretationFor } from './interpretations';
 import { publishedEventPages } from './site-publication';
-import { nasaStationAt } from '../nasa-instants';
+import { nasaAspectAt, nasaStationAt } from '../nasa-instants';
+import { archivedEventKey } from '../published-event-time';
 
 const catalog = eventsCatalog();
 const byId = catalog.byId;
@@ -273,8 +274,16 @@ describe('events catalog — derivation agreement', () => {
       }
       for (const aspect of source.aspects) {
         if (!slowBodies.has(aspect.a) || !slowBodies.has(aspect.b) || aspect.orb !== 0) continue;
-        const id = `${aspect.a.toLowerCase()}-${aspect.type}-${aspect.b.toLowerCase()}-${aspect.at.slice(0, 10)}`;
-        expect(byId.get(id)?.facts.provenance.source, id).toBe(`transits-${source.month}.json`);
+        const identity = ['aspect', aspect.a, aspect.b, aspect.type];
+        const archived = archivedEventKey(aspect.at, ...identity);
+        const published = publishedEventPages.find((page) => page.family === 'aspect'
+          && page.bodies[0] === aspect.a && page.bodies[1] === aspect.b && page.subtype === aspect.type
+          && archivedEventKey(page.anchor, ...identity) === archived);
+        const id = published?.id ?? aspectId(aspect.a, aspect.type, aspect.b, aspect.at);
+        const facts = byId.get(id)?.facts;
+        expect(facts?.provenance.source, id).toBe(`transits-${source.month}.json`);
+        expect(facts?.committed?.anchor ?? facts?.at, id).toBe(published?.anchor ?? aspect.at);
+        expect(facts?.at, id).toBe(nasaAspectAt(aspect.a, aspect.b, aspect.type, aspect.at) ?? aspect.at);
       }
     }
   });
