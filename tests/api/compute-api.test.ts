@@ -1,3 +1,4 @@
+import { DE440_PACK } from '@zodiacs/engine/de440/pack';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -544,7 +545,7 @@ describe('compute API receipts, backend and citation', () => {
     for (const endpoint of COMPUTE_ENDPOINTS) {
       const { json } = await call(endpoint, VALID[endpoint]);
       expect(json.schema).toBe(`zodiacs.compute-api.${endpoint}.v1`);
-      expect(json.backend).toEqual({ name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { name: 'astronomy-engine', version: '2.1.19' } });
+      expect(json.backend).toEqual({ name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { name: 'jpl-de440', version: DE440_PACK.sha256 } });
       expect(json.receipt.engine).toEqual(json.backend);
       expect(json.receipt.schema).toBe(endpoint === 'chart' || endpoint === 'houses'
         ? 'zodiacs.calculation-receipt.draft-v1' : 'zodiacs.compute-receipt.v1');
@@ -686,7 +687,8 @@ describe('compute API parity with the engine and the site resolver', () => {
     json.result.instants.forEach((row: any, index: number) => {
       const at = new Date(instants[index]);
       expect(row.instant).toBe(at.toISOString());
-      expect(row.bodies).toEqual(JSON.parse(JSON.stringify(positions(at).filter((body) => ['Sun', 'Moon', 'South Node'].includes(body.body)))));
+      expect(row.bodies).toEqual(JSON.parse(JSON.stringify(positions(at).filter((body) => ['Sun', 'Moon', 'South Node'].includes(body.body))
+        .map(({ ephemeris: _ephemeris, fallback: _fallback, ...body }) => body))));
       const chart = natalChart({ utc: at, timeKnown: false });
       expect(row.deltaT).toEqual(chart.deltaT);
       expect(row.timeScale).toEqual(chart.timeScale);

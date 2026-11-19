@@ -23,7 +23,6 @@
  * reads. The tests hold every result to both.
  */
 import { z } from 'zod';
-import { EPHEMERIS } from '@zodiacs/engine';
 import { NATAL_DIAGNOSTIC_SCHEMA, NATAL_ENVELOPE_SCHEMA, NATAL_RECEIPT_SCHEMA } from '@zodiacs/engine/receipt';
 import {
   COMPUTE_RECEIPT_SCHEMA, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, SEARCH_STEP_DAYS, SKY_FACT_KINDS, responseSchemaName,
@@ -44,6 +43,7 @@ export const SIGN_NAMES = Object.freeze([
 ] as const);
 export const CHART_FLAGS = Object.freeze([
   'dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span',
+  'de440-unavailable', 'outside-de440-span', 'delta-t-extrapolated',
 ] as const);
 export const ASPECT_TYPES = Object.freeze(['conjunction', 'sextile', 'square', 'trine', 'opposition'] as const);
 export const EVIDENCE = Object.freeze(['reproduced', 'reported', 'hypothesis', 'unresolved'] as const);
@@ -54,7 +54,7 @@ const count = z.number().int().min(0);
 /** Exactly two numbers. Not `z.tuple`, whose JSON Schema form some validators do not read. */
 const pair = z.array(z.number()).length(2);
 
-const ephemeris = z.strictObject({ name: z.literal(EPHEMERIS.name), version: z.string() });
+const ephemeris = z.strictObject({ name: z.enum(['astronomy-engine', 'jpl-de440']), version: z.string() });
 
 const engine = z.strictObject({
   name: z.literal('@zodiacs/engine'),
@@ -115,7 +115,8 @@ export const CAPABILITIES_OUTPUT = z.strictObject({
   engine: z.strictObject({
     name: z.literal('@zodiacs/engine'),
     version: z.string(),
-    releaseStatus: z.literal('unpublished-candidate'),
+    releaseStatus: z.literal('published'),
+    registry: z.literal('npm'),
   }),
   schemas: z.strictObject({
     envelope: z.literal(NATAL_ENVELOPE_SCHEMA),

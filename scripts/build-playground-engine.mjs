@@ -20,6 +20,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import * as esbuild from 'esbuild';
+import { browserEngineEsbuild } from './lib/browser-engine.mjs';
 import { runtimeImports } from './build-compute-local-time.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
@@ -54,6 +55,7 @@ export async function buildPlaygroundEngineBundle() {
     absWorkingDir: ROOT,
     bundle: true,
     platform: 'browser',
+    plugins: [browserEngineEsbuild()],
     format: 'esm',
     target: 'es2022',
     alias: { 'node:crypto': resolve(ROOT, 'src/lib/compute-api/playground-crypto.ts') },

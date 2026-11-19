@@ -1,3 +1,5 @@
+import priorIdentities from '../../docs/platform/evidence/site-engine-1-1-0/watch-prior-identities.json';
+import type { WatchIdentity } from './watch/contracts';
 import { describe, expect, it } from 'vitest';
 import { executeAiTool } from './tools';
 import { eventTimes, localIso, localMinuteIso, minuteUtc, moonCycle, moonDirection, moonPhaseLabel, roundToMinute, shownTime, shownUtc } from './clear-time';
@@ -132,26 +134,15 @@ describe('times an assistant can read one way only', () => {
     }
   });
 
-  it('Sky Watch hashes the same events as main, so its event ids do not move', async () => {
-    // Computed with calculateWindow on main at c87502b72, before the list was rounded. An engine change that moves
-    // WATCH_VERSION moves every id by design; nothing else may.
-    const lunation = await calculateWindow('2026-10-10T00:00:00Z', '2026-10-11T00:00:00Z');
-    expect(lunation.map((event: { eventId: string }) => event.eventId)).toEqual(['evt_7f7b371044b13376bd21158afdf7a127fff7fad6c7aaffba1130d9787d75f9ab']);
-    expect(Object.keys(lunation[0].data.event)).toEqual(['kind', 'at', 'sign', 'type', 'lon', 'degree']);
-    expect(lunation[0].data.event.at).toBe('2026-10-10T15:50:02.099Z');
-    expect(lunation[0].timestamp).toBe('2026-10-10T15:50:02.099Z');
-    const ingress = await calculateWindow('2026-11-01T00:00:00Z', '2026-11-03T00:00:00Z');
-    expect(ingress.map((event: { eventId: string }) => event.eventId)).toEqual(['evt_0e103ebec2d986cfbac2a53c756a8ada213d75572df5cb6c1e330f9cc61d196c']);
-    expect(Object.keys(ingress[0].data.event)).toEqual(['kind', 'at', 'body', 'sign', 'retrograde']);
-    expect(ingress[0].data.event.at).toBe('2026-11-01T04:18:12.545Z');
-    const week = await calculateWindow('2027-01-01T00:00:00Z', '2027-01-08T00:00:00Z');
-    expect(week.map((event: { eventId: string }) => event.eventId)).toEqual([
-      'evt_3323029a012f65209fdcad0ed67ba4517f3819e925d41d035112b6462c3279e1',
-      'evt_44949bd6e6863346c0a37a78b7d987688e9974d60622d5fa8eef70ba5a2c255e',
-      'evt_f1e09269720e5e91c0c7de9bc9f0937aa4aea00bf91ffb9d6ba0080a34de9040',
-      'evt_4d1fa1553133911da0a8d9743bd755625460e118ffc87d385532f1866c6bd5d0',
-      'evt_256d3f375c1ece5e187d464c7a16b8e00804036365182d4a6483e1e2d91f43c4',
-    ]);
+  it('keeps the published Sky Watch IDs while reconciling to exact DE440 times', async () => {
+    for (const { from, to, events } of priorIdentities.windows) {
+      const watched = await calculateWindow(from, to, events as WatchIdentity[]);
+      const exact = computeEvents(parseEventsRequest({ from, to, kinds: ['ingress', 'station', 'lunation'] }));
+      expect(watched.map(event => event.eventId)).toEqual(events.map(event => event.eventId));
+      expect(watched.map(event => event.timestamp)).toEqual(exact.result.events.map(event => event.at));
+      expect(watched.map(event => Object.keys(event.data.event))).toEqual(events.map(event => Object.keys(event.data.event)));
+      expect(watched.some((event, index) => event.timestamp !== events[index].timestamp)).toBe(true);
+    }
   });
 
   it('Sky Watch still takes the solved instants', async () => {

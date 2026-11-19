@@ -5,6 +5,7 @@ import solved from '../../docs/platform/evidence/event-pages-2027-20261113/horiz
 import { eventsCatalog } from './events/catalog';
 import { STYLE_GUIDE_READING_IDS } from './events/readings-2027';
 import { nasaStationAt, nasaIngressAt } from './nasa-instants';
+import { archivedEventKey } from './published-event-time';
 import {
   NASA_EVENT_TIMES_2027, nasaEclipseAt, nasaLunationAt, nasaShadowAt,
 } from './nasa-event-times-2027';
@@ -23,7 +24,8 @@ const catalog = eventsCatalog();
 describe('the 2027 event pages print NASA’s instants', () => {
   it('lists every 2027 full moon and eclipse, and each shadow edge of the 2027 Mercury and Mars retrogrades', () => {
     const fulls = (sky.moons as { type: string; at: string }[]).filter((m) => m.type === 'full' && m.at.startsWith('2027'));
-    expect(NASA_EVENT_TIMES_2027.lunations.map((row) => row.engine)).toEqual(fulls.map((m) => m.at));
+    expect(fulls.map((m) => archivedEventKey(m.at, 'lunation', m.type)))
+      .toEqual(NASA_EVENT_TIMES_2027.lunations.map((row) => row.engine));
     const eclipses = (eclipsesData.eclipses as { peak: string }[]).filter((e) => e.peak.startsWith('2027'));
     expect(NASA_EVENT_TIMES_2027.eclipses.map((row) => row.engine)).toEqual(eclipses.map((e) => e.peak));
     const windows = (sky.retrogrades as { planet: string; from: string; preShadowStart?: string | null; postShadowEnd?: string | null }[])

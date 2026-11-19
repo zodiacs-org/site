@@ -215,6 +215,13 @@ describe('claims ledger', () => {
           problems.push(`${claim.id} is ${claim.status}, but the engine's receipt states it`);
         }
       }
+      if (claim.status === 'historical') {
+        const uses = ledger.sentences.filter((sentence) => sentence.claim === claim.id);
+        if (uses.some(({ path }) => path !== 'docs/engine-validation/README.md')
+          || ledger.machine.some((entry) => entry.claim === claim.id)) {
+          problems.push(`${claim.id} is historical and can appear only in the engine validation record`);
+        }
+      }
       if (claim.status !== 'supported') {
         const resolution = claim.resolution ?? {};
         if (!(resolution.step || resolution.owner || resolution.allowance) || !resolution.note) {
