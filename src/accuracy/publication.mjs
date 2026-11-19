@@ -3,6 +3,10 @@ import publication from '../data/accuracy/publication.json' with { type: 'json' 
 export const ACCURACY_PATH = '/developers/accuracy/';
 export const accuracyPublished = publication.published === true;
 
+export function accuracyPagePaths() {
+  return accuracyPublished ? [{ params: { page: undefined } }] : [];
+}
+
 export function accuracyRobots(rules, published = accuracyPublished) {
   if (published) return rules;
   const barePath = ACCURACY_PATH.slice(0, -1);

@@ -8,7 +8,10 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import * as vendor from '@zodiacs/engine';
-import { ACCURACY_PATH, accuracyRobots } from '../src/accuracy/publication.mjs';
+import { ACCURACY_PATH, accuracyPagePaths, accuracyPublished, accuracyRobots } from '../src/accuracy/publication.mjs';
+import { getStaticPaths as rawPaths } from '../src/pages/developers/accuracy/raw/[date]/[file].ts';
+import { GET as builtRobots } from '../src/pages/robots.txt.ts';
+import { robotsGroupBlockFailures, robotsRules } from './indexing-consistency.mjs';
 import {
   BODIES, buildReceipt, collectReceipt, difference, horizonsUrl, loadSuite, rollingInstants, selfCheck, verifyRaw,
 } from './accuracy-receipt.mjs';
@@ -151,6 +154,18 @@ function recordedAnswer(url) {
 }
 
 describe('NASA accuracy receipts', () => {
+  it('keeps the receipt and downloads hidden with engine 1.1.0 and the owner switch off', async () => {
+    expect(vendor.ENGINE_VERSION).toBe('1.1.0');
+    expect(accuracyPublished).toBe(false);
+    expect(accuracyPagePaths()).toEqual([]);
+    expect(await rawPaths()).toEqual([]);
+    const robots = robotsRules(await builtRobots().text());
+    expect(robots.groups.some(({ agents }) => agents.includes('*'))).toBe(true);
+    expect(robotsGroupBlockFailures(robots, [
+      ACCURACY_PATH.slice(0, -1), ACCURACY_PATH, `${ACCURACY_PATH}raw/`,
+    ])).toEqual([]);
+  });
+
   it('blocks the withheld receipt for every crawler group', async () => {
     const rules = await readFile('src/robots.txt', 'utf8');
     expect(accuracyRobots(rules, true)).toBe(rules);
