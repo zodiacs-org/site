@@ -88,7 +88,7 @@
     "test:visual:update": "node tests/visual/visual-regression.mjs --update",
     "test:lighthouse": "node tests/visual/lighthouse.mjs",
     "test:webmcp": "node tests/webmcp-drive.mjs",
-    "test:chatgpt-gate": "CHATGPT_GATE=1 vitest run tests/chatgpt-plugin-gate.spec.ts --reporter=verbose",
+    "test:chatgpt-gate": "CHATGPT_GATE=1 GATE_BASE_URL=\"${BASE_URL:-}\" vitest run tests/chatgpt-plugin-gate.spec.ts --reporter=verbose",
     "test:mcp:protocol": "node tests/mcp-protocol-drive.mjs",
     "test:mcp:host": "node tests/mcp-host-drive.mjs",
     "test:mcp:benchmark": "node tests/mcp-benchmark.mjs",

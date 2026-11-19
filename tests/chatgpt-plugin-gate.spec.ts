@@ -5,7 +5,10 @@
  *
  *   BASE_URL       a deployment to test (a Vercel preview, or a local server).
  *                  Without it the gate starts tests/helpers/chatgpt-gate-server.ts,
- *                  which serves the published connector on 127.0.0.1.
+ *                  which serves the published connector on 127.0.0.1. Vitest
+ *                  overwrites BASE_URL inside the test process, so the npm script
+ *                  passes it on as GATE_BASE_URL; set that one when calling vitest
+ *                  directly.
  *   VERCEL_BYPASS  the preview's protection bypass token, sent only as Vercel's
  *                  own x-vercel-protection-bypass header.
  *   GATE_MCP=local with BASE_URL: check the pages on BASE_URL and run the MCP
@@ -429,8 +432,10 @@ const toolsByName = new Map<string, any>();
 
 describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
   beforeAll(async () => {
-    // Vite sets BASE_URL to "/" in every test run, so only an http(s) address counts as given.
-    const given = /^https?:\/\//.test(process.env.BASE_URL ?? '') ? process.env.BASE_URL!.replace(/\/+$/, '') : undefined;
+    // Vitest overwrites BASE_URL with Vite's base ("/") inside the test process, so the npm script hands the
+    // shell's BASE_URL over as GATE_BASE_URL. Only an http(s) address counts as given.
+    const address = [process.env.GATE_BASE_URL, process.env.BASE_URL].find(value => /^https?:\/\//.test(value ?? ''));
+    const given = address?.replace(/\/+$/, '');
     if (!given || process.env.GATE_MCP === 'local') local = await startGateServer();
     pagesBase = given ?? local!.baseUrl;
     mcpBase = process.env.GATE_MCP === 'local' || !given ? local!.baseUrl : given;

@@ -11,6 +11,9 @@
  *
  * Rate limits, quotas and usage counting are stand-ins that allow every call
  * and count nothing. It binds 127.0.0.1 only.
+ *
+ * To keep it running for another client (the gate with BASE_URL, MCP
+ * Inspector): npx vite-node --script scripts/serve-chatgpt-gate.ts 4530
  */
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
@@ -45,7 +48,7 @@ async function fileAt(base: string, pathname: string): Promise<{ path: string; b
   return null;
 }
 
-export async function startGateServer(): Promise<GateServer> {
+export async function startGateServer(port = 0): Promise<GateServer> {
   const vercel = JSON.parse(await readFile(join(root, 'vercel.json'), 'utf8')) as { rewrites: { source: string; destination: string }[] };
   // The AI routes exactly as vercel.json sends them: source path to the handler's route value.
   const aiRoutes = new Map<string, string>();
@@ -84,7 +87,7 @@ export async function startGateServer(): Promise<GateServer> {
       res.end(req.method === 'HEAD' ? undefined : found.body);
     })().catch(() => { if (!res.headersSent) res.writeHead(500); res.end(); });
   });
-  await new Promise<void>(done => server.listen(0, '127.0.0.1', done));
+  await new Promise<void>(done => server.listen(port, '127.0.0.1', done));
   const host = `127.0.0.1:${(server.address() as { port: number }).port}`;
   const allowed = async () => 'allowed' as const;
   handle = await routes.publishedConnector({
