@@ -321,9 +321,6 @@ function phaseFactor(goal: GoodDayGoal, day: DaySky): Factor | null {
   return null;
 }
 
-/** The shortest stretch of the waking hours a Moon sign is read for: half an hour. */
-const MIN_SEGMENT = 30 * 60_000;
-
 /** One stretch of the waking hours with the Moon in one sign. */
 export interface MoonSegment { sign: string; from: Date; to: Date }
 
@@ -348,15 +345,8 @@ function moonSegments(day: DaySky, periods: readonly VoidPeriod[]): MoonSegment[
     cursor = period.to;
   }
   out.push({ sign, from: cursor, to: day.wakeTo });
-  // A sign held for less than half an hour of the waking day is too brief to read: its minutes go to the sign beside it.
-  const merged: MoonSegment[] = [];
-  for (const segment of out) {
-    const previous = merged.at(-1);
-    if (previous && (segment.to.getTime() - segment.from.getTime() < MIN_SEGMENT || previous.to.getTime() - previous.from.getTime() < MIN_SEGMENT)) {
-      merged[merged.length - 1] = segment.to.getTime() - segment.from.getTime() < MIN_SEGMENT ? { ...previous, to: segment.to } : { ...segment, from: previous.from };
-    } else merged.push(segment);
-  }
-  return merged.filter((segment) => segment.to.getTime() > segment.from.getTime());
+  // Every sign the Moon holds in the waking hours is read, however briefly; only a stretch of no length is dropped.
+  return out.filter((segment) => segment.to.getTime() > segment.from.getTime());
 }
 
 const moonSignPoints = (goal: GoodDayGoal, sign: string) => (GOAL_RULES[goal].moonGood.includes(sign) ? 8 : GOAL_RULES[goal].moonPoor.includes(sign) ? -6 : 0);

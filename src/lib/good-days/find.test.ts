@@ -156,16 +156,20 @@ describe('the electional rules', { timeout: TIMEOUT }, () => {
     expect(move.text).not.toMatch(/, until/u);
   });
 
-  it('reads a sign the Moon holds for under half an hour of the waking day as the sign beside it', async () => {
+  it('reads both signs on a day the Moon changes sign in the waking hours, however near their edge', async () => {
     // The Moon enters Libra at 08:01 UTC on 22 March 2027 and Sagittarius at 19:43 UTC on 26 March 2027.
     const ingresses = ingressTable.ingresses as { sign: string; at: string }[];
     expect(ingresses.find((row) => row.at.startsWith('2027-03-22'))!.at.slice(11, 16)).toBe('08:01');
     expect(ingresses.find((row) => row.at.startsWith('2027-03-26'))!.at.slice(11, 16)).toBe('19:43');
-    for (const [date, line] of [['2027-03-22', 'The Moon is in Libra, a sign tradition reads as tender and celebratory.'], ['2027-03-26', 'The Moon is in Scorpio, a sign tradition sets aside for a wedding.']]) {
+    for (const [date, line] of [
+      ['2027-03-22', 'The Moon is in Virgo until 08:01, then in Libra, a sign tradition reads as tender and celebratory.'],
+      ['2027-03-26', 'The Moon is in Scorpio until 19:43, then in Sagittarius: Scorpio is a sign tradition sets aside for a wedding.'],
+    ]) {
       const result = await findGoodDays({ goal: 'wedding', from: date, to: date, zone: 'UTC', count: 1, today: TODAY }, clock);
       expect(result.best[0].date).toBe(date);
       expect(result.best[0].factors, date).toContain(line);
-      expect(result.best[0].factors.filter((text) => text.includes('until 08:01') || text.includes('until 19:43') || text.includes('then in')), date).toEqual([]);
+      // No line says the Moon is in one sign all day.
+      expect(result.best[0].factors.filter((text) => /^The Moon is in \w+[,.]/u.test(text) && !text.includes('until')), date).toEqual([]);
     }
   });
 
