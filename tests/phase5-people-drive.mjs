@@ -4,6 +4,7 @@ import peopleData from '../src/data/people.json' with { type: 'json' };
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { waitForPortraitReadiness } from './portrait-readiness.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const failures = [];
@@ -31,10 +32,10 @@ const representative = [
 if (OUT) await mkdir(OUT, { recursive: true });
 
 await withPreview({ port: 4425 }, async (baseURL) => {
-  const browser = await chromium.launch({
+  const browser = withFullLevel(await chromium.launch({
     executablePath: await findChromium(),
     args: STABLE_CHROMIUM_ARGS,
-  });
+  }));
 
   try {
     // Every generated route receives the search/privacy contract derived from
