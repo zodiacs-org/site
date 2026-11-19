@@ -8,9 +8,9 @@
  * engine's instants and src/data/nasa-event-instants.json
  * (`python3 scripts/build-nasa-event-instants.py`) records NASA's instant for
  * each of them. Every committed engine instant is listed in its NASA row, so
- * the lookup is exact: an instant the table does not list comes back
- * unchanged, and src/lib/nasa-instants.test.ts fails until the table is
- * rebuilt.
+ * the lookup is exact. The DE440 catalog links to archived engine keys
+ * through published-event-time-links.json. The published values and their
+ * provenance remain in the original table.
  *
  * The data files stay as they are: ingresses.json, sky.json and
  * events-publication.json are bundled byte for byte into the AI tools, and a
@@ -23,6 +23,7 @@
  */
 import table from '../data/nasa-event-instants.json';
 import { nasaEclipseAt, nasaLunationAt } from './nasa-event-times-2027';
+import { archivedEventKey } from './published-event-time';
 
 interface IngressRow { body: string; sign: string; retrograde: boolean; nasa: string; engine: string[] }
 interface StationRow { body: string; type: string; sign: string; nasa: string; engine: string[] }
@@ -58,17 +59,17 @@ for (const row of NASA_EVENT_TABLE.aspects) {
 
 /** NASA's instant for a planet's sign ingress the data files date at `at`. */
 export function nasaIngressAt(body: string, at: string): string | undefined {
-  return ingressIndex.get(`${body}|${at}`);
+  return ingressIndex.get(`${body}|${archivedEventKey(at, 'ingress', body)}`);
 }
 
 /** NASA's instant for a planet's station the data files date at `at`. */
 export function nasaStationAt(body: string, at: string): string | undefined {
-  return stationIndex.get(`${body}|${at}`);
+  return stationIndex.get(`${body}|${archivedEventKey(at, 'station', body)}`);
 }
 
 /** NASA's instant for an exact aspect the data files date at `at`. */
 export function nasaAspectAt(a: string, b: string, type: string, at: string): string | undefined {
-  return aspectIndex.get(`${a}|${b}|${type}|${at}`);
+  return aspectIndex.get(`${a}|${b}|${type}|${archivedEventKey(at, 'aspect', a, b, type)}`);
 }
 
 export type SkyEventRef =

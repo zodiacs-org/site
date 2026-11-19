@@ -5,7 +5,7 @@ import { fillWatchLedger, deliverWatchEvents } from './worker';
 
 /** Dedicated preview deployment: no production routes or credentials. */
 export function createWatchPreviewHandler(env: Readonly<Record<string, string | undefined>> = process.env) {
-  const mcp = createAiNodeHandler({ env });
+  const mcp = createAiNodeHandler({ env, de440: true });
   return async (req: any, res: any) => {
     res.setHeader('Cache-Control', 'no-store'); res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Robots-Tag', 'noindex'); res.setHeader('Referrer-Policy', 'no-referrer');
