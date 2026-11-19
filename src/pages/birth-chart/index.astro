@@ -5,6 +5,7 @@ import ArtFrame from '../../components/ArtFrame.astro';
 import PlanetGlyph from '../../components/PlanetGlyph';
 import ToolIcon from '../../components/ToolIcon.astro';
 import ChartCalculator from '../../islands/ChartCalculator';
+import LevelSwitch from '../../components/LevelSwitch.astro';
 import SkyTicker from '../../islands/SkyTicker';
 import { PostChartDailyBrief } from '../../islands/PostChartDailyBrief';
 import EmailCapture from '../../components/EmailCapture.astro';
@@ -572,10 +573,18 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
         <nav class="bc-crumbs" aria-label="Breadcrumb"><a href="/tools/">Tools</a><span aria-hidden="true">/</span><span aria-current="page">Birth chart</span></nav>
         <h1 class="bc-title">Get your free birth chart.</h1>
         <p class="bc-lede">Your Sun, Moon and rising sign, every planet and house, and what each one means.</p>
+        <LevelSwitch idPrefix="bc-level" />
       </div>
 
       <div class="bc-main" id="bc-form">
         <ChartCalculator mode="full" client:idle />
+        <nav class="level-data" data-depth="advanced" aria-label="Data for chart readers">
+          <span class="level-data__cap">For chart readers</span>
+          <a href="/methodology/">How we calculate</a>
+          <a href="/developers/">Chart data API</a>
+          <a href="/sky-calendar-heads-up.json">Sky events JSON feed</a>
+          <a href="/sky-calendar.ics">Sky calendar (.ics)</a>
+        </nav>
         <noscript>
           <p>This birth chart calculator needs JavaScript. Enable it and reload to calculate your Sun, Moon, rising sign, planets, and houses in your browser.</p>
         </noscript>
