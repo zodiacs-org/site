@@ -42,9 +42,9 @@ const jsonLd = [
       <p>
         Pick one of the {offered.examples.length} documented requests, or write your own, then send it to the{' '}
         <a href="/developers/compute/">compute API</a> and run it in this browser. The browser run uses the API's
-        own code, <code>{backend.name}</code> {backend.version} with {backend.ephemeris.name}{' '}
-        {backend.ephemeris.version}, so the two answers can be compared field by field, and each with the answer the
-        documentation gives.
+        code from <code>{backend.name}</code> {backend.version} with <code>astronomy-engine</code>.
+        The hosted API uses DE440, so positions and event times can differ. You can compare both answers with
+        the example in the documentation.
       </p>
       <p>
         Nothing leaves this page unless you send it. A request sent to the API follows its{' '}

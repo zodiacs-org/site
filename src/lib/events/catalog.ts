@@ -21,7 +21,7 @@ import {
   ingressId, ingressPath, isoDay, lunationId, lunationPath,
   moonNameForDate, retrogradeId, retrogradePath, stationId,
 } from './format';
-import { publishedEventById } from './site-publication';
+import { publishedAspectPage, publishedEventById } from './site-publication';
 import { NASA_INSTANT_SOURCE, nasaAspectAt, nasaIngressAt, nasaStationAt } from '../nasa-instants';
 import {
   NASA_EVENT_TIMES_2027_SOURCE, nasaEclipseAt, nasaLunationAt, nasaShadowAt,
@@ -375,10 +375,12 @@ function aspectFacts(): EventFacts[] {
     for (const aspect of month.aspects) {
       if (!slow.has(aspect.a) || !slow.has(aspect.b)) continue;
       if (aspect.orb !== 0) continue;
+      const id = aspectId(aspect.a, aspect.type, aspect.b, aspect.at);
+      const published = publishedAspectPage(aspect.a, aspect.type, aspect.b, aspect.at);
       const committedBase = {
         family: 'aspect' as const,
         subtype: aspect.type,
-        at: aspect.at,
+        at: published?.anchor ?? aspect.at,
         bodies: [aspect.a, aspect.b],
         signs: [aspect.aSign, aspect.bSign],
         degree: aspect.aDegree,
@@ -392,8 +394,8 @@ function aspectFacts(): EventFacts[] {
       );
       facts.push({
         ...base,
-        id: aspectId(aspect.a, aspect.type, aspect.b, aspect.at),
-        path: aspectPath(aspect.a, aspect.type, aspect.b, aspect.at),
+        id: published?.id ?? id,
+        path: published?.path ?? aspectPath(aspect.a, aspect.type, aspect.b, aspect.at),
         title: eventTitle(base),
         ...(committed ? { committed } : {}),
       });

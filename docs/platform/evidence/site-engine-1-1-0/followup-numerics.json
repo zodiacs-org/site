@@ -1,0 +1,51 @@
+{
+  "engine": "1.1.0",
+  "ephemeris": "de440",
+  "pack": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7",
+  "moonDistance": {
+    "instants": 124,
+    "de440MatchesSky": true,
+    "astronomyEngineMatchesDE421SampleInstants": true,
+    "sameTypeAndUtcDay": true,
+    "maxChangeMilliseconds": 5356,
+    "maxDistanceDifferenceFromDE421Km": 3.6959999999962747
+  },
+  "signEdge": {
+    "originalRunCommit": "afa0d3b01b3db90a186f049f3959817eda1e5c33",
+    "originalReferenceCeilingsArcseconds": {
+      "Sun": 3,
+      "Jupiter": 13,
+      "Saturn": 18,
+      "Uranus": 20
+    },
+    "installedCalcBounds": {
+      "Sun": {
+        "arcseconds": 0.004,
+        "basis": "largest angle from JPL Horizons's apparent geocentric place (DE441) at the conformance suite's L1 vectors, 24 TT instants a body from 1851 to 2148, in the true ecliptic of date, and from NAIF's de440.bsp at noon TT every day from 1800 to 2199 in all eight frames, the larger, on the shipped DE440 pack; src/calc-bounds-de440.ts"
+      },
+      "Jupiter": {
+        "arcseconds": 0.004,
+        "basis": "largest angle from JPL Horizons's apparent geocentric place (DE441) at the conformance suite's L1 vectors, 24 TT instants a body from 1851 to 2148, in the true ecliptic of date, and from NAIF's de440.bsp at noon TT every day from 1800 to 2199 in all eight frames, the larger, on the shipped DE440 pack; src/calc-bounds-de440.ts"
+      },
+      "Saturn": {
+        "arcseconds": 0.0039,
+        "basis": "largest angle from JPL Horizons's apparent geocentric place (DE441) at the conformance suite's L1 vectors, 24 TT instants a body from 1851 to 2148, in the true ecliptic of date, and from NAIF's de440.bsp at noon TT every day from 1800 to 2199 in all eight frames, the larger, on the shipped DE440 pack; src/calc-bounds-de440.ts"
+      },
+      "Uranus": {
+        "arcseconds": 0.004,
+        "basis": "largest angle from JPL Horizons's apparent geocentric place (DE441) at the conformance suite's L1 vectors, 24 TT instants a body from 1851 to 2148, in the true ecliptic of date, and from NAIF's de440.bsp at noon TT every day from 1800 to 2199 in all eight frames, the larger, on the shipped DE440 pack; src/calc-bounds-de440.ts"
+      }
+    }
+  },
+  "publishedLinks": 1584,
+  "sources": {
+    "src/data/sky.json": "602375eb3a7bb8f8363b012b1b113fa887cdc41b7c6b0631801f0774f1f79fdd",
+    "src/data/moon-distances.json": "6d4bf75d5959baa7d20bc04ef51841a0601978e549206f7705771733a2be907e",
+    "scripts/fixtures/moon-distances/de421-reference.json": "7affc3e18768cbd17980b80b8a3daefa353b8b13f270d4467805d21235c8bcd0",
+    "src/data/published-event-time-links.json": "f190c8f96ae90626694b0d4bb9c4d78631a3ed1d0229d5519577cfe85444ae1c",
+    "src/data/nasa-event-instants.json": "a698e48cfed961568f3be83a13f66f255ff13c0fbefc171f1306ade426b111a0",
+    "src/data/nasa-event-times-2027.json": "3543f7aa03722cbcd08827b927901c73ffd2ba1c76e6a608a10c25dd5ee24a35",
+    "src/data/events-publication.json": "719bfef0996540b49759d51c721a9ec6c8471babb1927c403410f172bab2af36",
+    "src/data/events-publication-2028-2030.json": "7b38dbcd8f1d6fd1d48f9e5558d43f0819f0a5d8ac142404ee1ed3c718b0d10f"
+  }
+}

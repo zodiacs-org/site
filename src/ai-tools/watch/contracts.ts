@@ -3,6 +3,7 @@ import { ENGINE_VERSION } from '@zodiacs/engine';
 
 export const WATCH_VERSION = `sky-watch-v1:${ENGINE_VERSION}`;
 export const DAY = 86_400_000;
+export const WATCH_MATCH_DAYS = 2;
 export const BODIES = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'] as const;
 export const NAMES = ['zodiacs.sky.ingress', 'zodiacs.sky.station', 'zodiacs.sky.lunation'] as const;
 export type EventName = typeof NAMES[number];
@@ -52,3 +53,7 @@ export interface Delivery {
   sealed: string; previous_sealed: string | null; rotate_until: string | null;
   filters: Filters; payload: { eventId: string; name: EventName; timestamp: string; data: { event: Record<string, unknown>; receipt: unknown }; cursor: null };
 }
+export type WatchEvent = Delivery['payload'];
+export type WatchIdentity = Pick<WatchEvent, 'eventId' | 'name' | 'timestamp'> & {
+  data: Pick<WatchEvent['data'], 'event'>;
+};

@@ -1,4 +1,10 @@
--- Run in the isolated local test database; every fixture is rolled back.
+-- Prepare the isolated database for the timing operations in the lifecycle drive.
+select to_regprocedure('public.zodiacs_sky_watch_timing_v1(text,jsonb)') is null as install_timing_migration \gset
+\if :install_timing_migration
+\ir ../supabase/migrations/20261118141004_sky_watch_timing.sql
+\endif
+
+-- Every OAuth fixture is rolled back.
 begin;
 do $$
 declare u uuid:=gen_random_uuid(); s uuid:=gen_random_uuid(); c uuid:=gen_random_uuid(); p jsonb; same jsonb; token jsonb; lease jsonb;
