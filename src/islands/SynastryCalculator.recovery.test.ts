@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import type { VNode } from 'preact';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import CalculationReload, { calculationLoadMessage } from './CalculationReload';
-import { UNDER_18_INVITE } from '../lib/invite/recipient';
+import { NO_DATE_INVITE, UNDER_18_INVITE } from '../lib/invite/recipient';
 
 const harness = vi.hoisted(() => ({
   slots: [] as unknown[], cursor: 0,
@@ -128,6 +128,8 @@ function deferred<T>() {
   const promise = new Promise<T>((done, fail) => { resolve = done; reject = fail; });
   return { promise, resolve, reject };
 }
+// When set, the recipient gate runs exactly as in production, with no adult's date standing in for a missing one.
+let realRecipientGate = false;
 function loadDependency(load: () => Promise<unknown>): Promise<unknown> {
   // The recipient's own birth date gates every invitation (ZOD-22). These harness comparisons mostly use pasted
   // positions, which carry no date and which production refuses, so the real gate is asked with an adult's date in
@@ -135,7 +137,7 @@ function loadDependency(load: () => Promise<unknown>): Promise<unknown> {
   if (load.toString().includes('invite/recipient')) return (load() as Promise<typeof import('../lib/invite/recipient')>).then((real) => ({
     ...real,
     deviceToday: () => '2026-11-16',
-    inviteRecipientGate: (ownDate: string | null | undefined, today: string) => real.inviteRecipientGate(ownDate ?? ADULT_DATE, today),
+    inviteRecipientGate: (ownDate: string | null | undefined, today: string) => real.inviteRecipientGate(realRecipientGate ? ownDate : ownDate ?? ADULT_DATE, today),
   }));
   if (load.toString().includes('inviteClient')) return Promise.resolve({
     openInviteSession: harness.openSession, completeInvite: harness.complete,
@@ -161,6 +163,7 @@ beforeAll(async () => {
 afterAll(() => vi.unstubAllEnvs());
 beforeEach(() => {
   dailyEmail = false;
+  realRecipientGate = false;
   harness.slots = []; harness.cursor = 0; harness.effects = []; harness.effectCursor = 0; harness.pendingEffects = [];
   harness.access.current = 0; harness.revoke = undefined;
   harness.allowed = true;
@@ -470,6 +473,36 @@ describe('compatibility optional sharing and invitation recovery', () => {
     pending.resolve({ completeInvite: harness.complete });
     await settle();
     expect(harness.complete).toHaveBeenCalledTimes(boundary === 'grant' ? 1 : 0);
+  });
+
+  // ZOD-22: with invite signups off (this block's build), the recipient's own birth date still decides the reading.
+  it.each([
+    ['a 2010 birth date', { source: 'form', date: '2010-06-01', time: '', timeKnown: false, city: { name: 'Bangkok', lat: 13.75, lon: 100.5, tz: 'Asia/Bangkok' } }, UNDER_18_INVITE],
+    ['a chart link, which carries no birth date to check', { source: 'link', link: { input: {}, label: 'Mine' } }, NO_DATE_INVITE],
+  ])('refuses an invitation opened with %s: the fixed message, no result, no network call', async (_case, side, message) => {
+    realRecipientGate = true;
+    const network = vi.fn(() => Promise.reject(new Error('no network expected')));
+    vi.stubGlobal('fetch', network);
+    vi.stubGlobal('navigator', { sendBeacon: network });
+    window.location.hash = `#invite=${handle}`;
+    render();
+    await settle();
+    expect(arrival()?.props.view.state).toBe('ready');
+    view().find((node) => node.props.idPrefix === 'syn-b')!.props.setSlot((prior: object) => ({ ...prior, ...side }));
+    await view().find((node) => node.type === 'form')!.props.onSubmit({ preventDefault: vi.fn() });
+    await settle();
+    expect(view().filter((node) => node.props.role === 'alert').map((node) => node.props.children)).toEqual([message]);
+    // Nothing of the synastry result is worked out or drawn.
+    expect(result()).toBeUndefined();
+    expect(view().some((node) => node.type === harness.compatShare || node.type === harness.sendCard)).toBe(false);
+    expect(harness.summarize).not.toHaveBeenCalled();
+    expect(harness.load.mock.calls.some(([load]) => /engine\/synastry|RelationshipWheel/u.test(String(load)))).toBe(false);
+    // Nothing is sent: no request, no beacon, and the invite is not completed.
+    await settle();
+    expect(network).not.toHaveBeenCalled();
+    expect(harness.complete).not.toHaveBeenCalled();
+    expect(harness.beacon).not.toHaveBeenCalled();
+    expect(harness.track).not.toHaveBeenCalledWith('invite_completed', {});
   });
 });
 
