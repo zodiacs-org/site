@@ -126,7 +126,7 @@ describe('homepage first-paint assets', () => {
     expect(page).toMatch(/\.hero__trust\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
     // DESIGN.md's approved hero: the sentence-case headline and caption.
     expect(page).toContain('<h1 class="hero__title">Explore the stars behind your story.</h1>');
-    expect(page).toContain('Free birth charts, moon signs, compatibility, and horoscopes: accurate, private, and easy to understand.');
+    expect(page).toContain('Free birth charts, moon signs, compatibility, and horoscopes. Precise sky positions, private by default, and readings in plain words.');
     expect(page).toContain('Get your free birth chart');
     expect(page).toMatch(/<a\b[^>]*class="btn btn--ghost hero__ghost"[^>]*href="\/horoscopes\/"[^>]*><span>See your horoscope<\/span><\/a>/u);
     expect(page).toContain('Free · No signup · Calculated in your browser');

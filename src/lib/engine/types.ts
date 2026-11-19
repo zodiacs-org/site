@@ -1,7 +1,8 @@
 /** Shared chart-engine types. Pure data — no ephemeris imports here. */
 
 export { ENGINE_VERSION } from '@zodiacs/engine/internal/math';
-import type { DeltaT, TimeScale } from '@zodiacs/engine';
+import type { ChartFlag, DeltaT, TimeScale } from '@zodiacs/engine';
+export type { ChartFlag } from '@zodiacs/engine';
 
 export type BodyName =
   | 'Sun' | 'Moon' | 'Mercury' | 'Venus' | 'Mars'
@@ -9,10 +10,6 @@ export type BodyName =
   | 'North Node' | 'South Node';
 
 export type HouseSystem = 'whole' | 'placidus';
-
-/** `outside-reference-span`: the instant is before 1800 or from 2200 (engine 0.1.1-rc.8 on). */
-export type ChartFlag =
-  | 'dst-gap' | 'dst-fold' | 'lmt' | 'no-time' | 'polar-fallback' | 'outside-reference-span';
 
 export interface ChartInput {
   /** Resolved UTC instant of birth. */

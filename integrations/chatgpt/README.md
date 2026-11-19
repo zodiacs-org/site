@@ -1,5 +1,26 @@
 # Zodiacs for ChatGPT — review candidate
 
+Note added 11 November 2026: most of this file describes the 0.5.0
+candidate of October and is kept as written. Today the hosted server reports
+0.6.6 and offers 19 read-only tools, and Zodiacs 0.6.6 is in OpenAI review
+(`docs/platform/zodiacs-ai/RESUBMISSION-0.6.0.md`). The privacy paragraph
+below is out of date on links: since 0.6.1 a link never carries a birth year,
+a birth time, a birthplace or the names you give, and a birthday link carries
+only the month and day.
+
+Note added 13 November 2026: the hosted server now reports 0.6.7. 0.6.6 is
+still the version in OpenAI review, and 0.6.7 goes in only after that review
+ends, with Dias's yes.
+
+Note added 18 November 2026: Zodiacs 0.6.8
+(`integrations/packages/zodiacs-sky-0.6.8.zip`) is the version prepared for
+the resubmission. It ships the invented examples in the tools' field
+descriptions, and two review cases in `chatgpt-app-submission.json` now use
+invented details too: the Mercury question comes from a reader in Mexico City,
+and the wedding card is for 18 September 2027 at 16:30 in Lisbon, Portugal. No
+tool, schema or behaviour changes. Nothing has been submitted; that waits for
+the OpenAI review of 0.6.6 to end and for Dias's yes.
+
 The 0.5.0 candidate has thirteen read-only tools. The six released in 0.4.0
 are capabilities, sky positions, events, sky fact checks, horoscopes and Chart
 Studio. The seven new ones share the occasions panel

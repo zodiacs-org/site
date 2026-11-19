@@ -1,0 +1,439 @@
+[
+ {
+  "id": "full:2026-12-24",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2026-12-24T01:28Z"
+ },
+ {
+  "id": "full:2027-01-22",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-01-22T12:17Z"
+ },
+ {
+  "id": "full:2027-02-20",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-02-20T23:23Z"
+ },
+ {
+  "id": "full:2027-03-22",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-03-22T10:43Z"
+ },
+ {
+  "id": "full:2027-04-20",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-04-20T22:27Z"
+ },
+ {
+  "id": "full:2027-05-20",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-05-20T10:59Z"
+ },
+ {
+  "id": "full:2027-06-19",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-06-19T00:44Z"
+ },
+ {
+  "id": "full:2027-07-18",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-07-18T15:45Z"
+ },
+ {
+  "id": "full:2027-08-17",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-08-17T07:28Z"
+ },
+ {
+  "id": "full:2027-09-15",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-09-15T23:03Z"
+ },
+ {
+  "id": "full:2027-10-15",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-10-15T13:47Z"
+ },
+ {
+  "id": "full:2027-11-14",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-11-14T03:26Z"
+ },
+ {
+  "id": "full:2027-12-13",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2027-12-13T16:08Z"
+ },
+ {
+  "id": "full:2028-01-12",
+  "kind": "lunation",
+  "phase": "full",
+  "seed": "2028-01-12T04:03Z"
+ },
+ {
+  "id": "new:2027-01-07",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-01-07T20:24Z"
+ },
+ {
+  "id": "new:2027-02-06",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-02-06T15:56Z"
+ },
+ {
+  "id": "new:2027-03-08",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-03-08T09:29Z"
+ },
+ {
+  "id": "new:2027-04-06",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-04-06T23:51Z"
+ },
+ {
+  "id": "new:2027-05-06",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-05-06T10:58Z"
+ },
+ {
+  "id": "new:2027-06-04",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-06-04T19:40Z"
+ },
+ {
+  "id": "new:2027-07-04",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-07-04T03:02Z"
+ },
+ {
+  "id": "new:2027-08-02",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-08-02T10:05Z"
+ },
+ {
+  "id": "new:2027-08-31",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-08-31T17:41Z"
+ },
+ {
+  "id": "new:2027-09-30",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-09-30T02:36Z"
+ },
+ {
+  "id": "new:2027-10-29",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-10-29T13:36Z"
+ },
+ {
+  "id": "new:2027-11-28",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-11-28T03:24Z"
+ },
+ {
+  "id": "new:2027-12-27",
+  "kind": "lunation",
+  "phase": "new",
+  "seed": "2027-12-27T20:12Z"
+ },
+ {
+  "id": "eclipse:solar:2026-08-12",
+  "kind": "eclipse",
+  "type": "solar",
+  "seed": "2026-08-12T17:46Z"
+ },
+ {
+  "id": "eclipse:lunar:2026-08-28",
+  "kind": "eclipse",
+  "type": "lunar",
+  "seed": "2026-08-28T04:13Z"
+ },
+ {
+  "id": "eclipse:solar:2027-02-06",
+  "kind": "eclipse",
+  "type": "solar",
+  "seed": "2027-02-06T16:00Z"
+ },
+ {
+  "id": "eclipse:lunar:2027-02-20",
+  "kind": "eclipse",
+  "type": "lunar",
+  "seed": "2027-02-20T23:13Z"
+ },
+ {
+  "id": "eclipse:lunar:2027-07-18",
+  "kind": "eclipse",
+  "type": "lunar",
+  "seed": "2027-07-18T16:03Z"
+ },
+ {
+  "id": "eclipse:solar:2027-08-02",
+  "kind": "eclipse",
+  "type": "solar",
+  "seed": "2027-08-02T10:07Z"
+ },
+ {
+  "id": "eclipse:lunar:2027-08-17",
+  "kind": "eclipse",
+  "type": "lunar",
+  "seed": "2027-08-17T07:14Z"
+ },
+ {
+  "id": "eclipse:lunar:2028-01-12",
+  "kind": "eclipse",
+  "type": "lunar",
+  "seed": "2028-01-12T04:13Z"
+ },
+ {
+  "id": "eclipse:solar:2028-01-26",
+  "kind": "eclipse",
+  "type": "solar",
+  "seed": "2028-01-26T15:08Z"
+ },
+ {
+  "id": "station:Mercury:R:2026-10-24",
+  "kind": "station",
+  "body": "199",
+  "seed": "2026-10-24T07:13Z"
+ },
+ {
+  "id": "station:Mercury:D:2026-11-13",
+  "kind": "station",
+  "body": "199",
+  "seed": "2026-11-13T15:54Z"
+ },
+ {
+  "id": "station:Mars:R:2027-01-10",
+  "kind": "station",
+  "body": "499",
+  "seed": "2027-01-10T12:59Z"
+ },
+ {
+  "id": "station:Mercury:R:2027-02-09",
+  "kind": "station",
+  "body": "199",
+  "seed": "2027-02-09T17:36Z"
+ },
+ {
+  "id": "station:Mercury:D:2027-03-03",
+  "kind": "station",
+  "body": "199",
+  "seed": "2027-03-03T12:32Z"
+ },
+ {
+  "id": "station:Mars:D:2027-04-01",
+  "kind": "station",
+  "body": "499",
+  "seed": "2027-04-01T14:08Z"
+ },
+ {
+  "id": "station:Mercury:R:2027-06-10",
+  "kind": "station",
+  "body": "199",
+  "seed": "2027-06-10T18:15Z"
+ },
+ {
+  "id": "station:Mercury:D:2027-07-04",
+  "kind": "station",
+  "body": "199",
+  "seed": "2027-07-04T19:39Z"
+ },
+ {
+  "id": "station:Mercury:R:2027-10-07",
+  "kind": "station",
+  "body": "199",
+  "seed": "2027-10-07T14:37Z"
+ },
+ {
+  "id": "station:Mercury:D:2027-10-28",
+  "kind": "station",
+  "body": "199",
+  "seed": "2027-10-28T14:10Z"
+ },
+ {
+  "id": "station:Mercury:R:2028-01-24",
+  "kind": "station",
+  "body": "199",
+  "seed": "2028-01-24T11:02Z"
+ },
+ {
+  "id": "station:Mercury:D:2028-02-14",
+  "kind": "station",
+  "body": "199",
+  "seed": "2028-02-14T12:38Z"
+ },
+ {
+  "id": "station:Mars:R:2029-02-14",
+  "kind": "station",
+  "body": "499",
+  "seed": "2029-02-14T08:16Z"
+ },
+ {
+  "id": "station:Mars:D:2029-05-05",
+  "kind": "station",
+  "body": "499",
+  "seed": "2029-05-05T19:00Z"
+ },
+ {
+  "id": "station:Uranus:D:2027-02-08",
+  "kind": "station",
+  "body": "799",
+  "seed": "2027-02-08T12:29Z",
+  "slow": true
+ },
+ {
+  "id": "station:Uranus:R:2027-09-15",
+  "kind": "station",
+  "body": "799",
+  "seed": "2027-09-15T09:09Z",
+  "slow": true
+ },
+ {
+  "id": "station:Pluto:D:2027-10-18",
+  "kind": "station",
+  "body": "999",
+  "seed": "2027-10-18T03:50Z",
+  "slow": true
+ },
+ {
+  "id": "station:Neptune:D:2027-12-15",
+  "kind": "station",
+  "body": "899",
+  "seed": "2027-12-15T09:08Z",
+  "slow": true
+ },
+ {
+  "id": "shadow:Mars:pre:2026-11-05",
+  "kind": "shadow",
+  "body": "499",
+  "seed": "2026-11-05T15:34Z",
+  "stationId": "station:Mars:D:2027-04-01"
+ },
+ {
+  "id": "shadow:Mercury:pre:2027-01-25",
+  "kind": "shadow",
+  "body": "199",
+  "seed": "2027-01-25T18:58Z",
+  "stationId": "station:Mercury:D:2027-03-03"
+ },
+ {
+  "id": "shadow:Mercury:post:2027-03-23",
+  "kind": "shadow",
+  "body": "199",
+  "seed": "2027-03-23T14:58Z",
+  "stationId": "station:Mercury:R:2027-02-09"
+ },
+ {
+  "id": "shadow:Mercury:pre:2027-05-26",
+  "kind": "shadow",
+  "body": "199",
+  "seed": "2027-05-26T06:04Z",
+  "stationId": "station:Mercury:D:2027-07-04"
+ },
+ {
+  "id": "shadow:Mars:post:2027-06-08",
+  "kind": "shadow",
+  "body": "499",
+  "seed": "2027-06-08T01:58Z",
+  "stationId": "station:Mars:R:2027-01-10"
+ },
+ {
+  "id": "shadow:Mercury:post:2027-07-19",
+  "kind": "shadow",
+  "body": "199",
+  "seed": "2027-07-19T08:43Z",
+  "stationId": "station:Mercury:R:2027-06-10"
+ },
+ {
+  "id": "shadow:Mercury:pre:2027-09-17",
+  "kind": "shadow",
+  "body": "199",
+  "seed": "2027-09-17T07:29Z",
+  "stationId": "station:Mercury:D:2027-10-28"
+ },
+ {
+  "id": "shadow:Mercury:post:2027-11-13",
+  "kind": "shadow",
+  "body": "199",
+  "seed": "2027-11-13T09:55Z",
+  "stationId": "station:Mercury:R:2027-10-07"
+ },
+ {
+  "id": "ingress:Jupiter:leo:2026-06-30",
+  "kind": "ingress",
+  "body": "599",
+  "lon": 120,
+  "seed": "2026-06-30T05:52Z"
+ },
+ {
+  "id": "ingress:Jupiter:virgo:2027-07-26",
+  "kind": "ingress",
+  "body": "599",
+  "lon": 150,
+  "seed": "2027-07-26T04:49Z"
+ },
+ {
+  "id": "ingress:Jupiter:libra:2028-08-24",
+  "kind": "ingress",
+  "body": "599",
+  "lon": 180,
+  "seed": "2028-08-24T05:08Z"
+ },
+ {
+  "id": "aspect:Uranus:sextile:Neptune:2027-01-15",
+  "kind": "aspect",
+  "body": "799",
+  "body2": "899",
+  "angle": 60,
+  "seed": "2027-01-15T09:26Z"
+ },
+ {
+  "id": "aspect:Uranus:sextile:Neptune:2027-06-06",
+  "kind": "aspect",
+  "body": "799",
+  "body2": "899",
+  "angle": 60,
+  "seed": "2027-06-06T10:12Z"
+ },
+ {
+  "id": "aspect:Uranus:trine:Pluto:2027-06-15",
+  "kind": "aspect",
+  "body": "799",
+  "body2": "999",
+  "angle": 120,
+  "seed": "2027-06-15T08:10Z"
+ },
+ {
+  "id": "aspect:Neptune:sextile:Pluto:2027-10-16",
+  "kind": "aspect",
+  "body": "899",
+  "body2": "999",
+  "angle": 60,
+  "seed": "2027-10-16T14:40Z"
+ }
+]

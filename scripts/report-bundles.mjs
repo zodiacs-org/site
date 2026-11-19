@@ -185,7 +185,10 @@ try {
 // /birth-chart/ 71 -> 93 KB. Local flags-on builds measured 87.5 KB (fix 6)
 // then 88.0 KB (fix 7). The GitHub flags-on job on the same fix-6 head
 // measured 90.7 KB and 61 chunks (local had 60), so 88 KB failed CI.
-// 93 KB covers that CI measurement with a small margin. /compatibility/
+// 93 KB covers that CI measurement with a small margin. The daily-habit
+// safety work (under-13 refusal and session handoffs) measured 93.1 KB
+// and 55.1 KB on the flags-and-account-sync CI job, so the limits move
+// to 94 KB and 56 KB. /compatibility/
 // 36 -> 54.5 KB (53.8 to 54.2 measured). Every other page loads the
 // bootstrap only on demand (src/lib/account-v2/profile-access-loader.mjs),
 // outside these sums.
@@ -274,6 +277,11 @@ for (const [route, limit] of routeBudgets) {
 const chunkRows = [...chunks.entries()]
   .map(([path, data]) => ({ ...data, path }))
   .sort((a, b) => b.gzip - a.gzip);
+const browserScripts = await walk(dist, (path) => ['.js', '.mjs', '.cjs'].includes(extname(path)));
+for (const path of browserScripts) {
+  const source = chunks.get(publicPath(path))?.source ?? await readFile(path, 'utf8');
+  if (source.includes('Wk9ERVBIMDK6TgAA')) fail(`DE440 pack found in browser bundle: ${publicPath(path)}`);
+}
 const largestChunk = chunkRows[0];
 if (largestChunk && largestChunk.gzip > budgets['chunk-max'] * 1024) {
   fail(`chunk-max: ${largestChunk.path} is ${kb(largestChunk.gzip)} KB gz (limit ${budgets['chunk-max']} KB)`);

@@ -15,6 +15,7 @@ import { resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { projectRoot, withPreview } from './visual/preview-server.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 
 const polyfillPath = resolve(
   projectRoot,
@@ -104,7 +105,8 @@ const CALCULATORS = [
   {
     name: 'zodiacs.lunar_return', path: '/lunar-return/', locales: [], call: { birth: BIRTH, after: '2026-10-15T00:00:00Z' },
     holds: (data) => data.instant > '2026-10-15' && data.instant < '2026-11-15', refuse: { birth: UNTIMED },
-    unread: { birth: { ...BIRTH, date: '2021-03-28', time: '01:30' } },
+    // London's spring-forward gap, more than 13 years ago so the birth date policy does not refuse it first.
+    unread: { birth: { ...BIRTH, date: '2012-03-25', time: '01:30' } },
   },
   {
     name: 'zodiacs.numerology', path: '/numerology/', locales: [],
@@ -335,13 +337,13 @@ async function drive(baseURL) {
   if (remoteBase) {
     native = { skipped: 'the production check drives the polyfill only' };
   } else {
-    const nativeBrowser = await chromium.launch({
+    const nativeBrowser = withFullLevel(await chromium.launch({
       executablePath,
       args: [
         ...STABLE_CHROMIUM_ARGS,
         '--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport',
       ],
-    });
+    }));
     try {
       const page = await nativeBrowser.newPage();
       await page.goto(`${baseURL}/`, { waitUntil: 'networkidle' });
@@ -362,10 +364,10 @@ async function drive(baseURL) {
     }
   }
 
-  const polyfillBrowser = await chromium.launch({
+  const polyfillBrowser = withFullLevel(await chromium.launch({
     executablePath,
     args: STABLE_CHROMIUM_ARGS,
-  });
+  }));
   let polyfill;
   let addresses;
   let exclusions;

@@ -1,3 +1,4 @@
+import { useBrowserEphemeris } from '../../../tests/helpers/browser-ephemeris';
 import { describe, expect, it } from 'vitest';
 import { bodyLongitude, longitudeSpeed } from './full';
 import independentCases from './fixtures/independent-eight-cases.json';
@@ -13,6 +14,8 @@ import {
 } from './transit-scan';
 import type { NatalTransitChart, TransitBody } from './transit-scan';
 import type { BodyName } from './types';
+
+useBrowserEphemeris();
 
 const normalize = (lon: number) => ((lon % 360) + 360) % 360;
 const at = (body: BodyName, lon: number) => ({ body, lon });

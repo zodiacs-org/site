@@ -1,3 +1,4 @@
+import { useBrowserEphemeris } from '../../../tests/helpers/browser-ephemeris';
 import { h } from 'preact';
 import { render } from 'preact-render-to-string';
 import { describe, expect, it, vi } from 'vitest';
@@ -10,6 +11,8 @@ import { emphasisFor } from '../scene/emphasis';
 import { entityId, type EntityRef } from '../scene/types';
 import { houseOf } from '../engine/houses';
 import Wheel from './Wheel';
+
+useBrowserEphemeris();
 
 type Point = { x: number; y: number };
 type Marker = Point & { body: string; radius: number; stroke: number };

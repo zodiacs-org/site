@@ -354,8 +354,8 @@ def build():
         'withinOneMinute': {
             'note': 'Left out of the table: the engine already places these within a minute of NASA',
             'sunIngresses': {'count': len(sun_diffs), 'maxSeconds': round(sun_worst, 1)},
-            'lunations': 'every new and full Moon agrees with NASA to the second (docs/accuracy-audit-2026-11/REPORT.md)',
-            'moonIngresses': 'every Moon sign change agrees with NASA to the second (docs/accuracy-audit-2026-11/REPORT.md)',
+            'lunations': 'every new and full Moon is within a minute of NASA, and within 6 s from 2026 to 2030; the pages print it to the minute (docs/accuracy-audit-2026-11/REPORT.md, correction of 2026-11-13)',
+            'moonIngresses': 'every Moon sign change is within a minute of NASA, and within 6 s from 2026 to 2030; the pages print it to the minute (docs/accuracy-audit-2026-11/REPORT.md, correction of 2026-11-13)',
         },
         'largestCorrectionSeconds': {
             'ingresses': worst(ingress_rows), 'stations': worst(station_rows), 'aspects': worst(list(aspect_rows.values())),

@@ -8,9 +8,9 @@
  * engine's instants and src/data/nasa-event-instants.json
  * (`python3 scripts/build-nasa-event-instants.py`) records NASA's instant for
  * each of them. Every committed engine instant is listed in its NASA row, so
- * the lookup is exact: an instant the table does not list comes back
- * unchanged, and src/lib/nasa-instants.test.ts fails until the table is
- * rebuilt.
+ * the lookup is exact. The DE440 catalog links to archived engine keys
+ * through published-event-time-links.json. The published values and their
+ * provenance remain in the original table.
  *
  * The data files stay as they are: ingresses.json, sky.json and
  * events-publication.json are bundled byte for byte into the AI tools, and a
@@ -22,6 +22,8 @@
  * table is about 200 KB).
  */
 import table from '../data/nasa-event-instants.json';
+import { nasaEclipseAt, nasaLunationAt } from './nasa-event-times-2027';
+import { archivedEventKey } from './published-event-time';
 
 interface IngressRow { body: string; sign: string; retrograde: boolean; nasa: string; engine: string[] }
 interface StationRow { body: string; type: string; sign: string; nasa: string; engine: string[] }
@@ -57,17 +59,17 @@ for (const row of NASA_EVENT_TABLE.aspects) {
 
 /** NASA's instant for a planet's sign ingress the data files date at `at`. */
 export function nasaIngressAt(body: string, at: string): string | undefined {
-  return ingressIndex.get(`${body}|${at}`);
+  return ingressIndex.get(`${body}|${archivedEventKey(at, 'ingress', body)}`);
 }
 
 /** NASA's instant for a planet's station the data files date at `at`. */
 export function nasaStationAt(body: string, at: string): string | undefined {
-  return stationIndex.get(`${body}|${at}`);
+  return stationIndex.get(`${body}|${archivedEventKey(at, 'station', body)}`);
 }
 
 /** NASA's instant for an exact aspect the data files date at `at`. */
 export function nasaAspectAt(a: string, b: string, type: string, at: string): string | undefined {
-  return aspectIndex.get(`${a}|${b}|${type}|${at}`);
+  return aspectIndex.get(`${a}|${b}|${type}|${archivedEventKey(at, 'aspect', a, b, type)}`);
 }
 
 export type SkyEventRef =
@@ -113,10 +115,86 @@ export function refineTransitMonth<T extends TransitMonthShape>(month: T): T {
 }
 
 /**
+ * A day's events (src/data/daily.json) with each planet ingress, station and
+ * exact aspect at NASA's instant. Lunations and the Sun keep their instants.
+ * Order is kept as given, though a correction can be hours and can move an
+ * event across midnight: a list for one UTC day takes its events from
+ * eventsOnUtcDay instead.
+ */
+export function refineDailyEvents<E extends { kind: string; at: string; planet?: string; a?: string; b?: string; type?: string }>(events: readonly E[]): E[] {
+  return events.map((event) => {
+    let at = event.at;
+    if ((event.kind === 'ingress' || event.kind === 'station') && event.planet) {
+      at = exactInstant({ kind: event.kind, body: event.planet, at: event.at });
+    } else if (event.kind === 'aspect' && event.a && event.b && event.type) {
+      at = exactInstant({ kind: 'aspect', a: event.a, b: event.b, type: event.type, at: event.at });
+    }
+    return at === event.at ? event : { ...event, at };
+  });
+}
+
+/** One event of a day, in the shape of daily.json's events. */
+export interface DayEvent {
+  kind: 'ingress' | 'lunation' | 'station' | 'aspect';
+  at: string;
+  planet?: string;
+  a?: string;
+  b?: string;
+  type?: string;
+  sign?: string;
+}
+
+type CatalogItem = Omit<DayEvent, 'kind'>;
+
+interface TransitCatalogShape {
+  month: string;
+  ingresses: readonly CatalogItem[];
+  lunations: readonly CatalogItem[];
+  stations: readonly CatalogItem[];
+  aspects: readonly CatalogItem[];
+}
+
+const EVENT_ARRAYS = [
+  ['ingresses', 'ingress'],
+  ['lunations', 'lunation'],
+  ['stations', 'station'],
+  ['aspects', 'aspect'],
+] as const;
+
+const shiftMonth = (month: string, by: number): string => {
+  const at = new Date(`${month}-01T00:00:00.000Z`);
+  at.setUTCMonth(at.getUTCMonth() + by);
+  return at.toISOString().slice(0, 7);
+};
+
+/**
+ * The events of one UTC day (YYYY-MM-DD) as the pages print them, in the
+ * shape of daily.json's events: every catalog ingress, lunation, station and
+ * aspect whose printed instant (refineDailyEvents) falls on that day, sorted.
+ * daily.json slices the catalog by the engine's instant, and NASA can move an
+ * event across midnight (Neptune sextile Pluto: engine 24 July 2026 23:09,
+ * NASA 25 July 05:28), so a day's list is built here rather than from that
+ * slice. The catalogs of the day's month and the months either side are read.
+ */
+export function eventsOnUtcDay(catalogs: readonly TransitCatalogShape[], date: string): DayEvent[] {
+  const month = date.slice(0, 7);
+  const months = new Set([shiftMonth(month, -1), month, shiftMonth(month, 1)]);
+  const events = catalogs
+    .filter((catalog) => months.has(catalog.month))
+    .flatMap((catalog) => EVENT_ARRAYS.flatMap(([array, kind]) => (
+      catalog[array].map((item): DayEvent => ({ kind, ...item }))
+    )));
+  return refineDailyEvents(events)
+    .filter((event) => event.at.slice(0, 10) === date)
+    .sort(byAt);
+}
+
+/**
  * Published event pages (src/data/events-publication.json) with each anchor
  * moved to the NASA instant the page prints, so a list that prints NASA's
  * times still finds the page for an event. A retrograde page's anchor is its
- * retrograde station.
+ * retrograde station. The 2027 full moons and eclipses move to the instant
+ * their pages print too.
  */
 export function refinePublishedAnchors<P extends { family: string; anchor: string; bodies?: string[]; subtype?: string }>(pages: readonly P[]): P[] {
   return pages.map((page) => {
@@ -125,6 +203,9 @@ export function refinePublishedAnchors<P extends { family: string; anchor: strin
     if (page.family === 'ingress' && a) anchor = nasaIngressAt(a, page.anchor);
     else if (page.family === 'aspect' && a && b && page.subtype) anchor = nasaAspectAt(a, b, page.subtype, page.anchor);
     else if (page.family === 'retrograde' && a) anchor = nasaStationAt(a, page.anchor);
+    // The 2027 full moons and eclipse peaks (src/lib/nasa-event-times-2027.ts).
+    else if (page.family === 'lunation' && page.subtype) anchor = nasaLunationAt(page.subtype, page.anchor);
+    else if (page.family === 'eclipse' && page.subtype) anchor = nasaEclipseAt(page.subtype, page.anchor);
     return anchor ? { ...page, anchor } : page;
   });
 }

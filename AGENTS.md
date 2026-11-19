@@ -20,19 +20,35 @@ shared task board. `CLAUDE.md` imports this file, so the rules live here once.
 - Commit as `admin@zodiacs.org` (name "Zodiacs Admin"). Never put a model
   name or a personal email address in a commit, a pull request or a file.
   When merging, check that the merge commit's author is Zodiacs.
-- Open pull requests as drafts. The owner pre-approves a merge when CI is
-  green (or each failure is shown to be unrelated and also fails on `main`),
-  an independent review finds no blockers, the live site is checked after the
-  merge (revert if it is broken), and the merge is logged in the pinned Merge
-  log issue (#879). Never push to `main`.
-- Additive database migrations (nothing deleted, no personal data touched)
-  may be applied after review and logged in #879; anything that deletes data
-  needs the owner's yes. A feature flag may be switched to fix a live problem,
-  logged in #879; secret values stay with the owner.
-- Ask the owner before spending money, submitting to a directory, deleting
-  data, posting publicly outside this repository, or messaging people.
+- Open pull requests as drafts. Never push to `main`. Never force-push or
+  rewrite history that is already pushed.
+- Never spend on the OpenAI API: no OpenAI API calls or keys in scripts,
+  tools or apps. Generated images and video go through Higgsfield.
+- Never modify the `market-lens-paper` repository or its files.
 - Never touch the `claude/zodiacs-handover-pr-review-tv7ni0` branch.
-- Never read, print or commit credentials, tokens or `.env` values.
+- Never read, print, log or commit credentials, tokens or `.env` values,
+  and never write them into a brief, a log, a status file or a pull request.
+
+### Merging: the owner's approved lanes
+
+The owner (Dias, 15 November 2026) set one merge rule for this repository
+and `zodiacs-org/engine`: agents merge only within the approved lanes, and
+only under the strict rule.
+
+- Approved lanes: squash-merging a site pull request and the deploy that
+  follows; copy, design and scope calls, except claims, prices, disclaimers
+  or how accuracy is described.
+- The strict rule, every time: every required check is green, re-read just
+  before merging; the merge is pinned to the reviewed head
+  (`gh pr merge --squash --match-head-commit <sha>`); an independent Codex
+  review says READY on that exact head; no review thread is unresolved; the
+  live site is checked after the merge (revert if it is broken); and the
+  merge is logged in the pinned Merge log issue (#879).
+- Always ask the owner first: database migrations, birth data and privacy,
+  payments, env vars and feature flags, production switch-ons, public posts
+  (directory submissions included), messages to others, secrets, spending
+  over $5, and deleting real user data. Nothing goes public without Dias's
+  yes.
 
 ### Product rules
 
@@ -40,13 +56,21 @@ shared task board. `CLAUDE.md` imports this file, so the rules live here once.
   confidence NN%" label (`src/ai-tools/reading-confidence.ts`). No betting
   tips, sports picks, market timing, election forecasts, health predictions
   or guarantees.
-- Never store or log users' birth details. Links never carry a birth year,
-  a birth time, a birthplace or the names you give; a birthday link carries
-  only the month and day.
+- Never store or log users' birth details, and never put them in a URL.
+  Links never carry a birth year, a birth time, a birthplace or the names
+  you give; a birthday link carries only the month and day.
+- Children means under 13. Zodiacs is not directed at children under 13:
+  collect nothing about a child under 13 (no name, birth date or
+  birthplace), and give no reading for a named child under 13
+  (`src/ai-tools/under-13.test.ts`). Nothing for anyone under 18 is framed
+  as romance or attraction.
 - The 13 published MCP tool definitions stay byte-identical
-  (`src/ai-tools/release-060.test.ts`). The one exception: 0.6.5 takes the
+  (`src/ai-tools/release-060.test.ts`). Recorded exceptions: 0.6.5 takes the
   `baby` and `coming-of-age` occasions out of `get_occasion_sky`, approved by
   Dias on 7 November 2026 after OpenAI's review
+  (`src/ai-tools/published-tools.ts`). ZOD-64 changes the Neptune time quoted
+  in `get_upcoming_events`' description from 14:31:41 to 14:32 UTC, that
+  description only, approved by Dias on 2026-11-17
   (`src/ai-tools/published-tools.ts`).
 - The site is dark only. Do not add a light theme or a theme switch.
 - No token, market or crypto language on consumer surfaces. The approved

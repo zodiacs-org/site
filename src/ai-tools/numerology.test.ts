@@ -12,6 +12,7 @@ import committedProgram from '../data/horoscope-program.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import { PUBLISHED_TOOLS } from './published-tools';
+import { expectedCapabilityReply } from '../../tests/helpers/de440-capabilities';
 
 /**
  * ZODIACS_NUMEROLOGY_ENABLED stays off in production. Off (unset, empty, '0' or anything but '1'), or on without the
@@ -71,7 +72,7 @@ const ON = { ...SCENARIOS.coverage, ZODIACS_NUMEROLOGY_ENABLED: '1' };
 const call = async (host: string, name: string, args: unknown, meta?: unknown) => message((await post(host, rpc('tools/call', { name, arguments: args, ...(meta ? { _meta: meta } : {}) }))).text).result;
 
 describe('the numerology switch off', () => {
-  it('leaves every scenario\'s initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them', async () => {
+  it('preserves the published bytes and reports the DE440 capabilities with numerology off', async () => {
     expect(NUMEROLOGY_SWITCH_ENV).toBe('ZODIACS_NUMEROLOGY_ENABLED');
     for (const [name, env] of Object.entries(SCENARIOS)) {
       // On without the coverage switch counts as off, so '1' joins the off values for the first two scenarios.
@@ -80,7 +81,9 @@ describe('the numerology switch off', () => {
         const host = await serve({ ...env, ZODIACS_NUMEROLOGY_ENABLED: value });
         for (const [request, [body, headers]] of Object.entries(REQUESTS)) {
           const reply = await post(host, body, headers);
-          expect(reply.text, `${name} ${request} with ZODIACS_NUMEROLOGY_ENABLED=${JSON.stringify(value)}`).toBe(FIXTURE[name][request].text);
+          const before = FIXTURE[name][request].text;
+          const expected = request === 'capabilities' ? expectedCapabilityReply(before) : before;
+          expect(reply.text, `${name} ${request} with ZODIACS_NUMEROLOGY_ENABLED=${JSON.stringify(value)}`).toBe(expected);
         }
       }
     }
@@ -114,9 +117,10 @@ describe('the numerology switch on', () => {
     expect(tool._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
     expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'name', 'year', 'zone']);
     expect(tool.inputSchema.required).toEqual(['birthDate']);
-    // Labelled as separate from astrology; work, money and wellbeing allowed as the tradition reads them, with the lines it may not cross.
+    // Labelled as separate from astrology; work and wellbeing allowed as the tradition reads them, no money forecasts (ZOD-30), with the lines it may not cross.
     expect(tool.description).toContain('Numerology is a separate tradition from astrology');
-    expect(tool.description).toContain('including work, money and wellbeing where the tradition speaks to them');
+    expect(tool.description).toContain('including work and wellbeing where the tradition speaks to them, with no money, earnings or promotion forecasts.');
+    expect(tool.description).not.toMatch(/strong year for earnings/u);
     expect(tool.description).toContain('Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.');
     expect(tool.description).not.toMatch(/reflection/u);
     expect(tool.description).toContain('not returned, stored or put in a link');
