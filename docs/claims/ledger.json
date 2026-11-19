@@ -1559,6 +1559,7 @@
     {"path":"src/ai-tools/tools.ts","text":"Chiron's stations and sign changes, and Chiron in get_natal_chart, come from NASA JPL Horizons positions for 1800 to 2199; outside those years Chiron is left out.","claim":"acc.chiron-horizons"},
     {"path":"src/ai-tools/watch/contracts.ts","text":"IANA time zone for display; UTC by default.","claim":"time.host-icu"},
     {"path":"src/components/HoroscopeProgramPage.astro","text":"Calculated in your browser, no account needed","claim":"priv.on-device"},
+    {"path":"src/components/LevelSwitch.astro","text":"Your answer stays in this browser, and you can switch anytime.","claim":"priv.local-storage"},
     {"path":"src/components/StoryCardShare.tsx","text":"Made on this device.","claim":"priv.story-share-card"},
     {"path":"src/components/StoryCardShare.tsx","text":"The card could not be made in this browser.","exempt":"not-a-claim"},
     {"path":"src/components/events/EventCountdown.astro","text":"The zone stays on your device.","claim":"priv.device-features"},
