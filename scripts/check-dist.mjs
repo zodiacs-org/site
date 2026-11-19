@@ -1558,8 +1558,8 @@ if (packetFNoindexCounts.localizedBirthdays !== 1464) {
 if (packetFNoindexCounts.russianSignGuides !== 12) {
   fail(`Packet F: ${packetFNoindexCounts.russianSignGuides}/12 Russian sign-guide previews are present`);
 }
-if (packetFNoindexCounts.people !== 501 - indexablePeoplePaths.size) {
-  fail(`Packet F: ${packetFNoindexCounts.people}/${501 - indexablePeoplePaths.size} deferred People profiles are present`);
+if (packetFNoindexCounts.people !== 516 - indexablePeoplePaths.size) {
+  fail(`Packet F: ${packetFNoindexCounts.people}/${516 - indexablePeoplePaths.size} deferred People profiles are present`);
 }
 
 if (sitemapLocs.size !== sitemapPolicy.total) {

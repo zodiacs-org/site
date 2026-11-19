@@ -42,6 +42,7 @@ import { runEditorialMetadataChecks } from './editorial-metadata-drive.mjs';
 import { verifyWidgetBuilder } from './widgets-drive.mjs';
 import { awaitAppliedFooter, runFooterStyleChecks } from './footer-style-checks.mjs';
 import { PEOPLE_IDENTITY_REVIEW_SLUGS } from '../scripts/people-identity-og-review.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? await findChromium();
@@ -191,10 +192,10 @@ async function checkKahloNatalReading(page, viewport) {
 
 try {
   if (OUT) await mkdir(OUT, { recursive: true });
-  const browser = await chromium.launch({
+  const browser = withFullLevel(await chromium.launch({
     executablePath: CHROMIUM,
     args: STABLE_CHROMIUM_ARGS,
-  });
+  }));
   await runRecoveryBrowserChecks({
     browser, baseURL: 'http://127.0.0.1:4399', check, outDir: OUT,
   });
