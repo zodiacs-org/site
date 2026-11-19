@@ -1,0 +1,833 @@
+{
+  "node": "v22.23.5",
+  "priorMain": {
+    "commit": "afa0d3b01b3db90a186f049f3959817eda1e5c33",
+    "passed": 9431,
+    "failed": 2,
+    "skipped": 14,
+    "total": 9447,
+    "failedFiles": 2,
+    "failures": [
+      {
+        "path": "scripts/home-first-paint.test.mjs",
+        "tests": [
+          "homepage first-paint assets discovers the poster first and installs client copy after the hero"
+        ]
+      },
+      {
+        "path": "scripts/registry-research-pause.test.mjs",
+        "tests": [
+          "the builders, run on a copy of the tree writes no draft, item, feed or index while paused, in build mode or --check, without reading the Daily Sky"
+        ]
+      }
+    ]
+  },
+  "branchBefore": {
+    "commitAtStart": "3fd00874f32c357d2aeb24d499fb802d0b96f2b3",
+    "passed": 9378,
+    "failed": 59,
+    "skipped": 13,
+    "total": 9450,
+    "failedFiles": 31,
+    "failures": [
+      {
+        "path": "scripts/build-moon-distances.test.mjs",
+        "tests": [
+          "moon distances matches the committed JPL Horizons (DE441) distances within 2 km",
+          "moon distances stays within 4 km of JPL DE421 at every lunation, and its apsides within 4 km and 5 minutes"
+        ]
+      },
+      {
+        "path": "scripts/claims-bindings.test.mjs",
+        "tests": [
+          "event times against Swiss Ephemeris were measured on the catalog the site publishes now",
+          "event times against Swiss Ephemeris print the planets' station, sign change and alignment times from NASA JPL, as the events pages say",
+          "images of one birth shared together narrow the birthplace about five times with one solar return image, as the privacy page says",
+          "the NASA JPL Horizons figure is the largest residual of the reference values the engine test uses",
+          "how event times are checked, on the methodology page gives the Neptune example from the NASA table and the engine instant it replaced",
+          "how event times are checked, on the methodology page bounds the Sun's sign changes by the measured maxima, each with its range",
+          "how event times are checked, on the methodology page bounds the Moon's event times by the 2026 to 2030 sample and says the pages print the minute",
+          "the Moon ingresses on the void-of-course calendar are within about 5 seconds of Swiss Ephemeris, measured on the table the site publishes"
+        ]
+      },
+      {
+        "path": "scripts/claims-ledger.test.mjs",
+        "tests": [
+          "claims ledger R1 lists every sentence the extractor selects",
+          "claims ledger R2 finds every listed sentence in its file, still selected",
+          "claims ledger R3 resolves every claim's evidence",
+          "claims ledger R4 finds every binding in its code or data",
+          "claims ledger R7 matches the conventions and coverage the engine's receipt states"
+        ]
+      },
+      {
+        "path": "scripts/event-shorts.test.ts",
+        "tests": [
+          "the sky event short videos prints NASA's station time for a retrograde, as its page does"
+        ]
+      },
+      {
+        "path": "scripts/mcp-artifact.test.mjs",
+        "tests": [
+          "the recorded evidence host-drive.json was measured against the bundle that ships"
+        ]
+      },
+      {
+        "path": "scripts/methodology-accuracy-claim.test.mjs",
+        "tests": [
+          "the accuracy claim on /methodology/ gives the two clocks' difference as statistics over 2100,2199, from the committed run",
+          "the every-tenth-day comparison, 1800 to 2199 was measured on the engine the site runs, with every call answered from the Swiss data files"
+        ]
+      },
+      {
+        "path": "scripts/phase1-acceptance-evidence.test.mjs",
+        "tests": [
+          "Phase 1 durable acceptance evidence contains exact 360px and 1280px captures for every new template"
+        ]
+      },
+      {
+        "path": "scripts/registry-outlook.test.mjs",
+        "tests": [
+          "Registry symbolic outlook builds reproducible daily and weekly editions from committed astronomy facts"
+        ]
+      },
+      {
+        "path": "scripts/sitemap-rendered-changes.test.mjs",
+        "tests": [
+          "a pull request that rolls the daily edition the plan step accepts only an exact, base-pinned allowance (existing: false)",
+          "a pull request that rolls the daily edition the plan step accepts only an exact, base-pinned allowance (existing: true)"
+        ]
+      },
+      {
+        "path": "tests/sky-events-references.test.ts",
+        "tests": [
+          "new and full Moons and the Sun's sign changes against JPL Horizons puts the Sun on the sign's edge, within the engine's 3 arcseconds of Horizons, at each sign change it lists",
+          "stations and the slow planets' sign changes against JPL Horizons puts each planet on the sign's edge, within the engine's own bound against Horizons, at the sign changes in the ingress table"
+        ]
+      },
+      {
+        "path": "tests/thesis-contract.test.mjs",
+        "tests": [
+          "thesis feedback simplification contract exposes the committed measured chart without scripts or opening a drawer"
+        ]
+      },
+      {
+        "path": "src/ai-tools/clear-time.test.ts",
+        "tests": [
+          "times an assistant can read one way only Sky Watch hashes the same events as main, so its event ids do not move"
+        ]
+      },
+      {
+        "path": "src/ai-tools/http.test.ts",
+        "tests": [
+          "stateless MCP HTTP boundary works with the official SDK client: list, call, widget read and close"
+        ]
+      },
+      {
+        "path": "src/ai-tools/numerology.test.ts",
+        "tests": [
+          "the numerology switch off leaves every scenario's initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them"
+        ]
+      },
+      {
+        "path": "src/ai-tools/schema-types.test.ts",
+        "tests": [
+          "the tools' schemas give the values the compute API returns exactly the schemas the API documents for them",
+          "what the tools return validates against the schemas they advertise, as a client checks it"
+        ]
+      },
+      {
+        "path": "src/ai-tools/sky-events.test.ts",
+        "tests": [
+          "the sky events switch off leaves every scenario's initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them",
+          "the sky events switch on answers with results that validate against the output schemas tools/list advertises, as a client checks them"
+        ]
+      },
+      {
+        "path": "src/ai-tools/year-score.test.ts",
+        "tests": [
+          "the Year Ahead Score switch off leaves tools/list and get_capabilities byte for byte as main answers them, and refuses the tool as unknown"
+        ]
+      },
+      {
+        "path": "src/data/almanac.test.ts",
+        "tests": [
+          "Almanac launch corpus pins the cited August dates and degrees to the committed calculation"
+        ]
+      },
+      {
+        "path": "src/lib/horoscope-page-data.test.ts",
+        "tests": [
+          "horoscope page sky strip lists an event on the UTC day of NASA’s instant when NASA moves it across midnight",
+          "horoscope page sky strip leaves out of “Also in this sky” the events the sky rows show, and keeps the rest"
+        ]
+      },
+      {
+        "path": "src/lib/nasa-event-times-2027.test.ts",
+        "tests": [
+          "the 2027 event pages print NASA’s instants lists every 2027 full moon and eclipse, and each shadow edge of the 2027 Mercury and Mars retrogrades",
+          "the 2027 event pages print NASA’s instants prints, on each style-guide page, the minute Horizons gives"
+        ]
+      },
+      {
+        "path": "src/lib/nasa-instants.test.ts",
+        "tests": [
+          "every planet event the pages print has its NASA instant in the monthly catalogs",
+          "every planet event the pages print has its NASA instant in the sign windows of ingresses.json, inside its horizons",
+          "every planet event the pages print has its NASA instant in sky.json's retrograde windows, whose stations never change UTC day",
+          "every planet event the pages print has its NASA instant in the event pages' publication receipt",
+          "every planet event the pages print has its NASA instant in the horoscope program's dated events",
+          "the helpers refine a month's planet events and keep its lunations and the Sun",
+          "the helpers move both edges of a sign window and keep the clipped ones",
+          "the helpers move retrograde stations and leave a window clipped at the table's start"
+        ]
+      },
+      {
+        "path": "src/lib/sky-calendar-feed.test.ts",
+        "tests": [
+          "the website sky calendar feed starts and ends each retrograde window at NASA JPL Horizons station instants"
+        ]
+      },
+      {
+        "path": "src/lib/today-sky.test.ts",
+        "tests": [
+          "Sky today facts links every published event page in its window, on any edition date"
+        ]
+      },
+      {
+        "path": "src/lib/zodiac-dates.test.ts",
+        "tests": [
+          "living correspondence chart data derives the current and next publication years from the committed receipt"
+        ]
+      },
+      {
+        "path": "tests/benchmarks/sky-benchmark.test.ts",
+        "tests": [
+          "the sky-fact benchmark, v0 is what the generator draws, the questions and key byte for byte and check_sky_fact's answers and facts, and with another engine the generator refuses to draw it again"
+        ]
+      },
+      {
+        "path": "tests/api/mcp-warm-up.test.ts",
+        "tests": [
+          "the /mcp warm-up answers initialize and tools/list inside the instance without reaching the network"
+        ]
+      },
+      {
+        "path": "src/ai-tools/accounts/flag-off.test.ts",
+        "tests": [
+          "the account switch off leaves initialize, tools/list, resources/list and every account route byte-for-byte as the 0.5.0 server answers them"
+        ]
+      },
+      {
+        "path": "src/lib/events/catalog.test.ts",
+        "tests": [
+          "events catalog , derivation agreement maps every monthly lunation, station, and slow-pair aspect into the unified facts"
+        ]
+      },
+      {
+        "path": "src/lib/events/year-format.test.ts",
+        "tests": [
+          "the year-page format on the style-guide event pages puts every instant a page prints on five clocks",
+          "the year-page format on the style-guide event pages says the times are NASA’s on every page, because every page prints NASA’s instant",
+          "the year-page format on the style-guide event pages prints only clock times and dates solved on Horizons"
+        ]
+      },
+      {
+        "path": "src/lib/scene/scene.test.ts",
+        "tests": [
+          "buildSceneModel parity matches the committed Kahlo scene snapshot"
+        ]
+      },
+      {
+        "path": "src/lib/i18n/ui/build-audit.test.ts",
+        "tests": [
+          "built client UI payloads installs one locale catalog before every island that uses shared UI copy"
+        ]
+      }
+    ]
+  },
+  "fetchedMain": {
+    "commit": "2fab4d9cd09c340a10858f2250bc74e4d6a4925d",
+    "passed": 9439,
+    "failed": 0,
+    "skipped": 13,
+    "total": 9452,
+    "failures": [],
+    "collectionFailures": []
+  },
+  "branchAfter": {
+    "parent": "3d79629188676ad634ac1f2374720d29f0f7fd7b",
+    "passed": 9426,
+    "failed": 11,
+    "skipped": 13,
+    "total": 9450,
+    "failures": [
+      {
+        "path": "scripts/claims-bindings.test.mjs",
+        "name": "event times against Swiss Ephemeris were measured on the catalog the site publishes now",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "scripts/claims-bindings.test.mjs",
+        "name": "the Moon ingresses on the void-of-course calendar are within about 5 seconds of Swiss Ephemeris, measured on the table the site publishes",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "scripts/mcp-artifact.test.mjs",
+        "name": "the recorded evidence host-drive.json was measured against the bundle that ships",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "scripts/mcp-pack-permissions.test.mjs",
+        "name": "packs the complete npm file selection identically from private and Git checkout permissions",
+        "reason": "Test error"
+      },
+      {
+        "path": "scripts/methodology-accuracy-claim.test.mjs",
+        "name": "the accuracy claim on /methodology/ gives the two clocks' difference as statistics over 2100, 2199, from the committed run",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "scripts/methodology-accuracy-claim.test.mjs",
+        "name": "the every-tenth-day comparison, 1800 to 2199 was measured on the engine the site runs, with every call answered from the Swiss data files",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "src/ai-tools/clear-time.test.ts",
+        "name": "times an assistant can read one way only Sky Watch hashes the same events as main, so its event ids do not move",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "src/ai-tools/http.test.ts",
+        "name": "stateless MCP HTTP boundary works with the official SDK client: list, call, widget read and close",
+        "reason": "Test error"
+      },
+      {
+        "path": "src/ai-tools/schema-types.test.ts",
+        "name": "the tools' schemas give the values the compute API returns exactly the schemas the API documents for them",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "src/ai-tools/schema-types.test.ts",
+        "name": "what the tools return validates against the schemas they advertise, as a client checks it",
+        "reason": "Assertion failure"
+      },
+      {
+        "path": "src/ai-tools/sky-events.test.ts",
+        "name": "the sky events switch on answers with results that validate against the output schemas tools/list advertises, as a client checks them",
+        "reason": "Assertion failure"
+      }
+    ],
+    "collectionFailures": []
+  },
+  "focusedResults": {
+    "branchBlockers": {
+      "passed": 141,
+      "failed": 10,
+      "skipped": 0,
+      "total": 151,
+      "failures": [
+        {
+          "path": "scripts/claims-bindings.test.mjs",
+          "name": "event times against Swiss Ephemeris were measured on the catalog the site publishes now",
+          "reason": "Assertion failure"
+        },
+        {
+          "path": "scripts/claims-bindings.test.mjs",
+          "name": "the Moon ingresses on the void-of-course calendar are within about 5 seconds of Swiss Ephemeris, measured on the table the site publishes",
+          "reason": "Assertion failure"
+        },
+        {
+          "path": "scripts/mcp-artifact.test.mjs",
+          "name": "the recorded evidence host-drive.json was measured against the bundle that ships",
+          "reason": "Assertion failure"
+        },
+        {
+          "path": "scripts/methodology-accuracy-claim.test.mjs",
+          "name": "the accuracy claim on /methodology/ gives the two clocks' difference as statistics over 2100, 2199, from the committed run",
+          "reason": "Assertion failure"
+        },
+        {
+          "path": "scripts/methodology-accuracy-claim.test.mjs",
+          "name": "the every-tenth-day comparison, 1800 to 2199 was measured on the engine the site runs, with every call answered from the Swiss data files",
+          "reason": "Assertion failure"
+        },
+        {
+          "path": "src/ai-tools/clear-time.test.ts",
+          "name": "times an assistant can read one way only Sky Watch hashes the same events as main, so its event ids do not move",
+          "reason": "Assertion failure"
+        },
+        {
+          "path": "src/ai-tools/http.test.ts",
+          "name": "stateless MCP HTTP boundary works with the official SDK client: list, call, widget read and close",
+          "reason": "Test error"
+        },
+        {
+          "path": "src/ai-tools/schema-types.test.ts",
+          "name": "the tools' schemas give the values the compute API returns exactly the schemas the API documents for them",
+          "reason": "Assertion failure"
+        },
+        {
+          "path": "src/ai-tools/schema-types.test.ts",
+          "name": "what the tools return validates against the schemas they advertise, as a client checks it",
+          "reason": "Assertion failure"
+        },
+        {
+          "path": "src/ai-tools/sky-events.test.ts",
+          "name": "the sky events switch on answers with results that validate against the output schemas tools/list advertises, as a client checks them",
+          "reason": "Assertion failure"
+        }
+      ],
+      "collectionFailures": []
+    },
+    "eventAndThesis": {
+      "passed": 101,
+      "failed": 0,
+      "skipped": 0,
+      "total": 101,
+      "failures": [],
+      "collectionFailures": []
+    },
+    "warmUp": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "total": 2,
+      "failures": [],
+      "collectionFailures": []
+    },
+    "packPermissions": {
+      "defaultNpmDirectory": {
+        "main": {
+          "passed": 0,
+          "failed": 1,
+          "skipped": 0,
+          "total": 1,
+          "failures": [
+            {
+              "path": "scripts/mcp-pack-permissions.test.mjs",
+              "name": "packs the complete npm file selection identically from private and Git checkout permissions",
+              "reason": "Test error"
+            }
+          ],
+          "collectionFailures": []
+        },
+        "branch": {
+          "passed": 0,
+          "failed": 1,
+          "skipped": 0,
+          "total": 1,
+          "failures": [
+            {
+              "path": "scripts/mcp-pack-permissions.test.mjs",
+              "name": "packs the complete npm file selection identically from private and Git checkout permissions",
+              "reason": "Test error"
+            }
+          ],
+          "collectionFailures": []
+        }
+      },
+      "freshWritableNpmDirectoryOffline": {
+        "main": {
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "total": 1,
+          "failures": [],
+          "collectionFailures": []
+        },
+        "branch": {
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "total": 1,
+          "failures": [],
+          "collectionFailures": []
+        }
+      }
+    }
+  },
+  "commandResults": {
+    "freshNpmCi": "passed",
+    "build": "passed",
+    "builtPages": 4750,
+    "check": "passed",
+    "fetchedMainFreshNpmCi": "passed",
+    "adapterCheck": "passed",
+    "publishedEventLinksCheck": "passed",
+    "browserCapture": {
+      "count": 18,
+      "browser": "Chromium 151.0.7922.173",
+      "builtAt": "2026-11-18T12:35:02.042Z"
+    }
+  },
+  "independentRefresh": {
+    "url": "https://www.astro.com/ftp/swisseph/ephe/sepl_18.se1",
+    "status": 403
+  },
+  "originallyFailingTests": [
+    {
+      "path": "scripts/build-moon-distances.test.mjs",
+      "name": "moon distances matches the committed JPL Horizons (DE441) distances within 2 km",
+      "group": "numerical",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/build-moon-distances.test.mjs",
+      "name": "moon distances stays within 4 km of JPL DE421 at every lunation, and its apsides within 4 km and 5 minutes",
+      "group": "numerical",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/claims-bindings.test.mjs",
+      "name": "event times against Swiss Ephemeris were measured on the catalog the site publishes now",
+      "group": "swiss",
+      "after": "failed"
+    },
+    {
+      "path": "scripts/claims-bindings.test.mjs",
+      "name": "event times against Swiss Ephemeris print the planets' station, sign change and alignment times from NASA JPL, as the events pages say",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/claims-bindings.test.mjs",
+      "name": "images of one birth shared together narrow the birthplace about five times with one solar return image, as the privacy page says",
+      "group": "numerical",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/claims-bindings.test.mjs",
+      "name": "the NASA JPL Horizons figure is the largest residual of the reference values the engine test uses",
+      "group": "numerical",
+      "after": "passed",
+      "afterName": "the NASA JPL Horizons figure is the largest residual of the reference values the browser engine test uses"
+    },
+    {
+      "path": "scripts/claims-bindings.test.mjs",
+      "name": "how event times are checked, on the methodology page gives the Neptune example from the NASA table and the engine instant it replaced",
+      "group": "claims",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/claims-bindings.test.mjs",
+      "name": "how event times are checked, on the methodology page bounds the Sun's sign changes by the measured maxima, each with its range",
+      "group": "claims",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/claims-bindings.test.mjs",
+      "name": "how event times are checked, on the methodology page bounds the Moon's event times by the 2026 to 2030 sample and says the pages print the minute",
+      "group": "claims",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/claims-bindings.test.mjs",
+      "name": "the Moon ingresses on the void-of-course calendar are within about 5 seconds of Swiss Ephemeris, measured on the table the site publishes",
+      "group": "swiss",
+      "after": "failed"
+    },
+    {
+      "path": "scripts/claims-ledger.test.mjs",
+      "name": "claims ledger R1 lists every sentence the extractor selects",
+      "group": "claims",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/claims-ledger.test.mjs",
+      "name": "claims ledger R2 finds every listed sentence in its file, still selected",
+      "group": "claims",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/claims-ledger.test.mjs",
+      "name": "claims ledger R3 resolves every claim's evidence",
+      "group": "claims",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/claims-ledger.test.mjs",
+      "name": "claims ledger R4 finds every binding in its code or data",
+      "group": "claims",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/claims-ledger.test.mjs",
+      "name": "claims ledger R7 matches the conventions and coverage the engine's receipt states",
+      "group": "claims",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/event-shorts.test.ts",
+      "name": "the sky event short videos prints NASA's station time for a retrograde, as its page does",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/mcp-artifact.test.mjs",
+      "name": "the recorded evidence host-drive.json was measured against the bundle that ships",
+      "group": "host",
+      "after": "failed"
+    },
+    {
+      "path": "scripts/methodology-accuracy-claim.test.mjs",
+      "name": "the accuracy claim on /methodology/ gives the two clocks' difference as statistics over 2100,2199, from the committed run",
+      "group": "swiss",
+      "after": "failed",
+      "afterName": "the accuracy claim on /methodology/ gives the two clocks' difference as statistics over 2100, 2199, from the committed run"
+    },
+    {
+      "path": "scripts/methodology-accuracy-claim.test.mjs",
+      "name": "the every-tenth-day comparison, 1800 to 2199 was measured on the engine the site runs, with every call answered from the Swiss data files",
+      "group": "swiss",
+      "after": "failed"
+    },
+    {
+      "path": "scripts/phase1-acceptance-evidence.test.mjs",
+      "name": "Phase 1 durable acceptance evidence contains exact 360px and 1280px captures for every new template",
+      "group": "build",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/registry-outlook.test.mjs",
+      "name": "Registry symbolic outlook builds reproducible daily and weekly editions from committed astronomy facts",
+      "group": "run",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/sitemap-rendered-changes.test.mjs",
+      "name": "a pull request that rolls the daily edition the plan step accepts only an exact, base-pinned allowance (existing: false)",
+      "group": "run",
+      "after": "passed"
+    },
+    {
+      "path": "scripts/sitemap-rendered-changes.test.mjs",
+      "name": "a pull request that rolls the daily edition the plan step accepts only an exact, base-pinned allowance (existing: true)",
+      "group": "run",
+      "after": "passed"
+    },
+    {
+      "path": "tests/sky-events-references.test.ts",
+      "name": "new and full Moons and the Sun's sign changes against JPL Horizons puts the Sun on the sign's edge, within the engine's 3 arcseconds of Horizons, at each sign change it lists",
+      "group": "numerical",
+      "after": "passed",
+      "afterName": "new and full Moons and the Sun's sign changes against JPL Horizons puts the Sun on the DE440 sign edge and within the original Horizons ceiling at each sign change it lists"
+    },
+    {
+      "path": "tests/sky-events-references.test.ts",
+      "name": "stations and the slow planets' sign changes against JPL Horizons puts each planet on the sign's edge, within the engine's own bound against Horizons, at the sign changes in the ingress table",
+      "group": "numerical",
+      "after": "passed",
+      "afterName": "stations and the slow planets' sign changes against JPL Horizons puts each planet on the DE440 sign edge and within the original Horizons ceilings for the ingress table"
+    },
+    {
+      "path": "tests/thesis-contract.test.mjs",
+      "name": "thesis feedback simplification contract exposes the committed measured chart without scripts or opening a drawer",
+      "group": "build",
+      "after": "passed"
+    },
+    {
+      "path": "src/ai-tools/clear-time.test.ts",
+      "name": "times an assistant can read one way only Sky Watch hashes the same events as main, so its event ids do not move",
+      "group": "watch",
+      "after": "failed"
+    },
+    {
+      "path": "src/ai-tools/http.test.ts",
+      "name": "stateless MCP HTTP boundary works with the official SDK client: list, call, widget read and close",
+      "group": "schema",
+      "after": "failed"
+    },
+    {
+      "path": "src/ai-tools/numerology.test.ts",
+      "name": "the numerology switch off leaves every scenario's initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them",
+      "group": "capability",
+      "after": "passed",
+      "afterName": "the numerology switch off preserves the published bytes and reports the DE440 capabilities with numerology off"
+    },
+    {
+      "path": "src/ai-tools/schema-types.test.ts",
+      "name": "the tools' schemas give the values the compute API returns exactly the schemas the API documents for them",
+      "group": "schema",
+      "after": "failed"
+    },
+    {
+      "path": "src/ai-tools/schema-types.test.ts",
+      "name": "what the tools return validates against the schemas they advertise, as a client checks it",
+      "group": "schema",
+      "after": "failed"
+    },
+    {
+      "path": "src/ai-tools/sky-events.test.ts",
+      "name": "the sky events switch off leaves every scenario's initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them",
+      "group": "capability",
+      "after": "passed",
+      "afterName": "the sky events switch off preserves the published bytes and reports the DE440 capabilities with sky events off"
+    },
+    {
+      "path": "src/ai-tools/sky-events.test.ts",
+      "name": "the sky events switch on answers with results that validate against the output schemas tools/list advertises, as a client checks them",
+      "group": "schema",
+      "after": "failed"
+    },
+    {
+      "path": "src/ai-tools/year-score.test.ts",
+      "name": "the Year Ahead Score switch off leaves tools/list and get_capabilities byte for byte as main answers them, and refuses the tool as unknown",
+      "group": "capability",
+      "after": "passed",
+      "afterName": "the Year Ahead Score switch off preserves the tool list, reports DE440 capabilities and refuses the disabled tool as unknown"
+    },
+    {
+      "path": "src/data/almanac.test.ts",
+      "name": "Almanac launch corpus pins the cited August dates and degrees to the committed calculation",
+      "group": "run",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/horoscope-page-data.test.ts",
+      "name": "horoscope page sky strip lists an event on the UTC day of NASA’s instant when NASA moves it across midnight",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/horoscope-page-data.test.ts",
+      "name": "horoscope page sky strip leaves out of “Also in this sky” the events the sky rows show, and keeps the rest",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/nasa-event-times-2027.test.ts",
+      "name": "the 2027 event pages print NASA’s instants lists every 2027 full moon and eclipse, and each shadow edge of the 2027 Mercury and Mars retrogrades",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/nasa-event-times-2027.test.ts",
+      "name": "the 2027 event pages print NASA’s instants prints, on each style-guide page, the minute Horizons gives",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/nasa-instants.test.ts",
+      "name": "every planet event the pages print has its NASA instant in the monthly catalogs",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/nasa-instants.test.ts",
+      "name": "every planet event the pages print has its NASA instant in the sign windows of ingresses.json, inside its horizons",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/nasa-instants.test.ts",
+      "name": "every planet event the pages print has its NASA instant in sky.json's retrograde windows, whose stations never change UTC day",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/nasa-instants.test.ts",
+      "name": "every planet event the pages print has its NASA instant in the event pages' publication receipt",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/nasa-instants.test.ts",
+      "name": "every planet event the pages print has its NASA instant in the horoscope program's dated events",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/nasa-instants.test.ts",
+      "name": "the helpers refine a month's planet events and keep its lunations and the Sun",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/nasa-instants.test.ts",
+      "name": "the helpers move both edges of a sign window and keep the clipped ones",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/nasa-instants.test.ts",
+      "name": "the helpers move retrograde stations and leave a window clipped at the table's start",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/sky-calendar-feed.test.ts",
+      "name": "the website sky calendar feed starts and ends each retrograde window at NASA JPL Horizons station instants",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/today-sky.test.ts",
+      "name": "Sky today facts links every published event page in its window, on any edition date",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/zodiac-dates.test.ts",
+      "name": "living correspondence chart data derives the current and next publication years from the committed receipt",
+      "group": "run",
+      "after": "passed"
+    },
+    {
+      "path": "tests/benchmarks/sky-benchmark.test.ts",
+      "name": "the sky-fact benchmark, v0 is what the generator draws, the questions and key byte for byte and check_sky_fact's answers and facts, and with another engine the generator refuses to draw it again",
+      "group": "numerical",
+      "after": "passed"
+    },
+    {
+      "path": "tests/api/mcp-warm-up.test.ts",
+      "name": "the /mcp warm-up answers initialize and tools/list inside the instance without reaching the network",
+      "group": "run",
+      "after": "passed"
+    },
+    {
+      "path": "src/ai-tools/accounts/flag-off.test.ts",
+      "name": "the account switch off leaves initialize, tools/list, resources/list and every account route byte-for-byte as the 0.5.0 server answers them",
+      "group": "capability",
+      "after": "passed",
+      "afterName": "the account switch off preserves the published bytes and reports DE440 capabilities with accounts off"
+    },
+    {
+      "path": "src/lib/events/catalog.test.ts",
+      "name": "events catalog , derivation agreement maps every monthly lunation, station, and slow-pair aspect into the unified facts",
+      "group": "publication",
+      "after": "passed",
+      "afterName": "events catalog ,  derivation agreement maps every monthly lunation, station, and slow-pair aspect into the unified facts"
+    },
+    {
+      "path": "src/lib/events/year-format.test.ts",
+      "name": "the year-page format on the style-guide event pages puts every instant a page prints on five clocks",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/events/year-format.test.ts",
+      "name": "the year-page format on the style-guide event pages says the times are NASA’s on every page, because every page prints NASA’s instant",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/events/year-format.test.ts",
+      "name": "the year-page format on the style-guide event pages prints only clock times and dates solved on Horizons",
+      "group": "publication",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/scene/scene.test.ts",
+      "name": "buildSceneModel parity matches the committed Kahlo scene snapshot",
+      "group": "run",
+      "after": "passed"
+    },
+    {
+      "path": "src/lib/i18n/ui/build-audit.test.ts",
+      "name": "built client UI payloads installs one locale catalog before every island that uses shared UI copy",
+      "group": "build",
+      "after": "passed"
+    }
+  ]
+}

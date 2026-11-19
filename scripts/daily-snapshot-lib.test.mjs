@@ -113,7 +113,7 @@ describe('daily snapshot source coverage', () => {
       illumination: Math.round(phase.illumination * 1000) / 1000,
     });
     expect(phase.name).toBe('Full Moon');
-    expect(event?.at).toBe('2026-07-29T14:35:42.223Z');
+    expect(event?.at).toBe('2026-07-29T14:35:43.458Z');
 
     const eventMoonLongitude = bodyLongitude('Moon', new Date(event.at));
     expect(event).toMatchObject({
