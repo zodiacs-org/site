@@ -21,7 +21,6 @@ import type { Chart } from '../lib/engine/types';
 import type { PreparedChartCard } from '../lib/share-card';
 import { formatSharingCopy, type SharingCopy, type SharingKey } from '../lib/sharing/copy-en';
 import { localizePath, t, type CatalogLocale } from '../lib/i18n';
-import { motion, motionScan } from '../lib/motion';
 
 /**
  * Three fields, one answer: Sun, Moon, and Rising from the same client-side
@@ -95,9 +94,11 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   const cardSource = useRef<{ chart: Chart; run: number } | null>(null);
 
   // The cards rise and their sign discs grow in once, as the result first
-  // appears (docs/MOTION.md).
+  // appears (docs/MOTION.md). This is motionScan from src/lib/motion.ts,
+  // inlined: importing it adds a shared chunk, and /big-three/ sits right
+  // under its first-load budget.
   useEffect(() => {
-    if (placements) motionScan(resultRef.current ?? undefined);
+    if (placements) (window as { zodiacsMotion?: { scan(root?: ParentNode): void } }).zodiacsMotion?.scan(resultRef.current ?? undefined);
   }, [placements]);
 
   useEffect(() => {
@@ -424,11 +425,11 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
             {placements.map(({ kind, title, lon }) => {
               const sign = signForLongitude(lon);
               return (
-                <div class="three-card shell tinted" style={`--sign:${sign.hue}`} key={kind} {...motion('rise')}>
+                <div class="three-card shell tinted" style={`--sign:${sign.hue}`} key={kind} data-enter="rise">
                   <div class="core tinted three-card__core">
                     <span class="mono--label">{title}</span>
                     <span class="three-card__sign">
-                      <picture class="three-card__icon" {...motion('disc')}>
+                      <picture class="three-card__icon" data-enter="disc">
                         <img src={`/assets/zodiac-icons/128/${sign.slug}.webp`} width="44" height="44" alt="" decoding="async" />
                       </picture>
                       {signName(sign, locale)}
