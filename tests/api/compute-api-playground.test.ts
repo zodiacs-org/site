@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { COMPUTE_ENDPOINTS, MAX_BODY_BYTES } from '../../src/lib/compute-api/constants';
 import { REFUSAL_EXAMPLES, SUCCESS_EXAMPLES } from '../../src/lib/compute-api/examples';
 import { createComputeApiHandler } from '../../src/lib/compute-api/handler';
@@ -13,6 +13,13 @@ import { createHash as playgroundHash, sha256 } from '../../src/lib/compute-api/
 import { receiptDigest } from '../../src/lib/receipt-digest';
 import { BUNDLE_PATH, buildPlaygroundEngineBundle } from '../../scripts/build-playground-engine.mjs';
 import { run } from '../../scripts/lib/compute-api-harness';
+
+// These parity checks compare the browser bundle with its source using its browser ephemeris.
+vi.mock('@zodiacs/engine', async (importOriginal) => {
+  const engine = await importOriginal<typeof import('@zodiacs/engine')>();
+  engine.setDefaultEphemeris('astronomy-engine');
+  return engine;
+});
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const handler = createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'allowed' });
@@ -35,7 +42,7 @@ function bodies(): Array<[string, string, string]> {
 }
 
 describe('the playground\'s browser run', () => {
-  it('answers every documented example, and every refusal a body provokes, as the handler does', async () => {
+  it('answers every documented example, and every refusal a body provokes, as the handler does with the same ephemeris', async () => {
     const cases = bodies();
     expect(new Set(cases.map(([, endpoint]) => endpoint))).toEqual(new Set(COMPUTE_ENDPOINTS));
     expect(cases.filter(([name]) => name.startsWith('refusal')).map(([name]) => name).sort()).toEqual([

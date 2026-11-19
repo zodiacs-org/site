@@ -3,6 +3,7 @@ import { createRequire, syncBuiltinESMExports } from 'node:module';
 import { tmpdir } from 'node:os';
 import { inspect } from 'node:util';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import ts from 'typescript';
 import { natalChart, positions } from '@zodiacs/engine';
 import {
   BUDGETS,
@@ -504,6 +505,7 @@ describe('the site and the compute API', () => {
       // Server-only AI adapters reuse pure compute operations. They do not
       // send browser calculations to the hosted compute API.
       'src/ai-tools/contracts.ts', 'src/ai-tools/http.ts', 'src/ai-tools/local.ts', 'src/ai-tools/tools.ts',
+      'src/ai-tools/de440-contract.ts',
       'src/ai-tools/http.test.ts', 'src/ai-tools/tools.test.ts',
       // It holds the tools' schemas to the compute API's documented ones and calls the tools across its span.
       'src/ai-tools/schema-types.test.ts',
@@ -557,6 +559,20 @@ describe('the site and the compute API', () => {
     const ADAPTER_IMPORTERS = new Set(['src/ai-tools/local.ts']);
     const PATHS = /\/api\/(?:v1\/(?:chart|positions|houses|events|time|sky-fact|elections)\b|compute\b)/u;
     const IMPORT = importOf('compute-api(?:\\/|[\'"\`])');
+    const WORKER = 'src/ai-tools/watch/worker.ts';
+    const workerImportsCompute = (text: string) => {
+      const source = ts.createSourceFile(WORKER, text, ts.ScriptTarget.Latest, false);
+      let withoutTypeImports = text;
+      for (const statement of [...source.statements].reverse()) {
+        if (ts.isImportDeclaration(statement) && statement.importClause?.isTypeOnly) {
+          withoutTypeImports = withoutTypeImports.slice(0, statement.getStart(source)) + '\n' + withoutTypeImports.slice(statement.end);
+        }
+      }
+      return IMPORT.test(withoutTypeImports);
+    };
+    expect(workerImportsCompute("import type { computeEvents } from '../../lib/compute-api/endpoints';")).toBe(false);
+    expect(workerImportsCompute("import { computeEvents } from '../../lib/compute-api/endpoints';")).toBe(true);
+    expect(workerImportsCompute("import('../../lib/compute-api/endpoints');")).toBe(true);
     const files: string[] = [];
     const walk = (directory: string) => {
       for (const entry of readdirSync(new URL(directory, root), { withFileTypes: true })) {
@@ -574,7 +590,8 @@ describe('the site and the compute API', () => {
     const callers = files.filter((path) => {
       if (path.startsWith(ADAPTER) || PLAYGROUND.has(path) || DEMO.has(path)) return false;
       const text = readFileSync(new URL(path, root), 'utf8');
-      return (PATHS.test(text) && !DOCUMENTS.has(path)) || (IMPORT.test(text) && !IMPORTERS.has(path));
+      const importsCompute = path === WORKER ? workerImportsCompute(text) : IMPORT.test(text);
+      return (PATHS.test(text) && !DOCUMENTS.has(path)) || (importsCompute && !IMPORTERS.has(path));
     });
     expect(callers).toEqual([]);
     const browserAdapters = files.filter(path => /^src\/(?:pages|islands|components)\//u.test(path))

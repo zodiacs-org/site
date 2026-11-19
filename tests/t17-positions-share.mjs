@@ -4,6 +4,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import sharp from 'sharp';
+import { setDefaultEphemeris } from '@zodiacs/engine';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { trackHydrationDiagnostics } from './t17-hydration-diagnostics.mjs';
@@ -24,6 +25,8 @@ const ENGINE_PACKAGE = JSON.parse(await readFile(
   'utf8',
 ));
 const ENGINE_VERSION = String(ENGINE_PACKAGE.version);
+// Use the browser chart bundle's position source for the Node comparison.
+setDefaultEphemeris('astronomy-engine');
 // The owner-approved primary navigation remains on every page. Collection
 // promotion elsewhere still must not appear in private chart readings.
 const SHARE_WING_LINKS = 'a[href="/astrofolio/"]:not([data-nav] a, [data-mobile-menu] a), a[href^="/registry/"], a[href^="/sdk/"]';

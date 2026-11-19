@@ -501,6 +501,14 @@
       "destination": "/api/compatibility?__zodiacs_ai=1"
     },
     {
+      "source": "/mcp/de440",
+      "destination": "/api/compatibility?__zodiacs_ai=de440"
+    },
+    {
+      "source": "/mcp/de440/",
+      "destination": "/api/compatibility?__zodiacs_ai=de440"
+    },
+    {
       "source": "/mcp/health",
       "destination": "/api/compatibility?__zodiacs_ai=health"
     },

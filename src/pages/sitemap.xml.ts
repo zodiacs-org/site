@@ -20,6 +20,7 @@ import {
   BIRTHDAY_CUSP_OG_MODIFIED_AT,
   BIRTHDAY_FAMOUS_LINE_MODIFIED_AT,
   PEOPLE_TEMPLATE_MODIFIED_AT,
+  de440UpdatedDate,
   lastmodDate,
   latestModifiedAt,
   terminalResearchLastmod,
@@ -1114,6 +1115,10 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   // fixed categories.
   for (const url of urls) {
     if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
+  }
+  for (const url of [...urls, ...localizedUrls]) {
+    const engineUpdated = de440UpdatedDate(url.loc);
+    if (engineUpdated) url.lastmod = laterDate(url.lastmod, engineUpdated);
   }
   return [
     ...urls,

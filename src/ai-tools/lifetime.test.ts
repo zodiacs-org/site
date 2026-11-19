@@ -10,10 +10,11 @@ function once(source: string, marker: string, replacement: string) {
   return source.replace(marker, replacement);
 }
 
-for (const [name, path, local] of [
-  ['HTTP', 'api/_ai/runtime.mjs', false],
-  ['stdio', 'plugins/zodiacs-developer/mcp/server.mjs', true],
-  ['Sky Watch', 'integrations/generated/sky-watch.mjs', false],
+for (const [name, path, local, de440] of [
+  ['HTTP', 'api/_ai/runtime.mjs', false, true],
+  ['published HTTP', 'api/_ai/published/runtime.mjs', false, false],
+  ['stdio', 'plugins/zodiacs-developer/mcp/server.mjs', true, false],
+  ['Sky Watch', 'integrations/generated/sky-watch.mjs', false, true],
 ] as const) it(`clears actual ${name} bundle state after success and failure`, async () => {
   // A disposable fixture keeps ordinary imports beside the real node_modules.
   // Only the local transport startup is omitted; calculation and cleanup are
@@ -29,21 +30,38 @@ for (const [name, path, local] of [
     }
     source = once(source, 'return localTimeModule;', 'auditResolvers.push(localTimeModule); return localTimeModule;');
     source = once(source, 'dispose() {', 'auditState() { return [offsetFormatters.size, histories.size, loads.size]; }, dispose() {');
-    source = once(source, '  return last;\n}', '  if (auditFail) throw new Error("synthetic engine failure");\n  return last;\n}');
-    source += `\nconst auditResolvers = []; let auditFail = false;
-export function auditState() { return [last ?? null, pluto_cache.length, CalcMoonCount]; }
+    if (de440) {
+      source = once(source, '    b.cachedRecord = record2;', '    b.cachedRecord = record2;\n    if (auditFail) throw new Error("synthetic engine failure");');
+      source = once(source, '  clearDe440State = () => {', '  auditReducer = reducer;\n  clearDe440State = () => {');
+    } else {
+      source = once(source, '  return last;\n}', '  if (auditFail) throw new Error("synthetic engine failure");\n  return last;\n}');
+    }
+    const stateReader = de440 ? `var auditReducer;
+export function auditState() {
+  const records = [...(auditReducer?.backend.bodies.values() ?? [])];
+  const vectors = auditReducer ? [auditReducer.a, auditReducer.b, auditReducer.c, auditReducer.emb, auditReducer.moon, auditReducer.earth,
+    auditReducer.backend.scratch, auditReducer.backend.scratch2] : [];
+  return [last ?? null, pluto_cache.length, CalcMoonCount, records.some(body => body.cachedRecord >= 0),
+    records.some(body => body.coefficients.some(value => value !== 0)), vectors.some(vector => vector.some(value => value !== 0))];
+}` : 'export function auditState() { return [last ?? null, pluto_cache.length, CalcMoonCount]; }';
+    source += `\nconst auditResolvers = []; var auditFail = false;
+${stateReader}
 export function auditSetFailure(value) { auditFail = value; }
 export { executeAiTool, executeAiToolWithoutLifetimeBoundary, auditResolvers${local ? ', respond, calculateNatalChart' : ''} };\n`;
+    const cleanState = de440 ? '[null, 0, 0, false, false, false]' : '[null, 0, 0]';
+    const positiveControl = de440
+      ? 'assert.deepEqual(bundle.auditState(), [null, 0, 0, true, true, true]);'
+      : 'assert.notEqual(bundle.auditState()[0], null); assert.ok(bundle.auditState()[1] > 0); assert.ok(bundle.auditState()[2] > 0);';
     await writeFile(join(directory, 'bundle.mjs'), source);
     await writeFile(join(directory, 'run.mjs'), `
 import assert from 'node:assert/strict';
 import * as bundle from './bundle.mjs';
 const args = { instant: '2082-03-14T05:29:17Z', zone: 'Asia/Bangkok' };
-const empty = () => { assert.deepEqual(bundle.auditState(), [null, 0, 0]); for (const resolver of bundle.auditResolvers) assert.deepEqual(resolver.auditState(), [0, 0, 0]); };
+const empty = () => { assert.deepEqual(bundle.auditState(), ${cleanState}); for (const resolver of bundle.auditResolvers) assert.deepEqual(resolver.auditState(), [0, 0, 0]); };
 // Positive control proves that the reader observes the real retained canary.
 const prior = await bundle.executeAiToolWithoutLifetimeBoundary('get_sky', args, {});
-assert.equal(prior.ok, true); assert.notEqual(bundle.auditState()[0], null);
-assert.ok(bundle.auditState()[1] > 0); assert.ok(bundle.auditState()[2] > 0);
+assert.equal(prior.ok, true);
+${positiveControl}
 assert.deepEqual(await bundle.executeAiTool('get_sky', args, {}), prior); empty();
 const concurrent = await Promise.all(['Asia/Bangkok', 'Europe/Paris', 'America/New_York'].map(zone => bundle.executeAiTool('get_sky', { ...args, zone }, {})));
 assert.ok(concurrent.every(result => result.ok)); empty();

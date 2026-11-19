@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { MakeTime, NextGlobalSolarEclipse, NextLunarEclipse, SearchGlobalSolarEclipse, SearchLunarEclipse } from 'astronomy-engine';
 import { calc } from '@zodiacs/engine/calc';
+import { bodyLongitude } from '@zodiacs/engine/internal';
 import { executeAiTool } from '../src/ai-tools/tools';
 import { timeBasis } from '@zodiacs/engine/time';
 import { SIGNS } from '../src/lib/signs';
@@ -26,9 +27,9 @@ import type { NatalChartDataWithNodes } from '../src/ai-tools/features/natal-cha
  *   hours, and the Sun and Moon for 2028-12-15 to 2029-01-21, past the engine's IERS table, were fetched with
  *   that pipeline's client into docs/engine-validation/sky-events-references/horizons/ (MANIFEST.json records each
  *   query, its retrieval time and SHA-256). Instants are roots of a nine-point Lagrange interpolant, as the
- *   pipeline's tools/series.py takes them. Gates: 30 seconds for a lunation; for a sign change, Horizons'
- *   longitude at the tool's instant within the engine's own measured bound against Horizons for that body, which
- *   its calc API states (Sun 3, Jupiter 13, Saturn 18, Uranus 20 arcseconds), of the sign's edge.
+ *   pipeline's tools/series.py takes them. Gate: 30 seconds for a lunation. The original external sign change ceilings
+ *   remain in arcseconds. The DE440 check also measures how closely the
+ *   returned time puts the body on its sign edge in the installed engine.
  * - Stations and the slow planets' sign changes: the pipeline's Horizons responses for Mercury (2026), Jupiter,
  *   Uranus, Neptune and Pluto (2019 to 2020) and Saturn (2016 to 2082), and its two Horizons-derived stations in
  *   src/lib/engine/fixtures/independent-eight-cases.json. Gate: 5 minutes for Mercury and 20 for Jupiter
@@ -215,8 +216,10 @@ describe('new and full Moons and the Sun\'s sign changes against JPL Horizons', 
     expect(checked).toBe(9);
   }, 60_000);
 
-  it('puts the Sun on the sign\'s edge, within the engine\'s 3 arcseconds of Horizons, at each sign change it lists', async () => {
-    expect(bound('Sun')).toBe(3);
+  it('puts the Sun on the DE440 sign edge and within the original Horizons ceiling at each sign change it lists', async () => {
+    // followup-numerics.json records the release bound and the unchanged reference ceiling.
+    const referenceCeiling = 3;
+    expect(bound('Sun')).toBe(0.004);
     let checked = 0;
     for (const [, sunPath] of PAIRS) {
       const sun = horizons(sunPath);
@@ -224,7 +227,9 @@ describe('new and full Moons and the Sun\'s sign changes against JPL Horizons', 
         const events = await search({ kinds: ['ingress'], planets: ['Sun'], from: dayOf(change.jd, -2), to: dayOf(change.jd, 2) });
         const event = events.find((candidate) => candidate.sign === change.sign);
         expect(event, `Sun into ${change.sign}`).toBeDefined();
-        expect(Math.abs(at(sun, jdTT(event!.at.utc)) - change.edge) * 3600, `Sun into ${change.sign}`).toBeLessThanOrEqual(bound('Sun'));
+        expect(Math.abs(at(sun, jdTT(event!.at.utc)) - change.edge) * 3600, `Sun into ${change.sign}`).toBeLessThanOrEqual(referenceCeiling);
+        expect(Math.abs(wrap(bodyLongitude('Sun', new Date(event!.at.utc)) - change.edge)) * 3600, event!.at.utc)
+          .toBeLessThanOrEqual(bound('Sun'));
         checked += 1;
       }
     }
@@ -268,8 +273,10 @@ describe('stations and the slow planets\' sign changes against JPL Horizons', ()
     }
   });
 
-  it('puts each planet on the sign\'s edge, within the engine\'s own bound against Horizons, at the sign changes in the ingress table', async () => {
-    expect([bound('Jupiter'), bound('Saturn'), bound('Uranus')]).toEqual([13, 18, 20]);
+  it('puts each planet on the DE440 sign edge and within the original Horizons ceilings for the ingress table', async () => {
+    const planets = ['Jupiter', 'Saturn', 'Uranus'] as const;
+    const referenceCeilings = { Jupiter: 13, Saturn: 18, Uranus: 20 };
+    expect(planets.map(bound)).toEqual([0.004, 0.0039, 0.004]);
     // Jupiter into Capricorn and Aquarius, Saturn into Aries and Taurus, Uranus into Taurus.
     const expected = [['Jupiter', 'jupiter-2019-2020.txt', 2], ['Saturn', 'saturn-2016-2082.txt', 2], ['Uranus', 'uranus-2019-2020.txt', 1]] as const;
     for (const [planet, file, count] of expected) {
@@ -281,7 +288,9 @@ describe('stations and the slow planets\' sign changes against JPL Horizons', ()
         const events = await search({ kinds: ['ingress'], planets: [planet], from: dayOf(change.jd, -3), to: dayOf(change.jd, 3) });
         const event = events.find((candidate) => candidate.sign === change.sign);
         expect(event, `${planet} into ${change.sign}`).toBeDefined();
-        expect(Math.abs(at(table, jdTT(event!.at.utc)) - change.edge) * 3600, `${planet} into ${change.sign}`).toBeLessThanOrEqual(bound(planet));
+        expect(Math.abs(at(table, jdTT(event!.at.utc)) - change.edge) * 3600, `${planet} into ${change.sign}`).toBeLessThanOrEqual(referenceCeilings[planet]);
+        expect(Math.abs(wrap(bodyLongitude(planet, new Date(event!.at.utc)) - change.edge)) * 3600, event!.at.utc)
+          .toBeLessThanOrEqual(bound(planet));
       }
     }
   }, 60_000);
