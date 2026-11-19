@@ -15,6 +15,8 @@
  *   PRIVACY_LEAK_ALLOW_HOSTS   comma-separated hosts other than the site's own that the
  *                         pages may address (default: plausible.io, the analytics
  *                         processor the privacy page names). Any other host fails the run.
+ *   PRIVACY_LEAK_ALLOW_QUERY   query parameter names a file request may carry after typing
+ *                         begins (default: v, surface, dpl; values are still scanned).
  *   PRIVACY_LEAK_THIRD_PARTY   "block" (default): a request to another host is recorded,
  *                         scanned and then dropped, so the run itself sends nothing to a
  *                         third party. "allow-get": its GET requests go through (an
@@ -67,6 +69,7 @@ const BYPASS = (process.env.VERCEL_BYPASS ?? '').trim();
 const REPORT_PATH = process.env.PRIVACY_LEAK_REPORT ?? join(tmpdir(), 'privacy-leak-report.json');
 const ALLOWED_HOSTS = (process.env.PRIVACY_LEAK_ALLOW_HOSTS ?? 'plausible.io').split(',').map((host) => host.trim().toLowerCase()).filter(Boolean);
 const THIRD_PARTY = process.env.PRIVACY_LEAK_THIRD_PARTY === 'allow-get' ? 'allow-get' : 'block';
+const QUERY_NAMES = (process.env.PRIVACY_LEAK_ALLOW_QUERY ?? 'v,surface,dpl').split(',').map((name) => name.trim()).filter(Boolean);
 
 interface Person {
   label: string;
@@ -498,8 +501,10 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     const afterTyping = requests.filter((entry) => !entry.serviceWorker && (entry.phase === 'form' || entry.phase === 'submit'));
     expect(afterTyping.filter((entry) => entry.method !== 'GET' || entry.body).map((entry) => `${entry.method} ${entry.url}`), `${flow.name}: writes after typing`).toEqual([]);
     for (const entry of afterTyping) {
-      const { search, pathname } = new URL(entry.url);
-      expect(search === '' || /^\?(?:v|surface)=[a-z0-9-]+$/u.test(search), `${flow.name}: query string on ${pathname}${search}`).toBe(true);
+      const { searchParams, pathname, search } = new URL(entry.url);
+      // A file's version, the surface a picture is drawn on, a deployment's id: the same for every visitor.
+      const fixed = [...searchParams].every(([name, value]) => QUERY_NAMES.includes(name) && /^[\w.-]{1,80}$/u.test(value));
+      expect(fixed, `${flow.name}: query string on ${pathname}${search}`).toBe(true);
     }
     expect(flow.recorder.entries.filter((entry) => /WEBSOCKET|FRAME|eventsource|websocket/u.test(entry.method)), `${flow.name}: sockets`).toEqual([]);
     // The page's own address holds no birth data, in the path, the query or the fragment.
