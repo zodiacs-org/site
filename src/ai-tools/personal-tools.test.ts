@@ -123,7 +123,7 @@ describe('the personal tools switch on', () => {
       const listed = tools.find((entry) => entry.name === tool.name)!;
       expect(listed).toMatchObject({ title: tool.title, description: tool.description, annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: !tool.clockDependent } });
       expect(listed._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
-      expect(`${tool.title} ${tool.description} ${tool.summary} ${JSON.stringify(listed.inputSchema)}`).not.toMatch(/[–—]|crypto|token|blockchain|market|invest|stock/iu);
+      expect(`${tool.title} ${tool.description} ${tool.summary} ${JSON.stringify(listed.inputSchema)}`).not.toMatch(/[\u2013\u2014]|crypto|token|blockchain|market|invest|stock/iu);
     }
   });
 
@@ -146,7 +146,7 @@ describe('the personal tools switch on', () => {
       const validate = ajv.compile(tools.find((entry) => entry.name === tool.name)!.outputSchema);
       expect(validate(result.structuredContent), JSON.stringify(validate.errors)).toBe(true);
       expect(JSON.parse(result.content[0].text)).toEqual(result.structuredContent);
-      expect(result.content[0].text).not.toMatch(/[–—]/u);
+      expect(result.content[0].text).not.toMatch(/[\u2013\u2014]/u);
       // Money, career, wellbeing and legal themes are read as tradition reads them; price calls, buy or sell signals,
       // diagnoses or medical timing, death predictions and won or lost cases never appear.
       expect(forbiddenClaim(result.content[0].text), tool.name).toBeNull();
