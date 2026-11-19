@@ -10,7 +10,7 @@ const full = (at: string) => {
 describe('supermoon rule (within 10% of the perigee to apogee range)', () => {
   it('marks the 24 November 2026 full Moon at 360,764 km', () => {
     const row = full('2026-11-24');
-    expect(row.at.slice(0, 19)).toBe('2026-11-24T14:53:35');
+    expect(row.at.slice(0, 19)).toBe('2026-11-24T14:53:33');
     expect(row.distanceKm).toBe(360764);
     const result = supermoon(row);
     expect(result).toEqual({

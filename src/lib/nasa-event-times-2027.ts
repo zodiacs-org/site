@@ -24,6 +24,7 @@
  * Build-side module: pages and libraries import it; islands must not.
  */
 import table from '../data/nasa-event-times-2027.json';
+import { archivedEventKey } from './published-event-time';
 
 interface LunationRow { type: 'full' | 'new'; engine: string; nasa: string }
 interface EclipseRow { type: 'solar' | 'lunar'; engine: string; nasa: string }
@@ -60,7 +61,7 @@ function match<R extends { engine: string; nasa: string }>(rows: readonly R[], a
 
 /** NASA's instant for the full Moon the data files date at `at`. */
 export function nasaLunationAt(type: string, at: string): string | undefined {
-  return match(NASA_EVENT_TIMES_2027.lunations.filter((row) => row.type === type), at);
+  return match(NASA_EVENT_TIMES_2027.lunations.filter((row) => row.type === type), archivedEventKey(at, 'lunation', type));
 }
 
 /** NASA's instant of greatest eclipse for the eclipse the data files peak at `at`. */
@@ -70,5 +71,5 @@ export function nasaEclipseAt(type: string, at: string): string | undefined {
 
 /** NASA's instant for the edge of a retrograde's shadow the data files date at `at`. */
 export function nasaShadowAt(body: string, edge: 'pre' | 'post', at: string): string | undefined {
-  return match(NASA_EVENT_TIMES_2027.shadows.filter((row) => row.body === body && row.edge === edge), at);
+  return match(NASA_EVENT_TIMES_2027.shadows.filter((row) => row.body === body && row.edge === edge), archivedEventKey(at, 'shadow', body, edge));
 }

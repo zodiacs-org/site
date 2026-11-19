@@ -42,28 +42,26 @@ describe('Almanac launch corpus', () => {
     const augustEclipses = eclipseData.eclipses.filter(({ peak }) => peak.startsWith('2026-08'));
     expect(august.month).toBe('2026-08');
     expect(august.stations).toEqual([]);
-    // rc.16 uses full IAU 2000B nutation: longitude origins move, so
-    // ingresses shift (at most 3.314 s here); common rotations cancel in
-    // lunation/aspect separations. All cited minute/degree labels stay fixed.
+    // These values come from the DE440 monthly transit catalog.
     expect(august.ingresses).toEqual([
-      { planet: 'Venus', at: '2026-08-06T19:13:57.026Z', sign: 'libra', retrograde: false },
-      { planet: 'Mercury', at: '2026-08-09T16:28:16.438Z', sign: 'leo', retrograde: false },
-      { planet: 'Mars', at: '2026-08-11T08:31:05.298Z', sign: 'cancer', retrograde: false },
-      { planet: 'Sun', at: '2026-08-23T02:19:09.547Z', sign: 'virgo', retrograde: false },
-      { planet: 'Mercury', at: '2026-08-25T11:04:25.565Z', sign: 'virgo', retrograde: false },
+      { planet: 'Venus', at: '2026-08-06T19:12:45.574Z', sign: 'libra', retrograde: false },
+      { planet: 'Mercury', at: '2026-08-09T16:28:22.220Z', sign: 'leo', retrograde: false },
+      { planet: 'Mars', at: '2026-08-11T08:30:30.557Z', sign: 'cancer', retrograde: false },
+      { planet: 'Sun', at: '2026-08-23T02:18:48.432Z', sign: 'virgo', retrograde: false },
+      { planet: 'Mercury', at: '2026-08-25T11:04:13.344Z', sign: 'virgo', retrograde: false },
     ]);
     expect(august.lunations).toEqual([
       {
         type: 'new',
-        at: '2026-08-12T17:36:41.548Z',
+        at: '2026-08-12T17:36:45.010Z',
         sign: 'leo',
-        degree: expect.closeTo(20.032494608022944, 10),
+        degree: expect.closeTo(20.0329202082886, 10),
       },
       {
         type: 'full',
-        at: '2026-08-28T04:18:31.156Z',
+        at: '2026-08-28T04:18:32.062Z',
         sign: 'pisces',
-        degree: expect.closeTo(4.901644193547327, 10),
+        degree: expect.closeTo(4.901965377684064, 10),
       },
     ]);
     expect(augustEclipses).toEqual([
@@ -81,23 +79,23 @@ describe('Almanac launch corpus', () => {
       b: 'Saturn',
       type: 'trine',
       orb: 0,
-      at: '2026-08-31T22:05:22.447Z',
+      at: '2026-08-31T22:17:14.773Z',
       aSign: 'leo',
-      aDegree: expect.closeTo(13.682380777464289, 10),
+      aDegree: expect.closeTo(13.684682368515666, 10),
       bSign: 'aries',
-      bDegree: expect.closeTo(13.68238059741185, 10),
+      bDegree: expect.closeTo(13.684682338330276, 10),
     });
     for (const receipt of [
-      'new moon is exact on August 12 at 17:36:41 UTC, at 20° Leo',
+      'new moon is exact on August 12 at 17:36:45 UTC, at 20° Leo',
       'total solar eclipse reaches its global peak at 17:45:53 UTC',
       'partial lunar eclipse peaks on August 28 at 04:12:55 UTC, obscuring 96.6%',
-      'full moon itself is exact at 04:18:31 UTC, at 4.9° Pisces',
-      'crosses 0°00′ Libra on August 6 at 19:13 UTC',
+      'full moon itself is exact at 04:18:32 UTC, at 4.9° Pisces',
+      'crosses 0°00′ Libra on August 6 at 19:12 UTC',
       'crosses 0°00′ Leo on August 9 at 16:28 UTC',
-      'crosses 0°00′ Cancer on August 11 at 08:31 UTC',
-      'crosses 0°00′ Virgo on August 23 at 02:19 UTC',
+      'crosses 0°00′ Cancer on August 11 at 08:30 UTC',
+      'crosses 0°00′ Virgo on August 23 at 02:18 UTC',
       'crosses 0°00′ Virgo on August 25 at 11:04 UTC',
-      'August 31 at 22:05 UTC. Both planets are at 13.7°',
+      'August 31 at 22:17 UTC. Both planets are at 13.7°',
     ]) expect(article).toContain(receipt);
   });
 
