@@ -1,0 +1,123 @@
+{
+  "source": "afa0d3b01b3db90a186f049f3959817eda1e5c33",
+  "windows": [
+    {
+      "from": "2026-10-10T00:00:00.000Z",
+      "to": "2026-10-11T00:00:00.000Z",
+      "events": [
+        {
+          "eventId": "evt_7f7b371044b13376bd21158afdf7a127fff7fad6c7aaffba1130d9787d75f9ab",
+          "name": "zodiacs.sky.lunation",
+          "timestamp": "2026-10-10T15:50:02.099Z",
+          "data": {
+            "event": {
+              "kind": "lunation",
+              "at": "2026-10-10T15:50:02.099Z",
+              "sign": "libra",
+              "type": "new",
+              "lon": 197.36011327273553,
+              "degree": 17.36011327273559
+            }
+          }
+        }
+      ]
+    },
+    {
+      "from": "2026-11-01T00:00:00.000Z",
+      "to": "2026-11-03T00:00:00.000Z",
+      "events": [
+        {
+          "eventId": "evt_0e103ebec2d986cfbac2a53c756a8ada213d75572df5cb6c1e330f9cc61d196c",
+          "name": "zodiacs.sky.ingress",
+          "timestamp": "2026-11-01T04:18:12.545Z",
+          "data": {
+            "event": {
+              "kind": "ingress",
+              "at": "2026-11-01T04:18:12.545Z",
+              "body": "Moon",
+              "sign": "leo",
+              "retrograde": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "from": "2027-01-01T00:00:00.000Z",
+      "to": "2027-01-08T00:00:00.000Z",
+      "events": [
+        {
+          "eventId": "evt_3323029a012f65209fdcad0ed67ba4517f3819e925d41d035112b6462c3279e1",
+          "name": "zodiacs.sky.ingress",
+          "timestamp": "2027-01-01T10:15:55.122Z",
+          "data": {
+            "event": {
+              "kind": "ingress",
+              "at": "2027-01-01T10:15:55.122Z",
+              "body": "Moon",
+              "sign": "scorpio",
+              "retrograde": false
+            }
+          }
+        },
+        {
+          "eventId": "evt_44949bd6e6863346c0a37a78b7d987688e9974d60622d5fa8eef70ba5a2c255e",
+          "name": "zodiacs.sky.ingress",
+          "timestamp": "2027-01-03T20:56:58.993Z",
+          "data": {
+            "event": {
+              "kind": "ingress",
+              "at": "2027-01-03T20:56:58.993Z",
+              "body": "Moon",
+              "sign": "sagittarius",
+              "retrograde": false
+            }
+          }
+        },
+        {
+          "eventId": "evt_f1e09269720e5e91c0c7de9bc9f0937aa4aea00bf91ffb9d6ba0080a34de9040",
+          "name": "zodiacs.sky.ingress",
+          "timestamp": "2027-01-06T09:17:14.072Z",
+          "data": {
+            "event": {
+              "kind": "ingress",
+              "at": "2027-01-06T09:17:14.072Z",
+              "body": "Moon",
+              "sign": "capricorn",
+              "retrograde": false
+            }
+          }
+        },
+        {
+          "eventId": "evt_4d1fa1553133911da0a8d9743bd755625460e118ffc87d385532f1866c6bd5d0",
+          "name": "zodiacs.sky.ingress",
+          "timestamp": "2027-01-07T08:53:40.745Z",
+          "data": {
+            "event": {
+              "kind": "ingress",
+              "at": "2027-01-07T08:53:40.745Z",
+              "body": "Venus",
+              "sign": "sagittarius",
+              "retrograde": false
+            }
+          }
+        },
+        {
+          "eventId": "evt_256d3f375c1ece5e187d464c7a16b8e00804036365182d4a6483e1e2d91f43c4",
+          "name": "zodiacs.sky.lunation",
+          "timestamp": "2027-01-07T20:24:26.070Z",
+          "data": {
+            "event": {
+              "kind": "lunation",
+              "at": "2027-01-07T20:24:26.070Z",
+              "sign": "capricorn",
+              "type": "new",
+              "lon": 287.30431197617645,
+              "degree": 17.30431197617645
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
