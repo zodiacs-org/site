@@ -4,12 +4,18 @@
 # The protection rule on main requires changes to arrive through a pull
 # request, so a workflow's direct push dies with GH006. This satisfies the
 # rule literally instead of bypassing it: push HEAD to a short-lived publish
-# branch, open a pull request with the workflow token, squash-merge it once
-# GitHub reports it mergeable, and delete the branch. No bypass actor, no
-# extra secret. It fails closed — leaving the pull request open for a
-# person — when the token may not open pull requests (a repository Actions
-# setting) or when the rule also demands approvals or status checks that a
-# workflow cannot supply for its own pull request.
+# branch, open a pull request, run the required checks, squash-merge it once
+# they pass, and delete the branch. No bypass actor. It fails closed — leaving
+# the pull request open for a person — when the token may not open pull
+# requests (a repository Actions setting) or when a required check fails or
+# cannot run.
+#
+# GH_TOKEN is the workflow token, or the owner's SITE_PUBLISH_TOKEN Actions
+# secret when one is saved. GitHub holds the pull_request checks of a pull
+# request the workflow token opens for a person to approve, so only the
+# owner's token lets a publication land unattended (#1128, 2026-11-19). That
+# token is a fine-grained token for this repository with Contents, Pull
+# requests and Actions read and write, and Checks and Metadata read.
 #
 # Usage: publish-through-pr.sh <base-branch> <verified-base-sha> <title> [body]
 # Prints the merged base-branch SHA as its last line of stdout.
@@ -20,7 +26,7 @@ verified="${2:?verified base sha}"
 title="${3:?pull request and commit title}"
 body="${4:-Published through a pull request because the protection rule on \`${1}\` requires one. Generated and verified by the ${GITHUB_WORKFLOW:-local} workflow, run ${GITHUB_RUN_ID:-local}.}"
 
-: "${GH_TOKEN:?GH_TOKEN is required (set it to github.token)}"
+: "${GH_TOKEN:?GH_TOKEN is required (secrets.SITE_PUBLISH_TOKEN || github.token)}"
 tmp="${RUNNER_TEMP:-/tmp}"
 
 slug=$(printf '%s' "$title" | tr -c 'A-Za-z0-9' '-' | tr -s '-' | sed 's/^-//; s/-$//' | tr 'A-Z' 'a-z' | cut -c1-48)
@@ -103,15 +109,16 @@ if [ "${#required[@]}" -gt 0 ]; then
     fi
     waiting=()
     failed=()
+    # With the owner's token each required check runs twice on this head:
+    # from the pull request itself and from the dispatch. Wait for every copy
+    # and require every copy to pass, so nothing merges past a failed one.
     for context in "${required[@]}"; do
-      latest=$(jq -c --arg name "$context" '[.[] | select(.name == $name)] | max_by(.id) // empty' <<<"$runs")
-      if [ -z "$latest" ] || [ "$(jq -r .status <<<"$latest")" != "completed" ]; then
+      copies=$(jq -c --arg name "$context" '[.[] | select(.name == $name)]' <<<"$runs")
+      bad=$(jq -r '[.[] | select(.status == "completed" and (.conclusion | IN("success", "skipped", "neutral") | not))] | first // empty | .conclusion + ": " + .html_url' <<<"$copies")
+      if [ -n "$bad" ]; then
+        failed+=("$context ($bad)")
+      elif [ "$(jq 'length' <<<"$copies")" -eq 0 ] || [ "$(jq '[.[] | select(.status != "completed")] | length' <<<"$copies")" -gt 0 ]; then
         waiting+=("$context")
-      else
-        case "$(jq -r .conclusion <<<"$latest")" in
-          success|skipped|neutral) ;;
-          *) failed+=("$context ($(jq -r '.conclusion + ": " + .html_url' <<<"$latest"))") ;;
-        esac
       fi
     done
     if [ "${#failed[@]}" -gt 0 ]; then
@@ -153,16 +160,16 @@ if [ "$state" != "MERGEABLE" ]; then
   exit 1
 fi
 
-if ! gh pr merge "$pr_url" --squash --subject "$title" --body "" 2>"$tmp/publish-pr-merge.err"; then
+if ! gh pr merge "$pr_url" --squash --match-head-commit "$(git rev-parse HEAD)" --subject "$title" --body "" 2>"$tmp/publish-pr-merge.err"; then
   cat "$tmp/publish-pr-merge.err" >&2
   # A pull request opened with the workflow token gets its own pull_request
   # check runs, and GitHub holds them for a person to approve. While they
   # wait, the rule refuses the merge even though the dispatched copies of
   # the same checks passed (2026-11-19, #1128). Say so plainly.
   gated=$(gh api "repos/{owner}/{repo}/actions/runs?head_sha=$(git rev-parse HEAD)&event=pull_request&per_page=50" \
-    --jq '[.workflow_runs[] | select(.conclusion == "action_required") | .name] | join(", ")' 2>/dev/null || true)
+    --jq '[.workflow_runs[] | select(.conclusion == "action_required") | .name] | unique | join(", ")' 2>/dev/null || true)
   if [ -n "$gated" ]; then
-    echo "::error title=The pull request's own checks are waiting for approval::$pr_url stays open for a person. GitHub holds its pull_request checks ($gated) for approval because the workflow token opened it, and refuses the merge while they wait. Save a repository-scoped token as the SITE_PUBLISH_TOKEN Actions secret so publications are opened by the owner, or approve the checks and merge this one by hand." >&2
+    echo "::error title=The pull request's own checks are waiting for approval::$pr_url stays open for a person. GitHub holds its pull_request checks ($gated) for approval because the workflow token opened it, and refuses the merge while they wait. Save a fine-grained token for this repository (Contents, Pull requests and Actions read and write; Checks and Metadata read) as the SITE_PUBLISH_TOKEN Actions secret so publications are opened by the owner, or approve the checks and merge this one by hand." >&2
     exit 1
   fi
   echo "::error title=The workflow token could not merge its pull request::$pr_url stays open for a person to merge. If $base also requires approvals or status checks, a workflow cannot supply them for its own pull request — relax that requirement for the GitHub Actions app or merge by hand." >&2
@@ -177,8 +184,9 @@ if [ "$(git rev-parse "origin/$base^{tree}")" != "$(git rev-parse 'HEAD^{tree}')
 fi
 echo "publish-through-pr: merged $pr_url as $merged"
 
-# A merge made with the workflow token does not trigger push workflows, so
-# Site Check would never run on the merged head and a broken deploy on the
+# A merge made with the workflow token does not trigger push workflows (a
+# merge with the owner's token does, and the two runs share one concurrency
+# group), so Site Check would never run on the merged head and a broken deploy on the
 # base would go unnoticed (the calendar-shaped research tests did exactly
 # that on 2026-09-02). workflow_dispatch is the documented exception, so ask
 # for the run explicitly. The protected-scope guard compares against the

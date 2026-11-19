@@ -132,6 +132,13 @@ describe('daily publication operations', () => {
     // A refused merge whose pull_request checks wait for approval says so.
     expect(publisher).toContain('select(.conclusion == "action_required")');
     expect(publisher).toContain('SITE_PUBLISH_TOKEN');
+    // Every copy of a required check must pass, and the merge is pinned to the head.
+    expect(publisher).toContain('select(.status != "completed")');
+    expect(publisher).toContain('--match-head-commit');
+    // The owner's token reaches only the one publishing step of each workflow.
+    for (const [name, workflow] of Object.entries({ daily, snapshot, transits, seasonClose, weeklyRecap, pulse })) {
+      expect(workflow.split('SITE_PUBLISH_TOKEN').length - 1, name).toBe(1);
+    }
     expect(publisher).toContain('Allow GitHub Actions to create and approve pull requests');
     expect(publisher).not.toContain('--admin');
     expect(publisher).not.toContain('git rebase');
