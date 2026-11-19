@@ -49,6 +49,7 @@ import {
 } from './i18n-hreflang-policy.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
 import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
+import { registryResearchWithheldProblems } from './registry-research-withheld.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
@@ -1530,6 +1531,12 @@ for (const notePath of registryResearchNotePaths) {
     fail(`Terminal Research: noindex note leaked into sitemap discovery — ${notePath}`);
   }
 }
+// While Registry Research is paused, a scheduled note is withheld: no item JSON,
+// no archive index or compact feed entry, no body on its page.
+for (const problem of await registryResearchWithheldProblems(root, {
+  publication: registryResearchPublication,
+  pause: JSON.parse(await readFile(resolve(repo, 'src/data/registry-research/pause.json'), 'utf8')),
+})) fail(`Terminal Research: ${problem}`);
 
 const packetFNoindexCounts = { localizedBirthdays: 0, russianSignGuides: 0, people: 0 };
 for (const file of files) {
