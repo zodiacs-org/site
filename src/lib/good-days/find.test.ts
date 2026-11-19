@@ -7,7 +7,7 @@ import { GOAL_RULES, GOOD_DAYS_NOTE, GOOD_DAY_GOALS, isMedicalGoal } from './goa
 import { moonAspects } from '@zodiacs/engine/techniques';
 import ingressTable from '../../data/aura-moon-ingresses.json';
 import eclipseTable from '../../data/eclipses.json';
-import { GOOD_DAYS_FIRST, GOOD_DAYS_LAST, UNDER_13_SENTENCE, UNDER_18_PARTNERSHIP_SENTENCE, findGoodDays, goodDaysWindow, moonSegmentsFactor, phaseBand, voidPeriods } from './find';
+import { GOOD_DAYS_FIRST, GOOD_DAYS_LAST, GOOD_DAY_VERDICTS, UNDER_13_SENTENCE, UNDER_18_PARTNERSHIP_SENTENCE, findGoodDays, goodDayVerdict, goodDaysWindow, moonSegmentsFactor, phaseBand, voidPeriods } from './find';
 import { scanTransitContacts, type TransitContact } from '../engine/transit-scan';
 import { UNTIMED_DROPPED_MESSAGE, pairUntimedContacts, personalFactors, preparePersonal, type BirthDetails, type PersonalDay } from './personal';
 
@@ -205,6 +205,58 @@ describe('the electional rules', { timeout: TIMEOUT }, () => {
     const station = (result: typeof bali) => result.avoid.filter((day) => day.reason.startsWith('Mercury stands still today')).map((day) => day.date);
     expect(station(newYork)).toEqual(['2027-06-10']);
     expect(station(bali)).toEqual(['2027-06-11']);
+  });
+});
+
+describe('a caution of ten points or more', { timeout: TIMEOUT }, () => {
+  it('keeps a contract day inside Mercury retrograde from reading as good, and says why in its reason', async () => {
+    // Every day from 10 February to 2 March 2027 falls inside Mercury retrograde (-16 for a contract).
+    const result = await findGoodDays({ goal: 'contract', from: '2027-02-10', to: '2027-03-02', zone: 'UTC', today: TODAY }, clock);
+    expect(result.best.length).toBeGreaterThan(0);
+    for (const day of result.best) {
+      expect([GOOD_DAY_VERDICTS.good, GOOD_DAY_VERDICTS.strong], day.date).not.toContain(day.verdict);
+      if (day.score >= 48) expect(day.verdict, day.date).toBe(GOOD_DAY_VERDICTS.mixed);
+      expect(day.reason, day.date).toContain('But ');
+      expect(day.reason, day.date).toMatch(/ But Mercury is retrograde, which tradition reads as delays and second thoughts in plans, messages and paperwork\.$/u);
+      expect(day.reason).not.toContain('\n');
+    }
+    expect(result.messages).toContain('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
+  });
+
+  it('caps the verdict, not the score: a travel day inside Mercury retrograde can score 66 or more and still read as mixed', async () => {
+    // Mercury retrograde is -10 for travel. On 16 February 2027 the rest of the day lifts the score past 66.
+    const result = await findGoodDays({ goal: 'travel', from: '2027-02-10', to: '2027-03-02', zone: 'UTC', today: TODAY }, clock);
+    const day = result.best.find((row) => row.date === '2027-02-16')!;
+    expect(day.score).toBeGreaterThanOrEqual(66);
+    expect(goodDayVerdict(day.score)).toBe(GOOD_DAY_VERDICTS.good);
+    expect(day.verdict).toBe(GOOD_DAY_VERDICTS.mixed);
+    expect(day.reason).toMatch(/\. But Mercury is retrograde, which tradition reads as delays and second thoughts in plans, messages and paperwork\.$/u);
+    // The best day scores 66 or more, but it carries the caution, so the window still has no clearly good day.
+    expect(result.best[0].score).toBeGreaterThanOrEqual(66);
+    expect(result.messages).toContain('No day in this window reads as clearly good for it; these are the best the window offers. A wider window may hold better days.');
+  });
+
+  it('names the heaviest caution when an eclipse is two or three days off, and lowers only a leading article', async () => {
+    // The total solar eclipse of 2 August 2027: 30 July and 5 August are three days off, -10 for a launch, not marked to avoid.
+    const result = await findGoodDays({ goal: 'launch', from: '2027-07-30', to: '2027-08-05', zone: 'Europe/Madrid', count: 7, today: TODAY }, clock);
+    const near = result.best.filter((day) => day.factors.some((line) => /eclipse in Leo is [23] days (?:away|ago)/u.test(line)));
+    expect(near.length).toBeGreaterThan(0);
+    const eclipse = / But a total solar eclipse in Leo is [23] days (?:away|ago): tradition keeps important beginnings clear of the days around it\.$/u;
+    for (const day of near) {
+      expect([GOOD_DAY_VERDICTS.good, GOOD_DAY_VERDICTS.strong], day.date).not.toContain(day.verdict);
+      // The heaviest caution is named: the eclipse (-10), or a Moon void most of the day (-12) where there is one.
+      const voidMost = day.factors.find((line) => line.startsWith('The Moon is void of course for most of the day'));
+      if (voidMost) expect(day.reason, day.date).toContain(` But t${voidMost.slice(1)}`);
+      else expect(day.reason, day.date).toMatch(eclipse);
+    }
+    expect(near.some((day) => eclipse.test(day.reason))).toBe(true);
+  });
+
+  it('leaves a day with no caution that heavy to its score', async () => {
+    const result = await findGoodDays({ goal: 'move', from: '2027-03-01', to: '2027-05-31', zone: 'Europe/London', count: 6, today: TODAY }, clock);
+    const clear = result.best.filter((day) => !day.reason.includes(' But '));
+    expect(clear.length).toBeGreaterThan(0);
+    for (const day of clear) expect(day.verdict, day.date).toBe(goodDayVerdict(day.score));
   });
 });
 

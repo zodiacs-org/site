@@ -55,7 +55,7 @@ export const goodDaysData = z.object({
     /** 0 to 100, astrology's traditional reading of the day for the goal. */
     score: z.number().int().min(0).max(100),
     verdict: z.string(),
-    /** One plain line: the day's strongest reasons. */
+    /** One plain line: the day's strongest reasons, then, after "But", its heaviest caution when one of ten points or more holds it back. */
     reason: z.string(),
     /** Every reason found, strongest first. */
     factors: z.array(z.string()),
