@@ -17,7 +17,6 @@ import { chromium, firefox } from 'playwright-core';
 import { recordHelpers } from './saved-records-browser-lib.mjs';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
-import { withFullLevel } from './level-fixture.mjs';
 
 const OUT = resolve(process.env.OUT_DIR ?? 'tests/visual/artifacts/saved-records-lifecycle');
 /** ENGINE=firefox runs the same journeys in a Playwright-managed Firefox (device mode; the simulated v2 reader needs no Web Locks). */
@@ -105,9 +104,9 @@ async function setV2(page, mode) {
 
 try {
   await mkdir(OUT, { recursive: true });
-  browser = withFullLevel(ENGINE === 'firefox'
+  browser = ENGINE === 'firefox'
     ? await firefox.launch({ headless: true })
-    : await chromium.launch({ executablePath: await findChromium(), headless: true, args: STABLE_CHROMIUM_ARGS }));
+    : await chromium.launch({ executablePath: await findChromium(), headless: true, args: STABLE_CHROMIUM_ARGS });
   await withPreview({ port: 4411 }, async (baseURL) => {
     base = baseURL;
     ({ gotoChart, computeKnownTime, keepState, waitKeepState, keep, downloadBytes, gotoProfile, recordCount, removeRecord } = recordHelpers(base));

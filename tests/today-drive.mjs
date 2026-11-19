@@ -9,7 +9,6 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { quietSunFixture } from './visual/quiet-sun-fixture.mjs';
-import { withFullLevel } from './level-fixture.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const CHROMIUM = await findChromium();
@@ -621,10 +620,10 @@ async function drive(BASE, browser) {
 }
 
 await withPreview({ port: 4398 }, async (BASE) => {
-  const browser = withFullLevel(await chromium.launch({
+  const browser = await chromium.launch({
     executablePath: CHROMIUM,
     args: STABLE_CHROMIUM_ARGS,
-  }));
+  });
   try {
     await drive(BASE, browser);
   } finally {
