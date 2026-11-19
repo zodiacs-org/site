@@ -37,6 +37,8 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * ZOD-64, still 0.6.7, approved by Dias on 2026-11-17, changes the Neptune time quoted in get_upcoming_events'
  * description from 14:31:41 to 14:32 UTC, as the event list now shows it (check_sky_fact still gives 14:31:41 and
  * keeps its sentence). That description is the only published change: nothing else in the thirteen moves.
+ * 0.6.8 changes only the reported version: it ships the invented examples of Developer 0.3.51 (INVENTED_EXAMPLES in
+ * src/ai-tools/published-tools.ts, approved by Dias on 17 November 2026) for the directory resubmission.
  */
 const root = new URL('../../', import.meta.url);
 const PUBLISHED = PUBLISHED_TOOLS;
@@ -223,11 +225,11 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect(other.structuredContent.error.message).toBe('occasion must be one of: wedding, anniversary, met, birthday, pet, home, job, graduation, retirement, gathering.');
   });
 
-  it('reports 0.6.7 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
+  it('reports 0.6.8 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
     const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
-    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.7' });
+    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.8' });
     const capabilities = (await rpc('tools/call', { name: 'get_capabilities', arguments: {} })).result.structuredContent;
-    expect(capabilities.data.version).toBe('0.6.7');
+    expect(capabilities.data.version).toBe('0.6.8');
     expect(capabilities.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(capabilities.data.limitations.join(' ')).toContain('Version 0.6.0 adds tools listed in tools/list');
   });

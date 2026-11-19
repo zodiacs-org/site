@@ -12,10 +12,9 @@ then still. Every page uses the same module, so nobody tunes timings by hand.
 Easing is `cubic-bezier(.23, 1, .32, 1)` throughout. Elements that come into
 view together are staggered by 70ms in document order (capped at four steps).
 
-Never: glows, pulses, bounces, shakes, parallax, infinite loops, or motion on
-text while someone reads it. Paragraphs of reading copy stay still; move the
-discs, figures and rings around them, and on occasional pages the cards,
-tiles and rows that hold them.
+Keep reading copy still. Use discs, figures and rings alongside it, and
+keep words and controls outside decorative marks. Avoid glows, pulses,
+bounces, shakes, parallax and infinite loops.
 
 ## The rule
 
@@ -31,11 +30,9 @@ daily pages never move.
 | Forms, form controls, buttons, `details` / `summary` | None. Present from the first frame |
 | Whole sections and articles | None. Mark the cards and marks inside them instead |
 | Hero pictures and hero headings (LCP) | None |
-| A result the person just asked for (`.calc__result`, `.sr-result`, `.three-card`) | The settled 200 ms arrival in `src/styles/base.css`, nothing added |
+| A result the person just asked for | The 200 ms arrival in `src/styles/base.css`. Big Three keeps its shipped card and disc entrances. |
 | Keyboard-driven actions | None |
 | Daily pages | No entrance motion at all |
-
-A group that comes into view together staggers by at most 4 steps.
 
 Occasional pages, where cards, tiles and rows may rise: the tools hub, sign
 guides, learn pages, sky and event pages, people pages, birthday pages,
@@ -52,14 +49,14 @@ monthly, yearly, love, career and their localized versions).
 3. Is it a card, tile or row (a link card, a list row)? It may `rise`, once, on an occasional page.
 4. Is it a paragraph, a heading, a form or control, a button, a `details` / `summary`, or a whole section? If so, stop.
 5. Is it the page's largest picture or heading (LCP)? If so, stop.
-6. Is it a result the person just asked for, or inside one? If so, stop: it already arrives in 200 ms.
-7. Would the group stagger past 4 steps? The runtime caps it; do not add your own longer delays.
+6. Is it a result the person just asked for, or inside one? Keep the result's existing arrival.
+7. Keep automatic stagger groups to four steps. The runtime caps them.
 8. Is the page's main button still on the first phone screen (390 x 844)?
 9. Run `node tests/motion-evidence.mjs --before <url> --after <url> --check` (once that harness has merged) and paste its summary in the PR.
 
 `src/lib/motion-contract.test.ts` enforces the parts of this that can be read
-from the source: the tags that are never marked, no marks on the daily pages
-and no marks on result blocks.
+from the source, including the allowed CSS properties, the runtime safeguards
+and the checks for marked tags, daily pages and result blocks.
 
 ## Not moving, on purpose
 
@@ -67,12 +64,13 @@ and no marks on result blocks.
 - Today, the horoscope hub and sign horoscope pages: opened daily, a reader comes for a line of text. Nothing on them is marked, not even cards or discs.
 - Paragraphs, headings, question rows' text, "On this page" lists: words people read.
 - Forms, buttons, place autocomplete, tabs, sign pickers, aspect chips, `details` / `summary`: controls people act on, often many times per visit.
-- Result cards on every calculator: they already arrive in 200 ms; a second layer would be two entrances.
-- Sign discs inside result cards: the card already arrives. One entrance per container.
+- Numerology result cards use the result container's 200 ms arrival. The
+  desktop emblem sits beside the hero copy and is capped at 216 px.
 - Whole sections and articles: too large; mark the cards and marks inside them.
 - Learn figures (AspectWheel, HouseWheel, ZodiacRing): already draw in view with CSS only; left as they are.
 - Empty and loading states: calculations finish in under 200 ms.
-- Cross-page view transitions (ZOD-231, not built) must be checked against marked pages, because a page would be snapshotted while its marks are hidden.
+- Check marked pages during cross-page view transitions, which can snapshot a
+  page while its marks are hidden.
 - In a sideways scroller, mark the figure, not its items.
 
 ## Files
@@ -91,39 +89,46 @@ import Motion from '../components/Motion.astro';
 ---
 <Base ...>
   <Motion />            <!-- once, before anything marked -->
-  <figure data-enter="rise">...</figure>
-  <svg data-enter="draw">
+  <svg data-enter="draw" aria-hidden="true">
     <circle class="motion-stroke" pathLength="1" ... />
   </svg>
-  <span data-enter="disc">7</span>
+  <a class="tile" href="/numerology/life-path/7/" data-enter="rise">
+    <span data-enter="disc" aria-hidden="true">7</span>
+    <span>Life Path 7</span>
+  </a>
 </Base>
 ```
 
 - `draw` needs `pathLength="1"` and `class="motion-stroke"` on each stroke.
 - Choreograph by hand with inline `--motion-i` (step index) or
   `--motion-delay` (extra delay).
+- An island that adds marks after the page loads can call
+  `window.zodiacsMotion?.scan(root)` after rendering them. Big Three uses this
+  call for its existing result entrances without importing a shared chunk.
 
 ## Guarantees
 
-- Without `<Motion />`, without JavaScript, with reduced motion and when
-  printing, everything is simply shown. The first Tab on a page shows every
-  marked element at once, so keyboard readers never wait on an entrance.
-- An element already above the screen (a reload lower down, a link to a
-  section) is shown at once, so scrolling up finds it in place.
-- A group that comes into view together staggers by at most 4 steps, so the
-  last item never waits more than 280ms.
-- If the runtime script fails or never runs, everything is shown after 3 s.
-- Elements show as soon as any part of them is on screen (threshold 0, as with
-  `.reveal`), so a tall block never sits blank while someone reads it.
+- Without `<Motion />`, JavaScript or Intersection Observer, and with reduced
+  motion or when printing, everything is shown immediately.
+- The first Tab, a same-page fragment link, or navigation to a nonempty
+  fragment shows all marks immediately and skips entrances for the rest of
+  the visit. A page opened with a nonempty fragment starts still.
+- Marks already above the viewport are shown immediately. On a scroll jump
+  without a fragment, such as End or scroll restoration, the next scroll
+  frame shows any waiting marks the jump passed.
+- The runtime scans while the document is parsing. Entrances trigger when
+  any part of a mark reaches the viewport (threshold 0, as with `.reveal`).
+  The automatic stagger adds at most 280 ms.
+- If the runtime throws during startup, everything is shown immediately. If
+  the initial switch runs and the runtime never starts, it switches off
+  after 3 seconds.
 - Only `opacity`, `transform` and `stroke-dashoffset` change: no layout shift.
 - Never mark the LCP element: the hero heading, a hero image or poster.
   Decorative inline SVG beside the hero heading (an emblem, a seal) may
   `draw` and `disc`, since it is never the largest paint.
-- After its pass an element is marked `.is-done`, so its own hover transitions
-  run without the entrance delay.
-- Move discs, figures and rings, and on occasional pages cards, tiles and
-  rows. Never mark controls people act on (buttons, form fields,
-  `<details>` summaries): they are there at once.
+- On `transitionend`, the runtime marks the element `.is-done` so its own
+  hover transitions run without the entrance delay. A timer also settles
+  draws, whose transitions run on their strokes.
 - The attribute is `data-enter`, and the page switch is
   `html[data-entrance]`. `data-motion` belongs to `/thesis/` figures and the
   chart explorer, so it is never used for this.

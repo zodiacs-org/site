@@ -1,3 +1,4 @@
+import { useBrowserEphemeris } from '../../../tests/helpers/browser-ephemeris';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { natalChart } from '@zodiacs/engine';
 import legacyPolar from '../engine/fixtures/legacy-polar-saved.json';
@@ -9,6 +10,8 @@ import { loadProfile } from './read-store';
 import { resolveSavedChart } from './resolve';
 import { EMPTY_PROFILE, PROFILE_KEY, type SavedChart } from './schema';
 import { currentSavedCalculation, POLAR_REPAIR_VERSION, repairLegacyPolarChart } from './polar-repair';
+
+useBrowserEphemeris();
 
 // The exact vendored 0.1.0 package is the pre-2026-08-24 implementation. At
 // this instant it stored the setting intersection (ASC 203.87198411230202°)

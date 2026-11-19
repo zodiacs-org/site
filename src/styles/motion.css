@@ -18,7 +18,8 @@
  *
  * Only opacity, transform and stroke-dashoffset move: no layout shift, and
  * the hero heading (the usual LCP element) is never marked. Keyboard readers
- * never wait: the runtime shows everything at once on the first Tab.
+ * and readers who jump to a part of the page never wait: the runtime shows
+ * everything at once on the first Tab or the jump.
  */
 
 :root {

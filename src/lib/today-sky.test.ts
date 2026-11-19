@@ -80,7 +80,9 @@ describe('Sky today facts', () => {
     expect(events.map((event) => event.at)).toEqual([...events.map((event) => event.at)].sort());
     for (const event of events.filter((entry) => entry.path)) {
       const page = eventsData.pages.find((candidate) => candidate.path === event.path)!;
-      expect(Math.abs(Date.parse(page.anchor) - Date.parse(event.at))).toBeLessThan(120_000);
+      expect(page.bodies).toContain(event.body);
+      if (event.other) expect(page.bodies).toContain(event.other);
+      if (event.kind !== 'station') expect(page.signs).toContain(event.sign);
     }
     expect(events.map((event) => event.title).join(' ')).not.toMatch(/\b(?:best|lucky|good day|bad day)\b/iu);
   });

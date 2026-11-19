@@ -197,13 +197,13 @@ the calendar and RSS feed links in the same change.
 | --- | --- | --- |
 | `calendar_subscribe` | `feed`: `sky`, `heads_up`, `eclipses`, `full_moons`, `mercury_retrograde`, `transits` | A visitor follows a webcal: subscribe link to a public calendar |
 | `calendar_download` | `feed`, the same list | A visitor follows a public .ics download link, or downloads the transit contacts file built in the browser (`transits`) |
-| `rss_subscribe` | `feed`: `horoscopes`, `horoscopes_sign`, `daily_sky`, `almanac`, `events`; `placement`: `footer`, `horoscope_page`, `feeds_page`, `developers` | A visitor follows a link to one of the site's RSS feeds |
+| `rss_subscribe` | `feed`: `horoscopes`, `horoscopes_sign`, `daily_sky`, `almanac`, `events`, `events_sign`; `placement`: `footer`, `horoscope_page`, `feeds_page`, `developers` | A visitor follows a link to one of the site's RSS feeds |
 
 The calendars named are the same files for every visitor (the sky calendar,
 the heads-up calendar and the 2027 eclipse, full moon and Mercury retrograde
 files). `transits` is only the word for the visitor's own transit file
 (`src/islands/CalendarSubscribe.tsx`): nothing from the file is sent. A single
-sign's horoscope feed counts as `horoscopes_sign`, never by its sign. The
+sign's horoscope feed counts as `horoscopes_sign` and a single sign's events feed as `events_sign`, never by its sign. The
 market research feed is not counted.
 
 The links name their event and values in `data-hook-event`,

@@ -489,6 +489,14 @@
       "destination": "/api/compatibility?__zodiacs_ai=1"
     },
     {
+      "source": "/mcp/de440",
+      "destination": "/api/compatibility?__zodiacs_ai=de440"
+    },
+    {
+      "source": "/mcp/de440/",
+      "destination": "/api/compatibility?__zodiacs_ai=de440"
+    },
+    {
       "source": "/mcp/health",
       "destination": "/api/compatibility?__zodiacs_ai=health"
     },
@@ -545,6 +553,22 @@
           "key": "Cache-Control",
           "value": "no-store"
         }
+      ]
+    },
+    {
+      "source": "/feeds/events.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/feed+json; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
+      ]
+    },
+    {
+      "source": "/feeds/events/:sign([a-z]+).json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/feed+json; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
       ]
     },
     {
