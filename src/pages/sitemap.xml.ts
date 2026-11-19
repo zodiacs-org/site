@@ -741,6 +741,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/numerology/', '2026-11-17'] as const,
   // The life path pages' seal, hued chips and entrance motion, last so it wins.
   ...LIFE_PATH_NUMBERS.map((n) => [`/numerology/life-path/${n}/`, '2026-11-17'] as const),
+  // Reader levels on the birth chart page: the first visit question, the level switch and the
+  // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
+  // last so this date wins.
+  ['/birth-chart/', '2026-11-19'] as const,
 ]);
 
 function getLastmod(loc: string): string {
