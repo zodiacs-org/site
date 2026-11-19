@@ -57,9 +57,24 @@ if [ -n "${PUBLISH_LAND_BRANCH:-}" ]; then
     echo "::error title=The publication branch moved::$branch is not at the commit that was handed over ($head_sha); nothing was opened." >&2
     exit 1
   fi
+  # A publication is one generated commit (plus, at most, the one-time scope
+  # allowance) on the verified base, and changes data, never the code, the
+  # workflows or the dependencies that build and check it.
+  if ! git merge-base --is-ancestor "$verified" "$head_sha" \
+    || [ "$(git rev-list --count "$verified..$head_sha")" -gt 2 ]; then
+    echo "::error title=Not a publication::$branch is not one publication commit on $verified; nothing was opened." >&2
+    exit 1
+  fi
+  outside=$(git diff --name-only "$verified" "$head_sha" \
+    | grep -E '^(\.github/|\.claude/|scripts/|package(-lock)?\.json$|AGENTS\.md$|CLAUDE\.md$)' \
+    | grep -vx '.github/phase1-scope-allowance.json' || true)
+  if [ -n "$outside" ]; then
+    echo "::error title=Not a publication::$branch changes code, workflows or dependencies ($(tr '\n' ' ' <<<"$outside")); nothing was opened." >&2
+    exit 1
+  fi
 else
 slug=$(printf '%s' "$title" | tr -c 'A-Za-z0-9' '-' | tr -s '-' | sed 's/^-//; s/-$//' | tr 'A-Z' 'a-z' | cut -c1-48)
-branch="publish/${slug}-${GITHUB_RUN_ID:-$$}"
+branch="publish/${slug}-${GITHUB_RUN_ID:-$$}-${GITHUB_RUN_ATTEMPT:-1}"
 
 # Build & Check's protected-scope guard now runs on this pull request. When
 # the only protected paths changed are the generated sign pages, carry the
@@ -95,7 +110,7 @@ hand_off() {
     return 2
   fi
   echo "publish-through-pr: handed $branch to site-publish.yml"
-  deadline=$(( $(date +%s) + ${PUBLISH_HANDOFF_TIMEOUT_MINUTES:-110} * 60 ))
+  deadline=$(( $(date +%s) + ${PUBLISH_HANDOFF_TIMEOUT_MINUTES:-120} * 60 ))
   while :; do
     sleep 30
     if [ -z "$run_id" ]; then
@@ -129,7 +144,10 @@ if [ "${PUBLISH_HANDOFF:-1}" = "1" ]; then
   if hand_off; then handed=0; else handed=$?; fi
   if [ "$handed" -eq 0 ]; then
     git fetch origin "$base"
-    merged=$(git rev-parse "origin/$base")
+    # Report the merge commit itself, not wherever the base has moved since.
+    merged=$(gh api "repos/{owner}/{repo}/pulls?state=closed&base=$base&head=${GITHUB_REPOSITORY_OWNER:-zodiacs-org}:$branch" \
+      --jq '[.[] | select(.merged_at != null) | .merge_commit_sha] | first // empty' 2>/dev/null || true)
+    if [ -z "$merged" ]; then merged=$(git rev-parse "origin/$base"); fi
     echo "publish-through-pr: Site Publish merged $branch; $base is at $merged"
     echo "$merged"
     exit 0
