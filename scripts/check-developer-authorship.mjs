@@ -1,6 +1,7 @@
 import { lstat, readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ACCURACY_PATH, accuracyPublished } from '../src/accuracy/publication.mjs';
 
 // Served documentation only: never walk repository docs/evidence or archives.
 // /developers/ and both llms files link the SDK and the static sky API,
@@ -28,6 +29,7 @@ if (!Array.isArray(timeAtlasIndex.files)
   throw new Error('Invalid time atlas file index');
 }
 export const generatedDeveloperDocuments = Object.freeze({
+  'accuracy/[...page].astro': accuracyPublished ? [`${ACCURACY_PATH.slice(1)}index.html`] : [],
   'docs/[...guide].astro': [
     'developers/docs/index.html',
     ...developerGuides.map((guide) => `developers/docs/${guide.slug}/index.html`),
