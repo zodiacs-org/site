@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
+import { withFullLevel } from './level-fixture.mjs';
 
 const root = process.env.ZODIACS_OWNERSHIP_ROOT ?? process.cwd();
 const evidence = process.env.OUT_DIR ?? process.env.ZODIACS_OWNERSHIP_EVIDENCE
@@ -200,7 +201,7 @@ async function check(name, action) {
   console.log(JSON.stringify({ name, status: results.at(-1).status }));
 }
 try {
-  browser = await chromium.launch({ executablePath: await findChromium(), headless: true, args: STABLE_CHROMIUM_ARGS });
+  browser = withFullLevel(await chromium.launch({ executablePath: await findChromium(), headless: true, args: STABLE_CHROMIUM_ARGS }));
   await check('edit-during-receipt-loader', async (subject) => {
     subject.expectedNatal = 0;
     const pending = await gate(subject, '**/calculator-receipt.*.js');
