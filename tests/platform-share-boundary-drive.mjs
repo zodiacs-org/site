@@ -4,7 +4,6 @@ import { resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
-import { withFullLevel } from './level-fixture.mjs';
 
 const output = resolve(process.env.PLATFORM_SHARE_EVIDENCE ?? 'tests/visual/artifacts/platform-share');
 await mkdir(output, { recursive: true });
@@ -14,7 +13,7 @@ const wire = (date, time = '08:30') => {
   if (time !== null) input.t = time;
   return '1.' + Buffer.from(JSON.stringify(input)).toString('base64url');
 };
-const browser = withFullLevel(await chromium.launch({ executablePath: await findChromium(), headless: true, args: STABLE_CHROMIUM_ARGS }));
+const browser = await chromium.launch({ executablePath: await findChromium(), headless: true, args: STABLE_CHROMIUM_ARGS });
 const checks = [];
 try {
   await withPreview({ port: 4336 }, async (baseURL) => {

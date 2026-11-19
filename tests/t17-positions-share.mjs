@@ -8,7 +8,6 @@ import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { trackHydrationDiagnostics } from './t17-hydration-diagnostics.mjs';
 import { computeBodies } from '@zodiacs/engine/internal';
-import { withFullLevel } from './level-fixture.mjs';
 
 const TIMEOUT = 45_000;
 const BODY_ORDER = [
@@ -138,11 +137,11 @@ function v2Wire(url) {
 }
 
 const executablePath = await findChromium();
-const browser = withFullLevel(await chromium.launch({
+const browser = await chromium.launch({
   executablePath,
   headless: true,
   args: STABLE_CHROMIUM_ARGS,
-}));
+});
 
 const errors = [];
 const transcript = { schema: 'zodiacs.t17-positions-share.v1' };
