@@ -43,7 +43,8 @@ describe('public legal identity', () => {
 
     // Terms and privacy were revised for the owner's approved Guide and
     // paste-address-only notices on 3 October. About changed on 16 October
-    // (the design sweep: its page-name label removed, dash punctuation).
+    // (the design sweep: its page-name label removed, dash punctuation), and on
+    // 19 November, when its contact section linked the support page.
     // Privacy changed again on 5 October, when the compute API it describes
     // gained the elections endpoint, and on 9 October, when it named the host's
     // 30-day request-log retention for the hosted MCP server, and on 14 October,
@@ -54,7 +55,7 @@ describe('public legal identity', () => {
     // and on 6 November, when it named Gemini alongside ChatGPT and Claude,
     // and on 7 November, when a birthday became the one occasion it lists with no card link,
     // and on 13 November, when it said the account export includes saved pages and Living Chart moments.
-    expect(about).toContain("dateModified: '2026-10-16T00:00:00.000Z'");
+    expect(about).toContain("dateModified: '2026-11-19T00:00:00.000Z'");
     expect(terms).toContain("const updated = '11 November 2026'");
     expect(terms).toContain("const modifiedAt = '2026-11-11T00:00:00.000Z'");
     expect(privacy).toContain('AI integration candidates');

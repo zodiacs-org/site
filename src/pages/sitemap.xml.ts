@@ -651,6 +651,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // privacy pages describe the same with the switch on and print the same date.
   ['/privacy/', '2026-11-11'] as const,
   ['/terms/', '2026-11-11'] as const,
+  // The support page, first published, and the about page's line linking to it. The day of the daily edition
+  // they were built with.
+  ['/support/', '2026-11-19'] as const,
+  ['/about/', '2026-11-19'] as const,
   ...['/es/privacy/', '/fr/privacy/', '/it/privacy/', '/pt/privacy/', '/ru/privacy/']
     .map((loc) => [loc, '2026-11-11'] as const),
   // The conventions registry's traditional void-of-course bodies (void-of-course-bodies:traditional), which the
@@ -891,6 +895,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/privacy/', priority: 0.4 },
     { loc: '/es/privacy/', priority: 0.4 },
     { loc: '/terms/', priority: 0.4 },
+    { loc: '/support/', priority: 0.4 },
     { loc: '/feeds/', priority: 0.55 },
     { loc: '/almanac/', priority: 0.75 },
   ].map((url) => {
