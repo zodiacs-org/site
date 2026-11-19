@@ -5,7 +5,6 @@ import {createHash} from 'node:crypto';
 import {chromium} from 'playwright-core';
 import {findChromium,STABLE_CHROMIUM_ARGS} from './visual/browser.mjs';
 import {withPreview} from './visual/preview-server.mjs';
-import { withFullLevel } from './level-fixture.mjs';
 const development=process.env.BIRTH_WINDOW_SERVER_MODE==='development';
 const artifactRoot='tests/visual/artifacts/birth-time-window'+(development?'-development':'');
 const records=[],observations=[];let failure=null;let stage="start";
@@ -16,7 +15,7 @@ async function committed(page){
 }
 try{
  await withPreview({port:8793},async baseURL=>{
-  const browser=withFullLevel(await chromium.launch({executablePath:await findChromium(),args:STABLE_CHROMIUM_ARGS}));
+  const browser=await chromium.launch({executablePath:await findChromium(),args:STABLE_CHROMIUM_ARGS});
   try{for(const variant of variants){
    const context=await browser.newContext({viewport:{width:variant.width,height:variant.height},reducedMotion:'reduce'});
    const page=await context.newPage(),errors=[];let hold=null;

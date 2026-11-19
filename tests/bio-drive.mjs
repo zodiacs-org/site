@@ -2,7 +2,6 @@ import { mkdir, readFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
-import { withFullLevel } from './level-fixture.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const CHROMIUM = await findChromium();
@@ -26,7 +25,7 @@ function check(name, ok, detail = '') {
 
 await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (BASE) => {
   if (OUT) await mkdir(OUT, { recursive: true });
-  const browser = withFullLevel(await chromium.launch({ executablePath: CHROMIUM, args: STABLE_CHROMIUM_ARGS }));
+  const browser = await chromium.launch({ executablePath: CHROMIUM, args: STABLE_CHROMIUM_ARGS });
 
   try {
     for (const viewport of [
