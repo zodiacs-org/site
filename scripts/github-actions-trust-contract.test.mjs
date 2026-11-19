@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import { readdir, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -88,6 +89,40 @@ describe('GitHub Actions trust boundaries', () => {
     expect(body).toContain("CLAUDE_CODE_MAX_OUTPUT_TOKENS: '16000'");
     expect(body).toContain("--max-budget-usd ${{ vars.PR_REVIEW_MAX_USD || '3' }}");
     expect(body).toContain('--max-turns 25');
+
+    // Read only, enforced: anything off the allowed list is refused, not
+    // auto-approved, and write and web tools are denied outright.
+    expect(body).toContain('--permission-mode dontAsk');
+    expect(body.match(/--permission-mode\b/gu)).toHaveLength(1);
+    expect(body).not.toMatch(/bypassPermissions|acceptEdits|dangerously-skip-permissions/u);
+    expect(body).toContain('--allowedTools "Read,Grep,Glob,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git log:*),Bash(git show:*)"');
+    const denied = body.match(/--disallowedTools "([^"]+)"/u)?.[1].split(',') ?? [];
+    for (const tool of ['Edit', 'MultiEdit', 'Write', 'NotebookEdit', 'WebFetch', 'WebSearch', 'Task', 'Agent']) {
+      expect(denied, tool).toContain(tool);
+    }
+
+    // The monthly limit counts every run that was not skipped: short ones,
+    // cancelled ones, and runs still queued or in progress at the same time.
+    expect(body).toContain('--jq ".workflow_runs[] | select(.id != $RUN_ID and .conclusion != \\"skipped\\") | .id" | wc -l');
+    expect(body).not.toContain('fromdateiso8601');
+    expect(body).not.toContain('.status == \\"completed\\"');
+
+    // The credential check reads the whole text in bash. A piped grep -q can
+    // stop at the first match, fail the writer with SIGPIPE under pipefail
+    // and let the text through.
+    expect(body).not.toMatch(/\|\s*grep\b/u);
+    const credRe = body.match(/^\s*cred_re='([^']+)'$/mu)?.[1] ?? '';
+    expect(credRe).toContain('gh[pousr]_');
+    const check = `[[ "$review"$'\\n'"$RESULT" =~ $cred_re ]]`;
+    expect(body).toContain(check);
+    const runCheck = (review, result) => spawnSync('bash', ['-e', '-o', 'pipefail', '-c', `cred_re='${credRe}'\n${check}`], {
+      env: { PATH: process.env.PATH, review, RESULT: result },
+    }).status;
+    const padding = 'a'.repeat(120_000);
+    expect(runCheck('ok', `{"review_markdown":"ghp_${'A'.repeat(36)} ${padding}"}`)).toBe(0);
+    expect(runCheck('ok', `{"blockers":["${padding}","sk-ant-api03-${'b'.repeat(12)}"]}`)).toBe(0);
+    expect(runCheck(`github_pat_${'c'.repeat(22)}`, '')).toBe(0);
+    expect(runCheck('A clean review.', `{"review_markdown":"${padding}"}`)).toBe(1);
   });
 
   it('pins preview probes to the configured project and team hostname family', async () => {

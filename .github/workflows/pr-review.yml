@@ -10,8 +10,9 @@ name: PR Review
 # ask for one early. A new push cancels the review still running on the
 # previous push. Each review is capped in turns and minutes, and the whole
 # workflow in reviews per calendar month (PR_REVIEW_MONTHLY_LIMIT, default
-# 300). The reviewer runs on Sonnet unless PR_REVIEW_MODEL says otherwise
-# (for example opus). Both are repository variables, so either can change
+# 300; every run this month that was not skipped counts, however short). The
+# reviewer runs on Sonnet unless PR_REVIEW_MODEL says otherwise (for example
+# opus). Both are repository variables, so either can change
 # without a code change. The hard ceiling in dollars is the monthly spend
 # limit on the key's workspace in the Anthropic Console.
 #
@@ -30,8 +31,10 @@ name: PR Review
 #   tokens each call uses and stops the review once they cost that much.
 #   A review stopped by any cap posts "no verdict", never a red check.
 #
-# The reviewer only reads. It has no write tools; the job posts its findings
-# as one comment that each later review replaces. The check fails only on an
+# The reviewer only reads. Write and web tools are denied, and in dontAsk mode
+# any tool call not on the allowed list is refused, never asked about or
+# approved on its own. The job posts its findings as one comment that each
+# later review replaces. The check fails only on an
 # explicit blocker. A missing key, a spent balance or an unfinished review is
 # a warning, never a red check, so merges are not held up by billing.
 #
@@ -120,12 +123,17 @@ jobs:
             exit 0
           fi
           month_start=$(date -u +%Y-%m-01)
-          # A run that lasted over 90 seconds reached the reviewer; a run
-          # stopped here by a missing key or the limit takes a few seconds.
+          # Every run this month counts as a paid review, short or long,
+          # finished, cancelled, queued or still running, except runs whose
+          # job was skipped (drafts, other labels, forks), which never reach
+          # this step. Runs stopped here (no key, too big, limit reached)
+          # count too, so the count can only run high. A run still in
+          # progress counts, so two pull requests reviewed at once each see
+          # the other.
           # If the count cannot be read, skip rather than spend blind.
           if ! used=$(gh api --paginate \
             "repos/$REPO/actions/workflows/pr-review.yml/runs?event=pull_request&created=%3E%3D$month_start&per_page=100" \
-            --jq ".workflow_runs[] | select(.id != $RUN_ID and .status == \"completed\" and .run_started_at != null) | select(((.updated_at | fromdateiso8601) - (.run_started_at | fromdateiso8601)) > 90) | .id" | wc -l); then
+            --jq ".workflow_runs[] | select(.id != $RUN_ID and .conclusion != \"skipped\") | .id" | wc -l); then
             echo "run=false" >> "$GITHUB_OUTPUT"
             echo "::warning::This month's review count could not be read, so no review ran."
             exit 0
@@ -217,7 +225,9 @@ jobs:
             --model ${{ vars.PR_REVIEW_MODEL || 'sonnet' }}
             --max-turns 25
             --max-budget-usd ${{ vars.PR_REVIEW_MAX_USD || '3' }}
+            --permission-mode dontAsk
             --allowedTools "Read,Grep,Glob,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git log:*),Bash(git show:*)"
+            --disallowedTools "Edit,MultiEdit,Write,NotebookEdit,WebFetch,WebSearch,Task,Agent"
             --json-schema '{"type":"object","additionalProperties":false,"required":["verdict","blockers","review_markdown"],"properties":{"verdict":{"type":"string","enum":["pass","block"]},"blockers":{"type":"array","items":{"type":"string"}},"review_markdown":{"type":"string"}}}'
 
       - name: Post or update the review comment
@@ -248,10 +258,12 @@ jobs:
           # The comment is public. Never post a credential, whatever the
           # reviewer was led to write. The whole result is checked, blockers
           # included, because the next step prints the blockers to the log.
-          # The key is matched in bash, so it never appears in a process's
-          # arguments.
+          # Both checks run in bash, with no pipe: the key never appears in a
+          # process's arguments, and a pattern check that stops reading at the
+          # first match cannot fail the pipe and let the text through.
+          cred_re='sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}'
           if { [ -n "$API_KEY" ] && [[ "$review$RESULT" == *"$API_KEY"* ]]; } ||
-             printf '%s\n%s' "$review" "$RESULT" | grep -qE 'sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}'; then
+             [[ "$review"$'\n'"$RESULT" =~ $cred_re ]]; then
             review="The automatic review wrote something shaped like a credential, so its text was not posted. Check the run, and rotate the key if it was the real one."
             echo "::error::The review text contained something shaped like a credential and was not posted."
             echo "leaked=true" >> "$GITHUB_OUTPUT"
