@@ -42906,14 +42906,15 @@ function retrogradePeriod(planet2, loops, now, zone9, basis) {
   const { current: loop, previous, retrogradeNow } = loops;
   const confidence = readingConfidence(basis.detail);
   const confidenceLabel = readingConfidenceLabel(basis.detail);
-  const status = retrogradeNow ? "retrograde" : previous?.postShadowEnd && previous.postShadowEnd.getTime() > now.getTime() ? "post-shadow" : loop.preShadowStart && loop.preShadowStart.getTime() <= now.getTime() ? "pre-shadow" : "direct";
+  const status = retrogradeNow ? "retrograde" : previous?.postShadowEnd && previous.postShadowEnd.getTime() > now.getTime() ? "post-shadow" : loop?.preShadowStart && loop.preShadowStart.getTime() <= now.getTime() ? "pre-shadow" : "direct";
   const subject = status === "post-shadow" && previous ? previous : loop;
+  if (!subject) throw new RangeError(`Zodiacs could not find ${planet2}'s retrograde around that date.`);
   const afterLoop = subject !== loop;
   const retro = stationOn(subject.stationRetrograde.at, subject.stationRetrograde.lon, zone9);
   const direct = stationOn(subject.stationDirect.at, subject.stationDirect.lon, zone9);
   const preShadowStart = subject.preShadowStart ? instantOn(subject.preShadowStart, zone9) : null;
   const postShadowEnd = subject.postShadowEnd ? instantOn(subject.postShadowEnd, zone9) : null;
-  const next = afterLoop ? { stationRetrograde: instantOn(loop.stationRetrograde.at, zone9).utc, stationDirect: instantOn(loop.stationDirect.at, zone9).utc } : null;
+  const next = afterLoop && loop ? { stationRetrograde: instantOn(loop.stationRetrograde.at, zone9).utc, stationDirect: instantOn(loop.stationDirect.at, zone9).utc } : null;
   const signs = loopSigns(subject).map((index) => SIGNS2[index].slug);
   const houses = basis.baseSign ? signs.map((sign3) => {
     const house = wholeSignHouseFromAsc(sign3, basis.baseSign);
@@ -43239,6 +43240,10 @@ async function retrogradeForMe(args, context) {
     dayEnds,
     foldAsc
   });
+  if (context.allowEvents) {
+    const verdict = await context.allowEvents();
+    if (verdict !== "allowed") return { refused: verdict === "limited" ? "rate-limited" : "rate-limit-unavailable" };
+  }
   const rowsAt = positionsMemo();
   const reading = retrogradeReading({
     planets,
