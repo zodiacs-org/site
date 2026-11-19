@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "research-notes-withheld-2026-11-20",
-  "baseCommit": "c4cf957b5f92aed1350ea83063778bdf7eb7c912",
+  "baseCommit": "43b1c21219944c1ee2b7b66ec2dadc56e11a1d44",
   "protectedPaths": [
     "scripts/registry-research-withheld.mjs"
   ]
