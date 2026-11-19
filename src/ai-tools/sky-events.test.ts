@@ -12,6 +12,7 @@ import committedProgram from '../data/horoscope-program.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import { PUBLISHED_TOOLS } from './published-tools';
+import { expectedCapabilityReply } from '../../tests/helpers/de440-capabilities';
 
 /**
  * ZODIACS_SKY_EVENTS_ENABLED stays off in production while the directories review the nineteen tools. Off (unset,
@@ -28,14 +29,14 @@ const LIVE = PUBLISHED_TOOLS;
 const servers: Server[] = [];
 afterAll(async () => { await Promise.all(servers.map((server) => new Promise<void>((resolve) => server.close(() => resolve())))); });
 
-async function serve(env: Record<string, string | undefined>, counted: string[] = []) {
+async function serve(env: Record<string, string | undefined>, counted: string[] = [], de440 = false) {
   let handle: (req: unknown, res: unknown) => Promise<void> = async () => {};
   const server = createServer((req, res) => { void handle(req, res); });
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
   servers.push(server);
   const host = `127.0.0.1:${(server.address() as { port: number }).port}`;
   // As api/_ai/handler.ts supplies them, and as the flag-off fixture was captured.
-  handle = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ...env }, allowedHosts: [host], rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed',
+  handle = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ...env }, de440, allowedHosts: [host], rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed',
     countUsage: async (tool) => { counted.push(tool); }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow,
       horoscopeMonths: async () => committedMonths, horoscopeProgram: async () => committedProgram as unknown as HoroscopeProgram } });
   return host;
@@ -66,7 +67,7 @@ const SCENARIOS = { released: {}, occasions: { ZODIACS_OCCASIONS_ENABLED: '1' },
 const call = async (host: string, name: string, args: unknown) => message((await post(host, rpc('tools/call', { name, arguments: args }))).text).result;
 
 describe('the sky events switch off', () => {
-  it('leaves every scenario\'s initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them', async () => {
+  it('preserves the published bytes and reports the DE440 capabilities with sky events off', async () => {
     expect(SKY_EVENTS_SWITCH_ENV).toBe('ZODIACS_SKY_EVENTS_ENABLED');
     for (const [name, env] of Object.entries(SCENARIOS)) {
       // On without the coverage switch counts as off, so '1' joins the off values for the first two scenarios.
@@ -75,7 +76,9 @@ describe('the sky events switch off', () => {
         const host = await serve({ ...env, ZODIACS_SKY_EVENTS_ENABLED: value });
         for (const [request, [body, headers]] of Object.entries(REQUESTS)) {
           const reply = await post(host, body, headers);
-          expect(reply.text, `${name} ${request} with ZODIACS_SKY_EVENTS_ENABLED=${JSON.stringify(value)}`).toBe(FIXTURE[name][request].text);
+          const before = FIXTURE[name][request].text;
+          const expected = request === 'capabilities' ? expectedCapabilityReply(before) : before;
+          expect(reply.text, `${name} ${request} with ZODIACS_SKY_EVENTS_ENABLED=${JSON.stringify(value)}`).toBe(expected);
         }
       }
     }
@@ -178,7 +181,7 @@ describe('the sky events switch on', () => {
   });
 
   it('answers with results that validate against the output schemas tools/list advertises, as a client checks them', async () => {
-    const host = await serve(env);
+    const host = await serve(env, [], true);
     const tools = message((await post(host, rpc('tools/list'))).text).result.tools as { name: string; outputSchema: object }[];
     const ajv = new Ajv2020({ strict: false, allErrors: true });
     addFormats(ajv);

@@ -34,7 +34,7 @@ if (!['serve', 'tick', 'grant', 'revoke'].includes(command)) {
         const current = Math.floor(Date.now() / 60_000); if (current !== minute) { minute = current; calls = 0; }
         return ++calls <= 40 ? 'allowed' : 'limited';
       };
-      const handler = createAiNodeHandler({ skyWatch: watch, allowedHosts: [`127.0.0.1:${port}`], rateLimit: limit,
+      const handler = createAiNodeHandler({ de440: true, skyWatch: watch, allowedHosts: [`127.0.0.1:${port}`], rateLimit: limit,
         atomicQuota: async () => 'allowed', env: { ...process.env, ZODIACS_MCP_ENABLED: '1' } });
       const server = createServer((req, res) => void handler(req, res));
       server.listen(port, '127.0.0.1', () => console.log(`Sky Watch authenticated preview: http://127.0.0.1:${port}/mcp`));
