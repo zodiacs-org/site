@@ -1177,31 +1177,25 @@
   outline-offset: 3px;
 }
 
-/* One orchestrated result entrance: presentation never blocks controls.
-   User input or the 1.4 second timer adds .is-settled. It speaks the shared
-   entrance motion (docs/MOTION.md, src/styles/motion.css): the two people,
-   then the wheel, then the aspects rise 10px over 440ms and stay still. No
-   tilt and no zoom. The fallbacks repeat motion.css for pages that do not
-   load it. */
+/* One result entrance: presentation never blocks controls. The result is
+   held for its first frame and .is-settled lets it go on the next one, so it
+   moves at once. It speaks the shared entrance motion (docs/MOTION.md,
+   src/styles/motion.css): the two people, then the wheel with its aspects,
+   rise 10px over 440ms and stay still. No tilt and no zoom. The fallbacks
+   repeat motion.css for pages that do not load it. */
 @media (prefers-reduced-motion: no-preference) {
   html.js .syn-meet:not(.is-settled) .syn__people,
-  html.js .syn-meet:not(.is-settled) .rwheel,
-  html.js .syn-meet:not(.is-settled) .syn__aspects,
-  html.js .syn-meet:not(.is-settled) .syn__tally {
+  html.js .syn-meet:not(.is-settled) .rwheel {
     opacity: 0;
     transform: translate3d(0, var(--motion-lift, 10px), 0);
   }
   html.js .syn-meet .syn__people,
-  html.js .syn-meet .rwheel,
-  html.js .syn-meet .syn__aspects,
-  html.js .syn-meet .syn__tally {
+  html.js .syn-meet .rwheel {
     transition:
       opacity var(--motion-rise, 440ms) var(--motion-ease, cubic-bezier(0.23, 1, 0.32, 1)),
       transform var(--motion-rise, 440ms) var(--motion-ease, cubic-bezier(0.23, 1, 0.32, 1));
   }
-  html.js .syn-meet .rwheel { transition-delay: var(--motion-step, 70ms); }
-  html.js .syn-meet .syn__aspects,
-  html.js .syn-meet .syn__tally { transition-delay: calc(2 * var(--motion-step, 70ms)); }
+  html.js .syn-meet.is-settled .rwheel { transition-delay: var(--motion-step, 70ms); }
 }
 
 @media (max-width: 520px) {
