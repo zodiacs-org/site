@@ -42,6 +42,11 @@ import '../styles/motion.css';
     // Threshold 0, as with .reveal: a block shows as soon as any of it is on
     // screen, however tall it is.
     var io = on && new IntersectionObserver(function (entries) {
+      // A page the browser scrolled by itself (a search result's text link,
+      // whose #:~:text= part never reaches location.hash, or a reload or Back
+      // that restores the old position) lands the reader mid-page. Nothing
+      // there may fade in under them, so the page shows everything at once.
+      if (!moved && window.scrollY > 0) { showAll(); return; }
       var step = 0;
       for (var i = 0; i < entries.length; i++) {
         var el = entries[i].target;
@@ -64,6 +69,17 @@ import '../styles/motion.css';
     // the same page, Back to one) never waits either: the place they land on
     // must already be there, so the jump shows everything at once too.
     var keyboard = false;
+    // Whether the reader has moved the page themselves (wheel, touch, a key,
+    // a click or a drag on the scrollbar). Only their own scroll may play
+    // entrances; any other scroll is the browser placing them.
+    var moved = false;
+    function markMoved() { moved = true; }
+    if (io) {
+      var opts = { capture: true, passive: true, once: true };
+      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (type) {
+        window.addEventListener(type, markMoved, opts);
+      });
+    }
     function showAll() {
       keyboard = true;
       if (io) io.disconnect();
