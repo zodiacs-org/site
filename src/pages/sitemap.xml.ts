@@ -1080,9 +1080,10 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-09');
     }
   }
-  // The engine page's line on the sidereal entry the site's code uses (2026-11-09), with the flag on or off.
+  // The engine page's line on the sidereal entry the site's code uses, with the flag on or off (2026-11-09, re-dated
+  // 2026-11-19 when ZOD-63's engine page rewrite was merged in).
   for (const url of urls) {
-    if (url.loc === '/developers/engine/') url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    if (url.loc === '/developers/engine/') url.lastmod = laterDate(url.lastmod, '2026-11-19');
   }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
   // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no
