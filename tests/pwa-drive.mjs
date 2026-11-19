@@ -16,7 +16,6 @@ import { chromium } from 'playwright-core';
 import { BRAND_ICON_PATHS } from '../src/lib/brand-icons.mjs';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
-import { withFullLevelContext } from './level-fixture.mjs';
 
 const TIMEOUT = 45_000;
 const PROFILE_PREFIX = join(tmpdir(), 'zodiacs-pwa-drive-');
@@ -123,7 +122,6 @@ try {
         timezoneId: 'UTC',
         serviceWorkers: 'allow',
       });
-      await withFullLevelContext(context);
       check('Chromium uses a persistent non-incognito profile with real service workers', true);
 
       const webErrors = [];

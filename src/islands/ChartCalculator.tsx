@@ -623,41 +623,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const [selection, setSelection] = useState<EntityRef | null>(null);
   const [aspectTypes, setAspectTypes] = useState<AspectType[]>(ALL_ASPECT_TYPES);
   const [showHouses, setShowHouses] = useState(true);
-  // Reader levels (docs/LEVELS.md): on a page with the level switch, the
-  // Beginner wheel keeps to signs and planets; houses and aspect lines come
-  // back from Intermediate up. Pages without levels never see a change.
-  // Moving back up restores what the reader had before, and a shared `?sel=`
-  // link keeps the house or aspect it points at drawn.
-  useEffect(() => {
-    let previous: string | null = null;
-    let kept: { houses: boolean; aspects: AspectType[] } | null = null;
-    const linkedKind = parseEntityId(new URLSearchParams(window.location.search).get('sel') ?? '')?.kind;
-    const linked = linkedKind === 'house' || linkedKind === 'aspect';
-    // The island reads html[data-level] and the switch's change event
-    // directly rather than importing src/lib/level.ts, so the shared level
-    // code stays out of this page's first-load scripts. The switch sets the
-    // attribute before it sends the event (src/lib/level-switch.ts).
-    const sync = () => {
-      const level = document.documentElement.getAttribute('data-level');
-      if (!level || level === previous) return;
-      const first = previous === null;
-      previous = level;
-      if (level === 'beginner') {
-        if (first && linked) return;
-        const saved = { houses: true, aspects: ALL_ASPECT_TYPES };
-        setShowHouses((value) => { if (!first) saved.houses = value; return false; });
-        setAspectTypes((value) => { if (!first) saved.aspects = value; return []; });
-        kept = saved;
-      } else if (kept) {
-        setShowHouses(kept.houses);
-        setAspectTypes(kept.aspects);
-        kept = null;
-      }
-    };
-    sync();
-    window.addEventListener('zodiacs:level', sync);
-    return () => window.removeEventListener('zodiacs:level', sync);
-  }, []);
   const [detailOpen, setDetailOpen] = useState(false);
   const [announce, setAnnounce] = useState('');
   const [spotlight, setSpotlight] = useState<ChartSpotlight | null>(null);
@@ -812,17 +777,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     if (!owner) return;
     if (next === lens) return;
     if (next === 'natal') {
-      // At Beginner the rail hides again on the natal wheel (docs/LEVELS.md),
-      // taking the focused button with it. A hidden button keeps focus until
-      // the browser restyles, so decide from where focus was, not from body.
-      const rail = (document.activeElement as Element | null)?.closest('.calc__lens-rail') ?? null;
       resetLens();
       track('lens_change', { lens: 'natal' });
-      if (rail) {
-        requestAnimationFrame(() => {
-          if (rail.isConnected && rail.getClientRects().length === 0) wheelboxRef.current?.focus();
-        });
-      }
       return;
     }
     try {
@@ -2514,7 +2470,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                         )}
                       </div>
                       {!tourOpen && (
-                        <div class="calc__lens-rail" role="group" aria-label={lensLabels.rail} data-depth={lens === 'natal' ? 'intermediate' : undefined}>
+                        <div class="calc__lens-rail" role="group" aria-label={lensLabels.rail}>
                           {(['natal', 'sky', 'progressed', 'return'] as const).map((id) => (
                             <button
                               key={id}
@@ -2529,7 +2485,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                           ))}
                         </div>
                       )}
-                      <div data-depth="intermediate">
                       <LayerChips
                         aspectTypes={aspectTypes}
                         onAspectTypes={setAspectTypes}
@@ -2538,8 +2493,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                         hasHouses={chart.houses != null}
                         locale={locale}
                       />
-                      </div>
-                      <div data-depth="intermediate">
                       {EntityPicker ? <EntityPicker
                         scene={scene}
                         selection={selection}
@@ -2562,8 +2515,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                           </>}
                         </div>
                       )}
-                      </div>
-                      <div class="calc__depth" data-depth="advanced">
+                      <div class="calc__depth">
                         <button
                           type="button"
                           class="calc__depth-btn"
@@ -2773,13 +2725,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               {resultContext}
 
               {mode === 'full' && locale === 'en' && AspectPatternFeature && (
-                <div data-depth="intermediate">
                 <AspectPatternFeature context="natal" points={chart.bodies} aspects={chart.aspects}
                   imageOf={{ chart, birthDate: computedInput?.date }}
                   timeKnown={chart.input.timeKnown && !chart.flags.includes('no-time')}
                   sourceKey={String(chartContextIdRef.current)}
                   onSelectBody={(body) => showOnChartFromReading({ kind: 'body', body }, 'instant')} />
-                </div>
               )}
 
               {/* A visual story leads; exact data remains available below. */}
@@ -2807,14 +2757,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               )}
 
               {mode === 'full' && ChartContext && (
-                <div data-depth="intermediate">
                 <ChartContext input={{ bodies: chart.bodies, timeKnown: chart.input.timeKnown,
                   moonSignCandidates: chart.moonSignCandidates, angles: chart.angles, houses: chart.houses }}
                   imageOf={{ chart, birthDate: computedInput?.date }}
                   locale={locale} inputRevision={inputRevision}
                   isInputCurrent={(revision) => inputRevisionRef.current === revision}
                   selection={selection} onShowOnChart={showOnChartFromReading} />
-                </div>
               )}
 
               {mode === 'full' && showsEnglishInterpretation && ApproachRead && (
@@ -3017,7 +2965,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           {mode === 'full' && scene && (
             <details
               class="calc__detail"
-              data-depth="advanced"
               data-detail
               data-evidence-disclosure
               open={detailOpen}
