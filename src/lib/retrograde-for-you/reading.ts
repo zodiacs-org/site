@@ -60,8 +60,11 @@ export interface RetrogradeLoop {
   postShadowEnd: Date | null;
 }
 
-/** The loop a planet is in at "now", or else its next one, and the one before (for a post-shadow still running). */
-export interface LoopSet { current: RetrogradeLoop; previous: RetrogradeLoop | null; retrogradeNow: boolean }
+/**
+ * The loop a planet is in at "now", or else its next one, and the one before (for a post-shadow still running).
+ * `current` is null only when the data holds no later loop and `previous`'s post-shadow is still running.
+ */
+export interface LoopSet { current: RetrogradeLoop | null; previous: RetrogradeLoop | null; retrogradeNow: boolean }
 
 export interface Instant { utc: string; date: string; label: string }
 export interface Station extends Instant { sign: string; degree: number; position: string }
@@ -233,16 +236,17 @@ export function retrogradePeriod(planet: RetrogradePlanet, loops: LoopSet, now: 
   const confidenceLabel = readingConfidenceLabel(basis.detail);
   const status: RetrogradeStatus = retrogradeNow ? 'retrograde'
     : previous?.postShadowEnd && previous.postShadowEnd.getTime() > now.getTime() ? 'post-shadow'
-      : loop.preShadowStart && loop.preShadowStart.getTime() <= now.getTime() ? 'pre-shadow'
+      : loop?.preShadowStart && loop.preShadowStart.getTime() <= now.getTime() ? 'pre-shadow'
         : 'direct';
-  // In the post-shadow the period is the loop that just ended; the next one gets a line of its own.
+  // In the post-shadow the period is the loop that just ended; the next one, when the data holds it, gets a line of its own.
   const subject = status === 'post-shadow' && previous ? previous : loop;
+  if (!subject) throw new RangeError(`Zodiacs could not find ${planet}'s retrograde around that date.`);
   const afterLoop = subject !== loop;
   const retro = stationOn(subject.stationRetrograde.at, subject.stationRetrograde.lon, zone);
   const direct = stationOn(subject.stationDirect.at, subject.stationDirect.lon, zone);
   const preShadowStart = subject.preShadowStart ? instantOn(subject.preShadowStart, zone) : null;
   const postShadowEnd = subject.postShadowEnd ? instantOn(subject.postShadowEnd, zone) : null;
-  const next = afterLoop ? { stationRetrograde: instantOn(loop.stationRetrograde.at, zone).utc, stationDirect: instantOn(loop.stationDirect.at, zone).utc } : null;
+  const next = afterLoop && loop ? { stationRetrograde: instantOn(loop.stationRetrograde.at, zone).utc, stationDirect: instantOn(loop.stationDirect.at, zone).utc } : null;
   const signs = loopSigns(subject).map((index) => SIGNS[index].slug);
   const houses = basis.baseSign ? signs.map((sign) => {
     const house = wholeSignHouseFromAsc(sign, basis.baseSign!);

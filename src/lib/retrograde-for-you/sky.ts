@@ -21,8 +21,10 @@ const time = (value: string) => Date.parse(value);
 
 /**
  * The loop a planet is in at `now`, else its next one, with the one before.
- * Null when the data ends before the next loop begins (or before the current
- * one ends), so the page can say so rather than guess.
+ * When the data holds no later loop but the last one's post-shadow is still
+ * running, `current` is null and `previous` is that loop. Null when the data
+ * ends before the next loop begins (or before the current one ends), so the
+ * page can say so rather than guess.
  */
 export function loopsFromSky(planet: RetrogradePlanet, now: Date, sky: SkySpan, lonAt: (planet: RetrogradePlanet, at: Date) => number): LoopSet | null {
   const at = now.getTime();
@@ -44,7 +46,10 @@ export function loopsFromSky(planet: RetrogradePlanet, now: Date, sky: SkySpan, 
   const inside = windows.findIndex((entry) => time(entry.from) <= at && time(entry.to!) > at);
   if (inside >= 0) return { current: toLoop(windows[inside]), previous: null, retrogradeNow: true };
   const next = windows.findIndex((entry) => time(entry.from) > at);
-  if (next < 0) return null;
+  if (next < 0) {
+    const last = windows.at(-1);
+    return last?.postShadowEnd && time(last.postShadowEnd) > at ? { current: null, previous: toLoop(last), retrogradeNow: false } : null;
+  }
   return { current: toLoop(windows[next]), previous: next > 0 ? toLoop(windows[next - 1]) : null, retrogradeNow: false };
 }
 

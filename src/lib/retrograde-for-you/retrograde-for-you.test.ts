@@ -71,6 +71,34 @@ describe('the /retrogrades/for-you/ page and get_retrograde_for_me', () => {
     expect(loopsFromSky('Mercury', new Date('2030-06-01T00:00:00Z'), span, () => 0)).not.toBeNull();
   });
 
+  it('still shows the post-shadow of a planet’s last published loop when no later loop is in the data', async () => {
+    // Mars's last published loop: 2029-02-14 to 2029-05-05, post-shadow to 2029-07-09. Venus's: 2029-12-16 to 2030-01-26, post-shadow to 2030-02-27.
+    const span = sky as Parameters<typeof loopsFromSky>[2];
+    for (const [planet, now, retro, postShadowEnd] of [
+      ['Mars', '2029-06-01T00:00:00Z', '2029-02-14', '2029-07-09'],
+      ['Venus', '2030-02-01T00:00:00Z', '2029-12-16', '2030-02-27'],
+    ] as const) {
+      const loops = loopsFromSky(planet, new Date(now), span, () => 0);
+      expect(loops, `${planet} ${now}`).not.toBeNull();
+      expect(loops!.retrogradeNow).toBe(false);
+      expect(loops!.current).toBeNull();
+      expect(loops!.previous!.stationRetrograde.at.toISOString().slice(0, 10)).toBe(retro);
+      expect(loops!.previous!.postShadowEnd!.toISOString().slice(0, 10)).toBe(postShadowEnd);
+      await prepareLocalTime('1990-05-03', MADRID.tz);
+      const page = computeRetrogradeForYou({ birthDate: '1990-05-03', birthTime: '08:30', place: MADRID, planets: [planet], now: new Date(now), zone: 'UTC' });
+      if (page.refused) throw new Error('refused');
+      expect(page.unavailable).toEqual([]);
+      expect(page.periods).toHaveLength(1);
+      expect(page.periods[0]).toMatchObject({ planet, status: 'post-shadow', retrogradeNow: false, next: null, nextLine: null });
+      expect(page.periods[0].stationRetrograde.date).toBe(retro);
+      expect(page.periods[0].postShadowEnd!.date).toBe(postShadowEnd);
+      expect(page.periods[0].reading).toContain(`is in the post-shadow until`);
+      expect(page.periods[0].shareQuery).toContain(`s=${retro}`);
+    }
+    // Once the last loop's post-shadow is over, the page says the data ends rather than guess.
+    expect(loopsFromSky('Mars', new Date('2029-07-10T00:00:00Z'), span, () => 0)).toBeNull();
+  });
+
   it('refuses a birth date less than 13 years ago and computes nothing', async () => {
     await prepareLocalTime('2016-05-03', MADRID.tz);
     expect(computeRetrogradeForYou({ birthDate: '2016-05-03', birthTime: null, place: MADRID, planets: ['Mercury'], now: new Date('2026-11-09T09:00:00Z'), zone: 'UTC' })).toEqual({ refused: 'under-13' });
