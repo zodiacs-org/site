@@ -41,6 +41,9 @@ const sectionList = [item.sections.skyFact, item.sections.traditionalReading, it
 const publishingPaused = pauseJson.status === 'paused';
 const scheduled = item.status === 'scheduled'
   && (publishingPaused || item.visibleAt > publication.generatedAt);
+// While publishing is paused a scheduled note is withheld: its readings and market section are left out of the page
+// entirely (not hidden for a later reveal), so the page carries only the title, the summary and the pause message.
+const withheld = scheduled && publishingPaused;
 const jsonUrl = `/assets/data/registry-research/items/${item.id}.json`;
 // Every research note is `noindex, follow` and stays out of the sitemaps (owner decision, 2026-10-26): the notes are
 // generated daily, so only the archive at /terminal/research/ is offered for indexing. The notes stay live and linked,
@@ -82,13 +85,14 @@ const terminalResearchBreadcrumb = {
 
     {scheduled ? (
       <section class="research-note__scheduled" data-scheduled-message>
-        <strong>This edition is approved and scheduled.</strong>
+        <strong>{withheld ? 'This edition was not published.' : 'This edition is approved and scheduled.'}</strong>
         <p>{publishingPaused
           ? 'Publishing is paused. This edition stays unpublished until publishing resumes.'
           : 'It becomes visible at its exact UTC event time. No market outcome has been attached in advance.'}</p>
       </section>
     ) : null}
 
+    {!withheld && (
     <div class="research-note__body" hidden={scheduled} data-research-body>
       {item.symbolicScore && (
         <section class="research-score" aria-labelledby="research-score-title">
@@ -131,10 +135,11 @@ const terminalResearchBreadcrumb = {
         <a href="/terminal/">Return to Terminal →</a>
       </div>
     </div>
+    )}
   </main>
 </Base>
 
-{scheduled && (
+{scheduled && !withheld && (
   <script>
     const note = document.querySelector('[data-scheduled="true"]');
     if (note instanceof HTMLElement) {
