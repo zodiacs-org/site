@@ -75,7 +75,7 @@ jobs:
         # first gate only: any workflow holding the workflow token reads as
         # github-actions[bot], so the real boundary is the publication check
         # in scripts/publish-through-pr.sh (one generated commit on the
-        # verified base, touching no code, workflow or dependency) plus the
+        # verified base, touching only generated publication data) plus the
         # environment's main-only deployment branch policy.
         env:
           ASKED_BY: ${{ github.triggering_actor }}

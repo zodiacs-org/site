@@ -142,8 +142,10 @@ describe('daily publication operations', () => {
     expect(publisher.indexOf('hand_off()')).toBeLessThan(publisher.indexOf('gh pr create'));
     // In land mode the branch is data: it must sit at exactly the handed-over commit.
     expect(publisher).toContain('if [ "$(git rev-parse FETCH_HEAD)" != "$head_sha" ]; then');
-    // ...and be one publication on the verified base that touches no code, workflow or dependency.
+    // ...and be one publication on the verified base that touches only generated data.
     expect(publisher).toContain('git merge-base --is-ancestor "$verified" "$head_sha"');
+    expect(publisher).toContain('git diff --no-renames --name-only "$verified" "$head_sha"');
+    expect(publisher).toContain("grep -vE '^(src/data/|public/assets/|public/registry/|docs/race-recaps/)'");
     expect(publisher).toContain("grep -vx '.github/phase1-scope-allowance.json'");
     // A re-run attempt gets its own branch, so it never reads an earlier attempt's Site Publish run.
     expect(publisher).toContain('${GITHUB_RUN_ID:-$$}-${GITHUB_RUN_ATTEMPT:-1}');

@@ -58,18 +58,19 @@ if [ -n "${PUBLISH_LAND_BRANCH:-}" ]; then
     exit 1
   fi
   # A publication is one generated commit (plus, at most, the one-time scope
-  # allowance) on the verified base, and changes data, never the code, the
-  # workflows or the dependencies that build and check it.
+  # allowance) on the verified base, and changes only the generated data the
+  # publishing workflows write. Renames are listed as both paths, so moving
+  # a file out of its place counts as touching it.
   if ! git merge-base --is-ancestor "$verified" "$head_sha" \
     || [ "$(git rev-list --count "$verified..$head_sha")" -gt 2 ]; then
     echo "::error title=Not a publication::$branch is not one publication commit on $verified; nothing was opened." >&2
     exit 1
   fi
-  outside=$(git diff --name-only "$verified" "$head_sha" \
-    | grep -E '^(\.github/|\.claude/|scripts/|package(-lock)?\.json$|AGENTS\.md$|CLAUDE\.md$)' \
+  outside=$(git diff --no-renames --name-only "$verified" "$head_sha" \
+    | grep -vE '^(src/data/|public/assets/|public/registry/|docs/race-recaps/)' \
     | grep -vx '.github/phase1-scope-allowance.json' || true)
   if [ -n "$outside" ]; then
-    echo "::error title=Not a publication::$branch changes code, workflows or dependencies ($(tr '\n' ' ' <<<"$outside")); nothing was opened." >&2
+    echo "::error title=Not a publication::$branch changes files outside the generated publication data ($(tr '\n' ' ' <<<"$outside")); nothing was opened." >&2
     exit 1
   fi
 else
