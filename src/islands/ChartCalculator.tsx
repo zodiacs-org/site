@@ -39,7 +39,6 @@ import {
 } from '../lib/scene/types';
 import { formatLongitude, signBySlug, signForLongitude, signName, signPrepositional } from '../lib/signs';
 import { signIcon } from '../lib/sign-icon';
-import { bigThree } from '../lib/interpretations';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { assessLocalDateReference } from '../lib/time/local-date-reference';
 import { houseOf } from '../lib/engine/houses';
@@ -118,6 +117,9 @@ type ShareDialogModule = typeof import('./ChartShareDialog');
 type ChartActionDockModule = typeof import('./ChartActionDock');
 const loadChartControls = createModuleLoader(() => import('./ChartActionDock'));
 const loadCalculatorReceipt = createModuleLoader(() => import('../lib/engine/calculator-receipt'));
+// The Big Three reading text only shows with a result, so it downloads with the calculation.
+const loadInterpretations = createModuleLoader(() => import('../lib/interpretations'));
+type BigThreeReader = typeof import('../lib/interpretations').bigThree;
 interface ChartResultOwner {
   chart: Chart;
   runId: number;
@@ -389,6 +391,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const [depthOpen, setDepthOpen] = useState(false);
   const [calendarSurface, setCalendarSurface] = useState<CalendarSubscribeModule | null>(null);
   const [chartActionDockModule, setChartActionDockModule] = useState<ChartActionDockModule | null>(null);
+  const [readBigThree, setReadBigThree] = useState<BigThreeReader | null>(null);
   const [controlsError, setControlsError] = useState(false);
   const [communicationSurface, setCommunicationSurface] = useState<CommunicationReadModule | null>(null);
   const [approachSurface, setApproachSurface] = useState<ApproachReadModule | null>(null);
@@ -1427,10 +1430,19 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       // pinned history; the downloads run together. A rejection is observed
       // by the loader itself.
       const localTimeReady = prepareLocalTime(input.date, input.city.tz);
+      // Optional: a failed download leaves the cards without their reading line.
+      const readingsReady = showsEnglishInterpretation
+        ? loadInterpretations().then((module) => module.bigThree, () => null)
+        : null;
       const engine = await loadEngine();
       if (!runIsCurrent()) return;
       await localTimeReady;
       if (!runIsCurrent()) return;
+      if (readingsReady) {
+        const read = await readingsReady;
+        if (!runIsCurrent()) return;
+        if (read) setReadBigThree(() => read);
+      }
       let receiptModule: Awaited<ReturnType<typeof loadCalculatorReceipt>> | null = null;
       if (mode === 'full') {
         try {
@@ -2407,7 +2419,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                       {signName(s, locale)}
                     </span>
                     <span class="mono three-card__deg">{formatLongitude(lon, locale)}</span>
-                    {showsEnglishInterpretation && <p class="three-card__read">{bigThree(kind, s.slug)}</p>}
+                    {showsEnglishInterpretation && readBigThree && <p class="three-card__read">{readBigThree(kind, s.slug)}</p>}
                     <a class="three-card__more" href={localizePath(locale, `/${s.slug}/`)}>{t(locale, 'read')} {signName(s, locale)} →</a>
                   </div>
                 </div>

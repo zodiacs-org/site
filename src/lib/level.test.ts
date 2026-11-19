@@ -102,6 +102,16 @@ describe('level rules in the page', () => {
     expect(island).toContain("getAttribute('data-level')");
   });
 
+  it('loads the Big Three reading text with the calculation, not with the page', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const island = await readFile(new URL('../islands/ChartCalculator.tsx', import.meta.url), 'utf8');
+    // Static, it would count against the /birth-chart/ first-load budget.
+    expect(island).not.toMatch(/from '\.\.\/lib\/interpretations'/);
+    expect(island).toContain("import('../lib/interpretations')");
+    // The cards wait for the text, so a result never grows a line after it shows.
+    expect(island.indexOf('await readingsReady')).toBeLessThan(island.indexOf('setChart(result)'));
+  });
+
   it('keeps the switch wiring out of the first-load scripts and replays an early press', async () => {
     const { readFile } = await import('node:fs/promises');
     const component = await readFile(new URL('../components/LevelSwitch.astro', import.meta.url), 'utf8');
