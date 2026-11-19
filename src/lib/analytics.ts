@@ -79,6 +79,8 @@ export type AnalyticsEventName =
   | 'living_chart_deleted'
   | 'living_chart_export'
   | 'calendar_subscribe'
+  | 'calendar_download'
+  | 'rss_subscribe'
   | 'chart_save'
   | 'chart_share'
   | 'wing_entry'

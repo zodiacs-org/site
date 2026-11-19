@@ -55,9 +55,12 @@ shared task board. `CLAUDE.md` imports this file, so the rules live here once.
   (`src/ai-tools/under-13.test.ts`). Nothing for anyone under 18 is framed
   as romance or attraction.
 - The 13 published MCP tool definitions stay byte-identical
-  (`src/ai-tools/release-060.test.ts`). The one exception: 0.6.5 takes the
+  (`src/ai-tools/release-060.test.ts`). Recorded exceptions: 0.6.5 takes the
   `baby` and `coming-of-age` occasions out of `get_occasion_sky`, approved by
   Dias on 7 November 2026 after OpenAI's review
+  (`src/ai-tools/published-tools.ts`). ZOD-64 changes the Neptune time quoted
+  in `get_upcoming_events`' description from 14:31:41 to 14:32 UTC, that
+  description only, approved by Dias on 2026-11-17
   (`src/ai-tools/published-tools.ts`).
 - The site is dark only. Do not add a light theme or a theme switch.
 - No token, market or crypto language on consumer surfaces. The approved

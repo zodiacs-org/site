@@ -1,3 +1,4 @@
+import { useBrowserEphemeris } from '../../tests/helpers/browser-ephemeris';
 import { readFileSync } from 'node:fs';
 import ts from 'typescript';
 import { describe, expect, it, vi } from 'vitest';
@@ -7,6 +8,8 @@ import { localDateContainsUtc, prepareLocalTime, resolveLocalToUtc } from '../li
 import { assessLocalDateReference } from '../lib/time/local-date-reference';
 import { signForLongitude } from '../lib/signs';
 import { t, type CatalogLocale } from '../lib/i18n';
+
+useBrowserEphemeris();
 
 // Execute the exact caller with controlled state and loader boundaries. The
 // separate native driver covers Preact rendering, visibility and ownership.

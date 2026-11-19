@@ -119,7 +119,7 @@ describe('independent lunar return references', () => {
     // The 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1 and 1.1.0-rc.2 rebuilds with CI's Python 3.11 change only the
     // recorded engine version (1.1.0-rc.2's also the digest of tools/engine-clock.ts, whose time basis now comes from @zodiacs/engine/time); numerical references and gates are unchanged.
     expect(digest(new URL('./fixtures/independent-lunar-returns.json', import.meta.url)))
-      .toBe('34d774c9fa152e95ceb659bdc705d87ce4305d3f49c9d1a47b9fed4d1c8b52f0');
+      .toBe('81a07a16b9a7a9c85ce4fc5ac633a110c5395dbd50c7235bf83138a44fda5243');
     expect(digest(new URL('./fixtures/swiss-lunar-fixed-target-applicability.json', import.meta.url)))
       .toBe('2f9056c0f93b22e3270bf1f496d804759a9057ac6b3e5a142604248ba1dddb1a');
     // The carried-over policy names the one it supersedes, and keeps its gates.

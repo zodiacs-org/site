@@ -62,7 +62,7 @@ export const compatibilityPerson = z.strictObject({
   zone: z.string().min(1).max(64).regex(ZONE_PATTERN).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign. Give it with longitude and zone. Nothing is stored."),
   longitude: z.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
-  place: plainText(80).optional().describe('Optional birthplace name, such as Madrid, Spain. Display only, not stored.'),
+  place: plainText(80).optional().describe('Optional birthplace name, such as Seville, Spain. Display only, not stored.'),
 }).superRefine((args, context) => {
   if (args.famous !== undefined) {
     if (Object.keys(args).length !== 1) context.addIssue({ code: 'custom', message: 'Give a famous person alone, without birth details.' });

@@ -5,6 +5,7 @@ import Base from '../../../layouts/Base.astro';
 import { SAVED_RESULT_FORWARD } from '../../../lib/profile/saved-result-link';
 import SignIcon from '../../../components/SignIcon.astro';
 import ArtFrame from '../../../components/ArtFrame.astro';
+import Motion from '../../../components/Motion.astro';
 import AskGuideLine from '../../../components/AskGuideLine.astro';
 import PairProse from '../../../components/compat/PairProse.astro';
 import SynastryCalculator from '../../../islands/SynastryCalculator';
@@ -115,6 +116,7 @@ const jsonLd = [
   {/* A comparison saved from an assistant links to its sign pair by its digest (#saved=…): it opens on the profile's saved list. */}
   <script slot="head" is:inline set:html={SAVED_RESULT_FORWARD} />
   <link slot="head" rel="preload" href="/fonts/eb-garamond-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
+  <Motion />
   <article class="ph" style={`--a:${a.hue};--b:${b.hue}`}>
     <header class="ph-hero">
       <div class="ph-hero__art">
@@ -238,10 +240,10 @@ const jsonLd = [
               ))}
             </div>
             <dl>
-              <div><dt>Element</dt><dd class="ph-basis__v">{pattern.elementPair}<span class="ph-el" aria-hidden="true">{people.map((sign) => <img src={elementMedallionSrc(sign.element)} srcset={elementMedallionSrcset(sign.element)} sizes="64px" width="128" height="128" alt="" loading="lazy" decoding="async" />)}</span></dd><dd class="ph-basis__m">{pattern.elementNote}</dd></div>
-              <div><dt>Mode</dt><dd class="ph-basis__v">{pattern.modalityPair}</dd><dd class="ph-basis__m">{pattern.modalityNote}</dd></div>
-              <div><dt>Polarity</dt><dd class="ph-basis__v">{pattern.polarity}</dd><dd class="ph-basis__m">{pattern.polarityNote}</dd></div>
-              <div><dt>{same || a.ruler === b.ruler ? 'Ruler' : 'Rulers'}</dt><dd class="ph-basis__v">{pattern.rulers}</dd><dd class="ph-basis__m">{rulersNote}</dd></div>
+              <div data-enter="rise"><dt>Element</dt><dd class="ph-basis__v">{pattern.elementPair}<span class="ph-el" aria-hidden="true">{people.map((sign) => <img src={elementMedallionSrc(sign.element)} srcset={elementMedallionSrcset(sign.element)} sizes="64px" width="128" height="128" alt="" loading="lazy" decoding="async" />)}</span></dd><dd class="ph-basis__m">{pattern.elementNote}</dd></div>
+              <div data-enter="rise"><dt>Mode</dt><dd class="ph-basis__v">{pattern.modalityPair}</dd><dd class="ph-basis__m">{pattern.modalityNote}</dd></div>
+              <div data-enter="rise"><dt>Polarity</dt><dd class="ph-basis__v">{pattern.polarity}</dd><dd class="ph-basis__m">{pattern.polarityNote}</dd></div>
+              <div data-enter="rise"><dt>{same || a.ruler === b.ruler ? 'Ruler' : 'Rulers'}</dt><dd class="ph-basis__v">{pattern.rulers}</dd><dd class="ph-basis__m">{rulersNote}</dd></div>
             </dl>
             <p class="ph-basis__note">Sun signs describe a starting pattern, not a verdict. The rest of both birth charts shapes how it is lived.</p>
           </section>
@@ -259,10 +261,10 @@ const jsonLd = [
           <p class="klede">This page reads one placement in each chart, the Sun. With birth details for both of you, the calculator reads the rest and shows where your two charts meet.</p>
           <div class="ph-adds">
             <h3>What a full comparison adds</h3>
-            <div><span class="ph-adds__gl" aria-hidden="true"><PairComparisonSymbol symbol="moon" /></span><div><b>Moon and Moon</b><span>How each of you settles, and what feels like home.</span></div></div>
-            <div><span class="ph-adds__gl ph-adds__gl--two" aria-hidden="true"><PairComparisonSymbol symbol="venus-mars" /></span><div><b>Venus and Mars</b><span>How affection is shown, and what draws each of you in.</span></div></div>
-            <div><span class="ph-adds__gl ph-adds__gl--mono" aria-hidden="true">ASC</span><div><b>Rising signs</b><span>First impressions and everyday approach. Needs birth times.</span></div></div>
-            <div><span class="ph-adds__gl" aria-hidden="true"><PairComparisonSymbol symbol="conjunction" /></span><div><b>Links between the charts</b><span>Where your planets meet, support each other, or rub.</span></div></div>
+            <div data-enter="rise"><span class="ph-adds__gl" aria-hidden="true"><PairComparisonSymbol symbol="moon" /></span><div><b>Moon and Moon</b><span>How each of you settles, and what feels like home.</span></div></div>
+            <div data-enter="rise"><span class="ph-adds__gl ph-adds__gl--two" aria-hidden="true"><PairComparisonSymbol symbol="venus-mars" /></span><div><b>Venus and Mars</b><span>How affection is shown, and what draws each of you in.</span></div></div>
+            <div data-enter="rise"><span class="ph-adds__gl ph-adds__gl--mono" aria-hidden="true">ASC</span><div><b>Rising signs</b><span>First impressions and everyday approach. Needs birth times.</span></div></div>
+            <div data-enter="rise"><span class="ph-adds__gl" aria-hidden="true"><PairComparisonSymbol symbol="conjunction" /></span><div><b>Links between the charts</b><span>Where your planets meet, support each other, or rub.</span></div></div>
           </div>
         </div>
         <!-- Keep the display: contents layout outside the visibility observer. -->
@@ -338,7 +340,7 @@ const jsonLd = [
             </div>
             <ul class="ph-pairs" role="list" aria-label={`${sign.name} with each sign`}>
               {otherPairs(sign).map(({ other, slug, now }) => (
-                <li>
+                <li data-enter="rise">
                   <a href={`/compatibility/${slug}/`} class:list={[now && 'is-now']} aria-current={now ? 'page' : undefined} style={`--now:${(now && !same ? (sign.slug === a.slug ? b : a) : sign).hue}`}>
                     <SignIcon sign={other.slug} size={38} />
                     <b>{other.name}</b>

@@ -45,8 +45,7 @@ const fulls = (sky.moons as { type: string; at: string }[])
     const id = `full-moon-${at.slice(0, 10)}`;
     return {
       id,
-      // The instant printed is NASA JPL Horizons' (src/lib/nasa-event-times-2027.ts), as on the
-      // full moon's own page; the id, the sign and the degree keep the committed sky data.
+      // Use the Horizons result when the committed lookup matches this calculation.
       at: new Date(nasaLunationAt('full', at) ?? at),
       name: second ? 'Blue' : MONTH_NAMES[date.getUTCMonth()],
       position: formatLongitude(lon),
@@ -168,7 +167,7 @@ const jsonLd = [
       <div class="core tinted rx-now__core">
         <span class="mono--label">Calendar file</span>
         <strong class="rx-now__line">
-          <a href={`/full-moon-calendar/${YEAR}.ics`}>Add the {YEAR} full moons to your calendar</a>
+          <a href={`/full-moon-calendar/${YEAR}.ics`} data-hook-event="calendar_download" data-hook-feed="full_moons">Add the {YEAR} full moons to your calendar</a>
         </strong>
         <span class="rx-now__all mono">
           One-minute events in universal time · every year from 2026 on <a href="/full-moon-calendar/">the full moon calendar</a>
@@ -216,7 +215,7 @@ const jsonLd = [
       />
     </div>
     <p class="year-page__check reveal">
-      Full moon times come from NASA JPL Horizons (the DE441 ephemeris), solved to the second and printed to the minute.
+      Full moon times use NASA JPL Horizons where the reference table has a match. The other times come from our engine.
       The signs and the degrees come from our own engine. <a href="/methodology/#event-times">How we check event times</a>
     </p>
   </section>
