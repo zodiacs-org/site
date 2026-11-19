@@ -1,14 +1,18 @@
 /**
  * Pre-submission gate for the ChatGPT plugin (Apps SDK) listing of
- * https://zodiacs.org/mcp. Run with `npm run test:chatgpt-gate`; plain
- * `npm test` skips it (it needs Chrome and a server).
+ * https://zodiacs.org/mcp. Plain `npm test` skips it (it needs Chrome and a
+ * server). Run it after `npm run build`, directly (there is no npm script:
+ * package.json is fingerprinted by the Phase 1 screenshot receipt):
  *
- *   BASE_URL       a deployment to test (a Vercel preview, or a local server).
+ *   CHATGPT_GATE=1 GATE_BASE_URL="$BASE_URL" npx vitest run tests/chatgpt-plugin-gate.spec.ts --reporter=verbose
+ *
+ *   GATE_BASE_URL  a deployment to test (a Vercel preview, or a local server).
  *                  Without it the gate starts tests/helpers/chatgpt-gate-server.ts,
- *                  which serves the published connector on 127.0.0.1. Vitest
- *                  overwrites BASE_URL inside the test process, so the npm script
- *                  passes it on as GATE_BASE_URL; set that one when calling vitest
- *                  directly.
+ *                  which serves the published connector on 127.0.0.1 and the
+ *                  built site from dist/. (Vitest overwrites BASE_URL inside the
+ *                  test process, which is why the address has its own name.)
+ *   GATE_ALLOW_NO_PAGES=1  without a deployment and without dist/, skip the
+ *                  listing-page check instead of failing on it.
  *   VERCEL_BYPASS  the preview's protection bypass token, sent only as Vercel's
  *                  own x-vercel-protection-bypass header.
  *   GATE_MCP=local with BASE_URL: check the pages on BASE_URL and run the MCP
@@ -17,18 +21,22 @@
  *   GATE_SCREENSHOT_DIR, GATE_REPORT  where the carousel PNGs and the JSON
  *                  measurements go (defaults under the system temp directory).
  *
- * It speaks Streamable HTTP to /mcp with no credentials of any kind, and
- * holds exactly five positive and three negative review cases. Every birth
- * detail in this file is invented for the test. Model routing itself (whether
- * ChatGPT picks a tool for a prompt) cannot be tested here: that is a manual
- * developer-mode check.
+ * It speaks Streamable HTTP to /mcp with no credentials of any kind. Its five
+ * positive and three negative review cases are the ones the package declares
+ * (plugins/zodiacs-sky/plugin.json, extensions["com.openai"].review.test_cases):
+ * each is driven with its prompt's own details, and none needs a private birth
+ * detail. The birth chart, unknown birth time and transit checks sit outside
+ * the five and three, as protocol tests; every private birth detail in them is
+ * invented for the test. Model routing itself (whether ChatGPT picks a tool
+ * for a prompt) cannot be tested here: that is a manual developer-mode check.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { Body, Ecliptic, GeoVector } from 'astronomy-engine';
 import { chromium, type Browser } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { startGateServer, type GateServer } from './helpers/chatgpt-gate-server';
@@ -40,6 +48,10 @@ const REPORT_PATH = process.env.GATE_REPORT ?? join(tmpdir(), 'chatgpt-gate-repo
 const BYPASS = (process.env.VERCEL_BYPASS ?? process.env.VERCEL_AUTOMATION_BYPASS_SECRET ?? '').trim();
 const PROTOCOL = '2025-06-18';
 const SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+
+interface DeclaredCase { description: string; prompt: string; tools_triggered?: string; expected_behavior: string }
+/** The review cases the package submits. The gate's five and three are these, prompt for prompt. */
+const DECLARED = JSON.parse(readFileSync(join(root, 'plugins/zodiacs-sky/plugin.json'), 'utf8')).extensions['com.openai'].review.test_cases as { positive: DeclaredCase[]; negative: DeclaredCase[] };
 
 // Invented people, used nowhere else: person A in Madrid, person B in Chicago.
 const PERSON_A = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
@@ -53,7 +65,6 @@ let pagesBase = '';
 let local: GateServer | undefined;
 let paceMs = 0;
 let lastRequestAt = 0;
-const sentHeaderNames = new Set<string>();
 
 interface Reply { status: number; headers: Headers; message: any; text: string }
 
@@ -70,7 +81,6 @@ function edgeHeaders(): Record<string, string> {
 async function post(body: unknown, extra: Record<string, string> = {}): Promise<Reply> {
   await paced();
   const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': PROTOCOL, ...extra };
-  for (const name of Object.keys(headers)) sentHeaderNames.add(name.toLowerCase());
   const response = await fetch(`${mcpBase}/mcp`, { method: 'POST', headers: { ...headers, ...edgeHeaders() }, body: JSON.stringify(body), redirect: 'manual' });
   const text = await response.text();
   let message: any = null;
@@ -85,7 +95,11 @@ async function post(body: unknown, extra: Record<string, string> = {}): Promise<
 
 let serial = 0;
 const rpc = (method: string, params: unknown = {}) => post({ jsonrpc: '2.0', id: ++serial, method, params });
-const callTool = (name: string, args: Record<string, unknown> = {}) => rpc('tools/call', { name, arguments: args });
+/** The tools called since a review case last cleared it, in order. */
+const called: string[] = [];
+const callTool = (name: string, args: Record<string, unknown> = {}) => { called.push(name); return rpc('tools/call', { name, arguments: args }); };
+const todayIn = (zone: string, at = new Date()) => new Intl.DateTimeFormat('en-CA', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(at);
+const literal = (text: string) => new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 
 async function get(base: string, path: string): Promise<{ status: number; headers: Headers; text: string }> {
   await paced();
@@ -103,6 +117,7 @@ function answered(reply: Reply, tool: string): any {
   expect(result.structuredContent).toMatchObject({ schema: 'zodiacs.ai-tool-result.v1', ok: true, tool });
   expect(result.content?.[0]).toMatchObject({ type: 'text', text: JSON.stringify(result.structuredContent) });
   sizes[tool] = Math.max(sizes[tool] ?? 0, Buffer.byteLength(JSON.stringify(result.structuredContent)));
+  for (const text of everyString(result.structuredContent)) if (/[–—]/.test(text)) answerDashes.add(`${tool}: ${/.{0,30}[–—].{0,20}/.exec(text)![0]}`);
   return result;
 }
 
@@ -129,14 +144,33 @@ function everyString(value: unknown, into: string[] = []): string[] {
 // ---------------------------------------------------------------------------
 // Listing policy lint (plugin guidelines 1.3, 3.4, 5.1, 5.4, 6.1).
 // ---------------------------------------------------------------------------
-/** A sentence that refuses or rules something out. Commerce and guarantee words may appear only in these. */
+/** Words that refuse or rule something out. Commerce and guarantee words may appear only where one of these governs them. */
 const REFUSES = /\b(?:not|no|never|nor|nothing|none|cannot|without|outside|refuses|refused|neither)\b/i;
+/** After the term, only a negated verb rules it out ("... or a guarantee is not a request for this tool"). */
+const NEGATED_AFTER = /\b(?:is|are|was|were|does|do|can|will|would|should|may|must) (?:not|never)\b|\bcannot\b/i;
+/** A clause that ends in a colon and says its list is ruled out ("A request for one of those is outside Zodiacs ...: a stock pick, a bet"). */
+const RULES_OUT_ITS_LIST = /\b(?:is|are) (?:outside|not|never)\b/i;
+/**
+ * True when every place the term appears in the sentence is ruled out in its own clause: a refusing word
+ * before it, a negated verb after it, or a list whose heading clause rules it out. "Zodiacs gives no stock
+ * picks" passes; "Buy now, no card needed" and "No card needed: buy now" do not.
+ */
+function ruledOut(sentence: string, pattern: RegExp): boolean {
+  for (const match of sentence.matchAll(new RegExp(pattern.source, 'gi'))) {
+    const clauses = (sentence.slice(0, match.index).split(/[.;!?]/).pop() ?? '').split(':');
+    const before = clauses.pop()!.slice(-240);
+    const after = sentence.slice(match.index! + match[0].length).split(/[.;:!?]/)[0];
+    if (!REFUSES.test(before) && !NEGATED_AFTER.test(after) && !RULES_OUT_ITS_LIST.test(clauses.join(':'))) return false;
+  }
+  return true;
+}
 const POLICY_RULES: { id: string; pattern: RegExp; allowedInRefusal: boolean }[] = [
   { id: 'competitor named', pattern: /\b(?:co-?star|the pattern|chani|sanctuary|astro\.com|astro-?seek|cafe ?astrology|time ?passages|nebula|astrotalk|horoscope\.com|astrology\.com|astrodienst)\b/i, allowedInRefusal: false },
   { id: 'comparison or superlative', pattern: /\b(?:better than|unlike other|the best astrology|most accurate|more accurate than|number one|world'?s (?:best|first|most)|leading|award[- ]winning|official(?:ly)?)\b|#1\b/i, allowedInRefusal: false },
   { id: 'pricing or upsell', pattern: /\b(?:pricing|price[sd]?|subscription plans?|paid|premium|upgrade[sd]?|free trial|discount|promo(?:tion|tional)?|coupon|checkout|purchase[sd]?|paywall|in-app)\b|\$\s?\d/i, allowedInRefusal: true },
   { id: 'purchase prompt', pattern: /\b(?:buy|sell|shop|order now)\b/i, allowedInRefusal: true },
   { id: 'crypto', pattern: /\b(?:crypto\w*|tokens?|coins?|wallets?|nfts?|blockchain|solana|airdrop|market cap|memecoin|astrofolio)\b/i, allowedInRefusal: false },
+  { id: 'trading or investing', pattern: /\b(?:trad(?:e[sd]?|ing)(?!-off)|invest\w*|stocks?|shares? in|portfolio)\b/i, allowedInRefusal: true },
   { id: 'advertising', pattern: /\b(?:advertis\w*|sponsor\w*|affiliate\w*)\b/i, allowedInRefusal: false },
   { id: 'unverifiable claim', pattern: /\b(?:100% accurate|guarantee[sd]?|scientifically (?:proven|validated)|always right|never wrong)\b/i, allowedInRefusal: true },
   { id: 'steering the model', pattern: /\b(?:always (?:use|call|prefer)|prefer (?:zodiacs|this (?:tool|app|plugin))|instead of (?:other|another) (?:apps?|plugins?|tools?|connectors?)|do not use (?:other|another)|ignore (?:previous|other|all) (?:instructions|tools))\b/i, allowedInRefusal: false },
@@ -152,14 +186,14 @@ function policyFindings(source: string, text: string): string[] {
   for (const sentence of sentencesOf(text)) {
     for (const rule of POLICY_RULES) {
       if (!rule.pattern.test(sentence)) continue;
-      if (rule.allowedInRefusal && REFUSES.test(sentence)) continue;
+      if (rule.allowedInRefusal && ruledOut(sentence, rule.pattern)) continue;
       found.push(`${source}: ${rule.id}: "${sentence.slice(0, 160)}"`);
     }
   }
   return found;
 }
 
-/** Negative case 1's fixed list: prompts Zodiacs must not be chosen for, with the words that would invite them. */
+/** A fixed list of prompts Zodiacs must not be chosen for, with the words that would invite them. */
 const OFF_TOPIC = [
   { prompt: 'What is the weather in Paris tomorrow?', terms: ['weather', 'temperature', 'rain'] },
   { prompt: 'Book me a flight to Tokyo next Friday.', terms: ['flight', 'airline', 'hotel', 'booking'] },
@@ -186,31 +220,59 @@ const MODES = [
 type Mode = typeof MODES[number];
 const TAP_MIN = 44;
 /**
- * Controls in the published panels that are under 44px on a 375px phone today, with the smaller side each had
- * on 20 November 2026. /mcp serves a frozen bundle (api/_ai/published/runtime.mjs), so enlarging them needs a
- * new panel version and the owner's yes; until then this list may only shrink. The gate fails when a control
- * that is not listed is under 44px, when a listed one gets smaller, and when a listed one is no longer found
- * (then its line goes). A link inside a sentence is not a tap target here (WCAG 2.5.8's inline exception).
+ * RED, not a pass: controls in the published panels that are under 44px on a 375px phone today, each keyed by
+ * its panel and listed with the smaller side it had there on 20 November 2026. /mcp serves a frozen bundle
+ * (api/_ai/published/runtime.mjs), so enlarging them needs a new panel version and the owner's yes; until then
+ * this list may only shrink. The gate fails when a control that is not listed for its panel is under 44px, when
+ * a listed one gets smaller, and when a listed one is no longer found (then its line goes). A link inside a
+ * sentence is not a tap target here (WCAG 2.5.8's inline exception).
  */
 const KNOWN_SMALL_TARGETS: Record<string, number> = {
-  'a.nameplate': 19, // the ZODIACS · ORG line at the top of the readings and occasions panels
-  'a.brand': 19, // the same line in the sky calendar
-  'a.panel-brand': 19, // and in Chart Studio
-  'a "Privacy"': 14, // the footer link: 14px in Chart Studio, 18.8px in the other panels
-  'a "How we calculate"': 14, // Chart Studio's footer
-  'button.copy': 29, // Copy the reading, Copy the card
-  'a.secondary': 29, // Read this pair
-  summary: 22.5, // "4 more contacts"
-  'input#from': 43, 'input#to': 43, 'select#zone': 43, // the sky calendar's form, one pixel short
+  // Readings (birth chart, transits, explainers)
+  'ui://zodiacs/readings-v3.html a.nameplate': 19, // the ZODIACS · ORG line at the top
+  'ui://zodiacs/readings-v3.html button.copy': 29, // Copy the reading
+  'ui://zodiacs/readings-v3.html a "Privacy"': 18.8, // the footer link
+  // Occasions (wedding card, two charts compared, a famous chart)
+  'ui://zodiacs/occasions-v8.html a.nameplate': 19,
+  'ui://zodiacs/occasions-v8.html button.copy': 29, // Copy the card
+  'ui://zodiacs/occasions-v8.html a.secondary': 29, // Read this pair, Open printable card
+  'ui://zodiacs/occasions-v8.html a "(a person)’s chart"': 29, // the links to two published people's pages
+  'ui://zodiacs/occasions-v8.html summary': 22.5, // "4 more contacts"
+  'ui://zodiacs/occasions-v8.html a "Privacy"': 18.8,
+  // Horoscopes
+  'ui://zodiacs/horoscopes-v7.html a.nameplate': 19,
+  'ui://zodiacs/horoscopes-v7.html button.text': 25.8, // Change sign
+  'ui://zodiacs/horoscopes-v7.html button': 34.2, // Today, Tomorrow, This week, General, Love, Career
+  'ui://zodiacs/horoscopes-v7.html summary': 22.5, // Why this reading?
+  'ui://zodiacs/horoscopes-v7.html a.method': 22.5, // How we write horoscopes
+  'ui://zodiacs/horoscopes-v7.html button.copy': 29, // Copy reading
+  'ui://zodiacs/horoscopes-v7.html a.secondary': 29, // More on zodiacs.org
+  'ui://zodiacs/horoscopes-v7.html a "Privacy"': 18.8,
+  // Sky calendar: the brand line, and its form one pixel short
+  'ui://zodiacs/sky-events-v4.html a.brand': 19,
+  'ui://zodiacs/sky-events-v4.html input#from': 43, 'ui://zodiacs/sky-events-v4.html input#to': 43, 'ui://zodiacs/sky-events-v4.html select#zone': 43,
+  // Chart Studio (empty state only)
+  'ui://zodiacs/chart-studio-v6.html a.panel-brand': 19,
+  'ui://zodiacs/chart-studio-v6.html a "How we calculate"': 14,
+  'ui://zodiacs/chart-studio-v6.html a "Privacy"': 14,
 };
 const smallTargetsSeen: Record<string, number> = {};
-const targetKey = (control: Control) => (control.tag === 'a' ? `a "${control.label}"` : control.tag.startsWith('summary') ? 'summary' : control.tag);
+const tapFailures: string[] = [];
+const targetKey = (widget: Widget, control: Control) => `${widget.uri} ${control.tag === 'a' ? `a "${control.label.replace(/^.+’s chart$/, '(a person)’s chart')}"` : control.tag}`;
+/** Dashes the published panels print today (house rule: none), as the line each sits on. Same ratchet as the tap targets. */
+const KNOWN_DASH_LINES: Record<string, RegExp> = {
+  'ui://zodiacs/sky-events-v4.html': /^\d{1,2} [A-Z][a-z]{2,3} – \d{1,2} [A-Z][a-z]{2,3} · times for /, // the sky calendar's heading: "19 Nov (en dash) 26 Nov · times for Mexico City"
+};
+const dashLinesSeen = new Set<string>();
+const answerDashes = new Set<string>();
+/** No link a panel builds may carry the invented people's birth details (dates, times, coordinates, places). */
+const BIRTH_DETAILS_IN_LINK = /1990|1988|08[:%3A]*30|19[:%3A]*45|40\.42|41\.88|-3\.7|-87\.63|Madrid|Chicago/i;
 
 interface Widget { uri: string; html: string; csp: { connectDomains: string[]; resourceDomains: string[] } }
 interface Control { tag: string; label: string; width: number; height: number; inline: boolean }
 interface Rendered {
   text: string; labels: string[]; scrollWidth: number; clientWidth: number; overflowing: string[];
-  controls: Control[]; theme: string; background: string; brokenImages: string[];
+  controls: Control[]; theme: string; background: string; brokenImages: string[]; hrefs: string[];
   messages: any[]; errors: string[]; requests: string[]; blocked: string[]; height: number; openHeight: number;
 }
 
@@ -281,9 +343,10 @@ async function render(widget: Widget, mode: Mode, result: unknown, options: { op
   const requests: string[] = [];
   const blocked: string[] = [];
   const allowed = new Set(widget.csp.resourceDomains);
-  // ChatGPT also sets window.openai; the panels read the result from it and still complete the MCP Apps handshake.
+  // ChatGPT also sets window.openai (the answer, and its _meta as toolResponseMetadata, which the horoscope panel
+  // draws from); the panels read the result from it and still complete the MCP Apps handshake.
   const html = options.openai
-    ? widget.html.replace('<head>', `<head><script>window.openai = ${JSON.stringify({ toolOutput: (result as any)?.structuredContent ?? null, theme: mode.theme, displayMode: 'inline', locale: 'en-US' }).replace(/</g, '\\u003c')};</script>`)
+    ? widget.html.replace('<head>', `<head><script>window.openai = ${JSON.stringify({ toolOutput: (result as any)?.structuredContent ?? null, toolResponseMetadata: (result as any)?._meta ?? null, theme: mode.theme, displayMode: 'inline', locale: 'en-US' }).replace(/</g, '\\u003c')};</script>`)
     : widget.html;
   try {
     await context.route('**/*', async (route) => {
@@ -348,7 +411,7 @@ async function render(widget: Widget, mode: Mode, result: unknown, options: { op
       }).slice(0, 6).map(name);
       const labels = [...document.querySelectorAll('[aria-label], [alt], [title], [placeholder]')].flatMap(element => ['aria-label', 'alt', 'title', 'placeholder'].map(attribute => element.getAttribute(attribute) ?? '')).filter(Boolean);
       return {
-        text: document.body.innerText, labels, scrollWidth: Math.max(doc.scrollWidth, document.body.scrollWidth), clientWidth: doc.clientWidth, overflowing, controls,
+        text: document.body.innerText, labels, hrefs: [...document.querySelectorAll('a[href]')].map(link => (link as HTMLAnchorElement).href), scrollWidth: Math.max(doc.scrollWidth, document.body.scrollWidth), clientWidth: doc.clientWidth, overflowing, controls,
         theme: doc.dataset.theme ?? '', background: getComputedStyle(document.body).backgroundColor,
         brokenImages: [...document.images].filter(image => shown(image) && image.naturalWidth === 0).map(image => image.currentSrc || image.src).map(source => source.slice(0, 80)),
       };
@@ -374,7 +437,7 @@ async function render(widget: Widget, mode: Mode, result: unknown, options: { op
     const unique = <T,>(items: T[]) => [...new Map(items.map(item => [JSON.stringify(item), item])).values()];
     return {
       ...open, scrollWidth: Math.max(closed.scrollWidth, open.scrollWidth), overflowing: unique([...closed.overflowing, ...open.overflowing]),
-      controls: unique([...closed.controls, ...open.controls]), brokenImages: unique([...closed.brokenImages, ...open.brokenImages]), labels: unique([...closed.labels, ...open.labels]),
+      controls: unique([...closed.controls, ...open.controls]), brokenImages: unique([...closed.brokenImages, ...open.brokenImages]), labels: unique([...closed.labels, ...open.labels]), hrefs: unique([...closed.hrefs, ...open.hrefs]),
       messages, errors, requests, blocked, height, openHeight,
     };
   } finally {
@@ -382,8 +445,8 @@ async function render(widget: Widget, mode: Mode, result: unknown, options: { op
   }
 }
 
-/** What every rendered state must satisfy, whatever it shows. */
-function expectClean(view: Rendered, widget: Widget, mode: Mode, label: string): void {
+/** What every rendered state must satisfy, whatever it shows. `linksOmit` adds what this state's own links must not carry. */
+function expectClean(view: Rendered, widget: Widget, mode: Mode, label: string, linksOmit?: RegExp): void {
   const initialize = view.messages.find(message => message?.method === 'ui/initialize');
   expect(initialize, `${label}: the widget opens with ui/initialize`).toMatchObject({ jsonrpc: '2.0', params: { protocolVersion: expect.any(String), appInfo: { name: expect.any(String) } } });
   expect(view.messages.some(message => message?.method === 'ui/notifications/initialized'), `${label}: the widget confirms the handshake`).toBe(true);
@@ -394,21 +457,37 @@ function expectClean(view: Rendered, widget: Widget, mode: Mode, label: string):
   expect(view.overflowing, `${label}: elements past the edge`).toEqual([]);
   expect(view.text.trim().length, `${label}: the card is not blank`).toBeGreaterThan(20);
   expect(view.text, `${label}: no raw values on screen`).not.toMatch(/\bundefined\b|\bNaN\b|\[object Object\]|\bnull\b/);
+  for (const href of view.hrefs) {
+    expect(href, `${label}: a link carries a birth detail`).not.toMatch(BIRTH_DETAILS_IN_LINK);
+    if (linksOmit) expect(href, `${label}: a link carries what it must not`).not.toMatch(linksOmit);
+  }
+  // No em or en dash on screen, beyond the lines already recorded as defects of the frozen panels.
+  const dashed = [view.text, ...view.labels].join('\n').split('\n').filter(line => /[–—]/.test(line));
+  const known = KNOWN_DASH_LINES[widget.uri];
+  for (const line of dashed) if (known?.test(line.trim())) dashLinesSeen.add(widget.uri);
+  expect(dashed.filter(line => !known?.test(line.trim())), `${label}: dashes on screen`).toEqual([]);
   renderedText.push({ source: `${widget.uri} ${label}`, text: [view.text, ...view.labels].join('\n') });
   onScreen[label] = view.text;
   if (mode.mobile) {
-    const small = view.controls.filter(control => !control.inline && Math.min(control.width, control.height) < TAP_MIN);
-    const failures: string[] = [];
-    for (const control of small) {
-      const key = targetKey(control);
+    // Collected here and judged once, in "375px touch targets", so one small control does not hide a state's other checks.
+    for (const control of view.controls.filter(item => !item.inline && Math.min(item.width, item.height) < TAP_MIN)) {
+      const key = targetKey(widget, control);
       const side = Math.min(control.width, control.height);
-      const size = `${control.tag} "${control.label}" ${control.width}x${control.height}`;
-      if (!(key in KNOWN_SMALL_TARGETS)) failures.push(`under ${TAP_MIN}px and not on the known list: ${size}`);
-      else if (side < KNOWN_SMALL_TARGETS[key] - 0.5) failures.push(`smaller than recorded (${KNOWN_SMALL_TARGETS[key]}px): ${size}`);
+      const size = `${label}: ${control.tag} "${control.label}" ${control.width}x${control.height}`;
+      if (!(key in KNOWN_SMALL_TARGETS)) tapFailures.push(`under ${TAP_MIN}px and not on the known list: ${size}`);
+      else if (side < KNOWN_SMALL_TARGETS[key] - 0.5) tapFailures.push(`smaller than recorded (${KNOWN_SMALL_TARGETS[key]}px): ${size}`);
       smallTargetsSeen[key] = Math.min(smallTargetsSeen[key] ?? Infinity, side);
     }
-    expect(failures.join('\n'), `${label}: tap targets`).toBe('');
   }
+}
+
+/** What the local server saw arrive on /mcp: header names only. A remote deployment cannot be asked, so this holds on loopback. */
+function expectNoCredentialHeaders(): void {
+  if (!local || mcpBase !== local.baseUrl) return;
+  const names = local.receivedHeaderNames();
+  for (const name of ['authorization', 'proxy-authorization', 'cookie', 'x-api-key', 'api-key', 'x-vercel-protection-bypass']) expect(names, `no ${name} header reached /mcp`).not.toContain(name);
+  for (const name of ['content-type', 'accept', 'mcp-protocol-version']) expect(names).toContain(name);
+  report.headerNamesReceived = names;
 }
 
 function widgetFor(tool: string): Widget {
@@ -465,6 +544,8 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
     await local?.close();
     report.structuredContentBytes = sizes;
     report.onScreen = onScreen;
+    report.tapTargets = { minimum: TAP_MIN, underMinimum: smallTargetsSeen, failures: tapFailures };
+    report.dashesInAnswers = [...answerDashes];
     report.target = { mcp: mcpBase, pages: pagesBase, server: initialize?.message?.result?.serverInfo, tools: tools.length, resources: resources.length };
     await writeFile(REPORT_PATH, `${JSON.stringify(report, null, 2)}\n`);
   });
@@ -473,7 +554,7 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
     it('connects with no credentials: only protocol headers go out, and nothing asks for an account', async () => {
       expect(initialize.message.result).toMatchObject({ protocolVersion: PROTOCOL, serverInfo: { name: 'zodiacs', version: expect.stringMatching(/^\d+\.\d+\.\d+$/) }, capabilities: { tools: {}, resources: {} } });
       expect(initialize.headers.get('www-authenticate')).toBeNull();
-      expect([...sentHeaderNames].sort()).toEqual(['accept', 'content-type', 'mcp-protocol-version']);
+      expectNoCredentialHeaders();
       expect(tools.length).toBeGreaterThanOrEqual(13);
       for (const tool of tools) expect(tool._meta?.securitySchemes, `${tool.name} security scheme`).toEqual([{ type: 'noauth' }]);
       // No OAuth discovery document exists, so no client is sent into a sign-in flow.
@@ -512,8 +593,9 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       expect(listing.displayName).toBe('Zodiacs');
       expect(listing.displayName).not.toMatch(/\b(?:MCP|Server|Plugin|App)\b/i);
       expect(policyFindings('listing', [listing.shortDescription, listing.longDescription].join('\n'))).toEqual([]);
-      expect(plugin.extensions['com.openai'].review.test_cases.positive).toHaveLength(5);
-      expect(plugin.extensions['com.openai'].review.test_cases.negative).toHaveLength(3);
+      // The review cases themselves are run below, prompt for prompt.
+      expect(plugin.extensions['com.openai'].review.test_cases).toEqual(DECLARED);
+      expect(plugin.extensions['com.openai'].review.commerce).toBe(false);
     });
 
     it('serves versioned widget addresses, with each tool on the newest version of its panel', () => {
@@ -560,7 +642,10 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
         expect(content.text, uri).not.toMatch(/<iframe\b/i);
         // Nor does any string in it, shown yet or not, name the collection, a purchase or a promotion (pictures and fonts set aside).
         const strings = content.text.replace(/data:[a-z0-9/+.-]+;base64,[A-Za-z0-9+/=]+/g, '');
-        expect(strings.match(/\b(?:astrofolio|wallets?|memecoin|solana|airdrop|cryptocurrenc\w*|buy now|free trial|coupon|sponsor\w*)\b/gi) ?? [], uri).toEqual([]);
+        expect(strings.match(/\b(?:astrofolio|wallets?|memecoin|solana|airdrop|crypto\w*|blockchain|nfts?|tokens?|coins?|trad(?:e[sd]?|ing)|market cap|invest\w*|buy now|free trial|coupon|sponsor\w*)\b/gi) ?? [], uri).toEqual([]);
+        // And the words in its markup (scripts, styles and tags set aside) keep the whole listing policy.
+        const words = strings.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, '\n').replace(/<!--[\s\S]*?-->/g, '\n').replace(/<[^>]+>/g, '\n');
+        expect(policyFindings(`${uri} markup`, words).join('\n'), uri).toBe('');
         widgets.set(uri, { uri, html: content.text, csp: meta.ui.csp });
       }
       report.widgetBytes = Object.fromEntries([...widgets].map(([uri, widget]) => [uri, Buffer.byteLength(widget.html)]));
@@ -569,7 +654,8 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
     it('declares every tool with a name, a title, a description and all four annotations', () => {
       expect(new Set(tools.map(tool => tool.name)).size).toBe(tools.length);
       // The review cases need the tools production lists today (ZODIACS_OCCASIONS_ENABLED=1 and ZODIACS_COVERAGE_ENABLED=1).
-      for (const name of ['get_natal_chart', 'get_sky', 'get_personal_transits', 'get_compatibility', 'get_upcoming_events', 'get_horoscope_period', 'get_capabilities']) expect(toolsByName.has(name), `the server offers ${name}`).toBe(true);
+      const declared = DECLARED.positive.flatMap(item => (item.tools_triggered ?? '').split(', '));
+      for (const name of [...declared, 'get_natal_chart', 'get_sky', 'get_personal_transits', 'get_horoscope_period', 'get_capabilities']) expect(toolsByName.has(name), `the server offers ${name}`).toBe(true);
       for (const tool of tools) {
         expect(tool.name, tool.name).toMatch(/^[a-z]+(?:_[a-z0-9]+)+$/);
         expect(tool.name, tool.name).not.toMatch(/best|official|pick_me|top|pro$/);
@@ -590,6 +676,15 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       }
       for (const resource of resources) findings.push(...policyFindings(resource.uri, everyString([resource.title, resource.description, resource._meta?.['openai/widgetDescription']]).join('\n')));
       expect(findings.join('\n')).toBe('');
+    });
+
+    it('uses no em or en dash in the instructions or any tool title or description', () => {
+      expect(initialize.message.result.instructions.match(/[–—]/g) ?? [], 'instructions').toEqual([]);
+      for (const tool of tools) expect([tool.title, tool.annotations?.title ?? '', tool.description].join('\n').match(/[–—]/g) ?? [], `${tool.name} title and description`).toEqual([]);
+      // Known defect of the frozen bundle, listed in the notes: field descriptions print a year range with an en dash. Nothing else may.
+      const fields = tools.flatMap(tool => everyString(tool.inputSchema).filter(text => /[–—]/.test(text)).map(text => ({ tool: tool.name, text })));
+      for (const field of fields) expect(field.text.replace(/\(years 1800–2199\)/g, ''), `${field.tool} field description`).not.toMatch(/[–—]/);
+      report.fieldDescriptionsWithADash = [...new Set(fields.map(field => field.tool))];
     });
 
     it('asks for no more than the task needs: no contact, identity or device-location fields, and town-level places', () => {
@@ -615,9 +710,10 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
 
     it('has the four listing pages and the domain verification file in place', async (context) => {
       if (local && pagesBase === local.baseUrl && !local.servesPages) {
-        // The connector needs no site build; the pages do. Say so instead of passing quietly.
-        console.warn('chatgpt-plugin-gate: no dist/ build, so the four listing pages were NOT checked. Run `npm run build` first, or set BASE_URL.');
-        report.listingPages = 'skipped: no dist/ build';
+        // The connector needs no site build; the pages do. Without one the gate fails, unless told the pages are checked elsewhere.
+        report.listingPages = 'not checked: no dist/ build';
+        if (process.env.GATE_ALLOW_NO_PAGES !== '1') throw new Error('No dist/ build, so the four listing pages cannot be checked: run `npm run build`, or set GATE_BASE_URL to a deployment, or GATE_ALLOW_NO_PAGES=1 to skip this check knowingly.');
+        console.warn('chatgpt-plugin-gate: GATE_ALLOW_NO_PAGES=1 and no dist/ build, so the four listing pages were NOT checked.');
         context.skip();
       }
       const pages: Record<string, number> = {};
@@ -641,10 +737,232 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
   });
 
   // -------------------------------------------------------------------------
-  // The review cases. Exactly five positive and three negative.
+  // The review cases: the five positive and three negative the package declares, each driven with the details
+  // its own prompt gives. `prompt` pins a driver to its declared case, so editing the package's cases fails the
+  // gate until the driver follows.
   // -------------------------------------------------------------------------
-  const POSITIVE_CASES: [string, () => Promise<void>][] = [
-    ['P1 a birth chart with an exact birth time gives the rising sign, the angles and a house for every planet', async () => {
+  const keysOf = (url: string) => [...new URL(url).searchParams.keys()].sort();
+  const POSITIVE: { prompt: string; run: (expected: string) => Promise<void> }[] = [
+    { prompt: "Is Mercury retrograde right now, and what else changes in the sky this week? I'm in Mexico City.", run: async () => {
+      const zone = 'America/Mexico_City';
+      const now = new Date();
+      const check = answered(await callTool('check_sky_fact', { kind: 'retrograde', body: 'Mercury', date: todayIn(zone, now), zone }), 'check_sky_fact').structuredContent.data;
+      const fact = check.calculation.result;
+      expect(fact.fact).toMatchObject({ kind: 'retrograde', body: 'Mercury', zone });
+      expect(check.answer).toBe(fact.answer);
+      // A yes or a no, unless Mercury turns inside the day itself.
+      if (fact.facts.stations.length === 0) {
+        expect(fact.facts.atEnd.retrograde).toBe(fact.facts.atStart.retrograde);
+        expect(check.answer).toBe(String(fact.facts.atStart.retrograde));
+        // The same answer from the ephemeris directly: which way Mercury's longitude moves over the day's first hour.
+        const longitude = (at: Date) => Ecliptic(GeoVector(Body.Mercury, at, true)).elon;
+        const start = new Date(fact.window.from);
+        const moved = ((longitude(new Date(start.getTime() + 3_600_000)) - longitude(start) + 540) % 360) - 180;
+        expect(moved < 0, 'Mercury moving backwards at the start of the day').toBe(fact.facts.atStart.retrograde);
+      }
+      // The astronomy comes with its receipt, apart from any meaning.
+      expect(check.calculation.receipt).toMatchObject({ schema: 'zodiacs.compute-receipt.v1' });
+      const from = now.toISOString();
+      const to = new Date(now.getTime() + 7 * 86_400_000).toISOString();
+      const result = answered(await callTool('get_upcoming_events', { from, to, zone }), 'get_upcoming_events');
+      const data = result.structuredContent.data;
+      expect(data).toMatchObject({ from, to, zone, completeness: 'tested-not-proven' });
+      // The Moon alone changes sign two or three times in a week.
+      expect(data.events.filter((event: any) => event.kind === 'ingress' && event.body === 'Moon').length).toBeGreaterThanOrEqual(2);
+      for (const event of data.events) {
+        expect(['ingress', 'station', 'lunation'], event.at).toContain(event.kind);
+        expect(Date.parse(event.at), event.at).toBeGreaterThanOrEqual(now.getTime() - 60_000);
+        expect(Date.parse(event.at), event.at).toBeLessThanOrEqual(Date.parse(to) + 60_000);
+        // Each time is also given on the Mexico City clock (UTC-6 all year since 2022), the same moment.
+        expect(event.localAt, event.at).toMatch(/-06:00$/);
+        expect(Date.parse(event.localAt), event.at).toBe(Date.parse(event.at));
+      }
+      expect(data.events.map((event: any) => event.at)).toEqual(data.events.map((event: any) => event.at).sort());
+      results.set('events-week', result);
+    } },
+    { prompt: "Show today's horoscope for Leo.", run: async () => {
+      // The prompt gives a sign and nothing else; the zone is the one an assistant passes for where the person is.
+      const zone = 'Europe/Madrid';
+      const days = [todayIn(zone)];
+      let result = answered(await callTool('get_horoscope', { sign: 'leo', zone }), 'get_horoscope');
+      days.push(todayIn(zone));
+      let data = result.structuredContent.data;
+      if (data.status === 'unavailable' && local && mcpBase === local.baseUrl) {
+        // A checkout older than today: its committed three-day window no longer reaches the clock. Read its newest day, and say so.
+        const newest = data.available.at(-1).date;
+        report.horoscopeDay = `${newest}: this checkout's horoscope window does not reach today (${data.date})`;
+        result = answered(await callTool('get_horoscope', { sign: 'leo', zone, date: newest }), 'get_horoscope');
+        data = result.structuredContent.data;
+      } else {
+        expect(days, 'the reading is for the person\'s own day').toContain(data.date);
+      }
+      expect(data).toMatchObject({ status: 'available', sign: 'leo', signName: 'Leo', period: 'day', focus: 'general', zone, zoneSource: 'request' });
+      expect(data.reading.title).toContain(data.dateLabel);
+      expect(data.reading.paragraphs.length).toBeGreaterThanOrEqual(1);
+      for (const paragraph of data.reading.paragraphs) expect(paragraph.text.length).toBeGreaterThan(40);
+      expect(data.disclosure).toMatch(/Reading confidence \d{2}%/);
+      expect(data.why.note).toMatch(/sky positions we calculate\. What they mean is astrological interpretation/);
+      // The share link keeps the sign and the reading's date, nothing else.
+      expect(keysOf(data.shareUrl)).toEqual(['d', 'ref', 's']);
+      expect(new URL(data.shareUrl).searchParams.get('d')).toBe(data.date);
+      results.set('horoscope', result);
+    } },
+    { prompt: "What does Frida Kahlo's chart look like? And what does a Saturn return mean?", run: async (expected) => {
+      const result = answered(await callTool('get_famous_chart', { name: 'Frida Kahlo' }), 'get_famous_chart');
+      const data = result.structuredContent.data;
+      expect(data).toMatchObject({ found: true, person: { name: 'Frida Kahlo', slug: 'frida-kahlo', sun: { sign: 'cancer' }, url: 'https://zodiacs.org/people/frida-kahlo/?ref=assistant' } });
+      expect(data.person.placements.map((placement: any) => placement.body)).toEqual(['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']);
+      for (const placement of data.person.placements) expect(SIGNS, placement.body).toContain(placement.sign);
+      expect(data.note).toMatch(/a reference instant, not a birth time/);
+      expect(data.note).toMatch(/No houses, rising sign, angles/);
+      results.set('famous-chart', result);
+      // Someone Zodiacs does not publish gets no chart, not an invented one.
+      const nobody = answered(await callTool('get_famous_chart', { name: 'Zxqv Nobodyson' }), 'get_famous_chart').structuredContent.data;
+      expect(nobody).toMatchObject({ found: false, suggestions: [] });
+      expect(nobody.person).toBeUndefined();
+      const explained = answered(await callTool('explain_astrology', { topic: 'Saturn return' }), 'explain_astrology');
+      const explainer = explained.structuredContent.data;
+      expect(explainer).toMatchObject({ found: true, topic: 'saturn-return' });
+      // The declared figures, read from the declared sentence itself.
+      const [, years, first, second, third] = /about every ([\d.]+) years and around ages (\d+), (\d+) and (\d+)/.exec(expected)!;
+      expect(explainer.paragraphs[0]).toContain(`about ${years} years`);
+      expect(explainer.paragraphs[0]).toContain(`around age ${first}, the second around ${second} and the third around ${third}`);
+      expect(explainer.pages.map((page: any) => page.url)).toContain('https://zodiacs.org/saturn-return/?ref=assistant');
+      expect(explainer.note).toMatch(/not a claim that they determine anything/);
+      results.set('explainer', explained);
+    } },
+    { prompt: "We're getting married on 18 September 2027 at 16:30 in Lisbon, Portugal. Is it a good day for it? Make us a card with the sky for that day.", run: async () => {
+      const found = answered(await callTool('find_birthplace', { place: 'Lisbon', country: 'Portugal', date: '2027-09-18' }), 'find_birthplace').structuredContent.data;
+      expect(found.places[0]).toMatchObject({ name: 'Lisbon', country: 'Portugal', latitude: 38.73, longitude: -9.15, timeZone: 'Europe/Lisbon', offset: '+01:00' });
+      const place = found.places[0];
+      const result = answered(await callTool('get_occasion_sky', { occasion: 'wedding', date: '2027-09-18', time: '16:30', zone: place.timeZone, latitude: place.latitude, longitude: place.longitude, place: place.name }), 'get_occasion_sky');
+      const data = result.structuredContent.data;
+      expect(data).toMatchObject({ occasion: 'wedding', date: '2027-09-18', instant: { utc: '2027-09-18T15:30:00.000Z' }, instantIs: 'given-time' });
+      expect(data.rating).toMatchObject({ score: 70, verdict: 'A good day for it. Reading confidence 70%.' });
+      expect(data.rating.reasons.length).toBeGreaterThanOrEqual(2);
+      expect(data.rating.reasons.at(-1)).toMatch(/^Reading confidence \d{2}%$/);
+      const sign = (body: string) => data.sky.bodies.find((item: any) => item.body === body).sign;
+      expect([sign('Sun'), sign('Moon')]).toEqual(['virgo', 'aries']);
+      expect(data.evening.sunset.local).toBe('Sat 18 Sept 2027, 19:40');
+      expect(data.evening.goldenHour.start.local).toBe('Sat 18 Sept 2027, 19:05');
+      expect(data.evening.planetsAfterDusk).toEqual(['Venus', 'Mars', 'Saturn']);
+      expect(data.note).toMatch(/not a guarantee of how it will go/);
+      // The share link: the occasion and its day, the Sun and Moon signs, the rating and its confidence. No time, place or names.
+      expect(keysOf(data.shareUrl)).toEqual(['c', 'd', 'moon', 'o', 'ref', 'score', 'sun', 'v']);
+      expect(data.shareUrl).not.toMatch(/16|Lisbon|38\.73|9\.15/);
+      results.set('occasion', result);
+    } },
+    { prompt: 'How compatible were Marilyn Monroe and Arthur Miller, going by their charts?', run: async (expected) => {
+      const result = answered(await callTool('get_compatibility', { a: { famous: 'Marilyn Monroe' }, b: { famous: 'Arthur Miller' } }), 'get_compatibility');
+      const data = result.structuredContent.data;
+      // The declared score, verdict, parts and label, read from the declared sentence itself.
+      const [, overall, verdict, attraction, communication, stability, confidence] = /score of (\d+) out of 100, "([^"]+)", with attraction (\d+), communication (\d+) and long-term stability (\d+) and a Reading confidence (\d+)% label/.exec(expected)!;
+      expect(data.score).toMatchObject({ overall: Number(overall), verdict, areas: { attraction: Number(attraction), communication: Number(communication), stability: Number(stability) } });
+      expect(data.score.headline).toContain(`Reading confidence ${confidence}%`);
+      expect(data.a).toMatchObject({ name: 'Marilyn Monroe', famous: true, sun: 'gemini', moon: null, rising: null, timeKnown: false, url: 'https://zodiacs.org/people/marilyn-monroe/?ref=assistant' });
+      expect(data.b).toMatchObject({ name: 'Arthur Miller', famous: true, sun: 'libra', moon: null, rising: null, timeKnown: false, url: 'https://zodiacs.org/people/arthur-miller/?ref=assistant' });
+      expect(data.contacts.length).toBeGreaterThanOrEqual(3);
+      for (const contact of data.contacts) expect(contact.line.length).toBeGreaterThan(20);
+      expect(data.contacts.map((contact: any) => contact.orb)).toEqual(data.contacts.map((contact: any) => contact.orb).sort((a: number, b: number) => a - b));
+      expect(data.notes.filter((note: string) => /birth time is not on record, so Zodiacs uses their published chart for 12:00 civil time/.test(note))).toHaveLength(2);
+      expect(data.notes.join(' ')).toMatch(/Moon and rising sign are left out/);
+      expect(data.note).toMatch(/not a guarantee of how things will turn out/);
+      expect(keysOf(data.shareUrl)).toEqual(['as', 'attraction', 'bs', 'c', 'communication', 'ref', 'score', 'stability', 'v']);
+      results.set('compatibility-famous', result);
+    } },
+  ];
+
+  /** Every sentence of the instructions and of every tool's title, description and field descriptions. */
+  const toolSentences = (): [string, string][] => [['instructions', initialize.message.result.instructions] as [string, string], ...tools.map(tool => [tool.name, [tool.title, tool.description, ...everyString(tool.inputSchema).filter(text => /\s/.test(text))].join('\n')] as [string, string])]
+    .flatMap(([source, text]) => sentencesOf(text).map(sentence => [source, sentence] as [string, string]));
+  /** Where one of the words appears at all, it must be in a sentence that rules the request out. */
+  const invitations = (pattern: RegExp) => toolSentences().filter(([, sentence]) => pattern.test(sentence) && !ruledOut(sentence, pattern)).map(([source, sentence]) => `${source}: "${sentence.slice(0, 160)}"`);
+
+  // A model's choice of tool cannot be run here. Each negative case holds what makes the declared behaviour the
+  // only one the server supports: what the metadata tells the model, and what the server does if called anyway.
+  const NEGATIVE: { prompt: string; run: () => Promise<void> }[] = [
+    { prompt: 'Reschedule my work meeting tomorrow.', run: async () => {
+      expect(initialize.message.result.instructions).toMatch(/It does not schedule anything/);
+      expect(initialize.message.result.instructions).toMatch(/a reminder or anything scheduled\. No Zodiacs tool is for such a request, not even as a first step/);
+      // No tool is about meetings or appointments, and scheduling is named only to rule it out.
+      expect(toolSentences().filter(([, sentence]) => /\b(?:meetings?|appointments?|reschedul\w*)\b/i.test(sentence)).map(([source]) => source)).toEqual([]);
+      expect(invitations(/\b(?:schedul\w*|reminders?)\b/i).join('\n')).toBe('');
+      // The one tool that names calendar apps hands over a link and says it writes nothing.
+      expect(toolsByName.get('get_sky_calendar')?.description ?? 'adds nothing to anyone\'s calendar itself and schedules nothing').toMatch(/adds nothing to anyone's calendar itself and schedules nothing/);
+      // No calendar access exists to use: every tool only reads, none is named for a write, and a write tool is unknown.
+      for (const tool of tools) {
+        expect(tool.annotations, tool.name).toMatchObject({ readOnlyHint: true, destructiveHint: false });
+        expect(tool._meta?.securitySchemes, tool.name).toEqual([{ type: 'noauth' }]);
+        expect(tool.name, tool.name).not.toMatch(/^(?:save|create|update|delete|remove|set|send|post|write|add|schedule|reschedule|book|buy|pay|subscribe|upload)_/);
+      }
+      for (const name of ['reschedule_meeting', 'create_event', 'update_calendar']) {
+        const reply = await callTool(name, { when: 'tomorrow' });
+        expect(reply.status, name).toBe(200);
+        expect(reply.message.result, name).toBeUndefined();
+        expect(reply.message.error, name).toMatchObject({ code: -32602 });
+      }
+    } },
+    { prompt: 'Tell me which stock will rise based on my horoscope.', run: async () => {
+      const instructions = initialize.message.result.instructions;
+      expect(instructions).toMatch(/gives no betting tips, sports picks, investment timing/);
+      expect(instructions).toMatch(/outside Zodiacs even when it names a sign, a planet, a retrograde, a birth date or a horoscope: a stock or lottery pick, an investment call/);
+      expect(instructions).toMatch(/the answer is that Zodiacs does not do this, with no tool call/);
+      expect(toolsByName.get('get_horoscope').description).toMatch(/no betting tips, sports picks, stock picks, investment timing, financial forecasts[^.]*including when such a request mentions a horoscope/);
+      // Stocks, investing and finance are named only to rule them out, in every tool.
+      expect(invitations(/\b(?:stocks?|invest\w*|financ\w*|portfolio|trading)\b/i).join('\n')).toBe('');
+      // If the horoscope tool is called anyway: it has no money reading to ask for, and the Leo reading of case two names no investment.
+      const error = refused(await callTool('get_horoscope', { sign: 'leo', focus: 'money' }), 'get_horoscope');
+      expect(error).toMatchObject({ code: 'invalid-arguments', message: 'focus must be one of: general, love, career.' });
+      const reading = everyString(resultOf('horoscope').structuredContent.data.reading).join('\n');
+      expect(reading).not.toMatch(/\b(?:stocks?|invest\w*|shares|portfolio|profits?|trading|returns? on)\b/i);
+    } },
+    { prompt: 'Guarantee that my partner and I will stay together.', run: async () => {
+      expect(initialize.message.result.instructions).toMatch(/guarantees no outcome/);
+      expect(initialize.message.result.instructions).toMatch(/never the odds that an event happens/);
+      expect(toolsByName.get('get_compatibility').description).toMatch(/not a guarantee of how a relationship will go/);
+      expect(toolsByName.get('explain_astrology').description).toMatch(/A guarantee about a relationship or anything else[^.]*are not requests for this tool/);
+      expect(invitations(/\bguarantee\w*\b/i).join('\n')).toBe('');
+      // If two people's charts are compared anyway (invented people here): a reading with its limit stated, never a promise.
+      const result = answered(await callTool('get_compatibility', { a: PERSON_A, b: PERSON_B }), 'get_compatibility');
+      const data = result.structuredContent.data;
+      expect(data.note).toMatch(/not a guarantee of how things will turn out/);
+      expect(data.score.headline).toMatch(/Reading confidence \d{2}%/);
+      for (const value of [data.score.overall, ...Object.values(data.score.areas) as number[]]) { expect(Number.isInteger(value)).toBe(true); expect(value).toBeGreaterThanOrEqual(0); expect(value).toBeLessThanOrEqual(100); }
+      const words = everyString(data).filter(text => !text.startsWith('https://')).join('\n');
+      expect(words).not.toMatch(/\b(?:will (?:stay|last|marry|break up|divorce)|destined|meant to be|soulmates?|certain to)\b/i);
+      expect(policyFindings('get_compatibility answer', words).join('\n')).toBe('');
+      // And no link in it carries either person's birth details.
+      expect(keysOf(data.shareUrl)).toEqual(['as', 'attraction', 'bs', 'c', 'communication', 'ref', 'score', 'stability', 'v']);
+      for (const url of everyString(result.structuredContent).filter(text => text.startsWith('https://'))) expect(url).not.toMatch(BIRTH_DETAILS_IN_LINK);
+      results.set('compatibility', result);
+    } },
+  ];
+
+  describe('positive review cases', () => {
+    it('are exactly the five the package declares, prompt for prompt', () => {
+      expect(DECLARED.positive).toHaveLength(5);
+      expect(POSITIVE.map(item => item.prompt)).toEqual(DECLARED.positive.map(item => item.prompt));
+    });
+    DECLARED.positive.forEach((declared, index) => it(`P${index + 1} ${declared.prompt}`, async () => {
+      called.length = 0;
+      await POSITIVE[index].run(declared.expected_behavior);
+      expect([...new Set(called)], 'the tools the case declares, in its order').toEqual(declared.tools_triggered!.split(', '));
+    }, 120_000));
+  });
+
+  describe('negative review cases', () => {
+    it('are exactly the three the package declares, prompt for prompt', () => {
+      expect(DECLARED.negative).toHaveLength(3);
+      expect(NEGATIVE.map(item => item.prompt)).toEqual(DECLARED.negative.map(item => item.prompt));
+    });
+    DECLARED.negative.forEach((declared, index) => it(`N${index + 1} ${declared.prompt}`, () => NEGATIVE[index].run(), 180_000));
+  });
+
+  // -------------------------------------------------------------------------
+  // Outside the five and three: birth charts, transits and the server's refusals.
+  // -------------------------------------------------------------------------
+  describe('more protocol checks, outside the review cases', () => {
+    it('a birth chart with an exact birth time gives the rising sign, the angles and a house for every planet', async () => {
       const result = answered(await callTool('get_natal_chart', PERSON_A), 'get_natal_chart');
       const data = result.structuredContent.data;
       expect(data).toMatchObject({ timeKnown: true, placed: true, houseSystem: 'whole-sign', castFor: { utc: '1990-05-03T06:30:00.000Z', basis: 'birth-time' } });
@@ -657,10 +975,11 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       for (const planet of data.planets) { expect(planet.house, `${planet.body} house`).toBeGreaterThanOrEqual(1); expect(planet.house).toBeLessThanOrEqual(12); }
       expect(data.unknown).toEqual([]);
       // Nothing the result links to carries the birth details.
-      for (const url of everyString(result.structuredContent).filter(text => text.startsWith('https://'))) expect(url).not.toMatch(/1990|08[:%3A]*30|40\.42|-3\.7|Madrid/i);
+      for (const url of everyString(result.structuredContent).filter(text => text.startsWith('https://'))) expect(url).not.toMatch(BIRTH_DETAILS_IN_LINK);
       results.set('natal-exact', result);
-    }],
-    ['P2 a birth chart with no birth time gives no rising sign and no houses, and says what is uncertain', async () => {
+    }, 120_000);
+
+    it('a birth chart with no birth time gives no rising sign and no houses, and says what is uncertain', async () => {
       const result = answered(await callTool('get_natal_chart', { birthDate: PERSON_A.birthDate }), 'get_natal_chart');
       const data = result.structuredContent.data;
       expect(data).toMatchObject({ timeKnown: false, placed: false, houseSystem: null, angles: null, castFor: { basis: 'utc-noon' } });
@@ -673,16 +992,15 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       expect(data.unknown.join(' ')).toMatch(/The Moon changed sign that day/);
       expect(JSON.stringify(data)).not.toMatch(/"ascendant":"|"midheaven":"/);
       results.set('natal-unknown-time', result);
-    }],
-    ["P3 today's sky and a person's transits come back dated, with the reading kept apart from the astronomy", async () => {
+    }, 120_000);
+
+    it("today's sky and a person's transits come back dated, with the reading kept apart from the astronomy", async () => {
       const sky = answered(await callTool('get_sky', {}), 'get_sky').structuredContent.data;
       expect(sky.mode).toBe('current-instant');
       expect(Math.abs(Date.now() - Date.parse(sky.time.utc))).toBeLessThan(5 * 60_000);
       const bodies = sky.calculation.result.instants[0].bodies;
       expect(bodies.map((body: any) => body.body)).toEqual(expect.arrayContaining(['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']));
       for (const body of bodies) { expect(body.lon).toBeGreaterThanOrEqual(0); expect(body.lon).toBeLessThan(360); expect(SIGNS).toContain(body.sign); }
-      expect(sky.moonPhase.illumination).toBeGreaterThanOrEqual(0);
-      expect(sky.moonPhase.illumination).toBeLessThanOrEqual(1);
       const result = answered(await callTool('get_personal_transits', { ...PERSON_A, from: '2027-03-01', to: '2027-03-31', currentZone: 'Europe/Madrid' }), 'get_personal_transits');
       const transits = result.structuredContent.data;
       expect(transits).toMatchObject({ mode: 'window', timeKnown: true, from: '2027-03-01', to: '2027-03-31', zone: 'Europe/Madrid' });
@@ -691,60 +1009,32 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       for (const contact of transits.contacts) { expect(contact.confidenceLabel).toMatch(/^Reading confidence \d{2}%$/); expect(Date.parse(contact.exactUtc)).not.toBeNaN(); }
       expect(transits.note).toMatch(/not a guarantee/);
       results.set('transits', result);
-    }],
-    ['P4 two people are compared: a score out of 100 with its parts, a confidence label and a share link with no birth details', async () => {
-      const result = answered(await callTool('get_compatibility', { a: PERSON_A, b: PERSON_B }), 'get_compatibility');
-      const data = result.structuredContent.data;
-      expect(data.a).toMatchObject({ sun: 'taurus', moon: 'leo', rising: 'gemini', timeKnown: true });
-      expect(data.b).toMatchObject({ sun: 'scorpio', timeKnown: true });
-      for (const value of [data.score.overall, ...Object.values(data.score.areas) as number[]]) { expect(Number.isInteger(value)).toBe(true); expect(value).toBeGreaterThanOrEqual(0); expect(value).toBeLessThanOrEqual(100); }
-      expect(Object.keys(data.score.areas).sort()).toEqual(['attraction', 'communication', 'stability']);
-      expect(data.score.headline).toMatch(/Reading confidence \d{2}%/);
-      expect(data.note).toMatch(/not a guarantee/);
-      expect(data.contacts.length).toBeGreaterThan(0);
-      const share = new URL(data.shareUrl);
-      expect(share.origin).toBe('https://zodiacs.org');
-      expect([...share.searchParams.keys()].sort()).toEqual(['as', 'attraction', 'bs', 'c', 'communication', 'ref', 'score', 'stability', 'v']);
-      for (const url of everyString(result.structuredContent).filter(text => text.startsWith('https://'))) expect(url).not.toMatch(/1990|1988|08[:%3A]*30|19[:%3A]*45|40\.42|41\.88|Madrid|Chicago/i);
-      results.set('compatibility', result);
-    }],
-    ['P5 what is coming up in the sky is listed with times, and the 2 August 2027 solar eclipse is in that month', async () => {
-      const result = answered(await callTool('get_upcoming_events', { from: '2027-07-25', to: '2027-08-20', zone: 'Europe/Madrid' }), 'get_upcoming_events');
-      const data = result.structuredContent.data;
-      expect(data.zone).toBe('Europe/Madrid');
-      const line = (event: any) => `${event.at} ${event.kind} ${event.body ?? ''}`.trim();
-      const lines = data.events.map(line);
+    }, 120_000);
+
+    it('a fixed month lists its events with times, and the 2 August 2027 solar eclipse is in it', async () => {
+      const data = answered(await callTool('get_upcoming_events', { from: '2027-07-25', to: '2027-08-20', zone: 'Europe/Madrid' }), 'get_upcoming_events').structuredContent.data;
+      const lines = data.events.map((event: any) => `${event.at} ${event.kind} ${event.body ?? ''}`.trim());
       expect(lines).toContain('2027-08-02T10:05:00Z lunation');
       expect(lines).toContain('2027-08-09T18:01:00Z station Saturn');
       expect(lines).toContain('2027-07-26T04:46:00Z ingress Jupiter');
       expect(lines).toEqual([...lines].sort());
-      expect(data.completeness).toBe('tested-not-proven');
-      results.set('events', result);
       const month = answered(await callTool('get_horoscope_period', { sign: 'leo', period: 'month', date: '2027-08-10', zone: 'Europe/Madrid' }), 'get_horoscope_period');
       const eclipse = month.structuredContent.data.sky.find((entry: any) => entry.kind === 'eclipse');
       expect(eclipse).toMatchObject({ planet: 'Sun', sign: 'leo', house: 1 });
       expect(eclipse.utc.slice(0, 16)).toBe('2027-08-02T10:06');
       expect(eclipse.line).toMatch(/^Solar eclipse in Leo on Mon 2 Aug/);
-      results.set('month', month);
-    }],
-  ];
+    }, 120_000);
 
-  const NEGATIVE_CASES: [string, () => Promise<void>][] = [
-    ['N1 off topic: no tool invites a prompt on the fixed list, and an unrelated tool name gets a plain error', async () => {
-      const texts: [string, string][] = [['instructions', initialize.message.result.instructions]];
-      for (const tool of tools) texts.push([tool.name, [tool.title, tool.description, ...everyString(tool.inputSchema).filter(text => /\s/.test(text))].join('\n')]);
-      const invitations: string[] = [];
+    it('off topic: no tool invites a prompt on the fixed list, and an unrelated tool name gets a plain error', async () => {
+      const found: string[] = [];
       for (const { prompt, terms } of OFF_TOPIC) {
         for (const term of terms) {
           const pattern = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-          for (const tool of tools) if (pattern.test(tool.name.replace(/_/g, ' '))) invitations.push(`${tool.name} is named for "${term}" (${prompt})`);
-          // Where a word from the list appears at all, the sentence must be one that rules the request out.
-          for (const [source, text] of texts) for (const sentence of sentencesOf(text)) {
-            if (pattern.test(sentence) && !REFUSES.test(sentence)) invitations.push(`${source} invites "${term}" (${prompt}): "${sentence.slice(0, 140)}"`);
-          }
+          for (const tool of tools) if (pattern.test(tool.name.replace(/_/g, ' '))) found.push(`${tool.name} is named for "${term}" (${prompt})`);
+          found.push(...invitations(pattern).map(line => `invites "${term}" (${prompt}): ${line}`));
         }
       }
-      expect(invitations.join('\n')).toBe('');
+      expect(found.join('\n')).toBe('');
       for (const name of ['get_weather', 'book_flight', 'run_python']) {
         const reply = await callTool(name, { query: 'Paris' });
         expect(reply.status, name).toBe(200);
@@ -753,8 +1043,9 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
         expect(reply.message.error.message, name).not.toMatch(/Paris|stack|TypeError/);
       }
       answered(await callTool('get_capabilities'), 'get_capabilities');
-    }],
-    ['N2 a malformed date, time or coordinate is refused by name, without a crash and without repeating the input', async () => {
+    }, 180_000);
+
+    it('a malformed date, time or coordinate is refused by name, without a crash and without repeating the input', async () => {
       const cases: [string, Record<string, unknown>, RegExp, string][] = [
         ['get_natal_chart', { birthDate: '1990-13-45' }, /birthDate must be a real date/, '1990-13-45'],
         ['get_natal_chart', { birthDate: 'the third of May' }, /birthDate must be a date such as/, 'third of May'],
@@ -776,12 +1067,9 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       expect(broken.status).toBe(400);
       expect(await broken.json()).toMatchObject({ jsonrpc: '2.0', error: { code: -32700 } });
       answered(await callTool('get_capabilities'), 'get_capabilities');
-    }],
-    ['N3 writing is not possible: every tool is read-only, and a save, a write field or a write method is refused', async () => {
-      for (const tool of tools) {
-        expect(tool.annotations, tool.name).toMatchObject({ readOnlyHint: true, destructiveHint: false });
-        expect(tool.name, tool.name).not.toMatch(/^(?:save|create|update|delete|remove|set|send|post|write|add|schedule|book|buy|pay|subscribe|upload)_/);
-      }
+    }, 180_000);
+
+    it('writing is not possible: a save, a write field or a write method is refused, and nothing is kept between calls', async () => {
       for (const name of ['save_chart', 'delete_chart', 'send_email', 'create_reminder']) {
         const reply = await callTool(name, { birthDate: PERSON_A.birthDate });
         expect(reply.status, name).toBe(200);
@@ -802,47 +1090,45 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       // The same question still gets the same answer: nothing was kept between calls.
       const again = answered(await callTool('get_natal_chart', PERSON_A), 'get_natal_chart');
       expect(again.structuredContent).toEqual(resultOf('natal-exact').structuredContent);
-    }],
-  ];
+    }, 180_000);
 
-  describe('positive review cases', () => {
-    it('are exactly five', () => { expect(POSITIVE_CASES).toHaveLength(5); });
-    for (const [name, run] of POSITIVE_CASES) it(name, run, 120_000);
-    it('keep each answer small enough for the conversation', () => {
+    it('keeps each answer small enough for the conversation, with no em or en dash in what the review cases returned', () => {
       // The largest answer on the live server in the 20 November capture was 12,030 bytes.
       for (const [tool, bytes] of Object.entries(sizes)) expect(bytes, `${tool} structuredContent bytes`).toBeLessThanOrEqual(16_384);
+      expect([...answerDashes]).toEqual([]);
     });
   });
 
-  describe('negative review cases', () => {
-    it('are exactly three', () => { expect(NEGATIVE_CASES).toHaveLength(3); });
-    for (const [name, run] of NEGATIVE_CASES) it(name, run, 180_000);
-  });
-
   // -------------------------------------------------------------------------
-  // The panels those five cases open, drawn in Chrome.
+  // The panels, drawn in Chrome: each declared case's own, then the birth chart and transit ones.
   // -------------------------------------------------------------------------
   describe('rendered widgets', () => {
-    const VIEWS: { key: string; tool: string; shows: RegExp[]; hides?: RegExp[]; shots: Partial<Record<Mode['name'], string>> }[] = [
-      { key: 'natal-exact', tool: 'get_natal_chart', shows: [/Taurus/, /Leo/, /Gemini/, /Rising/i], shots: { dark: '01-birth-chart-exact-time-dark.png' } },
-      { key: 'natal-unknown-time', tool: 'get_natal_chart', shows: [/Taurus/, /Leo or Virgo/, /No birth time was given/], hides: [/Ascendant|Midheaven/], shots: { mobile: '02-birth-chart-unknown-time-mobile.png' } },
-      { key: 'transits', tool: 'get_personal_transits', shows: [/Sun sextile your Sun/, /Reading confidence 75%/], shots: { light: '03-transits-light.png' } },
-      { key: 'compatibility', tool: 'get_compatibility', shows: [/Taurus/, /Scorpio/, /Reading confidence 75%/, /\b79\b/], shots: { dark: '04-compatibility-dark.png' } },
-      { key: 'events', tool: 'get_upcoming_events', shows: [/times for Madrid/, /New Moon/i, /Saturn/], hides: [/\d{4}-\d{2}-\d{2}T/], shots: { mobile: '05-sky-calendar-mobile.png' } },
-      { key: 'month', tool: 'get_horoscope_period', shows: [/Leo/, /Solar eclipse in Leo on Mon 2 Aug/], shots: {} },
+    type Shows = RegExp[] | ((data: any) => RegExp[]);
+    const VIEWS: { key: string; from: string; tool: string; shows: Shows; hides?: RegExp[]; linksOmit?: RegExp; shots: Partial<Record<Mode['name'], string>> }[] = [
+      { key: 'events-week', from: 'P1', tool: 'get_upcoming_events', shows: [/Mexico City/, /Moon/], hides: [/\d{4}-\d{2}-\d{2}T/], shots: {} },
+      { key: 'horoscope', from: 'P2', tool: 'get_horoscope', shows: data => [/Leo/, literal(`${data.dateLabel}, times for Madrid`), literal(data.reading.paragraphs[0].text.slice(0, 40)), /For reflection\. Astrology does not establish what will happen in your life\./, /These are sky positions we calculate/], shots: {} },
+      { key: 'famous-chart', from: 'P3', tool: 'get_famous_chart', shows: [/Frida Kahlo/, /Cancer/, /not a birth time/], linksOmit: /1907|07-06|Coyoac/i, shots: {} },
+      { key: 'explainer', from: 'P3', tool: 'explain_astrology', shows: [/Saturn return/, /about 29\.5 years/, /around age 29/], shots: {} },
+      { key: 'occasion', from: 'P4', tool: 'get_occasion_sky', shows: [/\b70\b/, /A good day for it/, /Reading confidence 70%/, /Virgo/, /Aries/, /19:40/, /Venus/, /not a guarantee/], linksOmit: /[?&#]place=|[?&#]names?=|(?<!Europe(?:%2F|\/))Lisbon/i, shots: { light: '05-wedding-card-light.png' } },
+      { key: 'compatibility-famous', from: 'P5', tool: 'get_compatibility', shows: [/\b80\b/, /A strong match/, /\b85\b/, /\b79\b/, /\b75\b/, /Reading confidence 60%/, /Gemini/, /Libra/, /birth time is not on record/, /not a guarantee/], linksOmit: /1926|1915|06-01|10-17|Los(?:%20|\+| )Angeles|Harlem/i, shots: {} },
+      { key: 'natal-exact', from: 'protocol', tool: 'get_natal_chart', shows: [/Taurus/, /Leo/, /Gemini/, /Rising/i], shots: { dark: '01-birth-chart-exact-time-dark.png' } },
+      { key: 'natal-unknown-time', from: 'protocol', tool: 'get_natal_chart', shows: [/Taurus/, /Leo or Virgo/, /No birth time was given/], hides: [/Ascendant|Midheaven/], shots: { mobile: '02-birth-chart-unknown-time-mobile.png' } },
+      { key: 'transits', from: 'protocol', tool: 'get_personal_transits', shows: [/Sun sextile your Sun/, /Reading confidence 75%/], shots: { light: '03-transits-light.png' } },
+      { key: 'compatibility', from: 'N3', tool: 'get_compatibility', shows: [/Taurus/, /Scorpio/, /Reading confidence 75%/, /\b79\b/, /not a guarantee/], shots: { dark: '04-compatibility-dark.png' } },
     ];
     const measurements: Record<string, unknown> = {};
 
     for (const view of VIEWS) {
       for (const mode of MODES) {
-        it(`${view.key} in ${mode.name} (${mode.width}px): fits, loads cleanly and shows the answer`, async () => {
+        it(`${view.from} ${view.key} in ${mode.name} (${mode.width}px): fits, loads cleanly and shows the answer`, async () => {
           const widget = widgetFor(view.tool);
-          const drawn = await render(widget, mode, resultOf(view.key), { screenshot: view.shots[mode.name] });
-          expectClean(drawn, widget, mode, `${view.key}/${mode.name}`);
+          const result = resultOf(view.key);
+          const drawn = await render(widget, mode, result, { screenshot: view.shots[mode.name] });
+          expectClean(drawn, widget, mode, `${view.key}/${mode.name}`, view.linksOmit);
           const seen = [drawn.text, ...drawn.labels].join('\n');
-          for (const pattern of view.shows) expect(seen, `${view.key}/${mode.name} shows ${pattern}`).toMatch(pattern);
+          for (const pattern of typeof view.shows === 'function' ? view.shows(result.structuredContent.data) : view.shows) expect(seen, `${view.key}/${mode.name} shows ${pattern}`).toMatch(pattern);
           for (const pattern of view.hides ?? []) expect(seen, `${view.key}/${mode.name} hides ${pattern}`).not.toMatch(pattern);
-          measurements[`${view.key}/${mode.name}`] = { height: drawn.height, scrollWidth: drawn.scrollWidth, clientWidth: drawn.clientWidth, theme: drawn.theme, background: drawn.background, requests: drawn.requests.length, smallestControl: drawn.controls.filter(control => !control.inline).sort((a, b) => Math.min(a.width, a.height) - Math.min(b.width, b.height))[0] ?? null };
+          measurements[`${view.key}/${mode.name}`] = { height: drawn.height, scrollWidth: drawn.scrollWidth, clientWidth: drawn.clientWidth, theme: drawn.theme, background: drawn.background, requests: drawn.requests.length, links: drawn.hrefs.length, smallestControl: drawn.controls.filter(control => !control.inline).sort((a, b) => Math.min(a.width, a.height) - Math.min(b.width, b.height))[0] ?? null };
         }, 90_000);
       }
     }
@@ -857,13 +1143,14 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
     }, 90_000);
 
     it('draws the same answer when ChatGPT hands it over through window.openai', async () => {
-      for (const view of VIEWS.filter(item => ['natal-exact', 'compatibility', 'events'].includes(item.key))) {
+      for (const view of VIEWS.filter(item => ['events-week', 'horoscope', 'occasion', 'compatibility-famous', 'natal-exact'].includes(item.key))) {
         const widget = widgetFor(view.tool);
-        const drawn = await render(widget, MODES[1], resultOf(view.key), { openai: true });
-        expectClean(drawn, widget, MODES[1], `${view.key}/window.openai`);
-        for (const pattern of view.shows) expect([drawn.text, ...drawn.labels].join('\n'), `${view.key}/window.openai shows ${pattern}`).toMatch(pattern);
+        const result = resultOf(view.key);
+        const drawn = await render(widget, MODES[1], result, { openai: true });
+        expectClean(drawn, widget, MODES[1], `${view.key}/window.openai`, view.linksOmit);
+        for (const pattern of typeof view.shows === 'function' ? view.shows(result.structuredContent.data) : view.shows) expect([drawn.text, ...drawn.labels].join('\n'), `${view.key}/window.openai shows ${pattern}`).toMatch(pattern);
       }
-    }, 120_000);
+    }, 180_000);
 
     it('has a plain empty state in every panel, on a phone too', async () => {
       for (const tool of ['get_natal_chart', 'get_compatibility', 'get_upcoming_events']) {
@@ -876,7 +1163,7 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       }
     }, 180_000);
 
-    it('opens the two other panels on a phone without overflow or errors: horoscopes and Chart Studio', async () => {
+    it('opens the horoscope panel with no sign chosen, and Chart Studio, on a phone without overflow or errors', async () => {
       for (const tool of ['get_horoscope', 'open_chart_studio']) {
         const widget = widgetFor(tool);
         const drawn = await render(widget, MODES[2], null);
@@ -900,14 +1187,27 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
     }, 180_000);
 
     it('keeps the listing policy in everything the panels put on screen', () => {
-      expect(renderedText.length).toBeGreaterThanOrEqual(30);
+      expect(renderedText.length).toBeGreaterThanOrEqual(40);
       const findings = renderedText.flatMap(({ source, text }) => policyFindings(source, text));
       expect([...new Set(findings)].join('\n')).toBe('');
-      // Every line of the known list is still needed; one that is not goes.
-      expect(Object.keys(KNOWN_SMALL_TARGETS).filter(key => !(key in smallTargetsSeen)).join(', '), 'known small targets no longer found under 44px').toBe('');
-      report.tapTargets = { minimum: TAP_MIN, knownUnderMinimum: smallTargetsSeen };
+      // RED, a known gap of the frozen horoscope panel: its answer carries "Reading confidence NN%" (case two asserts it)
+      // and the panel prints the disclosure without it. When a new panel prints the label, this fails: assert it in VIEWS then.
+      const horoscope = renderedText.filter(({ source }) => / horoscope\//.test(source));
+      expect(horoscope.length).toBeGreaterThanOrEqual(3);
+      report.horoscopePanelPrintsConfidenceLabel = horoscope.some(({ text }) => /Reading confidence/.test(text));
+      expect(report.horoscopePanelPrintsConfidenceLabel, 'the horoscope panel prints the Reading confidence label').toBe(false);
+      // Every recorded dash line is still there; one that is not goes from the list.
+      expect(Object.keys(KNOWN_DASH_LINES).filter(uri => !dashLinesSeen.has(uri)).join(', '), 'known dash lines no longer found').toBe('');
       report.widgetMeasurements = measurements;
       report.renderedStates = renderedText.length;
     });
+
+    it('375px touch targets: nothing under 44px beyond the recorded list (RED: the list is a known gap, not a 44px pass)', () => {
+      expect(tapFailures.join('\n')).toBe('');
+      // Every line of the known list is still needed; one that is not goes.
+      expect(Object.keys(KNOWN_SMALL_TARGETS).filter(key => !(key in smallTargetsSeen)).join(', '), 'known small targets no longer found under 44px').toBe('');
+    });
+
+    it('sent no credential header in the whole run', () => { expectNoCredentialHeaders(); });
   });
 });

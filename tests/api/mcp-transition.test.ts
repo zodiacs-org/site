@@ -54,3 +54,50 @@ it('keeps the published connector reply while a separate route advertises and re
     await new Promise<void>(resolve => server.close(() => resolve()));
   }
 }, 20_000);
+
+it('answers with no credentials while accounts are off: no sign-in challenge, and every tool is noauth and read-only', async () => {
+  const routes = await import('../../api/_ai/handler');
+  let published: Awaited<ReturnType<typeof routes.publishedConnector>> | undefined;
+  const server = createServer((req, res) => { void published!(req, res); });
+  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
+  const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
+  const allowed = async () => 'allowed' as const;
+  try {
+    // Production's switches for the tools it lists, with ZODIACS_ACCOUNTS_ENABLED unset.
+    published = await routes.publishedConnector({
+      env: { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1' },
+      allowedHosts: [new URL(base).host], rateLimit: allowed, atomicQuota: allowed, countUsage: async () => {},
+    });
+    // Only the protocol's own headers: no Authorization, no cookie, no key.
+    const ask = async (method: string, params: unknown) => {
+      const response = await fetch(`${base}/mcp`, { method: 'POST', headers: {
+        'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18',
+      }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) });
+      const text = await response.text();
+      const data = (response.headers.get('content-type') ?? '').includes('text/event-stream')
+        ? text.split('\n').filter(line => line.startsWith('data: ')).pop()?.slice(6) ?? ''
+        : text;
+      return { response, message: JSON.parse(data) };
+    };
+    const opened = await ask('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'no-account', version: '1' } });
+    expect(opened.response.status).toBe(200);
+    expect(opened.response.headers.get('www-authenticate')).toBeNull();
+    expect(opened.message.result.serverInfo.name).toBe('zodiacs');
+    const listed = await ask('tools/list', {});
+    expect(listed.response.status).toBe(200);
+    expect(listed.response.headers.get('www-authenticate')).toBeNull();
+    const tools = listed.message.result.tools as { name: string; annotations?: { readOnlyHint?: boolean }; _meta?: { securitySchemes?: unknown } }[];
+    expect(tools.length).toBeGreaterThanOrEqual(13);
+    for (const tool of tools) {
+      expect(tool._meta?.securitySchemes, tool.name).toEqual([{ type: 'noauth' }]);
+      expect(tool.annotations?.readOnlyHint, tool.name).toBe(true);
+    }
+    const called = await ask('tools/call', { name: 'get_capabilities', arguments: {} });
+    expect(called.response.status).toBe(200);
+    expect(called.response.headers.get('www-authenticate')).toBeNull();
+    expect(called.message.result.isError ?? false).toBe(false);
+  } finally {
+    server.closeAllConnections();
+    await new Promise<void>(resolve => server.close(() => resolve()));
+  }
+}, 20_000);

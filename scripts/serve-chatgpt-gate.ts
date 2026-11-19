@@ -4,7 +4,7 @@
  * dist/ when a build exists (tests/helpers/chatgpt-gate-server.ts).
  *
  *   npx vite-node --script scripts/serve-chatgpt-gate.ts 4530
- *   BASE_URL=http://127.0.0.1:4530 npm run test:chatgpt-gate
+ *   CHATGPT_GATE=1 GATE_BASE_URL=http://127.0.0.1:4530 npx vitest run tests/chatgpt-plugin-gate.spec.ts
  */
 import { startGateServer } from '../tests/helpers/chatgpt-gate-server';
 

@@ -34,6 +34,8 @@ export interface GateServer {
   baseUrl: string;
   /** True when dist/ exists, so the listing pages can be checked. */
   servesPages: boolean;
+  /** Every header name that arrived on an AI route (/mcp and its neighbours), lower case. Names only, never values. */
+  receivedHeaderNames(): string[];
   close(): Promise<void>;
 }
 
@@ -60,12 +62,14 @@ export async function startGateServer(port = 0): Promise<GateServer> {
   const servesPages = existsSync(join(dist, 'index.html'));
   const routes = await import('../../api/_ai/handler');
   let handle: Awaited<ReturnType<typeof routes.publishedConnector>> | undefined;
+  const received = new Set<string>();
 
   const server: Server = createServer((req: IncomingMessage, res: ServerResponse) => {
     void (async () => {
       const url = new URL(req.url ?? '/', 'http://localhost');
       const route = aiRoutes.get(url.pathname);
       if (route && route !== 'de440' && handle) {
+        for (const name of Object.keys(req.headers)) received.add(name.toLowerCase());
         // As after Vercel's rewrite: the destination's query first, then the request's own.
         const query = new URLSearchParams(`__zodiacs_ai=${route}`);
         for (const [key, value] of url.searchParams) query.append(key, value);
@@ -101,6 +105,7 @@ export async function startGateServer(port = 0): Promise<GateServer> {
   return {
     baseUrl: `http://${host}`,
     servesPages,
+    receivedHeaderNames: () => [...received].sort(),
     close: () => new Promise<void>((done) => { server.closeAllConnections(); server.close(() => done()); }),
   };
 }
