@@ -620,7 +620,7 @@
         "heading": "How close @zodiacs/engine comes",
         "paragraphs": [
           "Against NASA JPL Horizons, the engine's tests hold ten bodies at 2020 and three at 1907; the largest difference is 14.8″, for Neptune in 2020.",
-          "Against Swiss Ephemeris 2.10.03, every tenth day from 1800 to 2199 at noon UTC, for the ten bodies and the North Node, its longitudes differed by a median of 2.0″ and at most 22.9″ (Venus, 1878) up to 2026 at the same UT. That record was measured on release candidate 0.1.1-rc.17.",
+          "In the DE440 comparison with NASA JPL Horizons, 91,201 longitudes sampled every tenth day through 2026 differed by a median of 0.16 arcseconds and at most 0.55 arcseconds.",
           "Given the same sidereal time, latitude and obliquity, each of its thirteen house systems agrees with Swiss Ephemeris's house function to within 0.0001″, and Placidus, which iterates, to 0.01″."
         ]
       },

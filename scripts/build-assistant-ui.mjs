@@ -12,6 +12,7 @@ import { loadEnv } from 'vite';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { copyFile, stat } from 'node:fs/promises';
+import { browserEngineEsbuild } from './lib/browser-engine.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outdir = resolve(repo, 'dist/assets');
@@ -44,6 +45,7 @@ await build({
   splitting: false,
   outdir,
   entryNames: '[name]',
+  plugins: [browserEngineEsbuild()],
   define,
 });
 
@@ -57,6 +59,7 @@ await build({
   outdir,
   entryNames: '[name]',
   chunkNames: 'assistant-chunks/[name]-[hash]',
+  plugins: [browserEngineEsbuild()],
   // This stable bundle is built outside Astro/Vite's normal client graph.
   // Inline publishable Supabase configuration explicitly so Guide can fence
   // account A→B transitions; no server credential is exposed here.
