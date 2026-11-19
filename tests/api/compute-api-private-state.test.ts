@@ -12,7 +12,7 @@ import { describe, expect, it } from 'vitest';
  * than globalThis's property names. Test-only read access and references keep
  * request runtimes reachable for inspection; production has neither. Nothing
  * changes a computation or cleanup. The positive control bypasses only the
- * newly added cleanup, reproducing the old handler's retained exact TT.
+ * cleanup, exposing the DE440 reducer state that retains request data.
  */
 const root = fileURLToPath(new URL('../..', import.meta.url));
 const read = (path: string) => readFileSync(join(root, path), 'utf8');
@@ -29,12 +29,22 @@ describe('compute API private module lifetime', () => {
     try {
       let compute = read('api/_compute/compute.mjs');
       compute = once(compute, 'from "@vercel/firewall";', `from ${JSON.stringify(pathToFileURL(require.resolve('@vercel/firewall')).href)};`);
-      compute += `\nexport function auditEngineState() { return { frame: last ? structuredClone(last) : null, deltaTReset: DeltaT === deltaT, moonCalls: CalcMoonCount, plutoSegments: Object.keys(pluto_cache) }; }
+      compute = once(compute, '  clearDe440State = () => {', '  auditReducer = reducer;\n  clearDe440State = () => {');
+      compute += `\nvar auditReducer;
+export function auditEngineState() {
+  const records = [...(auditReducer?.backend.bodies.values() ?? [])];
+  const vectors = auditReducer ? [auditReducer.a, auditReducer.b, auditReducer.c, auditReducer.emb, auditReducer.moon, auditReducer.earth,
+    auditReducer.backend.scratch, auditReducer.backend.scratch2] : [];
+  return { frame: last ?? null, deltaTReset: DeltaT === deltaT, moonCalls: CalcMoonCount, plutoSegments: Object.keys(pluto_cache),
+    de440Records: records.some(body => body.cachedRecord >= 0),
+    de440Coefficients: records.some(body => body.coefficients.some(value => value !== 0)),
+    de440Vectors: vectors.some(vector => vector.some(value => value !== 0)) };
+}
 export { createComputeApiHandler as auditUnwrappedHandler };
-export let auditFailFrame = false;
+export var auditFailFrame = false;
 export function auditSetFrameFailure(value) { auditFailFrame = value; }
 `;
-      compute = once(compute, '  return last;\n}', '  if (auditFailFrame) throw new Error(\"synthetic ephemeris failure\");\n  return last;\n}');
+      compute = once(compute, '    b.cachedRecord = record2;', '    b.cachedRecord = record2;\n    if (auditFailFrame) throw new Error("synthetic ephemeris failure");');
       writeFileSync(join(directory, 'compute.mjs'), compute);
       let local = read('api/_compute/local-time.mjs');
       local = once(local, 'return localTimeModule;', 'auditRuntimes.push(localTimeModule); return localTimeModule;');
@@ -48,8 +58,6 @@ dispose() {`);
       // beside it exactly as they are in the packaged function.
       const adapter = await transform(read('api/_compute/handler.ts'), { loader: 'ts', format: 'esm', target: 'node22' });
       writeFileSync(join(directory, 'handler.mjs'), adapter.code);
-      const timeEntry = JSON.parse(read('node_modules/@zodiacs/engine/package.json')).exports['./time'].import;
-      const basis = pathToFileURL(join(root, 'node_modules/@zodiacs/engine', timeEntry)).href;
       writeFileSync(join(directory, 'run.mjs'), `
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -57,7 +65,6 @@ import { Readable } from 'node:stream';
 import handler from './handler.mjs';
 import { createComputeApiHandler, auditUnwrappedHandler, auditEngineState, auditSetFrameFailure } from './compute.mjs';
 import { createLocalTimeModule, auditRuntimes, auditPause } from './local-time.mjs';
-import { timeBasis } from ${JSON.stringify(basis)};
 process.env.NODE_ENV = 'production';
 let firewall = 204;
 globalThis.fetch = async () => new Response(null, { status: firewall });
@@ -65,7 +72,8 @@ const utc = '2082-03-14T05:29:17Z';
 const chart = { utc, latitude: -31.55537, longitude: 159.07735 };
 const localChart = { local: { date: '1913-07-19', time: '04:37', zone: 'Australia/Lord_Howe' }, latitude: -31.55537, longitude: 159.07735 };
 const empty = { offset: [], histories: [], pending: [] };
-const engineEmpty = () => assert.deepEqual(auditEngineState(), { frame: null, deltaTReset: true, moonCalls: 0, plutoSegments: [] });
+const engineEmpty = () => assert.deepEqual(auditEngineState(), { frame: null, deltaTReset: true, moonCalls: 0, plutoSegments: [],
+  de440Records: false, de440Coefficients: false, de440Vectors: false });
 const allEmpty = () => { engineEmpty(); for (const runtime of auditRuntimes) assert.deepEqual(runtime.auditState(), empty); };
 async function run(entry, endpoint, body, extra = {}) {
   const bytes = Buffer.from(typeof body === 'string' ? body : JSON.stringify(body));
@@ -91,23 +99,17 @@ function fresh(endpoint, body) {
 }
 const options = { localTime: createLocalTimeModule(), env: {}, rateLimit: async () => 'allowed' };
 const old = auditUnwrappedHandler(options);
-// Prime the input-independent receipt conventions, then retain a new canary.
+// Prime the input-independent receipt conventions, then populate the reducer for a different instant.
 await run(old, 'positions', { instants: ['2000-01-01T12:00:00Z'] });
 const oldResult = await run(old, 'chart', chart);
 const retained = auditEngineState();
-assert.notEqual(retained.frame, null);
-assert.ok(retained.plutoSegments.length > 0);
-assert.ok(retained.moonCalls > 0);
-let reconstructed = Date.UTC(2000, 0, 1, 12) + retained.frame.tt * 86400000;
-for (let n = 0; n < 6; n++) reconstructed += (retained.frame.tt - timeBasis(reconstructed).ttDays) * 86400000;
-// The last frame is the positive central-difference node sample, 0.25
-// day after the request. Undo that documented sample offset to recover UTC.
-assert.equal(Math.round(reconstructed) - 0.25 * 86400000, Date.parse(utc));
-assert.equal(retained.frame.rows.length, 9);
-assert.deepEqual(Object.keys(retained.frame.tilt), ['dpsi', 'deps', 'mobl', 'tobl', 'ee']);
+assert.equal(retained.frame, null);
+assert.equal(retained.de440Records, true);
+assert.equal(retained.de440Coefficients, true);
+assert.equal(retained.de440Vectors, true);
 // Same computation, new lifetime boundary. Inspect active state to ensure the
 // observer reads the real caches, then prove cleanup after return.
-const updated = await run(handler, 'chart', chart, { onEnd() { assert.notEqual(auditEngineState().frame, null); } });
+const updated = await run(handler, 'chart', chart, { onEnd() { assert.equal(auditEngineState().de440Records, true); } });
 assert.deepEqual(updated, oldResult);
 allEmpty();
 const inputs = {
@@ -138,8 +140,8 @@ for (const instant of ['1800-01-01T12:00:00.002Z', '2082-03-14T05:29:17.002Z', '
   assert.deepEqual(await run(handler, 'chart', body), fresh('chart', body));
   allEmpty();
 }
-// An engine failure after filling its frame must still restore DeltaT and
-// clear both caches through the adapter's outer finally.
+// A DE440 failure after decoding a record must still clear the reducer
+// through the adapter's outer finally.
 auditSetFrameFailure(true);
 assert.equal((await run(handler, 'chart', chart)).status, 500);
 allEmpty();

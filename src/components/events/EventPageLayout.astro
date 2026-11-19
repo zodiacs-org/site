@@ -39,6 +39,7 @@ import { EVENT_READINGS_2027_UPDATED } from '../../lib/events/readings-2027';
 import {
   eventClockHeading, eventClockRows, eventQuestions, eventTimesLine, guideDescription,
 } from '../../lib/events/year-format';
+import { de440UpdatedDate, lastmodDate, latestModifiedAt } from '../../lib/seo-lastmod';
 import { updatedIso, updatedLabel } from '../../world-times/updated';
 import WorldTimesTable from '../../world-times/WorldTimesTable.astro';
 
@@ -175,13 +176,18 @@ const followLinks: { href: string; label: string }[] = [
 
 const canonicalUrl = `https://zodiacs.org${facts.path}`;
 const articleImage = `https://zodiacs.org${published?.card ?? '/assets/og/v2/share.png'}`;
-// A style-guide page dates itself from the day its reading was written: the
-// visible "Updated" line, dateModified and the sitemap share that constant.
-const modifiedDate = guide
+// The reading, publication receipt, and engine release each date their own
+// change. The visible Updated day and the structured data use the latest one.
+const previousModifiedDate = guide
   ? updatedIso(EVENT_READINGS_2027_UPDATED)
   : published
     ? `${published.lastModified}T00:00:00.000Z`
     : event.lastModified;
+const engineUpdated = de440UpdatedDate(facts.path);
+const modifiedDate = engineUpdated
+  ? latestModifiedAt(engineUpdated, ...(previousModifiedDate ? [previousModifiedDate] : []))
+  : previousModifiedDate;
+const updatedDay = modifiedDate ? lastmodDate(modifiedDate) : EVENT_READINGS_2027_UPDATED;
 const jsonLd = [
   {
     '@type': 'Article',
@@ -267,9 +273,9 @@ const sources = [
         )}
       </p>
       <p class="event-hero__lead" data-event-lead>{interpretation?.lead ?? factLead}</p>
-      {guide && (
+      {(guide || engineUpdated) && (
         <p class="event-updated" data-event-updated>
-          Updated <time datetime={EVENT_READINGS_2027_UPDATED}>{updatedLabel(EVENT_READINGS_2027_UPDATED)}</time>
+          Updated <time datetime={updatedDay}>{updatedLabel(updatedDay)}</time>
         </p>
       )}
     </header>

@@ -116,15 +116,14 @@ describe('Transit fact generation', () => {
       aspects: july.aspects.length,
     }).toEqual({ ingresses: 2, lunations: 2, stations: 3, aspects: 16 });
     expect(july.lunations.map(({ type, at, sign }) => ({ type, at, sign }))).toEqual([
-      { type: 'new', at: '2026-07-14T09:43:36.119Z', sign: 'cancer' },
-      { type: 'full', at: '2026-07-29T14:35:42.223Z', sign: 'aquarius' },
+      { type: 'new', at: '2026-07-14T09:43:36.943Z', sign: 'cancer' },
+      { type: 'full', at: '2026-07-29T14:35:43.458Z', sign: 'aquarius' },
     ]);
-    // rc.16 full IAU 2000B nutation changes the time derivative of
-    // longitude, moving station roots; the search and tolerances are fixed.
+    // DE440 values are recorded in the adoption evidence de440-regression-values.json.
     expect(july.stations.map(({ planet, at, type }) => ({ planet, at, type }))).toEqual([
-      { planet: 'Neptune', at: '2026-07-07T11:01:00.780Z', type: 'retrograde' },
-      { planet: 'Mercury', at: '2026-07-23T22:56:24.667Z', type: 'direct' },
-      { planet: 'Saturn', at: '2026-07-26T19:53:12.269Z', type: 'retrograde' },
+      { planet: 'Neptune', at: '2026-07-07T10:55:07.708Z', type: 'retrograde' },
+      { planet: 'Mercury', at: '2026-07-23T22:57:21.767Z', type: 'direct' },
+      { planet: 'Saturn', at: '2026-07-26T19:56:14.037Z', type: 'retrograde' },
     ]);
 
     expect({
@@ -134,8 +133,8 @@ describe('Transit fact generation', () => {
       aspects: august.aspects.length,
     }).toEqual({ ingresses: 5, lunations: 2, stations: 0, aspects: 15 });
     expect(august.lunations.map(({ type, at, sign }) => ({ type, at, sign }))).toEqual([
-      { type: 'new', at: '2026-08-12T17:36:41.548Z', sign: 'leo' },
-      { type: 'full', at: '2026-08-28T04:18:31.156Z', sign: 'pisces' },
+      { type: 'new', at: '2026-08-12T17:36:45.010Z', sign: 'leo' },
+      { type: 'full', at: '2026-08-28T04:18:32.062Z', sign: 'pisces' },
     ]);
   });
 
@@ -150,18 +149,17 @@ describe('Transit fact generation', () => {
     ], { cwd: repositoryRoot });
 
     const generated = JSON.parse(await readFile(output, 'utf8'));
-    // rc.16 rotates the apparent longitude origin by the full nutation.
-    // Both crossings near Mercury's station persist, with new root instants.
+    // The DE440 generator retains both crossings near Mercury's station.
     expect(generated.ingresses.filter(({ planet }) => planet === 'Mercury')).toEqual([
       {
         planet: 'Mercury',
-        at: '1970-01-04T03:41:34.317Z',
+        at: '1970-01-04T04:20:17.716Z',
         sign: 'aquarius',
         retrograde: false,
       },
       {
         planet: 'Mercury',
-        at: '1970-01-04T12:42:33.386Z',
+        at: '1970-01-04T11:59:21.837Z',
         sign: 'capricorn',
         retrograde: true,
       },

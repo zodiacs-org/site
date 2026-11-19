@@ -58,6 +58,7 @@ describe('GitHub Actions trust boundaries', () => {
       ['db-backup.yml', 'database-backup-production'],
       ['preview-api-smoke.yml', 'preview-smoke-production'],
       ['push-daily.yml', 'daily-push-production'],
+      ['site-publish.yml', 'site-publish-production'],
       ['weekly-digest.yml', 'weekly-digest-production'],
     ]);
     const files = await workflows();
