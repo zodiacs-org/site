@@ -1,0 +1,20 @@
+{
+  "status": 200,
+  "source": {
+    "name": "astronomy-engine",
+    "version": "2.1.19"
+  },
+  "result": {
+    "from": "2026-01-26T00:00:00.000Z",
+    "to": "2026-01-27T00:00:00.000Z",
+    "events": [
+      {
+        "kind": "ingress",
+        "body": "Neptune",
+        "at": "2026-01-26T14:31:41.082Z",
+        "sign": "aries",
+        "retrograde": false
+      }
+    ]
+  }
+}

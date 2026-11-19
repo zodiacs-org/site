@@ -4,6 +4,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const SITE = 'https://zodiacs.org';
+const identity = JSON.parse(await readFile(new URL('../src/data/platform-engine-candidate.json', import.meta.url), 'utf8'));
 // Every href, src and srcset value, quoted either way or bare, is resolved against
 // its page. A link to zodiacs.org must reach a file in the build; any other link
 // must be HTTPS to a host the reference is built to name. A bare file name that the
@@ -38,14 +39,14 @@ export async function checkEngineReference(root) {
   let provenance;
   try { provenance = JSON.parse(await readFile(join(directory, 'provenance.json'), 'utf8')); }
   catch { return { pages: 0, errors: ['Missing or invalid reference provenance'] }; }
-  if (provenance.sourceRepository !== 'https://github.com/zodiacs-org/engine'
-    || provenance.artifactUrl !== 'https://raw.githubusercontent.com/zodiacs-org/engine/59c6ea9d9a4e7845a2880aa8303fcaadbd645170/artifacts/zodiacs-engine-1.1.0-rc.2.tgz'
-    || provenance.version !== '1.1.0-rc.2' || provenance.license !== 'MIT AND CC-BY-4.0'
-    || provenance.sourceCommit !== '806f76b43c0ee652016fe1b522c02d6f6e9c7ae5'
-    || provenance.sha256 !== 'c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c') errors.push('Reference identity differs from 1.1.0-rc.2');
+  if (provenance.sourceRepository !== identity.sourceRepository
+    || provenance.artifactUrl !== identity.artifactUrl
+    || provenance.version !== identity.version || provenance.license !== 'MIT AND CC-BY-4.0'
+    || provenance.sourceCommit !== identity.sourceCommit
+    || provenance.sha256 !== identity.sha256) errors.push(`Reference identity differs from ${identity.version}`);
   const files = await readdir(directory, { recursive: true });
   const pages = files.filter((file) => file.endsWith('.html'));
-  for (const required of ['index.html', 'modules.html', ...['engine','calc','conventions','crossings','deltat','geo','houses','lite','receipt','sky','techniques','time','timing','vedic','window'].map((name) => `modules/${name}.html`)]) {
+  for (const required of ['index.html', 'modules.html', ...['engine','calc','conventions','crossings','deltat','geo','houses','lite','receipt','sky','techniques','time','de440','de440_pack','timing','vedic','window'].map((name) => `modules/${name}.html`)]) {
     if (!pages.includes(required)) errors.push(`Missing required reference page: ${required}`);
   }
   for (const path of pages) {
@@ -53,8 +54,8 @@ export async function checkEngineReference(root) {
     const canonical = path === 'index.html' ? base : new URL(path, base).href;
     if (!html.includes(`<link rel="canonical" href="${canonical}"/>`) || (html.match(/rel="canonical"/g) ?? []).length !== 1) errors.push(`${path}: incorrect canonical`);
     if (!html.includes('<meta name="robots" content="noindex,follow"/>')) errors.push(`${path}: missing noindex contract`);
-    // The version must stand alone: "1.1.0-rc.2" is a prefix of "1.1.0-rc.20".
-    if (!/@zodiacs\/engine 1\.1\.0-rc\.2(?![-+.\w])/u.test(html) || !html.includes('MIT AND CC-BY-4.0')) errors.push(`${path}: missing version or licence`);
+    const version = /@zodiacs\/engine ([\w.+-]+)/gu;
+    if (![...html.matchAll(version)].some((match) => match[1] === identity.version) || !html.includes('MIT AND CC-BY-4.0')) errors.push(`${path}: missing version or licence`);
     if (!html.includes(`href="${provenance.sourceRepository}/tree/${provenance.sourceCommit}"`)) errors.push(`${path}: missing pinned source link`);
     if (!html.includes('<footer><nav class="engine-sign-rail"') || !html.includes('/about/#editorial-system')) errors.push(`${path}: missing footer or editorial policy`);
     const tokenWord = TOKEN_WORDS.exec(html);

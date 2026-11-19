@@ -4,7 +4,7 @@ import summary from '../src/data/conformance/summary.json';
 import source from '../src/data/conformance/source.json';
 import examples from '../src/lib/compute-api/examples.json';
 import { GET as registryJson } from '../src/pages/developers/conventions/registry.json';
-import { ENGINE_VERSION, HOUSE_SYSTEMS, natalChart, type ChartFlag, type DeltaT, type DeltaTSegment, type TimeScale, type TimeScaleName } from '@zodiacs/engine';
+import { ENGINE_VERSION, HOUSE_SYSTEMS, defaultEphemeris, natalChart, setDefaultEphemeris, type ChartFlag, type DeltaT, type DeltaTSegment, type TimeScale, type TimeScaleName } from '@zodiacs/engine';
 import { CONVENTIONS_REGISTRY, conventionAddress, conventionId, natalConventionIds, parseConventionId } from '@zodiacs/engine/conventions';
 import { NATAL_RECEIPT_CONVENTION_SETS, createNatalEnvelope, type NatalEnvelope, type NatalReceipt, type NatalReference } from '@zodiacs/engine/receipt';
 import { CALC_AYANAMSAS, CALC_BODIES, CALC_FRAMES, calc, chart, events, houses } from '@zodiacs/engine/calc';
@@ -30,8 +30,8 @@ function dashedStrings(value: unknown, path = 'registry'): string[] {
   return Object.entries(value).flatMap(([key, item]) => [...dashedStrings(key, `${path} key`), ...dashedStrings(item, `${path}.${key}`)]);
 }
 
-// The engine versions that wrote each natal conventions set, newest first (src/receipt.ts).
-const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
+// The engine versions that wrote the natal conventions sets, in package order.
+const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6', '1.1.0-rc.10 to 1.1.0'];
 
 /** The ids a natal receipt names: each field's namespace and value, as the registry's usedIn lists them. */
 function natalReceiptIds(receipt: Record<string, unknown>): string[] {
@@ -85,7 +85,7 @@ function natalEnvelopeIds(envelope: { receipt: Record<string, unknown>; result: 
 }
 
 /** Every calc call the tests make: each frame, center and correction, every body, each ayanamsa, a pinned ΔT, each house system. */
-function calcReceipts() {
+function calcReceiptsForDefault() {
   const time = '2000-01-01T12:00:00Z';
   const results: Array<{ status: string; receipt?: Parameters<typeof calcReceiptIds>[0] }> = [];
   for (const frame of CALC_FRAMES) {
@@ -108,6 +108,18 @@ function calcReceipts() {
   results.push(chart({ time, place: { latitude: 51.5, longitude: -0.1 }, zodiac: { sidereal: 'lahiri' } }) as never);
   results.push(events({ kind: 'longitude-crossing', body: 'Sun', longitude: 0, from: '2026-01-01T00:00:00Z', to: '2026-12-31T00:00:00Z' }) as never);
   return results.filter((result) => result.status === 'ok').map((result) => result.receipt!);
+}
+
+function calcReceipts() {
+  const original = defaultEphemeris().name;
+  try {
+    return (['de440', 'astronomy-engine'] as const).flatMap((source) => {
+      setDefaultEphemeris(source);
+      return calcReceiptsForDefault();
+    });
+  } finally {
+    setDefaultEphemeris(original);
+  }
 }
 
 /** Natal envelopes across the conditions their fields name: untimed, polar, outside the span, flagged, and each scale. */
@@ -157,7 +169,7 @@ describe('the conventions registry', () => {
     expect(dashedStrings(planted)).toHaveLength(2);
   });
 
-  it('holds every value of every natal conventions set, current where 1.1.0-rc.2 writes it and superseded where only earlier versions did', () => {
+  it('registers both conventions sets written by the current engine', () => {
     expect(SET_RANGES).toHaveLength(NATAL_RECEIPT_CONVENTION_SETS.length);
     const seen = new Set<string>();
     NATAL_RECEIPT_CONVENTION_SETS.forEach((set, index) => {
@@ -171,7 +183,8 @@ describe('the conventions registry', () => {
     });
     for (const id of seen) {
       const entry = entries.find((candidate) => candidate.id === id)!;
-      const current = Object.entries(NATAL_RECEIPT_CONVENTION_SETS[0]).some(([key, value]) => `${key}:${value}` === id);
+      const current = [NATAL_RECEIPT_CONVENTION_SETS[0], NATAL_RECEIPT_CONVENTION_SETS.at(-1)!]
+        .some((set) => Object.entries(set).some(([key, value]) => `${key}:${value}` === id));
       expect(entry.status, id).toBe(current ? 'current' : 'superseded');
     }
     // The natal receipt's own namespaces hold nothing else.
@@ -204,7 +217,7 @@ describe('the conventions registry', () => {
 
   it('lists exactly the values of the engine\'s closed vocabularies', () => {
     type Exactly<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
-    const FLAGS = ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span'] as const;
+    const FLAGS = ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span', 'de440-unavailable', 'outside-de440-span', 'delta-t-extrapolated'] as const;
     const REFERENCES = ['supplied-instant', 'utc-noon', 'local-noon'] as const;
     const SCALES = ['utc', 'ut1', 'tt'] as const;
     const SEGMENTS = ['long-term', 'reconstructed', 'observed', 'predicted', 'extrapolated', 'pinned', 'fallback'] as const;
@@ -242,7 +255,9 @@ describe('the conventions registry', () => {
       const bySite = natalEnvelopeIds(fields(envelope));
       expect(envelope.receipt.conventionIds).toEqual(bySite);
       expect(natalConventionIds(envelope)).toEqual(bySite);
-      expect(envelope.requiredFeatures).toEqual(['convention-ids']);
+      expect(envelope.requiredFeatures).toEqual(envelope.receipt.engine.ephemeris?.name === 'jpl-de440'
+        ? ['convention-ids', 'ephemeris-jpl-de440']
+        : ['convention-ids']);
     }
     // The rule reaches the result: a chart on IERS names its basis only there.
     expect(natalEnvelopes().some((envelope) => envelope.receipt.conventionIds!.includes('time-basis:iers'))).toBe(true);

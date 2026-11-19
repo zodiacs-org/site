@@ -3,6 +3,7 @@ import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerd
 import { computeApiRateLimit } from '../lib/compute-api/handler';
 import { PERSONAL_SWITCH_ENV, PERSONAL_TOOL_NAMES, AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, SKY_EVENTS_SWITCH_ENV, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_SWITCH_ENV, YEAR_SCORE_TOOL_NAMES, YEAR_SCORE_PEOPLE_SWITCH_ENV, SOLAR_RETURN_SWITCH_ENV, SOLAR_RETURN_TOOL_NAMES, NUMEROLOGY_SWITCH_ENV, NUMEROLOGY_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, inputSchemaFor, type AiToolName, type CoverageToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName, type SolarReturnToolName, type PersonalToolName } from './contracts';
 import { createAiServer } from './server';
+import { describeDe440Tools } from './de440-contract';
 import { coverageInputRefusal, isNumerologyTool, isSkyEventsTool, isYearScoreTool, isSolarReturnTool, normaliseCoverageCall, type AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
 import { argumentRefusal } from './argument-hints';
@@ -37,6 +38,8 @@ const ACCOUNT_ROUTES = ['resource', 'consent'];
 export interface ConsentPage { CONSENT_HTML: string; CONSENT_SCRIPT_HASH: string; CONSENT_STYLE_HASH: string }
 
 export interface AiHttpOptions {
+  /** The opt-in hosted route advertises the DE440 result schema. */
+  de440?: boolean;
   env?: Readonly<Record<string, string | undefined>>;
   /** Local tests/dev explicitly inject limits; production uses the existing Firewall. */
   rateLimit?: (req: any, id: string) => Promise<RateLimitVerdict>;
@@ -136,7 +139,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     const allowedKey = (key: string) => key === AI_ROUTE_PARAM || extraKeys.includes(key);
     if ([...rawQuery.keys()].some(key => !allowedKey(key)) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1 || extraKeys.some(key => rawQuery.getAll(key).length > 1)) return send(res, 400, 'invalid-query');
     const query = req.query ?? Object.fromEntries(rawQuery);
-    if (Object.keys(query).some(key => !allowedKey(key)) || (query[AI_ROUTE_PARAM] !== undefined && !['1', 'health', ...(accountsOn ? ACCOUNT_ROUTES : [])].includes(query[AI_ROUTE_PARAM]))) return send(res, 400, 'invalid-query');
+    const protocolRoutes = options.de440 ? ['1', 'de440', 'health'] : ['1', 'health'];
+    if (Object.keys(query).some(key => !allowedKey(key)) || (query[AI_ROUTE_PARAM] !== undefined && ![...protocolRoutes, ...(accountsOn ? ACCOUNT_ROUTES : [])].includes(query[AI_ROUTE_PARAM]))) return send(res, 400, 'invalid-query');
     if (query.authorization_id !== undefined && (typeof query.authorization_id !== 'string' || !/^[A-Za-z0-9_-]{8,256}$/.test(query.authorization_id))) return send(res, 400, 'invalid-query');
     const accountRoute = accountsOn && ACCOUNT_ROUTES.includes(query[AI_ROUTE_PARAM]);
     if (accountRoute && method !== 'GET') { res.setHeader('Allow', 'GET'); return send(res, 405, 'method-not-allowed'); }
@@ -274,6 +278,9 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         if (Buffer.byteLength(reply) > (panelResource ? 2_100_000 : 262144)) throw new Error('output-budget');
         function sanitize(text: string) {
           const parsed = JSON.parse(text);
+          if (options.de440 && (message.method === 'tools/list' || message.method === 'server/discover')) {
+            describeDe440Tools(parsed.result);
+          }
           // A 0.6.0 tool's or search_sky_events' arguments refused by the SDK's schema check get the tool's own field-named refusal.
           const named = calledTool && ((COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) || (PLACE_TOOL_NAMES as readonly string[]).includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || (PERSONAL_TOOL_NAMES as readonly string[]).includes(calledTool)) && parsed.result?.isError && !parsed.result?.structuredContent
             ? coverageInputRefusal(calledTool as CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | PersonalToolName, (message.params as { arguments?: unknown }).arguments, inputSchemaFor(calledTool as AiToolName, skyEvents, { yearScorePeople })) : null;

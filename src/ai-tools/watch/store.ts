@@ -8,7 +8,8 @@ export function watchRpc(env: Environment, fetcher: typeof fetch = fetch): Rpc {
   const headers: Record<string, string> = { apikey: key, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' };
   if (!key.startsWith('sb_secret_')) headers.Authorization = `Bearer ${key}`;
   return async (operation, input = {}) => {
-    const response = await fetcher(`${url}/rest/v1/rpc/zodiacs_sky_watch_v1`, { method: 'POST', headers, cache: 'no-store', redirect: 'error',
+    const procedure = operation === 'timingwindow' || operation === 'timingingest' ? 'zodiacs_sky_watch_timing_v1' : 'zodiacs_sky_watch_v1';
+    const response = await fetcher(`${url}/rest/v1/rpc/${procedure}`, { method: 'POST', headers, cache: 'no-store', redirect: 'error',
       signal: AbortSignal.timeout(5000), body: JSON.stringify({ operation, input }) });
     if (!response.ok) throw new Error('watch-store-unavailable');
     return response.json();

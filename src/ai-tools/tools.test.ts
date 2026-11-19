@@ -29,7 +29,7 @@ describe('public AI tools', () => {
       expect(result.data.mode).toBe('current-instant');
       expect(result.data.time.utc).toBe('2026-10-01T06:00:00.000Z');
       expect(result.data.time.display).toContain('13:00:00');
-      expect(result.data.calculation.result.instants[0].bodies).toEqual(positions(dependencies.now()));
+      expect(result.data.calculation.result.instants[0].bodies).toEqual(positions(dependencies.now()).map(({ ephemeris: _ephemeris, fallback: _fallback, ...body }) => body));
       expect(result.data.calculation.cite.version).toBe(ENGINE_VERSION);
     }
   });

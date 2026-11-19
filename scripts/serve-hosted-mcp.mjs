@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Serves the hosted MCP runtime (api/_ai/runtime.mjs, the bundle production runs) on 127.0.0.1 with production's
+ * Serves the published /mcp runtime on 127.0.0.1 with production's
  * switches: the server on and the occasion tools on, accounts off. ZODIACS_COVERAGE_ENABLED=1 in the shell also
  * offers the 0.6.0 tools, as production will once the owner switches them on, and ZODIACS_SKY_EVENTS_ENABLED=1 with it
  * adds search_sky_events, the natal chart's nodes and house systems, and Chiron; ZODIACS_NUMEROLOGY_ENABLED=1 with it adds
@@ -12,13 +12,13 @@
  */
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { createAiNodeHandler } from '../api/_ai/runtime.mjs';
+import { createAiNodeHandler } from '../api/_ai/published/runtime.mjs';
 
 const port = Number(process.argv[2] ?? 4521);
 const host = `127.0.0.1:${port}`;
-const horoscopeWindow = JSON.parse(await readFile(new URL('../src/data/horoscope-window.json', import.meta.url), 'utf8'));
+const horoscopeWindow = JSON.parse(await readFile(new URL('../api/_ai/published/horoscope-window.json', import.meta.url), 'utf8'));
 const horoscopeMonths = JSON.parse(await readFile(new URL('../src/data/horoscope-months.json', import.meta.url), 'utf8'));
-const horoscopeProgram = JSON.parse(await readFile(new URL('../src/data/horoscope-program.json', import.meta.url), 'utf8'));
+const horoscopeProgram = JSON.parse(await readFile(new URL('../api/_ai/published/horoscope-program.json', import.meta.url), 'utf8'));
 const handle = createAiNodeHandler({
   env: { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ...(process.env.ZODIACS_COVERAGE_ENABLED === '1' ? { ZODIACS_COVERAGE_ENABLED: '1' } : {}), ...(process.env.ZODIACS_SKY_EVENTS_ENABLED === '1' ? { ZODIACS_SKY_EVENTS_ENABLED: '1' } : {}), ...(process.env.ZODIACS_NUMEROLOGY_ENABLED === '1' ? { ZODIACS_NUMEROLOGY_ENABLED: '1' } : {}), ...(process.env.ZODIACS_PERSONAL_TOOLS_ENABLED === '1' ? { ZODIACS_PERSONAL_TOOLS_ENABLED: '1' } : {}) },
   allowedHosts: [host],
