@@ -1,19 +1,8 @@
 {
   "version": 1,
-  "id": "registry-younger-faces-2026-11-18",
-  "baseCommit": "9bedb9a11dd55aa6a7071152e0e8bea44a68ebbc",
+  "id": "research-notes-withheld-2026-11-20",
+  "baseCommit": "bf3341c0c44afbe7afd05629c28d3ef16b36d1c6",
   "protectedPaths": [
-    "public/registry/aquarius/index.html",
-    "public/registry/aries/index.html",
-    "public/registry/cancer/index.html",
-    "public/registry/capricorn/index.html",
-    "public/registry/gemini/index.html",
-    "public/registry/leo/index.html",
-    "public/registry/libra/index.html",
-    "public/registry/pisces/index.html",
-    "public/registry/sagittarius/index.html",
-    "public/registry/taurus/index.html",
-    "public/registry/virgo/index.html",
-    "scripts/build-sign-pages.mjs"
+    "scripts/registry-research-withheld.mjs"
   ]
 }
