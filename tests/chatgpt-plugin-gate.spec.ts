@@ -192,7 +192,9 @@ const TAP_MIN = 44;
 const KNOWN_SMALL_TARGETS: Record<string, number> = {
   'a.nameplate': 19, // the ZODIACS · ORG line at the top of the readings and occasions panels
   'a.brand': 19, // the same line in the sky calendar
-  'a "Privacy"': 18.8, // the footer link
+  'a.panel-brand': 19, // and in Chart Studio
+  'a "Privacy"': 14, // the footer link: 14px in Chart Studio, 18.8px in the other panels
+  'a "How we calculate"': 14, // Chart Studio's footer
   'button.copy': 29, // Copy the reading, Copy the card
   'a.secondary': 29, // Read this pair
   summary: 22.5, // "4 more contacts"
@@ -352,7 +354,8 @@ async function render(widget: Widget, mode: Mode, result: unknown, options: { op
     const closed = await measure();
     if (options.screenshot) {
       await mkdir(SCREENSHOT_DIR, { recursive: true });
-      await page.locator('#frame').screenshot({ path: join(SCREENSHOT_DIR, options.screenshot), animations: 'disabled' });
+      // Cropped to the card: the whole of it on a desktop, the first phone screen of it on a phone.
+      await page.screenshot({ path: join(SCREENSHOT_DIR, options.screenshot), animations: 'disabled', clip: { x: 0, y: 0, width: mode.width, height: mode.mobile ? Math.min(height, 812) : height } });
     }
     // Then with every "more" section open, where a wide table would show.
     await frame.evaluate(() => { for (const details of document.querySelectorAll('details')) details.open = true; });
@@ -468,6 +471,18 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
         expect(reply.status, path).toBe(404);
         expect(reply.headers.get('www-authenticate'), path).toBeNull();
       }
+      // ChatGPT's own origin may call from a browser; what any other origin gets is recorded, not judged here.
+      const origins: Record<string, number> = {};
+      for (const origin of ['https://chatgpt.com', 'https://directory.example']) {
+        await paced();
+        const preflight = await fetch(`${mcpBase}/mcp`, { method: 'OPTIONS', headers: { Origin: origin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'content-type', ...edgeHeaders() } });
+        origins[origin] = preflight.status;
+        if (origin === 'https://chatgpt.com') {
+          expect(preflight.status).toBe(204);
+          expect(preflight.headers.get('access-control-allow-origin')).toBe(origin);
+        }
+      }
+      report.corsPreflightStatusByOrigin = origins;
       const health = await get(mcpBase, '/mcp/health');
       expect(health.status).toBe(200);
       expect(JSON.parse(health.text)).toMatchObject({ service: 'zodiacs-mcp', ready: true });
@@ -843,6 +858,14 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
         }
       }
     }, 180_000);
+
+    it('opens the two other panels on a phone without overflow or errors: horoscopes and Chart Studio', async () => {
+      for (const tool of ['get_horoscope', 'open_chart_studio']) {
+        const widget = widgetFor(tool);
+        const drawn = await render(widget, MODES[2], null);
+        expectClean(drawn, widget, MODES[2], `${tool}/empty/mobile`);
+      }
+    }, 120_000);
 
     it('shows a refusal as one plain sentence, with no stale answer and no error in the console', async () => {
       const refusal = resultOf('refusal');
