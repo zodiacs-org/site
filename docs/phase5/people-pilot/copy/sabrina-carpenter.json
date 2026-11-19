@@ -1,0 +1,110 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "sabrina-carpenter",
+  "seedRound": 0,
+  "qid": "Q7396400",
+  "displayName": "Sabrina Carpenter",
+  "identity": "Singer and actor · United States · born 1999",
+  "title": "Sabrina Carpenter's birth chart",
+  "metaDescription": "Sabrina Carpenter's chart, computed from a sourced birth date: Sun at 20.5° Taurus. Birth time unknown, so no houses or rising sign.",
+  "lede": "The chart's headline is a square: Mercury and Neptune within 0.7°, thinking wired to imagination. A square is friction that produces motion, the aspect the tradition credits with building capability precisely by refusing to be comfortable.",
+  "ledeFact": "aspect:Mercury:Neptune:square",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:20.52",
+        "decan:taurus:third"
+      ],
+      "text": "The Sun sits at 20.5° Taurus, the third decan, 20° to 30°, which the tradition sub-rules by Saturn. Degrees matter more than the sign label here: two people born a fortnight apart share Taurus and share almost nothing else about where the Sun actually stood."
+    },
+    {
+      "key": "personal",
+      "title": "The personal registers",
+      "facts": [
+        "personal:Mercury:Taurus:5.0°",
+        "personal:Venus:Cancer:3.3°",
+        "personal:Mars:Libra:28.1°"
+      ],
+      "text": "The personal planets sit Mercury at 5.0° Taurus, Venus at 3.3° Cancer, Mars at 28.1° Libra. Mercury in an earth sign reads as a mind that trusts the measured and the checked; Venus in a water sign reads as taste tuned to mood and undertow; Mars in an air sign reads as drive that argues its way forward."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Mercury:Neptune:square:0.68",
+        "aspect:Mercury:Venus:sextile:1.74",
+        "aspect:Mercury:Saturn:conjunction:3.51"
+      ],
+      "text": "The day's firmest angle joins Mercury and Neptune, a square holding at 0.7°. A square is the tradition’s engine room: two drives at cross purposes, and the friction is the horsepower. Behind it, Mercury sextile Venus at 1.7°, and Mercury conjunction Saturn at 3.5°, both still well inside the orbs this site uses. These angles were checked through every hour of that civil day and survive throughout, which is why an unrecorded hour does not disturb them."
+    },
+    {
+      "key": "figures",
+      "title": "What the angles build",
+      "facts": [
+        "figure:unaspected:Moon"
+      ],
+      "text": "The Moon stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:Mars:detriment"
+      ],
+      "text": "One planet here sits in a sign the classical scheme scores. Mars in Libra at 28.1° is in detriment (the planet opposite its home, working against the grain). Condition, not character: that is all the dignity table ever measured."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:earth3-air3-fire2-water1",
+        "modalities:fixed5-cardinal3-mutable1",
+        "settled-signs:9",
+        "retrograde:3"
+      ],
+      "text": "Counting only the 9 placements whose signs hold for the whole day, the chart runs 3 earth, 3 air, 2 fire, 1 water by element and 5 fixed, 3 cardinal, 1 mutable by modality. Earth counts what remains: the built, the kept, the finished. Promise weighs less than delivery. Mars, Neptune and Pluto were retrograde (apparent backward motion from where the Earth sits, which the tradition reads as a function turned inward before it is turned out)."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon is genuinely open",
+      "facts": [
+        "moon-uncertain:pisces:aries"
+      ],
+      "uncertain": true,
+      "text": "The Moon crossed from Pisces into Aries during that day at the birthplace, travelling 14.1° between one midnight and the next. A birth time would settle it in a second; there isn’t one. So the Moon stays unnamed here. The alternative is a guess wearing the clothes of a fact."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/may-11/",
+    "label": "Everyone born on May 11"
+  },
+  "signLink": {
+    "href": "/taurus/",
+    "label": "The Taurus guide"
+  },
+  "substantiveFacts": [
+    "aspect:Mercury:Neptune:square",
+    "sun-degree:20.52",
+    "decan:taurus:third",
+    "personal:Mercury:Taurus:5.0°",
+    "personal:Venus:Cancer:3.3°",
+    "personal:Mars:Libra:28.1°",
+    "aspect:Mercury:Neptune:square:0.68",
+    "aspect:Mercury:Venus:sextile:1.74",
+    "aspect:Mercury:Saturn:conjunction:3.51",
+    "figure:unaspected:Moon",
+    "dignity:Mars:detriment",
+    "elements:earth3-air3-fire2-water1",
+    "modalities:fixed5-cardinal3-mutable1",
+    "settled-signs:9",
+    "retrograde:3",
+    "moon-uncertain:pisces:aries"
+  ],
+  "measurements": {
+    "originalWords": 415,
+    "substantiveStatements": 16,
+    "blocks": 7
+  }
+}
