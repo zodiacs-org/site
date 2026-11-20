@@ -36,6 +36,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import '../scripts/lib/deltat-install.mjs';
 import { Body, Ecliptic, GeoVector } from 'astronomy-engine';
 import { chromium, type Browser } from 'playwright-core';
 import {
