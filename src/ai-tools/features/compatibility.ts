@@ -57,7 +57,7 @@ const plainText = (max: number) => z.string().trim().min(1).max(max).regex(PLAIN
 export const compatibilityPerson = z.strictObject({
   famous: plainText(80).optional().describe('Instead of birth details: the name of a famous person Zodiacs publishes a chart for, such as Frida Kahlo. Give it alone, without birthDate or any other field.'),
   name: plainText(40).optional().describe('Optional first name to show on the card, only if the person wants one. Display only, not stored.'),
-  birthDate: z.string().regex(DATE_PATTERN).optional().describe('The birth date, such as 1994-08-21 (years 1800–2199). Needed unless famous is given.'),
+  birthDate: z.string().regex(DATE_PATTERN).optional().describe('The birth date, such as 1994-08-21 (years 1800 to 2199). Needed unless famous is given.'),
   time: z.string().regex(WALL_CLOCK).optional().describe('The birth time on the local clock, if known. Needs zone.'),
   zone: z.string().min(1).max(64).regex(ZONE_PATTERN).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign. Give it with longitude and zone. Nothing is stored."),

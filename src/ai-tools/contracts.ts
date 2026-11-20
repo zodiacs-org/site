@@ -19,7 +19,7 @@ import { solarReturnData, solarReturnInput } from './features/solar-return';
 import { numerologyData, numerologyInput } from './features/numerology';
 import { PERSONAL_TOOL_NAMES, personalRecord, type PersonalToolName } from './personal/registry';
 
-export const AI_VERSION = '0.6.8';
+export const AI_VERSION = '0.6.9';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
 /** The released tools: what the reviewed plugin offers. */
 export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'] as const;
@@ -140,27 +140,29 @@ export const ORIGIN = 'https://zodiacs.org';
 // ChatGPT keeps a panel by its URI, so a changed panel gets a new one. The
 // earlier URIs stay registered and serve the current panel, so conversations
 // and host definitions that still name them keep working.
-export const WIDGET_URI = 'ui://zodiacs/sky-events-v4.html';
-export const LEGACY_WIDGET_URIS = ['ui://zodiacs/sky-events-v3.html', 'ui://zodiacs/sky-events-v2.html', 'ui://zodiacs/sky-events-v1.html'] as const;
+export const WIDGET_URI = 'ui://zodiacs/sky-events-v5.html';
+export const LEGACY_WIDGET_URIS = ['ui://zodiacs/sky-events-v4.html', 'ui://zodiacs/sky-events-v3.html', 'ui://zodiacs/sky-events-v2.html', 'ui://zodiacs/sky-events-v1.html'] as const;
 export const STUDIO_URI = 'ui://zodiacs/chart-studio-v6.html';
 export const LEGACY_STUDIO_URIS = ['ui://zodiacs/chart-studio-v5.html', 'ui://zodiacs/chart-studio-v4.html', 'ui://zodiacs/chart-studio-v3.html', 'ui://zodiacs/chart-studio-v2.html', 'ui://zodiacs/chart-studio-v1.html'] as const;
 /** The first Chart Studio URI, kept for existing callers. */
 export const LEGACY_STUDIO_URI = 'ui://zodiacs/chart-studio-v1.html';
 export { HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS };
 /** The occasion tools' panel, offered only while ZODIACS_OCCASIONS_ENABLED=1. */
-export const OCCASIONS_URI = 'ui://zodiacs/occasions-v8.html';
+export const OCCASIONS_URI = 'ui://zodiacs/occasions-v9.html';
 /**
  * The five coverage tools' panel, registered only while those tools are offered. readings-v1 and readings-v2
  * were built for staging drives and are retired: panel-fingerprints.json keeps their hashes so neither name
  * can be reused for other bytes.
  */
-export const READINGS_URI = 'ui://zodiacs/readings-v3.html';
+export const READINGS_URI = 'ui://zodiacs/readings-v5.html';
+export const LEGACY_READINGS_URI = 'ui://zodiacs/readings-v3.html';
 /**
  * The readings panel while ZODIACS_SKY_EVENTS_ENABLED=1, for get_natal_chart alone: the same cards, with the lunar
  * nodes and Chiron listed in the birth chart (src/ai-tools/readings-panel/views-sky-events.tsx). Switched off, nothing names it.
  */
-export const READINGS_SKY_EVENTS_URI = 'ui://zodiacs/readings-v4.html';
-export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v7.html', 'ui://zodiacs/occasions-v6.html', 'ui://zodiacs/occasions-v5.html', 'ui://zodiacs/occasions-v4.html', 'ui://zodiacs/occasions-v3.html', 'ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
+export const READINGS_SKY_EVENTS_URI = 'ui://zodiacs/readings-v6.html';
+export const LEGACY_READINGS_SKY_EVENTS_URI = 'ui://zodiacs/readings-v4.html';
+export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v8.html', 'ui://zodiacs/occasions-v7.html', 'ui://zodiacs/occasions-v6.html', 'ui://zodiacs/occasions-v5.html', 'ui://zodiacs/occasions-v4.html', 'ui://zodiacs/occasions-v3.html', 'ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 
 /** What people see on the tool-call line and in the plugin's details. */
@@ -191,7 +193,7 @@ export const TOOL_TITLES: Record<AiToolName, string> = {
   ...personalRecord((tool) => tool.title),
 };
 
-const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800–2199).');
+const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800 to 2199).');
 export const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 const zone = z.string().min(1).max(64).regex(ZONE_PATTERN).describe("The person's time zone, such as America/Mexico_City or America/New_York. Without it, times are in UTC.");
 const date = z.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
@@ -209,7 +211,7 @@ export const INPUT_SCHEMAS = {
   check_sky_fact: z.strictObject({ kind: z.enum(['sign', 'retrograde', 'ingress', 'phase']), body: z.enum(EVENT_BODIES).optional(), sign: z.enum(SIGN_SLUGS).optional(), phase: z.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone.optional() }),
   get_occasion_sky: z.strictObject({
     occasion: z.enum(ASSISTANT_OCCASION_KINDS).describe('What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering.'),
-    date: date.optional().describe('The day, such as 2027-09-18 (years 1800–2199). Needed unless searchFrom and searchTo are given.'),
+    date: date.optional().describe('The day, such as 2027-09-18 (years 1800 to 2199). Needed unless searchFrom and searchTo are given.'),
     searchFrom: date.optional().describe('To find the best days: the first day of the window to search, such as 2027-09-01. Give it with searchTo.'),
     searchTo: date.optional().describe('The last day of the window to search, such as 2027-09-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back.'),
     time: wallClock.optional().describe('The local clock time, such as 16:30, if the person gives one. Needs zone.'),
