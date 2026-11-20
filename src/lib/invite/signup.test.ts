@@ -16,7 +16,7 @@ const json = (body: unknown) => new Response(JSON.stringify(body), { status: 200
 describe('the invite signup switch', () => {
   it('is on only as exactly 1, with the invite contract and the daily double opt-in', () => {
     expect(inviteSignupEnabled(SIGNUP_ENV)).toBe(true);
-    for (const value of [undefined, '', '0', 'true', ' 1x', 'yes']) expect(inviteSignupEnabled({ ...SIGNUP_ENV, INVITE_SIGNUP_ENABLED: value })).toBe(false);
+    for (const value of [undefined, '', '0', 'true', ' 1x', 'yes', ' 1', '1 ', '\t1\n']) expect(inviteSignupEnabled({ ...SIGNUP_ENV, INVITE_SIGNUP_ENABLED: value })).toBe(false);
     expect(inviteSignupEnabled({ ...SIGNUP_ENV, DAILY_EMAIL_ENABLED: '0' })).toBe(false);
     expect(inviteSignupEnabled({ ...SIGNUP_ENV, SUPABASE_SERVICE_ROLE_KEY: '' })).toBe(false);
   });

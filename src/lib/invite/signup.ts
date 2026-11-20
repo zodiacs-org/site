@@ -31,9 +31,12 @@ export const PUBLIC_INVITE_SIGNUP_SWITCH = 'PUBLIC_INVITE_SIGNUP_ENABLED';
 
 const read = (env: Environment, key: string) => (typeof env[key] === 'string' ? (env[key] as string).trim() : '');
 
-/** Exactly '1', with the invite contract and the daily email's double opt-in in place. */
+/**
+ * Exactly '1', untrimmed, with the invite contract and the daily email's
+ * double opt-in in place. A padded value such as ' 1' leaves the switch off.
+ */
 export function inviteSignupEnabled(env: Environment = process.env): boolean {
-  return read(env, INVITE_SIGNUP_SWITCH) === '1' && hasCompatibilityInviteContract(env) && hasDailySunEmailProvider(env);
+  return env[INVITE_SIGNUP_SWITCH] === '1' && hasCompatibilityInviteContract(env) && hasDailySunEmailProvider(env);
 }
 
 async function rpc(name: string, body: Record<string, unknown>, env: Environment, fetcher: Fetch): Promise<Record<string, unknown>> {
