@@ -4,20 +4,14 @@ import Base from '../../../layouts/Base.astro';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../../../lib/web-analytics.mjs';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../../lib/account-v2/feature-flags';
 import { weeklyDigestSignupEnabled } from '../../../lib/weekly-digest/feature-flags';
-import { configuredWalletChains } from '../../../lib/wallet/config';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
 });
 const weeklyDigestEnabled = weeklyDigestSignupEnabled();
 const webPushEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
-const walletChartEnabled = configuredWalletChains({
-  ...process.env,
-  PUBLIC_WALLET_CHART_ENABLED:
-    import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
-}).length > 0;
-const updated = '11 novembre 2026';
-const modifiedAt = '2026-11-11T00:00:00.000Z';
+const updated = '20 novembre 2026';
+const modifiedAt = '2026-11-20T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -25,7 +19,7 @@ const jsonLd = [
     name: 'Confidentialité sur Zodiacs.org',
     url: 'https://zodiacs.org/fr/privacy/',
     description:
-      'La manière dont Zodiacs.org traite les thèmes astraux, le stockage du navigateur, les comptes, les liens de partage, Guide, l’analyse d’audience, les consultations d’adresses publiques de portefeuille et les requêtes de données de marché.',
+      'La manière dont Zodiacs.org traite les thèmes astraux, le stockage du navigateur, les comptes, les liens de partage, Guide et l’analyse d’audience.',
     inLanguage: 'fr',
     dateModified: modifiedAt,
   },
@@ -34,7 +28,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 ---
 <Base
   title="Confidentialité — Comment tes données sont traitées | Zodiacs.org"
-  description="La manière dont Zodiacs.org traite les thèmes astraux, le stockage du navigateur, les comptes, les liens de partage, Guide, l’analyse d’audience, les consultations d’adresses publiques de portefeuille et les requêtes de données de marché."
+  description="La manière dont Zodiacs.org traite les thèmes astraux, le stockage du navigateur, les comptes, les liens de partage, Guide et l’analyse d’audience."
   path="/fr/privacy/"
   locale="fr"
   jsonLd={jsonLd}
@@ -44,7 +38,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
     <h1 class="method-title display">Tes données de naissance ne quittent ton appareil que lorsque tu les envoies.</h1>
 
     <div class="prose">
-      <p class="lede"> Le calcul du thème se fait dans ton navigateur. Les données de naissance ne sont envoyées ni lors du calcul ni lors d’une consultation The Cabinet of Twelve ; elles ne quittent ton appareil que si tu te connectes pour synchroniser des thèmes enregistrés, si tu partages un lien qui les contient ou si tu les écris dans un message à l’assistant. Aura transmet une adresse publique de portefeuille — pas tes données de naissance ni celles de ton thème — à un fournisseur de données blockchain pour une consultation en lecture seule. Les comptes{weeklyDigestEnabled ? ',' : ' et'} les données Aura mémorisées{weeklyDigestEnabled ? ' et l’e-mail hebdomadaire' : ''} sont facultatifs et désactivés par défaut. Nous n’affichons aucune publicité et n’utilisons aucun suivi intersite. </p>
+      <p class="lede"> Le calcul du thème se fait dans ton navigateur. Les données de naissance ne sont pas envoyées lors du calcul ; elles ne quittent ton appareil que si tu te connectes pour synchroniser des thèmes enregistrés, si tu partages un lien qui les contient ou si tu les écris dans un message à l’assistant. Les comptes{weeklyDigestEnabled ? ' et l’e-mail hebdomadaire' : ''} sont facultatifs et désactivés par défaut. Nous n’affichons aucune publicité et n’utilisons aucun suivi intersite. </p>
 
       <h2>Qui exploite ce site</h2>
       <p>
@@ -71,13 +65,35 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <p>
         La recherche de lieu télécharge depuis zodiacs.org un fichier de villes
         choisi d’après la première lettre que tu tapes, et la recherche dans ce
-        fichier se fait dans ton navigateur. Pour une naissance antérieure à 1970,
-        le calculateur télécharge aussi un fichier des changements d’heure
-        historiques, choisi d’après le fuseau horaire du lieu de naissance. Aucune de ces deux requêtes n’est adressée à un autre service. Les fichiers demandés indiquent à notre hébergeur la première lettre de la ville que tu as tapée et, pour une naissance antérieure à 1970, un groupe de fuseaux horaires qui comprend celui du lieu de naissance.
+        fichier se fait dans ton navigateur. Le calculateur télécharge aussi,
+        pour une naissance antérieure à 1970, un fichier des changements d’heure
+        historiques, choisi d’après le fuseau horaire du lieu de naissance, et,
+        quand aucune heure de naissance n’est indiquée, un script de plus, qui
+        montre seulement à notre hébergeur qu’aucune heure n’a été saisie.
+        Aucune de ces requêtes n’est adressée à un autre service. Les fichiers demandés indiquent à notre hébergeur la première lettre de la ville que tu as tapée et, pour une naissance antérieure à 1970, un groupe de fuseaux horaires qui comprend celui du lieu de naissance.
         Quand une page affiche les signes d’un thème natal, elle demande d’abord
         les images des douze signes, dans le même ordre pour chaque thème : ces
         requêtes ne montrent donc pas quels signes le thème contient.
       </p>
+      {accountSyncV2Enabled ? (
+        <p>
+          Les pages du calculateur de thème natal et du calculateur de
+          compatibilité ne chargent aucun script d’analyse d’audience et
+          n’envoient rien de ce que tu tapes à un autre service. D’autres
+          pages, comme la <a href="/fr/methodology/">page de méthodologie</a>,
+          chargent Plausible, l’outil d’analyse d’audience du site, décrit dans
+          « Hébergement, journaux et analyse d’audience ».
+        </p>
+      ) : (
+        <p>
+          La page du calculateur de compatibilité ne charge aucun script
+          d’analyse d’audience et n’envoie rien de ce que tu tapes à un autre
+          service. D’autres pages, comme la{' '}
+          <a href="/fr/methodology/">page de méthodologie</a>, chargent
+          Plausible, l’outil d’analyse d’audience du site, décrit dans
+          « Hébergement, journaux et analyse d’audience ».
+        </p>
+      )}
 
       <h2>Guide</h2>
       <p>{t('fr', 'trustGuideNotice')}</p>
@@ -172,103 +188,6 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         restaurer. La chronologie propose un export JSON portable et Markdown
         lisible, la modification et la suppression entrée par entrée, et une
         commande pour réessayer quand la synchronisation nécessite ton attention.
-      </p>
-
-      <h2>The Cabinet of Twelve et les adresses publiques de portefeuille</h2>
-      <p>
-        The Cabinet of Twelve lit côte à côte une adresse publique de portefeuille
-        et le ciel daté. Si tu choisis d’ajouter un thème déjà enregistré dans ce
-        navigateur, son résumé devient une couche de comparaison facultative qui
-        reste sur ton appareil. Le motif et toute réflexion symbolique sont
-        composés sur ton appareil. Lorsque tu composes ou actualises un Aura,
-        notre point d’accès des avoirs reçoit l’adresse publique et la transmet au
-        fournisseur de données blockchain configuré afin de vérifier quelles
-        entrées du Registre Zodiacs.org sont présentes. Le fournisseur configuré
-        est actuellement PublicNode, exploité par Allnodes. Le fournisseur reçoit
-        la consultation de notre serveur, pas de ton navigateur. La requête
-        n’inclut ni données de naissance, ni noms de thèmes, ni positions du
-        thème, ni géométrie du thème. Lorsque la fonction est activée, le Shelf
-        public facultatif de Zodiac Terminal utilise le même point d’accès et
-        envoie une seule adresse publique Solana, celle que tu saisis, uniquement
-        après que tu as appuyé sur « View » ; il n’envoie aucune donnée de
-        thème ou de naissance. Quand Aura est désactivé, le Shelf illustratif
-        n’effectue aucune requête d’adresse ou de fournisseur.
-      </p>
-      {walletChartEnabled && (
-        <p>
-          La page Thème natal de portefeuille envoie l’adresse publique que tu
-          colles à notre serveur, qui demande à un fournisseur de données
-          blockchain (un service RPC Solana, Etherscan ou un service RPC Base) la
-          première transaction de l’adresse et les signes du Registre qu’elle
-          détient, et garde la réponse en mémoire pendant un jour au maximum.
-          Aucune donnée de naissance ou de thème n’est envoyée.
-        </p>
-      )}
-      <p>{t('fr', 'trustWalletNotice')}</p>
-      <p>
-        Une adresse publique est publique, mais pas forcément anonyme. Ses avoirs
-        et son historique on-chain peuvent être visibles et se retrouver associés
-        à une personne ou à une autre activité. Vercel, le fournisseur de données
-        blockchain configuré et leur infrastructure peuvent traiter les
-        métadonnées ordinaires des requêtes ainsi que des journaux opérationnels
-        ou de sécurité, par exemple l’adresse IP, l’heure et les informations du
-        navigateur. Nous ne promettons pas qu’une requête portant sur une adresse
-        publique ne sera jamais journalisée par des fournisseurs d’infrastructure
-        dont nous ne contrôlons pas les pratiques de conservation.
-      </p>
-
-      <h2>Sources de données publiques d’Astrofolio, du Terminal et du Registre</h2>
-      <p>
-        Lorsqu’un panneau de marché concerné de Zodiac Terminal ou du Registre
-        s’affiche, ton navigateur peut demander des données publiques de marché à
-        Dex Screener, des données publiques de graphiques à GeckoTerminal ou des
-        données publiques de fréquentation à Wikimedia. Ces requêtes automatiques n’incluent ni adresse de
-        portefeuille, ni données de naissance, ni données de thème, ni résultats
-        Aura. Le service indépendant reçoit tout de même les métadonnées
-        ordinaires d’une requête web, telles que ton adresse IP, les informations
-        du navigateur et l’heure de la requête, et ses propres conditions de
-        confidentialité et pratiques de conservation s’appliquent.
-      </p>
-      <p>{t('fr', 'trustWalletNotice')}</p>
-      <p>
-        Le profil de chaque signe dans le Registre est en lecture seule. Il
-        affiche des données publiques de marché et des adresses de jetons
-        vérifiées, mais ne contient ni parcours d’achat ni lien vers une place de
-        marché. Le profil ne connecte pas de portefeuille, ne demande pas de
-        cotation, ne reçoit pas ton adresse publique et ne sollicite aucune
-        transaction. Aucune donnée de naissance ou de thème n’est incluse dans ces
-        requêtes de données de marché.
-      </p>
-
-      <h2>Stockage d’Aura dans le navigateur et partage</h2>
-      <p>
-        Par défaut, Aura conserve l’adresse publique, le réseau, les résultats de
-        signes du Registre, l’heure de la consultation et l’identifiant facultatif
-        du thème sélectionné dans le stockage de session de cet onglet. Cet
-        enregistrement ne peut plus être restauré au bout de huit heures. L’option
-        non cochée « Remember this address on this device » enregistre les mêmes
-        champs dans le stockage local et les rend non restaurables au bout de
-        24 heures. Les enregistrements non restaurables sont supprimés la
-        prochaine fois qu’Aura les lit ; si tu ne reviens pas, le navigateur peut
-        conserver les octets expirés jusqu’à ce que tu effaces les données du
-        site. « Forget address / Clear Aura data » supprime les deux
-        enregistrements Aura de ce navigateur ; cette commande ne peut pas
-        effacer l’historique public de la blockchain ni les journaux
-        d’infrastructure.
-      </p>
-      <p>
-        Les images de partage Aura sont composées sur ton appareil. L’image omet
-        l’adresse publique, le nom du thème, les données de naissance, les
-        positions exactes et la géométrie du thème. L’image du sceau montre quels
-        signes sont détenus, combien sur les douze, et une date. L’image du
-        cabinet montre le réseau, la date, les signes détenus et l’édition de
-        chacun, qui reflète le solde, avec un compteur de sculptures dorées allant
-        jusqu’à 99+. Aucune des deux n’inclut de fait issu d’un thème enregistré.
-        Une feuille de partage du navigateur ou un téléchargement envoie l’image
-        vers une destination que tu choisis, dont les conditions de
-        confidentialité s’appliquent alors. Effacer Aura ne permet pas de rappeler
-        les copies que d’autres personnes ou services ont enregistrées ou
-        republiées.
       </p>
 
       <h2>Compte facultatif (synchronisation entre appareils)</h2>
@@ -523,8 +442,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         propre au site, pour les fonctions que tu utilises : ce que tu enregistres
         (thèmes, comparaisons, moments Living Chart, progression
         d’apprentissage), l’état de travail des outils que tu utilises (comme la
-        conversation Guide et les calculs mis en cache), des données de session
-        Aura limitées, une adresse Aura mémorisée en option, les préférences du
+        conversation Guide et les calculs mis en cache), les préférences du
         site, des copies des fichiers du site lui-même pour une utilisation hors
         ligne et, si tu te connectes, un jeton de connexion. En dehors de ces
         cookies et de ce que décrivent les sections ci-dessus, ce stockage reste
@@ -542,9 +460,6 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <h2>Tes choix</h2>
       <ul>
         <li>Utiliser chaque calculateur sans compte ; rien de ce que tu saisis n’est stocké hors de ton appareil, sauf si tu te connectes, partages un thème.</li>
-        <li>Utiliser l’exemple Aura sans thème, sans adresse, sans connexion de portefeuille et sans achat.</li>
-        <li>Coller une adresse publique au lieu de connecter un logiciel de portefeuille tiers.</li>
-        <li>Laisser décochée l’option « Remember » d’Aura et effacer ses données de navigateur à tout moment.</li>
         <li>Supprimer les thèmes enregistrés en effaçant les données de ce site dans ton navigateur.</li>
         {accountSyncV2Enabled
           ? <li>Exporter ou supprimer un compte depuis la page de profil ; choisir séparément d’effacer ou non ce navigateur.</li>

@@ -149,28 +149,28 @@ describe('Registry risk and trust copy', () => {
       expect(value).not.toContain('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
     }
     expect(source).toContain('check only the twelve Registry mints');
-    // The English privacy page dropped the Shelf, Terminal and Registry data-source disclosures on
-    // 20 November 2026 (owner-approved); the translated privacy pages still carry them.
+    // The privacy pages dropped the Shelf, Terminal and Registry data-source disclosures on
+    // 20 November 2026 (owner-approved), in English and in every translation.
     expect(privacy).not.toContain("Zodiac Terminal's optional");
     expect(privacy).not.toContain('Dex Screener');
     expect(privacy).not.toContain('do not include a wallet address');
   });
 
-  it('names the current blockchain-data provider in every translated privacy page', async () => {
-    // The Aura/Shelf lookup forwards the public address to a third party;
-    // the translated disclosures say WHICH third party and must be updated
-    // together with the production RPC configuration. The English page
-    // dropped this disclosure on 20 November 2026 (owner-approved).
-    expect(await readFile(resolve(root, 'src/pages/privacy/index.astro'), 'utf8')).not.toContain('PublicNode');
+  it('keeps the blockchain-data provider disclosure off every privacy page', async () => {
+    // The Aura/Shelf lookup's provider disclosure was removed from the
+    // privacy pages on 20 November 2026 (owner-approved), the English page
+    // and then every translation; /disclosure/ is unchanged.
     for (const path of [
+      'src/pages/privacy/index.astro',
       'src/pages/es/privacy/index.astro',
       'src/pages/fr/privacy/index.astro',
       'src/pages/it/privacy/index.astro',
       'src/pages/pt/privacy/index.astro',
+      'src/pages/ru/privacy/index.astro',
     ]) {
       const html = await readFile(resolve(root, path), 'utf8');
-      expect(html, path).toContain('PublicNode');
-      expect(html, path).toContain('Allnodes');
+      expect(html, path).not.toContain('PublicNode');
+      expect(html, path).not.toContain('Allnodes');
     }
   });
 

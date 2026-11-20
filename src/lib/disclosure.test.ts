@@ -295,8 +295,9 @@ describe('registry disclosure contract', () => {
   });
 
   it('keeps the Registry wallet and asset-risk disclosures off the English privacy and terms pages', async () => {
-    // Removed from /privacy/ and /terms/ on 20 November 2026 (owner-approved); this page and the
-    // translated privacy pages are unchanged. scripts/legal-pages-copy.mjs holds the full list.
+    // Removed from /privacy/ and /terms/ on 20 November 2026 (owner-approved), and from the
+    // translated privacy pages the same day; this page is unchanged. scripts/legal-pages-copy.mjs
+    // holds the full list for every locale.
     const [privacySource, termsSource] = await Promise.all([
       readFile(resolve(repo, 'src/pages/privacy/index.astro'), 'utf8'),
       readFile(resolve(repo, 'src/pages/terms/index.astro'), 'utf8'),

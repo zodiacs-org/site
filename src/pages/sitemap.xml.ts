@@ -770,6 +770,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/developers/ai/', '/developers/mcp/'].map((loc) => [loc, '2026-11-20'] as const),
   ['/privacy/', '2026-11-20'] as const,
   ['/terms/', '2026-11-20'] as const,
+  // The five translated privacy pages with the same changes (owner-approved 20 November 2026), last so these
+  // dates win over their 11 November entry.
+  ...['/es/privacy/', '/fr/privacy/', '/it/privacy/', '/pt/privacy/', '/ru/privacy/']
+    .map((loc) => [loc, '2026-11-20'] as const),
 ]);
 
 function getLastmod(loc: string): string {

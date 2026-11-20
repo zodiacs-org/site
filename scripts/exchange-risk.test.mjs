@@ -86,17 +86,20 @@ describe('Exchange risk and trust copy', () => {
     }
   });
 
-  it('names GeckoTerminal in every translated privacy page, beside the other providers', async () => {
-    // The English page dropped the Registry market-data disclosure on 20 November 2026 (owner-approved).
-    expect(await read('src/pages/privacy/index.astro')).not.toContain('GeckoTerminal');
+  it('keeps the Registry market-data providers off every privacy page', async () => {
+    // The privacy pages dropped the Registry market-data disclosure on 20 November 2026, the English
+    // page and then the translated ones (owner-approved); /disclosure/ is unchanged.
     for (const path of [
+      'src/pages/privacy/index.astro',
       'src/pages/es/privacy/index.astro',
       'src/pages/fr/privacy/index.astro',
       'src/pages/it/privacy/index.astro',
       'src/pages/pt/privacy/index.astro',
+      'src/pages/ru/privacy/index.astro',
     ]) {
       const html = await read(path);
-      expect(html, path).toContain('GeckoTerminal');
+      expect(html, path).not.toContain('GeckoTerminal');
+      expect(html, path).not.toContain('Dex Screener');
     }
   });
 

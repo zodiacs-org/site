@@ -1,8 +1,12 @@
 {
   "version": 1,
-  "id": "legal-pages-registry-risk-test-379d9d111bf5",
+  "id": "legal-pages-locale-privacy-379d9d111bf5",
   "baseCommit": "379d9d111bf53d14adc3b02f04d582e1f8c94153",
   "protectedPaths": [
-    "scripts/registry-risk.test.mjs"
+    "scripts/registry-risk.test.mjs",
+    "src/pages/es/privacy/index.astro",
+    "src/pages/fr/privacy/index.astro",
+    "src/pages/it/privacy/index.astro",
+    "src/pages/pt/privacy/index.astro"
   ]
 }
