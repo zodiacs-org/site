@@ -1,12 +1,16 @@
 {
   "source": "07269a76e1ec1c43032af088e056a1c2ba8dfff4",
+  "runtimeSource": {
+    "base": "07269a76e1ec1c43032af088e056a1c2ba8dfff4",
+    "changes": "7245bce067c9fc25e600811f19d458f0b696b680"
+  },
   "sourcePaths": {
     "runtime.mjs": "api/_ai/runtime.mjs",
     "horoscope-window.json": "src/data/horoscope-window.json",
     "horoscope-program.json": "src/data/horoscope-program.json"
   },
   "publishedSha256": {
-    "api/_ai/published/runtime.mjs": "1effa2796fd6eb59f50316479141c1ad89e024f404878ca01d10119fb787ed95",
+    "api/_ai/published/runtime.mjs": "5a72f3f73ca1dc8944a8782ed6b995cf771804bc340a8e70e8cba992e01fa014",
     "api/_ai/published/horoscope-window.json": "0c5d307bc3365f039bd54dcfb63998716015a3debd09dd0933ab829d062b60df",
     "api/_ai/published/horoscope-program.json": "07e6e59d00c75a9ed3c29bf31406bf0d8f1b451072123b35c27ec66271bb6f21"
   },
@@ -15,13 +19,13 @@
       "neptuneUtc": "2026-01-26T14:32:00Z",
       "ephemeris": "astronomy-engine",
       "description": "it gives 14:32 UTC",
-      "serverVersion": "0.6.8"
+      "serverVersion": "0.6.9"
     },
     "/mcp/de440": {
       "neptuneUtc": "2026-01-26T17:35:00Z",
       "ephemeris": "jpl-de440",
       "description": "Sign change times use DE440.",
-      "serverVersion": "0.6.8"
+      "serverVersion": "0.6.9"
     }
   },
   "developer": {
