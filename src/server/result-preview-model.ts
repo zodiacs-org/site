@@ -21,6 +21,8 @@ import { dayLabel } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
 import { readingConfidence, readingConfidenceText } from '../ai-tools/reading-confidence.js';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac.js';
+import type { VedicSignsShare } from '../lib/vedic-signs/share.js';
+import { AYANAMSA_NAME, NAKSHATRA_NAMES, RASHIS } from '../lib/vedic-signs/wording.js';
 import {
   SKY_PLANETS,
   type BigThreeShare,
@@ -579,6 +581,54 @@ export function bigThreeCardModel(share: BigThreeShare): BigThreeCardModel {
     rows,
     title: rows.map((row) => row.text).join(', '),
     about: ['The big three: the Sun sign, the Moon sign and the rising sign.', ...unsettled].join(' '),
+    hue: HUES[share.sun],
+  };
+}
+
+// ── Vedic signs (src/lib/vedic-signs/share.ts) ──
+
+export interface VedicSignsCardModel {
+  sun: ShareSign;
+  /** The signs whose discs the card shows: the Sun, then the Moon and rising sign when the link names them. */
+  signs: PreviewSign[];
+  /** "Dhanu Sun" with "Sagittarius" under it, "Moon sign undetermined" for an unsettled Moon, and the rising sign only when it is known. */
+  rows: { slug: ShareSign | null; text: string; western: string | null }[];
+  /** "Moon in Swati, nakshatra 15 of 27", or that it is undetermined. */
+  nakshatra: string;
+  /** "Lahiri (Chitrapaksha) ayanamsa" */
+  ayanamsa: string;
+  /** "Dhanu Sun, Tula Moon, Simha rising", for the page. */
+  title: string;
+  about: string;
+  hue: string;
+}
+
+/** The Vedic signs: the sidereal Sun, the Moon or that its sign is undetermined, the rising sign only when known, and the Moon's nakshatra. */
+export function vedicSignsCardModel(share: VedicSignsShare): VedicSignsCardModel {
+  const rashi = (slug: ShareSign) => RASHIS[SIGN_SLUGS.indexOf(slug)];
+  const rows: VedicSignsCardModel['rows'] = [
+    { slug: share.sun, text: `${rashi(share.sun)} Sun`, western: signName(share.sun) },
+    share.moon ? { slug: share.moon, text: `${rashi(share.moon)} Moon`, western: signName(share.moon) } : { slug: null, text: 'Moon sign undetermined', western: null },
+    ...(share.rising ? [{ slug: share.rising, text: `${rashi(share.rising)} rising`, western: signName(share.rising) }] : []),
+  ];
+  const nakshatra = share.nakshatra ? `Moon in ${NAKSHATRA_NAMES[share.nakshatra - 1]}, nakshatra ${share.nakshatra} of 27` : 'Moon nakshatra undetermined';
+  const unsettled = [
+    ...(share.moon ? [] : ['The Moon changed sign on the birth day, so its sign needs the birth time.']),
+    ...(share.nakshatra ? [] : ['The Moon changed nakshatra on the birth day, so its nakshatra needs the birth time.']),
+    ...(share.rising ? [] : ['The rising sign (lagna) needs the birth time and place.']),
+  ];
+  return {
+    sun: share.sun,
+    signs: [
+      { slug: share.sun, label: `${rashi(share.sun)} Sun`, hue: HUES[share.sun] },
+      ...(share.moon ? [{ slug: share.moon, label: `${rashi(share.moon)} Moon`, hue: HUES[share.moon] }] : []),
+      ...(share.rising ? [{ slug: share.rising, label: `${rashi(share.rising)} rising`, hue: HUES[share.rising] }] : []),
+    ],
+    rows,
+    nakshatra,
+    ayanamsa: `${AYANAMSA_NAME[share.ayanamsa]} ayanamsa`,
+    title: rows.map((row) => row.text).join(', '),
+    about: [`Vedic signs in the sidereal zodiac, read with the ${AYANAMSA_NAME[share.ayanamsa]} ayanamsa. ${nakshatra}.`, ...unsettled].join(' '),
     hue: HUES[share.sun],
   };
 }
