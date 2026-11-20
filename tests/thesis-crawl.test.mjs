@@ -121,6 +121,25 @@ describe('thesis crawl readers', () => {
 
     const emptied = THESIS.replace(articleHtml(THESIS), '<article id="essay"></article>');
     expect(visibleText(articleHtml(emptied))).toBe('');
+
+    // The essay gone and only the evidence drawer left, as when the essay is drawn by a script: under the minimum.
+    const article = articleHtml(THESIS);
+    // Each <details>, whole with whatever it nests; the largest is the evidence drawer.
+    const drawers = (article.match(/<details\b/giu) ?? []).map((_tag, index) => {
+      let seen = -1;
+      return sliceElement(article, 'details', () => (seen += 1) === index);
+    });
+    const drawer = drawers.reduce((longest, candidate) => (candidate.length > longest.length ? candidate : longest), '');
+    const drawerText = visibleText(drawer).length;
+    const essayText = visibleText(article.replace(drawer, '')).length;
+    expect(drawerText, 'the evidence drawer is the larger part').toBeGreaterThan(essayText);
+    expect(essayText, 'the essay alone is a real part of the page').toBeGreaterThan(5_000);
+    const drawerOnly = THESIS.replace(article, `<article id="essay">${drawer}</article>`);
+    expect(visibleText(articleHtml(drawerOnly)).length).toBe(drawerText);
+    expect(drawerText, 'the drawer alone is under the minimum').toBeLessThan(MIN_ARTICLE_CHARACTERS);
+    // And the essay alone, with the drawer gone, is under it too.
+    const essayOnly = THESIS.replace(article, article.replace(drawer, ''));
+    expect(visibleText(articleHtml(essayOnly)).length).toBeLessThan(MIN_ARTICLE_CHARACTERS);
   });
 });
 
@@ -182,10 +201,11 @@ describe('nothing in the repository keeps the thesis from being crawled', () => 
     for (const rule of moves.filter(appliesOnProductionHost)) {
       expect(sourcePattern(rule.source).test('/thesis/'), rule.source).toBe(false);
     }
-    // A rule is set aside only when its own host condition rules zodiacs.org out.
-    for (const rule of moves.filter((candidate) => !appliesOnProductionHost(candidate))) {
-      expect(rule.has.some((condition) => condition.type === 'host')).toBe(true);
-    }
+    // The rules set aside are the two host moves, and nothing else.
+    expect(moves.filter((rule) => !appliesOnProductionHost(rule)).map((rule) => rule.has.find((condition) => condition.type === 'host').value)).toEqual([
+      '^(?:www\\.)?astrofolio\\.xyz$',
+      '^www\\.zodiacs\\.org$',
+    ]);
   });
 
   it('the sitemap lists it, dated no earlier than the page says it changed', () => {

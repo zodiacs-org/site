@@ -8,8 +8,12 @@
 export const THESIS_PATH = '/thesis/';
 export const SITE_ORIGIN = 'https://zodiacs.org';
 export const THESIS_CANONICAL = `${SITE_ORIGIN}${THESIS_PATH}`;
-/** The essay with its evidence, as text. The live page carried 30,074 on 2026-11-20. */
-export const MIN_ARTICLE_CHARACTERS = 20_000;
+/**
+ * The essay with its evidence, as text. The committed page carried 30,024 on
+ * 2026-11-20: 8,451 of essay and 21,572 in the closed evidence drawer. The
+ * minimum is 90% of the whole, so a page that lost either part falls under it.
+ */
+export const MIN_ARTICLE_CHARACTERS = 27_000;
 export const CORE_SITEMAP_PATH = '/sitemaps/core.xml';
 export const SITEMAP_INDEX_PATH = '/sitemap-index.xml';
 

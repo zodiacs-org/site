@@ -134,6 +134,8 @@ async function main() {
       : previewWide ? `X-Robots-Tag: ${robotsHeader} on every page of this preview host, the homepage included; production must be checked on ${SITE_ORIGIN}`
         : `X-Robots-Tag: ${robotsHeader}`);
 
+  if (previewWide) note(`the X-Robots-Tag check passed by the preview exemption: this run proves nothing about headers. Only a run on ${SITE_ORIGIN} does.`);
+
   const titles = headTitles(html);
   check('one document title', titles.length === 1 && titles[0].length > 0, titles.join(' | ') || 'none');
 
@@ -214,10 +216,12 @@ async function main() {
   check('the homepage links to /thesis/ in raw HTML', home.status === 200 && homeLinks.length > 0,
     `${homeLinks.length} link(s), ${footerLinks.length} of them in the footer`);
 
-  const calculator = await get('/birth-chart/');
-  const calculatorLinks = thesisAnchors(calculator.text());
-  check('the birth chart calculator carries no thesis link', calculator.status === 200 && calculatorLinks.length === 0,
-    calculator.status === 200 ? `${calculatorLinks.length} link(s)` : `status ${calculator.status}`);
+  for (const [name, path] of [['the birth chart calculator', '/birth-chart/'], ['the compatibility calculator', '/compatibility/'], ['the Spanish birth chart calculator', '/es/birth-chart/']]) {
+    const calculator = await get(path);
+    const calculatorLinks = thesisAnchors(calculator.text());
+    check(`${name} carries no thesis link`, calculator.status === 200 && calculatorLinks.length === 0,
+      calculator.status === 200 ? `${calculatorLinks.length} link(s)` : `status ${calculator.status}`);
+  }
 
   if (!isProduction) note(`this host is not ${SITE_ORIGIN}: whether Google has indexed the page is answered only by Search Console.`);
 }
