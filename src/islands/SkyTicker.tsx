@@ -6,6 +6,7 @@
  */
 import { useMemo } from 'preact/hooks';
 import { formatLongitude, signForLongitude, signName, signPrepositional } from '../lib/signs';
+import { signInRu } from '../lib/sign-ru';
 import sky from '../data/sky.json';
 import daily from '../data/daily.json';
 import { normalizeCatalogLocale, t, tf, type CatalogLocale as Locale } from '../lib/i18n';
@@ -87,7 +88,7 @@ export default function SkyTicker({ locale: rawLocale = 'en', discs = true }: { 
     out.push({ kind: 'sun', text: `${t(locale, 'sun')} ${formatLongitude(sunLon, locale)}`, hue: sunSign.hue, sign: sunSign.slug });
     out.push({
       kind: 'moon',
-      text: `${t(locale, 'moonIn')} ${locale === 'ru' ? signPrepositional(moonSign) : signName(moonSign, locale)}`,
+      text: `${locale === 'ru' ? `${t(locale, 'moonIn').replace(/(^| )в$/u, '')} ${signInRu(moonSign)}`.trimStart() : `${t(locale, 'moonIn')} ${signName(moonSign, locale)}`}`,
       hue: moonSign.hue,
       sign: moonSign.slug,
     });
