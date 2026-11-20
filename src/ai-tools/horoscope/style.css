@@ -1,11 +1,11 @@
 /* The horoscope panel's own controls and reading; everything else is the shared card kit (../card-kit/card.css). */
-.text { padding: 2px 0; border: 0; background: none; color: var(--ink); font-family: var(--sans); font-weight: 500; font-size: inherit; line-height: inherit; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+.text { min-width: 44px; min-height: 44px; padding: 2px 0; border: 0; background: none; color: var(--ink); font-family: var(--sans); font-weight: 500; font-size: inherit; line-height: inherit; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
 .meta .text { margin-left: 8px; }
 .shell > .text { justify-self: start; }
 
 .controls { display: grid; gap: 10px; }
 .pills { display: flex; flex-wrap: wrap; gap: 8px; }
-.pills button { padding: 7px 16px; border: 1px solid var(--line); border-radius: 999px; background: none; font-size: 14.5px; line-height: 1.3; transition: border-color .15s ease, background-color .15s ease; }
+.pills button { min-height: 44px; padding: 7px 16px; border: 1px solid var(--line); border-radius: 999px; background: none; font-size: 14.5px; line-height: 1.3; transition: border-color .15s ease, background-color .15s ease; }
 .pills button:hover { border-color: var(--accent); }
 .pills button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--card); font-weight: 600; }
 
@@ -20,7 +20,7 @@
 .facts-list li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 14px; padding-bottom: 6px; }
 .facts-list li + li { padding-top: 6px; border-top: 1px solid var(--line-soft); }
 .houses li { color: var(--muted); }
-.why .method { display: inline-block; margin-top: 10px; font-size: 14.5px; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+.why .method { display: inline-flex; align-items: center; min-height: 44px; margin-top: 10px; font-size: 14.5px; text-decoration-color: var(--accent); text-underline-offset: 4px; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 8px; }
 .grid button { display: grid; justify-items: center; gap: 3px; padding: 12px 6px 10px; background: var(--tile); border: 1px solid transparent; border-radius: 14px; transition: border-color .15s ease; }
