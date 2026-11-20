@@ -5,13 +5,12 @@ import { dirname, resolve } from 'node:path';
 import { ENGINE_VERSION } from '@zodiacs/engine';
 import {
   DAILY_EDITORIAL_CONSTITUTION,
-  DAILY_RENDERER_VERSION,
   buildDailyPublication,
   validateDailyPublication,
   type DailyPublication,
   type EditorialViolation,
 } from '../src/lib/daily-publication';
-import type { Daily } from '../src/lib/daily';
+import { DAILY_LEGACY_RENDERER_VERSION, type Daily } from '../src/lib/daily';
 import { computeDailySnapshot } from './daily-snapshot-lib.mjs';
 import { auditDailyAstronomy } from './daily-fact-audit.mjs';
 import { verifyDailyPublicationCopy } from './independent-copy-verifier';
@@ -21,6 +20,9 @@ export const DAILY_PATH = resolve(REPO_ROOT, 'src/data/daily.json');
 export const PUBLICATION_PATH = resolve(REPO_ROOT, 'src/data/daily-publication.json');
 export const MANIFEST_PATH = resolve(REPO_ROOT, 'src/data/daily-publication-manifest.json');
 export const POLICY_PATH = resolve(REPO_ROOT, 'src/lib/editorial-policy/constitution.v1.json');
+
+// Original source fingerprint of the v1.2 edition on the 1.1.0 engine at cutover.
+const LEGACY_GENERATOR_SHA256 = 'c4413f31ce1903594c3e54dd8ac0722dabdb4fc7c9ee0975b0f4cc42effd5493';
 
 export interface DailyPublicationManifest {
   schema: 'zodiacs.daily-publication-manifest.v2';
@@ -212,8 +214,10 @@ export async function expectedDailyPackage(): Promise<{
     },
     generation: {
       mode: publication.generation.mode,
-      generatorId: DAILY_RENDERER_VERSION,
-      generatorSha256: await generatorSha256(),
+      generatorId: publication.rendererVersion,
+      generatorSha256: publication.rendererVersion === DAILY_LEGACY_RENDERER_VERSION
+        ? LEGACY_GENERATOR_SHA256
+        : await generatorSha256(),
       model: publication.generation.model,
       freeformModelOutput: false,
     },
