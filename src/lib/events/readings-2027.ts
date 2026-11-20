@@ -25,8 +25,11 @@ export interface StyleGuideReading {
   next: string;
 }
 
-/** The day these readings were written; the pages print it as "Updated". */
-export const EVENT_READINGS_2027_UPDATED = '2026-11-14';
+/**
+ * The day these readings last changed; the pages print it as "Updated". Written
+ * 14 November 2026; on 16 November each gained the note on what its 40% label measures.
+ */
+export const EVENT_READINGS_2027_UPDATED = '2026-11-16';
 
 export const EVENT_READINGS_2027: Readonly<Record<string, StyleGuideReading>> = {
   // Full moons
