@@ -1,5 +1,7 @@
 import constitutionDocument from './editorial-policy/constitution.v1.json';
 import {
+  DAILY_LEGACY_RENDERER_VERSION,
+  DAILY_RENDERER_VERSION,
   HOUSE_THEME,
   dailyBodyFactId,
   dailyEventFactId,
@@ -10,13 +12,18 @@ import {
   type Daily,
   type DailyEvent,
   type DailyLine,
+  type DailyRendererVersion,
 } from './daily';
 import { SIGN_SLUGS, SIGNS } from './signs';
 
 type SignSlug = (typeof SIGNS)[number]['slug'];
 
 export const DAILY_PUBLICATION_SCHEMA = 'zodiacs.daily-publication.v1' as const;
-export const DAILY_RENDERER_VERSION = 'zodiacs.daily-renderer.v1.2' as const;
+
+/** Select by UTC edition date so a publication retry reproduces the same copy. */
+export function dailyRendererForDate(date: string): DailyRendererVersion {
+  return date < '2026-11-21' ? DAILY_LEGACY_RENDERER_VERSION : DAILY_RENDERER_VERSION;
+}
 
 interface PatternRule {
   id: string;
@@ -256,7 +263,7 @@ export interface DailyPublication {
   date: string;
   locale: 'en';
   policy: { id: string; version: string };
-  rendererVersion: typeof DAILY_RENDERER_VERSION;
+  rendererVersion: DailyRendererVersion;
   generation: {
     mode: 'deterministic-template' | 'ai-template-selection';
     generatorId: string;
@@ -278,10 +285,10 @@ const violation = (ruleId: string, path: string, message: string): EditorialViol
   message,
 });
 
-function todayLineForSign(sunSign: string, daily: Daily): DailyLine {
+function todayLineForSign(sunSign: string, daily: Daily, renderer: DailyRendererVersion = DAILY_RENDERER_VERSION): DailyLine {
   const moon = daily.bodies.find((body) => body.body === 'Moon');
   if (!moon) {
-    const fallback = dailyReading(sunSign, daily).lines[0];
+    const fallback = dailyReading(sunSign, daily, renderer).lines[0];
     return fallback ?? {
       text: 'The sky data for this date is unavailable.',
       receipt: `No Moon position · ${daily.date}`,
@@ -381,13 +388,14 @@ function factCatalog(daily: Daily, signs: DailyPublishedSign[]): DailyFactRecord
 }
 
 export function buildDailyPublication(daily: Daily): DailyPublication {
+  const renderer = dailyRendererForDate(daily.date);
   const signs: DailyPublishedSign[] = SIGN_SLUGS.map((sign) => {
-    const reading = dailyReading(sign, daily);
+    const reading = dailyReading(sign, daily, renderer);
     return {
       sign,
-      headline: dailyHeadline(sign, daily),
+      headline: dailyHeadline(sign, daily, renderer),
       lines: reading.lines,
-      todayLine: todayLineForSign(sign, daily),
+      todayLine: todayLineForSign(sign, daily, renderer),
     };
   });
   return {
@@ -398,10 +406,10 @@ export function buildDailyPublication(daily: Daily): DailyPublication {
       id: DAILY_EDITORIAL_CONSTITUTION.id,
       version: DAILY_EDITORIAL_CONSTITUTION.version,
     },
-    rendererVersion: DAILY_RENDERER_VERSION,
+    rendererVersion: renderer,
     generation: {
       mode: 'deterministic-template',
-      generatorId: DAILY_RENDERER_VERSION,
+      generatorId: renderer,
       model: null,
     },
     facts: factCatalog(daily, signs),
@@ -701,8 +709,8 @@ export function validateDailyPublication(
   if (publication.policy.id !== constitution.id || publication.policy.version !== constitution.version) {
     failures.push(violation('PROV-POLICY', 'publication.policy', 'publication policy is stale'));
   }
-  if (publication.rendererVersion !== DAILY_RENDERER_VERSION) {
-    failures.push(violation('PROV-RENDERER', 'publication.rendererVersion', 'renderer version is stale'));
+  if (publication.rendererVersion !== dailyRendererForDate(daily.date)) {
+    failures.push(violation('PROV-RENDERER', 'publication.rendererVersion', 'renderer version does not match the edition date'));
   }
   if (!constitution.generation.allowedModes.includes(publication.generation.mode)) {
     failures.push(violation('PROV-GENERATION', 'publication.generation.mode', 'generation mode is not allowed'));
