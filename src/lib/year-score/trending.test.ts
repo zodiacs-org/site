@@ -87,6 +87,28 @@ describe('draft posts', () => {
       }
     }
   });
+  it('withholds each class whatever its wording: any share or value move, a short or long of any name, any date, any legal result', () => {
+    const banned: Record<string, string[]> = {
+      'share or value move, words between allowed': ['Nvidia shares increase', 'Nvidia shares will steadily rise', 'Apple shares decrease', 'Shares could slowly grow', 'Shares shrink', 'Shares gain', 'Shares edge lower', 'The share price will quietly climb', 'Its stock price drops', 'Net worth set to shrink', 'Its value rises', 'The value will sharply fall', 'Valuation jumps', 'Nvidia will double', 'Set to halve'],
+      'short or long of a name or ticker, any case': ['Short Nvidia', 'short nvda', 'Short NVDA', 'short Tesla', 'Long Tesla', 'long tsla', 'Shorting Apple', 'Time to short Nvidia', 'Short meta now', 'I would short nvda', 'Longing Nvidia'],
+      'a month, season, weekday or span as a date': ['HIV in June', 'Lupus in June', 'Dengue in June', 'Hepatitis in June', 'Measles by March', 'Malaria during October', 'A scare in May', 'Lupus in may', 'hiv by march', 'Something by Mar', 'A scare in mid-June', 'By the end of April', 'On the 3rd of May', 'In early September', 'Through December', 'June 12', '12 June', '12th of March', 'March 2027', 'May 3rd', 'Back by spring', 'This summer', 'On Monday', 'Within weeks', 'In two weeks', 'Next month', '2027-06-12'],
+      'named condition, by name or by its ending': ['HIV', 'AIDS', 'Lupus', 'Dengue', 'Zika', 'Ebola', 'Cholera', 'Herpes', 'Shingles', 'Chickenpox', 'Rotavirus', 'Anemia', 'Endometriosis', 'Neuropathy', 'Neuralgia', 'Paraplegic', 'A fever', 'A hernia', 'An ulcer', 'Chronic pain', 'A rare condition', 'Back pain', 'A flare-up', 'Tests positive', 'MS', 'PTSD'],
+      'legal result, words between allowed': ['The appeal is successful', 'The appeal has failed', 'The appeal is unanimously rejected', 'The appeal succeeded', 'The appeal has been formally denied', 'The case is successful', 'The case was quickly granted', 'The charge fails', 'The charges against him were dropped', 'The motion was narrowly granted', 'The suit was ultimately thrown out', 'The case goes their way', 'The appeal is quietly overturned', 'Rejects the appeal', 'Denies the motion', 'Drops all charges', 'A successful appeal', 'A failed lawsuit'],
+    };
+    for (const [kind, labels] of Object.entries(banned)) {
+      for (const label of labels) {
+        expect(draftWithheld(label), `${kind}: ${label}`).toBe(true);
+        expect(draftPost(person, score({ label }), url), `${kind}: ${label}`).toBeNull();
+        expect(draftPost(person, score({ drivers: [{ title: label }] }), url), `${kind} in the transit: ${label}`).toBeNull();
+      }
+    }
+  });
+  it('still drafts ordinary wording beside those classes', () => {
+    for (const text of ['in short', 'In short, a calm year', 'short of time', 'falls short', 'cut short by rest', 'the long run', 'long for home', 'as long as it takes', 'a long time coming', 'a short Mercury retrograde', 'a year that may surprise', 'it may be a quiet year', 'what it comes to may surprise you', 'time to march on', 'a year to march forward', 'take charge of the year', 'a chronicle of the year', 'sympathy and empathy', 'a year of metamorphosis', 'nostalgia for home', 'academia', 'a year of challenges and steady work']) {
+      expect(draftWithheld(text), text).toBe(false);
+      expect(draftPost(person, score({ drivers: [{ title: text }] }), url), text).not.toBeNull();
+    }
+  });
   it('reads tickers in capitals only, so the ordinary words they spell still pass', () => {
     for (const text of ['a short year', 'a short window to sign agreements', 'short of time', 'a long year', 'the long view', 'a sole focus', 'connect the dots', 'a link to the past', 'near the end of the year', 'the tone of the year', 'a stellar year', 'a year of metamorphosis', 'a dichotomy', 'horoscopy', 'patient work', 'a share of the spotlight', 'shares a birthday', 'shares the credit', 'a year of broad appeal', 'ruled by Venus', 'the ruling planet', 'a fair judgment', 'a strong case for patience', 'a balanced year in the case of work', 'the claims of the year', 'a year to settle in', 'a fertile year', 'Reaching out', 'a top year', 'a year to clear the decks', 'worth the wait', 'a double life', 'twice the work']) {
       expect(draftWithheld(text), text).toBe(false);
