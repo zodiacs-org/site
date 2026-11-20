@@ -38,6 +38,11 @@ import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { Body, Ecliptic, GeoVector } from 'astronomy-engine';
 import { chromium, type Browser } from 'playwright-core';
+import {
+  COVERAGE_TOOL_NAMES, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS,
+  LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS,
+  OCCASION_TOOL_NAMES, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, STUDIO_URI, WIDGET_URI,
+} from '../src/ai-tools/contracts';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { startGateServer, type GateServer } from './helpers/chatgpt-gate-server';
 
@@ -562,6 +567,29 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
     });
 
     it('serves versioned widget addresses, with each tool on the newest version of its panel', () => {
+      const skyEvents = toolsByName.has('search_sky_events');
+      // Both readings panels share a URI prefix. Each keeps its own published aliases.
+      const panels = [
+        { current: WIDGET_URI, legacy: LEGACY_WIDGET_URIS, toolNames: ['get_upcoming_events'], alwaysListed: true },
+        { current: STUDIO_URI, legacy: LEGACY_STUDIO_URIS, toolNames: ['open_chart_studio'], alwaysListed: true },
+        { current: HOROSCOPE_URI, legacy: LEGACY_HOROSCOPE_URIS, toolNames: ['get_horoscope'] },
+        { current: OCCASIONS_URI, legacy: LEGACY_OCCASIONS_URIS, toolNames: OCCASION_TOOL_NAMES },
+        {
+          current: READINGS_URI,
+          legacy: [LEGACY_READINGS_URI],
+          toolNames: COVERAGE_TOOL_NAMES.filter(name => !skyEvents || name !== 'get_natal_chart'),
+        },
+        {
+          current: READINGS_SKY_EVENTS_URI,
+          legacy: [LEGACY_READINGS_SKY_EVENTS_URI],
+          toolNames: skyEvents ? ['get_natal_chart'] : [],
+        },
+      ];
+      const expectedUris = panels
+        .filter(panel => panel.alwaysListed || panel.toolNames.some(name => toolsByName.has(name)))
+        .flatMap(panel => [panel.current, ...panel.legacy]);
+      expect(resources.map(resource => resource.uri).sort(), 'current and legacy widget addresses').toEqual(expectedUris.sort());
+
       const listed = new Map<string, number[]>();
       for (const resource of resources) {
         const match = /^ui:\/\/zodiacs\/([a-z-]+)-v(\d+)\.html$/.exec(resource.uri);
@@ -569,17 +597,15 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
         expect(resource.mimeType).toBe('text/html;profile=mcp-app');
         listed.set(match![1], [...(listed.get(match![1]) ?? []), Number(match![2])]);
       }
+      const currentByTool = new Map(panels.flatMap(panel => panel.toolNames.map(name => [name, panel.current] as const)));
       const used = new Set<string>();
       for (const tool of tools) {
-        const uri = tool._meta?.['openai/outputTemplate'];
-        if (uri === undefined) continue;
-        expect(tool._meta.ui?.resourceUri, `${tool.name}: both template fields agree`).toBe(uri);
-        const [, family, version] = /^ui:\/\/zodiacs\/([a-z-]+)-v(\d+)\.html$/.exec(uri)!;
-        expect(Number(version), `${tool.name} uses the newest ${family}`).toBe(Math.max(...listed.get(family)!));
-        used.add(uri);
+        const current = currentByTool.get(tool.name);
+        expect(tool._meta?.['openai/outputTemplate'], `${tool.name} output template`).toBe(current);
+        expect(tool._meta?.ui?.resourceUri, `${tool.name} resource URI`).toBe(current);
+        if (current !== undefined) used.add(current);
       }
-      // Earlier versions stay served, so a conversation that opened one still loads it.
-      for (const [family, versions] of listed) expect(versions.sort((a, b) => a - b), family).toEqual(Array.from({ length: Math.max(...versions) }, (_, index) => index + 1).slice(-versions.length));
+      for (const versions of listed.values()) versions.sort((a, b) => a - b);
       report.widgetFamilies = Object.fromEntries(listed);
       report.widgetsInUse = [...used];
     });
