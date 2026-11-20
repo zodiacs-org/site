@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import YearScoreCalculator from '../../islands/YearScoreCalculator';
 import { ASPECT_ORB, PLANET_WEIGHT, POINT_WEIGHT } from '../../lib/year-score/core';
 import { launchFlagOn } from '../../lib/launch-flags';
+import { READING_CONFIDENCE_NOTE } from '../../lib/reading-confidence-note';
 import '../../styles/calculator.css';
 
 if (!launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED')) {
@@ -25,6 +26,10 @@ const faq = [
   {
     q: 'Why do I need only a birth date?',
     a: 'A date alone gives a first reading. Across one birth day the Sun moves about a degree and Mercury up to two, so without a birth time the score can move; the result shows the range. A birth time and place settle it and add the Moon.',
+  },
+  {
+    q: 'What does reading confidence mean?',
+    a: READING_CONFIDENCE_NOTE,
   },
 ];
 
@@ -127,6 +132,7 @@ const jsonLd = [
   :global(.ys__summary) { margin: 0; color: var(--text-2); }
   :global(.ys__range) { margin: 0; color: var(--text-2); font-size: var(--text-sm); }
   :global(.ys__meta) { margin: 4px 0 0; color: var(--muted); font-family: var(--font-mono); font-size: var(--text-xs); }
+  :global(.ys__confidence-note) { margin: 0; color: var(--muted); font-size: var(--text-xs); line-height: 1.5; }
   :global(.ys__months) { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: 4px; align-items: end; height: 140px; }
   :global(.ys__month) { display: grid; grid-template-rows: 1fr auto; height: 100%; align-items: end; text-align: center; }
   :global(.ys__bar) { display: block; height: var(--h); background: var(--sign, var(--text-2)); opacity: 0.75; border-radius: 3px 3px 0 0; }
