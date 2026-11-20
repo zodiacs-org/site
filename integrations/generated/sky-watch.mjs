@@ -44964,6 +44964,15 @@ function guardPersonalWeek(week, birthDate, today2) {
   };
 }
 
+// src/lib/birth-date-policy.ts
+var HOUR_MS4 = 36e5;
+function civilDateAt(now, offsetHours) {
+  return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
+}
+function earliestToday(now = /* @__PURE__ */ new Date()) {
+  return civilDateAt(now, -12);
+}
+
 // src/ai-tools/tools.ts
 var PRIVACY_POLICY = "https://zodiacs.org/privacy/";
 var SAVED_PAGE_EXCEPTION = "The only exception is a page a signed-in person chooses to save to their own account.";
@@ -45106,7 +45115,7 @@ function birthDatesIn(tool, args, now, hostZone) {
   return dates.filter((date3) => typeof date3 === "string" && CIVIL_DATE.test(date3));
 }
 function childBirthDateRefusal(tool, args, now, hostZone) {
-  const today2 = now.toISOString().slice(0, 10);
+  const today2 = earliestToday(now);
   return birthDatesIn(tool, args, now, hostZone).some((date3) => isUnder13(date3, today2)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
 }
 function occasionCardUrl(args) {
