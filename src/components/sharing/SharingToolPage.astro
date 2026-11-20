@@ -1,4 +1,5 @@
 ---
+import BigThreeCardSection from '../share/BigThreeCardSection.astro';
 import Base from '../../layouts/Base.astro';
 import { ruOgImageForPath } from '../../strings/seo.ru.mjs';
 import BigThreeQuick from '../../islands/BigThreeQuick';
@@ -63,4 +64,5 @@ const jsonLd = [{ '@type': 'WebApplication', name: s(locale, titleKey), descript
     {kind === 'twins' && <HeroCrop crop="twins" locale={locale} class="sharing-art" />}
     <SharingToolLinks locale={locale} current={path} />
   </section>
+  {kind === 'big' && locale !== 'en' && locale !== 'ru' && <BigThreeCardSection locale={locale as 'es' | 'pt' | 'fr' | 'it'} />}
 </Base>
