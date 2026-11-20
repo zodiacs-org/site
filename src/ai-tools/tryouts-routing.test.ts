@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { TOOL_DESCRIPTIONS } from './contracts';
 import { ASK_FIRST, CHILD_HOROSCOPE, OUTSIDE_ZODIACS, WHICH_TOOL } from './server';
 import { executeAiTool } from './tools';
-import { asInventedExamples, descriptionWithoutZod64, INVENTED_EXAMPLES, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, withoutZod64, ZOD_207_SENTENCES } from './published-tools';
+import { asInventedExamples, descriptionWithoutZod64, INVENTED_EXAMPLES, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS_068, withoutZod64, ZOD_207_SENTENCES } from './published-tools';
 
 /**
  * ZOD-207 (a draft on top of ZOD-58): the wording added after 200 questions were tried on two assistants
@@ -51,11 +51,11 @@ describe('the routing wording from the assistant tryouts', () => {
     // examples put in and ZOD-64 taken out, it is the list this release publishes.
     const joined = (saved('join', 'tools-list.json').tools as Record<string, unknown>[]).slice(0, 13);
     const withExamples = joined.map(tool => asInventedExamples(tool).tool);
-    expect(JSON.stringify(withExamples)).toBe(JSON.stringify(PUBLISHED_TOOLS.map(withoutZod64)));
+    expect(JSON.stringify(withExamples)).toBe(JSON.stringify(PUBLISHED_TOOLS_068.map(withoutZod64)));
     // The examples move only the eighteen schema descriptions they name.
     expect(joined.flatMap(tool => asInventedExamples(tool).changed).sort()).toEqual(Object.keys(INVENTED_EXAMPLES).sort());
     // ZOD-64 (approved by Dias on 2026-11-17) moves only get_upcoming_events' description since the join.
-    const moved = PUBLISHED_TOOLS.filter((tool, index) => JSON.stringify(tool) !== JSON.stringify(withExamples[index]));
+    const moved = PUBLISHED_TOOLS_068.filter((tool, index) => JSON.stringify(tool) !== JSON.stringify(withExamples[index]));
     expect(moved.map(tool => tool.name)).toEqual(['get_upcoming_events']);
     const joinedEvents = withExamples.find(tool => tool.name === 'get_upcoming_events')!;
     expect(JSON.stringify({ ...moved[0], description: joinedEvents.description })).toBe(JSON.stringify(joinedEvents));
