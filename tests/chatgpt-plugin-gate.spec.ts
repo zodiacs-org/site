@@ -39,6 +39,11 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import '../scripts/lib/deltat-install.mjs';
 import { Body, Ecliptic, GeoVector } from 'astronomy-engine';
 import { chromium, type Browser } from 'playwright-core';
+import {
+  COVERAGE_TOOL_NAMES, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS,
+  LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS,
+  OCCASION_TOOL_NAMES, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, STUDIO_URI, WIDGET_URI,
+} from '../src/ai-tools/contracts';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { startGateServer, type GateServer } from './helpers/chatgpt-gate-server';
 
@@ -220,51 +225,15 @@ const MODES = [
 ] as const;
 type Mode = typeof MODES[number];
 const TAP_MIN = 44;
-/**
- * RED, not a pass: controls in the published panels that are under 44px on a 375px phone today, each keyed by
- * its panel and listed with the smaller side it had there on 20 November 2026. /mcp serves a frozen bundle
- * (api/_ai/published/runtime.mjs), so enlarging them needs a new panel version and the owner's yes; until then
- * this list may only shrink. The gate fails when a control that is not listed for its panel is under 44px, when
- * a listed one gets smaller, and when a listed one is no longer found (then its line goes). A link inside a
- * sentence is not a tap target here (WCAG 2.5.8's inline exception).
- */
-const KNOWN_SMALL_TARGETS: Record<string, number> = {
-  // Readings (birth chart, transits, explainers)
-  'ui://zodiacs/readings-v3.html a.nameplate': 19, // the ZODIACS · ORG line at the top
-  'ui://zodiacs/readings-v3.html button.copy': 29, // Copy the reading
-  'ui://zodiacs/readings-v3.html a "Privacy"': 18.8, // the footer link
-  // Occasions (wedding card, two charts compared, a famous chart)
-  'ui://zodiacs/occasions-v8.html a.nameplate': 19,
-  'ui://zodiacs/occasions-v8.html button.copy': 29, // Copy the card
-  'ui://zodiacs/occasions-v8.html a.secondary': 29, // Read this pair, Open printable card
-  'ui://zodiacs/occasions-v8.html a "(a person)’s chart"': 29, // the links to two published people's pages
-  'ui://zodiacs/occasions-v8.html summary': 22.5, // "4 more contacts"
-  'ui://zodiacs/occasions-v8.html a "Privacy"': 18.8,
-  // Horoscopes
-  'ui://zodiacs/horoscopes-v7.html a.nameplate': 19,
-  'ui://zodiacs/horoscopes-v7.html button.text': 25.8, // Change sign
-  'ui://zodiacs/horoscopes-v7.html button': 34.2, // Today, Tomorrow, This week, General, Love, Career
-  'ui://zodiacs/horoscopes-v7.html summary': 22.5, // Why this reading?
-  'ui://zodiacs/horoscopes-v7.html a.method': 22.5, // How we write horoscopes
-  'ui://zodiacs/horoscopes-v7.html button.copy': 29, // Copy reading
-  'ui://zodiacs/horoscopes-v7.html a.secondary': 29, // More on zodiacs.org
-  'ui://zodiacs/horoscopes-v7.html a "Privacy"': 18.8,
-  // Sky calendar: the brand line, and its form one pixel short
-  'ui://zodiacs/sky-events-v4.html a.brand': 19,
-  'ui://zodiacs/sky-events-v4.html input#from': 43, 'ui://zodiacs/sky-events-v4.html input#to': 43, 'ui://zodiacs/sky-events-v4.html select#zone': 43,
-  // Chart Studio (empty state only)
-  'ui://zodiacs/chart-studio-v6.html a.panel-brand': 19,
-  'ui://zodiacs/chart-studio-v6.html a "How we calculate"': 14,
-  'ui://zodiacs/chart-studio-v6.html a "Privacy"': 14,
+// Links inside sentences use WCAG 2.5.8's inline exception.
+const STUDIO_TARGET_REASON = "Chart Studio is pinned to its published engine; a new address needs the owner's yes for the engine change";
+const KNOWN_SMALL_TARGETS: Record<string, { minimum: number; reason: string }> = {
+  'ui://zodiacs/chart-studio-v6.html a.panel-brand': { minimum: 19, reason: STUDIO_TARGET_REASON },
+  'ui://zodiacs/chart-studio-v6.html a "How we calculate"': { minimum: 14, reason: STUDIO_TARGET_REASON },
+  'ui://zodiacs/chart-studio-v6.html a "Privacy"': { minimum: 14, reason: STUDIO_TARGET_REASON },
 };
 const smallTargetsSeen: Record<string, number> = {};
 const tapFailures: string[] = [];
-const targetKey = (widget: Widget, control: Control) => `${widget.uri} ${control.tag === 'a' ? `a "${control.label.replace(/^.+’s chart$/, '(a person)’s chart')}"` : control.tag}`;
-/** Dashes the published panels print today (house rule: none), as the line each sits on. Same ratchet as the tap targets. */
-const KNOWN_DASH_LINES: Record<string, RegExp> = {
-  'ui://zodiacs/sky-events-v4.html': /^\d{1,2} [A-Z][a-z]{2,3} – \d{1,2} [A-Z][a-z]{2,3} · times for /, // the sky calendar's heading: "19 Nov (en dash) 26 Nov · times for Mexico City"
-};
-const dashLinesSeen = new Set<string>();
 const answerDashes = new Set<string>();
 /** No link a panel builds may carry the invented people's birth details (dates, times, coordinates, places). */
 const BIRTH_DETAILS_IN_LINK = /1990|1988|08[:%3A]*30|19[:%3A]*45|40\.42|41\.88|-3\.7|-87\.63|Madrid|Chicago/i;
@@ -462,21 +431,20 @@ function expectClean(view: Rendered, widget: Widget, mode: Mode, label: string, 
     expect(href, `${label}: a link carries a birth detail`).not.toMatch(BIRTH_DETAILS_IN_LINK);
     if (linksOmit) expect(href, `${label}: a link carries what it must not`).not.toMatch(linksOmit);
   }
-  // No em or en dash on screen, beyond the lines already recorded as defects of the frozen panels.
-  const dashed = [view.text, ...view.labels].join('\n').split('\n').filter(line => /[–—]/.test(line));
-  const known = KNOWN_DASH_LINES[widget.uri];
-  for (const line of dashed) if (known?.test(line.trim())) dashLinesSeen.add(widget.uri);
-  expect(dashed.filter(line => !known?.test(line.trim())), `${label}: dashes on screen`).toEqual([]);
+  const dashed = [view.text, ...view.labels].join('\n').split('\n').filter(line => /[\u2013\u2014]/u.test(line));
+  expect(dashed, `${label}: dashes on screen`).toEqual([]);
   renderedText.push({ source: `${widget.uri} ${label}`, text: [view.text, ...view.labels].join('\n') });
   onScreen[label] = view.text;
   if (mode.mobile) {
     // Collected here and judged once, in "375px touch targets", so one small control does not hide a state's other checks.
     for (const control of view.controls.filter(item => !item.inline && Math.min(item.width, item.height) < TAP_MIN)) {
-      const key = targetKey(widget, control);
       const side = Math.min(control.width, control.height);
-      const size = `${label}: ${control.tag} "${control.label}" ${control.width}x${control.height}`;
-      if (!(key in KNOWN_SMALL_TARGETS)) tapFailures.push(`under ${TAP_MIN}px and not on the known list: ${size}`);
-      else if (side < KNOWN_SMALL_TARGETS[key] - 0.5) tapFailures.push(`smaller than recorded (${KNOWN_SMALL_TARGETS[key]}px): ${size}`);
+      const target = control.tag === 'a' ? `a "${control.label}"` : control.tag;
+      const key = `${widget.uri} ${target}`;
+      const known = KNOWN_SMALL_TARGETS[key];
+      const size = `${label}: ${control.tag} "${control.label}" is ${control.width}x${control.height}px`;
+      if (!known) tapFailures.push(size);
+      else if (side < known.minimum - 0.5) tapFailures.push(`${size}, smaller than the recorded ${known.minimum}px`);
       smallTargetsSeen[key] = Math.min(smallTargetsSeen[key] ?? Infinity, side);
     }
   }
@@ -545,7 +513,7 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
     await local?.close();
     report.structuredContentBytes = sizes;
     report.onScreen = onScreen;
-    report.tapTargets = { minimum: TAP_MIN, underMinimum: smallTargetsSeen, failures: tapFailures };
+    report.tapTargets = { minimum: TAP_MIN, knownSmallTargets: KNOWN_SMALL_TARGETS, underMinimum: smallTargetsSeen, failures: tapFailures };
     report.dashesInAnswers = [...answerDashes];
     report.target = { mcp: mcpBase, pages: pagesBase, server: initialize?.message?.result?.serverInfo, tools: tools.length, resources: resources.length };
     await writeFile(REPORT_PATH, `${JSON.stringify(report, null, 2)}\n`);
@@ -600,6 +568,29 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
     });
 
     it('serves versioned widget addresses, with each tool on the newest version of its panel', () => {
+      const skyEvents = toolsByName.has('search_sky_events');
+      // Both readings panels share a URI prefix. Each keeps its own published aliases.
+      const panels = [
+        { current: WIDGET_URI, legacy: LEGACY_WIDGET_URIS, toolNames: ['get_upcoming_events'], alwaysListed: true },
+        { current: STUDIO_URI, legacy: LEGACY_STUDIO_URIS, toolNames: ['open_chart_studio'], alwaysListed: true },
+        { current: HOROSCOPE_URI, legacy: LEGACY_HOROSCOPE_URIS, toolNames: ['get_horoscope'] },
+        { current: OCCASIONS_URI, legacy: LEGACY_OCCASIONS_URIS, toolNames: OCCASION_TOOL_NAMES },
+        {
+          current: READINGS_URI,
+          legacy: [LEGACY_READINGS_URI],
+          toolNames: COVERAGE_TOOL_NAMES.filter(name => !skyEvents || name !== 'get_natal_chart'),
+        },
+        {
+          current: READINGS_SKY_EVENTS_URI,
+          legacy: [LEGACY_READINGS_SKY_EVENTS_URI],
+          toolNames: skyEvents ? ['get_natal_chart'] : [],
+        },
+      ];
+      const expectedUris = panels
+        .filter(panel => panel.alwaysListed || panel.toolNames.some(name => toolsByName.has(name)))
+        .flatMap(panel => [panel.current, ...panel.legacy]);
+      expect(resources.map(resource => resource.uri).sort(), 'current and legacy widget addresses').toEqual(expectedUris.sort());
+
       const listed = new Map<string, number[]>();
       for (const resource of resources) {
         const match = /^ui:\/\/zodiacs\/([a-z-]+)-v(\d+)\.html$/.exec(resource.uri);
@@ -607,17 +598,15 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
         expect(resource.mimeType).toBe('text/html;profile=mcp-app');
         listed.set(match![1], [...(listed.get(match![1]) ?? []), Number(match![2])]);
       }
+      const currentByTool = new Map(panels.flatMap(panel => panel.toolNames.map(name => [name, panel.current] as const)));
       const used = new Set<string>();
       for (const tool of tools) {
-        const uri = tool._meta?.['openai/outputTemplate'];
-        if (uri === undefined) continue;
-        expect(tool._meta.ui?.resourceUri, `${tool.name}: both template fields agree`).toBe(uri);
-        const [, family, version] = /^ui:\/\/zodiacs\/([a-z-]+)-v(\d+)\.html$/.exec(uri)!;
-        expect(Number(version), `${tool.name} uses the newest ${family}`).toBe(Math.max(...listed.get(family)!));
-        used.add(uri);
+        const current = currentByTool.get(tool.name);
+        expect(tool._meta?.['openai/outputTemplate'], `${tool.name} output template`).toBe(current);
+        expect(tool._meta?.ui?.resourceUri, `${tool.name} resource URI`).toBe(current);
+        if (current !== undefined) used.add(current);
       }
-      // Earlier versions stay served, so a conversation that opened one still loads it.
-      for (const [family, versions] of listed) expect(versions.sort((a, b) => a - b), family).toEqual(Array.from({ length: Math.max(...versions) }, (_, index) => index + 1).slice(-versions.length));
+      for (const versions of listed.values()) versions.sort((a, b) => a - b);
       report.widgetFamilies = Object.fromEntries(listed);
       report.widgetsInUse = [...used];
     });
@@ -679,13 +668,13 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       expect(findings.join('\n')).toBe('');
     });
 
-    it('uses no em or en dash in the instructions or any tool title or description', () => {
-      expect(initialize.message.result.instructions.match(/[–—]/g) ?? [], 'instructions').toEqual([]);
-      for (const tool of tools) expect([tool.title, tool.annotations?.title ?? '', tool.description].join('\n').match(/[–—]/g) ?? [], `${tool.name} title and description`).toEqual([]);
-      // Known defect of the frozen bundle, listed in the notes: field descriptions print a year range with an en dash. Nothing else may.
-      const fields = tools.flatMap(tool => everyString(tool.inputSchema).filter(text => /[–—]/.test(text)).map(text => ({ tool: tool.name, text })));
-      for (const field of fields) expect(field.text.replace(/\(years 1800–2199\)/g, ''), `${field.tool} field description`).not.toMatch(/[–—]/);
-      report.fieldDescriptionsWithADash = [...new Set(fields.map(field => field.tool))];
+    it('uses no em or en dash in instructions, tool titles or descriptions, including input fields', () => {
+      const dash = /[\u2013\u2014]/u;
+      expect(initialize.message.result.instructions, 'instructions').not.toMatch(dash);
+      const fields = tools.filter(tool => everyString(tool.inputSchema).some(text => dash.test(text))).map(tool => tool.name);
+      report.fieldDescriptionsWithADash = fields;
+      expect(fields, 'tools with dashes in input fields').toEqual([]);
+      for (const tool of tools) expect([tool.title, tool.annotations?.title ?? '', tool.description].join('\n'), tool.name).not.toMatch(dash);
     });
 
     it('asks for no more than the task needs: no contact, identity or device-location fields, and town-level places', () => {
@@ -1106,8 +1095,8 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
   describe('rendered widgets', () => {
     type Shows = RegExp[] | ((data: any) => RegExp[]);
     const VIEWS: { key: string; from: string; tool: string; shows: Shows; hides?: RegExp[]; linksOmit?: RegExp; shots: Partial<Record<Mode['name'], string>> }[] = [
-      { key: 'events-week', from: 'P1', tool: 'get_upcoming_events', shows: [/Mexico City/, /Moon/], hides: [/\d{4}-\d{2}-\d{2}T/], shots: {} },
-      { key: 'horoscope', from: 'P2', tool: 'get_horoscope', shows: data => [/Leo/, literal(`${data.dateLabel}, times for Madrid`), literal(data.reading.paragraphs[0].text.slice(0, 40)), /For reflection\. Astrology does not establish what will happen in your life\./, /These are sky positions we calculate/], shots: {} },
+      { key: 'events-week', from: 'P1', tool: 'get_upcoming_events', shows: [/\d{1,2} [A-Z][a-z]{2,3} to \d{1,2} [A-Z][a-z]{2,3} · times for Mexico City/, /Moon/], hides: [/\d{4}-\d{2}-\d{2}T/], shots: {} },
+      { key: 'horoscope', from: 'P2', tool: 'get_horoscope', shows: data => [/Leo/, literal(`${data.dateLabel}, times for Madrid`), literal(data.reading.paragraphs[0].text.slice(0, 40)), literal(data.disclosure), /These are sky positions we calculate/], shots: {} },
       { key: 'famous-chart', from: 'P3', tool: 'get_famous_chart', shows: [/Frida Kahlo/, /Cancer/, /not a birth time/], linksOmit: /1907|07-06|Coyoac/i, shots: {} },
       { key: 'explainer', from: 'P3', tool: 'explain_astrology', shows: [/Saturn return/, /about 29\.5 years/, /around age 29/], shots: {} },
       { key: 'occasion', from: 'P4', tool: 'get_occasion_sky', shows: [/\b70\b/, /A good day for it/, /Reading confidence 70%/, /Virgo/, /Aries/, /19:40/, /Venus/, /not a guarantee/], linksOmit: /[?&#]place=|[?&#]names?=|(?<!Europe(?:%2F|\/))Lisbon/i, shots: { light: '05-wedding-card-light.png' } },
@@ -1191,21 +1180,16 @@ describe.skipIf(!ENABLED)('ChatGPT plugin gate', () => {
       expect(renderedText.length).toBeGreaterThanOrEqual(40);
       const findings = renderedText.flatMap(({ source, text }) => policyFindings(source, text));
       expect([...new Set(findings)].join('\n')).toBe('');
-      // RED, a known gap of the frozen horoscope panel: its answer carries "Reading confidence NN%" (case two asserts it)
-      // and the panel prints the disclosure without it. When a new panel prints the label, this fails: assert it in VIEWS then.
       const horoscope = renderedText.filter(({ source }) => / horoscope\//.test(source));
       expect(horoscope.length).toBeGreaterThanOrEqual(3);
-      report.horoscopePanelPrintsConfidenceLabel = horoscope.some(({ text }) => /Reading confidence/.test(text));
-      expect(report.horoscopePanelPrintsConfidenceLabel, 'the horoscope panel prints the Reading confidence label').toBe(false);
-      // Every recorded dash line is still there; one that is not goes from the list.
-      expect(Object.keys(KNOWN_DASH_LINES).filter(uri => !dashLinesSeen.has(uri)).join(', '), 'known dash lines no longer found').toBe('');
+      report.horoscopePanelPrintsConfidenceLabel = horoscope.every(({ text }) => /Reading confidence \d{2}%/.test(text));
+      expect(report.horoscopePanelPrintsConfidenceLabel, 'each horoscope panel prints the Reading confidence label').toBe(true);
       report.widgetMeasurements = measurements;
       report.renderedStates = renderedText.length;
     });
 
-    it('375px touch targets: nothing under 44px beyond the recorded list (RED: the list is a known gap, not a 44px pass)', () => {
+    it('has 44px touch targets at 375px apart from the recorded Chart Studio controls', () => {
       expect(tapFailures.join('\n')).toBe('');
-      // Every line of the known list is still needed; one that is not goes.
       expect(Object.keys(KNOWN_SMALL_TARGETS).filter(key => !(key in smallTargetsSeen)).join(', '), 'known small targets no longer found under 44px').toBe('');
     });
 
