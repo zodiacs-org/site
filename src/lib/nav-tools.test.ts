@@ -178,6 +178,9 @@ describe('tools behind a launch switch', () => {
     expect(hrefs(true)).toEqual(expect.arrayContaining(['/year-score/', '/birthday-report/']));
     expect(hrefs(false)).not.toContain('/year-score/');
     expect(hrefs(false)).not.toContain('/birthday-report/');
+    expect(visibleTools(() => true).some((tool) => tool.href === '/good-days/')).toBe(true);
+    expect(visibleTools(() => false).some((tool) => tool.href === '/good-days/')).toBe(false);
+    expect(TOOLS_HUB.some((tool) => tool.href === '/good-days/')).toBe(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED'));
     for (const tool of ALL_TOOL_CATALOG) {
       if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
     }
