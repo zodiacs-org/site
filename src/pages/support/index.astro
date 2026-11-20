@@ -1,0 +1,100 @@
+---
+import Base from '../../layouts/Base.astro';
+
+// The public support page: one mailbox, what to send, and where the policies
+// and the developer documentation are. It has no form and collects nothing.
+const updated = '19 November 2026';
+const modifiedAt = '2026-11-19T00:00:00.000Z';
+const description =
+  'How to get help with Zodiacs.org and with Zodiacs in an AI assistant: one mailbox, what to include, and where the privacy policy, terms and developer documentation are.';
+
+const jsonLd = [
+  {
+    '@type': 'ContactPage',
+    name: 'Support: Zodiacs.org',
+    url: 'https://zodiacs.org/support/',
+    description,
+    dateModified: modifiedAt,
+    publisher: { '@id': 'https://zodiacs.org/#org' },
+  },
+];
+---
+<Base
+  title="Support | Zodiacs.org"
+  description={description}
+  path="/support/"
+  jsonLd={jsonLd}
+>
+  <section class="section container container--narrow">
+    <em class="kicker">Support</em>
+    <h1 class="method-title display">Help with Zodiacs.</h1>
+
+    <div class="prose">
+      <p class="lede">
+        For help with Zodiacs.org, or with Zodiacs in an AI assistant such as
+        ChatGPT or Claude, write to{' '}
+        <a href="mailto:admin@zodiacs.org">admin@zodiacs.org</a>. Zodiacs LLC
+        runs the site and reads that mailbox.
+      </p>
+
+      <h2 id="what-to-send">What to send</h2>
+      <ul>
+        <li>The page address, or the name of the assistant you were using.</li>
+        <li>What you asked for, what you got, and what you expected.</li>
+        <li>The date and your time zone, when the question is about a date or a time.</li>
+      </ul>
+      <p>
+        You do not need to send anyone's birth details to report a problem. If
+        a chart is the problem, an invented date that shows the same fault is
+        enough.
+      </p>
+
+      <h2 id="assistants">Zodiacs in an AI assistant</h2>
+      <p>
+        Zodiacs works in an assistant without a Zodiacs account or a sign-in.
+        The <a href="/developers/ai/">page for AI assistants</a> lists what it
+        can do, how to connect it and its limits. What happens to the details
+        you give it is in the{' '}
+        <a href="/privacy/#ai-integrations">privacy policy</a>.
+      </p>
+
+      <h2 id="errors">A mistake on a page</h2>
+      <p>
+        If a date, a degree or an explanation looks wrong, send the page
+        address and the claim. Material corrections are recorded in the{' '}
+        <a href="/corrections/">correction log</a>, and the{' '}
+        <a href="/methodology/">methodology</a> says how the site calculates.
+      </p>
+
+      <h2 id="policies">Policies</h2>
+      <p>
+        The <a href="/privacy/">privacy policy</a> says what the site handles
+        and how to make a request about your data. The{' '}
+        <a href="/terms/">terms of use</a> cover using the site.
+      </p>
+
+      <h2 id="developers">Developers</h2>
+      <p>
+        The <a href="/developers/">developer tools</a> have their own
+        documentation, and{' '}
+        <a href="/developers/support/">developer support</a> lists what each
+        integration covers and its calculation limits.
+      </p>
+
+      <h2 id="security">Security</h2>
+      <p>
+        To report a security problem, write to the same mailbox. The contact
+        is also published in{' '}
+        <a href="/.well-known/security.txt">security.txt</a>.
+      </p>
+
+      <p class="method-updated mono">Last updated: {updated}</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .method-title { margin: 6px 0 8px; }
+  .prose .lede { font-size: var(--text-lg); color: var(--text); }
+  .method-updated { margin-top: 40px; color: var(--faint); font-size: 12px; letter-spacing: 0.04em; }
+</style>
