@@ -484,7 +484,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [['/good-days/', '2026-11-09'] as const] : []),
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
-  ['/fomo/', '2026-09-01'] as const,
+  ['/fomo/', '2026-11-16'] as const,
   // Phase 4 re-exposes the already-reviewed Big Three share card from the
   // birth-chart result sheet.
   ['/birth-chart/', '2026-07-24'],

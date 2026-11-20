@@ -16,6 +16,8 @@ export const ANALYTICS_EVENT_PROPS = Object.freeze({
   terminal_view_switch: ['surface', 'direction'],
   sdk_click: ['source', 'destination'],
   bio_click: ['destination'],
+  // A visitor follows the thesis link on the Astrofolio or Fomo page (ZOD-43).
+  thesis_click: ['source'],
   // A visit that arrived from a link the Zodiacs app gave in ChatGPT or another assistant.
   assistant_arrival: ['assistant'],
   wallet_chart_computed: ['chain', 'holds_registry_asset'],
@@ -198,6 +200,9 @@ export const ANALYTICS_EVENT_VALUES = Object.freeze({
     destination: Object.freeze([
       'website', 'birth_chart', 'astrofolio', ...ZODIAC_SIGN_VALUES,
     ]),
+  }),
+  thesis_click: Object.freeze({
+    source: Object.freeze(['astrofolio', 'fomo']),
   }),
   registry_bridge_impression: Object.freeze({
     sign: ZODIAC_SIGN_VALUES,
