@@ -9,7 +9,7 @@
  * never posts. Drafts are plain text for a human to read, edit and post by hand.
  * Pure: no network, storage or logging (the X fetch lives in the script).
  */
-import { YEAR_PEOPLE, figureDriverTitle, personKey, type YearPerson } from './people';
+import { YEAR_PEOPLE, figureDriverTitle, personKey, yearPersonPath, type YearPerson } from './people';
 import { rangeWorthShowing } from './range';
 import { SCORE_ASPECTS, SCORE_POINTS, SLOW_PLANETS } from './core';
 import { driverTitle } from './reading';
@@ -80,11 +80,14 @@ const isScore = (value: number): boolean => Number.isFinite(value) && value >= 0
  * dash. The label must be one of the five tier labels (./tier.ts), the name a
  * figure in the Year Ahead directory, the main transit one of the transit
  * titles the reading gives (driverTitle in ./reading.ts) and the confidence
- * label "Reading confidence NN%". Anything else withholds the draft: it is
- * never softened or rewritten.
+ * label "Reading confidence NN%". The link is part of the allowlist too: the
+ * figure's own /year/ page on zodiacs.org and nothing else. Anything else
+ * withholds the draft: it is never softened or rewritten.
  */
 export const OFFICIAL_TIER_LABELS: ReadonlySet<string> = new Set([8, 6.5, 3.5, 2, 0].map((value) => scoreTier(value).label));
-export const OFFICIAL_FIGURE_NAMES: ReadonlySet<string> = new Set(YEAR_PEOPLE.map((person) => person.name));
+/** The directory's own record for each official name. A draft is built from this record, never from the caller's copy of it. */
+const OFFICIAL_FIGURES: ReadonlyMap<string, YearPerson> = new Map(YEAR_PEOPLE.map((person) => [person.name, person]));
+export const OFFICIAL_FIGURE_NAMES: ReadonlySet<string> = new Set(OFFICIAL_FIGURES.keys());
 /** Each official transit title, with the planet, aspect and point it names. */
 const OFFICIAL_TRANSITS: ReadonlyMap<string, { planet: string; aspect: string; point: string }> = new Map(
   SLOW_PLANETS.flatMap((planet) => SCORE_ASPECTS.flatMap((aspect) => SCORE_POINTS.map((point) => [driverTitle({ planet, aspect, point }), { planet, aspect, point }] as const))),
@@ -120,34 +123,45 @@ const OFFICIAL_CONFIDENCE_LABEL = /^Reading confidence (?:100|[1-9]?\d)%$/u;
  */
 export const DRAFT_NOTE = 'A reading of a public birth date, not of a company, a team or a result.';
 
+/** The one site a draft links to. */
+export const DRAFT_ORIGIN = 'https://zodiacs.org';
+/** The only link a figure's draft may carry: their own /year/ page. */
+export const draftLink = (person: Pick<YearPerson, 'slug'>): string => `${DRAFT_ORIGIN}${yearPersonPath(person.slug)}`;
+
 /**
  * A draft post for one match, under X's limit with its link counted as 23
- * characters, or null unless every word it carries is official wording.
+ * characters, or null unless every word it carries is official wording and
+ * its link is exactly the figure's own /year/ page on zodiacs.org. The draft
+ * is built from the directory's own record for the figure, never from the
+ * caller's copy.
  */
 export function draftPost(person: YearPerson, data: DraftScore, url: string): string | null {
   // No score, no wording or no confidence label: no draft, rather than one with a gap in it.
   if (data.status !== 'found' || data.score === null || !data.label || !data.confidenceLabel) return null;
   // Official wording only: anything else withholds the draft.
-  if (!isScore(data.score) || !OFFICIAL_TIER_LABELS.has(data.label) || !OFFICIAL_FIGURE_NAMES.has(person.name)) return null;
+  // The directory's own record, matched on name and slug together. The link must be that figure's own page, to the character.
+  const figure = OFFICIAL_FIGURES.get(person.name);
+  if (!figure || figure.slug !== person.slug || url !== draftLink(figure)) return null;
+  if (!isScore(data.score) || !OFFICIAL_TIER_LABELS.has(data.label)) return null;
   if (!OFFICIAL_CONFIDENCE_LABEL.test(data.confidenceLabel)) return null;
   const main = data.drivers[0];
-  const mainTitle = main ? officialTransitTitle(person, main) : null;
+  const mainTitle = main ? officialTransitTitle(figure, main) : null;
   if (main && mainTitle === null) return null;
   // The same range, in the same words, as the figure's /year/ page shows beside its score.
   const range = data.scoreRange ?? null;
   if (range && (!isScore(range.low) || !isScore(range.high) || range.low > range.high)) return null;
   const between = rangeWorthShowing(range) ? ` (between ${range.low.toFixed(1)} and ${range.high.toFixed(1)} without a birth time)` : '';
-  const headline = `${person.name}'s next twelve months on the Zodiacs Year Ahead Score: ${data.score.toFixed(1)}/10${between}, ${data.label.charAt(0).toLowerCase()}${data.label.slice(1)}.`;
+  const headline = `${figure.name}'s next twelve months on the Zodiacs Year Ahead Score: ${data.score.toFixed(1)}/10${between}, ${data.label.charAt(0).toLowerCase()}${data.label.slice(1)}.`;
   // No month is named, for anyone: next to a person in the news, a best or
   // hardest month reads as a stock call, a sports pick or worse.
   // Always printed from the official title, whichever wording the caller gave.
-  const transit = mainTitle ? `Main transit: ${mainTitle.replace(' your ', ` ${person.name.split(' ')[0]}'s `)}.` : null;
+  const transit = mainTitle ? `Main transit: ${mainTitle.replace(' your ', ` ${figure.name.split(' ')[0]}'s `)}.` : null;
   const ending = [`${data.confidenceLabel}.`, DRAFT_NOTE];
   const fits = (text: string) => text.length + 1 + X_LINK_LENGTH <= X_POST_LIMIT;
   const full = [headline, ...(transit ? [transit] : []), ...ending].join(' ');
   // Too long: the main transit goes first. The confidence label and the note are never dropped.
   const text = fits(full) ? full : [headline, ...ending].join(' ');
-  return fits(text) ? `${text}\n${url}` : null;
+  return fits(text) ? `${text}\n${draftLink(figure)}` : null;
 }
 
 /** What a reviewer must check before posting any draft. Printed under every match. */

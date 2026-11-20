@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { getYearScore } from '../../ai-tools/features/year-score';
-import { DRAFT_NOTE, OFFICIAL_FIGURE_NAMES, OFFICIAL_TIER_LABELS, OFFICIAL_TRANSIT_TITLES, REVIEW_CHECKLIST, X_POST_LIMIT, buildTrendingReport, compactKey, draftPost, matchTrends, officialTransitTitle, type DraftScore, type ReportMatch } from './trending';
+import { DRAFT_NOTE, DRAFT_ORIGIN, OFFICIAL_FIGURE_NAMES, OFFICIAL_TIER_LABELS, OFFICIAL_TRANSIT_TITLES, REVIEW_CHECKLIST, X_POST_LIMIT, buildTrendingReport, compactKey, draftLink, draftPost, matchTrends, officialTransitTitle, type DraftScore, type ReportMatch } from './trending';
 import { YEAR_PEOPLE, figureDriverTitle, findYearPerson, yearPageStart, yearPersonPath } from './people';
 import { SCORE_ASPECTS, SCORE_POINTS, SLOW_PLANETS } from './core';
 import { driverTitle } from './reading';
@@ -36,10 +36,11 @@ const OFFICIAL_TITLES = SLOW_PLANETS.flatMap((planet) => SCORE_ASPECTS.flatMap((
 describe('draft posts', () => {
   const person = findYearPerson('Jensen Huang')!;
   const url = 'https://zodiacs.org/year/jensen-huang/';
-  /** A label or a main transit title is withheld, both ways. */
+  /** A label, a main transit title or a link is withheld, all three ways. */
   const expectWithheld = (text: string, why: string) => {
     expect(draftPost(person, score({ label: text }), url), `${why}: ${text}`).toBeNull();
     expect(draftPost(person, score({ drivers: [{ title: text }] }), url), `${why} in the transit: ${text}`).toBeNull();
+    expect(draftPost(person, score(), text), `${why} as the link: ${text}`).toBeNull();
   };
   it('drafts one post under X’s limit, with the link, the confidence label and no dashes', () => {
     const draft = draftPost(person, score(), url)!;
@@ -91,6 +92,32 @@ describe('draft posts', () => {
       expect(draftPost(person, score({ scoreRange: { low: 5, high: value } }), url), `range ${value}`).toBeNull();
     }
     expect(draftPost(person, score({ scoreRange: { low: 7.6, high: 5.1 } }), url), 'range backwards').toBeNull();
+  });
+  it('withholds a draft whose link is not the figure’s own /year/ page', () => {
+    for (const link of [
+      '', ' ', 'Buy NVDA \u2014 $200 by June', 'Short NVDA', '$100',
+      'https://zodiacs.org/year/elon-musk/',
+      'https://zodiacs.org/year/jensen-huang', 'https://zodiacs.org/year/Jensen-Huang/',
+      'https://zodiacs.org/year/jensen-huang/?ref=short-nvda', 'https://zodiacs.org/year/jensen-huang/#buy',
+      'https://zodiacs.org/year/jensen-huang/ ', ' https://zodiacs.org/year/jensen-huang/', 'https://zodiacs.org/year/jensen-huang/\nShort NVDA', 'https://zodiacs.org/year/jensen-huang/\u2013',
+      'http://zodiacs.org/year/jensen-huang/', 'https://www.zodiacs.org/year/jensen-huang/', 'https://zodiacs.org.example.com/year/jensen-huang/', 'https://example.com/year/jensen-huang/',
+      'https://zodiacs.org/year-score/', 'https://zodiacs.org/',
+    ]) {
+      expect(draftPost(person, score(), link), JSON.stringify(link)).toBeNull();
+    }
+    // The record must be the directory's own: name and slug together.
+    expect(draftPost({ ...person, slug: 'buy-nvda' }, score(), 'https://zodiacs.org/year/buy-nvda/'), 'slug buy-nvda').toBeNull();
+    expect(draftPost({ ...person, slug: 'elon-musk' }, score(), 'https://zodiacs.org/year/elon-musk/'), 'slug elon-musk, its link').toBeNull();
+    expect(draftPost({ ...person, slug: 'elon-musk' }, score(), url), 'slug elon-musk, own link').toBeNull();
+    // A copy with the same name and slug is the same figure.
+    expect(draftPost({ ...person }, score(), url)).not.toBeNull();
+  });
+  it('links each figure to their own /year/ page on zodiacs.org', () => {
+    expect(DRAFT_ORIGIN).toBe('https://zodiacs.org');
+    for (const figure of YEAR_PEOPLE) {
+      expect(draftLink(figure)).toBe(`https://zodiacs.org/year/${figure.slug}/`);
+      expect(draftLink(figure)).toMatch(/^https:\/\/zodiacs\.org\/year\/[a-z0-9]+(?:-[a-z0-9]+)*\/$/u);
+    }
   });
   it('accepts get_year_score’s wording of an official title for that figure only, and prints the official title', () => {
     const scorer = { title: "Uranus trine Jensen Huang's Mercury", planet: 'Uranus', aspect: 'trine', point: 'Mercury' };
@@ -185,7 +212,7 @@ describe('draft posts', () => {
     for (const category of ['ceo', 'athlete', 'entertainer', 'founder'] as const) {
       const figure = YEAR_PEOPLE.find((candidate) => candidate.category === category);
       expect(figure, category).toBeDefined();
-      const draft = draftPost(figure!, score(), url)!;
+      const draft = draftPost(figure!, score(), draftLink(figure!))!;
       expect(draft, category).not.toBeNull();
       expect(draft, category).not.toMatch(/Strongest month|Most pressure|Hardest month|March 2027|October 2026/u);
       expect(draft.split('\n')[0], category).not.toMatch(MONTH_WORD);
@@ -216,10 +243,20 @@ describe('draft posts from the real scorer, as scripts/trending-x.ts makes them'
     for (const figure of YEAR_PEOPLE) {
       const { data } = await getYearScore({ person: figure.slug, from: yearPageStart(NOW) }, NOW, clock, ORIGIN);
       const url = `${ORIGIN}${yearPersonPath(figure.slug)}`;
+      const stranger = YEAR_PEOPLE.find((candidate) => candidate.slug !== figure.slug)!;
       const draft = draftPost(figure, data, url);
       if (draft === null) throw new Error(`no draft for ${figure.name}: label ${data.label}, main transit ${data.drivers[0]?.title}`);
       expect(draft.endsWith(`\n${url}`)).toBe(true);
-      expect(draft).toContain(`${data.score!.toFixed(1)}/10`);
+      // The guard's link, the scorer's page and the script's link are the same, to the character.
+      expect(draftLink(figure)).toBe(url);
+      expect(data.pageUrl).toBe(url);
+      expect(draft.endsWith(`\n${draftLink(figure)}`)).toBe(true);
+      // Pinned here, not guarded: the scorer's label is the tier of its score, and the score lies inside its range.
+      expect(data.label).toBe(scoreTier(data.score!).label);
+      if (data.scoreRange) {
+        expect(data.scoreRange.low).toBeLessThanOrEqual(data.score!);
+        expect(data.score!).toBeLessThanOrEqual(data.scoreRange.high);
+      }
       expect(draft).toContain(`${data.confidenceLabel}. ${DRAFT_NOTE}`);
       expect(draft).not.toMatch(/[‒-―⸺⸻]/u);
       expect(draft.split('\n')[0]).not.toMatch(MONTH_WORD);
@@ -234,7 +271,6 @@ describe('draft posts from the real scorer, as scripts/trending-x.ts makes them'
           expect(draft).toContain(`Main transit: ${official!.replace(' your ', ` ${figure.name.split(' ')[0]}'s `)}.`);
         }
         // The same answer with unofficial wording in place of the main transit, or a title worded for someone else: withheld.
-        const stranger = YEAR_PEOPLE.find((candidate) => candidate.slug !== figure.slug)!;
         for (const title of [`${main.title}, shares double`, main.title.replace(`${figure.name}'s`, `${figure.name.split(' ')[0]}'s`), main.title.replace(figure.name, stranger.name), 'Nvidia shares are now widely expected to increase'].filter((title) => title !== main.title)) {
           expect(draftPost(figure, { ...data, drivers: [{ ...main, title }, ...data.drivers.slice(1)] }, url), title).toBeNull();
         }
@@ -244,6 +280,8 @@ describe('draft posts from the real scorer, as scripts/trending-x.ts makes them'
         expect(draftPost(figure, { ...data, label }, url), label).toBeNull();
       }
       expect(draftPost({ ...figure, name: `${figure.name} (NVDA)` }, data, url), 'name changed').toBeNull();
+      expect(draftPost(figure, data, draftLink(stranger)), 'another figure’s link').toBeNull();
+      expect(draftPost(figure, data, `${url}?ref=x`), 'link with a query').toBeNull();
       expect(draftPost(figure, { ...data, confidenceLabel: `${data.confidenceLabel} (guaranteed)` }, url), 'confidence changed').toBeNull();
     }
     expect(withTransit).toBeGreaterThan(0);

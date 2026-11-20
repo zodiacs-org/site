@@ -22,10 +22,9 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createLocalTimeModule } from '../api/_compute/local-time.mjs';
 import { getYearScore } from '../src/ai-tools/features/year-score';
-import { buildTrendingReport, draftPost, matchTrends, type ReportMatch, type TrendInput } from '../src/lib/year-score/trending';
-import { yearPageStart, yearPersonPath } from '../src/lib/year-score/people';
+import { DRAFT_ORIGIN, buildTrendingReport, draftLink, draftPost, matchTrends, type ReportMatch, type TrendInput } from '../src/lib/year-score/trending';
+import { yearPageStart } from '../src/lib/year-score/people';
 
-const ORIGIN = 'https://zodiacs.org';
 const args = process.argv.slice(2);
 const flag = (name: string) => { const index = args.indexOf(name); return index === -1 ? undefined : args[index + 1]; };
 
@@ -58,8 +57,8 @@ const clock = createLocalTimeModule();
 const matches: ReportMatch[] = [];
 for (const match of report.matches) {
   // Scored from the same day as the figure's page, so the draft's number is the one the link shows.
-  const { data } = await getYearScore({ person: match.person.slug, from: yearPageStart(now) }, now, clock, ORIGIN);
-  const url = `${ORIGIN}${yearPersonPath(match.person.slug)}`;
+  const { data } = await getYearScore({ person: match.person.slug, from: yearPageStart(now) }, now, clock, DRAFT_ORIGIN);
+  const url = draftLink(match.person);
   matches.push({ trend: match.trend, volume: match.volume, slug: match.person.slug, name: match.person.name, score: data.score, label: data.label, url, draft: draftPost(match.person, data, url) });
 }
 clock.dispose();
