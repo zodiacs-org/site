@@ -13,6 +13,7 @@
  * with hreflang="en" and the English-only cue.
  */
 import Base from '../../layouts/Base.astro';
+import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
 import ArtFrame from '../ArtFrame.astro';
 import AskGuideLine from '../AskGuideLine.astro';
@@ -107,6 +108,20 @@ const focusCss = [
 const moon = daily.bodies.find((body) => body.body === 'Moon');
 const moonHouse = moon ? ((SIGNS.findIndex((entry) => entry.slug === moon.sign) - signIndex + 12) % 12) + 1 : null;
 const faq = c.faq(name);
+// The same Article the English daily page carries, dated with the edition and in this language.
+const canonicalUrl = `https://zodiacs.org${path}`;
+const articleJsonLd = [{
+  '@type': 'Article',
+  headline: c.title(name, titleDate).replace(/\s*\|\s*Zodiacs\.org.*$/u, ''),
+  description: c.description(name, dateLabel, c.notes(reading.lines.length)),
+  url: canonicalUrl,
+  datePublished: `${daily.date}T00:00:00.000Z`,
+  dateModified: `${daily.date}T00:00:00.000Z`,
+  author: EDITOR_AUTHOR,
+  publisher: { '@id': 'https://zodiacs.org/#org' },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+  inLanguage: locale === 'pt' ? 'pt-BR' : locale,
+}];
 // Week and month in this language once those editions are built here; otherwise the English pages, with the cue.
 const periodLinks = [
   { label: c.week, english: `/horoscopes/${sign.slug}/weekly/` },
@@ -130,6 +145,8 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
   path={path}
   locale={locale}
   editionDate={daily.date}
+  type="article"
+  jsonLd={articleJsonLd}
   image={locale === 'es' || locale === 'pt' ? localizedHoroscopeArtCard(sign.slug, locale) : localizedSignArtCard(sign.slug, locale === 'ru' ? 'en' : locale)}
   imageAlt={c.imageAlt(name)}
 >
