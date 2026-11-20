@@ -188,6 +188,12 @@ const description = 'A free astrology calculator.';
       .toEqual([]);
     expect(findConsumerBoundaryViolations("const route = '/sdk/';", 'src/pages/sitemap.xml.ts'))
       .toEqual([]);
+    expect(findConsumerBoundaryViolations('<a href="/thesis/">Thesis</a>', 'src/components/SiteFooter.astro'))
+      .toEqual([]);
+    expect(rules('<a href="/thesis/">Thesis</a>', 'src/pages/index.astro'))
+      .toContain('unsanctioned wing link');
+    expect(rules('<a href="/thesis/">Thesis</a>', 'src/components/SiteNav.astro'))
+      .toContain('unsanctioned wing link');
     expect(rules('<a href="/terminal/">Terminal</a>', 'src/components/SiteFooter.astro'))
       .toContain('unsanctioned wing link');
     expect(rules('<a href="/registry">Record</a>', 'src/pages/example.astro'))
