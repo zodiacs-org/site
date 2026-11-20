@@ -5,6 +5,7 @@ import HorizonDiagram from '../../components/HorizonDiagram.astro';
 import { ART, artSrc, artSrcset } from '../../lib/art';
 import PlanetGlyph from '../../components/PlanetGlyph';
 import ChartCalculator from '../../islands/ChartCalculator';
+import { launchFlagOn } from '../../lib/launch-flags';
 import SignIcon from '../../components/SignIcon.astro';
 import { SIGNS } from '../../lib/signs';
 import { RISING } from '../../lib/interpretations';
@@ -34,6 +35,12 @@ const faq = [
     q: 'What if my birth time is rounded, like exactly 7:00?',
     a: 'Rounded times are common on birth records. If your result sits in the first or last degree or two of a sign, treat the neighbouring sign as a real possibility and read both. The one that sounds like how strangers see you is usually yours.',
   },
+  // The relocation question points to the astrocartography map, so it is asked only while that page is on.
+  ...(launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED') ? [{
+    q: 'Does my rising sign change if I move?',
+    a: 'No. Your rising sign is fixed by the moment and place you were born. Astrologers do read relocation, though: the places where each planet sat on the horizon or overhead at your birth are drawn as lines on a map.',
+    link: { href: '/astrocartography/', label: 'Draw your astrocartography map' },
+  }] : []),
   {
     q: 'What is a chart ruler?',
     a: 'The planet that rules your rising sign is your chart ruler. Astrologers treat its sign and house as a major theme of the chart. The calculator names yours, using the traditional rulerships for consistency.',
