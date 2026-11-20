@@ -91,11 +91,12 @@ function App() {
 
   function accept(result: PanelToolResult) {
     let data = result._meta?.[PANEL_KEY] as HoroscopePanelData | undefined;
-    if (data?.minor) minor.current = true;
-    if (data && minor.current && !data.minor) data = softenMinorPanel(data);
     const { answer, error } = toolAnswer(result.structuredContent);
     if (data) {
-      setPanel(data);
+      const disclosure = minor.current && !data.minor ? panel?.disclosure : answer?.disclosure;
+      if (data.minor) minor.current = true;
+      if (minor.current && !data.minor) data = softenMinorPanel(data);
+      setPanel({ ...data, disclosure: disclosure ?? data.disclosure });
       setView(startView(data, data.requested.zone ?? deviceZone()));
       setPicking(false);
       setMessage('');
