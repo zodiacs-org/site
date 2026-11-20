@@ -81,6 +81,10 @@ const consumerPath = stripLocale(Astro.url.pathname);
 const isRegistryWing = /^\/(?:terminal|registry|sdk|thesis|archive|disclosure)(?:\/|$)/.test(consumerPath);
 const suppressFooterEmailCapture = /^\/(?:birth-chart|horoscopes|profile)(?:\/|$)/.test(consumerPath);
 const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
+// The thesis is published in English only. Each catalog already names it
+// (footerThesis); the section locales carry no such message and keep the
+// page's own name, as they do for Registry and SDK.
+const thesisLabel = sectionLocale ? 'Thesis' : t(locale, 'footerThesis');
 ---
 <footer class="zfooter">
   <div class="zfooter__inner">
@@ -151,6 +155,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
         <div class="zfooter__links">
           <a href="/astrofolio/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'navCollect')}{englishSuffix}</a>
           <a href="/registry/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerRegistry')}{englishSuffix}</a>
+          <a href="/thesis/" hreflang={englishHreflang} title={englishOnlyAria}>{thesisLabel}{englishSuffix}</a>
           <a href="/sdk/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerSdk')}{englishSuffix}</a>
           <a href={localizePath(locale, '/disclosure/')} hreflang={linkHreflang('/disclosure/')} title={linkTitle('/disclosure/')}>{t(locale, 'footerDisclosure')}{linkSuffix('/disclosure/')}</a>
         </div>
