@@ -72,8 +72,37 @@ export function matchTrends(trends: readonly TrendInput[]): TrendReport {
  * copy leaves out. Money, career, wellbeing and legal themes read the
  * traditional way are fine. A draft that trips this is withheld from the
  * report, never softened silently.
+ *
+ * Each class is matched by family, not by the one phrase that prompted it:
+ * any currency sign, a price move or a coin; any hospital or clinical word;
+ * any win or loss and any court word. A draft's own fixed words (the score,
+ * the tier labels, the transit titles, "Reading confidence NN%" and the note)
+ * stay clear of every class, which trending.test.ts checks for every figure.
  */
-export const DRAFT_BANNED = /\b(?:buy|sell|selling|price targets?|stocks?|crypto\w*|bitcoin|btc|tokens?|coins?|diagnos\w*|prognos\w*|surger\w*|surgical|operations?|treatments?|medica\w*|illness\w*|diseases?|cancer|pregnan\w*|recover(?:y|ies)|cure\w*|death|die|dies|dying|doom\w*|disaster|ruin\w*|crash\w*|collapse\w*|catastroph\w*|guarantee\w*)\b|\b(?:will|going to) (?:win|lose)\b|[\u2013\u2014]/iu;
+const BANNED_CLASSES = [
+  // A price, stock or crypto call: a currency sign or cashtag, a percentage
+  // move (the confidence label's own percentage aside), a price, a market, a
+  // move in one, or a coin.
+  String.raw`[$\u20ac\u00a3\u00a5\u20b9\u20a9\u20bd\u20bf\u00a2]`,
+  String.raw`(?<!confidence )\b\d+(?:[.,]\d+)?\s?(?:%|per ?cent\b)`,
+  String.raw`\b(?:prices?|priced|pricing|price targets?|valuations?|market caps?|stocks?|share prices?|shares? (?:up|down)|equit(?:y|ies)|dividends?|ipos?|tickers?|nasdaq|nyse|s&p|dow jones|ftse|nikkei|etfs?|portfolios?|invest\w*|trading|traders?|markets|the market|bull (?:run|market)|bullish|bear market|bearish|rall(?:y|ies|ied|ying)|surg(?:e|es|ed|ing)|soar\w*|plung\w*|plummet\w*|skyrocket\w*|tank(?:s|ed|ing)|pump\w*|dump\w*|to the moon|moonshot|all[- ]time highs?|\d+x)\b`,
+  String.raw`\b(?:crypto\w*|bitcoin|btc|eth|ether|ethereum|solana|dogecoin|doge|xrp|cardano|binance|coinbase|tether|usdt|usdc|\w*coins?|tokens?|nfts?|defi|web3|blockchain|on-?chain|airdrops?|hodl|satoshis?)\b`,
+  // A buy or sell signal.
+  String.raw`\b(?:buy\w*|sells?|selling|sell-?offs?|sold|short(?:ing|ed)? (?:the|it|them|on)|go(?:ing)? (?:long|short)|take profits?|profit[- ]taking|stop[- ]loss|entry point|exit point|accumulate)\b`,
+  // A diagnosis or medical timing: any clinical, hospital or treatment word.
+  String.raw`\b(?:diagnos\w*|prognos\w*|surger\w*|surgical|operations?|treatments?|medic\w*|illness\w*|ill|sick\w*|diseases?|disorders?|syndromes?|symptoms?|infect\w*|virus\w*|cancer|tumou?rs?|stroke(?! of)|heart attack|cardiac|seizures?|overdos\w*|injur\w*|hospital\w*|clinic\w*|icu|intensive care|emergency room|ambulance|doctors?|physicians?|therap(?:y|ies)|chemo\w*|radiotherap\w*|transplant\w*|vaccin\w*|prescri\w*|rehab\w*|pregnan\w*|miscarr\w*|recover(?:y|ies)|relapse\w*|remission|cure\w*|health (?:scare|crisis|problems?|issues?|news|decline)|mental (?:illness|breakdown)|depression|dementia|alzheimer\w*|diabet\w*|paraly\w*|coma)\b`,
+  // A death prediction.
+  String.raw`\b(?:death\w*|dead|deadly|die[sd]?|dying|deceas\w*|pass(?:es|ed|ing)? away|fatal\w*|funerals?|mortal\w*|obituar\w*|kill\w*|murder\w*|assassinat\w*|suicid\w*|rest in peace)\b`,
+  // A legal win or loss, and any other win or loss called in advance.
+  String.raw`\b(?:lawsuits?|litigat\w*|su(?:e|es|ed|ing)|verdicts?|jur(?:y|ies)|courts?|courtroom|(?:on|stand|stands|face|faces|facing) trial|trial (?:date|verdict)|indict\w*|convict\w*|acquit\w*|guilty|sentenced|prosecut\w*|plaintiffs?|defendants?|arrest\w*|jail\w*|prison\w*|legal (?:win|victory|loss|defeat|battle|fight|trouble)\w*)\b`,
+  String.raw`\b(?:wins?|won|winning|winners?|loses?|losing|losers?|victor(?:y|ies|ious)|defeat\w*|(?:will|going to|set to|about to|bound to|sure to|likely to) (?:win|lose|beat|fall|rise))\b`,
+  String.raw`\blost (?:the|a|an|his|her|their) (?:case|suit|lawsuit|appeal|trial|match|final|election|race|fight|battle)\b`,
+  // Doom, and any guarantee.
+  String.raw`\b(?:doom\w*|disasters?|disastrous|ruin\w*|crash\w*|collaps\w*|catastroph\w*|calamit\w*|cataclysm\w*|apocalyp\w*|downfall|meltdown|implo\w*|bankrupt\w*|insolven\w*|tragic|traged(?:y|ies)|devastat\w*|nightmare|worst|scandal\w*|disgrace\w*|fall from grace|cursed?|ill[- ]fated|end of (?:the road|an era|(?:his|her|their) career)|guarantee\w*)\b`,
+  // The dashes the site's copy leaves out: figure, en, em, horizontal bar and their wide forms.
+  String.raw`[\u2012-\u2015\u2e3a\u2e3b\ufe31\ufe32\ufe58]`,
+];
+export const DRAFT_BANNED = new RegExp(BANNED_CLASSES.join('|'), 'iu');
 
 
 /**
