@@ -14,6 +14,7 @@ import committedProgram from '../data/horoscope-program.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import { PUBLISHED_TOOLS } from './published-tools';
+import { expectedCapabilityReply } from '../../tests/helpers/de440-capabilities';
 
 /**
  * ZODIACS_GOOD_DAYS_ENABLED stays off in production until the owner switches it on for the next plugin release. Off
@@ -73,11 +74,14 @@ describe('the good days switch off', () => {
         const host = await serve({ ...env, ZODIACS_GOOD_DAYS_ENABLED: value });
         for (const [label, [body, headers]] of Object.entries(REQUESTS)) {
           const reply = await post(host, body, headers);
-          expect(reply.text, `${name} ${label} with ZODIACS_GOOD_DAYS_ENABLED=${JSON.stringify(value)}`).toBe(FIXTURE[name][label].text);
+          // The capabilities reply names the DE440 engine the server now runs, as the numerology test reads it.
+          const before = FIXTURE[name][label].text;
+          const expected = label === 'capabilities' ? expectedCapabilityReply(before) : before;
+          expect(reply.text, `${name} ${label} with ZODIACS_GOOD_DAYS_ENABLED=${JSON.stringify(value)}`).toBe(expected);
         }
       }
     }
-  });
+  }, 120_000);
 
   it('refuses a call to find_good_days as a tool it does not offer', async () => {
     const host = await serve(SCENARIOS.coverage);

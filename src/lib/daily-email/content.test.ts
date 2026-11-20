@@ -169,7 +169,7 @@ describe('daily email content', () => {
       unsubscribeUrl,
     });
     expect(message.text).toContain(expected);
-    expect(message.html).toContain(expected.replaceAll('—', '—'));
+    expect(message.html).toContain(expected);
     expect((message.text.match(/Ahead:/gu) ?? [])).toHaveLength(1);
     expect((message.html.match(/Ahead:/gu) ?? [])).toHaveLength(1);
     expect(message.text).toContain('Why this appeared:');

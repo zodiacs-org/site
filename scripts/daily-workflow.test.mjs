@@ -55,6 +55,8 @@ describe('daily publication operations', () => {
       expect(workflow, name).toContain('pull-requests: write');
       expect(workflow, name).toContain('actions: write');
       expect(workflow, name).toContain('GH_TOKEN: ${{ github.token }}');
+      // The owner's token never reaches a publishing workflow; Site Publish holds it.
+      expect(workflow, name).not.toContain('secrets.');
       expect(workflow, name).toContain('if grep -q "GH006" "$RUNNER_TEMP/publish-push.err"; then');
       expect(workflow, name).toContain('bash scripts/publish-through-pr.sh');
     }
@@ -116,6 +118,51 @@ describe('daily publication operations', () => {
     // A token-made merge triggers no push workflow, so the publisher asks for
     // Site Check on the merged head itself (workflow_dispatch is the exception).
     expect(publisher).toContain('gh workflow run site-check.yml --ref "$base" -f "scope_base=$merged"');
+    // A token-made pull request triggers no pull_request workflows, so the
+    // checks main requires never started (blocked from 2026-11-15). The
+    // publisher dispatches them on its own branch and merges only when every
+    // required check on that exact head has passed.
+    expect(publisher).toContain(".protection.required_status_checks.contexts[]?");
+    expect(publisher).toContain('node scripts/write-sign-page-allowance.mjs "$verified"');
+    expect(publisher.indexOf('write-sign-page-allowance.mjs')).toBeLessThan(publisher.indexOf('git push origin "HEAD:refs/heads/$branch"'));
+    expect(publisher).toContain('gh workflow run site-check.yml --ref "$branch" -f "scope_base=$verified"');
+    expect(publisher).toContain('gh workflow run sitemap-dates.yml --ref "$branch" -f "base=$verified" -f "head=$head_sha"');
+    expect(publisher).toContain('commits/$head_sha/check-runs');
+    expect(publisher.indexOf('all required checks passed')).toBeLessThan(publisher.indexOf('gh pr merge "$pr_url" --squash'));
+    // A refused merge whose pull_request checks wait for approval says so.
+    expect(publisher).toContain('select(.conclusion == "action_required")');
+    expect(publisher).toContain('SITE_PUBLISH_TOKEN');
+    // Every copy of a required check must pass, and the merge is pinned to the head.
+    expect(publisher).toContain('select(.status != "completed")');
+    expect(publisher).toContain('--match-head-commit "$head_sha"');
+    // The landing is handed to Site Publish (#1128, 2026-11-19), and falls back to
+    // the workflow token only when Site Publish stops at one of its two gates.
+    expect(publisher).toContain('gh workflow run site-publish.yml --ref "$default"');
+    expect(publisher).toContain('"Check that the owner token is saved" or .name == "Check who asked"');
+    expect(publisher.indexOf('hand_off()')).toBeLessThan(publisher.indexOf('gh pr create'));
+    // In land mode the branch is data: it must sit at exactly the handed-over commit.
+    expect(publisher).toContain('if [ "$(git rev-parse FETCH_HEAD)" != "$head_sha" ]; then');
+    // ...and be one publication on the verified base that touches only generated data.
+    expect(publisher).toContain('git merge-base --is-ancestor "$verified" "$head_sha"');
+    expect(publisher).toContain('git diff --no-renames --name-only "$verified" "$head_sha"');
+    expect(publisher).toContain("grep -vE '^((src/data|public/assets|public/registry|docs/race-recaps)/.*\\.(json|md)|public/registry/.*\\.html)$'");
+    expect(publisher).toContain("grep -vx '.github/phase1-scope-allowance.json'");
+    // A re-run attempt gets its own branch, so it never reads an earlier attempt's Site Publish run.
+    expect(publisher).toContain('${GITHUB_RUN_ID:-$$}-${GITHUB_RUN_ATTEMPT:-1}');
+
+    const sitePublish = await read('.github/workflows/site-publish.yml');
+    expect(sitePublish).toContain('environment: site-publish-production');
+    expect(sitePublish).toContain('permissions:\n  contents: read');
+    expect(sitePublish).toContain("if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)");
+    expect(sitePublish).toContain('ref: ${{ github.event.repository.default_branch }}');
+    expect(sitePublish).toContain('persist-credentials: false');
+    expect(sitePublish).toContain('[[ "$BRANCH" =~ ^publish/[a-z0-9-]+$ ]]');
+    // The token appears in exactly two places: the presence check and the landing step.
+    expect(sitePublish.split('secrets.SITE_PUBLISH_TOKEN').length - 1).toBe(2);
+    // No input is expanded straight into a shell line.
+    for (const line of sitePublish.split('\n').filter((l) => /^\s*(run:|\[|if \[)/u.test(l))) {
+      expect(line).not.toContain('${{');
+    }
     expect(publisher).toContain('Allow GitHub Actions to create and approve pull requests');
     expect(publisher).not.toContain('--admin');
     expect(publisher).not.toContain('git rebase');
@@ -147,7 +194,9 @@ describe('daily publication operations', () => {
       read('scripts/verify-live-daily.mjs'),
     ]);
 
-    expect(workflow).toContain('timeout-minutes: 25');
+    // Room for the required checks the publisher waits on (Build & Check alone
+    // runs about an hour) before it may merge its own pull request.
+    expect(workflow).toContain('timeout-minutes: 150');
     expect(workflow).toContain('signal: AbortSignal.timeout(15_000)');
     expect(liveVerifier).toContain('signal: AbortSignal.timeout(15_000)');
     expect(workflow).toContain("schema: 'zodiacs.daily-operation-receipt.v2'");

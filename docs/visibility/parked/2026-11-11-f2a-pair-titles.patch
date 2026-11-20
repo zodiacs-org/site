@@ -1,0 +1,84 @@
+diff --git a/src/components/compat/LocalizedPairPage.astro b/src/components/compat/LocalizedPairPage.astro
+index 59198e72..b7e4a665 100644
+--- a/src/components/compat/LocalizedPairPage.astro
++++ b/src/components/compat/LocalizedPairPage.astro
+@@ -33,6 +33,8 @@ interface Chrome {
+   kicker: string;
+   and: string;
+   pairName: (a: string, b: string) => string;
++  /** The page title in the words people search with in this language. */
++  searchTitle: (a: string, b: string) => string;
+   imageAlt: (a: string, b: string) => string;
+   about: (sign: string) => string;
+   basisTitle: string;
+@@ -55,6 +57,7 @@ const CHROME: Record<PairLocale, Chrome> = {
+     kicker: 'Compatibilidad',
+     and: 'y',
+     pairName: (x, y) => `${x} y ${y}`,
++    searchTitle: (x, y) => `Compatibilidad ${x} y ${y} en el amor`,
+     imageAlt: (x, y) => `Compatibilidad entre ${x} y ${y} | Zodiacs.org`,
+     about: (s) => `${s} (astrología)`,
+     basisTitle: 'Por qué esta combinación se lee así',
+@@ -75,6 +78,7 @@ const CHROME: Record<PairLocale, Chrome> = {
+     kicker: 'Compatibilidade',
+     and: 'e',
+     pairName: (x, y) => `${x} e ${y}`,
++    searchTitle: (x, y) => `${x} e ${y} combinam? Compatibilidade no amor`,
+     imageAlt: (x, y) => `Compatibilidade entre ${x} e ${y} | Zodiacs.org`,
+     about: (s) => `${s} (astrologia)`,
+     basisTitle: 'Por que esse par é lido assim',
+@@ -95,6 +99,7 @@ const CHROME: Record<PairLocale, Chrome> = {
+     kicker: 'Compatibilité',
+     and: 'et',
+     pairName: (x, y) => `${x} et ${y}`,
++    searchTitle: (x, y) => `Compatibilité ${x} et ${y} en amour`,
+     imageAlt: (x, y) => `Compatibilité ${x} et ${y} | Zodiacs.org`,
+     about: (s) => `${s} (astrologie)`,
+     basisTitle: 'Pourquoi ce duo se lit ainsi',
+@@ -115,6 +120,7 @@ const CHROME: Record<PairLocale, Chrome> = {
+     kicker: 'Compatibilità',
+     and: 'e',
+     pairName: (x, y) => `${x} e ${y}`,
++    searchTitle: (x, y) => `Affinità ${x} e ${y} in amore`,
+     imageAlt: (x, y) => `Compatibilità tra ${x} e ${y} | Zodiacs.org`,
+     about: (s) => `${s} (astrologia)`,
+     basisTitle: 'Perché questa coppia si legge così',
+@@ -148,6 +154,10 @@ const otherPairs = (sign: Sign) => SIGNS.map((other) => {
+ });
+ const signFacts = (sign: Sign) => `${signDateRange(sign, locale)} · ${elementLabel(sign.element, locale)} · ${modalityLabel(sign.modality, locale)} · ${planetLabel(locale, sign.ruler)}`;
+ 
++// The article keeps its own title as the headline; the browser title uses
++// the words people search with in this language.
++const pageTitle = c.searchTitle(nameA, nameB);
++
+ const jsonLd = [
+   {
+     '@type': 'Article',
+@@ -188,7 +198,7 @@ const jsonLd = [
+ <Base
+   clientUi
+   inlineCriticalCss
+-  title={entry.data.title}
++  title={pageTitle}
+   description={entry.data.description}
+   path={pagePath}
+   locale={locale}
+diff --git a/src/pages/sitemap.xml.ts b/src/pages/sitemap.xml.ts
+index a32e10d6..7abbc6a6 100644
+--- a/src/pages/sitemap.xml.ts
++++ b/src/pages/sitemap.xml.ts
+@@ -972,6 +972,14 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
+     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
+   }
++  // The translated pair pages now take their titles from the words people
++  // search with in each language (docs/visibility/FAMILIES.md, F2a).
++  for (const pair of pairs) {
++    for (const locale of ['es', 'fr', 'it', 'pt']) {
++      const url = localizedUrls.find((u) => u.loc === `/${locale}/compatibility/${pair.id}/`);
++      if (url) url.lastmod = laterDate(url.lastmod, '2026-11-09');
++    }
++  }
+   return [
+     ...urls,
+     ...localizedUrls,

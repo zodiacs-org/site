@@ -1,0 +1,59 @@
+{
+  "mode": "recorded fixture replay",
+  "endpoint": "https://ssd.jpl.nasa.gov/api/horizons.api",
+  "localResponseStatus": 403,
+  "rawComparisonInstants": [
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "C1",
+    "C2",
+    "C3",
+    "C4"
+  ],
+  "replayedAt": "2026-11-18T00:00:00.000Z",
+  "suiteCommit": "709bc813e2ee9de948ef0dcd008c76bf086fe7d4",
+  "engine": {
+    "version": "1.1.0",
+    "ephemerides": [
+      {
+        "name": "jpl-de440",
+        "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
+      }
+    ]
+  },
+  "nasaCheck": {
+    "total": 240,
+    "historical": {
+      "through": "2026-09-22",
+      "tolerance": 0.001,
+      "total": 170,
+      "largest": 0
+    },
+    "later": {
+      "after": "2026-09-22",
+      "tolerance": 0.01,
+      "total": 70,
+      "largest": 0
+    }
+  },
+  "sets": {
+    "suite": {
+      "total": 240,
+      "within": 240,
+      "largest": 0.012647263,
+      "bodyAtLargest": "Moon"
+    },
+    "rolling": {
+      "total": 120,
+      "within": 120,
+      "largest": 0.3830597923,
+      "bodyAtLargest": "Pluto"
+    }
+  }
+}

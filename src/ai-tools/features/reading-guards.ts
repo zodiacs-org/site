@@ -58,3 +58,6 @@ export function softenMinor(text: string): string {
 }
 
 export const MINOR_NOTE = 'This birth date is under 18, so romantic and attraction readings are left out.';
+
+/** Said when a love horoscope is asked for with a birth date under 18: the general reading is given in its place. */
+export const MINOR_LOVE_NOTE = 'This birth date is under 18, and Zodiacs does not give love or romance readings for anyone under 18, so this is the general reading.';

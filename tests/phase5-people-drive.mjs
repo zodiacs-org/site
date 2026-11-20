@@ -4,6 +4,7 @@ import peopleData from '../src/data/people.json' with { type: 'json' };
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { waitForPortraitReadiness } from './portrait-readiness.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const failures = [];
@@ -31,10 +32,10 @@ const representative = [
 if (OUT) await mkdir(OUT, { recursive: true });
 
 await withPreview({ port: 4425 }, async (baseURL) => {
-  const browser = await chromium.launch({
+  const browser = withFullLevel(await chromium.launch({
     executablePath: await findChromium(),
     args: STABLE_CHROMIUM_ARGS,
-  });
+  }));
 
   try {
     // Every generated route receives the search/privacy contract derived from
@@ -192,7 +193,7 @@ await withPreview({ port: 4425 }, async (baseURL) => {
     );
     check(
       protectedLiving.map((person) => person.slug).sort().join(',')
-        === 'bill-gates,leonardo-dicaprio,rigoberta-menchu,serena-williams',
+        === 'bad-bunny,bill-gates,erling-haaland,harry-styles,jenna-ortega,kendrick-lamar,kylie-jenner,leonardo-dicaprio,lisa,max-verstappen,mrbeast,olivia-rodrigo,rigoberta-menchu,rihanna,sabrina-carpenter,serena-williams,taylor-swift,timothee-chalamet,zendaya',
       'protected living-person set drifted',
     );
     await inventoryContext.close();
@@ -240,7 +241,13 @@ await withPreview({ port: 4425 }, async (baseURL) => {
       person.displayName.toLowerCase().includes(uniqueNeedle.toLowerCase())
     )).length;
     await directoryPage.locator('#people-name').fill(uniqueNeedle);
-    await directoryPage.waitForTimeout(80);
+    // The page hides cards at once and announces the count one animation frame later, so wait for the count it
+    // announces rather than a fixed delay, which a busy runner can outlast.
+    await directoryPage.waitForFunction(
+      (expected) => (document.querySelector('[data-people-count]')?.textContent ?? '').startsWith(expected),
+      `${expectedMatches} of ${indexablePeople.length}`,
+      { timeout: 3000 },
+    ).catch(() => {});
     check(
       await directoryPage.locator('[data-person-card]:visible').count() === expectedMatches,
       'name search did not narrow to the exact match set',
@@ -250,7 +257,8 @@ await withPreview({ port: 4425 }, async (baseURL) => {
       'name-search result count is not announced',
     );
     await directoryPage.locator('#people-name').fill('not a pilot name');
-    await directoryPage.waitForTimeout(50);
+    // The empty state is set in the same animation frame as the count; wait for it instead of a fixed delay.
+    await directoryPage.locator('.people-empty').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
     check(await directoryPage.locator('.people-empty').isVisible(), 'empty search state did not appear');
     check(directoryErrors.length === 0, `directory browser errors: ${directoryErrors.join(' | ')}`);
     await directoryContext.close();

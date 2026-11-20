@@ -589,6 +589,18 @@
    "Neptune": 13.068882,
    "Pluto": 9.834841
   },
+  "bad-bunny": {
+   "Sun": 19.85097,
+   "Moon": 1.473596,
+   "Mercury": 24.059494,
+   "Venus": 2.569588,
+   "Mars": 2.523003,
+   "Jupiter": 14.495906,
+   "Saturn": 4.888998,
+   "Uranus": 25.272318,
+   "Neptune": 22.785365,
+   "Pluto": 28.048875
+  },
   "banjo-paterson": {
    "Sun": 27.721625,
    "Moon": 26.430292,
@@ -1873,6 +1885,18 @@
    "Neptune": 11.906422,
    "Pluto": 13.977154
   },
+  "erling-haaland": {
+   "Sun": 28.977219,
+   "Moon": 23.130857,
+   "Mercury": 11.093484,
+   "Venus": 9.987432,
+   "Mars": 23.110464,
+   "Jupiter": 4.135079,
+   "Saturn": 28.603375,
+   "Uranus": 19.647317,
+   "Neptune": 5.357311,
+   "Pluto": 10.394478
+  },
   "ernest-shackleton": {
    "Sun": 26.706736,
    "Moon": 8.915348,
@@ -2641,6 +2665,18 @@
    "Neptune": 0.57933,
    "Pluto": 11.694947
   },
+  "harry-styles": {
+   "Sun": 12.40003,
+   "Moon": 18.234403,
+   "Mercury": 0.085265,
+   "Venus": 16.095845,
+   "Mars": 3.370313,
+   "Jupiter": 13.53231,
+   "Saturn": 0.409869,
+   "Uranus": 23.425969,
+   "Neptune": 21.641075,
+   "Pluto": 27.843327
+  },
   "hattie-mcdaniel": {
    "Sun": 20.006529,
    "Moon": 0.959853,
@@ -3145,6 +3181,18 @@
    "Neptune": 10.606563,
    "Pluto": 8.092699
   },
+  "jenna-ortega": {
+   "Sun": 4.492999,
+   "Moon": 12.397825,
+   "Mercury": 4.450549,
+   "Venus": 12.622504,
+   "Mars": 18.566962,
+   "Jupiter": 11.580795,
+   "Saturn": 28.912387,
+   "Uranus": 25.462793,
+   "Neptune": 8.339525,
+   "Pluto": 15.185556
+  },
   "jim-morrison": {
    "Sun": 15.696121,
    "Moon": 9.266313,
@@ -3601,6 +3649,18 @@
    "Neptune": 3.12716,
    "Pluto": 29.795306
   },
+  "kendrick-lamar": {
+   "Sun": 26.055609,
+   "Moon": 17.580216,
+   "Mercury": 16.380962,
+   "Venus": 7.996746,
+   "Mars": 17.888259,
+   "Jupiter": 23.872088,
+   "Saturn": 17.241128,
+   "Uranus": 24.676127,
+   "Neptune": 6.918082,
+   "Pluto": 7.400818
+  },
   "kenzo-tange": {
    "Sun": 10.96781,
    "Moon": 26.761832,
@@ -3648,6 +3708,18 @@
    "Uranus": 17.124593,
    "Neptune": 19.06941,
    "Pluto": 26.889308
+  },
+  "kylie-jenner": {
+   "Sun": 18.172454,
+   "Moon": 9.729321,
+   "Mercury": 14.151657,
+   "Venus": 21.883527,
+   "Mars": 27.821898,
+   "Jupiter": 16.839186,
+   "Saturn": 20.289368,
+   "Uranus": 6.219608,
+   "Neptune": 28.029511,
+   "Pluto": 2.829967
   },
   "lal-bahadur-shastri": {
    "Sun": 8.630374,
@@ -3780,6 +3852,18 @@
    "Uranus": 8.64186,
    "Neptune": 0.181528,
    "Pluto": 1.553577
+  },
+  "lisa": {
+   "Sun": 6.569859,
+   "Moon": 10.55006,
+   "Mercury": 21.401094,
+   "Venus": 4.950589,
+   "Mars": 22.977942,
+   "Jupiter": 14.135662,
+   "Saturn": 9.782026,
+   "Uranus": 7.778359,
+   "Neptune": 29.611419,
+   "Pluto": 5.504604
   },
   "louis-armstrong": {
    "Sun": 11.615725,
@@ -4297,6 +4381,18 @@
    "Neptune": 12.692064,
    "Pluto": 15.15982
   },
+  "max-verstappen": {
+   "Sun": 7.27825,
+   "Moon": 23.345486,
+   "Mercury": 26.736271,
+   "Venus": 21.062895,
+   "Mars": 1.038095,
+   "Jupiter": 12.19275,
+   "Saturn": 17.672688,
+   "Uranus": 4.815693,
+   "Neptune": 27.203305,
+   "Pluto": 3.456738
+  },
   "may-ziadeh": {
    "Sun": 22.640313,
    "Moon": 13.963124,
@@ -4428,6 +4524,18 @@
    "Uranus": 18.906899,
    "Neptune": 9.13591,
    "Pluto": 23.890325
+  },
+  "mrbeast": {
+   "Sun": 16.933767,
+   "Moon": 4.269228,
+   "Mercury": 20.598978,
+   "Venus": 4.407588,
+   "Mars": 18.173743,
+   "Jupiter": 20.798145,
+   "Saturn": 26.372943,
+   "Uranus": 12.70007,
+   "Neptune": 2.1624,
+   "Pluto": 7.240322
   },
   "muhammad-abduh": {
    "Sun": 10.958551,
@@ -4632,6 +4740,18 @@
    "Uranus": 8.632706,
    "Neptune": 8.178558,
    "Pluto": 16.046657
+  },
+  "olivia-rodrigo": {
+   "Sun": 1.763256,
+   "Moon": 23.870699,
+   "Mercury": 10.796662,
+   "Venus": 18.652669,
+   "Mars": 22.291832,
+   "Jupiter": 10.747626,
+   "Saturn": 22.138448,
+   "Uranus": 28.975165,
+   "Neptune": 11.446443,
+   "Pluto": 19.694521
   },
   "oodgeroo-noonuccal": {
    "Sun": 10.356051,
@@ -4981,6 +5101,18 @@
    "Neptune": 6.72126,
    "Pluto": 3.945729
   },
+  "rihanna": {
+   "Sun": 1.235901,
+   "Moon": 13.016653,
+   "Mercury": 13.237198,
+   "Venus": 13.089971,
+   "Mars": 28.814511,
+   "Jupiter": 26.659552,
+   "Saturn": 0.537131,
+   "Uranus": 0.215825,
+   "Neptune": 9.496047,
+   "Pluto": 12.574415
+  },
   "ritwik-ghatak": {
    "Sun": 11.308092,
    "Moon": 23.357437,
@@ -5160,6 +5292,18 @@
    "Uranus": 3.454922,
    "Neptune": 21.41999,
    "Pluto": 27.594917
+  },
+  "sabrina-carpenter": {
+   "Sun": 20.521798,
+   "Moon": 27.117144,
+   "Mercury": 5.049385,
+   "Venus": 3.312315,
+   "Mars": 28.126538,
+   "Jupiter": 20.622022,
+   "Saturn": 8.560409,
+   "Uranus": 16.746587,
+   "Neptune": 4.364876,
+   "Pluto": 9.645204
   },
   "sadegh-hedayat": {
    "Sun": 27.516323,
@@ -5533,6 +5677,18 @@
    "Neptune": 27.841709,
    "Pluto": 4.069805
   },
+  "taylor-swift": {
+   "Sun": 21.673778,
+   "Moon": 5.552155,
+   "Mercury": 9.041317,
+   "Venus": 1.989586,
+   "Mars": 26.8794,
+   "Jupiter": 7.654208,
+   "Saturn": 13.475064,
+   "Uranus": 4.658816,
+   "Neptune": 11.337273,
+   "Pluto": 16.506636
+  },
   "teresa-carreno": {
    "Sun": 0.818681,
    "Moon": 20.306732,
@@ -5592,6 +5748,18 @@
    "Uranus": 7.744142,
    "Neptune": 0.238561,
    "Pluto": 2.226742
+  },
+  "timothee-chalamet": {
+   "Sun": 5.465939,
+   "Moon": 22.143397,
+   "Mercury": 23.603407,
+   "Venus": 7.335249,
+   "Mars": 20.829051,
+   "Jupiter": 28.504621,
+   "Saturn": 19.118853,
+   "Uranus": 29.109041,
+   "Neptune": 24.523034,
+   "Pluto": 1.804649
   },
   "tina-turner": {
    "Sun": 3.582192,
@@ -6000,6 +6168,18 @@
    "Uranus": 9.385124,
    "Neptune": 17.839946,
    "Pluto": 19.752189
+  },
+  "zendaya": {
+   "Sun": 9.599593,
+   "Moon": 3.772096,
+   "Mercury": 3.201441,
+   "Venus": 24.299521,
+   "Mars": 24.918635,
+   "Jupiter": 7.82549,
+   "Saturn": 5.810163,
+   "Uranus": 1.215001,
+   "Neptune": 25.296072,
+   "Pluto": 0.472788
   },
   "zhou-enlai": {
    "Sun": 14.634456,

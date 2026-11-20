@@ -52,20 +52,20 @@ const rpc = async (method, params, attempt = 1) => {
 const SCENES = [
   {
     name: 'comparison', html: OCCASIONS_HTML, uri: 'ui://zodiacs/occasions-v8.html', heading: 'Lucía and Mateo',
-    prompt: 'Compare our charts, with our names on the card. I’m Lucía, born 3 May 1990 at 8:30 in Madrid. Mateo was born 10 August 1992.',
-    tool: 'get_compatibility', arguments: { a: { name: 'Lucía', birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038, place: 'Madrid, Spain' }, b: { name: 'Mateo', birthDate: '1992-08-10' } },
+    prompt: 'Compare our charts, with our names on the card. I’m Lucía, born 14 May 1994 at 9:15 in Seville, Spain. Mateo was born 4 August 1991.',
+    tool: 'get_compatibility', arguments: { a: { name: 'Lucía', birthDate: '1994-05-14', time: '09:15', zone: 'Europe/Madrid', latitude: 37.3891, longitude: -5.9845, place: 'Seville, Spain' }, b: { name: 'Mateo', birthDate: '1991-08-04' } },
     steps: [['hold', 0.5], ['scrollTo', '.hero', 0.7], ['hold', 0.8], ['open', 'summary', 0.5], ['scrollBy', 520, 1.5], ['hold', 0.4]],
   },
   {
     name: 'wedding', html: OCCASIONS_HTML, uri: 'ui://zodiacs/occasions-v8.html', heading: 'Lucía and Mateo',
-    prompt: 'Make a wedding card with our names for 12 June 2027 at 17:00 in Florence, Italy.',
-    tool: 'get_occasion_sky', arguments: { occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome', latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy', names: 'Lucía and Mateo' },
+    prompt: 'Make a wedding card with our names for 18 September 2027 at 16:30 in Lisbon, Portugal.',
+    tool: 'get_occasion_sky', arguments: { occasion: 'wedding', date: '2027-09-18', time: '16:30', zone: 'Europe/Lisbon', latitude: 38.7223, longitude: -9.1393, place: 'Lisbon, Portugal', names: 'Lucía and Mateo' },
     steps: [['hold', 0.5], ['scrollTo', '.hero', 0.7], ['hold', 1.0]],
   },
   {
     name: 'horoscope', html: HOROSCOPES_HTML, uri: 'ui://zodiacs/horoscopes-v6.html', heading: 'Leo',
     prompt: 'What does today hold for Leo?',
-    tool: 'get_horoscope', arguments: { sign: 'leo', zone: 'Asia/Bangkok' },
+    tool: 'get_horoscope', arguments: { sign: 'leo', zone: 'America/Mexico_City' },
     steps: [['hold', 0.6], ['scrollTo', 'button:has-text("Today")', 0.7], ['click', 'Tomorrow', 0.8], ['click', 'Love', 0.9], ['hold', 0.4]],
   },
   {
@@ -118,7 +118,7 @@ let posterFrame = null;
 const errors = [];
 const report = [];
 try {
-  const context = await browser.newContext({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 2, colorScheme: 'dark', reducedMotion: 'reduce', timezoneId: 'Asia/Bangkok' });
+  const context = await browser.newContext({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 2, colorScheme: 'dark', reducedMotion: 'reduce', timezoneId: 'America/Mexico_City' });
   context.setDefaultTimeout(30_000);
   await context.route('https://zodiacs.org/assets/**', async (route) => {
     const pathname = new URL(route.request().url()).pathname;

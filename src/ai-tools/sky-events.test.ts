@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { createAiNodeHandler } from './http';
-import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, EVERY_TOOL_WITH_SKY_EVENTS, READINGS_SKY_EVENTS_URI, READINGS_URI, SKY_EVENTS_SWITCH_ENV, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
+import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, EVERY_TOOL_WITH_SKY_EVENTS, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, SKY_EVENTS_SWITCH_ENV, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
 import { READINGS_SKY_EVENTS_HTML } from '../../integrations/generated/readings-sky-events.mjs';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
@@ -12,6 +12,7 @@ import committedProgram from '../data/horoscope-program.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import { PUBLISHED_TOOLS } from './published-tools';
+import { expectedCapabilityReply } from '../../tests/helpers/de440-capabilities';
 
 /**
  * ZODIACS_SKY_EVENTS_ENABLED stays off in production while the directories review the nineteen tools. Off (unset,
@@ -28,14 +29,14 @@ const LIVE = PUBLISHED_TOOLS;
 const servers: Server[] = [];
 afterAll(async () => { await Promise.all(servers.map((server) => new Promise<void>((resolve) => server.close(() => resolve())))); });
 
-async function serve(env: Record<string, string | undefined>, counted: string[] = []) {
+async function serve(env: Record<string, string | undefined>, counted: string[] = [], de440 = false) {
   let handle: (req: unknown, res: unknown) => Promise<void> = async () => {};
   const server = createServer((req, res) => { void handle(req, res); });
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
   servers.push(server);
   const host = `127.0.0.1:${(server.address() as { port: number }).port}`;
   // As api/_ai/handler.ts supplies them, and as the flag-off fixture was captured.
-  handle = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ...env }, allowedHosts: [host], rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed',
+  handle = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ...env }, de440, allowedHosts: [host], rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed',
     countUsage: async (tool) => { counted.push(tool); }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow,
       horoscopeMonths: async () => committedMonths, horoscopeProgram: async () => committedProgram as unknown as HoroscopeProgram } });
   return host;
@@ -66,7 +67,7 @@ const SCENARIOS = { released: {}, occasions: { ZODIACS_OCCASIONS_ENABLED: '1' },
 const call = async (host: string, name: string, args: unknown) => message((await post(host, rpc('tools/call', { name, arguments: args }))).text).result;
 
 describe('the sky events switch off', () => {
-  it('leaves every scenario\'s initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them', async () => {
+  it('preserves the published bytes and reports the DE440 capabilities with sky events off', async () => {
     expect(SKY_EVENTS_SWITCH_ENV).toBe('ZODIACS_SKY_EVENTS_ENABLED');
     for (const [name, env] of Object.entries(SCENARIOS)) {
       // On without the coverage switch counts as off, so '1' joins the off values for the first two scenarios.
@@ -75,7 +76,9 @@ describe('the sky events switch off', () => {
         const host = await serve({ ...env, ZODIACS_SKY_EVENTS_ENABLED: value });
         for (const [request, [body, headers]] of Object.entries(REQUESTS)) {
           const reply = await post(host, body, headers);
-          expect(reply.text, `${name} ${request} with ZODIACS_SKY_EVENTS_ENABLED=${JSON.stringify(value)}`).toBe(FIXTURE[name][request].text);
+          const before = FIXTURE[name][request].text;
+          const expected = request === 'capabilities' ? expectedCapabilityReply(before) : before;
+          expect(reply.text, `${name} ${request} with ZODIACS_SKY_EVENTS_ENABLED=${JSON.stringify(value)}`).toBe(expected);
         }
       }
     }
@@ -117,7 +120,7 @@ describe('the sky events switch on', () => {
       const tool = tools.find((entry) => entry.name === name)!;
       const was = before.find((entry) => entry.name === name)!;
       expect(tool.description.startsWith(was.description), name).toBe(true);
-      expect(tool.description, name).toContain('give them the returned shareUrl exactly');
+      expect(tool.description, name).toContain('shareUrl is the link for sharing');
       expect(JSON.stringify(tool.inputSchema), name).toBe(JSON.stringify(was.inputSchema));
       expect(tool._meta, name).toEqual(was._meta);
       expect(tool.outputSchema.anyOf[0].properties.data.properties.shareUrl, name).toEqual({ anyOf: [{ type: 'string', format: 'uri' }, { type: 'null' }] });
@@ -134,12 +137,12 @@ describe('the sky events switch on', () => {
     expect(natal.description).toContain('and Chiron, from NASA JPL Horizons positions for 1800 to 2199');
     expect(JSON.stringify(natal.outputSchema)).toContain('"chiron"');
     expect(natal.outputSchema.anyOf[0].properties.data.properties.shareUrl).toEqual({ anyOf: [{ type: 'string', format: 'uri' }, { type: 'null' }] });
-    expect(natal.description).toContain('If they want to share their big three, give them the returned shareUrl exactly');
+    expect(natal.description).toContain('shareUrl is the link for sharing the big three; it carries the Sun, Moon and rising signs, never the birth date.');
     // Its panel is the one that lists the lunar nodes; every other part of its _meta is as main has it.
     expect(natalBefore._meta.ui.resourceUri).toBe(READINGS_URI);
     expect(natal._meta).toEqual({ ...natalBefore._meta, ui: { ...natalBefore._meta.ui, resourceUri: READINGS_SKY_EVENTS_URI }, 'openai/outputTemplate': READINGS_SKY_EVENTS_URI });
     const explain = tools.find((tool) => tool.name === 'explain_astrology')!;
-    expect(explain.description).toContain('use search_sky_events');
+    expect(explain.description).toContain('come from search_sky_events');
     expect(explain.inputSchema.properties.topic.description).toContain('the lunar nodes');
     expect(explain.inputSchema.properties.topic.description).toContain('Chiron or Chiron in a sign or house');
     expect(JSON.stringify(explain.outputSchema)).toBe(JSON.stringify(before.find((tool) => tool.name === 'explain_astrology')!.outputSchema));
@@ -153,12 +156,14 @@ describe('the sky events switch on', () => {
     expect(sky.description).toContain('planets and Chiron turning retrograde or direct');
     expect(sky.description).toContain('use get_sky_calendar');
     expect(`${sky.title} ${sky.description} ${JSON.stringify(sky.inputSchema)}`).not.toMatch(/[–—]|crypto|token|blockchain|market/iu);
-    // One new resource, the natal chart's panel, listed after the readings panel the others keep; initialize is unchanged.
+    // The natal chart's panel and its legacy alias follow the two addresses used by the other readings.
     const resources = message((await post(host, REQUESTS.resourcesList[0])).text).result.resources as { uri: string; name: string }[];
     const resourcesBefore = message(FIXTURE.coverage.resourcesList.text).result.resources as { uri: string; name: string }[];
-    const at = resourcesBefore.findIndex((resource) => resource.uri === READINGS_URI);
-    expect(resources.map((resource) => resource.uri)).toEqual([...resourcesBefore.slice(0, at + 1).map((resource) => resource.uri), READINGS_SKY_EVENTS_URI, ...resourcesBefore.slice(at + 1).map((resource) => resource.uri)]);
-    expect(resources.filter((resource) => resource.uri !== READINGS_SKY_EVENTS_URI)).toEqual(resourcesBefore);
+    const beforeUris = resourcesBefore.map((resource) => resource.uri);
+    const at = beforeUris.indexOf(LEGACY_READINGS_URI);
+    const added: string[] = [READINGS_SKY_EVENTS_URI, LEGACY_READINGS_SKY_EVENTS_URI];
+    expect(resources.map((resource) => resource.uri)).toEqual([...beforeUris.slice(0, at + 1), ...added, ...beforeUris.slice(at + 1)]);
+    expect(resources.filter((resource) => !added.includes(resource.uri))).toEqual(resourcesBefore);
     expect(resources.find((resource) => resource.uri === READINGS_SKY_EVENTS_URI)).toMatchObject({ name: 'readings-sky-events', mimeType: 'text/html;profile=mcp-app' });
     const read = message((await post(host, rpc('resources/read', { uri: READINGS_SKY_EVENTS_URI }))).text).result.contents[0];
     expect(read.text).toBe(READINGS_SKY_EVENTS_HTML);
@@ -178,7 +183,7 @@ describe('the sky events switch on', () => {
   });
 
   it('answers with results that validate against the output schemas tools/list advertises, as a client checks them', async () => {
-    const host = await serve(env);
+    const host = await serve(env, [], true);
     const tools = message((await post(host, rpc('tools/list'))).text).result.tools as { name: string; outputSchema: object }[];
     const ajv = new Ajv2020({ strict: false, allErrors: true });
     addFormats(ajv);

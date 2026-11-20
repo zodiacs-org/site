@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../../components/ArtFrame.astro';
+import Motion from '../../components/Motion.astro';
 import ToolIcon from '../../components/ToolIcon.astro';
 import ToolsHelpCard from '../../components/tools/ToolsHelpCard.astro';
 import ToolsLead from '../../components/tools/ToolsLead.astro';
@@ -74,6 +75,7 @@ const jsonLd = [
   imageAlt="Free astrology tools, Zodiacs.org"
   jsonLd={jsonLd}
 >
+  <Motion />
   <header class="tools-hub kwrap">
     <div class="tools-hub__intro">
       <nav class="tools-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Tools</span></nav>
@@ -115,7 +117,7 @@ const jsonLd = [
   {chapters.map((chapter) => (
     <section class="tools-chapter" id={chapter.id} aria-labelledby={`${chapter.id}-h`}>
       <div class="kwrap">
-        <div class="tools-chapter__head">
+        <div class="tools-chapter__head" data-enter="rise">
           <ArtFrame
             class="tools-chapter__art"
             src={heroCropSrc(chapter.art, 360)}
@@ -133,7 +135,7 @@ const jsonLd = [
         </div>
         <ul class="tools-list">
           {chapter.tools.map((tool) => (
-            <li>
+            <li data-enter="rise">
               <a class="tools-row" href={tool.href}>
                 <ToolIcon name={tool.icon} size={52} />
                 <span><span class="tools-row__name">{tool.title}</span><span class="tools-row__line">{tool.promise}</span></span>
@@ -141,7 +143,7 @@ const jsonLd = [
             </li>
           ))}
         </ul>
-        {chapter.group === 'year' && <p class="tools-chapter__note">Explore the <a class="textlink" href="/learn/chinese-zodiac/">Chinese zodiac calendar and its twelve animals</a>, or follow the sky through our <a class="textlink" href="/feeds/">RSS feeds</a>.</p>}
+        {chapter.group === 'year' && <p class="tools-chapter__note">Explore the <a class="textlink" href="/learn/chinese-zodiac/">Chinese zodiac calendar and its twelve animals</a>, or follow the sky through our <a class="textlink" href="/feeds/">RSS feeds</a>. Each sign’s month has its own page in <a class="textlink" href="/seasons/">Sign seasons</a>, and <a class="textlink" href="/almanac/">the Almanac</a> keeps long-form notes on the month’s sky.</p>}
         {chapter.group === 'together' && <p class="tools-chapter__note">Mark a shared moment with <a class="textlink" href="/occasions/">occasion cards for weddings, birthdays and milestones</a>.</p>}
       </div>
     </section>

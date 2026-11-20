@@ -32,11 +32,11 @@ describe('Phase 5 People pilot contract', () => {
       .toThrow('Unmapped People discipline: unreviewed profession');
   });
 
-  it('contains exactly 501 distinct records with the policy-driven release boundary', () => {
+  it('contains exactly 516 distinct records with the policy-driven release boundary', () => {
     // 500 were published; one was withdrawn on 2026-07-27 because its Sun
     // sign proved undeterminable. Two owner-authorized protected living
-    // records were added on 2026-08-16. See index-policy.json.
-    expect(peopleData.people).toHaveLength(501);
+    // records were added on 2026-08-16, and 15 more on 2026-11-18. See index-policy.json.
+    expect(peopleData.people).toHaveLength(516);
     expect(new Set(peopleData.people.map((person) => person.slug)).size).toBe(peopleData.people.length);
     expect(new Set(peopleData.people.map((person) => person.qid)).size).toBe(peopleData.people.length);
     const indexable = peopleData.people.filter((person) => person.indexEligibility.eligible);
@@ -51,10 +51,25 @@ describe('Phase 5 People pilot contract', () => {
       person.indexEligibility.blockedBy.some((reason) => reason.includes('search-demand-tail'))
     ))).toBe(true);
     expect(protectedLiving.map((person) => person.slug).sort()).toEqual([
+      'bad-bunny',
       'bill-gates',
+      'erling-haaland',
+      'harry-styles',
+      'jenna-ortega',
+      'kendrick-lamar',
+      'kylie-jenner',
       'leonardo-dicaprio',
+      'lisa',
+      'max-verstappen',
+      'mrbeast',
+      'olivia-rodrigo',
       'rigoberta-menchu',
+      'rihanna',
+      'sabrina-carpenter',
       'serena-williams',
+      'taylor-swift',
+      'timothee-chalamet',
+      'zendaya',
     ]);
     expect(protectedLiving.every((person) => (
       person.living

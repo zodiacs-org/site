@@ -39,6 +39,7 @@ import {
   handleInviteImageRequest,
   handleInviteLinkRequest,
   handleInviteStoryRequest,
+  RESULT_SHARE_ROUTE_KEY,
   RESULT_SHARE_ROUTES,
 } from './result-preview';
 import {
@@ -331,7 +332,7 @@ describe('share link pages', () => {
     expect(html).toContain('<meta name="twitter:card" content="summary_large_image">');
     expect(html).toContain('<meta property="og:image:type" content="image/jpeg">');
     expect(html).toContain(`<img class="card" src="${image}"`);
-    expect(html).toContain('<a class="cta" href="/compatibility/?ref=chatgpt">Check your own compatibility</a>');
+    expect(html).toContain('<a class="cta" href="/compatibility/">Check your own compatibility</a>');
     expect(html).toContain('<title>Leo and Libra: 78/100 on Zodiacs</title>');
     expect(html).not.toMatch(/ref=chatgpt[^"]*"[^>]*og:image|image\?[^"]*ref=/u);
     // The same result as a 1080×1920 picture, to save and post as a story.
@@ -440,7 +441,7 @@ describe('share link pages', () => {
     expect(birthday).toContain('<title>3 May birthdays: Taurus Sun on Zodiacs</title>');
     expect(birthday).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/birthday-image?d=05-03">');
     expect(birthday).toContain('<meta property="og:image:type" content="image/jpeg">');
-    expect(birthday).toContain('<a class="cta" href="/birthday/?ref=chatgpt">Find your own birthday</a>');
+    expect(birthday).toContain('<a class="cta" href="/birthday/">Find your own birthday</a>');
     // The brand lockup, as in the nav: the tilted mark and ZODIACS · ORG, named Zodiacs.org.
     expect(birthday).toMatch(/<a class="brand" href="\/" aria-label="Zodiacs\.org"><svg viewBox="-2 4 28 16"[^>]*>(?:<circle [^>]+\/>){12}<\/svg><span class="brand-name" aria-hidden="true">Zodiacs<span class="brand-sep">·<\/span><span class="brand-tld">org<\/span><\/span><\/a>/u);
     expect(birthday).not.toContain('class="more"');
@@ -476,8 +477,8 @@ describe('share link pages', () => {
     const twins = await (await handleChartTwinsLinkRequest(new Request('https://zodiacs.org/share/chart-twins/?s=taurus&m=leo&ref=chatgpt'))).text();
     expect(twins).toContain('<h1>Taurus Sun, like Audrey Hepburn</h1>');
     expect(twins).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/chart-twins-image?s=taurus&amp;m=leo">');
-    expect(twins).toContain('<a class="cta" href="/chart-twins/?ref=chatgpt">Find your chart twins</a>');
-    expect(twins).toContain('<a class="more" href="/people/audrey-hepburn/?ref=chatgpt">Audrey Hepburn’s chart</a>');
+    expect(twins).toContain('<a class="cta" href="/chart-twins/">Find your chart twins</a>');
+    expect(twins).toContain('<a class="more" href="/people/audrey-hepburn/">Audrey Hepburn’s chart</a>');
     expect(twins).toContain('href="/api/og/chart-twins-story?s=taurus&amp;m=leo" download="zodiacs-chart-twins-taurus-story.jpg"');
     const famous = await (await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/?p=frida-kahlo'))).text();
     expect(famous).toContain('<title>Frida Kahlo’s birth chart on Zodiacs</title>');
@@ -510,8 +511,8 @@ describe('share link pages', () => {
     const big = await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=leo&m=aries&r=libra&ref=chatgpt'))).text();
     expect(big).toContain('<h1>Leo Sun, Aries Moon, Libra rising</h1>');
     expect(big).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/big-three-image?s=leo&amp;m=aries&amp;r=libra">');
-    expect(big).toContain('<a class="cta" href="/big-three/?ref=chatgpt">Find your big three</a>');
-    expect(big).toContain('<a class="more" href="/birth-chart/?ref=chatgpt">Open the birth chart page</a>');
+    expect(big).toContain('<a class="cta" href="/big-three/">Find your big three</a>');
+    expect(big).toContain('<a class="more" href="/birth-chart/">Open the birth chart page</a>');
     expect(big).toContain('href="/api/og/big-three-story?s=leo&amp;m=aries&amp;r=libra" download="zodiacs-big-three-leo-story.jpg"');
     expect(big).toContain(NATAL_NOTE);
     const untimed = await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=sagittarius'))).text();
@@ -536,8 +537,8 @@ describe('share link pages', () => {
     const invite = await (await handleInviteLinkRequest(new Request('https://zodiacs.org/share/invite/?s=taurus&p=scorpio&ref=chatgpt'))).text();
     expect(invite).toContain('<h1>Compare our charts</h1>');
     expect(invite).toContain('content="https://zodiacs.org/api/og/invite-image?s=taurus&amp;p=scorpio"');
-    expect(invite).toContain('<a class="cta" href="/compatibility/invite/?ref=chatgpt">Make an invite link</a>');
-    expect(invite).toContain('<a class="more" href="/compatibility/?ref=chatgpt">Compare two charts now</a>');
+    expect(invite).toContain('<a class="cta" href="/compatibility/invite/">Make an invite link</a>');
+    expect(invite).toContain('<a class="more" href="/compatibility/">Compare two charts now</a>');
     expect(invite).toContain('Taurus and Scorpio. Two birth charts, read together.');
     for (const page of [big, untimed, chinese, animal, invite]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
     // A bare address or a query that is not a share opens the plain page, with the site's own card.
@@ -555,7 +556,7 @@ describe('share link pages', () => {
       expect(month).toMatch(/<h1>Leo horoscope for [A-Z][a-z]+ \d{4}<\/h1>/u);
       expect(month).toContain(`content="https://zodiacs.org/api/og/horoscope-image?s=leo&amp;m=${LATEST_MONTH}"`);
       expect(month).toContain('Reading confidence 40%.');
-      expect(month).toContain('<a class="more" href="/horoscopes/leo/monthly/?ref=chatgpt">Leo’s monthly horoscope</a>');
+      expect(month).toContain('<a class="more" href="/horoscopes/leo/monthly/">Leo’s monthly horoscope</a>');
       expect(month).toContain(HOROSCOPE_DISCLOSURE);
       const year = await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&y=2027'))).text();
       expect(year).toContain('<h1>Leo horoscope for 2027</h1>');
@@ -604,9 +605,26 @@ describe('the deployed entry', () => {
     const shareRewrites = (vercel.rewrites as { source: string; destination: string }[]).filter((rewrite) => rewrite.destination.includes('__zodiacs_share='));
     expect(shareRewrites.map((rewrite) => rewrite.destination.split('__zodiacs_share=')[1]).sort()).toEqual([...RESULT_SHARE_ROUTES].sort());
     const source = readFileSync(new URL('../../api/compatibility.ts', import.meta.url), 'utf8');
-    expect(source).toContain("from '../src/server/result-preview.js'");
+    expect(source).toContain("import('../src/server/result-preview.js')");
+    // The function reads the share key without loading this module, so its copy of the key must match.
+    expect(source).toContain(`export const COMPATIBILITY_SHARE_ROUTE_KEY = '${RESULT_SHARE_ROUTE_KEY}';`);
   });
 
+
+  it('is reached through the compatibility function, which loads it only for a share link', async () => {
+    const { default: dispatcher } = await import('../../api/compatibility');
+    const query = { __zodiacs_share: 'compatibility-link', ...Object.fromEntries(new URLSearchParams(COMPAT)) };
+    const direct = nodeResponse();
+    await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query }, direct, 'compatibility-link');
+    const routed = nodeResponse();
+    await dispatcher({ method: 'GET', headers: { host: 'zodiacs.org' }, query }, routed);
+    expect(routed.statusCode).toBe(200);
+    expect(routed.body.toString()).toBe(direct.body.toString());
+    // A value that names no share route still falls through to the function's own not-found answer.
+    const unknown = nodeResponse();
+    await dispatcher({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'no-such-route' } }, unknown);
+    expect(unknown.statusCode).toBe(404);
+  });
 
   it('passes on only the route’s own keys, and the image refuses anything else', async () => {
     const res = nodeResponse();

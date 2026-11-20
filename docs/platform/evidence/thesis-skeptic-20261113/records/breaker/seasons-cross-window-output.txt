@@ -1,0 +1,55 @@
+2025 rows = article, cols = Sun window; value = mean reads in window / mean reads in rest of year - 1 (%)
+              ari   tau   gem   can   leo   vir   lib   sco   sag   cap   aqu   pis
+aries          91   -10   -27   -32   -22   -25   -27   -27   -33    31    50    51
+taurus         18    83    -6   -29   -25   -27   -31   -32   -35    41    39    19
+gemini        -11    -5    50    -4   -10    41   -10   -34   -41     7    12    11
+cancer          5    -7     9    42   -12   -32   -37   -35   -37    42    53    21
+leo             5    -4   -20     0    50   -26   -38   -40   -44    42    60    32
+virgo           5    -2   -15   -20     0    31   -26   -38   -43    36    47    34
+libra          10   -15   -21   -22   -18    -8    39   -27   -41    25    45    46
+scorpio        -6   -14   -19   -24   -20   -18     8    51   -25    33    35    11
+sagittarius    -2   -11   -13   -16   -22   -33   -22    11    44    34    26    14
+capricorn       1   -12   -16   -22   -24   -29   -29   -30   -21   137    56    17
+aquarius        5   -25   -30   -33   -34   -42   -46   -46   -47    93   201    66
+pisces         28   -15   -18   -27   -33   -36   -39   -37   -44    22    70   167
+2023 rows = article, cols = Sun window; value = mean reads in window / mean reads in rest of year - 1 (%)
+              ari   tau   gem   can   leo   vir   lib   sco   sag   cap   aqu   pis
+aries          81     8    -5    -8    -7   -22   -23   -26   -20    -3     0    33
+taurus         28    74     2   -13   -23   -22   -28   -31   -27     7    27    15
+gemini          3    19    49    -5   -22   -29   -27   -28    42     4    -1     2
+cancer         25    -6     4    22   -15   -25   -20   -10    -3     4    -1    28
+leo            -2   -14   -11    17    58   -20    -1   -18   -15    -7    17     1
+virgo           3   -10   -15   -12    -2    27   -16   -19   -12    20    17    24
+libra           4   -14   -23   -17   -20    -1    45    -6     5     8    15     8
+scorpio         4     5    -1   -13   -19   -30     3    43   -15     2     6    20
+sagittarius     9    -5    -8   -16   -15   -11   -12     6    35    -4     5    20
+capricorn       6    -6   -12   -17   -14   -21   -18    -8     9    60    13    17
+aquarius       -1   -19   -18   -13   -17   -19   -17   -18   -12    33    90    24
+pisces         12   -19   -27   -23   -21   -25   -24   -19   -14    14    45   121
+2019 rows = article, cols = Sun window; value = mean reads in window / mean reads in rest of year - 1 (%)
+              ari   tau   gem   can   leo   vir   lib   sco   sag   cap   aqu   pis
+aries          38     2    -1    -8     0    -6     6   -12   -10   -10    -7     9
+taurus          8    50     8    -6     1    -7     7   -17   -24   -12    -4    -3
+gemini         -7    15    63     0    -3   -13    11   -12   -18   -16   -12   -10
+cancer         -7     0    25    57     1   -12    -6   -21   -21   -16    -4     5
+leo            -3     5     7    23    66   -10   -15   -24   -27   -13    -3    -4
+virgo           6     4    -2    -6    24    57    -3   -27   -33   -17    -3     2
+libra          -8    -2    22    13     6     7    55   -15   -38   -23    -5   -12
+scorpio       -13    -8    -3    -6    -2    -1    48    58    -5   -21   -23   -20
+sagittarius    -7    -5    -3    -2    -2    -8     5    19    38     1   -10   -20
+capricorn       9    15    -7   -20   -16   -19   -13   -28   -18    67    31    11
+aquarius       -2    -4    -7   -18    -8   -16    -7   -25   -29    18    91    17
+pisces         -4   -12    -7     0    -2    -7    -1    -6   -16   -14    14    59
+share-of-twelve lift (in-season mean share / out-of-season mean share - 1):
+  aries         51.0
+  taurus        60.3
+  gemini        55.4
+  cancer        57.3
+  leo           68.1
+  virgo         65.9
+  libra         61.5
+  scorpio       65.1
+  sagittarius   59.1
+  capricorn     55.6
+  aquarius      59.9
+  pisces        65.4

@@ -1,0 +1,7 @@
+Public chart, receipt and crossing example from a separate consumer directory.
+{
+  "version": "1.1.0",
+  "sha256": "4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac",
+  "publicExamples": "passed",
+  "types": "passed"
+}

@@ -98,6 +98,7 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/auth/',
   '/bio/',
   '/developers/precision-preview/',
+  '/developers/accuracy/',
   '/disclosure/',
   '/feeds/market-research',
   '/fomo/',
@@ -281,6 +282,8 @@ async function loadStaticPages(repoRoot, context, env) {
     if (local.startsWith('embed/')) continue;
     if (local.includes('[')) continue;
     if (local === '404.astro') continue;
+    // Astro makes no route of a file or folder whose name starts with an underscore.
+    if (local.split('/').some((part) => part.startsWith('_'))) continue;
     const route = pagePath(file, pagesRoot);
     if (UNLISTED_ROUTE_PREFIXES.some((prefix) => route.startsWith(prefix))) continue;
     if (!launchedRoute(route, env)) continue;

@@ -1,19 +1,19 @@
 {
   "version": 1,
-  "id": "account-sync-v2-locale-profile-links-2026-11-12",
-  "baseCommit": "c30d4810f5842fc57bb56da20ff5ab03a07caa40",
+  "id": "generated-sign-pages-85ab18cd073e",
+  "baseCommit": "85ab18cd073eb46d4d06d25a708dd5cb7cd1f405",
   "protectedPaths": [
-    "src/lib/i18n/index.test.ts",
-    "src/lib/i18n/ui/en.ts",
-    "src/lib/i18n/ui/es.ts",
-    "src/lib/i18n/ui/fr.ts",
-    "src/lib/i18n/ui/it.ts",
-    "src/lib/i18n/ui/pt.ts",
-    "src/lib/i18n/ui/ru.test.ts",
-    "src/lib/i18n/ui/ru.ts",
-    "src/pages/es/profile/index.astro",
-    "src/pages/fr/profile/index.astro",
-    "src/pages/it/profile/index.astro",
-    "src/pages/pt/profile/index.astro"
+    "public/registry/aquarius/index.html",
+    "public/registry/aries/index.html",
+    "public/registry/cancer/index.html",
+    "public/registry/capricorn/index.html",
+    "public/registry/gemini/index.html",
+    "public/registry/leo/index.html",
+    "public/registry/libra/index.html",
+    "public/registry/pisces/index.html",
+    "public/registry/sagittarius/index.html",
+    "public/registry/scorpio/index.html",
+    "public/registry/taurus/index.html",
+    "public/registry/virgo/index.html"
   ]
 }

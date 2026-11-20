@@ -70,7 +70,9 @@ export async function auditWithRetry(args, {
       .some((line) => endpointDiagnostic.test(line.trim()));
     if (result.status === 0 && !result.error && !result.signal && !hasEndpointDiagnostic) return 0;
     const failureStatus = Number.isInteger(result.status) && result.status > 0 ? result.status : 1;
-    if (!isRetryableEndpointError(result)) return failureStatus;
+    if (!isRetryableEndpointError(result)) {
+      return failureStatus;
+    }
     if (attempt === retryDelays.length) {
       stderr('npm audit endpoint retries exhausted after 3 attempts; failing the gate.\n');
       return failureStatus;

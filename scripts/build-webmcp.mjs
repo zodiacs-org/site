@@ -9,6 +9,7 @@
  *   calculator tool loads it.
  */
 import { build } from 'esbuild';
+import { browserEngineEsbuild } from './lib/browser-engine.mjs';
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -32,6 +33,7 @@ for (const { entry, outfile, maxGzipBytes } of bundles) {
   await build({
     entryPoints: [resolve(repo, entry)],
     bundle: true,
+    plugins: [browserEngineEsbuild()],
     minify: true,
     format: 'esm',
     target: 'es2020',

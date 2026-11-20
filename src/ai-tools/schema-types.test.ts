@@ -1,3 +1,4 @@
+import { de440OutputSchema } from './de440-contract';
 import { describe, expect, it } from 'vitest';
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
@@ -79,7 +80,7 @@ describe('the tools\' schemas', () => {
   });
 
   it('give the values the compute API returns exactly the schemas the API documents for them', () => {
-    const data = (tool: AiToolName) => at(advertised(OUTPUT_SCHEMAS[tool], 'output'), 'anyOf', '0', 'properties', 'data', 'properties');
+    const data = (tool: AiToolName) => at(de440OutputSchema(advertised(OUTPUT_SCHEMAS[tool], 'output')) as Json, 'anyOf', '0', 'properties', 'data', 'properties');
     const documented = (name: string) => inlined(COMPUTE_SCHEMAS[name]);
     expect(data('get_capabilities').engine).toEqual(documented('Backend'));
     for (const [tool, result] of [['get_upcoming_events', 'EventsResult'], ['check_sky_fact', 'SkyFactResult']] as const) {
@@ -123,7 +124,7 @@ describe('what the tools return', () => {
   it('validates against the schemas they advertise, as a client checks it', async () => {
     const ajv = new Ajv2020({ strict: false, allErrors: true });
     addFormats(ajv);
-    const validators = new Map(EVERY_TOOL_WITH_GOOD_DAYS.map((tool) => [tool, ajv.compile(advertised(OUTPUT_SCHEMAS[tool], 'output'))]));
+    const validators = new Map(EVERY_TOOL_WITH_GOOD_DAYS.map((tool) => [tool, ajv.compile(de440OutputSchema(advertised(OUTPUT_SCHEMAS[tool], 'output')) as Json)]));
     const dependencies = { occasions: true, horoscopeWindow: async () => committedWindow as HoroscopeWindow, allowEvents: async () => 'allowed' as const };
     const invalid: string[] = [];
     const refused: string[] = [];

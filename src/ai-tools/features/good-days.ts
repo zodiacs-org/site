@@ -27,7 +27,7 @@ export const goodDaysInput = z.strictObject({
   to: z.string().regex(DATE).optional().describe(`The last day to search, at most ${GOOD_DAYS_MAX_DAYS} days in all (about twelve months), from ${GOOD_DAYS_FIRST} to ${GOOD_DAYS_LAST}. Leave it out for ${GOOD_DAYS_DEFAULT_DAYS} days from from.`),
   zone: zone.optional().describe("The person's time zone, such as Europe/London, so days and times are on their clock. Without it, UTC."),
   count: z.number().int().min(1).max(GOOD_DAYS_MAX_COUNT).optional().describe(`How many best days to return: ${GOOD_DAYS_DEFAULT_COUNT} unless given, at most ${GOOD_DAYS_MAX_COUNT}.`),
-  birthDate: z.string().regex(DATE).optional().describe("Optional: the person's own birth date, such as 1990-05-03, only if they ask for their own chart to be included. Used for this answer only, never stored. Never send a child's birth date."),
+  birthDate: z.string().regex(DATE).optional().describe("Optional: the person's own birth date, such as 1994-05-14, only if they ask for their own chart to be included. Used for this answer only, never stored. Never send a child's birth date."),
   birthTime: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe('Optional: the birth time on the birthplace clock, only if the person knows it. Never guess it. Needs birthDate and birthZone.'),
   birthZone: zone.optional().describe("Optional: the birthplace's time zone, such as America/New_York. Needs birthDate."),
 }).superRefine((args, context) => {

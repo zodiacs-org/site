@@ -88,18 +88,21 @@ describe('assistant site context', () => {
       // Hidden on 2026-11-12: /baby-zodiac/ (one tool, one static/consumer route) and /occasions/baby-shower/ (one static/consumer route).
       // The conventions registry at /developers/conventions/ adds one more.
       // The assistant showcase at /apps/ adds one evergreen page.
+      // Its four per-assistant pages (/apps/claude/, /apps/chatgpt/, /apps/cursor/, /apps/claude-code/) add four more.
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
       // The good day finder at /good-days/ adds one static page, only while
       // PUBLIC_GOOD_DAYS_ENABLED is '1'.
       // The Year Ahead Score at /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
       // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
-      consumerRoutes: 715 + Number(goodDays),
+      // The Fortune 500 CEO sign study at /studies/fortune-500-ceo-signs/ adds one more.
+      // The support page at /support/ adds one more, and one static page.
+      consumerRoutes: 721 + Number(goodDays),
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 76 + Number(goodDays),
+      staticPages: 82 + Number(goodDays),
       tools: 27,
     });
     if (goodDays) expect(context).toContain(GOOD_DAYS_LINE);

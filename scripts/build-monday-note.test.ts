@@ -126,7 +126,7 @@ describe('Monday Note builder', () => {
       expect.stringMatching(/^Tuesday, November 24: The full Moon in Gemini .*new Moon on November 9\./u),
       '  Full Moon at 2°20′ Gemini, 14:53 UTC',
       expect.stringMatching(/^Sunday, November 29: Uranus trine Pluto: /u),
-      '  Uranus trine Pluto, exact at 11:27 UTC: Uranus 3°31′ Gemini, Pluto 3°31′ Aquarius',
+      '  Uranus trine Pluto, exact at 11:22 UTC: Uranus 3°31′ Gemini, Pluto 3°31′ Aquarius',
     ]);
     expect(note.subject).toBe('This week: the full Moon in Gemini and Uranus trine Pluto');
   });
@@ -142,10 +142,10 @@ describe('Monday Note builder', () => {
       'A QUESTION FOR NEXT WEEK',
     ]);
     expect(sections.get('ONE THING TO DO')).toEqual([expect.stringMatching(/^On Tuesday, finish or hand off one task/u)]);
-    expect(sections.get('ONE DAY TO PROTECT')).toEqual([expect.stringMatching(/^Protect Sunday, November 29: Uranus trine Pluto is exact at 11:27 UTC\./u)]);
+    expect(sections.get('ONE DAY TO PROTECT')).toEqual([expect.stringMatching(/^Protect Sunday, November 29: Uranus trine Pluto is exact at 11:22 UTC\./u)]);
     expect(sections.get('COMING NEXT WEEK')).toEqual([
-      'Monday, November 30: Sun trine Saturn, exact at 06:01 UTC: Sun 8°01′ Sagittarius, Saturn 8°01′ Aries.',
-      'Friday, December 4: Venus enters Scorpio, 08:14 UTC.',
+      'Monday, November 30: Sun trine Saturn, exact at 06:05 UTC: Sun 8°02′ Sagittarius, Saturn 8°02′ Aries.',
+      'Friday, December 4: Venus enters Scorpio, 08:12 UTC.',
       'Sunday, December 6: Mercury enters Sagittarius, 08:33 UTC.',
     ]);
     const signs = sections.get('YOUR SUN SIGN THIS WEEK')!;

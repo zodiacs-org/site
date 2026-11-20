@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import type { VNode } from 'preact';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import CalculationReload, { calculationLoadMessage } from './CalculationReload';
@@ -44,7 +45,8 @@ vi.mock('../lib/module-load', async (importOriginal) => {
   const original = await importOriginal<typeof import('../lib/module-load')>();
   return { ...original, loadModule: (load: () => Promise<unknown>) => original.loadModule(() => harness.load(load)) };
 });
-vi.mock('preact/hooks', () => ({
+vi.mock('preact/hooks', () => {
+  const hooks = {
   useState: (initial: unknown) => {
     const slot = harness.cursor++;
     if (!(slot in harness.slots)) harness.slots[slot] = initial;
@@ -69,7 +71,10 @@ vi.mock('preact/hooks', () => ({
       harness.effects[index] = { dependencies, cleanup: typeof cleanup === 'function' ? cleanup : undefined };
     });
   },
-}));
+  };
+  // The meeting's settle step runs before paint; the harness has no paint, so it queues like useEffect.
+  return { ...hooks, useLayoutEffect: hooks.useEffect };
+});
 
 let SynastryCalculator: typeof import('./SynastryCalculator')['default'];
 const chart = {
@@ -457,5 +462,21 @@ describe('compatibility optional sharing and invitation recovery', () => {
     pending.resolve({ completeInvite: harness.complete });
     await settle();
     expect(harness.complete).toHaveBeenCalledTimes(boundary === 'grant' ? 1 : 0);
+  });
+});
+
+
+describe('pending comparison handoffs', () => {
+  it('discards a pending comparison handoff after revocation, even if access is later granted', () => {
+    const source = readFileSync(new URL('./SynastryCalculator.tsx', import.meta.url), 'utf8');
+    const sessionStart = source.indexOf("if (fragment.has('h'))");
+    const session = source.slice(sessionStart, source.indexOf('const valuesA', sessionStart));
+    const legacyStart = source.indexOf("if (fragment.has('a') || fragment.has('b'))");
+    const legacy = source.slice(legacyStart, source.indexOf('}, [profileReady, profile, locale]', legacyStart));
+    for (const branch of [session, legacy]) {
+      expect(branch).toContain('const request = requestRef.current');
+      expect(branch).toContain('request !== requestRef.current');
+      expect(branch).not.toContain('profileAccessAllowed()');
+    }
   });
 });

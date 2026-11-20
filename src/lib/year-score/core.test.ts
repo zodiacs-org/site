@@ -3,6 +3,8 @@ import { bodyLongitude, computeChart } from '../engine/full';
 import { ASPECT_ORB, MONTH_SCORE_SCALE, MONTH_SCORE_SCALE_TIMED, PLANET_WEIGHT, POINT_WEIGHT, SCORE_CENTER, SCORE_CENTER_TIMED, VALENCE, YEAR_SCORE_SCALE, YEAR_SCORE_SCALE_TIMED, contactsOn, curve, scoreYear, type MonthScore, type NatalPoints, type SlowPlanet, type YearScore } from './core';
 import { YEAR_PEOPLE, findYearPerson, personKey } from './people';
 import { monthLine, scoreTier, yearReading } from './reading';
+import { figureTierSummary } from './tier';
+import { FIGURE_NOTE } from './people';
 
 const fixed = (lons: Partial<Record<SlowPlanet, number>>) => (body: SlowPlanet) => lons[body] ?? 45;
 const natalAt = (iso: string): NatalPoints => {
@@ -170,14 +172,23 @@ describe('scoreYear', () => {
 });
 
 describe('the words', () => {
-  // Dias, 9 November 2026: money, career, wellbeing and legal themes are allowed as the tradition reads them;
+  // Dias, 9 November 2026: career, wellbeing and legal themes are allowed as the tradition reads them;
+  // no money, earnings or promotion forecasts (ZOD-30, 13 November 2026);
   // price or trading calls, buy or sell signals, diagnoses, death predictions, legal outcomes and doom are not.
   const banned = /\b(?:buy|sell|selling|price targets?|stocks?|crypto\w*|bitcoin|tokens?|diagnos\w*|prognos\w*|death|die|dies|dying|doom\w*|disaster|ruin\w*|catastroph\w*)\b|\byou will (?:win|lose)\b|[–—]/iu;
   it('frames every tier plainly, low scores as pressure rather than doom, with no trading call or diagnosis', () => {
-    for (const score of [0, 1.5, 3.5, 5, 7, 9.5]) {
+    for (const score of [0, 1.5, 2.5, 3.5, 5, 7, 9.5]) {
       const tier = scoreTier(score);
       expect(`${tier.label} ${tier.summary}`).not.toMatch(banned);
     }
+    // A named figure's tier words (ZOD-12): nothing about money, work, health or the reader, and the personal wording unchanged.
+    for (const score of [0, 1.5, 2.5, 3.5, 5, 7, 9.5]) {
+      const words = figureTierSummary(scoreTier(score).key);
+      expect(words).not.toMatch(banned);
+      expect(words).not.toMatch(/\b(?:earnings?|money|spending|agreements?|energy|career|work|rest|you|your)\b/iu);
+    }
+    expect(FIGURE_NOTE).not.toMatch(banned);
+    expect(FIGURE_NOTE).not.toMatch(/[–—]/u);
     expect(scoreTier(1).label).toBe('A year of heavy pressure');
     expect(scoreTier(5).label).toBe('A balanced year');
     // The cut points sit symmetrically around 5: 2, 3.5, 6.5 and 8.
@@ -190,8 +201,10 @@ describe('the words', () => {
     expect(scoreTier(6.5).key).toBe('supportive');
     expect(scoreTier(7.9).key).toBe('supportive');
     expect(scoreTier(8).key).toBe('open');
-    // Traditional themes are welcome: earnings in a strong year, rest in a hard one.
-    expect(scoreTier(9).summary).toContain('earnings');
+    // Traditional themes are welcome: career in a strong year, rest in a hard one. No money forecasts (ZOD-30).
+    expect(scoreTier(9).summary).toContain('career growth');
+    const money = /\b(?:money|earn|earns|earned|earner|earners|earning|earnings|promot\w*|income|salary|salaries|savings?|wealth\w*|profit\w*|budgets?|financ\w*|riches|prosper\w*|spend\w*|cash|bonus\w*)\b/iu;
+    for (const score of [0, 1.5, 2.5, 3.5, 5, 7, 9.5]) expect(scoreTier(score).summary).not.toMatch(money);
     expect(scoreTier(1).summary).toContain('look after your energy');
   });
   it('keeps month and driver lines free of trading calls, diagnoses, death, doom and dashes', () => {
@@ -350,6 +363,10 @@ describe('lines that agree with their headings', () => {
 });
 
 describe('the Year Ahead directory', () => {
+  it('scores a figure’s page from the first day of the month, so the page and a draft post agree all month', async () => {
+    const { yearPageStart } = await import('./people');
+    expect(yearPageStart(new Date('2026-11-09T23:59:00Z'))).toBe('2026-11-01');
+  });
   const REVIEW = '2026-11-09';
   it('lists only adults, each with a cited source and a unique slug', () => {
     const slugs = new Set<string>();
