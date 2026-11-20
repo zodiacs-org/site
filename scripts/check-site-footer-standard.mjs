@@ -91,8 +91,10 @@ await requireMarkers('src/components/SiteFooter.astro', [
   'class="zfooter__colophon"',
   'data-footer-guide',
   '.webp?surface=site-footer',
-  '<nav class="zfooter__group zfooter__group--wide" aria-label={t(locale, \'footerRegistry\')}>',
-  '<span class="zfooter__label">{t(locale, \'footerRegistry\')}</span>',
+  '<nav class="zfooter__group zfooter__group--wide" aria-labelledby="footer-registry-label">',
+  '<span class="zfooter__label" id="footer-registry-label" lang={registryLang}>{t(locale, \'footerRegistry\')}</span>',
+  '<aside class="zfooter__help" aria-labelledby="footer-guide-label">',
+  '<span id="footer-guide-label" lang={guideLang}>{FOOTER_COPY[locale].assistant}</span>',
   '<a href="/astrofolio/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, \'navCollect\')}{englishSuffix}</a>',
 ]);
 await requireMarkers('src/app.jsx', [

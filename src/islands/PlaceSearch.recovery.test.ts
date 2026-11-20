@@ -48,6 +48,9 @@ vi.mock('preact/hooks', () => ({
 import PlaceSearch from './PlaceSearch';
 import CalculationReload, { calculationLoadMessage } from './CalculationReload';
 import { ModuleLoadError } from '../lib/module-load';
+import { t } from '../lib/i18n';
+
+const UI_EN_NO_RESULTS = t('en', 'placeNoResults');
 
 const paris: City = { name: 'Paris', admin1: '', country: 'France', lat: 48.86, lon: 2.35, tz: 'Europe/Paris', pop: 2000000 };
 const onSelect = vi.fn();
@@ -69,6 +72,8 @@ function query(value: string) {
   const input = nodes(render()).find((node) => node.props.role === 'combobox')!;
   input.props.onInput({ target: { value } });
 }
+const listbox = (view: VNode<Record<string, any>>[]) => view.find((node) => node.props.role === 'listbox')!;
+const status = (view: VNode<Record<string, any>>[]) => view.find((node) => node.props.role === 'status')!;
 const flush = async () => { await Promise.resolve(); await Promise.resolve(); };
 
 beforeEach(() => {
@@ -109,18 +114,20 @@ describe('birthplace search recovery and request ownership', () => {
     expect(alert.props.children).toBe(calculationLoadMessage('en'));
     const recovery = view.find((node) => node.type === CalculationReload)!;
     expect(CalculationReload({ error: recovery.props.error, locale: recovery.props.locale })).not.toBeNull();
-    expect(view.some((node) => node.props.role === 'listbox')).toBe(false);
+    expect(listbox(view).props.hidden).toBe(true);
+    expect(view.some((node) => node.props.role === 'option')).toBe(false);
     expect(harness.search).not.toHaveBeenCalled();
   });
 
   it('announces loading, offers retry after failure, then exposes successful options', async () => {
     harness.search.mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce([paris]);
     query('Paris');
-    expect(nodes(render()).some((node) => node.props.role === 'status')).toBe(true);
+    expect(status(nodes(render())).props.children).toBe('Searching places…');
     await vi.advanceTimersByTimeAsync(120);
     let view = nodes(render());
     expect(view.some((node) => node.props.role === 'alert')).toBe(true);
-    expect(view.some((node) => node.props.role === 'listbox')).toBe(false);
+    expect(listbox(view).props.hidden).toBe(true);
+    expect(status(view).props.children).toBe('');
     const input = view.find((node) => node.props.role === 'combobox')!;
     const focus = vi.fn();
     (input.ref as { current: unknown }).current = { focus };
@@ -141,6 +148,7 @@ describe('birthplace search recovery and request ownership', () => {
     const view = nodes(render());
     expect(view.some((node) => node.props.role === 'option' && node.props['aria-disabled'] === true)).toBe(true);
     expect(view.some((node) => node.props.role === 'alert')).toBe(false);
+    expect(status(view).props.children).toBe(UI_EN_NO_RESULTS);
   });
 
   it('ignores a stale result after the query changes', async () => {
@@ -215,7 +223,35 @@ describe('birthplace search recovery and request ownership', () => {
     await vi.advanceTimersByTimeAsync(120);
     expect(harness.search).toHaveBeenCalledWith('Paris');
     const view = nodes(render());
-    expect(view.some((node) => node.props.role === 'status')).toBe(false);
+    expect(status(view).props.children).toBe('');
     expect(view.some((node) => node.type === 'button' && node.props.role === 'option')).toBe(true);
+  });
+});
+
+describe('birthplace search accessibility', () => {
+  it('keeps the controlled listbox and one live region mounted while closed', () => {
+    const view = nodes(render());
+    const input = view.find((node) => node.props.role === 'combobox')!;
+    expect(input.props['aria-expanded']).toBe(false);
+    expect(listbox(view).props.id).toBe(input.props['aria-controls']);
+    expect(listbox(view).props.hidden).toBe(true);
+    expect(status(view).props.children).toBe('');
+    expect(status(view).props.class).toBe('sr-only');
+    expect(view.filter((node) => node.props.role === 'status')).toHaveLength(1);
+  });
+
+  it('exposes the result count on every option and opens the listbox', async () => {
+    const parisTexas: City = { name: 'Paris', admin1: 'Texas', country: 'United States', lat: 33.66, lon: -95.56, tz: 'America/Chicago', pop: 25000 };
+    harness.search.mockResolvedValue([paris, parisTexas]);
+    query('Paris');
+    await vi.advanceTimersByTimeAsync(120);
+    const view = nodes(render());
+    const input = view.find((node) => node.props.role === 'combobox')!;
+    expect(input.props['aria-expanded']).toBe(true);
+    expect(listbox(view).props.hidden).toBe(false);
+    const options = view.filter((node) => node.type === 'button' && node.props.role === 'option');
+    expect(options.map((node) => [node.props['aria-posinset'], node.props['aria-setsize']])).toEqual([[1, 2], [2, 2]]);
+    expect(input.props['aria-activedescendant']).toBe(options[0].props.id);
+    expect(status(view).props.children).toBe('');
   });
 });
