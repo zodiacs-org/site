@@ -18,6 +18,12 @@ import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { projectRoot, withPreview } from './visual/preview-server.mjs';
 
 const SCREENSHOTS = process.argv.includes('--screenshots');
+// The reminder's window, as src/lib/good-days/outcomes.ts (FOLLOW_UP_DAYS) and outcome-memory.ts (REMINDER_KEEP_DAYS)
+// set it: asked a week after the day, removed once the day is more than 30 days past. The drive comes back between.
+const FOLLOW_UP_DAYS = 7;
+const REMINDER_KEEP_DAYS = 30;
+const RETURN_AFTER_DAYS = 14;
+const addDays = (date, days) => new Date(Date.parse(`${date}T00:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
 const evidence = resolve(projectRoot, 'docs/platform/zodiacs-ai/evidence/good-days');
 const BIRTH = '1990-05-03';
 const failures = [];
@@ -140,7 +146,7 @@ await withPreview({ port: 4371 }, async (base) => {
     } else {
       for (const viewport of VIEWPORTS) {
         const { context, tab, requests, errors } = await page(browser, viewport);
-        // Pick a day on 1 April 2027, and come back on 3 June.
+        // Pick a day on 1 April 2027, and come back once its follow-up is due and while the reminder is still kept.
         await tab.clock.setFixedTime(new Date('2027-04-01T09:00:00Z'));
         await tab.goto(`${base}/good-days/#g=move&f=2027-04-01&t=2027-05-31`, { waitUntil: 'networkidle' });
         await tab.waitForSelector('.good-days__result', { timeout: 60_000 });
@@ -150,7 +156,13 @@ await withPreview({ port: 4371 }, async (base) => {
         const kept = JSON.parse(stored ?? '[]');
         check(`${viewport.name}: the device keeps only the goal, the day, the score and the flag`, kept.length === 1 && Object.keys(kept[0]).sort().join() === 'day,goal,personal,score', stored ?? '');
         if (SCREENSHOTS) await tab.locator('.good-days__pick').first().screenshot({ path: `${evidence}/${viewport.name}-pick-day.png` });
-        await tab.clock.setFixedTime(new Date('2027-06-03T09:00:00Z'));
+        // The return day comes from the stored day, whichever best day the finder lists first: due a week after it
+        // (followUpDue) and kept until 30 days after it (prunePicks). Noon UTC is the same date in the context's London.
+        const pickedDay = kept[0]?.day ?? '';
+        const returnDay = addDays(pickedDay, RETURN_AFTER_DAYS);
+        check(`${viewport.name}: the return day is due and the reminder still kept`, /^\d{4}-\d{2}-\d{2}$/u.test(pickedDay)
+          && returnDay >= addDays(pickedDay, FOLLOW_UP_DAYS) && returnDay <= addDays(pickedDay, REMINDER_KEEP_DAYS), `${pickedDay} -> ${returnDay}`);
+        await tab.clock.setFixedTime(new Date(`${returnDay}T12:00:00Z`));
         await tab.goto(`${base}/good-days/`, { waitUntil: 'networkidle' });
         await tab.waitForSelector('.good-days__toast');
         await settle(tab);
@@ -173,7 +185,8 @@ await withPreview({ port: 4371 }, async (base) => {
         check(`${viewport.name}: nothing but the answer leaves the page`, !requests.some((line) => /plausible|vitals|insights/u.test(line)), requests.filter((line) => /plausible|vitals|insights/u.test(line)).join('\n'));
         if (SCREENSHOTS) await tab.screenshot({ path: `${evidence}/${viewport.name}-thanks.png` });
         const after = await tab.evaluate(() => localStorage.getItem('zodiacs.goodDays.followUps.v1'));
-        check(`${viewport.name}: an answered pick is not asked again`, JSON.parse(after ?? '[]')[0]?.done === true, after ?? '');
+        // finishPick removes an answered reminder, and the key itself when none is left; this was the only one.
+        check(`${viewport.name}: an answered pick is removed from the device`, after === null, after ?? '');
         check(`${viewport.name}: follow-up has no page errors`, errors.length === 0, errors.join('\n'));
         await context.close();
       }
