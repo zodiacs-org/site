@@ -104,6 +104,8 @@ describe('assistant site context', () => {
       // Its four per-assistant pages (/apps/claude/, /apps/chatgpt/, /apps/cursor/, /apps/claude-code/) add four more.
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
+      // The good day finder at /good-days/ adds one static page, only while
+      // PUBLIC_GOOD_DAYS_ENABLED is '1'.
       // The Year Ahead Score at /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
       // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
       // Each page in LAUNCH_FLAGGED_ROUTES adds one static page, only while
