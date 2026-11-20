@@ -102,6 +102,8 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/disclosure/',
   '/feeds/market-research',
   '/fomo/',
+  // The good day finder's "How did your day go?" page opens from a reminder link; it is noindex and never a first stop.
+  '/good-days/how-did-it-go/',
   '/people/',
   '/registry/',
   '/terminal/',
@@ -115,6 +117,7 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
 // inventory until their switch is exactly '1', so a page that is not live is
 // never recommended. Commit the output generated with every switch unset.
 export const LAUNCH_FLAGGED_ROUTES = Object.freeze({
+  '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED',
   '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
   '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
   '/your-day/': 'PUBLIC_YOUR_DAY_ENABLED',
