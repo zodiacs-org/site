@@ -83,12 +83,13 @@ describe('assistant site context', () => {
       // The Year Ahead Score at /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
       // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
       // The Fortune 500 CEO sign study at /studies/fortune-500-ceo-signs/ adds one more.
-      consumerRoutes: 720,
+      // The support page at /support/ adds one more, and one static page.
+      consumerRoutes: 721,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 81,
+      staticPages: 82,
       tools: 27,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
