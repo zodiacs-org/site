@@ -120,6 +120,7 @@ export const LAUNCH_FLAGGED_ROUTES = Object.freeze({
   '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED',
   '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
   '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
+  '/your-day/': 'PUBLIC_YOUR_DAY_ENABLED',
 });
 const launchedRoute = (route, env) => !LAUNCH_FLAGGED_ROUTES[route] || env[LAUNCH_FLAGGED_ROUTES[route]] === '1';
 

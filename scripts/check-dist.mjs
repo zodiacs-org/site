@@ -1372,6 +1372,8 @@ const raceIndexed = sitemapLocs.has('/race/');
 // The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
 const yearScoreIndexed = sitemapLocs.has('/year-score/');
 const birthdayReportIndexed = sitemapLocs.has('/birthday-report/');
+// Your day follows its launch flag (src/lib/launch-flags.ts) the same way.
+const yourDayIndexed = sitemapLocs.has('/your-day/');
 // The good day finder follows its launch flag (src/lib/launch-flags.ts) the same way.
 const goodDaysIndexed = sitemapLocs.has('/good-days/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
@@ -1437,6 +1439,7 @@ const sitemapPolicy = {
   // +1 for /good-days/, the English-only good day finder, once PUBLIC_GOOD_DAYS_ENABLED is on.
   // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
   // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
+  // +1 for /your-day/, the English-only personal day page, once PUBLIC_YOUR_DAY_ENABLED is on.
   // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/),
   // the three per-assistant /apps/ pages joined on 2026-11-16, and /apps/claude-code/ on 2026-11-17.
@@ -1444,7 +1447,7 @@ const sitemapPolicy = {
   // +1 for /almanac/sky-this-week-2026-11-23/, the first "Your sky this week" article.
   // +1 for /support/, the support page, linked from /about/.
   total: 1539 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
-    + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(goodDaysIndexed)
+    + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(yourDayIndexed) + Number(goodDaysIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1501,6 +1504,7 @@ const indexedFamilies = [
   { label: 'Good day finder', pattern: /^\/good-days\/$/, expected: Number(goodDaysIndexed), localized: false },
   { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
   { label: 'Birthday report', pattern: /^\/birthday-report\/$/, expected: Number(birthdayReportIndexed), localized: false },
+  { label: 'Your day', pattern: /^\/your-day\/$/, expected: Number(yourDayIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
   { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },
   { label: 'Terminal Research', pattern: /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/, expected: sitemapPolicy.registryResearchPages, localized: false },
