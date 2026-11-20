@@ -3,6 +3,7 @@ import '../../styles/people.css';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import PeopleCard from '../../components/people/PeopleCard.astro';
+import Motion from '../../components/Motion.astro';
 import {
   DIRECTORY_PEOPLE,
   PEOPLE_DIRECTORY_INDEXABLE,
@@ -74,6 +75,8 @@ const jsonLd = [
   minimalNavFontPreloads
 >
   <section class="people-page">
+    <!-- Inside the section, so the section stays main's first child and keeps its top padding. -->
+    <Motion />
     <header class="people-page__hero">
       <h1 class="display">People</h1>
       <p class="people-page__lede">
@@ -147,7 +150,7 @@ const jsonLd = [
       <p class="people-count people-count--js" aria-live="polite" data-people-count></p>
 
       <div class="people-grid" data-people-grid>
-        {DIRECTORY_PEOPLE.map((person) => <PeopleCard person={person} />)}
+        {DIRECTORY_PEOPLE.map((person) => <PeopleCard person={person} enter />)}
       </div>
 
       <div class="people-empty" data-people-empty>
