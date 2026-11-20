@@ -109,12 +109,13 @@ describe('assistant site context', () => {
       // Each page in LAUNCH_FLAGGED_ROUTES adds one static page, only while
       // its switch is '1'.
       // The Fortune 500 CEO sign study at /studies/fortune-500-ceo-signs/ adds one more.
-      consumerRoutes: 720 + pagesOn,
+      // The support page at /support/ adds one more, and one static page.
+      consumerRoutes: 721 + pagesOn,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 81 + pagesOn,
+      staticPages: 82 + pagesOn,
       tools: 27,
     });
     for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) {
