@@ -1439,7 +1439,8 @@ const sitemapPolicy = {
   // the three per-assistant /apps/ pages joined on 2026-11-16, and /apps/claude-code/ on 2026-11-17.
   // +1 for /studies/fortune-500-ceo-signs/, the CEO Sun sign data story, linked from /people/.
   // +1 for /almanac/sky-this-week-2026-11-23/, the first "Your sky this week" article.
-  total: 1538 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /support/, the support page, linked from /about/.
+  total: 1539 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
