@@ -763,6 +763,13 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
   ['/birth-chart/', '2026-11-19'] as const,
+  // The hosted MCP server's Origin and Host rules on the AI and MCP developer pages, and the privacy and terms
+  // pages without the Registry wallet and purchase disclosures, with the privacy page's no-birth-time script and
+  // analytics sentences (owner-approved 20 November 2026). The day of the daily edition they were built with,
+  // last so these dates win.
+  ...['/developers/ai/', '/developers/mcp/'].map((loc) => [loc, '2026-11-20'] as const),
+  ['/privacy/', '2026-11-20'] as const,
+  ['/terms/', '2026-11-20'] as const,
 ]);
 
 function getLastmod(loc: string): string {

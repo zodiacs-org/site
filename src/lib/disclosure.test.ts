@@ -294,7 +294,9 @@ describe('registry disclosure contract', () => {
     expect(boundary).toContain('href="/disclosure/"');
   });
 
-  it('keeps the English privacy and terms pages explicit about Aura data and asset risk', async () => {
+  it('keeps the Registry wallet and asset-risk disclosures off the English privacy and terms pages', async () => {
+    // Removed from /privacy/ and /terms/ on 20 November 2026 (owner-approved); this page and the
+    // translated privacy pages are unchanged. scripts/legal-pages-copy.mjs holds the full list.
     const [privacySource, termsSource] = await Promise.all([
       readFile(resolve(repo, 'src/pages/privacy/index.astro'), 'utf8'),
       readFile(resolve(repo, 'src/pages/terms/index.astro'), 'utf8'),
@@ -302,29 +304,25 @@ describe('registry disclosure contract', () => {
     const privacy = privacySource.replace(/\s+/g, ' ');
     const terms = termsSource.replace(/\s+/g, ' ');
 
-    for (const required of [
+    for (const removed of [
       'configured blockchain-data provider',
-      'does not include birth fields, chart names, chart placements, or chart geometry',
       'becomes ineligible for restoration after eight hours',
-      'ineligible after 24 hours',
-      'deleted the next time Aura reads them',
       'We do not promise that a public-address request is never logged',
       'Clearing Aura cannot recall copies',
-      'no birth data, public address, chart identifier, connected account identifier, or exact held-sign list',
     ]) {
-      expect(privacy).toContain(required);
+      expect(privacy).not.toContain(removed);
     }
+    // The analytics scope stays.
+    expect(privacy).toContain('no birth data, public address, chart identifier, connected account identifier, or exact held-sign list');
 
-    for (const required of [
+    for (const removed of [
       'result in a total loss',
       'Blockchain transactions are often irreversible',
-      "does not prove control of an address, legal ownership of an asset, or a person's identity",
       '“official,” “official Zodiac,” and similar wording mean only',
       'not an endorsement, solicitation, or statement that an asset is suitable for you',
       'as a dated operator attestation',
-      'must not be treated as independently verified',
     ]) {
-      expect(terms).toContain(required);
+      expect(terms).not.toContain(removed);
     }
     expect(terms).not.toContain('still pending operator confirmation');
   });

@@ -1,19 +1,8 @@
 {
   "version": 1,
-  "id": "generated-sign-pages-85ab18cd073e",
-  "baseCommit": "85ab18cd073eb46d4d06d25a708dd5cb7cd1f405",
+  "id": "legal-pages-registry-risk-test-379d9d111bf5",
+  "baseCommit": "379d9d111bf53d14adc3b02f04d582e1f8c94153",
   "protectedPaths": [
-    "public/registry/aquarius/index.html",
-    "public/registry/aries/index.html",
-    "public/registry/cancer/index.html",
-    "public/registry/capricorn/index.html",
-    "public/registry/gemini/index.html",
-    "public/registry/leo/index.html",
-    "public/registry/libra/index.html",
-    "public/registry/pisces/index.html",
-    "public/registry/sagittarius/index.html",
-    "public/registry/scorpio/index.html",
-    "public/registry/taurus/index.html",
-    "public/registry/virgo/index.html"
+    "scripts/registry-risk.test.mjs"
   ]
 }
