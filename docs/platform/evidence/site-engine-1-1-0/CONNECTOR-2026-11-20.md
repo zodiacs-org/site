@@ -7,7 +7,10 @@ Asia/Bangkok on 20 November 2026.
   audit outside Chart Studio. The gate requires 44px on both dimensions
   apart from the three recorded Chart Studio controls and inline links.
 - RED-9 displays the horoscope answer's full disclosure, including its
-  Reading confidence label, in the new horoscope panel.
+  Reading confidence label, in the new horoscope panel. After a minor's
+  horoscope, the panel retains that disclosure when the host sends a later
+  result without the minor flag. The repeated-result regression exercises
+  the original host subscription and checks the disclosure after both results.
 - RED-10 uses `1800 to 2199` in the five approved tools' input descriptions
   and `to` between dates in the sky calendar heading. The gate rejects en
   and em dashes in these descriptions and in rendered panels.
@@ -37,12 +40,13 @@ and copy the result to `api/_ai/published/runtime.mjs`.
 | Published runtime | SHA-256 |
 | --- | --- |
 | 0.6.8 | `1effa2796fd6eb59f50316479141c1ad89e024f404878ca01d10119fb787ed95` |
-| 0.6.9 | `ec6084cc471349715770be9e73e231515ae5b1888a65dd9193c7dca14e625c13` |
+| 0.6.9 | `35ec7fee9454408aeb99215ac11e546184f775f0ce057f79252a216301bd179e` |
 
 The transition fixture captures initialize, tool listing, resource listing,
 capabilities and the two accounts-off checks for each of three scenarios.
 An in-process comparison reproduced all 18 prior replies, then verified all
-18 regenerated replies against the approved differences. The production
+18 regenerated replies against the approved differences. The round 2 recut
+reproduced the committed 0.6.9 fixture byte for byte. The production
 Neptune path continues to use Astronomy Engine and the DE440 route keeps its
 separate calculation. The server reports 0.6.9. The portable plugin and
 registry record retain their existing versions.
