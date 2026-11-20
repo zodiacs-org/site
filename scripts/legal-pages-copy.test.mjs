@@ -4,10 +4,38 @@ import { LEGAL_PAGE_RULES, LOCALIZED_PRIVACY_PATHS, legalPageProblems, mainOf, n
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
+/**
+ * The source with its first account sync v2 conditional (the calculator
+ * analytics paragraph) reduced to one branch, as the built page prints it:
+ * check-dist reads the flag-on build and the flag-off build, never both
+ * branches at once.
+ */
+function analyticsBranch(source, flagOn) {
+  const open = '{accountSyncV2Enabled ? (';
+  const start = source.indexOf(open);
+  const separator = source.indexOf(') : (', start);
+  const end = source.indexOf(')}', separator);
+  if (start < 0 || separator < 0 || end < 0) throw new Error('analyticsBranch: no account sync v2 conditional');
+  const branch = flagOn ? source.slice(start + open.length, separator) : source.slice(separator + ') : ('.length, end);
+  return (source.slice(0, start) + branch + source.slice(end + 2)).replaceAll("{' '}", ' ');
+}
+
 describe('the English legal pages approved on 20 November 2026', () => {
   it('holds the privacy and terms sources to the approved copy', async () => {
     expect(legalPageProblems('/privacy/', await read('src/pages/privacy/index.astro'))).toEqual([]);
     expect(legalPageProblems('/terms/', await read('src/pages/terms/index.astro'))).toEqual([]);
+  });
+
+  it('holds the privacy page with account sync v2 on and with it off', async () => {
+    const source = await read('src/pages/privacy/index.astro');
+    const on = analyticsBranch(source, true);
+    const off = analyticsBranch(source, false);
+    expect(normalizeLegalHtml(on)).toContain('The birth chart and compatibility calculator pages load no analytics');
+    expect(normalizeLegalHtml(on)).not.toContain('The compatibility calculator page loads no analytics');
+    expect(normalizeLegalHtml(off)).toContain('The compatibility calculator page loads no analytics');
+    expect(normalizeLegalHtml(off)).not.toContain('The birth chart and compatibility calculator pages');
+    expect(legalPageProblems('/privacy/', on), 'flag on').toEqual([]);
+    expect(legalPageProblems('/privacy/', off), 'flag off').toEqual([]);
   });
 
   it('keeps the edited legal copy free of long dashes', async () => {
@@ -78,6 +106,19 @@ describe('the translated privacy pages revised on 20 November 2026', () => {
 
     it(`holds ${path} to the approved copy`, async () => {
       expect(legalPageProblems(`/${locale}/privacy/`, await read(path))).toEqual([]);
+    });
+
+    it(`holds ${path} with account sync v2 on and with it off, one branch at a time`, async () => {
+      const source = await read(path);
+      const on = normalizeLegalHtml(analyticsBranch(source, true));
+      const off = normalizeLegalHtml(analyticsBranch(source, false));
+      // Each fixture prints only its own sentence, as the built page does.
+      expect(on).toContain(flagOn);
+      expect(on).not.toContain(flagOff);
+      expect(off).toContain(flagOff);
+      expect(off).not.toContain(flagOn);
+      expect(legalPageProblems(`/${locale}/privacy/`, on), `${locale} flag on`).toEqual([]);
+      expect(legalPageProblems(`/${locale}/privacy/`, off), `${locale} flag off`).toEqual([]);
     });
 
     it(`names the birth chart page only while account sync v2 is on (${locale})`, async () => {
