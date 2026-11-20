@@ -1,0 +1,151 @@
+---
+import type { Receipt, ReceiptHistory } from './receipt';
+
+interface Props {
+  receipt: Receipt | null;
+  history: ReceiptHistory[];
+}
+
+const { receipt, history } = Astro.props;
+const suite = receipt?.sets.suite;
+const rolling = receipt?.sets.rolling;
+const failed = !!receipt && (suite!.total !== suite!.within || rolling!.total !== rolling!.within);
+const headlineSet = receipt && suite!.total === suite!.within && rolling!.total !== rolling!.within ? rolling : suite;
+const rawPath = (date: string, file: string) => `/developers/accuracy/raw/${date}/${file}`;
+const commands = [
+  'npm ci',
+  'node scripts/accuracy-receipt.mjs',
+  'node scripts/accuracy-receipt.mjs --verify',
+];
+const sets = receipt ? [
+  { name: 'Rolling instants', positions: receipt.sets.rolling.positions },
+  { name: 'Suite instants', positions: receipt.sets.suite.positions },
+] : [];
+---
+<section class="section container container--narrow accuracy-receipt">
+  <em class="kicker">Accuracy receipts</em>
+  <h1 class="display">
+    {receipt && headlineSet
+      ? `Checked against NASA on ${receipt.label}: ${headlineSet.within} of ${headlineSet.total} positions within ${receipt.threshold}″`
+      : 'Waiting for the first NASA accuracy receipt'}
+    {failed && <span>Positions outside the limit</span>}
+  </h1>
+  <div class="prose">
+    <p>We compare the positions our engine calculates with positions from NASA. The comparison shows how closely our arithmetic agrees with NASA's on where the planets are. It says nothing about what they mean.</p>
+  </div>
+  {receipt && suite && rolling && <>
+    <div class="prose">
+      <p>
+        Engine <code>{receipt.engine.version}</code> read{' '}
+        {receipt.engine.ephemerides.map(({ name, version }, index) =>
+          <>{index > 0 && ', '}<code>{name} {version}</code></>
+        )}. NASA's answers name <code>{receipt.source.ephemeris}</code> as their source.
+      </p>
+      <p>
+        The suite compares our positions with <a href={`${receipt.source.repository}/tree/${receipt.source.commit}/conformance`}>NASA's recorded positions</a>
+        carried into <code>{receipt.frames.suite}</code>. The rolling check uses midnight Terrestrial Time on the
+        first of each coming month and compares directly with <a href={receipt.source.horizons}>Horizons</a> in its{' '}
+        <code>{receipt.frames.rolling}</code> frame. The rolling differences include the change of frame.
+      </p>
+      <p>
+        At the nearest suite instant, <time datetime={receipt.frameDifference.date}>{receipt.frameDifference.label}</time>,
+        the mean longitude difference from the change of frame was <strong>{receipt.frameDifference.arcsec}″</strong>.
+        This is the recorded Horizons longitude less the same longitude carried into the suite frame, averaged over the bodies.
+      </p>
+      <p>
+        NASA's fresh and recorded answers agreed within the self check tolerance for{' '}
+        {receipt.nasaCheck.total} positions. Each position is within the limit when both longitude and latitude are within {receipt.threshold}″.
+      </p>
+    </div>
+
+    <h2>Results by body</h2>
+    <p>The largest difference is the larger of the absolute longitude and latitude differences. Mars through Pluto use the centres of their planetary systems.</p>
+    <div class="accuracy-table" tabindex="0" role="region" aria-label="Results by body">
+      <table>
+        <thead><tr><th scope="col">Body</th><th scope="col">Suite within limit</th><th scope="col">Suite largest</th><th scope="col">Rolling within limit</th><th scope="col">Rolling largest</th></tr></thead>
+        <tbody>
+          {receipt.bodies.map(({ body, suite, rolling }) => (
+            <tr><th scope="row">{body}</th><td>{suite.within} of {suite.total}</td><td>{suite.largest}″</td><td>{rolling.within} of {rolling.total}</td><td>{rolling.largest}″</td></tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr><th scope="row">All bodies</th><td>{suite.within} of {suite.total}</td><td>{suite.largest}″</td><td>{rolling.within} of {rolling.total}</td><td>{rolling.largest}″</td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <h2>Positions at each instant</h2>
+    <p>Differences are engine minus NASA. Longitudes wrap around the circle.</p>
+    {sets.map(({ name, positions }) => (
+      <details>
+        <summary>{name}</summary>
+        <div class="accuracy-table" tabindex="0" role="region" aria-label={name}>
+          <table>
+            <thead><tr><th scope="col">Instant</th><th scope="col">Body</th><th scope="col">Engine longitude</th><th scope="col">NASA longitude</th><th scope="col">Longitude difference</th><th scope="col">Engine latitude</th><th scope="col">NASA latitude</th><th scope="col">Latitude difference</th></tr></thead>
+            <tbody>
+              {positions.map((row) => (
+                <tr>
+                  <td><time datetime={row.date}>{row.label}</time></td><th scope="row">{row.body}</th>
+                  <td>{row.engine.lon}°</td><td>{row.horizons.lon}°</td><td>{row.difference.lon}″</td>
+                  <td>{row.engine.lat}°</td><td>{row.horizons.lat}°</td><td>{row.difference.lat}″</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+    ))}
+
+    <h2>Raw NASA responses</h2>
+    <p>Download the <a href={rawPath(receipt.date, 'SHA256SUMS')}>checksum file</a> to verify the rolling response bytes. The suite checksums below match the files kept by the run.</p>
+    {receipt.auditUrl && <p><a href={receipt.auditUrl}>Suite responses and checksums</a></p>}
+    <div class="accuracy-table" tabindex="0" role="region" aria-label="Raw NASA responses">
+      <table>
+        <thead><tr><th scope="col">Response</th><th scope="col">Set</th><th scope="col">Attempt</th><th scope="col">HTTP status</th><th scope="col">{receipt.checksumAlgorithm}</th></tr></thead>
+        <tbody>
+          {receipt.raw.map(({ file, sha256, set, body, attempt, status }) => (
+            <tr><th scope="row">{set === 'rolling' ? <a href={rawPath(receipt.date, file)} download>{body}</a> : body}</th><td>{set}</td><td>{attempt}</td><td>{status}</td><td><code>{sha256}</code></td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Receipt history</h2>
+    <div class="accuracy-table" tabindex="0" role="region" aria-label="Receipt history">
+      <table>
+        <thead><tr><th scope="col">Date</th><th scope="col">Engine</th><th scope="col">Suite within limit</th><th scope="col">Suite largest</th><th scope="col">Rolling within limit</th><th scope="col">Rolling largest</th><th scope="col">Raw files</th></tr></thead>
+        <tbody>
+          {[...history].reverse().map((row) => (
+            <tr>
+              <th scope="row"><time datetime={row.date}>{row.label}</time></th><td>{row.engine.version}</td>
+              <td>{row.suite.within} of {row.suite.total}</td><td>{row.suite.largest}″</td>
+              <td>{row.rolling.within} of {row.rolling.total}</td><td>{row.rolling.largest}″</td>
+              <td><a href={rawPath(row.date, 'SHA256SUMS')}>Checksums</a></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </>}
+
+  <h2>Run the check</h2>
+  <p>From a checkout of the <a href="https://github.com/zodiacs-org/site">site repository</a>, run these commands in order.</p>
+  <pre><code>{commands.join('\n')}</code></pre>
+</section>
+
+<style>
+  h1 { margin: var(--s-1) 0 var(--s-4); }
+  h1 span { display: block; }
+  h2 { margin: var(--s-12) 0 var(--s-4); font-size: var(--text-lg); }
+  p, .prose { max-width: 68ch; }
+  details { margin: var(--s-4) 0; }
+  summary { cursor: pointer; }
+  code, td { font-family: var(--font-mono); }
+  p code { overflow-wrap: anywhere; }
+  pre, .accuracy-table { overflow-x: auto; margin: var(--s-4) 0; }
+  pre { padding: var(--s-4); border: 1px solid var(--hair-1); }
+  table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  th, td { padding: 0.625rem 0.75rem; border-bottom: 1px solid var(--hair-1); text-align: left; white-space: nowrap; }
+  thead th { color: var(--text-2); }
+  tfoot { font-weight: 600; }
+</style>

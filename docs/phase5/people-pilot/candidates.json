@@ -5362,5 +5362,177 @@
       "film actor",
       "film producer"
     ]
+  },
+  {
+    "slug": "lisa",
+    "enwiki": "Lisa (rapper)",
+    "displayName": "Lisa",
+    "role": "pilot",
+    "intendedSign": "aries",
+    "note": "Owner-authorized protected living profile · Music · Thailand",
+    "disciplines": [
+      "singer",
+      "rapper"
+    ]
+  },
+  {
+    "slug": "sabrina-carpenter",
+    "enwiki": "Sabrina Carpenter",
+    "displayName": "Sabrina Carpenter",
+    "role": "pilot",
+    "intendedSign": "taurus",
+    "note": "Owner-authorized protected living profile · Music · United States",
+    "disciplines": [
+      "singer",
+      "actor"
+    ]
+  },
+  {
+    "slug": "mrbeast",
+    "enwiki": "MrBeast",
+    "displayName": "MrBeast",
+    "role": "pilot",
+    "intendedSign": "taurus",
+    "note": "Owner-authorized protected living profile · Online video and business · United States",
+    "disciplines": [
+      "YouTuber",
+      "entrepreneur"
+    ]
+  },
+  {
+    "slug": "kendrick-lamar",
+    "enwiki": "Kendrick Lamar",
+    "displayName": "Kendrick Lamar",
+    "role": "pilot",
+    "intendedSign": "gemini",
+    "note": "Owner-authorized protected living profile · Music · United States",
+    "disciplines": [
+      "rapper",
+      "songwriter"
+    ]
+  },
+  {
+    "slug": "erling-haaland",
+    "enwiki": "Erling Haaland",
+    "displayName": "Erling Haaland",
+    "role": "pilot",
+    "intendedSign": "cancer",
+    "note": "Owner-authorized protected living profile · Football · Norway",
+    "disciplines": [
+      "association football player"
+    ]
+  },
+  {
+    "slug": "kylie-jenner",
+    "enwiki": "Kylie Jenner",
+    "displayName": "Kylie Jenner",
+    "role": "pilot",
+    "intendedSign": "leo",
+    "note": "Owner-authorized protected living profile · Business and media · United States",
+    "disciplines": [
+      "entrepreneur"
+    ]
+  },
+  {
+    "slug": "zendaya",
+    "enwiki": "Zendaya",
+    "displayName": "Zendaya",
+    "role": "pilot",
+    "intendedSign": "virgo",
+    "note": "Owner-authorized protected living profile · Film and television · United States",
+    "disciplines": [
+      "actor",
+      "singer"
+    ]
+  },
+  {
+    "slug": "max-verstappen",
+    "enwiki": "Max Verstappen",
+    "displayName": "Max Verstappen",
+    "role": "pilot",
+    "intendedSign": "libra",
+    "note": "Owner-authorized protected living profile · Motor racing · Netherlands",
+    "disciplines": [
+      "Formula One driver"
+    ]
+  },
+  {
+    "slug": "jenna-ortega",
+    "enwiki": "Jenna Ortega",
+    "displayName": "Jenna Ortega",
+    "role": "pilot",
+    "intendedSign": "libra",
+    "note": "Owner-authorized protected living profile · Film and television · United States",
+    "disciplines": [
+      "actor"
+    ]
+  },
+  {
+    "slug": "taylor-swift",
+    "enwiki": "Taylor Swift",
+    "displayName": "Taylor Swift",
+    "role": "pilot",
+    "intendedSign": "sagittarius",
+    "note": "Owner-authorized protected living profile · Music · United States",
+    "disciplines": [
+      "singer-songwriter"
+    ]
+  },
+  {
+    "slug": "timothee-chalamet",
+    "enwiki": "Timothée Chalamet",
+    "displayName": "Timothée Chalamet",
+    "role": "pilot",
+    "intendedSign": "capricorn",
+    "note": "Owner-authorized protected living profile · Film · United States",
+    "disciplines": [
+      "actor"
+    ]
+  },
+  {
+    "slug": "harry-styles",
+    "enwiki": "Harry Styles",
+    "displayName": "Harry Styles",
+    "role": "pilot",
+    "intendedSign": "aquarius",
+    "note": "Owner-authorized protected living profile · Music · United Kingdom",
+    "disciplines": [
+      "singer-songwriter"
+    ]
+  },
+  {
+    "slug": "bad-bunny",
+    "enwiki": "Bad Bunny",
+    "displayName": "Bad Bunny",
+    "role": "pilot",
+    "intendedSign": "pisces",
+    "note": "Owner-authorized protected living profile · Music · Puerto Rico",
+    "disciplines": [
+      "singer",
+      "rapper"
+    ]
+  },
+  {
+    "slug": "rihanna",
+    "enwiki": "Rihanna",
+    "displayName": "Rihanna",
+    "role": "pilot",
+    "intendedSign": "pisces",
+    "note": "Owner-authorized protected living profile · Music and business · Barbados",
+    "disciplines": [
+      "singer",
+      "businessperson"
+    ]
+  },
+  {
+    "slug": "olivia-rodrigo",
+    "enwiki": "Olivia Rodrigo",
+    "displayName": "Olivia Rodrigo",
+    "role": "pilot",
+    "intendedSign": "pisces",
+    "note": "Owner-authorized protected living profile · Music · United States",
+    "disciplines": [
+      "singer-songwriter"
+    ]
   }
 ]

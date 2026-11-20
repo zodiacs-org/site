@@ -1,5 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/server';
-import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
+import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
 import { SAVED_PAGE_EXCEPTION, childBirthDateRefusal, executeAiTool, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
@@ -120,15 +120,15 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
     title: 'Zodiacs horoscopes', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it." },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: HOROSCOPES_HTML, _meta: panelMeta('inline', true) }] }));
-  // The coverage tools' panel: inline only, with no launcher of its own, and no earlier URI still served.
-  if (tools.some((tool) => panelFor(tool)?.uri === READINGS_URI)) server.registerResource('readings', READINGS_URI, {
+  // The coverage panels are inline only, with no launcher of their own.
+  if (tools.some((tool) => panelFor(tool)?.uri === READINGS_URI)) for (const { uri, name } of versions('readings', [READINGS_URI, LEGACY_READINGS_URI])) server.registerResource(name, uri, {
     title: 'Zodiacs readings', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': 'A birth chart, a monthly, yearly or weekly horoscope, the Chinese zodiac, personal transits, or a short explainer. Inline only.' },
-  }, () => ({ contents: [{ uri: READINGS_URI, mimeType: 'text/html;profile=mcp-app', text: READINGS_HTML, _meta: panelMeta('inline', true) }] }));
-  if (tools.some((tool) => panelFor(tool)?.uri === READINGS_SKY_EVENTS_URI)) server.registerResource('readings-sky-events', READINGS_SKY_EVENTS_URI, {
+  }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: READINGS_HTML, _meta: panelMeta('inline', true) }] }));
+  if (tools.some((tool) => panelFor(tool)?.uri === READINGS_SKY_EVENTS_URI)) for (const { uri, name } of versions('readings-sky-events', [READINGS_SKY_EVENTS_URI, LEGACY_READINGS_SKY_EVENTS_URI])) server.registerResource(name, uri, {
     title: 'Zodiacs readings', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': 'A birth chart with its lunar nodes, a monthly, yearly or weekly horoscope, the Chinese zodiac, personal transits, or a short explainer. Inline only.' },
-  }, () => ({ contents: [{ uri: READINGS_SKY_EVENTS_URI, mimeType: 'text/html;profile=mcp-app', text: READINGS_SKY_EVENTS_HTML, _meta: panelMeta('inline', true) }] }));
+  }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: READINGS_SKY_EVENTS_HTML, _meta: panelMeta('inline', true) }] }));
   if (tools.some((tool) => PANELS[tool]?.uri === OCCASIONS_URI)) for (const { uri, name } of versions('occasions', [OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS])) server.registerResource(name, uri, {
     title: 'Zodiacs occasions', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': 'A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar.' },
