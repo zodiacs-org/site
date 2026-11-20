@@ -2418,7 +2418,7 @@
       "status": "accepted",
       "release": "deployed",
       "evidence": [
-        "public/robots.txt allows every crawler"
+        "src/robots.txt allows every crawler"
       ]
     },
     {
