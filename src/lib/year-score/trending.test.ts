@@ -1,7 +1,8 @@
-import { describe, expect, it } from 'vitest';
-import { DRAFT_NOTE, OFFICIAL_FIGURE_NAMES, OFFICIAL_TIER_LABELS, OFFICIAL_TRANSIT_TITLES, REVIEW_CHECKLIST, X_POST_LIMIT, buildTrendingReport, compactKey, draftPost, matchTrends, type DraftScore, type ReportMatch } from './trending';
-import { YEAR_PEOPLE } from './people';
-import { findYearPerson } from './people';
+import { afterAll, describe, expect, it } from 'vitest';
+import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
+import { getYearScore } from '../../ai-tools/features/year-score';
+import { DRAFT_NOTE, OFFICIAL_FIGURE_NAMES, OFFICIAL_TIER_LABELS, OFFICIAL_TRANSIT_TITLES, REVIEW_CHECKLIST, X_POST_LIMIT, buildTrendingReport, compactKey, draftPost, matchTrends, officialTransitTitle, type DraftScore, type ReportMatch } from './trending';
+import { YEAR_PEOPLE, figureDriverTitle, findYearPerson, yearPageStart, yearPersonPath } from './people';
 import { SCORE_ASPECTS, SCORE_POINTS, SLOW_PLANETS } from './core';
 import { driverTitle } from './reading';
 import { scoreTier } from './tier';
@@ -91,6 +92,38 @@ describe('draft posts', () => {
     }
     expect(draftPost(person, score({ scoreRange: { low: 7.6, high: 5.1 } }), url), 'range backwards').toBeNull();
   });
+  it('accepts get_year_score’s wording of an official title for that figure only, and prints the official title', () => {
+    const scorer = { title: "Uranus trine Jensen Huang's Mercury", planet: 'Uranus', aspect: 'trine', point: 'Mercury' };
+    expect(officialTransitTitle(person, scorer)).toBe('Uranus trine your Mercury');
+    expect(draftPost(person, score({ drivers: [scorer] }), url)).toContain("Main transit: Uranus trine Jensen's Mercury.");
+    expect(draftPost(person, score({ drivers: [{ title: scorer.title }] }), url)).toContain("Main transit: Uranus trine Jensen's Mercury.");
+    expect(draftPost(person, score({ drivers: [{ title: 'Uranus trine your Mercury', planet: 'Uranus', aspect: 'trine', point: 'Mercury' }] }), url)).toContain("Uranus trine Jensen's Mercury");
+    // Another figure's name, a short or altered name, or altered wording around it: withheld.
+    for (const title of [
+      "Uranus trine Elon Musk's Mercury", "Uranus trine Jensen's Mercury", "Uranus trine jensen huang's Mercury", "Uranus trine Jensen Huang’s Mercury",
+      "Uranus trine Jensen Huangs Mercury", "Uranus trine Jensen Huang's Mercury.", "Uranus trine Jensen Huang's Mercury, shares double", "Uranus trines Jensen Huang's Mercury",
+      "Uranus trine Jensen Huang's Ascendant", "Mars trine Jensen Huang's Mercury", "Uranus trine Jensen Huang's (NVDA) Mercury", "Uranus trine Jensen Huang's  Mercury",
+      "Uranus trine Jensen Huang's your Mercury", "Jensen Huang's Mercury",
+    ]) {
+      expect(draftPost(person, score({ drivers: [{ title }] }), url), title).toBeNull();
+      expect(draftPost(person, score({ drivers: [{ ...scorer, title }] }), url), `${title} with fields`).toBeNull();
+    }
+    // The planet, aspect and point, where given, must be the ones the title names, all three of them.
+    for (const fields of [{ planet: 'Saturn' }, { aspect: 'square' }, { point: 'Sun' }, { planet: 'Uranus ' }, { aspect: 'trines' }]) {
+      expect(draftPost(person, score({ drivers: [{ ...scorer, ...fields }] }), url), JSON.stringify(fields)).toBeNull();
+    }
+    expect(draftPost(person, score({ drivers: [{ title: scorer.title, planet: 'Uranus' }] }), url), 'planet only').toBeNull();
+    expect(draftPost(person, score({ drivers: [{ title: scorer.title, planet: 'Uranus', aspect: 'trine' }] }), url), 'no point').toBeNull();
+    // Every official title, in every figure's own wording, drafts for that figure and for no other.
+    const other = findYearPerson('Elon Musk')!;
+    for (const figure of YEAR_PEOPLE) {
+      for (const title of OFFICIAL_TITLES) {
+        const worded = figureDriverTitle(title, figure.name);
+        expect(officialTransitTitle(figure, { title: worded }), worded).toBe(title);
+        if (figure.slug !== other.slug) expect(officialTransitTitle(other, { title: worded }), `${worded} for ${other.name}`).toBeNull();
+      }
+    }
+  });
   it('withholds a trading call or a diagnosis', () => {
     expect(draftPost(person, score({ label: 'A year to buy' }), url)).toBeNull();
     for (const label of ['A good time for surgery', 'A year to start treatment', 'Recovery from illness', 'A cure arrives']) expectWithheld(label, 'diagnosis');
@@ -171,6 +204,50 @@ describe('draft posts', () => {
     expect(long).toContain('Reading confidence 55%. ' + DRAFT_NOTE);
     expect(long.length - url.length + 23).toBeLessThanOrEqual(X_POST_LIMIT);
   });
+});
+
+describe('draft posts from the real scorer, as scripts/trending-x.ts makes them', () => {
+  const clock = createLocalTimeModule();
+  afterAll(() => clock.dispose());
+  const NOW = new Date('2026-11-20T09:00:00Z');
+  const ORIGIN = 'https://zodiacs.org';
+  it('drafts for every directory figure, with the official title of the scorer’s main transit, and still withholds unofficial wording', async () => {
+    let withTransit = 0;
+    for (const figure of YEAR_PEOPLE) {
+      const { data } = await getYearScore({ person: figure.slug, from: yearPageStart(NOW) }, NOW, clock, ORIGIN);
+      const url = `${ORIGIN}${yearPersonPath(figure.slug)}`;
+      const draft = draftPost(figure, data, url);
+      if (draft === null) throw new Error(`no draft for ${figure.name}: label ${data.label}, main transit ${data.drivers[0]?.title}`);
+      expect(draft.endsWith(`\n${url}`)).toBe(true);
+      expect(draft).toContain(`${data.score!.toFixed(1)}/10`);
+      expect(draft).toContain(`${data.confidenceLabel}. ${DRAFT_NOTE}`);
+      expect(draft).not.toMatch(/[‒-―⸺⸻]/u);
+      expect(draft.split('\n')[0]).not.toMatch(MONTH_WORD);
+      const main = data.drivers[0];
+      if (main) {
+        // The scorer words it with the figure's full name; the draft prints the official title with their first name.
+        expect(main.title).toContain(`${figure.name}'s`);
+        const official = officialTransitTitle(figure, main);
+        expect(official, main.title).not.toBeNull();
+        if (draft.includes('Main transit:')) {
+          withTransit += 1;
+          expect(draft).toContain(`Main transit: ${official!.replace(' your ', ` ${figure.name.split(' ')[0]}'s `)}.`);
+        }
+        // The same answer with unofficial wording in place of the main transit, or a title worded for someone else: withheld.
+        const stranger = YEAR_PEOPLE.find((candidate) => candidate.slug !== figure.slug)!;
+        for (const title of [`${main.title}, shares double`, main.title.replace(`${figure.name}'s`, `${figure.name.split(' ')[0]}'s`), main.title.replace(figure.name, stranger.name), 'Nvidia shares are now widely expected to increase'].filter((title) => title !== main.title)) {
+          expect(draftPost(figure, { ...data, drivers: [{ ...main, title }, ...data.drivers.slice(1)] }, url), title).toBeNull();
+        }
+        expect(draftPost(figure, { ...data, drivers: [{ ...main, planet: main.planet === 'Saturn' ? 'Jupiter' : 'Saturn' }] }, url), 'planet changed').toBeNull();
+      }
+      for (const label of ['A year to buy', 'A supportive year with steady momentum', 'The appeal is a success']) {
+        expect(draftPost(figure, { ...data, label }, url), label).toBeNull();
+      }
+      expect(draftPost({ ...figure, name: `${figure.name} (NVDA)` }, data, url), 'name changed').toBeNull();
+      expect(draftPost(figure, { ...data, confidenceLabel: `${data.confidenceLabel} (guaranteed)` }, url), 'confidence changed').toBeNull();
+    }
+    expect(withTransit).toBeGreaterThan(0);
+  }, 120_000);
 });
 
 describe('the report', () => {

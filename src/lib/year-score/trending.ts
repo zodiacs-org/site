@@ -9,7 +9,7 @@
  * never posts. Drafts are plain text for a human to read, edit and post by hand.
  * Pure: no network, storage or logging (the X fetch lives in the script).
  */
-import { YEAR_PEOPLE, personKey, type YearPerson } from './people';
+import { YEAR_PEOPLE, figureDriverTitle, personKey, type YearPerson } from './people';
 import { rangeWorthShowing } from './range';
 import { SCORE_ASPECTS, SCORE_POINTS, SLOW_PLANETS } from './core';
 import { driverTitle } from './reading';
@@ -37,7 +37,8 @@ export interface DraftScore {
   label: string | null;
   best: { name: string } | null;
   hardest: { name: string } | null;
-  drivers: { title: string }[];
+  /** get_year_score gives a figure's titles with their name in place of "your", and each driver's planet, aspect and point. */
+  drivers: { title: string; planet?: string; aspect?: string; point?: string }[];
   confidenceLabel: string | null;
   /** Without a birth time: the lowest and highest score across the birth day, as the figure's page shows it. */
   scoreRange?: { low: number; high: number } | null;
@@ -84,9 +85,33 @@ const isScore = (value: number): boolean => Number.isFinite(value) && value >= 0
  */
 export const OFFICIAL_TIER_LABELS: ReadonlySet<string> = new Set([8, 6.5, 3.5, 2, 0].map((value) => scoreTier(value).label));
 export const OFFICIAL_FIGURE_NAMES: ReadonlySet<string> = new Set(YEAR_PEOPLE.map((person) => person.name));
-export const OFFICIAL_TRANSIT_TITLES: ReadonlySet<string> = new Set(
-  SLOW_PLANETS.flatMap((planet) => SCORE_ASPECTS.flatMap((aspect) => SCORE_POINTS.map((point) => driverTitle({ planet, aspect, point })))),
+/** Each official transit title, with the planet, aspect and point it names. */
+const OFFICIAL_TRANSITS: ReadonlyMap<string, { planet: string; aspect: string; point: string }> = new Map(
+  SLOW_PLANETS.flatMap((planet) => SCORE_ASPECTS.flatMap((aspect) => SCORE_POINTS.map((point) => [driverTitle({ planet, aspect, point }), { planet, aspect, point }] as const))),
 );
+export const OFFICIAL_TRANSIT_TITLES: ReadonlySet<string> = new Set(OFFICIAL_TRANSITS.keys());
+/**
+ * The same titles as get_year_score words them for each directory figure
+ * (figureDriverTitle: "Uranus trine Jensen Huang's Mercury"), each mapped back
+ * to its official title. Only that figure's own full name is accepted.
+ */
+const FIGURE_TRANSIT_TITLES: ReadonlyMap<string, ReadonlyMap<string, string>> = new Map(
+  [...OFFICIAL_FIGURE_NAMES].map((name) => [name, new Map([...OFFICIAL_TRANSIT_TITLES].map((title) => [figureDriverTitle(title, name), title]))]),
+);
+
+/**
+ * The official title of a main transit, or null: the title exactly, or the
+ * figure's own wording of it from get_year_score. Where the driver carries its
+ * planet, aspect and point, they must be the ones that title names.
+ */
+export function officialTransitTitle(person: YearPerson, driver: DraftScore['drivers'][number]): string | null {
+  const title = OFFICIAL_TRANSITS.has(driver.title) ? driver.title : FIGURE_TRANSIT_TITLES.get(person.name)?.get(driver.title) ?? null;
+  if (title === null) return null;
+  const named = OFFICIAL_TRANSITS.get(title)!;
+  const fields = [driver.planet, driver.aspect, driver.point];
+  if (fields.every((field) => field === undefined)) return title;
+  return driver.planet === named.planet && driver.aspect === named.aspect && driver.point === named.point ? title : null;
+}
 const OFFICIAL_CONFIDENCE_LABEL = /^Reading confidence (?:100|[1-9]?\d)%$/u;
 
 /**
@@ -106,7 +131,8 @@ export function draftPost(person: YearPerson, data: DraftScore, url: string): st
   if (!isScore(data.score) || !OFFICIAL_TIER_LABELS.has(data.label) || !OFFICIAL_FIGURE_NAMES.has(person.name)) return null;
   if (!OFFICIAL_CONFIDENCE_LABEL.test(data.confidenceLabel)) return null;
   const main = data.drivers[0];
-  if (main && !OFFICIAL_TRANSIT_TITLES.has(main.title)) return null;
+  const mainTitle = main ? officialTransitTitle(person, main) : null;
+  if (main && mainTitle === null) return null;
   // The same range, in the same words, as the figure's /year/ page shows beside its score.
   const range = data.scoreRange ?? null;
   if (range && (!isScore(range.low) || !isScore(range.high) || range.low > range.high)) return null;
@@ -114,7 +140,8 @@ export function draftPost(person: YearPerson, data: DraftScore, url: string): st
   const headline = `${person.name}'s next twelve months on the Zodiacs Year Ahead Score: ${data.score.toFixed(1)}/10${between}, ${data.label.charAt(0).toLowerCase()}${data.label.slice(1)}.`;
   // No month is named, for anyone: next to a person in the news, a best or
   // hardest month reads as a stock call, a sports pick or worse.
-  const transit = main ? `Main transit: ${main.title.replace(' your ', ` ${person.name.split(' ')[0]}'s `)}.` : null;
+  // Always printed from the official title, whichever wording the caller gave.
+  const transit = mainTitle ? `Main transit: ${mainTitle.replace(' your ', ` ${person.name.split(' ')[0]}'s `)}.` : null;
   const ending = [`${data.confidenceLabel}.`, DRAFT_NOTE];
   const fits = (text: string) => text.length + 1 + X_LINK_LENGTH <= X_POST_LIMIT;
   const full = [headline, ...(transit ? [transit] : []), ...ending].join(' ');
