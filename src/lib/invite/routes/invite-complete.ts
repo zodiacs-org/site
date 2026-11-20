@@ -13,7 +13,8 @@ import {
 } from '../request.js';
 import { completeCompatibilityInvite } from '../server.js';
 import { compatibilityInviteTokenHash } from '../token.js';
-import { isEmptyJsonBody } from '../validate.js';
+import { recordRecipientConsent } from '../signup.js';
+import { parseCompleteInviteBody } from '../validate.js';
 
 export default async function handler(req: any, res: any): Promise<void> {
   if (req.method !== 'POST') {
@@ -29,7 +30,8 @@ export default async function handler(req: any, res: any): Promise<void> {
     sendInviteJson(res, 404, { error: 'not_found' });
     return;
   }
-  if (!isEmptyJsonBody(req.body)) {
+  const input = parseCompleteInviteBody(req.body);
+  if (!input) {
     sendInviteJson(res, 400, { error: 'invalid_request' });
     return;
   }
@@ -58,6 +60,11 @@ export default async function handler(req: any, res: any): Promise<void> {
       && result.label
       && result.completedAt,
     );
+    // With INVITE_SIGNUP_ENABLED=1, the recipient's consent is recorded against the invite their reading just
+    // completed, and only for a known version of the text their page showed (src/lib/invite/consent.ts).
+    if (input.consentVersion && result.inviteId) {
+      await recordRecipientConsent(result.inviteId, input.consentVersion).catch(() => undefined);
+    }
     if (shouldNotify) {
       waitUntil(dispatchCompatibilityInviteCompletionEmail({
         inviteId: result.inviteId!,
