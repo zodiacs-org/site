@@ -184,7 +184,9 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const ELECTIONS_ROUTES = ['/developers/', '/developers/compute/', '/developers/support/', '/privacy/'] as const;");
     expect(sitemap).toContain("...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const)");
     for (const page of [privacy, terms]) expect(page).toContain('dateModified: modifiedAt');
-    expect(about).toContain("dateModified: '2026-10-16T00:00:00.000Z'");
+    // The about page's contact section linked the support page on 19 November.
+    expect(about).toContain("dateModified: '2026-11-19T00:00:00.000Z'");
+    expect(sitemap).toContain("['/about/', '2026-11-19'] as const");
     expect(sitemap).toContain("const ENGINE_PHASE1_LASTMOD = '2026-09-23'");
     expect(sitemap).toContain("const PRIVACY_AUDIT_LASTMOD = '2026-09-28'");
     expect(sitemap).toContain("const SHARE_IMAGE_REVIEW_LASTMOD = '2026-09-29'");
