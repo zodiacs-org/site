@@ -1,0 +1,50 @@
+[
+  {
+    "date": "2026-11-18",
+    "label": "18 November 2026",
+    "checkedAt": "2026-11-18T14:11:50.523Z",
+    "engine": {
+      "version": "1.1.0-rc.2",
+      "ephemerides": [
+        {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      ]
+    },
+    "suite": {
+      "total": 240,
+      "within": 48,
+      "largest": 19.028118602
+    },
+    "rolling": {
+      "total": 120,
+      "within": 35,
+      "largest": 12.0037931564
+    }
+  },
+  {
+    "date": "2026-11-19",
+    "label": "19 November 2026",
+    "checkedAt": "2026-11-19T14:14:39.941Z",
+    "engine": {
+      "version": "1.1.0",
+      "ephemerides": [
+        {
+          "name": "jpl-de440",
+          "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
+        }
+      ]
+    },
+    "suite": {
+      "total": 240,
+      "within": 240,
+      "largest": 0.012647263
+    },
+    "rolling": {
+      "total": 120,
+      "within": 120,
+      "largest": 0.0513807393
+    }
+  }
+]

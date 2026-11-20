@@ -501,5 +501,20 @@
   "arthur-miller": "America/New_York",
   "paul-newman": "America/New_York",
   "bill-gates": "America/Los_Angeles",
-  "leonardo-dicaprio": "America/Los_Angeles"
+  "leonardo-dicaprio": "America/Los_Angeles",
+  "lisa": "Asia/Bangkok",
+  "sabrina-carpenter": "America/New_York",
+  "mrbeast": "America/Chicago",
+  "kendrick-lamar": "America/Los_Angeles",
+  "erling-haaland": "Europe/London",
+  "kylie-jenner": "America/Los_Angeles",
+  "zendaya": "America/Los_Angeles",
+  "max-verstappen": "Europe/Brussels",
+  "jenna-ortega": "America/Los_Angeles",
+  "taylor-swift": "America/New_York",
+  "timothee-chalamet": "America/New_York",
+  "harry-styles": "Europe/London",
+  "bad-bunny": "America/Puerto_Rico",
+  "rihanna": "America/Barbados",
+  "olivia-rodrigo": "America/Los_Angeles"
 }
