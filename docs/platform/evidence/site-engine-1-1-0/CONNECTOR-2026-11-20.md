@@ -4,37 +4,40 @@ Dias approved the tap-target, horoscope disclosure and dash fixes at 10:37
 Asia/Bangkok on 20 November 2026.
 
 - RED-1 sets 44px hit areas for the controls identified by the 375px phone
-  audit. The gate now requires 44px on both dimensions of every measured
-  control outside the inline-link exception.
+  audit outside Chart Studio. The gate requires 44px on both dimensions
+  apart from the three recorded Chart Studio controls and inline links.
 - RED-9 displays the horoscope answer's full disclosure, including its
   Reading confidence label, in the new horoscope panel.
 - RED-10 uses `1800 to 2199` in the five approved tools' input descriptions
   and `to` between dates in the sky calendar heading. The gate rejects en
   and em dashes in these descriptions and in rendered panels.
 
-The six current resource addresses are `sky-events-v5`, `chart-studio-v7`,
-`horoscopes-v8`, `occasions-v9`, `readings-v5` and `readings-v6`. Each
-earlier served address remains available as an alias, following the existing
-resource behavior. `readings-v6` displays the lunar nodes and Chiron when the
-existing sky events switch is on. Chart Studio's new address ends the v6 build
-pin and uses the site browser build, which selects Astronomy Engine.
+The five updated resource addresses are `sky-events-v5`, `horoscopes-v8`,
+`occasions-v9`, `readings-v5` and `readings-v6`. Their earlier served addresses
+remain available as aliases. `readings-v6` displays the lunar nodes and Chiron
+when the existing sky events switch is on. Chart Studio stays byte for byte
+at `chart-studio-v6.html` with its source pin and embedded engine 1.1.0-rc.1.
+Publishing the current browser build would change engine flags and receipt
+convention IDs. That change needs the owner's approval.
 
 As in ZOD-63, the published connector comes from a frozen source snapshot.
 `connector-transition.json` records the original source
-`07269a76e1ec1c43032af088e056a1c2ba8dfff4` and the source change
+`07269a76e1ec1c43032af088e056a1c2ba8dfff4` and the initial source change
 `7245bce067c9fc25e600811f19d458f0b696b680`. The old runtime reproduced byte
 for byte with the original hosted build and vendored engine 1.1.0-rc.2.
-Apply that change's runtime edits to `src/ai-tools/contracts.ts`, `server.ts`,
-`http.ts`, `features/compatibility.ts` and `horoscope/reading.ts` on the original
-source, then supply the six updated `integrations/generated/` panels from
-`npm run ai:build` at the source change. Build the `src/ai-tools/http.ts`
-entry with the original `scripts/build-ai-integrations.mjs` hosted settings
-and lifetime boundary, and copy the result to `api/_ai/published/runtime.mjs`.
+For the recut, take a one-line-context diff from `runtimeSource.changesBase`
+through this fix for `src/ai-tools/contracts.ts`, `server.ts`, `http.ts`,
+`features/compatibility.ts` and `horoscope/reading.ts`. Apply it to the original
+source. Supply the five updated `integrations/generated/` panels from
+`npm run ai:build` and keep `chart-studio.mjs` from `runtimeSource.chartStudioSource`.
+Build the `src/ai-tools/http.ts` entry with the original
+`scripts/build-ai-integrations.mjs` hosted settings and lifetime boundary,
+and copy the result to `api/_ai/published/runtime.mjs`.
 
 | Published runtime | SHA-256 |
 | --- | --- |
 | 0.6.8 | `1effa2796fd6eb59f50316479141c1ad89e024f404878ca01d10119fb787ed95` |
-| 0.6.9 | `5a72f3f73ca1dc8944a8782ed6b995cf771804bc340a8e70e8cba992e01fa014` |
+| 0.6.9 | `ec6084cc471349715770be9e73e231515ae5b1888a65dd9193c7dca14e625c13` |
 
 The transition fixture captures initialize, tool listing, resource listing,
 capabilities and the two accounts-off checks for each of three scenarios.

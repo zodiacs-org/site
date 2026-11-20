@@ -221,7 +221,6 @@ export const PUBLISHED_TOOLS_068 = LIVE_TOOLS.map((tool) => asInventedExamples(a
 const RANGE_TOOLS = new Set(['get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_occasion_sky', 'get_compatibility']);
 const PANEL_URIS_069: Record<string, string> = {
   'ui://zodiacs/sky-events-v4.html': 'ui://zodiacs/sky-events-v5.html',
-  'ui://zodiacs/chart-studio-v6.html': 'ui://zodiacs/chart-studio-v7.html',
   'ui://zodiacs/horoscopes-v7.html': 'ui://zodiacs/horoscopes-v8.html',
   'ui://zodiacs/occasions-v8.html': 'ui://zodiacs/occasions-v9.html',
 };
