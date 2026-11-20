@@ -30,6 +30,7 @@ import { LOCALE_META, localizePath, normalizeCatalogLocale, t, type CatalogLocal
 import { useEngine, type EngineLoader } from '../lib/hooks/useEngine';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { loadModule } from '../lib/module-load';
+import { RECIPIENT_CONSENT_LABEL, RECIPIENT_CONSENT_VERSION } from '../lib/invite/consent';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
@@ -92,6 +93,16 @@ const emptySlot = (): SlotState => ({
 });
 
 const COMPAT_INVITES_UI_ENABLED = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
+/**
+ * Invite signups (PUBLIC_INVITE_SIGNUP_ENABLED=1, only with the invites): the recipient confirms the details are their
+ * own before anything is worked out, and their reading completes the invite as it does with the switch off, sending
+ * the version of the text they confirmed (src/lib/invite/consent.ts). Someone 18 or older may then opt in to their own
+ * daily email, a separate signup with no link to the invite (src/islands/synastry/InviteSignup.tsx).
+ */
+const SIGN_ORDER = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'] as const;
+/** The sign of an ecliptic longitude, offered as the starting choice for the recipient's own daily email. */
+const signOfLongitude = (lon: number) => SIGN_ORDER[Math.floor((((lon % 360) + 360) % 360) / 30)];
+const INVITE_SIGNUP_UI_ENABLED = COMPAT_INVITES_UI_ENABLED && import.meta.env.PUBLIC_INVITE_SIGNUP_ENABLED === '1';
 
 // Saved-comparison strings stay module-local (the RelationshipWheel COPY
 // precedent): only this island uses them, and the central UI dictionary
@@ -545,10 +556,16 @@ function LoadRecovery({ error, onRetry, locale, area, reopenLink = false }: {
   );
 }
 
-export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped = false }: {
+export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped = false, dailyEmail = false }: {
   locale?: Locale;
   /** The host owns .calc so client:visible can observe the boxed form directly. */
   unwrapped?: boolean;
+  /**
+   * The daily Sun-sign email can be joined (DAILY_EMAIL_ENABLED=1 with its provider), decided by the page at build
+   * time as EmailCapture decides it. Without it the public subscribe route falls back to the weekly email, so an
+   * invitation's daily email card is not offered at all.
+   */
+  dailyEmail?: boolean;
 }) {
   const locale = normalizeCatalogLocale(rawLocale);
   const inviteUiActive = COMPAT_INVITES_UI_ENABLED
@@ -556,6 +573,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     && typeof window !== 'undefined'
     && window.location.pathname === '/compatibility/';
   const loadEngine = useEngine();
+  const [recipientConsent, setRecipientConsent] = useState(false);
+  const [recipientBand, setRecipientBand] = useState<import('../lib/invite/recipient').RecipientBand | null>(null);
+  const [signupMod, setSignupMod] = useState<typeof import('./synastry/InviteSignup') | null>(null);
   const { profile, ready: profileReady } = useProfile();
   const [slotA, setSlotA] = useState<SlotState>(emptySlot());
   const [slotB, setSlotB] = useState<SlotState>(emptySlot());
@@ -849,6 +869,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
   useEffect(() => {
     if (!profileAccessAllowed() || !result || result.source !== 'invite' || arrival.state !== 'ready') return;
     if (inviteCompletionRef.current === result.at) return;
+    // The invite completes when the reading shows, signups on or off. With signups on, the recipient ticked their own
+    // details before anything was worked out, and the completion names the version of that text.
+    const consentVersion = INVITE_SIGNUP_UI_ENABLED && recipientConsent ? RECIPIENT_CONSENT_VERSION : undefined;
     let active = true;
     const request = requestRef.current;
     const access = profileAccessGeneration.current;
@@ -856,7 +879,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
       if (!active || !profileAccessAllowed() || !requestIsCurrent(request, access)) return;
       inviteCompletionRef.current = result.at;
       track('invite_completed');
-      return completeInvite(arrival.handle, arrival.payload.expiresAt);
+      return consentVersion
+        ? completeInvite(arrival.handle, arrival.payload.expiresAt, undefined, consentVersion)
+        : completeInvite(arrival.handle, arrival.payload.expiresAt);
     }).catch(() => {});
     return () => { active = false; };
   }, [result, arrival, accessTick]);
@@ -1072,7 +1097,11 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     slotA.source === 'saved' && slotB.source === 'saved'
     && slotA.savedId !== '' && slotA.savedId === slotB.savedId;
 
-  const canCompare = slotReady(slotA) && slotReady(slotB) && !sameSaved && !busy;
+  // An invite with signups on asks the recipient to confirm the details are their own, and their age, first.
+  const inviteSignupActive = INVITE_SIGNUP_UI_ENABLED && inviteUiActive && arrival.state === 'ready';
+  // Any invitation, signups on or off: the recipient's age decides whether a reading is worked out at all (ZOD-22).
+  const inviteArrivalActive = inviteUiActive && arrival.state === 'ready';
+  const canCompare = slotReady(slotA) && slotReady(slotB) && !sameSaved && !busy && (!inviteSignupActive || recipientConsent);
 
   const track = (name: string, props: Record<string, string> = {}) => {
     (window as unknown as {
@@ -1387,6 +1416,20 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
         }
         return;
       }
+      if (inviteArrivalActive) {
+        // The recipient's own birth date, on this device, decides whether anything is worked out. Under 18 nothing is
+        // worked out or sent, as get_compatibility gives no reading under 18; with no date to check, ask for one.
+        const { inviteRecipientGate, deviceToday } = await loadModule(() => import('../lib/invite/recipient'));
+        const ownDate = sideB.source === 'form' ? sideB.date : sideB.source === 'saved' ? charts.find((chart) => chart.id === sideB.savedId)?.birth?.date : undefined;
+        const gate = inviteRecipientGate(ownDate, deviceToday());
+        if (!requestIsCurrent(request, accessGeneration)) return;
+        setRecipientBand(gate.band);
+        if (!gate.allowed) {
+          setError(gate.message);
+          return;
+        }
+        if (inviteSignupActive && dailyEmail && !signupMod) void loadModule(() => import('./synastry/InviteSignup')).then(setSignupMod).catch(() => {});
+      }
       const resolve = (slot: SlotState, fallback: string) =>
         slot.source === 'saved' ? resolveSaved(charts.find((c) => c.id === slot.savedId)!, loadEngine)
           : slot.source === 'link' ? resolveLink(slot.link!, loadEngine)
@@ -1567,6 +1610,12 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
             <SlotForm slot={slotB} setSlot={(u) => setSlotB(u)} charts={charts} idPrefix="syn-b" fallbackLabel={t(locale, 'personB')} locale={locale} loadEngine={loadEngine} refusal={refusals[1]} />
           </div>
 
+          {inviteSignupActive && (
+            <label class="field__toggle syn__own-details">
+              <input type="checkbox" checked={recipientConsent} required onChange={(event) => setRecipientConsent((event.currentTarget as HTMLInputElement).checked)} />
+              <span>{RECIPIENT_CONSENT_LABEL}</span>
+            </label>
+          )}
           <button class="btn btn--primary calc__submit" type="submit" disabled={!canCompare}>
             <span>{busy ? t(locale, 'comparing') : t(locale, 'compareCharts')}</span>
             <span class="orb">↗</span>
@@ -1679,6 +1728,13 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
                 inviterLabel={result.a.label}
                 onReturned={(method) => track('invite_returned', { method })}
               />
+              {result.source === 'invite' && inviteSignupActive && dailyEmail && recipientBand === 'adult' && signupMod && (
+                <signupMod.InviteSignup sign={(() => {
+                  // Preselect the recipient's Sun sign only from a timed chart; otherwise they choose it.
+                  const sun = result.b.timeKnown ? result.b.bodies.find((body) => body.body === 'Sun') : undefined;
+                  return sun ? signOfLongitude(sun.lon) : null;
+                })()} />
+              )}
               {result.source === 'invite'
                 && (slotB.source === 'form' || slotB.source === 'saved') && (
                 <sendBackMod.InvitationConversionCard
