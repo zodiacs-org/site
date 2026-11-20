@@ -2,16 +2,17 @@
  * Hostile inputs against the hosted MCP server's own code: the published
  * connector (api/_ai/handler.ts, publishedConnector), the bytes /mcp runs in
  * production, on a loopback address. No production request is made. Plain
- * `npm test` skips it; run it with
+ * `npm test` skips it, and no workflow runs it yet; run it by hand with
  *
- *   npm run test:adversarial-mcp
+ *   ADVERSARIAL_MCP=1 npx vitest run tests/adversarial-astronomy-mcp.spec.ts --reporter=verbose
  *
  * It is the thin, MCP-side companion of the engine repository's
  * tests/adversarial-astronomy.spec.ts (230 cases with measured tolerances).
  * The expected UTC instants below are the IANA tz database's (2026f, compiled
  * by zic with backzone), the same values that fixture holds; none comes from
  * this server. All birth data is invented, and every birth is more than 13
- * years ago, since the server refuses anything later.
+ * years ago, since the server refuses anything later (the one refused date is
+ * worked out from today's, five years back).
  *
  * What it holds the server to:
  *   - a historical wall time is read on that zone's history (US War Time,
@@ -20,23 +21,50 @@
  *     carries a timeNote that says which reading was used;
  *   - without a birth time there is no rising sign and no house, and on a day
  *     the Moon (or the Sun) changes sign its sign is null with both candidates;
- *   - inside the polar circle a chart still has finite numbers;
+ *   - inside the polar circle a chart still has a position for every planet,
+ *     both angles and a house from 1 to 12 (the house system is the default,
+ *     whole sign; no other system is asked for here);
  *   - malformed input is refused with an error that names the field, and no
  *     chart is made;
- *   - no number anywhere in any result is NaN or infinite.
+ *   - no number in any result is NaN or infinite. JSON writes either as null,
+ *     so the walk also fails on a null where a position's number belongs
+ *     (lon, lat, speed, degree, orb), and on "NaN" inside any text.
  */
 import { createServer, type IncomingMessage, type Server } from 'node:http';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const ENABLED = process.env.ADVERSARIAL_MCP === '1';
 const NEW_YORK = { latitude: 40.7128, longitude: -74.006 };
+/** A date five years before today, for the refusal: worked out here so the rule is tested whenever this runs. */
+const FIVE_YEARS_AGO = new Date(Date.now() - 5 * 365.25 * 86_400_000).toISOString().slice(0, 10);
 
 interface ToolResult { status: number; isError: boolean; data: Record<string, any> | null; error: { code?: string; message?: string } | null; text: string }
 
-function everyNumberFinite(value: unknown, where: string): void {
+/** Keys that hold a position's number in a result. JSON.stringify writes NaN and Infinity as null, so a null here is one of those. */
+const NUMBER_KEYS = new Set(['lon', 'lat', 'speed', 'degree', 'orb']);
+/** A position as the birth chart prints it, for example 0°24′ Cancer. */
+const POSITION = /^\d{1,2}°\d{2}′ [A-Z][a-z]+$/u;
+
+function everyNumberFinite(value: unknown, where: string, key = ''): void {
   if (typeof value === 'number' && !Number.isFinite(value)) throw new Error(`${where} is ${value}`);
+  if (NUMBER_KEYS.has(key) && value === null) throw new Error(`${where} is null, where a number belongs`);
+  if (typeof value === 'string' && /\bNaN\b|\bInfinity\b/u.test(value)) throw new Error(`${where} is ${JSON.stringify(value)}`);
   if (Array.isArray(value)) value.forEach((entry, index) => everyNumberFinite(entry, `${where}[${index}]`));
-  else if (value && typeof value === 'object') for (const [key, entry] of Object.entries(value)) everyNumberFinite(entry, `${where}.${key}`);
+  else if (value && typeof value === 'object') for (const [name, entry] of Object.entries(value)) everyNumberFinite(entry, `${where}.${name}`, name);
+}
+
+/** Every planet of a chart has a printed position, and with a time and a place both angles and a house. */
+function expectWholeChart(chart: Record<string, any>, placed: boolean): void {
+  expect((chart.planets as unknown[]).length).toBe(10);
+  for (const planet of chart.planets as { body: string; position: unknown; house: unknown }[]) {
+    expect(planet.position, `${planet.body} position`).toMatch(POSITION);
+    if (placed) expect(Number.isInteger(planet.house) && (planet.house as number) >= 1 && (planet.house as number) <= 12, `${planet.body} house ${String(planet.house)}`).toBe(true);
+  }
+  if (placed) {
+    expect(chart.angles.ascendant, 'ascendant').toMatch(POSITION);
+    expect(chart.angles.midheaven, 'midheaven').toMatch(POSITION);
+  }
+  for (const aspect of chart.aspects as { orb: unknown }[]) expect(typeof aspect.orb).toBe('number');
 }
 
 describe.skipIf(!ENABLED)('the hosted MCP server under hostile input (local published connector)', () => {
@@ -83,9 +111,8 @@ describe.skipIf(!ENABLED)('the hosted MCP server under hostile input (local publ
     const payload = /^(?:event|data):/u.test(raw) ? raw.split('\n').find((line) => line.startsWith('data:'))!.slice(5) : raw;
     const message = JSON.parse(payload) as { result?: { isError?: boolean; structuredContent?: { data?: Record<string, any>; error?: ToolResult['error'] }; content?: { text?: string }[] }; error?: ToolResult['error'] };
     const structured = message.result?.structuredContent;
+    // A NaN reaches JSON as null: the walk fails on a null under a position's number key, and on "NaN" in any text.
     everyNumberFinite(message, `${name} result`);
-    // A NaN would reach JSON as null inside a position: no body row may hold a null longitude.
-    expect(raw, `${name}: no NaN or Infinity in the response text`).not.toMatch(/\bNaN\b|\bInfinity\b/u);
     return { status: response.status, isError: Boolean(message.result?.isError ?? message.error), data: structured?.data ?? null, error: structured?.error ?? message.error ?? null, text: message.result?.content?.[0]?.text ?? '' };
   }
 
@@ -152,11 +179,20 @@ describe.skipIf(!ENABLED)('the hosted MCP server under hostile input (local publ
   });
 
   describe('polar latitudes and leap days', () => {
-    it.each([78.2232, 89.9999, 90, -77.85, -90])('a chart at latitude %s has whole-sign houses and finite numbers', async (latitude) => {
+    // No house system is asked for, so this is the default (whole sign), not a fallback from another system.
+    it.each([78.2232, 89.9999, 90, -77.85, -90])('a chart at latitude %s has the default whole-sign houses, a position for every planet and both angles', async (latitude) => {
       const result = await natal({ birthDate: '2000-06-21', time: '12:00', zone: 'UTC', latitude, longitude: 15 });
       expect(result.isError).toBe(false);
       expect(result.data!.houseSystem).toBe('whole-sign');
-      for (const planet of result.data!.planets as { house: number }[]) expect(planet.house >= 1 && planet.house <= 12).toBe(true);
+      expectWholeChart(result.data!, true);
+    });
+
+    it.each(['1800-01-01T00:00:00Z', '2000-06-21T12:00:00Z', '2199-12-31T23:59:59Z'])('the sky at %s has a number for every longitude, latitude and speed', async (instant) => {
+      const result = await call('get_sky', { instant });
+      expect(result.isError).toBe(false);
+      const bodies = result.data!.calculation.result.instants[0].bodies as Record<string, unknown>[];
+      expect(bodies.length).toBeGreaterThanOrEqual(10);
+      for (const body of bodies) for (const key of ['lon', 'lat', 'speed', 'degree']) expect(Number.isFinite(body[key]), `${String(body.body)} ${key}`).toBe(true);
     });
 
     it('takes 29 February 2000 and refuses 29 February 1900', async () => {
@@ -167,8 +203,11 @@ describe.skipIf(!ENABLED)('the hosted MCP server under hostile input (local publ
     });
 
     it('takes 1800 and 1850, and refuses 1799 and 2200', async () => {
-      expect((await natal({ birthDate: '1800-01-01', time: '00:00', zone: 'UTC' })).isError).toBe(false);
-      expect((await natal({ birthDate: '1850-01-01', time: '00:00', zone: 'UTC' })).isError).toBe(false);
+      for (const birthDate of ['1800-01-01', '1850-01-01']) {
+        const taken = await natal({ birthDate, time: '00:00', zone: 'UTC' });
+        expect(taken.isError, birthDate).toBe(false);
+        expectWholeChart(taken.data!, false);
+      }
       for (const birthDate of ['1799-12-31', '2200-01-01']) {
         const refused = await natal({ birthDate });
         expect(refused.isError, birthDate).toBe(true);
@@ -196,8 +235,18 @@ describe.skipIf(!ENABLED)('the hosted MCP server under hostile input (local publ
       expect(fact.answer).toBe('true');
       const at = Date.parse(fact.calculation.result.facts.ingresses[0].at);
       expect(Math.abs(at - Date.parse('2026-11-22T07:23:20.563Z'))).toBeLessThan(60_000);
-      expect(fact.calculation.receipt.engine.ephemeris.name).toMatch(/astronomy-engine|jpl-de440/u);
+      // The frozen bundle names astronomy-engine: a silent change of source fails here.
+      expect(fact.calculation.receipt.engine.ephemeris.name).toBe('astronomy-engine');
     });
+  });
+
+  it('the number walk fails on what JSON makes of a NaN', () => {
+    // JSON.stringify writes NaN and Infinity as null: the walk has to see that, or "no NaN" could never fail.
+    const sent = (value: unknown) => JSON.parse(JSON.stringify(value)) as unknown;
+    expect(() => everyNumberFinite(sent({ bodies: [{ body: 'Sun', lon: Number.NaN }] }), 'planted')).toThrow(/planted\.bodies\[0\]\.lon is null/u);
+    expect(() => everyNumberFinite(sent({ aspects: [{ orb: Number.POSITIVE_INFINITY }] }), 'planted')).toThrow(/orb is null/u);
+    expect(() => everyNumberFinite({ planets: [{ position: `${Number.NaN}°${Number.NaN}′ Cancer` }] }, 'planted')).toThrow(/position/u);
+    expect(() => everyNumberFinite(sent({ bodies: [{ lon: 239.9995, lat: 0, speed: 1.0097, degree: 29.9995 }], rising: { sign: null }, house: null }), 'planted')).not.toThrow();
   });
 
   describe('malformed input is refused by name, and no chart is made', () => {
@@ -217,7 +266,7 @@ describe.skipIf(!ENABLED)('the hosted MCP server under hostile input (local publ
       ['a time with seconds', { birthDate: '1990-06-15', time: '14:30:15', zone: 'UTC' }, /time must be a time/u],
       ['a zone that does not exist', { birthDate: '1990-06-15', time: '14:30', zone: 'Mars/Phobos' }, /zone must be a time zone name/u],
       ['a field the tool does not take', { birthDate: '1990-06-15', lat: 40.7 }, /Leave out fields/u],
-      ['a birth less than 13 years ago', { birthDate: '2021-03-14' }, /under 13/u],
+      ['a birth less than 13 years ago', { birthDate: FIVE_YEARS_AGO }, /under 13/u],
     ])('%s', async (_label, args, message) => {
       const result = await natal(args as Record<string, unknown>);
       expect(result.isError).toBe(true);

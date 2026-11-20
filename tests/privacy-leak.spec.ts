@@ -1,22 +1,29 @@
 /**
- * Zero network leak proof for the calculators: no request the browser makes
- * while a birth chart, a two-person comparison, a chart without a birth time
- * or an invitation is worked out carries the birth date, the birth time, the
- * birthplace or its coordinates. Plain `npm test` skips it (it needs Chrome
- * and a server). Run it after `npm run build`:
+ * Network leak proof for the calculators: no request the browser makes while a
+ * birth chart, a two-person comparison, a chart without a birth time or an
+ * invitation is worked out is a write, and none carries the birth date, the
+ * birth time, the birthplace or its coordinates in any of the written forms
+ * listed below. Plain `npm test` skips it (it needs Chrome and a server), and
+ * no workflow runs it yet: it is run by hand. After `npm run build`:
  *
- *   npm run test:privacy-leak                              the build in dist/, served on 127.0.0.1
- *   BASE_URL=https://<preview-host> npm run test:privacy-leak     a deployment
+ *   PRIVACY_LEAK=1 npx vitest run tests/privacy-leak.spec.ts --reporter=verbose
+ *       the build in dist/, served on 127.0.0.1
+ *   PRIVACY_LEAK=1 PRIVACY_LEAK_BASE_URL=https://<preview-host> npx vitest run tests/privacy-leak.spec.ts --reporter=verbose
+ *       a deployment
  *
+ *   PRIVACY_LEAK_BASE_URL  the deployment to test. (Not BASE_URL: Vitest sets that
+ *                         itself inside the test process.)
  *   VERCEL_BYPASS         a protected preview's bypass token. It is sent once, to the
  *                         deployment's own host, to obtain Vercel's bypass cookie, and
  *                         is never printed or written to the report.
  *   PRIVACY_LEAK_REPORT   where the JSON report goes (default: the system temp directory).
- *   PRIVACY_LEAK_ALLOW_HOSTS   comma-separated hosts other than the site's own that the
- *                         pages may address (default: plausible.io, the analytics
- *                         processor the privacy page names). Any other host fails the run.
+ *   PRIVACY_LEAK_ALLOW_HOSTS   comma-separated hosts other than the site's own that a
+ *                         page may address once it is left (default: plausible.io, the
+ *                         analytics processor the privacy page names). Any other host
+ *                         fails the run. The report records the list.
  *   PRIVACY_LEAK_ALLOW_QUERY   query parameter names a file request may carry after typing
  *                         begins (default: v, surface, dpl; values are still scanned).
+ *                         The report records the list.
  *   PRIVACY_LEAK_THIRD_PARTY   "block" (default): a request to another host is recorded,
  *                         scanned and then dropped, so the run itself sends nothing to a
  *                         third party. "allow-get": its GET requests go through (an
@@ -24,24 +31,41 @@
  *                         other method is still recorded, scanned and dropped, so no
  *                         analytics event is ever written by this test.
  *
- * (The npm script hands BASE_URL over as PRIVACY_LEAK_BASE_URL, because Vitest
- * sets BASE_URL itself inside the test process.)
- *
  * How it listens. Every request of the browser context is recorded through
  * Playwright, with service worker requests included, and again through the
- * DevTools protocol's Network domain, which also reports beacons and
- * WebSocket frames. Inside the page, fetch, XMLHttpRequest, sendBeacon,
- * WebSocket and EventSource are wrapped before any site script runs, so a call
- * is seen even if the request never leaves. `zodiacsAnalytics.track` is
- * wrapped too: what the page would hand to analytics is scanned whether or not
- * this build loads an analytics script.
+ * DevTools protocol's Network domain. The DevTools session is per page: it
+ * hears the page's own requests, beacons and WebSocket frames, and not a
+ * worker's or the service worker's. Inside the page, fetch, XMLHttpRequest,
+ * sendBeacon, WebSocket and EventSource are wrapped before any site script
+ * runs, so a call is seen even if the request never leaves.
+ * `zodiacsAnalytics.track` is wrapped too: what the page would hand to
+ * analytics is scanned whether or not this build loads an analytics script.
  *
- * What counts as a leak. For each person entered, every recorded URL, header
- * and body is searched for the birth date in the common written forms, the
- * birth time (local and UTC, 24 and 12 hour), the instant as an epoch number,
- * the place as typed, the city's name, its time zone's name, and its
- * coordinates to two decimals; long base64 runs are decoded and searched as
- * well. The expected number of matches is 0.
+ * What the listening cannot do, and what holds instead.
+ *   - The body of a Blob sent by sendBeacon is not readable on either network
+ *     channel, and the in-page wrapper reads it too late while a page unloads.
+ *     So the checks do not rest on reading bodies: any request to the site's
+ *     own host that is not a GET or a HEAD fails, in every phase, from the page
+ *     or the service worker; and a write to another host whose body could not
+ *     be read fails too. One test plants a real Blob beacon and requires both
+ *     checks to flag it.
+ *   - A socket opened by the service worker is heard by no listener. The served
+ *     /sw.js is therefore read as text and must not contain WebSocket,
+ *     EventSource or sendBeacon.
+ *
+ * What counts as a leak. The structural checks are the proof: after the first
+ * keystroke the page only downloads files (GET, no body, no query field
+ * beyond the fixed names), nothing is written to the site's own host in any
+ * phase, and no other host is addressed before the page is left. The second
+ * line is a search: for each person entered, every recorded URL, header and
+ * body is searched for the birth date in the common written forms, the birth
+ * time (local and UTC, 24 and 12 hour), the instant as an epoch number, the
+ * place as typed, the city's name, its time zone's name, and its coordinates
+ * to two decimals; long base64 runs are decoded and searched as well. The
+ * expected number of matches is 0. That is 0 of the listed forms, not of every
+ * possible encoding: a Julian day, a coordinate to one decimal, hex, a
+ * compressed body, or anything derived from the birth data (sign names,
+ * longitudes, the positions an invitation code holds) is not searched for.
  *
  * The boundary, which is not zero information. The files a flow downloads
  * depend on three things, and the test holds the dependence to exactly these:
@@ -204,6 +228,46 @@ function scan(recorded: Recorded[], needles: Needle[]): Leak[] {
   return leaks;
 }
 
+const hostOf = (url: string) => new URL(url).host.toLowerCase();
+const line = (entry: Recorded) => `${entry.phase}: ${entry.method} ${entry.url.slice(0, 160)}${entry.serviceWorker ? ' (service worker)' : ''}`;
+
+/**
+ * Requests to the site's own host that are not plain downloads, in any phase, from the page or the service
+ * worker. A calculator writes nothing to its own host, so whether a body could be read does not matter here.
+ */
+function ownHostWrites(requests: Recorded[], own: string): string[] {
+  return requests.filter((entry) => hostOf(entry.url) === own && (!['GET', 'HEAD'].includes(entry.method) || entry.body)).map(line);
+}
+
+/** Requests to any other host before the page is left: a calculator page addresses none. */
+function thirdPartyBeforeLeaving(requests: Recorded[], own: string): string[] {
+  return requests.filter((entry) => entry.phase !== 'leave' && hostOf(entry.url) !== own).map(line);
+}
+
+/**
+ * What is wrong with a request to another host. A processor is sent its own script's address, and events
+ * with the page's address and nothing typed. A write whose body could not be read counts as wrong.
+ */
+function thirdPartyProblems(requests: Recorded[], own: string, fallbackAddress: string): string[] {
+  const problems: string[] = [];
+  for (const entry of requests.filter((candidate) => hostOf(candidate.url) !== own)) {
+    const to = `${entry.phase}: ${entry.method} ${hostOf(entry.url)}${new URL(entry.url).pathname}`;
+    if (new URL(entry.url).search) problems.push(`${to}: a query string`);
+    if (entry.method === 'GET' || entry.method === 'HEAD') {
+      if (entry.body) problems.push(`${to}: a body on a download`);
+      continue;
+    }
+    if (!entry.body) { problems.push(`${to}: a write with an unreadable body`); continue; }
+    try {
+      const sent = JSON.parse(entry.body) as Record<string, unknown>;
+      const address = new URL(String(sent.u ?? sent.url ?? fallbackAddress));
+      if (`${address.search}${address.hash}`) problems.push(`${to}: the page address it carries has a query or a fragment`);
+      if ((sent.r ?? sent.referrer ?? null) !== null) problems.push(`${to}: it carries a referrer`);
+    } catch { problems.push(`${to}: a body that is not an event this test can read`); }
+  }
+  return problems;
+}
+
 /** Runs before any site script, in every frame: reports each way a page can send bytes. */
 function installPageHooks(): void {
   // Analytics scripts stay silent in an automated browser. Here they must behave as they do for a visitor.
@@ -268,6 +332,8 @@ function installPageHooks(): void {
   try {
     Object.defineProperty(window, 'zodiacsAnalytics', { configurable: true, get: () => wrapper, set: (value) => { if (value !== wrapper) real = value; } });
   } catch { /* already defined and locked: the network recording still sees what it sends */ }
+  // A page that makes no call still shows that the wrappers are in place.
+  report('installed', 'page-hooks');
 }
 
 class Recorder {
@@ -302,7 +368,15 @@ class Recorder {
     const devtools = await context.newCDPSession(page);
     await devtools.send('Network.enable');
     devtools.on('Network.requestWillBeSent', (event) => {
-      this.entries.push({ phase: this.phase, channel: 'devtools', method: event.request.method, url: event.request.url + (event.request.urlFragment ?? ''), headers: event.request.headers as Record<string, string>, body: event.request.postData ?? '', serviceWorker: false });
+      const entry: Recorded = { phase: this.phase, channel: 'devtools', method: event.request.method, url: event.request.url + (event.request.urlFragment ?? ''), headers: event.request.headers as Record<string, string>, body: event.request.postData ?? '', serviceWorker: false };
+      this.entries.push(entry);
+      // A body DevTools did not put in the event (a long one, a Blob's) is asked for by request id; 3 s at most.
+      if (event.request.hasPostData && !event.request.postData) {
+        this.pending.push(Promise.race([
+          devtools.send('Network.getRequestPostData', { requestId: event.requestId }).then((reply) => { entry.body = reply.postData ?? ''; }).catch(() => { /* not kept by the browser: the write checks do not depend on it */ }),
+          new Promise((resolve) => setTimeout(resolve, 3_000)),
+        ]));
+      }
     });
     devtools.on('Network.webSocketCreated', (event) => this.entries.push({ phase: this.phase, channel: 'devtools', method: 'WEBSOCKET', url: event.url, headers: {}, body: '', serviceWorker: false }));
     devtools.on('Network.webSocketFrameSent', (event) => this.entries.push({ phase: this.phase, channel: 'devtools', method: 'FRAME', url: 'websocket', headers: {}, body: event.response.payloadData, serviceWorker: false }));
@@ -338,6 +412,7 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
   let stopPreview: (() => Promise<void>) | undefined;
   let origin = '';
   const flows = new Map<string, FlowResult>();
+  let planted: Record<string, unknown> | null = null;
 
   beforeAll(async () => {
     // Service worker requests reach Playwright's request event only with this switch (Chromium).
@@ -349,7 +424,14 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
       stopPreview = preview.stop;
     }
     origin = new URL(base).origin;
-    browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS });
+    // Without the visual suite's own --disable-features list, which replaces Playwright's: with it, a beacon sent
+    // while a page is left is heard by no listener (the planted beacon test below fails).
+    browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS.filter((argument: string) => !argument.startsWith('--disable-features=')) });
+
+    // A socket or a beacon from the service worker would be heard by no listener here, so its file must hold none.
+    const worker = await fetchWithRetry(`${base}/sw.js`);
+    expect(worker.ok, 'the service worker file is served').toBe(true);
+    expect(await worker.text(), 'the service worker opens no socket and sends no beacon').not.toMatch(/WebSocket|EventSource|sendBeacon/u);
 
     // The needles are only as good as the fixture: each city must be in the served file with these coordinates.
     for (const person of [PERSON_A, PERSON_B, PERSON_C]) {
@@ -366,9 +448,13 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     await stopPreview?.();
     if (!flows.size) return;
     const report = {
-      schema: 'zodiacs.privacy-leak-report.v1',
+      schema: 'zodiacs.privacy-leak-report.v2',
       base,
-      hooks: 'playwright request events with service workers, DevTools Network domain, in-page fetch/XHR/sendBeacon/WebSocket/EventSource wrappers, zodiacsAnalytics.track wrapper',
+      hooks: 'playwright request events with service workers, DevTools Network domain (per page), in-page fetch/XHR/sendBeacon/WebSocket/EventSource wrappers, zodiacsAnalytics.track wrapper',
+      allowedHosts: ALLOWED_HOSTS,
+      allowedQueryNames: QUERY_NAMES,
+      thirdPartyMode: THIRD_PARTY,
+      plantedBlobBeacons: planted,
       leakedBirthDataMatches: [...flows.values()].reduce((sum, flow) => sum + flow.leaks.length, 0),
       flows: [...flows.values()].map((flow) => {
         const requests = flow.recorder.requests;
@@ -380,6 +466,8 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
           serviceWorkers: flow.recorder.serviceWorkers.map(pathOf),
           hosts: [...new Set(requests.map((entry) => new URL(entry.url).host))],
           notGet: requests.filter((entry) => entry.method !== 'GET').map((entry) => `${entry.method} ${pathOf(entry.url)}`),
+          ownHostWrites: ownHostWrites(requests, new URL(base).host.toLowerCase()).length,
+          thirdPartyBeforeLeaving: thirdPartyBeforeLeaving(requests, new URL(base).host.toLowerCase()).length,
           thirdParty: [...new Set(requests.filter((entry) => new URL(entry.url).host !== new URL(base).host).map((entry) => {
             let keys = '';
             try { keys = entry.body ? ` body keys: ${Object.keys(JSON.parse(entry.body) as object).join(',')}; event: ${String((JSON.parse(entry.body) as { n?: unknown }).n ?? '')}; props: ${Object.keys(((JSON.parse(entry.body) as { p?: object }).p) ?? {}).join(',')}` : ''; } catch { keys = ' body: not JSON'; }
@@ -388,10 +476,10 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
           thirdPartyMode: THIRD_PARTY,
           withQueryString: [...new Set(requests.filter((entry) => new URL(entry.url).search).map((entry) => new URL(entry.url).search.replace(/=.*$/u, '=…')))],
           webSockets: flow.recorder.entries.filter((entry) => entry.method === 'WEBSOCKET').length,
-          pageCalls: flow.recorder.entries.filter((entry) => entry.channel === 'page-hook').length,
+          pageCalls: flow.recorder.entries.filter((entry) => entry.channel === 'page-hook' && entry.method !== 'installed').length,
           analyticsEvents: [...new Set(flow.recorder.entries.filter((entry) => entry.channel === 'analytics').map((entry) => entry.url.replace('analytics-event:', '')))],
           afterTyping: [...new Set(requests.filter((entry) => !entry.serviceWorker && (entry.phase === 'form' || entry.phase === 'submit')).map((entry) => pathOf(entry.url)).filter((path) => /^\/data\/|tzdb-|share-positions-noon/u.test(path)))],
-          pageAddressAfter: flow.pageUrl.replace(origin, ''),
+          pageAddressAfter: flow.pageUrl.replace(origin, '').replace(/#p=.*$/u, '#p=<code>'),
           storageKeys: flow.storageKeys,
           cookies: flow.cookies,
           leaks: flow.leaks,
@@ -439,6 +527,8 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     const { context, recorder } = await newContext();
     const page = await context.newPage();
     try {
+      // The DevTools session is attached before the first request goes.
+      await recorder.settle();
       await page.goto(`${base}${path}`, { waitUntil: 'networkidle' });
       const later = page.getByRole('button', { name: 'Not now' });
       if (await later.count() && await later.first().isVisible()) await later.first().click().catch(() => {});
@@ -470,37 +560,36 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     await page.locator('.calc__result').first().waitFor({ timeout: 30_000 });
     await page.waitForTimeout(1_500);
     const text = (await page.locator('.calc__result').first().innerText()).replace(/\s+/gu, ' ');
+    const receipt = (await page.locator('[data-chart-receipt]').allTextContents()).join(' ').replace(/\s+/gu, ' ');
     return {
       risingSignNamed: /Rising (?:Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)\b/u.test(text),
-      housesNamed: (text.match(/\b\d+(?:st|nd|rd|th) house/gu) ?? []).length,
+      // The receipt of a chart with a birth time names its house system; without one there is none to name.
+      // It sits in a closed disclosure, so it is read as text content. Only these two facts leave this function.
+      receiptFound: / UTC/u.test(receipt),
+      houseSystemNamed: /(?:Whole sign|Placidus) houses/iu.test(receipt),
       saysNoRisingOrHouses: /birth time unknown; no rising sign or houses/u.test(text),
     };
   });
 
   /** What every flow must satisfy, whatever was entered. */
-  function expectNoLeak(flow: FlowResult): void {
+  function expectNoLeak(flow: FlowResult, address = /^\/[a-z-]+\/(?:invite\/)?$/u): void {
     const requests = flow.recorder.requests;
+    const own = new URL(base).host.toLowerCase();
     expect(requests.length, `${flow.name}: requests were recorded`).toBeGreaterThan(20);
     expect(flow.recorder.entries.some((entry) => entry.channel === 'devtools'), `${flow.name}: the DevTools recording ran`).toBe(true);
-    expect(flow.recorder.entries.some((entry) => entry.channel === 'page-hook'), `${flow.name}: the in-page wrappers ran`).toBe(true);
-    // The proof: nothing recorded on any channel holds any written form of the birth data.
-    expect(flow.leaks, `${flow.name}: leaked birth data`).toEqual([]);
-    // Requests go to the site's own host, or to a named processor, whose requests were scanned with the rest.
-    const foreign = [...new Set(requests.map((entry) => new URL(entry.url).host.toLowerCase()))].filter((host) => host !== new URL(base).host && !ALLOWED_HOSTS.includes(host));
+    expect(flow.recorder.entries.some((entry) => entry.channel === 'page-hook' && entry.method === 'installed'), `${flow.name}: the in-page wrappers were installed`).toBe(true);
+    // Nothing is written to the site's own host: no method but GET or HEAD and no body, in any phase, from the page or the service worker.
+    expect(ownHostWrites(requests, own), `${flow.name}: writes to the site's own host`).toEqual([]);
+    // No other host is addressed until the page is left, so no analytics script runs beside the form or the result.
+    expect(thirdPartyBeforeLeaving(requests, own), `${flow.name}: requests to another host before the page is left`).toEqual([]);
+    // After that, requests go to the site's own host or to a named processor, and a write that cannot be read fails.
+    const foreign = [...new Set(requests.map((entry) => hostOf(entry.url)))].filter((host) => host !== own && !ALLOWED_HOSTS.includes(host));
     expect(foreign, `${flow.name}: hosts other than the site's own and the named processors`).toEqual([]);
-    // What a processor is sent: its own script's address, and events with the page's address and nothing typed.
-    for (const entry of requests.filter((candidate) => new URL(candidate.url).host !== new URL(base).host)) {
-      expect(new URL(entry.url).search, `${flow.name}: query string to ${new URL(entry.url).host}`).toBe('');
-      if (!entry.body) continue;
-      const sent = JSON.parse(entry.body) as Record<string, unknown>;
-      const address = new URL(String(sent.u ?? sent.url ?? origin));
-      expect(`${address.search}${address.hash}`, `${flow.name}: the page address an event carries has no query or fragment`).toBe('');
-      expect(sent.r ?? sent.referrer ?? null, `${flow.name}: an event carries no referrer`).toBeNull();
-    }
-    // After the first keystroke the page only downloads files: GET, no body, and no query string a field could ride in.
-    const afterTyping = requests.filter((entry) => !entry.serviceWorker && (entry.phase === 'form' || entry.phase === 'submit'));
-    expect(afterTyping.filter((entry) => entry.method !== 'GET' || entry.body).map((entry) => `${entry.method} ${entry.url}`), `${flow.name}: writes after typing`).toEqual([]);
-    for (const entry of afterTyping) {
+    expect(thirdPartyProblems(requests, own, origin), `${flow.name}: what a named processor is sent`).toEqual([]);
+    // The second line: nothing recorded on any channel holds any listed written form of the birth data.
+    expect(flow.leaks, `${flow.name}: leaked birth data`).toEqual([]);
+    // After the first keystroke no request, the service worker's included, has a query string a field could ride in.
+    for (const entry of requests.filter((candidate) => candidate.phase === 'form' || candidate.phase === 'submit')) {
       const { searchParams, pathname, search } = new URL(entry.url);
       // A file's version, the surface a picture is drawn on, a deployment's id: the same for every visitor.
       const fixed = [...searchParams].every(([name, value]) => QUERY_NAMES.includes(name) && /^[\w.-]{1,80}$/u.test(value));
@@ -508,9 +597,17 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     }
     expect(flow.recorder.entries.filter((entry) => /WEBSOCKET|FRAME|eventsource|websocket/u.test(entry.method)), `${flow.name}: sockets`).toEqual([]);
     // The page's own address holds no birth data, in the path, the query or the fragment.
-    expect(flow.pageUrl.replace(origin, ''), `${flow.name}: page address after the result`).toMatch(/^\/[a-z-]+\/(?:invite\/)?$/u);
+    expect(flow.pageUrl.replace(origin, ''), `${flow.name}: page address after the result`).toMatch(address);
     expect(flow.cookies, `${flow.name}: cookies set`).toBe(0);
   }
+
+  const synastry = (name: string, first: Person, second: Person) => runFlow(name, '/compatibility/', [{ person: first, timeKnown: true }, { person: second, timeKnown: true }], async (page, recorder) => {
+    await fillPerson(page, 'syn-a-', '#syn-a-place', first, true);
+    await fillPerson(page, 'syn-b-', '#syn-b-place', second, true);
+    recorder.phase = 'submit';
+    await page.locator('.calc__submit').click();
+    await page.locator('.rwheel').first().waitFor({ timeout: 30_000 });
+  });
 
   const cityFiles = (flow: FlowResult) => flow.recorder.requests.filter((entry) => !entry.serviceWorker && new URL(entry.url).pathname.startsWith('/data/cities/')).map((entry) => new URL(entry.url).pathname + new URL(entry.url).search);
   /** The files asked for after the first keystroke, less the pictures (always all twelve signs) and worker blobs. */
@@ -519,10 +616,12 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     .map((entry) => new URL(entry.url).pathname + new URL(entry.url).search));
   const onlyIn = (a: Set<string>, b: Set<string>) => [...a].filter((file) => !b.has(file)).sort();
 
-  it('natal chart with a birth time: 0 leaked bytes', async () => {
+  it('natal chart with a birth time: no write, and none of the listed forms in any request', async () => {
     const flow = await natal('natal', PERSON_A, true);
     expectNoLeak(flow);
     expect(flow.extra.risingSignNamed, 'the chart with a time names a rising sign').toBe(true);
+    expect(flow.extra.receiptFound, 'the chart has a receipt').toBe(true);
+    expect(flow.extra.houseSystemNamed, 'the chart with a time names its house system').toBe(true);
     expect(flow.extra.saysNoRisingOrHouses).toBe(false);
     // The place search: the index and one file named by the first letter, once each, however many keys were pressed.
     expect(cityFiles(flow).sort()).toEqual(['/data/cities/index.json', '/data/cities/n.json']);
@@ -531,17 +630,18 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     expect(flow.recorder.requests.filter((entry) => entry.serviceWorker).length).toBeGreaterThan(0);
   }, 240_000);
 
-  it('natal chart without a birth time: 0 leaked bytes, no rising sign and no houses', async () => {
+  it('natal chart without a birth time: no write, none of the listed forms, no rising sign and no house system', async () => {
     const flow = await natal('natal-unknown-time', PERSON_A, false);
     expectNoLeak(flow);
-    // The page says what it left out, and names no house.
+    // The page says what it left out, and names no house system (the chart with a time does: the probe is not idle).
     expect(flow.extra.saysNoRisingOrHouses, 'the result says there is no rising sign or houses').toBe(true);
     expect(flow.extra.risingSignNamed, 'no rising sign is named without a birth time').toBe(false);
-    expect(flow.extra.housesNamed, 'no house is named without a birth time').toBe(0);
+    expect(flow.extra.receiptFound, 'the chart without a time has a receipt too').toBe(true);
+    expect(flow.extra.houseSystemNamed, 'no house system is named without a birth time').toBe(false);
     expect(cityFiles(flow).sort()).toEqual(['/data/cities/index.json', '/data/cities/n.json']);
   }, 240_000);
 
-  it('natal chart for a birth before 1970: 0 leaked bytes, one time zone history file', async () => {
+  it('natal chart for a birth before 1970: no write, none of the listed forms, one time zone history file', async () => {
     const flow = await natal('natal-before-1970', PERSON_C, true);
     expectNoLeak(flow);
     expect(cityFiles(flow).sort()).toEqual(['/data/cities/index.json', '/data/cities/m.json']);
@@ -551,14 +651,8 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     expect(loosen(history[0]!)).not.toMatch(/kolkata|mumbai|asia/u);
   }, 240_000);
 
-  it('synastry, two people entered by hand: 0 leaked bytes', async () => {
-    const flow = await runFlow('synastry', '/compatibility/', [{ person: PERSON_A, timeKnown: true }, { person: PERSON_B, timeKnown: true }], async (page, recorder) => {
-      await fillPerson(page, 'syn-a-', '#syn-a-place', PERSON_A, true);
-      await fillPerson(page, 'syn-b-', '#syn-b-place', PERSON_B, true);
-      recorder.phase = 'submit';
-      await page.locator('.calc__submit').click();
-      await page.locator('.rwheel').first().waitFor({ timeout: 30_000 });
-    });
+  it('synastry, two people entered by hand: no write, and none of the listed forms in any request', async () => {
+    const flow = await synastry('synastry', PERSON_A, PERSON_B);
     expectNoLeak(flow);
     expect(cityFiles(flow).sort()).toEqual(['/data/cities/index.json', '/data/cities/l.json', '/data/cities/n.json']);
   }, 240_000);
@@ -586,18 +680,34 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     // Nothing recorded while it was made holds the code either.
     expect(flow.recorder.entries.filter((entry) => `${entry.url} ${entry.body} ${Object.values(entry.headers).join(' ')}`.includes(token.slice(0, 24))).map((entry) => `${entry.channel} ${entry.method}`)).toEqual([]);
 
-    // The recipient: a fresh browser opens the link. No request, header or body may hold the code.
+    // The recipient: a fresh browser opens the link. No request, header or body may hold the code, and the
+    // page is held to everything a calculator flow is held to.
     const { context, recorder } = await newContext();
     try {
       const page = await context.newPage();
+      await recorder.settle();
+      // The code is in the address from the first request on, so every request counts as made after typing.
+      recorder.phase = 'submit';
       await page.goto(`${base}${parsed.pathname}${parsed.hash}`, { waitUntil: 'networkidle' });
       await page.waitForTimeout(5_000);
+      const pageUrl = page.url();
+      const storageKeys = await page.evaluate(() => [...Object.keys(localStorage), ...Object.keys(sessionStorage)]);
+      const cookies = (await context.cookies()).filter((cookie) => !cookie.name.startsWith('_vercel')).length;
       recorder.phase = 'leave';
+      await page.evaluate(() => { document.dispatchEvent(new Event('visibilitychange')); window.dispatchEvent(new Event('pagehide')); });
       await page.goto(`${base}/about/`, { waitUntil: 'networkidle' });
       await recorder.settle();
-      const carried = recorder.entries.filter((entry) => `${entry.url} ${entry.body} ${Object.values(entry.headers).join(' ')}`.includes(token.slice(0, 24)));
+      // What is sent: Playwright's requests, the wrapped calls and the socket frames. (DevTools also notes the
+      // address bar's fragment beside the document request; a browser does not send it, so that note is not a request.)
+      const sent = recorder.entries.filter((entry) => entry.channel !== 'devtools' || !entry.url.includes('#'));
+      const carried = [
+        ...sent.filter((entry) => `${entry.url} ${entry.body} ${Object.values(entry.headers).join(' ')}`.includes(token.slice(0, 24))),
+        ...recorder.entries.filter((entry) => entry.channel === 'devtools' && `${entry.url.split('#')[0]} ${entry.body} ${Object.values(entry.headers).join(' ')}`.includes(token.slice(0, 24))),
+      ];
       expect(carried.map((entry) => `${entry.channel} ${entry.method} ${entry.url.slice(0, 60)}`), 'requests carrying the chart code').toEqual([]);
-      expect(recorder.requests.length).toBeGreaterThan(10);
+      const recipient: FlowResult = { name: 'invite-recipient', recorder, leaks: scan(recorder.entries, needlesFor(PERSON_A, true)), pageUrl, storageKeys, cookies, extra: { requestsCarryingTheCode: carried.length } };
+      flows.set(recipient.name, recipient);
+      expectNoLeak(recipient, /^\/compatibility\/(?:#p=2\.[A-Za-z0-9_-]+)?$/u);
       flows.get('invite')!.extra = { recipientRequests: recorder.requests.length, recipientRequestsCarryingTheCode: carried.length, linkShape: `${parsed.pathname}#p=2.<${token.length - 2} characters>` };
     } finally {
       await context.close();
@@ -629,7 +739,80 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     expect([...pictures(other)].sort()).toEqual([...pictures(known)].sort());
   }, 240_000);
 
-  it('the scan itself finds a planted leak on every channel', () => {
+  it('two different pairs produce the same requests, beyond the documented boundary', async () => {
+    const first = flows.get('synastry')!;
+    expect(first, 'the synastry flow above ran').toBeTruthy();
+    // A second pair, different in every field; one of them was born before 1970.
+    const second = await synastry('synastry-second-pair', PERSON_B, PERSON_C);
+    expectNoLeak(second);
+    expect(cityFiles(second).sort()).toEqual(['/data/cities/index.json', '/data/cities/l.json', '/data/cities/m.json']);
+    const strip = (files: Set<string>) => new Set([...files].filter((file) => !file.startsWith('/data/cities/')));
+    const [a, b] = [strip(filesAfterTyping(first)), strip(filesAfterTyping(second))];
+    expect(onlyIn(a, b), 'files only the first pair asked for').toEqual([]);
+    expect(onlyIn(b, a).every((file) => /^\/_astro\/tzdb-/u.test(file)), `the second pair adds only zone history: ${onlyIn(b, a).join(' ')}`).toBe(true);
+  }, 240_000);
+
+  it('a planted Blob beacon is heard and flagged, end to end', async () => {
+    // The checks are only as good as the listening: a real page really sends, and the same checks the flows
+    // pass must fail. Two beacons with a Blob body holding person A's date: one to another host while the page
+    // is open, one to the site's own host when the page is left (the shape inviteClient.ts sends).
+    const path = '/__privacy-leak-planted';
+    const own = new URL(base).host.toLowerCase();
+    const { context, recorder } = await newContext();
+    try {
+      // Heard first, then dropped: the planted request never reaches the site, a deployment included.
+      await context.route((url) => url.pathname === path, (route) => route.abort('blockedbyclient'));
+      const page = await context.newPage();
+      await recorder.settle();
+      await page.goto(`${base}/about/`, { waitUntil: 'networkidle' });
+      recorder.phase = 'form';
+      await page.evaluate(([to, date]) => {
+        navigator.sendBeacon(`https://planted.invalid${to}`, new Blob([`born=${date}`]));
+        window.addEventListener('pagehide', () => { navigator.sendBeacon(to!, new Blob([JSON.stringify({ born: date })], { type: 'application/json' })); });
+      }, [path, PERSON_A.date]);
+      await page.waitForTimeout(1_000);
+      recorder.phase = 'leave';
+      await page.goto(`${base}/privacy/`, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(1_000);
+      await recorder.settle();
+
+      const requests = recorder.requests;
+      const heard = (host: string) => requests.find((entry) => hostOf(entry.url) === host && new URL(entry.url).pathname === path);
+      const [abroad, home] = [heard('planted.invalid'), heard(own)];
+      const leaks = scan(recorder.entries, needlesFor(PERSON_A, true));
+      const readBy = (host: string) => [...new Set(leaks.filter((leak) => leak.where.includes(`${host}${path}`) || leak.where === path || leak.where.endsWith(path)).map((leak) => leak.channel))];
+      planted = {
+        toAnotherHost: abroad ? { heard: true, phase: abroad.phase, method: abroad.method, bodyReadByPlaywright: abroad.body !== '', dateFoundOnChannels: readBy('planted.invalid') } : { heard: false },
+        toOwnHostOnLeaving: home ? { heard: true, phase: home.phase, method: home.method, bodyReadByPlaywright: home.body !== '' } : { heard: false },
+        flaggedBy: {
+          ownHostWrites: ownHostWrites(requests, own).length,
+          thirdPartyBeforeLeaving: thirdPartyBeforeLeaving(requests, own).length,
+          thirdPartyProblems: thirdPartyProblems(requests, own, origin),
+          listedFormsFound: leaks.length,
+        },
+      };
+
+      // Both were heard as requests, each in its phase.
+      expect(abroad, 'the beacon to another host was heard').toBeTruthy();
+      expect(abroad).toMatchObject({ phase: 'form', method: 'POST' });
+      expect(home, 'the beacon to the own host on leaving was heard').toBeTruthy();
+      expect(home).toMatchObject({ phase: 'leave', method: 'POST' });
+      // The write check flags the one to the own host, whether or not its body could be read.
+      expect(ownHostWrites(requests, own).filter((entry) => entry.includes(path))).toHaveLength(1);
+      // The other is flagged as a request to another host before leaving, as a host that is not named,
+      // and either its unreadable body or the date read from it.
+      expect(thirdPartyBeforeLeaving(requests, own).filter((entry) => entry.includes(path))).toHaveLength(1);
+      const problems = thirdPartyProblems(requests, own, origin).filter((problem) => problem.includes(path));
+      expect(problems.length + leaks.filter((leak) => leak.channel === 'playwright').length, 'the write to another host is flagged on the network channel').toBeGreaterThan(0);
+      if (abroad && !abroad.body) expect(problems.join(' ')).toMatch(/unreadable body/u);
+      // While the page is open the in-page wrapper does read a Blob: the date is found there.
+      expect(leaks.filter((leak) => leak.channel === 'page-hook' && leak.kind === 'date').length, 'the wrapper read the Blob sent while the page was open').toBeGreaterThan(0);
+    } finally {
+      await context.close();
+    }
+  }, 120_000);
+
+  it('the scan and the write checks find a planted leak on every channel', () => {
     // The proof is only as good as the scan: each written form, in each part of a request, must be caught.
     const needles = needlesFor(PERSON_A, true);
     const plant = (part: Partial<Recorded>): Recorded => ({ phase: 'planted', channel: 'playwright', method: 'GET', url: 'https://example.test/x', headers: {}, body: '', serviceWorker: false, ...part });
@@ -656,5 +839,11 @@ describe.skipIf(!ENABLED)('zero network leak: birth data never leaves the browse
     // And it is quiet on what the flows really send: a hashed file, a city file, a versioned picture.
     const clean = [plant({ url: 'https://example.test/_astro/natal.B-ECGcE7.js' }), plant({ url: 'https://example.test/data/cities/n.json' }), plant({ url: 'https://example.test/assets/zodiac-icons/128/gemini.webp?surface=sample-chart', headers: { referer: 'https://example.test/birth-chart/' } })];
     expect(scan(clean, needles)).toEqual([]);
+    // The write checks do not need a body: a POST whose body could not be read is flagged on either side.
+    const blind = [plant({ phase: 'leave', method: 'POST', url: 'https://example.test/api/x' }), plant({ phase: 'leave', method: 'POST', url: 'https://plausible.io/api/event' }), plant({ phase: 'leave', method: 'POST', url: 'https://example.test/sw-post', serviceWorker: true })];
+    expect(ownHostWrites(blind, 'example.test')).toHaveLength(2);
+    expect(thirdPartyProblems(blind, 'example.test', 'https://example.test').join(' ')).toMatch(/plausible\.io\/api\/event: a write with an unreadable body/u);
+    expect(thirdPartyBeforeLeaving([plant({ phase: 'form', url: 'https://plausible.io/js/script.js' })], 'example.test')).toHaveLength(1);
+    expect([ownHostWrites(clean, 'example.test'), thirdPartyBeforeLeaving(clean, 'example.test'), thirdPartyProblems(clean, 'example.test', 'https://example.test')]).toEqual([[], [], []]);
   });
 });
