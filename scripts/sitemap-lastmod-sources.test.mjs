@@ -8,6 +8,7 @@
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { accuracyRobots } from '../src/accuracy/publication.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), 'utf8');
@@ -47,7 +48,7 @@ describe('sitemap dates', () => {
   });
 
   it('robots.txt sends crawlers to the sitemap index alone', () => {
-    const sitemaps = read('public/robots.txt').split('\n').filter((line) => /^sitemap\s*:/iu.test(line));
+    const sitemaps = accuracyRobots(read('src/robots.txt')).split('\n').filter((line) => /^sitemap\s*:/iu.test(line));
     expect(sitemaps).toEqual(['Sitemap: https://zodiacs.org/sitemap-index.xml']);
   });
 });

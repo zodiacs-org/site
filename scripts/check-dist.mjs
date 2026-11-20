@@ -24,7 +24,7 @@
  *  10. The inline profile access loader names the built bootstrap chunk.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
-import { attr, canonicalHref, renderedLinks, crawlDepths, isDailyLastmodPath, robotsBlocks, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
+import { attr, canonicalHref, renderedLinks, crawlDepths, isDailyLastmodPath, robotsBlocks, robotsGroupBlockFailures, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -49,10 +49,14 @@ import {
 } from './i18n-hreflang-policy.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
 import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
+import { registryResearchWithheldProblems } from './registry-research-withheld.mjs';
+import { ACCURACY_PATH, accuracyPublished } from '../src/accuracy/publication.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
 const SITE_ORIGIN = 'https://zodiacs.org';
+const accuracyBarePath = ACCURACY_PATH.slice(0, -1);
+const isAccuracyPath = (path) => path === accuracyBarePath || path.startsWith(ACCURACY_PATH);
 /** Literal redirect sources from vercel.json — served URLs with no dist file. */
 const redirectSources = new Set(
   (JSON.parse(await readFile(resolve(repo, 'vercel.json'), 'utf8')).redirects ?? [])
@@ -426,6 +430,11 @@ for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const sourcePath = builtPageByFile.get(file);
   discoveryGraph.set(sourcePath, renderedLinks(sourcePath, html));
+  if (!accuracyPublished) {
+    for (const path of renderedLinks(sourcePath, html, { discoveryOnly: false })) {
+      if (isAccuracyPath(path)) fail(`accuracy: ${sourcePath} links to withheld ${path}`);
+    }
+  }
   for (const pathname of discoveryGraph.get(sourcePath)) {
     const target = targetPath(pathname);
     const linkedPath = target ? builtPageByFile.get(target) : undefined;
@@ -1530,6 +1539,12 @@ for (const notePath of registryResearchNotePaths) {
     fail(`Terminal Research: noindex note leaked into sitemap discovery — ${notePath}`);
   }
 }
+// While Registry Research is paused, a scheduled note is withheld: no item JSON,
+// no archive index or compact feed entry, no body on its page.
+for (const problem of await registryResearchWithheldProblems(root, {
+  publication: registryResearchPublication,
+  pause: JSON.parse(await readFile(resolve(repo, 'src/data/registry-research/pause.json'), 'utf8')),
+})) fail(`Terminal Research: ${problem}`);
 
 const packetFNoindexCounts = { localizedBirthdays: 0, russianSignGuides: 0, people: 0 };
 for (const file of files) {
@@ -1558,8 +1573,8 @@ if (packetFNoindexCounts.localizedBirthdays !== 1464) {
 if (packetFNoindexCounts.russianSignGuides !== 12) {
   fail(`Packet F: ${packetFNoindexCounts.russianSignGuides}/12 Russian sign-guide previews are present`);
 }
-if (packetFNoindexCounts.people !== 501 - indexablePeoplePaths.size) {
-  fail(`Packet F: ${packetFNoindexCounts.people}/${501 - indexablePeoplePaths.size} deferred People profiles are present`);
+if (packetFNoindexCounts.people !== 516 - indexablePeoplePaths.size) {
+  fail(`Packet F: ${packetFNoindexCounts.people}/${516 - indexablePeoplePaths.size} deferred People profiles are present`);
 }
 
 if (sitemapLocs.size !== sitemapPolicy.total) {
@@ -1828,6 +1843,16 @@ for (const file of files) {
   // same pages, still builds for IndexNow and the gates above, and is not
   // submitted twice. No page a sitemap lists may be blocked from crawling.
   const robots = robotsRules(await readFile(resolve(root, 'robots.txt'), 'utf8').catch(() => ''));
+  if (!accuracyPublished) {
+    if (await exists(resolve(root, `.${ACCURACY_PATH}`))) fail('accuracy: withheld receipt or downloads are in the build');
+    if ([...sitemapLocs].some(isAccuracyPath)) fail('accuracy: withheld receipt or downloads are in the sitemap');
+    if (!robots.groups.some(({ agents }) => agents.includes('*'))) {
+      fail('accuracy: robots.txt must have a wildcard crawler group');
+    }
+    for (const { agents, path } of robotsGroupBlockFailures(robots, [accuracyBarePath, ACCURACY_PATH, `${ACCURACY_PATH}raw/`])) {
+      fail(`accuracy: robots.txt group ${agents.join(', ')} must block ${path}`);
+    }
+  }
   if (robots.sitemaps.join('\n') !== 'https://zodiacs.org/sitemap-index.xml') {
     fail(`robots.txt: must name exactly one sitemap, https://zodiacs.org/sitemap-index.xml (names ${robots.sitemaps.join(', ') || 'none'})`);
   }
