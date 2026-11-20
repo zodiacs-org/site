@@ -45,7 +45,8 @@ vi.mock('../lib/module-load', async (importOriginal) => {
   const original = await importOriginal<typeof import('../lib/module-load')>();
   return { ...original, loadModule: (load: () => Promise<unknown>) => original.loadModule(() => harness.load(load)) };
 });
-vi.mock('preact/hooks', () => ({
+vi.mock('preact/hooks', () => {
+  const hooks = {
   useState: (initial: unknown) => {
     const slot = harness.cursor++;
     if (!(slot in harness.slots)) harness.slots[slot] = initial;
@@ -70,7 +71,10 @@ vi.mock('preact/hooks', () => ({
       harness.effects[index] = { dependencies, cleanup: typeof cleanup === 'function' ? cleanup : undefined };
     });
   },
-}));
+  };
+  // The meeting's settle step runs before paint; the harness has no paint, so it queues like useEffect.
+  return { ...hooks, useLayoutEffect: hooks.useEffect };
+});
 
 let SynastryCalculator: typeof import('./SynastryCalculator')['default'];
 const chart = {

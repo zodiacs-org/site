@@ -90,6 +90,7 @@ function harness() {
   context.loadEngine = () => Promise.resolve(engine);
   context.loadChartControls = () => Promise.resolve({ default: () => null });
   context.loadCalculatorReceipt = () => Promise.resolve({ computeCalculatorReceipt: (calculation: any) => { calls.push('portable-natal'); return { chart: chart(calculation), envelopeJson: 'synthetic exact envelope' }; } });
+  context.loadInterpretations = () => Promise.resolve({ bigThree: () => 'Synthetic reading' });
   context.importModule = (path: string) => modules.get(path) ?? Promise.resolve(
     path === '../lib/chart-signature' ? { chartSignature: () => ({ title: 'Synthetic signature' }) }
       : path === './PositionsShareSurface' ? { preparePrimaryShareArtifact: async () => ({ synthetic: true }), sharePrimaryArtifact: async () => 'saved' }
