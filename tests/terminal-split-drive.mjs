@@ -1433,6 +1433,7 @@ try {
     await flagged.close();
 
     const fomoPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    await installNetworkHarness(fomoPage.context());
     const clicks = [];
     const clickErrors = watchErrors(fomoPage, 'Fomo thesis link');
     await fomoPage.exposeFunction('recordThesisClick', (...args) => clicks.push(args));
