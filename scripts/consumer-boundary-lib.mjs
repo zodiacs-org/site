@@ -83,7 +83,7 @@ const LEGAL_OPERATIONAL_CONTEXT = /(?:\b(?:access|address|browser|contract|cooki
 const LEGAL_PROMOTIONAL_CONTEXT = /(?:^|[.!?]\s*)(?:buy|purchase|sell|trade|acquire|visit|open|follow)\b|\b(?:buy|purchase|sell|trade|acquire)\b[\s\S]{0,60}\b(?:here|now|today)\b/iu;
 const DISCLOSURE_KEY = /(?:^|\.)disclosure(?:\.|$)/iu;
 const DISCLOSURE_OPERATOR_KEY = /(?:^|\.)disclosure\.operatorStatement$/iu;
-const APPROVED_DISCLOSURE_KEY = /(?:^|\.)disclosure\.(?:adviceEvidence|adviceStatement|economicEvidence|economicStatement|metaDescription|operatorEvidence|operatorStatement|originEvidence|originStatement|tradeEvidence|tradeStatement)$/iu;
+const APPROVED_DISCLOSURE_KEY = /(?:^|\.)disclosure\.(?:addressLookupBody|adviceEvidence|adviceStatement|economicEvidence|economicStatement|metaDescription|operatorEvidence|operatorStatement|originEvidence|originStatement|tradeEvidence|tradeStatement)$/iu;
 const DISCLOSURE_CATALOG_SOURCE = /^src\/strings\/(?:en|additions\.(?:es|fr|it|pt))\.mjs$/u;
 const WING_CATALOG_KEY = /(?:^|\.)(?:archive|astrofolio|disclosure|markets?|registry(?:Lot)?|research|terminal|thesis|walletChart|wing)(?:\.|$)|^TERMINAL_OG_PREFIXES$/iu;
 
@@ -99,7 +99,7 @@ const SANCTIONED_INTERNAL_LINKS = Object.freeze([
   [/^src\/components\/SiteFooter\.astro$/u, /^\/(?:astrofolio|disclosure|registry|sdk|thesis)\/$/u],
   [/^src\/components\/SiteNav\.astro$/u, /^\/astrofolio\/$/u],
   [/^src\/islands\/(?:ChartCalculator|RaceBoard)\.tsx$/u, /^\/registry\/\$\{…\}\/$/u],
-  [/^src\/lib\/disclosure\.ts$/u, /^\/(?:astrofolio\/how-to-buy\/|registry\/(?:aries\/|zodiacs\.registry\.json)|sdk\/|thesis\/)$/u],
+  [/^src\/lib\/disclosure\.ts$/u, /^\/(?:astrofolio\/how-to-buy\/|disclosure\/|registry\/(?:aries\/|zodiacs\.registry\.json)|sdk\/|thesis\/)$/u],
   [/^src\/lib\/legacy\/urls\.ts$/u, /^\/(?:archive|astrofolio|registry|sdk|terminal|thesis)\//u],
   [/^src\/lib\/i18n\/index\.ts$/u, /^\/disclosure\/$/u],
   [/^src\/strings\/seo\.(?:en|ru)\.mjs$/u, /^\/disclosure\/$/u],

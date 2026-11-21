@@ -109,14 +109,16 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
       {accountSyncV2Enabled ? (
         <p>
           The birth chart and compatibility calculator pages load no analytics
-          script and send nothing you type to any other service. Other pages,
+          script and send nothing you type to any other service, except an
+          email address if you choose to sign up. Other pages,
           such as the <a href="/about/">about page</a>, load Plausible, the
           site's analytics, described under “Hosting, logs, and analytics”.
         </p>
       ) : (
         <p>
           The compatibility calculator page loads no analytics script and sends
-          nothing you type to any other service. Other pages, such as the{' '}
+          nothing you type to any other service, except an email address if you
+          choose to sign up. Other pages, such as the{' '}
           <a href="/about/">about page</a>, load Plausible, the site's
           analytics, described under “Hosting, logs, and analytics”.
         </p>
