@@ -94,6 +94,7 @@
     "test:compare:browser": "node tests/chart-compare-drive.mjs",
     "test:firstuse:browser": "node tests/developer-first-use-drive.mjs",
     "test:home-hero:browser": "node tests/hero-video-drive.mjs",
+    "test:home-scroll-cls:browser": "node tests/home-scroll-cls-drive.mjs",
     "test:home-demo:browser": "node tests/home-demo-drive.mjs",
     "test:thesis:browser": "node tests/thesis-qa-drive.mjs",
     "test:compatibility:browser": "node tests/relationship-wheel-drive.mjs && node tests/pair-calculator-visible-drive.mjs",
