@@ -14,12 +14,11 @@
 import { z } from 'zod';
 import { equatorialMoment } from '../../lib/astrocartography/positions';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, horizonLongitude, lineDistances, mcLongitude, strengthOf, wrapLongitude, type EquatorialBody } from '../../lib/astrocartography/lines';
-import { ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, lineMeaning, lineSentence } from '../../lib/astrocartography/meanings';
+import { ACG_CONFIDENCE, ACG_CONFIDENCE_TEXT, ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, farPlaceSummary, isUnder18, lineMeaning, lineSentence, roundedDistanceKm } from '../../lib/astrocartography/meanings';
 import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
 import { findBirthplace } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
-import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
-import { isUnder18, softenMinor, MINOR_NOTE } from '../features/reading-guards';
+import { softenMinor, MINOR_NOTE } from '../features/reading-guards';
 import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, zoneField, type PersonalToolContext } from './shared';
 
 export const ACG_MAX_CITIES = 5;
@@ -76,7 +75,7 @@ export const astrocartographyData = z.object({
     country: z.string(),
     latitude: z.number(),
     longitude: z.number(),
-    /** The nearest lines, closest first: every line within 800 km, and at least the closest three. */
+    /** Nearby lines, closest first. Outside the noticeable range, only the nearest measurement is given. */
     closest: z.array(nearLine).max(12),
     summary: z.string(),
   })).max(ACG_MAX_CITIES),
@@ -119,9 +118,6 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
   const under18 = isUnder18(args.birthDate, dateOn(context.now, todayZone));
   // Under 18 the lines read as love or attraction take their own readings (lineMeaning); softenMinor covers the rest.
   const guard = (text: string) => (under18 ? softenMinor(text) : text);
-  // The instant is fixed by the date, time and zone; coordinates change it only on local mean time.
-  const detail = readingDetail({ hasDate: true, hasTime: true, hasPlace: true });
-  const confidenceLabel = readingConfidenceLabel(detail);
   const lines = bodies.map((entry) => {
     const mc = mcLongitude(entry, gast);
     const at = (which: 'ASC' | 'DSC') => ACG_LIST_LATITUDES.flatMap((latitude) => {
@@ -152,18 +148,25 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
       if (!place) { unmatched.push(text); continue; }
       const point = { lat: place.latitude, lon: place.longitude };
       const distances = lineDistances(point, bodies, gast);
-      const closest = distances.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 12).map((row) => ({
-        planet: row.body, angle: row.angle, title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
-        distanceKm: Math.round(row.km), distanceMiles: Math.round(row.km / KM_PER_MILE), side: row.side, strength: strengthOf(row.km),
-        line: `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
-        shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }),
-      }));
+      const far = farPlaceSummary(distances[0]);
+      const selected = far ? distances.slice(0, 1) : distances.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 12);
+      const closest = selected.map((row) => {
+        const distanceKm = roundedDistanceKm(row.km);
+        return {
+          planet: row.body, angle: row.angle, title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
+          distanceKm, distanceMiles: Math.round(distanceKm / KM_PER_MILE), side: row.side, strength: strengthOf(row.km),
+          line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${ACG_CONFIDENCE_TEXT}.`,
+          shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }),
+        };
+      });
       const strong = closest.filter((row) => row.strength === 'strong');
       const top = closest[0];
-      const topMeaning = lineMeaning(top.planet, top.angle, under18);
-      const summary = strong.length
-        ? `${place.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(', ')}.${topMeaning ? ` ${guard(topMeaning)}` : ''}`
-        : `No line runs within ${STRONG_KM} km of ${place.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString('en-GB')} km ${top.side ?? 'away'}, so its pull is ${top.strength === 'noticeable' ? 'still noticeable there' : 'faint there'}.`;
+      let summary = far;
+      if (!summary && strong.length) {
+        const meaning = lineMeaning(top.planet, top.angle, under18);
+        summary = `${place.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(', ')}.${meaning ? ` ${guard(meaning)}` : ''}`;
+      }
+      summary ??= `No line runs within ${STRONG_KM} km of ${place.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString('en-GB')} km ${top.side ?? 'away'}, so its pull is still noticeable there.`;
       cities.push({ asked: text, name: place.name, region: place.region, country: place.country, latitude: roundCoordinate(place.latitude), longitude: roundCoordinate(place.longitude), closest, summary });
     }
     if (unmatched.length) limits.push(`Some names matched no town or city of 15,000 people or more in the index: ${unmatched.join(', ')}. Try another spelling, or add the country after a comma.`);
@@ -173,7 +176,7 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
       birthDate: args.birthDate, instantUtc: utc.toISOString(), siderealTimeDegrees: Math.round(gast * 10_000) / 10_000,
       lines, cities, unmatched,
       readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
-      confidence: readingConfidence(detail), confidenceLabel, limits,
+      confidence: ACG_CONFIDENCE, confidenceLabel: ACG_CONFIDENCE_TEXT, limits,
       pageUrl: `${context.origin}/astrocartography/`,
     },
     links: [

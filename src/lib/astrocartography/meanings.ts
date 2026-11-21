@@ -14,10 +14,14 @@
  */
 import { NOTICEABLE_KM, type AcgAngle, type AcgBody, type BodyLines, type LineDistance } from './lines.js';
 import { readingConfidence, readingConfidenceText, readingDetail } from '../../ai-tools/reading-confidence.js';
-import { MINOR_NOTE, isUnder18 } from '../../ai-tools/features/reading-guards.js';
+import { MINOR_NOTE, isUnderAge } from '../../ai-tools/features/reading-guards.js';
 
-/** The page's under-18 rule and note, the tools' own (pure), passed on so the page imports no AI tool module. */
-export { MINOR_NOTE, isUnder18 };
+export { MINOR_NOTE };
+
+/** Compare civil birthdays so 29 February cannot promote a 1 March birthday a day early. */
+export function isUnder18(birthDate: string, today: string): boolean {
+  return isUnderAge(birthDate, today, 18);
+}
 
 export const ANGLE_NAME: Record<AcgAngle, string> = {
   ASC: 'rising', DSC: 'setting', MC: 'overhead', IC: 'underfoot',
@@ -186,8 +190,14 @@ export function lineTable(lines: readonly BodyLines[]): { planet: AcgBody; mc: s
 }
 
 /** A distance as the page prints it: to the nearest 10 km, since 15 minutes of birth time moves a line about 400 km. */
-export function roundedKm(km: number): string {
-  return (Math.round(km / 10) * 10).toLocaleString('en-GB');
+export function roundedDistanceKm(km: number): number {
+  return Math.round(km / 10) * 10;
+}
+
+export function farPlaceSummary(nearest: LineDistance | undefined): string | null {
+  if (!nearest || nearest.km <= NOTICEABLE_KM) return null;
+  const distance = roundedDistanceKm(nearest.km).toLocaleString('en-GB');
+  return `No line within ${NOTICEABLE_KM} km; the nearest is the ${nearest.body} ${ANGLE_LABEL[nearest.angle]}, ${distance} km.`;
 }
 
 /**
@@ -195,12 +205,12 @@ export function roundedKm(km: number): string {
  * one), or, when even the nearest line is beyond NOTICEABLE_KM, one sentence naming it without a reading.
  */
 export function placeLines(lines: readonly LineDistance[], minor = false): { far: string | null; rows: (LineDistance & { title: string; distance: string; meaning: string | null })[] } {
-  const nearest = lines[0];
-  if (nearest && nearest.km > NOTICEABLE_KM) return { far: `No line within ${NOTICEABLE_KM} km; the nearest is the ${nearest.body} ${ANGLE_LABEL[nearest.angle]}, ${roundedKm(nearest.km)} km.`, rows: [] };
+  const far = farPlaceSummary(lines[0]);
+  if (far) return { far, rows: [] };
   return {
     far: null,
     rows: lines.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 6).map((row) => ({
-      ...row, title: `${row.body} ${ANGLE_LABEL[row.angle]}`, distance: `${roundedKm(row.km)} km${row.side ? ` ${row.side}` : ''}`, meaning: lineMeaning(row.body, row.angle, minor),
+      ...row, title: `${row.body} ${ANGLE_LABEL[row.angle]}`, distance: `${roundedDistanceKm(row.km).toLocaleString('en-GB')} km${row.side ? ` ${row.side}` : ''}`, meaning: lineMeaning(row.body, row.angle, minor),
     })),
   };
 }

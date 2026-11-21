@@ -2204,8 +2204,8 @@ export async function handleAstrocartographyLinkRequest(request: Request): Promi
     imageUrl: `${url.origin}${ASTROCARTOGRAPHY_SHARE_IMAGE_PATH}?${astrocartographyQuery(share)}`,
     story: { href: `${ASTROCARTOGRAPHY_SHARE_STORY_PATH}?${astrocartographyQuery(share)}`, filename: `zodiacs-astrocartography-${share.planet.toLowerCase()}-${share.angle.toLowerCase()}-story.jpg` },
     imageType: 'image/jpeg',
-    imageAlt: [`${model.title}.`, model.line].filter(Boolean).join(' '),
-    explanation: [model.detail, model.line, ASTROCARTOGRAPHY_ABOUT].filter(Boolean).join(' '),
+    imageAlt: [`${model.title}.`, model.detail, model.line, `${model.confidence}.`].filter(Boolean).join(' '),
+    explanation: [model.detail, model.line, `${model.confidence}.`, ASTROCARTOGRAPHY_ABOUT].filter(Boolean).join(' '),
     action: { label: 'Draw your own map', href: '/astrocartography/' },
     note: SHARE_NOTE,
   }));
