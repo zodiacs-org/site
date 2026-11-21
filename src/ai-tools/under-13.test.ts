@@ -150,7 +150,7 @@ describe('the hosted server refuses a child\'s birth date', () => {
       expect(answer.isError, `${name} ${JSON.stringify(answer.structuredContent?.error)}`).toBe(false);
     };
     await ok('get_natal_chart', { birthDate: '1990-05-03' });
-    await ok('get_natal_chart', { birthDate: '2013-11-08' });
+    await ok('get_natal_chart', { birthDate: '2013-11-07' });
     await ok('get_occasion_sky', { occasion: 'birthday', date: '1990-05-03' });
     await ok('get_occasion_sky', { occasion: 'birthday', date: '2027-05-03' });
     await ok('get_occasion_sky', { occasion: 'birthday', searchFrom: '2026-11-10', searchTo: '2026-11-30' });
@@ -215,7 +215,7 @@ describe('horoscopes and children under 13', () => {
       refused(answer, 'get_horoscope');
       expect(JSON.stringify(answer), birthDate).not.toContain(birthDate);
     }
-    expect((await call('get_horoscope', { sign: 'scorpio', birthDate: '2013-11-08' })).isError).toBe(false);
+    expect((await call('get_horoscope', { sign: 'scorpio', birthDate: '2013-11-07' })).isError).toBe(false);
   });
 
   it('has no field a child\'s name or age could travel in', async () => {

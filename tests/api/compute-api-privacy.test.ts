@@ -522,6 +522,8 @@ describe('the site and the compute API', () => {
       'src/ai-tools/features/sky-events.ts',
       // get_year_score (ZODIACS_YEAR_SCORE_ENABLED=1) resolves a birth's local time with the same operations, server-side.
       'src/ai-tools/features/year-score.ts',
+      // The hosted sky chart shares the instant validator and position names.
+      'src/ai-tools/features/moment-chart-contract.ts', 'src/ai-tools/features/moment-chart.ts', 'src/ai-tools/moment-chart.test.ts',
       // get_solar_return (ZODIACS_SOLAR_RETURN_ENABLED=1) resolves a birth's local time with the same operations, server-side.
       'src/ai-tools/features/solar-return.ts',
       // The new and full Moons either side of a moment come from the same lunation search, server-side (ZOD-64).

@@ -184,8 +184,8 @@ describe('privacy', () => {
       expect(result.isError).toBe(true);
       expect(result.structuredContent.error.message).toBe(UNDER_13_REFUSAL);
     }
-    // Thirteen today: the finder reads it.
-    expect((await call(host, 'find_good_days', { goal: 'travel', from: '2027-01-01', to: '2027-01-31', birthDate: '2013-11-09' })).isError).toBe(false);
+    // Thirteen in every time zone: the finder reads it.
+    expect((await call(host, 'find_good_days', { goal: 'travel', from: '2027-01-01', to: '2027-01-31', birthDate: '2013-11-08' })).isError).toBe(false);
   });
 
   it('gives no relationship or wedding timing from a birth date under 18', async () => {
