@@ -1,17 +1,23 @@
-import { readFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
+import { promisify } from 'node:util';
 import { DELTA_T_TABLE, deltaTAt } from '@zodiacs/engine/deltat';
-import { describe, expect, it } from 'vitest';
+import { timeBasis } from '@zodiacs/engine/time';
+import { describe, expect, it, vi } from 'vitest';
 import {
   ISSUE_TITLE,
   LEAP_SECONDS,
   dateOfMjd,
   evaluate,
+  evaluateSpan,
   mjdOfDate,
   mirrorDisagreement,
   parseFinals,
   renderReport,
   runMonitor,
+  runTzdbMonitor,
   validateFinals,
 } from './deltat-monitor.mjs';
 
@@ -196,5 +202,186 @@ describe('the weekly ΔT monitor', () => {
     expect(workflow).toContain(ISSUE_TITLE);
     expect(workflow).toMatch(/issues: write/u);
     expect(workflow).not.toMatch(/contents: write|git push|git commit/u);
+  });
+});
+
+const replayDate = '2026-11-13';
+const finalsPath = resolve(root, 'scripts/fixtures/finals2000A-20261112.txt');
+const newsPath = resolve(root, 'scripts/fixtures/tzdb-NEWS-2026f.txt');
+const tzdbUrl = 'https://data.iana.org/time-zones/tzdb';
+
+async function recordedRows() {
+  return parseFinals(await readFile(finalsPath, 'utf8'));
+}
+
+function shiftPredictions(rows, offset) {
+  return rows.map((row) => row.flag === 'P' ? { ...row, ut1MinusUtc: row.ut1MinusUtc + offset } : row);
+}
+
+describe('the UT1 span rule', () => {
+  it('finds the recorded peak across the whole overlap and reports its sigma and verdict', async () => {
+    const result = await runMonitor({
+      today: new Date(`${replayDate}T00:00:00Z`),
+      sources: [{ url: 'recorded IERS file', text: await readFile(finalsPath, 'utf8') }],
+    });
+    expect(result).toMatchObject({
+      status: 'quiet',
+      span: { days: 324, fires: false, worst: { on: '2027-10-01' } },
+    });
+    expect(Math.abs(result.span.worst.difference - 0.077)).toBeLessThan(0.005);
+    expect(result.span.worst.difference).toBeCloseTo(0.078009, 6);
+    expect(result.span.worst.sigma).toBeCloseTo(0.026148, 6);
+    expect(renderReport(result)).toContain('UT1 span: 324 days compared. Largest absolute difference: 0.0780 s on 2027-10-01 (engine σ 0.0261 s). Fires above 0.1 s: no.');
+  });
+
+  it('fires through the existing status when every IERS prediction moves by 0.2 s', async () => {
+    const rows = shiftPredictions(await recordedRows(), 0.2);
+    // Hold the existing value rule quiet so the status must come from the span.
+    const todayRow = rows.find((row) => row.mjd === mjdOfDate(replayDate));
+    const seconds = 32.184 + 37 - todayRow.ut1MinusUtc;
+    const result = await runMonitor({
+      today: new Date(`${replayDate}T00:00:00Z`),
+      sources: [{ url: 'shifted IERS file', text: rows.map((row) => (
+        finalsLine(row.mjd, row.flag, row.ut1MinusUtc)
+      )).join('\n') }],
+      model: () => ({ seconds, sigma: 0, segment: 'predicted' }),
+    });
+    expect(result).toMatchObject({
+      status: 'fired', valueFires: false, windowFires: false,
+      span: { days: 324, fires: true, worst: { on: '2026-11-13' } },
+    });
+    expect(renderReport(result)).toMatch(/0\.2067 s on 2026-11-13 .* Fires above 0\.1 s: yes/u);
+  });
+
+  it('fires exactly when the largest absolute shifted disagreement exceeds the threshold', async () => {
+    const rows = await recordedRows();
+    const first = mjdOfDate(replayDate);
+    const last = mjdOfDate('2027-10-02');
+    const differences = rows.filter(({ mjd }) => mjd >= first && mjd <= last).map((row) => {
+      const ms = Date.parse(`${dateOfMjd(row.mjd)}T00:00:00Z`);
+      return row.ut1MinusUtc - timeBasis(ms).timeScale.ut1MinusUtc.seconds;
+    });
+    for (let step = -30; step <= 30; step += 1) {
+      const shift = step / 100;
+      const max = Math.max(...differences.map((difference) => Math.abs(difference + shift)));
+      const result = evaluateSpan(shiftPredictions(rows, shift));
+      expect(result.worst.difference, `shift ${shift}`).toBeCloseTo(max, 12);
+      expect(result.fires, `shift ${shift}`).toBe(max > 0.1);
+    }
+  });
+
+  it('counts a shorter overlap and skips engine observations, model values and fallback', async () => {
+    const rows = await recordedRows();
+    const last = mjdOfDate('2027-09-10');
+    const result = await runMonitor({
+      today: new Date(`${replayDate}T00:00:00Z`),
+      sources: [{ url: 'shorter IERS file', text: rows.filter((row) => row.mjd <= last).map((row) => (
+        finalsLine(row.mjd, row.flag, row.ut1MinusUtc)
+      )).join('\n') }],
+    });
+    expect(result.span.days).toBe(302);
+    expect(renderReport(result)).toContain('UT1 span: 302 days compared.');
+
+    const mjd = mjdOfDate(replayDate);
+    const sources = ['predicted', 'predicted', 'observed', 'model', 'fallback', null];
+    const basis = (ms) => {
+      const source = sources[(ms - Date.parse(`${replayDate}T00:00:00Z`)) / 86_400_000];
+      return { timeScale: { ut1MinusUtc: source && { source, seconds: 0, sigma: 0.02 } } };
+    };
+    const sample = sources.map((_, index) => ({
+      mjd: mjd + index, flag: index === 0 ? 'I' : 'P', ut1MinusUtc: index === 1 ? -0.1 : -0.4,
+    }));
+    expect(evaluateSpan(sample, basis)).toEqual({
+      days: 1, worst: { difference: 0.1, on: '2026-11-14', sigma: 0.02 }, fires: false,
+    });
+    expect(evaluateSpan(sample.slice(2), basis)).toEqual({ days: 0, worst: null, fires: false });
+  });
+});
+
+describe('the time zone release rule', () => {
+  const respond = (text) => ({ ok: true, text: async () => text });
+
+  it('compares the year before the letter and reads NEWS only for a newer release', async () => {
+    const fetchVersion = (version) => async (url) => {
+      if (url === `${tzdbUrl}/version`) return respond(version);
+      if (url === `${tzdbUrl}/NEWS`) return respond('Release 2027a\n\n  Briefly:\n    A change.\n');
+      throw new Error(`unexpected URL ${url}`);
+    };
+    expect(await runTzdbMonitor({ installed: '2026f', fetchImpl: fetchVersion('2027a\r\n') }))
+      .toMatchObject({ status: 'fired', latest: '2027a' });
+    for (const [installed, version] of [['2026f', '2026f\n'], ['2025c', '2025c'], ['2026a', '2025z']]) {
+      const urls = [];
+      const fetchImpl = async (url) => {
+        urls.push(url);
+        return fetchVersion(version)(url);
+      };
+      expect(await runTzdbMonitor({ installed, fetchImpl })).toMatchObject({ status: 'quiet' });
+      expect(urls).toEqual([`${tzdbUrl}/version`]);
+    }
+  });
+
+  it.each(['version', 'NEWS'])('fails after three ten second attempts to read %s', async (endpoint) => {
+    const attempts = [];
+    const fetchImpl = async (url, { signal }) => {
+      if (url === `${tzdbUrl}/${endpoint}`) {
+        attempts.push(signal);
+        return { ok: false, status: 503 };
+      }
+      if (url === `${tzdbUrl}/version`) return respond('2026f\n');
+      throw new Error(`unexpected URL ${url}`);
+    };
+    const timeout = vi.spyOn(AbortSignal, 'timeout');
+    try {
+      const result = await runTzdbMonitor({ installed: '2025c', fetchImpl, pause: async () => {} });
+      expect(attempts).toHaveLength(3);
+      expect(new Set(attempts).size).toBe(3);
+      expect(timeout.mock.calls).toEqual(Array.from({ length: endpoint === 'NEWS' ? 4 : 3 }, () => [10_000]));
+      expect(result).toMatchObject({ status: 'failed', problem: expect.stringContaining(`${tzdbUrl}/${endpoint}: try 1: HTTP 503; try 2: HTTP 503; try 3: HTTP 503`) });
+    } finally {
+      timeout.mockRestore();
+    }
+  });
+
+  it('writes separate statuses and the recorded release notes through the CLI', async () => {
+    const directory = await mkdtemp(resolve(tmpdir(), 'weekly-data-monitor-'));
+    try {
+      const summary = resolve(directory, 'summary.md');
+      const issue = resolve(directory, 'deltat.md');
+      const tzIssue = resolve(directory, 'tzdb.md');
+      const output = resolve(directory, 'output');
+      const preload = `data:text/javascript,${encodeURIComponent(`
+        import { readFile } from 'node:fs/promises';
+        globalThis.fetch = async (url) => {
+          if (url === '${tzdbUrl}/version') return new Response('2026f\\r\\n');
+          if (url === '${tzdbUrl}/NEWS') return new Response(await readFile(${JSON.stringify(newsPath)}));
+          throw new Error('unexpected URL ' + url);
+        };
+      `)}`;
+      await promisify(execFile)(process.execPath, [
+        '--import', preload, resolve(root, 'scripts/deltat-monitor.mjs'),
+        '--date', replayDate, '--finals', finalsPath, '--summary', summary,
+        '--issue-body', issue, '--tz-issue-body', tzIssue, '--github-output', output,
+      ], { timeout: 4_000 });
+      const body = await readFile(tzIssue, 'utf8');
+      expect(body).toContain('The engine ships 2025c. IANA reports 2026f.');
+      expect(body).toContain('In 1925 Ireland fell back on 09-20 not 10-04');
+      expect(body).toContain('Cuba will not fall back');
+      expect(body.match(/^### 2026[a-f]$/gmu)).toHaveLength(6);
+      expect(body).not.toMatch(/### 2025c|Changes to code|Changes to commentary|Other data changes/u);
+      expect(await readFile(summary, 'utf8')).toContain('UT1 span: 324 days compared.');
+      await expect(readFile(issue, 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
+      expect(await readFile(output, 'utf8')).toBe('status=quiet\ntz_status=fired\n');
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  it('routes a release and failed data reads through the same scheduled workflow', async () => {
+    const workflow = await readFile(resolve(root, '.github/workflows/deltat-monitor.yml'), 'utf8');
+    expect(workflow).toContain('--tz-issue-body "$RUNNER_TEMP/tzdb-issue.md"');
+    expect(workflow).toContain("if: steps.monitor.outputs.tz_status == 'fired'");
+    expect(workflow).toContain('TITLE="Time zone data needs a refresh"');
+    expect(workflow).toContain("steps.monitor.outputs.status == 'failed' || steps.monitor.outputs.tz_status == 'failed'");
+    expect(workflow).toContain('23 6 * * 5');
   });
 });
