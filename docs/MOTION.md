@@ -30,7 +30,7 @@ daily pages never move.
 | Forms, form controls, buttons, `details` / `summary` | None. Present from the first frame |
 | Whole sections and articles | None. Mark the cards and marks inside them instead |
 | Hero pictures and hero headings (LCP) | None |
-| A result the person just asked for | The 200 ms arrival in `src/styles/base.css`. Big Three keeps its shipped card and disc entrances. |
+| A result the person just asked for | The 200 ms arrival in `src/styles/base.css` only. Big Three's result still marks its cards and discs: it merged before the guard and is listed in `KNOWN_ON_MAIN` in the guard test, to be fixed in its own PR. |
 | Keyboard-driven actions | None |
 | Daily pages | No entrance motion at all |
 
@@ -88,40 +88,53 @@ and the checks for marked tags, daily pages and result blocks.
 import Motion from '../components/Motion.astro';
 ---
 <Base ...>
-  <Motion />            <!-- once, before anything marked -->
-  <svg data-enter="draw" aria-hidden="true">
-    <circle class="motion-stroke" pathLength="1" ... />
-  </svg>
-  <a class="tile" href="/numerology/life-path/7/" data-enter="rise">
-    <span data-enter="disc" aria-hidden="true">7</span>
-    <span>Life Path 7</span>
-  </a>
+  <section class="section--tight container">
+    <Motion />          <!-- once, inside the first section, before anything marked -->
+    <svg data-enter="draw" aria-hidden="true">
+      <circle class="motion-stroke" pathLength="1" ... />
+    </svg>
+    <a class="tile" href="/numerology/life-path/7/" data-enter="rise">
+      <span data-enter="disc" aria-hidden="true">7</span>
+      <span>Life Path 7</span>
+    </a>
+  </section>
 </Base>
 ```
+
+- Put `<Motion />` inside the first `<section>` or hero wrapper, never before
+  it: its script tags would stop that section being `main`'s first child,
+  which changes its top padding by 20 px.
 
 - `draw` needs `pathLength="1"` and `class="motion-stroke"` on each stroke.
 - Choreograph by hand with inline `--motion-i` (step index) or
   `--motion-delay` (extra delay).
-- An island that adds marks after the page loads can call
-  `window.zodiacsMotion?.scan(root)` after rendering them. Big Three uses this
-  call for its existing result entrances without importing a shared chunk.
+- An island that adds marks after the page loads (never a result the person
+  asked for) can call `window.zodiacsMotion?.scan(root)` after rendering them.
+  Big Three still uses this call for its result entrances (see the rule above).
 
 ## Guarantees
 
-- Without `<Motion />`, JavaScript or Intersection Observer, and with reduced
-  motion or when printing, everything is shown immediately.
-- The first Tab, a same-page fragment link, or navigation to a nonempty
-  fragment shows all marks immediately and skips entrances for the rest of
-  the visit. A page opened with a nonempty fragment starts still.
-- Marks already above the viewport are shown immediately. On a scroll jump
-  without a fragment, such as End or scroll restoration, the next scroll
-  frame shows any waiting marks the jump passed.
-- The runtime scans while the document is parsing. Entrances trigger when
-  any part of a mark reaches the viewport (threshold 0, as with `.reveal`).
-  The automatic stagger adds at most 280 ms.
-- If the runtime throws during startup, everything is shown immediately. If
-  the initial switch runs and the runtime never starts, it switches off
-  after 3 seconds.
+- Without `<Motion />`, without JavaScript or Intersection Observer, with
+  reduced motion and when printing, everything is simply shown. The first Tab
+  on a page shows every marked element at once, so keyboard readers never
+  wait on an entrance. The same goes for a reader who jumps within the page:
+  an address with a `#`, a link to a section on the same page, or Back to one
+  shows every marked element at once, so an in-page link always lands on
+  content that is there. Any `#` in the address, a share link's included, and
+  any script that writes `location.hash`, turns entrances off for the rest of
+  that visit. So does a page the browser scrolls by itself before the reader
+  has moved it: a search result's text link (`#:~:text=`, which never reaches
+  `location.hash`), or a reload or Back that restores the old position.
+- Marks already above the screen are shown at once. A jump without a `#`,
+  such as End or a script scrolling the page, never leaves a mark it passed
+  hidden: the next scroll frame shows it.
+- The runtime picks marks up while the document is still parsing, so the
+  first ones do not wait for the whole page. Elements show as soon as any
+  part of them is on screen (threshold 0, as with `.reveal`), so a tall block
+  never sits blank while someone reads it. The automatic stagger stops at
+  four steps (at most 280 ms).
+- If the runtime throws during startup, everything is shown at once. If the
+  switch runs and the runtime never starts, it switches off after 3 seconds.
 - Only `opacity`, `transform` and `stroke-dashoffset` change: no layout shift.
 - Never mark the LCP element: the hero heading, a hero image or poster.
   Decorative inline SVG beside the hero heading (an emblem, a seal) may

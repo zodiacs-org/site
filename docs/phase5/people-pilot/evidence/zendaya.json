@@ -1,0 +1,116 @@
+{
+  "schema": "zodiacs.phase5.evidence.v1",
+  "slug": "zendaya",
+  "qid": "Q189489",
+  "displayName": "Zendaya",
+  "wikidataLabel": "Zendaya",
+  "wikidataDescription": "American actress and singer (born 1996)",
+  "retrievedAtUtc": "2026-11-18T10:55:24.000Z",
+  "sources": {
+    "wikidata": {
+      "entityUrl": "https://www.wikidata.org/wiki/Q189489",
+      "propertiesUsed": [
+        "P569",
+        "P19",
+        "P625",
+        "P106",
+        "P18",
+        "P570",
+        "P17",
+        "P131"
+      ],
+      "lastrevid": 2570521498
+    },
+    "wikipedia": {
+      "language": "en",
+      "title": "Zendaya",
+      "articleUrl": "https://en.wikipedia.org/wiki/Zendaya",
+      "pageId": 28753159,
+      "revisionId": 1386314013,
+      "revisionTimestamp": "2026-11-17T21:55:45Z"
+    }
+  },
+  "birth": {
+    "claimCount": 1,
+    "distinctDayPrecisionValues": [
+      "+1996-09-01T00:00:00Z|proleptic-gregorian"
+    ],
+    "allValues": [
+      {
+        "time": "+1996-09-01T00:00:00Z",
+        "precision": 11,
+        "calendar": "proleptic-gregorian",
+        "rank": "normal"
+      }
+    ],
+    "time": "+1996-09-01T00:00:00Z",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "timeOfDay": null,
+    "timeOfDayEvidence": "none: Wikidata carries no birth-time claim for this person"
+  },
+  "death": null,
+  "living": true,
+  "birthPlace": {
+    "entity": "Q17042",
+    "label": "Oakland",
+    "entityUrl": "https://www.wikidata.org/wiki/Q17042",
+    "country": {
+      "entity": "Q30",
+      "label": "United States"
+    },
+    "claimCount": 1,
+    "coordinates": {
+      "sourceEntity": "Q17042",
+      "sourceEntityLabel": "Oakland",
+      "latitude": 37.8,
+      "longitude": -122.25,
+      "precision": 0.016666666666667,
+      "escalationSteps": 0
+    }
+  },
+  "occupations": [
+    {
+      "entity": "Q33999",
+      "label": "actor"
+    },
+    {
+      "entity": "Q177220",
+      "label": "singer"
+    },
+    {
+      "entity": "Q10798782",
+      "label": "television actor"
+    },
+    {
+      "entity": "Q10800557",
+      "label": "film actor"
+    },
+    {
+      "entity": "Q3357567",
+      "label": "fashion model"
+    },
+    {
+      "entity": "Q2405480",
+      "label": "voice actor"
+    },
+    {
+      "entity": "Q5716684",
+      "label": "dancer"
+    }
+  ],
+  "portrait": {
+    "file": "File:Zendaya-byPhilipRomano.jpg",
+    "filePage": "https://commons.wikimedia.org/wiki/File:Zendaya-byPhilipRomano.jpg",
+    "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Zendaya-byPhilipRomano.jpg",
+    "width": 4024,
+    "height": 6048,
+    "licenseShortName": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "artist": "PhilipRomano",
+    "credit": "Own work",
+    "usageTerms": "Creative Commons Attribution-Share Alike 4.0",
+    "attributionRequired": "true",
+    "restrictions": ""
+  }
+}

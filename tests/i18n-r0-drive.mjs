@@ -1,6 +1,7 @@
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 
 const CORE_LOCALES = [
   { code: 'en', prefix: '', lang: 'en', hreflang: 'en' },
@@ -59,10 +60,10 @@ async function routeState(page) {
 }
 
 await withPreview({ port: 4417 }, async (baseURL) => {
-  const browser = await chromium.launch({
+  const browser = withFullLevel(await chromium.launch({
     executablePath: await findChromium(),
     args: STABLE_CHROMIUM_ARGS,
-  });
+  }));
   try {
     for (const viewport of [{ width: 390, height: 844 }, { width: 1280, height: 900 }]) {
       const page = await browser.newPage({ viewport });

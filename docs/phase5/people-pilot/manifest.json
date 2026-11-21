@@ -1,6 +1,6 @@
 {
  "schema": "zodiacs.phase5.people-manifest.v1",
- "status": "Phase 5 complete — 502 reviewed records",
+ "status": "Phase 5 complete: 517 reviewed records",
  "julianRule": "Option A — Julian-dated births are excluded from the Phase 5A pilot",
  "thresholds": {
   "schema": "zodiacs.phase5.thresholds.v1",
@@ -7964,6 +7964,157 @@
    }
   },
   {
+   "qid": "Q44333953",
+   "slug": "bad-bunny",
+   "displayName": "Bad Bunny",
+   "shortDescription": "Singer and rapper · United States · born 1994",
+   "disciplines": [
+    "singer",
+    "rapper"
+   ],
+   "birthDate": {
+    "storedValue": "1994-03-10",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1994-03-10",
+    "computedGregorianDate": "1994-03-10",
+    "birthdayCrossLinkKey": "1994-03-10",
+    "birthdayRoute": "/birthday/march-10/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q739675",
+    "entityLabel": "Bayamón",
+    "normalisedLabel": "Bayamón, United States",
+    "country": {
+     "entity": "Q30",
+     "label": "United States"
+    },
+    "coordinates": {
+     "latitude": 18.383333333333,
+     "longitude": -66.15,
+     "sourceEntity": "Q739675",
+     "sourceEntityLabel": "Bayamón",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/Puerto_Rico"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/Puerto_Rico",
+    "civilTime": "12:00",
+    "utcInstant": "1994-03-10T16:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -240,
+    "civilDayStartUtc": "1994-03-10T04:00:00.000Z",
+    "civilDayEndUtc": "1994-03-11T04:00:00.000Z",
+    "latitude": 18.383333333333,
+    "longitude": -66.15,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q739675",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -24.6,
+    "meridianResidualMoonDegrees": 0.2255
+   },
+   "sunSign": {
+    "slug": "pisces",
+    "name": "Pisces",
+    "degree": 19.85,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 19.3513,
+     "degreesToNextBoundaryAtWindowEnd": 9.6495
+    }
+   },
+   "moon": {
+    "sign": "pisces",
+    "signName": "Pisces",
+    "degree": 1.47,
+    "uncertain": true,
+    "signAtCivilDayStart": "aquarius",
+    "signAtCivilDayEnd": "pisces"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 0.999,
+    "Moon": 12.42,
+    "Mercury": 0.501,
+    "Venus": 1.244,
+    "Mars": 0.787,
+    "Jupiter": 0.032,
+    "Saturn": 0.119,
+    "Uranus": 0.04,
+    "Neptune": 0.024,
+    "Pluto": 0.005
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown; Moon sign undetermined",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q44333953",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2569383624
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Bad Bunny",
+     "articleUrl": "https://en.wikipedia.org/wiki/Bad_Bunny",
+     "pageId": 55943877,
+     "revisionId": 1385712325,
+     "revisionTimestamp": "2026-11-14T21:53:30Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Bad Bunny 2019 by Glenn Francis (cropped).jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 356,
+    "substantiveStatements": 16,
+    "highestPairwiseSimilarity": 0.1871
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
    "qid": "Q436699",
    "slug": "banjo-paterson",
    "displayName": "Banjo Paterson",
@@ -10413,7 +10564,7 @@
     "storedValue": "1955-10-28",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1955-10-28",
     "computedGregorianDate": "1955-10-28",
     "birthdayCrossLinkKey": "1955-10-28",
@@ -10539,7 +10690,7 @@
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -25267,6 +25418,156 @@
    }
   },
   {
+   "qid": "Q28967995",
+   "slug": "erling-haaland",
+   "displayName": "Erling Haaland",
+   "shortDescription": "Association football player · United Kingdom · born 2000",
+   "disciplines": [
+    "association football player"
+   ],
+   "birthDate": {
+    "storedValue": "2000-07-21",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "2000-07-21",
+    "computedGregorianDate": "2000-07-21",
+    "birthdayCrossLinkKey": "2000-07-21",
+    "birthdayRoute": "/birthday/july-21/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q39121",
+    "entityLabel": "Leeds",
+    "normalisedLabel": "Leeds, United Kingdom",
+    "country": {
+     "entity": "Q145",
+     "label": "United Kingdom"
+    },
+    "coordinates": {
+     "latitude": 53.7975,
+     "longitude": -1.5436111111111,
+     "sourceEntity": "Q39121",
+     "sourceEntityLabel": "Leeds",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "Europe/London"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "Europe/London",
+    "civilTime": "12:00",
+    "utcInstant": "2000-07-21T11:00:00.000Z",
+    "utcOffsetMinutesAtBirth": 60,
+    "civilDayStartUtc": "2000-07-20T23:00:00.000Z",
+    "civilDayEndUtc": "2000-07-21T23:00:00.000Z",
+    "latitude": 53.7975,
+    "longitude": -1.5436111111111,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q39121",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -66.17,
+    "meridianResidualMoonDegrees": 0.6066
+   },
+   "sunSign": {
+    "slug": "cancer",
+    "name": "Cancer",
+    "degree": 28.98,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 28.5,
+     "degreesToNextBoundaryAtWindowEnd": 0.5456
+    }
+   },
+   "moon": {
+    "sign": "pisces",
+    "signName": "Pisces",
+    "degree": 23.13,
+    "uncertain": false,
+    "signAtCivilDayStart": "pisces",
+    "signAtCivilDayEnd": "pisces"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 0.954,
+    "Moon": 12.465,
+    "Mercury": 0.366,
+    "Venus": 1.23,
+    "Mars": 0.652,
+    "Jupiter": 0.181,
+    "Saturn": 0.084,
+    "Uranus": 0.036,
+    "Neptune": 0.027,
+    "Pluto": 0.015
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q28967995",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2570409841
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Erling Haaland",
+     "articleUrl": "https://en.wikipedia.org/wiki/Erling_Haaland",
+     "pageId": 54333646,
+     "revisionId": 1386365109,
+     "revisionTimestamp": "2026-11-18T03:57:04Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Erling Haaland France v Norway 26 June 26-008 (cropped).jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 417,
+    "substantiveStatements": 18,
+    "highestPairwiseSimilarity": 0.2614
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
    "qid": "Q957543",
    "slug": "ernest-shackleton",
    "displayName": "Ernest Shackleton",
@@ -35627,6 +35928,156 @@
    }
   },
   {
+   "qid": "Q3626966",
+   "slug": "harry-styles",
+   "displayName": "Harry Styles",
+   "shortDescription": "Singer-songwriter · United Kingdom · born 1994",
+   "disciplines": [
+    "singer-songwriter"
+   ],
+   "birthDate": {
+    "storedValue": "1994-02-01",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1994-02-01",
+    "computedGregorianDate": "1994-02-01",
+    "birthdayCrossLinkKey": "1994-02-01",
+    "birthdayRoute": "/birthday/february-1/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q865716",
+    "entityLabel": "Redditch",
+    "normalisedLabel": "Redditch, United Kingdom",
+    "country": {
+     "entity": "Q145",
+     "label": "United Kingdom"
+    },
+    "coordinates": {
+     "latitude": 52.306944444444,
+     "longitude": -1.9491666666667,
+     "sourceEntity": "Q865716",
+     "sourceEntityLabel": "Redditch",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "Europe/London"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "Europe/London",
+    "civilTime": "12:00",
+    "utcInstant": "1994-02-01T12:00:00.000Z",
+    "utcOffsetMinutesAtBirth": 0,
+    "civilDayStartUtc": "1994-02-01T00:00:00.000Z",
+    "civilDayEndUtc": "1994-02-02T00:00:00.000Z",
+    "latitude": 52.306944444444,
+    "longitude": -1.9491666666667,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q865716",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -7.8,
+    "meridianResidualMoonDegrees": 0.0715
+   },
+   "sunSign": {
+    "slug": "aquarius",
+    "name": "Aquarius",
+    "degree": 12.4,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 11.8927,
+     "degreesToNextBoundaryAtWindowEnd": 17.0927
+    }
+   },
+   "moon": {
+    "sign": "libra",
+    "signName": "Libra",
+    "degree": 18.23,
+    "uncertain": false,
+    "signAtCivilDayStart": "libra",
+    "signAtCivilDayEnd": "libra"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 1.015,
+    "Moon": 14.304,
+    "Mercury": 1.339,
+    "Venus": 1.255,
+    "Mars": 0.779,
+    "Jupiter": 0.081,
+    "Saturn": 0.118,
+    "Uranus": 0.057,
+    "Neptune": 0.036,
+    "Pluto": 0.016
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q3626966",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2567606830
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Harry Styles",
+     "articleUrl": "https://en.wikipedia.org/wiki/Harry_Styles",
+     "pageId": 35459623,
+     "revisionId": 1384871585,
+     "revisionTimestamp": "2026-11-10T14:41:33Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:HarryStylesWembley170623 (14 of 93) (52982076132) (cropped).jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 368,
+    "substantiveStatements": 17,
+    "highestPairwiseSimilarity": 0.2189
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
    "qid": "Q228904",
    "slug": "hattie-mcdaniel",
    "displayName": "Hattie McDaniel",
@@ -42390,6 +42841,156 @@
    }
   },
   {
+   "qid": "Q21738166",
+   "slug": "jenna-ortega",
+   "displayName": "Jenna Ortega",
+   "shortDescription": "Actor · United States · born 2002",
+   "disciplines": [
+    "actor"
+   ],
+   "birthDate": {
+    "storedValue": "2002-09-27",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "2002-09-27",
+    "computedGregorianDate": "2002-09-27",
+    "birthdayCrossLinkKey": "2002-09-27",
+    "birthdayRoute": "/birthday/september-27/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q399976",
+    "entityLabel": "Palm Desert",
+    "normalisedLabel": "Palm Desert, United States",
+    "country": {
+     "entity": "Q30",
+     "label": "United States"
+    },
+    "coordinates": {
+     "latitude": 33.725555555556,
+     "longitude": -116.36944444444,
+     "sourceEntity": "Q399976",
+     "sourceEntityLabel": "Palm Desert",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/Los_Angeles"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/Los_Angeles",
+    "civilTime": "12:00",
+    "utcInstant": "2002-09-27T19:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -420,
+    "civilDayStartUtc": "2002-09-27T07:00:00.000Z",
+    "civilDayEndUtc": "2002-09-28T07:00:00.000Z",
+    "latitude": 33.725555555556,
+    "longitude": -116.36944444444,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q399976",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -45.48,
+    "meridianResidualMoonDegrees": 0.4169
+   },
+   "sunSign": {
+    "slug": "libra",
+    "name": "Libra",
+    "degree": 4.49,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 4.0025,
+     "degreesToNextBoundaryAtWindowEnd": 25.0164
+    }
+   },
+   "moon": {
+    "sign": "gemini",
+    "signName": "Gemini",
+    "degree": 12.4,
+    "uncertain": false,
+    "signAtCivilDayStart": "gemini",
+    "signAtCivilDayEnd": "gemini"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 0.981,
+    "Moon": 12.225,
+    "Mercury": 1.108,
+    "Venus": 0.432,
+    "Mars": 0.637,
+    "Jupiter": 0.172,
+    "Saturn": 0.025,
+    "Uranus": 0.028,
+    "Neptune": 0.012,
+    "Pluto": 0.017
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q21738166",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2570376867
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Jenna Ortega",
+     "articleUrl": "https://en.wikipedia.org/wiki/Jenna_Ortega",
+     "pageId": 50229776,
+     "revisionId": 1384370220,
+     "revisionTimestamp": "2026-11-07T22:52:20Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Jenna Ortega 2020 2.jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 382,
+    "substantiveStatements": 18,
+    "highestPairwiseSimilarity": 0.1949
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
    "qid": "Q44301",
    "slug": "jim-morrison",
    "displayName": "Jim Morrison",
@@ -48516,6 +49117,157 @@
    }
   },
   {
+   "qid": "Q130798",
+   "slug": "kendrick-lamar",
+   "displayName": "Kendrick Lamar",
+   "shortDescription": "Rapper and songwriter · United States · born 1987",
+   "disciplines": [
+    "rapper",
+    "songwriter"
+   ],
+   "birthDate": {
+    "storedValue": "1987-06-17",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1987-06-17",
+    "computedGregorianDate": "1987-06-17",
+    "birthdayCrossLinkKey": "1987-06-17",
+    "birthdayRoute": "/birthday/june-17/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q487119",
+    "entityLabel": "Compton",
+    "normalisedLabel": "Compton, United States",
+    "country": {
+     "entity": "Q30",
+     "label": "United States"
+    },
+    "coordinates": {
+     "latitude": 33.896666666667,
+     "longitude": -118.225,
+     "sourceEntity": "Q487119",
+     "sourceEntityLabel": "Compton",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/Los_Angeles"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/Los_Angeles",
+    "civilTime": "12:00",
+    "utcInstant": "1987-06-17T19:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -420,
+    "civilDayStartUtc": "1987-06-17T07:00:00.000Z",
+    "civilDayEndUtc": "1987-06-18T07:00:00.000Z",
+    "latitude": 33.896666666667,
+    "longitude": -118.225,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q487119",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -52.9,
+    "meridianResidualMoonDegrees": 0.4849
+   },
+   "sunSign": {
+    "slug": "gemini",
+    "name": "Gemini",
+    "degree": 26.06,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 25.5783,
+     "degreesToNextBoundaryAtWindowEnd": 3.4671
+    }
+   },
+   "moon": {
+    "sign": "pisces",
+    "signName": "Pisces",
+    "degree": 17.58,
+    "uncertain": false,
+    "signAtCivilDayStart": "pisces",
+    "signAtCivilDayEnd": "pisces"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 0.955,
+    "Moon": 13.767,
+    "Mercury": 0.255,
+    "Venus": 1.218,
+    "Mars": 0.642,
+    "Jupiter": 0.169,
+    "Saturn": 0.073,
+    "Uranus": 0.041,
+    "Neptune": 0.026,
+    "Pluto": 0.016
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q130798",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2569849327
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Kendrick Lamar",
+     "articleUrl": "https://en.wikipedia.org/wiki/Kendrick_Lamar",
+     "pageId": 29909823,
+     "revisionId": 1385406569,
+     "revisionTimestamp": "2026-11-13T04:13:06Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Pulitzer2018-portraits-kendrick-lamar.jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 402,
+    "substantiveStatements": 17,
+    "highestPairwiseSimilarity": 0.2614
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
    "qid": "Q151794",
    "slug": "kenzo-tange",
    "displayName": "Kenzō Tange",
@@ -49144,6 +49896,156 @@
     "eligible": false,
     "blockedBy": [
      "phase-5-completion-candidate — release gates pending"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
+   "qid": "Q1770624",
+   "slug": "kylie-jenner",
+   "displayName": "Kylie Jenner",
+   "shortDescription": "Entrepreneur · United States · born 1997",
+   "disciplines": [
+    "entrepreneur"
+   ],
+   "birthDate": {
+    "storedValue": "1997-08-10",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1997-08-10",
+    "computedGregorianDate": "1997-08-10",
+    "birthdayCrossLinkKey": "1997-08-10",
+    "birthdayRoute": "/birthday/august-10/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q1052562",
+    "entityLabel": "Cedars-Sinai Medical Center",
+    "normalisedLabel": "Cedars-Sinai Medical Center, United States",
+    "country": {
+     "entity": "Q30",
+     "label": "United States"
+    },
+    "coordinates": {
+     "latitude": 34.075198,
+     "longitude": -118.380676,
+     "sourceEntity": "Q1052562",
+     "sourceEntityLabel": "Cedars-Sinai Medical Center",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/Los_Angeles"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/Los_Angeles",
+    "civilTime": "12:00",
+    "utcInstant": "1997-08-10T19:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -420,
+    "civilDayStartUtc": "1997-08-10T07:00:00.000Z",
+    "civilDayEndUtc": "1997-08-11T07:00:00.000Z",
+    "latitude": 34.075198,
+    "longitude": -118.380676,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q1052562",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -53.52,
+    "meridianResidualMoonDegrees": 0.4906
+   },
+   "sunSign": {
+    "slug": "leo",
+    "name": "Leo",
+    "degree": 18.17,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 17.6928,
+     "degreesToNextBoundaryAtWindowEnd": 11.3478
+    }
+   },
+   "moon": {
+    "sign": "scorpio",
+    "signName": "Scorpio",
+    "degree": 9.73,
+    "uncertain": false,
+    "signAtCivilDayStart": "scorpio",
+    "signAtCivilDayEnd": "scorpio"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 0.959,
+    "Moon": 12.293,
+    "Mercury": 0.562,
+    "Venus": 1.194,
+    "Mars": 0.606,
+    "Jupiter": 0.13,
+    "Saturn": 0.016,
+    "Uranus": 0.039,
+    "Neptune": 0.025,
+    "Pluto": 0.001
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q1770624",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2567373034
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Kylie Jenner",
+     "articleUrl": "https://en.wikipedia.org/wiki/Kylie_Jenner",
+     "pageId": 21881809,
+     "revisionId": 1385250687,
+     "revisionTimestamp": "2026-11-12T14:10:58Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Kylie Jenner1 (cropped).png"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 456,
+    "substantiveStatements": 21,
+    "highestPairwiseSimilarity": 0.3057
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -49957,7 +50859,7 @@
     "storedValue": "1974-11-11",
     "precision": "day",
     "calendarModel": "proleptic-gregorian",
-    "calendarConversion": "none required — the stored value is already proleptic Gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
     "displayedDate": "1974-11-11",
     "computedGregorianDate": "1974-11-11",
     "birthdayCrossLinkKey": "1974-11-11",
@@ -50083,7 +50985,7 @@
    "indexEligibility": {
     "eligible": false,
     "blockedBy": [
-     "phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links"
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -50886,6 +51788,157 @@
     "eligible": false,
     "blockedBy": [
      "phase-5-completion-candidate — release gates pending"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
+   "qid": "Q26707663",
+   "slug": "lisa",
+   "displayName": "Lisa",
+   "shortDescription": "Singer and rapper · Thailand · born 1997",
+   "disciplines": [
+    "singer",
+    "rapper"
+   ],
+   "birthDate": {
+    "storedValue": "1997-03-27",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1997-03-27",
+    "computedGregorianDate": "1997-03-27",
+    "birthdayCrossLinkKey": "1997-03-27",
+    "birthdayRoute": "/birthday/march-27/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q1026460",
+    "entityLabel": "Buri Ram",
+    "normalisedLabel": "Buri Ram, Thailand",
+    "country": {
+     "entity": "Q869",
+     "label": "Thailand"
+    },
+    "coordinates": {
+     "latitude": 14.994166666667,
+     "longitude": 103.10222222222,
+     "sourceEntity": "Q1026460",
+     "sourceEntityLabel": "Buri Ram",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "Asia/Bangkok"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "Asia/Bangkok",
+    "civilTime": "12:00",
+    "utcInstant": "1997-03-27T05:00:00.000Z",
+    "utcOffsetMinutesAtBirth": 420,
+    "civilDayStartUtc": "1997-03-26T17:00:00.000Z",
+    "civilDayEndUtc": "1997-03-27T17:00:00.000Z",
+    "latitude": 14.994166666667,
+    "longitude": 103.10222222222,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q1026460",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -7.59,
+    "meridianResidualMoonDegrees": 0.0696
+   },
+   "sunSign": {
+    "slug": "aries",
+    "name": "Aries",
+    "degree": 6.57,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 6.0751,
+     "degreesToNextBoundaryAtWindowEnd": 22.9355
+    }
+   },
+   "moon": {
+    "sign": "scorpio",
+    "signName": "Scorpio",
+    "degree": 10.55,
+    "uncertain": false,
+    "signAtCivilDayStart": "scorpio",
+    "signAtCivilDayEnd": "scorpio"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 0.989,
+    "Moon": 12.56,
+    "Mercury": 1.778,
+    "Venus": 1.243,
+    "Mars": 0.364,
+    "Jupiter": 0.186,
+    "Saturn": 0.125,
+    "Uranus": 0.037,
+    "Neptune": 0.019,
+    "Pluto": 0.01
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q26707663",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2568155075
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Lisa (rapper)",
+     "articleUrl": "https://en.wikipedia.org/wiki/Lisa_(rapper)",
+     "pageId": 59226766,
+     "revisionId": 1386266829,
+     "revisionTimestamp": "2026-11-17T16:26:19Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:20240314 Lisa Manoban 07.png"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 437,
+    "substantiveStatements": 20,
+    "highestPairwiseSimilarity": 0.3002
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -57829,6 +58882,156 @@
    }
   },
   {
+   "qid": "Q2239218",
+   "slug": "max-verstappen",
+   "displayName": "Max Verstappen",
+   "shortDescription": "Formula One driver · Belgium · born 1997",
+   "disciplines": [
+    "Formula One driver"
+   ],
+   "birthDate": {
+    "storedValue": "1997-09-30",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1997-09-30",
+    "computedGregorianDate": "1997-09-30",
+    "birthdayCrossLinkKey": "1997-09-30",
+    "birthdayRoute": "/birthday/september-30/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q58780",
+    "entityLabel": "Hasselt",
+    "normalisedLabel": "Hasselt, Belgium",
+    "country": {
+     "entity": "Q31",
+     "label": "Belgium"
+    },
+    "coordinates": {
+     "latitude": 50.930480555556,
+     "longitude": 5.3384972222222,
+     "sourceEntity": "Q58780",
+     "sourceEntityLabel": "Hasselt",
+     "wikidataPrecision": 0.0000027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "Europe/Brussels"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "Europe/Brussels",
+    "civilTime": "12:00",
+    "utcInstant": "1997-09-30T10:00:00.000Z",
+    "utcOffsetMinutesAtBirth": 120,
+    "civilDayStartUtc": "1997-09-29T22:00:00.000Z",
+    "civilDayEndUtc": "1997-09-30T22:00:00.000Z",
+    "latitude": 50.930480555556,
+    "longitude": 5.3384972222222,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q58780",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -98.65,
+    "meridianResidualMoonDegrees": 0.9043
+   },
+   "sunSign": {
+    "slug": "libra",
+    "name": "Libra",
+    "degree": 7.28,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 6.7867,
+     "degreesToNextBoundaryAtWindowEnd": 22.2301
+    }
+   },
+   "moon": {
+    "sign": "virgo",
+    "signName": "Virgo",
+    "degree": 23.35,
+    "uncertain": false,
+    "signAtCivilDayStart": "virgo",
+    "signAtCivilDayEnd": "virgo"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 0.983,
+    "Moon": 11.79,
+    "Mercury": 1.789,
+    "Venus": 1.135,
+    "Mars": 0.7,
+    "Jupiter": 0.026,
+    "Saturn": 0.077,
+    "Uranus": 0.012,
+    "Neptune": 0.005,
+    "Pluto": 0.025
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q2239218",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2567710103
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Max Verstappen",
+     "articleUrl": "https://en.wikipedia.org/wiki/Max_Verstappen",
+     "pageId": 41758713,
+     "revisionId": 1386328683,
+     "revisionTimestamp": "2026-11-17T23:36:33Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:2024-08-25 Motorsport, Formel 1, Großer Preis der Niederlande 2024 STP 3973 by Stepro (portrait cropped).jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 445,
+    "substantiveStatements": 20,
+    "highestPairwiseSimilarity": 0.2281
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
    "qid": "Q2919042",
    "slug": "may-ziadeh",
    "displayName": "May Ziadeh",
@@ -59593,6 +60796,157 @@
     "eligible": false,
     "blockedBy": [
      "phase-5-completion-candidate — release gates pending"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
+   "qid": "Q57618112",
+   "slug": "mrbeast",
+   "displayName": "MrBeast",
+   "shortDescription": "YouTuber and entrepreneur · United States · born 1998",
+   "disciplines": [
+    "YouTuber",
+    "entrepreneur"
+   ],
+   "birthDate": {
+    "storedValue": "1998-05-07",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1998-05-07",
+    "computedGregorianDate": "1998-05-07",
+    "birthdayCrossLinkKey": "1998-05-07",
+    "birthdayRoute": "/birthday/may-7/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q49266",
+    "entityLabel": "Wichita",
+    "normalisedLabel": "Wichita, United States",
+    "country": {
+     "entity": "Q30",
+     "label": "United States"
+    },
+    "coordinates": {
+     "latitude": 37.688888888889,
+     "longitude": -97.336111111111,
+     "sourceEntity": "Q49266",
+     "sourceEntityLabel": "Wichita",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/Chicago"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/Chicago",
+    "civilTime": "12:00",
+    "utcInstant": "1998-05-07T17:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -300,
+    "civilDayStartUtc": "1998-05-07T05:00:00.000Z",
+    "civilDayEndUtc": "1998-05-08T05:00:00.000Z",
+    "latitude": 37.688888888889,
+    "longitude": -97.336111111111,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q49266",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -89.34,
+    "meridianResidualMoonDegrees": 0.819
+   },
+   "sunSign": {
+    "slug": "taurus",
+    "name": "Taurus",
+    "degree": 16.93,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 16.45,
+     "degreesToNextBoundaryAtWindowEnd": 12.5826
+    }
+   },
+   "moon": {
+    "sign": "libra",
+    "signName": "Libra",
+    "degree": 4.27,
+    "uncertain": true,
+    "signAtCivilDayStart": "virgo",
+    "signAtCivilDayEnd": "libra"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 0.967,
+    "Moon": 11.794,
+    "Mercury": 1.117,
+    "Venus": 1.132,
+    "Mars": 0.726,
+    "Jupiter": 0.183,
+    "Saturn": 0.121,
+    "Uranus": 0.008,
+    "Neptune": 0.002,
+    "Pluto": 0.025
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown; Moon sign undetermined",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q57618112",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2565179902
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "MrBeast",
+     "articleUrl": "https://en.wikipedia.org/wiki/MrBeast",
+     "pageId": 58920328,
+     "revisionId": 1386379184,
+     "revisionTimestamp": "2026-11-18T05:37:34Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:MrBeast in 2026 (cropped 4).png"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 408,
+    "substantiveStatements": 19,
+    "highestPairwiseSimilarity": 0.227
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -62347,6 +63701,156 @@
     "eligible": false,
     "blockedBy": [
      "phase-5-completion-candidate — release gates pending"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
+   "qid": "Q63243883",
+   "slug": "olivia-rodrigo",
+   "displayName": "Olivia Rodrigo",
+   "shortDescription": "Singer-songwriter · United States · born 2003",
+   "disciplines": [
+    "singer-songwriter"
+   ],
+   "birthDate": {
+    "storedValue": "2003-02-20",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "2003-02-20",
+    "computedGregorianDate": "2003-02-20",
+    "birthdayCrossLinkKey": "2003-02-20",
+    "birthdayRoute": "/birthday/february-20/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q838787",
+    "entityLabel": "Murrieta",
+    "normalisedLabel": "Murrieta, United States",
+    "country": {
+     "entity": "Q30",
+     "label": "United States"
+    },
+    "coordinates": {
+     "latitude": 33.569444444444,
+     "longitude": -117.2025,
+     "sourceEntity": "Q838787",
+     "sourceEntityLabel": "Murrieta",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/Los_Angeles"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/Los_Angeles",
+    "civilTime": "12:00",
+    "utcInstant": "2003-02-20T20:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -480,
+    "civilDayStartUtc": "2003-02-20T08:00:00.000Z",
+    "civilDayEndUtc": "2003-02-21T08:00:00.000Z",
+    "latitude": 33.569444444444,
+    "longitude": -117.2025,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q838787",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": 11.19,
+    "meridianResidualMoonDegrees": 0.1026
+   },
+   "sunSign": {
+    "slug": "pisces",
+    "name": "Pisces",
+    "degree": 1.76,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 1.2594,
+     "degreesToNextBoundaryAtWindowEnd": 27.733
+    }
+   },
+   "moon": {
+    "sign": "libra",
+    "signName": "Libra",
+    "degree": 23.87,
+    "uncertain": true,
+    "signAtCivilDayStart": "libra",
+    "signAtCivilDayEnd": "scorpio"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 1.008,
+    "Moon": 14.521,
+    "Mercury": 1.461,
+    "Venus": 1.163,
+    "Mars": 0.641,
+    "Jupiter": 0.117,
+    "Saturn": 0.003,
+    "Uranus": 0.058,
+    "Neptune": 0.036,
+    "Pluto": 0.017
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown; Moon sign undetermined",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q63243883",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2568214979
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Olivia Rodrigo",
+     "articleUrl": "https://en.wikipedia.org/wiki/Olivia_Rodrigo",
+     "pageId": 53100485,
+     "revisionId": 1385757045,
+     "revisionTimestamp": "2026-11-15T02:24:24Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Glasto2025-546 (cropped 2).jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 377,
+    "substantiveStatements": 16,
+    "highestPairwiseSimilarity": 0.2366
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -67023,6 +68527,157 @@
    }
   },
   {
+   "qid": "Q36844",
+   "slug": "rihanna",
+   "displayName": "Rihanna",
+   "shortDescription": "Singer and businessperson · Barbados · born 1988",
+   "disciplines": [
+    "singer",
+    "businessperson"
+   ],
+   "birthDate": {
+    "storedValue": "1988-02-20",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1988-02-20",
+    "computedGregorianDate": "1988-02-20",
+    "birthdayCrossLinkKey": "1988-02-20",
+    "birthdayRoute": "/birthday/february-20/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q819170",
+    "entityLabel": "Saint Michael",
+    "normalisedLabel": "Saint Michael, Barbados",
+    "country": {
+     "entity": "Q244",
+     "label": "Barbados"
+    },
+    "coordinates": {
+     "latitude": 13.118055555556,
+     "longitude": -59.603055555556,
+     "sourceEntity": "Q819170",
+     "sourceEntityLabel": "Saint Michael",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/Barbados"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/Barbados",
+    "civilTime": "12:00",
+    "utcInstant": "1988-02-20T16:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -240,
+    "civilDayStartUtc": "1988-02-20T04:00:00.000Z",
+    "civilDayEndUtc": "1988-02-21T04:00:00.000Z",
+    "latitude": 13.118055555556,
+    "longitude": -59.603055555556,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q819170",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": 1.59,
+    "meridianResidualMoonDegrees": 0.0146
+   },
+   "sunSign": {
+    "slug": "pisces",
+    "name": "Pisces",
+    "degree": 1.24,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 0.7317,
+     "degreesToNextBoundaryAtWindowEnd": 28.26
+    }
+   },
+   "moon": {
+    "sign": "aries",
+    "signName": "Aries",
+    "degree": 13.02,
+    "uncertain": false,
+    "signAtCivilDayStart": "aries",
+    "signAtCivilDayEnd": "aries"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 1.008,
+    "Moon": 14.398,
+    "Mercury": 0.37,
+    "Venus": 1.165,
+    "Mars": 0.673,
+    "Jupiter": 0.184,
+    "Saturn": 0.076,
+    "Uranus": 0.036,
+    "Neptune": 0.026,
+    "Pluto": 0.004
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q36844",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2568706382
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Rihanna",
+     "articleUrl": "https://en.wikipedia.org/wiki/Rihanna",
+     "pageId": 2110323,
+     "revisionId": 1383962517,
+     "revisionTimestamp": "2026-11-05T21:19:33Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Rihanna visits U.S. Embassy in Barbados 2024 (cropped).jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 409,
+    "substantiveStatements": 18,
+    "highestPairwiseSimilarity": 0.2279
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
    "qid": "Q55404",
    "slug": "ritwik-ghatak",
    "displayName": "Ritwik Ghatak",
@@ -69468,6 +71123,157 @@
     "eligible": false,
     "blockedBy": [
      "phase-5-completion-candidate — release gates pending"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
+   "qid": "Q7396400",
+   "slug": "sabrina-carpenter",
+   "displayName": "Sabrina Carpenter",
+   "shortDescription": "Singer and actor · United States · born 1999",
+   "disciplines": [
+    "singer",
+    "actor"
+   ],
+   "birthDate": {
+    "storedValue": "1999-05-11",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1999-05-11",
+    "computedGregorianDate": "1999-05-11",
+    "birthdayCrossLinkKey": "1999-05-11",
+    "birthdayRoute": "/birthday/may-11/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q1187391",
+    "entityLabel": "Quakertown",
+    "normalisedLabel": "Quakertown, United States",
+    "country": {
+     "entity": "Q30",
+     "label": "United States"
+    },
+    "coordinates": {
+     "latitude": 40.4406,
+     "longitude": -75.3406,
+     "sourceEntity": "Q1187391",
+     "sourceEntityLabel": "Quakertown",
+     "wikidataPrecision": 0.0001,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/New_York"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/New_York",
+    "civilTime": "12:00",
+    "utcInstant": "1999-05-11T16:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -240,
+    "civilDayStartUtc": "1999-05-11T04:00:00.000Z",
+    "civilDayEndUtc": "1999-05-12T04:00:00.000Z",
+    "latitude": 40.4406,
+    "longitude": -75.3406,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q1187391",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -61.36,
+    "meridianResidualMoonDegrees": 0.5625
+   },
+   "sunSign": {
+    "slug": "taurus",
+    "name": "Taurus",
+    "degree": 20.52,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 20.0386,
+     "degreesToNextBoundaryAtWindowEnd": 8.9951
+    }
+   },
+   "moon": {
+    "sign": "pisces",
+    "signName": "Pisces",
+    "degree": 27.12,
+    "uncertain": true,
+    "signAtCivilDayStart": "pisces",
+    "signAtCivilDayEnd": "aries"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 0.966,
+    "Moon": 14.118,
+    "Mercury": 1.863,
+    "Venus": 1.107,
+    "Mars": 0.3,
+    "Jupiter": 0.225,
+    "Saturn": 0.126,
+    "Uranus": 0.008,
+    "Neptune": 0.003,
+    "Pluto": 0.025
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown; Moon sign undetermined",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q7396400",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2567985942
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Sabrina Carpenter",
+     "articleUrl": "https://en.wikipedia.org/wiki/Sabrina_Carpenter",
+     "pageId": 36791152,
+     "revisionId": 1386176626,
+     "revisionTimestamp": "2026-11-17T03:19:50Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Sabrina Carpenter - O2 Arena 2025 - 086 (cropped 2).jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 415,
+    "substantiveStatements": 16,
+    "highestPairwiseSimilarity": 0.2326
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -74505,6 +76311,156 @@
    }
   },
   {
+   "qid": "Q26876",
+   "slug": "taylor-swift",
+   "displayName": "Taylor Swift",
+   "shortDescription": "Singer-songwriter · United States · born 1989",
+   "disciplines": [
+    "singer-songwriter"
+   ],
+   "birthDate": {
+    "storedValue": "1989-12-13",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1989-12-13",
+    "computedGregorianDate": "1989-12-13",
+    "birthdayCrossLinkKey": "1989-12-13",
+    "birthdayRoute": "/birthday/december-13/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q16899212",
+    "entityLabel": "Reading Hospital",
+    "normalisedLabel": "Reading Hospital, United States",
+    "country": {
+     "entity": "Q30",
+     "label": "United States"
+    },
+    "coordinates": {
+     "latitude": 40.332,
+     "longitude": -75.9433,
+     "sourceEntity": "Q16899212",
+     "sourceEntityLabel": "Reading Hospital",
+     "wikidataPrecision": 0.01178416718378,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/New_York"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/New_York",
+    "civilTime": "12:00",
+    "utcInstant": "1989-12-13T17:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -300,
+    "civilDayStartUtc": "1989-12-13T05:00:00.000Z",
+    "civilDayEndUtc": "1989-12-14T05:00:00.000Z",
+    "latitude": 40.332,
+    "longitude": -75.9433,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q16899212",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -3.77,
+    "meridianResidualMoonDegrees": 0.0346
+   },
+   "sunSign": {
+    "slug": "sagittarius",
+    "name": "Sagittarius",
+    "degree": 21.67,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 21.1655,
+     "degreesToNextBoundaryAtWindowEnd": 7.8178
+    }
+   },
+   "moon": {
+    "sign": "cancer",
+    "signName": "Cancer",
+    "degree": 5.55,
+    "uncertain": true,
+    "signAtCivilDayStart": "gemini",
+    "signAtCivilDayEnd": "cancer"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 1.017,
+    "Moon": 14.433,
+    "Mercury": 1.442,
+    "Venus": 0.525,
+    "Mars": 0.692,
+    "Jupiter": 0.126,
+    "Saturn": 0.113,
+    "Uranus": 0.059,
+    "Neptune": 0.036,
+    "Pluto": 0.035
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown; Moon sign undetermined",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q26876",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2566819755
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Taylor Swift",
+     "articleUrl": "https://en.wikipedia.org/wiki/Taylor_Swift",
+     "pageId": 5422144,
+     "revisionId": 1386408871,
+     "revisionTimestamp": "2026-11-18T10:40:28Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Taylor Swift at the 2023 MTV Video Music Awards (3).png"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 436,
+    "substantiveStatements": 18,
+    "highestPairwiseSimilarity": 0.2724
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
    "qid": "Q241494",
    "slug": "teresa-carreno",
    "displayName": "Teresa Carreño",
@@ -75306,6 +77262,156 @@
     "eligible": false,
     "blockedBy": [
      "phase-5-completion-candidate — release gates pending"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
+   "qid": "Q19877770",
+   "slug": "timothee-chalamet",
+   "displayName": "Timothée Chalamet",
+   "shortDescription": "Actor · United States · born 1995",
+   "disciplines": [
+    "actor"
+   ],
+   "birthDate": {
+    "storedValue": "1995-12-27",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1995-12-27",
+    "computedGregorianDate": "1995-12-27",
+    "birthdayCrossLinkKey": "1995-12-27",
+    "birthdayRoute": "/birthday/december-27/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q11299",
+    "entityLabel": "Manhattan",
+    "normalisedLabel": "Manhattan, United States",
+    "country": {
+     "entity": "Q30",
+     "label": "United States"
+    },
+    "coordinates": {
+     "latitude": 40.728333333333,
+     "longitude": -73.994166666667,
+     "sourceEntity": "Q11299",
+     "sourceEntityLabel": "Manhattan",
+     "wikidataPrecision": 0.00027777777777778,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/New_York"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/New_York",
+    "civilTime": "12:00",
+    "utcInstant": "1995-12-27T17:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -300,
+    "civilDayStartUtc": "1995-12-27T05:00:00.000Z",
+    "civilDayEndUtc": "1995-12-28T05:00:00.000Z",
+    "latitude": 40.728333333333,
+    "longitude": -73.994166666667,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q11299",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": 4.02,
+    "meridianResidualMoonDegrees": 0.0369
+   },
+   "sunSign": {
+    "slug": "capricorn",
+    "name": "Capricorn",
+    "degree": 5.47,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 4.9563,
+     "degreesToNextBoundaryAtWindowEnd": 24.0245
+    }
+   },
+   "moon": {
+    "sign": "pisces",
+    "signName": "Pisces",
+    "degree": 22.14,
+    "uncertain": false,
+    "signAtCivilDayStart": "pisces",
+    "signAtCivilDayEnd": "pisces"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 1.019,
+    "Moon": 13.511,
+    "Mercury": 1.388,
+    "Venus": 1.233,
+    "Mars": 0.777,
+    "Jupiter": 0.228,
+    "Saturn": 0.061,
+    "Uranus": 0.055,
+    "Neptune": 0.036,
+    "Pluto": 0.035
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q19877770",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2568599429
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Timothée Chalamet",
+     "articleUrl": "https://en.wikipedia.org/wiki/Timoth%C3%A9e_Chalamet",
+     "pageId": 46494361,
+     "revisionId": 1384407620,
+     "revisionTimestamp": "2026-11-08T02:41:15Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Timothée Chalamet-63541 (cropped).jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 414,
+    "substantiveStatements": 18,
+    "highestPairwiseSimilarity": 0.2379
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
@@ -80748,6 +82854,157 @@
     "eligible": false,
     "blockedBy": [
      "phase-5a-is-design-only — no People route exists yet"
+    ],
+    "contentChecksPassed": true,
+    "contentCheckFailures": []
+   },
+   "suppression": {
+    "status": "active",
+    "requestedBy": null,
+    "decidedAtUtc": null,
+    "note": null
+   }
+  },
+  {
+   "qid": "Q189489",
+   "slug": "zendaya",
+   "displayName": "Zendaya",
+   "shortDescription": "Actor and singer · United States · born 1996",
+   "disciplines": [
+    "actor",
+    "singer"
+   ],
+   "birthDate": {
+    "storedValue": "1996-09-01",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "calendarConversion": "none required: the stored value is already proleptic Gregorian",
+    "displayedDate": "1996-09-01",
+    "computedGregorianDate": "1996-09-01",
+    "birthdayCrossLinkKey": "1996-09-01",
+    "birthdayRoute": "/birthday/september-1/"
+   },
+   "birthTime": null,
+   "timeQuality": "unknown",
+   "birthTimeEvidence": "none: Wikidata carries no birth-time claim for this person",
+   "birthPlace": {
+    "entity": "Q17042",
+    "entityLabel": "Oakland",
+    "normalisedLabel": "Oakland, United States",
+    "country": {
+     "entity": "Q30",
+     "label": "United States"
+    },
+    "coordinates": {
+     "latitude": 37.8,
+     "longitude": -122.25,
+     "sourceEntity": "Q17042",
+     "sourceEntityLabel": "Oakland",
+     "wikidataPrecision": 0.016666666666667,
+     "escalationSteps": 0,
+     "precisionDowngrade": null
+    },
+    "timeZone": "America/Los_Angeles"
+   },
+   "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/Los_Angeles",
+    "civilTime": "12:00",
+    "utcInstant": "1996-09-01T19:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -420,
+    "civilDayStartUtc": "1996-09-01T07:00:00.000Z",
+    "civilDayEndUtc": "1996-09-02T07:00:00.000Z",
+    "latitude": 37.8,
+    "longitude": -122.25,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q17042",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false,
+    "meridianResidualMinutes": -69,
+    "meridianResidualMoonDegrees": 0.6325
+   },
+   "sunSign": {
+    "slug": "virgo",
+    "name": "Virgo",
+    "degree": 9.6,
+    "determinable": true,
+    "cuspCheck": {
+     "ambiguous": false,
+     "boundaryUtc": null,
+     "degreesInsideAtWindowStart": 9.1158,
+     "degreesToNextBoundaryAtWindowEnd": 19.9165
+    }
+   },
+   "moon": {
+    "sign": "taurus",
+    "signName": "Taurus",
+    "degree": 3.77,
+    "uncertain": true,
+    "signAtCivilDayStart": "aries",
+    "signAtCivilDayEnd": "taurus"
+   },
+   "unknownTimeErrorBandDegrees": {
+    "Sun": 0.968,
+    "Moon": 13.499,
+    "Mercury": 0.23,
+    "Venus": 1.038,
+    "Mars": 0.636,
+    "Jupiter": 0.006,
+    "Saturn": 0.065,
+    "Uranus": 0.028,
+    "Neptune": 0.017,
+    "Pluto": 0.012
+   },
+   "dataQualityLabel": "Birth date sourced; birth time unknown; Moon sign undetermined",
+   "sources": {
+    "wikidata": {
+     "entityUrl": "https://www.wikidata.org/wiki/Q189489",
+     "propertiesUsed": [
+      "P569",
+      "P19",
+      "P625",
+      "P106",
+      "P18",
+      "P570",
+      "P17",
+      "P131"
+     ],
+     "lastrevid": 2570521498
+    },
+    "wikipedia": {
+     "language": "en",
+     "title": "Zendaya",
+     "articleUrl": "https://en.wikipedia.org/wiki/Zendaya",
+     "pageId": 28753159,
+     "revisionId": 1386314013,
+     "revisionTimestamp": "2026-11-17T21:55:45Z"
+    },
+    "retrievedAtUtc": "2026-11-18T10:55:24.000Z"
+   },
+   "portrait": {
+    "available": false,
+    "reason": "portrait deliberately omitted from this protected living-person profile",
+    "file": "File:Zendaya-byPhilipRomano.jpg"
+   },
+   "living": true,
+   "reviewedAtUtc": "2026-08-16T00:00:00Z",
+   "computationInputVersion": {
+    "ephemeris": "astronomy-engine (repository dependency)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "pilotTools": "docs/phase5/people-pilot/tools @ protected-living-maintenance"
+   },
+   "contentDepth": {
+    "originalWords": 411,
+    "substantiveStatements": 19,
+    "highestPairwiseSimilarity": 0.2754
+   },
+   "indexEligibility": {
+    "eligible": false,
+    "blockedBy": [
+     "phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links"
     ],
     "contentChecksPassed": true,
     "contentCheckFailures": []
