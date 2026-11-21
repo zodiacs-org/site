@@ -15,6 +15,7 @@ describe('published conformance results', () => {
     expect(source.commit).toBe('01432be354d219dbc2d5609e05a9dd0bcfd313e0');
     expect(source.sha256).toBe('7b26115a5507bbd9c705bbbaa99be3a2408711c61be0b5141424535a75eed03f');
     expect(digest('summary.json')).toBe(source.sha256);
+    expect(source.unsupportedSha256).toBe('3f4948e4fcf1a0061fde203341faacb9f114926ba94f7dd7063df5c40474e58e');
     expect(digest('unsupported.json')).toBe(source.unsupportedSha256);
   });
 

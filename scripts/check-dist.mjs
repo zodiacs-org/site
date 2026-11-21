@@ -23,6 +23,7 @@
  *   9. Source sky, transit, and daily snapshots cover the build date.
  *  10. The inline profile access loader names the built bootstrap chunk.
  */
+import './check-conformance-page.mjs';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
 import { attr, canonicalHref, renderedLinks, crawlDepths, isDailyLastmodPath, robotsBlocks, robotsGroupBlockFailures, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';

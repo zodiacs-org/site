@@ -14,7 +14,7 @@ const testedEngine = summary.runs.find((run) => run.adapter.engine === '@zodiacs
 const siteEngine = /zodiacs-engine-(.+)\.tgz$/u.exec(packageDocument.dependencies['@zodiacs/engine'])?.[1] ?? packageDocument.dependencies['@zodiacs/engine'];
 
 const title = 'Conformance Suite for Astrology Engines | Zodiacs.org';
-const description = `Results for ${total} astrology test vectors covering positions, houses, angles, time, calendars and events. Compare @zodiacs/engine on DE440 and astronomy-engine, with a separate Swiss Ephemeris run.`;
+const description = 'An open conformance suite for astrology computation covering positions, houses, angles, time, calendars and events. Compare @zodiacs/engine on DE440 and astronomy-engine, with a separate Swiss Ephemeris run.';
 
 type Bucket = { count: number; pass: number; fail: number; unsupported: number; error: number };
 type Stats = { unit: string; n: number; median: number; p95: number; max: number };
@@ -251,10 +251,10 @@ const jsonLd = [
             <summary>Unsupported vectors and adapter reasons ({run.summary.total.unsupported})</summary>
             <dl>
               {run.reasons.map(([reason, ids]) => (
-                <>
+                <div>
                   <dt>{reason}</dt>
                   <dd><ul>{ids.map((id) => <li><code>{id}</code></li>)}</ul></dd>
-                </>
+                </div>
               ))}
             </dl>
           </details>
