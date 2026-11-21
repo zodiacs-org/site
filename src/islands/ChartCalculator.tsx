@@ -16,7 +16,6 @@ import AstroTerm from './AstroTerm';
 import SignChip from './SignChip';
 import PlanetGlyph from '../components/PlanetGlyph';
 import AspectGlyph from '../components/AspectGlyph';
-import Wheel from '../lib/wheel/Wheel';
 import LayerChips from './explorer/LayerChips';
 import { moonCandidates, moonIsUncertain, moonLabel } from '../lib/moon-certainty';
 import { createModuleLoader } from '../lib/module-load';
@@ -115,6 +114,7 @@ type ChartSignature = import('../lib/chart-signature').ChartSignature;
 type ShareSurfaceModule = typeof import('./PositionsShareSurface');
 type ShareDialogModule = typeof import('./ChartShareDialog');
 type ChartActionDockModule = typeof import('./ChartActionDock');
+const loadWheel = createModuleLoader(() => import('../lib/wheel/Wheel'));
 const loadChartControls = createModuleLoader(() => import('./ChartActionDock'));
 const loadCalculatorReceipt = createModuleLoader(() => import('../lib/engine/calculator-receipt'));
 // The Big Three reading text only shows with a result, so it downloads with the calculation.
@@ -339,8 +339,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const [houseSystem, setHouseSystem] = useState<HouseSystem>(initialField('#house-system')?.value === 'placidus'
     ? 'placidus' : 'whole');
   const [chart, setChart] = useState<Chart | null>(null);
-  const resultCount = useRef(0);
-  const firstResult = resultCount.current === 1;
+  const [resultCount, setResultCount] = useState(0);
+  const firstResult = resultCount === 1;
+  const [Wheel, setWheel] = useState<Awaited<ReturnType<typeof loadWheel>>['default'] | null>(null);
   // Read on the birthplace's own local mean time. Since engine rc.15 the
   // `lmt` flag says so too, whole minutes included; before, it marked only an
   // offset with seconds, which a whole-minute mean time lacked.
@@ -1431,6 +1432,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       // Early dates also download the local mean time table and the zone's
       // pinned history; the downloads run together. A rejection is observed
       // by the loader itself.
+      const wheelReady = mode === 'full' ? loadWheel() : null;
       const localTimeReady = prepareLocalTime(input.date, input.city.tz);
       // Optional: a failed download leaves the cards without their reading line.
       const readingsReady = showsEnglishInterpretation
@@ -1438,7 +1440,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         : null;
       const engine = await loadEngine();
       if (!runIsCurrent()) return;
-      await localTimeReady;
+      const [wheel] = await Promise.all([wheelReady, localTimeReady]);
       if (!runIsCurrent()) return;
       if (readingsReady) {
         const read = await readingsReady;
@@ -1495,7 +1497,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         chart: result, runId, inputRevision: runInputRevision, accessGeneration, requiresProfileAccess,
       };
       resultOwnerRef.current = owner;
-      resultCount.current += 1;
+      if (wheel) setWheel(() => wheel.default);
+      setResultCount((count) => count + 1);
       setChart(result);
       setOnMeanTime(resolved.localMeanTime !== undefined);
       if (portable) {
@@ -2473,7 +2476,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             </details>
           )}
 
-          {mode === 'full' && scene && (
+          {mode === 'full' && scene && Wheel && (
             <>
               <div class={`calc__wheel shell${tourOpen ? ' calc__wheel--tour' : ''}`}>
                 <div class="core calc__wheel-core">
