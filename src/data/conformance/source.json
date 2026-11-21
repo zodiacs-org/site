@@ -1,7 +1,18 @@
 {
-  "note": "summary.json is conformance/results/summary.json from the engine repository at the commit below, copied unchanged. Refresh both together.",
   "repository": "https://github.com/zodiacs-org/engine",
-  "commit": "883371f5d592cd952873422f13766038fcfa7b68",
+  "release": "v2.0.0",
+  "commit": "01432be354d219dbc2d5609e05a9dd0bcfd313e0",
+  "commitDate": "2026-11-21",
   "path": "conformance/results/summary.json",
-  "sha256": "fed41b3610c4289a7875b2c257b4df39247dd3c684ef4c07d90184a24e3f974b"
+  "sha256": "7b26115a5507bbd9c705bbbaa99be3a2408711c61be0b5141424535a75eed03f",
+  "report": {
+    "path": "conformance/RESULTS.md",
+    "sha256": "341073a8a7deabbfa610bf24e5bb6232874fffd10906162a8b3f61f8082ee998"
+  },
+  "resultSha256": {
+    "@zodiacs/engine": "bacb468ee50fc261347e0393efda830941dcd661b2003e52ec56460890abcfe6",
+    "@zodiacs/engine on astronomy-engine": "8f38ee659d5ca812a972923d6c068fdf52260547d4e2cb673c26175077f59916",
+    "Swiss Ephemeris": "383fe5b03e1529f20c8e071c80cb69141051dc019b868c8bcdf0222190baa7c0"
+  },
+  "unsupportedSha256": "3f4948e4fcf1a0061fde203341faacb9f114926ba94f7dd7063df5c40474e58e"
 }

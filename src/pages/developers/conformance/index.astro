@@ -3,6 +3,7 @@ import { ACCURACY_PATH, accuracyPublished } from '../../../accuracy/publication.
 import packageDocument from '../../../../package.json';
 import Base from '../../../layouts/Base.astro';
 import summary from '../../../data/conformance/summary.json';
+import unsupported from '../../../data/conformance/unsupported.json';
 import source from '../../../data/conformance/source.json';
 import { CONFORMANCE_LICENSE, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 
@@ -13,18 +14,20 @@ const testedEngine = summary.runs.find((run) => run.adapter.engine === '@zodiacs
 const siteEngine = /zodiacs-engine-(.+)\.tgz$/u.exec(packageDocument.dependencies['@zodiacs/engine'])?.[1] ?? packageDocument.dependencies['@zodiacs/engine'];
 
 const title = 'Conformance Suite for Astrology Engines | Zodiacs.org';
-const description = 'An open conformance suite for astrology computation: 500 test vectors for positions, houses and angles, time zones, time scales and calendars, each with an independent arbiter and a stated tolerance, and the results for @zodiacs/engine and for Swiss Ephemeris.';
+const description = `Results for ${total} astrology test vectors covering positions, houses, angles, time, calendars and events. Compare @zodiacs/engine on DE440 and astronomy-engine, with a separate Swiss Ephemeris run.`;
 
 type Bucket = { count: number; pass: number; fail: number; unsupported: number; error: number };
 type Stats = { unit: string; n: number; median: number; p95: number; max: number };
 type KindSummary = Bucket & { residuals?: Record<string, Stats> };
 
-const levelTitles: Record<string, string> = { L1: 'Positions', L2: 'Houses and angles', L3: 'Time and calendars' };
 const kindTitles: Record<string, string> = {
   'position.apparent.ecliptic-true-of-date': 'Apparent positions, ecliptic of date',
   'angles.asc-mc': 'Ascendant and midheaven',
   'angles.vertex-east-point': 'Vertex and east point',
   'houses.cusps': 'House cusps, thirteen systems',
+  'event.ingress': 'Sign ingresses',
+  'event.station': 'Planetary stations',
+  'event.lunation': 'New and full Moons',
   'time.zone-offset': 'Time zone offsets',
   'time.local-mean-time': 'Local mean time',
   'time.tt-minus-utc': 'TT − UTC',
@@ -40,7 +43,7 @@ function residual(kind: KindSummary): string {
     const format = (value: number) => (stats.unit === 'arcsec' ? value.toFixed(3) : value.toPrecision(3));
     return `${field} ${format(stats.median)}${unit} / ${format(stats.max)}${unit}`;
   });
-  return parts.join('; ') || '—';
+  return parts.join('; ') || 'No residual';
 }
 
 const escape = (text: string) => text.replace(/&/gu, '&amp;').replace(/</gu, '&lt;').replace(/>/gu, '&gt;');
@@ -74,9 +77,13 @@ function notesHtml(markdown: string | null): string {
 
 const runs = summary.runs.map((run) => ({
   ...run,
-  heading: `${run.adapter.engine} ${run.adapter.engineVersion}`,
+  heading: run.adapter.name === 'zodiacs-engine'
+    ? `${run.adapter.engine} ${run.adapter.engineVersion} (default DE440)`
+    : `${run.adapter.engine} ${run.adapter.engineVersion}`,
+  reasons: Object.entries((unsupported as Record<string, Record<string, string[]>>)[run.adapter.engine]),
   levels: summary.levels.map((level) => ({
     level: level.level,
+    title: level.title,
     bucket: (run.summary.byLevel as Record<string, Bucket>)[level.level],
     kinds: level.kinds.map((kind) => ({ kind: kind.kind, bucket: (run.summary.byKind as Record<string, KindSummary>)[kind.kind] })),
   })),
@@ -109,7 +116,7 @@ const jsonLd = [
       <p>
         The suite is {total} test vectors for the numbers an astrology program
         computes: positions, angles and house cusps, time zone offsets, time
-        scales and calendar dates. Each vector names its arbiter, the
+        scales, calendar dates and event times. Each vector names its arbiter, the
         independent source that decides the expected value, and a tolerance
         that was fixed before any engine was run against it. None uses Swiss
         Ephemeris as its arbiter; Swiss Ephemeris is measured like any other
@@ -119,8 +126,8 @@ const jsonLd = [
         Any engine can be run against it through a small adapter that reads
         and writes one JSON object per line. The vectors, the harness and the
         adapters are dedicated to the public domain under CC0 1.0.
-        Version {summary.suiteVersion} is at <a href={suiteTree}>zodiacs-org/engine</a>,
-        commit <code>{source.commit.slice(0, 7)}</code>, with its{' '}
+        Suite {summary.suiteVersion} is at <a href={suiteTree}>zodiacs-org/engine</a>,
+        commit <code>{source.commit.slice(0, 7)}</code> dated <time datetime={source.commitDate}>{source.commitDate}</time>, with its{' '}
         <a href={suiteFile('SPEC.md')}>format and protocol</a> and{' '}
         <a href={suiteFile('RESULTS.md')}>full results</a>. Each vector's kind and
         arbiter has an id in the <a href="/developers/conventions/#ns-kind">conventions registry</a>,
@@ -128,6 +135,27 @@ const jsonLd = [
         lists those two ids in its <code>conventionIds</code>.
       </p>
       {accuracyPublished && <p><a href={ACCURACY_PATH}>See the latest NASA accuracy receipt</a>.</p>}
+    </div>
+
+    <h2 id="results">Scoreboard</h2>
+    <div class="conformance-table-wrap" tabindex="0" role="region" aria-label="Scoreboard by adapter">
+      <table>
+        <thead><tr><th scope="col">Adapter</th><th scope="col">Suite</th><th scope="col">Vectors</th><th scope="col">Pass</th><th scope="col">Fail</th><th scope="col">Unsupported</th><th scope="col">Error</th><th scope="col">L1 positions passed</th></tr></thead>
+        <tbody>
+          {runs.map((run) => (
+            <tr>
+              <th scope="row"><a href={`#${run.adapter.name}`}>{run.heading}</a></th>
+              <td>{run.suiteVersion}</td>
+              <td>{run.summary.total.count}</td>
+              <td>{run.summary.total.pass}</td>
+              <td>{run.summary.total.fail}</td>
+              <td>{run.summary.total.unsupported}</td>
+              <td>{run.summary.total.error}</td>
+              <td>{run.summary.byLevel.L1.pass}/{run.summary.byLevel.L1.count}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
 
     <h2 id="vectors">What it checks</h2>
@@ -151,7 +179,7 @@ const jsonLd = [
     <div class="prose">
       <ul>
         {summary.levels.map((level) => level.arbiters.map((arbiter) => (
-          <li><strong>{levelTitles[level.level]}.</strong> {arbiter.name}.</li>
+          <li><strong>{level.title}.</strong> {arbiter.name}.</li>
         )))}
       </ul>
       <p>
@@ -162,12 +190,12 @@ const jsonLd = [
       </p>
     </div>
 
-    <h2 id="results">Results</h2>
+    <h2>Results by level and kind</h2>
     <div class="prose">
       <p>
-        A vector an engine has no function for is counted as unsupported, not
-        as a failure. Residuals are the median and largest difference from the
-        expected value.
+        Unsupported means the adapter could not answer the vector. Each run
+        lists those vector IDs with the adapter's reason. The residual columns give
+        the median and largest difference from the expected value.
       </p>
       {testedEngine === siteEngine ? (
         <p>
@@ -183,29 +211,33 @@ const jsonLd = [
       )}
     </div>
     {runs.map((run) => (
-      <>
-        <h3 class="conformance-run">{run.heading}</h3>
+      <section aria-labelledby={run.adapter.name}>
+        <h3 class="conformance-run" id={run.adapter.name}>{run.heading}</h3>
         <div class="conformance-table-wrap" tabindex="0" role="region" aria-label={`Results for ${run.heading}`}>
           <table>
-            <thead><tr><th scope="col">Kind</th><th scope="col">Pass</th><th scope="col">Fail</th><th scope="col">Unsupported</th><th scope="col">Median / largest residual</th></tr></thead>
+            <thead><tr><th scope="col">Kind</th><th scope="col">Vectors</th><th scope="col">Pass</th><th scope="col">Fail</th><th scope="col">Unsupported</th><th scope="col">Error</th><th scope="col">Median / largest residual</th></tr></thead>
             <tbody>
               {run.levels.map((level) => (
                 <>
                   {level.kinds.map((kind) => kind.bucket && (
-                    <tr>
+                    <tr data-kind={kind.kind}>
                       <th scope="row">{kindTitles[kind.kind] ?? kind.kind}</th>
+                      <td>{kind.bucket.count}</td>
                       <td>{kind.bucket.pass}</td>
                       <td>{kind.bucket.fail}</td>
-                      <td>{kind.bucket.unsupported + kind.bucket.error}</td>
+                      <td>{kind.bucket.unsupported}</td>
+                      <td>{kind.bucket.error}</td>
                       <td class="conformance-residual">{residual(kind.bucket)}</td>
                     </tr>
                   ))}
                   {level.bucket && (
-                    <tr class="conformance-total">
-                      <th scope="row">{levelTitles[level.level]}, all</th>
+                    <tr class="conformance-total" data-level={level.level}>
+                      <th scope="row">{level.level} {level.title}, all</th>
+                      <td>{level.bucket.count}</td>
                       <td>{level.bucket.pass}</td>
                       <td>{level.bucket.fail}</td>
-                      <td>{level.bucket.unsupported + level.bucket.error}</td>
+                      <td>{level.bucket.unsupported}</td>
+                      <td>{level.bucket.error}</td>
                       <td></td>
                     </tr>
                   )}
@@ -214,6 +246,20 @@ const jsonLd = [
             </tbody>
           </table>
         </div>
+        {run.reasons.length > 0 && (
+          <details class="conformance-reasons">
+            <summary>Unsupported vectors and adapter reasons ({run.summary.total.unsupported})</summary>
+            <dl>
+              {run.reasons.map(([reason, ids]) => (
+                <>
+                  <dt>{reason}</dt>
+                  <dd><ul>{ids.map((id) => <li><code>{id}</code></li>)}</ul></dd>
+                </>
+              ))}
+            </dl>
+          </details>
+        )}
+        <p class="conformance-tags"><a href={suiteFile(run.file)}>Adapter result file</a></p>
         {run.tags.length > 0 && (
           <p class="conformance-tags">
             {run.tags.map(([tag, bucket]) => `Vectors tagged ${tag}: ${bucket.pass} pass, ${bucket.fail} fail, ${bucket.unsupported} unsupported, of ${bucket.count}.`).join(' ')}
@@ -223,16 +269,18 @@ const jsonLd = [
           <p class="conformance-tags">Published as verdicts, returned flags and summary statistics only.</p>
         )}
         {run.suiteVersion !== summary.suiteVersion && (
-          <p class="conformance-tags">Run on version {run.suiteVersion}'s vector files, which hold the same vectors without their ids.</p>
+          <p class="conformance-tags">This run covers {run.summary.total.count} vectors from suite {run.suiteVersion} ({Object.keys(run.summary.byLevel).join(', ')}).</p>
         )}
         <div class="prose conformance-notes" set:html={notesHtml(run.notes)} />
-      </>
+      </section>
     ))}
 
-    <h2 id="run">Run it yourself</h2>
+    <h2 id="run">How to enter</h2>
     <div class="prose">
       <p>
-        With Node.js 20 or later, from a clone of the engine repository:
+        Follow the <a href={suiteFile('README.md')}>suite README</a> to run the harness.
+        The <a href={suiteFile('SPEC.md')}>adapter specification</a> defines the request, response and verdicts.
+        Run these commands from a clone of the engine repository.
       </p>
     </div>
     <pre tabindex="0" role="region" aria-label="Commands"><code>{`npm ci && npm run build
@@ -282,5 +330,10 @@ node conformance/harness/run.mjs \\
   .conformance-tolerance, .conformance-residual { white-space: normal !important; color: var(--text-2); }
   .conformance-total th, .conformance-total td { color: var(--text-1); border-bottom-color: var(--hair-2); }
   .conformance-tags { color: var(--text-2); font-size: var(--text-sm); max-width: 68ch; }
+  .conformance-reasons summary { cursor: pointer; }
+  .conformance-reasons dt { margin-top: var(--s-4); max-width: 68ch; }
+  .conformance-reasons dd { margin: var(--s-2) 0 var(--s-4); }
+  .conformance-reasons ul { display: flex; flex-wrap: wrap; column-gap: var(--s-3); padding: 0; list-style: none; }
+  .conformance-notes :global(code) { overflow-wrap: anywhere; white-space: normal; }
   .conformance-notes { font-size: var(--text-sm); color: var(--text-2); }
 </style>
