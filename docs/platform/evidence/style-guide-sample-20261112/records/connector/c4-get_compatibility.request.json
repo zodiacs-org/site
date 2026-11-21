@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_compatibility","arguments":{"a":{"birthDate":"1988-02-14"},"b":{"birthDate":"1991-09-30"}}}}
