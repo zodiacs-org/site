@@ -1,0 +1,228 @@
+{
+ "id": "23-get_compatibility-famous",
+ "why": "valid call, published famous chart",
+ "sentAtUtc": "2026-11-11T16:00:25+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_compatibility",
+   "arguments": {
+    "a": {
+     "birthDate": "1990-05-03"
+    },
+    "b": {
+     "famous": "Ada Lovelace"
+    }
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_compatibility\",\"data\":{\"a\":{\"name\":null,\"label\":\"Person A\",\"birthDate\":\"1990-05-03\",\"timeKnown\":false,\"placed\":false,\"place\":null,\"sun\":\"taurus\",\"moon\":null,\"rising\":null,\"famous\":false,\"url\":null},\"b\":{\"name\":\"Ada Lovelace\",\"label\":\"Ada Lovelace\",\"birthDate\":\"1815-12-10\",\"timeKnown\":false,\"placed\":false,\"place\":\"London\",\"sun\":\"sagittarius\",\"moon\":null,\"rising\":null,\"famous\":true,\"url\":\"https://zodiacs.org/people/ada-lovelace/?ref=assistant\"},\"score\":{\"overall\":60,\"areas\":{\"attraction\":62,\"communication\":73,\"stability\":48},\"verdict\":\"A good match, with some work to do\",\"headline\":\"Communication is the strongest part of this pairing; long-term stability will take the most work. Reading confidence 55%.\"},\"signPair\":{\"slug\":\"taurus-sagittarius\",\"signs\":[\"taurus\",\"sagittarius\"],\"same\":false,\"element\":{\"label\":\"Spark and soil\",\"note\":\"Fire starts, earth finishes: you’ll get a lot done together, but expect clashes over pace.\"},\"modality\":{\"label\":\"Anchor and sail\",\"note\":\"Stability meets flexibility: you balance each other well.\"},\"polarity\":\"One outgoing, one private: you balance each other, as one talks it out and the other thinks it through.\"},\"contacts\":[{\"aBody\":\"Venus\",\"bBody\":\"Mercury\",\"aspect\":\"trine\",\"orb\":1.2,\"generational\":false,\"line\":\"Person A’s way of loving flows with Ada Lovelace’s way of thinking. This flows naturally and brings out the best in you both.\"},{\"aBody\":\"Mars\",\"bBody\":\"Uranus\",\"aspect\":\"square\",\"orb\":1.6,\"generational\":false,\"line\":\"Person A’s drive pushes against Ada Lovelace’s independence. Expect friction here, especially under stress.\"},{\"aBody\":\"Sun\",\"bBody\":\"Saturn\",\"aspect\":\"square\",\"orb\":4.2,\"generational\":false,\"line\":\"Person A’s sense of self pushes against Ada Lovelace’s sense of duty. Expect friction here, especially under stress.\"},{\"aBody\":\"Saturn\",\"bBody\":\"Mars\",\"aspect\":\"square\",\"orb\":4.9,\"generational\":false,\"line\":\"Person A’s sense of duty pushes against Ada Lovelace’s drive. Expect friction here, especially under stress.\"},{\"aBody\":\"Mercury\",\"bBody\":\"Saturn\",\"aspect\":\"square\",\"orb\":5,\"generational\":false,\"line\":\"Person A’s way of thinking pushes against Ada Lovelace’s sense of duty. Expect friction here, especially under stress.\"},{\"aBody\":\"Jupiter\",\"bBody\":\"Jupiter\",\"aspect\":\"trine\",\"orb\":5.2,\"generational\":false,\"line\":\"Person A’s appetite for more flows with Ada Lovelace’s. This flows naturally and brings out the best in you both.\"},{\"aBody\":\"Jupiter\",\"bBody\":\"Venus\",\"aspect\":\"trine\",\"orb\":5.9,\"generational\":false,\"line\":\"Person A’s appetite for more flows with Ada Lovelace’s way of loving. This flows naturally and brings out the best in you both.\"},{\"aBody\":\"Neptune\",\"bBody\":\"Mars\",\"aspect\":\"square\",\"orb\":5.9,\"generational\":false,\"line\":\"Person A’s imagination pushes against Ada Lovelace’s drive. Expect friction here, especially under stress.\"}],\"counts\":{\"easeful\":4,\"charged\":7,\"total\":11,\"byAspect\":{\"conjunction\":0,\"sextile\":0,\"square\":7,\"trine\":4,\"opposition\":0}},\"elements\":{\"a\":{\"fire\":0,\"earth\":5,\"air\":0,\"water\":4},\"b\":{\"fire\":5,\"earth\":0,\"air\":1,\"water\":3}},\"modalities\":{\"a\":{\"cardinal\":4,\"fixed\":3,\"mutable\":2},\"b\":{\"cardinal\":1,\"fixed\":3,\"mutable\":5}},\"pageUrl\":\"https://zodiacs.org/compatibility/taurus-sagittarius/?ref=assistant\",\"cardUrl\":null,\"shareUrl\":\"https://zodiacs.org/share/compatibility/?as=taurus&bs=sagittarius&score=60&attraction=62&communication=73&stability=48&v=good&c=55&ref=assistant\",\"notes\":[\"Without a birth time for Person A, the Moon is left out: it moves about 13° in a day, so its contacts cannot be placed. Positions are for noon on the birth date, and the other orbs can differ by about a degree.\",\"Ada Lovelace's birth time is not on record, so Zodiacs uses their published chart for 12:00 civil time in London. Their Moon and rising sign are left out, and the other orbs can differ by about a degree.\",\"Reading confidence 55%\"],\"note\":\"Astrology’s reading of your two charts, for insight and fun, not a guarantee of how things will turn out.\"},\"links\":[{\"title\":\"Ada Lovelace's chart on Zodiacs\",\"url\":\"https://zodiacs.org/people/ada-lovelace/?ref=assistant\"},{\"title\":\"Compatibility on Zodiacs\",\"url\":\"https://zodiacs.org/compatibility/?ref=assistant\"},{\"title\":\"Resolve a town or city (find_birthplace)\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"},{\"title\":\"How we calculate\",\"url\":\"https://zodiacs.org/methodology/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_compatibility",
+    "data": {
+     "a": {
+      "name": null,
+      "label": "Person A",
+      "birthDate": "1990-05-03",
+      "timeKnown": false,
+      "placed": false,
+      "place": null,
+      "sun": "taurus",
+      "moon": null,
+      "rising": null,
+      "famous": false,
+      "url": null
+     },
+     "b": {
+      "name": "Ada Lovelace",
+      "label": "Ada Lovelace",
+      "birthDate": "1815-12-10",
+      "timeKnown": false,
+      "placed": false,
+      "place": "London",
+      "sun": "sagittarius",
+      "moon": null,
+      "rising": null,
+      "famous": true,
+      "url": "https://zodiacs.org/people/ada-lovelace/?ref=assistant"
+     },
+     "score": {
+      "overall": 60,
+      "areas": {
+       "attraction": 62,
+       "communication": 73,
+       "stability": 48
+      },
+      "verdict": "A good match, with some work to do",
+      "headline": "Communication is the strongest part of this pairing; long-term stability will take the most work. Reading confidence 55%."
+     },
+     "signPair": {
+      "slug": "taurus-sagittarius",
+      "signs": [
+       "taurus",
+       "sagittarius"
+      ],
+      "same": false,
+      "element": {
+       "label": "Spark and soil",
+       "note": "Fire starts, earth finishes: you’ll get a lot done together, but expect clashes over pace."
+      },
+      "modality": {
+       "label": "Anchor and sail",
+       "note": "Stability meets flexibility: you balance each other well."
+      },
+      "polarity": "One outgoing, one private: you balance each other, as one talks it out and the other thinks it through."
+     },
+     "contacts": [
+      {
+       "aBody": "Venus",
+       "bBody": "Mercury",
+       "aspect": "trine",
+       "orb": 1.2,
+       "generational": false,
+       "line": "Person A’s way of loving flows with Ada Lovelace’s way of thinking. This flows naturally and brings out the best in you both."
+      },
+      {
+       "aBody": "Mars",
+       "bBody": "Uranus",
+       "aspect": "square",
+       "orb": 1.6,
+       "generational": false,
+       "line": "Person A’s drive pushes against Ada Lovelace’s independence. Expect friction here, especially under stress."
+      },
+      {
+       "aBody": "Sun",
+       "bBody": "Saturn",
+       "aspect": "square",
+       "orb": 4.2,
+       "generational": false,
+       "line": "Person A’s sense of self pushes against Ada Lovelace’s sense of duty. Expect friction here, especially under stress."
+      },
+      {
+       "aBody": "Saturn",
+       "bBody": "Mars",
+       "aspect": "square",
+       "orb": 4.9,
+       "generational": false,
+       "line": "Person A’s sense of duty pushes against Ada Lovelace’s drive. Expect friction here, especially under stress."
+      },
+      {
+       "aBody": "Mercury",
+       "bBody": "Saturn",
+       "aspect": "square",
+       "orb": 5,
+       "generational": false,
+       "line": "Person A’s way of thinking pushes against Ada Lovelace’s sense of duty. Expect friction here, especially under stress."
+      },
+      {
+       "aBody": "Jupiter",
+       "bBody": "Jupiter",
+       "aspect": "trine",
+       "orb": 5.2,
+       "generational": false,
+       "line": "Person A’s appetite for more flows with Ada Lovelace’s. This flows naturally and brings out the best in you both."
+      },
+      {
+       "aBody": "Jupiter",
+       "bBody": "Venus",
+       "aspect": "trine",
+       "orb": 5.9,
+       "generational": false,
+       "line": "Person A’s appetite for more flows with Ada Lovelace’s way of loving. This flows naturally and brings out the best in you both."
+      },
+      {
+       "aBody": "Neptune",
+       "bBody": "Mars",
+       "aspect": "square",
+       "orb": 5.9,
+       "generational": false,
+       "line": "Person A’s imagination pushes against Ada Lovelace’s drive. Expect friction here, especially under stress."
+      }
+     ],
+     "counts": {
+      "easeful": 4,
+      "charged": 7,
+      "total": 11,
+      "byAspect": {
+       "conjunction": 0,
+       "sextile": 0,
+       "square": 7,
+       "trine": 4,
+       "opposition": 0
+      }
+     },
+     "elements": {
+      "a": {
+       "fire": 0,
+       "earth": 5,
+       "air": 0,
+       "water": 4
+      },
+      "b": {
+       "fire": 5,
+       "earth": 0,
+       "air": 1,
+       "water": 3
+      }
+     },
+     "modalities": {
+      "a": {
+       "cardinal": 4,
+       "fixed": 3,
+       "mutable": 2
+      },
+      "b": {
+       "cardinal": 1,
+       "fixed": 3,
+       "mutable": 5
+      }
+     },
+     "pageUrl": "https://zodiacs.org/compatibility/taurus-sagittarius/?ref=assistant",
+     "cardUrl": null,
+     "shareUrl": "https://zodiacs.org/share/compatibility/?as=taurus&bs=sagittarius&score=60&attraction=62&communication=73&stability=48&v=good&c=55&ref=assistant",
+     "notes": [
+      "Without a birth time for Person A, the Moon is left out: it moves about 13° in a day, so its contacts cannot be placed. Positions are for noon on the birth date, and the other orbs can differ by about a degree.",
+      "Ada Lovelace's birth time is not on record, so Zodiacs uses their published chart for 12:00 civil time in London. Their Moon and rising sign are left out, and the other orbs can differ by about a degree.",
+      "Reading confidence 55%"
+     ],
+     "note": "Astrology’s reading of your two charts, for insight and fun, not a guarantee of how things will turn out."
+    },
+    "links": [
+     {
+      "title": "Ada Lovelace's chart on Zodiacs",
+      "url": "https://zodiacs.org/people/ada-lovelace/?ref=assistant"
+     },
+     {
+      "title": "Compatibility on Zodiacs",
+      "url": "https://zodiacs.org/compatibility/?ref=assistant"
+     },
+     {
+      "title": "Resolve a town or city (find_birthplace)",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     },
+     {
+      "title": "How we calculate",
+      "url": "https://zodiacs.org/methodology/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

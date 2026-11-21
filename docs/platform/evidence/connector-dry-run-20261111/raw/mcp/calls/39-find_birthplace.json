@@ -1,0 +1,78 @@
+{
+ "id": "39-find_birthplace",
+ "why": "valid call",
+ "sentAtUtc": "2026-11-11T16:01:36+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "find_birthplace",
+   "arguments": {
+    "place": "Madrid",
+    "country": "Spain",
+    "date": "1990-05-03"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"find_birthplace\",\"data\":{\"place\":\"Madrid\",\"country\":\"Spain\",\"date\":\"1990-05-03\",\"places\":[{\"name\":\"Madrid\",\"region\":\"Madrid\",\"country\":\"Spain\",\"latitude\":40.42,\"longitude\":-3.7,\"timeZone\":\"Europe/Madrid\",\"offset\":\"+02:00\",\"offsetMinutes\":120},{\"name\":\"Madrid Centro\",\"region\":\"Madrid\",\"country\":\"Spain\",\"latitude\":40.42,\"longitude\":-3.7,\"timeZone\":\"Europe/Madrid\",\"offset\":\"+02:00\",\"offsetMinutes\":120}],\"message\":null,\"source\":{\"name\":\"GeoNames cities15000\",\"licence\":\"CC BY 4.0\",\"note\":\"Resolved from the place index shipped with Zodiacs. The name is not sent anywhere, and nothing is stored. Pass the latitude, longitude and time zone to a chart tool.\"}},\"links\":[{\"title\":\"Birth chart on Zodiacs\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "find_birthplace",
+    "data": {
+     "place": "Madrid",
+     "country": "Spain",
+     "date": "1990-05-03",
+     "places": [
+      {
+       "name": "Madrid",
+       "region": "Madrid",
+       "country": "Spain",
+       "latitude": 40.42,
+       "longitude": -3.7,
+       "timeZone": "Europe/Madrid",
+       "offset": "+02:00",
+       "offsetMinutes": 120
+      },
+      {
+       "name": "Madrid Centro",
+       "region": "Madrid",
+       "country": "Spain",
+       "latitude": 40.42,
+       "longitude": -3.7,
+       "timeZone": "Europe/Madrid",
+       "offset": "+02:00",
+       "offsetMinutes": 120
+      }
+     ],
+     "message": null,
+     "source": {
+      "name": "GeoNames cities15000",
+      "licence": "CC BY 4.0",
+      "note": "Resolved from the place index shipped with Zodiacs. The name is not sent anywhere, and nothing is stored. Pass the latitude, longitude and time zone to a chart tool."
+     }
+    },
+    "links": [
+     {
+      "title": "Birth chart on Zodiacs",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

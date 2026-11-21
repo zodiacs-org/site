@@ -1,0 +1,41 @@
+{
+ "id": "77-err-year-out-of-range",
+ "why": "D4: year outside 1800 to 2199",
+ "sentAtUtc": "2026-11-11T16:03:49+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_sky",
+   "arguments": {
+    "instant": "1700-01-01T00:00:00Z"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"get_sky\",\"error\":{\"code\":\"invalid-request\",\"message\":\"instants[0] must fall from 1800-01-01T00:00:00.000Z to 2199-12-31T23:59:59.999Z.\"}}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "get_sky",
+    "error": {
+     "code": "invalid-request",
+     "message": "instants[0] must fall from 1800-01-01T00:00:00.000Z to 2199-12-31T23:59:59.999Z."
+    }
+   },
+   "isError": true
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

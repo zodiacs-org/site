@@ -1,0 +1,61 @@
+Zodiacs AI Integrations | Zodiacs.orgSkip to content <#main>
+Zodiacs·org </>
+ToolsSignsToday </today/>Learn </learn/>Horoscopes </horoscopes/> </profile/>/Astrofolio </astrofolio/>
+Birth chartSee your sun, moon, rising, planets, houses, and what they mean. </birth-chart/>CompatibilityCompare two charts and see where they click, clash, and grow. </compatibility/>TransitsExplore today’s planets and their connections to your chart. </transits/>Moon signHow you feel, and what settles you. </moon-sign/>Rising signFind the sign people meet first. Birth time helps. </rising-sign/>Moon phaseTonight’s moon, and the moon of any date you care about. </moon-phase/>Saturn returnWhen yours hits, exactly, and what it tends to ask. </saturn-return/>BirthdayFind your Sun sign from your birthday, including dates near a sign change. </birthday/>
+More to explore
+- Group charts </group-charts/>
+- Chart twins </chart-twins/>
+- Big three card </big-three/>
+- Invite a friend </compatibility/invite/>
+- Sky calendar </sky-calendar/>
+- Chart of the day </chart-of-the-day/>
+- Your sky, wrapped </your-sky-wrapped/>
+- Chart PDF </astrologer-kit/>All tools → </tools/>
+AriesMar 21 to Apr 19 </aries/>TaurusApr 20 to May 20 </taurus/>GeminiMay 21 to Jun 20 </gemini/>CancerJun 21 to Jul 22 </cancer/>LeoJul 23 to Aug 22 </leo/>VirgoAug 23 to Sep 22 </virgo/>LibraSep 23 to Oct 22 </libra/>ScorpioOct 23 to Nov 21 </scorpio/>SagittariusNov 22 to Dec 21 </sagittarius/>CapricornDec 22 to Jan 19 </capricorn/>AquariusJan 20 to Feb 18 </aquarius/>PiscesFeb 19 to Mar 20 </pisces/>
+The siteBirth chart </birth-chart/>Compatibility </compatibility/>TodayYour daily reading and personal chart highlights </today/>Learn </learn/>HoroscopesDaily readings for your zodiac sign </horoscopes/>Saved chartsYour birth chart and the people you’ve added </profile/>
+Tools
+Transits </transits/>Moon sign </moon-sign/>Rising sign </rising-sign/>Moon phase </moon-phase/>Saturn return </saturn-return/>Birthday </birthday/>All tools → </tools/>
+Developers </developers/>AstrofolioOfficial Zodiac token collection </astrofolio/>
+The twelve
+Aries </aries/>Taurus </taurus/>Gemini </gemini/>Cancer </cancer/>Leo </leo/>Virgo </virgo/>Libra </libra/>Scorpio </scorpio/>Sagittarius </sagittarius/>Capricorn </capricorn/>Aquarius </aquarius/>Pisces </pisces/>
+Developer tools
+# Build with the sky
+Zodiacs connects AI assistants to the Zodiacs engine in two ways: a hosted MCP server at https://zodiacs.org/mcp for any assistant that accepts remote MCP connections, and a local developer plugin that runs on your own machine. Public directory listings remain release gates.
+Looking for the app? See the cards, short demo and current connection options for ChatGPT and Claude </apps/>.
+## Connect it
+To use it in Claude, open Customize, then Connectors, add a custom connector and enter https://zodiacs.org/mcp. Other assistants that accept remote MCP connections use the same address. Then ask one of the questions below.
+## The hosted server
+The hosted server computes positions at an explicit instant, finds sign ingresses, stations and new/full Moons in a window of up to 92 days, and checks astronomical claims. Answers include UTC, a display timezone, calculation receipts and numerical limits. A date-only claim can return depends. Event-search completeness is tested, not proven.
+It also serves dated Sun-sign horoscopes from the site's daily edition. It keeps the editions for the day before, the day of and the day after, so a reader in any time zone gets the reading written for their own date. Horoscopes are interpretation, for reflection.
+Its sky calendar, horoscope panel and Chart Studio declare sidebar and conversation-panel entrypoints. Chart Studio asks for birth details inside its panel and calculates there; the assistant receives only a selection the person reviews and shares. The server offers no birth-chart storage, scheduling, eclipse search or predictions of personal outcomes.
+Ask “What changes this week in Bangkok?”, “Is Mercury retrograde right now?” or “Show today's horoscope for Leo.” An answer should be useful in the conversation. Links to the Moon tool </moon-phase/>, lunar calendar </full-moon-calendar/> and methodology </methodology/> offer optional further exploration.
+## Build and verify an integration
+Zodiacs Developer provides skills for building with the engine, checking output and testing an integration. Its local stdio server adds natal-chart calculation and record comparison to the public-sky tools. It opens no listener or outbound connection. The existing local MCP adapter </developers/mcp/> remains available separately.
+In a checkout, run npm ci and npm test in plugins/zodiacs-developer. The plugin contains pinned dependencies, three skills and runnable synthetic sky/calendar examples. Installation details and review evidence are in the plugin directory <https://github.com/zodiacs-org/site/tree/main/plugins/zodiacs-developer>.
+## What local means
+The developer server computes on its machine. The assistant provider can still receive the arguments and results. Hosted sky calculations run on Zodiacs infrastructure. Public-sky tools need no birth details; derived natal positions remain personal data. Read the AI integration privacy explanation </privacy/#ai-integrations> before connecting personal records.
+Use the published calculation engine </developers/engine/> in external projects and preserve its notices. Site-derived candidate code retains the site's license. A receipt supports reproduction; it does not certify an imported record's authenticity or validate astrological interpretation.
+For current support and known calculation limitations, see developer support </developers/support/> and independent-reference conformance </developers/conformance/>.
+## The daily, by email.
+Your sign’s reading each morning. Free, unsubscribe anytime.
+Leave this field blank
+Email address
+ChangeYour Sun sign
+AriesTaurusGeminiCancerLeoVirgoLibraScorpioSagittariusCapricornAquariusPiscesEmail my daily horoscope
+We store your email and your chosen sign, nothing else. Never your birth details.
+You’re set. If confirmation or a change is needed, check your inbox.Choose your Sun sign so we can send its daily horoscope.That email address doesn’t look complete.Couldn't start the subscription. Please try again.
+Zodiacs·org </>
+Free astrology tools and sign guides, with charts calculated privately in your browser.Guide→
+An AI assistant for astrology questions and help using Zodiacs.
+Tools
+Birth chart </birth-chart/>Today </today/>Compatibility </compatibility/>Moon sign </moon-sign/>Rising sign </rising-sign/>Moon phase </moon-phase/>Saturn return </saturn-return/>Transits </transits/>Retrogrades </retrogrades/>Learn
+Learn astrology </learn/>Horoscopes </horoscopes/>The planets </learn/planets/>The houses </learn/houses/>Zodiac dates </learn/zodiac-dates/>Glossary </learn/glossary/>How charts are calculated </methodology/>Saved charts </profile/>Registry
+Astrofolio </astrofolio/>Registry </registry/>SDK </sdk/>Disclosure </disclosure/>Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. Read our disclosure </disclosure/>.The twelve
+Aries </aries/>Taurus </taurus/>Gemini </gemini/>Cancer </cancer/>Leo </leo/>Virgo </virgo/>Libra </libra/>Scorpio </scorpio/>Sagittarius </sagittarius/>Capricorn </capricorn/>Aquarius </aquarius/>Pisces </pisces/>
+LanguageEnglishEspañol </es/>Português (Brasil) </pt/>Français </fr/>Italiano </it/>
+© 2026 Zodiacs.orgLegal
+About </about/>Privacy </privacy/>Terms </terms/>More
+Developers </developers/>Widgets </widgets/>RSS </feeds/horoscopes.xml>
+Data & licenses
+Place data: GeoNames <https://www.geonames.org/> · CC BY 4.0
+Fonts under SIL OFL 1.1 </fonts/OFL-instrument-sans.txt>

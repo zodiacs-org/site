@@ -1,0 +1,310 @@
+{
+ "id": "59-u13-boundary-13y",
+ "why": "D4: boundary, just over 13",
+ "sentAtUtc": "2026-11-11T16:03:09+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_natal_chart",
+   "arguments": {
+    "birthDate": "2013-11-09"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_natal_chart\",\"data\":{\"birthDate\":\"2013-11-09\",\"time\":null,\"zone\":null,\"place\":null,\"timeKnown\":false,\"placed\":false,\"castFor\":{\"utc\":\"2013-11-09T12:00:00.000Z\",\"basis\":\"utc-noon\"},\"houseSystem\":null,\"sun\":{\"sign\":\"scorpio\",\"possibleSigns\":[\"scorpio\"],\"meaning\":\"You run deep and you know it: all-or-nothing attention, a long memory, and zero interest in small talk. Trust is your real currency, spent slowly and repaid completely.\",\"pageUrl\":\"https://zodiacs.org/scorpio/?ref=assistant\"},\"moon\":{\"sign\":null,\"possibleSigns\":[\"capricorn\",\"aquarius\"],\"meaning\":null,\"pageUrl\":null},\"rising\":{\"sign\":null,\"possibleSigns\":[],\"meaning\":null,\"pageUrl\":null},\"planets\":[{\"body\":\"Sun\",\"sign\":\"scorpio\",\"possibleSigns\":[\"scorpio\"],\"position\":\"17°14′ Scorpio\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Scorpio, it takes on a fixed water style. Intense, private, all-or-nothing.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/sun-in-scorpio/?ref=assistant\"},{\"body\":\"Moon\",\"sign\":null,\"possibleSigns\":[\"capricorn\",\"aquarius\"],\"position\":null,\"retrograde\":false,\"house\":null,\"signLine\":null,\"houseLine\":null,\"pageUrl\":null},{\"body\":\"Mercury\",\"sign\":\"scorpio\",\"possibleSigns\":[\"scorpio\"],\"position\":\"2°40′ Scorpio\",\"retrograde\":true,\"house\":null,\"signLine\":\"In Scorpio, it takes on a fixed water style. Intense, private, all-or-nothing.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/mercury-in-scorpio/?ref=assistant\"},{\"body\":\"Venus\",\"sign\":\"capricorn\",\"possibleSigns\":[\"capricorn\"],\"position\":\"3°57′ Capricorn\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/venus-in-capricorn/?ref=assistant\"},{\"body\":\"Mars\",\"sign\":\"virgo\",\"possibleSigns\":[\"virgo\"],\"position\":\"14°35′ Virgo\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Virgo, it takes on a mutable earth style. Precise, useful, quietly running the whole operation.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/mars-in-virgo/?ref=assistant\"},{\"body\":\"Jupiter\",\"sign\":\"cancer\",\"possibleSigns\":[\"cancer\"],\"position\":\"20°30′ Cancer\",\"retrograde\":true,\"house\":null,\"signLine\":\"In Cancer, it takes on a cardinal water style. Feels first, remembers everything, protects what it loves.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/jupiter-in-cancer/?ref=assistant\"},{\"body\":\"Saturn\",\"sign\":\"scorpio\",\"possibleSigns\":[\"scorpio\"],\"position\":\"14°35′ Scorpio\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Scorpio, it takes on a fixed water style. Intense, private, all-or-nothing.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/saturn-in-scorpio/?ref=assistant\"},{\"body\":\"Uranus\",\"sign\":\"aries\",\"possibleSigns\":[\"aries\"],\"position\":\"9°10′ Aries\",\"retrograde\":true,\"house\":null,\"signLine\":\"In Aries, it takes on a cardinal fire style. First out of the gate. Direct, fast, unafraid to start.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/uranus-in-aries/?ref=assistant\"},{\"body\":\"Neptune\",\"sign\":\"pisces\",\"possibleSigns\":[\"pisces\"],\"position\":\"2°35′ Pisces\",\"retrograde\":true,\"house\":null,\"signLine\":\"In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/neptune-in-pisces/?ref=assistant\"},{\"body\":\"Pluto\",\"sign\":\"capricorn\",\"possibleSigns\":[\"capricorn\"],\"position\":\"9°36′ Capricorn\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/pluto-in-capricorn/?ref=assistant\"}],\"angles\":null,\"aspects\":[{\"a\":\"Mars\",\"b\":\"Saturn\",\"type\":\"sextile\",\"orb\":0,\"line\":\"Your Mars has an open line to your Saturn. Your drive and your sense of duty cooperate whenever you remember to ask.\"},{\"a\":\"Mercury\",\"b\":\"Neptune\",\"type\":\"trine\",\"orb\":0.1,\"line\":\"Your Mercury runs downhill into your Neptune. Your way of thinking and your imagination help each other so smoothly the gift is easy to miss.\"},{\"a\":\"Uranus\",\"b\":\"Pluto\",\"type\":\"square\",\"orb\":0.4,\"line\":\"Your Uranus grinds against your Pluto. Your independence and your intensity pull in directions ninety degrees apart: permanent friction, and the strength that comes from working against it.\"},{\"a\":\"Mercury\",\"b\":\"Venus\",\"type\":\"sextile\",\"orb\":1.3,\"line\":\"Your Mercury has an open line to your Venus. Your way of thinking and your way of caring cooperate whenever you remember to ask.\"},{\"a\":\"Venus\",\"b\":\"Neptune\",\"type\":\"sextile\",\"orb\":1.4,\"line\":\"Your Venus has an open line to your Neptune. Your way of caring and your imagination cooperate whenever you remember to ask.\"},{\"a\":\"Sun\",\"b\":\"Mars\",\"type\":\"sextile\",\"orb\":2.7,\"line\":\"Your Sun has an open line to your Mars. A clear purpose can give you the push to begin. Choose a first step small enough to take while the intention is fresh.\"},{\"a\":\"Sun\",\"b\":\"Saturn\",\"type\":\"conjunction\",\"orb\":2.7,\"line\":\"Your Sun is fused to your Saturn. Your sense of self and your sense of duty run as one instrument, hard to play separately.\"},{\"a\":\"Sun\",\"b\":\"Jupiter\",\"type\":\"trine\",\"orb\":3.3,\"line\":\"Your Sun runs downhill into your Jupiter. Confidence can grow through learning, travel, or a wider view. Give that optimism a specific question to explore.\"}],\"balance\":{\"elements\":{\"fire\":1,\"earth\":3,\"air\":1,\"water\":5},\"modalities\":{\"cardinal\":4,\"fixed\":4,\"mutable\":2},\"lines\":[\"Water carries 5 of the ten planets. The chart reads the room before the memo: feeling is the first sense.\",\"4 planets were retrograde when you were born, a chart that does much of its work on the second pass.\",\"Sun, Mercury, Saturn all sit in Scorpio, a stellium; that sign's agenda gets 3 votes.\"]},\"unknown\":[\"No birth time was given, so the rising sign and the houses are unknown, and the chart is cast for midday.\",\"The Moon changed sign that day: it was in Capricorn or Aquarius, depending on the birth time.\",\"No time zone was given, so the chart is cast for noon UTC on the birth date.\",\"This birth date is under 18, so romantic and attraction readings are left out.\"],\"chartUrl\":\"https://zodiacs.org/birth-chart/?ref=assistant\",\"under18\":true,\"note\":\"Astrology’s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny.\"},\"links\":[{\"title\":\"Open the birth chart page on Zodiacs\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"},{\"title\":\"Resolve a town or city (find_birthplace)\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"},{\"title\":\"Scorpio on Zodiacs\",\"url\":\"https://zodiacs.org/scorpio/?ref=assistant\"},{\"title\":\"How to read a birth chart\",\"url\":\"https://zodiacs.org/learn/how-to-read-a-birth-chart/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_natal_chart",
+    "data": {
+     "birthDate": "2013-11-09",
+     "time": null,
+     "zone": null,
+     "place": null,
+     "timeKnown": false,
+     "placed": false,
+     "castFor": {
+      "utc": "2013-11-09T12:00:00.000Z",
+      "basis": "utc-noon"
+     },
+     "houseSystem": null,
+     "sun": {
+      "sign": "scorpio",
+      "possibleSigns": [
+       "scorpio"
+      ],
+      "meaning": "You run deep and you know it: all-or-nothing attention, a long memory, and zero interest in small talk. Trust is your real currency, spent slowly and repaid completely.",
+      "pageUrl": "https://zodiacs.org/scorpio/?ref=assistant"
+     },
+     "moon": {
+      "sign": null,
+      "possibleSigns": [
+       "capricorn",
+       "aquarius"
+      ],
+      "meaning": null,
+      "pageUrl": null
+     },
+     "rising": {
+      "sign": null,
+      "possibleSigns": [],
+      "meaning": null,
+      "pageUrl": null
+     },
+     "planets": [
+      {
+       "body": "Sun",
+       "sign": "scorpio",
+       "possibleSigns": [
+        "scorpio"
+       ],
+       "position": "17°14′ Scorpio",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Scorpio, it takes on a fixed water style. Intense, private, all-or-nothing.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/sun-in-scorpio/?ref=assistant"
+      },
+      {
+       "body": "Moon",
+       "sign": null,
+       "possibleSigns": [
+        "capricorn",
+        "aquarius"
+       ],
+       "position": null,
+       "retrograde": false,
+       "house": null,
+       "signLine": null,
+       "houseLine": null,
+       "pageUrl": null
+      },
+      {
+       "body": "Mercury",
+       "sign": "scorpio",
+       "possibleSigns": [
+        "scorpio"
+       ],
+       "position": "2°40′ Scorpio",
+       "retrograde": true,
+       "house": null,
+       "signLine": "In Scorpio, it takes on a fixed water style. Intense, private, all-or-nothing.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/mercury-in-scorpio/?ref=assistant"
+      },
+      {
+       "body": "Venus",
+       "sign": "capricorn",
+       "possibleSigns": [
+        "capricorn"
+       ],
+       "position": "3°57′ Capricorn",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/venus-in-capricorn/?ref=assistant"
+      },
+      {
+       "body": "Mars",
+       "sign": "virgo",
+       "possibleSigns": [
+        "virgo"
+       ],
+       "position": "14°35′ Virgo",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Virgo, it takes on a mutable earth style. Precise, useful, quietly running the whole operation.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/mars-in-virgo/?ref=assistant"
+      },
+      {
+       "body": "Jupiter",
+       "sign": "cancer",
+       "possibleSigns": [
+        "cancer"
+       ],
+       "position": "20°30′ Cancer",
+       "retrograde": true,
+       "house": null,
+       "signLine": "In Cancer, it takes on a cardinal water style. Feels first, remembers everything, protects what it loves.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/jupiter-in-cancer/?ref=assistant"
+      },
+      {
+       "body": "Saturn",
+       "sign": "scorpio",
+       "possibleSigns": [
+        "scorpio"
+       ],
+       "position": "14°35′ Scorpio",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Scorpio, it takes on a fixed water style. Intense, private, all-or-nothing.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/saturn-in-scorpio/?ref=assistant"
+      },
+      {
+       "body": "Uranus",
+       "sign": "aries",
+       "possibleSigns": [
+        "aries"
+       ],
+       "position": "9°10′ Aries",
+       "retrograde": true,
+       "house": null,
+       "signLine": "In Aries, it takes on a cardinal fire style. First out of the gate. Direct, fast, unafraid to start.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/uranus-in-aries/?ref=assistant"
+      },
+      {
+       "body": "Neptune",
+       "sign": "pisces",
+       "possibleSigns": [
+        "pisces"
+       ],
+       "position": "2°35′ Pisces",
+       "retrograde": true,
+       "house": null,
+       "signLine": "In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/neptune-in-pisces/?ref=assistant"
+      },
+      {
+       "body": "Pluto",
+       "sign": "capricorn",
+       "possibleSigns": [
+        "capricorn"
+       ],
+       "position": "9°36′ Capricorn",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/pluto-in-capricorn/?ref=assistant"
+      }
+     ],
+     "angles": null,
+     "aspects": [
+      {
+       "a": "Mars",
+       "b": "Saturn",
+       "type": "sextile",
+       "orb": 0,
+       "line": "Your Mars has an open line to your Saturn. Your drive and your sense of duty cooperate whenever you remember to ask."
+      },
+      {
+       "a": "Mercury",
+       "b": "Neptune",
+       "type": "trine",
+       "orb": 0.1,
+       "line": "Your Mercury runs downhill into your Neptune. Your way of thinking and your imagination help each other so smoothly the gift is easy to miss."
+      },
+      {
+       "a": "Uranus",
+       "b": "Pluto",
+       "type": "square",
+       "orb": 0.4,
+       "line": "Your Uranus grinds against your Pluto. Your independence and your intensity pull in directions ninety degrees apart: permanent friction, and the strength that comes from working against it."
+      },
+      {
+       "a": "Mercury",
+       "b": "Venus",
+       "type": "sextile",
+       "orb": 1.3,
+       "line": "Your Mercury has an open line to your Venus. Your way of thinking and your way of caring cooperate whenever you remember to ask."
+      },
+      {
+       "a": "Venus",
+       "b": "Neptune",
+       "type": "sextile",
+       "orb": 1.4,
+       "line": "Your Venus has an open line to your Neptune. Your way of caring and your imagination cooperate whenever you remember to ask."
+      },
+      {
+       "a": "Sun",
+       "b": "Mars",
+       "type": "sextile",
+       "orb": 2.7,
+       "line": "Your Sun has an open line to your Mars. A clear purpose can give you the push to begin. Choose a first step small enough to take while the intention is fresh."
+      },
+      {
+       "a": "Sun",
+       "b": "Saturn",
+       "type": "conjunction",
+       "orb": 2.7,
+       "line": "Your Sun is fused to your Saturn. Your sense of self and your sense of duty run as one instrument, hard to play separately."
+      },
+      {
+       "a": "Sun",
+       "b": "Jupiter",
+       "type": "trine",
+       "orb": 3.3,
+       "line": "Your Sun runs downhill into your Jupiter. Confidence can grow through learning, travel, or a wider view. Give that optimism a specific question to explore."
+      }
+     ],
+     "balance": {
+      "elements": {
+       "fire": 1,
+       "earth": 3,
+       "air": 1,
+       "water": 5
+      },
+      "modalities": {
+       "cardinal": 4,
+       "fixed": 4,
+       "mutable": 2
+      },
+      "lines": [
+       "Water carries 5 of the ten planets. The chart reads the room before the memo: feeling is the first sense.",
+       "4 planets were retrograde when you were born, a chart that does much of its work on the second pass.",
+       "Sun, Mercury, Saturn all sit in Scorpio, a stellium; that sign's agenda gets 3 votes."
+      ]
+     },
+     "unknown": [
+      "No birth time was given, so the rising sign and the houses are unknown, and the chart is cast for midday.",
+      "The Moon changed sign that day: it was in Capricorn or Aquarius, depending on the birth time.",
+      "No time zone was given, so the chart is cast for noon UTC on the birth date.",
+      "This birth date is under 18, so romantic and attraction readings are left out."
+     ],
+     "chartUrl": "https://zodiacs.org/birth-chart/?ref=assistant",
+     "under18": true,
+     "note": "Astrology’s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny."
+    },
+    "links": [
+     {
+      "title": "Open the birth chart page on Zodiacs",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     },
+     {
+      "title": "Resolve a town or city (find_birthplace)",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     },
+     {
+      "title": "Scorpio on Zodiacs",
+      "url": "https://zodiacs.org/scorpio/?ref=assistant"
+     },
+     {
+      "title": "How to read a birth chart",
+      "url": "https://zodiacs.org/learn/how-to-read-a-birth-chart/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

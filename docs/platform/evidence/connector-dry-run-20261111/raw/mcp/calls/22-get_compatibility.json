@@ -1,0 +1,234 @@
+{
+ "id": "22-get_compatibility",
+ "why": "valid call with names and place; D3 link check",
+ "sentAtUtc": "2026-11-11T16:00:23+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_compatibility",
+   "arguments": {
+    "a": {
+     "birthDate": "1990-05-03",
+     "time": "08:30",
+     "zone": "Europe/Madrid",
+     "latitude": 40.42,
+     "longitude": -3.7,
+     "place": "Madrid, Spain",
+     "name": "Ana"
+    },
+    "b": {
+     "name": "Ben",
+     "birthDate": "1988-11-23"
+    }
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_compatibility\",\"data\":{\"a\":{\"name\":\"Ana\",\"label\":\"Ana\",\"birthDate\":\"1990-05-03\",\"timeKnown\":true,\"placed\":true,\"place\":\"Madrid, Spain\",\"sun\":\"taurus\",\"moon\":\"leo\",\"rising\":\"gemini\",\"famous\":false,\"url\":null},\"b\":{\"name\":\"Ben\",\"label\":\"Ben\",\"birthDate\":\"1988-11-23\",\"timeKnown\":false,\"placed\":false,\"place\":null,\"sun\":\"sagittarius\",\"moon\":null,\"rising\":null,\"famous\":false,\"url\":null},\"score\":{\"overall\":63,\"areas\":{\"attraction\":68,\"communication\":63,\"stability\":58},\"verdict\":\"A good match, with some work to do\",\"headline\":\"Attraction is the strongest part of this pairing; long-term stability will take the most work. Reading confidence 60%.\"},\"signPair\":{\"slug\":\"taurus-sagittarius\",\"signs\":[\"taurus\",\"sagittarius\"],\"same\":false,\"element\":{\"label\":\"Spark and soil\",\"note\":\"Fire starts, earth finishes: you’ll get a lot done together, but expect clashes over pace.\"},\"modality\":{\"label\":\"Anchor and sail\",\"note\":\"Stability meets flexibility: you balance each other well.\"},\"polarity\":\"One outgoing, one private: you balance each other, as one talks it out and the other thinks it through.\"},\"contacts\":[{\"aBody\":\"Moon\",\"bBody\":\"Uranus\",\"aspect\":\"trine\",\"orb\":0.1,\"generational\":false,\"line\":\"Ana’s emotional life flows with Ben’s independence. This flows naturally and brings out the best in you both.\"},{\"aBody\":\"Moon\",\"bBody\":\"Venus\",\"aspect\":\"sextile\",\"orb\":0.3,\"generational\":false,\"line\":\"Ana’s emotional life works easily with Ben’s way of loving. An easy spark that grows when you use it.\"},{\"aBody\":\"Mercury\",\"bBody\":\"Pluto\",\"aspect\":\"opposition\",\"orb\":0.5,\"generational\":false,\"line\":\"Ana’s way of thinking pulls against Ben’s intensity. A strong pull that swings between attraction and tension.\"},{\"aBody\":\"Venus\",\"bBody\":\"Uranus\",\"aspect\":\"square\",\"orb\":0.5,\"generational\":false,\"line\":\"Ana’s way of loving pushes against Ben’s independence. Expect friction here, especially under stress.\"},{\"aBody\":\"Mars\",\"bBody\":\"Neptune\",\"aspect\":\"sextile\",\"orb\":0.7,\"generational\":false,\"line\":\"Ana’s drive works easily with Ben’s imagination. An easy spark that grows when you use it.\"},{\"aBody\":\"Sun\",\"bBody\":\"Pluto\",\"aspect\":\"opposition\",\"orb\":0.7,\"generational\":false,\"line\":\"Ana’s sense of self pulls against Ben’s intensity. A strong pull that swings between attraction and tension.\"},{\"aBody\":\"Jupiter\",\"bBody\":\"Neptune\",\"aspect\":\"opposition\",\"orb\":1.2,\"generational\":false,\"line\":\"Ana’s appetite for more pulls against Ben’s imagination. A strong pull that swings between attraction and tension.\"},{\"aBody\":\"Moon\",\"bBody\":\"Jupiter\",\"aspect\":\"square\",\"orb\":1.4,\"generational\":false,\"line\":\"Ana’s emotional life pushes against Ben’s appetite for more. Expect friction here, especially under stress.\"}],\"counts\":{\"easeful\":15,\"charged\":14,\"total\":33,\"byAspect\":{\"conjunction\":4,\"sextile\":6,\"square\":9,\"trine\":9,\"opposition\":5}},\"elements\":{\"a\":{\"fire\":1,\"earth\":5,\"air\":0,\"water\":4},\"b\":{\"fire\":3,\"earth\":2,\"air\":2,\"water\":2}},\"modalities\":{\"a\":{\"cardinal\":4,\"fixed\":4,\"mutable\":2},\"b\":{\"cardinal\":4,\"fixed\":2,\"mutable\":3}},\"pageUrl\":\"https://zodiacs.org/compatibility/taurus-sagittarius/?ref=assistant\",\"cardUrl\":null,\"shareUrl\":\"https://zodiacs.org/share/compatibility/?as=taurus&bs=sagittarius&score=63&attraction=68&communication=63&stability=58&v=good&c=60&ref=assistant\",\"notes\":[\"Without a birth time for Ben, the Moon is left out: it moves about 13° in a day, so its contacts cannot be placed. Positions are for noon on the birth date, and the other orbs can differ by about a degree.\",\"Reading confidence 60%\"],\"note\":\"Astrology’s reading of your two charts, for insight and fun, not a guarantee of how things will turn out.\"},\"links\":[{\"title\":\"Compatibility on Zodiacs\",\"url\":\"https://zodiacs.org/compatibility/?ref=assistant\"},{\"title\":\"Resolve a town or city (find_birthplace)\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"},{\"title\":\"How we calculate\",\"url\":\"https://zodiacs.org/methodology/?ref=assistant\"},{\"title\":\"Invite your partner to compare charts on Zodiacs\",\"url\":\"https://zodiacs.org/share/invite/?s=taurus&p=sagittarius&ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_compatibility",
+    "data": {
+     "a": {
+      "name": "Ana",
+      "label": "Ana",
+      "birthDate": "1990-05-03",
+      "timeKnown": true,
+      "placed": true,
+      "place": "Madrid, Spain",
+      "sun": "taurus",
+      "moon": "leo",
+      "rising": "gemini",
+      "famous": false,
+      "url": null
+     },
+     "b": {
+      "name": "Ben",
+      "label": "Ben",
+      "birthDate": "1988-11-23",
+      "timeKnown": false,
+      "placed": false,
+      "place": null,
+      "sun": "sagittarius",
+      "moon": null,
+      "rising": null,
+      "famous": false,
+      "url": null
+     },
+     "score": {
+      "overall": 63,
+      "areas": {
+       "attraction": 68,
+       "communication": 63,
+       "stability": 58
+      },
+      "verdict": "A good match, with some work to do",
+      "headline": "Attraction is the strongest part of this pairing; long-term stability will take the most work. Reading confidence 60%."
+     },
+     "signPair": {
+      "slug": "taurus-sagittarius",
+      "signs": [
+       "taurus",
+       "sagittarius"
+      ],
+      "same": false,
+      "element": {
+       "label": "Spark and soil",
+       "note": "Fire starts, earth finishes: you’ll get a lot done together, but expect clashes over pace."
+      },
+      "modality": {
+       "label": "Anchor and sail",
+       "note": "Stability meets flexibility: you balance each other well."
+      },
+      "polarity": "One outgoing, one private: you balance each other, as one talks it out and the other thinks it through."
+     },
+     "contacts": [
+      {
+       "aBody": "Moon",
+       "bBody": "Uranus",
+       "aspect": "trine",
+       "orb": 0.1,
+       "generational": false,
+       "line": "Ana’s emotional life flows with Ben’s independence. This flows naturally and brings out the best in you both."
+      },
+      {
+       "aBody": "Moon",
+       "bBody": "Venus",
+       "aspect": "sextile",
+       "orb": 0.3,
+       "generational": false,
+       "line": "Ana’s emotional life works easily with Ben’s way of loving. An easy spark that grows when you use it."
+      },
+      {
+       "aBody": "Mercury",
+       "bBody": "Pluto",
+       "aspect": "opposition",
+       "orb": 0.5,
+       "generational": false,
+       "line": "Ana’s way of thinking pulls against Ben’s intensity. A strong pull that swings between attraction and tension."
+      },
+      {
+       "aBody": "Venus",
+       "bBody": "Uranus",
+       "aspect": "square",
+       "orb": 0.5,
+       "generational": false,
+       "line": "Ana’s way of loving pushes against Ben’s independence. Expect friction here, especially under stress."
+      },
+      {
+       "aBody": "Mars",
+       "bBody": "Neptune",
+       "aspect": "sextile",
+       "orb": 0.7,
+       "generational": false,
+       "line": "Ana’s drive works easily with Ben’s imagination. An easy spark that grows when you use it."
+      },
+      {
+       "aBody": "Sun",
+       "bBody": "Pluto",
+       "aspect": "opposition",
+       "orb": 0.7,
+       "generational": false,
+       "line": "Ana’s sense of self pulls against Ben’s intensity. A strong pull that swings between attraction and tension."
+      },
+      {
+       "aBody": "Jupiter",
+       "bBody": "Neptune",
+       "aspect": "opposition",
+       "orb": 1.2,
+       "generational": false,
+       "line": "Ana’s appetite for more pulls against Ben’s imagination. A strong pull that swings between attraction and tension."
+      },
+      {
+       "aBody": "Moon",
+       "bBody": "Jupiter",
+       "aspect": "square",
+       "orb": 1.4,
+       "generational": false,
+       "line": "Ana’s emotional life pushes against Ben’s appetite for more. Expect friction here, especially under stress."
+      }
+     ],
+     "counts": {
+      "easeful": 15,
+      "charged": 14,
+      "total": 33,
+      "byAspect": {
+       "conjunction": 4,
+       "sextile": 6,
+       "square": 9,
+       "trine": 9,
+       "opposition": 5
+      }
+     },
+     "elements": {
+      "a": {
+       "fire": 1,
+       "earth": 5,
+       "air": 0,
+       "water": 4
+      },
+      "b": {
+       "fire": 3,
+       "earth": 2,
+       "air": 2,
+       "water": 2
+      }
+     },
+     "modalities": {
+      "a": {
+       "cardinal": 4,
+       "fixed": 4,
+       "mutable": 2
+      },
+      "b": {
+       "cardinal": 4,
+       "fixed": 2,
+       "mutable": 3
+      }
+     },
+     "pageUrl": "https://zodiacs.org/compatibility/taurus-sagittarius/?ref=assistant",
+     "cardUrl": null,
+     "shareUrl": "https://zodiacs.org/share/compatibility/?as=taurus&bs=sagittarius&score=63&attraction=68&communication=63&stability=58&v=good&c=60&ref=assistant",
+     "notes": [
+      "Without a birth time for Ben, the Moon is left out: it moves about 13° in a day, so its contacts cannot be placed. Positions are for noon on the birth date, and the other orbs can differ by about a degree.",
+      "Reading confidence 60%"
+     ],
+     "note": "Astrology’s reading of your two charts, for insight and fun, not a guarantee of how things will turn out."
+    },
+    "links": [
+     {
+      "title": "Compatibility on Zodiacs",
+      "url": "https://zodiacs.org/compatibility/?ref=assistant"
+     },
+     {
+      "title": "Resolve a town or city (find_birthplace)",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     },
+     {
+      "title": "How we calculate",
+      "url": "https://zodiacs.org/methodology/?ref=assistant"
+     },
+     {
+      "title": "Invite your partner to compare charts on Zodiacs",
+      "url": "https://zodiacs.org/share/invite/?s=taurus&p=sagittarius&ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

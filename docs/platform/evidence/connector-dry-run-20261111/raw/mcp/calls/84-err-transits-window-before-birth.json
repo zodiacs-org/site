@@ -1,0 +1,43 @@
+{
+ "id": "84-err-transits-window-before-birth",
+ "why": "D4: window before the birth date",
+ "sentAtUtc": "2026-11-11T16:04:14+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_personal_transits",
+   "arguments": {
+    "birthDate": "1990-05-03",
+    "from": "1980-01-01",
+    "to": "1980-02-01"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"get_personal_transits\",\"error\":{\"code\":\"invalid-request\",\"message\":\"The window starts before the birth date; give a from date on or after the birth date.\"}}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "get_personal_transits",
+    "error": {
+     "code": "invalid-request",
+     "message": "The window starts before the birth date; give a from date on or after the birth date."
+    }
+   },
+   "isError": true
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

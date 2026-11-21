@@ -1,0 +1,46 @@
+{
+ "id": "47-u18-get_compatibility-famous",
+ "why": "D2: 16-year-old with a famous adult",
+ "sentAtUtc": "2026-11-11T16:02:14+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_compatibility",
+   "arguments": {
+    "a": {
+     "birthDate": "2010-03-15"
+    },
+    "b": {
+     "famous": "Ada Lovelace"
+    }
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"get_compatibility\",\"error\":{\"code\":\"invalid-request\",\"message\":\"Compatibility readings are for two adults. For anyone under 18, ask explain_astrology about the two Sun signs for a friendship reading.\"}}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "get_compatibility",
+    "error": {
+     "code": "invalid-request",
+     "message": "Compatibility readings are for two adults. For anyone under 18, ask explain_astrology about the two Sun signs for a friendship reading."
+    }
+   },
+   "isError": true
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

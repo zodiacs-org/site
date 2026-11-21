@@ -1,0 +1,466 @@
+{
+ "id": "17-get_horoscope-love-adult",
+ "why": "adult control for the under-18 love test",
+ "sentAtUtc": "2026-11-11T16:00:11+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_horoscope",
+   "arguments": {
+    "sign": "taurus",
+    "focus": "love",
+    "zone": "Asia/Bangkok",
+    "birthDate": "1990-05-03"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "_meta": {
+    "zodiacs/horoscope": {
+     "sign": "taurus",
+     "signName": "Taurus",
+     "requested": {
+      "period": "day",
+      "focus": "love",
+      "zone": "Asia/Bangkok"
+     },
+     "days": [
+      {
+       "date": "2026-11-10",
+       "focuses": {
+        "general": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Today, name what is shared, owed, private, or difficult to divide. For Taurus, steady attention can reveal which pressure is real and which can wait. The new moon puts shared finances, debts, intimacy, and trust on the day’s agenda."
+          },
+          {
+           "text": "Remove one repeated snag from the routine before adding another promise to the week. In this reading, Venus retrograde in Libra brings attention to daily work, health routines, and responsibilities."
+          },
+          {
+           "text": "Connect shared finances, debts, intimacy, and trust with daily work, health routines, and responsibilities; keep what is sound and alter only the part that has stopped working."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Moon at 1° Sagittarius",
+           "at": "2026-11-10T12:00:00.000Z"
+          },
+          {
+           "text": "Venus at 23° Libra",
+           "at": "2026-11-10T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Moon in Sagittarius: your 8th solar house",
+          "Venus in Libra: your 6th solar house"
+         ],
+         "from": "2026-11-10",
+         "through": "2026-11-10",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-10&ref=assistant"
+        },
+        "love": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Look at the small routines through which care is actually delivered. For Taurus, reliability says more than a perfectly staged reassurance. Venus brings daily work, health routines, and responsibilities into the relationship foreground."
+          },
+          {
+           "text": "Approach trust, intimacy, and shared resources with explicit terms. Let the response clarify what can be shared, what stays private, and what needs a firmer term. The Moon shifts the emotional weather toward shared finances, debts, intimacy, and trust."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Venus at 23° Libra",
+           "at": "2026-11-10T12:00:00.000Z"
+          },
+          {
+           "text": "Moon at 1° Sagittarius",
+           "at": "2026-11-10T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Venus in Libra: your 6th solar house",
+          "Moon in Sagittarius: your 8th solar house"
+         ],
+         "from": "2026-11-10",
+         "through": "2026-11-10",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-10&f=love&ref=assistant"
+        },
+        "career": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Finish background work and protect concentration from unnecessary display. For Taurus, durable progress begins with the resource already in hand. Saturn retrograde brings rest, privacy, and unfinished matters into the work picture."
+          },
+          {
+           "text": "Make roles and terms clear with partners or clients. Write the role, term, and review date so the agreement can change through evidence. The Sun widens the frame to partners and one-to-one relationships."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Saturn at 8° Aries",
+           "at": "2026-11-10T12:00:00.000Z"
+          },
+          {
+           "text": "Sun at 18° Scorpio",
+           "at": "2026-11-10T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Saturn in Aries: your 12th solar house",
+          "Sun in Scorpio: your 7th solar house"
+         ],
+         "from": "2026-11-10",
+         "through": "2026-11-10",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-10&f=career&ref=assistant"
+        }
+       }
+      },
+      {
+       "date": "2026-11-11",
+       "focuses": {
+        "general": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Today, name what is shared, owed, private, or difficult to divide. For Taurus, steady attention can reveal which pressure is real and which can wait. The waxing crescent Moon puts shared finances, debts, intimacy, and trust on the day’s agenda."
+          },
+          {
+           "text": "Remove one repeated snag from the routine before adding another promise to the week. In this reading, Venus retrograde in Libra brings attention to daily work, health routines, and responsibilities."
+          },
+          {
+           "text": "Connect shared finances, debts, intimacy, and trust with daily work, health routines, and responsibilities; keep what is sound and alter only the part that has stopped working."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Moon at 13° Sagittarius",
+           "at": "2026-11-11T12:00:00.000Z"
+          },
+          {
+           "text": "Venus at 22° Libra",
+           "at": "2026-11-11T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Moon in Sagittarius: your 8th solar house",
+          "Venus in Libra: your 6th solar house"
+         ],
+         "from": "2026-11-11",
+         "through": "2026-11-11",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-11&ref=assistant"
+        },
+        "love": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Look at the small routines through which care is actually delivered. For Taurus, reliability says more than a perfectly staged reassurance. Venus brings daily work, health routines, and responsibilities into the relationship foreground."
+          },
+          {
+           "text": "Approach trust, intimacy, and shared resources with explicit terms. Let the response clarify what can be shared, what stays private, and what needs a firmer term. The Moon shifts the emotional weather toward shared finances, debts, intimacy, and trust."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Venus at 22° Libra",
+           "at": "2026-11-11T12:00:00.000Z"
+          },
+          {
+           "text": "Moon at 13° Sagittarius",
+           "at": "2026-11-11T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Venus in Libra: your 6th solar house",
+          "Moon in Sagittarius: your 8th solar house"
+         ],
+         "from": "2026-11-11",
+         "through": "2026-11-11",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-11&f=love&ref=assistant"
+        },
+        "career": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Finish background work and protect concentration from unnecessary display. For Taurus, durable progress begins with the resource already in hand. Saturn retrograde brings rest, privacy, and unfinished matters into the work picture."
+          },
+          {
+           "text": "Make roles and terms clear with partners or clients. Write the role, term, and review date so the agreement can change through evidence. The Sun widens the frame to partners and one-to-one relationships."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Saturn at 8° Aries",
+           "at": "2026-11-11T12:00:00.000Z"
+          },
+          {
+           "text": "Sun at 19° Scorpio",
+           "at": "2026-11-11T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Saturn in Aries: your 12th solar house",
+          "Sun in Scorpio: your 7th solar house"
+         ],
+         "from": "2026-11-11",
+         "through": "2026-11-11",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-11&f=career&ref=assistant"
+        }
+       }
+      },
+      {
+       "date": "2026-11-12",
+       "focuses": {
+        "general": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Today, name what is shared, owed, private, or difficult to divide. For Taurus, steady attention can reveal which pressure is real and which can wait. The waxing crescent Moon puts shared finances, debts, intimacy, and trust on the day’s agenda."
+          },
+          {
+           "text": "Remove one repeated snag from the routine before adding another promise to the week. In this reading, Venus retrograde in Libra brings attention to daily work, health routines, and responsibilities."
+          },
+          {
+           "text": "Connect shared finances, debts, intimacy, and trust with daily work, health routines, and responsibilities; keep what is sound and alter only the part that has stopped working."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Moon at 25° Sagittarius",
+           "at": "2026-11-12T12:00:00.000Z"
+          },
+          {
+           "text": "Venus at 22° Libra",
+           "at": "2026-11-12T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Moon in Sagittarius: your 8th solar house",
+          "Venus in Libra: your 6th solar house"
+         ],
+         "from": "2026-11-12",
+         "through": "2026-11-12",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-12&ref=assistant"
+        },
+        "love": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Look at the small routines through which care is actually delivered. For Taurus, reliability says more than a perfectly staged reassurance. Venus brings daily work, health routines, and responsibilities into the relationship foreground."
+          },
+          {
+           "text": "Approach trust, intimacy, and shared resources with explicit terms. Let the response clarify what can be shared, what stays private, and what needs a firmer term. The Moon shifts the emotional weather toward shared finances, debts, intimacy, and trust."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Venus at 22° Libra",
+           "at": "2026-11-12T12:00:00.000Z"
+          },
+          {
+           "text": "Moon at 25° Sagittarius",
+           "at": "2026-11-12T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Venus in Libra: your 6th solar house",
+          "Moon in Sagittarius: your 8th solar house"
+         ],
+         "from": "2026-11-12",
+         "through": "2026-11-12",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-12&f=love&ref=assistant"
+        },
+        "career": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Finish background work and protect concentration from unnecessary display. For Taurus, durable progress begins with the resource already in hand. Saturn retrograde brings rest, privacy, and unfinished matters into the work picture."
+          },
+          {
+           "text": "Make roles and terms clear with partners or clients. Write the role, term, and review date so the agreement can change through evidence. The Sun widens the frame to partners and one-to-one relationships."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Saturn at 8° Aries",
+           "at": "2026-11-12T12:00:00.000Z"
+          },
+          {
+           "text": "Sun at 20° Scorpio",
+           "at": "2026-11-12T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Saturn in Aries: your 12th solar house",
+          "Sun in Scorpio: your 7th solar house"
+         ],
+         "from": "2026-11-12",
+         "through": "2026-11-12",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-12&f=career&ref=assistant"
+        }
+       }
+      }
+     ],
+     "weeks": [
+      {
+       "status": "available",
+       "paragraphs": [
+        {
+         "text": "Protect the useful rhythm while making one deliberate adjustment. The week opens with partners and one-to-one relationships, moves through shared finances, debts, intimacy, and trust by Thursday, and closes on career, reputation, and public responsibilities. Give partnerships and agreements the first concrete move instead of asking one choice to settle all three areas at once."
+        },
+        {
+         "text": "Early in the week, turn toward partners and one-to-one relationships: put the agreement or disagreement directly on the table, then state the term that is still vague and give the other person a real chance to answer it. Keep the partnerships and agreements adjustment small enough to see what it changes before adding another."
+        },
+        {
+         "text": "By midweek, attention shifts to shared finances, debts, intimacy, and trust: name what is shared, owed, private, or difficult to divide, then list what is shared, what is owed, and what must remain private before making the next commitment."
+        },
+        {
+         "text": "At the exact contact, compare the spoken agreement with what each person is actually doing. The New Moon in Scorpio brings partners and one-to-one relationships into focus."
+        },
+        {
+         "text": "The week closes with career, reputation, and public responsibilities: choose what should be visible in your work and public role, then choose the finished work, standard, or responsibility you are prepared to make visible. For Taurus, the final review is to keep what is sound and alter only the part that has stopped working."
+        }
+       ],
+       "facts": [
+        {
+         "text": "New Moon in Scorpio at 16.9°",
+         "at": "2026-11-09T07:02:05.269Z"
+        },
+        {
+         "text": "Moon at 19° Scorpio",
+         "at": "2026-11-09T12:00:00.000Z"
+        },
+        {
+         "text": "Moon at 25° Sagittarius",
+         "at": "2026-11-12T12:00:00.000Z"
+        },
+        {
+         "text": "Moon at 1° Aquarius",
+         "at": "2026-11-15T12:00:00.000Z"
+        }
+       ],
+       "houses": [
+        "Moon in Scorpio: your 7th solar house",
+        "Moon in Sagittarius: your 8th solar house",
+        "Moon in Aquarius: your 10th solar house"
+       ],
+       "from": "2026-11-09",
+       "through": "2026-11-15",
+       "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&w=2026-11-09&ref=assistant"
+      }
+     ],
+     "note": "These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.",
+     "disclosure": "For reflection. Astrology does not establish what will happen in your life."
+    }
+   },
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_horoscope\",\"data\":{\"status\":\"available\",\"sign\":\"taurus\",\"signName\":\"Taurus\",\"period\":\"day\",\"focus\":\"love\",\"date\":\"2026-11-11\",\"dateLabel\":\"Wednesday 11 November\",\"zone\":\"Asia/Bangkok\",\"zoneLabel\":\"Bangkok\",\"zoneSource\":\"request\",\"reading\":{\"title\":\"Taurus · Wednesday 11 November · Love\",\"paragraphs\":[{\"text\":\"Look at the small routines through which care is actually delivered. For Taurus, reliability says more than a perfectly staged reassurance. Venus brings daily work, health routines, and responsibilities into the relationship foreground.\"},{\"text\":\"Approach trust, intimacy, and shared resources with explicit terms. Let the response clarify what can be shared, what stays private, and what needs a firmer term. The Moon shifts the emotional weather toward shared finances, debts, intimacy, and trust.\"}]},\"why\":{\"note\":\"These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.\",\"facts\":[{\"text\":\"Venus at 22° Libra\",\"when\":\"Wed 11 Nov, 7:00 pm\"},{\"text\":\"Moon at 13° Sagittarius\",\"when\":\"Wed 11 Nov, 7:00 pm\"}],\"houses\":[\"Venus in Libra: your 6th solar house\",\"Moon in Sagittarius: your 8th solar house\"]},\"personal\":{\"timeKnown\":false,\"items\":[{\"title\":\"Sun sextile your Saturn\",\"line\":\"Sun opens a door for your sense of duty: a few days of spotlight, an opening that rewards you if you take it.\",\"when\":\"From Sun 15 Nov · exact on Tue 17 Nov\"},{\"title\":\"Mercury trine your Jupiter\",\"line\":\"Mercury flows through your appetite for more: a busy stretch for messages and errands, help that arrives without being asked.\",\"when\":\"All week\"},{\"title\":\"Saturn square your Uranus\",\"line\":\"Saturn pushes against your independence: a long season of pressure and accounting, friction that will not resolve on its own.\",\"when\":\"All week\"},{\"title\":\"Saturn square your Jupiter\",\"line\":\"Saturn pushes against your appetite for more: a long season of pressure and accounting, friction that will not resolve on its own.\",\"when\":\"All week\"},{\"title\":\"Venus square your Saturn\",\"line\":\"Venus pushes against your sense of duty: a soft stretch of warmth and appetite, friction that will not resolve on its own.\",\"when\":\"All week\"}],\"note\":\"From your own birth chart: astrology’s forecast for your week, not a guarantee. Reading confidence 55%. For the dates of these contacts, use get_personal_transits.\"},\"shareUrl\":\"https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-11&f=love&ref=assistant\",\"disclosure\":\"For reflection. Astrology does not establish what will happen in your life. Reading confidence 40%. For a month, a year, or a love or career week, use get_horoscope_period.\"},\"links\":[{\"title\":\"Taurus on Zodiacs\",\"url\":\"https://zodiacs.org/horoscopes/taurus/?ref=assistant\"},{\"title\":\"How we calculate\",\"url\":\"https://zodiacs.org/methodology/?ref=assistant\"},{\"title\":\"The Taurus horoscope by email each morning\",\"url\":\"https://zodiacs.org/horoscopes/taurus/?ref=assistant#daily-email\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_horoscope",
+    "data": {
+     "status": "available",
+     "sign": "taurus",
+     "signName": "Taurus",
+     "period": "day",
+     "focus": "love",
+     "date": "2026-11-11",
+     "dateLabel": "Wednesday 11 November",
+     "zone": "Asia/Bangkok",
+     "zoneLabel": "Bangkok",
+     "zoneSource": "request",
+     "reading": {
+      "title": "Taurus · Wednesday 11 November · Love",
+      "paragraphs": [
+       {
+        "text": "Look at the small routines through which care is actually delivered. For Taurus, reliability says more than a perfectly staged reassurance. Venus brings daily work, health routines, and responsibilities into the relationship foreground."
+       },
+       {
+        "text": "Approach trust, intimacy, and shared resources with explicit terms. Let the response clarify what can be shared, what stays private, and what needs a firmer term. The Moon shifts the emotional weather toward shared finances, debts, intimacy, and trust."
+       }
+      ]
+     },
+     "why": {
+      "note": "These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.",
+      "facts": [
+       {
+        "text": "Venus at 22° Libra",
+        "when": "Wed 11 Nov, 7:00 pm"
+       },
+       {
+        "text": "Moon at 13° Sagittarius",
+        "when": "Wed 11 Nov, 7:00 pm"
+       }
+      ],
+      "houses": [
+       "Venus in Libra: your 6th solar house",
+       "Moon in Sagittarius: your 8th solar house"
+      ]
+     },
+     "personal": {
+      "timeKnown": false,
+      "items": [
+       {
+        "title": "Sun sextile your Saturn",
+        "line": "Sun opens a door for your sense of duty: a few days of spotlight, an opening that rewards you if you take it.",
+        "when": "From Sun 15 Nov · exact on Tue 17 Nov"
+       },
+       {
+        "title": "Mercury trine your Jupiter",
+        "line": "Mercury flows through your appetite for more: a busy stretch for messages and errands, help that arrives without being asked.",
+        "when": "All week"
+       },
+       {
+        "title": "Saturn square your Uranus",
+        "line": "Saturn pushes against your independence: a long season of pressure and accounting, friction that will not resolve on its own.",
+        "when": "All week"
+       },
+       {
+        "title": "Saturn square your Jupiter",
+        "line": "Saturn pushes against your appetite for more: a long season of pressure and accounting, friction that will not resolve on its own.",
+        "when": "All week"
+       },
+       {
+        "title": "Venus square your Saturn",
+        "line": "Venus pushes against your sense of duty: a soft stretch of warmth and appetite, friction that will not resolve on its own.",
+        "when": "All week"
+       }
+      ],
+      "note": "From your own birth chart: astrology’s forecast for your week, not a guarantee. Reading confidence 55%. For the dates of these contacts, use get_personal_transits."
+     },
+     "shareUrl": "https://zodiacs.org/share/horoscope/?s=taurus&d=2026-11-11&f=love&ref=assistant",
+     "disclosure": "For reflection. Astrology does not establish what will happen in your life. Reading confidence 40%. For a month, a year, or a love or career week, use get_horoscope_period."
+    },
+    "links": [
+     {
+      "title": "Taurus on Zodiacs",
+      "url": "https://zodiacs.org/horoscopes/taurus/?ref=assistant"
+     },
+     {
+      "title": "How we calculate",
+      "url": "https://zodiacs.org/methodology/?ref=assistant"
+     },
+     {
+      "title": "The Taurus horoscope by email each morning",
+      "url": "https://zodiacs.org/horoscopes/taurus/?ref=assistant#daily-email"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

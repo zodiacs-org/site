@@ -1,0 +1,18 @@
+HTTP/2 200 
+cache-control: no-store
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; script-src-attr 'none'; connect-src 'self' https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://wikimedia.org; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+content-type: text/event-stream
+cross-origin-opener-policy: same-origin-allow-popups
+date: Wed, 11 Nov 2026 15:56:52 GMT
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-accel-buffering: no
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-permitted-cross-domain-policies: none
+x-robots-tag: noindex
+x-vercel-cache: MISS
+x-vercel-id: sin1::iad1::24vgc-1794412611896-ee84907b61bd
+

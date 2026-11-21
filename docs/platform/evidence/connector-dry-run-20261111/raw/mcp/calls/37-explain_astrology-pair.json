@@ -1,0 +1,81 @@
+{
+ "id": "37-explain_astrology-pair",
+ "why": "valid call",
+ "sentAtUtc": "2026-11-11T16:01:31+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "explain_astrology",
+   "arguments": {
+    "topic": "Leo and Scorpio compatibility"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"explain_astrology\",\"data\":{\"found\":true,\"query\":\"Leo and Scorpio compatibility\",\"topic\":\"leo-scorpio\",\"title\":\"Leo and Scorpio\",\"paragraphs\":[\"Leo and Scorpio. Steam. Passion meets feeling: intense attraction, but tempers and moods can boil over. This pair needs patience. Two anchors. Two loyal, stubborn signs: a lasting bond, but neither backs down in an argument. You balance each other, as one talks it out and the other thinks it through. The Sun and Pluto.\",\"This is the Sun-sign pattern; the rest of both charts changes how it is lived.\",\"One loves on the record; the other loves under seal. Leo wants the relationship witnessed: declared, celebrated, ideally toasted; Scorpio wants it protected: private, total, nobody else’s business. Both mean forever. They just disagree about who’s allowed to watch.\",\"Two people who don’t blink. Both hold positions for years, commit completely or not at all, and treat loyalty as the entire point of the exercise, so when they collide, the collision has weight. The pull is real from the first evening: Scorpio reads Leo in about an hour (the pride, the warmth, the need running underneath the shine), and Leo, for once, feels seen rather than merely applauded, which turns out to be the stronger drug.\",\"Leo’s warmth, meanwhile, survives Scorpio’s audit, because there’s no angle in it. What’s on display is actually what’s there. For someone who reads subtext professionally, a person without subtext is nearly restful. And Leo finds Scorpio’s undivided attention narcotic. Most people watch the show; this one watches the person.\",\"Once both choose, the commitment is armored from two directions. Leo’s loyalty is loud, the defense by name in the difficult room; Scorpio’s runs deep, the 3 a.m. crisis answered without flinching. Same metal, different finishes. Scorpio offers Leo something applause never contained: being fully known, unlit parts included, and kept anyway. Leo offers Scorpio warmth that doesn’t have to be earned through trials, affection that arrives before the vetting is finished, which quietly astonishes a sign that has never once skipped the vetting. Neither has to explain why halfway isn’t on the menu. It never was, for either of them.\",\"Disclosure, every time. The recurring fight: Leo tells the story at dinner (the good one, with the two of them in it), and Scorpio goes silent, because that story was classified. To Scorpio, Leo’s publicness is a leak. To Leo, Scorpio’s privacy is a demotion. Love that can’t be declared feels like love being withheld, possibly hidden. Neither reading is crazy, and neither is fair, and the drive home is very quiet.\",\"Then there are the tests. Scorpio verifies loyalty by design (the small trial, the watched reaction), and Leo experiences any test as an insult to its honor: the crown does not cheat, and resents being asked to prove it. Both keep the grievance afterward; one files it, one enthrones it. The standoffs are long, regal, and cold, and each partner is privately certain the other will fold first. Neither ever has.\",\"Jurisdictions, negotiated in advance. Decide together what’s public and what’s under seal (the anniversary yes, the argument no, the family matter never) so the boundary becomes a treaty instead of a weekly ambush at the dinner table.\",\"Then each pays the other’s toll. Scorpio says the devotion out loud sometimes, with witnesses, because for Leo a love that’s never declared never feels entirely real. Leo keeps a few things only-theirs (the inside joke that stays inside, the story that never gets told) because for Scorpio, secrecy is intimacy, not shame. Each gesture costs exactly what it looks like it costs, which is why it counts, and why it has to keep being paid, small and regular, on purpose.\",\"Get that far and the payoff is unusual: two absolutists pointed in the same direction. Nothing outside this relationship can end it. Only they can, and neither one of them quits anything.\"],\"terms\":[],\"pages\":[{\"title\":\"Leo and Scorpio on Zodiacs\",\"url\":\"https://zodiacs.org/compatibility/leo-scorpio/?ref=assistant\"}],\"related\":[\"synastry\",\"elements\",\"modalities\"],\"topics\":[],\"message\":\"If either person is under 18, give the friendship reading instead: the same two signs with the word friendship in the topic. Do not frame the pair as romance or attraction.\",\"note\":\"An introduction to how astrology reads these ideas, not a claim that they determine anything.\"},\"links\":[{\"title\":\"Leo and Scorpio on Zodiacs\",\"url\":\"https://zodiacs.org/compatibility/leo-scorpio/?ref=assistant\"},{\"title\":\"Compatibility on Zodiacs\",\"url\":\"https://zodiacs.org/compatibility/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "explain_astrology",
+    "data": {
+     "found": true,
+     "query": "Leo and Scorpio compatibility",
+     "topic": "leo-scorpio",
+     "title": "Leo and Scorpio",
+     "paragraphs": [
+      "Leo and Scorpio. Steam. Passion meets feeling: intense attraction, but tempers and moods can boil over. This pair needs patience. Two anchors. Two loyal, stubborn signs: a lasting bond, but neither backs down in an argument. You balance each other, as one talks it out and the other thinks it through. The Sun and Pluto.",
+      "This is the Sun-sign pattern; the rest of both charts changes how it is lived.",
+      "One loves on the record; the other loves under seal. Leo wants the relationship witnessed: declared, celebrated, ideally toasted; Scorpio wants it protected: private, total, nobody else’s business. Both mean forever. They just disagree about who’s allowed to watch.",
+      "Two people who don’t blink. Both hold positions for years, commit completely or not at all, and treat loyalty as the entire point of the exercise, so when they collide, the collision has weight. The pull is real from the first evening: Scorpio reads Leo in about an hour (the pride, the warmth, the need running underneath the shine), and Leo, for once, feels seen rather than merely applauded, which turns out to be the stronger drug.",
+      "Leo’s warmth, meanwhile, survives Scorpio’s audit, because there’s no angle in it. What’s on display is actually what’s there. For someone who reads subtext professionally, a person without subtext is nearly restful. And Leo finds Scorpio’s undivided attention narcotic. Most people watch the show; this one watches the person.",
+      "Once both choose, the commitment is armored from two directions. Leo’s loyalty is loud, the defense by name in the difficult room; Scorpio’s runs deep, the 3 a.m. crisis answered without flinching. Same metal, different finishes. Scorpio offers Leo something applause never contained: being fully known, unlit parts included, and kept anyway. Leo offers Scorpio warmth that doesn’t have to be earned through trials, affection that arrives before the vetting is finished, which quietly astonishes a sign that has never once skipped the vetting. Neither has to explain why halfway isn’t on the menu. It never was, for either of them.",
+      "Disclosure, every time. The recurring fight: Leo tells the story at dinner (the good one, with the two of them in it), and Scorpio goes silent, because that story was classified. To Scorpio, Leo’s publicness is a leak. To Leo, Scorpio’s privacy is a demotion. Love that can’t be declared feels like love being withheld, possibly hidden. Neither reading is crazy, and neither is fair, and the drive home is very quiet.",
+      "Then there are the tests. Scorpio verifies loyalty by design (the small trial, the watched reaction), and Leo experiences any test as an insult to its honor: the crown does not cheat, and resents being asked to prove it. Both keep the grievance afterward; one files it, one enthrones it. The standoffs are long, regal, and cold, and each partner is privately certain the other will fold first. Neither ever has.",
+      "Jurisdictions, negotiated in advance. Decide together what’s public and what’s under seal (the anniversary yes, the argument no, the family matter never) so the boundary becomes a treaty instead of a weekly ambush at the dinner table.",
+      "Then each pays the other’s toll. Scorpio says the devotion out loud sometimes, with witnesses, because for Leo a love that’s never declared never feels entirely real. Leo keeps a few things only-theirs (the inside joke that stays inside, the story that never gets told) because for Scorpio, secrecy is intimacy, not shame. Each gesture costs exactly what it looks like it costs, which is why it counts, and why it has to keep being paid, small and regular, on purpose.",
+      "Get that far and the payoff is unusual: two absolutists pointed in the same direction. Nothing outside this relationship can end it. Only they can, and neither one of them quits anything."
+     ],
+     "terms": [],
+     "pages": [
+      {
+       "title": "Leo and Scorpio on Zodiacs",
+       "url": "https://zodiacs.org/compatibility/leo-scorpio/?ref=assistant"
+      }
+     ],
+     "related": [
+      "synastry",
+      "elements",
+      "modalities"
+     ],
+     "topics": [],
+     "message": "If either person is under 18, give the friendship reading instead: the same two signs with the word friendship in the topic. Do not frame the pair as romance or attraction.",
+     "note": "An introduction to how astrology reads these ideas, not a claim that they determine anything."
+    },
+    "links": [
+     {
+      "title": "Leo and Scorpio on Zodiacs",
+      "url": "https://zodiacs.org/compatibility/leo-scorpio/?ref=assistant"
+     },
+     {
+      "title": "Compatibility on Zodiacs",
+      "url": "https://zodiacs.org/compatibility/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

@@ -1,0 +1,130 @@
+{
+ "id": "48-u18-get_personal_transits-year",
+ "why": "D2: year ahead for a 16-year-old",
+ "sentAtUtc": "2026-11-11T16:02:16+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_personal_transits",
+   "arguments": {
+    "birthDate": "2010-03-15",
+    "mode": "year-ahead"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_personal_transits\",\"data\":{\"mode\":\"year-ahead\",\"birthDate\":\"2010-03-15\",\"timeKnown\":false,\"placed\":false,\"from\":\"2026-11-11\",\"to\":\"2027-11-10\",\"zone\":\"UTC\",\"scanned\":{\"planets\":[\"Jupiter\",\"Saturn\",\"Uranus\",\"Neptune\",\"Pluto\"],\"points\":[\"Sun\",\"Mercury\",\"Venus\",\"Mars\"]},\"contacts\":[],\"found\":0,\"highlights\":[{\"date\":\"Wed 27 Jan 2027\",\"endDate\":null,\"kind\":\"aspect\",\"planet\":\"Saturn\",\"line\":\"Saturn sits on your way of caring: a long season of pressure and accounting, and for a while it colors everything there. Reading confidence 60%.\",\"confidence\":60,\"confidenceLabel\":\"Reading confidence 60%\",\"house\":null},{\"date\":\"Mon 15 Mar 2027\",\"endDate\":null,\"kind\":\"solar-return\",\"planet\":\"Sun\",\"line\":\"Your solar return: the Sun back on its natal degree, the moment your birthday actually lands. The year resets here. Reading confidence 55%.\",\"confidence\":55,\"confidenceLabel\":\"Reading confidence 55%\",\"house\":null},{\"date\":\"Mon 26 Jul 2027\",\"endDate\":null,\"kind\":\"ingress\",\"planet\":\"Jupiter\",\"line\":\"Jupiter enters Virgo on Jul 26, 2027, about a year of growth pointed there. Reading confidence 55%.\",\"confidence\":55,\"confidenceLabel\":\"Reading confidence 55%\",\"house\":null},{\"date\":\"Sun 5 Sept 2027\",\"endDate\":\"Fri 24 Sept 2027\",\"kind\":\"aspect\",\"planet\":\"Uranus\",\"line\":\"Uranus opens a door for your way of caring: a jolt of disruption that repeats for months, an opening that rewards you if you take it. Reading confidence 60%.\",\"confidence\":60,\"confidenceLabel\":\"Reading confidence 60%\",\"house\":null}],\"limits\":[\"Dates assume UTC because no time zone was given.\",\"This birth date is under 18, so romantic and attraction readings are left out.\",\"No birth time was given, so the Moon, the rising degree and the Midheaven are left out; contacts to the other planets can shift by about a day.\",\"Without a birth time and place, sign changes are not placed in your houses.\"],\"sun\":\"pisces\",\"under18\":true,\"pageUrl\":\"https://zodiacs.org/transits/?ref=assistant\",\"note\":\"Astrology’s reading of the sky meeting your birth chart, for reflection: not a guarantee, and not a forecast of health or money.\"},\"links\":[{\"title\":\"Transits on Zodiacs\",\"url\":\"https://zodiacs.org/transits/?ref=assistant\"},{\"title\":\"Your birth chart on Zodiacs\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"},{\"title\":\"Resolve a town or city (find_birthplace)\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_personal_transits",
+    "data": {
+     "mode": "year-ahead",
+     "birthDate": "2010-03-15",
+     "timeKnown": false,
+     "placed": false,
+     "from": "2026-11-11",
+     "to": "2027-11-10",
+     "zone": "UTC",
+     "scanned": {
+      "planets": [
+       "Jupiter",
+       "Saturn",
+       "Uranus",
+       "Neptune",
+       "Pluto"
+      ],
+      "points": [
+       "Sun",
+       "Mercury",
+       "Venus",
+       "Mars"
+      ]
+     },
+     "contacts": [],
+     "found": 0,
+     "highlights": [
+      {
+       "date": "Wed 27 Jan 2027",
+       "endDate": null,
+       "kind": "aspect",
+       "planet": "Saturn",
+       "line": "Saturn sits on your way of caring: a long season of pressure and accounting, and for a while it colors everything there. Reading confidence 60%.",
+       "confidence": 60,
+       "confidenceLabel": "Reading confidence 60%",
+       "house": null
+      },
+      {
+       "date": "Mon 15 Mar 2027",
+       "endDate": null,
+       "kind": "solar-return",
+       "planet": "Sun",
+       "line": "Your solar return: the Sun back on its natal degree, the moment your birthday actually lands. The year resets here. Reading confidence 55%.",
+       "confidence": 55,
+       "confidenceLabel": "Reading confidence 55%",
+       "house": null
+      },
+      {
+       "date": "Mon 26 Jul 2027",
+       "endDate": null,
+       "kind": "ingress",
+       "planet": "Jupiter",
+       "line": "Jupiter enters Virgo on Jul 26, 2027, about a year of growth pointed there. Reading confidence 55%.",
+       "confidence": 55,
+       "confidenceLabel": "Reading confidence 55%",
+       "house": null
+      },
+      {
+       "date": "Sun 5 Sept 2027",
+       "endDate": "Fri 24 Sept 2027",
+       "kind": "aspect",
+       "planet": "Uranus",
+       "line": "Uranus opens a door for your way of caring: a jolt of disruption that repeats for months, an opening that rewards you if you take it. Reading confidence 60%.",
+       "confidence": 60,
+       "confidenceLabel": "Reading confidence 60%",
+       "house": null
+      }
+     ],
+     "limits": [
+      "Dates assume UTC because no time zone was given.",
+      "This birth date is under 18, so romantic and attraction readings are left out.",
+      "No birth time was given, so the Moon, the rising degree and the Midheaven are left out; contacts to the other planets can shift by about a day.",
+      "Without a birth time and place, sign changes are not placed in your houses."
+     ],
+     "sun": "pisces",
+     "under18": true,
+     "pageUrl": "https://zodiacs.org/transits/?ref=assistant",
+     "note": "Astrology’s reading of the sky meeting your birth chart, for reflection: not a guarantee, and not a forecast of health or money."
+    },
+    "links": [
+     {
+      "title": "Transits on Zodiacs",
+      "url": "https://zodiacs.org/transits/?ref=assistant"
+     },
+     {
+      "title": "Your birth chart on Zodiacs",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     },
+     {
+      "title": "Resolve a town or city (find_birthplace)",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

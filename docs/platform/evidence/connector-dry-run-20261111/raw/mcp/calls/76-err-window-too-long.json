@@ -1,0 +1,42 @@
+{
+ "id": "76-err-window-too-long",
+ "why": "D4: window over 92 days",
+ "sentAtUtc": "2026-11-11T16:03:46+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_upcoming_events",
+   "arguments": {
+    "from": "2026-11-01T00:00:00Z",
+    "to": "2027-06-01T00:00:00Z"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"get_upcoming_events\",\"error\":{\"code\":\"budget-exhausted\",\"message\":\"An events window is at most 92 days long.\"}}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "get_upcoming_events",
+    "error": {
+     "code": "budget-exhausted",
+     "message": "An events window is at most 92 days long."
+    }
+   },
+   "isError": true
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

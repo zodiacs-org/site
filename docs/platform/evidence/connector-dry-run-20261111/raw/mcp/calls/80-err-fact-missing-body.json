@@ -1,0 +1,41 @@
+{
+ "id": "80-err-fact-missing-body",
+ "why": "D4: kind without its fields",
+ "sentAtUtc": "2026-11-11T16:03:54+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "check_sky_fact",
+   "arguments": {
+    "kind": "sign"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"check_sky_fact\",\"error\":{\"code\":\"invalid-request\",\"message\":\"body is required.\"}}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "check_sky_fact",
+    "error": {
+     "code": "invalid-request",
+     "message": "body is required."
+    }
+   },
+   "isError": true
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

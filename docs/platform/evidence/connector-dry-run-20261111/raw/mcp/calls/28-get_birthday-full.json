@@ -1,0 +1,102 @@
+{
+ "id": "28-get_birthday-full",
+ "why": "valid call, solar return; D3 link check",
+ "sentAtUtc": "2026-11-11T16:00:47+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_birthday",
+   "arguments": {
+    "birthDate": "1990-05-03",
+    "time": "08:30",
+    "zone": "Europe/Madrid"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_birthday\",\"data\":{\"month\":5,\"day\":3,\"label\":\"3 May\",\"sunSpan\":{\"from\":\"12°10′ Taurus\",\"to\":\"13°34′ Taurus\",\"years\":\"1940 to 2030\",\"text\":\"Between 12°10′ Taurus and 13°34′ Taurus at noon universal time, depending on the year (1940 to 2030).\"},\"sign\":{\"slug\":\"taurus\",\"name\":\"Taurus\",\"element\":\"earth\",\"modality\":\"fixed\",\"ruler\":\"Venus\",\"dates\":\"Apr 20 to May 20\",\"meaning\":\"You are built for consistency: slow to start, nearly impossible to stop, with an unteachable instinct for what feels good and lasts. Change is fine, as long as it was your idea and arrived on schedule.\"},\"signFrom\":\"date\",\"boundary\":{\"nearestDegrees\":12.2,\"text\":\"Not a cusp date. Across 1940 to 2030 the Sun sits at least 12.2° inside Taurus on May 3, so the sign never changes with the year.\"},\"cusp\":null,\"decan\":{\"first\":2,\"last\":2,\"rulers\":[\"Mercury\"],\"text\":\"The second decan of Taurus (10° to 20°), whose traditional ruler is Mercury.\"},\"sunAtBirth\":{\"longitude\":42.5737,\"position\":\"12°34′ Taurus\",\"timeKnown\":true},\"famous\":null,\"pageUrl\":\"https://zodiacs.org/birthday/may-3/?ref=assistant\",\"shareUrl\":\"https://zodiacs.org/share/birthday/?d=05-03&ref=assistant\",\"solarReturn\":{\"year\":2026,\"instant\":{\"utc\":\"2026-05-02T23:44:17.779Z\",\"local\":\"Sun 3 May 2026, 01:44\"},\"timeKnown\":true,\"range\":null,\"note\":\"Computed from the birth time given in Europe/Madrid. Times read on the birthplace's clock.\"},\"note\":\"Facts about the Sun on this date and their traditional meanings.\"},\"links\":[{\"title\":\"3 May birthdays on Zodiacs\",\"url\":\"https://zodiacs.org/birthday/may-3/?ref=assistant\"},{\"title\":\"Solar returns on Zodiacs\",\"url\":\"https://zodiacs.org/solar-return/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_birthday",
+    "data": {
+     "month": 5,
+     "day": 3,
+     "label": "3 May",
+     "sunSpan": {
+      "from": "12°10′ Taurus",
+      "to": "13°34′ Taurus",
+      "years": "1940 to 2030",
+      "text": "Between 12°10′ Taurus and 13°34′ Taurus at noon universal time, depending on the year (1940 to 2030)."
+     },
+     "sign": {
+      "slug": "taurus",
+      "name": "Taurus",
+      "element": "earth",
+      "modality": "fixed",
+      "ruler": "Venus",
+      "dates": "Apr 20 to May 20",
+      "meaning": "You are built for consistency: slow to start, nearly impossible to stop, with an unteachable instinct for what feels good and lasts. Change is fine, as long as it was your idea and arrived on schedule."
+     },
+     "signFrom": "date",
+     "boundary": {
+      "nearestDegrees": 12.2,
+      "text": "Not a cusp date. Across 1940 to 2030 the Sun sits at least 12.2° inside Taurus on May 3, so the sign never changes with the year."
+     },
+     "cusp": null,
+     "decan": {
+      "first": 2,
+      "last": 2,
+      "rulers": [
+       "Mercury"
+      ],
+      "text": "The second decan of Taurus (10° to 20°), whose traditional ruler is Mercury."
+     },
+     "sunAtBirth": {
+      "longitude": 42.5737,
+      "position": "12°34′ Taurus",
+      "timeKnown": true
+     },
+     "famous": null,
+     "pageUrl": "https://zodiacs.org/birthday/may-3/?ref=assistant",
+     "shareUrl": "https://zodiacs.org/share/birthday/?d=05-03&ref=assistant",
+     "solarReturn": {
+      "year": 2026,
+      "instant": {
+       "utc": "2026-05-02T23:44:17.779Z",
+       "local": "Sun 3 May 2026, 01:44"
+      },
+      "timeKnown": true,
+      "range": null,
+      "note": "Computed from the birth time given in Europe/Madrid. Times read on the birthplace's clock."
+     },
+     "note": "Facts about the Sun on this date and their traditional meanings."
+    },
+    "links": [
+     {
+      "title": "3 May birthdays on Zodiacs",
+      "url": "https://zodiacs.org/birthday/may-3/?ref=assistant"
+     },
+     {
+      "title": "Solar returns on Zodiacs",
+      "url": "https://zodiacs.org/solar-return/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}
