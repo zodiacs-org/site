@@ -423,7 +423,12 @@
 /* The full chart owns its entrance. Suppress the shared starting-style
    transitions so the prompt and controls are available immediately. */
 .calc__result[data-wheel-reveal] .calc__three > .three-card,
-.calc__result[data-wheel-reveal] > .calc__first-reading { transition: none; }
+.calc__result[data-wheel-reveal] > .calc__first-reading,
+.calc__result[data-wheel-reveal] :is(.calc__approach-connector, .calc__comm-connector) { transition: none; }
+.calc__result[data-wheel-reveal] :is(.calc__approach-part, .calc__comm-part) {
+  transition: border-color 160ms var(--ease);
+  transition-delay: 0ms;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .wheel--settle { animation: none; }

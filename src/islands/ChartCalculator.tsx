@@ -1428,6 +1428,13 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     setSubjectMode(input.subjectMode ?? 'self');
     setMineHandoff(input.mine ?? null);
     if (mode === 'full' && !chartActionDockModule) requestChartControls();
+    if (mode === 'full') {
+      void import('./CalendarSubscribe').then(setCalendarSurface, () => {});
+      if (showsEnglishInterpretation) {
+        void import('./CommunicationRead').then(setCommunicationSurface, () => {});
+        void import('./ApproachRead').then(setApproachSurface, () => {});
+      }
+    }
     try {
       // Early dates also download the local mean time table and the zone's
       // pinned history; the downloads run together. A rejection is observed
@@ -1440,7 +1447,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         : null;
       const engine = await loadEngine();
       if (!runIsCurrent()) return;
-      const [wheel] = await Promise.all([wheelReady, localTimeReady]);
+      await localTimeReady;
+      const wheel = await wheelReady;
       if (!runIsCurrent()) return;
       if (readingsReady) {
         const read = await readingsReady;
@@ -1531,6 +1539,15 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       });
       void import('./PositionsShareSurface').then(async (surface) => {
         if (!runIsCurrent()) return;
+        // Rasterizing the export can occupy a phone's main thread for several
+        // frames. CSS owns the entrance; only the background export waits.
+        const wheel = resultRef.current?.querySelector('.wheel--settle');
+        if (wheel) {
+          const lastCard = resultRef.current?.querySelector('.calc__three > :last-child');
+          const entrance = [...wheel.getAnimations(), ...(lastCard?.getAnimations() ?? [])];
+          await Promise.allSettled(entrance.map((animation) => animation.finished));
+          if (!runIsCurrent()) return;
+        }
         const prepared = await surface.preparePrimaryShareArtifact(result, mode, locale, nextMoonAmbiguous, input.date);
         if (!runIsCurrent()) return;
         shareRuntimeRef.current.primary = { artifact: prepared, share: surface.sharePrimaryArtifact };
@@ -1542,13 +1559,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       const contextId = chartContextIdRef.current + 1;
       chartContextIdRef.current = contextId;
       clearPostChartContext();
-      if (mode === 'full') {
-        void import('./CalendarSubscribe').then(setCalendarSurface, () => {});
-        if (showsEnglishInterpretation) {
-          void import('./CommunicationRead').then(setCommunicationSurface, () => {});
-          void import('./ApproachRead').then(setApproachSurface, () => {});
-        }
-      }
       track('result_rendered', { mode });
       track('chart_computed', { mode, source });
       if (locale !== 'ru') void import('./PwaInstallPrompt').then(setPwaInstallModule, () => {});
@@ -2188,15 +2198,19 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     && firstReadingLoaded
     && !tourOpen
     && (firstReading.status === 'not_started' || firstReading.status === 'in_progress');
-  const shareActionLabel = subjectMode === 'other'
+  // The share options work while the first full-size image is being prepared.
+  const preparingChartImage = mode === 'full' && card === 'busy' && !shareRuntimeRef.current.primary;
+  const shareActionLabel = preparingChartImage
+    ? `${t(locale, 'shareChart')} · ${t(locale, 'chartActionsMore')}`
+    : subjectMode === 'other'
     ? wheelActionCopy.shareOther
     : t(locale, 'shareChart');
-  const shareActionStatusLabel = card === 'busy'
+  const shareActionDisabled = card === 'busy' && !preparingChartImage;
+  const shareActionStatusLabel = shareActionDisabled
     ? t(locale, 'rendering')
     : card === 'saved'
       ? t(locale, 'cardSaved')
       : shareActionLabel;
-  const shareActionDisabled = card === 'busy';
   return (
     <div class="calc" data-subject-mode={subjectMode}>
       <form
@@ -3035,7 +3049,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           {mode === 'full' && scene && (
             <details
               class="calc__detail"
-              data-depth="advanced"
               data-detail
               data-evidence-disclosure
               open={detailOpen}
@@ -3048,7 +3061,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   : <><span class="mono">{chart.aspects.length}</span>{detailLabels.aspects}</>}
               </summary>
               <div class="calc__detail-body">
-                <p class="calc__receipt mono" data-chart-receipt>
+                <p class="calc__receipt mono" data-depth="advanced" data-chart-receipt>
                   {chart.input.utc.toISOString().replace('T', ' · ').slice(0, 21)} UTC
                   {city ? ` · ${city.lat.toFixed(2)}°, ${city.lon.toFixed(2)}°` : ''}
                   {chart.houses ? <HouseSystemReceipt locale={locale} system={chart.houses.system} /> : ''}
@@ -3094,7 +3107,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                 </div>
 
                 {chart.aspects.length > 0 && (
-                  <section class="calc__aspects" aria-labelledby="calc-aspects-title">
+                  <section class="calc__aspects" data-depth="advanced" aria-labelledby="calc-aspects-title">
                     <h3 id="calc-aspects-title">{t(locale, 'aspectsFound')} {locale === 'ru' ? '—' : '-'} {locale === 'ru'
                       ? tp('ru', 'aspects', chart.aspects.length, russianCopy!.plurals)
                       : <>{chart.aspects.length} {t(locale, 'found')}</>}</h3>

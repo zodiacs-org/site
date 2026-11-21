@@ -1222,12 +1222,10 @@ try {
       }));
       await open(mobile, `${baseURL}/birth-chart/`);
       await computeChart(mobile);
-      await mobile.waitForFunction(() => {
-        const action = document.querySelector('[data-share-card]');
-        return action instanceof HTMLButtonElement && !action.disabled;
-      }, null, { timeout: TIMEOUT });
+      const preparedShare = mobile.getByRole('button', { name: 'Share your chart', exact: true });
+      await preparedShare.waitFor({ timeout: TIMEOUT });
       const mobileTapStart = await mobile.evaluate(() => performance.now());
-      await mobile.locator('[data-share-card]').click();
+      await preparedShare.click();
       await mobile.waitForFunction(() => globalThis.__mobileShareCalls === 1, null, { timeout: TIMEOUT });
       const mobilePayload = await mobile.evaluate(() => globalThis.__mobileSharePayload);
       assert.equal(mobilePayload.files.length, 1, 'one mobile tap must share one prepared file');

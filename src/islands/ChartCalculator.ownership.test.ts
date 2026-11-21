@@ -159,6 +159,25 @@ describe('ChartCalculator result ownership', () => {
     expect(h.calls).not.toContain('portable-natal'); expect(h.context.chart).not.toBeNull(); expect(h.context.receiptExport).toBeNull();
   });
 
+  it('publishes the result during the entrance and skips an obsolete background export', async () => {
+    const h = harness();
+    const entrance = deferred();
+    const prepare = vi.fn();
+    h.modules.set('./PositionsShareSurface', Promise.resolve({ preparePrimaryShareArtifact: prepare }));
+    h.context.resultRef.current = {
+      querySelector: () => ({ getAnimations: () => [{ finished: entrance.promise }] }),
+    };
+    await h.context.runChart(input(), true);
+    await flush();
+    expect(h.context.chart).not.toBeNull();
+    expect(prepare).not.toHaveBeenCalled();
+
+    h.context.invalidateProfileHandoff();
+    entrance.resolve();
+    await flush();
+    expect(prepare).not.toHaveBeenCalled();
+  });
+
   it.each(['signature', 'prepared-share'])('does not publish delayed %s for a newer input', async (boundary) => {
     const h = harness(), pending = deferred();
     if (boundary === 'signature') h.modules.set('../lib/chart-signature', pending.promise);
