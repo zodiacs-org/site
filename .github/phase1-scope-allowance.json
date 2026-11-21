@@ -1,12 +1,20 @@
 {
   "version": 1,
-  "id": "legal-pages-locale-privacy-379d9d111bf5",
-  "baseCommit": "379d9d111bf53d14adc3b02f04d582e1f8c94153",
+  "id": "legal-pages-locale-privacy-3e6bcbd359ed",
+  "baseCommit": "3e6bcbd359ed47f091448b66276e9493ee4e6ece",
   "protectedPaths": [
+    "public/assets/app.js",
     "scripts/registry-risk.test.mjs",
+    "src/app.jsx",
+    "src/components/LocalizedDisclosurePage.astro",
+    "src/islands/RegistryAura.tsx",
     "src/pages/es/privacy/index.astro",
     "src/pages/fr/privacy/index.astro",
     "src/pages/it/privacy/index.astro",
-    "src/pages/pt/privacy/index.astro"
+    "src/pages/pt/privacy/index.astro",
+    "src/strings/additions.es.mjs",
+    "src/strings/additions.fr.mjs",
+    "src/strings/additions.it.mjs",
+    "src/strings/additions.pt.mjs"
   ]
 }
