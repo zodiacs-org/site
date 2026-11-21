@@ -51,7 +51,7 @@ create or replace function public.birthday_reminder_request(p_email text, p_mont
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare previous timestamptz; confirmed timestamptz; sent smallint; window_start timestamptz; reminder_id uuid;
 begin
-  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_email, 7312031));
+  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_email, 0));
   perform public.birthday_reminders_sweep();
   select requested_at, confirmed_at, request_count, window_started_at into previous, confirmed, sent, window_start
     from zodiacs_reminders_private.birthday_reminders where email = p_email;

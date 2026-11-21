@@ -83,8 +83,7 @@ describe('the birthday reminder endpoint', () => {
     await birthdayReminderHandler(request('POST', { query: { confirm: 'a'.repeat(43) } }), res, { env: ENV, fetcher: fetcher as unknown as typeof fetch });
     expect(res.statusCode).toBe(200);
     expect(String((fetcher.mock.calls[0] as unknown[])[0])).toContain('/rest/v1/rpc/birthday_reminder_confirm');
-    expect(res.body).toContain('Stop and delete');
-    expect(res.body).toContain(`/api/email/birthday-reminder?unsubscribe=${unsubscribeToken(id, SECRET)}`);
+    expect(res.body).toContain(`<a href="/api/email/birthday-reminder?unsubscribe=${unsubscribeToken(id, SECRET)}">Stop and delete</a>`);
     // The page points to the stop link itself: reopening the confirmation link only shows an expired page.
     expect(res.body).toContain('Keep the Stop and delete link, or the confirmation email, if you want to stop before your birthday.');
     expect(res.body).not.toMatch(/this page(?:’|&#39;|')s link/u);

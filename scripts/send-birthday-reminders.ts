@@ -65,5 +65,5 @@ for (const reminder of due) {
     await releaseReminder(reminder.id).catch(() => false);
   }
 }
-console.log(`Birthday reminders for ${date}: ${due.length} due, ${dryRun ? 'dry run, none' : sent} sent, ${skipped} already claimed or stopped, ${failed} failed.`);
+console.log(`Birthday reminders: ${due.length} due, ${dryRun ? 'dry run, none' : sent} sent, ${skipped} already claimed or stopped, ${failed} failed.`);
 if (failed) process.exitCode = 1;

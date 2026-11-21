@@ -50,8 +50,7 @@ describe('the birthday send', () => {
   it('ends the birthday email with the postal address and says nothing false about the solar return', () => {
     const { text } = birthdayEmail('https://zodiacs.org', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u', 'Zodiacs.org, Test Address');
     expect(text.split('\n').slice(-2)).toEqual(['', 'Zodiacs.org, Test Address']);
-    expect(text).toContain('Your solar return falls around your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.');
-    expect(text).not.toContain('within a day');
+    expect(text).toContain('Your solar return falls on or within a day of your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.');
     expect(text).not.toContain('has come round');
     expect(text).not.toMatch(/[–—‒―]/u);
   });

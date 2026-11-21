@@ -554,13 +554,16 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
       {birthdayReminderOffered && (
         <p>
           After scoring your year you can ask for one email a year, on your
-          birthday. If you do, and confirm it from the email we send, we keep
-          your email address and your birthday's month and day, and when you
-          asked and confirmed, and send through <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
-          An unconfirmed request is deleted after 48 hours, and the link in
-          the confirmation email, on the confirmation page and in every
-          birthday email deletes both. Deleting a Zodiacs account does not
-          remove the reminder, so use that link to stop it.
+          birthday. We send a confirmation through <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>
+          and delete unconfirmed requests after 48 hours. We keep your email
+          address, your birthday's month and day, and when you asked and confirmed.
+          We also record when we last sent a reminder and count confirmation
+          requests to limit how often we email you.
+          Keep the confirmation email or the Stop and delete link on the
+          confirmation page. You can use that link to delete your email address
+          and birthday from the reminder list at any time. Every birthday email
+          has the same link. Deleting your Zodiacs account leaves the reminder
+          active until you stop it.
         </p>
       )}
       <p>

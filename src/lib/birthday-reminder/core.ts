@@ -154,7 +154,7 @@ export function birthdayEmail(origin: string, unsubscribeUrl: string, postalAddr
     text: [
       'Happy birthday.',
       '',
-      'Your solar return falls around your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.',
+      'Your solar return falls on or within a day of your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.',
       '',
       `Score the twelve months ahead: ${origin}/year-score/`,
       '',

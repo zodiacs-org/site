@@ -1,8 +1,7 @@
 /**
  * Birthday reminder storage: seven service-role RPCs from
- * supabase/migrations/20261112090000_birthday_reminders.sql. The table holds
- * the email, the month and day, the confirmation hash and two dates; nothing
- * else. Errors carry status codes only, never a request's values.
+ * supabase/migrations/20261112090000_birthday_reminders.sql.
+ * Errors carry status codes only, never a request's values.
  */
 type Environment = Record<string, unknown>;
 type Fetch = typeof fetch;

@@ -76,6 +76,8 @@ describe('GitHub Actions trust boundaries', () => {
     expect(body).toContain("if: vars.BIRTHDAY_REMINDERS_SENDING == '1' || vars.BIRTHDAY_REMINDER_ENABLED == '1'");
     expect(body).toContain('if [ "$BIRTHDAY_REMINDERS_SENDING" = "1" ]; then');
     expect(body).toContain('send-birthday-reminders.ts -- --cleanup-only');
+    expect(body).toContain('cron: "7 10 * * *"');
+    expect(body).toContain('DAILY_EMAIL_POSTAL_ADDRESS: ${{ vars.DAILY_EMAIL_POSTAL_ADDRESS }}');
   });
 
   it('pins preview probes to the configured project and team hostname family', async () => {

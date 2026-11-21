@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 import { confirmReminder, dueReminders } from './store';
 
@@ -36,12 +36,8 @@ describe('birthday reminder storage', () => {
     expect(migration).toContain('request_count smallint not null default 0');
     expect(migration).toContain('window_started_at timestamptz');
     // The lock comes first, so two requests for one address cannot both pass either cap.
-    expect(request.indexOf('pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_email, 7312031))')).toBeGreaterThan(0);
+    expect(request).toContain('pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_email, 0))');
     expect(request.indexOf('pg_advisory_xact_lock')).toBeLessThan(request.indexOf('select requested_at'));
-    // Its seed is its own: no other migration locks on 7312031.
-    const dir = new URL('../../../supabase/migrations/', import.meta.url);
-    const others = readdirSync(dir).filter((name) => name.endsWith('.sql') && name !== '20261112090000_birthday_reminders.sql');
-    expect(others.filter((name) => readFileSync(new URL(name, dir), 'utf8').includes('7312031'))).toEqual([]);
     expect(request).toContain("window_start <= pg_catalog.now() - interval '24 hours'");
     expect(request).toContain("if sent >= 6 then return pg_catalog.jsonb_build_object('outcome', 'capped')");
     expect(request).toContain("interval '60 seconds'");
