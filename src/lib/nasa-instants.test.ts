@@ -48,7 +48,18 @@ const sky = read<{ from: string; retrogrades: { planet: string; from: string; to
 type Receipt = { pages: { id: string; family: string; anchor: string; bodies: string[]; subtype: string; signs: string[] }[] };
 // Both receipts: 2026 to 2027 (bundled by the AI tools) and 2028 to 2030.
 const publication = { pages: [...read<Receipt>('events-publication.json').pages, ...read<Receipt>('events-publication-2028-2030.json').pages] };
-const program = read<{ evidence: { kind: string; eventKind?: string; eventType?: string; body?: string; a?: string; b?: string; at: string }[] }>('horoscope-program.json');
+const program = read<{ evidence: { kind: string; eventKind?: string; eventType?: string; body?: string; sourceId?: string; sign?: string; a?: string; b?: string; at: string }[] }>('horoscope-program.json');
+
+// Solar ingresses intentionally retain the engine catalog instant, not a NASA override.
+function expectCatalogSunIngress(receipt: (typeof program.evidence)[number]) {
+  expect(receipt.eventKind).toBe('ingress');
+  expect(receipt.body).toBe('Sun');
+  const month = months.find((entry) => receipt.sourceId === `src/data/transits-${entry.month}.json`);
+  expect(month, receipt.sourceId).toBeDefined();
+  const matches = month!.ingresses.filter((item) =>
+    item.planet === receipt.body && item.sign === receipt.sign && item.at === receipt.at);
+  expect(matches, receipt.at).toHaveLength(1);
+}
 
 describe('the NASA event table', () => {
   it('records where every instant came from', () => {
@@ -176,10 +187,32 @@ describe('every planet event the pages print has its NASA instant', () => {
   it('in the horoscope program\'s dated events', () => {
     for (const receipt of program.evidence) {
       if (receipt.kind !== 'sky-event') continue;
-      if (receipt.eventKind === 'ingress') expect(nasaIngressAt(receipt.body!, receipt.at), receipt.at).toBeDefined();
+      if (receipt.eventKind === 'ingress') {
+        if (receipt.body === 'Sun') expectCatalogSunIngress(receipt);
+        else expect(nasaIngressAt(receipt.body!, receipt.at), receipt.at).toBeDefined();
+      }
       if (receipt.eventKind === 'station') expect(nasaStationAt(receipt.body!, receipt.at), receipt.at).toBeDefined();
       if (receipt.eventKind === 'aspect') expect(nasaAspectAt(receipt.a!, receipt.b!, receipt.eventType!, receipt.at), receipt.at).toBeDefined();
     }
+  });
+});
+
+describe('catalog-backed Sun receipt regression', () => {
+  const sun = { kind: 'sky-event', eventKind: 'ingress', body: 'Sun',
+    sourceId: 'src/data/transits-2026-11.json', sign: 'sagittarius', at: '2026-11-22T07:23:20.566Z' };
+
+  it('checks the November Sun ingress against its exact catalog row', () => {
+    expect(nasaIngressAt(sun.body, sun.at)).toBeUndefined();
+    expectCatalogSunIngress(sun);
+  });
+
+  it.each([
+    { sourceId: 'src/data/transits-2026-10.json' },
+    { body: 'Moon' },
+    { sign: 'scorpio' },
+    { at: '2026-11-22T07:23:20.567Z' },
+  ])('rejects a changed Sun receipt field: %j', (change) => {
+    expect(() => expectCatalogSunIngress({ ...sun, ...change })).toThrow();
   });
 });
 
