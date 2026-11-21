@@ -198,7 +198,9 @@ const pageExists = (url: string) => {
   const path = new URL(url).pathname.replace(/^\/|\/$/gu, '');
   return existsSync(new URL(`src/pages/${path}/index.astro`, root)) || existsSync(new URL(`src/pages/${path}.astro`, root)) || existsSync(new URL(`src/pages/${path}/[slug].astro`, root));
 };
-async function chart(args: Record<string, unknown>, dependencies: Record<string, unknown> = on) {
+// Some ephemeris fixtures are in 2199. Read them at a clock when all are adults.
+const fixtureClock = { ...on, now: () => new Date('2220-01-01T12:00:00Z') };
+async function chart(args: Record<string, unknown>, dependencies: Record<string, unknown> = fixtureClock) {
   const result = await executeAiTool('get_natal_chart', args, dependencies);
   if (!result.ok || result.tool !== 'get_natal_chart') throw new Error(JSON.stringify(result));
   return result.data as Record<string, any>;
@@ -275,7 +277,7 @@ describe('get_natal_chart\'s Chiron, with the sky events switch', () => {
   });
 
   it('keeps romantic and health wording out of Chiron for anyone under 18', async () => {
-    const data = await chart({ birthDate: '2012-06-01', time: '12:00', zone: 'Europe/London', latitude: 51.5, longitude: -0.12 });
+    const data = await chart({ birthDate: '2012-06-01', time: '12:00', zone: 'Europe/London', latitude: 51.5, longitude: -0.12 }, on);
     expect(data.under18).toBe(true);
     expect(data.chiron.aspects.length).toBeGreaterThan(0);
     expect(JSON.stringify(data.chiron)).not.toMatch(/\b(?:romance|romantic|attraction|health)\b/iu);

@@ -37,6 +37,7 @@ describe.each([['/mcp', publishedConnector], ['/mcp/de440', de440Connector]] as 
     const on = await connect({ ...options, env: { ...env, [MOMENT_CHART_SWITCH]: '1' }, countUsage: counts });
     const list = async (handler: Handler) => (await rpc(handler, route, 'tools/list', {})).json.result.tools;
     const original = await list(off);
+    expect(original.map((tool: { name: string }) => tool.name)).not.toContain(MOMENT_CHART_TOOL);
     const tools = await list(on);
     expect(tools.slice(0, -1)).toEqual(original);
     expect(tools.at(-1)).toMatchObject({ name: MOMENT_CHART_TOOL, inputSchema: { additionalProperties: false } });
@@ -56,7 +57,17 @@ describe.each([['/mcp', publishedConnector], ['/mcp/de440', de440Connector]] as 
     expect(invalid.isError).toBe(true);
     const adult = (await call(on, 'get_natal_chart', { ...input, birthDate: '1990-04-18' })).result;
     expect(adult.structuredContent.ok).toBe(true);
-    const links = JSON.stringify([adult, moment]).match(/https?:[^"\s]+/g) ?? [];
+    function resultUrls(value: unknown): string[] {
+      if (typeof value === 'string') return value.startsWith('https://') ? [value] : [];
+      return value && typeof value === 'object' ? Object.values(value).flatMap(resultUrls) : [];
+    }
+    const links = resultUrls([adult.structuredContent, moment.structuredContent]);
+    for (const link of links) {
+      const url = new URL(link);
+      expect(url.origin).toBe('https://zodiacs.org');
+      expect(url.hash).toBe('');
+      expect(['', '?ref=assistant']).toContain(url.search);
+    }
     expect(links.length).toBeGreaterThan(0);
     expect(urls.length).toBeGreaterThan(0);
     expect(logs.some(log => log.mock.calls.length > 0)).toBe(true);
