@@ -243,7 +243,7 @@ jobs:
 
       - name: Homepage scroll layout stability
         timeout-minutes: 3
-        run: npm run test:home-scroll-cls:browser
+        run: node tests/home-scroll-cls-drive.mjs
 
       - name: Homepage interactive chart preview
         timeout-minutes: 5
