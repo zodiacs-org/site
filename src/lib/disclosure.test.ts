@@ -75,6 +75,8 @@ const ROUTE_TEXT_KEYS = [
   'adviceLabel',
   'adviceStatement',
   'adviceEvidence',
+  'addressLookupHeading',
+  'addressLookupBody',
   'linkPrivacy',
   'linkMethodology',
   'linkRegistry',
@@ -271,6 +273,9 @@ describe('registry disclosure contract', () => {
     expect(row.statement).toContain('not a wallet score or price signal');
     expect(row.statement).toContain('no purchase is required');
     expect(row.evidence).toContain('“Official” is a Registry classification only');
+    // The terms no longer carry a digital-asset risk section (removed 20 November 2026).
+    expect(row.evidence).not.toMatch(/the terms state/i);
+    expect(row.links.map((link) => link.href)).toEqual(['/disclosure/#address-lookup', '/thesis/']);
     for (const excludedClaim of [
       'government approval',
       'identity verification',
@@ -283,6 +288,28 @@ describe('registry disclosure contract', () => {
     }
   });
 
+  it('publishes the public-address lookup notice in every catalog (owner-approved 21 November 2026)', async () => {
+    expect(EN['disclosure.addressLookupBody']).toBe(
+      'A public-address lookup on Aura or in the Zodiac Terminal is read-only. When you compose or refresh an Aura, or press View on the Terminal Shelf, our holdings endpoint receives the public address and forwards it to the configured blockchain-data provider (currently PublicNode, operated by Allnodes) to check which Registry entries are present. The provider receives the lookup from our server, not from your browser. The request does not include birth fields, chart names, chart placements, or chart geometry. A public address is public but not necessarily anonymous; its on-chain holdings and history may be visible and may become linked with a person or other activity. Vercel, the configured blockchain-data provider, and their infrastructure may process routine request metadata and operational or security logs, such as IP address, time, and browser information. We do not promise that a public-address request is never logged by infrastructure providers whose retention practices we do not control.',
+    );
+    for (const locale of RELEASED_LOCALES) {
+      for (const key of ['addressLookupHeading', 'addressLookupBody', 'adviceEvidence'] as const) {
+        expect(disclosureText(locale, key), `${locale}:${key}`).not.toMatch(/[\u2013\u2014]/u);
+      }
+      const body = disclosureText(locale, 'addressLookupBody');
+      for (const name of ['Aura', 'PublicNode', 'Allnodes', 'Vercel', 'View']) {
+        expect(body, `${locale}:${name}`).toContain(name);
+      }
+      if (locale !== 'en') expect(body, locale).not.toBe(EN['disclosure.addressLookupBody']);
+      const advice = disclosureRows(locale).find((row) => row.id === 'financial-advice')!;
+      expect(advice.links[0].href, locale).toBe(`${localizePath(locale, '/disclosure/')}#address-lookup`);
+    }
+    const page = await readFile(resolve(repo, 'src/components/LocalizedDisclosurePage.astro'), 'utf8');
+    expect(page).toContain('<section id={ADDRESS_LOOKUP_ID}');
+    const terminal = (await readFile(resolve(repo, 'src/app.jsx'), 'utf8')).replace(/\s+/g, ' ');
+    expect(terminal).toMatch(/On View, Zodiacs\.org sends this public address[^<]*<a href="\/disclosure\/#address-lookup">/);
+  });
+
   it('keeps one quiet public-lookup note at the Accession Desk', async () => {
     const source = await readFile(resolve(repo, 'src/islands/RegistryAura.tsx'), 'utf8');
     const boundary = (source.match(/<details class="aura-wallet-connect aura-desk-details"[\s\S]*?<\/details>/)?.[0] ?? '')
@@ -290,11 +317,15 @@ describe('registry disclosure contract', () => {
 
     expect(boundary).toContain('sends the public address to its holdings provider');
     expect(source).not.toMatch(/connectSolanaWallet|connectEip6963Provider|Connect Solana wallet|Connect Base wallet/);
-    expect(boundary).toContain('href="/privacy/"');
+    expect(boundary).toContain('href="/disclosure/#address-lookup"');
+    expect(boundary).not.toContain('href="/privacy/"');
     expect(boundary).toContain('href="/disclosure/"');
   });
 
-  it('keeps the English privacy and terms pages explicit about Aura data and asset risk', async () => {
+  it('keeps the Registry wallet and asset-risk disclosures off the English privacy and terms pages', async () => {
+    // Removed from /privacy/ and /terms/ on 20 November 2026 (owner-approved), and from the
+    // translated privacy pages the same day; this page is unchanged. scripts/legal-pages-copy.mjs
+    // holds the full list for every locale.
     const [privacySource, termsSource] = await Promise.all([
       readFile(resolve(repo, 'src/pages/privacy/index.astro'), 'utf8'),
       readFile(resolve(repo, 'src/pages/terms/index.astro'), 'utf8'),
@@ -302,29 +333,25 @@ describe('registry disclosure contract', () => {
     const privacy = privacySource.replace(/\s+/g, ' ');
     const terms = termsSource.replace(/\s+/g, ' ');
 
-    for (const required of [
+    for (const removed of [
       'configured blockchain-data provider',
-      'does not include birth fields, chart names, chart placements, or chart geometry',
       'becomes ineligible for restoration after eight hours',
-      'ineligible after 24 hours',
-      'deleted the next time Aura reads them',
       'We do not promise that a public-address request is never logged',
       'Clearing Aura cannot recall copies',
-      'no birth data, public address, chart identifier, connected account identifier, or exact held-sign list',
     ]) {
-      expect(privacy).toContain(required);
+      expect(privacy).not.toContain(removed);
     }
+    // The analytics scope stays.
+    expect(privacy).toContain('no birth data, public address, chart identifier, connected account identifier, or exact held-sign list');
 
-    for (const required of [
+    for (const removed of [
       'result in a total loss',
       'Blockchain transactions are often irreversible',
-      "does not prove control of an address, legal ownership of an asset, or a person's identity",
       '“official,” “official Zodiac,” and similar wording mean only',
       'not an endorsement, solicitation, or statement that an asset is suitable for you',
       'as a dated operator attestation',
-      'must not be treated as independently verified',
     ]) {
-      expect(terms).toContain(required);
+      expect(terms).not.toContain(removed);
     }
     expect(terms).not.toContain('still pending operator confirmation');
   });

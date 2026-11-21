@@ -64,12 +64,15 @@ describe('public legal identity', () => {
     // exactly: a birth year, a birth time, a birthplace or the names you give,
     // and on 6 November, when it named Gemini alongside ChatGPT and Claude,
     // and on 7 November, when a birthday became the one occasion it lists with no card link,
-    // and on 13 November, when it said the account export includes saved pages and Living Chart moments.
+    // and on 13 November, when it said the account export includes saved pages and Living Chart moments,
+    // and on 20 November, when it named the no-birth-time script and the pages that load Plausible, renamed
+    // its assistant section and, with the terms, dropped the Registry wallet and purchase disclosures.
     expect(about).toContain("dateModified: '2026-11-19T00:00:00.000Z'");
-    expect(terms).toContain("const updated = '11 November 2026'");
-    expect(terms).toContain("const modifiedAt = '2026-11-11T00:00:00.000Z'");
-    expect(privacy).toContain('AI integration candidates');
-    expect(privacy).toContain("const updated = '13 November 2026'");
-    expect(privacy).toContain("const modifiedAt = '2026-11-13T00:00:00.000Z'");
+    expect(terms).toContain("const updated = '20 November 2026'");
+    expect(terms).toContain("const modifiedAt = '2026-11-20T00:00:00.000Z'");
+    expect(privacy).toContain('<h2 id="ai-integrations">The Zodiacs app</h2>');
+    expect(privacy).not.toContain('AI integration candidates');
+    expect(privacy).toContain("const updated = '20 November 2026'");
+    expect(privacy).toContain("const modifiedAt = '2026-11-20T00:00:00.000Z'");
   });
 });

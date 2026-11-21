@@ -51,6 +51,7 @@ import { readEventsPublication } from './lib/events-publications.mjs';
 import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
 import { registryResearchWithheldProblems } from './registry-research-withheld.mjs';
 import { ACCURACY_PATH, accuracyPublished } from '../src/accuracy/publication.mjs';
+import { LEGAL_PAGE_RULES, legalPageProblems, mainOf } from './legal-pages-copy.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
@@ -2000,6 +2001,16 @@ for (const [file, path] of builtPageByFile) {
     .replace(ENTITIES, (entity) => (/^&(?:nbsp|#160|#x[aA]0);$/u.test(entity) ? ' ' : 'x'));
   const joined = [...html.matchAll(INLINE_JOIN)].length;
   if (joined) fail(`${path}: ${joined} place(s) where text runs into an inline element; end the line with {' '}`);
+}
+
+// ---- Legal pages ---------------------------------------------------------------
+// The privacy and terms copy approved on 20 November 2026, and the five
+// translated privacy pages revised the same day: the no-birth-time script and
+// analytics sentences, the plain assistant heading, and no Registry wallet,
+// lookup, market-data or purchase disclosures (scripts/legal-pages-copy.mjs).
+for (const path of Object.keys(LEGAL_PAGE_RULES)) {
+  const html = await readFile(resolve(root, path.slice(1), 'index.html'), 'utf8');
+  for (const problem of legalPageProblems(path, mainOf(html))) fail(`legal pages: ${problem}`);
 }
 
 // ---- Profile access loader ---------------------------------------------------

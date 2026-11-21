@@ -4,20 +4,14 @@ import Base from '../../../layouts/Base.astro';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../../../lib/web-analytics.mjs';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../../lib/account-v2/feature-flags';
 import { weeklyDigestSignupEnabled } from '../../../lib/weekly-digest/feature-flags';
-import { configuredWalletChains } from '../../../lib/wallet/config';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
 });
 const weeklyDigestEnabled = weeklyDigestSignupEnabled();
 const webPushEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
-const walletChartEnabled = configuredWalletChains({
-  ...process.env,
-  PUBLIC_WALLET_CHART_ENABLED:
-    import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
-}).length > 0;
-const updated = '11 de novembro de 2026';
-const modifiedAt = '2026-11-11T00:00:00.000Z';
+const updated = '20 de novembro de 2026';
+const modifiedAt = '2026-11-20T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -25,7 +19,7 @@ const jsonLd = [
     name: 'Privacidade no Zodiacs.org',
     url: 'https://zodiacs.org/pt/privacy/',
     description:
-      'Como o Zodiacs.org trata mapas astrais, armazenamento no navegador, contas, links de compartilhamento, o Guide, análise de uso, consultas de endereços públicos de carteira e solicitações de dados de mercado.',
+      'Como o Zodiacs.org trata mapas astrais, armazenamento no navegador, contas, links de compartilhamento, o Guide e análise de uso.',
     inLanguage: 'pt-BR',
     dateModified: modifiedAt,
   },
@@ -34,7 +28,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 ---
 <Base
   title="Privacidade — Como seus dados são tratados | Zodiacs.org"
-  description="Como o Zodiacs.org trata mapas astrais, armazenamento no navegador, contas, links de compartilhamento, o Guide, análise de uso, consultas de endereços públicos de carteira e solicitações de dados de mercado."
+  description="Como o Zodiacs.org trata mapas astrais, armazenamento no navegador, contas, links de compartilhamento, o Guide e análise de uso."
   path="/pt/privacy/"
   locale="pt"
   jsonLd={jsonLd}
@@ -44,7 +38,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
     <h1 class="method-title display">Seus dados de nascimento só saem do seu dispositivo quando você os envia.</h1>
 
     <div class="prose">
-      <p class="lede"> O cálculo do mapa é feito no seu navegador. Os dados de nascimento não são enviados como parte do cálculo nem de uma consulta do The Cabinet of Twelve; eles só saem do seu dispositivo se você entrar na sua conta para sincronizar mapas salvos, compartilhar um link que os contenha ou digitá-los em uma mensagem ao assistente. Aura envia um endereço público de carteira — não seus dados de nascimento nem os do mapa — a um provedor de dados de blockchain para uma consulta somente para leitura. As contas{weeklyDigestEnabled ? ',' : ' e'} os dados lembrados do Aura{weeklyDigestEnabled ? ' e o e-mail semanal' : ''} são opcionais e ficam desativados por padrão. Não exibimos anúncios nem usamos rastreamento entre sites. </p>
+      <p class="lede"> O cálculo do mapa é feito no seu navegador. Os dados de nascimento não são enviados como parte do cálculo; eles só saem do seu dispositivo se você entrar na sua conta para sincronizar mapas salvos, compartilhar um link que os contenha ou digitá-los em uma mensagem ao assistente. As contas{weeklyDigestEnabled ? ' e o e-mail semanal' : ''} são opcionais e ficam desativados por padrão. Não exibimos anúncios nem usamos rastreamento entre sites. </p>
 
       <h2>Quem opera este site</h2>
       <p>
@@ -72,13 +66,35 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <p>
         A busca de lugares baixa do zodiacs.org um arquivo de cidades escolhido
         pela primeira letra que você digita e faz a busca nesse arquivo no seu
-        navegador. Para um nascimento antes de 1970, a calculadora também baixa
-        um arquivo de mudanças históricas de horário, escolhido pelo fuso
-        horário do local de nascimento. Nenhuma das duas solicitações vai para outro serviço. Os arquivos solicitados mostram ao nosso provedor de hospedagem a primeira letra da cidade que você digitou e, para um nascimento antes de 1970, um grupo de fusos horários que inclui o do local de nascimento. Quando
+        navegador. A calculadora também baixa, para um nascimento antes de
+        1970, um arquivo de mudanças históricas de horário, escolhido pelo fuso
+        horário do local de nascimento, e, quando nenhuma hora de nascimento é
+        informada, mais um script, que mostra ao nosso provedor de hospedagem
+        apenas que nenhuma hora foi informada. Nenhuma dessas solicitações vai
+        para outro serviço. Os arquivos solicitados mostram ao nosso provedor de hospedagem a primeira letra da cidade que você digitou e, para um nascimento antes de 1970, um grupo de fusos horários que inclui o do local de nascimento. Quando
         uma página mostra os signos de um mapa natal, ela primeiro solicita as
         imagens dos doze signos, na mesma ordem para todo mapa, de modo que
         essas solicitações não mostram quais signos o mapa tem.
       </p>
+      {accountSyncV2Enabled ? (
+        <p>
+          As páginas da calculadora de mapa astral e da calculadora de
+          compatibilidade não carregam nenhum script de análise de uso e não
+          enviam nada do que você digita a nenhum outro serviço, exceto um endereço de e-mail se você optar por se cadastrar. Outras
+          páginas, como a <a href="/pt/methodology/">página de metodologia</a>,
+          carregam o Plausible, a análise de uso do site, descrita em
+          “Hospedagem, registros e análise de uso”.
+        </p>
+      ) : (
+        <p>
+          A página da calculadora de compatibilidade não carrega nenhum script
+          de análise de uso e não envia nada do que você digita a nenhum outro
+          serviço, exceto um endereço de e-mail se você optar por se cadastrar. Outras páginas, como a{' '}
+          <a href="/pt/methodology/">página de metodologia</a>, carregam o
+          Plausible, a análise de uso do site, descrita em “Hospedagem,
+          registros e análise de uso”.
+        </p>
+      )}
 
       <h2>Guide</h2>
       <p>{t('pt', 'trustGuideNotice')}</p>
@@ -167,100 +183,6 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         oferece exportação em JSON portátil e em Markdown legível, edição e
         exclusão por entrada e um controle para tentar de novo quando a
         sincronização precisa de atenção.
-      </p>
-
-      <h2>The Cabinet of Twelve e endereços públicos de carteira</h2>
-      <p>
-        The Cabinet of Twelve lê lado a lado um endereço público de carteira e o
-        céu datado. Se você escolher adicionar um mapa já salvo neste
-        navegador, o resumo dele é uma camada opcional de comparação que fica no
-        dispositivo. O padrão e qualquer reflexão simbólica são compostos no seu
-        dispositivo. Quando você compõe ou atualiza um Aura, nosso endpoint de
-        ativos recebe o endereço público e o encaminha ao provedor de dados de
-        blockchain configurado para verificar quais entradas do Registro do
-        Zodiacs.org estão presentes. O provedor configurado é atualmente o
-        PublicNode, operado pela Allnodes. O provedor recebe a consulta do
-        nosso servidor, não do seu navegador. A solicitação não inclui dados de
-        nascimento, nomes de mapas, posições do mapa nem geometria do mapa.
-        Quando o recurso está ativado, o Shelf público opcional do
-        Zodiac Terminal usa o mesmo endpoint e envia um único endereço público Solana, o que você informar, somente depois que você pressiona “View”; ele
-        não envia dados do mapa nem de nascimento. Quando Aura está desativado,
-        o Shelf ilustrativo não faz nenhuma solicitação de endereço nem ao
-        provedor.
-      </p>
-      {walletChartEnabled && (
-        <p>
-          A página Wallet Chart envia ao nosso servidor o endereço público que
-          você cola. O servidor pede a um provedor de dados de blockchain (um
-          serviço RPC da Solana, o Etherscan ou um serviço RPC da Base) a
-          primeira transação do endereço e os signos do Registro que ele detém,
-          e mantém a resposta na memória por até um dia. Nenhum dado de
-          nascimento ou do mapa é enviado.
-        </p>
-      )}
-      <p>{t('pt', 'trustWalletNotice')}</p>
-      <p>
-        Um endereço público é público, mas não necessariamente anônimo. Os
-        ativos e o histórico on-chain dele podem ser visíveis e acabar
-        vinculados a uma pessoa ou a outra atividade. A Vercel, o provedor de
-        dados de blockchain configurado e a infraestrutura deles podem
-        processar metadados comuns das solicitações e registros operacionais ou
-        de segurança, como endereço IP, horário e informações do navegador. Não
-        prometemos que uma solicitação com um endereço público nunca seja
-        registrada por provedores de infraestrutura cujas práticas de retenção
-        não controlamos.
-      </p>
-
-      <h2>Fontes de dados públicas do Astrofolio, do Terminal e do Registro</h2>
-      <p>
-        Quando um painel de mercado relevante do Zodiac Terminal ou do Registro
-        é exibido, seu navegador pode solicitar dados públicos de mercado à
-        Dex Screener, dados públicos de gráficos à GeckoTerminal ou dados
-        públicos de audiência à Wikimedia.
-        Essas solicitações automáticas não incluem endereço de carteira, dados
-        de nascimento, dados do mapa nem resultados do Aura. O serviço
-        independente ainda assim recebe metadados comuns de uma solicitação
-        web, como seu endereço IP, informações do navegador e o horário da
-        solicitação, e os termos de privacidade e as práticas de retenção dele
-        se aplicam.
-      </p>
-      <p>{t('pt', 'trustWalletNotice')}</p>
-      <p>
-        O perfil de cada signo no Registro é somente para leitura. Ele mostra
-        dados públicos de mercado e endereços de tokens verificados, mas não
-        contém caminho de compra nem link para uma plataforma de negociação. O
-        perfil não conecta uma carteira, não solicita cotação, não recebe seu
-        endereço público e não pede uma transação. Nenhum dado de nascimento ou
-        do mapa é incluído nessas solicitações de dados de mercado.
-      </p>
-
-      <h2>Armazenamento no navegador e compartilhamento do Aura</h2>
-      <p>
-        Por padrão, Aura guarda o endereço público, a rede, os resultados dos
-        signos do Registro, o horário da consulta e o identificador opcional do
-        mapa selecionado no armazenamento de sessão desta aba. Depois de oito
-        horas, esses dados deixam de poder ser restaurados. A opção desmarcada
-        “Remember this address on this device” guarda os mesmos campos no
-        armazenamento local, e eles deixam de poder ser restaurados depois de
-        24 horas. Os registros que não podem mais ser restaurados são apagados
-        na próxima vez que Aura os lê; se você não voltar, o navegador pode
-        manter os bytes expirados até você limpar os dados do site.
-        “Forget address / Clear Aura data” remove os dois registros do Aura deste
-        navegador; isso não pode apagar o histórico público da blockchain nem
-        os registros de infraestrutura.
-      </p>
-      <p>
-        As imagens de compartilhamento do Aura são compostas no seu
-        dispositivo. A imagem omite o endereço público, o nome do mapa, os
-        dados de nascimento, as posições exatas e a geometria do mapa. A imagem
-        do selo mostra quais signos o endereço detém, quantos dos doze e uma
-        data. A imagem do gabinete mostra a rede, a data, quais signos o
-        endereço detém e a edição de cada um, que reflete o saldo, com uma
-        contagem de esculturas douradas que vai até 99+. Nenhuma das duas inclui
-        informações de um mapa salvo. Uma folha de compartilhamento do navegador
-        ou um download envia a imagem para um destino que você escolhe, cujos
-        termos de privacidade passam então a valer. Limpar o Aura não pode
-        recolher cópias que outras pessoas ou serviços salvaram ou republicaram.
       </p>
 
       <h2>Conta opcional (sincronização entre dispositivos)</h2>
@@ -512,9 +434,8 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         armazenamento do navegador próprio do site para os recursos que você
         usa: o que você salva (mapas, comparações, momentos do Living Chart,
         progresso de aprendizado), o estado de trabalho das ferramentas que
-        você usa (como a conversa do Guide e cálculos em cache), dados de
-        sessão limitados do Aura, um endereço do Aura lembrado de forma
-        opcional, preferências do site, cópias dos próprios arquivos do site
+        você usa (como a conversa do Guide e cálculos em cache), preferências
+        do site, cópias dos próprios arquivos do site
         para uso offline e, se você entrar, um token de acesso. Fora esses
         cookies e o que as seções acima descrevem, esse armazenamento fica no
         seu dispositivo, e nada dele é usado para rastrear você em outros
@@ -531,9 +452,6 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <h2>Suas escolhas</h2>
       <ul>
         <li>Usar todas as calculadoras sem conta; nada do que você informa é armazenado fora do seu dispositivo, a menos que você entre na conta, compartilhe um mapa ou assine o calendário dele.</li>
-        <li>Usar o exemplo do Aura sem mapa, endereço, conexão de carteira nem compra.</li>
-        <li>Colar um endereço público em vez de conectar um software de carteira de terceiros.</li>
-        <li>Deixar desmarcada a opção “Remember” do Aura e limpar os dados dele no navegador a qualquer momento.</li>
         <li>Apagar os mapas salvos limpando os dados deste site no seu navegador.</li>
         {accountSyncV2Enabled
           ? <li>Exportar ou excluir uma conta na página de perfil; escolher separadamente se quer limpar este navegador.</li>

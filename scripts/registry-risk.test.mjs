@@ -149,26 +149,28 @@ describe('Registry risk and trust copy', () => {
       expect(value).not.toContain('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
     }
     expect(source).toContain('check only the twelve Registry mints');
-    expect(privacy).toContain("Zodiac Terminal's optional");
-    expect(privacy).toContain('Dex Screener');
-    expect(privacy).toContain('Wikimedia');
-    expect(privacy).toContain('do not include a wallet address');
+    // The privacy pages dropped the Shelf, Terminal and Registry data-source disclosures on
+    // 20 November 2026 (owner-approved), in English and in every translation.
+    expect(privacy).not.toContain("Zodiac Terminal's optional");
+    expect(privacy).not.toContain('Dex Screener');
+    expect(privacy).not.toContain('do not include a wallet address');
   });
 
-  it('names the current blockchain-data provider in every privacy locale', async () => {
-    // The Aura/Shelf lookup forwards the public address to a third party;
-    // the disclosure must say WHICH third party, in every language, and
-    // must be updated together with the production RPC configuration.
+  it('keeps the blockchain-data provider disclosure off every privacy page', async () => {
+    // The Aura/Shelf lookup's provider disclosure was removed from the
+    // privacy pages on 20 November 2026 (owner-approved), the English page
+    // and then every translation; /disclosure/ is unchanged.
     for (const path of [
       'src/pages/privacy/index.astro',
       'src/pages/es/privacy/index.astro',
       'src/pages/fr/privacy/index.astro',
       'src/pages/it/privacy/index.astro',
       'src/pages/pt/privacy/index.astro',
+      'src/pages/ru/privacy/index.astro',
     ]) {
       const html = await readFile(resolve(root, path), 'utf8');
-      expect(html, path).toContain('PublicNode');
-      expect(html, path).toContain('Allnodes');
+      expect(html, path).not.toContain('PublicNode');
+      expect(html, path).not.toContain('Allnodes');
     }
   });
 
