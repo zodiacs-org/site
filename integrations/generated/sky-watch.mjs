@@ -43543,26 +43543,27 @@ function nakshatraReading(position3) {
     line: `Your Moon was in ${name}, the ${nakshatraOrdinal(position3.index + 1)} nakshatra, ruled by ${position3.lord}, with ${lore.deity} as its deity and ${lore.symbol} as its symbol. ${lore.line}`
   };
 }
-function passedThrough(indices, count) {
-  const first2 = indices[0], last2 = indices[indices.length - 1];
-  const steps = (last2 - first2 + count) % count;
-  return Array.from({ length: steps + 1 }, (_, step) => (first2 + step) % count);
+function forwardRun(first2, last2, size) {
+  const steps = (last2 - first2 + size) % size;
+  return Array.from({ length: steps + 1 }, (_, step) => (first2 + step) % size);
 }
 function vedicReading(input) {
   const { at, ends } = input;
+  const first2 = ends?.[0] ?? at;
+  const last2 = ends?.[ends.length - 1] ?? at;
+  const signRun = (pick2) => forwardRun(signIndexForLongitude2(pick2(first2)), signIndexForLongitude2(pick2(last2)), 12);
   const settled = (pick2) => {
-    if (!ends) return { held: true, candidates: [] };
-    const indices = passedThrough(ends.map((end) => signIndexForLongitude2(pick2(end))), 12);
-    return { held: indices.length === 1, candidates: indices.length === 1 ? [] : indices.map(label) };
+    const indices = signRun(pick2);
+    const held = indices.length === 1;
+    return { held, candidates: held ? [] : indices.map(label) };
   };
   const sunHold = settled((moment2) => moment2.sun.lon);
   const moonHold = settled((moment2) => moment2.moon.lon);
-  const tropicalRun = (pick2) => ends ? passedThrough(ends.map((end) => signIndexForLongitude2(pick2(end))), 12) : null;
-  const sun = sunHold.held ? signOf2(at.sun, sunLine(signIndexForLongitude2(at.sun.lon)), input.timeKnown, tropicalRun((moment2) => moment2.sun.tropical)) : null;
-  const moon = moonHold.held ? signOf2(at.moon, moonLine(signIndexForLongitude2(at.moon.lon)), input.timeKnown, tropicalRun((moment2) => moment2.moon.tropical)) : null;
+  const sun = sunHold.held ? signOf2(at.sun, sunLine(signIndexForLongitude2(at.sun.lon)), input.timeKnown, signRun((moment2) => moment2.sun.tropical)) : null;
+  const moon = moonHold.held ? signOf2(at.moon, moonLine(signIndexForLongitude2(at.moon.lon)), input.timeKnown, signRun((moment2) => moment2.moon.tropical)) : null;
   const rising = input.timeKnown && input.placed && at.rising ? signOf2(at.rising, risingLine(signIndexForLongitude2(at.rising.lon))) : null;
-  const nakshatraNames = ends ? passedThrough(ends.map((end) => end.nakshatra.index), 27).map((index) => NAKSHATRA_NAMES[index]) : [];
-  const nakshatraHeld = !ends || nakshatraNames.length === 1;
+  const nakshatraNames = forwardRun(first2.nakshatra.index, last2.nakshatra.index, 27).map((index) => NAKSHATRA_NAMES[index]);
+  const nakshatraHeld = nakshatraNames.length === 1;
   const moonNakshatra = nakshatraHeld ? { ...nakshatraReading(at.nakshatra), ...input.timeKnown ? {} : { pada: null } } : null;
   const limits2 = [];
   if (!input.timeKnown) {

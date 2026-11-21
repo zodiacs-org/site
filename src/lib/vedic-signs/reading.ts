@@ -106,29 +106,31 @@ export function nakshatraReading(position: SiderealMoment['nakshatra']): VedicNa
  * moments, in order: the Sun and Moon never move backwards, so a day that starts
  * in one sign or nakshatra and ends two along also passed through the one between.
  */
-export function passedThrough(indices: readonly number[], count: number): number[] {
-  const first = indices[0], last = indices[indices.length - 1];
-  const steps = (last - first + count) % count;
-  return Array.from({ length: steps + 1 }, (_, step) => (first + step) % count);
+export function forwardRun(first: number, last: number, size: number): number[] {
+  const steps = (last - first + size) % size;
+  return Array.from({ length: steps + 1 }, (_, step) => (first + step) % size);
 }
 
 /** The reading. A placement an untimed day leaves open comes back as candidates, never as a guess. */
 export function vedicReading(input: VedicReadingInput): VedicReading {
   const { at, ends } = input;
+  const first = ends?.[0] ?? at;
+  const last = ends?.[ends.length - 1] ?? at;
+  const signRun = (pick: (moment: SiderealMoment) => number) =>
+    forwardRun(signIndexForLongitude(pick(first)), signIndexForLongitude(pick(last)), 12);
   const settled = (pick: (moment: SiderealMoment) => number) => {
-    if (!ends) return { held: true, candidates: [] as string[] };
-    const indices = passedThrough(ends.map((end) => signIndexForLongitude(pick(end))), 12);
-    return { held: indices.length === 1, candidates: indices.length === 1 ? [] : indices.map(label) };
+    const indices = signRun(pick);
+    const held = indices.length === 1;
+    return { held, candidates: held ? [] : indices.map(label) };
   };
   const sunHold = settled((moment) => moment.sun.lon);
   const moonHold = settled((moment) => moment.moon.lon);
   // The Western sign takes the same forward walk over the day as the sidereal one.
-  const tropicalRun = (pick: (moment: SiderealMoment) => number) => ends ? passedThrough(ends.map((end) => signIndexForLongitude(pick(end))), 12) : null;
-  const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude(at.sun.lon)), input.timeKnown, tropicalRun((moment) => moment.sun.tropical)) : null;
-  const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude(at.moon.lon)), input.timeKnown, tropicalRun((moment) => moment.moon.tropical)) : null;
+  const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude(at.sun.lon)), input.timeKnown, signRun((moment) => moment.sun.tropical)) : null;
+  const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude(at.moon.lon)), input.timeKnown, signRun((moment) => moment.moon.tropical)) : null;
   const rising = input.timeKnown && input.placed && at.rising ? signOf(at.rising, risingLine(signIndexForLongitude(at.rising.lon))) : null;
-  const nakshatraNames = ends ? passedThrough(ends.map((end) => end.nakshatra.index), 27).map((index) => NAKSHATRA_NAMES[index]) : [];
-  const nakshatraHeld = !ends || nakshatraNames.length === 1;
+  const nakshatraNames = forwardRun(first.nakshatra.index, last.nakshatra.index, 27).map((index) => NAKSHATRA_NAMES[index]);
+  const nakshatraHeld = nakshatraNames.length === 1;
   // Without a birth time the pada is never settled: the Moon crosses a pada (3 degrees 20 minutes) in about six hours.
   const moonNakshatra = nakshatraHeld ? { ...nakshatraReading(at.nakshatra), ...(input.timeKnown ? {} : { pada: null }) } : null;
   const limits: string[] = [];
