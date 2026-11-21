@@ -175,6 +175,12 @@ describe('skyCheckBadge', () => {
     expect(badge.right).toBe('360 of 360 match NASA · 2 Nov 2026');
   });
 
+  it('gates badge endpoints on accuracyPublished alongside the receipt route', () => {
+    const endpoint = readFileSync(resolve(process.cwd(), 'src/pages/badges/[file].ts'), 'utf8');
+    expect(endpoint).toContain("import { accuracyPublished } from '../../accuracy/publication.mjs';");
+    expect(endpoint).toContain('if (!accuracyPublished) return [];');
+  });
+
   it('property: across 1,000 fixed-seed random snapshots, state is pass iff within === total and age <= 14 days', () => {
     const rand = mulberry32(20261122);
     const baseMs = Date.UTC(2026, 0, 1);
