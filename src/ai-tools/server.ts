@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
-import { SAVED_PAGE_EXCEPTION, childBirthDateRefusal, executeAiTool, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
+import { SAVED_PAGE_EXCEPTION, childBirthDateRefusal, executeAiTool, goodDaysOn, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
@@ -22,6 +22,11 @@ import { signInChallenge, type AccountsService } from './accounts/service';
  */
 export const UNDER_13_INSTRUCTION = 'Zodiacs is not directed at children under 13, so do not send a child\'s name, birth date or birthplace to its tools; they refuse a birth date less than 13 years ago.';
 /**
+ * With find_good_days offered, the closing sentence also says what it is for: traditional electional timing, so an
+ * assistant can use it for a good-day question without reading it as scheduling. Off, the text is unchanged.
+ */
+export const GOOD_DAYS_INSTRUCTION = ' find_good_days ranks days by astrology\'s traditional electional timing; share its days plainly with its care line, and never use it to time a medical procedure or treatment.';
+/**
  * ZOD-207 (a draft, waiting for the owner's approval): what the tryouts showed assistants getting wrong, said as
  * facts about Zodiacs. Without the first, an assistant fetched a horoscope or a retrograde check as a first step
  * toward a stock pick, a lottery number or a guarantee. Without the second, it asked for a sign or for birth details
@@ -38,8 +43,8 @@ export const WHICH_TOOL = 'Which tool: a horoscope goes to get_horoscope even wi
  */
 export const ASK_FIRST = 'Ask before using someone else\'s birth details.';
 export const CHILD_HOROSCOPE = 'There is no horoscope for a named child under 13, meaning a particular child the request names or points to, such as someone\'s nine-year-old daughter: not by sign, and not for a day, a week, a month or a year. A Sun sign on its own, with no name and no birth date, gets the general horoscope for that sign.';
-function instructions(accounts: boolean, occasions: boolean, coverage: boolean): string {
-  return 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Its results keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Calculation details such as versions, receipts and UTC are there for questions about how something was calculated. A URL in a result is complete as returned, including the query and the whole fragment after #, and a card link works only unchanged; where no card URL is returned, the returned page link takes its place. No Zodiacs link holds a birth date, birth time, birthplace or place name' + (occasions ? '; an occasion card link can hold coordinates rounded to two decimals.' : ', or coordinates.') + ' A birth time and a sign are taken as the person gives them, never guessed. ' + ASK_FIRST + ' Zodiacs never stores or logs birth details. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day.' + (accounts ? ` ${SAVED_PAGE_EXCEPTION}` : '') + (occasions ? ` ${UNDER_13_INSTRUCTION}` : '') + ` ${CHILD_HOROSCOPE}` + ' If a person or a birth date is under 18, Zodiacs gives no reading framed as romance, attraction or a sexual relationship. Scores, ratings and astrological forecasts are astrology\'s reading, and each comes with a "Reading confidence NN%" label: it says how specific the details were, never the odds that an event happens. Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome. It does not schedule anything, pick investments or give financial or medical advice. ' + OUTSIDE_ZODIACS + (occasions && coverage ? ` ${WHICH_TOOL}` : '');
+function instructions(accounts: boolean, occasions: boolean, coverage: boolean, goodDays = false): string {
+  return 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Its results keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Calculation details such as versions, receipts and UTC are there for questions about how something was calculated. A URL in a result is complete as returned, including the query and the whole fragment after #, and a card link works only unchanged; where no card URL is returned, the returned page link takes its place. No Zodiacs link holds a birth date, birth time, birthplace or place name' + (occasions ? '; an occasion card link can hold coordinates rounded to two decimals.' : ', or coordinates.') + ' A birth time and a sign are taken as the person gives them, never guessed. ' + ASK_FIRST + ' Zodiacs never stores or logs birth details. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day.' + (accounts ? ` ${SAVED_PAGE_EXCEPTION}` : '') + (occasions ? ` ${UNDER_13_INSTRUCTION}` : '') + ` ${CHILD_HOROSCOPE}` + ' If a person or a birth date is under 18, Zodiacs gives no reading framed as romance, attraction or a sexual relationship. Scores, ratings and astrological forecasts are astrology\'s reading, and each comes with a "Reading confidence NN%" label: it says how specific the details were, never the odds that an event happens. Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome. It does not schedule anything, pick investments or give financial or medical advice. ' + OUTSIDE_ZODIACS + (occasions && coverage ? ` ${WHICH_TOOL}` : '') + (goodDays ? GOOD_DAYS_INSTRUCTION : '');
 }
 
 const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
@@ -61,7 +66,7 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
 };
 
 /** Tools whose answer moves with the server's clock (today, this week, the current year), so a repeat call can differ. */
-const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', 'get_year_score', 'get_solar_return']);
+const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', 'get_year_score', 'get_solar_return', 'find_good_days']);
 
 const artResourceDomains = ['https://zodiacs.org'];
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
@@ -95,7 +100,7 @@ export interface AccountContext { service: AccountsService; principal: AccountPr
 export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }, account?: AccountContext) {
   const server = new McpServer({ name: 'zodiacs', version: AI_VERSION }, {
     capabilities: { tools: {}, resources: {}, ...(watch ? { events: {} } : {}) },
-    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage),
+    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage, goodDaysOn(dependencies)),
   });
   // The current URI first; each earlier one is registered under its own name and serves the same panel.
   const versions = (name: string, uris: readonly string[]) => uris.map((uri, index) => ({ uri, name: index === 0 ? name : `${name}-legacy${uris.length > 2 ? `-${uri.match(/-v(\d+)\.html$/u)?.[1]}` : ''}` }));
