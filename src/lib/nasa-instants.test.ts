@@ -48,6 +48,8 @@ const sky = read<{ from: string; retrogrades: { planet: string; from: string; to
 type Receipt = { pages: { id: string; family: string; anchor: string; bodies: string[]; subtype: string; signs: string[] }[] };
 // Both receipts: 2026 to 2027 (bundled by the AI tools) and 2028 to 2030.
 const publication = { pages: [...read<Receipt>('events-publication.json').pages, ...read<Receipt>('events-publication-2028-2030.json').pages] };
+const LUMINARIES = new Set(['Sun', 'Moon']);
+const catalogSunIngresses = new Set(months.flatMap((month) => month.ingresses.filter((item) => item.planet === 'Sun').map((item) => item.at)));
 const program = read<{ evidence: { kind: string; eventKind?: string; eventType?: string; body?: string; a?: string; b?: string; at: string }[] }>('horoscope-program.json');
 
 describe('the NASA event table', () => {
@@ -176,6 +178,15 @@ describe('every planet event the pages print has its NASA instant', () => {
   it('in the horoscope program\'s dated events', () => {
     for (const receipt of program.evidence) {
       if (receipt.kind !== 'sky-event') continue;
+      if (receipt.eventKind === 'ingress' && LUMINARIES.has(receipt.body!)) {
+        // The table leaves out the Sun and the Moon (see above): the page
+        // prints the catalog's own instant, so that instant must be one the
+        // committed data files date.
+        expect(nasaIngressAt(receipt.body!, receipt.at), receipt.at).toBeUndefined();
+        expect(exactInstant({ kind: 'ingress', body: receipt.body!, at: receipt.at }), receipt.at).toBe(receipt.at);
+        if (receipt.body === 'Sun') expect(catalogSunIngresses.has(receipt.at), receipt.at).toBe(true);
+        continue;
+      }
       if (receipt.eventKind === 'ingress') expect(nasaIngressAt(receipt.body!, receipt.at), receipt.at).toBeDefined();
       if (receipt.eventKind === 'station') expect(nasaStationAt(receipt.body!, receipt.at), receipt.at).toBeDefined();
       if (receipt.eventKind === 'aspect') expect(nasaAspectAt(receipt.a!, receipt.b!, receipt.eventType!, receipt.at), receipt.at).toBeDefined();
@@ -219,5 +230,13 @@ describe('the helpers', () => {
 
   it('return the committed instant for an event the table does not list', () => {
     expect(exactInstant({ kind: 'ingress', body: 'Sun', at: '2026-03-20T14:46:00.000Z' })).toBe('2026-03-20T14:46:00.000Z');
+  });
+
+  it('keep the catalog\'s instant for the Sun entering Sagittarius on 22 November 2026', () => {
+    // The daily program of 21 November 2026 was the first to cite a Sun
+    // ingress (site #1149); the catalog dates it, the table does not list it.
+    expect(catalogSunIngresses.has('2026-11-22T07:23:20.566Z')).toBe(true);
+    expect(nasaIngressAt('Sun', '2026-11-22T07:23:20.566Z')).toBeUndefined();
+    expect(exactInstant({ kind: 'ingress', body: 'Sun', at: '2026-11-22T07:23:20.566Z' })).toBe('2026-11-22T07:23:20.566Z');
   });
 });
