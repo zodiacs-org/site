@@ -295,6 +295,7 @@ try {
       assert.equal(await source.locator(SHARE_WING_LINKS).count(), 0,
         'computed tool results must omit collection links outside the shared navigation');
 
+      await source.getByRole('button', { name: 'Share your chart', exact: true }).waitFor({ timeout: TIMEOUT });
       const preparedSheet = await source.evaluate(() => {
         const all = globalThis.__t17CanvasText.slice();
         const titleIndex = all.findLastIndex((entry) => entry.value === 'Birth chart');

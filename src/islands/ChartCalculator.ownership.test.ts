@@ -173,7 +173,7 @@ describe('ChartCalculator result ownership', () => {
     expect(prepare).not.toHaveBeenCalled();
 
     h.context.invalidateProfileHandoff();
-    entrance.resolve();
+    entrance.resolve(undefined);
     await flush();
     expect(prepare).not.toHaveBeenCalled();
   });

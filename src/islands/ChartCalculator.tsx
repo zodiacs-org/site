@@ -1571,10 +1571,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         },
       }));
       requestAnimationFrame(() => {
-        if (runIsCurrent()) resultRef.current?.scrollIntoView({
-          behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-          block: 'start',
-        });
+        if (!runIsCurrent()) return;
+        // Put the first wheel in view before its entrance. Smooth scrolling
+        // during the reveal also makes the phone lay out intervening sections.
+        const instant = (mode === 'full' && resultCount === 0)
+          || matchMedia('(prefers-reduced-motion: reduce)').matches;
+        resultRef.current?.scrollIntoView({ behavior: instant ? 'instant' : 'smooth', block: 'start' });
       });
     } catch (err) {
       if (!runIsCurrent()) return;
@@ -2200,6 +2202,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     && (firstReading.status === 'not_started' || firstReading.status === 'in_progress');
   // The share options work while the first full-size image is being prepared.
   const preparingChartImage = mode === 'full' && card === 'busy' && !shareRuntimeRef.current.primary;
+  // Prepare the two reading images after the first chart image so their canvas
+  // work also stays outside the entrance. The readings render immediately.
+  const prepareReadingImages = !firstResult || !preparingChartImage;
   const shareActionLabel = preparingChartImage
     ? `${t(locale, 'shareChart')} · ${t(locale, 'chartActionsMore')}`
     : subjectMode === 'other'
@@ -2850,11 +2855,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               )}
 
               {mode === 'full' && showsEnglishInterpretation && ApproachRead && (
-                <ApproachRead chart={chart} locale={locale} moonAmbiguous={moonAmbiguous} birthDate={computedInput?.date} />
+                <ApproachRead prepareImage={prepareReadingImages} chart={chart} locale={locale} moonAmbiguous={moonAmbiguous} birthDate={computedInput?.date} />
               )}
 
               {mode === 'full' && showsEnglishInterpretation && CommunicationRead && (
-                <CommunicationRead chart={chart} locale={locale} birthDate={computedInput?.date} />
+                <CommunicationRead prepareImage={prepareReadingImages} chart={chart} locale={locale} birthDate={computedInput?.date} />
               )}
             </>
           )}
