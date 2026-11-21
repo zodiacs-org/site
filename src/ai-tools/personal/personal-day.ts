@@ -50,7 +50,7 @@ export const personalDayData = z.object({
   middayUtc: z.string(),
   /** The natal points the moving bodies were measured against. */
   points: z.array(natalPoint),
-  /** One line built from the highest scored contact. */
+  /** The strongest contact for the day, or the strongest in the background. */
   theme: z.string(),
   moon: z.object({
     /** The Moon's sign at midday. */
@@ -64,6 +64,7 @@ export const personalDayData = z.object({
   /** Contacts in score order, highest first. */
   contacts: z.array(z.object({
     rank: z.number().int().min(1),
+    group: z.enum(['today', 'background']),
     planet: transitBody,
     aspect: z.enum(MAJOR_ASPECT_ORDER),
     point: natalPoint,
@@ -86,7 +87,7 @@ export const personalDayData = z.object({
   under18: z.boolean(),
   limits: z.array(z.string()),
   pageUrl: z.url(),
-  /** The share card for the highest ranked contact that is not the Sun on the natal Sun: the day, the planet, aspect and natal point, and its confidence. Never a birth detail. Null with no such contact. */
+  /** The share card for the first eligible contact today, falling back to the background and excluding the Sun on the natal Sun: the day, the planet, aspect and natal point, and its confidence. Never a birth detail. Null with no such contact. */
   shareUrl: z.url().nullable(),
 });
 export type PersonalDayData = z.infer<typeof personalDayData>;
@@ -128,7 +129,7 @@ export const personalDayTool = definePersonalTool({
   name: 'get_personal_day',
   title: 'Your day',
   summary: "one day's transits to the person's own chart, ranked, with plain meanings",
-  description: "Gives one day's transits to the person's own birth chart: the moving Moon, Sun and planets in major aspect to their natal planets (and the rising degree and Midheaven with a birth time and place), ranked by strength, each with the exact time when it falls that day (only with a birth time), whether it is applying or separating, and what it traditionally means, plus the Moon's sign and the natal house it passes through. Use it for my day, my transits today or what today holds for me, once the person has given a birth date. For dated contacts over weeks or a year use get_personal_transits; for a general Sun-sign horoscope use get_horoscope. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first. Give currentZone for where they are now so the day falls on their clock. Share each reading plainly, with its reading-confidence label.",
+  description: "Gives one day's transits to the person's own birth chart: the moving Moon, Sun and planets in major aspect to their natal planets (and the rising degree and Midheaven with a birth time and place), ranked by strength within today and background groups, each with the exact time when it falls that day (only with a birth time), whether it is applying or separating, and what it traditionally means, plus the Moon's sign and the natal house it passes through. Use it for my day, my transits today or what today holds for me, once the person has given a birth date. For dated contacts over weeks or a year use get_personal_transits; for a general Sun-sign horoscope use get_horoscope. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first. Give currentZone for where they are now so the day falls on their clock. Share each reading plainly, with its reading-confidence label.",
   input: personalDayInput,
   data: personalDayData,
   clockDependent: true,

@@ -8,9 +8,9 @@ if (!launchFlagOn('PUBLIC_YOUR_DAY_ENABLED')) return Astro.redirect('/404.html')
 
 const faq = [
   { q: 'What is a transit?', a: 'A transit is a planet in today’s sky making an aspect to a point in your birth chart: sitting on it (a conjunction), facing it (an opposition), or at a square, trine or sextile to it. Astrologers read the moving planet as what arrives and your natal point as the part of life it touches.' },
-  { q: 'How are the contacts ranked?', a: 'Each contact gets a score from three weights and its tightness. Slow planets count most because their contacts last; the Sun, Moon, rising degree and Midheaven count most in your chart; a conjunction counts most and a sextile least. With a birth time, a contact that is exact during the day gets a bonus, so a fast Moon contact can still rise to the top. The tightness is measured at the middle of your day.' },
+  { q: 'How are the contacts ranked?', a: 'Today lists contacts from the Moon, Sun, Mercury, Venus and Mars, plus any slower planet exact that day. Other slow contacts appear in the background. Up to eight contacts are shown, including at most three in the background. Within each list, the strongest score comes first. Slow planets count most because their contacts last; the Sun, Moon, rising degree and Midheaven count most in your chart; a conjunction counts most and a sextile least. With a birth time, a contact that is exact during the day gets a bonus, so a fast Moon contact can still rise to the top. The tightness is measured at the middle of your day.' },
   { q: 'What do applying and separating mean?', a: 'Applying means the moving planet is still closing on the exact aspect; separating means the exact moment has passed and it is moving away. When the exact moment falls inside the day and a birth time is given, the page gives its time on your clock instead.' },
-  { q: 'Why does the birth time matter?', a: 'The Moon moves about a degree every two hours and the rising degree a degree every four minutes. Without a birth time, the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.' },
+  { q: 'Why does the birth time matter?', a: 'The Moon moves about a degree every two hours and the rising degree a degree every four minutes. No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.' },
   { q: 'Whose clock are the times on?', a: 'The day and its times are read on this device’s clock: the time zone your browser reports. If you are travelling, the times move with you. The birth time is read on the birthplace’s clock, as it was recorded.' },
   { q: 'What does the reading confidence mean?', a: 'It says how specific your details were: a birth date alone, or a date with a birth time and place, and, with a birth time, five points more when the contact is under a degree from exact. It is not the chance that something happens.' },
 ];
@@ -22,7 +22,7 @@ const jsonLd = [
 <Base
   clientUi
   title="Your Day: Today's Transits to Your Own Chart"
-  description="Today's planets measured against your own birth chart, ranked by strength, with exact times on your clock and what each contact traditionally means. Worked out in your browser."
+  description="Today's planets measured against your own birth chart, grouped by what is active today and what stays in the background, with exact contact times when you know your birth time. Worked out in your browser."
   path="/your-day/"
   image="/assets/og/v2/tool/transits.png"
   imageAlt="Transits on Zodiacs"
@@ -31,7 +31,7 @@ const jsonLd = [
   <section class="section--tight container">
     <div class="tool-hero">
       <h1 class="display">Your day</h1>
-      <p>Today’s Moon, Sun and planets measured against your own birth chart: which contacts are strongest, when each one is exact on your clock, and what astrology traditionally reads in it.</p>
+      <p>Today’s Moon, Sun and planets measured against your own birth chart: which contacts are strongest today, which linger in the background, and what each traditionally means.</p>
     </div>
     <YourDay client:load />
     <noscript><p>This page needs JavaScript. Enable it and reload to read your day in your browser.</p></noscript>
@@ -56,8 +56,9 @@ const jsonLd = [
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
   .yd-related { margin: 24px 0 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
   .yd-related a { color: var(--text); }
+  :global(.yd .calc__submit > span:first-child) { min-inline-size: 6em; text-align: start; }
   :global(.yd__clock) { min-height: 1.5em; }
-  :global(.yd__result) { display: grid; gap: 16px; margin-top: clamp(24px, 4vw, 36px); min-height: 60vh; align-content: start; scroll-margin-top: 88px; }
+  :global(.yd__result) { display: grid; gap: 16px; margin-top: clamp(24px, 4vw, 36px); min-height: 100svh; align-content: start; scroll-margin-top: 88px; }
   :global(.yd__head) { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; }
   :global(.yd__step) { min-height: 44px; min-width: 44px; padding: 8px 12px; gap: 6px; }
   :global(.yd__date) { margin: 0; text-align: center; font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-2); }
@@ -69,6 +70,9 @@ const jsonLd = [
   :global(.yd__moon .kicker) { color: var(--hue); }
   :global(.yd__moon .yd__moon-sign) { color: var(--text); font-family: var(--font-serif); font-size: var(--text-lg); }
   :global(.yd__mono) { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted); }
+  :global(.yd__group) { display: grid; gap: 12px; }
+  :global(.yd__group[aria-hidden="true"]) { visibility: hidden; }
+  :global(.yd__group-title) { margin: 0; min-block-size: 1.25em; font: 500 var(--text-lg)/1.25 var(--font-serif); }
   :global(.yd__contacts) { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
   :global(.yd__contact) { display: grid; gap: 8px; }
   :global(.yd__contact-head) { display: flex; align-items: center; gap: 10px; }
