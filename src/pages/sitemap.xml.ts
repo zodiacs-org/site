@@ -478,7 +478,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
   // The personal day: one day's transits to your own chart, first published 2026-11-09, once PUBLIC_YOUR_DAY_ENABLED is on.
-  ...(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? [['/your-day/', '2026-11-22'] as const] : []),
+  ...(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? [['/your-day/', '2026-11-20'] as const] : []),
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
