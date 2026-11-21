@@ -104,7 +104,7 @@ const period = z.object({
   possibleContacts: z.array(possibleContact),
   /** In the post-shadow the period is the loop that just ended; this is the next loop's stations, UTC to the minute. Null otherwise. */
   next: z.object({ stationRetrograde: z.string(), stationDirect: z.string() }).nullable(),
-  /** One plain paragraph: when, where, and what it traditionally asks for. */
+  /** The reading, followed by a separate line for each possible untimed contact. */
   reading: z.string(),
   confidence: z.number().int().min(40).max(95),
   confidenceLabel: z.string(),

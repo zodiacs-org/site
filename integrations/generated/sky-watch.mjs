@@ -42953,13 +42953,13 @@ function retrogradePeriod(planet2, loops, now, zone10, basis) {
   const opening = retrogradeNow ? `${planet2} is retrograde now. It turned retrograde on ${retro.label} at ${retro.position} and turns direct on ${direct.label} at ${direct.position}.` : afterLoop ? `${planet2} turned direct on ${direct.label} at ${direct.position} and is in the post-shadow until ${postShadowEnd.label}, going back over the degrees it covered while retrograde.` : `${planet2} is not retrograde now. It next turns retrograde on ${retro.label} at ${retro.position} and turns direct on ${direct.label} at ${direct.position}.`;
   const shadowLine = afterLoop ? "" : status === "pre-shadow" && preShadowStart ? ` It is already in the pre-shadow, which began on ${preShadowStart.label}, crossing the degrees the retrograde will revisit.` : preShadowStart && !retrogradeNow ? ` Its pre-shadow begins on ${preShadowStart.label}.` : "";
   const after = postShadowEnd && !afterLoop ? ` The post-shadow runs until ${postShadowEnd.label}, when it is back at the degree where it turned retrograde.` : "";
-  const reading = soften([
+  const paragraph2 = soften([
     `${opening}${shadowLine}${after}`,
     RETROGRADE_LINE[planet2],
     ...houses.map((entry) => entry.line),
-    ...contacts.map((entry) => entry.line),
-    ...possibleContacts.map((entry) => entry.line)
+    ...contacts.map((entry) => entry.line)
   ].join(" "));
+  const reading = [paragraph2, ...possibleContacts.map((entry) => entry.line)].join("\n");
   return {
     period: {
       planet: planet2,
@@ -43180,7 +43180,7 @@ var period = z16.object({
   possibleContacts: z16.array(possibleContact),
   /** In the post-shadow the period is the loop that just ended; this is the next loop's stations, UTC to the minute. Null otherwise. */
   next: z16.object({ stationRetrograde: z16.string(), stationDirect: z16.string() }).nullable(),
-  /** One plain paragraph: when, where, and what it traditionally asks for. */
+  /** The reading, followed by a separate line for each possible untimed contact. */
   reading: z16.string(),
   confidence: z16.number().int().min(40).max(95),
   confidenceLabel: z16.string(),

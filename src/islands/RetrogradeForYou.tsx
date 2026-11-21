@@ -76,7 +76,7 @@ function ShareButton({ query, planet }: { query: string; planet: RetrogradePlane
   );
 }
 
-function PeriodCard({ period, now }: { period: Period; now: number }) {
+export function PeriodCard({ period, now }: { period: Period; now: number }) {
   const when = period.retrogradeNow ? 'This retrograde' : period.status === 'post-shadow' || period.next ? 'Most recent retrograde' : 'Next retrograde';
   return (
     <article class="rfy__card tile" style={{ '--hue': HUE[period.planet] }} data-planet={period.planet.toLowerCase()}>
@@ -106,7 +106,6 @@ function PeriodCard({ period, now }: { period: Period; now: number }) {
           </ul>
         </div>
       )}
-      {/* A possible contact is said once, in the reading below, as the tool says it. */}
       {period.contacts.length > 0 && (
         <div class="rfy__block">
           <h4>Natal points the loop crosses</h4>
@@ -115,7 +114,7 @@ function PeriodCard({ period, now }: { period: Period; now: number }) {
           </ul>
         </div>
       )}
-      <p class="rfy__reading">{period.reading}</p>
+      {period.reading.split('\n').map((line) => <p class="rfy__reading" key={line}>{line}</p>)}
       <p class="rfy__confidence">{period.confidenceLabel}</p>
       {period.nextLine && <p class="rfy__next">{period.nextLine}</p>}
       {period.skyDate && (

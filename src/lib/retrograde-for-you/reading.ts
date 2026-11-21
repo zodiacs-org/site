@@ -278,13 +278,13 @@ export function retrogradePeriod(planet: RetrogradePlanet, loops: LoopSet, now: 
       ? ` It is already in the pre-shadow, which began on ${preShadowStart.label}, crossing the degrees the retrograde will revisit.`
       : preShadowStart && !retrogradeNow ? ` Its pre-shadow begins on ${preShadowStart.label}.` : '';
   const after = postShadowEnd && !afterLoop ? ` The post-shadow runs until ${postShadowEnd.label}, when it is back at the degree where it turned retrograde.` : '';
-  const reading = soften([
+  const paragraph = soften([
     `${opening}${shadowLine}${after}`,
     RETROGRADE_LINE[planet],
     ...houses.map((entry) => entry.line),
     ...contacts.map((entry) => entry.line),
-    ...possibleContacts.map((entry) => entry.line),
   ].join(' '));
+  const reading = [paragraph, ...possibleContacts.map((entry) => entry.line)].join('\n');
   return {
     period: {
       planet, retrogradeNow, status, stationRetrograde: retro, stationDirect: direct, preShadowStart, postShadowEnd, signs,

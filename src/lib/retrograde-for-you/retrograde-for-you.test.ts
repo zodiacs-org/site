@@ -1,13 +1,16 @@
 import { readFileSync } from 'node:fs';
+import { h } from 'preact';
+import { render } from 'preact-render-to-string';
 import { describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { retrogradeForMe } from '../../ai-tools/personal/retrograde-for-me';
 import { forbiddenClaim } from '../../ai-tools/personal/shared';
+import { PeriodCard } from '../../islands/RetrogradeForYou';
 import { computeRetrogradeForYou, prepareLocalTime, type RetrogradeForYouInput } from '../../islands/retrograde-for-you/compute';
 import sky from '../../data/sky.json';
 import { CONTACT_LINE, RETROGRADE_ASK, RETROGRADE_LINE } from './reading';
 import { loopsFromSky } from './sky';
-import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery, retrogradeTablePath } from './share';
+import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery } from './share';
 
 const clock = createLocalTimeModule();
 const MINUTES = 60_000;
@@ -128,7 +131,12 @@ describe('a planet in the post-shadow, untimed contacts and links (ZOD-20)', () 
     }
     const venus = page.periods.find((period) => period.planet === 'Venus')!;
     expect(venus.shareQuery).toContain('s=2026-10-03');
-    expect(venus.nextLine).toMatch(/^Next retrograde: Thu 11 May 2028 to /u);
+    const card = render(h(PeriodCard, { period: venus, now: Date.parse(page.now) }));
+    expect(card).toContain('retrograde from Sat 3 Oct 2026 to Sat 14 Nov 2026');
+    expect(card).toContain('class="rfy__now"');
+    expect(card).toContain('Next retrograde: Thu 11 May 2028 to Fri 23 Jun 2028.');
+    expect(card.match(/Next retrograde:/gu)).toHaveLength(1);
+    expect(card.match(/Reading confidence 70%/gu)).toHaveLength(1);
   });
 
   it('leaves a planet inside its retrograde as it was, with no next line', async () => {
@@ -140,37 +148,45 @@ describe('a planet in the post-shadow, untimed contacts and links (ZOD-20)', () 
       expect(mercury.reading.startsWith('Mercury is retrograde now. It turned retrograde on Sat 24 Oct 2026')).toBe(true);
       expect(mercury.reading).toContain('The post-shadow runs until');
     }
-    expect(page.periods.find((period) => period.planet === 'Mercury')!.nextLine).toBeNull();
+    const mercury = page.periods.find((period) => period.planet === 'Mercury')!;
+    const card = render(h(PeriodCard, { period: mercury, now: Date.parse(page.now) }));
+    expect(card).toContain('This retrograde: Sat 24 Oct 2026');
+    expect(card).not.toContain('Next retrograde:');
   });
 
   it('lists an untimed natal point near a loop’s edge only as a possible contact', async () => {
     // Natal Mercury for 23 Oct 1964 in Madrid: about 215.16° at noon, 214.35° and 215.97° at the ends of the day,
     // across the 2026 loop's direct station at about 215.03° (5°02' Scorpio).
     const { mcp, page } = await both({ birthDate: '1964-10-23' }, new Date('2026-11-09T09:00:00Z'), 'Europe/Madrid');
+    const possible = 'The loop may also pass over your natal Mercury; a birth time settles it.';
     for (const result of [page, mcp]) {
       const mercury = result.periods.find((period) => period.planet === 'Mercury')!;
       expect(mercury.contacts.map((entry) => entry.point)).not.toContain('Mercury');
       expect(mercury.possibleContacts.map((entry) => entry.point)).toContain('Mercury');
-      expect(mercury.reading).toContain('The loop may also pass over your natal Mercury; a birth time settles it.');
+      expect(mercury.reading.split('\n')).toContain(possible);
       for (const period of result.periods) {
         for (const entry of period.contacts) expect(entry.position).toMatch(/^about \d{1,2}° [A-Z][a-z]+$/u);
       }
     }
+    const mercury = page.periods.find((period) => period.planet === 'Mercury')!;
+    const card = render(h(PeriodCard, { period: mercury, now: Date.parse(page.now) }));
+    expect(card).toContain(`>${possible}</p>`);
+    expect(card.match(/may also pass over your natal Mercury/gu)).toHaveLength(1);
   });
 
   it('links Venus and Mars to their row in the retrogrades table, as the page does', async () => {
     const { mcp, page } = await bothWithLinks(TIMED, new Date('2026-11-20T12:00:00Z'), 'Europe/Madrid');
-    const urls = mcp.links.map((link) => new URL(link.url));
-    for (const planet of ['Venus', 'Mars'] as const) {
+    for (const [planet, path] of [
+      ['Mercury', '/mercury-retrograde/'],
+      ['Venus', '/retrogrades/#retrograde-venus-2026-10-03'],
+      ['Mars', '/retrogrades/#retrograde-mars-2027-01-10'],
+    ] as const) {
       const link = mcp.links.find((entry) => entry.title === `${planet} retrograde`)!;
-      const url = new URL(link.url);
-      expect(`${url.pathname}${url.hash}`.startsWith('/retrogrades/#retrograde-')).toBe(true);
-      const ours = page.periods.find((period) => period.planet === planet)!;
-      expect(`${url.pathname}${url.hash}`).toBe(retrogradeTablePath(planet, ours.skyDate));
+      expect(link.url).toBe(`https://zodiacs.org${path}`);
+      const period = page.periods.find((entry) => entry.planet === planet)!;
+      const card = render(h(PeriodCard, { period, now: Date.parse(page.now) }));
+      expect(card).toContain(`href="${path}"`);
     }
-    expect(mcp.links.find((entry) => entry.title === 'Venus retrograde')!.url).toBe('https://zodiacs.org/retrogrades/#retrograde-venus-2026-10-03');
-    expect(urls.some((url) => /^\/(?:venus|mars)-retrograde\/$/u.test(url.pathname))).toBe(false);
-    expect(mcp.links.find((entry) => entry.title === 'Mercury retrograde')!.url).toBe('https://zodiacs.org/mercury-retrograde/');
   });
 });
 
