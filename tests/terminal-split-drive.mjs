@@ -583,7 +583,7 @@ try {
     assert.equal(await page.locator('#about h2').innerText(), 'What is Astrofolio?');
     assert.deepEqual(await page.locator('#about h3').allInnerTexts(), ABOUT_ANSWERS);
     assert.equal(await page.locator('#about .campaign-about__risk').innerText(), ABOUT_RISK);
-    assert.equal(await page.locator('#about a[href="/thesis/"]').innerText(), 'Read the story →');
+    assert.equal(await page.locator('#about a[href="/thesis/"]').innerText(), 'How is this different from other memecoins? →');
     assert.equal(await page.locator('#about a[href="#buy"]').count(), 1);
     assert.equal(counts.gecko, 0);
     assert.equal(counts.wikimedia, 0);
@@ -1431,6 +1431,27 @@ try {
     assert.deepEqual({ jupiter: counts.jupiter, wallet: counts.wallet }, providersBefore);
     assert.deepEqual(flaggedErrors, []);
     await flagged.close();
+
+    const fomoPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    const clicks = [];
+    const clickErrors = watchErrors(fomoPage, 'Fomo thesis link');
+    await fomoPage.exposeFunction('recordThesisClick', (...args) => clicks.push(args));
+    for (const enabled of [false, true]) {
+      await fomoPage.goto(`${baseURL}/fomo/`);
+      await fomoPage.evaluate((enabled) => {
+        window.zodiacsAnalytics = enabled ? { track: window.recordThesisClick } : undefined;
+      }, enabled);
+      const link = fomoPage.getByRole('link', {
+        name: 'Not sure about memecoins? Read the case for these twelve, and the case against.',
+        exact: true,
+      });
+      assert.equal(await link.count(), 1);
+      await link.click();
+      await fomoPage.waitForURL(`${baseURL}/thesis/`);
+      assert.deepEqual(clicks, enabled ? [['thesis_click', { source: 'fomo' }]] : []);
+    }
+    assert.deepEqual(clickErrors, []);
+    await fomoPage.close();
   });
   console.log('terminal-split browser verification: PASS');
   console.log(JSON.stringify(counts));
