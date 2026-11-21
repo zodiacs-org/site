@@ -43,9 +43,13 @@ describe('vercel.json for the compute API', () => {
 
   it('still gives every static sky data file its family rule, and would have matched the compute paths before', () => {
     const family = config.headers.find((rule: any) => rule.source.startsWith('/api/v1/:file('));
-    expect(family.headers).toContainEqual({ key: 'Cache-Control', value: 'public, max-age=86400, must-revalidate' });
+    // The family rule's own lifetime is the fallback for misses; the files
+    // themselves get theirs from the rules that name them
+    // (scripts/sky-api-headers.test.mjs).
+    expect(family.headers).toContainEqual({ key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' });
     for (const path of ['/api/v1/index.json', '/api/v1/llms.txt', '/api/v1/sky/today.md', '/api/v1/schema/today.v1.json', '/api/v1/retrogrades/2026.json']) {
       expect(sourcePattern(family.source).test(path), path).toBe(true);
+      expect(effectiveHeaders(config, path).get('cache-control'), path).not.toBe('public, max-age=0, must-revalidate');
     }
     const before = sourcePattern('/api/v1/(.*)');
     for (const path of COMPUTE_PATHS) {
