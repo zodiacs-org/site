@@ -403,7 +403,55 @@
   from { opacity: 0; transform: scale(0.965); }
   to { opacity: 1; transform: none; }
 }
-@media (prefers-reduced-motion: reduce) { .wheel--animate { animation: none; } }
+@keyframes wheel-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes wheel-ring-in {
+  from { opacity: 0; transform: rotate(-8deg); }
+  to { opacity: 1; transform: rotate(0); }
+}
+@keyframes wheel-planet-in {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes wheel-card-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* The full chart owns its entrance. Suppress the shared starting-style
+   transitions so the prompt and controls are available immediately. */
+.calc__result[data-wheel-reveal] .calc__three > .three-card,
+.calc__result[data-wheel-reveal] > .calc__first-reading { transition: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .wheel--settle { animation: none; }
+  .wheel--settle .wheel__sign-ring,
+  .wheel--settle .wheel__body {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .wheel--settle .wheel__sign-ring { animation: wheel-ring-in 420ms var(--ease-soft) backwards; }
+  .wheel--settle .wheel__body {
+    animation: wheel-planet-in 320ms var(--ease-soft) calc(180ms + var(--i) * 35ms) backwards;
+  }
+  .wheel--settle .wheel__aspect-lines { animation: wheel-fade 240ms var(--ease) 520ms backwards; }
+  [data-wheel-reveal="first"] .calc__three > .three-card {
+    animation: wheel-card-in 200ms var(--ease) 700ms backwards;
+  }
+  [data-wheel-reveal="first"] .three-card:nth-child(2) { animation-delay: 740ms; }
+  [data-wheel-reveal="first"] .three-card:nth-child(3) { animation-delay: 780ms; }
+  /* Keyboard focus makes the card visible even during its delay. */
+  [data-wheel-reveal="first"] .three-card:focus-within { opacity: 1 !important; transform: none !important; }
+}
+@media (width < 720px) and (prefers-reduced-motion: no-preference) {
+  .wheel--settle .wheel__sign-ring,
+  .wheel--settle .wheel__body { animation-name: wheel-fade; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wheel--animate { animation: wheel-fade 160ms var(--ease) backwards; }
+}
 
 /* Placements table */
 /* Keep absolutely positioned accessible labels inside the table's scroller. */

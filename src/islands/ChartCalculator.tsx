@@ -10,7 +10,7 @@ import { CheckOurMath, ResultOpening } from './ChartTrust';
  *   'moon'   — moon-focused result view (same engine)
  *   'rising' — rising-focused result view (time required)
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
 import AstroTerm from './AstroTerm';
 import SignChip from './SignChip';
@@ -339,6 +339,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const [houseSystem, setHouseSystem] = useState<HouseSystem>(initialField('#house-system')?.value === 'placidus'
     ? 'placidus' : 'whole');
   const [chart, setChart] = useState<Chart | null>(null);
+  const resultCount = useRef(0);
+  const firstResult = resultCount.current === 1;
   // Read on the birthplace's own local mean time. Since engine rc.15 the
   // `lmt` flag says so too, whole minutes included; before, it marked only an
   // offset with seconds, which a whole-minute mean time lacked.
@@ -661,12 +663,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     window.addEventListener('zodiacs:level', sync);
     return () => window.removeEventListener('zodiacs:level', sync);
   }, []);
-  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(true);
   const [announce, setAnnounce] = useState('');
   const [spotlight, setSpotlight] = useState<ChartSpotlight | null>(null);
   const selFromUrl = useRef(false);
   const wheelboxRef = useRef<HTMLDivElement>(null);
-  const detailPreferenceRef = useRef<'open' | 'closed' | null>(null);
+  const detailPreferenceRef = useRef<'open' | 'closed'>('open');
   const spotlightRunRef = useRef(0);
   const spotlightArrivalCleanupRef = useRef<(() => void) | null>(null);
 
@@ -1027,16 +1029,16 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     }
   }, [scene]);
 
-  // Device-local preference. The server and first client paint stay closed;
-  // the one mount read may restore an explicit choice without tracking it as
-  // a fresh interaction.
+  // Expose placements with the result unless the visitor chose to collapse them.
   useEffect(() => {
     if (mode !== 'full') return;
     try {
       const stored = localStorage.getItem(DETAIL_STORAGE_KEY);
-      detailPreferenceRef.current = stored === 'open' || stored === 'closed' ? stored : null;
-      if (detailPreferenceRef.current === 'open') setDetailOpen(true);
-    } catch { /* storage unavailable — closed default remains */ }
+      if (stored === 'closed') {
+        detailPreferenceRef.current = 'closed';
+        setDetailOpen(false);
+      }
+    } catch { /* Storage unavailable. Keep placements open. */ }
   }, []);
 
   // The first-reading prompt is a device preference, just like exact-data
@@ -1366,7 +1368,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     openDetails(linked, nextMineHandoff, 'shared_details');
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (busy || !focusAfterComputeRef.current) return;
     if (error) {
       errorRef.current?.focus();
@@ -1493,6 +1495,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         chart: result, runId, inputRevision: runInputRevision, accessGeneration, requiresProfileAccess,
       };
       resultOwnerRef.current = owner;
+      resultCount.current += 1;
       setChart(result);
       setOnMeanTime(resolved.localMeanTime !== undefined);
       if (portable) {
@@ -2329,7 +2332,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       )}
 
       {chart && sun && moon && (
-        <div class="calc__result" ref={resultRef}>
+        <div class="calc__result" ref={resultRef} data-wheel-reveal={mode === 'full' ? (firstResult ? 'first' : 'repeat') : undefined}>
           <h2 class="sr-only" tabIndex={-1} ref={resultHeadingRef}>
             {subjectMode === 'other'
               ? otherSubjectCopy.heading(personName)
@@ -2502,7 +2505,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                             ? chart.aspects.filter((a) => a.orb < 6 && aspectTypes.includes(a.type))
                             : []}
                           renderOverlay={lensRing ?? undefined}
-                          animate
+                          animate={firstResult || 'fade'}
                           interactive={{
                             scene: viewScene ?? scene,
                             selection,
