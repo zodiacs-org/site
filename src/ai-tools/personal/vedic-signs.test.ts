@@ -3,7 +3,8 @@ import { NAKSHATRAS } from '@zodiacs/engine/vedic';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { executeAiTool } from '../tools';
 import { NAKSHATRA_LORE, RASHI_LINE, vedicSigns, vedicSignsData } from './vedic-signs';
-import { forbiddenClaim } from './shared';
+import { birthDayEnds, forbiddenClaim } from './shared';
+import tzNames from '../../data/tz-names.json';
 import { computeChart } from '../../lib/engine/full';
 
 // The engine, counted: the same computeChart, so every answer below is the real one.
@@ -117,6 +118,36 @@ describe('get_vedic_signs without a birth time', () => {
     expect(typeof timed.moon!.degree).toBe('number');
     expect(typeof timed.moonNakshatra!.pada).toBe('number');
   });
+
+  it('settles nothing without a zone that a historical clock could unsettle (Manila kept the American date until 1845)', async () => {
+    // 1844-01-07 on Manila's clock was UTC−15:56:08: the Moon was in Karka at its 00:00 and in Simha at its 23:59.
+    const early = await run({ birthDate: '1844-01-07', time: '00:00', zone: 'Asia/Manila' });
+    const late = await run({ birthDate: '1844-01-07', time: '23:59', zone: 'Asia/Manila' });
+    expect([early.moon!.rashi, late.moon!.rashi]).toEqual(['Karka', 'Simha']);
+    const untimed = await run({ birthDate: '1844-01-07' });
+    expect(untimed.moon).toBeNull();
+    expect(untimed.moonCandidates.join(' ')).toMatch(/Karka/u);
+    expect(untimed.moonCandidates.join(' ')).toMatch(/Simha/u);
+    // Anything the untimed answer does settle is what every clock's version of the day gives.
+    if (untimed.sun) for (const timed of [early, late]) expect(timed.sun!.rashi).toBe(untimed.sun.rashi);
+  });
+
+  it('takes every clock in tzdb since 1800 into the window of a date given without a zone', async () => {
+    // The names the runtime's own time zone data knows: a name it does not know is refused before any clock reads it.
+    const zones = tzNames.names.filter((zone) => { try { new Intl.DateTimeFormat('en-US', { timeZone: zone }); return true; } catch { return false; } });
+    expect(zones.length).toBeGreaterThan(400);
+    expect(zones).toEqual(expect.arrayContaining(['Asia/Manila', 'America/Metlakatla', 'Pacific/Kiritimati']));
+    for (const birthDate of ['1800-01-01', '1844-01-07', '1866-06-01', '2026-11-09']) {
+      const [first, last] = await birthDayEnds({ birthDate }, clock);
+      for (const zone of zones) {
+        await clock.prepareLocalTime(birthDate, zone);
+        for (const time of ['00:00', '23:59']) {
+          const at = clock.resolveLocalToUtc(birthDate, time, zone).utc.getTime();
+          expect(at >= first.getTime() && at <= last.getTime(), `${birthDate} ${time} ${zone}`).toBe(true);
+        }
+      }
+    }
+  }, 60_000);
 });
 
 describe('get_vedic_signs privacy and refusals', () => {
@@ -133,6 +164,16 @@ describe('get_vedic_signs privacy and refusals', () => {
   it('refuses a time without a zone, naming the field rule, and an unknown ayanamsa', async () => {
     expect(await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', time: '08:30' }, ON)).toMatchObject({ ok: false, error: { message: 'A birth time or a place needs its time zone.' } });
     expect(await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', ayanamsa: 'galactic' }, ON)).toMatchObject({ ok: false, error: { message: expect.stringContaining('ayanamsa must be one of') } });
+  });
+
+  it('checks the zone before any clock reads it, refusing an unknown one without repeating it and taking a known one in any letter case', async () => {
+    const refused = await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', zone: 'Mars/Olympus_Mons' }, ON);
+    expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+    expect(JSON.stringify(refused)).not.toMatch(/Mars|Olympus/u);
+    const lower = await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', time: '08:30', zone: 'asia/kolkata' }, ON);
+    const exact = await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', time: '08:30', zone: 'Asia/Kolkata' }, ON);
+    expect(lower.ok).toBe(true);
+    expect(lower).toEqual(exact);
   });
 });
 

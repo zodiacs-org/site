@@ -43676,8 +43676,12 @@ async function resolveBirth(args, clock2) {
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
   return { birthUtc, timeKnown, placed, latitude, longitude: longitude2, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
 }
+async function withCheckedZone(args, context) {
+  return args.zone ? { ...args, zone: await context.resolveZone(args.zone, "/zone") } : args;
+}
+var WIDEST_OFFSET_HOURS = 16;
 async function birthDayEnds2(args, clock2) {
-  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR6)];
+  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR6)];
   await clock2.prepareLocalTime(args.birthDate, args.zone);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
   const local = (time) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
@@ -43767,7 +43771,7 @@ var vedicSignsTool = definePersonalTool({
   data: vedicSignsData,
   clockDependent: false,
   example: { birthDate: "1990-05-03", time: "08:30", zone: "Asia/Kolkata", latitude: 28.61, longitude: 77.21 },
-  run: (args, context) => vedicSigns(args, context.localTime, context.origin)
+  run: async (args, context) => vedicSigns(await withCheckedZone(args, context), context.localTime, context.origin)
 });
 
 // src/ai-tools/personal/registry.ts

@@ -19,7 +19,7 @@ import { SIGNS } from '../../lib/signs';
 import { computeVedicSigns } from '../../lib/vedic-signs/compute';
 import { vedicSignsShareUrl } from '../../lib/vedic-signs/share';
 import { RASHIS, VEDIC_AYANAMSAS, type VedicAyanamsa } from '../../lib/vedic-signs/wording';
-import { birthDayEnds, birthFields, definePersonalTool, refineBirth, resolveBirth, type BirthArgs } from './shared';
+import { birthDayEnds, birthFields, definePersonalTool, refineBirth, resolveBirth, withCheckedZone, type BirthArgs } from './shared';
 
 export { NAKSHATRA_LORE, RASHIS, RASHI_LINE, VEDIC_AYANAMSAS, VEDIC_NOTE, type VedicAyanamsa } from '../../lib/vedic-signs/wording';
 
@@ -108,5 +108,5 @@ export const vedicSignsTool = definePersonalTool({
   data: vedicSignsData,
   clockDependent: false,
   example: { birthDate: '1990-05-03', time: '08:30', zone: 'Asia/Kolkata', latitude: 28.61, longitude: 77.21 },
-  run: (args, context) => vedicSigns(args, context.localTime, context.origin),
+  run: async (args, context) => vedicSigns(await withCheckedZone(args, context), context.localTime, context.origin),
 });
