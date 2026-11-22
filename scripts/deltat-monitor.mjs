@@ -369,7 +369,12 @@ export async function runMonitor({
 }
 
 const TZDB_RELEASE = /^\d{4}[a-z]+$/u;
-const TZDB_NEWS_SECTIONS = new Set(['Briefly:', 'Changes to past timestamps', 'Changes to future timestamps']);
+const TZDB_NEWS_SECTIONS = new Set([
+  'Briefly:',
+  'Changes to past timestamps',
+  'Changes to future timestamps',
+  'Changes to past and future timestamps',
+]);
 
 function isLaterRelease(candidate, installed) {
   const year = Number(candidate.slice(0, 4));

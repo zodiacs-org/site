@@ -429,6 +429,7 @@ describe('the time zone release rule', () => {
       expect(body).toContain('The engine ships 2025c. IANA reports 2026f.');
       expect(body).toContain('In 1925 Ireland fell back on 09-20 not 10-04');
       expect(body).toContain('Cuba will not fall back');
+      expect(body).toContain('Since 2022 Moldova has observed EU transition times');
       expect(body.match(/^### 2026[a-f]$/gmu)).toHaveLength(6);
       expect(body).not.toMatch(/### 2025c|Changes to code|Changes to commentary|Other data changes/u);
       expect(await readFile(summary, 'utf8')).toContain('UT1 span: 324 days compared.');
