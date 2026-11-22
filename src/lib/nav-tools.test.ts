@@ -23,7 +23,7 @@ type IsOn = (flag: LaunchFlag) => boolean;
 const HUB_GROUPS = ['you', 'together', 'sky', 'year'] as const;
 const MAIN_HUB = { you: 6, together: 6, sky: 6, year: 10 } as const;
 const MAIN_HUB_LENGTH = 29;
-const MAIN_NAV_MORE_LENGTH = 8;
+const MAIN_NAV_MORE_LENGTH = 9;
 const switchedOn = (entries: readonly { flag?: LaunchFlag }[], isOn: IsOn) => entries.filter((entry) => entry.flag !== undefined && isOn(entry.flag)).length;
 const switchedHubCards = (isOn: IsOn, group?: string) => switchedOn(ALL_TOOL_CATALOG.filter((tool) => tool.hub && (group === undefined || tool.hub.group === group)), isOn);
 const expectedGroups = (isOn: IsOn) => Object.fromEntries(HUB_GROUPS.map((group) => [group, MAIN_HUB[group] + switchedHubCards(isOn, group)]));
@@ -189,6 +189,22 @@ describe('tools behind a launch switch', () => {
   it('keeps all eight locale labels on every menu entry, switched or not', () => {
     for (const entry of ALL_NAV_MORE) {
       expect(Object.keys(entry.label).sort()).toEqual(['en', 'es', 'fr', 'it', 'pt', 'ru', 'zh-hans', 'zh-hant']);
+    }
+  });
+
+  it('lists solar return in NAV_MORE and gates year-score and good-days behind their launch flags', () => {
+    const moreHrefs = (on: boolean) => visibleNavMore(() => on).map((entry) => entry.href);
+    expect(moreHrefs(false)).toContain('/solar-return/');
+    expect(moreHrefs(false)).not.toContain('/year-score/');
+    expect(moreHrefs(false)).not.toContain('/good-days/');
+    expect(moreHrefs(true)).toEqual(expect.arrayContaining(['/solar-return/', '/year-score/', '/good-days/']));
+    expect(NAV_MORE.some((entry) => entry.href === '/year-score/')).toBe(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED'));
+    expect(NAV_MORE.some((entry) => entry.href === '/good-days/')).toBe(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED'));
+    for (const entry of ALL_NAV_MORE) {
+      for (const locale of RELEASED_LOCALES) {
+        expect(entry.label[locale].trim()).not.toBe('');
+        expect(entry.label[locale]).not.toMatch(/[\r\n\u2013\u2014]/u);
+      }
     }
   });
 });
