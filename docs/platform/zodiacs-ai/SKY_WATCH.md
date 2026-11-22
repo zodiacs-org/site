@@ -79,13 +79,22 @@ receiver `410`, or expiry cleanup. Metadata is removed 30 days after expiry;
 public event records and their delivery rows are retained for 30 days. Cleanup
 runs with the worker, so a stopped worker must be restarted to finish retention.
 
-The worker calculates fixed UTC-day partitions with the site's pinned engine.
-After merging main, this is the vendored rc.17 candidate, which is not published
-on npm. The already-connected Chart Studio preview still uses published rc.16.
-It fills at most three days per run toward a two-day horizon and persists its
-next boundary transactionally. Failed searches never advance it. Concurrent
-workers use compare-and-swap ingestion and unique subscription/event outbox
-rows. Engine changes refuse the ledger until an explicit migration is reviewed.
+The worker calculates fixed UTC days with the site engine. A clock revision
+replays the two days before the saved boundary. The worker matches each corrected
+event with the same body, phase or crossing in the neighboring days. A match
+keeps the stored ID and delivery state, even when the clock correction moves it
+across midnight. A new event gets an ID on its first observation, and later
+corrections use the stored ID. If two stored events can match, the worker stops
+that window for review. [Worker](../../../src/ai-tools/watch/worker.ts)
+
+The database checks that a worker still owns the next window before accepting its
+results. It updates the due time of a pending delivery that has yet to be tried.
+Previously sent deliveries keep their keys, and the existing retention policy
+still applies. Review the migration with the worker change. [Migration](../../../supabase/migrations/20261118141004_sky_watch_timing.sql)
+
+This migration replays the existing ledger format once. A later engine revision
+still requires a reviewed timing migration, so overlapping workers cannot move
+the cursor back and forth between calculation versions. [Migration version check](../../../supabase/migrations/20261118141004_sky_watch_timing.sql)
 
 The hosted worker also takes a three-minute database lease to bound overlapping
 invocations and saves aggregate completion health. Supabase Cron checks every

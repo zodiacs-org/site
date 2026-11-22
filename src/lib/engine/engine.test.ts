@@ -54,7 +54,7 @@ describe('independent true node and polar references', () => {
     // 1.1.0-rc.2's also the digest of tools/engine-clock.ts, whose time basis now comes from @zodiacs/engine/time); policies and
     // retained Horizons responses are unchanged.
     expect(digest('independent-node-polar.json'))
-      .toBe('52190b00b3b6769e73822bf0ca4d1fbc0e4652b451efe90e640dcc5f3d653651');
+      .toBe('813d0fcc81da81119b0ada087bd9bac12726cfc929757bb617dd07bf39e61776');
     expect(digest('swiss-node-polar-policy.json'))
       .toBe('7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
   });
@@ -116,7 +116,7 @@ describe('independent representative supported epochs', () => {
     // The 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1 and 1.1.0-rc.2 rebuilds update the recorded engine version
     // (1.1.0-rc.2's also the digest of tools/engine-clock.ts, whose time basis now comes from @zodiacs/engine/time).
     expect(digest('independent-eight-cases.json'))
-      .toBe('20ddba7551196a01dfe72fdb22bbc2a5d1a5d21f6d938cb1022f67f4511dbb3e');
+      .toBe('a2715837f486fab86e400304328a28b714d8d9a7d01360c3db24062665365cdd');
     expect(digest('swiss-eight-cases-policy.json'))
       .toBe('9dfc069be7c6854da1f0dff578c0b213e64624e720d21e27c6301b7612fd79a4');
   });

@@ -267,11 +267,11 @@ const personSchema = z.object({
 
 const peoplePilotSchema = z.object({
   schema: z.literal('zodiacs.phase5.people.v1'),
-  status: z.string().regex(/^Packet F search-quality release — \d+ indexable deceased records, \d+ deferred deceased records, 4 protected living records, 1 withdrawn$/u),
+  status: z.string().regex(/^Packet F search-quality release: \d+ indexable deceased records, \d+ deferred deceased records, 19 protected living records, 1 withdrawn$/u),
   releaseCounts: z.object({
     indexableDeceased: z.number().int().nonnegative(),
     deferredDeceased: z.number().int().nonnegative(),
-    protectedLiving: z.literal(4),
+    protectedLiving: z.literal(19),
     withdrawn: z.literal(1),
   }).strict(),
   reviewedAtUtc: isoInstantSchema,
@@ -280,7 +280,7 @@ const peoplePilotSchema = z.object({
   sourceIndexDemandSha256: z.string().regex(/^[a-f0-9]{64}$/u),
   indexPolicyApprovedAtUtc: isoInstantSchema,
   directoryIndexable: z.boolean(),
-  people: z.array(personSchema).length(501),
+  people: z.array(personSchema).length(516),
 }).strict().superRefine((release, context) => {
   const counts = {
     indexableDeceased: release.people.filter((person) => (
@@ -292,7 +292,7 @@ const peoplePilotSchema = z.object({
     protectedLiving: release.people.filter((person) => person.living).length,
     withdrawn: 1,
   };
-  const expectedStatus = `Packet F search-quality release — ${counts.indexableDeceased} indexable deceased records, ${counts.deferredDeceased} deferred deceased records, ${counts.protectedLiving} protected living records, 1 withdrawn`;
+  const expectedStatus = `Packet F search-quality release: ${counts.indexableDeceased} indexable deceased records, ${counts.deferredDeceased} deferred deceased records, ${counts.protectedLiving} protected living records, 1 withdrawn`;
   if (JSON.stringify(release.releaseCounts) !== JSON.stringify(counts)) {
     context.addIssue({ code: 'custom', message: 'People release counts do not match the records' });
   }
@@ -368,7 +368,7 @@ const DISCIPLINE_GROUP_BY_SOURCE: Readonly<Record<string, PeopleDisciplineGroup>
   singer: 'music', musician: 'music', violinist: 'music', cellist: 'music', guitarist: 'music',
   conductor: 'music', songwriter: 'music', 'opera singer': 'music', saxophonist: 'music',
   trumpeter: 'music', drummer: 'music', bandleader: 'music', 'music educator': 'music',
-  'recording artist': 'music', 'jazz singer': 'music',
+  'recording artist': 'music', 'jazz singer': 'music', rapper: 'music',
   sculptor: 'art', photographer: 'art', printmaker: 'art', illustrator: 'art', artist: 'art',
   'visual artist': 'art', muralist: 'art', ceramicist: 'art', photojournalist: 'art',
   'urban planner': 'architecture',
@@ -376,7 +376,7 @@ const DISCIPLINE_GROUP_BY_SOURCE: Readonly<Record<string, PeopleDisciplineGroup>
   'industrial designer': 'design', 'furniture designer': 'design', 'interior designer': 'design',
   'film director': 'film-stage', actor: 'film-stage', 'film actor': 'film-stage',
   'stage actor': 'film-stage', 'film producer': 'film-stage', comedian: 'film-stage',
-  'television actor': 'film-stage', filmmaker: 'film-stage',
+  'television actor': 'film-stage', filmmaker: 'film-stage', YouTuber: 'film-stage',
   politician: 'public-life', statesperson: 'public-life', lawyer: 'public-life',
   judge: 'public-life', activist: 'public-life', 'human rights activist': 'public-life',
   'civil rights advocate': 'public-life', suffragist: 'public-life', suffragette: 'public-life',
@@ -388,6 +388,7 @@ const DISCIPLINE_GROUP_BY_SOURCE: Readonly<Record<string, PeopleDisciplineGroup>
   'aircraft pilot': 'public-life', 'test pilot': 'public-life',
   'polar explorer': 'public-life', teacher: 'public-life', 'university teacher': 'public-life',
   pedagogue: 'public-life', feminist: 'public-life',
+  entrepreneur: 'public-life', businessperson: 'public-life',
   monarch: 'public-life', 'freedom fighter': 'public-life', monk: 'public-life',
   'association football player': 'sport', footballer: 'sport', 'baseball player': 'sport',
   'basketball player': 'sport', boxer: 'sport', athlete: 'sport', sprinter: 'sport',

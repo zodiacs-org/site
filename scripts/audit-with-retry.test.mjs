@@ -1,11 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  PICOMATCH_EXCEPTION, auditWithRetry, executeAudit, executeAuditJson, isRetryableEndpointError, picomatchExceptionBlocker,
+  auditWithRetry, executeAudit, isRetryableEndpointError,
 } from './audit-with-retry.mjs';
 
 vi.mock('node:child_process', () => ({ spawnSync: vi.fn() }));
+beforeEach(() => vi.mocked(spawnSync).mockReset());
 
 const diagnostic = 'npm error audit endpoint returned an error';
 const outage = {
@@ -20,9 +21,6 @@ function harness(...results) {
   let index = 0;
   return {
     execute: vi.fn(() => results[Math.min(index++, results.length - 1)]),
-    executeJson: vi.fn(() => ({ status: 1, stdout: '' })),
-    latestPicomatch: vi.fn(() => '4.0.7'),
-    today: () => '2026-11-18',
     wait: vi.fn(async () => {}),
     stdout: vi.fn(),
     stderr: vi.fn(),
@@ -177,115 +175,36 @@ describe('dependency advisory retry execution', () => {
   });
 });
 
-const picomatchAdvisory = {
-  source: 1247710,
-  name: 'picomatch',
-  dependency: 'picomatch',
-  title: 'picomatch vulnerable to ReDoS through single-branch repeated extglobs',
-  url: 'https://github.com/advisories/GHSA-fc5q-39xc-vjpf',
-  severity: 'high',
-  range: '<=4.0.7',
-};
-function report(extra = {}) {
-  return {
+describe('audit findings have no advisory exceptions', () => {
+  // GHSA-fc5q-39xc-vjpf was withdrawn on 2026-11-18. If the registry
+  // reports it again, fail normally rather than reviving the old exception.
+  const formerlyExceptedReport = {
     vulnerabilities: {
-      picomatch: { name: 'picomatch', severity: 'high', via: [picomatchAdvisory] },
-      fdir: { name: 'fdir', severity: 'high', via: ['picomatch'] },
-      tinyglobby: { name: 'tinyglobby', severity: 'high', via: ['fdir', 'picomatch'] },
-      vite: { name: 'vite', severity: 'high', via: ['fdir', 'picomatch', 'tinyglobby'] },
-      astro: { name: 'astro', severity: 'high', via: ['picomatch', 'vite'] },
-      ...extra,
+      picomatch: {
+        name: 'picomatch', severity: 'high',
+        via: [{
+          name: 'picomatch', severity: 'high', range: '<=4.0.7',
+          url: 'https://github.com/advisories/GHSA-fc5q-39xc-vjpf',
+        }],
+      },
     },
   };
-}
-const vitestModerate = {
-  '@vitest/mocker': {
-    name: '@vitest/mocker',
-    severity: 'moderate',
-    via: [{ name: '@vitest/mocker', url: 'https://github.com/advisories/GHSA-82fw-gwwq-j7x9', severity: 'moderate', range: '>=2.1.0 <4.1.11' }],
-  },
-};
-const ok = { latest: '4.0.7', today: '2026-11-18' };
-
-describe('temporary picomatch advisory exception', () => {
-  it('is pinned to the one advisory, the unfixed range and a dated backstop', () => {
-    expect(PICOMATCH_EXCEPTION).toEqual({
-      name: 'picomatch',
-      url: 'https://github.com/advisories/GHSA-fc5q-39xc-vjpf',
-      range: '<=4.0.7',
-      newestUnfixedRelease: '4.0.7',
-      expires: '2027-02-18',
-    });
-    expect(Object.isFrozen(PICOMATCH_EXCEPTION)).toBe(true);
-  });
-
-  it.each(['--omit=dev', '--audit-level=high'])('applies under %s when picomatch is the only finding', (policy) => {
-    expect(picomatchExceptionBlocker(policy, report(), ok)).toBeNull();
-  });
-
-  it('still applies on the last allowed day', () => {
-    expect(picomatchExceptionBlocker('--omit=dev', report(), { ...ok, today: '2027-02-18' })).toBeNull();
-  });
-
-  it('ignores advisories below the high-only policy but not below the production policy', () => {
-    expect(picomatchExceptionBlocker('--audit-level=high', report(vitestModerate), ok)).toBeNull();
-    expect(picomatchExceptionBlocker('--omit=dev', report(vitestModerate), ok)).toMatch(/another advisory/u);
-  });
 
   it.each([
-    ['a newer picomatch release exists', report(), { ...ok, latest: '4.0.8' }, /upgrade/u],
-    ['the newest release cannot be read', report(), { ...ok, latest: null }, /could not confirm/u],
-    ['the backstop date has passed', report(), { ...ok, today: '2027-02-19' }, /expired/u],
-    ['the date is missing', report(), { ...ok, today: undefined }, /date/u],
-    ['the advisory range changes', report({ picomatch: { severity: 'high', via: [{ ...picomatchAdvisory, range: '<4.0.8' }] } }), ok, /range changed/u],
-    ['another high advisory appears', report({ other: { severity: 'critical', via: [{ name: 'other', url: 'https://github.com/advisories/GHSA-xxxx', severity: 'critical', range: '*' }] } }), ok, /another advisory/u],
-    ['a different advisory hits picomatch', report({ picomatch: { severity: 'high', via: [picomatchAdvisory, { ...picomatchAdvisory, url: 'https://github.com/advisories/GHSA-yyyy' }] } }), ok, /another advisory/u],
-    ['an unknown severity appears', report({ odd: { severity: 'high', via: [{ name: 'odd', url: 'u', severity: 'severe', range: '*' }] } }), ok, /unknown severity/u],
-    ['an inherited name is used as a severity', report({ odd: { severity: 'high', via: [{ name: 'odd', url: 'u', severity: 'toString', range: '*' }] } }), ok, /unknown severity/u],
-    ['an entry has an empty via list', report({ odd: { severity: 'critical', via: [] } }), ok, /unreadable/u],
-    ['an entry points to a package the report does not list', report({ odd: { severity: 'critical', via: ['ghost'] } }), ok, /does not list/u],
-    ['an entry has no known severity of its own', report({ odd: { severity: 'HIGH', via: ['picomatch'] } }), ok, /unknown severity/u],
-    ['the report has no vulnerabilities map', {}, ok, /unreadable/u],
-    ['an entry has no via list', report({ odd: { name: 'odd' } }), ok, /unreadable/u],
-    ['picomatch is not in the report', { vulnerabilities: {} }, ok, /not the failure/u],
-  ])('fails closed when %s', (_label, auditReport, context, reason) => {
-    expect(picomatchExceptionBlocker('--omit=dev', auditReport, context)).toMatch(reason);
-  });
-
-  it('passes the gate only after the plain audit fails and the JSON audit shows nothing else', async () => {
-    const run = harness(findings);
-    run.executeJson.mockReturnValue({ status: 1, stdout: JSON.stringify(report()) });
-    expect(await auditWithRetry(['--omit=dev'], run)).toBe(0);
-    expect(run.executeJson.mock.calls).toEqual([[['--omit=dev']]]);
-    expect(run.stderr).toHaveBeenCalledWith(expect.stringContaining('temporary exception'));
-  });
-
-  it('keeps the failure status when the exception does not apply', async () => {
-    const run = harness({ ...findings, status: 7 });
-    run.executeJson.mockReturnValue({ status: 1, stdout: JSON.stringify(report()) });
-    run.latestPicomatch.mockReturnValue('4.0.8');
-    expect(await auditWithRetry(['--omit=dev'], run)).toBe(7);
-    expect(run.stderr).toHaveBeenCalledWith(expect.stringContaining('Failing the gate'));
-  });
-
-  it.each([{ status: 1, stdout: '{ broken' }, { status: null, signal: 'SIGTERM', stdout: '' }, { status: 1, error: new Error('x'), stdout: '{}' }])(
-    'fails closed when the JSON audit is unusable: %j', async (json) => {
-      const run = harness(findings);
-      run.executeJson.mockReturnValue(json);
-      expect(await auditWithRetry(['--omit=dev'], run)).toBe(1);
-      expect(run.latestPicomatch).not.toHaveBeenCalled();
-    },
-  );
-
-  it('never consults the exception for a clean audit', async () => {
-    const run = harness(clean);
-    expect(await auditWithRetry(['--omit=dev'], run)).toBe(0);
-    expect(run.executeJson).not.toHaveBeenCalled();
-  });
-
-  it('runs the JSON audit with the same policy and no other arguments', () => {
-    vi.mocked(spawnSync).mockReturnValueOnce(clean);
-    executeAuditJson(['--audit-level=high']);
-    expect(spawnSync).toHaveBeenLastCalledWith('npm', ['audit', '--audit-level=high', '--json'], expect.objectContaining({ encoding: 'utf8' }));
+    ['--omit=dev', 1], ['--omit=dev', 7],
+    ['--audit-level=high', 1], ['--audit-level=high', 7],
+  ])('preserves %s failure %s without a JSON fallback or package lookup', async (policy, status) => {
+    vi.mocked(spawnSync)
+      .mockReturnValueOnce({ ...findings, status, stdout: '# npm audit report\npicomatch <=4.0.7\nSeverity: high\n' })
+      // These would have granted the former exception. Neither may run.
+      .mockReturnValueOnce({ status: 1, stdout: JSON.stringify(formerlyExceptedReport), stderr: '' })
+      .mockReturnValueOnce({ status: 0, stdout: '4.0.7\n', stderr: '' });
+    const wait = vi.fn();
+    const stdout = vi.fn();
+    const stderr = vi.fn();
+    expect(await auditWithRetry([policy], { wait, stdout, stderr })).toBe(status);
+    expect(spawnSync).toHaveBeenCalledTimes(1);
+    expect(spawnSync).toHaveBeenCalledWith('npm', ['audit', policy], expect.any(Object));
+    expect(wait).not.toHaveBeenCalled();
   });
 });

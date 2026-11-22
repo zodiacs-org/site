@@ -14,6 +14,7 @@ import eclipsesData from '../../data/eclipses.json';
 import ingressesData from '../../data/ingresses.json';
 import { nasaAspectAt, nasaIngressAt, nasaStationAt } from '../nasa-instants';
 import { bodyLongitude } from '../engine/full';
+import { publishedAspectPage } from './site-publication';
 import type { BodyName } from '../engine/types';
 import { degreeInSign, signForLongitude } from '../signs';
 import {
@@ -684,14 +685,15 @@ function editorialFactsById(): Map<string, EventFacts> {
   for (const month of transitMonths) {
     for (const item of month.aspects ?? []) {
       if (!SLOW_BODIES.has(item.a) || !SLOW_BODIES.has(item.b) || item.orb !== 0) continue;
-      const id = aspectId(item.a, item.type, item.b, item.at);
+      const published = publishedAspectPage(item.a, item.type, item.b, item.at);
+      const id = published?.id ?? aspectId(item.a, item.type, item.b, item.at);
       keep({
         id,
         family: 'aspect',
         subtype: item.type,
-        path: aspectPath(item.a, item.type, item.b, item.at),
+        path: published?.path ?? aspectPath(item.a, item.type, item.b, item.at),
         title: id,
-        at: nasaAspectAt(item.a, item.b, item.type, item.at) ?? item.at,
+        at: nasaAspectAt(item.a, item.b, item.type, published?.anchor ?? item.at) ?? item.at,
         bodies: [item.a, item.b],
         signs: [item.aSign, item.bSign],
         degree: item.aDegree,

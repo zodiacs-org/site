@@ -24,10 +24,12 @@ import {
   DELTA_T_TABLE,
   ENGINE_VERSION,
   EPHEMERIS,
+  defaultEphemeris,
   REFERENCE_SPAN,
   natalChart,
 } from '@zodiacs/engine';
 import { conventionId } from '@zodiacs/engine/conventions';
+import { DE440_EPHEMERIS_NAME } from '@zodiacs/engine/de440';
 import { createNatalEnvelope, type NatalReceipt } from '@zodiacs/engine/receipt';
 import {
   COMPUTE_RECEIPT_SCHEMA,
@@ -40,11 +42,18 @@ import { receiptDigest } from '../receipt-digest.js';
 
 export { canonicalJson, receiptDigest } from '../receipt-digest.js';
 
-/** The backend every response names. */
+/** All accepted compute dates fall inside the installed DE440 pack. */
+function activeEphemeris() {
+  const { name, de440 } = defaultEphemeris();
+  if (name === 'astronomy-engine') return EPHEMERIS;
+  if (!de440.opened || !de440.version) throw new Error('The default DE440 ephemeris could not be opened.');
+  return Object.freeze({ name: DE440_EPHEMERIS_NAME, version: de440.version });
+}
+
 export const BACKEND = Object.freeze({
   name: '@zodiacs/engine' as const,
   version: ENGINE_VERSION,
-  ephemeris: Object.freeze({ name: EPHEMERIS.name, version: EPHEMERIS.version }),
+  ephemeris: activeEphemeris(),
 });
 
 /** A source of ΔT (TT − UT1) as a chart names it: its model, table and the table's digest. */

@@ -12,7 +12,7 @@ const profile = { version: 1, settings: { houseSystem: 'placidus' }, charts: [
   saved('timed', { date: '1990-02-01', time: '12:00', timeKnown: true, place }),
   saved('unknown', { date: '1990-02-01', time: null, timeKnown: false, place }),
   saved('no-place', { date: '1990-02-01', time: '12:00', timeKnown: true, place: null }),
-  saved('fold', { date: '2025-11-02', time: '01:30', timeKnown: true, place: { ...place, tz: 'America/New_York' } }),
+  saved('fold', { date: '2012-11-04', time: '01:30', timeKnown: true, place: { ...place, tz: 'America/New_York' } }),
 ] };
 
 export function isExpectedLunarError(entry, failedUrls) {

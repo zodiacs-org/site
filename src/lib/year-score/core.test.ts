@@ -3,6 +3,8 @@ import { bodyLongitude, computeChart } from '../engine/full';
 import { ASPECT_ORB, MONTH_SCORE_SCALE, MONTH_SCORE_SCALE_TIMED, PLANET_WEIGHT, POINT_WEIGHT, SCORE_CENTER, SCORE_CENTER_TIMED, VALENCE, YEAR_SCORE_SCALE, YEAR_SCORE_SCALE_TIMED, contactsOn, curve, scoreYear, type MonthScore, type NatalPoints, type SlowPlanet, type YearScore } from './core';
 import { YEAR_PEOPLE, findYearPerson, personKey } from './people';
 import { monthLine, scoreTier, yearReading } from './reading';
+import { figureTierSummary } from './tier';
+import { FIGURE_NOTE } from './people';
 
 const fixed = (lons: Partial<Record<SlowPlanet, number>>) => (body: SlowPlanet) => lons[body] ?? 45;
 const natalAt = (iso: string): NatalPoints => {
@@ -179,6 +181,14 @@ describe('the words', () => {
       const tier = scoreTier(score);
       expect(`${tier.label} ${tier.summary}`).not.toMatch(banned);
     }
+    // A named figure's tier words (ZOD-12): nothing about money, work, health or the reader, and the personal wording unchanged.
+    for (const score of [0, 1.5, 2.5, 3.5, 5, 7, 9.5]) {
+      const words = figureTierSummary(scoreTier(score).key);
+      expect(words).not.toMatch(banned);
+      expect(words).not.toMatch(/\b(?:earnings?|money|spending|agreements?|energy|career|work|rest|you|your)\b/iu);
+    }
+    expect(FIGURE_NOTE).not.toMatch(banned);
+    expect(FIGURE_NOTE).not.toMatch(/[–—]/u);
     expect(scoreTier(1).label).toBe('A year of heavy pressure');
     expect(scoreTier(5).label).toBe('A balanced year');
     // The cut points sit symmetrically around 5: 2, 3.5, 6.5 and 8.
@@ -353,6 +363,10 @@ describe('lines that agree with their headings', () => {
 });
 
 describe('the Year Ahead directory', () => {
+  it('scores a figure’s page from the first day of the month, so the page and a draft post agree all month', async () => {
+    const { yearPageStart } = await import('./people');
+    expect(yearPageStart(new Date('2026-11-09T23:59:00Z'))).toBe('2026-11-01');
+  });
   const REVIEW = '2026-11-09';
   it('lists only adults, each with a cited source and a unique slug', () => {
     const slugs = new Set<string>();

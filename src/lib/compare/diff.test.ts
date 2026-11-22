@@ -1,3 +1,4 @@
+import { useBrowserEphemeris } from '../../../tests/helpers/browser-ephemeris';
 import { describe, expect, it } from 'vitest';
 import { natalChart, ENGINE_VERSION } from '@zodiacs/engine';
 import { NATAL_RECEIPT_CONVENTION_SETS, createNatalEnvelope, parseNatalEnvelope } from '@zodiacs/engine/receipt';
@@ -6,6 +7,8 @@ import { deltaTAt } from '@zodiacs/engine/deltat';
 import { compareEnvelopes, type Evidence, type Replay } from './diff';
 import { replay as pageReplay } from './replay';
 import { buildEnvelope, ORDINARY, PRESETS, presetEnvelopes, type SyntheticInput } from './fixtures';
+
+useBrowserEphemeris();
 
 /** The real engine, wired in the way the page wires it. */
 const replay: Replay = (request) => {
