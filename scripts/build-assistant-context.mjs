@@ -118,6 +118,7 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
 // never recommended. Commit the output generated with every switch unset.
 export const LAUNCH_FLAGGED_ROUTES = Object.freeze({
   '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED',
+  '/tarot/': 'PUBLIC_TAROT_ENABLED',
   '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
   '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
 });

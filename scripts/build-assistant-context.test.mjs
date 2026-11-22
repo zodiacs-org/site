@@ -18,10 +18,12 @@ import {
 let temporaryDirectory;
 
 // The committed module is the output with every launch switch unset; the
-// good day finder joins the inventory only while its switch is exactly '1'.
+// good day finder and tarot join the inventory only while their switches are '1'.
 const FLAGS_OFF = Object.freeze({});
 const GOOD_DAYS_ON = Object.freeze({ PUBLIC_GOOD_DAYS_ENABLED: '1' });
 const GOOD_DAYS_LINE = '- /good-days/ —';
+const TAROT_ON = Object.freeze({ PUBLIC_TAROT_ENABLED: '1' });
+const TAROT_LINE = '- /tarot/ —';
 
 afterEach(async () => {
   if (temporaryDirectory) {
@@ -194,24 +196,32 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     expect(ASSISTANT_CONTEXT).toBe(first.context);
   });
 
-  it('commits the switches-unset output, and the good day finder switch adds exactly its one line', async () => {
-    expect(LAUNCH_FLAGGED_ROUTES).toEqual({ '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED', '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED', '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED' });
+  it('commits the switches-unset output, and the good day finder and tarot switches each add exactly one line', async () => {
+    expect(LAUNCH_FLAGGED_ROUTES).toEqual({
+      '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED',
+      '/tarot/': 'PUBLIC_TAROT_ENABLED',
+      '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
+      '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
+    });
     temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
 
     const off = await buildAssistantContext({ output: join(temporaryDirectory, 'off.ts'), env: FLAGS_OFF });
     expect(ASSISTANT_CONTEXT).toBe(off.context);
     expect(off.context).not.toContain('/good-days/');
+    expect(off.context).not.toContain('/tarot/');
 
     for (const value of ['', '0', 'true', ' 1']) {
-      const notOn = await generateAssistantContext({ env: { PUBLIC_GOOD_DAYS_ENABLED: value } });
-      expect(notOn.context).toBe(off.context);
+      expect((await generateAssistantContext({ env: { PUBLIC_GOOD_DAYS_ENABLED: value } })).context).toBe(off.context);
+      expect((await generateAssistantContext({ env: { PUBLIC_TAROT_ENABLED: value } })).context).toBe(off.context);
     }
 
-    const on = await buildAssistantContext({ output: join(temporaryDirectory, 'on.ts'), env: GOOD_DAYS_ON });
     const offLines = off.context.split('\n');
-    const added = on.context.split('\n').filter((line) => !offLines.includes(line));
-    expect(added).toHaveLength(1);
-    expect(added[0].startsWith(GOOD_DAYS_LINE)).toBe(true);
-    expect(on.context.split('\n').filter((line) => line !== added[0])).toEqual(offLines);
+    for (const [env, line, file] of [[GOOD_DAYS_ON, GOOD_DAYS_LINE, 'good-days.ts'], [TAROT_ON, TAROT_LINE, 'tarot.ts']]) {
+      const on = await buildAssistantContext({ output: join(temporaryDirectory, file), env });
+      const added = on.context.split('\n').filter((entry) => !offLines.includes(entry));
+      expect(added).toHaveLength(1);
+      expect(added[0].startsWith(line)).toBe(true);
+      expect(on.context.split('\n').filter((entry) => entry !== added[0])).toEqual(offLines);
+    }
   });
 });

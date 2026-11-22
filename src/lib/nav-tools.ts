@@ -310,6 +310,11 @@ export const ALL_TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 6, title: 'Numerology', promise: 'Life Path and more, with every step shown.', group: 'you' },
   },
   {
+    // Tarot is a separate practice from astrology; the promise says so.
+    href: '/tarot/', flag: 'PUBLIC_TAROT_ENABLED',
+    hub: { order: 6.5, title: 'Tarot', promise: 'A card or a full spread, apart from astrology.', group: 'you' },
+  },
+  {
     href: '/horoscopes/',
     hub: { order: 16, title: 'Horoscopes', promise: 'A reading for every sign, every morning.', group: 'sky' },
   },
@@ -360,10 +365,17 @@ export const ALL_TOOLS_LABEL = {
 
 /**
  * Newer sharing and return-visit tools, listed under the main eight in the
- * Tools menu with short labels. Every one has a route in all six catalog
- * locales; the Chinese zodiac section links their English pages.
+ * Tools menu with short labels. Entries behind a launch switch stay hidden
+ * until their switch is '1'.
  */
-export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[] = [
+export interface NavMoreEntry {
+  href: string;
+  label: Record<Locale, string>;
+  /** Build-time launch switch; hidden until its flag is '1'. */
+  flag?: LaunchFlag;
+}
+
+export const ALL_NAV_MORE: readonly NavMoreEntry[] = [
   { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы', 'zh-hans': '群组星盘', 'zh-hant': '群組星盤' } },
   { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы', 'zh-hans': '星盘双胞胎', 'zh-hant': '星盤雙胞胎' } },
   { href: '/big-three/', label: { en: 'Big three card', es: 'Los tres grandes', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Большая тройка', 'zh-hans': '日月升卡片', 'zh-hant': '日月升卡片' } },
@@ -372,7 +384,14 @@ export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[
   { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня', 'zh-hans': '每日星盘', 'zh-hant': '每日星盤' } },
   { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Ton ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года', 'zh-hans': '你的年度星空', 'zh-hant': '你的年度星空' } },
   { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты', 'zh-hans': '星盘 PDF', 'zh-hant': '星盤 PDF' } },
+  { href: '/tarot/', flag: 'PUBLIC_TAROT_ENABLED', label: { en: 'Tarot', es: 'Tarot', pt: 'Tarô', fr: 'Tarot', it: 'Tarocchi', ru: 'Таро', 'zh-hans': '塔罗抽牌', 'zh-hant': '塔羅抽牌' } },
 ];
+
+export const visibleNavMore = (isOn: (flag: LaunchFlag) => boolean = launchFlagOn): readonly NavMoreEntry[] => (
+  ALL_NAV_MORE.filter((entry) => !entry.flag || isOn(entry.flag))
+);
+
+export const NAV_MORE: readonly NavMoreEntry[] = visibleNavMore();
 
 export const NAV_MORE_LABEL = {
   en: 'More to explore', es: 'Más para explorar', pt: 'Mais para explorar', fr: 'À explorer aussi', it: 'Altro da esplorare', ru: 'Ещё стоит посмотреть',

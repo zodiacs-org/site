@@ -223,6 +223,10 @@ Set the repository variable `TRENDING_X_ENABLED` to `1` only after the people pa
 
 Switch `PUBLIC_SOLAR_RETURN_SHARE_ENABLED` on and deploy before `ZODIACS_SOLAR_RETURN_ENABLED`, or every `get_solar_return` answer carries a `shareUrl` that answers 404. Its link to `/birthday-report/` already waits for `PUBLIC_BIRTHDAY_REPORT_ENABLED`.
 
+## Tarot switch order
+
+Switch `PUBLIC_TAROT_ENABLED` on and deploy before `ZODIACS_TAROT_ENABLED`, or `draw_tarot` links to a missing page (`src/ai-tools/features/tarot.ts:63`). With `PUBLIC_TAROT_ENABLED` unset, `/tarot/` redirects to the 404 page, and its hub card, `NAV_MORE` link, and Guide line are all left out (`src/lib/launch-flags.ts`).
+
 ## Personal release and measurement
 
 The existing synthetic Personal Week Ahead uses an arbitrary unknown-time chart
