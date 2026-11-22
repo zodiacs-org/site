@@ -769,6 +769,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
   ['/birth-chart/', '2026-11-19'] as const,
+  ['/app/privacy/', '2026-11-22'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -901,6 +902,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/about/', priority: 0.55 },
     { loc: '/corrections/', priority: 0.4 },
     { loc: '/privacy/', priority: 0.4 },
+    { loc: '/app/privacy/', priority: 0.4 },
     { loc: '/es/privacy/', priority: 0.4 },
     { loc: '/terms/', priority: 0.4 },
     { loc: '/support/', priority: 0.4 },
