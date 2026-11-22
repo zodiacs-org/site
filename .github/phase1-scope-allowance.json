@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "generated-sign-pages-3e6bcbd359ed",
-  "baseCommit": "3e6bcbd359ed47f091448b66276e9493ee4e6ece",
+  "id": "generated-sign-pages-574a8218c9d2",
+  "baseCommit": "574a8218c9d22ed46dbe79088a988deea8e29da9",
   "protectedPaths": [
     "public/registry/aquarius/index.html",
     "public/registry/aries/index.html",
@@ -14,6 +14,7 @@
     "public/registry/sagittarius/index.html",
     "public/registry/scorpio/index.html",
     "public/registry/taurus/index.html",
-    "public/registry/virgo/index.html"
+    "public/registry/virgo/index.html",
+    "scripts/build-sign-pages.mjs"
   ]
 }
