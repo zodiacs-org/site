@@ -5,7 +5,7 @@ import { personalDay } from '../../ai-tools/personal/personal-day';
 import { forbiddenClaim, type PersonalToolContext } from '../../ai-tools/personal/shared';
 import { computeYourDay } from '../../islands/your-day/compute';
 import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
-import { MINOR_LEFT_OUT_HOUSES, UNTIMED_LIMIT, minorLeftOut, shareContact } from './day';
+import { MINOR_LEFT_OUT_HOUSES, UNTIMED_LIMIT, minorLeftOut } from './day';
 import { NATAL_HOUSE_THEME } from '../natal';
 import { softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { transitLine } from '../transits';
@@ -78,6 +78,20 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
     expect(adult.under18).toBe(false);
   }, 60_000);
 
+  it('keep someone born on 1 March under 18 on 29 February of the year they turn 18', async () => {
+    const leapDay = new Date('2028-02-29T12:00:00Z');
+    const born = { birthDate: '2010-03-01', time: '08:30', zone: 'UTC', latitude: 40.42, longitude: -3.7 };
+    const tool = (await personalDay({ ...born, currentZone: 'UTC' }, { ...context, now: leapDay })).data;
+    const page = await computeYourDay({ birthDate: born.birthDate, time: born.time, birthZone: born.zone, latitude: born.latitude, longitude: born.longitude, date: '2028-02-29', zone: 'UTC', today: '2028-02-29' });
+    for (const reading of [tool, page]) {
+      expect(reading.under18).toBe(true);
+      expect(reading.limits).toContain(MINOR_NOTE);
+    }
+    // The next day, 1 March, they are 18.
+    const birthday = await computeYourDay({ birthDate: born.birthDate, time: born.time, birthZone: born.zone, latitude: born.latitude, longitude: born.longitude, date: '2028-03-01', zone: 'UTC', today: '2028-03-01' });
+    expect(birthday.under18).toBe(false);
+  });
+
   it('leave out every contact and house line a minor could see that the check catches', () => {
     let kept = 0;
     for (const mover of TRANSIT_BODY_ORDER) for (const point of [...TRANSIT_BODY_ORDER, 'ASC', 'MC'] as const) for (const aspect of MAJOR_ASPECT_ORDER) {
@@ -144,21 +158,6 @@ describe('the your-day share link', () => {
     expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-11-09', sun: 'ophiuchus' })).toBeNull();
     expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-11-09', sun: null })).toBeNull();
     expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-05-03', sun: 'taurus' })).toBe('https://zodiacs.org/share/your-day/?day=2026-05-03&s=taurus');
-  });
-});
-
-describe('shareContact', () => {
-  it('prioritizes eligible contacts today, then in the background, in score order', () => {
-    const sunSun = { planet: 'Sun', point: 'Sun', group: 'today' } as const;
-    const marsSun = { planet: 'Mars', point: 'Sun', group: 'today' } as const;
-    const sunMoon = { planet: 'Sun', point: 'Moon', group: 'today' } as const;
-    const pluto = { planet: 'Pluto', point: 'Sun', group: 'background' } as const;
-    const saturn = { planet: 'Saturn', point: 'Moon', group: 'background' } as const;
-    expect(shareContact([pluto, sunSun, marsSun, sunMoon])).toBe(marsSun);
-    expect(shareContact([sunMoon, marsSun])).toBe(sunMoon);
-    expect(shareContact([sunSun, pluto, saturn])).toBe(pluto);
-    expect(shareContact([sunSun])).toBeNull();
-    expect(shareContact([])).toBeNull();
   });
 });
 

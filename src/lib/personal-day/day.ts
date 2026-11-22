@@ -31,13 +31,15 @@ import { NATAL_HOUSE_THEME } from '../natal';
 import { SIGNS, signIndexForLongitude } from '../signs';
 import type { ShareSign } from '../share-results';
 import { transitLine } from '../transits';
-import { MINOR_NOTE, isUnder18, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
+import { MINOR_NOTE, isUnderAge, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
 import { clockTime, dayLabel, nextDate } from './clock';
 import { BACKGROUND_LIMIT, PERSONAL_DAY_LIMIT, dayScore, maxOrb, orbOf, pointName } from './score';
 
 const slowMovers = new Set<TransitBody>(SLOW_TRANSIT_BODIES);
 const HOUR = 3_600_000;
+/** The widest civil offset any clock has kept since 1800, rounded out to whole hours (src/ai-tools/personal/shared.ts). */
+const WIDEST_OFFSET_HOURS = 16;
 /** The limit a date-only reading carries; the /your-day/ FAQ says the same. */
 export const UNTIMED_LIMIT = 'No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.';
 const ORDINAL = ['', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth'] as const;
@@ -100,12 +102,6 @@ export interface PersonalDayReading {
 
 export { clockTime, dateOn, dayLabel, nextDate } from './clock';
 
-/** Share the first eligible contact from today, falling back to the background.
- * The Sun on the natal Sun could reveal the birthday in any aspect. */
-export function shareContact<T extends Pick<DayContact, 'group' | 'planet' | 'point'>>(contacts: readonly T[]): T | null {
-  const eligible = contacts.filter(({ planet, point }) => planet !== 'Sun' || point !== 'Sun');
-  return eligible.find(({ group }) => group === 'today') ?? eligible[0] ?? null;
-}
 const round2 = (value: number) => Math.round(value * 100) / 100;
 const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.name;
 
@@ -179,7 +175,8 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   // For someone under 18 the contacts whose line reads as love, appetite, longing or heat are left out (minorLeftOut),
   // and so is the Moon's line in the fifth house ("pleasure").
   // softenMinor, shared with published tools whose output is frozen, does not reach them. MINOR_NOTE says so.
-  const under18 = isUnder18(input.birthDate, input.today ?? date);
+  // isUnderAge keeps 29 February as the cutoff, so someone born on 1 March is still under 18 on that day.
+  const under18 = isUnderAge(input.birthDate, input.today ?? date, 18);
   const guard = (text: string) => softenHealth(under18 ? softenMinor(text) : text);
   const found: Omit<DayContact, 'rank'>[] = [];
   for (const mover of TRANSIT_BODY_ORDER) {
@@ -284,8 +281,10 @@ export async function settledSunSign(
     start = clock.resolveLocalToUtc(birth.birthDate, '00:00', birth.zone, options).utc;
     end = clock.resolveLocalToUtc(birth.birthDate, '23:59', birth.zone, options).utc;
   } else {
-    start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - 14 * HOUR);
-    end = new Date(Date.parse(`${birth.birthDate}T23:59:00Z`) + 12 * HOUR);
+    // Every clock's version of the date since 1800: tzdb's history runs from UTC-15:56 (Asia/Manila before 1845)
+    // to UTC+15:13 (America/Metlakatla before 1867), so 00:00 at UTC+16 to 23:59 at UTC-16.
+    start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR);
+    end = new Date(Date.parse(`${birth.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR);
   }
   const startIndex = signIndexForLongitude(bodyLongitude('Sun', start));
   const endIndex = signIndexForLongitude(bodyLongitude('Sun', end));

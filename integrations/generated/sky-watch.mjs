@@ -42892,6 +42892,7 @@ var pointName2 = (point2) => POINT_NAME2[point2] ?? point2;
 // src/lib/personal-day/day.ts
 var slowMovers = new Set(SLOW_TRANSIT_BODIES);
 var HOUR6 = 36e5;
+var WIDEST_OFFSET_HOURS = 16;
 var UNTIMED_LIMIT = "No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.";
 var ORDINAL7 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
 var round2 = (value) => Math.round(value * 100) / 100;
@@ -42925,7 +42926,7 @@ async function readPersonalDay(natal, input, clock2) {
     const held = exact.get(key2);
     if (!held || Math.abs(at.getTime() - midday.getTime()) < Math.abs(held.getTime() - midday.getTime())) exact.set(key2, at);
   }
-  const under18 = isUnder18(input.birthDate, input.today ?? date3);
+  const under18 = isUnderAge(input.birthDate, input.today ?? date3, 18);
   const guard = (text2) => softenHealth(under18 ? softenMinor(text2) : text2);
   const found = [];
   for (const mover of TRANSIT_BODY_ORDER) {
@@ -43012,8 +43013,8 @@ async function settledSunSign2(natal, birth, clock2) {
     start = clock2.resolveLocalToUtc(birth.birthDate, "00:00", birth.zone, options).utc;
     end = clock2.resolveLocalToUtc(birth.birthDate, "23:59", birth.zone, options).utc;
   } else {
-    start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - 14 * HOUR6);
-    end = new Date(Date.parse(`${birth.birthDate}T23:59:00Z`) + 12 * HOUR6);
+    start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6);
+    end = new Date(Date.parse(`${birth.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR6);
   }
   const startIndex = signIndexForLongitude2(bodyLongitude2("Sun", start));
   const endIndex = signIndexForLongitude2(bodyLongitude2("Sun", end));
@@ -43102,6 +43103,9 @@ async function castNatal(args, clock2) {
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
 }
+async function withCheckedZone(args, context) {
+  return args.zone ? { ...args, zone: await context.resolveZone(args.zone, "/zone") } : args;
+}
 async function currentClock(currentZone, birthZone, context) {
   if (currentZone) return { zone: await context.resolveZone(currentZone, "/currentZone"), note: null };
   if (context.hostZone) {
@@ -43179,7 +43183,8 @@ var personalDayData = z16.object({
   /** The share card for the day's reading: the day and the person's settled Sun sign. Never a birth detail. Null when the Sun sign is unsettled on an untimed cusp day. */
   shareUrl: z16.url().nullable()
 });
-async function personalDay(args, context) {
+async function personalDay(given, context) {
+  const args = await withCheckedZone(given, context);
   const natal = await castNatal(args, context.localTime);
   const { zone: zone10, note } = await currentClock(args.currentZone, args.zone, context);
   const today2 = dateOn2(context.now, zone10);

@@ -159,16 +159,34 @@ export async function castNatal(args: BirthArgs, clock: PersonalToolContext['loc
 }
 
 /**
+ * The widest civil offsets any clock has kept since 1800, rounded out to whole
+ * hours: tzdb's history with backzone runs from UTC−15:56:08 (Asia/Manila,
+ * which kept the American date until the end of 1844) to UTC+15:13:42
+ * (America/Metlakatla, on the Asian date until 1867). Today's clocks stay
+ * within UTC−12 to UTC+14, but a birth date from 1800 on can be on any of them.
+ */
+export const WIDEST_OFFSET_HOURS = 16;
+
+/**
  * The two ends of an untimed birth day: the local day with a zone, else every
- * zone's version of that date (UTC−12 to UTC+14). A placement holds for an
- * untimed birth only when it is the same at both ends.
+ * clock's version of that date, from 00:00 at UTC+16 to 23:59 at UTC−16. A
+ * placement holds for an untimed birth only when it is the same at both ends.
  */
 export async function birthDayEnds(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<[Date, Date]> {
-  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR)];
+  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR)];
   await clock.prepareLocalTime(args.birthDate, args.zone);
   const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
   const local = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone!, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone!)).utc;
   return [local('00:00'), local('23:59')];
+}
+
+/**
+ * The birth arguments with the zone checked and spelled as tzdb spells it,
+ * through the context's resolver, before any clock sees it. An unknown zone is
+ * refused with the field named and the value never repeated back.
+ */
+export async function withCheckedZone<A extends BirthArgs>(args: A, context: Pick<PersonalToolContext, 'resolveZone'>): Promise<A> {
+  return args.zone ? { ...args, zone: await context.resolveZone(args.zone, '/zone') } : args;
 }
 
 /**

@@ -242,6 +242,17 @@ describe('get_personal_day with fewer details', () => {
     await expect(run({ birthDate: '2026-06-01', date: '2026-05-01' })).rejects.toThrow(/before the birth date/u);
     expect((await run({ ...ADULT, date: '2027-11-09' })).date).toBe('2027-11-09');
   });
+
+  it('shares no Sun sign without a zone when a historical clock puts the birth date across a sign change', async () => {
+    // 1835-07-22: the Sun entered Leo late in the day on Manila's clock, then UTC-15:56 (the American date until 1845).
+    const sunOf = (data: PersonalDayData) => new URL(data.shareUrl!).searchParams.get('s');
+    const early = await run({ birthDate: '1835-07-22', time: '00:00', zone: 'Asia/Manila' });
+    const late = await run({ birthDate: '1835-07-22', time: '23:59', zone: 'Asia/Manila' });
+    expect([sunOf(early), sunOf(late)]).toEqual(['cancer', 'leo']);
+    expect((await run({ birthDate: '1835-07-22' })).shareUrl).toBeNull();
+    // A date every clock keeps in one sign still shares it.
+    expect(new URL((await run({ birthDate: '1835-07-10' })).shareUrl!).searchParams.get('s')).toBe('cancer');
+  });
 });
 
 describe('get_personal_day for someone under 18', () => {
@@ -287,6 +298,17 @@ describe('get_personal_day privacy and refusals', () => {
     for (const url of urls) expect(url).not.toMatch(/1990|05-03|08:30|40\.42|3\.7|Madrid|[?&#](?:d|date|birth|t|time|lat|lon|tz|place|city)=/u);
     expect(forbiddenClaim(text)).toBeNull();
     expect(text).not.toMatch(/[\u2013\u2014]|crypto|token|blockchain|market|invest|stock/iu);
+  });
+
+  it('checks the zone before any clock reads it, refusing an unknown one without repeating it and taking a known one in any letter case', async () => {
+    for (const zone of ['Mars/Olympus_Mons', 'mars/olympus_mons']) {
+      const refused = await executeAiTool('get_personal_day', { ...ADULT, zone }, ON);
+      expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+      expect(JSON.stringify(refused)).not.toMatch(/mars|olympus/iu);
+    }
+    const lower = await executeAiTool('get_personal_day', { ...ADULT, zone: 'europe/madrid' }, ON);
+    expect(lower.ok).toBe(true);
+    expect(lower).toEqual(await executeAiTool('get_personal_day', ADULT, ON));
   });
 
   it('refuses a time without a zone with the field rule', async () => {

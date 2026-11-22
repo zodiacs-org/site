@@ -10,7 +10,6 @@ import type { ShareSign } from '../../lib/share-results';
 import { prepareLocalTime, resolveLocalToUtc } from '../../lib/time/localToUtc';
 
 export { prepareLocalTime };
-export { shareContact } from '../../lib/personal-day/day';
 
 export interface YourDayInput {
   birthDate: string;

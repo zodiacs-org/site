@@ -3,7 +3,7 @@
  * rating, a birthday, the sky calendar's next event, a horoscope (a day, a
  * week, a month or a year), chart twins, a famous chart, a life milestone,
  * the big three, the Chinese zodiac, an invitation to compare charts and a
- * personal day's shared contact (src/lib/personal-day/share.ts). Each has
+ * personal day's date and Sun sign (src/lib/personal-day/share.ts). Each has
  * a page with the result's picture and a way to try it, the 1200×630
  * preview image link previews show, and a 1080×1920 picture to post as a story. They read only the link's checked query
  * string (src/lib/share-results.ts, src/ai-tools/share-links.ts) and the
@@ -810,9 +810,8 @@ export function bigThreeCard(model: BigThreeCardModel, images: Map<ShareSign, st
 }
 
 /**
- * The personal day (the contact as a title): the art of the sign the moving planet rules, the day in its hue, the
- * contact, the site's transit sentence and its reading confidence. It names no sign of the person's, so it has no
- * disc and the brand's own ring.
+ * The personal day: the art of the person's Sun sign, the day in its hue, the Sun sign as the title and a plain line.
+ * It carries no contact, Moon or rising sign, natal point or birth detail, no disc, and keeps the brand's own ring.
  */
 export function yourDayCard(model: YourDayCardModel, art: string[]) {
   return frame(art, words({ discs: [], kicker: model.kicker, hue: model.hue, title: [titleBlock(model.title)], line: model.line, confidence: model.confidence }));
@@ -1393,7 +1392,7 @@ export function inviteStory(model: InviteCardModel, images: Map<ShareSign, strin
   ]), model.front, STORY_PAIR_FADE);
 }
 
-/** The personal day (C, the keepsake): the art of the planet's sign, the day, the contact, the sentence and its confidence. */
+/** The personal day (C, the keepsake): the art of the person's Sun sign, the day, the Sun sign and a plain line. */
 export function yourDayStory(model: YourDayCardModel, art: string[]) {
   return storyFrame(art, storyColumn([
     storyKicker(model.kicker, model.hue),

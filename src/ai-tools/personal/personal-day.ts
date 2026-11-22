@@ -16,7 +16,7 @@ import { PERSONAL_DAY_LIMIT } from '../../lib/personal-day/score';
 import { YOUR_DAY_PAGE_PATH, yourDayShareUrl } from '../../lib/personal-day/share';
 import { SIGNS } from '../../lib/signs';
 import { parseCivilDate } from '../../lib/time/civil-date';
-import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
+import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, withCheckedZone, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
 
 export {
   ASPECT_WEIGHT, DAY_ORB, EXACT_BONUS, MOVER_WEIGHT, PERSONAL_DAY_LIMIT, POINT_WEIGHT, SEXTILE_ORB_SHARE, dayScore, maxOrb,
@@ -93,7 +93,9 @@ export const personalDayData = z.object({
 export type PersonalDayData = z.infer<typeof personalDayData>;
 
 /** One day's transits to one birth chart. Throws RangeError for details it cannot use. */
-export async function personalDay(args: BirthArgs & { currentZone?: string | undefined; date?: string | undefined }, context: PersonalToolContext): Promise<{ data: PersonalDayData; links: { title: string; url: string }[] }> {
+export async function personalDay(given: BirthArgs & { currentZone?: string | undefined; date?: string | undefined }, context: PersonalToolContext): Promise<{ data: PersonalDayData; links: { title: string; url: string }[] }> {
+  // The birthplace zone is checked before any clock reads it; currentClock checks currentZone the same way.
+  const args = await withCheckedZone(given, context);
   const natal = await castNatal(args, context.localTime);
   const { zone, note } = await currentClock(args.currentZone, args.zone, context);
   const today = dateOn(context.now, zone);
