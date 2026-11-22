@@ -1,0 +1,9 @@
+{
+  "engineVersion": "1.1.0",
+  "artifactSHA256": "4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac",
+  "node": "v24.19.0",
+  "scope": "Public position and longitude crossing entries, checked with the January Neptune reference.",
+  "ephemeris": "de440",
+  "packSHA256": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7",
+  "neptuneAries": "2026-01-26T17:34:38.263Z"
+}

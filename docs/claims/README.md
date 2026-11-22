@@ -29,6 +29,7 @@ record is one line, so a diff reads as a list of changed claims.
 | `overstated` | true in part, or truer than the evidence shows | with a resolution, and counted against `maxOpenOverstated` |
 | `false` | untrue as worded | only where every sentence sits on a protected path |
 | `stale` | a translation the English has moved past | only on protected translated pages |
+| `historical` | a measurement on an earlier engine or a retired reference | only in the engine validation record, with the evidence and correction recorded |
 
 A resolution names what closes the claim: an engine brief step (`step: '1.11'`),
 an owner decision (`owner: '10.4'`), or an allowance to change protected pages
@@ -93,7 +94,7 @@ sentences must be listed, so the ledger records the version it was built on.
 | R2 | a listed sentence is no longer in its file, or no longer selected |
 | R3 | a claim has no evidence, or an item does not resolve |
 | R4 | a binding's text is no longer in its file |
-| R5 | a false or stale claim reaches an unprotected page, an open claim has no resolution, or the overstated count differs from the ratchet |
+| R5 | a false or stale claim reaches an unprotected page, a historical claim leaves the validation record, a claim requiring resolution lacks one, or the overstated count differs from the ratchet |
 | R6 | a translated sentence makes a claim no English copy makes, or a stale claim sits on an English page |
 | R7 | the engine's receipt conventions or coverage differ from `machine` |
 | R8 | an exemption has an unlisted reason, or a third-party one has no source |

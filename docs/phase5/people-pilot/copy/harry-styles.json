@@ -1,0 +1,112 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "harry-styles",
+  "seedRound": 0,
+  "qid": "Q3626966",
+  "displayName": "Harry Styles",
+  "identity": "Singer-songwriter · United Kingdom · born 1994",
+  "title": "Harry Styles's birth chart",
+  "metaDescription": "Harry Styles's chart, computed from a sourced birth date: Sun at 12.4° Aquarius. Birth time unknown, so no houses or rising sign.",
+  "lede": "Mercury and Saturn sit 0.3° from an exact conjunction, near enough that the tradition reads thinking and structure as a single working part. When two functions occupy one degree, the tradition reads a fusion: neither can act without committing the other.",
+  "ledeFact": "aspect:Mercury:Saturn:conjunction",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:12.40",
+        "decan:aquarius:second"
+      ],
+      "text": "Aquarius, but precisely: 12.4°, second decan, 10° to 20°, under Mercury in the triplicity scheme. The tradition kept these divisions because thirty degrees is a long street."
+    },
+    {
+      "key": "personal",
+      "title": "The fast planets",
+      "facts": [
+        "personal:Venus:Aquarius:16.1°",
+        "personal:Mars:Aquarius:3.4°"
+      ],
+      "text": "Venus holds 16.1° Aquarius, Mars holds 3.4° Aquarius, in the old shorthand, taste led by wit and proportion; drive that argues its way forward."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Mercury:Saturn:conjunction:0.32",
+        "aspect:Sun:Jupiter:square:1.13",
+        "aspect:Uranus:Neptune:conjunction:1.78"
+      ],
+      "text": "The day's firmest angle joins Mercury and Saturn, a conjunction holding at 0.3°. A conjunction concentrates rather than balances. The pair burns one fuel line. Behind it, the Sun square Jupiter at 1.1°, and Uranus conjunction Neptune at 1.8°, both still well inside the orbs this site uses. These are the day-proof angles: present at midnight, present at noon, present at the next midnight."
+    },
+    {
+      "key": "figures",
+      "title": "The standing structure",
+      "facts": [
+        "figure:unaspected:Moon"
+      ],
+      "text": "The Moon stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:Sun:detriment"
+      ],
+      "text": "The classical table has one entry for this chart. The Sun in Aquarius at 12.4° is in detriment (the planet opposite its home, working against the grain). The old table grades terrain, not talent: a placement in fall works uphill, nothing more."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:air4-water3-earth2",
+        "modalities:fixed5-cardinal3-mutable1",
+        "settled-signs:9",
+        "retrograde:0",
+        "sign-uncertain:Mercury:aquarius:pisces"
+      ],
+      "text": "The certain ground: 9 placements whose signs hold for the whole day, dividing 4 air, 3 water, 2 earth by element and 5 fixed, 3 cardinal, 1 mutable by mode. An air-weighted chart thinks in through-lines; the sentence is how it takes hold of the world. Mercury crossed from Aquarius into Pisces during that day, so its sign is left open. No settled placement falls in fire, an absence the tradition treats as information, not as a defect. Every body was moving forward that day, with no apparent reversals anywhere in the chart."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon, and how far it can move",
+      "facts": [
+        "moon-sign:libra",
+        "moon-band:14.3"
+      ],
+      "uncertain": false,
+      "text": "The Moon stayed in Libra for the whole of that day at the birthplace, covering 14.3° between midnight and midnight. Fast enough that its degree is approximate, slow enough that its sign is not in doubt. At the noon reference it stands at 18.2°."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/february-1/",
+    "label": "Everyone born on February 1"
+  },
+  "signLink": {
+    "href": "/aquarius/",
+    "label": "The Aquarius guide"
+  },
+  "substantiveFacts": [
+    "aspect:Mercury:Saturn:conjunction",
+    "sun-degree:12.40",
+    "decan:aquarius:second",
+    "personal:Venus:Aquarius:16.1°",
+    "personal:Mars:Aquarius:3.4°",
+    "aspect:Mercury:Saturn:conjunction:0.32",
+    "aspect:Sun:Jupiter:square:1.13",
+    "aspect:Uranus:Neptune:conjunction:1.78",
+    "figure:unaspected:Moon",
+    "dignity:Sun:detriment",
+    "elements:air4-water3-earth2",
+    "modalities:fixed5-cardinal3-mutable1",
+    "settled-signs:9",
+    "retrograde:0",
+    "sign-uncertain:Mercury:aquarius:pisces",
+    "moon-sign:libra",
+    "moon-band:14.3"
+  ],
+  "measurements": {
+    "originalWords": 368,
+    "substantiveStatements": 17,
+    "blocks": 7
+  }
+}

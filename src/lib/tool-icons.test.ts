@@ -11,10 +11,10 @@ function routeExists(path: string): boolean {
 }
 
 describe('tool icon set', () => {
-  it('has thirty-three distinct drawings, each on one of the twelve sign hues', () => {
-    expect(TOOL_ICON_NAMES).toHaveLength(33);
+  it('has thirty-four distinct drawings, each on one of the twelve sign hues', () => {
+    expect(TOOL_ICON_NAMES).toHaveLength(34);
     const bodies = new Set(TOOL_ICON_NAMES.map((name) => TOOL_ICONS[name].body));
-    expect(bodies.size).toBe(33);
+    expect(bodies.size).toBe(34);
     for (const name of TOOL_ICON_NAMES) expect(SIGN_HUES).toContain(TOOL_ICONS[name].hue);
   });
 

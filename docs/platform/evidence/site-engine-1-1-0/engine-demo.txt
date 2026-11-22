@@ -1,0 +1,13 @@
+Sun         24.19° gemini
+Moon        16.19° pisces
+Mercury      5.80° gemini
+Venus       18.85° taurus
+Mars        11.09° aries
+Jupiter     15.90° cancer
+Saturn      24.03° capricorn retrograde
+Uranus       8.16° capricorn retrograde
+Neptune     13.72° capricorn retrograde
+Pluto       15.40° scorpio retrograde
+North Node   8.12° aquarius
+South Node   8.12° leo
+ascendant  191.24°   engine 1.1.0

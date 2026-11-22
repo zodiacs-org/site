@@ -10,6 +10,7 @@ import { solarReturnInstant } from '../src/lib/engine/solar-return.ts';
 import { offsetAt, prepareLocalTime, resolveLocalToUtc } from '../src/lib/time/localToUtc.ts';
 import { computeLunarReturn } from '../src/islands/lunar-return/compute.ts';
 import { computeSolarReturn } from '../src/islands/solar-return/compute.ts';
+import { withBrowserEphemeris } from '../tests/helpers/browser-ephemeris.ts';
 
 /*
  * Sentences that state a measured accuracy, held to the measurement behind
@@ -17,54 +18,60 @@ import { computeSolarReturn } from '../src/islands/solar-return/compute.ts';
  * the figure it states still covers what was measured.
  */
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-const evidence = JSON.parse(read('docs/platform/evidence/site-engine-rc16/station-alignment/events-vs-swiss.json'));
+const measured = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0/claims-horizons/results.json'));
+const historicalEclipses = JSON.parse(read('docs/platform/evidence/site-engine-rc16/station-alignment/events-vs-swiss.json')).summary.eclipse;
+const maximum = (rows) => Math.max(...rows.map(({ differenceSeconds }) => Math.abs(differenceSeconds)));
+const events = (family) => measured.events.filter((row) => row.family === family);
 const MINUTE = 60;
 const HOUR = 3600;
 
-// deltas.json keeps each event's id and published instant and the summary
-// statistics the copy is held to; the differences from Swiss stay out of the
-// repository (DECISIONS-2026-09-28 §3). Measured on the rc.16 source-aligned product catalog.
-describe('event times against Swiss Ephemeris', () => {
-  it('were measured on the catalog the site publishes now', () => {
-    const published = eventsCatalog().events
-      .map(({ facts }) => facts)
-      .filter((facts) => facts.family !== 'retrograde' && facts.at)
-      // The engine catalog's own instants: a page that prints NASA's keeps it in `committed`.
+describe('event times against NASA JPL Horizons', () => {
+  it('binds the measured events to the current catalog and to the reference instants', () => {
+    const published = eventsCatalog().events.map(({ facts }) => facts)
+      .filter((facts) => !['retrograde', 'eclipse'].includes(facts.family) && facts.at)
       .map((facts) => `${facts.id} ${facts.committed?.anchor ?? facts.at}`)
       .sort();
-    const measured = evidence.deltas.map((row) => `${row.id} ${row.published}`).sort();
-    // A regenerated catalog needs docs/platform/evidence/events-vs-swiss-*/tools run again.
-    expect(published).toEqual(measured);
+    const compared = measured.events.map(({ id, at }) => `${id} ${at}`).sort();
+    expect(published).toEqual(compared);
+    for (const { at, horizonsAt, differenceSeconds } of measured.events) {
+      expect(Math.abs((Date.parse(at) - Date.parse(horizonsAt)) / 1000 - differenceSeconds)).toBeLessThan(0.001);
+    }
   });
 
-  it('keep moons and eclipses within a minute, as the events hub and full-moon calendar say', () => {
-    expect(evidence.summary.lunation.maxAbsSeconds).toBeLessThan(MINUTE);
-    expect(evidence.summary.eclipse.maxAbsSeconds).toBeLessThan(MINUTE);
+  it('keeps the lunation limit and the existing eclipse evidence binding', () => {
+    expect(maximum(events('lunation'))).toBeLessThan(MINUTE);
+    expect(historicalEclipses.maxAbsSeconds).toBeLessThan(MINUTE);
     expect(read('src/pages/full-moon-calendar/index.astro')).toContain('to within a minute, in universal time');
-    // The Swiss comparison above covers 2026 and 2027; the November 2026 NASA audit
-    // (docs/accuracy-audit-2026-11/) times every lunation the table holds, to 2030.
     expect(read('src/pages/full-moon-calendar/index.astro')).toContain('timed to within a minute through the end of {lastYear}');
     expect(read('src/pages/full-moon-calendar/index.astro')).toContain('const lastYear = new Date(Date.parse(sky.to) - 1).getUTCFullYear();');
     expect(read('src/pages/events/index.astro')).toContain('and eclipses are timed to within a minute');
   });
 
-  it('keep the original station ceiling and bind the tighter seven-minute measured claim', () => {
-    expect(evidence.summary.station.maxAbsSeconds).toBeLessThan(45 * MINUTE);
-    // Original ceiling retained; this additional bound checks the new measured copy.
-    expect(evidence.summary.station.maxAbsSeconds).toBeLessThan(7 * MINUTE);
-    const byPlanet = evidence.summary.stationMaxAbsSecondsByPlanet;
-    for (const planet of ['Mercury', 'Venus', 'Mars']) expect(byPlanet[planet]).toBeLessThan(10 * MINUTE);
+  it('keeps the original station ceiling and the seven-minute claim', () => {
+    const stations = events('station');
+    expect(maximum(stations)).toBeLessThan(45 * MINUTE);
+    expect(maximum(stations)).toBeLessThan(7 * MINUTE);
+    for (const planet of ['Mercury', 'Venus', 'Mars']) {
+      const rows = stations.filter(({ bodies }) => bodies.includes(planet));
+      expect(rows.length).toBeGreaterThan(0);
+      expect(maximum(rows)).toBeLessThan(10 * MINUTE);
+    }
     expect(read('src/components/events/EventFactsBand.astro'))
       .toContain('so these station times can be off by a few minutes.');
     expect(read('src/pages/mercury-retrograde/index.astro')).toContain('compute to within a few minutes');
   });
 
-  it('keep slow sign changes and alignments within half an hour, or several hours with Uranus, Neptune or Pluto', () => {
-    const slow = evidence.summary.slowEventMaxAbsSeconds;
-    expect(slow['ingress of Jupiter and Saturn only']).toBeLessThan(35 * MINUTE);
-    expect(slow['aspect of Jupiter and Saturn only']).toBeLessThan(35 * MINUTE);
-    expect(slow['ingress with Uranus, Neptune or Pluto']).toBeLessThan(8 * HOUR);
-    expect(slow['aspect with Uranus, Neptune or Pluto']).toBeLessThan(8 * HOUR);
+  it('keeps the slow ingress and alignment ceilings', () => {
+    for (const family of ['ingress', 'aspect']) {
+      const rows = events(family);
+      const outer = (row) => row.bodies.some((body) => ['Uranus', 'Neptune', 'Pluto'].includes(body));
+      const jupiterAndSaturn = rows.filter((row) => !outer(row));
+      const outerPlanets = rows.filter(outer);
+      expect(jupiterAndSaturn.length).toBeGreaterThan(0);
+      expect(outerPlanets.length).toBeGreaterThan(0);
+      expect(maximum(jupiterAndSaturn)).toBeLessThan(35 * MINUTE);
+      expect(maximum(outerPlanets)).toBeLessThan(8 * HOUR);
+    }
     const band = read('src/components/events/EventFactsBand.astro');
     expect(band).toContain('this time can be off by up to about half an hour.');
     expect(band).toContain('so slowly that this time can be off by several hours.');
@@ -87,7 +94,7 @@ describe('event times against Swiss Ephemeris', () => {
 });
 
 describe('images of one birth shared together', () => {
-  it('narrow the birthplace about five times with one solar return image, as the privacy page says', async () => {
+  it('narrow the birthplace about five times with one solar return image, as the privacy page says', () => withBrowserEphemeris(async () => {
     // A link carries the ascendant and midheaven to the whole degree at the
     // birth minute. A solar or lunar return image cast at the birthplace, as
     // they are by default, draws its own to the whole degree, at an instant
@@ -160,7 +167,7 @@ describe('images of one birth shared together', () => {
     expect(page).toContain('For a birth in Lyon in 1987, a link alone leaves an area of about 19,100 km²;');
     expect(page).toContain('leave about 3,900 km², about five times smaller;');
     expect(page).toContain('a link with two solar return images and four lunar return images leaves about 1,500 km².');
-  }, 120_000);
+  }), 120_000);
 });
 
 describe('the solar return with an unknown birth time', () => {
@@ -187,7 +194,7 @@ describe('the solar return with an unknown birth time', () => {
 });
 
 describe('the NASA JPL Horizons figure', () => {
-  it('is the largest residual of the reference values the engine test uses', () => {
+  it('is the largest residual of the reference values the browser engine test uses', () => withBrowserEphemeris(() => {
     const reference = JSON.parse(read('src/lib/engine/fixtures/horizons-reference.json'));
     const wrap = (d) => ((d + 540) % 360) - 180;
     let largest = { arcseconds: 0, where: '' };
@@ -204,7 +211,7 @@ describe('the NASA JPL Horizons figure', () => {
       expect(read(path), path).toContain('the largest difference is 14.8 arcseconds');
     }
     expect(read('src/pages/developers/index.astro').replace(/\s+/g, ' ')).toContain('the largest difference is 14.8 arcseconds');
-  });
+  }));
 });
 
 describe('how event times are checked, on the methodology page', () => {
@@ -330,7 +337,7 @@ describe('the famous-people pages', () => {
           || at(date, '00:00') !== computation.civilDayStartUtc
           || at(next, '00:00') !== computation.civilDayEndUtc) differ.push(slug);
     }
-    expect(people).toHaveLength(501);
+    expect(people).toHaveLength(516);
     expect(differ).toEqual([]);
     const page = read('src/pages/methodology/index.astro').replace(/\s+/g, ' ');
     expect(page).not.toContain('famous-people pages are the exception');
@@ -338,26 +345,35 @@ describe('the famous-people pages', () => {
 });
 
 describe('the Moon ingresses on the void-of-course calendar', () => {
-  it('are within about 5 seconds of Swiss Ephemeris, measured on the table the site publishes', () => {
-    const measured = JSON.parse(read('docs/platform/evidence/site-engine-1-0-0-rc2/moon-ingresses.json'));
+  it('binds the NASA JPL Horizons result to every published DE440 crossing', () => {
+    const comparison = measured.moonIngress;
     const bytes = readFileSync(new URL('../src/data/aura-moon-ingresses.json', import.meta.url));
-    // A regenerated table needs docs/platform/evidence/events-vs-swiss-2026-09-25/tools/moon-ingresses.py run again.
-    expect(measured.tableSha256).toBe(createHash('sha256').update(bytes).digest('hex'));
-    expect(measured.maxAbsSeconds).toBeLessThan(5);
-    expect(read('src/pages/void-of-course-moon/index.astro').replace(/\s+/g, ' '))
-      .toContain('falls within about 5 seconds of Swiss Ephemeris');
+    const table = JSON.parse(bytes);
+    expect(measured.reference).toBe('NASA JPL Horizons DE441');
+    expect(measured.ephemeris).toBe('de440');
+    expect(table.ingresses).toHaveLength(comparison.n);
+    expect(comparison.tableSha256).toBe(createHash('sha256').update(bytes).digest('hex'));
+    expect([comparison.fromUtc, comparison.toUtc]).toEqual([table.from, table.to]);
+    expect(comparison.rows.map(({ sign, at }) => ({ sign, at }))).toEqual(table.ingresses);
+    for (const { at, horizonsAt, differenceSeconds } of comparison.rows) {
+      expect(Math.abs((Date.parse(at) - Date.parse(horizonsAt)) / 1000 - differenceSeconds)).toBeLessThan(0.001);
+    }
+    const errors = comparison.rows.map(({ differenceSeconds }) => Math.abs(differenceSeconds)).sort((a, b) => a - b);
+    expect(errors.at(-1)).toBe(comparison.maxAbsSeconds);
+    expect(errors[Math.floor(errors.length / 2)]).toBe(comparison.medianAbsSeconds);
+    expect(comparison.maxAbsSeconds).toBeLessThan(5);
+    const ceiling = (Math.ceil(comparison.maxAbsSeconds * 100) / 100).toFixed(2);
+    const page = read('src/pages/void-of-course-moon/index.astro').replace(/\s+/g, ' ');
+    expect(page).toContain(`We checked all ${comparison.n} published Moon ingresses from 2026 through 2028 against live NASA JPL Horizons. The largest difference was ${ceiling} seconds at the end of a void.`);
+    expect(page).not.toContain('Swiss Ephemeris');
   });
 });
 
-describe('the Moon\'s disagreement with Swiss Ephemeris on the methodology page', () => {
-  it('states the in-span maximum as the ceiling, and the median beside it', () => {
-    // The per-row differences were removed on 2026-09-28 (DECISIONS-2026-09-28
-    // §3); these are their statistics, computed from the rows before then by
-    // the formula this test used on them (median of the middle two of 16).
-    const report = JSON.parse(read('docs/platform/evidence/swiss-benchmark/report-measure-rc8.json'));
-    const moon = report.statistics.withinRecord.moon;
+describe("the Moon's disagreement with Horizons on the methodology page", () => {
+  it('states the in-span maximum and median', () => {
+    const moon = measured.stratified.moon;
     expect(moon.n).toBe(16);
-    const page = read('src/pages/methodology/index.astro').replace(/\s+/g, ' ');
-    expect(page).toContain(`is at most ${moon.maxAbsArcsec.toFixed(1)} arcseconds over the span measured below, with a median of ${moon.medianAbsArcsec.toFixed(1)}`);
+    const page = read('src/pages/methodology/index.astro').replace(/\s+/g, ' ').replace(/<[^>]*>/g, '');
+    expect(page).toContain(`Among the ${moon.n} Moon measurements in that span the median was ${moon.p50.toFixed(2)} arcseconds and the largest was ${moon.max.toFixed(2)} arcseconds.`);
   });
 });

@@ -1,6 +1,6 @@
 {
   "recorded": "2026-10-06",
-  "how": "Current header sources and compute rewrites compiled with the official Vercel CLI 50.35.0 routing-utils getTransformedRoutes implementation used by vercel build, on Node 22.23.2. Historical Astro platformHeaders are retained from the unchanged September 29 build receipt via the October 3 routing receipt. The OpenAI domain challenge receives plain text and no-store only on its exact path; no compute route gains calendar caching.",
+  "how": "Current header sources and compute rewrites compiled with the official Vercel CLI 50.35.0 routing-utils getTransformedRoutes implementation used by vercel build, on Node 22.23.2. Historical Astro platformHeaders are retained from the unchanged September 29 build receipt via the October 3 routing receipt. The OpenAI domain challenge receives plain text and no-store only on its exact path; no compute route gains calendar caching. On 2026-11-18 the 45 header sources for the 15 owner-authorized protected living profiles were added in the same three shapes the official compiler produced for the 2026-08-16 protected profiles (exact page, asset prefix, share card).",
   "vercelConfigSha256": "8058f44ed6ccc4d684b4827780f2768abd8df5deca8e9118770c146b84330952",
   "platformHeaders": [
     {
@@ -20,6 +20,14 @@
     {
       "source": "/.well-known/openai-apps-challenge",
       "src": "^/\\.well-known/openai-apps-challenge$"
+    },
+    {
+      "source": "/feeds/events.json",
+      "src": "^/feeds/events\\.json$"
+    },
+    {
+      "source": "/feeds/events/:sign([a-z]+).json",
+      "src": "^/feeds/events(?:/([a-z]+))\\.json$"
     },
     {
       "source": "/sky-calendar.ics",
@@ -58,6 +66,66 @@
       "src": "^/people/leonardo-dicaprio/$"
     },
     {
+      "source": "/people/lisa/",
+      "src": "^/people/lisa/$"
+    },
+    {
+      "source": "/people/sabrina-carpenter/",
+      "src": "^/people/sabrina-carpenter/$"
+    },
+    {
+      "source": "/people/mrbeast/",
+      "src": "^/people/mrbeast/$"
+    },
+    {
+      "source": "/people/kendrick-lamar/",
+      "src": "^/people/kendrick-lamar/$"
+    },
+    {
+      "source": "/people/erling-haaland/",
+      "src": "^/people/erling-haaland/$"
+    },
+    {
+      "source": "/people/kylie-jenner/",
+      "src": "^/people/kylie-jenner/$"
+    },
+    {
+      "source": "/people/zendaya/",
+      "src": "^/people/zendaya/$"
+    },
+    {
+      "source": "/people/max-verstappen/",
+      "src": "^/people/max-verstappen/$"
+    },
+    {
+      "source": "/people/jenna-ortega/",
+      "src": "^/people/jenna-ortega/$"
+    },
+    {
+      "source": "/people/taylor-swift/",
+      "src": "^/people/taylor-swift/$"
+    },
+    {
+      "source": "/people/timothee-chalamet/",
+      "src": "^/people/timothee-chalamet/$"
+    },
+    {
+      "source": "/people/harry-styles/",
+      "src": "^/people/harry-styles/$"
+    },
+    {
+      "source": "/people/bad-bunny/",
+      "src": "^/people/bad-bunny/$"
+    },
+    {
+      "source": "/people/rihanna/",
+      "src": "^/people/rihanna/$"
+    },
+    {
+      "source": "/people/olivia-rodrigo/",
+      "src": "^/people/olivia-rodrigo/$"
+    },
+    {
       "source": "/assets/people/rigoberta-menchu(.*)",
       "src": "^/assets/people/rigoberta-menchu(.*)$"
     },
@@ -74,6 +142,66 @@
       "src": "^/assets/people/leonardo-dicaprio(.*)$"
     },
     {
+      "source": "/assets/people/lisa(.*)",
+      "src": "^/assets/people/lisa(.*)$"
+    },
+    {
+      "source": "/assets/people/sabrina-carpenter(.*)",
+      "src": "^/assets/people/sabrina-carpenter(.*)$"
+    },
+    {
+      "source": "/assets/people/mrbeast(.*)",
+      "src": "^/assets/people/mrbeast(.*)$"
+    },
+    {
+      "source": "/assets/people/kendrick-lamar(.*)",
+      "src": "^/assets/people/kendrick-lamar(.*)$"
+    },
+    {
+      "source": "/assets/people/erling-haaland(.*)",
+      "src": "^/assets/people/erling-haaland(.*)$"
+    },
+    {
+      "source": "/assets/people/kylie-jenner(.*)",
+      "src": "^/assets/people/kylie-jenner(.*)$"
+    },
+    {
+      "source": "/assets/people/zendaya(.*)",
+      "src": "^/assets/people/zendaya(.*)$"
+    },
+    {
+      "source": "/assets/people/max-verstappen(.*)",
+      "src": "^/assets/people/max-verstappen(.*)$"
+    },
+    {
+      "source": "/assets/people/jenna-ortega(.*)",
+      "src": "^/assets/people/jenna-ortega(.*)$"
+    },
+    {
+      "source": "/assets/people/taylor-swift(.*)",
+      "src": "^/assets/people/taylor-swift(.*)$"
+    },
+    {
+      "source": "/assets/people/timothee-chalamet(.*)",
+      "src": "^/assets/people/timothee-chalamet(.*)$"
+    },
+    {
+      "source": "/assets/people/harry-styles(.*)",
+      "src": "^/assets/people/harry-styles(.*)$"
+    },
+    {
+      "source": "/assets/people/bad-bunny(.*)",
+      "src": "^/assets/people/bad-bunny(.*)$"
+    },
+    {
+      "source": "/assets/people/rihanna(.*)",
+      "src": "^/assets/people/rihanna(.*)$"
+    },
+    {
+      "source": "/assets/people/olivia-rodrigo(.*)",
+      "src": "^/assets/people/olivia-rodrigo(.*)$"
+    },
+    {
       "source": "/assets/og/v2/people/rigoberta-menchu.png",
       "src": "^/assets/og/v2/people/rigoberta-menchu\\.png$"
     },
@@ -88,6 +216,66 @@
     {
       "source": "/assets/og/v2/people/leonardo-dicaprio.png",
       "src": "^/assets/og/v2/people/leonardo-dicaprio\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/lisa.png",
+      "src": "^/assets/og/v2/people/lisa\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/sabrina-carpenter.png",
+      "src": "^/assets/og/v2/people/sabrina-carpenter\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/mrbeast.png",
+      "src": "^/assets/og/v2/people/mrbeast\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/kendrick-lamar.png",
+      "src": "^/assets/og/v2/people/kendrick-lamar\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/erling-haaland.png",
+      "src": "^/assets/og/v2/people/erling-haaland\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/kylie-jenner.png",
+      "src": "^/assets/og/v2/people/kylie-jenner\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/zendaya.png",
+      "src": "^/assets/og/v2/people/zendaya\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/max-verstappen.png",
+      "src": "^/assets/og/v2/people/max-verstappen\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/jenna-ortega.png",
+      "src": "^/assets/og/v2/people/jenna-ortega\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/taylor-swift.png",
+      "src": "^/assets/og/v2/people/taylor-swift\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/timothee-chalamet.png",
+      "src": "^/assets/og/v2/people/timothee-chalamet\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/harry-styles.png",
+      "src": "^/assets/og/v2/people/harry-styles\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/bad-bunny.png",
+      "src": "^/assets/og/v2/people/bad-bunny\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/rihanna.png",
+      "src": "^/assets/og/v2/people/rihanna\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/olivia-rodrigo.png",
+      "src": "^/assets/og/v2/people/olivia-rodrigo\\.png$"
     },
     {
       "source": "/astrofolio/how-to-buy/(.*)",

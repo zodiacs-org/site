@@ -1,0 +1,300 @@
+{
+  "schema": "zodiacs.phase5.computed.v1",
+  "slug": "bad-bunny",
+  "qid": "Q44333953",
+  "displayName": "Bad Bunny",
+  "calendarModel": "proleptic-gregorian",
+  "storedDate": "1994-03-10",
+  "gregorianDate": "1994-03-10",
+  "displayedDate": "1994-03-10",
+  "birthdayCrossLinkKey": "1994-03-10",
+  "timeQuality": "unknown",
+  "computation": {
+    "convention": "noon civil time at the birthplace IANA zone, angles and houses omitted",
+    "timeZone": "America/Puerto_Rico",
+    "civilTime": "12:00",
+    "utcInstant": "1994-03-10T16:00:00.000Z",
+    "utcOffsetMinutesAtBirth": -240,
+    "civilDayStartUtc": "1994-03-10T04:00:00.000Z",
+    "civilDayEndUtc": "1994-03-11T04:00:00.000Z",
+    "latitude": 18.383333333333,
+    "longitude": -66.15,
+    "coordinateEscalationSteps": 0,
+    "coordinateSourceEntity": "Q739675",
+    "ephemeris": "astronomy-engine via GeoVector + Rotation_EQJ_ECT (server-ephemeris.ts convention)",
+    "aspectTable": "@zodiacs/engine/internal/math",
+    "anglesComputed": false,
+    "housesComputed": false,
+    "sectComputed": false
+  },
+  "sun": {
+    "sign": "pisces",
+    "signName": "Pisces",
+    "degree": 19.85
+  },
+  "moon": {
+    "sign": "pisces",
+    "signName": "Pisces",
+    "degree": 1.47,
+    "uncertain": true,
+    "signAtCivilDayStart": "aquarius",
+    "signAtCivilDayEnd": "pisces"
+  },
+  "cusp": {
+    "ambiguous": false,
+    "boundaryUtc": null,
+    "degreesInsideAtWindowStart": 19.3513,
+    "degreesToNextBoundaryAtWindowEnd": 9.6495
+  },
+  "unknownTimeErrorBandDegrees": {
+    "Sun": 0.999,
+    "Moon": 12.42,
+    "Mercury": 0.501,
+    "Venus": 1.244,
+    "Mars": 0.787,
+    "Jupiter": 0.032,
+    "Saturn": 0.119,
+    "Uranus": 0.04,
+    "Neptune": 0.024,
+    "Pluto": 0.005
+  },
+  "signUncertainTransitions": [
+    {
+      "body": "Moon",
+      "signAtCivilDayStart": "aquarius",
+      "signAtCivilDayEnd": "pisces"
+    }
+  ],
+  "placements": [
+    {
+      "body": "Sun",
+      "sign": "pisces",
+      "signName": "Pisces",
+      "degree": 19.85,
+      "retrograde": false,
+      "speedPerDay": 0.9992,
+      "dignity": null,
+      "stableAcrossDay": true,
+      "retrogradeStableAcrossDay": true
+    },
+    {
+      "body": "Moon",
+      "sign": "pisces",
+      "signName": "Pisces",
+      "degree": 1.47,
+      "retrograde": false,
+      "speedPerDay": 12.4165,
+      "dignity": null,
+      "stableAcrossDay": false,
+      "retrogradeStableAcrossDay": true
+    },
+    {
+      "body": "Mercury",
+      "sign": "aquarius",
+      "signName": "Aquarius",
+      "degree": 24.06,
+      "retrograde": false,
+      "speedPerDay": 0.5032,
+      "dignity": null,
+      "stableAcrossDay": true,
+      "retrogradeStableAcrossDay": true
+    },
+    {
+      "body": "Venus",
+      "sign": "aries",
+      "signName": "Aries",
+      "degree": 2.57,
+      "retrograde": false,
+      "speedPerDay": 1.2443,
+      "dignity": "detriment",
+      "stableAcrossDay": true,
+      "retrogradeStableAcrossDay": true
+    },
+    {
+      "body": "Mars",
+      "sign": "pisces",
+      "signName": "Pisces",
+      "degree": 2.52,
+      "retrograde": false,
+      "speedPerDay": 0.7866,
+      "dignity": null,
+      "stableAcrossDay": true,
+      "retrogradeStableAcrossDay": true
+    },
+    {
+      "body": "Jupiter",
+      "sign": "scorpio",
+      "signName": "Scorpio",
+      "degree": 14.5,
+      "retrograde": true,
+      "speedPerDay": -0.0317,
+      "dignity": null,
+      "stableAcrossDay": true,
+      "retrogradeStableAcrossDay": true
+    },
+    {
+      "body": "Saturn",
+      "sign": "pisces",
+      "signName": "Pisces",
+      "degree": 4.89,
+      "retrograde": false,
+      "speedPerDay": 0.119,
+      "dignity": null,
+      "stableAcrossDay": true,
+      "retrogradeStableAcrossDay": true
+    },
+    {
+      "body": "Uranus",
+      "sign": "capricorn",
+      "signName": "Capricorn",
+      "degree": 25.27,
+      "retrograde": false,
+      "speedPerDay": 0.04,
+      "dignity": null,
+      "stableAcrossDay": true,
+      "retrogradeStableAcrossDay": true
+    },
+    {
+      "body": "Neptune",
+      "sign": "capricorn",
+      "signName": "Capricorn",
+      "degree": 22.79,
+      "retrograde": false,
+      "speedPerDay": 0.0239,
+      "dignity": null,
+      "stableAcrossDay": true,
+      "retrogradeStableAcrossDay": true
+    },
+    {
+      "body": "Pluto",
+      "sign": "scorpio",
+      "signName": "Scorpio",
+      "degree": 28.05,
+      "retrograde": true,
+      "speedPerDay": -0.0054,
+      "dignity": null,
+      "stableAcrossDay": true,
+      "retrogradeStableAcrossDay": true
+    }
+  ],
+  "aspectsStableAcrossCivilDay": [
+    {
+      "a": "Moon",
+      "b": "Mars",
+      "type": "conjunction",
+      "orb": 1.05,
+      "applying": true
+    },
+    {
+      "a": "Mars",
+      "b": "Saturn",
+      "type": "conjunction",
+      "orb": 2.37,
+      "applying": true
+    },
+    {
+      "a": "Uranus",
+      "b": "Neptune",
+      "type": "conjunction",
+      "orb": 2.49,
+      "applying": false
+    },
+    {
+      "a": "Uranus",
+      "b": "Pluto",
+      "type": "sextile",
+      "orb": 2.78,
+      "applying": true
+    },
+    {
+      "a": "Sun",
+      "b": "Neptune",
+      "type": "sextile",
+      "orb": 2.93,
+      "applying": true
+    },
+    {
+      "a": "Moon",
+      "b": "Saturn",
+      "type": "conjunction",
+      "orb": 3.42,
+      "applying": true
+    },
+    {
+      "a": "Mercury",
+      "b": "Pluto",
+      "type": "square",
+      "orb": 3.99,
+      "applying": true
+    },
+    {
+      "a": "Mars",
+      "b": "Pluto",
+      "type": "square",
+      "orb": 4.47,
+      "applying": false
+    },
+    {
+      "a": "Venus",
+      "b": "Pluto",
+      "type": "trine",
+      "orb": 4.52,
+      "applying": false
+    },
+    {
+      "a": "Sun",
+      "b": "Jupiter",
+      "type": "trine",
+      "orb": 5.36,
+      "applying": false
+    },
+    {
+      "a": "Saturn",
+      "b": "Pluto",
+      "type": "square",
+      "orb": 6.84,
+      "applying": false
+    }
+  ],
+  "aspectsAtNoonOnly": [
+    {
+      "a": "Moon",
+      "b": "Pluto",
+      "type": "square",
+      "orb": 3.42,
+      "applying": false
+    },
+    {
+      "a": "Moon",
+      "b": "Mercury",
+      "type": "conjunction",
+      "orb": 7.41,
+      "applying": false
+    }
+  ],
+  "patterns": {
+    "settledBodyCount": 9,
+    "stelliums": [
+      {
+        "sign": "pisces",
+        "count": 3
+      }
+    ],
+    "elements": {
+      "water": 5,
+      "air": 1,
+      "fire": 1,
+      "earth": 2
+    },
+    "modalities": {
+      "mutable": 3,
+      "fixed": 3,
+      "cardinal": 3
+    },
+    "retrograde": [
+      "Jupiter",
+      "Pluto"
+    ],
+    "directionUncertain": []
+  }
+}

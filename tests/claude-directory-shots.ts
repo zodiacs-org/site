@@ -27,7 +27,7 @@ async function rpc(body: Record<string, unknown>) {
 }
 async function call(name: string, args: Record<string, unknown>) {
   const reply = await rpc({ jsonrpc: '2.0', id: Date.now(), method: 'tools/call', params: { name, arguments: args } });
-  assert.ok(reply?.result?.structuredContent?.ok, `${name} answered`);
+  assert.ok(reply?.result?.structuredContent?.ok, `${name} answered: ${JSON.stringify(reply?.error ?? reply?.result?.content ?? reply).slice(0, 600)}`);
   return { structuredContent: reply.result.structuredContent, _meta: reply.result._meta };
 }
 async function host(page: Page, result: { structuredContent: unknown; _meta?: unknown }) {
@@ -40,18 +40,18 @@ async function host(page: Page, result: { structuredContent: unknown; _meta?: un
 await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'zodiacs-listing-shots', version: '1' } } });
 await rpc({ jsonrpc: '2.0', method: 'notifications/initialized' });
 const now = new Date();
-const picker = await call('get_horoscope', { zone: 'Asia/Bangkok' });
-const leo = await call('get_horoscope', { sign: 'leo', zone: 'Asia/Bangkok' });
-const week = await call('get_upcoming_events', { from: now.toISOString(), to: new Date(now.getTime() + 7 * 86400000).toISOString(), zone: 'Asia/Bangkok' });
-const comparisonPrompt = "Compare my chart with my partner's and tell us how compatible we are: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992.";
+const picker = await call('get_horoscope', { zone: 'America/Mexico_City' });
+const leo = await call('get_horoscope', { sign: 'leo', zone: 'America/Mexico_City' });
+const week = await call('get_upcoming_events', { from: now.toISOString(), to: new Date(now.getTime() + 7 * 86400000).toISOString(), zone: 'America/Mexico_City' });
+const comparisonPrompt = "Compare my chart with my partner's and tell us how compatible we are: I was born 14 May 1994 at 9:15 in Seville, Spain, and my partner was born 4 August 1991.";
 const comparison = await call('get_compatibility', {
-  a: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038, place: 'Madrid, Spain' },
-  b: { birthDate: '1992-08-10' },
+  a: { birthDate: '1994-05-14', time: '09:15', zone: 'Europe/Madrid', latitude: 37.3891, longitude: -5.9845, place: 'Seville, Spain' },
+  b: { birthDate: '1991-08-04' },
 });
-const weddingPrompt = "We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day.";
+const weddingPrompt = "We're getting married on 18 September 2027 at 16:30 in Lisbon. Is it a good day for it? Make us a card with the sky for that day.";
 const wedding = await call('get_occasion_sky', {
-  occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome',
-  latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy',
+  occasion: 'wedding', date: '2027-09-18', time: '16:30', zone: 'Europe/Lisbon',
+  latitude: 38.7223, longitude: -9.1393, place: 'Lisbon, Portugal',
 });
 
 const out = new URL('../docs/platform/zodiacs-ai/claude-directory/', import.meta.url);
@@ -61,10 +61,15 @@ await mkdir(hostedOut, { recursive: true });
 const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS, headless: true });
 const shots: { file: string; prompt: string }[] = [];
 try {
-  const context = await browser.newContext({ viewport: { width: 760, height: 900 }, deviceScaleFactor: 2, colorScheme: 'dark', timezoneId: 'Asia/Bangkok' });
+  const context = await browser.newContext({ viewport: { width: 760, height: 900 }, deviceScaleFactor: 2, colorScheme: 'dark', reducedMotion: 'reduce', timezoneId: 'America/Mexico_City' });
   const page = await context.newPage();
   // Size the page to its content, as an MCP Apps host does from the panel's size reports.
   const save = async (file: string, prompt: string, part?: ReturnType<Page['locator']>) => {
+    // Wait for the fonts and every shown artwork image, so no picture is captured blank.
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForFunction(() => [...document.images].filter(image => image.getClientRects().length).every(image => image.complete && image.naturalWidth > 0), undefined, { timeout: 30000 });
+    await page.evaluate(() => Promise.all([...document.images].filter(image => image.getClientRects().length).map(image => image.decode())));
+    await page.waitForTimeout(500);
     const height = await page.evaluate(() => {
       const root = document.documentElement, previous = root.style.height;
       root.style.height = 'max-content';
@@ -87,8 +92,8 @@ try {
   await save('02-leo-today.png', "Show today's horoscope for Leo.");
 
   await page.setContent(WIDGET_HTML); await host(page, week);
-  await page.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('times for Bangkok'));
-  await save('03-sky-this-week.png', "Use Zodiacs to show this week's sky calendar for Bangkok.");
+  await page.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('times for Mexico City'));
+  await save('03-sky-this-week.png', "Use Zodiacs to show this week's sky calendar for Mexico City.");
 
   await page.setContent(STUDIO_HTML);
   await page.getByRole('heading', { name: 'When and where were you born?' }).waitFor();
@@ -110,6 +115,6 @@ try {
   await save('07-wedding-card.png', weddingPrompt);
   await copyFile(new URL('07-wedding-card.png', out), new URL('zodiacs-wedding-card-0.5.0.png', hostedOut));
 
-  await writeFile(new URL('screenshots.json', out), JSON.stringify({ made: now.toISOString(), source: 'Real panels from this build with live answers from https://zodiacs.org/mcp; dark theme; Bangkok time zone; personal details in 05–07 are synthetic examples', screenshots: shots }, null, 2) + '\n');
+  await writeFile(new URL('screenshots.json', out), JSON.stringify({ made: now.toISOString(), source: 'Real panels from this build with live answers from https://zodiacs.org/mcp; dark theme; Mexico City time zone; personal details in 05 to 07 are invented examples', screenshots: shots }, null, 2) + '\n');
   console.log(`Saved ${shots.length} listing screenshots.`);
 } finally { await browser.close(); }

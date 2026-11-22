@@ -43,15 +43,17 @@ try {
     const compare = page.locator('[data-compare-with-mine]');
     await compare.waitFor({ state: 'visible', timeout: TIMEOUT });
     const href = await compare.getAttribute('href');
-    assert.ok(href?.includes('#a='));
-    assert.ok(href?.includes('&b='));
+    assert.ok(href?.startsWith('/compatibility/'), 'the compare link opens the compatibility page');
+    assert.doesNotMatch(href ?? '', /[#&?](?:a|b|c|mine)=1\./u, 'the compare link carries no chart details');
 
     await compare.click();
     await page.locator('.syn__people').waitFor({ state: 'visible', timeout: TIMEOUT });
     const people = await page.locator('.syn__people').innerText();
     assert.match(people, /Mine/);
     assert.match(people, /A friend/);
-    assert.equal(new URL(page.url()).hash, '', 'compatibility should consume both private chart fragments');
+    assert.equal(new URL(page.url()).hash, '', 'compatibility should consume the session handoff key');
+    const leftover = await page.evaluate(() => Object.keys(sessionStorage).filter((key) => key.startsWith('zodiacs.handoff.')));
+    assert.deepEqual(leftover, [], 'the session handoff is deleted once read');
     await page.close();
   });
 } finally {

@@ -7,18 +7,22 @@
  * for other things). It:
  *
  *   1. turns motion on (html[data-entrance="on"]) before the marked elements
- *      are parsed, unless the reader asks for reduced motion, so nothing
+ *      are parsed, except for reduced motion or a URL fragment, so nothing
  *      flashes visible and then disappears. If the runtime below never
  *      starts, it turns motion off again after 3 s, so nothing stays hidden;
  *   2. reveals each marked element once, as it scrolls into view, and never
  *      again (one calm pass, then still). Marks are picked up while the page
  *      is still parsing, so the first ones do not wait for the whole document.
- *      An element already above the screen (a reload lower down, a link to a
- *      section) is shown at once. A group staggers by at most 4 steps;
+ *      An element already above the screen is shown at once, and a page the
+ *      browser scrolled by itself (a reload, Back, a text link) shows
+ *      everything at once. A group staggers by at most 4 steps. The first Tab
+ *      or an in-page link skips entrances;
  *   3. marks each element .is-done when its entrance ends, so its own hover
- *      transitions run without the entrance delay.
+ *      transitions run without the entrance delay;
+ *   4. exposes window.zodiacsMotion.scan(root) so islands that render later
+ *      can hand their new nodes over (never a result the person asked for).
  *
- * If the runtime throws, motion is turned off and everything is shown.
+ * If the runtime throws during startup, motion turns off and everything is shown.
  * Both scripts are inline and small: no extra request, nothing in the way of
  * the first paint. The timings live in src/styles/motion.css.
  */
@@ -29,7 +33,10 @@ import '../styles/motion.css';
     var root = document.documentElement;
     if (root.hasAttribute('data-entrance')) return;
     var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var on = !still && 'IntersectionObserver' in window;
+    // A page opened at a part of itself (an address with #) starts still, so
+    // the reader lands on content that is there from the first paint.
+    var jumped = location.hash.length > 1;
+    var on = !still && !jumped && 'IntersectionObserver' in window;
     root.setAttribute('data-entrance', on ? 'on' : 'off');
     // If the runtime below never starts, stop hiding anything.
     if (on) window.setTimeout(function () {
@@ -65,6 +72,10 @@ import '../styles/motion.css';
         window.setTimeout(function () { end(); }, 2600);
       }
 
+      function isAbove(boundingClientRect) {
+        return (boundingClientRect.width || boundingClientRect.height) && boundingClientRect.bottom <= 0;
+      }
+
       // Elements that come into view together are staggered in document
       // order, so a grid of cards arrives as a wave however far down it sits.
       // A marked element inside another one (a card's disc) takes no step of
@@ -73,15 +84,23 @@ import '../styles/motion.css';
       // Threshold 0, as with .reveal: a block shows as soon as any of it is
       // on screen, however tall it is.
       var io = on && new IntersectionObserver(function (entries) {
+        // A page the browser scrolled by itself (a search result's text link,
+        // whose #:~:text= part never reaches location.hash, or a reload or Back
+        // that restores the old position) lands the reader mid-page. Nothing
+        // there may fade in under them, so the page shows everything at once.
+        if (!moved && window.scrollY > 0) { showAll(); return; }
         var step = 0;
         for (var i = 0; i < entries.length; i++) {
           var entry = entries[i];
           var el = entry.target;
           if (el.classList.contains('is-in')) { io.unobserve(el); continue; }
           if (!entry.isIntersecting) {
-            // Already above the screen (a reload lower down, a link to a
-            // section): show it at once, so scrolling up finds it in place.
-            if (entry.boundingClientRect.bottom <= 0) { show(el, true); io.unobserve(el); }
+            // Show marks already above the viewport. Elements without a box
+            // can wait until shown.
+            if (isAbove(entry.boundingClientRect)) {
+              show(el, true);
+              io.unobserve(el);
+            }
             continue;
           }
           var nested = el.parentElement && el.parentElement.closest('[data-enter]');
@@ -92,21 +111,39 @@ import '../styles/motion.css';
       }, { threshold: 0 });
 
       // Keyboard readers never wait on an entrance: the first Tab shows
-      // everything at once and the page stays still from then on.
-      var keyboard = false;
+      // everything at once and the page stays still from then on. A reader who
+      // jumps to a part of the page (an address with #, a link to a section on
+      // the same page, Back to one) never waits either: the place they land on
+      // must already be there, so the jump shows everything at once too,
+      // including marks added later.
+      var still = false;
+      // Whether the reader has moved the page themselves (wheel, touch, a key,
+      // a click or a drag on the scrollbar). Only their own scroll may play
+      // entrances; any other scroll is the browser placing them.
+      var moved = false;
+      function markMoved() { moved = true; }
+      if (io) {
+        var opts = { capture: true, passive: true, once: true };
+        ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (type) {
+          window.addEventListener(type, markMoved, opts);
+        });
+      }
       function showAll() {
-        keyboard = true;
+        still = true;
         if (io) io.disconnect();
         var marked = document.querySelectorAll('[data-enter]');
-        for (var m = 0; m < marked.length; m++) marked[m].classList.add('is-in', 'is-done');
+        for (var m = 0; m < marked.length; m++) show(marked[m], true);
       }
       function scan(scope, instant) {
         var marked = (scope || document).querySelectorAll('[data-enter]:not(.is-in)');
         for (var m = 0; m < marked.length; m++) {
           // Observing an element twice is a no-op.
-          if (io && !keyboard && !instant) io.observe(marked[m]);
+          if (io && !still && !instant) io.observe(marked[m]);
           else show(marked[m], true);
         }
+      }
+      function jumping() {
+        return location.hash.length > 1;
       }
       if (io) {
         document.addEventListener('keydown', function onKey(event) {
@@ -114,28 +151,33 @@ import '../styles/motion.css';
           document.removeEventListener('keydown', onKey, true);
           showAll();
         }, true);
+        document.addEventListener('click', function (event) {
+          if (still) return;
+          var link = event.target && event.target.closest ? event.target.closest('a[href*="#"]') : null;
+          if (link && typeof link.hash === 'string' && link.hash.length > 1 && link.pathname === location.pathname && link.host === location.host) showAll();
+        }, true);
+        window.addEventListener('hashchange', function () {
+          if (!still && jumping()) showAll();
+        });
       }
-      // A jump can carry an element from below the screen to above it without
-      // it ever being on screen (the browser restoring a scroll position, a
-      // link to a section, the End key). The observer reports nothing then,
-      // so after each scroll anything still waiting above the screen is shown
-      // at once, and scrolling back up finds it in place.
+      // A jump (End, a script scrolling the page) can carry a mark past the
+      // viewport without an observer entry. Show those marks as soon as the
+      // scroll is handled.
       var sweeping = false;
       function sweep() {
         sweeping = false;
+        if (still) return;
         var waiting = document.querySelectorAll('[data-enter]:not(.is-in)');
         for (var w = 0; w < waiting.length; w++) {
-          var box = waiting[w].getBoundingClientRect();
-          // Skip elements with no box (inside a closed disclosure or a hidden tab).
-          if ((box.width || box.height) && box.bottom <= 0) {
+          if (isAbove(waiting[w].getBoundingClientRect())) {
             show(waiting[w], true);
-            if (io) io.unobserve(waiting[w]);
+            io.unobserve(waiting[w]);
           }
         }
       }
       if (io) {
         window.addEventListener('scroll', function () {
-          if (sweeping || keyboard) return;
+          if (sweeping || still) return;
           sweeping = true;
           window.requestAnimationFrame(sweep);
         }, { passive: true });
