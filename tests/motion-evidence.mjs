@@ -428,6 +428,7 @@ export function evaluateChecks({ route, viewport, subject, baseline = null, rest
   // Nested marks are reported, not failed: a disc inside a risen card shares the card's step
   // and reads as one entrance (docs/MOTION.md, the rule of 18 Nov).
   if (subject.hiddenAboveAfterReload == null) add('hiddenAboveAfterReload', 'fail', `unmeasured: ${subject.reload?.reason ?? 'not measured'}`);
+  else if (subject.reload?.notApplicable) add('hiddenAboveAfterReload', 'n/a', `not applicable: no marks on the page after the reload (scroll ${subject.reload.before} to ${subject.reload.after} px)`);
   else {
     const how = subject.reload ? ` (scroll ${subject.reload.before} to ${subject.reload.after} px, ${subject.reload.path})` : '';
     add('hiddenAboveAfterReload', subject.hiddenAboveAfterReload === 0 ? 'pass' : 'fail', `${subject.hiddenAboveAfterReload}${how}`);
@@ -1248,21 +1249,29 @@ async function measureReload(browser, url, viewport, notes) {
     await page.waitForTimeout(600);
     const count = () => page.evaluate(({ mark, shown }) => ({
       scrollY: Math.round(scrollY),
+      marked: document.querySelectorAll(`[${mark}]`).length,
       hidden: [...document.querySelectorAll(`body [${mark}]:not(.${shown})`)].filter((el) => el.getBoundingClientRect().bottom < 0).length,
     }), { mark: MARK_ATTRIBUTE, shown: SHOWN_CLASS });
     let result = await count();
     const near = (y) => Math.abs(y - before) <= RELOAD_SCROLL_TOLERANCE;
+    // With no marked element on the page nothing can be hidden, wherever the scroll is.
+    if (result.marked === 0) return { hidden: 0, before, after: result.scrollY, path: 'no marks', notApplicable: true };
     if (before === 0) return { hidden: result.hidden, before, after: result.scrollY, path: 'page does not scroll' };
     if (near(result.scrollY)) return { hidden: result.hidden, before, after: result.scrollY, path: 'native restore' };
+    // Fallback: scroll back without reader input, as a browser restore does,
+    // retrying while the page is still growing to its full height (up to 5 s).
     const native = result.scrollY;
-    await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), before);
-    await page.waitForTimeout(600);
-    result = await count();
+    const started = Date.now();
+    do {
+      await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), before);
+      await page.waitForTimeout(250);
+      result = await count();
+    } while (!near(result.scrollY) && Date.now() - started < 5000);
     if (near(result.scrollY)) {
       notes.push(`reload restored the scroll to ${native} px, not ${before} px; the harness scrolled back itself (explicit restore)`);
       return { hidden: result.hidden, before, after: result.scrollY, path: `explicit restore (native gave ${native} px)` };
     }
-    return { hidden: null, before, after: result.scrollY, path: 'unmeasured', reason: `scroll was ${before} px before the reload, ${native} px after it and ${result.scrollY} px after scrolling back (tolerance ${RELOAD_SCROLL_TOLERANCE} px)` };
+    return { hidden: null, before, after: result.scrollY, path: 'unmeasured', reason: `scroll was ${before} px before the reload, ${native} px after it and ${result.scrollY} px after scrolling back for 5 s (tolerance ${RELOAD_SCROLL_TOLERANCE} px)` };
   });
 }
 
@@ -1417,7 +1426,7 @@ async function measureBuild(browser, baseURL, route, viewport) {
     rootMarked: rest?.rootMarked ?? null,
     shownAtRest: rest?.shownAtRest ? stripVerbs(rest.shownAtRest) : null,
     hiddenAboveAfterReload: reload ? reload.hidden : null,
-    reload: reload ? { before: reload.before, after: reload.after, path: reload.path, ...(reload.reason ? { reason: reload.reason } : {}) } : null,
+    reload: reload ? { before: reload.before, after: reload.after, path: reload.path, ...(reload.reason ? { reason: reload.reason } : {}), ...(reload.notApplicable ? { notApplicable: true } : {}) } : null,
     primaryActionTop: rest?.primaryActionTop ?? null,
     reducedMotion: reducedMotion ? stripVerbs(reducedMotion) : null,
     noScript: noScript ? stripVerbs(noScript) : null,

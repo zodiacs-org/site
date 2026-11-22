@@ -468,6 +468,8 @@ describe('motion evidence: hard checks', () => {
     const checks = evaluateChecks({ route, viewport, subject });
     expect(statusOf(checks, 'hiddenAboveAfterReload')).toBe('fail');
     expect(detailOf(checks, 'hiddenAboveAfterReload')).toMatch(/^unmeasured: scroll was 3000 px/u);
+    const noMarks = evaluateChecks({ route, viewport, subject: { ...clean, hiddenAboveAfterReload: 0, reload: { before: 3000, after: 0, path: 'no marks', notApplicable: true } } });
+    expect(statusOf(noMarks, 'hiddenAboveAfterReload')).toBe('n/a');
     const explicit = evaluateChecks({ route, viewport, subject: { ...clean, reload: { before: 3000, after: 3000, path: 'explicit restore (native gave 0 px)' } } });
     expect(statusOf(explicit, 'hiddenAboveAfterReload')).toBe('pass');
     expect(detailOf(explicit, 'hiddenAboveAfterReload')).toContain('explicit restore');
