@@ -275,7 +275,7 @@ const sources = [
         )}
       </p>
       <p class="event-hero__lead" data-event-lead>{interpretation?.lead ?? factLead}</p>
-      {(guide || engineUpdated) && (
+      {(guide || engineUpdated || interpretation?.body) && (
         <p class="event-updated" data-event-updated>
           Updated <time datetime={updatedDay}>{updatedLabel(updatedDay)}</time>
         </p>
