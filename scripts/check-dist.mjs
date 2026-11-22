@@ -1595,8 +1595,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?lunar-return\/$/u.test(path))),
   new Set(['/lunar-return/']),
 );
-// Re-dated 2026-11-17: the tool's icon was added beside the hero heading (rendered content).
-if (!sitemapBlocksByPath.get('/lunar-return/')?.includes('<lastmod>2026-11-17</lastmod>')) {
+// Re-dated 2026-11-20: the tool's icon was added beside the hero heading (rendered content).
+if (!sitemapBlocksByPath.get('/lunar-return/')?.includes('<lastmod>2026-11-20</lastmod>')) {
   fail('sitemap.xml: lunar-return modification date must match the reviewed source revision');
 }
 requireExactSet(
