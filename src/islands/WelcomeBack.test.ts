@@ -15,12 +15,22 @@ function saved(id: string, relationship?: SavedChart['relationship']): SavedChar
     summary: { engineVersion: 'fixture', utcISO: '1990-01-01T12:00:00Z', houseSystem: 'whole', bodies: [{ body: 'Sun', lon: 10, retrograde: false }, { body: 'Moon', lon: 80, retrograde: false }], angles: { asc: 90, mc: 0 }, flags: ['no-time'] },
   };
 }
-function card() {
-  const cards = WelcomeBack({})!.props.children as VNode<Record<string, any>>[];
+function card(options: Parameters<typeof WelcomeBack>[0] = {}) {
+  const cards = WelcomeBack(options)!.props.children as VNode<Record<string, any>>[];
   return cards.find(Boolean)!.props;
 }
 
 describe('homepage personal daily handoff', () => {
+  it('keeps the most recently updated chart on localized homes, including an empty summary', () => {
+    harness.enabled = true;
+    const recent = saved('Friend', 'other');
+    recent.summary.bodies = [];
+    harness.charts = [saved('Owner', 'self'), recent];
+    const props = card({ locale: 'fr' });
+    expect(props.title).toContain('Friend');
+    expect(props.primary.props.href).toBe('/fr/transits/');
+  });
+
   it('names the same explicit chart as Today, even with a newer friend chart', () => {
     harness.enabled = true;
     harness.charts = [saved('Friend', 'other'), saved('Owner', 'self')];

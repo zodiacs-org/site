@@ -12,14 +12,16 @@ export default function WelcomeBack({ locale: rawLocale = 'en' }: { locale?: Loc
   const { profile, ready } = useProfile();
   const englishHome = locale === 'en';
   const shells = englishHome && !ready;
-  const charts = profile.charts.filter(chart => Array.isArray(chart?.summary?.bodies)
-    && chart.summary.bodies.some(body => Number.isFinite(body?.lon)));
+  const charts = englishHome
+    ? profile.charts.filter(chart => Array.isArray(chart?.summary?.bodies)
+      && chart.summary.bodies.some(body => Number.isFinite(body?.lon)))
+    : profile.charts;
   const count = charts.length;
   if (!shells && !count) return null;
 
-  const chart = englishHome && livingChartCaptureEnabled()
-    ? explicitSelfChart(charts)
-    : newestSavedChart(profile);
+  const chart = englishHome
+    ? (livingChartCaptureEnabled() ? explicitSelfChart(charts) : newestSavedChart(profile))
+    : [...charts].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0];
   const find = (name: string) => chart?.summary.bodies.find(b => b?.body === name && Number.isFinite(b.lon));
   const sun = find('Sun');
   // An unknown time does not establish the Moon or rising sign.
@@ -47,7 +49,7 @@ export default function WelcomeBack({ locale: rawLocale = 'en' }: { locale?: Loc
           key="chart"
           className="wb-card wb-chart"
           cue={t(locale, 'recommendedNext')}
-          title={handle ? tf(locale, 'todayForName', { name: handle }) : 'Today, for your chart'}
+          title={!englishHome || handle ? tf(locale, 'todayForName', { name: handle }) : 'Today, for your chart'}
           body={t(locale, 'savedChartTodayBody')}
           meta={(
             <dl class="wb__three" aria-hidden={!chart || undefined}>
