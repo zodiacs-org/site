@@ -3,12 +3,15 @@ import { RELEASED_LOCALES, localizePath, t } from './i18n';
 import { TOOL_ICON_FOR_PATH } from './tool-icons';
 import { launchFlagOn } from './launch-flags';
 import {
+  ALL_NAV_MORE,
   ALL_TOOL_CATALOG,
   FOOTER_TOOLS,
+  NAV_MORE,
   NAV_TOOLS,
   navToolLabelHasEnglishCue,
   TOOL_CATALOG,
   TOOLS_HUB,
+  visibleNavMore,
   visibleTools,
 } from './nav-tools';
 
@@ -133,6 +136,22 @@ describe('tools behind a launch switch', () => {
     expect(TOOLS_HUB.some((tool) => tool.href === '/good-days/')).toBe(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED'));
     for (const tool of ALL_TOOL_CATALOG) {
       if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
+    }
+  });
+
+  it('lists solar return in NAV_MORE and gates year-score and good-days behind their launch flags', () => {
+    const moreHrefs = (on: boolean) => visibleNavMore(() => on).map((entry) => entry.href);
+    expect(moreHrefs(false)).toContain('/solar-return/');
+    expect(moreHrefs(false)).not.toContain('/year-score/');
+    expect(moreHrefs(false)).not.toContain('/good-days/');
+    expect(moreHrefs(true)).toEqual(expect.arrayContaining(['/solar-return/', '/year-score/', '/good-days/']));
+    expect(NAV_MORE.some((entry) => entry.href === '/year-score/')).toBe(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED'));
+    expect(NAV_MORE.some((entry) => entry.href === '/good-days/')).toBe(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED'));
+    for (const entry of ALL_NAV_MORE) {
+      for (const locale of RELEASED_LOCALES) {
+        expect(entry.label[locale].trim()).not.toBe('');
+        expect(entry.label[locale]).not.toMatch(/[\r\n\u2013\u2014]/u);
+      }
     }
   });
 });

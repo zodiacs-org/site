@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "chinese-zodiac-remove-western-discs-2026-11-22",
-  "baseCommit": "835a7aa6c2b6d42addaccd74998e428a166defdb",
+  "baseCommit": "72d7ed97697a2e233e2f1d6e55860aa62e3bbf5f",
   "protectedPaths": [
     "src/pages/learn/chinese-zodiac/[animal]/index.astro",
     "src/pages/learn/chinese-zodiac/index.astro",
