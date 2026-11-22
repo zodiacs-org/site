@@ -42935,6 +42935,9 @@ function equatorialMoment(utc) {
 }
 
 // src/lib/astrocartography/meanings.ts
+function isUnder182(birthDate, today2) {
+  return isUnderAge(birthDate, today2, 18);
+}
 var ANGLE_NAME = {
   ASC: "rising",
   DSC: "setting",
@@ -43055,6 +43058,14 @@ function clockChangeLimit(flags, jumpMinutes) {
   const minutes = Math.round(jumpMinutes ?? 0);
   if (minutes < 1) return null;
   return flags.includes("dst-fold") ? clockFoldLimit(minutes) : flags.includes("dst-gap") ? clockGapLimit(minutes) : null;
+}
+function roundedDistanceKm(km) {
+  return Math.round(km / 10) * 10;
+}
+function farPlaceSummary(nearest) {
+  if (!nearest || nearest.km <= NOTICEABLE_KM) return null;
+  const distance2 = roundedDistanceKm(nearest.km).toLocaleString("en-GB");
+  return `No line within ${NOTICEABLE_KM} km; the nearest is the ${nearest.body} ${ANGLE_LABEL[nearest.angle]}, ${distance2} km.`;
 }
 
 // src/lib/astrocartography/share.ts
@@ -43183,7 +43194,7 @@ var astrocartographyData = z16.object({
     country: z16.string(),
     latitude: z16.number(),
     longitude: z16.number(),
-    /** The nearest lines, closest first: every line within 800 km, and at least the closest three. */
+    /** Nearby lines, closest first. Outside the noticeable range, only the nearest measurement is given. */
     closest: z16.array(nearLine).max(12),
     summary: z16.string()
   })).max(ACG_MAX_CITIES),
@@ -43214,10 +43225,8 @@ async function getAstrocartography(args, context) {
   const bodies = equatorialBodies(utc);
   const gast = greenwichSiderealDegrees(utc);
   const { zone: todayZone, note: todayNote } = await currentClock(args.currentZone, args.zone, context);
-  const under18 = isUnder18(args.birthDate, dateOn(context.now, todayZone));
+  const under18 = isUnder182(args.birthDate, dateOn(context.now, todayZone));
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
-  const detail = readingDetail({ hasDate: true, hasTime: true, hasPlace: true });
-  const confidenceLabel = readingConfidenceLabel(detail);
   const lines = bodies.map((entry) => {
     const mc = mcLongitude(entry, gast);
     const at = (which) => ACG_LIST_LATITUDES.flatMap((latitude) => {
@@ -43250,21 +43259,30 @@ async function getAstrocartography(args, context) {
       }
       const point2 = { lat: place2.latitude, lon: place2.longitude };
       const distances = lineDistances(point2, bodies, gast);
-      const closest = distances.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 12).map((row) => ({
-        planet: row.body,
-        angle: row.angle,
-        title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
-        distanceKm: Math.round(row.km),
-        distanceMiles: Math.round(row.km / KM_PER_MILE),
-        side: row.side,
-        strength: strengthOf(row.km),
-        line: `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
-        shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle })
-      }));
+      const far = farPlaceSummary(distances[0]);
+      const selected = far ? distances.slice(0, 1) : distances.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 12);
+      const closest = selected.map((row) => {
+        const distanceKm2 = roundedDistanceKm(row.km);
+        return {
+          planet: row.body,
+          angle: row.angle,
+          title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
+          distanceKm: distanceKm2,
+          distanceMiles: Math.round(distanceKm2 / KM_PER_MILE),
+          side: row.side,
+          strength: strengthOf(row.km),
+          line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${ACG_CONFIDENCE_TEXT}.`,
+          shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle })
+        };
+      });
       const strong = closest.filter((row) => row.strength === "strong");
       const top = closest[0];
-      const topMeaning = lineMeaning(top.planet, top.angle, under18);
-      const summary = strong.length ? `${place2.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(", ")}.${topMeaning ? ` ${guard(topMeaning)}` : ""}` : `No line runs within ${STRONG_KM} km of ${place2.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString("en-GB")} km ${top.side ?? "away"}, so its pull is ${top.strength === "noticeable" ? "still noticeable there" : "faint there"}.`;
+      let summary = far;
+      if (!summary && strong.length) {
+        const meaning = lineMeaning(top.planet, top.angle, under18);
+        summary = `${place2.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(", ")}.${meaning ? ` ${guard(meaning)}` : ""}`;
+      }
+      summary ??= `No line runs within ${STRONG_KM} km of ${place2.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString("en-GB")} km ${top.side ?? "away"}, so its pull is still noticeable there.`;
       cities.push({ asked: text2, name: place2.name, region: place2.region, country: place2.country, latitude: roundCoordinate(place2.latitude), longitude: roundCoordinate(place2.longitude), closest, summary });
     }
     if (unmatched.length) limits2.push(`Some names matched no town or city of 15,000 people or more in the index: ${unmatched.join(", ")}. Try another spelling, or add the country after a comma.`);
@@ -43278,8 +43296,8 @@ async function getAstrocartography(args, context) {
       cities,
       unmatched,
       readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
-      confidence: readingConfidence(detail),
-      confidenceLabel,
+      confidence: ACG_CONFIDENCE,
+      confidenceLabel: ACG_CONFIDENCE_TEXT,
       limits: limits2,
       pageUrl: `${context.origin}/astrocartography/`
     },

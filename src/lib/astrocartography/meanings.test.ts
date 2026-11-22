@@ -29,6 +29,8 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
       // An adult keeps the traditional reading.
       expect(lineMeaning(body, angle)).toBe(LINE_MEANING[body][angle]);
     }
+    expect(lineMeaning('Venus', 'ASC', true)).toBe('Places where ease and warmth come more readily, and you tend to feel at home in yourself.');
+    expect(lineMeaning('Neptune', 'DSC', true)).toBe('Places where other people can seem larger than life; keep a clear head about who is who.');
     expect(lineMeaning('Venus', 'DSC', true)).toBe('Places where friendships and good company come easily.');
     // A Descendant reading about partners or relationships is left out, with no words in its place.
     for (const body of ['Sun', 'Moon', 'Mercury', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Pluto'] as const) expect(lineMeaning(body, 'DSC', true), body).toBeNull();
@@ -77,6 +79,13 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
     // Without a current location the answer says which clock today was read on, as get_personal_day does.
     expect(home.data.limits).toContain('Today is read on the birthplace clock (Europe/London) because no current location was given.');
     expect(there.data.limits.some((entry: string) => entry.startsWith('Today is read'))).toBe(false);
+  });
+
+  it('keeps the under-18 reading until the birthday after leap day', async () => {
+    expect(under18('2010-03-01', new Date(2028, 1, 29, 12))).toBe(true);
+    const result = await executeAiTool('get_astrocartography', { birthDate: '2010-03-01', time: '08:30', zone: 'UTC' },
+      { ...ON, now: () => new Date('2028-02-29T12:00:00Z') });
+    expect(result).toMatchObject({ ok: true, data: { limits: expect.arrayContaining([MINOR_NOTE]) } });
   });
 
   it('are taken on the page by the device clock', () => {
@@ -164,6 +173,16 @@ describe('an astrocartography birth time the clocks repeated or skipped (ZOD-26)
     expect(clockGapLimit(1)).toContain('the time one minute later');
     expect(clockChangeLimit(['dst-gap'], 0.6)).toBe(clockGapLimit(1));
     expect(clockChangeLimit(['dst-gap'], 1.4)).not.toMatch(/\b1 minutes\b/u);
+  });
+
+  it.each([
+    ['2021-11-07', '01:30', CLOCK_FOLD_LIMIT],
+    ['2021-03-14', '02:30', 'That clock time did not exist where you were born: clocks jumped forward. This map uses the time one hour later.'],
+  ])('reports the New York clock change only when the birth is old enough for a reading', async (birthDate, time, notice) => {
+    const args = { birthDate, time, zone: 'America/New_York' };
+    expect(await executeAiTool('get_astrocartography', args, ON)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+    const result = await executeAiTool('get_astrocartography', args, { ...ON, now: () => new Date('2036-01-02T12:00:00Z') });
+    expect(result).toMatchObject({ ok: true, data: { limits: expect.arrayContaining([notice, MINOR_NOTE]) } });
   });
 
   it('puts the fold sentence in the tool limits', async () => {

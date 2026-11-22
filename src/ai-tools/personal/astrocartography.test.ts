@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import * as geometry from '../../lib/astrocartography/lines';
 import { skyEvents } from '@zodiacs/engine/sky';
 import { computeChart } from '../../lib/engine/full.js';
 import { meanObliquity } from '../../lib/engine/houses';
@@ -127,11 +128,32 @@ describe('get_astrocartography', () => {
     expect(newYork.closest[0]).toMatchObject({ planet: 'Mars', angle: 'ASC', strength: 'strong' });
     expect(newYork.closest[0].distanceKm).toBeLessThan(100);
     expect(newYork.closest[0].line).toMatch(/Reading confidence \d+%\.$/u);
-    for (const city of result.data.cities) expect(city.closest.length).toBeGreaterThanOrEqual(3);
+    for (const city of result.data.cities) {
+      expect(city.closest.length).toBeGreaterThanOrEqual(3);
+      for (const row of city.closest) expect(row.distanceKm % 10).toBe(0);
+    }
     const text = JSON.stringify(result);
     expect(forbiddenClaim(text)).toBeNull();
     for (const url of text.match(/https:\/\/[^"]+/gu) ?? []) expect(url).not.toMatch(/1990|08:30|London|New|Lisbon|Paris/u);
     expect(result.data.lines).toHaveLength(10);
+  });
+
+  it.each([
+    [3002, '3,000'], [800.1, '800'],
+  ] as const)('gives only the nearest measurement when all lines are beyond the noticeable range (%s km)', async (km, printed) => {
+    const distances = vi.spyOn(geometry, 'lineDistances').mockReturnValueOnce([
+      { body: 'Venus', angle: 'DSC', side: 'west', km },
+      { body: 'Sun', angle: 'MC', side: 'east', km: 3500 },
+    ]);
+    try {
+      const answer = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'UTC', cities: ['Lisbon'] }, ON);
+      const summary = `No line within 800 km; the nearest is the Venus Descendant line, ${printed} km.`;
+      expect(answer).toMatchObject({ ok: true, data: { cities: [{ summary, closest: [{
+        distanceKm: Math.round(km / 10) * 10, strength: 'faint', line: summary,
+      }] }] } });
+    } finally {
+      distances.mockRestore();
+    }
   });
 
   it('needs a birth time and its zone, and refuses a child', async () => {

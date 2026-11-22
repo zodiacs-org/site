@@ -34,6 +34,8 @@ describe('the astrocartography share page and pictures', () => {
   it('opens a page that names the line, shows its card and links back to the map', async () => {
     const html = await (await handleAstrocartographyLinkRequest(new Request('https://zodiacs.org/share/astrocartography/?p=venus&a=dsc&ref=chatgpt'))).text();
     expect(html).toContain('My Venus Descendant line');
+    expect(html).toMatch(/<img class="card"[^>]+alt="[^"]*Reading confidence 70%\."/u);
+    expect(html).toMatch(/<p class="lede">[^<]*Reading confidence 70%\./u);
     expect(html).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/astrocartography-image?p=venus&amp;a=dsc"');
     expect(html).toContain('href="/astrocartography/"');
     expect(html).toContain('/api/og/astrocartography-story?p=venus&amp;a=dsc');

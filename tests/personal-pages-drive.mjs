@@ -64,6 +64,13 @@ const ALL_PAGES = [
       // The share links are on the lines nearest a place the person checks.
       await choosePlace(tab, 'acg-check', 'Paris');
       await tab.locator('.acg__share').first().waitFor({ state: 'visible', timeout: 30_000 });
+      const table = tab.getByRole('table', { name: 'Where each line runs' });
+      const sun = await table.getByRole('row', { name: /^Sun /u }).innerText();
+      check('the table gives the Sun meridians', sun.includes('66.7° E') && sun.includes('113.3° W'));
+      const lines = tab.locator('.acg__lines :is(line, path)');
+      check('every planetary line has a title', await lines.evaluateAll((items) => items.length >= 40 && items.every((item) => item.querySelector('title')?.textContent.trim())));
+      const card = tab.getByRole('article').filter({ has: tab.getByRole('heading', { name: /Paris/u }) });
+      check('the place card prints reading confidence', await card.getByText('Reading confidence 70%', { exact: true }).isVisible());
       return '.acg__share';
     },
   },
