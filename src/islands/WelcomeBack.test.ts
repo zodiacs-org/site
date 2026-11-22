@@ -1,9 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { VNode } from 'preact';
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 import type { SavedChart } from '../lib/profile/schema';
 
 const harness = vi.hoisted(() => ({ charts: [] as SavedChart[], enabled: true }));
-vi.mock('../lib/hooks/useProfile', () => ({ useProfile: () => ({ profile: { charts: harness.charts } }) }));
+vi.mock('../lib/hooks/useProfile', () => ({ useProfile: () => ({ profile: { charts: harness.charts }, ready: true }) }));
 vi.mock('../lib/living-chart/feature-flags', () => ({ livingChartCaptureEnabled: () => harness.enabled }));
 import WelcomeBack from './WelcomeBack';
 
@@ -13,7 +15,10 @@ function saved(id: string, relationship?: SavedChart['relationship']): SavedChar
     summary: { engineVersion: 'fixture', utcISO: '1990-01-01T12:00:00Z', houseSystem: 'whole', bodies: [{ body: 'Sun', lon: 10, retrograde: false }, { body: 'Moon', lon: 80, retrograde: false }], angles: { asc: 90, mc: 0 }, flags: ['no-time'] },
   };
 }
-function card() { return (WelcomeBack({})!.props.children as VNode<Record<string, any>>).props; }
+function card() {
+  const cards = WelcomeBack({})!.props.children as VNode<Record<string, any>>[];
+  return cards.find(Boolean)!.props;
+}
 
 describe('homepage personal daily handoff', () => {
   it('names the same explicit chart as Today, even with a newer friend chart', () => {
@@ -75,5 +80,42 @@ describe('homepage personal daily handoff', () => {
     harness.enabled = true;
     harness.charts = [];
     expect(WelcomeBack({})).toBeNull();
+  });
+});
+
+describe('home greeting prepaint', () => {
+  const source = readFileSync(new URL('../home/HomeReturningPrepaint.astro', import.meta.url), 'utf8');
+  const script = source.slice(source.indexOf('>\n', source.indexOf('<script')) + 2, source.indexOf('</script>'));
+
+  it('reads only with profile access and clears the hint on revocation or unusable storage', () => {
+    const attributes = new Map([['data-account-sync-v2', '']]);
+    const root = {
+      hasAttribute: (name: string) => attributes.has(name),
+      setAttribute: (name: string, value: string) => attributes.set(name, value),
+      removeAttribute: (name: string) => attributes.delete(name),
+    };
+    const events = new EventTarget();
+    let allowed = false;
+    let raw = JSON.stringify({ version: 1, charts: [saved('Owner', 'self')] });
+    const getItem = vi.fn(() => raw);
+    runInNewContext(script, {
+      document: { documentElement: root }, localStorage: { getItem }, personalToday: true,
+      window: { addEventListener: events.addEventListener.bind(events), zodiacsProfileAccess: { canRead: () => allowed } },
+    });
+    expect(getItem).not.toHaveBeenCalled();
+    allowed = true;
+    events.dispatchEvent(new Event('zodiacs:profile-access'));
+    expect(attributes.get('data-home-returning')).toBe('chart');
+    allowed = false;
+    events.dispatchEvent(new Event('zodiacs:profile-access'));
+    expect(attributes.has('data-home-returning')).toBe(false);
+    expect(getItem).toHaveBeenCalledTimes(1);
+    allowed = true;
+    raw = JSON.stringify({ version: 1, charts: [saved('First', 'self'), saved('Second', 'self')] });
+    events.dispatchEvent(new Event('zodiacs:profile'));
+    expect(attributes.get('data-home-returning')).toBe('choose');
+    raw = '{';
+    events.dispatchEvent(new Event('zodiacs:profile'));
+    expect(attributes.has('data-home-returning')).toBe(false);
   });
 });

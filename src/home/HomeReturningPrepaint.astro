@@ -1,0 +1,23 @@
+---
+import { livingChartCaptureEnabled } from '../lib/living-chart/feature-flags';
+---
+<script is:inline define:vars={{ personalToday: livingChartCaptureEnabled() }}>
+  function syncHomeGreeting() {
+    const root = document.documentElement;
+    root.removeAttribute('data-home-returning');
+    try {
+      if (root.hasAttribute('data-account-sync-v2') && !window.zodiacsProfileAccess?.canRead()) return;
+      const profile = JSON.parse(localStorage.getItem('zodiacs.profile.v1') || 'null');
+      if (profile?.version !== 1 || !Array.isArray(profile.charts)) return;
+      const charts = profile.charts.filter(chart => Array.isArray(chart?.summary?.bodies)
+        && chart.summary.bodies.some(body => Number.isFinite(body?.lon)));
+      if (charts.length) {
+        const greet = !personalToday || charts.filter(chart => chart.relationship === 'self').length === 1;
+        root.setAttribute('data-home-returning', greet ? 'chart' : 'choose');
+      }
+    } catch {}
+  }
+  syncHomeGreeting();
+  window.addEventListener('zodiacs:profile', syncHomeGreeting);
+  window.addEventListener('zodiacs:profile-access', syncHomeGreeting);
+</script>

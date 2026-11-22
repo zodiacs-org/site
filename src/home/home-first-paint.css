@@ -234,3 +234,70 @@ html[data-local-chrome-typography][lang='en'] {
   .hero__video { animation: none; transform: scale(1.035); }
   .hero__video { transition: none; }
 }
+
+/* Only the prepaint hint can reveal a returning visitor's greeting. */
+:root:not([data-home-returning]) .wb-greeting,
+:root:not([data-home-returning="chart"]) .wb-greeting .wb-chart,
+:root:not([data-home-returning="choose"]) .wb-greeting .wb-choose { display: none; }
+
+/* Hydrated border-box heights, rounded up at 390, 430, 768 and 1280px. */
+.wb-greeting { --wb-chart-height: 473px; --wb-choose-height: 292px; }
+@media (min-width: 430px) {
+  .wb-greeting { --wb-chart-height: 474px; }
+}
+.wb-greeting .wb-chart .next-action__core { min-height: var(--wb-chart-height); }
+.wb-greeting .wb-choose .next-action__core { min-height: var(--wb-choose-height); }
+.wb-greeting .wb-card { margin-bottom: 26px; --sign: var(--sign-cancer); }
+/* Keep the shared actions in the same place while private details arrive. */
+.wb-greeting .next-action__core { align-items: start; }
+.wb-greeting .next-action__actions { align-self: end; }
+.wb-greeting .next-action__secondary {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  font-size: var(--text-sm);
+}
+.wb-greeting .wb-chart .next-action__secondary { grid-template-rows: repeat(2, 1lh); }
+.wb-greeting .wb-chart .next-action__title {
+  display: -webkit-box;
+  min-height: 2lh;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.wb-greeting :is(.chip, .btn, .btn .orb) { transition: none; transform: none; }
+@media (max-width: 719px) {
+  .wb-greeting .next-action__core { align-content: space-between; }
+  .wb-greeting .next-action__secondary { justify-items: start; }
+}
+
+/* Empty grid tracks reserve the sign rows even at intermediate widths
+   and with larger text. Labels and chips stay paired at each breakpoint. */
+.wb-greeting .wb__three {
+  display: grid;
+  align-items: center;
+  margin: 0;
+  grid-template-columns: max-content 1fr;
+  grid-template-rows: repeat(3, minmax(30px, auto));
+  gap: 10px 14px;
+}
+.wb-greeting .wb__three dt { margin: 0; padding: 0; }
+.wb-greeting .wb__three dd { margin: 0; display: inline-flex; align-items: center; }
+@media (min-width: 720px) {
+  .wb-greeting { --wb-chart-height: 273px; --wb-choose-height: 170px; }
+  .wb-greeting .wb__three {
+    grid-auto-flow: column;
+    grid-template-columns: repeat(3, max-content);
+    grid-template-rows: minmax(22px, auto) minmax(30px, auto);
+    gap: 4px 12px;
+  }
+}
+@media (min-width: 1100px) {
+  .wb-greeting { --wb-chart-height: 238px; --wb-choose-height: 192px; }
+  .wb-greeting .wb__three {
+    grid-template-columns: repeat(6, max-content);
+    grid-template-rows: minmax(30px, auto);
+  }
+  .wb-greeting .wb-chart .next-action__title { min-height: 1lh; -webkit-line-clamp: 1; }
+}
