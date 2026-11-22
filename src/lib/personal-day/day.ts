@@ -269,10 +269,11 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
 /**
  * The person's settled Sun sign for sharing: exact when a birth time is known,
  * or settled without a birth time only when both ends of the birth day share
- * the same Sun sign (else null). With a zone the day runs from the first pass
- * of its 00:00 to the end of the last pass of its 23:59, so a date the clock
- * showed twice (Apia, 4 July 1892) is read whole; a date it never showed
- * settles nothing.
+ * the same Sun sign (else null). With a zone the day runs from where the
+ * clock first reaches its 00:00 to where it last leaves the date
+ * (src/lib/time/local-day.ts), so a date the clock showed twice (Apia, 4 July
+ * 1892) is read whole and one it left early (St. John's, 2 May 1920, when
+ * 23:00 became 00:00) ends there; a date it never showed settles nothing.
  */
 export async function settledSunSign(
   natal: Pick<DayNatal, 'bodies' | 'timeKnown'>,
@@ -288,7 +289,9 @@ export async function settledSunSign(
   if (birth.zone) {
     await clock.prepareLocalTime(birth.birthDate, birth.zone);
     const options = birth.longitude === undefined ? {} : { longitude: birth.longitude };
-    const span = localDaySpan(birth.birthDate, clock.resolveLocalToUtc(birth.birthDate, '00:00', birth.zone, options), clock.resolveLocalToUtc(birth.birthDate, '23:59', birth.zone, { ...options, fold: 'later' }));
+    const zone = birth.zone;
+    // The span also reads the day either side, which the birth date's preparation covers (src/lib/time/local-day.ts).
+    const span = localDaySpan(birth.birthDate, (date, time, fold) => clock.resolveLocalToUtc(date, time, zone, { ...options, fold }));
     if (!span) return null;
     [start, end] = span;
   } else {

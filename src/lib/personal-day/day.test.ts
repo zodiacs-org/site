@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { personalDay } from '../../ai-tools/personal/personal-day';
-import { forbiddenClaim, type PersonalToolContext } from '../../ai-tools/personal/shared';
+import { birthDayEnds, forbiddenClaim, type PersonalToolContext } from '../../ai-tools/personal/shared';
 import { computeYourDay } from '../../islands/your-day/compute';
 import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
 import { MINOR_LEFT_OUT_HOUSES, UNTIMED_LIMIT, minorLeftOut, settledSunSign, type DayClock } from './day';
@@ -18,6 +18,26 @@ const NOW = new Date('2026-11-09T09:00:00Z');
 const MINOR_CHECK = /loving|appetite|longing|heat|pleasure|romant|attract/iu;
 const context: PersonalToolContext = { now: NOW, localTime: createLocalTimeModule(), resolveZone: async (name) => name, origin: 'https://zodiacs.org' };
 const ADULT = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
+
+/**
+ * A clock that changes once, at `change`, from `before` to `after` minutes east, resolved as the site's resolver
+ * resolves: a wall time it showed twice at the pass asked for, one it skipped moved forward by the jump. `calls`
+ * collects the pass asked for on each call.
+ */
+function steppedClock(change: string, before: number, after: number, calls: unknown[] = []): DayClock {
+  const at = Date.parse(change);
+  return {
+    prepareLocalTime: async () => {},
+    resolveLocalToUtc: (date, time, _zone, options) => {
+      calls.push(options?.fold ?? 'earlier');
+      const wall = Date.parse(`${date}T${time}:00Z`);
+      const passes = [wall - before * 60_000, wall - after * 60_000].filter((utc, index) => (index === 0 ? utc < at : utc >= at));
+      if (passes.length === 0) return { utc: new Date(wall - before * 60_000), offsetMinutes: after, flags: ['dst-gap'] };
+      const utc = options?.fold === 'later' ? Math.max(...passes) : Math.min(...passes);
+      return { utc: new Date(utc), offsetMinutes: utc < at ? before : after, flags: passes.length > 1 ? ['dst-fold'] : [] };
+    },
+  };
+}
 
 describe('the /your-day/ page and get_personal_day', () => {
   it('give the same ranked list, Moon and theme for a fixed chart and day', async () => {
@@ -71,25 +91,42 @@ describe('a birth date the clock repeated or skipped, on the /your-day/ page and
     const tool = (await personalDay({ birthDate: '1892-07-04', zone: 'Pacific/Apia', latitude: -13.83, longitude: -171.76, currentZone: 'Europe/Madrid', date: '2026-11-09' }, context)).data;
     expect(page.sunSign).toBe('cancer');
     expect(tool.shareUrl).toBe('https://zodiacs.org/share/your-day/?day=2026-11-09&s=cancer');
-    // A clock that showed its 23:59 twice, with the Sun entering Capricorn (2026-12-21T20:50:14Z) between the two
-    // passes: the first pass alone would settle Sagittarius; the whole date leaves it open.
+    // A clock that turned back from 00:00 on 22 December to 00:00 on the 21st, so it showed the 21st twice, with the
+    // Sun entering Capricorn (2026-12-21T20:50:14Z) during the second pass: the first pass alone would settle
+    // Sagittarius; the whole date leaves it open.
     const D = '2026-12-21';
-    const at = (wall: string, utc: string) => ({ utc: new Date(utc), offsetMinutes: (Date.parse(`${D}T${wall}:00Z`) - Date.parse(utc)) / 60_000 });
-    const calls: unknown[] = [];
-    const repeating: DayClock = {
-      prepareLocalTime: async () => {},
-      resolveLocalToUtc: (_date, time, _zone, options) => {
-        calls.push(options?.fold ?? 'earlier');
-        if (time === '00:00') return at('00:00', '2026-12-20T14:00:00Z');
-        return options?.fold === 'later' ? at('23:59', '2026-12-22T13:59:00Z') : at('23:59', '2026-12-21T13:59:00Z');
-      },
-    };
     const natal = { bodies: [{ body: 'Sun', lon: 269 }], timeKnown: false };
+    const calls: unknown[] = [];
+    const repeating = steppedClock('2026-12-21T14:00:00Z', 600, -840, calls);
     expect(await settledSunSign(natal, { birthDate: D, zone: 'Etc/Repeating' }, repeating)).toBeNull();
-    expect(calls).toEqual(['earlier', 'later']);
-    // The same clock without the repeat settles Sagittarius.
-    const once: DayClock = { ...repeating, resolveLocalToUtc: (date, time, zone) => repeating.resolveLocalToUtc(date, time, zone, {}) };
-    expect(await settledSunSign(natal, { birthDate: D, zone: 'Etc/Repeating' }, once)).toBe('sagittarius');
+    expect(calls).toContain('later');
+    // The same date on a clock that kept UTC+10 settles Sagittarius.
+    expect(await settledSunSign(natal, { birthDate: D, zone: 'Etc/Steady' }, steppedClock('2026-12-21T14:00:00Z', 600, 600))).toBe('sagittarius');
+  });
+
+  it('end a birth date where the clock jumped out of it, not partway into the next date', async () => {
+    // St. John's went from 23:00 on 2 May 1920 straight to 00:00 on 3 May: the page and the tool read the date to
+    // 02:30:51 UTC, not to its skipped 23:59 read forward by the jump (03:30:51 UTC).
+    const page = await computeYourDay({ ...PLACE, birthZone: 'America/St_Johns', latitude: 47.56, longitude: -52.71, birthDate: '1920-05-02' });
+    const tool = (await personalDay({ birthDate: '1920-05-02', zone: 'America/St_Johns', latitude: 47.56, longitude: -52.71, currentZone: 'Europe/Madrid', date: '2026-11-09' }, context)).data;
+    expect(page.sunSign).toBe('taurus');
+    expect(tool.shareUrl).toBe('https://zodiacs.org/share/your-day/?day=2026-11-09&s=taurus');
+    const ends = await birthDayEnds({ birthDate: '1920-05-02', zone: 'America/St_Johns' }, context.localTime);
+    expect(ends.map((end) => end.toISOString())).toEqual(['1920-05-02T03:30:52.000Z', '1920-05-03T02:30:51.000Z']);
+    // The same jump with the Sun entering Capricorn (2026-12-21T20:50:14Z) in the hour after it: 23:00 on the 21st
+    // became 00:00 on the 22nd at 20:30 UTC, so the whole date is Sagittarius. Read to its skipped 23:59, it was not.
+    const natal = { bodies: [{ body: 'Sun', lon: 269 }], timeKnown: false };
+    expect(await settledSunSign(natal, { birthDate: '2026-12-21', zone: 'Etc/Jump' }, steppedClock('2026-12-21T20:30:00Z', 150, 210))).toBe('sagittarius');
+  });
+
+  it('start a birth date where the clock jumped into it, when its 00:00 was skipped partway through the jump', async () => {
+    // As Toronto went from 23:30 on 30 March 1919 to 00:30 on 31 March: here 23:30 on 21 December became 00:30 on
+    // the 22nd at 20:30 UTC, before the Sun entered Capricorn at 20:50:14 UTC, so the 22nd began in Sagittarius.
+    // Read from its skipped 00:00 moved forward by the jump (21:00 UTC), it would settle Capricorn.
+    const natal = { bodies: [{ body: 'Sun', lon: 271 }], timeKnown: false };
+    expect(await settledSunSign(natal, { birthDate: '2026-12-22', zone: 'Etc/Jump' }, steppedClock('2026-12-21T20:30:00Z', 180, 240))).toBeNull();
+    const ends = await birthDayEnds({ birthDate: '1919-03-31', zone: 'America/Toronto' }, context.localTime);
+    expect(ends[0].toISOString()).toBe('1919-03-31T04:30:00.000Z');
   });
 });
 
