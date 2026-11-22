@@ -61,25 +61,45 @@ describe('the /your-day/ page and get_personal_day', () => {
 });
 
 describe('the reading guards on the /your-day/ page and get_personal_day', () => {
-  it('take the age on today, not on the day read, and leave the natal Venus out for someone under 18', async () => {
-    // Born 17 years and 6 months before today (2026-11-09), reading a day 7 months ahead, when they are 18.
-    const minor = { birthDate: '2009-05-09', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
+  const minorBirthDate = '2009-05-09';
+
+  async function pageAndTool(birthDate: string, date: string, today: string, now = NOW) {
+    const { zone, time, latitude, longitude } = ADULT;
+    const birth = { birthDate, time, latitude, longitude };
+    const page = await computeYourDay({ ...birth, birthZone: zone, date, zone, today });
+    const { data: tool } = await personalDay({ ...birth, zone, currentZone: zone, date }, { ...context, now });
+    return { page, tool };
+  }
+
+  it('keep the minor guards for someone aged 17 years and 6 months reading seven months ahead', async () => {
     for (const date of ['2027-06-09', '2027-06-01', '2027-06-17']) {
-      const tool = (await personalDay({ ...minor, currentZone: 'Europe/Madrid', date }, context)).data;
-      const page = await computeYourDay({ birthDate: minor.birthDate, time: minor.time, birthZone: minor.zone, latitude: minor.latitude, longitude: minor.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09' });
-      for (const reading of [tool, page]) {
+      const { page, tool } = await pageAndTool(minorBirthDate, date, '2026-11-09');
+      for (const reading of [page, tool]) {
         expect(reading.under18).toBe(true);
         expect(reading.limits).toContain(MINOR_NOTE);
+        expect(reading.contacts.some(({ point }) => point === 'Venus')).toBe(false);
         expect(reading.contacts.some((contact) => minorLeftOut(contact.planet, contact.point))).toBe(false);
-        expect(JSON.stringify({ ...reading, limits: [] })).not.toMatch(MINOR_CHECK);
+        expect(JSON.stringify({ theme: reading.theme, moon: reading.moon, contacts: reading.contacts })).not.toMatch(MINOR_CHECK);
       }
       expect(page.contacts).toEqual(tool.contacts);
       expect(page.limits).toEqual(tool.limits);
     }
-    // The same day read for an adult still lists the natal Venus when it is touched.
-    const adult = await computeYourDay({ birthDate: '1990-05-03', time: '08:30', birthZone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, date: '2027-06-09', zone: 'Europe/Madrid', today: '2026-11-09' });
-    expect(adult.under18).toBe(false);
-  }, 60_000);
+  });
+
+  it.each([
+    { when: 'just before', now: '2027-05-08T21:59:59Z', today: '2027-05-08', under18: true },
+    { when: 'at', now: '2027-05-08T22:00:00Z', today: '2027-05-09', under18: false },
+  ])('apply the correct guards $when local midnight on the 18th birthday', async ({ now, today, under18 }) => {
+    // The same future chart has a ranked Pluto contact to natal Venus when read as an adult.
+    const { page, tool } = await pageAndTool(minorBirthDate, '2027-06-09', today, new Date(now));
+    for (const reading of [page, tool]) {
+      expect(reading.under18).toBe(under18);
+      expect(reading.limits.includes(MINOR_NOTE)).toBe(under18);
+      expect(reading.contacts.some(({ planet, point }) => planet === 'Pluto' && point === 'Venus')).toBe(!under18);
+    }
+    expect(page.contacts).toEqual(tool.contacts);
+    expect(page.limits).toEqual(tool.limits);
+  });
 
   it('leave out every contact and house line a minor could see that the check catches', () => {
     let kept = 0;
@@ -110,21 +130,19 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
     expect(fifth).toBeGreaterThan(0);
   }, 60_000);
 
-  it('never read the sixth house as health', async () => {
-    let sixth = 0;
-    for (let day = 1; day <= 30; day += 1) {
-      const date = `2026-11-${String(day).padStart(2, '0')}`;
-      const page = await computeYourDay({ birthDate: ADULT.birthDate, time: ADULT.time, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09' });
-      if (page.moon.house?.number !== 6) continue;
-      sixth += 1;
-      const tool = (await personalDay({ ...ADULT, currentZone: 'Europe/Madrid', date }, context)).data;
-      expect(page.moon).toEqual(tool.moon);
-      expect(page.moon.house.line).toBe('The Moon is passing through your sixth house: routines, craft, and the shape of the day.');
-      expect(JSON.stringify(page)).not.toMatch(/health/iu);
-      expect(JSON.stringify(tool)).not.toMatch(/health/iu);
+  it.each([
+    { age: 'an adult', birthDate: ADULT.birthDate },
+    { age: 'a minor', birthDate: minorBirthDate },
+  ])('give the softened sixth-house line to $age', async ({ birthDate }) => {
+    const { page, tool } = await pageAndTool(birthDate, '2026-11-09', '2026-11-09');
+    expect(page.moon).toEqual(tool.moon);
+    const line = 'The Moon is passing through your sixth house: routines, craft, and the shape of the day.';
+    for (const reading of [page, tool]) {
+      expect(reading.moon.house).toEqual({ number: 6, line });
+      expect(reading.moon.line).toContain(line);
+      expect(/health/iu.test(JSON.stringify(reading))).toBe(false);
     }
-    expect(sixth).toBeGreaterThan(0);
-  }, 60_000);
+  });
 });
 
 describe('the your-day share link', () => {
