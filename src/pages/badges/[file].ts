@@ -8,7 +8,7 @@ import type { APIRoute, GetStaticPaths } from 'astro';
 import packageDocument from '../../../package.json';
 import latest from '../../data/accuracy/latest.json';
 import { accuracyPublished } from '../../accuracy/publication.mjs';
-import { engineVersionFromDependency, skyCheckBadge } from '../../lib/sky-check-badge.mjs';
+import { engineVersionFromDependency, skyCheckBadge } from '../../accuracy/sky-check-badge.mjs';
 
 const siteEngineVersion = engineVersionFromDependency(packageDocument.dependencies['@zodiacs/engine']);
 
