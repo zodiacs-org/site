@@ -17,6 +17,7 @@ import { skyEventsData, skyEventsInput } from './features/sky-events';
 import { yearScoreData, yearScoreInput, yearScoreSelfInput } from './features/year-score';
 import { solarReturnData, solarReturnInput } from './features/solar-return';
 import { numerologyData, numerologyInput } from './features/numerology';
+import { PERSONAL_TOOL_NAMES, personalRecord, type PersonalToolName } from './personal/registry';
 import { goodDaysData, goodDaysInput } from './features/good-days';
 import { MOMENT_CHART_TOOL, MOMENT_ROUTING, momentChartData, momentChartInput } from './features/moment-chart-contract';
 
@@ -107,9 +108,15 @@ export const EVERY_SWITCHED_TOOL = [...EVERY_TOOL_WITH_SKY_EVENTS, ...YEAR_SCORE
  * place and bytes (src/ai-tools/good-days.test.ts).
  */
 export const GOOD_DAYS_TOOL_NAMES = ['find_good_days'] as const;
-/** Every tool name the hosted server knows, in tools/list order, with every switch on. */
-export const EVERY_TOOL_NAME = [...EVERY_SWITCHED_TOOL, ...GOOD_DAYS_TOOL_NAMES, MOMENT_CHART_TOOL] as const;
-export type AiToolName = typeof EVERY_TOOL_NAME[number];
+/** The hosted roster through find_good_days, before the optional moment chart and personal tools. */
+export const EVERY_TOOL_WITH_GOOD_DAYS = [...EVERY_SWITCHED_TOOL, ...GOOD_DAYS_TOOL_NAMES] as const;
+export const EVERY_TOOL_NAME = [...EVERY_TOOL_WITH_GOOD_DAYS, MOMENT_CHART_TOOL] as const;
+/**
+ * The personal tools (src/ai-tools/personal/registry.ts): offered only where ZODIACS_PERSONAL_TOOLS_ENABLED=1 joins the
+ * coverage and occasion switches, after every other tool (find_good_days included), so with the switch off every entry keeps its place and bytes.
+ */
+export { PERSONAL_TOOL_NAMES, type PersonalToolName };
+export type AiToolName = typeof EVERY_TOOL_NAME[number] | PersonalToolName;
 export type CoverageToolName = typeof COVERAGE_TOOL_NAMES[number];
 export type PlaceToolName = typeof PLACE_TOOL_NAMES[number];
 export type SkyEventsToolName = typeof SKY_EVENTS_TOOL_NAMES[number];
@@ -135,6 +142,8 @@ export const SOLAR_RETURN_SWITCH_ENV = 'ZODIACS_SOLAR_RETURN_ENABLED';
 export const NUMEROLOGY_SWITCH_ENV = 'ZODIACS_NUMEROLOGY_ENABLED';
 /** Off unless exactly '1', and only with the occasion and coverage switches: find_good_days. */
 export const GOOD_DAYS_SWITCH_ENV = 'ZODIACS_GOOD_DAYS_ENABLED';
+/** Off unless exactly '1', and only with the coverage and occasion switches: the personal tools. */
+export const PERSONAL_SWITCH_ENV = 'ZODIACS_PERSONAL_TOOLS_ENABLED';
 /** The compute API's own events bound. */
 export const MAX_EVENT_DAYS = BUDGETS['events.windowDays'];
 export const MAX_HTTP_BYTES = 16_384;
@@ -196,6 +205,7 @@ export const TOOL_TITLES: Record<AiToolName, string> = {
   get_solar_return: 'Your solar return',
   get_numerology: 'Numerology numbers',
   find_good_days: 'Find good days',
+  ...personalRecord((tool) => tool.title),
 };
 
 const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00-06:00 (years 1800 to 2199).');
@@ -257,6 +267,7 @@ export const INPUT_SCHEMAS = {
   get_solar_return: solarReturnInput,
   get_numerology: numerologyInput,
   find_good_days: goodDaysInput,
+  ...personalRecord((tool) => tool.input),
   get_horoscope: z.strictObject({
     sign: z.enum(HOROSCOPE_SIGNS).optional().describe('Sun sign. Leave it out to let the person choose; never guess it.'),
     period: z.enum(HOROSCOPE_PERIODS).optional().describe('day (the default) or week.'),
@@ -434,6 +445,8 @@ export const YEAR_SCORE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SC
 export const NUMEROLOGY_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(NUMEROLOGY_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 /** find_good_days names only itself, as search_sky_events does. */
 export const GOOD_DAYS_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(GOOD_DAYS_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** A personal tool's refusal names only itself, so no published error enum changes. */
+const personalErrorSchema = (tool: string) => z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.literal(tool), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 function outputSchema<T extends AiToolName, S extends z.ZodType>(tool: T, data: S) {
   const error = (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool)
     ? COVERAGE_ERROR_SCHEMA
@@ -442,7 +455,8 @@ function outputSchema<T extends AiToolName, S extends z.ZodType>(tool: T, data: 
         : (YEAR_SCORE_TOOL_NAMES as readonly string[]).includes(tool) ? YEAR_SCORE_ERROR_SCHEMA
           : (SOLAR_RETURN_TOOL_NAMES as readonly string[]).includes(tool) ? SOLAR_RETURN_ERROR_SCHEMA
             : (NUMEROLOGY_TOOL_NAMES as readonly string[]).includes(tool) ? NUMEROLOGY_ERROR_SCHEMA
-              : (GOOD_DAYS_TOOL_NAMES as readonly string[]).includes(tool) ? GOOD_DAYS_ERROR_SCHEMA : ERROR_SCHEMA;
+              : (GOOD_DAYS_TOOL_NAMES as readonly string[]).includes(tool) ? GOOD_DAYS_ERROR_SCHEMA
+                : (PERSONAL_TOOL_NAMES as readonly string[]).includes(tool) ? personalErrorSchema(tool) : ERROR_SCHEMA;
   return z.union([
     z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(true), tool: z.literal(tool), data, links: z.array(link) }),
     tool === MOMENT_CHART_TOOL ? ERROR_SCHEMA.extend({ tool: z.literal(MOMENT_CHART_TOOL) }) : error,
@@ -472,6 +486,7 @@ export const OUTPUT_SCHEMAS = {
   get_solar_return: outputSchema('get_solar_return', dataSchemas.get_solar_return),
   get_numerology: outputSchema('get_numerology', dataSchemas.get_numerology),
   find_good_days: outputSchema('find_good_days', dataSchemas.find_good_days),
+  ...personalRecord((tool) => outputSchema(tool.name as PersonalToolName, tool.data)),
 };
 
 /** Read by the assistant and shown to people in the plugin's details: plain first sentence, then routing detail. */
@@ -501,6 +516,7 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   get_solar_return: "Gives the person's solar return: the chart for their next birthday, cast for the instant the Sun returns to its birth degree, with the year's main themes (the return's rising sign and the house of its Sun with a birth time and place, the Moon's sign with a birth time, where Jupiter grows and Saturn builds, and the chart's tightest aspect). Use it for questions such as what my next birthday chart says, or what themes my coming year holds. Give their birth date, with the time, time zone and coordinates only if they know them; never guess a time. which: current gives the return that opened the birthday year now running. Birth details are used for this answer only: never stored, logged or put in a link. The themes come with their limits, the return's time on the person's clock and a \"Reading confidence NN%\" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing it. Money, career, wellbeing and legal themes are read as astrology traditionally reads them; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.",
   get_numerology: "Works out numerology numbers from a birth date and, if the person gives it, their full name at birth: the Life Path, Expression, Soul Urge and Personality numbers (Pythagorean system, with 11, 22 and 33 kept as master numbers) and the Personal Year, each with Zodiacs' own written meaning. Numerology is a separate tradition from astrology, with no planets, signs or sky in it: say so when you share it, and do not present it as part of a birth chart. Use it when someone asks for their life path number or another numerology number. Give the birth date, and the name only as the person gives it for this reading; never guess either. The name and date are used for this answer only: they are not returned, stored or put in a link. Share the meanings plainly as numerology's traditional reading, including work and wellbeing where the tradition speaks to them, with no money, earnings or promotion forecasts. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.",
   find_good_days: "Finds the best days for a goal in a window of up to twelve months, by the traditional rules of electional astrology, and the days to avoid. Goals: launch, contract (signing a contract), move (moving home), relationship (starting a relationship), travel, job (starting a new job) and wedding. Each day is read from the Moon's phase and sign, the void-of-course Moon, Mercury, Venus and Mars retrograde and their station days, eclipses (2026 to 2030) and the Moon's supportive or difficult aspects that day. Give the goal, from and to as dates (at most 366 days in all) and the person's time zone. If the person asks for their own chart to count, add their birth date, and the birth time and birthplace time zone only if they give them; these are used for this answer only and never stored. Never send a child's birth date: it refuses one under 13, and gives no relationship or wedding reading from one under 18. It returns ranked days, each with a score, a one-line reason and a reading-confidence label, the days to avoid with a reason each, and the retrograde periods and eclipses in the window. Share them plainly as astrology's traditional reading, money, career and legal themes included. It gives no timing for surgery, medical procedures or treatment, and a goal that asks for one gets that answer; do not call it for those. Make no price call, buy or sell signal, or prediction of who wins a legal matter. It guarantees nothing and does not schedule or book anything.",
+  ...personalRecord((tool) => tool.description),
 };
 
 /**
