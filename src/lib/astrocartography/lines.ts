@@ -59,6 +59,13 @@ export function horizonLongitude(body: Pick<EquatorialBody, 'ra' | 'dec'>, gast:
  * at hour angle H, tan φ = −cos H / tan δ. Points beyond ±maxLatitude are left
  * out. A body on the equator (δ = 0) rises along a meridian: the line is then
  * that meridian.
+ *
+ * With a small declination the line is nearly a meridian, and one step of hour
+ * angle crosses many degrees of latitude around the equator (about cot δ times
+ * the step): close to an equinox the Sun's whole line falls between two steps,
+ * past ±maxLatitude. Every stretch of latitude the hour-angle samples leave
+ * wider than one step is filled in by latitude, every stepDegrees, so the line
+ * is kept whole however small the declination.
  */
 export function horizonLine(body: Pick<EquatorialBody, 'ra' | 'dec'>, gast: number, angle: 'ASC' | 'DSC', stepDegrees = 0.5, maxLatitude = 85): GeoPoint[] {
   const points: GeoPoint[] = [];
@@ -72,7 +79,23 @@ export function horizonLine(body: Pick<EquatorialBody, 'ra' | 'dec'>, gast: numb
     if (Math.abs(lat) > maxLatitude) continue;
     points.push({ lat, lon: wrapLongitude(body.ra + (angle === 'ASC' ? -h : h) - gast) });
   }
-  return points.sort((a, b) => a.lat - b.lat);
+  points.sort((a, b) => a.lat - b.lat);
+  // The latitude is monotonic in the hour angle, so the line runs in order of latitude; fill the wide gaps.
+  const filled: GeoPoint[] = [];
+  const fill = (from: number, to: number) => {
+    if (to - from <= stepDegrees) return;
+    for (let k = Math.max(0, Math.floor((from + maxLatitude) / stepDegrees)); ; k += 1) {
+      const lat = -maxLatitude + k * stepDegrees;
+      if (lat >= to || lat > maxLatitude + 1e-9) break;
+      if (lat <= from) continue;
+      const lon = horizonLongitude(body, gast, lat, angle);
+      if (lon !== null) filled.push({ lat, lon });
+    }
+  };
+  let previous = -maxLatitude - stepDegrees;
+  for (const point of points) { fill(previous, point.lat); filled.push(point); previous = point.lat; }
+  fill(previous, maxLatitude + stepDegrees);
+  return filled;
 }
 
 export interface BodyLines {

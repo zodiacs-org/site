@@ -424,7 +424,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
     if (isPersonalTool(tool)) {
       // A personal tool: computed by its own module from the engine and pre-written wording, for this call only.
       const now = dependencies.now?.() ?? new Date();
-      const child = childBirthDateRefusal(tool, input, now, context.hostZone);
+      // The age is read on the birth date as given and as the tool will read it, so a date its schema rewrites is checked too.
+      const child = childBirthDateRefusal(tool, input, now, context.hostZone) ?? childBirthDateRefusal(tool, parsed.data, now, context.hostZone);
       if (child) return child;
       const definition = personalTool(tool);
       const result = await feature(() => definition.run(definition.input.parse(input) as never, {

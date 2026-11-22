@@ -42846,7 +42846,26 @@ function horizonLine(body3, gast, angle2, stepDegrees = 0.5, maxLatitude = 85) {
     if (Math.abs(lat) > maxLatitude) continue;
     points.push({ lat, lon: wrapLongitude(body3.ra + (angle2 === "ASC" ? -h : h) - gast) });
   }
-  return points.sort((a, b) => a.lat - b.lat);
+  points.sort((a, b) => a.lat - b.lat);
+  const filled = [];
+  const fill = (from, to) => {
+    if (to - from <= stepDegrees) return;
+    for (let k = Math.max(0, Math.floor((from + maxLatitude) / stepDegrees)); ; k += 1) {
+      const lat = -maxLatitude + k * stepDegrees;
+      if (lat >= to || lat > maxLatitude + 1e-9) break;
+      if (lat <= from) continue;
+      const lon = horizonLongitude(body3, gast, lat, angle2);
+      if (lon !== null) filled.push({ lat, lon });
+    }
+  };
+  let previous = -maxLatitude - stepDegrees;
+  for (const point2 of points) {
+    fill(previous, point2.lat);
+    filled.push(point2);
+    previous = point2.lat;
+  }
+  fill(previous, maxLatitude + stepDegrees);
+  return filled;
 }
 function distanceKm(a, b) {
   const dLat = (b.lat - a.lat) * DEG8;
@@ -42978,7 +42997,7 @@ var LINE_MEANING = {
   Venus: {
     ASC: "Traditionally a place where you feel attractive and at ease, and where life is more pleasant and sociable.",
     DSC: "Traditionally one of the classic lines for love and partnership, and for agreements that go smoothly.",
-    MC: "Traditionally good for work in the arts, design, beauty and diplomacy, and for being liked in public; often read as good for earnings.",
+    MC: "Traditionally good for work in the arts, design, beauty and diplomacy, and for being liked in public; often read as a place where work feels more pleasant and goes more smoothly.",
     IC: "Traditionally a place for a beautiful, comfortable home and warm family life."
   },
   Mars: {
@@ -42990,7 +43009,7 @@ var LINE_MEANING = {
   Jupiter: {
     ASC: "Traditionally one of the luckiest lines: a place of optimism, growth and opportunities that seem to find you.",
     DSC: "Traditionally a place for generous partners, helpful advisers and agreements that work in your favour.",
-    MC: "Traditionally one of the best lines for career growth, promotion and a good name; often read as a strong place for earnings.",
+    MC: "Traditionally one of the best lines for career growth and a good name: a place where work opens up, mentors are generous and your horizons widen.",
     IC: "Traditionally a place for a large, happy home, good for family, property and feeling well provided for."
   },
   Saturn: {
@@ -45704,7 +45723,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
     let links = [methodLink];
     if (isPersonalTool(tool)) {
       const now = dependencies.now?.() ?? /* @__PURE__ */ new Date();
-      const child2 = childBirthDateRefusal(tool, input, now, context.hostZone);
+      const child2 = childBirthDateRefusal(tool, input, now, context.hostZone) ?? childBirthDateRefusal(tool, parsed2.data, now, context.hostZone);
       if (child2) return child2;
       const definition = personalTool(tool);
       const result2 = await feature(() => definition.run(definition.input.parse(input), {

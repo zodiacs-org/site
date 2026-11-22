@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 import * as geometry from '../../lib/astrocartography/lines';
 import { skyEvents } from '@zodiacs/engine/sky';
@@ -102,6 +103,40 @@ describe('astrocartography geometry', () => {
     expect(new Set(horizonLine({ ra: 90, dec: 0 }, 0, 'ASC').map((point) => point.lon))).toEqual(new Set([0]));
   });
 
+  it('keeps the rising and setting lines whole for a declination near zero, close to an equinox', () => {
+    // At 07:30 UTC on 20 March 2000 the Sun's declination is about -0.0014 degrees: every hour-angle step fell past 85 degrees, so both lines were empty.
+    const at = new Date('2000-03-20T07:30:00Z');
+    const equinox = equatorialBodies(at);
+    const equinoxGast = greenwichSiderealDegrees(at);
+    const sun = equinox.find((row) => row.body === 'Sun')!;
+    expect(Math.abs(sun.dec)).toBeLessThan(0.01);
+    const drawn = geometry.mapLines(equinox, equinoxGast).find((row) => row.body === 'Sun')!;
+    for (const [angle, line] of [['ASC', drawn.asc], ['DSC', drawn.dsc]] as const) {
+      expect(line.length, angle).toBeGreaterThan(300);
+      expect(line[0].lat, angle).toBeCloseTo(-85, 6);
+      expect(line.at(-1)!.lat, angle).toBeCloseTo(85, 6);
+      for (let index = 1; index < line.length; index += 1) {
+        expect(line[index].lat - line[index - 1].lat, `${angle} at ${line[index].lat}`).toBeGreaterThan(0);
+        expect(line[index].lat - line[index - 1].lat, `${angle} at ${line[index].lat}`).toBeLessThanOrEqual(0.5 + 1e-9);
+      }
+      for (const point of line) expect(Math.abs(wrapLongitude(point.lon - horizonLongitude(sun, equinoxGast, point.lat, angle)!)), `${angle} at ${point.lat}`).toBeLessThan(1e-9);
+      // A place on the line is found on it, so the distance a city is read at is not lost.
+      const place = { lat: 10, lon: horizonLongitude(sun, equinoxGast, 10, angle)! };
+      const row = lineDistances(place, equinox, equinoxGast).find((entry) => entry.body === 'Sun' && entry.angle === angle)!;
+      expect(row.km, angle).toBeLessThan(1);
+    }
+    // And for any small declination, either side of zero: whole, in order, and no stretch of latitude left wider than a step.
+    for (const dec of [1e-6, -1e-4, 0.01, -0.1, 0.5, 2, -3.4]) {
+      for (const angle of ['ASC', 'DSC'] as const) {
+        const line = horizonLine({ ra: 30, dec }, 100, angle);
+        const reach = Math.min(85, 90 - Math.abs(dec));
+        expect(line[0].lat, `${dec} ${angle}`).toBeLessThanOrEqual(-reach + 0.5);
+        expect(line.at(-1)!.lat, `${dec} ${angle}`).toBeGreaterThanOrEqual(reach - 0.5);
+        for (let index = 1; index < line.length; index += 1) expect(line[index].lat - line[index - 1].lat, `${dec} ${angle}`).toBeLessThanOrEqual(0.5 + 1e-9);
+      }
+    }
+  });
+
   it('finds a place on a line at distance zero, and lists the nearest first', () => {
     const venus = bodies.find((row) => row.body === 'Venus')!;
     const lon = horizonLongitude(venus, gast, 20, 'DSC')!;
@@ -161,6 +196,32 @@ describe('get_astrocartography', () => {
     expect(await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30' }, ON)).toMatchObject({ ok: false, error: { message: 'zone is required.' } });
     expect(await executeAiTool('get_astrocartography', { birthDate: '2019-05-03', time: '08:30', zone: 'Europe/London' }, ON)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
     expect(await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['a', 'b', 'c', 'd', 'e', 'f'].map((c) => `${c}${c}`) }, ON)).toMatchObject({ ok: false });
+  });
+
+  it('draws nothing for a child\'s birth date written with spaces around it, and does not repeat it back', async () => {
+    const positions = await import('../../lib/astrocartography/positions');
+    const moment = vi.spyOn(positions, 'equatorialMoment');
+    try {
+      for (const birthDate of [' 2020-01-01', '2020-01-01 ', '\t2020-01-01', '2020-01-01\n']) {
+        const answer = await executeAiTool('get_astrocartography', { birthDate, time: '08:30', zone: 'Europe/London' }, ON) as { ok: boolean; data?: unknown; error?: { code: string; message: string } };
+        expect(answer, JSON.stringify(birthDate)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+        expect(answer.data, JSON.stringify(birthDate)).toBeUndefined();
+        expect(answer.error!.message).not.toContain('2020');
+      }
+      expect(moment).not.toHaveBeenCalled();
+      // The spy sees the calculation when it runs.
+      expect(await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London' }, ON)).toMatchObject({ ok: true });
+      expect(moment).toHaveBeenCalled();
+    } finally {
+      moment.mockRestore();
+    }
+  });
+
+  it('reads the age on the arguments as the tool parses them, as well as on what was sent', () => {
+    const source = readFileSync(new URL('../tools.ts', import.meta.url), 'utf8');
+    const branch = source.slice(source.indexOf('if (isPersonalTool(tool)) {'));
+    expect(branch).toMatch(/childBirthDateRefusal\(tool, input, now, context\.hostZone\) \?\? childBirthDateRefusal\(tool, parsed\.data, now, context\.hostZone\)/u);
+    expect(branch.indexOf('childBirthDateRefusal(')).toBeLessThan(branch.indexOf('definition.run('));
   });
 
   it('is not offered with the switch off', async () => {

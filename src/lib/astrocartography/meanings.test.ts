@@ -193,3 +193,26 @@ describe('an astrocartography birth time the clocks repeated or skipped (ZOD-26)
     expect(plain.data.limits.some((entry: string) => entry.startsWith('That clock time'))).toBe(false);
   });
 });
+
+describe('astrocartography readings and money', () => {
+  // The owner's rule: no line is read as a money, earnings or income forecast for a place.
+  const MONEY = /earn|income|money|salary|wage|wealth|rich|prosper|financ|profit|pay rise|promotion/iu;
+
+  it('read no line, for an adult or someone under 18, as a place for earnings', () => {
+    for (const body of ACG_BODIES) for (const angle of ACG_ANGLES) for (const minor of [false, true]) {
+      const text = `${lineSentence(body, angle, minor)} ${lineMeaning(body, angle, minor) ?? ''}`;
+      expect(text, `${body} ${angle}${minor ? ' under 18' : ''}`).not.toMatch(MONEY);
+      expect(text, `${body} ${angle}`).not.toMatch(/[\u2013\u2014]/u);
+      const card = astrocartographyCardModel({ planet: body, angle, ref: null });
+      expect(`${card.title} ${card.detail} ${card.line ?? ''}`, `${body} ${angle} card`).not.toMatch(MONEY);
+    }
+  });
+
+  it('keeps the Venus and Jupiter Midheaven lines on work and standing, as the page and the tool give them', async () => {
+    expect(LINE_MEANING.Venus.MC).toBe('Traditionally good for work in the arts, design, beauty and diplomacy, and for being liked in public; often read as a place where work feels more pleasant and goes more smoothly.');
+    expect(LINE_MEANING.Jupiter.MC).toBe('Traditionally one of the best lines for career growth and a good name: a place where work opens up, mentors are generous and your horizons widen.');
+    const answer = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['New York', 'Lisbon', 'Tokyo', 'Sydney', 'Lima'] }, ON);
+    expect(answer.ok).toBe(true);
+    expect(JSON.stringify(answer)).not.toMatch(MONEY);
+  });
+});

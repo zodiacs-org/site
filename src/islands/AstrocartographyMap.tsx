@@ -47,6 +47,23 @@ export function under18(birthDate: string, now = new Date()): boolean {
   return isUnder18(birthDate, `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`);
 }
 
+/**
+ * The Gregorian date the map would be drawn for, from the date as entered, or
+ * the message for the form. The age is read on that date, after a typed or
+ * Old Style date is converted, so a date written another way cannot pass the
+ * under-13 check and then become a child's date.
+ */
+export async function mapBirthDate(date: string, calendar: CalendarChoice, now = new Date()): Promise<{ date: string } | { error: string }> {
+  let birthDate = date;
+  if (calendarInPlay(date, calendar)) {
+    const entry = await birthDateForChart('en', date, calendar);
+    if ('error' in entry) return { error: entry.error };
+    birthDate = entry.date;
+  }
+  // Zodiacs is not directed at children under 13: such a birth date draws nothing.
+  return under13(birthDate, now) ? { error: UNDER_13 } : { date: birthDate };
+}
+
 export default function AstrocartographyMap() {
   const [date, setDate] = useState('');
   const [calendar, setCalendar] = useState<CalendarChoice>('gregorian');
@@ -72,18 +89,16 @@ export default function AstrocartographyMap() {
   async function draw(event: Event) {
     event.preventDefault();
     if (!date || !time || !city) return;
-    // Zodiacs is not directed at children under 13: such a birth date draws nothing.
-    if (under13(date)) { setResult(null); setPlaces([]); setError(UNDER_13); return; }
     const request = ++revision.current;
     setBusy(true); setError(''); setResult(null); setPlaces([]);
     try {
+      // The date is converted and its age checked before anything is calculated.
+      const entry = await mapBirthDate(date, calendar);
+      if (request !== revision.current) return;
+      if ('error' in entry) { setError(entry.error); return; }
+      const birthDate = entry.date;
       const compute = await loadModule(() => import('./astrocartography/compute'));
-      let birthDate = date;
-      if (calendarInPlay(date, calendar)) {
-        const entry = await birthDateForChart('en', date, calendar);
-        if ('error' in entry) { setError(entry.error); return; }
-        birthDate = entry.date;
-      }
+      if (request !== revision.current) return;
       const drawn = await compute.computeAstrocartography({ birthDate, birthTime: time, place: city });
       if (request !== revision.current) return;
       nearest.current = compute.nearestLines;
