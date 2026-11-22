@@ -455,7 +455,8 @@
   .wheel--settle .wheel__body { animation-name: wheel-fade; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .wheel--animate { animation: wheel-fade 160ms var(--ease) backwards; }
+  .wheel--animate { animation: none; }
+  [data-wheel-reveal] .wheel--animate { animation: wheel-fade 160ms var(--ease) backwards; }
 }
 
 /* Placements table */

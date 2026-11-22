@@ -51,6 +51,9 @@ describe('birth chart reveal', () => {
         reduced.push(`${rule.selector} ${decl.value}`);
       }
     });
-    expect(reduced).toEqual(['.wheel--animate wheel-fade 160ms var(--ease) backwards']);
+    expect(reduced).toEqual([
+      '.wheel--animate none',
+      '[data-wheel-reveal] .wheel--animate wheel-fade 160ms var(--ease) backwards',
+    ]);
   });
 });
