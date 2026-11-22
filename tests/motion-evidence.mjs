@@ -14,8 +14,11 @@
  *    frame is exact and repeatable;
  * 3. a film strip after each step the route lists (a scroll, or a form fill
  *    and a click);
- * 4. numbers: layout shift, LCP, paint and entrance timing under throttling,
- *    long frames, animated properties, reduced motion and no-script states.
+ * 4. numbers: the sum of layout shifts over load and one scroll-through, LCP,
+ *    the largest above-the-fold block, paint and entrance timing under
+ *    throttling, long frames, animated properties, whether every mark ends up
+ *    shown (at rest, with reduced motion and with scripting off), and the
+ *    reload, primary-action and step checks.
  *
  * Usage:
  *
@@ -25,7 +28,9 @@
  *
  * `--before` alone is baseline mode: everything is measured, nothing is
  * compared. `--check` makes the process exit 1 when a hard check fails on the
- * "after" build (or on the only build).
+ * "after" build (or on the only build), when a route answers with a status
+ * outside 2xx on either build, or when the route list resolves to no routes.
+ * A measurement that could not be taken is a failure, never a pass.
  *
  * The harness does not build the site or start servers. Build each worktree,
  * then run `npx astro preview --port N --host 127.0.0.1` in it and pass the
@@ -61,9 +66,29 @@ export const STRIP_TIMES = [0, 100, 200, 300, 440, 700, 1100, 1600, 2200];
 export const ALLOWED_PROPERTIES = ['opacity', 'transform', 'stroke-dashoffset'];
 export const DAILY_SELECTORS = ['.skyticker', '.tbs__stamp'];
 export const PIXEL_THRESHOLD = 0.1;
-export const MAX_REST_DIFF = 0.001;
+/**
+ * Rest state: at most this many differing pixels (pixelmatch, threshold 0.1)
+ * on an "identical" route, however long the page. The same build compared
+ * with itself measured 0 on every route and screen size in three runs (the
+ * noise floor), and removing one 24 x 24 icon changes far more pixels than
+ * this (see docs/motion/evidence and the PR's negative controls).
+ */
+export const MAX_REST_PIXELS = 16;
 export const LONG_FRAME_MS = 50;
 export const LONG_FRAME_WINDOW_MS = 2500;
+/**
+ * Long frames on a slow runner. The reference is the same build, reloaded
+ * with its marks removed and measured over the same window. The subject fails
+ * when its longest frame exceeds max(50 ms, reference x 1.5 + one 60 Hz
+ * frame): frame gaps come in steps of 16.7 ms, and the same page measured
+ * twice on this runner differed by up to that ratio (see the PR).
+ */
+export const LONG_FRAME_RATIO = 1.5;
+export const FRAME_MS = 1000 / 60;
+/** After a reload, the scroll position must be within this many px of the one before it. */
+export const RELOAD_SCROLL_TOLERANCE = 4;
+/** Marks with their attribute renamed to this, for the reference load without marks. */
+export const STRIPPED_ATTRIBUTE = 'data-evidence-stripped';
 export const CLS_RETAKE_BELOW = 0.002;
 export const PRIMARY_ACTION_MARGIN = 100;
 export const SHEET_MAX_BYTES = 400 * 1024;
@@ -154,21 +179,57 @@ export function disallowedProperties(properties, allowed = ALLOWED_PROPERTIES) {
   return [...new Set(properties.map(toKebab))].filter((p) => !allowed.includes(p)).sort();
 }
 
-/** Long requestAnimationFrame gaps in [start, start + durationMs]. */
-export function longFrameStats(timestamps, start, durationMs = LONG_FRAME_WINDOW_MS, thresholdMs = LONG_FRAME_MS) {
+/**
+ * Long requestAnimationFrame gaps in the window (start, start + durationMs].
+ * A gap that ends inside the window counts in full; a gap that starts inside
+ * the window and ends after it counts up to the window's end. When the frames
+ * stop before the window ends, the time from the last frame to the window's
+ * end (or to `observedUntil`, when the frames were read) is a gap too. No gap
+ * in the window at all is "unmeasured", never a pass.
+ */
+export function longFrameStats(timestamps, start, durationMs = LONG_FRAME_WINDOW_MS, thresholdMs = LONG_FRAME_MS, observedUntil = null) {
   const end = start + durationMs;
   let count = 0;
   let longest = 0;
   let frames = 0;
-  for (let i = 1; i < timestamps.length; i += 1) {
-    const t = timestamps[i];
-    if (t <= start || t > end) continue;
-    const gap = t - timestamps[i - 1];
+  const consider = (gap) => {
     frames += 1;
     if (gap > thresholdMs) count += 1;
     if (gap > longest) longest = gap;
+  };
+  for (let i = 1; i < timestamps.length; i += 1) {
+    const t = timestamps[i];
+    const previous = timestamps[i - 1];
+    if (t <= start) continue;
+    if (previous >= end) break;
+    consider(Math.min(t, end) - previous);
   }
+  const last = timestamps[timestamps.length - 1];
+  if (observedUntil != null && last != null && last < end && observedUntil > last && last >= start) {
+    consider(Math.min(observedUntil, end) - last);
+  }
+  if (frames === 0) return { count: 0, longest: null, frames: 0, unmeasured: 'no frame was recorded in the window' };
   return { count, longest: Math.round(longest * 10) / 10, frames };
+}
+
+/** The longest frame allowed against a reference measured without marks. */
+export function longFrameLimit(referenceLongest) {
+  return Math.round(Math.max(LONG_FRAME_MS, referenceLongest * LONG_FRAME_RATIO + FRAME_MS) * 10) / 10;
+}
+
+/**
+ * pass: the longest frame is within the absolute 50 ms bar.
+ * note: over 50 ms, but the reference is over 50 ms too and the subject is
+ *   within longFrameLimit(reference): the runner is too slow for the
+ *   absolute bar and the marks did not make it materially worse.
+ * fail: over 50 ms while the reference is within it, over the relative
+ *   limit, or no reference was measured.
+ */
+export function longFrameVerdict(longest, referenceLongest) {
+  if (longest <= LONG_FRAME_MS) return 'pass';
+  if (referenceLongest == null) return 'fail';
+  if (longest > longFrameLimit(referenceLongest)) return 'fail';
+  return referenceLongest > LONG_FRAME_MS ? 'note' : 'fail';
 }
 
 /** Copy the top-left width x height area of an RGBA image. */
@@ -210,6 +271,7 @@ export function compareRest(a, b, { threshold = PIXEL_THRESHOLD, dailyRects = []
     : differing;
   return {
     differing,
+    outsideDaily,
     share: width * height > 0 ? differing / (width * height) : 0,
     width,
     height,
@@ -246,34 +308,60 @@ export function sheetLayout({ viewport, frameWidth, frameCount, rowCount }) {
 
 const fmtMs = (v) => (v == null ? 'n/a' : `${Math.round(v)} ms`);
 const fmtCount = (v) => (v == null ? 'n/a' : String(v));
+const isOk = (status) => status >= 200 && status < 300;
+
+function fmtLongFrames(n) {
+  const lf = n.longFrames;
+  if (!lf) return 'n/a';
+  if (lf.notApplicable) return `not applicable: ${lf.notApplicable}`;
+  if (lf.unmeasured) return `unmeasured: ${lf.unmeasured}`;
+  const retake = n.longFramesRetake?.longest != null ? ` (retake ${n.longFramesRetake.longest} ms)` : '';
+  const reference = n.longFramesReference?.longest != null ? `; without marks ${n.longFramesReference.longest} ms` : '';
+  return `${lf.count}, longest ${lf.longest} ms${retake}${reference}`;
+}
+
+function fmtShown(s) {
+  if (!s) return 'n/a';
+  const unrendered = s.total - s.rendered;
+  return `${s.rendered - s.notShown} of ${s.rendered} shown${unrendered ? ` (${unrendered} not rendered)` : ''}`;
+}
 
 /** One build's numbers for one viewport, as table cells. */
 export function formatNumbers(n) {
   if (!n) return {};
   return {
+    http: n.http ? (n.http.status != null ? String(n.http.status) : `error: ${n.http.error}`) : 'n/a',
     cls: n.cls == null ? 'n/a' : `${n.cls.toFixed(4)}${n.clsRetake != null ? ` (retake ${n.clsRetake.toFixed(4)})` : ''}`,
     lcp: n.lcp ? `${fmtMs(n.lcp.time)} \`${n.lcp.selector ?? '?'}\`` : 'n/a',
-    lcpMarked: n.lcp ? String(n.lcpMarked) : 'n/a',
+    lcpMarked: n.lcpMarked == null ? 'n/a' : String(n.lcpMarked),
+    largest: n.largest ? `\`${n.largest.selector ?? '?'}\` (${n.largest.kind}, ${n.largest.area} px²)${n.largest.marked ? ', marked' : ''}` : 'n/a',
     firstPaint: fmtMs(n.throttled?.firstPaint),
     domContentLoaded: fmtMs(n.throttled?.domContentLoaded),
-    firstMarkShown: n.throttled?.firstMarkShown == null ? 'none' : `${fmtMs(n.throttled.firstMarkShown)} (+${Math.round(n.throttled.firstMarkShown - (n.throttled.firstPaint ?? 0))} after paint)`,
-    longFrames: n.longFrames ? `${n.longFrames.count}, longest ${n.longFrames.longest} ms` : 'n/a',
+    firstMarkShown: n.throttled?.firstMarkShown == null
+      ? (n.markedCount === 0 ? 'n/a (no marks)' : 'none')
+      : `${fmtMs(n.throttled.firstMarkShown)} (+${Math.round(n.throttled.firstMarkShown - (n.throttled.firstPaint ?? 0))} after paint${n.throttled.scrolledToFirstMark ? ', after scrolling to it' : ''})`,
+    longFrames: fmtLongFrames(n),
     animatedProperties: n.animatedProperties ? (n.animatedProperties.join(', ') || 'none') : 'n/a',
     markedCount: fmtCount(n.markedCount),
     nestedMarks: fmtCount(n.nestedMarks),
     rootMarked: n.rootMarked == null ? 'n/a' : String(n.rootMarked),
-    hiddenAboveAfterReload: fmtCount(n.hiddenAboveAfterReload),
+    shownAtRest: fmtShown(n.shownAtRest),
+    hiddenAboveAfterReload: n.hiddenAboveAfterReload == null
+      ? `unmeasured${n.reload?.reason ? `: ${n.reload.reason}` : ''}`
+      : `${n.hiddenAboveAfterReload}${n.reload ? ` (scroll ${n.reload.before} to ${n.reload.after} px, ${n.reload.path})` : ''}`,
     primaryActionTop: n.primaryActionTop == null ? 'n/a' : `${n.primaryActionTop} px`,
-    reducedMotion: n.reducedMotion ? `${n.reducedMotion.running} running, ${n.reducedMotion.notOpaque} not opaque` : 'n/a',
-    noScript: n.noScript ? `${n.noScript.notOpaque} not opaque` : 'n/a',
+    reducedMotion: n.reducedMotion ? `${n.reducedMotion.running} running, ${fmtShown(n.reducedMotion)}` : 'n/a',
+    noScript: n.noScript ? fmtShown(n.noScript) : 'n/a',
     stripAnimations: n.strip ? `${n.strip.animations}${n.strip.lost ? ` (${n.strip.lost} lost)` : ''}` : 'n/a',
   };
 }
 
 export const NUMBER_ROWS = [
-  ['cls', 'CLS (load + scroll)'],
-  ['lcp', 'LCP'],
-  ['lcpMarked', 'LCP element marked'],
+  ['http', 'HTTP status'],
+  ['cls', 'Layout shift sum (load + one scroll-through)'],
+  ['lcp', 'LCP entry at load'],
+  ['lcpMarked', 'Any LCP entry on a marked element'],
+  ['largest', 'Largest above-the-fold block (geometry)'],
   ['firstPaint', 'First paint (throttled)'],
   ['domContentLoaded', 'DOMContentLoaded (throttled)'],
   ['firstMarkShown', 'First mark shown (throttled)'],
@@ -282,6 +370,7 @@ export const NUMBER_ROWS = [
   ['markedCount', 'Marked elements'],
   ['nestedMarks', 'Nested marks'],
   ['rootMarked', 'html has is-in'],
+  ['shownAtRest', 'Marks shown at rest'],
   ['hiddenAboveAfterReload', 'Hidden above after reload'],
   ['primaryActionTop', 'Primary action top'],
   ['reducedMotion', 'Reduced motion'],
@@ -289,19 +378,36 @@ export const NUMBER_ROWS = [
   ['stripAnimations', 'Animations in first-view strip'],
 ];
 
+function shownDetail(s) {
+  const base = fmtShown(s);
+  return s.notShown ? `${base}; not shown: ${s.examples.join('; ')}` : base;
+}
+
 /**
  * Hard checks for one route and viewport, applied to `subject` (the "after"
  * build, or the only build). `baseline` is the "before" build or null.
- * `baselineLongest` is the longest frame of the same page without marks.
+ * The long-frame reference is `subject.longFramesReference`: the same build
+ * reloaded with its marks removed and measured over the same window.
+ * Status is pass, fail, note (reported, not failed) or n/a (not applicable).
  */
-export function evaluateChecks({ route, viewport, subject, baseline = null, rest = null, baselineLongest = null }) {
+export function evaluateChecks({ route, viewport, subject, baseline = null, rest = null }) {
   const out = [];
   const add = (check, status, detail) => out.push({ check, status, detail });
   if (!subject) {
     add('measured', 'fail', 'no numbers were measured');
     return out;
   }
-  // cls
+  // HTTP status of the route on each build: an error page is never measured as the page.
+  const httpDetail = (n) => (n.http?.status != null
+    ? `${n.http.url} returned HTTP ${n.http.status}`
+    : `${n.http?.url ?? route.path} could not be fetched${n.http?.error ? ` (${n.http.error})` : ''}`);
+  if (baseline && !(baseline.http && isOk(baseline.http.status))) add('http (before)', 'fail', httpDetail(baseline));
+  if (!(subject.http && isOk(subject.http.status))) {
+    add('http', 'fail', httpDetail(subject));
+    return out;
+  }
+  add('http', 'pass', String(subject.http.status));
+  // layout shift (the sum over load and one scroll-through, not field CLS)
   if (subject.cls == null) add('cls', 'fail', 'not measured');
   else if (subject.cls === 0) add('cls', 'pass', '0');
   else if (subject.cls < CLS_RETAKE_BELOW && subject.clsRetake === 0) add('cls', 'pass', `${subject.cls.toFixed(4)} on the first take, 0 on the retake`);
@@ -311,50 +417,101 @@ export function evaluateChecks({ route, viewport, subject, baseline = null, rest
     if (value == null) add(check, 'fail', 'not measured');
     else add(check, ok ? 'pass' : 'fail', detail);
   };
-  flag('lcpMarked', subject.lcp ? subject.lcpMarked : null, subject.lcpMarked === false, `LCP element ${subject.lcp?.selector ?? '?'} ${subject.lcpMarked ? 'is' : 'is not'} marked`);
+  flag('lcpMarked', subject.lcpMarked, subject.lcpMarked === false, subject.lcpMarked
+    ? `an LCP entry fell on a marked element (${subject.lcpMarkedSelector ?? '?'})`
+    : `no LCP entry on a marked element (at load: ${subject.lcp?.selector ?? 'none'})`);
+  const largest = subject.largest;
+  flag('largestMarked', largest ? largest.marked : null, largest?.marked === false, largest
+    ? `largest above-the-fold ${largest.kind} \`${largest.selector}\` (${largest.area} px²) ${largest.marked ? 'is or sits inside a marked element' : 'is not marked'}`
+    : 'not measured');
   flag('rootMarked', subject.rootMarked, subject.rootMarked === false, `html ${subject.rootMarked ? 'has' : 'does not have'} ${SHOWN_CLASS}`);
   // Nested marks are reported, not failed: a disc inside a risen card shares the card's step
   // and reads as one entrance (docs/MOTION.md, the rule of 18 Nov).
-  flag('hiddenAboveAfterReload', subject.hiddenAboveAfterReload, subject.hiddenAboveAfterReload === 0, String(subject.hiddenAboveAfterReload));
+  if (subject.hiddenAboveAfterReload == null) add('hiddenAboveAfterReload', 'fail', `unmeasured: ${subject.reload?.reason ?? 'not measured'}`);
+  else {
+    const how = subject.reload ? ` (scroll ${subject.reload.before} to ${subject.reload.after} px, ${subject.reload.path})` : '';
+    add('hiddenAboveAfterReload', subject.hiddenAboveAfterReload === 0 ? 'pass' : 'fail', `${subject.hiddenAboveAfterReload}${how}`);
+  }
+  // every mark ends up shown
+  const shown = (check, s, extra = '') => {
+    if (!s) add(check, 'fail', 'not measured');
+    else add(check, s.notShown === 0 && !extra ? 'pass' : 'fail', `${extra}${shownDetail(s)}`);
+  };
+  shown('marksShownAtRest', subject.shownAtRest);
+  shown('reducedMotion', subject.reducedMotion, subject.reducedMotion?.running ? `${subject.reducedMotion.running} entrances running; ` : '');
+  shown('noScript', subject.noScript);
+  // animated properties: only the allowed ones, and every kind of mark actually sampled
   if (subject.animatedProperties == null) add('animatedProperties', 'fail', 'not measured');
   else {
     const bad = disallowedProperties(subject.animatedProperties);
-    add('animatedProperties', bad.length ? 'fail' : 'pass', bad.length ? `not allowed: ${bad.join(', ')}` : (subject.animatedProperties.join(', ') || 'none'));
+    const unsampled = (subject.markedVerbs ?? []).filter((verb) => !(subject.sampledVerbs ?? []).includes(verb));
+    if (bad.length) add('animatedProperties', 'fail', `not allowed: ${bad.join(', ')}`);
+    else if (subject.markedVerbs == null) add('animatedProperties', 'fail', 'unmeasured: the kinds of mark on the page were not recorded');
+    else if (unsampled.length) add('animatedProperties', 'fail', `unmeasured: no entrance was sampled for ${unsampled.join(', ')} (rendered marks of that kind exist)`);
+    else add('animatedProperties', 'pass', subject.markedVerbs.length ? (subject.animatedProperties.join(', ') || 'none') : 'none (no rendered marks)');
   }
-  if (!subject.reducedMotion) add('reducedMotion', 'fail', 'not measured');
-  else {
-    const { running, notOpaque } = subject.reducedMotion;
-    add('reducedMotion', running === 0 && notOpaque === 0 ? 'pass' : 'fail', `${running} running, ${notOpaque} not opaque`);
-  }
-  if (!subject.noScript) add('noScript', 'fail', 'not measured');
-  else add('noScript', subject.noScript.notOpaque === 0 ? 'pass' : 'fail', `${subject.noScript.notOpaque} not opaque`);
   // long frames
-  if (!subject.longFrames) add('longFrames', 'fail', 'not measured');
-  else if (subject.longFrames.longest <= LONG_FRAME_MS) add('longFrames', 'pass', `longest ${subject.longFrames.longest} ms`);
-  else if (baselineLongest == null) add('longFrames', 'fail', `longest ${subject.longFrames.longest} ms, no baseline without marks`);
-  else if (baselineLongest > LONG_FRAME_MS) add('longFrames', 'note', `runner too slow to judge: longest ${subject.longFrames.longest} ms, ${baselineLongest} ms without marks`);
-  else add('longFrames', 'fail', `longest ${subject.longFrames.longest} ms, ${baselineLongest} ms without marks`);
+  const lf = subject.longFrames;
+  if (!lf) add('longFrames', 'fail', 'not measured');
+  else if (lf.notApplicable) add('longFrames', 'n/a', `not applicable: ${lf.notApplicable}`);
+  else if (lf.unmeasured) add('longFrames', 'fail', `unmeasured: ${lf.unmeasured}`);
+  else {
+    const retake = subject.longFramesRetake?.longest;
+    const longest = retake != null ? Math.min(lf.longest, retake) : lf.longest;
+    const takes = `longest ${lf.longest} ms${retake != null ? `, retake ${retake} ms` : ''}`;
+    const reference = subject.longFramesReference;
+    const refLongest = reference?.longest ?? null;
+    const verdict = longFrameVerdict(longest, refLongest);
+    if (verdict === 'pass') add('longFrames', 'pass', takes);
+    else if (refLongest == null) add('longFrames', 'fail', `${takes}, and no reference without marks was measured${reference?.unmeasured ? ` (${reference.unmeasured})` : ''}`);
+    else {
+      const limit = longFrameLimit(refLongest);
+      const refText = `${refLongest} ms with marks removed (same build, same window)`;
+      if (verdict === 'note') add('longFrames', 'note', `runner too slow for the absolute ${LONG_FRAME_MS} ms bar: ${takes}, ${refText}; within ${limit} ms, so not materially worse`);
+      else if (longest > limit) add('longFrames', 'fail', `${takes}, over ${limit} ms (${LONG_FRAME_RATIO} x ${refText}, plus one frame)`);
+      else add('longFrames', 'fail', `${takes}, over ${LONG_FRAME_MS} ms while ${refText}`);
+    }
+  }
+  // scripted steps: a step that did not run is a failure on either build
+  (subject.steps ?? []).forEach((step, i) => {
+    if (step.skipped) add(`step ${i + 1}`, 'fail', `"${step.label}" did not run: ${step.skipped}`);
+  });
+  if (baseline) {
+    (baseline.steps ?? []).forEach((step, i) => {
+      if (step.skipped) add(`step ${i + 1} (before)`, 'fail', `"${step.label}" did not run on the before build: ${step.skipped}`);
+    });
+  }
   // rest state
   if (baseline && route.rest === 'identical') {
     if (!rest) add('rest', 'fail', 'rest state not compared');
-    else {
-      const pct = `${(rest.share * 100).toFixed(3)}%`;
-      if (rest.heightChanged) add('rest', 'fail', `height changed: ${rest.heightChanged.from} to ${rest.heightChanged.to} px (${pct} of the common area differs)`);
-      else if (rest.share <= MAX_REST_DIFF) add('rest', 'pass', `${pct} differs`);
-      else if (rest.dailyOnly) add('rest', 'note', `daily data: ${pct} differs, all inside ${DAILY_SELECTORS.join(' or ')}`);
-      else add('rest', 'fail', `${pct} differs (limit ${MAX_REST_DIFF * 100}%)`);
-    }
+    else if (rest.widthChanged) add('rest', 'fail', `width changed: ${rest.widthChanged.from} to ${rest.widthChanged.to} px`);
+    else if (rest.heightChanged) add('rest', 'fail', `height changed: ${rest.heightChanged.from} to ${rest.heightChanged.to} px (${rest.differing} px of the common area differ)`);
+    else if (rest.differing <= MAX_REST_PIXELS) add('rest', 'pass', `${rest.differing} px differ (limit ${MAX_REST_PIXELS})`);
+    else if (rest.outsideDaily != null && rest.outsideDaily <= MAX_REST_PIXELS) add('rest', 'note', `daily data: ${rest.differing} px differ, ${rest.outsideDaily} outside ${DAILY_SELECTORS.join(' or ')} (limit ${MAX_REST_PIXELS})`);
+    else add('rest', 'fail', `${rest.differing} px differ${rest.outsideDaily != null && rest.outsideDaily !== rest.differing ? `, ${rest.outsideDaily} outside the daily data` : ''} (limit ${MAX_REST_PIXELS})`);
   }
   // primary action
-  if (route.primaryAction && baseline) {
+  if (route.primaryAction) {
     const limit = viewport.height - PRIMARY_ACTION_MARGIN;
-    const before = baseline.primaryActionTop;
     const after = subject.primaryActionTop;
-    if (before == null || after == null) add('primaryAction', 'note', `primary action not found (before ${before ?? 'n/a'}, after ${after ?? 'n/a'})`);
-    else if (before <= limit && after > limit) add('primaryAction', 'fail', `top moved from ${before} to ${after} px, below ${limit} px`);
-    else add('primaryAction', 'pass', `top ${before} to ${after} px (limit ${limit} px)`);
+    if (baseline) {
+      const before = baseline.primaryActionTop;
+      if (before == null && after == null) add('primaryAction', 'fail', `${route.primaryAction} not found on either build`);
+      else if (before == null) add('primaryAction', 'fail', `unmeasured: ${route.primaryAction} not found on the before build (after: ${after} px)`);
+      else if (after == null) add('primaryAction', 'fail', `${route.primaryAction} found on the before build at ${before} px, missing on the after build`);
+      else if (before <= limit && after > limit) add('primaryAction', 'fail', `top moved from ${before} to ${after} px, below ${limit} px`);
+      else add('primaryAction', 'pass', `top ${before} to ${after} px (limit ${limit} px)`);
+    } else if (after == null) add('primaryAction', 'fail', `${route.primaryAction} not found`);
+    else if (after > limit) add('primaryAction', 'note', `top ${after} px, below the ${limit} px line (nothing to compare with in baseline mode)`);
+    else add('primaryAction', 'pass', `top ${after} px (limit ${limit} px)`);
   }
   return out;
+}
+
+/** The exit code of a run: 1 under --check when any hard check failed or nothing was measured. */
+export function checkExitCode(report, { check = false } = {}) {
+  if (!check) return 0;
+  return report.failures.length > 0 || report.routes.length === 0 ? 1 : 0;
 }
 
 export function stepLabel(step) {
@@ -371,7 +528,24 @@ export function escapeHtml(text) {
 
 const PROXY_NOTE = 'The 4x CPU and throttled-network numbers are a proxy, not a phone: headless Chromium on a shared machine with a slowed main thread and an emulated slow connection. Compare them between builds measured on the same machine, not against real devices.';
 
-const READING_NOTE = 'How to read the numbers: CLS covers the load and a scroll through the page that starts at `load` (steps of 0.8 of the screen, 150 ms apart). Long frames count requestAnimationFrame gaps over 50 ms in the 2.5 s after the first element gains is-in (after first paint when none does). Hidden above after reload is measured with the scroll restore made instant. Rest diff compares full-page screenshots with every finite animation finished, infinite loops on their first frame, videos on their first frame and `Date` fixed to the run\'s start in both builds.';
+const READING_NOTE = [
+  'How to read the numbers.',
+  'Layout shift sum: the sum of every layout shift during load and one scroll-through that starts at `load` (steps of 0.8 of the screen, 150 ms apart). It is not CLS as field tools define it (the worst five-second session window of a real visit); it is a stricter sum over a scripted visit. Measured with `Date` fixed to the run\'s start; on this Chrome a fixed clock left the layout-shift and LCP entries unchanged (same sources, same sizes).',
+  'The scroll-through announces itself as the reader\'s own scroll (one synthetic `wheel` event first), so a runtime that plays entrances only for a reader\'s scroll plays them here too.',
+  'LCP: Chrome reports no LCP entry for an element while it is at opacity 0 and reports a new one when it fades in, so the entry read at load can miss a hidden marked hero. "Any LCP entry on a marked element" therefore watches every entry until the end of the scroll-through, and "Largest above-the-fold block" measures the largest image or text block in the first screen by geometry, whatever its opacity; both must be unmarked.',
+  'First mark shown: the first element with the mark attribute that gains is-in (the site-wide `.reveal` heading entrance also adds is-in and is not counted). When no mark shows within 5 s of load, the harness scrolls the first mark into view and says so.',
+  `Long frames: requestAnimationFrame gaps over ${LONG_FRAME_MS} ms in the ${LONG_FRAME_WINDOW_MS / 1000} s after the first mark is shown, under 4x CPU. With no marks on the page the check is not applicable. Over ${LONG_FRAME_MS} ms, the same build is reloaded with its marks removed and measured over the same window; the check fails above max(${LONG_FRAME_MS} ms, ${LONG_FRAME_RATIO} x that reference + one 60 Hz frame), and is a note ("runner too slow for the absolute bar") only when the reference itself is over ${LONG_FRAME_MS} ms and the page is within that limit. One retake is allowed before a failure stands.`,
+  'Marks shown: every rendered element with the mark attribute must end at opacity 1 with no transform left over (rise, disc), and every `.motion-stroke` in a draw must end at stroke-dashoffset 0; checked after the scroll-through, with reduced motion and with scripting off.',
+  `Hidden above after reload: measured with the scroll restore made instant; the position after the reload must be within ${RELOAD_SCROLL_TOLERANCE} px of the one before it (native restore), otherwise the harness restores it itself (explicit restore) and says so, and if neither holds the check is unmeasured and fails.`,
+  `Rest diff: full-page screenshots with every finite animation finished, infinite loops on their first frame, videos on their first frame and \`Date\` fixed to the run's start in both builds; at most ${MAX_REST_PIXELS} differing pixels (pixelmatch threshold ${PIXEL_THRESHOLD}) on a route marked identical, and any change of page width or height fails.`,
+].join(' ');
+
+function restCell(rest) {
+  const width = rest.widthChanged ? `, width changed: ${rest.widthChanged.from} to ${rest.widthChanged.to} px` : '';
+  const height = rest.heightChanged ? `, height changed: ${rest.heightChanged.from} to ${rest.heightChanged.to} px` : '';
+  const daily = rest.differing > 0 && rest.outsideDaily != null && rest.outsideDaily !== rest.differing ? ` (${rest.outsideDaily} outside daily data)` : '';
+  return `${rest.differing} px${daily}${width}${height}`;
+}
 
 /** summary.md: one table per route, before and after side by side. */
 export function renderSummary(report) {
@@ -411,9 +585,7 @@ export function renderSummary(report) {
         if (c.build === 'before') return '';
         const rest = route.viewports[c.vp]?.rest;
         if (!rest) return 'n/a';
-        const pct = `${(rest.share * 100).toFixed(3)}%`;
-        const height = rest.heightChanged ? `, height changed: ${rest.heightChanged.from} to ${rest.heightChanged.to} px` : '';
-        return `${pct}${height}${rest.dailyOnly ? ' (daily data)' : ''}`;
+        return restCell(rest);
       }).join(' | ')} |`);
     }
     const cells = columns.map((c) => formatNumbers(route.viewports[c.vp]?.[c.build]));
@@ -476,8 +648,7 @@ export function renderReport(report) {
         if (c.build === 'before') return '<td></td>';
         const rest = route.viewports[c.vp]?.rest;
         if (!rest) return '<td>n/a</td>';
-        const text = `${(rest.share * 100).toFixed(3)}%${rest.heightChanged ? `, height changed: ${rest.heightChanged.from} to ${rest.heightChanged.to} px` : ''}${rest.dailyOnly ? ' (daily data)' : ''}`;
-        return `<td>${escapeHtml(text)}</td>`;
+        return `<td>${escapeHtml(restCell(rest))}</td>`;
       }).join('')}</tr>`);
     }
     const cells = columns.map((c) => formatNumbers(route.viewports[c.vp]?.[c.build]));
@@ -502,8 +673,8 @@ export function renderReport(report) {
 /* Browser side                                                        */
 /* ------------------------------------------------------------------ */
 
-/** Runs in the page before any of its own scripts. */
-function initScript(cfg) {
+/** Runs in the page before any of its own scripts. Exported for the unit tests only. */
+export function initScript(cfg) {
   const mark = `[${cfg.mark}]`;
   const describe = (el) => {
     if (!el || !el.tagName) return null;
@@ -511,8 +682,8 @@ function initScript(cfg) {
     return { tag: el.tagName, id: el.id || '', classes: cls.split(/\s+/u).filter(Boolean) };
   };
   const state = {
-    cls: 0, shifts: 0, lcp: null, firstPaint: null, firstContentfulPaint: null,
-    firstMarkShown: null, frames: [], props: {}, describe,
+    cls: 0, shifts: 0, lcp: null, lcpMarked: false, lcpMarkedElement: null, firstPaint: null, firstContentfulPaint: null,
+    firstMarkShown: null, frames: [], props: {}, verbs: {}, describe,
   };
   Object.defineProperty(window, '__motionEvidence', { value: state, enumerable: false });
   const observe = (type, fn) => {
@@ -521,14 +692,19 @@ function initScript(cfg) {
   observe('layout-shift', (entries) => {
     for (const e of entries) if (!e.hadRecentInput) { state.cls += e.value; state.shifts += 1; }
   });
+  // Chrome reports no entry for an element at opacity 0 and a new one when it
+  // fades in, so every entry is watched: any entry on a marked element counts.
   observe('largest-contentful-paint', (entries) => {
+    for (const e of entries) {
+      const marked = Boolean(e.element && e.element.closest && e.element.closest(mark));
+      if (marked && !state.lcpMarked) {
+        state.lcpMarked = true;
+        state.lcpMarkedElement = describe(e.element);
+      }
+    }
     const e = entries[entries.length - 1];
     if (!e) return;
-    state.lcp = {
-      time: e.startTime,
-      element: describe(e.element),
-      marked: Boolean(e.element && e.element.closest && e.element.closest(mark)),
-    };
+    state.lcp = { time: e.startTime, element: describe(e.element), marked: Boolean(e.element && e.element.closest && e.element.closest(mark)) };
   });
   observe('paint', (entries) => {
     for (const e of entries) {
@@ -536,11 +712,14 @@ function initScript(cfg) {
       if (e.name === 'first-contentful-paint' && state.firstContentfulPaint == null) state.firstContentfulPaint = e.startTime;
     }
   });
+  // Only an element with the mark attribute counts: the site-wide .reveal
+  // heading entrance (src/layouts/Base.astro) adds the same class.
   new MutationObserver((records) => {
     if (state.firstMarkShown != null) return;
     for (const r of records) {
       const el = r.target;
       if (el === document.documentElement || !el.classList || !el.classList.contains(cfg.shown)) continue;
+      if (!el.matches || !el.matches(mark)) continue;
       if (String(r.oldValue ?? '').split(/\s+/u).includes(cfg.shown)) continue;
       state.firstMarkShown = performance.now();
       break;
@@ -551,8 +730,10 @@ function initScript(cfg) {
     requestAnimationFrame(tick);
   }
   const record = (target, names) => {
-    if (!target || !target.closest || !target.closest(mark)) return;
+    const owner = target && target.closest ? target.closest(mark) : null;
+    if (!owner) return;
     for (const n of names) state.props[n] = true;
+    if (names.length) state.verbs[owner.getAttribute(cfg.mark)] = true;
   };
   addEventListener('transitionrun', (e) => record(e.target, [e.propertyName]), true);
   addEventListener('animationstart', (e) => {
@@ -566,10 +747,16 @@ function initScript(cfg) {
     record(e.target, names);
   }, true);
   if (cfg.stripMarks) {
+    // The attribute is renamed, not dropped, so the reference load can
+    // scroll to the same element the measured load scrolled to.
+    const unmark = (el) => {
+      el.setAttribute(cfg.stripped, el.getAttribute(cfg.mark));
+      el.removeAttribute(cfg.mark);
+    };
     const strip = (root) => {
       if (root.nodeType !== 1) return;
-      if (root.hasAttribute(cfg.mark)) root.removeAttribute(cfg.mark);
-      for (const el of root.querySelectorAll ? root.querySelectorAll(mark) : []) el.removeAttribute(cfg.mark);
+      if (root.hasAttribute(cfg.mark)) unmark(root);
+      for (const el of root.querySelectorAll ? root.querySelectorAll(mark) : []) unmark(el);
     };
     new MutationObserver((records) => {
       for (const r of records) {
@@ -595,7 +782,9 @@ function sampleAnimations(cfg) {
       loops.push(`${name} on ${d ? `${d.tag.toLowerCase()}${d.classes.slice(0, 2).map((c) => `.${c}`).join('')}` : '?'}`);
       continue;
     }
-    if (!s || !target || !target.closest || !target.closest(mark)) continue;
+    const owner = s && target && target.closest ? target.closest(mark) : null;
+    if (!owner) continue;
+    s.verbs[owner.getAttribute(cfg.mark)] = true;
     if (a.transitionProperty) s.props[a.transitionProperty] = true;
     for (const k of a.effect?.getKeyframes?.() ?? []) {
       for (const key of Object.keys(k)) if (!['offset', 'computedOffset', 'easing', 'composite'].includes(key)) s.props[key] = true;
@@ -613,21 +802,48 @@ function twoFrames() {
   return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 }
 
+/** Load a page; a response outside 2xx throws, so an error page is never measured as the page. */
 async function gotoPage(page, url, { timeout = 30000, notes } = {}) {
+  let response;
   try {
-    const response = await page.goto(url, { waitUntil: 'load', timeout });
-    if (response && !response.ok()) notes?.push(`${url} returned HTTP ${response.status()}`);
+    response = await page.goto(url, { waitUntil: 'load', timeout });
   } catch (error) {
     if (!/Timeout/iu.test(error.message)) throw error;
     await page.waitForLoadState('domcontentloaded', { timeout });
     await page.waitForTimeout(2000);
     notes?.push(`load did not fire within ${timeout / 1000} s; used domcontentloaded plus 2 s`);
+    return;
   }
+  if (!response) throw new Error(`${url} gave no response`);
+  if (!response.ok()) throw new Error(`${url} returned HTTP ${response.status()}`);
+}
+
+/** The route's HTTP status on a build, redirects followed. */
+async function probeStatus(url) {
+  try {
+    const response = await fetch(url, { redirect: 'follow', signal: AbortSignal.timeout(30000) });
+    await response.arrayBuffer();
+    return { url, status: response.status, ...(response.url !== url ? { finalUrl: response.url } : {}) };
+  } catch (error) {
+    return { url, status: null, error: String(error.cause?.code ?? error.message).split('\n')[0] };
+  }
+}
+
+/**
+ * Tell the page the reader is scrolling. The site's runtime plays entrances
+ * only for the reader's own scroll (wheel, touch, key or pointer), and shows
+ * everything at once for a scroll the browser made by itself; a scripted
+ * scroll would otherwise never play an entrance below the first screen.
+ * Synthetic events do not count as input for layout shift.
+ */
+function announceReaderScroll() {
+  window.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 1 }));
 }
 
 async function reloadPage(page, { timeout = 30000, notes } = {}) {
   try {
-    await page.reload({ waitUntil: 'load', timeout });
+    const response = await page.reload({ waitUntil: 'load', timeout });
+    if (response && !response.ok()) throw new Error(`reload returned HTTP ${response.status()}`);
   } catch (error) {
     if (!/Timeout/iu.test(error.message)) throw error;
     await page.waitForLoadState('domcontentloaded', { timeout });
@@ -650,6 +866,7 @@ async function settle(page, maxMs = SETTLE_MAX_MS) {
 }
 
 async function scrollThrough(page, cfg, loops) {
+  await page.evaluate(announceReaderScroll);
   let y = 0;
   for (let guard = 0; guard < 400; guard += 1) {
     const { max, step } = await page.evaluate(() => ({
@@ -717,7 +934,66 @@ async function withPage(browser, viewport, extra, init, fn) {
   }
 }
 
-const baseCfg = (extra = {}) => ({ mark: MARK_ATTRIBUTE, shown: SHOWN_CLASS, frames: false, stripMarks: false, ...extra });
+export const baseCfg = (extra = {}) => ({ mark: MARK_ATTRIBUTE, shown: SHOWN_CLASS, stripped: STRIPPED_ATTRIBUTE, frames: false, stripMarks: false, ...extra });
+
+/**
+ * In the page, at the top: the largest image or text block in the first
+ * screen, by geometry and whatever its opacity, as LCP would rank it if
+ * nothing were hidden. Chrome skips an element at opacity 0 when it picks the
+ * LCP element, so a marked hero hidden at load can make the LCP entry point
+ * elsewhere; this does not depend on that.
+ */
+function largestAboveFold({ mark }) {
+  const vw = innerWidth;
+  const vh = innerHeight;
+  const clipped = (r) => Math.max(0, Math.min(r.right, vw) - Math.max(r.left, 0)) * Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+  const visible = (el) => {
+    const cs = getComputedStyle(el);
+    return cs.visibility !== 'hidden' && cs.display !== 'none' && el.getClientRects().length > 0;
+  };
+  const candidates = [];
+  for (const el of document.querySelectorAll('img, video, image')) {
+    if (!visible(el)) continue;
+    let area = clipped(el.getBoundingClientRect());
+    const natural = el.naturalWidth && el.naturalHeight ? el.naturalWidth * el.naturalHeight : null;
+    const shown = el.getBoundingClientRect();
+    if (natural && shown.width * shown.height > natural) area *= natural / (shown.width * shown.height);
+    if (area > 0) candidates.push({ el, kind: 'image', area });
+  }
+  for (const el of document.body.querySelectorAll('*')) {
+    if (el.closest('svg')) continue;
+    const bg = getComputedStyle(el).backgroundImage;
+    if (!bg || !bg.includes('url(') || !visible(el)) continue;
+    const area = clipped(el.getBoundingClientRect());
+    if (area > 0) candidates.push({ el, kind: 'background image', area });
+  }
+  // Text: each text node is credited to its nearest block-level ancestor.
+  const blocks = new Map();
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.data.trim()) continue;
+    let block = node.parentElement;
+    if (!block || block.closest('script, style, noscript, template, svg')) continue;
+    if (!visible(block)) continue;
+    while (block.parentElement && block !== document.body && ['inline', 'contents'].includes(getComputedStyle(block).display)) block = block.parentElement;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    let area = 0;
+    for (const r of range.getClientRects()) area += clipped(r);
+    if (area > 0) blocks.set(block, (blocks.get(block) ?? 0) + area);
+  }
+  for (const [el, area] of blocks) candidates.push({ el, kind: 'text block', area });
+  candidates.sort((a, b) => b.area - a.area);
+  const top = candidates[0];
+  if (!top) return null;
+  const cls = typeof top.el.className === 'string' ? top.el.className : top.el.className?.baseVal ?? '';
+  return {
+    kind: top.kind,
+    area: Math.round(top.area),
+    descriptor: { tag: top.el.tagName, id: top.el.id || '', classes: cls.split(/\s+/u).filter(Boolean) },
+    marked: Boolean(top.el.closest(mark)),
+  };
+}
 
 /** Step 1 alone: load, scroll, settle, screenshot. Also cls, lcp and the static counts. */
 async function measureRest(browser, url, route, viewport, loops, notes) {
@@ -725,6 +1001,7 @@ async function measureRest(browser, url, route, viewport, loops, notes) {
   return withPage(browser, viewport, {}, cfg, async (page, context) => {
     // Both builds see the same clock, so a live sky wheel (the home page's)
     // draws the same positions in each rest-state screenshot. Timers run.
+    // A fixed clock left this Chrome's layout-shift and LCP entries unchanged.
     await context.clock.setFixedTime(RUN_STARTED_AT);
     await gotoPage(page, url, { notes });
     const atLoad = await page.evaluate(({ mark, primary }) => {
@@ -736,6 +1013,7 @@ async function measureRest(browser, url, route, viewport, loops, notes) {
         primaryActionTop: action ? Math.round(action.getBoundingClientRect().top + scrollY) : null,
       };
     }, { mark: MARK_ATTRIBUTE, primary: route.primaryAction ?? null });
+    const largest = await page.evaluate(largestAboveFold, { mark: `[${MARK_ATTRIBUTE}]` });
     await page.evaluate(twoFrames);
     await page.evaluate(() => document.fonts?.ready);
     // `load` can fire before the first paint is reported; give LCP up to 5 s.
@@ -746,10 +1024,14 @@ async function measureRest(browser, url, route, viewport, loops, notes) {
     await scrollThrough(page, cfg, loops);
     const settled = await settle(page);
     if (settled.remaining) notes.push(`rest: ${settled.remaining} finite animations still running after ${SETTLE_MAX_MS / 1000} s`);
+    const shownAtRest = await page.evaluate(inspectMarks, { mark: MARK_ATTRIBUTE });
     const after = await page.evaluate((shown) => ({
       cls: window.__motionEvidence.cls,
       rootMarked: document.documentElement.classList.contains(shown),
       props: Object.keys(window.__motionEvidence.props),
+      verbs: Object.keys(window.__motionEvidence.verbs),
+      lcpMarked: window.__motionEvidence.lcpMarked,
+      lcpMarkedElement: window.__motionEvidence.lcpMarkedElement,
     }), SHOWN_CLASS);
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
     await page.evaluate(twoFrames);
@@ -774,23 +1056,30 @@ async function measureRest(browser, url, route, viewport, loops, notes) {
     await page.evaluate(twoFrames);
     const png = await page.screenshot({ fullPage: true, type: 'png', animations: 'disabled' });
     return {
-      png, dailyRects, cls: after.cls, rootMarked: after.rootMarked, props: after.props, ...atLoad,
-      lcp: lcp ? { time: Math.round(lcp.time), selector: shortSelector(lcp.element), marked: lcp.marked } : null,
+      png, dailyRects, cls: after.cls, rootMarked: after.rootMarked, props: after.props, verbs: after.verbs, ...atLoad,
+      markedVerbs: shownAtRest.renderedVerbs,
+      shownAtRest,
+      lcp: lcp ? { time: Math.round(lcp.time), selector: shortSelector(lcp.element) } : null,
+      lcpMarked: after.lcpMarked,
+      lcpMarkedSelector: after.lcpMarkedElement ? shortSelector(after.lcpMarkedElement) : null,
+      largest: largest ? { kind: largest.kind, area: largest.area, selector: shortSelector(largest.descriptor), marked: largest.marked } : null,
     };
   });
 }
 
-async function measureFirstView(browser, url, viewport, loops, notes, props) {
+async function measureFirstView(browser, url, viewport, loops, notes, props, verbs) {
   const cfg = baseCfg();
   return withPage(browser, viewport, {}, cfg, async (page) => {
     await gotoPage(page, url, { notes });
     const strip = await filmStrip(page, cfg, loops);
-    for (const p of await page.evaluate(() => Object.keys(window.__motionEvidence.props))) props.add(p);
+    const seen = await page.evaluate(() => ({ props: Object.keys(window.__motionEvidence.props), verbs: Object.keys(window.__motionEvidence.verbs) }));
+    for (const p of seen.props) props.add(p);
+    for (const v of seen.verbs) verbs.add(v);
     return strip;
   });
 }
 
-async function measureStep(browser, url, viewport, step, loops, notes, props) {
+async function measureStep(browser, url, viewport, step, loops, notes, props, verbs) {
   const cfg = baseCfg();
   return withPage(browser, viewport, {}, cfg, async (page) => {
     await gotoPage(page, url, { notes });
@@ -800,17 +1089,22 @@ async function measureStep(browser, url, viewport, step, loops, notes, props) {
     await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     const selectors = [step.scrollTo, ...Object.keys(step.fill ?? {}), step.click].filter(Boolean);
     const skip = (reason) => {
-      notes.push(`step "${stepLabel(step)}" skipped: ${reason}`);
+      notes.push(`step "${stepLabel(step)}" did not run: ${reason}`);
       return { skipped: reason };
     };
     for (const selector of selectors) {
       if (await page.locator(selector).count() === 0) return skip(`${selector} not found`);
     }
     if (step.scrollTo) {
+      await page.evaluate(announceReaderScroll);
       await page.locator(step.scrollTo).first().evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'instant' }));
     }
     for (const [selector, value] of Object.entries(step.fill ?? {})) {
-      await page.locator(selector).first().fill(value);
+      try {
+        await page.locator(selector).first().fill(value, { timeout: 5000 });
+      } catch (error) {
+        return skip(`${selector} could not be filled (${String(error.message).split('\n')[0]})`);
+      }
     }
     if (step.click) {
       try {
@@ -820,13 +1114,22 @@ async function measureStep(browser, url, viewport, step, loops, notes, props) {
       }
     }
     const strip = await filmStrip(page, cfg, loops);
-    for (const p of await page.evaluate(() => Object.keys(window.__motionEvidence.props))) props.add(p);
+    const seen = await page.evaluate(() => ({ props: Object.keys(window.__motionEvidence.props), verbs: Object.keys(window.__motionEvidence.verbs) }));
+    for (const p of seen.props) props.add(p);
+    for (const v of seen.verbs) verbs.add(v);
     return strip;
   });
 }
 
-/** Second load: throttled network and 4x CPU. Paint, entrance timing, long frames. */
-async function measureThrottled(browser, url, viewport, notes, { stripMarks = false } = {}) {
+/**
+ * A throttled load: network and 4x CPU. Paint, entrance timing, long frames.
+ * The long-frame window starts when the first marked element is shown. With no
+ * marks the check is not applicable. With `stripMarks` the marks are renamed
+ * before they can be shown and the window starts at `anchorAt` (the measured
+ * load's first mark shown), scrolling where the measured load scrolled: the
+ * same page over the same window, without marks.
+ */
+async function measureThrottled(browser, url, viewport, notes, { stripMarks = false, anchorAt = null, scrollAt = null } = {}) {
   const cfg = baseCfg({ frames: true, stripMarks });
   return withPage(browser, viewport, {}, cfg, async (page, context) => {
     const cdp = await context.newCDPSession(page);
@@ -839,8 +1142,40 @@ async function measureThrottled(browser, url, viewport, notes, { stripMarks = fa
     });
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: THROTTLE.cpuRate });
     await gotoPage(page, url, { timeout: 120000, notes });
-    // Give a late entrance up to 5 s to show.
-    await page.waitForFunction(() => window.__motionEvidence.firstMarkShown != null, null, { timeout: 5000 }).catch(() => {});
+    const round = (v) => (v == null ? null : Math.round(v));
+    const scrollToFirst = (attribute) => page.evaluate(({ attr }) => {
+      window.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 1 }));
+      const first = document.querySelector(`[${attr}]`);
+      if (first) first.scrollIntoView({ block: 'center', behavior: 'instant' });
+      return performance.now();
+    }, { attr: attribute });
+    let scrolledAt = null;
+    if (stripMarks) {
+      if (scrollAt != null) {
+        await page.waitForFunction((t) => performance.now() >= t, scrollAt, { timeout: 30000, polling: 50 });
+        scrolledAt = await scrollToFirst(STRIPPED_ATTRIBUTE);
+      }
+    } else {
+      const marked = await page.evaluate((mark) => document.querySelectorAll(`[${mark}]`).length, MARK_ATTRIBUTE);
+      if (marked === 0) {
+        const state = await page.evaluate(() => {
+          const nav = performance.getEntriesByType('navigation')[0];
+          const s = window.__motionEvidence;
+          return { firstPaint: s.firstPaint ?? s.firstContentfulPaint, domContentLoaded: nav ? nav.domContentLoadedEventStart : null };
+        });
+        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+        return {
+          throttled: { firstPaint: round(state.firstPaint), domContentLoaded: round(state.domContentLoaded), firstMarkShown: null },
+          longFrames: { notApplicable: 'no marks' },
+        };
+      }
+      // Give a late entrance up to 5 s to show; then bring the first mark into view.
+      await page.waitForFunction(() => window.__motionEvidence.firstMarkShown != null, null, { timeout: 5000 }).catch(() => {});
+      if (await page.evaluate(() => window.__motionEvidence.firstMarkShown == null)) {
+        scrolledAt = await scrollToFirst(MARK_ATTRIBUTE);
+        await page.waitForFunction(() => window.__motionEvidence.firstMarkShown != null, null, { timeout: 5000 }).catch(() => {});
+      }
+    }
     const state = await page.evaluate(() => {
       const nav = performance.getEntriesByType('navigation')[0];
       const s = window.__motionEvidence;
@@ -850,18 +1185,22 @@ async function measureThrottled(browser, url, viewport, notes, { stripMarks = fa
         firstMarkShown: s.firstMarkShown,
       };
     });
-    const anchor = state.firstMarkShown ?? state.firstPaint ?? 0;
-    const marked = await page.evaluate((mark) => document.querySelectorAll(`[${mark}]`).length, MARK_ATTRIBUTE);
-    if (state.firstMarkShown == null && marked > 0 && !stripMarks) notes.push(`no element gained ${SHOWN_CLASS} during the throttled load; the long-frame window starts at first paint`);
-    await page.waitForFunction((end) => performance.now() > end, anchor + LONG_FRAME_WINDOW_MS + 100, { timeout: 30000, polling: 200 });
-    const frames = await page.evaluate(() => window.__motionEvidence.frames.slice());
-    const longFrames = longFrameStats(frames, anchor);
-    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
-    const round = (v) => (v == null ? null : Math.round(v));
-    return {
-      throttled: { firstPaint: round(state.firstPaint), domContentLoaded: round(state.domContentLoaded), firstMarkShown: round(state.firstMarkShown) },
-      longFrames,
+    const throttled = {
+      firstPaint: round(state.firstPaint),
+      domContentLoaded: round(state.domContentLoaded),
+      firstMarkShown: round(state.firstMarkShown),
+      ...(scrolledAt != null ? { scrolledToFirstMark: true, scrolledAt: Math.round(scrolledAt) } : {}),
     };
+    const anchor = stripMarks ? anchorAt : state.firstMarkShown;
+    if (anchor == null) {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+      return { throttled, longFrames: { unmeasured: stripMarks ? 'no window to measure against' : 'marked elements exist but none was shown within 10 s, even after scrolling to the first' } };
+    }
+    await page.waitForFunction((end) => performance.now() > end, anchor + LONG_FRAME_WINDOW_MS + 100, { timeout: 30000, polling: 200 });
+    const { frames, now } = await page.evaluate(() => ({ frames: window.__motionEvidence.frames.slice(), now: performance.now() }));
+    const longFrames = longFrameStats(frames, anchor, LONG_FRAME_WINDOW_MS, LONG_FRAME_MS, now);
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+    return { throttled, longFrames };
   });
 }
 
@@ -889,38 +1228,117 @@ function instantScrollRestore() {
   }
 }
 
+/**
+ * Marks hidden above the screen after a reload at the bottom of the page.
+ * At scroll 0 nothing can be above, so the count means something only when
+ * the position came back: natively (within RELOAD_SCROLL_TOLERANCE px), or,
+ * failing that, by the harness scrolling there itself without reader input,
+ * as a browser restore does. Otherwise the result is unmeasured.
+ */
 async function measureReload(browser, url, viewport, notes) {
   return withPage(browser, viewport, {}, baseCfg(), async (page) => {
     await page.addInitScript(instantScrollRestore);
     await gotoPage(page, url, { notes });
-    await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
+    const before = await page.evaluate(() => {
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+      return Math.round(scrollY);
+    });
     await page.waitForTimeout(300);
     await reloadPage(page, { notes });
     await page.waitForTimeout(600);
-    const result = await page.evaluate(({ mark, shown }) => ({
+    const count = () => page.evaluate(({ mark, shown }) => ({
       scrollY: Math.round(scrollY),
       hidden: [...document.querySelectorAll(`body [${mark}]:not(.${shown})`)].filter((el) => el.getBoundingClientRect().bottom < 0).length,
     }), { mark: MARK_ATTRIBUTE, shown: SHOWN_CLASS });
-    if (result.scrollY === 0) notes.push('reload did not restore the scroll position; hiddenAboveAfterReload is measured at the top');
-    return result.hidden;
+    let result = await count();
+    const near = (y) => Math.abs(y - before) <= RELOAD_SCROLL_TOLERANCE;
+    if (before === 0) return { hidden: result.hidden, before, after: result.scrollY, path: 'page does not scroll' };
+    if (near(result.scrollY)) return { hidden: result.hidden, before, after: result.scrollY, path: 'native restore' };
+    const native = result.scrollY;
+    await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), before);
+    await page.waitForTimeout(600);
+    result = await count();
+    if (near(result.scrollY)) {
+      notes.push(`reload restored the scroll to ${native} px, not ${before} px; the harness scrolled back itself (explicit restore)`);
+      return { hidden: result.hidden, before, after: result.scrollY, path: `explicit restore (native gave ${native} px)` };
+    }
+    return { hidden: null, before, after: result.scrollY, path: 'unmeasured', reason: `scroll was ${before} px before the reload, ${native} px after it and ${result.scrollY} px after scrolling back (tolerance ${RELOAD_SCROLL_TOLERANCE} px)` };
   });
 }
 
-const countMarked = ({ mark }) => {
-  const marked = [...document.querySelectorAll(`[${mark}]`)];
+/**
+ * In the page: is every rendered mark shown? rise and disc: computed opacity
+ * 1 and no transform left over (an SVG element may keep its own transform
+ * attribute); draw: opacity 1 and every .motion-stroke at stroke-dashoffset
+ * 0. A mark with no box (display none, a closed details) is not rendered and
+ * is counted apart. Also counts finite entrance animations still running.
+ */
+export function inspectMarks({ mark }) {
+  const sel = `[${mark}]`;
+  const marked = [...document.querySelectorAll(sel)];
   const running = document.getAnimations().filter((a) => a.effect?.getTiming?.().iterations !== Infinity
-    && a.playState === 'running' && a.effect?.target?.closest?.(`[${mark}]`)).length;
-  const notOpaque = marked.filter((el) => Number(getComputedStyle(el).opacity) !== 1).length;
-  return { running, notOpaque };
-};
+    && a.playState === 'running' && a.effect?.target?.closest?.(sel)).length;
+  const near = (a, b) => Math.abs(a - b) < 1e-3;
+  const matrixOf = (t) => {
+    if (!t || t === 'none') return [1, 0, 0, 1, 0, 0];
+    const m = t.match(/^matrix(3d)?\((.*)\)$/u);
+    if (!m) return null;
+    const v = m[2].split(',').map(Number);
+    if (!m[1]) return v;
+    const flat = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    if (![2, 3, 6, 7, 8, 9, 11, 14].every((i) => near(v[i], flat[i])) || !near(v[10], 1)) return null;
+    return [v[0], v[1], v[4], v[5], v[12], v[13]];
+  };
+  const own = (el) => {
+    const t = el.transform?.baseVal?.consolidate?.();
+    return t ? [t.matrix.a, t.matrix.b, t.matrix.c, t.matrix.d, t.matrix.e, t.matrix.f] : [1, 0, 0, 1, 0, 0];
+  };
+  const name = (el) => {
+    const cls = typeof el.className === 'string' ? el.className : el.className?.baseVal ?? '';
+    return `${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ''}${cls.split(/\s+/u).filter(Boolean).slice(0, 2).map((c) => `.${c}`).join('')}`;
+  };
+  let rendered = 0;
+  const examples = [];
+  const renderedVerbs = new Set();
+  let notShown = 0;
+  for (const el of marked) {
+    if (el.getClientRects().length === 0) continue;
+    rendered += 1;
+    const verb = el.getAttribute(mark);
+    renderedVerbs.add(verb);
+    const cs = getComputedStyle(el);
+    const why = [];
+    if (!near(Number(cs.opacity), 1)) why.push(`opacity ${cs.opacity}`);
+    if (verb === 'draw') {
+      for (const stroke of el.querySelectorAll('.motion-stroke')) {
+        const offset = parseFloat(getComputedStyle(stroke).strokeDashoffset);
+        if (!near(Number.isFinite(offset) ? offset : 0, 0)) {
+          why.push(`stroke-dashoffset ${getComputedStyle(stroke).strokeDashoffset} on ${name(stroke)}`);
+          break;
+        }
+      }
+    } else {
+      const m = matrixOf(cs.transform);
+      const expected = own(el);
+      if (!m || !m.every((x, i) => near(x, expected[i]))) why.push(`transform ${cs.transform}`);
+    }
+    if (why.length) {
+      notShown += 1;
+      if (examples.length < 5) examples.push(`${name(el)} (${verb}): ${why.join(', ')}`);
+    }
+  }
+  return { total: marked.length, rendered, notShown, examples, running, renderedVerbs: [...renderedVerbs].sort() };
+}
 
 async function measureReducedMotion(browser, url, viewport, notes) {
   return withPage(browser, viewport, { reducedMotion: 'reduce' }, baseCfg(), async (page) => {
     await gotoPage(page, url, { notes });
     await page.evaluate(twoFrames);
-    const first = await page.evaluate(countMarked, { mark: MARK_ATTRIBUTE });
+    const first = await page.evaluate(inspectMarks, { mark: MARK_ATTRIBUTE });
     let running = first.running;
+    let worst = first;
     // Scroll through too, so an entrance that ignores the preference is caught when it would start.
+    await page.evaluate(announceReaderScroll);
     let y = 0;
     for (let guard = 0; guard < 400; guard += 1) {
       const { max, step } = await page.evaluate(() => ({ max: document.documentElement.scrollHeight - innerHeight, step: Math.round(innerHeight * 0.8) }));
@@ -928,17 +1346,18 @@ async function measureReducedMotion(browser, url, viewport, notes) {
       y = Math.min(y + step, max);
       await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), y);
       await page.waitForTimeout(150);
-      running = Math.max(running, (await page.evaluate(countMarked, { mark: MARK_ATTRIBUTE })).running);
+      const now = await page.evaluate(inspectMarks, { mark: MARK_ATTRIBUTE });
+      running = Math.max(running, now.running);
+      if (now.notShown > worst.notShown) worst = now;
     }
-    return { running, notOpaque: first.notOpaque };
+    return { ...worst, running };
   });
 }
 
 async function measureNoScript(browser, url, viewport, notes) {
   return withPage(browser, viewport, { javaScriptEnabled: false }, null, async (page) => {
     await gotoPage(page, url, { notes });
-    const { notOpaque } = await page.evaluate(countMarked, { mark: MARK_ATTRIBUTE });
-    return { notOpaque };
+    return page.evaluate(inspectMarks, { mark: MARK_ATTRIBUTE });
   });
 }
 
@@ -957,31 +1376,51 @@ async function measureBuild(browser, baseURL, route, viewport) {
   const notes = [];
   const loops = new Set();
   const props = new Set();
+  const verbs = new Set();
+  const http = await probeStatus(url);
+  if (!(http.status >= 200 && http.status < 300)) {
+    notes.push(http.status != null ? `${url} returned HTTP ${http.status}; nothing else was measured` : `${url} could not be fetched (${http.error}); nothing else was measured`);
+    return {
+      numbers: { http, steps: (route.steps ?? []).map((step) => ({ label: stepLabel(step), skipped: 'the page did not load' })), notes },
+      loops: [], rest: null, firstView: null, steps: (route.steps ?? []).map(() => null),
+    };
+  }
   const rest = await safely(notes, 'rest state', () => measureRest(browser, url, route, viewport, loops, notes));
-  if (rest) for (const p of rest.props) props.add(p);
-  const firstView = await safely(notes, 'first-view strip', () => measureFirstView(browser, url, viewport, loops, notes, props));
+  if (rest) {
+    for (const p of rest.props) props.add(p);
+    for (const v of rest.verbs) verbs.add(v);
+  }
+  const firstView = await safely(notes, 'first-view strip', () => measureFirstView(browser, url, viewport, loops, notes, props, verbs));
   const steps = [];
   for (const step of route.steps ?? []) {
-    steps.push(await safely(notes, `step "${stepLabel(step)}"`, () => measureStep(browser, url, viewport, step, loops, notes, props)) ?? { skipped: 'failed' });
+    steps.push(await safely(notes, `step "${stepLabel(step)}"`, () => measureStep(browser, url, viewport, step, loops, notes, props, verbs)) ?? { skipped: 'the step threw (see notes)' });
   }
   const throttled = await safely(notes, 'throttled load', () => measureThrottled(browser, url, viewport, notes));
-  const hidden = await safely(notes, 'reload', () => measureReload(browser, url, viewport, notes));
+  const reload = await safely(notes, 'reload', () => measureReload(browser, url, viewport, notes));
   const reducedMotion = await safely(notes, 'reduced motion', () => measureReducedMotion(browser, url, viewport, notes));
   const noScript = await safely(notes, 'no script', () => measureNoScript(browser, url, viewport, notes));
   const numbers = {
+    http,
     cls: rest ? Math.round(rest.cls * 1e6) / 1e6 : null,
-    lcp: rest?.lcp ? { time: rest.lcp.time, selector: rest.lcp.selector } : null,
-    lcpMarked: rest?.lcp ? rest.lcp.marked : null,
+    lcp: rest?.lcp ?? null,
+    lcpMarked: rest ? rest.lcpMarked : null,
+    lcpMarkedSelector: rest?.lcpMarkedSelector ?? null,
+    largest: rest?.largest ?? null,
     throttled: throttled?.throttled ?? null,
     longFrames: throttled?.longFrames ?? null,
-    animatedProperties: rest ? [...new Set([...props].map(toKebab))].sort() : null,
+    // Not measured unless both the rest pass and the first-view strip ran.
+    animatedProperties: rest && firstView ? [...new Set([...props].map(toKebab))].sort() : null,
+    markedVerbs: rest?.markedVerbs ?? null,
+    sampledVerbs: [...verbs].sort(),
     markedCount: rest?.markedCount ?? null,
     nestedMarks: rest?.nestedMarks ?? null,
     rootMarked: rest?.rootMarked ?? null,
-    hiddenAboveAfterReload: hidden,
+    shownAtRest: rest?.shownAtRest ? stripVerbs(rest.shownAtRest) : null,
+    hiddenAboveAfterReload: reload ? reload.hidden : null,
+    reload: reload ? { before: reload.before, after: reload.after, path: reload.path, ...(reload.reason ? { reason: reload.reason } : {}) } : null,
     primaryActionTop: rest?.primaryActionTop ?? null,
-    reducedMotion,
-    noScript,
+    reducedMotion: reducedMotion ? stripVerbs(reducedMotion) : null,
+    noScript: noScript ? stripVerbs(noScript) : null,
     strip: firstView ? { animations: firstView.animations, lost: firstView.lost } : null,
     steps: (route.steps ?? []).map((step, i) => ({
       label: stepLabel(step),
@@ -996,6 +1435,10 @@ async function measureBuild(browser, baseURL, route, viewport) {
     firstView: firstView?.frames ?? null,
     steps: steps.map((s) => s?.frames ?? null),
   };
+}
+
+function stripVerbs({ renderedVerbs, ...rest }) {
+  return rest;
 }
 
 async function retakeCls(browser, baseURL, route, viewport) {
@@ -1077,6 +1520,9 @@ export async function run(options) {
     routes: [],
     failures: [],
   };
+  if (routes.length === 0) {
+    report.failures.push({ path: '(none)', viewport: '-', check: 'routes', detail: `the route list resolved to no routes (--routes ${JSON.stringify((options.routes ?? []).join(','))})` });
+  }
   try {
     for (const route of routes) {
       const entry = { path: route.path, rest: route.rest, primaryAction: route.primaryAction ?? null, loops: {}, sheets: [], viewports: {} };
@@ -1099,7 +1545,7 @@ export async function run(options) {
           const b = PNG.sync.read(measured.after.rest.png);
           const rest = compareRest(a, b, { dailyRects: [...measured.before.rest.dailyRects, ...measured.after.rest.dailyRects] });
           vpEntry.rest = {
-            share: rest.share, differing: rest.differing, heightChanged: rest.heightChanged, widthChanged: rest.widthChanged,
+            share: rest.share, differing: rest.differing, outsideDaily: rest.outsideDaily, heightChanged: rest.heightChanged, widthChanged: rest.widthChanged,
             dailyOnly: rest.dailyOnly, comparedArea: `${rest.width}x${rest.height}`,
           };
         }
@@ -1109,19 +1555,23 @@ export async function run(options) {
         if (subject.cls != null && subject.cls > 0 && subject.cls < CLS_RETAKE_BELOW) {
           subject.clsRetake = await retakeCls(browser, urls[subjectBuild], route, viewport);
         }
-        // Long frames: judge only against the same page without marks.
-        let baselineLongest = null;
-        if (subject.longFrames && subject.longFrames.longest > LONG_FRAME_MS) {
-          if (baseline?.longFrames) baselineLongest = baseline.longFrames.longest;
-          else {
-            const notes = [];
-            const unmarked = await safely(notes, 'unmarked long-frame baseline', () => measureThrottled(browser, `${urls[subjectBuild]}${route.path}`, viewport, notes, { stripMarks: true }));
-            baselineLongest = unmarked?.longFrames.longest ?? null;
-            subject.longFramesWithoutMarks = unmarked?.longFrames ?? null;
-            subject.notes.push(...notes);
+        // Long frames over the absolute bar: measure the same build with its
+        // marks removed over the same window (in either mode), then allow one
+        // retake of the subject before a failure stands.
+        if (subject.longFrames?.longest != null && subject.longFrames.longest > LONG_FRAME_MS) {
+          const notes = [];
+          const subjectURL = `${urls[subjectBuild]}${route.path}`;
+          const reference = await safely(notes, 'long-frame reference without marks', () => measureThrottled(browser, subjectURL, viewport, notes, {
+            stripMarks: true, anchorAt: subject.throttled.firstMarkShown, scrollAt: subject.throttled.scrolledAt ?? null,
+          }));
+          subject.longFramesReference = reference?.longFrames ?? { unmeasured: 'the reference load failed' };
+          if (longFrameVerdict(subject.longFrames.longest, subject.longFramesReference.longest ?? null) === 'fail') {
+            const retake = await safely(notes, 'long-frame retake', () => measureThrottled(browser, subjectURL, viewport, notes));
+            subject.longFramesRetake = retake?.longFrames ?? { unmeasured: 'the retake failed' };
           }
+          subject.notes.push(...notes);
         }
-        vpEntry.checks = evaluateChecks({ route, viewport, subject, baseline, rest: vpEntry.rest ?? null, baselineLongest });
+        vpEntry.checks = evaluateChecks({ route, viewport, subject, baseline, rest: vpEntry.rest ?? null });
         for (const c of vpEntry.checks) {
           if (c.status === 'fail') report.failures.push({ path: route.path, viewport: key, check: c.check, detail: c.detail });
         }
@@ -1178,5 +1628,5 @@ if (invokedDirectly) {
   } else {
     console.log('All hard checks pass.');
   }
-  if (options.check && report.failures.length) process.exit(1);
+  process.exit(checkExitCode(report, options));
 }
