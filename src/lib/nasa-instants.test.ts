@@ -7,6 +7,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import type { HoroscopeEvidenceReceipt, HoroscopeProgram } from './horoscope-program-types';
 import {
   NASA_EVENT_TABLE as table,
   exactInstant,
@@ -48,7 +49,16 @@ const sky = read<{ from: string; retrogrades: { planet: string; from: string; to
 type Receipt = { pages: { id: string; family: string; anchor: string; bodies: string[]; subtype: string; signs: string[] }[] };
 // Both receipts: 2026 to 2027 (bundled by the AI tools) and 2028 to 2030.
 const publication = { pages: [...read<Receipt>('events-publication.json').pages, ...read<Receipt>('events-publication-2028-2030.json').pages] };
-const program = read<{ evidence: { kind: string; eventKind?: string; eventType?: string; body?: string; a?: string; b?: string; at: string }[] }>('horoscope-program.json');
+const program = read<HoroscopeProgram>('horoscope-program.json');
+
+function programIngressInstant({ body, sign, at, sourceId }: Pick<HoroscopeEvidenceReceipt, 'body' | 'sign' | 'at' | 'sourceId'>) {
+  if (!body) return undefined;
+  if (body !== 'Sun' && body !== 'Moon') return nasaIngressAt(body, at);
+
+  // For a luminary, the page prints the instant from the receipt's monthly catalog.
+  const catalog = months.find(({ month }) => sourceId === `src/data/transits-${month}.json`);
+  return catalog?.ingresses.find((row) => row.planet === body && row.sign === sign && row.at === at)?.at;
+}
 
 describe('the NASA event table', () => {
   it('records where every instant came from', () => {
@@ -176,10 +186,36 @@ describe('every planet event the pages print has its NASA instant', () => {
   it('in the horoscope program\'s dated events', () => {
     for (const receipt of program.evidence) {
       if (receipt.kind !== 'sky-event') continue;
-      if (receipt.eventKind === 'ingress') expect(nasaIngressAt(receipt.body!, receipt.at), receipt.at).toBeDefined();
+      if (receipt.eventKind === 'ingress') expect(programIngressInstant(receipt), receipt.id).toBeDefined();
       if (receipt.eventKind === 'station') expect(nasaStationAt(receipt.body!, receipt.at), receipt.at).toBeDefined();
       if (receipt.eventKind === 'aspect') expect(nasaAspectAt(receipt.a!, receipt.b!, receipt.eventType!, receipt.at), receipt.at).toBeDefined();
     }
+  });
+});
+
+describe('horoscope program ingress receipts', () => {
+  // Cited by both the November 21 and November 22 editions.
+  const sun = { body: 'Sun', sign: 'sagittarius', at: '2026-11-22T07:23:20.566Z', sourceId: 'src/data/transits-2026-11.json' };
+
+  it('prints the Sagittarius ingress at the catalog instant', () => {
+    expect(nasaIngressAt(sun.body, sun.at)).toBeUndefined();
+    expect(programIngressInstant(sun)).toBe(sun.at);
+    expect(exactInstant({ kind: 'ingress', body: sun.body, at: sun.at })).toBe(sun.at);
+  });
+
+  it.each([
+    { sourceId: 'src/data/transits-2026-10.json' },
+    { body: 'Moon' },
+    { sign: 'scorpio' },
+    { at: '2026-11-22T07:23:20.567Z' },
+  ])('rejects an ingress absent from its cited catalog (%j)', (change) => {
+    expect(programIngressInstant({ ...sun, ...change })).toBeUndefined();
+  });
+
+  it('requires the NASA instant for Mars entering Virgo later that month', () => {
+    const mars = { ...sun, body: 'Mars', sign: 'virgo', at: '2026-11-25T23:37:05.540Z' };
+    expect(programIngressInstant(mars)).toBe('2026-11-25T23:37:08.000Z');
+    expect(programIngressInstant({ ...mars, at: '2026-11-25T23:37:05.541Z' })).toBeUndefined();
   });
 });
 
