@@ -27,6 +27,7 @@
  * never move anything on screen.
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { READING_CONFIDENCE_NOTE } from '../lib/reading-confidence-note';
 import { GOAL_RULES, GOOD_DAY_GOALS, type GoodDayGoal } from '../lib/good-days/goals';
 import type { GoodDaysResult } from '../lib/good-days/find';
 import { followUpLink, type PickedDay } from '../lib/good-days/outcomes';
@@ -298,7 +299,9 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
         {result && (
           <div class="calc__result good-days__result" ref={resultRef} tabIndex={-1} aria-label={`Good days: ${result.goalLabel}`}>
             <h2 class="good-days__title">{result.goalLabel}: the best days</h2>
-            <p class="good-days__sub">{result.days} days read, {shortDay(result.from)} to {shortDay(result.to)}. {CONFIDENCE_LABEL}.</p>
+            <p class="good-days__sub">{result.days} days read, {shortDay(result.from)} to {shortDay(result.to)}. {CONFIDENCE_LABEL}.
+              <small class="good-days__confidence-note" style={{ visibility: error ? 'hidden' : 'visible' }}>{READING_CONFIDENCE_NOTE}</small>
+            </p>
             <ol class="good-days__list">
               {result.best.map((day, index) => (
                 <li class="tile good-days__day" key={day.date}>

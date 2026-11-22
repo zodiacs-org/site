@@ -26,6 +26,7 @@ import EventRelated from './EventRelated.astro';
 import EventSignNotes from './EventSignNotes.astro';
 import EventCountdown from './EventCountdown.astro';
 import EventSkyWatch from './EventSkyWatch.astro';
+import { READING_CONFIDENCE_FAQ, READING_CONFIDENCE_NOTE } from '../../lib/reading-confidence-note';
 import { EVENT_READING_CONFIDENCE, watchPlan } from '../../lib/events/watch';
 import { eventsCatalog } from '../../lib/events/catalog';
 import { publishedEventById } from '../../lib/events/site-publication';
@@ -69,6 +70,7 @@ const clockRows = guide ? eventClockRows(facts) : [];
 const clockHeading = guide ? eventClockHeading(facts) : undefined;
 const timesLine = guide ? eventTimesLine(facts) : [];
 const faq = guide ? eventQuestions(event, resolve, catalog.events) : [];
+if (guide || interpretation?.body) faq.push(READING_CONFIDENCE_FAQ);
 const buildNow = new Date();
 const description = guide ? guideDescription(facts) : metaDescription(facts);
 
@@ -290,7 +292,8 @@ const sources = [
         </p>
         <p class="event-confidence" data-reading-confidence>
           <strong>{EVENT_READING_CONFIDENCE}</strong>. This reading uses the sky
-          alone. Your own chart, with a birth time and place, makes a reading more specific.
+          alone.
+          <small>{READING_CONFIDENCE_NOTE}</small>
         </p>
       </section>
     )}
@@ -323,7 +326,7 @@ const sources = [
         <p class="event-confidence" data-reading-confidence>
           <strong>{EVENT_READING_CONFIDENCE}</strong>. This reading uses the sky
           alone{interpretation.signNotes ? ', and a Sun sign for the notes below' : ''}.
-          Your own chart, with a birth time and place, makes a reading more specific.
+          <small>{READING_CONFIDENCE_NOTE}</small>
         </p>
       </section>
     )}
@@ -412,6 +415,7 @@ const sources = [
   .event-clocks__lead { margin: 0 0 14px; max-width: 64ch; color: var(--muted); }
   .event-check { margin: 14px 0 0; max-width: 64ch; color: var(--muted); font-size: var(--text-sm); }
   .event-check a { color: var(--text-2); }
+  .event-confidence small { display: block; }
   .faq-item { border-top: 1px solid var(--hair-1); }
   .faq-item summary { min-height: 44px; padding: 12px 0; cursor: pointer; color: var(--text); }
   .faq-item p { margin: 0 0 14px; color: var(--muted); }

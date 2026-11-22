@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import EvidenceDisclosure from './EvidenceDisclosure';
 import { motionScan } from '../lib/motion';
 import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
+import { NUMEROLOGY_SEPARATE } from '../lib/numerology/reading';
 import { POSITION_READINGS, type ReadingPosition } from '../data/numerology-readings';
 import StoryCardShare from '../components/StoryCardShare';
 import { numerologyStoryContent, prepareNumerologyStoryCard } from '../lib/numerology/story-card';
@@ -373,6 +374,7 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
       {profile && lifePath && cycles && (
         <div class="calc__result" style={`--sign:${hueFor(lifePath.value)}`}>
           <h2 class="sr-only" tabIndex={-1} ref={resultHeadingRef}>Your numbers</h2>
+          <p class="field__help">{NUMEROLOGY_SEPARATE}</p>
 
           {result?.nameEmptied && <p class="notice" role="status">{NAME_EMPTIED_NOTE}</p>}
 

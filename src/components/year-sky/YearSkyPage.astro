@@ -13,6 +13,8 @@ import YearSkyEs from '../../islands/YearSkyEs';
 import YearSkyPt from '../../islands/YearSkyPt';
 import YearSkyFr from '../../islands/YearSkyFr';
 import YearSkyIt from '../../islands/YearSkyIt';
+import Faq from '../Faq.astro';
+import { CONTACT_CONFIDENCE_FAQ } from '../../lib/reading-confidence-note';
 import PlanetGlyph from '../PlanetGlyph';
 import { localizePath } from '../../lib/i18n';
 import { yearSkyWords, type YearSkyLocale } from '../../lib/year-sky/copy';
@@ -105,6 +107,8 @@ const jsonLd = [{
 
       <p class="ys-invite">{w.generalInvite} <a href="#your-chart">{w.generalInviteLink} ↑</a></p>
     </section>
+
+    {locale === 'en' && <section><Faq items={[CONTACT_CONFIDENCE_FAQ]} /></section>}
 
     <nav class="return-discovery" aria-label={w.moreTitle}>
       <h2>{w.moreTitle}</h2>

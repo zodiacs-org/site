@@ -225,6 +225,17 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
   }
 
   const personal = result?.personal;
+  const firstLabel = personal?.allYear.find((moment) => moment.confidence !== null)
+    ?? personal?.moments.find((moment) => moment.confidence !== null);
+  function confidenceLabel(moment: YearMoment) {
+    if (moment.confidence === null) return null;
+    return <>
+      <p class="ys-moment__confidence">{w.confidence(moment.confidence)}</p>
+      {locale === 'en' && moment === firstLabel && (
+        <small class="sharing-note" style={{ visibility: error ? 'hidden' : 'visible' }}>{w.confidenceNote}</small>
+      )}
+    </>;
+  }
   const byQuarter = (moments: YearMoment[]) => QUARTERS.map((quarter) => moments.filter((moment) => quarterOf(moment.at) === quarter));
 
   return <div class="ys">
@@ -258,11 +269,12 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
       <CalculationReload error={error} locale={locale} />
     </form>
 
+    {busy && !personal && <div class="ys-pending" aria-hidden="true" />}
     {personal && <section class="ys-result" tabIndex={-1} ref={resultRef} aria-labelledby="ys-result-title" data-year-sky-result>
       <h2 id="ys-result-title" class="display ys-result__title">{w.resultTitle}</h2>
       <p class="ys-result__lede">{w.resultLede}</p>
       {!personal.timeKnown && <p class="notice">{w.unknownTime}</p>}
-      <p class="sharing-note">{w.confidenceNote}</p>
+      {locale !== 'en' && <p class="sharing-note">{w.confidenceNote}</p>}
 
       {personal.highlights.length > 0 && <div class="ys-brief">
         <h3>{w.briefTitle}</h3>
@@ -278,7 +290,7 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
         <p class="ys-quarter__lede">{w.allYearLede}</p>
         <ul class="ys-moments">{personal.allYear.map((moment) => <li class="ys-moment" key={moment.id}>
           <p class="ys-moment__line"><PlanetGlyph body={moment.body} size={16} class="ys-glyph" /> {moment.line}</p>
-          {moment.confidence !== null && <p class="ys-moment__confidence">{w.confidence(moment.confidence)}</p>}
+          {confidenceLabel(moment)}
         </li>)}</ul>
       </div>}
 
@@ -289,7 +301,7 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
           <h4 class="ys-moment__title"><PlanetGlyph body={moment.body} size={18} class="ys-glyph" /> {moment.title}</h4>
           <p class="ys-moment__line">{moment.line}</p>
           <p class="ys-moment__detail">{moment.detail}</p>
-          {moment.confidence !== null && <p class="ys-moment__confidence">{w.confidence(moment.confidence)}</p>}
+          {confidenceLabel(moment)}
         </li>)}</ul>}
       </div>)}
 

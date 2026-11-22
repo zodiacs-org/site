@@ -5,6 +5,7 @@
  * on submit and everything is calculated on this device; the birth details
  * are never sent, stored or put in the address bar.
  */
+import { READING_CONFIDENCE_NOTE } from '../lib/reading-confidence-note';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import PlaceSearch from './PlaceSearch';
 import { SIGNS, signForLongitude } from '../lib/signs';
@@ -164,7 +165,8 @@ export default function YearScoreCalculator() {
         </div>
       </form>
 
-      {result && (
+      {busy && !result && <div class="ys__pending" aria-hidden="true" />}
+      {result && !error && !timeNote && (
         <div class="calc__result ys" style={`--sign:${result.hue}`}>
           <div class="ys__score shell tinted" style={`--sign:${result.hue}`}>
             <div class="core tinted ys__score-core">
@@ -182,6 +184,7 @@ export default function YearScoreCalculator() {
                   <p class="ys__meta" data-ys-sun-unsettled>Your Sun is in {result.candidates[0]} or {result.candidates[1]}: a birth time settles it.</p>
                   <p class="ys__meta">{dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
                 </>}
+              <small class="field__help">{READING_CONFIDENCE_NOTE}</small>
             </div>
           </div>
 

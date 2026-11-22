@@ -116,6 +116,8 @@ describe('a date-only birth on the day the Sun changes sign', () => {
       expect(html).not.toContain('Share my birthday report');
       expect(html).not.toMatch(/(Pisces|Aries) Sun/u);
       expect(html).toContain(year.data.cardTitle);
+      expect(html).toContain('Numerology and tarot are separate traditions. They are not astrology.');
+      expect(html).not.toContain('Reading confidence');
       // The page still takes a tint: the sign of the Sun the report was cast from.
       expect(year.data.hue).toMatch(/^#/u);
     }

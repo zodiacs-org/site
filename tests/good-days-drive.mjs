@@ -13,6 +13,7 @@
  */
 import { mkdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { READING_CONFIDENCE_NOTE } from '../src/lib/reading-confidence-note.ts';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { projectRoot, withPreview } from './visual/preview-server.mjs';
@@ -99,6 +100,8 @@ await withPreview({ port: 4371 }, async (base) => {
         await tab.click('.calc__submit');
         await tab.waitForSelector('.good-days__result', { timeout: 60_000 });
         await settle(tab);
+        const note = tab.locator('.good-days__result small').filter({ hasText: READING_CONFIDENCE_NOTE });
+        check(`${viewport.name}: the first confidence label has one note`, await note.count() === 1 && await note.isVisible());
         const after = await cls(tab);
         check(`${viewport.name}: results arrive with zero CLS`, after.cls === 0, JSON.stringify(after));
         check(`${viewport.name}: no request carries the birth date`, !requests.some((line) => line.includes(BIRTH) || line.includes('1990')), requests.filter((line) => line.includes('1990')).join('\n'));
