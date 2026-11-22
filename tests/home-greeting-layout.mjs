@@ -45,7 +45,7 @@ async function verify(browser, baseURL, width, variant) {
   const held = new Promise(resolve => { release = resolve; });
   await page.route('**/_astro/WelcomeBack.*.js', async route => { await held; await route.continue(); });
   try {
-    await page.goto(baseURL, { waitUntil: 'load' });
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => performance.getEntriesByName('first-contentful-paint').length > 0);
     const section = page.locator('.wb-greeting');
     assert.equal(await section.locator('.wb-card').count(), 2);
@@ -71,6 +71,11 @@ async function verify(browser, baseURL, width, variant) {
     await page.waitForTimeout(3000);
     assert.deepEqual(await page.evaluate(geometry), before, 'Greeting and following section keep their geometry');
     assert.deepEqual(await page.evaluate(() => window.shifts), [], 'No layout shift from navigation through hydration + 3s');
+    if (width === 1280 && variant === 'chart') {
+      const button = section.locator('.btn');
+      await button.hover();
+      assert.equal(await button.locator('.orb').evaluate(el => getComputedStyle(el).transform), 'none');
+    }
     console.log(`${width}x${height} ${variant}: CLS 0, card height ${before.card?.[3] ?? 0}px`);
   } finally {
     release();

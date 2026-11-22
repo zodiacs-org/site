@@ -266,7 +266,8 @@ html[data-local-chrome-typography][lang='en'] {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
-.wb-greeting :is(.chip, .btn, .btn .orb) { transition: none; transform: none; }
+.wb-greeting :is(.chip, .btn, .btn .orb),
+.wb-greeting .btn:hover .orb { transition: none; transform: none; }
 @media (max-width: 719px) {
   .wb-greeting .next-action__core { align-content: space-between; }
   .wb-greeting .next-action__secondary { justify-items: start; }
