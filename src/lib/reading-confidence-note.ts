@@ -3,3 +3,6 @@ export const CONTACT_CONFIDENCE_NOTE = `${READING_CONFIDENCE_NOTE} A contact wit
 
 export const READING_CONFIDENCE_FAQ = { q: 'What does reading confidence mean?', a: READING_CONFIDENCE_NOTE };
 export const CONTACT_CONFIDENCE_FAQ = { ...READING_CONFIDENCE_FAQ, a: CONTACT_CONFIDENCE_NOTE };
+
+// The committed daily edition in which these pages gained the confidence note.
+export const READING_CONFIDENCE_UPDATED = '2026-11-20';

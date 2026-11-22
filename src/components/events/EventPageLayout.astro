@@ -26,7 +26,7 @@ import EventRelated from './EventRelated.astro';
 import EventSignNotes from './EventSignNotes.astro';
 import EventCountdown from './EventCountdown.astro';
 import EventSkyWatch from './EventSkyWatch.astro';
-import { READING_CONFIDENCE_FAQ, READING_CONFIDENCE_NOTE } from '../../lib/reading-confidence-note';
+import { READING_CONFIDENCE_FAQ, READING_CONFIDENCE_NOTE, READING_CONFIDENCE_UPDATED } from '../../lib/reading-confidence-note';
 import { EVENT_READING_CONFIDENCE, watchPlan } from '../../lib/events/watch';
 import { eventsCatalog } from '../../lib/events/catalog';
 import { publishedEventById } from '../../lib/events/site-publication';
@@ -186,9 +186,9 @@ const previousModifiedDate = guide
     ? `${published.lastModified}T00:00:00.000Z`
     : event.lastModified;
 const engineUpdated = de440UpdatedDate(facts.path);
-const modifiedDate = engineUpdated
-  ? latestModifiedAt(engineUpdated, ...(previousModifiedDate ? [previousModifiedDate] : []))
-  : previousModifiedDate;
+const revisions = [previousModifiedDate, engineUpdated, interpretation?.body && READING_CONFIDENCE_UPDATED]
+  .filter((date): date is string => Boolean(date));
+const modifiedDate = revisions.length ? latestModifiedAt(...revisions) : undefined;
 const updatedDay = modifiedDate ? lastmodDate(modifiedDate) : EVENT_READINGS_2027_UPDATED;
 const jsonLd = [
   {
