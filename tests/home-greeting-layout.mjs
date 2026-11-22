@@ -12,6 +12,15 @@ const chart = {
 };
 const other = { ...chart, id: '88888888-8888-4888-8888-888888888888', name: 'Another chart', relationship: 'other' };
 
+function observeLayoutShifts() {
+  window.shifts = [];
+  new PerformanceObserver(list => {
+    for (const entry of list.getEntries()) {
+      if (!entry.hadRecentInput) window.shifts.push(entry.value);
+    }
+  }).observe({ type: 'layout-shift', buffered: true });
+}
+
 function geometry() {
   const box = selector => {
     const rect = document.querySelector(selector)?.getBoundingClientRect();
@@ -30,14 +39,9 @@ async function verify(browser, baseURL, width, variant) {
   const context = await browser.newContext({ viewport: { width, height } });
   const page = await context.newPage();
   const profiles = { chart: [other, chart], choose: [other], none: [] };
+  await page.addInitScript(observeLayoutShifts);
   await page.addInitScript(charts => {
     if (charts.length) localStorage.setItem('zodiacs.profile.v1', JSON.stringify({ version: 1, charts }));
-    window.shifts = [];
-    new PerformanceObserver(list => {
-      for (const entry of list.getEntries()) {
-        if (!entry.hadRecentInput) window.shifts.push(entry.value);
-      }
-    }).observe({ type: 'layout-shift', buffered: true });
   }, profiles[variant]);
 
   // Hold the module to inspect the actual first paint independently of Preact.
@@ -89,11 +93,90 @@ async function verify(browser, baseURL, width, variant) {
   }
 }
 
+async function verifyAccountDecision(browser, baseURL, width, variant) {
+  const height = width === 390 ? 844 : 720;
+  const context = await browser.newContext({ viewport: { width, height } });
+  const page = await context.newPage();
+  const returning = variant === 'chart' || variant === 'choose';
+  const charts = variant === 'choose' ? [other] : variant === 'empty' ? [] : [chart];
+  await page.addInitScript(observeLayoutShifts);
+  await page.addInitScript(({ charts, variant }) => {
+    if (variant !== 'no-key') localStorage.setItem('zodiacs.profile.v1', JSON.stringify({ version: 1, charts }));
+    if (variant === 'denied') localStorage.setItem('zodiacs.account-sync-v2.local-owner.v1', JSON.stringify({
+      version: 1, accountId: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    }));
+    window.profileReads = 0;
+    const getItem = Storage.prototype.getItem;
+    Storage.prototype.getItem = function (key) {
+      if (key === 'zodiacs.profile.v1') window.profileReads++;
+      return getItem.call(this, key);
+    };
+  }, { charts, variant });
+
+  let release;
+  const held = new Promise(resolve => { release = resolve; });
+  let requests = 0;
+  await page.route(/\/profile-access-autostart\.[^/]+\.js$/, async route => {
+    requests++;
+    await held;
+    if (variant === 'failed') await route.abort('failed');
+    else await route.continue();
+  });
+  try {
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => performance.getEntriesByName('first-contentful-paint').length > 0);
+    const root = page.locator('html');
+    assert.equal(await root.getAttribute('data-account-sync-v2'), '');
+    assert.equal(await root.getAttribute('data-home-returning'), null);
+    const hero = page.locator('.hero');
+    const before = await hero.boundingBox();
+    assert.ok(before && await hero.isVisible());
+    const ticker = page.locator('.home-sky');
+    if (variant === 'no-key') {
+      assert.equal(await root.getAttribute('data-home-access-pending'), null);
+      assert.ok(await ticker.isVisible());
+    } else {
+      assert.equal(await root.getAttribute('data-home-access-pending'), '');
+      assert.equal(await ticker.isVisible(), false);
+      assert.equal(await page.locator('footer').isVisible(), false);
+    }
+    await page.waitForTimeout(2000);
+    assert.equal(requests, variant === 'no-key' ? 0 : 1);
+    assert.equal(await page.evaluate(() => window.profileReads), 0);
+    release();
+    await page.waitForFunction(() => !document.documentElement.hasAttribute('data-home-access-pending'));
+    assert.ok(await ticker.isVisible());
+    assert.equal(await root.getAttribute('data-home-returning'), returning ? variant : null);
+    if (returning) {
+      await page.waitForFunction(() => document.querySelectorAll('.wb-card').length === 1);
+      if (variant === 'chart') assert.ok((await page.locator('.wb-card h2').innerText()).includes(chart.name));
+    } else {
+      assert.equal(await page.locator('.wb-greeting').boundingBox(), null);
+    }
+    await page.waitForTimeout(3000);
+    assert.deepEqual(await hero.boundingBox(), before);
+    assert.deepEqual(await page.evaluate(() => window.shifts), []);
+    console.log(`${width}x${height} account decision (${variant}): CLS 0`);
+  } finally {
+    release();
+    await context.close();
+  }
+}
+
 await withPreview({ port: 4392 }, async baseURL => {
   const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS });
   try {
-    for (const width of [390, 430, 768, 1280]) {
-      for (const variant of ['chart', 'choose', 'none']) await verify(browser, baseURL, width, variant);
+    const html = await (await fetch(baseURL)).text();
+    if (/<html\b[^>]*\bdata-account-sync-v2\b/.test(html)) {
+      for (const width of [390, 1280]) {
+        for (const variant of ['chart', 'choose', 'empty', 'no-key', 'denied', 'failed']) {
+          await verifyAccountDecision(browser, baseURL, width, variant);
+        }
+      }
+    } else {
+      for (const width of [390, 430, 768, 1280]) {
+        for (const variant of ['chart', 'choose', 'none']) await verify(browser, baseURL, width, variant);
+      }
     }
   } finally {
     await browser.close();
