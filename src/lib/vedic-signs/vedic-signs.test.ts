@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { NAKSHATRAS, siderealChart } from '@zodiacs/engine/vedic';
 import { computeVedicSigns } from './compute';
-import { UNDER_13_MESSAGE, isUnder13, listOr, passedThrough, vedicReading } from './reading';
+import { UNDER_13_MESSAGE, forwardRun, isUnder13, listOr, vedicReading } from './reading';
 import { parseVedicSignsShare, vedicSignsQuery, vedicSignsShareQuery, vedicSignsShareUrl, VEDIC_SIGNS_SHARE_KEYS } from './share';
 import { AYANAMSA_NAME, NAKSHATRA_LORE, NAKSHATRA_NAMES, RASHIS, RASHI_LINE, VEDIC_AYANAMSAS, VEDIC_NOTE, nakshatraSigns } from './wording';
 import { forbiddenClaim } from '../../ai-tools/personal/shared';
@@ -146,49 +146,65 @@ describe('the Vedic signs share link', () => {
     expect(wrap.nakshatraCandidates).toEqual(['Revati', 'Ashwini', 'Bharani']);
     const signs = vedicReading({ ...base, at: moment(45, 3), ends: [moment(29.5, 2), moment(61, 4)] });
     expect(signs.moonCandidates).toEqual(['Aries (Mesha)', 'Taurus (Vrishabha)', 'Gemini (Mithuna)']);
-    expect(passedThrough([26, 1], 27)).toEqual([26, 0, 1]);
-    expect(passedThrough([5, 5], 12)).toEqual([5]);
-  });
-
-  it('lists every candidate between the two ends of an untimed day, three or more joined with commas (ZOD-18)', () => {
-    const moment = (moonLon: number, index: number) => ({ ayanamsa: 24, sun: { lon: 100, tropical: 124 }, moon: { lon: moonLon, tropical: moonLon + 24 }, rising: null, nakshatra: { index, pada: 4 as const, lord: 'Ketu' } });
-    const base = { timeKnown: false, placed: false, ayanamsa: 'lahiri' as const };
-    // A fast Moon starting late in Ashwini ends the day in Krittika; it spent most of the day in Bharani.
-    const fast = vedicReading({ ...base, at: moment(20, 1), ends: [moment(12, 0), moment(27.5, 2)] });
-    expect(fast.nakshatraCandidates).toEqual(['Ashwini', 'Bharani', 'Krittika']);
-    expect(fast.limits).toContain('The Moon changed nakshatra that day: it was in Ashwini, Bharani or Krittika. A birth time settles it.');
-    // Across the wrap: Revati to Bharani.
-    const wrap = vedicReading({ ...base, at: moment(5, 0), ends: [moment(358, 26), moment(15, 1)] });
-    expect(wrap.nakshatraCandidates).toEqual(['Revati', 'Ashwini', 'Bharani']);
-    // A Moon sign run from Pisces through Aries into Taurus.
-    const signs = vedicReading({ ...base, at: moment(10, 0), ends: [moment(345, 25), moment(31, 2)] });
-    expect(signs.moonCandidates).toEqual([`Pisces (${RASHIS[11]})`, `Aries (${RASHIS[0]})`, `Taurus (${RASHIS[1]})`]);
-    expect(signs.limits).toContain(`The Moon changed sign that day: it was in Pisces (${RASHIS[11]}), Aries (${RASHIS[0]}) or Taurus (${RASHIS[1]}). A birth time settles it.`);
-    expect(listOr(['A'])).toBe('A');
-    expect(listOr(['A', 'B'])).toBe('A or B');
-    expect(listOr(['A', 'B', 'C', 'D'])).toBe('A, B, C or D');
-  });
-
-  it('prints no degree and no pada without a birth time, and both with one (ZOD-18)', () => {
-    const moment = (moonLon: number, pada: 1 | 2 | 3 | 4) => ({ ayanamsa: 24, sun: { lon: 100, tropical: 124 }, moon: { lon: moonLon, tropical: moonLon + 24 }, rising: null, nakshatra: { index: 14, pada, lord: 'Rahu' } });
-    const untimed = vedicReading({ timeKnown: false, placed: false, ayanamsa: 'lahiri', at: moment(193, 2), ends: [moment(188, 1), moment(198, 4)] });
-    expect(untimed.sun).not.toBeNull();
-    expect(untimed.moon).not.toBeNull();
-    expect(untimed.moonNakshatra).not.toBeNull();
-    expect(untimed.sun!.degree).toBeNull();
-    expect(untimed.moon!.degree).toBeNull();
-    expect(untimed.moonNakshatra!.pada).toBeNull();
-    expect(untimed.limits[0]).toBe('No birth time was given, so there is no rising sign (lagna), no degree and no pada, and the Moon sign and nakshatra are given only where the whole birth day keeps them.');
-    const timed = vedicReading({ timeKnown: true, placed: false, ayanamsa: 'lahiri', at: moment(193, 2), ends: null });
-    expect(typeof timed.sun!.degree).toBe('number');
-    expect(typeof timed.moon!.degree).toBe('number');
-    expect(timed.moon!.degree).toBe(13);
-    expect(timed.sun!.degree).toBe(10);
-    expect(timed.moonNakshatra!.pada).toBe(2);
+    expect(forwardRun(26, 1, 27)).toEqual([26, 0, 1]);
+    expect(forwardRun(5, 5, 12)).toEqual([5]);
   });
 
   it('is built from a reading the same way the tool builds it', () => {
     const reading = vedicReading({ timeKnown: false, placed: false, ayanamsa: 'yukteswar', at: { ayanamsa: 22.4, sun: { lon: 100, tropical: 124 }, moon: { lon: 200, tropical: 224 }, rising: null, nakshatra: { index: 14, pada: 3, lord: 'Rahu' } }, ends: null });
     expect(vedicSignsShareQuery(reading)).toBe('s=cancer&m=libra&n=15&a=yukteswar');
+  });
+});
+
+describe('birth time and Vedic placements (ZOD-18)', () => {
+  const base = { timeKnown: false, placed: false, ayanamsa: 'lahiri' as const };
+  const moment = (moonLon: number, index: number, pada: 1 | 2 | 3 | 4 = 1) => ({
+    ayanamsa: 24,
+    sun: { lon: 100, tropical: 124 },
+    moon: { lon: moonLon, tropical: (moonLon + 24) % 360 },
+    rising: null,
+    nakshatra: { index, pada, lord: 'Rahu' },
+  });
+
+  it('includes Bharani between Ashwini and Krittika', () => {
+    const fast = vedicReading({ ...base, at: moment(20, 1), ends: [moment(12, 0), moment(27.5, 2)] });
+    expect(fast.moonNakshatra).toBeNull();
+    expect(fast.nakshatraCandidates).toEqual(['Ashwini', 'Bharani', 'Krittika']);
+    expect(fast.limits).toContain('The Moon changed nakshatra that day: it was in Ashwini, Bharani or Krittika. A birth time settles it.');
+  });
+
+  it('includes Ashwini between Revati and Bharani across the zodiac boundary', () => {
+    const wrap = vedicReading({ ...base, at: moment(5, 0), ends: [moment(358, 26), moment(15, 1)] });
+    expect(wrap.moonNakshatra).toBeNull();
+    expect(wrap.nakshatraCandidates).toEqual(['Revati', 'Ashwini', 'Bharani']);
+  });
+
+  it('includes Aries between Pisces and Taurus across the zodiac boundary', () => {
+    const signs = vedicReading({ ...base, at: moment(10, 0), ends: [moment(359, 26), moment(31, 2)] });
+    expect(signs.moon).toBeNull();
+    expect(signs.moonCandidates).toEqual([`Pisces (${RASHIS[11]})`, `Aries (${RASHIS[0]})`, `Taurus (${RASHIS[1]})`]);
+    expect(signs.limits).toContain(`The Moon changed sign that day: it was in Pisces (${RASHIS[11]}), Aries (${RASHIS[0]}) or Taurus (${RASHIS[1]}). A birth time settles it.`);
+  });
+
+  it('omits degrees, pada and rising for held untimed placements', () => {
+    const untimed = vedicReading({ ...base, at: moment(193, 14, 2), ends: [moment(188, 14, 1), moment(198, 14, 4)] });
+    expect(untimed.sun).toMatchObject({ sign: 'cancer', degree: null });
+    expect(untimed.moon).toMatchObject({ sign: 'libra', degree: null });
+    expect(untimed.moonNakshatra).toMatchObject({ name: 'Swati', pada: null });
+    expect(untimed.rising).toBeNull();
+    expect(untimed.limits[0]).toBe('No birth time was given, so there is no rising sign (lagna), no degree and no pada, and the Moon sign and nakshatra are given only where the whole birth day keeps them.');
+  });
+
+  it('gives numeric degrees and pada at a known birth time', () => {
+    const timed = vedicReading({ ...base, timeKnown: true, at: moment(193, 14, 2), ends: null });
+    expect(timed.sun).toMatchObject({ degree: 10 });
+    expect(timed.moon).toMatchObject({ degree: 13 });
+    expect(timed.moonNakshatra).toMatchObject({ pada: 2 });
+  });
+
+  it('joins candidate names with a final or', () => {
+    expect(listOr(['A'])).toBe('A');
+    expect(listOr(['A', 'B'])).toBe('A or B');
+    expect(listOr(['A', 'B', 'C', 'D'])).toBe('A, B, C or D');
   });
 });
