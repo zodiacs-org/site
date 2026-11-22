@@ -4,33 +4,38 @@
  * A before and after screenshot cannot show motion: both are taken at rest,
  * and at rest a correct motion change looks identical. This harness takes two
  * running builds of the site and, for each page in
- * `motion-evidence.routes.json`, at 390 x 844 and 1440 x 900, records:
+ * `motion-evidence.routes.json`, at 390 x 844 (driven by touch) and
+ * 1440 x 900 (driven by the wheel), records:
  *
- * 1. the rest state (every entrance triggered by a scroll through the page,
- *    then a full-page screenshot) and, with two builds, the share of pixels
+ * 1. the rest state (the page settled, one scroll-through, every entrance
+ *    finished, then a full-page screenshot) and, with two builds, the pixels
  *    that differ;
  * 2. a film strip of the first view: the page's finite animations (CSS
  *    transitions included) are paused and sought to fixed times, so each
  *    frame is exact and repeatable;
  * 3. a film strip after each step the route lists (a scroll, or a form fill
  *    and a click);
- * 4. numbers: the sum of layout shifts over load and one scroll-through, LCP,
- *    the largest above-the-fold block, paint and entrance timing under
- *    throttling, long frames, animated properties, whether every mark ends up
- *    shown (at rest, with reduced motion and with scripting off), and the
+ * 4. numbers: layout shift (a hard number taken after the page settles, and a
+ *    report-only number taken from `load`), LCP, the largest above-the-fold
+ *    block, paint and entrance timing under throttling, long frames (report
+ *    only), animated properties, mark counts, whether every mark is rendered
+ *    and shown (at rest, with reduced motion and with scripting off), and the
  *    reload, primary-action and step checks.
  *
  * Usage:
  *
  *   node tests/motion-evidence.mjs --before http://127.0.0.1:4391 \
  *     [--after http://127.0.0.1:4392] [--routes /numerology/,/compatibility/] \
+ *     [--marks-removed /tools/] [--frame-loads 5] \
  *     [--out tests/visual/artifacts/motion] [--check]
  *
- * `--before` alone is baseline mode: everything is measured, nothing is
- * compared. `--check` makes the process exit 1 when a hard check fails on the
- * "after" build (or on the only build), when a route answers with a status
- * outside 2xx on either build, or when the route list resolves to no routes.
- * A measurement that could not be taken is a failure, never a pass.
+ * `--before` alone is single-build mode: everything is measured, and the
+ * hard checks that need no second build apply. `--check` makes the process
+ * exit 1 when a hard check fails on the "after" build (or on the only build),
+ * when a route answers with a status outside 2xx on either build, or when the
+ * route list resolves to no routes. A measurement that could not be taken is
+ * a failure, never a pass. Long frames and the layout shift taken from `load`
+ * are printed for a person to read and never fail the run.
  *
  * The harness does not build the site or start servers. Build each worktree,
  * then run `npx astro preview --port N --host 127.0.0.1` in it and pass the
@@ -62,6 +67,8 @@ export const VIEWPORTS = [
   { width: 390, height: 844 },
   { width: 1440, height: 900 },
 ];
+/** Viewports this narrow are a phone: touch is enabled and every scroll-through is a touch gesture. */
+export const TOUCH_MAX_WIDTH = 600;
 export const STRIP_TIMES = [0, 100, 200, 300, 440, 700, 1100, 1600, 2200];
 export const ALLOWED_PROPERTIES = ['opacity', 'transform', 'stroke-dashoffset'];
 export const DAILY_SELECTORS = ['.skyticker', '.tbs__stamp'];
@@ -69,29 +76,51 @@ export const PIXEL_THRESHOLD = 0.1;
 /**
  * Rest state: at most this many differing pixels (pixelmatch, threshold 0.1,
  * which already leaves out pixels it classifies as antialiasing) on an
- * "identical" route, however long the page. The same build compared with
- * itself differed by 0 pixels in all 72 comparisons of three full runs on
- * 2026-11-22 (12 routes, 2 sizes): that is the noise floor, so nothing more
- * is tolerated. Hiding one icon at rest on /tools/ changed 81 and 91 pixels
- * (a 32 px line icon) and 13 pixels (the 19 px profile outline in the header).
+ * "identical" route, however long the page. Hiding one icon at rest on
+ * /tools/ changed 81 and 91 pixels (a 32 px line icon) and 13 pixels (the
+ * 19 px profile outline in the header), so nothing is tolerated. A capture
+ * that differs is retaken (see restVerdict).
  */
 export const MAX_REST_PIXELS = 0;
+/** Long frames are reported, never judged: the share of loads over this is printed. */
 export const LONG_FRAME_MS = 50;
 export const LONG_FRAME_WINDOW_MS = 2500;
+/** Throttled loads per build, route and size for the long-frame report. */
+export const FRAME_LOADS = 5;
 /**
- * Long frames on a slow runner. The reference is the same build, reloaded
- * with its marks removed and measured over the same window. The subject fails
- * when its longest frame exceeds max(50 ms, reference x 1.5 + one 60 Hz
- * frame): frame gaps come in steps of 16.7 ms, and the same page measured
- * twice on this runner differed by up to that ratio (see the PR).
+ * "Quiet": no request in flight and none finished, no DOM mutation and no
+ * layout-shift entry for this long, after `load` and with the fonts ready.
  */
-export const LONG_FRAME_RATIO = 1.5;
-export const FRAME_MS = 1000 / 60;
+export const QUIET_MS = 500;
+export const QUIET_CAP_MS = 10000;
+/** Layout shift, settled then scroll: takes per build, and how closely they must agree. */
+export const SETTLED_TAKES = 3;
+export const SHIFT_AGREEMENT = 0.002;
+/** Two builds: the after build may exceed the before build by at most this. */
+export const SHIFT_MARGIN = 0.002;
+/** One build: the tool's own bar, not a web standard (field CLS "good" is 0.1 over a whole visit). */
+export const SHIFT_SINGLE_BAR = 0.02;
+/** Layout shift, scroll from load: report-only takes per build. */
+export const FROM_LOAD_TAKES = 5;
+export const STEP_FRACTION = 0.8;
+/** The scroll from load steps every 150 ms, as the harness always has. */
+export const FAST_STEP_MS = 150;
+/**
+ * The settled scroll dwells at each step for at least 400 ms and then until
+ * the page has been still (no mutation, no shift) for 300 ms, at most 2 s,
+ * so a block that moves a few hundred ms after it comes into view moves
+ * while it is still on screen.
+ */
+export const SETTLED_STEP_MIN_MS = 400;
+export const SETTLED_STEP_QUIET_MS = 300;
+export const SETTLED_STEP_CAP_MS = 2000;
+/** A touch drag scrolls this much less than the finger moves (the slop before a scroll starts). */
+export const TOUCH_SLOP = 24;
+/** Rest images saved on a failure or an unstable capture: margin around the change, size cap. */
+export const REST_IMAGE_MARGIN = 32;
+export const REST_IMAGE_MAX_BYTES = 400 * 1024;
 /** After a reload, the scroll position must be within this many px of the one before it. */
 export const RELOAD_SCROLL_TOLERANCE = 4;
-/** Marks with their attribute renamed to this, for the reference load without marks. */
-export const STRIPPED_ATTRIBUTE = 'data-evidence-stripped';
-export const CLS_RETAKE_BELOW = 0.002;
 export const PRIMARY_ACTION_MARGIN = 100;
 export const SHEET_MAX_BYTES = 400 * 1024;
 export const SETTLE_MAX_MS = 4000;
@@ -102,7 +131,7 @@ export const THROTTLE = {
   cpuRate: 4,
 };
 
-/** Date.now() in every rest-state load, the same for both builds. */
+/** Date.now() in every rest-state and layout-shift load, the same for both builds. */
 const RUN_STARTED_AT = Date.now();
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -115,7 +144,7 @@ export const DEFAULT_ROUTES_FILE = resolve(here, 'motion-evidence.routes.json');
 /* ------------------------------------------------------------------ */
 
 export function parseArgs(argv) {
-  const options = { before: null, after: null, routes: null, out: DEFAULT_OUT, check: false };
+  const options = { before: null, after: null, routes: null, out: DEFAULT_OUT, check: false, marksRemoved: [], frameLoads: FRAME_LOADS };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     const [flag, inline] = arg.includes('=') ? [arg.slice(0, arg.indexOf('=')), arg.slice(arg.indexOf('=') + 1)] : [arg, undefined];
@@ -125,10 +154,16 @@ export function parseArgs(argv) {
       if (i >= argv.length || argv[i].startsWith('--')) throw new Error(`${flag} needs a value`);
       return argv[i];
     };
+    const list = (v) => v.split(',').map((p) => p.trim()).filter(Boolean);
     if (flag === '--before') options.before = value();
     else if (flag === '--after') options.after = value();
-    else if (flag === '--routes') options.routes = value().split(',').map((p) => p.trim()).filter(Boolean);
-    else if (flag === '--out') options.out = value();
+    else if (flag === '--routes') options.routes = list(value());
+    else if (flag === '--marks-removed') options.marksRemoved = list(value()).map(normalizePath);
+    else if (flag === '--frame-loads') {
+      const n = Number(value());
+      if (!Number.isInteger(n) || n < 1) throw new Error('--frame-loads needs a whole number of 1 or more');
+      options.frameLoads = n;
+    } else if (flag === '--out') options.out = value();
     else if (flag === '--check') options.check = true;
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -163,6 +198,11 @@ export function viewportKey(viewport) {
   return `${viewport.width}x${viewport.height}`;
 }
 
+/** touch for a phone-sized viewport, wheel otherwise. */
+export function inputFor(viewport) {
+  return viewport.width <= TOUCH_MAX_WIDTH ? 'touch' : 'wheel';
+}
+
 /** "h1#title.a.b" from {tag, id, classes}; at most two classes. */
 export function shortSelector(descriptor) {
   if (!descriptor) return null;
@@ -181,13 +221,20 @@ export function disallowedProperties(properties, allowed = ALLOWED_PROPERTIES) {
   return [...new Set(properties.map(toKebab))].filter((p) => !allowed.includes(p)).sort();
 }
 
+export function median(values) {
+  const v = values.filter((x) => x != null).sort((a, b) => a - b);
+  if (!v.length) return null;
+  const mid = Math.floor(v.length / 2);
+  return v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2;
+}
+
 /**
  * Long requestAnimationFrame gaps in the window (start, start + durationMs].
  * A gap that ends inside the window counts in full; a gap that starts inside
  * the window and ends after it counts up to the window's end. When the frames
  * stop before the window ends, the time from the last frame to the window's
  * end (or to `observedUntil`, when the frames were read) is a gap too. No gap
- * in the window at all is "unmeasured", never a pass.
+ * in the window at all is "unmeasured".
  */
 export function longFrameStats(timestamps, start, durationMs = LONG_FRAME_WINDOW_MS, thresholdMs = LONG_FRAME_MS, observedUntil = null) {
   const end = start + durationMs;
@@ -214,24 +261,66 @@ export function longFrameStats(timestamps, start, durationMs = LONG_FRAME_WINDOW
   return { count, longest: Math.round(longest * 10) / 10, frames };
 }
 
-/** The longest frame allowed against a reference measured without marks. */
-export function longFrameLimit(referenceLongest) {
-  return Math.round(Math.max(LONG_FRAME_MS, referenceLongest * LONG_FRAME_RATIO + FRAME_MS) * 10) / 10;
+/**
+ * The long-frame report for one build: the longest frame of each load's
+ * entrance window, their median and maximum, and how many loads had a frame
+ * over 50 ms. Never a verdict.
+ */
+export function summarizeLongFrames(takes) {
+  if (!takes || !takes.length) return null;
+  const applicable = takes.filter((t) => t && !t.notApplicable);
+  if (!applicable.length) return { loads: takes.length, notApplicable: takes.find((t) => t?.notApplicable)?.notApplicable ?? 'no marks' };
+  const measured = applicable.filter((t) => t.longest != null);
+  const longest = measured.map((t) => t.longest);
+  return {
+    loads: takes.length,
+    measured: measured.length,
+    unmeasured: applicable.length - measured.length,
+    median: longest.length ? Math.round(median(longest) * 10) / 10 : null,
+    max: longest.length ? Math.max(...longest) : null,
+    over: longest.filter((v) => v > LONG_FRAME_MS).length,
+    longest,
+    anchoredOn: [...new Set(measured.map((t) => t.anchoredOn).filter(Boolean))],
+  };
 }
 
 /**
- * pass: the longest frame is within the absolute 50 ms bar.
- * note: over 50 ms, but the reference is over 50 ms too and the subject is
- *   within longFrameLimit(reference): the runner is too slow for the
- *   absolute bar and the marks did not make it materially worse.
- * fail: over 50 ms while the reference is within it, over the relative
- *   limit, or no reference was measured.
+ * Layout shift, settled then scroll, for one build: SETTLED_TAKES takes that
+ * must each be measured and agree within SHIFT_AGREEMENT. The value is the
+ * largest take. Anything else is unmeasured, with the reason.
  */
-export function longFrameVerdict(longest, referenceLongest) {
-  if (longest <= LONG_FRAME_MS) return 'pass';
-  if (referenceLongest == null) return 'fail';
-  if (longest > longFrameLimit(referenceLongest)) return 'fail';
-  return referenceLongest > LONG_FRAME_MS ? 'note' : 'fail';
+export function settledShift(takes) {
+  const list = takes ?? [];
+  if (list.length < SETTLED_TAKES) return { value: null, unmeasured: `${list.length} of ${SETTLED_TAKES} takes were taken` };
+  const missing = list.find((t) => t == null || t.value == null);
+  if (missing) return { value: null, unmeasured: missing?.unmeasured ?? 'a take was not measured' };
+  const values = list.map((t) => t.value);
+  const spread = Math.max(...values) - Math.min(...values);
+  if (spread > SHIFT_AGREEMENT + 1e-9) {
+    return { value: null, unmeasured: `the ${list.length} takes disagree by more than ${SHIFT_AGREEMENT}: ${values.map((v) => v.toFixed(4)).join(', ')}` };
+  }
+  return { value: Math.max(...values), values };
+}
+
+/**
+ * The hard layout-shift check. Two builds: fail when the after build exceeds
+ * the before build by more than SHIFT_MARGIN. One build: fail above
+ * SHIFT_SINGLE_BAR. Unmeasured on either build fails.
+ */
+export function settledShiftVerdict(subjectTakes, baselineTakes = null) {
+  const after = settledShift(subjectTakes);
+  const fmt = (s) => `${s.value.toFixed(4)} (takes ${s.values.map((v) => v.toFixed(4)).join(', ')})`;
+  if (after.value == null) return { status: 'fail', detail: `unmeasured: ${after.unmeasured}` };
+  if (baselineTakes) {
+    const before = settledShift(baselineTakes);
+    if (before.value == null) return { status: 'fail', detail: `unmeasured on the before build: ${before.unmeasured}; after ${fmt(after)}` };
+    const delta = after.value - before.value;
+    const detail = `before ${fmt(before)}, after ${fmt(after)}`;
+    if (delta > SHIFT_MARGIN + 1e-9) return { status: 'fail', detail: `${detail}: the after build exceeds the before build by ${delta.toFixed(4)}, more than ${SHIFT_MARGIN}` };
+    return { status: 'pass', detail };
+  }
+  if (after.value > SHIFT_SINGLE_BAR + 1e-9) return { status: 'fail', detail: `${fmt(after)}, above ${SHIFT_SINGLE_BAR} (the tool's own bar for a single build)` };
+  return { status: 'pass', detail: `${fmt(after)} (bar ${SHIFT_SINGLE_BAR}, the tool's own)` };
 }
 
 /** Copy the top-left width x height area of an RGBA image. */
@@ -257,16 +346,31 @@ export function countOutsideRects(mask, width, height, rects) {
   return outside;
 }
 
+/** The box around the drawn pixels of a diff mask, or null. */
+export function maskBounds(mask, width, height) {
+  let x0 = Infinity; let y0 = Infinity; let x1 = -1; let y1 = -1;
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      if (mask[(y * width + x) * 4 + 3] === 0) continue;
+      if (x < x0) x0 = x;
+      if (x > x1) x1 = x;
+      if (y < y0) y0 = y;
+      if (y > y1) y1 = y;
+    }
+  }
+  return x1 < 0 ? null : { x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 };
+}
+
 /**
  * Compare two rest-state screenshots ({width, height, data} RGBA). A height
  * (or width) change is reported and the diff covers the common area.
  */
-export function compareRest(a, b, { threshold = PIXEL_THRESHOLD, dailyRects = [] } = {}) {
+export function compareRest(a, b, { threshold = PIXEL_THRESHOLD, dailyRects = [], keepMask = false } = {}) {
   const width = Math.min(a.width, b.width);
   const height = Math.min(a.height, b.height);
   const mask = Buffer.alloc(width * height * 4);
   const differing = pixelmatch(cropRGBA(a, width, height), cropRGBA(b, width, height), mask, width, height, {
-    threshold, diffMask: true, diffColor: [255, 0, 0],
+    threshold, diffMask: true, diffColor: [255, 0, 255],
   });
   const outsideDaily = differing > 0 && dailyRects.length > 0
     ? countOutsideRects(mask, width, height, dailyRects)
@@ -280,7 +384,112 @@ export function compareRest(a, b, { threshold = PIXEL_THRESHOLD, dailyRects = []
     heightChanged: a.height !== b.height ? { from: a.height, to: b.height } : null,
     widthChanged: a.width !== b.width ? { from: a.width, to: b.width } : null,
     dailyOnly: differing > 0 && dailyRects.length > 0 && outsideDaily === 0,
+    ...(keepMask ? { mask } : {}),
   };
+}
+
+/** One rest comparison: "same" (0 px), "daily" (every differing pixel inside the daily data) or "differs". */
+export function restTakeKind(take) {
+  if (!take) return 'differs';
+  if (take.widthChanged || take.heightChanged) return 'differs';
+  if (take.differing <= MAX_REST_PIXELS) return 'same';
+  if (take.outsideDaily != null && take.outsideDaily <= MAX_REST_PIXELS) return 'daily';
+  return 'differs';
+}
+
+/**
+ * Whether the rest comparison needs another pair of captures. A first pair
+ * that differs is retaken once; when the retake is the same, a third pair
+ * decides whether the difference recurs.
+ */
+export function restNeedsRetake(takes) {
+  const kinds = takes.map(restTakeKind);
+  if (kinds.length === 1) return kinds[0] === 'differs';
+  if (kinds.length === 2) return kinds[0] === 'differs' && kinds[1] !== 'differs';
+  return false;
+}
+
+/**
+ * The rest verdict over the takes. pass: the first pair is the same. fail:
+ * the first two pairs both differ, or a difference that went away on the
+ * retake came back on the third pair, or a needed retake is missing.
+ * unstable: it appeared once in three pairs (reported and listed, not a
+ * failure). note: only the daily data differs.
+ */
+export function restVerdict(takes) {
+  const fmt = (t) => {
+    if (!t) return 'not taken';
+    const size = t.widthChanged ? `width ${t.widthChanged.from} to ${t.widthChanged.to} px` : t.heightChanged ? `height ${t.heightChanged.from} to ${t.heightChanged.to} px` : null;
+    return `${t.differing} px${size ? ` and ${size}` : ''}`;
+  };
+  const counts = takes.map((t, i) => `take ${i + 1}: ${fmt(t)}`).join(', ');
+  if (!takes.length || !takes[0]) return { status: 'fail', detail: 'rest state not compared' };
+  const kinds = takes.map(restTakeKind);
+  if (kinds[0] === 'same') return { status: 'pass', detail: `0 px differ (limit ${MAX_REST_PIXELS})` };
+  if (kinds[0] === 'daily') {
+    return { status: 'note', detail: `daily data: ${takes[0].differing} px differ, ${takes[0].outsideDaily} outside ${DAILY_SELECTORS.join(' or ')} (limit ${MAX_REST_PIXELS})` };
+  }
+  if (kinds.length < 2) return { status: 'fail', detail: `${counts}; the retake was not taken` };
+  if (kinds[1] === 'differs') return { status: 'fail', detail: `differs on both pairs (${counts}; limit ${MAX_REST_PIXELS})` };
+  if (kinds.length < 3) return { status: 'fail', detail: `${counts}; the third pair was not taken` };
+  if (kinds[2] === 'differs') return { status: 'fail', detail: `differs again on the third pair (${counts}; limit ${MAX_REST_PIXELS})` };
+  return { status: 'unstable', detail: `unstable capture: differed once in three pairs (${counts})` };
+}
+
+/**
+ * Mark counts per route and size. Two builds: any change is listed; going
+ * from more than zero to zero fails unless the route is in --marks-removed.
+ * One build: fewer than the route's minMarks fails.
+ */
+export function markCountCheck({ route, subjectCount, baselineCount = null, twoBuilds = false, marksRemoved = [] }) {
+  if (twoBuilds) {
+    if (subjectCount == null || baselineCount == null) return { status: 'fail', detail: `not measured (before ${baselineCount ?? 'n/a'}, after ${subjectCount ?? 'n/a'})` };
+    const detail = `before ${baselineCount}, after ${subjectCount}`;
+    if (baselineCount > 0 && subjectCount === 0) {
+      if (marksRemoved.includes(route.path)) return { status: 'pass', detail: `${detail} (all marks removed, as --marks-removed says)` };
+      return { status: 'fail', detail: `${detail}: every mark is gone; pass --marks-removed ${route.path} if that is intended` };
+    }
+    return { status: 'pass', detail };
+  }
+  if (route.minMarks == null) return subjectCount == null ? null : { status: 'pass', detail: `${subjectCount} (no minimum listed)` };
+  if (subjectCount == null) return { status: 'fail', detail: `not measured (minMarks ${route.minMarks})` };
+  if (subjectCount < route.minMarks) return { status: 'fail', detail: `${subjectCount} marks, fewer than the ${route.minMarks} that motion-evidence.routes.json lists for this route` };
+  return { status: 'pass', detail: `${subjectCount} (minMarks ${route.minMarks})` };
+}
+
+export const MODES = [
+  ['rest', 'at rest'],
+  ['reducedMotion', 'under reduced motion'],
+  ['noScript', 'with scripting off'],
+];
+
+/**
+ * Whether each mark is rendered in the same modes. Every mark (by its path in
+ * the DOM) that is rendered in one mode and not in another is a problem,
+ * naming the element and the mode. A mark not rendered in any mode is
+ * legitimately absent. A mark missing from one mode's DOM is not rendered there.
+ */
+export function compareRendered(modes) {
+  const keys = new Map();
+  for (const [mode] of MODES) {
+    for (const m of modes[mode]?.marks ?? []) if (!keys.has(m.key)) keys.set(m.key, m.name);
+  }
+  const problems = [];
+  let absentInAll = 0;
+  for (const [key, name] of keys) {
+    const states = MODES.map(([mode, label]) => {
+      const m = (modes[mode]?.marks ?? []).find((x) => x.key === key);
+      return { mode, label, rendered: Boolean(m?.rendered), why: m ? m.absent : 'not in the DOM' };
+    });
+    const renderedIn = states.filter((s) => s.rendered);
+    if (!renderedIn.length) { absentInAll += 1; continue; }
+    for (const s of states) {
+      if (!s.rendered) problems.push({ key, name, mode: s.mode, detail: `${name} is not rendered ${s.label} (${s.why}) but is rendered ${renderedIn.map((r) => r.label).join(' and ')}` });
+    }
+  }
+  const counts = Object.fromEntries(MODES.map(([mode]) => [mode, modes[mode] ? (modes[mode].marks ?? []).filter((m) => m.rendered).length : null]));
+  const dom = Object.fromEntries(MODES.map(([mode]) => [mode, modes[mode] ? modes[mode].total : null]));
+  return { problems, counts, dom, absentInAll, union: keys.size };
 }
 
 /** Frame width for a sheet: start wide, shrink by 15 % while the sheet is too big. */
@@ -310,16 +519,16 @@ export function sheetLayout({ viewport, frameWidth, frameCount, rowCount }) {
 
 const fmtMs = (v) => (v == null ? 'n/a' : `${Math.round(v)} ms`);
 const fmtCount = (v) => (v == null ? 'n/a' : String(v));
+const fmtShift = (v) => (v == null ? 'n/a' : v === 0 ? '0' : v.toFixed(4));
 const isOk = (status) => status >= 200 && status < 300;
 
-function fmtLongFrames(n) {
-  const lf = n.longFrames;
+function fmtLongFrames(lf) {
   if (!lf) return 'n/a';
   if (lf.notApplicable) return `not applicable: ${lf.notApplicable}`;
-  if (lf.unmeasured) return `unmeasured: ${lf.unmeasured}`;
-  const retake = n.longFramesRetake?.longest != null ? ` (retake ${n.longFramesRetake.longest} ms)` : '';
-  const reference = n.longFramesReference?.longest != null ? `; without marks ${n.longFramesReference.longest} ms` : '';
-  return `${lf.count}, longest ${lf.longest} ms${retake}${reference}`;
+  if (lf.median == null) return `unmeasured in all ${lf.loads} loads`;
+  const anchor = lf.anchoredOn?.length ? `; window from the first mark shown after ${lf.anchoredOn.join(' or ')}` : '';
+  const unmeasured = lf.unmeasured ? `; ${lf.unmeasured} unmeasured` : '';
+  return `median ${lf.median} ms, max ${lf.max} ms; ${lf.over} of ${lf.measured} loads over ${LONG_FRAME_MS} ms (${lf.longest.join(', ')})${anchor}${unmeasured}`;
 }
 
 function fmtShown(s) {
@@ -328,12 +537,21 @@ function fmtShown(s) {
   return `${s.rendered - s.notShown} of ${s.rendered} shown${unrendered ? ` (${unrendered} not rendered)` : ''}`;
 }
 
+function fmtSettled(takes) {
+  if (!takes) return 'n/a';
+  const s = settledShift(takes);
+  const each = takes.map((t) => (t?.value == null ? 'unmeasured' : t.value.toFixed(4))).join(', ');
+  if (s.value == null) return `unmeasured (${each}): ${s.unmeasured}`;
+  return `${fmtShift(s.value)} (takes ${each})`;
+}
+
 /** One build's numbers for one viewport, as table cells. */
 export function formatNumbers(n) {
   if (!n) return {};
   return {
     http: n.http ? (n.http.status != null ? String(n.http.status) : `error: ${n.http.error}`) : 'n/a',
-    cls: n.cls == null ? 'n/a' : `${n.cls.toFixed(4)}${n.clsRetake != null ? ` (retake ${n.clsRetake.toFixed(4)})` : ''}`,
+    shiftSettled: fmtSettled(n.shiftSettled),
+    shiftFromLoad: n.shiftFromLoad ? n.shiftFromLoad.map((t) => (t?.value == null ? 'unmeasured' : fmtShift(t.value))).join(', ') : 'n/a',
     lcp: n.lcp ? `${fmtMs(n.lcp.time)} \`${n.lcp.selector ?? '?'}\`` : 'n/a',
     lcpMarked: n.lcpMarked == null ? 'n/a' : String(n.lcpMarked),
     largest: n.largest ? `\`${n.largest.selector ?? '?'}\` (${n.largest.kind}, ${n.largest.area} px²)${n.largest.marked ? ', marked' : ''}` : 'n/a',
@@ -342,12 +560,16 @@ export function formatNumbers(n) {
     firstMarkShown: n.throttled?.firstMarkShown == null
       ? (n.markedCount === 0 ? 'n/a (no marks)' : 'none')
       : `${fmtMs(n.throttled.firstMarkShown)} (+${Math.round(n.throttled.firstMarkShown - (n.throttled.firstPaint ?? 0))} after paint${n.throttled.scrolledToFirstMark ? ', after scrolling to it' : ''})`,
-    longFrames: fmtLongFrames(n),
+    longFrames: fmtLongFrames(n.longFrames),
+    entrancesPlayed: n.entrancesPlayed == null ? 'n/a' : `${n.entrancesPlayed} (${n.input}${n.input === 'touch' ? `, ${n.touches ?? 0} touchstart events` : ''})`,
     animatedProperties: n.animatedProperties ? (n.animatedProperties.join(', ') || 'none') : 'n/a',
     markedCount: fmtCount(n.markedCount),
     nestedMarks: fmtCount(n.nestedMarks),
     rootMarked: n.rootMarked == null ? 'n/a' : String(n.rootMarked),
     shownAtRest: fmtShown(n.shownAtRest),
+    marksRendered: n.shownAtRest || n.reducedMotion || n.noScript
+      ? `${MODES.map(([mode]) => { const m = n[mode === 'rest' ? 'shownAtRest' : mode]; return m?.marks ? m.marks.filter((x) => x.rendered).length : 'n/a'; }).join(' / ')} of ${n.shownAtRest?.total ?? 'n/a'} in the DOM`
+      : 'n/a',
     hiddenAboveAfterReload: n.hiddenAboveAfterReload == null
       ? `unmeasured${n.reload?.reason ? `: ${n.reload.reason}` : ''}`
       : `${n.hiddenAboveAfterReload}${n.reload ? ` (scroll ${n.reload.before} to ${n.reload.after} px, ${n.reload.path})` : ''}`,
@@ -360,19 +582,22 @@ export function formatNumbers(n) {
 
 export const NUMBER_ROWS = [
   ['http', 'HTTP status'],
-  ['cls', 'Layout shift sum (load + one scroll-through)'],
+  ['shiftSettled', 'Layout shift, settled then scroll (hard)'],
+  ['shiftFromLoad', 'Layout shift, scroll from load (report only, each take)'],
   ['lcp', 'LCP entry at load'],
   ['lcpMarked', 'Any LCP entry on a marked element'],
   ['largest', 'Largest above-the-fold block (geometry)'],
   ['firstPaint', 'First paint (throttled)'],
   ['domContentLoaded', 'DOMContentLoaded (throttled)'],
   ['firstMarkShown', 'First mark shown (throttled)'],
-  ['longFrames', 'Long frames > 50 ms (4x CPU)'],
+  ['longFrames', 'Longest frame in the entrance window, 4x CPU (report only)'],
+  ['entrancesPlayed', 'Entrances played during the scroll-through'],
   ['animatedProperties', 'Animated properties (marked)'],
   ['markedCount', 'Marked elements'],
   ['nestedMarks', 'Nested marks'],
   ['rootMarked', 'html has is-in'],
   ['shownAtRest', 'Marks shown at rest'],
+  ['marksRendered', 'Marks rendered (rest / reduced motion / no script)'],
   ['hiddenAboveAfterReload', 'Hidden above after reload'],
   ['primaryActionTop', 'Primary action top'],
   ['reducedMotion', 'Reduced motion'],
@@ -388,11 +613,12 @@ function shownDetail(s) {
 /**
  * Hard checks for one route and viewport, applied to `subject` (the "after"
  * build, or the only build). `baseline` is the "before" build or null.
- * The long-frame reference is `subject.longFramesReference`: the same build
- * reloaded with its marks removed and measured over the same window.
- * Status is pass, fail, note (reported, not failed) or n/a (not applicable).
+ * `rest` is { takes } from the rest comparison. Status is pass, fail, note
+ * (reported, not failed), unstable (a rest capture that differed once in
+ * three pairs, listed, not failed) or n/a (not applicable). Long frames and
+ * the layout shift from load are never checks.
  */
-export function evaluateChecks({ route, viewport, subject, baseline = null, rest = null }) {
+export function evaluateChecks({ route, viewport, subject, baseline = null, rest = null, marksRemoved = [] }) {
   const out = [];
   const add = (check, status, detail) => out.push({ check, status, detail });
   if (!subject) {
@@ -409,11 +635,12 @@ export function evaluateChecks({ route, viewport, subject, baseline = null, rest
     return out;
   }
   add('http', 'pass', String(subject.http.status));
-  // layout shift (the sum over load and one scroll-through, not field CLS)
-  if (subject.cls == null) add('cls', 'fail', 'not measured');
-  else if (subject.cls === 0) add('cls', 'pass', '0');
-  else if (subject.cls < CLS_RETAKE_BELOW && subject.clsRetake === 0) add('cls', 'pass', `${subject.cls.toFixed(4)} on the first take, 0 on the retake`);
-  else add('cls', 'fail', `${subject.cls.toFixed(4)}${subject.clsRetake != null ? `, retake ${subject.clsRetake.toFixed(4)}` : ''}`);
+  // layout shift, settled then scroll
+  const shift = settledShiftVerdict(subject.shiftSettled, baseline ? (baseline.shiftSettled ?? []) : null);
+  add('layoutShift', shift.status, shift.detail);
+  // mark counts
+  const marks = markCountCheck({ route, subjectCount: subject.markedCount ?? null, baselineCount: baseline?.markedCount ?? null, twoBuilds: Boolean(baseline), marksRemoved });
+  if (marks) add('marks', marks.status, marks.detail);
   // simple flags
   const flag = (check, value, ok, detail) => {
     if (value == null) add(check, 'fail', 'not measured');
@@ -435,7 +662,7 @@ export function evaluateChecks({ route, viewport, subject, baseline = null, rest
     const how = subject.reload ? ` (scroll ${subject.reload.before} to ${subject.reload.after} px, ${subject.reload.path})` : '';
     add('hiddenAboveAfterReload', subject.hiddenAboveAfterReload === 0 ? 'pass' : 'fail', `${subject.hiddenAboveAfterReload}${how}`);
   }
-  // every mark ends up shown
+  // every rendered mark ends up shown
   const shown = (check, s, extra = '') => {
     if (!s) add(check, 'fail', 'not measured');
     else add(check, s.notShown === 0 && !extra ? 'pass' : 'fail', `${extra}${shownDetail(s)}`);
@@ -443,6 +670,16 @@ export function evaluateChecks({ route, viewport, subject, baseline = null, rest
   shown('marksShownAtRest', subject.shownAtRest);
   shown('reducedMotion', subject.reducedMotion, subject.reducedMotion?.running ? `${subject.reducedMotion.running} entrances running; ` : '');
   shown('noScript', subject.noScript);
+  // the same marks rendered in all three modes
+  const modes = { rest: subject.shownAtRest, reducedMotion: subject.reducedMotion, noScript: subject.noScript };
+  const missing = MODES.filter(([mode]) => !modes[mode]?.marks).map(([, label]) => label);
+  if (missing.length) add('marksRendered', 'fail', `not measured ${missing.join(', ')}`);
+  else {
+    const r = compareRendered(modes);
+    const counts = `${r.counts.rest} / ${r.counts.reducedMotion} / ${r.counts.noScript} rendered (rest / reduced motion / no script) of ${r.union} in the DOM, ${r.absentInAll} absent in all three`;
+    if (r.problems.length) add('marksRendered', 'fail', `${r.problems.slice(0, 5).map((p) => p.detail).join('; ')}${r.problems.length > 5 ? `; and ${r.problems.length - 5} more` : ''} (${counts})`);
+    else add('marksRendered', 'pass', counts);
+  }
   // animated properties: only the allowed ones, and every kind of mark actually sampled
   if (subject.animatedProperties == null) add('animatedProperties', 'fail', 'not measured');
   else {
@@ -452,28 +689,6 @@ export function evaluateChecks({ route, viewport, subject, baseline = null, rest
     else if (subject.markedVerbs == null) add('animatedProperties', 'fail', 'unmeasured: the kinds of mark on the page were not recorded');
     else if (unsampled.length) add('animatedProperties', 'fail', `unmeasured: no entrance was sampled for ${unsampled.join(', ')} (rendered marks of that kind exist)`);
     else add('animatedProperties', 'pass', subject.markedVerbs.length ? (subject.animatedProperties.join(', ') || 'none') : 'none (no rendered marks)');
-  }
-  // long frames
-  const lf = subject.longFrames;
-  if (!lf) add('longFrames', 'fail', 'not measured');
-  else if (lf.notApplicable) add('longFrames', 'n/a', `not applicable: ${lf.notApplicable}`);
-  else if (lf.unmeasured) add('longFrames', 'fail', `unmeasured: ${lf.unmeasured}`);
-  else {
-    const retake = subject.longFramesRetake?.longest;
-    const longest = retake != null ? Math.min(lf.longest, retake) : lf.longest;
-    const takes = `longest ${lf.longest} ms${retake != null ? `, retake ${retake} ms` : ''}`;
-    const reference = subject.longFramesReference;
-    const refLongest = reference?.longest ?? null;
-    const verdict = longFrameVerdict(longest, refLongest);
-    if (verdict === 'pass') add('longFrames', 'pass', takes);
-    else if (refLongest == null) add('longFrames', 'fail', `${takes}, and no reference without marks was measured${reference?.unmeasured ? ` (${reference.unmeasured})` : ''}`);
-    else {
-      const limit = longFrameLimit(refLongest);
-      const refText = `${refLongest} ms with marks removed (same build, same window)`;
-      if (verdict === 'note') add('longFrames', 'note', `runner too slow for the absolute ${LONG_FRAME_MS} ms bar: ${takes}, ${refText}; within ${limit} ms, so not materially worse`);
-      else if (longest > limit) add('longFrames', 'fail', `${takes}, over ${limit} ms (${LONG_FRAME_RATIO} x ${refText}, plus one frame)`);
-      else add('longFrames', 'fail', `${takes}, over ${LONG_FRAME_MS} ms while ${refText}`);
-    }
   }
   // scripted steps: a step that did not run is a failure on either build
   (subject.steps ?? []).forEach((step, i) => {
@@ -486,12 +701,8 @@ export function evaluateChecks({ route, viewport, subject, baseline = null, rest
   }
   // rest state
   if (baseline && route.rest === 'identical') {
-    if (!rest) add('rest', 'fail', 'rest state not compared');
-    else if (rest.widthChanged) add('rest', 'fail', `width changed: ${rest.widthChanged.from} to ${rest.widthChanged.to} px`);
-    else if (rest.heightChanged) add('rest', 'fail', `height changed: ${rest.heightChanged.from} to ${rest.heightChanged.to} px (${rest.differing} px of the common area differ)`);
-    else if (rest.differing <= MAX_REST_PIXELS) add('rest', 'pass', `${rest.differing} px differ (limit ${MAX_REST_PIXELS})`);
-    else if (rest.outsideDaily != null && rest.outsideDaily <= MAX_REST_PIXELS) add('rest', 'note', `daily data: ${rest.differing} px differ, ${rest.outsideDaily} outside ${DAILY_SELECTORS.join(' or ')} (limit ${MAX_REST_PIXELS})`);
-    else add('rest', 'fail', `${rest.differing} px differ${rest.outsideDaily != null && rest.outsideDaily !== rest.differing ? `, ${rest.outsideDaily} outside the daily data` : ''} (limit ${MAX_REST_PIXELS})`);
+    const v = restVerdict(rest?.takes ?? []);
+    add('rest', v.status, v.detail);
   }
   // primary action
   if (route.primaryAction) {
@@ -505,7 +716,7 @@ export function evaluateChecks({ route, viewport, subject, baseline = null, rest
       else if (before <= limit && after > limit) add('primaryAction', 'fail', `top moved from ${before} to ${after} px, below ${limit} px`);
       else add('primaryAction', 'pass', `top ${before} to ${after} px (limit ${limit} px)`);
     } else if (after == null) add('primaryAction', 'fail', `${route.primaryAction} not found`);
-    else if (after > limit) add('primaryAction', 'note', `top ${after} px, below the ${limit} px line (nothing to compare with in baseline mode)`);
+    else if (after > limit) add('primaryAction', 'note', `top ${after} px, below the ${limit} px line (nothing to compare with in single-build mode)`);
     else add('primaryAction', 'pass', `top ${after} px (limit ${limit} px)`);
   }
   return out;
@@ -531,23 +742,44 @@ export function escapeHtml(text) {
 
 const PROXY_NOTE = 'The 4x CPU and throttled-network numbers are a proxy, not a phone: headless Chromium on a shared machine with a slowed main thread and an emulated slow connection. Compare them between builds measured on the same machine, not against real devices.';
 
+export const LONG_FRAME_NOTE = `Long frames are for a person to read: the tool does not fail on them. On this kind of runner the longest frame of the same page differs by 2x or more from one load to the next (frames arrive in 16.7 ms steps, and a page measured 14 times at 1440 x 900 was over ${LONG_FRAME_MS} ms in 8), so any threshold would fail clean pages and pass real regressions at random. Each build is loaded the same way several times; compare the medians and the maxima side by side.`;
+
+export const FROM_LOAD_NOTE = 'Layout shift, scroll from load, is report only: it never fails the run. It starts the scroll-through at `load`, so it catches pages whose own late styles or hydration move content under an early scroller; that is timing dependent by nature, and a wide spread between takes, or a value that is sometimes 0, means exactly that.';
+
 const READING_NOTE = [
   'How to read the numbers.',
-  'Layout shift sum: the sum of every layout shift during load and one scroll-through that starts at `load` (steps of 0.8 of the screen, 150 ms apart). It is not CLS as field tools define it (the worst five-second session window of a real visit); it is a stricter sum over a scripted visit. Measured with `Date` fixed to the run\'s start; on this Chrome a fixed clock left the layout-shift and LCP entries unchanged (same sources, same sizes).',
-  'The scroll-through announces itself as the reader\'s own scroll (one synthetic `wheel` event first), so a runtime that plays entrances only for a reader\'s scroll plays them here too.',
+  `Quiet: after \`load\`, with the fonts ready, no request in flight or finished, no DOM mutation and no layout-shift entry for ${QUIET_MS} ms (at most ${QUIET_CAP_MS / 1000} s; a page that never goes quiet leaves the measurements that need it unmeasured, and failed).`,
+  `Input: at ${VIEWPORTS.filter((v) => inputFor(v) === 'touch').map(viewportKey).join(', ')} the context has touch enabled and every scroll-through is a real touch drag sent through the DevTools protocol (the runtime's touchstart path); at ${VIEWPORTS.filter((v) => inputFor(v) === 'wheel').map(viewportKey).join(', ')} it announces itself with one synthetic \`wheel\` event and scrolls by script. Steps are ${STEP_FRACTION} of the screen. "Entrances played" counts the marks whose entrance started during the scroll-through. On a touch viewport Chrome stops reporting LCP entries at the first touch, as on a phone, so "Any LCP entry on a marked element" covers the load and the settled first screen there.`,
+  `Layout shift, settled then scroll (hard): every layout-shift entry from the moment the page is quiet until it is quiet again after one scroll-through, entries Chrome marks as following input included, with \`Date\` fixed to the run's start. The scroll dwells at each step for at least ${SETTLED_STEP_MIN_MS} ms and until the page has been still for ${SETTLED_STEP_QUIET_MS} ms. Taken ${SETTLED_TAKES} times per build; the takes must agree within ${SHIFT_AGREEMENT} or the check is unmeasured and fails. Two builds: fails when the after build exceeds the before build by more than ${SHIFT_MARGIN}. One build: fails above ${SHIFT_SINGLE_BAR}, a bar this tool sets for itself (field CLS calls 0.1 over a whole visit "good"). Neither is CLS as field tools define it.`,
+  FROM_LOAD_NOTE,
   'LCP: Chrome reports no LCP entry for an element while it is at opacity 0 and reports a new one when it fades in, so the entry read at load can miss a hidden marked hero. "Any LCP entry on a marked element" therefore watches every entry until the end of the scroll-through, and "Largest above-the-fold block" measures the largest image or text block in the first screen by geometry, whatever its opacity; both must be unmarked.',
-  'First mark shown: the first element with the mark attribute that gains is-in (the site-wide `.reveal` heading entrance also adds is-in and is not counted). When no mark shows within 5 s of load, the harness scrolls the first mark into view and says so.',
-  `Long frames: requestAnimationFrame gaps over ${LONG_FRAME_MS} ms in the ${LONG_FRAME_WINDOW_MS / 1000} s after the first mark is shown, under 4x CPU. With no marks on the page the check is not applicable. Over ${LONG_FRAME_MS} ms, the same build is reloaded with its marks removed and measured over the same window; the check fails above max(${LONG_FRAME_MS} ms, ${LONG_FRAME_RATIO} x that reference + one 60 Hz frame), and is a note ("runner too slow for the absolute bar") only when the reference itself is over ${LONG_FRAME_MS} ms and the page is within that limit. One retake is allowed before a failure stands.`,
+  'First mark shown: the first element with the mark attribute that gains is-in (the site-wide `.reveal` heading entrance also adds is-in and is not counted). When a mark is in the first screen it gets 5 s to show; when none is there, or none showed, the harness scrolls the first mark into view and says so.',
+  LONG_FRAME_NOTE,
+  `Long frames, how: requestAnimationFrame gaps in the ${LONG_FRAME_WINDOW_MS / 1000} s after the first mark is shown, under 4x CPU and a throttled network. When the page has no marks at load, the window starts at the first mark shown after hydration or after the route's scripted steps; with no marks at all it is not applicable.`,
   'Marks shown: every rendered element with the mark attribute must end at opacity 1 with no transform left over (rise, disc), and every `.motion-stroke` in a draw must end at stroke-dashoffset 0; checked after the scroll-through, with reduced motion and with scripting off.',
+  'Marks rendered: a mark is rendered when it and every ancestor are `visibility: visible`, none is `display: none`, and its box is not empty. Each mark must be rendered in the same modes (at rest, reduced motion, scripting off): one rendered in one mode and not in another fails, naming the element and the mode. A mark rendered in none of the three is legitimately absent.',
+  'Mark counts: with two builds, a route whose count changes is listed, and a route that goes from some marks to none fails unless `--marks-removed` names it. With one build, a route with `minMarks` in motion-evidence.routes.json fails below it.',
   `Hidden above after reload: measured with the scroll restore made instant; the position after the reload must be within ${RELOAD_SCROLL_TOLERANCE} px of the one before it (native restore), otherwise the harness restores it itself (explicit restore) and says so, and if neither holds the check is unmeasured and fails.`,
-  `Rest diff: full-page screenshots with every finite animation finished, infinite loops on their first frame, videos on their first frame and \`Date\` fixed to the run's start in both builds; at most ${MAX_REST_PIXELS} differing pixels (pixelmatch threshold ${PIXEL_THRESHOLD}) on a route marked identical, and any change of page width or height fails.`,
+  `Rest diff: full-page screenshots taken once the page is quiet after the scroll-through, with \`Date\` fixed to the run's start, finite animations finished, infinite ones paused on their first frame, videos paused on their first frame, the text caret hidden, every image loaded and decoded, and the shot repeated until two in a row are identical. At most ${MAX_REST_PIXELS} differing pixels (pixelmatch threshold ${PIXEL_THRESHOLD}) on a route marked identical, and any change of page width or height counts. A pair that differs is retaken; it fails when the retake differs too, and a difference seen once in three pairs is listed as an unstable capture. The images of every failing or unstable pair are saved, cropped to the change.`,
 ].join(' ');
 
 function restCell(rest) {
-  const width = rest.widthChanged ? `, width changed: ${rest.widthChanged.from} to ${rest.widthChanged.to} px` : '';
-  const height = rest.heightChanged ? `, height changed: ${rest.heightChanged.from} to ${rest.heightChanged.to} px` : '';
-  const daily = rest.differing > 0 && rest.outsideDaily != null && rest.outsideDaily !== rest.differing ? ` (${rest.outsideDaily} outside daily data)` : '';
-  return `${rest.differing} px${daily}${width}${height}`;
+  if (!rest?.takes?.length) return 'n/a';
+  return rest.takes.map((t, i) => {
+    const width = t.widthChanged ? `, width ${t.widthChanged.from} to ${t.widthChanged.to} px` : '';
+    const height = t.heightChanged ? `, height ${t.heightChanged.from} to ${t.heightChanged.to} px` : '';
+    const daily = t.differing > 0 && t.outsideDaily != null && t.outsideDaily !== t.differing ? ` (${t.outsideDaily} outside daily data)` : '';
+    return `${rest.takes.length > 1 ? `take ${i + 1}: ` : ''}${t.differing} px${daily}${width}${height}`;
+  }).join('; ');
+}
+
+function columnsFor(report) {
+  const columns = [];
+  for (const vp of report.viewports) {
+    columns.push({ vp, build: 'before' });
+    if (report.after) columns.push({ vp, build: 'after' });
+  }
+  return columns;
 }
 
 /** summary.md: one table per route, before and after side by side. */
@@ -558,10 +790,14 @@ export function renderSummary(report) {
   lines.push('');
   lines.push(`- Before: ${report.before}`);
   if (both) lines.push(`- After: ${report.after}`);
-  else lines.push('- Mode: baseline (one build, nothing compared)');
+  else lines.push('- Mode: single build (nothing compared between builds)');
   lines.push(`- Generated: ${report.generatedAt}`);
   lines.push(`- Viewports: ${report.viewports.join(', ')}. Strip times: ${STRIP_TIMES.join(', ')} ms.`);
-  lines.push(`- Checks applied to the ${both ? '"after"' : 'only'} build: ${report.failures.length === 0 ? 'all pass' : `${report.failures.length} failing`}.`);
+  lines.push(`- Hard checks on the ${both ? '"after"' : 'only'} build: ${report.failures.length === 0 ? 'all pass' : `${report.failures.length} failing`}.`);
+  lines.push('');
+  lines.push(LONG_FRAME_NOTE);
+  lines.push('');
+  lines.push(FROM_LOAD_NOTE);
   lines.push('');
   lines.push(PROXY_NOTE);
   lines.push('');
@@ -573,23 +809,35 @@ export function renderSummary(report) {
     for (const f of report.failures) lines.push(`- ${f.path} ${f.viewport} ${f.check}: ${f.detail}`);
     lines.push('');
   }
+  const unstable = report.unstable ?? [];
+  lines.push('## Unstable captures');
+  lines.push('');
+  if (unstable.length) for (const u of unstable) lines.push(`- ${u.path} ${u.viewport}: ${u.detail}`);
+  else lines.push('None.');
+  lines.push('');
+  if (both) {
+    const changed = report.markCounts?.filter((m) => m.before !== m.after) ?? [];
+    lines.push('## Mark counts that changed between builds');
+    lines.push('');
+    if (changed.length) for (const m of changed) lines.push(`- ${m.path} ${m.viewport}: ${m.before ?? 'n/a'} to ${m.after ?? 'n/a'}`);
+    else lines.push('None.');
+    lines.push('');
+  }
+  const images = report.restImages ?? [];
+  if (images.length) {
+    lines.push('## Rest images (failing or unstable pairs)');
+    lines.push('');
+    for (const im of images) lines.push(`- ${im.path} ${im.viewport} take ${im.take} (${im.differing} px): [before](${im.before}), [after](${im.after}), [diff](${im.diff})${im.note ? `, ${im.note}` : ''}`);
+    lines.push('');
+  }
   for (const route of report.routes) {
     lines.push(`## ${route.path} (rest: ${route.rest})`);
     lines.push('');
-    const columns = [];
-    for (const vp of report.viewports) {
-      columns.push({ vp, build: 'before' });
-      if (both) columns.push({ vp, build: 'after' });
-    }
+    const columns = columnsFor(report);
     lines.push(`| | ${columns.map((c) => `${c.build} ${c.vp}`).join(' | ')} |`);
     lines.push(`|---|${columns.map(() => '---').join('|')}|`);
     if (both) {
-      lines.push(`| Rest diff | ${columns.map((c) => {
-        if (c.build === 'before') return '';
-        const rest = route.viewports[c.vp]?.rest;
-        if (!rest) return 'n/a';
-        return restCell(rest);
-      }).join(' | ')} |`);
+      lines.push(`| Rest diff | ${columns.map((c) => (c.build === 'before' ? '' : restCell(route.viewports[c.vp]?.rest))).join(' | ')} |`);
     }
     const cells = columns.map((c) => formatNumbers(route.viewports[c.vp]?.[c.build]));
     for (const [key, label] of NUMBER_ROWS) {
@@ -607,7 +855,7 @@ export function renderSummary(report) {
     lines.push('');
     const loops = Object.entries(route.loops ?? {}).filter(([, list]) => list.length);
     if (loops.length) {
-      lines.push(`Loops (never paused, sought or waited for): ${loops.map(([build, list]) => `${build}: ${list.join('; ')}`).join('. ')}.`);
+      lines.push(`Loops (paused on their first frame for the rest capture, never sought or waited for): ${loops.map(([build, list]) => `${build}: ${list.join('; ')}`).join('. ')}.`);
       lines.push('');
     }
     const notes = [];
@@ -630,29 +878,24 @@ export function renderReport(report) {
   const both = Boolean(report.after);
   const parts = [];
   parts.push('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Motion evidence</title>');
-  parts.push('<style>body{background:#0b0c10;color:#e8e6e1;font:14px/1.5 system-ui,sans-serif;margin:24px}table{border-collapse:collapse;margin:8px 0 16px}td,th{border:1px solid #333;padding:4px 8px;text-align:left;vertical-align:top}th{background:#16181d}code{color:#c9b98a}.fail{color:#ff7a7a}.note{color:#e6c66a}img{max-width:100%;display:block;margin:8px 0 24px;border:1px solid #333}h2{margin-top:40px}</style></head><body>');
+  parts.push('<style>body{background:#0b0c10;color:#e8e6e1;font:14px/1.5 system-ui,sans-serif;margin:24px}table{border-collapse:collapse;margin:8px 0 16px}td,th{border:1px solid #333;padding:4px 8px;text-align:left;vertical-align:top}th{background:#16181d}code{color:#c9b98a}.fail{color:#ff7a7a}.note,.unstable{color:#e6c66a}img{max-width:100%;display:block;margin:8px 0 24px;border:1px solid #333}h2{margin-top:40px}</style></head><body>');
   parts.push('<h1>Motion evidence</h1>');
-  parts.push(`<p>Before: <code>${escapeHtml(report.before)}</code>${both ? `. After: <code>${escapeHtml(report.after)}</code>` : '. Baseline mode.'} Generated ${escapeHtml(report.generatedAt)}.</p>`);
-  parts.push(`<p>${escapeHtml(PROXY_NOTE)}</p>`);
-  parts.push(`<p>${report.failures.length === 0 ? 'All checks pass.' : `${report.failures.length} failing checks:`}</p>`);
+  parts.push(`<p>Before: <code>${escapeHtml(report.before)}</code>${both ? `. After: <code>${escapeHtml(report.after)}</code>` : '. Single-build mode.'} Generated ${escapeHtml(report.generatedAt)}.</p>`);
+  parts.push(`<p>${escapeHtml(LONG_FRAME_NOTE)}</p><p>${escapeHtml(FROM_LOAD_NOTE)}</p><p>${escapeHtml(PROXY_NOTE)}</p>`);
+  parts.push(`<p>${report.failures.length === 0 ? 'All hard checks pass.' : `${report.failures.length} failing checks:`}</p>`);
   if (report.failures.length) {
     parts.push(`<ul>${report.failures.map((f) => `<li class="fail">${escapeHtml(`${f.path} ${f.viewport} ${f.check}: ${f.detail}`)}</li>`).join('')}</ul>`);
   }
+  if (report.unstable?.length) parts.push(`<p>Unstable captures:</p><ul>${report.unstable.map((u) => `<li class="unstable">${escapeHtml(`${u.path} ${u.viewport}: ${u.detail}`)}</li>`).join('')}</ul>`);
+  for (const im of report.restImages ?? []) {
+    parts.push(`<p>${escapeHtml(`${im.path} ${im.viewport} take ${im.take} (${im.differing} px)`)}: <a href="${escapeHtml(im.before)}">before</a>, <a href="${escapeHtml(im.after)}">after</a>, <a href="${escapeHtml(im.diff)}">diff</a></p><img loading="lazy" src="${escapeHtml(im.diff)}" alt="${escapeHtml(`${im.path} rest diff`)}">`);
+  }
   for (const route of report.routes) {
     parts.push(`<h2>${escapeHtml(route.path)} <small>(rest: ${escapeHtml(route.rest)})</small></h2>`);
-    const columns = [];
-    for (const vp of report.viewports) {
-      columns.push({ vp, build: 'before' });
-      if (both) columns.push({ vp, build: 'after' });
-    }
+    const columns = columnsFor(report);
     parts.push(`<table><tr><th></th>${columns.map((c) => `<th>${c.build} ${c.vp}</th>`).join('')}</tr>`);
     if (both) {
-      parts.push(`<tr><td>Rest diff</td>${columns.map((c) => {
-        if (c.build === 'before') return '<td></td>';
-        const rest = route.viewports[c.vp]?.rest;
-        if (!rest) return '<td>n/a</td>';
-        return `<td>${escapeHtml(restCell(rest))}</td>`;
-      }).join('')}</tr>`);
+      parts.push(`<tr><td>Rest diff</td>${columns.map((c) => (c.build === 'before' ? '<td></td>' : `<td>${escapeHtml(restCell(route.viewports[c.vp]?.rest))}</td>`)).join('')}</tr>`);
     }
     const cells = columns.map((c) => formatNumbers(route.viewports[c.vp]?.[c.build]));
     for (const [key, label] of NUMBER_ROWS) {
@@ -685,15 +928,20 @@ export function initScript(cfg) {
     return { tag: el.tagName, id: el.id || '', classes: cls.split(/\s+/u).filter(Boolean) };
   };
   const state = {
-    cls: 0, shifts: 0, lcp: null, lcpMarked: false, lcpMarkedElement: null, firstPaint: null, firstContentfulPaint: null,
-    firstMarkShown: null, frames: [], props: {}, verbs: {}, describe,
+    shifts: [], lastActivity: 0, lcp: null, lcpMarked: false, lcpMarkedElement: null, firstPaint: null, firstContentfulPaint: null,
+    firstMarkShown: null, frames: [], props: {}, verbs: {}, describe, scrollStartedAt: null, played: 0, touches: 0,
   };
   Object.defineProperty(window, '__motionEvidence', { value: state, enumerable: false });
+  const now = () => performance.now();
   const observe = (type, fn) => {
     try { new PerformanceObserver((list) => fn(list.getEntries())).observe({ type, buffered: true }); } catch { /* unsupported */ }
   };
+  // Every entry is kept, those Chrome marks as following input too: the harness's own scroll is the only input.
   observe('layout-shift', (entries) => {
-    for (const e of entries) if (!e.hadRecentInput) { state.cls += e.value; state.shifts += 1; }
+    for (const e of entries) {
+      if (state.shifts.length < 5000) state.shifts.push({ t: e.startTime, value: e.value, recent: e.hadRecentInput });
+      state.lastActivity = now();
+    }
   });
   // Chrome reports no entry for an element at opacity 0 and a new one when it
   // fades in, so every entry is watched: any entry on a marked element counts.
@@ -724,19 +972,28 @@ export function initScript(cfg) {
       if (el === document.documentElement || !el.classList || !el.classList.contains(cfg.shown)) continue;
       if (!el.matches || !el.matches(mark)) continue;
       if (String(r.oldValue ?? '').split(/\s+/u).includes(cfg.shown)) continue;
-      state.firstMarkShown = performance.now();
+      state.firstMarkShown = now();
       break;
     }
   }).observe(document, { subtree: true, attributes: true, attributeFilter: ['class'], attributeOldValue: true });
+  // Any change to the document is activity, for the quiet wait.
+  new MutationObserver(() => { state.lastActivity = now(); })
+    .observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
   if (cfg.frames) {
     const tick = (t) => { if (state.frames.length < 50000) state.frames.push(t); requestAnimationFrame(tick); };
     requestAnimationFrame(tick);
   }
+  addEventListener('touchstart', () => { state.touches += 1; }, { capture: true, passive: true });
+  const played = new WeakSet();
   const record = (target, names) => {
     const owner = target && target.closest ? target.closest(mark) : null;
     if (!owner) return;
     for (const n of names) state.props[n] = true;
     if (names.length) state.verbs[owner.getAttribute(cfg.mark)] = true;
+    if (state.scrollStartedAt != null && !played.has(owner)) {
+      played.add(owner);
+      state.played += 1;
+    }
   };
   addEventListener('transitionrun', (e) => record(e.target, [e.propertyName]), true);
   addEventListener('animationstart', (e) => {
@@ -749,26 +1006,6 @@ export function initScript(cfg) {
     }
     record(e.target, names);
   }, true);
-  if (cfg.stripMarks) {
-    // The attribute is renamed, not dropped, so the reference load can
-    // scroll to the same element the measured load scrolled to.
-    const unmark = (el) => {
-      el.setAttribute(cfg.stripped, el.getAttribute(cfg.mark));
-      el.removeAttribute(cfg.mark);
-    };
-    const strip = (root) => {
-      if (root.nodeType !== 1) return;
-      if (root.hasAttribute(cfg.mark)) unmark(root);
-      for (const el of root.querySelectorAll ? root.querySelectorAll(mark) : []) unmark(el);
-    };
-    new MutationObserver((records) => {
-      for (const r of records) {
-        if (r.type === 'attributes') strip(r.target);
-        for (const n of r.addedNodes ?? []) strip(n);
-      }
-    }).observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: [cfg.mark] });
-    addEventListener('DOMContentLoaded', () => strip(document.documentElement), true);
-  }
 }
 
 /** In the page: sample the animations, record loops and marked properties. */
@@ -805,6 +1042,8 @@ function twoFrames() {
   return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 }
 
+const sleep = (ms) => new Promise((r) => { setTimeout(r, ms); });
+
 /** Load a page; a response outside 2xx throws, so an error page is never measured as the page. */
 async function gotoPage(page, url, { timeout = 30000, notes } = {}) {
   let response;
@@ -832,15 +1071,113 @@ async function probeStatus(url) {
   }
 }
 
+/** Requests in flight and the time of the last request event, for the quiet wait. */
+function trackNetwork(page) {
+  const net = { inflight: 0, last: Date.now() };
+  const pending = new Set();
+  page.on('request', (r) => { pending.add(r); net.inflight = pending.size; net.last = Date.now(); });
+  const done = (r) => { pending.delete(r); net.inflight = pending.size; net.last = Date.now(); };
+  page.on('requestfinished', done);
+  page.on('requestfailed', done);
+  return net;
+}
+
 /**
- * Tell the page the reader is scrolling. The site's runtime plays entrances
- * only for the reader's own scroll (wheel, touch, key or pointer), and shows
- * everything at once for a scroll the browser made by itself; a scripted
- * scroll would otherwise never play an entrance below the first screen.
- * Synthetic events do not count as input for layout shift.
+ * Wait until the page is quiet (see QUIET_MS). Returns { quiet: true, at }
+ * with the page's clock at that moment, or { quiet: false, reason } at the cap.
+ */
+async function waitForQuiet(page, net, { quietMs = QUIET_MS, capMs = QUIET_CAP_MS } = {}) {
+  const started = Date.now();
+  const fonts = await Promise.race([
+    page.evaluate(() => (document.fonts ? document.fonts.ready.then(() => true) : true)).catch(() => false),
+    sleep(capMs).then(() => false),
+  ]);
+  for (;;) {
+    const s = await page.evaluate(() => ({ now: performance.now(), last: window.__motionEvidence?.lastActivity ?? 0 }));
+    const pageQuiet = s.now - s.last >= quietMs;
+    const netQuiet = net.inflight === 0 && Date.now() - net.last >= quietMs;
+    if (fonts && pageQuiet && netQuiet) return { quiet: true, at: s.now, waited: Date.now() - started };
+    if (Date.now() - started >= capMs) {
+      const why = [!fonts && 'fonts not ready', !pageQuiet && 'the DOM or layout still changing', !netQuiet && `${net.inflight} requests in flight or recent`].filter(Boolean).join(', ');
+      return { quiet: false, reason: `not quiet within ${capMs / 1000} s (${why})` };
+    }
+    await sleep(100);
+  }
+}
+
+/**
+ * Tell the page the reader is scrolling (wheel input only). The site's
+ * runtime plays entrances only for the reader's own scroll (wheel, touch, key
+ * or pointer), and shows everything at once for a scroll the browser made by
+ * itself. Synthetic events do not count as input for layout shift.
  */
 function announceReaderScroll() {
   window.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 1 }));
+}
+
+/** One touch drag upward of `distance` px through the DevTools protocol; the finger stops before it lifts, so nothing flings. */
+async function touchDrag(cdp, viewport, distance, x = Math.round(viewport.width / 2)) {
+  const y0 = Math.round(viewport.height * 0.9);
+  const d = Math.min(Math.round(distance), Math.round(viewport.height * 0.85));
+  const n = Math.max(2, Math.ceil(d / 60));
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: y0 }] });
+  for (let k = 1; k <= n; k += 1) {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y0 - Math.round((d * k) / n) }] });
+    await sleep(16);
+  }
+  await sleep(100);
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+}
+
+/** After a settled step: at least SETTLED_STEP_MIN_MS, then until the page is still for SETTLED_STEP_QUIET_MS. */
+async function dwell(page, cadence) {
+  if (cadence === 'fast') {
+    await page.waitForTimeout(FAST_STEP_MS);
+    return;
+  }
+  const started = Date.now();
+  await page.waitForTimeout(SETTLED_STEP_MIN_MS);
+  while (Date.now() - started < SETTLED_STEP_CAP_MS) {
+    const s = await page.evaluate(() => ({ now: performance.now(), last: window.__motionEvidence?.lastActivity ?? 0 }));
+    if (s.now - s.last >= SETTLED_STEP_QUIET_MS) return;
+    await sleep(50);
+  }
+}
+
+/**
+ * One scroll-through, top to bottom, by the viewport's input: touch drags at
+ * a phone size, the wheel announcement and scripted scrolls otherwise.
+ * Returns whether it reached the bottom.
+ */
+async function scrollThrough(page, { viewport, cdp = null, cadence, onStep = null }) {
+  const input = inputFor(viewport);
+  await page.evaluate(() => { window.__motionEvidence.scrollStartedAt = performance.now(); });
+  if (input === 'wheel') await page.evaluate(announceReaderScroll);
+  let stalls = 0;
+  let steps = 0;
+  for (let guard = 0; guard < 400; guard += 1) {
+    const { y, max, step } = await page.evaluate((fraction) => ({
+      y: scrollY,
+      max: document.documentElement.scrollHeight - innerHeight,
+      step: Math.round(innerHeight * fraction),
+    }), STEP_FRACTION);
+    if (y >= max - 1) return { reachedEnd: true, steps, input };
+    if (input === 'touch') {
+      // A drag that starts on an element that keeps the touch for itself
+      // (touch-action: none) does not scroll the page: try the screen's edges.
+      for (const x of [Math.round(viewport.width / 2), 12, viewport.width - 12]) {
+        await touchDrag(cdp, viewport, Math.min(step, max - y) + TOUCH_SLOP, x);
+        if (await page.evaluate(() => scrollY) > y) break;
+      }
+    } else await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), Math.min(y + step, max));
+    await dwell(page, cadence);
+    steps += 1;
+    if (onStep) await onStep();
+    const after = await page.evaluate(() => scrollY);
+    stalls = after <= y ? stalls + 1 : 0;
+    if (stalls >= 2) return { reachedEnd: false, steps, input, reason: `the ${input} scroll stopped at ${Math.round(after)} px of ${Math.round(max)} px` };
+  }
+  return { reachedEnd: false, steps, input, reason: 'more than 400 steps' };
 }
 
 async function reloadPage(page, { timeout = 30000, notes } = {}) {
@@ -866,22 +1203,6 @@ async function settle(page, maxMs = SETTLE_MAX_MS) {
     }
     return { waited: Math.round(performance.now() - start), remaining: pending().length };
   }, maxMs);
-}
-
-async function scrollThrough(page, cfg, loops) {
-  await page.evaluate(announceReaderScroll);
-  let y = 0;
-  for (let guard = 0; guard < 400; guard += 1) {
-    const { max, step } = await page.evaluate(() => ({
-      max: document.documentElement.scrollHeight - innerHeight,
-      step: Math.round(innerHeight * 0.8),
-    }));
-    if (y >= max) break;
-    y = Math.min(y + step, max);
-    await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), y);
-    await page.waitForTimeout(150);
-    for (const l of await page.evaluate(sampleAnimations, cfg)) loops.add(l);
-  }
 }
 
 /** Pause the finite animations, seek through STRIP_TIMES, screenshot each. */
@@ -922,6 +1243,7 @@ function contextOptions(viewport, extra = {}) {
     deviceScaleFactor: 1,
     serviceWorkers: 'block',
     reducedMotion: 'no-preference',
+    hasTouch: inputFor(viewport) === 'touch',
     ...extra,
   };
 }
@@ -930,14 +1252,15 @@ async function withPage(browser, viewport, extra, init, fn) {
   const context = await browser.newContext(contextOptions(viewport, extra));
   try {
     const page = await context.newPage();
+    const net = trackNetwork(page);
     if (init) await page.addInitScript(initScript, init);
-    return await fn(page, context);
+    return await fn(page, context, net);
   } finally {
     await context.close();
   }
 }
 
-export const baseCfg = (extra = {}) => ({ mark: MARK_ATTRIBUTE, shown: SHOWN_CLASS, stripped: STRIPPED_ATTRIBUTE, frames: false, stripMarks: false, ...extra });
+export const baseCfg = (extra = {}) => ({ mark: MARK_ATTRIBUTE, shown: SHOWN_CLASS, frames: false, ...extra });
 
 /**
  * In the page, at the top: the largest image or text block in the first
@@ -998,16 +1321,92 @@ function largestAboveFold({ mark }) {
   };
 }
 
-/** Step 1 alone: load, scroll, settle, screenshot. Also cls, lcp and the static counts. */
-async function measureRest(browser, url, route, viewport, loops, notes) {
+/** The layout shift from the quiet moment `from` on, from the init script's log. */
+async function shiftSince(page, from) {
+  return page.evaluate((t0) => {
+    const list = window.__motionEvidence.shifts.filter((e) => e.t >= t0);
+    return { value: Math.round(list.reduce((s, e) => s + e.value, 0) * 1e6) / 1e6, entries: list.length, recent: list.filter((e) => e.recent).length };
+  }, from);
+}
+
+/**
+ * In the page, just before the rest capture: finish the finite animations,
+ * pause the infinite ones and every video on their first frame, hide the
+ * caret, and wait for every image to load and decode and for the fonts.
+ */
+async function freezeForCapture() {
+  const style = document.createElement('style');
+  style.textContent = '*, *::before, *::after { caret-color: transparent !important; }';
+  document.head.appendChild(style);
+  for (const a of document.getAnimations()) {
+    try {
+      if (a.effect?.getTiming?.().iterations === Infinity) {
+        a.pause();
+        a.currentTime = 0;
+      } else if (a.playState !== 'finished') a.finish();
+    } catch { /* cancelled meanwhile */ }
+  }
+  await Promise.all([...document.querySelectorAll('video')].map((video) => new Promise((done) => {
+    video.pause();
+    if (video.currentTime === 0) { done(); return; }
+    const timer = setTimeout(done, 3000);
+    video.addEventListener('seeked', () => { clearTimeout(timer); done(); }, { once: true });
+    video.currentTime = 0;
+  })));
+  await Promise.all([...document.images].filter((img) => img.currentSrc || img.getAttribute('src')).map((img) => (img.complete
+    ? Promise.resolve()
+    : new Promise((done) => {
+      const timer = setTimeout(done, 5000);
+      const finish = () => { clearTimeout(timer); done(); };
+      img.addEventListener('load', finish, { once: true });
+      img.addEventListener('error', finish, { once: true });
+    })).then(() => (img.naturalWidth ? img.decode().catch(() => {}) : null))));
+  if (document.fonts) await document.fonts.ready;
+}
+
+/**
+ * The rest capture: back at the top, quiet, frozen, and the full page shot
+ * until two shots in a row are identical (at most 4 shots).
+ */
+async function captureRest(page, net) {
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  const quiet = await waitForQuiet(page, net);
+  const dailyRects = await page.evaluate((selectors) => [...document.querySelectorAll(selectors.join(','))].map((el) => {
+    const r = el.getBoundingClientRect();
+    return { x: Math.floor(r.left + scrollX), y: Math.floor(r.top + scrollY), width: Math.ceil(r.width) + 1, height: Math.ceil(r.height) + 1 };
+  }), DAILY_SELECTORS);
+  await page.evaluate(freezeForCapture);
+  await page.evaluate(twoFrames);
+  await page.waitForTimeout(250);
+  const shot = () => page.screenshot({ fullPage: true, type: 'png', animations: 'allow', caret: 'hide' });
+  let png = await shot();
+  let shots = 1;
+  let stable = false;
+  while (shots < 4) {
+    await page.waitForTimeout(250);
+    const next = await shot();
+    shots += 1;
+    if (next.equals(png)) { stable = true; break; }
+    png = next;
+  }
+  return { png, dailyRects, quiet, shots, stable };
+}
+
+/**
+ * The rest load: quiet, one settled scroll-through (which is the first take
+ * of the hard layout-shift number), quiet again, the marks inspected, then the
+ * rest capture. With `captureOnly`, only what a rest retake needs.
+ */
+async function measureRest(browser, url, route, viewport, loops, notes, { captureOnly = false } = {}) {
   const cfg = baseCfg();
-  return withPage(browser, viewport, {}, cfg, async (page, context) => {
+  return withPage(browser, viewport, {}, cfg, async (page, context, net) => {
     // Both builds see the same clock, so a live sky wheel (the home page's)
     // draws the same positions in each rest-state screenshot. Timers run.
-    // A fixed clock left this Chrome's layout-shift and LCP entries unchanged.
     await context.clock.setFixedTime(RUN_STARTED_AT);
     await gotoPage(page, url, { notes });
-    const atLoad = await page.evaluate(({ mark, primary }) => {
+    const quiet1 = await waitForQuiet(page, net);
+    if (!quiet1.quiet) notes.push(`rest load: ${quiet1.reason}`);
+    const atQuiet = await page.evaluate(({ mark, primary }) => {
       const marked = [...document.querySelectorAll(`[${mark}]`)];
       const action = primary ? document.querySelector(primary) : null;
       return {
@@ -1016,57 +1415,86 @@ async function measureRest(browser, url, route, viewport, loops, notes) {
         primaryActionTop: action ? Math.round(action.getBoundingClientRect().top + scrollY) : null,
       };
     }, { mark: MARK_ATTRIBUTE, primary: route.primaryAction ?? null });
-    const largest = await page.evaluate(largestAboveFold, { mark: `[${MARK_ATTRIBUTE}]` });
-    await page.evaluate(twoFrames);
-    await page.evaluate(() => document.fonts?.ready);
-    // `load` can fire before the first paint is reported; give LCP up to 5 s.
-    await page.waitForFunction(() => window.__motionEvidence.lcp != null, null, { timeout: 5000 }).catch(() => {});
+    const largest = captureOnly ? null : await page.evaluate(largestAboveFold, { mark: `[${MARK_ATTRIBUTE}]` });
+    if (!captureOnly) await page.waitForFunction(() => window.__motionEvidence.lcp != null, null, { timeout: 5000 }).catch(() => {});
     const lcp = await page.evaluate(() => window.__motionEvidence.lcp);
-    if (!lcp) notes.push('no largest-contentful-paint entry within 5 s of load');
+    if (!lcp && !captureOnly) notes.push('no largest-contentful-paint entry within 5 s of load');
     for (const l of await page.evaluate(sampleAnimations, cfg)) loops.add(l);
-    await scrollThrough(page, cfg, loops);
+    const cdp = inputFor(viewport) === 'touch' ? await context.newCDPSession(page) : null;
+    const scroll = await scrollThrough(page, {
+      viewport, cdp, cadence: 'settled',
+      onStep: async () => { for (const l of await page.evaluate(sampleAnimations, cfg)) loops.add(l); },
+    });
     const settled = await settle(page);
     if (settled.remaining) notes.push(`rest: ${settled.remaining} finite animations still running after ${SETTLE_MAX_MS / 1000} s`);
-    const shownAtRest = await page.evaluate(inspectMarks, { mark: MARK_ATTRIBUTE });
+    const quiet2 = await waitForQuiet(page, net);
+    let shiftTake;
+    if (!quiet1.quiet) shiftTake = { value: null, unmeasured: `before the scroll: ${quiet1.reason}` };
+    else if (!scroll.reachedEnd) shiftTake = { value: null, unmeasured: `the scroll-through did not reach the bottom: ${scroll.reason}` };
+    else if (!quiet2.quiet) shiftTake = { value: null, unmeasured: `after the scroll: ${quiet2.reason}` };
+    else shiftTake = await shiftSince(page, quiet1.at);
+    const shownAtRest = captureOnly ? null : await page.evaluate(inspectMarks, { mark: MARK_ATTRIBUTE });
     const after = await page.evaluate((shown) => ({
-      cls: window.__motionEvidence.cls,
       rootMarked: document.documentElement.classList.contains(shown),
       props: Object.keys(window.__motionEvidence.props),
       verbs: Object.keys(window.__motionEvidence.verbs),
       lcpMarked: window.__motionEvidence.lcpMarked,
       lcpMarkedElement: window.__motionEvidence.lcpMarkedElement,
+      played: window.__motionEvidence.played,
+      touches: window.__motionEvidence.touches,
     }), SHOWN_CLASS);
-    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
-    await page.evaluate(twoFrames);
-    await page.waitForTimeout(200);
-    const dailyRects = await page.evaluate((selectors) => [...document.querySelectorAll(selectors.join(','))].map((el) => {
-      const r = el.getBoundingClientRect();
-      return { x: Math.floor(r.left + scrollX), y: Math.floor(r.top + scrollY), width: Math.ceil(r.width) + 1, height: Math.ceil(r.height) + 1 };
-    }), DAILY_SELECTORS);
-    // Infinite loops restart from their first frame for this one capture, so
-    // the rest state does not depend on when the shutter fell. Finite
-    // animations have already finished by now. A playing video (the home
-    // page's hero film) is held on its first frame for the same reason.
-    await page.evaluate(() => Promise.all([...document.querySelectorAll('video')]
-      .filter((video) => !video.paused || video.currentTime > 0)
-      .map((video) => new Promise((done) => {
-        video.pause();
-        if (video.currentTime === 0) { done(); return; }
-        const timer = setTimeout(done, 3000);
-        video.addEventListener('seeked', () => { clearTimeout(timer); done(); }, { once: true });
-        video.currentTime = 0;
-      }))));
-    await page.evaluate(twoFrames);
-    const png = await page.screenshot({ fullPage: true, type: 'png', animations: 'disabled' });
+    const capture = await captureRest(page, net);
+    if (!capture.stable) notes.push(`rest capture: no two shots in a row were identical in ${capture.shots} shots`);
+    if (!capture.quiet.quiet) notes.push(`rest capture: ${capture.quiet.reason}`);
+    if (after.played === 0 && atQuiet.markedCount > 0 && shownAtRest && shownAtRest.rendered > 0) {
+      notes.push(`the ${scroll.input} scroll-through played no entrance on a page with ${atQuiet.markedCount} marks (fine only if every mark was already shown before it)`);
+    }
     return {
-      png, dailyRects, cls: after.cls, rootMarked: after.rootMarked, props: after.props, verbs: after.verbs, ...atLoad,
-      markedVerbs: shownAtRest.renderedVerbs,
+      png: capture.png,
+      dailyRects: capture.dailyRects,
+      captureReady: capture.quiet.quiet,
+      shiftTake,
+      scroll: { reachedEnd: scroll.reachedEnd, steps: scroll.steps, input: scroll.input },
+      rootMarked: after.rootMarked, props: after.props, verbs: after.verbs, ...atQuiet,
+      entrancesPlayed: after.played,
+      touches: after.touches,
+      markedVerbs: shownAtRest?.renderedVerbs ?? null,
       shownAtRest,
       lcp: lcp ? { time: Math.round(lcp.time), selector: shortSelector(lcp.element) } : null,
       lcpMarked: after.lcpMarked,
       lcpMarkedSelector: after.lcpMarkedElement ? shortSelector(after.lcpMarkedElement) : null,
       largest: largest ? { kind: largest.kind, area: largest.area, selector: shortSelector(largest.descriptor), marked: largest.marked } : null,
     };
+  });
+}
+
+/** One more take of the hard layout-shift number: quiet, a settled scroll-through, quiet. */
+async function measureSettledShift(browser, url, viewport, notes) {
+  return withPage(browser, viewport, {}, baseCfg(), async (page, context, net) => {
+    await context.clock.setFixedTime(RUN_STARTED_AT);
+    await gotoPage(page, url, { notes });
+    const quiet1 = await waitForQuiet(page, net);
+    if (!quiet1.quiet) return { value: null, unmeasured: `before the scroll: ${quiet1.reason}` };
+    const cdp = inputFor(viewport) === 'touch' ? await context.newCDPSession(page) : null;
+    const scroll = await scrollThrough(page, { viewport, cdp, cadence: 'settled' });
+    if (!scroll.reachedEnd) return { value: null, unmeasured: `the scroll-through did not reach the bottom: ${scroll.reason}` };
+    await settle(page);
+    const quiet2 = await waitForQuiet(page, net);
+    if (!quiet2.quiet) return { value: null, unmeasured: `after the scroll: ${quiet2.reason}` };
+    return shiftSince(page, quiet1.at);
+  });
+}
+
+/** Report only: every layout shift from navigation on, with the scroll-through starting at `load`. */
+async function measureShiftFromLoad(browser, url, viewport, notes) {
+  return withPage(browser, viewport, {}, baseCfg(), async (page, context) => {
+    await context.clock.setFixedTime(RUN_STARTED_AT);
+    const cdp = inputFor(viewport) === 'touch' ? await context.newCDPSession(page) : null;
+    await gotoPage(page, url, { notes });
+    const scroll = await scrollThrough(page, { viewport, cdp, cadence: 'fast' });
+    await settle(page);
+    const take = await shiftSince(page, 0);
+    return scroll.reachedEnd ? take : { ...take, partial: scroll.reason };
   });
 }
 
@@ -1082,6 +1510,33 @@ async function measureFirstView(browser, url, viewport, loops, notes, props, ver
   });
 }
 
+/** Run one scripted step on a loaded page. Returns { skipped } when it could not run. */
+async function runStep(page, step) {
+  const selectors = [step.scrollTo, ...Object.keys(step.fill ?? {}), step.click].filter(Boolean);
+  for (const selector of selectors) {
+    if (await page.locator(selector).count() === 0) return { skipped: `${selector} not found` };
+  }
+  if (step.scrollTo) {
+    await page.evaluate(announceReaderScroll);
+    await page.locator(step.scrollTo).first().evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'instant' }));
+  }
+  for (const [selector, value] of Object.entries(step.fill ?? {})) {
+    try {
+      await page.locator(selector).first().fill(value, { timeout: 5000 });
+    } catch (error) {
+      return { skipped: `${selector} could not be filled (${String(error.message).split('\n')[0]})` };
+    }
+  }
+  if (step.click) {
+    try {
+      await page.locator(step.click).first().click({ timeout: 5000 });
+    } catch (error) {
+      return { skipped: `${step.click} could not be clicked (${String(error.message).split('\n')[0]})` };
+    }
+  }
+  return {};
+}
+
 async function measureStep(browser, url, viewport, step, loops, notes, props, verbs) {
   const cfg = baseCfg();
   return withPage(browser, viewport, {}, cfg, async (page) => {
@@ -1090,31 +1545,10 @@ async function measureStep(browser, url, viewport, step, loops, notes, props, ve
     // Islands hydrate after `load`; a form filled before that keeps its
     // submit button disabled. Wait for the network to go quiet first.
     await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
-    const selectors = [step.scrollTo, ...Object.keys(step.fill ?? {}), step.click].filter(Boolean);
-    const skip = (reason) => {
-      notes.push(`step "${stepLabel(step)}" did not run: ${reason}`);
-      return { skipped: reason };
-    };
-    for (const selector of selectors) {
-      if (await page.locator(selector).count() === 0) return skip(`${selector} not found`);
-    }
-    if (step.scrollTo) {
-      await page.evaluate(announceReaderScroll);
-      await page.locator(step.scrollTo).first().evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'instant' }));
-    }
-    for (const [selector, value] of Object.entries(step.fill ?? {})) {
-      try {
-        await page.locator(selector).first().fill(value, { timeout: 5000 });
-      } catch (error) {
-        return skip(`${selector} could not be filled (${String(error.message).split('\n')[0]})`);
-      }
-    }
-    if (step.click) {
-      try {
-        await page.locator(step.click).first().click({ timeout: 5000 });
-      } catch (error) {
-        return skip(`${step.click} could not be clicked (${String(error.message).split('\n')[0]})`);
-      }
+    const ran = await runStep(page, step);
+    if (ran.skipped) {
+      notes.push(`step "${stepLabel(step)}" did not run: ${ran.skipped}`);
+      return { skipped: ran.skipped };
     }
     const strip = await filmStrip(page, cfg, loops);
     const seen = await page.evaluate(() => ({ props: Object.keys(window.__motionEvidence.props), verbs: Object.keys(window.__motionEvidence.verbs) }));
@@ -1125,16 +1559,15 @@ async function measureStep(browser, url, viewport, step, loops, notes, props, ve
 }
 
 /**
- * A throttled load: network and 4x CPU. Paint, entrance timing, long frames.
- * The long-frame window starts when the first marked element is shown. With no
- * marks the check is not applicable. With `stripMarks` the marks are renamed
- * before they can be shown and the window starts at `anchorAt` (the measured
- * load's first mark shown), scrolling where the measured load scrolled: the
- * same page over the same window, without marks.
+ * A throttled load: network and 4x CPU. Paint, entrance timing, and the
+ * longest frame in the LONG_FRAME_WINDOW_MS after the first mark is shown.
+ * When the page has no marks at load, it waits for hydration, then runs the
+ * route's steps, and anchors the window on the first mark shown after them.
+ * With no marks at all, long frames are not applicable.
  */
-async function measureThrottled(browser, url, viewport, notes, { stripMarks = false, anchorAt = null, scrollAt = null } = {}) {
-  const cfg = baseCfg({ frames: true, stripMarks });
-  return withPage(browser, viewport, {}, cfg, async (page, context) => {
+async function measureThrottled(browser, url, route, viewport, notes) {
+  const cfg = baseCfg({ frames: true });
+  return withPage(browser, viewport, {}, cfg, async (page, context, net) => {
     const cdp = await context.newCDPSession(page);
     await cdp.send('Network.enable');
     await cdp.send('Network.emulateNetworkConditions', {
@@ -1146,62 +1579,67 @@ async function measureThrottled(browser, url, viewport, notes, { stripMarks = fa
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: THROTTLE.cpuRate });
     await gotoPage(page, url, { timeout: 120000, notes });
     const round = (v) => (v == null ? null : Math.round(v));
-    const scrollToFirst = (attribute) => page.evaluate(({ attr }) => {
-      window.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 1 }));
-      const first = document.querySelector(`[${attr}]`);
-      if (first) first.scrollIntoView({ block: 'center', behavior: 'instant' });
-      return performance.now();
-    }, { attr: attribute });
-    let scrolledAt = null;
-    if (stripMarks) {
-      if (scrollAt != null) {
-        await page.waitForFunction((t) => performance.now() >= t, scrollAt, { timeout: 30000, polling: 50 });
-        scrolledAt = await scrollToFirst(STRIPPED_ATTRIBUTE);
-      }
-    } else {
-      const marked = await page.evaluate((mark) => document.querySelectorAll(`[${mark}]`).length, MARK_ATTRIBUTE);
-      if (marked === 0) {
-        const state = await page.evaluate(() => {
-          const nav = performance.getEntriesByType('navigation')[0];
-          const s = window.__motionEvidence;
-          return { firstPaint: s.firstPaint ?? s.firstContentfulPaint, domContentLoaded: nav ? nav.domContentLoadedEventStart : null };
-        });
-        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
-        return {
-          throttled: { firstPaint: round(state.firstPaint), domContentLoaded: round(state.domContentLoaded), firstMarkShown: null },
-          longFrames: { notApplicable: 'no marks' },
-        };
-      }
-      // Give a late entrance up to 5 s to show; then bring the first mark into view.
-      await page.waitForFunction(() => window.__motionEvidence.firstMarkShown != null, null, { timeout: 5000 }).catch(() => {});
-      if (await page.evaluate(() => window.__motionEvidence.firstMarkShown == null)) {
-        scrolledAt = await scrollToFirst(MARK_ATTRIBUTE);
-        await page.waitForFunction(() => window.__motionEvidence.firstMarkShown != null, null, { timeout: 5000 }).catch(() => {});
-      }
-    }
-    const state = await page.evaluate(() => {
+    const count = () => page.evaluate((mark) => document.querySelectorAll(`[${mark}]`).length, MARK_ATTRIBUTE);
+    const paint = () => page.evaluate(() => {
       const nav = performance.getEntriesByType('navigation')[0];
       const s = window.__motionEvidence;
-      return {
-        firstPaint: s.firstPaint ?? s.firstContentfulPaint,
-        domContentLoaded: nav ? nav.domContentLoadedEventStart : null,
-        firstMarkShown: s.firstMarkShown,
-      };
+      return { firstPaint: s.firstPaint ?? s.firstContentfulPaint, domContentLoaded: nav ? nav.domContentLoadedEventStart : null, firstMarkShown: s.firstMarkShown };
     });
+    let anchoredOn = 'load';
+    if (await count() === 0) {
+      await waitForQuiet(page, net, { capMs: 20000 });
+      anchoredOn = 'hydration';
+    }
+    for (const [i, step] of (route.steps ?? []).entries()) {
+      if (await count() > 0) break;
+      const ran = await runStep(page, step);
+      if (ran.skipped) {
+        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+        const state = await paint();
+        return { throttled: { firstPaint: round(state.firstPaint), domContentLoaded: round(state.domContentLoaded), firstMarkShown: null }, longFrames: { unmeasured: `step ${i + 1} did not run: ${ran.skipped}` } };
+      }
+      await waitForQuiet(page, net, { capMs: 20000 });
+      anchoredOn = `step ${i + 1}`;
+    }
+    if (await count() === 0) {
+      const state = await paint();
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+      return {
+        throttled: { firstPaint: round(state.firstPaint), domContentLoaded: round(state.domContentLoaded), firstMarkShown: null },
+        longFrames: { notApplicable: route.steps?.length ? 'no marks at load, after hydration or after the steps' : 'no marks at load or after hydration' },
+      };
+    }
+    let scrolledAt = null;
+    // A mark in the first screen gets up to 5 s to show; with none there, or
+    // after that, the first mark is brought into view.
+    const inView = await page.evaluate((mark) => [...document.querySelectorAll(`[${mark}]`)].some((el) => {
+      const r = el.getBoundingClientRect();
+      return r.bottom > 0 && r.top < innerHeight && r.width > 0 && r.height > 0;
+    }), MARK_ATTRIBUTE);
+    if (inView) await page.waitForFunction(() => window.__motionEvidence.firstMarkShown != null, null, { timeout: 5000 }).catch(() => {});
+    if (await page.evaluate(() => window.__motionEvidence.firstMarkShown == null)) {
+      scrolledAt = await page.evaluate((mark) => {
+        window.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 1 }));
+        const first = document.querySelector(`[${mark}]`);
+        if (first) first.scrollIntoView({ block: 'center', behavior: 'instant' });
+        return performance.now();
+      }, MARK_ATTRIBUTE);
+      await page.waitForFunction(() => window.__motionEvidence.firstMarkShown != null, null, { timeout: 5000 }).catch(() => {});
+    }
+    const state = await paint();
     const throttled = {
       firstPaint: round(state.firstPaint),
       domContentLoaded: round(state.domContentLoaded),
       firstMarkShown: round(state.firstMarkShown),
-      ...(scrolledAt != null ? { scrolledToFirstMark: true, scrolledAt: Math.round(scrolledAt) } : {}),
+      ...(scrolledAt != null ? { scrolledToFirstMark: true } : {}),
     };
-    const anchor = stripMarks ? anchorAt : state.firstMarkShown;
-    if (anchor == null) {
+    if (state.firstMarkShown == null) {
       await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
-      return { throttled, longFrames: { unmeasured: stripMarks ? 'no window to measure against' : 'marked elements exist but none was shown within 10 s, even after scrolling to the first' } };
+      return { throttled, longFrames: { unmeasured: 'marked elements exist but none was shown, even after scrolling to the first' } };
     }
-    await page.waitForFunction((end) => performance.now() > end, anchor + LONG_FRAME_WINDOW_MS + 100, { timeout: 30000, polling: 200 });
+    await page.waitForFunction((end) => performance.now() > end, state.firstMarkShown + LONG_FRAME_WINDOW_MS + 100, { timeout: 30000, polling: 200 });
     const { frames, now } = await page.evaluate(() => ({ frames: window.__motionEvidence.frames.slice(), now: performance.now() }));
-    const longFrames = longFrameStats(frames, anchor, LONG_FRAME_WINDOW_MS, LONG_FRAME_MS, now);
+    const longFrames = { ...longFrameStats(frames, state.firstMarkShown, LONG_FRAME_WINDOW_MS, LONG_FRAME_MS, now), anchoredOn };
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
     return { throttled, longFrames };
   });
@@ -1278,11 +1716,14 @@ async function measureReload(browser, url, viewport, notes) {
 }
 
 /**
- * In the page: is every rendered mark shown? rise and disc: computed opacity
- * 1 and no transform left over (an SVG element may keep its own transform
- * attribute); draw: opacity 1 and every .motion-stroke at stroke-dashoffset
- * 0. A mark with no box (display none, a closed details) is not rendered and
- * is counted apart. Also counts finite entrance animations still running.
+ * In the page: is every mark rendered, and is every rendered mark shown?
+ * Rendered: the mark and every ancestor are visibility visible, none is
+ * display none, and its box is not empty. Shown: rise and disc at computed
+ * opacity 1 with no transform left over (an SVG element may keep its own
+ * transform attribute); draw at opacity 1 with every .motion-stroke at
+ * stroke-dashoffset 0. Each mark is listed by its path in the DOM, so the
+ * modes can be compared mark by mark. Also counts finite entrance animations
+ * still running.
  */
 export function inspectMarks({ mark }) {
   const sel = `[${mark}]`;
@@ -1308,12 +1749,36 @@ export function inspectMarks({ mark }) {
     const cls = typeof el.className === 'string' ? el.className : el.className?.baseVal ?? '';
     return `${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ''}${cls.split(/\s+/u).filter(Boolean).slice(0, 2).map((c) => `.${c}`).join('')}`;
   };
+  const keyOf = (el) => {
+    const parts = [];
+    for (let e = el; e && e.parentElement && e !== document.body; e = e.parentElement) {
+      let i = 1;
+      for (let s = e.previousElementSibling; s; s = s.previousElementSibling) i += 1;
+      parts.unshift(`${e.tagName.toLowerCase()}:${i}`);
+    }
+    return parts.join('>');
+  };
+  const absentWhy = (el) => {
+    if (el.getClientRects().length === 0) return 'display none or no box';
+    for (let e = el; e && e.tagName; e = e.parentElement) {
+      const cs = getComputedStyle(e);
+      const on = e === el ? '' : ` on ${name(e)}`;
+      if (cs.display === 'none') return `display none${on}`;
+      if (cs.visibility !== 'visible') return `visibility ${cs.visibility}${on}`;
+    }
+    const r = el.getBoundingClientRect();
+    if (!(r.width > 0 && r.height > 0)) return `empty box (${r.width} x ${r.height})`;
+    return null;
+  };
   let rendered = 0;
   const examples = [];
   const renderedVerbs = new Set();
+  const marks = [];
   let notShown = 0;
   for (const el of marked) {
-    if (el.getClientRects().length === 0) continue;
+    const absent = absentWhy(el);
+    marks.push({ key: keyOf(el), name: name(el), rendered: !absent, ...(absent ? { absent } : {}) });
+    if (absent) continue;
     rendered += 1;
     const verb = el.getAttribute(mark);
     renderedVerbs.add(verb);
@@ -1338,30 +1803,29 @@ export function inspectMarks({ mark }) {
       if (examples.length < 5) examples.push(`${name(el)} (${verb}): ${why.join(', ')}`);
     }
   }
-  return { total: marked.length, rendered, notShown, examples, running, renderedVerbs: [...renderedVerbs].sort() };
+  return { total: marked.length, rendered, notShown, examples, running, renderedVerbs: [...renderedVerbs].sort(), marks };
 }
 
 async function measureReducedMotion(browser, url, viewport, notes) {
-  return withPage(browser, viewport, { reducedMotion: 'reduce' }, baseCfg(), async (page) => {
+  return withPage(browser, viewport, { reducedMotion: 'reduce' }, baseCfg(), async (page, context) => {
     await gotoPage(page, url, { notes });
     await page.evaluate(twoFrames);
     const first = await page.evaluate(inspectMarks, { mark: MARK_ATTRIBUTE });
     let running = first.running;
     let worst = first;
     // Scroll through too, so an entrance that ignores the preference is caught when it would start.
-    await page.evaluate(announceReaderScroll);
-    let y = 0;
-    for (let guard = 0; guard < 400; guard += 1) {
-      const { max, step } = await page.evaluate(() => ({ max: document.documentElement.scrollHeight - innerHeight, step: Math.round(innerHeight * 0.8) }));
-      if (y >= max) break;
-      y = Math.min(y + step, max);
-      await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), y);
-      await page.waitForTimeout(150);
-      const now = await page.evaluate(inspectMarks, { mark: MARK_ATTRIBUTE });
-      running = Math.max(running, now.running);
-      if (now.notShown > worst.notShown) worst = now;
-    }
-    return { ...worst, running };
+    const cdp = inputFor(viewport) === 'touch' ? await context.newCDPSession(page) : null;
+    await scrollThrough(page, {
+      viewport, cdp, cadence: 'fast',
+      onStep: async () => {
+        const now = await page.evaluate(inspectMarks, { mark: MARK_ATTRIBUTE });
+        running = Math.max(running, now.running);
+        if (now.notShown > worst.notShown) worst = now;
+      },
+    });
+    const last = await page.evaluate(inspectMarks, { mark: MARK_ATTRIBUTE });
+    if (last.notShown > worst.notShown) worst = last;
+    return { ...worst, running, marks: last.marks };
   });
 }
 
@@ -1382,7 +1846,7 @@ async function safely(notes, label, fn) {
 }
 
 /** Everything for one build, one route, one viewport. */
-async function measureBuild(browser, baseURL, route, viewport) {
+async function measureBuild(browser, baseURL, route, viewport, options) {
   const url = `${baseURL}${route.path}`;
   const notes = [];
   const loops = new Set();
@@ -1401,24 +1865,43 @@ async function measureBuild(browser, baseURL, route, viewport) {
     for (const p of rest.props) props.add(p);
     for (const v of rest.verbs) verbs.add(v);
   }
+  const shiftSettled = [rest ? rest.shiftTake : { value: null, unmeasured: 'the rest load failed' }];
+  while (shiftSettled.length < SETTLED_TAKES) {
+    shiftSettled.push(await safely(notes, 'layout shift take', () => measureSettledShift(browser, url, viewport, notes)) ?? { value: null, unmeasured: 'the load failed (see notes)' });
+  }
+  const shiftFromLoad = [];
+  for (let i = 0; i < FROM_LOAD_TAKES; i += 1) {
+    shiftFromLoad.push(await safely(notes, 'layout shift from load', () => measureShiftFromLoad(browser, url, viewport, notes)) ?? { value: null });
+  }
   const firstView = await safely(notes, 'first-view strip', () => measureFirstView(browser, url, viewport, loops, notes, props, verbs));
   const steps = [];
   for (const step of route.steps ?? []) {
     steps.push(await safely(notes, `step "${stepLabel(step)}"`, () => measureStep(browser, url, viewport, step, loops, notes, props, verbs)) ?? { skipped: 'the step threw (see notes)' });
   }
-  const throttled = await safely(notes, 'throttled load', () => measureThrottled(browser, url, viewport, notes));
+  const frameTakes = [];
+  let throttled = null;
+  for (let i = 0; i < options.frameLoads; i += 1) {
+    const t = await safely(notes, 'throttled load', () => measureThrottled(browser, url, route, viewport, notes));
+    if (i === 0) throttled = t?.throttled ?? null;
+    frameTakes.push(t?.longFrames ?? { unmeasured: 'the throttled load failed' });
+    if (t?.longFrames?.notApplicable) break;
+  }
   const reload = await safely(notes, 'reload', () => measureReload(browser, url, viewport, notes));
   const reducedMotion = await safely(notes, 'reduced motion', () => measureReducedMotion(browser, url, viewport, notes));
   const noScript = await safely(notes, 'no script', () => measureNoScript(browser, url, viewport, notes));
   const numbers = {
     http,
-    cls: rest ? Math.round(rest.cls * 1e6) / 1e6 : null,
+    input: inputFor(viewport),
+    shiftSettled,
+    shiftFromLoad,
     lcp: rest?.lcp ?? null,
     lcpMarked: rest ? rest.lcpMarked : null,
     lcpMarkedSelector: rest?.lcpMarkedSelector ?? null,
     largest: rest?.largest ?? null,
-    throttled: throttled?.throttled ?? null,
-    longFrames: throttled?.longFrames ?? null,
+    throttled,
+    longFrames: summarizeLongFrames(frameTakes),
+    entrancesPlayed: rest?.entrancesPlayed ?? null,
+    touches: rest?.touches ?? null,
     // Not measured unless both the rest pass and the first-view strip ran.
     animatedProperties: rest && firstView ? [...new Set([...props].map(toKebab))].sort() : null,
     markedVerbs: rest?.markedVerbs ?? null,
@@ -1442,7 +1925,7 @@ async function measureBuild(browser, baseURL, route, viewport) {
   return {
     numbers,
     loops: [...loops].sort(),
-    rest: rest ? { png: rest.png, dailyRects: rest.dailyRects } : null,
+    rest: rest ? { png: rest.png, dailyRects: rest.dailyRects, ready: rest.captureReady } : null,
     firstView: firstView?.frames ?? null,
     steps: steps.map((s) => s?.frames ?? null),
   };
@@ -1452,10 +1935,79 @@ function stripVerbs({ renderedVerbs, ...rest }) {
   return rest;
 }
 
-async function retakeCls(browser, baseURL, route, viewport) {
-  const notes = [];
-  const rest = await safely(notes, 'cls retake', () => measureRest(browser, `${baseURL}${route.path}`, route, viewport, new Set(), notes));
-  return rest ? Math.round(rest.cls * 1e6) / 1e6 : null;
+/** A new rest capture of one build, for a retake. */
+async function retakeRest(browser, baseURL, route, viewport, notes) {
+  const r = await safely(notes, 'rest retake', () => measureRest(browser, `${baseURL}${route.path}`, route, viewport, new Set(), notes, { captureOnly: true }));
+  return r ? { png: r.png, dailyRects: r.dailyRects, ready: r.captureReady } : null;
+}
+
+/** Compare two rest captures; null when either is missing or was taken on a page that never went quiet. */
+function compareCaptures(a, b) {
+  if (!a || !b || !a.ready || !b.ready) return { result: null };
+  const A = PNG.sync.read(a.png);
+  const B = PNG.sync.read(b.png);
+  const result = compareRest(A, B, { dailyRects: [...a.dailyRects, ...b.dailyRects], keepMask: true });
+  return { result, A, B };
+}
+
+/**
+ * Save before.png, after.png and a diff (changed pixels in magenta over a
+ * dimmed after image), each cropped to the changed area plus a margin and
+ * scaled down until it is within REST_IMAGE_MAX_BYTES.
+ */
+async function saveRestImages(out, base, { A, B, result }) {
+  const width = Math.max(A.width, B.width);
+  const height = Math.max(A.height, B.height);
+  let box = maskBounds(result.mask, result.width, result.height);
+  if (!box) {
+    // Only the size changed: show where the shorter page ends.
+    const y = Math.max(0, Math.min(A.height, B.height) - 200);
+    box = { x: 0, y, width, height: height - y };
+  }
+  const left = Math.max(0, box.x - REST_IMAGE_MARGIN);
+  const top = Math.max(0, box.y - REST_IMAGE_MARGIN);
+  const right = Math.min(width, box.x + box.width + REST_IMAGE_MARGIN);
+  const bottom = Math.min(height, box.y + box.height + REST_IMAGE_MARGIN);
+  const region = (img) => {
+    const r = { left, top, width: Math.min(right, img.width) - left, height: Math.min(bottom, img.height) - top };
+    return r.width > 0 && r.height > 0 ? r : null;
+  };
+  const diff = new PNG({ width: B.width, height: B.height });
+  for (let i = 0; i < B.data.length; i += 4) {
+    diff.data[i] = Math.round(B.data[i] * 0.35);
+    diff.data[i + 1] = Math.round(B.data[i + 1] * 0.35);
+    diff.data[i + 2] = Math.round(B.data[i + 2] * 0.35);
+    diff.data[i + 3] = 255;
+  }
+  for (let y = 0; y < result.height; y += 1) {
+    for (let x = 0; x < result.width; x += 1) {
+      if (result.mask[(y * result.width + x) * 4 + 3] === 0) continue;
+      const j = (y * B.width + x) * 4;
+      diff.data[j] = 255; diff.data[j + 1] = 0; diff.data[j + 2] = 255;
+    }
+  }
+  const files = {};
+  let scaled = false;
+  for (const [name, img] of [['before', A], ['after', B], ['diff', diff]]) {
+    const r = region(img);
+    const file = `${base}-${name}.png`;
+    let buffer;
+    if (!r) buffer = await sharp({ create: { width: 8, height: 8, channels: 3, background: '#000' } }).png().toBuffer();
+    else {
+      const source = sharp(PNG.sync.write(img)).extract(r);
+      const raw = await source.png({ compressionLevel: 9 }).toBuffer();
+      buffer = raw;
+      let w = r.width;
+      while (buffer.length > REST_IMAGE_MAX_BYTES && w > 64) {
+        w = Math.floor(w * 0.8);
+        buffer = await sharp(raw).resize({ width: w, kernel: 'nearest' }).png({ compressionLevel: 9, palette: true }).toBuffer();
+        scaled = true;
+      }
+    }
+    await writeFile(resolve(out, file), buffer);
+    files[name] = file;
+  }
+  return { ...files, region: { x: left, y: top, width: right - left, height: bottom - top }, scaled };
 }
 
 /* ------------------------------------------------------------------ */
@@ -1518,6 +2070,7 @@ export async function run(options) {
   const builds = options.after ? ['before', 'after'] : ['before'];
   const urls = { before: options.before, after: options.after };
   const subjectBuild = options.after ? 'after' : 'before';
+  const runOptions = { frameLoads: options.frameLoads ?? FRAME_LOADS };
 
   const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS });
   const report = {
@@ -1528,67 +2081,72 @@ export async function run(options) {
     viewports: VIEWPORTS.map(viewportKey),
     stripTimes: STRIP_TIMES,
     throttle: THROTTLE,
+    marksRemoved: options.marksRemoved ?? [],
     routes: [],
     failures: [],
+    unstable: [],
+    markCounts: [],
+    restImages: [],
   };
   if (routes.length === 0) {
     report.failures.push({ path: '(none)', viewport: '-', check: 'routes', detail: options.routes ? 'the route list resolved to no routes: --routes named no path' : 'the routes file lists no routes' });
   }
   try {
     for (const route of routes) {
-      const entry = { path: route.path, rest: route.rest, primaryAction: route.primaryAction ?? null, loops: {}, sheets: [], viewports: {} };
+      const entry = { path: route.path, rest: route.rest, primaryAction: route.primaryAction ?? null, minMarks: route.minMarks ?? null, loops: {}, sheets: [], viewports: {} };
       if (route.unlisted) entry.unlisted = true;
       const loops = Object.fromEntries(builds.map((b) => [b, new Set()]));
+      const slug = routeSlug(route.path);
       for (const viewport of VIEWPORTS) {
         const key = viewportKey(viewport);
         console.log(`${route.path} ${key}`);
         const measured = {};
         for (const build of builds) {
           const started = Date.now();
-          measured[build] = await measureBuild(browser, urls[build], route, viewport);
+          measured[build] = await measureBuild(browser, urls[build], route, viewport, runOptions);
           for (const l of measured[build].loops) loops[build].add(l);
           console.log(`  ${build}: ${((Date.now() - started) / 1000).toFixed(1)} s`);
         }
         const vpEntry = Object.fromEntries(builds.map((b) => [b, measured[b].numbers]));
-        // Rest state comparison.
+        // Rest state: compared on every route, retaken only where it is judged.
         if (options.after && measured.before.rest && measured.after.rest) {
-          const a = PNG.sync.read(measured.before.rest.png);
-          const b = PNG.sync.read(measured.after.rest.png);
-          const rest = compareRest(a, b, { dailyRects: [...measured.before.rest.dailyRects, ...measured.after.rest.dailyRects] });
-          vpEntry.rest = {
-            share: rest.share, differing: rest.differing, outsideDaily: rest.outsideDaily, heightChanged: rest.heightChanged, widthChanged: rest.widthChanged,
-            dailyOnly: rest.dailyOnly, comparedArea: `${rest.width}x${rest.height}`,
-          };
+          const takes = [];
+          let pair = { before: measured.before.rest, after: measured.after.rest };
+          for (;;) {
+            const c = compareCaptures(pair.before, pair.after);
+            if (!c.result) {
+              takes.push(null);
+              break;
+            }
+            const { mask, ...kept } = c.result;
+            takes.push({ ...kept, comparedArea: `${kept.width}x${kept.height}` });
+            if (route.rest === 'identical' && restTakeKind(kept) === 'differs') {
+              const images = await saveRestImages(out, `rest-${slug}-${key}-take${takes.length}`, c);
+              report.restImages.push({ path: route.path, viewport: key, take: takes.length, differing: kept.differing, ...images, ...(images.scaled ? { note: 'scaled down to stay within 400 KB' } : {}) });
+              console.log(`  rest take ${takes.length}: ${kept.differing} px differ; saved ${images.before}, ${images.after}, ${images.diff} in ${out}`);
+            }
+            if (route.rest !== 'identical' || !restNeedsRetake(takes)) break;
+            const notes = [];
+            pair = {
+              before: await retakeRest(browser, urls.before, route, viewport, notes),
+              after: await retakeRest(browser, urls.after, route, viewport, notes),
+            };
+            vpEntry.after.notes.push(...notes);
+          }
+          vpEntry.rest = { takes };
+        } else if (options.after) {
+          vpEntry.rest = { takes: [null] };
         }
         const subject = vpEntry[subjectBuild];
         const baseline = options.after ? vpEntry.before : null;
-        // One retake for a micro layout shift.
-        if (subject.cls != null && subject.cls > 0 && subject.cls < CLS_RETAKE_BELOW) {
-          subject.clsRetake = await retakeCls(browser, urls[subjectBuild], route, viewport);
-        }
-        // Long frames over the absolute bar: measure the same build with its
-        // marks removed over the same window (in either mode), then allow one
-        // retake of the subject before a failure stands.
-        if (subject.longFrames?.longest != null && subject.longFrames.longest > LONG_FRAME_MS) {
-          const notes = [];
-          const subjectURL = `${urls[subjectBuild]}${route.path}`;
-          const reference = await safely(notes, 'long-frame reference without marks', () => measureThrottled(browser, subjectURL, viewport, notes, {
-            stripMarks: true, anchorAt: subject.throttled.firstMarkShown, scrollAt: subject.throttled.scrolledAt ?? null,
-          }));
-          subject.longFramesReference = reference?.longFrames ?? { unmeasured: 'the reference load failed' };
-          if (longFrameVerdict(subject.longFrames.longest, subject.longFramesReference.longest ?? null) === 'fail') {
-            const retake = await safely(notes, 'long-frame retake', () => measureThrottled(browser, subjectURL, viewport, notes));
-            subject.longFramesRetake = retake?.longFrames ?? { unmeasured: 'the retake failed' };
-          }
-          subject.notes.push(...notes);
-        }
-        vpEntry.checks = evaluateChecks({ route, viewport, subject, baseline, rest: vpEntry.rest ?? null });
+        if (options.after) report.markCounts.push({ path: route.path, viewport: key, before: vpEntry.before.markedCount ?? null, after: vpEntry.after.markedCount ?? null });
+        vpEntry.checks = evaluateChecks({ route, viewport, subject, baseline, rest: vpEntry.rest ?? null, marksRemoved: options.marksRemoved ?? [] });
         for (const c of vpEntry.checks) {
           if (c.status === 'fail') report.failures.push({ path: route.path, viewport: key, check: c.check, detail: c.detail });
+          if (c.status === 'unstable') report.unstable.push({ path: route.path, viewport: key, detail: c.detail });
         }
         entry.viewports[key] = vpEntry;
         // Sheets.
-        const slug = routeSlug(route.path);
         const strips = [{ id: 'first-view', label: `${key} first view`, frames: (b) => measured[b].firstView }];
         (route.steps ?? []).forEach((step, i) => {
           strips.push({ id: `step-${i + 1}`, label: `${key} after step ${i + 1}: ${stepLabel(step)}`, frames: (b) => measured[b].steps[i], step: i });
@@ -1633,11 +2191,16 @@ if (invokedDirectly) {
   const report = await run(options);
   const out = resolve(repoRoot, options.out);
   console.log(`\nWrote ${out}/summary.md, report.html, numbers.json and ${report.routes.reduce((n, r) => n + r.sheets.length, 0)} sheets.`);
+  for (const im of report.restImages) console.log(`Rest images: ${im.path} ${im.viewport} take ${im.take}: ${resolve(out, im.before)}, ${resolve(out, im.after)}, ${resolve(out, im.diff)}`);
+  for (const u of report.unstable) console.log(`Unstable capture: ${u.path} ${u.viewport}: ${u.detail}`);
+  const changed = report.markCounts.filter((m) => m.before !== m.after);
+  for (const m of changed) console.log(`Mark count changed: ${m.path} ${m.viewport}: ${m.before} to ${m.after}`);
   if (report.failures.length) {
     console.log(`${report.failures.length} hard checks fail:`);
     for (const f of report.failures) console.log(`  ${f.path} ${f.viewport} ${f.check}: ${f.detail}`);
   } else {
     console.log('All hard checks pass.');
   }
+  console.log(LONG_FRAME_NOTE);
   process.exit(checkExitCode(report, options));
 }

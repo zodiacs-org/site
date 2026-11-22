@@ -1,18 +1,21 @@
 /**
  * The motion evidence harness's pure helpers (ZOD-294): argument parsing,
- * route selection, the rest-state comparison, long-frame counting, sheet
- * geometry, the hard checks and the exit code. Two in-page functions (the
- * init script's first-mark watcher and the marks-shown inspection) run here
- * against small stand-ins for the DOM; the rest of the browser side is
- * exercised by running the harness against two builds.
+ * route selection, the rest-state comparison and its retakes, the
+ * layout-shift agreement rule, mark counts, rendered marks, long-frame
+ * counting and its report, sheet geometry, the hard checks and the exit code.
+ * Two in-page functions (the init script's first-mark watcher and the marks
+ * inspection) run here against small stand-ins for the DOM; the rest of the
+ * browser side is exercised by running the harness against two builds.
  */
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { describe, expect, it } from 'vitest';
 import {
-  ALLOWED_PROPERTIES, baseCfg, checkExitCode, compareRest, countOutsideRects, disallowedProperties, evaluateChecks, formatNumbers,
-  initScript, inspectMarks, LONG_FRAME_MS, longFrameLimit, longFrameStats, longFrameVerdict, MARK_ATTRIBUTE, MAX_REST_PIXELS,
-  nextFrameWidth, normalizePath, parseArgs, renderSummary, routeSlug, selectRoutes, sheetLayout, shortSelector, STRIP_TIMES, toKebab,
+  ALLOWED_PROPERTIES, baseCfg, checkExitCode, compareRendered, compareRest, countOutsideRects, disallowedProperties, evaluateChecks,
+  formatNumbers, FROM_LOAD_NOTE, initScript, inputFor, inspectMarks, LONG_FRAME_NOTE, longFrameStats, MARK_ATTRIBUTE, markCountCheck,
+  maskBounds, MAX_REST_PIXELS, median, nextFrameWidth, normalizePath, parseArgs, renderSummary, restNeedsRetake, restTakeKind, restVerdict,
+  routeSlug, selectRoutes, settledShift, settledShiftVerdict, SETTLED_TAKES, SHIFT_AGREEMENT, SHIFT_MARGIN, SHIFT_SINGLE_BAR, sheetLayout,
+  shortSelector, STRIP_TIMES, summarizeLongFrames, toKebab,
 } from './motion-evidence.mjs';
 
 const routesFile = JSON.parse(readFileSync(new URL('./motion-evidence.routes.json', import.meta.url), 'utf8'));
@@ -29,14 +32,20 @@ const paint = (image, x, y, w, h, rgb) => {
   return image;
 };
 
-const shownAll = (n = 4) => ({ total: n, rendered: n, notShown: 0, examples: [], running: 0 });
+const marksList = (n, rendered = true) => Array.from({ length: n }, (_, i) => ({ key: `main:1>ul:1>li:${i + 1}`, name: 'li.card', rendered }));
+const shownAll = (n = 4) => ({ total: n, rendered: n, notShown: 0, examples: [], running: 0, marks: marksList(n) });
+const zero = () => [{ value: 0 }, { value: 0 }, { value: 0 }];
 const clean = {
   http: { url: 'http://127.0.0.1:4391/x/', status: 200 },
-  cls: 0,
+  input: 'touch',
+  shiftSettled: zero(),
+  shiftFromLoad: [{ value: 0 }, { value: 0.3 }, { value: 0 }, { value: 0.31 }, { value: 0 }],
   lcp: { time: 400, selector: 'h1.display' },
   lcpMarked: false,
   largest: { kind: 'text block', area: 40000, selector: 'h1.display', marked: false },
-  longFrames: { count: 0, longest: 33.4, frames: 70 },
+  longFrames: summarizeLongFrames([{ count: 0, longest: 33.4, frames: 70, anchoredOn: 'load' }]),
+  entrancesPlayed: 4,
+  touches: 9,
   animatedProperties: ['opacity', 'transform'],
   markedVerbs: ['rise'],
   sampledVerbs: ['rise'],
@@ -57,7 +66,9 @@ const clean = {
 const viewport = { width: 390, height: 844 };
 const statusOf = (checks, name) => checks.find((c) => c.check === name)?.status;
 const detailOf = (checks, name) => checks.find((c) => c.check === name)?.detail;
-const sameRest = { differing: 0, outsideDaily: 0, share: 0, heightChanged: null, widthChanged: null };
+const same = { differing: 0, outsideDaily: 0, share: 0, heightChanged: null, widthChanged: null };
+const differs = (n = 55) => ({ ...same, differing: n, outsideDaily: n });
+const sameRest = { takes: [same] };
 
 describe('motion evidence: configuration', () => {
   it('keeps the marker in one constant and never matches data-motion', () => {
@@ -73,13 +84,21 @@ describe('motion evidence: configuration', () => {
     expect(ALLOWED_PROPERTIES).toEqual(['opacity', 'transform', 'stroke-dashoffset']);
   });
 
-  it('has a well-formed routes file', () => {
+  it('has a well-formed routes file with a minimum mark count on every default route', () => {
     expect(routesFile.length).toBe(12);
     for (const route of routesFile) {
       expect(route.path).toMatch(/^\/(?:.*\/)?$/u);
       expect(['changed', 'identical']).toContain(route.rest);
+      expect(Number.isInteger(route.minMarks) && route.minMarks >= 0, route.path).toBe(true);
     }
     expect(new Set(routesFile.map((r) => r.path)).size).toBe(routesFile.length);
+    // What main had on 2026-11-22 (3e6bcbd3): marks on these two routes only.
+    expect(Object.fromEntries(routesFile.filter((r) => r.minMarks > 0).map((r) => [r.path, r.minMarks]))).toEqual({ '/numerology/': 39, '/tools/': 31 });
+  });
+
+  it('drives a phone-sized viewport by touch and the desktop by the wheel', () => {
+    expect(inputFor({ width: 390, height: 844 })).toBe('touch');
+    expect(inputFor({ width: 1440, height: 900 })).toBe('wheel');
   });
 });
 
@@ -91,7 +110,17 @@ describe('motion evidence: arguments and routes', () => {
       routes: ['/numerology/', 'compatibility'],
       out: 'tests/visual/artifacts/motion',
       check: true,
+      marksRemoved: [],
+      frameLoads: 5,
     });
+  });
+
+  it('parses --marks-removed into normalized paths and --frame-loads into a count', () => {
+    const options = parseArgs(['--before', 'http://x', '--marks-removed', 'tools, /numerology/', '--frame-loads=3']);
+    expect(options.marksRemoved).toEqual(['/tools/', '/numerology/']);
+    expect(options.frameLoads).toBe(3);
+    expect(() => parseArgs(['--before', 'http://x', '--frame-loads', '0'])).toThrow(/frame-loads/u);
+    expect(() => parseArgs(['--before', 'http://x', '--frame-loads', 'many'])).toThrow(/frame-loads/u);
   });
 
   it('requires --before and rejects unknown flags', () => {
@@ -103,7 +132,7 @@ describe('motion evidence: arguments and routes', () => {
   it('narrows the routes file and keeps unlisted paths', () => {
     expect(normalizePath('compatibility')).toBe('/compatibility/');
     const chosen = selectRoutes(routesFile, ['compatibility', '/nowhere/']);
-    expect(chosen[0]).toEqual({ path: '/compatibility/', rest: 'identical' });
+    expect(chosen[0]).toEqual({ path: '/compatibility/', minMarks: 0, rest: 'identical' });
     expect(chosen[1]).toEqual({ path: '/nowhere/', rest: 'changed', unlisted: true });
     expect(selectRoutes(routesFile, null)).toBe(routesFile);
   });
@@ -141,14 +170,19 @@ describe('motion evidence: small helpers', () => {
     expect(nextFrameWidth(260)).toBe(221);
     expect(nextFrameWidth(41)).toBe(40);
   });
+
+  it('takes a median', () => {
+    expect(median([50, 16.7, 33.4])).toBe(33.4);
+    expect(median([1, 2, 3, 4])).toBe(2.5);
+    expect(median([])).toBeNull();
+  });
 });
 
-describe('motion evidence: long frames', () => {
+describe('motion evidence: long frames (report only)', () => {
   it('counts the gaps in the window and clips one that runs past its end', () => {
     const frames = [0, 16, 32, 100, 116, 132, 250, 266, 3000];
     // Window (20, 2520]: gaps ending at 32 (16), 100 (68), 116, 132, 250 (118), 266, and
     // 266 to 3000, which starts inside and is counted up to the end: 2254 ms.
-    // The old code dropped that last gap and reported { count: 2, longest: 118, frames: 6 }.
     expect(longFrameStats(frames, 20)).toEqual({ count: 3, longest: 2254, frames: 7 });
   });
 
@@ -161,69 +195,94 @@ describe('motion evidence: long frames', () => {
     expect(longFrameStats([0, 16, 32], 0, 500, 50, 900)).toEqual({ count: 1, longest: 468, frames: 3 });
   });
 
-  it('calls a window with no frames unmeasured, never a pass', () => {
-    // The old code returned { count: 0, longest: 0, frames: 0 }, which the checks passed.
+  it('calls a window with no frames unmeasured', () => {
     expect(longFrameStats([], 0)).toMatchObject({ frames: 0, longest: null, unmeasured: expect.any(String) });
     expect(longFrameStats([0, 16, 32], 5000)).toMatchObject({ frames: 0, unmeasured: expect.any(String) });
-    const checks = evaluateChecks({ route: { path: '/x/', rest: 'changed' }, viewport, subject: { ...clean, longFrames: longFrameStats([], 0) } });
-    expect(statusOf(checks, 'longFrames')).toBe('fail');
-    expect(detailOf(checks, 'longFrames')).toMatch(/^unmeasured/u);
   });
 
-  it('allows max(50 ms, reference x 1.5 + one frame)', () => {
-    expect(longFrameLimit(20)).toBe(50);
-    expect(longFrameLimit(33.4)).toBe(66.8);
-    expect(longFrameLimit(60)).toBe(106.7);
-    expect(longFrameLimit(116.7)).toBe(191.7);
+  it('reports the median, the maximum and the loads over 50 ms', () => {
+    const takes = [50.1, 66.7, 33.4, 83.4, 50].map((longest) => ({ count: 1, longest, frames: 60, anchoredOn: 'load' }));
+    expect(summarizeLongFrames(takes)).toMatchObject({ loads: 5, measured: 5, median: 50.1, max: 83.4, over: 3, anchoredOn: ['load'] });
+    expect(summarizeLongFrames([{ notApplicable: 'no marks at load or after hydration' }])).toEqual({ loads: 1, notApplicable: 'no marks at load or after hydration' });
+    expect(summarizeLongFrames([{ unmeasured: 'x' }, { longest: 40, anchoredOn: 'step 2' }])).toMatchObject({ unmeasured: 1, measured: 1, median: 40, anchoredOn: ['step 2'] });
   });
 
-  it('decides pass, note and fail at the boundaries', () => {
-    expect(longFrameVerdict(50, null)).toBe('pass');
-    expect(longFrameVerdict(50.1, null)).toBe('fail');
-    // Reference within the bar: the absolute 50 ms bar holds.
-    expect(longFrameVerdict(50.1, 33.4)).toBe('fail');
-    expect(longFrameVerdict(60, 50)).toBe('fail');
-    // Reference over the bar: a note while not materially worse, a failure beyond the limit.
-    expect(longFrameVerdict(106.7, 60)).toBe('note');
-    expect(longFrameVerdict(106.8, 60)).toBe('fail');
-    expect(longFrameVerdict(900, 60)).toBe('fail');
-    expect(longFrameVerdict(40, 60)).toBe('pass');
-  });
-
-  it('fails a much worse page on a slow runner (60 ms without marks, 900 ms with them)', () => {
-    // The old check set this aside as "runner too slow to judge" and exited 0.
+  it('never makes long frames a check, however long, and prints them side by side', () => {
     const route = { path: '/x/', rest: 'changed' };
-    const subject = { ...clean, longFrames: { count: 9, longest: 900, frames: 30 }, longFramesReference: { count: 1, longest: 60, frames: 140 } };
-    const checks = evaluateChecks({ route, viewport, subject });
-    expect(statusOf(checks, 'longFrames')).toBe('fail');
-    expect(detailOf(checks, 'longFrames')).toContain('over 106.7 ms');
-    expect(detailOf(checks, 'longFrames')).toContain('with marks removed');
+    const slow = { ...clean, longFrames: summarizeLongFrames([{ count: 9, longest: 900, frames: 30, anchoredOn: 'load' }]) };
+    const checks = evaluateChecks({ route, viewport, subject: slow, baseline: clean });
+    expect(checks.find((c) => /long/iu.test(c.check))).toBeUndefined();
+    expect(checks.filter((c) => c.status === 'fail')).toEqual([]);
+    expect(formatNumbers(slow).longFrames).toBe('median 900 ms, max 900 ms; 1 of 1 loads over 50 ms (900); window from the first mark shown after load');
+  });
+});
+
+describe('motion evidence: layout shift', () => {
+  it('needs three measured takes that agree within 0.002', () => {
+    expect(SETTLED_TAKES).toBe(3);
+    expect(SHIFT_AGREEMENT).toBe(0.002);
+    expect(settledShift(zero())).toEqual({ value: 0, values: [0, 0, 0] });
+    expect(settledShift([{ value: 0.001 }, { value: 0.003 }, { value: 0.002 }])).toMatchObject({ value: 0.003 });
+    expect(settledShift([{ value: 0 }, { value: 0.0025 }, { value: 0 }])).toMatchObject({ value: null, unmeasured: expect.stringMatching(/disagree/u) });
+    expect(settledShift([{ value: 0 }, { value: null, unmeasured: 'not quiet within 10 s' }, { value: 0 }])).toMatchObject({ value: null, unmeasured: 'not quiet within 10 s' });
+    expect(settledShift([{ value: 0 }, { value: 0 }])).toMatchObject({ value: null });
   });
 
-  it('notes a slow runner only when the page is not materially worse, and says what the reference is', () => {
+  it('fails a page that never went quiet, or whose takes disagree, on either build', () => {
     const route = { path: '/x/', rest: 'changed' };
-    const subject = { ...clean, longFrames: { count: 2, longest: 90, frames: 60 }, longFramesReference: { count: 2, longest: 83.3, frames: 60 } };
-    const checks = evaluateChecks({ route, viewport, subject });
-    expect(statusOf(checks, 'longFrames')).toBe('note');
-    expect(detailOf(checks, 'longFrames')).toMatch(/runner too slow for the absolute 50 ms bar/u);
-    expect(detailOf(checks, 'longFrames')).toMatch(/83\.3 ms with marks removed \(same build, same window\)/u);
-    expect(statusOf(evaluateChecks({ route, viewport, subject: { ...subject, longFramesReference: { count: 0, longest: 33, frames: 70 } } }), 'longFrames')).toBe('fail');
-    expect(statusOf(evaluateChecks({ route, viewport, subject: { ...subject, longFramesReference: null } }), 'longFrames')).toBe('fail');
-    expect(statusOf(evaluateChecks({ route, viewport, subject: { ...subject, longFramesReference: { unmeasured: 'x' } } }), 'longFrames')).toBe('fail');
+    const notQuiet = { ...clean, shiftSettled: [{ value: null, unmeasured: 'before the scroll: not quiet within 10 s' }, { value: 0 }, { value: 0 }] };
+    expect(statusOf(evaluateChecks({ route, viewport, subject: notQuiet }), 'layoutShift')).toBe('fail');
+    expect(detailOf(evaluateChecks({ route, viewport, subject: notQuiet }), 'layoutShift')).toMatch(/^unmeasured: before the scroll/u);
+    const disagree = { ...clean, shiftSettled: [{ value: 0.49 }, { value: 0 }, { value: 0.49 }] };
+    expect(statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: disagree }), 'layoutShift')).toBe('fail');
+    expect(detailOf(evaluateChecks({ route, viewport, subject: clean, baseline: disagree }), 'layoutShift')).toMatch(/unmeasured on the before build/u);
   });
 
-  it('takes the better of the first take and the retake', () => {
-    const route = { path: '/x/', rest: 'changed' };
-    const subject = { ...clean, longFrames: { count: 3, longest: 300, frames: 40 }, longFramesReference: { longest: 83.3, count: 1, frames: 60 }, longFramesRetake: { longest: 100, count: 1, frames: 60 } };
-    expect(statusOf(evaluateChecks({ route, viewport, subject }), 'longFrames')).toBe('note');
-    expect(statusOf(evaluateChecks({ route, viewport, subject: { ...subject, longFramesRetake: { longest: 250, count: 2, frames: 60 } } }), 'longFrames')).toBe('fail');
+  it('two builds: fails when the after build exceeds the before build by more than 0.002', () => {
+    const t = (v) => [{ value: v }, { value: v }, { value: v }];
+    expect(SHIFT_MARGIN).toBe(0.002);
+    expect(settledShiftVerdict(t(0.302), t(0.3)).status).toBe('pass');
+    expect(settledShiftVerdict(t(0.3025), t(0.3)).status).toBe('fail');
+    expect(settledShiftVerdict(t(0.0574), t(0)).status).toBe('fail');
+    expect(settledShiftVerdict(t(0), t(0.2)).status).toBe('pass');
   });
 
-  it('reports long frames as not applicable on a page with no marks', () => {
+  it('one build: fails above the tool\'s own bar of 0.02 and says it is the tool\'s own', () => {
+    const t = (v) => [{ value: v }, { value: v }, { value: v }];
+    expect(SHIFT_SINGLE_BAR).toBe(0.02);
+    expect(settledShiftVerdict(t(0.02)).status).toBe('pass');
+    expect(settledShiftVerdict(t(0.0201))).toMatchObject({ status: 'fail', detail: expect.stringMatching(/tool's own/u) });
+  });
+
+  it('never judges the layout shift from load, whatever its spread', () => {
     const route = { path: '/x/', rest: 'changed' };
-    const checks = evaluateChecks({ route, viewport, subject: { ...clean, markedCount: 0, markedVerbs: [], sampledVerbs: [], longFrames: { notApplicable: 'no marks' } } });
-    expect(statusOf(checks, 'longFrames')).toBe('n/a');
-    expect(detailOf(checks, 'longFrames')).toBe('not applicable: no marks');
+    const spread = { ...clean, shiftFromLoad: [0.49, 0, 0.49, 0.52, 0.28].map((value) => ({ value })) };
+    expect(evaluateChecks({ route, viewport, subject: spread, baseline: clean }).filter((c) => c.status === 'fail')).toEqual([]);
+    expect(formatNumbers(spread).shiftFromLoad).toBe('0.4900, 0, 0.4900, 0.5200, 0.2800');
+  });
+});
+
+describe('motion evidence: mark counts', () => {
+  const route = { path: '/tools/', rest: 'identical', minMarks: 31 };
+  it('fails a route whose marks all go, unless --marks-removed names it', () => {
+    expect(markCountCheck({ route, subjectCount: 0, baselineCount: 31, twoBuilds: true })).toMatchObject({ status: 'fail', detail: expect.stringMatching(/before 31, after 0.*--marks-removed \/tools\//u) });
+    expect(markCountCheck({ route, subjectCount: 0, baselineCount: 31, twoBuilds: true, marksRemoved: ['/tools/'] }).status).toBe('pass');
+    expect(markCountCheck({ route, subjectCount: 30, baselineCount: 31, twoBuilds: true }).status).toBe('pass');
+    expect(markCountCheck({ route, subjectCount: 3, baselineCount: 0, twoBuilds: true }).status).toBe('pass');
+    expect(markCountCheck({ route, subjectCount: null, baselineCount: 31, twoBuilds: true }).status).toBe('fail');
+  });
+
+  it('one build: fails below the route\'s minMarks', () => {
+    expect(markCountCheck({ route, subjectCount: 30 })).toMatchObject({ status: 'fail', detail: expect.stringMatching(/fewer than the 31/u) });
+    expect(markCountCheck({ route, subjectCount: 31 }).status).toBe('pass');
+    expect(markCountCheck({ route, subjectCount: null }).status).toBe('fail');
+    expect(markCountCheck({ route: { path: '/new/', rest: 'changed' }, subjectCount: 0 }).status).toBe('pass');
+  });
+
+  it('turns 31 marks to 0 into a failing run (exit 1)', () => {
+    const checks = evaluateChecks({ route, viewport, subject: { ...clean, markedCount: 0 }, baseline: { ...clean, markedCount: 31 }, rest: sameRest });
+    expect(statusOf(checks, 'marks')).toBe('fail');
+    expect(checkExitCode({ failures: checks.filter((c) => c.status === 'fail'), routes: [{}] }, { check: true })).toBe(1);
   });
 });
 
@@ -250,12 +309,11 @@ function runInitScript() {
     matches: (selector) => marked && selector === `[${MARK_ATTRIBUTE}]`,
   });
   const fire = (target, oldValue = '') => observers[0].fn([{ target, oldValue }]);
-  return { state: sandbox.__motionEvidence, fire, element };
+  return { state: sandbox.__motionEvidence, fire, element, observers };
 }
 
 describe('motion evidence: first mark shown', () => {
   it('ignores a .reveal heading that gains is-in', () => {
-    // The old watcher counted any element gaining is-in, so this read 1234 ms.
     const { state, fire, element } = runInitScript();
     fire(element(['reveal', 'is-in'], false));
     expect(state.firstMarkShown).toBeNull();
@@ -269,42 +327,58 @@ describe('motion evidence: first mark shown', () => {
     expect(state.firstMarkShown).toBe(1234);
   });
 
+  it('records any mutation as activity for the quiet wait', () => {
+    const { state, observers } = runInitScript();
+    expect(state.lastActivity).toBe(0);
+    observers[1].fn([{ type: 'childList' }]);
+    expect(state.lastActivity).toBe(1234);
+  });
+
   it('formats no marks as not applicable rather than "none"', () => {
     expect(formatNumbers({ ...clean, markedCount: 0, throttled: { firstPaint: 500, firstMarkShown: null } }).firstMarkShown).toBe('n/a (no marks)');
   });
 });
 
 /** Run inspectMarks against stand-in elements with fixed computed styles. */
-function inspect(elements) {
+function inspect(elements, { ancestor = {} } = {}) {
   const styles = new Map();
-  const make = ({ verb = null, opacity = '1', transform = 'none', strokes = [], rendered = true, own = null }) => {
+  const body = { tagName: 'BODY', id: '', className: '', parentElement: null };
+  styles.set(body, { display: 'block', visibility: 'visible' });
+  const wrapper = { tagName: 'UL', id: '', className: 'list', parentElement: body, previousElementSibling: null };
+  styles.set(wrapper, { display: 'block', visibility: 'visible', ...ancestor });
+  let previous = null;
+  const make = ({ verb = null, opacity = '1', transform = 'none', strokes = [], rendered = true, own = null, visibility = 'visible', display = 'block', box = [100, 40] }) => {
     const strokeEls = strokes.map((offset) => {
       const s = { tagName: 'circle', className: { baseVal: 'motion-stroke' }, id: '' };
       styles.set(s, { strokeDashoffset: offset });
       return s;
     });
     const el = {
-      tagName: verb === 'draw' ? 'g' : 'DIV',
+      tagName: verb === 'draw' ? 'g' : 'LI',
       id: '',
       className: 'card',
+      parentElement: wrapper,
+      previousElementSibling: previous,
       getAttribute: () => verb,
       getClientRects: () => (rendered ? [{}] : []),
+      getBoundingClientRect: () => ({ width: box[0], height: box[1] }),
       querySelectorAll: () => strokeEls,
       ...(own ? { transform: { baseVal: { consolidate: () => ({ matrix: own }) } } } : {}),
     };
-    styles.set(el, { opacity, transform });
+    previous = el;
+    styles.set(el, { opacity, transform, visibility, display });
     return el;
   };
   const marked = elements.map(make);
   const sandbox = {
-    document: { querySelectorAll: () => marked, getAnimations: () => [] },
+    document: { body, querySelectorAll: () => marked, getAnimations: () => [] },
     getComputedStyle: (el) => styles.get(el),
   };
   vm.createContext(sandbox);
   return vm.runInContext(`(${inspectMarks.toString()})(${JSON.stringify({ mark: MARK_ATTRIBUTE })})`, sandbox);
 }
 
-describe('motion evidence: marks shown', () => {
+describe('motion evidence: marks shown and rendered', () => {
   it('passes rise, disc and draw marks that are fully shown', () => {
     const result = inspect([
       { verb: 'rise' },
@@ -313,6 +387,7 @@ describe('motion evidence: marks shown', () => {
       { verb: 'disc', transform: 'matrix(1, 0, 0, 1, 40, 12)', own: { a: 1, b: 0, c: 0, d: 1, e: 40, f: 12 } },
     ]);
     expect(result).toMatchObject({ total: 4, rendered: 4, notShown: 0, renderedVerbs: ['disc', 'draw', 'rise'] });
+    expect(result.marks.map((m) => m.key)).toEqual(['ul:1>li:1', 'ul:1>li:2', 'ul:1>g:3', 'ul:1>li:4']);
   });
 
   it('fails a rise left transparent or offset, and a disc left scaled', () => {
@@ -327,14 +402,53 @@ describe('motion evidence: marks shown', () => {
   });
 
   it('fails a draw whose strokes are not drawn, even at opacity 1', () => {
-    // The old check read only the marked element's opacity, which a draw never changes.
     const result = inspect([{ verb: 'draw', opacity: '1', strokes: ['0', '1px'] }]);
     expect(result.notShown).toBe(1);
     expect(result.examples[0]).toMatch(/stroke-dashoffset 1px/u);
   });
 
-  it('counts a mark with no box apart, as not rendered', () => {
-    expect(inspect([{ verb: 'rise', opacity: '0', rendered: false }])).toMatchObject({ total: 1, rendered: 0, notShown: 0 });
+  it('does not count as rendered a mark with no box, visibility hidden (its own or an ancestor\'s), display none or an empty box', () => {
+    expect(inspect([{ verb: 'rise', opacity: '0', rendered: false }]).marks[0]).toMatchObject({ rendered: false, absent: 'display none or no box' });
+    expect(inspect([{ verb: 'rise', visibility: 'hidden' }]).marks[0]).toMatchObject({ rendered: false, absent: 'visibility hidden' });
+    expect(inspect([{ verb: 'rise' }], { ancestor: { visibility: 'collapse' } }).marks[0]).toMatchObject({ rendered: false, absent: 'visibility collapse on ul.list' });
+    expect(inspect([{ verb: 'rise', display: 'none' }]).marks[0]).toMatchObject({ rendered: false, absent: 'display none' });
+    expect(inspect([{ verb: 'rise', box: [0, 40] }]).marks[0]).toMatchObject({ rendered: false, absent: 'empty box (0 x 40)' });
+    // A hidden mark is not "shown" either: it is left out of the shown count and judged by the rendered comparison.
+    expect(inspect([{ verb: 'rise', visibility: 'hidden', opacity: '0' }])).toMatchObject({ total: 1, rendered: 0, notShown: 0 });
+  });
+
+  it('passes the same marks rendered in all three modes, and marks absent in all three', () => {
+    const marks = [...marksList(3), { key: 'details:1>li:1', name: 'li.closed', rendered: false, absent: 'display none' }];
+    const mode = { total: 4, marks };
+    const r = compareRendered({ rest: mode, reducedMotion: mode, noScript: mode });
+    expect(r).toMatchObject({ problems: [], counts: { rest: 3, reducedMotion: 3, noScript: 3 }, absentInAll: 1, union: 4 });
+  });
+
+  it('fails a mark hidden under reduced motion only, naming the element and the mode', () => {
+    const rest = { total: 3, marks: marksList(3) };
+    const reduced = { total: 3, marks: [marksList(3)[0], { ...marksList(3)[1], rendered: false, absent: 'visibility hidden' }, marksList(3)[2]] };
+    const r = compareRendered({ rest, reducedMotion: reduced, noScript: rest });
+    expect(r.problems).toHaveLength(1);
+    expect(r.problems[0]).toMatchObject({ mode: 'reducedMotion', detail: 'li.card is not rendered under reduced motion (visibility hidden) but is rendered at rest and with scripting off' });
+    const checks = evaluateChecks({ route: { path: '/x/', rest: 'changed' }, viewport, subject: { ...clean, shownAtRest: { ...shownAll(3), marks: rest.marks }, reducedMotion: { ...shownAll(3), rendered: 2, marks: reduced.marks }, noScript: { ...shownAll(3), marks: rest.marks } } });
+    expect(statusOf(checks, 'marksRendered')).toBe('fail');
+    expect(detailOf(checks, 'marksRendered')).toMatch(/under reduced motion \(visibility hidden\)/u);
+    expect(checkExitCode({ failures: checks.filter((c) => c.status === 'fail'), routes: [{}] }, { check: true })).toBe(1);
+  });
+
+  it('fails a mark that is display none with scripting off, or missing from that DOM', () => {
+    const rest = { total: 2, marks: marksList(2) };
+    const none = compareRendered({ rest, reducedMotion: rest, noScript: { total: 2, marks: [marksList(2)[0], { ...marksList(2)[1], rendered: false, absent: 'display none' }] } });
+    expect(none.problems.map((p) => p.mode)).toEqual(['noScript']);
+    expect(none.problems[0].detail).toMatch(/with scripting off \(display none\)/u);
+    const gone = compareRendered({ rest, reducedMotion: rest, noScript: { total: 1, marks: [marksList(2)[0]] } });
+    expect(gone.problems[0].detail).toMatch(/with scripting off \(not in the DOM\)/u);
+  });
+
+  it('fails the rendered check when a mode was not measured', () => {
+    const checks = evaluateChecks({ route: { path: '/x/', rest: 'changed' }, viewport, subject: { ...clean, noScript: null } });
+    expect(statusOf(checks, 'marksRendered')).toBe('fail');
+    expect(detailOf(checks, 'marksRendered')).toMatch(/not measured with scripting off/u);
   });
 });
 
@@ -365,54 +479,82 @@ describe('motion evidence: rest state', () => {
     expect(outside.outsideDaily).toBe(16);
   });
 
-  it('counts mask pixels outside rects', () => {
+  it('counts mask pixels outside rects and finds the box around them', () => {
     const mask = Buffer.alloc(4 * 4 * 4);
     mask[(1 * 4 + 1) * 4 + 3] = 255;
     mask[(3 * 4 + 3) * 4 + 3] = 255;
     expect(countOutsideRects(mask, 4, 4, [{ x: 0, y: 0, width: 2, height: 2 }])).toBe(1);
+    expect(maskBounds(mask, 4, 4)).toEqual({ x: 1, y: 1, width: 3, height: 3 });
+    expect(maskBounds(Buffer.alloc(16 * 4), 4, 4)).toBeNull();
+    const kept = compareRest(solid(10, 10), paint(solid(10, 10), 2, 3, 2, 2, [250, 250, 250]), { keepMask: true });
+    expect(maskBounds(kept.mask, 10, 10)).toEqual({ x: 2, y: 3, width: 2, height: 2 });
   });
 
-  it('fails a missing 24 x 24 icon on a long page, which the old 0.1% share allowed', () => {
+  it('fails a missing 24 x 24 icon on a long page on both pairs', () => {
     const route = { path: '/x/', rest: 'identical' };
     const a = paint(solid(390, 4000), 100, 2000, 24, 24, [220, 220, 220]);
-    const rest = compareRest(a, solid(390, 4000));
-    expect(rest.differing).toBe(576);
-    expect(rest.share).toBeLessThan(0.001);
-    expect(MAX_REST_PIXELS).toBeLessThan(576);
-    expect(statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest }), 'rest')).toBe('fail');
+    const take = compareRest(a, solid(390, 4000));
+    expect(take.differing).toBe(576);
+    expect(MAX_REST_PIXELS).toBe(0);
+    expect(restNeedsRetake([take])).toBe(true);
+    expect(restNeedsRetake([take, take])).toBe(false);
+    const checks = evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: { takes: [take, take] } });
+    expect(statusOf(checks, 'rest')).toBe('fail');
+    expect(detailOf(checks, 'rest')).toBe('differs on both pairs (take 1: 576 px, take 2: 576 px; limit 0)');
   });
 
-  it('passes a difference within the noise bar and fails one above it', () => {
-    const route = { path: '/x/', rest: 'identical' };
-    const at = (differing) => statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: { ...sameRest, differing, outsideDaily: differing } }), 'rest');
-    expect(at(MAX_REST_PIXELS)).toBe('pass');
-    expect(at(MAX_REST_PIXELS + 1)).toBe('fail');
+  it('classifies a take as same, daily or differs', () => {
+    expect(restTakeKind(same)).toBe('same');
+    expect(restTakeKind(differs(1))).toBe('differs');
+    expect(restTakeKind({ ...same, differing: 300, outsideDaily: 0 })).toBe('daily');
+    expect(restTakeKind({ ...same, heightChanged: { from: 10, to: 20 } })).toBe('differs');
+    expect(restTakeKind({ ...same, widthChanged: { from: 390, to: 400 } })).toBe('differs');
+    expect(restTakeKind(null)).toBe('differs');
   });
 
-  it('fails a width or height change', () => {
+  it('retakes a differing pair once, and a third time only when the retake was the same', () => {
+    expect(restNeedsRetake([same])).toBe(false);
+    expect(restNeedsRetake([{ ...same, differing: 300, outsideDaily: 0 }])).toBe(false);
+    expect(restNeedsRetake([differs()])).toBe(true);
+    expect(restNeedsRetake([differs(), differs()])).toBe(false);
+    expect(restNeedsRetake([differs(), same])).toBe(true);
+    expect(restNeedsRetake([differs(), same, same])).toBe(false);
+    expect(restNeedsRetake([differs(), same, differs()])).toBe(false);
+  });
+
+  it('decides pass, fail and unstable over the takes, and reports every count', () => {
+    expect(restVerdict([same]).status).toBe('pass');
+    expect(restVerdict([differs(55), differs(55)])).toEqual({ status: 'fail', detail: 'differs on both pairs (take 1: 55 px, take 2: 55 px; limit 0)' });
+    expect(restVerdict([differs(55), same, differs(40)])).toEqual({ status: 'fail', detail: 'differs again on the third pair (take 1: 55 px, take 2: 0 px, take 3: 40 px; limit 0)' });
+    expect(restVerdict([differs(55), same, same])).toEqual({ status: 'unstable', detail: 'unstable capture: differed once in three pairs (take 1: 55 px, take 2: 0 px, take 3: 0 px)' });
+    // A needed take that is missing never passes.
+    expect(restVerdict([differs(55)]).status).toBe('fail');
+    expect(restVerdict([differs(55), same]).status).toBe('fail');
+    expect(restVerdict([differs(55), null]).status).toBe('fail');
+    expect(restVerdict([null]).status).toBe('fail');
+    expect(restVerdict([]).status).toBe('fail');
+    expect(restVerdict([{ ...same, heightChanged: { from: 4000, to: 3800 } }, { ...same, heightChanged: { from: 4000, to: 3800 } }]).detail).toMatch(/height 4000 to 3800 px/u);
+  });
+
+  it('lists an unstable capture without failing the run, and fails one that recurs', () => {
     const route = { path: '/x/', rest: 'identical' };
-    const widthChanged = compareRest(solid(390, 100), solid(400, 100));
-    expect(widthChanged.widthChanged).toEqual({ from: 390, to: 400 });
-    expect(widthChanged.differing).toBe(0);
-    expect(statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: widthChanged }), 'rest')).toBe('fail');
-    expect(statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: { ...sameRest, heightChanged: { from: 10, to: 20 } } }), 'rest')).toBe('fail');
+    const unstable = evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: { takes: [differs(55), same, same] } });
+    expect(statusOf(unstable, 'rest')).toBe('unstable');
+    expect(checkExitCode({ failures: unstable.filter((c) => c.status === 'fail'), routes: [{}] }, { check: true })).toBe(0);
+    const recurs = evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: { takes: [differs(55), same, differs(55)] } });
+    expect(checkExitCode({ failures: recurs.filter((c) => c.status === 'fail'), routes: [{}] }, { check: true })).toBe(1);
   });
 
   it('notes daily data only when the pixels outside it are within the bar', () => {
     const route = { path: '/x/', rest: 'identical' };
-    const rest = { ...sameRest, differing: 5000, outsideDaily: 0 };
+    const rest = { takes: [{ ...same, differing: 5000, outsideDaily: 0 }] };
     expect(statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest }), 'rest')).toBe('note');
-    expect(statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: { ...rest, outsideDaily: 13 } }), 'rest')).toBe('fail');
-  });
-
-  it('holds the bar at the measured noise floor, below the faintest planted defect (13 px)', () => {
-    expect(MAX_REST_PIXELS).toBe(0);
-    expect(MAX_REST_PIXELS).toBeLessThan(13);
+    expect(restNeedsRetake([{ ...same, differing: 5000, outsideDaily: 13 }])).toBe(true);
   });
 
   it('judges the rest state only for identical routes with two builds', () => {
     const route = { path: '/x/', rest: 'identical' };
-    const over = { ...sameRest, differing: 900, outsideDaily: 900 };
+    const over = { takes: [differs(900), differs(900)] };
     expect(statusOf(evaluateChecks({ route: { ...route, rest: 'changed' }, viewport, subject: clean, baseline: clean, rest: over }), 'rest')).toBeUndefined();
     expect(statusOf(evaluateChecks({ route, viewport, subject: clean, rest: over }), 'rest')).toBeUndefined();
     expect(statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: null }), 'rest')).toBe('fail');
@@ -425,6 +567,8 @@ describe('motion evidence: hard checks', () => {
   it('passes a clean build', () => {
     const checks = evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: sameRest });
     expect(checks.filter((c) => c.status !== 'pass')).toEqual([]);
+    expect(checks.map((c) => c.check)).toEqual(['http', 'layoutShift', 'marks', 'lcpMarked', 'largestMarked', 'rootMarked', 'hiddenAboveAfterReload',
+      'marksShownAtRest', 'reducedMotion', 'noScript', 'marksRendered', 'animatedProperties', 'rest', 'primaryAction']);
   });
 
   it('fails the defects found in PR #1096', () => {
@@ -459,7 +603,7 @@ describe('motion evidence: hard checks', () => {
   });
 
   it('fails marks left hidden at rest, with reduced motion or without scripting', () => {
-    const hidden = { total: 4, rendered: 4, notShown: 1, examples: ['g (draw): stroke-dashoffset 1px'], running: 0 };
+    const hidden = { ...shownAll(), notShown: 1, examples: ['g (draw): stroke-dashoffset 1px'] };
     expect(statusOf(evaluateChecks({ route, viewport, subject: { ...clean, shownAtRest: hidden } }), 'marksShownAtRest')).toBe('fail');
     expect(statusOf(evaluateChecks({ route, viewport, subject: { ...clean, shownAtRest: null } }), 'marksShownAtRest')).toBe('fail');
     const checks = evaluateChecks({ route, viewport, subject: { ...clean, reducedMotion: { ...shownAll(), running: 2 }, noScript: hidden } });
@@ -508,46 +652,42 @@ describe('motion evidence: hard checks', () => {
     expect(statusOf(checks, 'noScript')).toBe('fail');
     expect(statusOf(checks, 'rootMarked')).toBe('fail');
   });
-
-  it('allows one retake for a micro layout shift', () => {
-    expect(statusOf(evaluateChecks({ route, viewport, subject: { ...clean, cls: 0.001, clsRetake: 0 } }), 'cls')).toBe('pass');
-    expect(statusOf(evaluateChecks({ route, viewport, subject: { ...clean, cls: 0.001, clsRetake: 0.001 } }), 'cls')).toBe('fail');
-    expect(statusOf(evaluateChecks({ route, viewport, subject: { ...clean, cls: 0.01 } }), 'cls')).toBe('fail');
-  });
 });
 
 describe('motion evidence: exit code', () => {
   const report = (failures, routes = [{ path: '/x/' }]) => ({ failures, routes });
   it('exits 1 under --check on any failure, 0 otherwise', () => {
     expect(checkExitCode(report([]), { check: true })).toBe(0);
-    expect(checkExitCode(report([{ check: 'cls' }]), { check: true })).toBe(1);
-    expect(checkExitCode(report([{ check: 'cls' }]), { check: false })).toBe(0);
+    expect(checkExitCode(report([{ check: 'layoutShift' }]), { check: true })).toBe(1);
+    expect(checkExitCode(report([{ check: 'layoutShift' }]), { check: false })).toBe(0);
   });
 
   it('exits 1 under --check when no route was measured', () => {
     expect(checkExitCode(report([], []), { check: true })).toBe(1);
   });
 
-  it('exits 1 for a run whose only problem is a long-frame or unmeasured failure', () => {
+  it('exits 1 for a run whose only problem is an unmeasured layout shift, and 0 for a run with only report-only numbers', () => {
     const route = { path: '/x/', rest: 'changed' };
-    const failures = evaluateChecks({ route, viewport, subject: { ...clean, longFrames: { count: 9, longest: 900, frames: 30 }, longFramesReference: { longest: 60, count: 1, frames: 140 } } })
-      .filter((c) => c.status === 'fail');
-    expect(failures.map((c) => c.check)).toEqual(['longFrames']);
-    expect(checkExitCode(report(failures), { check: true })).toBe(1);
-    const notApplicable = evaluateChecks({ route, viewport, subject: { ...clean, longFrames: { notApplicable: 'no marks' } } }).filter((c) => c.status === 'fail');
-    expect(checkExitCode(report(notApplicable), { check: true })).toBe(0);
-    expect(LONG_FRAME_MS).toBe(50);
+    const fails = (subject) => evaluateChecks({ route, viewport, subject }).filter((c) => c.status === 'fail');
+    const unmeasured = fails({ ...clean, shiftSettled: [{ value: 0 }, { value: 0.01 }, { value: 0 }] });
+    expect(unmeasured.map((c) => c.check)).toEqual(['layoutShift']);
+    expect(checkExitCode(report(unmeasured), { check: true })).toBe(1);
+    const noisy = fails({ ...clean, longFrames: summarizeLongFrames([{ longest: 200 }, { longest: 16.7 }]), shiftFromLoad: [{ value: 0.5 }, { value: 0 }] });
+    expect(checkExitCode(report(noisy), { check: true })).toBe(0);
   });
 });
 
 describe('motion evidence: summary', () => {
-  it('puts before and after side by side, labels the layout-shift sum and uses no long dashes', () => {
+  it('puts before and after side by side, says which numbers are report only and uses no long dashes', () => {
     const report = {
-      generatedAt: '2026-11-17T00:00:00.000Z',
+      generatedAt: '2026-11-22T00:00:00.000Z',
       before: 'http://127.0.0.1:4391',
       after: 'http://127.0.0.1:4392',
       viewports: ['390x844'],
       failures: [],
+      unstable: [{ path: '/x/', viewport: '390x844', detail: 'unstable capture: differed once in three pairs (take 1: 55 px, take 2: 0 px, take 3: 0 px)' }],
+      markCounts: [{ path: '/x/', viewport: '390x844', before: 31, after: 30 }],
+      restImages: [{ path: '/x/', viewport: '390x844', take: 1, differing: 55, before: 'rest-x-390x844-take1-before.png', after: 'rest-x-390x844-take1-after.png', diff: 'rest-x-390x844-take1-diff.png' }],
       routes: [{
         path: '/x/', rest: 'identical', loops: { before: ['drift on img.poster'], after: [] }, sheets: [{ label: 'first view', file: 'x.webp' }],
         viewports: { '390x844': { before: clean, after: clean, rest: sameRest, checks: [] } },
@@ -556,11 +696,22 @@ describe('motion evidence: summary', () => {
     const md = renderSummary(report);
     expect(md).toContain('| | before 390x844 | after 390x844 |');
     expect(md).toContain('| Rest diff |  | 0 px |');
-    expect(md).toContain('| Layout shift sum (load + one scroll-through) |');
-    expect(md).toContain('not CLS as field tools define it');
+    expect(md).toContain('| Layout shift, settled then scroll (hard) | 0 (takes 0.0000, 0.0000, 0.0000) |');
+    expect(md).toContain('| Layout shift, scroll from load (report only, each take) | 0, 0.3000, 0, 0.3100, 0 |');
+    expect(md).toContain(LONG_FRAME_NOTE);
+    expect(md).toContain(FROM_LOAD_NOTE);
+    expect(LONG_FRAME_NOTE).toMatch(/the tool does not fail on them/u);
+    expect(FROM_LOAD_NOTE).toMatch(/late styles or hydration/u);
+    expect(FROM_LOAD_NOTE).toMatch(/sometimes 0/u);
+    expect(md).toContain('## Unstable captures');
+    expect(md).toContain('- /x/ 390x844: unstable capture: differed once in three pairs');
+    expect(md).toContain('- /x/ 390x844: 31 to 30');
+    expect(md).toContain('[diff](rest-x-390x844-take1-diff.png)');
     expect(md).toContain('drift on img.poster');
     expect(md).toContain('a proxy, not a phone');
-    expect(md).not.toMatch(/[\u2013\u2014]/u);
+    expect(md).toContain('| Entrances played during the scroll-through | 4 (touch, 9 touchstart events) |');
+    expect(md).toContain('| Marks rendered (rest / reduced motion / no script) | 4 / 4 / 4 of 4 in the DOM |');
+    expect(md).not.toMatch(/[–—]/u);
     expect(formatNumbers(clean).firstMarkShown).toBe('850 ms (+350 after paint)');
     expect(formatNumbers(clean).shownAtRest).toBe('4 of 4 shown');
   });

@@ -1,4 +1,5 @@
 {
+  "correction": "see summary.md, note dated 2026-11-22",
   "generatedAt": "2026-11-17T16:59:09.975Z",
   "before": "http://127.0.0.1:4391",
   "after": null,
@@ -87,7 +88,8 @@
             "longFrames": {
               "count": 2,
               "longest": 66.6,
-              "frames": 142
+              "frames": 142,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -122,7 +124,8 @@
             "longFramesWithoutMarks": {
               "count": 1,
               "longest": 66.7,
-              "frames": 139
+              "frames": 139,
+              "void": true
             }
           },
           "checks": [
@@ -169,7 +172,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 66.6 ms, 66.7 ms without marks"
+              "detail": "runner too slow to judge: longest 66.6 ms, 66.7 ms without marks",
+              "void": true
             }
           ]
         },
@@ -189,7 +193,8 @@
             "longFrames": {
               "count": 2,
               "longest": 116.7,
-              "frames": 136
+              "frames": 136,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -224,7 +229,8 @@
             "longFramesWithoutMarks": {
               "count": 3,
               "longest": 116.6,
-              "frames": 132
+              "frames": 132,
+              "void": true
             }
           },
           "checks": [
@@ -271,7 +277,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 116.7 ms, 116.6 ms without marks"
+              "detail": "runner too slow to judge: longest 116.7 ms, 116.6 ms without marks",
+              "void": true
             }
           ]
         }
@@ -315,7 +322,8 @@
             "longFrames": {
               "count": 1,
               "longest": 66.8,
-              "frames": 146
+              "frames": 146,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -339,7 +347,8 @@
             "longFramesWithoutMarks": {
               "count": 2,
               "longest": 66.7,
-              "frames": 145
+              "frames": 145,
+              "void": true
             }
           },
           "checks": [
@@ -386,7 +395,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 66.8 ms, 66.7 ms without marks"
+              "detail": "runner too slow to judge: longest 66.8 ms, 66.7 ms without marks",
+              "void": true
             }
           ]
         },
@@ -406,7 +416,8 @@
             "longFrames": {
               "count": 0,
               "longest": 33.4,
-              "frames": 148
+              "frames": 148,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -472,7 +483,8 @@
             {
               "check": "longFrames",
               "status": "pass",
-              "detail": "longest 33.4 ms"
+              "detail": "longest 33.4 ms",
+              "void": true
             }
           ]
         }
@@ -516,7 +528,8 @@
             "longFrames": {
               "count": 2,
               "longest": 133.3,
-              "frames": 130
+              "frames": 130,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -540,7 +553,8 @@
             "longFramesWithoutMarks": {
               "count": 4,
               "longest": 133.4,
-              "frames": 128
+              "frames": 128,
+              "void": true
             }
           },
           "checks": [
@@ -587,7 +601,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 133.3 ms, 133.4 ms without marks"
+              "detail": "runner too slow to judge: longest 133.3 ms, 133.4 ms without marks",
+              "void": true
             }
           ]
         },
@@ -607,7 +622,8 @@
             "longFrames": {
               "count": 7,
               "longest": 183.3,
-              "frames": 115
+              "frames": 115,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -631,7 +647,8 @@
             "longFramesWithoutMarks": {
               "count": 7,
               "longest": 116.7,
-              "frames": 115
+              "frames": 115,
+              "void": true
             }
           },
           "checks": [
@@ -678,7 +695,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 183.3 ms, 116.7 ms without marks"
+              "detail": "runner too slow to judge: longest 183.3 ms, 116.7 ms without marks",
+              "void": true
             }
           ]
         }
@@ -722,7 +740,8 @@
             "longFrames": {
               "count": 0,
               "longest": 16.8,
-              "frames": 150
+              "frames": 150,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -788,7 +807,8 @@
             {
               "check": "longFrames",
               "status": "pass",
-              "detail": "longest 16.8 ms"
+              "detail": "longest 16.8 ms",
+              "void": true
             }
           ]
         },
@@ -808,7 +828,8 @@
             "longFrames": {
               "count": 0,
               "longest": 50,
-              "frames": 147
+              "frames": 147,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -874,7 +895,8 @@
             {
               "check": "longFrames",
               "status": "pass",
-              "detail": "longest 50 ms"
+              "detail": "longest 50 ms",
+              "void": true
             }
           ]
         }
@@ -918,7 +940,8 @@
             "longFrames": {
               "count": 1,
               "longest": 50.1,
-              "frames": 148
+              "frames": 148,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -942,7 +965,8 @@
             "longFramesWithoutMarks": {
               "count": 0,
               "longest": 33.4,
-              "frames": 149
+              "frames": 149,
+              "void": true
             }
           },
           "checks": [
@@ -989,7 +1013,8 @@
             {
               "check": "longFrames",
               "status": "fail",
-              "detail": "longest 50.1 ms, 33.4 ms without marks"
+              "detail": "longest 50.1 ms, 33.4 ms without marks",
+              "void": true
             }
           ]
         },
@@ -1009,7 +1034,8 @@
             "longFrames": {
               "count": 2,
               "longest": 83.3,
-              "frames": 141
+              "frames": 141,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1033,7 +1059,8 @@
             "longFramesWithoutMarks": {
               "count": 2,
               "longest": 83.3,
-              "frames": 144
+              "frames": 144,
+              "void": true
             }
           },
           "checks": [
@@ -1080,7 +1107,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 83.3 ms, 83.3 ms without marks"
+              "detail": "runner too slow to judge: longest 83.3 ms, 83.3 ms without marks",
+              "void": true
             }
           ]
         }
@@ -1124,7 +1152,8 @@
             "longFrames": {
               "count": 0,
               "longest": 33.5,
-              "frames": 145
+              "frames": 145,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1190,7 +1219,8 @@
             {
               "check": "longFrames",
               "status": "pass",
-              "detail": "longest 33.5 ms"
+              "detail": "longest 33.5 ms",
+              "void": true
             }
           ]
         },
@@ -1210,7 +1240,8 @@
             "longFrames": {
               "count": 2,
               "longest": 66.7,
-              "frames": 142
+              "frames": 142,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1234,7 +1265,8 @@
             "longFramesWithoutMarks": {
               "count": 2,
               "longest": 83.4,
-              "frames": 143
+              "frames": 143,
+              "void": true
             }
           },
           "checks": [
@@ -1281,7 +1313,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 66.7 ms, 83.4 ms without marks"
+              "detail": "runner too slow to judge: longest 66.7 ms, 83.4 ms without marks",
+              "void": true
             }
           ]
         }
@@ -1325,7 +1358,8 @@
             "longFrames": {
               "count": 6,
               "longest": 116.7,
-              "frames": 128
+              "frames": 128,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1349,7 +1383,8 @@
             "longFramesWithoutMarks": {
               "count": 1,
               "longest": 99.9,
-              "frames": 137
+              "frames": 137,
+              "void": true
             }
           },
           "checks": [
@@ -1396,7 +1431,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 116.7 ms, 99.9 ms without marks"
+              "detail": "runner too slow to judge: longest 116.7 ms, 99.9 ms without marks",
+              "void": true
             }
           ]
         },
@@ -1416,7 +1452,8 @@
             "longFrames": {
               "count": 6,
               "longest": 216.7,
-              "frames": 120
+              "frames": 120,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1440,7 +1477,8 @@
             "longFramesWithoutMarks": {
               "count": 3,
               "longest": 200,
-              "frames": 125
+              "frames": 125,
+              "void": true
             }
           },
           "checks": [
@@ -1487,7 +1525,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 216.7 ms, 200 ms without marks"
+              "detail": "runner too slow to judge: longest 216.7 ms, 200 ms without marks",
+              "void": true
             }
           ]
         }
@@ -1531,7 +1570,8 @@
             "longFrames": {
               "count": 3,
               "longest": 116.6,
-              "frames": 130
+              "frames": 130,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1555,7 +1595,8 @@
             "longFramesWithoutMarks": {
               "count": 6,
               "longest": 166.7,
-              "frames": 100
+              "frames": 100,
+              "void": true
             }
           },
           "checks": [
@@ -1602,7 +1643,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 116.6 ms, 166.7 ms without marks"
+              "detail": "runner too slow to judge: longest 116.6 ms, 166.7 ms without marks",
+              "void": true
             }
           ]
         },
@@ -1622,7 +1664,8 @@
             "longFrames": {
               "count": 3,
               "longest": 133.4,
-              "frames": 123
+              "frames": 123,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1646,7 +1689,8 @@
             "longFramesWithoutMarks": {
               "count": 4,
               "longest": 250,
-              "frames": 120
+              "frames": 120,
+              "void": true
             }
           },
           "checks": [
@@ -1693,7 +1737,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 133.4 ms, 250 ms without marks"
+              "detail": "runner too slow to judge: longest 133.4 ms, 250 ms without marks",
+              "void": true
             }
           ]
         }
@@ -1739,7 +1784,8 @@
             "longFrames": {
               "count": 3,
               "longest": 150,
-              "frames": 133
+              "frames": 133,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1763,7 +1809,8 @@
             "longFramesWithoutMarks": {
               "count": 3,
               "longest": 99.9,
-              "frames": 132
+              "frames": 132,
+              "void": true
             }
           },
           "checks": [
@@ -1810,7 +1857,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 150 ms, 99.9 ms without marks"
+              "detail": "runner too slow to judge: longest 150 ms, 99.9 ms without marks",
+              "void": true
             }
           ]
         },
@@ -1830,7 +1878,8 @@
             "longFrames": {
               "count": 4,
               "longest": 149.9,
-              "frames": 124
+              "frames": 124,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1854,7 +1903,8 @@
             "longFramesWithoutMarks": {
               "count": 6,
               "longest": 183.3,
-              "frames": 120
+              "frames": 120,
+              "void": true
             }
           },
           "checks": [
@@ -1901,7 +1951,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 149.9 ms, 183.3 ms without marks"
+              "detail": "runner too slow to judge: longest 149.9 ms, 183.3 ms without marks",
+              "void": true
             }
           ]
         }
@@ -1945,7 +1996,8 @@
             "longFrames": {
               "count": 1,
               "longest": 66.7,
-              "frames": 146
+              "frames": 146,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1969,7 +2021,8 @@
             "longFramesWithoutMarks": {
               "count": 1,
               "longest": 66.7,
-              "frames": 148
+              "frames": 148,
+              "void": true
             }
           },
           "checks": [
@@ -2016,7 +2069,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 66.7 ms, 66.7 ms without marks"
+              "detail": "runner too slow to judge: longest 66.7 ms, 66.7 ms without marks",
+              "void": true
             }
           ]
         },
@@ -2036,7 +2090,8 @@
             "longFrames": {
               "count": 3,
               "longest": 99.9,
-              "frames": 142
+              "frames": 142,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -2060,7 +2115,8 @@
             "longFramesWithoutMarks": {
               "count": 1,
               "longest": 83.3,
-              "frames": 145
+              "frames": 145,
+              "void": true
             }
           },
           "checks": [
@@ -2107,7 +2163,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 99.9 ms, 83.3 ms without marks"
+              "detail": "runner too slow to judge: longest 99.9 ms, 83.3 ms without marks",
+              "void": true
             }
           ]
         }
@@ -2151,7 +2208,8 @@
             "longFrames": {
               "count": 0,
               "longest": 50,
-              "frames": 146
+              "frames": 146,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -2217,7 +2275,8 @@
             {
               "check": "longFrames",
               "status": "pass",
-              "detail": "longest 50 ms"
+              "detail": "longest 50 ms",
+              "void": true
             }
           ]
         },
@@ -2237,7 +2296,8 @@
             "longFrames": {
               "count": 1,
               "longest": 133.3,
-              "frames": 143
+              "frames": 143,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -2261,7 +2321,8 @@
             "longFramesWithoutMarks": {
               "count": 1,
               "longest": 100,
-              "frames": 144
+              "frames": 144,
+              "void": true
             }
           },
           "checks": [
@@ -2308,7 +2369,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 133.3 ms, 100 ms without marks"
+              "detail": "runner too slow to judge: longest 133.3 ms, 100 ms without marks",
+              "void": true
             }
           ]
         }
@@ -2355,7 +2417,8 @@
             "longFrames": {
               "count": 4,
               "longest": 183.4,
-              "frames": 125
+              "frames": 125,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -2379,7 +2442,8 @@
             "longFramesWithoutMarks": {
               "count": 2,
               "longest": 150,
-              "frames": 131
+              "frames": 131,
+              "void": true
             }
           },
           "checks": [
@@ -2426,7 +2490,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 183.4 ms, 150 ms without marks"
+              "detail": "runner too slow to judge: longest 183.4 ms, 150 ms without marks",
+              "void": true
             }
           ]
         },
@@ -2446,7 +2511,8 @@
             "longFrames": {
               "count": 4,
               "longest": 183.4,
-              "frames": 119
+              "frames": 119,
+              "void": true
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -2470,7 +2536,8 @@
             "longFramesWithoutMarks": {
               "count": 4,
               "longest": 216.6,
-              "frames": 110
+              "frames": 110,
+              "void": true
             }
           },
           "checks": [
@@ -2517,7 +2584,8 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 183.4 ms, 216.6 ms without marks"
+              "detail": "runner too slow to judge: longest 183.4 ms, 216.6 ms without marks",
+              "void": true
             }
           ]
         }
@@ -2529,7 +2597,8 @@
       "path": "/learn/aspects/opposition/",
       "viewport": "390x844",
       "check": "longFrames",
-      "detail": "longest 50.1 ms, 33.4 ms without marks"
+      "detail": "longest 50.1 ms, 33.4 ms without marks",
+      "void": true
     },
     {
       "path": "/today/",
