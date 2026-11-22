@@ -187,4 +187,27 @@ describe('Phase 4 invitation browser boundary', () => {
       expect(body).toBeInstanceOf(Blob);
     }
   });
+
+  it('carries the recipient consent version through completion, replay and the page-exit beacon, and nothing else', async () => {
+    const version = 'invite-recipient-2026-11-16.v2';
+    const failing = vi.fn(async (_input: string | URL | Request, _init?: RequestInit) => new Response('{}', { status: 503 }));
+    await completeInvite(HANDLE_A, '2099-08-07T00:00:00.000Z', failing as typeof fetch, version);
+    expect(JSON.parse(String(failing.mock.calls[0]?.[1]?.body))).toEqual({ consentVersion: version });
+    expect(JSON.parse(String(localStorage.getItem(`${INVITE_PENDING_COMPLETION_KEY_PREFIX}${HANDLE_A}`))))
+      .toMatchObject({ version: 2, handle: HANDLE_A, consentVersion: version });
+
+    expect(beaconPendingCompletion()).toBe(true);
+    const beaconBody = vi.mocked(navigator.sendBeacon).mock.calls[0]?.[1] as Blob;
+    expect(JSON.parse(await beaconBody.text())).toEqual({ consentVersion: version });
+
+    const replay = vi.fn(async (_input: string | URL | Request, _init?: RequestInit) => new Response(JSON.stringify({ outcome: 'duplicate' }), { status: 200 }));
+    await expect(replayPendingCompletion(replay as typeof fetch)).resolves.toBe(true);
+    expect(JSON.parse(String(replay.mock.calls[0]?.[1]?.body))).toEqual({ consentVersion: version });
+
+    // Without a version, or with a malformed one, the body is the released empty object.
+    const plain = vi.fn(async (_input: string | URL | Request, _init?: RequestInit) => new Response(JSON.stringify({ outcome: 'completed' }), { status: 200 }));
+    await completeInvite(HANDLE_B, '2099-08-08T00:00:00.000Z', plain as typeof fetch);
+    await completeInvite(HANDLE_B, '2099-08-08T00:00:00.000Z', plain as typeof fetch, 'Not A Version');
+    expect(plain.mock.calls.map(([, init]) => init?.body)).toEqual(['{}', '{}']);
+  });
 });

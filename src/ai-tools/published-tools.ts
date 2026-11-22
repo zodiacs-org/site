@@ -214,5 +214,24 @@ export function withoutZod64(tool: Record<string, unknown>): Record<string, unkn
   return { ...tool, description: descriptionWithoutZod64(String(tool.name), String(tool.description)) };
 }
 
-/** The thirteen as this release lists them: ZOD-64's description, then the invented schema examples. */
-export const PUBLISHED_TOOLS = LIVE_TOOLS.map((tool) => asInventedExamples(asZod64(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool).tool);
+/** The thirteen as 0.6.8 listed them. */
+export const PUBLISHED_TOOLS_068 = LIVE_TOOLS.map((tool) => asInventedExamples(asZod64(asPanelV7(asPlainDescription(as065(tool).tool).tool).tool).tool).tool);
+
+// Dias approved these field descriptions and panel addresses on 2026-11-20.
+const RANGE_TOOLS = new Set(['get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_occasion_sky', 'get_compatibility']);
+const PANEL_URIS_069: Record<string, string> = {
+  'ui://zodiacs/sky-events-v4.html': 'ui://zodiacs/sky-events-v5.html',
+  'ui://zodiacs/horoscopes-v7.html': 'ui://zodiacs/horoscopes-v8.html',
+  'ui://zodiacs/occasions-v8.html': 'ui://zodiacs/occasions-v9.html',
+};
+
+export const PUBLISHED_TOOLS = PUBLISHED_TOOLS_068.map(tool => {
+  const released = { ...tool };
+  if (RANGE_TOOLS.has(String(tool.name))) {
+    released.inputSchema = JSON.parse(JSON.stringify(tool.inputSchema).replaceAll('1800\u20132199', '1800 to 2199'));
+  }
+  const meta = tool._meta as { ui?: { resourceUri: string }; 'openai/outputTemplate'?: string };
+  const uri = meta.ui && PANEL_URIS_069[meta.ui.resourceUri];
+  if (uri) released._meta = { ...meta, ui: { ...meta.ui, resourceUri: uri }, 'openai/outputTemplate': uri };
+  return released;
+});

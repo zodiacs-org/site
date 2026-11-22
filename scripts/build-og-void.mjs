@@ -32,6 +32,7 @@
  *   npm run data:og -- --only-art-cards   # the homepage and sign guide art cards (v8, JPEG)
  *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese
  *   npm run data:og -- --only-year-sky-card # Your 2027 sky's card (year-sky/v1, JPEG)
+ *   npm run data:og -- --only-good-days-card # the good day finder's card (good-days/v1, JPEG)
  *   npm run data:og -- --only-events      # the events hub card, and a card for each published event page that has none
  *   npm run data:og -- --review-people-identities # reviewed identity cards, artifacts only
  *
@@ -626,6 +627,37 @@ function yearSkyCard(copy = OG_EN.yearSky) {
   <div style="position: absolute; right: 88px; top: ${Math.round((534 - YEAR_SKY_WHEEL) / 2) + 4}px; width: ${YEAR_SKY_WHEEL}px; height: ${YEAR_SKY_WHEEL}px;">
     ${orbit(YEAR_SKY_DISC / 2, 0.16)}${orbit(YEAR_SKY_DISC + 44, 0.08)}${discs}
   </div>`;
+  return shell(body, `zodiacs.org${copy.path}`);
+}
+
+/**
+ * The good day finder's card (OG_EN.goodDays): its headline and a line on the
+ * left, and on the right a month of hairline day cells, five weeks of seven,
+ * with three days marked by pastel sign discs (the 400px tier), as the page
+ * marks the best days in a window. The footer carries the brand's own lockup.
+ */
+const GOOD_DAYS_CELL = 58;
+const GOOD_DAYS_GAP = 8;
+const GOOD_DAYS_MARKED = [[1, 3, 'taurus'], [2, 5, 'libra'], [4, 1, 'leo']];
+function goodDaysCard(copy = OG_EN.goodDays) {
+  const cells = [];
+  for (let row = 0; row < 5; row += 1) {
+    for (let col = 0; col < 7; col += 1) {
+      const x = col * (GOOD_DAYS_CELL + GOOD_DAYS_GAP);
+      const y = row * (GOOD_DAYS_CELL + GOOD_DAYS_GAP);
+      const mark = GOOD_DAYS_MARKED.find(([r, c]) => r === row && c === col);
+      cells.push(`<div style="position: absolute; left: ${x}px; top: ${y}px; width: ${GOOD_DAYS_CELL}px; height: ${GOOD_DAYS_CELL}px; border-radius: 12px; border: 1px solid rgba(198, 204, 218, ${mark ? 0.28 : 0.1});"></div>`);
+      if (mark) cells.push(`<img src="${ART.icons[mark[2]]}" width="44" height="44" alt="" style="position: absolute; left: ${x + 7}px; top: ${y + 7}px; width: 44px; height: 44px; display: block;" />`);
+    }
+  }
+  const width = 7 * GOOD_DAYS_CELL + 6 * GOOD_DAYS_GAP;
+  const height = 5 * GOOD_DAYS_CELL + 4 * GOOD_DAYS_GAP;
+  const body = `
+  <div style="position: absolute; left: 88px; top: 0; bottom: 96px; width: 560px; display: flex; flex-direction: column; justify-content: center; z-index: 2;">
+    <div class="display" style="font-size: 104px; line-height: 0.98; letter-spacing: -0.01em;">${escapeHtml(copy.title)}</div>
+    <div style="margin-top: 28px; font-size: 29px; line-height: 1.38; letter-spacing: -0.01em; color: ${INK2}; max-width: 22ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+  </div>
+  <div style="position: absolute; right: 88px; top: ${Math.round((534 - height) / 2) + 4}px; width: ${width}px; height: ${height}px;">${cells.join('')}</div>`;
   return shell(body, `zodiacs.org${copy.path}`);
 }
 
@@ -1317,6 +1349,22 @@ if (process.argv.includes('--only-year-sky-card')) {
   await mkdir(dirname(output), { recursive: true });
   await writeFile(output, bytes);
   console.log(`Done: ${OG_EN.yearSky.image}, ${(bytes.length / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
+// The good day finder's card (2026-11-09), built like Your 2027 sky's: a JPEG
+// under the art cards' budget, in its own folder.
+if (process.argv.includes('--only-good-days-card')) {
+  console.log('Rendering the good day finder card…');
+  for (const s of SIGNS) ART.icons[s.slug] = await b64(`public/assets/zodiac-icons/400/${s.slug}.webp`, 'image/webp');
+  const raw = await capture(goodDaysCard());
+  await browser.close();
+  const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+  if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${OG_EN.goodDays.image}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+  const output = resolve(root, `public${OG_EN.goodDays.image}`);
+  await mkdir(dirname(output), { recursive: true });
+  await writeFile(output, bytes);
+  console.log(`Done: ${OG_EN.goodDays.image}, ${(bytes.length / 1024).toFixed(0)}KB.`);
   process.exit(0);
 }
 

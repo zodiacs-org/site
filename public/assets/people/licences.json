@@ -8102,6 +8102,11 @@
    "sourceFile": "File:Audrey Hepburn in 1966.jpg"
   },
   {
+   "slug": "bad-bunny",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Bad Bunny 2019 by Glenn Francis (cropped).jpg"
+  },
+  {
    "slug": "bessie-head",
    "reason": "no image claim on the Wikidata entity",
    "sourceFile": null
@@ -8162,6 +8167,11 @@
    "sourceFile": "File:Emile Zola 1902.jpg"
   },
   {
+   "slug": "erling-haaland",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Erling Haaland France v Norway 26 June 26-008 (cropped).jpg"
+  },
+  {
    "slug": "florence-griffith-joyner",
    "reason": "creator credit too long to render legibly",
    "sourceFile": "File:Florence Griffith Joyner2.jpg"
@@ -8175,6 +8185,11 @@
    "slug": "haile-selassie",
    "reason": "creator credit too long to render legibly",
    "sourceFile": "File:Haile Selassie in full dress.jpg"
+  },
+  {
+   "slug": "harry-styles",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:HarryStylesWembley170623 (14 of 93) (52982076132) (cropped).jpg"
   },
   {
    "slug": "helen-frankenthaler",
@@ -8202,6 +8217,11 @@
    "sourceFile": "File:Joseph Mallord William Turner auto-retrato.jpg"
   },
   {
+   "slug": "jenna-ortega",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Jenna Ortega 2020 2.jpg"
+  },
+  {
    "slug": "jose-de-san-martin",
    "reason": "creator credit too long to render legibly",
    "sourceFile": "File:José de San Martín (retrato, c.1828).jpg"
@@ -8222,9 +8242,19 @@
    "sourceFile": "File:Karen Blixen cropped from larger original (cropped).jpg"
   },
   {
+   "slug": "kendrick-lamar",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Pulitzer2018-portraits-kendrick-lamar.jpg"
+  },
+  {
    "slug": "kenzo-tange",
    "reason": "licence \"CC BY-SA 3.0 nl\" is outside the accepted set (public domain, CC0, CC BY, CC BY-SA)",
    "sourceFile": "File:Kenzo Tange 1981.jpg"
+  },
+  {
+   "slug": "kylie-jenner",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Kylie Jenner1 (cropped).png"
   },
   {
    "slug": "lal-bahadur-shastri",
@@ -8245,6 +8275,11 @@
    "slug": "leonora-carrington",
    "reason": "no image claim on the Wikidata entity",
    "sourceFile": null
+  },
+  {
+   "slug": "lisa",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:20240314 Lisa Manoban 07.png"
   },
   {
    "slug": "louise-bourgeois",
@@ -8272,14 +8307,29 @@
    "sourceFile": "File:Maryam Mirzakhani in Seoul 2014.jpg"
   },
   {
+   "slug": "max-verstappen",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:2024-08-25 Motorsport, Formel 1, Großer Preis der Niederlande 2024 STP 3973 by Stepro (portrait cropped).jpg"
+  },
+  {
    "slug": "meena-kumari",
    "reason": "licence \"GODL-India\" is outside the accepted set (public domain, CC0, CC BY, CC BY-SA)",
    "sourceFile": "File:Meena Kumariji.jpg"
   },
   {
+   "slug": "mrbeast",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:MrBeast in 2026 (cropped 4).png"
+  },
+  {
    "slug": "nargis",
    "reason": "licence \"GODL-India\" is outside the accepted set (public domain, CC0, CC BY, CC BY-SA)",
    "sourceFile": "File:Nargis, Best Actress for Raat Aur Din.jpg"
+  },
+  {
+   "slug": "olivia-rodrigo",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Glasto2025-546 (cropped 2).jpg"
   },
   {
    "slug": "oodgeroo-noonuccal",
@@ -8302,6 +8352,16 @@
    "sourceFile": "File:Rembrandt van Rijn - Self-Portrait - Google Art Project.jpg"
   },
   {
+   "slug": "rihanna",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Rihanna visits U.S. Embassy in Barbados 2024 (cropped).jpg"
+  },
+  {
+   "slug": "sabrina-carpenter",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Sabrina Carpenter - O2 Arena 2025 - 086 (cropped 2).jpg"
+  },
+  {
    "slug": "smita-patil",
    "reason": "licence \"GODL-India\" is outside the accepted set (public domain, CC0, CC BY, CC BY-SA)",
    "sourceFile": "File:Smita Patil 2013 stamp of India (cropped).jpg"
@@ -8310,6 +8370,16 @@
    "slug": "subrahmanyan-chandrasekhar",
    "reason": "licence \"Attribution\" is outside the accepted set (public domain, CC0, CC BY, CC BY-SA)",
    "sourceFile": "File:Subrahmanyan Chandrasekhar.jpg"
+  },
+  {
+   "slug": "taylor-swift",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Taylor Swift at the 2023 MTV Video Music Awards (3).png"
+  },
+  {
+   "slug": "timothee-chalamet",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Timothée Chalamet-63541 (cropped).jpg"
   },
   {
    "slug": "u-thant",
@@ -8345,6 +8415,11 @@
    "slug": "zaha-hadid",
    "reason": "licence \"FAL\" is outside the accepted set (public domain, CC0, CC BY, CC BY-SA)",
    "sourceFile": "File:Zaha Hadid in Heydar Aliyev Cultural center in Baku nov 2013 (cropped).jpg"
+  },
+  {
+   "slug": "zendaya",
+   "reason": "portrait deliberately omitted from this protected living-person profile",
+   "sourceFile": "File:Zendaya-byPhilipRomano.jpg"
   }
  ]
 }

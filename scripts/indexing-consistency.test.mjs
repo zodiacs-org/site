@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { crawlDepths as graphDepths, isDailyLastmodPath, renderedLinks, robotsBlocks, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
+import { crawlDepths as graphDepths, isDailyLastmodPath, renderedLinks, robotsBlocks, robotsGroupBlockFailures, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 
 const crawlDepths = (pages) => graphDepths(new Map([...pages].map(([path, html]) => [path, renderedLinks(path, html)])));
 
 describe('rendered discovery graph', () => {
+  it('can inspect public anchors excluded from the discovery graph', () => {
+    const html = '<a href="https://zodiacs.org/developers/accuracy/?from=nav" rel="nofollow">Receipt</a>';
+    expect([...renderedLinks('/developers/', html, { discoveryOnly: false })]).toEqual(['/developers/accuracy/']);
+  });
+
   it('finds shortest click paths through relative, absolute and fragment links', () => {
     const pages = new Map([
       ['/', '<a href="/learn/">Learn</a><a href="https://zodiacs.org/tools/#all">Tools</a>'],
@@ -61,6 +66,21 @@ describe('robots.txt rules', () => {
     expect(rules.sitemaps).toEqual(['https://zodiacs.org/sitemap-index.xml']);
     expect(rules.disallow).toEqual(['/terminal/research/', '/developers/engine/reference/']);
     expect(robotsBlocks(rules, '/private/')).toBe(false);
+  });
+
+  it('rejects built robots text when a named group lacks the receipt block', () => {
+    const path = '/developers/accuracy/';
+    const robots = robotsRules([
+      'User-agent: *',
+      `Disallow: ${path}`,
+      'User-agent: ExampleCrawler',
+      'User-agent: SecondCrawler',
+      'Allow: /',
+    ].join('\n'));
+    const missing = robotsGroupBlockFailures(robots, [path]);
+    expect(missing).toEqual([{
+      agents: ['ExampleCrawler', 'SecondCrawler'], path,
+    }]);
   });
 
   it('lets the longest rule win, with $ anchoring the end', () => {
