@@ -12,9 +12,9 @@ const SWITCHED: readonly { route: ResultShareRoute; flag: (typeof FLAGS)[number]
   { route: 'birthday-report-image', flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', query: { s: 'leo', v: '6.4', t: '17' } },
   { route: 'solar-return-link', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
   { route: 'solar-return-image', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
-  { route: 'your-day-link', flag: 'PUBLIC_YOUR_DAY_ENABLED', query: { day: '2026-11-09', p: 'mars', a: 'square', n: 'sun', c: '75' } },
-  { route: 'your-day-image', flag: 'PUBLIC_YOUR_DAY_ENABLED', query: { day: '2026-11-09', p: 'mars', a: 'square', n: 'sun', c: '75' } },
-  { route: 'your-day-story', flag: 'PUBLIC_YOUR_DAY_ENABLED', query: { day: '2026-11-09', p: 'mars', a: 'square', n: 'sun', c: '75' } },
+  { route: 'your-day-link', flag: 'PUBLIC_YOUR_DAY_ENABLED', query: { day: '2026-11-09', s: 'taurus' } },
+  { route: 'your-day-image', flag: 'PUBLIC_YOUR_DAY_ENABLED', query: { day: '2026-11-09', s: 'taurus' } },
+  { route: 'your-day-story', flag: 'PUBLIC_YOUR_DAY_ENABLED', query: { day: '2026-11-09', s: 'taurus' } },
 ];
 
 function nodeResponse() {

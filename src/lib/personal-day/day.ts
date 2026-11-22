@@ -24,17 +24,19 @@
 import { bodyLongitude, computeBodies, computeChart } from '../engine/full.js';
 import { findLongitudeCrossings } from '../engine/returns';
 import { scanTransitContacts } from '../engine/transit-scan';
-import { MAJOR_ASPECT_ORDER, TRANSIT_BODY_ORDER, type NatalPoint, type TransitBody } from '../engine/transit-scan-shared';
+import { MAJOR_ASPECT_ORDER, SLOW_TRANSIT_BODIES, TRANSIT_BODY_ORDER, type NatalPoint, type TransitBody } from '../engine/transit-scan-shared';
 import type { AspectType } from '../engine/types';
 import { wholeSignHouseFromAsc } from '../daily';
 import { NATAL_HOUSE_THEME } from '../natal';
 import { SIGNS, signIndexForLongitude } from '../signs';
+import type { ShareSign } from '../share-results';
 import { transitLine } from '../transits';
 import { MINOR_NOTE, isUnder18, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
 import { clockTime, dayLabel, nextDate } from './clock';
-import { PERSONAL_DAY_LIMIT, dayScore, maxOrb, orbOf, pointName } from './score';
+import { BACKGROUND_LIMIT, PERSONAL_DAY_LIMIT, dayScore, maxOrb, orbOf, pointName } from './score';
 
+const slowMovers = new Set<TransitBody>(SLOW_TRANSIT_BODIES);
 const HOUR = 3_600_000;
 /** The limit a date-only reading carries; the /your-day/ FAQ says the same. */
 export const UNTIMED_LIMIT = 'No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.';
@@ -57,6 +59,7 @@ export interface DayNatal {
 
 export interface DayContact {
   rank: number;
+  group: 'today' | 'background';
   planet: TransitBody;
   aspect: AspectType;
   point: NatalPoint;
@@ -97,15 +100,11 @@ export interface PersonalDayReading {
 
 export { clockTime, dateOn, dayLabel, nextDate } from './clock';
 
-/**
- * The contact a share link names: the highest ranked one that is not the Sun
- * on the natal Sun, in any aspect, or null when there is none. With the day,
- * that contact states the birthday, so it stays on the page and off the link
- * (parseYourDayShare refuses it too). The page and get_personal_day both call
- * this, so they share the same contact.
- */
-export function shareContact<T extends { planet: string; point: string }>(contacts: readonly T[]): T | null {
-  return contacts.find((contact) => !(contact.planet === 'Sun' && contact.point === 'Sun')) ?? null;
+/** Share the first eligible contact from today, falling back to the background.
+ * The Sun on the natal Sun could reveal the birthday in any aspect. */
+export function shareContact<T extends Pick<DayContact, 'group' | 'planet' | 'point'>>(contacts: readonly T[]): T | null {
+  const eligible = contacts.filter(({ planet, point }) => planet !== 'Sun' || point !== 'Sun');
+  return eligible.find(({ group }) => group === 'today') ?? eligible[0] ?? null;
 }
 const round2 = (value: number) => Math.round(value * 100) / 100;
 const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.name;
@@ -198,6 +197,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
         const tight = natal.timeKnown && (orb < 1 || at !== null);
         const confidenceLabel = readingConfidenceLabel(natal.detail, tight);
         found.push({
+          group: at === null && slowMovers.has(mover) ? 'background' : 'today',
           planet: mover, aspect, point, orb: round2(orb), applying,
           exactAt: at ? at.toISOString() : null,
           exactLocal: at ? clockTime(at, zone) : null,
@@ -212,7 +212,16 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   }
   // Stable sort: equal scores keep the fixed body, point and aspect order they were found in.
   found.sort((a, b) => b.score - a.score);
-  const contacts = found.slice(0, PERSONAL_DAY_LIMIT).map((contact, index) => ({ rank: index + 1, ...contact }));
+  const contacts: DayContact[] = [];
+  let backgroundCount = 0;
+  for (const contact of found) {
+    if (contact.group === 'background') {
+      if (backgroundCount === BACKGROUND_LIMIT) continue;
+      backgroundCount += 1;
+    }
+    contacts.push({ rank: contacts.length + 1, ...contact });
+    if (contacts.length === PERSONAL_DAY_LIMIT) break;
+  }
 
   // The Moon today: its sign at midday, a change of sign inside the day, and with a rising sign the natal house.
   const moonIndex = signIndexForLongitude(sky.get('Moon')!);
@@ -234,11 +243,13 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
     house ? house.line : '',
   ].filter(Boolean).join(' ');
 
-  const top = contacts[0];
+  const top = contacts.find(({ group }) => group === 'today') ?? contacts[0];
   const label = dayLabel(midday, zone);
   const isToday = input.today === undefined || input.today === date;
+  const lead = top?.group === 'background' ? 'In the background,'
+    : isToday ? "Today's strongest contact is" : `The strongest contact on ${label} is`;
   const theme = top
-    ? `${isToday ? "Today's strongest contact" : `The strongest contact on ${label}`} is ${top.title}, ${top.exactLocal ? `exact at ${top.exactLocal}` : natal.timeKnown ? `${top.orb.toFixed(2)} degrees from exact and ${top.applying ? 'applying' : 'separating'}` : `about ${top.orb.toFixed(1)} degrees from exact`} (${top.confidenceLabel}).`
+    ? `${lead} ${top.title}, ${top.exactLocal ? `exact at ${top.exactLocal}` : natal.timeKnown ? `${top.orb.toFixed(2)} degrees from exact and ${top.applying ? 'applying' : 'separating'}` : `about ${top.orb.toFixed(1)} degrees from exact`} (${top.confidenceLabel}).`
     : `No major contact to your chart is within orb ${isToday ? 'today' : 'that day'}, so the Moon in ${signName(moonSign)} sets the tone.`;
 
   const limits: string[] = [];
@@ -246,7 +257,37 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   if (under18) limits.push(MINOR_NOTE);
   if (!natal.timeKnown) limits.push(UNTIMED_LIMIT);
   else if (!natal.placed) limits.push('No birthplace coordinates were given, so the rising degree, the Midheaven and the Moon\'s house are left out.');
-  if (found.length > PERSONAL_DAY_LIMIT) limits.push(`${found.length} contacts were within orb; the ${PERSONAL_DAY_LIMIT} with the highest scores are listed.`);
+  if (found.length > contacts.length) limits.push(`Of ${found.length} contacts, ${contacts.length} are listed by score, with up to ${BACKGROUND_LIMIT} in the background.`);
 
   return { date, dayLabel: label, zone, middayUtc: midday.toISOString(), points, theme, moon: { sign: moonSign, entersSign, house, line: moonLine }, contacts, found: found.length, under18, limits };
+}
+
+/**
+ * The person's settled Sun sign for sharing: exact when a birth time is known,
+ * or settled without a birth time only when both ends of the birth day share
+ * the same Sun sign (else null).
+ */
+export async function settledSunSign(
+  natal: Pick<DayNatal, 'bodies' | 'timeKnown'>,
+  birth: { birthDate: string; zone?: string | undefined; longitude?: number | undefined },
+  clock: DayClock,
+): Promise<ShareSign | null> {
+  const sun = natal.bodies.find((row) => row.body === 'Sun');
+  if (!sun) return null;
+  const sunIndex = signIndexForLongitude(sun.lon);
+  if (natal.timeKnown) return SIGNS[sunIndex].slug as ShareSign;
+  let start: Date;
+  let end: Date;
+  if (birth.zone) {
+    await clock.prepareLocalTime(birth.birthDate, birth.zone);
+    const options = birth.longitude === undefined ? undefined : { longitude: birth.longitude };
+    start = clock.resolveLocalToUtc(birth.birthDate, '00:00', birth.zone, options).utc;
+    end = clock.resolveLocalToUtc(birth.birthDate, '23:59', birth.zone, options).utc;
+  } else {
+    start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - 14 * HOUR);
+    end = new Date(Date.parse(`${birth.birthDate}T23:59:00Z`) + 12 * HOUR);
+  }
+  const startIndex = signIndexForLongitude(bodyLongitude('Sun', start));
+  const endIndex = signIndexForLongitude(bodyLongitude('Sun', end));
+  return startIndex === endIndex ? (SIGNS[startIndex].slug as ShareSign) : null;
 }

@@ -45,18 +45,17 @@ describe('get_personal_day against known answers', () => {
     expect(contact.line).toBe('Sun sits on your sense of self: a few days of spotlight, and for a while it colors everything there. Reading confidence 75%.');
   });
 
-  it('on the birthday, lists the Sun on the natal Sun but never shares it', async () => {
+  it('on the birthday, lists the Sun on the natal Sun and shares only the sky date and Sun sign', async () => {
     const { scan } = await natalFor(ADULT);
     const [solarReturn] = scanTransitContacts(scan, new Date('2026-05-01T00:00:00Z'), new Date('2026-05-06T00:00:00Z'), { transitBodies: ['Sun'], natalPoints: ['Sun'], aspects: ['conjunction'] });
     const date = dateOn(new Date(solarReturn.exactUtc), 'Europe/Madrid');
     const data = await run({ ...ADULT, date });
     expect(data.contacts.some((entry) => entry.planet === 'Sun' && entry.point === 'Sun')).toBe(true);
-    expect(data.shareUrl).not.toBeNull();
+    expect(data.shareUrl).toBe(`https://zodiacs.org/share/your-day/?day=${date}&s=taurus`);
     const url = new URL(data.shareUrl!);
+    expect([...url.searchParams.keys()].sort()).toEqual(['day', 's']);
     expect(url.searchParams.get('day')).toBe(date);
-    expect(url.searchParams.get('p') === 'sun' && url.searchParams.get('n') === 'sun').toBe(false);
-    const shared = data.contacts.find((entry) => !(entry.planet === 'Sun' && entry.point === 'Sun'))!;
-    expect([url.searchParams.get('p'), url.searchParams.get('a'), url.searchParams.get('n')]).toEqual([shared.planet.toLowerCase(), shared.aspect, shared.point.toLowerCase()]);
+    expect(url.searchParams.get('s')).toBe('taurus');
   });
 
   it('times an exact Mars contact to the minute, and the engine agrees the aspect is exact then', async () => {
@@ -113,17 +112,61 @@ describe('get_personal_day against known answers', () => {
     expect(first.contacts.length).toBeGreaterThan(0);
     expect(first.contacts.length).toBeLessThanOrEqual(PERSONAL_DAY_LIMIT);
     first.contacts.forEach((contact, index) => {
+      const daily = ['Moon', 'Sun', 'Mercury', 'Venus', 'Mars'].includes(contact.planet) || contact.exactAt !== null;
+      expect(contact.group).toBe(daily ? 'today' : 'background');
       expect(contact.rank).toBe(index + 1);
       if (index) expect(contact.score).toBeLessThanOrEqual(first.contacts[index - 1].score);
       expect(contact.score).toBeCloseTo(dayScore(contact.planet, contact.point, contact.aspect, contact.orb, contact.exactAt !== null), 0);
       expect(contact.line.endsWith(`${contact.confidenceLabel}.`)).toBe(true);
       expect(contact.confidence).toBe(contact.orb < 1 || contact.exactAt ? 75 : 70);
     });
-    expect(first.theme).toContain(first.contacts[0].title);
+    expect(first.theme).toContain(first.contacts.find((contact) => contact.group === 'today')!.title);
     // The weights put a tight slow contact to a light above a loose one to an outer planet.
     expect(dayScore('Saturn', 'Sun', 'square', 0.2, false)).toBeGreaterThan(dayScore('Saturn', 'Neptune', 'square', 0.2, false));
     expect(dayScore('Mars', 'Sun', 'conjunction', 0.1, true)).toBeGreaterThan(dayScore('Mars', 'Sun', 'conjunction', 0.1, false));
     expect(dayScore('Pluto', 'Sun', 'trine', 2, false)).toBe(0);
+  });
+});
+
+describe('daily and background contacts', () => {
+  const chart = { birthDate: '1985-01-23', currentZone: 'UTC' };
+
+  it('leads with a daily contact on consecutive days with Pluto within a degree of the natal Sun', async () => {
+    const titles: string[] = [];
+    for (const date of ['2026-11-09', '2026-11-10']) {
+      const data = await run({ ...chart, date });
+      const pluto = data.contacts[0];
+      expect(pluto).toMatchObject({ planet: 'Pluto', aspect: 'conjunction', point: 'Sun', group: 'background' });
+      expect(pluto.orb).toBeLessThan(1);
+      expect(data.contacts).toHaveLength(8);
+      expect(data.contacts.filter((contact) => contact.group === 'background')).toHaveLength(3);
+      const today = data.contacts.find((contact) => contact.group === 'today')!;
+      expect(data.theme).toContain(`${today.title}, about ${today.orb.toFixed(1)} degrees from exact`);
+      expect(data.theme).not.toContain(pluto.title);
+      expect([...new URL(data.shareUrl!).searchParams.keys()].sort()).toEqual(['day', 's']);
+      expect(new URL(data.shareUrl!).searchParams.get('day')).toBe(date);
+      titles.push(today.title);
+    }
+    expect(titles[0]).not.toBe(titles[1]);
+  });
+
+  it('puts a slow mover in Today on the day it is exact with a birth time', async () => {
+    const data = await run({ ...chart, time: '12:00', zone: 'UTC', date: '2026-11-24' });
+    const pluto = data.contacts.find((contact) => contact.planet === 'Pluto' && contact.point === 'Sun')!;
+    expect(pluto.group).toBe('today');
+    expect(pluto.exactLocal).toMatch(/^\d{2}:\d{2}$/u);
+    expect(data.theme).toContain(`${pluto.title}, exact at ${pluto.exactLocal}`);
+  });
+
+  it('uses the background for the theme when there are no daily contacts, and shares only day and Sun sign', async () => {
+    const data = await run({ birthDate: '2010-05-03', currentZone: 'UTC', date: '2026-12-31' });
+    expect(data.contacts).toHaveLength(1);
+    const [top] = data.contacts;
+    expect(top.group).toBe('background');
+    expect(data.theme).toBe(`In the background, ${top.title}, about ${top.orb.toFixed(1)} degrees from exact (${top.confidenceLabel}).`);
+    const query = new URL(data.shareUrl!).searchParams;
+    expect([...query.keys()].sort()).toEqual(['day', 's']);
+    expect([query.get('day'), query.get('s')]).toEqual(['2026-12-31', 'taurus']);
   });
 });
 

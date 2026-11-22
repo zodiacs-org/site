@@ -5,9 +5,9 @@ import { CopyLinkButton, type CopyLinkState } from './CopyLinkButton';
 import type { City } from '../lib/geo/search';
 import { loadModule } from '../lib/module-load';
 import { dateOn, dayLabel, daysBetween, shiftDate } from '../lib/personal-day/clock';
-import { BODY_SIGN, pointName } from '../lib/personal-day/score';
+import { BODY_SIGN } from '../lib/personal-day/score';
 import { yourDayShareUrl } from '../lib/personal-day/share';
-import type { PersonalDayReading } from '../lib/personal-day/day';
+import type { DayContact, PersonalDayReading } from '../lib/personal-day/day';
 import type { TransitBody } from '../lib/engine/transit-scan-shared';
 import { SIGNS } from '../lib/signs';
 
@@ -30,8 +30,35 @@ function deviceClock(): { zone: string; today: string } {
   }
 }
 
-/** The share link names `shared`, which is never the Sun on the natal Sun (shareContact in src/lib/personal-day/day.ts). */
-interface Shown { reading: PersonalDayReading; shared: PersonalDayReading['contacts'][number] | null; shareUrl: string | null; timed: boolean }
+/** The share link names only the sky date and the person's settled Sun sign (src/lib/personal-day/share.ts). */
+interface Shown { reading: PersonalDayReading; shareUrl: string | null; timed: boolean }
+
+function ContactGroup({ group, contacts, timed }: { group: DayContact['group']; contacts: DayContact[]; timed: boolean }) {
+  const headingId = `yd-${group}-heading`;
+  return (
+    <section class="yd__group" aria-hidden={contacts.length === 0 || undefined}>
+      <h2 class="yd__group-title" id={headingId}>{group === 'today' ? 'Today' : 'In the background'}</h2>
+      {contacts.length > 0 && (
+        <ol class="yd__contacts" aria-labelledby={headingId}>
+          {contacts.map((contact) => (
+            <li class="tile yd__contact" key={`${contact.planet}${contact.aspect}${contact.point}`} style={{ '--hue': hue(contact.planet) }}>
+              <div class="yd__contact-head">
+                <span class="yd__swatch" aria-hidden="true" />
+                <h3>{contact.title}</h3>
+              </div>
+              <p class="yd__when">
+                {contact.exactLocal ? `Exact at ${contact.exactLocal}` : contact.applying ? 'Applying' : 'Separating'}
+                <span>{!timed ? `about ${contact.orb.toFixed(1)}° orb at midday` : `${contact.orb.toFixed(2)}° orb at midday`}</span>
+              </p>
+              <p class="yd__line">{contact.line.slice(0, contact.line.length - contact.confidenceLabel.length - 1).trim()}</p>
+              <p class="yd__confidence">{contact.confidenceLabel}</p>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
 
 export default function YourDay() {
   const [date, setDate] = useState('');
@@ -83,19 +110,17 @@ export default function YourDay() {
       if (under13(birthDate, clock.today)) { setError(UNDER_13); setShown(null); return; }
       if (Math.abs(daysBetween(clock.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
       if (target < birthDate) { setError('Choose a day on or after the birth date.'); setShown(null); return; }
-      const { computeYourDay, shareContact } = await loadModule(() => import('./your-day/compute'));
+      const { computeYourDay } = await loadModule(() => import('./your-day/compute'));
       const reading = await computeYourDay({
         birthDate, time: timeKnown ? time : undefined, birthZone: city.tz, latitude: city.lat, longitude: city.lon,
         date: target, zone: clock.zone, today: clock.today,
       });
       if (request !== revision.current) return;
       setDay(target);
-      const shared = shareContact(reading.contacts);
-      setShown({ reading, shared, shareUrl: yourDayShareUrl(window.location.origin, { date: reading.date, contact: shared }), timed: timeKnown });
+      setShown({ reading, shareUrl: yourDayShareUrl(window.location.origin, { date: reading.date, sun: reading.sunSign }), timed: timeKnown });
       if (scroll) requestAnimationFrame(() => resultRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' }));
     } catch (cause) {
       if (request !== revision.current) return;
-      console.error(cause);
       setShown(null);
       setError(calculationError(cause, 'en', 'The day could not be read. Check the details and try again.'));
     } finally {
@@ -104,7 +129,6 @@ export default function YourDay() {
   }
 
   const reading = shown?.reading ?? null;
-  const shared = shown?.shared ?? null;
 
   return (
     <div class="calc yd" data-your-day>
@@ -156,34 +180,23 @@ export default function YourDay() {
                 <p class="yd__moon-sign">Moon in {signName(reading.moon.sign)}{reading.moon.house ? <span class="yd__mono"> · your {reading.moon.house.number}{['', 'st', 'nd', 'rd'][reading.moon.house.number] ?? 'th'} house</span> : null}</p>
                 <p>{reading.moon.line}</p>
               </div>
-
-              {reading.contacts.length > 0 ? (
-                <ol class="yd__contacts">
-                  {reading.contacts.map((contact) => (
-                    <li class="tile yd__contact" key={`${contact.planet}${contact.aspect}${contact.point}`} style={{ '--hue': hue(contact.planet) }}>
-                      <div class="yd__contact-head">
-                        <span class="yd__swatch" aria-hidden="true" />
-                        <h3>{contact.title}</h3>
-                      </div>
-                      <p class="yd__when">
-                        {contact.exactLocal ? `Exact at ${contact.exactLocal}` : contact.applying ? 'Applying' : 'Separating'}
-                        <span>{shown?.timed === false ? `about ${contact.orb.toFixed(1)}° orb at midday` : `${contact.orb.toFixed(2)}° orb at midday`}</span>
-                      </p>
-                      <p class="yd__line">{contact.line.slice(0, contact.line.length - contact.confidenceLabel.length - 1).trim()}</p>
-                      <p class="yd__confidence">{contact.confidenceLabel}</p>
-                    </li>
-                  ))}
-                </ol>
-              ) : <p class="yd__none">No moving planet is within orb of your chart on this day.</p>}
-
+            </>
+          )}
+          {busy && !reading && <p class="yd__pending">Reading {day ? dayLabel(`${day}T12:00:00Z`, 'UTC') : 'the day'}…</p>}
+          {(['today', 'background'] as const).map((group) => (
+            <ContactGroup key={group} group={group} contacts={reading?.contacts.filter((contact) => contact.group === group) ?? []} timed={shown?.timed === true} />
+          ))}
+          {reading && (
+            <>
+              {reading.contacts.length === 0 && <p class="yd__none">No moving planet is within orb of your chart on this day.</p>}
               {reading.limits.length > 0 && (
                 <ul class="yd__limits">{reading.limits.map((limit) => <li key={limit}>{limit}</li>)}</ul>
               )}
 
-              {shown?.shareUrl && shared && (
+              {shown?.shareUrl && (
                 <div class="yd__share">
                   <p class="kicker">Share the day</p>
-                  <p class="field__help">The card shows the day and {shared === reading.contacts[0] ? 'its strongest contact' : 'one of its contacts'}, {shared.planet} {shared.aspect} your {pointName(shared.point)}. It never shows your birth date, time or place.</p>
+                  <p class="field__help">The card shows the day and your Sun sign. It never shows your birth date, time or place.</p>
                   <div class="yd__share-actions">
                     <a class="btn btn--glass" href={shown.shareUrl} target="_blank" rel="noopener" data-your-day-share><span>Share my day</span><span class="orb" aria-hidden="true">↗</span></a>
                     <CopyLinkButton url={shown.shareUrl} state={copy} onStateChange={setCopy} idleLabel="Copy the link" copiedLabel="Link copied" ariaLabel="Copy the share link" buttonClass="btn btn--ghost" dataHook="share" />
@@ -192,7 +205,6 @@ export default function YourDay() {
               )}
             </>
           )}
-          {busy && !reading && <p class="yd__pending">Reading {day ? dayLabel(`${day}T12:00:00Z`, 'UTC') : 'the day'}…</p>}
         </section>
       )}
     </div>

@@ -21,10 +21,7 @@ import { dayLabel } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
 import { readingConfidence, readingConfidenceText } from '../ai-tools/reading-confidence.js';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac.js';
-import { BODY_SIGN, pointName } from '../lib/personal-day/score.js';
 import type { YourDayShare } from '../lib/personal-day/share.js';
-import { transitLine } from '../lib/transits.js';
-import { softenMinor } from '../ai-tools/features/reading-guards.js';
 import {
   SKY_PLANETS,
   type BigThreeShare,
@@ -653,33 +650,32 @@ export function inviteCardModel(share: InviteShare): InviteCardModel {
 // ── The personal day (src/lib/personal-day/share.ts) ──
 
 export interface YourDayCardModel {
-  /** The sign the moving planet rules: its hue and its art on the card. */
+  /** The person's Sun sign: its hue and its art on the card. */
   sign: ShareSign;
   hue: string;
   /** "My day, 9 November 2026" */
   kicker: string;
-  /** "Mars square my Sun" */
+  /** "Taurus Sun" */
   title: string;
-  /** "My day, 9 November 2026: Mars square my Sun", for the page. */
+  /** "My day, 9 November 2026: Taurus Sun", for the page. */
   heading: string;
-  /** The site's transit sentence for the contact. */
+  /** Plain description of the personal day reading for this Sun sign. */
   line: string;
-  /** "Reading confidence 75%" */
-  confidence: string;
+  confidence: string | null;
 }
 
 /**
- * A day's shared contact (the strongest one other than the Sun on the natal Sun), as the person shares it: the day, the moving planet, the aspect and the natal point,
- * with the site's transit sentence (src/lib/transits.ts). A shared card cannot know who made it, so its sentence
- * leaves out romantic and attraction wording, as a reading for someone under 18 does.
+ * The shared card for a personal day: the sky date and the person's Sun sign,
+ * with no Moon sign, rising sign, natal point, confidence, or birth details.
  */
 export function yourDayCardModel(share: YourDayShare): YourDayCardModel {
-  const sign = BODY_SIGN[share.planet];
+  const sign = share.sun;
+  const name = signName(sign);
   const kicker = `My day, ${fullDate(share.date)}`;
-  const title = `${share.planet} ${share.aspect} my ${pointName(share.point)}`;
+  const title = `${name} Sun`;
   return {
     sign, hue: HUES[sign], kicker, title, heading: `${kicker}: ${title}`,
-    line: softenMinor(transitLine(share.planet, share.aspect, pointName(share.point))),
-    confidence: readingConfidenceText(share.confidence),
+    line: `The day’s transits for a ${name} chart, ranked with exact times.`,
+    confidence: null,
   };
 }

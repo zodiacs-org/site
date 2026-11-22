@@ -4,15 +4,14 @@ import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { personalDay } from '../../ai-tools/personal/personal-day';
 import { forbiddenClaim, type PersonalToolContext } from '../../ai-tools/personal/shared';
 import { computeYourDay } from '../../islands/your-day/compute';
-import { PAIR_CONFIDENCES, readingConfidence } from '../../ai-tools/reading-confidence';
 import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
-import { MINOR_LEFT_OUT_HOUSES, minorLeftOut, shareContact } from './day';
+import { MINOR_LEFT_OUT_HOUSES, UNTIMED_LIMIT, minorLeftOut, shareContact } from './day';
 import { NATAL_HOUSE_THEME } from '../natal';
 import { softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { transitLine } from '../transits';
 import { MAJOR_ASPECT_ORDER, TRANSIT_BODY_ORDER } from '../engine/transit-scan-shared';
 import { pointName } from './score';
-import { parseYourDayShare, yourDayQuery, yourDayShareUrl, YOUR_DAY_CONFIDENCES, YOUR_DAY_SHARE_KEYS } from './share';
+import { parseYourDayShare, yourDayQuery, yourDayShareUrl, YOUR_DAY_SHARE_KEYS } from './share';
 
 const NOW = new Date('2026-11-09T09:00:00Z');
 /** The ticket's appetite check, with the longing, heat and pleasure a review found too. */
@@ -39,22 +38,22 @@ describe('the /your-day/ page and get_personal_day', () => {
     const tool = (await personalDay({ birthDate: ADULT.birthDate, zone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, currentZone: 'Europe/London', date: '2026-11-10' }, context)).data;
     const page = await computeYourDay({ birthDate: ADULT.birthDate, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date: '2026-11-10', zone: 'Europe/London', today: '2026-11-09' });
     expect(page.contacts).toEqual(tool.contacts);
+    expect(page.theme).toBe(tool.theme);
+    expect(page.limits).toEqual(tool.limits);
     expect(page.points).not.toContain('Moon');
     expect(page.theme).toMatch(/^The strongest contact on Tue 10 Nov 2026 is /u);
     const today = await computeYourDay({ birthDate: ADULT.birthDate, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date: '2026-11-09', zone: 'Europe/London', today: '2026-11-09' });
     expect(today.theme).toMatch(/^Today's strongest contact is /u);
   });
 
-  it('shares the highest ranked contact that is not the Sun on the natal Sun, and nothing about the birth', async () => {
+  it('shares only the sky date and Sun sign, and nothing else about the birth', async () => {
     const tool = (await personalDay({ ...ADULT, currentZone: 'Europe/Madrid', date: '2026-11-09' }, context)).data;
-    const top = shareContact(tool.contacts)!;
-    expect(top).toBe(tool.contacts.find((contact) => !(contact.planet === 'Sun' && contact.point === 'Sun')));
     expect(tool.pageUrl).toBe('https://zodiacs.org/your-day/');
-    expect(tool.shareUrl).toBe(`https://zodiacs.org/share/your-day/?day=2026-11-09&p=${top.planet.toLowerCase()}&a=${top.aspect}&n=${top.point.toLowerCase()}&c=${top.confidence}`);
+    expect(tool.shareUrl).toBe('https://zodiacs.org/share/your-day/?day=2026-11-09&s=taurus');
     const url = new URL(tool.shareUrl!);
     expect([...url.searchParams.keys()].every((key) => YOUR_DAY_SHARE_KEYS.includes(key))).toBe(true);
     expect(decodeURIComponent(url.href)).not.toMatch(/1990|05-03|08:30|40\.42|3\.7|Madrid/u);
-    expect(parseYourDayShare(url.searchParams)).toEqual({ date: '2026-11-09', planet: top.planet, aspect: top.aspect, point: top.point, confidence: top.confidence, ref: null });
+    expect(parseYourDayShare(url.searchParams)).toEqual({ date: '2026-11-09', sun: 'taurus', ref: null });
   });
 });
 
@@ -126,44 +125,38 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
 });
 
 describe('the your-day share link', () => {
-  const ok = { day: '2026-11-09', p: 'mars', a: 'square', n: 'asc', c: '75' };
-  it('reads only its own keys, each once, from fixed vocabularies', () => {
-    expect(parseYourDayShare(new URLSearchParams(ok))).toEqual({ date: '2026-11-09', planet: 'Mars', aspect: 'square', point: 'ASC', confidence: 75, ref: null });
+  const ok = { day: '2026-11-09', s: 'taurus' };
+  it('reads only its own keys (day, s, optional ref), each once, from fixed vocabularies', () => {
+    expect(parseYourDayShare(new URLSearchParams(ok))).toEqual({ date: '2026-11-09', sun: 'taurus', ref: null });
     expect(parseYourDayShare(new URLSearchParams({ ...ok, ref: 'chatgpt' }))?.ref).toBe('chatgpt');
     for (const bad of [
-      { ...ok, day: '2026-02-30' }, { ...ok, day: '1990-5-3' }, { ...ok, p: 'chiron' }, { ...ok, p: 'Mars' }, { ...ok, a: 'quincunx' },
-      { ...ok, n: 'north-node' }, { ...ok, c: '80' }, { ...ok, c: '075' }, { ...ok, ref: 'x' }, { ...ok, t: '08:30' }, { ...ok, lat: '40' },
-      // The Sun on the natal Sun, with the day, states the birthday: no aspect of it is a share.
-      { day: '2026-05-03', p: 'sun', a: 'conjunction', n: 'sun', c: '75' }, { ...ok, p: 'sun', n: 'sun' }, { ...ok, p: 'sun', a: 'opposition', n: 'sun' },
+      { ...ok, day: '2026-02-30' }, { ...ok, day: '1990-5-3' }, { ...ok, s: 'ophiuchus' }, { ...ok, s: 'Taurus' },
+      { ...ok, p: 'mars', a: 'square', n: 'asc', c: '75' }, { ...ok, m: 'leo' }, { ...ok, r: 'libra' },
+      { ...ok, ref: 'x' }, { ...ok, t: '08:30' }, { ...ok, lat: '40' },
     ]) expect(parseYourDayShare(new URLSearchParams(bad)), JSON.stringify(bad)).toBeNull();
-    const { c: _c, ...noConfidence } = ok;
-    expect(parseYourDayShare(new URLSearchParams(noConfidence))).toBeNull();
-    expect(parseYourDayShare(new URLSearchParams('day=2026-11-09&day=2026-11-10&p=mars&a=square&n=asc&c=75'))).toBeNull();
+    expect(parseYourDayShare(new URLSearchParams({ day: '2026-11-09' }))).toBeNull();
+    expect(parseYourDayShare(new URLSearchParams('day=2026-11-09&day=2026-11-10&s=taurus'))).toBeNull();
   });
 
-  it('accepts only the confidences the rule gives a dated chart', () => {
-    expect([...YOUR_DAY_CONFIDENCES].sort()).toEqual([readingConfidence('date'), readingConfidence('date', true), readingConfidence('timed-place'), readingConfidence('timed-place', true)].sort());
-    expect(YOUR_DAY_CONFIDENCES).toEqual(PAIR_CONFIDENCES);
-  });
-
-  it('round-trips and refuses a contact outside the vocabularies', () => {
+  it('round-trips and refuses values outside the vocabularies', () => {
     const share = parseYourDayShare(new URLSearchParams(ok))!;
     expect(parseYourDayShare(new URLSearchParams(yourDayQuery(share)))).toEqual(share);
-    expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-11-09', contact: { planet: 'North Node', aspect: 'square', point: 'Sun', confidence: 70 } })).toBeNull();
-    expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-11-09', contact: null })).toBeNull();
-    expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-05-03', contact: { planet: 'Sun', aspect: 'conjunction', point: 'Sun', confidence: 75 } })).toBeNull();
-    expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-05-03', contact: { planet: 'Sun', aspect: 'conjunction', point: 'Moon', confidence: 75 } })).toBe('https://zodiacs.org/share/your-day/?day=2026-05-03&p=sun&a=conjunction&n=moon&c=75');
+    expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-11-09', sun: 'ophiuchus' })).toBeNull();
+    expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-11-09', sun: null })).toBeNull();
+    expect(yourDayShareUrl('https://zodiacs.org', { date: '2026-05-03', sun: 'taurus' })).toBe('https://zodiacs.org/share/your-day/?day=2026-05-03&s=taurus');
   });
 });
 
 describe('shareContact', () => {
-  const contact = (planet: string, point: string) => ({ planet, point });
-  it('skips the Sun on the natal Sun and keeps the ranking otherwise', () => {
-    const sunSun = contact('Sun', 'Sun');
-    const marsSun = contact('Mars', 'Sun');
-    const sunMoon = contact('Sun', 'Moon');
-    expect(shareContact([sunSun, marsSun, sunMoon])).toBe(marsSun);
-    expect(shareContact([sunMoon, sunSun])).toBe(sunMoon);
+  it('prioritizes eligible contacts today, then in the background, in score order', () => {
+    const sunSun = { planet: 'Sun', point: 'Sun', group: 'today' } as const;
+    const marsSun = { planet: 'Mars', point: 'Sun', group: 'today' } as const;
+    const sunMoon = { planet: 'Sun', point: 'Moon', group: 'today' } as const;
+    const pluto = { planet: 'Pluto', point: 'Sun', group: 'background' } as const;
+    const saturn = { planet: 'Saturn', point: 'Moon', group: 'background' } as const;
+    expect(shareContact([pluto, sunSun, marsSun, sunMoon])).toBe(marsSun);
+    expect(shareContact([sunMoon, marsSun])).toBe(sunMoon);
+    expect(shareContact([sunSun, pluto, saturn])).toBe(pluto);
     expect(shareContact([sunSun])).toBeNull();
     expect(shareContact([])).toBeNull();
   });
@@ -172,6 +165,7 @@ describe('shareContact', () => {
 describe('the /your-day/ page copy', () => {
   it('passes the copy rule and has no dashes', () => {
     const text = ['src/pages/your-day/index.astro', 'src/islands/YourDay.tsx'].map((path) => readFileSync(path, 'utf8')).join('\n');
+    expect(text).toContain(UNTIMED_LIMIT);
     expect(forbiddenClaim(text.replace(/<style[\s\S]*?<\/style>/gu, ''))).toBeNull();
     expect(text).not.toMatch(/crypto|token|blockchain|market|invest|stock/iu);
   });

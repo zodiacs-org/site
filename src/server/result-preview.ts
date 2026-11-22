@@ -2169,13 +2169,13 @@ export async function handleYourDayLinkRequest(request: Request): Promise<Respon
   const model = yourDayCardModel(share);
   return htmlResponse(sharePageHtml({
     title: `${model.heading} on Zodiacs`,
-    description: `${model.line} ${model.confidence}.`,
+    description: model.line,
     heading: model.heading,
     imageUrl: `${url.origin}${YOUR_DAY_SHARE_IMAGE_PATH}?${yourDayQuery(share)}`,
     story: { href: `${YOUR_DAY_SHARE_STORY_PATH}?${yourDayQuery(share)}`, filename: `zodiacs-your-day-${share.date}-story.jpg` },
     imageType: 'image/jpeg',
-    imageAlt: `${model.heading}. ${model.line} ${model.confidence}.`,
-    explanation: `${model.line} ${model.confidence}. ${YOUR_DAY_ABOUT}`,
+    imageAlt: `${model.heading}. ${model.line}`,
+    explanation: `${model.line} ${YOUR_DAY_ABOUT}`,
     action: { label: 'Read your day', href: YOUR_DAY_PAGE_PATH },
     more: { label: 'Open the transit tracker', href: '/transits/' },
     note: YOUR_DAY_NOTE,

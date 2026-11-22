@@ -15,8 +15,9 @@
 import type { NatalPoint, TransitBody } from '../engine/transit-scan-shared';
 import type { AspectType } from '../engine/types';
 
-/** How many contacts are listed, highest score first. */
+/** List the strongest contacts, keeping at most three background contacts. */
 export const PERSONAL_DAY_LIMIT = 8;
+export const BACKGROUND_LIMIT = 3;
 
 /** Widest orb, in degrees, for each moving body's conjunction, square, trine and opposition. */
 export const DAY_ORB: Readonly<Record<TransitBody, number>> = {
