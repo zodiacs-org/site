@@ -290,15 +290,15 @@ export async function settledSunSign(
     await clock.prepareLocalTime(birth.birthDate, birth.zone);
     const options = birth.longitude === undefined ? {} : { longitude: birth.longitude };
     const zone = birth.zone;
-    // The span also reads the day either side, which the birth date's preparation covers (src/lib/time/local-day.ts).
+    // The span also reads the day after, which the birth date's preparation covers (src/lib/time/local-day.ts).
     const span = localDaySpan(birth.birthDate, (date, time, fold) => clock.resolveLocalToUtc(date, time, zone, { ...options, fold }));
     if (!span) return null;
     [start, end] = span;
   } else {
     // Every clock's version of the date since 1800: tzdb's history runs from UTC-15:56 (Asia/Manila before 1845)
-    // to UTC+15:13 (America/Metlakatla before 1867), so 00:00 at UTC+16 to 23:59 at UTC-16.
+    // to UTC+15:13 (America/Metlakatla before 1867), so 00:00 at UTC+16 to 23:59:59 at UTC-16.
     start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR);
-    end = new Date(Date.parse(`${birth.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR);
+    end = new Date(Date.parse(`${birth.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR);
   }
   const startIndex = signIndexForLongitude(bodyLongitude('Sun', start));
   const endIndex = signIndexForLongitude(bodyLongitude('Sun', end));

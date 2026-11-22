@@ -32,9 +32,11 @@ function steppedClock(change: string, before: number, after: number, calls: unkn
       calls.push(options?.fold ?? 'earlier');
       const wall = Date.parse(`${date}T${time}:00Z`);
       const passes = [wall - before * 60_000, wall - after * 60_000].filter((utc, index) => (index === 0 ? utc < at : utc >= at));
-      if (passes.length === 0) return { utc: new Date(wall - before * 60_000), offsetMinutes: after, flags: ['dst-gap'] };
+      // A skipped or repeated wall time carries the change behind it, as the engine's does.
+      const transition = { at: new Date(at).toISOString(), offsetBeforeMinutes: before, offsetAfterMinutes: after };
+      if (passes.length === 0) return { utc: new Date(wall - before * 60_000), offsetMinutes: after, flags: ['dst-gap'], transition };
       const utc = options?.fold === 'later' ? Math.max(...passes) : Math.min(...passes);
-      return { utc: new Date(utc), offsetMinutes: utc < at ? before : after, flags: passes.length > 1 ? ['dst-fold'] : [] };
+      return { utc: new Date(utc), offsetMinutes: utc < at ? before : after, flags: passes.length > 1 ? ['dst-fold'] : [], ...(passes.length > 1 ? { transition } : {}) };
     },
   };
 }
@@ -127,6 +129,25 @@ describe('a birth date the clock repeated or skipped, on the /your-day/ page and
     expect(await settledSunSign(natal, { birthDate: '2026-12-22', zone: 'Etc/Jump' }, steppedClock('2026-12-21T20:30:00Z', 180, 240))).toBeNull();
     const ends = await birthDayEnds({ birthDate: '1919-03-31', zone: 'America/Toronto' }, context.localTime);
     expect(ends[0].toISOString()).toBe('1919-03-31T04:30:00.000Z');
+  });
+
+  it('start and end a birth date at a clock change within a minute, to the second', async () => {
+    // Accra left local mean time at 00:00:52 UTC on 2 November 1915: at 0.25 degrees west the birthplace clock went
+    // from 23:59:52 on 1 November to 00:00:52 on 2 November, so the 2nd starts and the 1st ends there, not at 00:01.
+    const accra = async (birthDate: string) => (await birthDayEnds({ birthDate, zone: 'Africa/Accra', latitude: 5.55, longitude: -0.25 }, context.localTime)).map((end) => end.toISOString());
+    expect(await accra('1915-11-02')).toEqual(['1915-11-02T00:00:52.000Z', '1915-11-02T23:59:59.000Z']);
+    expect(await accra('1915-11-01')).toEqual(['1915-11-01T00:01:00.000Z', '1915-11-02T00:00:51.000Z']);
+    // The same kind of change four seconds before the Sun entered Capricorn (20:50:14 UTC): at 20:50:10 UTC 23:59:50
+    // on 21 December became 00:00:50 on the 22nd. The 21st is Sagittarius to its end and the 22nd begins in it; read
+    // to whole minutes, both ends fall after the ingress.
+    const clock = steppedClock('2026-12-21T20:50:10Z', 189 + 40 / 60, 190 + 40 / 60);
+    expect(await settledSunSign({ bodies: [{ body: 'Sun', lon: 269 }], timeKnown: false }, { birthDate: '2026-12-21', zone: 'Etc/Jump' }, clock)).toBe('sagittarius');
+    expect(await settledSunSign({ bodies: [{ body: 'Sun', lon: 271 }], timeKnown: false }, { birthDate: '2026-12-22', zone: 'Etc/Jump' }, clock)).toBeNull();
+  });
+
+  it('read a birth date given without a zone from 00:00 at UTC+16 to 23:59:59 at UTC-16', async () => {
+    const ends = await birthDayEnds({ birthDate: '2026-11-09' }, context.localTime);
+    expect(ends.map((end) => end.toISOString())).toEqual(['2026-11-08T08:00:00.000Z', '2026-11-10T15:59:59.000Z']);
   });
 });
 

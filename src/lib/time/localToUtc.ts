@@ -55,6 +55,13 @@ export interface LocalTimeResolution {
    * zone alone would have applied.
    */
   localMeanTime?: { longitude: number; zoneOffsetMinutes: number };
+  /**
+   * Present on a skipped or repeated wall time: the clock change behind it,
+   * its instant (UTC, ISO 8601, to the millisecond) and the offsets either
+   * side, so a caller can find where a date starts or ends within a minute
+   * (./local-day.ts).
+   */
+  transition?: { at: string; offsetBeforeMinutes: number; offsetAfterMinutes: number };
 }
 
 /**
@@ -302,5 +309,6 @@ export function resolveLocalToUtc(
     flags: [...resolved.flags],
     ...(resolved.jump && resolved.transition ? { jumpMinutes: Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes) } : {}),
     ...(resolved.localMeanTime ? { localMeanTime: { ...resolved.localMeanTime } } : {}),
+    ...(resolved.jump && resolved.transition ? { transition: { at: resolved.transition.at, offsetBeforeMinutes: resolved.transition.offsetBeforeMinutes, offsetAfterMinutes: resolved.transition.offsetAfterMinutes } } : {}),
   };
 }
