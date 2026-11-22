@@ -2185,7 +2185,7 @@ export async function handleRetrogradeForYouLinkRequest(request: Request): Promi
     story: { href: `${RETROGRADE_FOR_YOU_SHARE_STORY_PATH}?${retrogradeForYouQuery(share)}`, filename: `zodiacs-${share.planet}-retrograde-story.jpg` },
     imageType: 'image/jpeg',
     imageAlt: `${model.title}, ${model.span}. ${model.line}`,
-    explanation: `${model.span}. ${model.line} ${model.line === model.about ? '' : `${model.about} `}${model.confidence}.`,
+    explanation: `${model.span}. ${model.line}${model.confidence ? ` ${model.confidence}.` : ''}`,
     action: { label: 'See your retrogrades', href: RETROGRADE_FOR_YOU_PAGE_PATH },
     more: { label: 'Every retrograde through 2030', href: '/retrogrades/' },
     note: RETROGRADE_FOR_YOU_NOTE,

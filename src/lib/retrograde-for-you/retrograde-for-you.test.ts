@@ -237,16 +237,16 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
 });
 
 describe('the retrograde-for-you share link', () => {
-  it('carries only the planet, a published start date, the house, its basis and the confidence', () => {
-    const share = parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&h=7&b=rising&c=70'));
-    expect(share).toEqual({ planet: 'mercury', date: '2026-10-24', house: 7, basis: 'rising', confidence: 70, ref: null });
-    expect(retrogradeForYouQuery(share!)).toBe('p=mercury&s=2026-10-24&h=7&b=rising&c=70');
-    expect(parseRetrogradeForYouShare(new URLSearchParams('p=venus&s=2026-10-03&c=55'))).toMatchObject({ house: null, basis: null });
+  it('carries only the planet, a published start date, and the Sun sign when settled', () => {
+    const share = parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&sun=taurus'));
+    expect(share).toEqual({ planet: 'mercury', date: '2026-10-24', sun: 'taurus', ref: null });
+    expect(retrogradeForYouQuery(share!)).toBe('p=mercury&s=2026-10-24&sun=taurus');
+    expect(parseRetrogradeForYouShare(new URLSearchParams('p=venus&s=2026-10-03'))).toEqual({ planet: 'venus', date: '2026-10-03', sun: null, ref: null });
     for (const bad of [
-      'p=jupiter&s=2026-10-24&c=55', 'p=mercury&s=2026-13-40&c=55', 'p=mercury&s=2026-10-24&h=13&b=sun&c=55',
-      'p=mercury&s=2026-10-24&h=7&c=55', 'p=mercury&s=2026-10-24&b=sun&c=55', 'p=mercury&s=2026-10-24&h=7&b=rising&c=55',
-      'p=mercury&s=2026-10-24&h=7&b=sun&c=70', 'p=mercury&s=2026-10-24&c=60', 'p=mercury&s=2026-10-24&c=55&d=1990-05-03',
-      'p=mercury&s=2026-10-24&c=55&p=venus', 'p=mercury&s=2026-10-24&c=55&ref=other', 'p=mercury&s=2026-10-24',
+      'p=jupiter&s=2026-10-24&sun=taurus', 'p=mercury&s=2026-13-40&sun=taurus', 'p=mercury&s=2026-10-24&sun=ophiuchus',
+      'p=mercury&s=2026-10-24&h=7&b=rising&c=70', 'p=mercury&s=2026-10-24&h=7&b=sun&c=55', 'p=mercury&s=2026-10-24&c=55',
+      'p=mercury&s=2026-10-24&m=leo', 'p=mercury&s=2026-10-24&r=libra', 'p=mercury&s=2026-10-24&sun=taurus&d=1990-05-03',
+      'p=mercury&s=2026-10-24&sun=taurus&p=venus', 'p=mercury&s=2026-10-24&sun=taurus&ref=other', 'p=mercury',
     ]) expect(parseRetrogradeForYouShare(new URLSearchParams(bad)), bad).toBeNull();
   });
 

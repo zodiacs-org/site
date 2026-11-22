@@ -682,15 +682,15 @@ const yearDay = (at: string) => {
 
 export interface RetrogradeForYouCardModel {
   planet: string;
-  /** "Mercury retrograde in my seventh house", or "Mercury retrograde in my chart" when the chart settles no house. */
+  /** "Mercury retrograde for Taurus Sun", or "Mercury retrograde" when no Sun sign is carried. */
   title: string;
   /** "Sat 24 Oct 2026 to Fri 13 Nov 2026", the window's UTC days. */
   span: string;
-  /** "The seventh house covers partnership, the people you meet as equals.", and what it was counted from. */
+  /** The planet's retrograde in general. */
   line: string;
   /** The planet's retrograde in general, said once. */
   about: string;
-  confidence: string;
+  confidence: string | null;
   hue: string;
   sign: ShareSign;
 }
@@ -706,18 +706,16 @@ export function retrogradeForYouCardModel(share: RetrogradeForYouShare, events: 
   const event = events.find((candidate) => candidate.kind === 'retrograde' && candidate.planet === share.planet && candidate.date === share.date);
   if (!event || !event.end) return null;
   const planet = RETROGRADE_PLANET_NAME[share.planet];
-  const sign = RETROGRADE_PLANET_SIGN[share.planet];
-  const where = share.house ? `in my ${HOUSE_ORDINAL[share.house]} house` : 'in my chart';
-  const line = share.house
-    ? `The ${HOUSE_ORDINAL[share.house]} house covers ${RETROGRADE_CARD_HOUSE_THEME[share.house]}.${share.basis === 'sun' ? ' Counted from the Sun sign.' : ''}`
-    : RETROGRADE_ABOUT[share.planet];
+  const sign = share.sun ?? RETROGRADE_PLANET_SIGN[share.planet];
+  const title = share.sun ? `${planet} retrograde for ${signName(share.sun)} Sun` : `${planet} retrograde`;
+  const about = RETROGRADE_ABOUT[share.planet];
   return {
     planet,
-    title: `${planet} retrograde ${where}`,
+    title,
     span: `${yearDay(event.start)} to ${yearDay(event.end)}`,
-    line,
-    about: RETROGRADE_ABOUT[share.planet],
-    confidence: readingConfidenceText(share.confidence),
+    line: about,
+    about,
+    confidence: null,
     hue: HUES[sign],
     sign,
   };

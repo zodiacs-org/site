@@ -174,6 +174,15 @@ describe('get_retrograde_for_me privacy and refusals', () => {
     expect(result.ok).toBe(true);
     const text = JSON.stringify(result);
     for (const url of text.match(/https:\/\/[^"]+/gu) ?? []) expect(url).not.toMatch(/1990|05-03|08:30|40\.42|3\.7|Madrid/u);
+    if (result.ok) {
+      const shareUrls = (result.data as { periods: { shareUrl: string | null }[] }).periods.map((entry) => entry.shareUrl).filter(Boolean) as string[];
+      expect(shareUrls.length).toBeGreaterThan(0);
+      for (const shareUrl of shareUrls) {
+        const params = new URL(shareUrl).searchParams;
+        expect([...params.keys()].sort()).toEqual(['p', 's', 'sun']);
+        expect(params.get('sun')).toBe('taurus');
+      }
+    }
     expect(forbiddenClaim(text)).toBeNull();
     expect(text).not.toMatch(/[\u2013\u2014]/u);
   });

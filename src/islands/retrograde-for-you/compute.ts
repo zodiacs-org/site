@@ -10,11 +10,13 @@
 import { bodyLongitude, computeChart } from '../../lib/engine/full';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 import {
-  POINT_NAMES, dateOn, dayLabel, isUnder13, natalBasis, retrogradeReading, stationHouse,
+  POINT_NAMES, dateOn, dayLabel, isUnder13, natalBasis, retrogradeReading,
   type RetrogradePeriod, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
 import { publishedRetrogradeDate, retrogradeForYouShareQuery } from '../../lib/retrograde-for-you/share';
+import { SIGNS, signIndexForLongitude } from '../../lib/signs';
+import type { ShareSign } from '../../lib/share-results';
 import sky from '../../data/sky.json';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
@@ -77,14 +79,16 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
     planets: input.planets, now: input.now, zone: input.zone, basis,
     loopsFor: (planet) => loopsFromSky(planet, input.now, span, (body, at) => bodyLongitude(body, at)),
   });
+  const sunSign = sunHeld
+    ? (SIGNS[signIndexForLongitude(chart.bodies.find((row) => row.body === 'Sun')!.lon)].slug as ShareSign)
+    : null;
   return {
     periods: reading.periods.map((period) => ({
       ...period,
       skyDate: publishedRetrogradeDate(period.planet, period.stationRetrograde.utc, span.retrogrades),
       nextLine: period.next ? `Next retrograde: ${dayLabel(period.next.stationRetrograde, input.zone)} to ${dayLabel(period.next.stationDirect, input.zone)}.` : null,
       shareQuery: retrogradeForYouShareQuery({
-        planet: period.planet, stationRetrogradeUtc: period.stationRetrograde.utc, house: stationHouse(period),
-        countedFrom: period.housesCountedFrom, confidence: period.confidence,
+        planet: period.planet, stationRetrogradeUtc: period.stationRetrograde.utc, sun: sunSign,
       }, span.retrogrades),
     })),
     unavailable: reading.unavailable,

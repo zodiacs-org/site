@@ -12,9 +12,9 @@ const SWITCHED: readonly { route: ResultShareRoute; flag: (typeof FLAGS)[number]
   { route: 'birthday-report-image', flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', query: { s: 'leo', v: '6.4', t: '17' } },
   { route: 'solar-return-link', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
   { route: 'solar-return-image', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
-  { route: 'retrograde-for-you-link', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', h: '7', b: 'rising', c: '70' } },
-  { route: 'retrograde-for-you-image', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', h: '7', b: 'rising', c: '70' } },
-  { route: 'retrograde-for-you-story', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', h: '7', b: 'rising', c: '70' } },
+  { route: 'retrograde-for-you-link', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', sun: 'taurus' } },
+  { route: 'retrograde-for-you-image', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', sun: 'taurus' } },
+  { route: 'retrograde-for-you-story', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', query: { p: 'mercury', s: '2026-10-24', sun: 'taurus' } },
 ];
 
 function nodeResponse() {
