@@ -43640,11 +43640,25 @@ function vedicSignsShareUrl(origin, reading) {
 
 // src/ai-tools/personal/shared.ts
 import { z as z15 } from "zod";
+
+// src/lib/time/local-day.ts
+var LAST_MINUTE_MS = 59e3;
+function readsOnDate(date3, resolution) {
+  const wall = resolution.utc.getTime() + Math.round(resolution.offsetMinutes * 6e4);
+  return new Date(wall).toISOString().slice(0, 10) === date3;
+}
+function localDaySpan(date3, first2, last2) {
+  if (!readsOnDate(date3, first2)) return null;
+  return [first2.utc, new Date(last2.utc.getTime() + LAST_MINUTE_MS)];
+}
+
+// src/ai-tools/personal/shared.ts
 var PERSONAL_MIN_YEAR = 1800;
 var PERSONAL_MAX_YEAR = 2199;
 var ZONE = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE7 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 var HOUR6 = 36e5;
+var BIRTH_DATE_REFUSAL = `birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`;
 var zoneField = z15.string().min(1).max(64).regex(ZONE);
 var birthFields = {
   birthDate: z15.string().regex(DATE7).describe("The birth date, such as 1990-05-03 (years 1800 to 2199)."),
@@ -43662,7 +43676,7 @@ function definePersonalTool(definition) {
 }
 async function resolveBirth(args, clock2) {
   const birth = parseCivilDate(args.birthDate);
-  if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`);
+  if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(BIRTH_DATE_REFUSAL);
   if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
   const latitude = args.latitude === void 0 ? void 0 : roundCoordinate(args.latitude);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
@@ -43671,10 +43685,18 @@ async function resolveBirth(args, clock2) {
   let birthUtc;
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
-    const time = args.time ?? "12:00";
-    birthUtc = (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+    const wall = onBirthClock(args, clock2);
+    if (!readsOnDate(args.birthDate, wall("00:00"))) throw new RangeError(BIRTH_DATE_REFUSAL);
+    birthUtc = wall(args.time ?? "12:00").utc;
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
   return { birthUtc, timeKnown, placed, latitude, longitude: longitude2, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+}
+function onBirthClock(args, clock2) {
+  const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
+  return (time, fold3 = "earlier") => clock2.resolveLocalToUtc(args.birthDate, time, args.zone, {
+    ...longitude2 !== void 0 ? { longitude: longitude2 } : {},
+    ...fold3 === "later" ? { fold: fold3 } : {}
+  });
 }
 async function withCheckedZone(args, context) {
   return args.zone ? { ...args, zone: await context.resolveZone(args.zone, "/zone") } : args;
@@ -43683,9 +43705,10 @@ var WIDEST_OFFSET_HOURS = 16;
 async function birthDayEnds2(args, clock2) {
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR6)];
   await clock2.prepareLocalTime(args.birthDate, args.zone);
-  const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
-  const local = (time) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
-  return [local("00:00"), local("23:59")];
+  const wall = onBirthClock(args, clock2);
+  const span2 = localDaySpan(args.birthDate, wall("00:00"), wall("23:59", "later"));
+  if (!span2) throw new RangeError(BIRTH_DATE_REFUSAL);
+  return span2;
 }
 
 // src/ai-tools/personal/vedic-signs.ts

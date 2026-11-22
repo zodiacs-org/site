@@ -18,6 +18,7 @@ import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { computeChart } from '../../lib/engine/full.js';
 import type { Chart } from '../../lib/engine/types';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
+import { localDaySpan, readsOnDate } from '../../lib/time/local-day';
 import type { PlaceTable } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
 import { readingDetail, type ReadingDetail } from '../reading-confidence';
@@ -27,6 +28,8 @@ export const PERSONAL_MAX_YEAR = 2199;
 const ZONE = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 const DATE = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 const HOUR = 3_600_000;
+/** The refusal of a birth date the tools cannot use; it never repeats the date. */
+const BIRTH_DATE_REFUSAL = `birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`;
 
 export const zoneField = z.string().min(1).max(64).regex(ZONE);
 
@@ -132,7 +135,7 @@ export interface NatalCast extends BirthMoment {
  */
 export async function resolveBirth(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<BirthMoment> {
   const birth = parseCivilDate(args.birthDate);
-  if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`);
+  if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(BIRTH_DATE_REFUSAL);
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
   const latitude = args.latitude === undefined ? undefined : roundCoordinate(args.latitude);
   const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
@@ -141,10 +144,26 @@ export async function resolveBirth(args: BirthArgs, clock: PersonalToolContext['
   let birthUtc: Date;
   if (args.zone) {
     await clock.prepareLocalTime(args.birthDate, args.zone);
-    const time = args.time ?? '12:00';
-    birthUtc = (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+    const wall = onBirthClock(args, clock);
+    // A date the zone's clock never showed (Apia went from 29 to 31 December
+    // 2011) is refused, not moved onto the next date.
+    if (!readsOnDate(args.birthDate, wall('00:00'))) throw new RangeError(BIRTH_DATE_REFUSAL);
+    birthUtc = wall(args.time ?? '12:00').utc;
   } else birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
   return { birthUtc, timeKnown, placed, latitude, longitude, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+}
+
+/**
+ * A wall time on the birth date read on the birthplace clock: the zone's, or
+ * before its local mean time era ended the birthplace's own when a longitude
+ * is given. Call only after prepareLocalTime(args.birthDate, args.zone).
+ */
+function onBirthClock(args: BirthArgs, clock: PersonalToolContext['localTime']) {
+  const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
+  return (time: string, fold: 'earlier' | 'later' = 'earlier') => clock.resolveLocalToUtc(args.birthDate, time, args.zone!, {
+    ...(longitude !== undefined ? { longitude } : {}),
+    ...(fold === 'later' ? { fold } : {}),
+  });
 }
 
 /**
@@ -180,16 +199,20 @@ export async function withCheckedZone<A extends BirthArgs>(args: A, context: Pic
 export const WIDEST_OFFSET_HOURS = 16;
 
 /**
- * The two ends of an untimed birth day: the local day with a zone, else every
- * clock's version of that date, from 00:00 at UTC+16 to 23:59 at UTC−16. A
- * placement holds for an untimed birth only when it is the same at both ends.
+ * The two ends of an untimed birth day: with a zone, the whole local date in
+ * real time, from the first pass of its 00:00 to the end of the last pass of
+ * its 23:59, so a date the clock showed twice (Apia, 4 July 1892) is covered
+ * whole; else every clock's version of that date, from 00:00 at UTC+16 to
+ * 23:59 at UTC−16. A placement holds for an untimed birth only when it is the
+ * same at both ends. A date the zone's clock never showed is refused.
  */
 export async function birthDayEnds(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<[Date, Date]> {
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR)];
   await clock.prepareLocalTime(args.birthDate, args.zone);
-  const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
-  const local = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone!, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone!)).utc;
-  return [local('00:00'), local('23:59')];
+  const wall = onBirthClock(args, clock);
+  const span = localDaySpan(args.birthDate, wall('00:00'), wall('23:59', 'later'));
+  if (!span) throw new RangeError(BIRTH_DATE_REFUSAL);
+  return span;
 }
 
 /**

@@ -132,6 +132,35 @@ describe('get_vedic_signs without a birth time', () => {
     if (untimed.sun) for (const timed of [early, late]) expect(timed.sun!.rashi).toBe(untimed.sun.rashi);
   });
 
+  it('covers the whole of a date the clock showed twice (Apia lived 4 July 1892 twice, moving to the American date)', async () => {
+    // Its first 00:00 was 1892-07-03T11:26:56Z on UTC+12:33:04; its second 23:59 ended 1892-07-05T11:26:55Z on UTC−11:26:56.
+    const [first, last] = await birthDayEnds({ birthDate: '1892-07-04', zone: 'Pacific/Apia' }, clock);
+    expect([first.toISOString(), last.toISOString()]).toEqual(['1892-07-03T11:26:56.000Z', '1892-07-05T11:26:55.000Z']);
+    // The Moon was in Chitra at the first 00:00, in Swati at the first 23:59 and in Vishakha by the second.
+    expect((await run({ birthDate: '1892-07-04', time: '00:00', zone: 'Pacific/Apia' })).moonNakshatra!.name).toBe('Chitra');
+    expect((await run({ birthDate: '1892-07-04', time: '23:59', zone: 'Pacific/Apia' })).moonNakshatra!.name).toBe('Swati');
+    expect((await run({ birthDate: '1892-07-05', time: '00:00', zone: 'Pacific/Apia' })).moonNakshatra!.name).toBe('Vishakha');
+    const untimed = await run({ birthDate: '1892-07-04', zone: 'Pacific/Apia' });
+    expect(untimed.moonNakshatra).toBeNull();
+    expect(untimed.nakshatraCandidates).toEqual(['Chitra', 'Swati', 'Vishakha']);
+    // The same with the birthplace's own mean time.
+    expect((await run({ birthDate: '1892-07-04', zone: 'Pacific/Apia', latitude: -13.83, longitude: -171.76 })).nakshatraCandidates).toEqual(['Chitra', 'Swati', 'Vishakha']);
+  });
+
+  it('refuses a date the clock never showed (Apia went from 29 to 31 December 2011) without repeating it, timed or not', async () => {
+    for (const extra of [{}, { time: '12:00' }, { time: '12:00', latitude: -13.83, longitude: -171.76 }]) {
+      const args = { birthDate: '2011-12-30', zone: 'Pacific/Apia', ...extra };
+      await expect(run(args)).rejects.toThrow(RangeError);
+      const refused = await executeAiTool('get_vedic_signs', args, ON);
+      expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+      expect(JSON.stringify(refused)).not.toMatch(/2011|12-30|Apia|13\.83|171\.76/u);
+    }
+    await expect(birthDayEnds({ birthDate: '2011-12-30', zone: 'Pacific/Apia' }, clock)).rejects.toThrow(RangeError);
+    // The dates either side, and the same date on another clock, are answered.
+    for (const args of [{ birthDate: '2011-12-29', zone: 'Pacific/Apia' }, { birthDate: '2011-12-31', zone: 'Pacific/Apia' }, { birthDate: '2011-12-30', zone: 'Pacific/Pago_Pago' }, { birthDate: '2011-12-30' }])
+      expect((await executeAiTool('get_vedic_signs', args, ON)).ok, JSON.stringify(args)).toBe(true);
+  });
+
   it('takes every clock in tzdb since 1800 into the window of a date given without a zone', async () => {
     // The names the runtime's own time zone data knows: a name it does not know is refused before any clock reads it.
     const zones = tzNames.names.filter((zone) => { try { new Intl.DateTimeFormat('en-US', { timeZone: zone }); return true; } catch { return false; } });
