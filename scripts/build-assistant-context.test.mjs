@@ -97,14 +97,16 @@ describe('assistant site context', () => {
       // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
       // The Fortune 500 CEO sign study at /studies/fortune-500-ceo-signs/ adds one more.
       // The support page at /support/ adds one more, and one static page.
-      consumerRoutes: 721 + Number(goodDays),
+      // The iPhone app privacy policy adds one static page.
+      consumerRoutes: 722 + Number(goodDays),
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 82 + Number(goodDays),
+      staticPages: 83 + Number(goodDays),
       tools: 27,
     });
+    expect(context).toContain('- /app/privacy/: How Simastry handles');
     if (goodDays) expect(context).toContain(GOOD_DAYS_LINE);
     else expect(context).not.toContain('/good-days/');
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');

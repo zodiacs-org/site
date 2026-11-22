@@ -349,9 +349,14 @@ function compactDescription(value, maxLength = 42) {
   return `${output.replace(/[.,;:!?]+$/, '')}…`;
 }
 
+// The native app inventory uses a colon. Keep the existing website entries byte-identical.
+function routeLabel(route) {
+  return route.startsWith('/app/') ? `- ${route}:` : `- ${route} \u2014`;
+}
+
 function pageLines(entries, { compact = false } = {}) {
   return entries
-    .map((entry) => `- ${entry.route} — ${compact ? compactDescription(entry.description) : clean(entry.description)}`)
+    .map((entry) => `${routeLabel(entry.route)} ${compact ? compactDescription(entry.description) : clean(entry.description)}`)
     .join('\n');
 }
 
@@ -509,7 +514,7 @@ export async function generateAssistantContext({ repoRoot = repo, env = process.
     throw new Error(`Assistant context duplicates localized routes under /${duplicatedLocale}`);
   }
   const missingDescriptions = [...consumerRoutes]
-    .filter((route) => !context.includes(`- ${route} —`));
+    .filter((route) => !context.includes(routeLabel(route)));
   if (missingDescriptions.length) {
     throw new Error(`Assistant context has routes without descriptions: ${missingDescriptions.join(', ')}`);
   }
