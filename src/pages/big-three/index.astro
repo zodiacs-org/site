@@ -2,7 +2,6 @@
 import SharingToolLinks from '../../components/sharing/SharingToolLinks.astro';
 import { sharingText } from '../../lib/sharing/copy';
 import Base from '../../layouts/Base.astro';
-import Motion from '../../components/Motion.astro';
 import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import { SHARING_COPY } from '../../lib/sharing/copy';
@@ -68,7 +67,6 @@ const jsonLd = [
       </p>
     </div>
 
-    <Motion />
     <BigThreeQuick copy={SHARING_COPY.en} client:load />
     <SharingToolLinks current="/big-three/" />
   </section>

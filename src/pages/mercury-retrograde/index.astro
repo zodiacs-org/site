@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Motion from '../../components/Motion.astro';
 import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import AskGuideAbout from '../../components/AskGuideAbout.astro';
 import Motion from '../../components/Motion.astro';
@@ -175,7 +174,6 @@ const jsonLd = [
     </div>
     {/* The windows table rises once as it scrolls in (docs/MOTION.md); the hero and the
         "right now" answer above stay still. */}
-    <Motion />
     <div class="table-wrap" data-enter="rise">
       <table class="rx-table">
         <thead>
