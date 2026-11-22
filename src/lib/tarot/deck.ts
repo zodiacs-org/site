@@ -39,5 +39,5 @@ export const SUIT_THEMES: Readonly<Record<Suit | 'major', { name: string; theme:
   wands: { name: 'Wands', theme: 'Drive, projects and initiative: what you start, what you are excited about, and what you push for.' },
   cups: { name: 'Cups', theme: 'Feelings and relationships: affection, friendship, disappointment, and what you hold close.' },
   swords: { name: 'Swords', theme: 'Thought, decisions and honesty: clear thinking, hard conversations, worry, and conflict.' },
-  pentacles: { name: 'Pentacles', theme: 'Work, money and daily life: earning, skill, home, routine, and the patience of building something.' },
+  pentacles: { name: 'Pentacles', theme: 'Work, resources and daily life: craft, skill, home, routine, and the patience of building something.' },
 });

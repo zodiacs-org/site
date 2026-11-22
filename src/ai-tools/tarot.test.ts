@@ -122,8 +122,9 @@ describe('the tarot switch on', () => {
     expect(tool.inputSchema.additionalProperties).toBe(false);
     expect(tool.inputSchema.properties.spread.enum).toEqual(['one-card', 'three-card', 'celtic-cross']);
     expect(tool.description).toContain('Tarot is a separate practice from astrology');
-    // Work, money, wellbeing and agreements as tarot reads them; the lines it may not cross; no mandatory reflection line.
-    expect(tool.description).toContain('including work, money, wellbeing and agreements where the card speaks to them');
+    // Work, practical foundations, wellbeing and agreements as tarot reads them, with no money/earnings/promotion forecasts.
+    expect(tool.description).toContain('including work, practical foundations, wellbeing and agreements where the card speaks to them');
+    expect(tool.description).toContain('with no money, earnings or promotion forecasts');
     expect(tool.description).toContain('Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.');
     expect(tool.description).not.toMatch(/reflection/u);
     expect(tool.description).toContain("never send the person's question, name or birth details");

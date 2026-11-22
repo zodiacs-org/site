@@ -43565,7 +43565,7 @@ var SUIT_THEMES = Object.freeze({
   wands: { name: "Wands", theme: "Drive, projects and initiative: what you start, what you are excited about, and what you push for." },
   cups: { name: "Cups", theme: "Feelings and relationships: affection, friendship, disappointment, and what you hold close." },
   swords: { name: "Swords", theme: "Thought, decisions and honesty: clear thinking, hard conversations, worry, and conflict." },
-  pentacles: { name: "Pentacles", theme: "Work, money and daily life: earning, skill, home, routine, and the patience of building something." }
+  pentacles: { name: "Pentacles", theme: "Work, resources and daily life: craft, skill, home, routine, and the patience of building something." }
 });
 
 // src/lib/tarot/spreads.ts
@@ -43744,8 +43744,8 @@ var TAROT_MEANINGS = {
   },
   "temperance": {
     keywords: ["balance", "moderation", "blending", "patience"],
-    upright: "A winged figure pours water between two cups, slowly, without spilling a drop. Temperance is the middle way: balance between work and rest, food and sleep, spending and saving. The tradition reads it as wellbeing restored through moderation. Notice where small, steady adjustments would do more than a dramatic change.",
-    reversed: "Reversed, the mix is off: late nights, overdoing it, all work and then none, or swinging between extremes with money or habits. Ask where you have lost your sense of proportion, and what a steadier daily measure might look like, in rest as much as in effort.",
+    upright: "A winged figure pours water between two cups, slowly, without spilling a drop. Temperance is the middle way: balance between work and rest, food and sleep, giving and keeping. The tradition reads it as wellbeing restored through moderation. Notice where small, steady adjustments would do more than a dramatic change.",
+    reversed: "Reversed, the mix is off: late nights, overdoing it, all work and then none, or swinging between extremes with resources or habits. Ask where you have lost your sense of proportion, and what a steadier daily measure might look like, in rest as much as in effort.",
     question: "Where in your life would a little less and a little slower help?"
   },
   "the-devil": {
@@ -43822,7 +43822,7 @@ var TAROT_MEANINGS = {
   },
   "six-of-wands": {
     keywords: ["recognition", "success", "confidence", "praise"],
-    upright: "A rider wearing a laurel wreath moves through a cheering crowd. The Six of Wands is the card of public recognition: a promotion, a project that lands, credit where it is due. The tradition reads it as a strong card for career and reputation. Accept the praise graciously, and note what kind of effort brought you here.",
+    upright: "A rider wearing a laurel wreath moves through a cheering crowd. The Six of Wands is the card of public recognition: a milestone, a project that lands, credit where it is due. The tradition reads it as a strong card for career and reputation. Accept the praise graciously, and note what kind of effort brought you here.",
     reversed: "Reversed, recognition may be slow or go to someone else, or you might be relying on outside approval to feel your work matters. It can also describe pride that makes working with others harder. Ask what success would mean to you if nobody else were clapping.",
     question: "How would you measure this success if nobody else saw it?"
   },
@@ -44043,15 +44043,15 @@ var TAROT_MEANINGS = {
     question: "What would you decide if you looked only at the facts and your principles?"
   },
   "ace-of-pentacles": {
-    keywords: ["opportunity", "new income", "practical start", "potential"],
-    upright: "A hand offers a single disc above a garden gate. The Ace of Pentacles is a practical opening: a new job, a pay rise, a business idea, a skill that can earn its keep. The tradition reads it as a good start for money and work, built one steady step at a time.",
-    reversed: "Reversed, a promising offer may slip away through poor planning, or money and effort leak out faster than they come in. Consider what groundwork is missing, whether a simple budget would help, and whether you are passing over something solid because it looks ordinary.",
+    keywords: ["opportunity", "practical foundation", "practical start", "potential"],
+    upright: "A hand offers a single disc above a garden gate. The Ace of Pentacles is a practical opening: a new role, a grounded plan, a craft worth building, a skill that can carry its weight. The tradition reads it as a steady foundation for work and resources, built one step at a time.",
+    reversed: "Reversed, a promising offer may slip away through poor planning, or time and effort scatter faster than they take root. Consider what groundwork is missing, whether a simpler plan would help, and whether you are passing over something solid because it looks ordinary.",
     question: "What practical first step could you take today?"
   },
   "two-of-pentacles": {
-    keywords: ["juggling", "adaptability", "budgeting", "balance"],
-    upright: "A figure juggles two discs linked by a figure-eight loop, ships riding the waves behind. The Two of Pentacles is about keeping several commitments moving at once: two jobs, bills and plans, work and home. The tradition reads it as a time to stay flexible with your hours and your money.",
-    reversed: "Reversed, the juggling gets messy: too many commitments, payments or deadlines at once, and something dropped. Consider what to put down or postpone, where your money and hours are really going, and whether you keep saying yes to things that leave no room for what matters.",
+    keywords: ["juggling", "adaptability", "pacing", "balance"],
+    upright: "A figure juggles two discs linked by a figure-eight loop, ships riding the waves behind. The Two of Pentacles is about keeping several commitments moving at once: two roles, errands and plans, work and home. The tradition reads it as a time to stay flexible with your hours and your energy.",
+    reversed: "Reversed, the juggling gets messy: too many commitments, tasks or deadlines at once, and something dropped. Consider what to put down or postpone, where your hours and attention are really going, and whether you keep saying yes to things that leave no room for what matters.",
     question: "Which of the things you are juggling could you put down for a while?"
   },
   "three-of-pentacles": {
@@ -44061,69 +44061,69 @@ var TAROT_MEANINGS = {
     question: "Whose skills would make your work better if you invited them in?"
   },
   "four-of-pentacles": {
-    keywords: ["saving", "security", "control", "holding on"],
-    upright: "A seated figure holds one disc tightly to his chest, with others under his feet and on his head. The Four of Pentacles is about saving and holding on: money put by, a secure position, control of what you have built. The tradition reads it as security, and warns when caution turns into a tight fist.",
-    reversed: "Reversed, the grip loosens: you may be ready to spend or share more freely, or worried that money is slipping away. It can also point to holding on so hard that nothing new comes in. Consider what you are guarding, and what a sensible balance of saving and spending would be.",
+    keywords: ["stewardship", "security", "control", "holding on"],
+    upright: "A seated figure holds one disc tightly to his chest, with others under his feet and on his head. The Four of Pentacles is about guarding and holding on: reserves kept close, a steady position, control of what you have built. The tradition reads it as security, and warns when caution turns into a tight fist.",
+    reversed: "Reversed, the grip loosens: you may be ready to share or let go more freely, or worried that your footing is slipping away. It can also point to holding on so hard that nothing new comes in. Consider what you are guarding, and what a sensible balance of keeping and sharing would be.",
     question: "What are you holding so tightly that nothing new can reach you?"
   },
   "five-of-pentacles": {
     keywords: ["hardship", "lean times", "exclusion", "seeking support"],
-    upright: "Two figures walk through snow past a lit church window. The Five of Pentacles is the card of a lean stretch: money tight, work uncertain, feeling left out in the cold. The tradition reads it as hardship that help can ease, so look for the lit window: support, advice, people who would gladly help.",
-    reversed: "Reversed, a difficult season may be easing, with money or work starting to recover, or you are finally accepting help that was always on offer. Consider who you could reach out to, and whether pride or shame has been keeping you outside the door.",
+    upright: "Two figures walk through snow past a lit church window. The Five of Pentacles is the card of a lean stretch: resources stretched thin, work uncertain, feeling left out in the cold. The tradition reads it as hardship that help can ease, so look for the lit window: support, advice, people who would gladly help.",
+    reversed: "Reversed, a difficult season may be easing, with energy or work starting to steady, or you are finally accepting help that was always on offer. Consider who you could reach out to, and whether pride or shame has been keeping you outside the door.",
     question: "Where is help available that you have not yet asked for?"
   },
   "six-of-pentacles": {
     keywords: ["generosity", "giving and receiving", "sharing", "fairness"],
-    upright: "A merchant holding a pair of scales hands out money to two people kneeling nearby. The Six of Pentacles is about giving and receiving: a fair wage, a loan repaid, help offered or accepted. The tradition reads it as resources flowing where they are needed. Notice where you can give, and where you can receive gracefully.",
-    reversed: "Reversed, generosity may come with strings attached, or money and favours run only one way. You might be lending what you cannot spare, or accepting help that leaves you uneasy. Consider whether the exchange feels fair to both sides, and whether something owed needs settling.",
+    upright: "A figure holding a pair of scales shares discs with two people kneeling nearby. The Six of Pentacles is about giving and receiving: a fair exchange, a favour returned, help offered or accepted. The tradition reads it as resources flowing where they are needed. Notice where you can give, and where you can receive gracefully.",
+    reversed: "Reversed, generosity may come with strings attached, or help and favours run only one way. You might be giving what you cannot spare, or accepting help that leaves you uneasy. Consider whether the exchange feels fair to both sides, and whether something owed needs settling.",
     question: "Where is the balance of giving and receiving uneven in your life?"
   },
   "seven-of-pentacles": {
     keywords: ["patience", "assessment", "long-term effort", "perseverance"],
-    upright: "A gardener leans on a hoe, looking at a bush where seven discs are ripening. The Seven of Pentacles is long-term effort: savings that grow slowly, a career that takes years, work that pays off over time. The tradition reads it as a moment to take stock of what your effort is earning, and adjust.",
-    reversed: "Reversed, impatience may tempt you to abandon something just before it pays off, or you keep putting in time and money without checking what comes back. Consider whether you need more patience, or a clearer look at what your work is actually producing.",
+    upright: "A gardener leans on a hoe, looking at a bush where seven discs are ripening. The Seven of Pentacles is long-term effort: foundations that grow slowly, a craft that takes years, work that bears fruit over time. The tradition reads it as a moment to take stock of what your effort is building, and adjust.",
+    reversed: "Reversed, impatience may tempt you to abandon something just before it bears fruit, or you keep putting in time and energy without checking what comes back. Consider whether you need more patience, or a clearer look at what your work is actually producing.",
     question: "Is the work you are putting in growing what you actually want?"
   },
   "eight-of-pentacles": {
     keywords: ["diligence", "practice", "mastery", "attention to detail"],
-    upright: "An artisan sits at a workbench, carving one disc after another, the finished ones hung on display. The Eight of Pentacles is skilled, steady work: training, a craft, a job you get better at by doing. The tradition reads it as good for study, apprenticeships and earning through a skill. Focus on the work itself.",
+    upright: "An artisan sits at a workbench, carving one disc after another, the finished ones hung on display. The Eight of Pentacles is skilled, steady work: training, a craft, a job you get better at by doing. The tradition reads it as steady ground for study, apprenticeships and mastering a craft. Focus on the work itself.",
     reversed: "Reversed, practice can turn into perfectionism, or the work becomes rote and you lose interest. Consider whether you are improving or just repeating, and whether a new challenge or a short break would bring back the care.",
     question: "Which skill would you practise until it becomes second nature?"
   },
   "nine-of-pentacles": {
     keywords: ["self-reliance", "refinement", "independence", "enjoyment"],
-    upright: "A woman stands in a flourishing vineyard, a falcon on her gloved hand, at ease in a place she has tended. The Nine of Pentacles is comfort earned by your own effort: money of your own, a pleasant home, independence. The tradition reads it as a good time to enjoy what your work has paid for.",
+    upright: "A woman stands in a flourishing vineyard, a falcon on her gloved hand, at ease in a place she has tended. The Nine of Pentacles is comfort built by your own effort: self-reliance, a pleasant home, independence. The tradition reads it as a moment to appreciate what steady work has built.",
     reversed: "Reversed, independence may become isolation, or you find it hard to enjoy what you have built because there is always more to do. Consider whether you are allowing yourself to rest in your achievements, and whether you need others more than you admit.",
     question: "What have you built that you can stop and enjoy today?"
   },
   "ten-of-pentacles": {
     keywords: ["legacy", "family", "security", "lasting foundations"],
-    upright: "Several generations gather in an archway, with dogs at their feet and a house behind. The Ten of Pentacles is about what lasts: family, home, savings and traditions built over years. The tradition reads it as long-term security, an inheritance of skill or property, and thought for what you would like to leave others.",
-    reversed: "Reversed, family expectations may feel heavy, or money and property cause friction at home. Old traditions might clash with how you want to live. Consider which inherited habits support you and which hold you back, and how to talk about shared resources openly.",
+    upright: "Several generations gather in an archway, with dogs at their feet and a house behind. The Ten of Pentacles is about what lasts: family, home, resources and traditions built over years. The tradition reads it as long-term security, an inheritance of skill or property, and thought for what you would like to leave others.",
+    reversed: "Reversed, family expectations may feel heavy, or shared property and household duties cause friction at home. Old traditions might clash with how you want to live. Consider which inherited habits support you and which hold you back, and how to talk about shared resources openly.",
     question: "What would you like to pass on to the people who come after you?"
   },
   "page-of-pentacles": {
     keywords: ["study", "diligence", "new skill", "application"],
-    upright: "A young figure holds a disc up to the light, studying it closely. The Page of Pentacles is the careful learner: a new course, an apprenticeship, a first job, a practical goal such as saving for something. Commit to learning slowly and well, with patience for the clumsy early stages.",
+    upright: "A young figure holds a disc up to the light, studying it closely. The Page of Pentacles is the careful learner: a new course, an apprenticeship, a first job, a practical goal built piece by piece. Commit to learning slowly and well, with patience for the clumsy early stages.",
     reversed: "Reversed, the learner may lose focus, or plan endlessly without ever picking up the tools. Consider whether you need a concrete next step, a teacher, or simply to begin, accepting that first attempts are usually rough.",
     question: "What are you ready to learn slowly and well?"
   },
   "knight-of-pentacles": {
     keywords: ["reliability", "routine", "patience", "persistence"],
-    upright: "A knight sits on a still horse, looking at a disc, in no hurry at all. The Knight of Pentacles is steady, reliable effort: showing up for work every day, keeping to a budget, finishing what you start. The tradition reads it as slow, dependable progress with work and money. Value consistency.",
+    upright: "A knight sits on a still horse, looking at a disc, in no hurry at all. The Knight of Pentacles is steady, reliable effort: showing up for work every day, keeping a steady plan, finishing what you start. The tradition reads it as slow, dependable progress in work and daily routines. Value consistency.",
     reversed: "Reversed, steadiness can turn into stubbornness or boredom, where routine becomes a rut. Or you might be neglecting the everyday tasks you usually do well. Consider whether your routine still serves you, or whether a small change would bring fresh focus.",
     question: "Which routine, kept up faithfully, would make the biggest difference?"
   },
   "queen-of-pentacles": {
     keywords: ["nurturing", "practicality", "homemaking", "care"],
-    upright: "The Queen of Pentacles sits in a garden with a rabbit at her feet, holding a disc in her lap. She runs a household well, manages money sensibly, and still finds time for others. Notice how practical care, a cooked meal, a tidy budget, a good night's sleep, supports everyone around you, you included.",
+    upright: "The Queen of Pentacles sits in a garden with a rabbit at her feet, holding a disc in her lap. She runs a household well, tends her resources sensibly, and still finds time for others. Notice how practical care, a cooked meal, an orderly home, a good night's sleep, supports everyone around you, you included.",
     reversed: "Reversed, caring for everyone else may leave your own needs unmet, or the home becomes a source of stress rather than comfort. Consider whether you are trying to do everything yourself, and what would help you feel looked after too.",
     question: "What small act of practical care would make your home feel better?"
   },
   "king-of-pentacles": {
     keywords: ["stability", "business", "dependability", "stewardship"],
-    upright: "The King of Pentacles sits among vines and flowers, relaxed and secure on his throne. He is the person who has built practical and financial stability through years of work: the business owner, the steady provider. The tradition reads him as success in business and money, used well and shared.",
-    reversed: "Reversed, stability may turn into stubbornness, or success into a focus on status and possessions. It can also point to careless spending, or a business decision made for show. Consider whether you are measuring yourself by what you own rather than who you are.",
+    upright: "The King of Pentacles sits among vines and flowers, relaxed and secure on his throne. He is the person who has built practical stability through years of work: the builder, the steady steward. The tradition reads him as grounded stewardship of work and resources, used well and shared.",
+    reversed: "Reversed, stability may turn into stubbornness, or success into a focus on status and possessions. It can also point to careless excess, or a decision made for show. Consider whether you are measuring yourself by what you own rather than who you are.",
     question: "How can your experience help someone else build their own steadiness?"
   }
 };
@@ -44560,7 +44560,7 @@ var TOOL_DESCRIPTIONS = {
   get_solar_return: `Gives the person's solar return: the chart for their next birthday, cast for the instant the Sun returns to its birth degree, with the year's main themes (the return's rising sign and the house of its Sun with a birth time and place, the Moon's sign with a birth time, where Jupiter grows and Saturn builds, and the chart's tightest aspect). Use it for questions such as what my next birthday chart says, or what themes my coming year holds. Give their birth date, with the time, time zone and coordinates only if they know them; never guess a time. which: current gives the return that opened the birthday year now running. Birth details are used for this answer only: never stored, logged or put in a link. The themes come with their limits, the return's time on the person's clock and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing it. Money, career, wellbeing and legal themes are read as astrology traditionally reads them; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.`,
   get_numerology: "Works out numerology numbers from a birth date and, if the person gives it, their full name at birth: the Life Path, Expression, Soul Urge and Personality numbers (Pythagorean system, with 11, 22 and 33 kept as master numbers) and the Personal Year, each with Zodiacs' own written meaning. Numerology is a separate tradition from astrology, with no planets, signs or sky in it: say so when you share it, and do not present it as part of a birth chart. Use it when someone asks for their life path number or another numerology number. Give the birth date, and the name only as the person gives it for this reading; never guess either. The name and date are used for this answer only: they are not returned, stored or put in a link. Share the meanings plainly as numerology's traditional reading, including work and wellbeing where the tradition speaks to them, with no money, earnings or promotion forecasts. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.",
   find_good_days: "Finds the best days for a goal in a window of up to twelve months, by the traditional rules of electional astrology, and the days to avoid. Goals: launch, contract (signing a contract), move (moving home), relationship (starting a relationship), travel, job (starting a new job) and wedding. Each day is read from the Moon's phase and sign, the void-of-course Moon, Mercury, Venus and Mars retrograde and their station days, eclipses (2026 to 2030) and the Moon's supportive or difficult aspects that day. Give the goal, from and to as dates (at most 366 days in all) and the person's time zone. If the person asks for their own chart to count, add their birth date, and the birth time and birthplace time zone only if they give them; these are used for this answer only and never stored. Never send a child's birth date: it refuses one under 13, and gives no relationship or wedding reading from one under 18. It returns ranked days, each with a score, a one-line reason and a reading-confidence label, the days to avoid with a reason each, and the retrograde periods and eclipses in the window. Share them plainly as astrology's traditional reading, money, career and legal themes included. It gives no timing for surgery, medical procedures or treatment, and a goal that asks for one gets that answer; do not call it for those. Make no price call, buy or sell signal, or prediction of who wins a legal matter. It guarantees nothing and does not schedule or book anything.",
-  draw_tarot: "Draws tarot cards: one card, three cards (past, present, future) or the ten-card Celtic Cross, each upright or reversed, with Zodiacs' own written meaning and a question to think about. Tarot is a separate practice from astrology, with no planets, signs or birth details in it: say so when you share the cards, and do not mix them with a chart reading. Use it when someone asks for a tarot card or a tarot reading. Each draw is random and fair, from the full 78-card deck with a secure random number generator, and a new call is a new draw. It takes only the spread and whether to allow reversed cards: never send the person's question, name or birth details, and keep the question in the conversation. Share each card plainly as tarot's traditional reading, including work, money, wellbeing and agreements where the card speaks to them, such as the Ace of Pentacles as a good opening for income or the Four of Swords as a call to rest. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter."
+  draw_tarot: "Draws tarot cards: one card, three cards (past, present, future) or the ten-card Celtic Cross, each upright or reversed, with Zodiacs' own written meaning and a question to think about. Tarot is a separate practice from astrology, with no planets, signs or birth details in it: say so when you share the cards, and do not mix them with a chart reading. Use it when someone asks for a tarot card or a tarot reading. Each draw is random and fair, from the full 78-card deck with a secure random number generator, and a new call is a new draw. It takes only the spread and whether to allow reversed cards: never send the person's question, name or birth details, and keep the question in the conversation. Share each card plainly as tarot's traditional reading, including work, practical foundations, wellbeing and agreements where the card speaks to them, such as the Ace of Pentacles as a steady practical foundation or the Four of Swords as a call to rest, with no money, earnings or promotion forecasts. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter."
 };
 var SKY_EVENTS_INPUT_SCHEMAS = {
   get_natal_chart: natalChartInputWithHouses,
@@ -45899,7 +45899,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes("find_birthplace") ? " a town or city named instead of coordinates, find_birthplace;" : ""} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.`);
           if (skyEvents2) capabilities.limitations.push("Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead, such as the next eclipses, a planet's next retrograde, when a planet changes sign, every full Moon next year or this week's void-of-course Moon periods, search_sky_events; eclipses, retrograde periods and Moons in a calendar app, get_sky_calendar; a yes or no check on one moment or day, check_sky_fact. In a birth chart, get_natal_chart gives the lunar nodes and Chiron, and takes houseSystem placidus for Placidus houses.");
           if (numerologyOn(dependencies)) capabilities.limitations.push("get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition's reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.");
-          if (tarotOn(dependencies)) capabilities.limitations.push("draw_tarot is listed in tools/list too: a fair, random tarot draw (one card, three cards or the Celtic Cross, upright or reversed) with Zodiacs' own meanings. Tarot is a separate practice from astrology, with no planets or signs in it; each card is read as the tradition reads it, work, money, wellbeing and agreements included, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.");
+          if (tarotOn(dependencies)) capabilities.limitations.push("draw_tarot is listed in tools/list too: a fair, random tarot draw (one card, three cards or the Celtic Cross, upright or reversed) with Zodiacs' own meanings. Tarot is a separate practice from astrology, with no planets or signs in it; each card is read as the tradition reads it, work, practical foundations, wellbeing and agreements included, with no reading-confidence label, no money, earnings or promotion forecasts, and no price or investment calls, diagnoses, death predictions or legal verdicts.");
         }
         if (goodDaysOn(dependencies)) {
           const capabilities = data;

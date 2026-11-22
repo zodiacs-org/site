@@ -141,11 +141,13 @@ describe('no seeding', () => {
 
 describe('the meanings', () => {
   /**
-   * Work, money, wellbeing and agreements are allowed as the tradition reads them (the copy rule of 9 November 2026).
+   * Work, practical foundations, wellbeing and agreements are allowed as the tradition reads them,
+   * with no money, earnings or promotion forecasts (ZOD-30).
    * Still not allowed: price, stock or coin calls, buy or sell signals, diagnoses or medical timing, death predictions,
    * and saying a legal matter will be won or lost.
    */
   const DISALLOWED = /\b(?:stocks|stock (?:markets?|prices?|picks?|tips?)|share prices?|crypto\w*|tokens?|coins?|bitcoin|price targets?|buy|sell|selling|diagnos\w*|prognos\w*|surgery|pregnan\w*|death|die|dies|dying|dead|lawsuit|verdict|(?:will|going to) (?:win|lose)|lottery|gambl\w*)\b/iu;
+  const MONEY_FORECAST = /\b(?:money|earn|earns|earned|earner|earners|earning|earnings|promot\w*|income|salary|salaries|savings?|wealth\w*|profit\w*|budgets?|budgeting|financ\w*|riches|prosper\w*|spend\w*|cash|bonus\w*|pay rise|pays off|paid for|wage\w*|loan\w*)\b/iu;
   const FORECAST = /\byou will\b|\bwill happen\b|\bis coming\b|\bexpect to\b|\bsoon you\b/iu;
 
   it('has a meaning for every card, in deck order', () => {
@@ -175,13 +177,14 @@ describe('the meanings', () => {
     for (const text of texts) {
       expect(text, text).not.toMatch(/[–—]| - /u);
       expect(text, text).not.toMatch(DISALLOWED);
+      expect(text, text).not.toMatch(MONEY_FORECAST);
       expect(text, text).not.toMatch(FORECAST);
       expect(text, text).not.toMatch(/!/u);
     }
   });
 
-  it('reads work, money, wellbeing and agreements where the tradition does', () => {
-    expect(TAROT_MEANINGS['ace-of-pentacles'].upright).toContain('a good start for money and work');
+  it('reads work, practical foundations, wellbeing and agreements where the tradition does', () => {
+    expect(TAROT_MEANINGS['ace-of-pentacles'].upright).toContain('a steady foundation for work and resources');
     expect(TAROT_MEANINGS['four-of-swords'].upright).toContain('take rest seriously');
     expect(TAROT_MEANINGS.justice.upright).toContain('a good time to sign agreements');
     expect(TAROT_MEANINGS.temperance.upright).toContain('wellbeing');
