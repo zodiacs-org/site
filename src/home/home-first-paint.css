@@ -236,6 +236,9 @@ html[data-local-chrome-typography][lang='en'] {
 }
 
 /* Only the prepaint hint can reveal a returning visitor's greeting. */
+:root[data-home-access-pending] { overflow-y: scroll; }
+:root[data-home-access-pending] #main > .hero ~ *,
+:root[data-home-access-pending] #main ~ footer { display: none; }
 :root:not([data-home-returning]) .wb-greeting,
 :root:not([data-home-returning="chart"]) .wb-greeting .wb-chart,
 :root:not([data-home-returning="choose"]) .wb-greeting .wb-choose { display: none; }

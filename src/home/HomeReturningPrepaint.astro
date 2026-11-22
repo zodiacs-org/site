@@ -2,11 +2,23 @@
 import { livingChartCaptureEnabled } from '../lib/living-chart/feature-flags';
 ---
 <script is:inline define:vars={{ personalToday: livingChartCaptureEnabled() }}>
-  function syncHomeGreeting() {
+  function syncHomeGreeting(initial) {
     const root = document.documentElement;
     root.removeAttribute('data-home-returning');
     try {
-      if (root.hasAttribute('data-account-sync-v2') && !window.zodiacsProfileAccess?.canRead()) return;
+      if (root.hasAttribute('data-account-sync-v2') && !window.zodiacsProfileAccess?.canRead()) {
+        // The presence loader can inspect key names while their values are locked.
+        if (initial === true) {
+          for (let index = 0; index < localStorage.length; index++) {
+            if (localStorage.key(index) === 'zodiacs.profile.v1') {
+              root.setAttribute('data-home-access-pending', '');
+              break;
+            }
+          }
+        }
+        return;
+      }
+      root.removeAttribute('data-home-access-pending');
       const profile = JSON.parse(localStorage.getItem('zodiacs.profile.v1') || 'null');
       if (profile?.version !== 1 || !Array.isArray(profile.charts)) return;
       const charts = profile.charts.filter(chart => Array.isArray(chart?.summary?.bodies)
@@ -17,7 +29,12 @@ import { livingChartCaptureEnabled } from '../lib/living-chart/feature-flags';
       }
     } catch {}
   }
-  syncHomeGreeting();
+  syncHomeGreeting(true);
   window.addEventListener('zodiacs:profile', syncHomeGreeting);
   window.addEventListener('zodiacs:profile-access', syncHomeGreeting);
+  window.addEventListener('zodiacs:home-access-decided', () => {
+    if (!document.documentElement.hasAttribute('data-home-access-pending')) return;
+    syncHomeGreeting();
+    document.documentElement.removeAttribute('data-home-access-pending');
+  });
 </script>

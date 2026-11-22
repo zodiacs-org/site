@@ -109,9 +109,13 @@ describe('home greeting prepaint', () => {
     let raw = JSON.stringify({ version: 1, charts: [saved('Owner', 'self')] });
     const getItem = vi.fn(() => raw);
     runInNewContext(script, {
-      document: { documentElement: root }, localStorage: { getItem }, personalToday: true,
+      document: { documentElement: root }, localStorage: { getItem, length: 1, key: () => 'zodiacs.profile.v1' }, personalToday: true,
       window: { addEventListener: events.addEventListener.bind(events), zodiacsProfileAccess: { canRead: () => allowed } },
     });
+    expect(getItem).not.toHaveBeenCalled();
+    expect(attributes.has('data-home-access-pending')).toBe(true);
+    events.dispatchEvent(new Event('zodiacs:home-access-decided'));
+    expect(attributes.has('data-home-access-pending')).toBe(false);
     expect(getItem).not.toHaveBeenCalled();
     allowed = true;
     events.dispatchEvent(new Event('zodiacs:profile-access'));
@@ -119,6 +123,7 @@ describe('home greeting prepaint', () => {
     allowed = false;
     events.dispatchEvent(new Event('zodiacs:profile-access'));
     expect(attributes.has('data-home-returning')).toBe(false);
+    expect(attributes.has('data-home-access-pending')).toBe(false);
     expect(getItem).toHaveBeenCalledTimes(1);
     allowed = true;
     raw = JSON.stringify({ version: 1, charts: [saved('First', 'self'), saved('Second', 'self')] });
