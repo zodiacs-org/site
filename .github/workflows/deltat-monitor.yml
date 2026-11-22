@@ -3,9 +3,10 @@ name: ΔT monitor
 # Once a week, compares the engine's frozen ΔT table (model zodiacs-deltat/1)
 # with IERS's finals2000A.all, and opens or comments on the issue
 # "ΔT table needs a refresh" when the model has drifted from IERS or its
-# predictions are about to run out. It commits nothing: a refresh is an
-# engine release that the site takes through a normal pull request. The rule
-# and its replay over 2025–2026: docs/platform/evidence/deltat-2026-09-25/README.md §6.
+# predictions are about to run out. It also compares overlapping predictions
+# for UT1 and checks for IANA time zone releases. A refresh is an engine
+# release that the site takes through a normal pull request.
+# Rules: docs/platform/evidence/deltat-2026-09-25/README.md, sections 6 and 11.
 
 on:
   schedule:
@@ -21,7 +22,7 @@ concurrency:
 
 jobs:
   monitor:
-    name: Compare the ΔT table with IERS
+    name: Check IERS and IANA data
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -39,12 +40,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Compare with IERS
+      - name: Check IERS and IANA data
         id: monitor
-        run: node scripts/deltat-monitor.mjs --issue-body "$RUNNER_TEMP/deltat-issue.md"
+        run: >-
+          node scripts/deltat-monitor.mjs
+          --issue-body "$RUNNER_TEMP/deltat-issue.md"
+          --tz-issue-body "$RUNNER_TEMP/tzdb-issue.md"
 
       - name: Open or update the refresh issue
-        if: steps.monitor.outputs.status != 'quiet'
+        if: steps.monitor.outputs.status == 'fired' || steps.monitor.outputs.status == 'failed'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -57,8 +61,22 @@ jobs:
             gh issue create --title "$TITLE" --body-file "$RUNNER_TEMP/deltat-issue.md"
           fi
 
-      - name: Mark the run failed when IERS could not be read
-        if: steps.monitor.outputs.status == 'failed'
+      - name: Open or update the time zone refresh issue
+        if: steps.monitor.outputs.tz_status == 'fired'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          echo "No mirror gave a valid finals2000A.all; the issue carries the reasons." >&2
+          TITLE="Time zone data needs a refresh"
+          NUMBER=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number,title \
+            --jq '.[] | select(.title == "Time zone data needs a refresh") | .number' | head -n 1)
+          if [ -n "$NUMBER" ]; then
+            gh issue comment "$NUMBER" --body-file "$RUNNER_TEMP/tzdb-issue.md"
+          else
+            gh issue create --title "$TITLE" --body-file "$RUNNER_TEMP/tzdb-issue.md"
+          fi
+
+      - name: Mark the run failed when source data could not be read
+        if: steps.monitor.outputs.status == 'failed' || steps.monitor.outputs.tz_status == 'failed'
+        run: |
+          echo "Source data could not be read. See the monitor summary for details." >&2
           exit 1
