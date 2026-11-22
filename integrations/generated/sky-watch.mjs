@@ -42819,6 +42819,17 @@ function getNumerology(args, context) {
 // src/ai-tools/personal/personal-day.ts
 import { z as z16 } from "zod";
 
+// src/lib/time/local-day.ts
+var LAST_MINUTE_MS = 59e3;
+function readsOnDate(date3, resolution) {
+  const wall = resolution.utc.getTime() + Math.round(resolution.offsetMinutes * 6e4);
+  return new Date(wall).toISOString().slice(0, 10) === date3;
+}
+function localDaySpan(date3, first2, last2) {
+  if (!readsOnDate(date3, first2)) return null;
+  return [first2.utc, new Date(last2.utc.getTime() + LAST_MINUTE_MS)];
+}
+
 // src/lib/personal-day/clock.ts
 var DAY18 = 864e5;
 function dayLabel3(at, timeZone) {
@@ -42909,6 +42920,7 @@ async function readPersonalDay(natal, input, clock2) {
   const { date: date3, zone: zone10 } = input;
   const dayStart2 = await startOf(date3, zone10, clock2);
   const dayEnd = await startOf(nextDate2(date3), zone10, clock2);
+  if (dayEnd.getTime() <= dayStart2.getTime()) throw new RangeError("date must be a real date, such as 2026-11-12.");
   const midday = new Date((dayStart2.getTime() + dayEnd.getTime()) / 2);
   const later = new Date(midday.getTime() + HOUR6);
   const points = [...TRANSIT_BODY_ORDER.filter((body2) => natal.timeKnown || body2 !== "Moon"), ...natal.angles ? ["ASC", "MC"] : []];
@@ -43009,9 +43021,10 @@ async function settledSunSign2(natal, birth, clock2) {
   let end;
   if (birth.zone) {
     await clock2.prepareLocalTime(birth.birthDate, birth.zone);
-    const options = birth.longitude === void 0 ? void 0 : { longitude: birth.longitude };
-    start = clock2.resolveLocalToUtc(birth.birthDate, "00:00", birth.zone, options).utc;
-    end = clock2.resolveLocalToUtc(birth.birthDate, "23:59", birth.zone, options).utc;
+    const options = birth.longitude === void 0 ? {} : { longitude: birth.longitude };
+    const span2 = localDaySpan(birth.birthDate, clock2.resolveLocalToUtc(birth.birthDate, "00:00", birth.zone, options), clock2.resolveLocalToUtc(birth.birthDate, "23:59", birth.zone, { ...options, fold: "later" }));
+    if (!span2) return null;
+    [start, end] = span2;
   } else {
     start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6);
     end = new Date(Date.parse(`${birth.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR6);
@@ -43060,6 +43073,7 @@ var PERSONAL_MIN_YEAR = 1800;
 var PERSONAL_MAX_YEAR = 2199;
 var ZONE = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE7 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
+var BIRTH_DATE_REFUSAL = `birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`;
 var zoneField = z15.string().min(1).max(64).regex(ZONE);
 var birthFields = {
   birthDate: z15.string().regex(DATE7).describe("The birth date, such as 1990-05-03 (years 1800 to 2199)."),
@@ -43082,7 +43096,7 @@ function dateOn2(at, timeZone) {
 }
 async function castNatal(args, clock2) {
   const birth = parseCivilDate(args.birthDate);
-  if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`);
+  if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(BIRTH_DATE_REFUSAL);
   if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
   const latitude = args.latitude === void 0 ? void 0 : roundCoordinate(args.latitude);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
@@ -43093,8 +43107,9 @@ async function castNatal(args, clock2) {
   let jumpMinutes = null;
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
-    const time = args.time ?? "12:00";
-    const resolved = longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone);
+    const wall = onBirthClock(args, clock2);
+    if (!readsOnDate(args.birthDate, wall("00:00"))) throw new RangeError(BIRTH_DATE_REFUSAL);
+    const resolved = wall(args.time ?? "12:00");
     birthUtc = resolved.utc;
     flags = [...resolved.flags];
     if (resolved.jump && resolved.transition) jumpMinutes = Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes);
@@ -43102,6 +43117,13 @@ async function castNatal(args, clock2) {
   const chart = computeChart3({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
+}
+function onBirthClock(args, clock2) {
+  const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
+  return (time, fold3 = "earlier") => clock2.resolveLocalToUtc(args.birthDate, time, args.zone, {
+    ...longitude2 !== void 0 ? { longitude: longitude2 } : {},
+    ...fold3 === "later" ? { fold: fold3 } : {}
+  });
 }
 async function withCheckedZone(args, context) {
   return args.zone ? { ...args, zone: await context.resolveZone(args.zone, "/zone") } : args;

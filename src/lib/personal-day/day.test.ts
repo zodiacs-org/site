@@ -5,7 +5,7 @@ import { personalDay } from '../../ai-tools/personal/personal-day';
 import { forbiddenClaim, type PersonalToolContext } from '../../ai-tools/personal/shared';
 import { computeYourDay } from '../../islands/your-day/compute';
 import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
-import { MINOR_LEFT_OUT_HOUSES, UNTIMED_LIMIT, minorLeftOut } from './day';
+import { MINOR_LEFT_OUT_HOUSES, UNTIMED_LIMIT, minorLeftOut, settledSunSign, type DayClock } from './day';
 import { NATAL_HOUSE_THEME } from '../natal';
 import { softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { transitLine } from '../transits';
@@ -54,6 +54,42 @@ describe('the /your-day/ page and get_personal_day', () => {
     expect([...url.searchParams.keys()].every((key) => YOUR_DAY_SHARE_KEYS.includes(key))).toBe(true);
     expect(decodeURIComponent(url.href)).not.toMatch(/1990|05-03|08:30|40\.42|3\.7|Madrid/u);
     expect(parseYourDayShare(url.searchParams)).toEqual({ date: '2026-11-09', sun: 'taurus', ref: null });
+  });
+});
+
+describe('a birth date the clock repeated or skipped, on the /your-day/ page and get_personal_day', () => {
+  const PLACE = { birthZone: 'Pacific/Apia', latitude: -13.83, longitude: -171.76, date: '2026-11-09', zone: 'Europe/Madrid', today: '2026-11-09' };
+
+  it('refuses a date the clock never showed (Apia, 30 December 2011) before anything is worked out, timed or not', async () => {
+    for (const time of [undefined, '12:00']) await expect(computeYourDay({ ...PLACE, birthDate: '2011-12-30', time })).rejects.toThrow(RangeError);
+    expect((await computeYourDay({ ...PLACE, birthDate: '2011-12-31' })).contacts.length).toBeGreaterThan(0);
+  });
+
+  it('reads the Sun over every pass of a date the clock showed twice before settling it', async () => {
+    // Apia lived 4 July 1892 twice; the page and the tool read both passes and agree.
+    const page = await computeYourDay({ ...PLACE, birthDate: '1892-07-04' });
+    const tool = (await personalDay({ birthDate: '1892-07-04', zone: 'Pacific/Apia', latitude: -13.83, longitude: -171.76, currentZone: 'Europe/Madrid', date: '2026-11-09' }, context)).data;
+    expect(page.sunSign).toBe('cancer');
+    expect(tool.shareUrl).toBe('https://zodiacs.org/share/your-day/?day=2026-11-09&s=cancer');
+    // A clock that showed its 23:59 twice, with the Sun entering Capricorn (2026-12-21T20:50:14Z) between the two
+    // passes: the first pass alone would settle Sagittarius; the whole date leaves it open.
+    const D = '2026-12-21';
+    const at = (wall: string, utc: string) => ({ utc: new Date(utc), offsetMinutes: (Date.parse(`${D}T${wall}:00Z`) - Date.parse(utc)) / 60_000 });
+    const calls: unknown[] = [];
+    const repeating: DayClock = {
+      prepareLocalTime: async () => {},
+      resolveLocalToUtc: (_date, time, _zone, options) => {
+        calls.push(options?.fold ?? 'earlier');
+        if (time === '00:00') return at('00:00', '2026-12-20T14:00:00Z');
+        return options?.fold === 'later' ? at('23:59', '2026-12-22T13:59:00Z') : at('23:59', '2026-12-21T13:59:00Z');
+      },
+    };
+    const natal = { bodies: [{ body: 'Sun', lon: 269 }], timeKnown: false };
+    expect(await settledSunSign(natal, { birthDate: D, zone: 'Etc/Repeating' }, repeating)).toBeNull();
+    expect(calls).toEqual(['earlier', 'later']);
+    // The same clock without the repeat settles Sagittarius.
+    const once: DayClock = { ...repeating, resolveLocalToUtc: (date, time, zone) => repeating.resolveLocalToUtc(date, time, zone, {}) };
+    expect(await settledSunSign(natal, { birthDate: D, zone: 'Etc/Repeating' }, once)).toBe('sagittarius');
   });
 });
 

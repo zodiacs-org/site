@@ -311,6 +311,25 @@ describe('get_personal_day privacy and refusals', () => {
     expect(lower).toEqual(await executeAiTool('get_personal_day', ADULT, ON));
   });
 
+  it('refuses a birth date the clock never showed (Apia went from 29 to 31 December 2011) without repeating it, timed or not', async () => {
+    for (const extra of [{}, { time: '12:00' }, { time: '12:00', latitude: -13.83, longitude: -171.76 }]) {
+      const args = { birthDate: '2011-12-30', zone: 'Pacific/Apia', currentZone: 'Europe/Madrid', ...extra };
+      await expect(run(args)).rejects.toThrow(RangeError);
+      const refused = await executeAiTool('get_personal_day', args, ON);
+      expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+      expect(JSON.stringify(refused)).not.toMatch(/2011|12-30|Apia|13\.83|171\.76/u);
+    }
+    // The dates either side, and the same date on another clock, are read.
+    for (const args of [{ birthDate: '2011-12-29', zone: 'Pacific/Apia' }, { birthDate: '2011-12-31', zone: 'Pacific/Apia' }, { birthDate: '2011-12-30', zone: 'Pacific/Pago_Pago' }])
+      expect((await executeAiTool('get_personal_day', { ...args, currentZone: 'Europe/Madrid' }, ON)).ok, JSON.stringify(args)).toBe(true);
+  });
+
+  it('refuses a day to read that the clock never showed, rather than reading the next one', async () => {
+    const birth = { birthDate: '1990-05-03', zone: 'Europe/Madrid' };
+    await expect(run({ ...birth, currentZone: 'Pacific/Apia', date: '2011-12-30' }, new Date('2011-12-29T12:00:00Z'))).rejects.toThrow('date must be a real date, such as 2026-11-12.');
+    expect((await run({ ...birth, currentZone: 'Pacific/Apia', date: '2011-12-31' }, new Date('2011-12-29T12:00:00Z'))).date).toBe('2011-12-31');
+  });
+
   it('refuses a time without a zone with the field rule', async () => {
     expect(await executeAiTool('get_personal_day', { birthDate: '1990-05-03', time: '08:30' }, ON)).toMatchObject({ ok: false, error: { message: 'A birth time or a place needs its time zone.' } });
   });
