@@ -147,6 +147,31 @@ describe('get_vedic_signs without a birth time', () => {
     expect((await run({ birthDate: '1892-07-04', zone: 'Pacific/Apia', latitude: -13.83, longitude: -171.76 })).nakshatraCandidates).toEqual(['Chitra', 'Swati', 'Vishakha']);
   });
 
+  it('ends a date where the clock left it (St. John\'s went from 23:00 on 2 May 1920 straight to 00:00 on 3 May)', async () => {
+    // Its 23:59 never happened: read forward by the jump it would fall at 03:29:52 UTC on 3 May, an hour into that date.
+    const [first, last] = await birthDayEnds({ birthDate: '1920-05-02', zone: 'America/St_Johns' }, clock);
+    expect([first.toISOString(), last.toISOString()]).toEqual(['1920-05-02T03:30:52.000Z', '1920-05-03T02:30:51.000Z']);
+    // The Moon stayed in Swati the whole local date and reached Vishakha only in the hour the old span ran on into.
+    expect((await run({ birthDate: '1920-05-02', time: '00:00', zone: 'America/St_Johns' })).moonNakshatra!.name).toBe('Swati');
+    expect((await run({ birthDate: '1920-05-02', time: '22:59', zone: 'America/St_Johns' })).moonNakshatra!.name).toBe('Swati');
+    expect((await run({ birthDate: '1920-05-03', time: '00:59', zone: 'America/St_Johns' })).moonNakshatra!.name).toBe('Vishakha');
+    for (const extra of [{}, { latitude: 47.56, longitude: -52.71 }]) {
+      const untimed = await run({ birthDate: '1920-05-02', zone: 'America/St_Johns', ...extra });
+      expect(untimed.moonNakshatra?.name).toBe('Swati');
+      expect(untimed.nakshatraCandidates).toEqual([]);
+      const tool = await executeAiTool('get_vedic_signs', { birthDate: '1920-05-02', zone: 'America/St_Johns', ...extra }, ON);
+      expect(tool.ok).toBe(true);
+      expect(JSON.stringify(tool)).not.toMatch(/Vishakha/u);
+    }
+  });
+
+  it('starts a date where the clock reached it partway through a jump (Toronto went from 23:30 on 30 March 1919 to 00:30 on 31 March)', async () => {
+    const [first] = await birthDayEnds({ birthDate: '1919-03-31', zone: 'America/Toronto' }, clock);
+    expect(first.toISOString()).toBe('1919-03-31T04:30:00.000Z');
+    const [, last] = await birthDayEnds({ birthDate: '1919-03-30', zone: 'America/Toronto' }, clock);
+    expect(last.toISOString()).toBe('1919-03-31T04:29:59.000Z');
+  });
+
   it('refuses a date the clock never showed (Apia went from 29 to 31 December 2011) without repeating it, timed or not', async () => {
     for (const extra of [{}, { time: '12:00' }, { time: '12:00', latitude: -13.83, longitude: -171.76 }]) {
       const args = { birthDate: '2011-12-30', zone: 'Pacific/Apia', ...extra };

@@ -6,7 +6,7 @@ import { prepareLocalTime, resolveLocalToUtc } from './localToUtc';
 async function span(date: string, zone: string, longitude?: number) {
   await prepareLocalTime(date, zone);
   const options = longitude === undefined ? {} : { longitude };
-  return localDaySpan(date, resolveLocalToUtc(date, '00:00', zone, options), resolveLocalToUtc(date, '23:59', zone, { ...options, fold: 'later' }));
+  return localDaySpan(date, (day, time, fold) => resolveLocalToUtc(day, time, zone, { ...options, fold }));
 }
 const iso = (value: [Date, Date] | null) => value && value.map((at) => at.toISOString());
 
@@ -45,5 +45,30 @@ describe('a local date as real time', () => {
     expect(hours(await span('2026-11-01', 'America/New_York'))).toBe(25);
     // São Paulo skipped 00:00 to 01:00 on 4 November 2018: the date started at its 01:00.
     expect(iso(await span('2018-11-04', 'America/Sao_Paulo'))?.[0]).toBe('2018-11-04T03:00:00.000Z');
+  });
+
+  it('ends a date where the clock jumped out of it, not an hour into the next (St. John\'s, 2 May 1920)', async () => {
+    // At 23:00 on 2 May 1920 (UTC−3:30:52) St. John's went straight to 00:00 on 3 May (UTC−2:30:52).
+    // Its 23:59 never happened; read forward by the jump it falls at 03:29:52 UTC on 3 May.
+    await prepareLocalTime('1920-05-02', 'America/St_Johns');
+    expect(resolveLocalToUtc('1920-05-02', '23:59', 'America/St_Johns', { fold: 'later' }).flags).toContain('dst-gap');
+    expect(iso(await span('1920-05-02', 'America/St_Johns'))).toEqual(['1920-05-02T03:30:52.000Z', '1920-05-03T02:30:51.000Z']);
+    expect(iso(await span('1920-05-03', 'America/St_Johns'))).toEqual(['1920-05-03T02:30:52.000Z', '1920-05-04T02:30:51.000Z']);
+  });
+
+  it('starts a date where the clock jumped into it, when its 00:00 was skipped partway through a gap (Toronto, 31 March 1919)', async () => {
+    // At 23:30 on 30 March 1919 (UTC−5) Toronto went to 00:30 on 31 March (UTC−4).
+    expect(iso(await span('1919-03-30', 'America/Toronto'))).toEqual(['1919-03-30T05:00:00.000Z', '1919-03-31T04:29:59.000Z']);
+    expect(iso(await span('1919-03-31', 'America/Toronto'))).toEqual(['1919-03-31T04:30:00.000Z', '1919-04-01T03:59:59.000Z']);
+  });
+
+  it('ends a date at its last pass when the clock turned back over midnight (Goose Bay, 25 October 1987)', async () => {
+    // At 00:01 on 25 October 1987 (UTC−3) Goose Bay went back to 23:01 on 24 October (UTC−4).
+    expect(iso(await span('1987-10-24', 'America/Goose_Bay'))).toEqual(['1987-10-24T03:00:00.000Z', '1987-10-25T03:59:59.000Z']);
+    expect(iso(await span('1987-10-25', 'America/Goose_Bay'))).toEqual(['1987-10-25T03:00:00.000Z', '1987-10-26T03:59:59.000Z']);
+  });
+
+  it('ends the day before a skipped date where the jump happened (Apia, 29 December 2011)', async () => {
+    expect(iso(await span('2011-12-29', 'Pacific/Apia'))).toEqual(['2011-12-29T10:00:00.000Z', '2011-12-30T09:59:59.000Z']);
   });
 });

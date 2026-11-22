@@ -25,9 +25,10 @@ class InlineWorker {
 afterEach(() => { vi.unstubAllGlobals(); posted.length = 0; });
 
 const APIA = { tz: 'Pacific/Apia', lat: -13.83, lon: -171.76 };
-async function form(birthDate: string, birthTime: string | null) {
+const ST_JOHNS = { tz: 'America/St_Johns', lat: 47.56, lon: -52.71 };
+async function form(birthDate: string, birthTime: string | null, place: VedicFormInput['place'] = APIA) {
   vi.stubGlobal('Worker', InlineWorker);
-  const input: VedicFormInput = { birthDate, birthTime, place: APIA, ayanamsa: 'lahiri' };
+  const input: VedicFormInput = { birthDate, birthTime, place, ayanamsa: 'lahiri' };
   await prepareLocalTime(input.birthDate, input.place.tz);
   return computeVedicFromForm(input);
 }
@@ -38,6 +39,14 @@ describe('the /vedic-signs/ page on a clock that repeated or skipped a date', ()
     expect(posted[0].ends!.map((end) => end.utc)).toEqual(['1892-07-03T11:27:02.000Z', '1892-07-05T11:27:01.000Z']);
     expect(reading.moonNakshatra).toBeNull();
     expect(reading.nakshatraCandidates).toEqual(['Chitra', 'Swati', 'Vishakha']);
+  });
+
+  it('ends a date where the clock left it (St. John\'s, 23:00 on 2 May 1920 became 00:00 on 3 May), as the tool does', async () => {
+    const reading = await form('1920-05-02', null, ST_JOHNS);
+    // Not 03:30:51 UTC, where its skipped 23:59 read forward by the jump would end it.
+    expect(posted[0].ends!.map((end) => end.utc)).toEqual(['1920-05-02T03:30:52.000Z', '1920-05-03T02:30:51.000Z']);
+    expect(reading.moonNakshatra?.name).toBe('Swati');
+    expect(reading.nakshatraCandidates).toEqual([]);
   });
 
   it('refuses a date the clock never showed (Apia, 30 December 2011) before anything is worked out, timed or not', async () => {

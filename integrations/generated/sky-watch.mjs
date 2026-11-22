@@ -43642,14 +43642,47 @@ function vedicSignsShareUrl(origin, reading) {
 import { z as z15 } from "zod";
 
 // src/lib/time/local-day.ts
+var SECOND = 1e3;
+var MINUTE2 = 6e4;
+var DAY18 = 864e5;
 var LAST_MINUTE_MS = 59e3;
-function readsOnDate(date3, resolution) {
-  const wall = resolution.utc.getTime() + Math.round(resolution.offsetMinutes * 6e4);
-  return new Date(wall).toISOString().slice(0, 10) === date3;
+function wallOf(resolution) {
+  return resolution.utc.getTime() + Math.round(resolution.offsetMinutes * MINUTE2);
 }
-function localDaySpan(date3, first2, last2) {
-  if (!readsOnDate(date3, first2)) return null;
-  return [first2.utc, new Date(last2.utc.getTime() + LAST_MINUTE_MS)];
+function readsOnDate(date3, resolution) {
+  return new Date(wallOf(resolution)).toISOString().slice(0, 10) === date3;
+}
+function reaches(wall, resolve2) {
+  const at = (minute) => {
+    const iso3 = new Date(minute).toISOString();
+    return resolve2(iso3.slice(0, 10), iso3.slice(11, 16), "earlier");
+  };
+  const here = at(wall);
+  if (!here.flags.includes("dst-gap")) return here.utc.getTime();
+  const before2 = wall - here.utc.getTime();
+  const inThisGap = (minute) => {
+    const resolution = at(minute);
+    return resolution.flags.includes("dst-gap") && Math.abs(minute - resolution.utc.getTime() - before2) < SECOND;
+  };
+  const jumpMinutes = Math.max(0, Math.ceil((Math.round(here.offsetMinutes * MINUTE2) - before2) / MINUTE2));
+  let outside = wall - jumpMinutes * MINUTE2;
+  let inside = wall;
+  if (inThisGap(outside)) return outside - before2;
+  while (inside - outside > MINUTE2) {
+    const middle = outside + Math.floor((inside - outside) / MINUTE2 / 2) * MINUTE2;
+    if (inThisGap(middle)) inside = middle;
+    else outside = middle;
+  }
+  return inside - before2;
+}
+function localDaySpan(date3, resolve2) {
+  if (!readsOnDate(date3, resolve2(date3, "00:00", "earlier"))) return null;
+  const midnight = Date.parse(`${date3}T00:00:00Z`);
+  const start = reaches(midnight, resolve2);
+  let end = reaches(midnight + DAY18, resolve2) - SECOND;
+  const last2 = resolve2(date3, "23:59", "later");
+  if (!last2.flags.includes("dst-gap")) end = Math.max(end, last2.utc.getTime() + LAST_MINUTE_MS);
+  return [new Date(start), new Date(end)];
 }
 
 // src/ai-tools/personal/shared.ts
@@ -43692,8 +43725,12 @@ async function resolveBirth(args, clock2) {
   return { birthUtc, timeKnown, placed, latitude, longitude: longitude2, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
 }
 function onBirthClock(args, clock2) {
+  const read = wallOnBirthplaceClock(args, clock2);
+  return (time) => read(args.birthDate, time, "earlier");
+}
+function wallOnBirthplaceClock(args, clock2) {
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
-  return (time, fold3 = "earlier") => clock2.resolveLocalToUtc(args.birthDate, time, args.zone, {
+  return (date3, time, fold3) => clock2.resolveLocalToUtc(date3, time, args.zone, {
     ...longitude2 !== void 0 ? { longitude: longitude2 } : {},
     ...fold3 === "later" ? { fold: fold3 } : {}
   });
@@ -43705,8 +43742,7 @@ var WIDEST_OFFSET_HOURS = 16;
 async function birthDayEnds2(args, clock2) {
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR6)];
   await clock2.prepareLocalTime(args.birthDate, args.zone);
-  const wall = onBirthClock(args, clock2);
-  const span2 = localDaySpan(args.birthDate, wall("00:00"), wall("23:59", "later"));
+  const span2 = localDaySpan(args.birthDate, wallOnBirthplaceClock(args, clock2));
   if (!span2) throw new RangeError(BIRTH_DATE_REFUSAL);
   return span2;
 }
@@ -44011,7 +44047,7 @@ function readsAs(contact) {
 }
 
 // src/lib/good-days/find.ts
-var DAY18 = 864e5;
+var DAY19 = 864e5;
 var HOUR8 = 36e5;
 var GOOD_DAYS_MAX_DAYS = 366;
 var GOOD_DAYS_DEFAULT_DAYS = 90;
@@ -44019,7 +44055,7 @@ var GOOD_DAYS_DEFAULT_COUNT = 5;
 var GOOD_DAYS_MAX_COUNT = 10;
 var AVOID_COUNT = 8;
 var GOOD_DAYS_FIRST = eclipses_default.from.slice(0, 10);
-var GOOD_DAYS_LAST = new Date(Date.parse(eclipses_default.to) - DAY18).toISOString().slice(0, 10);
+var GOOD_DAYS_LAST = new Date(Date.parse(eclipses_default.to) - DAY19).toISOString().slice(0, 10);
 var WAKING = { from: "08:00", to: "20:00" };
 var UNDER_13_SENTENCE = "Zodiacs is not directed at children under 13, so it gives no reading from a birth date less than 13 years ago.";
 var UNDER_18_PARTNERSHIP_SENTENCE = "Zodiacs gives no relationship or wedding timing from a birth date under 18. Leave the birth date out for the general sky, or choose another goal.";
@@ -44039,8 +44075,8 @@ var GOVERNING_POINTS = -10;
 var MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 var MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-var dayNumber2 = (date3) => Date.parse(`${date3}T00:00:00Z`) / DAY18;
-var dateOf2 = (day2) => new Date(day2 * DAY18).toISOString().slice(0, 10);
+var dayNumber2 = (date3) => Date.parse(`${date3}T00:00:00Z`) / DAY19;
+var dateOf2 = (day2) => new Date(day2 * DAY19).toISOString().slice(0, 10);
 var addDays3 = (date3, days) => dateOf2(dayNumber2(date3) + days);
 var isRealDate2 = (date3) => /^\d{4}-\d{2}-\d{2}$/u.test(date3) && !Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) && dateOf2(dayNumber2(date3)) === date3;
 function dayLabel3(date3) {
@@ -44086,7 +44122,7 @@ var RETROGRADE_LINE = {
 };
 var SIGNIFICATORS = ["Mercury", "Venus", "Mars"];
 function voidPeriods(from, to) {
-  const lead = new Date(from.getTime() - 4 * DAY18);
+  const lead = new Date(from.getTime() - 4 * DAY19);
   const ingresses2 = moonIngresses(lead, to);
   const aspects2 = moonAspects(lead, to);
   const out = [];
@@ -44214,7 +44250,7 @@ function eclipseFactor(day2) {
   if (within.length) {
     return { points: -30, avoid: true, text: `${cap11(describe(within[0]))} falls today: tradition keeps important beginnings away from eclipses.`, clause: `${describe(within[0])} today` };
   }
-  const near = ECLIPSES2.map((row) => ({ row, gap: Math.round(Math.abs(row.at - day2.noon.getTime()) / DAY18) })).filter(({ gap }) => gap >= 1 && gap <= 3).sort((a, b) => a.gap - b.gap)[0];
+  const near = ECLIPSES2.map((row) => ({ row, gap: Math.round(Math.abs(row.at - day2.noon.getTime()) / DAY19) })).filter(({ gap }) => gap >= 1 && gap <= 3).sort((a, b) => a.gap - b.gap)[0];
   if (!near) return null;
   const when = near.row.at > day2.noon.getTime() ? `${near.gap} ${near.gap === 1 ? "day" : "days"} away` : `${near.gap} ${near.gap === 1 ? "day" : "days"} ago`;
   return {
@@ -44338,7 +44374,7 @@ async function findGoodDays(input, clock2) {
   const skies = await daySkies(from, days, input.zone, clock2);
   const windowStart = skies[0].start;
   const windowEnd2 = skies.at(-1).end;
-  const scanned = voidPeriods(new Date(windowStart.getTime() - DAY18), new Date(windowEnd2.getTime() + 3 * DAY18));
+  const scanned = voidPeriods(new Date(windowStart.getTime() - DAY19), new Date(windowEnd2.getTime() + 3 * DAY19));
   const periods = scanned.periods;
   const aspects2 = scanned.aspects.filter((row) => row.at.getTime() >= windowStart.getTime() && row.at.getTime() < windowEnd2.getTime());
   const segments = skies.map((day2) => moonSegments(day2, periods));
@@ -44909,9 +44945,9 @@ var descriptionFor = (tool, skyEvents2, switches = {}) => (tool === "get_year_sc
 import { McpServer } from "@modelcontextprotocol/server";
 
 // src/ai-tools/clear-time.ts
-var MINUTE2 = 6e4;
+var MINUTE3 = 6e4;
 function roundToMinute(utc) {
-  return new Date(Math.round(new Date(utc).getTime() / MINUTE2) * MINUTE2);
+  return new Date(Math.round(new Date(utc).getTime() / MINUTE3) * MINUTE3);
 }
 var two = (value) => String(Math.trunc(Math.abs(value))).padStart(2, "0");
 function localIso(utc, zone10, milliseconds = false) {
@@ -44922,7 +44958,7 @@ function localIso(utc, zone10, milliseconds = false) {
   const wall = /* @__PURE__ */ new Date(0);
   wall.setUTCFullYear(year, Number(parts.month) - 1, Number(parts.day));
   wall.setUTCHours(Number(parts.hour), Number(parts.minute), Number(parts.second), 0);
-  const offsetMinutes2 = Math.round((wall.getTime() - instant3.getTime()) / MINUTE2);
+  const offsetMinutes2 = Math.round((wall.getTime() - instant3.getTime()) / MINUTE3);
   const offset = `${offsetMinutes2 < 0 ? "-" : "+"}${two(offsetMinutes2 / 60)}:${two(offsetMinutes2 % 60)}`;
   const fraction = milliseconds ? `.${String(exact - instant3.getTime()).padStart(3, "0")}` : "";
   return `${wall.toISOString().slice(0, 19)}${fraction}${offset}`;
@@ -44934,7 +44970,7 @@ function shownTime(utc, window) {
   const time = new Date(utc).getTime();
   const low = Math.max(Date.parse(EPOCH.from), window ? new Date(window.from).getTime() : -Infinity);
   const high = Math.min(Date.parse(EPOCH.to), window ? new Date(window.to).getTime() : Infinity);
-  for (const [unit3, precision] of [[MINUTE2, "minute"], [1e3, "second"]]) {
+  for (const [unit3, precision] of [[MINUTE3, "minute"], [1e3, "second"]]) {
     const nearest = Math.round(time / unit3) * unit3;
     const other = nearest > time ? Math.floor(time / unit3) * unit3 : Math.ceil(time / unit3) * unit3;
     for (const candidate of [nearest, other]) if (candidate >= low && candidate <= high) return { at: new Date(candidate), precision };
@@ -45425,7 +45461,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const sign4 = match[1] === "-" ? -1 : 1;
       return sign4 * (Number(match[2] ?? 0) * 60 + Number(match[3] ?? 0) + Number(match[4] ?? 0) / 60);
     }
-    var DAY23 = 864e5;
+    var DAY24 = 864e5;
     var PROBE = 36 * 36e5;
     var MAX_DEPARTURE_SECONDS = 180 * 60;
     var FIXED_ZONE = /^(?:etc\/)?(?:utc|uct|gmt|gmt0|gmt[+-]0|greenwich|universal|zulu)$|^etc\/gmt[+-]\d{1,2}$/iu;
@@ -45454,8 +45490,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       if (first2) {
         return second ? { chosen: fold3 === "later" ? second : first2, kind: "fold", at: firstChange(clockAt, first2.utcMs, second.utcMs) } : { chosen: first2, kind: null, at: null };
       }
-      let lo = wallMs - PROBE - DAY23;
-      let hi = wallMs + PROBE + DAY23;
+      let lo = wallMs - PROBE - DAY24;
+      let hi = wallMs + PROBE + DAY24;
       while (hi - lo > 1) {
         const mid = Math.floor((lo + hi) / 2);
         if (mid + clockAt(mid) * 1e3 > wallMs) hi = mid;
@@ -45523,7 +45559,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       wall.setUTCFullYear(civil.year, civil.month - 1, civil.day);
       const wallMs = wall.setUTCHours(Number(hhmm[1]), Number(hhmm[2]));
       const loaded = FIXED_ZONE.test(timeZone) ? null : loadedHistory(timeZone);
-      if (loaded === void 0 && wallMs < DAY23) throw new ZoneHistoryNotLoadedError();
+      if (loaded === void 0 && wallMs < DAY24) throw new ZoneHistoryNotLoadedError();
       const history = loaded ?? null;
       const zoneAt2 = zoneClock(timeZone, history);
       const place2 = longitude2 !== void 0 && history ? birthplaceClock(history, wallMs, longitude2, zoneAt2) : null;
@@ -45693,8 +45729,8 @@ function savedOccasionPath(args, data) {
 }
 
 // src/lib/occasions/milestones.ts
-var DAY19 = 864e5;
-var YEAR2 = 365.25 * DAY19;
+var DAY20 = 864e5;
+var YEAR2 = 365.25 * DAY20;
 var SYNODIC_MONTH = 29.530588;
 var MERCURY_STEP_DAYS = 4;
 function ageAt(birth, at) {
@@ -45722,7 +45758,7 @@ function fullMoonsBetween(from, to) {
   if (!(to.getTime() > from.getTime())) return 0;
   const start = moonPhase(from).angle;
   const end = moonPhase(to).angle;
-  const days = (to.getTime() - from.getTime()) / DAY19;
+  const days = (to.getTime() - from.getTime()) / DAY20;
   const remainder = ((end - start) % 360 + 360) % 360;
   const turns = Math.round((days * 360 / SYNODIC_MONTH - remainder) / 360);
   const gained = turns * 360 + remainder;
@@ -45732,7 +45768,7 @@ function fullMoonsBetween(from, to) {
 function mercuryRetrogradesBetween(from, to) {
   let count = 0;
   let previous = longitudeSpeed2("Mercury", from);
-  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY19; ; t += MERCURY_STEP_DAYS * DAY19) {
+  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY20; ; t += MERCURY_STEP_DAYS * DAY20) {
     const at = Math.min(t, to.getTime());
     const speed = longitudeSpeed2("Mercury", new Date(at));
     if (previous >= 0 && speed < 0) count += 1;
@@ -45790,7 +45826,7 @@ var MILESTONE_WORDS = {
 };
 
 // src/lib/occasions/milestone-card.ts
-var DAY20 = 864e5;
+var DAY21 = 864e5;
 async function milestoneCard(input, asOf, clock2) {
   if (!validOccasionDate(input.birthDate)) throw new RangeError("The birth date must be a real date from 1800 to 2199.");
   if (input.time !== null && !/^([01]\d|2[0-3]):[0-5]\d$/u.test(input.time)) throw new RangeError("The time must be HH:MM.");
@@ -45802,7 +45838,7 @@ async function milestoneCard(input, asOf, clock2) {
     birth = (input.birthplace ? resolveLocalToUtc(input.birthDate, input.time, input.timeZone, { longitude: input.birthplace.lon }) : resolveLocalToUtc(input.birthDate, input.time, input.timeZone)).utc;
   } else {
     const [year, month, day2] = input.birthDate.split("-").map(Number);
-    birth = new Date(Date.UTC(year, month - 1, day2) + DAY20 / 2);
+    birth = new Date(Date.UTC(year, month - 1, day2) + DAY21 / 2);
   }
   if (birth.getTime() > asOf.getTime()) throw new RangeError("The birth date is in the future.");
   return { ...lifeMilestones2(birth, asOf), timeKnown: input.time !== null };
@@ -45812,7 +45848,7 @@ async function milestoneCard(input, asOf, clock2) {
 var WEEK_DAYS = 7;
 var WEEK_ORB = 3;
 var WEEK_LIMIT = 5;
-var DAY21 = 864e5;
+var DAY22 = 864e5;
 var SAMPLE_MS = 6 * 36e5;
 var UNTIMED_LEFT_OUT = ["Moon", "ASC", "MC"];
 function remember(ephemeris) {
@@ -45843,7 +45879,7 @@ function scanYourWeek(request2, ephemeris, limit = WEEK_LIMIT) {
   const fromMs = Date.parse(request2.fromUtc);
   if (!Number.isFinite(fromMs)) throw new RangeError("The week needs a valid start.");
   if (typeof request2.timeKnown !== "boolean") throw new RangeError("Confirm whether the birth time is known.");
-  const toMs = fromMs + WEEK_DAYS * DAY21;
+  const toMs = fromMs + WEEK_DAYS * DAY22;
   const from = new Date(fromMs), to = new Date(toMs);
   const natal = request2.timeKnown ? request2.natal : { bodies: request2.natal.bodies, angles: null };
   const points = natalTransitPoints(natal).filter((point2) => request2.timeKnown || !UNTIMED_LEFT_OUT.includes(point2.name));
@@ -47019,7 +47055,7 @@ async function verifyCallback(url, secret, id, post, now) {
 // src/ai-tools/watch/contracts.ts
 import { z as z19 } from "zod";
 var WATCH_VERSION = `sky-watch-v1:${ENGINE_VERSION}`;
-var DAY22 = 864e5;
+var DAY23 = 864e5;
 var WATCH_MATCH_DAYS = 2;
 var BODIES5 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var NAMES = ["zodiacs.sky.ingress", "zodiacs.sky.station", "zodiacs.sky.lunation"];
@@ -47197,7 +47233,7 @@ var SkyWatch = class {
       expected_revision: previous?.revision ?? 0,
       rotated: previousValue !== null && previousValue.secret !== secret,
       verified: needsVerification,
-      ttl_ms: Math.min(params.ttlMs ?? DAY22, 7 * DAY22)
+      ttl_ms: Math.min(params.ttlMs ?? DAY23, 7 * DAY23)
     });
     if (!result) throw new ProtocolError(-32e3, "Subscription changed or access expired. Retry the request.");
     return { id, refreshBefore: result.expires_at, cursor: null, truncated: false };
@@ -48268,7 +48304,7 @@ function reconcileWatchEvents(events, existing) {
   return events.map((event2) => {
     const signature2 = eventSignature(event2.name, event2.data.event);
     const at = Date.parse(event2.timestamp);
-    const matches = candidates.filter((candidate) => candidate.signature === signature2 && Math.abs(candidate.at - at) <= WATCH_MATCH_DAYS * DAY22);
+    const matches = candidates.filter((candidate) => candidate.signature === signature2 && Math.abs(candidate.at - at) <= WATCH_MATCH_DAYS * DAY23);
     if (matches.length > 1) throw new Error("ambiguous-watch-event");
     const eventId = matches[0]?.eventId ?? `evt_${digest(JSON.stringify(["sky-watch-event-v2", signature2, event2.timestamp]))}`;
     if (used.has(eventId)) throw new Error("duplicate-watch-event");
@@ -48281,10 +48317,10 @@ async function fillWatchLedger(rpc, now = Date.now(), calculate = calculateWindo
   for (; filled < 3; filled++) {
     const { from, existing } = await rpc("timingwindow", {
       version: timingVersion,
-      start: new Date(Math.floor(now / DAY22) * DAY22).toISOString()
+      start: new Date(Math.floor(now / DAY23) * DAY23).toISOString()
     });
-    if (Date.parse(from) >= Math.floor(now / DAY22) * DAY22 + 2 * DAY22) break;
-    const to = new Date(Date.parse(from) + DAY22).toISOString();
+    if (Date.parse(from) >= Math.floor(now / DAY23) * DAY23 + 2 * DAY23) break;
+    const to = new Date(Date.parse(from) + DAY23).toISOString();
     const events = await calculate(from, to, existing);
     if (!await rpc("timingingest", { version: timingVersion, from, to, events })) break;
   }

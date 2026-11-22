@@ -114,6 +114,23 @@ const preparedBefore = (use: ts.CallExpression, date: string, zone: string) => c
   .some((prepare) => prepare.arguments.length === 2 && normal(prepare.arguments[0].getText()) === date
     && normal(prepare.arguments[1].getText()) === zone && awaitedBefore(prepare, use.getStart()));
 
+/**
+ * A resolver handed to localDaySpan (./local-day.ts) reads the date it is
+ * given and the day either side of it. The preparation that counts is the
+ * span's date: the engine loads a zone's whole history for any date up to
+ * 1970, and no clock changed between 1969-12-31 and 1970-01-03, so the day
+ * after 1970-01-01 and the day before 1970-01-02 need none of their own.
+ * Returns the localDaySpan call and its date, or null for any other call.
+ */
+function daySpanOf(call: ts.CallExpression): { span: ts.CallExpression; date: ts.Expression } | null {
+  const resolver = enclosingFunction(call);
+  const span = resolver.parent;
+  if (!ts.isArrowFunction(resolver) || !span || !ts.isCallExpression(span) || !ts.isIdentifier(span.expression)
+    || span.expression.text !== 'localDaySpan' || span.arguments[1] !== resolver
+    || !ts.isIdentifier(call.arguments[0]) || resolver.parameters[0]?.name.getText() !== call.arguments[0].getText()) return null;
+  return { span, date: span.arguments[0] };
+}
+
 const sources = walk(root)
   .filter((path) => /\.(?:ts|tsx)$/.test(path) && !/\.test\.tsx?$/.test(path))
   .map((path) => {
@@ -135,10 +152,13 @@ describe('callers of resolveLocalToUtc', () => {
         const longitude = longitudeOf(call);
         const where = `${path}:${file.getLineAndCharacterOfPosition(call.getStart()).line + 1}`;
         if (longitude && !/\.lon$/.test(longitude.getText())) problems.push(`${where} passes ${longitude.getText()} as the longitude`);
-        const date = normal(call.arguments[0].getText());
+        const daySpan = daySpanOf(call);
+        const anchor = daySpan ? daySpan.span : call;
+        const dateArgument = daySpan ? daySpan.date : call.arguments[0];
+        const date = normal(dateArgument.getText());
         const zone = normal(call.arguments[2].getText());
-        const scope = enclosingFunction(call);
-        if (preparedBefore(call, date, zone)) continue;
+        const scope = enclosingFunction(anchor);
+        if (preparedBefore(anchor, date, zone)) continue;
         // A named function is prepared for when every call of it follows an
         // awaited preparation of the same date and zone, its parameters
         // replaced by the call's arguments: TransitTracker's natal helpers in
@@ -150,7 +170,7 @@ describe('callers of resolveLocalToUtc', () => {
           : [file];
         const uses = helper ? users.flatMap((user) => calls(user, helper)) : [];
         const preparedByCallers = uses.length > 0 && uses.every((use) => preparedBefore(use,
-          substituted(call.arguments[0], scope as ts.SignatureDeclaration, use),
+          substituted(dateArgument, scope as ts.SignatureDeclaration, use),
           substituted(call.arguments[2], scope as ts.SignatureDeclaration, use)));
         if (preparedByCallers) continue;
         if (UNPREPARED[path]) unprepared.add(path);
