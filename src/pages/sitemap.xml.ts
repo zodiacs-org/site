@@ -769,6 +769,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
   ['/birth-chart/', '2026-11-19'] as const,
+  // The English compatibility invite emblem gained its axis and disc entrances.
+  ['/compatibility/', '2026-11-22'] as const,
 ]);
 
 function getLastmod(loc: string): string {
