@@ -49,6 +49,17 @@ describe('the /vedic-signs/ page on a clock that repeated or skipped a date', ()
     expect(reading.nakshatraCandidates).toEqual([]);
   });
 
+  it('starts and ends a date at a clock change within a minute (Accra, 2 November 1915), as the tool does', async () => {
+    // At 0.25 degrees west the birthplace clock went from 23:59:52 on 1 November to 00:00:52 on 2 November.
+    const accra = { tz: 'Africa/Accra', lat: 5.55, lon: -0.25 };
+    await form('1915-11-02', null, accra);
+    await form('1915-11-01', null, accra);
+    expect(posted.map((message) => message.ends!.map((end) => end.utc))).toEqual([
+      ['1915-11-02T00:00:52.000Z', '1915-11-02T23:59:59.000Z'],
+      ['1915-11-01T00:01:00.000Z', '1915-11-02T00:00:51.000Z'],
+    ]);
+  });
+
   it('refuses a date the clock never showed (Apia, 30 December 2011) before anything is worked out, timed or not', async () => {
     for (const time of [null, '12:00']) {
       await expect(form('2011-12-30', time)).rejects.toThrow(RangeError);

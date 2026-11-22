@@ -116,10 +116,10 @@ const preparedBefore = (use: ts.CallExpression, date: string, zone: string) => c
 
 /**
  * A resolver handed to localDaySpan (./local-day.ts) reads the date it is
- * given and the day either side of it. The preparation that counts is the
- * span's date: the engine loads a zone's whole history for any date up to
- * 1970, and no clock changed between 1969-12-31 and 1970-01-03, so the day
- * after 1970-01-01 and the day before 1970-01-02 need none of their own.
+ * given and the day after it. The preparation that counts is the span's
+ * date: the engine loads a zone's whole history for any date up to 1970, and
+ * no clock changed between 1969-12-31 and 1970-01-03, so the day after
+ * 1970-01-01 needs none of its own.
  * Returns the localDaySpan call and its date, or null for any other call.
  */
 function daySpanOf(call: ts.CallExpression): { span: ts.CallExpression; date: ts.Expression } | null {

@@ -4,6 +4,7 @@ import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { executeAiTool } from '../tools';
 import { NAKSHATRA_LORE, RASHI_LINE, vedicSigns, vedicSignsData } from './vedic-signs';
 import { birthDayEnds, forbiddenClaim } from './shared';
+import { localDaySpan } from '../../lib/time/local-day';
 import tzNames from '../../data/tz-names.json';
 import { computeChart } from '../../lib/engine/full';
 
@@ -172,6 +173,13 @@ describe('get_vedic_signs without a birth time', () => {
     expect(last.toISOString()).toBe('1919-03-31T04:29:59.000Z');
   });
 
+  it('starts and ends a date at a clock change within a minute (Accra left local mean time at 00:00:52 UTC on 2 November 1915)', async () => {
+    // At 0.25 degrees west the birthplace clock went from 23:59:52 on 1 November to 00:00:52 on 2 November.
+    const ends = async (birthDate: string) => (await birthDayEnds({ birthDate, zone: 'Africa/Accra', latitude: 5.55, longitude: -0.25 }, clock)).map((at) => at.toISOString());
+    expect(await ends('1915-11-02')).toEqual(['1915-11-02T00:00:52.000Z', '1915-11-02T23:59:59.000Z']);
+    expect(await ends('1915-11-01')).toEqual(['1915-11-01T00:01:00.000Z', '1915-11-02T00:00:51.000Z']);
+  });
+
   it('refuses a date the clock never showed (Apia went from 29 to 31 December 2011) without repeating it, timed or not', async () => {
     for (const extra of [{}, { time: '12:00' }, { time: '12:00', latitude: -13.83, longitude: -171.76 }]) {
       const args = { birthDate: '2011-12-30', zone: 'Pacific/Apia', ...extra };
@@ -195,12 +203,13 @@ describe('get_vedic_signs without a birth time', () => {
       const [first, last] = await birthDayEnds({ birthDate }, clock);
       for (const zone of zones) {
         await clock.prepareLocalTime(birthDate, zone);
-        for (const time of ['00:00', '23:59']) {
-          const at = clock.resolveLocalToUtc(birthDate, time, zone).utc.getTime();
-          expect(at >= first.getTime() && at <= last.getTime(), `${birthDate} ${time} ${zone}`).toBe(true);
-        }
+        // The whole local date on that clock, to its last second.
+        const span = localDaySpan(birthDate, (date, time, fold) => clock.resolveLocalToUtc(date, time, zone, { fold }));
+        if (span) expect(span[0] >= first && span[1] <= last, `${birthDate} ${zone}`).toBe(true);
       }
     }
+    // 00:00 at UTC+16 to 23:59:59 at UTC−16.
+    expect((await birthDayEnds({ birthDate: '2026-11-09' }, clock)).map((at) => at.toISOString())).toEqual(['2026-11-08T08:00:00.000Z', '2026-11-10T15:59:59.000Z']);
   }, 60_000);
 });
 

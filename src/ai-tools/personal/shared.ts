@@ -165,7 +165,7 @@ function onBirthClock(args: BirthArgs, clock: PersonalToolContext['localTime']) 
 
 /**
  * Any wall time on the birthplace clock, for localDaySpan, which also reads
- * the day either side of the birth date: prepareLocalTime(args.birthDate,
+ * the day after the birth date: prepareLocalTime(args.birthDate,
  * args.zone) covers them, since the engine loads a zone's whole history for
  * any date up to 1970.
  */
@@ -215,11 +215,11 @@ export const WIDEST_OFFSET_HOURS = 16;
  * leaves the date (src/lib/time/local-day.ts), so a date the clock showed
  * twice (Apia, 4 July 1892) is covered whole and one it left early (St.
  * John's, 2 May 1920, when 23:00 became 00:00) ends there; else every clock's version of that date, from 00:00 at UTC+16 to
- * 23:59 at UTC−16. A placement holds for an untimed birth only when it is the
+ * 23:59:59 at UTC−16. A placement holds for an untimed birth only when it is the
  * same at both ends. A date the zone's clock never showed is refused.
  */
 export async function birthDayEnds(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<[Date, Date]> {
-  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR)];
+  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR)];
   await clock.prepareLocalTime(args.birthDate, args.zone);
   const span = localDaySpan(args.birthDate, wallOnBirthplaceClock(args, clock));
   if (!span) throw new RangeError(BIRTH_DATE_REFUSAL);

@@ -39,9 +39,9 @@ export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReadin
   // ends of the local date keep it: from where the clock first reaches its
   // 00:00 to where it last leaves the date, so a date the clock showed twice
   // (Apia, 4 July 1892) is covered whole and one it left early (St. John's,
-  // 2 May 1920, when 23:00 became 00:00) ends there. The resolver reads the
-  // day either side too, which the birth date's preparation covers: the
-  // engine loads a zone's whole history for any date up to 1970.
+  // 2 May 1920, when 23:00 became 00:00) ends there, to the second. The
+  // resolver reads the day after too, which the birth date's preparation
+  // covers: the engine loads a zone's whole history for any date up to 1970.
   const dayEnds = timeKnown ? undefined : localDaySpan(input.birthDate,
     (date, time, fold) => resolveLocalToUtc(date, time, input.place.tz, { longitude: input.place.lon, fold })) ?? undefined;
   // The birthplace rounded to two decimals, as every tool rounds a place it is given.

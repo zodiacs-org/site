@@ -43645,43 +43645,42 @@ import { z as z15 } from "zod";
 var SECOND = 1e3;
 var MINUTE2 = 6e4;
 var DAY18 = 864e5;
-var LAST_MINUTE_MS = 59e3;
+var skipped = (resolution) => resolution.flags.includes("dst-gap");
+var repeated = (resolution) => resolution.flags.includes("dst-fold");
+function changeBehind(resolution) {
+  const transition = resolution.transition;
+  if (!transition) throw new Error("The resolver gave no clock change for a skipped or repeated wall time.");
+  const at = Date.parse(transition.at);
+  return { at, wallAfter: at + Math.round(transition.offsetAfterMinutes * MINUTE2) };
+}
 function wallOf(resolution) {
   return resolution.utc.getTime() + Math.round(resolution.offsetMinutes * MINUTE2);
 }
 function readsOnDate(date3, resolution) {
-  return new Date(wallOf(resolution)).toISOString().slice(0, 10) === date3;
+  const wall = skipped(resolution) && resolution.transition ? changeBehind(resolution).wallAfter : wallOf(resolution);
+  return new Date(wall).toISOString().slice(0, 10) === date3;
 }
-function reaches(wall, resolve2) {
-  const at = (minute) => {
-    const iso3 = new Date(minute).toISOString();
-    return resolve2(iso3.slice(0, 10), iso3.slice(11, 16), "earlier");
-  };
-  const here = at(wall);
-  if (!here.flags.includes("dst-gap")) return here.utc.getTime();
-  const before2 = wall - here.utc.getTime();
-  const inThisGap = (minute) => {
-    const resolution = at(minute);
-    return resolution.flags.includes("dst-gap") && Math.abs(minute - resolution.utc.getTime() - before2) < SECOND;
-  };
-  const jumpMinutes = Math.max(0, Math.ceil((Math.round(here.offsetMinutes * MINUTE2) - before2) / MINUTE2));
-  let outside = wall - jumpMinutes * MINUTE2;
-  let inside = wall;
-  if (inThisGap(outside)) return outside - before2;
-  while (inside - outside > MINUTE2) {
-    const middle = outside + Math.floor((inside - outside) / MINUTE2 / 2) * MINUTE2;
-    if (inThisGap(middle)) inside = middle;
-    else outside = middle;
-  }
-  return inside - before2;
+function midnightOf(date3) {
+  const at = Date.parse(`${date3}T00:00:00Z`);
+  if (!Number.isFinite(at)) throw new RangeError("A local date must be a real YYYY-MM-DD date.");
+  return at;
+}
+function dateAfter(date3) {
+  const next = new Date(midnightOf(date3) + DAY18).toISOString();
+  if (!/^\d{4}-/u.test(next)) throw new RangeError("A local date must be before 9999-12-31.");
+  return next.slice(0, 10);
+}
+function lastReach(date3, resolve2) {
+  const resolution = resolve2(date3, "00:00", "later");
+  if (skipped(resolution)) return changeBehind(resolution).at;
+  if (!repeated(resolution) || changeBehind(resolution).wallAfter < midnightOf(date3)) return resolution.utc.getTime();
+  return resolve2(date3, "00:00", "earlier").utc.getTime();
 }
 function localDaySpan(date3, resolve2) {
-  if (!readsOnDate(date3, resolve2(date3, "00:00", "earlier"))) return null;
-  const midnight = Date.parse(`${date3}T00:00:00Z`);
-  const start = reaches(midnight, resolve2);
-  let end = reaches(midnight + DAY18, resolve2) - SECOND;
-  const last2 = resolve2(date3, "23:59", "later");
-  if (!last2.flags.includes("dst-gap")) end = Math.max(end, last2.utc.getTime() + LAST_MINUTE_MS);
+  const midnight = resolve2(date3, "00:00", "earlier");
+  if (!readsOnDate(date3, midnight)) return null;
+  const start = skipped(midnight) ? changeBehind(midnight).at : midnight.utc.getTime();
+  const end = lastReach(dateAfter(date3), resolve2) - SECOND;
   return [new Date(start), new Date(end)];
 }
 
@@ -43740,7 +43739,7 @@ async function withCheckedZone(args, context) {
 }
 var WIDEST_OFFSET_HOURS = 16;
 async function birthDayEnds2(args, clock2) {
-  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + WIDEST_OFFSET_HOURS * HOUR6)];
+  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR6)];
   await clock2.prepareLocalTime(args.birthDate, args.zone);
   const span2 = localDaySpan(args.birthDate, wallOnBirthplaceClock(args, clock2));
   if (!span2) throw new RangeError(BIRTH_DATE_REFUSAL);
