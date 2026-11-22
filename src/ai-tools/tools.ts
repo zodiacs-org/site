@@ -34,11 +34,13 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, GOOD_DAYS_TOOL_NAMES, type AiToolName, type SolarReturnToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
 import { MINOR_LOVE_NOTE, isUnder13, isUnderAge } from './features/reading-guards';
+import { earliestToday } from '../lib/birth-date-policy';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
 import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, softenMinorAnswer, softenMinorPanel, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
+import { PERSONAL_TOOL_NAMES, isPersonalTool, personalTool, type PersonalToolName } from './personal/registry';
 
 export interface AiDependencies {
   /** Authenticated preview only; changes the declared privacy/limitations. */
@@ -73,6 +75,11 @@ export interface AiDependencies {
   numerology?: boolean;
   /** find_good_days (ZODIACS_GOOD_DAYS_ENABLED=1), in effect only with the coverage and occasion tools (goodDaysOn). */
   goodDays?: boolean;
+  /**
+   * The personal tools (ZODIACS_PERSONAL_TOOLS_ENABLED=1, src/ai-tools/personal/registry.ts), in effect only with the
+   * coverage and occasion tools (personalOn).
+   */
+  personal?: boolean;
   /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
   horoscopeMonths?: () => Promise<HoroscopeMonths>;
   /** The committed horoscope program (src/data/horoscope-program.json), for the yearly readings. */
@@ -173,6 +180,11 @@ export function goodDaysOn(dependencies: AiDependencies): boolean {
   return !!(dependencies.occasions && dependencies.coverage && dependencies.goodDays);
 }
 
+/** Whether the personal tools' switch is in effect: it joins the occasion and coverage switches, and alone changes nothing. */
+export function personalOn(dependencies: AiDependencies): boolean {
+  return !!(dependencies.occasions && dependencies.coverage && dependencies.personal);
+}
+
 /** The tools this server actually offers with these dependencies. */
 export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   const released: AiToolName[] = AI_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope' || !!dependencies.horoscopeWindow);
@@ -184,7 +196,8 @@ export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   // get_year_score comes after everything else, so every entry before it keeps its place.
   // get_numerology comes after get_solar_return, so every entry before it keeps its place.
   // find_good_days comes after them all, so every entry before it keeps its place.
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : []), ...(goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : [])];
+  // The personal tools come after everything else, so every entry before them keeps its place.
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : []), ...(goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : []), ...(personalOn(dependencies) ? PERSONAL_TOOL_NAMES : [])];
 }
 
 const isCoverageTool = (tool: string): tool is CoverageToolName => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool);
@@ -214,13 +227,15 @@ const FIELD_FORMAT: Record<string, string> = {
 };
 
 /** The birth years a tool takes, named when a date in the right form falls outside them (1799-05-03). */
-const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | GoodDaysToolName, string>> = {
+const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | GoodDaysToolName | PersonalToolName, string>> = {
   get_natal_chart: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_personal_transits: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_year_score: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_solar_return: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_numerology: '1800 to 2199',
 };
+/** Every personal tool takes a birth date in the natal chart's years. */
+const birthYearsOf = (tool: CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | GoodDaysToolName | PersonalToolName) => (isPersonalTool(tool) ? `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}` : BIRTH_YEARS[tool]);
 
 /**
  * A 0.6.0 tool's refusal of arguments its schema does not accept, naming each field: "birthDate is required.",
@@ -228,7 +243,7 @@ const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsTo
  * values; nothing from the request is repeated, so an unknown property's name never comes back. `schema` is the
  * tool's input schema in effect, its sky events form while that switch is on; an array item is named as kinds[0].
  */
-export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | GoodDaysToolName, input: unknown, schema: z.ZodType = INPUT_SCHEMAS[tool]) {
+export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | GoodDaysToolName | PersonalToolName, input: unknown, schema: z.ZodType = INPUT_SCHEMAS[tool]) {
   const parsed = schema.safeParse(input ?? {});
   if (parsed.success) return null;
   const record = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
@@ -244,7 +259,7 @@ export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | Sk
     if (issue.code === 'too_big' && 'maximum' in issue && issue.origin === 'number') return `${field} must be at most ${String(issue.maximum)}.`;
     if (issue.code === 'invalid_type' && issue.expected === 'number') return `${field} must be a number.`;
     if (issue.code === 'invalid_type' && issue.expected === 'int') return `${field} must be a whole number.`;
-    if (field === 'birthDate' && BIRTH_YEARS[tool] && typeof record.birthDate === 'string' && /^\d{4}-\d{2}-\d{2}$/u.test(record.birthDate)) return `birthDate must be a date from ${BIRTH_YEARS[tool]}, such as 1994-05-14.`;
+    if (field === 'birthDate' && birthYearsOf(tool) && typeof record.birthDate === 'string' && /^\d{4}-\d{2}-\d{2}$/u.test(record.birthDate)) return `birthDate must be a date from ${birthYearsOf(tool)}, such as 1994-05-14.`;
     return `${field} must be ${FIELD_FORMAT[field] ?? 'in the documented form'}.`;
   });
   return failure(tool, 'invalid-request', [...new Set(sentences)].slice(0, 3).join(' '));
@@ -306,9 +321,14 @@ export function birthDatesIn(tool: AiToolName, args: unknown, now: Date, hostZon
  * The hosted tools' refusal of a child's birth date, before anything is worked out: Zodiacs is not directed at
  * children under 13, so a call that carries a birth date less than 13 years before today, or one still to come, gets
  * the fixed refusal and no card, chart or reading. Null for every other call.
+ *
+ * "Today" is the calendar date at UTC-12, the earliest date anywhere on Earth, the same day the site's chart forms
+ * use (../lib/birth-date-policy.ts). So nobody is accepted before their 13th birthday in any time zone; the UTC date
+ * accepted a child west of UTC up to 12 hours early. The cost is the one the 9 November audit states: someone at
+ * UTC+14 is accepted up to 26 hours after their 13th birthday begins.
  */
 export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date, hostZone?: string) {
-  const today = now.toISOString().slice(0, 10);
+  const today = earliestToday(now);
   return birthDatesIn(tool, args, now, hostZone).some((date) => isUnder13(date, today)) ? failure(tool, 'invalid-request', UNDER_13_REFUSAL) : null;
 }
 
@@ -399,15 +419,29 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
   const resolveZone = (name: string) => localTime().canonicalZoneName(name);
   try {
     if ((OCCASION_TOOL_NAMES as readonly string[]).includes(tool) && !dependencies.occasions) return failure(tool, 'unavailable', 'This tool is not offered here.');
-    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
+    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
     // get_year_score takes a public figure only with its people switch (contracts.ts, YEAR_SCORE_PEOPLE_INPUT).
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
-    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
+    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
     const parsed = inputSchemaFor(tool, skyEvents, switches).safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');
     let data: unknown;
     let links: { title: string; url: string }[] = [methodLink];
-    switch (tool) {
+    if (isPersonalTool(tool)) {
+      // A personal tool: computed by its own module from the engine and pre-written wording, for this call only.
+      const now = dependencies.now?.() ?? new Date();
+      const child = childBirthDateRefusal(tool, input, now, context.hostZone);
+      if (child) return child;
+      const definition = personalTool(tool);
+      const result = await feature(() => definition.run(definition.input.parse(input) as never, {
+        now, localTime: localTime(), resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone), hostZone: context.hostZone, origin: ORIGIN,
+        ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
+        ...(dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}),
+      }));
+      if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+      if ('refused' in result) return failure(tool, result.refused, 'Zodiacs is busy. Try again in a minute.', result.refused === 'rate-limited' ? 60 : 300);
+      ({ data, links } = result);
+    } else switch (tool) {
       case 'open_chart_studio': {
         data = { title: 'Chart Studio', calculation: 'browser-local', initialChart: 'birth-details', sharing: 'user-reviewed-selection-only' };
         links = [{ title: 'Birth chart page. A chat readout from details already given uses get_natal_chart.', url: `${ORIGIN}/birth-chart/` }];
@@ -459,6 +493,12 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           const capabilities = data as { privacy: string; limitations: string[] };
           capabilities.privacy += ' The good day finder takes a goal and dates, and, only if the person asks for their own chart to count, a birth date with an optional time and birthplace time zone, for that call only; it saves none of it and returns only the natal Sun sign.';
           capabilities.limitations.push('find_good_days (also listed in tools/list) ranks the days in a window of up to twelve months for a launch, a contract, a move, a relationship, travel, a new job or a wedding, by traditional electional astrology, and names the days to avoid. It gives no medical timing, no price calls and no legal outcomes, and it schedules nothing.');
+        }
+        if (personalOn(dependencies) && PERSONAL_TOOL_NAMES.length) {
+          // The personal tools: what each does, and that none of them keeps the details it is given.
+          const capabilities = data as { privacy: string; limitations: string[] };
+          capabilities.privacy += ` The personal tools (${PERSONAL_TOOL_NAMES.join(', ')}) take a birth date, with an optional time, time zone and coordinates, and sometimes town or city names, for that call only; they save, log and count none of it, and no link they return carries a birth detail or a place.`;
+          capabilities.limitations.push(`Personal tools, also listed in tools/list: ${PERSONAL_TOOL_NAMES.map((name) => `${name} (${personalTool(name).summary})`).join(', ')}. Each is calculated by Zodiacs' own code with pre-written wording, with a reading-confidence label on each reading. They read money, career, wellbeing and legal matters as astrology traditionally does, never as a guarantee: no calls on prices or what to buy or sell, no diagnoses or medical timing, no predictions of death, and no promise of how a legal matter ends.`);
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
