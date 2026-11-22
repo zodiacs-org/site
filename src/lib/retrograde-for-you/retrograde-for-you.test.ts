@@ -8,6 +8,7 @@ import { forbiddenClaim } from '../../ai-tools/personal/shared';
 import { PeriodCard } from '../../islands/RetrogradeForYou';
 import { computeRetrogradeForYou, prepareLocalTime, type RetrogradeForYouInput } from '../../islands/retrograde-for-you/compute';
 import sky from '../../data/sky.json';
+import { retrogradeForYouCardModel, skyEvents } from '../../server/result-preview-model';
 import { CONTACT_LINE, RETROGRADE_ASK, RETROGRADE_LINE } from './reading';
 import { loopsFromSky } from './sky';
 import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery } from './share';
@@ -205,15 +206,36 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     // Madrid, 30 Sep 1990: clocks went back from 03:00 to 02:00. At 02:10 the passes give Cancer and Leo rising.
     const split = await both({ birthDate: '1990-09-30', time: '02:10' }, now, 'Europe/Madrid');
     const line = 'Clocks repeated that hour where you were born. This reading uses the earlier pass, with Cancer rising; the later pass would give Leo rising and change every house.';
-    expect(split.page.limits).toContain(line);
-    expect(split.mcp.limits).toContain(line);
-    expect(split.page.limits).toEqual(split.mcp.limits.filter((entry) => !entry.startsWith('Today is read')));
+    for (const result of [split.page, split.mcp]) {
+      expect(result.limits).toEqual([line]);
+      // The houses follow the earlier pass: Scorpio is fifth from Cancer, fourth from Leo.
+      expect(result.periods.find((period) => period.planet === 'Mercury')?.houses).toMatchObject([{ sign: 'scorpio', house: 5 }]);
+    }
     // At 02:50 both passes give Leo rising, and an ordinary time is no fold at all: no limit.
     for (const time of ['02:50', '04:10']) {
       const same = await both({ birthDate: '1990-09-30', time }, now, 'Europe/Madrid');
-      expect(same.page.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
-      expect(same.mcp.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
+      expect(same.page.limits).toEqual([]);
+      expect(same.mcp.limits).toEqual([]);
     }
+  });
+
+  it('keeps the sixth-house wording from an untimed reading through its share card', async () => {
+    const { page, mcp } = await both({ birthDate: '2010-06-05' }, new Date('2026-11-09T09:00:00Z'), 'UTC');
+    const theme = 'routines, craft, and the shape of the day';
+    const pageVenus = page.periods.find((period) => period.planet === 'Venus')!;
+    const toolVenus = mcp.periods.find((period) => period.planet === 'Venus')!;
+    for (const venus of [pageVenus, toolVenus]) {
+      expect(venus.houses.find((entry) => entry.house === 6)).toMatchObject({ sign: 'scorpio', theme });
+      expect(venus.reading).toContain(theme);
+      expect(JSON.stringify(venus)).not.toMatch(/health/iu);
+    }
+    expect(toolVenus.shareUrl).toBe(`https://zodiacs.org/share/retrograde-for-you/?${pageVenus.shareQuery}`);
+    const share = parseRetrogradeForYouShare(new URLSearchParams(pageVenus.shareQuery!));
+    expect(share).toMatchObject({ house: 6, basis: 'sun' });
+    const events = skyEvents({ retrogrades: sky.retrogrades, moons: [], eclipses: [] });
+    const card = retrogradeForYouCardModel(share!, events);
+    expect(card?.line).toBe(`The sixth house covers ${theme}. Counted from the Sun sign.`);
+    expect(JSON.stringify(card)).not.toMatch(/health/iu);
   });
 
   it('takes the later pass the real size of the change on: half an hour on Lord Howe Island', async () => {

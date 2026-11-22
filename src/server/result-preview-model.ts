@@ -20,6 +20,7 @@ import { MILESTONE_WORDS } from '../lib/occasions/milestone-words.js';
 import { dayLabel } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
 import { readingConfidence, readingConfidenceText } from '../ai-tools/reading-confidence.js';
+import { softenHealth } from '../ai-tools/features/reading-guards.js';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac.js';
 import {
   SKY_PLANETS,
@@ -709,7 +710,7 @@ export function retrogradeForYouCardModel(share: RetrogradeForYouShare, events: 
   const sign = RETROGRADE_PLANET_SIGN[share.planet];
   const where = share.house ? `in my ${HOUSE_ORDINAL[share.house]} house` : 'in my chart';
   const line = share.house
-    ? `The ${HOUSE_ORDINAL[share.house]} house covers ${RETROGRADE_CARD_HOUSE_THEME[share.house]}.${share.basis === 'sun' ? ' Counted from the Sun sign.' : ''}`
+    ? softenHealth(`The ${HOUSE_ORDINAL[share.house]} house covers ${RETROGRADE_CARD_HOUSE_THEME[share.house]}.${share.basis === 'sun' ? ' Counted from the Sun sign.' : ''}`)
     : RETROGRADE_ABOUT[share.planet];
   return {
     planet,
