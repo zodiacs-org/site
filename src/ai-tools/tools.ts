@@ -35,12 +35,12 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, GOOD_DAYS_TOOL_NAMES, type AiToolName, type SolarReturnToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
 import { MINOR_LOVE_NOTE, isUnder13, isUnderAge } from './features/reading-guards';
+import { earliestToday } from '../lib/birth-date-policy';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
 import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, softenMinorAnswer, softenMinorPanel, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
-import { earliestToday } from '../lib/birth-date-policy';
 import { castMomentChart } from './features/moment-chart';
 import { PERSONAL_TOOL_NAMES, isPersonalTool, personalTool, type PersonalToolName } from './personal/registry';
 
@@ -324,6 +324,11 @@ export function birthDatesIn(tool: AiToolName, args: unknown, now: Date, hostZon
  * The hosted tools' refusal of a child's birth date, before anything is worked out: Zodiacs is not directed at
  * children under 13, so a call that carries a birth date less than 13 years before today, or one still to come, gets
  * the fixed refusal and no card, chart or reading. Null for every other call.
+ *
+ * "Today" is the calendar date at UTC-12, the earliest date anywhere on Earth, the same day the site's chart forms
+ * use (../lib/birth-date-policy.ts). So nobody is accepted before their 13th birthday in any time zone; the UTC date
+ * accepted a child west of UTC up to 12 hours early. The cost is the one the 9 November audit states: someone at
+ * UTC+14 is accepted up to 26 hours after their 13th birthday begins.
  */
 export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date, hostZone?: string) {
   const today = earliestToday(now);
