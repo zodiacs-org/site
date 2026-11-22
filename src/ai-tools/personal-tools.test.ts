@@ -175,7 +175,7 @@ describe('the personal tools switch on', () => {
     }
   }, 120_000);
 
-  it('never repeats a refused value back', async () => {
+  it('never repeats a refused value back, each refused field on its own', async () => {
     const host = await serve(ON);
     // One bad field per call, so each is refused by its own check and not by an earlier one.
     const cases: [Record<string, unknown>, RegExp][] = [
