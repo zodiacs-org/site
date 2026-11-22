@@ -1,10 +1,10 @@
 # Motion evidence
 
-- Before: http://127.0.0.1:4391
-- After: http://127.0.0.1:4403
-- Generated: 2026-11-17T18:24:24.690Z
+- Before: http://127.0.0.1:4411
+- After: http://127.0.0.1:4460
+- Generated: 2026-11-22T02:02:05.794Z
 - Viewports: 390x844, 1440x900. Strip times: 0, 100, 200, 300, 440, 700, 1100, 1600, 2200 ms.
-- Checks applied to the "after" build: 2 failing.
+- Checks applied to the "after" build: 3 failing.
 
 The 4x CPU and throttled-network numbers are a proxy, not a phone: headless Chromium on a shared machine with a slowed main thread and an emulated slow connection. Compare them between builds measured on the same machine, not against real devices.
 
@@ -12,7 +12,8 @@ How to read the numbers: CLS covers the load and a scroll through the page that 
 
 ## Failing checks
 
-- /events/jupiter-trine-saturn-2027-04-03/ 390x844 longFrames: longest 66.6 ms, 50 ms without marks
+- /events/ 390x844 longFrames: longest 133.3 ms, 50 ms without marks
+- /events/jupiter-trine-saturn-2027-04-03/ 390x844 longFrames: longest 66.6 ms, 33.3 ms without marks
 - /seasons/ 1440x900 cls: 0.0153
 
 ## /events/ (rest: changed)
@@ -21,13 +22,13 @@ How to read the numbers: CLS covers the load and a scroll through the page that 
 |---|---|---|---|---|
 | Rest diff |  | 0.000% |  | 0.000% |
 | CLS (load + scroll) | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
-| LCP | 268 ms `p` | 192 ms `p` | 248 ms `p` | 244 ms `p` |
+| LCP | 208 ms `p` | 176 ms `p` | 216 ms `p` | 236 ms `p` |
 | LCP element marked | false | false | false | false |
-| First paint (throttled) | 1172 ms | 1364 ms | 1152 ms | 1188 ms |
-| DOMContentLoaded (throttled) | 706 ms | 754 ms | 735 ms | 719 ms |
-| First mark shown (throttled) | 1132 ms (+-40 after paint) | 1455 ms (+91 after paint) | 1049 ms (+-103 after paint) | 1312 ms (+124 after paint) |
-| Long frames > 50 ms (4x CPU) | 2, longest 83.3 ms | 1, longest 83.3 ms | 3, longest 83.3 ms | 1, longest 100 ms |
-| Animated properties (marked) | none | opacity, transform | none | opacity, transform |
+| First paint (throttled) | 1124 ms | 1084 ms | 1268 ms | 1112 ms |
+| DOMContentLoaded (throttled) | 788 ms | 717 ms | 771 ms | 728 ms |
+| First mark shown (throttled) | 1087 ms (+-37 after paint) | 1046 ms (+-38 after paint) | 1139 ms (+-129 after paint) | 1029 ms (+-83 after paint) |
+| Long frames > 50 ms (4x CPU) | 0, longest 50 ms | 3, longest 133.3 ms | 2, longest 383.4 ms | 2, longest 66.7 ms |
+| Animated properties (marked) | none | transform | none | transform |
 | Marked elements | 0 | 8 | 0 | 8 |
 | Nested marks | 0 | 0 | 0 | 0 |
 | html has is-in | false | false | false | false |
@@ -39,8 +40,8 @@ How to read the numbers: CLS covers the load and a scroll through the page that 
 
 Checks not passing:
 
-- 390x844 longFrames: NOTE, runner too slow to judge: longest 83.3 ms, 83.3 ms without marks
-- 1440x900 longFrames: NOTE, runner too slow to judge: longest 100 ms, 83.3 ms without marks
+- 390x844 longFrames: FAIL, longest 133.3 ms, 50 ms without marks
+- 1440x900 longFrames: NOTE, runner too slow to judge: longest 66.7 ms, 383.4 ms without marks
 
 Sheets: [390x844 first view](events-390x844-first-view.webp), [1440x900 first view](events-1440x900-first-view.webp)
 
@@ -50,12 +51,12 @@ Sheets: [390x844 first view](events-390x844-first-view.webp), [1440x900 first vi
 |---|---|---|---|---|
 | Rest diff |  | 0.000% |  | 0.000% |
 | CLS (load + scroll) | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
-| LCP | 176 ms `p` | 172 ms `p` | 208 ms `p` | 192 ms `p` |
+| LCP | 124 ms `p` | 128 ms `p` | 160 ms `p` | 172 ms `p` |
 | LCP element marked | false | false | false | false |
-| First paint (throttled) | 992 ms | 904 ms | 980 ms | 952 ms |
-| DOMContentLoaded (throttled) | 695 ms | 667 ms | 686 ms | 703 ms |
-| First mark shown (throttled) | 1040 ms (+48 after paint) | 877 ms (+-27 after paint) | 908 ms (+-72 after paint) | 935 ms (+-17 after paint) |
-| Long frames > 50 ms (4x CPU) | 0, longest 50 ms | 2, longest 66.6 ms | 2, longest 150 ms | 2, longest 66.7 ms |
+| First paint (throttled) | 876 ms | 896 ms | 972 ms | 980 ms |
+| DOMContentLoaded (throttled) | 661 ms | 680 ms | 694 ms | 695 ms |
+| First mark shown (throttled) | 902 ms (+26 after paint) | 889 ms (+-7 after paint) | 940 ms (+-32 after paint) | 901 ms (+-79 after paint) |
+| Long frames > 50 ms (4x CPU) | 0, longest 33.3 ms | 1, longest 66.6 ms | 3, longest 83.3 ms | 2, longest 83.4 ms |
 | Animated properties (marked) | none | opacity, transform | none | opacity, transform |
 | Marked elements | 0 | 1 | 0 | 1 |
 | Nested marks | 0 | 0 | 0 | 0 |
@@ -68,8 +69,8 @@ Sheets: [390x844 first view](events-390x844-first-view.webp), [1440x900 first vi
 
 Checks not passing:
 
-- 390x844 longFrames: FAIL, longest 66.6 ms, 50 ms without marks
-- 1440x900 longFrames: NOTE, runner too slow to judge: longest 66.7 ms, 150 ms without marks
+- 390x844 longFrames: FAIL, longest 66.6 ms, 33.3 ms without marks
+- 1440x900 longFrames: NOTE, runner too slow to judge: longest 83.4 ms, 83.3 ms without marks
 
 Sheets: [390x844 first view](events-jupiter-trine-saturn-2027-04-03-390x844-first-view.webp), [1440x900 first view](events-jupiter-trine-saturn-2027-04-03-1440x900-first-view.webp)
 
@@ -78,13 +79,13 @@ Sheets: [390x844 first view](events-jupiter-trine-saturn-2027-04-03-390x844-firs
 | | before 390x844 | after 390x844 | before 1440x900 | after 1440x900 |
 |---|---|---|---|---|
 | Rest diff |  | 0.000% |  | 0.000% |
-| CLS (load + scroll) | 0.0000 | 0.0000 | 0.0000 | 0.0153 |
-| LCP | 180 ms `p` | 168 ms `p` | 304 ms `p` | 284 ms `p` |
+| CLS (load + scroll) | 0.0000 | 0.0000 | 0.0153 | 0.0153 |
+| LCP | 144 ms `p` | 128 ms `p` | 232 ms `p` | 272 ms `p` |
 | LCP element marked | false | false | false | false |
-| First paint (throttled) | 1020 ms | 948 ms | 1172 ms | 1028 ms |
-| DOMContentLoaded (throttled) | 803 ms | 765 ms | 781 ms | 754 ms |
+| First paint (throttled) | 920 ms | 900 ms | 1056 ms | 1044 ms |
+| DOMContentLoaded (throttled) | 731 ms | 734 ms | 752 ms | 757 ms |
 | First mark shown (throttled) | none | none | none | none |
-| Long frames > 50 ms (4x CPU) | 1, longest 50.1 ms | 0, longest 33.4 ms | 1, longest 233.3 ms | 4, longest 83.4 ms |
+| Long frames > 50 ms (4x CPU) | 0, longest 33.3 ms | 0, longest 50 ms | 2, longest 83.3 ms | 2, longest 83.3 ms |
 | Animated properties (marked) | none | none | none | none |
 | Marked elements | 0 | 0 | 0 | 0 |
 | Nested marks | 0 | 0 | 0 | 0 |
@@ -98,7 +99,7 @@ Sheets: [390x844 first view](events-jupiter-trine-saturn-2027-04-03-390x844-firs
 Checks not passing:
 
 - 1440x900 cls: FAIL, 0.0153
-- 1440x900 longFrames: NOTE, runner too slow to judge: longest 83.4 ms, 233.3 ms without marks
+- 1440x900 longFrames: NOTE, runner too slow to judge: longest 83.3 ms, 83.3 ms without marks
 
 Sheets: [390x844 first view](seasons-390x844-first-view.webp), [1440x900 first view](seasons-1440x900-first-view.webp)
 
@@ -107,14 +108,14 @@ Sheets: [390x844 first view](seasons-390x844-first-view.webp), [1440x900 first v
 | | before 390x844 | after 390x844 | before 1440x900 | after 1440x900 |
 |---|---|---|---|---|
 | Rest diff |  | 0.000% |  | 0.000% |
-| CLS (load + scroll) | 0.0001 | 0.0000 | 0.0002 | 0.0000 |
-| LCP | 212 ms `img` | 232 ms `img` | 336 ms `img` | 312 ms `img` |
+| CLS (load + scroll) | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| LCP | 152 ms `img` | 140 ms `img` | 212 ms `img` | 224 ms `img` |
 | LCP element marked | false | false | false | false |
-| First paint (throttled) | 1108 ms | 1088 ms | 1352 ms | 1184 ms |
-| DOMContentLoaded (throttled) | 1551 ms | 1502 ms | 2175 ms | 2114 ms |
+| First paint (throttled) | 1080 ms | 1056 ms | 1136 ms | 1220 ms |
+| DOMContentLoaded (throttled) | 1369 ms | 1342 ms | 1779 ms | 2048 ms |
 | First mark shown (throttled) | none | none | none | none |
-| Long frames > 50 ms (4x CPU) | 2, longest 116.7 ms | 3, longest 133.3 ms | 2, longest 100 ms | 4, longest 183.2 ms |
-| Animated properties (marked) | none | opacity, transform | none | opacity, transform |
+| Long frames > 50 ms (4x CPU) | 2, longest 66.7 ms | 2, longest 83.3 ms | 1, longest 99.9 ms | 2, longest 100 ms |
+| Animated properties (marked) | none | transform | none | transform |
 | Marked elements | 0 | 12 | 0 | 12 |
 | Nested marks | 0 | 0 | 0 | 0 |
 | html has is-in | false | false | false | false |
@@ -126,8 +127,8 @@ Sheets: [390x844 first view](seasons-390x844-first-view.webp), [1440x900 first v
 
 Checks not passing:
 
-- 390x844 longFrames: NOTE, runner too slow to judge: longest 133.3 ms, 116.7 ms without marks
-- 1440x900 longFrames: NOTE, runner too slow to judge: longest 183.2 ms, 100 ms without marks
+- 390x844 longFrames: NOTE, runner too slow to judge: longest 83.3 ms, 66.7 ms without marks
+- 1440x900 longFrames: NOTE, runner too slow to judge: longest 100 ms, 99.9 ms without marks
 
 Notes:
 
@@ -142,12 +143,12 @@ Sheets: [390x844 first view](seasons-aries-390x844-first-view.webp), [1440x900 f
 |---|---|---|---|---|
 | Rest diff |  | 0.000% |  | 0.000% |
 | CLS (load + scroll) | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
-| LCP | 208 ms `p.people-page__lede` | 168 ms `a.nav__chip` | 224 ms `span.nav__name` | 200 ms `span.nav__name` |
+| LCP | 188 ms `p.people-page__lede` | 164 ms `p.people-page__lede` | 260 ms `p.people-page__lede` | 244 ms `p.people-page__lede` |
 | LCP element marked | false | false | false | false |
-| First paint (throttled) | 936 ms | 1008 ms | 1068 ms | 1008 ms |
-| DOMContentLoaded (throttled) | 980 ms | 1019 ms | 893 ms | 920 ms |
-| First mark shown (throttled) | none | 1069 ms (+61 after paint) | none | 958 ms (+-50 after paint) |
-| Long frames > 50 ms (4x CPU) | 3, longest 133.3 ms | 4, longest 133.3 ms | 3, longest 66.7 ms | 4, longest 116.7 ms |
+| First paint (throttled) | 904 ms | 940 ms | 1008 ms | 716 ms |
+| DOMContentLoaded (throttled) | 912 ms | 929 ms | 907 ms | 990 ms |
+| First mark shown (throttled) | none | 948 ms (+8 after paint) | none | 984 ms (+268 after paint) |
+| Long frames > 50 ms (4x CPU) | 1, longest 66.6 ms | 1, longest 66.7 ms | 2, longest 83.3 ms | 2, longest 66.6 ms |
 | Animated properties (marked) | none | opacity, transform | none | opacity, transform |
 | Marked elements | 0 | 104 | 0 | 104 |
 | Nested marks | 0 | 0 | 0 | 0 |
@@ -160,8 +161,8 @@ Sheets: [390x844 first view](seasons-aries-390x844-first-view.webp), [1440x900 f
 
 Checks not passing:
 
-- 390x844 longFrames: NOTE, runner too slow to judge: longest 133.3 ms, 133.3 ms without marks
-- 1440x900 longFrames: NOTE, runner too slow to judge: longest 116.7 ms, 66.7 ms without marks
+- 390x844 longFrames: NOTE, runner too slow to judge: longest 66.7 ms, 66.6 ms without marks
+- 1440x900 longFrames: NOTE, runner too slow to judge: longest 66.6 ms, 83.3 ms without marks
 
 Sheets: [390x844 first view](people-390x844-first-view.webp), [1440x900 first view](people-1440x900-first-view.webp)
 
