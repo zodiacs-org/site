@@ -113,7 +113,7 @@ describe('the numerology switch on', () => {
     expect(JSON.stringify(tools.slice(0, -1))).toBe(JSON.stringify(before));
     const tool = tools.at(-1)!;
     expect(tool).toMatchObject({ name: 'get_numerology', title: TOOL_TITLES.get_numerology, description: TOOL_DESCRIPTIONS.get_numerology,
-      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true, title: 'Numerology numbers' } });
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: false, title: 'Numerology numbers' } });
     expect(tool._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
     expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'name', 'year', 'zone']);
     expect(tool.inputSchema.required).toEqual(['birthDate']);
@@ -131,6 +131,7 @@ describe('the numerology switch on', () => {
     // get_capabilities says what it is and that it is not astrology.
     const capabilities = (await call(host, 'get_capabilities', {})).structuredContent.data;
     expect(capabilities.coverage.tools.split(', ').at(-1)).toBe('get_numerology');
+    expect(capabilities.limitations.join(' ')).toContain('With them Zodiacs offers 20 tools: the 13 in the tools field and these 7.');
     expect(capabilities.limitations.join(' ')).toContain('Numerology is a separate tradition from astrology');
     expect(capabilities.privacy).toContain('The numerology tool takes a birth date and, if given, a name, for that call only');
   });
