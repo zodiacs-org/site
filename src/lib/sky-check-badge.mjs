@@ -78,6 +78,10 @@ export function formatBadgeDate(isoDate) {
  * Compute badge state, strings, JSON payload and SVG markup from an accuracy snapshot.
  * Returns null if the snapshot is missing/invalid or if the snapshot or site engine
  * version is older than stable 1.1.0.
+ *
+ * @param {any} snapshot
+ * @param {Date | string} [today]
+ * @param {{ siteEngineVersion?: string | null }} [options]
  */
 export function skyCheckBadge(snapshot, today = new Date(), { siteEngineVersion = null } = {}) {
   if (!snapshot || typeof snapshot !== 'object') return null;
