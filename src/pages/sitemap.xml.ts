@@ -770,7 +770,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // last so this date wins.
   ['/birth-chart/', '2026-11-19'] as const,
   // Arrival ?ref= list expanded with hn, github and reddit on the privacy page (ZOD-182).
-  ['/privacy/', '2026-11-20'] as const,
+  ['/privacy/', '2026-11-22'] as const,
 ]);
 
 function getLastmod(loc: string): string {
