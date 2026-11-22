@@ -24,7 +24,7 @@
  *  10. The inline profile access loader names the built bootstrap chunk.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
-import { attr, canonicalHref, renderedLinks, crawlDepths, isDailyLastmodPath, robotsBlocks, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
+import { attr, canonicalHref, renderedLinks, crawlDepths, isDailyLastmodPath, robotsBlocks, robotsGroupBlockFailures, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -49,10 +49,14 @@ import {
 } from './i18n-hreflang-policy.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
 import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
+import { registryResearchWithheldProblems } from './registry-research-withheld.mjs';
+import { ACCURACY_PATH, accuracyPublished } from '../src/accuracy/publication.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
 const SITE_ORIGIN = 'https://zodiacs.org';
+const accuracyBarePath = ACCURACY_PATH.slice(0, -1);
+const isAccuracyPath = (path) => path === accuracyBarePath || path.startsWith(ACCURACY_PATH);
 /** Literal redirect sources from vercel.json — served URLs with no dist file. */
 const redirectSources = new Set(
   (JSON.parse(await readFile(resolve(repo, 'vercel.json'), 'utf8')).redirects ?? [])
@@ -219,6 +223,7 @@ for (const { file, minItems } of [
   { file: 'feeds/daily-sky.xml', minItems: 1 },
   { file: 'feeds/almanac.xml', minItems: 1 },
   { file: 'feeds/events.xml', minItems: eventsPublication.timeline?.length ?? 0 },
+  ...ZODIAC_SIGN_SLUGS.map((sign) => ({ file: `feeds/events/${sign}.xml`, minItems: 1 })),
 ]) {
   const path = resolve(root, file);
   if (!(await exists(path))) {
@@ -255,6 +260,27 @@ for (const { file, minItems } of [
   }
   for (const m of xml.matchAll(/<pubDate>([^<]+)<\/pubDate>/g)) {
     if (Number.isNaN(Date.parse(m[1]))) fail(`${file}: bad pubDate ${m[1]}`);
+  }
+}
+
+// ---- 3c. Sky-event JSON feeds (JSON Feed 1.1) ---------------------------------
+for (const file of ['feeds/events.json', ...ZODIAC_SIGN_SLUGS.map((sign) => `feeds/events/${sign}.json`)]) {
+  const path = resolve(root, file);
+  if (!(await exists(path))) {
+    fail(`${file}: missing`);
+    continue;
+  }
+  let feed;
+  try { feed = JSON.parse(await readFile(path, 'utf8')); } catch { fail(`${file}: not JSON`); continue; }
+  if (feed.version !== 'https://jsonfeed.org/version/1.1') fail(`${file}: not JSON Feed 1.1`);
+  if (feed.feed_url !== `https://zodiacs.org/${file}`) fail(`${file}: feed_url ${feed.feed_url}`);
+  if (!Array.isArray(feed.items) || feed.items.length === 0) fail(`${file}: no items`);
+  if (file === 'feeds/events.json' && feed.items?.length !== (eventsPublication.timeline?.length ?? 0)) {
+    fail(`${file}: ${feed.items?.length} items vs publication receipt ${eventsPublication.timeline?.length ?? 0}`);
+  }
+  for (const item of feed.items ?? []) {
+    if (!String(item.url).startsWith('https://zodiacs.org/')) fail(`${file}: non-absolute url ${item.url}`);
+    if (Number.isNaN(Date.parse(item.date_published))) fail(`${file}: bad date_published ${item.date_published}`);
   }
 }
 
@@ -404,6 +430,11 @@ for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const sourcePath = builtPageByFile.get(file);
   discoveryGraph.set(sourcePath, renderedLinks(sourcePath, html));
+  if (!accuracyPublished) {
+    for (const path of renderedLinks(sourcePath, html, { discoveryOnly: false })) {
+      if (isAccuracyPath(path)) fail(`accuracy: ${sourcePath} links to withheld ${path}`);
+    }
+  }
   for (const pathname of discoveryGraph.get(sourcePath)) {
     const target = targetPath(pathname);
     const linkedPath = target ? builtPageByFile.get(target) : undefined;
@@ -1341,6 +1372,8 @@ const raceIndexed = sitemapLocs.has('/race/');
 // The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
 const yearScoreIndexed = sitemapLocs.has('/year-score/');
 const birthdayReportIndexed = sitemapLocs.has('/birthday-report/');
+// The good day finder follows its launch flag (src/lib/launch-flags.ts) the same way.
+const goodDaysIndexed = sitemapLocs.has('/good-days/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
 const indexablePeoplePaths = new Set(
   JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).people
@@ -1401,13 +1434,17 @@ const sitemapPolicy = {
   // +1 for /your-2027-sky/, the 2027 personal sky edition.
   // +60 for the Spanish, Portuguese, French and Italian editions of /your-2027-sky/, /moon-journal/, /seasons/
   //     and the twelve /seasons/{sign}/ pages (15 per locale).
+  // +1 for /good-days/, the English-only good day finder, once PUBLIC_GOOD_DAYS_ENABLED is on.
   // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
   // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
   // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/),
   // the three per-assistant /apps/ pages joined on 2026-11-16, and /apps/claude-code/ on 2026-11-17.
-  total: 1536 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
-    + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
+  // +1 for /studies/fortune-500-ceo-signs/, the CEO Sun sign data story, linked from /people/.
+  // +1 for /almanac/sky-this-week-2026-11-23/, the first "Your sky this week" article.
+  // +1 for /support/, the support page, linked from /about/.
+  total: 1539 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+    + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(goodDaysIndexed)
     + listedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1461,6 +1498,7 @@ const indexedFamilies = [
   { label: 'Life Path pages', pattern: /^\/numerology\/life-path\/(?:[1-9]|11|22|33)\/$/, expected: 12, localized: false },
   { label: 'Registry Collection', pattern: /^\/registry\/collection\/$/, expected: Number(registryAuraIndexed), localized: false },
   { label: 'The Race', pattern: /^\/race\/$/, expected: Number(raceIndexed), localized: false },
+  { label: 'Good day finder', pattern: /^\/good-days\/$/, expected: Number(goodDaysIndexed), localized: false },
   { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
   { label: 'Birthday report', pattern: /^\/birthday-report\/$/, expected: Number(birthdayReportIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
@@ -1506,6 +1544,12 @@ for (const notePath of registryResearchNotePaths) {
     fail(`Terminal Research: noindex note leaked into sitemap discovery — ${notePath}`);
   }
 }
+// While Registry Research is paused, a scheduled note is withheld: no item JSON,
+// no archive index or compact feed entry, no body on its page.
+for (const problem of await registryResearchWithheldProblems(root, {
+  publication: registryResearchPublication,
+  pause: JSON.parse(await readFile(resolve(repo, 'src/data/registry-research/pause.json'), 'utf8')),
+})) fail(`Terminal Research: ${problem}`);
 
 const packetFNoindexCounts = { localizedBirthdays: 0, russianSignGuides: 0, people: 0 };
 for (const file of files) {
@@ -1534,8 +1578,8 @@ if (packetFNoindexCounts.localizedBirthdays !== 1464) {
 if (packetFNoindexCounts.russianSignGuides !== 12) {
   fail(`Packet F: ${packetFNoindexCounts.russianSignGuides}/12 Russian sign-guide previews are present`);
 }
-if (packetFNoindexCounts.people !== 501 - indexablePeoplePaths.size) {
-  fail(`Packet F: ${packetFNoindexCounts.people}/${501 - indexablePeoplePaths.size} deferred People profiles are present`);
+if (packetFNoindexCounts.people !== 516 - indexablePeoplePaths.size) {
+  fail(`Packet F: ${packetFNoindexCounts.people}/${516 - indexablePeoplePaths.size} deferred People profiles are present`);
 }
 
 if (sitemapLocs.size !== sitemapPolicy.total) {
@@ -1804,6 +1848,16 @@ for (const file of files) {
   // same pages, still builds for IndexNow and the gates above, and is not
   // submitted twice. No page a sitemap lists may be blocked from crawling.
   const robots = robotsRules(await readFile(resolve(root, 'robots.txt'), 'utf8').catch(() => ''));
+  if (!accuracyPublished) {
+    if (await exists(resolve(root, `.${ACCURACY_PATH}`))) fail('accuracy: withheld receipt or downloads are in the build');
+    if ([...sitemapLocs].some(isAccuracyPath)) fail('accuracy: withheld receipt or downloads are in the sitemap');
+    if (!robots.groups.some(({ agents }) => agents.includes('*'))) {
+      fail('accuracy: robots.txt must have a wildcard crawler group');
+    }
+    for (const { agents, path } of robotsGroupBlockFailures(robots, [accuracyBarePath, ACCURACY_PATH, `${ACCURACY_PATH}raw/`])) {
+      fail(`accuracy: robots.txt group ${agents.join(', ')} must block ${path}`);
+    }
+  }
   if (robots.sitemaps.join('\n') !== 'https://zodiacs.org/sitemap-index.xml') {
     fail(`robots.txt: must name exactly one sitemap, https://zodiacs.org/sitemap-index.xml (names ${robots.sitemaps.join(', ') || 'none'})`);
   }

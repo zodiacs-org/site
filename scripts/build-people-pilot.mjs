@@ -70,7 +70,7 @@ for (const source of manifest.people) {
       blockedBy: indexEligible
         ? []
         : livingProtected
-          ? ['phase-5c-living-person-protection — separate consent or qualified review required']
+          ? ['phase-5c-living-person-protection: separate consent or qualified review required']
           : ['packet-f-search-demand-tail — page remains available but is withheld from indexing'],
     },
     portrait: source.portrait.available
@@ -99,7 +99,7 @@ for (const source of manifest.people) {
 
 const output = `${JSON.stringify({
   schema: 'zodiacs.phase5.people.v1',
-  status: `Packet F search-quality release — ${indexableProfiles.size} indexable deceased records, ${noindexTailProfiles.size} deferred deceased records, ${protectedLivingProfiles.size} protected living records, 1 withdrawn`,
+  status: `Packet F search-quality release: ${indexableProfiles.size} indexable deceased records, ${noindexTailProfiles.size} deferred deceased records, ${protectedLivingProfiles.size} protected living records, 1 withdrawn`,
   releaseCounts: {
     indexableDeceased: indexableProfiles.size,
     deferredDeceased: noindexTailProfiles.size,

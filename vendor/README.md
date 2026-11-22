@@ -1,7 +1,17 @@
 # Vendored @zodiacs/engine artifact
 
-`zodiacs-engine-1.1.0-rc.2.tgz` is the exact archive consumed by this
-revision. It is a **vendored candidate, not on npm**. The registry read of
+The site installs `zodiacs-engine-1.1.0.tgz` from this directory. The archive
+came from npm. Its computed SHA-512 matches npm's `dist.integrity`, and
+`zodiacs-engine-1.1.0.sha256` records its SHA-256. The release carries its
+LICENSE, LICENSING.md and NOTICE. The registry and pack measurements are
+in [the adoption evidence](../docs/platform/evidence/site-engine-1-1-0/).
+
+- Source commit: `2496c28f273e1e99526490e857332fae44473367`
+- Artifact SHA-256: `4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac`
+
+# Previous candidate: 1.1.0-rc.2
+
+`zodiacs-engine-1.1.0-rc.2.tgz` and its checksum remain archived. It is a **vendored candidate, not on npm**. The registry read of
 2026-11-04 records `1.0.0` under `latest` and `0.1.1-rc.16` under `next`,
 and answers that 1.1.0-rc.2 is not in the registry
 (`docs/platform/evidence/site-engine-1-1-0-rc2/npm-view.txt`).

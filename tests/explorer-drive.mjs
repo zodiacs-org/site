@@ -42,6 +42,7 @@ import { runEditorialMetadataChecks } from './editorial-metadata-drive.mjs';
 import { verifyWidgetBuilder } from './widgets-drive.mjs';
 import { awaitAppliedFooter, runFooterStyleChecks } from './footer-style-checks.mjs';
 import { PEOPLE_IDENTITY_REVIEW_SLUGS } from '../scripts/people-identity-og-review.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? await findChromium();
@@ -191,10 +192,10 @@ async function checkKahloNatalReading(page, viewport) {
 
 try {
   if (OUT) await mkdir(OUT, { recursive: true });
-  const browser = await chromium.launch({
+  const browser = withFullLevel(await chromium.launch({
     executablePath: CHROMIUM,
     args: STABLE_CHROMIUM_ARGS,
-  });
+  }));
   await runRecoveryBrowserChecks({
     browser, baseURL: 'http://127.0.0.1:4399', check, outDir: OUT,
   });
@@ -599,7 +600,7 @@ try {
       && dock.querySelectorAll('[data-tour-start]').length === 1
       && dock.querySelectorAll('[data-share-card]').length === 1
       && dock.querySelectorAll('[data-read-another-chart]').length === 1
-      && dock.querySelector('[data-read-another-chart]')?.getAttribute('href')?.startsWith('/birth-chart/someone-else/#mine=')
+      && dock.querySelector('[data-read-another-chart]')?.getAttribute('href') === '/birth-chart/someone-else/'
       && document.querySelectorAll('[data-primary-action]').length === 1;
   }));
   check('chart actions: save/guide/share/read-another actions are unique and absent from More ways', await page.evaluate(() =>

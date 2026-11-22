@@ -75,8 +75,8 @@ export function compatibilityInviteHandlerForAction(value: unknown): InviteHandl
 
 export default async function handler(req: any, res: any): Promise<void> {
   if (req.query?.__zodiacs_ai !== undefined) {
-    const { default: ai } = await loadAiHandler();
-    await ai(req, res);
+    const ai = await loadAiHandler();
+    await (req.query.__zodiacs_ai === 'de440' ? ai.de440 : ai.default)(req, res);
     return;
   }
   // The compute API (/api/v1/chart and five more) rewrites here (vercel.json)
@@ -105,6 +105,14 @@ export default async function handler(req: any, res: any): Promise<void> {
   // deployed function; the Games handler owns everything past this line.
   if (req.query?.__zodiacs_games_route === '1') {
     await handleGamesApi(req, res);
+    return;
+  }
+  // /api/good-days/outcome rewrites here (vercel.json) so the good day finder's
+  // anonymous "How did your day go?" answers do not add a deployed function.
+  // Its handler is off unless ZODIACS_GOOD_DAYS_OUTCOMES_ENABLED=1.
+  if (req.query?.__zodiacs_good_days === 'outcome') {
+    const { handleOutcomeRequest } = await import('../src/lib/good-days/outcome-api.js');
+    await handleOutcomeRequest(req, res, { env: process.env });
     return;
   }
   if (req.query?.action === 'registry-news') {
