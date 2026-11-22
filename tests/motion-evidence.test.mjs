@@ -402,7 +402,12 @@ describe('motion evidence: rest state', () => {
     const route = { path: '/x/', rest: 'identical' };
     const rest = { ...sameRest, differing: 5000, outsideDaily: 0 };
     expect(statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest }), 'rest')).toBe('note');
-    expect(statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: { ...rest, outsideDaily: 600 } }), 'rest')).toBe('fail');
+    expect(statusOf(evaluateChecks({ route, viewport, subject: clean, baseline: clean, rest: { ...rest, outsideDaily: 13 } }), 'rest')).toBe('fail');
+  });
+
+  it('holds the bar at the measured noise floor, below the faintest planted defect (13 px)', () => {
+    expect(MAX_REST_PIXELS).toBe(0);
+    expect(MAX_REST_PIXELS).toBeLessThan(13);
   });
 
   it('judges the rest state only for identical routes with two builds', () => {

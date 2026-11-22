@@ -67,13 +67,15 @@ export const ALLOWED_PROPERTIES = ['opacity', 'transform', 'stroke-dashoffset'];
 export const DAILY_SELECTORS = ['.skyticker', '.tbs__stamp'];
 export const PIXEL_THRESHOLD = 0.1;
 /**
- * Rest state: at most this many differing pixels (pixelmatch, threshold 0.1)
- * on an "identical" route, however long the page. The same build compared
- * with itself measured 0 on every route and screen size in three runs (the
- * noise floor), and removing one 24 x 24 icon changes far more pixels than
- * this (see docs/motion/evidence and the PR's negative controls).
+ * Rest state: at most this many differing pixels (pixelmatch, threshold 0.1,
+ * which already leaves out pixels it classifies as antialiasing) on an
+ * "identical" route, however long the page. The same build compared with
+ * itself differed by 0 pixels in all 72 comparisons of three full runs on
+ * 2026-11-22 (12 routes, 2 sizes): that is the noise floor, so nothing more
+ * is tolerated. Hiding one icon at rest on /tools/ changed 81 and 91 pixels
+ * (a 32 px line icon) and 13 pixels (the 19 px profile outline in the header).
  */
-export const MAX_REST_PIXELS = 16;
+export const MAX_REST_PIXELS = 0;
 export const LONG_FRAME_MS = 50;
 export const LONG_FRAME_WINDOW_MS = 2500;
 /**
@@ -1530,7 +1532,7 @@ export async function run(options) {
     failures: [],
   };
   if (routes.length === 0) {
-    report.failures.push({ path: '(none)', viewport: '-', check: 'routes', detail: `the route list resolved to no routes (--routes ${JSON.stringify((options.routes ?? []).join(','))})` });
+    report.failures.push({ path: '(none)', viewport: '-', check: 'routes', detail: options.routes ? 'the route list resolved to no routes: --routes named no path' : 'the routes file lists no routes' });
   }
   try {
     for (const route of routes) {
