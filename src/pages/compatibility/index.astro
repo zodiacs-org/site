@@ -7,6 +7,7 @@ import RaceRamp from '../../components/RaceRamp.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import ToolEmblem from '../../components/ToolEmblem.astro';
+import Motion from '../../components/Motion.astro';
 import SynastryCalculator from '../../islands/SynastryCalculator';
 import { SIGNS } from '../../lib/signs';
 import { pairSlug } from '../../lib/compat';
@@ -75,8 +76,9 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
       </p>
     </div>
 
+    <Motion />
     <div class="compat-choices">
-      <a class="compat-choice compat-choice--invite" href="/compatibility/invite/">
+      <a class="compat-choice compat-choice--invite" href="/compatibility/invite/" data-enter="rise">
         <ToolEmblem kind="compat" />
         <span class="compat-choice__body">
           <strong>Send a link to someone</strong>
@@ -84,7 +86,7 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
           <span class="compat-choice__go">Make an invite link →</span>
         </span>
       </a>
-      <a class="compat-choice" href="#compare-form">
+      <a class="compat-choice" href="#compare-form" data-enter="rise">
         <span class="compat-choice__body">
           <strong>Enter both charts yourself</strong>
           <span>If you already know both birth dates, and the times and places if you have them.</span>

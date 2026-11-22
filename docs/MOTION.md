@@ -86,3 +86,15 @@ useEffect(() => { if (result) motionScan(containerRef.current ?? undefined); }, 
   (it inherits `--motion-i`), so a grid staggers by card, not by part.
 - `.reveal` in `src/styles/base.css` stays as it is: the small heading
   entrance on pages that already use it.
+
+## Not moving, on purpose
+
+- Moon phase and the Moon journal: the Moon readout is a live answer inside an island.
+- Sky calendar: the calendar is a control.
+- Birthday hub: 366 day chips, too many to move.
+- Birthday date pages: the hero picture is the largest paint.
+- About, support, methodology, Learn articles and the glossary: reading text.
+- Occasions: a form.
+- Apps: its own designed landing page.
+- Ask: its three topic cards are whole `<section>`s of reading text, each with its heading.
+- Translated seasons hubs and every translated sharing page: only the English pages move.
