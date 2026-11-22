@@ -1,0 +1,110 @@
+{
+  "schema": "zodiacs.phase5.copy.v1",
+  "slug": "olivia-rodrigo",
+  "seedRound": 0,
+  "qid": "Q63243883",
+  "displayName": "Olivia Rodrigo",
+  "identity": "Singer-songwriter · United States · born 2003",
+  "title": "Olivia Rodrigo's birth chart",
+  "metaDescription": "Olivia Rodrigo's chart, computed from a sourced birth date: Sun at 1.8° Pisces. Birth time unknown, so no houses or rising sign.",
+  "lede": "The chart's headline is an opposition: Mercury and Jupiter within 0.1°, thinking wired to expansion. An opposition is the tradition’s tug of war. Both ends are real, and the work is holding them at once rather than picking a winner.",
+  "ledeFact": "aspect:Mercury:Jupiter:opposition",
+  "blocks": [
+    {
+      "key": "sun",
+      "title": "Where the Sun actually stood",
+      "facts": [
+        "sun-degree:1.76",
+        "decan:pisces:first"
+      ],
+      "text": "Measured rather than labelled, the Sun holds 1.8° Pisces: the first decan, whose classical sub-ruler is Jupiter. A water sign, read here in its first face."
+    },
+    {
+      "key": "personal",
+      "title": "Closer to the ground",
+      "facts": [
+        "personal:Mercury:Aquarius:10.8°",
+        "personal:Venus:Capricorn:18.6°",
+        "personal:Mars:Sagittarius:22.3°"
+      ],
+      "text": "Day to day the chart speaks through Mercury in Aquarius (10.8°), Venus in Capricorn (18.6°), Mars in Sagittarius (22.3°): a mind at home in argument and pattern, taste for the substantial and the lasting, drive that ignites on contact."
+    },
+    {
+      "key": "geometry",
+      "title": "The angles that hold",
+      "facts": [
+        "aspect:Mercury:Jupiter:opposition:0.05",
+        "aspect:Mars:Saturn:opposition:0.15",
+        "aspect:Mercury:Neptune:conjunction:0.65"
+      ],
+      "text": "Mercury and Jupiter hold the closest angle here, an opposition, 0.1° wide. Across the wheel, each body sees the other in full. The old reading is not conflict so much as permanent mutual visibility. Behind it, Mars opposition Saturn at 0.1°, and Mercury conjunction Neptune at 0.7°, both still well inside the orbs this site uses. Each angle here was measured at every hour of the civil day and held; whatever the missing clock said, this geometry was in it."
+    },
+    {
+      "key": "figures",
+      "title": "Figures in the geometry",
+      "facts": [
+        "figure:unaspected:Moon"
+      ],
+      "text": "The Moon stands apart from every major angle the day held. The tradition reads an unaspected planet as a voice that speaks on its own schedule, unmodulated by the rest of the chart."
+    },
+    {
+      "key": "dignity",
+      "title": "The classical map",
+      "facts": [
+        "dignity:none"
+      ],
+      "text": "The dignity table has nothing to say about this chart. All seven classical planets sit in signs it treats as neutral, so the reading rests entirely on placement and angle."
+    },
+    {
+      "key": "shape",
+      "title": "The shape of the whole",
+      "facts": [
+        "elements:air4-fire3-water1-earth1",
+        "modalities:mutable4-fixed4-cardinal1",
+        "settled-signs:9",
+        "retrograde:2"
+      ],
+      "text": "The honest balance sheet uses the 9 placements whose signs hold for the whole day: air 4, fire 3, water 1, earth 1 across the elements, and mutable 4, fixed 4, cardinal 1 across the modalities. An air emphasis is read as distance for the sake of clarity: the idea gets examined before it gets adopted. Jupiter and Saturn were retrograde (apparent backward motion from where the Earth sits, which the tradition reads as a function turned inward before it is turned out)."
+    },
+    {
+      "key": "moon",
+      "title": "The Moon is genuinely open",
+      "facts": [
+        "moon-uncertain:libra:scorpio"
+      ],
+      "uncertain": true,
+      "text": "The Moon crossed from Libra into Scorpio during that day at the birthplace, travelling 14.5° between one midnight and the next. Half the day belongs to each sign, and the split falls at an unrecorded hour, so this page holds the Moon as a genuine unknown."
+    }
+  ],
+  "birthdayLink": {
+    "href": "/birthday/february-20/",
+    "label": "Everyone born on February 20"
+  },
+  "signLink": {
+    "href": "/pisces/",
+    "label": "The Pisces guide"
+  },
+  "substantiveFacts": [
+    "aspect:Mercury:Jupiter:opposition",
+    "sun-degree:1.76",
+    "decan:pisces:first",
+    "personal:Mercury:Aquarius:10.8°",
+    "personal:Venus:Capricorn:18.6°",
+    "personal:Mars:Sagittarius:22.3°",
+    "aspect:Mercury:Jupiter:opposition:0.05",
+    "aspect:Mars:Saturn:opposition:0.15",
+    "aspect:Mercury:Neptune:conjunction:0.65",
+    "figure:unaspected:Moon",
+    "dignity:none",
+    "elements:air4-fire3-water1-earth1",
+    "modalities:mutable4-fixed4-cardinal1",
+    "settled-signs:9",
+    "retrograde:2",
+    "moon-uncertain:libra:scorpio"
+  ],
+  "measurements": {
+    "originalWords": 377,
+    "substantiveStatements": 16,
+    "blocks": 7
+  }
+}

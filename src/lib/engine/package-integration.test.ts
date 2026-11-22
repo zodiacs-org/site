@@ -18,7 +18,7 @@ import { computeBodies, computeChart } from './full';
 import { PROGRESSION_DAYS_PER_YEAR, progressedBodies, progressedInstant } from './progressions';
 import { ENGINE_VERSION } from './types';
 
-const artifactPath = resolve(process.cwd(), 'vendor/zodiacs-engine-1.1.0-rc.2.tgz');
+const artifactPath = resolve(process.cwd(), 'vendor/zodiacs-engine-1.1.0.tgz');
 const docsPath = resolve(process.cwd(), 'public/sdk/engine');
 
 function walk(directory: string): string[] {
@@ -37,7 +37,7 @@ describe('vendored @zodiacs/engine integration', () => {
             utc: new Date('2001-12-21T00:00:00Z'), latitude, longitude,
             houseSystem, timeKnown: true,
           };
-          const published = natalChart(input);
+          const { ephemeris: _ephemeris, ...published } = natalChart(input);
           const site = computeChart(input);
           expect(site).toEqual({
             ...published,
@@ -92,7 +92,7 @@ describe('vendored @zodiacs/engine integration', () => {
   it('matches both recorded checksums in the repository', () => {
     const artifact = readFileSync(artifactPath);
     const checksum = readFileSync(
-      resolve(process.cwd(), 'vendor/zodiacs-engine-1.1.0-rc.2.sha256'),
+      resolve(process.cwd(), 'vendor/zodiacs-engine-1.1.0.sha256'),
       'utf8',
     ).trim().split(/\s+/u)[0];
     const lock = JSON.parse(
@@ -113,7 +113,7 @@ describe('vendored @zodiacs/engine integration', () => {
     const siteBodies = computeBodies(date);
 
     expect(ENGINE_VERSION).toBe(packageEngineVersion);
-    expect(ENGINE_VERSION).toBe('1.1.0-rc.2');
+    expect(ENGINE_VERSION).toBe('1.1.0');
     expect(siteBodies).toEqual(
       packageBodies.map(({ body, lon, lat, speed, retrograde }) => ({
         body,

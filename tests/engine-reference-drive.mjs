@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright-core';
+import engineRelease from '../src/data/platform-engine-candidate.json' with { type: 'json' };
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 
@@ -16,7 +17,7 @@ try {
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
       await page.goto(`${baseURL}/developers/engine/`, { waitUntil: 'networkidle' });
-      await page.getByRole('link', { name: 'Read the 1.1.0-rc.2 API reference', exact: true }).click();
+      await page.getByRole('link', { name: `Read the ${engineRelease.version} API reference`, exact: true }).click();
       await page.waitForURL('**/developers/engine/reference/');
       await page.getByRole('link', { name: 'module index', exact: true }).click();
       await page.waitForURL('**/modules.html');

@@ -73,6 +73,7 @@ describe('profile-access generation privacy fence', () => {
 describe('profile-derived result surfaces', () => {
   it('installs the generation fence in every concrete result holder', async () => {
     const surfaces = [
+      { file: 'BigThreeQuick.tsx', scrub: 'setPlacements(null)' },
       { file: 'TransitTracker.tsx', scrub: 'setResult(null)' },
       { file: 'SolarReturnCalculator.tsx', scrub: 'setResult(null)' },
       { file: 'SynastryCalculator.tsx', scrub: 'setResult(null)' },
