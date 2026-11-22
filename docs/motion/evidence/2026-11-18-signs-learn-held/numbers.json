@@ -1,0 +1,893 @@
+{
+  "generatedAt": "2026-11-22T01:56:23.280Z",
+  "before": "http://127.0.0.1:4411",
+  "after": "http://127.0.0.1:4450",
+  "markAttribute": "data-enter",
+  "viewports": [
+    "390x844",
+    "1440x900"
+  ],
+  "stripTimes": [
+    0,
+    100,
+    200,
+    300,
+    440,
+    700,
+    1100,
+    1600,
+    2200
+  ],
+  "throttle": {
+    "latency": 150,
+    "downloadThroughput": 209715,
+    "uploadThroughput": 96000,
+    "cpuRate": 4
+  },
+  "routes": [
+    {
+      "path": "/aries/",
+      "rest": "identical",
+      "primaryAction": null,
+      "loops": {
+        "before": [],
+        "after": []
+      },
+      "sheets": [
+        {
+          "label": "390x844 first view",
+          "file": "aries-390x844-first-view.webp",
+          "bytes": 327728,
+          "frameWidth": 260
+        },
+        {
+          "label": "1440x900 first view",
+          "file": "aries-1440x900-first-view.webp",
+          "bytes": 144582,
+          "frameWidth": 360
+        }
+      ],
+      "viewports": {
+        "390x844": {
+          "before": {
+            "cls": 0,
+            "lcp": {
+              "time": 216,
+              "selector": "img.sg-hero__art"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 648,
+              "domContentLoaded": 715,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 5,
+              "longest": 83.3,
+              "frames": 132
+            },
+            "animatedProperties": [],
+            "markedCount": 0,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "after": {
+            "cls": 0,
+            "lcp": {
+              "time": 216,
+              "selector": "img.sg-hero__art"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 612,
+              "domContentLoaded": 623,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 2,
+              "longest": 100,
+              "frames": 135
+            },
+            "animatedProperties": [],
+            "markedCount": 4,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": [
+              "no element gained is-in during the throttled load; the long-frame window starts at first paint"
+            ]
+          },
+          "rest": {
+            "share": 0,
+            "differing": 0,
+            "heightChanged": null,
+            "widthChanged": null,
+            "dailyOnly": false,
+            "comparedArea": "390x13116"
+          },
+          "checks": [
+            {
+              "check": "cls",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "lcpMarked",
+              "status": "pass",
+              "detail": "LCP element img.sg-hero__art is not marked"
+            },
+            {
+              "check": "rootMarked",
+              "status": "pass",
+              "detail": "html does not have is-in"
+            },
+            {
+              "check": "hiddenAboveAfterReload",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "animatedProperties",
+              "status": "pass",
+              "detail": "none"
+            },
+            {
+              "check": "reducedMotion",
+              "status": "pass",
+              "detail": "0 running, 0 not opaque"
+            },
+            {
+              "check": "noScript",
+              "status": "pass",
+              "detail": "0 not opaque"
+            },
+            {
+              "check": "longFrames",
+              "status": "note",
+              "detail": "runner too slow to judge: longest 100 ms, 83.3 ms without marks"
+            },
+            {
+              "check": "rest",
+              "status": "pass",
+              "detail": "0.000% differs"
+            }
+          ]
+        },
+        "1440x900": {
+          "before": {
+            "cls": 0,
+            "lcp": {
+              "time": 320,
+              "selector": "img.sg-hero__art"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 860,
+              "domContentLoaded": 771,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 5,
+              "longest": 116.7,
+              "frames": 123
+            },
+            "animatedProperties": [],
+            "markedCount": 0,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "after": {
+            "cls": 0,
+            "lcp": {
+              "time": 268,
+              "selector": "img.sg-hero__art"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 816,
+              "domContentLoaded": 792,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 5,
+              "longest": 166.7,
+              "frames": 120
+            },
+            "animatedProperties": [],
+            "markedCount": 4,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": [
+              "no element gained is-in during the throttled load; the long-frame window starts at first paint"
+            ]
+          },
+          "rest": {
+            "share": 0,
+            "differing": 0,
+            "heightChanged": null,
+            "widthChanged": null,
+            "dailyOnly": false,
+            "comparedArea": "1440x9078"
+          },
+          "checks": [
+            {
+              "check": "cls",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "lcpMarked",
+              "status": "pass",
+              "detail": "LCP element img.sg-hero__art is not marked"
+            },
+            {
+              "check": "rootMarked",
+              "status": "pass",
+              "detail": "html does not have is-in"
+            },
+            {
+              "check": "hiddenAboveAfterReload",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "animatedProperties",
+              "status": "pass",
+              "detail": "none"
+            },
+            {
+              "check": "reducedMotion",
+              "status": "pass",
+              "detail": "0 running, 0 not opaque"
+            },
+            {
+              "check": "noScript",
+              "status": "pass",
+              "detail": "0 not opaque"
+            },
+            {
+              "check": "longFrames",
+              "status": "note",
+              "detail": "runner too slow to judge: longest 166.7 ms, 116.7 ms without marks"
+            },
+            {
+              "check": "rest",
+              "status": "pass",
+              "detail": "0.000% differs"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/leo/",
+      "rest": "changed",
+      "primaryAction": null,
+      "loops": {
+        "before": [],
+        "after": []
+      },
+      "sheets": [
+        {
+          "label": "390x844 first view",
+          "file": "leo-390x844-first-view.webp",
+          "bytes": 337254,
+          "frameWidth": 260
+        },
+        {
+          "label": "1440x900 first view",
+          "file": "leo-1440x900-first-view.webp",
+          "bytes": 148226,
+          "frameWidth": 360
+        }
+      ],
+      "viewports": {
+        "390x844": {
+          "before": {
+            "cls": 0,
+            "lcp": {
+              "time": 168,
+              "selector": "img.sg-hero__art"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 800,
+              "domContentLoaded": 774,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 1,
+              "longest": 83.3,
+              "frames": 140
+            },
+            "animatedProperties": [],
+            "markedCount": 0,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "after": {
+            "cls": 0,
+            "lcp": {
+              "time": 168,
+              "selector": "img.sg-hero__art"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 656,
+              "domContentLoaded": 773,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 5,
+              "longest": 83.4,
+              "frames": 134
+            },
+            "animatedProperties": [],
+            "markedCount": 4,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": [
+              "no element gained is-in during the throttled load; the long-frame window starts at first paint"
+            ]
+          },
+          "rest": {
+            "share": 0,
+            "differing": 0,
+            "heightChanged": null,
+            "widthChanged": null,
+            "dailyOnly": false,
+            "comparedArea": "390x13727"
+          },
+          "checks": [
+            {
+              "check": "cls",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "lcpMarked",
+              "status": "pass",
+              "detail": "LCP element img.sg-hero__art is not marked"
+            },
+            {
+              "check": "rootMarked",
+              "status": "pass",
+              "detail": "html does not have is-in"
+            },
+            {
+              "check": "hiddenAboveAfterReload",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "animatedProperties",
+              "status": "pass",
+              "detail": "none"
+            },
+            {
+              "check": "reducedMotion",
+              "status": "pass",
+              "detail": "0 running, 0 not opaque"
+            },
+            {
+              "check": "noScript",
+              "status": "pass",
+              "detail": "0 not opaque"
+            },
+            {
+              "check": "longFrames",
+              "status": "note",
+              "detail": "runner too slow to judge: longest 83.4 ms, 83.3 ms without marks"
+            }
+          ]
+        },
+        "1440x900": {
+          "before": {
+            "cls": 0,
+            "lcp": {
+              "time": 292,
+              "selector": "img.sg-hero__art"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 764,
+              "domContentLoaded": 700,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 5,
+              "longest": 166.7,
+              "frames": 117
+            },
+            "animatedProperties": [],
+            "markedCount": 0,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "after": {
+            "cls": 0,
+            "lcp": {
+              "time": 276,
+              "selector": "img.sg-hero__art"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 820,
+              "domContentLoaded": 724,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 5,
+              "longest": 133.4,
+              "frames": 123
+            },
+            "animatedProperties": [],
+            "markedCount": 4,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": [
+              "no element gained is-in during the throttled load; the long-frame window starts at first paint"
+            ]
+          },
+          "rest": {
+            "share": 0,
+            "differing": 0,
+            "heightChanged": null,
+            "widthChanged": null,
+            "dailyOnly": false,
+            "comparedArea": "1440x9536"
+          },
+          "checks": [
+            {
+              "check": "cls",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "lcpMarked",
+              "status": "pass",
+              "detail": "LCP element img.sg-hero__art is not marked"
+            },
+            {
+              "check": "rootMarked",
+              "status": "pass",
+              "detail": "html does not have is-in"
+            },
+            {
+              "check": "hiddenAboveAfterReload",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "animatedProperties",
+              "status": "pass",
+              "detail": "none"
+            },
+            {
+              "check": "reducedMotion",
+              "status": "pass",
+              "detail": "0 running, 0 not opaque"
+            },
+            {
+              "check": "noScript",
+              "status": "pass",
+              "detail": "0 not opaque"
+            },
+            {
+              "check": "longFrames",
+              "status": "note",
+              "detail": "runner too slow to judge: longest 133.4 ms, 166.7 ms without marks"
+            }
+          ]
+        }
+      },
+      "unlisted": true
+    },
+    {
+      "path": "/learn/",
+      "rest": "changed",
+      "primaryAction": null,
+      "loops": {
+        "before": [],
+        "after": []
+      },
+      "sheets": [
+        {
+          "label": "390x844 first view",
+          "file": "learn-390x844-first-view.webp",
+          "bytes": 307450,
+          "frameWidth": 260
+        },
+        {
+          "label": "1440x900 first view",
+          "file": "learn-1440x900-first-view.webp",
+          "bytes": 157032,
+          "frameWidth": 360
+        }
+      ],
+      "viewports": {
+        "390x844": {
+          "before": {
+            "cls": 0,
+            "lcp": {
+              "time": 192,
+              "selector": "img"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 1080,
+              "domContentLoaded": 803,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 1,
+              "longest": 83.4,
+              "frames": 146
+            },
+            "animatedProperties": [],
+            "markedCount": 0,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "after": {
+            "cls": 0,
+            "lcp": {
+              "time": 196,
+              "selector": "img"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 1032,
+              "domContentLoaded": 761,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 1,
+              "longest": 83.4,
+              "frames": 148
+            },
+            "animatedProperties": [],
+            "markedCount": 8,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": [
+              "no element gained is-in during the throttled load; the long-frame window starts at first paint"
+            ]
+          },
+          "rest": {
+            "share": 0,
+            "differing": 0,
+            "heightChanged": null,
+            "widthChanged": null,
+            "dailyOnly": false,
+            "comparedArea": "390x9603"
+          },
+          "checks": [
+            {
+              "check": "cls",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "lcpMarked",
+              "status": "pass",
+              "detail": "LCP element img is not marked"
+            },
+            {
+              "check": "rootMarked",
+              "status": "pass",
+              "detail": "html does not have is-in"
+            },
+            {
+              "check": "hiddenAboveAfterReload",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "animatedProperties",
+              "status": "pass",
+              "detail": "none"
+            },
+            {
+              "check": "reducedMotion",
+              "status": "pass",
+              "detail": "0 running, 0 not opaque"
+            },
+            {
+              "check": "noScript",
+              "status": "pass",
+              "detail": "0 not opaque"
+            },
+            {
+              "check": "longFrames",
+              "status": "note",
+              "detail": "runner too slow to judge: longest 83.4 ms, 83.4 ms without marks"
+            }
+          ]
+        },
+        "1440x900": {
+          "before": {
+            "cls": 0.000053,
+            "lcp": {
+              "time": 296,
+              "selector": "img"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 1148,
+              "domContentLoaded": 769,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 1,
+              "longest": 83.3,
+              "frames": 143
+            },
+            "animatedProperties": [],
+            "markedCount": 0,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "after": {
+            "cls": 0.000053,
+            "lcp": {
+              "time": 256,
+              "selector": "img"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 1216,
+              "domContentLoaded": 803,
+              "firstMarkShown": null
+            },
+            "longFrames": {
+              "count": 2,
+              "longest": 133.3,
+              "frames": 141
+            },
+            "animatedProperties": [],
+            "markedCount": 8,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": [
+              "no element gained is-in during the throttled load; the long-frame window starts at first paint"
+            ],
+            "clsRetake": 0.000053
+          },
+          "rest": {
+            "share": 0,
+            "differing": 0,
+            "heightChanged": null,
+            "widthChanged": null,
+            "dailyOnly": false,
+            "comparedArea": "1440x7410"
+          },
+          "checks": [
+            {
+              "check": "cls",
+              "status": "fail",
+              "detail": "0.0001, retake 0.0001"
+            },
+            {
+              "check": "lcpMarked",
+              "status": "pass",
+              "detail": "LCP element img is not marked"
+            },
+            {
+              "check": "rootMarked",
+              "status": "pass",
+              "detail": "html does not have is-in"
+            },
+            {
+              "check": "hiddenAboveAfterReload",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "animatedProperties",
+              "status": "pass",
+              "detail": "none"
+            },
+            {
+              "check": "reducedMotion",
+              "status": "pass",
+              "detail": "0 running, 0 not opaque"
+            },
+            {
+              "check": "noScript",
+              "status": "pass",
+              "detail": "0 not opaque"
+            },
+            {
+              "check": "longFrames",
+              "status": "note",
+              "detail": "runner too slow to judge: longest 133.3 ms, 83.3 ms without marks"
+            }
+          ]
+        }
+      },
+      "unlisted": true
+    }
+  ],
+  "failures": [
+    {
+      "path": "/learn/",
+      "viewport": "1440x900",
+      "check": "cls",
+      "detail": "0.0001, retake 0.0001"
+    }
+  ]
+}
