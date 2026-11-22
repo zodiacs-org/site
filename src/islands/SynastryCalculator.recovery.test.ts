@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import type { VNode } from 'preact';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import CalculationReload, { calculationLoadMessage } from './CalculationReload';
+import { NO_DATE_INVITE, UNDER_18_INVITE } from '../lib/invite/recipient';
 
 const harness = vi.hoisted(() => ({
   slots: [] as unknown[], cursor: 0,
@@ -45,7 +46,8 @@ vi.mock('../lib/module-load', async (importOriginal) => {
   const original = await importOriginal<typeof import('../lib/module-load')>();
   return { ...original, loadModule: (load: () => Promise<unknown>) => original.loadModule(() => harness.load(load)) };
 });
-vi.mock('preact/hooks', () => ({
+vi.mock('preact/hooks', () => {
+  const hooks = {
   useState: (initial: unknown) => {
     const slot = harness.cursor++;
     if (!(slot in harness.slots)) harness.slots[slot] = initial;
@@ -70,7 +72,10 @@ vi.mock('preact/hooks', () => ({
       harness.effects[index] = { dependencies, cleanup: typeof cleanup === 'function' ? cleanup : undefined };
     });
   },
-}));
+  };
+  // The meeting's settle step runs before paint; the harness has no paint, so it queues like useEffect.
+  return { ...hooks, useLayoutEffect: hooks.useEffect };
+});
 
 let SynastryCalculator: typeof import('./SynastryCalculator')['default'];
 const chart = {
@@ -78,6 +83,7 @@ const chart = {
   angles: { asc: 120, mc: 30 }, houseSystem: 'whole', engineVersion: 'test',
 };
 const handle = 'abcdefghijklmnopqrstuv';
+const ADULT_DATE = '1990-05-03';
 const payload = { label: 'Their chart', positions: chart, sunSign: 'taurus', timeKnown: true, expiresAt: '2026-12-01T00:00:00.000Z' };
 const ready = { state: 'ready', handle, payload };
 const unmount = () => harness.effects.forEach((effect) => effect.cleanup?.());
@@ -87,10 +93,11 @@ function revoke() {
   harness.revoke?.();
   window.dispatchEvent(new Event('zodiacs:profile-access'));
 }
+let dailyEmail = false;
 function render() {
   harness.cursor = 0;
   harness.effectCursor = 0;
-  const view = SynastryCalculator({ locale: 'en' });
+  const view = SynastryCalculator({ locale: 'en', dailyEmail });
   harness.pendingEffects.splice(0).forEach((effect) => effect());
   return view;
 }
@@ -125,7 +132,17 @@ function deferred<T>() {
   const promise = new Promise<T>((done, fail) => { resolve = done; reject = fail; });
   return { promise, resolve, reject };
 }
+// When set, the recipient gate runs exactly as in production, with no adult's date standing in for a missing one.
+let realRecipientGate = false;
 function loadDependency(load: () => Promise<unknown>): Promise<unknown> {
+  // The recipient's own birth date gates every invitation (ZOD-22). These harness comparisons mostly use pasted
+  // positions, which carry no date and which production refuses, so the real gate is asked with an adult's date in
+  // their place. A date the recipient typed is passed through unchanged.
+  if (load.toString().includes('invite/recipient')) return (load() as Promise<typeof import('../lib/invite/recipient')>).then((real) => ({
+    ...real,
+    deviceToday: () => '2026-11-16',
+    inviteRecipientGate: (ownDate: string | null | undefined, today: string) => real.inviteRecipientGate(realRecipientGate ? ownDate : ownDate ?? ADULT_DATE, today),
+  }));
   if (load.toString().includes('inviteClient')) return Promise.resolve({
     openInviteSession: harness.openSession, completeInvite: harness.complete,
     replayPendingCompletion: harness.replay, beaconPendingCompletion: harness.beacon,
@@ -149,6 +166,8 @@ beforeAll(async () => {
 });
 afterAll(() => vi.unstubAllEnvs());
 beforeEach(() => {
+  dailyEmail = false;
+  realRecipientGate = false;
   harness.slots = []; harness.cursor = 0; harness.effects = []; harness.effectCursor = 0; harness.pendingEffects = [];
   harness.access.current = 0; harness.revoke = undefined;
   harness.allowed = true;
@@ -459,8 +478,95 @@ describe('compatibility optional sharing and invitation recovery', () => {
     await settle();
     expect(harness.complete).toHaveBeenCalledTimes(boundary === 'grant' ? 1 : 0);
   });
+
+  // ZOD-22: with invite signups off (this block's build), the recipient's own birth date still decides the reading.
+  it.each([
+    ['a 2010 birth date', { source: 'form', date: '2010-06-01', time: '', timeKnown: false, city: { name: 'Bangkok', lat: 13.75, lon: 100.5, tz: 'Asia/Bangkok' } }, UNDER_18_INVITE],
+    ['a chart link, which carries no birth date to check', { source: 'link', link: { input: {}, label: 'Mine' } }, NO_DATE_INVITE],
+  ])('refuses an invitation opened with %s: the fixed message, no result, no network call', async (_case, side, message) => {
+    realRecipientGate = true;
+    const network = vi.fn(() => Promise.reject(new Error('no network expected')));
+    vi.stubGlobal('fetch', network);
+    vi.stubGlobal('navigator', { sendBeacon: network });
+    window.location.hash = `#invite=${handle}`;
+    render();
+    await settle();
+    expect(arrival()?.props.view.state).toBe('ready');
+    view().find((node) => node.props.idPrefix === 'syn-b')!.props.setSlot((prior: object) => ({ ...prior, ...side }));
+    await view().find((node) => node.type === 'form')!.props.onSubmit({ preventDefault: vi.fn() });
+    await settle();
+    expect(view().filter((node) => node.props.role === 'alert').map((node) => node.props.children)).toEqual([message]);
+    // Nothing of the synastry result is worked out or drawn.
+    expect(result()).toBeUndefined();
+    expect(view().some((node) => node.type === harness.compatShare || node.type === harness.sendCard)).toBe(false);
+    expect(harness.summarize).not.toHaveBeenCalled();
+    expect(harness.load.mock.calls.some(([load]) => /engine\/synastry|RelationshipWheel/u.test(String(load)))).toBe(false);
+    // Nothing is sent: no request, no beacon, and the invite is not completed.
+    await settle();
+    expect(network).not.toHaveBeenCalled();
+    expect(harness.complete).not.toHaveBeenCalled();
+    expect(harness.beacon).not.toHaveBeenCalled();
+    expect(harness.track).not.toHaveBeenCalledWith('invite_completed', {});
+  });
 });
 
+describe('compatibility invitations with invite signups on (ZOD-21)', () => {
+  beforeAll(async () => {
+    vi.resetModules();
+    vi.stubEnv('PUBLIC_INVITE_SIGNUP_ENABLED', '1');
+    ({ default: SynastryCalculator } = await import('./SynastryCalculator'));
+  });
+
+  async function openAndCompare(side: object): Promise<void> {
+    window.location.hash = `#invite=${handle}`;
+    render();
+    await settle();
+    expect(arrival()?.props.view.state).toBe('ready');
+    const ownDetails = view().find((node) => node.type === 'input' && node.props.type === 'checkbox' && node.props.required);
+    expect(ownDetails).toBeDefined();
+    ownDetails!.props.onChange({ currentTarget: { checked: true } });
+    view().find((node) => node.props.idPrefix === 'syn-b')!.props.setSlot((prior: object) => ({ ...prior, ...side }));
+    await view().find((node) => node.type === 'form')!.props.onSubmit({ preventDefault: vi.fn() });
+    await settle();
+  }
+  const signupCard = () => view().find((node) => typeof node.type === 'function' && (node.type as Function).name === 'InviteSignup');
+
+  it('completes the invite once when the reading shows, naming the text the recipient confirmed', async () => {
+    dailyEmail = true;
+    await openAndCompare({ source: 'positions', positions: { chart, label: 'Mine' } });
+    expect(result()).toBeDefined();
+    await vi.waitFor(() => expect(harness.complete).toHaveBeenCalledOnce());
+    expect(harness.complete).toHaveBeenCalledWith(handle, payload.expiresAt, undefined, 'invite-recipient-2026-11-16.v2');
+    expect(harness.track).toHaveBeenCalledWith('invite_completed', {});
+    // Later renders do not complete it again.
+    await settle();
+    await settle();
+    expect(harness.complete).toHaveBeenCalledOnce();
+    // The daily email card is a separate opt-in: it gets the sign to offer and nothing about the invitation.
+    expect(signupCard()?.props).toEqual({ sign: 'taurus' });
+  });
+
+  it('offers no daily email card when the daily email cannot be joined, and still completes the invite', async () => {
+    dailyEmail = false;
+    await openAndCompare({ source: 'positions', positions: { chart, label: 'Mine' } });
+    expect(result()).toBeDefined();
+    await vi.waitFor(() => expect(harness.complete).toHaveBeenCalledOnce());
+    await settle();
+    expect(signupCard()).toBeUndefined();
+    expect(harness.load.mock.calls.some(([load]) => String(load).includes('InviteSignup'))).toBe(false);
+  });
+
+  it('refuses a recipient under 18 from the date they typed: the fixed message, no reading, no completion', async () => {
+    dailyEmail = true;
+    await openAndCompare({ source: 'form', date: '2010-06-01', time: '', timeKnown: false, city: { name: 'Bangkok', lat: 13.75, lon: 100.5, tz: 'Asia/Bangkok' } });
+    expect(view().some((node) => node.props.role === 'alert' && node.props.children === UNDER_18_INVITE)).toBe(true);
+    expect(result()).toBeUndefined();
+    await settle();
+    expect(harness.complete).not.toHaveBeenCalled();
+    expect(harness.track).not.toHaveBeenCalledWith('invite_completed', {});
+    expect(signupCard()).toBeUndefined();
+  });
+});
 
 describe('pending comparison handoffs', () => {
   it('discards a pending comparison handoff after revocation, even if access is later granted', () => {

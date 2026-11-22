@@ -1,0 +1,100 @@
+{
+  "schema": "zodiacs.phase5.evidence.v1",
+  "slug": "sabrina-carpenter",
+  "qid": "Q7396400",
+  "displayName": "Sabrina Carpenter",
+  "wikidataLabel": null,
+  "wikidataDescription": "American singer-songwriter and actress (born 1999)",
+  "retrievedAtUtc": "2026-11-18T10:55:24.000Z",
+  "sources": {
+    "wikidata": {
+      "entityUrl": "https://www.wikidata.org/wiki/Q7396400",
+      "propertiesUsed": [
+        "P569",
+        "P19",
+        "P625",
+        "P106",
+        "P18",
+        "P570",
+        "P17",
+        "P131"
+      ],
+      "lastrevid": 2567985942
+    },
+    "wikipedia": {
+      "language": "en",
+      "title": "Sabrina Carpenter",
+      "articleUrl": "https://en.wikipedia.org/wiki/Sabrina_Carpenter",
+      "pageId": 36791152,
+      "revisionId": 1386176626,
+      "revisionTimestamp": "2026-11-17T03:19:50Z"
+    }
+  },
+  "birth": {
+    "claimCount": 1,
+    "distinctDayPrecisionValues": [
+      "+1999-05-11T00:00:00Z|proleptic-gregorian"
+    ],
+    "allValues": [
+      {
+        "time": "+1999-05-11T00:00:00Z",
+        "precision": 11,
+        "calendar": "proleptic-gregorian",
+        "rank": "normal"
+      }
+    ],
+    "time": "+1999-05-11T00:00:00Z",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "timeOfDay": null,
+    "timeOfDayEvidence": "none: Wikidata carries no birth-time claim for this person"
+  },
+  "death": null,
+  "living": true,
+  "birthPlace": {
+    "entity": "Q1187391",
+    "label": "Quakertown",
+    "entityUrl": "https://www.wikidata.org/wiki/Q1187391",
+    "country": {
+      "entity": "Q30",
+      "label": "United States"
+    },
+    "claimCount": 1,
+    "coordinates": {
+      "sourceEntity": "Q1187391",
+      "sourceEntityLabel": "Quakertown",
+      "latitude": 40.4406,
+      "longitude": -75.3406,
+      "precision": 0.0001,
+      "escalationSteps": 0
+    }
+  },
+  "occupations": [
+    {
+      "entity": "Q33999",
+      "label": "actor"
+    },
+    {
+      "entity": "Q177220",
+      "label": "singer"
+    },
+    {
+      "entity": "Q488205",
+      "label": "singer-songwriter"
+    }
+  ],
+  "portrait": {
+    "file": "File:Sabrina Carpenter - O2 Arena 2025 - 086 (cropped 2).jpg",
+    "filePage": "https://commons.wikimedia.org/wiki/File:Sabrina%20Carpenter%20-%20O2%20Arena%202025%20-%20086%20(cropped%202).jpg",
+    "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Sabrina_Carpenter_-_O2_Arena_2025_-_086_(cropped_2).jpg",
+    "width": 683,
+    "height": 981,
+    "licenseShortName": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "artist": "Raph_PH",
+    "credit": "https://www.flickr.com/photos/69880995@N04/54379277725/",
+    "usageTerms": "Creative Commons Attribution 2.0",
+    "attributionRequired": "true",
+    "restrictions": ""
+  }
+}
