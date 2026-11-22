@@ -771,7 +771,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/birth-chart/', '2026-11-19'] as const,
   // Conformance suite 0.3.0 (640 vectors) and results for @zodiacs/engine 2.0.0, Skyfield, astronomia
   // and PyEphem (ZOD-95 Part A), on the day of the daily edition it was built with, last so this date wins.
-  ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-20'] as const),
+  ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-22'] as const),
 ]);
 
 function getLastmod(loc: string): string {
