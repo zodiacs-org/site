@@ -124,6 +124,8 @@ export const RELOAD_SCROLL_TOLERANCE = 4;
 export const PRIMARY_ACTION_MARGIN = 100;
 export const SHEET_MAX_BYTES = 400 * 1024;
 export const SETTLE_MAX_MS = 4000;
+/** A browser context still busy after this long is closed, and what it was measuring is unmeasured (a failure, never a pass). */
+export const CONTEXT_WATCHDOG_MS = 300000;
 export const THROTTLE = {
   latency: 150,
   downloadThroughput: Math.round((1.6 * 1024 * 1024) / 8),
@@ -748,6 +750,7 @@ export const FROM_LOAD_NOTE = 'Layout shift, scroll from load, is report only: i
 
 const READING_NOTE = [
   'How to read the numbers.',
+  `A page that keeps the browser busy for more than ${CONTEXT_WATCHDOG_MS / 1000} s in one measurement is stopped, and that measurement is unmeasured (and failed) with a note.`,
   `Quiet: after \`load\`, with the fonts ready, no request in flight or finished, no DOM mutation and no layout-shift entry for ${QUIET_MS} ms (at most ${QUIET_CAP_MS / 1000} s; a page that never goes quiet leaves the measurements that need it unmeasured, and failed).`,
   `Input: at ${VIEWPORTS.filter((v) => inputFor(v) === 'touch').map(viewportKey).join(', ')} the context has touch enabled and every scroll-through is a real touch drag sent through the DevTools protocol (the runtime's touchstart path); at ${VIEWPORTS.filter((v) => inputFor(v) === 'wheel').map(viewportKey).join(', ')} it announces itself with one synthetic \`wheel\` event and scrolls by script. Steps are ${STEP_FRACTION} of the screen. "Entrances played" counts the marks whose entrance started during the scroll-through. On a touch viewport Chrome stops reporting LCP entries at the first touch, as on a phone, so "Any LCP entry on a marked element" covers the load and the settled first screen there.`,
   `Layout shift, settled then scroll (hard): every layout-shift entry from the moment the page is quiet until it is quiet again after one scroll-through, entries Chrome marks as following input included, with \`Date\` fixed to the run's start. The scroll dwells at each step for at least ${SETTLED_STEP_MIN_MS} ms and until the page has been still for ${SETTLED_STEP_QUIET_MS} ms. Taken ${SETTLED_TAKES} times per build; the takes must agree within ${SHIFT_AGREEMENT} or the check is unmeasured and fails. Two builds: fails when the after build exceeds the before build by more than ${SHIFT_MARGIN}. One build: fails above ${SHIFT_SINGLE_BAR}, a bar this tool sets for itself (field CLS calls 0.1 over a whole visit "good"). Neither is CLS as field tools define it.`,
@@ -1039,7 +1042,8 @@ function sampleAnimations(cfg) {
 }
 
 function twoFrames() {
-  return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+  // Bounded: a page that stops producing frames must not stall the run.
+  return new Promise((r) => { setTimeout(r, 1000); requestAnimationFrame(() => requestAnimationFrame(() => r())); });
 }
 
 const sleep = (ms) => new Promise((r) => { setTimeout(r, ms); });
@@ -1229,7 +1233,7 @@ async function filmStrip(page, cfg, loops) {
       for (const a of list) {
         try { a.currentTime = time; } catch { /* cancelled */ }
       }
-      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+      await new Promise((r) => { setTimeout(r, 1000); requestAnimationFrame(() => requestAnimationFrame(() => r())); });
       return list.filter((a) => a.playState === 'idle').length;
     }, t);
     frames.push(await page.screenshot({ type: 'png' }));
@@ -1250,13 +1254,19 @@ function contextOptions(viewport, extra = {}) {
 
 async function withPage(browser, viewport, extra, init, fn) {
   const context = await browser.newContext(contextOptions(viewport, extra));
+  let timedOut = false;
+  const watchdog = setTimeout(() => { timedOut = true; context.close().catch(() => {}); }, CONTEXT_WATCHDOG_MS);
   try {
     const page = await context.newPage();
     const net = trackNetwork(page);
     if (init) await page.addInitScript(initScript, init);
     return await fn(page, context, net);
+  } catch (error) {
+    if (timedOut) throw new Error(`still busy after ${CONTEXT_WATCHDOG_MS / 1000} s, so it was stopped (${String(error.message).split('\n')[0]})`);
+    throw error;
   } finally {
-    await context.close();
+    clearTimeout(watchdog);
+    await context.close().catch(() => {});
   }
 }
 
@@ -1360,8 +1370,10 @@ async function freezeForCapture() {
       const finish = () => { clearTimeout(timer); done(); };
       img.addEventListener('load', finish, { once: true });
       img.addEventListener('error', finish, { once: true });
-    })).then(() => (img.naturalWidth ? img.decode().catch(() => {}) : null))));
-  if (document.fonts) await document.fonts.ready;
+    })).then(() => (img.naturalWidth
+    ? Promise.race([img.decode().catch(() => {}), new Promise((done) => { setTimeout(done, 5000); })])
+    : null))));
+  if (document.fonts) await Promise.race([document.fonts.ready, new Promise((done) => { setTimeout(done, 5000); })]);
 }
 
 /**
