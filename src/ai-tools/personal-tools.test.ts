@@ -170,8 +170,9 @@ describe('the personal tools switch on', () => {
         const direct = await executeAiTool(tool.name as never, { ...tool.example, birthDate }, { occasions: true, coverage: true, personal: true, now: () => NOW, placeTable: async () => loadPlaceTable() });
         expect(direct).toMatchObject({ ok: false, error: { message: UNDER_13_REFUSAL } });
       }
-      // Thirteen today is old enough.
-      expect((await call(host, tool.name, { ...tool.example, birthDate: '2013-11-09' })).isError, tool.name).toBe(false);
+      // Thirteen everywhere is old enough. The refusal counts from the calendar date at UTC-12 (main's #1139, as the
+      // site's chart forms do), and at 09:00 UTC on 9 November it is still 8 November there.
+      expect((await call(host, tool.name, { ...tool.example, birthDate: '2013-11-08' })).isError, tool.name).toBe(false);
     }
   }, 120_000);
 
