@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-17T19:09:14.695Z",
-  "before": "http://127.0.0.1:4391",
-  "after": "http://127.0.0.1:4401",
+  "generatedAt": "2026-11-22T01:41:25.662Z",
+  "before": "http://127.0.0.1:4411",
+  "after": "http://127.0.0.1:4440",
   "markAttribute": "data-enter",
   "viewports": [
     "390x844",
@@ -37,13 +37,13 @@
         {
           "label": "390x844 first view",
           "file": "transits-390x844-first-view.webp",
-          "bytes": 214594,
+          "bytes": 214504,
           "frameWidth": 260
         },
         {
           "label": "1440x900 first view",
           "file": "transits-1440x900-first-view.webp",
-          "bytes": 72650,
+          "bytes": 72578,
           "frameWidth": 360
         }
       ],
@@ -52,19 +52,19 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 212,
+              "time": 232,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1056,
-              "domContentLoaded": 1045,
-              "firstMarkShown": 1132
+              "firstPaint": 1024,
+              "domContentLoaded": 1159,
+              "firstMarkShown": 1265
             },
             "longFrames": {
               "count": 1,
-              "longest": 66.7,
-              "frames": 150
+              "longest": 100,
+              "frames": 148
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -89,19 +89,19 @@
           "after": {
             "cls": 0,
             "lcp": {
-              "time": 132,
+              "time": 140,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1092,
-              "domContentLoaded": 1199,
-              "firstMarkShown": 1171
+              "firstPaint": 1136,
+              "domContentLoaded": 1198,
+              "firstMarkShown": 1130
             },
             "longFrames": {
-              "count": 2,
-              "longest": 83.3,
-              "frames": 144
+              "count": 3,
+              "longest": 150.1,
+              "frames": 134
             },
             "animatedProperties": [
               "opacity",
@@ -173,7 +173,7 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 83.3 ms, 66.7 ms without marks"
+              "detail": "runner too slow to judge: longest 150.1 ms, 100 ms without marks"
             }
           ]
         },
@@ -181,19 +181,19 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 296,
+              "time": 264,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1228,
-              "domContentLoaded": 1206,
-              "firstMarkShown": 1260
+              "firstPaint": 1236,
+              "domContentLoaded": 1091,
+              "firstMarkShown": 1234
             },
             "longFrames": {
-              "count": 1,
-              "longest": 100,
-              "frames": 145
+              "count": 2,
+              "longest": 83.4,
+              "frames": 144
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -218,19 +218,19 @@
           "after": {
             "cls": 0,
             "lcp": {
-              "time": 288,
+              "time": 316,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1212,
-              "domContentLoaded": 1105,
-              "firstMarkShown": 1101
+              "firstPaint": 1292,
+              "domContentLoaded": 1336,
+              "firstMarkShown": 1299
             },
             "longFrames": {
               "count": 3,
-              "longest": 150,
-              "frames": 137
+              "longest": 83.3,
+              "frames": 138
             },
             "animatedProperties": [
               "opacity",
@@ -305,7 +305,7 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 150 ms, 100 ms without marks"
+              "detail": "runner too slow to judge: longest 83.3 ms, 83.4 ms without marks"
             }
           ]
         }
@@ -324,13 +324,13 @@
         {
           "label": "390x844 first view",
           "file": "eclipses-390x844-first-view.webp",
-          "bytes": 277582,
+          "bytes": 277048,
           "frameWidth": 260
         },
         {
           "label": "1440x900 first view",
           "file": "eclipses-1440x900-first-view.webp",
-          "bytes": 70508,
+          "bytes": 70432,
           "frameWidth": 360
         }
       ],
@@ -339,19 +339,19 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 132,
+              "time": 148,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 924,
-              "domContentLoaded": 693,
-              "firstMarkShown": 891
+              "firstPaint": 908,
+              "domContentLoaded": 710,
+              "firstMarkShown": 903
             },
             "longFrames": {
-              "count": 1,
-              "longest": 83.4,
-              "frames": 144
+              "count": 0,
+              "longest": 33.4,
+              "frames": 149
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -376,19 +376,19 @@
           "after": {
             "cls": 0,
             "lcp": {
-              "time": 176,
+              "time": 140,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 932,
-              "domContentLoaded": 701,
-              "firstMarkShown": 952
+              "firstPaint": 904,
+              "domContentLoaded": 676,
+              "firstMarkShown": 915
             },
             "longFrames": {
               "count": 1,
               "longest": 66.7,
-              "frames": 146
+              "frames": 147
             },
             "animatedProperties": [
               "opacity",
@@ -459,8 +459,8 @@
             },
             {
               "check": "longFrames",
-              "status": "note",
-              "detail": "runner too slow to judge: longest 66.7 ms, 83.4 ms without marks"
+              "status": "fail",
+              "detail": "longest 66.7 ms, 33.4 ms without marks"
             }
           ]
         },
@@ -468,19 +468,19 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 216,
+              "time": 192,
               "selector": "h1.display"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 988,
-              "domContentLoaded": 699,
-              "firstMarkShown": 1001
+              "firstPaint": 932,
+              "domContentLoaded": 640,
+              "firstMarkShown": 843
             },
             "longFrames": {
               "count": 2,
-              "longest": 83.4,
-              "frames": 142
+              "longest": 83.3,
+              "frames": 141
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -510,14 +510,14 @@
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1032,
-              "domContentLoaded": 720,
-              "firstMarkShown": 950
+              "firstPaint": 932,
+              "domContentLoaded": 695,
+              "firstMarkShown": 865
             },
             "longFrames": {
               "count": 2,
-              "longest": 116.6,
-              "frames": 139
+              "longest": 66.7,
+              "frames": 144
             },
             "animatedProperties": [
               "opacity",
@@ -543,8 +543,8 @@
             "notes": []
           },
           "rest": {
-            "share": 0.020560760464606618,
-            "differing": 150110,
+            "share": 0.020563773833004603,
+            "differing": 150132,
             "heightChanged": {
               "from": 5070,
               "to": 5123
@@ -592,7 +592,7 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 116.6 ms, 83.4 ms without marks"
+              "detail": "runner too slow to judge: longest 66.7 ms, 83.3 ms without marks"
             }
           ]
         }
@@ -611,13 +611,13 @@
         {
           "label": "390x844 first view",
           "file": "full-moon-calendar-390x844-first-view.webp",
-          "bytes": 301208,
+          "bytes": 301214,
           "frameWidth": 260
         },
         {
           "label": "1440x900 first view",
           "file": "full-moon-calendar-1440x900-first-view.webp",
-          "bytes": 83860,
+          "bytes": 84004,
           "frameWidth": 360
         }
       ],
@@ -626,19 +626,19 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 176,
+              "time": 172,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 948,
-              "domContentLoaded": 714,
-              "firstMarkShown": 913
+              "firstPaint": 900,
+              "domContentLoaded": 707,
+              "firstMarkShown": 939
             },
             "longFrames": {
-              "count": 1,
-              "longest": 66.7,
-              "frames": 147
+              "count": 0,
+              "longest": 33.4,
+              "frames": 148
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -663,19 +663,19 @@
           "after": {
             "cls": 0,
             "lcp": {
-              "time": 180,
+              "time": 124,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 980,
-              "domContentLoaded": 702,
-              "firstMarkShown": 989
+              "firstPaint": 932,
+              "domContentLoaded": 738,
+              "firstMarkShown": 906
             },
             "longFrames": {
               "count": 0,
-              "longest": 50,
-              "frames": 145
+              "longest": 33.4,
+              "frames": 149
             },
             "animatedProperties": [
               "opacity",
@@ -701,8 +701,8 @@
             "notes": []
           },
           "rest": {
-            "share": 0.050958576942183496,
-            "differing": 266707,
+            "share": 0.05095150750888456,
+            "differing": 266670,
             "heightChanged": {
               "from": 13420,
               "to": 13456
@@ -750,7 +750,7 @@
             {
               "check": "longFrames",
               "status": "pass",
-              "detail": "longest 50 ms"
+              "detail": "longest 33.4 ms"
             }
           ]
         },
@@ -758,19 +758,19 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 212,
+              "time": 188,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1068,
-              "domContentLoaded": 687,
-              "firstMarkShown": 1008
+              "firstPaint": 964,
+              "domContentLoaded": 690,
+              "firstMarkShown": 863
             },
             "longFrames": {
               "count": 2,
-              "longest": 99.9,
-              "frames": 145
+              "longest": 100,
+              "frames": 141
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -795,19 +795,19 @@
           "after": {
             "cls": 0,
             "lcp": {
-              "time": 180,
+              "time": 176,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1060,
-              "domContentLoaded": 712,
-              "firstMarkShown": 1054
+              "firstPaint": 956,
+              "domContentLoaded": 700,
+              "firstMarkShown": 877
             },
             "longFrames": {
               "count": 2,
               "longest": 83.3,
-              "frames": 141
+              "frames": 143
             },
             "animatedProperties": [
               "opacity",
@@ -879,7 +879,7 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 83.3 ms, 99.9 ms without marks"
+              "detail": "runner too slow to judge: longest 83.3 ms, 100 ms without marks"
             }
           ]
         }
@@ -898,13 +898,13 @@
         {
           "label": "390x844 first view",
           "file": "retrogrades-390x844-first-view.webp",
-          "bytes": 238434,
+          "bytes": 231526,
           "frameWidth": 260
         },
         {
           "label": "1440x900 first view",
           "file": "retrogrades-1440x900-first-view.webp",
-          "bytes": 69974,
+          "bytes": 69330,
           "frameWidth": 360
         }
       ],
@@ -913,62 +913,25 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 160,
+              "time": 124,
               "selector": "strong.rx-now__line"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 948,
-              "domContentLoaded": 698,
-              "firstMarkShown": 977
-            },
-            "longFrames": {
-              "count": 0,
-              "longest": 50,
-              "frames": 148
-            },
-            "animatedProperties": [],
-            "markedCount": 0,
-            "nestedMarks": 0,
-            "rootMarked": false,
-            "hiddenAboveAfterReload": 0,
-            "primaryActionTop": null,
-            "reducedMotion": {
-              "running": 0,
-              "notOpaque": 0
-            },
-            "noScript": {
-              "notOpaque": 0
-            },
-            "strip": {
-              "animations": 0,
-              "lost": 0
-            },
-            "steps": [],
-            "notes": []
-          },
-          "after": {
-            "cls": 0,
-            "lcp": {
-              "time": 172,
-              "selector": "h1.display"
-            },
-            "lcpMarked": false,
-            "throttled": {
-              "firstPaint": 1008,
+              "firstPaint": 916,
               "domContentLoaded": 707,
-              "firstMarkShown": 945
+              "firstMarkShown": 904
             },
             "longFrames": {
               "count": 1,
-              "longest": 66.7,
-              "frames": 142
+              "longest": 66.6,
+              "frames": 148
             },
             "animatedProperties": [
               "opacity",
               "transform"
             ],
-            "markedCount": 1,
+            "markedCount": 8,
             "nestedMarks": 0,
             "rootMarked": false,
             "hiddenAboveAfterReload": 0,
@@ -987,9 +950,49 @@
             "steps": [],
             "notes": []
           },
+          "after": {
+            "cls": 0,
+            "lcp": {
+              "time": 124,
+              "selector": "h1.display"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 884,
+              "domContentLoaded": 678,
+              "firstMarkShown": 901
+            },
+            "longFrames": {
+              "count": 0,
+              "longest": 50,
+              "frames": 148
+            },
+            "animatedProperties": [
+              "opacity",
+              "transform"
+            ],
+            "markedCount": 9,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 4,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
           "rest": {
-            "share": 0.04932883282998757,
-            "differing": 208254,
+            "share": 0.04934162373423343,
+            "differing": 208308,
             "heightChanged": {
               "from": 10825,
               "to": 10861
@@ -1036,8 +1039,8 @@
             },
             {
               "check": "longFrames",
-              "status": "fail",
-              "detail": "longest 66.7 ms, 50 ms without marks"
+              "status": "pass",
+              "detail": "longest 50 ms"
             }
           ]
         },
@@ -1045,62 +1048,25 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 220,
+              "time": 172,
               "selector": "h1.display"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1108,
-              "domContentLoaded": 704,
-              "firstMarkShown": 1079
-            },
-            "longFrames": {
-              "count": 3,
-              "longest": 116.6,
-              "frames": 143
-            },
-            "animatedProperties": [],
-            "markedCount": 0,
-            "nestedMarks": 0,
-            "rootMarked": false,
-            "hiddenAboveAfterReload": 0,
-            "primaryActionTop": null,
-            "reducedMotion": {
-              "running": 0,
-              "notOpaque": 0
-            },
-            "noScript": {
-              "notOpaque": 0
-            },
-            "strip": {
-              "animations": 0,
-              "lost": 0
-            },
-            "steps": [],
-            "notes": []
-          },
-          "after": {
-            "cls": 0,
-            "lcp": {
-              "time": 268,
-              "selector": "h1.display"
-            },
-            "lcpMarked": false,
-            "throttled": {
-              "firstPaint": 1052,
-              "domContentLoaded": 703,
-              "firstMarkShown": 942
+              "firstPaint": 1008,
+              "domContentLoaded": 721,
+              "firstMarkShown": 922
             },
             "longFrames": {
               "count": 2,
-              "longest": 100,
-              "frames": 138
+              "longest": 83.2,
+              "frames": 142
             },
             "animatedProperties": [
               "opacity",
               "transform"
             ],
-            "markedCount": 1,
+            "markedCount": 8,
             "nestedMarks": 0,
             "rootMarked": false,
             "hiddenAboveAfterReload": 0,
@@ -1114,6 +1080,46 @@
             },
             "strip": {
               "animations": 2,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "after": {
+            "cls": 0,
+            "lcp": {
+              "time": 160,
+              "selector": "h1.display"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 1008,
+              "domContentLoaded": 680,
+              "firstMarkShown": 973
+            },
+            "longFrames": {
+              "count": 2,
+              "longest": 66.7,
+              "frames": 144
+            },
+            "animatedProperties": [
+              "opacity",
+              "transform"
+            ],
+            "markedCount": 9,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 4,
               "lost": 0
             },
             "steps": [],
@@ -1166,7 +1172,7 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 100 ms, 116.6 ms without marks"
+              "detail": "runner too slow to judge: longest 66.7 ms, 83.2 ms without marks"
             }
           ]
         }
@@ -1185,13 +1191,13 @@
         {
           "label": "390x844 first view",
           "file": "mercury-retrograde-390x844-first-view.webp",
-          "bytes": 296098,
+          "bytes": 296038,
           "frameWidth": 260
         },
         {
           "label": "1440x900 first view",
           "file": "mercury-retrograde-1440x900-first-view.webp",
-          "bytes": 77444,
+          "bytes": 77562,
           "frameWidth": 360
         }
       ],
@@ -1200,14 +1206,14 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 160,
+              "time": 124,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 936,
-              "domContentLoaded": 689,
-              "firstMarkShown": 910
+              "firstPaint": 904,
+              "domContentLoaded": 691,
+              "firstMarkShown": 901
             },
             "longFrames": {
               "count": 0,
@@ -1215,7 +1221,7 @@
               "frames": 148
             },
             "animatedProperties": [],
-            "markedCount": 0,
+            "markedCount": 1,
             "nestedMarks": 0,
             "rootMarked": false,
             "hiddenAboveAfterReload": 0,
@@ -1237,25 +1243,25 @@
           "after": {
             "cls": 0,
             "lcp": {
-              "time": 160,
+              "time": 116,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 944,
-              "domContentLoaded": 688,
-              "firstMarkShown": 884
+              "firstPaint": 872,
+              "domContentLoaded": 694,
+              "firstMarkShown": 854
             },
             "longFrames": {
-              "count": 2,
-              "longest": 66.7,
-              "frames": 143
+              "count": 0,
+              "longest": 49.9,
+              "frames": 149
             },
             "animatedProperties": [
               "opacity",
               "transform"
             ],
-            "markedCount": 1,
+            "markedCount": 2,
             "nestedMarks": 0,
             "rootMarked": false,
             "hiddenAboveAfterReload": 0,
@@ -1320,8 +1326,8 @@
             },
             {
               "check": "longFrames",
-              "status": "fail",
-              "detail": "longest 66.7 ms, 50 ms without marks"
+              "status": "pass",
+              "detail": "longest 49.9 ms"
             }
           ]
         },
@@ -1329,22 +1335,22 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 228,
+              "time": 180,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1008,
-              "domContentLoaded": 666,
-              "firstMarkShown": 917
+              "firstPaint": 928,
+              "domContentLoaded": 682,
+              "firstMarkShown": 845
             },
             "longFrames": {
-              "count": 3,
-              "longest": 116.7,
-              "frames": 141
+              "count": 2,
+              "longest": 66.7,
+              "frames": 143
             },
             "animatedProperties": [],
-            "markedCount": 0,
+            "markedCount": 1,
             "nestedMarks": 0,
             "rootMarked": false,
             "hiddenAboveAfterReload": 0,
@@ -1366,25 +1372,25 @@
           "after": {
             "cls": 0,
             "lcp": {
-              "time": 204,
+              "time": 168,
               "selector": "p"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1076,
-              "domContentLoaded": 689,
-              "firstMarkShown": 1050
+              "firstPaint": 920,
+              "domContentLoaded": 698,
+              "firstMarkShown": 885
             },
             "longFrames": {
               "count": 2,
-              "longest": 100,
-              "frames": 141
+              "longest": 66.7,
+              "frames": 145
             },
             "animatedProperties": [
               "opacity",
               "transform"
             ],
-            "markedCount": 1,
+            "markedCount": 2,
             "nestedMarks": 0,
             "rootMarked": false,
             "hiddenAboveAfterReload": 0,
@@ -1450,7 +1456,7 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 100 ms, 116.7 ms without marks"
+              "detail": "runner too slow to judge: longest 66.7 ms, 66.7 ms without marks"
             }
           ]
         }
@@ -1469,13 +1475,13 @@
         {
           "label": "390x844 first view",
           "file": "void-of-course-moon-390x844-first-view.webp",
-          "bytes": 256690,
+          "bytes": 269490,
           "frameWidth": 260
         },
         {
           "label": "1440x900 first view",
           "file": "void-of-course-moon-1440x900-first-view.webp",
-          "bytes": 78696,
+          "bytes": 78720,
           "frameWidth": 360
         }
       ],
@@ -1484,19 +1490,19 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 124,
-              "selector": "p"
+              "time": 140,
+              "selector": "p.voc-now__text"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1004,
-              "domContentLoaded": 930,
+              "firstPaint": 912,
+              "domContentLoaded": 745,
               "firstMarkShown": null
             },
             "longFrames": {
-              "count": 1,
-              "longest": 66.7,
-              "frames": 146
+              "count": 0,
+              "longest": 50,
+              "frames": 148
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1521,19 +1527,19 @@
           "after": {
             "cls": 0,
             "lcp": {
-              "time": 144,
-              "selector": "p"
+              "time": 132,
+              "selector": "p.voc-now__text"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 932,
-              "domContentLoaded": 754,
-              "firstMarkShown": 900
+              "firstPaint": 912,
+              "domContentLoaded": 744,
+              "firstMarkShown": 898
             },
             "longFrames": {
               "count": 1,
               "longest": 66.7,
-              "frames": 143
+              "frames": 147
             },
             "animatedProperties": [
               "opacity",
@@ -1559,12 +1565,12 @@
             "notes": []
           },
           "rest": {
-            "share": 0.0012783840873085725,
+            "share": 0.001273829491016323,
             "differing": 3486,
             "heightChanged": null,
             "widthChanged": null,
             "dailyOnly": false,
-            "comparedArea": "390x6992"
+            "comparedArea": "390x7017"
           },
           "checks": [
             {
@@ -1575,7 +1581,7 @@
             {
               "check": "lcpMarked",
               "status": "pass",
-              "detail": "LCP element p is not marked"
+              "detail": "LCP element p.voc-now__text is not marked"
             },
             {
               "check": "rootMarked",
@@ -1604,8 +1610,8 @@
             },
             {
               "check": "longFrames",
-              "status": "note",
-              "detail": "runner too slow to judge: longest 66.7 ms, 66.7 ms without marks"
+              "status": "fail",
+              "detail": "longest 66.7 ms, 50 ms without marks"
             }
           ]
         },
@@ -1613,19 +1619,19 @@
           "before": {
             "cls": 0,
             "lcp": {
-              "time": 184,
-              "selector": "span.nav__name"
+              "time": 192,
+              "selector": "p.voc-now__text"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1108,
-              "domContentLoaded": 779,
+              "firstPaint": 996,
+              "domContentLoaded": 736,
               "firstMarkShown": null
             },
             "longFrames": {
-              "count": 3,
-              "longest": 116.7,
-              "frames": 137
+              "count": 2,
+              "longest": 83.4,
+              "frames": 145
             },
             "animatedProperties": [],
             "markedCount": 0,
@@ -1650,18 +1656,18 @@
           "after": {
             "cls": 0,
             "lcp": {
-              "time": 272,
-              "selector": "h1.display"
+              "time": 180,
+              "selector": "p.voc-now__text"
             },
             "lcpMarked": false,
             "throttled": {
-              "firstPaint": 1032,
-              "domContentLoaded": 754,
-              "firstMarkShown": 928
+              "firstPaint": 964,
+              "domContentLoaded": 875,
+              "firstMarkShown": 917
             },
             "longFrames": {
-              "count": 1,
-              "longest": 83.3,
+              "count": 2,
+              "longest": 83.4,
               "frames": 144
             },
             "animatedProperties": [
@@ -1688,12 +1694,12 @@
             "notes": []
           },
           "rest": {
-            "share": 0.0008824151336228631,
+            "share": 0.0008791974588357319,
             "differing": 8680,
             "heightChanged": null,
             "widthChanged": null,
             "dailyOnly": false,
-            "comparedArea": "1440x6831"
+            "comparedArea": "1440x6856"
           },
           "checks": [
             {
@@ -1704,7 +1710,7 @@
             {
               "check": "lcpMarked",
               "status": "pass",
-              "detail": "LCP element h1.display is not marked"
+              "detail": "LCP element p.voc-now__text is not marked"
             },
             {
               "check": "rootMarked",
@@ -1734,7 +1740,7 @@
             {
               "check": "longFrames",
               "status": "note",
-              "detail": "runner too slow to judge: longest 83.3 ms, 116.7 ms without marks"
+              "detail": "runner too slow to judge: longest 83.4 ms, 83.4 ms without marks"
             }
           ]
         }
@@ -1744,13 +1750,13 @@
   ],
   "failures": [
     {
-      "path": "/retrogrades/",
+      "path": "/eclipses/",
       "viewport": "390x844",
       "check": "longFrames",
-      "detail": "longest 66.7 ms, 50 ms without marks"
+      "detail": "longest 66.7 ms, 33.4 ms without marks"
     },
     {
-      "path": "/mercury-retrograde/",
+      "path": "/void-of-course-moon/",
       "viewport": "390x844",
       "check": "longFrames",
       "detail": "longest 66.7 ms, 50 ms without marks"
