@@ -168,28 +168,29 @@ describe('the time zone picker', () => {
     expect(island).toContain('if (datesSet) return;');
   });
 
-  it('checks age against the earliest of the picked zone\'s, the device\'s and UTC\'s today, never a day early', () => {
-    // 11:00 UTC on 16 November 2026 is already the 17th in Kiritimati (UTC+14).
+  it('checks age against UTC-12 (the earliest date anywhere) and refuses via birthDateRefusal before computing', () => {
+    // 11:00 UTC on 16 November 2026 is already the 17th in Kiritimati (UTC+14) and still the 15th at UTC-12.
     const instant = new Date('2026-11-16T11:00:00Z');
     expect(localToday('Pacific/Kiritimati', instant)).toBe('2026-11-17');
-    expect(ageCheckToday('Pacific/Kiritimati', 'Asia/Bangkok', instant)).toBe('2026-11-16');
-    // Even a device in Kiritimati as well: UTC's today still rules, as the hosted tool's check does.
-    expect(ageCheckToday('Pacific/Kiritimati', 'Pacific/Kiritimati', instant)).toBe('2026-11-16');
-    // A zone behind UTC gives its own, earlier today.
-    expect(ageCheckToday('Pacific/Pago_Pago', 'Asia/Bangkok', new Date('2026-11-16T05:00:00Z'))).toBe('2026-11-15');
+    expect(ageCheckToday('Pacific/Kiritimati', 'Asia/Bangkok', instant)).toBe('2026-11-15');
+    expect(ageCheckToday('Pacific/Kiritimati', 'Pacific/Kiritimati', instant)).toBe('2026-11-15');
+    // At 15:00 UTC on 16 November 2026, UTC-12 has reached 16 November.
+    expect(ageCheckToday('Pacific/Pago_Pago', 'Asia/Bangkok', new Date('2026-11-16T15:00:00Z'))).toBe('2026-11-16');
     const island = code(SOURCES.island);
+    expect(island).toContain('const refusal = birthDateRefusal(input.birth);');
+    expect(island).toContain('setError(birthDateRefusalText(refusal));');
     expect(island).toContain('today: ageCheckToday(input.zone, deviceZone),');
     expect(island).toContain('max={thirteenYearsAgo(ageCheckToday(zone, deviceZone))}');
   });
 
-  it('refuses a birth date that turns 13 tomorrow in UTC, with Kiritimati picked', async () => {
+  it('refuses a birth date that turns 13 today in UTC and Kiritimati while UTC-12 is still the day before', async () => {
     const instant = new Date('2026-11-16T11:00:00Z');
-    // Born 17 November 2013: 13 in Kiritimati on its 17 November, not yet in UTC or Bangkok.
+    // Born 16 November 2013: 13 in UTC and Kiritimati on 16 Nov 11:00 UTC, still 12 at UTC-12 (15 Nov).
     const today = ageCheckToday('Pacific/Kiritimati', 'Asia/Bangkok', instant);
-    await expect(findGoodDays({ goal: 'launch', from: '2027-01-01', to: '2027-01-07', zone: 'Pacific/Kiritimati', today, birth: { date: '2013-11-17' } }, clock))
+    await expect(findGoodDays({ goal: 'launch', from: '2027-01-01', to: '2027-01-07', zone: 'Pacific/Kiritimati', today, birth: { date: '2013-11-16' } }, clock))
       .rejects.toThrow(UNDER_13_SENTENCE);
-    // The birth field's latest date is 16 November 2013, so the date cannot be entered either.
-    expect(thirteenYearsAgo(today)).toBe('2013-11-16');
+    // The birth field's latest date is 15 November 2013, so the date cannot be entered either.
+    expect(thirteenYearsAgo(today)).toBe('2013-11-15');
     // The picked zone's own today alone would have let it through.
     expect(localToday('Pacific/Kiritimati', instant)).toBe('2026-11-17');
   });
