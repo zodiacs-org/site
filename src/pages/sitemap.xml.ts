@@ -770,6 +770,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // last so this date wins.
   ['/birth-chart/', '2026-11-19'] as const,
   ['/app/privacy/', '2026-11-22'] as const,
+  ['/support/', '2026-11-22'] as const,
 ]);
 
 function getLastmod(loc: string): string {

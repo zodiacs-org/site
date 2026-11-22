@@ -38,10 +38,10 @@ describe('public legal identity', () => {
     const support = await source('src/pages/support/index.astro');
     expect(support).toContain('mailto:admin@zodiacs.org');
     expect(support.match(/mailto:[^"']+/gu)!.every((link) => link === 'mailto:admin@zodiacs.org')).toBe(true);
-    for (const link of ['/privacy/', '/terms/', '/developers/ai/', '/developers/support/']) expect(support).toContain(`href="${link}`);
+    for (const link of ['/privacy/', '/app/privacy/', '/terms/', '/developers/ai/', '/developers/support/']) expect(support).toContain(`href="${link}`);
     expect(support).not.toMatch(/<form\b|<input\b/u);
     expect(support).not.toMatch(/[–—]/u);
-    expect(support).toContain("const updated = '19 November 2026'");
+    expect(support).toContain("const updated = '22 November 2026'");
   });
 
   it('dates the changed legal pages to the public release date', async () => {
