@@ -20,7 +20,7 @@ const EXPECTED_SECTION_COUNTS = {
   'WS2d — structured data': 47,
   'WS3 — share cards and result sharing': 61,
   'WS4 — PWA, install prompt, and flag-off push scaffold': 22,
-  'WS5 — programmatic pages and Chinese zodiac': 77,
+  'WS5 — programmatic pages and Chinese zodiac': 76,
   'WS6 — widgets': 83,
   'WS8 — wallet natal chart': 68,
 };

@@ -13,9 +13,12 @@ function format(template: string, values: Record<string, string | number>): stri
   );
 }
 
+// The retired caption of the Western sign disc row has no translations (see chinese-zodiac-zh.ts).
+const { iconRailNote: _retiredCaption, ...PAGE_COPY } = CHINESE_ZODIAC_COPY;
+
 export function chineseZodiacCopy(locale: ChineseZodiacLocale) {
   if (isSectionLocale(locale)) return CHINESE_ZODIAC_ZH[locale].copy;
-  return localizedAdditionObject(locale, 'chineseZodiac', CHINESE_ZODIAC_COPY);
+  return localizedAdditionObject(locale, 'chineseZodiac', PAGE_COPY);
 }
 
 export function chineseZodiacAnimals(locale: ChineseZodiacLocale) {
