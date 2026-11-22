@@ -74,7 +74,7 @@ export const vedicSignsData = z.object({
   limits: z.array(z.string()),
   note: z.string(),
   pageUrl: z.url(),
-  /** The share card: the sidereal signs, the nakshatra's number and the ayanamsa, never a birth detail. Null when the Sun changed sign on an untimed birth day. */
+  /** The share card: the sidereal Sun sign and the ayanamsa only, never a Moon or rising sign, nakshatra or birth detail. Null when the Sun changed sign on an untimed birth day. */
   shareUrl: z.url().nullable(),
 });
 export type VedicSignsData = z.infer<typeof vedicSignsData>;

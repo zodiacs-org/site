@@ -84,35 +84,36 @@ describe('the Vedic signs share link', () => {
   let timed: Awaited<ReturnType<typeof computeVedicSigns>>;
   beforeAll(async () => { timed = await computeVedicSigns({ birthUtc: new Date('2000-01-01T12:00:00Z'), timeKnown: true, latitude: 28.61, longitude: 77.21, ayanamsa: 'lahiri' }); });
 
-  it('carries only the signs, the nakshatra number and the ayanamsa', () => {
+  it('carries only the sidereal Sun sign and the ayanamsa, even when the Moon, rising sign and nakshatra are known', () => {
     const query = vedicSignsShareQuery(timed)!;
     const params = new URLSearchParams(query);
+    expect(timed.moon).not.toBeNull();
+    expect(timed.rising).not.toBeNull();
+    expect(timed.moonNakshatra).not.toBeNull();
     expect([...params.keys()].every((key) => VEDIC_SIGNS_SHARE_KEYS.includes(key))).toBe(true);
-    expect(Object.fromEntries(params)).toEqual({ s: 'sagittarius', m: 'libra', r: timed.rising!.sign, n: '15', a: 'lahiri' });
-    expect(query).not.toMatch(/2000|12:00|28\.61|77\.21/u);
+    expect(Object.fromEntries(params)).toEqual({ s: 'sagittarius', a: 'lahiri' });
+    expect(query).not.toMatch(/2000|12:00|28\.61|77\.21|libra|swati|[&?](m|r|n)=/iu);
     expect(vedicSignsShareUrl('https://zodiacs.org', timed)).toBe(`https://zodiacs.org/share/vedic-signs/?${query}`);
-    expect(parseVedicSignsShare(params)).toEqual({ sun: 'sagittarius', moon: 'libra', rising: timed.rising!.sign, nakshatra: 15, ayanamsa: 'lahiri', ref: null });
+    expect(parseVedicSignsShare(params)).toEqual({ sun: 'sagittarius', ayanamsa: 'lahiri', ref: null });
   });
 
-  it('makes no link when the Sun’s sign is open, and leaves out what an untimed day leaves open', () => {
+  it('makes no link when the Sun’s sign is open, and the same link whatever else the day settles', () => {
     const at = timed;
     expect(vedicSignsShareQuery({ ...at, sun: null })).toBeNull();
-    expect(vedicSignsShareQuery({ ...at, moon: null, rising: null, moonNakshatra: null })).toBe('s=sagittarius&a=lahiri');
-    expect(vedicSignsQuery({ sun: 'leo', moon: null, rising: 'aries', nakshatra: 10, ayanamsa: 'raman', ref: 'chatgpt' }, true)).toBe('s=leo&n=10&a=raman&ref=chatgpt');
+    const untimed: typeof at = { ...at, moon: null, rising: null, moonNakshatra: null };
+    expect(vedicSignsShareQuery(untimed)).toBe('s=sagittarius&a=lahiri');
+    expect(vedicSignsQuery({ sun: 'leo', ayanamsa: 'raman', ref: 'chatgpt' }, true)).toBe('s=leo&a=raman&ref=chatgpt');
+    expect(vedicSignsQuery({ sun: 'leo', ayanamsa: 'raman', ref: 'chatgpt' })).toBe('s=leo&a=raman');
   });
 
   it('opens only a strict query', () => {
     const ok = (query: string) => parseVedicSignsShare(new URLSearchParams(query));
-    expect(ok('s=leo&a=lahiri')).toMatchObject({ sun: 'leo', moon: null, nakshatra: null });
-    expect(ok('s=leo&n=3&a=lahiri')).toMatchObject({ moon: null, nakshatra: 3 }); // Krittika runs from Aries into Taurus
-    expect(ok('s=leo&m=aries&n=2&a=fagan-bradley&ref=assistant')).toMatchObject({ moon: 'aries', nakshatra: 2, ref: 'assistant' });
-    expect(ok('s=leo&m=taurus&n=3&r=virgo&a=lahiri')).toMatchObject({ rising: 'virgo' });
+    expect(ok('s=leo&a=lahiri')).toEqual({ sun: 'leo', ayanamsa: 'lahiri', ref: null });
+    expect(ok('s=leo&a=fagan-bradley&ref=assistant')).toEqual({ sun: 'leo', ayanamsa: 'fagan-bradley', ref: 'assistant' });
     for (const bad of [
-      's=leo', 'a=lahiri', 's=leo&a=galactic-center', 's=lion&a=lahiri', 's=leo&n=0&a=lahiri', 's=leo&n=28&a=lahiri', 's=leo&n=07&a=lahiri',
-      's=leo&m=aries&n=10&a=lahiri', // Magha is in Leo, not Aries
-      's=leo&n=10&a=lahiri', // a day that keeps the Moon in Magha keeps it in Leo
-
-      's=leo&r=virgo&a=lahiri', 's=leo&m=aries&r=virgo&a=lahiri', // a rising sign takes a settled Moon and nakshatra
+      's=leo', 'a=lahiri', 's=leo&a=galactic-center', 's=lion&a=lahiri',
+      // the Moon sign, rising sign and nakshatra are never part of the link
+      's=leo&m=aries&a=lahiri', 's=leo&n=3&a=lahiri', 's=leo&m=taurus&n=3&r=virgo&a=lahiri', 's=leo&r=virgo&a=lahiri',
       's=leo&a=lahiri&d=1990-08-01', 's=leo&a=lahiri&lat=28.6', 's=leo&s=leo&a=lahiri', 's=leo&a=lahiri&ref=other',
     ]) expect(ok(bad), bad).toBeNull();
   });
@@ -152,7 +153,7 @@ describe('the Vedic signs share link', () => {
 
   it('is built from a reading the same way the tool builds it', () => {
     const reading = vedicReading({ timeKnown: false, placed: false, ayanamsa: 'yukteswar', at: { ayanamsa: 22.4, sun: { lon: 100, tropical: 124 }, moon: { lon: 200, tropical: 224 }, rising: null, nakshatra: { index: 14, pada: 3, lord: 'Rahu' } }, ends: null });
-    expect(vedicSignsShareQuery(reading)).toBe('s=cancer&m=libra&n=15&a=yukteswar');
+    expect(vedicSignsShareQuery(reading)).toBe('s=cancer&a=yukteswar');
   });
 });
 

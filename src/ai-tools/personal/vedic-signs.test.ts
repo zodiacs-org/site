@@ -27,7 +27,7 @@ describe('get_vedic_signs against known answers', () => {
     expect(data.moonNakshatra).toMatchObject({ name: 'Swati', number: 15, pada: 4, lord: 'Rahu' });
     expect(data.rising).not.toBeNull();
     expect(data.pageUrl).toBe('https://zodiacs.org/vedic-signs/');
-    expect(data.shareUrl).toBe(`https://zodiacs.org/share/vedic-signs/?s=sagittarius&m=libra&r=${data.rising!.sign}&n=15&a=lahiri`);
+    expect(data.shareUrl).toBe('https://zodiacs.org/share/vedic-signs/?s=sagittarius&a=lahiri');
   });
 
   it('puts the sidereal Sun into Makara around Makar Sankranti (14 to 15 January) and into Mesha around Mesha Sankranti (14 April)', async () => {

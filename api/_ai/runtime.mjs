@@ -43457,12 +43457,6 @@ var AYANAMSA_NAME = {
   "true-chitra": "True Chitra"
 };
 var NAKSHATRA_NAMES = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"];
-function nakshatraSigns(index) {
-  const start = index * 40 / 3;
-  const first2 = Math.floor(start / 30);
-  const last2 = Math.floor((index + 1) * 40 / 3 / 30 - 1e-9);
-  return first2 === last2 ? [first2] : [first2, last2];
-}
 var RASHIS = ["Mesha", "Vrishabha", "Mithuna", "Karka", "Simha", "Kanya", "Tula", "Vrishchika", "Dhanu", "Makara", "Kumbha", "Meena"];
 var RASHI_LINE = [
   "Mesha, ruled by Mars: quick to start, direct, and at its best with a clear goal in front of it.",
@@ -43626,50 +43620,22 @@ function computeVedicSigns(input) {
 
 // src/lib/vedic-signs/share.ts
 var VEDIC_SIGNS_SHARE_PATH = "/share/vedic-signs/";
-var VEDIC_SIGNS_SHARE_KEYS = Object.freeze(["s", "m", "r", "n", "a", "ref"]);
+var VEDIC_SIGNS_SHARE_KEYS = Object.freeze(["s", "a", "ref"]);
 var isSign5 = (value) => !!value && SHARE_SIGNS.includes(value);
 var isAyanamsa = (value) => !!value && VEDIC_AYANAMSAS.includes(value);
-var NAKSHATRA_RE = /^(?:[1-9]|1[0-9]|2[0-7])$/u;
-var fits = (nakshatra2, moon) => nakshatraSigns(nakshatra2 - 1).includes(SHARE_SIGNS.indexOf(moon));
 function vedicSignsQuery(share, withRef2 = false) {
-  const params = new URLSearchParams({ s: share.sun });
-  if (share.moon) params.set("m", share.moon);
-  if (share.moon && share.nakshatra && share.rising) params.set("r", share.rising);
-  if (share.nakshatra) params.set("n", String(share.nakshatra));
-  params.set("a", share.ayanamsa);
+  const params = new URLSearchParams({ s: share.sun, a: share.ayanamsa });
   if (withRef2 && share.ref) params.set("ref", share.ref);
   return params.toString();
 }
 function vedicSignsShareQuery(reading) {
   const sun = reading.sun?.sign;
   if (!isSign5(sun) || !isAyanamsa(reading.ayanamsa.name)) return null;
-  const moon = isSign5(reading.moon?.sign) ? reading.moon.sign : null;
-  const nakshatra2 = reading.moonNakshatra && Number.isInteger(reading.moonNakshatra.number) && reading.moonNakshatra.number >= 1 && reading.moonNakshatra.number <= 27 ? reading.moonNakshatra.number : null;
-  const rising = isSign5(reading.rising?.sign) ? reading.rising.sign : null;
-  const share = { sun, moon, rising, nakshatra: nakshatra2, ayanamsa: reading.ayanamsa.name, ref: null };
-  const query = vedicSignsQuery(share);
-  return parseVedicSignsShare(new URLSearchParams(query)) ? query : vedicSignsQuery({ ...share, rising: null, nakshatra: null });
+  return vedicSignsQuery({ sun, ayanamsa: reading.ayanamsa.name, ref: null });
 }
 function vedicSignsShareUrl(origin, reading) {
   const query = vedicSignsShareQuery(reading);
   return query === null ? null : `${origin}${VEDIC_SIGNS_SHARE_PATH}?${query}`;
-}
-function parseVedicSignsShare(params) {
-  const fields2 = /* @__PURE__ */ new Map();
-  for (const [key2, value] of params) {
-    if (!VEDIC_SIGNS_SHARE_KEYS.includes(key2) || fields2.has(key2)) return null;
-    fields2.set(key2, value);
-  }
-  const [sun, moon, rising, number2, ayanamsa2, refText] = ["s", "m", "r", "n", "a", "ref"].map((key2) => fields2.get(key2));
-  const ref3 = refText === void 0 ? null : refText === "chatgpt" || refText === "assistant" ? refText : void 0;
-  if (!isSign5(sun) || !isAyanamsa(ayanamsa2) || ref3 === void 0) return null;
-  if (moon !== void 0 && !isSign5(moon) || rising !== void 0 && !isSign5(rising)) return null;
-  if (number2 !== void 0 && !NAKSHATRA_RE.test(number2)) return null;
-  const nakshatra2 = number2 === void 0 ? null : Number(number2);
-  if (rising !== void 0 && (moon === void 0 || nakshatra2 === null)) return null;
-  if (moon !== void 0 && nakshatra2 !== null && !fits(nakshatra2, moon)) return null;
-  if (moon === void 0 && nakshatra2 !== null && nakshatraSigns(nakshatra2 - 1).length === 1) return null;
-  return { sun, moon: moon ?? null, rising: rising ?? null, nakshatra: nakshatra2, ayanamsa: ayanamsa2, ref: ref3 };
 }
 
 // src/ai-tools/personal/shared.ts
@@ -43768,7 +43734,7 @@ var vedicSignsData = z16.object({
   limits: z16.array(z16.string()),
   note: z16.string(),
   pageUrl: z16.url(),
-  /** The share card: the sidereal signs, the nakshatra's number and the ayanamsa, never a birth detail. Null when the Sun changed sign on an untimed birth day. */
+  /** The share card: the sidereal Sun sign and the ayanamsa only, never a Moon or rising sign, nakshatra or birth detail. Null when the Sun changed sign on an untimed birth day. */
   shareUrl: z16.url().nullable()
 });
 async function vedicSigns(args, clock2, origin) {

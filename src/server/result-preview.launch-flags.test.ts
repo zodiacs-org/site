@@ -12,9 +12,9 @@ const SWITCHED: readonly { route: ResultShareRoute; flag: (typeof FLAGS)[number]
   { route: 'birthday-report-image', flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', query: { s: 'leo', v: '6.4', t: '17' } },
   { route: 'solar-return-link', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
   { route: 'solar-return-image', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
-  { route: 'vedic-signs-link', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', m: 'libra', r: 'leo', n: '15', a: 'lahiri' } },
-  { route: 'vedic-signs-image', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', m: 'libra', r: 'leo', n: '15', a: 'lahiri' } },
-  { route: 'vedic-signs-story', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', m: 'libra', r: 'leo', n: '15', a: 'lahiri' } },
+  { route: 'vedic-signs-link', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', a: 'lahiri' } },
+  { route: 'vedic-signs-image', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', a: 'lahiri' } },
+  { route: 'vedic-signs-story', flag: 'PUBLIC_VEDIC_SIGNS_ENABLED', query: { s: 'sagittarius', a: 'lahiri' } },
 ];
 
 function nodeResponse() {

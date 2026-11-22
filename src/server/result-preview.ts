@@ -809,7 +809,7 @@ export function bigThreeCard(model: BigThreeCardModel, images: Map<ShareSign, st
     ...model.rows.map((row) => bigThreeRow(row, images, size, 52, 14))), model.sun);
 }
 
-/** One Vedic sign: its disc, the rashi with the body, and the Western name of the same sign under it; an undetermined Moon is an empty ring and the words in italic. */
+/** One Vedic sign: its disc, the rashi with the body, and the Western name of the same sign under it. */
 function vedicRow(row: VedicSignsCardModel['rows'][number], images: Map<ShareSign, string>, size: number, disc: number, gap: number) {
   const src = row.slug ? images.get(row.slug) : undefined;
   return h('div', { style: { display: 'flex', alignItems: 'center', marginTop: `${gap}px` } },
@@ -822,16 +822,13 @@ function vedicRow(row: VedicSignsCardModel['rows'][number], images: Map<ShareSig
       ...(row.western ? [h('div', { style: { display: 'flex', fontSize: Math.round(size * 0.42), lineHeight: 1.2, color: MUTED, marginTop: '2px' } }, row.western)] : [])));
 }
 
-/**
- * The Vedic signs (the three as a list, like the big three): the Sun's panel facing the Moon's when the Moon is
- * settled, the rows with their discs, and the Moon's nakshatra under them.
- */
+/** The Vedic Sun sign: the Sun's panel, its row with its disc, and the ayanamsa it was read with. */
 export function vedicSignsCard(model: VedicSignsCardModel, images: Map<ShareSign, string>, art: string[]) {
   const size = fit(model.rows.map((row) => row.text), TEXT_WIDTH - 76, 52, 36);
   return frame(art, h('div', { style: { display: 'flex', flexDirection: 'column', position: 'absolute', left: '64px', bottom: '56px', width: `${TEXT_WIDTH}px` } },
-    h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: model.hue, marginBottom: '2px' } }, 'Vedic signs'),
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: model.hue, marginBottom: '2px' } }, 'Vedic Sun sign'),
     ...model.rows.map((row) => vedicRow(row, images, size, 46, 10)),
-    h('div', { style: { display: 'flex', fontSize: 24, lineHeight: 1.3, color: INK_SOFT, marginTop: '18px' } }, `${model.nakshatra}.`)), model.sun);
+    h('div', { style: { display: 'flex', fontSize: 24, lineHeight: 1.3, color: INK_SOFT, marginTop: '18px' } }, `Read with the ${model.ayanamsa}.`)), model.sun);
 }
 
 const PLATE_LEFT = 480;
@@ -1087,7 +1084,7 @@ export async function handleVedicSignsImageRequest(request: Request): Promise<Re
   const share = parseVedicSignsShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = vedicSignsCardModel(share);
-  return imageFor(model.signs, bigThreeArt(share), (images, art) => vedicSignsCard(model, images, art));
+  return imageFor(model.signs, [share.sun], (images, art) => vedicSignsCard(model, images, art));
 }
 
 export async function handleChineseZodiacImageRequest(request: Request): Promise<Response> {
@@ -1383,13 +1380,13 @@ export function bigThreeStory(model: BigThreeCardModel, images: Map<ShareSign, s
   ]), model.sun, STORY_PAIR_FADE);
 }
 
-/** The Vedic signs: the Sun's panel facing the Moon's, the rows with their discs, the nakshatra and the way to find yours. */
+/** The Vedic Sun sign: the Sun's panel, its row with its disc, the ayanamsa and the way to find yours. */
 export function vedicSignsStory(model: VedicSignsCardModel, images: Map<ShareSign, string>, art: string[]) {
   const size = fit(model.rows.map((row) => row.text), STORY_WIDTH - 144 - 120, 84, 52);
   return storyFrame(art, storyColumn([
-    storyKicker('Vedic signs', model.hue),
+    storyKicker('Vedic Sun sign', model.hue),
     h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '6px' } }, ...model.rows.map((row) => vedicRow(row, images, size, 80, 22))),
-    storyLine(`${model.nakshatra}.`, 36),
+    storyLine(`Read with the ${model.ayanamsa}.`, 36),
     storyAction('Find your Vedic signs', 'zodiacs.org/vedic-signs'),
   ]), model.sun, STORY_PAIR_FADE);
 }
@@ -1529,7 +1526,7 @@ export async function handleVedicSignsStoryRequest(request: Request): Promise<Re
   const share = parseVedicSignsShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = vedicSignsCardModel(share);
-  return storyFor(model.signs, bigThreeArt(share), (images, art) => vedicSignsStory(model, images, art));
+  return storyFor(model.signs, [share.sun], (images, art) => vedicSignsStory(model, images, art));
 }
 
 export async function handleChineseZodiacStoryRequest(request: Request): Promise<Response> {
@@ -2139,13 +2136,13 @@ export async function handleVedicSignsLinkRequest(request: Request): Promise<Res
   if (!share) return htmlResponse(sharePageHtml(defaultVedicSignsPage(url.origin)));
   const model = vedicSignsCardModel(share);
   return htmlResponse(sharePageHtml({
-    title: `${model.title}: Vedic signs on Zodiacs`,
+    title: `${model.title}: Vedic Sun sign on Zodiacs`,
     description: model.about,
     heading: model.title,
     imageUrl: `${url.origin}${VEDIC_SIGNS_SHARE_IMAGE_PATH}?${vedicSignsQuery(share)}`,
     story: { href: `${VEDIC_SIGNS_SHARE_STORY_PATH}?${vedicSignsQuery(share)}`, filename: `zodiacs-vedic-signs-${share.sun}-story.jpg` },
     imageType: 'image/jpeg',
-    imageAlt: `Vedic signs: ${model.title}. ${model.nakshatra}.`,
+    imageAlt: `Vedic Sun sign: ${model.title}, read with the ${model.ayanamsa}.`,
     explanation: model.about,
     action: { label: 'Find your Vedic signs', href: VEDIC_SIGNS_PAGE_PATH },
     more: { label: 'Your Western big three', href: '/big-three/' },

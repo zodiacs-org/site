@@ -147,7 +147,7 @@ export default function VedicSigns() {
   async function share() {
     if (!shareUrl) return;
     if (typeof navigator.share === 'function') {
-      try { await navigator.share({ title: 'My Vedic signs on Zodiacs', text: 'My Moon, Sun and rising signs in the sidereal zodiac.', url: shareUrl }); return; } catch (cause) {
+      try { await navigator.share({ title: 'My Vedic signs on Zodiacs', text: 'My Sun sign in the sidereal zodiac.', url: shareUrl }); return; } catch (cause) {
         if ((cause as DOMException)?.name === 'AbortError') return;
       }
     }
@@ -207,10 +207,10 @@ export default function VedicSigns() {
           <div class="vedic__share">
             {shareUrl ? (
               <>
-                <button type="button" class="btn btn--primary" onClick={share}><span>Share my Vedic signs</span><span class="orb" aria-hidden="true">↗</span></button>
+                <button type="button" class="btn btn--primary" onClick={share}><span>Share my Vedic Sun sign</span><span class="orb" aria-hidden="true">↗</span></button>
                 <a class="btn btn--ghost" href={`${VEDIC_SIGNS_SHARE_PATH}?${query}`}>Open the share card</a>
                 <p class="vedic__share-note" role="status">
-                  {shared === 'copied' ? 'Link copied.' : shared === 'failed' ? 'The link could not be copied. Open the share card and copy its address.' : 'The link carries only your signs, the nakshatra and the ayanamsa: never your birth date, time or place.'}
+                  {shared === 'copied' ? 'Link copied.' : shared === 'failed' ? 'The link could not be copied. Open the share card and copy its address.' : 'The link carries only your sidereal Sun sign and the ayanamsa: never your Moon or rising sign, nakshatra, birth date, time or place.'}
                 </p>
               </>
             ) : (
