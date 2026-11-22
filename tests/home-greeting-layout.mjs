@@ -41,9 +41,10 @@ async function verify(browser, baseURL, width, variant) {
   }, profiles[variant]);
 
   // Hold the module to inspect the actual first paint independently of Preact.
+  let requests = 0;
   let release;
   const held = new Promise(resolve => { release = resolve; });
-  await page.route('**/_astro/WelcomeBack.*.js', async route => { await held; await route.continue(); });
+  await page.route('**/_astro/WelcomeBack.*.js', async route => { requests++; await held; await route.continue(); });
   try {
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => performance.getEntriesByName('first-contentful-paint').length > 0);
@@ -61,14 +62,19 @@ async function verify(browser, baseURL, width, variant) {
     }
     const before = await page.evaluate(geometry);
     release();
-    await page.locator('astro-island[component-url*="WelcomeBack."]:not([ssr])').waitFor({ state: 'attached' });
-    await page.waitForFunction(count => document.querySelectorAll('.wb-card').length === count, variant === 'none' ? 0 : 1);
+    if (variant !== 'none') {
+      await page.locator('astro-island[component-url*="WelcomeBack."]:not([ssr])').waitFor({ state: 'attached' });
+      await page.waitForFunction(() => document.querySelectorAll('.wb-card').length === 1);
+    } else {
+      await page.waitForLoadState('load');
+    }
     if (variant === 'chart') {
       assert.ok((await section.locator('h2').innerText()).includes(chart.name));
       assert.equal(await section.locator('.chip').count(), 3);
       assert.equal(await section.getByRole('link', { name: 'Open saved chart' }).getAttribute('href'), '/birth-chart/#profileChartId=' + chart.id);
     }
     await page.waitForTimeout(3000);
+    assert.equal(requests, variant === 'none' ? 0 : 1);
     assert.deepEqual(await page.evaluate(geometry), before, 'Greeting and following section keep their geometry');
     assert.deepEqual(await page.evaluate(() => window.shifts), [], 'No layout shift from navigation through hydration + 3s');
     if (width === 1280 && variant === 'chart') {
