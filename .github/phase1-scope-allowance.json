@@ -1,13 +1,10 @@
 {
   "version": 1,
-  "id": "chinese-zodiac-remove-western-discs-2026-11-22",
-  "baseCommit": "c61ebe082098f50690f810d330d091f769c4887a",
+  "id": "zod-43-astrofolio-thesis-link",
+  "baseCommit": "49e098731d858e323fd4845041410a2fd8ffd425",
   "protectedPaths": [
-    "src/pages/learn/chinese-zodiac/[animal]/index.astro",
-    "src/pages/learn/chinese-zodiac/index.astro",
-    "src/strings/additions.es.mjs",
-    "src/strings/additions.fr.mjs",
-    "src/strings/additions.it.mjs",
-    "src/strings/additions.pt.mjs"
+    "public/assets/app.js",
+    "scripts/registry-consumer-contract.test.mjs",
+    "src/app.jsx"
   ]
 }

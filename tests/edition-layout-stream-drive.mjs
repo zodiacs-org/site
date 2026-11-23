@@ -14,7 +14,8 @@ import { withPreview } from './visual/preview-server.mjs';
 // otherwise the already painted decorative disc changes its position.
 export async function editionLayoutStreaming(baseURL) {
   const publication = JSON.parse(await readFile(new URL('../src/data/daily-publication.json', import.meta.url), 'utf8'));
-  const datedClock = Date.parse(`${publication.date}T00:17:00Z`) + 86_400_000;
+  const editionClock = Date.parse(`${publication.date}T00:17:00Z`);
+  const datedClock = editionClock + 86_400_000;
   const response = await fetch(new URL('/horoscopes/aries/', baseURL));
   assert.equal(response.status, 200);
   const html = await response.text();
@@ -33,15 +34,26 @@ export async function editionLayoutStreaming(baseURL) {
   const wheel = todayHTML.indexOf('<div class="today-wheel"');
   assert.ok(wheel > 0, 'The real Today wheel must be present');
   const wheelCut = todayHTML.indexOf('>', wheel) + 1;
+  // Pause after the last motion glyph. Every edition has at least Mercury's
+  // direct or retrograde status, even when no other planet is retrograde.
+  const motionItem = Math.max(
+    todayHTML.lastIndexOf('class="skyticker__item skyticker__item--retro"'),
+    todayHTML.lastIndexOf('class="skyticker__item skyticker__item--direct"'),
+  );
+  const glyphEnd = '</svg></span>';
+  const glyph = todayHTML.indexOf(glyphEnd, motionItem);
+  assert.ok(motionItem > wheel && glyph > motionItem, 'The Today ticker must include a motion glyph');
+  const tickerCut = glyph + glyphEnd.length;
 
   const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url, 'http://local');
       if (url.pathname === '/today/') {
         res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
-        res.write(todayHTML.slice(0, wheelCut));
+        const cut = url.searchParams.get('pause') === 'ticker' ? tickerCut : wheelCut;
+        res.write(todayHTML.slice(0, cut));
         await new Promise(resolve => setTimeout(resolve, 600));
-        res.end(todayHTML.slice(wheelCut));
+        res.end(todayHTML.slice(cut));
         return;
       }
       if (url.pathname === '/horoscopes/aries/') {
@@ -69,9 +81,10 @@ export async function editionLayoutStreaming(baseURL) {
     const scenarios = [
       ...[360, 900, 1280].flatMap(width => Object.keys(cuts).map(pause => ({ path: '/horoscopes/aries/', width, pause }))),
       ...[360, 412, 1280].map(width => ({ path: '/today/', width, pause: 'wheel' })),
+      ...[360, 900].map(width => ({ path: '/today/', width, height: 1400, pause: 'ticker' })),
     ];
-    for (const { path, width, pause } of scenarios) {
-      const context = await browser.newContext({ viewport: { width, height: 1600 } });
+    for (const { path, width, height = 1600, pause } of scenarios) {
+      const context = await browser.newContext({ viewport: { width, height } });
       try {
         const page = await context.newPage();
         await page.addInitScript(({ now }) => {
@@ -99,8 +112,12 @@ export async function editionLayoutStreaming(baseURL) {
               });
             }
           }).observe({ type: 'layout-shift', buffered: true });
-        }, { now: datedClock });
+        }, { now: pause === 'ticker' ? editionClock : datedClock });
         await page.goto(`http://127.0.0.1:${server.address().port}${path}?pause=${pause}`, { waitUntil: 'networkidle' });
+        if (pause === 'ticker') {
+          await page.waitForSelector('[data-today-state="empty"]');
+          await page.evaluate(() => document.fonts.ready);
+        }
         await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
         const shifts = await page.evaluate(() => window.__controlShifts);
         const cls = shifts.reduce((sum, shift) => sum + shift.value, 0);

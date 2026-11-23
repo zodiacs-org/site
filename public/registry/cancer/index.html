@@ -1288,7 +1288,7 @@
         <div class="market__head"><p class="market__copy">The price can change quickly and can fall to zero.</p><a class="market__source" data-market-live-link href="https://dexscreener.com/solana/DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW" rel="noopener noreferrer external nofollow">View live chart ↗</a></div>
         <section class="quick" aria-labelledby="quick-title" data-live-quote>
           <span class="quick__label" id="quick-title" data-live-price-label>Latest recorded price</span>
-          <div class="quick__quote" aria-live="polite"><strong class="quick__price" data-live-price>$0</strong><span class="quick__change" data-live-change>Past 24 hours —</span><p class="quick__state" data-live-state>Showing the latest saved price. Checking for a newer one…</p></div>
+          <div class="quick__quote" aria-live="polite"><strong class="quick__price" data-live-price data-price-missing>—</strong><span class="quick__change" data-live-change>Past 24 hours —</span><p class="quick__state" data-live-state>No saved price is recorded. Checking for a current one…</p></div>
         </section>
         <div class="market__grid" data-market-grid>
           <div class="market__cell"><div class="market__k">Total market value</div><div class="market__v ">—</div></div>
@@ -1898,6 +1898,7 @@
     var liveState = liveQuote && liveQuote.querySelector('[data-live-state]');
     var liveLoading = false;
     var hasLiveQuote = false;
+    var savedPriceMissing = !!(livePrice && livePrice.hasAttribute('data-price-missing'));
     var liveCheckedAt = null;
     var panel = document.querySelector('[data-market]');
     var stateEl = panel.querySelector('[data-market-state]');
@@ -1974,6 +1975,11 @@
         liveState.textContent = 'Last price shown. A newer price is temporarily unavailable. Checked ' + liveCheckedAt + '.';
         return;
       }
+      if (savedPriceMissing) {
+        livePrice.textContent = '—';
+        liveState.textContent = 'A current price is unavailable right now, and no saved price is recorded.';
+        return;
+      }
       liveState.textContent = 'A newer price is temporarily unavailable. The latest saved price remains shown.';
     }
 
@@ -1994,6 +2000,7 @@
       hasLiveQuote = true;
       liveCheckedAt = new Date().toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
       if (livePriceLabel) livePriceLabel.textContent = 'Current price';
+      livePrice.removeAttribute('data-price-missing');
       livePrice.textContent = fmtPrice(best.priceUsd);
       liveChange.textContent = 'Past 24 hours ' + fmtPct(change);
       liveChange.classList.remove('quick__change--up', 'quick__change--down');
@@ -2137,12 +2144,14 @@
       var price = finiteNumber(asset.priceUsd);
       var change = finiteNumber(asset.change24hPct);
       if (livePriceLabel) livePriceLabel.textContent = 'Latest recorded price';
-      livePrice.textContent = price === null ? '—' : fmtPrice(price);
+      savedPriceMissing = price === null;
+      livePrice.toggleAttribute('data-price-missing', savedPriceMissing);
+      livePrice.textContent = fmtPrice(price);
       liveChange.textContent = 'Past 24 hours ' + fmtPct(change);
       liveChange.classList.remove('quick__change--up', 'quick__change--down');
       if (change !== null && change > 0) liveChange.classList.add('quick__change--up');
       if (change !== null && change < 0) liveChange.classList.add('quick__change--down');
-      liveState.textContent = 'Updated ' + fmtTimestamp(snapshot.source && snapshot.source.readAt) + '.';
+      liveState.textContent = (savedPriceMissing ? 'No price is recorded in the latest snapshot. ' : '') + 'Updated ' + fmtTimestamp(snapshot.source && snapshot.source.readAt) + '.';
     }
 
     function observationsForRange(range) {
