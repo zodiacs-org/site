@@ -36,11 +36,16 @@ python3 tools/score.py
 The Claude run uses the machine's signed-in Claude Code. The OpenAI runs are not run again: the owner has not
 approved OpenAI API spend (ZOD-207), so `run-tryouts.py --provider openai` stops before any request. Use the
 recorded OpenAI runs in `runs/` instead. The Claude child sees only an allowlist of environment variables (PATH,
-HOME, LANG, LC_ALL, TERM, TMPDIR, USER, CLAUDE_CONFIG_DIR). Gateways are not supported: if `ANTHROPIC_BASE_URL` is
-set at all, the run stops before any request. Claude Code reads its managed settings file
-(`/etc/claude-code/managed-settings.json`, or `/Library/Application Support/ClaudeCode/managed-settings.json` on
-macOS) whatever `--setting-sources` says, so the run also stops if that file sets an `ANTHROPIC_BASE_URL` on any host
-but `api.anthropic.com`, or cannot be read. Any argument containing "openai" stops the run, and flags must be
-spelled in full. With `--forward`, the stub sends calls only over https to
+HOME, LANG, LC_ALL, TERM, TMPDIR, USER, CLAUDE_CONFIG_DIR). Gateways are not supported: `ANTHROPIC_BASE_URL` may be
+set only to an https URL on the host `api.anthropic.com`, and is passed on then; anything else stops the run before
+any request. Claude Code reads its managed settings whatever `--setting-sources` says: `managed-settings.json` and
+every `*.json` in `managed-settings.d`, under `/etc/claude-code` and, on macOS,
+`/Library/Application Support/ClaudeCode`. The run also stops if any of them sets an `ANTHROPIC_BASE_URL` that is not
+https on `api.anthropic.com`, or cannot be read. A `--provider` value containing "openai" stops the run, and flags
+must be spelled in full. With `--forward`, the stub sends calls only over https to
 `zodiacs.org` and refuses redirects.
+
+The breaker launchers, `breaker/run-all.sh` and `breaker-join/run-all.sh`, run only the Claude stand-in and stop
+at the first step that fails. They cannot reproduce the recorded OpenAI runs; those recorded runs in `runs/` (and
+in `breaker/runs/` and `breaker-join/runs/`) are the evidence.
 No key is in this folder.
