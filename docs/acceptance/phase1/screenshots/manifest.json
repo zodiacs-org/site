@@ -6,7 +6,7 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-11-23T12:51:09.653Z",
+  "capturedAt": "2026-11-23T14:29:49.992Z",
   "browser": "Chromium 151.0.7922.173",
   "dailyDate": "2026-11-23",
   "publicationCanonicalSha256": "eb83b1532da2660de184bf9cc4db3b23874bcb4f83a2c7162a3cd82df4502b55",
@@ -19,7 +19,7 @@
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-11-23T12:46:46.548Z",
+    "builtAt": "2026-11-23T14:28:27.471Z",
     "templateSourceSha256": "39e7a3badb1481aaea1157cd2a44fc168c52a14e85848ad12ecf076dc1687449",
     "dailyDate": "2026-11-23",
     "publicationCanonicalSha256": "eb83b1532da2660de184bf9cc4db3b23874bcb4f83a2c7162a3cd82df4502b55",
@@ -42,7 +42,7 @@
         "file": "today-360.png",
         "width": 360,
         "height": 11642,
-        "sha256": "b09681a3fb43cd86c0dd4ddad6b7130ed9eca212ae1340b85eb03e9a00b0a1da"
+        "sha256": "9fccb22a493fcde66edb9bd655d8dc5476fd470b780826f13d92433444808d40"
       },
       "layout": {
         "clientWidth": 360,
@@ -90,7 +90,7 @@
         "file": "horoscopes-hub-360.png",
         "width": 360,
         "height": 6311,
-        "sha256": "3a5acacb73e1c1ee5975eb6ec4dc78a61c0a6d660919d318a84dff1209774dee"
+        "sha256": "6a5355fc9cfaaf8e8fb5b5f6564935a1422a9ccdf7204f4c76ad9429291977cc"
       },
       "layout": {
         "clientWidth": 360,
@@ -114,7 +114,7 @@
         "file": "horoscopes-hub-1280.png",
         "width": 1280,
         "height": 3191,
-        "sha256": "423b7e552328953bf0eb0978a40f9c9a58aab8ee5f5d400938a6bfa3095cb70c"
+        "sha256": "afaee3c000e2b882c642c6539487d1e9e674814ad2c3cdbce9ba87468407eabe"
       },
       "layout": {
         "clientWidth": 1280,
