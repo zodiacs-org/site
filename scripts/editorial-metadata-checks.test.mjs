@@ -12,13 +12,13 @@ describe('editorial metadata ownership', () => {
     for (const locale of ['', '/es', '/pt', '/fr', '/it']) {
       const articles = entries.filter(([path, x]) => path.startsWith(`${locale}/learn/chinese-zodiac/`) && x.type === 'Article');
       expect(articles).toHaveLength(13);
-      // English animal pages carry the 2026-10-26 art revision; the hub and other locales stay on 2026-10-16.
-      expect(new Set(articles.map(([, x]) => x.modified))).toEqual(new Set(locale ? ['2026-10-16'] : ['2026-10-16', '2026-10-26']));
+      // Every Chinese zodiac page lost the Western sign disc row on 2026-11-22.
+      expect(new Set(articles.map(([, x]) => x.modified))).toEqual(new Set(['2026-11-22']));
     }
     for (const locale of ['/zh-hans', '/zh-hant']) {
       const articles = entries.filter(([path, x]) => path.startsWith(`${locale}/learn/chinese-zodiac/`) && x.type === 'Article');
       expect(articles).toHaveLength(13);
-      expect(new Set(articles.map(([, x]) => x.modified))).toEqual(new Set(['2026-10-24', '2026-10-26']));
+      expect(new Set(articles.map(([, x]) => x.modified))).toEqual(new Set(['2026-11-22']));
     }
     expect(() => editorialMetadata('/ru/learn/chinese-zodiac/')).toThrow(/Missing/);
   });
