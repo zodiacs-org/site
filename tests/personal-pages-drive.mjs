@@ -136,16 +136,19 @@ async function open(browser, viewport) {
       for (const entry of list.getEntries()) {
         if (entry.hadRecentInput) continue;
         window.__cls += entry.value;
-        window.__shifts.push({ value: entry.value, sources: entry.sources?.map((source) => source.node?.outerHTML?.slice(0, 160)) });
+        window.__shifts.push({ value: entry.value, sources: entry.sources?.map((source) => source.node?.nodeName) });
       }
     }).observe({ type: 'layout-shift', buffered: true });
   });
   const tab = await context.newPage();
-  const requests = [];
-  tab.on('request', (request) => requests.push(`${request.url()} ${request.postData() ?? ''}`));
-  const errors = [];
-  tab.on('pageerror', (error) => errors.push(String(error)));
-  return { context, tab, requests, errors };
+  // Keep only counts so a privacy regression cannot write a birth detail to the test log.
+  const observed = { requestsWithBirthDate: 0, pageErrors: 0 };
+  tab.on('request', (request) => {
+    const birthYear = BIRTH.date.slice(0, 4);
+    if (request.url().includes(birthYear) || request.postData()?.includes(birthYear)) observed.requestsWithBirthDate++;
+  });
+  tab.on('pageerror', () => { observed.pageErrors++; });
+  return { context, tab, observed };
 }
 const settle = (tab) => tab.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(done, 1500)))));
 const cls = (tab) => tab.evaluate(() => ({ cls: window.__cls, shifts: window.__shifts }));
@@ -170,29 +173,32 @@ if (onPages.length) {
             await settle(session.tab);
             load = await cls(session.tab);
           }
-          const { context, tab, requests, errors } = session;
+          const { context, tab, observed } = session;
           check(`${label}: first load has zero CLS`, load.cls === 0, JSON.stringify(load));
 
           const before = tab.url();
           const selector = await page.run(tab);
           await settle(tab);
-          check(`${label}: the address bar is unchanged after the result`, tab.url() === before, tab.url());
-          const leaked = requests.filter((line) => line.includes(BIRTH.date) || line.includes('1990'));
-          check(`${label}: no request carries the birth date`, leaked.length === 0, leaked.join('\n'));
+          check(`${label}: the address bar is unchanged after the result`, tab.url() === before);
+          check(`${label}: no request carries the birth date`, observed.requestsWithBirthDate === 0);
 
           const hrefs = await tab.locator(selector).evaluateAll((links) => links.map((link) => link.getAttribute('href')));
           check(`${label}: the result offers a share link`, hrefs.length > 0);
-          for (const href of hrefs) {
-            const url = new URL(href, base);
+          for (const [index, href] of hrefs.entries()) {
+            const url = URL.parse(href, base);
+            if (!url) {
+              check(`${label}: share link ${index + 1} has a valid URL`, false);
+              continue;
+            }
             const keys = [...url.searchParams.keys()];
-            check(`${label}: share link ${href} goes to ${page.sharePath}`, url.pathname === page.sharePath, url.pathname);
-            check(`${label}: share link ${href} carries exactly ${page.expectedKeys.join(', ')}`,
-              new Set(keys).size === keys.length && JSON.stringify([...keys].sort()) === JSON.stringify(page.expectedKeys), keys.join(', '));
-            check(`${label}: share link ${href} carries no birth detail`, !BIRTH_DETAIL.test(url.search));
+            check(`${label}: share link ${index + 1} goes to ${page.sharePath}`, url.origin === new URL(base).origin && url.pathname === page.sharePath);
+            check(`${label}: share link ${index + 1} carries exactly ${page.expectedKeys.join(', ')}`,
+              new Set(keys).size === keys.length && JSON.stringify([...keys].sort()) === JSON.stringify(page.expectedKeys));
+            check(`${label}: share link ${index + 1} carries no birth detail`, !BIRTH_DETAIL.test(url.search));
           }
           const overflow = await tab.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
           check(`${label}: no horizontal scroll`, !overflow);
-          check(`${label}: no page errors`, errors.length === 0, errors.join('\n'));
+          check(`${label}: no page errors`, observed.pageErrors === 0, observed.pageErrors);
           await context.close();
         }
       }
