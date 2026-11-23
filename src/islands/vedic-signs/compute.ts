@@ -12,6 +12,7 @@ import type { TropicalMoment } from '../../lib/vedic-signs/tropical';
 import type { VedicAyanamsa } from '../../lib/vedic-signs/wording';
 import { localDaySpan, readsOnDate } from '../../lib/time/local-day';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
+import { roundCoordinate } from '../../ai-tools/plain-text';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
 
@@ -32,9 +33,16 @@ export interface VedicFormInput {
  */
 export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReading> {
   const timeKnown = input.birthTime !== null;
-  const dayStart = resolveLocalToUtc(input.birthDate, '00:00', input.place.tz, { longitude: input.place.lon });
+  // The birthplace rounded to two decimals, as every tool rounds a place it is
+  // given (get_vedic_signs through roundCoordinate), before any clock reads
+  // it: before a zone's local mean time era ended, the clock is the
+  // longitude's own (240 s per degree), so the raw longitude would move the
+  // birth instant by up to 1.2 seconds and a rising degree on a sign boundary
+  // with it (New York, 11 May 1880, 03:34 at 74.006 degrees west).
+  const rounded = { lat: roundCoordinate(input.place.lat), lon: roundCoordinate(input.place.lon) };
+  const dayStart = resolveLocalToUtc(input.birthDate, '00:00', input.place.tz, { longitude: rounded.lon });
   if (!readsOnDate(input.birthDate, dayStart)) return Promise.reject(new RangeError('The birth date was not on the birthplace clock.'));
-  const birthUtc = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: input.place.lon }).utc;
+  const birthUtc = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: rounded.lon }).utc;
   // An untimed birth is read at local noon, and a placement holds only if both
   // ends of the local date keep it: from where the clock first reaches its
   // 00:00 to where it last leaves the date, so a date the clock showed twice
@@ -43,11 +51,9 @@ export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReadin
   // resolver reads the day after too, which the birth date's preparation
   // covers: the engine loads a zone's whole history for any date up to 1970.
   const dayEnds = timeKnown ? undefined : localDaySpan(input.birthDate,
-    (date, time, fold) => resolveLocalToUtc(date, time, input.place.tz, { longitude: input.place.lon, fold })) ?? undefined;
-  // The birthplace rounded to two decimals, as every tool rounds a place it is given.
-  const round2 = (value: number) => Math.round(value * 100) / 100;
+    (date, time, fold) => resolveLocalToUtc(date, time, input.place.tz, { longitude: rounded.lon, fold })) ?? undefined;
   return import('../../lib/vedic-signs/tropical').then(({ tropicalMoments }) => {
-    const moments = tropicalMoments({ birthUtc, timeKnown, latitude: round2(input.place.lat), longitude: round2(input.place.lon), dayEnds });
+    const moments = tropicalMoments({ birthUtc, timeKnown, latitude: rounded.lat, longitude: rounded.lon, dayEnds });
     const wire = (moment: TropicalMoment) => ({ ...moment, utc: moment.utc.toISOString() });
     return inWorker({ ...moments, at: wire(moments.at), ends: moments.ends ? moments.ends.map(wire) : null, ayanamsa: input.ayanamsa });
   });
