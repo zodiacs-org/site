@@ -121,7 +121,7 @@ describe('assistant site context', () => {
       tools: 27,
     });
     for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) {
-      expect(context.includes(`- ${route} —`)).toBe(switchedRoutes(env).includes(route));
+      expect(context.includes(`- ${route} \u2014`)).toBe(switchedRoutes(env).includes(route));
     }
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');
@@ -238,7 +238,7 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     const added = context.split('\n').filter((line) => !offLines.includes(line));
 
     expect(added).toHaveLength(on.length);
-    for (const route of on) expect(added.filter((line) => line.startsWith(`- ${route} —`))).toHaveLength(1);
+    for (const route of on) expect(added.filter((line) => line.startsWith(`- ${route} \u2014`))).toHaveLength(1);
     expect(context.split('\n').filter((line) => !added.includes(line))).toEqual(offLines);
     expect(counts.staticPages).toBe(off.counts.staticPages + on.length);
     expect(counts.consumerRoutes).toBe(off.counts.consumerRoutes + on.length);

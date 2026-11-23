@@ -39,7 +39,7 @@ describe('the astrocartography share page and pictures', () => {
     expect(html).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/astrocartography-image?p=venus&amp;a=dsc"');
     expect(html).toContain('href="/astrocartography/"');
     expect(html).toContain('/api/og/astrocartography-story?p=venus&amp;a=dsc');
-    expect(html).not.toMatch(/[–—]/u);
+    expect(html).not.toMatch(/[\u2013\u2014]/u);
     // A link that is not a share opens the plain page, which still leads to the map.
     const plain = await (await handleAstrocartographyLinkRequest(new Request('https://zodiacs.org/share/astrocartography/?p=venus&a=dsc&city=Paris'))).text();
     expect(plain).toContain('Your astrocartography map');
