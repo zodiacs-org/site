@@ -15,12 +15,22 @@
 import { NOTICEABLE_KM, type AcgAngle, type AcgBody, type BodyLines, type LineDistance } from './lines.js';
 import { readingConfidence, readingConfidenceText, readingDetail } from '../../ai-tools/reading-confidence.js';
 import { MINOR_NOTE, isUnderAge } from '../../ai-tools/features/reading-guards.js';
+import { earliestToday } from '../birth-date-policy.js';
 
 export { MINOR_NOTE };
 
 /** Compare civil birthdays so 29 February cannot promote a 1 March birthday a day early. */
 export function isUnder18(birthDate: string, today: string): boolean {
   return isUnderAge(birthDate, today, 18);
+}
+
+/**
+ * Under 18 at an instant, on the calendar date at UTC-12 (the earliest date anywhere, the day the shared under-13
+ * policy reads): the page and the get_astrocartography tool both read the age here, so the love and attraction
+ * readings stay left out until the 18th birthday has begun everywhere, whatever clock the person is on.
+ */
+export function under18At(birthDate: string, now: Date): boolean {
+  return isUnderAge(birthDate, earliestToday(now), 18);
 }
 
 export const ANGLE_NAME: Record<AcgAngle, string> = {

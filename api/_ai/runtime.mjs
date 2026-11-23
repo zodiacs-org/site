@@ -42891,10 +42891,12 @@ function distanceToPolylineKm(place2, line) {
   });
   for (const neighbour of [at - 1, at + 1]) {
     const other = line[neighbour];
-    if (!other || Math.abs(other.lon - line[at].lon) > 180) continue;
+    if (!other) continue;
+    const from = line[at];
+    const otherLon = from.lon + wrapLongitude(other.lon - from.lon);
     let lo = 0;
     let hi = 1;
-    const at_ = (t) => distanceKm(place2, { lat: line[at].lat + (other.lat - line[at].lat) * t, lon: line[at].lon + (other.lon - line[at].lon) * t });
+    const at_ = (t) => distanceKm(place2, { lat: from.lat + (other.lat - from.lat) * t, lon: from.lon + (otherLon - from.lon) * t });
     for (let i = 0; i < 30; i += 1) {
       const m1 = lo + (hi - lo) * 0.382;
       const m2 = lo + (hi - lo) * 0.618;
@@ -42953,9 +42955,18 @@ function equatorialMoment(utc) {
   return { gast, bodies };
 }
 
+// src/lib/birth-date-policy.ts
+var HOUR_MS4 = 36e5;
+function civilDateAt(now, offsetHours) {
+  return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
+}
+function earliestToday(now = /* @__PURE__ */ new Date()) {
+  return civilDateAt(now, -12);
+}
+
 // src/lib/astrocartography/meanings.ts
-function isUnder182(birthDate, today2) {
-  return isUnderAge(birthDate, today2, 18);
+function under18At(birthDate, now) {
+  return isUnderAge(birthDate, earliestToday(now), 18);
 }
 var ANGLE_NAME = {
   ASC: "rising",
@@ -43122,11 +43133,6 @@ function refineBirth(args, context) {
 function definePersonalTool(definition) {
   return definition;
 }
-function dateOn(at, timeZone) {
-  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(at);
-  const part = (type) => parts.find((entry) => entry.type === type).value;
-  return `${part("year")}-${part("month")}-${part("day")}`;
-}
 async function castNatal(args, clock2) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`);
@@ -43149,17 +43155,6 @@ async function castNatal(args, clock2) {
   const chart = computeChart3({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
-}
-async function currentClock(currentZone, birthZone, context) {
-  if (currentZone) return { zone: await context.resolveZone(currentZone, "/currentZone"), note: null };
-  if (context.hostZone) {
-    try {
-      return { zone: await context.resolveZone(context.hostZone, "/currentZone"), note: null };
-    } catch {
-    }
-  }
-  if (birthZone) return { zone: birthZone, note: `Today is read on the birthplace clock (${birthZone}) because no current location was given.` };
-  return { zone: "UTC", note: "Today is read in UTC because no time zone was given." };
 }
 
 // src/ai-tools/personal/astrocartography.ts
@@ -43243,8 +43238,8 @@ async function getAstrocartography(args, context) {
   const utc = natal.birthUtc;
   const bodies = equatorialBodies(utc);
   const gast = greenwichSiderealDegrees(utc);
-  const { zone: todayZone, note: todayNote } = await currentClock(args.currentZone, args.zone, context);
-  const under18 = isUnder182(args.birthDate, dateOn(context.now, todayZone));
+  if (args.currentZone) await context.resolveZone(args.currentZone, "/currentZone");
+  const under18 = under18At(args.birthDate, context.now);
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
   const lines = bodies.map((entry) => {
     const mc = mcLongitude(entry, gast);
@@ -43257,8 +43252,6 @@ async function getAstrocartography(args, context) {
   const cities = [];
   const unmatched = [];
   const limits2 = [
-    // Which clock "today" (and so the age) was read on, when it is not where the person is now.
-    ...todayNote ? [todayNote] : [],
     "Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.",
     `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`
   ];
@@ -43334,7 +43327,8 @@ var astrocartographyTool = definePersonalTool({
   description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
-  clockDependent: false,
+  // The readings change on the eighteenth birthday, so a repeat call can differ as the server's clock moves.
+  clockDependent: true,
   example: { birthDate: "1990-05-03", time: "08:30", zone: "Europe/London", latitude: 51.51, longitude: -0.13, cities: ["Lisbon", "New York", "Tokyo"] },
   run: (args, context) => getAstrocartography(args, context)
 });
@@ -45498,15 +45492,6 @@ function guardPersonalWeek(week, birthDate, today2) {
     items: week.items.map((item) => ({ ...item, title: softenMinor(item.title), line: softenMinor(item.line) })),
     note: `${week.note} ${MINOR_NOTE}`
   };
-}
-
-// src/lib/birth-date-policy.ts
-var HOUR_MS4 = 36e5;
-function civilDateAt(now, offsetHours) {
-  return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
-}
-function earliestToday(now = /* @__PURE__ */ new Date()) {
-  return civilDateAt(now, -12);
 }
 
 // src/ai-tools/tools.ts

@@ -47,6 +47,20 @@ from other pages, Guide line and share routes are all absent. Switch a page's
 flag on and deploy before `ZODIACS_PERSONAL_TOOLS_ENABLED`, or that tool's
 `pageUrl` and `shareUrl` lead to a missing page.
 
+The Guide's line is the exception: the site assistant reads the committed
+`api/_assistant/context.ts`, which is generated with every switch unset, and
+the normal build does not regenerate it. Setting the flag on Vercel therefore
+does not add the page to the Guide, and
+`scripts/build-assistant-context.test.mjs` holds the committed module to the
+switches-unset output. To put a launched page in the Guide, a pull request
+removes its route from `LAUNCH_FLAGGED_ROUTES` in
+`scripts/build-assistant-context.mjs` (for astrocartography,
+`'/astrocartography/'`), runs `npm run data:assistant-context` with no
+switch set, and commits the regenerated `api/_assistant/context.ts`, which
+gains exactly that page's one line. Merge it only after the flag is on in
+production, so the Guide never names a page that is not live. Until then the
+Guide does not mention the page.
+
 ## How a tool is added
 
 Each tool is one module in `src/ai-tools/personal/` that exports a definition

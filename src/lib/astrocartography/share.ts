@@ -48,3 +48,19 @@ export function parseAstrocartographyShare(params: URLSearchParams): Astrocartog
   if (ref !== undefined && ref !== 'chatgpt' && ref !== 'assistant') return null;
   return { planet, angle, ref: (ref as AstrocartographyShare['ref']) ?? null };
 }
+
+/**
+ * The share page's own address for a query as it arrived: the line's keys, each once, in their fixed order, or
+ * nothing when the query is not a share. Every other key (a birth date, a place, a name, an app's tracking key) is
+ * left out, and nothing is read from it, echoed or logged.
+ */
+export function astrocartographyCleanQuery(params: URLSearchParams): string {
+  const kept = new URLSearchParams();
+  for (const key of ASTROCARTOGRAPHY_SHARE_KEYS) {
+    const values = params.getAll(key);
+    if (values.length > 1) return '';
+    if (values.length === 1) kept.set(key, values[0]);
+  }
+  const share = parseAstrocartographyShare(kept);
+  return share ? astrocartographyQuery(share, true) : '';
+}

@@ -68,17 +68,23 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
     expect(seen).toBeGreaterThan(300);
   });
 
-  it('take the age on the person\'s own clock, as get_personal_day does', async () => {
-    // 20:00 UTC on 9 Nov 2026 is already 10 Nov in Bangkok: an 18th birthday on 10 Nov has arrived there, not in London.
+  it('take the age on the calendar date at UTC-12, as the page does, whatever clock the person is on', async () => {
+    // 20:00 UTC on 9 Nov 2026 is already 10 Nov in Bangkok, but still 9 Nov at UTC-12: an 18th birthday on 10 Nov
+    // has not begun everywhere, so the under-18 readings stay, with a current zone or without one.
     const late = { ...ON, now: () => new Date('2026-11-09T20:00:00Z') };
     const args = { birthDate: '2008-11-10', time: '08:30', zone: 'Europe/London' };
-    const there = await executeAiTool('get_astrocartography', { ...args, currentZone: 'Asia/Bangkok' }, late) as { ok: true; data: any };
-    expect(there.data.limits).not.toContain(MINOR_NOTE);
-    const home = await executeAiTool('get_astrocartography', args, late) as { ok: true; data: any };
-    expect(home.data.limits).toContain(MINOR_NOTE);
-    // Without a current location the answer says which clock today was read on, as get_personal_day does.
-    expect(home.data.limits).toContain('Today is read on the birthplace clock (Europe/London) because no current location was given.');
-    expect(there.data.limits.some((entry: string) => entry.startsWith('Today is read'))).toBe(false);
+    for (const call of [{ ...args, currentZone: 'Asia/Bangkok' }, { ...args, currentZone: 'Pacific/Kiritimati' }, args]) {
+      const answer = await executeAiTool('get_astrocartography', call, late) as { ok: true; data: any };
+      expect(answer.data.limits, JSON.stringify(call)).toContain(MINOR_NOTE);
+      // The age no longer depends on a clock, so the answer names none.
+      expect(answer.data.limits.some((entry: string) => entry.startsWith('Today is read'))).toBe(false);
+    }
+    // From noon UTC on 10 Nov it is the 10th at UTC-12 too: the adult reading, wherever the person is.
+    const begun = { ...ON, now: () => new Date('2026-11-10T12:00:00Z') };
+    for (const call of [{ ...args, currentZone: 'Pacific/Pago_Pago' }, args]) {
+      const answer = await executeAiTool('get_astrocartography', call, begun) as { ok: true; data: any };
+      expect(answer.data.limits, JSON.stringify(call)).not.toContain(MINOR_NOTE);
+    }
   });
 
   it('keeps the under-18 reading until the birthday after leap day', async () => {

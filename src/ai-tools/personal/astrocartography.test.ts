@@ -5,10 +5,10 @@ import { skyEvents } from '@zodiacs/engine/sky';
 import { computeChart } from '../../lib/engine/full.js';
 import { meanObliquity } from '../../lib/engine/houses';
 import { ACG_BODIES, distanceKm, distanceToMeridianKm, eclipticToEquatorial, horizonLine, horizonLongitude, lineDistances, mcLongitude, ramcFromMc, wrapLongitude } from '../../lib/astrocartography/lines';
-import { LINE_MEANING } from '../../lib/astrocartography/meanings';
+import { LINE_MEANING, MINOR_NOTE } from '../../lib/astrocartography/meanings';
 import { executeAiTool } from '../tools';
 import { loadPlaceTable } from '../features/place-table';
-import { equatorialBodies, greenwichSiderealDegrees } from './astrocartography';
+import { astrocartographyTool, equatorialBodies, greenwichSiderealDegrees } from './astrocartography';
 import { forbiddenClaim } from './shared';
 
 const BIRTH = new Date('1990-05-03T07:30:00Z');
@@ -222,6 +222,59 @@ describe('get_astrocartography', () => {
     const branch = source.slice(source.indexOf('if (isPersonalTool(tool)) {'));
     expect(branch).toMatch(/childBirthDateRefusal\(tool, input, now, context\.hostZone\) \?\? childBirthDateRefusal\(tool, parsed\.data, now, context\.hostZone\)/u);
     expect(branch.indexOf('childBirthDateRefusal(')).toBeLessThan(branch.indexOf('definition.run('));
+  });
+
+  describe('reads the age as the /astrocartography/ page does, on the calendar date at UTC-12', () => {
+    // Born 10 November 2008 in Kiritimati (UTC+14), living in Los Angeles. At 2026-11-10T02:00Z it is already the
+    // 10th on the birthplace clock, but still the 9th at UTC-12 and in Los Angeles: the person is 17.
+    const BORN = { birthDate: '2008-11-10', time: '08:30', zone: 'Pacific/Kiritimati', cities: ['Los Angeles'] };
+    const LOVE = LINE_MEANING.Venus.DSC;
+    const at = (iso: string) => ({ ...ON, now: () => new Date(iso) });
+    async function venusNearby(args: Record<string, unknown>, iso: string) {
+      // Los Angeles sits on the Venus Descendant line, so the reading the place gets is that line's.
+      const distances = vi.spyOn(geometry, 'lineDistances').mockReturnValueOnce([
+        { body: 'Venus', angle: 'DSC', side: 'east', km: 40 },
+        { body: 'Sun', angle: 'MC', side: 'west', km: 900 },
+        { body: 'Moon', angle: 'IC', side: 'west', km: 1200 },
+      ]);
+      try {
+        const answer = await executeAiTool('get_astrocartography', args, at(iso)) as { ok: true; data: any };
+        expect(answer.ok).toBe(true);
+        return answer.data;
+      } finally {
+        distances.mockRestore();
+      }
+    }
+
+    it('gives no love-and-partnership reading to a 17-year-old whose birthplace clock has passed the 18th birthday', async () => {
+      for (const args of [BORN, { ...BORN, currentZone: 'Pacific/Kiritimati' }, { ...BORN, currentZone: 'America/Los_Angeles' }]) {
+        const data = await venusNearby(args, '2026-11-10T02:00:00Z');
+        const text = JSON.stringify(data);
+        expect(text, JSON.stringify(args)).not.toContain(LOVE);
+        expect(text).not.toMatch(/\b(?:love|romance|partner(?:ship)?s?)\b/iu);
+        expect(data.limits).toContain(MINOR_NOTE);
+        expect(data.readings.DSC).toBe('Descendant lines (setting).');
+        expect(data.cities[0].closest[0]).toMatchObject({ planet: 'Venus', angle: 'DSC' });
+      }
+      // Still 17 one second before the 18th birthday begins at UTC-12.
+      expect(JSON.stringify(await venusNearby(BORN, '2026-11-10T11:59:59Z'))).not.toContain(LOVE);
+    });
+
+    it('gives the adult reading once the 18th birthday has begun everywhere', async () => {
+      const data = await venusNearby(BORN, '2026-11-10T12:00:00Z');
+      expect(data.cities[0].summary).toContain(LOVE);
+      expect(data.limits).not.toContain(MINOR_NOTE);
+      // No line about which clock "today" was read on: the age is read on the same day everywhere.
+      expect(data.limits.join(' ')).not.toMatch(/Today is read/u);
+    });
+
+    it('still refuses an unknown current zone with the field named', async () => {
+      expect(await executeAiTool('get_astrocartography', { ...BORN, currentZone: 'Mars/Olympus_Mons' }, at('2026-11-10T12:00:00Z'))).toMatchObject({ ok: false, error: { message: expect.stringContaining('currentZone') } });
+    });
+
+    it('is marked clock dependent, since a repeat call across the 18th birthday changes the reading', () => {
+      expect(astrocartographyTool.clockDependent).toBe(true);
+    });
   });
 
   it('is not offered with the switch off', async () => {

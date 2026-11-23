@@ -14,12 +14,12 @@
 import { z } from 'zod';
 import { equatorialMoment } from '../../lib/astrocartography/positions';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, horizonLongitude, lineDistances, mcLongitude, strengthOf, wrapLongitude, type EquatorialBody } from '../../lib/astrocartography/lines';
-import { ACG_CONFIDENCE, ACG_CONFIDENCE_TEXT, ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, farPlaceSummary, isUnder18, lineMeaning, lineSentence, roundedDistanceKm } from '../../lib/astrocartography/meanings';
+import { ACG_CONFIDENCE, ACG_CONFIDENCE_TEXT, ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, farPlaceSummary, lineMeaning, lineSentence, roundedDistanceKm, under18At } from '../../lib/astrocartography/meanings';
 import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
 import { findBirthplace } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
 import { softenMinor, MINOR_NOTE } from '../features/reading-guards';
-import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, zoneField, type PersonalToolContext } from './shared';
+import { birthFields, castNatal, definePersonalTool, refineBirth, zoneField, type PersonalToolContext } from './shared';
 
 export const ACG_MAX_CITIES = 5;
 /** Latitudes the rising and setting lines are listed at in the answer: every 5 degrees from 75 south to 75 north. */
@@ -113,9 +113,11 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
   const utc = natal.birthUtc;
   const bodies = equatorialBodies(utc);
   const gast = greenwichSiderealDegrees(utc);
-  // Today on the person's clock, as get_personal_day reads it, so an 18th birthday falls on the same day in both.
-  const { zone: todayZone, note: todayNote } = await currentClock(args.currentZone, args.zone, context as PersonalToolContext);
-  const under18 = isUnder18(args.birthDate, dateOn(context.now, todayZone));
+  // A current zone named is still checked, so an unknown name is refused with the field named.
+  if (args.currentZone) await context.resolveZone(args.currentZone, '/currentZone');
+  // The age is read as the /astrocartography/ page reads it: on the calendar date at UTC-12, the earliest anywhere,
+  // so nobody gets the love and attraction readings before their 18th birthday has begun everywhere.
+  const under18 = under18At(args.birthDate, context.now);
   // Under 18 the lines read as love or attraction take their own readings (lineMeaning); softenMinor covers the rest.
   const guard = (text: string) => (under18 ? softenMinor(text) : text);
   const lines = bodies.map((entry) => {
@@ -130,8 +132,6 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
   const cities: AstrocartographyData['cities'] = [];
   const unmatched: string[] = [];
   const limits: string[] = [
-    // Which clock "today" (and so the age) was read on, when it is not where the person is now.
-    ...(todayNote ? [todayNote] : []),
     'Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.',
     `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`,
   ];
@@ -194,7 +194,8 @@ export const astrocartographyTool = definePersonalTool({
   description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
-  clockDependent: false,
+  // The readings change on the eighteenth birthday, so a repeat call can differ as the server's clock moves.
+  clockDependent: true,
   example: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', latitude: 51.51, longitude: -0.13, cities: ['Lisbon', 'New York', 'Tokyo'] },
   run: (args, context) => getAstrocartography(args, context),
 });

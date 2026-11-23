@@ -79,7 +79,7 @@ import { figureYearScore } from './year-score-figure.js';
 import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
 import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
 import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
-import { ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, ASTROCARTOGRAPHY_SHARE_KEYS, ASTROCARTOGRAPHY_SHARE_PATH, ASTROCARTOGRAPHY_SHARE_STORY_PATH, astrocartographyQuery, parseAstrocartographyShare, type AstrocartographyShare } from '../lib/astrocartography/share.js';
+import { ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, ASTROCARTOGRAPHY_SHARE_KEYS, ASTROCARTOGRAPHY_SHARE_PATH, ASTROCARTOGRAPHY_SHARE_STORY_PATH, astrocartographyCleanQuery, astrocartographyQuery, parseAstrocartographyShare, type AstrocartographyShare } from '../lib/astrocartography/share.js';
 import { ACG_CONFIDENCE_TEXT, ANGLE_LABEL, ANGLE_NAME, angleArea, lineMeaning } from '../lib/astrocartography/meanings.js';
 import type { AcgBody } from '../lib/astrocartography/lines.js';
 import {
@@ -2194,6 +2194,10 @@ function defaultAstrocartographyPage(origin: string): SharePage {
 export async function handleAstrocartographyLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
+  // A key the share does not use, or a repeated one, is cleared from the address before the page opens: the page
+  // has no script to do it, so the browser is sent to the share's own address (the line alone, or the plain page).
+  const clean = astrocartographyCleanQuery(url.searchParams);
+  if (url.searchParams.toString() !== clean) return seeOther(`${url.origin}${ASTROCARTOGRAPHY_SHARE_PATH}${clean ? `?${clean}` : ''}`);
   const share = parseAstrocartographyShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultAstrocartographyPage(url.origin)));
   const model = astrocartographyCardModel(share);
@@ -2213,7 +2217,11 @@ export async function handleAstrocartographyLinkRequest(request: Request): Promi
 
 // ── The deployed function's entry ────────────────────────────────────
 
-const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string; refused?: readonly string[] }>> = {
+/**
+ * `wholeQuery`: the page is handed the query as it arrived (without the route key), so it can clear keys it does
+ * not use from the address itself rather than have them skipped here and left in the browser's address bar.
+ */
+const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string; refused?: readonly string[]; wholeQuery?: true }>> = {
   'compatibility-link': { path: COMPATIBILITY_SHARE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityLinkRequest },
   'compatibility-image': { path: COMPATIBILITY_SHARE_IMAGE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityImageRequest },
   'occasion-link': { path: OCCASION_SHARE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionLinkRequest },
@@ -2253,7 +2261,7 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', refused: BIRTHDAY_REPORT_REFUSED_SHARE_KEYS },
   'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
   'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
-  'astrocartography-link': { path: ASTROCARTOGRAPHY_SHARE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyLinkRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED' },
+  'astrocartography-link': { path: ASTROCARTOGRAPHY_SHARE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyLinkRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED', wholeQuery: true },
   'astrocartography-image': { path: ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyImageRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED' },
   'astrocartography-story': { path: ASTROCARTOGRAPHY_SHARE_STORY_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyStoryRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED' },
 };
@@ -2302,6 +2310,11 @@ export async function handleResultShareNodeRequest(req: any, res: any, route: Re
       await writeNodeResponse(res, retired);
       return;
     }
+  }
+  if (target.wholeQuery) {
+    const raw = rawNodeQuery(query).toString();
+    await writeNodeResponse(res, await target.handle(new Request(`${requestOrigin(req)}${target.path}${raw ? `?${raw}` : ''}`, { method })));
+    return;
   }
   let params = new URLSearchParams();
   // A key the route refuses outright (the birthday report's old py), once or repeated, is checked before the
