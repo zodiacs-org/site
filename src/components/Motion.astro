@@ -38,17 +38,22 @@ import '../styles/motion.css';
     var jumped = location.hash.length > 1;
     var on = !still && !jumped && 'IntersectionObserver' in window;
     root.setAttribute('data-entrance', on ? 'on' : 'off');
-    // If the runtime below never starts, stop hiding anything.
+    // If the runtime below never starts, stop hiding anything. It flags the
+    // root once it has started; on any doubt, motion turns off.
     if (on) window.setTimeout(function () {
-      if (!window.zodiacsMotion) root.setAttribute('data-entrance', 'off');
+      try {
+        if (!root.hasAttribute('data-entrance-ready')) root.setAttribute('data-entrance', 'off');
+      } catch (err) {
+        root.setAttribute('data-entrance', 'off');
+      }
     }, 3000);
   })();
 </script>
 <script is:inline>
   (function () {
-    if (window.zodiacsMotion) return;
     var root = document.documentElement;
     try {
+      if (window.zodiacsMotion) return;
       var on = root.getAttribute('data-entrance') === 'on';
       // A group that comes into view together staggers by at most 4 steps.
       var MAX_STEP = 4;
@@ -108,6 +113,7 @@ import '../styles/motion.css';
           show(el, false);
           io.unobserve(el);
         }
+        settle();
       }, { threshold: 0 });
 
       // Keyboard readers never wait on an entrance: the first Tab shows
@@ -133,6 +139,7 @@ import '../styles/motion.css';
         if (io) io.disconnect();
         var marked = document.querySelectorAll('[data-enter]');
         for (var m = 0; m < marked.length; m++) show(marked[m], true);
+        listen(false);
       }
       function scan(scope, instant) {
         var marked = (scope || document).querySelectorAll('[data-enter]:not(.is-in)');
@@ -141,6 +148,7 @@ import '../styles/motion.css';
           if (io && !still && !instant) io.observe(marked[m]);
           else show(marked[m], true);
         }
+        if (!still && document.querySelector('[data-enter]:not(.is-in)')) listen(true);
       }
       function jumping() {
         return location.hash.length > 1;
@@ -174,13 +182,24 @@ import '../styles/motion.css';
             io.unobserve(waiting[w]);
           }
         }
+        settle();
       }
-      if (io) {
-        window.addEventListener('scroll', function () {
-          if (sweeping || still) return;
-          sweeping = true;
-          window.requestAnimationFrame(sweep);
-        }, { passive: true });
+      function onScroll() {
+        if (sweeping || still) return;
+        sweeping = true;
+        window.requestAnimationFrame(sweep);
+      }
+      // The scroll listener is attached while at least one mark waits, and
+      // removed once none does; scan() attaches it again for new marks.
+      var listening = false;
+      function listen(want) {
+        if (!io || want === listening) return;
+        listening = want;
+        if (want) window.addEventListener('scroll', onScroll, { passive: true });
+        else window.removeEventListener('scroll', onScroll);
+      }
+      function settle() {
+        if (!document.querySelector('[data-enter]:not(.is-in)')) listen(false);
       }
       window.zodiacsMotion = { scan: scan };
       scan();
@@ -194,6 +213,8 @@ import '../styles/motion.css';
           scan();
         }, { once: true });
       }
+      // Tells the switch above that the runtime has started.
+      root.setAttribute('data-entrance-ready', '');
     } catch (err) {
       // Never leave anything hidden.
       root.setAttribute('data-entrance', 'off');
