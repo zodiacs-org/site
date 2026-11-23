@@ -49,6 +49,23 @@ it('keeps the published connector reply while a separate route advertises and re
       } });
       expect(answer.content[0]).toMatchObject({ type: 'text', text: JSON.stringify(answer.structuredContent) });
     }
+
+    const numerologyOptions = {
+      ...options,
+      env: { ...options.env, ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1', ZODIACS_NUMEROLOGY_ENABLED: '1' },
+    };
+    [published, corrected] = await Promise.all([routes.publishedConnector(numerologyOptions), routes.de440Connector(numerologyOptions)]);
+    for (const client of clients) {
+      const list = await client.listTools();
+      expect(list.tools.map(tool => tool.name)).toContain('get_numerology');
+      const capabilities = await client.callTool({ name: 'get_capabilities', arguments: {} });
+      expect(capabilities.structuredContent).toMatchObject({ ok: true, data: {
+        limitations: expect.arrayContaining(['For a numerology reading, use get_numerology, not explain_astrology.']),
+      } });
+      const reading = await client.callTool({ name: 'get_numerology', arguments: { birthDate: '1990-01-01' } });
+      expect(reading.structuredContent).toMatchObject({ ok: true, data: { separateFromAstrology: expect.stringContaining('not astrology') } });
+      expect(JSON.stringify(reading.structuredContent)).not.toMatch(/reading confidence/iu);
+    }
   } finally {
     await Promise.all(clients.map(client => client.close()));
     server.closeAllConnections();
