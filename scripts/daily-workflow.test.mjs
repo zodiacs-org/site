@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -131,14 +132,14 @@ describe('daily publication operations', () => {
     expect(publisher.indexOf('all required checks passed')).toBeLessThan(publisher.indexOf('gh pr merge "$pr_url" --squash'));
     // A refused merge whose pull_request checks wait for approval says so.
     expect(publisher).toContain('select(.conclusion == "action_required")');
-    expect(publisher).toContain('SITE_PUBLISH_TOKEN');
+    expect(publisher).toContain('SITE_PUBLISH_APP_KEY');
     // Every copy of a required check must pass, and the merge is pinned to the head.
     expect(publisher).toContain('select(.status != "completed")');
     expect(publisher).toContain('--match-head-commit "$head_sha"');
     // The landing is handed to Site Publish (#1128, 2026-11-19), and falls back to
-    // the workflow token only when Site Publish stops at one of its two gates.
+    // the workflow token only when Site Publish stops at a gate or cannot get the App's token.
     expect(publisher).toContain('gh workflow run site-publish.yml --ref "$default"');
-    expect(publisher).toContain('"Check that the owner token is saved" or .name == "Check who asked"');
+    expect(publisher).toContain('"Check that the publishing key is saved" or .name == "Check who asked" or .name == "Get the publishing App token"');
     expect(publisher.indexOf('hand_off()')).toBeLessThan(publisher.indexOf('gh pr create'));
     // In land mode the branch is data: it must sit at exactly the handed-over commit.
     expect(publisher).toContain('if [ "$(git rev-parse FETCH_HEAD)" != "$head_sha" ]; then');
@@ -157,8 +158,17 @@ describe('daily publication operations', () => {
     expect(sitePublish).toContain('ref: ${{ github.event.repository.default_branch }}');
     expect(sitePublish).toContain('persist-credentials: false');
     expect(sitePublish).toContain('[[ "$BRANCH" =~ ^publish/[a-z0-9-]+$ ]]');
-    // The token appears in exactly two places: the presence check and the landing step.
+    // Each key appears in exactly two places: the presence check and the step that uses it.
     expect(sitePublish.split('secrets.SITE_PUBLISH_TOKEN').length - 1).toBe(2);
+    expect(sitePublish.split('secrets.SITE_PUBLISH_APP_KEY').length - 1).toBe(2);
+    expect(sitePublish).toContain('GH_TOKEN: ${{ steps.app.outputs.token || secrets.SITE_PUBLISH_TOKEN }}');
+    // The App's token is minted after the trusted checkout, by trusted code, with no third-party action.
+    expect(sitePublish.indexOf('persist-credentials: false')).toBeLessThan(sitePublish.indexOf('run: bash scripts/github-app-token.sh'));
+    const appToken = await read('scripts/github-app-token.sh');
+    expect(appToken).toContain('permissions: {contents: "write", pull_requests: "write", actions: "write", checks: "read"}');
+    expect(appToken).toContain('repositories: [$repo]');
+    expect(appToken).toContain('echo "::add-mask::$token"');
+    expect(appToken).toContain("trap 'rm -f \"$key\"' EXIT");
     // No input is expanded straight into a shell line.
     for (const line of sitePublish.split('\n').filter((l) => /^\s*(run:|\[|if \[)/u.test(l))) {
       expect(line).not.toContain('${{');
@@ -166,6 +176,16 @@ describe('daily publication operations', () => {
     expect(publisher).toContain('Allow GitHub Actions to create and approve pull requests');
     expect(publisher).not.toContain('--admin');
     expect(publisher).not.toContain('git rebase');
+  });
+
+  it('keeps every publishing shell script parseable by bash', () => {
+    // String checks alone let a quoting slip through (#1212 review): bash
+    // must parse each script, or every publication stops before it starts.
+    for (const script of ['scripts/publish-through-pr.sh', 'scripts/github-app-token.sh']) {
+      const parsed = spawnSync('bash', ['-n', script], { cwd: root, encoding: 'utf8' });
+      expect(parsed.stderr, script).toBe('');
+      expect(parsed.status, script).toBe(0);
+    }
   });
 
   it('declares the daily and Monday-weekly publication boundary at 00:00 UTC', async () => {
