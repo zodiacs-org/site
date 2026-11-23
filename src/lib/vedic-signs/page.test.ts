@@ -1,14 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { vedicFromTropical } from '../../lib/vedic-signs/sidereal';
-import type { TropicalMoment } from '../../lib/vedic-signs/tropical';
-import { computeVedicFromForm, prepareLocalTime, type VedicFormInput } from './compute';
+import { vedicFromTropical } from './sidereal';
+import type { TropicalMoment } from './tropical';
+import { computeVedicFromForm, prepareLocalTime, type VedicFormInput } from '../../islands/vedic-signs/compute';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { vedicSigns } from '../../ai-tools/personal/vedic-signs';
 import { birthDayEnds } from '../../ai-tools/personal/shared';
 
 /**
  * The page's worker, run in this thread: the same sidereal half
- * (./vedic.worker.ts posts vedicFromTropical's reading back), so the test
+ * (src/islands/vedic-signs/vedic.worker.ts posts vedicFromTropical's reading back), so the test
  * reads the instants the page hands it.
  */
 const posted: { ends: { utc: string }[] | null }[] = [];

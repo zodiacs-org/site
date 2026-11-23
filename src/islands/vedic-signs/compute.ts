@@ -12,7 +12,14 @@ import type { TropicalMoment } from '../../lib/vedic-signs/tropical';
 import type { VedicAyanamsa } from '../../lib/vedic-signs/wording';
 import { localDaySpan, readsOnDate } from '../../lib/time/local-day';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
-import { roundCoordinate } from '../../ai-tools/plain-text';
+
+/**
+ * Two decimals, as every tool rounds a place it is given
+ * (src/ai-tools/plain-text.ts, roundCoordinate). Restated here because no
+ * browser module imports src/ai-tools/ (the compute API privacy test);
+ * src/lib/vedic-signs/page.test.ts holds the page to the tool's answer.
+ */
+const roundCoordinate = (value: number): number => Math.round(value * 100) / 100;
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
 
