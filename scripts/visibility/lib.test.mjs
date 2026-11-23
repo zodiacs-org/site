@@ -97,11 +97,22 @@ describe('visibility lib', () => {
     expect(src).not.toContain('OPENAI_API_KEY');
     expect(src).toContain("args.providers || 'gemini,anthropic,xai'");
     const { spawnSync } = await import('node:child_process');
-    const env = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/_API_KEY$|_AUTH_TOKEN$|^ANTHROPIC_PROFILE$/.test(k)));
-    const run = spawnSync(process.execPath, [new URL('./ai-answers.mjs', import.meta.url).pathname, '--providers', 'openai', '--dry-run'], { env, encoding: 'utf8' });
-    expect(run.status).toBe(1);
-    expect(run.stderr).toContain('The OpenAI API is not used: the owner has not approved OpenAI API spend (ZOD-207).');
-    expect(run.stdout).toBe('');
+    const { fileURLToPath } = await import('node:url');
+    const script = fileURLToPath(new URL('./ai-answers.mjs', import.meta.url));
+    // A missing questions file: the refusal must come before the questions are read.
+    const missing = fileURLToPath(new URL('./no-such-questions.json', import.meta.url));
+    // An explicit minimal environment: no keys, no NODE_OPTIONS.
+    const env = { PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '' };
+    for (const providers of [['--providers', 'openai'], ['--providers=openai'], ['--providers', 'gemini, openai'], ['--providers', ' OpenAI ']]) {
+      const run = spawnSync(process.execPath, [script, ...providers, '--questions', missing, '--dry-run'], { env, encoding: 'utf8' });
+      expect(run.status, providers.join(' ')).toBe(1);
+      expect(run.stderr).toContain('The OpenAI API is not used: the owner has not approved OpenAI API spend (ZOD-207).');
+      expect(run.stdout).toBe('');
+    }
+    const unknown = spawnSync(process.execPath, [script, '--providers', 'gemini,mystery', '--questions', missing, '--dry-run'], { env, encoding: 'utf8' });
+    expect(unknown.status).toBe(1);
+    expect(unknown.stderr).toContain('Unknown or missing provider: mystery');
+    expect(unknown.stdout).toBe('');
   });
 });
 

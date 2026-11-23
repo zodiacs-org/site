@@ -7,11 +7,12 @@ calls in its first turn. Nothing is scored here; see score.py.
 --tools is a folder with tools-list.json and initialize.json (a saved tools/list and initialize result).
 --forward sends each call the model makes on to the live connector, read-only, and records how it answered.
 openai: no longer runs. The owner has not approved OpenAI API spend (ZOD-207); the OpenAI runs recorded in runs/
-are kept as evidence, and `--provider openai` stops before any request is made.
+are kept as evidence, and `--provider openai` stops (exit 1) before any request is made.
 claude: `claude -p` (Claude Code, headless) with no built-in tools, its system prompt replaced, and the tools served
 by tools/stub-mcp.mjs over MCP. The first turn only (--max-turns 1).
 The system prompt is one line that sets the scene, the date, and the connector's own instructions.
-Claude uses the machine's signed-in Claude Code. No key is read or written here.
+Claude uses the machine's signed-in Claude Code. No key is read or written here. Its environment drops
+ANTHROPIC_API_KEY and every OPENAI_* variable, and an ANTHROPIC_BASE_URL on an openai.com host stops the run.
 """
 import argparse, json, os, subprocess, sys, tempfile, time, urllib.request, urllib.error
 from concurrent.futures import ThreadPoolExecutor
@@ -58,7 +59,7 @@ def ask_claude(args, tools_file, system, question):
         command = ['claude', '-p', question['question'], '--model', args.model, '--system-prompt', system, '--mcp-config', json.dumps(config),
                    '--strict-mcp-config', '--tools', '', '--max-turns', '1', '--output-format', 'stream-json', '--verbose',
                    '--permission-mode', 'bypassPermissions', '--setting-sources', '']
-        environment = {k: v for k, v in os.environ.items() if k != 'ANTHROPIC_API_KEY'}
+        environment = {k: v for k, v in os.environ.items() if k != 'ANTHROPIC_API_KEY' and not k.startswith('OPENAI_')}
         environment['ENABLE_TOOL_SEARCH'] = 'false'
         done = subprocess.run(command, cwd=work, env=environment, capture_output=True, text=True, timeout=300)
         out = done.stdout
@@ -83,7 +84,21 @@ def ask_claude(args, tools_file, system, question):
             for call, record in zip(calls, live): call['live'] = record.get('live')
         return {'modelReported': model, 'toolsOffered': offered, 'otherTools': other, 'calls': calls, 'text': text[:600]}
 
+def refuse_openai(argv):
+    # Runs before argparse, so `--provider openai` exits 1 whatever else is missing.
+    for i, arg in enumerate(argv):
+        value = arg.split('=', 1)[1] if arg.startswith('--provider=') else argv[i + 1] if arg == '--provider' and i + 1 < len(argv) else None
+        if value is not None and 'openai' in value.strip().lower():
+            print(OPENAI_REFUSAL, file=sys.stderr); sys.exit(1)
+
+def refuse_openai_endpoint():
+    # The claude path never sends a request to an OpenAI host.
+    base = os.environ.get('ANTHROPIC_BASE_URL', '')
+    if 'openai.com' in base.lower():
+        print('ANTHROPIC_BASE_URL points at an OpenAI host; unset it. ' + OPENAI_REFUSAL, file=sys.stderr); sys.exit(1)
+
 def main():
+    refuse_openai(sys.argv[1:])
     parser = argparse.ArgumentParser()
     parser.add_argument('--provider', required=True, choices=['openai', 'claude'])
     parser.add_argument('--model', required=True)
@@ -95,7 +110,8 @@ def main():
     parser.add_argument('--only', default='')
     parser.add_argument('--without-instructions', action='store_true', help='leave the connector instructions out of the system prompt')
     args = parser.parse_args()
-    if args.provider == 'openai': sys.exit(OPENAI_REFUSAL)
+    if args.provider == 'openai': print(OPENAI_REFUSAL, file=sys.stderr); sys.exit(1)
+    refuse_openai_endpoint()
     tools_file = os.path.abspath(os.path.join(args.tools, 'tools-list.json'))
     tools = json.load(open(tools_file))['tools']
     system = system_prompt(json.load(open(os.path.join(args.tools, 'initialize.json')))['instructions'])

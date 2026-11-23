@@ -4,10 +4,12 @@
 // answer, its cited sources and whether zodiacs.org is named or cited.
 //
 //   node scripts/visibility/ai-answers.mjs --label 2026-11-08 [--runs 3]
-//        [--providers gemini,anthropic,xai] [--only q01,q02] [--dry-run]
+//        [--providers gemini,anthropic,xai] [--only q01,q02] [--questions file] [--dry-run]
 //
 // The OpenAI API is not used: the owner has not approved OpenAI API spend
-// (ZOD-207). `--providers openai` stops before any request, with no override.
+// (ZOD-207). Any provider naming openai stops before any request, with no
+// override; so does an unknown provider. Claude is always called at
+// api.anthropic.com, whatever ANTHROPIC_BASE_URL or a profile says.
 //
 // Keys come from the shell only: GEMINI_API_KEY, ANTHROPIC_API_KEY (or an
 // `ant auth login` profile), XAI_API_KEY. A provider without a key is skipped
@@ -24,31 +26,48 @@
 // The questions carry no personal data and the prompts carry no birth details.
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
-import Anthropic from '@anthropic-ai/sdk';
 import { loadQuestions, parseAnthropicResponse, parseGeminiResponse, parseResponsesApi, planAnswers, scoreAnswer, VIS_DIR } from './lib.mjs';
 
-const args = Object.fromEntries(
-  process.argv.slice(2).reduce((acc, a, i, all) => {
-    if (a.startsWith('--')) acc.push([a.slice(2), all[i + 1] && !all[i + 1].startsWith('--') ? all[i + 1] : true]);
-    return acc;
-  }, []),
-);
-const label = args.label || new Date().toISOString().slice(0, 10);
-const runs = Number(args.runs || 1);
-const wanted = String(args.providers || 'gemini,anthropic,xai').split(',');
-if (wanted.includes('openai')) {
+// Accepts `--name value` and `--name=value`.
+const args = {};
+for (let i = 2; i < process.argv.length; i++) {
+  const a = process.argv[i];
+  if (!a.startsWith('--')) continue;
+  const eq = a.indexOf('=');
+  if (eq > 2) args[a.slice(2, eq)] = a.slice(eq + 1);
+  else args[a.slice(2)] = process.argv[i + 1] !== undefined && !process.argv[i + 1].startsWith('--') ? process.argv[++i] : true;
+}
+const KNOWN = ['gemini', 'anthropic', 'xai'];
+const wanted = String(args.providers === true || args.providers === undefined ? KNOWN.join(',') : args.providers)
+  .split(',').map((p) => p.trim().toLowerCase()).filter(Boolean);
+// This check runs before the questions are read or any request is made, --dry-run included.
+if (wanted.some((p) => p.includes('openai'))) {
   console.error('The OpenAI API is not used: the owner has not approved OpenAI API spend (ZOD-207). Use gemini, anthropic or xai instead.');
   process.exit(1);
 }
+const unknown = wanted.filter((p) => !KNOWN.includes(p));
+if (unknown.length || !wanted.length) {
+  console.error(`Unknown or missing provider: ${unknown.join(', ') || '(none)'}. Use gemini, anthropic or xai.`);
+  process.exit(1);
+}
+const label = args.label || new Date().toISOString().slice(0, 10);
+const runs = Number(args.runs || 1);
 const only = args.only ? new Set(String(args.only).split(',')) : null;
-const questions = loadQuestions().filter((q) => !only || only.has(q.id));
+const questions = loadQuestions(typeof args.questions === 'string' ? args.questions : undefined).filter((q) => !only || only.has(q.id));
 const outDir = path.join(VIS_DIR, 'baseline', label, 'ai');
 
 // Answers should look like what a person in the United States sees.
 const LOCATION = { country: 'US' };
 
+// Fixed endpoints only: no environment value can point a provider at another
+// host, and redirects are refused.
+const HOSTS = new Set(['generativelanguage.googleapis.com', 'api.x.ai']);
+const ANTHROPIC_BASE_URL = 'https://api.anthropic.com';
+
 async function postJson(url, headers, body) {
-  const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
+  const { protocol, hostname } = new URL(url);
+  if (protocol !== 'https:' || !HOSTS.has(hostname)) throw new Error(`Refusing to call ${hostname}`);
+  const res = await fetch(url, { method: 'POST', redirect: 'error', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
   const text = await res.text();
   if (!res.ok) throw new Error(`${res.status} ${text.slice(0, 300)}`);
   return JSON.parse(text);
@@ -59,7 +78,7 @@ const providers = {
     ready: () => !!process.env.GEMINI_API_KEY,
     async ask(question) {
       const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-      const json = await postJson(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, { 'x-goog-api-key': process.env.GEMINI_API_KEY }, {
+      const json = await postJson(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, { 'x-goog-api-key': process.env.GEMINI_API_KEY }, {
         contents: [{ role: 'user', parts: [{ text: question }] }],
         tools: [{ google_search: {} }],
       });
@@ -71,7 +90,11 @@ const providers = {
     ready: () => !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN || process.env.ANTHROPIC_PROFILE),
     client: null,
     async ask(question) {
-      this.client ||= new Anthropic();
+      // An explicit baseURL: ANTHROPIC_BASE_URL and a profile's base_url are ignored.
+      if (!this.client) {
+        const { default: Anthropic } = await import('@anthropic-ai/sdk');
+        this.client = new Anthropic({ baseURL: ANTHROPIC_BASE_URL });
+      }
       const messages = [{ role: 'user', content: question }];
       let response;
       // Server-side web search can pause a long turn; send it back to continue.
