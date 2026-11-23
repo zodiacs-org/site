@@ -4,7 +4,8 @@ import { scanTransitContacts, type TransitContact } from '../../engine/transit-s
 import type { Chart } from '../../engine/types';
 import { t } from '../../i18n';
 import { wrappedTargets, wrappedWindow } from '../../return-visits/wrapped';
-import { calculateEntry, type ChartEntry } from '../../sharing/chart-entry';
+import { calculateEntry, entryRefusalMessage, type ChartEntry } from '../../sharing/chart-entry';
+import { birthDateRefusal, birthDateRefusalText } from '../../birth-date-policy';
 import { personNatal } from './chart';
 import { position } from './format';
 import { BIRTHS, city } from '../../../../tests/webmcp/calculator-fixtures';
@@ -13,6 +14,11 @@ import { islandFunction, ref } from '../../../../tests/webmcp/island-code';
 import { chartPdfResult, yearWrappedResult } from './return-visits';
 
 const PEOPLE = BIRTHS.filter(([label]) => label !== 'an untimed date the clock skipped');
+
+const COMPUTABLE = PEOPLE.filter(([label]) => label !== 'the last day');
+const LAST_DAY = PEOPLE.find(([label]) => label === 'the last day')![1];
+const FUTURE = birthDateRefusalText('future_birth_date');
+const policy = { birthDateRefusal, birthDateRefusalText, entryRefusalMessage };
 
 const entry = (birth: Birth): ChartEntry => ({
   id: 3, name: '', date: birth.date, time: birth.time ?? '', timeKnown: birth.time !== null, city: city(birth), calendar: 'gregorian',
@@ -53,12 +59,13 @@ async function page(kind: 'kit' | 'wrapped', birth: Birth, year: number): Promis
     },
     setError: (value: string) => { state.error = value; },
     s: (_locale: string, key: string) => key, calculationError: (_e: unknown, _l: string, fallback: string) => fallback,
+    ...policy,
   }, { preventDefault() {} });
   return state;
 }
 
 describe('ReturnPersonal on /astrologer-kit/ (Chart PDF)', () => {
-  it.each(PEOPLE)('returns the chart the PDF prints: %s', async (_label, birth) => {
+  it.each(COMPUTABLE)('returns the chart the PDF prints: %s', async (_label, birth) => {
     const shown = await page('kit', birth, 2026);
     expect(shown.error).toBe('');
     expect(shown.pdfChart).not.toBeNull();
@@ -73,10 +80,16 @@ describe('ReturnPersonal on /astrologer-kit/ (Chart PDF)', () => {
     expect(result.computedUtc).toBe(printed.input.utc.toISOString());
     if (birth.time === null) expect(result.aspects.some((aspect) => aspect.a === 'Moon' || aspect.b === 'Moon')).toBe(false);
   });
+
+  it('refuses a birth date that has not happened yet', async () => {
+    const shown = await page('kit', LAST_DAY, 2026);
+    expect(shown.error).toBe(FUTURE);
+    expect(shown.pdfChart).toBeNull();
+  });
 });
 
 describe('ReturnPersonal on /your-sky-wrapped/', () => {
-  it.each(PEOPLE.flatMap(([label, birth]) => [2022, 2026].map((year) => [`${label}, ${year}`, birth, year] as [string, Birth, number])))(
+  it.each(COMPUTABLE.flatMap(([label, birth]) => [2022, 2026].map((year) => [`${label}, ${year}`, birth, year] as [string, Birth, number])))(
     'finds the year\'s contacts the page lists: %s',
     async (_label, birth, year) => {
       const shown = await page('wrapped', birth, year);
@@ -92,7 +105,13 @@ describe('ReturnPersonal on /your-sky-wrapped/', () => {
   );
 
   it('includes years with contacts', async () => {
-    const counts = await Promise.all(PEOPLE.map(([, birth]) => yearWrappedResult(birth, 2026, new Date()).then((result) => result.contacts.length)));
+    const counts = await Promise.all(COMPUTABLE.map(([, birth]) => yearWrappedResult(birth, 2026, new Date()).then((result) => result.contacts.length)));
     expect(counts.some((count) => count > 0)).toBe(true);
+  });
+
+  it('refuses a birth date that has not happened yet', async () => {
+    const shown = await page('wrapped', LAST_DAY, 2026);
+    expect(shown.error).toBe(FUTURE);
+    expect(shown.contacts).toBeNull();
   });
 });

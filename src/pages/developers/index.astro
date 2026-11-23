@@ -1,4 +1,5 @@
 ---
+import { ACCURACY_PATH, accuracyPublished } from '../../accuracy/publication.mjs';
 import conformance from '../../data/conformance/summary.json';
 import conventions from '../../data/conventions/registry.json';
 import Base from '../../layouts/Base.astro';
@@ -146,8 +147,12 @@ const jsonLd = [
         <li>
           <p class="dev-status">Available · suite {conformance.suiteVersion}</p>
           <h2><a href="/developers/conformance/">Check an engine against independent references</a></h2>
-          <p>Test vectors for positions, houses and angles, time zones, time scales and calendars, each with an independent arbiter and a stated tolerance, with the results for @zodiacs/engine and for Swiss Ephemeris. Any engine can be run against them through a small adapter.</p>
+          <p>Test vectors for positions, houses and angles, time zones, time scales, calendars and event times, each with an independent arbiter and a stated tolerance, with results for @zodiacs/engine, Swiss Ephemeris, Skyfield, astronomia and PyEphem. Any engine can be run against them through a small adapter.</p>
         </li>
+        {accuracyPublished && <li>
+          <h2><a href={ACCURACY_PATH}>See the latest NASA accuracy receipt</a></h2>
+          <p>Compare our positions with NASA’s and download the original responses.</p>
+        </li>}
         <li>
           <p class="dev-status">Available · registry {conventions.version}</p>
           <h2><a href="/developers/conventions/">Look up what a receipt's ids mean</a></h2>
@@ -269,10 +274,9 @@ const jsonLd = [
     <h2 class="dev-h2">The contract</h2>
     <div class="prose">
       <p>
-        Positions are apparent geocentric tropical longitudes from the same
-        engine the calculators use, tested against NASA JPL Horizons reference
-        data at two dates, 1907 and 2020, where the largest difference is 14.8
-        arcseconds. Today's positions are a single snapshot taken at 12:00 UTC
+        Positions are apparent geocentric tropical longitudes. In the browser
+        engine's comparison with NASA JPL Horizons at two dates, 1907 and 2020,
+        the largest difference is 14.8 arcseconds. Today's positions are a single snapshot taken at 12:00 UTC
         (<code>snapshotAt</code>). Publication is scheduled from 00:00 UTC;
         jobs, deployment, or caches can delay availability. All instants are UTC in ISO 8601, and signs
         are lowercase slugs with an English <code>signName</code> beside them.
@@ -331,8 +335,13 @@ const jsonLd = [
         <a href="/widgets/">embeddable widgets</a> render tonight's moon,
         today's sky, and a mini birth chart inside a sandboxed iframe. Dated
         editorial is available as RSS:{' '}
-        <a href="/feeds/horoscopes.xml">daily horoscopes</a> and{' '}
-        <a href="/feeds/daily-sky.xml">the daily sky</a>. The site-wide guide
+        <a href="/feeds/horoscopes.xml" data-hook-event="rss_subscribe" data-hook-feed="horoscopes" data-hook-placement="developers">daily horoscopes</a> and{' '}
+        <a href="/feeds/daily-sky.xml" data-hook-event="rss_subscribe" data-hook-feed="daily_sky" data-hook-placement="developers">the daily sky</a>.
+        Every published sky event (new and full Moons, eclipses, stations, slow planet sign changes and exact alignments
+        between slow planets) is a feed too: <a href="/feeds/events.xml" data-hook-event="rss_subscribe" data-hook-feed="events" data-hook-placement="developers">RSS</a>,{' '}
+        <a href="/feeds/events.json">JSON Feed</a> with each event’s UTC instant, signs and page under <code>_zodiacs</code>,
+        one feed per sign at <code>{'/feeds/events/{sign}.xml'}</code> and <code>.json</code>, and a{' '}
+        <a href="/sky-calendar/">calendar to subscribe to</a>. The site-wide guide
         for agents is <a href="/llms.txt">llms.txt</a>.
       </p>
     </div>

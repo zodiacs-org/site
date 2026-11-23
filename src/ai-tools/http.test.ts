@@ -2,7 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_WIDGET_URIS, LEGACY_STUDIO_URIS, LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, LEGACY_OCCASIONS_URIS, OCCASION_TOOL_NAMES, READINGS_URI, COVERAGE_TOOL_NAMES } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_WIDGET_URIS, LEGACY_STUDIO_URIS, LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, LEGACY_OCCASIONS_URIS, LEGACY_READINGS_URI, OCCASION_TOOL_NAMES, READINGS_URI, COVERAGE_TOOL_NAMES } from './contracts';
 import committedWindow from '../data/horoscope-window.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
@@ -17,7 +17,7 @@ let occasionsSwitch: string | undefined;
 let coverageSwitch: string | undefined;
 const env = { get ZODIACS_MCP_ENABLED() { return enabled; }, get ZODIACS_OCCASIONS_ENABLED() { return occasionsSwitch; }, get ZODIACS_COVERAGE_ENABLED() { return coverageSwitch; } };
 beforeAll(async () => {
-  server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); if (kind === 'request' && atomicRequest === 'throw') throw new Error('budget unreachable'); return (kind === 'request' ? atomicRequest : atomicEvent) as 'allowed' | 'limited' | 'unavailable'; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
+  server = createServer((req, res) => { void createAiNodeHandler({ env, de440: true, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); if (kind === 'request' && atomicRequest === 'throw') throw new Error('budget unreachable'); return (kind === 'request' ? atomicRequest : atomicEvent) as 'allowed' | 'limited' | 'unavailable'; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   base = `http://127.0.0.1:${(server.address() as { port: number }).port}/mcp`;
   allowedHost = new URL(base).host;
@@ -131,8 +131,9 @@ describe('stateless MCP HTTP boundary', () => {
       const horoscopes = tools.tools.find(tool => tool.name === 'get_horoscope')!;
       expect(horoscopes.title).toBe('Horoscopes');
       // Hosts choose a tool from this transport description, before any reading exists.
-      expect(horoscopes.description).toMatch(/Do not call this tool for stock picks, investment advice, financial forecasts, health predictions or guaranteed outcomes/u);
-      expect(horoscopes.description).toMatch(/even when the request mentions a horoscope[.] Decline those requests without a tool call; do not offer astrology-themed investment suggestions/u);
+      // Its limits are stated as facts about the tool (ZOD-58), not as orders to the assistant.
+      expect(horoscopes.description).toMatch(/Limits: no betting tips, sports picks, stock picks, investment timing, financial forecasts, election forecasts, health predictions or guaranteed outcomes/u);
+      expect(horoscopes.description).toMatch(/including when such a request mentions a horoscope[.]/u);
       expect((horoscopes._meta?.ui as { resourceUri?: string } | undefined)?.resourceUri).toBe(HOROSCOPE_URI);
       expect(horoscopes._meta?.['openai/widgetAccessible']).toBe(true);
       expect(horoscopes._meta?.['openai/outputTemplate']).toBe(HOROSCOPE_URI);
@@ -288,13 +289,14 @@ describe('stateless MCP HTTP boundary', () => {
   });
   it('lists and reads the readings panel only while coverage is on, inline and without a sidebar launch', async () => {
     const resources = async () => (await readMessage(await post(rpc('resources/list')))).result.resources.map((resource: { uri: string }) => resource.uri);
-    expect(READINGS_URI).toBe('ui://zodiacs/readings-v3.html');
+    expect(READINGS_URI).toBe('ui://zodiacs/readings-v5.html');
     occasionsSwitch = '1';
     try {
       expect(await resources()).not.toContain(READINGS_URI);
       coverageSwitch = '1';
       const listed = await resources();
       expect(listed).toContain(READINGS_URI);
+      expect(listed).toContain(LEGACY_READINGS_URI);
       // The retired staging addresses are never served.
       for (const retired of ['ui://zodiacs/readings-v1.html', 'ui://zodiacs/readings-v2.html']) expect(listed).not.toContain(retired);
       const tools = (await readMessage(await post(rpc('tools/list')))).result.tools;

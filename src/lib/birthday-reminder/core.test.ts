@@ -43,7 +43,7 @@ describe('the birthday send', () => {
   });
   it('words both emails plainly, with no dashes and no birth details', () => {
     const texts = [confirmationEmail('https://zodiacs.org/api/email/birthday-reminder?confirm=t', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u'), birthdayEmail('https://zodiacs.org', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u', 'Zodiacs.org, Test Address')];
-    for (const email of texts) expect(`${email.subject} ${email.text}`).not.toMatch(/[–—‒―]/u);
+    for (const email of texts) expect(`${email.subject} ${email.text}`).not.toMatch(/[\u2013\u2014‒―]/u);
     expect(texts[1].text).toContain('https://zodiacs.org/year-score/');
     expect(texts[1].text).toContain('Stop these birthday emails');
   });
@@ -52,7 +52,7 @@ describe('the birthday send', () => {
     expect(text.split('\n').slice(-2)).toEqual(['', 'Zodiacs.org, Test Address']);
     expect(text).toContain('Your solar return falls on or within a day of your birthday: the Sun comes back to where it was when you were born, and a new year of your chart begins.');
     expect(text).not.toContain('has come round');
-    expect(text).not.toMatch(/[–—‒―]/u);
+    expect(text).not.toMatch(/[\u2013\u2014‒―]/u);
   });
   it('asks for yesterday’s birthdays too, so a skipped run is caught up the next day', () => {
     const key = (days: { month: number; day: number }[]) => days.map(({ month, day }) => `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`).sort();

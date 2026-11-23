@@ -15,6 +15,24 @@ FILES = {
     "zodiacs-developer": COMMON + ["package.json", "package-lock.json", ".mcp.json", "ENGINE-LICENSE", "ENGINE-NOTICE", "ENGINE-LICENSING"],
 }
 DIRS = {"zodiacs-sky": ["assets", "skills", ".codex-plugin", ".claude-plugin"], "zodiacs-developer": ["assets", "skills", "examples", "mcp", ".codex-plugin"]}
+DEVELOPER_COMPATIBILITY_FILES = ("mcp/server.mjs", "ENGINE-LICENSE", "ENGINE-NOTICE", "ENGINE-LICENSING", "NOTICE")
+
+
+def developer_compatibility(check):
+    receipt = json.loads((ROOT / "docs/platform/evidence/site-engine-1-1-0/connector-transition.json").read_text())["developer"]
+    archive = (ROOT / receipt["baselineArchive"]).read_bytes()
+    if hashlib.sha256(archive).hexdigest() != receipt["baselineArchiveSha256"]:
+        raise ValueError("The baseline developer archive has changed")
+    with zipfile.ZipFile(io.BytesIO(archive)) as bundle:
+        for member in DEVELOPER_COMPATIBILITY_FILES:
+            path = ROOT / "plugins/zodiacs-developer" / member
+            expected = bundle.read(member)
+            if check:
+                if path.read_bytes() != expected:
+                    raise ValueError(f"The developer compatibility file {member} has changed")
+            else:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(expected)
 
 
 def archive(name):
@@ -43,7 +61,11 @@ def archive(name):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--developer-compatibility", action="store_true")
     args = parser.parse_args()
+    developer_compatibility(args.check or not args.developer_compatibility)
+    if args.developer_compatibility:
+        return
     OUT.mkdir(parents=True, exist_ok=True)
     manifest = {"schema": "zodiacs.ai-review-packages.v1", "status": "Unpublished review candidates; bounded host evidence recorded, release gates pending", "packages": []}
     for name in FILES:

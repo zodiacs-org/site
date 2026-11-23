@@ -37,7 +37,7 @@ export function birthdayReminderStorageReady(env: Environment = process.env): bo
  * Ahead Score the email links to is on, and storage, sending and the token secret are configured.
  */
 export function birthdayReminderEnabled(env: Environment = process.env): boolean {
-  return environmentValue(env, BIRTHDAY_REMINDER_SWITCH) === '1'
+  return env[BIRTHDAY_REMINDER_SWITCH] === '1'
     && env[BIRTHDAY_REMINDER_PUBLIC_SWITCH] === '1'
     && env.PUBLIC_YEAR_SCORE_ENABLED === '1'
     && !!environmentValue(env, 'PUBLIC_SUPABASE_URL')

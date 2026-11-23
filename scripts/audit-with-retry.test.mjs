@@ -1,9 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { describe, expect, it, vi } from 'vitest';
-import { auditWithRetry, executeAudit, isRetryableEndpointError } from './audit-with-retry.mjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  auditWithRetry, executeAudit, isRetryableEndpointError,
+} from './audit-with-retry.mjs';
 
 vi.mock('node:child_process', () => ({ spawnSync: vi.fn() }));
+beforeEach(() => vi.mocked(spawnSync).mockReset());
 
 const diagnostic = 'npm error audit endpoint returned an error';
 const outage = {
@@ -169,5 +172,39 @@ describe('dependency advisory retry execution', () => {
     expect(workflow).toContain('run: |\n          node scripts/audit-with-retry.mjs --omit=dev\n          node scripts/audit-with-retry.mjs --audit-level=high');
     const advisoryStep = workflow.split('- name: Dependency advisories stay at zero')[1].split('- name:')[0];
     expect(advisoryStep).not.toMatch(/continue-on-error|\|\|\s*true|set\s+\+e/u);
+  });
+});
+
+describe('audit findings have no advisory exceptions', () => {
+  // GHSA-fc5q-39xc-vjpf was withdrawn on 2026-11-18. If the registry
+  // reports it again, fail normally rather than reviving the old exception.
+  const formerlyExceptedReport = {
+    vulnerabilities: {
+      picomatch: {
+        name: 'picomatch', severity: 'high',
+        via: [{
+          name: 'picomatch', severity: 'high', range: '<=4.0.7',
+          url: 'https://github.com/advisories/GHSA-fc5q-39xc-vjpf',
+        }],
+      },
+    },
+  };
+
+  it.each([
+    ['--omit=dev', 1], ['--omit=dev', 7],
+    ['--audit-level=high', 1], ['--audit-level=high', 7],
+  ])('preserves %s failure %s without a JSON fallback or package lookup', async (policy, status) => {
+    vi.mocked(spawnSync)
+      .mockReturnValueOnce({ ...findings, status, stdout: '# npm audit report\npicomatch <=4.0.7\nSeverity: high\n' })
+      // These would have granted the former exception. Neither may run.
+      .mockReturnValueOnce({ status: 1, stdout: JSON.stringify(formerlyExceptedReport), stderr: '' })
+      .mockReturnValueOnce({ status: 0, stdout: '4.0.7\n', stderr: '' });
+    const wait = vi.fn();
+    const stdout = vi.fn();
+    const stderr = vi.fn();
+    expect(await auditWithRetry([policy], { wait, stdout, stderr })).toBe(status);
+    expect(spawnSync).toHaveBeenCalledTimes(1);
+    expect(spawnSync).toHaveBeenCalledWith('npm', ['audit', policy], expect.any(Object));
+    expect(wait).not.toHaveBeenCalled();
   });
 });

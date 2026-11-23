@@ -7,6 +7,10 @@ import type { InvitePublicPayload } from '../../lib/invite/types';
 import { rememberInviteLink } from '../../lib/invite/local-links';
 import { signIcon } from '../../lib/sign-icon';
 import { accountSyncV2Enabled } from '../../lib/account-v2/feature-flags';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../../lib/birth-date-policy';
+import { INVITER_CONSENT_VERSION } from '../../lib/invite/consent';
+
+const INVITE_SIGNUP_UI = import.meta.env.PUBLIC_INVITE_SIGNUP_ENABLED === '1';
 
 const COPY = {
   invTitle: 'Invite them to fill in their half.',
@@ -15,6 +19,9 @@ const COPY = {
   invConsentLabel: "Share this chart's positions with whoever opens the link",
   invTerm1: "The link carries your chart's name or label and its computed positions. It never carries your birth date, time, or place.",
   invTerm2: 'Meant for one person. It closes once their reading is made, and after 14 days at the latest.',
+  // With invite signups on (PUBLIC_INVITE_SIGNUP_ENABLED=1): the chart must be the inviter's own. The invite still closes
+  // once the reading is made (invTerm2); this text is consent version INVITER_CONSENT_VERSION (src/lib/invite/consent.ts).
+  invConsentLabelSignup: "This is my own chart, and I agree to share its positions with whoever opens the link",
   invTerm3: "You can end it early anytime from your profile, on any device you're signed in to.",
   invNotifyLabel: 'Email me once, when their reading is ready',
   invNotifyNote: "One email for this invitation, to your account address. It isn't a subscription, and it doesn't touch your daily email choices.",
@@ -276,8 +283,14 @@ export function InvitePanel({ enabled, visible, charts }: InvitePanelProps) {
 
   if (!enabled || !visible || account === 'loading') return null;
 
+  // A saved chart whose birth date is under 13 or still to come makes no invitation.
+  const selectedChart = syncedCharts.find((chart) => chart.id === selected) ?? null;
+  const selectedRefusal = selectedChart ? birthDateRefusal(selectedChart.birth.date) : null;
+
   async function createInvite() {
     if (!session || !selected || !consent || requestRef.current) return;
+    const chosen = charts.find((chart) => chart.id === selected);
+    if (!chosen || birthDateRefusal(chosen.birth.date)) return;
     const accessGeneration = profileAccessGeneration.current;
     requestRef.current = true;
     setCreateState('creating');
@@ -299,7 +312,10 @@ export function InvitePanel({ enabled, visible, charts }: InvitePanelProps) {
           Authorization: `Bearer ${currentSession.access_token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ chartId: selected, consent: true, notify }),
+        // With signups on, the version of the consent text this panel showed, so the server records only what was seen.
+        body: JSON.stringify(INVITE_SIGNUP_UI
+          ? { chartId: selected, consent: true, notify, consentVersion: INVITER_CONSENT_VERSION }
+          : { chartId: selected, consent: true, notify }),
       });
       if (accessGeneration !== profileAccessGeneration.current || !profileAccessAllowed()) return;
       if (response.status === 429) {
@@ -413,7 +429,9 @@ export function InvitePanel({ enabled, visible, charts }: InvitePanelProps) {
     );
   }
 
-  const stateMessage = createState === 'error'
+  const stateMessage = selectedRefusal
+    ? birthDateRefusalText(selectedRefusal)
+    : createState === 'error'
     ? COPY.invError
     : createState === 'throttled'
       ? COPY.invThrottled
@@ -446,7 +464,7 @@ export function InvitePanel({ enabled, visible, charts }: InvitePanelProps) {
         </fieldset>
         <label class="syn-invite__check">
           <input type="checkbox" checked={consent} onChange={(event) => setConsent((event.currentTarget as HTMLInputElement).checked)} />
-          <span>{COPY.invConsentLabel}</span>
+          <span>{INVITE_SIGNUP_UI ? COPY.invConsentLabelSignup : COPY.invConsentLabel}</span>
         </label>
         <div class="syn-invite__terms">
           <p>{COPY.invTerm1}</p>
@@ -462,14 +480,14 @@ export function InvitePanel({ enabled, visible, charts }: InvitePanelProps) {
           <button
             type="button"
             class="btn btn--primary"
-            disabled={!selected || !consent || createState === 'creating'}
+            disabled={!selected || !consent || createState === 'creating' || selectedRefusal !== null}
             onClick={createInvite}
           >
             <span>{createState === 'creating' ? COPY.invCreating : COPY.invCreate}</span>
             <span class="orb" aria-hidden="true">↗</span>
           </button>
         )}
-        {stateMessage && <p class="calc__error" role="alert">{stateMessage}</p>}
+        {stateMessage && <p class="calc__error" role="alert" lang={birthDateRefusalLang(stateMessage)}>{stateMessage}</p>}
         {createState === 'capped' && (
           <a class="text-link" href="/profile/#compat-invites">Open your invitations →</a>
         )}

@@ -29,7 +29,21 @@ describe('the birthday reminder sender', () => {
     vi.unstubAllEnvs();
   });
 
+  it('stops after cleanup when the sending switch is unset', async () => {
+    vi.stubEnv('BIRTHDAY_REMINDERS_SENDING', undefined);
+    vi.stubEnv('DAILY_EMAIL_POSTAL_ADDRESS', 'Test postal address');
+    const fetcher = vi.fn().mockResolvedValueOnce(Response.json(0));
+    vi.stubGlobal('fetch', fetcher);
+    vi.spyOn(process, 'exit').mockImplementation(() => { throw new Error('sender exited'); });
+
+    await expect(run()).rejects.toThrow('sender exited');
+    expect(process.exit).toHaveBeenCalledWith(0);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(fetcher.mock.calls[0][0]).toBe('https://storage.invalid/rest/v1/rpc/birthday_reminders_sweep');
+  });
+
   it('exits non-zero before looking up recipients when the postal address is missing', async () => {
+    vi.stubEnv('BIRTHDAY_REMINDERS_SENDING', '1');
     const fetcher = vi.fn().mockResolvedValueOnce(Response.json(0));
     vi.stubGlobal('fetch', fetcher);
     vi.spyOn(process, 'exit').mockImplementation(() => { throw new Error('sender exited'); });

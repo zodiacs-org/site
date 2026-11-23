@@ -1,0 +1,275 @@
+// Shared helpers for the exact-phrase visibility program (docs/visibility/).
+// Pure functions only, so scripts/visibility/lib.test.mjs can cover them.
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+export const VIS_DIR = path.join(ROOT, 'docs/visibility');
+export const SITE = 'https://zodiacs.org';
+
+export function loadQuestions(file = path.join(VIS_DIR, 'questions.json')) {
+  const data = JSON.parse(readFileSync(file, 'utf8'));
+  return data.questions;
+}
+
+// An answer counts for a question only when it was asked in the question's
+// current wording and the call succeeded. Failed calls and answers to older
+// wording are not results.
+export function answerCounts(answer, question) {
+  return !!answer && !answer.error && answer.id === question.id && answer.question === question.question;
+}
+
+// Resume plan for one provider file. Answers that count are kept and not asked
+// again. A failed call is asked again and its error entry is replaced. An
+// answer to older wording is moved to `superseded` (kept for the record, never
+// scored) and the question is asked again in its current wording.
+export function planAnswers(doc, questions, runs) {
+  const byId = new Map(questions.map((q) => [q.id, q]));
+  const keep = [];
+  const superseded = [...(doc.superseded || [])];
+  const done = new Set();
+  for (const a of doc.answers || []) {
+    const q = byId.get(a.id);
+    if (!q) { keep.push(a); continue; } // outside this run (--only): untouched
+    if (a.error) continue; // asked again; the new attempt takes its place
+    if (a.question !== q.question) { superseded.push(a); continue; }
+    done.add(`${a.id}#${a.run}`);
+    keep.push(a);
+  }
+  const todo = [];
+  for (const q of questions) for (let r = 1; r <= runs; r++) if (!done.has(`${q.id}#${r}`)) todo.push([q, r]);
+  return { answers: keep, superseded, todo };
+}
+
+// Hostname without www, lowercase. Returns '' for anything that is not a URL.
+export function hostOf(url) {
+  try {
+    return new URL(url).hostname.toLowerCase().replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+}
+
+export function isZodiacsUrl(url) {
+  const h = hostOf(url);
+  return h === 'zodiacs.org' || h.endsWith('.zodiacs.org');
+}
+
+// Gemini returns grounding links as vertexaisearch redirect URLs whose title is
+// the source domain. Prefer the title when it looks like a hostname.
+export function citationHost(c) {
+  const h = hostOf(c.url);
+  if (h && !h.endsWith('vertexaisearch.cloud.google.com')) return h;
+  const t = String(c.title || '').toLowerCase().trim().replace(/^www\./, '');
+  return /^[a-z0-9.-]+\.[a-z]{2,}$/.test(t) ? t : h;
+}
+
+// Does an answer mention the brand, and does it cite a zodiacs.org page?
+export function scoreAnswer(text, citations = []) {
+  const mentioned = /\bzodiacs\.org\b|\bzodiacs org\b/i.test(text || '');
+  const hosts = citations.map(citationHost).filter(Boolean);
+  const citedUrls = citations.filter((c) => citationHost(c) === 'zodiacs.org' || isZodiacsUrl(c.url)).map((c) => c.url);
+  return {
+    mentioned,
+    cited: citedUrls.length > 0,
+    citedUrls,
+    citedHosts: [...new Set(hosts)],
+  };
+}
+
+// A landing page as it may be written out: origin and path only. Query
+// strings and fragments are dropped, because a shared or bookmarked URL could
+// carry birth details. Returns null for anything that is not a URL.
+export function pagePath(url) {
+  try {
+    const u = new URL(url);
+    return u.origin + u.pathname;
+  } catch {
+    return null;
+  }
+}
+
+// Search Console phrase matching: exact (after normalising case, spacing and
+// punctuation) or close (every phrase word present, any order).
+export function normaliseQuery(q) {
+  // Case, accents and punctuation folded; letters of any script kept.
+  return String(q).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim();
+}
+
+export function matchPhrase(query, phrase) {
+  const q = normaliseQuery(query);
+  const p = normaliseQuery(phrase);
+  if (q === p) return 'exact';
+  const words = new Set(q.split(' '));
+  return p.split(' ').every((w) => words.has(w)) ? 'close' : null;
+}
+
+// Minimal RFC 4180 CSV parser (Search Console exports quote fields with commas).
+export function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (quoted) {
+      if (ch === '"' && text[i + 1] === '"') { field += '"'; i++; }
+      else if (ch === '"') quoted = false;
+      else field += ch;
+    } else if (ch === '"') quoted = true;
+    else if (ch === ',') { row.push(field); field = ''; }
+    else if (ch === '\n' || ch === '\r') {
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      row.push(field); field = '';
+      if (row.length > 1 || row[0] !== '') rows.push(row);
+      row = [];
+    } else field += ch;
+  }
+  if (field !== '' || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+// Aggregate Search Console rows ({query, page, clicks, impressions, position})
+// per phrase. Position is impression-weighted, as Search Console reports it.
+export function summarisePhrase(rows, phrase, { closeMatches = true } = {}) {
+  let clicks = 0, impressions = 0, weighted = 0;
+  const pages = new Map();
+  const queries = new Set();
+  for (const r of rows) {
+    const m = matchPhrase(r.query, phrase);
+    if (!m || (m === 'close' && !closeMatches)) continue;
+    queries.add(r.query);
+    clicks += r.clicks;
+    impressions += r.impressions;
+    weighted += r.position * r.impressions;
+    const page = r.page && pagePath(r.page);
+    if (page) pages.set(page, (pages.get(page) || 0) + r.impressions);
+  }
+  return {
+    phrase,
+    clicks,
+    impressions,
+    position: impressions ? +(weighted / impressions).toFixed(1) : null,
+    // A count only: raw queries are never written out, because a person can
+    // type a birth date, time or place into a search box.
+    queryCount: queries.size,
+    topPages: [...pages.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([page]) => page),
+  };
+}
+
+// Opportunity score used to rank candidate phrases once data exists.
+// demand: monthly impressions (Search Console) or a prior when there is none.
+// position: current average position, null when the site has no impressions.
+// aiCiteRate: share of assistant answers (0..1) that cite zodiacs.org.
+// fit: 1 for a working tool page, 0.8 for an article, 0.6 for a page to build.
+export function opportunityScore({ demand, position, aiCiteRate = 0, fit = 1 }) {
+  // Pages sitting on page one bottom or page two move most for the least work.
+  let gap;
+  if (position == null) gap = 0.5;
+  else if (position <= 3) gap = 0.3;
+  else if (position <= 20) gap = 1;
+  else if (position <= 50) gap = 0.7;
+  else gap = 0.4;
+  return +(Math.log10(1 + Math.max(0, demand)) * gap * fit * (1 - 0.5 * aiCiteRate)).toFixed(3);
+}
+
+// Consumer copy rules this program must keep: no em or en dashes, and no
+// token, market or crypto words.
+const DASHES = /[\u2013\u2014]/;
+const MARKET = /\b(crypto|token|tokens|nft|coin|blockchain|wallet|market|trade|trading|invest|buy now)\b/i;
+export function copyProblems(text) {
+  const out = [];
+  if (DASHES.test(text)) out.push('em or en dash');
+  const m = text.match(MARKET);
+  if (m) out.push(`market word "${m[0]}"`);
+  return out;
+}
+
+// Keyword Planner "Avg. monthly searches" comes as an exact count ("1,300"),
+// a bucket ("10 - 100", "1K – 10K", "100K-1M") or blank / "-" when it has no
+// data. Exact counts become digits, buckets become "low-high" in digits, and
+// anything else is 'TBD' (missing data, never a measured zero).
+export function parseVolume(raw) {
+  const s = String(raw ?? '').trim();
+  const num = (t) => {
+    const m = /^(\d+(?:[.,]\d+)?|\d{1,3}(?:[,.\s]\d{3})+)\s*([KkMm])?$/.exec(t.trim());
+    if (!m) return null;
+    const mult = m[2] ? (/k/i.test(m[2]) ? 1e3 : 1e6) : 1;
+    const n = m[2] ? Number(m[1].replace(',', '.')) : Number(m[1].replace(/[,.\s]/g, ''));
+    return Number.isFinite(n) ? Math.round(n * mult) : null;
+  };
+  const range = /^(.+?)\s*[-\u2013\u2014]\s*(.+)$/.exec(s);
+  if (range) {
+    const lo = num(range[1]), hi = num(range[2]);
+    return lo != null && hi != null && lo <= hi ? `${lo}-${hi}` : 'TBD';
+  }
+  const n = num(s);
+  return n == null ? 'TBD' : String(n);
+}
+
+// Volume cell from a keyword table: { low, exact } or null when not known.
+export function volumeOf(cell) {
+  const s = String(cell ?? '');
+  if (/^\d+$/.test(s)) return { low: +s, exact: true };
+  const m = /^(\d+)-(\d+)$/.exec(s);
+  return m ? { low: +m[1], exact: false } : null;
+}
+
+// OpenAI Responses API and xAI's compatible Responses API share a shape:
+// output[] message items whose output_text parts carry url_citation annotations.
+// A response that did not complete (status failed, incomplete or cancelled, or
+// an error object) or that carries no answer text throws, so the caller records
+// an error entry and the next run asks again instead of keeping an empty answer.
+export function parseResponsesApi(json) {
+  if (!json || typeof json !== 'object') throw new Error('response is not an object');
+  if (json.error) throw new Error(`response error: ${String(json.error.message || json.error.code || json.error).slice(0, 200)}`);
+  if (json.status && json.status !== 'completed') throw new Error(`response status ${json.status}`);
+  let text = '';
+  const citations = [];
+  for (const item of json.output || []) {
+    if (item.type !== 'message') continue;
+    for (const part of item.content || []) {
+      if (part.type !== 'output_text') continue;
+      text += part.text;
+      for (const a of part.annotations || []) if (a.type === 'url_citation') citations.push({ url: a.url, title: a.title || '' });
+    }
+  }
+  for (const url of json.citations || []) citations.push({ url: typeof url === 'string' ? url : url.url, title: '' });
+  if (!text.trim()) throw new Error('response has no answer text');
+  return { text, citations, model: json.model };
+}
+
+// Gemini generateContent: only a candidate that finished normally (STOP) is an
+// answer. MAX_TOKENS, SAFETY, RECITATION, a missing finish reason or empty text
+// throw, so the run records an error entry and the next run asks again.
+export function parseGeminiResponse(json, model) {
+  const cand = json?.candidates?.[0] || {};
+  const text = (cand.content?.parts || []).map((p) => p.text || '').join('');
+  if (cand.finishReason !== 'STOP' || !text.trim()) throw new Error(`no finished answer (finishReason ${cand.finishReason || 'none'})`);
+  const citations = (cand.groundingMetadata?.groundingChunks || []).filter((c) => c.web).map((c) => ({ url: c.web.uri, title: c.web.title || '' }));
+  return { text, citations, model: json.modelVersion || model };
+}
+
+// Anthropic Messages: a refusal is kept as a refused answer; any stop other
+// than end_turn (max_tokens, pause_turn, ...) or empty text throws so it is
+// asked again.
+export function parseAnthropicResponse(response) {
+  if (response?.stop_reason === 'refusal') return { text: '', citations: [], model: response.model, refused: true };
+  let text = '';
+  const citations = [];
+  for (const block of response?.content || []) {
+    if (block.type === 'text') {
+      text += block.text;
+      for (const c of block.citations || []) if (c.url) citations.push({ url: c.url, title: c.title || '' });
+    }
+  }
+  if (response?.stop_reason !== 'end_turn' || !text.trim()) throw new Error(`no finished answer (stop_reason ${response?.stop_reason})`);
+  return { text, citations, model: response.model };
+}
+
+// The ranking's monthly volume cell: TBD when unknown, "at least N" when any
+// query's volume is the low end of a Keyword Planner range.
+export function volumeLabel({ known, volume, ranged }) {
+  return known ? (ranged ? `at least ${volume}` : String(volume)) : 'TBD';
+}

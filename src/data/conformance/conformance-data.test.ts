@@ -18,17 +18,33 @@ describe('vendored conformance summary', () => {
     expect(source.commit).toMatch(/^[0-9a-f]{40}$/u);
   });
 
-  it('has 500 vectors in three levels', () => {
-    expect(summary.levels.map((level: { level: string }) => level.level)).toEqual(['L1', 'L2', 'L3']);
-    expect(summary.levels.reduce((sum: number, level: { count: number }) => sum + level.count, 0)).toBe(500);
+  it('has 640 vectors in four levels', () => {
+    expect(summary.suiteVersion).toBe('0.3.0');
+    expect(summary.levels.map((level: { level: string }) => level.level)).toEqual(['L1', 'L2', 'L3', 'L4']);
+    expect(summary.levels.reduce((sum: number, level: { count: number }) => sum + level.count, 0)).toBe(640);
   });
 
   it('accounts for every vector in every run', () => {
     for (const run of summary.runs) {
       const total = run.summary.total;
       expect(total.pass + total.fail + total.unsupported + total.error).toBe(total.count);
-      expect(total.count).toBe(500);
+      expect(total.count).toBe(run.suiteVersion === '0.3.0' ? 640 : 500);
     }
+  });
+
+  it('includes @zodiacs/engine 2.0.0 default DE440 and astronomy-engine runs', () => {
+    const de440 = summary.runs.find(
+      (run: { file: string }) => run.file === 'results/zodiacs-engine.json',
+    );
+    const fallback = summary.runs.find(
+      (run: { file: string }) => run.file === 'results/zodiacs-engine-astronomy-engine.json',
+    );
+    expect(de440.adapter.engineVersion).toBe('2.0.0');
+    expect(de440.summary.byLevel.L1.pass).toBe(240);
+    expect(de440.summary.total).toMatchObject({ count: 640, pass: 569, fail: 0, unsupported: 71, error: 0 });
+    expect(fallback.adapter.engineVersion).toBe('2.0.0');
+    expect(fallback.summary.byLevel.L1.pass).toBe(48);
+    expect(fallback.summary.total).toMatchObject({ count: 640, pass: 341, fail: 228, unsupported: 71, error: 0 });
   });
 
   it('publishes no per-vector values for Swiss Ephemeris', () => {

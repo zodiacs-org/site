@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import {chromium} from 'playwright-core';
 import {findChromium,STABLE_CHROMIUM_ARGS} from './visual/browser.mjs';
 import {withPreview} from './visual/preview-server.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 const development=process.env.BIRTH_WINDOW_SERVER_MODE==='development';
 const artifactRoot='tests/visual/artifacts/birth-time-window'+(development?'-development':'');
 const records=[],observations=[];let failure=null;let stage="start";
@@ -15,7 +16,7 @@ async function committed(page){
 }
 try{
  await withPreview({port:8793},async baseURL=>{
-  const browser=await chromium.launch({executablePath:await findChromium(),args:STABLE_CHROMIUM_ARGS});
+  const browser=withFullLevel(await chromium.launch({executablePath:await findChromium(),args:STABLE_CHROMIUM_ARGS}));
   try{for(const variant of variants){
    const context=await browser.newContext({viewport:{width:variant.width,height:variant.height},reducedMotion:'reduce'});
    const page=await context.newPage(),errors=[];let hold=null;
@@ -116,11 +117,14 @@ try{
     const beforeBoundary=await page.evaluate(()=>window.__birthWindowControls.created.length);
     await page.getByLabel('Birth date',{exact:true}).fill('2199-12-31');
     await page.getByLabel('Birth time',{exact:true}).fill('23:59');
-    await page.locator('.calc__submit').click();await committed(page);
-    const upperUTC=await page.locator('.calc__result [data-check-our-math] time').getAttribute('datetime');
-    assert.ok(Date.parse(upperUTC)>=Date.parse('2200-01-01T00:00:00Z'),'The committed accepted local date actually resolves beyond the UTC reference span');
-    assert.equal(await page.locator('.calc__result [data-check-our-math]').getAttribute('data-instant-basis'),'birth');
-    assert.equal(await page.locator('[data-birth-window-entry]').count(),0,'A supported local boundary date resolving beyond the UTC reference span has no window entry');
+    // The upper edge of the local date range is a future birth date, which the
+    // birth date policy refuses before any chart is computed.
+    await page.locator('.calc__submit').click();
+    const upperRefusal=page.locator('.calc__form .calc__error');await upperRefusal.waitFor();
+    assert.equal(await upperRefusal.innerText(),"That birth date hasn't happened yet. Check the year and try again.");
+    await page.waitForFunction(()=>document.querySelector('.calc__form')?.getAttribute('aria-busy')==='false');
+    assert.equal(await page.locator('.calc__result').count(),0,'A future birth date produces no chart');
+    assert.equal(await page.locator('[data-birth-window-entry]').count(),0,'A future birth date has no window entry');
     assert.equal(await page.evaluate(()=>window.__birthWindowControls.created.length),beforeBoundary);
     await page.getByLabel('Birth date',{exact:true}).fill('1800-01-01');
     await page.getByLabel('Birth time',{exact:true}).fill('12:00');
@@ -140,7 +144,7 @@ try{
       options:[...document.querySelectorAll('[data-birth-window] select option')].map(option=>({value:option.value,disabled:option.disabled})),
       reference:document.querySelector('[data-birth-window-reference]')?.textContent??null
     }));
-    observations.push({variant:variant.name,stage,upperUTC,lowerBoundaryState});
+    observations.push({variant:variant.name,stage,lowerBoundaryState});
     const automationOptionStates={
       oneMinuteEnabled:await bounded.locator('select option[value="1"]').isEnabled(),
       thirtyMinuteDisabled:await bounded.locator('select option[value="30"]').isDisabled(),
@@ -173,7 +177,7 @@ try{
     assert.equal(await bounded.locator('[role="alert"]').count(),0);
     assert.deepEqual(errors,[]);
     const native=await page.evaluate(()=>window.__birthWindowControls);
-    records.push({name:variant.name,viewport:variant,summary,native,boundaryInstants:{upperUTC,lowerUTC},controls:{noWorkerBeforeRequest:true,realSampledWindow:true,allCellsRendered:true,explicitCancelTerminates:true,windowChangeTerminates:true,chartReplacementTerminates:true,unknownTimeExcluded:true,noOverflow:true,outOfSpanEntryExcluded:true,boundaryOptionsDisabled:true,boundaryPresetNativeWorker:true,fullBoundaryWorker:true,committedBoundaryInstantsVerified:true},pageErrors:errors});
+    records.push({name:variant.name,viewport:variant,summary,native,boundaryInstants:{lowerUTC},controls:{noWorkerBeforeRequest:true,realSampledWindow:true,allCellsRendered:true,explicitCancelTerminates:true,windowChangeTerminates:true,chartReplacementTerminates:true,unknownTimeExcluded:true,noOverflow:true,futureBirthDateRefused:true,boundaryOptionsDisabled:true,boundaryPresetNativeWorker:true,fullBoundaryWorker:true,committedBoundaryInstantsVerified:true},pageErrors:errors});
    }finally{hold?.release();hold=null;await context.close();}
   }}finally{await browser.close();}
  });

@@ -87,7 +87,7 @@ describe('the birthday reminder endpoint', () => {
     // The page points to the stop link itself: reopening the confirmation link only shows an expired page.
     expect(res.body).toContain('Keep the Stop and delete link, or the confirmation email, if you want to stop before your birthday.');
     expect(res.body).not.toMatch(/this page(?:’|&#39;|')s link/u);
-    expect(res.body).not.toMatch(/[–—]/u);
+    expect(res.body).not.toMatch(/[\u2013\u2014]/u);
   });
 
   it('shows the expired page, with no stop link, when the confirmation is unknown, expired or replayed', async () => {

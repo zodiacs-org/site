@@ -1,0 +1,46 @@
+---
+import Base from '../../../layouts/Base.astro';
+import packageDocument from '../../../../package.json';
+import latest from '../../../data/accuracy/latest.json';
+import entries from '../../../data/accuracy/history.json';
+import { ACCURACY_PATH, accuracyPagePaths } from '../../../accuracy/publication.mjs';
+import type { Receipt as ReceiptData, ReceiptHistory } from '../../../accuracy/receipt';
+import { ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
+import { badgeEmbedSnippets, engineVersionFromDependency, skyCheckBadge } from '../../../accuracy/sky-check-badge.mjs';
+import Receipt from '../../../accuracy/AccuracyReceipt.astro';
+
+export function getStaticPaths() {
+  return accuracyPagePaths();
+}
+
+const receipt = latest as ReceiptData | null;
+const history = entries as ReceiptHistory[];
+const siteEngineVersion = engineVersionFromDependency(packageDocument.dependencies['@zodiacs/engine']);
+const computedBadge = skyCheckBadge(receipt, new Date(), { siteEngineVersion });
+const badge = computedBadge ? { label: computedBadge.label, ...badgeEmbedSnippets(computedBadge) } : null;
+const title = 'Accuracy Receipts | Zodiacs.org';
+const description = 'Dates, planet positions and raw NASA Horizons responses from checks of the Zodiacs.org engine.';
+const jsonLd = receipt ? [
+  {
+    '@type': 'Dataset',
+    name: 'Zodiacs.org accuracy receipts',
+    description,
+    url: `https://zodiacs.org${ACCURACY_PATH}`,
+    dateModified: receipt.checkedAt,
+    version: receipt.engine.version,
+    isAccessibleForFree: true,
+    creator: ORGANIZATION,
+    distribution: receipt.raw.filter(({ set }) => set === 'rolling').map(({ body, set, file, sha256 }) => ({
+      '@type': 'DataDownload',
+      name: `${body}, ${set}`,
+      encodingFormat: 'text/plain',
+      contentUrl: `https://zodiacs.org${ACCURACY_PATH}raw/${receipt.date}/${file}`,
+      sha256,
+    })),
+  },
+  developerBreadcrumb(ACCURACY_PATH, 'Accuracy receipts'),
+] : [];
+---
+<Base title={title} description={description} path={ACCURACY_PATH} jsonLd={jsonLd}>
+  <Receipt receipt={receipt} history={history} badge={badge} />
+</Base>

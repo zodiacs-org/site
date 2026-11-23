@@ -36,6 +36,10 @@ if (!birthdayReminderStorageReady()) {
 const swept = dryRun ? 0 : await sweepExpiredRequests();
 console.log(`Birthday reminders: ${dryRun ? 'dry run, no' : swept} expired unconfirmed requests deleted.`);
 if (args.includes('--cleanup-only')) process.exit(0);
+if (!dryRun && process.env.BIRTHDAY_REMINDERS_SENDING !== '1') {
+  console.log('Birthday reminder sending is off. Nothing sent.');
+  process.exit(0);
+}
 if (!birthdayReminderEnabled()) {
   console.log('Birthday reminders are off (BIRTHDAY_REMINDER_ENABLED or a public switch it needs is not 1, or storage, sending or the secret is missing). Nothing sent.');
   process.exit(0);

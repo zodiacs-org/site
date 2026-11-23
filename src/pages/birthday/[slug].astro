@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../../components/ArtFrame.astro';
+import Motion from '../../components/Motion.astro';
 import ShareRow from '../../components/ShareRow.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import CollectBand from '../../components/CollectBand.astro';
@@ -26,7 +27,11 @@ import birthdays from '../../data/birthdays.json';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { BIRTHDAY_PEOPLE_VISIBLE, peopleForBirthday } from '../../lib/people';
-import { BIRTHDAY_CUSP_OG_MODIFIED_AT, BIRTHDAY_FAMOUS_LINE_MODIFIED_AT, latestModifiedAt } from '../../lib/seo-lastmod';
+import { BIRTHDAY_CUSP_OG_MODIFIED_AT, BIRTHDAY_FAMOUS_LINE_MODIFIED_AT, de440UpdatedDate, lastmodDate, latestModifiedAt } from '../../lib/seo-lastmod';
+import { BIRTHDAY_DAY_UPDATED, updatedIso, updatedLabel } from '../../world-times/updated';
+import { worldTimesSentence } from '../../world-times/world-times';
+import { formatDate, formatTime } from '../../lib/i18n/dates';
+import sunIngresses from '../../data/sun-ingresses.json';
 
 export async function getStaticPaths() {
   const entries = await getCollection('birthdays', (e) => !e.data.draft);
@@ -112,6 +117,30 @@ if (sign && decan) {
     a: `Check your birth year in the table. If your year is a split year, the deciding fact is your birth time converted to universal time, or skip the table and compute your chart, which reads the Sun's exact degree for your birth moment.`,
   });
 }
+// The Sun's season around this date in the coming year (2028 for February 29),
+// from src/data/sun-ingresses.json: the season window for a whole-sign date,
+// the boundary crossing in five time zones for a cusp date.
+const SEASON_YEAR = month === 2 && day === 29 ? 2028 : 2027;
+const sunWindows = sunIngresses.windows as { sign: string; from: string; to: string }[];
+const utcDay = (d: Date) => formatDate('en', d, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const utcClock = (d: Date) => formatTime('en', d, { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+if (sign) {
+  const noon = Date.UTC(SEASON_YEAR, month - 1, day, 12);
+  const season = sunWindows.find((w) => w.sign === sign.slug && Date.parse(w.from) <= noon && noon < Date.parse(w.to));
+  if (!season) throw new Error(`No ${sign.name} season holds ${label}, ${SEASON_YEAR} in sun-ingresses.json`);
+  const [from, to] = [new Date(season.from), new Date(season.to)];
+  faq.push({
+    q: `When is ${sign.name} season in ${SEASON_YEAR}?`,
+    a: `The ${sign.name} season that holds ${label}, ${SEASON_YEAR} runs from ${utcDay(from)} at ${utcClock(from)} UTC to ${utcDay(to)} at ${utcClock(to)} UTC. ${label} falls inside ${sign.name} season on the UTC calendar in every year from ${yearFrom} to ${yearTo}.`,
+  });
+} else if (cusp) {
+  const ingress = sunWindows.find((w) => w.sign === cusp.b.slug && w.from.startsWith(`${SEASON_YEAR}-`));
+  if (!ingress) throw new Error(`No ${SEASON_YEAR} ${cusp.b.name} ingress in sun-ingresses.json`);
+  faq.push({
+    q: `When does the Sun enter ${cusp.b.name} in ${SEASON_YEAR}?`,
+    a: `At ${worldTimesSentence(new Date(ingress.from))}. A birthday is a date on a local clock, so near the boundary the time zone can change the answer: convert the birth time to universal time before reading the year table.`,
+  });
+}
 faq.push({
   q: `What degree is the Sun on ${label}?`,
   a: `Between ${formatLongitude(data.lonMin)} and ${formatLongitude(data.lonMax)} at noon universal time, depending on the year. The calendar drifts about a quarter degree per year against the Sun and resets on leap years. Your exact degree needs your birth date, year, and time.`,
@@ -175,12 +204,17 @@ const famousParts = famousItems.map((item, index) => ({
 const ogImage = cusp
   ? '/assets/og/v2/tool/birthday.png'
   : signArtCard(heroSign!.slug);
+const engineUpdated = de440UpdatedDate(`/birthday/${slug}/`);
 const pageModifiedAt = latestModifiedAt(
   entry.data.updated,
   ...(cusp ? [BIRTHDAY_CUSP_OG_MODIFIED_AT] : []),
   ...(birthdayPeople.length > 0 ? [BIRTHDAY_FAMOUS_LINE_MODIFIED_AT] : []),
   ...(birthdayDegreesChanged(entry.id) ? [BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT] : []),
+  // The season question, the cusp crossing in five time zones and the Updated line.
+  updatedIso(BIRTHDAY_DAY_UPDATED),
+  ...(engineUpdated ? [engineUpdated] : []),
 );
+const updatedDay = lastmodDate(pageModifiedAt);
 
 const jsonLd = [
   {
@@ -235,6 +269,7 @@ const jsonLd = [
       fetchpriority="high"
     />
   )}
+  <Motion />
   <article class="bday" style={`--sign:${hue};--hue:${hue}`}>
     {/* 1. The answer first, the sign art in the light. */}
     <BirthdayHero
@@ -250,6 +285,7 @@ const jsonLd = [
       </nav>
       <h1 class="display bday-title">Born on <em>{label}</em></h1>
       <p class="bday-hero__lede">{entry.data.description}</p>
+      <p class="bday-hero__updated">Updated <time datetime={updatedDay}>{updatedLabel(updatedDay)}</time></p>
       <ul class="bday-answers" aria-label="The short answer">
         {answers.map((answer, index) => (
           <li class:list={['bday-answer', index > 0 && 'bday-answer--plain']}>
@@ -272,7 +308,7 @@ const jsonLd = [
     {/* 2. Where the Sun stands, open by default. */}
     <section class="kwrap bday-measure" id="measure" aria-labelledby="bday-measure-title">
       <div class="bday-measure__dial">
-        <BirthdayDial label={label} lonMin={data.lonMin} lonMax={data.lonMax} sign={sign} cusp={cusp} decan={decan} />
+        <div data-enter="rise"><BirthdayDial label={label} lonMin={data.lonMin} lonMax={data.lonMax} sign={sign} cusp={cusp} decan={decan} /></div>
       </div>
       <div class="bday-measure__head">
         <span class="kicker">Exact date and cusp check</span>
@@ -474,7 +510,10 @@ const jsonLd = [
     <section class="kwrap qa bday-questions" aria-labelledby="bday-questions-title">
       <div>
         <h2 class="h-2" id="bday-questions-title">The date, answered</h2>
-        <p>Short answers to what people ask about a {label} birthday. <a href="/methodology/">How the positions are calculated</a>.</p>
+        <p>
+          Short answers to what people ask about a {label} birthday. The Sun's positions are calculated with Astronomy
+          Engine, and our November 2026 audit checked the sign and degrees on every birthday page against NASA JPL Horizons. <a href="/methodology/">How the positions are calculated</a>.
+        </p>
       </div>
       <div class="kfaq">
         {faq.map(({ q, a }, index) => (
@@ -519,17 +558,17 @@ const jsonLd = [
           </div>
         </div>
         <div class="grid-3 bday-deeper__grid">
-          <a class="bday-dcard" href={`/${heroSign.slug}/`}>
+          <a data-enter="rise" class="bday-dcard" href={`/${heroSign.slug}/`}>
             <ArtFrame sign={heroSign.slug} src={signArtSrc(heroSign.slug, 720)} width={720} height={480} alt="" class="bday-dcard__art" />
             <span class="bday-dcard__row"><SignIcon sign={heroSign.slug} size={26} /><span class="h-4">{heroSign.name} guide</span></span>
             <span class="bday-dcard__text">Character, relationships, history, and what the sign means across a chart.</span>
           </a>
-          <a class="bday-dcard" href={`/learn/placements/sun-in-${heroSign.slug}/`}>
+          <a data-enter="rise" class="bday-dcard" href={`/learn/placements/sun-in-${heroSign.slug}/`}>
             <ArtFrame src={heroCropSrc('sign-ring', 560)} srcset={heroCropSrcset('sign-ring')} sizes="(min-width: 960px) 380px, 112px" width={HERO_CROP_SIZE.width} height={HERO_CROP_SIZE.height} alt="" class="bday-dcard__art" />
             <span class="bday-dcard__row"><span class="bday-dcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7.4" /><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" /></svg></span><span class="h-4">Sun in {heroSign.name}</span></span>
             <span class="bday-dcard__text">What the Sun in {heroSign.name} means in any chart, for every {heroSign.name} birthday.</span>
           </a>
-          <a class="bday-dcard" href={`/horoscopes/${heroSign.slug}/`}>
+          <a data-enter="rise" class="bday-dcard" href={`/horoscopes/${heroSign.slug}/`}>
             <ArtFrame src={heroCropSrc('zodiac-figures', 560)} srcset={heroCropSrcset('zodiac-figures')} sizes="(min-width: 960px) 380px, 112px" width={HERO_CROP_SIZE.width} height={HERO_CROP_SIZE.height} alt="" class="bday-dcard__art" spot="30% 70%" />
             <span class="bday-dcard__row"><SignIcon sign={heroSign.slug} size={26} /><span class="h-4">{heroSign.name} horoscope</span></span>
             <span class="bday-dcard__text">The daily reading for {heroSign.name}, for reflection.</span>
@@ -615,6 +654,7 @@ const jsonLd = [
   .bday-answer :global(.sign-icon) { width: 22px; }
   .bday-answer :global(.bday-answer__second) { margin-left: -14px; box-shadow: 0 0 0 2px var(--void-1); border-radius: 50%; }
   .bday-answer--plain { padding-left: 14px; color: var(--ink-1); }
+  .bday-hero__updated { margin: 10px 0 0; font-size: 0.86rem; color: var(--ink-2); }
   .bday-hero__famous { margin: 20px 0 0; max-width: 46ch; font-size: 0.98rem; line-height: 1.5; color: var(--ink-1); text-wrap: pretty; }
   .bday-hero__famous a { color: var(--ink-0); text-decoration: underline; text-decoration-color: var(--hair-2); text-decoration-thickness: 1px; text-underline-offset: 3px; }
   .bday-hero__famous a:hover { text-decoration-color: var(--hue); }

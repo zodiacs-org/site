@@ -620,7 +620,7 @@
         "heading": "How close @zodiacs/engine comes",
         "paragraphs": [
           "Against NASA JPL Horizons, the engine's tests hold ten bodies at 2020 and three at 1907; the largest difference is 14.8″, for Neptune in 2020.",
-          "Against Swiss Ephemeris 2.10.03, every tenth day from 1800 to 2199 at noon UTC, for the ten bodies and the North Node, its longitudes differed by a median of 2.0″ and at most 22.9″ (Venus, 1878) up to 2026 at the same UT. That record was measured on release candidate 0.1.1-rc.17.",
+          "In the DE440 comparison with NASA JPL Horizons, 91,201 longitudes sampled every tenth day through 2026 differed by a median of 0.16 arcseconds and at most 0.55 arcseconds.",
           "Given the same sidereal time, latitude and obliquity, each of its thirteen house systems agrees with Swiss Ephemeris's house function to within 0.0001″, and Placidus, which iterates, to 0.01″."
         ]
       },
@@ -828,13 +828,13 @@
   {
     "slug": "astrology-mcp-server",
     "title": "Astrology MCP server",
-    "description": "Connect an assistant or your own code to Zodiacs over the Model Context Protocol: a hosted server with six read-only tools and no sign-in, or a local stdio server that computes on your machine.",
+    "description": "Connect an assistant or your own code to Zodiacs over the Model Context Protocol: a hosted server with 19 read-only tools and no sign-in, or a local stdio server that computes on your machine.",
     "installation": false,
     "sections": [
       {
         "heading": "The hosted server",
         "paragraphs": [
-          "https://zodiacs.org/mcp speaks MCP over Streamable HTTP. Its six tools are read-only and need no sign-in: get_sky, get_upcoming_events, check_sky_fact, get_horoscope, open_chart_studio and get_capabilities. In Claude, add it as a custom connector. In code, connect with the official SDK client, which npm install @modelcontextprotocol/client@2.3.1 installs, under Apache-2.0.",
+          "https://zodiacs.org/mcp speaks MCP over Streamable HTTP. It lists 19 tools, all read-only and with no sign-in. Eleven need no birth details, among them get_sky, get_upcoming_events, check_sky_fact and get_horoscope for the sky and the daily horoscope, open_chart_studio, which opens a chart the person fills in themselves, and get_capabilities, which says what the server can do. The others read a birth chart, compare two charts, describe a day that matters, look up a town and more; the AI assistants page linked below lists every one. In Claude, add it as a custom connector. In code, connect with the official SDK client, which npm install @modelcontextprotocol/client@2.3.1 installs, under Apache-2.0.",
           "The guide checks run this code with that client against the hosted server's own handler, served locally; Mercury was direct at that instant, so the answer is false."
         ],
         "code": {
@@ -851,7 +851,7 @@
       {
         "heading": "What either one does not do",
         "paragraphs": [
-          "Neither server stores what an assistant sends it. A connected assistant still receives the arguments and the results, and its provider's own policies apply to them. The tools calculate the sky; they do not predict, schedule or advise."
+          "Neither server stores what an assistant sends it. A connected assistant still receives the arguments and the results, and its provider's own policies apply to them. The hosted server's horoscopes and readings are astrology's interpretation. Neither server schedules anything, and neither gives betting tips, investment timing, election forecasts, health predictions or financial or medical advice."
         ]
       }
     ],

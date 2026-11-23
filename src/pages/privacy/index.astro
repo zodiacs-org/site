@@ -27,8 +27,8 @@ const oauthProviders = enabledOAuthProviders({
 });
 const oauthProviderNames = oauthProviders.map((provider) => (provider === 'google' ? 'Google' : 'Apple')).join(' or ');
 const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
-const updated = '11 November 2026';
-const modifiedAt = '2026-11-11T00:00:00.000Z';
+const updated = '13 November 2026';
+const modifiedAt = '2026-11-13T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -43,6 +43,8 @@ const jsonLd = [
 const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 // The hosted app's 0.5.0 tools (src/ai-tools, ZODIACS_OCCASIONS_ENABLED) take birth dates; the page says so only while they are offered.
 const assistantBirthToolsEnabled = (import.meta.env.ZODIACS_OCCASIONS_ENABLED ?? process.env.ZODIACS_OCCASIONS_ENABLED) === '1';
+// The good day finder's "How did your day go?" follow-up: described only while it is switched on.
+const goodDaysOutcomesEnabled = (import.meta.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED ?? process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED) === '1';
 // Save to my Zodiacs account (src/ai-tools/accounts, ZODIACS_ACCOUNTS_ENABLED) is offered only with those tools and the profile's saved list; the page says so only while it is.
 // The 0.6.0 birth chart, transit and Chinese zodiac tools (ZODIACS_COVERAGE_ENABLED, with the 0.5.0 tools) take birth dates too; the page names them only while they are offered.
 const assistantCoverageEnabled = assistantBirthToolsEnabled && (import.meta.env.ZODIACS_COVERAGE_ENABLED ?? process.env.ZODIACS_COVERAGE_ENABLED) === '1';
@@ -141,6 +143,21 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
           site data removes saved charts, and we cannot see or recover charts that
           were only saved in your browser.
         </p>
+      )}
+
+      {goodDaysOutcomesEnabled && (
+        <>
+          <h2>How did your day go?</h2>
+          <p>
+            When you pick a day with the good day finder, you can add a reminder to your calendar or ask this browser
+            to remind you. The browser reminder keeps, in local storage, the goal, the day, its score and whether a birth
+            date was used, nothing else. It is removed once you answer or dismiss it, or the next time you open the good day finder more than 30 days after the day. A week after the day, we ask how it went. If you answer, we keep the goal, the day, the
+            finder's score, whether your birth date was used to rank it (never the birth date), your rating and your
+            note, with the date it arrived. We take dates, times, email addresses, web addresses and phone numbers out of
+            the note, and we drop a note that mentions a child, a birth or an age. We keep no name, IP address, account or device identifier
+            with the answer. We use these answers to see how the days people pick turn out.
+          </p>
+        </>
       )}
 
       <h2>Share links and invitations</h2>
@@ -407,7 +424,10 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
             )}
             <li>
               You can download a JSON account export or initiate permanent
-              deletion from the profile page. Account deletion also removes a
+              deletion from the profile page. The export includes the pages
+              saved to your profile, with the summary and result kept with each
+              assistant save, and the Living Chart moments kept for your
+              account. Account deletion also removes a
               linked, independently confirmed Daily Sun subscription when that
               cleanup can be confirmed. If an email change or key rotation makes
               the match ambiguous, account erasure still completes and the page
@@ -670,9 +690,25 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         Aura events carry only allowlisted categories such as an outcome and
         a coarse held-count bucket; other events similarly record “a chart was
         saved,” never whose. Links from the Zodiacs app in ChatGPT or
-        another assistant end in ?ref=chatgpt or ?ref=assistant. The page
-        takes that off its address as it opens, and Plausible counts the
-        visit under that name and nothing else from the link.{accountSyncV2Enabled ? ' No analytics script runs on your profile page, the sign-in page, or any page that can show a chart saved in your browser or synced to your account, such as the home page, the birth chart, Today, transits and the daily horoscope for your sign.' : ''}
+        another assistant end in ?ref=chatgpt or ?ref=assistant. Some of our
+        own links, such as those in our videos, cards, notes and app, can end
+        in ?ref=video, ?ref=card, ?ref=note or ?ref=app. A shared result page,
+        whose address begins with /share/, runs no script: it keeps the word in
+        the address it was opened with, stores and counts nothing from it, and
+        does not pass it on to its links. Our other pages take the word off
+        their address as they open. When the word is one of these six, this
+        browser tab keeps only that word, until the tab is closed, so an event
+        can say which kind of link opened it; any other word is dropped. For
+        an assistant link to one of those pages, Plausible counts the visit
+        under that name and nothing else from the link. Events for sign-ups, good-day checks, the
+        Year Ahead Score, birthday cards and the calendar and RSS feed links
+        carry only fixed categories, such as where a sign-up form or a feed
+        link sat, which calendar or feed was chosen, which kind of link opened
+        the tab, or whether a good-day check is the first, the second or a
+        later one on this device. For that last one, this browser keeps a count that stops
+        at three and is never sent. These events carry no email address, star
+        sign, birth date, birth time, birthplace, name or anything you
+        type.{accountSyncV2Enabled ? ' No analytics script runs on your profile page, the sign-in page, or any page that can show a chart saved in your browser or synced to your account, such as the home page, the birth chart, Today, transits and the daily horoscope for your sign.' : ''}
       </p>
       {webAnalyticsEnabled && (
         <p>

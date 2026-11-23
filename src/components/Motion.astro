@@ -1,0 +1,223 @@
+---
+/**
+ * The site's shared entrance motion (docs/MOTION.md). Marks arrive; words and
+ * controls never wait. Put <Motion /> once, near the top of a page's content
+ * and before anything marked with data-enter (the attribute is data-enter,
+ * not data-motion, which /thesis/ figures and the chart explorer already use
+ * for other things). It:
+ *
+ *   1. turns motion on (html[data-entrance="on"]) before the marked elements
+ *      are parsed, except for reduced motion or a URL fragment, so nothing
+ *      flashes visible and then disappears. If the runtime below never
+ *      starts, it turns motion off again after 3 s, so nothing stays hidden;
+ *   2. reveals each marked element once, as it scrolls into view, and never
+ *      again (one calm pass, then still). Marks are picked up while the page
+ *      is still parsing, so the first ones do not wait for the whole document.
+ *      An element already above the screen is shown at once, and a page the
+ *      browser scrolled by itself (a reload, Back, a text link) shows
+ *      everything at once. A group staggers by at most 4 steps. The first Tab
+ *      or an in-page link skips entrances;
+ *   3. marks each element .is-done when its entrance ends, so its own hover
+ *      transitions run without the entrance delay;
+ *   4. exposes window.zodiacsMotion.scan(root) so islands that render later
+ *      can hand their new nodes over (never a result the person asked for).
+ *
+ * If the runtime throws during startup, motion turns off and everything is shown.
+ * Both scripts are inline and small: no extra request, nothing in the way of
+ * the first paint. The timings live in src/styles/motion.css.
+ */
+import '../styles/motion.css';
+---
+<script is:inline>
+  (function () {
+    var root = document.documentElement;
+    if (root.hasAttribute('data-entrance')) return;
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // A page opened at a part of itself (an address with #) starts still, so
+    // the reader lands on content that is there from the first paint.
+    var jumped = location.hash.length > 1;
+    var on = !still && !jumped && 'IntersectionObserver' in window;
+    root.setAttribute('data-entrance', on ? 'on' : 'off');
+    // If the runtime below never starts, stop hiding anything. It flags the
+    // root once it has started; on any doubt, motion turns off.
+    if (on) window.setTimeout(function () {
+      try {
+        if (!root.hasAttribute('data-entrance-ready')) root.setAttribute('data-entrance', 'off');
+      } catch (err) {
+        root.setAttribute('data-entrance', 'off');
+      }
+    }, 3000);
+  })();
+</script>
+<script is:inline>
+  (function () {
+    var root = document.documentElement;
+    try {
+      if (window.zodiacsMotion) return;
+      var on = root.getAttribute('data-entrance') === 'on';
+      // A group that comes into view together staggers by at most 4 steps.
+      var MAX_STEP = 4;
+
+      // Shows one element. instant: no entrance at all. Otherwise the element
+      // is marked .is-done when its entrance ends, so its own transitions,
+      // such as a card's hover, run without the entrance delay. The timer
+      // covers a draw, whose transitions run on its strokes, not on itself.
+      function show(el, instant) {
+        if (instant) { el.classList.add('is-in', 'is-done'); return; }
+        el.classList.add('is-in');
+        var done = false;
+        function end(e) {
+          if (e && e.target !== el) return;
+          if (done) return;
+          done = true;
+          el.removeEventListener('transitionend', end);
+          el.classList.add('is-done');
+        }
+        el.addEventListener('transitionend', end);
+        window.setTimeout(function () { end(); }, 2600);
+      }
+
+      function isAbove(boundingClientRect) {
+        return (boundingClientRect.width || boundingClientRect.height) && boundingClientRect.bottom <= 0;
+      }
+
+      // Elements that come into view together are staggered in document
+      // order, so a grid of cards arrives as a wave however far down it sits.
+      // A marked element inside another one (a card's disc) takes no step of
+      // its own: it inherits the parent's --motion-i, so the wave counts
+      // cards, not parts, even when the two arrive in different batches.
+      // Threshold 0, as with .reveal: a block shows as soon as any of it is
+      // on screen, however tall it is.
+      var io = on && new IntersectionObserver(function (entries) {
+        // A page the browser scrolled by itself (a search result's text link,
+        // whose #:~:text= part never reaches location.hash, or a reload or Back
+        // that restores the old position) lands the reader mid-page. Nothing
+        // there may fade in under them, so the page shows everything at once.
+        if (!moved && window.scrollY > 0) { showAll(); return; }
+        var step = 0;
+        for (var i = 0; i < entries.length; i++) {
+          var entry = entries[i];
+          var el = entry.target;
+          if (el.classList.contains('is-in')) { io.unobserve(el); continue; }
+          if (!entry.isIntersecting) {
+            // Show marks already above the viewport. Elements without a box
+            // can wait until shown.
+            if (isAbove(entry.boundingClientRect)) {
+              show(el, true);
+              io.unobserve(el);
+            }
+            continue;
+          }
+          var nested = el.parentElement && el.parentElement.closest('[data-enter]');
+          if (!nested && !el.style.getPropertyValue('--motion-i')) el.style.setProperty('--motion-i', String(Math.min(step++, MAX_STEP)));
+          show(el, false);
+          io.unobserve(el);
+        }
+        settle();
+      }, { threshold: 0 });
+
+      // Keyboard readers never wait on an entrance: the first Tab shows
+      // everything at once and the page stays still from then on. A reader who
+      // jumps to a part of the page (an address with #, a link to a section on
+      // the same page, Back to one) never waits either: the place they land on
+      // must already be there, so the jump shows everything at once too,
+      // including marks added later.
+      var still = false;
+      // Whether the reader has moved the page themselves (wheel, touch, a key,
+      // a click or a drag on the scrollbar). Only their own scroll may play
+      // entrances; any other scroll is the browser placing them.
+      var moved = false;
+      function markMoved() { moved = true; }
+      if (io) {
+        var opts = { capture: true, passive: true, once: true };
+        ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (type) {
+          window.addEventListener(type, markMoved, opts);
+        });
+      }
+      function showAll() {
+        still = true;
+        if (io) io.disconnect();
+        var marked = document.querySelectorAll('[data-enter]');
+        for (var m = 0; m < marked.length; m++) show(marked[m], true);
+        listen(false);
+      }
+      function scan(scope, instant) {
+        var marked = (scope || document).querySelectorAll('[data-enter]:not(.is-in)');
+        for (var m = 0; m < marked.length; m++) {
+          // Observing an element twice is a no-op.
+          if (io && !still && !instant) io.observe(marked[m]);
+          else show(marked[m], true);
+        }
+        if (!still && document.querySelector('[data-enter]:not(.is-in)')) listen(true);
+      }
+      function jumping() {
+        return location.hash.length > 1;
+      }
+      if (io) {
+        document.addEventListener('keydown', function onKey(event) {
+          if (event.key !== 'Tab') return;
+          document.removeEventListener('keydown', onKey, true);
+          showAll();
+        }, true);
+        document.addEventListener('click', function (event) {
+          if (still) return;
+          var link = event.target && event.target.closest ? event.target.closest('a[href*="#"]') : null;
+          if (link && typeof link.hash === 'string' && link.hash.length > 1 && link.pathname === location.pathname && link.host === location.host) showAll();
+        }, true);
+        window.addEventListener('hashchange', function () {
+          if (!still && jumping()) showAll();
+        });
+      }
+      // A jump (End, a script scrolling the page) can carry a mark past the
+      // viewport without an observer entry. Show those marks as soon as the
+      // scroll is handled.
+      var sweeping = false;
+      function sweep() {
+        sweeping = false;
+        if (still) return;
+        var waiting = document.querySelectorAll('[data-enter]:not(.is-in)');
+        for (var w = 0; w < waiting.length; w++) {
+          if (isAbove(waiting[w].getBoundingClientRect())) {
+            show(waiting[w], true);
+            io.unobserve(waiting[w]);
+          }
+        }
+        settle();
+      }
+      function onScroll() {
+        if (sweeping || still) return;
+        sweeping = true;
+        window.requestAnimationFrame(sweep);
+      }
+      // The scroll listener is attached while at least one mark waits, and
+      // removed once none does; scan() attaches it again for new marks.
+      var listening = false;
+      function listen(want) {
+        if (!io || want === listening) return;
+        listening = want;
+        if (want) window.addEventListener('scroll', onScroll, { passive: true });
+        else window.removeEventListener('scroll', onScroll);
+      }
+      function settle() {
+        if (!document.querySelector('[data-enter]:not(.is-in)')) listen(false);
+      }
+      window.zodiacsMotion = { scan: scan };
+      scan();
+      if (document.readyState === 'loading') {
+        // The parser is still adding elements. Pick them up as they arrive, so
+        // marks at the top of the page do not wait for the whole document and
+        // its deferred scripts.
+        var poll = window.setInterval(function () { scan(); }, 50);
+        document.addEventListener('DOMContentLoaded', function () {
+          window.clearInterval(poll);
+          scan();
+        }, { once: true });
+      }
+      // Tells the switch above that the runtime has started.
+      root.setAttribute('data-entrance-ready', '');
+    } catch (err) {
+      // Never leave anything hidden.
+      root.setAttribute('data-entrance', 'off');
+    }
+  })();
+</script>

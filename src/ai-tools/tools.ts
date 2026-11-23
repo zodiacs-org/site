@@ -1,5 +1,5 @@
 import { moonPhase } from '@zodiacs/engine';
-import { moonPhaseNameFromAngle } from '../lib/engine/lite';
+import { eventTimes, localIso, moonPhaseLabel } from './clear-time';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { ComputeApiError } from '../lib/compute-api/errors';
 import { BUDGETS, EPOCH, EVENT_KINDS } from '../lib/compute-api/constants';
@@ -28,15 +28,19 @@ import { searchSkyEvents } from './features/sky-events';
 import { getYearScore } from './features/year-score';
 import { getSolarReturn } from './features/solar-return';
 import { getNumerology } from './features/numerology';
+import { getGoodDays } from './features/good-days';
+import { NO_MEDICAL_TIMING, isMedicalGoal } from '../lib/good-days/goals';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
-import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, type AiToolName, type SolarReturnToolName, type CoverageToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
-import { isUnder13 } from './features/reading-guards';
+import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, GOOD_DAYS_TOOL_NAMES, type AiToolName, type SolarReturnToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
+import { MINOR_LOVE_NOTE, isUnder13, isUnderAge } from './features/reading-guards';
+import { earliestToday } from '../lib/birth-date-policy';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
-import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
+import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, softenMinorAnswer, softenMinorPanel, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
+import { PERSONAL_TOOL_NAMES, isPersonalTool, personalTool, type PersonalToolName } from './personal/registry';
 
 export interface AiDependencies {
   /** Authenticated preview only; changes the declared privacy/limitations. */
@@ -69,6 +73,13 @@ export interface AiDependencies {
    * Numerology is a separate tradition from astrology.
    */
   numerology?: boolean;
+  /** find_good_days (ZODIACS_GOOD_DAYS_ENABLED=1), in effect only with the coverage and occasion tools (goodDaysOn). */
+  goodDays?: boolean;
+  /**
+   * The personal tools (ZODIACS_PERSONAL_TOOLS_ENABLED=1, src/ai-tools/personal/registry.ts), in effect only with the
+   * coverage and occasion tools (personalOn).
+   */
+  personal?: boolean;
   /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
   horoscopeMonths?: () => Promise<HoroscopeMonths>;
   /** The committed horoscope program (src/data/horoscope-program.json), for the yearly readings. */
@@ -109,8 +120,9 @@ export function dailyEmailLink(origin: string, sign?: string): { title: string; 
 }
 const LIMITS = { from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS['events.samples'], factSamples: BUDGETS['sky-fact.samples'] };
 
+/** The zone's clock as ISO 8601 with its offset, 2026-11-10T15:35:46+07:00: a day-first date reads as another month in the United States. */
 export function displayTime(utc: string, zone: string): string {
-  return new Intl.DateTimeFormat('en-GB', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23', timeZoneName: 'shortOffset' }).format(new Date(utc));
+  return localIso(utc, zone);
 }
 
 function failure(tool: AiToolName, code: string, message: string, retryAfterSeconds?: number) {
@@ -163,6 +175,16 @@ export function solarReturnOn(dependencies: AiDependencies): boolean {
   return !!(dependencies.occasions && dependencies.coverage && dependencies.solarReturn);
 }
 
+/** Whether the good days switch is in effect: it joins the occasion and coverage switches, and alone changes nothing. */
+export function goodDaysOn(dependencies: AiDependencies): boolean {
+  return !!(dependencies.occasions && dependencies.coverage && dependencies.goodDays);
+}
+
+/** Whether the personal tools' switch is in effect: it joins the occasion and coverage switches, and alone changes nothing. */
+export function personalOn(dependencies: AiDependencies): boolean {
+  return !!(dependencies.occasions && dependencies.coverage && dependencies.personal);
+}
+
 /** The tools this server actually offers with these dependencies. */
 export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   const released: AiToolName[] = AI_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope' || !!dependencies.horoscopeWindow);
@@ -173,7 +195,9 @@ export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   // search_sky_events comes last, so the nineteen entries before it keep their places.
   // get_year_score comes after everything else, so every entry before it keeps its place.
   // get_numerology comes after get_solar_return, so every entry before it keeps its place.
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : [])];
+  // find_good_days comes after them all, so every entry before it keeps its place.
+  // The personal tools come after everything else, so every entry before them keeps its place.
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : []), ...(goodDaysOn(dependencies) ? GOOD_DAYS_TOOL_NAMES : []), ...(personalOn(dependencies) ? PERSONAL_TOOL_NAMES : [])];
 }
 
 const isCoverageTool = (tool: string): tool is CoverageToolName => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool);
@@ -182,6 +206,7 @@ export const isSkyEventsTool = (tool: string): tool is SkyEventsToolName => (SKY
 export const isYearScoreTool = (tool: string): tool is YearScoreToolName => (YEAR_SCORE_TOOL_NAMES as readonly string[]).includes(tool);
 export const isSolarReturnTool = (tool: string): tool is SolarReturnToolName => (SOLAR_RETURN_TOOL_NAMES as readonly string[]).includes(tool);
 export const isNumerologyTool = (tool: string): tool is NumerologyToolName => (NUMEROLOGY_TOOL_NAMES as readonly string[]).includes(tool);
+export const isGoodDaysTool = (tool: string): tool is GoodDaysToolName => (GOOD_DAYS_TOOL_NAMES as readonly string[]).includes(tool);
 /** What search_sky_events does, for get_capabilities. */
 const SKY_EVENTS_TOOL_SUMMARY: Record<SkyEventsToolName, string> = {
   search_sky_events: 'eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods, months or years ahead',
@@ -197,18 +222,20 @@ const COVERAGE_TOOL_SUMMARY: Record<CoverageToolName, string> = {
 
 /** What a field must look like, for refusals that say how to fix it. */
 const FIELD_FORMAT: Record<string, string> = {
-  birthDate: 'a date such as 1990-05-03', date: 'a date such as 2026-12-01', from: 'a date such as 2026-11-01', to: 'a date such as 2026-12-01',
-  time: 'a time such as 08:30', zone: 'a time zone name such as Europe/London', currentZone: 'a time zone name such as Asia/Bangkok', place: 'plain text',
+  birthDate: 'a date such as 1994-05-14', birthTime: 'a time such as 09:15', birthZone: 'a time zone name such as America/New_York', date: 'a date such as 2026-12-01', from: 'a date such as 2026-11-01', to: 'a date such as 2026-12-01',
+  time: 'a time such as 09:15', zone: 'a time zone name such as Europe/London', currentZone: 'a time zone name such as America/Mexico_City', place: 'plain text',
 };
 
 /** The birth years a tool takes, named when a date in the right form falls outside them (1799-05-03). */
-const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName, string>> = {
+const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | GoodDaysToolName | PersonalToolName, string>> = {
   get_natal_chart: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_personal_transits: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_year_score: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_solar_return: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_numerology: '1800 to 2199',
 };
+/** Every personal tool takes a birth date in the natal chart's years. */
+const birthYearsOf = (tool: CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | GoodDaysToolName | PersonalToolName) => (isPersonalTool(tool) ? `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}` : BIRTH_YEARS[tool]);
 
 /**
  * A 0.6.0 tool's refusal of arguments its schema does not accept, naming each field: "birthDate is required.",
@@ -216,10 +243,12 @@ const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsTo
  * values; nothing from the request is repeated, so an unknown property's name never comes back. `schema` is the
  * tool's input schema in effect, its sky events form while that switch is on; an array item is named as kinds[0].
  */
-export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName, input: unknown, schema: z.ZodType = INPUT_SCHEMAS[tool]) {
+export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | GoodDaysToolName | PersonalToolName, input: unknown, schema: z.ZodType = INPUT_SCHEMAS[tool]) {
   const parsed = schema.safeParse(input ?? {});
   if (parsed.success) return null;
   const record = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
+  // A goal asking for medical timing gets its own sentence, so it is not carried over to another goal.
+  if (tool === 'find_good_days' && isMedicalGoal(record.goal)) return failure(tool, 'invalid-request', NO_MEDICAL_TIMING);
   const sentences = parsed.error.issues.map((issue: z.core.$ZodIssue) => {
     const field = issue.path.map((part) => (typeof part === 'number' ? `[${part}]` : String(part))).join('.').replace(/\.\[/gu, '[');
     if (issue.code === 'unrecognized_keys') return 'Leave out fields this tool does not take.';
@@ -230,7 +259,7 @@ export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | Sk
     if (issue.code === 'too_big' && 'maximum' in issue && issue.origin === 'number') return `${field} must be at most ${String(issue.maximum)}.`;
     if (issue.code === 'invalid_type' && issue.expected === 'number') return `${field} must be a number.`;
     if (issue.code === 'invalid_type' && issue.expected === 'int') return `${field} must be a whole number.`;
-    if (field === 'birthDate' && BIRTH_YEARS[tool] && typeof record.birthDate === 'string' && /^\d{4}-\d{2}-\d{2}$/u.test(record.birthDate)) return `birthDate must be a date from ${BIRTH_YEARS[tool]}, such as 1990-05-03.`;
+    if (field === 'birthDate' && birthYearsOf(tool) && typeof record.birthDate === 'string' && /^\d{4}-\d{2}-\d{2}$/u.test(record.birthDate)) return `birthDate must be a date from ${birthYearsOf(tool)}, such as 1994-05-14.`;
     return `${field} must be ${FIELD_FORMAT[field] ?? 'in the documented form'}.`;
   });
   return failure(tool, 'invalid-request', [...new Set(sentences)].slice(0, 3).join(' '));
@@ -292,9 +321,14 @@ export function birthDatesIn(tool: AiToolName, args: unknown, now: Date, hostZon
  * The hosted tools' refusal of a child's birth date, before anything is worked out: Zodiacs is not directed at
  * children under 13, so a call that carries a birth date less than 13 years before today, or one still to come, gets
  * the fixed refusal and no card, chart or reading. Null for every other call.
+ *
+ * "Today" is the calendar date at UTC-12, the earliest date anywhere on Earth, the same day the site's chart forms
+ * use (../lib/birth-date-policy.ts). So nobody is accepted before their 13th birthday in any time zone; the UTC date
+ * accepted a child west of UTC up to 12 hours early. The cost is the one the 9 November audit states: someone at
+ * UTC+14 is accepted up to 26 hours after their 13th birthday begins.
  */
 export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date, hostZone?: string) {
-  const today = now.toISOString().slice(0, 10);
+  const today = earliestToday(now);
   return birthDatesIn(tool, args, now, hostZone).some((date) => isUnder13(date, today)) ? failure(tool, 'invalid-request', UNDER_13_REFUSAL) : null;
 }
 
@@ -385,15 +419,29 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
   const resolveZone = (name: string) => localTime().canonicalZoneName(name);
   try {
     if ((OCCASION_TOOL_NAMES as readonly string[]).includes(tool) && !dependencies.occasions) return failure(tool, 'unavailable', 'This tool is not offered here.');
-    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
+    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
     // get_year_score takes a public figure only with its people switch (contracts.ts, YEAR_SCORE_PEOPLE_INPUT).
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
-    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
+    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
     const parsed = inputSchemaFor(tool, skyEvents, switches).safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');
     let data: unknown;
     let links: { title: string; url: string }[] = [methodLink];
-    switch (tool) {
+    if (isPersonalTool(tool)) {
+      // A personal tool: computed by its own module from the engine and pre-written wording, for this call only.
+      const now = dependencies.now?.() ?? new Date();
+      const child = childBirthDateRefusal(tool, input, now, context.hostZone);
+      if (child) return child;
+      const definition = personalTool(tool);
+      const result = await feature(() => definition.run(definition.input.parse(input) as never, {
+        now, localTime: localTime(), resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone), hostZone: context.hostZone, origin: ORIGIN,
+        ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
+        ...(dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}),
+      }));
+      if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+      if ('refused' in result) return failure(tool, result.refused, 'Zodiacs is busy. Try again in a minute.', result.refused === 'rate-limited' ? 60 : 300);
+      ({ data, links } = result);
+    } else switch (tool) {
       case 'open_chart_studio': {
         data = { title: 'Chart Studio', calculation: 'browser-local', initialChart: 'birth-details', sharing: 'user-reviewed-selection-only' };
         links = [{ title: 'Birth chart page. A chat readout from details already given uses get_natal_chart.', url: `${ORIGIN}/birth-chart/` }];
@@ -438,6 +486,17 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           // Numerology is a separate tradition from astrology, and the line says so.
           if (numerologyOn(dependencies)) capabilities.limitations.push('get_numerology is listed in tools/list too: Pythagorean numerology (Life Path, Expression, Soul Urge, Personality and Personal Year) from a birth date and, if given, a name. Numerology is a separate tradition from astrology, with no planets or signs in it; its meanings are the tradition\'s reading of each number, with no reading-confidence label, and no price or investment calls, diagnoses, death predictions or legal verdicts.');
         }
+        if (goodDaysOn(dependencies)) {
+          const capabilities = data as { privacy: string; limitations: string[] };
+          capabilities.privacy += ' The good day finder takes a goal and dates, and, only if the person asks for their own chart to count, a birth date with an optional time and birthplace time zone, for that call only; it saves none of it and returns only the natal Sun sign.';
+          capabilities.limitations.push('find_good_days (also listed in tools/list) ranks the days in a window of up to twelve months for a launch, a contract, a move, a relationship, travel, a new job or a wedding, by traditional electional astrology, and names the days to avoid. It gives no medical timing, no price calls and no legal outcomes, and it schedules nothing.');
+        }
+        if (personalOn(dependencies) && PERSONAL_TOOL_NAMES.length) {
+          // The personal tools: what each does, and that none of them keeps the details it is given.
+          const capabilities = data as { privacy: string; limitations: string[] };
+          capabilities.privacy += ` The personal tools (${PERSONAL_TOOL_NAMES.join(', ')}) take a birth date, with an optional time, time zone and coordinates, and sometimes town or city names, for that call only; they save, log and count none of it, and no link they return carries a birth detail or a place.`;
+          capabilities.limitations.push(`Personal tools, also listed in tools/list: ${PERSONAL_TOOL_NAMES.map((name) => `${name} (${personalTool(name).summary})`).join(', ')}. Each is calculated by Zodiacs' own code with pre-written wording, with a reading-confidence label on each reading. They read money, career, wellbeing and legal matters as astrology traditionally does, never as a guarantee: no calls on prices or what to buy or sell, no diagnoses or medical timing, no predictions of death, and no promise of how a legal matter ends.`);
+        }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
           capabilities.privacy += ' Only the save tool needs an account: when the person signs in to their own Zodiacs account and asks to keep a chart, comparison, occasion card or personal week, Zodiacs works it out again from the same details and saves that result, including the birth dates and names in it, to their account until they delete it. It saves no conversation text.';
@@ -461,7 +520,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const calculation = computePositions(parsePositionsRequest({ instants: [instant], ...(args.bodies ? { bodies: args.bodies } : {}) }));
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = { mode: args.instant ? 'requested-instant' : 'current-instant', time: { utc, zone, display: displayTime(utc, zone) }, calculation, moonPhase: { name: moonPhaseNameFromAngle(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: 'Astronomical calculations; no personal prediction is supplied.' };
+        data = { mode: args.instant ? 'requested-instant' : 'current-instant', time: { utc, zone, display: displayTime(utc, zone) }, calculation, moonPhase: { name: moonPhaseLabel(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: 'Astronomical calculations; no personal prediction is supplied.' };
         links = [moonLink, methodLink, calendarLink];
         break;
       }
@@ -478,7 +537,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
         const calculation = computeEvents(parsedRequest);
-        data = { from: calculation.result.from, to: calculation.result.to, zone, events: calculation.result.events.map(event => ({ ...event, localAt: displayTime(event.at, zone) })), calculation, completeness: calculation.receipt.search!.completeness };
+        data = { from: calculation.result.from, to: calculation.result.to, zone, // Each time to the minute, inside the window, on the UTC clock and on the zone's; the solved instants stay in calculation, under its receipt.
+          events: calculation.result.events.map(event => ({ ...event, ...eventTimes(event.at, zone, calculation.result) })), calculation, completeness: calculation.receipt.search!.completeness };
         links = [{ title: 'Subscribe to these in your calendar (get_sky_calendar)', url: `${ORIGIN}/sky-calendar/` },
           // With the sky events switch, the tool for one kind of event further ahead.
           ...(skyEvents ? [{ title: 'Eclipses, stations, sign changes and Moons months or years ahead (search_sky_events)', url: `${ORIGIN}/events/` }] : []),
@@ -509,18 +569,25 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         let zoneSource: ZoneSource = 'default';
         if (args.zone) {
           try { zone = await zoneAt(args.zone, '/zone', resolveZone); zoneSource = 'request'; }
-          catch { return failure(tool, 'invalid-timezone', "Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok."); }
+          catch { return failure(tool, 'invalid-timezone', "Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City."); }
         } else if (context.hostZone) {
           // A hint the assistant shares; an unknown name falls back to UTC rather than failing.
           try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); zoneSource = 'assistant'; } catch { /* keep UTC */ }
         }
         const window = await dependencies.horoscopeWindow();
         const localDate = dateInZone(dependencies.now?.() ?? new Date(), zone);
-        const request = { period: args.period ?? 'day', focus: args.focus ?? 'general', ...(args.sign ? { sign: args.sign } : {}), ...(args.date ? { date: args.date } : {}) } as const;
-        data = resolveHoroscope(window, request, zone, zoneSource, localDate, ORIGIN);
+        // Under 18 on the person's own date, Zodiacs gives no love or romance reading: the general one stands in,
+        // with a note that says so, and no line of any reading reads as romance. The birth date is only compared.
+        // isUnderAge keeps 29 February as 29 February, so someone born on 1 March is still under 18 that day.
+        const minor = args.birthDate !== undefined && isUnderAge(args.birthDate, localDate, 18);
+        const loveWithheld = minor && args.focus === 'love';
+        const request = { period: args.period ?? 'day', focus: loveWithheld ? 'general' : args.focus ?? 'general', ...(args.sign ? { sign: args.sign } : {}), ...(args.date ? { date: args.date } : {}) } as const;
+        const answer = resolveHoroscope(window, request, zone, zoneSource, localDate, ORIGIN);
+        data = minor ? softenMinorAnswer(answer) : answer;
+        if (loveWithheld) (data as { message?: string }).message = answer.message ? `${answer.message} ${MINOR_LOVE_NOTE}` : MINOR_LOVE_NOTE;
         const horoscope = data as { disclosure: string; reading?: { paragraphs: { text: string; heading?: string }[] }; personal?: { note: string } };
         const signLabel = readingConfidenceLabel('sign');
-        horoscope.disclosure = `${horoscope.disclosure} ${signLabel}. For a month, a year, or a love or career week, use get_horoscope_period.`;
+        horoscope.disclosure = `${horoscope.disclosure} ${signLabel}. ${minor ? 'For a month, a year or a career week' : 'For a month, a year, or a love or career week'}, use get_horoscope_period.`;
         // A personal forecast takes a birth date, so it follows the same switch as the other birth-date tools.
         if (args.birthDate && dependencies.occasions) {
           let birthZone: string | undefined;
@@ -539,7 +606,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
             throw error;
           }
         }
-        if (args.sign) context.horoscopePanel = horoscopePanel(window, args.sign, { period: request.period, focus: request.focus, ...(args.date ? { date: args.date } : {}), ...(zoneSource === 'default' ? {} : { zone }) }, { origin: ORIGIN, ref: context.ref ?? null });
+        if (args.sign) context.horoscopePanel = (minor ? softenMinorPanel : (panel: HoroscopePanelData) => panel)(horoscopePanel(window, args.sign, { period: request.period, focus: request.focus, ...(args.date ? { date: args.date } : {}), ...(zoneSource === 'default' ? {} : { zone }) }, { origin: ORIGIN, ref: context.ref ?? null }));
         links = [...(args.sign ? [{ title: `${args.sign[0].toUpperCase()}${args.sign.slice(1)} on Zodiacs`, url: `${ORIGIN}/horoscopes/${args.sign}/` }] : []), methodLink, dailyEmailLink(ORIGIN, args.sign)];
         break;
       }
@@ -693,7 +760,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         let zoneSource: 'request' | 'assistant' | 'default' = 'default';
         if (args.zone) {
           try { zone = await zoneAt(args.zone, '/zone', resolveZone); zoneSource = 'request'; }
-          catch { return failure(tool, 'invalid-timezone', "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok."); }
+          catch { return failure(tool, 'invalid-timezone', "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City."); }
         } else if (context.hostZone) {
           try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); zoneSource = 'assistant'; } catch { /* keep UTC and say so */ }
         }
@@ -743,7 +810,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         let zoneSource: 'request' | 'assistant' | 'default' = 'default';
         if (args.zone) {
           try { zone = await zoneAt(args.zone, '/zone', resolveZone); zoneSource = 'request'; }
-          catch { return failure(tool, 'invalid-timezone', "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok."); }
+          catch { return failure(tool, 'invalid-timezone', "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City."); }
         } else if (context.hostZone) {
           try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); zoneSource = 'assistant'; } catch { /* keep UTC and say so */ }
         }
@@ -788,12 +855,36 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         let currentYear = now.getUTCFullYear();
         if (args.zone) {
           try { currentYear = Number(dateInZone(now, await zoneAt(args.zone, '/zone', resolveZone)).slice(0, 4)); currentYearFrom = 'zone'; }
-          catch { return failure(tool, 'invalid-timezone', "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok."); }
+          catch { return failure(tool, 'invalid-timezone', "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or America/Mexico_City."); }
         } else if (context.hostZone) {
           try { currentYear = Number(dateInZone(now, await zoneAt(context.hostZone, '/zone', resolveZone)).slice(0, 4)); currentYearFrom = 'assistant'; } catch { /* keep UTC and say so */ }
         }
         const result = await feature(async () => getNumerology(args, { currentYear, currentYearFrom, origin: ORIGIN }));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        ({ data, links } = result);
+        break;
+      }
+      case 'find_good_days': {
+        const args = INPUT_SCHEMAS.find_good_days.parse(input);
+        let zone = 'UTC';
+        let zoneSource: 'request' | 'assistant' | 'default' = 'default';
+        if (args.zone) {
+          try { zone = await zoneAt(args.zone, '/zone', resolveZone); zoneSource = 'request'; }
+          catch { return failure(tool, 'invalid-timezone', "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok."); }
+        } else if (context.hostZone) {
+          try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); zoneSource = 'assistant'; } catch { /* keep UTC and say so */ }
+        }
+        let birthZone: string | undefined;
+        if (args.birthZone) {
+          try { birthZone = await zoneAt(args.birthZone, '/birthZone', resolveZone); }
+          catch { return failure(tool, 'invalid-timezone', "birthZone: Zodiacs doesn't recognise that birthplace time zone. Use a name such as America/New_York."); }
+        }
+        const result = await feature(() => getGoodDays({ ...args, ...(birthZone ? { birthZone } : {}) }, localTime(), {
+          zone, zoneSource, today: dateInZone(dependencies.now?.() ?? new Date(), zone), origin: ORIGIN,
+          ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
+        }));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        if ('refused' in result) return failure(tool, result.refused, 'Zodiacs is busy. Try again in a minute.', result.refused === 'rate-limited' ? 60 : 300);
         ({ data, links } = result);
         break;
       }

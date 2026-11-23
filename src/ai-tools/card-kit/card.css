@@ -34,7 +34,7 @@ p { margin: 0; }
 .card > * { min-width: 0; }
 /* The nameplate: the brand lockup (DESIGN.md, "The brand lockup"), at the
    nav's 13px. The tilted mark is still; nothing on the card moves on its own. */
-.nameplate { display: inline-flex; align-items: center; gap: 10px; width: fit-content; color: var(--ink); text-decoration: none; white-space: nowrap; direction: ltr; }
+.nameplate { display: inline-flex; align-items: center; min-height: 44px; gap: 10px; width: fit-content; color: var(--ink); text-decoration: none; white-space: nowrap; direction: ltr; }
 .nameplate svg { flex: none; overflow: visible; }
 .nameplate-name { font: 400 13px/1 var(--serif); letter-spacing: .2em; text-transform: uppercase; }
 .nameplate-sep { margin: 0 .2em; color: var(--muted); }
@@ -161,9 +161,9 @@ p { margin: 0; }
 .facts-stacked dd { text-align: left; }
 .facts .sign-value { display: inline-flex; align-items: center; gap: 8px; }
 
-.more summary { cursor: pointer; width: fit-content; color: var(--ink); font-size: 14.5px; font-weight: 500; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; list-style: none; }
+.more summary { display: flex; align-items: center; min-width: 44px; min-height: 44px; cursor: pointer; width: fit-content; color: var(--ink); font-size: 14.5px; font-weight: 500; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; list-style: none; }
 .more summary::-webkit-details-marker { display: none; }
-.more summary::after { content: ''; display: inline-block; width: 6px; height: 6px; margin: 0 0 3px 9px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); transition: transform .2s ease; }
+.more summary::after { content: ''; display: inline-block; width: 6px; height: 6px; margin-left: 9px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); transition: transform .2s ease; }
 .more[open] summary::after { transform: translateY(3px) rotate(225deg); }
 .more[open] > :not(summary) { margin-top: 12px; }
 
@@ -185,11 +185,11 @@ p { margin: 0; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
 .actions a.primary { display: inline-flex; align-items: center; gap: 12px; min-height: 46px; padding: 6px 6px 6px 20px; border-radius: 999px; background: var(--ink); color: var(--card); font: 600 15.5px/1.2 var(--sans); text-decoration: none; }
 .actions .orb { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--orb); }
-.actions a.secondary { display: inline-flex; align-items: center; gap: 7px; padding: 4px 0; color: var(--ink); font: 500 15px/1.4 var(--sans); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: var(--accent); text-underline-offset: 5px; }
+.actions a.secondary { display: inline-flex; align-items: center; min-height: 44px; gap: 7px; padding: 4px 0; color: var(--ink); font: 500 15px/1.4 var(--sans); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: var(--accent); text-underline-offset: 5px; }
 .actions a.secondary:hover, .copy:hover, .links a:hover { text-decoration-thickness: 2px; }
 .arrow { display: block; flex: none; }
 .links { display: flex; flex-wrap: wrap; gap: 8px 20px; }
-.links a, .copy { padding: 4px 0; border: 0; background: none; color: var(--ink); font: 500 15px/1.4 var(--sans); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: var(--accent); text-underline-offset: 5px; }
+.links a, .copy { display: inline-flex; align-items: center; min-height: 44px; padding: 4px 0; border: 0; background: none; color: var(--ink); font: 500 15px/1.4 var(--sans); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: var(--accent); text-underline-offset: 5px; }
 .copy-block { display: grid; gap: 4px; justify-items: start; }
 .status { min-height: 0; color: var(--muted); font-size: 13.5px; }
 .fine { color: var(--muted); font-size: 13px; line-height: 1.5; max-width: 66ch; }
@@ -197,7 +197,7 @@ p { margin: 0; }
 code { font: 400 13px/1.5 var(--mono); overflow-wrap: anywhere; }
 
 .panel-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 14px; padding: 0 4px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
-.panel-foot a { color: var(--muted); text-underline-offset: 3px; }
+.panel-foot a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding-inline: 4px; color: var(--muted); text-underline-offset: 3px; }
 
 /* A panel shell for the states before a card (waiting, a refusal, the sign picker) */
 .shell { display: grid; gap: 16px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); }

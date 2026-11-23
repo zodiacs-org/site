@@ -7,6 +7,7 @@ import committedMonths from '../../data/horoscope-months.json';
 import committedProgram from '../../data/horoscope-program.json';
 import type { HoroscopeWindow } from '../horoscope/window';
 import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
+import { expectedCapabilityReply } from '../../../tests/helpers/de440-capabilities';
 
 /**
  * The account switch defaults off. Off (unset, empty, '0' or anything but '1'),
@@ -32,6 +33,29 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * privacy text each gain one sentence: Zodiacs is not directed at children under 13, and its tools refuse a birth date
  * less than 13 years ago. Their compatibility limitation now says that from 13 to 17 it points to a friendship reading
  * (src/ai-tools/under-13.test.ts). The released scenario, every tools/list and every resources/list keep their bytes.
+ * 0.6.7 (ZOD-58) changes the reported version in every scenario, and rewrites tool descriptions and the server
+ * instructions as plain descriptions, so every scenario's initialize, tools/list and bearer answers change in those
+ * texts too (src/ai-tools/published-tools.ts). Every schema keeps its bytes. The horoscope panel moves to
+ * horoscopes-v7, so a panel opened for a birth date under 18 stays softened when another sign is picked in it: get_horoscope's
+ * panel address changes in every tools/list, and each resources/list gains v7, with v6 kept under a legacy name.
+ * ZOD-207 (a draft on top of ZOD-58, still 0.6.7) adds to the server instructions what is outside Zodiacs, that a
+ * named child under 13 gets no horoscope and, in the coverage scenario, which tool takes which request; it says "Ask
+ * before using someone else's birth details" there in the words get_capabilities uses; and it adds routing and
+ * declining sentences to the get_natal_chart, explain_astrology and get_horoscope_period descriptions and to four of
+ * the thirteen published ones, get_horoscope, check_sky_fact, get_upcoming_events and open_chart_studio, which the
+ * owner approved on 13 November 2026 (src/ai-tools/published-tools.ts, src/ai-tools/tryouts-routing.test.ts). ZOD-207
+ * changes no schema, no panel address and no resources/list.
+ * ZOD-64 (PR 1068's minute times, still 0.6.7, approved by Dias on 2026-11-17) changes the time that
+ * get_upcoming_events' description quotes for Neptune entering Aries from 14:31:41 to 14:32 UTC, in every tools/list
+ * (src/ai-tools/published-tools.ts). Nothing else in any scenario changes.
+ * Developer 0.3.51 (still 0.6.7, owner approved on 17 November 2026 for the next directory resubmission) puts invented
+ * examples in eighteen input schema field descriptions of the published tools and the same examples in the later
+ * tools, so every scenario's tools/list changes in that example text only (INVENTED_EXAMPLES in
+ * src/ai-tools/published-tools.ts). No name, schema shape, annotation or resources/list changes.
+ * 0.6.8 changes only the reported version, in every scenario, to ship those invented examples for the directory
+ * resubmission.
+ * For 0.6.9, the fixture was captured from the rebuilt published runtime. The version, panel addresses
+ * and five tools' input descriptions follow the fixes Dias approved on 20 November 2026.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];
@@ -84,7 +108,7 @@ async function capture(env: Record<string, string | undefined>) {
 }
 
 describe('the account switch off', () => {
-  it('leaves initialize, tools/list, resources/list and every account route byte-for-byte as the 0.5.0 server answers them', async () => {
+  it('preserves the published bytes and reports DE440 capabilities with accounts off', async () => {
     if (process.env.CAPTURE_FLAG_OFF_FIXTURE === '1') {
       const fixture: Record<string, unknown> = {};
       for (const [name, env] of Object.entries(SCENARIOS)) fixture[name] = await capture(env);
@@ -96,7 +120,9 @@ describe('the account switch off', () => {
         // Account settings without the switch change nothing either.
         const current = await capture({ ...env, ZODIACS_ACCOUNTS_ENABLED: accounts, ZODIACS_ACCOUNTS_OAUTH_CLIENTS: '00000000-0000-4000-8000-000000000000',
           PUBLIC_SUPABASE_URL: 'https://synthetic.supabase.co', PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_synthetic' });
-        expect(current, `${name} with ZODIACS_ACCOUNTS_ENABLED=${JSON.stringify(accounts)}`).toEqual(fixture[name]);
+        const recorded = fixture[name];
+        const expected = { ...recorded, capabilities: { ...recorded.capabilities, text: expectedCapabilityReply(recorded.capabilities.text) } };
+        expect(current, `${name} with ZODIACS_ACCOUNTS_ENABLED=${JSON.stringify(accounts)}`).toEqual(expected);
       }
     }
   }, 60_000);

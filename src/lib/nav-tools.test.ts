@@ -1,15 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import { RELEASED_LOCALES, localizePath, t } from './i18n';
 import { TOOL_ICON_FOR_PATH } from './tool-icons';
+import { launchFlagOn } from './launch-flags';
 import {
+  ALL_NAV_MORE,
   ALL_TOOL_CATALOG,
   FOOTER_TOOLS,
+  NAV_MORE,
   NAV_TOOLS,
   navToolLabelHasEnglishCue,
   TOOL_CATALOG,
   TOOLS_HUB,
+  visibleNavMore,
   visibleTools,
 } from './nav-tools';
+
+// The good day finder's hub card ('year' group) appears only while
+// PUBLIC_GOOD_DAYS_ENABLED is '1'; with it unset these are main's numbers.
+const goodDaysCards = Number(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED'));
 
 describe('NAV_TOOLS', () => {
   it.each(['es', 'pt', 'fr', 'it'] as const)('recognizes the existing %s Birthday language cue once', (locale) => {
@@ -70,7 +78,7 @@ describe('NAV_TOOLS', () => {
       '/transits/',
       '/retrogrades/',
     ]);
-    expect(TOOLS_HUB).toHaveLength(29);
+    expect(TOOLS_HUB).toHaveLength(29 + goodDaysCards);
     for (const tool of [...NAV_TOOLS, ...FOOTER_TOOLS, ...TOOLS_HUB]) {
       expect(catalogueHrefs.has(tool.href)).toBe(true);
     }
@@ -80,7 +88,7 @@ describe('NAV_TOOLS', () => {
     expect(TOOLS_HUB.filter((tool) => tool.group === 'lead').map((tool) => tool.href)).toEqual(['/birth-chart/']);
     expect(TOOLS_HUB[0].href).toBe('/birth-chart/');
     const counts = Object.fromEntries(['you', 'together', 'sky', 'year'].map((group) => [group, TOOLS_HUB.filter((tool) => tool.group === group).length]));
-    expect(counts).toEqual({ you: 6, together: 6, sky: 6, year: 10 });
+    expect(counts).toEqual({ you: 6, together: 6, sky: 6, year: 10 + goodDaysCards });
     expect(new Set(TOOLS_HUB.map((tool) => tool.icon)).size).toBe(TOOLS_HUB.length);
     for (const tool of TOOLS_HUB) {
       expect(tool.promise).not.toMatch(/[\r\n\u2013\u2014]/u);
@@ -123,8 +131,27 @@ describe('tools behind a launch switch', () => {
     expect(hrefs(true)).toEqual(expect.arrayContaining(['/year-score/', '/birthday-report/']));
     expect(hrefs(false)).not.toContain('/year-score/');
     expect(hrefs(false)).not.toContain('/birthday-report/');
+    expect(visibleTools(() => true).some((tool) => tool.href === '/good-days/')).toBe(true);
+    expect(visibleTools(() => false).some((tool) => tool.href === '/good-days/')).toBe(false);
+    expect(TOOLS_HUB.some((tool) => tool.href === '/good-days/')).toBe(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED'));
     for (const tool of ALL_TOOL_CATALOG) {
       if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
+    }
+  });
+
+  it('lists solar return in NAV_MORE and gates year-score and good-days behind their launch flags', () => {
+    const moreHrefs = (on: boolean) => visibleNavMore(() => on).map((entry) => entry.href);
+    expect(moreHrefs(false)).toContain('/solar-return/');
+    expect(moreHrefs(false)).not.toContain('/year-score/');
+    expect(moreHrefs(false)).not.toContain('/good-days/');
+    expect(moreHrefs(true)).toEqual(expect.arrayContaining(['/solar-return/', '/year-score/', '/good-days/']));
+    expect(NAV_MORE.some((entry) => entry.href === '/year-score/')).toBe(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED'));
+    expect(NAV_MORE.some((entry) => entry.href === '/good-days/')).toBe(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED'));
+    for (const entry of ALL_NAV_MORE) {
+      for (const locale of RELEASED_LOCALES) {
+        expect(entry.label[locale].trim()).not.toBe('');
+        expect(entry.label[locale]).not.toMatch(/[\r\n\u2013\u2014]/u);
+      }
     }
   });
 });

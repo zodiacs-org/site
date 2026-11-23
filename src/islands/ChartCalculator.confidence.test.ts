@@ -69,7 +69,7 @@ const controls = [
   ['Juneau repeated member', '1867-10-18', 'America/Juneau'],
   ['ordinary endpoint singleton', '1990-01-04', 'Asia/Bangkok'],
   ['ordinary two endpoint signs', '1990-01-01', 'Europe/London'],
-  ['non-hour gap day', '2024-10-06', 'Australia/Lord_Howe'],
+  ['non-hour gap day', '2012-10-07', 'Australia/Lord_Howe'],
   ['repeated Apia date', '1892-07-04', 'Pacific/Apia'],
 ] as const;
 

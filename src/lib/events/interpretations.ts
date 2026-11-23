@@ -14,6 +14,7 @@ import eclipsesData from '../../data/eclipses.json';
 import ingressesData from '../../data/ingresses.json';
 import { nasaAspectAt, nasaIngressAt, nasaStationAt } from '../nasa-instants';
 import { bodyLongitude } from '../engine/full';
+import { publishedAspectPage } from './site-publication';
 import type { BodyName } from '../engine/types';
 import { degreeInSign, signForLongitude } from '../signs';
 import {
@@ -23,6 +24,7 @@ import {
 } from './format';
 import type { EventFacts, EventInterpretation } from './types';
 import { REVISED_EVENT_READINGS } from './revised-readings';
+import { EVENT_READINGS_2027 } from './readings-2027';
 import { lunarTotalityMinutes } from '../nasa-lunar-eclipses';
 
 const INTERPRETATIONS: Record<string, EventInterpretation> = {
@@ -683,14 +685,15 @@ function editorialFactsById(): Map<string, EventFacts> {
   for (const month of transitMonths) {
     for (const item of month.aspects ?? []) {
       if (!SLOW_BODIES.has(item.a) || !SLOW_BODIES.has(item.b) || item.orb !== 0) continue;
-      const id = aspectId(item.a, item.type, item.b, item.at);
+      const published = publishedAspectPage(item.a, item.type, item.b, item.at);
+      const id = published?.id ?? aspectId(item.a, item.type, item.b, item.at);
       keep({
         id,
         family: 'aspect',
         subtype: item.type,
-        path: aspectPath(item.a, item.type, item.b, item.at),
+        path: published?.path ?? aspectPath(item.a, item.type, item.b, item.at),
         title: id,
-        at: nasaAspectAt(item.a, item.b, item.type, item.at) ?? item.at,
+        at: nasaAspectAt(item.a, item.b, item.type, published?.anchor ?? item.at) ?? item.at,
         bodies: [item.a, item.b],
         signs: [item.aSign, item.bSign],
         degree: item.aDegree,
@@ -713,6 +716,15 @@ export function interpretationFor(idOrFacts: string | EventFacts): EventInterpre
   if (bespoke) return bespoke;
   const revised = REVISED_EVENT_READINGS[id];
   if (revised) return revised;
+  // The 2027 pages written to the reading style guide: advice, why, action, what is next.
+  const guided = EVENT_READINGS_2027[id];
+  if (guided) {
+    return {
+      lead: guided.hook,
+      body: [guided.why, guided.tryIt],
+      styleGuide: { why: guided.why, tryIt: guided.tryIt, comeBack: guided.comeBack, next: guided.next },
+    };
+  }
   const facts = typeof idOrFacts === 'string' ? EDITORIAL_FACTS.get(id) : idOrFacts;
   return facts ? generatedInterpretation(facts) : undefined;
 }
