@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CHINESE_ZODIAC_ANIMALS, CHINESE_ZODIAC_COPY } from './chinese-zodiac';
-import { CHINESE_ZODIAC_ZH, stemBranchYear } from './chinese-zodiac-zh';
-import { chineseZodiacAnimals, chineseZodiacLocalizedText } from './chinese-zodiac-localized';
+import { CHINESE_ZODIAC_ZH, stemBranchYear, type ChineseZodiacCopyKey } from './chinese-zodiac-zh';
+import { chineseZodiacAnimals, chineseZodiacCopy, chineseZodiacLocalizedText } from './chinese-zodiac-localized';
 import { readFileSync } from 'node:fs';
 import { ENGLISH_ONLY_COPY } from '../lib/i18n/english-only';
 import { SECTION_UI } from '../lib/i18n/ui/server';
@@ -12,15 +12,18 @@ const strings = (locale: keyof typeof CHINESE_ZODIAC_ZH) => [
 ];
 
 describe('Chinese editions of the Chinese zodiac guide', () => {
-  it('carries every English key and every animal in both scripts', () => {
+  it('carries every English page key and every animal in both scripts', () => {
+    // iconRailNote, the caption of the retired Western sign disc row, has no Chinese copy.
+    const pageCopy = Object.entries(CHINESE_ZODIAC_COPY).filter(([key]) => key !== 'iconRailNote');
     for (const locale of ['zh-hans', 'zh-hant'] as const) {
-      expect(Object.keys(CHINESE_ZODIAC_ZH[locale].copy).sort()).toEqual(Object.keys(CHINESE_ZODIAC_COPY).sort());
+      expect(Object.keys(CHINESE_ZODIAC_ZH[locale].copy).sort()).toEqual(pageCopy.map(([key]) => key).sort());
+      expect(CHINESE_ZODIAC_ZH[locale].copy).not.toHaveProperty('iconRailNote');
       expect(Object.keys(CHINESE_ZODIAC_ZH[locale].animals).sort())
         .toEqual(CHINESE_ZODIAC_ANIMALS.map((animal) => animal.slug).sort());
-      for (const [key, english] of Object.entries(CHINESE_ZODIAC_COPY)) {
+      for (const [key, english] of pageCopy) {
         const placeholders = (text: string) => [...new Set([...text.matchAll(/\{(\w+)\}/g)].map((match) => match[1]))].sort();
         // Pinyin is dropped for Chinese readers; every other placeholder survives.
-        expect(placeholders(CHINESE_ZODIAC_ZH[locale].copy[key as keyof typeof CHINESE_ZODIAC_COPY]), key)
+        expect(placeholders(CHINESE_ZODIAC_ZH[locale].copy[key as ChineseZodiacCopyKey]), key)
           .toEqual(placeholders(english).filter((name) => name !== 'pinyin'));
       }
     }
@@ -73,6 +76,21 @@ describe('Chinese editions of the Chinese zodiac guide', () => {
     // The English fallbacks for these items are gone.
     expect(nav).not.toContain('astrofolioLabelLang');
     expect(footer).not.toContain(`t('en', 'trustFreeAnswer')`);
+  });
+
+  it('shows no row of Western sign discs and no caption for it, in any language', () => {
+    for (const file of [
+      '../pages/learn/chinese-zodiac/index.astro',
+      '../pages/learn/chinese-zodiac/[animal]/index.astro',
+      '../components/programmatic/LocalizedChineseZodiacHub.astro',
+      '../components/programmatic/LocalizedChineseZodiacAnimal.astro',
+    ]) {
+      const source = readFileSync(new URL(file, import.meta.url), 'utf8');
+      expect(source, file).not.toMatch(/ChineseZodiacBrandRail|cz-brand|iconRailNote|SignIcon/);
+    }
+    for (const locale of ['es', 'fr', 'it', 'pt', 'zh-hans', 'zh-hant'] as const) {
+      expect(chineseZodiacCopy(locale), locale).not.toHaveProperty('iconRailNote');
+    }
   });
 });
 

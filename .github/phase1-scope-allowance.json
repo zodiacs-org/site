@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "zod-43-astrofolio-thesis-link",
-  "baseCommit": "c61ebe082098f50690f810d330d091f769c4887a",
+  "baseCommit": "30385f52ea961f49bfe9068eaa625a8e45fa7cc7",
   "protectedPaths": [
     "public/assets/app.js",
     "scripts/registry-consumer-contract.test.mjs",
