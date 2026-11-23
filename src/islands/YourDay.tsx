@@ -10,13 +10,24 @@ import { yourDayShareUrl } from '../lib/personal-day/share';
 import type { DayContact, PersonalDayReading } from '../lib/personal-day/day';
 import type { TransitBody } from '../lib/engine/transit-scan-shared';
 import { SIGNS } from '../lib/signs';
+import { birthDateRefusal, birthDateRefusalText } from '../lib/birth-date-policy';
 
 /** How far from today a day may be read, either side, as the get_personal_day tool allows. */
 const MAX_DAYS = 366;
-const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no reading for a birth date less than 13 years ago. Nothing was worked out.';
+export const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no reading for a birth date less than 13 years ago. Nothing was worked out.';
 
-/** A birth date less than 13 years before today (both YYYY-MM-DD), or one still to come. */
-const under13 = (birthDate: string, today: string) => birthDate > `${String(Number(today.slice(0, 4)) - 13).padStart(4, '0')}${today.slice(4)}`;
+/**
+ * The form's message when the shared birth date policy (src/lib/birth-date-policy.ts)
+ * refuses a converted Gregorian birth date, or null. The policy reads today at
+ * UTC-12, whatever this device's clock and zone say, so nobody is read before
+ * their 13th birthday has begun everywhere; a date after the calendar date at
+ * UTC+14 is still to come.
+ */
+export function yourDayRefusal(birthDate: string, now: Date = new Date()): string | null {
+  const refusal = birthDateRefusal(birthDate, now);
+  if (refusal === null) return null;
+  return refusal === 'under_13' ? UNDER_13 : birthDateRefusalText(refusal);
+}
 const signName = (slug: string) => SIGNS.find((sign) => sign.slug === slug)?.name ?? slug;
 const hue = (planet: TransitBody) => `var(--sign-${BODY_SIGN[planet]})`;
 
@@ -107,7 +118,8 @@ export default function YourDay() {
         if ('error' in entry) { setError(entry.error); setShown(null); return; }
         birthDate = entry.date;
       }
-      if (under13(birthDate, clock.today)) { setError(UNDER_13); setShown(null); return; }
+      const refusal = yourDayRefusal(birthDate);
+      if (refusal) { setError(refusal); setShown(null); return; }
       if (Math.abs(daysBetween(clock.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
       if (target < birthDate) { setError('Choose a day on or after the birth date.'); setShown(null); return; }
       const { computeYourDay } = await loadModule(() => import('./your-day/compute'));
