@@ -34,7 +34,8 @@
  * `cite.url` is the tool's entry on the developer page, an anchor that does
  * not move.
  */
-import { ENGINE_VERSION, EPHEMERIS } from '@zodiacs/engine';
+import { ENGINE_VERSION } from '@zodiacs/engine';
+import { BACKEND } from '../lib/compute-api/receipt.js';
 import { receiptDigest } from '../lib/receipt-digest';
 import { ADAPTER_NAME, ADAPTER_VERSION, type CompareOutputName } from './bounds';
 
@@ -79,7 +80,7 @@ function adapterReceipt<Tool extends Exclude<ToolName, 'calculate_natal_chart' |
     schema: ADAPTER_RECEIPT_SCHEMA,
     tool,
     adapter: { name: ADAPTER_NAME, version: ADAPTER_VERSION },
-    engine: { name: '@zodiacs/engine' as const, version: ENGINE_VERSION, ephemeris: { name: EPHEMERIS.name, version: EPHEMERIS.version } },
+    engine: BACKEND,
   };
 }
 

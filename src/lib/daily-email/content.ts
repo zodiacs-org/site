@@ -207,7 +207,7 @@ function chartBirthSummary(chart: SavedChart): string {
 }
 
 function nearbyChartEventTitle(event: PublishedEventDescriptor): string {
-  const title = event.title.replace(/(?:,|\s+—)\s+.*$/u, '').trim();
+  const title = event.title.replace(/(?:,|\s+[\u2013\u2014])\s+.*$/u, '').trim();
   const date = new Intl.DateTimeFormat('en', {
     month: 'long',
     day: 'numeric',
@@ -356,7 +356,7 @@ function textFromModel(model: MessageModel): string {
       '',
     );
   }
-  lines.push(`${model.cta.label}:`, model.cta.url, '', '—');
+  lines.push(`${model.cta.label}:`, model.cta.url, '');
   for (const line of model.footerLines) lines.push(line);
   if (model.manageUrl) lines.push(`Manage: ${model.manageUrl}`);
   lines.push(`Unsubscribe: ${model.unsubscribeUrl}`, model.postalAddress);

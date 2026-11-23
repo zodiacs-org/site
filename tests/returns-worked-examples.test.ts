@@ -7,6 +7,7 @@
  * the first run's record. This test runs the vendored engine again on every scored fixture and every
  * development fixture, through the frozen tools/run.mjs, and asserts what results.json recorded.
  */
+import { useBrowserEphemeris } from './helpers/browser-ephemeris';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -14,6 +15,8 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { tolerance } from '../docs/platform/evidence/returns-worked-examples-20261107/tools/tolerance.mjs';
 import { DEVELOPMENT, runDevelopment, score, verdict } from '../docs/platform/evidence/returns-worked-examples-20261107/tools/run.mjs';
+
+useBrowserEphemeris();
 
 const FOLDER = 'docs/platform/evidence/returns-worked-examples-20261107';
 const PREREGISTRATION = `${FOLDER}/PREREGISTRATION.md`;

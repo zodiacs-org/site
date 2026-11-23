@@ -44,20 +44,20 @@ describe('published release version', () => {
     expect(directoryManifest.version).toBe(skyManifest.version);
   });
 
-  it('reports the listing release in the public status response', async () => {
+  it('reports server version 0.6.9 in the public status response', async () => {
     const response = await fetch(`${endpoint}?__zodiacs_ai=health`);
     expect(response.status).toBe(200);
-    expect((await response.json()).version).toBe(skyManifest.version);
+    expect((await response.json()).version).toBe('0.6.9');
   });
 
-  it('reports the listing release during the MCP handshake', async () => {
+  it('reports server version 0.6.9 during the MCP handshake', async () => {
     const result = await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-version-test', version: '1' } });
-    expect(result.serverInfo.version).toBe(skyManifest.version);
+    expect(result.serverInfo.version).toBe('0.6.9');
   });
 
-  it('reports the listing release in get_capabilities', async () => {
+  it('reports server version 0.6.9 in get_capabilities', async () => {
     const result = await rpc('tools/call', { name: 'get_capabilities', arguments: {} });
     expect(result.isError).toBe(false);
-    expect(result.structuredContent.data.version).toBe(skyManifest.version);
+    expect(result.structuredContent.data.version).toBe('0.6.9');
   });
 });

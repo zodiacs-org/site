@@ -96,7 +96,18 @@ export async function prepareClientPdf(chart: Chart, entry: ChartEntry, date: st
   if (y > 2000) { await finish(); begin(); }
   y += 42; text(s(locale, 'details'), 125, y, 38, serif); y += 56;
   y = paragraph(`${s(locale, 'engine')}: ${chart.engineVersion}`, y, 24) + 12;
-  if (chart.flags.length) y = paragraph(chart.flags.filter((flag) => flag !== 'outside-reference-span').map((flag) => t(locale, ({ 'dst-gap': 'dstGapNotice', 'dst-fold': 'dstFoldNotice', lmt: 'lmtNotice', 'no-time': 'noTimeNotice', 'polar-fallback': 'polarNotice', 'outside-reference-span': 'trustAccuracyAnswer' } as const)[flag])).join(' · '), y, 24);
+  const noticeKeys = {
+    'dst-gap': 'dstGapNotice',
+    'dst-fold': 'dstFoldNotice',
+    lmt: 'lmtNotice',
+    'no-time': 'noTimeNotice',
+    'polar-fallback': 'polarNotice',
+  } as const;
+  const notices = chart.flags.flatMap((flag) => {
+    const key = noticeKeys[flag as keyof typeof noticeKeys];
+    return key ? [t(locale, key)] : [];
+  });
+  if (notices.length) y = paragraph(notices.join(' · '), y, 24);
   await finish();
   return assembleChartPdf(pages, `https://zodiacs.org${localizePath(locale, '/methodology/')}`);
 }

@@ -7,6 +7,7 @@
  */
 import type { Daily, DailyBody } from './daily';
 import { HOUSE_THEME } from './daily';
+import { aspectId, eclipseId, ingressId, lunationId, retrogradeId } from './events/format';
 import { SIGNS, signBySlug } from './signs';
 
 export interface SkyMoon { type: string; at: string }
@@ -224,9 +225,15 @@ export function comingUp(
     const time = Date.parse(at);
     return time > start && time < end;
   };
-  const pageAt = (at: string, families: readonly string[]) => pages.find((page) => (
-    families.includes(page.family) && Math.abs(Date.parse(page.anchor) - Date.parse(at)) < 120_000
-  ))?.path;
+  const byId = new Map(pages.map((page) => [page.id, page.path]));
+  const pageAt = (id: string, at: string, families: readonly string[]) => {
+    const instant = Date.parse(at);
+    const withoutDay = id.slice(0, -10);
+    return byId.get(id) ?? pages.find((page) => families.includes(page.family) && (
+      Math.abs(Date.parse(page.anchor) - instant) < 120_000 ||
+      (page.id.slice(0, -10) === withoutDay && Math.abs(Date.parse(page.anchor) - instant) < DAY_MS)
+    ))?.path;
+  };
   const eclipseEvents: ComingEvent[] = eclipses.filter((eclipse) => within(eclipse.peak)).map((eclipse) => ({
     at: eclipse.peak,
     kind: 'eclipse',
@@ -234,7 +241,7 @@ export function comingUp(
     sign: eclipse.sign,
     title: `${cap(eclipse.kind)} ${eclipse.type} eclipse in ${signWord(eclipse.sign)}`,
     detail: `${degreeMinutes(eclipse.degree)} ${signWord(eclipse.sign)} · ${utcClock(eclipse.peak)} UTC`,
-    path: pageAt(eclipse.peak, ['eclipse']),
+    path: pageAt(eclipseId(eclipse.peak), eclipse.peak, ['eclipse']),
   }));
   const eclipseDays = new Set(eclipseEvents.map((event) => event.at.slice(0, 10)));
   const seen = new Set<string>();
@@ -249,7 +256,7 @@ export function comingUp(
         sign: ingress.sign,
         title: `${ingress.planet} enters ${signWord(ingress.sign)}`,
         detail: `${ingress.retrograde ? 'Retrograde, from' : 'From'} ${signWord(neighbourSign(ingress.sign, ingress.retrograde ? 1 : -1))} · ${utcClock(ingress.at)} UTC`,
-        path: pageAt(ingress.at, ['ingress', 'season']),
+        path: pageAt(ingressId(ingress.planet, ingress.sign, ingress.at), ingress.at, ['ingress', 'season']),
       });
     }
     for (const lunation of catalog.lunations) {
@@ -261,7 +268,7 @@ export function comingUp(
         sign: lunation.sign,
         title: `${lunation.type === 'new' ? 'New' : 'Full'} moon in ${signWord(lunation.sign)}`,
         detail: `${degreeMinutes(lunation.degree)} ${signWord(lunation.sign)} · ${utcClock(lunation.at)} UTC`,
-        path: pageAt(lunation.at, ['lunation']),
+        path: pageAt(lunationId(lunation.type === 'new' ? 'new' : 'full', lunation.at), lunation.at, ['lunation']),
       });
     }
     for (const station of catalog.stations) {
@@ -273,12 +280,13 @@ export function comingUp(
         sign: station.sign,
         title: `${station.planet} stations ${station.type}`,
         detail: `${degreeMinutes(station.degree)} ${signWord(station.sign)} · ${utcClock(station.at)} UTC`,
-        path: pageAt(station.at, ['retrograde']),
+        path: station.type === 'retrograde'
+          ? pageAt(retrogradeId(station.planet, station.at), station.at, ['retrograde']) : undefined,
       });
     }
     for (const aspect of catalog.aspects) {
       if (!within(aspect.at)) continue;
-      const path = pageAt(aspect.at, ['aspect']);
+      const path = pageAt(aspectId(aspect.a, aspect.type, aspect.b, aspect.at), aspect.at, ['aspect']);
       if (!path) continue;
       events.push({
         at: aspect.at,

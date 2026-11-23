@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "version": "1.1.0-rc.2",
-  "sourceCommit": "806f76b43c0ee652016fe1b522c02d6f6e9c7ae5",
-  "sha256": "c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c",
+  "version": "1.1.0",
+  "sourceCommit": "2496c28f273e1e99526490e857332fae44473367",
+  "sha256": "4e53cda9bd6ccb5f5581c2a9af2f2ae4010af2599f411ac5220425e0932e41ac",
   "license": "MIT AND CC-BY-4.0",
   "sourceRepository": "https://github.com/zodiacs-org/engine",
-  "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/59c6ea9d9a4e7845a2880aa8303fcaadbd645170/artifacts/zodiacs-engine-1.1.0-rc.2.tgz",
+  "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/d82d2410835b18d52eecc8a97d02ee87a5b14012/artifacts/zodiacs-engine-1.1.0.tgz",
   "generator": {
     "typedoc": "0.28.20",
     "typescript": "5.9.3"
@@ -65,6 +65,8 @@
         "DeclinationOrbPolicy",
         "DeclinationRow",
         "Declinations",
+        "DefaultEphemeris",
+        "DefaultEphemerisName",
         "DeltaT",
         "DeltaTSegment",
         "DeltaTTable",
@@ -73,6 +75,7 @@
         "EPHEMERIS",
         "EPHEMERIS_SPAN",
         "Element",
+        "EphemerisFallback",
         "EquatorialCoordinates",
         "HOUSE_SYSTEMS",
         "HouseNumber",
@@ -98,6 +101,7 @@
         "PointName",
         "PointPosition",
         "Polarity",
+        "PositionSource",
         "RA_POLE_TOLERANCE",
         "REFERENCE_SPAN",
         "ResolvedAspectRule",
@@ -111,6 +115,7 @@
         "SaturnReturnSource",
         "Sect",
         "SignDefinition",
+        "SourceBody",
         "SynastryResult",
         "TimeScale",
         "TimeScaleName",
@@ -130,6 +135,7 @@
         "declinationOf",
         "declinationOrb",
         "declinationsForBodies",
+        "defaultEphemeris",
         "degreeInSign",
         "deltaT",
         "deltaTAt",
@@ -174,6 +180,7 @@
         "searchLongitudeCrossingsWith",
         "sectOf",
         "separation",
+        "setDefaultEphemeris",
         "signForLongitude",
         "signIndexForLongitude",
         "summarizePair",
@@ -182,7 +189,8 @@
         "transits",
         "vehlowCusps",
         "vertexOf",
-        "wholeSignCusps"
+        "wholeSignCusps",
+        "withEphemeris"
       ]
     },
     "./calc": {
@@ -279,6 +287,7 @@
         "CalendarName",
         "CalendarNote",
         "City",
+        "FoldChoice",
         "GREGORIAN_ADOPTION",
         "GREGORIAN_ADOPTION_SOURCES",
         "GeoNamesClient",
@@ -450,6 +459,7 @@
         "AspectPatterns",
         "CHALDEAN_FACES",
         "CLASSICAL_PLANETS",
+        "ChartAspectPatterns",
         "ClassicalPlanet",
         "CompositeAspect",
         "CompositeChart",
@@ -459,6 +469,7 @@
         "DavisonOptions",
         "DavisonPlaceConvention",
         "Debility",
+        "DetailedResult",
         "DignityRulers",
         "DignitySpan",
         "EGYPTIAN_TERMS",
@@ -495,6 +506,7 @@
         "SolarReturnOptions",
         "SolarReturnSelection",
         "TRIPLICITY_LORDS",
+        "TechniqueEphemeris",
         "TechniqueFlag",
         "VOID_BODIES",
         "VOID_OF_COURSE_CONVENTION",
@@ -518,15 +530,19 @@
         "hasClassicalDignities",
         "lunarReturn",
         "lunarReturnInstant",
+        "lunarReturnInstantDetailed",
         "moonAspects",
         "moonIngresses",
         "moonSignCandidates",
         "moonSignsBetween",
+        "moonSignsBetweenDetailed",
         "mostRecentSolarReturnInstant",
+        "mostRecentSolarReturnInstantDetailed",
         "mutualReceptions",
         "patternContainment",
         "solarReturn",
         "solarReturnInstant",
+        "solarReturnInstantDetailed",
         "voidOfCourseAt",
         "voidOfCourseWindows"
       ]
@@ -554,6 +570,31 @@
         "tilt",
         "timeBands",
         "timeBasis"
+      ]
+    },
+    "./de440": {
+      "declaration": "./dist/de440.d.ts",
+      "exports": [
+        "BARYCENTRE_NOT_CENTRE",
+        "DE440_EPHEMERIS_NAME",
+        "De440Error",
+        "De440ErrorCode",
+        "De440OpenOptions",
+        "De440Source",
+        "REDUCED_BODIES",
+        "ReducedBody",
+        "openDe440Pack",
+        "openDe440PackSync"
+      ]
+    },
+    "./de440/pack": {
+      "declaration": "./dist/de440-pack.d.ts",
+      "exports": [
+        "DE440_PACK",
+        "De440PackDescription",
+        "de440PackBytes",
+        "openShippedDe440Pack",
+        "shippedDe440Source"
       ]
     },
     "./timing": {
@@ -730,8 +771,8 @@
   },
   "notices": {
     "release/LICENSE.txt": "9a8ab25f278db9d59a00ee82d1a82d63ee4891a9c417c53b4e2b9942aaab10df",
-    "release/LICENSING.txt": "38399534d93270c62637ae7bdd8489766f3d58ea86033edfe68c8c30e80f94e5",
-    "release/NOTICE.txt": "e1d384bd46e0068bf510a2b0ef61e264bf522737d2323fa1c72098898d260f0c",
-    "release/README.txt": "31cfc113f9da439790dcfdb8eeea0f6606de5a6d8eb2bb01527f3562f27115c9"
+    "release/LICENSING.txt": "0c2de247653d43b1366f39546756afe9d2c168d7996881904861c0bacca827d9",
+    "release/NOTICE.txt": "6b8f9885d1f7648cbd28ac0845a835a20e3da4c2700d64ddbc45617ff5d09a0c",
+    "release/README.txt": "6fd2fa40f709e669c651c610d23a83613a77af714782f687ad1aa6b88e638cfa"
   }
 }

@@ -75,7 +75,7 @@ const ownImage = (family: string) => `content="https://zodiacs.org/api/og/${fami
 describe('the ref words a share link may carry', () => {
   it('are the arrival words, less any default such as direct, in one list', () => {
     expect(SHARE_REFS).toEqual(ARRIVAL_REF_VALUES.filter((ref) => ref !== 'direct'));
-    expect([...SHARE_REFS].sort()).toEqual(['app', 'assistant', 'card', 'chatgpt', 'note', 'video']);
+    expect([...SHARE_REFS].sort()).toEqual(['app', 'assistant', 'card', 'chatgpt', 'github', 'hn', 'note', 'reddit', 'video']);
     for (const ref of SHARE_REFS) expect(readShareRef(ref)).toBe(ref);
     expect(readShareRef(undefined)).toBeNull();
     for (const ref of ['', 'direct', 'tiktok', 'CARD', 'card ', 'chatgpt,card']) expect(readShareRef(ref)).toBeUndefined();

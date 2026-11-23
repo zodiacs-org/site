@@ -59,15 +59,19 @@ export function resolvePeopleIndexPolicy({ manifest, indexPolicy, indexDemand })
     .sort();
   const configuredOverrides = indexPolicy.demandPruning.continuityOverrides ?? [];
   const configuredOverrideSlugs = configuredOverrides.map((entry) => entry.slug);
+  // Every reviewed deceased profile linked from a Registry sign record must be
+  // indexable. The four Packet F overrides keep their index status after the
+  // 2026-11-18 Registry refresh unlinked them, so pages already in search are
+  // not withdrawn; the override list itself stays fixed at those four.
   if (configuredOverrides.length !== 4
-      || requiredOverrides.length !== configuredOverrides.length
       || new Set(configuredOverrideSlugs).size !== configuredOverrides.length
-      || [...configuredOverrideSlugs].sort().some((slug, index) => slug !== requiredOverrides[index])
+      || requiredOverrides.some((slug) => !configuredOverrideSlugs.includes(slug))
       || configuredOverrides.some((entry) => (
-        entry.rank !== rankedBySlug.get(entry.slug)
+        !reviewedDeceasedProfiles.has(entry.slug)
+        || entry.rank !== rankedBySlug.get(entry.slug)
         || entry.rank <= rankedTarget
       ))) {
-    throw new Error('People link-continuity overrides do not exactly match the ranked Registry links');
+    throw new Error('People link-continuity overrides do not cover the ranked Registry links');
   }
   for (const slug of configuredOverrideSlugs) {
     indexableProfiles.add(slug);

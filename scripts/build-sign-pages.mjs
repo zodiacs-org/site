@@ -80,13 +80,25 @@ const protectedLinkPolicy = peopleIndexPolicy.expansion?.personSpecificLinkAutho
 const expectedProtectedProfiles = Object.keys(SIGN_PROFILE_PROTECTED_LINKS).sort();
 const policyProtectedProfiles = [...(protectedLinkPolicy?.profiles ?? [])].sort();
 
+const grantedProtectedProfiles = (protectedLinkPolicy?.grants ?? [])
+  .flatMap((grant) => grant.profiles ?? []).sort();
 if (
-  protectedLinkPolicy?.surface !== '/registry/scorpio/'
-  || policyProtectedProfiles.join(',') !== expectedProtectedProfiles.join(',')
+  policyProtectedProfiles.join(',') !== expectedProtectedProfiles.join(',')
+  || grantedProtectedProfiles.join(',') !== expectedProtectedProfiles.join(',')
+  || (protectedLinkPolicy?.grants ?? []).some((grant) => (
+    typeof grant.authorizedBy !== 'string'
+    || !grant.authorizedBy.startsWith('owner instruction of ')
+    || !Number.isFinite(Date.parse(grant.authorizedAtUtc))
+  ))
+  || expectedProtectedProfiles.some((slug) => (
+    protectedLinkPolicy.surfaces?.[slug] !== SIGN_PROFILE_PROTECTED_LINKS[slug].surface
+    || !SIGN_PROFILE_PEOPLE[SIGN_PROFILE_PROTECTED_LINKS[slug].sign]?.includes(slug)
+  ))
+  || Object.keys(protectedLinkPolicy?.surfaces ?? {}).length !== expectedProtectedProfiles.length
 ) {
   throw new Error(
-    'Registry protected People link policy must authorize only bill-gates and '
-    + 'leonardo-dicaprio on /registry/scorpio/'
+    'Registry protected People link policy must match the owner-authorized '
+    + 'profiles, each on its own sign\'s Registry page only'
   );
 }
 

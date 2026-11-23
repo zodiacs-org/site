@@ -1,6 +1,6 @@
 // The underscore directory adds no Vercel function. /mcp rewrites through compatibility.
 import { waitUntil } from '@vercel/functions';
-import { createAiNodeHandler } from './runtime.mjs';
+import type { AiHttpOptions } from './runtime.mjs';
 
 // The daily publication commits the horoscope window; it is read when a horoscope is asked for, so the bundle stays the same every day.
 const horoscopeWindow = async () => (await import('../../src/data/horoscope-window.json', { with: { type: 'json' } })).default;
@@ -15,9 +15,40 @@ const consentPage = async () => import('../../integrations/generated/accounts-co
 const placeTable = async () => (await import('../../src/ai-tools/features/place-table.js')).loadPlaceTable();
 
 const dependencies = { horoscopeWindow, horoscopeMonths, horoscopeProgram, placeTable };
+const publishedDependencies = {
+  ...dependencies,
+  horoscopeWindow: async () => {
+    const current = await horoscopeWindow();
+    const published = (await import('./published/horoscope-window.json', { with: { type: 'json' } })).default;
+    return current.generatedFor === published.generatedFor ? published : current;
+  },
+  horoscopeProgram: async () => {
+    const current = await horoscopeProgram();
+    const published = (await import('./published/horoscope-program.json', { with: { type: 'json' } })).default;
+    return current.anchorDate === published.anchorDate ? published : current;
+  },
+};
 
-// waitUntil lets the anonymous daily usage count, started after each reply has ended, finish in the same invocation.
-export default createAiNodeHandler({ dependencies, waitUntil, consentPage });
+export function publishedConnector(options: AiHttpOptions = {}) {
+  return import('./published/runtime.mjs').then(({ createAiNodeHandler }) =>
+    createAiNodeHandler({ dependencies: publishedDependencies, waitUntil, consentPage, ...options }));
+}
+
+export function de440Connector(options: AiHttpOptions = {}) {
+  return import('./runtime.mjs').then(({ createAiNodeHandler }) =>
+    createAiNodeHandler({ dependencies, waitUntil, consentPage, ...options, de440: true }));
+}
+
+let publishedHandler: ReturnType<typeof publishedConnector> | undefined;
+let de440Handler: ReturnType<typeof de440Connector> | undefined;
+
+export default async function published(req: any, res: any) {
+  await (await (publishedHandler ??= publishedConnector()))(req, res);
+}
+
+export async function de440(req: any, res: any) {
+  await (await (de440Handler ??= de440Connector()))(req, res);
+}
 
 const WARM_UP_CALLS = [
   { jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'zodiacs-warm-up', version: '1' } } },
@@ -32,9 +63,7 @@ const WARM_UP_CALLS = [
  * and the replies go nowhere; only their status codes come back, so a test can tell a warm-up from one that did nothing. It changes no answer: the handler it warms is built the same way, per request, either way.
  */
 export async function warmUp(): Promise<number[]> {
-  const handle = createAiNodeHandler({
-    dependencies,
-    consentPage,
+  const handle = await publishedConnector({
     rateLimit: async () => 'allowed',
     atomicQuota: async () => 'allowed',
     countUsage: async () => undefined,

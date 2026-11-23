@@ -38,7 +38,7 @@ const people = manifest.people;
 /* 1 — exactly 20 unique QIDs and slugs */
 const qids = new Set(people.map((person) => person.qid));
 const slugs = new Set(people.map((person) => person.slug));
-check('exactly 501 active reviewed people', people.length === 501, `${people.length}`);
+check('exactly 516 active reviewed people', people.length === 516, `${people.length}`);
 check('unique QIDs', qids.size === people.length, `${qids.size}`);
 check('unique slugs', slugs.size === people.length, `${slugs.size}`);
 
@@ -418,7 +418,7 @@ if (phase5c) {
   );
   check(
     'Phase 5C exact protected living set',
-    protectedLiving.length === 4
+    protectedLiving.length === 19
       && protectedLiving.every((person) => person.living)
       && protectedLiving.map((person) => person.slug).sort().join(',')
         === [...policy.protectedLivingProfiles].sort().join(','),

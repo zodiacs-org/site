@@ -9385,6 +9385,291 @@
         "degreesToNextBoundaryAtWindowEnd": 12.3207
       },
       "reasons": []
+    },
+    {
+      "slug": "lisa",
+      "qid": "Q26707663",
+      "displayName": "Lisa",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1997-03-27",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1997-03-27",
+      "sun": "Aries 6.57°",
+      "moonUncertain": false,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 6.0751,
+        "degreesToNextBoundaryAtWindowEnd": 22.9355
+      },
+      "reasons": []
+    },
+    {
+      "slug": "sabrina-carpenter",
+      "qid": "Q7396400",
+      "displayName": "Sabrina Carpenter",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1999-05-11",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1999-05-11",
+      "sun": "Taurus 20.52°",
+      "moonUncertain": true,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 20.0386,
+        "degreesToNextBoundaryAtWindowEnd": 8.9951
+      },
+      "reasons": []
+    },
+    {
+      "slug": "mrbeast",
+      "qid": "Q57618112",
+      "displayName": "MrBeast",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1998-05-07",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1998-05-07",
+      "sun": "Taurus 16.93°",
+      "moonUncertain": true,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 16.45,
+        "degreesToNextBoundaryAtWindowEnd": 12.5826
+      },
+      "reasons": []
+    },
+    {
+      "slug": "kendrick-lamar",
+      "qid": "Q130798",
+      "displayName": "Kendrick Lamar",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1987-06-17",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1987-06-17",
+      "sun": "Gemini 26.06°",
+      "moonUncertain": false,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 25.5783,
+        "degreesToNextBoundaryAtWindowEnd": 3.4671
+      },
+      "reasons": []
+    },
+    {
+      "slug": "erling-haaland",
+      "qid": "Q28967995",
+      "displayName": "Erling Haaland",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "2000-07-21",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "2000-07-21",
+      "sun": "Cancer 28.98°",
+      "moonUncertain": false,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 28.5,
+        "degreesToNextBoundaryAtWindowEnd": 0.5456
+      },
+      "reasons": []
+    },
+    {
+      "slug": "kylie-jenner",
+      "qid": "Q1770624",
+      "displayName": "Kylie Jenner",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1997-08-10",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1997-08-10",
+      "sun": "Leo 18.17°",
+      "moonUncertain": false,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 17.6928,
+        "degreesToNextBoundaryAtWindowEnd": 11.3478
+      },
+      "reasons": []
+    },
+    {
+      "slug": "zendaya",
+      "qid": "Q189489",
+      "displayName": "Zendaya",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1996-09-01",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1996-09-01",
+      "sun": "Virgo 9.60°",
+      "moonUncertain": true,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 9.1158,
+        "degreesToNextBoundaryAtWindowEnd": 19.9165
+      },
+      "reasons": []
+    },
+    {
+      "slug": "max-verstappen",
+      "qid": "Q2239218",
+      "displayName": "Max Verstappen",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1997-09-30",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1997-09-30",
+      "sun": "Libra 7.28°",
+      "moonUncertain": false,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 6.7867,
+        "degreesToNextBoundaryAtWindowEnd": 22.2301
+      },
+      "reasons": []
+    },
+    {
+      "slug": "jenna-ortega",
+      "qid": "Q21738166",
+      "displayName": "Jenna Ortega",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "2002-09-27",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "2002-09-27",
+      "sun": "Libra 4.49°",
+      "moonUncertain": false,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 4.0025,
+        "degreesToNextBoundaryAtWindowEnd": 25.0164
+      },
+      "reasons": []
+    },
+    {
+      "slug": "taylor-swift",
+      "qid": "Q26876",
+      "displayName": "Taylor Swift",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1989-12-13",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1989-12-13",
+      "sun": "Sagittarius 21.67°",
+      "moonUncertain": true,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 21.1655,
+        "degreesToNextBoundaryAtWindowEnd": 7.8178
+      },
+      "reasons": []
+    },
+    {
+      "slug": "timothee-chalamet",
+      "qid": "Q19877770",
+      "displayName": "Timothée Chalamet",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1995-12-27",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1995-12-27",
+      "sun": "Capricorn 5.47°",
+      "moonUncertain": false,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 4.9563,
+        "degreesToNextBoundaryAtWindowEnd": 24.0245
+      },
+      "reasons": []
+    },
+    {
+      "slug": "harry-styles",
+      "qid": "Q3626966",
+      "displayName": "Harry Styles",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1994-02-01",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1994-02-01",
+      "sun": "Aquarius 12.40°",
+      "moonUncertain": false,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 11.8927,
+        "degreesToNextBoundaryAtWindowEnd": 17.0927
+      },
+      "reasons": []
+    },
+    {
+      "slug": "bad-bunny",
+      "qid": "Q44333953",
+      "displayName": "Bad Bunny",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1994-03-10",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1994-03-10",
+      "sun": "Pisces 19.85°",
+      "moonUncertain": true,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 19.3513,
+        "degreesToNextBoundaryAtWindowEnd": 9.6495
+      },
+      "reasons": []
+    },
+    {
+      "slug": "rihanna",
+      "qid": "Q36844",
+      "displayName": "Rihanna",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "1988-02-20",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "1988-02-20",
+      "sun": "Pisces 1.24°",
+      "moonUncertain": false,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 0.7317,
+        "degreesToNextBoundaryAtWindowEnd": 28.26
+      },
+      "reasons": []
+    },
+    {
+      "slug": "olivia-rodrigo",
+      "qid": "Q63243883",
+      "displayName": "Olivia Rodrigo",
+      "role": "pilot",
+      "verdict": "accepted",
+      "storedDate": "2003-02-20",
+      "calendarModel": "proleptic-gregorian",
+      "gregorianDate": "2003-02-20",
+      "sun": "Pisces 1.76°",
+      "moonUncertain": true,
+      "cusp": {
+        "ambiguous": false,
+        "boundaryUtc": null,
+        "degreesInsideAtWindowStart": 1.2594,
+        "degreesToNextBoundaryAtWindowEnd": 27.733
+      },
+      "reasons": []
     }
   ]
 }

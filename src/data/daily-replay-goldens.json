@@ -7,15 +7,15 @@
       "date": "2026-06-20",
       "coverage": "complete",
       "eventKinds": [],
-      "factsSha256": "1a9cafe8f84a62e4ce262ad7a1c5eccce537c6469b6a15605b78979db2bf6930",
-      "publicationSha256": "1cf3e017b26d03305415e63874b4360ea58a296ee0fc0764715b735190350632"
+      "factsSha256": "ae7db36472d748e2d28e7d0e1b3af2ed291c48a967852506496451ee214b76a9",
+      "publicationSha256": "fa6e4cab8c5e338e7ff09b8e01c6659b69db6f64286b73f1fbf732b7cebe41da"
     },
     {
       "date": "2026-07-01",
       "coverage": "complete",
       "eventKinds": [],
-      "factsSha256": "c4d11969d46c5cd3a7abb4b9818a7307254490721d83a815c3221f22a08b40d0",
-      "publicationSha256": "dfe210cf915f9aac28bcaab50823d2971a6dc64f034f9420187f5f809d63bc46"
+      "factsSha256": "1c4cd23e33857c9b198a36fd765c60612d62d797fdba4ba2ebd2afa8fa95c378",
+      "publicationSha256": "c191845a22d88ae40a8375c3f961e96cd6a8a57fad83ba46ef53d1e8314aafb0"
     },
     {
       "date": "2026-07-07",
@@ -23,8 +23,8 @@
       "eventKinds": [
         "station"
       ],
-      "factsSha256": "adebcd813328dfa31d946e85875669d62f13aee28ccef1ba2cad1413369aeeb9",
-      "publicationSha256": "4fb1befc67f3e7a2ceeb894b8459fc8ab859a0a9cb241a1041f700a48a810278"
+      "factsSha256": "080e16fd5f2173f3f7a9f1340499ac8005b65b6283f9a5f8390c479fcef7e597",
+      "publicationSha256": "02c7e00348e6d1e9c4a6284a5b546313bfcc069c6d8eb8c15680a1b843ed5254"
     },
     {
       "date": "2026-07-09",
@@ -32,8 +32,8 @@
       "eventKinds": [
         "ingress"
       ],
-      "factsSha256": "011556aeec24f381e416fa1a464f1c6f3a72135b969ead9e04e53727e7b46cfc",
-      "publicationSha256": "feafbba3284aed5ffc4b6f824eb2f2b64180e276654d70be149ff6c5e319efd3"
+      "factsSha256": "29009f2b446766c4397af33990f9ae62db10a6eb6d213fb45dfa0273cace02c9",
+      "publicationSha256": "73d86291bbe052b2929445b3416d6750f746d5adc95486bcd664d0fb8c7cdb45"
     },
     {
       "date": "2026-07-14",
@@ -41,8 +41,8 @@
       "eventKinds": [
         "lunation"
       ],
-      "factsSha256": "f4ddef428239c6cd6c1153d8f9d85ca32b113f8d02ab479ace23f4b37b1278f1",
-      "publicationSha256": "4edef3bb9e8e2d6e88cfa452506450ca5963337be2b0054314f3e6113610d5f4"
+      "factsSha256": "bba254f042cf8505f5a39c1dd201cb8e5a8711960354b80e8af3a004e5f809c8",
+      "publicationSha256": "6907acb029586a8b57ec9a2761df919b8e6026b464260d5eb38b2c1098b48d82"
     },
     {
       "date": "2026-07-19",
@@ -50,8 +50,8 @@
       "eventKinds": [
         "aspect"
       ],
-      "factsSha256": "1e004fa0b4617953a73a5b31b2674a39161a6fe9adbadcb7e59a4c0a59690a88",
-      "publicationSha256": "7d2210ae690354bc54fb75ce7df0b41bd950b763e0b77467db2583ec9a39dc28"
+      "factsSha256": "38955a030390f6d7d6de607a2af1f1b5c1d3fae81b30c122d2d4e59e79853f8e",
+      "publicationSha256": "cb8e7da8009a6d84c992560956908b82dba3400a6706a975b4e2e1c8ce258a16"
     }
   ]
 }

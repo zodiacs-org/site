@@ -8,6 +8,10 @@ import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-p
 import natalAspectsPublication from '../data/natal-aspects-publication.json';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
 import type { APIRoute } from 'astro';
+import { ACCURACY_PATH, accuracyPublished } from '../accuracy/publication.mjs';
+import accuracyReceipt from '../data/accuracy/latest.json';
+import accuracyHistory from '../data/accuracy/history.json';
+import type { Receipt, ReceiptHistory } from '../accuracy/receipt';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES } from '../data/numerology-pages';
 import { getCollection } from 'astro:content';
 import { LEGACY_URLS } from '../lib/legacy/urls';
@@ -20,6 +24,7 @@ import {
   BIRTHDAY_CUSP_OG_MODIFIED_AT,
   BIRTHDAY_FAMOUS_LINE_MODIFIED_AT,
   PEOPLE_TEMPLATE_MODIFIED_AT,
+  de440UpdatedDate,
   lastmodDate,
   latestModifiedAt,
   terminalResearchLastmod,
@@ -68,6 +73,8 @@ const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 // The twelve Registry sign pages re-read their mint and freeze authority on chain (thesis evidence refresh).
 const REGISTRY_SIGN_LASTMOD = '2026-11-10';
+// The Registry roster changed on every sign page except Scorpio.
+const REGISTRY_ROSTER_LASTMOD = '2026-11-19';
 const THESIS_LASTMOD = '2026-11-14';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
@@ -473,6 +480,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
+  // The good day finder, first published 2026-11-09.
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [['/good-days/', '2026-11-09'] as const] : []),
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
   ['/fomo/', '2026-09-01'] as const,
@@ -491,7 +500,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
     'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
-  ].map((sign) => [`/registry/${sign}/`, REGISTRY_SIGN_LASTMOD] as const),
+  ].map((sign) => [
+    `/registry/${sign}/`,
+    sign === 'scorpio' ? REGISTRY_SIGN_LASTMOD : REGISTRY_ROSTER_LASTMOD,
+  ] as const),
   ...[
     '/disclosure/',
     ...CHINESE_ZODIAC_PATHS,
@@ -641,6 +653,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // privacy pages describe the same with the switch on and print the same date.
   ['/privacy/', '2026-11-11'] as const,
   ['/terms/', '2026-11-11'] as const,
+  // The support page, first published, and the about page's line linking to it. The day of the daily edition
+  // they were built with.
+  ['/support/', '2026-11-19'] as const,
+  ['/about/', '2026-11-19'] as const,
   ...['/es/privacy/', '/fr/privacy/', '/it/privacy/', '/pt/privacy/', '/ru/privacy/']
     .map((loc) => [loc, '2026-11-11'] as const),
   // The conventions registry's traditional void-of-course bodies (void-of-course-bodies:traditional), which the
@@ -682,6 +698,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...eventsPublication.pages
     .filter((event) => event.family === 'eclipse')
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
+  // The good day finder's links: its card on the tools hub, and the lines on the occasions and void-of-course
+  // pages that point to it. The day of the daily edition they were built with; the later dates below win.
+  // Only while PUBLIC_GOOD_DAYS_ENABLED is on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? ['/occasions/', '/tools/', '/void-of-course-moon/'].map((loc) => [loc, '2026-11-09'] as const) : []),
   // The transits page's link to the Year Ahead Score (2026-11-09), last so this date wins.
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/transits/', '2026-11-09'] as const] : []),
   // The tools hub's Year Ahead Score and Birthday report cards, and the birthday hub's link to the report,
@@ -725,7 +745,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // built with, last so this date wins.
   ...CONNECTOR_PAGE_ROUTES.map((loc) => [loc, CONNECTOR_PAGE_LASTMOD] as const),
   // The AI developer page's sample question names a neutral city, from 16 November; after the connector pages so it wins.
-  ['/developers/ai/', '2026-11-16'] as const,
+  // From 19 November it says in words that the hosted server needs no account, sign-in or API key.
+  ['/developers/ai/', '2026-11-19'] as const,
   // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
   // the daily edition it was built with, last so this date wins.
   // The Fortune 500 CEO Sun sign study, first published 17 November.
@@ -740,6 +761,19 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/numerology/', '2026-11-17'] as const,
   // The life path pages' seal, hued chips and entrance motion, last so it wins.
   ...LIFE_PATH_NUMBERS.map((n) => [`/numerology/life-path/${n}/`, '2026-11-17'] as const),
+  // The conventions registry's ids for conformance suite 0.3.0 (level L4's event kinds and its arbiter), registry
+  // version 2026-11-19, on the day of the daily edition it was built with, last so this date wins. /developers/
+  // prints the registry's version.
+  ...['/developers/', '/developers/conventions/'].map((route) => [route, '2026-11-19'] as const),
+  // Reader levels on the birth chart page: the first visit question, the level switch and the
+  // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
+  // last so this date wins.
+  ['/birth-chart/', '2026-11-19'] as const,
+  // Conformance suite 0.3.0 (640 vectors) and results for @zodiacs/engine 2.0.0, Skyfield, astronomia
+  // and PyEphem (ZOD-95 Part A), on the day of the daily edition it was built with, last so this date wins.
+  ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-22'] as const),
+  // Arrival ?ref= list expanded with hn, github and reddit on the privacy page (ZOD-182).
+  ['/privacy/', '2026-11-22'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -785,6 +819,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const gamesEnabled = (import.meta.env.PUBLIC_ZODIAC_GAMES_ENABLED
     ?? process.env.PUBLIC_ZODIAC_GAMES_ENABLED) === '1';
 
+  const firstAccuracyDate = (accuracyHistory as ReceiptHistory[])[0]?.date;
   const evergreenUrls = [
     { loc: '/', priority: 1.0 },
     { loc: '/birth-chart/', priority: 0.95 },
@@ -838,6 +873,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/birthday/', priority: 0.7 },
     { loc: '/occasions/', priority: 0.7 },
     { loc: '/occasions/milestones/', priority: 0.6 },
+    ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [{ loc: '/good-days/', priority: 0.7 }] : []),
     { loc: '/widgets/', priority: 0.6 },
     { loc: '/developers/', priority: 0.6 },
     { loc: '/developers/support/', priority: 0.6 },
@@ -872,15 +908,22 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/privacy/', priority: 0.4 },
     { loc: '/es/privacy/', priority: 0.4 },
     { loc: '/terms/', priority: 0.4 },
+    { loc: '/support/', priority: 0.4 },
     { loc: '/feeds/', priority: 0.55 },
     { loc: '/almanac/', priority: 0.75 },
-  ].map((url) => ({
-    ...url,
-    lastmod: url.loc === '/today/' ? daily.date : getLastmod(url.loc),
-  }));
+  ].map((url) => {
+    let date = url.loc === '/today/' ? daily.date : getLastmod(url.loc);
+    if (accuracyPublished && firstAccuracyDate && (url.loc === '/developers/' || url.loc === '/developers/conformance/')) {
+      date = laterDate(date, firstAccuracyDate);
+    }
+    return { ...url, lastmod: date };
+  });
 
   const urls: { loc: string; priority: number; lastmod?: string }[] = [
     ...evergreenUrls,
+    ...(accuracyPublished
+      ? [{ loc: ACCURACY_PATH, priority: 0.6, lastmod: (accuracyReceipt as Receipt | null)?.date }]
+      : []),
     ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: EVERGREEN_LASTMOD.get(loc) ?? DEVELOPER_GUIDES_LASTMOD })),
     ...(registryAuraEntry ? [registryAuraEntry] : []),
     ...(gamesEnabled ? [
@@ -1107,6 +1150,10 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   // fixed categories.
   for (const url of urls) {
     if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-14');
+  }
+  for (const url of [...urls, ...localizedUrls]) {
+    const engineUpdated = de440UpdatedDate(url.loc);
+    if (engineUpdated) url.lastmod = laterDate(url.lastmod, engineUpdated);
   }
   return [
     ...urls,

@@ -20,6 +20,9 @@ import { computeSolarReturn, nearForReturnYear, type SolarReturnResultData } fro
 import { solarReturnExportModel } from '../islands/solar-return/export-model';
 import { computeLunarReturn, type LunarReturnResultData } from '../islands/lunar-return/compute';
 import { lunarReturnExportModel } from '../islands/lunar-return/export-model';
+import { useBrowserEphemeris } from '../../tests/helpers/browser-ephemeris';
+
+useBrowserEphemeris();
 
 const NOW = new Date('2026-09-28T00:00:00Z');
 const norm = (x: number) => ((x % 360) + 360) % 360;
