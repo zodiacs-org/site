@@ -1,0 +1,96 @@
+{
+  "schema": "zodiacs.phase5.evidence.v1",
+  "slug": "mrbeast",
+  "qid": "Q57618112",
+  "displayName": "MrBeast",
+  "wikidataLabel": "MrBeast",
+  "wikidataDescription": "American YouTuber, media personality and businessman (born 1998)",
+  "retrievedAtUtc": "2026-11-18T10:55:24.000Z",
+  "sources": {
+    "wikidata": {
+      "entityUrl": "https://www.wikidata.org/wiki/Q57618112",
+      "propertiesUsed": [
+        "P569",
+        "P19",
+        "P625",
+        "P106",
+        "P18",
+        "P570",
+        "P17",
+        "P131"
+      ],
+      "lastrevid": 2565179902
+    },
+    "wikipedia": {
+      "language": "en",
+      "title": "MrBeast",
+      "articleUrl": "https://en.wikipedia.org/wiki/MrBeast",
+      "pageId": 58920328,
+      "revisionId": 1386379184,
+      "revisionTimestamp": "2026-11-18T05:37:34Z"
+    }
+  },
+  "birth": {
+    "claimCount": 1,
+    "distinctDayPrecisionValues": [
+      "+1998-05-07T00:00:00Z|proleptic-gregorian"
+    ],
+    "allValues": [
+      {
+        "time": "+1998-05-07T00:00:00Z",
+        "precision": 11,
+        "calendar": "proleptic-gregorian",
+        "rank": "normal"
+      }
+    ],
+    "time": "+1998-05-07T00:00:00Z",
+    "precision": "day",
+    "calendarModel": "proleptic-gregorian",
+    "timeOfDay": null,
+    "timeOfDayEvidence": "none: Wikidata carries no birth-time claim for this person"
+  },
+  "death": null,
+  "living": true,
+  "birthPlace": {
+    "entity": "Q49266",
+    "label": "Wichita",
+    "entityUrl": "https://www.wikidata.org/wiki/Q49266",
+    "country": {
+      "entity": "Q30",
+      "label": "United States"
+    },
+    "claimCount": 1,
+    "coordinates": {
+      "sourceEntity": "Q49266",
+      "sourceEntityLabel": "Wichita",
+      "latitude": 37.688888888889,
+      "longitude": -97.336111111111,
+      "precision": 0.00027777777777778,
+      "escalationSteps": 0
+    }
+  },
+  "occupations": [
+    {
+      "entity": "Q131524",
+      "label": "entrepreneur"
+    },
+    {
+      "entity": "Q17125263",
+      "label": "YouTuber"
+    }
+  ],
+  "portrait": {
+    "file": "File:MrBeast in 2026 (cropped 4).png",
+    "filePage": "https://commons.wikimedia.org/wiki/File:MrBeast%20in%202026%20(cropped%204).png",
+    "descriptionUrl": "https://commons.wikimedia.org/wiki/File:MrBeast_in_2026_(cropped_4).png",
+    "width": 1862,
+    "height": 2484,
+    "licenseShortName": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "artist": "Tyren Redd",
+    "credit": "David Soled",
+    "usageTerms": "Creative Commons Attribution 4.0",
+    "attributionRequired": "true",
+    "restrictions": ""
+  }
+}

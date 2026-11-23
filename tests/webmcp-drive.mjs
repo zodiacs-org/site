@@ -15,6 +15,7 @@ import { resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { projectRoot, withPreview } from './visual/preview-server.mjs';
+import { withFullLevel } from './level-fixture.mjs';
 
 const polyfillPath = resolve(
   projectRoot,
@@ -336,13 +337,13 @@ async function drive(baseURL) {
   if (remoteBase) {
     native = { skipped: 'the production check drives the polyfill only' };
   } else {
-    const nativeBrowser = await chromium.launch({
+    const nativeBrowser = withFullLevel(await chromium.launch({
       executablePath,
       args: [
         ...STABLE_CHROMIUM_ARGS,
         '--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport',
       ],
-    });
+    }));
     try {
       const page = await nativeBrowser.newPage();
       await page.goto(`${baseURL}/`, { waitUntil: 'networkidle' });
@@ -363,10 +364,10 @@ async function drive(baseURL) {
     }
   }
 
-  const polyfillBrowser = await chromium.launch({
+  const polyfillBrowser = withFullLevel(await chromium.launch({
     executablePath,
     args: STABLE_CHROMIUM_ARGS,
-  });
+  }));
   let polyfill;
   let addresses;
   let exclusions;

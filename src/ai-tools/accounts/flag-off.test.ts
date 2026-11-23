@@ -54,6 +54,8 @@ import { expectedCapabilityReply } from '../../../tests/helpers/de440-capabiliti
  * src/ai-tools/published-tools.ts). No name, schema shape, annotation or resources/list changes.
  * 0.6.8 changes only the reported version, in every scenario, to ship those invented examples for the directory
  * resubmission.
+ * For 0.6.9, the fixture was captured from the rebuilt published runtime. The version, panel addresses
+ * and five tools' input descriptions follow the fixes Dias approved on 20 November 2026.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

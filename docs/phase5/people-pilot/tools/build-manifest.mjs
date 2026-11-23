@@ -157,7 +157,7 @@ for (const candidate of candidates) {
       precision: 'day',
       calendarModel: computed.calendarModel,
       calendarConversion: computed.calendarModel === 'proleptic-gregorian'
-        ? 'none required — the stored value is already proleptic Gregorian'
+        ? 'none required: the stored value is already proleptic Gregorian'
         : 'Julian → proleptic Gregorian via Julian Day Number',
       displayedDate: computed.displayedDate,
       computedGregorianDate: computed.gregorianDate,
@@ -241,7 +241,7 @@ for (const candidate of candidates) {
     indexEligibility: {
       eligible: false,
       blockedBy: evidence.living
-        ? ['phase-5c-living-person-protection — noindex/nofollow; excluded from sitemap, search, directory, birthday and automatic related-person links']
+        ? ['phase-5c-living-person-protection: noindex/nofollow. Excluded from sitemap, search, directory, birthday and automatic related-person links']
         : ['phase-5-completion-candidate — release gates pending'],
       contentChecksPassed: failures.length === 0,
       contentCheckFailures: failures,
@@ -252,7 +252,7 @@ for (const candidate of candidates) {
 
 const manifest = {
   ...existingManifest,
-  status: `Phase 5 complete — ${people.length + withdrawnSlugs.size} reviewed records`,
+  status: `Phase 5 complete: ${people.length + withdrawnSlugs.size} reviewed records`,
   thresholds,
   people: people.sort((a, b) => a.slug.localeCompare(b.slug)),
 };

@@ -1,10 +1,13 @@
 {
   "version": 1,
-  "id": "zod-63-de440-registry-timing",
-  "baseCommit": "ff4056218de1f9e13ac4bd7548aeaaf4c230f356",
+  "id": "chinese-zodiac-remove-western-discs-2026-11-22",
+  "baseCommit": "c61ebe082098f50690f810d330d091f769c4887a",
   "protectedPaths": [
-    "scripts/build-aura-moon-ingresses.mjs",
-    "scripts/registry-outlook.test.mjs",
-    "src/data/aura-moon-ingresses.json"
+    "src/pages/learn/chinese-zodiac/[animal]/index.astro",
+    "src/pages/learn/chinese-zodiac/index.astro",
+    "src/strings/additions.es.mjs",
+    "src/strings/additions.fr.mjs",
+    "src/strings/additions.it.mjs",
+    "src/strings/additions.pt.mjs"
   ]
 }

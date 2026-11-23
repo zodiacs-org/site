@@ -7,8 +7,8 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import {
   DAILY_EDITORIAL_CONSTITUTION,
-  DAILY_RENDERER_VERSION,
   buildDailyPublication,
+  dailyRendererForDate,
   validateDailyPublication,
 } from '../src/lib/daily-publication';
 import type { Daily } from '../src/lib/daily';
@@ -75,10 +75,16 @@ async function checkedEdition(date: string) {
   }
 }
 
+if (goldens.schema !== 'zodiacs.daily-replay-goldens.v1'
+  || goldens.cases.some((golden) => goldens.rendererVersion !== dailyRendererForDate(golden.date))
+  || goldens.policyVersion !== DAILY_EDITORIAL_CONSTITUTION.version) {
+  throw new Error('fixed replay goldens require an explicit renderer/policy version update');
+}
+
 if (process.argv.includes('--print-goldens')) {
   const printed = {
     schema: 'zodiacs.daily-replay-goldens.v1',
-    rendererVersion: DAILY_RENDERER_VERSION,
+    rendererVersion: goldens.rendererVersion,
     policyVersion: DAILY_EDITORIAL_CONSTITUTION.version,
     cases: [],
   } as typeof goldens;
@@ -96,11 +102,6 @@ if (process.argv.includes('--print-goldens')) {
   process.exit(0);
 }
 
-if (goldens.schema !== 'zodiacs.daily-replay-goldens.v1'
-  || goldens.rendererVersion !== DAILY_RENDERER_VERSION
-  || goldens.policyVersion !== DAILY_EDITORIAL_CONSTITUTION.version) {
-  throw new Error('fixed replay goldens require an explicit renderer/policy version update');
-}
 for (const golden of goldens.cases) {
   const { facts, publication } = await checkedEdition(golden.date);
   const eventKinds = [...new Set(facts.events.map((event) => event.kind))].sort();
