@@ -127,7 +127,7 @@ hand_off() {
       if [ "$conclusion" = "success" ]; then return 0; fi
       if [ "$conclusion" != "running" ]; then
         token_step=$(gh api "repos/{owner}/{repo}/actions/runs/$run_id/jobs" \
-          --jq '[.jobs[].steps[]? | select(.name == "Check that the owner token is saved" or .name == "Check who asked") | select(.conclusion == "failure") | .name] | first // ""' 2>/dev/null || true)
+          --jq '[.jobs[].steps[]? | select(.name == "Check that the publishing key is saved" or .name == "Check who asked" or .name == "Get the publishing app's token") | select(.conclusion == "failure") | .name] | first // ""' 2>/dev/null || true)
         if [ -n "$token_step" ]; then
           echo "::warning title=Site Publish stopped at \"$token_step\"::$url. This publication pull request is opened with the workflow token instead, and its checks will wait for a person." >&2
           return 2
@@ -269,7 +269,7 @@ if ! gh pr merge "$pr_url" --squash --match-head-commit "$head_sha" --subject "$
   gated=$(gh api "repos/{owner}/{repo}/actions/runs?head_sha=$head_sha&event=pull_request&per_page=50" \
     --jq '[.workflow_runs[] | select(.conclusion == "action_required") | .name] | unique | join(", ")' 2>/dev/null || true)
   if [ -n "$gated" ]; then
-    echo "::error title=The pull request's own checks are waiting for approval::$pr_url stays open for a person. GitHub holds its pull_request checks ($gated) for approval because the workflow token opened it, and refuses the merge while they wait. Save a fine-grained token for this repository (Contents, Pull requests and Actions read and write; Checks and Metadata read) as the SITE_PUBLISH_TOKEN secret of the site-publish-production environment so Site Publish opens publications as the owner, or approve the checks and merge this one by hand." >&2
+    echo "::error title=The pull request's own checks are waiting for approval::$pr_url stays open for a person. GitHub holds its pull_request checks ($gated) for approval because the workflow token opened it, and refuses the merge while they wait. Set up the site's publishing GitHub App (SITE_PUBLISH_APP_ID variable and SITE_PUBLISH_APP_KEY secret of the site-publish-production environment) so Site Publish opens publications with its own key, or approve the checks and merge this one by hand." >&2
     exit 1
   fi
   echo "::error title=The publication pull request could not be merged::$pr_url stays open for a person to merge. Check what the protection rule on $base still requires (the error above says what GitHub refused) and merge by hand." >&2

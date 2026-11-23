@@ -1,7 +1,7 @@
 name: Site Publish
 
-# Lands one verified publication branch on the default branch with the owner's
-# token. The publishing workflows (Daily Sky, Pulse Refresh, Race, Registry
+# Lands one verified publication branch on the default branch with the
+# site's publishing GitHub App (or, until it is set up, the owner's token). The publishing workflows (Daily Sky, Pulse Refresh, Race, Registry
 # Market Snapshot, Transits) build and verify a package, push it to a
 # publish/* branch with the workflow token, and dispatch this workflow.
 #
@@ -12,7 +12,10 @@ name: Site Publish
 # owner's token lives only here, scoped to the protected environment
 # site-publish-production, and is used for nothing but opening that one pull
 # request, waiting for every required check, merging it and deleting the
-# branch. Nothing is bypassed: a failing, missing or slow check leaves the
+# branch. The preferred key is a small GitHub App installed on this repository
+# only (variable SITE_PUBLISH_APP_ID, secret SITE_PUBLISH_APP_KEY): it mints a
+# one-hour token per run with scripts/github-app-token.sh and belongs to no
+# person. A saved SITE_PUBLISH_TOKEN still works when no App is configured. Nothing is bypassed: a failing, missing or slow check leaves the
 # pull request open for a person.
 #
 # Only trusted code runs with the token: the default branch is checked out,
@@ -61,14 +64,17 @@ jobs:
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     timeout-minutes: 115
     steps:
-      - name: Check that the owner token is saved
+      - name: Check that the publishing key is saved
+        id: key
         env:
+          HAS_APP: ${{ vars.SITE_PUBLISH_APP_ID != '' && secrets.SITE_PUBLISH_APP_KEY != '' }}
           HAS_TOKEN: ${{ secrets.SITE_PUBLISH_TOKEN != '' }}
         run: |
-          if [ "$HAS_TOKEN" != "true" ]; then
-            echo "::error title=The owner token is not saved::Save a fine-grained token for this repository (Contents, Pull requests and Actions read and write; Checks and Metadata read) as the SITE_PUBLISH_TOKEN secret of the site-publish-production environment. The publishing workflow falls back to its own pull request, which needs a person." >&2
+          if [ "$HAS_APP" != "true" ] && [ "$HAS_TOKEN" != "true" ]; then
+            echo "::error title=The publishing key is not saved::Install the site's publishing GitHub App on this repository and save its App ID as the SITE_PUBLISH_APP_ID variable and its private key as the SITE_PUBLISH_APP_KEY secret of the site-publish-production environment. The publishing workflow falls back to its own pull request, which needs a person." >&2
             exit 1
           fi
+          echo "app=$HAS_APP" >>"$GITHUB_OUTPUT"
 
       - name: Check who asked
         # Runs started with the workflow token or by the owner pass. This is a
@@ -105,6 +111,14 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Get the publishing app's token
+        id: app
+        if: steps.key.outputs.app == 'true'
+        env:
+          APP_ID: ${{ vars.SITE_PUBLISH_APP_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.SITE_PUBLISH_APP_KEY }}
+        run: bash scripts/github-app-token.sh
+
       - name: Open, check and merge the publication pull request
         env:
           BASE: ${{ github.event.repository.default_branch }}
@@ -113,7 +127,7 @@ jobs:
           HEAD_SHA: ${{ inputs.head }}
           TITLE: ${{ inputs.title }}
           BODY: ${{ inputs.body }}
-          GH_TOKEN: ${{ secrets.SITE_PUBLISH_TOKEN }}
+          GH_TOKEN: ${{ steps.app.outputs.token || secrets.SITE_PUBLISH_TOKEN }}
           PUBLISH_LAND_BRANCH: ${{ inputs.branch }}
           PUBLISH_LAND_HEAD: ${{ inputs.head }}
         run: bash scripts/publish-through-pr.sh "$BASE" "$VERIFIED" "$TITLE" "$BODY"
