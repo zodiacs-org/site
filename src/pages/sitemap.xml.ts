@@ -772,6 +772,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // Conformance suite 0.3.0 (640 vectors) and results for @zodiacs/engine 2.0.0, Skyfield, astronomia
   // and PyEphem (ZOD-95 Part A), on the day of the daily edition it was built with, last so this date wins.
   ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-22'] as const),
+  // Arrival ?ref= list expanded with hn, github and reddit on the privacy page (ZOD-182).
+  ['/privacy/', '2026-11-22'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -1146,7 +1148,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   }
   // The English privacy page describes which essay link clicks the site counts.
   for (const url of urls) {
-    if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-20');
+    if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-23');
   }
   for (const url of [...urls, ...localizedUrls]) {
     const engineUpdated = de440UpdatedDate(url.loc);

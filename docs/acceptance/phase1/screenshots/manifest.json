@@ -6,11 +6,11 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-11-23T07:13:10.721Z",
+  "capturedAt": "2026-11-23T12:51:09.653Z",
   "browser": "Chromium 151.0.7922.173",
   "dailyDate": "2026-11-23",
   "publicationCanonicalSha256": "eb83b1532da2660de184bf9cc4db3b23874bcb4f83a2c7162a3cd82df4502b55",
-  "templateSourceSha256": "d80ad03f7b178ac9365dd771ad6d7f30c894c08bad01fd297e8574af0c919017",
+  "templateSourceSha256": "39e7a3badb1481aaea1157cd2a44fc168c52a14e85848ad12ecf076dc1687449",
   "renderPayloadSha256": {
     "daily": "a19dd214e333a34c0f606ebb3d5b9d392075e811f05f8cbc312adc060ac230ec",
     "dailyPublication": "346e7071ae74906a06c5f6018dd632b3a5b38049a44068f463ad376dea9a30b5",
@@ -19,8 +19,8 @@
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-11-23T07:12:20.769Z",
-    "templateSourceSha256": "d80ad03f7b178ac9365dd771ad6d7f30c894c08bad01fd297e8574af0c919017",
+    "builtAt": "2026-11-23T12:46:46.548Z",
+    "templateSourceSha256": "39e7a3badb1481aaea1157cd2a44fc168c52a14e85848ad12ecf076dc1687449",
     "dailyDate": "2026-11-23",
     "publicationCanonicalSha256": "eb83b1532da2660de184bf9cc4db3b23874bcb4f83a2c7162a3cd82df4502b55",
     "renderPayloadSha256": {
@@ -42,7 +42,7 @@
         "file": "today-360.png",
         "width": 360,
         "height": 11642,
-        "sha256": "9fccb22a493fcde66edb9bd655d8dc5476fd470b780826f13d92433444808d40"
+        "sha256": "b09681a3fb43cd86c0dd4ddad6b7130ed9eca212ae1340b85eb03e9a00b0a1da"
       },
       "layout": {
         "clientWidth": 360,
@@ -66,7 +66,7 @@
         "file": "today-1280.png",
         "width": 1280,
         "height": 8015,
-        "sha256": "c718d6b0e413d44cf06e47d8c86e9b33ad8ad61e800ef86651685ebc5437c399"
+        "sha256": "362c738f120cc464fb6c87e701861e7a03a40de2370c87774005fd1505dd6961"
       },
       "layout": {
         "clientWidth": 1280,
@@ -90,7 +90,7 @@
         "file": "horoscopes-hub-360.png",
         "width": 360,
         "height": 6311,
-        "sha256": "6a5355fc9cfaaf8e8fb5b5f6564935a1422a9ccdf7204f4c76ad9429291977cc"
+        "sha256": "3a5acacb73e1c1ee5975eb6ec4dc78a61c0a6d660919d318a84dff1209774dee"
       },
       "layout": {
         "clientWidth": 360,
@@ -114,7 +114,7 @@
         "file": "horoscopes-hub-1280.png",
         "width": 1280,
         "height": 3191,
-        "sha256": "afaee3c000e2b882c642c6539487d1e9e674814ad2c3cdbce9ba87468407eabe"
+        "sha256": "423b7e552328953bf0eb0978a40f9c9a58aab8ee5f5d400938a6bfa3095cb70c"
       },
       "layout": {
         "clientWidth": 1280,
