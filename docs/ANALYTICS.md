@@ -97,7 +97,7 @@ recorded in `docs/growth/records/2026/GROWTH-2026-09-01-vercel-web-analytics-fla
 | `verifier_used` | `chain`, `outcome` | Paste-address verification completes |
 | `terminal_view_switch` | `surface`, `direction` | A visitor follows the visible Terminal view switch or the saved-preference banner |
 | `sdk_click` | `source`, `destination` | A Registry or astrology surface opens SDK documentation |
-| `thesis_click` | `source` (`astrofolio` or `fomo`) | Fired when a visitor follows the thesis link on the Astrofolio or Fomo page |
+| `thesis_click` | `source` (`astrofolio` or `fomo`) | Fired on the Fomo thesis link when analytics is enabled. The Astrofolio page omits analytics. |
 | `wallet_chart_computed` | `chain`, `holds_registry_asset` | A feature-flagged wallet chart renders |
 
 `verifier_used` never includes the pasted address, and `email_subscribed`
