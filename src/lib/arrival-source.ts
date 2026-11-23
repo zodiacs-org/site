@@ -15,7 +15,7 @@
  */
 import { ARRIVAL_REF_VALUES, ARRIVAL_SOURCE_VALUES } from './analytics-config.mjs';
 
-export type ArrivalRef = 'video' | 'chatgpt' | 'assistant' | 'card' | 'app' | 'note';
+export type ArrivalRef = 'video' | 'chatgpt' | 'assistant' | 'card' | 'app' | 'note' | 'hn' | 'github' | 'reddit';
 export type ArrivalSource = 'direct' | ArrivalRef;
 
 export const ARRIVAL_REFS = ARRIVAL_REF_VALUES as readonly ArrivalRef[];
