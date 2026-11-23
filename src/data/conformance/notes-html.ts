@@ -6,13 +6,28 @@ const escape = (text: string) => text
 
 function matchHttpsLink(text: string, start: number): { end: number; label: string; href: string } | null {
   if (text[start] !== '[') return null;
-  const closeBracket = text.indexOf(']', start + 1);
+  let i = start + 1;
+  let closeBracket = -1;
+  while (i < text.length) {
+    if (text[i] === '`') {
+      const codeEnd = text.indexOf('`', i + 1);
+      if (codeEnd !== -1) {
+        i = codeEnd + 1;
+        continue;
+      }
+    }
+    if (text[i] === ']') {
+      closeBracket = i;
+      break;
+    }
+    i += 1;
+  }
   if (closeBracket === -1 || text[closeBracket + 1] !== '(') return null;
   const urlStart = closeBracket + 2;
   if (!text.startsWith('https://', urlStart)) return null;
 
   let depth = 0;
-  let i = urlStart;
+  i = urlStart;
   while (i < text.length) {
     const ch = text[i];
     if (/\s/u.test(ch)) return null;
@@ -33,6 +48,22 @@ function matchHttpsLink(text: string, start: number): { end: number; label: stri
   return null;
 }
 
+function findClosingBold(text: string, start: number): number {
+  let i = start;
+  while (i < text.length) {
+    if (text[i] === '`') {
+      const codeEnd = text.indexOf('`', i + 1);
+      if (codeEnd !== -1) {
+        i = codeEnd + 1;
+        continue;
+      }
+    }
+    if (text.startsWith('**', i)) return i;
+    i += 1;
+  }
+  return -1;
+}
+
 function inline(text: string): string {
   const out: string[] = [];
   let i = 0;
@@ -45,7 +76,7 @@ function inline(text: string): string {
         continue;
       }
     }
-    if (text[i] === '[' ) {
+    if (text[i] === '[') {
       const link = matchHttpsLink(text, i);
       if (link) {
         out.push(`<a href="${escape(link.href)}">${inline(link.label)}</a>`);
@@ -54,7 +85,7 @@ function inline(text: string): string {
       }
     }
     if (text.startsWith('**', i)) {
-      const end = text.indexOf('**', i + 2);
+      const end = findClosingBold(text, i + 2);
       if (end !== -1 && end > i + 2) {
         out.push(`<strong>${inline(text.slice(i + 2, end))}</strong>`);
         i = end + 2;
@@ -79,6 +110,7 @@ export function notesHtml(markdown: string | null): string {
   let inList = false;
   let nested = false;
   let paragraph: string[] = [];
+  let currentItem: string[] | null = null;
 
   const flushParagraph = () => {
     if (paragraph.length === 0) return;
@@ -86,8 +118,15 @@ export function notesHtml(markdown: string | null): string {
     paragraph = [];
   };
 
+  const flushItem = (keepOpenForNested = false) => {
+    if (!currentItem) return;
+    out.push(`<li>${inline(currentItem.join(' '))}${keepOpenForNested ? '' : '</li>'}`);
+    currentItem = null;
+  };
+
   const closeList = () => {
     if (!inList) return;
+    flushItem();
     if (nested) {
       out.push('</ul></li>');
       nested = false;
@@ -106,15 +145,18 @@ export function notesHtml(markdown: string | null): string {
         out.push('<ul>');
         inList = true;
       }
-      if (deep && !nested && out.length > 0 && out[out.length - 1].endsWith('</li>')) {
-        out[out.length - 1] = out[out.length - 1].replace(/<\/li>$/u, '');
+      if (deep && !nested && currentItem) {
+        flushItem(true);
         out.push('<ul>');
         nested = true;
-      } else if (!deep && nested) {
-        out.push('</ul></li>');
-        nested = false;
+      } else {
+        flushItem();
+        if (!deep && nested) {
+          out.push('</ul></li>');
+          nested = false;
+        }
       }
-      out.push(`<li>${inline(item[2])}</li>`);
+      currentItem = [item[2].trim()];
       continue;
     }
 
@@ -132,8 +174,8 @@ export function notesHtml(markdown: string | null): string {
       continue;
     }
 
-    if (inList && /^\s+/u.test(rawLine) && out.length > 0 && out[out.length - 1].endsWith('</li>')) {
-      out[out.length - 1] = `${out[out.length - 1].slice(0, -5)} ${inline(trimmed)}</li>`;
+    if (inList && currentItem && /^\s+/u.test(rawLine)) {
+      currentItem.push(trimmed);
       continue;
     }
 
