@@ -62,14 +62,11 @@ import {
   longDate,
   NEUTRAL_HUE,
   occasionCardModel,
-  RETROGRADE_CARD_HOUSE_THEME,
   retrogradeForYouCardModel,
   skyCalendarCardModel,
   skyEvents,
 } from './result-preview-model';
 import { parseRetrogradeForYouShare } from '../lib/retrograde-for-you/share';
-import { NATAL_HOUSE_THEME } from '../lib/natal';
-import { softenHealth, softenMinor } from '../ai-tools/features/reading-guards';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
@@ -799,8 +796,8 @@ describe('share preview images', () => {
     ['Chinese zodiac', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=rabbit'))],
     ['invitation', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?s=taurus&p=scorpio'))],
     ['invitation with one sign', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?p=gemini'))],
-    ['retrograde in my chart', () => handleRetrogradeForYouImageRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&h=7&b=rising&c=70'))],
-    ['retrograde with no house', () => handleRetrogradeForYouImageRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-image?p=mars&s=2027-01-10&c=55'))],
+    ['retrograde for Sun sign', () => handleRetrogradeForYouImageRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&sun=taurus'))],
+    ['retrograde without Sun sign', () => handleRetrogradeForYouImageRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-image?p=mars&s=2027-01-10'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -844,8 +841,9 @@ describe('share preview images', () => {
       [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image'],
       [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image?s=taurus&n=Ana'],
       [handleCompatibilityImageRequest, `https://zodiacs.org/api/og/compatibility-image?${COMPAT}&c=99`],
-      [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-25&h=7&b=rising&c=70'],
-      [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&h=7&b=rising&c=70&d=1990-05-03'],
+      [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-25&sun=taurus'],
+      [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&sun=taurus&d=1990-05-03'],
+      [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&h=7&b=rising&c=70'],
     ] as const) expect((await handle(new Request(url))).status, url).toBe(400);
   });
 });
@@ -870,7 +868,7 @@ describe('story pictures', () => {
     ['big three with the Moon undetermined', () => handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=sagittarius'))],
     ['Chinese zodiac', () => handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=tiger'))],
     ['invitation', () => handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio'))],
-    ['retrograde in my chart', () => handleRetrogradeForYouStoryRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-story?p=venus&s=2026-10-03&h=5&b=sun&c=55'))],
+    ['retrograde for Sun sign', () => handleRetrogradeForYouStoryRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-story?p=venus&s=2026-10-03&sun=taurus'))],
   ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The story renderer must not fetch assets or fonts.');
@@ -904,37 +902,24 @@ describe('story pictures', () => {
 describe('a retrograde in one person’s chart', () => {
   const events = skyEvents({ moons: [], retrogrades: json<{ retrogrades: { planet: string; from: string; to: string }[] }>('../data/sky.json').retrogrades, eclipses: [] });
 
-  it('draws the planet, its house and the published window, and nothing about the birth', () => {
-    const model = retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&h=7&b=rising&c=70'))!, events)!;
+  it('draws the planet, the published window and optional Sun sign, and nothing personal beyond the Sun sign', () => {
+    const model = retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&sun=taurus'))!, events)!;
     expect(model).toMatchObject({
-      title: 'Mercury retrograde in my seventh house',
+      title: 'Mercury retrograde for Taurus Sun',
       span: 'Sat 24 Oct 2026 to Fri 13 Nov 2026',
-      line: 'The seventh house covers partnership, the people you meet as equals.',
-      confidence: 'Reading confidence 70%',
+      confidence: null,
     });
-    expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=venus&s=2026-10-03&h=5&b=sun&c=55'))!, events)!.line)
-      .toBe('The fifth house covers pleasure, play, children, and what you make for its own sake. Counted from the Sun sign.');
-    expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2027-01-10&c=55'))!, events)!.title).toBe('Mars retrograde in my chart');
-    expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2026-10-24&c=55'))!, events)).toBeNull();
-  });
-
-  it('keeps the birth chart’s house themes, with romance read as play', () => {
-    for (let house = 1; house <= 12; house += 1) expect(RETROGRADE_CARD_HOUSE_THEME[house]).toBe(softenHealth(softenMinor(NATAL_HOUSE_THEME[house])));
-  });
-
-  it('never reads the sixth house as health beside a dated window', () => {
-    const card = retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&h=6&b=rising&c=70'))!, events)!;
-    expect(card.line).toBe('The sixth house covers routines, craft, and the shape of the day.');
-    expect(JSON.stringify(card)).not.toMatch(/health/iu);
+    expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2027-01-10'))!, events)!.title).toBe('Mars retrograde');
+    expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2026-10-24'))!, events)).toBeNull();
   });
 
   it('opens a page whose action leads back to the retrogrades page', async () => {
-    const page = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24&h=7&b=rising&c=70&ref=chatgpt'))).text();
-    expect(page).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&amp;s=2026-10-24&amp;h=7&amp;b=rising&amp;c=70">');
+    const page = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24&sun=taurus&ref=chatgpt'))).text();
+    expect(page).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&amp;s=2026-10-24&amp;sun=taurus">');
     expect(page).toContain('<a class="cta" href="/retrogrades/for-you/">See your retrogrades</a>');
-    expect(page).toContain('Mercury retrograde in my seventh house');
+    expect(page).toContain('Mercury retrograde for Taurus Sun');
     expect(page).not.toMatch(/[\u2013\u2014]/u);
-    const plain = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24&c=55&d=1990-05-03'))).text();
+    const plain = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24&d=1990-05-03'))).text();
     expect(plain).toContain('content="https://zodiacs.org/assets/og/v2/tool/retrogrades.png"');
     expect(plain).toContain('<a class="cta" href="/retrogrades/for-you/">See your retrogrades</a>');
   });

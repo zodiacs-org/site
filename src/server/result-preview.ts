@@ -787,7 +787,7 @@ export function milestoneCard(model: MilestoneCardModel, art: string[]) {
     h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: '30px' } }, model.line)));
 }
 
-/** A retrograde in one person's chart: the Sky dial, the window and the house it falls in, never the birth details. */
+/** A retrograde in one person's chart: the Sky dial, the planet, the published window and, when the link carries it, the Sun sign; never the birth details. */
 export function retrogradeForYouCard(model: RetrogradeForYouCardModel, art: string[]) {
   return frame(art, words({
     discs: [],
@@ -1350,7 +1350,7 @@ export function famousChartStory(model: FamousChartCardModel, images: Map<ShareS
   ]), model.sign.slug);
 }
 
-/** A retrograde in one person's chart (C, the keepsake): the Sky dial, the planet in its house, the window and the reading's confidence. */
+/** A retrograde in one person's chart (C, the keepsake): the Sky dial, the planet, the published window and what that retrograde means in general. */
 export function retrogradeForYouStory(model: RetrogradeForYouCardModel, art: string[]) {
   return storyFrame(art, storyColumn([
     storyKicker('Retrogrades in my chart', model.hue),
@@ -2185,7 +2185,7 @@ export async function handleRetrogradeForYouLinkRequest(request: Request): Promi
     story: { href: `${RETROGRADE_FOR_YOU_SHARE_STORY_PATH}?${retrogradeForYouQuery(share)}`, filename: `zodiacs-${share.planet}-retrograde-story.jpg` },
     imageType: 'image/jpeg',
     imageAlt: `${model.title}, ${model.span}. ${model.line}`,
-    explanation: `${model.span}. ${model.line} ${model.line === model.about ? '' : `${model.about} `}${model.confidence}.`,
+    explanation: `${model.span}. ${model.line}${model.confidence ? ` ${model.confidence}.` : ''}`,
     action: { label: 'See your retrogrades', href: RETROGRADE_FOR_YOU_PAGE_PATH },
     more: { label: 'Every retrograde through 2030', href: '/retrogrades/' },
     note: RETROGRADE_FOR_YOU_NOTE,

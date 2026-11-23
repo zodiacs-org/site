@@ -5383,32 +5383,32 @@ function validateResult(value, instantaneousApplying, instant4, scale2) {
     const mc = angles.mc;
     const opposite = cusps.slice(0, 6).every((cusp, index) => angularClose(cusps[index + 6], cusp + 180));
     const thirtyFrom = (start) => cusps.every((cusp, index) => angularClose(cusp, start + index * 30));
-    let consistent2;
+    let consistent;
     switch (system) {
       case "whole":
-        consistent2 = thirtyFrom(Math.floor(asc / 30) * 30);
+        consistent = thirtyFrom(Math.floor(asc / 30) * 30);
         break;
       case "equal":
-        consistent2 = thirtyFrom(asc);
+        consistent = thirtyFrom(asc);
         break;
       // The 10th cusp is the midheaven, so the 1st is 90° past it.
       case "equal-mc":
-        consistent2 = thirtyFrom(mc + 90);
+        consistent = thirtyFrom(mc + 90);
         break;
       case "vehlow":
-        consistent2 = thirtyFrom(asc - 15);
+        consistent = thirtyFrom(asc - 15);
         break;
       // Neither angle is a Morinus cusp; the meridian system keeps the midheaven.
       case "morinus":
-        consistent2 = opposite;
+        consistent = opposite;
         break;
       case "meridian":
-        consistent2 = opposite && angularClose(cusps[9], mc);
+        consistent = opposite && angularClose(cusps[9], mc);
         break;
       default:
-        consistent2 = opposite && angularClose(cusps[0], asc) && (angularClose(cusps[9], mc) || TURNING_WITH_ASCENDANT.includes(system) && angularClose(cusps[9], mc + 180));
+        consistent = opposite && angularClose(cusps[0], asc) && (angularClose(cusps[9], mc) || TURNING_WITH_ASCENDANT.includes(system) && angularClose(cusps[9], mc + 180));
     }
-    if (!consistent2) fail2("inconsistent_result");
+    if (!consistent) fail2("inconsistent_result");
     if (system === "porphyry") {
       const upper = wrap(angles.asc - angles.mc);
       const lower2 = 180 - upper;
@@ -42909,7 +42909,8 @@ function natalBasis(input) {
     points,
     approximate: !input.timeKnown,
     detail: readingDetail({ hasDate: true, hasTime: input.timeKnown, hasPlace: input.placed }),
-    minor: isUnder18(input.birthDate, input.today),
+    // isUnderAge keeps 29 February as 29 February, so someone born on 1 March is still under 18 that day.
+    minor: isUnderAge(input.birthDate, input.today, 18),
     limits: limits2
   };
 }
@@ -43001,28 +43002,15 @@ function retrogradeReading(input) {
   const summary = `${openings.join(" ")} ${readingConfidenceLabel(input.basis.detail)}.`;
   return { periods, unavailable, summary, limits: limits2 };
 }
-function stationHouse(period2) {
-  return period2.houses.find((entry) => entry.sign === period2.stationRetrograde.sign)?.house ?? null;
-}
 
 // src/lib/retrograde-for-you/share.ts
 var RETROGRADE_FOR_YOU_PAGE_PATH = "/retrogrades/for-you/";
 var RETROGRADE_FOR_YOU_SHARE_PATH = "/share/retrograde-for-you/";
-var RETROGRADE_FOR_YOU_SHARE_KEYS = Object.freeze(["p", "s", "h", "b", "c", "ref"]);
+var RETROGRADE_FOR_YOU_SHARE_KEYS = Object.freeze(["p", "s", "sun", "ref"]);
 var SHARE_RETROGRADE_PLANETS = ["mercury", "venus", "mars"];
-var [DATE_CONFIDENCE, TIMED_CONFIDENCE] = DAY_CONFIDENCES;
-function consistent(share) {
-  if (share.house === null !== (share.basis === null)) return false;
-  if (!DAY_CONFIDENCES.includes(share.confidence)) return false;
-  return share.basis === "rising" ? share.confidence === TIMED_CONFIDENCE : share.confidence === DATE_CONFIDENCE;
-}
 function retrogradeForYouQuery(share, withRef2 = false) {
   const params = new URLSearchParams({ p: share.planet, s: share.date });
-  if (share.house !== null && share.basis !== null) {
-    params.set("h", String(share.house));
-    params.set("b", share.basis);
-  }
-  params.set("c", String(share.confidence));
+  if (share.sun !== null) params.set("sun", share.sun);
   if (withRef2 && share.ref) params.set("ref", share.ref);
   return params.toString();
 }
@@ -43036,9 +43024,7 @@ function retrogradeForYouShareQuery(source3, windows2) {
   if (!SHARE_RETROGRADE_PLANETS.includes(planet2)) return null;
   const date3 = publishedRetrogradeDate(source3.planet, source3.stationRetrogradeUtc, windows2);
   if (!date3) return null;
-  const basis = source3.house === null || source3.countedFrom === null ? null : source3.countedFrom === "rising sign" ? "rising" : "sun";
-  const share = { planet: planet2, date: date3, house: basis ? source3.house : null, basis, confidence: source3.confidence, ref: null };
-  return consistent(share) ? retrogradeForYouQuery(share) : null;
+  return retrogradeForYouQuery({ planet: planet2, date: date3, sun: source3.sun, ref: null });
 }
 var retrogradeForYouShareUrl = (origin, query) => `${origin}${RETROGRADE_FOR_YOU_SHARE_PATH}?${query}`;
 function retrogradeTablePath(planet2, skyDate) {
@@ -43184,7 +43170,7 @@ var period = z16.object({
   reading: z16.string(),
   confidence: z16.number().int().min(40).max(95),
   confidenceLabel: z16.string(),
-  /** A link to this retrograde's share card: the planet, the window's start date, the house and its basis and the confidence. Null when the window is past the site's published sky data. */
+  /** A link to this retrograde's share card: the planet, the window's start date, and the Sun sign when settled. Null when the window is past the site's published sky data. */
   shareUrl: z16.url().nullable()
 });
 var retrogradeForMeData = z16.object({
@@ -43265,13 +43251,12 @@ async function retrogradeForMe(args, context) {
     loopsFor: (planet2) => retrogradeLoops(planet2, now, rowsAt),
     leadingLimits: clock2.note ? [clock2.note] : []
   });
+  const sunSign = sunHeld ? SIGNS2[signIndexForLongitude2(natal.chart.bodies.find((row) => row.body === "Sun").lon)].slug : null;
   const periods = reading.periods.map((period2) => {
     const query = retrogradeForYouShareQuery({
       planet: period2.planet,
       stationRetrogradeUtc: period2.stationRetrograde.utc,
-      house: stationHouse(period2),
-      countedFrom: period2.housesCountedFrom,
-      confidence: period2.confidence
+      sun: sunSign
     }, sky_default.retrogrades);
     return { ...period2, shareUrl: query ? retrogradeForYouShareUrl(context.origin, query) : null };
   });
@@ -45474,6 +45459,15 @@ function guardPersonalWeek(week, birthDate, today2) {
   };
 }
 
+// src/lib/birth-date-policy.ts
+var HOUR_MS4 = 36e5;
+function civilDateAt(now, offsetHours) {
+  return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
+}
+function earliestToday(now = /* @__PURE__ */ new Date()) {
+  return civilDateAt(now, -12);
+}
+
 // src/ai-tools/tools.ts
 var PRIVACY_POLICY = "https://zodiacs.org/privacy/";
 var SAVED_PAGE_EXCEPTION = "The only exception is a page a signed-in person chooses to save to their own account.";
@@ -45620,7 +45614,7 @@ function birthDatesIn(tool, args, now, hostZone) {
   return dates.filter((date3) => typeof date3 === "string" && CIVIL_DATE.test(date3));
 }
 function childBirthDateRefusal(tool, args, now, hostZone) {
-  const today2 = now.toISOString().slice(0, 10);
+  const today2 = earliestToday(now);
   return birthDatesIn(tool, args, now, hostZone).some((date3) => isUnder13(date3, today2)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
 }
 function occasionCardUrl(args) {

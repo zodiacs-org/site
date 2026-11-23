@@ -6,10 +6,11 @@ import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { retrogradeForMe } from '../../ai-tools/personal/retrograde-for-me';
 import { forbiddenClaim } from '../../ai-tools/personal/shared';
 import { PeriodCard } from '../../islands/RetrogradeForYou';
-import { computeRetrogradeForYou, prepareLocalTime, type RetrogradeForYouInput } from '../../islands/retrograde-for-you/compute';
+import { computeRetrogradeForYou, prepareLocalTime, retrogradeForYouRefusal, type RetrogradeForYouInput } from '../../islands/retrograde-for-you/compute';
 import sky from '../../data/sky.json';
 import { retrogradeForYouCardModel, skyEvents } from '../../server/result-preview-model';
-import { CONTACT_LINE, RETROGRADE_ASK, RETROGRADE_LINE } from './reading';
+import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
+import { CONTACT_LINE, POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, natalBasis } from './reading';
 import { loopsFromSky } from './sky';
 import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery } from './share';
 
@@ -106,6 +107,40 @@ describe('the /retrogrades/for-you/ page and get_retrograde_for_me', () => {
   it('refuses a birth date less than 13 years ago and computes nothing', async () => {
     await prepareLocalTime('2016-05-03', MADRID.tz);
     expect(computeRetrogradeForYou({ birthDate: '2016-05-03', birthTime: null, place: MADRID, planets: ['Mercury'], now: new Date('2026-11-09T09:00:00Z'), zone: 'UTC' })).toEqual({ refused: 'under-13' });
+  });
+
+  // The shared policy reads today at UTC-12: at 2026-11-09T09:00Z it is the 9th in UTC and in
+  // every zone the page might be told it is in, but still the 8th at UTC-12.
+  it.each(['UTC', 'Pacific/Kiritimati', 'Asia/Bangkok', 'Europe/Madrid', 'America/New_York', 'Pacific/Pago_Pago'])(
+    'refuses the 13th birthday until it has begun everywhere, read in %s',
+    async (zone) => {
+      await prepareLocalTime('2013-11-09', MADRID.tz);
+      const page = (now: string) => computeRetrogradeForYou({ birthDate: '2013-11-09', birthTime: null, place: MADRID, planets: ['Mercury'], now: new Date(now), zone });
+      expect(page('2026-11-09T09:00:00Z')).toEqual({ refused: 'under-13' });
+      expect(page('2026-11-09T11:59:59Z')).toEqual({ refused: 'under-13' });
+      expect(page('2026-11-09T12:00:00Z').refused).toBeUndefined();
+      expect(retrogradeForYouRefusal('2013-11-09', new Date('2026-11-09T11:59:59Z'))).toEqual({ refused: 'under-13' });
+      expect(retrogradeForYouRefusal('2013-11-08', new Date('2026-11-09T09:00:00Z'))).toBeNull();
+    },
+  );
+
+  it('calls a date the future only past the calendar date at UTC+14, and calculates nothing for it', () => {
+    expect(retrogradeForYouRefusal('2026-11-10', new Date('2026-11-09T09:59:59Z'))).toEqual({ refused: 'future-birth-date' });
+    expect(retrogradeForYouRefusal('2026-11-10', new Date('2026-11-09T10:00:00Z'))).toEqual({ refused: 'under-13' });
+    expect(computeRetrogradeForYou({ birthDate: '2027-01-01', birthTime: null, place: MADRID, planets: ['Mercury'], now: new Date('2026-11-09T09:00:00Z'), zone: 'UTC' })).toEqual({ refused: 'future-birth-date' });
+  });
+
+  it('checks the shared policy before it resolves the birth time or builds a chart', () => {
+    const source = readFileSync(new URL('../../islands/retrograde-for-you/compute.ts', import.meta.url), 'utf8');
+    const body = source.slice(source.indexOf('export function computeRetrogradeForYou('));
+    expect(body.indexOf('retrogradeForYouRefusal(input.birthDate, input.now)')).toBeGreaterThan(0);
+    expect(body.indexOf('retrogradeForYouRefusal(input.birthDate, input.now)')).toBeLessThan(body.indexOf('resolveLocalToUtc('));
+    expect(body.indexOf('retrogradeForYouRefusal(input.birthDate, input.now)')).toBeLessThan(body.indexOf('computeChart('));
+    expect(source).not.toMatch(/isUnder13/u);
+    const island = readFileSync(new URL('../../islands/RetrogradeForYou.tsx', import.meta.url), 'utf8');
+    const calculate = island.slice(island.indexOf('async function calculate('));
+    expect(calculate.indexOf('birthDateRefusal(birthDate)')).toBeGreaterThan(calculate.indexOf('birthDate = entry.date'));
+    expect(calculate.indexOf('birthDateRefusal(birthDate)')).toBeLessThan(calculate.indexOf('prepareLocalTime('));
   });
 });
 
@@ -219,7 +254,7 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     }
   });
 
-  it('keeps the sixth-house wording from an untimed reading through its share card', async () => {
+  it('softens an untimed sixth-house reading and keeps its house details off the share card', async () => {
     const { page, mcp } = await both({ birthDate: '2010-06-05' }, new Date('2026-11-09T09:00:00Z'), 'UTC');
     const theme = 'routines, craft, and the shape of the day';
     const pageVenus = page.periods.find((period) => period.planet === 'Venus')!;
@@ -231,10 +266,11 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     }
     expect(toolVenus.shareUrl).toBe(`https://zodiacs.org/share/retrograde-for-you/?${pageVenus.shareQuery}`);
     const share = parseRetrogradeForYouShare(new URLSearchParams(pageVenus.shareQuery!));
-    expect(share).toMatchObject({ house: 6, basis: 'sun' });
+    expect(share).toEqual({ planet: 'venus', date: pageVenus.skyDate, sun: 'gemini', ref: null });
     const events = skyEvents({ retrogrades: sky.retrogrades, moons: [], eclipses: [] });
     const card = retrogradeForYouCardModel(share!, events);
-    expect(card?.line).toBe(`The sixth house covers ${theme}. Counted from the Sun sign.`);
+    expect(card?.line).toMatch(/^Venus retrograde /u);
+    expect(card?.line).not.toMatch(/house/iu);
     expect(JSON.stringify(card)).not.toMatch(/health/iu);
   });
 
@@ -256,19 +292,54 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     expect(mcp.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
     expect(page.limits).toEqual(mcp.limits.filter((entry) => !entry.startsWith('Today is read')));
   });
+
+  it('keeps 29 February as 29 February for the under-18 rule: born 1 March 2010 is still a minor that day', async () => {
+    // Madrid, 1 Mar 2010 at 07:15 gives Aquarius rising, so Venus's 2028 loop in Gemini falls in the fifth house,
+    // whose theme names romance. A Date cutoff rolls 29 Feb 2010 over to 1 Mar and read this person as 18.
+    const birth = { birthDate: '2010-03-01', time: '07:15' };
+    const fifth = (periods: readonly { planet: string; houses: readonly { house: number; theme: string; line: string }[]; reading: string }[]) => {
+      const venus = periods.find((period) => period.planet === 'Venus')!;
+      expect(venus.houses[0]).toMatchObject({ house: 5 });
+      return [venus.houses[0].theme, venus.houses[0].line, venus.reading].join(' ');
+    };
+    const leap = await both(birth, new Date('2028-02-29T12:00:00Z'), 'UTC');
+    for (const result of [leap.page, leap.mcp]) {
+      expect(result.limits).toContain(MINOR_NOTE);
+      expect(fifth(result.periods)).not.toMatch(/romance|romantic/iu);
+      expect(JSON.stringify([result.periods, result.summary])).not.toMatch(/romance|romantic|attraction/iu);
+    }
+    const birthday = await both(birth, new Date('2028-03-01T12:00:00Z'), 'UTC');
+    for (const result of [birthday.page, birthday.mcp]) {
+      expect(result.limits).not.toContain(MINOR_NOTE);
+      expect(fifth(result.periods)).toContain('romance');
+    }
+  });
+
+  it('reads the under-18 rule on the civil date, leap day included', () => {
+    const bodies = POINT_NAMES.map((body, index) => ({ body, lon: index * 30 }));
+    const minor = (birthDate: string, today: string) => natalBasis({
+      timeKnown: true, placed: true, angles: { asc: 0, mc: 270 }, bodies, sunHeld: true, birthDate, today,
+    }).minor;
+    expect(minor('2010-03-01', '2028-02-28')).toBe(true);
+    expect(minor('2010-03-01', '2028-02-29')).toBe(true);
+    expect(minor('2010-03-01', '2028-03-01')).toBe(false);
+    // Born on 29 February: under 18 until the calendar reaches 1 March in a common year.
+    expect(minor('2008-02-29', '2026-02-28')).toBe(true);
+    expect(minor('2008-02-29', '2026-03-01')).toBe(false);
+  });
 });
 
 describe('the retrograde-for-you share link', () => {
-  it('carries only the planet, a published start date, the house, its basis and the confidence', () => {
-    const share = parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&h=7&b=rising&c=70'));
-    expect(share).toEqual({ planet: 'mercury', date: '2026-10-24', house: 7, basis: 'rising', confidence: 70, ref: null });
-    expect(retrogradeForYouQuery(share!)).toBe('p=mercury&s=2026-10-24&h=7&b=rising&c=70');
-    expect(parseRetrogradeForYouShare(new URLSearchParams('p=venus&s=2026-10-03&c=55'))).toMatchObject({ house: null, basis: null });
+  it('carries only the planet, a published start date, and the Sun sign when settled', () => {
+    const share = parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&sun=taurus'));
+    expect(share).toEqual({ planet: 'mercury', date: '2026-10-24', sun: 'taurus', ref: null });
+    expect(retrogradeForYouQuery(share!)).toBe('p=mercury&s=2026-10-24&sun=taurus');
+    expect(parseRetrogradeForYouShare(new URLSearchParams('p=venus&s=2026-10-03'))).toEqual({ planet: 'venus', date: '2026-10-03', sun: null, ref: null });
     for (const bad of [
-      'p=jupiter&s=2026-10-24&c=55', 'p=mercury&s=2026-13-40&c=55', 'p=mercury&s=2026-10-24&h=13&b=sun&c=55',
-      'p=mercury&s=2026-10-24&h=7&c=55', 'p=mercury&s=2026-10-24&b=sun&c=55', 'p=mercury&s=2026-10-24&h=7&b=rising&c=55',
-      'p=mercury&s=2026-10-24&h=7&b=sun&c=70', 'p=mercury&s=2026-10-24&c=60', 'p=mercury&s=2026-10-24&c=55&d=1990-05-03',
-      'p=mercury&s=2026-10-24&c=55&p=venus', 'p=mercury&s=2026-10-24&c=55&ref=other', 'p=mercury&s=2026-10-24',
+      'p=jupiter&s=2026-10-24&sun=taurus', 'p=mercury&s=2026-13-40&sun=taurus', 'p=mercury&s=2026-10-24&sun=ophiuchus',
+      'p=mercury&s=2026-10-24&h=7&b=rising&c=70', 'p=mercury&s=2026-10-24&h=7&b=sun&c=55', 'p=mercury&s=2026-10-24&c=55',
+      'p=mercury&s=2026-10-24&m=leo', 'p=mercury&s=2026-10-24&r=libra', 'p=mercury&s=2026-10-24&sun=taurus&d=1990-05-03',
+      'p=mercury&s=2026-10-24&sun=taurus&p=venus', 'p=mercury&s=2026-10-24&sun=taurus&ref=other', 'p=mercury',
     ]) expect(parseRetrogradeForYouShare(new URLSearchParams(bad)), bad).toBeNull();
   });
 

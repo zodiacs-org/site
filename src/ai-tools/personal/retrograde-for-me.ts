@@ -24,11 +24,12 @@ import { z } from 'zod';
 import { findLongitudeCrossings, positions } from '@zodiacs/engine';
 import { SampleBudget, positionsMemo, rowOf, stationCrossings } from '../../lib/compute-api/endpoints';
 import {
-  POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, natalBasis, retrogradeReading, stationHouse,
+  POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, natalBasis, retrogradeReading,
   type RetrogradeLoop, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { RETROGRADE_FOR_YOU_PAGE_PATH, publishedRetrogradeDate, retrogradeForYouShareQuery, retrogradeForYouShareUrl, retrogradeTablePath } from '../../lib/retrograde-for-you/share';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
+import type { ShareSign } from '../../lib/share-results';
 import { computeChart } from '../../lib/engine/full.js';
 import sky from '../../data/sky.json';
 import { birthDayEnds, birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
@@ -108,7 +109,7 @@ const period = z.object({
   reading: z.string(),
   confidence: z.number().int().min(40).max(95),
   confidenceLabel: z.string(),
-  /** A link to this retrograde's share card: the planet, the window's start date, the house and its basis and the confidence. Null when the window is past the site's published sky data. */
+  /** A link to this retrograde's share card: the planet, the window's start date, and the Sun sign when settled. Null when the window is past the site's published sky data. */
   shareUrl: z.url().nullable(),
 });
 export const retrogradeForMeData = z.object({
@@ -199,10 +200,12 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     loopsFor: (planet) => retrogradeLoops(planet, now, rowsAt),
     leadingLimits: clock.note ? [clock.note] : [],
   });
+  const sunSign = sunHeld
+    ? (SIGNS[signIndexForLongitude(natal.chart.bodies.find((row) => row.body === 'Sun')!.lon)].slug as ShareSign)
+    : null;
   const periods = reading.periods.map((period) => {
     const query = retrogradeForYouShareQuery({
-      planet: period.planet, stationRetrogradeUtc: period.stationRetrograde.utc, house: stationHouse(period),
-      countedFrom: period.housesCountedFrom, confidence: period.confidence,
+      planet: period.planet, stationRetrogradeUtc: period.stationRetrograde.utc, sun: sunSign,
     }, sky.retrogrades);
     return { ...period, shareUrl: query ? retrogradeForYouShareUrl(context.origin, query) : null };
   });

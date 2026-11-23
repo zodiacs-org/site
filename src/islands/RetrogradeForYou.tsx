@@ -6,8 +6,9 @@ import type { RetrogradeForYouOutcome } from './retrograde-for-you/compute';
 import { retrogradeTablePath } from '../lib/retrograde-for-you/share';
 import { loadModule } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
+import { birthDateRefusal, FUTURE_BIRTH_DATE_SENTENCE } from '../lib/birth-date-policy';
 
-type Result = Exclude<RetrogradeForYouOutcome, { refused: 'under-13' }>;
+type Result = Exclude<RetrogradeForYouOutcome, { refused: string }>;
 type Period = Result['periods'][number];
 
 const PLANETS: readonly RetrogradePlanet[] = ['Mercury', 'Venus', 'Mars'];
@@ -137,7 +138,7 @@ export default function RetrogradeForYou() {
   const [city, setCity] = useState<City | null>(null);
   const [planets, setPlanets] = useState<ReadonlySet<RetrogradePlanet>>(new Set(PLANETS));
   const [result, setResult] = useState<Result | null>(null);
-  const [refused, setRefused] = useState(false);
+  const [refused, setRefused] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -148,7 +149,7 @@ export default function RetrogradeForYou() {
 
   function clear() {
     revision.current += 1;
-    setBusy(false); setResult(null); setRefused(false); setError('');
+    setBusy(false); setResult(null); setRefused(null); setError('');
   }
 
   function toggle(planet: RetrogradePlanet) {
@@ -162,7 +163,7 @@ export default function RetrogradeForYou() {
     event.preventDefault();
     if (!ready || busy || !city) return;
     const request = ++revision.current;
-    setBusy(true); setError(''); setResult(null); setRefused(false);
+    setBusy(true); setError(''); setResult(null); setRefused(null);
     try {
       const { computeRetrogradeForYou, prepareLocalTime } = await loadModule(() => import('./retrograde-for-you/compute'));
       let birthDate = date;
@@ -172,6 +173,9 @@ export default function RetrogradeForYou() {
         if ('error' in entry) { setError(entry.error); return; }
         birthDate = entry.date;
       }
+      // The shared birth date policy (UTC-12) on the converted date, before any local time or chart is resolved.
+      const policy = birthDateRefusal(birthDate);
+      if (policy) { setRefused(policy === 'under_13' ? UNDER_13 : FUTURE_BIRTH_DATE_SENTENCE); return; }
       const input = {
         birthDate, birthTime: timeKnown ? time : null, place: { lat: city.lat, lon: city.lon, tz: city.tz },
         planets: PLANETS.filter((planet) => planets.has(planet)), now: new Date(), zone: browserZone(),
@@ -179,7 +183,7 @@ export default function RetrogradeForYou() {
       await prepareLocalTime(input.birthDate, input.place.tz);
       if (request !== revision.current) return;
       const outcome = computeRetrogradeForYou(input);
-      if (outcome.refused) setRefused(true);
+      if (outcome.refused) setRefused(outcome.refused === 'under-13' ? UNDER_13 : FUTURE_BIRTH_DATE_SENTENCE);
       else setResult(outcome);
     } catch (cause) {
       if (request === revision.current) {
@@ -227,7 +231,7 @@ export default function RetrogradeForYou() {
       </form>
 
       <div class="rfy__result" aria-live="polite">
-        {refused && <p class="notice" role="status">{UNDER_13}</p>}
+        {refused && <p class="notice" role="status">{refused}</p>}
         {result && (
           <>
             <p class="rfy__clock">Read for today on this device’s clock ({result.zone}).</p>

@@ -17,7 +17,7 @@
 import { wholeSignHouseFromAsc } from '../daily';
 import { NATAL_HOUSE_THEME } from '../natal';
 import { SIGNS, signBySlug, signIndexForLongitude } from '../signs';
-import { MINOR_NOTE, isUnder13, isUnder18, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
+import { MINOR_NOTE, isUnder13, isUnderAge, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
 
 export { isUnder13, MINOR_NOTE };
@@ -222,7 +222,8 @@ export function natalBasis(input: {
   return {
     countedFrom, baseSign, points, approximate: !input.timeKnown,
     detail: readingDetail({ hasDate: true, hasTime: input.timeKnown, hasPlace: input.placed }),
-    minor: isUnder18(input.birthDate, input.today),
+    // isUnderAge keeps 29 February as 29 February, so someone born on 1 March is still under 18 that day.
+    minor: isUnderAge(input.birthDate, input.today, 18),
     limits,
   };
 }
