@@ -1,8 +1,8 @@
 {
   "type": "official-SDK protocol interoperability against the real server process; not a named end-user host, and not a model-driven demonstration",
-  "startedAt": "2026-11-18T10:49:17.142Z",
-  "completedAt": "2026-11-18T10:49:24.752Z",
-  "node": "v22.23.5",
+  "startedAt": "2026-11-23T16:03:38.148Z",
+  "completedAt": "2026-11-23T16:03:43.735Z",
+  "node": "v22.23.4",
   "client": {
     "package": "@modelcontextprotocol/client",
     "version": "2.3.1",
@@ -17,8 +17,8 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "bytes": 5820578,
-    "sha256": "6e66a58558b243ae68541664bc46b1b38ef8aa78bcbac8fcd58d6f990011bc11"
+    "bytes": 5838780,
+    "sha256": "5d78f5a097672a1eb963b8d56a1076e3ecf64d847204a26153e941a35d49d3e2"
   },
   "wire": [
     {
@@ -110,15 +110,15 @@
       "ok": true,
       "detail": {
         "name": "zodiacs-mcp-server",
-        "version": "0.1.0-rc.27"
+        "version": "0.1.0-rc.28"
       }
     },
     {
       "name": "server version is the packaged adapter candidate version",
       "ok": true,
       "detail": {
-        "server": "0.1.0-rc.27",
-        "package": "0.1.0-rc.27"
+        "server": "0.1.0-rc.28",
+        "package": "0.1.0-rc.28"
       }
     },
     {
@@ -207,7 +207,7 @@
       "ok": true,
       "detail": {
         "name": "@zodiacs/engine",
-        "version": "1.1.0",
+        "version": "2.1.0",
         "releaseStatus": "published",
         "registry": "npm"
       }
@@ -218,13 +218,13 @@
       "detail": {
         "adapter": {
           "name": "zodiacs-mcp-server",
-          "version": "0.1.0-rc.27",
+          "version": "0.1.0-rc.28",
           "releaseStatus": "unpublished-candidate",
           "transport": "stdio"
         },
         "engine": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0",
+          "version": "2.1.0",
           "releaseStatus": "published",
           "registry": "npm"
         }
@@ -235,9 +235,9 @@
       "ok": true,
       "detail": {
         "url": "https://zodiacs.org/developers/mcp/#get_capabilities",
-        "receipt": "sha256:770264a2a548ecc705b138a68baa71092818b0e97b3b72969afd5f29138ff57d",
+        "receipt": "sha256:850146d534b015a0fe1caee21bd39112e476fecbfc8fefcc5f0ca8464bd8641d",
         "engine": "@zodiacs/engine",
-        "version": "1.1.0"
+        "version": "2.1.0"
       }
     },
     {
@@ -307,15 +307,15 @@
       "detail": {
         "chart": {
           "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
-          "receipt": "sha256:2f73d92a68dac107f1ff6608c68c7f3460680ddd35d6c1675c397ff10bf17ab4",
+          "receipt": "sha256:15ed62754edf73a63154d5a8d9331d4124973b3f2058b54947624c12e268cc97",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0"
+          "version": "2.1.0"
         },
         "record": {
           "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
-          "receipt": "sha256:2f73d92a68dac107f1ff6608c68c7f3460680ddd35d6c1675c397ff10bf17ab4",
+          "receipt": "sha256:15ed62754edf73a63154d5a8d9331d4124973b3f2058b54947624c12e268cc97",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0"
+          "version": "2.1.0"
         }
       }
     },
@@ -374,11 +374,11 @@
         "tool": "compare_calculation_records",
         "adapter": {
           "name": "zodiacs-mcp-server",
-          "version": "0.1.0-rc.27"
+          "version": "0.1.0-rc.28"
         },
         "engine": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0",
+          "version": "2.1.0",
           "ephemeris": {
             "name": "jpl-de440",
             "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
@@ -404,9 +404,9 @@
       "ok": true,
       "detail": {
         "url": "https://zodiacs.org/developers/mcp/#get_positions",
-        "receipt": "sha256:94e990ee1d9f635a2b72dcdd5e63aa7139a361499888e4b2e4c0a9e5ac5989e9",
+        "receipt": "sha256:4ad579eb3d7eae2261036e2cb2aabfb8251104cd27cf5219d23563eb77fc4b6b",
         "engine": "@zodiacs/engine",
-        "version": "1.1.0"
+        "version": "2.1.0"
       }
     },
     {
@@ -665,9 +665,9 @@
       "ok": true,
       "detail": {
         "url": "https://zodiacs.org/developers/mcp/#resolve_birth_time",
-        "receipt": "sha256:981bc9a74247634f148292dd4f2dcfda7e5fb14b71bee6b6ee6b4456e67a2f94",
+        "receipt": "sha256:cb01e8017616a98a6b792f4ac4b8e69b9ce7b2eb156888445aa0c841d362d8cc",
         "engine": "@zodiacs/engine",
-        "version": "1.1.0"
+        "version": "2.1.0"
       }
     },
     {
@@ -733,18 +733,26 @@
         {
           "from": "1.1.0-rc.10",
           "to": null
+        },
+        {
+          "from": "2.0.0-rc.3",
+          "to": null
+        },
+        {
+          "from": "2.0.0-rc.3",
+          "to": null
         }
       ]
     },
     {
       "name": "the methodology resource names the engine and the site's methodology page",
       "ok": true,
-      "detail": "# How this server calculates\n\nzodiacs-mcp-server 0.1.0-rc.27 runs @zodiacs/engine 1.1.0, with DE440, on the machine it runs on.\nThe site's methodology page, https://zodiacs.org/methodology/, describes"
+      "detail": "# How this server calculates\n\nzodiacs-mcp-server 0.1.0-rc.28 runs @zodiacs/engine 2.1.0, with DE440, on the machine it runs on.\nThe site's methodology page, https://zodiacs.org/methodology/, describes"
     },
     {
       "name": "the default comparison response repeats no birth detail back",
       "ok": true,
-      "detail": "{\"identical\":false,\"counts\":{\"differences\":113,\"substantive\":113,\"displayOnly\":0,\"explanations\":3},\"output\":\"summary\",\"differences\":[{\"id\":\"instant\",\"area\":\"Inputs\",\"label\":\"Resolved instant (UTC)\",\"d"
+      "detail": "{\"identical\":false,\"counts\":{\"differences\":114,\"substantive\":114,\"displayOnly\":0,\"explanations\":4},\"output\":\"summary\",\"differences\":[{\"id\":\"instant\",\"area\":\"Inputs\",\"label\":\"Resolved instant (UTC)\",\"d"
     },
     {
       "name": "and still says which field moved, how, and by how much",
@@ -1043,22 +1051,22 @@
     {
       "name": "stderr carried the adapter's startup note, so the capture is real",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.27, engine 1.1.0, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.28, engine 2.1.0, no network\n"
     },
     {
       "name": "stderr carried only the adapter's own notes",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.27, engine 1.1.0, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.28, engine 2.1.0, no network\n"
     },
     {
       "name": "stderr carried no birth detail, coordinate or record content",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.27, engine 1.1.0, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.28, engine 2.1.0, no network\n"
     },
     {
       "name": "the transport exposes the server process id, so the next check measures something",
       "ok": true,
-      "detail": 42946
+      "detail": 25773
     },
     {
       "name": "the server process is gone after the client closes",
@@ -1156,7 +1164,7 @@
           1,
           6
         ],
-        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.27, engine 1.1.0, no network"
+        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.28, engine 2.1.0, no network"
       }
     },
     {
@@ -1170,7 +1178,7 @@
           83,
           7
         ],
-        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.27, engine 1.1.0, no network"
+        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.28, engine 2.1.0, no network"
       }
     },
     {

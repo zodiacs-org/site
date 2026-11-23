@@ -8,6 +8,7 @@ import type { Chart, ChartInput } from './types';
 import policy from './fixtures/independent-lunar-return-policy.json';
 import references from './fixtures/independent-lunar-returns.json';
 import applicability from './fixtures/swiss-lunar-fixed-target-applicability.json';
+import { onBeforeContinuousUtcClock } from '../../../tests/helpers/pre-continuous-utc';
 
 // The resolver is the engine's, which the site loads on first use.
 beforeAll(() => prepareLocalTime('2000-01-01', 'UTC'));
@@ -171,8 +172,11 @@ describe('independent lunar return references', () => {
 
   it.each(references.cases)('$id: chart at the separately preserved independent instant', (reference) => {
     const input = policy.cases.find((row) => row.id === reference.id)!;
+    // The references read an instant after the IERS table as UT1, as the engine
+    // did before 2.0.0; the chart is taken at that same UT1 and TT, so the
+    // comparison still measures positions and angles, not the clock.
     const chart = ephemeris.computeChart({
-      utc: new Date(reference.independentChartUTC), ...locationFor(input.returnLocation),
+      utc: onBeforeContinuousUtcClock(reference.independentChartUTC), ...locationFor(input.returnLocation),
       houseSystem: 'placidus', timeKnown: true,
     });
     record(reference.id, 'fixedIndependentChart', { chart });
@@ -197,7 +201,7 @@ describe('independent lunar return references', () => {
     const supplementUtc = new Date(reference.utc);
     expect(Math.abs(chart.input.utc.getTime() - supplementUtc.getTime()), 'The returned-chart reference no longer applies; rebuild the independent references at the new product timestamp')
       .toBeLessThanOrEqual(15_000);
-    expectIndependentChart(ephemeris.computeChart({ utc: supplementUtc, ...place }), reference.reference);
+    expectIndependentChart(ephemeris.computeChart({ utc: onBeforeContinuousUtcClock(reference.utc), ...place }), reference.reference);
   });
 
   it('retains geocentric event identity under relocation and the independent relocated component', () => {

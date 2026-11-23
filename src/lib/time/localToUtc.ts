@@ -5,7 +5,7 @@
  * resolution onto them.
  *
  * The engine reads a wall time in an IANA zone (docs/time.md in the engine):
- * - before 1970, on the zone's history from tzdata 2025c compiled with its
+ * - before 1970, on the zone's history from tzdata 2026f compiled with its
  *   backzone file, which the engine ships in 16 files and loads lazily, one per
  *   call of prepareLocalTime(date, timeZone);
  * - from 1970, and in the fixed zones, on the host's Intl data;

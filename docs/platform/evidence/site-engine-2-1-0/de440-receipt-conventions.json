@@ -1,0 +1,25 @@
+{
+  "engine": "2.1.0",
+  "ephemeris": {
+    "name": "jpl-de440",
+    "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
+  },
+  "instant": "2000-01-01T12:00:00Z",
+  "conventions": {
+    "angles": "gast-and-true-obliquity",
+    "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+    "calendar": "proleptic-gregorian",
+    "conventionIds": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+    "deltaT": "tt-minus-ut1;value-in-result",
+    "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+    "longitudeUnit": "degrees-[0,360)",
+    "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+    "moonPosition": "ephemeris-geocentric-moon;light-time;solar-deflection;relativistic-aberration",
+    "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+    "planetPositions": "apparent-geocentric-ecliptic-of-date;light-time;solar-deflection;relativistic-aberration;barycentres-mars-to-pluto",
+    "positionFrame": "icrf-to-true-ecliptic-of-date;iau2006-precession-with-bias;iau2000b-nutation-p03;tdb-three-term",
+    "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+    "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+    "zodiac": "tropical"
+  }
+}

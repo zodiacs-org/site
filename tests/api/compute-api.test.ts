@@ -630,7 +630,7 @@ describe('compute API receipts, backend and citation', () => {
   it("lists the engine's own house systems, bodies and pinned tzdb release", () => {
     expect([...HOUSE_SYSTEM_NAMES]).toEqual([...HOUSE_SYSTEMS]);
     expect(positions('2026-09-29T12:00:00Z').map((row) => row.body)).toEqual([...POSITION_BODIES]);
-    expect(localTime.TZDB).toMatchObject({ version: '2025c', form: 'main+backzone' });
+    expect(localTime.TZDB).toMatchObject({ version: '2026f', form: 'main+backzone' });
   });
 });
 
@@ -688,14 +688,14 @@ describe('compute API parity with the engine and the site resolver', () => {
       const at = new Date(instants[index]);
       expect(row.instant).toBe(at.toISOString());
       expect(row.bodies).toEqual(JSON.parse(JSON.stringify(positions(at).filter((body) => ['Sun', 'Moon', 'South Node'].includes(body.body))
-        .map(({ ephemeris: _ephemeris, fallback: _fallback, ...body }) => body))));
+        .map(({ ephemeris: _ephemeris, fallback: _fallback, flags: _flags, ...body }) => body))));
       const chart = natalChart({ utc: at, timeKnown: false });
       expect(row.deltaT).toEqual(chart.deltaT);
       expect(row.timeScale).toEqual(chart.timeScale);
       expect(row.flags).toEqual(outsideReferenceSpan(at) ? ['outside-reference-span'] : []);
     });
-    // Before 1972 and after the UT1 table the instant is read as UT1; between, on IERS UT1 − UTC.
-    expect(json.result.instants.map((row: any) => row.timeScale.basis)).toEqual(['delta-t', 'delta-t', 'iers', 'delta-t']);
+    // Before 1972 the instant is read as UT1; to the end of the UT1 table, on IERS UT1 − UTC; after it, on continuous UTC.
+    expect(json.result.instants.map((row: any) => row.timeScale.basis)).toEqual(['delta-t', 'delta-t', 'iers', 'continuous-utc']);
     const all = (await call('positions', { instants: ['2026-09-29T12:00:00Z'] })).json;
     expect(all.result.instants[0].bodies.map((row: any) => row.body)).toEqual([...POSITION_BODIES]);
   });

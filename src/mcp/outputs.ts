@@ -42,7 +42,7 @@ export const SIGN_NAMES = Object.freeze([
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ] as const);
 export const CHART_FLAGS = Object.freeze([
-  'dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span',
+  'dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'polar-angles', 'calendar-unknown', 'host-zone-data-differs', 'outside-reference-span',
   'de440-unavailable', 'outside-de440-span', 'delta-t-extrapolated',
 ] as const);
 export const ASPECT_TYPES = Object.freeze(['conjunction', 'sextile', 'square', 'trine', 'opposition'] as const);
@@ -291,10 +291,10 @@ const deltaT = z.strictObject({
 
 const timeScale = z.strictObject({
   input: z.literal('utc'),
-  basis: z.enum(['iers', 'delta-t']),
-  ut1MinusUtc: z.strictObject({ seconds: z.number(), sigma: z.number(), source: z.enum(['observed', 'predicted', 'fallback']) }).nullable(),
+  basis: z.enum(['iers', 'continuous-utc', 'delta-t']),
+  ut1MinusUtc: z.strictObject({ seconds: z.number(), sigma: z.number(), source: z.enum(['observed', 'predicted', 'fallback', 'model']) }).nullable(),
   leapSeconds: z.strictObject({ taiMinusUtc: z.number(), listed: z.boolean() }).nullable(),
-}).describe('How the engine read the instant. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis delta-t, otherwise: the instant is read as UT1, and TT is UT1 plus the ΔT model.');
+}).describe('How the engine read the instant. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis continuous-utc, after the table: TT is UTC plus 69.184 s, and UT1 comes from the ΔT model. basis delta-t, before 1972: the instant is read as UT1, and TT is UT1 plus the ΔT model.');
 
 const backend = z.strictObject({
   name: z.literal('@zodiacs/engine'),
@@ -459,7 +459,7 @@ export const TIME_OUTPUT = computeBody('resolve_birth_time', z.strictObject({
   localMeanTime: z.strictObject({ longitude: z.number(), zoneOffsetMinutes: z.number() }).nullable()
     .describe('The place\'s own mean time, where the time was read on it, with the zone\'s offset then.'),
   zoneHistory: z.enum(['pinned', 'runtime'])
-    .describe('pinned: tzdb release 2025c with backzone, which the engine ships, read the offset. runtime: the runtime\'s own time zone data read it.'),
+    .describe('pinned: tzdb release 2026f with backzone, which the engine ships, read the offset. runtime: the runtime\'s own time zone data read it.'),
   zoneUncertain: z.boolean()
     .describe('True for a date up to 1970-01-01 read on the runtime\'s data where the release records no local time, as at an Antarctic station before it was staffed.'),
   intlOffsetMinutes: z.number().nullable()

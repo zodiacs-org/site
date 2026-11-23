@@ -354,7 +354,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       applying: bool,
     },
   },
-  ChartFlag: { enum: ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span', 'delta-t-extrapolated', 'de440-unavailable', 'outside-de440-span'] },
+  ChartFlag: { enum: ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'polar-angles', 'calendar-unknown', 'host-zone-data-differs', 'outside-reference-span', 'delta-t-extrapolated', 'de440-unavailable', 'outside-de440-span'] },
   DeltaT: {
     type: 'object',
     required: ['seconds', 'sigma', 'model', 'table', 'tableDigest', 'segment'],
@@ -370,14 +370,14 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
   },
   TimeScale: object(['input', 'basis', 'ut1MinusUtc', 'leapSeconds'], {
     input: { const: 'utc' },
-    basis: { enum: ['iers', 'delta-t'] },
+    basis: { enum: ['iers', 'continuous-utc', 'delta-t'] },
     ut1MinusUtc: nullable(object(['seconds', 'sigma', 'source'], {
-      seconds: num, sigma: num, source: { enum: ['observed', 'predicted', 'fallback'] },
-    }, 'UT1 − UTC in seconds as the engine used it, with its 1-sigma band and its source: observed or predicted by IERS, or fallback after the table ends; null before 1972.')),
+      seconds: num, sigma: num, source: { enum: ['observed', 'predicted', 'fallback', 'model'] },
+    }, 'UT1 − UTC in seconds as the engine used it, with its 1-sigma band and its source: observed or predicted by IERS, model after the table ends (TT − UTC, 69.184 s, less the ΔT model), or fallback in a receipt from an engine before 2.0.0; null before 1972.')),
     leapSeconds: nullable(object(['taiMinusUtc', 'listed'], {
       taiMinusUtc: num, listed: bool,
     }, 'TAI − UTC in seconds from the IERS leap-second list; listed is false after the list expires and its last value is carried.')),
-  }, 'How the engine read the instant, as a chart reports it. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis delta-t, otherwise: the instant is read as UT1, and TT is UT1 plus the ΔT model.'),
+  }, 'How the engine read the instant, as a chart reports it. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis continuous-utc, after the table: TT is UTC plus 69.184 s, and UT1 comes from the ΔT model. basis delta-t, before 1972: the instant is read as UT1, and TT is UT1 plus the ΔT model.'),
   LocalResolution: {
     type: 'object',
     required: ['offsetMinutes', 'flags', 'localMeanTime', 'zoneHistory', 'zoneUncertain'],
@@ -814,7 +814,7 @@ const DESCRIPTIONS: Readonly<Record<ComputeEndpoint, string>> = {
   positions: 'The rows the engine\'s positions() returns at each instant: tropical ecliptic longitude and latitude of date, speed in degrees per day, and the sign. Each instant carries the ΔT it was computed with.',
   houses: 'The angles and the twelve cusps of natalChart for one instant, place and house system. Inside the polar circle Placidus and Koch fall back to whole sign, and the flags and the receipt say so.',
   events: 'Sign ingresses of the requested bodies, their stations, and new and full moons, found by the engine\'s crossing search. Each crossing is bisected to within its search step divided by 2^24. Completeness is tested, not proven: sampling can miss a pair of crossings around a station that falls between two samples.',
-  time: '@zodiacs/engine/geo, the resolver the birth chart calculator uses: a repeated wall time takes the earlier instant (dst-fold), a skipped one moves forward by the gap (dst-gap). A time before the place adopted a legal time uses a local mean time (lmt): with a longitude the place\'s own, without one the zone reference city\'s. A date up to 1970-01-01 takes the offsets of tzdb release 2025c, backzone included, which the engine ships (zoneHistory pinned); where the server\'s time zone data gives the zone another offset at that instant, the flags include zone-history-disputed. Otherwise offsets come from the server\'s time zone data (zoneHistory runtime), and a date up to 1970-01-01 read that way has zoneUncertain true, unless the zone is a fixed offset such as UTC. A date may be written in the Julian calendar up to 1923, and a country named gets the birth forms\' note on when it changed calendar. A place of the Zodiacs time atlas named with atlasPlace gets the atlas\'s reading of the same wall time, with its rule, its uncertainty flag and its citations, beside tzdb\'s.',
+  time: '@zodiacs/engine/geo, the resolver the birth chart calculator uses: a repeated wall time takes the earlier instant (dst-fold), a skipped one moves forward by the gap (dst-gap). A time before the place adopted a legal time uses a local mean time (lmt): with a longitude the place\'s own, without one the zone reference city\'s. A date up to 1970-01-01 takes the offsets of tzdb release 2026f, backzone included, which the engine ships (zoneHistory pinned); where the server\'s time zone data gives the zone another offset at that instant, the flags include zone-history-disputed. Otherwise offsets come from the server\'s time zone data (zoneHistory runtime), and a date up to 1970-01-01 read that way has zoneUncertain true, unless the zone is a fixed offset such as UTC. A date may be written in the Julian calendar up to 1923, and a country named gets the birth forms\' note on when it changed calendar. A place of the Zodiacs time atlas named with atlasPlace gets the atlas\'s reading of the same wall time, with its rule, its uncertainty flag and its citations, beside tzdb\'s.',
   'sky-fact': 'A structured fact, never interpretive text, answered true, false or depends, with the computed values that decide it. A fact about a date is depends when the answer turns on the time of day or, with no zone given, on the zone.',
   elections: `An election search: every stretch of the window in which all the conditions hold. Sign changes, stations and the Moon's new and full phases come from the engine's crossing search; void periods from the Moon's sign changes and its last exact aspect before each; house changes from natalChart, sampled every ${ELECTION_STEPS.houseSampleMinutes} minutes inside the stretches the other conditions leave, more finely where a body passes more than one house between samples. Every boundary is within a second. Completeness is tested, not proven: on 100 random requests it found the same windows as a scan of every 10 seconds, every end within 5.4 seconds.`,
 };

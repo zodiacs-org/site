@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
 
 /**
  * The thirteen tool definitions the directories reviewed, as the live server published them on 1 November 2026
@@ -38,6 +39,14 @@ import { readFileSync } from 'node:fs';
  * description of get_upcoming_events only: no other tool, field, schema, annotation or _meta moves.
  * check_sky_fact's description keeps 14:31:41, because check_sky_fact still gives the solved instant,
  * 2026-01-26T14:31:41.084Z. withoutZod64 takes the change back out, for comparing with lists saved before ZOD-64.
+ *
+ * Continuous UTC: engine 2.0.0 reads an instant after 2 October 2027 as continuous UTC, so a chart then reports its
+ * clock as basis continuous-utc with a UT1 − UTC of source model. The published time schema allowed only iers and
+ * delta-t, and observed, predicted and fallback, so a client that checks results against the schema refused get_sky
+ * and check_sky_fact after that date. asContinuousUtc below gives those two tools the compute API's time schema, with
+ * the new values and its wording, in their output schemas only, three places in all. This change to the published
+ * definitions was approved by Dias on 2026-11-23; no other tool, field, input schema, description, annotation or
+ * _meta moves, and the directory's frozen server (api/_ai/published/) is not touched.
  */
 export const LIVE_TOOLS = JSON.parse(readFileSync(new URL('../../docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json', import.meta.url), 'utf8')).result.tools as Record<string, unknown>[];
 
@@ -226,7 +235,7 @@ const PANEL_URIS_069: Record<string, string> = {
 };
 
 export const PUBLISHED_TOOLS = PUBLISHED_TOOLS_068.map(tool => {
-  const released = { ...tool };
+  const released = { ...asContinuousUtc(tool).tool };
   if (RANGE_TOOLS.has(String(tool.name))) {
     released.inputSchema = JSON.parse(JSON.stringify(tool.inputSchema).replaceAll('1800\u20132199', '1800 to 2199'));
   }
@@ -235,3 +244,29 @@ export const PUBLISHED_TOOLS = PUBLISHED_TOOLS_068.map(tool => {
   if (uri) released._meta = { ...meta, ui: { ...meta.ui, resourceUri: uri }, 'openai/outputTemplate': uri };
   return released;
 });
+
+/**
+ * Continuous UTC, approved by Dias on 2026-11-23: the time schema each result of get_sky and check_sky_fact carries,
+ * as published and as it now reads, the compute API's own (components.schemas.TimeScale).
+ */
+export const CONTINUOUS_UTC_TOOLS = ['get_sky', 'check_sky_fact'];
+
+/** An entry with the compute API's time schema in its output schema, and the paths that changed. */
+export function asContinuousUtc(tool: Record<string, unknown>): { tool: Record<string, unknown>; changed: string[] } {
+  const changed: string[] = [];
+  const timeScaleRequired = JSON.stringify(['input', 'basis', 'ut1MinusUtc', 'leapSeconds']);
+  const walk = (node: unknown, path: string): unknown => {
+    if (Array.isArray(node)) return node.map((item, index) => walk(item, `${path}[${index}]`));
+    if (!node || typeof node !== 'object') return node;
+    const record = node as Record<string, unknown>;
+    if (JSON.stringify(record.required) === timeScaleRequired && JSON.stringify(record) !== JSON.stringify(COMPUTE_SCHEMAS.TimeScale)) {
+      changed.push(path);
+      return JSON.parse(JSON.stringify(COMPUTE_SCHEMAS.TimeScale));
+    }
+    return Object.fromEntries(Object.entries(record).map(([key, value]) => [key, walk(value, `${path}.${key}`)]));
+  };
+  const name = String(tool.name);
+  if (!tool.outputSchema) return { tool, changed };
+  const outputSchema = walk(tool.outputSchema, `${name}.outputSchema`);
+  return { tool: changed.length ? { ...tool, outputSchema } : tool, changed };
+}

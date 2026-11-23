@@ -321,9 +321,11 @@ export function computePositions(request: PositionsRequest) {
     const { deltaT, timeScale } = basisOf(instant);
     return {
       instant: iso(instant),
-      // The response identifies the ephemeris once in its backend and receipt.
+      // The response identifies the ephemeris once in its backend and receipt. From engine 2.0.0 a row
+      // can carry the instant's own flags too; the instant reports them once, in its deltaT segment,
+      // its timeScale and its flags.
       bodies: (request.bodies ? rows.filter((row) => request.bodies!.includes(row.body)) : rows)
-        .map(({ ephemeris: _ephemeris, fallback: _fallback, ...body }) => body),
+        .map(({ ephemeris: _ephemeris, fallback: _fallback, flags: _flags, ...body }) => body),
       deltaT,
       timeScale,
       flags: outsideReferenceSpan(instant) ? ['outside-reference-span' as const] : [],

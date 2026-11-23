@@ -2,7 +2,7 @@
   "type": "named end-user host interoperability: the host launched the adapter and connected to it. Separate from the official-SDK protocol drive, and separate from the model-driven demonstration recorded by hand in host-interop.md.",
   "host": {
     "name": "Claude Code CLI",
-    "version": "2.1.327 (Claude Code)",
+    "version": "2.1.330 (Claude Code)",
     "mechanism": "claude mcp add/list/get/remove, stdio"
   },
   "notTested": [
@@ -16,9 +16,9 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "sha256": "6e66a58558b243ae68541664bc46b1b38ef8aa78bcbac8fcd58d6f990011bc11"
+    "sha256": "5d78f5a097672a1eb963b8d56a1076e3ecf64d847204a26153e941a35d49d3e2"
   },
-  "completedAt": "2026-11-18T20:33:34.242Z",
+  "completedAt": "2026-11-23T16:03:46.975Z",
   "checks": 7,
   "passed": 7,
   "results": [

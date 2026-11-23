@@ -1,7 +1,7 @@
 /**
  * Local civil time through @zodiacs/engine/geo, the resolver the birth chart
  * calculator also reads local times with (src/lib/time/localToUtc.ts delegates
- * to it): before 1970 the history of tzdata 2025c with its backzone file, which
+ * to it): before 1970 the history of tzdata 2026f with its backzone file, which
  * the engine ships; from 1970 the runtime's Intl data; and before standard
  * time a birthplace's own mean time. Nothing here converts a time itself.
  *

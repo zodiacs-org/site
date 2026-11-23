@@ -24,7 +24,7 @@ function rootEntryGraph(extension = 'js') {
   return visit(`node_modules/@zodiacs/engine/dist/index.${extension}`);
 }
 
-const evidencePath = 'docs/platform/evidence/site-engine-1-1-0/claims-horizons';
+const evidencePath = 'docs/platform/evidence/site-engine-2-1-0/claims-horizons';
 const { engine, ephemeris, archiveSha256, deltaTTableDigest, reference, stratified, dense, clock }
   = JSON.parse(read(`${evidencePath}/results.json`));
 const requests = JSON.parse(read(`${evidencePath}/requests.json`));
@@ -108,8 +108,11 @@ describe('the accuracy claim on /methodology/', () => {
       .toContain('START_TIME=%272100-01-01%27&STOP_TIME=%272199-12-31%27&STEP_SIZE=%271+d%27&QUANTITIES=%2730%27');
     expect(prose).toContain('Beyond its prediction interval Horizons holds its UTC offset fixed.');
     expect(prose).toContain("The engine estimates the Earth's rotation with its ΔT model.");
-    expect(prose).toContain(`from 2100 to 2199, those clock readings put the calculation ${tenth(clock.offset[0])} to ${tenth(clock.offset[1])} seconds apart`);
-    expect(enginePage).toContain(`Horizons' fixed future UTC offset put the same calendar labels ${tenth(clock.offset[0])} to ${tenth(clock.offset[1])} seconds apart`);
+    // Since engine 2.0.0 both read a future calendar label as UTC with a fixed offset, so the readings agree.
+    expect(clock.offset[0]).toBeLessThanOrEqual(clock.offset[1]);
+    expect(prose).toContain('Since release 2.0.0 it also holds atomic time a fixed 69.184 seconds ahead of UTC beyond 2 October 2027, as Horizons does.');
+    expect(prose).toContain(`from 2100 to 2199, those clock readings put the calculation within ${upperHundredth(clock.offset[1])} seconds of Horizons`);
+    expect(enginePage).toContain(`Horizons' fixed future UTC offset put the same calendar labels within ${upperHundredth(clock.offset[1])} seconds of each other`);
   });
 
   it('states the observed ΔT the engine uses, with its measured agreement', () => {
@@ -148,7 +151,7 @@ describe('the accuracy claim on /methodology/', () => {
 
   it('names the related ephemerides and limits the figures to the measurement dates', () => {
     expect(reference).toBe('NASA JPL Horizons DE441');
-    expect(prose).toContain("engine 1.1.0 with live NASA JPL Horizons DE441");
+    expect(prose).toContain(`engine ${engine} with the NASA JPL Horizons DE441 answers`);
     expect(prose).toContain("DE440 and DE441 are related JPL ephemerides. This comparison measures their agreement on the sampled dates.");
     expect(prose).toContain("Horizons returned apparent longitudes at Earth's centre in the ecliptic of date.");
     expect(prose).not.toContain('Swiss Ephemeris');
@@ -261,7 +264,8 @@ describe('the every-tenth-day comparison, 1800 to 2199', () => {
 
   it('gives the far-future Moon at matched TT and at the same input time', () => {
     expect(futureTt.max).toBeLessThan(10);
-    expect(futureUt.max).toBeGreaterThan(futureTt.max);
+    // Since engine 2.0.0 the same input time and matched TT agree, so the two figures are close.
+    expect(futureUt.max).toBeLessThan(10);
     const result = `${upperHundredth(futureTt.max)} arcseconds at matched Terrestrial Time and ${upperHundredth(futureUt.max)} arcseconds at the same input time`;
     expect(prose).toContain(`From 2150 to 2199, the largest Moon difference was ${result}`);
     expect(enginePage).toContain(`From 2150 to 2199 the maximum Moon difference was ${result}`);
