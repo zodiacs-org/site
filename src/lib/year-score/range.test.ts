@@ -137,5 +137,7 @@ describe('the untimed note', () => {
     }
     const island = readFileSync(new URL('../../../src/islands/YearScoreCalculator.tsx', import.meta.url), 'utf8');
     expect(island).toContain('{!result.timeKnown && <p class="field__help">{untimedScoreNote(result.range)}</p>}');
+    expect(island).toContain('birthDateRefusal(date)');
+    expect(island).toContain('birthDateRefusalText(refusal)');
   });
 });
