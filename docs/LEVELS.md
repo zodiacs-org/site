@@ -17,8 +17,8 @@ The rising sign and Moon sign pages open less, and say so through
 
 | Page | Intermediate opens | Advanced adds |
 | --- | --- | --- |
-| /rising-sign/ | The chart ruler rows and one day of rising signs | How we calculate and the chart data API |
-| /moon-sign/ | Why birth time can change your Moon | How we calculate and the chart data API |
+| /rising-sign/ | One day of rising signs | How we calculate and the chart data API |
+| /moon-sign/ | Why your birth time matters | How we calculate and the chart data API |
 
 Beginner is the default. The choice lives in this browser only
 (`localStorage` key `zodiacs-level`), never in a link and never on a server.

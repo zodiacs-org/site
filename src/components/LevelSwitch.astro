@@ -37,7 +37,11 @@ const options = [
     status: 'Showing houses, aspects and transits too.' },
   { level: 'advanced', label: 'Advanced', answer: 'I read charts myself', hint: 'Exact positions, the 3D view and data',
     status: 'Showing everything, down to exact positions.' },
-].map((o) => ({ ...o, ...words[o.level as keyof typeof words] }));
+].map((o) => {
+  // A word left out (or undefined) keeps the birth chart's default.
+  const own = Object.entries(words[o.level as keyof typeof words] ?? {}).filter(([, v]) => v !== undefined);
+  return { ...o, ...Object.fromEntries(own) };
+});
 ---
 <script is:inline>
   (function () {

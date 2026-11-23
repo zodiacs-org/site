@@ -130,8 +130,8 @@ const gap = later.minutes - example.minutes;
         <h1 class="rs-title">Find your rising sign.</h1>
         <p class="klede rs-lede">The sign that was coming up on the eastern horizon the moment you were born. It describes how people first meet you, and it sets the shape of your whole chart.</p>
         <LevelSwitch idPrefix="rs-level" words={{
-          intermediate: { hint: 'Your chart ruler and a day of rising signs open',
-            status: 'Showing the chart ruler and a day of rising signs too.' },
+          intermediate: { hint: 'A day of rising signs opens',
+            status: 'Showing a day of rising signs too.' },
           advanced: { hint: 'Plus how we calculate and the chart data',
             status: 'Showing everything, with how we calculate and the chart data.' },
         }} />
@@ -169,7 +169,7 @@ const gap = later.minutes - example.minutes;
           </div>
           <div class="rs-example__sign"><h2 class="h-2">{example.sign.name} rising</h2><span class="rs-mono">{example.degree}</span></div>
           <p class="rs-example__read">{RISING[example.sign.slug]}</p>
-          <div class="rs-example__rows" data-depth="intermediate">
+          <div class="rs-example__rows">
             <div>
               <span class="rs-example__ri" aria-hidden="true"><PlanetGlyph body={example.ruler} size={15} /></span>
               <span><b>Chart ruler: {example.ruler} in {example.rulerSign.name}.</b> <span class="rs-m">The planet steering your rising sign.</span></span>
