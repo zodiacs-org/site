@@ -13,9 +13,13 @@ by tools/stub-mcp.mjs over MCP. The first turn only (--max-turns 1).
 The system prompt is one line that sets the scene, the date, and the connector's own instructions.
 Claude uses the machine's signed-in Claude Code. No key is read or written here. Its environment is built from an
 allowlist of names (CHILD_ENV below); no other variable, key or OPENAI_* value is read or passed on. Gateways are not
-supported: if ANTHROPIC_BASE_URL is set at all, the run stops (exit 1) before any request.
+supported: if ANTHROPIC_BASE_URL is set at all, the run stops (exit 1) before any request. Claude Code also reads its
+managed settings file whatever --setting-sources says, so the run stops too if that file sets an ANTHROPIC_BASE_URL on
+any host but api.anthropic.com, or cannot be read. Any argument containing "openai" stops the run before argparse,
+and flags must be spelled in full (no abbreviations).
 """
 import argparse, json, os, subprocess, sys, tempfile, time
+from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -72,21 +76,39 @@ def ask_claude(args, tools_file, system, question):
         return {'modelReported': model, 'toolsOffered': offered, 'otherTools': other, 'calls': calls, 'text': text[:600]}
 
 def refuse_openai(argv):
-    # Runs before argparse, so `--provider openai` exits 1 whatever else is missing.
-    for i, arg in enumerate(argv):
-        value = arg.split('=', 1)[1] if arg.startswith('--provider=') else argv[i + 1] if arg == '--provider' and i + 1 < len(argv) else None
-        if value is not None and 'openai' in value.strip().lower():
-            print(OPENAI_REFUSAL, file=sys.stderr); sys.exit(1)
+    # Runs before argparse: any argument naming openai, in any flag or spelling, exits 1 whatever else is given.
+    if any('openai' in arg.lower() for arg in argv):
+        print(OPENAI_REFUSAL, file=sys.stderr); sys.exit(1)
 
 def refuse_gateway():
     # Gateways are not supported: Claude Code is only ever pointed at its default host.
     if 'ANTHROPIC_BASE_URL' in os.environ:
         print('ANTHROPIC_BASE_URL is set; unset it. Gateways are not supported by this runner (ZOD-207).', file=sys.stderr); sys.exit(1)
 
+# Claude Code loads these even with --setting-sources ''.
+MANAGED_SETTINGS = ('/etc/claude-code/managed-settings.json', '/Library/Application Support/ClaudeCode/managed-settings.json')
+
+def refuse_managed_gateway():
+    # Only the hostname check result is ever printed, never a value from the file.
+    for path in MANAGED_SETTINGS[:1] + (MANAGED_SETTINGS[1:] if sys.platform == 'darwin' else ()):
+        if not os.path.exists(path): continue
+        try:
+            with open(path) as f: settings = json.load(f)
+            env = settings.get('env') or {} if isinstance(settings, dict) else None
+            if not isinstance(env, dict): raise ValueError
+            base = env.get('ANTHROPIC_BASE_URL')
+            ok = base is None or (isinstance(base, str) and urlparse(base).hostname == 'api.anthropic.com')
+        except Exception:
+            print(f'{path} could not be read as settings; the run stops (ZOD-207).', file=sys.stderr); sys.exit(1)
+        if not ok:
+            print(f'{path} sets ANTHROPIC_BASE_URL to a host other than api.anthropic.com. '
+                  'Gateways are not supported by this runner (ZOD-207).', file=sys.stderr); sys.exit(1)
+
 def main():
     refuse_openai(sys.argv[1:])
     refuse_gateway()
-    parser = argparse.ArgumentParser()
+    refuse_managed_gateway()
+    parser = argparse.ArgumentParser(allow_abbrev=False)
     parser.add_argument('--provider', required=True, choices=['openai', 'claude'])
     parser.add_argument('--model', required=True)
     parser.add_argument('--tools', required=True)

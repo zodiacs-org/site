@@ -273,3 +273,16 @@ export function parseAnthropicResponse(response) {
 export function volumeLabel({ known, volume, ranged }) {
   return known ? (ranged ? `at least ${volume}` : String(volume)) : 'TBD';
 }
+
+// A fetch bound to one provider's exact host: https only, no port or
+// credentials in the URL, redirects refused. Anything else throws before a
+// request is sent, so one provider's credentials never reach another host.
+export function guardedFetchFor(host, fetchImpl = globalThis.fetch) {
+  return async function guardedFetch(input, init = {}) {
+    const url = new URL(typeof input === 'object' && input !== null && 'url' in input ? input.url : String(input));
+    if (url.protocol !== 'https:' || url.port || url.username || url.password || url.hostname !== host) {
+      throw new Error(`Refusing to call ${url.protocol}//${url.host}: only https to ${host} is allowed here (ZOD-207)`);
+    }
+    return fetchImpl(input, { ...init, redirect: 'error' });
+  };
+}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseAnthropicResponse, parseCsv, parseGeminiResponse, parseResponsesApi, volumeLabel, parseVolume, volumeOf, scoreAnswer, summarisePhrase } from './lib.mjs';
+import { answerCounts, citationHost, copyProblems, guardedFetchFor, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseAnthropicResponse, parseCsv, parseGeminiResponse, parseResponsesApi, volumeLabel, parseVolume, volumeOf, scoreAnswer, summarisePhrase } from './lib.mjs';
 
 describe('visibility lib', () => {
   it('holds fifty questions with unique ids and phrases', () => {
@@ -112,6 +112,20 @@ describe('visibility lib', () => {
     expect(unknown.status).toBe(1);
     expect(unknown.stderr).toContain('Unknown or missing provider: mystery');
     expect(unknown.stdout).toBe('');
+    // A bare or empty --providers stops instead of selecting every provider.
+    for (const providers of [['--providers'], ['--providers', '--dry-run'], ['--providers='], ['--providers', ''], ['--providers', ' , ']]) {
+      const run = spawnSync(process.execPath, [script, ...providers, '--questions', missing, '--dry-run'], { env, encoding: 'utf8' });
+      expect(run.status, providers.join(' ')).toBe(1);
+      expect(run.stderr).toContain('Unknown or missing provider: (none)');
+      expect(run.stdout).toBe('');
+    }
+    // Repeating --providers stops instead of asking the union.
+    for (const providers of [['--providers', 'xai', '--providers', 'gemini'], ['--providers=xai', '--providers=xai'], ['--providers', 'xai', '--providers']]) {
+      const run = spawnSync(process.execPath, [script, ...providers, '--questions', missing, '--dry-run'], { env, encoding: 'utf8' });
+      expect(run.status, providers.join(' ')).toBe(1);
+      expect(run.stderr).toContain('Give --providers once');
+      expect(run.stdout).toBe('');
+    }
     // The default list, read from a dry run: no keys in the environment, so
     // nothing is ready and no request is made.
     const dry = spawnSync(process.execPath, [script, '--dry-run', '--label', 'dry-run-test'], { env, encoding: 'utf8' });
@@ -119,6 +133,38 @@ describe('visibility lib', () => {
     expect(dry.stderr).toBe('');
     expect(dry.stdout.split('\n').filter((l) => l.endsWith('answers still to collect)')).map((l) => l.split(':')[0])).toEqual(['gemini', 'anthropic', 'xai']);
     expect(dry.stdout).not.toMatch(/openai/i);
+  });
+});
+
+describe('guarded fetch (ZOD-207)', () => {
+  it('lets the Anthropic client reach only api.anthropic.com', async () => {
+    const calls = [];
+    const record = async (input, init) => { calls.push([String(input), init]); return new Response('{}'); };
+    const anthropicFetch = guardedFetchFor('api.anthropic.com', record);
+    for (const url of [
+      'https://generativelanguage.googleapis.com/v1beta/models/m:generateContent',
+      'https://api.x.ai/v1/responses',
+      'https://api.openai.com/v1/oauth/token',
+      'http://api.anthropic.com/v1/messages',
+      'https://api.anthropic.com:8443/v1/messages',
+      'https://user:pass@api.anthropic.com/v1/messages',
+      'https://api.anthropic.com.example.net/v1/messages',
+    ]) {
+      await expect(anthropicFetch(url, { method: 'POST' }), url).rejects.toThrow(/ZOD-207/);
+      // Request itself refuses a URL with credentials, so only the string form is tried there.
+      if (!url.includes('@')) await expect(anthropicFetch(new Request(url), {}), url).rejects.toThrow(/ZOD-207/);
+    }
+    expect(calls).toEqual([]);
+    await anthropicFetch('https://api.anthropic.com/v1/messages', { method: 'POST' });
+    expect(calls).toHaveLength(1);
+    expect(calls[0][1]).toEqual({ method: 'POST', redirect: 'error' });
+  });
+  it('keeps each provider on its own host', async () => {
+    const calls = [];
+    const record = async (input) => { calls.push(String(input)); return new Response('{}'); };
+    await expect(guardedFetchFor('api.x.ai', record)('https://api.anthropic.com/v1/messages')).rejects.toThrow(/ZOD-207/);
+    await expect(guardedFetchFor('generativelanguage.googleapis.com', record)('https://api.x.ai/v1/responses')).rejects.toThrow(/ZOD-207/);
+    expect(calls).toEqual([]);
   });
 });
 

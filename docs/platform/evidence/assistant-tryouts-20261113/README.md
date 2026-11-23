@@ -37,6 +37,10 @@ The Claude run uses the machine's signed-in Claude Code. The OpenAI runs are not
 approved OpenAI API spend (ZOD-207), so `run-tryouts.py --provider openai` stops before any request. Use the
 recorded OpenAI runs in `runs/` instead. The Claude child sees only an allowlist of environment variables (PATH,
 HOME, LANG, LC_ALL, TERM, TMPDIR, USER, CLAUDE_CONFIG_DIR). Gateways are not supported: if `ANTHROPIC_BASE_URL` is
-set at all, the run stops before any request. With `--forward`, the stub sends calls only over https to
+set at all, the run stops before any request. Claude Code reads its managed settings file
+(`/etc/claude-code/managed-settings.json`, or `/Library/Application Support/ClaudeCode/managed-settings.json` on
+macOS) whatever `--setting-sources` says, so the run also stops if that file sets an `ANTHROPIC_BASE_URL` on any host
+but `api.anthropic.com`, or cannot be read. Any argument containing "openai" stops the run, and flags must be
+spelled in full. With `--forward`, the stub sends calls only over https to
 `zodiacs.org` and refuses redirects.
 No key is in this folder.
