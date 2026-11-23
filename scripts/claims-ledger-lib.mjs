@@ -196,6 +196,7 @@ export const SCOPE_DROP = Object.freeze([
   { pattern: /^src\/data\/lunar-new-year\.json$/u, reason: 'generated Lunar New Year dates with no prose (scripts/build-lunar-new-year.mjs)' },
   { pattern: /^src\/data\/people\.json$/u, reason: 'the people pilot\'s frozen, generated copy; its facts are checked by build-people-pilot.mjs --check' },
   { pattern: /(?:^|\/)fixtures\/|\.fixture\.json$/u, reason: 'test fixtures, not copy' },
+  { pattern: /^src\/lib\/markdown-twins\/(?:pages|sky-tables)\.ts$/u, reason: 'the Markdown twins\' copies of their pages\' sentences and dated rows, held verbatim to the page sources and the built pages by src/lib/markdown-twins/markdown-twins.test.ts; the pages are read instead' },
 ]);
 
 /**

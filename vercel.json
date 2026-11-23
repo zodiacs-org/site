@@ -576,6 +576,90 @@
       ]
     },
     {
+      "source": "/birth-chart.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/birth-chart/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/compatibility.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/compatibility/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/moon-sign.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/moon-sign/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/rising-sign.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/rising-sign/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/saturn-return.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/saturn-return/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/mercury-retrograde.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/mercury-retrograde/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/full-moon-calendar.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/full-moon-calendar/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/eclipses.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/eclipses/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/horoscopes.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/horoscopes/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/methodology.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/methodology/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/privacy.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/privacy/>; rel=\"canonical\"" }
+      ]
+    },
+    {
+      "source": "/about.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Link", "value": "<https://zodiacs.org/about/>; rel=\"canonical\"" }
+      ]
+    },
+    {
       "source": "/sky-calendar.ics",
       "headers": [
         { "key": "Content-Type", "value": "text/calendar; charset=utf-8" },

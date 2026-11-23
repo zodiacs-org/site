@@ -25,6 +25,7 @@ import {
 } from '../strings/seo';
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import { ART_CARD_LOCALES, HOME_ART_CARD, homeArtCard } from '../lib/og-art-cards.mjs';
+import { markdownTwinHref } from '../lib/markdown-twins/model';
 
 interface Props {
   title: string;
@@ -77,6 +78,8 @@ const alternates = noindex
   : alternatePaths(path);
 const alternateEntries = noindex ? [] : alternatePathEntries(path);
 const defaultAlternate = alternates?.[DEFAULT_LOCALE];
+// The same page as Markdown, for the twelve English pages that have a twin (src/lib/markdown-twins).
+const markdownTwin = noindex ? null : markdownTwinHref(canonicalPath, locale);
 const ogLocale = LOCALE_META[locale].ogLocale;
 const ogLocaleAlternates = alternateEntries
   .filter((entry) => entry.locale !== locale)
@@ -261,6 +264,7 @@ const graph = graphNodes.length
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
+{markdownTwin && <link rel="alternate" type="text/markdown" href={markdownTwin} />}
 {defaultAlternate && (
   <>
     {alternateEntries.map((entry) => (
