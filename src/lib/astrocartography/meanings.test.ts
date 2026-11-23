@@ -88,10 +88,11 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
     expect(result).toMatchObject({ ok: true, data: { limits: expect.arrayContaining([MINOR_NOTE]) } });
   });
 
-  it('are taken on the page by the device clock', () => {
-    const now = new Date(2026, 10, 9, 12);
+  it('are taken on the page on the calendar date at UTC-12, as the under-13 policy reads it', () => {
+    const now = new Date('2026-11-09T12:00:00Z');
     expect(under18('2008-11-10', now)).toBe(true);
     expect(under18('2008-11-09', now)).toBe(false);
+    expect(under18('2008-11-09', new Date('2026-11-09T11:59:59Z'))).toBe(true);
   });
 });
 
