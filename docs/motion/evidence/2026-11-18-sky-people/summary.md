@@ -1,3 +1,5 @@
+> 23 Nov 2026: describes the state before the independent review. No longer true: event pages are no longer marked (no `aside.next-action` entrance, no `<Motion />`); /people/ marks 98 cards, not 104 (the first 6 never wait), and a name search shows every card at once. See the PR #1107 body, "After independent review, 23 Nov".
+
 # Motion evidence
 
 - Before: http://127.0.0.1:4411
