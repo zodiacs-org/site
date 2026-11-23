@@ -32,19 +32,21 @@ describe('vendored conformance summary', () => {
     }
   });
 
-  it('includes @zodiacs/engine 2.0.0 default DE440 and astronomy-engine runs', () => {
+  it('includes @zodiacs/engine 2.1.0 default DE440 and astronomy-engine runs', () => {
     const de440 = summary.runs.find(
       (run: { file: string }) => run.file === 'results/zodiacs-engine.json',
     );
     const fallback = summary.runs.find(
       (run: { file: string }) => run.file === 'results/zodiacs-engine-astronomy-engine.json',
     );
-    expect(de440.adapter.engineVersion).toBe('2.0.0');
+    expect(de440.adapter.engineVersion).toBe('2.1.0');
     expect(de440.summary.byLevel.L1.pass).toBe(240);
-    expect(de440.summary.total).toMatchObject({ count: 640, pass: 569, fail: 0, unsupported: 71, error: 0 });
-    expect(fallback.adapter.engineVersion).toBe('2.0.0');
+    expect(de440.summary.byLevel.L4).toMatchObject({ count: 140, pass: 140, fail: 0, unsupported: 0, error: 0 });
+    expect(de440.summary.total).toMatchObject({ count: 640, pass: 639, fail: 0, unsupported: 1, error: 0 });
+    expect(fallback.adapter.engineVersion).toBe('2.1.0');
     expect(fallback.summary.byLevel.L1.pass).toBe(48);
-    expect(fallback.summary.total).toMatchObject({ count: 640, pass: 341, fail: 228, unsupported: 71, error: 0 });
+    expect(fallback.summary.byLevel.L4).toMatchObject({ count: 140, pass: 85, fail: 55, unsupported: 0, error: 0 });
+    expect(fallback.summary.total).toMatchObject({ count: 640, pass: 392, fail: 247, unsupported: 1, error: 0 });
   });
 
   it('publishes no per-vector values for Swiss Ephemeris', () => {
