@@ -52,6 +52,8 @@ import { isPastPageHidden } from '../lib/indexing/past-pages-hidden-list';
 import { WINDOW_READING_IDS, WINDOW_READINGS_UPDATED } from '../lib/events/window-readings';
 import { launchFlagOn } from '../lib/launch-flags';
 
+// English explainer answers on four thin tool pages (src/lib/seo/tool-explainers.ts).
+const TOOL_EXPLAINERS_LASTMOD = '2026-11-16';
 const SITE = 'https://zodiacs.org';
 type RegistryResearchPublication = {
   generatedAt: string;
@@ -476,7 +478,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/compare/', '2026-09-18'] as const,
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
-  ['/lunar-return/', '2026-09-06'] as const,
+  ['/lunar-return/', '2026-11-16'] as const,
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
@@ -557,9 +559,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ].map((loc) => [loc, AUDIT_REMEDIATION_LASTMOD] as const),
   ...['/', '/about/', '/privacy/', '/terms/'].map((loc) => [loc, LEGAL_IDENTITY_LASTMOD] as const),
   ...dailyEditions.flatMap((edition) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/${edition.day}/`, edition.ownerApproval.approvedAt.slice(0, 10)] as const)),
-  ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, dailyEditions.map((edition) => edition.ownerApproval.approvedAt.slice(0, 10)).sort().at(-1)!] as const) : []),
-  ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, '2026-10-04'] as const)),
-  ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, '2026-10-03'] as const)),
+  ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, [...dailyEditions.map((edition) => edition.ownerApproval.approvedAt.slice(0, 10)), ...(locale === 'en' ? [TOOL_EXPLAINERS_LASTMOD] : [])].sort().at(-1)!] as const) : []),
+  ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, locale === 'en' && path === '/your-sky-wrapped/' ? TOOL_EXPLAINERS_LASTMOD : '2026-10-04'] as const)),
+  ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, locale === 'en' && (path === '/group-charts/' || path === '/chart-twins/') ? TOOL_EXPLAINERS_LASTMOD : '2026-10-03'] as const)),
   ...['/full-moon-calendar/2027/', '/eclipses/2027/', '/mercury-retrograde/2027/']
     .map((loc) => [loc, YEAR_PAGES_LASTMOD] as const),
   ...['/numerology/', '/tools/', '/methodology/'].map((loc) => [loc, NUMEROLOGY_LASTMOD] as const),
