@@ -51,9 +51,15 @@ approved-lanes wording in both repositories.
   history that is already pushed, and never spend on the OpenAI API.
 
 In this repository: merges are squash merges
-(`gh pr merge --squash --match-head-commit <sha>`); the live site is checked
-after the merge and reverted if it is broken; and each merge is logged in the
-pinned Merge log issue (#879).
+(`gh pr merge --squash --match-head-commit <sha>`). A merge made under the
+rule above includes the automatic production deploy that follows it; that
+deploy is not a separate production switch-on, but anything the change turns
+on (a flag, an env var, a new public listing) still needs Dias's yes. The live
+site is checked after the merge and reverted if it is broken. Each merge is
+logged in the pinned Merge log issue (#879); that log entry is internal
+record-keeping, not a public post. Merging through
+`scripts/publish-through-pr.sh` does not replace the rule: the Codex READY on
+the exact head and the unresolved-thread check still come first.
 
 ### Product rules
 
