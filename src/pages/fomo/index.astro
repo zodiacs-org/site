@@ -309,6 +309,9 @@ const sources = [
                 fomo<FomoMark /> is a free trading app for iPhone, Android, and the web. <span class="fomo-deck__more">All twelve zodiac signs are on it:
                 buy yours in a few taps, follow your friends, and see what they are trading.</span>
               </p>
+              <p class="fomo-web">
+                <a id="fomo-thesis-link" href="/thesis/">Not sure about memecoins? Read the case for these twelve, and the case against. <span aria-hidden="true">→</span></a>
+              </p>
               <div class="fomo-stores reveal" id="top-stores" style="--reveal-delay:180ms" data-fomo-stores>
                 <a class="fomo-badge fomo-badge--apple" href={FOMO_APP_STORE} rel="external nofollow noopener" data-store="apple">
                   <img src={APP_STORE_BADGE} width="144" height="48" alt="Download on the App Store" />
@@ -317,7 +320,7 @@ const sources = [
                   <img src={GOOGLE_PLAY_BADGE} width="185" height="71" alt="Get it on Google Play" />
                 </a>
               </div>
-              <p class="fomo-web reveal" style="--reveal-delay:220ms">
+              <p class="fomo-web fomo-web--desktop reveal" style="--reveal-delay:220ms">
                 <span>Or on a computer:</span>
                 <a href={FOMO_SITE} rel="external nofollow noopener">fomo.family in a browser ↗</a>
               </p>
@@ -672,6 +675,11 @@ const sources = [
     </section>
   </article>
 
+  <script is:inline>
+    document.getElementById('fomo-thesis-link').addEventListener('click', function () {
+      window.zodiacsAnalytics?.track('thesis_click', { source: 'fomo' });
+    });
+  </script>
   <script is:inline type="application/json" id="fomo-records" set:html={recordsJson}></script>
 
 <script>
@@ -1802,7 +1810,7 @@ const sources = [
       padding-bottom: calc(28px + env(safe-area-inset-bottom));
     }
     .fomo-hero__copy { max-width: none; }
-    .fomo-hero .fomo-back, .fomo-hero .fomo-web, .fomo-hero .fomo-deck { display: none; }
+    .fomo-hero .fomo-back, .fomo-hero .fomo-web--desktop, .fomo-hero .fomo-deck { display: none; }
     .fomo-hero__text .fomo-deck { max-width: 30ch; }
     .fomo-hero__text .fomo-stores { margin-top: 22px; }
     .fomo-phone__frame { transform: none; }
