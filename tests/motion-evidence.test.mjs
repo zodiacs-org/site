@@ -13,7 +13,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ALLOWED_PROPERTIES, baseCfg, checkExitCode, compareRendered, compareRest, countOutsideRects, disallowedProperties, evaluateChecks,
   firstViewCaptureNote, formatNumbers, FROM_LOAD_NOTE, initScript, inputFor, inspectMarks, LONG_FRAME_NOTE, longFrameStats, MARK_ATTRIBUTE, markCountCheck,
-  maskBounds, MAX_REST_PIXELS, median, nextFrameWidth, normalizePath, parseArgs, renderSummary, restNeedsRetake, restTakeKind, restVerdict,
+  maskBounds, MAX_REST_PIXELS, median, nextFrameWidth, normalizePath, parseArgs, renderReport, renderSummary, restNeedsRetake, restTakeKind, restVerdict,
   routeSlug, selectRoutes, settledShift, settledShiftVerdict, SETTLED_TAKES, SHIFT_AGREEMENT, SHIFT_MARGIN, SHIFT_SINGLE_BAR, sheetLayout,
   shortSelector, STRIP_TIMES, summarizeLongFrames, toKebab,
 } from './motion-evidence.mjs';
@@ -596,7 +596,7 @@ describe('motion evidence: rest state', () => {
     expect(restTakeKind({ ...same, differing: 300, outsideDaily: 0 })).toBe('daily');
     expect(restTakeKind({ ...same, heightChanged: { from: 10, to: 20 } })).toBe('differs');
     expect(restTakeKind({ ...same, widthChanged: { from: 390, to: 400 } })).toBe('differs');
-    expect(restTakeKind(null)).toBe('differs');
+    expect(restTakeKind(null)).toBe('unmeasured');
   });
 
   it('retakes a differing pair once, and a third time only when the retake was the same', () => {
@@ -801,5 +801,81 @@ describe('motion evidence: summary', () => {
     expect(md).not.toMatch(/[–—]/u);
     expect(formatNumbers(clean).firstMarkShown).toBe('850 ms (+350 after paint)');
     expect(formatNumbers(clean).shownAtRest).toBe('4 of 4 shown');
+  });
+});
+
+describe('motion evidence: unmeasured takes in the reports', () => {
+  const route = { path: '/x/', rest: 'identical' };
+  const reportFor = (rest, subject = clean) => {
+    const checks = evaluateChecks({ route, viewport, subject, baseline: clean, rest });
+    return {
+      checks,
+      report: {
+        generatedAt: '2026-11-23T00:00:00.000Z',
+        before: 'http://127.0.0.1:4391',
+        after: 'http://127.0.0.1:4392',
+        viewports: ['390x844'],
+        failures: checks.filter((c) => c.status === 'fail').map((c) => ({ path: '/x/', viewport: '390x844', check: c.check, detail: c.detail })),
+        unstable: [],
+        markCounts: [],
+        restImages: [],
+        routes: [
+          { path: '/x/', rest: 'identical', loops: {}, sheets: [], viewports: { '390x844': { before: clean, after: subject, rest, checks } } },
+          { path: '/y/', rest: 'identical', loops: {}, sheets: [], viewports: { '390x844': { before: clean, after: clean, rest: sameRest, checks: [] } } },
+        ],
+      },
+    };
+  };
+  const section = (md, path) => md.slice(md.indexOf(`## ${path} `), md.indexOf('## /y/ '));
+  const cases = [
+    ['[null]', [null], /unmeasured/u],
+    ['[{ unmeasured }]', [{ unmeasured: 'the after page never became quiet' }], /not compared \(the after page never became quiet\)/u],
+    ['[null, take]', [null, same], /unmeasured/u],
+    ['[differs, null]', [differs(55), null], /take 2: unmeasured/u],
+    ['[differs, { unmeasured }]', [differs(55), { unmeasured: 'the before capture failed' }], /take 2: unmeasured \(the before capture failed\)/u],
+    ['[differs, same, null]', [differs(55), same, null], /take 3: unmeasured/u],
+  ];
+  for (const [name, takes, pattern] of cases) {
+    it(`renders rest takes ${name} as unmeasured, fails the rest check and exits 1, and still reports the next route`, () => {
+      const { checks, report } = reportFor({ takes });
+      let md;
+      expect(() => { md = renderSummary(report); }).not.toThrow();
+      let html;
+      expect(() => { html = renderReport(report); }).not.toThrow();
+      expect(statusOf(checks, 'rest')).toBe('fail');
+      expect(detailOf(checks, 'rest')).toMatch(/^unmeasured/u);
+      expect(detailOf(checks, 'rest')).toMatch(pattern);
+      expect(checkExitCode(report, { check: true })).toBe(1);
+      expect(section(md, '/x/')).toMatch(/\| Rest diff \|  \| [^|]*unmeasured/u);
+      expect(md).toContain('## /y/ (rest: identical)');
+      expect(md).toMatch(/## \/y\/ \(rest: identical\)[\s\S]*\| Rest diff \|  \| 0 px \|/u);
+      expect(html).toMatch(/<td>Rest diff<\/td><td><\/td><td>[^<]*unmeasured/u);
+      expect(html).toContain('<h2>/y/ <small>');
+      const json = JSON.parse(JSON.stringify(report));
+      expect(json.routes[0].viewports['390x844'].rest.takes).toHaveLength(takes.length);
+    });
+  }
+
+  it('never passes, retakes or reads as a difference an unmeasured take', () => {
+    expect(restTakeKind(null)).toBe('unmeasured');
+    expect(restTakeKind({ unmeasured: 'x' })).toBe('unmeasured');
+    expect(restNeedsRetake([null])).toBe(false);
+    expect(restNeedsRetake([{ unmeasured: 'x' }])).toBe(false);
+    expect(restVerdict([differs(55), null]).detail).not.toMatch(/differs on both pairs/u);
+    expect(restVerdict([]).detail).toMatch(/^unmeasured/u);
+  });
+
+  it('renders null layout-shift takes and failed throttled loads as unmeasured without throwing', () => {
+    const subject = { ...clean, shiftSettled: [null, { value: 0 }, { value: null, unmeasured: 'the load failed (see notes)' }], shiftFromLoad: [null, { value: 0 }], longFrames: summarizeLongFrames([null, { unmeasured: 'the throttled load failed' }]), strip: null };
+    const { checks, report } = reportFor(sameRest, subject);
+    expect(statusOf(checks, 'layoutShift')).toBe('fail');
+    expect(detailOf(checks, 'layoutShift')).toMatch(/^unmeasured/u);
+    expect(checkExitCode(report, { check: true })).toBe(1);
+    const n = formatNumbers(subject);
+    expect(n.shiftSettled).toMatch(/^unmeasured \(unmeasured, 0\.0000, unmeasured\)/u);
+    expect(n.shiftFromLoad).toBe('unmeasured, 0');
+    expect(n.longFrames).toBe('unmeasured in all 2 loads');
+    expect(() => renderSummary(report)).not.toThrow();
+    expect(() => renderReport(report)).not.toThrow();
   });
 });

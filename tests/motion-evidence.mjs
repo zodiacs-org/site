@@ -294,8 +294,10 @@ export function summarizeLongFrames(takes) {
 export function settledShift(takes) {
   const list = takes ?? [];
   if (list.length < SETTLED_TAKES) return { value: null, unmeasured: `${list.length} of ${SETTLED_TAKES} takes were taken` };
-  const missing = list.find((t) => t == null || t.value == null);
-  if (missing) return { value: null, unmeasured: missing?.unmeasured ?? 'a take was not measured' };
+  // some(), not find(): a null take is itself falsy.
+  if (list.some((t) => t == null || t.value == null)) {
+    return { value: null, unmeasured: list.find((t) => t != null && t.value == null)?.unmeasured ?? 'a take was not measured' };
+  }
   const values = list.map((t) => t.value);
   const spread = Math.max(...values) - Math.min(...values);
   if (spread > SHIFT_AGREEMENT + 1e-9) {
@@ -390,9 +392,22 @@ export function compareRest(a, b, { threshold = PIXEL_THRESHOLD, dailyRects = []
   };
 }
 
-/** One rest comparison: "same" (0 px), "daily" (every differing pixel inside the daily data) or "differs". */
+/**
+ * A rest take that was not measured: null (as older numbers.json files have
+ * it) or { unmeasured: reason }, when a capture failed or never became quiet.
+ */
+export function restTakeUnmeasured(take) {
+  return take == null || take.unmeasured != null;
+}
+
+/** Why a rest take was not measured. */
+function unmeasuredReason(take) {
+  return take?.unmeasured ?? 'a capture is missing';
+}
+
+/** One rest comparison: "same" (0 px), "daily" (every differing pixel inside the daily data), "differs" or "unmeasured". */
 export function restTakeKind(take) {
-  if (!take) return 'differs';
+  if (restTakeUnmeasured(take)) return 'unmeasured';
   if (take.widthChanged || take.heightChanged) return 'differs';
   if (take.differing <= MAX_REST_PIXELS) return 'same';
   if (take.outsideDaily != null && take.outsideDaily <= MAX_REST_PIXELS) return 'daily';
@@ -405,6 +420,7 @@ export function restTakeKind(take) {
  * decides whether the difference recurs.
  */
 export function restNeedsRetake(takes) {
+  // An unmeasured take is never retaken: the verdict fails it.
   const kinds = takes.map(restTakeKind);
   if (kinds.length === 1) return kinds[0] === 'differs';
   if (kinds.length === 2) return kinds[0] === 'differs' && kinds[1] !== 'differs';
@@ -420,18 +436,22 @@ export function restNeedsRetake(takes) {
  */
 export function restVerdict(takes) {
   const fmt = (t) => {
-    if (!t) return 'not taken';
+    if (restTakeUnmeasured(t)) return `unmeasured (${unmeasuredReason(t)})`;
     const size = t.widthChanged ? `width ${t.widthChanged.from} to ${t.widthChanged.to} px` : t.heightChanged ? `height ${t.heightChanged.from} to ${t.heightChanged.to} px` : null;
     return `${t.differing} px${size ? ` and ${size}` : ''}`;
   };
   const counts = takes.map((t, i) => `take ${i + 1}: ${fmt(t)}`).join(', ');
-  if (!takes.length || !takes[0]) return { status: 'fail', detail: 'rest state not compared' };
+  if (!takes.length) return { status: 'fail', detail: 'unmeasured: rest state not compared' };
   const kinds = takes.map(restTakeKind);
+  // Unmeasured is never a pass, whichever pair it is.
+  const gap = kinds.indexOf('unmeasured');
+  if (gap === 0) return { status: 'fail', detail: `unmeasured: rest state not compared (${unmeasuredReason(takes[0])})` };
   if (kinds[0] === 'same') return { status: 'pass', detail: `0 px differ (limit ${MAX_REST_PIXELS})` };
   if (kinds[0] === 'daily') {
     return { status: 'note', detail: `daily data: ${takes[0].differing} px differ, ${takes[0].outsideDaily} outside ${DAILY_SELECTORS.join(' or ')} (limit ${MAX_REST_PIXELS})` };
   }
   if (kinds.length < 2) return { status: 'fail', detail: `${counts}; the retake was not taken` };
+  if (gap > 0) return { status: 'fail', detail: `unmeasured: take ${gap + 1} could not be compared (${counts})` };
   if (kinds[1] === 'differs') return { status: 'fail', detail: `differs on both pairs (${counts}; limit ${MAX_REST_PIXELS})` };
   if (kinds.length < 3) return { status: 'fail', detail: `${counts}; the third pair was not taken` };
   if (kinds[2] === 'differs') return { status: 'fail', detail: `differs again on the third pair (${counts}; limit ${MAX_REST_PIXELS})` };
@@ -769,6 +789,7 @@ const READING_NOTE = [
 function restCell(rest) {
   if (!rest?.takes?.length) return 'n/a';
   return rest.takes.map((t, i) => {
+    if (restTakeUnmeasured(t)) return `${rest.takes.length > 1 ? `take ${i + 1}: ` : ''}unmeasured (${unmeasuredReason(t)})`;
     const width = t.widthChanged ? `, width ${t.widthChanged.from} to ${t.widthChanged.to} px` : '';
     const height = t.heightChanged ? `, height ${t.heightChanged.from} to ${t.heightChanged.to} px` : '';
     const daily = t.differing > 0 && t.outsideDaily != null && t.outsideDaily !== t.differing ? ` (${t.outsideDaily} outside daily data)` : '';
@@ -2013,9 +2034,11 @@ async function retakeRest(browser, baseURL, route, viewport, notes) {
   return r ? { png: r.png, dailyRects: r.dailyRects, ready: r.captureReady } : null;
 }
 
-/** Compare two rest captures; null when either is missing or was taken on a page that never went quiet. */
+/** Compare two rest captures; no result, with the reason, when either is missing or was taken on a page that never went quiet. */
 function compareCaptures(a, b) {
-  if (!a || !b || !a.ready || !b.ready) return { result: null };
+  const missing = [!a && 'the before capture failed', !b && 'the after capture failed',
+    a && !a.ready && 'the before page never became quiet', b && !b.ready && 'the after page never became quiet'].filter(Boolean);
+  if (missing.length) return { result: null, reason: missing.join(', ') };
   const A = PNG.sync.read(a.png);
   const B = PNG.sync.read(b.png);
   const result = compareRest(A, B, { dailyRects: [...a.dailyRects, ...b.dailyRects], keepMask: true });
@@ -2187,7 +2210,7 @@ export async function run(options) {
           for (;;) {
             const c = compareCaptures(pair.before, pair.after);
             if (!c.result) {
-              takes.push(null);
+              takes.push({ unmeasured: c.reason });
               break;
             }
             const { mask, ...kept } = c.result;
@@ -2207,7 +2230,7 @@ export async function run(options) {
           }
           vpEntry.rest = { takes };
         } else if (options.after) {
-          vpEntry.rest = { takes: [null] };
+          vpEntry.rest = { takes: [{ unmeasured: [!measured.before.rest && 'the before rest load failed', !measured.after.rest && 'the after rest load failed'].filter(Boolean).join(', ') }] };
         }
         const subject = vpEntry[subjectBuild];
         const baseline = options.after ? vpEntry.before : null;
