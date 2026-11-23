@@ -1,13 +1,12 @@
 {
   "version": 1,
-  "id": "chinese-zodiac-remove-western-discs-2026-11-22",
-  "baseCommit": "c61ebe082098f50690f810d330d091f769c4887a",
+  "id": "site-engine-2-1-0-2026-11-23",
+  "baseCommit": "e3662b877a849c56c1ed4c2a25303936d85858dc",
   "protectedPaths": [
-    "src/pages/learn/chinese-zodiac/[animal]/index.astro",
-    "src/pages/learn/chinese-zodiac/index.astro",
-    "src/strings/additions.es.mjs",
-    "src/strings/additions.fr.mjs",
-    "src/strings/additions.it.mjs",
-    "src/strings/additions.pt.mjs"
+    "src/data/aura-moon-ingresses.json",
+    "src/pages/es/methodology/index.astro",
+    "src/pages/fr/methodology/index.astro",
+    "src/pages/it/methodology/index.astro",
+    "src/pages/pt/methodology/index.astro"
   ]
 }

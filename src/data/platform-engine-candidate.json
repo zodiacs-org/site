@@ -11,7 +11,7 @@
   "sourceCommit": "92825deeeb5c74c5f56b37d5d612c3439347087e",
   "sourcePackagePath": "",
   "evidenceRepository": "https://github.com/zodiacs-org/site",
-  "evidenceCommit": "9fd2a66b2f6f30deebec2676e9976e817c196678",
+  "evidenceCommit": "cfc5936382b4adb5c3f62ceabd1b374c5b8ebb54",
   "evidencePaths": {
     "ledger": "docs/platform/evidence/site-engine-2-1-0/ARTIFACT-IDENTITY.md",
     "node22": "docs/platform/evidence/site-engine-2-1-0/node22-parity.json",
