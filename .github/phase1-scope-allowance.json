@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "generated-sign-pages-3e6bcbd359ed",
-  "baseCommit": "3e6bcbd359ed47f091448b66276e9493ee4e6ece",
+  "id": "generated-sign-pages-e9521db21875",
+  "baseCommit": "e9521db21875eb0ef7821497524056ad720aa91f",
   "protectedPaths": [
     "public/registry/aquarius/index.html",
     "public/registry/aries/index.html",
