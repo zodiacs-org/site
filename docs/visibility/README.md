@@ -50,8 +50,13 @@ The program has two layers:
    keys in the shell, or allow `api.x.ai` and save the keys as environment
    secrets. It asks Gemini, Claude and Grok. ChatGPT is not asked through the
    OpenAI API: the owner has not approved OpenAI API spend (ZOD-207), and
-   `--providers openai` stops before any request. A full run costs roughly
-   $20 to $60 (check prices first).
+   any `--providers` value naming openai stops before any request. Every
+   request, the Anthropic SDK's sign-in and token calls included, may go only
+   over https to `api.anthropic.com`, `generativelanguage.googleapis.com` or
+   `api.x.ai`, and redirects are refused. Gateways are not supported: an
+   `ANTHROPIC_BASE_URL` or a profile `base_url` is ignored for messages, and a
+   sign-in or token call to any other host is refused. A full run costs
+   roughly $20 to $60 (check prices first).
 6. **Domains:** the recommendation is to buy none ([DOMAINS.md](DOMAINS.md)).
 
 ## Baseline recorded on 2026-11-08

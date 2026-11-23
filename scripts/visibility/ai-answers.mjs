@@ -7,9 +7,12 @@
 //        [--providers gemini,anthropic,xai] [--only q01,q02] [--questions file] [--dry-run]
 //
 // The OpenAI API is not used: the owner has not approved OpenAI API spend
-// (ZOD-207). Any provider naming openai stops before any request, with no
-// override; so does an unknown provider. Claude is always called at
-// api.anthropic.com, whatever ANTHROPIC_BASE_URL or a profile says.
+// (ZOD-207). Any --providers value naming openai stops before any request,
+// with no override; so does an unknown provider. Every outbound request, the
+// Anthropic SDK's own sign-in and token calls included, goes through one
+// guarded fetch that allows only https to api.anthropic.com,
+// generativelanguage.googleapis.com and api.x.ai, and refuses redirects.
+// Gateways (ANTHROPIC_BASE_URL or a profile's base_url) are not supported.
 //
 // Keys come from the shell only: GEMINI_API_KEY, ANTHROPIC_API_KEY (or an
 // `ant auth login` profile), XAI_API_KEY. A provider without a key is skipped
@@ -38,13 +41,22 @@ for (let i = 2; i < process.argv.length; i++) {
   else args[a.slice(2)] = process.argv[i + 1] !== undefined && !process.argv[i + 1].startsWith('--') ? process.argv[++i] : true;
 }
 const KNOWN = ['gemini', 'anthropic', 'xai'];
-const wanted = String(args.providers === true || args.providers === undefined ? KNOWN.join(',') : args.providers)
-  .split(',').map((p) => p.trim().toLowerCase()).filter(Boolean);
-// This check runs before the questions are read or any request is made, --dry-run included.
-if (wanted.some((p) => p.includes('openai'))) {
-  console.error('The OpenAI API is not used: the owner has not approved OpenAI API spend (ZOD-207). Use gemini, anthropic or xai instead.');
+const OPENAI_REFUSAL = 'The OpenAI API is not used: the owner has not approved OpenAI API spend (ZOD-207). Use gemini, anthropic or xai instead.';
+// Every --providers value, in both forms and from every occurrence, is
+// checked for openai before the questions are read or any request is made,
+// --dry-run included. Only then is the union validated.
+const providerValues = [];
+for (let i = 2; i < process.argv.length; i++) {
+  const a = process.argv[i];
+  if (a.startsWith('--providers=')) providerValues.push(a.slice('--providers='.length));
+  else if (a === '--providers' && process.argv[i + 1] !== undefined && !process.argv[i + 1].startsWith('--')) providerValues.push(process.argv[i + 1]);
+}
+const entries = providerValues.flatMap((v) => v.split(',')).map((p) => p.trim().toLowerCase()).filter(Boolean);
+if (entries.some((p) => p.includes('openai'))) {
+  console.error(OPENAI_REFUSAL);
   process.exit(1);
 }
+const wanted = providerValues.length ? [...new Set(entries)] : KNOWN;
 const unknown = wanted.filter((p) => !KNOWN.includes(p));
 if (unknown.length || !wanted.length) {
   console.error(`Unknown or missing provider: ${unknown.join(', ') || '(none)'}. Use gemini, anthropic or xai.`);
@@ -59,15 +71,22 @@ const outDir = path.join(VIS_DIR, 'baseline', label, 'ai');
 // Answers should look like what a person in the United States sees.
 const LOCATION = { country: 'US' };
 
-// Fixed endpoints only: no environment value can point a provider at another
-// host, and redirects are refused.
-const HOSTS = new Set(['generativelanguage.googleapis.com', 'api.x.ai']);
+// One guarded fetch for every outbound request, including the Anthropic
+// SDK's (messages, OAuth refresh and OIDC exchange alike): https only, these
+// exact hostnames only, no redirects. Anything else throws before sending.
+const ALLOWED_HOSTS = new Set(['api.anthropic.com', 'generativelanguage.googleapis.com', 'api.x.ai']);
 const ANTHROPIC_BASE_URL = 'https://api.anthropic.com';
 
+async function guardedFetch(input, init = {}) {
+  const url = new URL(input instanceof Request ? input.url : String(input));
+  if (url.protocol !== 'https:' || url.port || url.username || url.password || !ALLOWED_HOSTS.has(url.hostname)) {
+    throw new Error(`Refusing to call ${url.protocol}//${url.host}: only https to ${[...ALLOWED_HOSTS].join(', ')} is allowed (ZOD-207)`);
+  }
+  return fetch(input, { ...init, redirect: 'error' });
+}
+
 async function postJson(url, headers, body) {
-  const { protocol, hostname } = new URL(url);
-  if (protocol !== 'https:' || !HOSTS.has(hostname)) throw new Error(`Refusing to call ${hostname}`);
-  const res = await fetch(url, { method: 'POST', redirect: 'error', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
+  const res = await guardedFetch(url, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
   const text = await res.text();
   if (!res.ok) throw new Error(`${res.status} ${text.slice(0, 300)}`);
   return JSON.parse(text);
@@ -90,10 +109,12 @@ const providers = {
     ready: () => !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN || process.env.ANTHROPIC_PROFILE),
     client: null,
     async ask(question) {
-      // An explicit baseURL: ANTHROPIC_BASE_URL and a profile's base_url are ignored.
+      // An explicit baseURL, and the guarded fetch for every SDK request,
+      // sign-in and token calls included: a gateway or a profile's base_url
+      // on any other host is refused.
       if (!this.client) {
         const { default: Anthropic } = await import('@anthropic-ai/sdk');
-        this.client = new Anthropic({ baseURL: ANTHROPIC_BASE_URL });
+        this.client = new Anthropic({ baseURL: ANTHROPIC_BASE_URL, fetch: guardedFetch });
       }
       const messages = [{ role: 'user', content: question }];
       let response;

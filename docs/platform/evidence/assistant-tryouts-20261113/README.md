@@ -35,5 +35,8 @@ python3 tools/score.py
 `run-tryouts.py --questions <file>` takes any other question file of the same shape, and skips ids already in `--out`.
 The Claude run uses the machine's signed-in Claude Code. The OpenAI runs are not run again: the owner has not
 approved OpenAI API spend (ZOD-207), so `run-tryouts.py --provider openai` stops before any request. Use the
-recorded OpenAI runs in `runs/` instead.
+recorded OpenAI runs in `runs/` instead. The Claude child sees only an allowlist of environment variables (PATH,
+HOME, LANG, LC_ALL, TERM, TMPDIR, USER, CLAUDE_CONFIG_DIR). Gateways are not supported: if `ANTHROPIC_BASE_URL` is
+set at all, the run stops before any request. With `--forward`, the stub sends calls only over https to
+`zodiacs.org` and refuses redirects.
 No key is in this folder.

@@ -95,7 +95,6 @@ describe('visibility lib', () => {
     const src = readFileSync(new URL('./ai-answers.mjs', import.meta.url), 'utf8');
     expect(src).not.toContain('api.openai.com');
     expect(src).not.toContain('OPENAI_API_KEY');
-    expect(src).toContain("args.providers || 'gemini,anthropic,xai'");
     const { spawnSync } = await import('node:child_process');
     const { fileURLToPath } = await import('node:url');
     const script = fileURLToPath(new URL('./ai-answers.mjs', import.meta.url));
@@ -103,7 +102,7 @@ describe('visibility lib', () => {
     const missing = fileURLToPath(new URL('./no-such-questions.json', import.meta.url));
     // An explicit minimal environment: no keys, no NODE_OPTIONS.
     const env = { PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '' };
-    for (const providers of [['--providers', 'openai'], ['--providers=openai'], ['--providers', 'gemini, openai'], ['--providers', ' OpenAI ']]) {
+    for (const providers of [['--providers', 'openai'], ['--providers=openai'], ['--providers', 'gemini, openai'], ['--providers', ' OpenAI '], ['--providers', 'openai', '--providers', 'xai'], ['--providers=xai', '--providers=openai']]) {
       const run = spawnSync(process.execPath, [script, ...providers, '--questions', missing, '--dry-run'], { env, encoding: 'utf8' });
       expect(run.status, providers.join(' ')).toBe(1);
       expect(run.stderr).toContain('The OpenAI API is not used: the owner has not approved OpenAI API spend (ZOD-207).');
@@ -113,6 +112,13 @@ describe('visibility lib', () => {
     expect(unknown.status).toBe(1);
     expect(unknown.stderr).toContain('Unknown or missing provider: mystery');
     expect(unknown.stdout).toBe('');
+    // The default list, read from a dry run: no keys in the environment, so
+    // nothing is ready and no request is made.
+    const dry = spawnSync(process.execPath, [script, '--dry-run', '--label', 'dry-run-test'], { env, encoding: 'utf8' });
+    expect(dry.status).toBe(0);
+    expect(dry.stderr).toBe('');
+    expect(dry.stdout.split('\n').filter((l) => l.endsWith('answers still to collect)')).map((l) => l.split(':')[0])).toEqual(['gemini', 'anthropic', 'xai']);
+    expect(dry.stdout).not.toMatch(/openai/i);
   });
 });
 

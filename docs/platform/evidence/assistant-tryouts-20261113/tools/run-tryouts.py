@@ -11,10 +11,11 @@ are kept as evidence, and `--provider openai` stops (exit 1) before any request 
 claude: `claude -p` (Claude Code, headless) with no built-in tools, its system prompt replaced, and the tools served
 by tools/stub-mcp.mjs over MCP. The first turn only (--max-turns 1).
 The system prompt is one line that sets the scene, the date, and the connector's own instructions.
-Claude uses the machine's signed-in Claude Code. No key is read or written here. Its environment drops
-ANTHROPIC_API_KEY and every OPENAI_* variable, and an ANTHROPIC_BASE_URL on an openai.com host stops the run.
+Claude uses the machine's signed-in Claude Code. No key is read or written here. Its environment is built from an
+allowlist of names (CHILD_ENV below); no other variable, key or OPENAI_* value is read or passed on. Gateways are not
+supported: if ANTHROPIC_BASE_URL is set at all, the run stops (exit 1) before any request.
 """
-import argparse, json, os, subprocess, sys, tempfile, time, urllib.request, urllib.error
+import argparse, json, os, subprocess, sys, tempfile, time
 from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -31,25 +32,13 @@ OPENAI_REFUSAL = ('The OpenAI API is not used: the owner has not approved OpenAI
 
 class LimitStop(Exception): pass
 
-def post(url, body, headers, timeout=180):
-    request = urllib.request.Request(url, data=json.dumps(body).encode(), headers={'Content-Type': 'application/json', **headers})
-    try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            return response.status, response.read().decode(), response.headers.get('content-type', '')
-    except urllib.error.HTTPError as error:
-        return error.code, error.read().decode(), error.headers.get('content-type', '')
+# The only variables the claude child sees. Values are read for these names only.
+CHILD_ENV = ('PATH', 'HOME', 'LANG', 'LC_ALL', 'TERM', 'TMPDIR', 'USER', 'CLAUDE_CONFIG_DIR')
 
-def live_call(name, arguments):
-    status, text, kind = post(LIVE, {'jsonrpc': '2.0', 'id': 1, 'method': 'tools/call', 'params': {'name': name, 'arguments': arguments}},
-                              {'Accept': 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18'})
-    try:
-        body = json.loads(next(line for line in text.split('\n') if line.startswith('data: '))[6:] if 'event-stream' in kind else text)
-        result = body.get('result') or {}
-        structured = result.get('structuredContent') or {}
-        return {'status': status, 'isError': result.get('isError', 'error' in body), 'ok': structured.get('ok'),
-                'error': (body.get('error') or {}).get('message') or (structured.get('error') or {}).get('code')}
-    except Exception as error:
-        return {'status': status, 'failed': str(error)[:200]}
+def child_environment():
+    environment = {name: os.environ[name] for name in CHILD_ENV if name in os.environ}
+    environment['ENABLE_TOOL_SEARCH'] = 'false'
+    return environment
 
 def ask_claude(args, tools_file, system, question):
     with tempfile.TemporaryDirectory() as work:
@@ -59,9 +48,7 @@ def ask_claude(args, tools_file, system, question):
         command = ['claude', '-p', question['question'], '--model', args.model, '--system-prompt', system, '--mcp-config', json.dumps(config),
                    '--strict-mcp-config', '--tools', '', '--max-turns', '1', '--output-format', 'stream-json', '--verbose',
                    '--permission-mode', 'bypassPermissions', '--setting-sources', '']
-        environment = {k: v for k, v in os.environ.items() if k != 'ANTHROPIC_API_KEY' and not k.startswith('OPENAI_')}
-        environment['ENABLE_TOOL_SEARCH'] = 'false'
-        done = subprocess.run(command, cwd=work, env=environment, capture_output=True, text=True, timeout=300)
+        done = subprocess.run(command, cwd=work, env=child_environment(), capture_output=True, text=True, timeout=300)
         out = done.stdout
         if 'model_requires_usage_credits' in out or '"api_error_status":429' in out.replace(' ', ''):
             raise LimitStop(out[-600:])
@@ -91,14 +78,14 @@ def refuse_openai(argv):
         if value is not None and 'openai' in value.strip().lower():
             print(OPENAI_REFUSAL, file=sys.stderr); sys.exit(1)
 
-def refuse_openai_endpoint():
-    # The claude path never sends a request to an OpenAI host.
-    base = os.environ.get('ANTHROPIC_BASE_URL', '')
-    if 'openai.com' in base.lower():
-        print('ANTHROPIC_BASE_URL points at an OpenAI host; unset it. ' + OPENAI_REFUSAL, file=sys.stderr); sys.exit(1)
+def refuse_gateway():
+    # Gateways are not supported: Claude Code is only ever pointed at its default host.
+    if 'ANTHROPIC_BASE_URL' in os.environ:
+        print('ANTHROPIC_BASE_URL is set; unset it. Gateways are not supported by this runner (ZOD-207).', file=sys.stderr); sys.exit(1)
 
 def main():
     refuse_openai(sys.argv[1:])
+    refuse_gateway()
     parser = argparse.ArgumentParser()
     parser.add_argument('--provider', required=True, choices=['openai', 'claude'])
     parser.add_argument('--model', required=True)
@@ -111,7 +98,6 @@ def main():
     parser.add_argument('--without-instructions', action='store_true', help='leave the connector instructions out of the system prompt')
     args = parser.parse_args()
     if args.provider == 'openai': print(OPENAI_REFUSAL, file=sys.stderr); sys.exit(1)
-    refuse_openai_endpoint()
     tools_file = os.path.abspath(os.path.join(args.tools, 'tools-list.json'))
     tools = json.load(open(tools_file))['tools']
     system = system_prompt(json.load(open(os.path.join(args.tools, 'initialize.json')))['instructions'])
