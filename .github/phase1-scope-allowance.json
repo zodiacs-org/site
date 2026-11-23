@@ -1,13 +1,19 @@
 {
   "version": 1,
-  "id": "chinese-zodiac-remove-western-discs-2026-11-22",
-  "baseCommit": "c61ebe082098f50690f810d330d091f769c4887a",
+  "id": "generated-sign-pages-e3662b877a84",
+  "baseCommit": "e3662b877a849c56c1ed4c2a25303936d85858dc",
   "protectedPaths": [
-    "src/pages/learn/chinese-zodiac/[animal]/index.astro",
-    "src/pages/learn/chinese-zodiac/index.astro",
-    "src/strings/additions.es.mjs",
-    "src/strings/additions.fr.mjs",
-    "src/strings/additions.it.mjs",
-    "src/strings/additions.pt.mjs"
+    "public/registry/aquarius/index.html",
+    "public/registry/aries/index.html",
+    "public/registry/cancer/index.html",
+    "public/registry/capricorn/index.html",
+    "public/registry/gemini/index.html",
+    "public/registry/leo/index.html",
+    "public/registry/libra/index.html",
+    "public/registry/pisces/index.html",
+    "public/registry/sagittarius/index.html",
+    "public/registry/scorpio/index.html",
+    "public/registry/taurus/index.html",
+    "public/registry/virgo/index.html"
   ]
 }
