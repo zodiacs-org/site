@@ -5,11 +5,11 @@
  * (src/lib/time/localToUtc.ts), and the ranking and words the get_personal_day
  * tool uses (src/lib/personal-day/). Nothing here leaves the browser.
  */
-import { castDayNatal, readPersonalDay, type PersonalDayReading } from '../../lib/personal-day/day';
+import { castDayNatal, readPersonalDay, settledSunSign, type PersonalDayReading } from '../../lib/personal-day/day';
+import type { ShareSign } from '../../lib/share-results';
 import { prepareLocalTime, resolveLocalToUtc } from '../../lib/time/localToUtc';
 
 export { prepareLocalTime };
-export { shareContact } from '../../lib/personal-day/day';
 
 export interface YourDayInput {
   birthDate: string;
@@ -27,8 +27,10 @@ export interface YourDayInput {
 
 const clock = { prepareLocalTime, resolveLocalToUtc };
 
-export async function computeYourDay(input: YourDayInput): Promise<PersonalDayReading> {
+export async function computeYourDay(input: YourDayInput): Promise<PersonalDayReading & { sunSign: ShareSign | null }> {
   await prepareLocalTime(input.birthDate, input.birthZone);
   const natal = castDayNatal({ birthDate: input.birthDate, time: input.time, zone: input.birthZone, latitude: input.latitude, longitude: input.longitude }, clock);
-  return readPersonalDay(natal, { birthDate: input.birthDate, date: input.date, zone: input.zone, today: input.today }, clock);
+  const reading = await readPersonalDay(natal, { birthDate: input.birthDate, date: input.date, zone: input.zone, today: input.today }, clock);
+  const sunSign = await settledSunSign(natal, { birthDate: input.birthDate, zone: input.birthZone, longitude: input.longitude }, clock);
+  return { ...reading, sunSign };
 }

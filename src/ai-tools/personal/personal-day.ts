@@ -11,12 +11,12 @@
  */
 import { z } from 'zod';
 import { MAJOR_ASPECT_ORDER, NATAL_POINT_ORDER, TRANSIT_BODY_ORDER } from '../../lib/engine/transit-scan-shared';
-import { readPersonalDay, shareContact } from '../../lib/personal-day/day';
+import { readPersonalDay, settledSunSign } from '../../lib/personal-day/day';
 import { PERSONAL_DAY_LIMIT } from '../../lib/personal-day/score';
 import { YOUR_DAY_PAGE_PATH, yourDayShareUrl } from '../../lib/personal-day/share';
 import { SIGNS } from '../../lib/signs';
 import { parseCivilDate } from '../../lib/time/civil-date';
-import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
+import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, withCheckedZone, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
 
 export {
   ASPECT_WEIGHT, DAY_ORB, EXACT_BONUS, MOVER_WEIGHT, PERSONAL_DAY_LIMIT, POINT_WEIGHT, SEXTILE_ORB_SHARE, dayScore, maxOrb,
@@ -87,13 +87,15 @@ export const personalDayData = z.object({
   under18: z.boolean(),
   limits: z.array(z.string()),
   pageUrl: z.url(),
-  /** The share card for the first eligible contact today, falling back to the background and excluding the Sun on the natal Sun: the day, the planet, aspect and natal point, and its confidence. Never a birth detail. Null with no such contact. */
+  /** The share card for the day's reading: the day and the person's settled Sun sign. Never a birth detail. Null when the Sun sign is unsettled on an untimed cusp day. */
   shareUrl: z.url().nullable(),
 });
 export type PersonalDayData = z.infer<typeof personalDayData>;
 
 /** One day's transits to one birth chart. Throws RangeError for details it cannot use. */
-export async function personalDay(args: BirthArgs & { currentZone?: string | undefined; date?: string | undefined }, context: PersonalToolContext): Promise<{ data: PersonalDayData; links: { title: string; url: string }[] }> {
+export async function personalDay(given: BirthArgs & { currentZone?: string | undefined; date?: string | undefined }, context: PersonalToolContext): Promise<{ data: PersonalDayData; links: { title: string; url: string }[] }> {
+  // The birthplace zone is checked before any clock reads it; currentClock checks currentZone the same way.
+  const args = await withCheckedZone(given, context);
   const natal = await castNatal(args, context.localTime);
   const { zone, note } = await currentClock(args.currentZone, args.zone, context);
   const today = dateOn(context.now, zone);
@@ -108,6 +110,11 @@ export async function personalDay(args: BirthArgs & { currentZone?: string | und
     { birthDate: args.birthDate, date, zone, today, note },
     context.localTime,
   );
+  const sunSign = await settledSunSign(
+    { bodies: natal.chart.bodies, timeKnown: natal.timeKnown },
+    { birthDate: args.birthDate, zone: args.zone, longitude: natal.longitude },
+    context.localTime,
+  );
   const pageUrl = `${context.origin}${YOUR_DAY_PAGE_PATH}`;
   return {
     data: {
@@ -115,7 +122,7 @@ export async function personalDay(args: BirthArgs & { currentZone?: string | und
       ...day,
       moon: day.moon as PersonalDayData['moon'],
       pageUrl,
-      shareUrl: yourDayShareUrl(context.origin, { date, contact: shareContact(day.contacts) }),
+      shareUrl: yourDayShareUrl(context.origin, { date, sun: sunSign }),
     },
     links: [
       { title: 'Your day on Zodiacs', url: pageUrl },

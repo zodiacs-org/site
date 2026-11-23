@@ -29,14 +29,18 @@ import type { AspectType } from '../engine/types';
 import { wholeSignHouseFromAsc } from '../daily';
 import { NATAL_HOUSE_THEME } from '../natal';
 import { SIGNS, signIndexForLongitude } from '../signs';
+import type { ShareSign } from '../share-results';
 import { transitLine } from '../transits';
-import { MINOR_NOTE, isUnder18, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
+import { localDaySpan, readsOnDate, type WallResolution } from '../time/local-day';
+import { MINOR_NOTE, isUnderAge, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
 import { clockTime, dayLabel, nextDate } from './clock';
 import { BACKGROUND_LIMIT, PERSONAL_DAY_LIMIT, dayScore, maxOrb, orbOf, pointName } from './score';
 
 const slowMovers = new Set<TransitBody>(SLOW_TRANSIT_BODIES);
 const HOUR = 3_600_000;
+/** The widest civil offset any clock has kept since 1800, rounded out to whole hours (src/ai-tools/personal/shared.ts). */
+const WIDEST_OFFSET_HOURS = 16;
 /** The limit a date-only reading carries; the /your-day/ FAQ says the same. */
 export const UNTIMED_LIMIT = 'No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.';
 const ORDINAL = ['', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth'] as const;
@@ -44,7 +48,7 @@ const ORDINAL = ['', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'se
 /** The two calls of the site's local-time resolver the day needs (src/lib/time/localToUtc.ts, or the compute API's copy). */
 export interface DayClock {
   prepareLocalTime: (date: string, timeZone: string) => Promise<void>;
-  resolveLocalToUtc: (date: string, time: string, timeZone: string, options?: { longitude?: number }) => { utc: Date };
+  resolveLocalToUtc: (date: string, time: string, timeZone: string, options?: { longitude?: number; fold?: 'earlier' | 'later' }) => WallResolution;
 }
 
 /** The birth chart as the day reads it: the natal bodies, the angles with a time and place, and how specific it is. */
@@ -99,12 +103,6 @@ export interface PersonalDayReading {
 
 export { clockTime, dateOn, dayLabel, nextDate } from './clock';
 
-/** Share the first eligible contact from today, falling back to the background.
- * The Sun on the natal Sun could reveal the birthday in any aspect. */
-export function shareContact<T extends Pick<DayContact, 'group' | 'planet' | 'point'>>(contacts: readonly T[]): T | null {
-  const eligible = contacts.filter(({ planet, point }) => planet !== 'Sun' || point !== 'Sun');
-  return eligible.find(({ group }) => group === 'today') ?? eligible[0] ?? null;
-}
 const round2 = (value: number) => Math.round(value * 100) / 100;
 const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.name;
 
@@ -113,6 +111,9 @@ const signName = (slug: string) => SIGNS.find((entry) => entry.slug === slug)!.n
  * (castNatal in src/ai-tools/personal/shared.ts): whole-sign houses, the
  * birthplace rounded to two decimals, local noon without a birth time, and
  * the angles only with a time and place. Await clock.prepareLocalTime first.
+ * A date the birthplace clock never showed (Apia went from 29 to 31 December
+ * 2011) throws a RangeError, which the page answers with its general message,
+ * rather than being read as the next date.
  */
 export function castDayNatal(input: { birthDate: string; time?: string | undefined; zone: string; latitude?: number | undefined; longitude?: number | undefined }, clock: DayClock): DayNatal {
   const round = (value: number) => Math.round(value * 100) / 100;
@@ -120,8 +121,9 @@ export function castDayNatal(input: { birthDate: string; time?: string | undefin
   const longitude = input.longitude === undefined ? undefined : round(input.longitude);
   const timeKnown = input.time !== undefined;
   const placed = latitude !== undefined && longitude !== undefined;
-  const time = input.time ?? '12:00';
-  const utc = (longitude !== undefined ? clock.resolveLocalToUtc(input.birthDate, time, input.zone, { longitude }) : clock.resolveLocalToUtc(input.birthDate, time, input.zone)).utc;
+  const wall = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(input.birthDate, time, input.zone, { longitude }) : clock.resolveLocalToUtc(input.birthDate, time, input.zone));
+  if (!readsOnDate(input.birthDate, wall('00:00'))) throw new RangeError('The birth date was not on the birthplace clock.');
+  const utc = wall(input.time ?? '12:00').utc;
   const chart = computeChart({ utc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   return { bodies: chart.bodies, angles, timeKnown, placed, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
@@ -155,6 +157,8 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   // The local day: its two midnights on the person's clock, and the moment halfway between them.
   const dayStart = await startOf(date, zone, clock);
   const dayEnd = await startOf(nextDate(date), zone, clock);
+  // A day the clock skipped has no length: both midnights resolve to the same instant.
+  if (dayEnd.getTime() <= dayStart.getTime()) throw new RangeError('date must be a real date, such as 2026-11-12.');
   const midday = new Date((dayStart.getTime() + dayEnd.getTime()) / 2);
   const later = new Date(midday.getTime() + HOUR);
 
@@ -178,7 +182,8 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   // For someone under 18 the contacts whose line reads as love, appetite, longing or heat are left out (minorLeftOut),
   // and so is the Moon's line in the fifth house ("pleasure").
   // softenMinor, shared with published tools whose output is frozen, does not reach them. MINOR_NOTE says so.
-  const under18 = isUnder18(input.birthDate, input.today ?? date);
+  // isUnderAge keeps 29 February as the cutoff, so someone born on 1 March is still under 18 on that day.
+  const under18 = isUnderAge(input.birthDate, input.today ?? date, 18);
   const guard = (text: string) => softenHealth(under18 ? softenMinor(text) : text);
   const found: Omit<DayContact, 'rank'>[] = [];
   for (const mover of TRANSIT_BODY_ORDER) {
@@ -259,4 +264,43 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   if (found.length > contacts.length) limits.push(`Of ${found.length} contacts, ${contacts.length} are listed by score, with up to ${BACKGROUND_LIMIT} in the background.`);
 
   return { date, dayLabel: label, zone, middayUtc: midday.toISOString(), points, theme, moon: { sign: moonSign, entersSign, house, line: moonLine }, contacts, found: found.length, under18, limits };
+}
+
+/**
+ * The person's settled Sun sign for sharing: exact when a birth time is known,
+ * or settled without a birth time only when both ends of the birth day share
+ * the same Sun sign (else null). With a zone the day runs from where the
+ * clock first reaches its 00:00 to where it last leaves the date
+ * (src/lib/time/local-day.ts), so a date the clock showed twice (Apia, 4 July
+ * 1892) is read whole and one it left early (St. John's, 2 May 1920, when
+ * 23:00 became 00:00) ends there; a date it never showed settles nothing.
+ */
+export async function settledSunSign(
+  natal: Pick<DayNatal, 'bodies' | 'timeKnown'>,
+  birth: { birthDate: string; zone?: string | undefined; longitude?: number | undefined },
+  clock: DayClock,
+): Promise<ShareSign | null> {
+  const sun = natal.bodies.find((row) => row.body === 'Sun');
+  if (!sun) return null;
+  const sunIndex = signIndexForLongitude(sun.lon);
+  if (natal.timeKnown) return SIGNS[sunIndex].slug as ShareSign;
+  let start: Date;
+  let end: Date;
+  if (birth.zone) {
+    await clock.prepareLocalTime(birth.birthDate, birth.zone);
+    const options = birth.longitude === undefined ? {} : { longitude: birth.longitude };
+    const zone = birth.zone;
+    // The span also reads the day after, which the birth date's preparation covers (src/lib/time/local-day.ts).
+    const span = localDaySpan(birth.birthDate, (date, time, fold) => clock.resolveLocalToUtc(date, time, zone, { ...options, fold }));
+    if (!span) return null;
+    [start, end] = span;
+  } else {
+    // Every clock's version of the date since 1800: tzdb's history runs from UTC-15:56 (Asia/Manila before 1845)
+    // to UTC+15:13 (America/Metlakatla before 1867), so 00:00 at UTC+16 to 23:59:59 at UTC-16.
+    start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR);
+    end = new Date(Date.parse(`${birth.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR);
+  }
+  const startIndex = signIndexForLongitude(bodyLongitude('Sun', start));
+  const endIndex = signIndexForLongitude(bodyLongitude('Sun', end));
+  return startIndex === endIndex ? (SIGNS[startIndex].slug as ShareSign) : null;
 }

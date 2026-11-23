@@ -16,7 +16,7 @@ import { isFixedOffsetZone } from '../time/fixed-zones.js';
 
 export interface LocalTimeModule {
   prepareLocalTime(date: string, timeZone: string): Promise<void>;
-  resolveLocalToUtc(date: string, time: string, timeZone: string, options?: { longitude?: number }): EngineLocalTimeResolution;
+  resolveLocalToUtc(date: string, time: string, timeZone: string, options?: { longitude?: number; fold?: 'earlier' | 'later' }): EngineLocalTimeResolution;
   /** The tzdb spelling of a zone name given in any letter case, or null (src/lib/time/zone-names.ts). */
   canonicalZoneName(name: string): Promise<string | null>;
   /** The tzdb release the engine ships. */

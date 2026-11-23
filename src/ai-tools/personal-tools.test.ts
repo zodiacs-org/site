@@ -170,17 +170,27 @@ describe('the personal tools switch on', () => {
         const direct = await executeAiTool(tool.name as never, { ...tool.example, birthDate }, { occasions: true, coverage: true, personal: true, now: () => NOW, placeTable: async () => loadPlaceTable() });
         expect(direct).toMatchObject({ ok: false, error: { message: UNDER_13_REFUSAL } });
       }
-      // Thirteen today is old enough.
-      expect((await call(host, tool.name, { ...tool.example, birthDate: '2013-11-09' })).isError, tool.name).toBe(false);
+      // Thirteen everywhere is old enough. The refusal counts from the calendar date at UTC-12 (main's #1139, as the
+      // site's chart forms do), and at 09:00 UTC on 9 November it is still 8 November there.
+      expect((await call(host, tool.name, { ...tool.example, birthDate: '2013-11-08' })).isError, tool.name).toBe(false);
     }
   }, 120_000);
 
-  it('never repeats a refused value back', async () => {
+  it('never repeats a refused value back, each refused field on its own', async () => {
     const host = await serve(ON);
+    // One bad field per call, so each is refused by its own check and not by an earlier one.
+    const cases: [Record<string, unknown>, RegExp][] = [
+      [{ birthDate: '1990-02-31' }, /1990-02-31/u],
+      [{ zone: 'Mars/Olympus_Mons' }, /Mars|Olympus/u],
+      [{ zone: 'mars/olympus_mons' }, /mars|olympus/iu],
+      [{ secretField: 'Ada Lovelace' }, /Ada|Lovelace/u],
+    ];
     for (const tool of TOOLS) {
-      const result = await call(host, tool.name, { ...tool.example, birthDate: '1990-02-31', zone: 'Mars/Olympus_Mons', secretField: 'Ada Lovelace' });
-      expect(result.isError).toBe(true);
-      expect(result.content[0].text).not.toMatch(/Olympus|Ada Lovelace|1990-02-31/u);
+      for (const [bad, echo] of cases) {
+        const result = await call(host, tool.name, { ...tool.example, ...bad });
+        expect(result.isError, `${tool.name} ${Object.keys(bad)[0]}`).toBe(true);
+        expect(JSON.stringify(result), `${tool.name} ${Object.keys(bad)[0]}`).not.toMatch(echo);
+      }
     }
   });
 });

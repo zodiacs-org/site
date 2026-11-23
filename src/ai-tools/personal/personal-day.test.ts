@@ -45,18 +45,17 @@ describe('get_personal_day against known answers', () => {
     expect(contact.line).toBe('Sun sits on your sense of self: a few days of spotlight, and for a while it colors everything there. Reading confidence 75%.');
   });
 
-  it('on the birthday, lists the Sun on the natal Sun but never shares it', async () => {
+  it('on the birthday, lists the Sun on the natal Sun and shares only the sky date and Sun sign', async () => {
     const { scan } = await natalFor(ADULT);
     const [solarReturn] = scanTransitContacts(scan, new Date('2026-05-01T00:00:00Z'), new Date('2026-05-06T00:00:00Z'), { transitBodies: ['Sun'], natalPoints: ['Sun'], aspects: ['conjunction'] });
     const date = dateOn(new Date(solarReturn.exactUtc), 'Europe/Madrid');
     const data = await run({ ...ADULT, date });
     expect(data.contacts.some((entry) => entry.planet === 'Sun' && entry.point === 'Sun')).toBe(true);
-    expect(data.shareUrl).not.toBeNull();
+    expect(data.shareUrl).toBe(`https://zodiacs.org/share/your-day/?day=${date}&s=taurus`);
     const url = new URL(data.shareUrl!);
+    expect([...url.searchParams.keys()].sort()).toEqual(['day', 's']);
     expect(url.searchParams.get('day')).toBe(date);
-    expect(url.searchParams.get('p') === 'sun' && url.searchParams.get('n') === 'sun').toBe(false);
-    const shared = data.contacts.find((entry) => entry.group === 'today' && !(entry.planet === 'Sun' && entry.point === 'Sun'))!;
-    expect([url.searchParams.get('p'), url.searchParams.get('a'), url.searchParams.get('n')]).toEqual([shared.planet.toLowerCase(), shared.aspect, shared.point.toLowerCase()]);
+    expect(url.searchParams.get('s')).toBe('taurus');
   });
 
   it('times an exact Mars contact to the minute, and the engine agrees the aspect is exact then', async () => {
@@ -144,7 +143,8 @@ describe('daily and background contacts', () => {
       const today = data.contacts.find((contact) => contact.group === 'today')!;
       expect(data.theme).toContain(`${today.title}, about ${today.orb.toFixed(1)} degrees from exact`);
       expect(data.theme).not.toContain(pluto.title);
-      expect(new URL(data.shareUrl!).searchParams.get('p')).toBe(today.planet.toLowerCase());
+      expect([...new URL(data.shareUrl!).searchParams.keys()].sort()).toEqual(['day', 's']);
+      expect(new URL(data.shareUrl!).searchParams.get('day')).toBe(date);
       titles.push(today.title);
     }
     expect(titles[0]).not.toBe(titles[1]);
@@ -158,14 +158,15 @@ describe('daily and background contacts', () => {
     expect(data.theme).toContain(`${pluto.title}, exact at ${pluto.exactLocal}`);
   });
 
-  it('uses the background for the theme and the card when there are no daily contacts', async () => {
+  it('uses the background for the theme when there are no daily contacts, and shares only day and Sun sign', async () => {
     const data = await run({ birthDate: '2010-05-03', currentZone: 'UTC', date: '2026-12-31' });
     expect(data.contacts).toHaveLength(1);
     const [top] = data.contacts;
     expect(top.group).toBe('background');
     expect(data.theme).toBe(`In the background, ${top.title}, about ${top.orb.toFixed(1)} degrees from exact (${top.confidenceLabel}).`);
     const query = new URL(data.shareUrl!).searchParams;
-    expect([query.get('p'), query.get('a'), query.get('n')]).toEqual([top.planet.toLowerCase(), top.aspect, top.point.toLowerCase()]);
+    expect([...query.keys()].sort()).toEqual(['day', 's']);
+    expect([query.get('day'), query.get('s')]).toEqual(['2026-12-31', 'taurus']);
   });
 });
 
@@ -241,6 +242,17 @@ describe('get_personal_day with fewer details', () => {
     await expect(run({ birthDate: '2026-06-01', date: '2026-05-01' })).rejects.toThrow(/before the birth date/u);
     expect((await run({ ...ADULT, date: '2027-11-09' })).date).toBe('2027-11-09');
   });
+
+  it('shares no Sun sign without a zone when a historical clock puts the birth date across a sign change', async () => {
+    // 1835-07-22: the Sun entered Leo late in the day on Manila's clock, then UTC-15:56 (the American date until 1845).
+    const sunOf = (data: PersonalDayData) => new URL(data.shareUrl!).searchParams.get('s');
+    const early = await run({ birthDate: '1835-07-22', time: '00:00', zone: 'Asia/Manila' });
+    const late = await run({ birthDate: '1835-07-22', time: '23:59', zone: 'Asia/Manila' });
+    expect([sunOf(early), sunOf(late)]).toEqual(['cancer', 'leo']);
+    expect((await run({ birthDate: '1835-07-22' })).shareUrl).toBeNull();
+    // A date every clock keeps in one sign still shares it.
+    expect(new URL((await run({ birthDate: '1835-07-10' })).shareUrl!).searchParams.get('s')).toBe('cancer');
+  });
 });
 
 describe('get_personal_day for someone under 18', () => {
@@ -286,6 +298,36 @@ describe('get_personal_day privacy and refusals', () => {
     for (const url of urls) expect(url).not.toMatch(/1990|05-03|08:30|40\.42|3\.7|Madrid|[?&#](?:d|date|birth|t|time|lat|lon|tz|place|city)=/u);
     expect(forbiddenClaim(text)).toBeNull();
     expect(text).not.toMatch(/[\u2013\u2014]|crypto|token|blockchain|market|invest|stock/iu);
+  });
+
+  it('checks the zone before any clock reads it, refusing an unknown one without repeating it and taking a known one in any letter case', async () => {
+    for (const zone of ['Mars/Olympus_Mons', 'mars/olympus_mons']) {
+      const refused = await executeAiTool('get_personal_day', { ...ADULT, zone }, ON);
+      expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+      expect(JSON.stringify(refused)).not.toMatch(/mars|olympus/iu);
+    }
+    const lower = await executeAiTool('get_personal_day', { ...ADULT, zone: 'europe/madrid' }, ON);
+    expect(lower.ok).toBe(true);
+    expect(lower).toEqual(await executeAiTool('get_personal_day', ADULT, ON));
+  });
+
+  it('refuses a birth date the clock never showed (Apia went from 29 to 31 December 2011) without repeating it, timed or not', async () => {
+    for (const extra of [{}, { time: '12:00' }, { time: '12:00', latitude: -13.83, longitude: -171.76 }]) {
+      const args = { birthDate: '2011-12-30', zone: 'Pacific/Apia', currentZone: 'Europe/Madrid', ...extra };
+      await expect(run(args)).rejects.toThrow(RangeError);
+      const refused = await executeAiTool('get_personal_day', args, ON);
+      expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+      expect(JSON.stringify(refused)).not.toMatch(/2011|12-30|Apia|13\.83|171\.76/u);
+    }
+    // The dates either side, and the same date on another clock, are read.
+    for (const args of [{ birthDate: '2011-12-29', zone: 'Pacific/Apia' }, { birthDate: '2011-12-31', zone: 'Pacific/Apia' }, { birthDate: '2011-12-30', zone: 'Pacific/Pago_Pago' }])
+      expect((await executeAiTool('get_personal_day', { ...args, currentZone: 'Europe/Madrid' }, ON)).ok, JSON.stringify(args)).toBe(true);
+  });
+
+  it('refuses a day to read that the clock never showed, rather than reading the next one', async () => {
+    const birth = { birthDate: '1990-05-03', zone: 'Europe/Madrid' };
+    await expect(run({ ...birth, currentZone: 'Pacific/Apia', date: '2011-12-30' }, new Date('2011-12-29T12:00:00Z'))).rejects.toThrow('date must be a real date, such as 2026-11-12.');
+    expect((await run({ ...birth, currentZone: 'Pacific/Apia', date: '2011-12-31' }, new Date('2011-12-29T12:00:00Z'))).date).toBe('2011-12-31');
   });
 
   it('refuses a time without a zone with the field rule', async () => {

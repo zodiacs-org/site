@@ -10,13 +10,24 @@ import { yourDayShareUrl } from '../lib/personal-day/share';
 import type { DayContact, PersonalDayReading } from '../lib/personal-day/day';
 import type { TransitBody } from '../lib/engine/transit-scan-shared';
 import { SIGNS } from '../lib/signs';
+import { birthDateRefusal, birthDateRefusalText } from '../lib/birth-date-policy';
 
 /** How far from today a day may be read, either side, as the get_personal_day tool allows. */
 const MAX_DAYS = 366;
-const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no reading for a birth date less than 13 years ago. Nothing was worked out.';
+export const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no reading for a birth date less than 13 years ago. Nothing was worked out.';
 
-/** A birth date less than 13 years before today (both YYYY-MM-DD), or one still to come. */
-const under13 = (birthDate: string, today: string) => birthDate > `${String(Number(today.slice(0, 4)) - 13).padStart(4, '0')}${today.slice(4)}`;
+/**
+ * The form's message when the shared birth date policy (src/lib/birth-date-policy.ts)
+ * refuses a converted Gregorian birth date, or null. The policy reads today at
+ * UTC-12, whatever this device's clock and zone say, so nobody is read before
+ * their 13th birthday has begun everywhere; a date after the calendar date at
+ * UTC+14 is still to come.
+ */
+export function yourDayRefusal(birthDate: string, now: Date = new Date()): string | null {
+  const refusal = birthDateRefusal(birthDate, now);
+  if (refusal === null) return null;
+  return refusal === 'under_13' ? UNDER_13 : birthDateRefusalText(refusal);
+}
 const signName = (slug: string) => SIGNS.find((sign) => sign.slug === slug)?.name ?? slug;
 const hue = (planet: TransitBody) => `var(--sign-${BODY_SIGN[planet]})`;
 
@@ -30,8 +41,8 @@ function deviceClock(): { zone: string; today: string } {
   }
 }
 
-/** The share link names `shared`, which is never the Sun on the natal Sun (shareContact in src/lib/personal-day/day.ts). */
-interface Shown { reading: PersonalDayReading; shared: PersonalDayReading['contacts'][number] | null; shareUrl: string | null; timed: boolean }
+/** The share link names only the sky date and the person's settled Sun sign (src/lib/personal-day/share.ts). */
+interface Shown { reading: PersonalDayReading; shareUrl: string | null; timed: boolean }
 
 function ContactGroup({ group, contacts, timed }: { group: DayContact['group']; contacts: DayContact[]; timed: boolean }) {
   const headingId = `yd-${group}-heading`;
@@ -107,18 +118,18 @@ export default function YourDay() {
         if ('error' in entry) { setError(entry.error); setShown(null); return; }
         birthDate = entry.date;
       }
-      if (under13(birthDate, clock.today)) { setError(UNDER_13); setShown(null); return; }
+      const refusal = yourDayRefusal(birthDate);
+      if (refusal) { setError(refusal); setShown(null); return; }
       if (Math.abs(daysBetween(clock.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
       if (target < birthDate) { setError('Choose a day on or after the birth date.'); setShown(null); return; }
-      const { computeYourDay, shareContact } = await loadModule(() => import('./your-day/compute'));
+      const { computeYourDay } = await loadModule(() => import('./your-day/compute'));
       const reading = await computeYourDay({
         birthDate, time: timeKnown ? time : undefined, birthZone: city.tz, latitude: city.lat, longitude: city.lon,
         date: target, zone: clock.zone, today: clock.today,
       });
       if (request !== revision.current) return;
       setDay(target);
-      const shared = shareContact(reading.contacts);
-      setShown({ reading, shared, shareUrl: yourDayShareUrl(window.location.origin, { date: reading.date, contact: shared }), timed: timeKnown });
+      setShown({ reading, shareUrl: yourDayShareUrl(window.location.origin, { date: reading.date, sun: reading.sunSign }), timed: timeKnown });
       if (scroll) requestAnimationFrame(() => resultRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' }));
     } catch (cause) {
       if (request !== revision.current) return;
@@ -130,7 +141,6 @@ export default function YourDay() {
   }
 
   const reading = shown?.reading ?? null;
-  const shared = shown?.shared ?? null;
 
   return (
     <div class="calc yd" data-your-day>
@@ -195,10 +205,10 @@ export default function YourDay() {
                 <ul class="yd__limits">{reading.limits.map((limit) => <li key={limit}>{limit}</li>)}</ul>
               )}
 
-              {shown?.shareUrl && shared && (
+              {shown?.shareUrl && (
                 <div class="yd__share">
                   <p class="kicker">Share the day</p>
-                  <p class="field__help">The card shows the day and one contact, {shared.title}. It never shows your birth date, time or place.</p>
+                  <p class="field__help">The card shows the day and your Sun sign. It never shows your birth date, time or place.</p>
                   <div class="yd__share-actions">
                     <a class="btn btn--glass" href={shown.shareUrl} target="_blank" rel="noopener" data-your-day-share><span>Share my day</span><span class="orb" aria-hidden="true">↗</span></a>
                     <CopyLinkButton url={shown.shareUrl} state={copy} onStateChange={setCopy} idleLabel="Copy the link" copiedLabel="Link copied" ariaLabel="Copy the share link" buttonClass="btn btn--ghost" dataHook="share" />
