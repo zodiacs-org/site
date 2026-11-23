@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { vedicFromTropical } from '../../lib/vedic-signs/sidereal';
-import type { TropicalMoment } from '../../lib/vedic-signs/tropical';
-import { computeVedicFromForm, prepareLocalTime, type VedicFormInput } from './compute';
-import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
-import { vedicSigns } from '../../ai-tools/personal/vedic-signs';
-import { birthDayEnds } from '../../ai-tools/personal/shared';
+import { vedicFromTropical } from '../src/lib/vedic-signs/sidereal';
+import type { TropicalMoment } from '../src/lib/vedic-signs/tropical';
+import { computeVedicFromForm, prepareLocalTime, type VedicFormInput } from '../src/islands/vedic-signs/compute';
+import { createLocalTimeModule } from '../api/_compute/local-time.mjs';
+import { vedicSigns } from '../src/ai-tools/personal/vedic-signs';
+import { birthDayEnds } from '../src/ai-tools/personal/shared';
 
 /**
  * The page's worker, run in this thread: the same sidereal half

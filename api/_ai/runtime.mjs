@@ -9637,6 +9637,11 @@ function inviteShareUrl(origin, signs) {
   return `${origin}${INVITE_SHARE_PATH}${query ? `?${query}` : ""}`;
 }
 
+// src/lib/geo/coordinates.ts
+function roundCoordinate(value) {
+  return Math.round(value * 100) / 100;
+}
+
 // src/ai-tools/plain-text.ts
 function plainDashes(text2) {
   if (!text2.includes("\u2013") && !text2.includes("\u2014")) return text2;
@@ -9651,9 +9656,6 @@ function stripConsumerDashes(value) {
     return copy;
   }
   return value;
-}
-function roundCoordinate(value) {
-  return Math.round(value * 100) / 100;
 }
 
 // src/lib/engine/chart-adapter.ts

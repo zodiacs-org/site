@@ -12,7 +12,7 @@ import type { TropicalMoment } from '../../lib/vedic-signs/tropical';
 import type { VedicAyanamsa } from '../../lib/vedic-signs/wording';
 import { localDaySpan, readsOnDate } from '../../lib/time/local-day';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
-import { roundCoordinate } from '../../ai-tools/plain-text';
+import { roundCoordinate } from '../../lib/geo/coordinates';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
 
