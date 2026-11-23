@@ -1,3 +1,5 @@
+> 23 Nov 2026: describes the floated mark before the independent review. No longer true: the mark's 72px and 112px sizes, the headings and intros wrapping around it, and the form or answer card moving down (up to 80 px). The mark now sits out of the text flow and nothing moves; see the PR #1108 body, "After independent review, 23 Nov".
+
 # Motion evidence
 
 - Before: http://127.0.0.1:4411
