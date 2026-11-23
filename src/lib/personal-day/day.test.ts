@@ -5,7 +5,8 @@ import { personalDay } from '../../ai-tools/personal/personal-day';
 import { birthDayEnds, forbiddenClaim, type PersonalToolContext } from '../../ai-tools/personal/shared';
 import { computeYourDay } from '../../islands/your-day/compute';
 import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
-import { MINOR_LEFT_OUT_HOUSES, UNTIMED_LIMIT, minorLeftOut, settledSunSign, type DayClock } from './day';
+import { MINOR_LEFT_OUT_HOUSES, UNTIMED_LIMIT, castDayNatal, localDayBounds, minorLeftOut, readPersonalDay, settledSunSign, type DayClock } from './day';
+import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
 import { NATAL_HOUSE_THEME } from '../natal';
 import { softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { transitLine } from '../transits';
@@ -16,7 +17,7 @@ import { parseYourDayShare, yourDayQuery, yourDayShareUrl, YOUR_DAY_SHARE_KEYS }
 const NOW = new Date('2026-11-09T09:00:00Z');
 /** The ticket's appetite check, with the longing, heat and pleasure a review found too. */
 const MINOR_CHECK = /loving|appetite|longing|heat|pleasure|romant|attract/iu;
-const context: PersonalToolContext = { now: NOW, localTime: createLocalTimeModule(), resolveZone: async (name) => name, origin: 'https://zodiacs.org' };
+const context: PersonalToolContext = { now: NOW, localTime: createLocalTimeModule(), resolveZone: async (name) => name, origin: 'https://zodiacs.org', pageOn: true };
 const ADULT = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
 
 /**
@@ -45,7 +46,7 @@ describe('the /your-day/ page and get_personal_day', () => {
   it('give the same ranked list, Moon and theme for a fixed chart and day', async () => {
     for (const [date, zone] of [['2026-11-09', 'Europe/Madrid'], ['2026-11-12', 'Asia/Bangkok'], ['2027-02-01', 'America/New_York']] as const) {
       const tool = (await personalDay({ ...ADULT, currentZone: zone, date }, context)).data;
-      const page = await computeYourDay({ birthDate: ADULT.birthDate, time: ADULT.time, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date, zone, today: '2026-11-09' });
+      const page = await computeYourDay({ birthDate: ADULT.birthDate, time: ADULT.time, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date, zone, today: '2026-11-09', now: new Date('2026-11-09T12:00:00Z') });
       expect(page.contacts.length).toBeGreaterThan(0);
       expect(page.contacts).toEqual(tool.contacts);
       expect(page.moon).toEqual(tool.moon);
@@ -58,13 +59,13 @@ describe('the /your-day/ page and get_personal_day', () => {
 
   it('agree without a birth time too, and say "today" only for today', async () => {
     const tool = (await personalDay({ birthDate: ADULT.birthDate, zone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, currentZone: 'Europe/London', date: '2026-11-10' }, context)).data;
-    const page = await computeYourDay({ birthDate: ADULT.birthDate, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date: '2026-11-10', zone: 'Europe/London', today: '2026-11-09' });
+    const page = await computeYourDay({ birthDate: ADULT.birthDate, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date: '2026-11-10', zone: 'Europe/London', today: '2026-11-09', now: new Date('2026-11-09T12:00:00Z') });
     expect(page.contacts).toEqual(tool.contacts);
     expect(page.theme).toBe(tool.theme);
     expect(page.limits).toEqual(tool.limits);
     expect(page.points).not.toContain('Moon');
     expect(page.theme).toMatch(/^The strongest contact on Tue 10 Nov 2026 is /u);
-    const today = await computeYourDay({ birthDate: ADULT.birthDate, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date: '2026-11-09', zone: 'Europe/London', today: '2026-11-09' });
+    const today = await computeYourDay({ birthDate: ADULT.birthDate, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date: '2026-11-09', zone: 'Europe/London', today: '2026-11-09', now: new Date('2026-11-09T12:00:00Z') });
     expect(today.theme).toMatch(/^Today's strongest contact is /u);
   });
 
@@ -80,7 +81,7 @@ describe('the /your-day/ page and get_personal_day', () => {
 });
 
 describe('a birth date the clock repeated or skipped, on the /your-day/ page and get_personal_day', () => {
-  const PLACE = { birthZone: 'Pacific/Apia', latitude: -13.83, longitude: -171.76, date: '2026-11-09', zone: 'Europe/Madrid', today: '2026-11-09' };
+  const PLACE = { birthZone: 'Pacific/Apia', latitude: -13.83, longitude: -171.76, date: '2026-11-09', zone: 'Europe/Madrid', today: '2026-11-09', now: new Date('2026-11-09T12:00:00Z') };
 
   it('refuses a date the clock never showed (Apia, 30 December 2011) before anything is worked out, timed or not', async () => {
     for (const time of [undefined, '12:00']) await expect(computeYourDay({ ...PLACE, birthDate: '2011-12-30', time })).rejects.toThrow(RangeError);
@@ -157,7 +158,7 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
     const minor = { birthDate: '2009-05-09', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
     for (const date of ['2027-06-09', '2027-06-01', '2027-06-17']) {
       const tool = (await personalDay({ ...minor, currentZone: 'Europe/Madrid', date }, context)).data;
-      const page = await computeYourDay({ birthDate: minor.birthDate, time: minor.time, birthZone: minor.zone, latitude: minor.latitude, longitude: minor.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09' });
+      const page = await computeYourDay({ birthDate: minor.birthDate, time: minor.time, birthZone: minor.zone, latitude: minor.latitude, longitude: minor.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09', now: new Date('2026-11-09T12:00:00Z') });
       for (const reading of [tool, page]) {
         expect(reading.under18).toBe(true);
         expect(reading.limits).toContain(MINOR_NOTE);
@@ -168,7 +169,7 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
       expect(page.limits).toEqual(tool.limits);
     }
     // The same day read for an adult still lists the natal Venus when it is touched.
-    const adult = await computeYourDay({ birthDate: '1990-05-03', time: '08:30', birthZone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, date: '2027-06-09', zone: 'Europe/Madrid', today: '2026-11-09' });
+    const adult = await computeYourDay({ birthDate: '1990-05-03', time: '08:30', birthZone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, date: '2027-06-09', zone: 'Europe/Madrid', today: '2026-11-09', now: new Date('2026-11-09T12:00:00Z') });
     expect(adult.under18).toBe(false);
   }, 60_000);
 
@@ -176,14 +177,63 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
     const leapDay = new Date('2028-02-29T12:00:00Z');
     const born = { birthDate: '2010-03-01', time: '08:30', zone: 'UTC', latitude: 40.42, longitude: -3.7 };
     const tool = (await personalDay({ ...born, currentZone: 'UTC' }, { ...context, now: leapDay })).data;
-    const page = await computeYourDay({ birthDate: born.birthDate, time: born.time, birthZone: born.zone, latitude: born.latitude, longitude: born.longitude, date: '2028-02-29', zone: 'UTC', today: '2028-02-29' });
+    const page = await computeYourDay({ birthDate: born.birthDate, time: born.time, birthZone: born.zone, latitude: born.latitude, longitude: born.longitude, date: '2028-02-29', zone: 'UTC', today: '2028-02-29', now: new Date('2028-02-29T12:00:00Z') });
     for (const reading of [tool, page]) {
       expect(reading.under18).toBe(true);
       expect(reading.limits).toContain(MINOR_NOTE);
     }
     // The next day, 1 March, they are 18.
-    const birthday = await computeYourDay({ birthDate: born.birthDate, time: born.time, birthZone: born.zone, latitude: born.latitude, longitude: born.longitude, date: '2028-03-01', zone: 'UTC', today: '2028-03-01' });
+    const birthday = await computeYourDay({ birthDate: born.birthDate, time: born.time, birthZone: born.zone, latitude: born.latitude, longitude: born.longitude, date: '2028-03-01', zone: 'UTC', today: '2028-03-01', now: new Date('2028-03-01T12:00:00Z') });
     expect(birthday.under18).toBe(false);
+  });
+
+  describe('take the age on the calendar date at UTC-12, whatever clock the day is read on', () => {
+    // Born 10 November 2008 in Madrid. At 2026-11-10T02:00Z it is already the 10th in Kiritimati (UTC+14) and Madrid,
+    // but still the 9th in Los Angeles and at UTC-12: they may live where they are 17, so the care holds everywhere.
+    const born = { birthDate: '2008-11-10', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
+    const EARLY = new Date('2026-11-10T02:00:00Z');
+    const LATE = new Date('2026-11-10T12:00:00Z');
+    const tool = async (now: Date, currentZone: string) => (await personalDay({ ...born, currentZone, date: '2026-11-10' }, { ...context, now })).data;
+    const page = (now: Date, zone: string, today: string) => computeYourDay({ birthDate: born.birthDate, time: born.time, birthZone: born.zone, latitude: born.latitude, longitude: born.longitude, date: '2026-11-10', zone, today, now });
+
+    it('in get_personal_day, from Los Angeles and from Kiritimati alike', async () => {
+      const losAngeles = await tool(EARLY, 'America/Los_Angeles');
+      const kiritimati = await tool(EARLY, 'Pacific/Kiritimati');
+      for (const reading of [losAngeles, kiritimati]) {
+        expect(reading.under18).toBe(true);
+        expect(reading.limits).toContain(MINOR_NOTE);
+        expect(reading.contacts.some((contact) => minorLeftOut(contact.planet, contact.point))).toBe(false);
+      }
+      expect((await tool(new Date('2026-11-10T11:59:59Z'), 'Pacific/Kiritimati')).under18).toBe(true);
+      expect((await tool(LATE, 'Pacific/Kiritimati')).under18).toBe(false);
+      expect((await tool(LATE, 'America/Los_Angeles')).under18).toBe(false);
+    }, 60_000);
+
+    it('on the page, on a device in any zone', async () => {
+      for (const [zone, today] of [['Pacific/Kiritimati', '2026-11-10'], ['Europe/Madrid', '2026-11-10'], ['America/Los_Angeles', '2026-11-09'], ['UTC', '2026-11-10']] as const) {
+        const early = await page(EARLY, zone, today);
+        expect(early.under18, zone).toBe(true);
+        expect(early.contacts.some((contact) => minorLeftOut(contact.planet, contact.point)), zone).toBe(false);
+        expect((await page(LATE, zone, today)).under18, zone).toBe(false);
+      }
+    }, 60_000);
+  });
+
+  it('read a day whose midnight the clock jumped over from the jump, on both resolvers', async () => {
+    // Toronto, 31 March 1919: the clocks went from 23:30 EST on the 30th to 00:30 EDT on the 31st (04:30 UTC). The
+    // resolver moves the skipped 00:00 to 00:30 EDT (05:00 UTC); the civil day began half an hour before that.
+    const site: DayClock = { prepareLocalTime, resolveLocalToUtc };
+    const natal = castDayNatal({ birthDate: '1900-01-01', zone: 'America/Toronto' }, context.localTime);
+    for (const clock of [context.localTime, site]) {
+      const bounds = await localDayBounds('1919-03-31', 'America/Toronto', clock);
+      expect(bounds!.map((at) => at.toISOString())).toEqual(['1919-03-31T04:30:00.000Z', '1919-04-01T04:00:00.000Z']);
+      const day = await readPersonalDay(natal, { birthDate: '1900-01-01', date: '1919-03-31', zone: 'America/Toronto', now: new Date('1919-03-31T12:00:00Z') }, clock);
+      expect(day.middayUtc).toBe('1919-03-31T16:15:00.000Z');
+    }
+    // An ordinary day keeps its two midnights, and a day the clock skipped (Apia, 30 December 2011) is refused.
+    expect((await localDayBounds('2026-11-09', 'Europe/Madrid', site))!.map((at) => at.toISOString())).toEqual(['2026-11-08T23:00:00.000Z', '2026-11-09T23:00:00.000Z']);
+    expect(await localDayBounds('2011-12-30', 'Pacific/Apia', site)).toBeNull();
+    await expect(readPersonalDay(natal, { birthDate: '1900-01-01', date: '2011-12-30', zone: 'Pacific/Apia', now: NOW }, site)).rejects.toThrow(RangeError);
   });
 
   it('leave out every contact and house line a minor could see that the check catches', () => {
@@ -205,8 +255,8 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
     let fifth = 0;
     for (let day = 1; day <= 30; day += 1) {
       const date = `2026-11-${String(day).padStart(2, '0')}`;
-      const adult = await computeYourDay({ birthDate: '1990-05-03', time: minor.time, birthZone: minor.zone, latitude: minor.latitude, longitude: minor.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09' });
-      const page = await computeYourDay({ birthDate: minor.birthDate, time: minor.time, birthZone: minor.zone, latitude: minor.latitude, longitude: minor.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09' });
+      const adult = await computeYourDay({ birthDate: '1990-05-03', time: minor.time, birthZone: minor.zone, latitude: minor.latitude, longitude: minor.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09', now: new Date('2026-11-09T12:00:00Z') });
+      const page = await computeYourDay({ birthDate: minor.birthDate, time: minor.time, birthZone: minor.zone, latitude: minor.latitude, longitude: minor.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09', now: new Date('2026-11-09T12:00:00Z') });
       const tool = (await personalDay({ ...minor, currentZone: 'Europe/Madrid', date }, context)).data;
       expect(page.moon).toEqual(tool.moon);
       expect(page.moon.line).not.toMatch(MINOR_CHECK);
@@ -219,7 +269,7 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
     let sixth = 0;
     for (let day = 1; day <= 30; day += 1) {
       const date = `2026-11-${String(day).padStart(2, '0')}`;
-      const page = await computeYourDay({ birthDate: ADULT.birthDate, time: ADULT.time, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09' });
+      const page = await computeYourDay({ birthDate: ADULT.birthDate, time: ADULT.time, birthZone: ADULT.zone, latitude: ADULT.latitude, longitude: ADULT.longitude, date, zone: 'Europe/Madrid', today: '2026-11-09', now: new Date('2026-11-09T12:00:00Z') });
       if (page.moon.house?.number !== 6) continue;
       sixth += 1;
       const tool = (await personalDay({ ...ADULT, currentZone: 'Europe/Madrid', date }, context)).data;

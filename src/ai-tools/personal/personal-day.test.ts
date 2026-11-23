@@ -8,14 +8,15 @@ import { MINOR_NOTE } from '../features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
 import { maxOrb } from '../../lib/personal-day/score';
 import { executeAiTool } from '../tools';
-import { PERSONAL_DAY_LIMIT, dayScore, personalDay, type PersonalDayData } from './personal-day';
+import { PERSONAL_DAY_LIMIT, dayScore, personalDay, personalDayTool, type PersonalDayData } from './personal-day';
 import { castNatal, dateOn, forbiddenClaim, type PersonalToolContext } from './shared';
 
 const clock = createLocalTimeModule();
 const NOW = new Date('2026-11-09T09:00:00Z');
-const context = (now = NOW): PersonalToolContext => ({ now, localTime: clock, resolveZone: async (name) => name, origin: 'https://zodiacs.org' });
+const context = (now = NOW): PersonalToolContext => ({ now, localTime: clock, resolveZone: async (name) => name, origin: 'https://zodiacs.org', pageOn: true });
 const run = (args: Parameters<typeof personalDay>[0], now = NOW) => personalDay(args, context(now)).then((result) => result.data);
-const ON = { occasions: true, coverage: true, personal: true, now: () => NOW };
+const PAGE_FLAG = 'PUBLIC_YOUR_DAY_ENABLED';
+const ON = { occasions: true, coverage: true, personal: true, now: () => NOW, sitePageOn: (flag: string) => flag === PAGE_FLAG };
 const ADULT = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, currentZone: 'Europe/Madrid' };
 const MINUTE = 60_000;
 const separation = (a: number, b: number) => Math.abs(((((a - b) % 360) + 540) % 360) - 180);
@@ -328,6 +329,34 @@ describe('get_personal_day privacy and refusals', () => {
     const birth = { birthDate: '1990-05-03', zone: 'Europe/Madrid' };
     await expect(run({ ...birth, currentZone: 'Pacific/Apia', date: '2011-12-30' }, new Date('2011-12-29T12:00:00Z'))).rejects.toThrow('date must be a real date, such as 2026-11-12.');
     expect((await run({ ...birth, currentZone: 'Pacific/Apia', date: '2011-12-31' }, new Date('2011-12-29T12:00:00Z'))).date).toBe('2011-12-31');
+  });
+
+  it('links to the page and its share card only while the website page is switched on', async () => {
+    expect(personalDayTool.pageFlag).toBe(PAGE_FLAG);
+    const args = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, currentZone: 'Europe/Madrid' };
+    const linked = (result: Awaited<ReturnType<typeof executeAiTool>>) => {
+      if (!result.ok) throw new Error('refused');
+      return { data: result.data as PersonalDayData, urls: JSON.stringify(result).match(/https:\/\/[^"]+/gu) ?? [] };
+    };
+    // The MCP switches on and the page on: the page and the day's share card.
+    const on = linked(await executeAiTool('get_personal_day', args, ON));
+    expect(on.data.pageUrl).toBe('https://zodiacs.org/your-day/');
+    expect(on.data.shareUrl).toMatch(/^https:\/\/zodiacs\.org\/share\/your-day\/\?day=/u);
+    expect(on.urls).toContain('https://zodiacs.org/your-day/');
+    // The MCP switches on and the page off (or no page switch read at all): neither, so no link is a 404.
+    for (const dependencies of [{ ...ON, sitePageOn: () => false }, { occasions: true, coverage: true, personal: true, now: () => NOW }]) {
+      const off = linked(await executeAiTool('get_personal_day', args, dependencies));
+      expect(off.data.pageUrl).toBeNull();
+      expect(off.data.shareUrl).toBeNull();
+      expect(off.urls.filter((url) => url.includes('/your-day/') || url.includes('/share/'))).toEqual([]);
+      expect(off.urls).toContain('https://zodiacs.org/transits/');
+    }
+    for (const pageOn of [false, undefined]) {
+      const result = await personalDay(args, { ...context(), pageOn });
+      expect(result.data.pageUrl).toBeNull();
+      expect(result.data.shareUrl).toBeNull();
+      expect(result.links.map((link) => link.url)).not.toContain('https://zodiacs.org/your-day/');
+    }
   });
 
   it('refuses a time without a zone with the field rule', async () => {

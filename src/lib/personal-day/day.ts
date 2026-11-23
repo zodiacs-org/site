@@ -33,12 +33,14 @@ import type { ShareSign } from '../share-results';
 import { transitLine } from '../transits';
 import { localDaySpan, readsOnDate, type WallResolution } from '../time/local-day';
 import { MINOR_NOTE, isUnderAge, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
+import { earliestToday } from '../birth-date-policy';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
 import { clockTime, dayLabel, nextDate } from './clock';
 import { BACKGROUND_LIMIT, PERSONAL_DAY_LIMIT, dayScore, maxOrb, orbOf, pointName } from './score';
 
 const slowMovers = new Set<TransitBody>(SLOW_TRANSIT_BODIES);
 const HOUR = 3_600_000;
+const SECOND = 1_000;
 /** The widest civil offset any clock has kept since 1800, rounded out to whole hours (src/ai-tools/personal/shared.ts). */
 const WIDEST_OFFSET_HOURS = 16;
 /** The limit a date-only reading carries; the /your-day/ FAQ says the same. */
@@ -141,24 +143,34 @@ export function minorLeftOut(mover: TransitBody, point: NatalPoint): boolean {
 /** Under 18, the natal houses whose theme the Moon's line would read as pleasure: the fifth. */
 export const MINOR_LEFT_OUT_HOUSES: readonly number[] = [5];
 
-async function startOf(date: string, zone: string, clock: DayClock): Promise<Date> {
+/**
+ * The real time a local date covers on a zone's clock, as [start, end): from where the clock first reaches its
+ * 00:00, or jumps over it into the date, to where it last reaches the next date's 00:00 (src/lib/time/local-day.ts,
+ * as settledSunSign reads the birth day). Toronto's clocks went from 23:30 on 30 March 1919 to 00:30 on 31 March,
+ * so the 31st starts at the jump (04:30 UTC), not at the 00:30 the resolver moves a skipped midnight to. Null for a
+ * date the clock skipped.
+ */
+export async function localDayBounds(date: string, zone: string, clock: DayClock): Promise<[Date, Date] | null> {
   await clock.prepareLocalTime(date, zone);
-  return clock.resolveLocalToUtc(date, '00:00', zone).utc;
+  await clock.prepareLocalTime(nextDate(date), zone);
+  const span = localDaySpan(date, (day, time, fold) => clock.resolveLocalToUtc(day, time, zone, { fold }));
+  // The span's end is inclusive to the second; the day ends where the next one starts.
+  return span ? [span[0], new Date(span[1].getTime() + SECOND)] : null;
 }
 
 /**
  * One day's transits to one birth chart. `date` is the day on `zone`'s clock;
  * `today` is today's date on that clock, so the theme says "today" only for
- * today; `note` is a sentence about which clock was used, listed first in the
- * limits.
+ * today; `now` is the instant of the reading, for the under-18 rule; `note` is
+ * a sentence about which clock was used, listed first in the limits.
  */
-export async function readPersonalDay(natal: DayNatal, input: { birthDate: string; date: string; zone: string; today?: string | undefined; note?: string | null | undefined }, clock: DayClock): Promise<PersonalDayReading> {
+export async function readPersonalDay(natal: DayNatal, input: { birthDate: string; date: string; zone: string; now: Date; today?: string | undefined; note?: string | null | undefined }, clock: DayClock): Promise<PersonalDayReading> {
   const { date, zone } = input;
-  // The local day: its two midnights on the person's clock, and the moment halfway between them.
-  const dayStart = await startOf(date, zone, clock);
-  const dayEnd = await startOf(nextDate(date), zone, clock);
-  // A day the clock skipped has no length: both midnights resolve to the same instant.
-  if (dayEnd.getTime() <= dayStart.getTime()) throw new RangeError('date must be a real date, such as 2026-11-12.');
+  // The local day as the clock showed it, and the moment halfway through it.
+  const bounds = await localDayBounds(date, zone, clock);
+  // A day the clock skipped has no length.
+  if (!bounds) throw new RangeError('date must be a real date, such as 2026-11-12.');
+  const [dayStart, dayEnd] = bounds;
   const midday = new Date((dayStart.getTime() + dayEnd.getTime()) / 2);
   const later = new Date(midday.getTime() + HOUR);
 
@@ -178,12 +190,14 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
     if (!held || Math.abs(at.getTime() - midday.getTime()) < Math.abs(held.getTime() - midday.getTime())) exact.set(key, at);
   }
 
-  // Age is taken on today, as the published tools take it, not on the day read, which can be up to a year ahead.
+  // Age is taken on today, not on the day read, which can be up to a year ahead, and today is the calendar date at
+  // UTC-12 (earliestToday), as the shared under-13 policy reads it: the clock the day is read on (the device's, the
+  // current zone's or the birthplace's) never moves it, so nobody is read as 18 before their birthday everywhere.
   // For someone under 18 the contacts whose line reads as love, appetite, longing or heat are left out (minorLeftOut),
   // and so is the Moon's line in the fifth house ("pleasure").
   // softenMinor, shared with published tools whose output is frozen, does not reach them. MINOR_NOTE says so.
   // isUnderAge keeps 29 February as the cutoff, so someone born on 1 March is still under 18 on that day.
-  const under18 = isUnderAge(input.birthDate, input.today ?? date, 18);
+  const under18 = isUnderAge(input.birthDate, earliestToday(input.now), 18);
   const guard = (text: string) => softenHealth(under18 ? softenMinor(text) : text);
   const found: Omit<DayContact, 'rank'>[] = [];
   for (const mover of TRANSIT_BODY_ORDER) {

@@ -42862,6 +42862,15 @@ function localDaySpan(date3, resolve2) {
   return [new Date(start), new Date(end)];
 }
 
+// src/lib/birth-date-policy.ts
+var HOUR_MS4 = 36e5;
+function civilDateAt(now, offsetHours) {
+  return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
+}
+function earliestToday(now = /* @__PURE__ */ new Date()) {
+  return civilDateAt(now, -12);
+}
+
 // src/lib/personal-day/clock.ts
 var DAY19 = 864e5;
 function dayLabel3(at, timeZone) {
@@ -42935,6 +42944,7 @@ var pointName2 = (point2) => POINT_NAME2[point2] ?? point2;
 // src/lib/personal-day/day.ts
 var slowMovers = new Set(SLOW_TRANSIT_BODIES);
 var HOUR6 = 36e5;
+var SECOND2 = 1e3;
 var WIDEST_OFFSET_HOURS = 16;
 var UNTIMED_LIMIT = "No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.";
 var ORDINAL7 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
@@ -42944,15 +42954,17 @@ function minorLeftOut(mover, point2) {
   return mover === "Venus" || mover === "Mars" || mover === "Neptune" || point2 === "Venus" || point2 === "Jupiter";
 }
 var MINOR_LEFT_OUT_HOUSES = [5];
-async function startOf(date3, zone10, clock2) {
+async function localDayBounds(date3, zone10, clock2) {
   await clock2.prepareLocalTime(date3, zone10);
-  return clock2.resolveLocalToUtc(date3, "00:00", zone10).utc;
+  await clock2.prepareLocalTime(nextDate2(date3), zone10);
+  const span2 = localDaySpan(date3, (day2, time, fold3) => clock2.resolveLocalToUtc(day2, time, zone10, { fold: fold3 }));
+  return span2 ? [span2[0], new Date(span2[1].getTime() + SECOND2)] : null;
 }
 async function readPersonalDay(natal, input, clock2) {
   const { date: date3, zone: zone10 } = input;
-  const dayStart2 = await startOf(date3, zone10, clock2);
-  const dayEnd = await startOf(nextDate2(date3), zone10, clock2);
-  if (dayEnd.getTime() <= dayStart2.getTime()) throw new RangeError("date must be a real date, such as 2026-11-12.");
+  const bounds = await localDayBounds(date3, zone10, clock2);
+  if (!bounds) throw new RangeError("date must be a real date, such as 2026-11-12.");
+  const [dayStart2, dayEnd] = bounds;
   const midday = new Date((dayStart2.getTime() + dayEnd.getTime()) / 2);
   const later = new Date(midday.getTime() + HOUR6);
   const points = [...TRANSIT_BODY_ORDER.filter((body2) => natal.timeKnown || body2 !== "Moon"), ...natal.angles ? ["ASC", "MC"] : []];
@@ -42970,7 +42982,7 @@ async function readPersonalDay(natal, input, clock2) {
     const held = exact.get(key2);
     if (!held || Math.abs(at.getTime() - midday.getTime()) < Math.abs(held.getTime() - midday.getTime())) exact.set(key2, at);
   }
-  const under18 = isUnderAge(input.birthDate, input.today ?? date3, 18);
+  const under18 = isUnderAge(input.birthDate, earliestToday(input.now), 18);
   const guard = (text2) => softenHealth(under18 ? softenMinor(text2) : text2);
   const found = [];
   for (const mover of TRANSIT_BODY_ORDER) {
@@ -43238,8 +43250,12 @@ var personalDayData = z16.object({
   /** True when the birth date is under 18 today. Romantic and attraction readings are left out, and so are the contacts to the natal Venus and Jupiter, those of the moving Venus, Mars and Neptune, and the Moon's line in the fifth house. */
   under18: z16.boolean(),
   limits: z16.array(z16.string()),
-  pageUrl: z16.url(),
-  /** The share card for the day's reading: the day and the person's settled Sun sign. Never a birth detail. Null when the Sun sign is unsettled on an untimed cusp day. */
+  /** The /your-day/ page; null while the website's page is switched off (PUBLIC_YOUR_DAY_ENABLED). */
+  pageUrl: z16.url().nullable(),
+  /**
+   * The share card for the day's reading: the day and the person's settled Sun sign. Never a birth detail. Null when
+   * the Sun sign is unsettled on an untimed cusp day, or while the website's page is switched off.
+   */
   shareUrl: z16.url().nullable()
 });
 async function personalDay(given, context) {
@@ -43254,7 +43270,8 @@ async function personalDay(given, context) {
   if (date3 < args.birthDate) throw new RangeError("date is before the birth date; give a day on or after it.");
   const day2 = await readPersonalDay(
     { bodies: natal.chart.bodies, angles: natal.angles, timeKnown: natal.timeKnown, placed: natal.placed, detail: natal.detail },
-    { birthDate: args.birthDate, date: date3, zone: zone10, today: today2, note },
+    // The under-18 rule reads the UTC-12 date from now (readPersonalDay); `zone` and `today` are the reading's clock only.
+    { birthDate: args.birthDate, date: date3, zone: zone10, today: today2, now: context.now, note },
     context.localTime
   );
   const sunSign = await settledSunSign2(
@@ -43262,7 +43279,8 @@ async function personalDay(given, context) {
     { birthDate: args.birthDate, zone: args.zone, longitude: natal.longitude },
     context.localTime
   );
-  const pageUrl = `${context.origin}${YOUR_DAY_PAGE_PATH}`;
+  const pageOn = context.pageOn === true;
+  const pageUrl = pageOn ? `${context.origin}${YOUR_DAY_PAGE_PATH}` : null;
   return {
     data: {
       birthDate: args.birthDate,
@@ -43271,10 +43289,10 @@ async function personalDay(given, context) {
       ...day2,
       moon: day2.moon,
       pageUrl,
-      shareUrl: yourDayShareUrl(context.origin, { date: date3, sun: sunSign })
+      shareUrl: pageOn ? yourDayShareUrl(context.origin, { date: date3, sun: sunSign }) : null
     },
     links: [
-      { title: "Your day on Zodiacs", url: pageUrl },
+      ...pageUrl ? [{ title: "Your day on Zodiacs", url: pageUrl }] : [],
       { title: "Transits on Zodiacs", url: `${context.origin}/transits/` },
       { title: "Today's sky on Zodiacs", url: `${context.origin}/today/` }
     ]
@@ -43288,6 +43306,7 @@ var personalDayTool = definePersonalTool({
   input: personalDayInput,
   data: personalDayData,
   clockDependent: true,
+  pageFlag: "PUBLIC_YOUR_DAY_ENABLED",
   example: { birthDate: "1990-05-03", time: "08:30", zone: "Europe/Madrid", latitude: 40.42, longitude: -3.7, currentZone: "Europe/Madrid" },
   run: (args, context) => personalDay(args, context)
 });
@@ -45453,15 +45472,6 @@ function guardPersonalWeek(week, birthDate, today2) {
   };
 }
 
-// src/lib/birth-date-policy.ts
-var HOUR_MS4 = 36e5;
-function civilDateAt(now, offsetHours) {
-  return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
-}
-function earliestToday(now = /* @__PURE__ */ new Date()) {
-  return civilDateAt(now, -12);
-}
-
 // src/ai-tools/tools.ts
 var PRIVACY_POLICY = "https://zodiacs.org/privacy/";
 var SAVED_PAGE_EXCEPTION = "The only exception is a page a signed-in person chooses to save to their own account.";
@@ -45694,6 +45704,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone),
         hostZone: context.hostZone,
         origin: ORIGIN,
+        pageOn: definition.pageFlag === void 0 || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {},
         ...dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}
       }));
@@ -47640,6 +47651,7 @@ function createAiNodeHandler(options = {}) {
           return "unavailable";
         }
       } };
+      if (personal2) dependencies.sitePageOn = (flag) => env[flag] === "1";
       const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: "stateless", responseMode: "auto", onerror: () => {
       } });
       try {

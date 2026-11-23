@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import type { CalendarChoice } from './BirthFields';
+import { GatedBirthFields, birthDateOpen, checkedBirthDate, useBirthDateCheck } from './GatedBirthFields';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { CopyLinkButton, type CopyLinkState } from './CopyLinkButton';
 import type { City } from '../lib/geo/search';
@@ -93,7 +94,9 @@ export default function YourDay() {
     setDay((current) => current || now.today);
   }, []);
 
-  const ready = date !== '' && city !== null && (!timeKnown || time !== '') && day !== '' && clock !== null;
+  // The date is checked as it is entered; the time and birthplace open only once the converted date is accepted.
+  const check = useBirthDateCheck(date, calendar, yourDayRefusal);
+  const ready = birthDateOpen(check) && city !== null && (!timeKnown || time !== '') && day !== '' && clock !== null;
   const minDay = clock ? shiftDate(clock.today, -MAX_DAYS) : undefined;
   const maxDay = clock ? shiftDate(clock.today, MAX_DAYS) : undefined;
 
@@ -111,21 +114,17 @@ export default function YourDay() {
     setError('');
     setCopy('idle');
     try {
-      let birthDate = date;
-      if (calendarInPlay(date, calendar)) {
-        const entry = await birthDateForChart('en', date, calendar);
-        if (request !== revision.current) return;
-        if ('error' in entry) { setError(entry.error); setShown(null); return; }
-        birthDate = entry.date;
-      }
-      const refusal = yourDayRefusal(birthDate);
-      if (refusal) { setError(refusal); setShown(null); return; }
+      // The shared policy (UTC-12) on the converted date, before the calculation loads.
+      const entry = await checkedBirthDate(date, calendar, yourDayRefusal);
+      if (request !== revision.current) return;
+      if ('error' in entry) { setError(entry.error); setShown(null); return; }
+      const birthDate = entry.date;
       if (Math.abs(daysBetween(clock.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
       if (target < birthDate) { setError('Choose a day on or after the birth date.'); setShown(null); return; }
       const { computeYourDay } = await loadModule(() => import('./your-day/compute'));
       const reading = await computeYourDay({
         birthDate, time: timeKnown ? time : undefined, birthZone: city.tz, latitude: city.lat, longitude: city.lon,
-        date: target, zone: clock.zone, today: clock.today,
+        date: target, zone: clock.zone, today: clock.today, now: new Date(),
       });
       if (request !== revision.current) return;
       setDay(target);
@@ -147,9 +146,9 @@ export default function YourDay() {
       <form class="calc__form shell" onSubmit={(event) => { event.preventDefault(); void read(day, true); }} aria-busy={busy}>
         <div class="core calc__core">
           <div class="calc__fields">
-            <BirthFields
+            <GatedBirthFields
               locale="en" dateId="yd-date" timeId="yd-time" placeId="yd-place"
-              date={date} time={time} timeKnown={timeKnown} city={city}
+              date={date} check={check} time={time} timeKnown={timeKnown} city={city}
               onDateChange={(value) => { clear(); setDate(value); }}
               calendar={calendar} onCalendarChange={(value) => { clear(); setCalendar(value); }}
               onTimeChange={(value) => { clear(); setTime(value); }}
@@ -162,7 +161,8 @@ export default function YourDay() {
               <label class="field__label" for="yd-day">Day to read</label>
               <input id="yd-day" class="field__input" type="date" required value={day} min={minDay} max={maxDay}
                 onInput={(event) => { clear(); setDay((event.target as HTMLInputElement).value); }} />
-              <p class="field__help yd__clock">Times are on this device’s clock{clock ? ` (${clock.zone.replaceAll('_', ' ')})` : ''}.</p>
+              {/* One text node: the zone is filled in after load, and nothing already drawn may move when it is (zero CLS). */}
+              <p class="field__help yd__clock">{`Times are on this device’s clock${clock ? ` (${clock.zone.replaceAll('_', ' ')})` : ''}.`}</p>
             </div>
           </div>
           <button class="btn btn--primary calc__submit" type="submit" disabled={!ready || busy}><span>{busy ? 'Reading…' : 'Read my day'}</span><span class="orb" aria-hidden="true">↗</span></button>
