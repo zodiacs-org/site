@@ -10,7 +10,7 @@
 import { bodyLongitude, computeChart } from '../../lib/engine/full';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 import {
-  POINT_NAMES, dateOn, dayLabel, isUnder13, natalBasis, retrogradeReading,
+  POINT_NAMES, dateOn, dayLabel, natalBasis, retrogradeReading,
   type RetrogradePeriod, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
@@ -18,6 +18,7 @@ import { publishedRetrogradeDate, retrogradeForYouShareQuery } from '../../lib/r
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
 import sky from '../../data/sky.json';
+import { birthDateRefusal } from '../../lib/birth-date-policy';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
 
@@ -33,7 +34,7 @@ export interface RetrogradeForYouInput {
 }
 
 export type RetrogradeForYouOutcome =
-  | { refused: 'under-13' }
+  | { refused: 'under-13' | 'future-birth-date' }
   | {
     refused?: undefined;
     periods: (RetrogradePeriod & { shareQuery: string | null; skyDate: string | null; nextLine: string | null })[];
@@ -48,10 +49,25 @@ export type RetrogradeForYouOutcome =
     zone: string;
   };
 
+/**
+ * Why the page refuses a (Gregorian) birth date, or null: the shared policy
+ * (src/lib/birth-date-policy.ts), which reads today at UTC-12 whatever this
+ * device's clock and zone say, so nobody is read before their 13th birthday
+ * has begun everywhere.
+ */
+export function retrogradeForYouRefusal(birthDate: string, now: Date): Extract<RetrogradeForYouOutcome, { refused: string }> | null {
+  const refusal = birthDateRefusal(birthDate, now);
+  if (refusal === 'under_13') return { refused: 'under-13' };
+  if (refusal === 'future_birth_date') return { refused: 'future-birth-date' };
+  return null;
+}
+
 /** Await prepareLocalTime(input.birthDate, input.place.tz) first. */
 export function computeRetrogradeForYou(input: RetrogradeForYouInput): RetrogradeForYouOutcome {
+  // The shared birth date policy, before any chart resolution.
+  const refused = retrogradeForYouRefusal(input.birthDate, input.now);
+  if (refused) return refused;
   const today = dateOn(input.now, input.zone);
-  if (isUnder13(input.birthDate, today)) return { refused: 'under-13' };
   const timeKnown = input.birthTime !== null;
   const resolved = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: input.place.lon });
   const birthUtc = resolved.utc;

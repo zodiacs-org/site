@@ -652,28 +652,6 @@ export function inviteCardModel(share: InviteShare): InviteCardModel {
 const RETROGRADE_PLANET_NAME: Readonly<Record<ShareRetrogradePlanet, string>> = { mercury: 'Mercury', venus: 'Venus', mars: 'Mars' };
 /** Each planet wears the hue of the sign it rules, as on the page (src/islands/RetrogradeForYou.tsx). */
 export const RETROGRADE_PLANET_SIGN: Readonly<Record<ShareRetrogradePlanet, ShareSign>> = { mercury: 'gemini', venus: 'taurus', mars: 'aries' };
-/**
- * What each house covers, as the birth chart says it (NATAL_HOUSE_THEME in
- * src/lib/natal.ts, which a test holds this to), with the fifth house's
- * romance read as play: a card carries no age, so it says what an under-18
- * reading would. The sixth house never reads as health (softenHealth), since a
- * card sits beside dated retrograde windows.
- */
-export const RETROGRADE_CARD_HOUSE_THEME: Readonly<Record<number, string>> = {
-  1: 'first impressions, instinct, and the way you arrive',
-  2: 'earning, owning, and what security is made of',
-  3: 'language, siblings, short trips, and the everyday mind',
-  4: 'home, roots, family, and where you go to be unobserved',
-  5: 'pleasure, play, children, and what you make for its own sake',
-  6: 'routines, craft, and the shape of the day',
-  7: 'partnership, the people you meet as equals',
-  8: 'shared resources, trust, and what gets merged',
-  9: 'travel, study, belief, and the long view',
-  10: 'career, reputation, and the public record',
-  11: 'friends, groups, allies, and the future you point at',
-  12: 'solitude, rest, and what runs beneath awareness',
-};
-const HOUSE_ORDINAL = ['', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth'];
 const DAY_WITH_YEAR = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 const yearDay = (at: string) => {
   const parts = Object.fromEntries(DAY_WITH_YEAR.formatToParts(new Date(at)).map((part) => [part.type, part.value]));
@@ -690,6 +668,7 @@ export interface RetrogradeForYouCardModel {
   line: string;
   /** The planet's retrograde in general, said once. */
   about: string;
+  /** Always null: the card says only what the planet's retrograde means in general, no personal reading to label. */
   confidence: string | null;
   hue: string;
   sign: ShareSign;

@@ -62,14 +62,11 @@ import {
   longDate,
   NEUTRAL_HUE,
   occasionCardModel,
-  RETROGRADE_CARD_HOUSE_THEME,
   retrogradeForYouCardModel,
   skyCalendarCardModel,
   skyEvents,
 } from './result-preview-model';
 import { parseRetrogradeForYouShare } from '../lib/retrograde-for-you/share';
-import { NATAL_HOUSE_THEME } from '../lib/natal';
-import { softenHealth, softenMinor } from '../ai-tools/features/reading-guards';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
@@ -914,10 +911,6 @@ describe('a retrograde in one person’s chart', () => {
     });
     expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2027-01-10'))!, events)!.title).toBe('Mars retrograde');
     expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2026-10-24'))!, events)).toBeNull();
-  });
-
-  it('keeps the birth chart’s house themes, with romance read as play', () => {
-    for (let house = 1; house <= 12; house += 1) expect(RETROGRADE_CARD_HOUSE_THEME[house]).toBe(softenHealth(softenMinor(NATAL_HOUSE_THEME[house])));
   });
 
   it('opens a page whose action leads back to the retrogrades page', async () => {
