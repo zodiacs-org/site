@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "sign-guide-entrance-motion-2026-11-23",
-  "baseCommit": "11a9390cfc8e3084deac6c4ece7d5d69e849b15f",
+  "baseCommit": "dee63e2e2a4b34c601ca6b145b9e7eda0bb98552",
   "protectedPaths": [
     "src/pages/[sign]/index.astro"
   ]
