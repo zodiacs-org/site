@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import type { CalendarChoice } from './BirthFields';
+import { GatedBirthFields, birthDateOpen, checkedBirthDate, useBirthDateCheck } from './GatedBirthFields';
 import type { City } from '../lib/geo/search';
 import type { RetrogradePlanet, RetrogradeStatus } from '../lib/retrograde-for-you/reading';
 import type { RetrogradeForYouOutcome } from './retrograde-for-you/compute';
@@ -27,6 +28,21 @@ const SIGN_NAME: Record<string, string> = {
 const UNDER_13 = 'Zodiacs is not made for children under 13, so it gives no reading for a birth date less than 13 years ago. Nothing was calculated. If you are 13 or older, enter your own birth date.';
 const SHARE_ORIGIN = 'https://zodiacs.org';
 const W = 600;
+
+/**
+ * The page's sentence for a converted Gregorian birth date it refuses, or null: the shared policy
+ * (src/lib/birth-date-policy.ts), which reads today at UTC-12 whatever this device's clock and zone say.
+ */
+export function retrogradeFormRefusal(birthDate: string, now: Date = new Date()): string | null {
+  const policy = birthDateRefusal(birthDate, now);
+  return policy === null ? null : policy === 'under_13' ? UNDER_13 : FUTURE_BIRTH_DATE_SENTENCE;
+}
+
+/**
+ * The fixed code logged when a calculation fails: never the exception itself, whose message can carry the
+ * birth date, time or place it was given.
+ */
+export const RETROGRADE_ERROR_CODE = 'retrograde-for-you: calculation-failed';
 
 function browserZone(): string {
   try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch { return 'UTC'; }
@@ -144,7 +160,9 @@ export default function RetrogradeForYou() {
   const errorRef = useRef<HTMLParagraphElement>(null);
   const revision = useRef(0);
 
-  const ready = date !== '' && city !== null && (!timeKnown || time !== '') && planets.size > 0;
+  // The date is checked as it is entered; the time and birthplace open only once the converted date is accepted.
+  const check = useBirthDateCheck(date, calendar, retrogradeFormRefusal);
+  const ready = birthDateOpen(check) && city !== null && (!timeKnown || time !== '') && planets.size > 0;
   useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
 
   function clear() {
@@ -165,17 +183,14 @@ export default function RetrogradeForYou() {
     const request = ++revision.current;
     setBusy(true); setError(''); setResult(null); setRefused(null);
     try {
+      // The shared birth date policy (UTC-12) on the converted date, before the calculation loads or any local time
+      // or chart is resolved.
+      const entry = await checkedBirthDate(date, calendar, retrogradeFormRefusal);
+      if (request !== revision.current) return;
+      if ('error' in entry) { setRefused(entry.error); return; }
+      const birthDate = entry.date;
       const { computeRetrogradeForYou, prepareLocalTime } = await loadModule(() => import('./retrograde-for-you/compute'));
-      let birthDate = date;
-      if (calendarInPlay(date, calendar)) {
-        const entry = await birthDateForChart('en', date, calendar);
-        if (request !== revision.current) return;
-        if ('error' in entry) { setError(entry.error); return; }
-        birthDate = entry.date;
-      }
-      // The shared birth date policy (UTC-12) on the converted date, before any local time or chart is resolved.
-      const policy = birthDateRefusal(birthDate);
-      if (policy) { setRefused(policy === 'under_13' ? UNDER_13 : FUTURE_BIRTH_DATE_SENTENCE); return; }
+      if (request !== revision.current) return;
       const input = {
         birthDate, birthTime: timeKnown ? time : null, place: { lat: city.lat, lon: city.lon, tz: city.tz },
         planets: PLANETS.filter((planet) => planets.has(planet)), now: new Date(), zone: browserZone(),
@@ -187,7 +202,7 @@ export default function RetrogradeForYou() {
       else setResult(outcome);
     } catch (cause) {
       if (request === revision.current) {
-        console.error(cause);
+        console.error(RETROGRADE_ERROR_CODE);
         setError(calculationError(cause, 'en', 'The retrogrades could not be worked out. Check the details and try again.'));
       }
     } finally { if (request === revision.current) setBusy(false); }
@@ -199,9 +214,9 @@ export default function RetrogradeForYou() {
       <form class="calc__form shell" onSubmit={calculate} aria-busy={busy}>
         <div class="core calc__core">
           <div class="calc__fields">
-            <BirthFields
+            <GatedBirthFields
               locale="en" dateId="rfy-date" timeId="rfy-time" placeId="rfy-place"
-              date={date} time={time} timeKnown={timeKnown} city={city}
+              date={date} check={check} time={time} timeKnown={timeKnown} city={city}
               onDateChange={(value) => { clear(); setDate(value); }}
               calendar={calendar}
               onCalendarChange={(value) => { clear(); setCalendar(value); }}

@@ -32,7 +32,7 @@ import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
 import { computeChart } from '../../lib/engine/full.js';
 import sky from '../../data/sky.json';
-import { birthDayEnds, birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
+import { birthDayEnds, birthFields, castNatal, currentClock, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
 
 export { RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, type RetrogradeLoop, type RetrogradePlanet };
 
@@ -109,7 +109,10 @@ const period = z.object({
   reading: z.string(),
   confidence: z.number().int().min(40).max(95),
   confidenceLabel: z.string(),
-  /** A link to this retrograde's share card: the planet, the window's start date, and the Sun sign when settled. Null when the window is past the site's published sky data. */
+  /**
+   * A link to this retrograde's share card: the planet, the window's start date, and the Sun sign when settled. Null
+   * when the window is past the site's published sky data, or while the website's page is switched off.
+   */
   shareUrl: z.url().nullable(),
 });
 export const retrogradeForMeData = z.object({
@@ -122,7 +125,8 @@ export const retrogradeForMeData = z.object({
   periods: z.array(period),
   summary: z.string(),
   limits: z.array(z.string()),
-  pageUrl: z.url(),
+  /** The /retrogrades/for-you/ page; null while the website's page is switched off (PUBLIC_RETROGRADES_FOR_YOU_ENABLED). */
+  pageUrl: z.url().nullable(),
 });
 export type RetrogradeForMeData = z.infer<typeof retrogradeForMeData>;
 
@@ -161,7 +165,7 @@ export function retrogradeLoops(planet: RetrogradePlanet, now: Date, rowsAt = po
 }
 
 /** The retrogrades for one person. Throws RangeError for details it cannot use. */
-export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin' | 'allowEvents'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
+export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin' | 'allowEvents' | 'pageOn'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
   const natal = await castNatal(args, context.localTime);
   const clock = await currentClock(args.currentZone, args.zone, context as PersonalToolContext);
   const now = context.now;
@@ -187,7 +191,8 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     : null;
   const basis = natalBasis({
     timeKnown: natal.timeKnown, placed: natal.placed, angles: natal.angles, bodies: natal.chart.bodies, sunHeld,
-    birthDate: args.birthDate, today: dateOn(now, clock.zone), dayEnds, foldAsc,
+    // The under-18 rule reads the UTC-12 calendar date from `now` (natalBasis), never the clock the dates are shown on.
+    birthDate: args.birthDate, now, dayEnds, foldAsc,
   });
   // The station and shadow searches count against the hosted event budget, as search_sky_events' do.
   if (context.allowEvents) {
@@ -203,8 +208,10 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
   const sunSign = sunHeld
     ? (SIGNS[signIndexForLongitude(natal.chart.bodies.find((row) => row.body === 'Sun')!.lon)].slug as ShareSign)
     : null;
+  // The page and its share cards are linked only while the website's page is on: with it off they would be a 404.
+  const pageOn = context.pageOn === true;
   const periods = reading.periods.map((period) => {
-    const query = retrogradeForYouShareQuery({
+    const query = pageOn && retrogradeForYouShareQuery({
       planet: period.planet, stationRetrogradeUtc: period.stationRetrograde.utc, sun: sunSign,
     }, sky.retrogrades);
     return { ...period, shareUrl: query ? retrogradeForYouShareUrl(context.origin, query) : null };
@@ -212,10 +219,10 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
   return {
     data: {
       birthDate: args.birthDate, timeKnown: natal.timeKnown, placed: natal.placed, now: new Date(Math.round(now.getTime() / 60_000) * 60_000).toISOString(), timeZone: clock.zone,
-      periods, summary: reading.summary, limits: reading.limits, pageUrl: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}`,
+      periods, summary: reading.summary, limits: reading.limits, pageUrl: pageOn ? `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` : null,
     },
     links: [
-      { title: 'Retrogrades in your chart on Zodiacs', url: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` },
+      ...(pageOn ? [{ title: 'Retrogrades in your chart on Zodiacs', url: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` }] : []),
       { title: 'Retrogrades on Zodiacs', url: `${context.origin}/retrogrades/` },
       ...periods.map((period) => ({ title: `${period.planet} retrograde`, url: `${context.origin}${retrogradeTablePath(period.planet, publishedRetrogradeDate(period.planet, period.stationRetrograde.utc, sky.retrogrades))}` })),
       { title: 'Your birth chart on Zodiacs', url: `${context.origin}/birth-chart/` },
@@ -231,6 +238,7 @@ export const retrogradeForMeTool = definePersonalTool({
   input: retrogradeForMeInput,
   data: retrogradeForMeData,
   clockDependent: true,
+  pageFlag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED',
   example: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, currentZone: 'Europe/Madrid' },
   run: (args, context) => retrogradeForMe(args, context),
 });

@@ -25,7 +25,7 @@ async function both(birth: { birthDate: string; time?: string }, now: Date, zone
 async function bothWithLinks(birth: { birthDate: string; time?: string }, now: Date, zone: string) {
   const mcp = await retrogradeForMe(
     { birthDate: birth.birthDate, ...(birth.time ? { time: birth.time } : {}), zone: MADRID.tz, latitude: MADRID.lat, longitude: MADRID.lon, currentZone: zone },
-    { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org' },
+    { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true },
   );
   if ('refused' in mcp) throw new Error(mcp.refused);
   await prepareLocalTime(birth.birthDate, MADRID.tz);
@@ -138,8 +138,12 @@ describe('the /retrogrades/for-you/ page and get_retrograde_for_me', () => {
     expect(source).not.toMatch(/isUnder13/u);
     const island = readFileSync(new URL('../../islands/RetrogradeForYou.tsx', import.meta.url), 'utf8');
     const calculate = island.slice(island.indexOf('async function calculate('));
-    expect(calculate.indexOf('birthDateRefusal(birthDate)')).toBeGreaterThan(calculate.indexOf('birthDate = entry.date'));
-    expect(calculate.indexOf('birthDateRefusal(birthDate)')).toBeLessThan(calculate.indexOf('prepareLocalTime('));
+    // The converted date is checked (checkedBirthDate with the page's refusal) before the calculation module loads.
+    const check = calculate.indexOf('checkedBirthDate(date, calendar, retrogradeFormRefusal)');
+    expect(check).toBeGreaterThan(0);
+    expect(check).toBeLessThan(calculate.indexOf("import('./retrograde-for-you/compute')"));
+    expect(check).toBeLessThan(calculate.indexOf('prepareLocalTime('));
+    expect(island).toMatch(/birthDateRefusal\(birthDate, now\)/u);
   });
 });
 
@@ -257,7 +261,7 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     const now = new Date('2026-11-09T09:00:00Z');
     const result = await retrogradeForMe(
       { birthDate: '1987-03-15', time: '01:30', zone: place.tz, latitude: place.lat, longitude: place.lon, currentZone: 'Europe/Madrid' },
-      { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org' },
+      { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true },
     );
     if ('refused' in result) throw new Error(result.refused);
     const mcp = result.data;
@@ -292,17 +296,68 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     }
   });
 
-  it('reads the under-18 rule on the civil date, leap day included', () => {
+  it('reads the under-18 rule on the civil date at UTC-12, leap day included', () => {
     const bodies = POINT_NAMES.map((body, index) => ({ body, lon: index * 30 }));
-    const minor = (birthDate: string, today: string) => natalBasis({
-      timeKnown: true, placed: true, angles: { asc: 0, mc: 270 }, bodies, sunHeld: true, birthDate, today,
+    // Noon UTC is the start of that calendar date at UTC-12.
+    const minor = (birthDate: string, now: string) => natalBasis({
+      timeKnown: true, placed: true, angles: { asc: 0, mc: 270 }, bodies, sunHeld: true, birthDate, now: new Date(now),
     }).minor;
-    expect(minor('2010-03-01', '2028-02-28')).toBe(true);
-    expect(minor('2010-03-01', '2028-02-29')).toBe(true);
-    expect(minor('2010-03-01', '2028-03-01')).toBe(false);
+    expect(minor('2010-03-01', '2028-02-28T12:00:00Z')).toBe(true);
+    expect(minor('2010-03-01', '2028-02-29T12:00:00Z')).toBe(true);
+    expect(minor('2010-03-01', '2028-03-01T12:00:00Z')).toBe(false);
+    // Already 1 March from UTC+0 east, but still 29 February at UTC-12: still a minor.
+    expect(minor('2010-03-01', '2028-03-01T02:00:00Z')).toBe(true);
+    expect(minor('2010-03-01', '2028-03-01T11:59:59Z')).toBe(true);
     // Born on 29 February: under 18 until the calendar reaches 1 March in a common year.
-    expect(minor('2008-02-29', '2026-02-28')).toBe(true);
-    expect(minor('2008-02-29', '2026-03-01')).toBe(false);
+    expect(minor('2008-02-29', '2026-02-28T12:00:00Z')).toBe(true);
+    expect(minor('2008-02-29', '2026-03-01T12:00:00Z')).toBe(false);
+  });
+
+  describe('keeps the under-18 care until the 18th birthday has begun everywhere, whatever clock the dates are shown on', () => {
+    // Born 1 March 2010 at 07:15 in Madrid. At 2028-03-01T02:00Z it is already 1 March in Madrid and Kiritimati but
+    // still 29 February in Los Angeles and at UTC-12: the person may live where they are still 17.
+    const birth = { birthDate: '2010-03-01', time: '07:15', zone: MADRID.tz, latitude: MADRID.lat, longitude: MADRID.lon };
+    const toolAt = async (now: string, extra: { currentZone?: string; hostZone?: string } = {}) => {
+      const { hostZone, ...args } = extra;
+      const result = await retrogradeForMe({ ...birth, ...args }, { now: new Date(now), localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true, ...(hostZone ? { hostZone } : {}) });
+      if ('refused' in result) throw new Error(result.refused);
+      return result.data;
+    };
+    const pageAt = async (now: string, zone: string) => {
+      await prepareLocalTime(birth.birthDate, MADRID.tz);
+      const page = computeRetrogradeForYou({ birthDate: birth.birthDate, birthTime: birth.time, place: MADRID, planets: ['Mercury', 'Venus', 'Mars'], now: new Date(now), zone });
+      if (page.refused) throw new Error('refused');
+      return page;
+    };
+    const romance = (result: { periods: unknown; summary: string }) => /romance|romantic|attraction/iu.test(JSON.stringify([result.periods, result.summary]));
+
+    it('get_retrograde_for_me with no current zone and no host zone, so the dates fall on the birthplace clock', async () => {
+      const early = await toolAt('2028-03-01T02:00:00Z');
+      expect(early.timeZone).toBe('Europe/Madrid');
+      expect(early.limits).toContain(MINOR_NOTE);
+      expect(romance(early)).toBe(false);
+      expect((await toolAt('2028-03-01T11:59:59Z')).limits).toContain(MINOR_NOTE);
+      const adult = await toolAt('2028-03-01T12:00:00Z');
+      expect(adult.limits).not.toContain(MINOR_NOTE);
+      expect(romance(adult)).toBe(true);
+    });
+
+    it('get_retrograde_for_me with a current zone or a host zone east of UTC-12', async () => {
+      for (const extra of [{ currentZone: 'Pacific/Kiritimati' }, { currentZone: 'Europe/Madrid' }, { currentZone: 'America/Los_Angeles' }, { hostZone: 'Pacific/Kiritimati' }]) {
+        const result = await toolAt('2028-03-01T02:00:00Z', extra);
+        expect(result.limits, JSON.stringify(extra)).toContain(MINOR_NOTE);
+        expect(romance(result), JSON.stringify(extra)).toBe(false);
+      }
+    });
+
+    it('the page, on a device in any zone', async () => {
+      for (const zone of ['Pacific/Kiritimati', 'Europe/Madrid', 'Asia/Bangkok', 'UTC', 'America/Los_Angeles']) {
+        const early = await pageAt('2028-03-01T02:00:00Z', zone);
+        expect(early.limits, zone).toContain(MINOR_NOTE);
+        expect(romance(early), zone).toBe(false);
+        expect((await pageAt('2028-03-01T12:00:00Z', zone)).limits, zone).not.toContain(MINOR_NOTE);
+      }
+    });
   });
 });
 

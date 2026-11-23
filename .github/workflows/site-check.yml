@@ -610,7 +610,6 @@ jobs:
       - name: Good day finder drive (zero CLS, privacy, share link)
         run: npm run test:good-days:browser
 
-
   phase7-living-chart-drive:
     name: Phase 7 Living Chart drive
     runs-on: ubuntu-latest

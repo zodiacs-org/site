@@ -19,6 +19,7 @@ import { NATAL_HOUSE_THEME } from '../natal';
 import { SIGNS, signBySlug, signIndexForLongitude } from '../signs';
 import { MINOR_NOTE, isUnder13, isUnderAge, softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
+import { earliestToday } from '../birth-date-policy';
 
 export { isUnder13, MINOR_NOTE };
 
@@ -173,8 +174,11 @@ export function foldRisingLimit(earlier: string, later: string): string {
 /**
  * The house basis and the natal points, from a chart cast with whole-sign
  * houses. `sunHeld` says whether the Sun's sign is the same at both ends of an
- * untimed birth day (always true with a birth time). `today` is the date on
- * the person's clock, for the under-18 rule.
+ * untimed birth day (always true with a birth time). `now` is the instant
+ * of the reading. The under-18 rule reads the age on the calendar date at
+ * UTC-12 (earliestToday), as the shared under-13 policy does, so nobody is
+ * read as 18 early in any time zone; the clock the dates are shown on (the
+ * device's, the current zone's or the birthplace's) never moves it.
  */
 export function natalBasis(input: {
   timeKnown: boolean;
@@ -183,7 +187,7 @@ export function natalBasis(input: {
   bodies: readonly { body: string; lon: number }[];
   sunHeld: boolean;
   birthDate: string;
-  today: string;
+  now: Date;
   /** Without a birth time: the bodies at the start and the end of the birth day. */
   dayEnds?: readonly [readonly { body: string; lon: number }[], readonly { body: string; lon: number }[]];
   /**
@@ -223,7 +227,7 @@ export function natalBasis(input: {
     countedFrom, baseSign, points, approximate: !input.timeKnown,
     detail: readingDetail({ hasDate: true, hasTime: input.timeKnown, hasPlace: input.placed }),
     // isUnderAge keeps 29 February as 29 February, so someone born on 1 March is still under 18 that day.
-    minor: isUnderAge(input.birthDate, input.today, 18),
+    minor: isUnderAge(input.birthDate, earliestToday(input.now), 18),
     limits,
   };
 }

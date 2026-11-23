@@ -138,6 +138,7 @@ import {
   RETROGRADE_FOR_YOU_SHARE_PATH,
   RETROGRADE_FOR_YOU_SHARE_STORY_PATH,
   parseRetrogradeForYouShare,
+  retrogradeForYouCleanQuery,
   retrogradeForYouQuery,
 } from '../lib/retrograde-for-you/share.js';
 import { HOROSCOPE_DISCLOSURE } from '../ai-tools/horoscope/reading.js';
@@ -2174,6 +2175,10 @@ function defaultRetrogradeForYouPage(origin: string): SharePage {
 export async function handleRetrogradeForYouLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
+  // A key the share does not use, or a repeated one, is cleared from the address before the page opens: the page
+  // has no script to do it, so the browser is sent to the share's own address (the retrograde alone, or the plain page).
+  const clean = retrogradeForYouCleanQuery(url.searchParams);
+  if (url.searchParams.toString() !== clean) return seeOther(`${url.origin}${RETROGRADE_FOR_YOU_SHARE_PATH}${clean ? `?${clean}` : ''}`);
   const share = parseRetrogradeForYouShare(url.searchParams);
   const model = share ? retrogradeForYouCardModel(share, (await loadShareData().catch(() => null))?.skyEvents ?? []) : null;
   if (!share || !model) return htmlResponse(sharePageHtml(defaultRetrogradeForYouPage(url.origin)));
@@ -2194,7 +2199,11 @@ export async function handleRetrogradeForYouLinkRequest(request: Request): Promi
 
 // ── The deployed function's entry ────────────────────────────────────
 
-const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string; refused?: readonly string[] }>> = {
+/**
+ * `wholeQuery`: the page is handed the query as it arrived (without the route key), so it can clear keys it does
+ * not use from the address itself rather than have them skipped here and left in the browser's address bar.
+ */
+const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string; refused?: readonly string[]; wholeQuery?: true }>> = {
   'compatibility-link': { path: COMPATIBILITY_SHARE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityLinkRequest },
   'compatibility-image': { path: COMPATIBILITY_SHARE_IMAGE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityImageRequest },
   'occasion-link': { path: OCCASION_SHARE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionLinkRequest },
@@ -2234,7 +2243,7 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', refused: BIRTHDAY_REPORT_REFUSED_SHARE_KEYS },
   'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
   'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
-  'retrograde-for-you-link': { path: RETROGRADE_FOR_YOU_SHARE_PATH, keys: RETROGRADE_FOR_YOU_SHARE_KEYS, handle: handleRetrogradeForYouLinkRequest, flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED' },
+  'retrograde-for-you-link': { path: RETROGRADE_FOR_YOU_SHARE_PATH, keys: RETROGRADE_FOR_YOU_SHARE_KEYS, handle: handleRetrogradeForYouLinkRequest, flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', wholeQuery: true },
   'retrograde-for-you-image': { path: RETROGRADE_FOR_YOU_SHARE_IMAGE_PATH, keys: RETROGRADE_FOR_YOU_SHARE_KEYS, handle: handleRetrogradeForYouImageRequest, flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED' },
   'retrograde-for-you-story': { path: RETROGRADE_FOR_YOU_SHARE_STORY_PATH, keys: RETROGRADE_FOR_YOU_SHARE_KEYS, handle: handleRetrogradeForYouStoryRequest, flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED' },
 };
@@ -2283,6 +2292,11 @@ export async function handleResultShareNodeRequest(req: any, res: any, route: Re
       await writeNodeResponse(res, retired);
       return;
     }
+  }
+  if (target.wholeQuery) {
+    const raw = rawNodeQuery(query).toString();
+    await writeNodeResponse(res, await target.handle(new Request(`${requestOrigin(req)}${target.path}${raw ? `?${raw}` : ''}`, { method })));
+    return;
   }
   let params = new URLSearchParams();
   // A key the route refuses outright (the birthday report's old py), once or repeated, is checked before the

@@ -42819,6 +42819,15 @@ function getNumerology(args, context) {
 // src/ai-tools/personal/retrograde-for-me.ts
 import { z as z16 } from "zod";
 
+// src/lib/birth-date-policy.ts
+var HOUR_MS4 = 36e5;
+function civilDateAt(now, offsetHours) {
+  return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
+}
+function earliestToday(now = /* @__PURE__ */ new Date()) {
+  return civilDateAt(now, -12);
+}
+
 // src/lib/retrograde-for-you/reading.ts
 var RETROGRADE_PLANETS = ["Mercury", "Venus", "Mars"];
 var RETROGRADE_LINE = {
@@ -42910,7 +42919,7 @@ function natalBasis(input) {
     approximate: !input.timeKnown,
     detail: readingDetail({ hasDate: true, hasTime: input.timeKnown, hasPlace: input.placed }),
     // isUnderAge keeps 29 February as 29 February, so someone born on 1 March is still under 18 that day.
-    minor: isUnderAge(input.birthDate, input.today, 18),
+    minor: isUnderAge(input.birthDate, earliestToday(input.now), 18),
     limits: limits2
   };
 }
@@ -43055,11 +43064,6 @@ function refineBirth(args, context) {
 function definePersonalTool(definition) {
   return definition;
 }
-function dateOn2(at, timeZone) {
-  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(at);
-  const part = (type) => parts.find((entry) => entry.type === type).value;
-  return `${part("year")}-${part("month")}-${part("day")}`;
-}
 async function castNatal(args, clock2) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`);
@@ -43170,7 +43174,10 @@ var period = z16.object({
   reading: z16.string(),
   confidence: z16.number().int().min(40).max(95),
   confidenceLabel: z16.string(),
-  /** A link to this retrograde's share card: the planet, the window's start date, and the Sun sign when settled. Null when the window is past the site's published sky data. */
+  /**
+   * A link to this retrograde's share card: the planet, the window's start date, and the Sun sign when settled. Null
+   * when the window is past the site's published sky data, or while the website's page is switched off.
+   */
   shareUrl: z16.url().nullable()
 });
 var retrogradeForMeData = z16.object({
@@ -43183,7 +43190,8 @@ var retrogradeForMeData = z16.object({
   periods: z16.array(period),
   summary: z16.string(),
   limits: z16.array(z16.string()),
-  pageUrl: z16.url()
+  /** The /retrogrades/for-you/ page; null while the website's page is switched off (PUBLIC_RETROGRADES_FOR_YOU_ENABLED). */
+  pageUrl: z16.url().nullable()
 });
 function shadows(planet2, retro, direct) {
   const pre = findLongitudeCrossings(planet2, direct.lon, new Date(retro.at.getTime() - SHADOW_SEARCH_DAYS * DAY18), retro.at).filter((crossing) => !crossing.retrograde).at(-1)?.at ?? null;
@@ -43233,8 +43241,9 @@ async function retrogradeForMe(args, context) {
     angles: natal.angles,
     bodies: natal.chart.bodies,
     sunHeld,
+    // The under-18 rule reads the UTC-12 calendar date from `now` (natalBasis), never the clock the dates are shown on.
     birthDate: args.birthDate,
-    today: dateOn2(now, clock2.zone),
+    now,
     dayEnds,
     foldAsc
   });
@@ -43252,8 +43261,9 @@ async function retrogradeForMe(args, context) {
     leadingLimits: clock2.note ? [clock2.note] : []
   });
   const sunSign = sunHeld ? SIGNS2[signIndexForLongitude2(natal.chart.bodies.find((row) => row.body === "Sun").lon)].slug : null;
+  const pageOn = context.pageOn === true;
   const periods = reading.periods.map((period2) => {
-    const query = retrogradeForYouShareQuery({
+    const query = pageOn && retrogradeForYouShareQuery({
       planet: period2.planet,
       stationRetrogradeUtc: period2.stationRetrograde.utc,
       sun: sunSign
@@ -43270,10 +43280,10 @@ async function retrogradeForMe(args, context) {
       periods,
       summary: reading.summary,
       limits: reading.limits,
-      pageUrl: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}`
+      pageUrl: pageOn ? `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` : null
     },
     links: [
-      { title: "Retrogrades in your chart on Zodiacs", url: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` },
+      ...pageOn ? [{ title: "Retrogrades in your chart on Zodiacs", url: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` }] : [],
       { title: "Retrogrades on Zodiacs", url: `${context.origin}/retrogrades/` },
       ...periods.map((period2) => ({ title: `${period2.planet} retrograde`, url: `${context.origin}${retrogradeTablePath(period2.planet, publishedRetrogradeDate(period2.planet, period2.stationRetrograde.utc, sky_default.retrogrades))}` })),
       { title: "Your birth chart on Zodiacs", url: `${context.origin}/birth-chart/` }
@@ -43288,6 +43298,7 @@ var retrogradeForMeTool = definePersonalTool({
   input: retrogradeForMeInput,
   data: retrogradeForMeData,
   clockDependent: true,
+  pageFlag: "PUBLIC_RETROGRADES_FOR_YOU_ENABLED",
   example: { birthDate: "1990-05-03", time: "08:30", zone: "Europe/Madrid", latitude: 40.42, longitude: -3.7, currentZone: "Europe/Madrid" },
   run: (args, context) => retrogradeForMe(args, context)
 });
@@ -45459,15 +45470,6 @@ function guardPersonalWeek(week, birthDate, today2) {
   };
 }
 
-// src/lib/birth-date-policy.ts
-var HOUR_MS4 = 36e5;
-function civilDateAt(now, offsetHours) {
-  return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
-}
-function earliestToday(now = /* @__PURE__ */ new Date()) {
-  return civilDateAt(now, -12);
-}
-
 // src/ai-tools/tools.ts
 var PRIVACY_POLICY = "https://zodiacs.org/privacy/";
 var SAVED_PAGE_EXCEPTION = "The only exception is a page a signed-in person chooses to save to their own account.";
@@ -45700,6 +45702,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone),
         hostZone: context.hostZone,
         origin: ORIGIN,
+        pageOn: definition.pageFlag === void 0 || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {},
         ...dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}
       }));
@@ -47647,6 +47650,7 @@ function createAiNodeHandler(options = {}) {
           return "unavailable";
         }
       } };
+      if (personal2) dependencies.sitePageOn = (flag) => env[flag] === "1";
       const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: "stateless", responseMode: "auto", onerror: () => {
       } });
       try {

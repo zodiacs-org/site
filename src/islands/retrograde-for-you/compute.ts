@@ -10,7 +10,7 @@
 import { bodyLongitude, computeChart } from '../../lib/engine/full';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 import {
-  POINT_NAMES, dateOn, dayLabel, natalBasis, retrogradeReading,
+  POINT_NAMES, dayLabel, natalBasis, retrogradeReading,
   type RetrogradePeriod, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
@@ -67,7 +67,6 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
   // The shared birth date policy, before any chart resolution.
   const refused = retrogradeForYouRefusal(input.birthDate, input.now);
   if (refused) return refused;
-  const today = dateOn(input.now, input.zone);
   const timeKnown = input.birthTime !== null;
   const resolved = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: input.place.lon });
   const birthUtc = resolved.utc;
@@ -89,7 +88,7 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
     const sunAt = (end: readonly { body: string; lon: number }[]) => sign(end.find((row) => row.body === 'Sun')!.lon);
     sunHeld = sunAt(dayEnds[0]) === sunAt(dayEnds[1]);
   }
-  const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, today, dayEnds, foldAsc });
+  const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, now: input.now, dayEnds, foldAsc });
   const span = sky as SkySpan;
   const reading = retrogradeReading({
     planets: input.planets, now: input.now, zone: input.zone, basis,

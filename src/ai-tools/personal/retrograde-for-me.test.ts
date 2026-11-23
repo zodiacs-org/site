@@ -5,14 +5,15 @@ import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { UNDER_13_REFUSAL } from '../contracts';
 import { MINOR_NOTE } from '../features/reading-guards';
 import { executeAiTool } from '../tools';
-import { RETROGRADE_ASK, RETROGRADE_LINE, retrogradeForMe, retrogradeLoops } from './retrograde-for-me';
+import { RETROGRADE_ASK, RETROGRADE_LINE, retrogradeForMe, retrogradeForMeTool, retrogradeLoops } from './retrograde-for-me';
 import { castNatal, forbiddenClaim } from './shared';
 
 const clock = createLocalTimeModule();
 const NOW = new Date('2026-11-09T09:00:00Z');
-const context = (now = NOW) => ({ now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org' });
+const context = (now = NOW) => ({ now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true });
 const run = (args: Parameters<typeof retrogradeForMe>[0], now = NOW) => retrogradeForMe(args, context(now)).then((result) => { if ('refused' in result) throw new Error(result.refused); return result.data; });
-const ON = { occasions: true, coverage: true, personal: true, now: () => NOW };
+const PAGE_FLAG = 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED';
+const ON = { occasions: true, coverage: true, personal: true, now: () => NOW, sitePageOn: (flag: string) => flag === PAGE_FLAG };
 const HOUR = 3_600_000;
 const near = (actual: string, published: string, within = HOUR) => expect(Math.abs(Date.parse(actual) - Date.parse(published)), `${actual} against ${published}`).toBeLessThanOrEqual(within);
 const MADRID = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
@@ -185,6 +186,37 @@ describe('get_retrograde_for_me privacy and refusals', () => {
     }
     expect(forbiddenClaim(text)).toBeNull();
     expect(text).not.toMatch(/[\u2013\u2014]/u);
+  });
+
+  it('links to the page and its share cards only while the website page is switched on', async () => {
+    expect(retrogradeForMeTool.pageFlag).toBe(PAGE_FLAG);
+    const linked = (result: Awaited<ReturnType<typeof executeAiTool>>) => {
+      if (!result.ok) throw new Error('refused');
+      const data = result.data as { pageUrl: string | null; periods: { shareUrl: string | null }[] };
+      return { data, urls: JSON.stringify(result).match(/https:\/\/[^"]+/gu) ?? [] };
+    };
+    // The MCP switches on and the page on: the page, and a share card for each published window.
+    const on = linked(await executeAiTool('get_retrograde_for_me', { ...MADRID, currentZone: 'Europe/Madrid' }, ON));
+    expect(on.data.pageUrl).toBe('https://zodiacs.org/retrogrades/for-you/');
+    expect(on.data.periods.some((period) => period.shareUrl?.startsWith('https://zodiacs.org/share/retrograde-for-you/?'))).toBe(true);
+    expect(on.urls).toContain('https://zodiacs.org/retrogrades/for-you/');
+    // The MCP switches on and the page off (or no page switch read at all): neither, so no link is a 404.
+    for (const dependencies of [{ ...ON, sitePageOn: () => false }, { occasions: true, coverage: true, personal: true, now: () => NOW }]) {
+      const off = linked(await executeAiTool('get_retrograde_for_me', { ...MADRID, currentZone: 'Europe/Madrid' }, dependencies));
+      expect(off.data.pageUrl).toBeNull();
+      expect(off.data.periods.every((period) => period.shareUrl === null)).toBe(true);
+      expect(off.urls.filter((url) => url.includes('/retrogrades/for-you/') || url.includes('/share/'))).toEqual([]);
+      // The published retrogrades tables stay linked: they are live pages on main.
+      expect(off.urls.some((url) => url.startsWith('https://zodiacs.org/retrogrades/'))).toBe(true);
+    }
+    // Called directly, anything but pageOn: true links neither.
+    for (const pageOn of [false, undefined]) {
+      const result = await retrogradeForMe({ ...MADRID, currentZone: 'Europe/Madrid' }, { ...context(), pageOn });
+      if ('refused' in result) throw new Error(result.refused);
+      expect(result.data.pageUrl).toBeNull();
+      expect(result.data.periods.every((period) => period.shareUrl === null)).toBe(true);
+      expect(result.links.map((link) => link.url).filter((url) => url.includes('/retrogrades/for-you/'))).toEqual([]);
+    }
   });
 
   it('refuses a time without a zone and an unknown planet', async () => {

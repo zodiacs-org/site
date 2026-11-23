@@ -66,7 +66,7 @@ import {
   skyCalendarCardModel,
   skyEvents,
 } from './result-preview-model';
-import { parseRetrogradeForYouShare } from '../lib/retrograde-for-you/share';
+import { parseRetrogradeForYouShare, retrogradeForYouCleanQuery } from '../lib/retrograde-for-you/share';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
@@ -919,8 +919,65 @@ describe('a retrograde in one person’s chart', () => {
     expect(page).toContain('<a class="cta" href="/retrogrades/for-you/">See your retrogrades</a>');
     expect(page).toContain('Mercury retrograde for Taurus Sun');
     expect(page).not.toMatch(/[\u2013\u2014]/u);
-    const plain = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24&d=1990-05-03'))).text();
+    // A link with a key the share does not use is sent to the retrograde's own address, which keeps the card.
+    const extra = await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24&d=1990-05-03'));
+    expect(extra.status).toBe(303);
+    expect(extra.headers.get('location')).toBe('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24');
+    expect(await extra.text()).toBe('');
+    // A link that is not a share opens the plain page, which still leads to the retrogrades page.
+    const plain = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/'))).text();
     expect(plain).toContain('content="https://zodiacs.org/assets/og/v2/tool/retrogrades.png"');
     expect(plain).toContain('<a class="cta" href="/retrogrades/for-you/">See your retrogrades</a>');
+  });
+
+  describe('clears every key the share does not use from the address, on the deployed entry', () => {
+    const SECRETS = ['1990-05-03', '08:30', 'Lisbon', 'Ada', '38.72', 'scorpio', 'leo'];
+    const holdsNone = (text: string) => { for (const value of SECRETS) expect(text).not.toContain(value); };
+    const deployed = async (route: 'retrograde-for-you-link' | 'retrograde-for-you-image' | 'retrograde-for-you-story', query: Record<string, string | string[]>) => {
+      vi.stubEnv('PUBLIC_RETROGRADES_FOR_YOU_ENABLED', '1');
+      const res = nodeResponse();
+      await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: route, ...query } }, res, route);
+      return res;
+    };
+    afterEach(() => { vi.unstubAllEnvs(); });
+
+    it.each([
+      [{ p: 'mercury', s: '2026-10-24', sun: 'taurus', birthDate: '1990-05-03' }, '/share/retrograde-for-you/?p=mercury&s=2026-10-24&sun=taurus'],
+      [{ p: 'mercury', s: '2026-10-24', sun: 'taurus', moon: 'scorpio', rising: 'leo', h: '7' }, '/share/retrograde-for-you/?p=mercury&s=2026-10-24&sun=taurus'],
+      [{ p: 'mercury', s: '2026-10-24', t: '08:30', city: 'Lisbon', n: 'Ada', lat: '38.72' }, '/share/retrograde-for-you/?p=mercury&s=2026-10-24'],
+      [{ d: '1990-05-03', s: '2026-10-24', p: 'mercury', ref: 'chatgpt' }, '/share/retrograde-for-you/?p=mercury&s=2026-10-24&ref=chatgpt'],
+      [{ p: 'mercury', s: '2026-10-24', b: 'rising', c: '70', fbclid: 'IwAR0' }, '/share/retrograde-for-you/?p=mercury&s=2026-10-24'],
+      // A repeated key, or a query that is no share, leaves nothing of the query: the plain page.
+      [{ p: 'mercury', s: ['2026-10-24', '1990-05-03'] }, '/share/retrograde-for-you/'],
+      [{ p: 'jupiter', s: '2026-10-24', d: '1990-05-03' }, '/share/retrograde-for-you/'],
+      [{ birthDate: '1990-05-03' }, '/share/retrograde-for-you/'],
+    ] as const)('sends %j to %s', async (query, location) => {
+      const res = await deployed('retrograde-for-you-link', query as Record<string, string | string[]>);
+      expect(res.statusCode).toBe(303);
+      expect(res.headers.get('location')).toBe(`https://zodiacs.org${location}`);
+      holdsNone(res.headers.get('location')!);
+      holdsNone(res.body.toString('utf8'));
+    });
+
+    it('opens the card at the clean address, and the plain page with no query', async () => {
+      const card = await deployed('retrograde-for-you-link', { p: 'mercury', s: '2026-10-24', sun: 'taurus' });
+      expect(card.statusCode).toBe(200);
+      expect(card.body.toString('utf8')).toContain('Mercury retrograde for Taurus Sun');
+      expect((await deployed('retrograde-for-you-link', { p: 'mercury', s: '2026-10-24', ref: 'assistant' })).statusCode).toBe(200);
+      const plain = await deployed('retrograde-for-you-link', {});
+      expect(plain.statusCode).toBe(200);
+      expect(plain.body.toString('utf8')).toContain('Retrogrades in your chart');
+    });
+
+    it('leaves the pictures as they were: only their own keys, else refused', async () => {
+      expect((await deployed('retrograde-for-you-image', { p: 'mercury', s: '2026-10-24', birthDate: '1990-05-03' })).statusCode).toBe(400);
+      expect((await deployed('retrograde-for-you-story', { p: 'mercury', s: '2026-10-24', fbclid: 'IwAR0' })).statusCode).toBe(400);
+    });
+
+    it('builds the clean query from the share keys alone', () => {
+      expect(retrogradeForYouCleanQuery(new URLSearchParams('sun=leo&x=1&s=2026-10-24&p=venus'))).toBe('p=venus&s=2026-10-24&sun=leo');
+      expect(retrogradeForYouCleanQuery(new URLSearchParams('p=venus&s=2026-10-24&ref=other'))).toBe('');
+      expect(retrogradeForYouCleanQuery(new URLSearchParams(''))).toBe('');
+    });
   });
 });

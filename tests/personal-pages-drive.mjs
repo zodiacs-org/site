@@ -9,7 +9,7 @@
  *   bar or sending the birth date anywhere, and every share link on the result carries exactly the tool's
  *   *_SHARE_KEYS (without `ref`, which only the assistant adds), each once, and no birth detail.
  *
- * A branch carries only its own pages; a page whose source is not in src/pages is skipped.
+ * This branch carries only its own page (Retrogrades for you); a page whose source is not in src/pages is skipped.
  *
  *   npm run build && node tests/personal-pages-drive.mjs
  */
@@ -40,31 +40,16 @@ const ALL_PAGES = [
     sharePath: '/share/retrograde-for-you/',
     linkedFrom: ['/', '/tools/', '/retrogrades/', '/mercury-retrograde/'],
     async run(tab) {
+      // A date under 13 keeps the birth time and birthplace locked, with no birthplace search to send a request.
+      await tab.fill('#rfy-date', '2020-01-01');
+      check('an under-13 date locks the birth time', await tab.locator('#rfy-time').isDisabled());
+      check('an under-13 date offers no birthplace search', (await tab.locator('#rfy-place[role="combobox"]').count()) === 0 && await tab.locator('#rfy-place').isDisabled());
       await tab.fill('#rfy-date', BIRTH.date);
       await tab.fill('#rfy-time', BIRTH.time);
       await choosePlace(tab, 'rfy-place', BIRTH.place);
       await tab.getByRole('button', { name: 'Show my retrogrades' }).click();
       await tab.locator('.rfy__share-link').first().waitFor({ state: 'visible', timeout: 60_000 });
       return '.rfy__share-link';
-    },
-  },
-  {
-    path: '/astrocartography/',
-    flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED',
-    source: 'src/pages/astrocartography/index.astro',
-    keys: { file: 'src/lib/astrocartography/share.ts', name: 'ASTROCARTOGRAPHY_SHARE_KEYS' },
-    sharePath: '/share/astrocartography/',
-    linkedFrom: ['/', '/tools/', '/rising-sign/', '/solar-return/'],
-    async run(tab) {
-      await tab.fill('#acg-date', BIRTH.date);
-      await tab.fill('#acg-time', BIRTH.time);
-      await choosePlace(tab, 'acg-place', BIRTH.place);
-      await tab.getByRole('button', { name: 'Draw my map' }).click();
-      await tab.locator('#acg-check').waitFor({ state: 'visible', timeout: 60_000 });
-      // The share links are on the lines nearest a place the person checks.
-      await choosePlace(tab, 'acg-check', 'Paris');
-      await tab.locator('.acg__share').first().waitFor({ state: 'visible', timeout: 30_000 });
-      return '.acg__share';
     },
   },
 ];
