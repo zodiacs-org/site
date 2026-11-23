@@ -136,7 +136,7 @@ export default function SkyTicker({ locale: rawLocale = 'en', discs = true }: { 
     <p class="skyticker" aria-label={tf(locale, 'skyTickerAria', { date: receiptDate })}>
       <span class="skyticker__label">{tf(locale, 'skyAsOf', { date: compactReceiptDate })}</span>
       {items.map((item) => (
-        <span class={`skyticker__item skyticker__item--${item.kind}`} key={item.text}>
+        <span class={`skyticker__item skyticker__item--${item.kind}`} data-label={item.text} key={item.text}>
           {item.sign && discs ? (
             <span class="skyticker__icon skyticker__icon--disc">
               <img src={`/assets/zodiac-icons/48/${item.sign}.webp`} width="18" height="18" alt="" decoding="async" />
@@ -146,7 +146,7 @@ export default function SkyTicker({ locale: rawLocale = 'en', discs = true }: { 
               <TickerIcon kind={item.kind} />
             </span>
           )}
-          <span>{item.text}</span>
+          <span class="skyticker__text">{item.text}</span>
         </span>
       ))}
     </p>

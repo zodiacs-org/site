@@ -322,9 +322,18 @@ a.kcard { transition: border-color var(--dur-1) var(--ease), background var(--du
   color: var(--muted);
   margin-right: 2px;
 }
-.skyticker__item { display: inline-flex; align-items: center; gap: 6px; }
-.skyticker__icon { display: inline-flex; color: var(--text-2); }
+.skyticker__item { display: inline-grid; align-items: center; column-gap: 6px; }
+/* Size the text cell from the opening tag. A streamed glyph can paint before
+   its label arrives, and the complete label determines which row it fits on. */
+.skyticker__item::after,
+.skyticker__text { grid-area: 1 / 2; }
+.skyticker__item::after {
+  content: attr(data-label);
+  visibility: hidden;
+}
+.skyticker__icon { grid-area: 1 / 1; display: inline-flex; width: 13px; color: var(--text-2); }
 /* The Sun and the Moon wear the pastel disc of the sign they are in. */
+.skyticker__icon--disc { width: 18px; }
 .skyticker__icon--disc img { display: block; width: 18px; height: 18px; border-radius: 50%; }
 .skyticker__icon svg {
   width: 13px;
