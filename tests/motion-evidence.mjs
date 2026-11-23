@@ -578,7 +578,7 @@ export function formatNumbers(n) {
     primaryActionTop: n.primaryActionTop == null ? 'n/a' : `${n.primaryActionTop} px`,
     reducedMotion: n.reducedMotion ? `${n.reducedMotion.running} running, ${fmtShown(n.reducedMotion)}` : 'n/a',
     noScript: n.noScript ? fmtShown(n.noScript) : 'n/a',
-    stripAnimations: n.strip ? `${n.strip.animations}${n.strip.lost ? ` (${n.strip.lost} lost)` : ''}` : 'n/a',
+    stripAnimations: n.strip ? `${n.strip.animations}${n.strip.lost ? ` (${n.strip.lost} lost)` : ''}${n.strip.note ? `; ${n.strip.note}` : ''}` : 'n/a',
   };
 }
 
@@ -1009,6 +1009,50 @@ export function initScript(cfg) {
     }
     record(e.target, names);
   }, true);
+  // First view only: the runtime starts entrances while the document is
+  // still parsing, so a slow load-blocking asset can let them end before
+  // `load`. Each frame from document start, every new finite CSS transition
+  // or animation on a mark (its strokes included) gets a paused copy at
+  // time 0, a script animation that style changes such as .is-done cannot
+  // cancel. filmStrip seeks the copies after `load`; holding stops there.
+  if (cfg.holdEntrances) {
+    const held = [];
+    const copied = new WeakSet();
+    state.held = held;
+    state.heldOriginals = copied;
+    state.holding = true;
+    const hold = () => {
+      if (!state.holding) return;
+      for (const a of document.getAnimations ? document.getAnimations() : []) {
+        if (copied.has(a)) continue;
+        if (a.transitionProperty == null && a.animationName == null) continue;
+        const effect = a.effect;
+        const target = effect && effect.target;
+        if (!target || !target.closest || !target.closest(mark)) continue;
+        const timing = effect.getTiming ? effect.getTiming() : {};
+        if (timing.iterations === Infinity) continue;
+        if (a.playState === 'finished' || a.playState === 'idle') continue;
+        copied.add(a);
+        try {
+          const copy = target.animate(effect.getKeyframes(), { ...timing, ...(effect.pseudoElement ? { pseudoElement: effect.pseudoElement } : {}) });
+          copy.pause();
+          copy.currentTime = 0;
+          held.push(copy);
+        } catch { /* not copyable */ }
+      }
+      requestAnimationFrame(hold);
+    };
+    requestAnimationFrame(hold);
+  }
+}
+
+/**
+ * The first-view strip's caption note: when marks were in the first screen
+ * at `load` but no entrance was held, the strip's frames are static for that
+ * reason and must not read as "nothing moves".
+ */
+export function firstViewCaptureNote({ held, marksInView }) {
+  return !held && marksInView > 0 ? 'first-view entrances not captured' : null;
 }
 
 /** In the page: sample the animations, record loops and marked properties. */
@@ -1213,16 +1257,21 @@ async function settle(page, maxMs = SETTLE_MAX_MS) {
 async function filmStrip(page, cfg, loops) {
   await page.evaluate(twoFrames);
   const info = await page.evaluate(() => {
+    const s = window.__motionEvidence;
+    if (s) s.holding = false;
     const frozen = [];
+    let originals = 0;
     for (const a of document.getAnimations()) {
       const iterations = a.effect?.getTiming?.().iterations;
       if (iterations === Infinity) continue;
       if (a.playState === 'finished' || a.playState === 'idle') continue;
       a.pause();
       frozen.push(a);
+      // An entrance held by its copy (initScript, holdEntrances) is counted once, as the copy.
+      if (s?.heldOriginals?.has(a)) originals += 1;
     }
     Object.defineProperty(window, '__motionEvidenceFrozen', { value: frozen, configurable: true });
-    return { count: frozen.length };
+    return { count: frozen.length - originals, held: s?.held ? s.held.length : null };
   });
   for (const l of await page.evaluate(sampleAnimations, cfg)) loops.add(l);
   const frames = [];
@@ -1234,11 +1283,12 @@ async function filmStrip(page, cfg, loops) {
         try { a.currentTime = time; } catch { /* cancelled */ }
       }
       await new Promise((r) => { setTimeout(r, 1000); requestAnimationFrame(() => requestAnimationFrame(() => r())); });
-      return list.filter((a) => a.playState === 'idle').length;
+      const originals = window.__motionEvidence?.heldOriginals;
+      return list.filter((a) => a.playState === 'idle' && !originals?.has(a)).length;
     }, t);
     frames.push(await page.screenshot({ type: 'png' }));
   }
-  return { frames, animations: info.count, lost };
+  return { frames, animations: info.count, lost, held: info.held };
 }
 
 function contextOptions(viewport, extra = {}) {
@@ -1511,10 +1561,19 @@ async function measureShiftFromLoad(browser, url, viewport, notes) {
 }
 
 async function measureFirstView(browser, url, viewport, loops, notes, props, verbs) {
-  const cfg = baseCfg();
+  const cfg = baseCfg({ holdEntrances: true });
   return withPage(browser, viewport, {}, cfg, async (page) => {
     await gotoPage(page, url, { notes });
+    // Rendered marks that intersect the first screen at `load`.
+    const marksInView = await page.evaluate((selector) => [...document.querySelectorAll(selector)].filter((el) => {
+      const r = el.getBoundingClientRect();
+      const cs = getComputedStyle(el);
+      return cs.display !== 'none' && cs.visibility !== 'hidden' && (r.width > 0 || r.height > 0)
+        && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
+    }).length, `[${cfg.mark}]`);
     const strip = await filmStrip(page, cfg, loops);
+    strip.note = firstViewCaptureNote({ held: strip.held, marksInView });
+    if (strip.note) notes.push(`${strip.note}: ${marksInView} marks were in the first screen at load, and no entrance was held for the strip`);
     const seen = await page.evaluate(() => ({ props: Object.keys(window.__motionEvidence.props), verbs: Object.keys(window.__motionEvidence.verbs) }));
     for (const p of seen.props) props.add(p);
     for (const v of seen.verbs) verbs.add(v);
@@ -1927,7 +1986,7 @@ async function measureBuild(browser, baseURL, route, viewport, options) {
     primaryActionTop: rest?.primaryActionTop ?? null,
     reducedMotion: reducedMotion ? stripVerbs(reducedMotion) : null,
     noScript: noScript ? stripVerbs(noScript) : null,
-    strip: firstView ? { animations: firstView.animations, lost: firstView.lost } : null,
+    strip: firstView ? { animations: firstView.animations, lost: firstView.lost, held: firstView.held, ...(firstView.note ? { note: firstView.note } : {}) } : null,
     steps: (route.steps ?? []).map((step, i) => ({
       label: stepLabel(step),
       ...(steps[i]?.skipped ? { skipped: steps[i].skipped } : { animations: steps[i]?.animations ?? 0, lost: steps[i]?.lost ?? 0 }),
@@ -1939,6 +1998,7 @@ async function measureBuild(browser, baseURL, route, viewport, options) {
     loops: [...loops].sort(),
     rest: rest ? { png: rest.png, dailyRects: rest.dailyRects, ready: rest.captureReady } : null,
     firstView: firstView?.frames ?? null,
+    firstViewNote: firstView?.note ?? null,
     steps: steps.map((s) => s?.frames ?? null),
   };
 }
@@ -2159,14 +2219,15 @@ export async function run(options) {
         }
         entry.viewports[key] = vpEntry;
         // Sheets.
-        const strips = [{ id: 'first-view', label: `${key} first view`, frames: (b) => measured[b].firstView }];
+        const strips = [{ id: 'first-view', label: `${key} first view`, frames: (b) => measured[b].firstView, note: (b) => measured[b].firstViewNote }];
         (route.steps ?? []).forEach((step, i) => {
           strips.push({ id: `step-${i + 1}`, label: `${key} after step ${i + 1}: ${stepLabel(step)}`, frames: (b) => measured[b].steps[i], step: i });
         });
         for (const strip of strips) {
           const rows = builds.map((b) => {
             const skipped = strip.step != null ? vpEntry[b].steps[strip.step]?.skipped : null;
-            return { label: `${b}  ${urls[b]}${route.path}`, frames: strip.frames(b), missing: skipped ? `skipped: ${skipped}` : 'not captured' };
+            const note = strip.note?.(b);
+            return { label: `${b}  ${urls[b]}${route.path}${note ? `  (${note})` : ''}`, frames: strip.frames(b), missing: skipped ? `skipped: ${skipped}` : 'not captured' };
           });
           const file = `${slug}-${key}-${strip.id}.webp`;
           const { buffer, frameWidth } = await buildSheet({ rows, viewport });

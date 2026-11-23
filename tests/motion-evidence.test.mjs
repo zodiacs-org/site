@@ -12,7 +12,7 @@ import vm from 'node:vm';
 import { describe, expect, it } from 'vitest';
 import {
   ALLOWED_PROPERTIES, baseCfg, checkExitCode, compareRendered, compareRest, countOutsideRects, disallowedProperties, evaluateChecks,
-  formatNumbers, FROM_LOAD_NOTE, initScript, inputFor, inspectMarks, LONG_FRAME_NOTE, longFrameStats, MARK_ATTRIBUTE, markCountCheck,
+  firstViewCaptureNote, formatNumbers, FROM_LOAD_NOTE, initScript, inputFor, inspectMarks, LONG_FRAME_NOTE, longFrameStats, MARK_ATTRIBUTE, markCountCheck,
   maskBounds, MAX_REST_PIXELS, median, nextFrameWidth, normalizePath, parseArgs, renderSummary, restNeedsRetake, restTakeKind, restVerdict,
   routeSlug, selectRoutes, settledShift, settledShiftVerdict, SETTLED_TAKES, SHIFT_AGREEMENT, SHIFT_MARGIN, SHIFT_SINGLE_BAR, sheetLayout,
   shortSelector, STRIP_TIMES, summarizeLongFrames, toKebab,
@@ -311,6 +311,93 @@ function runInitScript() {
   const fire = (target, oldValue = '') => observers[0].fn([{ target, oldValue }]);
   return { state: sandbox.__motionEvidence, fire, element, observers };
 }
+
+/**
+ * Run the init script with holdEntrances against a document whose
+ * getAnimations() the test fills, and a requestAnimationFrame the test
+ * steps one frame at a time.
+ */
+function runHoldScript(cfg = baseCfg({ holdEntrances: true })) {
+  const frames = [];
+  const animations = [];
+  const sandbox = {
+    document: { documentElement: { tagName: 'HTML' }, getAnimations: () => animations },
+    performance: { now: () => 0 },
+    MutationObserver: class { observe() {} },
+    PerformanceObserver: class { observe() {} },
+    addEventListener() {},
+    requestAnimationFrame: (fn) => { frames.push(fn); },
+  };
+  sandbox.window = sandbox;
+  vm.createContext(sandbox);
+  vm.runInContext(`(${initScript.toString()})(${JSON.stringify(cfg)})`, sandbox);
+  const step = () => { const pending = frames.splice(0); for (const fn of pending) fn(0); };
+  const copies = [];
+  const target = (marked) => ({
+    tagName: 'DIV',
+    closest: (selector) => (marked && selector === `[${MARK_ATTRIBUTE}]` ? {} : null),
+    animate(keyframes, timing) {
+      const copy = { keyframes, timing, currentTime: null, paused: false, pause() { this.paused = true; } };
+      copies.push(copy);
+      return copy;
+    },
+  });
+  const css = ({ marked = true, iterations = 1, playState = 'running', kind = 'transition' } = {}) => ({
+    ...(kind === 'transition' ? { transitionProperty: 'opacity' } : kind === 'animation' ? { animationName: 'spin' } : {}),
+    playState,
+    effect: { target: target(marked), getTiming: () => ({ delay: 120, duration: 440, iterations, fill: 'backwards' }), getKeyframes: () => [{ opacity: '0' }, { opacity: '1' }] },
+  });
+  return { state: sandbox.__motionEvidence, animations, step, copies, css, frames };
+}
+
+describe('motion evidence: first-view entrances held from document start', () => {
+  it('copies each new finite entrance on a mark once, paused at 0 with its own timing, until told to stop', () => {
+    const { state, animations, step, copies, css, frames } = runHoldScript();
+    expect(state.holding).toBe(true);
+    const rise = css();
+    animations.push(rise);
+    step();
+    expect(copies).toHaveLength(1);
+    expect(copies[0]).toMatchObject({ paused: true, currentTime: 0, timing: { delay: 120, duration: 440, iterations: 1 } });
+    expect(copies[0].keyframes).toEqual([{ opacity: '0' }, { opacity: '1' }]);
+    expect(state.held).toHaveLength(1);
+    expect(state.heldOriginals.has(rise)).toBe(true);
+    step();
+    expect(copies).toHaveLength(1);
+    // a CSS animation on a stroke inside a mark counts too
+    animations.push(css({ kind: 'animation' }));
+    step();
+    expect(copies).toHaveLength(2);
+    state.holding = false;
+    animations.push(css());
+    step();
+    expect(copies).toHaveLength(2);
+    expect(frames).toHaveLength(0);
+  });
+
+  it('leaves unmarked, infinite, finished and script animations alone (its own copies included)', () => {
+    const { animations, step, copies, css } = runHoldScript();
+    animations.push(css({ marked: false }), css({ iterations: Infinity }), css({ playState: 'finished' }), css({ playState: 'idle' }), css({ kind: 'script' }));
+    step();
+    expect(copies).toHaveLength(0);
+  });
+
+  it('does nothing without holdEntrances, as in every measurement but the first view', () => {
+    const { state, frames } = runHoldScript(baseCfg());
+    expect(state.holding).toBeUndefined();
+    expect(state.held).toBeUndefined();
+    expect(frames).toHaveLength(0);
+  });
+
+  it('says so when marks were in the first screen at load and no entrance was held', () => {
+    expect(firstViewCaptureNote({ held: 0, marksInView: 3 })).toBe('first-view entrances not captured');
+    expect(firstViewCaptureNote({ held: 2, marksInView: 3 })).toBeNull();
+    expect(firstViewCaptureNote({ held: 0, marksInView: 0 })).toBeNull();
+    expect(firstViewCaptureNote({ held: null, marksInView: 0 })).toBeNull();
+    expect(formatNumbers({ ...clean, strip: { animations: 0, lost: 0, held: 0, note: 'first-view entrances not captured' } }).stripAnimations).toBe('0; first-view entrances not captured');
+    expect(formatNumbers(clean).stripAnimations).toBe('8');
+  });
+});
 
 describe('motion evidence: first mark shown', () => {
   it('ignores a .reveal heading that gains is-in', () => {
