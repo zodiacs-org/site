@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -138,7 +139,7 @@ describe('daily publication operations', () => {
     // The landing is handed to Site Publish (#1128, 2026-11-19), and falls back to
     // the workflow token only when Site Publish stops at a gate or cannot get the App's token.
     expect(publisher).toContain('gh workflow run site-publish.yml --ref "$default"');
-    expect(publisher).toContain('"Check that the publishing key is saved" or .name == "Check who asked" or .name == "Get the publishing app\'s token"');
+    expect(publisher).toContain('"Check that the publishing key is saved" or .name == "Check who asked" or .name == "Get the publishing App token"');
     expect(publisher.indexOf('hand_off()')).toBeLessThan(publisher.indexOf('gh pr create'));
     // In land mode the branch is data: it must sit at exactly the handed-over commit.
     expect(publisher).toContain('if [ "$(git rev-parse FETCH_HEAD)" != "$head_sha" ]; then');
@@ -175,6 +176,16 @@ describe('daily publication operations', () => {
     expect(publisher).toContain('Allow GitHub Actions to create and approve pull requests');
     expect(publisher).not.toContain('--admin');
     expect(publisher).not.toContain('git rebase');
+  });
+
+  it('keeps every publishing shell script parseable by bash', () => {
+    // String checks alone let a quoting slip through (#1212 review): bash
+    // must parse each script, or every publication stops before it starts.
+    for (const script of ['scripts/publish-through-pr.sh', 'scripts/github-app-token.sh']) {
+      const parsed = spawnSync('bash', ['-n', script], { cwd: root, encoding: 'utf8' });
+      expect(parsed.stderr, script).toBe('');
+      expect(parsed.status, script).toBe(0);
+    }
   });
 
   it('declares the daily and Monday-weekly publication boundary at 00:00 UTC', async () => {

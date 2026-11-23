@@ -44,7 +44,7 @@ echo "::add-mask::$jwt"
 
 call() {
   curl -fsS --retry 3 --retry-all-errors -H "Authorization: Bearer $1" -H "Accept: application/vnd.github+json" \
-    -H "X-GitHub-Api-Version: 2022-11-28" "${@:2}"
+    -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/json" "${@:2}"
 }
 
 if ! installation=$(call "$jwt" "$api/repos/$GITHUB_REPOSITORY/installation" | jq -r '.id // empty') || [ -z "$installation" ]; then

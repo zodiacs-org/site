@@ -1,22 +1,27 @@
 name: Site Publish
 
 # Lands one verified publication branch on the default branch with the
-# site's publishing GitHub App (or, until it is set up, the owner's token). The publishing workflows (Daily Sky, Pulse Refresh, Race, Registry
-# Market Snapshot, Transits) build and verify a package, push it to a
+# site's publishing GitHub App (or, until it is set up, the owner's token).
+# The publishing workflows (Daily Sky, Pulse Refresh, Race, Registry Market
+# Snapshot, Transits) build and verify a package, push it to a
 # publish/* branch with the workflow token, and dispatch this workflow.
 #
 # Why a separate workflow: GitHub holds the pull_request checks of a pull
 # request the workflow token opens until a person approves them, and the
 # protection rule on main refuses the merge while they wait (#1128,
-# 2026-11-19). A pull request the owner opens runs its checks normally. The
-# owner's token lives only here, scoped to the protected environment
-# site-publish-production, and is used for nothing but opening that one pull
-# request, waiting for every required check, merging it and deleting the
-# branch. The preferred key is a small GitHub App installed on this repository
-# only (variable SITE_PUBLISH_APP_ID, secret SITE_PUBLISH_APP_KEY): it mints a
-# one-hour token per run with scripts/github-app-token.sh and belongs to no
-# person. A saved SITE_PUBLISH_TOKEN still works when no App is configured. Nothing is bypassed: a failing, missing or slow check leaves the
-# pull request open for a person.
+# 2026-11-19). A pull request opened by a GitHub App or the owner runs its
+# checks normally. The publishing key lives only here, scoped to the protected
+# environment site-publish-production, and is used for nothing but opening
+# that one pull request, waiting for every required check, merging it and
+# deleting the branch.
+#
+# The key is a small GitHub App installed on this repository only (variable
+# SITE_PUBLISH_APP_ID, secret SITE_PUBLISH_APP_KEY): each run mints a one-hour
+# token with scripts/github-app-token.sh, and it belongs to no person. Once the
+# App is configured it replaces SITE_PUBLISH_TOKEN, which is used only when no
+# App is set up; if the App cannot get a token, the run stops and the
+# publisher falls back to its own pull request. Nothing is bypassed: a
+# failing, missing or slow check leaves the pull request open for a person.
 #
 # Only trusted code runs with the token: the default branch is checked out,
 # the publication branch is only fetched as data, and every input is checked
@@ -111,7 +116,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Get the publishing app's token
+      - name: Get the publishing App token
         id: app
         if: steps.key.outputs.app == 'true'
         env:

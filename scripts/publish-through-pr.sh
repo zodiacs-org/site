@@ -14,9 +14,10 @@
 # opens until a person approves them, and the rule refuses the merge while
 # they wait (#1128, 2026-11-19). So after pushing the publish branch, this
 # hands the landing to the Site Publish workflow (site-publish.yml), which
-# runs this same script from the default branch with the owner's token,
-# scoped to the protected environment site-publish-production. If that
-# token is not saved there, or the hand-off cannot start, it falls back to
+# runs this same script from the default branch with the site's publishing
+# GitHub App (or the owner's token), scoped to the protected environment
+# site-publish-production. If no key is saved there, the App cannot get a
+# token, or the hand-off cannot start, it falls back to
 # opening the pull request with the workflow token as before.
 #
 # Usage: publish-through-pr.sh <base-branch> <verified-base-sha> <title> [body]
@@ -48,7 +49,7 @@ if [ "$(git rev-parse "origin/$base")" != "$verified" ]; then
 fi
 
 if [ -n "${PUBLISH_LAND_BRANCH:-}" ]; then
-  # Land mode: Site Publish, with the owner's token. Never run code from the
+  # Land mode: Site Publish, with the publishing key. Never run code from the
   # branch; only check that it holds exactly the commit that was handed over.
   branch="$PUBLISH_LAND_BRANCH"
   head_sha="${PUBLISH_LAND_HEAD:?PUBLISH_LAND_HEAD is required in land mode}"
@@ -127,7 +128,7 @@ hand_off() {
       if [ "$conclusion" = "success" ]; then return 0; fi
       if [ "$conclusion" != "running" ]; then
         token_step=$(gh api "repos/{owner}/{repo}/actions/runs/$run_id/jobs" \
-          --jq '[.jobs[].steps[]? | select(.name == "Check that the publishing key is saved" or .name == "Check who asked" or .name == "Get the publishing app's token") | select(.conclusion == "failure") | .name] | first // ""' 2>/dev/null || true)
+          --jq '[.jobs[].steps[]? | select(.name == "Check that the publishing key is saved" or .name == "Check who asked" or .name == "Get the publishing App token") | select(.conclusion == "failure") | .name] | first // ""' 2>/dev/null || true)
         if [ -n "$token_step" ]; then
           echo "::warning title=Site Publish stopped at \"$token_step\"::$url. This publication pull request is opened with the workflow token instead, and its checks will wait for a person." >&2
           return 2
