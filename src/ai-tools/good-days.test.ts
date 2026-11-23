@@ -179,13 +179,15 @@ describe('privacy', () => {
 
   it('refuses a birth date under 13 with the fixed sentence, before anything is worked out', async () => {
     const host = await serve(ON);
-    for (const birthDate of ['2016-03-01', '2013-11-10', '2027-01-01']) {
+    // At 09:00 UTC on 9 November it is still 8 November at UTC-12, the date the refusal counts from, so a 13th
+    // birthday on the 9th has not begun everywhere yet.
+    for (const birthDate of ['2016-03-01', '2013-11-10', '2013-11-09', '2027-01-01']) {
       const result = await call(host, 'find_good_days', { goal: 'travel', from: '2027-01-01', to: '2027-01-31', birthDate });
       expect(result.isError).toBe(true);
       expect(result.structuredContent.error.message).toBe(UNDER_13_REFUSAL);
     }
-    // Thirteen today: the finder reads it.
-    expect((await call(host, 'find_good_days', { goal: 'travel', from: '2027-01-01', to: '2027-01-31', birthDate: '2013-11-09' })).isError).toBe(false);
+    // Thirteen everywhere: the finder reads it.
+    expect((await call(host, 'find_good_days', { goal: 'travel', from: '2027-01-01', to: '2027-01-31', birthDate: '2013-11-08' })).isError).toBe(false);
   });
 
   it('gives no relationship or wedding timing from a birth date under 18', async () => {
