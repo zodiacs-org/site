@@ -94,6 +94,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Tarot draw stays out of the build with PUBLIC_TAROT_ENABLED unset
+        run: node scripts/check-tarot-dist.mjs
+
       - name: Developer documentation authorship
         run: |
           npx vitest run scripts/check-developer-authorship.test.mjs
@@ -601,6 +604,9 @@ jobs:
 
       - name: Build (tarot flag on)
         run: npm run build
+
+      - name: Tarot draw assets are built (tarot flag on)
+        run: node scripts/check-tarot-dist.mjs
 
       - name: Tarot page drive (zero CLS, draw, share card)
         run: node tests/feature-page-evidence-drive.mjs tarot

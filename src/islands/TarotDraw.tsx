@@ -12,6 +12,25 @@ import { SuitIcon } from '../lib/tarot/suit-icons';
 import { prepareTarotStoryCard, tarotStoryContent } from '../lib/tarot/story-card';
 
 const GENERIC_MESSAGE = 'The cards could not be drawn in this browser. Try reloading the page.';
+const SPREAD_NAME = 'tarot-spread';
+const REVERSALS_NAME = 'tarot-reversals';
+
+/** What a form's own controls say: the checked spread and the reversals box, or null when there is no form to read. */
+export interface FormChoice { spread: SpreadId; reversals: boolean }
+type ControlReader = { querySelector(selector: string): { value?: string; checked?: boolean } | null };
+
+/**
+ * The spread and reversals the form's controls hold. A choice made before the island hydrated stays in the native
+ * controls (Preact keeps their checked state, and the hydration directive replays no change event for it), so the
+ * draw reads the controls themselves, never the state alone.
+ */
+export function formChoice(form: ControlReader | null | undefined): FormChoice | null {
+  if (!form) return null;
+  const value = form.querySelector(`input[name="${SPREAD_NAME}"]:checked`)?.value;
+  const box = form.querySelector(`input[name="${REVERSALS_NAME}"]`);
+  if (!value || !(SPREAD_IDS as readonly string[]).includes(value) || !box) return null;
+  return { spread: value as SpreadId, reversals: box.checked === true };
+}
 
 export default function TarotDraw() {
   const [spread, setSpread] = useState<SpreadId>('three-card');
@@ -19,13 +38,27 @@ export default function TarotDraw() {
   const [drawn, setDrawn] = useState<TarotCardReading[] | null>(null);
   const [error, setError] = useState('');
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const [focusNext, setFocusNext] = useState(false);
+  // The draw cannot run until the island has: the button stays disabled until then, so a browser without JavaScript
+  // never sends the form (and its spread) as a query.
+  const [ready, setReady] = useState(false);
+
+  // A spread or reversals choice made before hydration is in the controls, not in the state: take it over once.
+  useEffect(() => {
+    const chosen = formChoice(formRef.current);
+    if (chosen) { setSpread(chosen.spread); setReversals(chosen.reversals); }
+    setReady(true);
+  }, []);
 
   function draw(event: Event) {
     event.preventDefault();
     try {
       setError('');
-      setDrawn(drawTarotReading(spread, reversals));
+      const chosen = formChoice(event.currentTarget as HTMLFormElement) ?? { spread, reversals };
+      if (chosen.spread !== spread) setSpread(chosen.spread);
+      if (chosen.reversals !== reversals) setReversals(chosen.reversals);
+      setDrawn(drawTarotReading(chosen.spread, chosen.reversals));
       setFocusNext(true);
     } catch {
       setDrawn(null);
@@ -39,23 +72,23 @@ export default function TarotDraw() {
 
   return (
     <div class="calc tarot">
-      <form class="calc__form shell" onSubmit={draw}>
+      <form class="calc__form shell" onSubmit={draw} ref={formRef}>
         <div class="core calc__core">
           <fieldset class="field tarot__spreads">
             <legend class="field__label">Spread</legend>
             {SPREAD_IDS.map((id) => (
               <label key={id} class="tarot__choice">
-                <input type="radio" name="tarot-spread" value={id} checked={spread === id} onChange={() => { setSpread(id); setDrawn(null); }} />
+                <input type="radio" name={SPREAD_NAME} value={id} checked={spread === id} onChange={() => { setSpread(id); setDrawn(null); }} />
                 <span>{SPREADS[id].name}</span>
               </label>
             ))}
             <p class="field__help">{SPREADS[spread].description}</p>
           </fieldset>
           <label class="tarot__choice tarot__reversals">
-            <input type="checkbox" checked={reversals} onChange={(e) => { setReversals((e.target as HTMLInputElement).checked); setDrawn(null); }} />
+            <input type="checkbox" name={REVERSALS_NAME} checked={reversals} onChange={(e) => { setReversals((e.target as HTMLInputElement).checked); setDrawn(null); }} />
             <span>Allow reversed cards</span>
           </label>
-          <button class="btn btn--primary calc__submit" type="submit">
+          <button class="btn btn--primary calc__submit" type="submit" disabled={!ready}>
             <span>{drawn ? 'Draw again' : 'Draw the cards'}</span>
             <span class="orb">↗</span>
           </button>

@@ -5,7 +5,11 @@ import { TOOL_ICONS, TOOL_ICON_FOR_PATH, TOOL_ICON_NAMES, toolIconForPath } from
 
 const SIGN_HUES = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 
+/** A page an integration routes from another file: the tarot draw (scripts/tarot-route.mjs, routed while its flag is on). */
+const INJECTED: Readonly<Record<string, string>> = { '/tarot/': 'src/pages/tarot/_draw.astro' };
+
 function routeExists(path: string): boolean {
+  if (INJECTED[path]) return existsSync(resolve(INJECTED[path]));
   const dir = resolve('src/pages', `.${path}`);
   return existsSync(resolve(dir, 'index.astro'));
 }

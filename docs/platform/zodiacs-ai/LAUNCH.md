@@ -225,7 +225,9 @@ Switch `PUBLIC_SOLAR_RETURN_SHARE_ENABLED` on and deploy before `ZODIACS_SOLAR_R
 
 ## Tarot switch order
 
-Switch `PUBLIC_TAROT_ENABLED` on and deploy before `ZODIACS_TAROT_ENABLED`, or `draw_tarot` links to a missing page (`src/ai-tools/features/tarot.ts:63`). With `PUBLIC_TAROT_ENABLED` unset, `/tarot/` redirects to the 404 page, and its hub card, `NAV_MORE` link, and Guide line are all left out (`src/lib/launch-flags.ts`).
+Switch `PUBLIC_TAROT_ENABLED` on and deploy before `ZODIACS_TAROT_ENABLED`, or `draw_tarot` links to a missing page (`src/ai-tools/features/tarot.ts:63`). With `PUBLIC_TAROT_ENABLED` unset, `/tarot/` redirects to the 404 page, and its hub card, `NAV_MORE` link, and Guide line are all left out (`src/lib/launch-flags.ts`). The page is routed only while the flag is on (`scripts/tarot-route.mjs`), so a flag-off build carries none of the draw's code or meanings; `node scripts/check-tarot-dist.mjs` checks the built site both ways.
+
+`draw_tarot` is in the candidate runtime (`api/_ai/runtime.mjs`), which production serves at `/mcp/de440`. The published runtime behind `/mcp` is frozen and never lists it, whatever the switches say. To review it locally, serve the candidate: `ZODIACS_COVERAGE_ENABLED=1 ZODIACS_TAROT_ENABLED=1 node scripts/serve-hosted-mcp.mjs 4521 --candidate`, then connect to `http://127.0.0.1:4521/mcp/de440`.
 
 ## Personal release and measurement
 

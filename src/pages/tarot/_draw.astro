@@ -8,6 +8,8 @@ import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
 import '../../styles/tarot.css';
 
+// Routed at /tarot/ only while PUBLIC_TAROT_ENABLED is on (scripts/tarot-route.mjs): off, /tarot/ is ./_off.astro, so
+// a flag-off build never bundles the draw or its meanings. The check stays as a second guard.
 if (!launchFlagOn('PUBLIC_TAROT_ENABLED')) {
   return Astro.redirect('/404.html');
 }

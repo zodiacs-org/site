@@ -3,6 +3,7 @@ import preact from '@astrojs/preact';
 import mdx from '@astrojs/mdx';
 import { natalAspectRoutes } from './scripts/natal-aspects-policy.mjs';
 import { registryResearchWithheld } from './scripts/registry-research-withheld.mjs';
+import { tarotRoute } from './scripts/tarot-route.mjs';
 import { browserEngineVite } from './scripts/lib/browser-engine.mjs';
 
 function interactionDirective() {
@@ -71,7 +72,7 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
-  integrations: [interactionDirective(), paintedDirective(), natalAspectRoutes(), registryResearchWithheld(), preact(), mdx()],
+  integrations: [interactionDirective(), paintedDirective(), natalAspectRoutes(), registryResearchWithheld(), tarotRoute(), preact(), mdx()],
   build: {
     format: 'directory',
     inlineStylesheets: 'auto',
