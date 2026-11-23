@@ -25,7 +25,8 @@
  *   npm run build
  *   node tests/edition-dated-drive.mjs
  */
-import { createServer } from 'node:http';
+import assert from 'node:assert/strict';
+import { startStreamedPreview } from './visual/streamed-preview.mjs';
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 import { datedEditionTextIn, datedEditionTitleIn, editionDateLabel } from '../src/lib/edition-freshness.ts';
@@ -89,45 +90,36 @@ function relativeWordBreak(html, word) {
   return -1;
 }
 
-const pause = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 const total = (shifts) => shifts.reduce((sum, shift) => sum + shift.value, 0);
 
 await withPreview({ port: 4393 }, async (baseURL) => {
   const served = new Map();
-  const server = createServer(async (req, res) => {
-    try {
-      const response = await fetch(new URL(req.url, baseURL));
-      const bytes = Buffer.from(await response.arrayBuffer());
-      res.statusCode = response.status;
-      for (const [name, value] of response.headers) {
-        if (!['content-encoding', 'content-length', 'transfer-encoding', 'etag'].includes(name)) {
-          res.setHeader(name, value);
-        }
-      }
-      const html = bytes.toString();
-      const route = routeByPath.get(req.url);
-      const wordBreak = route && response.ok ? relativeWordBreak(html, languages[route.locale].word) : -1;
-      const documentEnd = html.indexOf('</body>');
-      if (wordBreak < 0 || documentEnd < wordBreak) {
-        res.end(bytes);
-        return;
-      }
-      served.set(req.url, html);
-      res.write(html.slice(0, wordBreak));
-      await pause(300);
-      res.write(html.slice(wordBreak, documentEnd));
-      await pause(300);
-      res.end(html.slice(documentEnd));
-    } catch {
-      if (!res.headersSent) res.statusCode = 500;
-      res.end();
+  const ariesStream = '/horoscopes/aries/?stream=mobile';
+  const proxy = await startStreamedPreview(baseURL, (path, html) => {
+    if (path === ariesStream) {
+      const body = html.indexOf('<div class="hz-hero__body"');
+      const bodyOpen = html.indexOf('>', body);
+      const date = html.indexOf('class="kicker hz-hero__kicker"', bodyOpen);
+      const dateOpen = html.indexOf('>', date);
+      const title = html.indexOf('class="hz-hero__title"', dateOpen);
+      const titleEnd = html.indexOf('</h1>', title);
+      const facts = html.indexOf('class="kfacts hz-hero__facts"', titleEnd);
+      const discEnd = html.indexOf('</picture>', facts);
+      const periods = html.indexOf('class="seg program__periods', titleEnd);
+      const linkEnd = html.indexOf('</a>', periods);
+      assert.ok(body > 0 && bodyOpen > body && date > bodyOpen && dateOpen > date);
+      assert.ok(title > dateOpen && titleEnd > title && periods > titleEnd && linkEnd > periods);
+      assert.ok(facts > titleEnd && discEnd > facts && periods > discEnd);
+      return [bodyOpen + 1, dateOpen + 1, titleEnd + '</h1>'.length, discEnd + '</picture>'.length, linkEnd + '</a>'.length];
     }
+    const route = routeByPath.get(path);
+    const wordBreak = route ? relativeWordBreak(html, languages[route.locale].word) : -1;
+    const documentEnd = html.indexOf('</body>');
+    if (wordBreak < 0 || documentEnd < wordBreak) return [];
+    served.set(path, html);
+    return [wordBreak, documentEnd];
   });
-  await new Promise((resolve, reject) => {
-    server.once('error', reject);
-    server.listen(0, '127.0.0.1', resolve);
-  });
-  const origin = `http://127.0.0.1:${server.address().port}`;
+  const { origin } = proxy;
 
   let browser;
   try {
@@ -301,6 +293,19 @@ await withPreview({ port: 4393 }, async (baseURL) => {
       }
     }
 
+    // Paint the mobile hero in stages through the sign disc, then pause
+    // again before the period switch receives its second link.
+    const aries = await open(ariesStream, viewports[0], datedNow);
+    try {
+      assert.equal(aries.status, 200);
+      await settle(aries.page);
+      assert.equal(await aries.page.getAttribute('html', 'data-edition-state'), 'dated');
+      const shifts = await aries.page.evaluate(() => globalThis.__editionShifts);
+      check('360px dated Aries: streamed headline and period links have exactly zero CLS', total(shifts) === 0, JSON.stringify(shifts));
+    } finally {
+      await aries.context.close();
+    }
+
     // Without JavaScript nothing decides the state: EditionText keeps the
     // dated server form, which is true whichever day it is read.
     const { context, page } = await open('/today/', viewports[0], datedNow, false);
@@ -314,7 +319,7 @@ await withPreview({ port: 4393 }, async (baseURL) => {
     console.log(`Chromium ${browser.version()} · edition ${editionDate} · dated clock ${new Date(datedNow).toISOString()}`);
   } finally {
     await browser?.close();
-    await new Promise((resolve) => server.close(resolve));
+    await proxy.close();
   }
 });
 

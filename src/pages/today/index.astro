@@ -124,6 +124,12 @@ const allAspects = aspectsToday(daily);
 const aspectCards = allAspects.slice(0, 4);
 const wheelAspects = allAspects.map((aspect) => ({ a: aspect.a, b: aspect.b, type: aspect.type }));
 const aspectTypes = new Set(allAspects.map((aspect) => aspect.type));
+const legendEntries = [
+  { key: 'rx', label: 'Retrograde', shown: true },
+  { key: 'easy', label: 'Trine or sextile', shown: aspectTypes.has('trine') || aspectTypes.has('sextile') },
+  { key: 'tense', label: 'Square or opposition', shown: aspectTypes.has('square') || aspectTypes.has('opposition') },
+  { key: 'joined', label: 'Conjunction', shown: aspectTypes.has('conjunction') },
+].filter((entry) => entry.shown);
 const definition = (slug: string) => CONTEXT_TERMS.find((term) => term.slug === slug)?.plainDefinition ?? '';
 const named = (body: string) => (body === 'Sun' || body === 'Moon' ? `the ${body}` : body);
 const topic = (body: string) => NATAL_BODY_THEME[body as keyof typeof NATAL_BODY_THEME]?.topic ?? '';
@@ -287,10 +293,15 @@ const monthDay = (iso: string) => ({
           </svg>
         </div>
         <figcaption class="today-legend">
-          <span><i class="today-legend__rx">Rx</i>Retrograde</span>
-          {(aspectTypes.has('trine') || aspectTypes.has('sextile')) && <span><i class="today-legend__line today-legend__line--easy"></i>Trine or sextile</span>}
-          {(aspectTypes.has('square') || aspectTypes.has('opposition')) && <span><i class="today-legend__line today-legend__line--tense"></i>Square or opposition</span>}
-          {aspectTypes.has('conjunction') && <span><i class="today-legend__line today-legend__line--joined"></i>Conjunction</span>}
+          {[true, false].map((reserve) => legendEntries.map(({ key, label }, index) => (
+            <span class="today-legend__item" data-label={label} data-key={key}
+              data-slot={reserve ? key : undefined} data-entry={reserve ? undefined : key}
+              aria-hidden={reserve || undefined} style={`order:${index}`}>
+              {!reserve && <>
+                <i class={key === 'rx' ? 'today-legend__rx' : `today-legend__line today-legend__line--${key}`}>{key === 'rx' ? 'Rx' : ''}</i><span>{label}</span>
+              </>}
+            </span>
+          )))}
         </figcaption>
       </figure>
     </header>
@@ -723,8 +734,19 @@ const monthDay = (iso: string) => ({
     transform: translate(-50%, -50%);
   }
   .today-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-top: 14px; color: var(--ink-2); font-size: 12.5px; }
-  .today-legend span { display: inline-flex; align-items: center; gap: 7px; }
-  .today-legend i { font-style: normal; }
+  /* Lay out the whole caption first. Each incoming entry replaces its
+     same-size flex slot, so other entries keep their row and centre. */
+  .today-legend:has([data-entry="rx"]) [data-slot="rx"],
+  .today-legend:has([data-entry="easy"]) [data-slot="easy"],
+  .today-legend:has([data-entry="tense"]) [data-slot="tense"],
+  .today-legend:has([data-entry="joined"]) [data-slot="joined"] { display: none; }
+  .today-legend__item { display: inline-grid; grid-template-columns: 18px max-content; align-items: center; column-gap: 7px; }
+  .today-legend__item[data-key="rx"] { grid-template-columns: max-content max-content; }
+  .today-legend__item[data-key="rx"]::before { content: 'Rx'; visibility: hidden; grid-area: 1 / 1; }
+  .today-legend__item::after { content: attr(data-label); visibility: hidden; grid-area: 1 / 2; }
+  .today-legend__item > span { grid-area: 1 / 2; }
+  .today-legend__item > i { grid-area: 1 / 1; font-style: normal; }
+  .today-legend__item[data-key="rx"]::before,
   .today-legend__rx { color: rgba(224, 176, 128, 0.9); font-family: var(--font-mono); font-size: 11px; }
   .today-legend__line { display: inline-block; width: 18px; height: 0; border-top: 1.5px solid; }
   .today-legend__line--easy { color: rgba(182, 212, 228, 0.85); }

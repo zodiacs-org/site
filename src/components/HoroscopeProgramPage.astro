@@ -275,6 +275,13 @@ const descriptionTail = reading.description.includes(': ')
   ? reading.description.slice(reading.description.indexOf(': ') + 2)
   : reading.description;
 const heroCaption = capitalize(descriptionTail);
+const heroTitle = `${sign.name} ${reading.title}`;
+const heroFacts = [
+  { label: signDateRange(sign), disc: true },
+  { label: capitalize(sign.element) },
+  { label: capitalize(sign.modality) },
+  { label: `Ruled by ${sign.ruler}`, class: 'hz-hero__ruler' },
+];
 const heroArtSizes = '(min-width: 761px) 74vw, calc(100vw - 16px)';
 
 // ── The sky behind the reading ──
@@ -437,16 +444,28 @@ const ctaLede = edgeMoon && moonHouse
           </>
         ) : <span aria-current="page">{sign.name}</span>}
       </nav>
-      <div class="hz-hero__body">
-        <span class="kicker hz-hero__kicker">{heroKicker}</span>
-        <h1 class="hz-hero__title">{sign.name} {reading.title}</h1>
-        <p class="program__description hz-hero__cap">{heroCaption}</p>
-        <p class="kfacts hz-hero__facts">
-          <span><SignIcon sign={sign.slug} size={20} webpOnly class="hz-hero__disc" />{signDateRange(sign)}</span>
-          <span>{capitalize(sign.element)}</span>
-          <span>{capitalize(sign.modality)}</span>
-          <span class="hz-hero__ruler">Ruled by {sign.ruler}</span>
-        </p>
+      <div class="hz-hero__body" data-daily-hero={editionDate ? true : undefined}>
+        {editionDate && (
+          <div class="hz-hero__measure" aria-hidden="true">
+            <span class="kicker" data-label={heroKicker}></span>
+            <span class="hz-hero__title" data-label={heroTitle}></span>
+            <p class="kfacts hz-hero__facts">
+              {heroFacts.map((fact) => (
+                <span class={fact.class} data-label={fact.label}>{fact.disc && <i class="hz-hero__measure-disc"></i>}</span>
+              ))}
+            </p>
+          </div>
+        )}
+        <div class="hz-hero__copy">
+          <span class="kicker hz-hero__kicker">{heroKicker}</span>
+          <h1 class="hz-hero__title">{heroTitle}</h1>
+          <p class="program__description hz-hero__cap">{heroCaption}</p>
+          <p class="kfacts hz-hero__facts">
+            {heroFacts.map((fact) => (
+              <span class={fact.class}>{fact.disc && <SignIcon sign={sign.slug} size={20} webpOnly class="hz-hero__disc" />}{fact.label}</span>
+            ))}
+          </p>
+        </div>
       </div>
       <span class="hz-hero__credit" aria-hidden="true">{sign.name}, from the Zodiacs sign art</span>
     </header>
@@ -784,6 +803,8 @@ const ctaLede = edgeMoon && moonHouse
     bottom: 50px;
     max-width: 620px;
   }
+  .hz-hero__measure { display: none; }
+  .hz-hero__copy { display: contents; }
   .hz-hero__kicker { color: var(--ink-1); }
   .hz-hero__title {
     margin: 10px 0 0;
@@ -1299,6 +1320,16 @@ const ctaLede = edgeMoon && moonHouse
     }
     .program__crumbs { top: 80px; left: 20px; }
     .hz-hero__body { left: 20px; right: 20px; bottom: 26px; }
+    /* The body spans the frame. Its bottom-aligned grid measures the complete
+       mobile copy first, then paints incoming text at the top of that cell. */
+    .hz-hero__body[data-daily-hero] { top: 0; display: grid; align-content: end; pointer-events: none; }
+    [data-daily-hero] > .hz-hero__measure,
+    [data-daily-hero] > .hz-hero__copy { grid-area: 1 / 1; display: block; align-self: start; }
+    [data-daily-hero] > .hz-hero__copy { pointer-events: auto; }
+    .hz-hero__measure { visibility: hidden; }
+    .hz-hero__measure [data-label]::after { content: attr(data-label); }
+    .hz-hero__measure .hz-hero__title { display: block; }
+    .hz-hero__measure-disc { width: 20px; height: 20px; margin-right: 8px; }
     .hz-hero__title { font-size: var(--text-2xl); line-height: 1.04; letter-spacing: -0.005em; }
     .hz-hero__cap { display: none; }
     .hz-hero__facts { margin-top: 16px; font-size: 12.5px; gap: 4px 8px; }
@@ -1306,7 +1337,8 @@ const ctaLede = edgeMoon && moonHouse
     .hz-hero__credit { display: none; }
     /* 44px period links in a 4px-padded, bordered pill: a 54px first row. */
     .hz-controls { grid-template-rows: 54px 96px; gap: 12px; margin-top: 14px; padding: 12px 0 10px; }
-    .hz-seg { display: flex; width: 100%; justify-self: stretch; }
+    /* Each period owns its column as soon as the first link arrives. */
+    .hz-seg { display: grid; grid-template-columns: repeat(3, minmax(max-content, 1fr)); width: 100%; justify-self: stretch; }
     .hz-seg > a { flex: 1; justify-content: center; min-height: 44px; padding-inline: 6px; }
     /* All twelve signs at once, six by two, with nothing to scroll. The names
        stay in the accessibility tree; each disc is a 48px-tall tap target. */
