@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "site-engine-2-1-0-2026-11-23",
-  "baseCommit": "e3662b877a849c56c1ed4c2a25303936d85858dc",
+  "baseCommit": "a12fd34f1548bb6f07ce3f4c77c9bf98a91054ba",
   "protectedPaths": [
     "src/data/aura-moon-ingresses.json",
     "src/pages/es/methodology/index.astro",
