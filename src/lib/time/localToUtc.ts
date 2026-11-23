@@ -37,7 +37,8 @@ export interface LocalTimeResolution {
   utc: Date;
   /** Offset applied, minutes east of UTC (may be fractional for LMT). */
   offsetMinutes: number;
-  flags: ('dst-gap' | 'dst-fold' | 'lmt')[];
+  /** The engine's flags; engine 2.0.0 added calendar-unknown and host-zone-data-differs. */
+  flags: ('dst-gap' | 'dst-fold' | 'lmt' | 'calendar-unknown' | 'host-zone-data-differs')[];
   /**
    * Present when the birthplace's own mean time read the wall time (also in
    * the gap at the end of its era): the longitude used, and the offset the
