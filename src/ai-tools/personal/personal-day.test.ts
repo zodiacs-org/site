@@ -321,7 +321,7 @@ describe('get_personal_day privacy and refusals', () => {
     }
     // The dates either side, and the same date on another clock, are read.
     for (const args of [{ birthDate: '2011-12-29', zone: 'Pacific/Apia' }, { birthDate: '2011-12-31', zone: 'Pacific/Apia' }, { birthDate: '2011-12-30', zone: 'Pacific/Pago_Pago' }])
-      expect((await executeAiTool('get_personal_day', { ...args, currentZone: 'Europe/Madrid' }, ON)).ok, JSON.stringify(args)).toBe(true);
+      expect((await executeAiTool('get_personal_day', { ...args, currentZone: 'Europe/Madrid' }, ON)).ok).toBe(true);
   });
 
   it('refuses a day to read that the clock never showed, rather than reading the next one', async () => {

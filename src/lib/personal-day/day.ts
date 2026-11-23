@@ -152,7 +152,7 @@ async function startOf(date: string, zone: string, clock: DayClock): Promise<Dat
  * today; `note` is a sentence about which clock was used, listed first in the
  * limits.
  */
-export async function readPersonalDay(natal: DayNatal, input: { birthDate: string; date: string; zone: string; today?: string | undefined; note?: string | null | undefined }, clock: DayClock): Promise<PersonalDayReading> {
+export async function readPersonalDay(natal: DayNatal, input: { birthDate: string; date: string; zone: string; today: string; note?: string | null | undefined }, clock: DayClock): Promise<PersonalDayReading> {
   const { date, zone } = input;
   // The local day: its two midnights on the person's clock, and the moment halfway between them.
   const dayStart = await startOf(date, zone, clock);
@@ -183,7 +183,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   // and so is the Moon's line in the fifth house ("pleasure").
   // softenMinor, shared with published tools whose output is frozen, does not reach them. MINOR_NOTE says so.
   // isUnderAge keeps 29 February as the cutoff, so someone born on 1 March is still under 18 on that day.
-  const under18 = isUnderAge(input.birthDate, input.today ?? date, 18);
+  const under18 = isUnderAge(input.birthDate, input.today, 18);
   const guard = (text: string) => softenHealth(under18 ? softenMinor(text) : text);
   const found: Omit<DayContact, 'rank'>[] = [];
   for (const mover of TRANSIT_BODY_ORDER) {
@@ -249,7 +249,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
 
   const top = contacts.find(({ group }) => group === 'today') ?? contacts[0];
   const label = dayLabel(midday, zone);
-  const isToday = input.today === undefined || input.today === date;
+  const isToday = input.today === date;
   const lead = top?.group === 'background' ? 'In the background,'
     : isToday ? "Today's strongest contact is" : `The strongest contact on ${label} is`;
   const theme = top

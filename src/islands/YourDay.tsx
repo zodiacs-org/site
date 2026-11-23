@@ -106,6 +106,8 @@ export default function YourDay() {
 
   async function read(target: string, scroll: boolean) {
     if (!ready || !clock || !city) return;
+    const now = deviceClock();
+    setClock(now);
     const request = ++revision.current;
     setBusy(true);
     setError('');
@@ -120,12 +122,12 @@ export default function YourDay() {
       }
       const refusal = yourDayRefusal(birthDate);
       if (refusal) { setError(refusal); setShown(null); return; }
-      if (Math.abs(daysBetween(clock.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
+      if (Math.abs(daysBetween(now.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
       if (target < birthDate) { setError('Choose a day on or after the birth date.'); setShown(null); return; }
       const { computeYourDay } = await loadModule(() => import('./your-day/compute'));
       const reading = await computeYourDay({
         birthDate, time: timeKnown ? time : undefined, birthZone: city.tz, latitude: city.lat, longitude: city.lon,
-        date: target, zone: clock.zone, today: clock.today,
+        date: target, zone: now.zone, today: now.today,
       });
       if (request !== revision.current) return;
       setDay(target);

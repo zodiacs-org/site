@@ -42970,7 +42970,7 @@ async function readPersonalDay(natal, input, clock2) {
     const held = exact.get(key2);
     if (!held || Math.abs(at.getTime() - midday.getTime()) < Math.abs(held.getTime() - midday.getTime())) exact.set(key2, at);
   }
-  const under18 = isUnderAge(input.birthDate, input.today ?? date3, 18);
+  const under18 = isUnderAge(input.birthDate, input.today, 18);
   const guard = (text2) => softenHealth(under18 ? softenMinor(text2) : text2);
   const found = [];
   for (const mover of TRANSIT_BODY_ORDER) {
@@ -43033,7 +43033,7 @@ async function readPersonalDay(natal, input, clock2) {
   ].filter(Boolean).join(" ");
   const top = contacts.find(({ group }) => group === "today") ?? contacts[0];
   const label = dayLabel3(midday, zone10);
-  const isToday = input.today === void 0 || input.today === date3;
+  const isToday = input.today === date3;
   const lead = top?.group === "background" ? "In the background," : isToday ? "Today's strongest contact is" : `The strongest contact on ${label} is`;
   const theme = top ? `${lead} ${top.title}, ${top.exactLocal ? `exact at ${top.exactLocal}` : natal.timeKnown ? `${top.orb.toFixed(2)} degrees from exact and ${top.applying ? "applying" : "separating"}` : `about ${top.orb.toFixed(1)} degrees from exact`} (${top.confidenceLabel}).` : `No major contact to your chart is within orb ${isToday ? "today" : "that day"}, so the Moon in ${signName6(moonSign)} sets the tone.`;
   const limits2 = [];
