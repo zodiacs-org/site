@@ -1,16 +1,19 @@
 #!/usr/bin/env node
-// Ask the fifty questions in docs/visibility/questions.json to ChatGPT (OpenAI),
-// Gemini, Claude and Grok through their APIs with web search switched on, and
-// record each answer, its cited sources and whether zodiacs.org is named or cited.
+// Ask the fifty questions in docs/visibility/questions.json to Gemini, Claude
+// and Grok through their APIs with web search switched on, and record each
+// answer, its cited sources and whether zodiacs.org is named or cited.
 //
 //   node scripts/visibility/ai-answers.mjs --label 2026-11-08 [--runs 3]
-//        [--providers openai,gemini,anthropic,xai] [--only q01,q02] [--dry-run]
+//        [--providers gemini,anthropic,xai] [--only q01,q02] [--dry-run]
 //
-// Keys come from the shell only: OPENAI_API_KEY, GEMINI_API_KEY,
-// ANTHROPIC_API_KEY (or an `ant auth login` profile), XAI_API_KEY. A provider
-// without a key is skipped and reported. Model names can be pinned with
-// OPENAI_MODEL, GEMINI_MODEL, ANTHROPIC_MODEL, XAI_MODEL; the model each API
-// says it used is recorded with every answer, so a re-run can match it.
+// The OpenAI API is not used: the owner has not approved OpenAI API spend
+// (ZOD-207). `--providers openai` stops before any request, with no override.
+//
+// Keys come from the shell only: GEMINI_API_KEY, ANTHROPIC_API_KEY (or an
+// `ant auth login` profile), XAI_API_KEY. A provider without a key is skipped
+// and reported. Model names can be pinned with GEMINI_MODEL, ANTHROPIC_MODEL,
+// XAI_MODEL; the model each API says it used is recorded with every answer,
+// so a re-run can match it.
 //
 // Output: docs/visibility/baseline/<label>/ai/<provider>.json. The script
 // resumes: successful answers to a question's current wording are kept and
@@ -32,7 +35,11 @@ const args = Object.fromEntries(
 );
 const label = args.label || new Date().toISOString().slice(0, 10);
 const runs = Number(args.runs || 1);
-const wanted = String(args.providers || 'openai,gemini,anthropic,xai').split(',');
+const wanted = String(args.providers || 'gemini,anthropic,xai').split(',');
+if (wanted.includes('openai')) {
+  console.error('The OpenAI API is not used: the owner has not approved OpenAI API spend (ZOD-207). Use gemini, anthropic or xai instead.');
+  process.exit(1);
+}
 const only = args.only ? new Set(String(args.only).split(',')) : null;
 const questions = loadQuestions().filter((q) => !only || only.has(q.id));
 const outDir = path.join(VIS_DIR, 'baseline', label, 'ai');
@@ -48,17 +55,6 @@ async function postJson(url, headers, body) {
 }
 
 const providers = {
-  openai: {
-    ready: () => !!process.env.OPENAI_API_KEY,
-    async ask(question) {
-      const json = await postJson('https://api.openai.com/v1/responses', { authorization: `Bearer ${process.env.OPENAI_API_KEY}` }, {
-        model: process.env.OPENAI_MODEL || 'gpt-5',
-        tools: [{ type: 'web_search', user_location: { type: 'approximate', ...LOCATION } }],
-        input: question,
-      });
-      return parseResponsesApi(json);
-    },
-  },
   gemini: {
     ready: () => !!process.env.GEMINI_API_KEY,
     async ask(question) {

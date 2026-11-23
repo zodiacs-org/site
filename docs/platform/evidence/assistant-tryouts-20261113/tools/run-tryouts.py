@@ -2,16 +2,16 @@
 """Asks each question once, in a new conversation, with the Zodiacs tools on offer, and records the tools the model
 calls in its first turn. Nothing is scored here; see score.py.
 
-  run-tryouts.py --provider openai --model gpt-6.1-sol --tools raw/live --out runs/live.gpt-6.1-sol.jsonl [--forward]
   run-tryouts.py --provider claude --model claude-sonnet-5-5 --tools raw/live --out runs/live.claude-sonnet-5-5.jsonl [--forward]
 
 --tools is a folder with tools-list.json and initialize.json (a saved tools/list and initialize result).
 --forward sends each call the model makes on to the live connector, read-only, and records how it answered.
-openai: the Responses API, each tool offered as a function with its name, description and input schema.
+openai: no longer runs. The owner has not approved OpenAI API spend (ZOD-207); the OpenAI runs recorded in runs/
+are kept as evidence, and `--provider openai` stops before any request is made.
 claude: `claude -p` (Claude Code, headless) with no built-in tools, its system prompt replaced, and the tools served
 by tools/stub-mcp.mjs over MCP. The first turn only (--max-turns 1).
-Both get the same system prompt: one line that sets the scene, the date, and the connector's own instructions.
-The OpenAI key is read from OPENAI_API_KEY; Claude uses the machine's signed-in Claude Code. No key is written anywhere.
+The system prompt is one line that sets the scene, the date, and the connector's own instructions.
+Claude uses the machine's signed-in Claude Code. No key is read or written here.
 """
 import argparse, json, os, subprocess, sys, tempfile, time, urllib.request, urllib.error
 from concurrent.futures import ThreadPoolExecutor
@@ -24,6 +24,9 @@ def system_prompt(instructions):
     return (f"You are a helpful assistant in a chat app. Today is {TODAY}. The person has connected the Zodiacs connector, "
             f"so its tools are available to you. Use a tool when it helps answer; answer directly when no tool fits.\n\n"
             f"Zodiacs connector instructions: {instructions}")
+
+OPENAI_REFUSAL = ('The OpenAI API is not used: the owner has not approved OpenAI API spend (ZOD-207). '
+                  'Use the recorded runs in runs/ instead.')
 
 class LimitStop(Exception): pass
 
@@ -46,23 +49,6 @@ def live_call(name, arguments):
                 'error': (body.get('error') or {}).get('message') or (structured.get('error') or {}).get('code')}
     except Exception as error:
         return {'status': status, 'failed': str(error)[:200]}
-
-def ask_openai(args, tools, system, question):
-    body = {'model': args.model, 'instructions': system, 'input': question['question'], 'store': False,
-            'tools': [{'type': 'function', 'name': t['name'], 'description': t['description'], 'parameters': t['inputSchema'], 'strict': False} for t in tools]}
-    for attempt in range(4):
-        status, text, _ = post('https://api.openai.com/v1/responses', body, {'Authorization': f"Bearer {os.environ['OPENAI_API_KEY']}"})
-        if status == 200: break
-        if status == 429 and 'insufficient_quota' in text: raise LimitStop(text[:300])
-        time.sleep(5 * (attempt + 1))
-    else:
-        return {'error': f'HTTP {status}: {text[:300]}'}
-    reply = json.loads(text)
-    calls = [{'name': item['name'], 'arguments': json.loads(item.get('arguments') or '{}')} for item in reply['output'] if item['type'] == 'function_call']
-    said = ''.join(part.get('text', '') for item in reply['output'] if item['type'] == 'message' for part in item.get('content', []))
-    if args.forward:
-        for call in calls: call['live'] = live_call(call['name'], call['arguments'])
-    return {'modelReported': reply.get('model'), 'calls': calls, 'text': said[:600]}
 
 def ask_claude(args, tools_file, system, question):
     with tempfile.TemporaryDirectory() as work:
@@ -109,6 +95,7 @@ def main():
     parser.add_argument('--only', default='')
     parser.add_argument('--without-instructions', action='store_true', help='leave the connector instructions out of the system prompt')
     args = parser.parse_args()
+    if args.provider == 'openai': sys.exit(OPENAI_REFUSAL)
     tools_file = os.path.abspath(os.path.join(args.tools, 'tools-list.json'))
     tools = json.load(open(tools_file))['tools']
     system = system_prompt(json.load(open(os.path.join(args.tools, 'initialize.json')))['instructions'])
@@ -119,7 +106,7 @@ def main():
     todo = [q for q in questions if q['id'] not in done]
     def one(question):
         try:
-            result = ask_openai(args, tools, system, question) if args.provider == 'openai' else ask_claude(args, tools_file, system, question)
+            result = ask_claude(args, tools_file, system, question)
         except LimitStop: raise
         except Exception as error: result = {'error': str(error)[:300]}
         return {'id': question['id'], 'question': question['question'], 'provider': args.provider, 'model': args.model,

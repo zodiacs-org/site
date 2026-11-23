@@ -28,11 +28,12 @@ To run it again:
 ```bash
 python3 tools/build-questions.py > questions.json
 npx vite-node --script docs/platform/evidence/assistant-tryouts-20261113/tools/dump-branch-tools.ts docs/platform/evidence/assistant-tryouts-20261113/raw/branch   # from the repository root
-python3 tools/run-tryouts.py --provider openai --model gpt-6.1-sol --tools raw/branch --out runs/branch.gpt-6.1-sol.jsonl
 python3 tools/run-tryouts.py --provider claude --model claude-sonnet-5-5 --tools raw/branch --out runs/branch.claude-sonnet-5-5.jsonl
 python3 tools/score.py
 ```
 
 `run-tryouts.py --questions <file>` takes any other question file of the same shape, and skips ids already in `--out`.
-The OpenAI run reads `OPENAI_API_KEY` from the environment; the Claude run uses the machine's signed-in Claude Code.
+The Claude run uses the machine's signed-in Claude Code. The OpenAI runs are not run again: the owner has not
+approved OpenAI API spend (ZOD-207), so `run-tryouts.py --provider openai` stops before any request. Use the
+recorded OpenAI runs in `runs/` instead.
 No key is in this folder.

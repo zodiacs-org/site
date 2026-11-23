@@ -90,6 +90,19 @@ describe('visibility lib', () => {
     const src = readFileSync(new URL('./ai-answers.mjs', import.meta.url), 'utf8');
     expect(src).not.toMatch(/sk-[A-Za-z0-9]{10,}/);
   });
+
+  it('never calls the OpenAI API and refuses an explicit openai provider (ZOD-207)', async () => {
+    const src = readFileSync(new URL('./ai-answers.mjs', import.meta.url), 'utf8');
+    expect(src).not.toContain('api.openai.com');
+    expect(src).not.toContain('OPENAI_API_KEY');
+    expect(src).toContain("args.providers || 'gemini,anthropic,xai'");
+    const { spawnSync } = await import('node:child_process');
+    const env = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/_API_KEY$|_AUTH_TOKEN$|^ANTHROPIC_PROFILE$/.test(k)));
+    const run = spawnSync(process.execPath, [new URL('./ai-answers.mjs', import.meta.url).pathname, '--providers', 'openai', '--dry-run'], { env, encoding: 'utf8' });
+    expect(run.status).toBe(1);
+    expect(run.stderr).toContain('The OpenAI API is not used: the owner has not approved OpenAI API spend (ZOD-207).');
+    expect(run.stdout).toBe('');
+  });
 });
 
 describe('keyword tables', () => {
