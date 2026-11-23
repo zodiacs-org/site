@@ -94,9 +94,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   const cardSource = useRef<{ chart: Chart; run: number } | null>(null);
 
   // The cards rise and their sign discs grow in once, as the result first
-  // appears (docs/MOTION.md). This is motionScan from src/lib/motion.ts,
-  // inlined: importing it adds a shared chunk, and /big-three/ sits right
-  // under its first-load budget.
+  // appears (docs/MOTION.md), through the runtime in src/components/Motion.astro.
   useEffect(() => {
     if (placements) (window as { zodiacsMotion?: { scan(root?: ParentNode): void } }).zodiacsMotion?.scan(resultRef.current ?? undefined);
   }, [placements]);
