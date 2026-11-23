@@ -24,8 +24,6 @@ interface Props {
   deferred?: boolean;
   decoding?: 'async' | 'sync' | 'auto';
   class?: string;
-  /** Shared entrance motion (docs/MOTION.md); needs <Motion /> on the page. */
-  enter?: 'disc' | 'rise';
 }
 
 const {
@@ -38,14 +36,13 @@ const {
   deferred = false,
   decoding = 'async',
   class: className,
-  enter,
 } = Astro.props;
 const s = signBySlug(sign);
 const tier = size <= 24 ? 48 : size <= 64 ? 128 : 400;
 const avif = `/assets/zodiac-icons/${tier}/${sign}.avif`;
 const webp = `/assets/zodiac-icons/${tier}/${sign}.webp`;
 ---
-<picture class:list={['sign-icon', className]} style={`--sign:${s.hue};--sign-size:${size}px`} data-enter={enter}>
+<picture class:list={['sign-icon', className]} style={`--sign:${s.hue};--sign-size:${size}px`}>
   {!webpOnly && <source {...(deferred ? { 'data-srcset': avif } : { srcset: avif })} type="image/avif" />}
   <img
     {...(deferred ? { 'data-src': webp } : { src: webp })}

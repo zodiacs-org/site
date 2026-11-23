@@ -53,7 +53,9 @@ const fit = Math.min(1, 9 / [...title].length).toFixed(3);
       </nav>
     )}
     <div class="sg-hero__kicker">
-      <SignIcon sign={slug} size={34} loading="eager" fetchPriority="low" webpOnly class="sg-hero__disc" enter="disc" />
+      {/* The disc grows in once where the page loads the shared motion
+          runtime (docs/MOTION.md); elsewhere it is simply there. */}
+      <span class="sg-hero__disc-in" data-enter="disc"><SignIcon sign={slug} size={34} loading="eager" fetchPriority="low" webpOnly class="sg-hero__disc" /></span>
       {kicker && <span class="kicker">{kicker}</span>}
     </div>
     <h1 class="h-hero sg-hero__title">{title}</h1>
@@ -114,6 +116,7 @@ const fit = Math.min(1, 9 / [...title].length).toFixed(3);
   .sg-hero__crumbs span[aria-hidden] { opacity: 0.6; }
   .sg-hero__kicker { display: flex; align-items: center; gap: 12px; }
   .sg-hero__kicker .kicker { margin: 0; font-size: 1.2rem; color: var(--ink-1); }
+  .sg-hero__disc-in { display: flex; }
   .sg-hero__kicker .sg-hero__disc { width: 34px; }
   .sg-hero__title {
     margin-top: 10px;
