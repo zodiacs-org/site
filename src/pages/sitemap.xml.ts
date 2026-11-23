@@ -774,6 +774,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-22'] as const),
   // Arrival ?ref= list expanded with hn, github and reddit on the privacy page (ZOD-182).
   ['/privacy/', '2026-11-22'] as const,
+  // Conformance scoreboard refreshed for @zodiacs/engine 2.1.0 (639/640, 140/140 L4) and verified PyEphem counts.
+  ['/developers/conformance/', '2026-11-23'] as const,
 ]);
 
 function getLastmod(loc: string): string {
