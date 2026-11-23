@@ -328,7 +328,7 @@ a.kcard { transition: border-color var(--dur-1) var(--ease), background var(--du
 .skyticker__item::after,
 .skyticker__text { grid-area: 1 / 2; }
 .skyticker__item::after {
-  content: attr(data-label);
+  content: attr(data-sizing-text);
   visibility: hidden;
 }
 .skyticker__icon { grid-area: 1 / 1; display: inline-flex; width: 13px; color: var(--text-2); }
