@@ -152,4 +152,20 @@ describe('tools behind a launch switch', () => {
       if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
     }
   });
+
+  it('lists solar return in NAV_MORE and gates year-score and good-days behind their launch flags', () => {
+    const moreHrefs = (on: boolean) => visibleNavMore(() => on).map((entry) => entry.href);
+    expect(moreHrefs(false)).toContain('/solar-return/');
+    expect(moreHrefs(false)).not.toContain('/year-score/');
+    expect(moreHrefs(false)).not.toContain('/good-days/');
+    expect(moreHrefs(true)).toEqual(expect.arrayContaining(['/solar-return/', '/year-score/', '/good-days/']));
+    expect(NAV_MORE.some((entry) => entry.href === '/year-score/')).toBe(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED'));
+    expect(NAV_MORE.some((entry) => entry.href === '/good-days/')).toBe(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED'));
+    for (const entry of ALL_NAV_MORE) {
+      for (const locale of RELEASED_LOCALES) {
+        expect(entry.label[locale].trim()).not.toBe('');
+        expect(entry.label[locale]).not.toMatch(/[\r\n\u2013\u2014]/u);
+      }
+    }
+  });
 });
