@@ -67,4 +67,14 @@ describe('vendored conformance summary', () => {
     expect(html).toContain('mean obliquity');
     expect(html).toContain('<a href="https://github.com/brandon-rhodes/pyephem/blob/4.2.1/LICENSE">Engine licence (MIT)</a>');
   });
+
+  it('preserves nested lists across blank lines, literal code spans, and balanced-paren URLs', () => {
+    const looseNested = '- Parent\n\n  - Child\n\n- Sibling';
+    expect(notesHtml(looseNested)).toBe('<ul><li>Parent<ul><li>Child</li></ul></li><li>Sibling</li></ul>');
+
+    const codeAndParens = 'Literal `[a](https://example.com)` and [wiki](https://en.wikipedia.org/wiki/Delta_T_(timekeeping)).';
+    expect(notesHtml(codeAndParens)).toBe(
+      '<p>Literal <code>[a](https://example.com)</code> and <a href="https://en.wikipedia.org/wiki/Delta_T_(timekeeping)">wiki</a>.</p>',
+    );
+  });
 });
