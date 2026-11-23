@@ -52,6 +52,8 @@ import { isPastPageHidden } from '../lib/indexing/past-pages-hidden-list';
 import { WINDOW_READING_IDS, WINDOW_READINGS_UPDATED } from '../lib/events/window-readings';
 import { launchFlagOn } from '../lib/launch-flags';
 
+// English explainer answers on four thin tool pages (src/lib/seo/tool-explainers.ts).
+const TOOL_EXPLAINERS_LASTMOD = '2026-11-16';
 const SITE = 'https://zodiacs.org';
 type RegistryResearchPublication = {
   generatedAt: string;
@@ -71,10 +73,10 @@ const researchLastmod = terminalResearchLastmod(
 const YEARLY_HOROSCOPE_LASTMOD = '2026-11-06';
 const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
-// The twelve Registry sign pages re-read their mint and freeze authority on chain (thesis evidence refresh).
-const REGISTRY_SIGN_LASTMOD = '2026-11-10';
-// The Registry roster changed on every sign page except Scorpio.
-const REGISTRY_ROSTER_LASTMOD = '2026-11-19';
+// A missing saved price now shows as unavailable, not $0 (same change as the roster pages).
+const REGISTRY_SIGN_LASTMOD = '2026-11-22';
+// A missing saved price now shows as unavailable, not $0.
+const REGISTRY_ROSTER_LASTMOD = '2026-11-22';
 const THESIS_LASTMOD = '2026-11-14';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
@@ -476,7 +478,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/compare/', '2026-09-18'] as const,
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
-  ['/lunar-return/', '2026-09-06'] as const,
+  ['/lunar-return/', '2026-11-16'] as const,
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
@@ -557,9 +559,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ].map((loc) => [loc, AUDIT_REMEDIATION_LASTMOD] as const),
   ...['/', '/about/', '/privacy/', '/terms/'].map((loc) => [loc, LEGAL_IDENTITY_LASTMOD] as const),
   ...dailyEditions.flatMap((edition) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/${edition.day}/`, edition.ownerApproval.approvedAt.slice(0, 10)] as const)),
-  ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, dailyEditions.map((edition) => edition.ownerApproval.approvedAt.slice(0, 10)).sort().at(-1)!] as const) : []),
-  ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, '2026-10-04'] as const)),
-  ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, '2026-10-03'] as const)),
+  ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, [...dailyEditions.map((edition) => edition.ownerApproval.approvedAt.slice(0, 10)), ...(locale === 'en' ? [TOOL_EXPLAINERS_LASTMOD] : [])].sort().at(-1)!] as const) : []),
+  ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, locale === 'en' && path === '/your-sky-wrapped/' ? TOOL_EXPLAINERS_LASTMOD : '2026-10-04'] as const)),
+  ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, locale === 'en' && (path === '/group-charts/' || path === '/chart-twins/') ? TOOL_EXPLAINERS_LASTMOD : '2026-10-03'] as const)),
   ...['/full-moon-calendar/2027/', '/eclipses/2027/', '/mercury-retrograde/2027/']
     .map((loc) => [loc, YEAR_PAGES_LASTMOD] as const),
   ...['/numerology/', '/tools/', '/methodology/'].map((loc) => [loc, NUMEROLOGY_LASTMOD] as const),
@@ -780,6 +782,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-22'] as const),
   // Arrival ?ref= list expanded with hn, github and reddit on the privacy page (ZOD-182).
   ['/privacy/', '2026-11-22'] as const,
+  // Conformance scoreboard refreshed for @zodiacs/engine 2.1.0 (639/640, 140/140 L4) and verified PyEphem counts.
+  ['/developers/conformance/', '2026-11-23'] as const,
 ]);
 
 function getLastmod(loc: string): string {
