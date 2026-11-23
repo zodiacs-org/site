@@ -8,7 +8,8 @@ import { forbiddenClaim } from '../../ai-tools/personal/shared';
 import { PeriodCard } from '../../islands/RetrogradeForYou';
 import { computeRetrogradeForYou, prepareLocalTime, retrogradeForYouRefusal, type RetrogradeForYouInput } from '../../islands/retrograde-for-you/compute';
 import sky from '../../data/sky.json';
-import { CONTACT_LINE, RETROGRADE_ASK, RETROGRADE_LINE } from './reading';
+import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
+import { CONTACT_LINE, POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, natalBasis } from './reading';
 import { loopsFromSky } from './sky';
 import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery } from './share';
 
@@ -267,6 +268,41 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     expect(page.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
     expect(mcp.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
     expect(page.limits).toEqual(mcp.limits.filter((entry) => !entry.startsWith('Today is read')));
+  });
+
+  it('keeps 29 February as 29 February for the under-18 rule: born 1 March 2010 is still a minor that day', async () => {
+    // Madrid, 1 Mar 2010 at 07:15 gives Aquarius rising, so Venus's 2028 loop in Gemini falls in the fifth house,
+    // whose theme names romance. A Date cutoff rolls 29 Feb 2010 over to 1 Mar and read this person as 18.
+    const birth = { birthDate: '2010-03-01', time: '07:15' };
+    const fifth = (periods: readonly { planet: string; houses: readonly { house: number; theme: string; line: string }[]; reading: string }[]) => {
+      const venus = periods.find((period) => period.planet === 'Venus')!;
+      expect(venus.houses[0]).toMatchObject({ house: 5 });
+      return [venus.houses[0].theme, venus.houses[0].line, venus.reading].join(' ');
+    };
+    const leap = await both(birth, new Date('2028-02-29T12:00:00Z'), 'UTC');
+    for (const result of [leap.page, leap.mcp]) {
+      expect(result.limits).toContain(MINOR_NOTE);
+      expect(fifth(result.periods)).not.toMatch(/romance|romantic/iu);
+      expect(JSON.stringify([result.periods, result.summary])).not.toMatch(/romance|romantic|attraction/iu);
+    }
+    const birthday = await both(birth, new Date('2028-03-01T12:00:00Z'), 'UTC');
+    for (const result of [birthday.page, birthday.mcp]) {
+      expect(result.limits).not.toContain(MINOR_NOTE);
+      expect(fifth(result.periods)).toContain('romance');
+    }
+  });
+
+  it('reads the under-18 rule on the civil date, leap day included', () => {
+    const bodies = POINT_NAMES.map((body, index) => ({ body, lon: index * 30 }));
+    const minor = (birthDate: string, today: string) => natalBasis({
+      timeKnown: true, placed: true, angles: { asc: 0, mc: 270 }, bodies, sunHeld: true, birthDate, today,
+    }).minor;
+    expect(minor('2010-03-01', '2028-02-28')).toBe(true);
+    expect(minor('2010-03-01', '2028-02-29')).toBe(true);
+    expect(minor('2010-03-01', '2028-03-01')).toBe(false);
+    // Born on 29 February: under 18 until the calendar reaches 1 March in a common year.
+    expect(minor('2008-02-29', '2026-02-28')).toBe(true);
+    expect(minor('2008-02-29', '2026-03-01')).toBe(false);
   });
 });
 
