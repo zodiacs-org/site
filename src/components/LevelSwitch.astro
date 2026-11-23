@@ -19,16 +19,25 @@ import Motion from './Motion.astro';
 // frame or the page shifts.
 import levelCss from '../styles/level.css?raw';
 
+type Words = { hint?: string; status?: string };
 interface Props {
   /** Prefix for element ids, so two switches on one page never clash. */
   idPrefix?: string;
+  /**
+   * What each level opens on this page, for pages that open less than the
+   * birth chart. The question and the status line promise only what is there.
+   */
+  words?: Partial<Record<'beginner' | 'intermediate' | 'advanced', Words>>;
 }
-const { idPrefix = 'level' } = Astro.props;
+const { idPrefix = 'level', words = {} } = Astro.props;
 const options = [
-  { level: 'beginner', label: 'Beginner', answer: "I'm new to it", hint: 'Plain words, the key parts first' },
-  { level: 'intermediate', label: 'Intermediate', answer: 'I know my big three', hint: 'Houses, aspects and transits open' },
-  { level: 'advanced', label: 'Advanced', answer: 'I read charts myself', hint: 'Exact positions, the 3D view and data' },
-];
+  { level: 'beginner', label: 'Beginner', answer: "I'm new to it", hint: 'Plain words, the key parts first',
+    status: 'Showing plain words and the key parts first.' },
+  { level: 'intermediate', label: 'Intermediate', answer: 'I know my big three', hint: 'Houses, aspects and transits open',
+    status: 'Showing houses, aspects and transits too.' },
+  { level: 'advanced', label: 'Advanced', answer: 'I read charts myself', hint: 'Exact positions, the 3D view and data',
+    status: 'Showing everything, down to exact positions.' },
+].map((o) => ({ ...o, ...words[o.level as keyof typeof words] }));
 ---
 <script is:inline>
   (function () {
@@ -69,7 +78,9 @@ const options = [
         <button type="button" class="level-switch__btn" data-level-set={o.level} aria-pressed="false">{o.label}</button>
       ))}
     </div>
-    <p class="level-switch__status" data-level-status aria-live="polite"></p>
+    <p class="level-switch__status" data-level-status aria-live="polite"
+      data-status-beginner={options[0].status} data-status-intermediate={options[1].status}
+      data-status-advanced={options[2].status}></p>
   </div>
 </div>
 <script is:inline>

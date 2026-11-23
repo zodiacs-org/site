@@ -774,6 +774,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-22'] as const),
   // Arrival ?ref= list expanded with hn, github and reddit on the privacy page (ZOD-182).
   ['/privacy/', '2026-11-22'] as const,
+  // Reader levels on the rising sign and Moon sign pages: the level switch, the first visit
+  // question and the data links for chart readers (docs/LEVELS.md), last so these dates win.
+  ...['/rising-sign/', '/moon-sign/'].map((loc) => [loc, '2026-11-23'] as const),
 ]);
 
 function getLastmod(loc: string): string {

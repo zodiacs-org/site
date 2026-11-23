@@ -90,8 +90,29 @@ describe('level rules in the page', () => {
     // The pressed button is marked inline, right after the switch, before paint.
     const pressedInline = component.slice(component.indexOf('</div>\n</div>\n<script is:inline>'));
     expect(pressedInline).toContain("setAttribute('aria-pressed'");
-    expect(wiring.slice(wiring.indexOf('function apply('))).toContain('STATUS[level]');
+    expect(wiring.slice(wiring.indexOf('function apply('))).toContain('data-status-${level}');
     expect(wiring).toContain('[data-level-set="${pageLevel() ?? DEFAULT_LEVEL}"]`)?.focus()');
+  });
+
+  it('takes each page\'s own wording for the question and the status line', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const read = (path: string) => readFile(new URL(path, import.meta.url), 'utf8');
+    const component = await read('../components/LevelSwitch.astro');
+    const wiring = await read('./level-switch.ts');
+    // The status line reads the words its own switch carries, not a fixed list.
+    expect(component).toContain('data-status-advanced={options[2].status}');
+    expect(wiring).toContain('data-status-${level}');
+    expect(wiring).not.toMatch(/const STATUS\b/);
+    // Pages that open less than the birth chart never promise its 3D view.
+    for (const page of ['../pages/rising-sign/index.astro', '../pages/moon-sign/index.astro']) {
+      const source = await read(page);
+      expect(source).toMatch(/<LevelSwitch[^>]*words=\{\{[\s\S]*intermediate:[\s\S]*advanced:/);
+      const tag = source.slice(source.indexOf('<LevelSwitch'), source.indexOf('/>', source.indexOf('<LevelSwitch')));
+      expect(tag).not.toContain('3D');
+      // Everything the intermediate and advanced words promise is marked to open.
+      expect(source).toContain('data-depth="intermediate"');
+      expect(source).toContain('data-depth="advanced"');
+    }
   });
 
   it('lets the chart island follow the level without loading the shared level code', async () => {
@@ -139,7 +160,7 @@ describe('level rules in the page', () => {
   it('adds no mono font to first paint', async () => {
     const { readFile } = await import('node:fs/promises');
     const css = (await readFile(new URL('../styles/level.css', import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '');
-    const firstPaint = css.split('}').filter((rule) => /\.level-(switch|ask)/.test(rule.split('{')[0]));
+    const firstPaint = css.split('}').filter((rule) => /\.level-(switch|ask|data)/.test(rule.split('{')[0]));
     expect(firstPaint.length).toBeGreaterThan(0);
     for (const rule of firstPaint) expect(rule).not.toContain('--font-mono');
   });

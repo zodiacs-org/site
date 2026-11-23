@@ -6,11 +6,6 @@
  */
 import { DEFAULT_LEVEL, LEVEL_ASKED_KEY, LEVEL_EVENT, LEVEL_STORAGE_KEY, isLevel, pageLevel, type Level } from './level';
 
-const STATUS: Record<Level, string> = {
-  beginner: 'Showing plain words and the key parts first.',
-  intermediate: 'Showing houses, aspects and transits too.',
-  advanced: 'Showing everything, down to exact positions.',
-};
 const MARKED = '[data-depth], [data-depth-only]';
 
 const store = {
@@ -31,7 +26,10 @@ function apply(level: Level) {
     b.setAttribute('aria-pressed', String(b.dataset.levelSet === level));
   });
   window.dispatchEvent(new CustomEvent(LEVEL_EVENT, { detail: { level } }));
-  document.querySelectorAll('[data-level-status]').forEach((s) => { s.textContent = STATUS[level]; });
+  // Each switch carries its page's own wording (LevelSwitch's words prop).
+  document.querySelectorAll<HTMLElement>('[data-level-status]').forEach((s) => {
+    s.textContent = s.getAttribute(`data-status-${level}`) ?? '';
+  });
   // Depth that just opened fades in once, outermost blocks only, in reading
   // order. It fades without rising, because readings inside stay still
   // (docs/MOTION.md). Motion is off for reduced motion (html[data-entrance]).

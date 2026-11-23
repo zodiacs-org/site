@@ -5,6 +5,7 @@ import HorizonDiagram from '../../components/HorizonDiagram.astro';
 import { ART, artSrc, artSrcset } from '../../lib/art';
 import PlanetGlyph from '../../components/PlanetGlyph';
 import ChartCalculator from '../../islands/ChartCalculator';
+import LevelSwitch from '../../components/LevelSwitch.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import { SIGNS } from '../../lib/signs';
 import { RISING } from '../../lib/interpretations';
@@ -128,11 +129,22 @@ const gap = later.minutes - example.minutes;
         <nav class="rs-crumbs" aria-label="Breadcrumb"><a href="/tools/">Tools</a><span aria-hidden="true">/</span><span aria-current="page">Rising sign</span></nav>
         <h1 class="rs-title">Find your rising sign.</h1>
         <p class="klede rs-lede">The sign that was coming up on the eastern horizon the moment you were born. It describes how people first meet you, and it sets the shape of your whole chart.</p>
+        <LevelSwitch idPrefix="rs-level" words={{
+          intermediate: { hint: 'Your chart ruler and a day of rising signs open',
+            status: 'Showing the chart ruler and a day of rising signs too.' },
+          advanced: { hint: 'Plus how we calculate and the chart data',
+            status: 'Showing everything, with how we calculate and the chart data.' },
+        }} />
 
         <ChartCalculator mode="rising" client:load />
         <noscript>
           <p>This rising sign calculator needs JavaScript. Enable it and reload with your birth date, exact time, and place to calculate your ascendant.</p>
         </noscript>
+        <nav class="level-data" data-depth="advanced" aria-label="Data for chart readers">
+          <span class="level-data__cap">For chart readers</span>
+          <a href="/methodology/">How we calculate</a>
+          <a href="/developers/">Chart data API</a>
+        </nav>
 
         <p class="rs-notime">
           <span class="rs-notime__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 3.6a8.6 8.6 0 1 0 4.9 13.9A7 7 0 0 1 15.5 3.6z" /></svg></span>
@@ -157,7 +169,7 @@ const gap = later.minutes - example.minutes;
           </div>
           <div class="rs-example__sign"><h2 class="h-2">{example.sign.name} rising</h2><span class="rs-mono">{example.degree}</span></div>
           <p class="rs-example__read">{RISING[example.sign.slug]}</p>
-          <div class="rs-example__rows">
+          <div class="rs-example__rows" data-depth="intermediate">
             <div>
               <span class="rs-example__ri" aria-hidden="true"><PlanetGlyph body={example.ruler} size={15} /></span>
               <span><b>Chart ruler: {example.ruler} in {example.rulerSign.name}.</b> <span class="rs-m">The planet steering your rising sign.</span></span>
@@ -195,7 +207,7 @@ const gap = later.minutes - example.minutes;
     </div>
 
     <!-- One day of rising signs: one strip on a wide screen, two half days on a phone. -->
-    <div class="rs-day rs-day--d">
+    <div class="rs-day rs-day--d" data-depth="intermediate">
       <div class="rs-day__head">
         <h3 class="h-3">One day in {RISING_EXAMPLE.place}, {RISING_EXAMPLE.date}</h3>
         <p>Each band is one rising sign. Wider bands took longer to rise.</p>
@@ -225,7 +237,7 @@ const gap = later.minutes - example.minutes;
       </div>
     </div>
 
-    <div class="rs-day rs-day--m">
+    <div class="rs-day rs-day--m" data-depth="intermediate">
       <div class="rs-day__head">
         <h3 class="h-3">One day in {RISING_EXAMPLE.place}, {RISING_EXAMPLE.date}</h3>
         <p>Each band is one rising sign. Wider bands took longer to rise.</p>

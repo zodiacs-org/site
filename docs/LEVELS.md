@@ -12,6 +12,14 @@ HTML, so search engines and readers without JavaScript see every depth.
 | Intermediate | "I know my big three" | Houses, aspect lines, the chart lenses (sky now, progressed, year ahead), patterns and context |
 | Advanced | "I read charts myself" | The 3D view, the exact positions table, the receipt and data links |
 
+The rising sign and Moon sign pages open less, and say so through
+`<LevelSwitch words>`:
+
+| Page | Intermediate opens | Advanced adds |
+| --- | --- | --- |
+| /rising-sign/ | The chart ruler rows and one day of rising signs | How we calculate and the chart data API |
+| /moon-sign/ | Why birth time can change your Moon | How we calculate and the chart data API |
+
 Beginner is the default. The choice lives in this browser only
 (`localStorage` key `zodiacs-level`), never in a link and never on a server.
 
@@ -20,7 +28,9 @@ Beginner is the default. The choice lives in this browser only
 1. Put `<LevelSwitch />` once, above anything marked. It sets
    `html[data-level]` before the marked content is parsed, asks the first
    visit question, and shows the switch. Give it an `idPrefix` if a page could
-   ever hold two.
+   ever hold two. A page that opens less than the birth chart passes `words`
+   with its own hint and status line for each level, so the question and the
+   switch promise only what that page has.
 2. Mark markup:
    - `data-depth="intermediate"`: shown from Intermediate up.
    - `data-depth="advanced"`: Advanced only.
