@@ -145,8 +145,8 @@ const jsonLd = [
 >
   <section class="section--tight container container--narrow">
     <Motion />
+    <ToolHeroMark name="retrogrades" />
     <div class="tool-hero reveal">
-      <ToolHeroMark name="retrogrades" />
       <h1 class="display">See when Mercury turns retrograde.</h1>
       <p>
         Every window below is computed from <a href="/learn/glossary/#mercury">Mercury</a>’s actual motion,
@@ -284,8 +284,9 @@ const jsonLd = [
   }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
-  /* The tool's mark floats beside the heading (ToolHeroMark). Clear it at the
-     hero's end so the form below never slides up beside it; a clearfix rather
-     than flow-root keeps the heading's margins collapsing as before. */
-  .tool-hero::after { content: ''; display: block; clear: right; }
+  /* The tool's mark (ToolHeroMark) sits in the hero's top-right corner only where
+     the heading and intro leave it room on main; at these widths they do not. */
+  @media (max-width: 337px), (min-width: 617px) and (max-width: 709px) {
+    :global(.tool-hero-mark) { display: none; }
+  }
 </style>

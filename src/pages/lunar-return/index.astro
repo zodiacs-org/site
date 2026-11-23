@@ -20,7 +20,8 @@ const jsonLd = [
 <Base accountSurface clientUi inlineCriticalCss title="Lunar Return Calculator — Your Next Moon Return" description="Find your next lunar return with a known birth time. Explore its chart, save a private image, or add the moment to your calendar." path="/lunar-return/" jsonLd={jsonLd}>
   <section class="section--tight container">
     <Motion />
-    <div class="tool-hero"><ToolHeroMark name="lunar-return" /><h1 class="display">Your lunar return</h1><p>Find the next time the Moon returns to its place in your birth chart. Explore a fresh set of prompts for everyday care, connection, and attention.</p></div>
+    <ToolHeroMark name="lunar-return" />
+    <div class="tool-hero"><h1 class="display">Your lunar return</h1><p>Find the next time the Moon returns to its place in your birth chart. Explore a fresh set of prompts for everyday care, connection, and attention.</p></div>
     <!-- Use the existing intent trigger and automatic post-load fallback so
          calculator dependencies do not compete with the first text paint. -->
     <LunarReturnCalculator client:interaction />
@@ -39,8 +40,4 @@ const jsonLd = [
   .faq__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); min-height: 44px; }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
-  /* The tool's mark floats beside the heading (ToolHeroMark). Clear it at the
-     hero's end so the form below never slides up beside it; a clearfix rather
-     than flow-root keeps the heading's margins collapsing as before. */
-  .tool-hero::after { content: ''; display: block; clear: right; }
 </style>
