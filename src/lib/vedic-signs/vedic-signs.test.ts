@@ -1,4 +1,5 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { NAKSHATRAS, siderealChart } from '@zodiacs/engine/vedic';
 import { computeVedicSigns } from './compute';
 import { UNDER_13_MESSAGE, forwardRun, isUnder13, listOr, vedicReading } from './reading';
@@ -7,6 +8,8 @@ import { AYANAMSA_NAME, NAKSHATRA_LORE, NAKSHATRA_NAMES, RASHIS, RASHI_LINE, VED
 import { forbiddenClaim } from '../../ai-tools/personal/shared';
 import { softenMinor } from '../../ai-tools/features/reading-guards';
 import { signIndexForLongitude } from '../signs';
+import { FUTURE_BIRTH_DATE_SENTENCE } from '../birth-date-policy';
+import { vedicFormRefusal } from '../../islands/VedicSigns';
 
 const angle = (a: number, b: number) => Math.abs(((a - b + 540) % 360) - 180);
 
@@ -55,6 +58,42 @@ describe('the Vedic signs the page and the tool share', () => {
   it('refuses a birth date under 13 years old', () => {
     expect(isUnder13('2014-11-10', '2026-11-09')).toBe(true);
     expect(isUnder13('2013-11-09', '2026-11-09')).toBe(false);
+  });
+
+  describe('the form reads the birthday by the shared policy, at UTC-12, whatever the device says', () => {
+    const zone = process.env.TZ;
+    afterEach(() => {
+      if (zone === undefined) delete process.env.TZ;
+      else process.env.TZ = zone;
+    });
+
+    // At 2026-11-23T00:30Z it is already the 23rd in Bangkok (07:30), but still the 22nd at UTC-12.
+    it.each(['Asia/Bangkok', 'Pacific/Kiritimati', 'Europe/Madrid', 'UTC', 'America/New_York', 'Pacific/Pago_Pago'])(
+      'refuses the 13th birthday until it has begun everywhere, on a device in %s',
+      (deviceZone) => {
+        process.env.TZ = deviceZone;
+        expect(vedicFormRefusal('2013-11-23', new Date('2026-11-23T00:30:00Z'))).toBe(UNDER_13_MESSAGE);
+        expect(vedicFormRefusal('2013-11-23', new Date('2026-11-23T11:59:59Z'))).toBe(UNDER_13_MESSAGE);
+        expect(vedicFormRefusal('2013-11-23', new Date('2026-11-23T12:00:00Z'))).toBeNull();
+        expect(vedicFormRefusal('2013-11-22', new Date('2026-11-23T00:30:00Z'))).toBeNull();
+      },
+    );
+
+    it('calls a date the future only past the calendar date at UTC+14', () => {
+      expect(vedicFormRefusal('2026-11-24', new Date('2026-11-23T09:59:59Z'))).toBe(FUTURE_BIRTH_DATE_SENTENCE);
+      expect(vedicFormRefusal('2026-11-24', new Date('2026-11-23T10:00:00Z'))).toBe(UNDER_13_MESSAGE);
+    });
+
+    it('checks the converted date before it loads the calculation, not on the device clock', () => {
+      const source = readFileSync(new URL('../../islands/VedicSigns.tsx', import.meta.url), 'utf8');
+      const calculate = source.slice(source.indexOf('async function calculate('));
+      const check = calculate.indexOf('vedicFormRefusal(birthDate)');
+      expect(check).toBeGreaterThan(calculate.indexOf('birthDate = entry.date'));
+      expect(check).toBeLessThan(calculate.indexOf("import('./vedic-signs/compute')"));
+      expect(check).toBeLessThan(calculate.indexOf('prepareLocalTime('));
+      expect(source).toMatch(/birthDateRefusal\(birthDate, now\)/u);
+      expect(source).not.toMatch(/todayLocal|getFullYear/u);
+    });
   });
 
   it('gives an untimed day’s Moon as candidates when it changed sign, and no rising sign', async () => {

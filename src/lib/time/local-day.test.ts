@@ -158,4 +158,3 @@ describe('a local date as real time, on clock changes no zone made', () => {
     expect(iso(localDaySpan('1920-05-02', clock))).toEqual(iso(await span('1920-05-02', 'America/St_Johns')));
   });
 });
-

@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
 import type { City } from '../lib/geo/search';
 import type { VedicReading, VedicSign } from '../lib/vedic-signs/reading';
-import { UNDER_13_MESSAGE, isUnder13, listOr } from '../lib/vedic-signs/reading';
+import { UNDER_13_MESSAGE, listOr } from '../lib/vedic-signs/reading';
+import { birthDateRefusal, birthDateRefusalText } from '../lib/birth-date-policy';
 import { AYANAMSA_NAME, VEDIC_AYANAMSAS, type VedicAyanamsa } from '../lib/vedic-signs/wording';
 import { VEDIC_SIGNS_SHARE_PATH, vedicSignsShareQuery } from '../lib/vedic-signs/share';
 import { SIGNS } from '../lib/signs';
@@ -20,9 +21,17 @@ const AYANAMSA_HELP: Record<VedicAyanamsa, string> = {
   'true-chitra': 'Lahiri’s idea held exactly: the star Spica at 0 degrees Libra on the day.',
 };
 
-function todayLocal(): string {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+/**
+ * The form's message when the shared birth date policy (src/lib/birth-date-policy.ts)
+ * refuses a converted Gregorian birth date, or null. The policy reads today at
+ * UTC-12, whatever this device's clock and zone say, so nobody is read before
+ * their 13th birthday has begun everywhere; a date after the calendar date at
+ * UTC+14 is still to come.
+ */
+export function vedicFormRefusal(birthDate: string, now: Date = new Date()): string | null {
+  const refusal = birthDateRefusal(birthDate, now);
+  if (refusal === null) return null;
+  return refusal === 'under_13' ? UNDER_13_MESSAGE : birthDateRefusalText(refusal);
 }
 
 function degrees(value: number): string {
@@ -125,8 +134,9 @@ export default function VedicSigns() {
         if ('error' in entry) { setError(entry.error); return; }
         birthDate = entry.date;
       }
-      // Under 13: say so, and work nothing out.
-      if (isUnder13(birthDate, todayLocal())) { setError(UNDER_13_MESSAGE); return; }
+      // Under 13, or still to come: say so, and work nothing out.
+      const refusal = vedicFormRefusal(birthDate);
+      if (refusal) { setError(refusal); return; }
       const { computeVedicFromForm, prepareLocalTime } = await loadModule(() => import('./vedic-signs/compute'));
       const input = { birthDate, birthTime: timeKnown ? time : null, place: { tz: city.tz, lat: city.lat, lon: city.lon }, ayanamsa };
       await prepareLocalTime(input.birthDate, input.place.tz);
