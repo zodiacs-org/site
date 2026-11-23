@@ -748,7 +748,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
     <ul class="home-signs__row" role="list">
       {SIGNS.map((s) => (
         <li>
-          <a class="home-sign" href={`/${s.slug}/`} style={`--sign:${s.hue}`} data-enter="rise">
+          <a class="home-sign" href={`/${s.slug}/`} style={`--sign:${s.hue}`}>
             <ArtFrame
               sign={s.slug}
               alt=""
