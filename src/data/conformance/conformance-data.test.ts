@@ -8,6 +8,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import source from './source.json';
+import { notesHtml } from './notes-html';
 
 const bytes = readFileSync(resolve(__dirname, 'summary.json'));
 const summary = JSON.parse(bytes.toString('utf8'));
@@ -52,5 +53,18 @@ describe('vendored conformance summary', () => {
   it('publishes no per-vector values for Swiss Ephemeris', () => {
     const swiss = summary.runs.find((run: { adapter: { engine: string } }) => run.adapter.engine === 'Swiss Ephemeris');
     expect(swiss.values).toBe('none');
+  });
+
+  it('renders non-empty HTML notes for every engine, including paragraph and link notes', () => {
+    for (const run of summary.runs) {
+      const html = notesHtml(run.notes);
+      expect(html.length).toBeGreaterThan(100);
+      expect(html).not.toMatch(/\[[^\]]+\]\(https:\/\//u);
+    }
+    const pyephem = summary.runs.find((run: { file: string }) => run.file === 'results/pyephem.json');
+    const html = notesHtml(pyephem.notes);
+    expect(html).toContain('<p>');
+    expect(html).toContain('mean obliquity');
+    expect(html).toContain('<a href="https://github.com/brandon-rhodes/pyephem/blob/4.2.1/LICENSE">Engine licence (MIT)</a>');
   });
 });
