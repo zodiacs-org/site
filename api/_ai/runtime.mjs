@@ -43007,7 +43007,7 @@ var LINE_MEANING = {
   },
   Venus: {
     ASC: "Traditionally a place where you feel attractive and at ease, and where life is more pleasant and sociable.",
-    DSC: "Traditionally one of the classic lines for love and partnership, and for agreements that go smoothly.",
+    DSC: "Traditionally one of the classic lines for love and partnership, and for negotiating agreements.",
     MC: "Traditionally good for work in the arts, design, beauty and diplomacy, and for being liked in public; often read as a place where work feels more pleasant and goes more smoothly.",
     IC: "Traditionally a place for a beautiful, comfortable home and warm family life."
   },
@@ -43019,7 +43019,7 @@ var LINE_MEANING = {
   },
   Jupiter: {
     ASC: "Traditionally one of the luckiest lines: a place of optimism, growth and opportunities that seem to find you.",
-    DSC: "Traditionally a place for generous partners, helpful advisers and agreements that work in your favour.",
+    DSC: "Traditionally a place for generous partners, helpful advisers and working out agreements together.",
     MC: "Traditionally one of the best lines for career growth and a good name: a place where work opens up, mentors are generous and your horizons widen.",
     IC: "Traditionally a place for a large, happy home, good for family, property and feeling well provided for."
   },
@@ -43167,7 +43167,6 @@ var astrocartographyInput = z16.strictObject({
   time: birthFields.time.unwrap().describe("The birth time on the local clock, such as 08:30. Required: the lines move about 1 degree of longitude for every 4 minutes of birth time. Never guess it. Needs zone."),
   zone: birthFields.zone.unwrap().describe("The birthplace's time zone, such as Europe/Madrid. Required."),
   latitude: birthFields.latitude.describe("Optional. The birthplace's latitude, with longitude: it matters only for births on local mean time, before standard time zones. Nothing is stored."),
-  currentZone: zoneField.optional().describe("Where the person is now, such as Asia/Bangkok, so their age is read on their own clock, as get_personal_day reads it."),
   cities: z16.array(z16.string().trim().min(2).max(80)).max(ACG_MAX_CITIES).optional().describe(`Optional. Up to ${ACG_MAX_CITIES} towns or cities to check, such as "Lisbon" or "Paris, France" (a country after a comma when several places share the name). Names are matched against the place index bundled with Zodiacs and not sent anywhere or stored.`)
 }).superRefine(refineBirth);
 var body = z16.enum(ACG_BODIES);
@@ -43238,7 +43237,8 @@ async function getAstrocartography(args, context) {
   const utc = natal.birthUtc;
   const bodies = equatorialBodies(utc);
   const gast = greenwichSiderealDegrees(utc);
-  if (args.currentZone) await context.resolveZone(args.currentZone, "/currentZone");
+  const confidence = readingConfidence(natal.detail);
+  const confidenceLabel = readingConfidenceText(confidence);
   const under18 = under18At(args.birthDate, context.now);
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
   const lines = bodies.map((entry) => {
@@ -43283,7 +43283,7 @@ async function getAstrocartography(args, context) {
           distanceMiles: Math.round(distanceKm2 / KM_PER_MILE),
           side: row.side,
           strength: strengthOf(row.km),
-          line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${ACG_CONFIDENCE_TEXT}.`,
+          line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
           shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle })
         };
       });
@@ -43308,8 +43308,8 @@ async function getAstrocartography(args, context) {
       cities,
       unmatched,
       readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
-      confidence: ACG_CONFIDENCE,
-      confidenceLabel: ACG_CONFIDENCE_TEXT,
+      confidence,
+      confidenceLabel,
       limits: limits2,
       pageUrl: `${context.origin}/astrocartography/`
     },
@@ -43324,7 +43324,7 @@ var astrocartographyTool = definePersonalTool({
   name: "get_astrocartography",
   title: "Your map lines",
   summary: "astrocartography lines, and the lines nearest named towns and cities",
-  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
+  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13: check the birth date first, and ask for no birth time or birthplace when it is less than 13 years ago, since the tool refuses that date. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
   // The readings change on the eighteenth birthday, so a repeat call can differ as the server's clock moves.
@@ -45643,6 +45643,7 @@ function childBirthDateRefusal(tool, args, now, hostZone) {
   const today2 = earliestToday(now);
   return birthDatesIn(tool, args, now, hostZone).some((date3) => isUnder13(date3, today2)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
 }
+var AGE_FIRST_TOOLS = /* @__PURE__ */ new Set(["get_astrocartography"]);
 function occasionCardUrl(args) {
   if (BIRTH_OCCASIONS.has(args.occasion)) return null;
   if (args.zone && (args.latitude === void 0 || args.longitude === void 0)) return null;
@@ -45707,6 +45708,10 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
     if (OCCASION_TOOL_NAMES.includes(tool) && !dependencies.occasions) return failure(tool, "unavailable", "This tool is not offered here.");
     if ((COVERAGE_TOOL_NAMES.includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
+    if (AGE_FIRST_TOOLS.has(tool)) {
+      const child2 = childBirthDateRefusal(tool, input, dependencies.now?.() ?? /* @__PURE__ */ new Date(), context.hostZone);
+      if (child2) return child2;
+    }
     if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) {
       const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents2, switches));
       if (refusal) return refusal;
@@ -47691,6 +47696,8 @@ function createAiNodeHandler(options = {}) {
             if (options.de440 && (message.method === "tools/list" || message.method === "server/discover")) {
               describeDe440Tools(parsed2.result);
             }
+            const child2 = calledTool && AGE_FIRST_TOOLS.has(calledTool) && parsed2.result?.isError && !parsed2.result?.structuredContent ? childBirthDateRefusal(calledTool, message.params.arguments, options.dependencies?.now?.() ?? /* @__PURE__ */ new Date()) : null;
+            if (child2) return JSON.stringify({ ...parsed2, result: { isError: true, content: [{ type: "text", text: JSON.stringify(child2) }], structuredContent: child2 } });
             const named2 = calledTool && (COVERAGE_TOOL_NAMES.includes(calledTool) || PLACE_TOOL_NAMES.includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || isGoodDaysTool(calledTool) || PERSONAL_TOOL_NAMES.includes(calledTool)) && parsed2.result?.isError && !parsed2.result?.structuredContent ? coverageInputRefusal(calledTool, message.params.arguments, inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : null;
             if (named2) return JSON.stringify({ ...parsed2, result: { isError: true, content: [{ type: "text", text: JSON.stringify(named2) }], structuredContent: named2 } });
             return JSON.stringify(sanitizeProtocolMessage(parsed2, refusal));

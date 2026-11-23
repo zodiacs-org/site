@@ -131,6 +131,13 @@ describe('the astrocartography page', () => {
     });
   });
 
+  it('searches places over the whole index, so no request carries a letter of the birthplace or a checked town', () => {
+    const source = readFileSync(new URL('./AstrocartographyMap.tsx', import.meta.url), 'utf8');
+    const searches = source.match(/<PlaceSearch\b[^>]*>/gu) ?? [];
+    expect(searches).toHaveLength(2);
+    for (const search of searches) expect(search).toMatch(/\swholeIndex\s/u);
+  });
+
   it('reads the under-18 care on the same day as the get_astrocartography tool', () => {
     for (const iso of ['2026-11-10T02:00:00Z', '2026-11-10T11:59:59Z', '2026-11-10T12:00:00Z']) {
       expect(under18('2008-11-10', new Date(iso)), iso).toBe(under18At('2008-11-10', new Date(iso)));

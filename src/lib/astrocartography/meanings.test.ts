@@ -70,10 +70,10 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
 
   it('take the age on the calendar date at UTC-12, as the page does, whatever clock the person is on', async () => {
     // 20:00 UTC on 9 Nov 2026 is already 10 Nov in Bangkok, but still 9 Nov at UTC-12: an 18th birthday on 10 Nov
-    // has not begun everywhere, so the under-18 readings stay, with a current zone or without one.
+    // has not begun everywhere, so the under-18 readings stay. The tool takes no current zone at all.
     const late = { ...ON, now: () => new Date('2026-11-09T20:00:00Z') };
     const args = { birthDate: '2008-11-10', time: '08:30', zone: 'Europe/London' };
-    for (const call of [{ ...args, currentZone: 'Asia/Bangkok' }, { ...args, currentZone: 'Pacific/Kiritimati' }, args]) {
+    for (const call of [args, { ...args, zone: 'Asia/Bangkok' }, { ...args, zone: 'Pacific/Kiritimati' }]) {
       const answer = await executeAiTool('get_astrocartography', call, late) as { ok: true; data: any };
       expect(answer.data.limits, JSON.stringify(call)).toContain(MINOR_NOTE);
       // The age no longer depends on a clock, so the answer names none.
@@ -81,7 +81,7 @@ describe('astrocartography readings for someone under 18 (ZOD-26)', () => {
     }
     // From noon UTC on 10 Nov it is the 10th at UTC-12 too: the adult reading, wherever the person is.
     const begun = { ...ON, now: () => new Date('2026-11-10T12:00:00Z') };
-    for (const call of [{ ...args, currentZone: 'Pacific/Pago_Pago' }, args]) {
+    for (const call of [{ ...args, zone: 'Pacific/Pago_Pago' }, args]) {
       const answer = await executeAiTool('get_astrocartography', call, begun) as { ok: true; data: any };
       expect(answer.data.limits, JSON.stringify(call)).not.toContain(MINOR_NOTE);
     }
@@ -221,5 +221,14 @@ describe('astrocartography readings and money', () => {
     const answer = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['New York', 'Lisbon', 'Tokyo', 'Sydney', 'Lima'] }, ON);
     expect(answer.ok).toBe(true);
     expect(JSON.stringify(answer)).not.toMatch(MONEY);
+  });
+});
+
+describe('agreements on the Descendant lines', () => {
+  it('read Venus and Jupiter as negotiation and working together, never as how an agreement turns out', () => {
+    expect(LINE_MEANING.Venus.DSC).toBe('Traditionally one of the classic lines for love and partnership, and for negotiating agreements.');
+    expect(LINE_MEANING.Jupiter.DSC).toBe('Traditionally a place for generous partners, helpful advisers and working out agreements together.');
+    const OUTCOME = /\b(?:agreements?|contracts?|deals?|negotiations?)\b[^.]*\b(?:smooth\w*|favou?r\w*|succeed\w*|go(?:es)? well|win\w*|pay off)\b/iu;
+    for (const body of ACG_BODIES) for (const angle of ACG_ANGLES) expect(LINE_MEANING[body][angle], `${body} ${angle}`).not.toMatch(OUTCOME);
   });
 });

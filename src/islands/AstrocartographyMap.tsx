@@ -123,7 +123,7 @@ export function AcgBirthFields({ date, calendar, check, time, city, onDateChange
     <div class="field">
       <label class="field__label" for="acg-place">{t('en', 'birthplace')}</label>
       {open
-        ? <PlaceSearch id="acg-place" selected={city} onSelect={onCityChange} locale="en" selectionHint={t('en', 'placePickHint')} required />
+        ? <PlaceSearch id="acg-place" selected={city} onSelect={onCityChange} locale="en" selectionHint={t('en', 'placePickHint')} required wholeIndex />
         : <input id="acg-place" class="field__input" type="text" disabled placeholder={t('en', 'placePlaceholder')} aria-describedby="acg-place-help" />}
       <p id="acg-place-help" class="field__help">The birthplace sets the time zone of the birth time.</p>
     </div>,
@@ -143,6 +143,13 @@ export default function AstrocartographyMap() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const revision = useRef(0);
+  // An edit to the birth details withdraws the map drawn for the old ones and any draw still running, so neither the
+  // map nor its place readings stay on screen for details the form now holds differently (or refuses).
+  function invalidate() {
+    ++revision.current;
+    setResult(null); setPlaces([]); setAdding(null); setMinor(false); setBusy(false); setError('');
+  }
+  const edit = <T,>(set: (value: T) => void) => (value: T) => { invalidate(); set(value); };
   // The date is checked as it is entered: at once for a Gregorian date, after conversion for one written another way.
   const dateKey = `${calendar}|${date}`;
   const quick = quickDateCheck(date, calendar);
@@ -212,7 +219,7 @@ export default function AstrocartographyMap() {
           <div class="calc__fields">
             <AcgBirthFields
               date={date} calendar={calendar} check={check} time={time} city={city}
-              onDateChange={setDate} onCalendarChange={setCalendar} onTimeChange={setTime} onCityChange={setCity}
+              onDateChange={edit(setDate)} onCalendarChange={edit(setCalendar)} onTimeChange={edit(setTime)} onCityChange={edit(setCity)}
             />
           </div>
           <button class="btn btn--primary calc__submit" type="submit" disabled={!dateOpen || !time || !city || busy}><span>{busy ? 'Drawing…' : 'Draw my map'}</span><span class="orb" aria-hidden="true">↗</span></button>
@@ -276,7 +283,7 @@ export default function AstrocartographyMap() {
           <div class="acg__places">
             <div class="field">
               <label class="field__label" for="acg-check">Check a town or city</label>
-              <PlaceSearch key={`check-${places.length}`} id="acg-check" selected={adding} onSelect={addPlace} locale="en" />
+              <PlaceSearch key={`check-${places.length}`} id="acg-check" selected={adding} onSelect={addPlace} locale="en" wholeIndex />
               <p class="field__help">Up to {MAX_PLACES} places. Lines within about {STRONG_KM} km are read as strong; by about {NOTICEABLE_KM} km they fade.</p>
             </div>
             {places.map(({ city: place, lines }) => {

@@ -11,10 +11,12 @@ const harness = vi.hoisted(() => ({
   writes: vi.fn(),
   search: vi.fn(),
   preload: vi.fn(),
+  wholeSearch: vi.fn(),
+  wholePreload: vi.fn(),
   load: vi.fn(),
 }));
 
-vi.mock('../lib/geo/search', () => ({ searchCities: harness.search, preloadIndex: harness.preload }));
+vi.mock('../lib/geo/search', () => ({ searchCities: harness.search, preloadIndex: harness.preload, searchWholeIndex: harness.wholeSearch, preloadWholeIndex: harness.wholePreload }));
 vi.mock('../lib/module-load', async (importOriginal) => ({
   ...await importOriginal<object>(),
   loadModule: (load: () => Promise<unknown>) => harness.load(load),
@@ -52,10 +54,10 @@ import { ModuleLoadError } from '../lib/module-load';
 const paris: City = { name: 'Paris', admin1: '', country: 'France', lat: 48.86, lon: 2.35, tz: 'Europe/Paris', pop: 2000000 };
 const onSelect = vi.fn();
 const flushEffects = () => harness.pending.splice(0).forEach((run) => run());
-function render(selected: City | null = null, deferEffects = false) {
+function render(selected: City | null = null, deferEffects = false, wholeIndex = false) {
   harness.cursor = 0;
   harness.effectCursor = 0;
-  const view = PlaceSearch({ onSelect, selected });
+  const view = PlaceSearch({ onSelect, selected, ...(wholeIndex ? { wholeIndex } : {}) });
   if (!deferEffects) flushEffects();
   return view;
 }
@@ -81,6 +83,8 @@ beforeEach(() => {
   harness.writes.mockClear();
   harness.search.mockReset();
   harness.preload.mockReset().mockResolvedValue({});
+  harness.wholeSearch.mockReset();
+  harness.wholePreload.mockReset().mockResolvedValue({});
   harness.load.mockReset().mockImplementation((load: () => Promise<unknown>) => load());
   onSelect.mockClear();
 });
@@ -217,5 +221,19 @@ describe('birthplace search recovery and request ownership', () => {
     const view = nodes(render());
     expect(view.some((node) => node.props.role === 'status')).toBe(false);
     expect(view.some((node) => node.type === 'button' && node.props.role === 'option')).toBe(true);
+  });
+
+  it('with wholeIndex, loads the whole index on focus and searches it, never the letter-by-letter search', async () => {
+    harness.wholeSearch.mockResolvedValue([paris]);
+    const input = nodes(render(null, false, true)).find((node) => node.props.role === 'combobox')!;
+    input.props.onFocus();
+    await vi.dynamicImportSettled();
+    expect(harness.wholePreload).toHaveBeenCalledOnce();
+    input.props.onInput({ target: { value: 'Paris' } });
+    await vi.advanceTimersByTimeAsync(120);
+    expect(harness.wholeSearch).toHaveBeenCalledWith('Paris');
+    expect(harness.search).not.toHaveBeenCalled();
+    expect(harness.preload).not.toHaveBeenCalled();
+    expect(nodes(render(null, false, true)).some((node) => node.type === 'button' && node.props.role === 'option')).toBe(true);
   });
 });

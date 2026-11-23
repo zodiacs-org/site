@@ -56,6 +56,9 @@ const ALL_PAGES = [
     sharePath: '/share/astrocartography/',
     linkedFrom: ['/', '/tools/', '/rising-sign/', '/solar-return/'],
     async run(tab) {
+      // Every request address, to check the place searches ask for the same fixed set of city files whatever is typed.
+      const addresses = [];
+      tab.on('request', (request) => addresses.push(request.url()));
       await tab.fill('#acg-date', BIRTH.date);
       await tab.fill('#acg-time', BIRTH.time);
       await choosePlace(tab, 'acg-place', BIRTH.place);
@@ -64,6 +67,12 @@ const ALL_PAGES = [
       // The share links are on the lines nearest a place the person checks.
       await choosePlace(tab, 'acg-check', 'Paris');
       await tab.locator('.acg__share').first().waitFor({ state: 'visible', timeout: 30_000 });
+      const index = JSON.parse(await readFile(resolve(projectRoot, 'dist/data/cities/index.json'), 'utf8'));
+      const whole = ['/data/cities/index.json', ...index.shards.map((key) => `/data/cities/${key}.json`)].sort();
+      const cities = [...new Set(addresses.map((address) => new URL(address)).filter((url) => url.pathname.startsWith('/data/cities/')).map((url) => `${url.pathname}${url.search}`))].sort();
+      check('the place searches request the whole city index, the same files whatever is typed', JSON.stringify(cities) === JSON.stringify(whole), cities.join(', '));
+      const typed = addresses.filter((address) => /london|paris/iu.test(address));
+      check('no request carries a place typed into a search', typed.length === 0, typed.join('\n'));
       const table = tab.getByRole('table', { name: 'Where each line runs' });
       const sun = await table.getByRole('row', { name: /^Sun /u }).innerText();
       check('the table gives the Sun meridians', sun.includes('66.7° E') && sun.includes('113.3° W'));
