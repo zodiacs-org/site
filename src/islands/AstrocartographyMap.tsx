@@ -8,6 +8,7 @@ import { ACG_CONFIDENCE_TEXT, ANGLE_LABEL, angleArea, ANGLE_NAME, MAP_PICTURE_HE
 import { loadModule } from '../lib/module-load';
 import { astrocartographyShareUrl } from '../lib/astrocartography/share';
 import CalculationReload, { calculationError } from './CalculationReload';
+import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText, earliestToday } from '../lib/birth-date-policy';
 
 /** Each planet drawn in the hue of the sign it rules, the only colour the site uses. */
 const HUE: Record<AcgBody, string> = {
@@ -35,23 +36,23 @@ function paths(points: readonly GeoPoint[]): string[] {
   return out;
 }
 
-export const UNDER_13 = 'Zodiacs is not directed at children under 13, so it does not draw a map for a birth date less than 13 years ago.';
-/** A birth date less than 13 years before today on this device's clock, or still to come. */
-export function under13(birthDate: string, now = new Date()): boolean {
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  return birthDate > `${String(now.getFullYear() - 13).padStart(4, '0')}${today.slice(4)}`;
-}
-
-/** A birth date under 18 on this device's clock: the readings leave out love, attraction and romance. */
+/**
+ * A birth date under 18 on the earliest calendar date anywhere (UTC-12), the
+ * day the shared under-13 policy reads: the readings leave out love,
+ * attraction and romance, and nobody leaves that care early in any time zone.
+ */
 export function under18(birthDate: string, now = new Date()): boolean {
-  return isUnder18(birthDate, `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`);
+  return isUnder18(birthDate, earliestToday(now));
 }
 
 /**
  * The Gregorian date the map would be drawn for, from the date as entered, or
  * the message for the form. The age is read on that date, after a typed or
  * Old Style date is converted, so a date written another way cannot pass the
- * under-13 check and then become a child's date.
+ * under-13 check and then become a child's date. The check is the shared
+ * policy (src/lib/birth-date-policy.ts): a date less than 13 years before the
+ * calendar date at UTC-12, or after the calendar date at UTC+14, draws nothing,
+ * whatever this device's clock and time zone say.
  */
 export async function mapBirthDate(date: string, calendar: CalendarChoice, now = new Date()): Promise<{ date: string } | { error: string }> {
   let birthDate = date;
@@ -61,7 +62,8 @@ export async function mapBirthDate(date: string, calendar: CalendarChoice, now =
     birthDate = entry.date;
   }
   // Zodiacs is not directed at children under 13: such a birth date draws nothing.
-  return under13(birthDate, now) ? { error: UNDER_13 } : { date: birthDate };
+  const refusal = birthDateRefusal(birthDate, now);
+  return refusal ? { error: birthDateRefusalText(refusal) } : { date: birthDate };
 }
 
 export default function AstrocartographyMap() {
@@ -137,7 +139,7 @@ export default function AstrocartographyMap() {
           </div>
           <button class="btn btn--primary calc__submit" type="submit" disabled={!date || !time || !city || busy}><span>{busy ? 'Drawing…' : 'Draw my map'}</span><span class="orb" aria-hidden="true">↗</span></button>
           <p class="calc__privacy"><strong>Private by default.</strong> The map is calculated on this device; nothing is uploaded.</p>
-          {error && <p class="calc__error" role="alert">{error}</p>}
+          {error && <p class="calc__error" role="alert" lang={birthDateRefusalLang(error)}>{error}</p>}
           <CalculationReload error={error} locale="en" />
         </div>
       </form>
