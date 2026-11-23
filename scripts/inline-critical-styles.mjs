@@ -94,15 +94,10 @@ const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
 // through the share control), so the count per pair page is derived from the
 // page's own links instead of being fixed.
 const pairRequiredInlined = [/^Base\.[A-Za-z0-9_-]+\.css$/u, /^pair-page\.[A-Za-z0-9_-]+\.css$/u];
-// 115 entry pages carry 229 inlined stylesheets; feature flags do not change it.
-// (229 since numerology's restyle: its own page styles passed Astro's 4 KB
-// inline limit, so they arrive as a stylesheet that this script inlines.)
-const entryInlinedStylesheets = 229;
+// The 115 entry pages include both emitted stylesheets on the English home.
+// Its sign grid and sample chart can be on screen as soon as a reader scrolls.
+const entryInlinedStylesheets = 230;
 const targetPaths = [
-  // The EN homepage keeps only Base plus its route-owned first-paint geometry
-  // on the render path. The complete route bundle still loads after first
-  // paint (and remains present for no-JS readers), so below-fold styles cannot
-  // delay the poster while the settled page keeps its reviewed appearance.
   'index.html',
   'birth-chart/index.html',
   // The lunar-return hero missed LCP with two blocking stylesheet requests.
@@ -122,15 +117,11 @@ const targetPaths = [
 
 /**
  * Entry pages inline the styles required for above-fold geometry and defer
- * the rest. The homepage and RU calculator need Base only; the EN calculator
+ * the rest. The RU calculator needs Base only; the EN calculator
  * also keeps calculator.css on the render path. No-JS copies remain ordinary
  * stylesheets, so the settled page is unchanged.
  */
 const deferNonBaseConfig = new Map([
-  ['index.html', {
-    select: /^Base\.[A-Za-z0-9_-]+\.css$/u,
-    shape: { inline: 1, deferred: 1, external: 2 },
-  }],
   ['birth-chart/index.html', {
     select: /^(?:Base|calculator)\.[A-Za-z0-9_-]+\.css$/u,
     shape: { inline: 2, deferred: 2, external: 4 },

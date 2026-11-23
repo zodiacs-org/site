@@ -9208,7 +9208,10 @@ var ARRIVAL_REF_VALUES = Object.freeze([
   "assistant",
   "card",
   "app",
-  "note"
+  "note",
+  "hn",
+  "github",
+  "reddit"
 ]);
 
 // src/lib/occasions/kinds.ts
