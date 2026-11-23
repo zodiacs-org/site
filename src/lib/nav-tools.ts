@@ -358,21 +358,30 @@ export const ALL_TOOLS_LABEL = {
   'zh-hant': '全部工具',
 } as const satisfies Record<Locale, string>;
 
+interface NavMoreEntry { href: string; label: Record<Locale, string>; flag?: LaunchFlag }
+
 /**
  * Newer sharing and return-visit tools, listed under the main eight in the
  * Tools menu with short labels. Every one has a route in all six catalog
  * locales; the Chinese zodiac section links their English pages.
  */
-export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[] = [
+export const ALL_NAV_MORE: readonly NavMoreEntry[] = [
   { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы', 'zh-hans': '群组星盘', 'zh-hant': '群組星盤' } },
   { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы', 'zh-hans': '星盘双胞胎', 'zh-hant': '星盤雙胞胎' } },
   { href: '/big-three/', label: { en: 'Big three card', es: 'Los tres grandes', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Большая тройка', 'zh-hans': '日月升卡片', 'zh-hant': '日月升卡片' } },
   { href: '/compatibility/invite/', label: { en: 'Invite a friend', es: 'Invitar a un amigo', pt: 'Convidar alguém', fr: 'Inviter un ami', it: 'Invita un amico', ru: 'Пригласить друга', 'zh-hans': '邀请朋友', 'zh-hant': '邀請朋友' } },
+  { href: '/solar-return/', label: { en: 'Solar return', es: 'Retorno solar', pt: 'Retorno solar', fr: 'Révolution solaire', it: 'Ritorno solare', ru: 'Соляр', 'zh-hans': '太阳回归', 'zh-hant': '太陽回歸' } },
+  { href: '/year-score/', flag: 'PUBLIC_YEAR_SCORE_ENABLED', label: { en: 'Year Ahead Score', es: 'Puntuación del año', pt: 'Nota do ano', fr: 'Score de l’année', it: 'Punteggio dell’anno', ru: 'Оценка года', 'zh-hans': '年度运势评分', 'zh-hant': '年度運勢評分' } },
+  { href: '/good-days/', flag: 'PUBLIC_GOOD_DAYS_ENABLED', label: { en: 'Good day finder', es: 'Días favorables', pt: 'Dias favoráveis', fr: 'Bons jours', it: 'Giorni favorevoli', ru: 'Удачные дни', 'zh-hans': '吉日查询', 'zh-hant': '吉日查詢' } },
   { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба', 'zh-hans': '天象日历', 'zh-hant': '天象日曆' } },
   { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня', 'zh-hans': '每日星盘', 'zh-hant': '每日星盤' } },
   { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Ton ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года', 'zh-hans': '你的年度星空', 'zh-hant': '你的年度星空' } },
   { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты', 'zh-hans': '星盘 PDF', 'zh-hant': '星盤 PDF' } },
 ];
+
+/** The menu a build shows: an entry behind a switch that is off is left out. */
+export const visibleNavMore = (isOn: (flag: LaunchFlag) => boolean = launchFlagOn) => ALL_NAV_MORE.filter((entry) => !entry.flag || isOn(entry.flag));
+export const NAV_MORE: readonly NavMoreEntry[] = visibleNavMore();
 
 export const NAV_MORE_LABEL = {
   en: 'More to explore', es: 'Más para explorar', pt: 'Mais para explorar', fr: 'À explorer aussi', it: 'Altro da esplorare', ru: 'Ещё стоит посмотреть',
