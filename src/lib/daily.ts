@@ -76,6 +76,12 @@ export interface DailyReading {
   lines: DailyLine[];
 }
 
+export const DAILY_LEGACY_RENDERER_VERSION = 'zodiacs.daily-renderer.v1.2';
+export const DAILY_RENDERER_VERSION = 'zodiacs.daily-renderer.v1.3';
+export type DailyRendererVersion = typeof DAILY_LEGACY_RENDERER_VERSION | typeof DAILY_RENDERER_VERSION;
+
+const LEGACY_COPY_BREAK = ' \u2014 ';
+
 export const ORDINAL = [
   '', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth',
   'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth',
@@ -165,11 +171,13 @@ export function houseLine(
   body: DailyBody,
   house: number,
   context?: { date: string; sunSign: string },
+  renderer: DailyRendererVersion = DAILY_RENDERER_VERSION,
 ): DailyLine {
   const rx = body.retrograde ? ', retrograde' : '';
   const sourceFactId = context ? dailyBodyFactId(context.date, body) : null;
+  const themeBreak = renderer === DAILY_LEGACY_RENDERER_VERSION ? LEGACY_COPY_BREAK : ', which covers ';
   return {
-    text: `${PLANET_VERB[body.body] ?? `${body.body} is in`} your ${ORDINAL[house]} house — ${HOUSE_THEME[house]}.`,
+    text: `${PLANET_VERB[body.body] ?? `${body.body} is in`} your ${ORDINAL[house]} house${themeBreak}${HOUSE_THEME[house]}.`,
     receipt: `${body.body} ${body.degree.toFixed(1)}° ${cap(body.sign)}${rx} · house ${house}`,
     house,
     body: body.body,
@@ -195,12 +203,17 @@ const hueForSign = (slug: string): string | undefined => {
 
 const utcTime = (at: string) => `${at.slice(11, 16)} UTC`;
 
-function eventLine(e: DailyEvent, sunSign: string, date: string): DailyLine | null {
+function eventLine(e: DailyEvent, sunSign: string, date: string, renderer: DailyRendererVersion): DailyLine | null {
   const sourceFactId = dailyEventFactId(date, e);
+  const legacy = renderer === DAILY_LEGACY_RENDERER_VERSION;
   if (e.kind === 'ingress' && e.planet && e.sign) {
     const house = solarHouse(e.sign, sunSign);
+    const arrival = `${e.planet} enters your ${ORDINAL[house]} house today`;
+    const change = e.planet === 'Saturn' || e.planet === 'Pluto' ? 'a long-term tenant' : 'new weather';
     return {
-      text: `${e.planet} enters your ${ORDINAL[house]} house today — ${HOUSE_THEME[house]} picks up ${e.planet === 'Saturn' || e.planet === 'Pluto' ? 'a long-term tenant' : 'new weather'}.`,
+      text: legacy
+        ? `${arrival}${LEGACY_COPY_BREAK}${HOUSE_THEME[house]} picks up ${change}.`
+        : `${arrival}, bringing ${change} to ${HOUSE_THEME[house]}.`,
       receipt: `${e.planet} → 0° ${cap(e.sign)} · ${utcTime(e.at)}`,
       house,
       body: e.planet,
@@ -213,8 +226,11 @@ function eventLine(e: DailyEvent, sunSign: string, date: string): DailyLine | nu
   if (e.kind === 'lunation' && e.sign) {
     const house = solarHouse(e.sign, sunSign);
     const name = e.type === 'new' ? 'New Moon' : 'Full Moon';
+    const action = e.type === 'new' ? 'a clean line to start something in' : 'something comes due in';
+    const change = legacy ? `${LEGACY_COPY_BREAK}${action}`
+      : e.type === 'new' ? `, ${action}` : `. ${cap(action)}`;
     return {
-      text: `${name} in your ${ORDINAL[house]} house — ${e.type === 'new' ? 'a clean line to start something in' : 'something comes due in'} ${HOUSE_THEME[house]}.`,
+      text: `${name} in your ${ORDINAL[house]} house${change} ${HOUSE_THEME[house]}.`,
       receipt: `${name} ${e.degree?.toFixed(1)}° ${cap(e.sign)} · ${utcTime(e.at)}`,
       house,
       body: 'Moon',
@@ -227,8 +243,10 @@ function eventLine(e: DailyEvent, sunSign: string, date: string): DailyLine | nu
   if (e.kind === 'station' && e.planet && e.sign) {
     const house = solarHouse(e.sign, sunSign);
     const dir = e.type === 'retrograde' ? 'stations retrograde' : 'stations direct';
+    const action = e.type === 'retrograde' ? 'expect revisions in' : 'forward motion returns to';
+    const change = legacy ? `${LEGACY_COPY_BREAK}${action}` : `. ${cap(action)}`;
     return {
-      text: `${e.planet} ${dir} in your ${ORDINAL[house]} house — ${e.type === 'retrograde' ? 'expect revisions in' : 'forward motion returns to'} ${HOUSE_THEME[house]}.`,
+      text: `${e.planet} ${dir} in your ${ORDINAL[house]} house${change} ${HOUSE_THEME[house]}.`,
       receipt: `${e.planet} ${dir} ${e.degree?.toFixed(1)}° ${cap(e.sign)} · ${utcTime(e.at)}`,
       house,
       body: e.planet,
@@ -239,8 +257,10 @@ function eventLine(e: DailyEvent, sunSign: string, date: string): DailyLine | nu
     };
   }
   if (e.kind === 'aspect' && e.a && e.b && e.type) {
+    const detail = legacy ? `${LEGACY_COPY_BREAK}sky-wide weather, worth knowing the hour.`
+      : '. This is sky-wide weather, and the hour is worth knowing.';
     return {
-      text: `${e.a} ${e.type} ${e.b} is exact today — sky-wide weather, worth knowing the hour.`,
+      text: `${e.a} ${e.type} ${e.b} is exact today${detail}`,
       receipt: `${e.a} ${e.type} ${e.b} · exact ${utcTime(e.at)}`,
       body: e.a,
       templateId: 'aspect-collective.v1',
@@ -256,12 +276,12 @@ function eventLine(e: DailyEvent, sunSign: string, date: string): DailyLine | nu
  * Moon always, then the personal planets whose houses aren't already
  * covered. Four lines, no filler.
  */
-export function dailyReading(sunSign: string, daily: Daily): DailyReading {
+export function dailyReading(sunSign: string, daily: Daily, renderer: DailyRendererVersion = DAILY_RENDERER_VERSION): DailyReading {
   const lines: DailyLine[] = [];
   const usedHouses = new Set<number>();
 
   for (const e of daily.events) {
-    const line = eventLine(e, sunSign, daily.date);
+    const line = eventLine(e, sunSign, daily.date, renderer);
     if (line) {
       lines.push(line);
       if (e.sign) usedHouses.add(solarHouse(e.sign, sunSign));
@@ -274,7 +294,7 @@ export function dailyReading(sunSign: string, daily: Daily): DailyReading {
   if (moon) {
     const h = solarHouse(moon.sign, sunSign);
     if (!usedHouses.has(h)) {
-      lines.push(houseLine(moon, h, { date: daily.date, sunSign }));
+      lines.push(houseLine(moon, h, { date: daily.date, sunSign }, renderer));
       usedHouses.add(h);
     }
   }
@@ -285,7 +305,7 @@ export function dailyReading(sunSign: string, daily: Daily): DailyReading {
     if (!b) continue;
     const h = solarHouse(b.sign, sunSign);
     if (usedHouses.has(h)) continue;
-    lines.push(houseLine(b, h, { date: daily.date, sunSign }));
+    lines.push(houseLine(b, h, { date: daily.date, sunSign }, renderer));
     usedHouses.add(h);
   }
 
@@ -294,8 +314,8 @@ export function dailyReading(sunSign: string, daily: Daily): DailyReading {
 }
 
 /** One-liner for the hub cards: the sign's single strongest note. */
-export function dailyHeadline(sunSign: string, daily: Daily): string {
-  const reading = dailyReading(sunSign, daily);
+export function dailyHeadline(sunSign: string, daily: Daily, renderer: DailyRendererVersion = DAILY_RENDERER_VERSION): string {
+  const reading = dailyReading(sunSign, daily, renderer);
   // Collective aspects still lead the detailed reading, but a hub card should
   // lead with the first fact that actually changes with the reader's sign.
   return reading.lines.find((line) => line.house !== undefined)?.text ?? reading.headline;

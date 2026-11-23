@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { createAiNodeHandler } from './http';
-import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, EVERY_TOOL_WITH_SKY_EVENTS, READINGS_SKY_EVENTS_URI, READINGS_URI, SKY_EVENTS_SWITCH_ENV, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
+import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, EVERY_TOOL_WITH_SKY_EVENTS, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, SKY_EVENTS_SWITCH_ENV, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
 import { READINGS_SKY_EVENTS_HTML } from '../../integrations/generated/readings-sky-events.mjs';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
@@ -156,12 +156,14 @@ describe('the sky events switch on', () => {
     expect(sky.description).toContain('planets and Chiron turning retrograde or direct');
     expect(sky.description).toContain('use get_sky_calendar');
     expect(`${sky.title} ${sky.description} ${JSON.stringify(sky.inputSchema)}`).not.toMatch(/[–—]|crypto|token|blockchain|market/iu);
-    // One new resource, the natal chart's panel, listed after the readings panel the others keep; initialize is unchanged.
+    // The natal chart's panel and its legacy alias follow the two addresses used by the other readings.
     const resources = message((await post(host, REQUESTS.resourcesList[0])).text).result.resources as { uri: string; name: string }[];
     const resourcesBefore = message(FIXTURE.coverage.resourcesList.text).result.resources as { uri: string; name: string }[];
-    const at = resourcesBefore.findIndex((resource) => resource.uri === READINGS_URI);
-    expect(resources.map((resource) => resource.uri)).toEqual([...resourcesBefore.slice(0, at + 1).map((resource) => resource.uri), READINGS_SKY_EVENTS_URI, ...resourcesBefore.slice(at + 1).map((resource) => resource.uri)]);
-    expect(resources.filter((resource) => resource.uri !== READINGS_SKY_EVENTS_URI)).toEqual(resourcesBefore);
+    const beforeUris = resourcesBefore.map((resource) => resource.uri);
+    const at = beforeUris.indexOf(LEGACY_READINGS_URI);
+    const added: string[] = [READINGS_SKY_EVENTS_URI, LEGACY_READINGS_SKY_EVENTS_URI];
+    expect(resources.map((resource) => resource.uri)).toEqual([...beforeUris.slice(0, at + 1), ...added, ...beforeUris.slice(at + 1)]);
+    expect(resources.filter((resource) => !added.includes(resource.uri))).toEqual(resourcesBefore);
     expect(resources.find((resource) => resource.uri === READINGS_SKY_EVENTS_URI)).toMatchObject({ name: 'readings-sky-events', mimeType: 'text/html;profile=mcp-app' });
     const read = message((await post(host, rpc('resources/read', { uri: READINGS_SKY_EVENTS_URI }))).text).result.contents[0];
     expect(read.text).toBe(READINGS_SKY_EVENTS_HTML);

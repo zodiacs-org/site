@@ -72,6 +72,8 @@ only under the strict rule.
   in `get_upcoming_events`' description from 14:31:41 to 14:32 UTC, that
   description only, approved by Dias on 2026-11-17
   (`src/ai-tools/published-tools.ts`).
+  For 0.6.9, Dias approved the new panel addresses and the year-range
+  wording in five tools' input descriptions on 2026-11-20.
 - The site is dark only. Do not add a light theme or a theme switch.
 - No token, market or crypto language on consumer surfaces. The approved
   exception is the Collect band and the other sanctioned wing links described

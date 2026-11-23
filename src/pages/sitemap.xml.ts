@@ -480,6 +480,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
+  // The good day finder, first published 2026-11-09.
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [['/good-days/', '2026-11-09'] as const] : []),
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
   ['/fomo/', '2026-09-01'] as const,
@@ -651,6 +653,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // privacy pages describe the same with the switch on and print the same date.
   ['/privacy/', '2026-11-11'] as const,
   ['/terms/', '2026-11-11'] as const,
+  // The support page, first published, and the about page's line linking to it. The day of the daily edition
+  // they were built with.
+  ['/support/', '2026-11-19'] as const,
+  ['/about/', '2026-11-19'] as const,
   ...['/es/privacy/', '/fr/privacy/', '/it/privacy/', '/pt/privacy/', '/ru/privacy/']
     .map((loc) => [loc, '2026-11-11'] as const),
   // The conventions registry's traditional void-of-course bodies (void-of-course-bodies:traditional), which the
@@ -692,6 +698,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...eventsPublication.pages
     .filter((event) => event.family === 'eclipse')
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
+  // The good day finder's links: its card on the tools hub, and the lines on the occasions and void-of-course
+  // pages that point to it. The day of the daily edition they were built with; the later dates below win.
+  // Only while PUBLIC_GOOD_DAYS_ENABLED is on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? ['/occasions/', '/tools/', '/void-of-course-moon/'].map((loc) => [loc, '2026-11-09'] as const) : []),
   // The transits page's link to the Year Ahead Score (2026-11-09), last so this date wins.
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/transits/', '2026-11-09'] as const] : []),
   // The tools hub's Year Ahead Score and Birthday report cards, and the birthday hub's link to the report,
@@ -735,7 +745,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // built with, last so this date wins.
   ...CONNECTOR_PAGE_ROUTES.map((loc) => [loc, CONNECTOR_PAGE_LASTMOD] as const),
   // The AI developer page's sample question names a neutral city, from 16 November; after the connector pages so it wins.
-  ['/developers/ai/', '2026-11-16'] as const,
+  // From 19 November it says in words that the hosted server needs no account, sign-in or API key.
+  ['/developers/ai/', '2026-11-19'] as const,
   // The home hero no longer calls readings accurate: precision describes the sky positions only. The day of
   // the daily edition it was built with, last so this date wins.
   // The Fortune 500 CEO Sun sign study, first published 17 November.
@@ -758,6 +769,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
   ['/birth-chart/', '2026-11-19'] as const,
+  // Conformance suite 0.3.0 (640 vectors) and results for @zodiacs/engine 2.0.0, Skyfield, astronomia
+  // and PyEphem (ZOD-95 Part A), on the day of the daily edition it was built with, last so this date wins.
+  ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-22'] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -857,6 +871,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/birthday/', priority: 0.7 },
     { loc: '/occasions/', priority: 0.7 },
     { loc: '/occasions/milestones/', priority: 0.6 },
+    ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [{ loc: '/good-days/', priority: 0.7 }] : []),
     { loc: '/widgets/', priority: 0.6 },
     { loc: '/developers/', priority: 0.6 },
     { loc: '/developers/support/', priority: 0.6 },
@@ -891,6 +906,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/privacy/', priority: 0.4 },
     { loc: '/es/privacy/', priority: 0.4 },
     { loc: '/terms/', priority: 0.4 },
+    { loc: '/support/', priority: 0.4 },
     { loc: '/feeds/', priority: 0.55 },
     { loc: '/almanac/', priority: 0.75 },
   ].map((url) => {
