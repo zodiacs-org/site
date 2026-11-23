@@ -1,7 +1,13 @@
 import type { SectionLocale } from '../lib/i18n/core';
 import type { CHINESE_ZODIAC_COPY } from './chinese-zodiac';
 
-type ChineseZodiacCopy = Record<keyof typeof CHINESE_ZODIAC_COPY, string>;
+/**
+ * Every page string of the guide. CHINESE_ZODIAC_COPY.iconRailNote, the caption of the retired row
+ * of Western sign discs, is no longer shown on any page; it stays in English only because the
+ * published horoscopes panel and AI runtime bundle that object byte for byte.
+ */
+export type ChineseZodiacCopyKey = Exclude<keyof typeof CHINESE_ZODIAC_COPY, 'iconRailNote'>;
+type ChineseZodiacCopy = Record<ChineseZodiacCopyKey, string>;
 interface ChineseZodiacAnimalCopy { name: string; association: string; context: string }
 
 /**
@@ -42,7 +48,6 @@ export const CHINESE_ZODIAC_ZH: Record<SectionLocale, {
       next: '下一个生肖',
       westernLink: '了解西方星座的日期是怎么划分的（英文）',
       chartLink: '计算西方占星的出生星盘（英文）',
-      iconRailNote: '这些彩色圆标是 Zodiacs.org 用来代表西方十二星座的站点标识，不代表十二生肖，也和生肖没有对应关系。',
       itemLink: '了解{animal}年',
       siteName: 'Zodiacs.org',
       learnLabel: '学习',
@@ -148,7 +153,6 @@ export const CHINESE_ZODIAC_ZH: Record<SectionLocale, {
       next: '下一個生肖',
       westernLink: '了解西方星座的日期是怎麼劃分的（英文）',
       chartLink: '計算西方占星的出生星盤（英文）',
-      iconRailNote: '這些彩色圓標是 Zodiacs.org 用來代表西方十二星座的網站標誌，不代表十二生肖，也和生肖沒有對應關係。',
       itemLink: '了解{animal}年',
       siteName: 'Zodiacs.org',
       learnLabel: '學習',
