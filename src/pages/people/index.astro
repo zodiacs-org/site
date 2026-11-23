@@ -193,10 +193,14 @@ const jsonLd = [
         });
       };
       // A search result gets no entrance: the first touch of the box shows
-      // every card at once and for good, and a card still mid-entrance ends it.
+      // every card at once and for good, and an entrance still running jumps
+      // to its end.
       const still = () => {
         (window as { zodiacsMotion?: { scan(root?: ParentNode, instant?: boolean): void } }).zodiacsMotion?.scan(directory, true);
-        for (const card of cards) if (card.classList.contains('is-in')) card.classList.add('is-done');
+        for (const card of cards) {
+          if (card.classList.contains('is-in')) card.classList.add('is-done');
+          for (const animation of card.getAnimations()) animation.finish();
+        }
       };
       input.addEventListener('focus', still, { once: true });
       input.addEventListener('input', () => { still(); refresh(); });
