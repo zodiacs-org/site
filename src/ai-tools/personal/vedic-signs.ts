@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { SIGNS } from '../../lib/signs';
 import { computeVedicSigns } from '../../lib/vedic-signs/compute';
 import { vedicSignsShareUrl } from '../../lib/vedic-signs/share';
+import { SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
 import { RASHIS, VEDIC_AYANAMSAS, type VedicAyanamsa } from '../../lib/vedic-signs/wording';
 import { birthDayEnds, birthFields, definePersonalTool, refineBirth, resolveBirth, withCheckedZone, type BirthArgs } from './shared';
 
@@ -73,25 +74,34 @@ export const vedicSignsData = z.object({
   confidenceLabel: z.string(),
   limits: z.array(z.string()),
   note: z.string(),
-  pageUrl: z.url(),
-  /** The share card: the sidereal Sun sign and the ayanamsa only, never a Moon or rising sign, nakshatra or birth detail. Null when the Sun changed sign on an untimed birth day. */
+  /** The /vedic-signs/ page; null while the website's page is switched off (PUBLIC_VEDIC_SIGNS_ENABLED). */
+  pageUrl: z.url().nullable(),
+  /**
+   * The share card: the sidereal Sun sign and the ayanamsa only, never a Moon or rising sign, nakshatra or birth
+   * detail. Null when the Sun changed sign on an untimed birth day, or while the website's page is switched off.
+   */
   shareUrl: z.url().nullable(),
 });
 export type VedicSignsData = z.infer<typeof vedicSignsData>;
 
 /** The sidereal signs and Moon nakshatra for one birth. Throws RangeError for details it cannot use. */
-export async function vedicSigns(args: BirthArgs & { ayanamsa?: VedicAyanamsa | undefined }, clock: Parameters<typeof resolveBirth>[1], origin: string): Promise<{ data: VedicSignsData; links: { title: string; url: string }[] }> {
+export async function vedicSigns(args: BirthArgs & { ayanamsa?: VedicAyanamsa | undefined }, clock: Parameters<typeof resolveBirth>[1], origin: string, pageOn = false): Promise<{ data: VedicSignsData; links: { title: string; url: string }[] }> {
   const ayanamsa = args.ayanamsa ?? 'lahiri';
   // The instant only: computeVedicSigns casts the one chart at it (and at the day's ends untimed).
   const birth = await resolveBirth(args, clock);
-  const reading = computeVedicSigns({
+  // A birth time the clock skipped is refused, never read at the time the clock jumped to; a repeated one is read at
+  // its first pass, and the limits say so.
+  const onClock = birthTimeOnClock(birth.flags, birth.timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
+  const reading = withClockLimit(computeVedicSigns({
     birthUtc: birth.birthUtc, timeKnown: birth.timeKnown, latitude: birth.latitude, longitude: birth.longitude, ayanamsa,
     dayEnds: birth.timeKnown ? undefined : await birthDayEnds(args, clock),
-  });
+  }), onClock.limit);
   return {
-    data: { birthDate: args.birthDate, ...reading, pageUrl: `${origin}/vedic-signs/`, shareUrl: vedicSignsShareUrl(origin, reading) },
+    // The page and its share card are linked only while the website's page is on: with it off they would be a 404.
+    data: { birthDate: args.birthDate, ...reading, pageUrl: pageOn ? `${origin}/vedic-signs/` : null, shareUrl: pageOn ? vedicSignsShareUrl(origin, reading) : null },
     links: [
-      { title: 'Your Vedic signs on Zodiacs', url: `${origin}/vedic-signs/` },
+      ...(pageOn ? [{ title: 'Your Vedic signs on Zodiacs', url: `${origin}/vedic-signs/` }] : []),
       { title: 'Your birth chart on Zodiacs (Western zodiac)', url: `${origin}/birth-chart/` },
       { title: 'Resolve a town or city (find_birthplace)', url: `${origin}/birth-chart/` },
       { title: 'How we calculate', url: `${origin}/methodology/` },
@@ -107,6 +117,7 @@ export const vedicSignsTool = definePersonalTool({
   input: vedicSignsInput,
   data: vedicSignsData,
   clockDependent: false,
+  pageFlag: 'PUBLIC_VEDIC_SIGNS_ENABLED',
   example: { birthDate: '1990-05-03', time: '08:30', zone: 'Asia/Kolkata', latitude: 28.61, longitude: 77.21 },
-  run: async (args, context) => vedicSigns(await withCheckedZone(args, context), context.localTime, context.origin),
+  run: async (args, context) => vedicSigns(await withCheckedZone(args, context), context.localTime, context.origin, context.pageOn === true),
 });

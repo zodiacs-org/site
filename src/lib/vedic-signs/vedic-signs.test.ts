@@ -87,8 +87,8 @@ describe('the Vedic signs the page and the tool share', () => {
     it('checks the converted date before it loads the calculation, not on the device clock', () => {
       const source = readFileSync(new URL('../../islands/VedicSigns.tsx', import.meta.url), 'utf8');
       const calculate = source.slice(source.indexOf('async function calculate('));
-      const check = calculate.indexOf('vedicFormRefusal(birthDate)');
-      expect(check).toBeGreaterThan(calculate.indexOf('birthDate = entry.date'));
+      const check = calculate.indexOf('checkedBirthDate(date, calendar, vedicFormRefusal)');
+      expect(check).toBeGreaterThan(0);
       expect(check).toBeLessThan(calculate.indexOf("import('./vedic-signs/compute')"));
       expect(check).toBeLessThan(calculate.indexOf('prepareLocalTime('));
       expect(source).toMatch(/birthDateRefusal\(birthDate, now\)/u);

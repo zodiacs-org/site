@@ -68,6 +68,11 @@ export interface PersonalToolContext {
   /** The time zone the assistant shares with the call, if any (ChatGPT's user location). */
   hostZone?: string | undefined;
   origin: string;
+  /**
+   * The tool's website page is switched on (the definition's pageFlag, or no flag at all), so its page and share
+   * links lead somewhere. Anything but true: the answer carries neither.
+   */
+  pageOn?: boolean | undefined;
   /** The hosted event budget, for tools that search the sky over a span. */
   allowEvents?: (() => Promise<Verdict>) | undefined;
   /** The GeoNames place index, for tools that take place names. */
@@ -85,6 +90,8 @@ export interface PersonalToolDefinition<N extends string = string> {
   readonly summary: string;
   readonly input: z.ZodType;
   readonly data: z.ZodType;
+  /** The PUBLIC_*_ENABLED switch of the tool's website page, when it has one; the tool links to the page only while it is on. */
+  readonly pageFlag?: string;
   /** True when a repeat call can differ because the answer moves with the server's clock. */
   readonly clockDependent: boolean;
   /** A call with an adult's details, which the shared tests make (src/ai-tools/personal-tools.test.ts). */
@@ -120,6 +127,11 @@ export interface BirthMoment {
   latitude: number | undefined;
   longitude: number | undefined;
   detail: ReadingDetail;
+  /**
+   * The resolver's flags for the birth's wall time: dst-gap when the clock skipped it (moved forward by the jump),
+   * dst-fold when it showed it twice (the earlier pass is used), lmt for local mean time. Empty without a zone.
+   */
+  flags: readonly string[];
 }
 
 export interface NatalCast extends BirthMoment {
@@ -142,15 +154,18 @@ export async function resolveBirth(args: BirthArgs, clock: PersonalToolContext['
   const timeKnown = args.time !== undefined;
   const placed = latitude !== undefined && longitude !== undefined;
   let birthUtc: Date;
+  let flags: readonly string[] = [];
   if (args.zone) {
     await clock.prepareLocalTime(args.birthDate, args.zone);
     const wall = onBirthClock(args, clock);
     // A date the zone's clock never showed (Apia went from 29 to 31 December
     // 2011) is refused, not moved onto the next date.
     if (!readsOnDate(args.birthDate, wall('00:00'))) throw new RangeError(BIRTH_DATE_REFUSAL);
-    birthUtc = wall(args.time ?? '12:00').utc;
+    const resolved = wall(args.time ?? '12:00');
+    birthUtc = resolved.utc;
+    flags = [...resolved.flags];
   } else birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
-  return { birthUtc, timeKnown, placed, latitude, longitude, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+  return { birthUtc, timeKnown, placed, latitude, longitude, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags };
 }
 
 /**

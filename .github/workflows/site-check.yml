@@ -253,6 +253,10 @@ jobs:
         timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/events npm run test:events:browser
 
+      - name: Personal tool pages stay off with their switches unset
+        timeout-minutes: 5
+        run: node tests/personal-pages-drive.mjs
+
       - name: Good day finder stays off with PUBLIC_GOOD_DAYS_ENABLED unset
         timeout-minutes: 5
         run: npm run test:good-days:browser
@@ -576,6 +580,9 @@ jobs:
         timeout-minutes: 25
         run: npm test
 
+      - name: Vedic signs drive (zero CLS, age gate, address bar, share link keys)
+        run: node tests/personal-pages-drive.mjs
+
   good-days-drive:
     name: Good day finder drive
     runs-on: ubuntu-latest
@@ -606,7 +613,6 @@ jobs:
 
       - name: Good day finder drive (zero CLS, privacy, share link)
         run: npm run test:good-days:browser
-
 
   phase7-living-chart-drive:
     name: Phase 7 Living Chart drive

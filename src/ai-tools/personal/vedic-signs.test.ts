@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { NAKSHATRAS } from '@zodiacs/engine/vedic';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { executeAiTool } from '../tools';
-import { NAKSHATRA_LORE, RASHI_LINE, vedicSigns, vedicSignsData } from './vedic-signs';
+import { NAKSHATRA_LORE, RASHI_LINE, vedicSigns, vedicSignsData, vedicSignsTool } from './vedic-signs';
+import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_TIME, SkippedBirthTimeError } from '../../lib/vedic-signs/clock';
 import { birthDayEnds, forbiddenClaim } from './shared';
 import { localDaySpan } from '../../lib/time/local-day';
 import tzNames from '../../data/tz-names.json';
@@ -15,8 +16,9 @@ vi.mock('../../lib/engine/full', async (importOriginal) => {
 });
 
 const clock = createLocalTimeModule();
-const run = (args: Parameters<typeof vedicSigns>[0]) => vedicSigns(args, clock, 'https://zodiacs.org').then((result) => result.data);
-const ON = { occasions: true, coverage: true, personal: true, now: () => new Date('2026-11-09T09:00:00Z') };
+const run = (args: Parameters<typeof vedicSigns>[0]) => vedicSigns(args, clock, 'https://zodiacs.org', true).then((result) => result.data);
+const PAGE_FLAG = 'PUBLIC_VEDIC_SIGNS_ENABLED';
+const ON = { occasions: true, coverage: true, personal: true, now: () => new Date('2026-11-09T09:00:00Z'), sitePageOn: (flag: string) => flag === PAGE_FLAG };
 
 describe('get_vedic_signs against known answers', () => {
   it('gives the Lahiri ayanamsa at J2000 as published (23 degrees 51 minutes) and the J2000 Sun and Moon', async () => {
@@ -166,6 +168,36 @@ describe('get_vedic_signs without a birth time', () => {
     }
   });
 
+  it('refuses a birth time the clock skipped, never reading it at the time the clock jumped to (St. John\'s, 2 May 1920)', async () => {
+    // 23:00 on 2 May became 00:00 on 3 May: 23:59 never showed, and read forward it would be 00:59 on 3 May, in
+    // Vishakha, though the Moon stayed in Swati all of 2 May.
+    for (const time of ['23:00', '23:30', '23:59']) {
+      for (const extra of [{}, { latitude: 47.56, longitude: -52.71 }]) {
+        const args = { birthDate: '1920-05-02', time, zone: 'America/St_Johns', ...extra };
+        await expect(run(args)).rejects.toThrow(SkippedBirthTimeError);
+        const refused = await executeAiTool('get_vedic_signs', args, ON);
+        expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request', message: SKIPPED_BIRTH_TIME } });
+        expect(JSON.stringify(refused)).not.toMatch(/1920|05-02|23:|St_Johns|Vishakha|Swati|47\.56|52\.71/u);
+      }
+    }
+    // The minute before the jump is read, with no clock limit.
+    const before = await run({ birthDate: '1920-05-02', time: '22:59', zone: 'America/St_Johns' });
+    expect(before.moonNakshatra!.name).toBe('Swati');
+    expect(before.limits).not.toContain(REPEATED_BIRTH_TIME);
+  });
+
+  it('says which pass it reads for a birth time the clock showed twice: the first (Madrid, 30 September 1990, 02:10)', async () => {
+    // Madrid's clocks went back from 03:00 to 02:00, so 02:10 came twice; the reading is at the first, 00:10 UTC.
+    const repeated = await run({ birthDate: '1990-09-30', time: '02:10', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 });
+    expect(repeated.limits[0]).toBe(REPEATED_BIRTH_TIME);
+    const ordinary = await run({ birthDate: '1990-09-30', time: '04:10', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 });
+    expect(ordinary.limits).not.toContain(REPEATED_BIRTH_TIME);
+    // Untimed, the day is read whole, so no pass is chosen.
+    expect((await run({ birthDate: '1990-09-30', zone: 'Europe/Madrid' })).limits).not.toContain(REPEATED_BIRTH_TIME);
+    const tool = await executeAiTool('get_vedic_signs', { birthDate: '1990-09-30', time: '02:10', zone: 'Europe/Madrid' }, ON);
+    expect(tool.ok && (tool.data as { limits: string[] }).limits[0]).toBe(REPEATED_BIRTH_TIME);
+  });
+
   it('starts a date where the clock reached it partway through a jump (Toronto went from 23:30 on 30 March 1919 to 00:30 on 31 March)', async () => {
     const [first] = await birthDayEnds({ birthDate: '1919-03-31', zone: 'America/Toronto' }, clock);
     expect(first.toISOString()).toBe('1919-03-31T04:30:00.000Z');
@@ -237,6 +269,32 @@ describe('get_vedic_signs privacy and refusals', () => {
     const exact = await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', time: '08:30', zone: 'Asia/Kolkata' }, ON);
     expect(lower.ok).toBe(true);
     expect(lower).toEqual(exact);
+  });
+});
+
+describe('get_vedic_signs links to its page only while the website page is switched on', () => {
+  const args = { birthDate: '1990-05-03', time: '08:30', zone: 'Asia/Kolkata', latitude: 28.61, longitude: 77.21 };
+  const linked = (result: Awaited<ReturnType<typeof executeAiTool>>) => {
+    if (!result.ok) throw new Error('refused');
+    return { data: result.data as { pageUrl: string | null; shareUrl: string | null }, urls: JSON.stringify(result).match(/https:\/\/[^"]+/gu) ?? [] };
+  };
+
+  it('with the MCP switches on and the page on, and with the page off', async () => {
+    expect(vedicSignsTool.pageFlag).toBe(PAGE_FLAG);
+    const on = linked(await executeAiTool('get_vedic_signs', args, ON));
+    expect(on.data.pageUrl).toBe('https://zodiacs.org/vedic-signs/');
+    expect(on.data.shareUrl).toBe('https://zodiacs.org/share/vedic-signs/?s=aries&a=lahiri');
+    expect(on.urls).toContain('https://zodiacs.org/vedic-signs/');
+    for (const dependencies of [{ ...ON, sitePageOn: () => false }, { occasions: true, coverage: true, personal: true, now: () => new Date('2026-11-09T09:00:00Z') }]) {
+      const off = linked(await executeAiTool('get_vedic_signs', args, dependencies));
+      expect(off.data.pageUrl).toBeNull();
+      expect(off.data.shareUrl).toBeNull();
+      expect(off.urls.filter((url) => url.includes('/vedic-signs/'))).toEqual([]);
+      expect(off.urls).toContain('https://zodiacs.org/birth-chart/');
+    }
+    const direct = await vedicSigns(args, clock, 'https://zodiacs.org');
+    expect(direct.data.pageUrl).toBeNull();
+    expect(direct.links.map((link) => link.url)).not.toContain('https://zodiacs.org/vedic-signs/');
   });
 });
 

@@ -1,7 +1,8 @@
 import { h } from 'preact';
 import { render } from 'preact-render-to-string';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { VedicPlacements } from './VedicSigns';
+import VedicSigns, { VedicPlacements, formatDegrees } from './VedicSigns';
 import { computeVedicSigns } from '../lib/vedic-signs/compute';
 import { vedicReading } from '../lib/vedic-signs/reading';
 
@@ -41,5 +42,53 @@ describe('the /vedic-signs/ result (ZOD-18)', () => {
     const at = positions(markup);
     expect(at).toEqual([...at].sort((a, b) => a - b));
     expect(markup).toContain('The Moon changed nakshatra that day: Revati, Ashwini or Bharani. A birth time settles it.');
+  });
+});
+
+describe('the /vedic-signs/ form', () => {
+  const SOURCE = readFileSync(new URL('./VedicSigns.tsx', import.meta.url), 'utf8');
+  const input = (markup: string, id: string) => markup.match(new RegExp(`<input[^>]*id="${id}"[^>]*>`, 'u'))?.[0] ?? '';
+
+  it('opens with the birth time and birthplace locked, and no birthplace search to send a city lookup', () => {
+    const markup = render(h(VedicSigns, {}));
+    expect(input(markup, 'vedic-time')).toMatch(/\sdisabled/u);
+    expect(input(markup, 'vedic-place')).toMatch(/\sdisabled/u);
+    expect(markup).not.toContain('role="combobox"');
+  });
+
+  it('asks for the time and birthplace only through the gated fields, opened by the converted date', () => {
+    expect(SOURCE).not.toMatch(/<BirthFields\b/u);
+    expect(SOURCE).toMatch(/useBirthDateCheck\(date, calendar, vedicFormRefusal\)/u);
+    expect(SOURCE).toMatch(/const ready = birthDateOpen\(check\) && city !== null/u);
+  });
+
+  it('gives a skipped birth time its own sentence, and logs nothing', () => {
+    expect(SOURCE).toMatch(/cause instanceof SkippedBirthTimeError \? SKIPPED_BIRTH_TIME/u);
+    expect(SOURCE).not.toMatch(/console\./u);
+  });
+
+  it('prints whole arcminutes without losing one to binary rounding', () => {
+    expect(formatDegrees(2.15)).toBe('2°09′');
+    expect(formatDegrees(16.52)).toBe('16°31′');
+    expect(formatDegrees(0.29)).toBe('0°17′');
+    expect(formatDegrees(29.99)).toBe('29°59′');
+    expect(formatDegrees(0)).toBe('0°00′');
+    expect(formatDegrees(10.016)).toBe('10°00′');
+    for (let hundredths = 0; hundredths < 3000; hundredths += 1) {
+      const value = hundredths / 100;
+      const minutes = Math.floor((hundredths * 60) / 100);
+      expect(formatDegrees(value), String(value)).toBe(`${Math.floor(minutes / 60)}°${String(minutes % 60).padStart(2, '0')}′`);
+    }
+  });
+});
+
+describe('the personal pages drive on this branch', () => {
+  const drive = readFileSync(new URL('../../tests/personal-pages-drive.mjs', import.meta.url), 'utf8');
+  const workflow = readFileSync(new URL('../../.github/workflows/site-check.yml', import.meta.url), 'utf8');
+  it('drives Vedic signs, its age gate and share link, and runs in the flag-on job', () => {
+    expect(drive).toContain("path: '/vedic-signs/'");
+    expect(drive).toContain("check('an under-13 date locks the birth time'");
+    const job = workflow.slice(workflow.indexOf('  vedic-signs-flag-on:'));
+    expect(job.slice(0, job.indexOf('\n  good-days-drive:'))).toContain('run: node tests/personal-pages-drive.mjs');
   });
 });

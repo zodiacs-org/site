@@ -1,10 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { vedicFromTropical } from '../../lib/vedic-signs/sidereal';
-import type { TropicalMoment } from '../../lib/vedic-signs/tropical';
-import { computeVedicFromForm, prepareLocalTime, type VedicFormInput } from './compute';
+import { vedicFromTropical } from './sidereal';
+import type { TropicalMoment } from './tropical';
+import { computeVedicFromForm, prepareLocalTime, type VedicFormInput } from '../../islands/vedic-signs/compute';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { vedicSigns } from '../../ai-tools/personal/vedic-signs';
 import { birthDayEnds } from '../../ai-tools/personal/shared';
+import { roundCoordinate } from '../../ai-tools/plain-text';
+import { roundPlace } from './place';
+import { REPEATED_BIRTH_TIME, SkippedBirthTimeError } from './clock';
 
 /**
  * The page's worker, run in this thread: the same sidereal half
@@ -72,6 +75,26 @@ describe('the /vedic-signs/ page on a clock that repeated or skipped a date', ()
   });
 });
 
+describe('the /vedic-signs/ page on a birth time the clock skipped or repeated, as the tool reads it', () => {
+  it('refuses a skipped time before anything is worked out (St. John\'s, 23:59 on 2 May 1920)', async () => {
+    for (const time of ['23:00', '23:59']) {
+      await expect(form('1920-05-02', time, ST_JOHNS)).rejects.toThrow(SkippedBirthTimeError);
+      expect(posted).toHaveLength(0);
+    }
+    expect((await form('1920-05-02', '22:59', ST_JOHNS)).moonNakshatra!.name).toBe('Swati');
+  });
+
+  it('reads a repeated time at its first pass and says so, with the tool\'s limits (Madrid, 02:10 on 30 September 1990)', async () => {
+    const MADRID = { tz: 'Europe/Madrid', lat: 40.42, lon: -3.7 };
+    const page = await form('1990-09-30', '02:10', MADRID);
+    expect(page.limits[0]).toBe(REPEATED_BIRTH_TIME);
+    const tool = (await vedicSigns({ birthDate: '1990-09-30', time: '02:10', zone: MADRID.tz, latitude: MADRID.lat, longitude: MADRID.lon }, createLocalTimeModule(), 'https://zodiacs.org')).data;
+    expect(page.limits).toEqual(tool.limits);
+    expect(page.rising).toEqual(tool.rising);
+    expect((await form('1990-09-30', '04:10', MADRID)).limits).not.toContain(REPEATED_BIRTH_TIME);
+  });
+});
+
 describe('the /vedic-signs/ page and the get_vedic_signs tool on the same birth', () => {
   // The tool's resolver, as the hosted tools run it; the page uses the site's.
   const tool = (birthDate: string, time: string | undefined, place: VedicFormInput['place']) => vedicSigns(
@@ -109,5 +132,15 @@ describe('the /vedic-signs/ page and the get_vedic_signs tool on the same birth'
     const answer = await tool('1990-05-03', '08:30', kolkata);
     expect(answer.rising).not.toBeNull();
     expect(signs(page)).toEqual(signs(answer));
+  });
+});
+
+describe('the page rounds a birthplace as the tools do', () => {
+  it('gives roundCoordinate\'s answer for every coordinate, so the page and get_vedic_signs read the same place', () => {
+    for (const value of [-74.006, 74.005, -0.005, 0.015, 1.005, -52.715, 179.995, -180, 40.7128, 28.6139, 77.209]) expect(roundPlace(value), String(value)).toBe(roundCoordinate(value));
+    for (let step = -18_000_00; step <= 18_000_00; step += 997) {
+      const value = step / 10_000 + 0.00005;
+      expect(roundPlace(value), String(value)).toBe(roundCoordinate(value));
+    }
   });
 });

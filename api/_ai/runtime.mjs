@@ -43638,6 +43638,24 @@ function vedicSignsShareUrl(origin, reading) {
   return query === null ? null : `${origin}${VEDIC_SIGNS_SHARE_PATH}?${query}`;
 }
 
+// src/lib/vedic-signs/clock.ts
+var SKIPPED_BIRTH_TIME = "That birth time never showed on the birthplace clock: the clocks jumped past it that day. Check the birth time.";
+var REPEATED_BIRTH_TIME = "The birthplace clock showed that birth time twice that day, when the clocks went back. This reading uses the first of the two.";
+var SkippedBirthTimeError = class extends RangeError {
+  constructor() {
+    super(SKIPPED_BIRTH_TIME);
+    this.name = "SkippedBirthTimeError";
+  }
+};
+function birthTimeOnClock(flags, timeKnown) {
+  if (!timeKnown) return { skipped: false, limit: null };
+  if (flags.includes("dst-gap")) return { skipped: true, limit: null };
+  return { skipped: false, limit: flags.includes("dst-fold") ? REPEATED_BIRTH_TIME : null };
+}
+function withClockLimit(reading, limit) {
+  return limit ? { ...reading, limits: [limit, ...reading.limits] } : reading;
+}
+
 // src/ai-tools/personal/shared.ts
 import { z as z15 } from "zod";
 
@@ -43715,13 +43733,16 @@ async function resolveBirth(args, clock2) {
   const timeKnown = args.time !== void 0;
   const placed = latitude !== void 0 && longitude2 !== void 0;
   let birthUtc;
+  let flags = [];
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
     const wall = onBirthClock(args, clock2);
     if (!readsOnDate(args.birthDate, wall("00:00"))) throw new RangeError(BIRTH_DATE_REFUSAL);
-    birthUtc = wall(args.time ?? "12:00").utc;
+    const resolved = wall(args.time ?? "12:00");
+    birthUtc = resolved.utc;
+    flags = [...resolved.flags];
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
-  return { birthUtc, timeKnown, placed, latitude, longitude: longitude2, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+  return { birthUtc, timeKnown, placed, latitude, longitude: longitude2, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags };
 }
 function onBirthClock(args, clock2) {
   const read = wallOnBirthplaceClock(args, clock2);
@@ -43795,25 +43816,32 @@ var vedicSignsData = z16.object({
   confidenceLabel: z16.string(),
   limits: z16.array(z16.string()),
   note: z16.string(),
-  pageUrl: z16.url(),
-  /** The share card: the sidereal Sun sign and the ayanamsa only, never a Moon or rising sign, nakshatra or birth detail. Null when the Sun changed sign on an untimed birth day. */
+  /** The /vedic-signs/ page; null while the website's page is switched off (PUBLIC_VEDIC_SIGNS_ENABLED). */
+  pageUrl: z16.url().nullable(),
+  /**
+   * The share card: the sidereal Sun sign and the ayanamsa only, never a Moon or rising sign, nakshatra or birth
+   * detail. Null when the Sun changed sign on an untimed birth day, or while the website's page is switched off.
+   */
   shareUrl: z16.url().nullable()
 });
-async function vedicSigns(args, clock2, origin) {
+async function vedicSigns(args, clock2, origin, pageOn = false) {
   const ayanamsa2 = args.ayanamsa ?? "lahiri";
   const birth = await resolveBirth(args, clock2);
-  const reading = computeVedicSigns({
+  const onClock = birthTimeOnClock(birth.flags, birth.timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
+  const reading = withClockLimit(computeVedicSigns({
     birthUtc: birth.birthUtc,
     timeKnown: birth.timeKnown,
     latitude: birth.latitude,
     longitude: birth.longitude,
     ayanamsa: ayanamsa2,
     dayEnds: birth.timeKnown ? void 0 : await birthDayEnds2(args, clock2)
-  });
+  }), onClock.limit);
   return {
-    data: { birthDate: args.birthDate, ...reading, pageUrl: `${origin}/vedic-signs/`, shareUrl: vedicSignsShareUrl(origin, reading) },
+    // The page and its share card are linked only while the website's page is on: with it off they would be a 404.
+    data: { birthDate: args.birthDate, ...reading, pageUrl: pageOn ? `${origin}/vedic-signs/` : null, shareUrl: pageOn ? vedicSignsShareUrl(origin, reading) : null },
     links: [
-      { title: "Your Vedic signs on Zodiacs", url: `${origin}/vedic-signs/` },
+      ...pageOn ? [{ title: "Your Vedic signs on Zodiacs", url: `${origin}/vedic-signs/` }] : [],
       { title: "Your birth chart on Zodiacs (Western zodiac)", url: `${origin}/birth-chart/` },
       { title: "Resolve a town or city (find_birthplace)", url: `${origin}/birth-chart/` },
       { title: "How we calculate", url: `${origin}/methodology/` }
@@ -43828,8 +43856,9 @@ var vedicSignsTool = definePersonalTool({
   input: vedicSignsInput,
   data: vedicSignsData,
   clockDependent: false,
+  pageFlag: "PUBLIC_VEDIC_SIGNS_ENABLED",
   example: { birthDate: "1990-05-03", time: "08:30", zone: "Asia/Kolkata", latitude: 28.61, longitude: 77.21 },
-  run: async (args, context) => vedicSigns(await withCheckedZone(args, context), context.localTime, context.origin)
+  run: async (args, context) => vedicSigns(await withCheckedZone(args, context), context.localTime, context.origin, context.pageOn === true)
 });
 
 // src/ai-tools/personal/registry.ts
@@ -46234,6 +46263,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone),
         hostZone: context.hostZone,
         origin: ORIGIN,
+        pageOn: definition.pageFlag === void 0 || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {},
         ...dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}
       }));
@@ -48180,6 +48210,7 @@ function createAiNodeHandler(options = {}) {
           return "unavailable";
         }
       } };
+      if (personal2) dependencies.sitePageOn = (flag) => env[flag] === "1";
       const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: "stateless", responseMode: "auto", onerror: () => {
       } });
       try {
