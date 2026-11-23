@@ -150,7 +150,13 @@ describe('Monday Note builder', () => {
     ]);
     const signs = sections.get('YOUR SUN SIGN THIS WEEK')!;
     expect(signs.map((line) => line.split(':')[0])).toEqual(SIGNS.map((sign) => sign.name));
-    expect(signs[0]).toBe('Aries: The full Moon in Gemini falls in your third solar house: messages, errands and the people nearby. Answer the message you have been putting off. Reading confidence 40%');
+    // Composed from the week's sky until the committed program holds this week's
+    // published weekly readings; then the Aries line is that reading's opening.
+    expect(signs[0]).toBe(
+      note.signLineSource === 'published-weekly'
+        ? 'Aries: Sequence the week before charging at its loudest moment. Reading confidence 40%'
+        : 'Aries: The full Moon in Gemini falls in your third solar house: messages, errands and the people nearby. Answer the message you have been putting off. Reading confidence 40%',
+    );
     // The last section runs into the links and the footer, which follow it in the text part.
     expect(sections.get('A QUESTION FOR NEXT WEEK')!.slice(0, 3)).toEqual([
       'What did you finish or hand off at the full Moon?',
