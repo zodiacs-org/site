@@ -8,7 +8,7 @@
  * an empty block of no height, so its top is the hero's top and its right
  * edge the column's right edge.
  *
- * Sizes: 40px below 760px, 64px to 1023px, 88px from 1024px, where the
+ * Sizes: 40px below 760px, 52px to 1023px, 88px from 1024px, where the
  * hero's column leaves room beside a one-line heading. A page can change a
  * size with --tool-hero-mark-phone, --tool-hero-mark-tablet or
  * --tool-hero-mark-desk, and hides the mark (display: none) at widths where
@@ -45,7 +45,7 @@ const { name } = Astro.props;
     pointer-events: none;
   }
   @media (min-width: 760px) {
-    .tool-hero-mark { --tool-icon-size: var(--tool-hero-mark-tablet, 64px); }
+    .tool-hero-mark { --tool-icon-size: var(--tool-hero-mark-tablet, 52px); }
   }
   @media (min-width: 1024px) {
     .tool-hero-mark { --tool-icon-size: var(--tool-hero-mark-desk, 88px); }
