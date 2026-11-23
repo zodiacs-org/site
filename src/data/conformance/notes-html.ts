@@ -132,6 +132,11 @@ export function notesHtml(markdown: string | null): string {
       continue;
     }
 
+    if (inList && /^\s+/u.test(rawLine) && out.length > 0 && out[out.length - 1].endsWith('</li>')) {
+      out[out.length - 1] = `${out[out.length - 1].slice(0, -5)} ${inline(trimmed)}</li>`;
+      continue;
+    }
+
     closeList();
     paragraph.push(trimmed);
   }

@@ -72,6 +72,9 @@ describe('vendored conformance summary', () => {
     const looseNested = '- Parent\n\n  - Child\n\n- Sibling';
     expect(notesHtml(looseNested)).toBe('<ul><li>Parent<ul><li>Child</li></ul></li><li>Sibling</li></ul>');
 
+    const wrappedNested = '- Parent line one\n  line two\n  - Child\n- Sibling';
+    expect(notesHtml(wrappedNested)).toBe('<ul><li>Parent line one line two<ul><li>Child</li></ul></li><li>Sibling</li></ul>');
+
     const codeAndParens = 'Literal `[a](https://example.com)` and [wiki](https://en.wikipedia.org/wiki/Delta_T_(timekeeping)).';
     expect(notesHtml(codeAndParens)).toBe(
       '<p>Literal <code>[a](https://example.com)</code> and <a href="https://en.wikipedia.org/wiki/Delta_T_(timekeeping)">wiki</a>.</p>',
