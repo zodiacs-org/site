@@ -6,7 +6,7 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-11-23T15:59:23.182Z",
+  "capturedAt": "2026-11-23T19:09:01.424Z",
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-11-23",
   "publicationCanonicalSha256": "eb83b1532da2660de184bf9cc4db3b23874bcb4f83a2c7162a3cd82df4502b55",
@@ -19,7 +19,7 @@
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-11-23T15:58:46.062Z",
+    "builtAt": "2026-11-23T19:08:21.528Z",
     "templateSourceSha256": "8a55d25b647b7e7d0123a1b2320515ce1b1cef111abe727ffd14471bb73fb3d6",
     "dailyDate": "2026-11-23",
     "publicationCanonicalSha256": "eb83b1532da2660de184bf9cc4db3b23874bcb4f83a2c7162a3cd82df4502b55",
@@ -41,13 +41,13 @@
       "screenshot": {
         "file": "today-360.png",
         "width": 360,
-        "height": 11607,
-        "sha256": "218bc6db96dbba24e97a274178cc631b2b49a2d476cfbec3bb4dbcabbc4659d3"
+        "height": 11642,
+        "sha256": "d284050b6b6c56e6b03d65ac4bb6f2563559c8de8a9cff80fcad5c4ec4d72630"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
-        "scrollHeight": 11607,
+        "scrollHeight": 11642,
         "contentLength": 8176,
         "overlay": false,
         "guideLauncher": true
