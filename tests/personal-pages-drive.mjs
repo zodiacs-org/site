@@ -124,24 +124,25 @@ async function open(browser, viewport) {
   });
   await context.addInitScript(() => {
     window.__cls = 0;
-    window.__shifts = [];
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (entry.hadRecentInput) continue;
         window.__cls += entry.value;
-        window.__shifts.push({ value: entry.value, sources: entry.sources?.map((source) => source.node?.outerHTML?.slice(0, 160)) });
       }
     }).observe({ type: 'layout-shift', buffered: true });
   });
   const tab = await context.newPage();
-  const requests = [];
-  tab.on('request', (request) => requests.push(`${request.url()} ${request.postData() ?? ''}`));
-  const errors = [];
-  tab.on('pageerror', (error) => errors.push(String(error)));
-  return { context, tab, requests, errors };
+  const counts = { requestsWithBirthDate: 0, pageErrors: 0 };
+  tab.on('request', (request) => {
+    if ([request.url(), request.postData() ?? ''].some((text) => text.includes(BIRTH.date) || text.includes(BIRTH.date.slice(0, 4)))) {
+      counts.requestsWithBirthDate++;
+    }
+  });
+  tab.on('pageerror', () => { counts.pageErrors++; });
+  return { context, tab, counts };
 }
 const settle = (tab) => tab.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(done, 1500)))));
-const cls = (tab) => tab.evaluate(() => ({ cls: window.__cls, shifts: window.__shifts }));
+const cls = (tab) => tab.evaluate(() => window.__cls);
 
 if (onPages.length) {
   await withPreview({ port: Number(process.env.PERSONAL_PAGES_PORT ?? 4381) }, async (base) => {
@@ -154,38 +155,43 @@ if (onPages.length) {
           await session.tab.goto(`${base}${page.path}`, { waitUntil: 'networkidle' });
           await settle(session.tab);
           let load = await cls(session.tab);
-          if (load.cls !== 0) {
+          if (load !== 0) {
             // One rerun for a micro-shift flake; a second shift is real.
-            console.log(`rerun ${label}: first load shifted ${load.cls}`);
+            console.log(`rerun ${label}: first load shifted ${load}`);
             await session.context.close();
             session = await open(browser, viewport);
             await session.tab.goto(`${base}${page.path}`, { waitUntil: 'networkidle' });
             await settle(session.tab);
             load = await cls(session.tab);
           }
-          const { context, tab, requests, errors } = session;
-          check(`${label}: first load has zero CLS`, load.cls === 0, JSON.stringify(load));
+          const { context, tab, counts } = session;
+          check(`${label}: first load has zero CLS`, load === 0, String(load));
 
           const before = tab.url();
-          const selector = await page.run(tab);
+          const selector = await page.run(tab).catch(() => {
+            throw new Error(`${label}: could not complete the personal form`);
+          });
           await settle(tab);
-          check(`${label}: the address bar is unchanged after the result`, tab.url() === before, tab.url());
-          const leaked = requests.filter((line) => line.includes(BIRTH.date) || line.includes('1990'));
-          check(`${label}: no request carries the birth date`, leaked.length === 0, leaked.join('\n'));
+          check(`${label}: the address bar is unchanged after the result`, tab.url() === before);
+          check(`${label}: no request carries the birth date`, counts.requestsWithBirthDate === 0, String(counts.requestsWithBirthDate));
 
           const hrefs = await tab.locator(selector).evaluateAll((links) => links.map((link) => link.getAttribute('href')));
           check(`${label}: the result offers a share link`, hrefs.length > 0);
-          for (const href of hrefs) {
+          for (const [index, href] of hrefs.entries()) {
+            const link = `${label}: share link ${index + 1}`;
+            const valid = typeof href === 'string' && URL.canParse(href, base);
+            check(`${link} is a valid URL`, valid);
+            if (!valid) continue;
             const url = new URL(href, base);
             const keys = [...url.searchParams.keys()];
-            check(`${label}: share link ${href} goes to ${page.sharePath}`, url.pathname === page.sharePath, url.pathname);
-            check(`${label}: share link ${href} carries exactly ${page.expectedKeys.join(', ')}`,
-              new Set(keys).size === keys.length && JSON.stringify([...keys].sort()) === JSON.stringify(page.expectedKeys), keys.join(', '));
-            check(`${label}: share link ${href} carries no birth detail`, !BIRTH_DETAIL.test(url.search));
+            check(`${link} goes to ${page.sharePath}`, url.pathname === page.sharePath);
+            check(`${link} carries exactly ${page.expectedKeys.join(', ')}`,
+              new Set(keys).size === keys.length && JSON.stringify([...keys].sort()) === JSON.stringify(page.expectedKeys));
+            check(`${link} carries no birth detail`, !BIRTH_DETAIL.test(url.search));
           }
           const overflow = await tab.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
           check(`${label}: no horizontal scroll`, !overflow);
-          check(`${label}: no page errors`, errors.length === 0, errors.join('\n'));
+          check(`${label}: no page errors`, counts.pageErrors === 0, String(counts.pageErrors));
           await context.close();
         }
       }

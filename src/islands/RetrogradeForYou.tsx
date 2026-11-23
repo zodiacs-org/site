@@ -187,7 +187,6 @@ export default function RetrogradeForYou() {
       else setResult(outcome);
     } catch (cause) {
       if (request === revision.current) {
-        console.error(cause);
         setError(calculationError(cause, 'en', 'The retrogrades could not be worked out. Check the details and try again.'));
       }
     } finally { if (request === revision.current) setBusy(false); }
