@@ -4,8 +4,7 @@ import { existsSync } from 'node:fs';
 import { createAiNodeHandler } from './http';
 import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES, WITHDRAWN_OCCASION_REFUSAL } from './contracts';
 import { executeAiTool } from './tools';
-import { as065, asContinuousUtc, asInventedExamples, asPanelV7, asPlainDescription, asZod64, descriptionWithoutZod64, INVENTED_EXAMPLES, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, PUBLISHED_TOOLS_068, withoutZod64, ZOD_64_SENTENCES, CONTINUOUS_UTC_TOOLS } from './published-tools';
-import { COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
+import { as065, asContinuousUtc, asInventedExamples, asPanelV7, asPlainDescription, asZod64, descriptionWithoutZod64, INVENTED_EXAMPLES, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, PUBLISHED_TOOLS_068, withoutZod64, ZOD_64_SENTENCES, CONTINUOUS_UTC_TIME_SCALE, CONTINUOUS_UTC_TOOLS } from './published-tools';
 import { EXPLAIN_TOPICS } from './features/explain';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac';
 import { SIGNS } from '../lib/signs';
@@ -200,13 +199,13 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect([...new Set(changes.map(path => path.split('.')[0]))]).toEqual(CONTINUOUS_UTC_TOOLS);
     expect(changes).toHaveLength(3);
     expect(changes.every(path => path.split('.')[1] === 'outputSchema')).toBe(true);
-    const timeScale = COMPUTE_SCHEMAS.TimeScale as { properties: { basis: { enum: string[] } } };
+    const timeScale = CONTINUOUS_UTC_TIME_SCALE as { properties: { basis: { enum: string[] } } };
     expect(timeScale.properties.basis.enum).toEqual(['iers', 'continuous-utc', 'delta-t']);
     for (const [index, tool] of PUBLISHED_TOOLS_068.entries()) {
       const now = asContinuousUtc(tool).tool;
       // Everything but the output schema stays byte for byte, and the output schema moves only where the time schema sits.
       expect(JSON.stringify({ ...now, outputSchema: tool.outputSchema }), String(tool.name)).toBe(JSON.stringify(tool));
-      const strip = (text: string) => text.split(JSON.stringify(COMPUTE_SCHEMAS.TimeScale)).join('T');
+      const strip = (text: string) => text.split(JSON.stringify(CONTINUOUS_UTC_TIME_SCALE)).join('T');
       if (!CONTINUOUS_UTC_TOOLS.includes(String(tool.name))) expect(now).toBe(tool);
       else expect(strip(JSON.stringify(now.outputSchema)).includes('"basis":{"enum":["iers","delta-t"]}')).toBe(false);
     }
