@@ -33,6 +33,16 @@ function dashedStrings(value: unknown, path = 'registry'): string[] {
 // The engine versions that wrote the natal conventions sets, in package order.
 const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6', '1.1.0-rc.10 to 1.1.0'];
 
+// The registry cites the vector files in which it first catalogued each level.
+// Suite 0.3.0 reissued L1 to L3 with new file digests.
+const registrySuiteCommit = '47eebb83516ad99152dfefb69feff2aea93264b3';
+const earlierSuiteCommit = '7e64717bc7dd17f76d124138e811742b055c183a';
+const earlierLevelDigests: Record<string, string> = {
+  L1: '4e45a5267d806a38624c6cc1eb29dd66229e5ec908fd87de9e1ec69459bb84b8',
+  L2: 'fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5',
+  L3: '51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66',
+};
+
 /** The ids a natal receipt names: each field's namespace and value, as the registry's usedIn lists them. */
 function natalReceiptIds(receipt: Record<string, unknown>): string[] {
   const out: string[] = [];
@@ -305,17 +315,25 @@ describe('the conventions registry', () => {
   });
 
   it('holds exactly the kinds and arbiters of the conformance vectors, tied to their vector files', () => {
-    const levelKinds = summary.levels.flatMap((level) => level.kinds.map((kind) => [kind.kind, level] as const));
-    const levelArbiters = summary.levels.flatMap((level) => level.arbiters.map((arbiter) => [arbiter, level] as const));
-    expect(values('kind')).toEqual(levelKinds.map(([kind]) => kind));
-    expect(values('arbiter')).toEqual(levelArbiters.map(([arbiter]) => arbiter.id));
-    for (const [kind, level] of levelKinds) {
-      expect(entries.find((entry) => entry.id === `kind:${kind}`)!.sources[0].title).toContain(level.sha256);
-    }
-    for (const [arbiter, level] of levelArbiters) {
-      const entry = entries.find((candidate) => candidate.id === `arbiter:${arbiter.id}`)!;
-      expect(entry.title).toBe(arbiter.name);
-      expect(entry.sources[0].title).toContain(level.sha256);
+    expect(values('kind')).toEqual(summary.levels.flatMap((level) => level.kinds.map(({ kind }) => kind)));
+    expect(values('arbiter')).toEqual(summary.levels.flatMap((level) => level.arbiters.map(({ id }) => id)));
+    for (const level of summary.levels) {
+      const earlierDigest = earlierLevelDigests[level.level];
+      const suite = earlierDigest ? '0.2.0' : summary.suiteVersion;
+      const file = level.file.replace(`vectors/${summary.suiteVersion}/`, `vectors/${suite}/`);
+      const commit = earlierDigest ? earlierSuiteCommit : registrySuiteCommit;
+      const repo = `https://github.com/zodiacs-org/engine/blob/${commit}/conformance`;
+      const levelIds = [...level.kinds.map(({ kind }) => `kind:${kind}`), ...level.arbiters.map(({ id }) => `arbiter:${id}`)];
+      for (const id of levelIds) {
+        const entry = entries.find((candidate) => candidate.id === id)!;
+        expect(entry.sources[0].title, id).toBe(`Conformance suite ${suite}, ${file} (${level.level}, ${level.title}; sha256 ${earlierDigest ?? level.sha256})`);
+        expect(entry.sources[0].url, id).toBe(`${repo}/${file}`);
+        expect(entry.sources[1].url, id).toBe(`${repo}/SPEC.md`);
+        expect(entry.status, id).toBe('current');
+      }
+      for (const arbiter of level.arbiters) {
+        expect(entries.find((entry) => entry.id === `arbiter:${arbiter.id}`)!.title).toBe(arbiter.name);
+      }
     }
   });
 
@@ -327,7 +345,7 @@ describe('the conventions registry', () => {
     }
     expect(registry.engine).toMatchObject({ package: '@zodiacs/engine', version: ENGINE_VERSION });
     expect(registry.conformance.suiteVersion).toBe(summary.suiteVersion);
-    expect(registry.conformance.commit).toBe(source.commit);
+    expect(registry.conformance.commit).toBe(registrySuiteCommit);
   });
 
   it('is served as JSON with the address of each id on the registry page', async () => {

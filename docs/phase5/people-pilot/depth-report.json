@@ -1,11 +1,11 @@
 {
  "schema": "zodiacs.phase5.depth-report.v1",
  "metric": "5-word shingle Jaccard similarity, the metric scripts/check-programmatic-uniqueness.mjs already applies to the 78 compatibility pages",
- "pages": 501,
+ "pages": 516,
  "originalWords": {
   "min": 332,
   "max": 516,
-  "median": 423
+  "median": 422
  },
  "substantiveStatements": {
   "min": 12,
@@ -13,16 +13,26 @@
  },
  "highestSimilarity": {
   "pair": [
-   "katherine-johnson",
-   "rosalind-franklin"
+   "alfred-hitchcock",
+   "kylie-jenner"
   ],
-  "similarity": 0.3048
+  "similarity": 0.3057
  },
  "topPairs": [
+  {
+   "a": "alfred-hitchcock",
+   "b": "kylie-jenner",
+   "similarity": 0.3057
+  },
   {
    "a": "katherine-johnson",
    "b": "rosalind-franklin",
    "similarity": 0.3048
+  },
+  {
+   "a": "audrey-hepburn",
+   "b": "lisa",
+   "similarity": 0.3002
   },
   {
    "a": "alfred-north-whitehead",
@@ -45,6 +55,11 @@
    "similarity": 0.2907
   },
   {
+   "a": "cantinflas",
+   "b": "kylie-jenner",
+   "similarity": 0.2897
+  },
+  {
    "a": "toshiro-mifune",
    "b": "yosano-akiko",
    "similarity": 0.2884
@@ -53,21 +68,6 @@
    "a": "ethel-smyth",
    "b": "judith-wright",
    "similarity": 0.2883
-  },
-  {
-   "a": "alfred-hitchcock",
-   "b": "celia-cruz",
-   "similarity": 0.2877
-  },
-  {
-   "a": "alfred-hitchcock",
-   "b": "miriam-makeba",
-   "similarity": 0.2877
-  },
-  {
-   "a": "amrita-pritam",
-   "b": "edmund-hillary",
-   "similarity": 0.2875
   }
  ],
  "perSlugMax": {
@@ -85,7 +85,7 @@
   "alexander-graham-bell": 0.2408,
   "alfonsina-storni": 0.2602,
   "alfred-adler": 0.2757,
-  "alfred-hitchcock": 0.2877,
+  "alfred-hitchcock": 0.3057,
   "alfred-north-whitehead": 0.2948,
   "ali-farka-toure": 0.2628,
   "alma-mahler": 0.2198,
@@ -98,7 +98,7 @@
   "amy-winehouse": 0.2456,
   "andy-warhol": 0.2285,
   "anita-mui": 0.2938,
-  "anne-bronte": 0.2463,
+  "anne-bronte": 0.2521,
   "anne-sullivan": 0.2537,
   "annie-jump-cannon": 0.2652,
   "antoine-lavoisier": 0.2025,
@@ -115,11 +115,12 @@
   "arthur-schopenhauer": 0.1805,
   "astrid-lindgren": 0.1964,
   "audre-lorde": 0.2546,
-  "audrey-hepburn": 0.2465,
+  "audrey-hepburn": 0.3002,
   "august-strindberg": 0.2176,
-  "ayrton-senna": 0.2189,
+  "ayrton-senna": 0.2279,
   "ba-jin": 0.2309,
   "babe-ruth": 0.2613,
+  "bad-bunny": 0.1871,
   "banjo-paterson": 0.1948,
   "barbara-mcclintock": 0.2152,
   "bedrich-smetana": 0.2172,
@@ -150,7 +151,7 @@
   "camille-saint-saens": 0.2505,
   "candido-portinari": 0.2198,
   "cantinflas": 0.2934,
-  "carl-friedrich-gauss": 0.2263,
+  "carl-friedrich-gauss": 0.2277,
   "carl-sandburg": 0.2052,
   "carlos-chagas": 0.1934,
   "carlos-fuentes": 0.2308,
@@ -227,6 +228,7 @@
   "emmeline-pankhurst": 0.2074,
   "enrico-fermi": 0.241,
   "erik-satie": 0.2754,
+  "erling-haaland": 0.2614,
   "ernest-shackleton": 0.2325,
   "erwin-schrodinger": 0.2606,
   "ethel-smyth": 0.2883,
@@ -288,11 +290,12 @@
   "haile-selassie": 0.2561,
   "halide-edib-ad-var": 0.2802,
   "hanae-mori": 0.2793,
-  "hans-christian-andersen": 0.251,
+  "hans-christian-andersen": 0.2641,
   "harriet-beecher-stowe": 0.2608,
   "harriet-taylor-mill": 0.2529,
+  "harry-styles": 0.2189,
   "hattie-mcdaniel": 0.2836,
-  "hector-berlioz": 0.219,
+  "hector-berlioz": 0.2632,
   "heinrich-hertz": 0.2311,
   "heitor-villa-lobos": 0.228,
   "helen-b-taussig": 0.2344,
@@ -306,7 +309,7 @@
   "hideki-yukawa": 0.2412,
   "hideyo-noguchi": 0.2574,
   "hilma-af-klint": 0.2631,
-  "homi-j-bhabha": 0.1916,
+  "homi-j-bhabha": 0.1929,
   "honore-de-balzac": 0.2312,
   "humphry-davy": 0.1935,
   "ida-b-wells": 0.2076,
@@ -332,7 +335,8 @@
   "jean-beliveau": 0.233,
   "jean-jacques-rousseau": 0.2587,
   "jean-luc-godard": 0.2316,
-  "jean-michel-basquiat": 0.2285,
+  "jean-michel-basquiat": 0.2754,
+  "jenna-ortega": 0.1949,
   "jim-morrison": 0.2229,
   "joan-didion": 0.228,
   "joan-miro": 0.2129,
@@ -371,10 +375,12 @@
   "katherine-mansfield": 0.2358,
   "kathleen-kenyon": 0.2803,
   "keith-haring": 0.1912,
+  "kendrick-lamar": 0.2614,
   "kenzo-tange": 0.2408,
   "knute-rockne": 0.1876,
   "konrad-lorenz": 0.2625,
   "kwame-nkrumah": 0.2154,
+  "kylie-jenner": 0.3057,
   "lal-bahadur-shastri": 0.2156,
   "lao-she": 0.205,
   "lata-mangeshkar": 0.2285,
@@ -386,6 +392,7 @@
   "leslie-cheung": 0.2332,
   "lin-huiyin": 0.2587,
   "lina-bo-bardi": 0.2645,
+  "lisa": 0.3002,
   "louis-armstrong": 0.253,
   "louis-pasteur": 0.25,
   "louisa-may-alcott": 0.2007,
@@ -393,7 +400,7 @@
   "lu-xun": 0.2445,
   "luchino-visconti": 0.2319,
   "luciano-pavarotti": 0.2293,
-  "lucretia-mott": 0.1934,
+  "lucretia-mott": 0.2069,
   "lucy-maud-montgomery": 0.1852,
   "ludwig-wittgenstein": 0.2629,
   "luis-barragan": 0.2628,
@@ -423,12 +430,13 @@
   "marlene-dietrich": 0.2559,
   "martin-luther-king-jr": 0.2541,
   "mary-jackson": 0.2505,
-  "mary-oliver": 0.2327,
+  "mary-oliver": 0.2591,
   "mary-pickford": 0.2671,
   "mary-shelley": 0.2825,
   "mary-wollstonecraft": 0.2296,
   "maryam-mirzakhani": 0.1701,
   "matthew-henson": 0.2625,
+  "max-verstappen": 0.2281,
   "may-ziadeh": 0.2823,
   "maya-angelou": 0.2529,
   "meena-kumari": 0.2462,
@@ -440,6 +448,7 @@
   "miriam-makeba": 0.2877,
   "misuzu-kaneko": 0.2317,
   "montesquieu": 0.2437,
+  "mrbeast": 0.227,
   "muhammad-abduh": 0.2216,
   "muhammad-ali-jinnah": 0.2598,
   "muhammad-iqbal": 0.1813,
@@ -457,6 +466,7 @@
   "nise-da-silveira": 0.2177,
   "nusrat-fateh-ali-khan": 0.1925,
   "octavia-hill": 0.2761,
+  "olivia-rodrigo": 0.2366,
   "oodgeroo-noonuccal": 0.2143,
   "oscar-niemeyer": 0.2745,
   "ousmane-sembene": 0.2412,
@@ -470,7 +480,7 @@
   "paul-verlaine": 0.2484,
   "paula-modersohn-becker": 0.2433,
   "peter-tosh": 0.2412,
-  "pierre-auguste-renoir": 0.2023,
+  "pierre-auguste-renoir": 0.227,
   "piet-mondrian": 0.2559,
   "premchand": 0.2595,
   "prince": 0.1948,
@@ -486,6 +496,7 @@
   "rembrandt": 0.1926,
   "rene-descartes": 0.2376,
   "rigoberta-menchu": 0.1867,
+  "rihanna": 0.2279,
   "ritwik-ghatak": 0.2075,
   "roald-amundsen": 0.228,
   "roberto-clemente": 0.2704,
@@ -501,6 +512,7 @@
   "s-h-raza": 0.251,
   "s-ren-kierkegaard": 0.2056,
   "saadat-hasan-manto": 0.2478,
+  "sabrina-carpenter": 0.2326,
   "sadegh-hedayat": 0.2469,
   "sally-ride": 0.2397,
   "samuel-barber": 0.1996,
@@ -532,11 +544,13 @@
   "swami-vivekananda": 0.2533,
   "sylvia-plath": 0.2222,
   "tarsila-do-amaral": 0.2297,
+  "taylor-swift": 0.2724,
   "teresa-carreno": 0.2318,
   "teresa-teng": 0.2625,
   "thomas-mann": 0.2399,
   "thomas-sankara": 0.2112,
   "thor-heyerdahl": 0.2421,
+  "timothee-chalamet": 0.2379,
   "tina-turner": 0.2662,
   "toni-morrison": 0.2397,
   "toshiro-mifune": 0.2884,
@@ -546,13 +560,13 @@
   "vincent-van-gogh": 0.204,
   "violeta-parra": 0.2633,
   "virginia-apgar": 0.2681,
-  "virginia-woolf": 0.2074,
+  "virginia-woolf": 0.2132,
   "vittorio-de-sica": 0.216,
   "w-e-b-du-bois": 0.2506,
   "w-g-grace": 0.1792,
   "walt-whitman": 0.2077,
   "walter-gropius": 0.2907,
-  "walter-payton": 0.2602,
+  "walter-payton": 0.2777,
   "wangari-maathai": 0.2072,
   "whina-cooper": 0.2548,
   "william-blake": 0.2595,
@@ -568,9 +582,10 @@
   "yasunari-kawabata": 0.2862,
   "yogi-berra": 0.2074,
   "yosano-akiko": 0.2884,
-  "yu-gwan-sun": 0.231,
+  "yu-gwan-sun": 0.2724,
   "yuri-gagarin": 0.2559,
   "zaha-hadid": 0.2364,
+  "zendaya": 0.2754,
   "zhou-enlai": 0.254
  }
 }
