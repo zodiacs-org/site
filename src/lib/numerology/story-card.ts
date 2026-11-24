@@ -45,7 +45,7 @@ export function numerologyStoryContent(number: CoreNumber): NumerologyStoryConte
     keywords: meaning.keywords.join(' · '),
     reading: POSITION_READINGS.lifePath[number],
     address: pageUrl.replace(/^https:\/\//u, '').replace(/\/$/u, ''),
-    note: 'A separate tradition from astrology',
+    note: 'Numerology is not astrology',
     hue: signBySlug(slug).hue,
     filename: `zodiacs-life-path-${number}.png`,
     pageUrl,
