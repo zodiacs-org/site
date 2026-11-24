@@ -9,6 +9,7 @@
  * src/lib/interpretations.ts; no em or en dashes; no health, money, betting
  * or guarantees; nothing about tokens or markets.
  */
+import { CONTACT_CONFIDENCE_NOTE } from '../reading-confidence-note';
 import type { CatalogLocale } from '../i18n/core';
 import { BODY_ROLE } from '../compat';
 import { transitLine } from '../transits';
@@ -296,7 +297,7 @@ const en: YearSkyWords = {
   calendarExact: 'Exact at {time} UTC.',
   calendarMore: 'More: {url}',
   calendarForecast: 'Dates are computed; what they mean is astrology’s forecast, not a guarantee.',
-  confidenceNote: 'Each reading carries a reading confidence: how specific the chart details behind it are, not the odds that something happens.',
+  confidenceNote: CONTACT_CONFIDENCE_NOTE,
   cardHeadline: 'My sky in',
   cardSun: 'Sun',
   cardMoon: 'Moon',
