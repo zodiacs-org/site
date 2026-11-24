@@ -37,22 +37,6 @@ async function choosePlace(tab, id, query) {
 
 const ALL_PAGES = [
   {
-    path: '/retrogrades/for-you/',
-    flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED',
-    source: 'src/pages/retrogrades/for-you/index.astro',
-    keys: { file: 'src/lib/retrograde-for-you/share.ts', name: 'RETROGRADE_FOR_YOU_SHARE_KEYS' },
-    sharePath: '/share/retrograde-for-you/',
-    linkedFrom: ['/', '/tools/', '/retrogrades/', '/mercury-retrograde/'],
-    async run(tab) {
-      await tab.fill('#rfy-date', BIRTH.date);
-      await tab.fill('#rfy-time', BIRTH.time);
-      await choosePlace(tab, 'rfy-place', BIRTH.place);
-      await tab.getByRole('button', { name: 'Show my retrogrades' }).click();
-      await tab.locator('.rfy__share-link').first().waitFor({ state: 'visible', timeout: 60_000 });
-      return '.rfy__share-link';
-    },
-  },
-  {
     path: '/astrocartography/',
     flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED',
     source: 'src/pages/astrocartography/index.astro',

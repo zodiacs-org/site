@@ -43095,6 +43095,9 @@ function civilDateAt(now, offsetHours) {
 function earliestToday(now = /* @__PURE__ */ new Date()) {
   return civilDateAt(now, -12);
 }
+function latestToday(now = /* @__PURE__ */ new Date()) {
+  return civilDateAt(now, 14);
+}
 
 // src/lib/astrocartography/meanings.ts
 function under18At(birthDate, now) {
@@ -43609,7 +43612,13 @@ function placeLabel(place2) {
 }
 function choiceList(places) {
   const labels = distinctPlaceLabels(places.map((place2) => ({ name: place2.name, admin1: place2.region, country: place2.country, lat: place2.latitude, lon: place2.longitude })));
-  return places.map((place2, index) => ({ id: place2.id, name: place2.name, region: place2.region, country: place2.country, label: labels[index] }));
+  const foldedKey = (label) => partKeys(label).join(",");
+  const folded2 = /* @__PURE__ */ new Map();
+  for (const label of labels) folded2.set(foldedKey(label), (folded2.get(foldedKey(label)) ?? 0) + 1);
+  return places.map((place2, index) => {
+    const label = (folded2.get(foldedKey(labels[index])) ?? 0) > 1 ? `${placeLabel(place2)} (${coordinateText(place2.latitude, place2.longitude)})` : labels[index];
+    return { id: place2.id, name: place2.name, region: place2.region, country: place2.country, label };
+  });
 }
 async function getAstrocartography(args, context) {
   const natal = await castNatal(args, context.localTime);
@@ -46141,21 +46150,36 @@ function childBirthDateRefusal(tool, args, now, hostZone) {
   return birthDatesIn(tool, args, now, hostZone).some((date3) => isUnder13(date3, today2)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
 }
 var AGE_FIRST_TOOLS = /* @__PURE__ */ new Set(["get_astrocartography"]);
-var LOOSE_CIVIL_DATE = /^(\d{4})([-/.])(\d{1,2})\2(\d{1,2})$/u;
-function ageCheckDate(text2) {
-  const trimmed = text2.trim();
-  const match = LOOSE_CIVIL_DATE.exec(trimmed);
-  if (!match) return trimmed;
-  const [year, month, day2] = [Number(match[1]), Number(match[3]), Number(match[4])];
+var LOOSE_DATE_PARTS = [/^(\d{1,4})\s*([-/.])\s*(\d{1,2})\s*\2\s*(\d{1,4})$/u, /^(\d{1,4})\s+(\d{1,2})\s+(\d{1,4})$/u];
+function calendarDate(year, month, day2) {
   const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
   const daysInMonth3 = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
-  if (month < 1 || month > 12 || day2 < 1 || day2 > daysInMonth3) return trimmed;
-  return `${match[1]}-${String(month).padStart(2, "0")}-${String(day2).padStart(2, "0")}`;
+  if (year < 1 || month < 1 || month > 12 || day2 < 1 || day2 > daysInMonth3) return null;
+  return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day2).padStart(2, "0")}`;
+}
+function ageCheckReadings(text2, now = /* @__PURE__ */ new Date()) {
+  const trimmed = text2.trim();
+  if (CIVIL_DATE.test(trimmed)) return [trimmed];
+  const match = LOOSE_DATE_PARTS.map((pattern) => pattern.exec(trimmed)).find(Boolean);
+  if (!match) return [];
+  const [first2, middle, last2] = match.length === 5 ? [match[1], match[3], match[4]] : [match[1], match[2], match[3]];
+  const readings = [];
+  if (first2.length === 4) readings.push(calendarDate(Number(first2), Number(middle), Number(last2)));
+  else if (first2.length <= 2 && (last2.length === 4 || last2.length === 2)) {
+    const thisYear = Number(latestToday(now).slice(0, 4));
+    const years = last2.length === 4 ? [Number(last2)] : [1900 + Number(last2), 2e3 + Number(last2)].filter((year) => year <= thisYear);
+    for (const year of years) readings.push(calendarDate(year, Number(middle), Number(first2)), calendarDate(year, Number(first2), Number(middle)));
+  }
+  return [...new Set(readings.filter((reading) => reading !== null))];
 }
 function ageFirstRefusal(tool, args, now, hostZone) {
   const birthDate = fieldOf(args, "birthDate");
-  const read = typeof birthDate === "string" ? { ...args, birthDate: ageCheckDate(birthDate) } : args;
-  return childBirthDateRefusal(tool, read, now, hostZone);
+  if (typeof birthDate !== "string") return childBirthDateRefusal(tool, args, now, hostZone);
+  for (const reading of ageCheckReadings(birthDate, now)) {
+    const refusal = childBirthDateRefusal(tool, { ...args, birthDate: reading }, now, hostZone);
+    if (refusal) return refusal;
+  }
+  return null;
 }
 function occasionCardUrl(args) {
   if (BIRTH_OCCASIONS.has(args.occasion)) return null;

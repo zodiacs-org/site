@@ -35,7 +35,7 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, GOOD_DAYS_TOOL_NAMES, type AiToolName, type SolarReturnToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
 import { MINOR_LOVE_NOTE, isUnder13, isUnderAge } from './features/reading-guards';
-import { earliestToday } from '../lib/birth-date-policy';
+import { earliestToday, latestToday } from '../lib/birth-date-policy';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
@@ -350,36 +350,57 @@ export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date
  */
 export const AGE_FIRST_TOOLS: ReadonlySet<string> = new Set<AiToolName>(['get_astrocartography']);
 
-/** A year first date with one separator, -, / or ., and a month and day of one or two digits: 2020-1-1, 2020/01/01, 2020.1.1. */
-const LOOSE_CIVIL_DATE = /^(\d{4})([-/.])(\d{1,2})\2(\d{1,2})$/u;
+/** Three runs of digits joined by one separator used twice: -, / or . (with spaces around it allowed), or spaces alone. */
+const LOOSE_DATE_PARTS = [/^(\d{1,4})\s*([-/.])\s*(\d{1,2})\s*\2\s*(\d{1,4})$/u, /^(\d{1,4})\s+(\d{1,2})\s+(\d{1,4})$/u];
 
-/**
- * A birth date as YYYY-MM-DD when it is a real calendar date written year first, with the spaces around it removed and
- * the month and day padded (2020-1-1, 2020/01/01 and 2020.1.1 are 2020-01-01); otherwise the text with only its spaces
- * removed, so a value that is not a date keeps the tool's own date sentence. Used only for the age check, never echoed.
- */
-export function ageCheckDate(text: string): string {
-  const trimmed = text.trim();
-  const match = LOOSE_CIVIL_DATE.exec(trimmed);
-  if (!match) return trimmed;
-  const [year, month, day] = [Number(match[1]), Number(match[3]), Number(match[4])];
+/** YYYY-MM-DD when year, month and day make a real calendar date, otherwise null. */
+function calendarDate(year: number, month: number, day: number): string | null {
   const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
   const daysInMonth = month === 2 ? (leap ? 29 : 28) : [4, 6, 9, 11].includes(month) ? 30 : 31;
-  if (month < 1 || month > 12 || day < 1 || day > daysInMonth) return trimmed;
-  return `${match[1]}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  if (year < 1 || month < 1 || month > 12 || day < 1 || day > daysInMonth) return null;
+  return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
 /**
- * The child refusal for a tool in AGE_FIRST_TOOLS, read before any missing field is named. The birth date is read
- * with the spaces around it removed and, when it is a real date written year first with -, / or . and an unpadded
- * month or day, as that date (ageCheckDate), so a child's date in any of those forms is refused for the age too and
- * not answered with the date's format or the fields still missing. Only the age check reads the normalised date; the
- * call itself is read as sent.
+ * Every plausible reading of a birth date as YYYY-MM-DD, for the age check only; never stored, logged or echoed.
+ * The text is read with the spaces around it removed. A date already in YYYY-MM-DD form is that date alone. Otherwise
+ * three runs of digits joined by -, / or . (the same one twice) or by spaces are read in each order that fits: year
+ * first (a four digit first run: year, month, day), and day first and month first (a last run of four digits, or of
+ * two digits, which reads as both 19YY and 20YY unless 20YY has not begun anywhere on Earth). Only real calendar dates count.
+ * 2020/1/1 is 2020-01-01 alone; 31/01/2020 is 2020-01-31 alone; 01/02/2015 is 2015-02-01 and 2015-01-02. An empty
+ * list means no reading is a date, so the tool's own date sentence stands.
+ */
+export function ageCheckReadings(text: string, now: Date = new Date()): string[] {
+  const trimmed = text.trim();
+  if (CIVIL_DATE.test(trimmed)) return [trimmed];
+  const match = LOOSE_DATE_PARTS.map((pattern) => pattern.exec(trimmed)).find(Boolean);
+  if (!match) return [];
+  const [first, middle, last] = match.length === 5 ? [match[1], match[3], match[4]] : [match[1], match[2], match[3]];
+  const readings: (string | null)[] = [];
+  if (first.length === 4) readings.push(calendarDate(Number(first), Number(middle), Number(last)));
+  else if (first.length <= 2 && (last.length === 4 || last.length === 2)) {
+    const thisYear = Number(latestToday(now).slice(0, 4));
+    const years = last.length === 4 ? [Number(last)] : [1900 + Number(last), 2000 + Number(last)].filter((year) => year <= thisYear);
+    for (const year of years) readings.push(calendarDate(year, Number(middle), Number(first)), calendarDate(year, Number(first), Number(middle)));
+  }
+  return [...new Set(readings.filter((reading): reading is string => reading !== null))];
+}
+
+/**
+ * The child refusal for a tool in AGE_FIRST_TOOLS, read before any missing field is named. The birth date is read in
+ * every plausible order (ageCheckReadings), and the call is refused for the age when any reading is less than 13 years
+ * before today at UTC-12 or still to come, so a child's date in any of those forms, or one that reads as a child's in
+ * one order and an adult's in another, is refused and not answered with the date's format or the fields still
+ * missing. Only when every reading is an adult's, or none is a date, does the call go on, read as sent.
  */
 export function ageFirstRefusal(tool: AiToolName, args: unknown, now: Date, hostZone?: string) {
   const birthDate = fieldOf(args, 'birthDate');
-  const read = typeof birthDate === 'string' ? { ...(args as Record<string, unknown>), birthDate: ageCheckDate(birthDate) } : args;
-  return childBirthDateRefusal(tool, read, now, hostZone);
+  if (typeof birthDate !== 'string') return childBirthDateRefusal(tool, args, now, hostZone);
+  for (const reading of ageCheckReadings(birthDate, now)) {
+    const refusal = childBirthDateRefusal(tool, { ...(args as Record<string, unknown>), birthDate: reading }, now, hostZone);
+    if (refusal) return refusal;
+  }
+  return null;
 }
 
 /**

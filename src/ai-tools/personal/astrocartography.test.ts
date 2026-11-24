@@ -7,7 +7,7 @@ import { computeChart } from '../../lib/engine/full.js';
 import { meanObliquity } from '../../lib/engine/houses';
 import { ACG_BODIES, distanceKm, distanceToMeridianKm, eclipticToEquatorial, horizonLine, horizonLongitude, lineDistances, mcLongitude, ramcFromMc, wrapLongitude } from '../../lib/astrocartography/lines';
 import { LINE_MEANING, MINOR_NOTE } from '../../lib/astrocartography/meanings';
-import { ageCheckDate, coverageInputRefusal, executeAiTool } from '../tools';
+import { ageCheckReadings, coverageInputRefusal, executeAiTool } from '../tools';
 import { createAiNodeHandler } from '../http';
 import { INPUT_SCHEMAS, UNDER_13_REFUSAL } from '../contracts';
 import { loadPlaceTable } from '../features/place-table';
@@ -391,6 +391,38 @@ describe('get_astrocartography', () => {
     expect(astrocartographyInput.safeParse({ ...base, cities: ['Lisbon', 'Paris', 'Rome'], placeIds: ids }).success).toBe(true);
   });
 
+  it('tells apart places whose labels differ only in accents, and reads the id or label given back as that place', async () => {
+    const base = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London' };
+    const table = await loadPlaceTable();
+    // Ābādeh and Abadeh are two towns in Fars, Iran; their labels fold alike, so typed back, neither names one place.
+    const result = await executeAiTool('get_astrocartography', { ...base, cities: ['Abadeh, Fars, Iran', 'Abadeh, Tehran, Iran'] }, ON) as { ok: true; data: any };
+    expect(result.ok).toBe(true);
+    expect(result.data.cities).toEqual([]);
+    for (const entry of [result.data.ambiguous[0], result.data.didYouMean[0]]) {
+      expect(entry.places).toEqual([
+        { id: 'p1rywmm50j22', name: 'Ābādeh', region: 'Fars', country: 'Iran', label: 'Ābādeh, Fars, Iran (28.83° N, 53.17° E)' },
+        { id: 'p1u11oeekylr', name: 'Abadeh', region: 'Fars', country: 'Iran', label: 'Abadeh, Fars, Iran (31.16° N, 52.65° E)' },
+      ]);
+    }
+    expect(result.data.limits).toContain('More than one town or city matches Abadeh, Fars, Iran: Ābādeh, Fars, Iran (28.83° N, 53.17° E); Abadeh, Fars, Iran (31.16° N, 52.65° E). Some share a name, region and country, so choose one by its id in placeIds.');
+    expect(result.data.limits).toContain('No town or city in the index matches Abadeh, Tehran, Iran. Did you mean Ābādeh, Fars, Iran (28.83° N, 53.17° E); Abadeh, Fars, Iran (31.16° N, 52.65° E)? Ask which one is meant, then give its id in placeIds.');
+    expect(result.data.limits.join(' ')).not.toMatch(/Add the region or country after a comma/u);
+    // Each id, and each label as listed, reads exactly its own place.
+    for (const place of result.data.ambiguous[0].places) {
+      const chosen = await executeAiTool('get_astrocartography', { ...base, placeIds: [place.id] }, ON) as { ok: true; data: any };
+      expect(chosen.data.ambiguous).toEqual([]);
+      expect(chosen.data.didYouMean).toEqual([]);
+      expect(chosen.data.cities).toHaveLength(1);
+      expect(chosen.data.cities[0]).toMatchObject({ asked: place.id, id: place.id, name: place.name, region: 'Fars', country: 'Iran' });
+      expect(resolvePlace(table, place.label)).toMatchObject({ place: { id: place.id } });
+      const byLabel = await executeAiTool('get_astrocartography', { ...base, cities: [place.label] }, ON) as { ok: true; data: any };
+      expect(byLabel.data.cities.map((city: { id: string }) => city.id)).toEqual([place.id]);
+    }
+    // Labels that do not fold alike keep their plain form and the region sentence.
+    const belmont = await executeAiTool('get_astrocartography', { ...base, cities: ['Belmont'] }, ON) as { ok: true; data: any };
+    expect(belmont.data.ambiguous[0].places.every((place: { label: string }) => !/° N|° S/u.test(place.label))).toBe(true);
+  });
+
   it('reads a region only by its whole name, never by words inside a longer one: Virginia is not West Virginia', async () => {
     const table = await loadPlaceTable();
     const read = (text: string) => {
@@ -675,11 +707,48 @@ describe('get_astrocartography', () => {
       expect(timed.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14.');
     }
     // A value that is not a calendar date keeps the date sentence, never the age refusal.
-    for (const birthDate of ['2020/13/01', '2020/02/30', '2021.2.29', '2020-01/01', '20/01/2020', 'soon']) {
+    for (const birthDate of ['2020/13/01', '2020/02/30', '2021.2.29', '2020-01/01', '32/13/2020', '2020/01', 'soon']) {
       const answer = await executeAiTool('get_astrocartography', { birthDate }, ON) as { ok: false; error: { message: string } };
       expect(answer.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14. time is required. zone is required.');
     }
-    expect(['2020-1-1', '2020/01/01', '2020.1.1', ' 2020/1/1 ', '2016.2.29', '2017.2.29', 'x'].map(ageCheckDate)).toEqual(['2020-01-01', '2020-01-01', '2020-01-01', '2020-01-01', '2016-02-29', '2017.2.29', 'x']);
+    const now = ON.now();
+    expect(['2020-1-1', '2020/01/01', '2020.1.1', ' 2020/1/1 ', '2016.2.29', '2017.2.29', 'x'].map((text) => ageCheckReadings(text, now))).toEqual([['2020-01-01'], ['2020-01-01'], ['2020-01-01'], ['2020-01-01'], ['2016-02-29'], [], []]);
+  });
+
+  it('refuses a date written day first or month first when any reading of it is a child\'s, and goes on only when every reading is an adult\'s', async () => {
+    // ON's clock is 2026-11-09T09:00Z: 2026-11-08 at UTC-12, so 2013-11-08 is the latest birth date accepted.
+    const now = ON.now();
+    expect(ageCheckReadings('31/01/2020', now)).toEqual(['2020-01-31']);
+    expect(ageCheckReadings('01/02/2015', now)).toEqual(['2015-02-01', '2015-01-02']);
+    expect(ageCheckReadings('01/12/2013', now)).toEqual(['2013-12-01', '2013-01-12']);
+    expect(ageCheckReadings('31 01 1990', now)).toEqual(['1990-01-31']);
+    expect(ageCheckReadings('01/02/15', now)).toEqual(['1915-02-01', '1915-01-02', '2015-02-01', '2015-01-02']);
+    expect(ageCheckReadings('31.01.90', now)).toEqual(['1990-01-31']);
+    expect(ageCheckReadings('1990-01-31', now)).toEqual(['1990-01-31']);
+    const refused = [
+      '31/01/2020', '31-01-2020', '31.01.2020', '31 01 2020', ' 31 / 1 / 2020 ', // day first only
+      '01/31/2020', // month first only
+      '01/02/2015', '01.02.2015', // both readings a child's
+      '01/12/2013', '12/01/2013', // 1 December 2013 (a child's) or 12 January 2013 (an adult's)
+      '09/11/2013', '11/09/2013', // 9 November 2013, the day after the latest accepted, in one reading
+      '01/02/15', '31/01/20', '09/11/13', // two digit years read as 20YY too
+      '01/12/2026', '12/31/2026', // still to come
+    ];
+    for (const birthDate of refused) {
+      for (const extra of [{}, { time: '08:30', zone: 'Europe/London' }]) {
+        const answer = await executeAiTool('get_astrocartography', { birthDate, ...extra }, ON);
+        expect(answer, JSON.stringify({ birthDate, ...extra })).toMatchObject({ ok: false, error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+        expect(JSON.stringify(answer)).not.toMatch(/is required|must be a date|2020|2015|2013|2026/u);
+      }
+    }
+    // Every reading an adult's: the replies it got before, the date's form and the fields still missing.
+    for (const birthDate of ['31/01/1990', '01/31/1990', '31 01 1990', '31.1.1990', '08/11/2013', '11/08/2013', '31/01/90', '05/06/1985']) {
+      const alone = await executeAiTool('get_astrocartography', { birthDate }, ON) as { ok: false; error: { message: string } };
+      expect(alone.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14. time is required. zone is required.');
+      const timed = await executeAiTool('get_astrocartography', { birthDate, time: '08:30', zone: 'Europe/London' }, ON) as { ok: false; error: { message: string } };
+      expect(timed.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14.');
+    }
+    expect(await executeAiTool('get_astrocartography', { birthDate: '1990-01-31' }, ON)).toMatchObject({ ok: false, error: { message: 'time is required. zone is required.' } });
   });
 
   it('tells the assistant to check the age before it asks for a birth time or birthplace', () => {
@@ -758,6 +827,19 @@ describe('get_astrocartography on the hosted server', () => {
       expect(alone.structuredContent, birthDate).toMatchObject({ ok: false, error: { message: 'birthDate must be a date such as 1994-05-14. time is required. zone is required.' } });
     }
     expect((await call(host, 'get_astrocartography', { birthDate: '2020/02/30' })).structuredContent.error.message).toBe('birthDate must be a date such as 1994-05-14. time is required. zone is required.');
+  });
+
+  it('answers a date written day first or month first with the age refusal when any reading is a child\'s', async () => {
+    const host = await serve();
+    for (const birthDate of ['31/01/2020', '01/02/2015', '01/12/2013', '31 01 2020', '01/02/15']) {
+      const result = await call(host, 'get_astrocartography', { birthDate });
+      expect(result.structuredContent, birthDate).toMatchObject({ ok: false, tool: 'get_astrocartography', error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+      expect(JSON.stringify(result)).not.toMatch(/is required|must be a date|2020|2015|2013|birth time|timezone/iu);
+    }
+    for (const birthDate of ['31/01/1990', '01/31/1990']) {
+      expect((await call(host, 'get_astrocartography', { birthDate })).structuredContent, birthDate).toMatchObject({ ok: false, error: { message: 'birthDate must be a date such as 1994-05-14. time is required. zone is required.' } });
+    }
+    expect((await call(host, 'get_astrocartography', { birthDate: '1990-01-31' })).structuredContent).toMatchObject({ ok: false, error: { message: 'time is required. zone is required.' } });
   });
 
   it('links the page and its line cards on the staging site when the call comes in on the staging host', async () => {

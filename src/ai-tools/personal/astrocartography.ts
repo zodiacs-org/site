@@ -371,10 +371,21 @@ export function placeLabel(place: Pick<AcgPlace, 'name' | 'region' | 'country'>)
   return placeLabelText({ name: place.name, admin1: place.region, country: place.country });
 }
 
-/** Choices as the answer lists them: each with its id, and a label that tells it apart from the others (distinctPlaceLabels). */
+/**
+ * Choices as the answer lists them: each with its id, and a label that tells it apart from the others
+ * (distinctPlaceLabels). Labels that differ only in accents, case or punctuation (Ābādeh, Fars, Iran and Abadeh, Fars,
+ * Iran) fold alike, so typed back either would name both places: those take their coordinates too, like places that
+ * share a label, and the answer says to choose one by its id.
+ */
 function choiceList(places: readonly AcgPlace[]): AstrocartographyData['ambiguous'][number]['places'] {
   const labels = distinctPlaceLabels(places.map((place) => ({ name: place.name, admin1: place.region, country: place.country, lat: place.latitude, lon: place.longitude })));
-  return places.map((place, index) => ({ id: place.id, name: place.name, region: place.region, country: place.country, label: labels[index] }));
+  const foldedKey = (label: string) => partKeys(label).join(',');
+  const folded = new Map<string, number>();
+  for (const label of labels) folded.set(foldedKey(label), (folded.get(foldedKey(label)) ?? 0) + 1);
+  return places.map((place, index) => {
+    const label = (folded.get(foldedKey(labels[index])) ?? 0) > 1 ? `${placeLabel(place)} (${coordinateText(place.latitude, place.longitude)})` : labels[index];
+    return { id: place.id, name: place.name, region: place.region, country: place.country, label };
+  });
 }
 
 export async function getAstrocartography(args: AstrocartographyInput, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'origin' | 'pageOn' | 'placeTable'>): Promise<{ data: AstrocartographyData; links: { title: string; url: string }[] }> {
