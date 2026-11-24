@@ -746,6 +746,7 @@ export function motionBlock() {
   var NAMES = { aries: 'Aries', taurus: 'Taurus', gemini: 'Gemini', cancer: 'Cancer', leo: 'Leo', virgo: 'Virgo', libra: 'Libra', scorpio: 'Scorpio', sagittarius: 'Sagittarius', capricorn: 'Capricorn', aquarius: 'Aquarius', pisces: 'Pisces' };
   /* The reader's pick lives in this page only: nothing is stored or sent. */
   var mine = document.querySelector('[data-motion="mine"]');
+  var mineRest = mine && mine.querySelector('[data-mine-label]') ? mine.querySelector('[data-mine-label]').textContent : '';
   if (mine) {
     var grid = mine.querySelector('.mine-signs');
     var label = mine.querySelector('[data-mine-label]');
@@ -807,6 +808,17 @@ export function motionBlock() {
     var sign = e.detail.sign;
     // Every picker, this one included, only dispatches; each plate syncs here, so nothing re-dispatches.
     carrySync(sign);
+    // The first plate's own picker, when it is on the page, follows a pick made anywhere else.
+    if (mine) {
+      var known = !!NAMES[sign];
+      [].forEach.call(mine.querySelectorAll('.mine-sign'), function (o) { o.setAttribute('aria-pressed', known && o.getAttribute('data-sign') === sign ? 'true' : 'false'); });
+      var mineGrid = mine.querySelector('.mine-signs'), mineLabel = mine.querySelector('[data-mine-label]');
+      if (mineGrid) mineGrid.classList.toggle('has-pick', known);
+      if (mineLabel) {
+        if (!mineLabel.hasAttribute('data-resting')) mineLabel.setAttribute('data-resting', mineRest);
+        mineLabel.textContent = known ? NAMES[sign] + '. You already knew.' : mineLabel.getAttribute('data-resting');
+      }
+    }
     if (field) marks(field, '.tw', sign);
     if (shelf) marks(shelf, '.disc', sign);
     if (cal) marks(cal, '.cal-peak', sign);
