@@ -43015,10 +43015,7 @@ function dayLabel3(at, timeZone) {
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
 }
 var HOUR6 = 36e5;
-var offsetFormats = /* @__PURE__ */ new Map();
-function offsetSeconds(at, timeZone) {
-  let format3 = offsetFormats.get(timeZone);
-  if (!format3) offsetFormats.set(timeZone, format3 = new Intl.DateTimeFormat("en-GB", { timeZone, timeZoneName: "longOffset" }));
+function offsetSeconds(at, format3) {
   const name = format3.formatToParts(at).find((part) => part.type === "timeZoneName").value;
   const match = /^GMT(?:([+-])(\d{2}):(\d{2})(?::(\d{2}))?)?$/u.exec(name);
   if (!match) throw new RangeError(`Unexpected time zone offset: ${name}`);
@@ -43031,22 +43028,23 @@ function offsetLabel(seconds2) {
   const rest = minutes % 60;
   return `UTC${seconds2 < 0 ? "-" : "+"}${hours}${rest ? `:${String(rest).padStart(2, "0")}` : ""}`;
 }
-function shownTwice(at, timeZone, own) {
+function shownTwice(at, format3, own) {
   const others = /* @__PURE__ */ new Set();
   for (let hours = -26; hours <= 26; hours += 1) {
-    const offset = offsetSeconds(new Date(at.getTime() + hours * HOUR6), timeZone);
+    const offset = offsetSeconds(new Date(at.getTime() + hours * HOUR6), format3);
     if (offset !== own) others.add(offset);
   }
   for (const offset of others) {
     const twin = new Date(at.getTime() + (own - offset) * 1e3);
-    if (offsetSeconds(twin, timeZone) === offset) return true;
+    if (offsetSeconds(twin, format3) === offset) return true;
   }
   return false;
 }
 function clockTime2(at, timeZone) {
   const time = new Intl.DateTimeFormat("en-GB", { timeZone, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(at);
-  const own = offsetSeconds(at, timeZone);
-  return shownTwice(at, timeZone, own) ? `${time} (${offsetLabel(own)})` : time;
+  const offsets = new Intl.DateTimeFormat("en-GB", { timeZone, timeZoneName: "longOffset" });
+  const own = offsetSeconds(at, offsets);
+  return shownTwice(at, offsets, own) ? `${time} (${offsetLabel(own)})` : time;
 }
 var nextDate2 = (date3) => new Date(Date.parse(`${date3}T00:00:00Z`) + DAY19).toISOString().slice(0, 10);
 

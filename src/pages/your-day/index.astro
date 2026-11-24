@@ -57,7 +57,9 @@ const jsonLd = [
   .yd-related { margin: 24px 0 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
   .yd-related a { color: var(--text); }
   :global(.yd .calc__submit > span:first-child) { min-inline-size: 6em; text-align: start; }
-  :global(.yd__clock) { min-height: 1.5em; }
+  /* Two lines held from the first paint: the zone is filled in after load, and the longest names
+     (America/Argentina/Rio Gallegos at 360px to 768px) take the second line without moving the button below. */
+  :global(.yd__clock) { line-height: 1.5; block-size: 3em; overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
   :global(.yd__result) { display: grid; gap: 16px; margin-top: clamp(24px, 4vw, 36px); min-height: 100svh; align-content: start; scroll-margin-top: 88px; }
   :global(.yd__head) { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; }
   :global(.yd__step) { min-height: 44px; min-width: 44px; padding: 8px 12px; gap: 6px; }

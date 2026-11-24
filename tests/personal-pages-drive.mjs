@@ -5,7 +5,9 @@
  * - switch off: the page is the redirect to the 404 page, and no page that links to it on launch (the tools hub,
  *   the home page's Tools menu, the pages its pull request linked from) and no sitemap row leads to it;
  * - switch on, at 360px and 1280px: the page loads with zero layout shift (one rerun, as AGENTS.md allows for a
- *   micro-shift flake; a second shift fails), a fixed adult birth gives a result without changing the address
+ *   micro-shift flake; a second shift fails), and again at 360px and 768px on a device whose zone has a long name
+ *   (America/Argentina/Rio_Gallegos) that the page fills in after load, with the name shown whole; a fixed adult
+ *   birth gives a result without changing the address
  *   bar or sending the birth date anywhere, and every share link on the result carries exactly the tool's
  *   *_SHARE_KEYS (without `ref`, which only the assistant adds), each once, and no birth detail.
  *
@@ -39,6 +41,8 @@ const ALL_PAGES = [
     keys: { file: 'src/lib/personal-day/share.ts', name: 'YOUR_DAY_SHARE_KEYS' },
     sharePath: '/share/your-day/',
     linkedFrom: ['/', '/tools/', '/today/', '/transits/', '/horoscopes/'],
+    /** The device-clock line the page fills in after load, and the zone name it must show whole. */
+    zoneLabel: { selector: '.yd__clock', shows: 'America/Argentina/Rio Gallegos' },
     async run(tab) {
       // A date under 13 keeps the birth time and birthplace locked, with no birthplace search to send a request.
       await tab.fill('#yd-date', '2020-01-01');
@@ -102,10 +106,17 @@ const VIEWPORTS = [
   { name: 'desktop', width: 1280, height: 900 },
 ];
 
-async function open(browser, viewport) {
+/** Devices on a zone with a long name, filled in after load: the reserved space must hold it at these widths. */
+const LONG_ZONE = 'America/Argentina/Rio_Gallegos';
+const LONG_ZONE_VIEWPORTS = [
+  { name: 'mobile', width: 360, height: 780, isMobile: true, hasTouch: true },
+  { name: 'tablet', width: 768, height: 1024 },
+];
+
+async function open(browser, viewport, timezoneId = 'Europe/London') {
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: 1,
-    isMobile: !!viewport.isMobile, hasTouch: !!viewport.hasTouch, timezoneId: 'Europe/London', locale: 'en-GB', reducedMotion: 'reduce',
+    isMobile: !!viewport.isMobile, hasTouch: !!viewport.hasTouch, timezoneId, locale: 'en-GB', reducedMotion: 'reduce',
   });
   await context.addInitScript(() => {
     window.__cls = 0;
@@ -132,6 +143,31 @@ if (onPages.length) {
   await withPreview({ port: Number(process.env.PERSONAL_PAGES_PORT ?? 4381) }, async (base) => {
     const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS });
     try {
+      for (const page of onPages.filter((entry) => entry.zoneLabel)) {
+        for (const viewport of LONG_ZONE_VIEWPORTS) {
+          const label = `${page.path} @${viewport.width} on ${LONG_ZONE}`;
+          let session = await open(browser, viewport, LONG_ZONE);
+          await session.tab.goto(`${base}${page.path}`, { waitUntil: 'networkidle' });
+          await settle(session.tab);
+          let load = await cls(session.tab);
+          if (load.cls !== 0) {
+            console.log(`rerun ${label}: first load shifted ${load.cls}`);
+            await session.context.close();
+            session = await open(browser, viewport, LONG_ZONE);
+            await session.tab.goto(`${base}${page.path}`, { waitUntil: 'networkidle' });
+            await settle(session.tab);
+            load = await cls(session.tab);
+          }
+          check(`${label}: first load has zero CLS`, load.cls === 0, JSON.stringify(load));
+          const zone = await session.tab.locator(page.zoneLabel.selector).evaluate((node) => ({
+            text: node.textContent, whole: node.scrollHeight <= node.clientHeight + 1,
+          }));
+          check(`${label}: the clock line names the zone`, zone.text.includes(page.zoneLabel.shows), zone.text);
+          check(`${label}: the zone name is shown whole in the reserved space`, zone.whole, JSON.stringify(zone));
+          check(`${label}: no page errors`, session.errors.length === 0, session.errors.join('\n'));
+          await session.context.close();
+        }
+      }
       for (const page of onPages) {
         for (const viewport of VIEWPORTS) {
           const label = `${page.path} @${viewport.width}`;

@@ -20,11 +20,12 @@ export function dayLabel(at: Date | string, timeZone: string): string {
 
 const HOUR = 3_600_000;
 
-/** The zone's offset from UTC at an instant, in seconds east, from Intl's "GMT-04:00" ("GMT" at zero). */
-const offsetFormats = new Map<string, Intl.DateTimeFormat>();
-function offsetSeconds(at: Date, timeZone: string): number {
-  let format = offsetFormats.get(timeZone);
-  if (!format) offsetFormats.set(timeZone, format = new Intl.DateTimeFormat('en-GB', { timeZone, timeZoneName: 'longOffset' }));
+/**
+ * The zone's offset from UTC at an instant, in seconds east, from Intl's "GMT-04:00" ("GMT" at zero). The formatter
+ * is made for one clock time and dropped with it: the zone can be a birthplace's (the MCP falls back to the birth
+ * clock), so nothing here keeps a zone past the call that was given it.
+ */
+function offsetSeconds(at: Date, format: Intl.DateTimeFormat): number {
   const name = format.formatToParts(at).find((part) => part.type === 'timeZoneName')!.value;
   const match = /^GMT(?:([+-])(\d{2}):(\d{2})(?::(\d{2}))?)?$/u.exec(name);
   if (!match) throw new RangeError(`Unexpected time zone offset: ${name}`);
@@ -44,15 +45,15 @@ function offsetLabel(seconds: number): string {
  * Whether the zone's clock showed this instant's wall time at another instant too: when the clock was turned back,
  * the same wall time comes round again under the other offset. The offsets come from a day either side.
  */
-function shownTwice(at: Date, timeZone: string, own: number): boolean {
+function shownTwice(at: Date, format: Intl.DateTimeFormat, own: number): boolean {
   const others = new Set<number>();
   for (let hours = -26; hours <= 26; hours += 1) {
-    const offset = offsetSeconds(new Date(at.getTime() + hours * HOUR), timeZone);
+    const offset = offsetSeconds(new Date(at.getTime() + hours * HOUR), format);
     if (offset !== own) others.add(offset);
   }
   for (const offset of others) {
     const twin = new Date(at.getTime() + (own - offset) * 1000);
-    if (offsetSeconds(twin, timeZone) === offset) return true;
+    if (offsetSeconds(twin, format) === offset) return true;
   }
   return false;
 }
@@ -60,8 +61,9 @@ function shownTwice(at: Date, timeZone: string, own: number): boolean {
 /** HH:MM on a zone's clock, with the offset after it when the clock showed that time twice: "01:03 (UTC-4)". */
 export function clockTime(at: Date, timeZone: string): string {
   const time = new Intl.DateTimeFormat('en-GB', { timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(at);
-  const own = offsetSeconds(at, timeZone);
-  return shownTwice(at, timeZone, own) ? `${time} (${offsetLabel(own)})` : time;
+  const offsets = new Intl.DateTimeFormat('en-GB', { timeZone, timeZoneName: 'longOffset' });
+  const own = offsetSeconds(at, offsets);
+  return shownTwice(at, offsets, own) ? `${time} (${offsetLabel(own)})` : time;
 }
 /** The next calendar date, YYYY-MM-DD. */
 export const nextDate = (date: string) => new Date(Date.parse(`${date}T00:00:00Z`) + DAY).toISOString().slice(0, 10);
