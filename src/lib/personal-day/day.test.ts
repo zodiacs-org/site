@@ -11,14 +11,16 @@ import { NATAL_HOUSE_THEME } from '../natal';
 import { softenHealth, softenMinor } from '../../ai-tools/features/reading-guards';
 import { transitLine } from '../transits';
 import { MAJOR_ASPECT_ORDER, TRANSIT_BODY_ORDER } from '../engine/transit-scan-shared';
-import { pointName } from './score';
-import { dateOn } from './clock';
+import { orbOf, pointName } from './score';
+import { clockTime, dateOn } from './clock';
 import { bodyLongitude } from '../engine/full.js';
 import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../vedic-signs/clock';
 import { executeAiTool } from '../../ai-tools/tools';
 import { parseYourDayShare, yourDayQuery, yourDayShareUrl, YOUR_DAY_SHARE_KEYS } from './share';
 
 const NOW = new Date('2026-11-09T09:00:00Z');
+const SECOND_MS = 1_000;
+const HOUR_MS = 3_600_000;
 /** The ticket's appetite check, with the longing, heat and pleasure a review found too. */
 const MINOR_CHECK = /loving|appetite|longing|heat|pleasure|romant|attract/iu;
 const context: PersonalToolContext = { now: NOW, localTime: createLocalTimeModule(), resolveZone: async (name) => name, origin: 'https://zodiacs.org', pageOn: true };
@@ -360,6 +362,77 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
     }
     expect(sixth).toBeGreaterThan(0);
   }, 60_000);
+});
+
+describe('applying, separating and exact times on the /your-day/ page and get_personal_day', () => {
+  const site: DayClock = { prepareLocalTime, resolveLocalToUtc };
+  const MINUTE = 60_000;
+
+  it('read applying or separating from the way the orb is moving at midday, even when it is exact within the hour after', async () => {
+    // A date-only chart, read on 24 November 2026 on UTC: midday is 12:00 UTC.
+    await prepareLocalTime('1990-05-03', 'UTC');
+    const base = castDayNatal({ birthDate: '1990-05-03', zone: 'UTC' }, site);
+    const midday = Date.parse('2026-11-24T12:00:00Z');
+    const moonAt = (offset: number) => bodyLongitude('Moon', new Date(midday + offset));
+    const read = async (minutes: number) => {
+      // A natal Venus the moving Moon trines exactly `minutes` after midday.
+      const venus = (moonAt(minutes * MINUTE) + 120) % 360;
+      const natal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Venus' ? { ...row, lon: venus } : row)) };
+      const day = await readPersonalDay(natal, { birthDate: '1990-05-03', date: '2026-11-24', zone: 'UTC', now: NOW }, site);
+      expect(day.middayUtc).toBe('2026-11-24T12:00:00.000Z');
+      const contact = day.contacts.find((entry) => entry.planet === 'Moon' && entry.point === 'Venus' && entry.aspect === 'trine');
+      expect(contact, `${minutes} minutes`).toBeDefined();
+      // Without a birth time no exact moment is given, so the direction alone says which.
+      expect(contact!.exactAt).toBeNull();
+      return { applying: contact!.applying, orb: (offset: number) => orbOf(moonAt(offset), venus, 'trine') };
+    };
+
+    // Exact 20 minutes after midday: the orb is closing at midday, and an hour later it is past exact and wider than
+    // at midday, which is what read it as separating before.
+    const crossing = await read(20);
+    expect(crossing.orb(SECOND_MS)).toBeLessThan(crossing.orb(0));
+    expect(crossing.orb(HOUR_MS)).toBeGreaterThan(crossing.orb(0));
+    expect(crossing.applying).toBe(true);
+    // Exact 40 minutes after midday, and 3 hours after: closing at midday.
+    expect((await read(40)).applying).toBe(true);
+    expect((await read(180)).applying).toBe(true);
+    // Exact 20 minutes and 3 hours before midday: past exact and opening at midday.
+    expect((await read(-20)).applying).toBe(false);
+    expect((await read(-180)).applying).toBe(false);
+  });
+
+  it('give a time the clock showed twice with its UTC offset, and every other time as HH:MM', () => {
+    // New York turned its clocks back from 02:00 (UTC-4) to 01:00 (UTC-5) on 1 November 2026: 01:03 came round twice.
+    expect(clockTime(new Date('2026-11-01T05:03:00Z'), 'America/New_York')).toBe('01:03 (UTC-4)');
+    expect(clockTime(new Date('2026-11-01T06:03:00Z'), 'America/New_York')).toBe('01:03 (UTC-5)');
+    expect(clockTime(new Date('2026-11-01T04:59:00Z'), 'America/New_York')).toBe('00:59');
+    expect(clockTime(new Date('2026-11-01T07:00:00Z'), 'America/New_York')).toBe('02:00');
+    // The spring change skips an hour and repeats none.
+    expect(clockTime(new Date('2026-03-08T07:30:00Z'), 'America/New_York')).toBe('03:30');
+    // London, 25 October 2026, and Lord Howe's half-hour change on 5 April 2026.
+    expect(clockTime(new Date('2026-10-25T00:30:00Z'), 'Europe/London')).toBe('01:30 (UTC+1)');
+    expect(clockTime(new Date('2026-10-25T01:30:00Z'), 'Europe/London')).toBe('01:30 (UTC+0)');
+    expect(clockTime(new Date('2026-04-04T14:45:00Z'), 'Australia/Lord_Howe')).toBe('01:45 (UTC+11)');
+    expect(clockTime(new Date('2026-04-04T15:15:00Z'), 'Australia/Lord_Howe')).toBe('01:45 (UTC+10:30)');
+    expect(clockTime(new Date('2026-11-24T12:00:00Z'), 'UTC')).toBe('12:00');
+  });
+
+  it('give an exact moment in the repeated hour with the offset, on both passes of 01:03 in New York', async () => {
+    await prepareLocalTime('1960-01-01', 'UTC');
+    const base = castDayNatal({ birthDate: '1960-01-01', time: '12:00', zone: 'UTC' }, site);
+    const exactLocal = async (exactAt: string) => {
+      // A natal Moon the moving Moon reaches exactly at `exactAt`.
+      const natal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Moon' ? { ...row, lon: bodyLongitude('Moon', new Date(exactAt)) } : row)) };
+      const day = await readPersonalDay(natal, { birthDate: '1960-01-01', date: '2026-11-01', zone: 'America/New_York', now: NOW }, site);
+      const contact = day.contacts.find((entry) => entry.planet === 'Moon' && entry.point === 'Moon' && entry.aspect === 'conjunction');
+      expect(Math.abs(Date.parse(contact!.exactAt!) - Date.parse(exactAt))).toBeLessThan(MINUTE / 4);
+      return { local: contact!.exactLocal };
+    };
+    const first = await exactLocal('2026-11-01T05:03:30Z');
+    expect(first.local).toBe('01:03 (UTC-4)');
+    expect((await exactLocal('2026-11-01T06:03:30Z')).local).toBe('01:03 (UTC-5)');
+    expect((await exactLocal('2026-11-01T17:03:30Z')).local).toBe('12:03');
+  });
 });
 
 describe('the your-day share link', () => {

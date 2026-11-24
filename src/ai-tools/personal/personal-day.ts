@@ -76,7 +76,7 @@ export const personalDayData = z.object({
     applying: z.boolean(),
     /** The exact moment, when it falls inside the local day. */
     exactAt: z.string().nullable(),
-    /** The same moment on the person's clock, HH:MM. */
+    /** The same moment on the person's clock, HH:MM, with the UTC offset after it when the clock showed that time twice. */
     exactLocal: z.string().nullable(),
     score: z.number().min(0),
     title: z.string(),

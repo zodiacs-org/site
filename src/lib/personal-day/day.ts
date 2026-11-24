@@ -42,6 +42,7 @@ import { BACKGROUND_LIMIT, PERSONAL_DAY_LIMIT, dayScore, maxOrb, orbOf, pointNam
 const slowMovers = new Set<TransitBody>(SLOW_TRANSIT_BODIES);
 const HOUR = 3_600_000;
 const SECOND = 1_000;
+const MINUTE = 60_000;
 /** The widest civil offset any clock has kept since 1800, rounded out to whole hours (src/ai-tools/personal/shared.ts). */
 const WIDEST_OFFSET_HOURS = 16;
 /** The limit a date-only reading carries; the /your-day/ FAQ says the same. */
@@ -79,7 +80,7 @@ export interface DayContact {
   applying: boolean;
   /** The exact moment, when it falls inside the local day. */
   exactAt: string | null;
-  /** The same moment on the person's clock, HH:MM. */
+  /** The same moment on the person's clock, HH:MM, with the UTC offset after it when the clock showed that time twice. */
   exactLocal: string | null;
   score: number;
   title: string;
@@ -183,7 +184,10 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   if (!bounds) throw new RangeError('date must be a real date, such as 2026-11-12.');
   const [dayStart, dayEnd] = bounds;
   const midday = new Date((dayStart.getTime() + dayEnd.getTime()) / 2);
-  const later = new Date(midday.getTime() + HOUR);
+  // Applying or separating is the direction the orb is moving at midday itself: its rate of change there, read over a
+  // minute either side. An orb read an hour later can be past an exact moment that falls inside that hour.
+  const justBefore = new Date(midday.getTime() - MINUTE);
+  const justAfter = new Date(midday.getTime() + MINUTE);
 
   const points: NatalPoint[] = [...TRANSIT_BODY_ORDER.filter((body) => natal.timeKnown || body !== 'Moon'), ...(natal.angles ? ['ASC', 'MC'] as const : [])];
   const natalBodies = natal.bodies.filter((row) => (TRANSIT_BODY_ORDER as readonly string[]).includes(row.body)).map(({ body, lon }) => ({ body: body as TransitBody, lon }));
@@ -219,7 +223,8 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
   const found: Omit<DayContact, 'rank'>[] = [];
   for (const mover of TRANSIT_BODY_ORDER) {
     const moverLon = sky.get(mover)!;
-    const moverLater = bodyLongitude(mover, later);
+    const moverBefore = bodyLongitude(mover, justBefore);
+    const moverAfter = bodyLongitude(mover, justAfter);
     for (const point of points) {
       if (under18 && minorLeftOut(mover, point)) continue;
       const pointLon = natalLon.get(point)!;
@@ -227,7 +232,7 @@ export async function readPersonalDay(natal: DayNatal, input: { birthDate: strin
         const orb = orbOf(moverLon, pointLon, aspect);
         const at = exact.get(`${mover}|${point}|${aspect}`) ?? null;
         if (orb > maxOrb(mover, aspect) && !at) continue;
-        const applying = at ? at.getTime() > midday.getTime() : orbOf(moverLater, pointLon, aspect) < orb;
+        const applying = at ? at.getTime() > midday.getTime() : orbOf(moverAfter, pointLon, aspect) < orbOf(moverBefore, pointLon, aspect);
         // A date-only chart is never tight: its contacts carry the plain date-only confidence.
         const tight = natal.timeKnown && (orb < 1 || at !== null);
         const confidenceLabel = readingConfidenceLabel(natal.detail, tight);

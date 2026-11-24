@@ -42885,7 +42885,40 @@ function dayLabel3(at, timeZone) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short", day: "numeric", month: "short", year: "numeric" }).formatToParts(new Date(at)).map((part) => [part.type, part.value]));
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
 }
-var clockTime2 = (at, timeZone) => new Intl.DateTimeFormat("en-GB", { timeZone, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(at);
+var HOUR6 = 36e5;
+var offsetFormats = /* @__PURE__ */ new Map();
+function offsetSeconds(at, timeZone) {
+  let format3 = offsetFormats.get(timeZone);
+  if (!format3) offsetFormats.set(timeZone, format3 = new Intl.DateTimeFormat("en-GB", { timeZone, timeZoneName: "longOffset" }));
+  const name = format3.formatToParts(at).find((part) => part.type === "timeZoneName").value;
+  const match = /^GMT(?:([+-])(\d{2}):(\d{2})(?::(\d{2}))?)?$/u.exec(name);
+  if (!match) throw new RangeError(`Unexpected time zone offset: ${name}`);
+  if (!match[1]) return 0;
+  return (match[1] === "-" ? -1 : 1) * (Number(match[2]) * 3600 + Number(match[3]) * 60 + Number(match[4] ?? 0));
+}
+function offsetLabel(seconds2) {
+  const minutes = Math.round(Math.abs(seconds2) / 60);
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return `UTC${seconds2 < 0 ? "-" : "+"}${hours}${rest ? `:${String(rest).padStart(2, "0")}` : ""}`;
+}
+function shownTwice(at, timeZone, own) {
+  const others = /* @__PURE__ */ new Set();
+  for (let hours = -26; hours <= 26; hours += 1) {
+    const offset = offsetSeconds(new Date(at.getTime() + hours * HOUR6), timeZone);
+    if (offset !== own) others.add(offset);
+  }
+  for (const offset of others) {
+    const twin = new Date(at.getTime() + (own - offset) * 1e3);
+    if (offsetSeconds(twin, timeZone) === offset) return true;
+  }
+  return false;
+}
+function clockTime2(at, timeZone) {
+  const time = new Intl.DateTimeFormat("en-GB", { timeZone, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(at);
+  const own = offsetSeconds(at, timeZone);
+  return shownTwice(at, timeZone, own) ? `${time} (${offsetLabel(own)})` : time;
+}
 var nextDate2 = (date3) => new Date(Date.parse(`${date3}T00:00:00Z`) + DAY19).toISOString().slice(0, 10);
 
 // src/lib/vedic-signs/clock.ts
@@ -42973,8 +43006,9 @@ var pointName2 = (point2) => POINT_NAME2[point2] ?? point2;
 
 // src/lib/personal-day/day.ts
 var slowMovers = new Set(SLOW_TRANSIT_BODIES);
-var HOUR6 = 36e5;
+var HOUR7 = 36e5;
 var SECOND2 = 1e3;
+var MINUTE3 = 6e4;
 var WIDEST_OFFSET_HOURS = 16;
 var UNTIMED_LIMIT = "No birth time was given, so the natal Moon, the rising degree and the Midheaven are left out, the chart is cast for midday of the birth date, and no exact times are given: without a birth time a contact can be exact a day or more either side.";
 var ORDINAL7 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
@@ -42996,7 +43030,8 @@ async function readPersonalDay(natal, input, clock2) {
   if (!bounds) throw new RangeError("date must be a real date, such as 2026-11-12.");
   const [dayStart2, dayEnd] = bounds;
   const midday = new Date((dayStart2.getTime() + dayEnd.getTime()) / 2);
-  const later = new Date(midday.getTime() + HOUR6);
+  const justBefore = new Date(midday.getTime() - MINUTE3);
+  const justAfter = new Date(midday.getTime() + MINUTE3);
   const points = [...TRANSIT_BODY_ORDER.filter((body2) => natal.timeKnown || body2 !== "Moon"), ...natal.angles ? ["ASC", "MC"] : []];
   const natalBodies = natal.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon }) => ({ body: body2, lon }));
   const natalLon = new Map(natalBodies.map((row) => [row.body, row.lon]));
@@ -43019,7 +43054,8 @@ async function readPersonalDay(natal, input, clock2) {
   const found = [];
   for (const mover of TRANSIT_BODY_ORDER) {
     const moverLon = sky.get(mover);
-    const moverLater = bodyLongitude2(mover, later);
+    const moverBefore = bodyLongitude2(mover, justBefore);
+    const moverAfter = bodyLongitude2(mover, justAfter);
     for (const point2 of points) {
       if (under18 && minorLeftOut(mover, point2)) continue;
       const pointLon = natalLon.get(point2);
@@ -43027,7 +43063,7 @@ async function readPersonalDay(natal, input, clock2) {
         const orb = orbOf(moverLon, pointLon, aspect2);
         const at = exact.get(`${mover}|${point2}|${aspect2}`) ?? null;
         if (orb > maxOrb(mover, aspect2) && !at) continue;
-        const applying = at ? at.getTime() > midday.getTime() : orbOf(moverLater, pointLon, aspect2) < orb;
+        const applying = at ? at.getTime() > midday.getTime() : orbOf(moverAfter, pointLon, aspect2) < orbOf(moverBefore, pointLon, aspect2);
         const tight = natal.timeKnown && (orb < 1 || at !== null);
         const confidenceLabel = readingConfidenceLabel(natal.detail, tight);
         found.push({
@@ -43103,8 +43139,8 @@ async function settledSunSign2(natal, birth, clock2) {
     if (!span2) return null;
     [start, end] = span2;
   } else {
-    start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6);
-    end = new Date(Date.parse(`${birth.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR6);
+    start = new Date(Date.parse(`${birth.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR7);
+    end = new Date(Date.parse(`${birth.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR7);
   }
   const startIndex = signIndexForLongitude2(bodyLongitude2("Sun", start));
   const endIndex = signIndexForLongitude2(bodyLongitude2("Sun", end));
@@ -43269,7 +43305,7 @@ var personalDayData = z16.object({
     applying: z16.boolean(),
     /** The exact moment, when it falls inside the local day. */
     exactAt: z16.string().nullable(),
-    /** The same moment on the person's clock, HH:MM. */
+    /** The same moment on the person's clock, HH:MM, with the UTC offset after it when the clock showed that time twice. */
     exactLocal: z16.string().nullable(),
     score: z16.number().min(0),
     title: z16.string(),
@@ -43460,7 +43496,7 @@ var PARTNERSHIP_GOALS = /* @__PURE__ */ new Set(["relationship", "wedding"]);
 
 // src/lib/good-days/personal.ts
 var UNTIMED_DROPPED_MESSAGE = "No birth time was given, so contacts from Venus, Mars, Jupiter and Saturn are counted only on the rare days a birth date alone can date them; most, often all, are left out.";
-var HOUR7 = 36e5;
+var HOUR8 = 36e5;
 var BENEFICS = ["Venus", "Jupiter"];
 var MALEFICS = ["Mars", "Saturn"];
 var VERB = { conjunction: "meets", sextile: "sextiles", square: "squares", trine: "trines", opposition: "opposes" };
@@ -43482,7 +43518,7 @@ async function preparePersonal(birth, clock2) {
   const sunLon = bodies.find((row) => row.body === "Sun").lon;
   let sun = SIGNS2[signIndex(sunLon)].slug;
   if (!timeKnown) {
-    const ends = birth.zone ? [await instant(birth.date, "00:00", birth.zone, clock2), await instant(birth.date, "23:59", birth.zone, clock2)] : [new Date(Date.parse(`${birth.date}T00:00:00Z`) - 14 * HOUR7), new Date(Date.parse(`${birth.date}T23:59:00Z`) + 12 * HOUR7)];
+    const ends = birth.zone ? [await instant(birth.date, "00:00", birth.zone, clock2), await instant(birth.date, "23:59", birth.zone, clock2)] : [new Date(Date.parse(`${birth.date}T00:00:00Z`) - 14 * HOUR8), new Date(Date.parse(`${birth.date}T23:59:00Z`) + 12 * HOUR8)];
     const [early, late] = ends.map((at) => computeChart3({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.map((row) => ({ body: row.body, lon: row.lon })));
     const signs = new Set([early, late].map((set) => signIndex(set.find((row) => row.body === "Sun").lon)));
     if (signs.size > 1) sun = null;
@@ -43566,7 +43602,7 @@ function readsAs(contact) {
 
 // src/lib/good-days/find.ts
 var DAY21 = 864e5;
-var HOUR8 = 36e5;
+var HOUR9 = 36e5;
 var GOOD_DAYS_MAX_DAYS = 366;
 var GOOD_DAYS_DEFAULT_DAYS = 90;
 var GOOD_DAYS_DEFAULT_COUNT = 5;
@@ -43753,7 +43789,7 @@ function moonSignFactor(goal, sign3) {
 function moonSegmentsFactor(goal, segments, zone10, date3, noonSign) {
   if (segments.length < 2) return moonSignFactor(goal, noonSign);
   if (segments.every((segment) => moonSignPoints(goal, segment.sign) === 0)) return null;
-  const hours = (segment) => (segment.to.getTime() - segment.from.getTime()) / HOUR8;
+  const hours = (segment) => (segment.to.getTime() - segment.from.getTime()) / HOUR9;
   const total = segments.reduce((sum, segment) => sum + hours(segment), 0);
   const points = Math.round(segments.reduce((sum, segment) => sum + moonSignPoints(goal, segment.sign) * hours(segment), 0) / total) || 0;
   const until = (index) => index < segments.length - 1 ? ` until ${clockOn(segments[index].to, zone10, date3)}` : "";
@@ -43799,7 +43835,7 @@ function voidFactor(day2, periods, zone10) {
   const touching = periods.filter((period) => period.from.getTime() < day2.wakeTo.getTime() && period.to.getTime() > day2.wakeFrom.getTime());
   const spans = touching.map((period) => ({ from: clockOn(period.from, zone10, day2.date), to: clockOn(period.to, zone10, day2.date) }));
   if (!touching.length) return { factor: null, spans };
-  const hours = touching.reduce((sum, period) => sum + (Math.min(period.to.getTime(), day2.wakeTo.getTime()) - Math.max(period.from.getTime(), day2.wakeFrom.getTime())) / HOUR8, 0);
+  const hours = touching.reduce((sum, period) => sum + (Math.min(period.to.getTime(), day2.wakeTo.getTime()) - Math.max(period.from.getTime(), day2.wakeFrom.getTime())) / HOUR9, 0);
   const first2 = spans[0];
   if (hours >= 8) return { factor: { points: -12, text: `The Moon is void of course for most of the day (from ${first2.from} to ${first2.to}), when tradition says new beginnings drift.`, clause: "a void-of-course Moon most of the day" }, spans };
   if (hours >= 2) return { factor: { points: -4, text: `The Moon is void of course from ${first2.from} to ${first2.to}; tradition would begin outside those hours.`, clause: "a void-of-course Moon for part of the day" }, spans };
@@ -44463,9 +44499,9 @@ var descriptionFor = (tool, skyEvents2, switches = {}) => (tool === "get_year_sc
 import { McpServer } from "@modelcontextprotocol/server";
 
 // src/ai-tools/clear-time.ts
-var MINUTE3 = 6e4;
+var MINUTE4 = 6e4;
 function roundToMinute(utc) {
-  return new Date(Math.round(new Date(utc).getTime() / MINUTE3) * MINUTE3);
+  return new Date(Math.round(new Date(utc).getTime() / MINUTE4) * MINUTE4);
 }
 var two = (value) => String(Math.trunc(Math.abs(value))).padStart(2, "0");
 function localIso(utc, zone10, milliseconds = false) {
@@ -44476,7 +44512,7 @@ function localIso(utc, zone10, milliseconds = false) {
   const wall = /* @__PURE__ */ new Date(0);
   wall.setUTCFullYear(year, Number(parts.month) - 1, Number(parts.day));
   wall.setUTCHours(Number(parts.hour), Number(parts.minute), Number(parts.second), 0);
-  const offsetMinutes2 = Math.round((wall.getTime() - instant3.getTime()) / MINUTE3);
+  const offsetMinutes2 = Math.round((wall.getTime() - instant3.getTime()) / MINUTE4);
   const offset = `${offsetMinutes2 < 0 ? "-" : "+"}${two(offsetMinutes2 / 60)}:${two(offsetMinutes2 % 60)}`;
   const fraction = milliseconds ? `.${String(exact - instant3.getTime()).padStart(3, "0")}` : "";
   return `${wall.toISOString().slice(0, 19)}${fraction}${offset}`;
@@ -44488,7 +44524,7 @@ function shownTime(utc, window) {
   const time = new Date(utc).getTime();
   const low = Math.max(Date.parse(EPOCH.from), window ? new Date(window.from).getTime() : -Infinity);
   const high = Math.min(Date.parse(EPOCH.to), window ? new Date(window.to).getTime() : Infinity);
-  for (const [unit2, precision] of [[MINUTE3, "minute"], [1e3, "second"]]) {
+  for (const [unit2, precision] of [[MINUTE4, "minute"], [1e3, "second"]]) {
     const nearest = Math.round(time / unit2) * unit2;
     const other = nearest > time ? Math.floor(time / unit2) * unit2 : Math.ceil(time / unit2) * unit2;
     for (const candidate of [nearest, other]) if (candidate >= low && candidate <= high) return { at: new Date(candidate), precision };
