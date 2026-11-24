@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { createAiNodeHandler } from './http';
 import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES, WITHDRAWN_OCCASION_REFUSAL } from './contracts';
 import { executeAiTool } from './tools';
-import { as065, asInventedExamples, asPanelV7, asPlainDescription, asZod64, descriptionWithoutZod64, INVENTED_EXAMPLES, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, withoutZod64, ZOD_64_SENTENCES } from './published-tools';
+import { as065, asInventedExamples, asPanelV7, asPlainDescription, asZod64, descriptionWithoutZod64, INVENTED_EXAMPLES, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, PUBLISHED_TOOLS_068, withoutZod64, ZOD_64_SENTENCES } from './published-tools';
 import { EXPLAIN_TOPICS } from './features/explain';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac';
 import { SIGNS } from '../lib/signs';
@@ -39,6 +39,7 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * keeps its sentence). That description is the only published change: nothing else in the thirteen moves.
  * 0.6.8 changes only the reported version: it ships the invented examples of Developer 0.3.51 (INVENTED_EXAMPLES in
  * src/ai-tools/published-tools.ts, approved by Dias on 17 November 2026) for the directory resubmission.
+ * For 0.6.9, Dias approved new panel addresses and year-range wording in five input schemas on 20 November 2026.
  */
 const root = new URL('../../', import.meta.url);
 const PUBLISHED = PUBLISHED_TOOLS;
@@ -131,7 +132,7 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     const listed = (await rpc('tools/list', {})).result.tools as Record<string, unknown>[];
     for (const path of Object.keys(INVENTED_EXAMPLES)) {
       const [name, ...keys] = path.split('.');
-      expect(at(listed.find(tool => tool.name === name), keys), path).toBe(INVENTED_EXAMPLES[path]);
+      expect(at(listed.find(tool => tool.name === name), keys), path).toBe(INVENTED_EXAMPLES[path].replace('1800\u20132199', '1800 to 2199'));
     }
   });
 
@@ -173,7 +174,7 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     // The only published path that moves is get_upcoming_events' description.
     expect(before.flatMap(tool => asZod64(tool).changed)).toEqual(['get_upcoming_events.description']);
     expect(Object.keys(ZOD_64_SENTENCES)).toEqual(['get_upcoming_events']);
-    for (const [index, tool] of PUBLISHED_TOOLS.entries()) {
+    for (const [index, tool] of PUBLISHED_TOOLS_068.entries()) {
       const name = String(tool.name);
       if (name === 'get_upcoming_events') expect(JSON.stringify({ ...tool, description: before[index].description }), name).toBe(JSON.stringify(before[index]));
       else expect(JSON.stringify(tool), name).toBe(JSON.stringify(before[index]));
@@ -225,11 +226,11 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect(other.structuredContent.error.message).toBe('occasion must be one of: wedding, anniversary, met, birthday, pet, home, job, graduation, retirement, gathering.');
   });
 
-  it('reports 0.6.8 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
+  it('reports 0.6.9 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
     const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
-    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.8' });
+    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.9' });
     const capabilities = (await rpc('tools/call', { name: 'get_capabilities', arguments: {} })).result.structuredContent;
-    expect(capabilities.data.version).toBe('0.6.8');
+    expect(capabilities.data.version).toBe('0.6.9');
     expect(capabilities.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(capabilities.data.limitations.join(' ')).toContain('Version 0.6.0 adds tools listed in tools/list');
   });
@@ -277,7 +278,7 @@ describe('get_capabilities names every tool offered', () => {
 describe('the five 0.6.0 tools', () => {
   it('are read-only, closed-world, non-destructive and anonymous, with the readings panel inline and no sidebar launch', async () => {
     const tools = (await rpc('tools/list', {})).result.tools as { name: string; title: string; description: string; annotations: Record<string, unknown>; _meta: Record<string, unknown>; icons?: unknown; inputSchema: { type: string; properties: Record<string, { type?: string }> } }[];
-    expect(READINGS_URI).toBe('ui://zodiacs/readings-v3.html');
+    expect(READINGS_URI).toBe('ui://zodiacs/readings-v5.html');
     for (const name of COVERAGE_TOOL_NAMES) {
       const tool = tools.find(entry => entry.name === name)!;
       expect(tool.title).toBe(TOOL_TITLES[name]);

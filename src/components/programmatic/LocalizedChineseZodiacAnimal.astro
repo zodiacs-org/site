@@ -1,7 +1,7 @@
 ---
 import { editorialDates } from '../../lib/editorial-metadata.mjs';
 import Base from '../../layouts/Base.astro';
-import ChineseZodiacBrandRail from '../ChineseZodiacBrandRail.astro';
+import ChineseZodiacArt from '../ChineseZodiacArt.astro';
 import { chineseYearsForAnimal } from '../../data/chinese-zodiac';
 import {
   chineseZodiacAnimals,
@@ -67,7 +67,7 @@ const jsonLd = [
       <em class="kicker">{copy.animalKicker} · {chineseZodiacLocalizedText(locale, 'numberLabel', { number: String(animal.position).padStart(2, '0') })}</em>
       <h1 class="display cz-page__title">{chineseZodiacLocalizedText(locale, 'yearOf', { animal: animal.name })}</h1>
       <p class="cz-page__lede">{animal.association}</p>
-      <ChineseZodiacBrandRail note={copy.iconRailNote} />
+      {chinese && <ChineseZodiacArt slug={animal.slug} name={animal.name} locale={locale} />}
     </header>
 
     <dl class="cz-facts">

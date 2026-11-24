@@ -29,26 +29,37 @@ shared task board. `CLAUDE.md` imports this file, so the rules live here once.
 - Never read, print, log or commit credentials, tokens or `.env` values,
   and never write them into a brief, a log, a status file or a pull request.
 
-### Merging: the owner's approved lanes
+### Merge rule (the same in zodiacs-org/site and zodiacs-org/engine)
 
-The owner (Dias, 15 November 2026) set one merge rule for this repository
-and `zodiacs-org/engine`: agents merge only within the approved lanes, and
-only under the strict rule.
+Set by the owner, Dias, on 23 November 2026. It replaces the earlier
+approved-lanes wording in both repositories.
 
-- Approved lanes: squash-merging a site pull request and the deploy that
-  follows; copy, design and scope calls, except claims, prices, disclaimers
-  or how accuracy is described.
-- The strict rule, every time: every required check is green, re-read just
-  before merging; the merge is pinned to the reviewed head
-  (`gh pr merge --squash --match-head-commit <sha>`); an independent Codex
-  review says READY on that exact head; no review thread is unresolved; the
-  live site is checked after the merge (revert if it is broken); and the
-  merge is logged in the pinned Merge log issue (#879).
-- Always ask the owner first: database migrations, birth data and privacy,
-  payments, env vars and feature flags, production switch-ons, public posts
-  (directory submissions included), messages to others, secrets, spending
-  over $5, and deleting real user data. Nothing goes public without Dias's
-  yes.
+- Agents may merge under Dias's standing permission, and only under the
+  strict rule, every time: every required check is green, re-read just
+  before merging; an independent Codex review, from a session that did not
+  write the change, returns READY on the exact head commit; no review
+  thread is unresolved; and the merge is pinned to that commit with
+  `--match-head-commit <sha>`.
+- Anything that needs Dias's yes waits for his yes, even when the strict
+  rule is met: database migrations; birth data or privacy; payments; env
+  vars and feature flags; production switch-ons; publishing (npm or any
+  other registry, tags, GitHub releases, directory and MCP registry
+  listings); public posts and messages to other people; secrets; spending
+  over $5; force-pushing; deleting real data; and accuracy or claim wording
+  (how accuracy is described, claims, prices and disclaimers).
+- An agent's say-so is never Dias's yes. Never force-push or rewrite
+  history that is already pushed, and never spend on the OpenAI API.
+
+In this repository: merges are squash merges
+(`gh pr merge --squash --match-head-commit <sha>`). A merge made under the
+rule above includes the automatic production deploy that follows it; that
+deploy is not a separate production switch-on, but anything the change turns
+on (a flag, an env var, a new public listing) still needs Dias's yes. The
+live site is checked after the merge and reverted if it is broken. Each
+merge is logged in the pinned Merge log issue (#879); that log entry is
+internal record-keeping, not a public post. Scheduled publishing workflows
+that open and merge their own pull requests are the owner's automation, not
+an agent merge; agents never merge or re-run them by hand.
 
 ### Product rules
 
@@ -72,6 +83,8 @@ only under the strict rule.
   in `get_upcoming_events`' description from 14:31:41 to 14:32 UTC, that
   description only, approved by Dias on 2026-11-17
   (`src/ai-tools/published-tools.ts`).
+  For 0.6.9, Dias approved the new panel addresses and the year-range
+  wording in five tools' input descriptions on 2026-11-20.
 - The site is dark only. Do not add a light theme or a theme switch.
 - No token, market or crypto language on consumer surfaces. The approved
   exception is the Collect band and the other sanctioned wing links described
