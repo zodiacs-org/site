@@ -549,20 +549,29 @@ export function motionBlock() {
       .is-armed .cal-pass--again .cal-draw { transition-duration:.7s; }
     }
     .thesis-carry .field-readout__n { width:1ch; text-align:center; }
-    .thesis-carry svg.twelve-ring { width:76px; height:76px; flex:none; }
+    .thesis-carry .carry-twelve { display:flex; align-items:baseline; gap:12px; max-width:none; font-size:15px; }
+    .thesis-carry .carry-twelve .field-twelve__big { display:inline; line-height:1; }
+    /* The timeline: the axis is drawn through time, each form's marker drops
+       onto its date at --t, its leader draws up to the drawing, and the
+       drawing unveils as its twelve marks arrive. */
     @media screen and (prefers-reduced-motion:no-preference) {
-      .thesis-carry.is-armed .transmission::after { transform:scaleX(0); }
-      .thesis-carry.is-armed.is-on .transmission::after { transform:none; transition:transform 2.4s linear; }
+      .thesis-carry.is-armed .carry-line { transform:scaleX(0); transform-box:fill-box; transform-origin:0 50%; }
+      .thesis-carry.is-armed.is-on .carry-line { transform:none; transition:transform 2.75s linear; }
+      .thesis-carry.is-armed .carry-ticks { opacity:.12; }
+      .thesis-carry.is-armed.is-on .carry-ticks { opacity:1; transition:opacity .6s ease; }
+      .thesis-carry.is-armed .carry-mark { opacity:0; transform:scale(.4); transform-box:fill-box; transform-origin:center; }
+      .thesis-carry.is-armed.is-on .carry-mark { opacity:1; transform:none; transition:opacity .3s cubic-bezier(.23,1,.32,1), transform .3s cubic-bezier(.23,1,.32,1); transition-delay:var(--t); }
+      .thesis-carry.is-armed .carry-lead { stroke-dasharray:1; stroke-dashoffset:-1; }
+      .thesis-carry.is-armed.is-on .carry-lead { stroke-dashoffset:0; transition:stroke-dashoffset .38s ease-out; transition-delay:calc(var(--t) + 80ms); }
       .thesis-carry.is-armed .era__name, .thesis-carry.is-armed .era__time { opacity:.12; }
-      .thesis-carry.is-armed.is-on .era__name, .thesis-carry.is-armed.is-on .era__time { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--i) * 400ms); }
-      /* A veil in the plate's own colour dims each disc, so the disc stays solid and the track never shows through it. */
-      .thesis-carry.is-armed .era__object::after { content:''; position:absolute; inset:0; border-radius:50%; background:var(--surface); opacity:.88; }
-      .thesis-carry.is-armed.is-on .era__object::after { opacity:0; transition:opacity .45s ease; transition-delay:calc(var(--i) * 400ms); }
-      .thesis-carry.is-armed .cw { opacity:.12; }
-      .thesis-carry.is-armed.is-twelve .cw { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--i) * 70ms); }
-    }
-    @media screen and (prefers-reduced-motion:no-preference) and (max-width:480px) {
-      .thesis-carry.is-armed .transmission::after { transform:scaleY(0); }
+      .thesis-carry.is-armed.is-on .era__name, .thesis-carry.is-armed.is-on .era__time { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--t) + 380ms); }
+      /* A veil in the plate's own colour dims each drawing, so it stays solid and nothing shows through it. */
+      .thesis-carry.is-armed .era__object::after { content:''; position:absolute; inset:0; background:var(--surface); opacity:.88; }
+      .thesis-carry.is-armed.is-on .era__object::after { opacity:0; transition:opacity .45s ease; transition-delay:calc(var(--t) + 380ms); }
+      .thesis-carry.is-armed .cd { opacity:0; transform:scale(.4); transform-box:fill-box; transform-origin:center; }
+      .thesis-carry.is-armed.is-on .cd { opacity:1; transform:none; transition:opacity .3s cubic-bezier(.23,1,.32,1), transform .3s cubic-bezier(.23,1,.32,1); transition-delay:calc(var(--t) + 480ms + var(--k) * 22ms); }
+      .thesis-carry.is-armed .carry-twelve { opacity:.12; }
+      .thesis-carry.is-armed.is-twelve .carry-twelve { opacity:1; transition:opacity .45s ease; }
     }`;
   const js = `
 // Armed after load, so none of this work delays the first paint.
@@ -606,23 +615,23 @@ export function motionBlock() {
       people.classList.add('is-on');
     });
   }
-  // The timeline: a line carries the signs from form to form, each form
-  // lights as the line reaches it, and the twelve light once the coin has.
+  // The timeline: each form starts at its own --t (one source of truth, on
+  // its .era in the markup); the count ticks as each form lands, and the
+  // readout's twelve lights once the last form's marks have arrived.
   var carry = document.querySelector('[data-motion="carry"]');
   var carried = carry && carry.querySelector('[data-carry-count]');
   if (animate && carried && below(carry)) {
-    var forms = carry.querySelectorAll('.era').length;
+    var eras = [].slice.call(carry.querySelectorAll('.era'));
+    var starts = eras.map(function (era) { return parseFloat(getComputedStyle(era).getPropertyValue('--t')) || 0; });
     carry.classList.add('is-armed');
     carried.textContent = '0';
-    window.addEventListener('beforeprint', function () { carried.textContent = String(forms); });
+    window.addEventListener('beforeprint', function () { carried.textContent = String(eras.length); });
     once(carry, function () {
       carry.classList.add('is-on');
-      for (var step = 0; step < forms; step++) (function (at) {
-        setTimeout(function () {
-          carried.textContent = String(at + 1);
-          if (at === forms - 1) carry.classList.add('is-twelve');
-        }, at * 400 + 200);
-      })(step);
+      starts.forEach(function (start, at) {
+        setTimeout(function () { carried.textContent = String(at + 1); }, start + 500);
+      });
+      setTimeout(function () { carry.classList.add('is-twelve'); }, Math.max.apply(Math, starts) + 1150);
     });
   }
   var fig = document.querySelector('[data-motion="field"]');

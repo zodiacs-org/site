@@ -440,7 +440,10 @@ describe('thesis transmission and gallery contract', () => {
   const galleryTag = /<[a-z][^>]*\bdata-gallery-stage(?:=(?:"[^"]*"|'[^']*'|[^\s>]+))?[^>]*>/i;
   const gallery = sliceMatchedElement(holding, galleryTag);
 
-  it('ends F1 with the canonical circle image and the word Coin', () => {
+  // The owner's redesign (24 Nov 2026) replaced the hue discs and the app-icon
+  // image with seven drawings, each holding the twelve sign marks, and renamed
+  // the last form from "Coin" to "Digital asset".
+  it('ends F1 with the Digital asset drawing', () => {
     expect(eras).toHaveLength(7);
     const finalEra = eras.at(-1);
     const name = sliceElement(
@@ -455,12 +458,63 @@ describe('thesis transmission and gallery contract', () => {
     );
     const images = voidTagParts(finalEra?.inner ?? '', 'img');
 
-    expect(textOf(name)).toBe('Coin');
+    expect(textOf(name)).toBe('Digital asset');
     expect(textOf(time)).toBe('5 Jul 2024');
-    expect(images).toHaveLength(1);
-    expect(images[0].attrs).toMatch(/\bsrc=["']\/assets\/app-icons\/v3\/icon-192\.png["']/i);
-    expect(images[0].attrs).toMatch(/\balt=["']["']/i);
-    expect(finalEra?.inner).not.toMatch(/<svg\b/i);
+    expect(images).toHaveLength(0);
+    expect([...(finalEra?.inner ?? '').matchAll(/<svg\b/gi)]).toHaveLength(1);
+  });
+
+  it('draws every F1 form with exactly the twelve sign marks, in sign order', () => {
+    const HUES = ['#DE8E79', '#B9D4BE', '#B29DD0', '#B6D4E4', '#E0A9B4', '#B7D9B0',
+      '#D3A9DE', '#B9DCE8', '#E0B080', '#C0DEA8', '#AE8FC9', '#A9D4C4'];
+    const PHONE = 5;
+    expect(eras).toHaveLength(7);
+    eras.forEach((era, index) => {
+      expect([...era.inner.matchAll(/<svg\b/gi)], era.inner.slice(0, 80)).toHaveLength(1);
+      // A mark is a circle, a rect, or a g whose first shape carries the colour.
+      const marks = [...era.inner.matchAll(/<(circle|rect|g)\b[^>]*\bclass=["']cd["'][^>]*>/gi)];
+      expect(marks).toHaveLength(12);
+      if (index === PHONE) return;
+      const fills = marks.map((m) => {
+        const tag = m[1].toLowerCase() === 'g' ? era.inner.slice(m.index + m[0].length).match(/<[a-z]+\b[^>]*>/i)?.[0] ?? '' : m[0];
+        return tag.match(/\bfill=["'](#[0-9A-F]{6})["']/i)?.[1]?.toUpperCase();
+      });
+      expect(fills).toEqual(HUES);
+    });
+    // The phone holds the zodiac emoji keyboard: twelve purple keys, each with one sign glyph.
+    const keys = [...eras[PHONE].inner.matchAll(/<g\b[^>]*\bclass=["']cd["'][^>]*>([\s\S]*?<\/g>)\s*<\/g>/gi)];
+    expect(keys).toHaveLength(12);
+    for (const key of keys) {
+      const rects = [...key[1].matchAll(/<rect\b[^>]*>/gi)];
+      expect(rects).toHaveLength(1);
+      expect(rects[0][0]).toMatch(/\bfill=["']#c45fdc["']/i);
+      expect([...key[1].matchAll(/<path\b/gi)]).toHaveLength(1);
+    }
+    // The digital asset is a trading screen of twelve mini charts, one per sign, and no prices.
+    const asset = eras.at(-1).inner.match(/<svg\b[\s\S]*<\/svg>/i)?.[0] ?? '';
+    expect([...asset.matchAll(/<g\b[^>]*\bclass=["']cd["']/gi)]).toHaveLength(12);
+    expect(asset).not.toMatch(/<text\b/i);
+    expect(textOf(asset)).not.toMatch(/[%$€£↑↓▲▼+]|\d/);
+    expect(fig1).not.toMatch(/twelve-ring/i);
+    expect(fig1).not.toMatch(/icon-192/i);
+    expect(eras[4].inner).toMatch(/>HOROSCOPE<\/text>/);
+  });
+
+  it('places F1 on a true-scale time axis, with a small strip for phones', () => {
+    const svgs = [...fig1.matchAll(/<svg\b[^>]*\bclass=["']([^"']*\bcarry-axis\b[^"']*)["'][^>]*>[\s\S]*?<\/svg>/gi)];
+    const big = svgs.filter((m) => !/\bcarry-axis--mini\b/.test(m[1]));
+    const mini = svgs.filter((m) => /\bcarry-axis--mini\b/.test(m[1]));
+    expect(big).toHaveLength(1);
+    expect(mini).toHaveLength(1);
+    expect([...big[0][0].matchAll(/\bclass=["']carry-lead["']/g)]).toHaveLength(7);
+    expect([...big[0][0].matchAll(/\bclass=["']carry-mark["']/g)]).toHaveLength(7);
+    expect([...mini[0][0].matchAll(/\bclass=["']carry-mark["']/g)]).toHaveLength(7);
+    expect([...mini[0][0].matchAll(/\bclass=["']carry-lead["']/g)]).toHaveLength(0);
+    // The axis sits outside .story-figure, which a browser check keeps compact.
+    const story = sliceElement(fig1, /<div\b[^>]*class=["']story-figure["'][^>]*>/i, 'div');
+    expect(story).not.toMatch(/carry-axis/);
+    const caption = sliceElement(fig1, /<p\b[^>]*class=["']zfig-cap["'][^>]*>/i, 'p');
+    expect(textOf(caption)).toBe('Each drawing holds twelve marks, one for each sign. The line is drawn to scale: three of the seven forms arrived in the last hundred years. Digital assets are the newest.');
   });
 
   it('draws F1 as an animated plate like the first three figures', () => {
@@ -471,13 +525,12 @@ describe('thesis transmission and gallery contract', () => {
     expect(textOf(head)).toBe('Seven forms in about 2,400 years. The same twelve signs.');
     // The finished state is the markup: the count reads 7 without scripts.
     expect(fig1).toMatch(/<span\b[^>]*\bdata-carry-count\b[^>]*>7<\/span>/i);
-    expect([...fig1.matchAll(/<circle\b[^>]*class=["']cw["']/gi)]).toHaveLength(12);
     const transmission = fig1.match(/<div\b[^>]*class=["']transmission["'][^>]*>/i)?.[0] ?? '';
     expect(transmission).not.toBe('');
     expect(transmission).not.toMatch(/\bdata-almanac-reveal\b/i);
     // The readout sits outside .story-figure, which a browser check keeps compact.
     const story = sliceElement(fig1, /<div\b[^>]*class=["']story-figure["'][^>]*>/i, 'div');
-    expect(story).not.toMatch(/data-carry-count|class=["']cw["']/i);
+    expect(story).not.toMatch(/data-carry-count|carry-twelve/i);
     expect(fig1).toMatch(/<p\b[^>]*class=["']zfig-cap["']/i);
     expect(fig1).toMatch(/<p\b[^>]*class=["']zfig-src["'][^>]*>[\s\S]*href=["']#dated-timeline["']/i);
     expect(HTML).toMatch(/<details\b[^>]*\bid=["']dated-timeline["'][^>]*>\s*<summary>See the dated historical timeline<\/summary>/i);
@@ -758,6 +811,9 @@ describe('thesis pass bar', () => {
   const prose = essayProse();
   const proseLower = prose.toLowerCase();
   const essayVisible = visibleTextOf(essay);
+  // The same text without the timeline plate (#fig-1), built the same way; used only by check 3.
+  const fig1Html = sliceElement(essay, /<figure\b[^>]*\bid=["']fig-1["'][^>]*>/i, 'figure');
+  const essayVisibleWithoutFig1 = visibleTextOf(essay.replace(fig1Html, ' '));
   const count = (text, phrase) => text.split(phrase).length - 1;
 
   it('1. ledger: every sentence with a number has a claim, and every claim is printed', () => {
@@ -786,8 +842,17 @@ describe('thesis pass bar', () => {
 
   it('3. one name: no asset jargon or gold and Bitcoin above the evidence', () => {
     for (const pattern of [/\bdigital assets?\b/i, /\binstrument\b/i, /\bcandidacy\b/i, /\bstanding\b/i, /\bunits\b/i, /\bgold\b/i, /\bbitcoin\b/i]) {
-      expect(essayVisible, `essay says ${pattern}`).not.toMatch(pattern);
+      // Owner's decision of 24 Nov 2026: the timeline's last form is named "Digital asset" so it is not read as a metal coin among physical objects.
+      const tested = pattern.source === '\\bdigital assets?\\b' ? essayVisibleWithoutFig1 : essayVisible;
+      expect(tested, `essay says ${pattern}`).not.toMatch(pattern);
     }
+    // The exemption cannot grow: in #fig-1 the phrase appears exactly twice, as the last
+    // era's name and in the caption's last sentence.
+    expect(fig1Html).not.toBe('');
+    const fig1Visible = visibleTextOf(fig1Html);
+    expect(fig1Visible.match(/\bdigital assets?\b/gi) ?? []).toHaveLength(2);
+    expect(fig1Html).toMatch(/<span class="era__name">Digital asset<\/span>\s*<span class="era__time">5 Jul 2024<\/span>/);
+    expect(fig1Visible).toContain('Digital assets are the newest.');
   });
 
   it('4. said early: "coin" is in the first 60 words after the hero', () => {

@@ -452,23 +452,26 @@ try {
       && await isVisuallyExposed(audience.locator('#pulse')));
   await setVault(page, false);
 
-  // The last historical form is the branded digital asset, and the gallery
-  // upgrades its authored fallback only when the reader reaches Section V.
+  // The last historical form is the digital asset, drawn (since the owner's
+  // redesign) as a trading screen of twelve mini charts; the gallery upgrades its
+  // authored fallback only when the reader reaches Section V.
   const finalEraState = await page.locator('#fig-1 .era').last().evaluate((era) => {
-    const image = era.querySelector('.era__object img');
+    const drawing = era.querySelector('.era__object svg');
     return {
-      imageCount: era.querySelectorAll('.era__object img').length,
-      imageAlt: image?.getAttribute('alt'),
-      imageSrc: image ? new URL(image.src).pathname : '',
+      svgCount: era.querySelectorAll('.era__object svg').length,
+      imageCount: era.querySelectorAll('img').length,
+      marks: drawing ? drawing.querySelectorAll('.cd').length : 0,
+      width: drawing ? drawing.getBoundingClientRect().width : 0,
       label: era.querySelector('.era__name')?.textContent?.trim(),
       date: era.querySelector('.era__time')?.textContent?.trim(),
     };
   });
-  check('F1 ends with the circle logo, Coin, and 5 Jul 2024',
-    finalEraState.imageCount === 1
-      && finalEraState.imageAlt === ''
-      && finalEraState.imageSrc === '/assets/app-icons/v3/icon-192.png'
-      && finalEraState.label === 'Coin'
+  check('F1 ends with the Digital asset drawing of the twelve, and 5 Jul 2024',
+    finalEraState.svgCount === 1
+      && finalEraState.imageCount === 0
+      && finalEraState.marks === 12
+      && finalEraState.width > 0
+      && finalEraState.label === 'Digital asset'
       && finalEraState.date === '5 Jul 2024',
     JSON.stringify(finalEraState));
 
@@ -720,32 +723,68 @@ try {
     return {
       armed: fig.classList.contains('is-armed'),
       on: fig.classList.contains('is-on'),
-      twelve: fig.classList.contains('is-twelve'),
+      isTwelve: fig.classList.contains('is-twelve'),
       count: fig.querySelector('[data-carry-count]')?.textContent ?? '',
-      // A disc is dimmed by a veil in the plate's colour, so its shown strength is 1 minus the veil.
-      firstDisc: 1 - veil(fig.querySelector('.era__object')),
+      // A drawing is dimmed by a veil in the plate's colour, so its shown strength is 1 minus the veil.
+      firstDrawing: 1 - veil(fig.querySelector('.era__object')),
+      firstMark: opacity(fig.querySelector('.cd')),
       eras: [...fig.querySelectorAll('.era > *')].map((node) => (node.classList.contains('era__object') ? 1 - veil(node) : opacity(node))),
-      ring: [...fig.querySelectorAll('.cw')].map(opacity),
+      marks: [...fig.querySelectorAll('.cd')].map(opacity),
+      twelve: opacity(fig.querySelector('.carry-twelve')),
+      // The big axis: leaders draw up from their dates (stroke-dashoffset to 0), markers pop to 1.
+      leads: [...fig.querySelectorAll('svg.carry-axis:not(.carry-axis--mini) .carry-lead')]
+        .map((node) => Number.parseFloat(getComputedStyle(node).strokeDashoffset)),
+      axisMarks: [...fig.querySelectorAll('svg.carry-axis:not(.carry-axis--mini) .carry-mark')].map(opacity),
       height: fig.getBoundingClientRect().height,
     };
   });
+  // Each leader's top end must sit under its drawing's horizontal centre.
+  const leaderOffsets = () => carry.locator('#fig-1').evaluate((fig) => {
+    const drawings = [...fig.querySelectorAll('.era__object')];
+    return [...fig.querySelectorAll('svg.carry-axis:not(.carry-axis--mini) .carry-lead')].map((lead, index) => {
+      const point = lead.getPointAtLength(0);
+      const matrix = lead.getScreenCTM();
+      const x = point.x * matrix.a + point.y * matrix.c + matrix.e;
+      const box = drawings[index].getBoundingClientRect();
+      return Math.abs(x - (box.left + box.width / 2));
+    });
+  });
   const carryBefore = await carryState();
-  check('F1 plate: armed below the fold with the count at 0 and the forms dim',
-    carryBefore.armed && !carryBefore.on && carryBefore.count === '0' && carryBefore.firstDisc < 0.2,
-    JSON.stringify({ ...carryBefore, eras: undefined, ring: undefined }));
+  check('F1 plate: armed below the fold with the count at 0, the forms veiled and no marks yet',
+    carryBefore.armed && !carryBefore.on && carryBefore.count === '0'
+      && carryBefore.firstDrawing < 0.2 && carryBefore.firstMark === 0
+      && carryBefore.leads.length === 7 && carryBefore.leads[0] !== 0,
+    JSON.stringify({ ...carryBefore, eras: undefined, marks: undefined }));
   await carry.locator('#fig-1').evaluate((fig) => fig.scrollIntoView({ block: 'center', behavior: 'instant' }));
-  await wait(4000);
+  await wait(5000);
   const carryAfter = await carryState();
-  check('F1 plate: plays once into view, ending on 7 with every form and dot lit',
-    carryAfter.on && carryAfter.twelve && carryAfter.count === '7'
+  check('F1 plate: plays once into view, ending on 7 with every form unveiled and all 84 marks lit',
+    carryAfter.on && carryAfter.isTwelve && carryAfter.count === '7'
       && carryAfter.eras.length === 21 && carryAfter.eras.every((value) => value === 1)
-      && carryAfter.ring.length === 12 && carryAfter.ring.every((value) => value === 1),
+      && carryAfter.marks.length === 84 && carryAfter.marks.every((value) => value === 1)
+      && carryAfter.twelve === 1
+      && carryAfter.leads.length === 7 && carryAfter.leads.every((value) => value === 0)
+      && carryAfter.axisMarks.length === 7 && carryAfter.axisMarks.every((value) => value === 1),
     JSON.stringify(carryAfter));
   check('F1 plate: the motion never changes the figure height',
     carryBefore.height === carryAfter.height, `${carryBefore.height} vs ${carryAfter.height}`);
   for (const width of [1440, 810, 730, 623, 375]) {
     await carry.setViewportSize({ width, height: 900 });
     await wait(200);
+    if ([1440, 730, 623].includes(width)) {
+      const offsets = await leaderOffsets();
+      check(`${width}px: F1 timeline leaders start under their drawings' centres`,
+        offsets.length === 7 && offsets.every((value) => value <= 3),
+        offsets.map((value) => value.toFixed(2)).join(', '));
+    }
+    if (width === 375) {
+      const axes = await carry.locator('#fig-1').evaluate((fig) => ({
+        big: getComputedStyle(fig.querySelector('svg.carry-axis:not(.carry-axis--mini)')).display,
+        mini: getComputedStyle(fig.querySelector('svg.carry-axis--mini')).display,
+      }));
+      check('375px: F1 hides the big axis and shows the small scale strip',
+        axes.big === 'none' && axes.mini !== 'none', JSON.stringify(axes));
+    }
     await shot(carry, '#fig-1', `thesis-f1-plate-${width}.png`);
   }
   check('no page errors (F1 plate)', carryErrors.length === 0, carryErrors.slice(0, 2).join(' | '));
@@ -840,22 +879,24 @@ try {
   await wait(300);
   const annotatedF1 = await annotatedTransmission.evaluate((transmission) => {
     const eras = [...transmission.querySelectorAll('.era')];
-    const image = eras.at(-1)?.querySelector('.era__object img');
+    const coin = eras.at(-1)?.querySelectorAll('.era__object svg') ?? [];
     const tops = eras.map((era) => era.offsetTop);
     return {
-      complete: image?.complete ?? false,
+      coinSvgs: coin.length,
+      coinMarks: coin[0]?.querySelectorAll('.cd').length ?? 0,
+      coinWidth: coin[0]?.getBoundingClientRect().width ?? 0,
       eras: eras.length,
-      naturalWidth: image?.naturalWidth ?? 0,
       oneRow: tops.length > 0 && Math.max(...tops) - Math.min(...tops) <= 2,
       clientWidth: transmission.clientWidth,
       scrollWidth: transmission.scrollWidth,
     };
   });
-  check('730px: F1 keeps seven eras on one row with the loaded circle logo',
+  check('730px: F1 keeps seven eras on one row with the Digital asset drawing of the twelve',
     annotatedF1.eras === 7
       && annotatedF1.oneRow
-      && annotatedF1.complete
-      && annotatedF1.naturalWidth === 192
+      && annotatedF1.coinSvgs === 1
+      && annotatedF1.coinMarks === 12
+      && annotatedF1.coinWidth > 0
       && annotatedF1.scrollWidth <= annotatedF1.clientWidth + 1,
     JSON.stringify(annotatedF1));
   await shot(annotated, '#fig-1', 'thesis-f1-730.png');
@@ -1061,11 +1102,19 @@ try {
   const reducedCarry = await reduced.locator('#fig-1').evaluate((fig) => ({
     armed: fig.classList.contains('is-armed'),
     count: fig.querySelector('[data-carry-count]')?.textContent ?? '',
-    opacities: [...fig.querySelectorAll('.era > *, .cw')].map((node) => Number.parseFloat(getComputedStyle(node).opacity)),
+    opacities: [...fig.querySelectorAll('.era > *, .carry-twelve')].map((node) => Number.parseFloat(getComputedStyle(node).opacity)),
+    marks: [...fig.querySelectorAll('.cd')].map((node) => Number.parseFloat(getComputedStyle(node).opacity)),
+    axis: [...fig.querySelectorAll('.carry-mark, .carry-ticks')].map((node) => Number.parseFloat(getComputedStyle(node).opacity)),
+    leads: [...fig.querySelectorAll('.carry-lead')].map((node) => getComputedStyle(node).strokeDasharray),
+    line: [...fig.querySelectorAll('.carry-line')].map((node) => getComputedStyle(node).transform),
   }));
-  check('reduced motion: F1 plate shows its finished state, unarmed, count 7',
+  check('reduced motion: F1 plate shows its finished state, unarmed, count 7, all 84 marks',
     !reducedCarry.armed && reducedCarry.count === '7'
-      && reducedCarry.opacities.length === 33 && reducedCarry.opacities.every((value) => value === 1),
+      && reducedCarry.opacities.length === 22 && reducedCarry.opacities.every((value) => value === 1)
+      && reducedCarry.marks.length === 84 && reducedCarry.marks.every((value) => value === 1)
+      && reducedCarry.axis.length === 16 && reducedCarry.axis.every((value) => value === 1)
+      && reducedCarry.leads.length === 7 && reducedCarry.leads.every((value) => value === 'none')
+      && reducedCarry.line.length === 2 && reducedCarry.line.every((value) => value === 'none'),
     JSON.stringify(reducedCarry));
   await checkOwnershipDrawer(reduced, 'reduced motion');
   for (const [name, selector] of VISUAL_MODULES) {
