@@ -83,11 +83,20 @@ const ALL_PAGES = [
       // The share links are on the lines nearest a place the person checks.
       await choosePlace(tab, 'acg-check', 'Paris');
       await tab.locator('.acg__share').first().waitFor({ state: 'visible', timeout: 30_000 });
+      // Two towns called Udaipur in Rajasthan: the picker tells them apart by their coordinates, each with its own id.
+      await tab.locator('#acg-check').fill('Udaipur');
+      const udaipurs = tab.locator('#acg-check-list [role="option"]:not([aria-disabled="true"])');
+      await udaipurs.first().waitFor({ state: 'visible', timeout: 30_000 });
+      const labels = (await udaipurs.allInnerTexts()).map((text) => text.replace(/\s+/gu, ' ').trim());
+      const placeIds = await tab.locator('#acg-check-list li[data-place-id]').evaluateAll((items) => items.map((item) => item.getAttribute('data-place-id')));
+      const rajasthan = labels.filter((label) => label.startsWith('Udaipur Rajasthan, India'));
+      check('same-named places in the picker show distinct labels and ids', rajasthan.length === 2 && new Set(labels).size === labels.length && rajasthan.every((label) => /\d+\.\d{2}° N, \d+\.\d{2}° E/u.test(label)) && placeIds.length === labels.length && new Set(placeIds).size === placeIds.length, `${labels.join(' / ')} | ${placeIds.join(', ')}`);
+      await tab.locator('#acg-check').fill('');
       const index = JSON.parse(await readFile(resolve(projectRoot, 'dist/data/cities/index.json'), 'utf8'));
       const whole = ['/data/cities/index.json', ...index.shards.map((key) => `/data/cities/${key}.json`)].sort();
       const cities = [...new Set(addresses.map((address) => new URL(address)).filter((url) => url.pathname.startsWith('/data/cities/')).map((url) => `${url.pathname}${url.search}`))].sort();
       check('the place searches request the whole city index, the same files whatever is typed', JSON.stringify(cities) === JSON.stringify(whole), cities.join(', '));
-      const typed = addresses.filter((address) => /london|paris/iu.test(address));
+      const typed = addresses.filter((address) => /london|paris|udaipur/iu.test(address));
       check('no request carries a place typed into a search', typed.length === 0, typed.join('\n'));
       const table = tab.getByRole('table', { name: 'Where each line runs' });
       const sun = await table.getByRole('row', { name: /^Sun /u }).innerText();

@@ -196,8 +196,8 @@ describe('get_astrocartography', () => {
     expect(result.data.cities[0]).toMatchObject({ latitude: expect.closeTo(-22.8, 0), longitude: expect.closeTo(-45.2, 0) });
     // Two towns are called Belmont in the United States: no guess, and never Belmont Cragin.
     expect(result.data.ambiguous).toEqual([{ asked: 'Belmont, United States', places: [
-      { name: 'Belmont', region: 'California', country: 'United States' },
-      { name: 'Belmont', region: 'Massachusetts', country: 'United States' },
+      { id: expect.stringMatching(/^p[0-9a-z]{11}$/u), name: 'Belmont', region: 'California', country: 'United States', label: 'Belmont, California, United States' },
+      { id: expect.stringMatching(/^p[0-9a-z]{11}$/u), name: 'Belmont', region: 'Massachusetts', country: 'United States', label: 'Belmont, Massachusetts, United States' },
     ] }]);
     expect(result.data.unmatched).toEqual([]);
     expect(result.data.limits).toContain('More than one town or city matches Belmont, United States: Belmont, California, United States; Belmont, Massachusetts, United States. Add the region or country after a comma to choose one, such as Belmont, California, United States.');
@@ -221,11 +221,78 @@ describe('get_astrocartography', () => {
     expect(alone.data.cities.map((city: { name: string; country: string }) => `${city.name}, ${city.country}`)).toEqual(['Kerman, Iran', 'Dali, China', 'St. Louis, United States', 'London, United Kingdom', 'Lisbon, Portugal']);
     expect(alone.data.ambiguous).toEqual([]);
     const table = await loadPlaceTable();
-    expect(resolvePlace(table, 'Kerman, China')).toBeNull();
+    expect(resolvePlace(table, 'Kerman, China')).toMatchObject({ suggestions: [{ name: 'Kerman', country: 'Iran' }] });
+    expect(resolvePlace(table, 'Qwxzv, China')).toBeNull();
     expect(resolvePlace(table, 'London, Canada')).toMatchObject({ place: { name: 'London', region: 'Ontario', country: 'Canada' } });
     expect(resolvePlace(table, 'Springfield, United States')).toMatchObject({ choices: expect.arrayContaining([expect.objectContaining({ region: 'Missouri' })]) });
     const listed = await executeAiTool('find_birthplace', { place: 'Kerman', country: 'Iran' }, ON) as { ok: true; data: any };
     expect(listed.data.places.map((place: { name: string }) => place.name)).toEqual(['Kermanshah', 'Kerman']);
+  });
+
+  it('never lets a country read over the region typed: a region no place of the name is in gets suggestions, not another region', async () => {
+    const result = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['London, Scotland', 'Cardiff, England', 'Cardiff, Wales', 'London, England', 'London, Ontario, Canada'] }, ON) as { ok: true; data: any };
+    expect(result.ok).toBe(true);
+    // Scotland and England are regions of the United Kingdom in the index, not other names for it.
+    expect(result.data.cities.map((city: { asked: string; name: string; region: string; country: string }) => [city.asked, `${city.name}, ${city.region}, ${city.country}`])).toEqual([
+      ['Cardiff, Wales', 'Cardiff, Wales, United Kingdom'],
+      ['London, England', 'London, England, United Kingdom'],
+      ['London, Ontario, Canada', 'London, Ontario, Canada'],
+    ]);
+    expect(result.data.cities[2]).toMatchObject({ latitude: expect.closeTo(42.98, 1), longitude: expect.closeTo(-81.23, 1) });
+    expect(result.data.didYouMean.map((entry: { asked: string; places: { label: string }[] }) => [entry.asked, entry.places.map((place) => place.label)])).toEqual([
+      ['London, Scotland', ['London, England, United Kingdom', 'London, Ontario, Canada']],
+      ['Cardiff, England', ['Cardiff, Wales, United Kingdom']],
+    ]);
+    expect(result.data.ambiguous).toEqual([]);
+    expect(result.data.unmatched).toEqual([]);
+    expect(result.data.limits).toContain('No town or city in the index matches London, Scotland. Did you mean London, England, United Kingdom; London, Ontario, Canada? Ask which one is meant, then give its id in placeIds.');
+    expect(result.data.limits).toContain('No town or city in the index matches Cardiff, England. Did you mean Cardiff, Wales, United Kingdom? Ask which one is meant, then give its id in placeIds.');
+    const table = await loadPlaceTable();
+    for (const [text, region] of [['London, United Kingdom', 'England'], ['London, UK', 'England'], ['London, England, United Kingdom', 'England'], ['Glasgow, Scotland', 'Scotland'], ['Belfast, Northern Ireland', 'Northern Ireland'], ['Paris, France', 'Ile-de-France'], ['Belmont, California', 'California']] as const) {
+      expect(resolvePlace(table, text)).toMatchObject({ place: { region } });
+    }
+    // A region must be the place's own: Ontario is not England, and the last part names the country.
+    expect(resolvePlace(table, 'London, England, Canada')).toMatchObject({ suggestions: expect.any(Array) });
+    expect(resolvePlace(table, 'London, Ontario, United Kingdom')).toMatchObject({ suggestions: expect.any(Array) });
+    expect(resolvePlace(table, 'Cardiff, Scotland')).toMatchObject({ suggestions: [{ name: 'Cardiff', region: 'Wales' }] });
+  });
+
+  it('gives each place an id and a label that tells same-named places apart, and reads the place an id names', async () => {
+    const base = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London' };
+    const result = await executeAiTool('get_astrocartography', { ...base, cities: ['Udaipur, Rajasthan, India'] }, ON) as { ok: true; data: any };
+    expect(result.ok).toBe(true);
+    expect(result.data.cities).toEqual([]);
+    const [entry] = result.data.ambiguous;
+    expect(entry.asked).toBe('Udaipur, Rajasthan, India');
+    // Two towns of 15,000 or more are called Udaipur in Rajasthan, about 400 km apart. The index has no district, so
+    // their coordinates tell them apart.
+    expect(entry.places.map((place: { label: string }) => place.label)).toEqual([
+      'Udaipur, Rajasthan, India (24.59° N, 73.71° E)',
+      'Udaipur, Rajasthan, India (27.72° N, 75.47° E)',
+    ]);
+    const ids = entry.places.map((place: { id: string }) => place.id);
+    expect(new Set(ids).size).toBe(2);
+    expect(result.data.limits).toContain('More than one town or city matches Udaipur, Rajasthan, India: Udaipur, Rajasthan, India (24.59° N, 73.71° E); Udaipur, Rajasthan, India (27.72° N, 75.47° E). Some share a name, region and country, so choose one by its id in placeIds.');
+    // Sending the same label back would ask again; the id reads exactly that place.
+    const chosen = await executeAiTool('get_astrocartography', { ...base, placeIds: [ids[1]] }, ON) as { ok: true; data: any };
+    expect(chosen.ok).toBe(true);
+    expect(chosen.data.ambiguous).toEqual([]);
+    expect(chosen.data.cities).toHaveLength(1);
+    expect(chosen.data.cities[0]).toMatchObject({ asked: ids[1], id: ids[1], name: 'Udaipur', region: 'Rajasthan', country: 'India', latitude: 27.72, longitude: 75.47 });
+    expect(chosen.data.cities[0].closest.length).toBeGreaterThan(0);
+    // An id comes back with the place it names, and names it again.
+    const again = await executeAiTool('get_astrocartography', { ...base, cities: ['Lisbon'], placeIds: [ids[0]] }, ON) as { ok: true; data: any };
+    expect(again.data.cities.map((city: { name: string; latitude: number }) => [city.name, city.latitude])).toEqual([['Lisbon', 38.73], ['Udaipur', 24.59]]);
+    const lisbon = again.data.cities[0].id;
+    const viaId = await executeAiTool('get_astrocartography', { ...base, placeIds: [lisbon] }, ON) as { ok: true; data: any };
+    expect(viaId.data.cities[0]).toMatchObject({ id: lisbon, name: 'Lisbon', country: 'Portugal' });
+    // An id the index does not have is refused, without repeating it; and the two lists together hold five places at most.
+    const unknown = await executeAiTool('get_astrocartography', { ...base, placeIds: ['pzzzzzzzzzzz'] }, ON) as { ok: boolean };
+    expect(unknown.ok).toBe(false);
+    expect(JSON.stringify(unknown)).not.toContain('pzzzzzzzzzzz');
+    const tooMany = await executeAiTool('get_astrocartography', { ...base, cities: ['Lisbon', 'Paris', 'Rome'], placeIds: ids.concat(lisbon) }, ON) as { ok: boolean };
+    expect(tooMany.ok).toBe(false);
+    expect(astrocartographyInput.safeParse({ ...base, cities: ['Lisbon', 'Paris', 'Rome'], placeIds: ids }).success).toBe(true);
   });
 
   it('links to the page and its line cards only while the website page is switched on', async () => {

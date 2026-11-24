@@ -18,6 +18,7 @@ import { ACG_CONFIDENCE, ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, farPlaceSumm
 import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
 import { countryMatches, queryVariants, type PlaceTable } from '../features/birthplace';
 import { fold, queryRows, shardKey, type Row } from '../../lib/geo/rank';
+import { distinctPlaceLabels, placeId, placeLabelText, rowPoint } from '../../lib/geo/place-label';
 import { roundCoordinate } from '../plain-text';
 import { softenMinor, MINOR_NOTE } from '../features/reading-guards';
 import { readingConfidence, readingConfidenceText } from '../reading-confidence';
@@ -35,7 +36,10 @@ export const astrocartographyInput = z.strictObject({
   zone: birthFields.zone.unwrap().describe("The birthplace's time zone, such as Europe/Madrid. Required."),
   latitude: birthFields.latitude.describe("Optional. The birthplace's latitude, with longitude: it matters only for births on local mean time, before standard time zones. Nothing is stored."),
   cities: z.array(z.string().trim().min(2).max(80)).max(ACG_MAX_CITIES).optional().describe(`Optional. Up to ${ACG_MAX_CITIES} towns or cities to check, such as "Lisbon" or "Paris, France" (a country after a comma when several places share the name). Names are matched against the place index bundled with Zodiacs and not sent anywhere or stored.`),
-}).superRefine(refineBirth);
+  placeIds: z.array(z.string().trim().min(2).max(40)).max(ACG_MAX_CITIES).optional().describe(`Optional. The id of a place listed under ambiguous or didYouMean in an earlier answer, to check exactly that place. Up to ${ACG_MAX_CITIES} places in all, with cities.`),
+}).superRefine(refineBirth).superRefine((args, context) => {
+  if ((args.cities?.length ?? 0) + (args.placeIds?.length ?? 0) > ACG_MAX_CITIES) context.addIssue({ code: 'custom', path: ['placeIds'], message: `Up to ${ACG_MAX_CITIES} places in all, with cities.` });
+});
 export type AstrocartographyInput = z.infer<typeof astrocartographyInput>;
 
 const body = z.enum(ACG_BODIES);
@@ -57,6 +61,8 @@ const nearLine = z.object({
    */
   shareUrl: z.url().nullable(),
 });
+/** A place to ask about: its id for placeIds, and a label that tells it apart from the others listed with it. */
+const placeChoice = z.object({ id: z.string(), name: z.string(), region: z.string(), country: z.string(), label: z.string() });
 export const astrocartographyData = z.object({
   birthDate: z.string(),
   /** The birth instant the lines are for, UTC. */
@@ -74,6 +80,8 @@ export const astrocartographyData = z.object({
   })),
   cities: z.array(z.object({
     asked: z.string(),
+    /** The place's id (placeIds reads it back). */
+    id: z.string(),
     name: z.string(),
     region: z.string(),
     country: z.string(),
@@ -88,7 +96,12 @@ export const astrocartographyData = z.object({
   /** Names that match more than one place equally well, with the places they could be: ask which one is meant. */
   ambiguous: z.array(z.object({
     asked: z.string(),
-    places: z.array(z.object({ name: z.string(), region: z.string(), country: z.string() })).min(2).max(5),
+    places: z.array(placeChoice).min(2).max(5),
+  })).max(ACG_MAX_CITIES),
+  /** Names with a region or country that no place with the name is in, with the places of that name elsewhere: ask which one is meant. */
+  didYouMean: z.array(z.object({
+    asked: z.string(),
+    places: z.array(placeChoice).min(1).max(5),
   })).max(ACG_MAX_CITIES),
   readings: z.object({ ASC: z.string(), DSC: z.string(), MC: z.string(), IC: z.string() }),
   confidence: z.number().int().min(40).max(95),
@@ -109,12 +122,12 @@ export function greenwichSiderealDegrees(utc: Date): number {
   return equatorialMoment(utc).gast;
 }
 
-/** A town or city as this tool reads it from the place index. */
-export interface AcgPlace { name: string; region: string; country: string; latitude: number; longitude: number }
+/** A town or city as this tool reads it from the place index, with its id (placeId, src/lib/geo/place-label.ts). */
+export interface AcgPlace { id: string; name: string; region: string; country: string; latitude: number; longitude: number }
 
 /**
- * "Lisbon", "Paris, France" or "Belmont, Massachusetts, United States": the name, then any region or country after a
- * comma. Each part after the name must be the place's country or its region.
+ * "Lisbon", "Paris, France", "Belmont, California" or "London, Ontario, Canada": the name, then a region or a country
+ * after a comma, or a region and then the country.
  */
 function splitCity(text: string): { place: string; hints: string[] } {
   const [place, ...hints] = text.split(',').map((part) => part.trim());
@@ -122,9 +135,25 @@ function splitCity(text: string): { place: string; hints: string[] } {
 }
 
 const words = (text: string) => ` ${fold(text).replace(/[^a-z0-9]+/gu, ' ').trim()} `;
-/** The hint is the place's country (countryMatches) or its region, or whole words of it. */
-function hintMatches(hint: string, region: string, country: string): boolean {
-  return countryMatches(country, hint) || (words(hint).trim() !== '' && words(region).includes(words(hint)));
+/**
+ * Names a person may give as a country that are a region of it in the index: England, Scotland, Wales and Northern
+ * Ireland are the United Kingdom's regions. A typed one must be the place's own region, never just its country, so
+ * London, Scotland is not London, England, and Northern Ireland is never read as Ireland.
+ */
+const REGION_NAMES: ReadonlySet<string> = new Set(['england', 'scotland', 'wales', 'northern ireland']);
+const isRegionName = (hint: string) => REGION_NAMES.has(words(hint).trim());
+/** The hint is the place's region, or whole words of it. */
+function regionMatches(hint: string, region: string): boolean {
+  return words(hint).trim() !== '' && words(region).includes(words(hint));
+}
+/** The hint is the place's country (countryMatches); a region name such as Scotland must be the place's region instead. */
+function countryHintMatches(hint: string, region: string, country: string): boolean {
+  return isRegionName(hint) ? regionMatches(hint, region) : countryMatches(country, hint);
+}
+/** One part after the name: the region or the country. Several: each a region, and the last the country. */
+function hintsMatch(hints: readonly string[], region: string, country: string): boolean {
+  if (hints.length === 1) return regionMatches(hints[0], region) || countryHintMatches(hints[0], region, country);
+  return hints.every((hint, index) => (index === hints.length - 1 ? countryHintMatches(hint, region, country) : regionMatches(hint, region)));
 }
 
 /** How a place's name meets the name asked for: whole, then with whole words added, then a longer word, then containing it. */
@@ -146,6 +175,24 @@ function fitOf(names: readonly string[], query: string): Fit | null {
 const MINOR_SHARE = 0.1;
 export const ACG_CHOICES = 5;
 
+function toPlace(table: PlaceTable, row: Row): AcgPlace {
+  const point = rowPoint(table.index, row);
+  return { id: placeId(point), name: point.name, region: point.admin1, country: point.country, latitude: point.lat, longitude: point.lon };
+}
+
+const byId = new WeakMap<PlaceTable, Map<string, Row>>();
+/** The place an id from placeId names, or null. */
+export function placeById(table: PlaceTable, id: string): AcgPlace | null {
+  let rows = byId.get(table);
+  if (!rows) {
+    rows = new Map();
+    for (const shard of Object.values(table.shards)) for (const row of shard) rows.set(placeId(rowPoint(table.index, row)), row);
+    byId.set(table, rows);
+  }
+  const row = rows.get(id.trim());
+  return row ? toPlace(table, row) : null;
+}
+
 /**
  * The one town or city a name asks for, or the places it could be when the index cannot tell. A place whose whole
  * name is the one asked for comes first: Aparecida, Brazil is Aparecida, not Aparecida de Goiânia, and Kerman, Iran
@@ -153,45 +200,57 @@ export const ACG_CHOICES = 5;
  * States) are choices to ask about, not a guess; with no region or country given, the largest is read when every
  * other is under a tenth of its size (London is London, England) and no longer name that adds whole words to it is
  * larger (Mexico asks between Mexico City and Mexico, Philippines). With no whole-name match, a single place whose
- * name adds whole words (New York City, Nara-shi) is read; several are choices. Null when nothing matches.
+ * name adds whole words (New York City, Nara-shi) is read; several are choices. A region or country given is never
+ * overridden: when no place with the name is there (London, Scotland or Cardiff, England), the places with the name
+ * elsewhere come back as suggestions to ask about, never as the answer. Null when nothing matches the name.
  */
-export function resolvePlace(table: PlaceTable, text: string): { place: AcgPlace } | { choices: AcgPlace[] } | null {
+export function resolvePlace(table: PlaceTable, text: string): { place: AcgPlace } | { choices: AcgPlace[] } | { suggestions: AcgPlace[] } | null {
   const { place, hints } = splitCity(text);
-  const found = new Map<Row, Fit>();
+  const named = new Map<Row, Fit>();
   for (const query of queryVariants(place)) {
     const key = shardKey(query);
     for (const row of queryRows(table.index, table.shards[key] ?? [], key)) {
       const fit = fitOf(row[1] === 0 ? [fold(row[0])] : [fold(row[0]), fold(row[1])], query);
       if (fit === null) continue;
-      const region = table.index.admin1[row[2]] ?? '';
-      const country = table.index.countries[row[3]] ?? '';
-      if (!hints.every((hint) => hintMatches(hint, region, country))) continue;
-      const known = found.get(row);
-      if (known === undefined || fit < known) found.set(row, fit);
+      const known = named.get(row);
+      if (known === undefined || fit < known) named.set(row, fit);
     }
   }
-  const toPlace = (row: Row): AcgPlace => ({ name: row[0], region: table.index.admin1[row[2]] ?? '', country: table.index.countries[row[3]] ?? '', latitude: row[4] / 100, longitude: row[5] / 100 });
+  const found = new Map([...named].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? '', table.index.countries[row[3]] ?? '')));
   // Each fit's places, largest first.
-  const rows = (fit: Fit) => [...found].filter(([, value]) => value === fit).map(([row]) => row).sort((a, b) => b[7] - a[7]);
-  const choose = (list: Row[]) => (list.length === 1 ? { place: toPlace(list[0]) } : { choices: list.slice(0, ACG_CHOICES).map(toPlace) });
-  const whole = rows(Fit.Whole);
+  const rows = (from: Map<Row, Fit>, fit: Fit) => [...from].filter(([, value]) => value === fit).map(([row]) => row).sort((a, b) => b[7] - a[7]);
+  const best = (from: Map<Row, Fit>) => {
+    for (const fit of [Fit.Whole, Fit.Words, Fit.Longer, Fit.Contains]) {
+      const list = rows(from, fit);
+      if (list.length) return list;
+    }
+    return [];
+  };
+  if (!found.size) {
+    const elsewhere = best(named);
+    return elsewhere.length ? { suggestions: elsewhere.slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) } : null;
+  }
+  const choose = (list: Row[]) => (list.length === 1 ? { place: toPlace(table, list[0]) } : { choices: list.slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) });
+  const whole = rows(found, Fit.Whole);
   if (whole.length) {
     if (hints.length) return choose(whole);
     const [largest, next] = whole;
     if (next && next[7] >= largest[7] * MINOR_SHARE) return choose(whole);
-    const larger = rows(Fit.Words).filter((row) => row[7] > largest[7]);
+    const larger = rows(found, Fit.Words).filter((row) => row[7] > largest[7]);
     return larger.length ? choose([...larger, largest]) : choose([largest]);
   }
-  for (const fit of [Fit.Words, Fit.Longer, Fit.Contains]) {
-    const list = rows(fit);
-    if (list.length) return choose(list);
-  }
-  return null;
+  return choose(best(found));
 }
 
 /** "Belmont, California, United States": a choice written as the cities input reads it. */
 export function placeLabel(place: Pick<AcgPlace, 'name' | 'region' | 'country'>): string {
-  return [place.name, place.region, place.country].filter(Boolean).join(', ');
+  return placeLabelText({ name: place.name, admin1: place.region, country: place.country });
+}
+
+/** Choices as the answer lists them: each with its id, and a label that tells it apart from the others (distinctPlaceLabels). */
+function choiceList(places: readonly AcgPlace[]): AstrocartographyData['ambiguous'][number]['places'] {
+  const labels = distinctPlaceLabels(places.map((place) => ({ name: place.name, admin1: place.region, country: place.country, lat: place.latitude, lon: place.longitude })));
+  return places.map((place, index) => ({ id: place.id, name: place.name, region: place.region, country: place.country, label: labels[index] }));
 }
 
 export async function getAstrocartography(args: AstrocartographyInput, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'origin' | 'pageOn' | 'placeTable'>): Promise<{ data: AstrocartographyData; links: { title: string; url: string }[] }> {
@@ -232,47 +291,64 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
   if (clockChange) limits.push(clockChange);
   if (under18) limits.push(MINOR_NOTE);
   const asked = args.cities ?? [];
-  if (asked.length) {
+  const ids = args.placeIds ?? [];
+  const didYouMean: AstrocartographyData['didYouMean'] = [];
+  const readPlace = (text: string, place: AcgPlace) => {
+    const point = { lat: place.latitude, lon: place.longitude };
+    const distances = lineDistances(point, bodies, gast);
+    const far = farPlaceSummary(distances[0]);
+    const selected = far ? distances.slice(0, 1) : distances.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 12);
+    const closest = selected.map((row) => {
+      const distanceKm = roundedDistanceKm(row.km);
+      return {
+        planet: row.body, angle: row.angle, title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
+        distanceKm, distanceMiles: Math.round(distanceKm / KM_PER_MILE), side: row.side, strength: strengthOf(row.km),
+        line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
+        shareUrl: pageOn && cardMatches ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null,
+      };
+    });
+    const strong = closest.filter((row) => row.strength === 'strong');
+    const top = closest[0];
+    let summary = far;
+    if (!summary && strong.length) {
+      const meaning = lineMeaning(top.planet, top.angle, under18);
+      summary = `${place.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(', ')}.${meaning ? ` ${guard(meaning)}` : ''}`;
+    }
+    summary ??= `No line runs within ${STRONG_KM} km of ${place.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString('en-GB')} km ${top.side ?? 'away'}, so its pull is still noticeable there.`;
+    cities.push({ asked: text, id: place.id, name: place.name, region: place.region, country: place.country, latitude: roundCoordinate(place.latitude), longitude: roundCoordinate(place.longitude), closest, summary });
+  };
+  if (asked.length || ids.length) {
     if (!context.placeTable) throw new RangeError('Town and city lookup is not offered here; leave out cities for the lines alone.');
     const table = await context.placeTable();
+    // An id names one place exactly; one the index does not have is refused rather than skipped, without repeating it.
+    const byIds = ids.map((id) => {
+      const place = placeById(table, id);
+      if (!place) throw new RangeError('A place id is not in the index. Use an id from ambiguous or didYouMean, or name the place in cities.');
+      return [id, place] as const;
+    });
     for (const text of asked) {
       const resolved = resolvePlace(table, text);
-      if (!resolved) { unmatched.push(text); continue; }
-      if ('choices' in resolved) {
-        ambiguous.push({ asked: text, places: resolved.choices.map(({ name, region, country }) => ({ name, region, country })) });
-        continue;
-      }
-      const { place } = resolved;
-      const point = { lat: place.latitude, lon: place.longitude };
-      const distances = lineDistances(point, bodies, gast);
-      const far = farPlaceSummary(distances[0]);
-      const selected = far ? distances.slice(0, 1) : distances.filter((row, index) => index < 3 || row.km <= NOTICEABLE_KM).slice(0, 12);
-      const closest = selected.map((row) => {
-        const distanceKm = roundedDistanceKm(row.km);
-        return {
-          planet: row.body, angle: row.angle, title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
-          distanceKm, distanceMiles: Math.round(distanceKm / KM_PER_MILE), side: row.side, strength: strengthOf(row.km),
-          line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
-          shareUrl: pageOn && cardMatches ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null,
-        };
-      });
-      const strong = closest.filter((row) => row.strength === 'strong');
-      const top = closest[0];
-      let summary = far;
-      if (!summary && strong.length) {
-        const meaning = lineMeaning(top.planet, top.angle, under18);
-        summary = `${place.name} is within ${STRONG_KM} km of your ${strong.map((row) => row.title).join(', ')}.${meaning ? ` ${guard(meaning)}` : ''}`;
-      }
-      summary ??= `No line runs within ${STRONG_KM} km of ${place.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString('en-GB')} km ${top.side ?? 'away'}, so its pull is still noticeable there.`;
-      cities.push({ asked: text, name: place.name, region: place.region, country: place.country, latitude: roundCoordinate(place.latitude), longitude: roundCoordinate(place.longitude), closest, summary });
+      if (!resolved) unmatched.push(text);
+      else if ('choices' in resolved) ambiguous.push({ asked: text, places: choiceList(resolved.choices) });
+      else if ('suggestions' in resolved) didYouMean.push({ asked: text, places: choiceList(resolved.suggestions) });
+      else readPlace(text, resolved.place);
     }
-    for (const entry of ambiguous) limits.push(`More than one town or city matches ${entry.asked}: ${entry.places.map(placeLabel).join('; ')}. Add the region or country after a comma to choose one, such as ${placeLabel(entry.places[0])}.`);
+    for (const [id, place] of byIds) readPlace(id, place);
+    for (const entry of ambiguous) {
+      const labels = entry.places.map((place) => place.label).join('; ');
+      // Places that share a name, region and country cannot be told apart by name: only the id chooses one.
+      const shared = entry.places.some((place) => place.label !== placeLabel(place));
+      limits.push(shared
+        ? `More than one town or city matches ${entry.asked}: ${labels}. Some share a name, region and country, so choose one by its id in placeIds.`
+        : `More than one town or city matches ${entry.asked}: ${labels}. Add the region or country after a comma to choose one, such as ${entry.places[0].label}.`);
+    }
+    for (const entry of didYouMean) limits.push(`No town or city in the index matches ${entry.asked}. Did you mean ${entry.places.map((place) => place.label).join('; ')}? Ask which one is meant, then give its id in placeIds.`);
     if (unmatched.length) limits.push(`Some names matched no town or city of 15,000 people or more in the index: ${unmatched.join(', ')}. Try another spelling, or add the country after a comma.`);
   }
   return {
     data: {
       birthDate: args.birthDate, instantUtc: utc.toISOString(), siderealTimeDegrees: Math.round(gast * 10_000) / 10_000,
-      lines, cities, unmatched, ambiguous,
+      lines, cities, unmatched, ambiguous, didYouMean,
       readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
       confidence, confidenceLabel, limits,
       pageUrl: pageOn ? `${context.origin}/astrocartography/` : null,
@@ -289,7 +365,7 @@ export const astrocartographyTool = definePersonalTool({
   name: 'get_astrocartography',
   title: 'Your map lines',
   summary: 'astrocartography lines, and the lines nearest named towns and cities',
-  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13: check the birth date first, and ask for no birth time or birthplace when it is less than 13 years ago, since the tool refuses that date. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. A name that matches more than one place comes back under ambiguous with the places it could be; ask the person which one they mean. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
+  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13: check the birth date first, and ask for no birth time or birthplace when it is less than 13 years ago, since the tool refuses that date. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. A name that matches more than one place comes back under ambiguous with the places it could be; ask the person which one they mean. A name with a region or country that no place of that name is in comes back under didYouMean; ask which one is meant. To check a place listed under ambiguous or didYouMean, give its id in placeIds. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
   // The readings change on the eighteenth birthday, so a repeat call can differ as the server's clock moves.

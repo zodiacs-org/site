@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { BirthDateField, birthDateForChart, calendarInPlay, loadBirthCalendar, type CalendarChoice } from './BirthFields';
 import PlaceSearch from './PlaceSearch';
 import type { City } from '../lib/geo/search';
+import { placeDistinctions, placeId } from '../lib/geo/place-label';
 import type { AcgResult } from './astrocartography/compute';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, strengthOf, type AcgAngle, type AcgBody, type GeoPoint, type LineDistance } from '../lib/astrocartography/lines';
 import { ACG_CONFIDENCE_TEXT, ANGLE_LABEL, angleArea, ANGLE_NAME, MAP_PICTURE_HELP, MINOR_NOTE, clockChangeLimit, lineTable, placeLines, under18At } from '../lib/astrocartography/meanings';
@@ -123,7 +124,7 @@ export function AcgBirthFields({ date, calendar, check, time, city, onDateChange
     <div class="field">
       <label class="field__label" for="acg-place">{t('en', 'birthplace')}</label>
       {open
-        ? <PlaceSearch id="acg-place" selected={city} onSelect={onCityChange} locale="en" selectionHint={t('en', 'placePickHint')} required wholeIndex />
+        ? <PlaceSearch id="acg-place" selected={city} onSelect={onCityChange} locale="en" selectionHint={t('en', 'placePickHint')} required wholeIndex distinctLabels />
         : <input id="acg-place" class="field__input" type="text" disabled placeholder={t('en', 'placePlaceholder')} aria-describedby="acg-place-help" />}
       <p id="acg-place-help" class="field__help">The birthplace sets the time zone of the birth time.</p>
     </div>,
@@ -207,7 +208,7 @@ export default function AstrocartographyMap() {
   function addPlace(next: City | null) {
     setAdding(next);
     if (!next || !result || !nearest.current) return;
-    if (places.length >= MAX_PLACES || places.some((entry) => entry.city.name === next.name && entry.city.lat === next.lat)) { setAdding(null); return; }
+    if (places.length >= MAX_PLACES || places.some((entry) => placeId(entry.city) === placeId(next))) { setAdding(null); return; }
     setPlaces([...places, { city: next, lines: nearest.current({ lat: next.lat, lon: next.lon }, result) }]);
     setAdding(null);
   }
@@ -286,14 +287,16 @@ export default function AstrocartographyMap() {
           <div class="acg__places">
             <div class="field">
               <label class="field__label" for="acg-check">Check a town or city</label>
-              <PlaceSearch key={`check-${places.length}`} id="acg-check" selected={adding} onSelect={addPlace} locale="en" wholeIndex />
+              <PlaceSearch key={`check-${places.length}`} id="acg-check" selected={adding} onSelect={addPlace} locale="en" wholeIndex distinctLabels />
               <p class="field__help">Up to {MAX_PLACES} places. Lines within about {STRONG_KM} km are read as strong; by about {NOTICEABLE_KM} km they fade.</p>
             </div>
-            {places.map(({ city: place, lines }) => {
+            {places.map(({ city: place, lines }, index) => {
               const reading = placeLines(lines, minor);
+              // Two places checked with the same name, region and country show their coordinates too.
+              const extra = placeDistinctions(places.map((entry) => entry.city))[index];
               return (
-              <article class="tile acg__place-card" key={`${place.name}${place.lat}`}>
-                <h3>{place.name}<span>{place.admin1 ? `${place.admin1}, ` : ''}{place.country}</span></h3>
+              <article class="tile acg__place-card" key={placeId(place)}>
+                <h3>{place.name}<span>{place.admin1 ? `${place.admin1}, ` : ''}{place.country}{extra ? ` (${extra})` : ''}</span></h3>
                 {reading.far && <p>{reading.far}</p>}
                 {reading.rows.length > 0 && <ul>
                   {reading.rows.map((row) => (

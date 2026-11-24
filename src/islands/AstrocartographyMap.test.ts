@@ -147,6 +147,15 @@ describe('the astrocartography page', () => {
     for (const search of searches) expect(search).toMatch(/\swholeIndex\s/u);
   });
 
+  it('tells same-named places apart in both pickers and in the checked places, and keeps two such places as two', () => {
+    const source = readFileSync(new URL('./AstrocartographyMap.tsx', import.meta.url), 'utf8');
+    const searches = source.match(/<PlaceSearch\b[^>]*>/gu) ?? [];
+    expect(searches).toHaveLength(2);
+    for (const search of searches) expect(search).toMatch(/\sdistinctLabels\s/u);
+    expect(source).toMatch(/places\.some\(\(entry\) => placeId\(entry\.city\) === placeId\(next\)\)/u);
+    expect(source).toMatch(/placeDistinctions\(places\.map\(\(entry\) => entry\.city\)\)\[index\]/u);
+  });
+
   it('reads the under-18 care on the same day as the get_astrocartography tool', () => {
     for (const iso of ['2026-11-10T02:00:00Z', '2026-11-10T11:59:59Z', '2026-11-10T12:00:00Z']) {
       expect(under18('2008-11-10', new Date(iso)), iso).toBe(under18At('2008-11-10', new Date(iso)));
