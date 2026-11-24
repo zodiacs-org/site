@@ -43331,8 +43331,16 @@ var changeAt = (wall) => {
   const at = wall.jump && wall.transition?.at ? Date.parse(wall.transition.at) : Number.NaN;
   return Number.isFinite(at) ? at : null;
 };
+function nextMidnight(date3, read) {
+  try {
+    const next = new Date(Date.parse(`${date3}T00:00:00Z`) + 864e5).toISOString().slice(0, 10);
+    return /^\d{4}-\d{2}-\d{2}$/.test(next) ? read("00:00", next) : null;
+  } catch {
+    return null;
+  }
+}
 function birthDaySpan(date3, zone10, longitude2, resolve2) {
-  const read = (time2) => longitude2 !== void 0 ? resolve2(date3, time2, zone10, { longitude: longitude2 }) : resolve2(date3, time2, zone10);
+  const read = (time2, on = date3) => longitude2 !== void 0 ? resolve2(on, time2, zone10, { longitude: longitude2 }) : resolve2(on, time2, zone10);
   let first2 = 0;
   let start = read(hhmm(first2));
   let skippedStart = null;
@@ -43350,11 +43358,18 @@ function birthDaySpan(date3, zone10, longitude2, resolve2) {
   if (start.flags.includes("dst-gap")) return [read("00:00").utc, new Date(read("23:59").utc.getTime() + LAST_INSTANT_MS)];
   const jump = end.flags.includes("dst-fold") ? jumpOf(end) : null;
   let startMs = start.utc.getTime();
-  let endMs = end.utc.getTime() + (jump ? jump * 6e4 : 0) + LAST_INSTANT_MS;
+  let endMs = end.utc.getTime() + (jump ? Math.round(jump * 6e4) : 0) + LAST_INSTANT_MS;
   const opened2 = skippedStart ? changeAt(skippedStart) : null;
   if (opened2 !== null && opened2 <= startMs && opened2 > startMs - 6e4) startMs = opened2;
   const closed = skippedEnd && !jump ? changeAt(skippedEnd) : null;
   if (closed !== null && closed > end.utc.getTime() && closed <= end.utc.getTime() + 6e4) endMs = closed - 1;
+  if (!skippedEnd && !jump && last2 === DAY_MINUTES - 1) {
+    const next = nextMidnight(date3, read);
+    const skipped = next?.flags.includes("dst-gap") ?? false;
+    const endMinute = end.utc.getTime();
+    const shown = next === null ? null : skipped ? changeAt(next) : next.utc.getTime();
+    if (shown !== null && shown > endMinute && shown <= endMinute + (skipped ? 6e4 : 12e4)) endMs = shown - 1;
+  }
   return [new Date(startMs), new Date(endMs)];
 }
 

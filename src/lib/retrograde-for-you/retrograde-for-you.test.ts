@@ -474,6 +474,22 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     }
   });
 
+  it('reads an untimed day the clocks left within its last minute alike on the page and in the tool: Heiligensee, 31 March 1893', async () => {
+    // Heiligensee's own mean time ran 53 minutes ahead of UTC until 23:06:32 UTC, when its clock went from 23:59:32
+    // straight to 00:06:32 on 1 April: both paths read the day as ending at 23:06:31.999 UTC, never into 1 April.
+    const HEILIGENSEE = { lat: 52.61, lon: 13.25, tz: 'Europe/Berlin' };
+    const now = new Date('2026-11-24T12:00:00Z');
+    await prepareLocalTime('1893-03-31', HEILIGENSEE.tz);
+    expect(birthDaySpan('1893-03-31', HEILIGENSEE.tz, HEILIGENSEE.lon, resolveLocalToUtc)[1].toISOString()).toBe('1893-03-31T23:06:31.999Z');
+    const page = computeRetrogradeForYou({ birthDate: '1893-03-31', birthTime: null, place: HEILIGENSEE, planets: ['Mercury', 'Venus', 'Mars'], now, zone: 'UTC' });
+    if (page.refused) throw new Error(page.refused);
+    expect(page.periods.length).toBeGreaterThan(0);
+    const result = await retrogradeForMe({ birthDate: '1893-03-31', zone: HEILIGENSEE.tz, latitude: HEILIGENSEE.lat, longitude: HEILIGENSEE.lon, planets: ['Mercury', 'Venus', 'Mars'], currentZone: 'UTC' }, { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true });
+    if ('refused' in result) throw new Error(result.refused);
+    expect(result.data.periods.map((period) => [period.contacts, period.possibleContacts, period.houses, period.housesCountedFrom]))
+      .toEqual(page.periods.map((period) => [period.contacts, period.possibleContacts, period.houses, period.housesCountedFrom]));
+  });
+
   it('takes the later pass the real size of the change on: half an hour on Lord Howe Island', async () => {
     // 15 Mar 1987, 01:30: the clocks went back 30 minutes, and both passes give Capricorn rising. An hour on would give Aquarius.
     const place = { lat: -31.55, lon: 159.08, tz: 'Australia/Lord_Howe' };

@@ -12,7 +12,8 @@
  *   result arrives well after the click;
  * - switch on, Retrogrades for you: for three births within seconds of a Sun ingress, the page in Chromium (whose
  *   bundle computes on astronomy-engine) shows the same Sun sign, share cards and houses as get_retrograde_for_me
- *   from the generated hosted runtime (api/_ai/runtime.mjs, run `npm run ai:build` first) for the same birth.
+ *   from the generated hosted runtime (api/_ai/runtime.mjs, run `npm run ai:build` first) for the same birth, both
+ *   reading now as PARITY_NOW.
  *
  * This branch carries only its own page (Retrogrades for you); a page whose source is not in src/pages is skipped.
  *
@@ -38,6 +39,11 @@ const HELD_BACK_MS = 1_500;
  * Births within seconds of a Sun ingress: the DE440 pack and astronomy-engine put the Sun in different signs at
  * these instants (src/ai-tools/personal/page-ephemeris.test.ts), so the page and the tool agree only on one ephemeris.
  */
+/**
+ * The one instant both sides of the cusp parity read as now: Chromium's clock is fixed to it before the page loads,
+ * and the hosted tool is given it, so the comparison cannot drift as the published data runs out.
+ */
+const PARITY_NOW = new Date('2026-11-24T12:00:00Z');
 const CUSP_BIRTHS = [
   { date: '1970-04-20', time: '12:15', place: 'Reykjavik', sun: 'aries' },
   { date: '1962-04-20', time: '14:51', place: 'London', sun: 'aries' },
@@ -217,7 +223,7 @@ async function cityOf(name, meta) {
 async function hostedRetrogrades(args) {
   const { createAiNodeHandler } = await import(pathToFileURL(resolve(projectRoot, 'api/_ai/runtime.mjs')).href);
   const env = { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1', ZODIACS_PERSONAL_TOOLS_ENABLED: '1', PUBLIC_RETROGRADES_FOR_YOU_ENABLED: '1' };
-  const handle = createAiNodeHandler({ env, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {} });
+  const handle = createAiNodeHandler({ env, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: () => PARITY_NOW } });
   const server = createServer((req, res) => { void handle(req, res); });
   await new Promise((done) => server.listen(0, '127.0.0.1', done));
   try {
@@ -248,6 +254,9 @@ async function hostedRetrogrades(args) {
 async function cuspParity(browser, base) {
   const { context, tab, errors } = await open(browser, VIEWPORTS[1]);
   try {
+    // Date.now() and new Date() read PARITY_NOW on the page; its timers keep running.
+    await tab.clock.setFixedTime(PARITY_NOW);
+    check('/retrogrades/for-you/ cusp births: the page reads the fixed clock', await tab.evaluate(() => new Date().toISOString()) === PARITY_NOW.toISOString());
     for (const birth of CUSP_BIRTHS) {
       const label = `/retrogrades/for-you/ cusp ${birth.place} ${birth.date} ${birth.time}`;
       await tab.goto(`${base}/retrogrades/for-you/`, { waitUntil: 'networkidle' });
@@ -269,6 +278,7 @@ async function cuspParity(browser, base) {
       const hosted = await hostedRetrogrades({ birthDate: birth.date, time: birth.time, zone: place.zone, latitude: place.latitude, longitude: place.longitude, currentZone: 'Europe/London' });
       check(`${label}: the hosted tool answers`, hosted?.ok === true, JSON.stringify(hosted).slice(0, 300));
       if (hosted?.ok !== true) continue;
+      check(`${label}: the hosted tool read the fixed clock`, hosted.data.now === PARITY_NOW.toISOString(), hosted.data.now);
       const tool = hosted.data.periods.map((period) => ({
         planet: period.planet,
         // Without `ref`, which only the assistant's links carry.

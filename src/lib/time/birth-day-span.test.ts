@@ -7,13 +7,13 @@ import { prepareLocalTime, resolveLocalToUtc } from './localToUtc';
 const clock = createLocalTimeModule();
 
 /** The page's reader: the site's resolver, as src/islands/retrograde-for-you/compute.ts reads it. */
-async function pageSpan(date: string, zone: string): Promise<string[]> {
+async function pageSpan(date: string, zone: string, longitude?: number): Promise<string[]> {
   await prepareLocalTime(date, zone);
-  return birthDaySpan(date, zone, undefined, resolveLocalToUtc).map((at) => at.toISOString());
+  return birthDaySpan(date, zone, longitude, resolveLocalToUtc).map((at) => at.toISOString());
 }
 
 /** The tool's reader: the compute API's resolver, through birthDayEnds (src/ai-tools/personal/shared.ts). */
-const toolSpan = async (date: string, zone: string) => (await birthDayEnds({ birthDate: date, zone }, clock)).map((at) => at.toISOString());
+const toolSpan = async (date: string, zone: string, longitude?: number) => (await birthDayEnds({ birthDate: date, zone, ...(longitude === undefined ? {} : { longitude }) }, clock)).map((at) => at.toISOString());
 
 describe('the whole span of an untimed birth date on the birthplace clock', () => {
   it.each([
@@ -55,6 +55,21 @@ describe('the whole span of an untimed birth date on the birthplace clock', () =
     expect(await toolSpan('1937-06-30', 'Europe/Amsterdam')).toEqual(before);
   });
 
+  it('ends the instant before the next date when the clocks leave the date within its last minute: Heiligensee, 1893', async () => {
+    // Heiligensee (52.61 N, 13.25 E) kept its own mean time, 53 minutes ahead of UTC, until Berlin's clocks moved to
+    // CET at 23:06:32 UTC on 31 March 1893: there the clock went from 23:59:32 straight to 00:06:32 on 1 April. Read
+    // to the minute, the 31st would run to 23:06:59.999 UTC, 28 seconds into 1 April.
+    const lon = 13.25;
+    const last = ['1893-03-30T23:07:00.000Z', '1893-03-31T23:06:31.999Z'];
+    expect(await pageSpan('1893-03-31', 'Europe/Berlin', lon)).toEqual(last);
+    expect(await toolSpan('1893-03-31', 'Europe/Berlin', lon)).toEqual(last);
+    const next = ['1893-03-31T23:06:32.000Z', '1893-04-01T22:59:59.999Z'];
+    expect(await pageSpan('1893-04-01', 'Europe/Berlin', lon)).toEqual(next);
+    expect(await toolSpan('1893-04-01', 'Europe/Berlin', lon)).toEqual(next);
+    // Adjacent days meet: the 31st's last millisecond is the one before the 1st's first.
+    expect(Date.parse(last[1]) + 1).toBe(Date.parse(next[0]));
+  });
+
   it('ends at the change when the clocks skip from the end of the date between whole minutes', () => {
     // A synthetic 10-minute gap from 23:50:20 at UTC+0: 23:51 onward is skipped, 23:50 is shown, and the change is at
     // 23:50:20 UTC, so the day ends at 23:50:19.999 rather than at 23:50:59.999.
@@ -64,6 +79,12 @@ describe('the whole span of an untimed birth date on the birthplace clock', () =
       ? { utc: new Date(minute(time) - 50 * 60_000), flags: ['dst-gap'], jumpMinutes: 10, transitionAt: change }
       : { utc: new Date(minute(time)), flags: [] });
     expect(birthDaySpan('2000-01-01', 'Test/EndGap', undefined, reader).map((at) => at.toISOString())).toEqual(['2000-01-01T00:00:00.000Z', '2000-01-01T23:50:19.999Z']);
+    // Clocks set back 30 seconds at midnight UTC repeat only part of 23:59, which the resolver does not mark: the day
+    // runs until the next date's 00:00 first showed, 30 seconds after the change.
+    const setBack = (date: string, time: string): WallReading => (date === '2000-01-02'
+      ? { utc: new Date(Date.UTC(2000, 0, 2, 0, 0, 30) + (minute(time) - minute('00:00'))), flags: [] }
+      : { utc: new Date(minute(time)), flags: [] });
+    expect(birthDaySpan('2000-01-01', 'Test/SetBack', undefined, setBack).map((at) => at.toISOString())).toEqual(['2000-01-01T00:00:00.000Z', '2000-01-02T00:00:29.999Z']);
     // A change the resolver reports outside the minute next to the gap is not this gap's: the whole minute stands.
     const stray = (_date: string, time: string): WallReading => ({ ...reader(_date, time), ...(time > '23:50' ? { transitionAt: new Date(0) } : {}) });
     expect(birthDaySpan('2000-01-01', 'Test/EndGap', undefined, stray)[1].toISOString()).toBe('2000-01-01T23:50:59.999Z');

@@ -47,18 +47,32 @@ const changeAt = (wall: WallReading): number | null => {
 };
 
 /**
+ * The next date's 00:00 on the same clock, or null where the resolver cannot read it (past its years). The zone
+ * history prepareLocalTime(date, zone) loads is the whole zone's, so the next date needs no other preparation.
+ */
+function nextMidnight(date: string, read: (time: string, on?: string) => WallReading): WallReading | null {
+  try {
+    const next = new Date(Date.parse(`${date}T00:00:00Z`) + 86_400_000).toISOString().slice(0, 10);
+    return /^\d{4}-\d{2}-\d{2}$/.test(next) ? read('00:00', next) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * The first and last instant of the date on the zone's clock (with the birthplace's longitude for its local mean
  * time, when given): the first minute at its earlier pass, and the last millisecond of the last minute at its later
  * one, which is the instant before the next local midnight (or before the jump, when the clocks skip from the end of
  * this date). A clock change need not fall on a whole minute (Amsterdam's clocks went from 00:00:00 to 00:00:28
  * on 1 July 1937, at 22:40:28 UTC on the 30th), so where a skipped minute borders the day the span starts or ends at
- * the change itself, as the resolver gives it, and a whole minute is the fallback only where the resolver gives no
- * instant. The caller awaits
+ * the change itself, as the resolver gives it to the millisecond, and a day whose last minute the clocks left early
+ * ends the instant before the next date was first shown; a whole minute is the fallback only where the resolver
+ * gives no instant. The caller awaits
  * prepareLocalTime(date, zone) first, as for any call of the resolver. A date the clock skipped whole is refused
  * before this is asked (src/lib/vedic-signs/clock.ts, skippedWholeDate); here it falls back to its 00:00 and 23:59.
  */
 export function birthDaySpan(date: string, zone: string, longitude: number | undefined, resolve: WallResolver): [Date, Date] {
-  const read = (time: string) => (longitude !== undefined ? resolve(date, time, zone, { longitude }) : resolve(date, time, zone));
+  const read = (time: string, on = date) => (longitude !== undefined ? resolve(on, time, zone, { longitude }) : resolve(on, time, zone));
   let first = 0;
   let start = read(hhmm(first));
   let skippedStart: WallReading | null = null;
@@ -76,12 +90,25 @@ export function birthDaySpan(date: string, zone: string, longitude: number | und
   if (start.flags.includes('dst-gap')) return [read('00:00').utc, new Date(read('23:59').utc.getTime() + LAST_INSTANT_MS)];
   const jump = end.flags.includes('dst-fold') ? jumpOf(end) : null;
   let startMs = start.utc.getTime();
-  let endMs = end.utc.getTime() + (jump ? jump * 60_000 : 0) + LAST_INSTANT_MS;
+  let endMs = end.utc.getTime() + (jump ? Math.round(jump * 60_000) : 0) + LAST_INSTANT_MS;
   // The clocks moved on at the change, within the minute before the first one they showed (or within the minute
   // after the last one): a change outside that minute is not this gap's, and the whole minute stands.
   const opened = skippedStart ? changeAt(skippedStart) : null;
   if (opened !== null && opened <= startMs && opened > startMs - 60_000) startMs = opened;
   const closed = skippedEnd && !jump ? changeAt(skippedEnd) : null;
   if (closed !== null && closed > end.utc.getTime() && closed <= end.utc.getTime() + 60_000) endMs = closed - 1;
+  // The clocks can also leave the date within its own last minute, which the resolver reads whole: at Heiligensee
+  // (13.25 degrees east, its own mean time, 53 minutes ahead of UTC) they went from 23:59:32 on 31 March 1893 to
+  // 00:06:32 on 1 April, at 23:06:32 UTC. The day then ends the instant before the next date was first shown, read
+  // to the millisecond from the next date's 00:00: the change itself when that was skipped, else its earlier pass.
+  if (!skippedEnd && !jump && last === DAY_MINUTES - 1) {
+    const next = nextMidnight(date, read);
+    const skipped = next?.flags.includes('dst-gap') ?? false;
+    const endMinute = end.utc.getTime();
+    const shown = next === null ? null : skipped ? changeAt(next) : next.utc.getTime();
+    // Only a change within that last minute, or a clock set back by less than a minute (so that 23:59 was not
+    // repeated whole), moves the end: anything else is not this day's.
+    if (shown !== null && shown > endMinute && shown <= endMinute + (skipped ? 60_000 : 120_000)) endMs = shown - 1;
+  }
   return [new Date(startMs), new Date(endMs)];
 }
