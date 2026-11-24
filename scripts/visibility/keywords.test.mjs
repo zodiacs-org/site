@@ -87,4 +87,21 @@ describe('keyword tables', () => {
     expect(held.length).toBeGreaterThan(0);
     for (const row of held) expect(row[6].startsWith('/es/')).toBe(true);
   });
+
+  it('marks a family held only when the publication record builds it in that language', () => {
+    const record = JSON.parse(readFileSync('src/data/locale-expansion-publication.json', 'utf8')).entries;
+    const horoscope = { today: 'horoscope-daily', tomorrow: 'horoscope-tomorrow', weekly: 'horoscope-weekly', monthly: 'horoscope-monthly', yearly: 'horoscope-2027' };
+    const familyOf = (row) => (row[3] === 'horoscope' ? horoscope[row[4]]
+      : row[3] === 'compatibility' ? 'compatibility-pair'
+        : row[3] === 'signs' ? 'sign-guide'
+          : row[4]);
+    let held = 0;
+    for (const locale of LOCALES) {
+      for (const row of read(locale).filter((r) => r[7] === 'held')) {
+        held += 1;
+        expect(record[locale]?.[familyOf(row)], `${locale} ${row[3]} ${row[4]} ${row[5]}`).toBeTruthy();
+      }
+    }
+    expect(held).toBeGreaterThan(0);
+  });
 });

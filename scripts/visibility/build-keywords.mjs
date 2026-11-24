@@ -175,16 +175,21 @@ const PUBLISHED = {
   hi: { horoscope: [], compat: false, signs: false, chart: false, sky: [] },
 };
 
-// Built but held by the locale expansion (src/data/locale-expansion-publication.json,
-// PRs for parts 1 and 2): the page exists in the language and waits for its
-// release batch. Coverage "held" names the localized URL it will have.
-const HELD = {
-  es: { horoscope: ['tomorrow', 'weekly', 'monthly', 'yearly'], sky: ['full-moon', 'new-moon'] },
-  pt: { horoscope: ['tomorrow', 'weekly', 'monthly', 'yearly'], sky: ['full-moon', 'new-moon'] },
-  fr: { horoscope: ['today', 'tomorrow', 'weekly', 'monthly', 'yearly'], sky: ['full-moon', 'new-moon'] },
-  it: { horoscope: ['today', 'tomorrow', 'weekly', 'monthly', 'yearly'], sky: ['full-moon', 'new-moon'] },
-  ru: { horoscope: ['today', 'tomorrow', 'weekly', 'monthly', 'yearly'], sky: ['full-moon', 'new-moon'], compat: true, signs: true },
-};
+// Built but held by the locale expansion: a family counts as held in a locale
+// only when src/data/locale-expansion-publication.json has an entry for it, so
+// a page that is not built yet stays "partial". Coverage "held" names the
+// localized URL it will have.
+const PUBLICATION = JSON.parse(readFileSync(new URL('../../src/data/locale-expansion-publication.json', import.meta.url), 'utf8'));
+const HOROSCOPE_FAMILY = { today: 'horoscope-daily', tomorrow: 'horoscope-tomorrow', weekly: 'horoscope-weekly', monthly: 'horoscope-monthly', yearly: 'horoscope-2027' };
+export function heldFor(locale, publication = PUBLICATION) {
+  const has = (family) => Boolean(publication.entries?.[locale]?.[family]);
+  return {
+    horoscope: Object.keys(HOROSCOPE_FAMILY).filter((period) => has(HOROSCOPE_FAMILY[period])),
+    sky: ['full-moon', 'new-moon'].filter(has),
+    compat: has('compatibility-pair'),
+    signs: has('sign-guide'),
+  };
+}
 const HELD_NOTE = 'built in this language and held until its release batch';
 const CANDIDATE_NOTE = 'candidate locale: nothing published in this language; native review of the query wording needed before use';
 const NOTE = { de: CANDIDATE_NOTE, pl: CANDIDATE_NOTE, tr: CANDIDATE_NOTE, ja: `${CANDIDATE_NOTE}; no spaces in Japanese queries except where people type them`, hi: `${CANDIDATE_NOTE}; much Hindi astrology search is sidereal (Vedic) while the site is tropical`, ar: 'native review needed before use; no Arabic pages published', 'zh-hans': 'native review needed before use; only the Chinese zodiac guide is published in Chinese', 'zh-hant': 'native review needed before use; only the Chinese zodiac guide is published in Chinese' };
@@ -204,7 +209,7 @@ function chartTarget(q) {
 }
 
 export function rowsFor(locale) {
-  const c = L[locale], pub = PUBLISHED[locale], held = HELD[locale] ?? {}, p = c.prefix, rows = [];
+  const c = L[locale], pub = PUBLISHED[locale], held = heldFor(locale), p = c.prefix, rows = [];
   const add = (family, sub, query, url, coverage, note = '') => rows.push([locale, c.lang, c.loc, family, sub, query, url || '', coverage, 'TBD', 'TBD', 'TBD', [note, NOTE[locale]].filter(Boolean).join('; ')]);
   const enHoroPath = { today: '', tomorrow: 'tomorrow/', weekly: 'weekly/', monthly: 'monthly/', yearly: '2027/' };
   SLUGS.forEach((slug, i) => {
