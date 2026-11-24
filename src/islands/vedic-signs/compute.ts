@@ -17,6 +17,7 @@ import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock, withClo
 import { untimedInstant } from '../../lib/vedic-signs/untimed';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
+export { prepareEveryZoneHistory } from '../../lib/time/every-zone-history';
 
 export interface VedicFormInput {
   birthDate: string;

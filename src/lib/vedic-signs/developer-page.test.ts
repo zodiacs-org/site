@@ -24,4 +24,15 @@ describe('the engine page on the Vedic entry point', () => {
     expect(SOURCE.match(/which this site does not use/gu)).toHaveLength(1);
     expect(SOURCE.match(/get_vedic_signs/gu)).toHaveLength(1);
   });
+
+  it('re-dates the engine page in the sitemap only while the switch is on', () => {
+    const sitemap = readFileSync(new URL('../../pages/sitemap.xml.ts', import.meta.url), 'utf8');
+    const lines = sitemap.split('\n');
+    const dated = lines.flatMap((line, index) => (line.includes("url.loc === '/developers/engine/'") ? [index] : []));
+    expect(dated).toHaveLength(1);
+    // The nearest loop above it reads the Vedic signs switch, and that loop is still open at the line.
+    const loop = lines.slice(0, dated[0]).findLastIndex((line) => /^\s*for \(const url of /u.test(line));
+    expect(lines[loop]).toContain("for (const url of launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? urls : [])");
+    expect(lines.slice(loop + 1, dated[0]).some((line) => /^ {2}\}$/u.test(line))).toBe(false);
+  });
 });

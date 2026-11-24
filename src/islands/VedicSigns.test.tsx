@@ -62,6 +62,18 @@ describe('the /vedic-signs/ form', () => {
     expect(SOURCE).toMatch(/const ready = birthDateOpen\(check\) && city !== null/u);
   });
 
+  it('asks for every zone history file before the birth\'s own, so no request depends on the birth', async () => {
+    expect(SOURCE).toMatch(/await prepareEveryZoneHistory\(\);\s*\n\s*await prepareLocalTime\(input\.birthDate, input\.place\.tz\);/u);
+    const compute = await import('./vedic-signs/compute');
+    const every = await import('../lib/time/every-zone-history');
+    expect(compute.prepareEveryZoneHistory).toBe(every.prepareEveryZoneHistory);
+  });
+
+  it('searches the birthplace over the whole city index, never letter by letter', () => {
+    const gated = readFileSync(new URL('./GatedBirthFields.tsx', import.meta.url), 'utf8');
+    expect(gated).toMatch(/<PlaceSearch [^>]*\bwholeIndex\b[^>]*\/>/u);
+  });
+
   it('gives a skipped birth time its own sentence, and logs nothing', () => {
     expect(SOURCE).toMatch(/cause instanceof SkippedBirthTimeError \? SKIPPED_BIRTH_TIME/u);
     // A birth date the clock skipped whole gets its own sentence too, not the general one.

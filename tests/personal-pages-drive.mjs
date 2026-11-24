@@ -12,12 +12,15 @@
  *   name or its coordinates, and a second, different birth in a fresh browser asks for the same sign pictures,
  *   so the requests do not tell the host which signs a reading shows.
  *
+ * The page with `privateRequests` is also held to files that do not depend on the birth: its birthplace search asks
+ * for the whole city index, and it asks for all sixteen zone history files, for a 1990 birth and a 1915 one alike.
+ *
  * This branch carries only its own page (Vedic signs); a page whose source is not in src/pages is skipped.
  *
  *   npm run build && node tests/personal-pages-drive.mjs
  */
 import { existsSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
@@ -28,6 +31,13 @@ const BIRTH = { date: '1990-05-03', time: '08:30', place: 'London' };
 const BIRTH_DETAIL = /1990|05-03|0503|08:30|0830|london|51\.5|-0\.1/iu;
 /** A second adult birth whose Sun, Moon and rising signs all differ from the first's. */
 const OTHER_BIRTH = { date: '1985-11-20', time: '14:15', place: 'Mumbai' };
+/**
+ * A birth from before 1970, in another zone and under another letter: the resolver reads its zone's history, so the
+ * requests would differ from a 1990 birth's if the page asked only for the history files a birth needs.
+ */
+const HISTORICAL_BIRTH = { date: '1915-11-02', time: '09:00', place: 'Accra' };
+/** The engine's zone history files as the built site serves them. */
+const ZONE_HISTORY_FILE = /\/_astro\/tzdb-\d{4}[a-z]-\d{2}-/u;
 
 /** Chooses the first place the search offers, and returns its name, region and country as the option shows them. */
 async function choosePlace(tab, id, query) {
@@ -65,10 +75,21 @@ const ALL_PAGES = [
     privateRequests: { signPictures: /\/assets\/zodiac-icons\//u, result: '.vedic__result' },
     async run(tab, birth = BIRTH, first = true) {
       if (first) {
+        const addresses = [];
+        tab.on('request', (request) => addresses.push(request.url()));
+        const afterDate = async (date) => {
+          const from = addresses.length;
+          await tab.fill('#vedic-date', date);
+          await settle(tab);
+          return addresses.slice(from);
+        };
         // A date under 13 keeps the birth time and birthplace locked, with no birthplace search to send a request.
-        await tab.fill('#vedic-date', '2020-01-01');
+        await afterDate('2020-01-01');
         check('an under-13 date locks the birth time', await tab.locator('#vedic-time').isDisabled());
         check('an under-13 date offers no birthplace search', (await tab.locator('#vedic-place[role="combobox"]').count()) === 0 && await tab.locator('#vedic-place').isDisabled());
+        // The calendar module loads with the fields, so a date before 1924 asks for nothing a later date does not.
+        const early = await afterDate('1920-05-03');
+        check('a date before 1924 asks for no file', early.length === 0, early.join('\n'));
       }
       await tab.fill('#vedic-date', birth.date);
       await tab.fill('#vedic-time', birth.time);
@@ -170,6 +191,18 @@ function placeCoordinates(cities, place) {
   return row ? [row[4] / 100, row[5] / 100] : null;
 }
 
+/**
+ * The files a reading asked for that could depend on a birth: the city index files, and the engine's zone history
+ * files. Both must be the same for every birth (the whole city index, and all sixteen history files).
+ */
+function birthDependentFiles(requests) {
+  const paths = [...new Set(requests.map((line) => new URL(line.split(' ')[0]).pathname))];
+  return {
+    cities: paths.filter((path) => path.startsWith('/data/cities/')).sort(),
+    histories: paths.filter((path) => ZONE_HISTORY_FILE.test(path)).sort(),
+  };
+}
+
 /** One more reading in a fresh browser context: the requests it sent and the result's text. */
 async function otherReading(browser, viewport, base, page, birth) {
   const { context, tab, requests, cities } = await open(browser, viewport);
@@ -234,6 +267,23 @@ if (onPages.length) {
             check(`${label}: no request for the second birth carries its date, time, birthplace's full name or coordinates`, otherCarried.length === 0, `${otherNeedles.join(' | ')}\n${otherCarried.join('\n')}`);
             const otherPictures = signPictureRequests(other.requests, page.privateRequests.signPictures);
             check(`${label}: both readings ask for the same sign pictures`, JSON.stringify(pictures) === JSON.stringify(otherPictures), `${pictures.join(', ')}\nvs\n${otherPictures.join(', ')}`);
+            // The birthplace search asks for the whole city index, and the page for every zone history file, whatever
+            // the birth: a 1990 birth needs no history file, a 1915 one needs its zone's.
+            const index = JSON.parse(await readFile(resolve(projectRoot, 'dist/data/cities/index.json'), 'utf8'));
+            const wholeIndex = ['/data/cities/index.json', ...index.shards.map((key) => `/data/cities/${key}.json`)].sort();
+            const builtHistories = (await readdir(resolve(projectRoot, 'dist/_astro'))).map((name) => `/_astro/${name}`).filter((path) => ZONE_HISTORY_FILE.test(path)).sort();
+            const files = birthDependentFiles(requests);
+            check(`${label}: the birthplace search requests the whole city index`, JSON.stringify(files.cities) === JSON.stringify(wholeIndex), files.cities.join(', '));
+            check(`${label}: the page asks for every zone history file for a 1990 birth`, builtHistories.length === 16 && JSON.stringify(files.histories) === JSON.stringify(builtHistories), files.histories.join(', '));
+            const historical = await otherReading(browser, viewport, base, page, HISTORICAL_BIRTH);
+            const historicalNeedles = birthLeaks(HISTORICAL_BIRTH, historical.place);
+            const historicalCarried = leaksIn(historical.requests, historicalNeedles);
+            check(`${label}: the historical birth's coordinates are known to the drive`, historical.place.coordinates !== null, JSON.stringify(historical.place));
+            check(`${label}: no request for the historical birth carries its date, time, birthplace's full name or coordinates`, historicalCarried.length === 0, `${historicalNeedles.join(' | ')}\n${historicalCarried.join('\n')}`);
+            for (const [name, reading] of [['the second birth', other], ['the 1915 birth', historical]]) {
+              const theirs = birthDependentFiles(reading.requests);
+              check(`${label}: ${name} asks for the same city and zone history files as the first`, JSON.stringify(theirs) === JSON.stringify(files), `${JSON.stringify(theirs)}\nvs\n${JSON.stringify(files)}`);
+            }
           }
 
           const hrefs = await tab.locator(selector).evaluateAll((links) => links.map((link) => link.getAttribute('href')));

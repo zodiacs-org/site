@@ -139,8 +139,11 @@ export default function VedicSigns() {
       if (request !== revision.current) return;
       if ('error' in entry) { setError(entry.error); return; }
       const birthDate = entry.date;
-      const { computeVedicFromForm, prepareLocalTime } = await loadModule(() => import('./vedic-signs/compute'));
+      const { computeVedicFromForm, prepareEveryZoneHistory, prepareLocalTime } = await loadModule(() => import('./vedic-signs/compute'));
       const input = { birthDate, birthTime: timeKnown ? time : null, place: { tz: city.tz, lat: city.lat, lon: city.lon }, ayanamsa };
+      // All sixteen zone history files first, whatever the birth: which file a birth needs, and whether it needs one at
+      // all, would tell the host the birthplace's zone group and that the birth is from 1970 or before.
+      await prepareEveryZoneHistory();
       await prepareLocalTime(input.birthDate, input.place.tz);
       if (request !== revision.current) return;
       const reading = await computeVedicFromForm(input);

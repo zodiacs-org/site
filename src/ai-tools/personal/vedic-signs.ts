@@ -56,8 +56,8 @@ const nakshatra = z.object({
   symbol: z.string(),
   line: z.string(),
 });
+/** No birth detail is repeated back: the assistant already has what the person gave it. */
 export const vedicSignsData = z.object({
-  birthDate: z.string(),
   timeKnown: z.boolean(),
   placed: z.boolean(),
   ayanamsa: z.object({ name: z.enum(VEDIC_AYANAMSAS), label: z.string(), degrees: z.number() }),
@@ -104,7 +104,7 @@ export async function vedicSigns(args: BirthArgs & { ayanamsa?: VedicAyanamsa | 
   }), onClock.limit);
   return {
     // The page and its share card are linked only while the website's page is on: with it off they would be a 404.
-    data: { birthDate: args.birthDate, ...reading, pageUrl: pageOn ? `${origin}/vedic-signs/` : null, shareUrl: pageOn ? vedicSignsShareUrl(origin, reading) : null },
+    data: { ...reading, pageUrl: pageOn ? `${origin}/vedic-signs/` : null, shareUrl: pageOn ? vedicSignsShareUrl(origin, reading) : null },
     links: [
       ...(pageOn ? [{ title: 'Your Vedic signs on Zodiacs', url: `${origin}/vedic-signs/` }] : []),
       { title: 'Your birth chart on Zodiacs (Western zodiac)', url: `${origin}/birth-chart/` },

@@ -51,7 +51,7 @@ async function form(birthDate: string, birthTime: string | null, place: VedicFor
 describe('the /vedic-signs/ page on a clock that repeated or skipped a date', () => {
   it('reads the whole of a date the clock showed twice (Apia, 4 July 1892), as the tool does', async () => {
     const reading = await form('1892-07-04', null);
-    expect(posted[0].ends!.map((end) => end.utc)).toEqual(['1892-07-03T11:27:02.000Z', '1892-07-05T11:27:01.000Z']);
+    expect(posted[0].ends!.map((end) => end.utc)).toEqual(['1892-07-03T11:27:02.000Z', '1892-07-05T11:27:01.999Z']);
     expect(reading.moonNakshatra).toBeNull();
     expect(reading.nakshatraCandidates).toEqual(['Chitra', 'Swati', 'Vishakha']);
   });
@@ -59,7 +59,7 @@ describe('the /vedic-signs/ page on a clock that repeated or skipped a date', ()
   it('ends a date where the clock left it (St. John\'s, 23:00 on 2 May 1920 became 00:00 on 3 May), as the tool does', async () => {
     const reading = await form('1920-05-02', null, ST_JOHNS);
     // Not 03:30:51 UTC, where its skipped 23:59 read forward by the jump would end it.
-    expect(posted[0].ends!.map((end) => end.utc)).toEqual(['1920-05-02T03:30:52.000Z', '1920-05-03T02:30:51.000Z']);
+    expect(posted[0].ends!.map((end) => end.utc)).toEqual(['1920-05-02T03:30:52.000Z', '1920-05-03T02:30:51.999Z']);
     expect(reading.moonNakshatra?.name).toBe('Swati');
     expect(reading.nakshatraCandidates).toEqual([]);
   });
@@ -70,9 +70,23 @@ describe('the /vedic-signs/ page on a clock that repeated or skipped a date', ()
     await form('1915-11-02', null, accra);
     await form('1915-11-01', null, accra);
     expect(posted.map((message) => message.ends!.map((end) => end.utc))).toEqual([
-      ['1915-11-02T00:00:52.000Z', '1915-11-02T23:59:59.000Z'],
-      ['1915-11-01T00:01:00.000Z', '1915-11-02T00:00:51.000Z'],
+      ['1915-11-02T00:00:52.000Z', '1915-11-02T23:59:59.999Z'],
+      ['1915-11-01T00:01:00.000Z', '1915-11-02T00:00:51.999Z'],
     ]);
+  });
+
+  it('reads an untimed date to its last millisecond (London, 1 June 1906: the Moon entered Hasta at 23:59:59.422 UTC), as the tool does', async () => {
+    const LONDON = { tz: 'Europe/London', lat: 51.51, lon: -0.13 };
+    const page = await form('1906-06-01', null, LONDON);
+    expect(posted[0].ends!.map((end) => end.utc)).toEqual(['1906-06-01T00:00:00.000Z', '1906-06-01T23:59:59.999Z']);
+    expect(page.moonNakshatra).toBeNull();
+    expect(page.nakshatraCandidates).toContain('Hasta');
+    const answer = (await vedicSigns({ birthDate: '1906-06-01', zone: LONDON.tz, latitude: LONDON.lat, longitude: LONDON.lon }, createLocalTimeModule(), 'https://zodiacs.org')).data;
+    expect(answer.moonNakshatra).toBeNull();
+    expect(answer.nakshatraCandidates).toEqual(page.nakshatraCandidates);
+    // The Moon was still in Uttara Phalguni a second earlier: the last second of the date decides it.
+    const before = (await vedicSigns({ birthDate: '1906-06-01', time: '23:59', zone: LONDON.tz }, createLocalTimeModule(), 'https://zodiacs.org')).data;
+    expect(before.moonNakshatra!.name).toBe('Uttara Phalguni');
   });
 
   it('refuses a date the clock never showed (Apia, 30 December 2011) before anything is worked out, timed or not', async () => {
@@ -162,15 +176,15 @@ describe('the /vedic-signs/ page and the get_vedic_signs tool on the same birth'
     // noon. The resolver reads that noon at 10:00 UTC (13:00 on the new clock), still inside the date; neither the
     // page nor the tool reads there, but at the middle of the date's span.
     const KHARTOUM = { tz: 'Africa/Khartoum', lat: 15.55, lon: 32.53 };
-    const middle = '2000-01-15T09:29:59.500Z';
+    const middle = '2000-01-15T09:29:59.999Z';
     const page = await form('2000-01-15', null, KHARTOUM);
-    expect(posted[0].ends!.map((end) => end.utc)).toEqual(['2000-01-14T22:00:00.000Z', '2000-01-15T20:59:59.000Z']);
+    expect(posted[0].ends!.map((end) => end.utc)).toEqual(['2000-01-14T22:00:00.000Z', '2000-01-15T20:59:59.999Z']);
     expect((posted[0] as unknown as { at: { utc: string } }).at.utc).toBe(middle);
     const answer = await tool('2000-01-15', undefined, KHARTOUM);
     expect(toolInstants.map((at) => at.toISOString())).toEqual([middle]);
     expect(signs(page)).toEqual(signs(answer));
     // The flag alone decides it: a skipped noon that still lies inside the date takes the middle too.
-    const span = [new Date('2000-01-14T22:00:00Z'), new Date('2000-01-15T20:59:59Z')] as const;
+    const span = [new Date('2000-01-14T22:00:00Z'), new Date('2000-01-15T20:59:59.999Z')] as const;
     expect(untimedInstant(new Date('2000-01-15T10:00:00Z'), span, ['dst-gap']).toISOString()).toBe(middle);
     expect(untimedInstant(new Date('2000-01-15T10:00:00Z'), span, []).toISOString()).toBe('2000-01-15T10:00:00.000Z');
   });

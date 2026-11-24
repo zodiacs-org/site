@@ -1130,16 +1130,14 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
-  // The tools hub's card for Vedic signs and the big three and Moon sign pages' lines linking to it (2026-11-09).
-  // Only while PUBLIC_VEDIC_SIGNS_ENABLED is on: off, those pages keep their own dates.
+  // The tools hub's card for Vedic signs and the big three and Moon sign pages' lines linking to it (2026-11-09), and
+  // the engine page's lines saying the site reads the sidereal entry point (re-dated 2026-11-19 when ZOD-63's engine
+  // page rewrite was merged in). Only while PUBLIC_VEDIC_SIGNS_ENABLED is on: off, those pages read as on main and
+  // keep their own dates.
   for (const url of launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? urls : []) {
     if (url.loc === '/tools/' || url.loc === '/big-three/' || url.loc === '/moon-sign/') {
       url.lastmod = laterDate(url.lastmod, '2026-11-09');
     }
-  }
-  // The engine page's line on the sidereal entry the site's code uses, with the flag on or off (2026-11-09, re-dated
-  // 2026-11-19 when ZOD-63's engine page rewrite was merged in).
-  for (const url of urls) {
     if (url.loc === '/developers/engine/') url.lastmod = laterDate(url.lastmod, '2026-11-19');
   }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer

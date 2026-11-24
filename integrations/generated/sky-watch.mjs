@@ -43808,7 +43808,7 @@ function untimedInstant(noon2, span2, noonFlags) {
 import { z as z15 } from "zod";
 
 // src/lib/time/local-day.ts
-var SECOND = 1e3;
+var LAST_MS = 1;
 var MINUTE2 = 6e4;
 var DAY18 = 864e5;
 var skipped = (resolution) => resolution.flags.includes("dst-gap");
@@ -43846,7 +43846,7 @@ function localDaySpan(date3, resolve2) {
   const midnight = resolve2(date3, "00:00", "earlier");
   if (!readsOnDate(date3, midnight)) return null;
   const start = skipped(midnight) ? changeBehind(midnight).at : midnight.utc.getTime();
-  const end = lastReach(dateAfter(date3), resolve2) - SECOND;
+  const end = lastReach(dateAfter(date3), resolve2) - LAST_MS;
   return [new Date(start), new Date(end)];
 }
 
@@ -43908,7 +43908,7 @@ async function withCheckedZone(args, context) {
 }
 var WIDEST_OFFSET_HOURS = 16;
 async function birthDayEnds2(args, clock2) {
-  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR6)];
+  if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:59.999Z`) + WIDEST_OFFSET_HOURS * HOUR6)];
   await clock2.prepareLocalTime(args.birthDate, args.zone);
   const span2 = localDaySpan(args.birthDate, wallOnBirthplaceClock(args, clock2));
   if (!span2) throw new SkippedBirthDateError();
@@ -43946,7 +43946,6 @@ var nakshatra = z16.object({
   line: z16.string()
 });
 var vedicSignsData = z16.object({
-  birthDate: z16.string(),
   timeKnown: z16.boolean(),
   placed: z16.boolean(),
   ayanamsa: z16.object({ name: z16.enum(VEDIC_AYANAMSAS), label: z16.string(), degrees: z16.number() }),
@@ -43989,7 +43988,7 @@ async function vedicSigns(args, clock2, origin, pageOn = false) {
   }), onClock.limit);
   return {
     // The page and its share card are linked only while the website's page is on: with it off they would be a 404.
-    data: { birthDate: args.birthDate, ...reading, pageUrl: pageOn ? `${origin}/vedic-signs/` : null, shareUrl: pageOn ? vedicSignsShareUrl(origin, reading) : null },
+    data: { ...reading, pageUrl: pageOn ? `${origin}/vedic-signs/` : null, shareUrl: pageOn ? vedicSignsShareUrl(origin, reading) : null },
     links: [
       ...pageOn ? [{ title: "Your Vedic signs on Zodiacs", url: `${origin}/vedic-signs/` }] : [],
       { title: "Your birth chart on Zodiacs (Western zodiac)", url: `${origin}/birth-chart/` },
