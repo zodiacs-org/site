@@ -3601,20 +3601,35 @@
           : fallbackCopy(link);
         copy.then(function () { say('Link copied.'); }, function () { say('Copy unavailable. The link is ' + link); });
       }
-      share.addEventListener('click', function () {
-        if (typeof navigator.share !== 'function') { copyLink(); return; }
+      /* The image is fetched ahead of the click (when the plate comes near, or
+         on the first touch, hover or focus of the button), so the share sheet
+         opens straight from the click. If the image is not ready by then, the
+         link is shared without it. */
+      var files = null, asked = false;
+      function prepare() {
+        if (asked || typeof navigator.share !== 'function' || typeof fetch !== 'function' || typeof File !== 'function') return;
+        asked = true;
         fetch(save.getAttribute('href')).then(function (response) {
           if (!response.ok) throw new Error('no image');
           return response.blob();
         }).then(function (blob) {
-          var files = [new File([blob], 'evolution-of-the-zodiac.png', { type: 'image/png' })];
-          if (navigator.canShare && navigator.canShare({ files: files })) {
-            return navigator.share({ files: files, title: about.title, text: about.text, url: about.url });
-          }
-          return navigator.share(about);
-        }, function () {
-          return navigator.share(about);
-        }).then(function () { say(''); }, function (error) {
+          var made = [new File([blob], 'evolution-of-the-zodiac.png', { type: 'image/png' })];
+          if (navigator.canShare && navigator.canShare({ files: made })) files = made;
+        }).catch(function () {});
+      }
+      ['pointerenter', 'touchstart', 'focus'].forEach(function (kind) { share.addEventListener(kind, prepare, { passive: true }); });
+      if ('IntersectionObserver' in window) {
+        var nearby = new IntersectionObserver(function (entries) {
+          if (entries[0].isIntersecting) { nearby.disconnect(); prepare(); }
+        }, { rootMargin: '300px 0px' });
+        nearby.observe(plate);
+      }
+      share.addEventListener('click', function () {
+        if (typeof navigator.share !== 'function') { copyLink(); return; }
+        var payload = files
+          ? { files: files, title: about.title, text: about.text, url: about.url }
+          : about;
+        navigator.share(payload).then(function () { say(''); }, function (error) {
           // Closing the share sheet is not an error.
           if (error && error.name === 'AbortError') return;
           copyLink();

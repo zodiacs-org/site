@@ -989,6 +989,29 @@ try {
       && shared[0].files[0].type === 'image/png' && shared[0].files[0].size > 0
       && shared[0].title === 'The evolution of the zodiac',
     JSON.stringify(shared));
+  // The image is prepared ahead of the click. When it has not arrived, the click
+  // still opens the share sheet at once, with the link alone.
+  const slowPage = await shareContext.newPage();
+  await slowPage.addInitScript(() => {
+    window.__shared = [];
+    Object.defineProperty(Navigator.prototype, 'canShare', { value: () => true, configurable: true });
+    Object.defineProperty(Navigator.prototype, 'share', {
+      value: (data) => {
+        window.__shared.push({ url: data.url, files: (data.files ?? []).map((file) => ({ name: file.name })) });
+        return Promise.resolve();
+      },
+      configurable: true,
+    });
+  });
+  await slowPage.route('**/assets/thesis/share/evolution-of-the-zodiac.png', () => {});
+  await slowPage.goto(`${BASE}/thesis/#zodiac-timeline`, { waitUntil: 'load' });
+  await slowPage.locator('#fig-1 .carry-share').click();
+  await slowPage.waitForFunction(() => window.__shared.length > 0, null, { timeout: 2000 }).catch(() => {});
+  const sharedSlow = await slowPage.evaluate(() => window.__shared);
+  check('Share while the image is still loading shares the link at once, without the image',
+    sharedSlow.length === 1 && sharedSlow[0].url === STABLE && sharedSlow[0].files.length === 0,
+    JSON.stringify(sharedSlow));
+  await slowPage.close();
   await shareContext.close();
 
   // The annotated review viewport keeps the full four-column matrix.
