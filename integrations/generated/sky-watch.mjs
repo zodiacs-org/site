@@ -43667,11 +43667,12 @@ function withClockLimit(reading, limit) {
 }
 
 // src/lib/vedic-signs/untimed.ts
-function untimedInstant(noon2, span2) {
+function untimedInstant(noon2, span2, noonFlags) {
   const at = noon2.getTime();
   const start = span2[0].getTime();
   const end = span2[1].getTime();
-  return at >= start && at <= end ? noon2 : new Date(Math.floor((start + end) / 2));
+  const shown = !noonFlags.includes("dst-gap") && at >= start && at <= end;
+  return shown ? noon2 : new Date(Math.floor((start + end) / 2));
 }
 
 // src/ai-tools/personal/shared.ts
@@ -43848,7 +43849,7 @@ async function vedicSigns(args, clock2, origin, pageOn = false) {
   const onClock = birthTimeOnClock(birth.flags, birth.timeKnown);
   if (onClock.skipped) throw new SkippedBirthTimeError();
   const dayEnds = birth.timeKnown ? void 0 : await birthDayEnds2(args, clock2);
-  const birthUtc = dayEnds && args.zone ? untimedInstant(birth.birthUtc, dayEnds) : birth.birthUtc;
+  const birthUtc = dayEnds && args.zone ? untimedInstant(birth.birthUtc, dayEnds, birth.flags) : birth.birthUtc;
   const reading = withClockLimit(computeVedicSigns({
     birthUtc,
     timeKnown: birth.timeKnown,

@@ -11,6 +11,13 @@ import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_DATE, SkippedBirthDateError, Skipped
 import { untimedInstant } from './untimed';
 import { executeAiTool } from '../../ai-tools/tools';
 
+/** The instants get_vedic_signs casts its chart at, recorded on the way through to the real calculation. */
+const toolInstants = vi.hoisted(() => [] as Date[]);
+vi.mock('./compute', async (original) => {
+  const real = await original<typeof import('./compute')>();
+  return { ...real, computeVedicSigns: (input: Parameters<typeof real.computeVedicSigns>[0]) => { toolInstants.push(input.birthUtc); return real.computeVedicSigns(input); } };
+});
+
 /**
  * The page's worker, run in this thread: the same sidereal half
  * (src/islands/vedic-signs/vedic.worker.ts posts vedicFromTropical's reading back), so the test
@@ -30,7 +37,7 @@ class InlineWorker {
   terminate() {}
 }
 
-afterEach(() => { vi.unstubAllGlobals(); posted.length = 0; });
+afterEach(() => { vi.unstubAllGlobals(); posted.length = 0; toolInstants.length = 0; });
 
 const APIA = { tz: 'Pacific/Apia', lat: -13.83, lon: -171.76 };
 const ST_JOHNS = { tz: 'America/St_Johns', lat: 47.56, lon: -52.71 };
@@ -147,7 +154,25 @@ describe('the /vedic-signs/ page and the get_vedic_signs tool on the same birth'
     expect(signs(page)).toEqual(signs(answer));
     // An ordinary date keeps local noon.
     const noon = new Date('2026-11-09T05:00:00Z');
-    expect(untimedInstant(noon, [new Date('2026-11-08T17:00:00Z'), new Date('2026-11-09T16:59:59Z')])).toBe(noon);
+    expect(untimedInstant(noon, [new Date('2026-11-08T17:00:00Z'), new Date('2026-11-09T16:59:59Z')], [])).toBe(noon);
+  });
+
+  it('reads an untimed birth at the middle of the date when the clock skipped noon on it (Khartoum, 15 January 2000), as the tool does', async () => {
+    // Sudan moved from UTC+2 to UTC+3 at noon on 15 January 2000: 12:00 became 13:00, so the date never showed
+    // noon. The resolver reads that noon at 10:00 UTC (13:00 on the new clock), still inside the date; neither the
+    // page nor the tool reads there, but at the middle of the date's span.
+    const KHARTOUM = { tz: 'Africa/Khartoum', lat: 15.55, lon: 32.53 };
+    const middle = '2000-01-15T09:29:59.500Z';
+    const page = await form('2000-01-15', null, KHARTOUM);
+    expect(posted[0].ends!.map((end) => end.utc)).toEqual(['2000-01-14T22:00:00.000Z', '2000-01-15T20:59:59.000Z']);
+    expect((posted[0] as unknown as { at: { utc: string } }).at.utc).toBe(middle);
+    const answer = await tool('2000-01-15', undefined, KHARTOUM);
+    expect(toolInstants.map((at) => at.toISOString())).toEqual([middle]);
+    expect(signs(page)).toEqual(signs(answer));
+    // The flag alone decides it: a skipped noon that still lies inside the date takes the middle too.
+    const span = [new Date('2000-01-14T22:00:00Z'), new Date('2000-01-15T20:59:59Z')] as const;
+    expect(untimedInstant(new Date('2000-01-15T10:00:00Z'), span, ['dst-gap']).toISOString()).toBe(middle);
+    expect(untimedInstant(new Date('2000-01-15T10:00:00Z'), span, []).toISOString()).toBe('2000-01-15T10:00:00.000Z');
   });
 
   it('refuses a date the clock never showed with its own sentence, on the page and in the tool (Apia, 30 December 2011)', async () => {

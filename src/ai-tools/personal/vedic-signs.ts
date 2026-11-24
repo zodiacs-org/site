@@ -95,9 +95,10 @@ export async function vedicSigns(args: BirthArgs & { ayanamsa?: VedicAyanamsa | 
   const onClock = birthTimeOnClock(birth.flags, birth.timeKnown);
   if (onClock.skipped) throw new SkippedBirthTimeError();
   const dayEnds = birth.timeKnown ? undefined : await birthDayEnds(args, clock);
-  // Untimed on a birthplace clock, local noon only when the clock showed it on the date; else the middle of the date,
+  // Untimed on a birthplace clock, local noon only when the clock showed it on the date (not skipped, not moved off it);
+  // else the middle of the date,
   // as the page reads it (src/lib/vedic-signs/untimed.ts).
-  const birthUtc = dayEnds && args.zone ? untimedInstant(birth.birthUtc, dayEnds) : birth.birthUtc;
+  const birthUtc = dayEnds && args.zone ? untimedInstant(birth.birthUtc, dayEnds, birth.flags) : birth.birthUtc;
   const reading = withClockLimit(computeVedicSigns({
     birthUtc, timeKnown: birth.timeKnown, latitude: birth.latitude, longitude: birth.longitude, ayanamsa, dayEnds,
   }), onClock.limit);

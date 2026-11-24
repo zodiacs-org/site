@@ -58,8 +58,9 @@ export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReadin
   // covers: the engine loads a zone's whole history for any date up to 1970.
   const dayEnds = timeKnown ? undefined : localDaySpan(input.birthDate,
     (date, time, fold) => resolveLocalToUtc(date, time, input.place.tz, { longitude: rounded.lon, fold })) ?? undefined;
-  // Untimed, local noon only when the clock showed it on the date; else the middle of the date (./untimed.ts).
-  const birthUtc = dayEnds ? untimedInstant(birth.utc, dayEnds) : birth.utc;
+  // Untimed, local noon only when the clock showed it on the date (not skipped, not moved off it); else the middle of
+  // the date (src/lib/vedic-signs/untimed.ts).
+  const birthUtc = dayEnds ? untimedInstant(birth.utc, dayEnds, birth.flags) : birth.utc;
   return import('../../lib/vedic-signs/tropical').then(({ tropicalMoments }) => {
     const moments = tropicalMoments({ birthUtc, timeKnown, latitude: rounded.lat, longitude: rounded.lon, dayEnds });
     const wire = (moment: TropicalMoment) => ({ ...moment, utc: moment.utc.toISOString() });
