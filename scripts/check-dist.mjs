@@ -37,7 +37,7 @@ import {
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
 import { PUBLICATION_RECORD_MARKER, chunksWithPublicationRecord } from './publication-record-chunks.mjs';
-import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
+import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, enabledLocalesForPath, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 import { expansionFamilyPaths } from './i18n-hreflang-policy.mjs';
 import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
 import { pastPagesHidden, pastPagesHiddenFailures } from '../src/lib/indexing/past-pages-hidden.mjs';
@@ -1637,7 +1637,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?lunar-return\/$/u.test(path))),
   new Set(['/lunar-return/']),
 );
-if (!sitemapBlocksByPath.get('/lunar-return/')?.includes('<lastmod>2026-11-16</lastmod>')) {
+// Re-dated 2026-11-24: the tool's icon was added beside the hero heading (rendered content).
+if (!sitemapBlocksByPath.get('/lunar-return/')?.includes('<lastmod>2026-11-24</lastmod>')) {
   fail('sitemap.xml: lunar-return modification date must match the reviewed source revision');
 }
 requireExactSet(
@@ -1718,9 +1719,13 @@ for (const file of files) {
   const russianRouteAvailable = expectedHreflangsForPath(pagePath).has('ru')
     || LOCALIZED_404_PATHS.has(pagePath)
     || (hiddenChildPage && pagePath.startsWith('/ru/'));
+  // A family the locale expansion builds in Russian (released, or held in a
+  // preview build) may link its Russian twin; a normal build enables no held page.
+  const russianExpansionBuilt = enabledLocalesForPath(pagePath.replace(/^\/(?:es|pt|fr|it|ru)(?=\/)/u, '')).includes('ru');
   const russianRouteRenderable = russianRouteAvailable
     || hreflangRouteFamily(pagePath) === 'sign-guide'
-    || hiddenChildPage;
+    || hiddenChildPage
+    || russianExpansionBuilt;
   if (!russianRouteRenderable && /href=["'](?:https:\/\/zodiacs\.org)?\/ru(?:\/|["'#?])/.test(html)) {
     fail(`${rel}: Russian route leaked onto a deferred or programmatic page`);
   }
@@ -1738,7 +1743,7 @@ for (const file of files) {
     fail(`${rel}: inactive Arabic Open Graph locale leaked into HTML`);
   }
   const isRussianSignGuide = /^\/ru\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/$/u.test(pagePath);
-  if (!russianRouteAvailable && !isRussianSignGuide
+  if (!russianRouteAvailable && !isRussianSignGuide && !(russianExpansionBuilt && pagePath.startsWith('/ru/'))
       && /property=["']og:locale(?::alternate)?["'][^>]*content=["']ru_RU["']/.test(html)) {
     fail(`${rel}: Russian Open Graph locale leaked onto a deferred or programmatic page`);
   }
