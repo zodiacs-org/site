@@ -11,6 +11,7 @@
  * with the English-only cue.
  */
 import Base from '../../layouts/Base.astro';
+import HubCardText from './HubCardText.astro';
 import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
 import AskGuideLine from '../AskGuideLine.astro';
 import EmailCapture from '../EmailCapture.astro';
@@ -37,6 +38,7 @@ const daily = dailyData as Daily;
 const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
 });
+const edition = { locale, editionDate: daily.date };
 const cards = SIGNS.map((sign) => {
   const reading = dailyReadingForLocale(sign.slug, daily, locale);
   return { sign, name: signName(sign, locale), teaser: reading.lines.find((line) => line.house !== undefined)?.text ?? reading.headline };
@@ -79,16 +81,23 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
 
     <h2 class="display hhl-preview-title">{t(locale, 'todayBySignTitle')}</h2>
     <div class="hhl-grid">
-      {cards.map(({ sign, teaser }) => (
+      {cards.map(({ sign, name, teaser }, index) => (
         <a class="tile hhl-card" href={local(`/horoscopes/${sign.slug}/`)} {...englishAttrs(local(`/horoscopes/${sign.slug}/`))} style={`--sign:${sign.hue}`}>
           <SignIcon sign={sign.slug} size={48} />
-          <span class="hhl-card__name">{signName(sign, locale)}</span>
-          <span class="hhl-card__dates">{signDateRange(sign, locale)}</span>
+          <span class="hhl-card__name"><HubCardText text={name} {...edition} /></span>
+          <span class="hhl-card__dates"><HubCardText text={signDateRange(sign, locale)} {...edition} /></span>
           <span class="hhl-card__today">
-            <span class="hhl-card__label">{dateLabel}</span>
-            {teaser}
+            <span class="hhl-card__label"><HubCardText text={dateLabel} {...edition} /></span>
+            <span class="hhl-card__copy">
+              {cards.slice(index + 1, index + 4).map((peer, offset) => {
+                // The first card sizes the row before the following cards stream in.
+                const columns = [2, 3, 4].filter(count => index % count === 0 && offset + 1 < count);
+                return columns.length > 0 && <span aria-hidden="true" data-row-columns={columns.join(' ')}>{peer.teaser}</span>;
+              })}
+              <span><HubCardText text={teaser} {...edition} /></span>
+            </span>
           </span>
-          <span class="hhl-card__go">{c.read}</span>
+          <span class="hhl-card__go"><HubCardText text={c.read} {...edition} /></span>
         </a>
       ))}
     </div>
@@ -170,6 +179,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
   .hhl-card__name { font-weight: 650; letter-spacing: -0.01em; }
   .hhl-card__dates { color: var(--faint); font-size: 12.5px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
   .hhl-card__today {
+    width: 100%;
     margin-top: 6px;
     padding-top: 10px;
     border-top: 1px solid var(--hair-1);
@@ -180,6 +190,12 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
     overflow-wrap: break-word;
     hyphens: auto;
   }
+  .hhl-card__copy { display: grid; }
+  .hhl-card__copy > span { grid-area: 1 / 1; }
+  .hhl-card__copy [data-row-columns] { visibility: hidden; display: none; }
+  @media (460px < width < 700px) { .hhl-card__copy [data-row-columns~="2"] { display: block; } }
+  @media (700px <= width < 1000px) { .hhl-card__copy [data-row-columns~="3"] { display: block; } }
+  @media (min-width: 1000px) { .hhl-card__copy [data-row-columns~="4"] { display: block; } }
   .hhl-card__label {
     display: block;
     margin-bottom: 5px;
