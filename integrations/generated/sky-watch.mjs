@@ -45566,14 +45566,27 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           const verdict = await dependencies.allowEvents();
           if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Zodiacs is busy. Try again in a minute.", verdict === "limited" ? 60 : 300);
         }
-        const calculation = await computeSkyFact(request2, { localTime: localTime2() });
-        const zoneFlags = calculation.result.zone ? [...calculation.result.zone.start.flags, ...calculation.result.zone.end.flags] : [];
-        if (zoneFlags.includes("calendar-unknown")) {
-          return failure(tool, "calendar-unknown", "That date was skipped by a calendar change in the requested time zone, so the civil date is ambiguous without a calendar or country. Pass an explicit UTC instant, or resolve the date with POST /api/v1/time.");
+        const rawCalculation = await computeSkyFact(request2, { localTime: localTime2() });
+        const zoneName = rawCalculation.result.fact.zone;
+        const fixedZone = zoneName !== null && isFixedOffsetZone(zoneName);
+        const zoneFlags = rawCalculation.result.zone ? [...rawCalculation.result.zone.start.flags, ...rawCalculation.result.zone.end.flags] : [];
+        if (!fixedZone && zoneFlags.includes("calendar-unknown")) {
+          return failure(tool, "calendar-unknown", "That date was skipped by a calendar change in the requested time zone, so the civil date is ambiguous without a calendar or country. Omit zone to check across every time zone, or inspect the UTC window with get_upcoming_events.");
         }
         if (zoneFlags.includes("host-zone-data-differs")) {
-          return failure(tool, "host-zone-data-differs", "This server's time zone rules differ near that date. Pass an explicit UTC instant, or resolve the date with POST /api/v1/time.");
+          return failure(tool, "host-zone-data-differs", "This server's time zone rules differ near that date. Omit zone to check across every time zone, or inspect the UTC window with get_upcoming_events.");
         }
+        const publishedLocalFlags = (flags) => flags.filter((flag) => flag === "dst-gap" || flag === "dst-fold" || flag === "lmt");
+        const calculation = rawCalculation.result.zone ? {
+          ...rawCalculation,
+          result: {
+            ...rawCalculation.result,
+            zone: {
+              start: { ...rawCalculation.result.zone.start, flags: publishedLocalFlags(rawCalculation.result.zone.start.flags) },
+              end: { ...rawCalculation.result.zone.end, flags: publishedLocalFlags(rawCalculation.result.zone.end.flags) }
+            }
+          }
+        } : rawCalculation;
         data = { answer: calculation.result.answer, calculation, interpretation: "The verdict checks an astronomical proposition, not an astrological prediction." };
         links = [methodLink, calendarLink];
         break;

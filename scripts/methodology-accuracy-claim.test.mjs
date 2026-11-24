@@ -110,7 +110,7 @@ describe('the accuracy claim on /methodology/', () => {
     expect(prose).toContain("The engine estimates the Earth's rotation with its ΔT model.");
     // Since engine 2.0.0 both read a future calendar label as UTC with a fixed offset, so the readings agree.
     expect(clock.offset[0]).toBeLessThanOrEqual(clock.offset[1]);
-    expect(prose).toContain('Since release 2.0.0 it also holds atomic time a fixed 69.184 seconds ahead of UTC beyond 2 October 2027, as Horizons does.');
+    expect(prose).toContain('Since release 2.0.0 it also holds Terrestrial Time a fixed 69.184 seconds ahead of UTC beyond 2 October 2027, as Horizons does.');
     expect(prose).toContain(`from 2100 to 2199, those clock readings put the calculation within ${upperHundredth(clock.offset[1])} seconds of Horizons`);
     expect(enginePage).toContain(`Horizons' fixed future UTC offset put the same calendar labels within ${upperHundredth(clock.offset[1])} seconds of each other`);
   });

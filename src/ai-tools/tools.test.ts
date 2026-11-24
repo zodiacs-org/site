@@ -97,10 +97,17 @@ describe('public AI tools', () => {
     expect(result.ok).toBe(true);
     if (result.ok && result.tool === 'check_sky_fact') expect(result.data.answer).toBe('true');
   });
-  it('refuses a hosted check_sky_fact date when the resolver flags calendar-unknown instead of dropping the warning', async () => {
-    const result = await executeAiTool('check_sky_fact', { kind: 'sign', body: 'Sun', sign: 'aquarius', date: '1918-02-08', zone: 'Europe/Moscow' }, dependencies);
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.error.code).toBe('calendar-unknown');
+  it('refuses a hosted check_sky_fact date when a civil zone flags calendar-unknown, while still answering UTC', async () => {
+    const refused = await executeAiTool('check_sky_fact', { kind: 'sign', body: 'Sun', sign: 'aquarius', date: '1918-02-08', zone: 'Europe/Moscow' }, dependencies);
+    expect(refused.ok).toBe(false);
+    if (!refused.ok) expect(refused.error.code).toBe('calendar-unknown');
+    const utcResult = await executeAiTool('check_sky_fact', { kind: 'sign', body: 'Sun', sign: 'aquarius', date: '1918-02-08', zone: 'UTC' }, dependencies);
+    expect(utcResult.ok).toBe(true);
+    if (utcResult.ok && utcResult.tool === 'check_sky_fact') {
+      const zone = (utcResult.data.calculation.result as { zone: { start: { flags: string[] }; end: { flags: string[] } } | null }).zone;
+      expect(zone).not.toBeNull();
+      expect([...zone!.start.flags, ...zone!.end.flags]).toEqual([]);
+    }
   });
 });
 
