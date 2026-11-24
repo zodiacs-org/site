@@ -7,8 +7,8 @@
  *   which pages load Plausible, and heads its assistant section with a plain
  *   name instead of "AI integration candidates".
  * - /privacy/ and /terms/ no longer carry the Registry's wallet, address
- *   lookup, market-data and purchase disclosures. /disclosure/ and the
- *   Registry pages themselves are unchanged.
+ *   lookup, market-data and purchase disclosures. The same lookup details now
+ *   live in the address-lookup section on every locale's /disclosure/ page.
  * - The five translated privacy pages (es, fr, it, pt, ru) say the same about
  *   the no-birth-time script and Plausible in their own words, and carry none
  *   of those disclosures either. They have no assistant section, and there is

@@ -802,6 +802,14 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/privacy/', '2026-11-22'] as const,
   // Conformance scoreboard refreshed for @zodiacs/engine 2.1.0 (639/640, 140/140 L4) and verified PyEphem counts.
   ['/developers/conformance/', '2026-11-23'] as const,
+  // The public-address lookup section on every locale's disclosure page
+  // (owner-approved 20 and 21 November 2026). Last so these dates win over
+  // the 23 August audit date.
+  ...['/disclosure/', '/es/disclosure/', '/fr/disclosure/', '/it/disclosure/', '/pt/disclosure/', '/ru/disclosure/']
+    .map((loc) => [loc, '2026-11-20'] as const),
+  // English /privacy/ changed versus main, whose rendered lastmod is already
+  // 2026-11-23, so the sitemap date must be later than that day.
+  ['/privacy/', '2026-11-24'] as const,
   // The tool's icon was added beside the hero heading (TOOL_MARKS_ROUTES), last so it wins.
   ...TOOL_MARKS_ROUTES.map((loc) => [loc, TOOL_MARKS_LASTMOD] as const),
 ]);
@@ -1179,6 +1187,11 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   // The English privacy page describes which essay link clicks the site counts.
   for (const url of urls) {
     if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-23');
+  }
+  // Aura's "Lookup details" link on the Cabinet of Twelve page now points at
+  // /disclosure/#address-lookup (owner-approved 21 November 2026).
+  for (const url of urls) {
+    if (url.loc === '/registry/collection/') url.lastmod = laterDate(url.lastmod, '2026-11-20');
   }
   for (const url of [...urls, ...localizedUrls]) {
     const engineUpdated = de440UpdatedDate(url.loc);
