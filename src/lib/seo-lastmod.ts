@@ -1,3 +1,6 @@
+import de440SitemapDates from '../data/de440-sitemap-dates.json';
+import engine21SitemapDates from '../data/engine-2-1-sitemap-dates.json';
+
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/u;
 
 export const BIRTHDAY_CUSP_OG_MODIFIED_AT = '2026-08-23T00:00:00.000Z';
@@ -5,6 +8,17 @@ export const BIRTHDAY_CUSP_OG_MODIFIED_AT = '2026-08-23T00:00:00.000Z';
 export const BIRTHDAY_FAMOUS_LINE_MODIFIED_AT = '2026-10-19T00:00:00.000Z';
 export const PEOPLE_TEMPLATE_MODIFIED_AT = '2026-10-16T00:00:00.000Z';
 export const TERMINAL_RESEARCH_BASE_LASTMOD = '2026-08-13';
+
+// The routes measured to have changed in the DE440 release builds, and those
+// measured to have changed again when the site moved to engine 2.1.0 (its
+// continuous UTC time rule moves far-future instants). A route takes the later
+// of the two dates.
+const engineUpdates = [de440SitemapDates, engine21SitemapDates].map(({ date, paths }) => ({ date, paths: new Set(paths) }));
+
+export function de440UpdatedDate(path: string): string | undefined {
+  const dates = engineUpdates.filter(({ paths }) => paths.has(path)).map(({ date }) => date).sort();
+  return dates.at(-1);
+}
 
 type DateInput = string | Date;
 

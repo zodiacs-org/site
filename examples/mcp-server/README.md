@@ -59,7 +59,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.26.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.28.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -347,12 +347,12 @@ request. GeoNames data is CC BY 4.0; credit GeoNames where you show its places.
 ```json
 {
   "engine": {
-    "ephemeris": {
-      "name": "astronomy-engine",
-      "version": "2.1.19"
-    },
     "name": "@zodiacs/engine",
-    "version": "1.1.0-rc.2"
+    "version": "2.1.0",
+    "ephemeris": {
+      "name": "jpl-de440",
+      "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
+    }
   },
   "timeKnown": true,
   "houses": {
@@ -365,14 +365,22 @@ request. GeoNames data is CC BY 4.0; credit GeoNames where you show its places.
   "bodies": [
     {
       "body": "Sun",
-      "degree": 24.189077046148668,
-      "lat": -0.000018285232619282298,
-      "lon": 84.18907704614867,
+      "degree": 24.18924940760587,
+      "lat": 0.00012106432355840252,
+      "lon": 84.1892494076059,
       "retrograde": false,
       "sign": "gemini",
-      "speed": 0.95512655695984
+      "speed": 0.9550960040911605
     },
-    "…11 more"
+    {
+      "body": "Moon",
+      "degree": 16.193852070518574,
+      "lat": 3.1896952415129896,
+      "lon": 346.1938520705186,
+      "retrograde": false,
+      "sign": "pisces",
+      "speed": 13.384141951803485
+    }
   ],
   "angles": {
     "asc": 191.23954148521,
@@ -383,23 +391,29 @@ request. GeoNames data is CC BY 4.0; credit GeoNames where you show its places.
   "cusps": [
     191.23954148521,
     216.40903277974905,
-    "…10 more"
+    247.7692743485036
   ],
   "aspects": [
     {
       "a": "Moon",
       "applying": false,
       "b": "Jupiter",
-      "orb": 0.29106046772676564,
+      "orb": 0.2908247113836069,
       "type": "trine"
     },
-    "…16 more"
+    {
+      "a": "Jupiter",
+      "applying": false,
+      "b": "Pluto",
+      "orb": 0.5027815651115191,
+      "type": "trine"
+    }
   ],
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
-    "receipt": "sha256:76d953cb7a695181809da13b2b4f2cf817d81a3101b1dc076fda58176fc1f1be",
+    "receipt": "sha256:15ed62754edf73a63154d5a8d9331d4124973b3f2058b54947624c12e268cc97",
     "engine": "@zodiacs/engine",
-    "version": "1.1.0-rc.2"
+    "version": "2.1.0"
   }
 }
 ```
@@ -414,7 +428,9 @@ request. GeoNames data is CC BY 4.0; credit GeoNames where you show its places.
 
 Placidus cannot be computed there, so `houses` comes back
 `{ "requested": "placidus", "actual": "whole", "absenceReason": null }` and
-`resultFlags` carries `"polar-fallback"`. The requested system and the one used
+`resultFlags` carries `"polar-fallback"`, and `"polar-angles"`, which the
+engine adds from 2.0.0 to every chart whose angles are inside the polar
+circle. The requested system and the one used
 are separate fields, so a fallback is visible rather than silent.
 
 **3. Two records that differ only in house system.**
@@ -427,10 +443,10 @@ are separate fields, so a fallback is visible rather than silent.
 {
   "identical": false,
   "counts": {
-    "differences": 15,
-    "substantive": 15,
+    "differences": 2,
+    "substantive": 2,
     "displayOnly": 0,
-    "explanations": 1
+    "explanations": 2
   },
   "output": "summary",
   "differences": [
@@ -444,80 +460,60 @@ are separate fields, so a fallback is visible rather than silent.
       "kind": "metadata"
     },
     {
-      "id": "houses-actual",
-      "area": "Houses",
-      "label": "House system actually used",
-      "left": "placidus",
-      "right": "whole",
+      "id": "result-flags",
+      "area": "Provenance",
+      "label": "Result flags",
+      "left": "[\"polar-fallback\",\"polar-angles\"]",
+      "right": "[\"polar-angles\"]",
       "delta": null,
       "kind": "metadata"
-    },
-    {
-      "id": "houses-system",
-      "area": "Houses",
-      "label": "House system in the result",
-      "left": "placidus",
-      "right": "whole",
-      "delta": null,
-      "kind": "metadata"
-    },
-    {
-      "id": "cusp-1",
-      "area": "Houses",
-      "label": "House 1 cusp",
-      "delta": -11.239541485209998,
-      "kind": "numeric",
-      "valuesWithheld": true
-    },
-    "…cusp-2 through cusp-12"
+    }
   ],
   "explanations": [
     {
       "id": "house-system",
-      "evidence": "reproduced",
-      "statement": "The different house system accounts for the house cusps.",
+      "evidence": "reported",
+      "statement": "The two charts asked for different house systems.",
       "covers": [
-        "cusp-1",
-        "cusp-2",
-        "cusp-3",
-        "cusp-4",
-        "cusp-5",
-        "cusp-6",
-        "cusp-7",
-        "cusp-8",
-        "cusp-9",
-        "cusp-10",
-        "cusp-11",
-        "cusp-12",
-        "houses-requested",
-        "houses-actual",
-        "houses-system"
+        "houses-requested"
       ],
-      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 1.1.0-rc.2, and changing only the house system turns each one into the other, in both directions."
+      "detail": "The cusps are the same in both files, so this difference changed nothing that was computed."
+    },
+    {
+      "id": "flags",
+      "evidence": "reported",
+      "statement": "The two files record different flags about how the calculation went.",
+      "covers": [
+        "result-flags"
+      ],
+      "detail": "A flag records something the engine had to do — a fallback, or a missing input — rather than a result."
     }
   ],
-  "limits": [
-    "Only the house system is re-run here. A different moment or place is never promoted past a hypothesis, even when both records name the same engine.",
-    "Both receipts name the same engine, so agreement between them would show consistency, not independent astronomical accuracy."
-  ],
+  "limits": [],
   "disclosure": "A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.",
   "withheld": "By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: \"full\" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments.",
   "receipt": {
     "schema": "zodiacs.mcp-receipt.v1",
     "tool": "compare_calculation_records",
-    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.26" },
+    "adapter": {
+      "name": "zodiacs-mcp-server",
+      "version": "0.1.0-rc.28"
+    },
     "engine": {
       "name": "@zodiacs/engine",
-      "version": "1.1.0-rc.2",
-      "ephemeris": { "name": "astronomy-engine", "version": "2.1.19" }
+      "version": "2.1.0",
+      "ephemeris": {
+        "name": "jpl-de440",
+        "version": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7"
+      }
     },
     "output": "summary"
   },
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
-    "receipt": "sha256:cb5c82d0a8bfed9561188a37f274faa303526f4a82bd89857e7e075c3abc53cd",
+    "receipt": "sha256:8faaae326b4051826b6cc5675c0d83cd3893fcb1025a3cd25f4ba98b9d21bb13",
     "engine": "@zodiacs/engine",
-    "version": "1.1.0-rc.2"
+    "version": "2.1.0"
   }
 }
 ```
@@ -542,7 +538,7 @@ API uses on each of its answers:
   that does not move;
 - `receipt`: `sha256:` and the SHA-256 of a receipt's RFC 8785 canonical JSON;
 - `engine` and `version`: the engine that calculated, `@zodiacs/engine`
-  1.1.0-rc.2.
+  2.1.0.
 
 A chart cites the engine's calculation receipt, the `receipt` inside the record
 that `output: "record"` returns for the same arguments, so a summary and a
@@ -592,8 +588,8 @@ request.
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.26`, unpublished candidate |
-| engine | `@zodiacs/engine` `1.1.0-rc.2`, unpublished candidate, bundled into `server.mjs`; npm serves `1.0.0` under `latest` |
+| adapter | `0.1.0-rc.28`, unpublished candidate |
+| engine | `@zodiacs/engine` `2.1.0`, available on npm and bundled into `server.mjs`. It uses DE440 by default. |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
 | validation | `zod` 4.6.5, pinned exactly |
@@ -643,15 +639,18 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   `broadDateRange: "not-certified"`; this is the range the rest of Zodiacs
   supports and the adapter adopts it rather than inventing a wider one.
 - **Not on npm.** This adapter is not published under any name, and
-  `get_capabilities` labels it `unpublished-candidate`. Nor is the engine it
-  bundles: npm does not carry `@zodiacs/engine` 1.1.0-rc.2, and
-  `get_capabilities` labels it `unpublished-candidate` too. npm serves 1.0.0
-  under `latest`, published on 2026-10-11, which computes the same values.
+  `get_capabilities` labels it `unpublished-candidate`. The engine it
+  bundles is published: npm serves `@zodiacs/engine` 2.1.0 under `latest`.
   From 1.1.0-rc.1 the engine's records list the ids of the Zodiacs
   conventions registry they name, and 1.0.0, like adapters up to rc.24,
   refuses them as `unsupported_feature`. `server.mjs` is built from the
   engine's carried archive. This adapter does not import `calc` or Vedic; its
-  finite comparison with rc.18 is recorded in the site adoption. rc.26
+  finite comparison with rc.18 is recorded in the site adoption. rc.28
+  bundles 2.1.0 in place of 1.1.0: after the IERS table ends (2027-10-02) it
+  reads UTC on the continuous-UTC rule, so `timeScale.basis` is
+  `continuous-utc` there and an instant is about 2 seconds later by 2047 at
+  the same TT, its zone histories are tzdb 2026f in place of 2025c, and a
+  polar chart adds the `polar-angles` flag. rc.27 bundles 1.1.0. rc.26
   bundles 1.1.0-rc.2 in place of 1.1.0-rc.1, with the engine's own time
   basis in place of the site's copy of it, and its comparison with rc.25 is
   recorded with that change. rc.25 bundles 1.1.0-rc.1 in place of 1.0.0, and

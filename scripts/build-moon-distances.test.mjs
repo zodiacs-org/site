@@ -1,7 +1,10 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { MOON_DISTANCES_PATH, moonDistanceKm, renderMoonDistances } from './build-moon-distances.mjs';
+import { searchLunations } from './lunation-search.mjs';
+import { withBrowserEphemeris } from '../tests/helpers/browser-ephemeris.ts';
+import { asBeforeContinuousUtc } from '../tests/helpers/pre-continuous-utc.ts';
 
 const root = resolve(import.meta.dirname, '..');
 const fixtures = resolve(import.meta.dirname, 'fixtures/moon-distances');
@@ -9,6 +12,12 @@ const committed = readFileSync(MOON_DISTANCES_PATH, 'utf8');
 const data = JSON.parse(committed);
 const sky = JSON.parse(readFileSync(resolve(root, 'src/data/sky.json'), 'utf8'));
 const de421 = JSON.parse(readFileSync(resolve(fixtures, 'de421-reference.json'), 'utf8'));
+
+const solveCatalog = () => [['new', 0], ['full', 180]].flatMap(([type, target]) => (
+  searchLunations(new Date(sky.from), new Date(sky.to), target).map((at) => ({ type, at: at.toISOString() }))
+)).sort((a, b) => a.at.localeCompare(b.at));
+// The installed release roots and the unchanged reference cohort are recorded in followup-numerics.json.
+let originalCatalog;
 
 /** The range column of a Horizons VECTORS table (VEC_TABLE 3, CSV, KM-S, geometric). */
 function horizonsRange(name) {
@@ -23,12 +32,17 @@ function horizonsRange(name) {
 }
 
 describe('moon distances', () => {
+  beforeAll(async () => {
+    originalCatalog = await withBrowserEphemeris(solveCatalog);
+  });
+
   it('rebuilds byte for byte', async () => {
     expect(await renderMoonDistances()).toBe(committed);
   });
 
   it('covers every new and full Moon in sky.json, at the catalog instant', () => {
     expect(data.lunations.map(({ type, at }) => ({ type, at }))).toEqual(sky.moons);
+    expect(sky.moons).toEqual(solveCatalog());
     const years = new Set(data.lunations.map((l) => l.at.slice(0, 4)));
     expect([...years]).toEqual(['2026', '2027', '2028', '2029', '2030']);
     for (const lunation of data.lunations) {
@@ -52,16 +66,29 @@ describe('moon distances', () => {
       expect(url).toContain("CENTER='500@399'");
       // At the Horizons instant itself.
       expect(Math.abs(moonDistanceKm(at) - km)).toBeLessThan(2);
-      // And as published: the lunation within a second of it, rounded to the km.
-      const lunation = data.lunations.find((l) => Math.abs(Date.parse(l.at) - at.getTime()) < 1000);
-      expect(lunation, name).toBeDefined();
+      // The reference was sampled at the earlier engine's lunation instant.
+      const index = originalCatalog.findIndex((l) => Math.abs(Date.parse(l.at) - at.getTime()) < 1000);
+      expect(index, name).toBeGreaterThanOrEqual(0);
+      const lunation = data.lunations[index];
+      expect(lunation.type, name).toBe(originalCatalog[index].type);
+      expect(lunation.at.slice(0, 10), name).toBe(originalCatalog[index].at.slice(0, 10));
       expect(Math.abs(lunation.distanceKm - km)).toBeLessThan(2);
     }
   });
 
   it('stays within 4 km of JPL DE421 at every lunation, and its apsides within 4 km and 5 minutes', () => {
     expect(de421.ephemeris.name).toBe('JPL DE421');
-    expect(de421.lunations.map(({ type, at }) => ({ type, at }))).toEqual(sky.moons);
+    // The reference was sampled at the instants an engine before 2.0.0 wrote. After the IERS table (2027-10-02) the
+    // engine now writes the same TT on continuous UTC, and its ΔT model there moved by milliseconds, so those
+    // lunations are matched to within a second, read as the earlier engines wrote them.
+    expect(de421.lunations.map(({ type }) => type)).toEqual(originalCatalog.map(({ type }) => type));
+    de421.lunations.forEach(({ at }, i) => {
+      const ours = originalCatalog[i].at;
+      if (ours === asBeforeContinuousUtc(ours)) expect(at, ours).toBe(ours);
+      else expect(Math.abs(Date.parse(at) - Date.parse(asBeforeContinuousUtc(ours))), ours).toBeLessThan(1000);
+    });
+    expect(sky.moons.map(({ type, at }) => ({ type, day: at.slice(0, 10) })))
+      .toEqual(originalCatalog.map(({ type, at }) => ({ type, day: at.slice(0, 10) })));
     data.lunations.forEach((lunation, i) => {
       expect(Math.abs(lunation.distanceKm - de421.lunations[i].distanceKm), lunation.at).toBeLessThan(4);
     });

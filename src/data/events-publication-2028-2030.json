@@ -17,7 +17,7 @@
       "id": "full-moon-2028-01-12",
       "path": "/full-moon/2028-01-12/",
       "title": "Full moon in Cancer, January 12, 2028",
-      "anchor": "2028-01-12T04:03:06.410Z",
+      "anchor": "2028-01-12T04:03:05.255Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -53,7 +53,7 @@
       "id": "uranus-trine-pluto-2028-01-13",
       "path": "/events/uranus-trine-pluto-2028-01-13/",
       "title": "Uranus trine Pluto, January 13, 2028",
-      "anchor": "2028-01-13T06:52:39.447Z",
+      "anchor": "2028-01-13T06:40:44.897Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -72,7 +72,7 @@
       "id": "mercury-retrograde-2028-01-24",
       "path": "/mercury-retrograde/2028-01-24/",
       "title": "Mercury retrograde, January 2028",
-      "anchor": "2028-01-24T11:03:29.179Z",
+      "anchor": "2028-01-24T11:02:00.849Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -107,7 +107,7 @@
       "id": "new-moon-2028-01-26",
       "path": "/new-moon/2028-01-26/",
       "title": "New moon in Aquarius, January 26, 2028",
-      "anchor": "2028-01-26T15:12:30.887Z",
+      "anchor": "2028-01-26T15:12:31.051Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -125,7 +125,7 @@
       "id": "full-moon-2028-02-10",
       "path": "/full-moon/2028-02-10/",
       "title": "Full moon in Leo, February 10, 2028",
-      "anchor": "2028-02-10T15:03:46.014Z",
+      "anchor": "2028-02-10T15:03:46.344Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -143,7 +143,7 @@
       "id": "new-moon-2028-02-25",
       "path": "/new-moon/2028-02-25/",
       "title": "New moon in Pisces, February 25, 2028",
-      "anchor": "2028-02-25T10:37:24.945Z",
+      "anchor": "2028-02-25T10:37:25.356Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -161,7 +161,7 @@
       "id": "full-moon-2028-03-11",
       "path": "/full-moon/2028-03-11/",
       "title": "Full moon in Virgo, March 11, 2028",
-      "anchor": "2028-03-11T01:06:03.070Z",
+      "anchor": "2028-03-11T01:06:05.295Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -179,7 +179,7 @@
       "id": "new-moon-2028-03-26",
       "path": "/new-moon/2028-03-26/",
       "title": "New moon in Aries, March 26, 2028",
-      "anchor": "2028-03-26T04:31:20.913Z",
+      "anchor": "2028-03-26T04:31:19.677Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -197,7 +197,7 @@
       "id": "full-moon-2028-04-09",
       "path": "/full-moon/2028-04-09/",
       "title": "Full moon in Libra, April 9, 2028",
-      "anchor": "2028-04-09T10:26:36.972Z",
+      "anchor": "2028-04-09T10:26:37.877Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -215,7 +215,7 @@
       "id": "saturn-enters-taurus-2028-04-13",
       "path": "/events/saturn-enters-taurus-2028-04-13/",
       "title": "Saturn enters Taurus, April 13, 2028",
-      "anchor": "2028-04-13T04:05:03.310Z",
+      "anchor": "2028-04-13T03:39:44.766Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -232,7 +232,7 @@
       "id": "new-moon-2028-04-24",
       "path": "/new-moon/2028-04-24/",
       "title": "New moon in Taurus, April 24, 2028",
-      "anchor": "2028-04-24T19:46:56.371Z",
+      "anchor": "2028-04-24T19:46:56.454Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -250,7 +250,7 @@
       "id": "full-moon-2028-05-08",
       "path": "/full-moon/2028-05-08/",
       "title": "Full moon in Scorpio, May 8, 2028",
-      "anchor": "2028-05-08T19:48:57.413Z",
+      "anchor": "2028-05-08T19:48:56.836Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -268,7 +268,7 @@
       "id": "uranus-trine-pluto-2028-05-10",
       "path": "/events/uranus-trine-pluto-2028-05-10/",
       "title": "Uranus trine Pluto, May 10, 2028",
-      "anchor": "2028-05-10T02:50:40.437Z",
+      "anchor": "2028-05-10T03:03:59.363Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -287,7 +287,7 @@
       "id": "venus-retrograde-2028-05-10",
       "path": "/venus-retrograde/2028-05-10/",
       "title": "Venus retrograde, May 2028",
-      "anchor": "2028-05-10T23:02:03.485Z",
+      "anchor": "2028-05-10T23:02:35.125Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -304,7 +304,7 @@
       "id": "mercury-retrograde-2028-05-21",
       "path": "/mercury-retrograde/2028-05-21/",
       "title": "Mercury retrograde, May 2028",
-      "anchor": "2028-05-21T08:39:52.382Z",
+      "anchor": "2028-05-21T08:43:24.637Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -321,7 +321,7 @@
       "id": "new-moon-2028-05-24",
       "path": "/new-moon/2028-05-24/",
       "title": "New moon in Gemini, May 24, 2028",
-      "anchor": "2028-05-24T08:16:19.018Z",
+      "anchor": "2028-05-24T08:16:19.265Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -339,7 +339,7 @@
       "id": "full-moon-2028-06-07",
       "path": "/full-moon/2028-06-07/",
       "title": "Full moon in Sagittarius, June 7, 2028",
-      "anchor": "2028-06-07T06:08:49.814Z",
+      "anchor": "2028-06-07T06:08:49.320Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -357,7 +357,7 @@
       "id": "neptune-sextile-pluto-2028-06-09",
       "path": "/events/neptune-sextile-pluto-2028-06-09/",
       "title": "Neptune sextile Pluto, June 9, 2028",
-      "anchor": "2028-06-09T01:49:36.552Z",
+      "anchor": "2028-06-09T04:25:35.173Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -376,7 +376,7 @@
       "id": "new-moon-2028-06-22",
       "path": "/new-moon/2028-06-22/",
       "title": "New moon in Cancer, June 22, 2028",
-      "anchor": "2028-06-22T18:27:35.529Z",
+      "anchor": "2028-06-22T18:27:33.633Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -394,7 +394,7 @@
       "id": "saturn-square-pluto-2028-06-24",
       "path": "/events/saturn-square-pluto-2028-06-24/",
       "title": "Saturn square Pluto, June 24, 2028",
-      "anchor": "2028-06-24T03:18:58.402Z",
+      "anchor": "2028-06-24T02:59:44.508Z",
       "family": "aspect",
       "subtype": "square",
       "bodies": [
@@ -413,7 +413,7 @@
       "id": "full-moon-2028-07-06",
       "path": "/full-moon/2028-07-06/",
       "title": "Full moon in Capricorn, July 6, 2028",
-      "anchor": "2028-07-06T18:10:50.114Z",
+      "anchor": "2028-07-06T18:10:49.455Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -467,7 +467,7 @@
       "id": "new-moon-2028-07-22",
       "path": "/new-moon/2028-07-22/",
       "title": "New moon in Cancer, July 22, 2028",
-      "anchor": "2028-07-22T03:01:44.808Z",
+      "anchor": "2028-07-22T03:01:43.242Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -485,7 +485,7 @@
       "id": "full-moon-2028-08-05",
       "path": "/full-moon/2028-08-05/",
       "title": "Full moon in Aquarius, August 5, 2028",
-      "anchor": "2028-08-05T08:09:49.030Z",
+      "anchor": "2028-08-05T08:09:49.607Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -503,7 +503,7 @@
       "id": "new-moon-2028-08-20",
       "path": "/new-moon/2028-08-20/",
       "title": "New moon in Leo, August 20, 2028",
-      "anchor": "2028-08-20T10:43:51.966Z",
+      "anchor": "2028-08-20T10:43:51.801Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -521,7 +521,7 @@
       "id": "jupiter-enters-libra-2028-08-24",
       "path": "/events/jupiter-enters-libra-2028-08-24/",
       "title": "Jupiter enters Libra, August 24, 2028",
-      "anchor": "2028-08-24T05:04:19.914Z",
+      "anchor": "2028-08-24T05:08:28.754Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -538,7 +538,7 @@
       "id": "full-moon-2028-09-03",
       "path": "/full-moon/2028-09-03/",
       "title": "Full moon in Pisces, September 3, 2028",
-      "anchor": "2028-09-03T23:47:35.454Z",
+      "anchor": "2028-09-03T23:47:36.031Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -574,7 +574,7 @@
       "id": "mercury-retrograde-2028-09-19",
       "path": "/mercury-retrograde/2028-09-19/",
       "title": "Mercury retrograde, September 2028",
-      "anchor": "2028-09-19T16:30:15.819Z",
+      "anchor": "2028-09-19T16:33:03.250Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -591,7 +591,7 @@
       "id": "jupiter-trine-pluto-2028-09-24",
       "path": "/events/jupiter-trine-pluto-2028-09-24/",
       "title": "Jupiter trine Pluto, September 24, 2028",
-      "anchor": "2028-09-24T07:39:35.545Z",
+      "anchor": "2028-09-24T07:45:29.607Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -610,7 +610,7 @@
       "id": "jupiter-opposition-neptune-2028-09-28",
       "path": "/events/jupiter-opposition-neptune-2028-09-28/",
       "title": "Jupiter opposition Neptune, September 28, 2028",
-      "anchor": "2028-09-28T19:29:36.928Z",
+      "anchor": "2028-09-28T19:15:56.085Z",
       "family": "aspect",
       "subtype": "opposition",
       "bodies": [
@@ -629,7 +629,7 @@
       "id": "full-moon-2028-10-03",
       "path": "/full-moon/2028-10-03/",
       "title": "Full moon in Aries, October 3, 2028",
-      "anchor": "2028-10-03T16:25:01.142Z",
+      "anchor": "2028-10-03T16:24:59.742Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -647,7 +647,7 @@
       "id": "new-moon-2028-10-18",
       "path": "/new-moon/2028-10-18/",
       "title": "New moon in Libra, October 18, 2028",
-      "anchor": "2028-10-18T02:56:48.672Z",
+      "anchor": "2028-10-18T02:56:49.166Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -665,7 +665,7 @@
       "id": "jupiter-trine-uranus-2028-10-27",
       "path": "/events/jupiter-trine-uranus-2028-10-27/",
       "title": "Jupiter trine Uranus, October 27, 2028",
-      "anchor": "2028-10-27T09:03:33.902Z",
+      "anchor": "2028-10-27T09:05:53.978Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -684,7 +684,7 @@
       "id": "full-moon-2028-11-02",
       "path": "/full-moon/2028-11-02/",
       "title": "Full moon in Taurus, November 2, 2028",
-      "anchor": "2028-11-02T09:17:21.255Z",
+      "anchor": "2028-11-02T09:17:21.914Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -702,7 +702,7 @@
       "id": "neptune-sextile-pluto-2028-11-08",
       "path": "/events/neptune-sextile-pluto-2028-11-08/",
       "title": "Neptune sextile Pluto, November 8, 2028",
-      "anchor": "2028-11-08T04:21:11.666Z",
+      "anchor": "2028-11-08T01:44:40.333Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -721,7 +721,7 @@
       "id": "saturn-square-pluto-2028-11-15",
       "path": "/events/saturn-square-pluto-2028-11-15/",
       "title": "Saturn square Pluto, November 15, 2028",
-      "anchor": "2028-11-15T12:29:27.342Z",
+      "anchor": "2028-11-15T12:56:54.961Z",
       "family": "aspect",
       "subtype": "square",
       "bodies": [
@@ -740,7 +740,7 @@
       "id": "new-moon-2028-11-16",
       "path": "/new-moon/2028-11-16/",
       "title": "New moon in Scorpio, November 16, 2028",
-      "anchor": "2028-11-16T13:17:59.597Z",
+      "anchor": "2028-11-16T13:18:02.234Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -758,7 +758,7 @@
       "id": "full-moon-2028-12-02",
       "path": "/full-moon/2028-12-02/",
       "title": "Full moon in Gemini, December 2, 2028",
-      "anchor": "2028-12-02T01:40:10.975Z",
+      "anchor": "2028-12-02T01:40:14.765Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -776,7 +776,7 @@
       "id": "new-moon-2028-12-16",
       "path": "/new-moon/2028-12-16/",
       "title": "New moon in Sagittarius, December 16, 2028",
-      "anchor": "2028-12-16T02:06:16.774Z",
+      "anchor": "2028-12-16T02:06:19.906Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -794,7 +794,7 @@
       "id": "full-moon-2028-12-31",
       "path": "/full-moon/2028-12-31/",
       "title": "Full moon in Cancer, December 31, 2028",
-      "anchor": "2028-12-31T16:48:27.585Z",
+      "anchor": "2028-12-31T16:48:31.786Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -830,7 +830,7 @@
       "id": "mercury-retrograde-2029-01-07",
       "path": "/mercury-retrograde/2029-01-07/",
       "title": "Mercury retrograde, January 2029",
-      "anchor": "2029-01-07T07:57:22.675Z",
+      "anchor": "2029-01-07T07:55:51.708Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -866,7 +866,7 @@
       "id": "new-moon-2029-01-14",
       "path": "/new-moon/2029-01-14/",
       "title": "New moon in Capricorn, January 14, 2029",
-      "anchor": "2029-01-14T17:24:29.613Z",
+      "anchor": "2029-01-14T17:24:31.425Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -884,7 +884,7 @@
       "id": "full-moon-2029-01-30",
       "path": "/full-moon/2029-01-30/",
       "title": "Full moon in Leo, January 30, 2029",
-      "anchor": "2029-01-30T06:03:35.385Z",
+      "anchor": "2029-01-30T06:03:37.692Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -902,7 +902,7 @@
       "id": "new-moon-2029-02-13",
       "path": "/new-moon/2029-02-13/",
       "title": "New moon in Aquarius, February 13, 2029",
-      "anchor": "2029-02-13T10:31:30.883Z",
+      "anchor": "2029-02-13T10:31:31.707Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -920,7 +920,7 @@
       "id": "mars-retrograde-2029-02-14",
       "path": "/mars-retrograde/2029-02-14/",
       "title": "Mars retrograde, February 2029",
-      "anchor": "2029-02-14T08:12:52.118Z",
+      "anchor": "2029-02-14T08:16:11.191Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -938,7 +938,7 @@
       "id": "full-moon-2029-02-28",
       "path": "/full-moon/2029-02-28/",
       "title": "Full moon in Virgo, February 28, 2029",
-      "anchor": "2029-02-28T17:10:13.915Z",
+      "anchor": "2029-02-28T17:10:15.810Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -956,7 +956,7 @@
       "id": "new-moon-2029-03-15",
       "path": "/new-moon/2029-03-15/",
       "title": "New moon in Pisces, March 15, 2029",
-      "anchor": "2029-03-15T04:19:15.732Z",
+      "anchor": "2029-03-15T04:19:15.815Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -974,7 +974,7 @@
       "id": "saturn-square-pluto-2029-03-29",
       "path": "/events/saturn-square-pluto-2029-03-29/",
       "title": "Saturn square Pluto, March 29, 2029",
-      "anchor": "2029-03-29T23:21:02.958Z",
+      "anchor": "2029-03-29T23:09:02.311Z",
       "family": "aspect",
       "subtype": "square",
       "bodies": [
@@ -993,7 +993,7 @@
       "id": "full-moon-2029-03-30",
       "path": "/full-moon/2029-03-30/",
       "title": "Full moon in Libra, March 30, 2029",
-      "anchor": "2029-03-30T02:26:25.051Z",
+      "anchor": "2029-03-30T02:26:25.298Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1011,7 +1011,7 @@
       "id": "new-moon-2029-04-13",
       "path": "/new-moon/2029-04-13/",
       "title": "New moon in Aries, April 13, 2029",
-      "anchor": "2029-04-13T21:40:11.937Z",
+      "anchor": "2029-04-13T21:40:11.278Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1029,7 +1029,7 @@
       "id": "full-moon-2029-04-28",
       "path": "/full-moon/2029-04-28/",
       "title": "Full moon in Scorpio, April 28, 2029",
-      "anchor": "2029-04-28T10:36:51.574Z",
+      "anchor": "2029-04-28T10:36:48.855Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1047,7 +1047,7 @@
       "id": "mercury-retrograde-2029-05-01",
       "path": "/mercury-retrograde/2029-05-01/",
       "title": "Mercury retrograde, May 2029",
-      "anchor": "2029-05-01T23:10:21.825Z",
+      "anchor": "2029-05-01T23:06:00.790Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -1064,7 +1064,7 @@
       "id": "new-moon-2029-05-13",
       "path": "/new-moon/2029-05-13/",
       "title": "New moon in Taurus, May 13, 2029",
-      "anchor": "2029-05-13T13:42:09.298Z",
+      "anchor": "2029-05-13T13:42:09.546Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1082,7 +1082,7 @@
       "id": "neptune-sextile-pluto-2029-05-22",
       "path": "/events/neptune-sextile-pluto-2029-05-22/",
       "title": "Neptune sextile Pluto, May 22, 2029",
-      "anchor": "2029-05-22T17:03:33.380Z",
+      "anchor": "2029-05-22T19:15:37.544Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -1101,7 +1101,7 @@
       "id": "full-moon-2029-05-27",
       "path": "/full-moon/2029-05-27/",
       "title": "Full moon in Sagittarius, May 27, 2029",
-      "anchor": "2029-05-27T18:37:33.321Z",
+      "anchor": "2029-05-27T18:37:31.014Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1119,7 +1119,7 @@
       "id": "new-moon-2029-06-12",
       "path": "/new-moon/2029-06-12/",
       "title": "New moon in Gemini, June 12, 2029",
-      "anchor": "2029-06-12T03:50:32.472Z",
+      "anchor": "2029-06-12T03:50:33.461Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1173,7 +1173,7 @@
       "id": "full-moon-2029-06-26",
       "path": "/full-moon/2029-06-26/",
       "title": "Full moon in Capricorn, June 26, 2029",
-      "anchor": "2029-06-26T03:22:22.748Z",
+      "anchor": "2029-06-26T03:22:21.265Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1209,7 +1209,7 @@
       "id": "new-moon-2029-07-11",
       "path": "/new-moon/2029-07-11/",
       "title": "New moon in Cancer, July 11, 2029",
-      "anchor": "2029-07-11T15:51:06.420Z",
+      "anchor": "2029-07-11T15:51:04.360Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1227,7 +1227,7 @@
       "id": "full-moon-2029-07-25",
       "path": "/full-moon/2029-07-25/",
       "title": "Full moon in Aquarius, July 25, 2029",
-      "anchor": "2029-07-25T13:35:49.199Z",
+      "anchor": "2029-07-25T13:35:46.150Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1245,7 +1245,7 @@
       "id": "new-moon-2029-08-10",
       "path": "/new-moon/2029-08-10/",
       "title": "New moon in Leo, August 10, 2029",
-      "anchor": "2029-08-10T01:55:51.378Z",
+      "anchor": "2029-08-10T01:55:47.917Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1263,7 +1263,7 @@
       "id": "full-moon-2029-08-24",
       "path": "/full-moon/2029-08-24/",
       "title": "Full moon in Pisces, August 24, 2029",
-      "anchor": "2029-08-24T01:51:18.312Z",
+      "anchor": "2029-08-24T01:51:14.193Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1281,7 +1281,7 @@
       "id": "mercury-retrograde-2029-09-02",
       "path": "/mercury-retrograde/2029-09-02/",
       "title": "Mercury retrograde, September 2029",
-      "anchor": "2029-09-02T12:14:28.797Z",
+      "anchor": "2029-09-02T12:17:28.094Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -1299,7 +1299,7 @@
       "id": "new-moon-2029-09-08",
       "path": "/new-moon/2029-09-08/",
       "title": "New moon in Virgo, September 8, 2029",
-      "anchor": "2029-09-08T10:44:25.996Z",
+      "anchor": "2029-09-08T10:44:23.606Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1317,7 +1317,7 @@
       "id": "full-moon-2029-09-22",
       "path": "/full-moon/2029-09-22/",
       "title": "Full moon in Pisces, September 22, 2029",
-      "anchor": "2029-09-22T16:29:22.920Z",
+      "anchor": "2029-09-22T16:29:19.376Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1335,7 +1335,7 @@
       "id": "jupiter-enters-scorpio-2029-09-24",
       "path": "/events/jupiter-enters-scorpio-2029-09-24/",
       "title": "Jupiter enters Scorpio, September 24, 2029",
-      "anchor": "2029-09-24T06:27:17.997Z",
+      "anchor": "2029-09-24T06:24:06.670Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -1352,7 +1352,7 @@
       "id": "new-moon-2029-10-07",
       "path": "/new-moon/2029-10-07/",
       "title": "New moon in Libra, October 7, 2029",
-      "anchor": "2029-10-07T19:14:36.818Z",
+      "anchor": "2029-10-07T19:14:33.934Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1370,7 +1370,7 @@
       "id": "full-moon-2029-10-22",
       "path": "/full-moon/2029-10-22/",
       "title": "Full moon in Aries, October 22, 2029",
-      "anchor": "2029-10-22T09:27:39.318Z",
+      "anchor": "2029-10-22T09:27:34.951Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1388,7 +1388,7 @@
       "id": "jupiter-square-pluto-2029-11-01",
       "path": "/events/jupiter-square-pluto-2029-11-01/",
       "title": "Jupiter square Pluto, November 1, 2029",
-      "anchor": "2029-11-01T00:42:45.196Z",
+      "anchor": "2029-11-01T00:43:18.649Z",
       "family": "aspect",
       "subtype": "square",
       "bodies": [
@@ -1407,7 +1407,7 @@
       "id": "new-moon-2029-11-06",
       "path": "/new-moon/2029-11-06/",
       "title": "New moon in Scorpio, November 6, 2029",
-      "anchor": "2029-11-06T04:24:09.562Z",
+      "anchor": "2029-11-06T04:24:08.161Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1425,7 +1425,7 @@
       "id": "full-moon-2029-11-21",
       "path": "/full-moon/2029-11-21/",
       "title": "Full moon in Taurus, November 21, 2029",
-      "anchor": "2029-11-21T04:03:01.383Z",
+      "anchor": "2029-11-21T04:02:58.746Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1443,7 +1443,7 @@
       "id": "neptune-sextile-pluto-2029-11-30",
       "path": "/events/neptune-sextile-pluto-2029-11-30/",
       "title": "Neptune sextile Pluto, November 30, 2029",
-      "anchor": "2029-11-30T23:26:53.231Z",
+      "anchor": "2029-11-30T21:09:14.615Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -1462,7 +1462,7 @@
       "id": "new-moon-2029-12-05",
       "path": "/new-moon/2029-12-05/",
       "title": "New moon in Sagittarius, December 5, 2029",
-      "anchor": "2029-12-05T14:52:07.613Z",
+      "anchor": "2029-12-05T14:52:08.520Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1498,7 +1498,7 @@
       "id": "venus-retrograde-2029-12-16",
       "path": "/venus-retrograde/2029-12-16/",
       "title": "Venus retrograde, December 2029",
-      "anchor": "2029-12-16T23:49:27.187Z",
+      "anchor": "2029-12-16T23:47:24.579Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -1533,7 +1533,7 @@
       "id": "full-moon-2029-12-20",
       "path": "/full-moon/2029-12-20/",
       "title": "Full moon in Gemini, December 20, 2029",
-      "anchor": "2029-12-20T22:46:30.746Z",
+      "anchor": "2029-12-20T22:46:31.570Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1551,7 +1551,7 @@
       "id": "mercury-retrograde-2029-12-22",
       "path": "/mercury-retrograde/2029-12-22/",
       "title": "Mercury retrograde, December 2029",
-      "anchor": "2029-12-22T05:49:50.917Z",
+      "anchor": "2029-12-22T05:49:41.688Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -1568,7 +1568,7 @@
       "id": "jupiter-opposition-saturn-2029-12-22",
       "path": "/events/jupiter-opposition-saturn-2029-12-22/",
       "title": "Jupiter opposition Saturn, December 22, 2029",
-      "anchor": "2029-12-22T07:02:55.781Z",
+      "anchor": "2029-12-22T07:03:16.545Z",
       "family": "aspect",
       "subtype": "opposition",
       "bodies": [
@@ -1587,7 +1587,7 @@
       "id": "new-moon-2030-01-04",
       "path": "/new-moon/2030-01-04/",
       "title": "New moon in Capricorn, January 4, 2030",
-      "anchor": "2030-01-04T02:49:33.778Z",
+      "anchor": "2030-01-04T02:49:34.189Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1605,7 +1605,7 @@
       "id": "full-moon-2030-01-19",
       "path": "/full-moon/2030-01-19/",
       "title": "Full moon in Cancer, January 19, 2030",
-      "anchor": "2030-01-19T15:54:21.949Z",
+      "anchor": "2030-01-19T15:54:22.773Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1623,7 +1623,7 @@
       "id": "new-moon-2030-02-02",
       "path": "/new-moon/2030-02-02/",
       "title": "New moon in Aquarius, February 2, 2030",
-      "anchor": "2030-02-02T16:07:33.295Z",
+      "anchor": "2030-02-02T16:07:31.729Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1641,7 +1641,7 @@
       "id": "full-moon-2030-02-18",
       "path": "/full-moon/2030-02-18/",
       "title": "Full moon in Leo, February 18, 2030",
-      "anchor": "2030-02-18T06:19:50.394Z",
+      "anchor": "2030-02-18T06:19:49.735Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1659,7 +1659,7 @@
       "id": "new-moon-2030-03-04",
       "path": "/new-moon/2030-03-04/",
       "title": "New moon in Pisces, March 4, 2030",
-      "anchor": "2030-03-04T06:34:43.583Z",
+      "anchor": "2030-03-04T06:34:40.946Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1677,7 +1677,7 @@
       "id": "full-moon-2030-03-19",
       "path": "/full-moon/2030-03-19/",
       "title": "Full moon in Virgo, March 19, 2030",
-      "anchor": "2030-03-19T17:56:32.851Z",
+      "anchor": "2030-03-19T17:56:30.626Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1695,7 +1695,7 @@
       "id": "new-moon-2030-04-02",
       "path": "/new-moon/2030-04-02/",
       "title": "New moon in Aries, April 2, 2030",
-      "anchor": "2030-04-02T22:02:36.087Z",
+      "anchor": "2030-04-02T22:02:33.450Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1713,7 +1713,7 @@
       "id": "mercury-retrograde-2030-04-13",
       "path": "/mercury-retrograde/2030-04-13/",
       "title": "Mercury retrograde, April 2030",
-      "anchor": "2030-04-13T02:27:57.831Z",
+      "anchor": "2030-04-13T02:33:56.425Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -1731,7 +1731,7 @@
       "id": "full-moon-2030-04-18",
       "path": "/full-moon/2030-04-18/",
       "title": "Full moon in Libra, April 18, 2030",
-      "anchor": "2030-04-18T03:20:03.661Z",
+      "anchor": "2030-04-18T03:20:02.343Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1749,7 +1749,7 @@
       "id": "jupiter-opposition-saturn-2030-04-24",
       "path": "/events/jupiter-opposition-saturn-2030-04-24/",
       "title": "Jupiter opposition Saturn, April 24, 2030",
-      "anchor": "2030-04-24T01:53:15.482Z",
+      "anchor": "2030-04-24T01:56:26.891Z",
       "family": "aspect",
       "subtype": "opposition",
       "bodies": [
@@ -1768,7 +1768,7 @@
       "id": "new-moon-2030-05-02",
       "path": "/new-moon/2030-05-02/",
       "title": "New moon in Taurus, May 2, 2030",
-      "anchor": "2030-05-02T14:12:15.039Z",
+      "anchor": "2030-05-02T14:12:10.095Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1786,7 +1786,7 @@
       "id": "neptune-sextile-pluto-2030-05-04",
       "path": "/events/neptune-sextile-pluto-2030-05-04/",
       "title": "Neptune sextile Pluto, May 4, 2030",
-      "anchor": "2030-05-04T13:21:05.980Z",
+      "anchor": "2030-05-04T15:27:54.480Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -1805,7 +1805,7 @@
       "id": "full-moon-2030-05-17",
       "path": "/full-moon/2030-05-17/",
       "title": "Full moon in Scorpio, May 17, 2030",
-      "anchor": "2030-05-17T11:19:09.663Z",
+      "anchor": "2030-05-17T11:19:09.745Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1823,7 +1823,7 @@
       "id": "saturn-enters-gemini-2030-06-01",
       "path": "/events/saturn-enters-gemini-2030-06-01/",
       "title": "Saturn enters Gemini, June 1, 2030",
-      "anchor": "2030-06-01T02:32:43.173Z",
+      "anchor": "2030-06-01T02:34:11.832Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -1840,7 +1840,7 @@
       "id": "new-moon-2030-06-01",
       "path": "/new-moon/2030-06-01/",
       "title": "New moon in Gemini, June 1, 2030",
-      "anchor": "2030-06-01T06:21:24.327Z",
+      "anchor": "2030-06-01T06:21:21.526Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1894,7 +1894,7 @@
       "id": "full-moon-2030-06-15",
       "path": "/full-moon/2030-06-15/",
       "title": "Full moon in Sagittarius, June 15, 2030",
-      "anchor": "2030-06-15T18:41:01.292Z",
+      "anchor": "2030-06-15T18:41:01.457Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1912,7 +1912,7 @@
       "id": "new-moon-2030-06-30",
       "path": "/new-moon/2030-06-30/",
       "title": "New moon in Cancer, June 30, 2030",
-      "anchor": "2030-06-30T21:34:28.587Z",
+      "anchor": "2030-06-30T21:34:29.575Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1930,7 +1930,7 @@
       "id": "full-moon-2030-07-15",
       "path": "/full-moon/2030-07-15/",
       "title": "Full moon in Capricorn, July 15, 2030",
-      "anchor": "2030-07-15T02:11:59.795Z",
+      "anchor": "2030-07-15T02:12:00.290Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1948,7 +1948,7 @@
       "id": "new-moon-2030-07-30",
       "path": "/new-moon/2030-07-30/",
       "title": "New moon in Leo, July 30, 2030",
-      "anchor": "2030-07-30T11:11:00.057Z",
+      "anchor": "2030-07-30T11:11:00.962Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1966,7 +1966,7 @@
       "id": "full-moon-2030-08-13",
       "path": "/full-moon/2030-08-13/",
       "title": "Full moon in Aquarius, August 13, 2030",
-      "anchor": "2030-08-13T10:44:25.502Z",
+      "anchor": "2030-08-13T10:44:25.089Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1984,7 +1984,7 @@
       "id": "mercury-retrograde-2030-08-16",
       "path": "/mercury-retrograde/2030-08-16/",
       "title": "Mercury retrograde, August 2030",
-      "anchor": "2030-08-16T01:22:54.169Z",
+      "anchor": "2030-08-16T01:19:46.962Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -2001,7 +2001,7 @@
       "id": "new-moon-2030-08-28",
       "path": "/new-moon/2030-08-28/",
       "title": "New moon in Virgo, August 28, 2030",
-      "anchor": "2030-08-28T23:07:21.869Z",
+      "anchor": "2030-08-28T23:07:22.857Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2019,7 +2019,7 @@
       "id": "full-moon-2030-09-11",
       "path": "/full-moon/2030-09-11/",
       "title": "Full moon in Pisces, September 11, 2030",
-      "anchor": "2030-09-11T21:17:57.675Z",
+      "anchor": "2030-09-11T21:17:56.686Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2037,7 +2037,7 @@
       "id": "new-moon-2030-09-27",
       "path": "/new-moon/2030-09-27/",
       "title": "New moon in Libra, September 27, 2030",
-      "anchor": "2030-09-27T09:54:40.078Z",
+      "anchor": "2030-09-27T09:54:41.725Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2055,7 +2055,7 @@
       "id": "full-moon-2030-10-11",
       "path": "/full-moon/2030-10-11/",
       "title": "Full moon in Aries, October 11, 2030",
-      "anchor": "2030-10-11T10:46:51.181Z",
+      "anchor": "2030-10-11T10:46:51.757Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2073,7 +2073,7 @@
       "id": "jupiter-enters-sagittarius-2030-10-22",
       "path": "/events/jupiter-enters-sagittarius-2030-10-22/",
       "title": "Jupiter enters Sagittarius, October 22, 2030",
-      "anchor": "2030-10-22T23:13:59.291Z",
+      "anchor": "2030-10-22T23:14:20.303Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -2090,7 +2090,7 @@
       "id": "new-moon-2030-10-26",
       "path": "/new-moon/2030-10-26/",
       "title": "New moon in Scorpio, October 26, 2030",
-      "anchor": "2030-10-26T20:16:58.897Z",
+      "anchor": "2030-10-26T20:17:00.628Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2108,7 +2108,7 @@
       "id": "full-moon-2030-11-10",
       "path": "/full-moon/2030-11-10/",
       "title": "Full moon in Taurus, November 10, 2030",
-      "anchor": "2030-11-10T03:30:19.664Z",
+      "anchor": "2030-11-10T03:30:19.087Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2126,7 +2126,7 @@
       "id": "jupiter-opposition-saturn-2030-11-20",
       "path": "/events/jupiter-opposition-saturn-2030-11-20/",
       "title": "Jupiter opposition Saturn, November 20, 2030",
-      "anchor": "2030-11-20T01:08:11.527Z",
+      "anchor": "2030-11-20T01:05:40.080Z",
       "family": "aspect",
       "subtype": "opposition",
       "bodies": [
@@ -2145,7 +2145,7 @@
       "id": "new-moon-2030-11-25",
       "path": "/new-moon/2030-11-25/",
       "title": "New moon in Sagittarius, November 25, 2030",
-      "anchor": "2030-11-25T06:46:30.636Z",
+      "anchor": "2030-11-25T06:46:30.059Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2181,7 +2181,7 @@
       "id": "mercury-retrograde-2030-12-06",
       "path": "/mercury-retrograde/2030-12-06/",
       "title": "Mercury retrograde, December 2030",
-      "anchor": "2030-12-06T02:44:33.193Z",
+      "anchor": "2030-12-06T02:46:21.297Z",
       "family": "retrograde",
       "subtype": "cycle",
       "bodies": [
@@ -2199,7 +2199,7 @@
       "id": "jupiter-sextile-pluto-2030-12-08",
       "path": "/events/jupiter-sextile-pluto-2030-12-08/",
       "title": "Jupiter sextile Pluto, December 8, 2030",
-      "anchor": "2030-12-08T06:37:34.970Z",
+      "anchor": "2030-12-08T06:42:26.739Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -2236,7 +2236,7 @@
       "id": "full-moon-2030-12-09",
       "path": "/full-moon/2030-12-09/",
       "title": "Full moon in Gemini, December 9, 2030",
-      "anchor": "2030-12-09T22:40:28.279Z",
+      "anchor": "2030-12-09T22:40:28.361Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2254,7 +2254,7 @@
       "id": "jupiter-trine-neptune-2030-12-10",
       "path": "/events/jupiter-trine-neptune-2030-12-10/",
       "title": "Jupiter trine Neptune, December 10, 2030",
-      "anchor": "2030-12-10T08:13:31.669Z",
+      "anchor": "2030-12-10T08:02:06.533Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -2273,7 +2273,7 @@
       "id": "new-moon-2030-12-24",
       "path": "/new-moon/2030-12-24/",
       "title": "New moon in Capricorn, December 24, 2030",
-      "anchor": "2030-12-24T17:32:15.075Z",
+      "anchor": "2030-12-24T17:32:14.334Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2291,7 +2291,7 @@
       "id": "neptune-sextile-pluto-2030-12-26",
       "path": "/events/neptune-sextile-pluto-2030-12-26/",
       "title": "Neptune sextile Pluto, December 26, 2030",
-      "anchor": "2030-12-26T17:10:11.607Z",
+      "anchor": "2030-12-26T14:35:55.654Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -2312,7 +2312,7 @@
       "id": "full-moon-2028-01-12",
       "path": "/full-moon/2028-01-12/",
       "title": "Full moon in Cancer, January 12, 2028",
-      "anchor": "2028-01-12T04:03:06.410Z",
+      "anchor": "2028-01-12T04:03:05.255Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2346,7 +2346,7 @@
       "id": "jupiter-stations-retrograde-2028-01-12",
       "path": "/retrogrades/#retrograde-jupiter-2028-01-12",
       "title": "Jupiter stations retrograde, January 12, 2028",
-      "anchor": "2028-01-12T08:54:01.406Z",
+      "anchor": "2028-01-12T08:53:21.854Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2362,7 +2362,7 @@
       "id": "uranus-trine-pluto-2028-01-13",
       "path": "/events/uranus-trine-pluto-2028-01-13/",
       "title": "Uranus trine Pluto, January 13, 2028",
-      "anchor": "2028-01-13T06:52:39.447Z",
+      "anchor": "2028-01-13T06:40:44.897Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -2380,7 +2380,7 @@
       "id": "mercury-stations-retrograde-2028-01-24",
       "path": "/mercury-retrograde/2028-01-24/",
       "title": "Mercury stations retrograde, January 24, 2028",
-      "anchor": "2028-01-24T11:03:29.179Z",
+      "anchor": "2028-01-24T11:02:00.849Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2413,7 +2413,7 @@
       "id": "new-moon-2028-01-26",
       "path": "/new-moon/2028-01-26/",
       "title": "New moon in Aquarius, January 26, 2028",
-      "anchor": "2028-01-26T15:12:30.887Z",
+      "anchor": "2028-01-26T15:12:31.051Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2430,7 +2430,7 @@
       "id": "full-moon-2028-02-10",
       "path": "/full-moon/2028-02-10/",
       "title": "Full moon in Leo, February 10, 2028",
-      "anchor": "2028-02-10T15:03:46.014Z",
+      "anchor": "2028-02-10T15:03:46.344Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2447,7 +2447,7 @@
       "id": "uranus-stations-direct-2028-02-12",
       "path": "/retrogrades/#retrograde-uranus-2027-09-15",
       "title": "Uranus stations direct, February 12, 2028",
-      "anchor": "2028-02-12T23:49:19.276Z",
+      "anchor": "2028-02-12T23:49:15.321Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2463,7 +2463,7 @@
       "id": "mercury-stations-direct-2028-02-14",
       "path": "/mercury-retrograde/2028-01-24/",
       "title": "Mercury stations direct, February 14, 2028",
-      "anchor": "2028-02-14T12:39:33.046Z",
+      "anchor": "2028-02-14T12:38:41.630Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2479,7 +2479,7 @@
       "id": "new-moon-2028-02-25",
       "path": "/new-moon/2028-02-25/",
       "title": "New moon in Pisces, February 25, 2028",
-      "anchor": "2028-02-25T10:37:24.945Z",
+      "anchor": "2028-02-25T10:37:25.356Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2496,7 +2496,7 @@
       "id": "full-moon-2028-03-11",
       "path": "/full-moon/2028-03-11/",
       "title": "Full moon in Virgo, March 11, 2028",
-      "anchor": "2028-03-11T01:06:03.070Z",
+      "anchor": "2028-03-11T01:06:05.295Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2513,7 +2513,7 @@
       "id": "new-moon-2028-03-26",
       "path": "/new-moon/2028-03-26/",
       "title": "New moon in Aries, March 26, 2028",
-      "anchor": "2028-03-26T04:31:20.913Z",
+      "anchor": "2028-03-26T04:31:19.677Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2530,7 +2530,7 @@
       "id": "full-moon-2028-04-09",
       "path": "/full-moon/2028-04-09/",
       "title": "Full moon in Libra, April 9, 2028",
-      "anchor": "2028-04-09T10:26:36.972Z",
+      "anchor": "2028-04-09T10:26:37.877Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2547,7 +2547,7 @@
       "id": "saturn-enters-taurus-2028-04-13",
       "path": "/events/saturn-enters-taurus-2028-04-13/",
       "title": "Saturn enters Taurus, April 13, 2028",
-      "anchor": "2028-04-13T04:05:03.310Z",
+      "anchor": "2028-04-13T03:39:44.766Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -2563,7 +2563,7 @@
       "id": "new-moon-2028-04-24",
       "path": "/new-moon/2028-04-24/",
       "title": "New moon in Taurus, April 24, 2028",
-      "anchor": "2028-04-24T19:46:56.371Z",
+      "anchor": "2028-04-24T19:46:56.454Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2580,7 +2580,7 @@
       "id": "full-moon-2028-05-08",
       "path": "/full-moon/2028-05-08/",
       "title": "Full moon in Scorpio, May 8, 2028",
-      "anchor": "2028-05-08T19:48:57.413Z",
+      "anchor": "2028-05-08T19:48:56.836Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2597,7 +2597,7 @@
       "id": "pluto-stations-retrograde-2028-05-09",
       "path": "/retrogrades/#retrograde-pluto-2028-05-09",
       "title": "Pluto stations retrograde, May 9, 2028",
-      "anchor": "2028-05-09T09:32:46.991Z",
+      "anchor": "2028-05-09T09:32:53.583Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2613,7 +2613,7 @@
       "id": "uranus-trine-pluto-2028-05-10",
       "path": "/events/uranus-trine-pluto-2028-05-10/",
       "title": "Uranus trine Pluto, May 10, 2028",
-      "anchor": "2028-05-10T02:50:40.437Z",
+      "anchor": "2028-05-10T03:03:59.363Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -2631,7 +2631,7 @@
       "id": "venus-stations-retrograde-2028-05-10",
       "path": "/venus-retrograde/2028-05-10/",
       "title": "Venus stations retrograde, May 10, 2028",
-      "anchor": "2028-05-10T23:02:03.485Z",
+      "anchor": "2028-05-10T23:02:35.125Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2647,7 +2647,7 @@
       "id": "jupiter-stations-direct-2028-05-13",
       "path": "/retrogrades/#retrograde-jupiter-2028-01-12",
       "title": "Jupiter stations direct, May 13, 2028",
-      "anchor": "2028-05-13T20:02:00.849Z",
+      "anchor": "2028-05-13T20:00:16.698Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2663,7 +2663,7 @@
       "id": "mercury-stations-retrograde-2028-05-21",
       "path": "/mercury-retrograde/2028-05-21/",
       "title": "Mercury stations retrograde, May 21, 2028",
-      "anchor": "2028-05-21T08:39:52.382Z",
+      "anchor": "2028-05-21T08:43:24.637Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2679,7 +2679,7 @@
       "id": "new-moon-2028-05-24",
       "path": "/new-moon/2028-05-24/",
       "title": "New moon in Gemini, May 24, 2028",
-      "anchor": "2028-05-24T08:16:19.018Z",
+      "anchor": "2028-05-24T08:16:19.265Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2696,7 +2696,7 @@
       "id": "full-moon-2028-06-07",
       "path": "/full-moon/2028-06-07/",
       "title": "Full moon in Sagittarius, June 7, 2028",
-      "anchor": "2028-06-07T06:08:49.814Z",
+      "anchor": "2028-06-07T06:08:49.320Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2713,7 +2713,7 @@
       "id": "neptune-sextile-pluto-2028-06-09",
       "path": "/events/neptune-sextile-pluto-2028-06-09/",
       "title": "Neptune sextile Pluto, June 9, 2028",
-      "anchor": "2028-06-09T01:49:36.552Z",
+      "anchor": "2028-06-09T04:25:35.173Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -2731,7 +2731,7 @@
       "id": "mercury-stations-direct-2028-06-14",
       "path": "/mercury-retrograde/2028-05-21/",
       "title": "Mercury stations direct, June 14, 2028",
-      "anchor": "2028-06-14T06:07:05.829Z",
+      "anchor": "2028-06-14T06:05:41.454Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2747,7 +2747,7 @@
       "id": "new-moon-2028-06-22",
       "path": "/new-moon/2028-06-22/",
       "title": "New moon in Cancer, June 22, 2028",
-      "anchor": "2028-06-22T18:27:35.529Z",
+      "anchor": "2028-06-22T18:27:33.633Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2764,7 +2764,7 @@
       "id": "venus-stations-direct-2028-06-22",
       "path": "/venus-retrograde/2028-05-10/",
       "title": "Venus stations direct, June 22, 2028",
-      "anchor": "2028-06-22T22:13:04.863Z",
+      "anchor": "2028-06-22T22:12:55.634Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -2780,7 +2780,7 @@
       "id": "saturn-square-pluto-2028-06-24",
       "path": "/events/saturn-square-pluto-2028-06-24/",
       "title": "Saturn square Pluto, June 24, 2028",
-      "anchor": "2028-06-24T03:18:58.402Z",
+      "anchor": "2028-06-24T02:59:44.508Z",
       "family": "aspect",
       "subtype": "square",
       "bodies": [
@@ -2798,7 +2798,7 @@
       "id": "full-moon-2028-07-06",
       "path": "/full-moon/2028-07-06/",
       "title": "Full moon in Capricorn, July 6, 2028",
-      "anchor": "2028-07-06T18:10:50.114Z",
+      "anchor": "2028-07-06T18:10:49.455Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2832,7 +2832,7 @@
       "id": "neptune-stations-retrograde-2028-07-11",
       "path": "/retrogrades/#retrograde-neptune-2028-07-11",
       "title": "Neptune stations retrograde, July 11, 2028",
-      "anchor": "2028-07-11T13:05:31.347Z",
+      "anchor": "2028-07-11T13:03:57.743Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2865,7 +2865,7 @@
       "id": "new-moon-2028-07-22",
       "path": "/new-moon/2028-07-22/",
       "title": "New moon in Cancer, July 22, 2028",
-      "anchor": "2028-07-22T03:01:44.808Z",
+      "anchor": "2028-07-22T03:01:43.242Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2882,7 +2882,7 @@
       "id": "full-moon-2028-08-05",
       "path": "/full-moon/2028-08-05/",
       "title": "Full moon in Aquarius, August 5, 2028",
-      "anchor": "2028-08-05T08:09:49.030Z",
+      "anchor": "2028-08-05T08:09:49.607Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2899,7 +2899,7 @@
       "id": "new-moon-2028-08-20",
       "path": "/new-moon/2028-08-20/",
       "title": "New moon in Leo, August 20, 2028",
-      "anchor": "2028-08-20T10:43:51.966Z",
+      "anchor": "2028-08-20T10:43:51.801Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2916,7 +2916,7 @@
       "id": "saturn-stations-retrograde-2028-08-22",
       "path": "/retrogrades/#retrograde-saturn-2028-08-22",
       "title": "Saturn stations retrograde, August 22, 2028",
-      "anchor": "2028-08-22T22:16:21.297Z",
+      "anchor": "2028-08-22T22:17:15.351Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2932,7 +2932,7 @@
       "id": "jupiter-enters-libra-2028-08-24",
       "path": "/events/jupiter-enters-libra-2028-08-24/",
       "title": "Jupiter enters Libra, August 24, 2028",
-      "anchor": "2028-08-24T05:04:19.914Z",
+      "anchor": "2028-08-24T05:08:28.754Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -2948,7 +2948,7 @@
       "id": "full-moon-2028-09-03",
       "path": "/full-moon/2028-09-03/",
       "title": "Full moon in Pisces, September 3, 2028",
-      "anchor": "2028-09-03T23:47:35.454Z",
+      "anchor": "2028-09-03T23:47:36.031Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2982,7 +2982,7 @@
       "id": "uranus-stations-retrograde-2028-09-19",
       "path": "/retrogrades/#retrograde-uranus-2028-09-19",
       "title": "Uranus stations retrograde, September 19, 2028",
-      "anchor": "2028-09-19T00:01:15.146Z",
+      "anchor": "2028-09-19T00:01:36.239Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -2998,7 +2998,7 @@
       "id": "mercury-stations-retrograde-2028-09-19",
       "path": "/mercury-retrograde/2028-09-19/",
       "title": "Mercury stations retrograde, September 19, 2028",
-      "anchor": "2028-09-19T16:30:15.819Z",
+      "anchor": "2028-09-19T16:33:03.250Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3014,7 +3014,7 @@
       "id": "jupiter-trine-pluto-2028-09-24",
       "path": "/events/jupiter-trine-pluto-2028-09-24/",
       "title": "Jupiter trine Pluto, September 24, 2028",
-      "anchor": "2028-09-24T07:39:35.545Z",
+      "anchor": "2028-09-24T07:45:29.607Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -3032,7 +3032,7 @@
       "id": "jupiter-opposition-neptune-2028-09-28",
       "path": "/events/jupiter-opposition-neptune-2028-09-28/",
       "title": "Jupiter opposition Neptune, September 28, 2028",
-      "anchor": "2028-09-28T19:29:36.928Z",
+      "anchor": "2028-09-28T19:15:56.085Z",
       "family": "aspect",
       "subtype": "opposition",
       "bodies": [
@@ -3050,7 +3050,7 @@
       "id": "full-moon-2028-10-03",
       "path": "/full-moon/2028-10-03/",
       "title": "Full moon in Aries, October 3, 2028",
-      "anchor": "2028-10-03T16:25:01.142Z",
+      "anchor": "2028-10-03T16:24:59.742Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3067,7 +3067,7 @@
       "id": "mercury-stations-direct-2028-10-11",
       "path": "/mercury-retrograde/2028-09-19/",
       "title": "Mercury stations direct, October 11, 2028",
-      "anchor": "2028-10-11T10:30:01.318Z",
+      "anchor": "2028-10-11T10:27:42.890Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3083,7 +3083,7 @@
       "id": "new-moon-2028-10-18",
       "path": "/new-moon/2028-10-18/",
       "title": "New moon in Libra, October 18, 2028",
-      "anchor": "2028-10-18T02:56:48.672Z",
+      "anchor": "2028-10-18T02:56:49.166Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3100,7 +3100,7 @@
       "id": "pluto-stations-direct-2028-10-19",
       "path": "/retrogrades/#retrograde-pluto-2028-05-09",
       "title": "Pluto stations direct, October 19, 2028",
-      "anchor": "2028-10-19T03:41:40.927Z",
+      "anchor": "2028-10-19T03:42:36.297Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3116,7 +3116,7 @@
       "id": "jupiter-trine-uranus-2028-10-27",
       "path": "/events/jupiter-trine-uranus-2028-10-27/",
       "title": "Jupiter trine Uranus, October 27, 2028",
-      "anchor": "2028-10-27T09:03:33.902Z",
+      "anchor": "2028-10-27T09:05:53.978Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -3134,7 +3134,7 @@
       "id": "full-moon-2028-11-02",
       "path": "/full-moon/2028-11-02/",
       "title": "Full moon in Taurus, November 2, 2028",
-      "anchor": "2028-11-02T09:17:21.255Z",
+      "anchor": "2028-11-02T09:17:21.914Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3151,7 +3151,7 @@
       "id": "neptune-sextile-pluto-2028-11-08",
       "path": "/events/neptune-sextile-pluto-2028-11-08/",
       "title": "Neptune sextile Pluto, November 8, 2028",
-      "anchor": "2028-11-08T04:21:11.666Z",
+      "anchor": "2028-11-08T01:44:40.333Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -3169,7 +3169,7 @@
       "id": "saturn-square-pluto-2028-11-15",
       "path": "/events/saturn-square-pluto-2028-11-15/",
       "title": "Saturn square Pluto, November 15, 2028",
-      "anchor": "2028-11-15T12:29:27.342Z",
+      "anchor": "2028-11-15T12:56:54.961Z",
       "family": "aspect",
       "subtype": "square",
       "bodies": [
@@ -3187,7 +3187,7 @@
       "id": "new-moon-2028-11-16",
       "path": "/new-moon/2028-11-16/",
       "title": "New moon in Scorpio, November 16, 2028",
-      "anchor": "2028-11-16T13:17:59.597Z",
+      "anchor": "2028-11-16T13:18:02.234Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3204,7 +3204,7 @@
       "id": "full-moon-2028-12-02",
       "path": "/full-moon/2028-12-02/",
       "title": "Full moon in Gemini, December 2, 2028",
-      "anchor": "2028-12-02T01:40:10.975Z",
+      "anchor": "2028-12-02T01:40:14.765Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3221,7 +3221,7 @@
       "id": "new-moon-2028-12-16",
       "path": "/new-moon/2028-12-16/",
       "title": "New moon in Sagittarius, December 16, 2028",
-      "anchor": "2028-12-16T02:06:16.774Z",
+      "anchor": "2028-12-16T02:06:19.906Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3238,7 +3238,7 @@
       "id": "neptune-stations-direct-2028-12-16",
       "path": "/retrogrades/#retrograde-neptune-2028-07-11",
       "title": "Neptune stations direct, December 16, 2028",
-      "anchor": "2028-12-16T20:49:57.509Z",
+      "anchor": "2028-12-16T20:43:45.731Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3254,7 +3254,7 @@
       "id": "full-moon-2028-12-31",
       "path": "/full-moon/2028-12-31/",
       "title": "Full moon in Cancer, December 31, 2028",
-      "anchor": "2028-12-31T16:48:27.585Z",
+      "anchor": "2028-12-31T16:48:31.786Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3288,7 +3288,7 @@
       "id": "saturn-stations-direct-2029-01-05",
       "path": "/retrogrades/#retrograde-saturn-2028-08-22",
       "title": "Saturn stations direct, January 5, 2029",
-      "anchor": "2029-01-05T12:34:24.550Z",
+      "anchor": "2029-01-05T12:38:52.177Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3304,7 +3304,7 @@
       "id": "mercury-stations-retrograde-2029-01-07",
       "path": "/mercury-retrograde/2029-01-07/",
       "title": "Mercury stations retrograde, January 7, 2029",
-      "anchor": "2029-01-07T07:57:22.675Z",
+      "anchor": "2029-01-07T07:55:51.708Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3337,7 +3337,7 @@
       "id": "new-moon-2029-01-14",
       "path": "/new-moon/2029-01-14/",
       "title": "New moon in Capricorn, January 14, 2029",
-      "anchor": "2029-01-14T17:24:29.613Z",
+      "anchor": "2029-01-14T17:24:31.425Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3354,7 +3354,7 @@
       "id": "mercury-stations-direct-2029-01-27",
       "path": "/mercury-retrograde/2029-01-07/",
       "title": "Mercury stations direct, January 27, 2029",
-      "anchor": "2029-01-27T18:38:00.761Z",
+      "anchor": "2029-01-27T18:41:11.922Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3370,7 +3370,7 @@
       "id": "full-moon-2029-01-30",
       "path": "/full-moon/2029-01-30/",
       "title": "Full moon in Leo, January 30, 2029",
-      "anchor": "2029-01-30T06:03:35.385Z",
+      "anchor": "2029-01-30T06:03:37.692Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3387,7 +3387,7 @@
       "id": "jupiter-stations-retrograde-2029-02-10",
       "path": "/retrogrades/#retrograde-jupiter-2029-02-10",
       "title": "Jupiter stations retrograde, February 10, 2029",
-      "anchor": "2029-02-10T13:05:24.755Z",
+      "anchor": "2029-02-10T13:06:58.359Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3403,7 +3403,7 @@
       "id": "new-moon-2029-02-13",
       "path": "/new-moon/2029-02-13/",
       "title": "New moon in Aquarius, February 13, 2029",
-      "anchor": "2029-02-13T10:31:30.883Z",
+      "anchor": "2029-02-13T10:31:31.707Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3420,7 +3420,7 @@
       "id": "mars-stations-retrograde-2029-02-14",
       "path": "/mars-retrograde/2029-02-14/",
       "title": "Mars stations retrograde, February 14, 2029",
-      "anchor": "2029-02-14T08:12:52.118Z",
+      "anchor": "2029-02-14T08:16:11.191Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3436,7 +3436,7 @@
       "id": "uranus-stations-direct-2029-02-16",
       "path": "/retrogrades/#retrograde-uranus-2028-09-19",
       "title": "Uranus stations direct, February 16, 2029",
-      "anchor": "2029-02-16T10:52:48.456Z",
+      "anchor": "2029-02-16T10:51:39.901Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3452,7 +3452,7 @@
       "id": "full-moon-2029-02-28",
       "path": "/full-moon/2029-02-28/",
       "title": "Full moon in Virgo, February 28, 2029",
-      "anchor": "2029-02-28T17:10:13.915Z",
+      "anchor": "2029-02-28T17:10:15.810Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3469,7 +3469,7 @@
       "id": "new-moon-2029-03-15",
       "path": "/new-moon/2029-03-15/",
       "title": "New moon in Pisces, March 15, 2029",
-      "anchor": "2029-03-15T04:19:15.732Z",
+      "anchor": "2029-03-15T04:19:15.815Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3486,7 +3486,7 @@
       "id": "saturn-square-pluto-2029-03-29",
       "path": "/events/saturn-square-pluto-2029-03-29/",
       "title": "Saturn square Pluto, March 29, 2029",
-      "anchor": "2029-03-29T23:21:02.958Z",
+      "anchor": "2029-03-29T23:09:02.311Z",
       "family": "aspect",
       "subtype": "square",
       "bodies": [
@@ -3504,7 +3504,7 @@
       "id": "full-moon-2029-03-30",
       "path": "/full-moon/2029-03-30/",
       "title": "Full moon in Libra, March 30, 2029",
-      "anchor": "2029-03-30T02:26:25.051Z",
+      "anchor": "2029-03-30T02:26:25.298Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3521,7 +3521,7 @@
       "id": "new-moon-2029-04-13",
       "path": "/new-moon/2029-04-13/",
       "title": "New moon in Aries, April 13, 2029",
-      "anchor": "2029-04-13T21:40:11.937Z",
+      "anchor": "2029-04-13T21:40:11.278Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3538,7 +3538,7 @@
       "id": "full-moon-2029-04-28",
       "path": "/full-moon/2029-04-28/",
       "title": "Full moon in Scorpio, April 28, 2029",
-      "anchor": "2029-04-28T10:36:51.574Z",
+      "anchor": "2029-04-28T10:36:48.855Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3555,7 +3555,7 @@
       "id": "mercury-stations-retrograde-2029-05-01",
       "path": "/mercury-retrograde/2029-05-01/",
       "title": "Mercury stations retrograde, May 1, 2029",
-      "anchor": "2029-05-01T23:10:21.825Z",
+      "anchor": "2029-05-01T23:06:00.790Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3571,7 +3571,7 @@
       "id": "mars-stations-direct-2029-05-05",
       "path": "/mars-retrograde/2029-02-14/",
       "title": "Mars stations direct, May 5, 2029",
-      "anchor": "2029-05-05T18:58:41.337Z",
+      "anchor": "2029-05-05T19:00:03.075Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3587,7 +3587,7 @@
       "id": "pluto-stations-retrograde-2029-05-11",
       "path": "/retrogrades/#retrograde-pluto-2029-05-11",
       "title": "Pluto stations retrograde, May 11, 2029",
-      "anchor": "2029-05-11T04:16:58.212Z",
+      "anchor": "2029-05-11T04:17:21.943Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3603,7 +3603,7 @@
       "id": "new-moon-2029-05-13",
       "path": "/new-moon/2029-05-13/",
       "title": "New moon in Taurus, May 13, 2029",
-      "anchor": "2029-05-13T13:42:09.298Z",
+      "anchor": "2029-05-13T13:42:09.546Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3620,7 +3620,7 @@
       "id": "neptune-sextile-pluto-2029-05-22",
       "path": "/events/neptune-sextile-pluto-2029-05-22/",
       "title": "Neptune sextile Pluto, May 22, 2029",
-      "anchor": "2029-05-22T17:03:33.380Z",
+      "anchor": "2029-05-22T19:15:37.544Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -3638,7 +3638,7 @@
       "id": "mercury-stations-direct-2029-05-25",
       "path": "/mercury-retrograde/2029-05-01/",
       "title": "Mercury stations direct, May 25, 2029",
-      "anchor": "2029-05-25T19:15:24.609Z",
+      "anchor": "2029-05-25T19:20:38.378Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3654,7 +3654,7 @@
       "id": "full-moon-2029-05-27",
       "path": "/full-moon/2029-05-27/",
       "title": "Full moon in Sagittarius, May 27, 2029",
-      "anchor": "2029-05-27T18:37:33.321Z",
+      "anchor": "2029-05-27T18:37:31.014Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3671,7 +3671,7 @@
       "id": "new-moon-2029-06-12",
       "path": "/new-moon/2029-06-12/",
       "title": "New moon in Gemini, June 12, 2029",
-      "anchor": "2029-06-12T03:50:32.472Z",
+      "anchor": "2029-06-12T03:50:33.461Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3705,7 +3705,7 @@
       "id": "jupiter-stations-direct-2029-06-13",
       "path": "/retrogrades/#retrograde-jupiter-2029-02-10",
       "title": "Jupiter stations direct, June 13, 2029",
-      "anchor": "2029-06-13T21:08:06.474Z",
+      "anchor": "2029-06-13T21:06:38.144Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3738,7 +3738,7 @@
       "id": "full-moon-2029-06-26",
       "path": "/full-moon/2029-06-26/",
       "title": "Full moon in Capricorn, June 26, 2029",
-      "anchor": "2029-06-26T03:22:22.748Z",
+      "anchor": "2029-06-26T03:22:21.265Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3772,7 +3772,7 @@
       "id": "new-moon-2029-07-11",
       "path": "/new-moon/2029-07-11/",
       "title": "New moon in Cancer, July 11, 2029",
-      "anchor": "2029-07-11T15:51:06.420Z",
+      "anchor": "2029-07-11T15:51:04.360Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3789,7 +3789,7 @@
       "id": "neptune-stations-retrograde-2029-07-14",
       "path": "/retrogrades/#retrograde-neptune-2029-07-14",
       "title": "Neptune stations retrograde, July 14, 2029",
-      "anchor": "2029-07-14T02:11:34.335Z",
+      "anchor": "2029-07-14T02:09:55.458Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3805,7 +3805,7 @@
       "id": "full-moon-2029-07-25",
       "path": "/full-moon/2029-07-25/",
       "title": "Full moon in Aquarius, July 25, 2029",
-      "anchor": "2029-07-25T13:35:49.199Z",
+      "anchor": "2029-07-25T13:35:46.150Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3822,7 +3822,7 @@
       "id": "new-moon-2029-08-10",
       "path": "/new-moon/2029-08-10/",
       "title": "New moon in Leo, August 10, 2029",
-      "anchor": "2029-08-10T01:55:51.378Z",
+      "anchor": "2029-08-10T01:55:47.917Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3839,7 +3839,7 @@
       "id": "full-moon-2029-08-24",
       "path": "/full-moon/2029-08-24/",
       "title": "Full moon in Pisces, August 24, 2029",
-      "anchor": "2029-08-24T01:51:18.312Z",
+      "anchor": "2029-08-24T01:51:14.193Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3856,7 +3856,7 @@
       "id": "mercury-stations-retrograde-2029-09-02",
       "path": "/mercury-retrograde/2029-09-02/",
       "title": "Mercury stations retrograde, September 2, 2029",
-      "anchor": "2029-09-02T12:14:28.797Z",
+      "anchor": "2029-09-02T12:17:28.094Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3872,7 +3872,7 @@
       "id": "saturn-stations-retrograde-2029-09-06",
       "path": "/retrogrades/#retrograde-saturn-2029-09-06",
       "title": "Saturn stations retrograde, September 6, 2029",
-      "anchor": "2029-09-06T08:35:28.710Z",
+      "anchor": "2029-09-06T08:34:24.110Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3888,7 +3888,7 @@
       "id": "new-moon-2029-09-08",
       "path": "/new-moon/2029-09-08/",
       "title": "New moon in Virgo, September 8, 2029",
-      "anchor": "2029-09-08T10:44:25.996Z",
+      "anchor": "2029-09-08T10:44:23.606Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3905,7 +3905,7 @@
       "id": "full-moon-2029-09-22",
       "path": "/full-moon/2029-09-22/",
       "title": "Full moon in Pisces, September 22, 2029",
-      "anchor": "2029-09-22T16:29:22.920Z",
+      "anchor": "2029-09-22T16:29:19.376Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3922,7 +3922,7 @@
       "id": "uranus-stations-retrograde-2029-09-23",
       "path": "/retrogrades/#retrograde-uranus-2029-09-23",
       "title": "Uranus stations retrograde, September 23, 2029",
-      "anchor": "2029-09-23T16:20:01.464Z",
+      "anchor": "2029-09-23T16:21:46.932Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -3938,7 +3938,7 @@
       "id": "jupiter-enters-scorpio-2029-09-24",
       "path": "/events/jupiter-enters-scorpio-2029-09-24/",
       "title": "Jupiter enters Scorpio, September 24, 2029",
-      "anchor": "2029-09-24T06:27:17.997Z",
+      "anchor": "2029-09-24T06:24:06.670Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -3954,7 +3954,7 @@
       "id": "mercury-stations-direct-2029-09-25",
       "path": "/mercury-retrograde/2029-09-02/",
       "title": "Mercury stations direct, September 25, 2029",
-      "anchor": "2029-09-25T02:02:57.538Z",
+      "anchor": "2029-09-25T02:01:42.391Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -3970,7 +3970,7 @@
       "id": "new-moon-2029-10-07",
       "path": "/new-moon/2029-10-07/",
       "title": "New moon in Libra, October 7, 2029",
-      "anchor": "2029-10-07T19:14:36.818Z",
+      "anchor": "2029-10-07T19:14:33.934Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3987,7 +3987,7 @@
       "id": "pluto-stations-direct-2029-10-21",
       "path": "/retrogrades/#retrograde-pluto-2029-05-11",
       "title": "Pluto stations direct, October 21, 2029",
-      "anchor": "2029-10-21T03:52:34.833Z",
+      "anchor": "2029-10-21T03:53:36.796Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -4003,7 +4003,7 @@
       "id": "full-moon-2029-10-22",
       "path": "/full-moon/2029-10-22/",
       "title": "Full moon in Aries, October 22, 2029",
-      "anchor": "2029-10-22T09:27:39.318Z",
+      "anchor": "2029-10-22T09:27:34.951Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4020,7 +4020,7 @@
       "id": "jupiter-square-pluto-2029-11-01",
       "path": "/events/jupiter-square-pluto-2029-11-01/",
       "title": "Jupiter square Pluto, November 1, 2029",
-      "anchor": "2029-11-01T00:42:45.196Z",
+      "anchor": "2029-11-01T00:43:18.649Z",
       "family": "aspect",
       "subtype": "square",
       "bodies": [
@@ -4038,7 +4038,7 @@
       "id": "new-moon-2029-11-06",
       "path": "/new-moon/2029-11-06/",
       "title": "New moon in Scorpio, November 6, 2029",
-      "anchor": "2029-11-06T04:24:09.562Z",
+      "anchor": "2029-11-06T04:24:08.161Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4055,7 +4055,7 @@
       "id": "full-moon-2029-11-21",
       "path": "/full-moon/2029-11-21/",
       "title": "Full moon in Taurus, November 21, 2029",
-      "anchor": "2029-11-21T04:03:01.383Z",
+      "anchor": "2029-11-21T04:02:58.746Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4072,7 +4072,7 @@
       "id": "neptune-sextile-pluto-2029-11-30",
       "path": "/events/neptune-sextile-pluto-2029-11-30/",
       "title": "Neptune sextile Pluto, November 30, 2029",
-      "anchor": "2029-11-30T23:26:53.231Z",
+      "anchor": "2029-11-30T21:09:14.615Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -4090,7 +4090,7 @@
       "id": "new-moon-2029-12-05",
       "path": "/new-moon/2029-12-05/",
       "title": "New moon in Sagittarius, December 5, 2029",
-      "anchor": "2029-12-05T14:52:07.613Z",
+      "anchor": "2029-12-05T14:52:08.520Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4124,7 +4124,7 @@
       "id": "venus-stations-retrograde-2029-12-16",
       "path": "/venus-retrograde/2029-12-16/",
       "title": "Venus stations retrograde, December 16, 2029",
-      "anchor": "2029-12-16T23:49:27.187Z",
+      "anchor": "2029-12-16T23:47:24.579Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -4140,7 +4140,7 @@
       "id": "neptune-stations-direct-2029-12-19",
       "path": "/retrogrades/#retrograde-neptune-2029-07-14",
       "title": "Neptune stations direct, December 19, 2029",
-      "anchor": "2029-12-19T08:28:22.880Z",
+      "anchor": "2029-12-19T08:23:49.979Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -4173,7 +4173,7 @@
       "id": "full-moon-2029-12-20",
       "path": "/full-moon/2029-12-20/",
       "title": "Full moon in Gemini, December 20, 2029",
-      "anchor": "2029-12-20T22:46:30.746Z",
+      "anchor": "2029-12-20T22:46:31.570Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4190,7 +4190,7 @@
       "id": "mercury-stations-retrograde-2029-12-22",
       "path": "/mercury-retrograde/2029-12-22/",
       "title": "Mercury stations retrograde, December 22, 2029",
-      "anchor": "2029-12-22T05:49:50.917Z",
+      "anchor": "2029-12-22T05:49:41.688Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -4206,7 +4206,7 @@
       "id": "jupiter-opposition-saturn-2029-12-22",
       "path": "/events/jupiter-opposition-saturn-2029-12-22/",
       "title": "Jupiter opposition Saturn, December 22, 2029",
-      "anchor": "2029-12-22T07:02:55.781Z",
+      "anchor": "2029-12-22T07:03:16.545Z",
       "family": "aspect",
       "subtype": "opposition",
       "bodies": [
@@ -4224,7 +4224,7 @@
       "id": "new-moon-2030-01-04",
       "path": "/new-moon/2030-01-04/",
       "title": "New moon in Capricorn, January 4, 2030",
-      "anchor": "2030-01-04T02:49:33.778Z",
+      "anchor": "2030-01-04T02:49:34.189Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4241,7 +4241,7 @@
       "id": "mercury-stations-direct-2030-01-11",
       "path": "/mercury-retrograde/2029-12-22/",
       "title": "Mercury stations direct, January 11, 2030",
-      "anchor": "2030-01-11T05:44:27.919Z",
+      "anchor": "2030-01-11T05:46:34.481Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -4257,7 +4257,7 @@
       "id": "saturn-stations-direct-2030-01-19",
       "path": "/retrogrades/#retrograde-saturn-2029-09-06",
       "title": "Saturn stations direct, January 19, 2030",
-      "anchor": "2030-01-19T03:51:15.731Z",
+      "anchor": "2030-01-19T03:54:07.118Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -4273,7 +4273,7 @@
       "id": "full-moon-2030-01-19",
       "path": "/full-moon/2030-01-19/",
       "title": "Full moon in Cancer, January 19, 2030",
-      "anchor": "2030-01-19T15:54:21.949Z",
+      "anchor": "2030-01-19T15:54:22.773Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4290,7 +4290,7 @@
       "id": "venus-stations-direct-2030-01-26",
       "path": "/venus-retrograde/2029-12-16/",
       "title": "Venus stations direct, January 26, 2030",
-      "anchor": "2030-01-26T21:33:25.224Z",
+      "anchor": "2030-01-26T21:33:21.269Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -4306,7 +4306,7 @@
       "id": "new-moon-2030-02-02",
       "path": "/new-moon/2030-02-02/",
       "title": "New moon in Aquarius, February 2, 2030",
-      "anchor": "2030-02-02T16:07:33.295Z",
+      "anchor": "2030-02-02T16:07:31.729Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4323,7 +4323,7 @@
       "id": "full-moon-2030-02-18",
       "path": "/full-moon/2030-02-18/",
       "title": "Full moon in Leo, February 18, 2030",
-      "anchor": "2030-02-18T06:19:50.394Z",
+      "anchor": "2030-02-18T06:19:49.735Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4340,7 +4340,7 @@
       "id": "uranus-stations-direct-2030-02-20",
       "path": "/retrogrades/#retrograde-uranus-2029-09-23",
       "title": "Uranus stations direct, February 20, 2030",
-      "anchor": "2030-02-20T23:23:56.571Z",
+      "anchor": "2030-02-20T23:22:32.196Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -4356,7 +4356,7 @@
       "id": "new-moon-2030-03-04",
       "path": "/new-moon/2030-03-04/",
       "title": "New moon in Pisces, March 4, 2030",
-      "anchor": "2030-03-04T06:34:43.583Z",
+      "anchor": "2030-03-04T06:34:40.946Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4373,7 +4373,7 @@
       "id": "jupiter-stations-retrograde-2030-03-13",
       "path": "/retrogrades/#retrograde-jupiter-2030-03-13",
       "title": "Jupiter stations retrograde, March 13, 2030",
-      "anchor": "2030-03-13T14:34:12.245Z",
+      "anchor": "2030-03-13T14:33:20.829Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -4389,7 +4389,7 @@
       "id": "full-moon-2030-03-19",
       "path": "/full-moon/2030-03-19/",
       "title": "Full moon in Virgo, March 19, 2030",
-      "anchor": "2030-03-19T17:56:32.851Z",
+      "anchor": "2030-03-19T17:56:30.626Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4406,7 +4406,7 @@
       "id": "new-moon-2030-04-02",
       "path": "/new-moon/2030-04-02/",
       "title": "New moon in Aries, April 2, 2030",
-      "anchor": "2030-04-02T22:02:36.087Z",
+      "anchor": "2030-04-02T22:02:33.450Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4423,7 +4423,7 @@
       "id": "mercury-stations-retrograde-2030-04-13",
       "path": "/mercury-retrograde/2030-04-13/",
       "title": "Mercury stations retrograde, April 13, 2030",
-      "anchor": "2030-04-13T02:27:57.831Z",
+      "anchor": "2030-04-13T02:33:56.425Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -4439,7 +4439,7 @@
       "id": "full-moon-2030-04-18",
       "path": "/full-moon/2030-04-18/",
       "title": "Full moon in Libra, April 18, 2030",
-      "anchor": "2030-04-18T03:20:03.661Z",
+      "anchor": "2030-04-18T03:20:02.343Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4456,7 +4456,7 @@
       "id": "jupiter-opposition-saturn-2030-04-24",
       "path": "/events/jupiter-opposition-saturn-2030-04-24/",
       "title": "Jupiter opposition Saturn, April 24, 2030",
-      "anchor": "2030-04-24T01:53:15.482Z",
+      "anchor": "2030-04-24T01:56:26.891Z",
       "family": "aspect",
       "subtype": "opposition",
       "bodies": [
@@ -4474,7 +4474,7 @@
       "id": "new-moon-2030-05-02",
       "path": "/new-moon/2030-05-02/",
       "title": "New moon in Taurus, May 2, 2030",
-      "anchor": "2030-05-02T14:12:15.039Z",
+      "anchor": "2030-05-02T14:12:10.095Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4491,7 +4491,7 @@
       "id": "neptune-sextile-pluto-2030-05-04",
       "path": "/events/neptune-sextile-pluto-2030-05-04/",
       "title": "Neptune sextile Pluto, May 4, 2030",
-      "anchor": "2030-05-04T13:21:05.980Z",
+      "anchor": "2030-05-04T15:27:54.480Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -4509,7 +4509,7 @@
       "id": "mercury-stations-direct-2030-05-06",
       "path": "/mercury-retrograde/2030-04-13/",
       "title": "Mercury stations direct, May 6, 2030",
-      "anchor": "2030-05-06T20:18:13.797Z",
+      "anchor": "2030-05-06T20:14:53.407Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -4525,7 +4525,7 @@
       "id": "pluto-stations-retrograde-2030-05-12",
       "path": "/retrogrades/#retrograde-pluto-2030-05-12",
       "title": "Pluto stations retrograde, May 12, 2030",
-      "anchor": "2030-05-12T23:12:34.979Z",
+      "anchor": "2030-05-12T23:12:48.163Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -4541,7 +4541,7 @@
       "id": "full-moon-2030-05-17",
       "path": "/full-moon/2030-05-17/",
       "title": "Full moon in Scorpio, May 17, 2030",
-      "anchor": "2030-05-17T11:19:09.663Z",
+      "anchor": "2030-05-17T11:19:09.745Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4558,7 +4558,7 @@
       "id": "saturn-enters-gemini-2030-06-01",
       "path": "/events/saturn-enters-gemini-2030-06-01/",
       "title": "Saturn enters Gemini, June 1, 2030",
-      "anchor": "2030-06-01T02:32:43.173Z",
+      "anchor": "2030-06-01T02:34:11.832Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -4574,7 +4574,7 @@
       "id": "new-moon-2030-06-01",
       "path": "/new-moon/2030-06-01/",
       "title": "New moon in Gemini, June 1, 2030",
-      "anchor": "2030-06-01T06:21:24.327Z",
+      "anchor": "2030-06-01T06:21:21.526Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4625,7 +4625,7 @@
       "id": "full-moon-2030-06-15",
       "path": "/full-moon/2030-06-15/",
       "title": "Full moon in Sagittarius, June 15, 2030",
-      "anchor": "2030-06-15T18:41:01.292Z",
+      "anchor": "2030-06-15T18:41:01.457Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4642,7 +4642,7 @@
       "id": "new-moon-2030-06-30",
       "path": "/new-moon/2030-06-30/",
       "title": "New moon in Cancer, June 30, 2030",
-      "anchor": "2030-06-30T21:34:28.587Z",
+      "anchor": "2030-06-30T21:34:29.575Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4659,7 +4659,7 @@
       "id": "jupiter-stations-direct-2030-07-15",
       "path": "/retrogrades/#retrograde-jupiter-2030-03-13",
       "title": "Jupiter stations direct, July 15, 2030",
-      "anchor": "2030-07-15T01:25:40.282Z",
+      "anchor": "2030-07-15T01:26:31.698Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -4675,7 +4675,7 @@
       "id": "full-moon-2030-07-15",
       "path": "/full-moon/2030-07-15/",
       "title": "Full moon in Capricorn, July 15, 2030",
-      "anchor": "2030-07-15T02:11:59.795Z",
+      "anchor": "2030-07-15T02:12:00.290Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4692,7 +4692,7 @@
       "id": "neptune-stations-retrograde-2030-07-16",
       "path": "/retrogrades/#retrograde-neptune-2030-07-16",
       "title": "Neptune stations retrograde, July 16, 2030",
-      "anchor": "2030-07-16T16:30:07.909Z",
+      "anchor": "2030-07-16T16:28:29.032Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -4708,7 +4708,7 @@
       "id": "new-moon-2030-07-30",
       "path": "/new-moon/2030-07-30/",
       "title": "New moon in Leo, July 30, 2030",
-      "anchor": "2030-07-30T11:11:00.057Z",
+      "anchor": "2030-07-30T11:11:00.962Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4725,7 +4725,7 @@
       "id": "full-moon-2030-08-13",
       "path": "/full-moon/2030-08-13/",
       "title": "Full moon in Aquarius, August 13, 2030",
-      "anchor": "2030-08-13T10:44:25.502Z",
+      "anchor": "2030-08-13T10:44:25.089Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4742,7 +4742,7 @@
       "id": "mercury-stations-retrograde-2030-08-16",
       "path": "/mercury-retrograde/2030-08-16/",
       "title": "Mercury stations retrograde, August 16, 2030",
-      "anchor": "2030-08-16T01:22:54.169Z",
+      "anchor": "2030-08-16T01:19:46.962Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -4758,7 +4758,7 @@
       "id": "new-moon-2030-08-28",
       "path": "/new-moon/2030-08-28/",
       "title": "New moon in Virgo, August 28, 2030",
-      "anchor": "2030-08-28T23:07:21.869Z",
+      "anchor": "2030-08-28T23:07:22.857Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4775,7 +4775,7 @@
       "id": "mercury-stations-direct-2030-09-08",
       "path": "/mercury-retrograde/2030-08-16/",
       "title": "Mercury stations direct, September 8, 2030",
-      "anchor": "2030-09-08T09:22:24.726Z",
+      "anchor": "2030-09-08T09:27:17.401Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -4791,7 +4791,7 @@
       "id": "full-moon-2030-09-11",
       "path": "/full-moon/2030-09-11/",
       "title": "Full moon in Pisces, September 11, 2030",
-      "anchor": "2030-09-11T21:17:57.675Z",
+      "anchor": "2030-09-11T21:17:56.686Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4808,7 +4808,7 @@
       "id": "saturn-stations-retrograde-2030-09-20",
       "path": "/retrogrades/#retrograde-saturn-2030-09-20",
       "title": "Saturn stations retrograde, September 20, 2030",
-      "anchor": "2030-09-20T21:31:41.073Z",
+      "anchor": "2030-09-20T21:29:46.375Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -4824,7 +4824,7 @@
       "id": "new-moon-2030-09-27",
       "path": "/new-moon/2030-09-27/",
       "title": "New moon in Libra, September 27, 2030",
-      "anchor": "2030-09-27T09:54:40.078Z",
+      "anchor": "2030-09-27T09:54:41.725Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4841,7 +4841,7 @@
       "id": "uranus-stations-retrograde-2030-09-28",
       "path": "/retrogrades/#retrograde-uranus-2030-09-28",
       "title": "Uranus stations retrograde, September 28, 2030",
-      "anchor": "2030-09-28T08:25:14.354Z",
+      "anchor": "2030-09-28T08:26:55.868Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -4857,7 +4857,7 @@
       "id": "full-moon-2030-10-11",
       "path": "/full-moon/2030-10-11/",
       "title": "Full moon in Aries, October 11, 2030",
-      "anchor": "2030-10-11T10:46:51.181Z",
+      "anchor": "2030-10-11T10:46:51.757Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4874,7 +4874,7 @@
       "id": "jupiter-enters-sagittarius-2030-10-22",
       "path": "/events/jupiter-enters-sagittarius-2030-10-22/",
       "title": "Jupiter enters Sagittarius, October 22, 2030",
-      "anchor": "2030-10-22T23:13:59.291Z",
+      "anchor": "2030-10-22T23:14:20.303Z",
       "family": "ingress",
       "subtype": "ingress",
       "bodies": [
@@ -4890,7 +4890,7 @@
       "id": "pluto-stations-direct-2030-10-23",
       "path": "/retrogrades/#retrograde-pluto-2030-05-12",
       "title": "Pluto stations direct, October 23, 2030",
-      "anchor": "2030-10-23T03:04:23.671Z",
+      "anchor": "2030-10-23T03:05:30.907Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -4906,7 +4906,7 @@
       "id": "new-moon-2030-10-26",
       "path": "/new-moon/2030-10-26/",
       "title": "New moon in Scorpio, October 26, 2030",
-      "anchor": "2030-10-26T20:16:58.897Z",
+      "anchor": "2030-10-26T20:17:00.628Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4923,7 +4923,7 @@
       "id": "full-moon-2030-11-10",
       "path": "/full-moon/2030-11-10/",
       "title": "Full moon in Taurus, November 10, 2030",
-      "anchor": "2030-11-10T03:30:19.664Z",
+      "anchor": "2030-11-10T03:30:19.087Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -4940,7 +4940,7 @@
       "id": "jupiter-opposition-saturn-2030-11-20",
       "path": "/events/jupiter-opposition-saturn-2030-11-20/",
       "title": "Jupiter opposition Saturn, November 20, 2030",
-      "anchor": "2030-11-20T01:08:11.527Z",
+      "anchor": "2030-11-20T01:05:40.080Z",
       "family": "aspect",
       "subtype": "opposition",
       "bodies": [
@@ -4958,7 +4958,7 @@
       "id": "new-moon-2030-11-25",
       "path": "/new-moon/2030-11-25/",
       "title": "New moon in Sagittarius, November 25, 2030",
-      "anchor": "2030-11-25T06:46:30.636Z",
+      "anchor": "2030-11-25T06:46:30.059Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -4992,7 +4992,7 @@
       "id": "mercury-stations-retrograde-2030-12-06",
       "path": "/mercury-retrograde/2030-12-06/",
       "title": "Mercury stations retrograde, December 6, 2030",
-      "anchor": "2030-12-06T02:44:33.193Z",
+      "anchor": "2030-12-06T02:46:21.297Z",
       "family": "station",
       "subtype": "retrograde",
       "bodies": [
@@ -5008,7 +5008,7 @@
       "id": "jupiter-sextile-pluto-2030-12-08",
       "path": "/events/jupiter-sextile-pluto-2030-12-08/",
       "title": "Jupiter sextile Pluto, December 8, 2030",
-      "anchor": "2030-12-08T06:37:34.970Z",
+      "anchor": "2030-12-08T06:42:26.739Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -5043,7 +5043,7 @@
       "id": "full-moon-2030-12-09",
       "path": "/full-moon/2030-12-09/",
       "title": "Full moon in Gemini, December 9, 2030",
-      "anchor": "2030-12-09T22:40:28.279Z",
+      "anchor": "2030-12-09T22:40:28.361Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -5060,7 +5060,7 @@
       "id": "jupiter-trine-neptune-2030-12-10",
       "path": "/events/jupiter-trine-neptune-2030-12-10/",
       "title": "Jupiter trine Neptune, December 10, 2030",
-      "anchor": "2030-12-10T08:13:31.669Z",
+      "anchor": "2030-12-10T08:02:06.533Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -5078,7 +5078,7 @@
       "id": "neptune-stations-direct-2030-12-21",
       "path": "/retrogrades/#retrograde-neptune-2030-07-16",
       "title": "Neptune stations direct, December 21, 2030",
-      "anchor": "2030-12-21T20:41:57.625Z",
+      "anchor": "2030-12-21T20:39:18.104Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -5094,7 +5094,7 @@
       "id": "new-moon-2030-12-24",
       "path": "/new-moon/2030-12-24/",
       "title": "New moon in Capricorn, December 24, 2030",
-      "anchor": "2030-12-24T17:32:15.075Z",
+      "anchor": "2030-12-24T17:32:14.334Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -5111,7 +5111,7 @@
       "id": "mercury-stations-direct-2030-12-25",
       "path": "/mercury-retrograde/2030-12-06/",
       "title": "Mercury stations direct, December 25, 2030",
-      "anchor": "2030-12-25T21:17:20.184Z",
+      "anchor": "2030-12-25T21:15:29.443Z",
       "family": "station",
       "subtype": "direct",
       "bodies": [
@@ -5127,7 +5127,7 @@
       "id": "neptune-sextile-pluto-2030-12-26",
       "path": "/events/neptune-sextile-pluto-2030-12-26/",
       "title": "Neptune sextile Pluto, December 26, 2030",
-      "anchor": "2030-12-26T17:10:11.607Z",
+      "anchor": "2030-12-26T14:35:55.654Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [

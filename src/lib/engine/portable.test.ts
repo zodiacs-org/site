@@ -54,8 +54,10 @@ describe('optional portable calculation boundary', () => {
     expect(result.chart.input.houseSystem).toBe('placidus');
     expect(result.chart.input.utc.toISOString()).toBe('2001-12-21T08:30:00.000Z');
     expect(result.chart.houses?.system ?? null).toBe(timeKnown ? 'whole' : null);
-    expect(result.chart.flags).toEqual([timeKnown ? 'polar-fallback' : 'no-time']);
-    expect(result.chart).toEqual({ ...native, input: { ...native.input, flags: [] },
+    expect(result.chart.flags).toEqual(timeKnown ? ['polar-fallback', 'polar-angles'] : ['no-time']);
+    const { ephemeris, ...compact } = native;
+    expect(result.envelope.receipt.engine.ephemeris).toEqual(ephemeris);
+    expect(result.chart).toEqual({ ...compact, input: { ...native.input, flags: [] },
       bodies: native.bodies.map(({ body, lon, lat, speed, retrograde }) => ({ body, lon, lat, speed, retrograde })) });
     const serialized = serializeNatalEnvelope(result.envelope);
     expect(parseNatalEnvelope(serialized)).toEqual({ ok: true, envelope: result.envelope });
@@ -256,7 +258,10 @@ describe('shared compact chart projection', () => {
     const legacy = computeChart(input);
     const native = natalChart(input);
     expect(legacy.input).toBe(input);
-    expect(legacy).toEqual({ ...native, input, bodies: native.bodies.map(({ sign, degree, ...body }) => body) });
+    const { ephemeris: _ephemeris, ...compact } = native;
+    expect(legacy).toEqual({ ...compact, input, bodies: native.bodies.map(({ body, lon, lat, speed, retrograde }) => ({
+      body, lon, lat, speed, retrograde,
+    })) });
     const projected = adaptChart(native, input);
     expect(projected.input).toBe(input);
     expect(projected.bodies).not.toBe(native.bodies);

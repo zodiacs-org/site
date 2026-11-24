@@ -13,9 +13,10 @@ import { describe, expect, it } from 'vitest';
 import Ajv2020 from 'ajv/dist/2020';
 import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport } from '@modelcontextprotocol/server';
-import { ENGINE_VERSION, EPHEMERIS, natalChart } from '@zodiacs/engine';
+import { ENGINE_VERSION, defaultEphemeris, natalChart, setDefaultEphemeris } from '@zodiacs/engine';
 import { NATAL_RECEIPT_CONVENTION_SETS, createNatalEnvelope, serializeNatalEnvelope } from '@zodiacs/engine/receipt';
 import candidate from '../data/platform-engine-candidate.json';
+import { BACKEND } from '../lib/compute-api/receipt';
 import { ADAPTER_VERSION, HOUSE_SYSTEMS } from './bounds';
 import { ADAPTER_RECEIPT_SCHEMA, DOCS_URL, TOOL_NAMES, citeFor } from './cite';
 import { createServer } from './create-server';
@@ -139,7 +140,14 @@ pairs.push([placidus, whole], [whole, placidus], [placidus, offset]);
 // is taken by its content, the one with a time scale and no nutation key; rc.15
 // listed no ids and required no feature.
 const relabelled = (() => {
-  const record = JSON.parse(placidus);
+  const ephemeris = defaultEphemeris().name;
+  setDefaultEphemeris('astronomy-engine');
+  let record;
+  try {
+    record = JSON.parse(natal({ ...LONDON, output: 'record' }).record);
+  } finally {
+    setDefaultEphemeris(ephemeris);
+  }
   record.receipt.engine = { ...record.receipt.engine, version: '0.1.1-rc.15' };
   record.receipt.conventions = { ...NATAL_RECEIPT_CONVENTION_SETS.find((set) => 'timeScale' in set && !('nutation' in set))! };
   delete record.receipt.conventionIds;
@@ -302,7 +310,7 @@ describe('compare_calculation_records over pairs from the corpus', () => {
         schema: ADAPTER_RECEIPT_SCHEMA,
         tool: 'compare_calculation_records',
         adapter: { name: 'zodiacs-mcp-server', version: ADAPTER_VERSION },
-        engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { ...EPHEMERIS } },
+        engine: BACKEND,
         output,
       });
       expect(value.cite).toEqual({
@@ -389,7 +397,7 @@ describe('get_capabilities', () => {
       schema: ADAPTER_RECEIPT_SCHEMA,
       tool: 'get_capabilities',
       adapter: { name: 'zodiacs-mcp-server', version: ADAPTER_VERSION },
-      engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { ...EPHEMERIS } },
+      engine: BACKEND,
     });
   });
 });
@@ -397,25 +405,26 @@ describe('get_capabilities', () => {
 describe('the conventions vocabulary', () => {
   const vocabulary = conventionsVocabulary();
 
-  it('is the engine\'s own sets, the current one first, with a writer for each', () => {
+  it('lists the engine\'s own sets in order with a writer for each', () => {
     expect(SET_WRITERS).toHaveLength(NATAL_RECEIPT_CONVENTION_SETS.length);
     expect(vocabulary.sets.map((set) => set.conventions)).toEqual([...NATAL_RECEIPT_CONVENTION_SETS]);
     const fresh = createNatalEnvelope(natalChart({ utc: LONDON.utc })).receipt;
-    expect(fresh.conventions).toEqual(vocabulary.sets[0].conventions);
-    // The installed engine writes the current set, first introduced in 1.1.0-rc.1.
+    const current = vocabulary.sets.find(set => canonical(set.conventions) === canonical(fresh.conventions));
+    expect(current?.current).toBe(true);
+    // The installed engine identifies the DE440 set's first version.
     // Compare the whole release tuple across the transition to 1.0 candidates.
     const release = (version: string) => {
       const parts = /^(\d+)\.(\d+)\.(\d+)(?:-rc\.(\d+))?$/.exec(version);
       expect(parts, 'a stable release or numbered release candidate').not.toBeNull();
       return [...parts!.slice(1, 4).map(Number), parts![4] === undefined ? Infinity : Number(parts![4])];
     };
-    expect(vocabulary.sets[0].writtenBy).toEqual({ from: '1.1.0-rc.1', to: null });
+    expect(current?.writtenBy).toEqual({ from: '1.1.0-rc.10', to: null });
     const installed = release(ENGINE_VERSION);
-    const introduced = release(vocabulary.sets[0].writtenBy.from);
+    const introduced = release(current!.writtenBy.from);
     const order = installed.reduce((result, value, index) => result || Math.sign(value - introduced[index]), 0);
     expect(order).toBeGreaterThanOrEqual(0);
     expect(vocabulary.coverage).toEqual(fresh.coverage);
-    expect(vocabulary.engine).toEqual({ name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { ...EPHEMERIS } });
+    expect(vocabulary.engine).toEqual(BACKEND);
   });
 
   it('describes every key any set carries, and nothing else', () => {
@@ -428,7 +437,7 @@ describe('the conventions vocabulary', () => {
     expect(vocabulary.keys.conventionIds.recordedFrom).toBe('1.1.0-rc.1');
   });
 
-  it('names the versions that wrote each set, newest first and without a gap', () => {
+  it('names consecutive versions for the astronomy engine sets and identifies the DE440 writer', () => {
     // A release's place in the engine's history: the 0.1.1 candidates by number, then 1.0.0 and the release after
     // it, 1.1.0-rc.1 (the engine's artifacts/archives.json). The releases between rc.17 and 1.0.0 wrote rc.16's set.
     const place = (version: string) => {
@@ -437,15 +446,16 @@ describe('the conventions vocabulary', () => {
       expect(['1.0.0', '1.1.0-rc.1'], version).toContain(version);
       return version === '1.0.0' ? 1000 : 1001;
     };
-    expect(vocabulary.sets.map((set) => set.current)).toEqual(vocabulary.sets.map((_set, index) => index === 0));
-    expect(SET_WRITERS[0].to).toBeNull();
-    for (let index = 1; index < SET_WRITERS.length; index += 1) {
-      const { from, to } = SET_WRITERS[index];
+    const astronomyWriters = SET_WRITERS.slice(0, SET_WRITERS.findIndex(({ from }) => from === '1.1.0-rc.10'));
+    expect(vocabulary.sets.map((set) => set.current)).toEqual(SET_WRITERS.map(({ to }) => to === null));
+    expect(astronomyWriters[0].to).toBeNull();
+    for (let index = 1; index < astronomyWriters.length; index += 1) {
+      const { from, to } = astronomyWriters[index];
       expect(place(from)).toBeLessThanOrEqual(place(to!));
       // Each older set ends with the release before the one the next set begins with.
-      expect(place(to!) + 1, `${to}, then ${SET_WRITERS[index - 1].from}`).toBe(place(SET_WRITERS[index - 1].from));
+      expect(place(to!) + 1, `${to}, then ${astronomyWriters[index - 1].from}`).toBe(place(astronomyWriters[index - 1].from));
     }
-    expect(SET_WRITERS.at(-1)!.from).toBe('0.1.1-rc.3');
+    expect(astronomyWriters.at(-1)!.from).toBe('0.1.1-rc.3');
   });
 
   it('says what every chart flag reports', () => {

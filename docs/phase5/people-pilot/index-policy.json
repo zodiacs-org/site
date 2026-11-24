@@ -528,27 +528,106 @@
     "rank": 161
    }
   ],
-  "reason": "Keep the 100 highest measured public-demand profiles plus four reviewed deceased profiles already linked from Registry sign records. The remaining reviewed deceased profiles stay live but noindex, follow."
+  "reason": "Keep the 100 highest measured public-demand profiles plus four reviewed deceased profiles already linked from Registry sign records. The remaining reviewed deceased profiles stay live but noindex, follow. The 2026-11-18 Registry refresh removed these four from the sign records; they keep their continuity override so pages already in search are not withdrawn."
  },
  "protectedLivingProfiles": [
   "bill-gates",
   "leonardo-dicaprio",
   "rigoberta-menchu",
-  "serena-williams"
+  "serena-williams",
+  "lisa",
+  "sabrina-carpenter",
+  "mrbeast",
+  "kendrick-lamar",
+  "erling-haaland",
+  "kylie-jenner",
+  "zendaya",
+  "max-verstappen",
+  "jenna-ortega",
+  "taylor-swift",
+  "timothee-chalamet",
+  "harry-styles",
+  "bad-bunny",
+  "rihanna",
+  "olivia-rodrigo"
  ],
  "expansion": {
   "authorizedBy": "owner instruction of 2026-07-27 — Phase 5 completion authorizes public indexing of complete deceased-person profiles and qualifying directory pages after all gates pass",
   "authorizedAtUtc": "2026-07-27T00:00:00Z",
   "livingBoundary": "living-person profiles remain noindex/nofollow and excluded from sitemap, search, directory, birthday links, and automatic related-person links",
   "personSpecificLinkAuthorization": {
-   "authorizedBy": "owner instruction of 2026-08-16",
-   "authorizedAtUtc": "2026-08-16T00:00:00Z",
    "profiles": [
     "bill-gates",
-    "leonardo-dicaprio"
+    "leonardo-dicaprio",
+    "lisa",
+    "sabrina-carpenter",
+    "mrbeast",
+    "kendrick-lamar",
+    "erling-haaland",
+    "kylie-jenner",
+    "zendaya",
+    "max-verstappen",
+    "jenna-ortega",
+    "taylor-swift",
+    "timothee-chalamet",
+    "harry-styles",
+    "bad-bunny",
+    "rihanna",
+    "olivia-rodrigo"
    ],
-   "surface": "/registry/scorpio/",
-   "scope": "Direct, nofollow name links are authorized. The protected profiles remain noindex/nofollow and excluded from the directory, sitemap, search, birthday links, and automatic related-person rails."
+   "surfaces": {
+    "bill-gates": "/registry/scorpio/",
+    "leonardo-dicaprio": "/registry/scorpio/",
+    "lisa": "/registry/aries/",
+    "sabrina-carpenter": "/registry/taurus/",
+    "mrbeast": "/registry/taurus/",
+    "kendrick-lamar": "/registry/gemini/",
+    "erling-haaland": "/registry/cancer/",
+    "kylie-jenner": "/registry/leo/",
+    "zendaya": "/registry/virgo/",
+    "max-verstappen": "/registry/libra/",
+    "jenna-ortega": "/registry/libra/",
+    "taylor-swift": "/registry/sagittarius/",
+    "timothee-chalamet": "/registry/capricorn/",
+    "harry-styles": "/registry/aquarius/",
+    "bad-bunny": "/registry/pisces/",
+    "rihanna": "/registry/pisces/",
+    "olivia-rodrigo": "/registry/pisces/"
+   },
+   "grants": [
+    {
+     "authorizedBy": "owner instruction of 2026-08-16",
+     "authorizedAtUtc": "2026-08-16T00:00:00Z",
+     "decisionRecord": "docs/PHASE5-PEOPLE-PROTECTED-LINK-DECISION-2026-08-16.md",
+     "profiles": [
+      "bill-gates",
+      "leonardo-dicaprio"
+     ]
+    },
+    {
+     "authorizedBy": "owner instruction of 2026-11-18",
+     "authorizedAtUtc": "2026-11-18T00:00:00Z",
+     "decisionRecord": "docs/PHASE5-PEOPLE-PROTECTED-LINK-DECISION-2026-11-18.md",
+     "profiles": [
+      "lisa",
+      "sabrina-carpenter",
+      "mrbeast",
+      "kendrick-lamar",
+      "erling-haaland",
+      "kylie-jenner",
+      "zendaya",
+      "max-verstappen",
+      "jenna-ortega",
+      "taylor-swift",
+      "timothee-chalamet",
+      "harry-styles",
+      "bad-bunny",
+      "rihanna",
+      "olivia-rodrigo"
+     ]
+    }
+   ],
+   "scope": "Direct, nofollow name links are authorized, each only from the one Registry sign page named in surfaces. The protected profiles remain noindex/nofollow and excluded from the directory, sitemap, search, birthday links, and automatic related-person rails."
   }
  },
  "withdrawn": [

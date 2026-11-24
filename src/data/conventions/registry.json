@@ -1,21 +1,21 @@
 {
   "schema": "zodiacs.conventions-registry.v1",
-  "version": "2026-11-04",
+  "version": "2026-11-23",
   "title": "Conventions registry",
   "base": "https://zodiacs.org/developers/conventions/",
   "license": "CC0-1.0",
   "idSyntax": "An id is a namespace, a colon and a value. The value is everything after the first colon and may itself hold colons, semicolons, slashes or an @. A receipt that holds a value under a field names the id of that field's namespace and that value. Natal receipts from @zodiacs/engine 1.1.0-rc.1 list, as conventionIds, every id that they and their result name, in code-unit order, each once, and the compute API's receipts list the ids their own fields name in the same way.",
   "engine": {
     "package": "@zodiacs/engine",
-    "version": "1.1.0-rc.2",
+    "version": "2.1.0",
     "repository": "https://github.com/zodiacs-org/engine",
-    "commit": "883371f5d592cd952873422f13766038fcfa7b68"
+    "commit": "92825deeeb5c74c5f56b37d5d612c3439347087e"
   },
   "conformance": {
     "suite": "zodiacs-conformance",
-    "suiteVersion": "0.2.0",
+    "suiteVersion": "0.3.0",
     "repository": "https://github.com/zodiacs-org/engine",
-    "commit": "883371f5d592cd952873422f13766038fcfa7b68"
+    "commit": "47eebb83516ad99152dfefb69feff2aea93264b3"
   },
   "groups": [
     {
@@ -48,7 +48,11 @@
         "sidereal-time",
         "aspects",
         "search",
-        "time-band"
+        "time-band",
+        "target",
+        "place",
+        "frame-turn",
+        "bounds"
       ]
     },
     {
@@ -62,7 +66,8 @@
         "moonNodes",
         "moonPosition",
         "planetPositions",
-        "timeScale"
+        "timeScale",
+        "positionFrame"
       ]
     },
     {
@@ -134,7 +139,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "zodiac:sidereal",
@@ -718,6 +723,19 @@
             }
           ],
           "status": "current"
+        },
+        {
+          "id": "light-time:iterated",
+          "value": "iterated",
+          "title": "Iterated light time",
+          "definition": "The apparent place calculation iterates the time taken by light from the body.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
+            }
+          ],
+          "status": "current"
         }
       ]
     },
@@ -745,6 +763,19 @@
             }
           ],
           "status": "current"
+        },
+        {
+          "id": "aberration:relativistic-annual",
+          "value": "relativistic-annual",
+          "title": "Relativistic annual aberration",
+          "definition": "The reduction applies relativistic aberration from the observer velocity.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
+            }
+          ],
+          "status": "current"
         }
       ]
     },
@@ -765,6 +796,19 @@
             {
               "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "deflection:sun-outside-disc",
+          "value": "sun-outside-disc",
+          "title": "Solar deflection outside the disc",
+          "definition": "The reduction applies solar gravitational deflection outside the apparent solar disc.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
             }
           ],
           "status": "current"
@@ -875,7 +919,20 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+        },
+        {
+          "id": "nutation:iau2000b-p03",
+          "value": "iau2000b-p03",
+          "title": "Nutation with P03 adjustments",
+          "definition": "The reduction uses the IAU 2000B series with adjustments for the P03 precession.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
+            }
+          ],
+          "status": "current"
         }
       ]
     },
@@ -927,6 +984,19 @@
             {
               "title": "G. Petit and B. Luzum (eds.), IERS Conventions (2010), IERS Technical Note 36",
               "url": "https://www.iers.org/IERS/EN/Publications/TechnicalNotes/tn36.html"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "frame-bias:iau2006-fukushima-williams",
+          "value": "iau2006-fukushima-williams",
+          "title": "Frame bias and precession",
+          "definition": "The reduction uses the Fukushima Williams formulation of frame bias and precession.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
             }
           ],
           "status": "current"
@@ -1130,7 +1200,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "speed:degrees-per-day;central-difference-plus-minus-0.25-day",
@@ -1170,6 +1240,19 @@
             {
               "title": "astronomy-engine 2.1.19 (Don Cross)",
               "url": "https://www.npmjs.com/package/astronomy-engine/v/2.1.19"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ephemeris:jpl-de440@51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7",
+          "value": "jpl-de440@51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7",
+          "title": "JPL DE440",
+          "definition": "The sealed pack supplied with the engine, refitted from the JPL DE440 planetary ephemeris.",
+          "sources": [
+            {
+              "title": "Zodiacs engine release and DE440 reduction",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/receipt.ts"
             }
           ],
           "status": "current"
@@ -1232,7 +1315,7 @@
           "id": "time:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise",
           "value": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise",
           "title": "The engine's time basis",
-          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds (UTC + (TAI − UTC) + 32.184 s) and UT1 from IERS UT1 − UTC; outside that span, the instant read as UT1 and TT from the ΔT model. The natal receipt names the same basis in its timeScale convention.",
+          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds (UTC + (TAI − UTC) + 32.184 s) and UT1 from IERS UT1 − UTC; before 1972, the instant read as UT1 and TT from the ΔT model. After the table, engines before 2.0.0 read the instant as UT1 too; from 2.0.0 the id stays the same, and each instant's timeScale.basis continuous-utc records that TT is UTC plus 69.184 s and UT1 comes from the ΔT model. The natal receipt names the same basis in its timeScale convention.",
           "sources": [
             {
               "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
@@ -1245,6 +1328,19 @@
             {
               "title": "IERS Bulletin C, leap seconds (TAI − UTC)",
               "url": "https://hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "time:tdb-three-term",
+          "value": "tdb-three-term",
+          "title": "Barycentric dynamical time",
+          "definition": "The reduction converts terrestrial time to barycentric dynamical time with a three term expression.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
             }
           ],
           "status": "current"
@@ -1523,7 +1619,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "angles:gast-and-mean-obliquity",
@@ -1606,7 +1702,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "aspects:major-aspects;sun-moon-eight-planets;no-nodes",
@@ -1698,7 +1794,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1738,7 +1834,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1766,7 +1862,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "deltaT:tt-minus-ut1;ut1-read-as-utc;value-in-result",
@@ -1816,7 +1912,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1840,7 +1936,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1864,7 +1960,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6; 1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1896,7 +1992,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "moonPosition:astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
@@ -1933,6 +2029,20 @@
           ],
           "status": "superseded",
           "writtenBy": "0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        },
+        {
+          "id": "moonPosition:ephemeris-geocentric-moon;light-time;solar-deflection;relativistic-aberration",
+          "value": "ephemeris-geocentric-moon;light-time;solar-deflection;relativistic-aberration",
+          "title": "Lunar position with DE440",
+          "definition": "The apparent geocentric Moon, with light time, solar deflection and relativistic aberration.",
+          "sources": [
+            {
+              "title": "Zodiacs engine release and DE440 reduction",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -1956,7 +2066,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 2.0.0-rc.3 to 2.1.0"
         },
         {
           "id": "planetPositions:apparent-geocentric-ecliptic-of-date",
@@ -1971,6 +2081,20 @@
           ],
           "status": "superseded",
           "writtenBy": "0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        },
+        {
+          "id": "planetPositions:apparent-geocentric-ecliptic-of-date;light-time;solar-deflection;relativistic-aberration;barycentres-mars-to-pluto",
+          "value": "apparent-geocentric-ecliptic-of-date;light-time;solar-deflection;relativistic-aberration;barycentres-mars-to-pluto",
+          "title": "Planet positions with DE440",
+          "definition": "Apparent geocentric positions with light time, solar deflection and relativistic aberration. The calculation uses the Mars to Pluto system barycentres.",
+          "sources": [
+            {
+              "title": "Zodiacs engine release and DE440 reduction",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -2006,7 +2130,33 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 1.1.0-rc.10 to 2.1.0"
+        },
+        {
+          "id": "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
+          "value": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;tt-utc-plus-69.184s-and-ut1-from-delta-t-model-after;delta-t-model-before-1972;in-result",
+          "title": "The engine's time basis with continuous UTC, in the result",
+          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds and UT1 from IERS UT1 − UTC; after the table, TT is UTC plus 69.184 s and UT1 comes from the ΔT model; before 1972, the instant read as UT1 and TT from the ΔT model; the basis recorded in the result's timeScale. A receipt names this set only for a chart whose basis is continuous-utc.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 2.1.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/docs/time.md#from-an-instant-to-ut1-and-tt"
+            },
+            {
+              "title": "@zodiacs/engine 2.1.0, docs/time.md, Receipts",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/docs/time.md#receipts"
+            },
+            {
+              "title": "IERS Bulletin C, leap seconds (TAI − UTC)",
+              "url": "https://hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "2.0.0-rc.3 to 2.1.0"
         }
       ]
     },
@@ -2099,6 +2249,36 @@
           "status": "current"
         },
         {
+          "id": "flag:calendar-unknown",
+          "value": "calendar-unknown",
+          "title": "Calendar unknown",
+          "definition": "A local date given with no country that a calendar changeover may have skipped, so its civil calendar is uncertain. A caller assertion that a natal receipt accepts only from 1582-10-04 to before 1918-02-28 (UTC). From engine 2.0.0.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, README, Input flag compatibility",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/README.md#input-flag-compatibility"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:host-zone-data-differs",
+          "value": "host-zone-data-differs",
+          "title": "Host zone data differs",
+          "definition": "A wall time from 1970 on that the host's Intl read where the host's time zone data differs from the engine's pinned tzdata nearby. A caller assertion that a natal receipt refuses before 1970-01-01T00:00Z. From engine 2.0.0.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, README, Input flag compatibility",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/README.md#input-flag-compatibility"
+            },
+            {
+              "title": "@zodiacs/engine 2.1.0, docs/time.md, Host time zone data",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/docs/time.md#host-time-zone-data"
+            }
+          ],
+          "status": "current"
+        },
+        {
           "id": "flag:no-time",
           "value": "no-time",
           "title": "No birth time",
@@ -2125,6 +2305,19 @@
           "status": "current"
         },
         {
+          "id": "flag:polar-angles",
+          "value": "polar-angles",
+          "title": "Polar angles",
+          "definition": "The chart's angles are inside the polar circle, where |latitude| ≥ 90° less the true obliquity of date, in any house system; the ascendant there turns half a circle twice a day. From engine 2.0.0.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/README.md#house-systems"
+            }
+          ],
+          "status": "current"
+        },
+        {
           "id": "flag:outside-reference-span",
           "value": "outside-reference-span",
           "title": "Outside the reference span",
@@ -2133,6 +2326,45 @@
             {
               "title": "@zodiacs/engine 1.0.0, README, the reference span",
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:de440-unavailable",
+          "value": "de440-unavailable",
+          "title": "DE440 unavailable",
+          "definition": "The DE440 pack could not be opened, so the positions used astronomy engine.",
+          "sources": [
+            {
+              "title": "Zodiacs engine release and DE440 reduction",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/receipt.ts"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:outside-de440-span",
+          "value": "outside-de440-span",
+          "title": "Outside the DE440 span",
+          "definition": "The instant is outside the DE440 pack coverage, so the positions used astronomy engine.",
+          "sources": [
+            {
+              "title": "Zodiacs engine release and DE440 reduction",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/receipt.ts"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:delta-t-extrapolated",
+          "value": "delta-t-extrapolated",
+          "title": "Extrapolated delta T",
+          "definition": "The engine uses its extrapolation for delta T outside its tabulated interval.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
             }
           ],
           "status": "current"
@@ -2278,10 +2510,23 @@
           "status": "current"
         },
         {
+          "id": "time-basis:continuous-utc",
+          "value": "continuous-utc",
+          "title": "Continuous UTC",
+          "definition": "After the IERS table (2027-10-02): TT is UTC plus 69.184 s, the last listed leap seconds carried, and UT1 comes from the ΔT model. From engine 2.0.0.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/docs/time.md#from-an-instant-to-ut1-and-tt"
+            }
+          ],
+          "status": "current"
+        },
+        {
           "id": "time-basis:delta-t",
           "value": "delta-t",
           "title": "ΔT model",
-          "definition": "Outside the IERS span: the instant read as UT1, TT from the ΔT model.",
+          "definition": "Before 1972: the instant read as UT1, TT from the ΔT model. Engines before 2.0.0 also used it after the IERS table.",
           "sources": [
             {
               "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
@@ -2534,11 +2779,24 @@
           "id": "ut1-source:fallback",
           "value": "fallback",
           "title": "Fallback",
-          "definition": "After the table, for UTC or TT input: 0 ± 0.9 s.",
+          "definition": "0 ± 0.9 s after the table: what engines before 2.0.0 recorded for UTC or TT input there, and what a pinned ΔT on UTC input still records.",
           "sources": [
             {
               "title": "@zodiacs/engine 1.0.0, docs/time.md, What a chart reports",
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#what-a-chart-reports"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ut1-source:model",
+          "value": "model",
+          "title": "Model",
+          "definition": "After the table, on the continuous UTC rule: 69.184 s less the ΔT model's TT − UT1, with the model's band. From engine 2.0.0.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 2.1.0, docs/time.md, What a chart reports",
+              "url": "https://github.com/zodiacs-org/engine/blob/92825deeeb5c74c5f56b37d5d612c3439347087e/docs/time.md#what-a-chart-reports"
             }
           ],
           "status": "current"
@@ -3111,6 +3369,57 @@
             }
           ],
           "status": "current"
+        },
+        {
+          "id": "kind:event.ingress",
+          "value": "event.ingress",
+          "title": "Time a body reaches a sign boundary",
+          "definition": "L4 (Event times): 70 vectors, tolerance tt_s ±2 s to ±5250 s, or utc_s ±2 s to ±24 s. The instant in the vector's window at which a body's apparent geocentric ecliptic longitude of date (as in L1) equals longitude_deg, a multiple of 30 degrees, in either direction of motion. Instants are seconds from J2000.0: of TT from 2000-01-01T12:00:00 TT, or of UTC from 2000-01-01T12:00:00 UTC for the vectors tagged utc-input, whose UTC is TT less 69.184 s. The window is open at its start and closed at its end, and holds exactly one such instant. The tolerance is the time the longitude takes to move 1 arcsecond there, at least 1 s.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.3.0, vectors/0.3.0/L4-events.json (L4, Event times; sha256 4c153d887f993536549432213e81648e9d0b4fc940eb1f116c4aa732dba6e25f)",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/vectors/0.3.0/L4-events.json"
+            },
+            {
+              "title": "Conformance suite 0.3.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:event.station",
+          "value": "event.station",
+          "title": "Time a body turns retrograde or direct",
+          "definition": "L4 (Event times): 30 vectors, tolerance tt_s ±6270 s to ±50406 s; direction exact. The instant in the vector's window at which the rate of a body's apparent geocentric ecliptic longitude of date is zero, and its direction: retrograde when the rate turns from positive to negative, direct when it turns from negative to positive. Instants are seconds of TT from 2000-01-01T12:00:00 TT; the window is open at its start and closed at its end, and holds exactly one station. The tolerance is the time the longitude takes to leave its turning value by 1 arcsecond, at least 60 s.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.3.0, vectors/0.3.0/L4-events.json (L4, Event times; sha256 4c153d887f993536549432213e81648e9d0b4fc940eb1f116c4aa732dba6e25f)",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/vectors/0.3.0/L4-events.json"
+            },
+            {
+              "title": "Conformance suite 0.3.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:event.lunation",
+          "value": "event.lunation",
+          "title": "Time of a new or full Moon",
+          "definition": "L4 (Event times): 40 vectors, tolerance tt_s ±2 s to ±3 s, or utc_s ±2 s to ±3 s. The instant in the vector's window at which the Moon's apparent geocentric ecliptic longitude of date minus the Sun's, reduced to 0 to 360 degrees, equals phase_deg: 0 for a new Moon, 180 for a full Moon. Instants are seconds from J2000.0: of TT from 2000-01-01T12:00:00 TT, or of UTC from 2000-01-01T12:00:00 UTC for the vectors tagged utc-input, whose UTC is TT less 69.184 s. The window is open at its start and closed at its end, and holds exactly one such instant. The tolerance is the time that difference takes to move 1 arcsecond there, at least 1 s.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.3.0, vectors/0.3.0/L4-events.json (L4, Event times; sha256 4c153d887f993536549432213e81648e9d0b4fc940eb1f116c4aa732dba6e25f)",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/vectors/0.3.0/L4-events.json"
+            },
+            {
+              "title": "Conformance suite 0.3.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
         }
       ]
     },
@@ -3306,6 +3615,139 @@
             {
               "title": "Conformance suite 0.2.0, SPEC.md",
               "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:l4-de440s-events",
+          "value": "l4-de440s-events",
+          "title": "NASA JPL DE440s reduced to apparent geocentric longitudes in the IAU 2006/2000A true ecliptic and equinox of date, with event instants solved by bisection",
+          "definition": "The independent arbiter of L4 (Event times) vectors. Source: NASA's DE440s kernel (de440s.bsp, sha256 c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2), reduced with ERFA to apparent geocentric longitudes as the L1 arbiter's own check reduces them (light time, deflection by the Sun, annual aberration, IAU 2006/2000A precession and nutation, true obliquity), Mars to Pluto as their system barycentres. Each event is found by sampling at 1 hour steps and solved by bisection to 1 ms. Every solve is repeated with half hour brackets, and every event is cross-checked against JPL Horizons (DE441), whose answers are committed with the suite. The design, instants and tolerance rule were committed before any engine was run against them.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.3.0, vectors/0.3.0/L4-events.json (L4, Event times; sha256 4c153d887f993536549432213e81648e9d0b4fc940eb1f116c4aa732dba6e25f)",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/vectors/0.3.0/L4-events.json"
+            },
+            {
+              "title": "Conformance suite 0.3.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/47eebb83516ad99152dfefb69feff2aea93264b3/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "positionFrame",
+      "title": "Position frame",
+      "description": "The position is reduced from the ICRF to the true ecliptic of date using precession, nutation and the engine time conversion.",
+      "usedIn": [
+        "natal receipts: conventions.positionFrame"
+      ],
+      "entries": [
+        {
+          "id": "positionFrame:icrf-to-true-ecliptic-of-date;iau2006-precession-with-bias;iau2000b-nutation-p03;tdb-three-term",
+          "value": "icrf-to-true-ecliptic-of-date;iau2006-precession-with-bias;iau2000b-nutation-p03;tdb-three-term",
+          "title": "DE440 ecliptic of date",
+          "definition": "The position is reduced from the ICRF to the true ecliptic of date using precession, nutation and the engine time conversion.",
+          "sources": [
+            {
+              "title": "Zodiacs engine release and DE440 reduction",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "1.1.0-rc.10 to 2.1.0; 2.0.0-rc.3 to 2.1.0"
+        }
+      ]
+    },
+    {
+      "name": "target",
+      "title": "Target",
+      "description": "The target is the centre of mass of the planet and its satellites.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "target:system-barycentre",
+          "value": "system-barycentre",
+          "title": "System barycentre",
+          "definition": "The target is the centre of mass of the planet and its satellites.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "place",
+      "title": "Place",
+      "description": "The reduction turns the apparent ICRF direction to the true ecliptic and equinox of date.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "place:icrf-to-true-ecliptic-of-date",
+          "value": "icrf-to-true-ecliptic-of-date",
+          "title": "True ecliptic of date",
+          "definition": "The reduction turns the apparent ICRF direction to the true ecliptic and equinox of date.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "frame-turn",
+      "title": "Frame turn",
+      "description": "The output convention rotates the place from the true ecliptic of date.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "frame-turn:from-true-ecliptic-of-date",
+          "value": "from-true-ecliptic-of-date",
+          "title": "Rotation from the ecliptic",
+          "definition": "The output convention rotates the place from the true ecliptic of date.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "bounds",
+      "title": "Bounds",
+      "description": "The bounds also include the position change from uncertainty in delta T.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "bounds:plus-delta-t-band",
+          "value": "plus-delta-t-band",
+          "title": "Delta T contribution to bounds",
+          "definition": "The bounds also include the position change from uncertainty in delta T.",
+          "sources": [
+            {
+              "title": "Zodiacs engine calculation conventions and DE440 support",
+              "url": "https://github.com/zodiacs-org/engine/blob/2496c28f273e1e99526490e857332fae44473367/src/calc.ts"
             }
           ],
           "status": "current"

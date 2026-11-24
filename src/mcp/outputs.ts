@@ -23,7 +23,6 @@
  * reads. The tests hold every result to both.
  */
 import { z } from 'zod';
-import { EPHEMERIS } from '@zodiacs/engine';
 import { NATAL_DIAGNOSTIC_SCHEMA, NATAL_ENVELOPE_SCHEMA, NATAL_RECEIPT_SCHEMA } from '@zodiacs/engine/receipt';
 import {
   COMPUTE_RECEIPT_SCHEMA, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, SEARCH_STEP_DAYS, SKY_FACT_KINDS, responseSchemaName,
@@ -43,7 +42,8 @@ export const SIGN_NAMES = Object.freeze([
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ] as const);
 export const CHART_FLAGS = Object.freeze([
-  'dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span',
+  'dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'polar-angles', 'calendar-unknown', 'host-zone-data-differs', 'outside-reference-span',
+  'de440-unavailable', 'outside-de440-span', 'delta-t-extrapolated',
 ] as const);
 export const ASPECT_TYPES = Object.freeze(['conjunction', 'sextile', 'square', 'trine', 'opposition'] as const);
 export const EVIDENCE = Object.freeze(['reproduced', 'reported', 'hypothesis', 'unresolved'] as const);
@@ -54,7 +54,7 @@ const count = z.number().int().min(0);
 /** Exactly two numbers. Not `z.tuple`, whose JSON Schema form some validators do not read. */
 const pair = z.array(z.number()).length(2);
 
-const ephemeris = z.strictObject({ name: z.literal(EPHEMERIS.name), version: z.string() });
+const ephemeris = z.strictObject({ name: z.enum(['astronomy-engine', 'jpl-de440']), version: z.string() });
 
 const engine = z.strictObject({
   name: z.literal('@zodiacs/engine'),
@@ -115,7 +115,8 @@ export const CAPABILITIES_OUTPUT = z.strictObject({
   engine: z.strictObject({
     name: z.literal('@zodiacs/engine'),
     version: z.string(),
-    releaseStatus: z.literal('unpublished-candidate'),
+    releaseStatus: z.literal('published'),
+    registry: z.literal('npm'),
   }),
   schemas: z.strictObject({
     envelope: z.literal(NATAL_ENVELOPE_SCHEMA),
@@ -290,10 +291,10 @@ const deltaT = z.strictObject({
 
 const timeScale = z.strictObject({
   input: z.literal('utc'),
-  basis: z.enum(['iers', 'delta-t']),
-  ut1MinusUtc: z.strictObject({ seconds: z.number(), sigma: z.number(), source: z.enum(['observed', 'predicted', 'fallback']) }).nullable(),
+  basis: z.enum(['iers', 'continuous-utc', 'delta-t']),
+  ut1MinusUtc: z.strictObject({ seconds: z.number(), sigma: z.number(), source: z.enum(['observed', 'predicted', 'fallback', 'model']) }).nullable(),
   leapSeconds: z.strictObject({ taiMinusUtc: z.number(), listed: z.boolean() }).nullable(),
-}).describe('How the engine read the instant. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis delta-t, otherwise: the instant is read as UT1, and TT is UT1 plus the ΔT model.');
+}).describe('How the engine read the instant. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis continuous-utc, after the table: TT is UTC plus 69.184 s, and UT1 comes from the ΔT model. basis delta-t, before 1972: the instant is read as UT1, and TT is UT1 plus the ΔT model.');
 
 const backend = z.strictObject({
   name: z.literal('@zodiacs/engine'),
@@ -453,12 +454,12 @@ export const SKY_FACT_OUTPUT = computeBody('check_sky_fact', z.strictObject({
 export const TIME_OUTPUT = computeBody('resolve_birth_time', z.strictObject({
   utc: instantOut,
   offsetMinutes: z.number().describe('Minutes east of UTC; fractional before standard time.'),
-  flags: z.array(z.enum(['dst-gap', 'dst-fold', 'lmt', 'zone-history-disputed', 'outside-reference-span']))
-    .describe('dst-gap: the time was skipped and moved forward by the gap. dst-fold: it happened twice and the earlier was taken. lmt: it was read on a local mean time. zone-history-disputed: tzdb\'s default build, the runtime\'s own data, gives the zone another offset at the instant than the pinned history. outside-reference-span: the instant falls outside 1800 to 2200.'),
+  flags: z.array(z.enum(['dst-gap', 'dst-fold', 'lmt', 'calendar-unknown', 'host-zone-data-differs', 'zone-history-disputed', 'outside-reference-span']))
+    .describe('dst-gap: the time was skipped and moved forward by the gap. dst-fold: it happened twice and the earlier was taken. lmt: it was read on a local mean time. calendar-unknown: the date was skipped by a calendar change and no country settled which calendar it was written in. host-zone-data-differs: the runtime\'s time zone data differs from the pinned release near this instant. zone-history-disputed: tzdb\'s default build, the runtime\'s own data, gives the zone another offset at the instant than the pinned history. outside-reference-span: the instant falls outside 1800 to 2200.'),
   localMeanTime: z.strictObject({ longitude: z.number(), zoneOffsetMinutes: z.number() }).nullable()
     .describe('The place\'s own mean time, where the time was read on it, with the zone\'s offset then.'),
   zoneHistory: z.enum(['pinned', 'runtime'])
-    .describe('pinned: tzdb release 2025c with backzone, which the engine ships, read the offset. runtime: the runtime\'s own time zone data read it.'),
+    .describe('pinned: tzdb release 2026f with backzone, which the engine ships, read the offset. runtime: the runtime\'s own time zone data read it.'),
   zoneUncertain: z.boolean()
     .describe('True for a date up to 1970-01-01 read on the runtime\'s data where the release records no local time, as at an Antarctic station before it was staffed.'),
   intlOffsetMinutes: z.number().nullable()

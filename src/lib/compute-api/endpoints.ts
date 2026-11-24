@@ -321,7 +321,11 @@ export function computePositions(request: PositionsRequest) {
     const { deltaT, timeScale } = basisOf(instant);
     return {
       instant: iso(instant),
-      bodies: request.bodies ? rows.filter((row) => request.bodies!.includes(row.body)) : rows,
+      // The response identifies the ephemeris once in its backend and receipt. From engine 2.0.0 a row
+      // can carry the instant's own flags too; the instant reports them once, in its deltaT segment,
+      // its timeScale and its flags.
+      bodies: (request.bodies ? rows.filter((row) => request.bodies!.includes(row.body)) : rows)
+        .map(({ ephemeris: _ephemeris, fallback: _fallback, flags: _flags, ...body }) => body),
       deltaT,
       timeScale,
       flags: outsideReferenceSpan(instant) ? ['outside-reference-span' as const] : [],
@@ -427,7 +431,11 @@ function atlasFacts(request: TimeRequest, utc: Date) {
 }
 
 export async function computeTime(request: TimeRequest, dependencies: ComputeDependencies) {
-  const local = await resolveLocal(dependencies.localTime, request.local, request.longitude);
+  const local = await resolveLocal(dependencies.localTime, request.local, request.longitude, {
+    writtenDate: request.writtenDate,
+    calendar: request.calendar,
+    country: request.country,
+  });
   // TT as the engine reads the instant: from 1972 to the end of its UT1 table,
   // UTC plus the leap seconds and 32.184 s; otherwise the instant read as UT1,
   // plus ΔT. Days from 2000-01-01T12:00 on TT, to the millisecond.

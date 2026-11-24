@@ -1,3 +1,4 @@
+import { useBrowserEphemeris } from '../../../tests/helpers/browser-ephemeris';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { natalChart } from '@zodiacs/engine';
 import legacyPolar from '../engine/fixtures/legacy-polar-saved.json';
@@ -9,6 +10,8 @@ import { loadProfile } from './read-store';
 import { resolveSavedChart } from './resolve';
 import { EMPTY_PROFILE, PROFILE_KEY, type SavedChart } from './schema';
 import { currentSavedCalculation, POLAR_REPAIR_VERSION, repairLegacyPolarChart } from './polar-repair';
+
+useBrowserEphemeris();
 
 // The exact vendored 0.1.0 package is the pre-2026-08-24 implementation. At
 // this instant it stored the setting intersection (ASC 203.87198411230202°)
@@ -97,7 +100,10 @@ describe('legacy polar saved-chart repair', () => {
         .toEqual(current.bodies.map(({ body, retrograde }) => ({ body, retrograde })));
       repaired.summary.bodies.forEach(({ lon }, index) => expect(arcsecondsApart(lon, recorded.bodies[index].lon)).toBeLessThan(0.01));
       expect(repaired.summary.houseSystem).toBe(current.houses!.system);
-      expect(repaired.summary.flags).toEqual(current.flags);
+      // From engine 2.0.0 a chart inside the polar circle also carries polar-angles. The repair fixes only the
+      // legacy axis; a repaired record is recalculated (currentSavedCalculation), which adds that flag.
+      expect(repaired.summary.flags).toEqual(current.flags.filter((flag) => flag !== 'polar-angles'));
+      expect(current.flags).toContain('polar-angles');
     }
     expect(repairedCount).toBeGreaterThan(0);
   });

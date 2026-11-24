@@ -1,7 +1,8 @@
+import { de440OutputSchema } from './de440-contract';
 import { describe, expect, it } from 'vitest';
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
-import { EVERY_SWITCHED_TOOL, INPUT_SCHEMAS, OUTPUT_SCHEMAS, SKY_EVENTS_INPUT_SCHEMAS, SKY_EVENTS_OUTPUT_SCHEMAS, type AiToolName } from './contracts';
+import { EVERY_TOOL_WITH_GOOD_DAYS, INPUT_SCHEMAS, OUTPUT_SCHEMAS, SKY_EVENTS_INPUT_SCHEMAS, SKY_EVENTS_OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 import { SAVE_OUTPUT_SCHEMA, SAVE_TOOL_NAME, saveInput } from './accounts/contracts';
 import { executeAiTool } from './tools';
 import { COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
@@ -16,7 +17,7 @@ type Converts = { '~standard': { jsonSchema: Record<'input' | 'output', (options
 const advertised = (schema: unknown, io: 'input' | 'output') => (schema as Converts)['~standard'].jsonSchema[io]({ target: 'draft-2020-12' });
 
 const TOOLS: Array<[string, unknown, unknown]> = [
-  ...EVERY_SWITCHED_TOOL.map((tool): [string, unknown, unknown] => [tool, INPUT_SCHEMAS[tool], OUTPUT_SCHEMAS[tool]]),
+  ...EVERY_TOOL_WITH_GOOD_DAYS.map((tool): [string, unknown, unknown] => [tool, INPUT_SCHEMAS[tool], OUTPUT_SCHEMAS[tool]]),
   // The wider natal chart and explainer the sky events switch offers.
   ...(Object.keys(SKY_EVENTS_INPUT_SCHEMAS) as AiToolName[]).map((tool): [string, unknown, unknown] => [`${tool} with sky events`, SKY_EVENTS_INPUT_SCHEMAS[tool], SKY_EVENTS_OUTPUT_SCHEMAS[tool] ?? OUTPUT_SCHEMAS[tool]]),
   [SAVE_TOOL_NAME, saveInput, SAVE_OUTPUT_SCHEMA],
@@ -54,7 +55,21 @@ function inlined(schema: unknown): unknown {
   if (Array.isArray(schema)) return schema.map(inlined);
   if (!schema || typeof schema !== 'object') return schema;
   const node = schema as Json;
-  if (typeof node.$ref === 'string') return inlined(COMPUTE_SCHEMAS[node.$ref.replace('#/components/schemas/', '')]);
+  if (typeof node.$ref === 'string') {
+    const name = node.$ref.replace('#/components/schemas/', '');
+    // The 13 published connector schemas freeze LocalResolution.flags to the original three flags (AGENTS.md).
+    if (name === 'LocalResolution') {
+      const local = COMPUTE_SCHEMAS.LocalResolution as Json;
+      return inlined({
+        ...local,
+        properties: {
+          ...(local.properties as Json),
+          flags: { type: 'array', items: { enum: ['dst-gap', 'dst-fold', 'lmt'] } },
+        },
+      });
+    }
+    return inlined(COMPUTE_SCHEMAS[name]);
+  }
   return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inlined(value)]));
 }
 
@@ -79,7 +94,7 @@ describe('the tools\' schemas', () => {
   });
 
   it('give the values the compute API returns exactly the schemas the API documents for them', () => {
-    const data = (tool: AiToolName) => at(advertised(OUTPUT_SCHEMAS[tool], 'output'), 'anyOf', '0', 'properties', 'data', 'properties');
+    const data = (tool: AiToolName) => at(de440OutputSchema(advertised(OUTPUT_SCHEMAS[tool], 'output')) as Json, 'anyOf', '0', 'properties', 'data', 'properties');
     const documented = (name: string) => inlined(COMPUTE_SCHEMAS[name]);
     expect(data('get_capabilities').engine).toEqual(documented('Backend'));
     for (const [tool, result] of [['get_upcoming_events', 'EventsResult'], ['check_sky_fact', 'SkyFactResult']] as const) {
@@ -123,7 +138,7 @@ describe('what the tools return', () => {
   it('validates against the schemas they advertise, as a client checks it', async () => {
     const ajv = new Ajv2020({ strict: false, allErrors: true });
     addFormats(ajv);
-    const validators = new Map(EVERY_SWITCHED_TOOL.map((tool) => [tool, ajv.compile(advertised(OUTPUT_SCHEMAS[tool], 'output'))]));
+    const validators = new Map<string, ReturnType<typeof ajv.compile>>(EVERY_TOOL_WITH_GOOD_DAYS.map((tool) => [tool, ajv.compile(de440OutputSchema(advertised(OUTPUT_SCHEMAS[tool], 'output')) as Json)]));
     const dependencies = { occasions: true, horoscopeWindow: async () => committedWindow as HoroscopeWindow, allowEvents: async () => 'allowed' as const };
     const invalid: string[] = [];
     const refused: string[] = [];

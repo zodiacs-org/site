@@ -26,6 +26,7 @@ import EventRelated from './EventRelated.astro';
 import EventSignNotes from './EventSignNotes.astro';
 import EventCountdown from './EventCountdown.astro';
 import EventSkyWatch from './EventSkyWatch.astro';
+import { READING_CONFIDENCE_FAQ, READING_CONFIDENCE_NOTE, READING_CONFIDENCE_UPDATED } from '../../lib/reading-confidence-note';
 import { EVENT_READING_CONFIDENCE, watchPlan } from '../../lib/events/watch';
 import { eventsCatalog } from '../../lib/events/catalog';
 import { publishedEventById } from '../../lib/events/site-publication';
@@ -39,6 +40,7 @@ import { EVENT_READINGS_2027_UPDATED } from '../../lib/events/readings-2027';
 import {
   eventClockHeading, eventClockRows, eventQuestions, eventTimesLine, guideDescription,
 } from '../../lib/events/year-format';
+import { de440UpdatedDate, lastmodDate, latestModifiedAt } from '../../lib/seo-lastmod';
 import { updatedIso, updatedLabel } from '../../world-times/updated';
 import WorldTimesTable from '../../world-times/WorldTimesTable.astro';
 
@@ -68,6 +70,7 @@ const clockRows = guide ? eventClockRows(facts) : [];
 const clockHeading = guide ? eventClockHeading(facts) : undefined;
 const timesLine = guide ? eventTimesLine(facts) : [];
 const faq = guide ? eventQuestions(event, resolve, catalog.events) : [];
+if (guide || interpretation?.body) faq.push(READING_CONFIDENCE_FAQ);
 const buildNow = new Date();
 const description = guide ? guideDescription(facts) : metaDescription(facts);
 
@@ -175,13 +178,18 @@ const followLinks: { href: string; label: string }[] = [
 
 const canonicalUrl = `https://zodiacs.org${facts.path}`;
 const articleImage = `https://zodiacs.org${published?.card ?? '/assets/og/v2/share.png'}`;
-// A style-guide page dates itself from the day its reading was written: the
-// visible "Updated" line, dateModified and the sitemap share that constant.
-const modifiedDate = guide
+// The reading, publication receipt, and engine release each date their own
+// change. The visible Updated day and the structured data use the latest one.
+const previousModifiedDate = guide
   ? updatedIso(EVENT_READINGS_2027_UPDATED)
   : published
     ? `${published.lastModified}T00:00:00.000Z`
     : event.lastModified;
+const engineUpdated = de440UpdatedDate(facts.path);
+const revisions = [previousModifiedDate, engineUpdated, interpretation?.body && READING_CONFIDENCE_UPDATED]
+  .filter((date): date is string => Boolean(date));
+const modifiedDate = revisions.length ? latestModifiedAt(...revisions) : undefined;
+const updatedDay = modifiedDate ? lastmodDate(modifiedDate) : EVENT_READINGS_2027_UPDATED;
 const jsonLd = [
   {
     '@type': 'Article',
@@ -267,9 +275,9 @@ const sources = [
         )}
       </p>
       <p class="event-hero__lead" data-event-lead>{interpretation?.lead ?? factLead}</p>
-      {guide && (
+      {(guide || engineUpdated || interpretation?.body) && (
         <p class="event-updated" data-event-updated>
-          Updated <time datetime={EVENT_READINGS_2027_UPDATED}>{updatedLabel(EVENT_READINGS_2027_UPDATED)}</time>
+          Updated <time datetime={updatedDay}>{updatedLabel(updatedDay)}</time>
         </p>
       )}
     </header>
@@ -284,7 +292,8 @@ const sources = [
         </p>
         <p class="event-confidence" data-reading-confidence>
           <strong>{EVENT_READING_CONFIDENCE}</strong>. This reading uses the sky
-          alone. Your own chart, with a birth time and place, makes a reading more specific.
+          alone.
+          <small>{READING_CONFIDENCE_NOTE}</small>
         </p>
       </section>
     )}
@@ -317,7 +326,7 @@ const sources = [
         <p class="event-confidence" data-reading-confidence>
           <strong>{EVENT_READING_CONFIDENCE}</strong>. This reading uses the sky
           alone{interpretation.signNotes ? ', and a Sun sign for the notes below' : ''}.
-          Your own chart, with a birth time and place, makes a reading more specific.
+          <small>{READING_CONFIDENCE_NOTE}</small>
         </p>
       </section>
     )}
@@ -406,6 +415,7 @@ const sources = [
   .event-clocks__lead { margin: 0 0 14px; max-width: 64ch; color: var(--muted); }
   .event-check { margin: 14px 0 0; max-width: 64ch; color: var(--muted); font-size: var(--text-sm); }
   .event-check a { color: var(--text-2); }
+  .event-confidence small { display: block; }
   .faq-item { border-top: 1px solid var(--hair-1); }
   .faq-item summary { min-height: 44px; padding: 12px 0; cursor: pointer; color: var(--text); }
   .faq-item p { margin: 0 0 14px; color: var(--muted); }

@@ -1,0 +1,63 @@
+{
+  "baseCommit": "afa0d3b01b3db90a186f049f3959817eda1e5c33",
+  "releaseBuildCommit": "a90810c5d1531dc9c7aaa0a02c694fb93d315434",
+  "inventoryRows": {
+    "before": 434,
+    "after": 434
+  },
+  "chartEngineClosureGzipBytes": {
+    "before": 33239,
+    "after": 34060,
+    "entry": "dist/_astro/full.DmIA6MVx.js"
+  },
+  "largestAstroChunk": {
+    "before": {
+      "bytes": 202630,
+      "gzipBytes": 51428
+    },
+    "after": {
+      "bytes": 202630,
+      "gzipBytes": 51428
+    }
+  },
+  "playground": {
+    "before": {
+      "bytes": 553381,
+      "gzipBytes": 150157
+    },
+    "after": {
+      "bytes": 561382,
+      "gzipBytes": 153212
+    }
+  },
+  "webmcpCalculators": {
+    "before": {
+      "bytes": 410371,
+      "gzipBytes": 125420
+    },
+    "after": {
+      "bytes": 415317,
+      "gzipBytes": 127370
+    }
+  },
+  "guideLazyEngine": {
+    "before": {
+      "bytes": 65339,
+      "gzipBytes": 31208
+    },
+    "after": {
+      "bytes": 67469,
+      "gzipBytes": 32116
+    }
+  },
+  "serviceWorker": {
+    "before": {
+      "bytes": 26047,
+      "gzipBytes": 9109
+    },
+    "after": {
+      "bytes": 26047,
+      "gzipBytes": 9098
+    }
+  }
+}

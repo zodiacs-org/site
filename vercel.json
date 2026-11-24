@@ -441,6 +441,10 @@
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },
     {
+      "source": "/api/good-days/outcome",
+      "destination": "/api/compatibility?__zodiacs_good_days=outcome"
+    },
+    {
       "source": "/api/email/confirm",
       "destination": "/api/email/subscribe?__zodiacs_email_route=confirm"
     },
@@ -487,6 +491,14 @@
     {
       "source": "/mcp/",
       "destination": "/api/compatibility?__zodiacs_ai=1"
+    },
+    {
+      "source": "/mcp/de440",
+      "destination": "/api/compatibility?__zodiacs_ai=de440"
+    },
+    {
+      "source": "/mcp/de440/",
+      "destination": "/api/compatibility?__zodiacs_ai=de440"
     },
     {
       "source": "/mcp/health",
@@ -677,6 +689,141 @@
       ]
     },
     {
+      "source": "/people/lisa/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/sabrina-carpenter/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/mrbeast/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/kendrick-lamar/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/erling-haaland/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/kylie-jenner/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/zendaya/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/max-verstappen/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/jenna-ortega/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/taylor-swift/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/timothee-chalamet/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/harry-styles/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/bad-bunny/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/rihanna/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/people/olivia-rodrigo/",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
       "source": "/assets/people/rigoberta-menchu(.*)",
       "headers": [
         {
@@ -713,6 +860,141 @@
       ]
     },
     {
+      "source": "/assets/people/lisa(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/sabrina-carpenter(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/mrbeast(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/kendrick-lamar(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/erling-haaland(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/kylie-jenner(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/zendaya(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/max-verstappen(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/jenna-ortega(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/taylor-swift(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/timothee-chalamet(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/harry-styles(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/bad-bunny(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/rihanna(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/people/olivia-rodrigo(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
       "source": "/assets/og/v2/people/rigoberta-menchu.png",
       "headers": [
         {
@@ -741,6 +1023,141 @@
     },
     {
       "source": "/assets/og/v2/people/leonardo-dicaprio.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/lisa.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/sabrina-carpenter.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/mrbeast.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/kendrick-lamar.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/erling-haaland.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/kylie-jenner.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/zendaya.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/max-verstappen.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/jenna-ortega.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/taylor-swift.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/timothee-chalamet.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/harry-styles.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/bad-bunny.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/rihanna.png",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/og/v2/people/olivia-rodrigo.png",
       "headers": [
         {
           "key": "X-Robots-Tag",

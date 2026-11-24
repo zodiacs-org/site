@@ -17,7 +17,7 @@ const instant = (v: unknown): v is string => text(v, 40) && Number.isFinite(Date
 const longitude = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v < 360;
 const house = (v: unknown): v is Profile['settings']['houseSystem'] => v === 'whole' || v === 'placidus';
 const bodies = new Set(['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','North Node','South Node']);
-const flags = new Set(['dst-gap','dst-fold','lmt','no-time','polar-fallback','outside-reference-span']);
+const flags = new Set(['dst-gap','dst-fold','lmt','no-time','polar-fallback','polar-angles','calendar-unknown','host-zone-data-differs','outside-reference-span','delta-t-extrapolated','de440-unavailable','outside-de440-span']);
 const fail = (): never => { throw new Error('This is not a valid Zodiacs chart backup. Nothing was changed.'); };
 
 function parsePlace(v: unknown): SavedPlace | null {
@@ -37,7 +37,7 @@ function parseChart(v: unknown): SavedChart {
     || !Number.isFinite(Date.parse(b.date)) || new Date(b.date).toISOString().slice(0, 10) !== b.date
     || typeof b.timeKnown !== 'boolean' || (b.time !== null && (!text(b.time, 5) || !/^(?:[01]\d|2[0-3]):[0-5]\d$/u.test(b.time)))
     || (b.timeKnown && b.time === null) || !text(s.engineVersion, 100) || !instant(s.utcISO) || !house(s.houseSystem)
-    || !Array.isArray(s.bodies) || s.bodies.length < 1 || s.bodies.length > 12 || !Array.isArray(s.flags) || s.flags.length > 6
+    || !Array.isArray(s.bodies) || s.bodies.length < 1 || s.bodies.length > 12 || !Array.isArray(s.flags) || s.flags.length > flags.size
     || s.flags.some(f => typeof f !== 'string' || !flags.has(f))
     || (v.relationship !== undefined && v.relationship !== 'self' && v.relationship !== 'other')) return fail();
   const normalizedBodies = s.bodies.map(item => {

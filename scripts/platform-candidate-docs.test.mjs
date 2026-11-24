@@ -50,7 +50,8 @@ describe('developer candidate documentation', () => {
     expect(lock.packages[`node_modules/${candidate.name}`].integrity)
       .toBe(`sha512-${createHash('sha512').update(archive).digest('base64')}`);
     const files = readPackageArchive(archive);
-    expect(files.size).toBe(90);
+    const pack = JSON.parse(read('docs/platform/evidence/site-engine-2-1-0/npm-pack.json'));
+    expect(files.size).toBe(pack.entryCount);
     for (const [path, bytes] of files) {
       // Buffer.equals checks length and every byte without walking a large
       // archive member through the assertion library's generic object comparer.
@@ -143,26 +144,30 @@ describe('developer candidate documentation', () => {
     expect(receipt.types).toBe('passed');
   });
 
-  it('records the vendored 1.1.0-rc.2 candidate beside the published 1.0.0, and retains the earlier rc.16 and rc.15 provenance', () => {
+  it('records the published npm release and retains the earlier candidate provenance', () => {
+    const pack = JSON.parse(read('docs/platform/evidence/site-engine-2-1-0/npm-pack.json'));
+    expect(candidate.releaseStatus).toBe('published');
+    expect(candidate.releaseLabel).toBe('On npm');
+    expect(candidate.registryVersion).toBe(candidate.version);
+    expect(pack.version).toBe(candidate.version);
+    expect(pack.integrity).toBe(`sha512-${createHash('sha512').update(archive).digest('base64')}`);
     // 1.1.0-rc.2 is vendored and not on npm. npm serves 1.0.0 under `latest`, published by the engine's Release
     // workflow on 2026-10-11 and read again with its attestation verified on the day the site vendored the candidate.
-    expect(candidate.releaseStatus).toBe('vendored-candidate');
-    expect(candidate.releaseLabel).toBe('Vendored candidate');
-    expect(candidate.registryVersion).toBe('1.0.0');
-    expect(manifest.version).toBe(candidate.version);
-    expect(candidate.registryObservedOn).toBe(registryNow.readAt.slice(0, 10));
+    const historicalPublished = '1.0.0';
+    const historicalCandidate = '1.1.0-rc.2';
+    expect(registryNow.readAt.slice(0, 10)).toBe('2026-11-04');
     const listed = JSON.parse(npmView.slice(npmView.indexOf('{'), npmView.indexOf('\n}\n') + 2));
     expect(listed['dist-tags']).toEqual(registryNow.distTags);
-    expect(listed.versions).toContain(candidate.registryVersion);
-    expect(listed.versions).not.toContain(candidate.version);
-    expect(npmView).toContain(`'${candidate.name}@${candidate.version}' is not in this registry.`);
-    const published = readFileSync(resolve(root, `vendor/zodiacs-engine-${candidate.registryVersion}.tgz`));
+    expect(listed.versions).toContain(historicalPublished);
+    expect(listed.versions).not.toContain(historicalCandidate);
+    expect(npmView).toContain(`'${candidate.name}@${historicalCandidate}' is not in this registry.`);
+    const published = readFileSync(resolve(root, `vendor/zodiacs-engine-${historicalPublished}.tgz`));
     const publishedHex = createHash('sha512').update(published).digest('hex');
     for (const [when, record] of [['2026-10-11', release], ['2026-11-04', registryNow]]) {
       expect(record.readAt.slice(0, 10), when).toBe(when);
       expect(record.package).toBe(candidate.name);
-      expect(record.version).toBe(candidate.registryVersion);
-      expect(record.distTags).toEqual({ latest: candidate.registryVersion, next: '0.1.1-rc.16' });
+      expect(record.version).toBe(historicalPublished);
+      expect(record.distTags).toEqual({ latest: historicalPublished, next: '0.1.1-rc.16' });
       // npm's tarball is the 1.0.0 archive the site keeps: the same SHA-1 and SHA-512, and the same file count.
       expect(record.dist.shasum).toBe(createHash('sha1').update(published).digest('hex'));
       expect(record.dist.integrity).toBe(`sha512-${createHash('sha512').update(published).digest('base64')}`);
@@ -170,14 +175,14 @@ describe('developer candidate documentation', () => {
       // The SLSA provenance names the source repository, the workflow on main and the commit
       // the package was built from, for these bytes; npm verified it.
       expect(record.dist.attestations.provenance.predicateType).toBe('https://slsa.dev/provenance/v1');
-      expect(record.provenance.subject).toEqual({ name: `pkg:npm/%40zodiacs/engine@${candidate.registryVersion}`, sha512: publishedHex });
+      expect(record.provenance.subject).toEqual({ name: `pkg:npm/%40zodiacs/engine@${historicalPublished}`, sha512: publishedHex });
       expect(record.provenance.workflow).toEqual({
         ref: 'refs/heads/main', repository: candidate.sourceRepository, path: '.github/workflows/release.yml',
       });
       expect(record.provenance.resolvedDependencies).toHaveLength(1);
       expect(record.provenance.resolvedDependencies[0].uri).toBe(`git+${candidate.sourceRepository}@refs/heads/main`);
       expect(record.provenance.resolvedDependencies[0].digest.gitCommit).toMatch(/^[a-f0-9]{40}$/);
-      expect(record.auditSignatures.installed).toBe(candidate.registryVersion);
+      expect(record.auditSignatures.installed).toBe(historicalPublished);
       expect(record.auditSignatures.report).toEqual({ invalid: [], missing: [] });
       expect(record.auditSignatures.summary).toContain('1 package has a verified attestation');
     }

@@ -5,14 +5,15 @@
  * makes no request.
  *
  * The vocabulary is the engine's own data. `NATAL_RECEIPT_CONVENTION_SETS` is
- * every conventions set a record may carry, the current one first. The engine
+ * every conventions set a record may carry, in the engine's order. The engine
  * does not export its coverage statement, so it is read from a receipt the
  * engine writes for a fixed instant, as the compute API reads it. What is written
  * here is only what the engine leaves to its documentation: which versions
  * wrote each set, and a sentence on what each key and flag covers. The tests
  * compare both with the engine's sets.
  */
-import { ENGINE_VERSION, EPHEMERIS, natalChart } from '@zodiacs/engine';
+import { ENGINE_VERSION, natalChart } from '@zodiacs/engine';
+import { BACKEND } from '../lib/compute-api/receipt.js';
 import { NATAL_RECEIPT_CONVENTION_SETS, NATAL_RECEIPT_SCHEMA, createNatalEnvelope } from '@zodiacs/engine/receipt';
 import { BUDGETS, SEARCH_STEP_DAYS } from '../lib/compute-api/constants';
 import { ADAPTER_NAME, ADAPTER_VERSION } from './bounds';
@@ -25,7 +26,7 @@ export const VOCABULARY_SCHEMA = 'zodiacs.conventions-vocabulary.v1';
 /**
  * The engine versions that wrote each set of `NATAL_RECEIPT_CONVENTION_SETS`,
  * in its order, as the engine's declarations document them. `to: null` is the
- * current set.
+ * current set for its ephemeris.
  */
 export const SET_WRITERS = Object.freeze([
   { from: '1.1.0-rc.1', to: null },
@@ -34,6 +35,9 @@ export const SET_WRITERS = Object.freeze([
   { from: '0.1.1-rc.8', to: '0.1.1-rc.14' },
   { from: '0.1.1-rc.7', to: '0.1.1-rc.7' },
   { from: '0.1.1-rc.3', to: '0.1.1-rc.6' },
+  { from: '1.1.0-rc.10', to: null },
+  { from: '2.0.0-rc.3', to: null },
+  { from: '2.0.0-rc.3', to: null },
 ] as const);
 
 /** What each key of a conventions set covers. Its value is the engine's own token. */
@@ -41,6 +45,7 @@ export const CONVENTION_KEYS: Readonly<Record<string, string>> = Object.freeze({
   calendar: 'The calendar dates are read on.',
   conventionIds: 'Which ids of the Zodiacs conventions registry (zodiacs.org/developers/conventions) a record lists in receipt.conventionIds, and in what order.',
   zodiac: 'The zodiac longitudes are measured in.',
+  positionFrame: 'The precession, nutation and time scale used to put positions on the ecliptic of date.',
   planetPositions: 'How the planets\' positions are reduced: the observer, the frame, and which corrections apply.',
   moonPosition: 'Where the Moon\'s position comes from, and which corrections apply to it.',
   moonNodes: 'How the lunar nodes are found.',
@@ -61,25 +66,34 @@ export const FLAG_MEANINGS: Readonly<Record<string, string>> = Object.freeze({
   lmt: 'The local time given was read on a local mean time: the birthplace\'s own, from its longitude, where the record has one, otherwise the time zone\'s.',
   'no-time': 'No birth time was known: the instant is a reference, and angles and houses are absent.',
   'polar-fallback': 'The house system requested is undefined at this latitude, so whole sign was used.',
+  'polar-angles': 'The place is inside a polar circle, and the angles were computed there.',
+  'calendar-unknown': 'The date was skipped by a calendar change at the place, so its civil calendar is uncertain.',
+  'host-zone-data-differs': 'The time zone data of the computer that ran the calculation differs from the engine\'s near this time; its offset was used.',
   'outside-reference-span': 'The instant falls outside the engine\'s reference span, 1800 to 2200.',
+  'delta-t-extrapolated': 'The result uses a time correction extrapolated beyond the table of observations.',
+  'de440-unavailable': 'The engine could not open the DE440 pack and used astronomy engine.',
+  'outside-de440-span': 'The instant falls outside the DE440 coverage and the engine used astronomy engine.',
 });
 
 export function conventionsVocabulary() {
   const sets = NATAL_RECEIPT_CONVENTION_SETS.map((conventions, index) => ({
     writtenBy: SET_WRITERS[index],
-    current: index === 0,
+    current: SET_WRITERS[index]?.to === null,
     conventions,
   }));
   const keys = Object.fromEntries(Object.entries(CONVENTION_KEYS).map(([key, covers]) => {
-    // The earliest set carrying the key: the sets run from the current one back.
-    const earliest = [...sets].reverse().find((set) => key in set.conventions);
+    // The engine keeps the astronomy engine history in reverse order, then appends the DE440 set
+    // (1.1.0-rc.10) and the two continuous-UTC sets (2.0.0-rc.3).
+    const history = sets.slice(0, SET_WRITERS.findIndex(({ from }) => from === '1.1.0-rc.10'));
+    const earliest = history.findLast((set) => key in set.conventions)
+      ?? sets.find((set) => key in set.conventions);
     return [key, { covers, recordedFrom: earliest?.writtenBy.from ?? null }];
   }));
   return {
     schema: VOCABULARY_SCHEMA,
     note: 'A Zodiacs-owned draft vocabulary, not an industry interoperability standard. Each calculation record names the set it was computed under in receipt.conventions, and from 1.1.0-rc.1 lists the ids of the Zodiacs conventions registry that it names in receipt.conventionIds. A record is read only under a set the engine version it names may carry: a set before rc.16\'s under the versions that wrote it, and rc.16\'s and the current one under 0.1.1-rc.16 and later.',
     receiptSchema: NATAL_RECEIPT_SCHEMA,
-    engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { name: EPHEMERIS.name, version: EPHEMERIS.version } },
+    engine: BACKEND,
     keys,
     sets,
     coverage: createNatalEnvelope(natalChart({ utc: '2000-01-01T12:00:00Z', timeKnown: false })).receipt.coverage,
@@ -106,7 +120,7 @@ const METHODOLOGY_SECTIONS = Object.freeze([
   `\`check_sky_fact\` answers \`true\`, \`false\` or \`depends\`, with the computed values that decide the answer. It never interprets. ${ANY_ZONE_DAY_TEXT}`,
   `An aspect fact holds while the two bodies' separation is within the orb a chart uses for that aspect, the wider one when the Sun or the Moon is one of them. On a date, the reply gives where the aspect begins or ends and where it is exact, which the same crossing search finds on the difference between the two longitudes, at the Moon's step when the Moon is one of them.`,
   '## Local times and places',
-  '`resolve_birth_time` runs the compute API\'s time endpoint, POST https://zodiacs.org/api/v1/time, on this machine, with the resolver its function uses, @zodiacs/engine/geo, and the zone histories it loads, which are built into this server. A local date and time in an IANA zone becomes UTC and Terrestrial Time. A time the clocks skipped moves forward by the gap (`dst-gap`); one they repeated takes the earlier instant (`dst-fold`). A time before the place adopted a legal time is read on a local mean time (`lmt`): the place\'s own with its longitude, the zone reference city\'s without one. Up to 1970-01-01 the offsets are those of tzdb 2025c with its backzone file, which the engine ships; from then on, the runtime\'s own time zone data. Where the shipped history answered, `intlOffsetMinutes` is the zone\'s offset at the same instant in the runtime\'s data, tzdb\'s default build, and the flags include `zone-history-disputed` where the two differ. A date written in the Julian calendar is accepted up to 1923-12-31 and converted before the time is read; with a country code the reply gives the birth forms\' note on when that country changed calendar. With `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which records with citations what the clocks said in France and the United States from 1870 to 1919, the reply adds the atlas\'s reading of the same wall time: each instant with the rule the atlas applies, its uncertainty flag (documented, inferred or uncertain) and reasons, and its citations, and how many seconds the first instant is from tzdb\'s. Pass the `utc` it returns to the other tools.',
+  '`resolve_birth_time` runs the compute API\'s time endpoint, POST https://zodiacs.org/api/v1/time, on this machine, with the resolver its function uses, @zodiacs/engine/geo, and the zone histories it loads, which are built into this server. A local date and time in an IANA zone becomes UTC and Terrestrial Time. A time the clocks skipped moves forward by the gap (`dst-gap`); one they repeated takes the earlier instant (`dst-fold`). A time before the place adopted a legal time is read on a local mean time (`lmt`): the place\'s own with its longitude, the zone reference city\'s without one. Up to 1970-01-01 the offsets are those of tzdb 2026f with its backzone file, which the engine ships; from then on, the runtime\'s own time zone data. Where the shipped history answered, `intlOffsetMinutes` is the zone\'s offset at the same instant in the runtime\'s data, tzdb\'s default build, and the flags include `zone-history-disputed` where the two differ. A date written in the Julian calendar is accepted up to 1923-12-31 and converted before the time is read; with a country code the reply gives the birth forms\' note on when that country changed calendar. With `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which records with citations what the clocks said in France and the United States from 1870 to 1919, the reply adds the atlas\'s reading of the same wall time: each instant with the rule the atlas applies, its uncertainty flag (documented, inferred or uncertain) and reasons, and its citations, and how many seconds the first instant is from tzdb\'s. Pass the `utc` it returns to the other tools.',
   '`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site\'s birthplace search, built into this server: names that start with the query first, then, from three characters, names that begin with the same letter and contain it, each by population; a place is matched by its GeoNames name or its ASCII spelling, with accents, letter case and apostrophes set aside. Coordinates are rounded to 0.01°, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.',
   '## Dates',
   'Requests are accepted from 1800 to 2199. That is the range the rest of Zodiacs supports, not a range in which every date has been checked: the engine\'s records state `broadDateRange: "not-certified"`.',
@@ -118,7 +132,7 @@ export function methodology(): string {
   return [
     '# How this server calculates',
     '',
-    `${ADAPTER_NAME} ${ADAPTER_VERSION} runs @zodiacs/engine ${ENGINE_VERSION}, with astronomy-engine ${EPHEMERIS.version}, on the machine it runs on.`,
+    `${ADAPTER_NAME} ${ADAPTER_VERSION} runs @zodiacs/engine ${ENGINE_VERSION}, with DE440, on the machine it runs on.`,
     'The site\'s methodology page, https://zodiacs.org/methodology/, describes the same engine as the site\'s calculators use it, and https://zodiacs.org/developers/engine/ reports how far its results were from other software in dated measurements. This text says what the eight tools do with it.',
     '',
     ...METHODOLOGY_SECTIONS.flatMap((section) => [section, '']),

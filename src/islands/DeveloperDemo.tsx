@@ -12,6 +12,7 @@
  * it to that.
  */
 import { useState } from 'preact/hooks';
+import { CONTACT_CONFIDENCE_FAQ, CONTACT_CONFIDENCE_NOTE } from '../lib/reading-confidence-note';
 import demo from '../data/developer-demo.json';
 import type { City } from '../lib/geo/rank';
 import { PLAYGROUND_ENGINE_PATH, PLAYGROUND_PATH } from '../lib/developer-playground';
@@ -262,7 +263,7 @@ function ChartQuestion() {
         <ul>
           <li>Computed by {engineLine(answer.receipt)}, as the answer&rsquo;s receipt names them. The local time was read with {runtimeLine(answer.receipt)}.</li>
           <li>An automated test compares the engine&rsquo;s positions with NASA JPL Horizons at 2020 (ten bodies) and 1907 (Sun, Moon and Mars). The sample maximum difference is 14.8 arcseconds (Neptune, 2020).</li>
-          <li>Compared with Swiss Ephemeris 2.10.03 every tenth day from 1800 to 2026, the sample maximum difference in longitude is 22.9 arcseconds (Venus, 1878).</li>
+          <li>In the DE440 comparison with NASA JPL Horizons, the largest longitude difference was 0.55 arcseconds across 91,201 measurements through 2026.</li>
           <li>A sample maximum is the largest difference found in the cases measured. It is not a bound for every date.</li>
           <li>The answer cites its receipt as <code class="demo__digest">{answer.cite?.receipt}</code>, the SHA-256 of the receipt&rsquo;s canonical JSON, which <a href={PLAYGROUND_PATH}>the playground</a> computes again.</li>
         </ul>
@@ -434,6 +435,7 @@ function CompatibilityQuestion() {
           Score: {data.score.overall} of 100 (attraction {data.score.areas.attraction}, communication{' '}
           {data.score.areas.communication}, stability {data.score.areas.stability}). {data.score.headline}
         </p>
+        <small class="demo__note">{CONTACT_CONFIDENCE_NOTE}</small>
         <h3>The closest contacts</h3>
         <ul class="demo__contacts">
           {data.contacts.slice(0, 4).map((contact: Json) => (
@@ -445,6 +447,10 @@ function CompatibilityQuestion() {
         <p class="demo__note">{data.note}</p>
         <p class="demo__note" data-source="build">Computed with the hosted get_compatibility tool&rsquo;s own code when this page was built, for two synthetic births.</p>
       </div>
+      <details class="demo__note">
+        <summary>{CONTACT_CONFIDENCE_FAQ.q}</summary>
+        <p>{CONTACT_CONFIDENCE_FAQ.a}</p>
+      </details>
       <JsonResponse value={result} label="The JSON result" />
 
       <h3>The same question as an MCP tool call</h3>
@@ -460,7 +466,7 @@ function CompatibilityQuestion() {
       <section class="demo__checked" aria-labelledby="demo-checked-compatibility">
         <h3 id="demo-checked-compatibility">How this was checked</h3>
         <ul>
-          <li>Both charts come from {engineLine(demo.chart.answer.receipt)}, the engine behind the birth chart question, so their positions carry the same sample maxima: 14.8 arcseconds against NASA JPL Horizons and 22.9 arcseconds against Swiss Ephemeris.</li>
+          <li>Both charts use {engineLine(demo.chart.answer.receipt)}, the engine cited in their records. The <a href="/methodology/">methodology page</a> gives the DE440 sample and its comparison with NASA JPL Horizons.</li>
           <li>The score, the sign pair notes and the contact lines are astrology&rsquo;s reading, in the site&rsquo;s own compatibility wording. No reference can check them, so they are not measured.</li>
         </ul>
       </section>

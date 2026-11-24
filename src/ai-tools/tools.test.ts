@@ -29,7 +29,7 @@ describe('public AI tools', () => {
       expect(result.data.mode).toBe('current-instant');
       expect(result.data.time.utc).toBe('2026-10-01T06:00:00.000Z');
       expect(result.data.time.display).toContain('13:00:00');
-      expect(result.data.calculation.result.instants[0].bodies).toEqual(positions(dependencies.now()));
+      expect(result.data.calculation.result.instants[0].bodies).toEqual(positions(dependencies.now()).map(({ ephemeris: _ephemeris, fallback: _fallback, ...body }) => body));
       expect(result.data.calculation.cite.version).toBe(ENGINE_VERSION);
     }
   });
@@ -96,6 +96,18 @@ describe('public AI tools', () => {
     const result = await executeAiTool('check_sky_fact', { kind: 'ingress', body: 'Sun', sign: 'libra', date: '2026-09-23', zone: 'Asia/Bangkok' }, dependencies);
     expect(result.ok).toBe(true);
     if (result.ok && result.tool === 'check_sky_fact') expect(result.data.answer).toBe('true');
+  });
+  it('refuses a hosted check_sky_fact date when a civil zone flags calendar-unknown, while still answering UTC', async () => {
+    const refused = await executeAiTool('check_sky_fact', { kind: 'sign', body: 'Sun', sign: 'aquarius', date: '1918-02-08', zone: 'Europe/Moscow' }, dependencies);
+    expect(refused.ok).toBe(false);
+    if (!refused.ok) expect(refused.error.code).toBe('calendar-unknown');
+    const utcResult = await executeAiTool('check_sky_fact', { kind: 'sign', body: 'Sun', sign: 'aquarius', date: '1918-02-08', zone: 'UTC' }, dependencies);
+    expect(utcResult.ok).toBe(true);
+    if (utcResult.ok && utcResult.tool === 'check_sky_fact') {
+      const zone = (utcResult.data.calculation.result as { zone: { start: { flags: string[] }; end: { flags: string[] } } | null }).zone;
+      expect(zone).not.toBeNull();
+      expect([...zone!.start.flags, ...zone!.end.flags]).toEqual([]);
+    }
   });
 });
 
@@ -165,9 +177,9 @@ describe('horoscopes', () => {
     expect(data.zoneLabel).toBe('London');
   });
   it('reports the release version', async () => {
-    expect(AI_VERSION).toBe('0.6.8');
+    expect(AI_VERSION).toBe('0.6.9');
     const result = await executeAiTool('get_capabilities', {}, dependencies);
-    if (result.ok && result.tool === 'get_capabilities') expect(result.data.version).toBe('0.6.8');
+    if (result.ok && result.tool === 'get_capabilities') expect(result.data.version).toBe('0.6.9');
     else expect.unreachable();
   });
   it('names the missing field in a refusal, with the same code', async () => {

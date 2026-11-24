@@ -1,6 +1,7 @@
 /** Actual article-to-transit behavior at the gated mobile and desktop widths. */
 import { mkdir, readFile } from 'node:fs/promises';
 import { readEventsPublication } from '../scripts/lib/events-publications.mjs';
+import { READING_CONFIDENCE_UPDATED } from '../src/lib/reading-confidence-note.ts';
 
 // Both receipts, joined as the site publishes them: 2026 to 2027 and 2028 to 2030.
 const publication = await readEventsPublication(new URL('..', import.meta.url).pathname);
@@ -11,14 +12,26 @@ const ids = ['neptune-sextile-pluto-2026-09-16', 'new-moon-2026-09-11', 'venus-r
 // The pages print, and hand to /transits/, NASA's instant for a planet event
 // (src/lib/nasa-instants.ts); the publication keeps the engine's anchor.
 const nasa = JSON.parse(await readFile(new URL('../src/data/nasa-event-instants.json', import.meta.url), 'utf8'));
+// A DE440 instant reaches its NASA row through the archived engine key
+// (src/lib/published-event-time.ts), as the pages look it up.
+const links = JSON.parse(await readFile(new URL('../src/data/published-event-time-links.json', import.meta.url), 'utf8')).keys;
+// Pages measured to have changed in the DE440 release, or in the move to engine
+// 2.1.0, date that change
+// (src/lib/seo-lastmod.ts de440UpdatedDate).
+const engineDates = await Promise.all(['de440-sitemap-dates.json', 'engine-2-1-sitemap-dates.json']
+  .map(async (name) => JSON.parse(await readFile(new URL(`../src/data/${name}`, import.meta.url), 'utf8'))));
 const iso = (value) => new Date(value).toISOString();
+const archived = (anchor) => Object.entries(links).find(([key]) => key.endsWith(`|${iso(anchor)}`))?.[1] ?? anchor;
 const nasaFor = (anchor) => [...nasa.ingresses, ...nasa.stations, ...nasa.aspects]
-  .find((row) => row.engine.some((at) => iso(at) === iso(anchor)));
+  .find((row) => row.engine.some((at) => iso(at) === iso(archived(anchor))));
+const modifiedFor = (event) => iso(Math.max(Date.parse(`${event.lastModified}T00:00:00.000Z`),
+  ...engineDates.filter(({ paths }) => paths.includes(event.path)).map(({ date }) => Date.parse(`${date}T00:00:00.000Z`)),
+  Date.parse(`${READING_CONFIDENCE_UPDATED}T00:00:00.000Z`)));
 const events = ids.map((id) => {
   const event = publication.pages.find((page) => page.id === id);
   if (!event) throw new Error(`Missing event fixture: ${id}`);
   const row = nasaFor(event.anchor);
-  return { ...event, anchor: row ? iso(row.nasa) : event.anchor };
+  return { ...event, anchor: row ? iso(row.nasa) : event.anchor, modified: modifiedFor(event) };
 });
 const profile = {
   version: 1, settings: { houseSystem: 'whole' },
@@ -68,7 +81,7 @@ export async function runEventTransitChecks({ browser, baseURL, check, outDir = 
           .flatMap((script) => { const data = JSON.parse(script.textContent); return data['@graph'] ?? [data]; })
           .filter((node) => node['@type'] === 'Article'));
         check(`event ${width}: ${event.id} exposes the actual revision without inventing first publication`,
-          articles.length === 1 && articles[0].dateModified === `${event.lastModified}T00:00:00.000Z`
+          articles.length === 1 && articles[0].dateModified === event.modified
           && !Object.hasOwn(articles[0], 'datePublished'));
         if (outDir) await staticPage.screenshot({ path: `${outDir}/event-${event.id}-${width}.png`, fullPage: true });
       }

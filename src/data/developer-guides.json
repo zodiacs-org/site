@@ -566,7 +566,7 @@
       {
         "heading": "How the time was read",
         "paragraphs": [
-          "For a local time the answer says how it was read: its offset from UTC, flags for a clock time that was skipped (dst-gap) or repeated (dst-fold) or read on local mean time (lmt), and which zone history answered. Before 1970 that history is tzdb 2025c with its backzone file; from 1970 it is the server runtime's own time zone data.",
+          "For a local time the answer says how it was read: its offset from UTC, flags for a clock time that was skipped (dst-gap) or repeated (dst-fold) or read on local mean time (lmt), and which zone history answered. Before 1970 that history is tzdb 2026f with its backzone file; from 1970 it is the server runtime's own time zone data.",
           "The endpoint needs a time; it has no form for an unknown birth time. Without one, do not send noon as if it were known: ask for positions on the date, show the rising sign and the houses as unknown, and say that the Moon can change sign during the day."
         ]
       },
@@ -620,7 +620,7 @@
         "heading": "How close @zodiacs/engine comes",
         "paragraphs": [
           "Against NASA JPL Horizons, the engine's tests hold ten bodies at 2020 and three at 1907; the largest difference is 14.8″, for Neptune in 2020.",
-          "Against Swiss Ephemeris 2.10.03, every tenth day from 1800 to 2199 at noon UTC, for the ten bodies and the North Node, its longitudes differed by a median of 2.0″ and at most 22.9″ (Venus, 1878) up to 2026 at the same UT. That record was measured on release candidate 0.1.1-rc.17.",
+          "In the DE440 comparison with NASA JPL Horizons, 91,201 longitudes sampled every tenth day through 2026 differed by a median of 0.16 arcseconds and at most 0.55 arcseconds.",
           "Given the same sidereal time, latitude and obliquity, each of its thirteen house systems agrees with Swiss Ephemeris's house function to within 0.0001″, and Placidus, which iterates, to 0.01″."
         ]
       },

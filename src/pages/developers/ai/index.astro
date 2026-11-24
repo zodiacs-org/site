@@ -1,7 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 const title = 'Zodiacs AI Integrations | Zodiacs.org';
-const description = 'Connect an AI assistant to the hosted Zodiacs MCP server or the local developer plugin: supported tools, privacy and installation.';
+const description = 'Connect an AI assistant to the hosted Zodiacs MCP server, with no account, sign-in or API key, or run the local developer plugin: tools, privacy and installation.';
 // The hosted server's tools, in the order it lists them: one plain line each.
 // src/ai-tools/developer-ai-page.test.ts holds this list to the names in src/ai-tools/contracts.ts.
 const skyTools: [string, string][] = [
@@ -37,7 +37,7 @@ const toolCount = skyTools.length + birthTools.length;
       <p>Zodiacs connects AI assistants to the Zodiacs engine in two ways: a hosted MCP server at <code>https://zodiacs.org/mcp</code> for any assistant that accepts remote MCP connections, and a local developer plugin that runs on your own machine. Public directory listings remain release gates.</p>
       <p>Looking for the app? <a href="/apps/">See the cards, short demo and current connection options for ChatGPT and Claude</a>.</p>
       <h2>Connect it</h2>
-      <p>To use it in Claude, open Customize, then Connectors, add a custom connector and enter <code>https://zodiacs.org/mcp</code>. Other assistants that accept remote MCP connections use the same address. Then ask one of the questions below.</p>
+      <p>To use it in Claude, open Customize, then Connectors, add a custom connector and enter <code>https://zodiacs.org/mcp</code>. Other assistants that accept remote MCP connections use the same address. The hosted server needs no account, no sign-in and no API key: the address is all an assistant needs, and every tool only reads. Then ask one of the questions below.</p>
       <h2>The hosted server</h2>
       <p>The hosted server lists {toolCount} tools. It calculates the sky at a moment you name, reads birth charts, compares two charts, and serves the dated Sun-sign horoscopes the site publishes. Answers give times on the person's own clock where a time zone is known. Calculated facts are kept apart from what astrology reads into them, and each reading carries a reading-confidence label that says how specific the details were, never the odds that something happens. Answers include UTC, a display timezone, calculation receipts and numerical limits. Event-search completeness is tested, not proven.</p>
       <p>The horoscopes come from the site's daily edition. It keeps the editions for the day before, the day of and the day after, so a reader in any time zone gets the reading written for their own date. Horoscopes are interpretation, for reflection.</p>

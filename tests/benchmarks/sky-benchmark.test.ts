@@ -40,6 +40,8 @@ import { ANY_ZONE_DAY } from '../../src/lib/compute-api/constants';
 import { moonPhase, positions } from '@zodiacs/engine';
 import { bodyLongitude, longitudeSpeed } from '@zodiacs/engine/internal';
 import { checkSkyFact } from '../../src/mcp/sky-tools';
+import { withBrowserEphemeris } from '../helpers/browser-ephemeris';
+import { asBeforeContinuousUtc } from '../helpers/pre-continuous-utc';
 
 const DIR = new URL('../../public/developers/sky-benchmark/v0/', import.meta.url);
 const read = (name: string) => JSON.parse(readFileSync(new URL(name, DIR), 'utf8'));
@@ -48,6 +50,14 @@ const key = read('key.json');
 const tool = read('tool-answers.json');
 
 type Request = Record<string, unknown>;
+
+// v0's engine read a UTC instant after the IERS table as UT1; read a replay's event times as v0 did.
+function readAsV0(value: unknown, name?: string): unknown {
+  if (name === 'at' && typeof value === 'string') return asBeforeContinuousUtc(value);
+  if (Array.isArray(value)) return value.map((entry) => readAsV0(entry));
+  if (value !== null && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, readAsV0(entry, key)]));
+  return value;
+}
 async function reply(request: Request): Promise<any> {
   const outcome = await checkSkyFact(request as any);
   if (!outcome.ok) throw new Error(`refused ${JSON.stringify(request)}: ${outcome.refusal}`);
@@ -117,9 +127,12 @@ describe('the sky-fact benchmark, v0', () => {
     // Once the generator draws a later version, v0 is held by its pinned bytes alone.
     if (sameEngine && VERSION === 'v0') expect(await writeOrCheck('v0', { check: true })).toEqual([]);
     else await expect(writeOrCheck('v0', { check: true })).rejects.toThrow(/v0 is frozen/u);
-    // With another engine the generator does not draw v0 again, and check_sky_fact's replies to its questions are held
-    // to the published ones as the generator's check holds them: each answer, the facts behind it, every event within 2 s.
-    if (!sameEngine && VERSION === 'v0') expect(replyDifferences(tool, await toolAnswers(items, key, checkSkyFact))).toEqual([]);
+    // Replay v0 with its original ephemeris. Other tests in this file drive the current backend.
+    if (!sameEngine && VERSION === 'v0') {
+      const replay = await withBrowserEphemeris(() => toolAnswers(items, key, checkSkyFact));
+      const asV0 = { ...replay, answers: replay.answers.map((answer: any) => ({ ...answer, reply: readAsV0(answer.reply) })) };
+      expect(replyDifferences(tool, asV0)).toEqual([]);
+    }
   }, 300_000);
 
   it('names the engine and the ΔT tables it was drawn with, and the generator draws it only with those', () => {

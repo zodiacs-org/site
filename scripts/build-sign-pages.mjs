@@ -80,13 +80,25 @@ const protectedLinkPolicy = peopleIndexPolicy.expansion?.personSpecificLinkAutho
 const expectedProtectedProfiles = Object.keys(SIGN_PROFILE_PROTECTED_LINKS).sort();
 const policyProtectedProfiles = [...(protectedLinkPolicy?.profiles ?? [])].sort();
 
+const grantedProtectedProfiles = (protectedLinkPolicy?.grants ?? [])
+  .flatMap((grant) => grant.profiles ?? []).sort();
 if (
-  protectedLinkPolicy?.surface !== '/registry/scorpio/'
-  || policyProtectedProfiles.join(',') !== expectedProtectedProfiles.join(',')
+  policyProtectedProfiles.join(',') !== expectedProtectedProfiles.join(',')
+  || grantedProtectedProfiles.join(',') !== expectedProtectedProfiles.join(',')
+  || (protectedLinkPolicy?.grants ?? []).some((grant) => (
+    typeof grant.authorizedBy !== 'string'
+    || !grant.authorizedBy.startsWith('owner instruction of ')
+    || !Number.isFinite(Date.parse(grant.authorizedAtUtc))
+  ))
+  || expectedProtectedProfiles.some((slug) => (
+    protectedLinkPolicy.surfaces?.[slug] !== SIGN_PROFILE_PROTECTED_LINKS[slug].surface
+    || !SIGN_PROFILE_PEOPLE[SIGN_PROFILE_PROTECTED_LINKS[slug].sign]?.includes(slug)
+  ))
+  || Object.keys(protectedLinkPolicy?.surfaces ?? {}).length !== expectedProtectedProfiles.length
 ) {
   throw new Error(
-    'Registry protected People link policy must authorize only bill-gates and '
-    + 'leonardo-dicaprio on /registry/scorpio/'
+    'Registry protected People link policy must match the owner-authorized '
+    + 'profiles, each on its own sign\'s Registry page only'
   );
 }
 
@@ -456,7 +468,11 @@ function wholeUsd(value) {
   return `$${Math.round(number).toLocaleString('en-US')}`;
 }
 
+// A missing saved price (null, undefined, an empty string, a boolean or a
+// non-finite value) is not a price of zero: Number(null) is 0, so it is
+// caught before the conversion.
 function formatPrice(value) {
+  if (value === null || value === undefined || value === '' || typeof value === 'boolean') return '—';
   const number = Number(value);
   if (!Number.isFinite(number)) return '—';
   const digits = Math.abs(number) < 0.0001 ? 8 : Math.abs(number) < 0.01 ? 6 : 4;
@@ -1428,7 +1444,7 @@ ${m.ownership.segments.map((segment) => `          <div><i style="--legend:${seg
         <div class="market__head"><p class="market__copy">The price can change quickly and can fall to zero.</p><a class="market__source" data-market-live-link href="${esc(m.dexscreener)}" rel="noopener noreferrer external nofollow">View live chart ↗</a></div>
         <section class="quick" aria-labelledby="quick-title" data-live-quote>
           <span class="quick__label" id="quick-title" data-live-price-label>Latest recorded price</span>
-          <div class="quick__quote" aria-live="polite"><strong class="quick__price" data-live-price>${m.marketAsset ? formatPrice(m.marketAsset.priceUsd) : '—'}</strong><span class="quick__change" data-live-change>Past 24 hours ${m.marketAsset?.change24hPct == null ? '—' : `${Number(m.marketAsset.change24hPct) > 0 ? '+' : ''}${Number(m.marketAsset.change24hPct).toFixed(2)}%`}</span><p class="quick__state" data-live-state>Showing the latest saved price. Checking for a newer one…</p></div>
+          <div class="quick__quote" aria-live="polite"><strong class="quick__price" data-live-price${formatPrice(m.marketAsset?.priceUsd) === '—' ?' data-price-missing' : ''}>${formatPrice(m.marketAsset?.priceUsd)}</strong><span class="quick__change" data-live-change>Past 24 hours ${m.marketAsset?.change24hPct == null ? '—' : `${Number(m.marketAsset.change24hPct) > 0 ? '+' : ''}${Number(m.marketAsset.change24hPct).toFixed(2)}%`}</span><p class="quick__state" data-live-state>${formatPrice(m.marketAsset?.priceUsd) === '—' ?'No saved price is recorded. Checking for a current one…' : 'Showing the latest saved price. Checking for a newer one…'}</p></div>
         </section>
         <div class="market__grid" data-market-grid>
 ${staticMetrics.map(([key, value, className]) => `          <div class="market__cell"><div class="market__k">${esc(key)}</div><div class="market__v ${className}">${esc(value)}</div></div>`).join('\n')}
@@ -1631,6 +1647,7 @@ ${guideLoaderSource('en')}
     var liveState = liveQuote && liveQuote.querySelector('[data-live-state]');
     var liveLoading = false;
     var hasLiveQuote = false;
+    var savedPriceMissing = !!(livePrice && livePrice.hasAttribute('data-price-missing'));
     var liveCheckedAt = null;
     var panel = document.querySelector('[data-market]');
     var stateEl = panel.querySelector('[data-market-state]');
@@ -1707,6 +1724,11 @@ ${guideLoaderSource('en')}
         liveState.textContent = 'Last price shown. A newer price is temporarily unavailable. Checked ' + liveCheckedAt + '.';
         return;
       }
+      if (savedPriceMissing) {
+        livePrice.textContent = '—';
+        liveState.textContent = 'A current price is unavailable right now, and no saved price is recorded.';
+        return;
+      }
       liveState.textContent = 'A newer price is temporarily unavailable. The latest saved price remains shown.';
     }
 
@@ -1727,6 +1749,7 @@ ${guideLoaderSource('en')}
       hasLiveQuote = true;
       liveCheckedAt = new Date().toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
       if (livePriceLabel) livePriceLabel.textContent = 'Current price';
+      livePrice.removeAttribute('data-price-missing');
       livePrice.textContent = fmtPrice(best.priceUsd);
       liveChange.textContent = 'Past 24 hours ' + fmtPct(change);
       liveChange.classList.remove('quick__change--up', 'quick__change--down');
@@ -1870,12 +1893,14 @@ ${guideLoaderSource('en')}
       var price = finiteNumber(asset.priceUsd);
       var change = finiteNumber(asset.change24hPct);
       if (livePriceLabel) livePriceLabel.textContent = 'Latest recorded price';
-      livePrice.textContent = price === null ? '—' : fmtPrice(price);
+      savedPriceMissing = price === null;
+      livePrice.toggleAttribute('data-price-missing', savedPriceMissing);
+      livePrice.textContent = fmtPrice(price);
       liveChange.textContent = 'Past 24 hours ' + fmtPct(change);
       liveChange.classList.remove('quick__change--up', 'quick__change--down');
       if (change !== null && change > 0) liveChange.classList.add('quick__change--up');
       if (change !== null && change < 0) liveChange.classList.add('quick__change--down');
-      liveState.textContent = 'Updated ' + fmtTimestamp(snapshot.source && snapshot.source.readAt) + '.';
+      liveState.textContent = (savedPriceMissing ? 'No price is recorded in the latest snapshot. ' : '') + 'Updated ' + fmtTimestamp(snapshot.source && snapshot.source.readAt) + '.';
     }
 
     function observationsForRange(range) {

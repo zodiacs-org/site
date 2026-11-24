@@ -4,7 +4,7 @@ import summary from '../src/data/conformance/summary.json';
 import source from '../src/data/conformance/source.json';
 import examples from '../src/lib/compute-api/examples.json';
 import { GET as registryJson } from '../src/pages/developers/conventions/registry.json';
-import { ENGINE_VERSION, HOUSE_SYSTEMS, natalChart, type ChartFlag, type DeltaT, type DeltaTSegment, type TimeScale, type TimeScaleName } from '@zodiacs/engine';
+import { ENGINE_VERSION, HOUSE_SYSTEMS, defaultEphemeris, natalChart, setDefaultEphemeris, type ChartFlag, type DeltaT, type DeltaTSegment, type TimeScale, type TimeScaleName } from '@zodiacs/engine';
 import { CONVENTIONS_REGISTRY, conventionAddress, conventionId, natalConventionIds, parseConventionId } from '@zodiacs/engine/conventions';
 import { NATAL_RECEIPT_CONVENTION_SETS, createNatalEnvelope, type NatalEnvelope, type NatalReceipt, type NatalReference } from '@zodiacs/engine/receipt';
 import { CALC_AYANAMSAS, CALC_BODIES, CALC_FRAMES, calc, chart, events, houses } from '@zodiacs/engine/calc';
@@ -30,8 +30,18 @@ function dashedStrings(value: unknown, path = 'registry'): string[] {
   return Object.entries(value).flatMap(([key, item]) => [...dashedStrings(key, `${path} key`), ...dashedStrings(item, `${path}.${key}`)]);
 }
 
-// The engine versions that wrote each natal conventions set, newest first (src/receipt.ts).
-const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
+// The engine versions that wrote the natal conventions sets, in package order.
+const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6', '1.1.0-rc.10 to 2.1.0', '2.0.0-rc.3 to 2.1.0', '2.0.0-rc.3 to 2.1.0'];
+
+// The registry cites the vector files in which it first catalogued each level.
+// Suite 0.3.0 reissued L1 to L3 with new file digests.
+const registrySuiteCommit = '47eebb83516ad99152dfefb69feff2aea93264b3';
+const earlierSuiteCommit = '7e64717bc7dd17f76d124138e811742b055c183a';
+const earlierLevelDigests: Record<string, string> = {
+  L1: '4e45a5267d806a38624c6cc1eb29dd66229e5ec908fd87de9e1ec69459bb84b8',
+  L2: 'fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5',
+  L3: '51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66',
+};
 
 /** The ids a natal receipt names: each field's namespace and value, as the registry's usedIn lists them. */
 function natalReceiptIds(receipt: Record<string, unknown>): string[] {
@@ -85,7 +95,7 @@ function natalEnvelopeIds(envelope: { receipt: Record<string, unknown>; result: 
 }
 
 /** Every calc call the tests make: each frame, center and correction, every body, each ayanamsa, a pinned ΔT, each house system. */
-function calcReceipts() {
+function calcReceiptsForDefault() {
   const time = '2000-01-01T12:00:00Z';
   const results: Array<{ status: string; receipt?: Parameters<typeof calcReceiptIds>[0] }> = [];
   for (const frame of CALC_FRAMES) {
@@ -108,6 +118,18 @@ function calcReceipts() {
   results.push(chart({ time, place: { latitude: 51.5, longitude: -0.1 }, zodiac: { sidereal: 'lahiri' } }) as never);
   results.push(events({ kind: 'longitude-crossing', body: 'Sun', longitude: 0, from: '2026-01-01T00:00:00Z', to: '2026-12-31T00:00:00Z' }) as never);
   return results.filter((result) => result.status === 'ok').map((result) => result.receipt!);
+}
+
+function calcReceipts() {
+  const original = defaultEphemeris().name;
+  try {
+    return (['de440', 'astronomy-engine'] as const).flatMap((source) => {
+      setDefaultEphemeris(source);
+      return calcReceiptsForDefault();
+    });
+  } finally {
+    setDefaultEphemeris(original);
+  }
 }
 
 /** Natal envelopes across the conditions their fields name: untimed, polar, outside the span, flagged, and each scale. */
@@ -157,7 +179,7 @@ describe('the conventions registry', () => {
     expect(dashedStrings(planted)).toHaveLength(2);
   });
 
-  it('holds every value of every natal conventions set, current where 1.1.0-rc.2 writes it and superseded where only earlier versions did', () => {
+  it('registers both conventions sets written by the current engine', () => {
     expect(SET_RANGES).toHaveLength(NATAL_RECEIPT_CONVENTION_SETS.length);
     const seen = new Set<string>();
     NATAL_RECEIPT_CONVENTION_SETS.forEach((set, index) => {
@@ -171,7 +193,8 @@ describe('the conventions registry', () => {
     });
     for (const id of seen) {
       const entry = entries.find((candidate) => candidate.id === id)!;
-      const current = Object.entries(NATAL_RECEIPT_CONVENTION_SETS[0]).some(([key, value]) => `${key}:${value}` === id);
+      const current = [NATAL_RECEIPT_CONVENTION_SETS[0], NATAL_RECEIPT_CONVENTION_SETS.at(-1)!]
+        .some((set) => Object.entries(set).some(([key, value]) => `${key}:${value}` === id));
       expect(entry.status, id).toBe(current ? 'current' : 'superseded');
     }
     // The natal receipt's own namespaces hold nothing else.
@@ -204,7 +227,7 @@ describe('the conventions registry', () => {
 
   it('lists exactly the values of the engine\'s closed vocabularies', () => {
     type Exactly<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
-    const FLAGS = ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span'] as const;
+    const FLAGS = ['dst-gap', 'dst-fold', 'lmt', 'calendar-unknown', 'host-zone-data-differs', 'no-time', 'polar-fallback', 'polar-angles', 'outside-reference-span', 'de440-unavailable', 'outside-de440-span', 'delta-t-extrapolated'] as const;
     const REFERENCES = ['supplied-instant', 'utc-noon', 'local-noon'] as const;
     const SCALES = ['utc', 'ut1', 'tt'] as const;
     const SEGMENTS = ['long-term', 'reconstructed', 'observed', 'predicted', 'extrapolated', 'pinned', 'fallback'] as const;
@@ -227,9 +250,9 @@ describe('the conventions registry', () => {
     type Basis = TimeScale['basis'];
     type Model = DeltaT['model'];
     type Source = NonNullable<TimeScale['ut1MinusUtc']>['source'];
-    const BASES = ['iers', 'delta-t', 'pinned'] as const;
+    const BASES = ['iers', 'continuous-utc', 'delta-t', 'pinned'] as const;
     const MODELS = ['iers-utc/1', 'zodiacs-deltat/1', 'pinned'] as const;
-    const SOURCES = ['observed', 'predicted', 'fallback'] as const;
+    const SOURCES = ['observed', 'predicted', 'fallback', 'model'] as const;
     const records: [Exactly<typeof BASES[number], Basis>, Exactly<typeof MODELS[number], Model>, Exactly<typeof SOURCES[number], Source>] = [true, true, true];
     expect(records.every(Boolean)).toBe(true);
     expect(values('time-basis')).toEqual([...BASES]);
@@ -242,7 +265,12 @@ describe('the conventions registry', () => {
       const bySite = natalEnvelopeIds(fields(envelope));
       expect(envelope.receipt.conventionIds).toEqual(bySite);
       expect(natalConventionIds(envelope)).toEqual(bySite);
-      expect(envelope.requiredFeatures).toEqual(['convention-ids']);
+      // From 2.0.0-rc.3 a chart on continuous UTC needs a reader that knows that basis.
+      expect(envelope.requiredFeatures).toEqual([
+        'convention-ids',
+        ...envelope.receipt.engine.ephemeris?.name === 'jpl-de440' ? ['ephemeris-jpl-de440'] : [],
+        ...envelope.result.timeScale.basis === 'continuous-utc' ? ['time-basis-continuous-utc'] : [],
+      ]);
     }
     // The rule reaches the result: a chart on IERS names its basis only there.
     expect(natalEnvelopes().some((envelope) => envelope.receipt.conventionIds!.includes('time-basis:iers'))).toBe(true);
@@ -290,17 +318,25 @@ describe('the conventions registry', () => {
   });
 
   it('holds exactly the kinds and arbiters of the conformance vectors, tied to their vector files', () => {
-    const levelKinds = summary.levels.flatMap((level) => level.kinds.map((kind) => [kind.kind, level] as const));
-    const levelArbiters = summary.levels.flatMap((level) => level.arbiters.map((arbiter) => [arbiter, level] as const));
-    expect(values('kind')).toEqual(levelKinds.map(([kind]) => kind));
-    expect(values('arbiter')).toEqual(levelArbiters.map(([arbiter]) => arbiter.id));
-    for (const [kind, level] of levelKinds) {
-      expect(entries.find((entry) => entry.id === `kind:${kind}`)!.sources[0].title).toContain(level.sha256);
-    }
-    for (const [arbiter, level] of levelArbiters) {
-      const entry = entries.find((candidate) => candidate.id === `arbiter:${arbiter.id}`)!;
-      expect(entry.title).toBe(arbiter.name);
-      expect(entry.sources[0].title).toContain(level.sha256);
+    expect(values('kind')).toEqual(summary.levels.flatMap((level) => level.kinds.map(({ kind }) => kind)));
+    expect(values('arbiter')).toEqual(summary.levels.flatMap((level) => level.arbiters.map(({ id }) => id)));
+    for (const level of summary.levels) {
+      const earlierDigest = earlierLevelDigests[level.level];
+      const suite = earlierDigest ? '0.2.0' : summary.suiteVersion;
+      const file = level.file.replace(`vectors/${summary.suiteVersion}/`, `vectors/${suite}/`);
+      const commit = earlierDigest ? earlierSuiteCommit : registrySuiteCommit;
+      const repo = `https://github.com/zodiacs-org/engine/blob/${commit}/conformance`;
+      const levelIds = [...level.kinds.map(({ kind }) => `kind:${kind}`), ...level.arbiters.map(({ id }) => `arbiter:${id}`)];
+      for (const id of levelIds) {
+        const entry = entries.find((candidate) => candidate.id === id)!;
+        expect(entry.sources[0].title, id).toBe(`Conformance suite ${suite}, ${file} (${level.level}, ${level.title}; sha256 ${earlierDigest ?? level.sha256})`);
+        expect(entry.sources[0].url, id).toBe(`${repo}/${file}`);
+        expect(entry.sources[1].url, id).toBe(`${repo}/SPEC.md`);
+        expect(entry.status, id).toBe('current');
+      }
+      for (const arbiter of level.arbiters) {
+        expect(entries.find((entry) => entry.id === `arbiter:${arbiter.id}`)!.title).toBe(arbiter.name);
+      }
     }
   });
 
@@ -312,7 +348,7 @@ describe('the conventions registry', () => {
     }
     expect(registry.engine).toMatchObject({ package: '@zodiacs/engine', version: ENGINE_VERSION });
     expect(registry.conformance.suiteVersion).toBe(summary.suiteVersion);
-    expect(registry.conformance.commit).toBe(source.commit);
+    expect(registry.conformance.commit).toBe(registrySuiteCommit);
   });
 
   it('is served as JSON with the address of each id on the registry page', async () => {

@@ -1,5 +1,5 @@
 {
-  "engineVersion": "1.1.0-rc.2",
+  "engineVersion": "2.1.0",
   "conventions": [
     {
       "type": "conjunction",
@@ -44,32 +44,32 @@
         {
           "geometry": "conjunction",
           "utc": "2001-01-24T12:00:00.000Z",
-          "separation": 0.4993805715558892,
-          "orb": 0.4993805715558892
+          "separation": 0.5001274410091696,
+          "orb": 0.5001274410091696
         },
         {
           "geometry": "sextile",
           "utc": "2001-04-18T12:00:00.000Z",
-          "separation": 59.00828910634755,
-          "orb": 0.9917108936524528
+          "separation": 59.00862434842895,
+          "orb": 0.9913756515710475
         },
         {
           "geometry": "square",
           "utc": "2001-01-16T12:00:00.000Z",
-          "separation": 90.2936833142636,
-          "orb": 0.2936833142636033
+          "separation": 90.29391538025794,
+          "orb": 0.2939153802579426
         },
         {
           "geometry": "trine",
           "utc": "2001-06-30T12:00:00.000Z",
-          "separation": 119.88799587142046,
-          "orb": 0.11200412857954234
+          "separation": 119.88786894133904,
+          "orb": 0.11213105866096384
         },
         {
           "geometry": "opposition",
           "utc": "2001-05-07T12:00:00.000Z",
-          "separation": 179.01726697299978,
-          "orb": 0.9827330270002221
+          "separation": 179.0170738788316,
+          "orb": 0.98292612116839
         }
       ],
       "examples": [
@@ -83,33 +83,33 @@
           "bodies": [
             {
               "body": "Sun",
-              "longitude": 296.4246402347974
+              "longitude": 296.42480310013013
             },
             {
               "body": "Moon",
-              "longitude": 206.13095692053378
+              "longitude": 206.1308877198722
             }
           ],
-          "separation": 90.2936833142636,
+          "separation": 90.29391538025794,
           "angle": 90,
-          "residualOrb": 0.2936833142636033,
+          "residualOrb": 0.2939153802579426,
           "geometry": "square",
           "applying": true,
-          "engineVersion": "1.1.0-rc.2",
+          "engineVersion": "2.1.0",
           "daySpan": {
             "from": {
               "utc": "2001-01-16T00:00:00.000Z",
-              "separation": 96.46278755909384,
+              "separation": 96.46304130169108,
               "geometry": "square",
-              "orb": 6.46278755909384
+              "orb": 6.463041301691078
             },
             "to": {
               "utc": "2001-01-17T00:00:00.000Z",
-              "separation": 84.22512995977911,
+              "separation": 84.225348346499,
               "geometry": "square",
-              "orb": 5.77487004022089
+              "orb": 5.774651653500996
             },
-            "separationChange": 12.23765759931473,
+            "separationChange": 12.237692955192074,
             "hourlySamples": 25,
             "samplesListingGeometry": 25
           },
@@ -131,33 +131,33 @@
           "bodies": [
             {
               "body": "Sun",
-              "longitude": 98.75998593310692
+              "longitude": 98.7600728364141
             },
             {
               "body": "Moon",
-              "longitude": 218.64798180452738
+              "longitude": 218.64794177775312
             }
           ],
-          "separation": 119.88799587142046,
+          "separation": 119.88786894133904,
           "angle": 120,
-          "residualOrb": 0.11200412857954234,
+          "residualOrb": 0.11213105866096384,
           "geometry": "trine",
           "applying": true,
-          "engineVersion": "1.1.0-rc.2",
+          "engineVersion": "2.1.0",
           "daySpan": {
             "from": {
               "utc": "2001-06-30T00:00:00.000Z",
-              "separation": 113.69092807802994,
+              "separation": 113.69082091773481,
               "geometry": "trine",
-              "orb": 6.309071921970059
+              "orb": 6.309179082265189
             },
             "to": {
               "utc": "2001-07-01T00:00:00.000Z",
-              "separation": 126.0174014776814,
+              "separation": 126.01724163360936,
               "geometry": "trine",
-              "orb": 6.017401477681403
+              "orb": 6.017241633609359
             },
-            "separationChange": 12.326473399651462,
+            "separationChange": 12.326420715874548,
             "hourlySamples": 25,
             "samplesListingGeometry": 25
           },
@@ -173,22 +173,22 @@
       "timeSensitive": {
         "utc": "2001-01-02T12:00:00.000Z",
         "geometry": "square",
-        "orb": 5.05514359898234,
-        "separation": 84.94485640101766,
+        "orb": 5.055859135630158,
+        "separation": 84.94414086436984,
         "daySpan": {
           "from": {
             "utc": "2001-01-02T00:00:00.000Z",
-            "separation": 79.25433001685337,
+            "separation": 79.25366496611582,
             "geometry": null,
             "orb": null
           },
           "to": {
             "utc": "2001-01-03T00:00:00.000Z",
-            "separation": 90.71414851336021,
+            "separation": 90.71339626352938,
             "geometry": "square",
-            "orb": 0.7141485133602146
+            "orb": 0.7133962635293756
           },
-          "separationChange": 11.459818496506841,
+          "separationChange": 11.459731297413555,
           "hourlySamples": 25,
           "samplesListingGeometry": 19
         }
@@ -205,32 +205,32 @@
         {
           "geometry": "conjunction",
           "utc": "2001-05-19T12:00:00.000Z",
-          "separation": 0.30215398709924557,
-          "orb": 0.30215398709924557
+          "separation": 0.301520556182993,
+          "orb": 0.301520556182993
         },
         {
           "geometry": "sextile",
           "utc": "2001-02-21T12:00:00.000Z",
-          "separation": 60.51845434716415,
-          "orb": 0.5184543471641518
+          "separation": 60.51916276727093,
+          "orb": 0.5191627672709274
         },
         {
           "geometry": "square",
           "utc": "2001-03-18T12:00:00.000Z",
-          "separation": 89.95301946153677,
-          "orb": 0.046980538463230914
+          "separation": 89.95471290134446,
+          "orb": 0.045287098655535374
         },
         {
           "geometry": "trine",
           "utc": "2001-08-25T12:00:00.000Z",
-          "separation": 120.36167895818801,
-          "orb": 0.36167895818800844
+          "separation": 120.36294384819269,
+          "orb": 0.36294384819268544
         },
         {
           "geometry": "opposition",
           "utc": "2001-02-11T12:00:00.000Z",
-          "separation": 179.60370113512317,
-          "orb": 0.396298864876826
+          "separation": 179.60401933483672,
+          "orb": 0.3959806651632789
         }
       ],
       "examples": [
@@ -244,33 +244,33 @@
           "bodies": [
             {
               "body": "Moon",
-              "longitude": 14.209231913483393
+              "longitude": 14.209427280068828
             },
             {
               "body": "Venus",
-              "longitude": 14.511385900582638
+              "longitude": 14.510947836251836
             }
           ],
-          "separation": 0.30215398709924557,
+          "separation": 0.301520556182993,
           "angle": 0,
-          "residualOrb": 0.30215398709924557,
+          "residualOrb": 0.301520556182993,
           "geometry": "conjunction",
           "applying": true,
-          "engineVersion": "1.1.0-rc.2",
+          "engineVersion": "2.1.0",
           "daySpan": {
             "from": {
               "utc": "2001-05-19T00:00:00.000Z",
-              "separation": 6.212262754477081,
+              "separation": 6.2116267290180645,
               "geometry": "conjunction",
-              "orb": 6.212262754477081
+              "orb": 6.2116267290180645
             },
             "to": {
               "utc": "2001-05-20T00:00:00.000Z",
-              "separation": 5.681795211286385,
+              "separation": 5.682390461878242,
               "geometry": "conjunction",
-              "orb": 5.681795211286385
+              "orb": 5.682390461878242
             },
-            "separationChange": 0.5304675431906958,
+            "separationChange": 0.5292362671398223,
             "hourlySamples": 25,
             "samplesListingGeometry": 25
           },
@@ -292,33 +292,33 @@
           "bodies": [
             {
               "body": "Moon",
-              "longitude": 187.38291207906136
+              "longitude": 187.38261175771848
             },
             {
               "body": "Venus",
-              "longitude": 6.986613214184501
+              "longitude": 6.986631092555179
             }
           ],
-          "separation": 179.60370113512317,
+          "separation": 179.60401933483672,
           "angle": 180,
-          "residualOrb": 0.396298864876826,
+          "residualOrb": 0.3959806651632789,
           "geometry": "opposition",
           "applying": false,
-          "engineVersion": "1.1.0-rc.2",
+          "engineVersion": "2.1.0",
           "daySpan": {
             "from": {
               "utc": "2001-02-11T00:00:00.000Z",
-              "separation": 173.52700614385867,
+              "separation": 173.52665592790515,
               "geometry": "opposition",
-              "orb": 6.472993856141329
+              "orb": 6.4733440720948465
             },
             "to": {
               "utc": "2001-02-12T00:00:00.000Z",
-              "separation": 172.84595585582997,
+              "separation": 172.84623979951436,
               "geometry": "opposition",
-              "orb": 7.1540441441700295
+              "orb": 7.153760200485635
             },
-            "separationChange": 0.6810502880287004,
+            "separationChange": 0.6804161283907888,
             "hourlySamples": 25,
             "samplesListingGeometry": 25
           },
@@ -334,22 +334,22 @@
       "timeSensitive": {
         "utc": "2001-01-04T12:00:00.000Z",
         "geometry": "sextile",
-        "orb": 1.9706328346881037,
-        "separation": 61.970632834688104,
+        "orb": 1.9703610111100716,
+        "separation": 61.97036101111007,
         "daySpan": {
           "from": {
             "utc": "2001-01-04T00:00:00.000Z",
-            "separation": 55.9513337735259,
+            "separation": 55.951041505023284,
             "geometry": "sextile",
-            "orb": 4.048666226474097
+            "orb": 4.048958494976716
           },
           "to": {
             "utc": "2001-01-05T00:00:00.000Z",
-            "separation": 68.09981587518331,
+            "separation": 68.099577732326,
             "geometry": null,
             "orb": null
           },
-          "separationChange": 12.148482101657407,
+          "separationChange": 12.148536227302714,
           "hourlySamples": 25,
           "samplesListingGeometry": 18
         }
@@ -366,32 +366,32 @@
         {
           "geometry": "conjunction",
           "utc": "2002-05-09T12:00:00.000Z",
-          "separation": 0.7181008927747712,
-          "orb": 0.7181008927747712
+          "separation": 0.7182944874732584,
+          "orb": 0.7182944874732584
         },
         {
           "geometry": "sextile",
           "utc": "2002-01-18T12:00:00.000Z",
-          "separation": 60.49101221028991,
-          "orb": 0.4910122102899095
+          "separation": 60.49173837448751,
+          "orb": 0.491738374487511
         },
         {
           "geometry": "square",
           "utc": "2001-11-22T12:00:00.000Z",
-          "separation": 90.64108566597639,
-          "orb": 0.6410856659763908
+          "separation": 90.64235558891329,
+          "orb": 0.6423555889132899
         },
         {
           "geometry": "trine",
           "utc": "2001-01-15T12:00:00.000Z",
-          "separation": 119.16815742283183,
-          "orb": 0.8318425771681746
+          "separation": 119.16771789915515,
+          "orb": 0.83228210084485
         },
         {
           "geometry": "opposition",
           "utc": "2001-07-19T12:00:00.000Z",
-          "separation": 179.87551928731642,
-          "orb": 0.12448071268357808
+          "separation": 179.87423270558367,
+          "orb": 0.1257672944163346
         }
       ],
       "examples": [
@@ -405,33 +405,33 @@
           "bodies": [
             {
               "body": "Venus",
-              "longitude": 299.1777374896832
+              "longitude": 299.1774922173813
             },
             {
               "body": "Mars",
-              "longitude": 359.6687496999731
+              "longitude": 359.6692305918688
             }
           ],
-          "separation": 60.49101221028991,
+          "separation": 60.49173837448751,
           "angle": 60,
-          "residualOrb": 0.4910122102899095,
+          "residualOrb": 0.491738374487511,
           "geometry": "sextile",
           "applying": true,
-          "engineVersion": "1.1.0-rc.2",
+          "engineVersion": "2.1.0",
           "daySpan": {
             "from": {
               "utc": "2002-01-18T00:00:00.000Z",
-              "separation": 60.755146117143624,
+              "separation": 60.75587940842547,
               "geometry": "sextile",
-              "orb": 0.7551461171436245
+              "orb": 0.7558794084254714
             },
             "to": {
               "utc": "2002-01-19T00:00:00.000Z",
-              "separation": 60.22684162279711,
+              "separation": 60.227560594980105,
               "geometry": "sextile",
-              "orb": 0.22684162279711018
+              "orb": 0.22756059498010472
             },
-            "separationChange": 0.5283044943465143,
+            "separationChange": 0.5283188134453667,
             "hourlySamples": 25,
             "samplesListingGeometry": 25
           },
@@ -453,33 +453,33 @@
           "bodies": [
             {
               "body": "Venus",
-              "longitude": 227.4795115015683
+              "longitude": 227.47912221413912
             },
             {
               "body": "Mars",
-              "longitude": 318.1205971675447
+              "longitude": 318.1214778030524
             }
           ],
-          "separation": 90.64108566597639,
+          "separation": 90.64235558891329,
           "angle": 90,
-          "residualOrb": 0.6410856659763908,
+          "residualOrb": 0.6423555889132899,
           "geometry": "square",
           "applying": true,
-          "engineVersion": "1.1.0-rc.2",
+          "engineVersion": "2.1.0",
           "daySpan": {
             "from": {
               "utc": "2001-11-22T00:00:00.000Z",
-              "separation": 90.90977439620548,
+              "separation": 90.9110315686267,
               "geometry": "square",
-              "orb": 0.9097743962054778
+              "orb": 0.9110315686266972
             },
             "to": {
               "utc": "2001-11-23T00:00:00.000Z",
-              "separation": 90.37256953249596,
+              "separation": 90.37385141659325,
               "geometry": "square",
-              "orb": 0.3725695324959588
+              "orb": 0.37385141659325427
             },
-            "separationChange": 0.537204863709519,
+            "separationChange": 0.5371801520334429,
             "hourlySamples": 25,
             "samplesListingGeometry": 25
           },
@@ -495,22 +495,22 @@
       "timeSensitive": {
         "utc": "2001-02-04T12:00:00.000Z",
         "geometry": "trine",
-        "orb": 6.971140442561762,
-        "separation": 126.97114044256176,
+        "orb": 6.971058752335068,
+        "separation": 126.97105875233507,
         "daySpan": {
           "from": {
             "utc": "2001-02-04T00:00:00.000Z",
-            "separation": 126.81994222439266,
+            "separation": 126.81984069896245,
             "geometry": "trine",
-            "orb": 6.819942224392662
+            "orb": 6.819840698962452
           },
           "to": {
             "utc": "2001-02-05T00:00:00.000Z",
-            "separation": 127.11938134259924,
+            "separation": 127.11931689800275,
             "geometry": null,
             "orb": null
           },
-          "separationChange": 0.2994391182065783,
+          "separationChange": 0.2994761990402992,
           "hourlySamples": 25,
           "samplesListingGeometry": 15
         }
@@ -576,7 +576,7 @@
   "venus": {
     "from": "2001-01-01T12:00:00.000Z",
     "days": 2922,
-    "maxSunVenusSeparation": 47.0931997305849,
+    "maxSunVenusSeparation": 47.09277793589058,
     "venusMarsWindows": [
       {
         "geometry": "conjunction",
