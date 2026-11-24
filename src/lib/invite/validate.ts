@@ -44,26 +44,59 @@ function labelFromChartName(value: unknown): string | null {
   return Array.from(label).slice(0, INVITE_LABEL_MAX).join('');
 }
 
+/** A consent version as the page sends it; whether it is a known one is checked where it is recorded. */
+const CONSENT_VERSION_RE = /^[a-z0-9.-]{1,64}$/u;
+
+/**
+ * The create request: exactly chartId, consent and notify, as released, or
+ * those three and the consentVersion of the text the inviter's page showed
+ * (src/lib/invite/consent.ts). Anything else is refused.
+ */
 export function parseCreateInviteBody(value: unknown): {
   chartId: string;
   consent: true;
   notify: boolean;
+  consentVersion?: string;
 } | null {
   let input = value;
   if (typeof input === 'string') {
     try { input = JSON.parse(input); } catch { return null; }
   }
   const body = record(input);
-  if (!body
-    || Object.keys(body).length !== 3
+  if (!body) return null;
+  const keys = Object.keys(body);
+  const versioned = Object.prototype.hasOwnProperty.call(body, 'consentVersion');
+  if (keys.length !== (versioned ? 4 : 3)
     || !Object.prototype.hasOwnProperty.call(body, 'chartId')
     || !Object.prototype.hasOwnProperty.call(body, 'consent')
     || !Object.prototype.hasOwnProperty.call(body, 'notify')
     || typeof body.chartId !== 'string'
     || !INVITE_UUID_RE.test(body.chartId)
     || body.consent !== true
-    || typeof body.notify !== 'boolean') return null;
-  return { chartId: body.chartId, consent: true, notify: body.notify };
+    || typeof body.notify !== 'boolean'
+    || (versioned && (typeof body.consentVersion !== 'string' || !CONSENT_VERSION_RE.test(body.consentVersion)))) return null;
+  return versioned
+    ? { chartId: body.chartId, consent: true, notify: body.notify, consentVersion: body.consentVersion as string }
+    : { chartId: body.chartId, consent: true, notify: body.notify };
+}
+
+/**
+ * The completion request: empty, as released, or exactly the consentVersion
+ * of the text the recipient's page showed before their reading. Anything else,
+ * a birth detail included, is refused.
+ */
+export function parseCompleteInviteBody(value: unknown): { consentVersion?: string } | null {
+  if (isEmptyJsonBody(value)) return {};
+  let input = value;
+  if (typeof input === 'string') {
+    try { input = JSON.parse(input); } catch { return null; }
+  }
+  const body = record(input);
+  if (!body
+    || Object.keys(body).length !== 1
+    || typeof body.consentVersion !== 'string'
+    || !CONSENT_VERSION_RE.test(body.consentVersion)) return null;
+  return { consentVersion: body.consentVersion };
 }
 
 export function parseInviteIdBody(value: unknown): string | null {

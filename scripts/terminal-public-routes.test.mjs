@@ -129,7 +129,7 @@ describe('Terminal public-route split', () => {
     const legacyUrls = await read('src/lib/legacy/urls.ts');
     expect(feed).toContain("home_page_url: 'https://zodiacs.org/terminal/research/'");
     expect(sitemap).toContain("'/terminal/research/'");
-    expect(sitemap).toContain("['/astrofolio/', AUDIT_REMEDIATION_LASTMOD]");
+    expect(sitemap).toContain("['/astrofolio/', '2026-11-20']");
     expect(sitemap).toContain("['/terminal/', AUDIT_REMEDIATION_LASTMOD]");
     expect(legacyUrls).toContain("{ path: '/astrofolio/', priority: 0.8 }");
     expect(legacyUrls).toContain("{ path: '/terminal/', priority: 0.78 }");

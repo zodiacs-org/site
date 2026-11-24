@@ -5,6 +5,7 @@ import { UNDER_13_REFUSAL } from './contracts';
 import { birthDatesIn, childBirthDateRefusal, executeAiTool } from './tools';
 import { CHILD_HOROSCOPE, UNDER_13_INSTRUCTION } from './server';
 import { isUnder13, isUnder18 } from './features/reading-guards';
+import { birthDateRefusal } from '../lib/birth-date-policy';
 import { MINOR_COMPATIBILITY_REFUSAL } from './features/compatibility';
 import { buildSavedRecord, saveToZodiacs } from './accounts/save';
 import { saveInput } from './accounts/contracts';
@@ -119,6 +120,22 @@ describe('a birth date under 13', () => {
     expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09', place: 'Auckland', zone: 'Pacific/Auckland' }, midUtc, 'America/Los_Angeles')).not.toBeNull();
     expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09', place: 'Los Angeles', zone: 'America/Los_Angeles' }, midUtc)).toBeNull();
   });
+
+  it('counts the 13 years to the earliest calendar date anywhere (UTC-12), as the site\'s chart forms do', () => {
+    // 02:00 UTC on 10 November is still 9 November in Los Angeles, so a child born on 10 November 2013 is 12 there.
+    // The UTC date (10 November) accepted them; the date at UTC-12 (9 November) refuses them.
+    const earlyUtc = new Date('2026-11-10T02:00:00Z');
+    expect(childBirthDateRefusal('get_natal_chart', { birthDate: '2013-11-10' }, earlyUtc)).not.toBeNull();
+    expect(childBirthDateRefusal('get_compatibility', { a: { birthDate: '1990-05-03' }, b: { birthDate: '2013-11-10' } }, earlyUtc)).not.toBeNull();
+    // A day older is 13 everywhere and is answered.
+    expect(childBirthDateRefusal('get_natal_chart', { birthDate: '2013-11-09' }, earlyUtc)).toBeNull();
+    // Once it is 10 November at UTC-12 (12:00 UTC), the 13th birthday has come everywhere.
+    expect(childBirthDateRefusal('get_natal_chart', { birthDate: '2013-11-10' }, new Date('2026-11-10T12:00:00Z'))).toBeNull();
+    // The site's forms and the hosted tools agree on every one of these.
+    for (const [birthDate, at] of [['2013-11-10', '2026-11-10T02:00:00Z'], ['2013-11-09', '2026-11-10T02:00:00Z'], ['2013-11-10', '2026-11-10T12:00:00Z'], ['2031-01-01', '2026-11-10T02:00:00Z']] as const) {
+      expect(childBirthDateRefusal('get_natal_chart', { birthDate }, new Date(at)) !== null, `${birthDate} at ${at}`).toBe(birthDateRefusal(birthDate, new Date(at)) !== null);
+    }
+  });
 });
 
 describe('the hosted server refuses a child\'s birth date', () => {
@@ -150,7 +167,8 @@ describe('the hosted server refuses a child\'s birth date', () => {
       expect(answer.isError, `${name} ${JSON.stringify(answer.structuredContent?.error)}`).toBe(false);
     };
     await ok('get_natal_chart', { birthDate: '1990-05-03' });
-    await ok('get_natal_chart', { birthDate: '2013-11-08' });
+    // 13 everywhere at 03:00 UTC on 8 November (it is 7 November at UTC-12); the 8th is refused until then.
+    await ok('get_natal_chart', { birthDate: '2013-11-07' });
     await ok('get_occasion_sky', { occasion: 'birthday', date: '1990-05-03' });
     await ok('get_occasion_sky', { occasion: 'birthday', date: '2027-05-03' });
     await ok('get_occasion_sky', { occasion: 'birthday', searchFrom: '2026-11-10', searchTo: '2026-11-30' });
@@ -210,12 +228,13 @@ describe('horoscopes and children under 13', () => {
   });
 
   it('still refuses a horoscope with a birth date less than 13 years ago, on the day before the 13th birthday too', async () => {
-    for (const birthDate of ['2017-08-17', '2013-11-09', '2026-11-01']) {
+    // At 03:00 UTC on 8 November it is still 7 November at UTC-12, so a 13th birthday on the 8th has not come everywhere.
+    for (const birthDate of ['2017-08-17', '2013-11-09', '2013-11-08', '2026-11-01']) {
       const answer = await call('get_horoscope', { sign: 'leo', birthDate });
       refused(answer, 'get_horoscope');
       expect(JSON.stringify(answer), birthDate).not.toContain(birthDate);
     }
-    expect((await call('get_horoscope', { sign: 'scorpio', birthDate: '2013-11-08' })).isError).toBe(false);
+    expect((await call('get_horoscope', { sign: 'scorpio', birthDate: '2013-11-07' })).isError).toBe(false);
   });
 
   it('has no field a child\'s name or age could travel in', async () => {
