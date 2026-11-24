@@ -345,6 +345,17 @@ export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date
 export const AGE_FIRST_TOOLS: ReadonlySet<string> = new Set<AiToolName>(['get_astrocartography']);
 
 /**
+ * The child refusal for a tool in AGE_FIRST_TOOLS, read before any missing field is named. The birth date is read
+ * with the spaces around it removed, as the tool's own schema reads it, so a child's date written with a space is
+ * refused for the age too and not answered with the fields still missing.
+ */
+export function ageFirstRefusal(tool: AiToolName, args: unknown, now: Date, hostZone?: string) {
+  const birthDate = fieldOf(args, 'birthDate');
+  const read = typeof birthDate === 'string' ? { ...(args as Record<string, unknown>), birthDate: birthDate.trim() } : args;
+  return childBirthDateRefusal(tool, read, now, hostZone);
+}
+
+/**
  * The card page with its details after the #, as the site's own Copy link makes it. The page reads a
  * zone only with the place's coordinates, so a zone without them gets no link rather than one that
  * opens on a different card. A birthday, a baby's arrival, or a coming of age gets no card link: the
@@ -435,7 +446,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
     // get_year_score takes a public figure only with its people switch (contracts.ts, YEAR_SCORE_PEOPLE_INPUT).
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
     // A tool that refuses a child's birth date before naming any missing field (AGE_FIRST_TOOLS).
-    if (AGE_FIRST_TOOLS.has(tool)) { const child = childBirthDateRefusal(tool, input, dependencies.now?.() ?? new Date(), context.hostZone); if (child) return child; }
+    if (AGE_FIRST_TOOLS.has(tool)) { const child = ageFirstRefusal(tool, input, dependencies.now?.() ?? new Date(), context.hostZone); if (child) return child; }
     if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
     const parsed = inputSchemaFor(tool, skyEvents, switches).safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');

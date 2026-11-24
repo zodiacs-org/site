@@ -14,7 +14,7 @@
 import { z } from 'zod';
 import { equatorialMoment } from '../../lib/astrocartography/positions';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, horizonLongitude, lineDistances, mcLongitude, strengthOf, wrapLongitude, type EquatorialBody } from '../../lib/astrocartography/lines';
-import { ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, farPlaceSummary, lineMeaning, lineSentence, roundedDistanceKm, under18At } from '../../lib/astrocartography/meanings';
+import { ACG_CONFIDENCE, ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, farPlaceSummary, lineMeaning, lineSentence, roundedDistanceKm, under18At } from '../../lib/astrocartography/meanings';
 import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
 import { findBirthplace } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
@@ -52,7 +52,7 @@ const nearLine = z.object({
   line: z.string(),
   /**
    * A share card of this line alone: the planet and the angle, never the birth details or the place. Null while the
-   * website's page is switched off.
+   * website's page is switched off, and for a reading whose confidence is not the card's (no birthplace coordinates).
    */
   shareUrl: z.url().nullable(),
 });
@@ -122,6 +122,9 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
   // The shared rule (../reading-confidence.ts): a birth time counts only with the birthplace's latitude and longitude.
   const confidence = readingConfidence(natal.detail);
   const confidenceLabel = readingConfidenceText(confidence);
+  // A line's share card prints the page's confidence (ACG_CONFIDENCE, a birth time with its birthplace), so a
+  // reading with another confidence gets no card link rather than one whose card disagrees with it.
+  const cardMatches = confidence === ACG_CONFIDENCE;
   // The age is read as the /astrocartography/ page reads it: on the calendar date at UTC-12, the earliest anywhere,
   // so nobody gets the love and attraction readings before their 18th birthday has begun everywhere.
   const under18 = under18At(args.birthDate, context.now);
@@ -163,7 +166,7 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
           planet: row.body, angle: row.angle, title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
           distanceKm, distanceMiles: Math.round(distanceKm / KM_PER_MILE), side: row.side, strength: strengthOf(row.km),
           line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
-          shareUrl: pageOn ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null,
+          shareUrl: pageOn && cardMatches ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null,
         };
       });
       const strong = closest.filter((row) => row.strength === 'strong');

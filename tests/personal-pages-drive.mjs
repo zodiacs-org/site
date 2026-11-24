@@ -14,7 +14,7 @@
  *   npm run build && node tests/personal-pages-drive.mjs
  */
 import { existsSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
@@ -23,6 +23,10 @@ import { projectRoot, withPreview } from './visual/preview-server.mjs';
 /** A fixed adult birth: a date, a clock time and a place the place search finds. */
 const BIRTH = { date: '1990-05-03', time: '08:30', place: 'London' };
 const BIRTH_DETAIL = /1990|05-03|0503|08:30|0830|london|51\.5|-0\.1/iu;
+/** A birth before 1970, whose clock the engine reads from the zone's history file rather than from Intl. */
+const HISTORICAL_BIRTH = { date: '1950-05-03', time: '08:30' };
+/** The engine's zone history files as the built site serves them. */
+const ZONE_HISTORY_FILE = /\/_astro\/tzdb-\d{4}[a-z]-\d{2}-/u;
 
 async function choosePlace(tab, id, query) {
   await tab.locator(`#${id}`).fill(query);
@@ -80,6 +84,34 @@ const ALL_PAGES = [
       check('every planetary line has a title', await lines.evaluateAll((items) => items.length >= 40 && items.every((item) => item.querySelector('title')?.textContent.trim())));
       const card = tab.getByRole('article').filter({ has: tab.getByRole('heading', { name: /Paris/u }) });
       check('the place card prints reading confidence', await card.getByText('Reading confidence 70%', { exact: true }).isVisible());
+      // The zone history files: a 1990 birth needs none and a 1950 one needs its zone's, yet both ask for the whole set.
+      const histories = () => [...new Set(addresses.map((address) => new URL(address).pathname).filter((path) => ZONE_HISTORY_FILE.test(path)))].sort();
+      const builtHistories = (await readdir(resolve(projectRoot, 'dist/_astro'))).map((name) => `/_astro/${name}`).filter((path) => ZONE_HISTORY_FILE.test(path)).sort();
+      check('the built site has the engine\'s sixteen zone history files', builtHistories.length === 16, builtHistories.join(', '));
+      const afterModern = histories();
+      check('a birth after 1970 asks for every zone history file', JSON.stringify(afterModern) === JSON.stringify(builtHistories), afterModern.join(', '));
+      const before = addresses.length;
+      // The Moon's row moves most between the two births; its text says which map is drawn.
+      const moonText = () => tab.evaluate(() => [...document.querySelectorAll('table tr')].find((row) => row.textContent.trim().startsWith('Moon'))?.textContent ?? '');
+      const moonIs = (text, same) => tab.waitForFunction(([want, equal]) => {
+        const now = [...document.querySelectorAll('table tr')].find((row) => row.textContent.trim().startsWith('Moon'))?.textContent ?? '';
+        return now !== '' && (now === want) === equal;
+      }, [text, same], { timeout: 60_000 });
+      const moonModern = await moonText();
+      await tab.fill('#acg-date', HISTORICAL_BIRTH.date);
+      await tab.fill('#acg-time', HISTORICAL_BIRTH.time);
+      await tab.getByRole('button', { name: 'Draw my map' }).click();
+      await moonIs(moonModern, false);
+      const later = addresses.slice(before);
+      check('a birth before 1970 asks for no zone history file of its own', later.every((address) => !ZONE_HISTORY_FILE.test(new URL(address).pathname)), later.join('\n'));
+      check('a birth before 1970 leaves the same set of zone history files', JSON.stringify(histories()) === JSON.stringify(builtHistories), histories().join(', '));
+      check('no request carries the historical birth date', later.every((address) => !address.includes('1950')), later.join('\n'));
+      // Back to the fixed birth, whose share links the drive checks next.
+      await tab.fill('#acg-date', BIRTH.date);
+      await tab.getByRole('button', { name: 'Draw my map' }).click();
+      await moonIs(moonModern, true);
+      await choosePlace(tab, 'acg-check', 'Paris');
+      await tab.locator('.acg__share').first().waitFor({ state: 'visible', timeout: 30_000 });
       return '.acg__share';
     },
   },

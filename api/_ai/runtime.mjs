@@ -43187,7 +43187,7 @@ var nearLine = z16.object({
   line: z16.string(),
   /**
    * A share card of this line alone: the planet and the angle, never the birth details or the place. Null while the
-   * website's page is switched off.
+   * website's page is switched off, and for a reading whose confidence is not the card's (no birthplace coordinates).
    */
   shareUrl: z16.url().nullable()
 });
@@ -43247,6 +43247,7 @@ async function getAstrocartography(args, context) {
   const gast = greenwichSiderealDegrees(utc);
   const confidence = readingConfidence(natal.detail);
   const confidenceLabel = readingConfidenceText(confidence);
+  const cardMatches = confidence === ACG_CONFIDENCE;
   const under18 = under18At(args.birthDate, context.now);
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
   const lines = bodies.map((entry) => {
@@ -43292,7 +43293,7 @@ async function getAstrocartography(args, context) {
           side: row.side,
           strength: strengthOf(row.km),
           line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
-          shareUrl: pageOn ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null
+          shareUrl: pageOn && cardMatches ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null
         };
       });
       const strong = closest.filter((row) => row.strength === "strong");
@@ -45653,6 +45654,11 @@ function childBirthDateRefusal(tool, args, now, hostZone) {
   return birthDatesIn(tool, args, now, hostZone).some((date3) => isUnder13(date3, today2)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
 }
 var AGE_FIRST_TOOLS = /* @__PURE__ */ new Set(["get_astrocartography"]);
+function ageFirstRefusal(tool, args, now, hostZone) {
+  const birthDate = fieldOf(args, "birthDate");
+  const read = typeof birthDate === "string" ? { ...args, birthDate: birthDate.trim() } : args;
+  return childBirthDateRefusal(tool, read, now, hostZone);
+}
 function occasionCardUrl(args) {
   if (BIRTH_OCCASIONS.has(args.occasion)) return null;
   if (args.zone && (args.latitude === void 0 || args.longitude === void 0)) return null;
@@ -45718,7 +45724,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
     if ((COVERAGE_TOOL_NAMES.includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
     if (AGE_FIRST_TOOLS.has(tool)) {
-      const child2 = childBirthDateRefusal(tool, input, dependencies.now?.() ?? /* @__PURE__ */ new Date(), context.hostZone);
+      const child2 = ageFirstRefusal(tool, input, dependencies.now?.() ?? /* @__PURE__ */ new Date(), context.hostZone);
       if (child2) return child2;
     }
     if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) {
@@ -47707,7 +47713,7 @@ function createAiNodeHandler(options = {}) {
             if (options.de440 && (message.method === "tools/list" || message.method === "server/discover")) {
               describeDe440Tools(parsed2.result);
             }
-            const child2 = calledTool && AGE_FIRST_TOOLS.has(calledTool) && parsed2.result?.isError && !parsed2.result?.structuredContent ? childBirthDateRefusal(calledTool, message.params.arguments, options.dependencies?.now?.() ?? /* @__PURE__ */ new Date()) : null;
+            const child2 = calledTool && AGE_FIRST_TOOLS.has(calledTool) && parsed2.result?.isError && !parsed2.result?.structuredContent ? ageFirstRefusal(calledTool, message.params.arguments, options.dependencies?.now?.() ?? /* @__PURE__ */ new Date()) : null;
             if (child2) return JSON.stringify({ ...parsed2, result: { isError: true, content: [{ type: "text", text: JSON.stringify(child2) }], structuredContent: child2 } });
             const named2 = calledTool && (COVERAGE_TOOL_NAMES.includes(calledTool) || PLACE_TOOL_NAMES.includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || isGoodDaysTool(calledTool) || PERSONAL_TOOL_NAMES.includes(calledTool)) && parsed2.result?.isError && !parsed2.result?.structuredContent ? coverageInputRefusal(calledTool, message.params.arguments, inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : null;
             if (named2) return JSON.stringify({ ...parsed2, result: { isError: true, content: [{ type: "text", text: JSON.stringify(named2) }], structuredContent: named2 } });

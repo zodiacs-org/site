@@ -13,6 +13,8 @@ import { INPUT_SCHEMAS, UNDER_13_REFUSAL } from '../contracts';
 import { loadPlaceTable } from '../features/place-table';
 import { astrocartographyInput, astrocartographyTool, equatorialBodies, greenwichSiderealDegrees } from './astrocartography';
 import { forbiddenClaim } from './shared';
+import { parseAstrocartographyShare } from '../../lib/astrocartography/share';
+import { astrocartographyCardModel } from '../../server/result-preview';
 
 const BIRTH = new Date('1990-05-03T07:30:00Z');
 const PAGE_FLAG = 'PUBLIC_ASTROCARTOGRAPHY_ENABLED';
@@ -179,7 +181,7 @@ describe('get_astrocartography', () => {
 
   it('links to the page and its line cards only while the website page is switched on', async () => {
     expect(astrocartographyTool.pageFlag).toBe(PAGE_FLAG);
-    const args = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Lisbon', 'New York'] };
+    const args = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', latitude: 51.51, longitude: -0.13, cities: ['Lisbon', 'New York'] };
     const linked = (result: Awaited<ReturnType<typeof executeAiTool>>) => {
       if (!result.ok) throw new Error('refused');
       const data = result.data as { pageUrl: string | null; cities: { closest: { shareUrl: string | null }[] }[] };
@@ -323,12 +325,45 @@ describe('get_astrocartography', () => {
     expect(JSON.stringify(placed)).not.toContain('Reading confidence 55%');
   });
 
+  it('links a line\'s share card only when the reading\'s confidence is the one the card prints', async () => {
+    const CITY = ['Lisbon'];
+    const card = astrocartographyCardModel({ planet: 'Venus', angle: 'DSC', ref: null });
+    expect(card.confidence).toBe('Reading confidence 70%');
+    const untimed = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: CITY }, ON) as { ok: true; data: any };
+    expect(untimed.data.confidence).toBe(55);
+    expect(untimed.data.cities[0].closest.length).toBeGreaterThan(0);
+    for (const row of untimed.data.cities[0].closest) expect(row.shareUrl).toBeNull();
+    expect(JSON.stringify(untimed)).not.toContain('/share/astrocartography/');
+    // The page link stays: the page draws its own 70% map from a birthplace the person picks.
+    expect(untimed.data.pageUrl).toBe('https://zodiacs.org/astrocartography/');
+    const placed = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', latitude: 51.51, longitude: -0.13, cities: CITY }, ON) as { ok: true; data: any };
+    expect(placed.data.confidence).toBe(70);
+    for (const row of placed.data.cities[0].closest) {
+      expect(row.shareUrl).toMatch(/^https:\/\/zodiacs\.org\/share\/astrocartography\/\?p=[a-z]+&a=(?:asc|dsc|mc|ic)$/u);
+      const model = astrocartographyCardModel(parseAstrocartographyShare(new URL(row.shareUrl).searchParams)!);
+      expect(model.confidence).toBe(placed.data.confidenceLabel);
+    }
+  });
+
   it('refuses a child\'s birth date before it names any missing field', async () => {
     for (const args of [{ birthDate: '2020-01-01' }, { birthDate: '2020-01-01', zone: 'Europe/London' }, { birthDate: '2020-01-01', time: '8:30' }, { birthDate: '2020-01-01', cities: 'Lisbon' }]) {
       expect(await executeAiTool('get_astrocartography', args, ON), JSON.stringify(args)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
     }
     // An adult's date with the same fields missing is still asked for them.
     expect(await executeAiTool('get_astrocartography', { birthDate: '1990-05-03' }, ON)).toMatchObject({ ok: false, error: { message: 'time is required. zone is required.' } });
+  });
+
+  it('refuses a child\'s birth date written with spaces around it, with no other argument, before it names any missing field', async () => {
+    for (const birthDate of [' 2020-01-01', '2020-01-01 ', '\t2020-01-01', '2020-01-01\n', '  2015-06-01  ']) {
+      const answer = await executeAiTool('get_astrocartography', { birthDate }, ON);
+      expect(answer, JSON.stringify(birthDate)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+      expect(JSON.stringify(answer)).not.toMatch(/is required|2020|2015/u);
+    }
+    // An adult's padded date alone gets the tool's own field sentences, not the age refusal.
+    const adult = await executeAiTool('get_astrocartography', { birthDate: ' 1990-05-03 ' }, ON) as { ok: false; error: { message: string } };
+    expect(adult.ok).toBe(false);
+    expect(adult.error.message).not.toBe(UNDER_13_REFUSAL);
+    expect(adult.error.message).toMatch(/time is required\. zone is required\./u);
   });
 
   it('tells the assistant to check the age before it asks for a birth time or birthplace', () => {
@@ -380,6 +415,16 @@ describe('get_astrocartography on the hosted server', () => {
     }
     // An adult's date alone is still asked for the birth time and its zone.
     expect((await call(host, 'get_astrocartography', { birthDate: '1990-05-03' })).structuredContent).toMatchObject({ ok: false, error: { message: 'time is required. zone is required.' } });
+  });
+
+  it('answers a child\'s birth date written with spaces around it, with no other argument, with the age refusal', async () => {
+    const host = await serve();
+    for (const birthDate of [' 2020-01-01', '2020-01-01 ', '\t2020-01-01', '2020-01-01\n']) {
+      const result = await call(host, 'get_astrocartography', { birthDate });
+      expect(result.isError, JSON.stringify(birthDate)).toBe(true);
+      expect(result.structuredContent, JSON.stringify(birthDate)).toMatchObject({ ok: false, tool: 'get_astrocartography', error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+      expect(JSON.stringify(result)).not.toMatch(/is required|2020-01-01|birth time|timezone/iu);
+    }
   });
 
   it('leaves every other tool\'s reply to arguments its schema refuses as it was', async () => {

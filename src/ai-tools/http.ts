@@ -4,7 +4,7 @@ import { computeApiRateLimit } from '../lib/compute-api/handler';
 import { PERSONAL_SWITCH_ENV, PERSONAL_TOOL_NAMES, AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, SKY_EVENTS_SWITCH_ENV, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_SWITCH_ENV, YEAR_SCORE_TOOL_NAMES, YEAR_SCORE_PEOPLE_SWITCH_ENV, SOLAR_RETURN_SWITCH_ENV, SOLAR_RETURN_TOOL_NAMES, NUMEROLOGY_SWITCH_ENV, NUMEROLOGY_TOOL_NAMES, GOOD_DAYS_SWITCH_ENV, GOOD_DAYS_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, inputSchemaFor, type AiToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName, type SolarReturnToolName, type PersonalToolName } from './contracts';
 import { createAiServer } from './server';
 import { describeDe440Tools } from './de440-contract';
-import { AGE_FIRST_TOOLS, childBirthDateRefusal, coverageInputRefusal, isGoodDaysTool, isNumerologyTool, isSkyEventsTool, isYearScoreTool, isSolarReturnTool, normaliseCoverageCall, type AiDependencies } from './tools';
+import { AGE_FIRST_TOOLS, ageFirstRefusal, coverageInputRefusal, isGoodDaysTool, isNumerologyTool, isSkyEventsTool, isYearScoreTool, isSolarReturnTool, normaliseCoverageCall, type AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
 import { argumentRefusal } from './argument-hints';
 import { reserveAiQuota, type QuotaKind } from './quota';
@@ -288,7 +288,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
           // A tool in AGE_FIRST_TOOLS whose arguments the SDK's schema check refused gets the child refusal first, so a
           // child's birth date alone is not answered with the fields still missing.
           const child = calledTool && AGE_FIRST_TOOLS.has(calledTool) && parsed.result?.isError && !parsed.result?.structuredContent
-            ? childBirthDateRefusal(calledTool as AiToolName, (message.params as { arguments?: unknown }).arguments, options.dependencies?.now?.() ?? new Date()) : null;
+            ? ageFirstRefusal(calledTool as AiToolName, (message.params as { arguments?: unknown }).arguments, options.dependencies?.now?.() ?? new Date()) : null;
           if (child) return JSON.stringify({ ...parsed, result: { isError: true, content: [{ type: 'text', text: JSON.stringify(child) }], structuredContent: child } });
           // A 0.6.0 tool's or search_sky_events' arguments refused by the SDK's schema check get the tool's own field-named refusal.
           const named = calledTool && ((COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) || (PLACE_TOOL_NAMES as readonly string[]).includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || isGoodDaysTool(calledTool) || (PERSONAL_TOOL_NAMES as readonly string[]).includes(calledTool)) && parsed.result?.isError && !parsed.result?.structuredContent

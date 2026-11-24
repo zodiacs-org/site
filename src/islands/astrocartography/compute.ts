@@ -8,6 +8,7 @@
 import { lineDistances, mapLines, type BodyLines, type EquatorialBody, type GeoPoint, type LineDistance } from '../../lib/astrocartography/lines';
 import { equatorialMoment } from '../../lib/astrocartography/positions';
 import { prepareLocalTime, resolveLocalToUtc, type LocalTimeResolution } from '../../lib/time/localToUtc';
+import { prepareEveryZoneHistory } from '../../lib/time/every-zone-history';
 
 type LocalTimeFlag = LocalTimeResolution['flags'][number];
 import land from '../../data/astrocartography-land.json';
@@ -26,6 +27,9 @@ export interface AcgResult {
 }
 
 export async function computeAstrocartography(input: AcgInput): Promise<AcgResult> {
+  // All sixteen zone history files first, whatever the birth: which file a birth needs, and whether it needs one at
+  // all, would tell the host the birthplace's zone group and that the birth is from 1970 or before.
+  await prepareEveryZoneHistory();
   await prepareLocalTime(input.birthDate, input.place.tz);
   const resolved = resolveLocalToUtc(input.birthDate, input.birthTime, input.place.tz, { longitude: input.place.lon });
   const utc = resolved.utc;
