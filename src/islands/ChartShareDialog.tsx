@@ -101,6 +101,7 @@ export default function ChartShareDialog({
   }, []);
 
   const primaryChoice: Choice = mode === 'full' ? 'sheet' : 'placement';
+  const waitingForPrimary = mode === 'full' && card === 'busy' && !preparedPrimary;
   const primaryAlternative = primaryShareCardVariant(locale, Boolean(chart.angles));
   const primaryTitle = mode === 'full'
     ? copy.sheet
@@ -166,14 +167,15 @@ export default function ChartShareDialog({
   }, [preparedPrimary, primaryChoice]);
 
   useEffect(() => {
-    if (preparedPrimary) return;
+    if (waitingForPrimary || prepared[primaryChoice]) return;
+    if (preparedPrimary && (primaryChoice !== 'sheet' || hideRef.current)) return;
     void prepareChoice(primaryChoice, hideRef.current);
-  }, [preparedPrimary, primaryChoice]);
+  }, [preparedPrimary, primaryChoice, waitingForPrimary]);
 
   useEffect(() => {
-    if (mode !== 'full') return;
+    if (mode !== 'full' || waitingForPrimary || prepared[primaryAlternative]) return;
     void prepareChoice(primaryAlternative);
-  }, [mode, primaryAlternative]);
+  }, [mode, primaryAlternative, waitingForPrimary]);
 
   async function buildChoice(choice: Choice, hidden: boolean): Promise<PreparedChartCard> {
     // Images with birth details hidden show what the links carry (share-card's imageChart).
@@ -269,7 +271,7 @@ export default function ChartShareDialog({
       return next;
     });
     setStates((current) => ({ ...current, sheet: hidden && preparedPrimary ? 'ready' : 'idle' }));
-    if (!hidden || !preparedPrimary) void prepareChoice('sheet', hidden);
+    if (!waitingForPrimary && (!hidden || !preparedPrimary)) void prepareChoice('sheet', hidden);
   }
 
   function shareChoice(choice: Choice): void {
@@ -305,7 +307,7 @@ export default function ChartShareDialog({
   }
 
   const actionText = (choice: Choice): string => {
-    if (states[choice] === 'preparing') return shareText(locale, 'preparingImage');
+    if (waitingForPrimary || states[choice] === 'preparing') return shareText(locale, 'preparingImage');
     if (states[choice] === 'busy') return t(locale, 'rendering');
     if (choice === 'sheet') return copy.sheet;
     if (choice === 'signature') return shareCardText(locale, 'signatureAction');

@@ -13,7 +13,8 @@ describe('the numerology share card', () => {
       expect(content.address).toBe(`zodiacs.org/numerology/life-path/${number}`);
       expect(content.filename).toBe(`zodiacs-life-path-${number}.png`);
       expect(content.hue).toMatch(/^#[0-9A-F]{6}$/iu);
-      expect(content.note).toContain('separate tradition from astrology');
+      expect(content.note).toContain('not astrology');
+      expect(JSON.stringify(content)).not.toContain('Reading confidence');
       expect(JSON.stringify(content)).not.toMatch(/[–—]/u);
     }
   });
