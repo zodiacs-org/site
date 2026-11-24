@@ -25,7 +25,9 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
 export const PROJECT_ID = 'prj_nRTO3q3aNYLfaM3dotAowOc028fO';
+export const TEAM_ID = 'team_Ue0ac8HT1b3TAzaDDZBTFhQt';
 export const TIME_ZONE = 'Asia/Bangkok';
+export const PATH_QUERY_LIMIT = 10000;
 
 /** The bots the weekly table names, in order, with the labels Vercel may log for each. */
 export const NAMED_BOTS = [
@@ -49,17 +51,40 @@ export const OTHER_LABELLED = 'Other labelled bots';
 
 export const FAMILIES = ['calculators', 'learn', 'horoscopes', 'events', 'llms', 'md', 'mcp', 'other'];
 
+
+/** The published Markdown twins and discovery files. Only these count as machine-only paths. */
+export const PUBLISHED_MD_PATHS = Object.freeze([
+  '/birth-chart.md',
+  '/compatibility.md',
+  '/moon-sign.md',
+  '/rising-sign.md',
+  '/saturn-return.md',
+  '/mercury-retrograde.md',
+  '/full-moon-calendar.md',
+  '/eclipses.md',
+  '/horoscopes.md',
+  '/methodology.md',
+  '/privacy.md',
+  '/about.md',
+]);
+export const DISCOVERY_PATHS = Object.freeze(['/llms.txt', '/llms-full.txt']);
+export const KNOWN_MACHINE_PATHS = Object.freeze([...DISCOVERY_PATHS, ...PUBLISHED_MD_PATHS]);
+
+const knownMachine = new Set(KNOWN_MACHINE_PATHS);
+
+const normalisedPath = (rawPath) => String(rawPath ?? '').split(/[?#]/u)[0] || '/';
+
 const LOCALE_PREFIX = /^\/(?:es|pt|fr|it|ru|zh-hans|zh-hant)(?=\/)/u;
 const CALCULATORS = /^\/(?:birth-chart|compatibility\/?$|compatibility\/invite|moon-sign|rising-sign|saturn-return|solar-return|lunar-return|transits|moon-phase|numerology|big-three|chart-twins|group-charts|good-days|year-score|astrologer-kit|your-sky-wrapped|your-2027-sky|chinese-zodiac|tools)(?:\/|$)/u;
 const HOROSCOPES = /^\/(?:horoscopes?|today|tomorrow)(?:\/|$)/u;
-const EVENTS = /^\/(?:events|mercury-retrograde|retrogrades|full-moon-calendar|new-moon-calendar|eclipses|sky-calendar|seasons|ingresses|feeds)(?:[/.-]|$)/u;
+const EVENTS = /^\/(?:events|mercury-retrograde|venus-retrograde|mars-retrograde|retrogrades|full-moon-calendar|full-moon|new-moon-calendar|new-moon|eclipses|sky-calendar|seasons|ingresses|feeds)(?:[/.-]|$)/u;
 const LEARN = /^\/(?:learn|aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces|compatibility|birthdays?|people|methodology|about|privacy|glossary|placements)(?:\/|$)/u;
 
 /** The path family a request path belongs to. Query strings and fragments are ignored. */
 export function pathFamily(rawPath) {
-  const path = String(rawPath ?? '').split(/[?#]/u)[0] || '/';
+  const path = normalisedPath(rawPath);
   if (/^\/(?:api\/v1\/)?llms(?:-full)?\.txt$/u.test(path)) return 'llms';
-  if (/\.md$/u.test(path)) return 'md';
+  if (knownMachine.has(path) && path.endsWith('.md')) return 'md';
   if (/^\/mcp(?:\/|$)/u.test(path)) return 'mcp';
   const bare = path.replace(LOCALE_PREFIX, '');
   if (CALCULATORS.test(bare)) return 'calculators';
@@ -70,7 +95,7 @@ export function pathFamily(rawPath) {
 }
 
 /** Requests to these come almost only from programs, so an unlabelled share there estimates disguised agents. */
-export const isMachineOnlyPath = (path) => ['llms', 'md'].includes(pathFamily(path)) && !String(path).startsWith('/api/');
+export const isMachineOnlyPath = (path) => knownMachine.has(normalisedPath(path));
 
 const clean = (label) => String(label ?? '').trim().toLowerCase().replace(/[\s_]+/gu, '-');
 
@@ -100,17 +125,43 @@ export function normaliseRows(input) {
   });
 }
 
-/** Totals per bot row and per family, and the unlabelled share on machine-only paths. */
-export function summarise(rows) {
+/** Split a saved export into bot-total rows and path-grouped rows. */
+export function splitCountSources(input) {
+  if (input && typeof input === 'object' && !Array.isArray(input) && (input.totals || input.paths || input.botTotals || input.pathRows)) {
+    return {
+      totals: normaliseRows(input.totals ?? input.botTotals ?? []),
+      paths: normaliseRows(input.paths ?? input.pathRows ?? []),
+    };
+  }
+  const rows = normaliseRows(input);
+  const totals = rows.filter((row) => row.path === null);
+  const paths = rows.filter((row) => row.path !== null);
+  return { totals, paths };
+}
+
+/** Totals per bot row and per family, and the unlabelled share on machine-only paths.
+ *  Bot-only rows feed Total. Path-grouped rows feed families and the unlabelled share.
+ *  Combining both kinds of export no longer double-counts the same requests. */
+export function summarise(input, { pathLimit = PATH_QUERY_LIMIT } = {}) {
+  const { totals: totalRows, paths: pathRows } = Array.isArray(input) && input.length && input[0].bot !== undefined && input[0].count !== undefined && !input.totals
+    ? { totals: input.filter((row) => row.path === null), paths: input.filter((row) => row.path !== null) }
+    : splitCountSources(input);
+  const totals = totalRows;
+  const paths = pathRows;
   const rowNames = [...NAMED_BOTS.map(([name]) => name), OTHER_LABELLED, UNLABELLED];
   const table = new Map(rowNames.map((name) => [name, { total: 0, byFamily: Object.fromEntries(FAMILIES.map((family) => [family, 0])) }]));
-  let pathCounted = false;
+  const pathCounted = paths.length > 0;
   const machine = { all: 0, unlabelled: 0, byPath: new Map() };
-  for (const { bot, path, count } of rows) {
+  const totalSource = totals.length ? 'bot-totals' : (pathCounted ? 'path-breakdown' : 'none');
+  const incompletePathBreakdown = pathCounted && paths.length >= pathLimit;
+  const addTotal = (bot, count) => { table.get(bot).total += count; };
+  if (totals.length) {
+    for (const { bot, count } of totals) addTotal(bot, count);
+  } else {
+    for (const { bot, count } of paths) addTotal(bot, count);
+  }
+  for (const { bot, path, count } of paths) {
     const entry = table.get(bot);
-    entry.total += count;
-    if (path === null) continue;
-    pathCounted = true;
     entry.byFamily[pathFamily(path)] += count;
     if (isMachineOnlyPath(path)) {
       machine.all += count;
@@ -121,14 +172,14 @@ export function summarise(rows) {
       machine.byPath.set(path, slot);
     }
   }
-  return { table, pathCounted, machine };
+  return { table, pathCounted, machine, totalSource, incompletePathBreakdown };
 }
 
 const fmt = (n) => n.toLocaleString('en-US');
 const pct = (part, whole) => (whole ? `${((part / whole) * 100).toFixed(1)}%` : 'n/a');
 
 /** The weekly table, in Markdown. */
-export function renderTable({ table, pathCounted, machine }, { from, to, source = 'Vercel observability, vercel.request.count' } = {}) {
+export function renderTable({ table, pathCounted, machine, totalSource = 'bot-totals', incompletePathBreakdown = false }, { from, to, source = 'Vercel observability, vercel.request.count' } = {}) {
   const lines = [
     `# AI crawler counts, ${from} to ${to} (${TIME_ZONE} days)`,
     '',
@@ -156,7 +207,13 @@ export function renderTable({ table, pathCounted, machine }, { from, to, source 
   } else {
     lines.push('Path families and the unlabelled share need the second query (grouped by bot label and path).', '');
   }
-  lines.push('Families: calculators, learn (sign, pair and learn pages, methodology, about, privacy), horoscopes (and Today), events (sky calendars, retrogrades, eclipses, seasons, feeds), llms (llms.txt files), md (Markdown twins), mcp, other.');
+  if (totalSource === 'path-breakdown') {
+    lines.push('Total is taken from the path-grouped export because no bot-only totals were supplied. It can undercount if that export hit its group limit.', '');
+  }
+  if (incompletePathBreakdown) {
+    lines.push('The path-grouped export reached its group limit, so the family columns and the unlabelled share may be incomplete. Totals still come from the bot-only query when that file was supplied.', '');
+  }
+  lines.push('Families: calculators, learn (sign, pair and learn pages, methodology, about, privacy), horoscopes (and Today), events (sky calendars, retrogrades, eclipses, seasons, feeds, and dated full-moon, new-moon, Venus and Mars retrograde pages), llms (llms.txt files), md (the published Markdown twins), mcp, other.');
   return `${lines.join('\n')}\n`;
 }
 
@@ -172,10 +229,15 @@ export function bangkokWindow(from, to) {
 /** The two read-only observability queries, as the request bodies the Vercel connector takes. */
 export function querySpecs(from, to, pathDimension = 'request_path') {
   const window = bangkokWindow(from, to);
-  const base = { metric: 'vercel.request.count', aggregation: 'sum', scope: { type: 'project', projectId: PROJECT_ID }, ...window };
+  const base = {
+    metric: 'vercel.request.count',
+    aggregation: 'sum',
+    scope: { type: 'project', projectId: PROJECT_ID, teamId: TEAM_ID },
+    ...window,
+  };
   return [
     { purpose: 'Totals per bot label', ...base, groupBy: ['bot_name'], limit: 200 },
-    { purpose: 'Bot label by path (families and the unlabelled share)', ...base, groupBy: ['bot_name', pathDimension], limit: 10000 },
+    { purpose: 'Bot label by path (families and the unlabelled share)', ...base, groupBy: ['bot_name', pathDimension], limit: PATH_QUERY_LIMIT },
   ];
 }
 
@@ -190,7 +252,7 @@ function main(argv) {
   }
   const file = opt('counts');
   if (!file) throw new Error('Give --counts rows.json, or --print-query.');
-  const markdown = renderTable(summarise(normaliseRows(JSON.parse(readFileSync(file, 'utf8')))), { from, to });
+  const markdown = renderTable(summarise(JSON.parse(readFileSync(file, 'utf8'))), { from, to });
   const out = opt('out');
   if (out) writeFileSync(out, markdown);
   else process.stdout.write(markdown);

@@ -87,6 +87,10 @@ export function fullMoonTable(now = new Date()) {
       };
     });
   const next = fulls.find((f) => !f.past);
+  const nextBlueMoon = fulls.find((f) => !f.past && f.name === 'Blue');
+  const nextBlue = nextBlueMoon
+    ? formatDate('en', nextBlueMoon.at, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+    : null;
   const status = next
     ? `The next full moon is the ${next.name} Moon on ${tableDay(next.at)}, at ${next.position}.`
     : 'Later full moon dates are not available yet.';
@@ -96,6 +100,7 @@ export function fullMoonTable(now = new Date()) {
     lastYear,
     asOf: formatShortDate('en', now),
     status,
+    nextBlue,
     years: years.map((year) => ({
       year,
       rows: fulls.filter((f) => f.year === year).map((f) => [

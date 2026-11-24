@@ -3,6 +3,11 @@ import Base from '../../layouts/Base.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import { EDITOR_ORGANIZATION } from '../../lib/editorial';
 import { EN } from '../../strings/en.mjs';
+import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../lib/account-v2/feature-flags';
+
+const accountSyncV2Enabled = isAccountSyncV2Enabled({
+  PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
+});
 
 const jsonLd = [
   {
@@ -16,7 +21,7 @@ const jsonLd = [
     url: 'https://zodiacs.org/about/',
     description:
       'Who runs Zodiacs.org and why: a free astrology reference where charts are computed accurately, explained plainly, and kept private on your device.',
-    dateModified: '2026-11-19T00:00:00.000Z',
+    dateModified: '2026-11-24T00:00:00.000Z',
   },
 ];
 ---
@@ -73,8 +78,11 @@ const jsonLd = [
       <h2>Your data stays yours</h2>
       <p>
         The engine runs in your browser, so chart calculation sends no birth
-        fields to a chart API. Charts you save live on your device; if you
-        sign in to a free account, they sync to it with their birth details.
+        fields to a chart API. Charts you save live on your device. {accountSyncV2Enabled ? (
+          <>Signing in to an account does not send your saved charts. If you are 18 or older, you can choose one chart that is your own and sync it, encrypted, to your account.</>
+        ) : (
+          <>Chart sync is paused: signing in to an account does not send your saved charts, and nothing new is sent to your account.</>
+        )}
         If you explicitly attach a chart to Guide, which is offered only in
         the encrypted sync preview and not on the public site, its
         placements-only summary, not the saved name or raw birth fields, is sent
@@ -93,11 +101,6 @@ const jsonLd = [
         records and addresses, while the <a href="/terminal/">Terminal</a>{' '}
         presents a denser record of dated public activity. These sections stay
         separate from the free astrology surfaces by design.
-      </p>
-      <p>
-        Charts you save start on this device and sync only if you choose a
-        Zodiacs.org account. Saved charts live in your profile and are never
-        required to use the free tools.
       </p>
       <p>
         {EN['disclosure.aboutNotice']}{' '}

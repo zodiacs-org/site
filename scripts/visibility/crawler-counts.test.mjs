@@ -1,16 +1,23 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   OTHER_LABELLED,
   PROJECT_ID,
+  TEAM_ID,
   UNLABELLED,
   bangkokWindow,
   botRow,
+  isMachineOnlyPath,
   normaliseRows,
   pathFamily,
   querySpecs,
   renderTable,
   summarise,
 } from './crawler-counts.mjs';
+
+const fixture = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'fixtures/crawler-counts-sample.json'), 'utf8'));
 
 describe('crawler counts', () => {
   it('sorts paths into families, ignoring locales and query strings', () => {
@@ -22,6 +29,12 @@ describe('crawler counts', () => {
     expect(pathFamily('/horoscopes/leo/')).toBe('horoscopes');
     expect(pathFamily('/mercury-retrograde/2027/')).toBe('events');
     expect(pathFamily('/sky-calendar.ics')).toBe('events');
+    expect(pathFamily('/full-moon/2026-07-29/')).toBe('events');
+    expect(pathFamily('/venus-retrograde/2026-10-03/')).toBe('events');
+    expect(pathFamily('/mystery.md')).toBe('other');
+    expect(isMachineOnlyPath('/birth-chart.md')).toBe(true);
+    expect(isMachineOnlyPath('/mystery.md')).toBe(false);
+    expect(isMachineOnlyPath('/llms.txt')).toBe(true);
     expect(pathFamily('/llms.txt')).toBe('llms');
     expect(pathFamily('/llms-full.txt')).toBe('llms');
     expect(pathFamily('/birth-chart.md')).toBe('md');
@@ -72,7 +85,34 @@ describe('crawler counts', () => {
     });
     const specs = querySpecs('2026-11-16', '2026-11-22');
     expect(specs.map((spec) => spec.groupBy)).toEqual([['bot_name'], ['bot_name', 'request_path']]);
-    for (const spec of specs) expect(spec).toMatchObject({ metric: 'vercel.request.count', scope: { projectId: PROJECT_ID } });
+    for (const spec of specs) {
+      expect(spec).toMatchObject({
+        metric: 'vercel.request.count',
+        scope: { projectId: PROJECT_ID, teamId: TEAM_ID },
+      });
+    }
     expect(() => bangkokWindow('2026-11-22', '2026-11-16')).toThrow();
+  });
+
+  it('uses bot-only totals when both exports are present and does not print unknown .md paths', () => {
+    const summary = summarise(fixture);
+    expect(summary.totalSource).toBe('bot-totals');
+    expect(summary.table.get('ClaudeBot').total).toBe(40);
+    expect(summary.table.get(UNLABELLED).total).toBe(20);
+    expect(summary.table.get('ClaudeBot').byFamily.events).toBe(10);
+    expect(summary.table.get(UNLABELLED).byFamily.other).toBe(99);
+    expect(summary.machine).toMatchObject({ all: 50, unlabelled: 15 });
+    expect([...summary.machine.byPath.keys()]).toEqual(['/llms.txt', '/birth-chart.md']);
+    const markdown = renderTable(summary, { from: '2026-11-16', to: '2026-11-22' });
+    expect(markdown).toContain('| ClaudeBot | 40 |');
+    expect(markdown).not.toContain('mystery.md');
+    expect(markdown).not.toContain('1990-01-01');
+    expect(markdown).not.toMatch(/[\u2013\u2014]/u);
+  });
+
+  it('flags a path export that reached its group limit', () => {
+    const summary = summarise(fixture, { pathLimit: 7 });
+    expect(summary.incompletePathBreakdown).toBe(true);
+    expect(renderTable(summary, { from: '2026-11-16', to: '2026-11-22' })).toContain('reached its group limit');
   });
 });

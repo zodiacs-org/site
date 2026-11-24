@@ -1154,6 +1154,19 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   for (const url of urls) {
     if (url.loc === '/privacy/') url.lastmod = laterDate(url.lastmod, '2026-11-23');
   }
+  // Privacy, methodology and about now agree on the Charts you save wording;
+  // the privacy page adds How to check this yourself; the full moon FAQ takes
+  // the next blue moon date from the table.
+  for (const url of urls) {
+    if (
+      url.loc === '/privacy/'
+      || url.loc === '/methodology/'
+      || url.loc === '/about/'
+      || url.loc === '/full-moon-calendar/'
+    ) {
+      url.lastmod = laterDate(url.lastmod, '2026-11-24');
+    }
+  }
   for (const url of [...urls, ...localizedUrls]) {
     const engineUpdated = de440UpdatedDate(url.loc);
     if (engineUpdated) url.lastmod = laterDate(url.lastmod, engineUpdated);

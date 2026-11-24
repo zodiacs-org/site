@@ -15,6 +15,17 @@ import programData from '../../data/horoscope-program.json';
 import { t } from '../i18n';
 import type { Block, Twin, TwinSlug } from './model';
 import { eclipseTable, fullMoonTable, mercuryRetrogradeTable } from './sky-tables';
+import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../account-v2/feature-flags';
+
+const accountSyncV2Enabled = isAccountSyncV2Enabled({
+  PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
+});
+const chartsYouSaveSync = accountSyncV2Enabled
+  ? 'It is not sent anywhere unless you share it or choose to sync it. Signing in to an account does not send your saved charts.'
+  : 'It is not sent anywhere unless you share it. Chart sync is paused: signing in to an account does not send your saved charts, and nothing new is sent to your account.';
+const signingInDoesNotSend = accountSyncV2Enabled
+  ? 'Signing in to an account does not send your saved charts. If you are 18 or older, you can choose one chart that is your own and sync it, encrypted, to your account.'
+  : 'Chart sync is paused: signing in to an account does not send your saved charts, and nothing new is sent to your account.';
 
 type Faq = { q: string; a: string; computed?: boolean };
 
@@ -223,7 +234,7 @@ function fullMoonCalendar(): Twin {
       ...faqBlocks('Questions, answered', [
         { q: 'When is the next full moon?', a: `${table.status} Every date on this page is computed from the Moon's actual opposition to the Sun, to within a minute, in universal time.`, computed: true },
         { q: 'Why does the full moon date sometimes differ by a day?', a: 'The full moon is one instant, the moment the Moon stands exactly opposite the Sun, and this page lists that instant in universal time. If it lands at 2 a.m. UTC, it is still the previous evening in the Americas, so a local calendar can honestly print the neighboring date. The Moon looks full to the eye for a night on either side regardless.' },
-        { q: 'What is a blue moon?', a: 'The common modern meaning is the second full moon inside one calendar month, which happens every two to three years because lunar months run about 29.5 days. The next one is on May 31, 2026. The older almanac meaning, a fourth full moon in one season, survives mostly in trivia contests. Neither kind looks blue.' },
+        { q: 'What is a blue moon?', a: `The common modern meaning is the second full moon inside one calendar month, which happens every two to three years because lunar months run about 29.5 days. ${table.nextBlue ? `The next one is on ${table.nextBlue}.` : 'Later blue moon dates are not available yet.'} The older almanac meaning, a fourth full moon in one season, survives mostly in trivia contests. Neither kind looks blue.`, computed: true },
         { q: 'Where do full moon names come from?', a: 'The Wolf, Snow, Worm sequence comes from North American almanac tradition, which drew on Algonquian and colonial seasonal names. They describe the farming and hunting year, not astrology. The astrological content of a full moon is its zodiac sign and degree, which is why the table lists both.' },
         { q: 'What does a full moon mean in astrology?', a: 'A full moon is the Sun and Moon in exact opposition, so it always pairs two opposite signs. A Capricorn full moon happens in Cancer season. Astrologers read it as a culmination or a coming-to-light in the part of your chart holding the Moon’s sign. Which part that is takes your birth chart.' },
       ]),
@@ -325,7 +336,7 @@ function methodology(): Twin {
       { h: 2, text: 'Birthplace search' },
       { p: 'Place lookup runs against a bundled index of ~34,000 cities from GeoNames (CC BY 4.0), each carrying its IANA time zone. Coordinates are stored to ~1 km precision, far finer than a birth chart needs.' },
       { h: 2, text: 'Privacy' },
-      { p: 'The entire chart calculation happens in your browser. Your birth date, time, and place are not sent to a chart API, and there is no account requirement or analytics attached to birth data. Charts you save live in your browser\'s local storage first, deletable by you at any time. If you sign in to an account, your saved charts and their birth details upload to your Supabase account and are protected by row-level security. Guide sends each question to Anthropic; if you press “Attach my chart”, which is offered only in the encrypted sync preview, a placements-only summary goes with each message while “Using my chart” remains on. The assistant never attaches the saved name, birth fields, or coordinates, though the summary\'s positions still give the birth date and time, and its ascendant and midheaven, kept to the whole degree, the birthplace roughly. A transit calendar or a compatibility invitation sends a chart\'s positions, which still give the birth date and time; the privacy page lists every case.' },
+      { p: `The entire chart calculation happens in your browser. Your birth date, time, and place are not sent to a chart API, and there is no account requirement or analytics attached to birth data. Charts you save live in your browser's local storage first, deletable by you at any time. ${signingInDoesNotSend} Guide sends each question to Anthropic; if you press “Attach my chart”, which is offered only in the encrypted sync preview, a placements-only summary goes with each message while “Using my chart” remains on. The assistant never attaches the saved name, birth fields, or coordinates, though the summary's positions still give the birth date and time, and its ascendant and midheaven, kept to the whole degree, the birthplace roughly. A transit calendar or a compatibility invitation sends a chart's positions, which still give the birth date and time; the privacy page lists every case.`, computed: true },
       { h: 2, text: 'Honest limits' },
       { list: [
         'Chiron and the asteroids aren\'t included yet (the engine\'s remit is major bodies); they\'re planned via public-domain JPL data.',
@@ -345,8 +356,11 @@ function privacy(): Twin {
     // The page's meta description names the wing's lookups; the twin covers the consumer sections only, so it leaves it out.
     blocks: [
       { h: 2, text: 'What happens when you use a calculator' },
-      { p: 'Every chart you calculate here is computed on your own device. When you enter a birth date, time, and place, that information is used by code running in your browser to calculate the chart. It is not transmitted to our servers, logged, or stored by us as part of that calculation. It leaves the device only if you share a link that carries it or put it in an assistant message. This is a deliberate design choice, described in full on our methodology page.' },
+      { p: `Every chart you calculate here is computed on your own device. When you enter a birth date, time, and place, that information is used by code running in your browser to calculate the chart. It is not transmitted to our servers, logged, or stored by us as part of that calculation. ${chartsYouSaveSync} This is a deliberate design choice, described in full on our methodology page.`, computed: true },
       { p: 'Place search downloads from zodiacs.org a city file chosen by the first letter you type, and searches it in your browser. For a birth before 1970, the calculator also downloads a file of historical clock changes chosen by the birthplace\'s time zone. Neither request goes to any other service. Which files are requested shows our host the first letter of the city you typed and, for a birth before 1970, a group of time zones that includes the birthplace\'s. When a page shows the signs of a birth chart, it first requests the pictures of all twelve signs, in the same order for every chart, so those requests do not show which signs the chart has.' },
+      { h: 2, text: 'How to check this yourself' },
+      { p: 'You can watch this in your own browser. Open the developer tools, choose the Network tab, and calculate a chart on the birth chart page. The page downloads files from zodiacs.org: a city file named by the first letter you type, for a birth before 1970 a file of historical clock changes, and the pictures of all twelve signs. None of these requests carries your birth date, time or place, and the page sends nothing to our servers while it works out your chart.' },
+      { p: 'Birth details leave your device only when you choose an action that sends them: syncing a chart to your account, sharing a link that carries them, or typing them into an assistant message. A transit calendar or a compatibility invitation sends a chart\'s positions, which still give the birth date and time. If you attach a chart to Guide, which is offered only in the encrypted sync preview, its placements-only summary goes to Anthropic with your question. A program that uses the compute API sends the birth details it chooses in the body of its request; the site\'s own calculators do not use that API.' },
       { h: 2, text: 'Guide' },
       { p: t('en', 'trustGuideNotice'), computed: true },
       { p: 'When you send a question to Guide, that message, recent Guide messages, and the visible Guide context are sent to Anthropic for an input safety check and to generate a draft reply. That generated draft reply is then sent back to Anthropic for a second safety check before you see it. The current web Guide conversation stays only in this browser session, is not synced to an account, and is not stored as text on Zodiacs.org servers, whether or not you are signed in. Anthropic says it does not use API inputs or outputs to train models by default and deletes them from its backend within 30 days, except when the law or enforcement of its Usage Policy requires longer retention. To enforce the daily limit, we keep a salted one-way identifier derived from your IP address, never the raw IP, with its daily count and a record of each request. Each later quota check deletes counts older than the previous UTC day and request records older than 48 hours. We do not send that identifier to Anthropic or put conversation text in provider metadata. Guide also sets a session cookie holding a random, signed identifier. It is used to limit simultaneous requests from one browser, lasts until the browser session ends, and is not stored with your messages.' },
@@ -361,7 +375,7 @@ function privacy(): Twin {
       { p: 'If we change how we handle data, we will update this page and its date. Material changes to the account or email features will be reflected here before they take effect.' },
       { h: 2, text: 'Contact' },
       { p: 'Privacy and deletion requests may be sent to Zodiacs LLC at admin@zodiacs.org.' },
-      { p: 'Last updated: 13 November 2026', computed: true },
+      { p: 'Last updated: 24 November 2026', computed: true },
     ],
   };
 }
@@ -381,7 +395,7 @@ function about(): Twin {
       { h: 2, text: 'Accuracy without the homework' },
       { p: 'When a date, degree, or birth time matters, it is calculated against the actual sky and checked before it appears. If you want the ephemeris, house systems, historical time-zone handling, and accuracy limits, the full methodology is public.' },
       { h: 2, text: 'Your data stays yours' },
-      { p: 'The engine runs in your browser, so chart calculation sends no birth fields to a chart API. Charts you save live on your device; if you sign in to a free account, they sync to it with their birth details. If you explicitly attach a chart to Guide, which is offered only in the encrypted sync preview and not on the public site, its placements-only summary, not the saved name or raw birth fields, is sent with your question to Anthropic for that conversation; its positions still give your birth date and time. There are no ads and no cross-site tracking. The full detail is on the privacy page.' },
+      { p: `The engine runs in your browser, so chart calculation sends no birth fields to a chart API. Charts you save live on your device. ${signingInDoesNotSend} If you explicitly attach a chart to Guide, which is offered only in the encrypted sync preview and not on the public site, its placements-only summary, not the saved name or raw birth fields, is sent with your question to Anthropic for that conversation; its positions still give your birth date and time. There are no ads and no cross-site tracking. The full detail is on the privacy page.`, computed: true },
       { h: 2, text: 'How Zodiacs.org is maintained' },
       { p: 'Zodiacs.org is a Zodiacs LLC publication maintained by automated systems, without a traditional human editorial staff. Articles use the Zodiacs.org organizational byline; there is no invented editor, biography, or set of credentials behind it. The calculators remain free because the core math runs on your device.' },
       { h: 2, text: 'Get in touch' },

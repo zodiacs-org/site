@@ -55,6 +55,10 @@ const fulls = (sky.moons as { type: string; at: string }[])
 
 const years = [...new Set(fulls.map((f) => f.year))];
 const next = fulls.find((f) => !f.past);
+const nextBlueMoon = fulls.find((f) => !f.past && f.name === 'Blue');
+const nextBlue = nextBlueMoon
+  ? formatDate('en', nextBlueMoon.at, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+  : null;
 const upcomingEvents = fulls.filter((f) => f.at >= buildNow && f.at <= eventHorizon);
 
 const fmtDay = (d: Date) =>
@@ -79,7 +83,7 @@ const faq = [
   },
   {
     q: 'What is a blue moon?',
-    a: 'The common modern meaning is the second full moon inside one calendar month, which happens every two to three years because lunar months run about 29.5 days. The next one is on May 31, 2026. The older almanac meaning, a fourth full moon in one season, survives mostly in trivia contests. Neither kind looks blue.',
+    a: `The common modern meaning is the second full moon inside one calendar month, which happens every two to three years because lunar months run about 29.5 days. ${nextBlue ? `The next one is on ${nextBlue}.` : 'Later blue moon dates are not available yet.'} The older almanac meaning, a fourth full moon in one season, survives mostly in trivia contests. Neither kind looks blue.`,
   },
   {
     q: 'Where do full moon names come from?',
