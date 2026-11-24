@@ -10,6 +10,7 @@ import { loadModule } from '../lib/module-load';
 import { astrocartographyShareUrl } from '../lib/astrocartography/share';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
+import { parseCivilDate } from '../lib/time/civil-date';
 import { t } from '../lib/i18n';
 
 /** Each planet drawn in the hue of the sign it rules, the only colour the site uses. */
@@ -56,7 +57,8 @@ export type DateCheck = { date: string } | { error: string } | null;
  */
 export function quickDateCheck(date: string, calendar: CalendarChoice, now = new Date()): DateCheck | undefined {
   if (!date) return null;
-  return calendarInPlay(date, calendar) ? undefined : ageCheck(date, now);
+  // A day the calendar does not have (1990-02-30) is read by the calendar module, which names the problem.
+  return calendarInPlay(date, calendar) || !parseCivilDate(date) ? undefined : ageCheck(date, now);
 }
 
 /** Zodiacs is not directed at children under 13: a Gregorian birth date under 13, or still to come, draws nothing. */
@@ -76,8 +78,9 @@ function ageCheck(birthDate: string, now: Date): { date: string } | { error: str
  */
 export async function mapBirthDate(date: string, calendar: CalendarChoice, now = new Date()): Promise<{ date: string } | { error: string }> {
   let birthDate = date;
-  if (calendarInPlay(date, calendar)) {
-    const entry = await birthDateForChart('en', date, calendar);
+  if (calendarInPlay(date, calendar) || !parseCivilDate(date)) {
+    // A date that is not a real Gregorian day is read as written in the Gregorian calendar, so it is refused there.
+    const entry = calendarInPlay(date, calendar) ? await birthDateForChart('en', date, calendar) : (await loadBirthCalendar()).readChartBirthDate('en', date, 'gregorian');
     if ('error' in entry) return { error: entry.error };
     birthDate = entry.date;
   }

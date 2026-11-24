@@ -249,7 +249,10 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     }
     // A 0.6.0 tool's sign arrives as written ("Leo"); it is lower-cased before the SDK checks the published enum.
     if (calledTool && normaliseCoverageCall(body)) text = JSON.stringify(body);
-    const refusal = calledTool ? argumentRefusal(calledTool, (message.params as Record<string, unknown>).arguments, calledTool === SAVE_TOOL_NAME ? undefined : inputSchemaFor(calledTool, skyEvents, { yearScorePeople })) : undefined;
+    // A tool in AGE_FIRST_TOOLS reads its age gate before anything else, so whatever the SDK's schema check would say
+    // about another field, a child's birth date gets the refusal and an unsettled one the date alone (ageFirstRefusal).
+    const ageFirst = calledTool && AGE_FIRST_TOOLS.has(calledTool) ? ageFirstRefusal(calledTool as AiToolName, (message.params as Record<string, unknown>).arguments, options.dependencies?.now?.() ?? new Date()) : null;
+    const refusal = ageFirst ?? (calledTool ? argumentRefusal(calledTool, (message.params as Record<string, unknown>).arguments, calledTool === SAVE_TOOL_NAME ? undefined : inputSchemaFor(calledTool, skyEvents, { yearScorePeople })) : undefined);
     const watchMethod = ['events/list', 'events/subscribe', 'events/unsubscribe'].includes(String(message.method));
     if (watch && watchMethod && req.headers?.['mcp-protocol-version'] !== '2026-07-28') return send(res, 400, 'event-protocol-required');
     if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list', ...(watch ? ['events/list', 'events/subscribe', 'events/unsubscribe'] : [])].includes(String(message.method))) {
@@ -290,11 +293,13 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
           if (options.de440 && (message.method === 'tools/list' || message.method === 'server/discover')) {
             describeDe440Tools(parsed.result);
           }
-          // A tool in AGE_FIRST_TOOLS whose arguments the SDK's schema check refused gets the tool's own age gate reply
-          // first (ageFirstRefusal), so no birth time or zone is asked for until the birth date reads as an adult's.
-          const child = calledTool && AGE_FIRST_TOOLS.has(calledTool) && parsed.result?.isError && !parsed.result?.structuredContent
-            ? ageFirstRefusal(calledTool as AiToolName, (message.params as { arguments?: unknown }).arguments, options.dependencies?.now?.() ?? new Date()) : null;
-          if (child) return JSON.stringify({ ...parsed, result: { isError: true, content: [{ type: 'text', text: JSON.stringify(child) }], structuredContent: child } });
+          // A tool in AGE_FIRST_TOOLS whose arguments the SDK's schema check refused gets its age gate reply instead
+          // (ageFirst, read before the SDK ran), so no birth time, zone or place is asked for until the birth date
+          // reads as an adult's in every way it can be read.
+          if (ageFirst && (parsed.error || (parsed.result?.isError && !parsed.result?.structuredContent))) {
+            const { error: _refused, ...rest } = parsed;
+            return JSON.stringify({ ...rest, result: { isError: true, content: [{ type: 'text', text: JSON.stringify(ageFirst) }], structuredContent: ageFirst } });
+          }
           // A 0.6.0 tool's or search_sky_events' arguments refused by the SDK's schema check get the tool's own field-named refusal.
           const named = calledTool && ((COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) || (PLACE_TOOL_NAMES as readonly string[]).includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || isGoodDaysTool(calledTool) || (PERSONAL_TOOL_NAMES as readonly string[]).includes(calledTool)) && parsed.result?.isError && !parsed.result?.structuredContent
             ? coverageInputRefusal(calledTool as CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | GoodDaysToolName | PersonalToolName, (message.params as { arguments?: unknown }).arguments, inputSchemaFor(calledTool as AiToolName, skyEvents, { yearScorePeople })) : null;

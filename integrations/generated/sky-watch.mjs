@@ -43741,7 +43741,7 @@ var astrocartographyTool = definePersonalTool({
   name: "get_astrocartography",
   title: "Your map lines",
   summary: "astrocartography lines, and the lines nearest named towns and cities",
-  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13: check the birth date first, and ask for no birth time or birthplace when it is less than 13 years ago, since the tool refuses that date. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. A name that matches more than one place comes back under ambiguous with the places it could be; ask the person which one they mean. A name with a region or country that no place of that name is in comes back under didYouMean; ask which one is meant. To check a place listed under ambiguous or didYouMean, give its id in placeIds. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
+  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13, and this tool refuses anyone under 13. Ask for the birth date alone first, with a four-digit year, and while that date does not yet show the person is 13 or older, ask for no birth time, time zone or birthplace and do not call find_birthplace. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. A name that matches more than one place comes back under ambiguous with the places it could be; ask the person which one they mean. A name with a region or country that no place of that name is in comes back under didYouMean; ask which one is meant. To check a place listed under ambiguous or didYouMean, give its id in placeIds. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
   // The readings change on the eighteenth birthday, so a repeat call can differ as the server's clock moves.
@@ -46015,6 +46015,51 @@ function guardPersonalWeek(week, birthDate, today2) {
   };
 }
 
+// src/ai-tools/birth-date-age-gate.ts
+var MONTH_NUMBERS = new Map(
+  ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"].flatMap((name, index) => [[name, index + 1], [name.slice(0, 3), index + 1], ...name === "september" ? [["sept", index + 1]] : []])
+);
+var SHORT_RUN = /^\d{1,2}$/u;
+function yearsOfRun(run2) {
+  if (/^\d{4}$/u.test(run2)) return [Number(run2)];
+  if (/^\d{2}$/u.test(run2)) return [1900 + Number(run2), 2e3 + Number(run2)];
+  return [];
+}
+function readingsOf(yearRun, monthRun, dayRun) {
+  if (!SHORT_RUN.test(monthRun) || !SHORT_RUN.test(dayRun)) return [];
+  return yearsOfRun(yearRun).map((year) => ({ year, month: Number(monthRun), day: Number(dayRun) }));
+}
+function writtenDateReadings(text2) {
+  const numeric = /^(\d+)\s*(?:[-/.]|\s)\s*(\d+)\s*(?:[-/.]|\s)\s*(\d+)$/u.exec(text2);
+  if (numeric) {
+    const [, a, b, c] = numeric;
+    return [...readingsOf(a, b, c), ...readingsOf(a, c, b), ...readingsOf(c, b, a), ...readingsOf(c, a, b)];
+  }
+  if (!/^[\p{L}\d].*[\p{L}\d]$/u.test(text2)) return [];
+  const words2 = text2.toLowerCase().split(/[\s,./-]+/u).filter((word) => word !== "of");
+  const monthAt = words2.findIndex((word) => MONTH_NUMBERS.has(word));
+  if (words2.length !== 3 || monthAt < 0) return [];
+  const month = String(MONTH_NUMBERS.get(words2[monthAt]));
+  const numbers = words2.filter((_, index) => index !== monthAt).map((word) => /^(\d+)(st|nd|rd|th)?$/u.exec(word));
+  if (numbers.some((match) => !match)) return [];
+  const [first2, second] = numbers;
+  const readings = [];
+  for (const [day2, year] of [[first2, second], [second, first2]]) if (!year[2]) readings.push(...readingsOf(year[1], month, day2[1]));
+  return readings;
+}
+function calendarDay({ year, month, day: day2 }) {
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth3 = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  if (year < NATAL_MIN_YEAR || day2 > daysInMonth3) return null;
+  return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day2).padStart(2, "0")}`;
+}
+function birthDateAgeGate(value, now) {
+  if (typeof value !== "string" || value.length > 64) return "NEEDS_DATE";
+  const days = writtenDateReadings(value.trim()).filter(({ month, day: day2 }) => month >= 1 && month <= 12 && day2 >= 1 && day2 <= 31).map(calendarDay);
+  if (days.some((day2) => day2 !== null && birthDateRefusal(day2, now) !== null)) return "UNDER_13";
+  return days.length > 0 && days.every((day2) => day2 !== null) ? "ADULT" : "NEEDS_DATE";
+}
+
 // src/ai-tools/tools.ts
 var PRIVACY_POLICY = "https://zodiacs.org/privacy/";
 var SAVED_PAGE_EXCEPTION = "The only exception is a page a signed-in person chooses to save to their own account.";
@@ -46164,61 +46209,14 @@ function childBirthDateRefusal(tool, args, now, hostZone) {
   const today2 = earliestToday(now);
   return birthDatesIn(tool, args, now, hostZone).some((date3) => isUnder13(date3, today2)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
 }
-var AGE_FIRST_TOOLS = /* @__PURE__ */ new Set(["get_astrocartography"]);
-var MONTH_NUMBERS = new Map(
-  ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"].flatMap((name, index) => [[name, index + 1], [name.slice(0, 3), index + 1], ...name === "september" ? [["sept", index + 1]] : []])
-);
-function yearsOfRun(run2, thisYear) {
-  if (/^\d{4}$/u.test(run2)) return [Number(run2)];
-  if (/^\d{2}$/u.test(run2)) return [1900 + Number(run2), 2e3 + Number(run2)].filter((year) => year <= thisYear);
-  return [];
-}
-var SHORT_RUN = /^\d{1,2}$/u;
-function writtenDateReadings(text2, thisYear) {
-  const numeric = /^(\d+)\s*([-/.])\s*(\d+)\s*\2\s*(\d+)$/u.exec(text2) ?? /^(\d+)\s+(\d+)\s+(\d+)$/u.exec(text2);
-  if (numeric) {
-    const [a, b, c] = numeric.length === 5 ? [numeric[1], numeric[3], numeric[4]] : [numeric[1], numeric[2], numeric[3]];
-    if (/^\d{4}$/u.test(a)) return SHORT_RUN.test(b) && SHORT_RUN.test(c) ? [{ years: [Number(a)], month: Number(b), day: Number(c) }] : [];
-    if (!SHORT_RUN.test(a) || !SHORT_RUN.test(b) || !/^(?:\d{2}|\d{4})$/u.test(c)) return [];
-    const years = yearsOfRun(c, thisYear);
-    const readings2 = [{ years, month: Number(b), day: Number(a) }, { years, month: Number(a), day: Number(b) }];
-    if (a.length === 2 && c.length === 2) readings2.push({ years: yearsOfRun(a, thisYear), month: Number(b), day: Number(c) });
-    return readings2;
-  }
-  if (!/^[\p{L}\d].*[\p{L}\d]$/u.test(text2)) return [];
-  const words2 = text2.toLowerCase().split(/[\s,./-]+/u);
-  if (words2.length === 4 && words2[1] === "of") words2.splice(1, 1);
-  const monthAt = words2.findIndex((word) => MONTH_NUMBERS.has(word));
-  if (words2.length !== 3 || monthAt < 0 || monthAt > 1) return [];
-  const month = MONTH_NUMBERS.get(words2[monthAt]);
-  const numbers = words2.filter((_, index) => index !== monthAt).map((word) => /^(\d{1,4})(st|nd|rd|th)?$/u.exec(word));
-  if (numbers.some((match) => !match)) return [];
-  const readings = [];
-  for (const [dayMatch, yearMatch] of [[numbers[0], numbers[1]], [numbers[1], numbers[0]]]) {
-    if (SHORT_RUN.test(dayMatch[1]) && !yearMatch[2]) {
-      const years = yearsOfRun(yearMatch[1], thisYear);
-      if (years.length) readings.push({ years, month, day: Number(dayMatch[1]) });
-    }
-  }
-  return readings;
-}
-function calendarDate(year, month, day2) {
-  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-  const daysInMonth3 = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
-  if (year < NATAL_MIN_YEAR || month < 1 || month > 12 || day2 < 1 || day2 > daysInMonth3) return null;
-  return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day2).padStart(2, "0")}`;
-}
-function birthDateAgeGate(value, now) {
-  if (typeof value !== "string" || value.length > 64) return "NEEDS_DATE";
-  const thisYear = Number(latestToday(now).slice(0, 4));
-  const days = writtenDateReadings(value.trim(), thisYear).filter(({ month, day: day2 }) => month >= 1 && month <= 12 && day2 >= 1 && day2 <= 31).flatMap(({ years, month, day: day2 }) => years.map((year) => calendarDate(year, month, day2)));
-  if (days.some((day2) => day2 !== null && birthDateRefusal(day2, now) !== null)) return "UNDER_13";
-  return days.length > 0 && days.every((day2) => day2 !== null) ? "ADULT" : "NEEDS_DATE";
-}
+var AGE_FIRST_TOOLS = new Set(PERSONAL_TOOL_NAMES.filter((name) => {
+  const input = personalTool(name).input;
+  return input.shape !== void 0 && "birthDate" in input.shape;
+}));
 function ageFirstRefusal(tool, args, now) {
   const birthDate = fieldOf(args, "birthDate");
   const gate = birthDateAgeGate(birthDate, now);
-  if (gate === "UNDER_13") return failure(tool, "invalid-request", UNDER_13_REFUSAL);
+  if (gate === "UNDER_13") return failure(tool, "invalid-request", UNDER_13_SENTENCE);
   if (gate === "NEEDS_DATE") return failure(tool, "invalid-request", birthDate === void 0 ? "birthDate is required." : `birthDate must be ${FIELD_FORMAT.birthDate}.`);
   return null;
 }
@@ -46301,7 +46299,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
     if (isPersonalTool(tool)) {
       const now = dependencies.now?.() ?? /* @__PURE__ */ new Date();
       const child2 = childBirthDateRefusal(tool, input, now, context.hostZone) ?? childBirthDateRefusal(tool, parsed2.data, now, context.hostZone);
-      if (child2) return child2;
+      if (child2) return AGE_FIRST_TOOLS.has(tool) ? failure(tool, "invalid-request", UNDER_13_SENTENCE) : child2;
       const definition = personalTool(tool);
       const result2 = await feature(() => definition.run(definition.input.parse(input), {
         now,
@@ -48268,7 +48266,8 @@ function createAiNodeHandler(options = {}) {
         if (changed) text2 = JSON.stringify(body3);
       }
       if (calledTool && normaliseCoverageCall(body3)) text2 = JSON.stringify(body3);
-      const refusal = calledTool ? argumentRefusal(calledTool, message.params.arguments, calledTool === SAVE_TOOL_NAME ? void 0 : inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : void 0;
+      const ageFirst = calledTool && AGE_FIRST_TOOLS.has(calledTool) ? ageFirstRefusal(calledTool, message.params.arguments, options.dependencies?.now?.() ?? /* @__PURE__ */ new Date()) : null;
+      const refusal = ageFirst ?? (calledTool ? argumentRefusal(calledTool, message.params.arguments, calledTool === SAVE_TOOL_NAME ? void 0 : inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : void 0);
       const watchMethod = ["events/list", "events/subscribe", "events/unsubscribe"].includes(String(message.method));
       if (watch && watchMethod && req.headers?.["mcp-protocol-version"] !== "2026-07-28") return send(res, 400, "event-protocol-required");
       if (!["initialize", "notifications/initialized", "ping", "server/discover", "tools/list", "tools/call", "resources/list", "resources/read", "resources/templates/list", ...watch ? ["events/list", "events/subscribe", "events/unsubscribe"] : []].includes(String(message.method))) {
@@ -48306,8 +48305,10 @@ function createAiNodeHandler(options = {}) {
             if (options.de440 && (message.method === "tools/list" || message.method === "server/discover")) {
               describeDe440Tools(parsed2.result);
             }
-            const child2 = calledTool && AGE_FIRST_TOOLS.has(calledTool) && parsed2.result?.isError && !parsed2.result?.structuredContent ? ageFirstRefusal(calledTool, message.params.arguments, options.dependencies?.now?.() ?? /* @__PURE__ */ new Date()) : null;
-            if (child2) return JSON.stringify({ ...parsed2, result: { isError: true, content: [{ type: "text", text: JSON.stringify(child2) }], structuredContent: child2 } });
+            if (ageFirst && (parsed2.error || parsed2.result?.isError && !parsed2.result?.structuredContent)) {
+              const { error: _refused, ...rest } = parsed2;
+              return JSON.stringify({ ...rest, result: { isError: true, content: [{ type: "text", text: JSON.stringify(ageFirst) }], structuredContent: ageFirst } });
+            }
             const named2 = calledTool && (COVERAGE_TOOL_NAMES.includes(calledTool) || PLACE_TOOL_NAMES.includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || isGoodDaysTool(calledTool) || PERSONAL_TOOL_NAMES.includes(calledTool)) && parsed2.result?.isError && !parsed2.result?.structuredContent ? coverageInputRefusal(calledTool, message.params.arguments, inputSchemaFor(calledTool, skyEvents2, { yearScorePeople })) : null;
             if (named2) return JSON.stringify({ ...parsed2, result: { isError: true, content: [{ type: "text", text: JSON.stringify(named2) }], structuredContent: named2 } });
             return JSON.stringify(sanitizeProtocolMessage(parsed2, refusal));

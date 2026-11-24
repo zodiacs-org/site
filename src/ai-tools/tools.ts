@@ -35,7 +35,9 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, GOOD_DAYS_TOOL_NAMES, type AiToolName, type SolarReturnToolName, type CoverageToolName, type GoodDaysToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
 import { MINOR_LOVE_NOTE, isUnder13, isUnderAge } from './features/reading-guards';
-import { birthDateRefusal, earliestToday, latestToday } from '../lib/birth-date-policy';
+import { earliestToday } from '../lib/birth-date-policy';
+import { birthDateAgeGate } from './birth-date-age-gate';
+import { UNDER_13_SENTENCE as AGE_FIRST_UNDER_13 } from '../lib/good-days/find';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
@@ -344,109 +346,28 @@ export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date
 }
 
 /**
- * The tools whose child refusal comes before their missing-field sentences, so a call that carries only a child's
- * birth date is refused for the age and is never asked for a birth time or birthplace. get_astrocartography only;
- * every other tool keeps its replies (the hosted server reads this set too, ./http.ts).
+ * The tools whose child refusal comes before any other sentence: every personal tool that takes a birth date (its
+ * input names birthDate), so a call that carries a child's birth date, alone or with a birth time, zone, place or
+ * field this tool cannot use, is refused for the age and is never asked for a birth time or birthplace. The hosted
+ * server reads this set too (./server.ts, ./http.ts); every other tool keeps its replies.
  */
-export const AGE_FIRST_TOOLS: ReadonlySet<string> = new Set<AiToolName>(['get_astrocartography']);
-
-/** English month names and their three letter abbreviations (and Sept), lower case, as month numbers. */
-const MONTH_NUMBERS: ReadonlyMap<string, number> = new Map(
-  ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
-    .flatMap((name, index) => [[name, index + 1], [name.slice(0, 3), index + 1], ...(name === 'september' ? [['sept', index + 1]] : [])] as [string, number][]),
-);
-
-/** One way of reading a written date: the years its year part can name, with the month and the day it gives. */
-interface WrittenDateReading { years: readonly number[]; month: number; day: number }
-
-/** The years a run of digits can name: itself when four digits long, 19YY and 20YY when two (20YY only once that year has begun somewhere). */
-function yearsOfRun(run: string, thisYear: number): number[] {
-  if (/^\d{4}$/u.test(run)) return [Number(run)];
-  if (/^\d{2}$/u.test(run)) return [1900 + Number(run), 2000 + Number(run)].filter((year) => year <= thisYear);
-  return [];
-}
-const SHORT_RUN = /^\d{1,2}$/u;
+export const AGE_FIRST_TOOLS: ReadonlySet<string> = new Set<string>(PERSONAL_TOOL_NAMES.filter((name) => {
+  const input = personalTool(name).input as { shape?: Record<string, unknown> };
+  return input.shape !== undefined && 'birthDate' in input.shape;
+}));
 
 /**
- * Every plausible reading of a written date, before any is checked against the calendar. Numbers joined by one
- * separator used twice (-, / or ., with spaces around it allowed) or by spaces alone: a four digit first run is the
- * year, then the month and the day; a four digit last run is the year after a day and a month in either order (day
- * first and month first); three runs of one or two digits are read day first, month first and, when the first run
- * has two digits, year first, with each two digit year in every century it can name. An English month name or its
- * three letter abbreviation, in any case, with the day and the year before or after it (January 5, 2020;
- * 5 January 2020; 5th of January, 2020; 2020 Jan 5), commas, full stops, hyphens, slashes and spaces between the
- * parts; when both numbers could be the year, both readings. Anything else has no reading.
- */
-function writtenDateReadings(text: string, thisYear: number): WrittenDateReading[] {
-  const numeric = /^(\d+)\s*([-/.])\s*(\d+)\s*\2\s*(\d+)$/u.exec(text) ?? /^(\d+)\s+(\d+)\s+(\d+)$/u.exec(text);
-  if (numeric) {
-    const [a, b, c] = numeric.length === 5 ? [numeric[1], numeric[3], numeric[4]] : [numeric[1], numeric[2], numeric[3]];
-    if (/^\d{4}$/u.test(a)) return SHORT_RUN.test(b) && SHORT_RUN.test(c) ? [{ years: [Number(a)], month: Number(b), day: Number(c) }] : [];
-    if (!SHORT_RUN.test(a) || !SHORT_RUN.test(b) || !/^(?:\d{2}|\d{4})$/u.test(c)) return [];
-    const years = yearsOfRun(c, thisYear);
-    const readings: WrittenDateReading[] = [{ years, month: Number(b), day: Number(a) }, { years, month: Number(a), day: Number(b) }];
-    if (a.length === 2 && c.length === 2) readings.push({ years: yearsOfRun(a, thisYear), month: Number(b), day: Number(c) });
-    return readings;
-  }
-  if (!/^[\p{L}\d].*[\p{L}\d]$/u.test(text)) return [];
-  const words = text.toLowerCase().split(/[\s,./-]+/u);
-  if (words.length === 4 && words[1] === 'of') words.splice(1, 1);
-  const monthAt = words.findIndex((word) => MONTH_NUMBERS.has(word));
-  if (words.length !== 3 || monthAt < 0 || monthAt > 1) return [];
-  const month = MONTH_NUMBERS.get(words[monthAt])!;
-  const numbers = words.filter((_, index) => index !== monthAt).map((word) => /^(\d{1,4})(st|nd|rd|th)?$/u.exec(word));
-  if (numbers.some((match) => !match)) return [];
-  const readings: WrittenDateReading[] = [];
-  // Either number can be the day and the other the year, as long as the day has one or two digits and the year carries no ordinal ending.
-  for (const [dayMatch, yearMatch] of [[numbers[0]!, numbers[1]!], [numbers[1]!, numbers[0]!]]) {
-    if (SHORT_RUN.test(dayMatch[1]) && !yearMatch[2]) { const years = yearsOfRun(yearMatch[1], thisYear); if (years.length) readings.push({ years, month, day: Number(dayMatch[1]) }); }
-  }
-  return readings;
-}
-
-/** YYYY-MM-DD when the year (from NATAL_MIN_YEAR on), month and day make a real calendar date, otherwise null. */
-function calendarDate(year: number, month: number, day: number): string | null {
-  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-  const daysInMonth = month === 2 ? (leap ? 29 : 28) : [4, 6, 9, 11].includes(month) ? 30 : 31;
-  if (year < NATAL_MIN_YEAR || month < 1 || month > 12 || day < 1 || day > daysInMonth) return null;
-  return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-}
-
-/** What a birth date allows before anything else about the call is read (birthDateAgeGate). */
-export type BirthDateAgeGate = 'ADULT' | 'UNDER_13' | 'NEEDS_DATE';
-
-/**
- * The one age check for a birth date as sent, failing closed; read only to decide, never stored, logged or echoed.
- * The text (spaces around it removed) is read in every plausible way (writtenDateReadings), a reading being plausible
- * when its month is 1 to 12 and its day 1 to 31.
- * - UNDER_13 when any plausible reading is a real calendar date that birth-date-policy refuses: less than 13 years
- *   before today at UTC-12, or still to come at UTC+14.
- * - ADULT only when there is a plausible reading and every one is a real calendar date from NATAL_MIN_YEAR on that
- *   is 13 years or more before today at UTC-12.
- * - NEEDS_DATE for everything else: no value, a value that is not text, text with no plausible reading (empty,
- *   partial, unreadable, extra parts), or a plausible reading that is not a real date (1990-02-30, 31/04/1990) or is
- *   before NATAL_MIN_YEAR.
- */
-export function birthDateAgeGate(value: unknown, now: Date): BirthDateAgeGate {
-  if (typeof value !== 'string' || value.length > 64) return 'NEEDS_DATE';
-  const thisYear = Number(latestToday(now).slice(0, 4));
-  const days = writtenDateReadings(value.trim(), thisYear)
-    .filter(({ month, day }) => month >= 1 && month <= 12 && day >= 1 && day <= 31)
-    .flatMap(({ years, month, day }) => years.map((year) => calendarDate(year, month, day)));
-  if (days.some((day) => day !== null && birthDateRefusal(day, now) !== null)) return 'UNDER_13';
-  return days.length > 0 && days.every((day) => day !== null) ? 'ADULT' : 'NEEDS_DATE';
-}
-
-/**
- * The reply for a tool in AGE_FIRST_TOOLS before any other field is named, from birthDateAgeGate: UNDER_13 gets the
- * child refusal; NEEDS_DATE gets the birth date asked for alone, "birthDate is required." when it is missing and the
- * date's form otherwise, never a birth time or a zone; ADULT gets null, and the call goes on, read as sent. Both the
- * tool (executeAiTool) and the hosted server, for arguments its schema check refused (./http.ts), reply with this.
+ * The reply for a tool in AGE_FIRST_TOOLS before any other field is read, from the one age gate
+ * (./birth-date-age-gate.ts): UNDER_13 gets the plain under-13 refusal (src/lib/good-days/find.ts), never the
+ * birthday card wording of UNDER_13_REFUSAL; NEEDS_DATE gets the birth date asked for alone, "birthDate is required."
+ * when it is missing and the date's form otherwise, never a birth time, zone or place; ADULT gets null, and the call
+ * goes on, read as sent. The tool (executeAiTool) and the hosted server (./server.ts, and ./http.ts before the SDK's
+ * schema check can name another field) reply with this.
  */
 export function ageFirstRefusal(tool: AiToolName, args: unknown, now: Date) {
   const birthDate = fieldOf(args, 'birthDate');
   const gate = birthDateAgeGate(birthDate, now);
-  if (gate === 'UNDER_13') return failure(tool, 'invalid-request', UNDER_13_REFUSAL);
+  if (gate === 'UNDER_13') return failure(tool, 'invalid-request', AGE_FIRST_UNDER_13);
   if (gate === 'NEEDS_DATE') return failure(tool, 'invalid-request', birthDate === undefined ? 'birthDate is required.' : `birthDate must be ${FIELD_FORMAT.birthDate}.`);
   return null;
 }
@@ -553,7 +474,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       const now = dependencies.now?.() ?? new Date();
       // The age is read on the birth date as given and as the tool will read it, so a date its schema rewrites is checked too.
       const child = childBirthDateRefusal(tool, input, now, context.hostZone) ?? childBirthDateRefusal(tool, parsed.data, now, context.hostZone);
-      if (child) return child;
+      // A tool in AGE_FIRST_TOOLS refuses with its own plain sentence, the same as its age gate's.
+      if (child) return AGE_FIRST_TOOLS.has(tool) ? failure(tool, 'invalid-request', AGE_FIRST_UNDER_13) : child;
       const definition = personalTool(tool);
       const result = await feature(() => definition.run(definition.input.parse(input) as never, {
         now, localTime: localTime(), resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone), hostZone: context.hostZone, origin: dependencies.siteOrigin ?? ORIGIN,

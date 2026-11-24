@@ -58,6 +58,27 @@ const ALL_PAGES = [
       };
       const early = await afterDate('1920-05-03');
       check('a date before 1924 asks for no file', early.length === 0, early.join('\n'));
+      // Old Style, then a day no calendar has, then a child's date: each is refused at the date, and the birth time
+      // and birthplace stay disabled.
+      const shut = async (label) => {
+        await settle(tab);
+        const state = await tab.evaluate(() => ({
+          time: document.querySelector('#acg-time')?.disabled, place: document.querySelector('#acg-place')?.disabled,
+          error: document.querySelector('#acg-date-error')?.textContent ?? '',
+        }));
+        check(`${label}: refused at the date, birth time and birthplace disabled`, state.time === true && state.place === true && state.error !== '', JSON.stringify(state));
+      };
+      await tab.locator('input[name="acg-date-calendar"][value="julian"]').check();
+      await tab.fill('#acg-date', '1990-02-30');
+      await shut('Old Style, then 1990-02-30');
+      await tab.locator('input[name="acg-date-calendar"][value="gregorian"]').check();
+      await shut('Old Style 1990-02-30, then Gregorian');
+      await tab.fill('#acg-date', '1920-05-03');
+      await tab.locator('input[name="acg-date-calendar"][value="julian"]').check();
+      await tab.fill('#acg-date', '1900-02-30');
+      await shut('Old Style, then 1900-02-30');
+      await tab.fill('#acg-date', '2020-05-03');
+      await shut('Old Style, then a child\'s date');
       const modern = await afterDate(BIRTH.date);
       check('a date after 1924 asks for no file', modern.length === 0, modern.join('\n'));
       await tab.fill('#acg-time', BIRTH.time);

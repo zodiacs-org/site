@@ -62,6 +62,29 @@ describe('the astrocartography page', () => {
     expect(await mapBirthDate('2013-11-09', 'gregorian', now)).toEqual({ date: '2013-11-09' });
   });
 
+  it('opens the birth time and birthplace only for a real calendar day, whichever calendar was chosen', async () => {
+    const now = new Date('2026-11-09T12:00:00Z');
+    const NO_SUCH_DAY = 'There is no such date in the Gregorian calendar.';
+    // A day the calendar does not have is never passed at once: it goes to the calendar reader, which refuses it.
+    for (const date of ['1990-02-30', '2019-02-29', '1990-04-31', '1990-13-01', '1990-00-10']) {
+      expect(quickDateCheck(date, 'gregorian', now), date).toBeUndefined();
+      expect(await mapBirthDate(date, 'gregorian', now), date).toEqual({ error: expect.any(String) });
+    }
+    expect(await mapBirthDate('1990-02-30', 'gregorian', now)).toEqual({ error: NO_SUCH_DAY });
+    // Old Style chosen, then a 1924 or later day that does not exist: refused, never read as a Gregorian date.
+    expect(await mapBirthDate('1990-02-30', 'julian', now)).toEqual({ error: NO_SUCH_DAY });
+    expect(await mapBirthDate('1900-02-30', 'julian', now)).toEqual({ error: expect.any(String) });
+    // A real day still opens them, and an Old Style 29 February 1900 is a real Julian day.
+    expect(quickDateCheck('1990-02-28', 'gregorian', now)).toEqual({ date: '1990-02-28' });
+    expect(await mapBirthDate('1900-02-29', 'julian', now)).toEqual({ date: '1900-03-13' });
+    const html = render(h('div', null, h(AcgBirthFields, {
+      date: '1990-02-30', calendar: 'gregorian', check: { error: NO_SUCH_DAY }, time: '08:30', city: null,
+      onDateChange: () => {}, onCalendarChange: () => {}, onTimeChange: () => {}, onCityChange: () => {},
+    })));
+    expect(html).toMatch(/id="acg-time"[^>]*disabled/u);
+    expect(html).toMatch(/id="acg-place"[^>]*disabled/u);
+  });
+
   it('checks the converted date before it loads the calculation', () => {
     const source = readFileSync(new URL('./AstrocartographyMap.tsx', import.meta.url), 'utf8');
     const draw = source.slice(source.indexOf('async function draw('));
