@@ -53,7 +53,7 @@ describe('independent true node and polar references', () => {
     // 2.1.0 rebuild: continuous-UTC clock after 2027-10-02 refreshed the post-2027
     // Horizons responses and engine version metadata; policies and gates are unchanged.
     expect(digest('independent-node-polar.json'))
-      .toBe('257385b2de9e2f32d7f1076b55f8006fbe9ebd943b04224b70ef3c6951445e85');
+      .toBe('32181e51747ec4381c147a21da75d4ea0a944ab6ba73fc1f5c998b5f5c6d94bc');
     expect(digest('swiss-node-polar-policy.json'))
       .toBe('7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
   });

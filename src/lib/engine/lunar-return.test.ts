@@ -119,7 +119,7 @@ describe('independent lunar return references', () => {
     // 2.1.0 rebuild: continuous-UTC clock after 2027-10-02 refreshed the post-2027
     // Horizons responses and engine version metadata; policies and gates are unchanged.
     expect(digest(new URL('./fixtures/independent-lunar-returns.json', import.meta.url)))
-      .toBe('bdb6de7b66d221a60f2ff951bf62dd9a85df4a7dc57ffb0406bf55761ba4c24b');
+      .toBe('5e901f7404331b238771f80cb5205f06d06a6149612a695cddb0ecdde4fc7c9c');
     expect(digest(new URL('./fixtures/swiss-lunar-fixed-target-applicability.json', import.meta.url)))
       .toBe('2f9056c0f93b22e3270bf1f496d804759a9057ac6b3e5a142604248ba1dddb1a');
     // The carried-over policy names the one it supersedes, and keeps its gates.
