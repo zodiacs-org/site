@@ -1,5 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Motion from '../../components/Motion.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import SolarReturnCalculator from '../../islands/SolarReturnCalculator';
 import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
@@ -30,6 +32,8 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
+    <Motion />
+    <ToolHeroMark name="solar-return" />
     <div class="tool-hero">
       <h1 class="display">Your solar return</h1>
       <p>See the themes shaping your personal year: where to grow, what needs steadier attention, and which part of life is asking to lead. Choose a year and location to cast the chart.</p>
