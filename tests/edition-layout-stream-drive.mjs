@@ -57,6 +57,13 @@ export async function editionLayoutStreaming(baseURL) {
     ['/horoscopes/aries/', { html, cuts: { ...cuts, brand: afterTag(html, 'class="nav__mark"', '</a>') } }],
     ['/today/', { html: todayHTML, cuts: { wheel: wheelCut, ticker: tickerCut } }],
   ]);
+  const appsResponse = await fetch(new URL('/apps/', baseURL));
+  assert.equal(appsResponse.status, 200);
+  const appsHTML = await appsResponse.text();
+  const figure = appsHTML.indexOf('<figure class="apps-hero__visual"');
+  const caption = appsHTML.indexOf('<figcaption', figure);
+  assert.ok(figure > 0 && caption > figure, 'The showcase caption must follow its image');
+  pages.set('/apps/', { html: appsHTML, cuts: { image: caption, tools: afterTag(appsHTML, 'data-tools-toggle', '>') } });
   const hubs = ['/es/horoscopes/', '/pt/horoscopes/'];
   for (const path of hubs) {
     const response = await fetch(new URL(path, baseURL));
@@ -71,6 +78,7 @@ export async function editionLayoutStreaming(baseURL) {
     const name = html.indexOf('>', html.indexOf('<span', picker)) + 1;
     assert.match(html.slice(name), /^(Aries|Áries)</u);
     pages.set(path, { html, cuts: {
+      tools: afterTag(html, 'data-tools-toggle', '>'),
       picker,
       name: name + 1,
       date: afterTag(html, 'class="hhl-card__label"', '</span>'),
@@ -79,16 +87,23 @@ export async function editionLayoutStreaming(baseURL) {
     } });
   }
 
+  const waitForPaint = (pause) => pause === 'tools' || pause === 'image';
+  let resumeResponse;
   const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url, 'http://local');
       const page = pages.get(url.pathname);
       if (page) {
-        const cut = page.cuts[url.searchParams.get('pause')];
+        const pause = url.searchParams.get('pause');
+        const cut = page.cuts[pause];
         assert.ok(cut > 0, `Unknown pause on ${url.pathname}`);
         res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
         res.write(page.html.slice(0, cut));
-        await new Promise(resolve => setTimeout(resolve, 600));
+        if (waitForPaint(pause)) {
+          await new Promise(resolve => { resumeResponse = resolve; });
+        } else {
+          await new Promise(resolve => setTimeout(resolve, 600));
+        }
         res.end(page.html.slice(cut));
         return;
       }
@@ -108,6 +123,10 @@ export async function editionLayoutStreaming(baseURL) {
     const scenarios = [
       ...[360, 900, 1280].flatMap(width => Object.keys(cuts).map(pause => ({ path: '/horoscopes/aries/', width, pause }))),
       { path: '/horoscopes/aries/', width: 1280, pause: 'brand' },
+      ...[768, 1040].map(width => ({ path: '/apps/', width, pause: 'image' })),
+      { path: '/apps/', width: 920, pause: 'tools' },
+      { path: '/es/horoscopes/', width: 1040, pause: 'tools' },
+      { path: '/pt/horoscopes/', width: 1280, pause: 'tools' },
       ...hubs.flatMap(path => [
         { path, width: 360, pause: 'picker' },
         { path, width: 700, pause: 'name' },
@@ -154,7 +173,26 @@ export async function editionLayoutStreaming(baseURL) {
             }
           }).observe({ type: 'layout-shift', buffered: true });
         }, { now: pause === 'ticker' ? editionClock : datedClock });
-        await page.goto(`http://127.0.0.1:${server.address().port}${path}?pause=${pause}`, { waitUntil: 'networkidle' });
+        const url = `http://127.0.0.1:${server.address().port}${path}?pause=${pause}`;
+        const reserved = page.locator(pause === 'tools' ? '.nav__links' : '.apps-hero__visual');
+        let earlyBounds;
+        if (waitForPaint(pause)) {
+          // Paint the partial response even when the CI browser starts slowly.
+          try {
+            await page.goto(url, { waitUntil: 'commit' });
+            const first = pause === 'tools' ? '[data-tools-toggle]' : '.apps-hero__image img';
+            await page.locator(first).waitFor({ state: 'visible' });
+            await page.screenshot();
+            earlyBounds = await reserved.boundingBox();
+            assert.ok(earlyBounds);
+          } finally {
+            resumeResponse?.();
+            resumeResponse = undefined;
+          }
+          await page.waitForLoadState('networkidle');
+        } else {
+          await page.goto(url, { waitUntil: 'networkidle' });
+        }
         if (pause === 'ticker') {
           await page.waitForSelector('[data-today-state="empty"]');
         }
@@ -165,9 +203,19 @@ export async function editionLayoutStreaming(baseURL) {
         const scenario = `${path} ${width}px response paused after ${pause}`;
         console.log(JSON.stringify({ scenario, cls, shifts }));
         if (cls !== 0) failures.push(`${scenario}: ${cls}`);
+        if (earlyBounds) {
+          const finalBounds = await reserved.boundingBox();
+          if (!finalBounds || Object.keys(earlyBounds).some(key => earlyBounds[key] !== finalBounds[key])) {
+            failures.push(`${scenario}: bounds changed from ${JSON.stringify(earlyBounds)} to ${JSON.stringify(finalBounds)}`);
+          }
+        }
         if (path === '/horoscopes/aries/') {
           assert.equal(await page.locator('.hz-signrail a').count(), 12);
           assert.equal(await page.locator('.hz-signrail a[aria-current="page"]').count(), 1);
+        } else if (path === '/apps/') {
+          const link = page.getByRole('link', { name: 'View the full example', exact: true });
+          assert.equal(await link.count(), 1);
+          assert.equal(await link.isVisible(), true);
         } else if (hubs.includes(path)) {
           assert.equal(await page.locator('.hhl-picker a').count(), 12);
           assert.equal(await page.locator('.hhl-grid a').count(), 12);

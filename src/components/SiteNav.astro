@@ -397,6 +397,8 @@ const englishOnlyLabel = (href: string, label: string): string | undefined => (
     gap: 6px;
     min-width: 0;
     padding: 7px 11px;
+    /* Reserve the label line and its padding as soon as the opening tag arrives. */
+    min-block-size: calc(1lh + 14px);
     border-radius: var(--r-full);
     font-size: 14px;
     font-weight: 500;
