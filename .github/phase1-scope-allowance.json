@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "id": "learn-hub-entrance-motion-2026-11-24",
-  "baseCommit": "26a485e7d5d67f70e2d001eccb3c9e9e05384a4b",
+  "id": "locale-expansion-hook-2026-11-09",
+  "baseCommit": "a87814ba29d3e22edfd434e1c17971d4413f7197",
   "protectedPaths": [
-    "src/pages/learn/index.astro"
+    "src/lib/i18n/index.ts"
   ]
 }

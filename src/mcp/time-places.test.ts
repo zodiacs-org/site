@@ -208,6 +208,28 @@ describe('resolve_birth_time is the compute API\'s time endpoint', () => {
     }
     expect(TIME_OUTPUT.safeParse({ ...corpus[0].value, extra: 1 }).success).toBe(false);
   });
+
+  it('passes calendar and country context to the resolver and validates calendar-unknown under TIME_OUTPUT and OpenAPI', async () => {
+    const ajv = new Ajv2020({ allErrors: true, strict: false });
+    addFormats(ajv);
+    const OPENAPI_ID = 'https://zodiacs.org/api/v1/openapi.json';
+    ajv.addSchema({ $id: OPENAPI_ID, components: { schemas: COMPUTE_COMPONENTS } });
+    const openapi = ajv.getSchema(`${OPENAPI_ID}#/components/schemas/${responseComponentName(COMPUTE_TOOLS.resolve_birth_time)}`)!;
+
+    const ambiguous = value(await resolveBirthTime({ local: { date: '1918-02-08', time: '12:00', zone: 'Europe/Moscow' } } as any));
+    expect(ambiguous.result.flags).toContain('calendar-unknown');
+    expect(() => TIME_OUTPUT.parse(ambiguous)).not.toThrow();
+    expect(openapi(ambiguous), ajv.errorsText(openapi.errors)).toBe(true);
+
+    const explicitJulian = value(await resolveBirthTime({
+      local: { date: '1918-01-31', time: '12:00', zone: 'Europe/Moscow' },
+      calendar: 'julian',
+      country: 'RU',
+    } as any));
+    expect(explicitJulian.result.flags).not.toContain('calendar-unknown');
+    expect(() => TIME_OUTPUT.parse(explicitJulian)).not.toThrow();
+    expect(openapi(explicitJulian), ajv.errorsText(openapi.errors)).toBe(true);
+  });
 });
 
 /** The site's own search, reading the index files the calculators fetch. */

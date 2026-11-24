@@ -4,6 +4,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { MOON_DISTANCES_PATH, moonDistanceKm, renderMoonDistances } from './build-moon-distances.mjs';
 import { searchLunations } from './lunation-search.mjs';
 import { withBrowserEphemeris } from '../tests/helpers/browser-ephemeris.ts';
+import { asBeforeContinuousUtc } from '../tests/helpers/pre-continuous-utc.ts';
 
 const root = resolve(import.meta.dirname, '..');
 const fixtures = resolve(import.meta.dirname, 'fixtures/moon-distances');
@@ -31,7 +32,9 @@ function horizonsRange(name) {
 }
 
 describe('moon distances', () => {
-  beforeAll(async () => { originalCatalog = await withBrowserEphemeris(solveCatalog); });
+  beforeAll(async () => {
+    originalCatalog = await withBrowserEphemeris(solveCatalog);
+  });
 
   it('rebuilds byte for byte', async () => {
     expect(await renderMoonDistances()).toBe(committed);
@@ -75,7 +78,15 @@ describe('moon distances', () => {
 
   it('stays within 4 km of JPL DE421 at every lunation, and its apsides within 4 km and 5 minutes', () => {
     expect(de421.ephemeris.name).toBe('JPL DE421');
-    expect(de421.lunations.map(({ type, at }) => ({ type, at }))).toEqual(originalCatalog);
+    // The reference was sampled at the instants an engine before 2.0.0 wrote. After the IERS table (2027-10-02) the
+    // engine now writes the same TT on continuous UTC, and its ΔT model there moved by milliseconds, so those
+    // lunations are matched to within a second, read as the earlier engines wrote them.
+    expect(de421.lunations.map(({ type }) => type)).toEqual(originalCatalog.map(({ type }) => type));
+    de421.lunations.forEach(({ at }, i) => {
+      const ours = originalCatalog[i].at;
+      if (ours === asBeforeContinuousUtc(ours)) expect(at, ours).toBe(ours);
+      else expect(Math.abs(Date.parse(at) - Date.parse(asBeforeContinuousUtc(ours))), ours).toBeLessThan(1000);
+    });
     expect(sky.moons.map(({ type, at }) => ({ type, day: at.slice(0, 10) })))
       .toEqual(originalCatalog.map(({ type, at }) => ({ type, day: at.slice(0, 10) })));
     data.lunations.forEach((lunation, i) => {
