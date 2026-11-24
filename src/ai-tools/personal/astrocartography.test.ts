@@ -427,6 +427,38 @@ describe('get_astrocartography on the hosted server', () => {
     }
   });
 
+  it('links the page and its line cards on the staging site when the call comes in on the staging host', async () => {
+    const STAGING = 'zodiacs-mcp-staging.vercel.app';
+    const env = { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1', ZODIACS_PERSONAL_TOOLS_ENABLED: '1', ZODIACS_MCP_STAGING_HOST: STAGING, [PAGE_FLAG]: '1' };
+    // The default host list: zodiacs.org, www.zodiacs.org and the configured staging host.
+    const handle = createAiNodeHandler({ env, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: ON.now, placeTable: ON.placeTable } });
+    const server = createServer((req, res) => { void handle(req, res); });
+    await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+    servers.push(server);
+    const port = (server.address() as { port: number }).port;
+    const callOn = (host: string, path: string) => new Promise<any>((resolve, reject) => {
+      const req = request({ host: '127.0.0.1', port, path, method: 'POST', headers: { Host: host, 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18' } }, (res) => {
+        let text = ''; res.setEncoding('utf8');
+        res.on('data', (chunk) => { text += chunk; });
+        res.on('end', () => resolve(JSON.parse(text.includes('data: ') ? text.split('\n').find((line) => line.startsWith('data: '))!.slice(6) : text).result));
+      });
+      req.on('error', reject);
+      req.end(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'get_astrocartography', arguments: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', latitude: 51.51, longitude: -0.13, cities: ['Lisbon'] } } }));
+    });
+    const pageLinks = (result: any) => (JSON.stringify(result.structuredContent).match(/https:\/\/[^"]+/gu) ?? []).filter((url) => url.includes('/astrocartography/'));
+    for (const path of ['/mcp', '/mcp/de440']) {
+      const staged = await callOn(STAGING, path);
+      expect(staged.structuredContent?.ok, path).toBe(true);
+      expect(staged.structuredContent.data.pageUrl).toBe(`https://${STAGING}/astrocartography/`);
+      const links = pageLinks(staged);
+      expect(links.some((url) => url.includes('/share/astrocartography/')), path).toBe(true);
+      expect(links.every((url) => url.startsWith(`https://${STAGING}/`)), links.join(' ')).toBe(true);
+    }
+    const live = await callOn('zodiacs.org', '/mcp');
+    expect(live.structuredContent.data.pageUrl.startsWith('https://zodiacs.org/astrocartography/')).toBe(true);
+    expect(pageLinks(live).every((url) => url.startsWith('https://zodiacs.org/'))).toBe(true);
+  });
+
   it('leaves every other tool\'s reply to arguments its schema refuses as it was', async () => {
     const host = await serve();
     const args = { birthDate: '2020-01-01', time: '8:30' };

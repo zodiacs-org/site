@@ -85,6 +85,11 @@ export interface AiDependencies {
    * definition names a pageFlag links to its page and share card only then; unset, it links to neither.
    */
   sitePageOn?: (flag: string) => boolean;
+  /**
+   * The site a personal tool's links go to, when it is not zodiacs.org: the staging host the call came in on, whose
+   * page switches sitePageOn reads. Unset, ORIGIN.
+   */
+  siteOrigin?: string;
   /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
   horoscopeMonths?: () => Promise<HoroscopeMonths>;
   /** The committed horoscope program (src/data/horoscope-program.json), for the yearly readings. */
@@ -460,7 +465,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       if (child) return child;
       const definition = personalTool(tool);
       const result = await feature(() => definition.run(definition.input.parse(input) as never, {
-        now, localTime: localTime(), resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone), hostZone: context.hostZone, origin: ORIGIN,
+        now, localTime: localTime(), resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone), hostZone: context.hostZone, origin: dependencies.siteOrigin ?? ORIGIN,
         pageOn: definition.pageFlag === undefined || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
         ...(dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}),

@@ -45745,7 +45745,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         localTime: localTime2(),
         resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone),
         hostZone: context.hostZone,
-        origin: ORIGIN,
+        origin: dependencies.siteOrigin ?? ORIGIN,
         pageOn: definition.pageFlag === void 0 || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {},
         ...dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}
@@ -47694,6 +47694,7 @@ function createAiNodeHandler(options = {}) {
         }
       } };
       if (personal2) dependencies.sitePageOn = (flag) => env[flag] === "1";
+      if (personal2 && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
       const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: "stateless", responseMode: "auto", onerror: () => {
       } });
       try {
