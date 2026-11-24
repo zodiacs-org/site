@@ -11,7 +11,7 @@ import { REPEATED_BIRTH_TIME, SkippedBirthTimeError } from './clock';
 
 /**
  * The page's worker, run in this thread: the same sidereal half
- * (./vedic.worker.ts posts vedicFromTropical's reading back), so the test
+ * (src/islands/vedic-signs/vedic.worker.ts posts vedicFromTropical's reading back), so the test
  * reads the instants the page hands it.
  */
 const posted: { ends: { utc: string }[] | null }[] = [];
