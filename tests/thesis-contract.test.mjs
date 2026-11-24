@@ -582,16 +582,14 @@ describe('thesis transmission and gallery contract', () => {
     expect(label).toBe('The evolution of the zodiac. Pick your sign.');
   });
 
-  it('signs F1 with the site ring and name, and makes it shareable', () => {
-    const favicon = readFileSync(resolve(ROOT, 'public/assets/app-icons/v3/favicon.svg'), 'utf8');
-    const faviconFills = [...favicon.matchAll(/<circle\b[^>]*\bfill=["'](#[0-9A-Fa-f]{6})["']/g)].map((m) => m[1]);
-    expect(faviconFills).toHaveLength(12);
+  it('signs F1 with the brand lockup, and makes it shareable', async () => {
+    // The canonical lockup (src/lib/brand-lockup.mjs): the tilted ring and ZODIACS · ORG, never a redrawn mark.
+    const { tiltedRingSvg, lockupWordsHtml, ringWidthFor, LOCKUP_SIZE, LOCKUP_LABEL } = await import('../src/lib/brand-lockup.mjs');
     const brand = partOf(fig1, 'carry-brand');
-    const ring = brand.match(/<svg\b[\s\S]*?<\/svg>/i)?.[0] ?? '';
-    expect(ring).toMatch(/\baria-hidden=["']true["']/);
-    expect(ring).not.toMatch(/<rect\b/i);
-    expect([...ring.matchAll(/<circle\b[^>]*\bfill=["'](#[0-9A-Fa-f]{6})["']/g)].map((m) => m[1])).toEqual(faviconFills);
-    expect(textOf(brand)).toBe('zodiacs.org');
+    expect(fig1).toMatch(new RegExp(`<span class="carry-brand" role="img" aria-label="${LOCKUP_LABEL}">`));
+    expect(brand).toContain(tiltedRingSvg({ width: ringWidthFor(LOCKUP_SIZE.page), className: 'carry-brand__ring' }));
+    expect(brand).toContain(lockupWordsHtml({ name: 'carry-brand__name', sep: 'carry-brand__sep', tld: 'carry-brand__tld' }));
+    expect(fig1).not.toMatch(/zodiacs\.org<\/span>/);
     // A stable link to the plate.
     expect(fig1).toMatch(/<span\b[^>]*\bid=["']zodiac-timeline["'][^>]*class=["']carry-anchor["']/);
     // Share (scripts) and Save image (a plain link to the committed PNG).
