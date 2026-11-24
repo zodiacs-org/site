@@ -1,0 +1,53 @@
+---
+/**
+ * A page's own mark: its tool icon in the top-right corner of the hero,
+ * arriving once (docs/MOTION.md). It is out of the text flow, so the heading,
+ * the intro and the form below keep exactly the shape and place they have
+ * without it. Put it just before the block that holds the h1 (the
+ * .tool-hero), or as the first child of a column that holds it: its anchor is
+ * an empty block of no height, so its top is the hero's top and its right
+ * edge the column's right edge.
+ *
+ * Sizes: 40px below 760px, 52px to 1023px, 88px from 1024px, where the
+ * hero's column leaves room beside a one-line heading. A page can change a
+ * size with --tool-hero-mark-phone, --tool-hero-mark-tablet or
+ * --tool-hero-mark-desk, and hides the mark (display: none) at widths where
+ * its heading or intro reach into that corner.
+ */
+import ToolIcon from './ToolIcon.astro';
+import type { ToolIconName } from '../lib/tool-icons';
+
+interface Props {
+  name: ToolIconName;
+}
+
+const { name } = Astro.props;
+---
+<div class="tool-hero-mark-anchor">
+  <div class="tool-hero-mark" aria-hidden="true" data-enter="disc">
+    <ToolIcon name={name} size={40} inset={false} />
+  </div>
+</div>
+
+<style>
+  .tool-hero-mark-anchor {
+    position: relative;
+    height: 0;
+  }
+  .tool-hero-mark {
+    --tool-icon-size: var(--tool-hero-mark-phone, 40px);
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: var(--tool-icon-size);
+    height: var(--tool-icon-size);
+    line-height: 0;
+    pointer-events: none;
+  }
+  @media (min-width: 760px) {
+    .tool-hero-mark { --tool-icon-size: var(--tool-hero-mark-tablet, 52px); }
+  }
+  @media (min-width: 1024px) {
+    .tool-hero-mark { --tool-icon-size: var(--tool-hero-mark-desk, 88px); }
+  }
+</style>
