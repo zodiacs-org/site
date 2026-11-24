@@ -2136,6 +2136,7 @@
     {"path":"src/islands/ProfileSafety.tsx","text":"Your charts, name, photo, and received cards stay in this browser and are included in chart backups.","claim":"priv.profile-backup"},
     {"path":"src/islands/ProfileSunSignCapture.tsx","text":"a preference on this device, not a chart","claim":"priv.local-storage"},
     {"path":"src/islands/ProfileSunSignCapture.tsx","text":"added · on this device","claim":"priv.local-storage"},
+    {"path":"src/islands/RetrogradeForYou.tsx","text":"${…}: the sky data this page uses starts on ${…} and cannot place ${…} on today's date on this device, so ${…} not shown here.","claim":"priv.on-device"},
     {"path":"src/islands/RetrogradeForYou.tsx","text":"Everything is worked out on this device.","claim":"priv.on-device"},
     {"path":"src/islands/RetrogradeForYou.tsx","text":"Read for today on this device’s clock (${…}).","claim":"priv.on-device"},
     {"path":"src/islands/SolarReturnCalculator.tsx","text":"The chart is calculated on this device; nothing is uploaded.","claim":"priv.on-device"},
