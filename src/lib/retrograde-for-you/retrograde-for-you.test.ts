@@ -9,7 +9,10 @@ import { PeriodCard } from '../../islands/RetrogradeForYou';
 import { computeRetrogradeForYou, prepareLocalTime, retrogradeForYouRefusal, type RetrogradeForYouInput } from '../../islands/retrograde-for-you/compute';
 import sky from '../../data/sky.json';
 import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
-import { CONTACT_LINE, POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, natalBasis } from './reading';
+import { CONTACT_LINE, POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, dayTurns, natalBasis, retrogradePeriod } from './reading';
+import { bodyLongitude } from '../engine/full';
+import { birthDaySpan } from '../time/birth-day-span';
+import { resolveLocalToUtc } from '../time/localToUtc';
 import { loopsFromSky } from './sky';
 import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery } from './share';
 import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../vedic-signs/clock';
@@ -243,6 +246,63 @@ describe('a planet in the post-shadow, untimed contacts and links (ZOD-20)', () 
     const card = render(h(PeriodCard, { period: mercury, now: Date.parse(page.now) }));
     expect(card).toContain(`>${possible}</p>`);
     expect(card.match(/may also pass over your natal Mercury/gu)).toHaveLength(1);
+  });
+
+  it('reads where an untimed natal planet turned that day, not only the two ends, before calling a contact definite', async () => {
+    // Mercury turned retrograde in the evening of 21 March 1926 (UTC, the Madrid clock that day): at about 14.7434°
+    // at the end of the day, 14.7382° at its start, and about 14.7575° where it turned in between.
+    await prepareLocalTime('1926-03-21', MADRID.tz);
+    const [start, end] = birthDaySpan('1926-03-21', MADRID.tz, MADRID.lon, resolveLocalToUtc);
+    const lonAt = (body: string, at: Date) => bodyLongitude(body as (typeof POINT_NAMES)[number], at);
+    const turns = dayTurns(lonAt, start, end);
+    expect(turns.map((row) => row.body)).toEqual(['Mercury']);
+    const ends = [lonAt('Mercury', start), lonAt('Mercury', end)];
+    expect(turns[0].lon).toBeGreaterThan(Math.max(...ends));
+    expect(turns[0].lon).toBeCloseTo(14.7575, 3);
+    // The page's ephemeris and the tool's find the same turn.
+    const { positions } = await import('@zodiacs/engine');
+    const toolTurns = dayTurns((body, at) => positions(at).find((row) => row.body === body)!.lon, start, end);
+    expect(toolTurns.map((row) => row.body)).toEqual(['Mercury']);
+    expect(toolTurns[0].lon).toBeCloseTo(turns[0].lon, 6);
+    // An ordinary day: nothing turns.
+    expect(dayTurns(lonAt, new Date('1926-03-10T00:00:00Z'), new Date('1926-03-10T23:59:59.999Z'))).toEqual([]);
+
+    // A loop whose retrograde station lies between the day's later end and the turn: Mercury is on its degrees at both
+    // ends of the day and off them in the evening, so it is a possible contact only.
+    const rows = (at: Date) => POINT_NAMES.map((body) => ({ body, lon: lonAt(body, at) }));
+    const bodies = rows(new Date('1926-03-21T12:00:00Z'));
+    const edge = (Math.max(...ends) + turns[0].lon) / 2;
+    const loop = {
+      planet: 'Mercury' as const,
+      stationRetrograde: { at: new Date('2026-06-29T17:00:00Z'), lon: edge },
+      stationDirect: { at: new Date('2026-07-23T21:00:00Z'), lon: edge - 12 },
+      preShadowStart: null, postShadowEnd: null,
+    };
+    const basis = (dayTurnsRows?: { body: string; lon: number }[]) => natalBasis({
+      timeKnown: false, placed: true, angles: null, bodies, sunHeld: true, birthDate: '1926-03-21', now: new Date('2026-06-01T00:00:00Z'),
+      dayEnds: [rows(start), rows(end)], ...(dayTurnsRows ? { dayTurns: dayTurnsRows } : {}),
+    });
+    const read = (dayTurnsRows?: { body: string; lon: number }[]) => retrogradePeriod('Mercury', { current: loop, previous: null, retrogradeNow: false }, new Date('2026-06-01T00:00:00Z'), 'UTC', basis(dayTurnsRows)).period;
+    // The two ends alone call it definite.
+    expect(read().contacts.map((entry) => entry.point)).toContain('Mercury');
+    const period = read(turns);
+    expect(period.contacts.map((entry) => entry.point)).not.toContain('Mercury');
+    expect(period.possibleContacts.map((entry) => entry.point)).toContain('Mercury');
+    // A loop that ends just past the turn holds every degree of the day: definite again.
+    const wide = { ...loop, stationRetrograde: { ...loop.stationRetrograde, lon: turns[0].lon + 0.01 } };
+    expect(retrogradePeriod('Mercury', { current: wide, previous: null, retrogradeNow: false }, new Date('2026-06-01T00:00:00Z'), 'UTC', basis(turns)).period.contacts.map((entry) => entry.point)).toContain('Mercury');
+  });
+
+  it('calls natal Mercury only a possible contact when it turned on the birth day just past the loop’s station, on the page and in the tool', async () => {
+    // Mercury turned retrograde on 20 September 1824 at about 198.598°, past the 2028 loop's retrograde station at
+    // about 198.594°, and was back on the loop's degrees (about 198.589° and 198.578°) at both ends of the Madrid day.
+    const { mcp, page } = await both({ birthDate: '1824-09-20' }, new Date('2028-09-01T12:00:00Z'), 'Europe/Madrid');
+    for (const result of [page, mcp]) {
+      const mercury = result.periods.find((period) => period.planet === 'Mercury')!;
+      expect(mercury.stationRetrograde.date).toBe('2028-09-19');
+      expect(mercury.contacts.map((entry) => entry.point)).not.toContain('Mercury');
+      expect(mercury.possibleContacts.map((entry) => entry.point)).toContain('Mercury');
+    }
   });
 
   it('links Venus and Mars to their row in the retrogrades table, as the page does', async () => {

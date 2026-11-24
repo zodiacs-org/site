@@ -97,10 +97,11 @@ export interface NatalBasis {
   baseSign: string | null;
   /**
    * The natal points. Without a birth time `lon` is the noon chart's and
-   * `ends` holds the longitude at each end of the birth day, so a contact is
-   * claimed only when both ends agree.
+   * `ends` holds the longitude at each end of the birth day, then the
+   * longitude where the planet turned if it stationed that day, so a contact
+   * is claimed only when every degree it covered that day agrees.
    */
-  points: { name: string; lon: number; ends?: readonly [number, number] }[];
+  points: { name: string; lon: number; ends?: readonly number[] }[];
   /** True without a birth time: natal positions are printed in whole degrees, with "about". */
   approximate: boolean;
   detail: ReadingDetail;
@@ -161,6 +162,42 @@ export function loopSigns(loop: RetrogradeLoop): number[] {
   return out;
 }
 
+/** The bodies that can station; the Sun and Moon never do. */
+const TURNING_POINTS: readonly string[] = POINT_NAMES.filter((name) => name !== 'Sun' && name !== 'Moon');
+/** The step the direction of motion is read over. */
+const DIRECTION_STEP_MS = 60_000;
+const direction = (from: number, to: number) => Math.sign((((to - from) % 360) + 540) % 360 - 180);
+
+/**
+ * The planets that stationed within an untimed birth day, each with its longitude where it turned. Between the two
+ * ends of the day a planet moves one way unless it stations, so its two ends and that turn bound every degree it
+ * covered: a planet that turned can be on a loop's degrees at both ends of the day and off them in between. The turn
+ * is found by halving the span between a moment it moved one way and one it moved the other until the two are under
+ * a second apart. `lonAt` is the ephemeris the caller reads the ends with. Pure.
+ */
+export function dayTurns(lonAt: (body: string, at: Date) => number, start: Date, end: Date): { body: string; lon: number }[] {
+  const at = (ms: number) => new Date(ms);
+  const moving = (body: string, ms: number) => direction(lonAt(body, at(ms)), lonAt(body, at(ms + DIRECTION_STEP_MS)));
+  const out: { body: string; lon: number }[] = [];
+  const first = start.getTime();
+  const last = end.getTime() - DIRECTION_STEP_MS;
+  if (!(last > first)) return out;
+  for (const body of TURNING_POINTS) {
+    const opening = moving(body, first);
+    const closing = moving(body, last);
+    if (opening === 0 || closing === 0 || opening === closing) continue;
+    let lo = first;
+    let hi = last;
+    while (hi - lo > 1_000) {
+      const mid = Math.floor((lo + hi) / 2);
+      if (moving(body, mid) === opening) lo = mid;
+      else hi = mid;
+    }
+    out.push({ body, lon: lonAt(body, at(hi)) });
+  }
+  return out;
+}
+
 /** True when `lon` lies on the loop's degrees, from the direct station forward to the retrograde station. */
 export function inLoop(loop: RetrogradeLoop, lon: number): boolean {
   return norm(lon - loop.stationDirect.lon) <= norm(loop.stationRetrograde.lon - loop.stationDirect.lon);
@@ -190,6 +227,8 @@ export function natalBasis(input: {
   now: Date;
   /** Without a birth time: the bodies at the start and the end of the birth day. */
   dayEnds?: readonly [readonly { body: string; lon: number }[], readonly { body: string; lon: number }[]];
+  /** Without a birth time: the planets that stationed within the birth day, where they turned (dayTurns). */
+  dayTurns?: readonly { body: string; lon: number }[];
   /**
    * When the birth time fell in a stretch the clocks repeated: the rising degree at the later pass, the size of the
    * change after the earlier one. The chart uses the earlier pass; a limit says so only when the rising sign, and so
@@ -218,7 +257,8 @@ export function natalBasis(input: {
   const endLon = (rows: readonly { body: string; lon: number }[], name: string) => rows.find((row) => row.body === name)!.lon;
   const ends = !input.timeKnown ? input.dayEnds : undefined;
   const points: NatalBasis['points'] = POINT_NAMES.filter((name) => name !== 'Moon' || input.timeKnown).map((name) => ({
-    name: name as string, lon: lonOf(name), ...(ends ? { ends: [endLon(ends[0], name), endLon(ends[1], name)] as const } : {}),
+    name: name as string, lon: lonOf(name),
+    ...(ends ? { ends: [endLon(ends[0], name), endLon(ends[1], name), ...(input.dayTurns ?? []).filter((row) => row.body === name).map((row) => row.lon)] } : {}),
   }));
   if (input.angles) points.push({ name: 'Ascendant', lon: input.angles.asc }, { name: 'Midheaven', lon: input.angles.mc });
   if (!input.timeKnown) limits.push('Without a birth time the natal Moon is left out of the points each loop passes over.');

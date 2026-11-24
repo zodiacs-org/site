@@ -27,7 +27,7 @@ import { z } from 'zod';
 import { findLongitudeCrossings, positions } from '@zodiacs/engine';
 import { SampleBudget, positionsMemo, rowOf, stationCrossings } from '../../lib/compute-api/endpoints';
 import {
-  POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, natalBasis, retrogradeReading,
+  POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, dayTurns, formatPosition, natalBasis, retrogradeReading,
   type LoopSet, type RetrogradeLoop, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
@@ -209,6 +209,7 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
   // the Sun sign counts the houses, and a natal point is a contact, only then.
   let sunHeld = true;
   let dayEnds: Parameters<typeof natalBasis>[0]['dayEnds'];
+  let turns: Parameters<typeof natalBasis>[0]['dayTurns'];
   if (!natal.timeKnown) {
     const sunIndex = signIndexForLongitude(natal.chart.bodies.find((row) => row.body === 'Sun')!.lon);
     const ends = await birthDayEnds(args, context.localTime);
@@ -217,6 +218,13 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
       return POINT_NAMES.map((body) => ({ body: body as string, lon: rowOf(at, body).lon }));
     });
     dayEnds = [rows[0], rows[1]];
+    // A planet that stationed that day can leave a loop's degrees between the two ends: where it turned counts too.
+    const seen = new Map<number, ReturnType<typeof positions>>();
+    const at = (instant: Date) => {
+      if (!seen.has(instant.getTime())) seen.set(instant.getTime(), positions(instant));
+      return seen.get(instant.getTime())!;
+    };
+    turns = dayTurns((body, instant) => rowOf(at(instant), body as (typeof POINT_NAMES)[number]).lon, ends[0], ends[1]);
     sunHeld = rows.every((end) => signIndexForLongitude(end.find((row) => row.body === 'Sun')!.lon) === sunIndex);
   }
   // A birth time the clocks showed twice: the rising degree at the later pass, the size of the change on, for the fold limit.
@@ -226,7 +234,7 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
   const basis = natalBasis({
     timeKnown: natal.timeKnown, placed: natal.placed, angles: natal.angles, bodies: natal.chart.bodies, sunHeld,
     // The under-18 rule reads the UTC-12 calendar date from `now` (natalBasis), never the clock the dates are shown on.
-    birthDate: args.birthDate, now, dayEnds, foldAsc,
+    birthDate: args.birthDate, now, dayEnds, dayTurns: turns, foldAsc,
   });
   // The station and shadow searches count against the hosted event budget, as search_sky_events' do.
   if (context.allowEvents) {

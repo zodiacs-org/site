@@ -44,6 +44,31 @@ describe('the whole span of an untimed birth date on the birthplace clock', () =
     expect((await birthDayEnds({ birthDate: '1972-05-20' }, clock)).map((at) => at.toISOString())).toEqual(['1972-05-19T10:00:00.000Z', '1972-05-21T11:59:59.999Z']);
   });
 
+  it('starts and ends at a clock change that falls between whole minutes, so adjacent days meet', async () => {
+    // Amsterdam's clocks went from 00:00:00 to 00:00:28 on 1 July 1937 (UTC+1:19:32 to UTC+1:20), at 22:40:28 UTC
+    // on the 30th: the 1st starts at that instant, not at its 00:01 (22:41:00 UTC), and the 30th ends just before it.
+    const first = ['1937-06-30T22:40:28.000Z', '1937-07-01T22:39:59.999Z'];
+    expect(await pageSpan('1937-07-01', 'Europe/Amsterdam')).toEqual(first);
+    expect(await toolSpan('1937-07-01', 'Europe/Amsterdam')).toEqual(first);
+    const before = ['1937-06-29T22:40:28.000Z', '1937-06-30T22:40:27.999Z'];
+    expect(await pageSpan('1937-06-30', 'Europe/Amsterdam')).toEqual(before);
+    expect(await toolSpan('1937-06-30', 'Europe/Amsterdam')).toEqual(before);
+  });
+
+  it('ends at the change when the clocks skip from the end of the date between whole minutes', () => {
+    // A synthetic 10-minute gap from 23:50:20 at UTC+0: 23:51 onward is skipped, 23:50 is shown, and the change is at
+    // 23:50:20 UTC, so the day ends at 23:50:19.999 rather than at 23:50:59.999.
+    const minute = (time: string) => Date.UTC(2000, 0, 1, Number(time.slice(0, 2)), Number(time.slice(3)));
+    const change = new Date(Date.UTC(2000, 0, 1, 23, 50, 20));
+    const reader = (_date: string, time: string): WallReading => (time > '23:50'
+      ? { utc: new Date(minute(time) - 50 * 60_000), flags: ['dst-gap'], jumpMinutes: 10, transitionAt: change }
+      : { utc: new Date(minute(time)), flags: [] });
+    expect(birthDaySpan('2000-01-01', 'Test/EndGap', undefined, reader).map((at) => at.toISOString())).toEqual(['2000-01-01T00:00:00.000Z', '2000-01-01T23:50:19.999Z']);
+    // A change the resolver reports outside the minute next to the gap is not this gap's: the whole minute stands.
+    const stray = (_date: string, time: string): WallReading => ({ ...reader(_date, time), ...(time > '23:50' ? { transitionAt: new Date(0) } : {}) });
+    expect(birthDaySpan('2000-01-01', 'Test/EndGap', undefined, stray)[1].toISOString()).toBe('2000-01-01T23:50:59.999Z');
+  });
+
   it('reads the later pass the real size of the change on, and falls back to 00:00 and 23:59 for a date skipped whole', () => {
     const minute = (time: string) => Date.UTC(2000, 0, 1, Number(time.slice(0, 2)), Number(time.slice(3)));
     // The engine's form of a 30-minute fold (the transition's two offsets), as on Lord Howe Island.

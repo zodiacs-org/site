@@ -10,7 +10,7 @@
 import { bodyLongitude, computeChart } from '../../lib/engine/full';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 import {
-  POINT_NAMES, dayLabel, natalBasis, retrogradeReading,
+  POINT_NAMES, dayLabel, dayTurns, natalBasis, retrogradeReading,
   type RetrogradePeriod, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { birthDaySpan } from '../../lib/time/birth-day-span';
@@ -86,6 +86,7 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
     : null;
   let sunHeld = true;
   let dayEnds: Parameters<typeof natalBasis>[0]['dayEnds'];
+  let turns: Parameters<typeof natalBasis>[0]['dayTurns'];
   if (!timeKnown) {
     // Without a birth time a placement holds only if it is the same at both ends of the birth day, its whole span on
     // the birthplace clock up to the instant before the next local midnight: a repeated last minute at its later pass,
@@ -93,11 +94,13 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
     const [dayStart, dayEnd] = birthDaySpan(input.birthDate, input.place.tz, input.place.lon, resolveLocalToUtc);
     const rows = (at: Date) => POINT_NAMES.map((body) => ({ body, lon: bodyLongitude(body, at) }));
     dayEnds = [rows(dayStart), rows(dayEnd)];
+    // A planet that stationed that day can leave a loop's degrees between the two ends: where it turned counts too.
+    turns = dayTurns((body, at) => bodyLongitude(body as (typeof POINT_NAMES)[number], at), dayStart, dayEnd);
     const sign = (lon: number) => Math.floor((((lon % 360) + 360) % 360) / 30);
     const sunAt = (end: readonly { body: string; lon: number }[]) => sign(end.find((row) => row.body === 'Sun')!.lon);
     sunHeld = sunAt(dayEnds[0]) === sunAt(dayEnds[1]);
   }
-  const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, now: input.now, dayEnds, foldAsc });
+  const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, now: input.now, dayEnds, dayTurns: turns, foldAsc });
   const span = sky as SkySpan;
   const reading = withClockLimit(retrogradeReading({
     planets: input.planets, now: input.now, zone: input.zone, basis,

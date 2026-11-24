@@ -40618,10 +40618,10 @@ function published(origin, id) {
   const page = publishedEventById.get(id);
   return page ? `${origin}${page.path}` : null;
 }
-function retrogradeWindowOf(planet2, at, direction) {
+function retrogradeWindowOf(planet2, at, direction2) {
   return RETROGRADES.find((window) => {
-    const edge = direction === "retrograde" ? window.from : window.to;
-    return window.planet === planet2 && edge !== null && !(direction === "retrograde" && edge === SKY_FROM) && Math.abs(Date.parse(edge) - at.getTime()) <= 2 * DAY14;
+    const edge = direction2 === "retrograde" ? window.from : window.to;
+    return window.planet === planet2 && edge !== null && !(direction2 === "retrograde" && edge === SKY_FROM) && Math.abs(Date.parse(edge) - at.getTime()) <= 2 * DAY14;
   });
 }
 function pageFor(origin, event2) {
@@ -43015,6 +43015,31 @@ function loopSigns(loop) {
   }
   return out;
 }
+var TURNING_POINTS = POINT_NAMES.filter((name) => name !== "Sun" && name !== "Moon");
+var DIRECTION_STEP_MS = 6e4;
+var direction = (from, to) => Math.sign(((to - from) % 360 + 540) % 360 - 180);
+function dayTurns(lonAt, start, end) {
+  const at = (ms) => new Date(ms);
+  const moving = (body2, ms) => direction(lonAt(body2, at(ms)), lonAt(body2, at(ms + DIRECTION_STEP_MS)));
+  const out = [];
+  const first2 = start.getTime();
+  const last2 = end.getTime() - DIRECTION_STEP_MS;
+  if (!(last2 > first2)) return out;
+  for (const body2 of TURNING_POINTS) {
+    const opening = moving(body2, first2);
+    const closing = moving(body2, last2);
+    if (opening === 0 || closing === 0 || opening === closing) continue;
+    let lo = first2;
+    let hi = last2;
+    while (hi - lo > 1e3) {
+      const mid = Math.floor((lo + hi) / 2);
+      if (moving(body2, mid) === opening) lo = mid;
+      else hi = mid;
+    }
+    out.push({ body: body2, lon: lonAt(body2, at(hi)) });
+  }
+  return out;
+}
 function inLoop(loop, lon) {
   return norm3(lon - loop.stationDirect.lon) <= norm3(loop.stationRetrograde.lon - loop.stationDirect.lon);
 }
@@ -43041,7 +43066,7 @@ function natalBasis(input) {
   const points = POINT_NAMES.filter((name) => name !== "Moon" || input.timeKnown).map((name) => ({
     name,
     lon: lonOf2(name),
-    ...ends ? { ends: [endLon(ends[0], name), endLon(ends[1], name)] } : {}
+    ...ends ? { ends: [endLon(ends[0], name), endLon(ends[1], name), ...(input.dayTurns ?? []).filter((row) => row.body === name).map((row) => row.lon)] } : {}
   }));
   if (input.angles) points.push({ name: "Ascendant", lon: input.angles.asc }, { name: "Midheaven", lon: input.angles.mc });
   if (!input.timeKnown) limits2.push("Without a birth time the natal Moon is left out of the points each loop passes over.");
@@ -43239,17 +43264,36 @@ var DAY_MINUTES = 24 * 60;
 var hhmm = (minute2) => `${String(Math.floor(minute2 / 60)).padStart(2, "0")}:${String(minute2 % 60).padStart(2, "0")}`;
 var jumpOf = (wall) => wall.jumpMinutes ?? (wall.jump && wall.transition ? Math.abs(wall.transition.offsetAfterMinutes - wall.transition.offsetBeforeMinutes) : null);
 var LAST_INSTANT_MS = 6e4 - 1;
+var changeAt = (wall) => {
+  if (wall.transitionAt instanceof Date) return wall.transitionAt.getTime();
+  const at = wall.jump && wall.transition?.at ? Date.parse(wall.transition.at) : Number.NaN;
+  return Number.isFinite(at) ? at : null;
+};
 function birthDaySpan(date3, zone10, longitude2, resolve2) {
   const read = (time2) => longitude2 !== void 0 ? resolve2(date3, time2, zone10, { longitude: longitude2 }) : resolve2(date3, time2, zone10);
   let first2 = 0;
   let start = read(hhmm(first2));
-  while (start.flags.includes("dst-gap") && first2 < DAY_MINUTES - 1) start = read(hhmm(++first2));
+  let skippedStart = null;
+  while (start.flags.includes("dst-gap") && first2 < DAY_MINUTES - 1) {
+    skippedStart = start;
+    start = read(hhmm(++first2));
+  }
   let last2 = DAY_MINUTES - 1;
   let end = read(hhmm(last2));
-  while (end.flags.includes("dst-gap") && last2 > first2) end = read(hhmm(--last2));
+  let skippedEnd = null;
+  while (end.flags.includes("dst-gap") && last2 > first2) {
+    skippedEnd = end;
+    end = read(hhmm(--last2));
+  }
   if (start.flags.includes("dst-gap")) return [read("00:00").utc, new Date(read("23:59").utc.getTime() + LAST_INSTANT_MS)];
   const jump = end.flags.includes("dst-fold") ? jumpOf(end) : null;
-  return [start.utc, new Date(end.utc.getTime() + (jump ? jump * 6e4 : 0) + LAST_INSTANT_MS)];
+  let startMs = start.utc.getTime();
+  let endMs = end.utc.getTime() + (jump ? jump * 6e4 : 0) + LAST_INSTANT_MS;
+  const opened2 = skippedStart ? changeAt(skippedStart) : null;
+  if (opened2 !== null && opened2 <= startMs && opened2 > startMs - 6e4) startMs = opened2;
+  const closed = skippedEnd && !jump ? changeAt(skippedEnd) : null;
+  if (closed !== null && closed > end.utc.getTime() && closed <= end.utc.getTime() + 6e4) endMs = closed - 1;
+  return [new Date(startMs), new Date(endMs)];
 }
 
 // src/ai-tools/personal/shared.ts
@@ -43450,14 +43494,21 @@ async function retrogradeForMe(args, context) {
   const planets = RETROGRADE_PLANETS.filter((planet2) => !args.planets || args.planets.includes(planet2));
   let sunHeld = true;
   let dayEnds;
+  let turns;
   if (!natal.timeKnown) {
     const sunIndex = signIndexForLongitude2(natal.chart.bodies.find((row) => row.body === "Sun").lon);
     const ends = await birthDayEnds2(args, context.localTime);
     const rows3 = ends.map((end) => {
-      const at = positions(end);
-      return POINT_NAMES.map((body2) => ({ body: body2, lon: rowOf(at, body2).lon }));
+      const at2 = positions(end);
+      return POINT_NAMES.map((body2) => ({ body: body2, lon: rowOf(at2, body2).lon }));
     });
     dayEnds = [rows3[0], rows3[1]];
+    const seen = /* @__PURE__ */ new Map();
+    const at = (instant4) => {
+      if (!seen.has(instant4.getTime())) seen.set(instant4.getTime(), positions(instant4));
+      return seen.get(instant4.getTime());
+    };
+    turns = dayTurns((body2, instant4) => rowOf(at(instant4), body2).lon, ends[0], ends[1]);
     sunHeld = rows3.every((end) => signIndexForLongitude2(end.find((row) => row.body === "Sun").lon) === sunIndex);
   }
   const foldAsc = natal.angles && natal.flags.includes("dst-fold") && natal.jumpMinutes ? computeChart3({ utc: new Date(natal.birthUtc.getTime() + natal.jumpMinutes * 6e4), latitude: natal.latitude, longitude: natal.longitude, houseSystem: "whole", timeKnown: true }).angles?.asc ?? null : null;
@@ -43471,6 +43522,7 @@ async function retrogradeForMe(args, context) {
     birthDate: args.birthDate,
     now,
     dayEnds,
+    dayTurns: turns,
     foldAsc
   });
   if (context.allowEvents) {
