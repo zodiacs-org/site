@@ -415,10 +415,10 @@ const ctaLede = edgeMoon && moonHouse
       } catch (error) {}
     </script>
   )}
-  {/* Shared entrance motion (docs/MOTION.md). The hero and the controls hold
-      still, since they stay put while a period switch crossfades the reading;
-      the reading itself stays still too. The rail's sky rows, the chart call
-      to action, the further reading and the sign grid move once. */}
+  {/* Shared entrance motion (docs/MOTION.md). The hero, the controls and the
+      reading hold still, since they stay put while a period switch crossfades
+      the reading. The rail's sky rows, the further reading and the sign cards
+      rise once; the chart wheel and the sign discs grow in once. */}
   <Motion />
   <article
     class="program"
@@ -629,7 +629,7 @@ const ctaLede = edgeMoon && moonHouse
 
     <section class="kwrap hz-section" aria-labelledby="chart-cta-heading">
       <div class="hz-cta">
-        <figure class="hz-cta__wheel hz-wheel" data-enter="rise">
+        <figure class="hz-cta__wheel hz-wheel" data-enter="disc">
           <img
             src={`/horoscopes/${sign.slug}/sky-wheel-${surface}.svg`}
             width={HOROSCOPE_WHEEL_SIZE}
@@ -705,7 +705,7 @@ const ctaLede = edgeMoon && moonHouse
                 style={`--sign:${other.hue}`}
                 data-enter="rise"
               >
-                <SignIcon sign={other.slug} size={44} webpOnly enter="disc" />
+                <span class="hz-signgrid__disc" data-enter="disc"><SignIcon sign={other.slug} size={44} webpOnly /></span>
                 <b>{other.name}</b>
                 <small>{other.slug === sign.slug ? 'Reading now' : signDateRange(other)}</small>
               </a>
@@ -737,6 +737,8 @@ const ctaLede = edgeMoon && moonHouse
     display: block;
     padding-bottom: clamp(48px, 7vw, 96px);
   }
+  /* Holds a sign card's disc so it can grow in without marking the picture. */
+  .hz-signgrid__disc { display: flex; }
 
   /* ── Hero: the sign art in the rounded cinematic frame ─────────── */
   .hz-hero {

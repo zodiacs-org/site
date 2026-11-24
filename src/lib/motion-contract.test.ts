@@ -25,15 +25,14 @@ const NEVER_TAGS = new Set([
 ]);
 // Pages opened daily: no entrance motion at all. Any page whose path under
 // src/pages starts with one of these folders, at the top level or directly
-// under a locale folder (es/today/, pt/horoscopes/, [someLocale]/today/),
-// plus the components those pages are built from.
-const DAILY_FOLDERS = new Set(['today', 'horoscopes']);
+// under a locale folder (es/today/, [someLocale]/today/), plus the components
+// those pages are built from. Horoscope pages left this list on 2026-11-24,
+// when the site owner chose calm motion there (docs/MOTION.md).
+const DAILY_FOLDERS = new Set(['today']);
 const LOCALE_FOLDER = /^(?:[a-z]{2}(?:-[a-z]{4})?|\[\w*Locale\])$/u;
 const DAILY_COMPONENTS = [
-  'components/HoroscopeProgramPage.astro',
   'islands/today/',
   'components/localized/LocalizedToday.astro',
-  'components/localized/LocalizedHoroscope.astro',
 ];
 // A result the person asked for keeps the settled 200 ms arrival in base.css.
 const RESULT_CLASS = /\bclass(?:Name)?=\{?\s*["'`][^"'`]*(calc__result|sr-result|three-card)/u;
@@ -47,7 +46,7 @@ const KNOWN_ON_MAIN: Known[] = [
   { file: 'islands/BigThreeQuick.tsx', tag: 'picture', className: 'three-card__icon', kind: 'disc' },
 ];
 const RULE = 'Marks always arrive; cards, tiles and rows may rise on occasional pages; never paragraphs, headings, forms, buttons, details, sections, heroes or results. See docs/MOTION.md.';
-const DAILY_RULE = 'Daily pages (Today, the horoscope hub, sign horoscopes) have no entrance motion. See docs/MOTION.md.';
+const DAILY_RULE = 'Daily pages (Today) have no entrance motion. See docs/MOTION.md.';
 const RESULT_RULE = 'A result the person asked for keeps its own 200 ms arrival in base.css; never mark it. See docs/MOTION.md.';
 const ISLAND_RULE = 'Islands render after the person acts; nothing in them is marked. See docs/MOTION.md.';
 
@@ -288,9 +287,10 @@ describe('entrance motion contract', () => {
 
   it('never marks anything on the daily pages', async () => {
     const files = await dailyFiles();
-    for (const page of ['pages/today/index.astro', 'pages/es/today/index.astro', 'pages/pt/horoscopes/index.astro', 'pages/horoscopes/[sign]/index.astro']) {
+    for (const page of ['pages/today/index.astro', 'pages/es/today/index.astro']) {
       expect(files, `the daily rule covers ${page}`).toContain(page);
     }
+    expect(files.some((file) => file.includes('horoscopes/') || file.includes('Horoscope')), 'horoscope pages may move calmly').toBe(false);
     expect(files.some((file) => file.startsWith('pages/feeds/')), 'feeds are not daily pages').toBe(false);
     const offenders = (await marksOf(files)).map(describeMark);
     expect(offenders, DAILY_RULE).toEqual([]);
