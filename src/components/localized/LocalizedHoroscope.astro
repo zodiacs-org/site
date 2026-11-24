@@ -37,6 +37,8 @@ import { signDateRange } from '../../lib/sign-display';
 import { localizedHoroscopeArtCard, signArtCard as localizedSignArtCard } from '../../lib/og-art-cards.mjs';
 import { degreeMinutes } from '../../lib/today-sky';
 import { COPY_FOR_HOROSCOPE } from './today-copy-registry';
+import { horoscopeModule } from '../../lib/locale-expansion/horoscope/modules';
+import { SUN_SIGN_READING_CONFIDENCE } from '../../lib/locale-expansion/confidence';
 import { named as namedBody } from './today-copy';
 
 type Locale = 'es' | 'pt' | 'fr' | 'it';
@@ -53,6 +55,9 @@ const daily = dailyData as Daily;
 const sign = signBySlug(signSlug);
 const name = signName(sign, locale);
 const reading = dailyReadingForLocale(sign.slug, daily, locale);
+// The expansion's French and Italian readings carry the reading confidence label
+// (AGENTS.md); the live Spanish and Portuguese pages keep their layout unchanged.
+const confidenceChrome = locale === 'fr' || locale === 'it' ? horoscopeModule(locale).chrome : null;
 const cap = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 const planet = (body: string) => planetLabel(locale, body);
 const named = (body: string) => namedBody(locale, body);
@@ -211,6 +216,9 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
         <div class="hzl-note__body">
           <DailyLocaleReading locale={locale} reading={reading} />
         </div>
+        {confidenceChrome && (
+          <p class="hzl-confidence" data-reading-confidence><strong>{confidenceChrome.confidence(SUN_SIGN_READING_CONFIDENCE)}</strong>. {confidenceChrome.confidenceNote}</p>
+        )}
 
         <p class="hzl-note__foot">
           {c.foot(name)}{' '}
@@ -574,6 +582,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
     text-wrap: balance;
   }
   .hzl-note__body { margin-top: 34px; }
+  .hzl-confidence { margin: 16px 0 0; font-size: 14px; color: var(--ink-2, #b9bfcc); }
   /* Above DailyLocaleReading's own scoped rules (0,3,1), for this page's
      larger serif reading column; its markup is unchanged. */
   .hzl .hzl-note__body .daily-locale__lines { gap: 0; margin-bottom: 18px; }

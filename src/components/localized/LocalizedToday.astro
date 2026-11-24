@@ -21,6 +21,8 @@ import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
 import ArtFrame from '../ArtFrame.astro';
 import AskGuideLine from '../AskGuideLine.astro';
 import DailyLocaleReading from '../DailyLocaleReading.astro';
+import { horoscopeModule } from '../../lib/locale-expansion/horoscope/modules';
+import { SUN_SIGN_READING_CONFIDENCE } from '../../lib/locale-expansion/confidence';
 import EvidenceDisclosure from '../EvidenceDisclosure.astro';
 import GuideQuickPrompts from '../GuideQuickPrompts.astro';
 import SignIcon from '../SignIcon.astro';
@@ -140,6 +142,9 @@ const todayMoonPath = moonPath(daily.moon.illumination, waxing);
 
 // The twelve sign notes, exactly as the localized reading renders them.
 const readings = SIGNS.map((entry) => ({ sign: entry, reading: dailyReadingForLocale(entry.slug, daily, locale) }));
+// The expansion's French and Italian readings carry the reading confidence label
+// (AGENTS.md); the live Spanish and Portuguese pages keep their layout unchanged.
+const confidenceChrome = locale === 'fr' || locale === 'it' ? horoscopeModule(locale).chrome : null;
 
 // The dates ahead, worded from the catalogs' own fields.
 const allIngresses = catalogs.flatMap((catalog) => catalog.ingresses);
@@ -376,6 +381,9 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
           </a>
         ))}
       </nav>
+      {confidenceChrome && (
+        <p class="tdl-confidence" data-reading-confidence><strong>{confidenceChrome.confidence(SUN_SIGN_READING_CONFIDENCE)}</strong>. {confidenceChrome.confidenceNote}</p>
+      )}
       <div class="tdl-readings">
         {readings.map(({ sign: entry, reading }) => (
           <article class="tdl-sign" id={entry.slug} style={`--sign:${entry.hue}`}>
@@ -790,6 +798,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
   .tdl-picker a:hover { border-color: color-mix(in oklab, var(--sign) 65%, var(--hair-2)); color: var(--text); }
   .tdl-picker a:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 2px; }
   .tdl-picker__name { max-width: 100%; overflow: hidden; font-size: 12px; font-weight: 650; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+  .tdl-confidence { margin: 0 0 16px; font-size: 14px; color: var(--ink-2, #b9bfcc); }
   .tdl-readings {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
