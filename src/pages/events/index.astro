@@ -8,6 +8,7 @@
 import Base from '../../layouts/Base.astro';
 import '../../styles/events.css';
 import EventMark from '../../components/events/EventMark.astro';
+import Motion from '../../components/Motion.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import { eventsCatalog } from '../../lib/events/catalog';
 import { eventsPublication } from '../../lib/events/site-publication';
@@ -171,6 +172,8 @@ const sources = [
   </noscript>
 
   <section class="section--tight container container--narrow">
+    <!-- Inside the section, so the section stays main's first child and keeps its top padding. -->
+    <Motion />
     <div class="tool-hero reveal">
       <h1 class="display">Sky events</h1>
       <p>
@@ -204,7 +207,7 @@ const sources = [
       <div class="section-head reveal"><h2 id="next-up-head">Next up</h2></div>
       <div class="evhub-next reveal">
         {nextUp.map((event) => (
-          <a class="evhub-next__tile tile" href={event.facts.path} style={event.facts.signs[0] ? `--sign:${signBySlug(event.facts.signs[0]).hue}` : undefined}>
+          <a class="evhub-next__tile tile" data-enter="rise" href={event.facts.path} style={event.facts.signs[0] ? `--sign:${signBySlug(event.facts.signs[0]).hue}` : undefined}>
             <span class="evhub-next__head">
               <EventMark facts={event.facts} />
               <span class="evhub-next__date mono">{eventDay(event.facts.at ?? event.facts.start!)}</span>
@@ -297,7 +300,7 @@ const sources = [
     </div>
     <div class="evhub-types reveal">
       {types.map((type) => (
-        <div class="evhub-type tile" style={type.sample?.facts.signs[0] ? `--sign:${signBySlug(type.sample.facts.signs[0]).hue}` : undefined}>
+        <div class="evhub-type tile" data-enter="rise" style={type.sample?.facts.signs[0] ? `--sign:${signBySlug(type.sample.facts.signs[0]).hue}` : undefined}>
           {type.sample && <EventMark facts={type.sample.facts} />}
           <span class="evhub-type__name">{type.name}</span>
           <p class="evhub-type__what">
