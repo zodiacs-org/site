@@ -441,7 +441,7 @@ const CONNECTOR_PAGE_ROUTES = [
 const PEOPLE_HUB_MODIFIED_AT = '2026-11-17T00:00:00.000Z';
 // The tool's icon was added beside the hero heading on these twelve tool pages (rendered content). The day of
 // the daily edition it was built with; listed last in EVERGREEN_LASTMOD so this date wins over older ones.
-const TOOL_MARKS_LASTMOD = '2026-11-20';
+const TOOL_MARKS_LASTMOD = '2026-11-24';
 const TOOL_MARKS_ROUTES = [
   '/big-three/', '/moon-sign/', '/rising-sign/', '/solar-return/', '/lunar-return/', '/saturn-return/',
   '/transits/', '/eclipses/', '/full-moon-calendar/', '/retrogrades/', '/mercury-retrograde/',
