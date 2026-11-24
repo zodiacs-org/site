@@ -633,9 +633,11 @@ try {
   check('technical evidence is progressively disclosed', (await page.locator('details.evidence-drawer').count()) >= 6);
 
   // Entrances use one short transition and a restrained 50ms child stagger.
-  // Sample the transmission after it enters; computed timing remains available
-  // after the one-time transition has completed.
-  const motionSample = page.locator('#fig-1 .transmission');
+  // Sample the candidacy snapshot after it enters; computed timing remains
+  // available after the one-time transition has completed. (F1 used to be
+  // the sample; it now plays its own figure motion instead of the reveal.)
+  await setVault(page, true);
+  const motionSample = page.locator('#the-candidacy .human-score[data-almanac-reveal]');
   await motionSample.scrollIntoViewIfNeeded();
   await wait(850);
   const motionTimings = await motionSample.locator(':scope > *').evaluateAll((nodes) => nodes.slice(0, 4).map((node) => {
@@ -657,6 +659,7 @@ try {
         return delta >= 0.04 && delta <= 0.06;
       }),
     motionTimings.map((timing) => `${timing.delay}s`).join(', '));
+  await setVault(page, false);
 
   // Origin receipts stay linked from the public-history story.
   check('public history links the registry disclosure origin row',
@@ -700,6 +703,48 @@ try {
   await shot(mid, '#the-instrument', 'thesis-x-1280.png');
   await shot(mid, null, 'thesis-hero-1280.png');
   await mid.close();
+
+  // F1 is a plate with its own one-time motion: the line carries the signs
+  // from form to form, the count steps to 7, then the twelve light.
+  const carry = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const carryErrors = [];
+  carry.on('pageerror', (err) => carryErrors.push(String(err)));
+  await carry.goto(`${BASE}/thesis/`, { waitUntil: 'networkidle' });
+  await wait(300);
+  const carryState = () => carry.locator('#fig-1').evaluate((fig) => {
+    const opacity = (node) => Number.parseFloat(getComputedStyle(node).opacity);
+    return {
+      armed: fig.classList.contains('is-armed'),
+      on: fig.classList.contains('is-on'),
+      twelve: fig.classList.contains('is-twelve'),
+      count: fig.querySelector('[data-carry-count]')?.textContent ?? '',
+      firstDisc: opacity(fig.querySelector('.era__object')),
+      eras: [...fig.querySelectorAll('.era > *')].map(opacity),
+      ring: [...fig.querySelectorAll('.cw')].map(opacity),
+      height: fig.getBoundingClientRect().height,
+    };
+  });
+  const carryBefore = await carryState();
+  check('F1 plate: armed below the fold with the count at 0 and the forms dim',
+    carryBefore.armed && !carryBefore.on && carryBefore.count === '0' && carryBefore.firstDisc < 0.2,
+    JSON.stringify({ ...carryBefore, eras: undefined, ring: undefined }));
+  await carry.locator('#fig-1').evaluate((fig) => fig.scrollIntoView({ block: 'center', behavior: 'instant' }));
+  await wait(4000);
+  const carryAfter = await carryState();
+  check('F1 plate: plays once into view, ending on 7 with every form and dot lit',
+    carryAfter.on && carryAfter.twelve && carryAfter.count === '7'
+      && carryAfter.eras.length === 21 && carryAfter.eras.every((value) => value === 1)
+      && carryAfter.ring.length === 12 && carryAfter.ring.every((value) => value === 1),
+    JSON.stringify(carryAfter));
+  check('F1 plate: the motion never changes the figure height',
+    carryBefore.height === carryAfter.height, `${carryBefore.height} vs ${carryAfter.height}`);
+  for (const width of [1440, 810, 730, 623, 375]) {
+    await carry.setViewportSize({ width, height: 900 });
+    await wait(200);
+    await shot(carry, '#fig-1', `thesis-f1-plate-${width}.png`);
+  }
+  check('no page errors (F1 plate)', carryErrors.length === 0, carryErrors.slice(0, 2).join(' | '));
+  await carry.close();
 
   // The annotated review viewport keeps the full four-column matrix.
   const review = await browser.newPage({ viewport: { width: 810, height: 1054 } });
@@ -1008,6 +1053,15 @@ try {
   check('reduced motion: reveal targets have no active transitions or animations',
     reducedStates.every((state) => state.transition.split(',').every((duration) => Number.parseFloat(duration) === 0)
       && state.animation === 'none'));
+  const reducedCarry = await reduced.locator('#fig-1').evaluate((fig) => ({
+    armed: fig.classList.contains('is-armed'),
+    count: fig.querySelector('[data-carry-count]')?.textContent ?? '',
+    opacities: [...fig.querySelectorAll('.era > *, .cw')].map((node) => Number.parseFloat(getComputedStyle(node).opacity)),
+  }));
+  check('reduced motion: F1 plate shows its finished state, unarmed, count 7',
+    !reducedCarry.armed && reducedCarry.count === '7'
+      && reducedCarry.opacities.length === 33 && reducedCarry.opacities.every((value) => value === 1),
+    JSON.stringify(reducedCarry));
   await checkOwnershipDrawer(reduced, 'reduced motion');
   for (const [name, selector] of VISUAL_MODULES) {
     check(`reduced motion: ${name} is visually exposed`, await isVisuallyExposed(reduced.locator(selector).first()));

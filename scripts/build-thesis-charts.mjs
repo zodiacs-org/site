@@ -499,10 +499,10 @@ export function motionBlock() {
       .is-armed .tw { opacity:.12; transition:opacity .45s ease; transition-delay:calc(var(--i) * 70ms); }
       .is-armed.is-twelve .tw { opacity:1; }
     }
-    .thesis-mine, .thesis-shelf, .thesis-calendar { padding:20px; border:1px solid var(--hair); border-radius:14px; }
-    .thesis-mine .zfig-head, .thesis-shelf .zfig-head { margin-bottom:16px; }
-    .thesis-mine .zfig-cap, .thesis-shelf .zfig-cap, .thesis-calendar .zfig-cap { max-width:68ch; font-family:'Instrument Sans',system-ui,sans-serif; font-style:normal; font-size:14px; line-height:1.65; color:var(--ink-2); }
-    .thesis-mine .zfig-src, .thesis-shelf .zfig-src, .thesis-calendar .zfig-src { max-width:none; font-size:11px; line-height:1.6; color:var(--ink-dim); }
+    .thesis-mine, .thesis-shelf, .thesis-calendar, .thesis-carry { padding:20px; border:1px solid var(--hair); border-radius:14px; }
+    .thesis-mine .zfig-head, .thesis-shelf .zfig-head, .thesis-carry .zfig-head { margin-bottom:16px; }
+    .thesis-mine .zfig-cap, .thesis-shelf .zfig-cap, .thesis-calendar .zfig-cap, .thesis-carry .zfig-cap { max-width:68ch; font-family:'Instrument Sans',system-ui,sans-serif; font-style:normal; font-size:14px; line-height:1.65; color:var(--ink-2); }
+    .thesis-mine .zfig-src, .thesis-shelf .zfig-src, .thesis-calendar .zfig-src, .thesis-carry .zfig-src { max-width:none; font-size:11px; line-height:1.6; color:var(--ink-dim); }
     .mine-film { margin:0 0 16px; }
     .mine-film__stage { position:relative; }
     .film-play { display:none; position:absolute; inset:0; margin:auto; width:max-content; height:max-content; align-items:center; gap:10px; padding:0; border:0; background:none; color:var(--ink); font:500 14px/1 'Instrument Sans',system-ui,sans-serif; cursor:pointer; }
@@ -547,6 +547,19 @@ export function motionBlock() {
       .is-armed .cal-draw { stroke-dasharray:1 1; stroke-dashoffset:1; }
       .is-armed.is-on .cal-draw { stroke-dashoffset:0; transition:stroke-dashoffset 1.1s ease; transition-delay:var(--d); }
       .is-armed .cal-pass--again .cal-draw { transition-duration:.7s; }
+    }
+    .thesis-carry .field-readout__n { width:1ch; text-align:center; }
+    .thesis-carry svg.twelve-ring { width:76px; height:76px; flex:none; }
+    @media screen and (prefers-reduced-motion:no-preference) {
+      .thesis-carry.is-armed .transmission::after { transform:scaleX(0); }
+      .thesis-carry.is-armed.is-on .transmission::after { transform:none; transition:transform 2.4s linear; }
+      .thesis-carry.is-armed .era > * { opacity:.12; }
+      .thesis-carry.is-armed.is-on .era > * { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--i) * 400ms); }
+      .thesis-carry.is-armed .cw { opacity:.12; }
+      .thesis-carry.is-armed.is-twelve .cw { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--i) * 70ms); }
+    }
+    @media screen and (prefers-reduced-motion:no-preference) and (max-width:480px) {
+      .thesis-carry.is-armed .transmission::after { transform:scaleY(0); }
     }`;
   const js = `
 // Armed after load, so none of this work delays the first paint.
@@ -588,6 +601,25 @@ export function motionBlock() {
     people.classList.add('is-armed');
     once(people, function () {
       people.classList.add('is-on');
+    });
+  }
+  // The timeline: a line carries the signs from form to form, each form
+  // lights as the line reaches it, and the twelve light once the coin has.
+  var carry = document.querySelector('[data-motion="carry"]');
+  var carried = carry && carry.querySelector('[data-carry-count]');
+  if (animate && carried && below(carry)) {
+    var forms = carry.querySelectorAll('.era').length;
+    carry.classList.add('is-armed');
+    carried.textContent = '0';
+    window.addEventListener('beforeprint', function () { carried.textContent = String(forms); });
+    once(carry, function () {
+      carry.classList.add('is-on');
+      for (var step = 0; step < forms; step++) (function (at) {
+        setTimeout(function () {
+          carried.textContent = String(at + 1);
+          if (at === forms - 1) carry.classList.add('is-twelve');
+        }, at * 400);
+      })(step);
     });
   }
   var fig = document.querySelector('[data-motion="field"]');

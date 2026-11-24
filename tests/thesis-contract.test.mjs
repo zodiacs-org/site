@@ -463,6 +463,26 @@ describe('thesis transmission and gallery contract', () => {
     expect(finalEra?.inner).not.toMatch(/<svg\b/i);
   });
 
+  it('draws F1 as an animated plate like the first three figures', () => {
+    const open = fig1.match(/^<figure\b[^>]*>/i)?.[0] ?? '';
+    expect(open).toMatch(/\bclass=["'][^"']*\bzfig thesis-plate\b[^"']*["']/i);
+    expect(open).toMatch(/\bdata-motion=["']carry["']/i);
+    const head = sliceElement(fig1, /<figcaption\b[^>]*class=["'][^"']*\bzfig-head\b[^"']*["'][^>]*>/i, 'figcaption');
+    expect(textOf(head)).toBe('Seven forms in about 2,400 years. The same twelve signs.');
+    // The finished state is the markup: the count reads 7 without scripts.
+    expect(fig1).toMatch(/<span\b[^>]*\bdata-carry-count\b[^>]*>7<\/span>/i);
+    expect([...fig1.matchAll(/<circle\b[^>]*class=["']cw["']/gi)]).toHaveLength(12);
+    const transmission = fig1.match(/<div\b[^>]*class=["']transmission["'][^>]*>/i)?.[0] ?? '';
+    expect(transmission).not.toBe('');
+    expect(transmission).not.toMatch(/\bdata-almanac-reveal\b/i);
+    // The readout sits outside .story-figure, which a browser check keeps compact.
+    const story = sliceElement(fig1, /<div\b[^>]*class=["']story-figure["'][^>]*>/i, 'div');
+    expect(story).not.toMatch(/data-carry-count|class=["']cw["']/i);
+    expect(fig1).toMatch(/<p\b[^>]*class=["']zfig-cap["']/i);
+    expect(fig1).toMatch(/<p\b[^>]*class=["']zfig-src["'][^>]*>[\s\S]*href=["']#dated-timeline["']/i);
+    expect(HTML).toMatch(/<details\b[^>]*\bid=["']dated-timeline["'][^>]*>\s*<summary>See the dated historical timeline<\/summary>/i);
+  });
+
   it('places one gallery outside the essay, just before the Twelve Catalogue', () => {
     const allGalleryTags = [...HTML.matchAll(new RegExp(galleryTag.source, 'gi'))];
     const galleryStart = HTML.indexOf(holding);

@@ -1079,22 +1079,30 @@
     .story-figure::before { border-color: rgba(238,241,247,.045); }
     .story-figure__kicker { text-transform: none; letter-spacing: .02em; color: var(--ink-2); }
 
+    /* F1 is a plate: the figure is the only panel. The dim track runs from
+       the first disc's centre to the last; the lit line over it is what the
+       motion draws, from the start, with transform only. */
     #fig-1 .story-figure {
-      background: rgba(10,12,17,.78);
-      border-color: var(--hair-2);
-      box-shadow: none;
+      margin: 22px 0 0; padding: 0; border: 0; border-radius: 0;
+      background: none; box-shadow: none; overflow: visible;
     }
     #fig-1 .story-figure::before { display: none; }
-    #fig-1 .transmission::before {
+    #fig-1 .transmission::before,
+    #fig-1 .transmission::after {
+      top: 31px; left: calc((100% - 48px) / 14); right: calc((100% - 48px) / 14);
       height: 1px; border-radius: 999px;
+    }
+    #fig-1 .transmission::before { background: var(--hair-2); }
+    #fig-1 .transmission::after {
+      content: ""; position: absolute;
       background: linear-gradient(90deg,#DE8E79,#B9D4BE,#B29DD0,#B6D4E4,#E0A9B4,#D3A9DE,#A9D4C4);
-      opacity: .34;
+      transform-origin: 0 50%;
     }
     #fig-1 .era__object {
       background: var(--era);
       border: 0;
       color: #12151d;
-      box-shadow: 0 0 0 7px #0a0c11;
+      box-shadow: 0 0 0 7px var(--surface);
     }
     #fig-1 .era__object svg { width: 30px; height: 30px; }
     #fig-1 .era__object--brand {
@@ -1708,9 +1716,14 @@
       .evidence-vault__body { padding:0 16px 8px; }
       .thesis-close { padding:26px 18px; }
     }
+    @media (max-width: 480px) {
+      #fig-1 .transmission::before, #fig-1 .transmission::after { top:29px; bottom:29px; left:29px; right:auto; width:1px; height:auto; }
+      #fig-1 .transmission::after { background:linear-gradient(180deg,#DE8E79,#B9D4BE,#B29DD0,#B6D4E4,#E0A9B4,#D3A9DE,#A9D4C4); transform-origin:50% 0; }
+      #fig-1 .era__object { box-shadow:0 0 0 6px var(--surface); }
+    }
     @media (min-width: 481px) and (max-width: 559px) {
       #fig-1 .transmission { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 22px; }
-      #fig-1 .transmission::before { display:none; }
+      #fig-1 .transmission::before, #fig-1 .transmission::after { display:none; }
       #fig-1 .era {
         grid-template-columns:48px 1fr; column-gap:12px;
         padding:8px 0;
@@ -1719,9 +1732,9 @@
     }
     @media (min-width: 560px) and (max-width: 760px) {
       #fig-1 .transmission { grid-template-columns:.9fr 1.2fr 1.16fr .84fr .82fr .82fr 1.1fr; gap:6px; }
-      #fig-1 .transmission::before { display:block; top:22px; left:6%; right:6%; }
+      #fig-1 .transmission::before, #fig-1 .transmission::after { display:block; top:22px; bottom:auto; width:auto; height:1px; left:calc((100% - 36px) * .0658); right:calc((100% - 36px) * .0804); }
       #fig-1 .era { display:block; text-align:center; padding:0; }
-      #fig-1 .era__object { width:44px; height:44px; margin:0 auto 9px; box-shadow:0 0 0 5px #0a0c11; }
+      #fig-1 .era__object { width:44px; height:44px; margin:0 auto 9px; box-shadow:0 0 0 5px var(--surface); }
       #fig-1 .era__object svg { width:27px; height:27px; }
       #fig-1 .era__name { font-size:11px; line-height:1.2; }
       #fig-1 .era__time {
@@ -2033,21 +2046,25 @@
           <p>
             It has outlived everything that carried it. The signs travelled on clay tablets, then in manuscripts, then in printed almanacs. In 1930 a London newspaper printed a horoscope for the newborn Princess Margaret, readers asked for more, and <a href="https://www.smithsonianmag.com/history/how-are-horoscopes-still-thing-180957701/" rel="noopener noreferrer">the horoscope column was born</a>. Then came the phone. Each sign has had its own symbol in the world’s standard character set since 1993, and it is on your keyboard now. A child born a thousand years from now will be born under one of the same twelve.
           </p>
-          <figure class="zfig" id="fig-1">
-            <figcaption class="zfig-head">The transmission.</figcaption>
+          <figure class="zfig thesis-plate thesis-carry" id="fig-1" data-motion="carry">
+            <figcaption class="zfig-head">Seven forms in about 2,400 years. The same twelve signs.</figcaption>
+            <div class="field-top carry-top">
+              <p class="field-readout"><span class="field-readout__n" data-carry-count>7</span> <span class="field-readout__of">forms have carried the signs so far</span></p>
+              <div class="field-twelve"><svg class="twelve-ring" viewBox="0 0 120 120" role="img" aria-label="The same twelve signs in every form."><circle class="cw" style="--i:0" cx="60.00" cy="16.00" r="7" fill="#DE8E79"><title>Aries</title></circle><circle class="cw" style="--i:1" cx="82.00" cy="21.89" r="7" fill="#B9D4BE"><title>Taurus</title></circle><circle class="cw" style="--i:2" cx="98.11" cy="38.00" r="7" fill="#B29DD0"><title>Gemini</title></circle><circle class="cw" style="--i:3" cx="104.00" cy="60.00" r="7" fill="#B6D4E4"><title>Cancer</title></circle><circle class="cw" style="--i:4" cx="98.11" cy="82.00" r="7" fill="#E0A9B4"><title>Leo</title></circle><circle class="cw" style="--i:5" cx="82.00" cy="98.11" r="7" fill="#B7D9B0"><title>Virgo</title></circle><circle class="cw" style="--i:6" cx="60.00" cy="104.00" r="7" fill="#D3A9DE"><title>Libra</title></circle><circle class="cw" style="--i:7" cx="38.00" cy="98.11" r="7" fill="#B9DCE8"><title>Scorpio</title></circle><circle class="cw" style="--i:8" cx="21.89" cy="82.00" r="7" fill="#E0B080"><title>Sagittarius</title></circle><circle class="cw" style="--i:9" cx="16.00" cy="60.00" r="7" fill="#C0DEA8"><title>Capricorn</title></circle><circle class="cw" style="--i:10" cx="21.89" cy="38.00" r="7" fill="#AE8FC9"><title>Aquarius</title></circle><circle class="cw" style="--i:11" cx="38.00" cy="21.89" r="7" fill="#A9D4C4"><title>Pisces</title></circle></svg><p class="field-twelve__n"><span class="field-twelve__big">12</span> the same twelve in every form</p></div>
+            </div>
             <div class="story-figure" aria-label="The zodiac moving through seven forms across history">
-              <div class="story-figure__kicker">One shared language · many forms</div>
-              <div class="transmission" data-almanac-reveal>
-                <div class="era" style="--era:#DE8E79"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M8 7h24v26H8zM13 13c3-2 5 2 8 0s5 2 7 0M13 19h14M13 25h9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="era__name">Clay tablet</span><span class="era__time">c. 450 BCE</span></div>
-                <div class="era" style="--era:#B9D4BE"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="m11 24 6-8 5 5 7-9M12 12h.1M29 27h.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="era__name">Star map</span><span class="era__time">150 BCE to 150 CE</span></div>
-                <div class="era" style="--era:#B29DD0"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M9 9c6-2 10 0 11 3 1-3 5-5 11-3v23c-6-2-10 0-11 3-1-3-5-5-11-3V9Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M20 12v23M13 16h4m-4 5h4m6-5h4m-4 5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="era__name">Manuscript</span><span class="era__time">850 to 1150 CE</span></div>
-                <div class="era" style="--era:#B6D4E4"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><rect x="8" y="10" width="24" height="22" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 16h24M14 7v6m12-6v6M13 21h4m3 0h7m-14 5h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="era__name">Almanac</span><span class="era__time">c. 1500</span></div>
-                <div class="era" style="--era:#E0A9B4"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M8 9h24v23H8zM12 13h16M12 18h7v9h-7zm11 0h5m-5 4h5m-5 4h5m-5 4h5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="era__name">Newspaper</span><span class="era__time">1930</span></div>
-                <div class="era" style="--era:#D3A9DE"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><rect x="12" y="6" width="16" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="20" cy="29" r="1" fill="currentColor"/><path d="M16 11h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="era__name">Phone</span><span class="era__time">c. 2010</span></div>
-                <div class="era" style="--era:#A9D4C4"><span class="era__object era__object--brand" aria-hidden="true"><img src="/assets/app-icons/v3/icon-192.png" width="192" height="192" alt="" loading="lazy" decoding="async" /></span><span class="era__name">Coin</span><span class="era__time">5 Jul 2024</span></div>
+              <div class="transmission">
+                <div class="era" style="--era:#DE8E79;--i:0"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M8 7h24v26H8zM13 13c3-2 5 2 8 0s5 2 7 0M13 19h14M13 25h9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="era__name">Clay tablet</span><span class="era__time">c. 450 BCE</span></div>
+                <div class="era" style="--era:#B9D4BE;--i:1"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="m11 24 6-8 5 5 7-9M12 12h.1M29 27h.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="era__name">Star map</span><span class="era__time">150 BCE to 150 CE</span></div>
+                <div class="era" style="--era:#B29DD0;--i:2"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M9 9c6-2 10 0 11 3 1-3 5-5 11-3v23c-6-2-10 0-11 3-1-3-5-5-11-3V9Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M20 12v23M13 16h4m-4 5h4m6-5h4m-4 5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="era__name">Manuscript</span><span class="era__time">850 to 1150 CE</span></div>
+                <div class="era" style="--era:#B6D4E4;--i:3"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><rect x="8" y="10" width="24" height="22" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 16h24M14 7v6m12-6v6M13 21h4m3 0h7m-14 5h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="era__name">Almanac</span><span class="era__time">c. 1500</span></div>
+                <div class="era" style="--era:#E0A9B4;--i:4"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M8 9h24v23H8zM12 13h16M12 18h7v9h-7zm11 0h5m-5 4h5m-5 4h5m-5 4h5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="era__name">Newspaper</span><span class="era__time">1930</span></div>
+                <div class="era" style="--era:#D3A9DE;--i:5"><span class="era__object" aria-hidden="true"><svg viewBox="0 0 40 40"><rect x="12" y="6" width="16" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="20" cy="29" r="1" fill="currentColor"/><path d="M16 11h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="era__name">Phone</span><span class="era__time">c. 2010</span></div>
+                <div class="era" style="--era:#A9D4C4;--i:6"><span class="era__object era__object--brand" aria-hidden="true"><img src="/assets/app-icons/v3/icon-192.png" width="192" height="192" alt="" loading="lazy" decoding="async" /></span><span class="era__name">Coin</span><span class="era__time">5 Jul 2024</span></div>
               </div>
             </div>
             <p class="zfig-cap">The twelve-sign vocabulary survived by moving with people. Coins are its newest form.</p>
+            <p class="zfig-src">Dates: <a href="#dated-timeline">the dated historical timeline</a> below.</p>
           </figure>
           <p>
             Nobody owns the zodiac. A coin named after a team, a cartoon or a celebrity borrows a name that belongs to someone, and that someone can object. The signs are older than every company and every country, so there is no one to ask and no one who can take them back. They are nobody’s scripture and nobody’s flag. People who think astrology is nonsense will still tell you their sign.
@@ -2357,7 +2374,7 @@
             <p class="zfig-cap">The symbols were in Unicode by June 1993, long before these coins. Glyphs redrawn here in the twelve sign hues.</p>
             <p class="zfig-src"><a href="https://www.unicode.org/Public/17.0.0/ucd/DerivedAge.txt" rel="noopener noreferrer">Unicode character ages</a> · <a href="https://www.unicode.org/versions/Unicode1.1.0/" rel="noopener noreferrer">Unicode 1.1 · June 1993</a></p>
           </figure>
-          <details class="evidence-drawer">
+          <details class="evidence-drawer" id="dated-timeline">
               <summary>See the dated historical timeline</summary>
               <div class="evidence-drawer__body">
             <svg viewBox="0 0 920 322" role="img" aria-label="Timeline of the fixed twelve-sign zodiac from the fifth century BCE to the present, over the lifespans of empires and currencies that ended."><line x1="344.04040404040404" y1="60" x2="344.04040404040404" y2="292" stroke="rgba(198,204,218,0.05)"/><text x="344.0" y="308" text-anchor="middle">500 BCE</text><line x1="452.84343434343435" y1="60" x2="452.84343434343435" y2="292" stroke="rgba(198,204,218,0.05)"/><text x="452.8" y="308" text-anchor="middle">1 CE</text><line x1="561.2121212121212" y1="60" x2="561.2121212121212" y2="292" stroke="rgba(198,204,218,0.05)"/><text x="561.2" y="308" text-anchor="middle">500 CE</text><line x1="669.7979797979798" y1="60" x2="669.7979797979798" y2="292" stroke="rgba(198,204,218,0.05)"/><text x="669.8" y="308" text-anchor="middle">1000 CE</text><line x1="778.3838383838383" y1="60" x2="778.3838383838383" y2="292" stroke="rgba(198,204,218,0.05)"/><text x="778.4" y="308" text-anchor="middle">1500 CE</text><line x1="886.969696969697" y1="60" x2="886.969696969697" y2="292" stroke="rgba(198,204,218,0.05)"/><text x="887.0" y="308" text-anchor="middle">2000 CE</text><line x1="61.717171717171716" y1="112" x2="354.8989898989899" y2="112" stroke="rgba(198,204,218,0.28)" stroke-width="1.5" stroke-dasharray="2 5"/><text x="61.7" y="92" text-anchor="start">astral antecedents · star lists, omen series</text><line x1="354.8989898989899" y1="112" x2="892.6161616161617" y2="112" stroke="#C6CCDA" stroke-width="2"/><circle cx="892.6161616161617" cy="112" r="3.5" fill="#EEF1F7"/><line x1="354.8989898989899" y1="106" x2="354.8989898989899" y2="118" stroke="#C6CCDA" stroke-width="1.5"/><line x1="354.8989898989899" y1="34" x2="354.8989898989899" y2="104" stroke="rgba(198,204,218,0.10)"/><text x="352.9" y="30" text-anchor="start" class="zfig-lab">Babylon · the fixed twelve</text><line x1="420.0505050505051" y1="106" x2="420.0505050505051" y2="118" stroke="#C6CCDA" stroke-width="1.5"/><line x1="420.0505050505051" y1="52" x2="420.0505050505051" y2="104" stroke="rgba(198,204,218,0.10)"/><text x="418.1" y="48" text-anchor="start" class="zfig-lab">Hellenistic horoscopy</text><line x1="485.20202020202015" y1="106" x2="485.20202020202015" y2="118" stroke="#C6CCDA" stroke-width="1.5"/><line x1="485.20202020202015" y1="70" x2="485.20202020202015" y2="104" stroke="rgba(198,204,218,0.10)"/><text x="483.2" y="66" text-anchor="start" class="zfig-lab">Ptolemy</text><line x1="637.2222222222222" y1="106" x2="637.2222222222222" y2="118" stroke="#C6CCDA" stroke-width="1.5"/><line x1="637.2222222222222" y1="34" x2="637.2222222222222" y2="104" stroke="rgba(198,204,218,0.10)"/><text x="635.2" y="30" text-anchor="start" class="zfig-lab">Arabic astronomy</text><line x1="702.3737373737374" y1="106" x2="702.3737373737374" y2="118" stroke="#C6CCDA" stroke-width="1.5"/><line x1="702.3737373737374" y1="52" x2="702.3737373737374" y2="104" stroke="rgba(198,204,218,0.10)"/><text x="700.4" y="48" text-anchor="start" class="zfig-lab">Latin Europe</text><line x1="778.3838383838383" y1="106" x2="778.3838383838383" y2="118" stroke="#C6CCDA" stroke-width="1.5"/><line x1="778.3838383838383" y1="70" x2="778.3838383838383" y2="104" stroke="rgba(198,204,218,0.10)"/><text x="776.4" y="66" text-anchor="start" class="zfig-lab">print</text><line x1="871.7971313131313" y1="106" x2="871.7971313131313" y2="118" stroke="#C6CCDA" stroke-width="1.5"/><line x1="871.7971313131313" y1="88" x2="871.7971313131313" y2="104" stroke="rgba(198,204,218,0.10)"/><text x="874.8" y="84" text-anchor="end" class="zfig-lab">the newspaper column</text><line x1="889.1414141414141" y1="106" x2="889.1414141414141" y2="118" stroke="#C6CCDA" stroke-width="1.5"/><line x1="889.1414141414141" y1="34" x2="889.1414141414141" y2="104" stroke="rgba(198,204,218,0.10)"/><text x="892.1" y="30" text-anchor="end" class="zfig-lab">apps</text><rect x="316.67676767676767" y="152" width="18.9" height="13" rx="3" fill="#151925" stroke="rgba(198,204,218,0.16)"/><text x="343.6" y="162.5" text-anchor="start">Neo-Babylonian empire · ended 539 BCE</text><rect x="406.8030303030303" y="178" width="105.3" height="13" rx="3" fill="#151925" stroke="rgba(198,204,218,0.16)"/><text x="520.1" y="188.5" text-anchor="start">the denarius · ended 274 CE</text><rect x="446.76262626262627" y="204" width="109.2" height="13" rx="3" fill="#151925" stroke="rgba(198,204,218,0.16)"/><text x="564.0" y="214.5" text-anchor="start">Roman empire · ended 476 CE</text><rect x="524.2929292929293" y="230" width="243.9" height="13" rx="3" fill="#151925" stroke="rgba(198,204,218,0.16)"/><text x="532.3" y="240.5" text-anchor="start">Byzantine empire · ended 1453 CE</text><rect x="615.5050505050506" y="256" width="110.3" height="13" rx="3" fill="#151925" stroke="rgba(198,204,218,0.16)"/><text x="607.5" y="266.5" text-anchor="end">Abbasid caliphate · ended 1258 CE</text><text x="40.0" y="142" text-anchor="start">carriers beneath the line, all ended:</text></svg>
@@ -3647,10 +3664,10 @@
       .is-armed .tw { opacity:.12; transition:opacity .45s ease; transition-delay:calc(var(--i) * 70ms); }
       .is-armed.is-twelve .tw { opacity:1; }
     }
-    .thesis-mine, .thesis-shelf, .thesis-calendar { padding:20px; border:1px solid var(--hair); border-radius:14px; }
-    .thesis-mine .zfig-head, .thesis-shelf .zfig-head { margin-bottom:16px; }
-    .thesis-mine .zfig-cap, .thesis-shelf .zfig-cap, .thesis-calendar .zfig-cap { max-width:68ch; font-family:'Instrument Sans',system-ui,sans-serif; font-style:normal; font-size:14px; line-height:1.65; color:var(--ink-2); }
-    .thesis-mine .zfig-src, .thesis-shelf .zfig-src, .thesis-calendar .zfig-src { max-width:none; font-size:11px; line-height:1.6; color:var(--ink-dim); }
+    .thesis-mine, .thesis-shelf, .thesis-calendar, .thesis-carry { padding:20px; border:1px solid var(--hair); border-radius:14px; }
+    .thesis-mine .zfig-head, .thesis-shelf .zfig-head, .thesis-carry .zfig-head { margin-bottom:16px; }
+    .thesis-mine .zfig-cap, .thesis-shelf .zfig-cap, .thesis-calendar .zfig-cap, .thesis-carry .zfig-cap { max-width:68ch; font-family:'Instrument Sans',system-ui,sans-serif; font-style:normal; font-size:14px; line-height:1.65; color:var(--ink-2); }
+    .thesis-mine .zfig-src, .thesis-shelf .zfig-src, .thesis-calendar .zfig-src, .thesis-carry .zfig-src { max-width:none; font-size:11px; line-height:1.6; color:var(--ink-dim); }
     .mine-film { margin:0 0 16px; }
     .mine-film__stage { position:relative; }
     .film-play { display:none; position:absolute; inset:0; margin:auto; width:max-content; height:max-content; align-items:center; gap:10px; padding:0; border:0; background:none; color:var(--ink); font:500 14px/1 'Instrument Sans',system-ui,sans-serif; cursor:pointer; }
@@ -3696,6 +3713,19 @@
       .is-armed.is-on .cal-draw { stroke-dashoffset:0; transition:stroke-dashoffset 1.1s ease; transition-delay:var(--d); }
       .is-armed .cal-pass--again .cal-draw { transition-duration:.7s; }
     }
+    .thesis-carry .field-readout__n { width:1ch; text-align:center; }
+    .thesis-carry svg.twelve-ring { width:76px; height:76px; flex:none; }
+    @media screen and (prefers-reduced-motion:no-preference) {
+      .thesis-carry.is-armed .transmission::after { transform:scaleX(0); }
+      .thesis-carry.is-armed.is-on .transmission::after { transform:none; transition:transform 2.4s linear; }
+      .thesis-carry.is-armed .era > * { opacity:.12; }
+      .thesis-carry.is-armed.is-on .era > * { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--i) * 400ms); }
+      .thesis-carry.is-armed .cw { opacity:.12; }
+      .thesis-carry.is-armed.is-twelve .cw { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--i) * 70ms); }
+    }
+    @media screen and (prefers-reduced-motion:no-preference) and (max-width:480px) {
+      .thesis-carry.is-armed .transmission::after { transform:scaleY(0); }
+    }
   </style>
   <script data-thesis-figures>
 // Armed after load, so none of this work delays the first paint.
@@ -3737,6 +3767,25 @@
     people.classList.add('is-armed');
     once(people, function () {
       people.classList.add('is-on');
+    });
+  }
+  // The timeline: a line carries the signs from form to form, each form
+  // lights as the line reaches it, and the twelve light once the coin has.
+  var carry = document.querySelector('[data-motion="carry"]');
+  var carried = carry && carry.querySelector('[data-carry-count]');
+  if (animate && carried && below(carry)) {
+    var forms = carry.querySelectorAll('.era').length;
+    carry.classList.add('is-armed');
+    carried.textContent = '0';
+    window.addEventListener('beforeprint', function () { carried.textContent = String(forms); });
+    once(carry, function () {
+      carry.classList.add('is-on');
+      for (var step = 0; step < forms; step++) (function (at) {
+        setTimeout(function () {
+          carried.textContent = String(at + 1);
+          if (at === forms - 1) carry.classList.add('is-twelve');
+        }, at * 400);
+      })(step);
     });
   }
   var fig = document.querySelector('[data-motion="field"]');
