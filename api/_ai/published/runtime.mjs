@@ -5726,6 +5726,9 @@ var CONDITION_FIELDS = Object.freeze({
   angular: ["kind", "body", "not"]
 });
 var VALIDATION_MESSAGES = TEXT;
+var LOCAL_DAY_MESSAGES = /* @__PURE__ */ Object.freeze({
+  splitDay: "This date happened in two parts in this zone: its clocks went back across midnight, so no single window holds the whole day."
+});
 
 // src/lib/compute-api/endpoints.ts
 var HOUR_MS = 36e5;
@@ -5918,6 +5921,15 @@ async function dayWindow(day2, dependencies) {
     }
   };
 }
+async function refuseSplitDay(request2, dependencies) {
+  const day2 = "day" in request2 ? request2.day : "instant" in request2.when ? null : request2.when;
+  if (day2 === null || day2.zone === null) return;
+  for (const date3 of [day2.date, nextDate(day2.date)]) {
+    if (await clockWentBackAcrossMidnight(dependencies.localTime, date3, day2.zone)) {
+      throw invalidRequest("/date", LOCAL_DAY_MESSAGES.splitDay);
+    }
+  }
+}
 function searchSpan(window) {
   return { from: new Date(window.from.getTime() - 1), to: new Date(window.to.getTime() - 1) };
 }
@@ -5972,18 +5984,6 @@ function relativeCrossings(request2, target, from, to, budget, rowsAt) {
   };
   const step = request2.body === "Moon" || request2.other === "Moon" ? SEARCH_STEP_DAYS.moon : SEARCH_STEP_DAYS.default;
   return budget.settle(searchLongitudeCrossingsWith(relativeAt, request2.body, target, from, to, budget.options(step)));
-}
-var LOCAL_DAY_MESSAGES = Object.freeze({
-  splitDay: "This date happened in two parts in this zone: its clocks went back across midnight, so no single window holds the whole day."
-});
-async function refuseSplitDay(request2, dependencies) {
-  const day2 = "day" in request2 ? request2.day : "instant" in request2.when ? null : request2.when;
-  if (day2 === null || day2.zone === null) return;
-  for (const date3 of [day2.date, nextDate(day2.date)]) {
-    if (await clockWentBackAcrossMidnight(dependencies.localTime, date3, day2.zone)) {
-      throw invalidRequest("/date", LOCAL_DAY_MESSAGES.splitDay);
-    }
-  }
 }
 async function computeSkyFact(request2, dependencies) {
   const budget = new SampleBudget("sky-fact.samples");
