@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, LEGACY_READINGS_SKY_EVENTS_URI, LEGACY_READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
-import { SAVED_PAGE_EXCEPTION, childBirthDateRefusal, executeAiTool, goodDaysOn, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
+import { AGE_FIRST_TOOLS, SAVED_PAGE_EXCEPTION, ageFirstRefusal, childBirthDateRefusal, executeAiTool, goodDaysOn, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
@@ -148,8 +148,9 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
       _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: readingsPanel(panel.uri) ? [{ type: 'thread' }] : [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
     }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {
       const context: AiCallContext = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };
-      // A child's birth date gets the fixed refusal before anything is worked out.
-      const result = childBirthDateRefusal(tool, args, dependencies.now?.() ?? new Date(), context.hostZone)
+      // A child's birth date gets the fixed refusal before anything is worked out; a tool in AGE_FIRST_TOOLS gets its age gate.
+      const now = dependencies.now?.() ?? new Date();
+      const result = (AGE_FIRST_TOOLS.has(tool) ? ageFirstRefusal(tool, args, now) : childBirthDateRefusal(tool, args, now, context.hostZone))
         ?? await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
       return {
         isError: !result.ok, content: [{ type: 'text' as const, text: JSON.stringify(result) }], structuredContent: result,

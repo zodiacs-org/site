@@ -43089,6 +43089,8 @@ function equatorialMoment(utc) {
 
 // src/lib/birth-date-policy.ts
 var HOUR_MS4 = 36e5;
+var CIVIL_DATE = /^(\d{4})-(\d{2})-(\d{2})$/u;
+var MINIMUM_AGE = 13;
 function civilDateAt(now, offsetHours) {
   return new Date(now.getTime() + offsetHours * HOUR_MS4).toISOString().slice(0, 10);
 }
@@ -43097,6 +43099,13 @@ function earliestToday(now = /* @__PURE__ */ new Date()) {
 }
 function latestToday(now = /* @__PURE__ */ new Date()) {
   return civilDateAt(now, 14);
+}
+function birthDateRefusal(birthDate, now = /* @__PURE__ */ new Date()) {
+  if (typeof birthDate !== "string" || !CIVIL_DATE.test(birthDate)) return null;
+  if (birthDate > latestToday(now)) return "future_birth_date";
+  const today2 = earliestToday(now);
+  const thirteenYearsBefore = `${String(Number(today2.slice(0, 4)) - MINIMUM_AGE).padStart(4, "0")}${today2.slice(4)}`;
+  return birthDate > thirteenYearsBefore ? "under_13" : null;
 }
 
 // src/lib/astrocartography/meanings.ts
@@ -46120,7 +46129,7 @@ function clockTime3(utc, zone10) {
   return { utc, local: zone10 ? local : `${local} UTC` };
 }
 var optionalClock = (utc, zone10) => utc ? clockTime3(utc, zone10) : null;
-var CIVIL_DATE = /^\d{4}-\d{2}-\d{2}$/u;
+var CIVIL_DATE2 = /^\d{4}-\d{2}-\d{2}$/u;
 var fieldOf = (value, key2) => value && typeof value === "object" && !Array.isArray(value) ? value[key2] : void 0;
 var LATEST_CLOCK_MS = 14 * 36e5;
 function cardToday(now, zones) {
@@ -46143,65 +46152,68 @@ function birthDatesIn(tool, args, now, hostZone) {
     const windowDay = typeof from === "string" && typeof to === "string" && from <= today2 ? to < today2 ? to : today2 : void 0;
     dates = [date3, windowDay].filter((day2) => typeof day2 === "string" && day2 <= today2);
   }
-  return dates.filter((date3) => typeof date3 === "string" && CIVIL_DATE.test(date3));
+  return dates.filter((date3) => typeof date3 === "string" && CIVIL_DATE2.test(date3));
 }
 function childBirthDateRefusal(tool, args, now, hostZone) {
   const today2 = earliestToday(now);
   return birthDatesIn(tool, args, now, hostZone).some((date3) => isUnder13(date3, today2)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
 }
 var AGE_FIRST_TOOLS = /* @__PURE__ */ new Set(["get_astrocartography"]);
-var LOOSE_DATE_PARTS = [/^(\d{1,4})\s*([-/.])\s*(\d{1,2})\s*\2\s*(\d{1,4})$/u, /^(\d{1,4})\s+(\d{1,2})\s+(\d{1,4})$/u];
 var MONTH_NUMBERS = new Map(
   ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"].flatMap((name, index) => [[name, index + 1], [name.slice(0, 3), index + 1], ...name === "september" ? [["sept", index + 1]] : []])
 );
-var MONTH_WORD = "(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sept|sep|oct|nov|dec)";
-var DAY_RUN = "(\\d{1,2})(?:st|nd|rd|th)?";
-var MONTH_NAME_DATES = [
-  { pattern: new RegExp(`^${MONTH_WORD}[\\s,./-]*${DAY_RUN}[\\s,./-]+(\\d{4}|\\d{2})$`, "iu"), order: "mdy" },
-  { pattern: new RegExp(`^${DAY_RUN}[\\s,./-]*(?:of\\s+)?${MONTH_WORD}[\\s,./-]*(\\d{4}|\\d{2})$`, "iu"), order: "dmy" },
-  { pattern: new RegExp(`^(\\d{4})[\\s,./-]*${MONTH_WORD}[\\s,./-]*${DAY_RUN}$`, "iu"), order: "ymd" }
-];
-function yearsOfRun(run2, now) {
-  if (run2.length === 4) return [Number(run2)];
-  const thisYear = Number(latestToday(now).slice(0, 4));
-  return [1900 + Number(run2), 2e3 + Number(run2)].filter((year) => year <= thisYear);
+function yearsOfRun(run2, thisYear) {
+  if (/^\d{4}$/u.test(run2)) return [Number(run2)];
+  if (/^\d{2}$/u.test(run2)) return [1900 + Number(run2), 2e3 + Number(run2)].filter((year) => year <= thisYear);
+  return [];
+}
+var SHORT_RUN = /^\d{1,2}$/u;
+function writtenDateReadings(text2, thisYear) {
+  const numeric = /^(\d+)\s*([-/.])\s*(\d+)\s*\2\s*(\d+)$/u.exec(text2) ?? /^(\d+)\s+(\d+)\s+(\d+)$/u.exec(text2);
+  if (numeric) {
+    const [a, b, c] = numeric.length === 5 ? [numeric[1], numeric[3], numeric[4]] : [numeric[1], numeric[2], numeric[3]];
+    if (/^\d{4}$/u.test(a)) return SHORT_RUN.test(b) && SHORT_RUN.test(c) ? [{ years: [Number(a)], month: Number(b), day: Number(c) }] : [];
+    if (!SHORT_RUN.test(a) || !SHORT_RUN.test(b) || !/^(?:\d{2}|\d{4})$/u.test(c)) return [];
+    const years = yearsOfRun(c, thisYear);
+    const readings2 = [{ years, month: Number(b), day: Number(a) }, { years, month: Number(a), day: Number(b) }];
+    if (a.length === 2 && c.length === 2) readings2.push({ years: yearsOfRun(a, thisYear), month: Number(b), day: Number(c) });
+    return readings2;
+  }
+  if (!/^[\p{L}\d].*[\p{L}\d]$/u.test(text2)) return [];
+  const words2 = text2.toLowerCase().split(/[\s,./-]+/u);
+  if (words2.length === 4 && words2[1] === "of") words2.splice(1, 1);
+  const monthAt = words2.findIndex((word) => MONTH_NUMBERS.has(word));
+  if (words2.length !== 3 || monthAt < 0 || monthAt > 1) return [];
+  const month = MONTH_NUMBERS.get(words2[monthAt]);
+  const numbers = words2.filter((_, index) => index !== monthAt).map((word) => /^(\d{1,4})(st|nd|rd|th)?$/u.exec(word));
+  if (numbers.some((match) => !match)) return [];
+  const readings = [];
+  for (const [dayMatch, yearMatch] of [[numbers[0], numbers[1]], [numbers[1], numbers[0]]]) {
+    if (SHORT_RUN.test(dayMatch[1]) && !yearMatch[2]) {
+      const years = yearsOfRun(yearMatch[1], thisYear);
+      if (years.length) readings.push({ years, month, day: Number(dayMatch[1]) });
+    }
+  }
+  return readings;
 }
 function calendarDate(year, month, day2) {
   const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
   const daysInMonth3 = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
-  if (year < 1 || month < 1 || month > 12 || day2 < 1 || day2 > daysInMonth3) return null;
+  if (year < NATAL_MIN_YEAR || month < 1 || month > 12 || day2 < 1 || day2 > daysInMonth3) return null;
   return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day2).padStart(2, "0")}`;
 }
-function ageCheckReadings(text2, now = /* @__PURE__ */ new Date()) {
-  const trimmed = text2.trim();
-  if (CIVIL_DATE.test(trimmed)) return [trimmed];
-  const readings = [];
-  const named2 = MONTH_NAME_DATES.map(({ pattern, order }) => ({ match: pattern.exec(trimmed), order })).find(({ match: match2 }) => match2);
-  if (named2?.match) {
-    const [, a, b, c] = named2.match;
-    const [yearRun, monthWord, dayRun] = named2.order === "mdy" ? [c, a, b] : named2.order === "dmy" ? [c, b, a] : [a, b, c];
-    const month = MONTH_NUMBERS.get(monthWord.toLowerCase());
-    if (month) for (const year of yearsOfRun(yearRun, now)) readings.push(calendarDate(year, month, Number(dayRun)));
-    return [...new Set(readings.filter((reading) => reading !== null))];
-  }
-  const match = LOOSE_DATE_PARTS.map((pattern) => pattern.exec(trimmed)).find(Boolean);
-  if (!match) return [];
-  const [first2, middle, last2] = match.length === 5 ? [match[1], match[3], match[4]] : [match[1], match[2], match[3]];
-  if (first2.length === 4) readings.push(calendarDate(Number(first2), Number(middle), Number(last2)));
-  else if (first2.length <= 2 && (last2.length === 4 || last2.length === 2)) {
-    for (const year of yearsOfRun(last2, now)) readings.push(calendarDate(year, Number(middle), Number(first2)), calendarDate(year, Number(first2), Number(middle)));
-  }
-  return [...new Set(readings.filter((reading) => reading !== null))];
+function birthDateAgeGate(value, now) {
+  if (typeof value !== "string" || value.length > 64) return "NEEDS_DATE";
+  const thisYear = Number(latestToday(now).slice(0, 4));
+  const days = writtenDateReadings(value.trim(), thisYear).filter(({ month, day: day2 }) => month >= 1 && month <= 12 && day2 >= 1 && day2 <= 31).flatMap(({ years, month, day: day2 }) => years.map((year) => calendarDate(year, month, day2)));
+  if (days.some((day2) => day2 !== null && birthDateRefusal(day2, now) !== null)) return "UNDER_13";
+  return days.length > 0 && days.every((day2) => day2 !== null) ? "ADULT" : "NEEDS_DATE";
 }
-function ageFirstRefusal(tool, args, now, hostZone) {
+function ageFirstRefusal(tool, args, now) {
   const birthDate = fieldOf(args, "birthDate");
-  if (birthDate === void 0) return failure(tool, "invalid-request", "birthDate is required.");
-  const readings = typeof birthDate === "string" ? ageCheckReadings(birthDate, now) : [];
-  if (readings.length === 0) return failure(tool, "invalid-request", `birthDate must be ${FIELD_FORMAT.birthDate}.`);
-  for (const reading of readings) {
-    const refusal = childBirthDateRefusal(tool, { ...args, birthDate: reading }, now, hostZone);
-    if (refusal) return refusal;
-  }
+  const gate = birthDateAgeGate(birthDate, now);
+  if (gate === "UNDER_13") return failure(tool, "invalid-request", UNDER_13_REFUSAL);
+  if (gate === "NEEDS_DATE") return failure(tool, "invalid-request", birthDate === void 0 ? "birthDate is required." : `birthDate must be ${FIELD_FORMAT.birthDate}.`);
   return null;
 }
 function occasionCardUrl(args) {
@@ -46269,7 +46281,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
     if ((COVERAGE_TOOL_NAMES.includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
     const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
     if (AGE_FIRST_TOOLS.has(tool)) {
-      const child2 = ageFirstRefusal(tool, input, dependencies.now?.() ?? /* @__PURE__ */ new Date(), context.hostZone);
+      const child2 = ageFirstRefusal(tool, input, dependencies.now?.() ?? /* @__PURE__ */ new Date());
       if (child2) return child2;
     }
     if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool) || isGoodDaysTool(tool) || isPersonalTool(tool)) {
@@ -47834,7 +47846,8 @@ function createAiServer(dependencies, watch, account) {
       _meta: { ...!watch ? { securitySchemes: [{ type: "noauth" }] } : watch.service.oauth ? { securitySchemes: [{ type: "oauth2", scopes: WATCH_SCOPES }] } : {}, ...panel ? { ui: { resourceUri: panel.uri, visibility: ["model", "app"] }, "openai/outputTemplate": panel.uri, "openai/ui": { entrypoints: readingsPanel(panel.uri) ? [{ type: "thread" }] : [{ type: "global" }, { type: "thread" }] }, ...tool === "get_horoscope" ? { "openai/widgetAccessible": true } : {} } : {} }
     }, async (args, ctx) => {
       const context = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };
-      const result = childBirthDateRefusal(tool, args, dependencies.now?.() ?? /* @__PURE__ */ new Date(), context.hostZone) ?? await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
+      const now = dependencies.now?.() ?? /* @__PURE__ */ new Date();
+      const result = (AGE_FIRST_TOOLS.has(tool) ? ageFirstRefusal(tool, args, now) : childBirthDateRefusal(tool, args, now, context.hostZone)) ?? await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
       return {
         isError: !result.ok,
         content: [{ type: "text", text: JSON.stringify(result) }],

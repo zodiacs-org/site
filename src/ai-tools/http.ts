@@ -290,8 +290,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
           if (options.de440 && (message.method === 'tools/list' || message.method === 'server/discover')) {
             describeDe440Tools(parsed.result);
           }
-          // A tool in AGE_FIRST_TOOLS whose arguments the SDK's schema check refused gets the child refusal first, so a
-          // child's birth date alone is not answered with the fields still missing.
+          // A tool in AGE_FIRST_TOOLS whose arguments the SDK's schema check refused gets the tool's own age gate reply
+          // first (ageFirstRefusal), so no birth time or zone is asked for until the birth date reads as an adult's.
           const child = calledTool && AGE_FIRST_TOOLS.has(calledTool) && parsed.result?.isError && !parsed.result?.structuredContent
             ? ageFirstRefusal(calledTool as AiToolName, (message.params as { arguments?: unknown }).arguments, options.dependencies?.now?.() ?? new Date()) : null;
           if (child) return JSON.stringify({ ...parsed, result: { isError: true, content: [{ type: 'text', text: JSON.stringify(child) }], structuredContent: child } });
