@@ -20,7 +20,10 @@ import Base from '../../layouts/Base.astro';
 import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
 import ArtFrame from '../ArtFrame.astro';
 import AskGuideLine from '../AskGuideLine.astro';
+import DailyWheelLegend from '../DailyWheelLegend.astro';
 import DailyLocaleReading from '../DailyLocaleReading.astro';
+import { horoscopeModule } from '../../lib/locale-expansion/horoscope/modules';
+import { SUN_SIGN_READING_CONFIDENCE } from '../../lib/locale-expansion/confidence';
 import EvidenceDisclosure from '../EvidenceDisclosure.astro';
 import GuideQuickPrompts from '../GuideQuickPrompts.astro';
 import SignIcon from '../SignIcon.astro';
@@ -140,6 +143,9 @@ const todayMoonPath = moonPath(daily.moon.illumination, waxing);
 
 // The twelve sign notes, exactly as the localized reading renders them.
 const readings = SIGNS.map((entry) => ({ sign: entry, reading: dailyReadingFor(entry.slug, daily, locale) }));
+// The expansion's French, Italian and Russian readings carry the reading confidence
+// label (AGENTS.md); the live Spanish and Portuguese pages keep their layout unchanged.
+const confidenceChrome = locale === 'fr' || locale === 'it' || locale === 'ru' ? horoscopeModule(locale).chrome : null;
 
 // The dates ahead, worded from the catalogs' own fields.
 const allIngresses = catalogs.flatMap((catalog) => catalog.ingresses);
@@ -287,19 +293,18 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
             {todayMoonPath && todayMoonPath !== 'full' && <path d={moonPath(daily.moon.illumination, waxing, 18)} fill="#E6E2D6" />}
           </svg>
         </div>
-        <figcaption class="tdl-legend">
-          <span><i class="tdl-legend__rx">Rx</i>{c.legendRx}</span>
-          {(aspectTypes.has('trine') || aspectTypes.has('sextile')) && <span><i class="tdl-legend__line tdl-legend__line--easy"></i>{c.legendEasy}</span>}
-          {(aspectTypes.has('square') || aspectTypes.has('opposition')) && <span><i class="tdl-legend__line tdl-legend__line--tense"></i>{c.legendTense}</span>}
-          {aspectTypes.has('conjunction') && <span><i class="tdl-legend__line tdl-legend__line--joined"></i>{c.legendJoined}</span>}
-        </figcaption>
+        <DailyWheelLegend
+          class="tdl-legend"
+          aspectTypes={aspectTypes}
+          labels={{ rx: c.legendRx, easy: c.legendEasy, tense: c.legendTense, joined: c.legendJoined }}
+        />
       </figure>
     </header>
 
     <!-- 2. The sky in one line, the same line the home page shows. -->
     <div class="kwrap">
       <div class="ticker-band tdl-skyline">
-        <SkyTicker locale={locale} />
+        <SkyTicker locale={locale} reserveLabels />
       </div>
     </div>
 
@@ -376,6 +381,9 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
           </a>
         ))}
       </nav>
+      {confidenceChrome && (
+        <p class="tdl-confidence" data-reading-confidence><strong>{confidenceChrome.confidence(SUN_SIGN_READING_CONFIDENCE)}</strong>. {confidenceChrome.confidenceNote}</p>
+      )}
       <div class="tdl-readings">
         {readings.map(({ sign: entry, reading }) => (
           <article class="tdl-sign" id={entry.slug} style={`--sign:${entry.hue}`}>
@@ -699,14 +707,6 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
     aspect-ratio: 1;
     transform: translate(-50%, -50%);
   }
-  .tdl-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-top: 14px; color: var(--ink-2); font-size: 12.5px; }
-  .tdl-legend span { display: inline-flex; align-items: center; gap: 7px; }
-  .tdl-legend i { font-style: normal; }
-  .tdl-legend__rx { color: rgba(224, 176, 128, 0.9); font-family: var(--font-mono); font-size: 11px; }
-  .tdl-legend__line { display: inline-block; width: 18px; height: 0; border-top: 1.5px solid; }
-  .tdl-legend__line--easy { color: rgba(182, 212, 228, 0.85); }
-  .tdl-legend__line--tense { color: rgba(222, 142, 121, 0.85); }
-  .tdl-legend__line--joined { color: rgba(238, 241, 247, 0.6); }
 
   /* ── 2. The sky line ──────────────────────────────────────────── */
   .tdl-skyline { margin-top: 18px; }
@@ -790,6 +790,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
   .tdl-picker a:hover { border-color: color-mix(in oklab, var(--sign) 65%, var(--hair-2)); color: var(--text); }
   .tdl-picker a:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 2px; }
   .tdl-picker__name { max-width: 100%; overflow: hidden; font-size: 12px; font-weight: 650; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+  .tdl-confidence { margin: 0 0 16px; font-size: 14px; color: var(--ink-2, #b9bfcc); }
   .tdl-readings {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -998,7 +999,6 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
     .tdl-hero__lede { margin-top: 16px; font-size: 1.06rem; }
     .tdl-hero__actions { flex-direction: column; align-items: stretch; margin-top: 24px; }
     .tdl-hero__actions .btn { width: 100%; }
-    .tdl-legend { gap: 6px 14px; font-size: 12px; }
     .tdl-skyline .skyticker { gap: 10px 18px; }
     .tdl-lights { grid-template-columns: minmax(0, 1fr); gap: 16px; }
     .tdl-light__art .artframe { aspect-ratio: 16 / 9; }

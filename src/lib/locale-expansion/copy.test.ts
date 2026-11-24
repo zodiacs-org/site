@@ -107,13 +107,11 @@ for (const [locale, mod] of Object.entries(HOROSCOPE_MODULES) as Array<[Expansio
       }
       const monthly = mod.chrome.title('Capricornio', { surface: 'monthly', from: `${month.month}-01`, through: `${month.month}-28`, month: month.month });
       expect(monthly.length, monthly).toBeLessThanOrEqual(60);
+      expect(mod.chrome.confidence(readingConfidence('sign'))).toMatch(/40 ?%/u);
       if (locale === 'it') {
-        // Italian names the reading's basis instead of printing a number.
-        expect(mod.chrome.confidence(readingConfidence('sign'))).toBe('Lettura dal segno solare');
-        expect(mod.chrome.confidence(readingConfidence('sign'))).not.toMatch(/[\d%]/u);
-        expect(mod.chrome.confidenceNote).not.toMatch(/[\d%]|numero|affidabil|attendibil|accuratezz|precision/iu);
-      } else {
-        expect(mod.chrome.confidence(readingConfidence('sign'))).toMatch(/40 ?%/u);
+        // Italian translates "Reading confidence" literally (Dias, 2026-11-24): never "reliability" or "accuracy".
+        expect(mod.chrome.confidence(readingConfidence('sign'))).toBe('Fiducia della lettura 40%');
+        expect(mod.chrome.confidenceNote).not.toMatch(/affidabil|attendibil|accuratezz|precision/iu);
       }
       expect(mod.chrome.confidence(40)).not.toContain('Reading confidence');
       const { skyRow, title, h1, description, faq, ...plain } = mod.chrome;
@@ -147,12 +145,13 @@ for (const [locale, copy] of Object.entries(LUNATION_COPY) as Array<[ExpansionLo
       expect(problems).toEqual([]);
     });
 
-    if (locale === 'it') {
-      it('names the reading as a Sun-sign reading without a number', () => {
-        expect(copy.confidence(readingConfidence('sign'))).toBe('Lettura dal segno solare');
-        expect(copy.confidenceNote).not.toMatch(/[\d%]|numero|affidabil|attendibil|accuratezz|precision/iu);
-      });
-    }
+    it('prints the reading confidence label with its number', () => {
+      expect(copy.confidence(readingConfidence('sign'))).toMatch(/40 ?%/u);
+      if (locale === 'it') {
+        expect(copy.confidence(readingConfidence('sign'))).toBe('Fiducia della lettura 40%');
+        expect(copy.confidenceNote).not.toMatch(/affidabil|attendibil|accuratezz|precision/iu);
+      }
+    });
   });
 }
 
