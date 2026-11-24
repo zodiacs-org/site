@@ -438,6 +438,14 @@ const CONNECTOR_PAGE_ROUTES = [
 
 // The /people/ hub began linking the Fortune 500 CEO sign study; the hub alone, not each person page.
 const PEOPLE_HUB_MODIFIED_AT = '2026-11-17T00:00:00.000Z';
+// The tool's icon was added beside the hero heading on these twelve tool pages (rendered content). The day of
+// the daily edition it was built with; listed last in EVERGREEN_LASTMOD so this date wins over older ones.
+const TOOL_MARKS_LASTMOD = '2026-11-24';
+const TOOL_MARKS_ROUTES = [
+  '/big-three/', '/moon-sign/', '/rising-sign/', '/solar-return/', '/lunar-return/', '/saturn-return/',
+  '/transits/', '/eclipses/', '/full-moon-calendar/', '/retrogrades/', '/mercury-retrograde/',
+  '/void-of-course-moon/',
+] as const;
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -782,6 +790,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/privacy/', '2026-11-22'] as const,
   // Conformance scoreboard refreshed for @zodiacs/engine 2.1.0 (639/640, 140/140 L4) and verified PyEphem counts.
   ['/developers/conformance/', '2026-11-23'] as const,
+  // The tool's icon was added beside the hero heading (TOOL_MARKS_ROUTES), last so it wins.
+  ...TOOL_MARKS_ROUTES.map((loc) => [loc, TOOL_MARKS_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

@@ -1,5 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Motion from '../../components/Motion.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import { siteVoidOfCourseAt, siteVoidOfCourseWindows, type VoidOfCourseWindow } from '../../data/void-of-course';
 import { signBySlug } from '../../lib/signs';
@@ -116,6 +118,8 @@ const description = 'Void-of-course Moon times for this month and the next two, 
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
+    <Motion />
+    <ToolHeroMark name="void-of-course" />
     <div class="tool-hero">
       <h1 class="display">When the Moon is void of course.</h1>
       <p>
@@ -310,4 +314,9 @@ const description = 'Void-of-course Moon times for this month and the next two, 
   .faq__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* The tool's mark (ToolHeroMark) sits in the hero's top-right corner only where
+     the heading and intro leave it room on main; at these widths they do not. */
+  @media (min-width: 561px) and (max-width: 649px) {
+    :global(.tool-hero-mark) { display: none; }
+  }
 </style>

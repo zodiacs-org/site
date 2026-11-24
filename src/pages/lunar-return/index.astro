@@ -1,5 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Motion from '../../components/Motion.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import LunarReturnCalculator from '../../islands/LunarReturnCalculator';
 import '../../styles/calculator.css';
 
@@ -17,6 +19,8 @@ const jsonLd = [
 ---
 <Base accountSurface clientUi inlineCriticalCss title="Lunar Return Calculator: Your Next Moon Return | Zodiacs.org" description="Find your next lunar return with a known birth time. Explore its chart, save a private image, or add the moment to your calendar." path="/lunar-return/" jsonLd={jsonLd}>
   <section class="section--tight container">
+    <Motion />
+    <ToolHeroMark name="lunar-return" />
     <div class="tool-hero"><h1 class="display">Your lunar return</h1><p>Find the next time the Moon returns to its place in your birth chart. Explore a fresh set of prompts for everyday care, connection, and attention.</p></div>
     <!-- Use the existing intent trigger and automatic post-load fallback so
          calculator dependencies do not compete with the first text paint. -->

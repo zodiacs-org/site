@@ -15,6 +15,7 @@ import Faq from '../Faq.astro';
 import AskGuideAbout from '../AskGuideAbout.astro';
 import SeasonClock from './SeasonClock.astro';
 import SeasonStory from './SeasonStory.astro';
+import Motion from '../Motion.astro';
 import { englishOnlyCue, localizePath, renderableLocalesForPath } from '../../lib/i18n';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { SIGNS, signBySlug, signName } from '../../lib/signs';
@@ -117,6 +118,9 @@ const more = [
   sources={sources}
 >
   <section class="kwrap season-hero" style={`--sign:${sign.hue}`}>
+    {/* English pages only: the translated season pages stay as they are. Inside
+        the hero, so it stays main's first child and keeps its top padding. */}
+    {locale === 'en' && <Motion />}
     <div class="season-hero__copy">
       <p class="kicker">{ui.kicker(name)}</p>
       <h1 class="display season-hero__title">{title}</h1>
@@ -154,7 +158,7 @@ const more = [
       {readers.map(({ reader, name: readerName, text, house, houseName }) => {
         const horoscope = horoscopeLink(`/horoscopes/${reader.slug}/`);
         return (
-          <li class:list={['tile', 'season-ask', { 'season-ask--own': house === 1 }]} style={`--sign:${reader.hue}`} id={`for-${reader.slug}`}>
+          <li class:list={['tile', 'season-ask', { 'season-ask--own': house === 1 }]} style={`--sign:${reader.hue}`} id={`for-${reader.slug}`} data-enter={locale === 'en' ? 'rise' : undefined}>
             <div class="season-ask__head">
               <SignIcon sign={reader.slug} size={40} />
               <div>
