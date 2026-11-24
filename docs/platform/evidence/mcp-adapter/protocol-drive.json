@@ -1,8 +1,8 @@
 {
   "type": "official-SDK protocol interoperability against the real server process; not a named end-user host, and not a model-driven demonstration",
-  "startedAt": "2026-11-23T16:03:38.148Z",
-  "completedAt": "2026-11-23T16:03:43.735Z",
-  "node": "v22.23.4",
+  "startedAt": "2026-11-24T06:12:40.299Z",
+  "completedAt": "2026-11-24T06:12:43.983Z",
+  "node": "v26.4.0",
   "client": {
     "package": "@modelcontextprotocol/client",
     "version": "2.3.1",
@@ -17,8 +17,8 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "bytes": 5838780,
-    "sha256": "5d78f5a097672a1eb963b8d56a1076e3ecf64d847204a26153e941a35d49d3e2"
+    "bytes": 5839327,
+    "sha256": "770958dad69df4d8724fa909f88bcdcfe5032ad4a02d9ef235793d86a67ef256"
   },
   "wire": [
     {
@@ -665,7 +665,7 @@
       "ok": true,
       "detail": {
         "url": "https://zodiacs.org/developers/mcp/#resolve_birth_time",
-        "receipt": "sha256:cb01e8017616a98a6b792f4ac4b8e69b9ce7b2eb156888445aa0c841d362d8cc",
+        "receipt": "sha256:0fc607a0b595770aa7c12a1004d6ecc432971606b73a30b4173471a960ee3bf9",
         "engine": "@zodiacs/engine",
         "version": "2.1.0"
       }
@@ -1066,7 +1066,7 @@
     {
       "name": "the transport exposes the server process id, so the next check measures something",
       "ok": true,
-      "detail": 25773
+      "detail": 43681
     },
     {
       "name": "the server process is gone after the client closes",
