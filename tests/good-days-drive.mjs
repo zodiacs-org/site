@@ -112,6 +112,17 @@ await withPreview({ port: 4371 }, async (base) => {
         check(`${viewport.name}: the share link carries only the goal, dates and zone`, /^http:\/\/127\.0\.0\.1:\d+\/good-days\/#g=contract&f=2027-01-01&t=2027-06-30&z=[A-Za-z0-9_+\-/]+$/u.test(link ?? ''), link ?? '');
         const card = await tab.textContent('.good-days-card');
         check(`${viewport.name}: the share card holds no birth detail`, !/1990|05-03|3 May 1990/u.test(card ?? ''), card ?? '');
+        await tab.evaluate(() => {
+          Object.defineProperty(navigator, 'clipboard', {
+            configurable: true,
+            value: { writeText: () => Promise.reject(new Error('denied')) },
+          });
+        });
+        await tab.getByRole('button', { name: 'Copy the link' }).click();
+        await tab.locator('.calc__error').waitFor({ timeout: 5_000 });
+        check(`${viewport.name}: a refused clipboard copy still leaves the note visible`,
+          await note.count() === 1 && await note.isVisible()
+          && (await tab.locator('.calc__error').textContent())?.includes('The link could not be copied') === true);
         const overflow = await tab.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
         check(`${viewport.name}: no horizontal scroll`, !overflow);
         check(`${viewport.name}: no page errors`, errors.length === 0, errors.join('\n'));
