@@ -16,6 +16,9 @@ import { PERSONAL_DAY_LIMIT } from '../../lib/personal-day/score';
 import { YOUR_DAY_PAGE_PATH, yourDayShareUrl } from '../../lib/personal-day/share';
 import { SIGNS } from '../../lib/signs';
 import { parseCivilDate } from '../../lib/time/civil-date';
+import { readsOnDate } from '../../lib/time/local-day';
+import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock } from '../../lib/vedic-signs/clock';
+import { roundCoordinate } from '../plain-text';
 import { birthFields, castNatal, currentClock, dateOn, definePersonalTool, refineBirth, withCheckedZone, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
 
 export {
@@ -100,7 +103,18 @@ export type PersonalDayData = z.infer<typeof personalDayData>;
 export async function personalDay(given: BirthArgs & { currentZone?: string | undefined; date?: string | undefined }, context: PersonalToolContext): Promise<{ data: PersonalDayData; links: { title: string; url: string }[] }> {
   // The birthplace zone is checked before any clock reads it; currentClock checks currentZone the same way.
   const args = await withCheckedZone(given, context);
+  // A birth date the birthplace clock skipped whole, or a birth time it skipped, is refused, never read as the next
+  // date or the time the clock jumped to; a time it showed twice is read at its first pass, and the limits say so first
+  // (src/lib/vedic-signs/clock.ts, as the /your-day/ page does).
+  if (args.zone) {
+    await context.localTime.prepareLocalTime(args.birthDate, args.zone);
+    const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
+    const midnight = longitude !== undefined ? context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone, { longitude }) : context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone);
+    if (!readsOnDate(args.birthDate, midnight)) throw new SkippedBirthDateError();
+  }
   const natal = await castNatal(args, context.localTime);
+  const onClock = birthTimeOnClock(natal.flags, natal.timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
   const { zone, note } = await currentClock(args.currentZone, args.zone, context);
   const today = dateOn(context.now, zone);
   const date = args.date ?? today;
@@ -110,7 +124,7 @@ export async function personalDay(given: BirthArgs & { currentZone?: string | un
   if (date < args.birthDate) throw new RangeError('date is before the birth date; give a day on or after it.');
 
   const day = await readPersonalDay(
-    { bodies: natal.chart.bodies, angles: natal.angles, timeKnown: natal.timeKnown, placed: natal.placed, detail: natal.detail },
+    { bodies: natal.chart.bodies, angles: natal.angles, timeKnown: natal.timeKnown, placed: natal.placed, detail: natal.detail, clockLimit: onClock.limit },
     // The under-18 rule reads the UTC-12 date from now (readPersonalDay); `zone` and `today` are the reading's clock only.
     { birthDate: args.birthDate, date, zone, today, now: context.now, note },
     context.localTime,

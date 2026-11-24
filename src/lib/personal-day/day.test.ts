@@ -12,6 +12,10 @@ import { softenHealth, softenMinor } from '../../ai-tools/features/reading-guard
 import { transitLine } from '../transits';
 import { MAJOR_ASPECT_ORDER, TRANSIT_BODY_ORDER } from '../engine/transit-scan-shared';
 import { pointName } from './score';
+import { dateOn } from './clock';
+import { bodyLongitude } from '../engine/full.js';
+import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../vedic-signs/clock';
+import { executeAiTool } from '../../ai-tools/tools';
 import { parseYourDayShare, yourDayQuery, yourDayShareUrl, YOUR_DAY_SHARE_KEYS } from './share';
 
 const NOW = new Date('2026-11-09T09:00:00Z');
@@ -234,6 +238,82 @@ describe('the reading guards on the /your-day/ page and get_personal_day', () =>
     expect((await localDayBounds('2026-11-09', 'Europe/Madrid', site))!.map((at) => at.toISOString())).toEqual(['2026-11-08T23:00:00.000Z', '2026-11-09T23:00:00.000Z']);
     expect(await localDayBounds('2011-12-30', 'Pacific/Apia', site)).toBeNull();
     await expect(readPersonalDay(natal, { birthDate: '1900-01-01', date: '2011-12-30', zone: 'Pacific/Apia', now: NOW }, site)).rejects.toThrow(RangeError);
+  });
+
+  it('refuse a birth time the clock skipped and say which pass a repeated one used, before any exact time', async () => {
+    const site: DayClock = { prepareLocalTime, resolveLocalToUtc };
+    const ON = { occasions: true, coverage: true, personal: true, now: () => NOW };
+    const MADRID = { zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 };
+    // Madrid, 25 Mar 1990: the clocks went from 02:00 straight to 03:00, so 02:30 never showed; read forward it is 03:30.
+    await prepareLocalTime('1990-03-25', MADRID.zone);
+    for (const time of ['02:00', '02:30', '02:59']) {
+      expect(() => castDayNatal({ birthDate: '1990-03-25', time, ...MADRID }, site), time).toThrow(SkippedBirthTimeError);
+      const args = { birthDate: '1990-03-25', time, ...MADRID, currentZone: 'Europe/Madrid', date: '2026-11-09' };
+      await expect(personalDay(args, context), time).rejects.toThrow(SkippedBirthTimeError);
+      const refused = await executeAiTool('get_personal_day', args, ON);
+      expect(refused, time).toMatchObject({ ok: false, error: { code: 'invalid-request', message: SKIPPED_BIRTH_TIME } });
+      expect(JSON.stringify(refused)).not.toMatch(/1990|03-25|02:|Madrid|40\.42|3\.7|exact/iu);
+    }
+    // Madrid, 30 Sep 1990: the clocks went back from 03:00 to 02:00, so 02:30 showed twice: read at the first pass, said first.
+    await prepareLocalTime('1990-09-30', MADRID.zone);
+    const repeated = { birthDate: '1990-09-30', time: '02:30', ...MADRID };
+    const tool = (await personalDay({ ...repeated, currentZone: 'Europe/Madrid', date: '2026-11-09' }, context)).data;
+    const page = await computeYourDay({ birthDate: repeated.birthDate, time: repeated.time, birthZone: MADRID.zone, latitude: MADRID.latitude, longitude: MADRID.longitude, date: '2026-11-09', zone: 'Europe/Madrid', today: '2026-11-09', now: NOW });
+    expect(tool.limits[0]).toBe(REPEATED_BIRTH_TIME);
+    expect(page.limits).toEqual(tool.limits);
+    expect(page.contacts).toEqual(tool.contacts);
+    // The minutes either side, and the same dates without a birth time, carry no clock sentence.
+    for (const birth of [{ birthDate: '1990-03-25', time: '01:59' }, { birthDate: '1990-03-25', time: '03:00' }, { birthDate: '1990-09-30', time: '03:10' }, { birthDate: '1990-03-25' }, { birthDate: '1990-09-30' }]) {
+      const read = (await personalDay({ ...birth, ...MADRID, currentZone: 'Europe/Madrid', date: '2026-11-09' }, context)).data;
+      expect(read.limits, JSON.stringify(birth)).not.toContain(REPEATED_BIRTH_TIME);
+      expect(read.limits).not.toContain(SKIPPED_BIRTH_TIME);
+    }
+  });
+
+  it('refuse a birth date the birthplace clock skipped whole, on the page and in the tool', async () => {
+    // Kwajalein went from 23:59:59 on 20 August 1993 (UTC-12) to 00:00 on 22 August (UTC+12): the 21st never showed.
+    const site: DayClock = { prepareLocalTime, resolveLocalToUtc };
+    const ON = { occasions: true, coverage: true, personal: true, now: () => NOW };
+    const KWAJALEIN = { zone: 'Pacific/Kwajalein', latitude: 9.19, longitude: 167.42 };
+    await prepareLocalTime('1993-08-21', KWAJALEIN.zone);
+    expect(() => castDayNatal({ birthDate: '1993-08-21', ...KWAJALEIN }, site)).toThrow(SkippedBirthDateError);
+    for (const placed of [{ latitude: KWAJALEIN.latitude, longitude: KWAJALEIN.longitude }, {}]) {
+      const args = { birthDate: '1993-08-21', zone: KWAJALEIN.zone, ...placed, currentZone: 'UTC', date: '2026-11-09' };
+      await expect(personalDay(args, context)).rejects.toThrow(SkippedBirthDateError);
+      const refused = await executeAiTool('get_personal_day', args, ON);
+      expect(refused, JSON.stringify(placed)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: SKIPPED_BIRTH_DATE } });
+      expect(JSON.stringify(refused)).not.toMatch(/1993|08-21|Kwajalein|9\.19|167/u);
+    }
+    // The days either side showed.
+    for (const birthDate of ['1993-08-20', '1993-08-22']) {
+      await prepareLocalTime(birthDate, KWAJALEIN.zone);
+      expect(() => castDayNatal({ birthDate, ...KWAJALEIN }, site)).not.toThrow();
+      expect((await personalDay({ birthDate, ...KWAJALEIN, currentZone: 'UTC', date: '2026-11-09' }, context)).data.date).toBe('2026-11-09');
+    }
+  });
+
+  it('give a contact in the stretch two neighbouring dates share to the date the clock showed at its exact moment', async () => {
+    // Goose Bay, 25 October 1987: at 00:01 (UTC-3, 03:01 UTC) the clocks went back to 23:01 on the 24th (UTC-4). The
+    // 24th's span runs to 03:59:59 UTC and the 25th's starts at 03:00 UTC: the hour between is in both. The clock
+    // showed the 25th from 03:00:00 to 03:00:59 UTC and the 24th again from 03:01 UTC.
+    const site: DayClock = { prepareLocalTime, resolveLocalToUtc };
+    const ZONE = 'America/Goose_Bay';
+    const base = castDayNatal({ birthDate: '1960-01-01', time: '12:00', zone: 'UTC' }, site);
+    const read = async (exactAt: string, date: string) => {
+      // A natal Moon the moving Moon reaches exactly at `exactAt`.
+      const natal = { ...base, bodies: base.bodies.map((row) => (row.body === 'Moon' ? { ...row, lon: bodyLongitude('Moon', new Date(exactAt)) } : row)) };
+      const day = await readPersonalDay(natal, { birthDate: '1960-01-01', date, zone: ZONE, now: NOW }, site);
+      // Every exact time a reading gives is on its own date.
+      for (const contact of day.contacts) if (contact.exactAt) expect(dateOn(new Date(contact.exactAt), ZONE), `${date} ${contact.title}`).toBe(date);
+      return day.contacts.find((contact) => contact.planet === 'Moon' && contact.point === 'Moon' && contact.aspect === 'conjunction');
+    };
+    const near = (at: string | null | undefined, want: string) => at !== null && at !== undefined && Math.abs(Date.parse(at) - Date.parse(want)) < 60_000;
+    // 03:30 UTC is 23:30 on the 24th, the second time round: the 24th's contact, exact then, and not the 25th's.
+    expect(near((await read('1987-10-25T03:30:00Z', '1987-10-24'))?.exactAt, '1987-10-25T03:30:00Z')).toBe(true);
+    expect(near((await read('1987-10-25T03:30:00Z', '1987-10-25'))?.exactAt, '1987-10-25T03:30:00Z')).toBe(false);
+    // 03:00:20 UTC is 00:00:20 on the 25th: the 25th's contact, and not the 24th's.
+    expect(near((await read('1987-10-25T03:00:20Z', '1987-10-25'))?.exactAt, '1987-10-25T03:00:20Z')).toBe(true);
+    expect(near((await read('1987-10-25T03:00:20Z', '1987-10-24'))?.exactAt, '1987-10-25T03:00:20Z')).toBe(false);
   });
 
   it('leave out every contact and house line a minor could see that the check catches', () => {

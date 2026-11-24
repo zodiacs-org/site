@@ -42876,12 +42876,39 @@ function earliestToday(now = /* @__PURE__ */ new Date()) {
 
 // src/lib/personal-day/clock.ts
 var DAY19 = 864e5;
+function dateOn(at, timeZone) {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(at);
+  const part = (type) => parts.find((entry) => entry.type === type).value;
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
 function dayLabel3(at, timeZone) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short", day: "numeric", month: "short", year: "numeric" }).formatToParts(new Date(at)).map((part) => [part.type, part.value]));
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
 }
 var clockTime2 = (at, timeZone) => new Intl.DateTimeFormat("en-GB", { timeZone, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(at);
 var nextDate2 = (date3) => new Date(Date.parse(`${date3}T00:00:00Z`) + DAY19).toISOString().slice(0, 10);
+
+// src/lib/vedic-signs/clock.ts
+var SKIPPED_BIRTH_TIME = "That birth time never showed on the birthplace clock: the clocks jumped past it that day. Check the birth time.";
+var REPEATED_BIRTH_TIME = "The birthplace clock showed that birth time twice that day, when the clocks went back. This reading uses the first of the two.";
+var SKIPPED_BIRTH_DATE = "That date never showed on the birthplace clock: the clocks jumped past the whole day. Check the birth date.";
+var SkippedBirthTimeError = class extends RangeError {
+  constructor() {
+    super(SKIPPED_BIRTH_TIME);
+    this.name = "SkippedBirthTimeError";
+  }
+};
+var SkippedBirthDateError = class extends RangeError {
+  constructor() {
+    super(SKIPPED_BIRTH_DATE);
+    this.name = "SkippedBirthDateError";
+  }
+};
+function birthTimeOnClock(flags, timeKnown) {
+  if (!timeKnown) return { skipped: false, limit: null };
+  if (flags.includes("dst-gap")) return { skipped: true, limit: null };
+  return { skipped: false, limit: flags.includes("dst-fold") ? REPEATED_BIRTH_TIME : null };
+}
 
 // src/lib/personal-day/score.ts
 var PERSONAL_DAY_LIMIT = 8;
@@ -42978,10 +43005,12 @@ async function readPersonalDay(natal, input, clock2) {
     natalLon.set("MC", natal.angles.mc);
   }
   const sky = new Map(computeBodies2(midday).map((row) => [row.body, row.lon]));
+  const onDate = (at) => Number(date3.slice(0, 4)) <= 1970 || dateOn(at, zone10) === date3;
   const exact = /* @__PURE__ */ new Map();
   if (natal.timeKnown) for (const contact of scanTransitContacts({ bodies: natalBodies, angles: natal.angles }, dayStart2, new Date(dayEnd.getTime() - 1), { transitBodies: TRANSIT_BODY_ORDER, includeMoon: true, natalPoints: points })) {
     const key2 = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
     const at = new Date(contact.exactUtc);
+    if (!onDate(at)) continue;
     const held = exact.get(key2);
     if (!held || Math.abs(at.getTime() - midday.getTime()) < Math.abs(held.getTime() - midday.getTime())) exact.set(key2, at);
   }
@@ -43051,7 +43080,7 @@ async function readPersonalDay(natal, input, clock2) {
   const isToday = input.today === void 0 || input.today === date3;
   const lead = top?.group === "background" ? "In the background," : isToday ? "Today's strongest contact is" : `The strongest contact on ${label} is`;
   const theme = top ? `${lead} ${top.title}, ${top.exactLocal ? `exact at ${top.exactLocal}` : natal.timeKnown ? `${top.orb.toFixed(2)} degrees from exact and ${top.applying ? "applying" : "separating"}` : `about ${top.orb.toFixed(1)} degrees from exact`} (${top.confidenceLabel}).` : `No major contact to your chart is within orb ${isToday ? "today" : "that day"}, so the Moon in ${signName6(moonSign)} sets the tone.`;
-  const limits2 = [];
+  const limits2 = natal.clockLimit ? [natal.clockLimit] : [];
   if (input.note) limits2.push(input.note);
   if (under18) limits2.push(MINOR_NOTE);
   if (!natal.timeKnown) limits2.push(UNTIMED_LIMIT);
@@ -43263,7 +43292,15 @@ var personalDayData = z16.object({
 });
 async function personalDay(given, context) {
   const args = await withCheckedZone(given, context);
+  if (args.zone) {
+    await context.localTime.prepareLocalTime(args.birthDate, args.zone);
+    const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
+    const midnight = longitude2 !== void 0 ? context.localTime.resolveLocalToUtc(args.birthDate, "00:00", args.zone, { longitude: longitude2 }) : context.localTime.resolveLocalToUtc(args.birthDate, "00:00", args.zone);
+    if (!readsOnDate(args.birthDate, midnight)) throw new SkippedBirthDateError();
+  }
   const natal = await castNatal(args, context.localTime);
+  const onClock = birthTimeOnClock(natal.flags, natal.timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
   const { zone: zone10, note } = await currentClock(args.currentZone, args.zone, context);
   const today2 = dateOn2(context.now, zone10);
   const date3 = args.date ?? today2;
@@ -43272,7 +43309,7 @@ async function personalDay(given, context) {
   if (distance2 > PERSONAL_DAY_MAX_DAYS) throw new RangeError(`date must be within ${PERSONAL_DAY_MAX_DAYS} days of today.`);
   if (date3 < args.birthDate) throw new RangeError("date is before the birth date; give a day on or after it.");
   const day2 = await readPersonalDay(
-    { bodies: natal.chart.bodies, angles: natal.angles, timeKnown: natal.timeKnown, placed: natal.placed, detail: natal.detail },
+    { bodies: natal.chart.bodies, angles: natal.angles, timeKnown: natal.timeKnown, placed: natal.placed, detail: natal.detail, clockLimit: onClock.limit },
     // The under-18 rule reads the UTC-12 date from now (readPersonalDay); `zone` and `today` are the reading's clock only.
     { birthDate: args.birthDate, date: date3, zone: zone10, today: today2, now: context.now, note },
     context.localTime

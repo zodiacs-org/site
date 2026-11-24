@@ -11,6 +11,7 @@ import { yourDayShareUrl } from '../lib/personal-day/share';
 import type { DayContact, PersonalDayReading } from '../lib/personal-day/day';
 import type { TransitBody } from '../lib/engine/transit-scan-shared';
 import { SIGNS } from '../lib/signs';
+import { SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
 import { birthDateRefusal, birthDateRefusalText } from '../lib/birth-date-policy';
 
 /** How far from today a day may be read, either side, as the get_personal_day tool allows. */
@@ -33,12 +34,12 @@ const signName = (slug: string) => SIGNS.find((sign) => sign.slug === slug)?.nam
 const hue = (planet: TransitBody) => `var(--sign-${BODY_SIGN[planet]})`;
 
 /** The browser's own clock: its zone and today's date there. */
-function deviceClock(): { zone: string; today: string } {
+export function deviceClock(at: Date = new Date()): { zone: string; today: string } {
   try {
     const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
-    return { zone, today: dateOn(new Date(), zone) };
+    return { zone, today: dateOn(at, zone) };
   } catch {
-    return { zone: 'UTC', today: new Date().toISOString().slice(0, 10) };
+    return { zone: 'UTC', today: at.toISOString().slice(0, 10) };
   }
 }
 
@@ -110,6 +111,11 @@ export default function YourDay() {
   async function read(target: string, scroll: boolean) {
     if (!ready || !clock || !city) return;
     const request = ++revision.current;
+    // The device's clock as the form is sent, not as the page loaded: a tab left open past midnight, or moved to
+    // another zone, reads today and its bounds afresh. The day chosen stays as chosen.
+    const now = new Date();
+    const current = deviceClock(now);
+    setClock(current);
     setBusy(true);
     setError('');
     setCopy('idle');
@@ -119,12 +125,12 @@ export default function YourDay() {
       if (request !== revision.current) return;
       if ('error' in entry) { setError(entry.error); setShown(null); return; }
       const birthDate = entry.date;
-      if (Math.abs(daysBetween(clock.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
+      if (Math.abs(daysBetween(current.today, target)) > MAX_DAYS) { setError(`Choose a day within ${MAX_DAYS} days of today.`); setShown(null); return; }
       if (target < birthDate) { setError('Choose a day on or after the birth date.'); setShown(null); return; }
       const { computeYourDay } = await loadModule(() => import('./your-day/compute'));
       const reading = await computeYourDay({
         birthDate, time: timeKnown ? time : undefined, birthZone: city.tz, latitude: city.lat, longitude: city.lon,
-        date: target, zone: clock.zone, today: clock.today, now: new Date(),
+        date: target, zone: current.zone, today: current.today, now,
       });
       if (request !== revision.current) return;
       setDay(target);
@@ -133,7 +139,9 @@ export default function YourDay() {
     } catch (cause) {
       if (request !== revision.current) return;
       setShown(null);
-      setError(calculationError(cause, 'en', 'The day could not be read. Check the details and try again.'));
+      // A birth time or date the clock skipped gets its own sentence; anything else the general one.
+      setError(cause instanceof SkippedBirthTimeError ? SKIPPED_BIRTH_TIME : cause instanceof SkippedBirthDateError ? SKIPPED_BIRTH_DATE
+        : calculationError(cause, 'en', 'The day could not be read. Check the details and try again.'));
     } finally {
       if (request === revision.current) setBusy(false);
     }
