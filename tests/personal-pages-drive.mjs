@@ -14,7 +14,7 @@
  *   npm run build && node tests/personal-pages-drive.mjs
  */
 import { existsSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
@@ -23,6 +23,8 @@ import { projectRoot, withPreview } from './visual/preview-server.mjs';
 /** A fixed adult birth: a date, a clock time and a place the place search finds. */
 const BIRTH = { date: '1990-05-03', time: '08:30', place: 'London' };
 const BIRTH_DETAIL = /1990|05-03|0503|08:30|0830|london|51\.5|-0\.1/iu;
+/** The engine's zone history files as the built site serves them. */
+const ZONE_HISTORY_FILE = /\/_astro\/tzdb-\d{4}[a-z]-\d{2}-/u;
 
 async function choosePlace(tab, id, query) {
   await tab.locator(`#${id}`).fill(query);
@@ -44,11 +46,17 @@ const ALL_PAGES = [
       await tab.fill('#rfy-date', '2020-01-01');
       check('an under-13 date locks the birth time', await tab.locator('#rfy-time').isDisabled());
       check('an under-13 date offers no birthplace search', (await tab.locator('#rfy-place[role="combobox"]').count()) === 0 && await tab.locator('#rfy-place').isDisabled());
+      const addresses = [];
+      tab.on('request', (request) => addresses.push(new URL(request.url()).pathname));
       await tab.fill('#rfy-date', BIRTH.date);
       await tab.fill('#rfy-time', BIRTH.time);
       await choosePlace(tab, 'rfy-place', BIRTH.place);
       await tab.getByRole('button', { name: 'Show my retrogrades' }).click();
       await tab.locator('.rfy__share-link').first().waitFor({ state: 'visible', timeout: 60_000 });
+      // A 1990 birth needs no zone history file, yet the page asks for the whole set, as it does for any birth.
+      const builtHistories = (await readdir(resolve(projectRoot, 'dist/_astro'))).map((name) => `/_astro/${name}`).filter((path) => ZONE_HISTORY_FILE.test(path)).sort();
+      const asked = [...new Set(addresses.filter((path) => ZONE_HISTORY_FILE.test(path)))].sort();
+      check('the page asks for every zone history file, whatever the birth', builtHistories.length === 16 && JSON.stringify(asked) === JSON.stringify(builtHistories), asked.join(', '));
       return '.rfy__share-link';
     },
   },

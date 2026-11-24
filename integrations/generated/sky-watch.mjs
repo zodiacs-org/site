@@ -1150,8 +1150,8 @@ var EPHEMERIS_SPAN = /* @__PURE__ */ Object.freeze({
 var FROM = Date.UTC(1800, 0, 1);
 var TO = Date.UTC(2200, 0, 1);
 function outsideReferenceSpan(utc) {
-  const time = Date.prototype.getTime.call(utc);
-  return !(time >= FROM && time < TO);
+  const time2 = Date.prototype.getTime.call(utc);
+  return !(time2 >= FROM && time2 < TO);
 }
 var LEAP_SECOND_LIST = /* @__PURE__ */ Object.freeze({
   source: "IERS leap-seconds.list, retrieved 2026-09-29",
@@ -3121,12 +3121,12 @@ var AstroTime = class _AstroTime {
    *      An `AstroTime` object for the specified terrestrial time.
    */
   static FromTerrestrialTime(tt) {
-    let time = new _AstroTime(tt);
+    let time2 = new _AstroTime(tt);
     for (; ; ) {
-      const err = tt - time.tt;
+      const err = tt - time2.tt;
       if (Math.abs(err) < 1e-12)
-        return time;
-      time = time.AddDays(err);
+        return time2;
+      time2 = time2.AddDays(err);
     }
   }
   /**
@@ -3159,8 +3159,8 @@ function MakeTime(date3) {
   }
   return new AstroTime(date3);
 }
-function mean_obliq(time) {
-  var t = time.tt / 36525;
+function mean_obliq(time2) {
+  var t = time2.tt / 36525;
   var asec = ((((-434e-10 * t - 576e-9) * t + 20034e-7) * t - 1831e-7) * t - 46.836769) * t + 84381.406;
   return asec / 3600;
 }
@@ -3174,13 +3174,13 @@ function obl_ecl2equ_vec(oblDegrees, pos) {
     pos[1] * sin_obl + pos[2] * cos_obl
   ];
 }
-function ecl2equ_vec(time, pos) {
-  return obl_ecl2equ_vec(mean_obliq(time), pos);
+function ecl2equ_vec(time2, pos) {
+  return obl_ecl2equ_vec(mean_obliq(time2), pos);
 }
 var CalcMoonCount = 0;
-function CalcMoon(time) {
+function CalcMoon(time2) {
   ++CalcMoonCount;
-  const T = time.tt / 36525;
+  const T = time2.tt / 36525;
   function DeclareArray1(xmin, xmax) {
     const array = [];
     let i;
@@ -3434,12 +3434,12 @@ function rotate(rot, vec) {
     rot.rot[0][2] * vec[0] + rot.rot[1][2] * vec[1] + rot.rot[2][2] * vec[2]
   ];
 }
-function precession(pos, time, dir) {
-  const r = precession_rot(time, dir);
+function precession(pos, time2, dir) {
+  const r = precession_rot(time2, dir);
   return rotate(r, pos);
 }
-function precession_rot(time, dir) {
-  const t = time.tt / 36525;
+function precession_rot(time2, dir) {
+  const t = time2.tt / 36525;
   let eps0 = 84381.406;
   let psia = ((((-951e-10 * t + 132851e-9) * t - 114045e-8) * t - 1.0790069) * t + 5038.481507) * t;
   let omegaa = ((((3337e-10 * t - 467e-9) * t - 772503e-8) * t + 0.0512623) * t - 0.025754) * t + eps0;
@@ -3520,32 +3520,32 @@ var RotationMatrix = class {
   }
 };
 function GeoMoon(date3) {
-  const time = MakeTime(date3);
-  const moon = CalcMoon(time);
+  const time2 = MakeTime(date3);
+  const moon = CalcMoon(time2);
   const dist_cos_lat = moon.distance_au * Math.cos(moon.geo_eclip_lat);
   const gepos = [
     dist_cos_lat * Math.cos(moon.geo_eclip_lon),
     dist_cos_lat * Math.sin(moon.geo_eclip_lon),
     moon.distance_au * Math.sin(moon.geo_eclip_lat)
   ];
-  const mpos1 = ecl2equ_vec(time, gepos);
-  const mpos2 = precession(mpos1, time, PrecessDirection.Into2000);
-  return new Vector(mpos2[0], mpos2[1], mpos2[2], time);
+  const mpos1 = ecl2equ_vec(time2, gepos);
+  const mpos2 = precession(mpos1, time2, PrecessDirection.Into2000);
+  return new Vector(mpos2[0], mpos2[1], mpos2[2], time2);
 }
 function GeoMoonState(date3) {
-  const time = MakeTime(date3);
+  const time2 = MakeTime(date3);
   const dt = 1e-5;
-  const t1 = time.AddDays(-dt);
-  const t2 = time.AddDays(+dt);
+  const t1 = time2.AddDays(-dt);
+  const t2 = time2.AddDays(+dt);
   const r1 = GeoMoon(t1);
   const r2 = GeoMoon(t2);
-  return new StateVector((r1.x + r2.x) / 2, (r1.y + r2.y) / 2, (r1.z + r2.z) / 2, (r2.x - r1.x) / (2 * dt), (r2.y - r1.y) / (2 * dt), (r2.z - r1.z) / (2 * dt), time);
+  return new StateVector((r1.x + r2.x) / 2, (r1.y + r2.y) / 2, (r1.z + r2.z) / 2, (r2.x - r1.x) / (2 * dt), (r2.y - r1.y) / (2 * dt), (r2.z - r1.z) / (2 * dt), time2);
 }
 function GeoEmbState(date3) {
-  const time = MakeTime(date3);
-  const s = GeoMoonState(time);
+  const time2 = MakeTime(date3);
+  const s = GeoMoonState(time2);
   const d = 1 + EARTH_MOON_MASS_RATIO;
-  return new StateVector(s.x / d, s.y / d, s.z / d, s.vx / d, s.vy / d, s.vz / d, time);
+  return new StateVector(s.x / d, s.y / d, s.z / d, s.vx / d, s.vy / d, s.vz / d, time2);
 }
 function VsopFormula(formula, t, clamp_angle) {
   let tpower = 1;
@@ -3600,13 +3600,13 @@ function VsopSphereToRect(lon, lat, radius) {
     radius * Math.sin(lat)
   ];
 }
-function CalcVsop(model, time) {
-  const t = time.tt / DAYS_PER_MILLENNIUM;
+function CalcVsop(model, time2) {
+  const t = time2.tt / DAYS_PER_MILLENNIUM;
   const lon = VsopFormula(model[LON_INDEX], t, true);
   const lat = VsopFormula(model[LAT_INDEX], t, false);
   const rad = VsopFormula(model[RAD_INDEX], t, false);
   const eclip = VsopSphereToRect(lon, lat, rad);
-  return VsopRotate(eclip).ToAstroVector(time);
+  return VsopRotate(eclip).ToAstroVector(time2);
 }
 function CalcVsopPosVel(model, tt) {
   const t = tt / DAYS_PER_MILLENNIUM;
@@ -3633,19 +3633,19 @@ function CalcVsopPosVel(model, tt) {
   const equ_vel = VsopRotate(eclip_vel);
   return new body_state_t(tt, equ_pos, equ_vel);
 }
-function AdjustBarycenter(ssb, time, body2, pmass) {
+function AdjustBarycenter(ssb, time2, body2, pmass) {
   const shift2 = pmass / (pmass + SUN_GM);
-  const planet2 = CalcVsop(vsop[body2], time);
+  const planet2 = CalcVsop(vsop[body2], time2);
   ssb.x += shift2 * planet2.x;
   ssb.y += shift2 * planet2.y;
   ssb.z += shift2 * planet2.z;
 }
-function CalcSolarSystemBarycenter(time) {
-  const ssb = new Vector(0, 0, 0, time);
-  AdjustBarycenter(ssb, time, Body.Jupiter, JUPITER_GM);
-  AdjustBarycenter(ssb, time, Body.Saturn, SATURN_GM);
-  AdjustBarycenter(ssb, time, Body.Uranus, URANUS_GM);
-  AdjustBarycenter(ssb, time, Body.Neptune, NEPTUNE_GM);
+function CalcSolarSystemBarycenter(time2) {
+  const ssb = new Vector(0, 0, 0, time2);
+  AdjustBarycenter(ssb, time2, Body.Jupiter, JUPITER_GM);
+  AdjustBarycenter(ssb, time2, Body.Saturn, SATURN_GM);
+  AdjustBarycenter(ssb, time2, Body.Uranus, URANUS_GM);
+  AdjustBarycenter(ssb, time2, Body.Neptune, NEPTUNE_GM);
   return ssb;
 }
 var PLUTO_NUM_STATES = 51;
@@ -3894,38 +3894,38 @@ function CalcPlutoOneWay(entry, target_tt, dt) {
     sim = GravSim(i + 1 === n ? target_tt : sim.grav.tt + dt, sim.grav);
   return sim;
 }
-function CalcPluto(time, helio) {
+function CalcPluto(time2, helio) {
   let r, v, bary;
-  const seg = GetSegment(pluto_cache, time.tt);
+  const seg = GetSegment(pluto_cache, time2.tt);
   if (!seg) {
     let sim;
-    if (time.tt < PlutoStateTable[0][0])
-      sim = CalcPlutoOneWay(PlutoStateTable[0], time.tt, -PLUTO_DT);
+    if (time2.tt < PlutoStateTable[0][0])
+      sim = CalcPlutoOneWay(PlutoStateTable[0], time2.tt, -PLUTO_DT);
     else
-      sim = CalcPlutoOneWay(PlutoStateTable[PLUTO_NUM_STATES - 1], time.tt, +PLUTO_DT);
+      sim = CalcPlutoOneWay(PlutoStateTable[PLUTO_NUM_STATES - 1], time2.tt, +PLUTO_DT);
     r = sim.grav.r;
     v = sim.grav.v;
     bary = sim.bary;
   } else {
-    const left = ClampIndex((time.tt - seg[0].tt) / PLUTO_DT, PLUTO_NSTEPS - 1);
+    const left = ClampIndex((time2.tt - seg[0].tt) / PLUTO_DT, PLUTO_NSTEPS - 1);
     const s1 = seg[left];
     const s2 = seg[left + 1];
     const acc = s1.a.mean(s2.a);
-    const ra = UpdatePosition(time.tt - s1.tt, s1.r, s1.v, acc);
-    const va = UpdateVelocity(time.tt - s1.tt, s1.v, acc);
-    const rb = UpdatePosition(time.tt - s2.tt, s2.r, s2.v, acc);
-    const vb = UpdateVelocity(time.tt - s2.tt, s2.v, acc);
-    const ramp = (time.tt - s1.tt) / PLUTO_DT;
+    const ra = UpdatePosition(time2.tt - s1.tt, s1.r, s1.v, acc);
+    const va = UpdateVelocity(time2.tt - s1.tt, s1.v, acc);
+    const rb = UpdatePosition(time2.tt - s2.tt, s2.r, s2.v, acc);
+    const vb = UpdateVelocity(time2.tt - s2.tt, s2.v, acc);
+    const ramp = (time2.tt - s1.tt) / PLUTO_DT;
     r = ra.mul(1 - ramp).add(rb.mul(ramp));
     v = va.mul(1 - ramp).add(vb.mul(ramp));
   }
   if (helio) {
     if (!bary)
-      bary = new major_bodies_t(time.tt);
+      bary = new major_bodies_t(time2.tt);
     r = r.sub(bary.Sun.r);
     v = v.sub(bary.Sun.v);
   }
-  return new StateVector(r.x, r.y, r.z, v.x, v.y, v.z, time);
+  return new StateVector(r.x, r.y, r.z, v.x, v.y, v.z, time2);
 }
 var Rotation_JUP_EQJ = new RotationMatrix([
   [0.999432765338654, -0.0336771074697641, 0],
@@ -3933,44 +3933,44 @@ var Rotation_JUP_EQJ = new RotationMatrix([
   [-0.0144994559663353, -0.430299169409101, 0.902569881273754]
 ]);
 function HelioVector(body2, date3) {
-  var time = MakeTime(date3);
+  var time2 = MakeTime(date3);
   if (body2 in vsop)
-    return CalcVsop(vsop[body2], time);
+    return CalcVsop(vsop[body2], time2);
   if (body2 === Body.Pluto) {
-    const p = CalcPluto(time, true);
-    return new Vector(p.x, p.y, p.z, time);
+    const p = CalcPluto(time2, true);
+    return new Vector(p.x, p.y, p.z, time2);
   }
   if (body2 === Body.Sun)
-    return new Vector(0, 0, 0, time);
+    return new Vector(0, 0, 0, time2);
   if (body2 === Body.Moon) {
-    var e = CalcVsop(vsop.Earth, time);
-    var m = GeoMoon(time);
-    return new Vector(e.x + m.x, e.y + m.y, e.z + m.z, time);
+    var e = CalcVsop(vsop.Earth, time2);
+    var m = GeoMoon(time2);
+    return new Vector(e.x + m.x, e.y + m.y, e.z + m.z, time2);
   }
   if (body2 === Body.EMB) {
-    const e2 = CalcVsop(vsop.Earth, time);
-    const m2 = GeoMoon(time);
+    const e2 = CalcVsop(vsop.Earth, time2);
+    const m2 = GeoMoon(time2);
     const denom = 1 + EARTH_MOON_MASS_RATIO;
-    return new Vector(e2.x + m2.x / denom, e2.y + m2.y / denom, e2.z + m2.z / denom, time);
+    return new Vector(e2.x + m2.x / denom, e2.y + m2.y / denom, e2.z + m2.z / denom, time2);
   }
   if (body2 === Body.SSB)
-    return CalcSolarSystemBarycenter(time);
+    return CalcSolarSystemBarycenter(time2);
   const star = UserDefinedStar(body2);
   if (star) {
     const sphere = new Spherical(star.dec, 15 * star.ra, star.dist);
-    return VectorFromSphere(sphere, time);
+    return VectorFromSphere(sphere, time2);
   }
   throw `HelioVector: Unknown body "${body2}"`;
 }
-function CorrectLightTravel(func, time) {
-  let ltime = time;
+function CorrectLightTravel(func, time2) {
+  let ltime = time2;
   let dt = 0;
   for (let iter = 0; iter < 10; ++iter) {
     const pos = func(ltime);
     const lt = pos.Length() / C_AUDAY;
     if (lt > 1)
       throw `Object is too distant for light-travel solver.`;
-    const ltime2 = time.AddDays(-lt);
+    const ltime2 = time2.AddDays(-lt);
     dt = Math.abs(ltime2.tt - ltime.tt);
     if (dt < 1e-9)
       return pos;
@@ -3985,63 +3985,63 @@ var BodyPosition = class {
     this.aberration = aberration;
     this.observerPos = observerPos;
   }
-  Position(time) {
+  Position(time2) {
     if (this.aberration) {
-      this.observerPos = HelioVector(this.observerBody, time);
+      this.observerPos = HelioVector(this.observerBody, time2);
     } else {
     }
-    const targetPos = HelioVector(this.targetBody, time);
-    return new Vector(targetPos.x - this.observerPos.x, targetPos.y - this.observerPos.y, targetPos.z - this.observerPos.z, time);
+    const targetPos = HelioVector(this.targetBody, time2);
+    return new Vector(targetPos.x - this.observerPos.x, targetPos.y - this.observerPos.y, targetPos.z - this.observerPos.z, time2);
   }
 };
 function BackdatePosition(date3, observerBody, targetBody, aberration) {
   VerifyBoolean(aberration);
-  const time = MakeTime(date3);
+  const time2 = MakeTime(date3);
   if (UserDefinedStar(targetBody)) {
-    const tvec = HelioVector(targetBody, time);
+    const tvec = HelioVector(targetBody, time2);
     if (aberration) {
-      const ostate = HelioState(observerBody, time);
-      const rvec = new Vector(tvec.x - ostate.x, tvec.y - ostate.y, tvec.z - ostate.z, time);
+      const ostate = HelioState(observerBody, time2);
+      const rvec = new Vector(tvec.x - ostate.x, tvec.y - ostate.y, tvec.z - ostate.z, time2);
       const s = C_AUDAY / rvec.Length();
-      return new Vector(rvec.x + ostate.vx / s, rvec.y + ostate.vy / s, rvec.z + ostate.vz / s, time);
+      return new Vector(rvec.x + ostate.vx / s, rvec.y + ostate.vy / s, rvec.z + ostate.vz / s, time2);
     }
-    const ovec = HelioVector(observerBody, time);
-    return new Vector(tvec.x - ovec.x, tvec.y - ovec.y, tvec.z - ovec.z, time);
+    const ovec = HelioVector(observerBody, time2);
+    return new Vector(tvec.x - ovec.x, tvec.y - ovec.y, tvec.z - ovec.z, time2);
   }
   let observerPos;
   if (aberration) {
-    observerPos = new Vector(0, 0, 0, time);
+    observerPos = new Vector(0, 0, 0, time2);
   } else {
-    observerPos = HelioVector(observerBody, time);
+    observerPos = HelioVector(observerBody, time2);
   }
   const bpos = new BodyPosition(observerBody, targetBody, aberration, observerPos);
-  return CorrectLightTravel((t) => bpos.Position(t), time);
+  return CorrectLightTravel((t) => bpos.Position(t), time2);
 }
 function GeoVector(body2, date3, aberration) {
   VerifyBoolean(aberration);
-  const time = MakeTime(date3);
+  const time2 = MakeTime(date3);
   switch (body2) {
     case Body.Earth:
-      return new Vector(0, 0, 0, time);
+      return new Vector(0, 0, 0, time2);
     case Body.Moon:
-      return GeoMoon(time);
+      return GeoMoon(time2);
     default:
-      const vec = BackdatePosition(time, Body.Earth, body2, aberration);
-      vec.t = time;
+      const vec = BackdatePosition(time2, Body.Earth, body2, aberration);
+      vec.t = time2;
       return vec;
   }
 }
-function ExportState(terse, time) {
-  return new StateVector(terse.r.x, terse.r.y, terse.r.z, terse.v.x, terse.v.y, terse.v.z, time);
+function ExportState(terse, time2) {
+  return new StateVector(terse.r.x, terse.r.y, terse.r.z, terse.v.x, terse.v.y, terse.v.z, time2);
 }
 function HelioState(body2, date3) {
-  const time = MakeTime(date3);
+  const time2 = MakeTime(date3);
   switch (body2) {
     case Body.Sun:
-      return new StateVector(0, 0, 0, 0, 0, 0, time);
+      return new StateVector(0, 0, 0, 0, 0, 0, time2);
     case Body.SSB:
-      const bary = new major_bodies_t(time.tt);
-      return new StateVector(-bary.Sun.r.x, -bary.Sun.r.y, -bary.Sun.r.z, -bary.Sun.v.x, -bary.Sun.v.y, -bary.Sun.v.z, time);
+      const bary = new major_bodies_t(time2.tt);
+      return new StateVector(-bary.Sun.r.x, -bary.Sun.r.y, -bary.Sun.r.z, -bary.Sun.v.x, -bary.Sun.v.y, -bary.Sun.v.z, time2);
     case Body.Mercury:
     case Body.Venus:
     case Body.Earth:
@@ -4050,19 +4050,19 @@ function HelioState(body2, date3) {
     case Body.Saturn:
     case Body.Uranus:
     case Body.Neptune:
-      const planet2 = CalcVsopPosVel(vsop[body2], time.tt);
-      return ExportState(planet2, time);
+      const planet2 = CalcVsopPosVel(vsop[body2], time2.tt);
+      return ExportState(planet2, time2);
     case Body.Pluto:
-      return CalcPluto(time, true);
+      return CalcPluto(time2, true);
     case Body.Moon:
     case Body.EMB:
-      const earth = CalcVsopPosVel(vsop.Earth, time.tt);
-      const state = body2 == Body.Moon ? GeoMoonState(time) : GeoEmbState(time);
-      return new StateVector(state.x + earth.r.x, state.y + earth.r.y, state.z + earth.r.z, state.vx + earth.v.x, state.vy + earth.v.y, state.vz + earth.v.z, time);
+      const earth = CalcVsopPosVel(vsop.Earth, time2.tt);
+      const state = body2 == Body.Moon ? GeoMoonState(time2) : GeoEmbState(time2);
+      return new StateVector(state.x + earth.r.x, state.y + earth.r.y, state.z + earth.r.z, state.vx + earth.v.x, state.vy + earth.v.y, state.vz + earth.v.z, time2);
     default:
       if (UserDefinedStar(body2)) {
-        const vec = HelioVector(body2, time);
-        return new StateVector(vec.x, vec.y, vec.z, 0, 0, 0, time);
+        const vec = HelioVector(body2, time2);
+        return new StateVector(vec.x, vec.y, vec.z, 0, 0, 0, time2);
       }
       throw `HelioState: Unsupported body "${body2}"`;
   }
@@ -4072,12 +4072,12 @@ var ApsisKind;
   ApsisKind2[ApsisKind2["Pericenter"] = 0] = "Pericenter";
   ApsisKind2[ApsisKind2["Apocenter"] = 1] = "Apocenter";
 })(ApsisKind || (ApsisKind = {}));
-function VectorFromSphere(sphere, time) {
-  time = MakeTime(time);
+function VectorFromSphere(sphere, time2) {
+  time2 = MakeTime(time2);
   const radlat = sphere.lat * DEG2RAD;
   const radlon = sphere.lon * DEG2RAD;
   const rcoslat = sphere.dist * Math.cos(radlat);
-  return new Vector(rcoslat * Math.cos(radlon), rcoslat * Math.sin(radlon), sphere.dist * Math.sin(radlat), time);
+  return new Vector(rcoslat * Math.cos(radlon), rcoslat * Math.sin(radlon), sphere.dist * Math.sin(radlat), time2);
 }
 var EclipseKind;
 (function(EclipseKind2) {
@@ -4213,11 +4213,11 @@ function evaluated(run2) {
     SetDeltaTFunction(deltaT);
   }
 }
-function gastHours(time) {
-  const t = time.tt / 36525;
-  const eqeq = tilt(time.tt).ee;
-  const thet1 = 0.779057273264 + 0.00273781191135448 * time.ut;
-  const thet3 = time.ut % 1;
+function gastHours(time2) {
+  const t = time2.tt / 36525;
+  const eqeq = tilt(time2.tt).ee;
+  const thet1 = 0.779057273264 + 0.00273781191135448 * time2.ut;
+  const thet3 = time2.ut % 1;
   let theta = 360 * ((thet1 + thet3) % 1);
   if (theta < 0) theta += 360;
   const st = eqeq + 0.014506 + ((((-368e-10 * t - 29956e-9) * t - 44e-8) * t + 1.3915817) * t + 4612.156534) * t;
@@ -4242,17 +4242,17 @@ var PLANETS = [
   { name: "Neptune", body: Body.Neptune },
   { name: "Pluto", body: Body.Pluto }
 ];
-function planetOfDate(body2, time) {
-  const equatorial = GeoVector(body2, time, true);
-  return eclipticOfDate(equatorial.x, equatorial.y, equatorial.z, time.tt);
+function planetOfDate(body2, time2) {
+  const equatorial = GeoVector(body2, time2, true);
+  return eclipticOfDate(equatorial.x, equatorial.y, equatorial.z, time2.tt);
 }
-function moonOfDate(time) {
-  const equatorial = GeoMoon(time);
-  return eclipticOfDate(equatorial.x, equatorial.y, equatorial.z, time.tt);
+function moonOfDate(time2) {
+  const equatorial = GeoMoon(time2);
+  return eclipticOfDate(equatorial.x, equatorial.y, equatorial.z, time2.tt);
 }
-function trueNodeLongitude(time) {
-  const state = GeoMoonState(time);
-  const frame = eclipticFrame(time.tt);
+function trueNodeLongitude(time2) {
+  const state = GeoMoonState(time2);
+  const frame = eclipticFrame(time2.tt);
   const [x, y] = meanEcliptic(
     frame,
     state.y * state.vz - state.z * state.vy,
@@ -4267,15 +4267,15 @@ function longitudeAt(body2, ms, clock2) {
 }
 function longitudeOn(body2, basis, from, behind) {
   if (from) return sourceLongitude(from, body2, basis.ttDays, behind);
-  const time = timeOf(basis);
-  if (body2 === "Moon") return moonOfDate(time).lon;
-  if (body2 === "North Node") return trueNodeLongitude(time);
+  const time2 = timeOf(basis);
+  if (body2 === "Moon") return moonOfDate(time2).lon;
+  if (body2 === "North Node") return trueNodeLongitude(time2);
   if (body2 === "South Node") {
-    return normalizeLongitude(trueNodeLongitude(time) + 180);
+    return normalizeLongitude(trueNodeLongitude(time2) + 180);
   }
   const planet2 = PLANETS.find((candidate) => candidate.name === body2);
   if (!planet2) throw new RangeError(`Unknown body: ${body2}`);
-  return planetOfDate(planet2.body, time).lon;
+  return planetOfDate(planet2.body, time2).lon;
 }
 function bodyLongitude(body2, date3) {
   return evaluated(() => longitudeAt(body2, date3.getTime(), UTC_CLOCK));
@@ -4363,12 +4363,12 @@ function chartAt(input) {
   let angles = null;
   let houses = null;
   if (input.timeKnown && input.latitude !== void 0 && input.longitude !== void 0) {
-    const time = timeOf(basis);
+    const time2 = timeOf(basis);
     const angleInput = {
-      gastHours: gastHours(time),
+      gastHours: gastHours(time2),
       latitude: input.latitude,
       longitude: input.longitude,
-      obliquity: tilt(time.tt).tobl
+      obliquity: tilt(time2.tt).tobl
     };
     angles = computeAngles(angleInput);
     const result = computeHouses(input.houseSystem, angleInput, angles);
@@ -4496,13 +4496,13 @@ function coarseSampleCount({ fromTime, toTime, step }) {
 }
 function solve(longitudeAt2, targetLongitude, { fromTime, toTime, step }, count) {
   const found = [];
-  const offsetAt = (time) => signedDelta(targetLongitude, longitudeAt2(time));
-  const sampleAt = (time) => {
-    const longitude2 = longitudeAt2(time);
-    return { time, longitude: longitude2, offset: signedDelta(targetLongitude, longitude2) };
+  const offsetAt = (time2) => signedDelta(targetLongitude, longitudeAt2(time2));
+  const sampleAt = (time2) => {
+    const longitude2 = longitudeAt2(time2);
+    return { time: time2, longitude: longitude2, offset: signedDelta(targetLongitude, longitude2) };
   };
-  const keep = (time, retrograde) => {
-    if (time > fromTime && time <= toTime) found.push({ at: new Date(time), retrograde });
+  const keep = (time2, retrograde) => {
+    if (time2 > fromTime && time2 <= toTime) found.push({ at: new Date(time2), retrograde });
   };
   const bisect2 = (low, high, rising) => {
     let lower2 = low;
@@ -4622,10 +4622,10 @@ function run(longitudeAt2, body2, targetLongitude, window, maxSamples) {
   const count = coarseSampleCount(window);
   if (count > maxSamples) return refused2(0);
   let samples = 0;
-  const sample2 = (time) => {
+  const sample2 = (time2) => {
     if (samples >= maxSamples) throw new SampleBudgetReached();
     samples += 1;
-    const longitude2 = longitudeAt2(body2, new Date(time));
+    const longitude2 = longitudeAt2(body2, new Date(time2));
     if (!Number.isFinite(longitude2)) {
       throw new RangeError("Ephemeris returned a non-finite longitude.");
     }
@@ -5471,12 +5471,12 @@ function validateLocal(value, receipt, timeBasis22) {
   }
   const local = record(value);
   fields(local, LOCAL_FIELDS, timeBasis22 ? LOCAL_TIME_BASIS_FIELDS : []);
-  const date3 = text(local.date, 10), time = text(local.time, 5);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date3) || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time))
+  const date3 = text(local.date, 10), time2 = text(local.time, 5);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date3) || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time2))
     fail2("invalid_context");
   let wall;
   try {
-    wall = dateFrom(`${date3}T${time}:00Z`, "wall").getTime();
+    wall = dateFrom(`${date3}T${time2}:00Z`, "wall").getTime();
   } catch {
     fail2("invalid_context");
   }
@@ -5497,7 +5497,7 @@ function validateLocal(value, receipt, timeBasis22) {
   if (later && !timeBasis22) fail2("unsupported_feature");
   if (later && !receipt.inputFlags.includes("dst-fold")) fail2("invalid_context");
   if (receipt.inputFlags.includes("dst-gap") !== shift2 > 0) fail2("invalid_context");
-  if (receipt.reference === "local-noon" && time !== "12:00") fail2("invalid_context");
+  if (receipt.reference === "local-noon" && time2 !== "12:00") fail2("invalid_context");
   if (!timeBasis22) {
     if (receipt.inputFlags.includes("lmt") !== Math.abs(offset % 1) > 1e-9) fail2("invalid_context");
     return;
@@ -6213,9 +6213,9 @@ var FIXED_OFFSET_ZONE_SOURCE = FIXED_OFFSET_ZONE.source;
 
 // src/lib/compute-api/local-time.ts
 var PINNED_HISTORY_LAST_DATE = "1970-01-01";
-function wallMilliseconds({ date: date3, time }) {
+function wallMilliseconds({ date: date3, time: time2 }) {
   const [year, month, day2] = date3.split("-").map(Number);
-  const [hour, minute2] = time.split(":").map(Number);
+  const [hour, minute2] = time2.split(":").map(Number);
   const wall = /* @__PURE__ */ new Date(0);
   wall.setUTCFullYear(year, month - 1, day2);
   wall.setUTCHours(hour, minute2, 0, 0);
@@ -8075,10 +8075,10 @@ function conventionsOf(body2, input) {
 }
 function stateAt2(body2, site, conventions, ms) {
   refuseUnderSource("@zodiacs/engine/sky's rising and setting");
-  return onChartClock(ms, "utc", void 0, (time) => {
-    const g = GeoVector(BODIES2[body2], time, true);
-    const [vx, vy, vz] = turn2(equatorRows(time.tt, "true"), g.x, g.y, g.z);
-    const theta = (gastHours(time) * 15 + site.longitude) * RAD4;
+  return onChartClock(ms, "utc", void 0, (time2) => {
+    const g = GeoVector(BODIES2[body2], time2, true);
+    const [vx, vy, vz] = turn2(equatorRows(time2.tt, "true"), g.x, g.y, g.z);
+    const theta = (gastHours(time2) * 15 + site.longitude) * RAD4;
     const phi = site.latitude * RAD4;
     const sinPhi = Math.sin(phi);
     const cosPhi = Math.cos(phi);
@@ -8429,13 +8429,13 @@ function validOccasionDate(value) {
   const probe = new Date(Date.UTC(year, month - 1, day2));
   return year >= OCCASION_MIN_YEAR && year <= OCCASION_MAX_YEAR && probe.getUTCMonth() === month - 1 && probe.getUTCDate() === day2;
 }
-async function localInstant(date3, time, timeZone, place2, clock2) {
+async function localInstant(date3, time2, timeZone, place2, clock2) {
   const { prepareLocalTime, resolveLocalToUtc } = clock2;
   await prepareLocalTime(date3, timeZone);
-  return (place2 ? resolveLocalToUtc(date3, time, timeZone, { longitude: place2.lon }) : resolveLocalToUtc(date3, time, timeZone)).utc;
+  return (place2 ? resolveLocalToUtc(date3, time2, timeZone, { longitude: place2.lon }) : resolveLocalToUtc(date3, time2, timeZone)).utc;
 }
-function utcInstant(date3, time) {
-  return /* @__PURE__ */ new Date(`${date3}T${time}:00Z`);
+function utcInstant(date3, time2) {
+  return /* @__PURE__ */ new Date(`${date3}T${time2}:00Z`);
 }
 async function occasionCard(input, clock2) {
   if (!validOccasionDate(input.date)) {
@@ -8446,7 +8446,7 @@ async function occasionCard(input, clock2) {
     throw new RangeError("A time or a place needs its time zone.");
   }
   const { date: date3, timeZone, place: place2 } = input;
-  const at = (time) => timeZone ? localInstant(date3, time, timeZone, place2, clock2) : Promise.resolve(utcInstant(date3, time));
+  const at = (time2) => timeZone ? localInstant(date3, time2, timeZone, place2, clock2) : Promise.resolve(utcInstant(date3, time2));
   const instant4 = await at(input.time ?? "12:00");
   const sky = skyAt(instant4);
   let moonSignChange = null;
@@ -8557,7 +8557,7 @@ async function bestDays(input, clock2) {
   const days = bestDaysWindow(input.from, input.to);
   if (input.time !== null && !/^([01]\d|2[0-3]):[0-5]\d$/u.test(input.time)) throw new RangeError("The time must be HH:MM.");
   if (input.time !== null && !input.timeZone) throw new RangeError("A time needs its time zone.");
-  const time = input.time ?? "12:00";
+  const time2 = input.time ?? "12:00";
   const start = dayNumber(input.from);
   const rated = [];
   for (let offset = 0; offset < days; offset += 1) {
@@ -8565,9 +8565,9 @@ async function bestDays(input, clock2) {
     let instant4;
     if (input.timeZone) {
       await clock2.prepareLocalTime(date3, input.timeZone);
-      instant4 = (input.longitude !== null ? clock2.resolveLocalToUtc(date3, time, input.timeZone, { longitude: input.longitude }) : clock2.resolveLocalToUtc(date3, time, input.timeZone)).utc;
+      instant4 = (input.longitude !== null ? clock2.resolveLocalToUtc(date3, time2, input.timeZone, { longitude: input.longitude }) : clock2.resolveLocalToUtc(date3, time2, input.timeZone)).utc;
     } else {
-      instant4 = /* @__PURE__ */ new Date(`${date3}T${time}:00Z`);
+      instant4 = /* @__PURE__ */ new Date(`${date3}T${time2}:00Z`);
     }
     const { score: score2, verdict, weighed } = weighOccasionDate(input.occasion, skyAt(instant4));
     const reasons = weighed.map((item, index) => ({ ...item, index })).sort((a, b) => Math.abs(b.points) - Math.abs(a.points) || a.index - b.index).slice(0, BEST_DAY_REASONS).map((item) => item.reason);
@@ -18576,10 +18576,10 @@ function checkPerson(person2, label) {
   }
 }
 async function birthInstant(person2, clock2) {
-  const time = person2.time ?? "12:00";
-  if (!person2.zone) return /* @__PURE__ */ new Date(`${person2.birthDate}T${time}:00Z`);
+  const time2 = person2.time ?? "12:00";
+  if (!person2.zone) return /* @__PURE__ */ new Date(`${person2.birthDate}T${time2}:00Z`);
   await clock2.prepareLocalTime(person2.birthDate, person2.zone);
-  const resolved = person2.longitude !== void 0 ? clock2.resolveLocalToUtc(person2.birthDate, time, person2.zone, { longitude: person2.longitude }) : clock2.resolveLocalToUtc(person2.birthDate, time, person2.zone);
+  const resolved = person2.longitude !== void 0 ? clock2.resolveLocalToUtc(person2.birthDate, time2, person2.zone, { longitude: person2.longitude }) : clock2.resolveLocalToUtc(person2.birthDate, time2, person2.zone);
   return resolved.utc;
 }
 function findFamous(name) {
@@ -28071,8 +28071,8 @@ async function canonicalZone(name, localTime2) {
     throw error;
   }
 }
-async function birthInstant2(birthDate, time, timeZone, longitude2, localTime2) {
-  if (timeZone) return (await resolveLocal(localTime2, { date: birthDate, time: time ?? "12:00", zone: timeZone }, longitude2)).utc;
+async function birthInstant2(birthDate, time2, timeZone, longitude2, localTime2) {
+  if (timeZone) return (await resolveLocal(localTime2, { date: birthDate, time: time2 ?? "12:00", zone: timeZone }, longitude2)).utc;
   const [year, month, day2] = birthDate.split("-").map(Number);
   const utc = /* @__PURE__ */ new Date(0);
   utc.setUTCFullYear(year, month - 1, day2);
@@ -29089,12 +29089,12 @@ var natalChartDataWithNodes = natalChartData.extend({
   /** The big three's card: the Sun sign, the Moon sign when settled, the rising sign when known; never the birth date. Null when the Sun changed sign that day. */
   shareUrl: z4.url().nullable()
 });
-async function resolveLocal2(date3, time, zone10, longitude2, clock2) {
+async function resolveLocal2(date3, time2, zone10, longitude2, clock2) {
   await clock2.prepareLocalTime(date3, zone10);
-  return longitude2 !== void 0 ? clock2.resolveLocalToUtc(date3, time, zone10, { longitude: longitude2 }) : clock2.resolveLocalToUtc(date3, time, zone10);
+  return longitude2 !== void 0 ? clock2.resolveLocalToUtc(date3, time2, zone10, { longitude: longitude2 }) : clock2.resolveLocalToUtc(date3, time2, zone10);
 }
-async function localInstant2(date3, time, zone10, longitude2, clock2) {
-  return (await resolveLocal2(date3, time, zone10, longitude2, clock2)).utc;
+async function localInstant2(date3, time2, zone10, longitude2, clock2) {
+  return (await resolveLocal2(date3, time2, zone10, longitude2, clock2)).utc;
 }
 function offsetText(minutes) {
   const rounded = Math.round(minutes);
@@ -29102,11 +29102,11 @@ function offsetText(minutes) {
   const abs = Math.abs(rounded);
   return `${sign3}${String(Math.floor(abs / 60)).padStart(2, "0")}:${String(abs % 60).padStart(2, "0")}`;
 }
-function birthTimeNote(date3, time, zone10, resolved) {
+function birthTimeNote(date3, time2, zone10, resolved) {
   const offsetUsed = offsetText(resolved.offsetMinutes);
   if (resolved.flags.includes("dst-gap")) {
     const [year, month, day2] = date3.split("-").map(Number);
-    const [hour, minute2] = time.split(":").map(Number);
+    const [hour, minute2] = time2.split(":").map(Number);
     const local = new Date(resolved.utc.getTime() + resolved.offsetMinutes * 6e4);
     const shiftMinutes = Math.round((local.getTime() - Date.UTC(year, month - 1, day2, hour, minute2)) / 6e4);
     const shown = local.toISOString().slice(11, 16);
@@ -29116,7 +29116,7 @@ function birthTimeNote(date3, time, zone10, resolved) {
       kind: "dst-gap",
       shiftMinutes,
       offsetUsed,
-      text: `${time} did not exist on ${date3} in ${zone10}: the clocks jumped forward past it. The chart is cast for ${shown}${onDate} on the new clock (UTC${offsetUsed}), ${shiftMinutes} minute${shiftMinutes === 1 ? "" : "s"} later. Check the birth time with the person if it matters.`
+      text: `${time2} did not exist on ${date3} in ${zone10}: the clocks jumped forward past it. The chart is cast for ${shown}${onDate} on the new clock (UTC${offsetUsed}), ${shiftMinutes} minute${shiftMinutes === 1 ? "" : "s"} later. Check the birth time with the person if it matters.`
     };
   }
   if (resolved.flags.includes("dst-fold")) {
@@ -29124,7 +29124,7 @@ function birthTimeNote(date3, time, zone10, resolved) {
       kind: "dst-fold",
       shiftMinutes: 0,
       offsetUsed,
-      text: `${time} happened twice on ${date3} in ${zone10}, because the clocks went back. The chart uses the first time (UTC${offsetUsed}); a birth in the repeated hour would move the Moon, the rising sign and the houses, so ask which it was if it matters.`
+      text: `${time2} happened twice on ${date3} in ${zone10}, because the clocks went back. The chart uses the first time (UTC${offsetUsed}); a birth in the repeated hour would move the Moon, the rising sign and the houses, so ask which it was if it matters.`
     };
   }
   return void 0;
@@ -32911,8 +32911,8 @@ function selectedAspects(options) {
 }
 function refineLongitudeExtremum(ephemeris, body2, fromMs, toMs, maximize) {
   const referenceLon = ephemeris.bodyLongitude(body2, new Date((fromMs + toMs) / 2));
-  const valueAt2 = (time) => {
-    const lon = ephemeris.bodyLongitude(body2, new Date(time));
+  const valueAt2 = (time2) => {
+    const lon = ephemeris.bodyLongitude(body2, new Date(time2));
     return referenceLon + signedAngularDelta(referenceLon, lon);
   };
   let lo = fromMs;
@@ -33467,7 +33467,7 @@ var cap7 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 function natalSunSign(args, timeKnown, sunLon, longitude2, clock2) {
   const sign3 = SIGNS2[signIndexForLongitude2(sunLon)].slug;
   if (timeKnown) return sign3;
-  const local = (time) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+  const local = (time2) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time2, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time2, args.zone)).utc;
   const ends = args.zone ? [local("00:00"), local("23:59")] : [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR4), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR4)];
   const signs = new Set(ends.map((at) => signIndexForLongitude2(computeChart3({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon)));
   return signs.size === 1 ? sign3 : null;
@@ -33488,8 +33488,8 @@ async function getPersonalTransits(args, now, clock2, origin) {
   let birthUtc;
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
-    const time = args.time ?? "12:00";
-    birthUtc = (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+    const time2 = args.time ?? "12:00";
+    birthUtc = (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time2, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time2, args.zone)).utc;
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
   const chart = computeChart3({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
@@ -41782,15 +41782,15 @@ function natalPointsAt(utc, timeKnown) {
   const lon = (body2) => chart.bodies.find((row) => row.body === body2).lon;
   return { natal: { Sun: lon("Sun"), Moon: timeKnown ? lon("Moon") : null, Mercury: lon("Mercury"), Venus: lon("Venus"), Mars: lon("Mars") }, sunLon: lon("Sun") };
 }
-async function birthInstant3(birthDate, time, timeZone, clock2, longitude2) {
+async function birthInstant3(birthDate, time2, timeZone, clock2, longitude2) {
   if (!timeZone) return /* @__PURE__ */ new Date(`${birthDate}T12:00:00Z`);
   await clock2.prepareLocalTime(birthDate, timeZone);
-  const local = time ?? "12:00";
+  const local = time2 ?? "12:00";
   return (longitude2 !== void 0 ? clock2.resolveLocalToUtc(birthDate, local, timeZone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(birthDate, local, timeZone)).utc;
 }
 var sunLonAt = (at) => computeChart3({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon;
 function settledSun(birthDate, utc, timeKnown, timeZone, clock2, longitude2) {
-  const local = (time) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(birthDate, time, timeZone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(birthDate, time, timeZone)).utc;
+  const local = (time2) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(birthDate, time2, timeZone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(birthDate, time2, timeZone)).utc;
   const ends = timeKnown ? [utc, utc] : timeZone ? [local("00:00"), local("23:59")] : birthDayEnvelope(birthDate);
   const { sign: sign3 } = settledSunSign(ends, sunLonAt);
   return sign3 === null ? null : SIGNS2[sign3].slug;
@@ -41828,7 +41828,7 @@ async function getYearScore(args, now, clock2, origin) {
   const limits2 = [];
   let figure;
   let birthDate;
-  let time;
+  let time2;
   let timeZone;
   let longitude2;
   let placed = false;
@@ -41840,23 +41840,23 @@ async function getYearScore(args, now, clock2, origin) {
         links
       };
     }
-    ({ birthDate, birthTime: time, zone: timeZone } = figure);
+    ({ birthDate, birthTime: time2, zone: timeZone } = figure);
   } else {
     birthDate = args.birthDate;
     const parsed2 = parseCivilDate(birthDate);
     if (!parsed2 || parsed2.year < 1800 || parsed2.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
     if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 09:15.");
-    time = args.time ?? null;
+    time2 = args.time ?? null;
     timeZone = args.zone ?? null;
     longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
     placed = args.latitude !== void 0 && longitude2 !== void 0;
   }
   if (start < birthDate) throw new RangeError("from is before the birth date; there is no chart to meet yet.");
-  const timeKnown = time !== null;
+  const timeKnown = time2 !== null;
   const under18 = isUnder18(birthDate, today(now));
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
   if (under18) limits2.push(MINOR_NOTE);
-  const utc = await birthInstant3(birthDate, time, timeZone, clock2, longitude2);
+  const utc = await birthInstant3(birthDate, time2, timeZone, clock2, longitude2);
   const { natal } = natalPointsAt(utc, timeKnown);
   const sun = settledSun(birthDate, utc, timeKnown, timeZone, clock2, longitude2);
   const longitudeAt2 = cachedLongitude((body2, date3) => bodyLongitude2(body2, date3));
@@ -42144,7 +42144,7 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
   const timeKnown = args.time !== void 0;
   const placed = latitude !== void 0 && longitude2 !== void 0;
   let birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
-  const onBirthplaceClock = (time) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+  const onBirthplaceClock = (time2) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time2, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time2, args.zone)).utc;
   if (args.zone) await clock2.prepareLocalTime(args.birthDate, args.zone);
   if (args.time !== void 0) birthUtc = onBirthplaceClock(args.time);
   if (birthUtc.getTime() > now.getTime()) throw new RangeError("The birth date is still to come.");
@@ -43015,6 +43015,32 @@ function retrogradeReading(input) {
   return { periods, unavailable, summary, limits: limits2 };
 }
 
+// src/lib/retrograde-for-you/sky.ts
+var time = (value) => Date.parse(value);
+function loopsFromSky(planet2, now, sky, lonAt) {
+  const at = now.getTime();
+  const windows2 = sky.retrogrades.filter((entry) => entry.planet === planet2 && entry.to && entry.from !== sky.from).sort((left, right) => time(left.from) - time(right.from));
+  const toLoop = (entry) => {
+    const retro = new Date(entry.from);
+    const direct = new Date(entry.to);
+    return {
+      planet: planet2,
+      stationRetrograde: { at: retro, lon: lonAt(planet2, retro) },
+      stationDirect: { at: direct, lon: lonAt(planet2, direct) },
+      preShadowStart: entry.preShadowStart ? new Date(entry.preShadowStart) : null,
+      postShadowEnd: entry.postShadowEnd ? new Date(entry.postShadowEnd) : null
+    };
+  };
+  const inside = windows2.findIndex((entry) => time(entry.from) <= at && time(entry.to) > at);
+  if (inside >= 0) return { current: toLoop(windows2[inside]), previous: null, retrogradeNow: true };
+  const next = windows2.findIndex((entry) => time(entry.from) > at);
+  if (next < 0) {
+    const last2 = windows2.at(-1);
+    return last2?.postShadowEnd && time(last2.postShadowEnd) > at ? { current: null, previous: toLoop(last2), retrogradeNow: false } : null;
+  }
+  return { current: toLoop(windows2[next]), previous: next > 0 ? toLoop(windows2[next - 1]) : null, retrogradeNow: false };
+}
+
 // src/lib/retrograde-for-you/share.ts
 var RETROGRADE_FOR_YOU_PAGE_PATH = "/retrogrades/for-you/";
 var RETROGRADE_FOR_YOU_SHARE_PATH = "/share/retrograde-for-you/";
@@ -43048,12 +43074,24 @@ function retrogradeTablePath(planet2, skyDate) {
 // src/lib/vedic-signs/clock.ts
 var SKIPPED_BIRTH_TIME = "That birth time never showed on the birthplace clock: the clocks jumped past it that day. Check the birth time.";
 var REPEATED_BIRTH_TIME = "The birthplace clock showed that birth time twice that day, when the clocks went back. This reading uses the first of the two.";
+var SKIPPED_BIRTH_DATE = "That date never showed on the birthplace clock: the clocks jumped past the whole day. Check the birth date.";
 var SkippedBirthTimeError = class extends RangeError {
   constructor() {
     super(SKIPPED_BIRTH_TIME);
     this.name = "SkippedBirthTimeError";
   }
 };
+var SkippedBirthDateError = class extends RangeError {
+  constructor() {
+    super(SKIPPED_BIRTH_DATE);
+    this.name = "SkippedBirthDateError";
+  }
+};
+function skippedWholeDate(date3, midnight) {
+  if (!midnight.flags.includes("dst-gap")) return false;
+  const wall = new Date(midnight.utc.getTime() + Math.round(midnight.offsetMinutes * 6e4));
+  return wall.toISOString().slice(0, 10) !== date3;
+}
 function birthTimeOnClock(flags, timeKnown) {
   if (!timeKnown) return { skipped: false, limit: null };
   if (flags.includes("dst-gap")) return { skipped: true, limit: null };
@@ -43098,8 +43136,8 @@ async function castNatal(args, clock2) {
   let jumpMinutes = null;
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
-    const time = args.time ?? "12:00";
-    const resolved = longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone);
+    const time2 = args.time ?? "12:00";
+    const resolved = longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time2, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time2, args.zone);
     birthUtc = resolved.utc;
     flags = [...resolved.flags];
     if (resolved.jump && resolved.transition) jumpMinutes = Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes);
@@ -43112,7 +43150,7 @@ async function birthDayEnds2(args, clock2) {
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR6)];
   await clock2.prepareLocalTime(args.birthDate, args.zone);
   const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
-  const local = (time) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+  const local = (time2) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time2, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time2, args.zone)).utc;
   return [local("00:00"), local("23:59")];
 }
 async function currentClock(currentZone, birthZone, context) {
@@ -43239,6 +43277,12 @@ function retrogradeLoops(planet2, now, rowsAt = positionsMemo()) {
   return { current: fill(loops[position3]), previous, retrogradeNow };
 }
 async function retrogradeForMe(args, context) {
+  if (args.time === void 0 && args.zone) {
+    await context.localTime.prepareLocalTime(args.birthDate, args.zone);
+    const longitude2 = args.longitude === void 0 ? void 0 : roundCoordinate(args.longitude);
+    const midnight = longitude2 !== void 0 ? context.localTime.resolveLocalToUtc(args.birthDate, "00:00", args.zone, { longitude: longitude2 }) : context.localTime.resolveLocalToUtc(args.birthDate, "00:00", args.zone);
+    if (skippedWholeDate(args.birthDate, midnight)) throw new SkippedBirthDateError();
+  }
   const natal = await castNatal(args, context.localTime);
   const onClock = birthTimeOnClock(natal.flags, natal.timeKnown);
   if (onClock.skipped) throw new SkippedBirthTimeError();
@@ -43280,7 +43324,9 @@ async function retrogradeForMe(args, context) {
     now,
     zone: clock2.zone,
     basis,
-    loopsFor: (planet2) => retrogradeLoops(planet2, now, rowsAt),
+    // The windows the page reads (src/data/sky.json) wherever they reach, so the tool and the page give the same status
+    // to the second at a station or a shadow's edge; past the data, the engine's own station search.
+    loopsFor: (planet2) => loopsFromSky(planet2, now, sky_default, (body2, at) => rowOf(rowsAt(at), body2).lon) ?? retrogradeLoops(planet2, now, rowsAt),
     leadingLimits: clock2.note ? [clock2.note] : []
   }), onClock.limit);
   const sunSign = sunHeld ? SIGNS2[signIndexForLongitude2(natal.chart.bodies.find((row) => row.body === "Sun").lon)].slug : null;
@@ -43441,10 +43487,10 @@ var MALEFICS = ["Mars", "Saturn"];
 var VERB = { conjunction: "meets", sextile: "sextiles", square: "squares", trine: "trines", opposition: "opposes" };
 var signIndex = (lon) => Math.floor((lon % 360 + 360) % 360 / 30);
 var signName6 = (slug) => SIGNS2.find((sign3) => sign3.slug === slug).name;
-async function instant2(date3, time, zone10, clock2) {
-  if (!zone10) return /* @__PURE__ */ new Date(`${date3}T${time}:00Z`);
+async function instant2(date3, time2, zone10, clock2) {
+  if (!zone10) return /* @__PURE__ */ new Date(`${date3}T${time2}:00Z`);
   await clock2.prepareLocalTime(date3, zone10);
-  return clock2.resolveLocalToUtc(date3, time, zone10).utc;
+  return clock2.resolveLocalToUtc(date3, time2, zone10).utc;
 }
 async function preparePersonal(birth, clock2) {
   if (!/^\d{4}-\d{2}-\d{2}$/u.test(birth.date) || Number.isNaN(Date.parse(`${birth.date}T00:00:00Z`))) throw new RangeError("birthDate must be a real date, such as 1994-05-14.");
@@ -43523,9 +43569,9 @@ function personalFactors(chart, days, zone10) {
   } else {
     ({ kept: dated, dropped } = pairUntimedContacts(scan(chart.early), scan(chart.late), days));
   }
-  const time = (at) => new Intl.DateTimeFormat("en-GB", { timeZone: zone10, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(at);
+  const time2 = (at) => new Intl.DateTimeFormat("en-GB", { timeZone: zone10, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(at);
   for (const { contact: contact2, index } of dated) {
-    const when = chart.timeKnown ? ` (exact at ${time(new Date(contact2.exactUtc))})` : "";
+    const when = chart.timeKnown ? ` (exact at ${time2(new Date(contact2.exactUtc))})` : "";
     const clause = `${contact2.transitBody} ${VERB[contact2.aspect]} your natal ${contact2.natalPoint}`;
     if (readsAs(contact2) === "support") out[index].push({ points: 6, text: `${clause} today${when}, a supportive contact in your own chart.`, clause });
     else out[index].push({ points: -6, text: `${clause} today${when}, a contact tradition reads as pressure in your own chart.`, clause });
@@ -43638,9 +43684,9 @@ var retroFlags = (at) => {
   return Object.fromEntries(SIGNIFICATORS.map((planet2) => [planet2, rows3.find((row) => row.body === planet2).speed < 0]));
 };
 async function daySkies(from, days, zone10, clock2) {
-  const at = async (date3, time) => {
+  const at = async (date3, time2) => {
     await clock2.prepareLocalTime(date3, zone10);
-    return clock2.resolveLocalToUtc(date3, time, zone10).utc;
+    return clock2.resolveLocalToUtc(date3, time2, zone10).utc;
   };
   const out = [];
   let start = await at(from, "00:00");
@@ -44460,15 +44506,15 @@ function localMinuteIso(utc, zone10) {
   return localIso(roundToMinute(utc), zone10);
 }
 function shownTime(utc, window) {
-  const time = new Date(utc).getTime();
+  const time2 = new Date(utc).getTime();
   const low = Math.max(Date.parse(EPOCH.from), window ? new Date(window.from).getTime() : -Infinity);
   const high = Math.min(Date.parse(EPOCH.to), window ? new Date(window.to).getTime() : Infinity);
   for (const [unit2, precision] of [[MINUTE2, "minute"], [1e3, "second"]]) {
-    const nearest = Math.round(time / unit2) * unit2;
-    const other = nearest > time ? Math.floor(time / unit2) * unit2 : Math.ceil(time / unit2) * unit2;
+    const nearest = Math.round(time2 / unit2) * unit2;
+    const other = nearest > time2 ? Math.floor(time2 / unit2) * unit2 : Math.ceil(time2 / unit2) * unit2;
     for (const candidate of [nearest, other]) if (candidate >= low && candidate <= high) return { at: new Date(candidate), precision };
   }
-  return { at: new Date(time), precision: "millisecond" };
+  return { at: new Date(time2), precision: "millisecond" };
 }
 function shownUtc(shown) {
   const iso3 = shown.at.toISOString();
@@ -45037,11 +45083,11 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       return { longitude: longitude2, calendar, country, fold: fold3 };
     }
     var pad2 = (value, width = 2) => String(value).padStart(width, "0");
-    function resolveLocalToUtc(date3, time, timeZone, options) {
+    function resolveLocalToUtc(date3, time2, timeZone, options) {
       offsetFormatter(timeZone);
       const { longitude: longitude2, calendar, country, fold: fold3 } = readOptions2(options);
       const written = parseCalendarDate2(date3, calendar);
-      const hhmm = typeof time === "string" ? /^([01]\d|2[0-3]):([0-5]\d)$/u.exec(time) : null;
+      const hhmm = typeof time2 === "string" ? /^([01]\d|2[0-3]):([0-5]\d)$/u.exec(time2) : null;
       if (!written || !hhmm) {
         throw new RangeError(`Local date/time must be a ${calendar === "julian" ? "Julian" : "Gregorian"} date YYYY-MM-DD and a time HH:MM.`);
       }
@@ -45112,7 +45158,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
         calendarNote: country === void 0 ? null : noteFor(gregorianDate, calendar, country),
         localResolution: {
           date: gregorianDate,
-          time,
+          time: time2,
           timeZone,
           offsetMinutes: offsetMinutes2,
           gapShiftMinutes: kind === "gap" && transition ? transition.offsetAfterMinutes - transition.offsetBeforeMinutes : 0,
@@ -45273,7 +45319,7 @@ function mercuryRetrogradesBetween(from, to) {
 function nextMilestone(milestones, asOf) {
   let best = null;
   for (const milestone2 of milestones) {
-    const at = milestone2.passes.map((pass) => Date.parse(pass.at)).find((time) => time >= asOf.getTime());
+    const at = milestone2.passes.map((pass) => Date.parse(pass.at)).find((time2) => time2 >= asOf.getTime());
     if (at !== void 0 && (!best || at < best.at)) best = { milestone: milestone2, at };
   }
   return best?.milestone ?? null;
@@ -45464,13 +45510,13 @@ async function personalWeek(input, now, clock2, zone10) {
   if (input.birthTime !== void 0 && !parseCivilTime(input.birthTime)) throw new RangeError("The birth time must be HH:MM.");
   if (input.birthTime !== void 0 && !input.birthZone) throw new RangeError("A birth time needs the birthplace time zone.");
   const timeKnown = input.birthTime !== void 0;
-  const time = input.birthTime ?? "12:00";
+  const time2 = input.birthTime ?? "12:00";
   let utc;
   if (input.birthZone) {
     await clock2.prepareLocalTime(input.birthDate, input.birthZone);
-    utc = clock2.resolveLocalToUtc(input.birthDate, time, input.birthZone).utc;
+    utc = clock2.resolveLocalToUtc(input.birthDate, time2, input.birthZone).utc;
   } else {
-    utc = /* @__PURE__ */ new Date(`${input.birthDate}T${time}:00Z`);
+    utc = /* @__PURE__ */ new Date(`${input.birthDate}T${time2}:00Z`);
   }
   const chart = computeChart3({ utc, houseSystem: "whole", timeKnown });
   const week = computeYourWeek({
@@ -45724,7 +45770,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         localTime: localTime2(),
         resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone),
         hostZone: context.hostZone,
-        origin: ORIGIN,
+        origin: dependencies.siteOrigin ?? ORIGIN,
         pageOn: definition.pageFlag === void 0 || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {},
         ...dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}
@@ -47674,6 +47720,7 @@ function createAiNodeHandler(options = {}) {
         }
       } };
       if (personal2) dependencies.sitePageOn = (flag) => env[flag] === "1";
+      if (personal2 && validStagingHost && host.toLowerCase() === stagingHost) dependencies.siteOrigin = `https://${stagingHost}`;
       const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: "stateless", responseMode: "auto", onerror: () => {
       } });
       try {

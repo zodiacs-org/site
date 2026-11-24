@@ -4,8 +4,11 @@
  * degrees, the shadow on either side, the natal house the loop falls in and
  * the natal points it passes over.
  *
- * Every instant is the engine's, by the code the compute API and
- * search_sky_events already use: stationCrossings (src/lib/compute-api/endpoints.ts)
+ * Where the committed sky data (src/data/sky.json) reaches, the loops are its
+ * windows, the ones the /retrogrades/ and /retrogrades/for-you/ pages read, so
+ * the tool and the pages give the same status to the second at a station or a
+ * shadow's edge. Past the data, every instant is the engine's, by the code the
+ * compute API and search_sky_events already use: stationCrossings (src/lib/compute-api/endpoints.ts)
  * finds where the engine's longitude speed crosses zero, and the shadows are
  * the engine's own longitude crossings (findLongitudeCrossings), defined as
  * scripts/build-sky.mjs defines them for the /retrogrades/ page: the pre-shadow
@@ -27,12 +30,14 @@ import {
   POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, natalBasis, retrogradeReading,
   type RetrogradeLoop, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
+import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
 import { RETROGRADE_FOR_YOU_PAGE_PATH, publishedRetrogradeDate, retrogradeForYouShareQuery, retrogradeForYouShareUrl, retrogradeTablePath } from '../../lib/retrograde-for-you/share';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
 import { computeChart } from '../../lib/engine/full.js';
 import sky from '../../data/sky.json';
-import { SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
+import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock, skippedWholeDate, withClockLimit } from '../../lib/vedic-signs/clock';
+import { roundCoordinate } from '../plain-text';
 import { birthDayEnds, birthFields, castNatal, currentClock, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
 
 export { RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, type RetrogradeLoop, type RetrogradePlanet };
@@ -167,6 +172,13 @@ export function retrogradeLoops(planet: RetrogradePlanet, now: Date, rowsAt = po
 
 /** The retrogrades for one person. Throws RangeError for details it cannot use. */
 export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin' | 'allowEvents' | 'pageOn'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
+  // A date the birthplace clock skipped whole has no day to read: refused before any chart, never read as the next date.
+  if (args.time === undefined && args.zone) {
+    await context.localTime.prepareLocalTime(args.birthDate, args.zone);
+    const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
+    const midnight = longitude !== undefined ? context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone, { longitude }) : context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone);
+    if (skippedWholeDate(args.birthDate, midnight)) throw new SkippedBirthDateError();
+  }
   const natal = await castNatal(args, context.localTime);
   // A birth time the clock skipped is refused, never read at the time the clock jumped to; a repeated one is read at
   // its first pass, and the limits say so (src/lib/vedic-signs/clock.ts, as the page does).
@@ -207,7 +219,9 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
   const rowsAt = positionsMemo();
   const reading = withClockLimit(retrogradeReading({
     planets, now, zone: clock.zone, basis,
-    loopsFor: (planet) => retrogradeLoops(planet, now, rowsAt),
+    // The windows the page reads (src/data/sky.json) wherever they reach, so the tool and the page give the same status
+    // to the second at a station or a shadow's edge; past the data, the engine's own station search.
+    loopsFor: (planet) => loopsFromSky(planet, now, sky as SkySpan, (body, at) => rowOf(rowsAt(at), body).lon) ?? retrogradeLoops(planet, now, rowsAt),
     leadingLimits: clock.note ? [clock.note] : [],
   }), onClock.limit);
   const sunSign = sunHeld

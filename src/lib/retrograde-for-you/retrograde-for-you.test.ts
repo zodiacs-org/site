@@ -12,7 +12,7 @@ import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
 import { CONTACT_LINE, POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, natalBasis } from './reading';
 import { loopsFromSky } from './sky';
 import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery } from './share';
-import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_TIME, SkippedBirthTimeError } from '../vedic-signs/clock';
+import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../vedic-signs/clock';
 import { executeAiTool } from '../../ai-tools/tools';
 
 const clock = createLocalTimeModule();
@@ -180,6 +180,36 @@ describe('a planet in the post-shadow, untimed contacts and links (ZOD-20)', () 
     expect(card.match(/Reading confidence 70%/gu)).toHaveLength(1);
   });
 
+  it('gives the page and the tool the same status a second either side of every station and shadow edge', async () => {
+    // The page's windows (sky.json). Mercury turned direct at 19:33:23 on 20 Mar 2026; NASA gives 19:32:50, and the
+    // engine's own search lands near that, so at 19:33:00 an engine-read tool and the page disagreed.
+    const window = sky.retrogrades.find((entry) => entry.planet === 'Mercury' && entry.from.startsWith('2026-02-26'))!;
+    const edges: [string, string, string][] = [
+      [window.preShadowStart!, 'direct', 'pre-shadow'],
+      [window.from, 'pre-shadow', 'retrograde'],
+      [window.to!, 'retrograde', 'post-shadow'],
+      [window.postShadowEnd!, 'post-shadow', 'direct'],
+    ];
+    const status = async (at: Date) => {
+      const { mcp, page } = await both({ birthDate: '1990-05-03' }, at, 'UTC');
+      const pick = (result: { periods: { planet: string; status: string; retrogradeNow: boolean; stationDirect: { utc: string } }[] }) => result.periods.find((period) => period.planet === 'Mercury')!;
+      return { mcp: pick(mcp), page: pick(page) };
+    };
+    for (const [edge, before, after] of edges) {
+      for (const [at, expected] of [[new Date(Date.parse(edge) - 1_000), before], [new Date(Date.parse(edge) + 1_000), after]] as const) {
+        const { mcp, page } = await status(at);
+        expect(page.status, `page at ${at.toISOString()}`).toBe(expected);
+        expect(mcp.status, `tool at ${at.toISOString()}`).toBe(page.status);
+        expect(mcp.retrogradeNow, `tool at ${at.toISOString()}`).toBe(page.retrogradeNow);
+        expect(mcp.stationDirect.utc).toBe(page.stationDirect.utc);
+      }
+    }
+    // The reviewed instant itself.
+    const reviewed = await status(new Date('2026-03-20T19:33:00Z'));
+    expect(reviewed.page.status).toBe('retrograde');
+    expect(reviewed.mcp.status).toBe('retrograde');
+  });
+
   it('leaves a planet inside its retrograde as it was, with no next line', async () => {
     const { mcp, page } = await both(TIMED, new Date('2026-11-09T09:00:00Z'), 'Europe/Madrid');
     for (const result of [page, mcp]) {
@@ -286,6 +316,34 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
       expect(read.page.limits).not.toContain(REPEATED_BIRTH_TIME);
       expect(read.page.limits).toEqual(read.mcp.limits.filter((entry) => !entry.startsWith('Today is read')));
     }
+  });
+
+  it('refuses a birth date the birthplace clock skipped whole on the page and in the tool, never reading the next day', async () => {
+    // Kwajalein went from 23:59:59 on 20 August 1993 (UTC-12) straight to 00:00 on 22 August (UTC+12): 21 August never
+    // showed there. Read at local noon, the resolver would move the birth onto 22 August.
+    const KWAJALEIN = { lat: 9.19, lon: 167.42, tz: 'Pacific/Kwajalein' };
+    const now = new Date('2026-11-09T09:00:00Z');
+    const ON = { occasions: true, coverage: true, personal: true, now: () => now };
+    await prepareLocalTime('1993-08-21', KWAJALEIN.tz);
+    expect(() => computeRetrogradeForYou({ birthDate: '1993-08-21', birthTime: null, place: KWAJALEIN, planets: ['Mercury'], now, zone: 'UTC' })).toThrow(SkippedBirthDateError);
+    for (const placed of [{ latitude: KWAJALEIN.lat, longitude: KWAJALEIN.lon }, {}]) {
+      const args = { birthDate: '1993-08-21', zone: KWAJALEIN.tz, ...placed, currentZone: 'UTC' };
+      await expect(retrogradeForMe(args, { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true })).rejects.toThrow(SkippedBirthDateError);
+      const refused = await executeAiTool('get_retrograde_for_me', args, ON);
+      expect(refused, JSON.stringify(placed)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: SKIPPED_BIRTH_DATE } });
+      expect(JSON.stringify(refused)).not.toMatch(/1993|08-21|Kwajalein|9\.19|167/u);
+    }
+    // The days either side showed, and are read on the page and in the tool alike.
+    for (const birthDate of ['1993-08-20', '1993-08-22']) {
+      await prepareLocalTime(birthDate, KWAJALEIN.tz);
+      const page = computeRetrogradeForYou({ birthDate, birthTime: null, place: KWAJALEIN, planets: ['Mercury'], now, zone: 'UTC' });
+      expect(page.refused, birthDate).toBeUndefined();
+      const mcp = await retrogradeForMe({ birthDate, zone: KWAJALEIN.tz, latitude: KWAJALEIN.lat, longitude: KWAJALEIN.lon, currentZone: 'UTC', planets: ['Mercury'] }, { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true });
+      expect('refused' in mcp, birthDate).toBe(false);
+    }
+    // An ordinary spring-forward date (Madrid, 25 Mar 1990) loses an hour, not the day: still read.
+    await prepareLocalTime('1990-03-25', MADRID.tz);
+    expect(computeRetrogradeForYou({ birthDate: '1990-03-25', birthTime: null, place: MADRID, planets: ['Mercury'], now, zone: 'UTC' }).refused).toBeUndefined();
   });
 
   it('takes the later pass the real size of the change on: half an hour on Lord Howe Island', async () => {

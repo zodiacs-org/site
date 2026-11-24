@@ -1,10 +1,12 @@
-import { describe, expect, it } from 'vitest';
+import { createServer, request, type Server } from 'node:http';
+import { afterAll, describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { wholeSignHouseFromAsc } from '../../lib/daily';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { UNDER_13_REFUSAL } from '../contracts';
 import { MINOR_NOTE } from '../features/reading-guards';
 import { executeAiTool } from '../tools';
+import { createAiNodeHandler } from '../http';
 import { RETROGRADE_ASK, RETROGRADE_LINE, retrogradeForMe, retrogradeForMeTool, retrogradeLoops } from './retrograde-for-me';
 import { castNatal, forbiddenClaim } from './shared';
 
@@ -217,6 +219,64 @@ describe('get_retrograde_for_me privacy and refusals', () => {
       expect(result.data.periods.every((period) => period.shareUrl === null)).toBe(true);
       expect(result.links.map((link) => link.url).filter((url) => url.includes('/retrogrades/for-you/'))).toEqual([]);
     }
+  });
+
+  describe('on the hosted server', () => {
+    const STAGING = 'zodiacs-mcp-staging.vercel.app';
+    const servers: Server[] = [];
+    afterAll(async () => { await Promise.all(servers.map((server) => new Promise<void>((resolve) => server.close(() => resolve())))); });
+    async function serve(page: '1' | undefined) {
+      const env = { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1', ZODIACS_PERSONAL_TOOLS_ENABLED: '1', ZODIACS_MCP_STAGING_HOST: STAGING, ...(page ? { [PAGE_FLAG]: page } : {}) };
+      // The default host list: zodiacs.org, www.zodiacs.org and the configured staging host.
+      const handle = createAiNodeHandler({ env, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: () => NOW } });
+      const server = createServer((req, res) => { void handle(req, res); });
+      await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+      servers.push(server);
+      return (server.address() as { port: number }).port;
+    }
+    function call(port: number, host: string, path: string) {
+      return new Promise<any>((resolve, reject) => {
+        const req = request({ host: '127.0.0.1', port, path, method: 'POST', headers: { Host: host, 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18' } }, (res) => {
+          let text = ''; res.setEncoding('utf8');
+          res.on('data', (chunk) => { text += chunk; });
+          res.on('end', () => {
+            const body = text.includes('data: ') ? text.split('\n').find((line) => line.startsWith('data: '))!.slice(6) : text;
+            resolve(JSON.parse(body).result);
+          });
+        });
+        req.on('error', reject);
+        req.end(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'get_retrograde_for_me', arguments: { ...MADRID, currentZone: 'Europe/Madrid' } } }));
+      });
+    }
+    const pageLinks = (result: any) => (JSON.stringify(result.structuredContent).match(/https:\/\/[^"]+/gu) ?? []).filter((url) => url.includes('/retrogrades/for-you/') || url.includes('/share/'));
+
+    it('links the page and its cards on the staging site when the call comes in on the staging host, never on zodiacs.org', async () => {
+      const port = await serve('1');
+      for (const path of ['/mcp', '/mcp/de440']) {
+        const staged = await call(port, STAGING, path);
+        expect(staged.structuredContent?.ok, path).toBe(true);
+        const links = pageLinks(staged);
+        expect(links.length, path).toBeGreaterThan(0);
+        expect(links.every((url) => url.startsWith(`https://${STAGING}/`)), links.join(' ')).toBe(true);
+        expect(staged.structuredContent.data.pageUrl).toBe(`https://${STAGING}/retrogrades/for-you/`);
+        expect(JSON.stringify(staged)).not.toMatch(/https:\/\/zodiacs\.org\/(?:retrogrades\/for-you|share)\//u);
+      }
+      // On zodiacs.org the same deployment links zodiacs.org.
+      const live = await call(port, 'zodiacs.org', '/mcp');
+      const links = pageLinks(live);
+      expect(links.length).toBeGreaterThan(0);
+      expect(links.every((url) => url.startsWith('https://zodiacs.org/'))).toBe(true);
+    });
+
+    it('links neither the page nor a card on either host while the page is switched off', async () => {
+      const port = await serve(undefined);
+      for (const host of [STAGING, 'zodiacs.org']) {
+        const result = await call(port, host, '/mcp');
+        expect(result.structuredContent?.ok, host).toBe(true);
+        expect(result.structuredContent.data.pageUrl).toBeNull();
+        expect(pageLinks(result), host).toEqual([]);
+      }
+    });
   });
 
   it('refuses a time without a zone and an unknown planet', async () => {

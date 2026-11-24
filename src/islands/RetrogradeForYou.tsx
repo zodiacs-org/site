@@ -8,7 +8,8 @@ import { retrogradeForYouShareUrl, retrogradeTablePath } from '../lib/retrograde
 import { loadModule } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { birthDateRefusal, FUTURE_BIRTH_DATE_SENTENCE } from '../lib/birth-date-policy';
-import { SKIPPED_BIRTH_TIME, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
+import { prepareEveryZoneHistory } from '../lib/time/every-zone-history';
+import { SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
 
 type Result = Exclude<RetrogradeForYouOutcome, { refused: string }>;
 type Period = Result['periods'][number];
@@ -196,14 +197,18 @@ export default function RetrogradeForYou() {
         birthDate, birthTime: timeKnown ? time : null, place: { lat: city.lat, lon: city.lon, tz: city.tz },
         planets: PLANETS.filter((planet) => planets.has(planet)), now: new Date(), zone: browserZone(),
       };
+      // All sixteen zone history files first, whatever the birth: which file a birth needs, and whether it needs one at
+      // all, would tell the host the birthplace's zone group and that the birth is from 1970 or before.
+      await prepareEveryZoneHistory();
       await prepareLocalTime(input.birthDate, input.place.tz);
       if (request !== revision.current) return;
       const outcome = computeRetrogradeForYou(input);
       if (outcome.refused) setRefused(outcome.refused === 'under-13' ? UNDER_13 : FUTURE_BIRTH_DATE_SENTENCE);
       else setResult(outcome);
     } catch (cause) {
-      // A birth time the clock skipped gets its own sentence; anything else the general one, with a fixed error code.
+      // A birth time or date the clock skipped gets its own sentence; anything else the general one, with a fixed error code.
       if (request === revision.current && cause instanceof SkippedBirthTimeError) setError(SKIPPED_BIRTH_TIME);
+      else if (request === revision.current && cause instanceof SkippedBirthDateError) setError(SKIPPED_BIRTH_DATE);
       else if (request === revision.current) {
         console.error(RETROGRADE_ERROR_CODE);
         setError(calculationError(cause, 'en', 'The retrogrades could not be worked out. Check the details and try again.'));

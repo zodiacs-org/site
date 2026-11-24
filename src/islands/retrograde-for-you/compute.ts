@@ -19,7 +19,7 @@ import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
 import sky from '../../data/sky.json';
 import { birthDateRefusal } from '../../lib/birth-date-policy';
-import { SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
+import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock, skippedWholeDate, withClockLimit } from '../../lib/vedic-signs/clock';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
 
@@ -69,6 +69,8 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
   const refused = retrogradeForYouRefusal(input.birthDate, input.now);
   if (refused) return refused;
   const timeKnown = input.birthTime !== null;
+  // A date the birthplace clock skipped whole has no day to read: refused before any chart, never read as the next date.
+  if (!timeKnown && skippedWholeDate(input.birthDate, resolveLocalToUtc(input.birthDate, '00:00', input.place.tz, { longitude: input.place.lon }))) throw new SkippedBirthDateError();
   const resolved = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: input.place.lon });
   // A birth time the clock skipped is refused, never read at the time the clock jumped to; a repeated one is read at
   // its first pass, and the limits say so (src/lib/vedic-signs/clock.ts, as get_retrograde_for_me does).

@@ -40,6 +40,18 @@ describe('the Retrogrades for you form', () => {
     });
   });
 
+  it('answers a birth time or a whole date the clock skipped with its own sentence, logging nothing', () => {
+    const handler = SOURCE.slice(SOURCE.indexOf('} catch (cause) {'), SOURCE.indexOf('} finally {', SOURCE.indexOf('} catch (cause) {')));
+    expect(handler).toMatch(/cause instanceof SkippedBirthTimeError\) setError\(SKIPPED_BIRTH_TIME\)/u);
+    expect(handler).toMatch(/cause instanceof SkippedBirthDateError\) setError\(SKIPPED_BIRTH_DATE\)/u);
+    // Both come before the branch that logs the error code.
+    expect(handler.indexOf('SkippedBirthDateError')).toBeLessThan(handler.indexOf('console.error'));
+  });
+
+  it('asks for every zone history file before it prepares the birth\'s own date and zone', () => {
+    expect(SOURCE).toMatch(/await prepareEveryZoneHistory\(\);\s*\n\s*await prepareLocalTime\(input\.birthDate, input\.place\.tz\);/u);
+  });
+
   it('logs a fixed error code, never the exception, which can carry the birth details it was given', () => {
     expect(RETROGRADE_ERROR_CODE).toMatch(/^[a-z-]+: [a-z-]+$/u);
     const consoleCalls = SOURCE.match(/console\.\w+\([^)]*\)/gu) ?? [];
