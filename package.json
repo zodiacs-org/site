@@ -152,7 +152,6 @@
     "data:app-icons": "node scripts/build-app-icons.mjs",
     "data:og-preview-font": "node scripts/build-og-preview-font.mjs",
     "data:thesis-figures": "node scripts/build-thesis-figures.mjs",
-    "data:thesis-share-plate": "node scripts/build-thesis-share-plate.mjs",
     "docs:build-report": "node scripts/build-build-report.mjs",
     "check:thesis-links": "node scripts/check-thesis-links.mjs",
     "check:site:live": "node scripts/check-site.mjs",

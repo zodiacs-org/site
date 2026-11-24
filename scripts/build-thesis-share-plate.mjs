@@ -5,7 +5,7 @@
  *   public/assets/thesis/share/evolution-of-the-zodiac.png
  *
  *   npm run build                      (the image is taken from the built page)
- *   npm run data:thesis-share-plate
+ *   node scripts/build-thesis-share-plate.mjs   (no npm script: package.json is part of the Phase 1 evidence fingerprint)
  *
  * Like the Astrofolio share card (build-astrofolio-share-card.mjs), it uses
  * Playwright's Chromium (CHROMIUM_PATH, else /opt/pw-browsers/chromium, else
