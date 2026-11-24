@@ -11,6 +11,7 @@
  * with the English-only cue.
  */
 import Base from '../../layouts/Base.astro';
+import HubCardText from './HubCardText.astro';
 import AskGuideLine from '../AskGuideLine.astro';
 import EmailCapture from '../EmailCapture.astro';
 import GuideQuickPrompts from '../GuideQuickPrompts.astro';
@@ -120,9 +121,10 @@ const daily = dailyData as Daily;
 const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
 });
+const edition = { locale, editionDate: daily.date };
 const cards = SIGNS.map((sign) => {
   const reading = dailyReadingForLocale(sign.slug, daily, locale);
-  return { sign, teaser: reading.lines.find((line) => line.house !== undefined)?.text ?? reading.headline };
+  return { sign, name: signName(sign, locale), teaser: reading.lines.find((line) => line.house !== undefined)?.text ?? reading.headline };
 });
 ---
 <Base
@@ -145,26 +147,33 @@ const cards = SIGNS.map((sign) => {
 
     <p class="hhl-jump-label">{c.jumpLabel}</p>
     <nav class="hhl-picker" aria-label={c.pickerAria}>
-      {cards.map(({ sign }) => (
-        <a href={local(`/horoscopes/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
+      {cards.map(({ sign, name }) => (
+        <a href={local(`/horoscopes/${sign.slug}/`)} data-name={name} style={`--sign:${sign.hue}`}>
           <SignIcon sign={sign.slug} size={24} webpOnly fetchPriority="low" />
-          <span>{signName(sign, locale)}</span>
+          <span>{name}</span>
         </a>
       ))}
     </nav>
 
     <h2 class="display hhl-preview-title">{t(locale, 'todayBySignTitle')}</h2>
     <div class="hhl-grid">
-      {cards.map(({ sign, teaser }) => (
+      {cards.map(({ sign, name, teaser }, index) => (
         <a class="tile hhl-card" href={local(`/horoscopes/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
           <SignIcon sign={sign.slug} size={48} />
-          <span class="hhl-card__name">{signName(sign, locale)}</span>
-          <span class="hhl-card__dates">{signDateRange(sign, locale)}</span>
+          <span class="hhl-card__name"><HubCardText text={name} {...edition} /></span>
+          <span class="hhl-card__dates"><HubCardText text={signDateRange(sign, locale)} {...edition} /></span>
           <span class="hhl-card__today">
-            <span class="hhl-card__label">{dateLabel}</span>
-            {teaser}
+            <span class="hhl-card__label"><HubCardText text={dateLabel} {...edition} /></span>
+            <span class="hhl-card__copy">
+              {cards.slice(index + 1, index + 4).map((peer, offset) => {
+                // The first card sizes the row before the following cards stream in.
+                const columns = [2, 3, 4].filter(count => index % count === 0 && offset + 1 < count);
+                return columns.length > 0 && <span aria-hidden="true" data-row-columns={columns.join(' ')}>{peer.teaser}</span>;
+              })}
+              <span><HubCardText text={teaser} {...edition} /></span>
+            </span>
           </span>
-          <span class="hhl-card__go">{c.read}</span>
+          <span class="hhl-card__go"><HubCardText text={c.read} {...edition} /></span>
         </a>
       ))}
     </div>
@@ -204,8 +213,11 @@ const cards = SIGNS.map((sign) => {
   .hhl-jump-label { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
   .hhl-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 28px; }
   .hhl-picker a {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-areas: "icon label";
+    grid-template-columns: 24px minmax(0, max-content);
+    place-items: center;
+    align-content: center;
     justify-content: center;
     gap: 7px;
     min-width: 0;
@@ -217,7 +229,10 @@ const cards = SIGNS.map((sign) => {
     font-size: 13px;
     text-decoration: none;
   }
-  .hhl-picker a span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hhl-picker a :global(.sign-icon) { grid-area: icon; }
+  .hhl-picker a span { justify-self: stretch; }
+  .hhl-picker a::before { content: attr(data-name); visibility: hidden; }
+  .hhl-picker a::before, .hhl-picker a span { grid-area: label; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hhl-picker a:hover { border-color: var(--sign); background: var(--void-2); }
   .hhl-picker a:focus-visible { outline: 2px solid var(--sign); outline-offset: 3px; }
   @media (max-width: 359px) { .hhl-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -240,6 +255,7 @@ const cards = SIGNS.map((sign) => {
   .hhl-card__name { font-weight: 650; letter-spacing: -0.01em; }
   .hhl-card__dates { color: var(--faint); font-size: 12.5px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
   .hhl-card__today {
+    width: 100%;
     margin-top: 6px;
     padding-top: 10px;
     border-top: 1px solid var(--hair-1);
@@ -250,6 +266,12 @@ const cards = SIGNS.map((sign) => {
     overflow-wrap: break-word;
     hyphens: auto;
   }
+  .hhl-card__copy { display: grid; }
+  .hhl-card__copy > span { grid-area: 1 / 1; }
+  .hhl-card__copy [data-row-columns] { visibility: hidden; display: none; }
+  @media (460px < width < 700px) { .hhl-card__copy [data-row-columns~="2"] { display: block; } }
+  @media (700px <= width < 1000px) { .hhl-card__copy [data-row-columns~="3"] { display: block; } }
+  @media (min-width: 1000px) { .hhl-card__copy [data-row-columns~="4"] { display: block; } }
   .hhl-card__label {
     display: block;
     margin-bottom: 5px;
@@ -270,7 +292,7 @@ const cards = SIGNS.map((sign) => {
   .hhl-method a { color: var(--text); }
   @media (max-width: 460px) {
     /* Longer sign names (Capricornio, Capricórnio) sit under their disc. */
-    .hhl-picker a { flex-direction: column; gap: 3px; min-height: 60px; padding-block: 6px; font-size: 12px; }
+    .hhl-picker a { grid-template-areas: "icon icon icon" ". label ."; grid-template-columns: 1fr max-content 1fr; gap: 3px 0; min-height: 60px; padding-block: 6px; font-size: 12px; }
     .hhl-grid { grid-template-columns: 1fr; }
     .hhl-card { padding-inline: 18px; }
   }

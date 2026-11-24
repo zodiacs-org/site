@@ -1,0 +1,21 @@
+---
+import { datedEditionTextIn } from '../../lib/edition-freshness';
+
+interface Props {
+  text: string;
+  locale: 'es' | 'pt';
+  editionDate: string;
+}
+const { text, locale, editionDate } = Astro.props;
+const dated = datedEditionTextIn(locale, text, editionDate);
+---
+<span class="card-text" data-copy={text} data-dated={dated === text ? undefined : dated}><span>{text}</span><span hidden></span></span>
+
+<style>
+  /* A centered line changes its starting point as more of the word or
+     paragraph arrives. The opening tag can already paint the complete copy.
+     Once the parser reaches the end marker, use the normal selectable text. */
+  .card-text:not(:has(> [hidden]))::before { content: attr(data-copy); }
+  :global([data-edition-state="dated"]) .card-text[data-dated]:not(:has(> [hidden]))::before { content: attr(data-dated); }
+  .card-text:not(:has(> [hidden])) > span { display: none; }
+</style>
