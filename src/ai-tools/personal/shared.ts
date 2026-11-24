@@ -142,7 +142,11 @@ export interface NatalCast {
  * it is cast for local noon (UTC noon without a zone) with no angles, as
  * get_natal_chart and get_personal_transits cast it.
  */
-export async function castNatal(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<NatalCast> {
+/**
+ * `chartOf` casts the chart from the resolved instant: the hosted engine's default unless a tool must match its
+ * website page's calculation (./page-ephemeris.ts).
+ */
+export async function castNatal(args: BirthArgs, clock: PersonalToolContext['localTime'], chartOf: (input: Parameters<typeof computeChart>[0]) => Chart = computeChart): Promise<NatalCast> {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`);
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
@@ -161,7 +165,7 @@ export async function castNatal(args: BirthArgs, clock: PersonalToolContext['loc
     flags = [...resolved.flags];
     if (resolved.jump && resolved.transition) jumpMinutes = Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes);
   } else birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
-  const chart = computeChart({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
+  const chart = chartOf({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   return { birthUtc, chart, timeKnown, placed, latitude, longitude, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
 }

@@ -5,15 +5,15 @@ import { describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { retrogradeForMe } from '../../ai-tools/personal/retrograde-for-me';
 import { forbiddenClaim } from '../../ai-tools/personal/shared';
-import { PeriodCard } from '../../islands/RetrogradeForYou';
+import { PeriodCard, notCoveredSentence } from '../../islands/RetrogradeForYou';
 import { computeRetrogradeForYou, prepareLocalTime, retrogradeForYouRefusal, type RetrogradeForYouInput } from '../../islands/retrograde-for-you/compute';
 import sky from '../../data/sky.json';
 import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
 import { CONTACT_LINE, POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, dayTurns, natalBasis, retrogradePeriod } from './reading';
-import { bodyLongitude } from '../engine/full';
+import { bodyLongitude, longitudeSpeed } from '../engine/full';
 import { birthDaySpan } from '../time/birth-day-span';
 import { resolveLocalToUtc } from '../time/localToUtc';
-import { loopsFromSky } from './sky';
+import { loopsFromSky, skyCoverageStart } from './sky';
 import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery } from './share';
 import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../vedic-signs/clock';
 import { executeAiTool } from '../../ai-tools/tools';
@@ -187,8 +187,12 @@ describe('a planet in the post-shadow, untimed contacts and links (ZOD-20)', () 
     // The page's windows (sky.json). Mercury turned direct at 19:33:23 on 20 Mar 2026; NASA gives 19:32:50, and the
     // engine's own search lands near that, so at 19:33:00 an engine-read tool and the page disagreed.
     const window = sky.retrogrades.find((entry) => entry.planet === 'Mercury' && entry.from.startsWith('2026-02-26'))!;
+    // The first published window's pre-shadow is where the data starts to settle Mercury's status (skyCoverageStart):
+    // a second before it the page says the data cannot place Mercury, and the tool reads the engine.
+    const second = sky.retrogrades.find((entry) => entry.planet === 'Mercury' && entry.from.startsWith('2026-06-29'))!;
     const edges: [string, string, string][] = [
-      [window.preShadowStart!, 'direct', 'pre-shadow'],
+      [second.preShadowStart!, 'direct', 'pre-shadow'],
+      [window.preShadowStart!, 'not covered', 'pre-shadow'],
       [window.from, 'pre-shadow', 'retrograde'],
       [window.to!, 'retrograde', 'post-shadow'],
       [window.postShadowEnd!, 'post-shadow', 'direct'],
@@ -196,11 +200,18 @@ describe('a planet in the post-shadow, untimed contacts and links (ZOD-20)', () 
     const status = async (at: Date) => {
       const { mcp, page } = await both({ birthDate: '1990-05-03' }, at, 'UTC');
       const pick = (result: { periods: { planet: string; status: string; retrogradeNow: boolean; stationDirect: { utc: string } }[] }) => result.periods.find((period) => period.planet === 'Mercury')!;
-      return { mcp: pick(mcp), page: pick(page) };
+      return { mcp: pick(mcp), page: pick(page), notCovered: page.notCovered };
     };
     for (const [edge, before, after] of edges) {
       for (const [at, expected] of [[new Date(Date.parse(edge) - 1_000), before], [new Date(Date.parse(edge) + 1_000), after]] as const) {
-        const { mcp, page } = await status(at);
+        const { mcp, page, notCovered } = await status(at);
+        if (expected === 'not covered') {
+          expect(page, `page at ${at.toISOString()}`).toBeUndefined();
+          expect(notCovered).toContain('Mercury');
+          expect(mcp.status, `tool at ${at.toISOString()}`).toBe('direct');
+          continue;
+        }
+        expect(notCovered).not.toContain('Mercury');
         expect(page.status, `page at ${at.toISOString()}`).toBe(expected);
         expect(mcp.status, `tool at ${at.toISOString()}`).toBe(page.status);
         expect(mcp.retrogradeNow, `tool at ${at.toISOString()}`).toBe(page.retrogradeNow);
@@ -288,9 +299,16 @@ describe('a planet in the post-shadow, untimed contacts and links (ZOD-20)', () 
     const period = read(turns);
     expect(period.contacts.map((entry) => entry.point)).not.toContain('Mercury');
     expect(period.possibleContacts.map((entry) => entry.point)).toContain('Mercury');
-    // A loop that ends just past the turn holds every degree of the day: definite again.
+    // A loop that ends just past the turn holds every degree of the day, yet a planet that turned within an untimed birth
+    // day is never a definite contact: possible only.
     const wide = { ...loop, stationRetrograde: { ...loop.stationRetrograde, lon: turns[0].lon + 0.01 } };
-    expect(retrogradePeriod('Mercury', { current: wide, previous: null, retrogradeNow: false }, new Date('2026-06-01T00:00:00Z'), 'UTC', basis(turns)).period.contacts.map((entry) => entry.point)).toContain('Mercury');
+    const widePeriod = retrogradePeriod('Mercury', { current: wide, previous: null, retrogradeNow: false }, new Date('2026-06-01T00:00:00Z'), 'UTC', basis(turns)).period;
+    expect(widePeriod.contacts.map((entry) => entry.point)).not.toContain('Mercury');
+    expect(widePeriod.possibleContacts.map((entry) => entry.point)).toContain('Mercury');
+    // A loop that misses every degree of the day is no contact at all.
+    const clear = { ...loop, stationRetrograde: { ...loop.stationRetrograde, lon: Math.min(...ends) - 1 }, stationDirect: { ...loop.stationDirect, lon: Math.min(...ends) - 13 } };
+    const clearPeriod = retrogradePeriod('Mercury', { current: clear, previous: null, retrogradeNow: false }, new Date('2026-06-01T00:00:00Z'), 'UTC', basis(turns)).period;
+    expect([...clearPeriod.contacts, ...clearPeriod.possibleContacts].map((entry) => entry.point)).not.toContain('Mercury');
   });
 
   it('calls natal Mercury only a possible contact when it turned on the birth day just past the loop’s station, on the page and in the tool', async () => {
@@ -596,5 +614,114 @@ describe('the page’s words', () => {
     // No planet's words say when to make a purchase, a sale or an investment, or call a stretch good or poor for one.
     const TIMING = /\b(?:purchas\w*|buy\w*|sell\w*|invest\w*)\b|\b(?:good|poor|bad|best|worst|right|wrong)\s+(?:window|time|moment)\b/iu;
     for (const text of [CONTACT_LINE, ...Object.values(RETROGRADE_LINE), ...Object.values(RETROGRADE_ASK)]) expect(text).not.toMatch(TIMING);
+  });
+});
+
+describe('stations within an untimed birth day (dayTurns)', () => {
+  const SECOND = 1_000;
+  // The Madrid day of 3 May 1990, from local midnight to the instant before the next one.
+  const span = async () => {
+    await prepareLocalTime('1990-05-03', MADRID.tz);
+    return birthDaySpan('1990-05-03', MADRID.tz, MADRID.lon, resolveLocalToUtc);
+  };
+  /**
+   * Mercury stationing at `turn`, a parabola in time with Mercury's real curvature at a station (about 2e-11 degrees
+   * per second squared); every other planet moving forward at a steady rate.
+   */
+  const synthetic = (turn: number) => (body: string, at: Date) => {
+    const seconds = (at.getTime() - turn) / SECOND;
+    return body === 'Mercury' ? 100 + 1e-11 * seconds * seconds : 200 + 1e-5 * (at.getTime() - Date.UTC(1990, 0, 1)) / SECOND;
+  };
+
+  for (const [label, offset] of [
+    ['ten seconds after local midnight', (start: number) => start + 10 * SECOND],
+    ['ten seconds before the next local midnight', (_start: number, end: number) => end + 1 - 10 * SECOND],
+    ['inside the day', (start: number) => start + 9 * 3_600_000 + 17 * 60_000 + 23_456],
+  ] as const) {
+    it(`finds a station ${label}, to within a second`, async () => {
+      const [start, end] = await span();
+      const turn = offset(start.getTime(), end.getTime());
+      const turns = dayTurns(synthetic(turn), start, end);
+      expect(turns.map((row) => row.body)).toEqual(['Mercury']);
+      expect(Math.abs(turns[0].at.getTime() - turn)).toBeLessThanOrEqual(SECOND);
+      expect(turns[0].lon).toBeCloseTo(100, 9);
+    });
+  }
+
+  it('makes a planet that turned that day only a possible contact, even with every degree of the day inside the loop', async () => {
+    const [start, end] = await span();
+    for (const turn of [start.getTime() + 10 * SECOND, end.getTime() + 1 - 10 * SECOND]) {
+      const lonAt = synthetic(turn);
+      const rows = (at: Date) => POINT_NAMES.map((body) => ({ body, lon: lonAt(body, at) }));
+      const basis = natalBasis({
+        timeKnown: false, placed: true, angles: null, bodies: rows(new Date((start.getTime() + end.getTime()) / 2)), sunHeld: true,
+        birthDate: '1990-05-03', now: new Date('2026-06-01T00:00:00Z'), dayEnds: [rows(start), rows(end)], dayTurns: dayTurns(lonAt, start, end),
+      });
+      const loop = {
+        planet: 'Mercury' as const,
+        stationRetrograde: { at: new Date('2026-06-29T17:00:00Z'), lon: 110 },
+        stationDirect: { at: new Date('2026-07-23T21:00:00Z'), lon: 90 },
+        preShadowStart: null, postShadowEnd: null,
+      };
+      const period = retrogradePeriod('Mercury', { current: loop, previous: null, retrogradeNow: false }, new Date('2026-06-01T00:00:00Z'), 'UTC', basis).period;
+      expect(period.contacts.map((entry) => entry.point)).not.toContain('Mercury');
+      expect(period.possibleContacts.map((entry) => entry.point)).toContain('Mercury');
+    }
+  });
+
+  it('finds Mercury’s real turn on 21 March 1926 within a second of the station bisected on the engine’s speed', async () => {
+    await prepareLocalTime('1926-03-21', MADRID.tz);
+    const [start, end] = birthDaySpan('1926-03-21', MADRID.tz, MADRID.lon, resolveLocalToUtc);
+    const turns = dayTurns((body, at) => bodyLongitude(body as (typeof POINT_NAMES)[number], at), start, end);
+    expect(turns.map((row) => row.body)).toEqual(['Mercury']);
+    // The station itself: where the engine's longitude speed changes sign, halved to a millisecond.
+    let lo = start.getTime();
+    let hi = end.getTime();
+    const opening = Math.sign(longitudeSpeed('Mercury', start));
+    while (hi - lo > 1) {
+      const mid = lo + Math.floor((hi - lo) / 2);
+      if (Math.sign(longitudeSpeed('Mercury', new Date(mid))) === opening) lo = mid;
+      else hi = mid;
+    }
+    expect(Math.abs(turns[0].at.getTime() - hi)).toBeLessThanOrEqual(SECOND);
+    expect(turns[0].lon).toBeCloseTo(bodyLongitude('Mercury', new Date(hi)), 8);
+  });
+
+  it('finds nothing on a day no planet turned', async () => {
+    const [start, end] = await span();
+    expect(dayTurns((body, at) => bodyLongitude(body as (typeof POINT_NAMES)[number], at), start, end)).toEqual([]);
+  });
+});
+
+describe('dates the published retrograde data does not cover', () => {
+  const span = sky as Parameters<typeof loopsFromSky>[2];
+
+  it('settles a planet only from its first published pre-shadow, never before the data begins', () => {
+    expect(skyCoverageStart('Mercury', span)?.toISOString()).toBe('2026-02-11T22:12:14.682Z');
+    expect(skyCoverageStart('Venus', span)?.toISOString()).toBe('2026-08-31T14:45:38.367Z');
+    expect(skyCoverageStart('Mars', span)?.toISOString()).toBe('2026-11-05T15:33:42.445Z');
+    for (const planet of ['Mercury', 'Venus', 'Mars'] as const) {
+      expect(loopsFromSky(planet, new Date('2025-03-20T12:00:00Z'), span, () => 0), planet).toBeNull();
+      expect(loopsFromSky(planet, new Date('2025-12-31T23:59:59Z'), span, () => 0), planet).toBeNull();
+      expect(loopsFromSky(planet, new Date('2031-06-01T00:00:00Z'), span, () => 0), planet).toBeNull();
+    }
+    expect(loopsFromSky('Venus', new Date('2026-08-31T14:45:39Z'), span, () => 0)?.current?.stationRetrograde.at.toISOString()).toBe('2026-10-03T07:15:41.747Z');
+  });
+
+  it('never calls Venus direct with the clock at 20 March 2025, when it was retrograde: the page says it is not covered, the tool reads the engine', async () => {
+    const now = new Date('2025-03-20T12:00:00Z');
+    const { mcp, page } = await both({ birthDate: '1990-05-03', time: '08:30' }, now, 'Europe/Madrid');
+    expect(page.periods.map((period) => period.planet)).not.toContain('Venus');
+    expect(page.notCovered).toEqual(['Mercury', 'Venus', 'Mars']);
+    expect(page.unavailable).toEqual([]);
+    expect(page.dataStarts).toBe('Thu 1 Jan 2026');
+    expect(JSON.stringify(page)).not.toMatch(/Venus is not retrograde|Direct now/u);
+    expect(notCoveredSentence(page.notCovered, page.dataStarts)).toBe('Mercury and Venus and Mars: the sky data this page uses starts on Thu 1 Jan 2026 and cannot place them on today\'s date on this device, so they are not shown here.');
+    expect(notCoveredSentence(['Venus'], page.dataStarts)).toBe('Venus: the sky data this page uses starts on Thu 1 Jan 2026 and cannot place it on today\'s date on this device, so it is not shown here.');
+    // The tool's engine fallback: Venus turned retrograde on 1 or 2 March 2025 and was retrograde that day.
+    const venus = mcp.periods.find((period) => period.planet === 'Venus')!;
+    expect(venus).toMatchObject({ status: 'retrograde', retrogradeNow: true });
+    expect(venus.stationRetrograde.utc.startsWith('2025-03-0')).toBe(true);
+    expect(venus.shareUrl).toBeNull();
   });
 });

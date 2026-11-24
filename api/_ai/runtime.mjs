@@ -4219,6 +4219,10 @@ function defaultEphemeris() {
     })
   });
 }
+function setDefaultEphemeris(name) {
+  if (name !== "de440" && name !== "astronomy-engine") throw new TypeError('setDefaultEphemeris takes "de440" or "astronomy-engine"');
+  defaultName = name;
+}
 function refuseUnderSource(what) {
   if (source) throw new TypeError(`${what} does not run inside withEphemeris: it computes on the engine's own sources, not a caller's`);
 }
@@ -43016,27 +43020,42 @@ function loopSigns(loop) {
   return out;
 }
 var TURNING_POINTS = POINT_NAMES.filter((name) => name !== "Sun" && name !== "Moon");
-var DIRECTION_STEP_MS = 6e4;
+var DIRECTION_HALF_SPAN_MS = 3e4;
+var TURN_RESOLUTION_MS = 1e3;
 var direction = (from, to) => Math.sign(((to - from) % 360 + 540) % 360 - 180);
 function dayTurns(lonAt, start, end) {
-  const at = (ms) => new Date(ms);
-  const moving = (body2, ms) => direction(lonAt(body2, at(ms)), lonAt(body2, at(ms + DIRECTION_STEP_MS)));
+  const moving = (body2, ms) => direction(lonAt(body2, new Date(ms - DIRECTION_HALF_SPAN_MS)), lonAt(body2, new Date(ms + DIRECTION_HALF_SPAN_MS)));
   const out = [];
   const first2 = start.getTime();
-  const last2 = end.getTime() - DIRECTION_STEP_MS;
+  const last2 = end.getTime();
   if (!(last2 > first2)) return out;
+  const turned = (body2, ms) => out.push({ body: body2, lon: lonAt(body2, new Date(ms)), at: new Date(ms) });
   for (const body2 of TURNING_POINTS) {
     const opening = moving(body2, first2);
     const closing = moving(body2, last2);
-    if (opening === 0 || closing === 0 || opening === closing) continue;
+    if (opening === 0) {
+      turned(body2, first2);
+      continue;
+    }
+    if (closing === 0) {
+      turned(body2, last2);
+      continue;
+    }
+    if (opening === closing) continue;
     let lo = first2;
     let hi = last2;
-    while (hi - lo > 1e3) {
-      const mid = Math.floor((lo + hi) / 2);
-      if (moving(body2, mid) === opening) lo = mid;
+    while (hi - lo > TURN_RESOLUTION_MS) {
+      const mid = lo + Math.floor((hi - lo) / 2);
+      const now = moving(body2, mid);
+      if (now === 0) {
+        lo = mid;
+        hi = mid;
+        break;
+      }
+      if (now === opening) lo = mid;
       else hi = mid;
     }
-    out.push({ body: body2, lon: lonAt(body2, at(hi)) });
+    turned(body2, lo + Math.floor((hi - lo) / 2));
   }
   return out;
 }
@@ -43063,11 +43082,15 @@ function natalBasis(input) {
   } else limits2.push("No birth time was given and the Sun changed sign on the birth day, so there are no houses. A birth time settles it.");
   const endLon = (rows3, name) => rows3.find((row) => row.body === name).lon;
   const ends = !input.timeKnown ? input.dayEnds : void 0;
-  const points = POINT_NAMES.filter((name) => name !== "Moon" || input.timeKnown).map((name) => ({
-    name,
-    lon: lonOf2(name),
-    ...ends ? { ends: [endLon(ends[0], name), endLon(ends[1], name), ...(input.dayTurns ?? []).filter((row) => row.body === name).map((row) => row.lon)] } : {}
-  }));
+  const points = POINT_NAMES.filter((name) => name !== "Moon" || input.timeKnown).map((name) => {
+    const turns = ends ? (input.dayTurns ?? []).filter((row) => row.body === name).map((row) => row.lon) : [];
+    return {
+      name,
+      lon: lonOf2(name),
+      ...ends ? { ends: [endLon(ends[0], name), endLon(ends[1], name), ...turns] } : {},
+      ...turns.length > 0 ? { turned: true } : {}
+    };
+  });
   if (input.angles) points.push({ name: "Ascendant", lon: input.angles.asc }, { name: "Midheaven", lon: input.angles.mc });
   if (!input.timeKnown) limits2.push("Without a birth time the natal Moon is left out of the points each loop passes over.");
   return {
@@ -43107,7 +43130,7 @@ function retrogradePeriod(planet2, loops, now, zone10, basis) {
   const possibleContacts = [];
   for (const point2 of basis.points) {
     const inside = point2.ends ? point2.ends.map((lon) => inLoop(subject, lon)) : [inLoop(subject, point2.lon)];
-    if (inside.every(Boolean)) {
+    if (inside.every(Boolean) && !point2.turned) {
       contacts.push({
         point: point2.name,
         sign: SIGNS2[signIndexForLongitude2(point2.lon)].slug,
@@ -43172,9 +43195,20 @@ function retrogradeReading(input) {
 
 // src/lib/retrograde-for-you/sky.ts
 var time = (value) => Date.parse(value);
+function wholeWindows(planet2, sky) {
+  return sky.retrogrades.filter((entry) => entry.planet === planet2 && entry.to && entry.from !== sky.from).sort((left, right) => time(left.from) - time(right.from));
+}
+function skyCoverageStart(planet2, sky) {
+  const first2 = wholeWindows(planet2, sky)[0];
+  if (!first2) return null;
+  const start = Math.max(time(sky.from), time(first2.preShadowStart ?? first2.from));
+  return new Date(start);
+}
 function loopsFromSky(planet2, now, sky, lonAt) {
   const at = now.getTime();
-  const windows2 = sky.retrogrades.filter((entry) => entry.planet === planet2 && entry.to && entry.from !== sky.from).sort((left, right) => time(left.from) - time(right.from));
+  const covered = skyCoverageStart(planet2, sky);
+  if (!covered || at < covered.getTime()) return null;
+  const windows2 = wholeWindows(planet2, sky);
   const toLoop = (entry) => {
     const retro = new Date(entry.from);
     const direct = new Date(entry.to);
@@ -43256,6 +43290,34 @@ function withClockLimit(reading, limit) {
   return limit ? { ...reading, limits: [limit, ...reading.limits] } : reading;
 }
 
+// src/ai-tools/personal/page-ephemeris.ts
+function onPageEphemeris(run2) {
+  const before2 = defaultEphemeris().name;
+  setDefaultEphemeris("astronomy-engine");
+  try {
+    const value = run2();
+    if (typeof value?.then === "function") throw new TypeError("onPageEphemeris runs synchronous calculations only");
+    return value;
+  } finally {
+    setDefaultEphemeris(before2);
+  }
+}
+function pageChart(input) {
+  return onPageEphemeris(() => computeChart3(input));
+}
+function pageLongitudes() {
+  const seen = /* @__PURE__ */ new Map();
+  return (body2, at) => {
+    const key2 = `${body2} ${at.getTime()}`;
+    let lon = seen.get(key2);
+    if (lon === void 0) {
+      lon = onPageEphemeris(() => bodyLongitude2(body2, at));
+      seen.set(key2, lon);
+    }
+    return lon;
+  };
+}
+
 // src/ai-tools/personal/shared.ts
 import { z as z15 } from "zod";
 
@@ -43317,7 +43379,7 @@ function refineBirth(args, context) {
 function definePersonalTool(definition) {
   return definition;
 }
-async function castNatal(args, clock2) {
+async function castNatal(args, clock2, chartOf = computeChart3) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`);
   if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
@@ -43336,7 +43398,7 @@ async function castNatal(args, clock2) {
     flags = [...resolved.flags];
     if (resolved.jump && resolved.transition) jumpMinutes = Math.abs(resolved.transition.offsetAfterMinutes - resolved.transition.offsetBeforeMinutes);
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
-  const chart = computeChart3({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
+  const chart = chartOf({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }), flags, jumpMinutes };
 }
@@ -43469,8 +43531,8 @@ function retrogradeLoops(planet2, now, rowsAt = positionsMemo()) {
   const previous = !retrogradeNow && position3 > 0 ? fill(loops[position3 - 1]) : null;
   return { current: fill(loops[position3]), previous, retrogradeNow };
 }
-function toolLoops(planet2, now, rowsAt = positionsMemo(), span2 = sky_default) {
-  const fromSky = loopsFromSky(planet2, now, span2, (body2, at) => rowOf(rowsAt(at), body2).lon);
+function toolLoops(planet2, now, rowsAt = positionsMemo(), span2 = sky_default, pageLon = pageLongitudes()) {
+  const fromSky = loopsFromSky(planet2, now, span2, pageLon);
   if (!fromSky) return retrogradeLoops(planet2, now, rowsAt);
   if (fromSky.current || !fromSky.previous) return fromSky;
   const ended = fromSky.previous.stationDirect.at.getTime();
@@ -43486,7 +43548,8 @@ async function retrogradeForMe(args, context) {
     const midnight = longitude2 !== void 0 ? context.localTime.resolveLocalToUtc(args.birthDate, "00:00", args.zone, { longitude: longitude2 }) : context.localTime.resolveLocalToUtc(args.birthDate, "00:00", args.zone);
     if (skippedWholeDate(args.birthDate, midnight)) throw new SkippedBirthDateError();
   }
-  const natal = await castNatal(args, context.localTime);
+  const natal = await castNatal(args, context.localTime, pageChart);
+  const pageLon = pageLongitudes();
   const onClock = birthTimeOnClock(natal.flags, natal.timeKnown);
   if (onClock.skipped) throw new SkippedBirthTimeError();
   const clock2 = await currentClock(args.currentZone, args.zone, context);
@@ -43498,20 +43561,12 @@ async function retrogradeForMe(args, context) {
   if (!natal.timeKnown) {
     const sunIndex = signIndexForLongitude2(natal.chart.bodies.find((row) => row.body === "Sun").lon);
     const ends = await birthDayEnds2(args, context.localTime);
-    const rows3 = ends.map((end) => {
-      const at2 = positions(end);
-      return POINT_NAMES.map((body2) => ({ body: body2, lon: rowOf(at2, body2).lon }));
-    });
+    const rows3 = ends.map((end) => POINT_NAMES.map((body2) => ({ body: body2, lon: pageLon(body2, end) })));
     dayEnds = [rows3[0], rows3[1]];
-    const seen = /* @__PURE__ */ new Map();
-    const at = (instant4) => {
-      if (!seen.has(instant4.getTime())) seen.set(instant4.getTime(), positions(instant4));
-      return seen.get(instant4.getTime());
-    };
-    turns = dayTurns((body2, instant4) => rowOf(at(instant4), body2).lon, ends[0], ends[1]);
+    turns = dayTurns(pageLon, ends[0], ends[1]);
     sunHeld = rows3.every((end) => signIndexForLongitude2(end.find((row) => row.body === "Sun").lon) === sunIndex);
   }
-  const foldAsc = natal.angles && natal.flags.includes("dst-fold") && natal.jumpMinutes ? computeChart3({ utc: new Date(natal.birthUtc.getTime() + natal.jumpMinutes * 6e4), latitude: natal.latitude, longitude: natal.longitude, houseSystem: "whole", timeKnown: true }).angles?.asc ?? null : null;
+  const foldAsc = natal.angles && natal.flags.includes("dst-fold") && natal.jumpMinutes ? pageChart({ utc: new Date(natal.birthUtc.getTime() + natal.jumpMinutes * 6e4), latitude: natal.latitude, longitude: natal.longitude, houseSystem: "whole", timeKnown: true }).angles?.asc ?? null : null;
   const basis = natalBasis({
     timeKnown: natal.timeKnown,
     placed: natal.placed,
@@ -43537,7 +43592,7 @@ async function retrogradeForMe(args, context) {
     basis,
     // The windows the page reads (src/data/sky.json) wherever they reach, so the tool and the page give the same status
     // to the second at a station or a shadow's edge; past the data, the engine's own station search.
-    loopsFor: (planet2) => toolLoops(planet2, now, rowsAt),
+    loopsFor: (planet2) => toolLoops(planet2, now, rowsAt, sky_default, pageLon),
     leadingLimits: clock2.note ? [clock2.note] : []
   }), onClock.limit);
   const sunSign = sunHeld ? SIGNS2[signIndexForLongitude2(natal.chart.bodies.find((row) => row.body === "Sun").lon)].slug : null;

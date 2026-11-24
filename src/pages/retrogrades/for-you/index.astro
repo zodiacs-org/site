@@ -79,8 +79,14 @@ const related = [
   :global(.rfy__chip[aria-pressed='false'] .rfy__swatch) { background: transparent; }
   :global(.rfy__swatch) { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--hue); background: var(--hue); flex: none; }
 
+  :global(.rfy__submit-label) { display: inline-grid; }
+  :global(.rfy__submit-label > span) { grid-area: 1 / 1; }
+  :global(.rfy__submit-label > .is-off) { visibility: hidden; }
+
   :global(.rfy__result) { display: grid; gap: 16px; margin-top: clamp(24px, 4vw, 36px); }
   :global(.rfy__result:empty) { display: none; }
+  /* Sent and not edited since: a screen's height held below the form, so the result fills space already there. */
+  :global(.rfy__result[data-reserved]) { display: grid; align-content: start; min-height: 100vh; }
   :global(.rfy__clock) { margin: 0; color: var(--muted); font-size: var(--text-sm); }
   :global(.rfy__cards) { display: grid; gap: 16px; }
   :global(.rfy__card) { padding: clamp(18px, 4vw, 26px); display: grid; gap: 14px; }

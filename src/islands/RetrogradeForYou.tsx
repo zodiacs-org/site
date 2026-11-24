@@ -27,7 +27,13 @@ const SIGN_NAME: Record<string, string> = {
   aries: 'Aries', taurus: 'Taurus', gemini: 'Gemini', cancer: 'Cancer', leo: 'Leo', virgo: 'Virgo',
   libra: 'Libra', scorpio: 'Scorpio', sagittarius: 'Sagittarius', capricorn: 'Capricorn', aquarius: 'Aquarius', pisces: 'Pisces',
 };
-const UNDER_13 = 'Zodiacs is not made for children under 13, so it gives no reading for a birth date less than 13 years ago. Nothing was calculated. If you are 13 or older, enter your own birth date.';
+/**
+ * For planets this device's date comes before the sky data can place: never read as direct. A short factual sentence,
+ * listed for the owner's wording review.
+ */
+export const notCoveredSentence = (planets: readonly RetrogradePlanet[], dataStarts: string) =>
+  `${planets.join(' and ')}: the sky data this page uses starts on ${dataStarts} and cannot place ${planets.length > 1 ? 'them' : 'it'} on today's date on this device, so ${planets.length > 1 ? 'they are' : 'it is'} not shown here.`;
+const UNDER_13 ='Zodiacs is not made for children under 13, so it gives no reading for a birth date less than 13 years ago. Nothing was calculated. If you are 13 or older, enter your own birth date.';
 const W = 600;
 
 /**
@@ -158,6 +164,9 @@ export default function RetrogradeForYou() {
   const [result, setResult] = useState<Result | null>(null);
   const [refused, setRefused] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // From the moment the form is sent until the next edit, the result area keeps a screen's height below the form, so
+  // a result that arrives after the calculation loads moves nothing that is on screen (zero layout shift).
+  const [reserved, setReserved] = useState(false);
   const [error, setError] = useState('');
   const errorRef = useRef<HTMLParagraphElement>(null);
   const revision = useRef(0);
@@ -169,7 +178,7 @@ export default function RetrogradeForYou() {
 
   function clear() {
     revision.current += 1;
-    setBusy(false); setResult(null); setRefused(null); setError('');
+    setBusy(false); setResult(null); setRefused(null); setError(''); setReserved(false);
   }
 
   function toggle(planet: RetrogradePlanet) {
@@ -183,7 +192,7 @@ export default function RetrogradeForYou() {
     event.preventDefault();
     if (!ready || busy || !city) return;
     const request = ++revision.current;
-    setBusy(true); setError(''); setResult(null); setRefused(null);
+    setBusy(true); setError(''); setResult(null); setRefused(null); setReserved(true);
     try {
       // The shared birth date policy (UTC-12) on the converted date, before the calculation loads or any local time
       // or chart is resolved.
@@ -246,14 +255,21 @@ export default function RetrogradeForYou() {
               ))}
             </div>
           </fieldset>
-          <button class="btn btn--primary calc__submit" type="submit" disabled={!ready || busy}><span>{busy ? 'Working it out…' : 'Show my retrogrades'}</span><span class="orb" aria-hidden="true">↗</span></button>
+          <button class="btn btn--primary calc__submit" type="submit" disabled={!ready || busy}>
+            {/* Both labels share one cell, so the button keeps one width and nothing beside it moves when the label changes. */}
+            <span class="rfy__submit-label">
+              <span class={busy ? 'is-off' : undefined}>Show my retrogrades</span>
+              <span class={busy ? undefined : 'is-off'}>Working it out…</span>
+            </span>
+            <span class="orb" aria-hidden="true">↗</span>
+          </button>
           <p class="calc__privacy"><strong>Private by default.</strong> Everything is worked out on this device. Nothing you enter is uploaded, stored or put in a link.</p>
           {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
           <CalculationReload error={error} locale="en" />
         </div>
       </form>
 
-      <div class="rfy__result" aria-live="polite">
+      <div class="rfy__result" aria-live="polite" data-reserved={reserved ? '' : undefined}>
         {refused && <p class="notice" role="status">{refused}</p>}
         {result && (
           <>
@@ -264,6 +280,11 @@ export default function RetrogradeForYou() {
             {result.unavailable.length > 0 && (
               <p class="notice">
                 {result.unavailable.join(' and ')}: the sky data this page uses runs to {result.dataEnds}, and the next retrograde starts after that, so it is not shown here.
+              </p>
+            )}
+            {result.notCovered.length > 0 && (
+              <p class="notice" data-not-covered>
+                {notCoveredSentence(result.notCovered, result.dataStarts)}
               </p>
             )}
             {result.limits.map((line) => <p class="notice" key={line}>{line}</p>)}

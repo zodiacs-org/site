@@ -14,7 +14,7 @@ import {
   type RetrogradePeriod, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { birthDaySpan } from '../../lib/time/birth-day-span';
-import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
+import { loopsFromSky, skyCoverageStart, type SkySpan } from '../../lib/retrograde-for-you/sky';
 import { publishedRetrogradeDate, retrogradeForYouShareQuery } from '../../lib/retrograde-for-you/share';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
@@ -42,6 +42,10 @@ export type RetrogradeForYouOutcome =
     periods: (RetrogradePeriod & { shareQuery: string | null; skyDate: string | null; nextLine: string | null })[];
     /** Planets whose next loop lies past the committed sky data. */
     unavailable: RetrogradePlanet[];
+    /** Planets the committed sky data cannot place yet on this clock's date: it is before the data settles where they stand. */
+    notCovered: RetrogradePlanet[];
+    /** "Thu 1 Jan 2026", the first day the data covers. */
+    dataStarts: string;
     /** "Thu 1 Jan 2031", the first day the data does not cover. */
     dataEnds: string;
     summary: string;
@@ -109,6 +113,10 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
   const sunSign = sunHeld
     ? (SIGNS[signIndexForLongitude(chart.bodies.find((row) => row.body === 'Sun')!.lon)].slug as ShareSign)
     : null;
+  const beforeData = (planet: RetrogradePlanet) => {
+    const covered = skyCoverageStart(planet, span);
+    return !covered || input.now.getTime() < covered.getTime();
+  };
   return {
     periods: reading.periods.map((period) => ({
       ...period,
@@ -118,7 +126,10 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
         planet: period.planet, stationRetrogradeUtc: period.stationRetrograde.utc, sun: sunSign,
       }, span.retrogrades),
     })),
-    unavailable: reading.unavailable,
+    // Before the data settles where a planet stands it is not covered, never read as direct; past the data, unavailable.
+    unavailable: reading.unavailable.filter((planet) => !beforeData(planet)),
+    notCovered: reading.unavailable.filter(beforeData),
+    dataStarts: dayLabel(sky.from, 'UTC'),
     dataEnds: dayLabel(sky.to, 'UTC'),
     summary: reading.summary,
     limits: reading.limits,

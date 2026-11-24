@@ -17,14 +17,18 @@
  * retrograde station. The houses, natal points and pre-written words are
  * src/lib/retrograde-for-you/reading.ts, shared with the /retrogrades/for-you/
  * page, which reads the same loops from the committed sky data; nothing is
- * generated.
+ * generated. The natal chart, the birth day's ends and turns, and the
+ * published windows' station degrees are read on the page's ephemeris
+ * (./page-ephemeris.ts), so a birth near a cusp gets the same Sun sign, houses
+ * and share card here as on the page. Before the data settles where a planet
+ * stands, and past its end, the engine's station search answers instead.
  *
  * Houses are whole-sign, counted from the rising sign with a birth time and
  * place, as the site counts them; otherwise from the Sun sign, labelled so.
  * Pure: no network, storage or logging.
  */
 import { z } from 'zod';
-import { findLongitudeCrossings, positions } from '@zodiacs/engine';
+import { findLongitudeCrossings } from '@zodiacs/engine';
 import { SampleBudget, positionsMemo, rowOf, stationCrossings } from '../../lib/compute-api/endpoints';
 import {
   POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, dayTurns, formatPosition, natalBasis, retrogradeReading,
@@ -34,10 +38,10 @@ import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
 import { RETROGRADE_FOR_YOU_PAGE_PATH, publishedRetrogradeDate, retrogradeForYouShareQuery, retrogradeForYouShareUrl, retrogradeTablePath } from '../../lib/retrograde-for-you/share';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
-import { computeChart } from '../../lib/engine/full.js';
 import sky from '../../data/sky.json';
 import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock, skippedWholeDate, withClockLimit } from '../../lib/vedic-signs/clock';
 import { roundCoordinate } from '../plain-text';
+import { pageChart, pageLongitudes } from './page-ephemeris';
 import { birthDayEnds, birthFields, castNatal, currentClock, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
 
 export { RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, type RetrogradeLoop, type RetrogradePlanet };
@@ -175,8 +179,9 @@ export function retrogradeLoops(planet: RetrogradePlanet, now: Date, rowsAt = po
  * search past them. When the data's last loop is in its post-shadow and the data holds no later loop, that published
  * post-shadow stays and the engine supplies the next loop's stations, so the answer still says when it next turns.
  */
-export function toolLoops(planet: RetrogradePlanet, now: Date, rowsAt = positionsMemo(), span: SkySpan = sky as SkySpan): LoopSet {
-  const fromSky = loopsFromSky(planet, now, span, (body, at) => rowOf(rowsAt(at), body).lon);
+export function toolLoops(planet: RetrogradePlanet, now: Date, rowsAt = positionsMemo(), span: SkySpan = sky as SkySpan, pageLon: (body: RetrogradePlanet, at: Date) => number = pageLongitudes()): LoopSet {
+  // The published windows' station degrees as the page reads them (./page-ephemeris.ts), so the houses and contacts agree.
+  const fromSky = loopsFromSky(planet, now, span, pageLon);
   if (!fromSky) return retrogradeLoops(planet, now, rowsAt);
   if (fromSky.current || !fromSky.previous) return fromSky;
   const ended = fromSky.previous.stationDirect.at.getTime();
@@ -196,7 +201,10 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     const midnight = longitude !== undefined ? context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone, { longitude }) : context.localTime.resolveLocalToUtc(args.birthDate, '00:00', args.zone);
     if (skippedWholeDate(args.birthDate, midnight)) throw new SkippedBirthDateError();
   }
-  const natal = await castNatal(args, context.localTime);
+  // The natal chart, the day's ends and turns, and the published loops' degrees on the page's ephemeris
+  // (./page-ephemeris.ts), so the page and this tool give the same Sun sign, houses and contacts for the same birth.
+  const natal = await castNatal(args, context.localTime, pageChart);
+  const pageLon = pageLongitudes();
   // A birth time the clock skipped is refused, never read at the time the clock jumped to; a repeated one is read at
   // its first pass, and the limits say so (src/lib/vedic-signs/clock.ts, as the page does).
   const onClock = birthTimeOnClock(natal.flags, natal.timeKnown);
@@ -213,23 +221,15 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
   if (!natal.timeKnown) {
     const sunIndex = signIndexForLongitude(natal.chart.bodies.find((row) => row.body === 'Sun')!.lon);
     const ends = await birthDayEnds(args, context.localTime);
-    const rows = ends.map((end) => {
-      const at = positions(end);
-      return POINT_NAMES.map((body) => ({ body: body as string, lon: rowOf(at, body).lon }));
-    });
+    const rows = ends.map((end) => POINT_NAMES.map((body) => ({ body: body as string, lon: pageLon(body, end) })));
     dayEnds = [rows[0], rows[1]];
     // A planet that stationed that day can leave a loop's degrees between the two ends: where it turned counts too.
-    const seen = new Map<number, ReturnType<typeof positions>>();
-    const at = (instant: Date) => {
-      if (!seen.has(instant.getTime())) seen.set(instant.getTime(), positions(instant));
-      return seen.get(instant.getTime())!;
-    };
-    turns = dayTurns((body, instant) => rowOf(at(instant), body as (typeof POINT_NAMES)[number]).lon, ends[0], ends[1]);
+    turns = dayTurns(pageLon, ends[0], ends[1]);
     sunHeld = rows.every((end) => signIndexForLongitude(end.find((row) => row.body === 'Sun')!.lon) === sunIndex);
   }
   // A birth time the clocks showed twice: the rising degree at the later pass, the size of the change on, for the fold limit.
   const foldAsc = natal.angles && natal.flags.includes('dst-fold') && natal.jumpMinutes
-    ? computeChart({ utc: new Date(natal.birthUtc.getTime() + natal.jumpMinutes * 60_000), latitude: natal.latitude!, longitude: natal.longitude!, houseSystem: 'whole', timeKnown: true }).angles?.asc ?? null
+    ? pageChart({ utc: new Date(natal.birthUtc.getTime() + natal.jumpMinutes * 60_000), latitude: natal.latitude!, longitude: natal.longitude!, houseSystem: 'whole', timeKnown: true }).angles?.asc ?? null
     : null;
   const basis = natalBasis({
     timeKnown: natal.timeKnown, placed: natal.placed, angles: natal.angles, bodies: natal.chart.bodies, sunHeld,
@@ -246,7 +246,7 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     planets, now, zone: clock.zone, basis,
     // The windows the page reads (src/data/sky.json) wherever they reach, so the tool and the page give the same status
     // to the second at a station or a shadow's edge; past the data, the engine's own station search.
-    loopsFor: (planet) => toolLoops(planet, now, rowsAt),
+    loopsFor: (planet) => toolLoops(planet, now, rowsAt, sky as SkySpan, pageLon),
     leadingLimits: clock.note ? [clock.note] : [],
   }), onClock.limit);
   const sunSign = sunHeld

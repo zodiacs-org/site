@@ -17,6 +17,17 @@ describe('the Retrogrades for you form', () => {
     expect(markup).toMatch(/<button class="btn btn--primary calc__submit" type="submit" disabled/u);
   });
 
+  it('keeps both submit labels in one cell, so the button keeps its width when the label changes (zero layout shift)', () => {
+    const markup = render(h(RetrogradeForYou, {}));
+    expect(markup).toContain('<span class="rfy__submit-label"><span>Show my retrogrades</span><span class="is-off">Working it out…</span></span>');
+    // The result area holds a screen's height from the moment the form is sent until the next edit.
+    expect(SOURCE).toMatch(/setBusy\(true\); setError\(''\); setResult\(null\); setRefused\(null\); setReserved\(true\);/u);
+    expect(SOURCE).toMatch(/data-reserved=\{reserved \? '' : undefined\}/u);
+    const page = readFileSync(new URL('../pages/retrogrades/for-you/index.astro', import.meta.url), 'utf8');
+    expect(page).toContain(":global(.rfy__result[data-reserved]) { display: grid; align-content: start; min-height: 100vh; }");
+    expect(page).toContain(':global(.rfy__submit-label > .is-off) { visibility: hidden; }');
+  });
+
   it('asks for the time and birthplace only through the gated fields, opened by the converted date', () => {
     expect(SOURCE).not.toMatch(/<BirthFields\b/u);
     expect(SOURCE).toMatch(/<GatedBirthFields\b/u);
