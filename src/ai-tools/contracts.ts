@@ -292,8 +292,24 @@ const publishedBackendSchema = {
     },
   },
 };
-const connectorComputeSchema = (name: string) =>
-  name === 'Backend' ? publishedBackendSchema : COMPUTE_SCHEMAS[name];
+// Engine 2.0.0 adds the continuous-utc basis, the model source and three chart flags to the compute API. The
+// connector's time schema follows the compute API's, with continuous-utc and model, as Dias approved on 23 November 2026
+// (src/ai-tools/published-tools.ts, asContinuousUtc). The three new chart flags keep the published list until a
+// connector release may change it; at run time flags are checked only as objects (computeValue below).
+const publishedChartFlagSchema = { enum: ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span', 'delta-t-extrapolated', 'de440-unavailable', 'outside-de440-span'] };
+const publishedLocalResolutionSchema = {
+  ...COMPUTE_SCHEMAS.LocalResolution,
+  properties: {
+    ...(COMPUTE_SCHEMAS.LocalResolution.properties as Record<string, unknown>),
+    flags: { type: 'array', items: { enum: ['dst-gap', 'dst-fold', 'lmt'] } },
+  },
+};
+const PUBLISHED_COMPUTE_SCHEMAS: Readonly<Record<string, unknown>> = {
+  Backend: publishedBackendSchema,
+  ChartFlag: publishedChartFlagSchema,
+  LocalResolution: publishedLocalResolutionSchema,
+};
+const connectorComputeSchema = (name: string) => PUBLISHED_COMPUTE_SCHEMAS[name] ?? COMPUTE_SCHEMAS[name];
 
 /** A compute API schema with its references to other components written out, so it stands alone in a tool's schema. */
 function inlined(schema: unknown): unknown {
