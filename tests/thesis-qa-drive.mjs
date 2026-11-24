@@ -579,7 +579,7 @@ try {
   await checkOwnershipDrawer(page, 'desktop');
 
   // The human visual layer and optional evidence remain available.
-  check('seven-era transmission renders', (await page.locator('.transmission .era').count()) === 7);
+  check('eight-era transmission renders', (await page.locator('.transmission .era').count()) === 8);
   check('F2 exposes measured data outside a template or drawer',
     await page.locator('#fig-2 [data-attention-chart]:visible').count() === 1
       && await page.locator('#fig-2 template, #fig-2 details').count() === 0);
@@ -728,9 +728,11 @@ try {
       // A drawing is dimmed by a veil in the plate's colour, so its shown strength is 1 minus the veil.
       firstDrawing: 1 - veil(fig.querySelector('.era__object')),
       firstMark: opacity(fig.querySelector('.cd')),
-      eras: [...fig.querySelectorAll('.era > *')].map((node) => (node.classList.contains('era__object') ? 1 - veil(node) : opacity(node))),
+      eras: [...fig.querySelectorAll('.era > :not(.era__tip)')].map((node) => (node.classList.contains('era__object') ? 1 - veil(node) : opacity(node))),
       marks: [...fig.querySelectorAll('.cd')].map(opacity),
-      twelve: opacity(fig.querySelector('.carry-twelve')),
+      // The closing beat: the twelve sign icons in the header light one after another.
+      picks: [...fig.querySelectorAll('.carry-pick')].map(opacity),
+      live: fig.classList.contains('is-live'),
       // The big axis: leaders draw up from their dates (stroke-dashoffset to 0), markers pop to 1.
       leads: [...fig.querySelectorAll('svg.carry-axis:not(.carry-axis--mini) .carry-lead')]
         .map((node) => Number.parseFloat(getComputedStyle(node).strokeDashoffset)),
@@ -753,28 +755,134 @@ try {
   check('F1 plate: armed below the fold with the count at 0, the forms veiled and no marks yet',
     carryBefore.armed && !carryBefore.on && carryBefore.count === '0'
       && carryBefore.firstDrawing < 0.2 && carryBefore.firstMark === 0
-      && carryBefore.leads.length === 7 && carryBefore.leads[0] !== 0,
+      && carryBefore.leads.length === 8 && carryBefore.leads[0] !== 0
+      && carryBefore.picks.length === 12 && carryBefore.picks.every((value) => value < 0.2),
     JSON.stringify({ ...carryBefore, eras: undefined, marks: undefined }));
   await carry.locator('#fig-1').evaluate((fig) => fig.scrollIntoView({ block: 'center', behavior: 'instant' }));
-  await wait(5000);
+  const scrolledAt = Date.now();
+  // While the entrance plays, hovering a form and clicking a sign do nothing.
+  await wait(800);
+  await carry.locator('#fig-1 .era').nth(0).hover();
+  await wait(250);
+  await carry.locator('#fig-1 .carry-pick[data-sign="leo"]').click();
+  await wait(150);
+  const duringPlay = await carry.locator('#fig-1').evaluate((fig) => ({
+    tip: getComputedStyle(fig.querySelector('.era__tip')).visibility,
+    pressed: fig.querySelector('.carry-pick[data-sign="leo"]').getAttribute('aria-pressed'),
+    pick: fig.classList.contains('has-pick'),
+  }));
+  check('F1 plate: while the entrance plays, hover shows nothing and the picker is off',
+    duringPlay.tip === 'hidden' && duringPlay.pressed === 'false' && !duringPlay.pick, JSON.stringify(duringPlay));
+  await carry.mouse.move(2, 2);
+  await wait(Math.max(0, 6000 - (Date.now() - scrolledAt)));
   const carryAfter = await carryState();
-  check('F1 plate: plays once into view, ending on 7 with every form unveiled and all 84 marks lit',
-    carryAfter.on && carryAfter.isTwelve && carryAfter.count === '7'
-      && carryAfter.eras.length === 21 && carryAfter.eras.every((value) => value === 1)
-      && carryAfter.marks.length === 84 && carryAfter.marks.every((value) => value === 1)
-      && carryAfter.twelve === 1
-      && carryAfter.leads.length === 7 && carryAfter.leads.every((value) => value === 0)
-      && carryAfter.axisMarks.length === 7 && carryAfter.axisMarks.every((value) => value === 1),
+  check('F1 plate: plays once into view, ending on 8 with every form unveiled and all 96 marks lit',
+    carryAfter.on && carryAfter.isTwelve && carryAfter.live && carryAfter.count === '8'
+      && carryAfter.eras.length === 24 && carryAfter.eras.every((value) => value === 1)
+      && carryAfter.marks.length === 96 && carryAfter.marks.every((value) => value === 1)
+      && carryAfter.picks.length === 12 && carryAfter.picks.every((value) => value === 1)
+      && carryAfter.leads.length === 8 && carryAfter.leads.every((value) => value === 0)
+      && carryAfter.axisMarks.length === 8 && carryAfter.axisMarks.every((value) => value === 1),
     JSON.stringify(carryAfter));
   check('F1 plate: the motion never changes the figure height',
     carryBefore.height === carryAfter.height, `${carryBefore.height} vs ${carryAfter.height}`);
+
+  // Each form explains itself on hover or focus, and dims the other forms.
+  const tipState = (index) => carry.locator('#fig-1').evaluate((fig, at) => {
+    const opacity = (node) => Number.parseFloat(getComputedStyle(node).opacity);
+    const tips = [...fig.querySelectorAll('.era__tip')];
+    const box = fig.getBoundingClientRect();
+    const tip = tips[at].getBoundingClientRect();
+    const leads = [...fig.querySelectorAll('svg.carry-axis:not(.carry-axis--mini) .carry-lead')];
+    return {
+      shown: tips.map((node) => getComputedStyle(node).visibility === 'visible' && opacity(node) === 1),
+      inside: tip.left >= box.left && tip.right <= box.right && tip.top >= box.top && tip.bottom <= box.bottom,
+      drawings: [...fig.querySelectorAll('.era__object')].map(opacity),
+      lead: opacity(leads[at]),
+      others: leads.filter((_, i) => i !== at).map(opacity),
+    };
+  }, index);
+  await carry.locator('#fig-1 .era').nth(4).hover();
+  await wait(300);
+  const hovered = await tipState(4);
+  check('1440px: hovering the fifth form shows only its pop-up and dims the other seven',
+    hovered.shown.filter(Boolean).length === 1 && hovered.shown[4] && hovered.inside
+      && hovered.drawings.every((value, i) => (i === 4 ? value === 1 : Math.abs(value - 0.35) < 0.01))
+      && hovered.lead === 1 && hovered.others.every((value) => Math.abs(value - 0.35) < 0.01),
+    JSON.stringify(hovered));
+  await carry.mouse.move(2, 2);
+  await wait(300);
+  const away = await tipState(4);
+  check('1440px: moving away restores every form',
+    away.shown.every((value) => !value) && away.drawings.every((value) => value === 1)
+      && away.lead === 1 && away.others.every((value) => value === 1),
+    JSON.stringify(away));
+  await carry.locator('#fig-1 .era').nth(3).focus();
+  await carry.keyboard.press('Tab');
+  await wait(300);
+  const tabbed = await tipState(4);
+  const tabbedFocus = await carry.evaluate(() => document.activeElement?.getAttribute('aria-describedby'));
+  await carry.keyboard.press('Escape');
+  await wait(300);
+  const escaped = await tipState(4);
+  check('1440px: Tab to a form shows its pop-up and Escape hides it',
+    tabbedFocus === 'carry-tip-4' && tabbed.shown[4] && escaped.shown.every((value) => !value),
+    JSON.stringify({ tabbedFocus, tabbed: tabbed.shown, escaped: escaped.shown }));
+  await carry.evaluate(() => document.activeElement?.blur());
+
+  // The header icons are a sign picker: the reader's sign is marked in every drawing.
+  const pickState = () => carry.evaluate(() => {
+    const fig = document.querySelector('#fig-1');
+    const me = [...fig.querySelectorAll('.cd.is-me')];
+    const other = fig.querySelector('.cd:not(.is-me)');
+    const leoDisc = document.querySelector('[data-motion="shelf"] .disc[data-sign="leo"]');
+    return {
+      pressed: [...fig.querySelectorAll('.carry-pick')].filter((b) => b.getAttribute('aria-pressed') === 'true').map((b) => b.dataset.sign),
+      label: fig.querySelector('[data-carry-label]').textContent,
+      me: me.length,
+      meK: [...new Set(me.map((node) => node.style.getPropertyValue('--k').trim()))],
+      perDrawing: [...fig.querySelectorAll('.era')].map((era) => era.querySelectorAll('.cd.is-me').length),
+      otherOpacity: other ? Number.parseFloat(getComputedStyle(other).opacity) : null,
+      asset: fig.querySelector('.da-word').textContent,
+      shelfLeo: !!leoDisc && leoDisc.classList.contains('is-me'),
+    };
+  });
+  await carry.locator('#fig-1 .carry-pick[data-sign="leo"]').click();
+  await wait(400);
+  const leo = await pickState();
+  check('1440px: picking Leo marks Leo in all eight drawings, the trading screen and the shelf plate',
+    JSON.stringify(leo.pressed) === '["leo"]' && leo.label === 'Leo in every form.'
+      && leo.me === 8 && JSON.stringify(leo.meK) === '["4"]' && leo.perDrawing.every((value) => value === 1)
+      && Math.abs(leo.otherOpacity - 0.25) < 0.01 && leo.asset === 'LEO' && leo.shelfLeo,
+    JSON.stringify(leo));
+  await carry.locator('#fig-1 .carry-pick[data-sign="leo"]').click();
+  await wait(400);
+  const cleared = await pickState();
+  check('1440px: clicking Leo again clears the pick everywhere',
+    cleared.pressed.length === 0 && cleared.label === 'The evolution of the zodiac. Pick your sign.'
+      && cleared.me === 0 && cleared.otherOpacity === 1 && cleared.asset === 'ARIES' && !cleared.shelfLeo,
+    JSON.stringify(cleared));
+  await carry.locator('#fig-1 .carry-pick[data-sign="cancer"]').focus();
+  await carry.keyboard.press('Tab');
+  await carry.keyboard.press('Enter');
+  await wait(400);
+  const keyed = await pickState();
+  await carry.keyboard.press('Enter');
+  await wait(400);
+  const keyedOff = await pickState();
+  check('1440px: Tab to a sign and Enter picks it, Enter again clears it',
+    JSON.stringify(keyed.pressed) === '["leo"]' && keyed.me === 8 && keyed.asset === 'LEO'
+      && keyedOff.pressed.length === 0 && keyedOff.me === 0 && keyedOff.asset === 'ARIES',
+    JSON.stringify({ keyed: keyed.pressed, keyedOff: keyedOff.pressed }));
+  await carry.evaluate(() => document.activeElement?.blur());
+
   for (const width of [1440, 810, 730, 623, 375]) {
     await carry.setViewportSize({ width, height: 900 });
     await wait(200);
     if ([1440, 730, 623].includes(width)) {
       const offsets = await leaderOffsets();
       check(`${width}px: F1 timeline leaders start under their drawings' centres`,
-        offsets.length === 7 && offsets.every((value) => value <= 3),
+        offsets.length === 8 && offsets.every((value) => value <= 3),
         offsets.map((value) => value.toFixed(2)).join(', '));
     }
     if (width === 375) {
@@ -784,11 +892,104 @@ try {
       }));
       check('375px: F1 hides the big axis and shows the small scale strip',
         axes.big === 'none' && axes.mini !== 'none', JSON.stringify(axes));
+      const phone = await carry.evaluate(() => {
+        const fig = document.querySelector('#fig-1');
+        const box = fig.getBoundingClientRect();
+        const picks = [...fig.querySelectorAll('.carry-pick')].map((b) => b.getBoundingClientRect());
+        const tips = [...fig.querySelectorAll('.era__tip')];
+        return {
+          rows: new Set(picks.map((r) => Math.round(r.top))).size,
+          inside: picks.every((r) => r.left >= box.left && r.right <= box.right),
+          overflow: document.documentElement.scrollWidth > window.innerWidth,
+          tips: tips.map((t) => getComputedStyle(t).position === 'static' && getComputedStyle(t).visibility === 'visible'
+            && Number.parseFloat(getComputedStyle(t).opacity) === 1 && t.getBoundingClientRect().height > 0),
+        };
+      });
+      check('375px: twelve sign buttons in one row inside the plate, every sentence shown as text',
+        phone.rows === 1 && phone.inside && !phone.overflow && phone.tips.length === 8 && phone.tips.every(Boolean),
+        JSON.stringify(phone));
     }
     await shot(carry, '#fig-1', `thesis-f1-plate-${width}.png`);
   }
   check('no page errors (F1 plate)', carryErrors.length === 0, carryErrors.slice(0, 2).join(' | '));
   await carry.close();
+
+  // The plate is shareable: a stable link, Share and Save image.
+  const STABLE = 'https://zodiacs.org/thesis/#zodiac-timeline';
+  const linked = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await linked.goto(`${BASE}/thesis/#zodiac-timeline`, { waitUntil: 'networkidle' });
+  await wait(600);
+  const linkedState = await linked.locator('#fig-1').evaluate((fig) => {
+    const box = fig.getBoundingClientRect();
+    return {
+      inView: box.top < window.innerHeight && box.bottom > 0,
+      armed: fig.classList.contains('is-armed'),
+      count: fig.querySelector('[data-carry-count]').textContent,
+    };
+  });
+  check('#zodiac-timeline lands on the plate, which shows its finished state at once',
+    linkedState.inView && !linkedState.armed && linkedState.count === '8', JSON.stringify(linkedState));
+  const saved = await linked.request.get(`${BASE}/assets/thesis/share/evolution-of-the-zodiac.png`);
+  check('Save image serves the plate as a PNG',
+    saved.status() === 200 && /^image\/png/.test(saved.headers()['content-type'] ?? ''),
+    `${saved.status()} ${saved.headers()['content-type']}`);
+  const capture = await linked.evaluate(() => {
+    document.documentElement.classList.add('is-capture');
+    const fig = document.querySelector('#fig-1');
+    const shown = (node) => !!node && getComputedStyle(node).display !== 'none' && node.getClientRects().length > 0;
+    const state = {
+      share: shown(fig.querySelector('.carry-share')),
+      save: shown(fig.querySelector('.carry-save')),
+      brand: shown(fig.querySelector('.carry-brand')),
+    };
+    document.documentElement.classList.remove('is-capture');
+    return state;
+  });
+  check('in the share image (is-capture) the controls are hidden and the brand mark is shown',
+    !capture.share && !capture.save && capture.brand, JSON.stringify(capture));
+  await linked.close();
+
+  const copyContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await copyContext.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
+  const copyPage = await copyContext.newPage();
+  await copyPage.addInitScript(() => { Object.defineProperty(Navigator.prototype, 'share', { value: undefined, configurable: true }); });
+  await copyPage.goto(`${BASE}/thesis/#zodiac-timeline`, { waitUntil: 'networkidle' });
+  await copyPage.locator('#fig-1 .carry-share').click();
+  await wait(300);
+  const copied = await copyPage.evaluate(async () => ({
+    clip: await navigator.clipboard.readText(),
+    status: document.querySelector('#fig-1 .carry-share-status').textContent,
+  }));
+  check('Share without a share sheet copies the stable link and says so',
+    copied.clip === STABLE && copied.status === 'Link copied.', JSON.stringify(copied));
+  await copyContext.close();
+
+  const shareContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const sharePage = await shareContext.newPage();
+  await sharePage.addInitScript(() => {
+    window.__shared = [];
+    Object.defineProperty(Navigator.prototype, 'canShare', { value: () => true, configurable: true });
+    Object.defineProperty(Navigator.prototype, 'share', {
+      value: (data) => {
+        window.__shared.push({
+          url: data.url, title: data.title, text: data.text,
+          files: (data.files ?? []).map((file) => ({ name: file.name, type: file.type, size: file.size })),
+        });
+        return Promise.resolve();
+      },
+      configurable: true,
+    });
+  });
+  await sharePage.goto(`${BASE}/thesis/#zodiac-timeline`, { waitUntil: 'networkidle' });
+  await sharePage.locator('#fig-1 .carry-share').click();
+  await sharePage.waitForFunction(() => window.__shared.length > 0, null, { timeout: 5000 }).catch(() => {});
+  const shared = await sharePage.evaluate(() => window.__shared);
+  check('Share with a share sheet sends the stable link and one PNG of the plate',
+    shared.length === 1 && shared[0].url === STABLE && shared[0].files.length === 1
+      && shared[0].files[0].type === 'image/png' && shared[0].files[0].size > 0
+      && shared[0].title === 'The evolution of the zodiac',
+    JSON.stringify(shared));
+  await shareContext.close();
 
   // The annotated review viewport keeps the full four-column matrix.
   const review = await browser.newPage({ viewport: { width: 810, height: 1054 } });
@@ -891,8 +1092,8 @@ try {
       scrollWidth: transmission.scrollWidth,
     };
   });
-  check('730px: F1 keeps seven eras on one row with the Digital asset drawing of the twelve',
-    annotatedF1.eras === 7
+  check('730px: F1 keeps eight eras on one row with the Digital asset drawing of the twelve',
+    annotatedF1.eras === 8
       && annotatedF1.oneRow
       && annotatedF1.coinSvgs === 1
       && annotatedF1.coinMarks === 12
@@ -924,13 +1125,14 @@ try {
     `${compactPage.documentWidth} vs ${compactPage.viewportWidth}`);
 
   const chronology = await compact.locator('#fig-1 .era__time').allTextContents();
-  check('623px: transmission retains seven chronological anchors',
+  check('623px: transmission retains eight chronological anchors',
     JSON.stringify(chronology.map((value) => value.trim())) === JSON.stringify([
       'c. 450 BCE',
       '150 BCE to 150 CE',
       '850 to 1150 CE',
       'c. 1500',
       '1930',
+      '1993',
       'c. 2010',
       '5 Jul 2024',
     ]),
@@ -1102,20 +1304,31 @@ try {
   const reducedCarry = await reduced.locator('#fig-1').evaluate((fig) => ({
     armed: fig.classList.contains('is-armed'),
     count: fig.querySelector('[data-carry-count]')?.textContent ?? '',
-    opacities: [...fig.querySelectorAll('.era > *, .carry-twelve')].map((node) => Number.parseFloat(getComputedStyle(node).opacity)),
+    opacities: [...fig.querySelectorAll('.era > :not(.era__tip), .carry-pick')].map((node) => Number.parseFloat(getComputedStyle(node).opacity)),
     marks: [...fig.querySelectorAll('.cd')].map((node) => Number.parseFloat(getComputedStyle(node).opacity)),
-    axis: [...fig.querySelectorAll('.carry-mark, .carry-ticks')].map((node) => Number.parseFloat(getComputedStyle(node).opacity)),
+    axis: [...fig.querySelectorAll('.carry-mark, .carry-tick, .carry-note')].map((node) => Number.parseFloat(getComputedStyle(node).opacity)),
     leads: [...fig.querySelectorAll('.carry-lead')].map((node) => getComputedStyle(node).strokeDasharray),
     line: [...fig.querySelectorAll('.carry-line')].map((node) => getComputedStyle(node).transform),
   }));
-  check('reduced motion: F1 plate shows its finished state, unarmed, count 7, all 84 marks',
-    !reducedCarry.armed && reducedCarry.count === '7'
-      && reducedCarry.opacities.length === 22 && reducedCarry.opacities.every((value) => value === 1)
-      && reducedCarry.marks.length === 84 && reducedCarry.marks.every((value) => value === 1)
-      && reducedCarry.axis.length === 16 && reducedCarry.axis.every((value) => value === 1)
-      && reducedCarry.leads.length === 7 && reducedCarry.leads.every((value) => value === 'none')
+  check('reduced motion: F1 plate shows its finished state, unarmed, count 8, all 96 marks',
+    !reducedCarry.armed && reducedCarry.count === '8'
+      && reducedCarry.opacities.length === 36 && reducedCarry.opacities.every((value) => value === 1)
+      && reducedCarry.marks.length === 96 && reducedCarry.marks.every((value) => value === 1)
+      && reducedCarry.axis.length === 44 && reducedCarry.axis.every((value) => value === 1)
+      && reducedCarry.leads.length === 8 && reducedCarry.leads.every((value) => value === 'none')
       && reducedCarry.line.length === 2 && reducedCarry.line.every((value) => value === 'none'),
     JSON.stringify(reducedCarry));
+  await reduced.locator('#fig-1 .era').nth(4).hover();
+  const reducedTip = await reduced.locator('#fig-1 .era__tip').nth(4).evaluate((tip) => ({
+    visibility: getComputedStyle(tip).visibility,
+    opacity: getComputedStyle(tip).opacity,
+    durations: getComputedStyle(tip).transitionDuration,
+  }));
+  check('reduced motion: an F1 pop-up appears at once, with no transition',
+    reducedTip.visibility === 'visible' && reducedTip.opacity === '1'
+      && reducedTip.durations.split(',').every((value) => Number.parseFloat(value) === 0),
+    JSON.stringify(reducedTip));
+  await reduced.mouse.move(2, 2);
   await checkOwnershipDrawer(reduced, 'reduced motion');
   for (const [name, selector] of VISUAL_MODULES) {
     check(`reduced motion: ${name} is visually exposed`, await isVisuallyExposed(reduced.locator(selector).first()));
