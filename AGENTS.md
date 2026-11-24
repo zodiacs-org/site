@@ -67,6 +67,7 @@ an agent merge; agents never merge or re-run them by hand.
   confidence NN%" label (`src/ai-tools/reading-confidence.ts`). No betting
   tips, sports picks, market timing, election forecasts, health predictions
   or guarantees.
+- Numerology and tarot are separate traditions, not astrology. Their answers carry no 'Reading confidence' label, and every answer says they are not astrology.
 - Never store or log users' birth details, and never put them in a URL.
   Links never carry a birth year, a birth time, a birthplace or the names
   you give; a birthday link carries only the month and day.
