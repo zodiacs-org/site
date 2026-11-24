@@ -97,7 +97,11 @@ await withPreview({ port: 4393 }, async (baseURL) => {
   const ariesStream = '/horoscopes/aries/?stream=mobile';
   const splitCounts = new Map();
   const eventStream = '/horoscopes/aries/?stream=events';
-  const tickerStream = '/pt/today/?stream=ticker';
+  const localizedStreams = new Map([
+    ['/pt/today/?stream=ticker', 'Portuguese'],
+    ['/es/today/?stream=ticker', 'Spanish'],
+  ]);
+  const legendSplitCounts = new Map();
   const proxy = await startStreamedPreview(baseURL, (path, html) => {
     if (path === ariesStream) {
       const body = html.indexOf('<div class="hz-hero__body"');
@@ -115,14 +119,24 @@ await withPreview({ port: 4393 }, async (baseURL) => {
       assert.ok(facts > titleEnd && discEnd > facts && periods > discEnd);
       return [bodyOpen + 1, dateOpen + 1, titleEnd + '</h1>'.length, discEnd + '</picture>'.length, linkEnd + '</a>'.length];
     }
-    if (path === tickerStream) {
+    if (localizedStreams.has(path)) {
+      const legend = html.match(/<figcaption class="[^"]*\btdl-legend\b[^"]*"[^>]*>[\s\S]*?<\/figcaption>/);
+      assert.ok(legend);
+      // Paint after each reserved cell, visible entry, and glyph. A packet
+      // arriving later can otherwise move a translated label to a new row.
+      const cells = [...legend[0].matchAll(/data-slot="[^"]+"[^>]*><\/span>|data-entry="[^"]+"[^>]*>|<\/i>/g)];
+      assert.ok(cells.length > 0);
+      legendSplitCounts.set(path, cells.length);
       const start = html.indexOf('<p class="skyticker"');
       const end = html.indexOf('</p>', start);
       assert.ok(start >= 0 && end > start);
       const glyphs = [...html.slice(start, end).matchAll(/(?:<\/svg>|<img[^>]*>)<\/span>/g)];
       assert.ok(glyphs.length > 0);
       splitCounts.set(path, glyphs.length);
-      return glyphs.map((glyph) => start + glyph.index + glyph[0].length);
+      return [
+        ...cells.map((cell) => legend.index + cell.index + cell[0].length),
+        ...glyphs.map((glyph) => start + glyph.index + glyph[0].length),
+      ];
     }
     if (path === eventStream) {
       const rail = html.match(/<aside class="upcoming-events[^"]*"[^>]*>[\s\S]*?<\/aside>/);
@@ -324,18 +338,24 @@ await withPreview({ port: 4393 }, async (baseURL) => {
       await aries.context.close();
     }
 
-    const ticker = await open(tickerStream, viewports[0], datedNow);
-    try {
-      assert.equal(ticker.status, 200);
-      await settle(ticker.page);
-      assert.equal(await ticker.page.getAttribute('html', 'data-edition-state'), 'dated');
-      const items = await ticker.page.locator('.tdl-skyline .skyticker__item[data-label]').count();
-      assert.ok(items >= 3);
-      assert.equal(splitCounts.get(tickerStream), items);
-      const shifts = await ticker.page.evaluate(() => globalThis.__editionShifts);
-      check('360px dated Portuguese Today: streamed ticker glyphs keep exactly zero CLS', total(shifts) === 0, JSON.stringify(shifts));
-    } finally {
-      await ticker.context.close();
+    for (const [route, language] of localizedStreams) {
+      const ticker = await open(route, viewports[0], datedNow);
+      try {
+        assert.equal(ticker.status, 200);
+        await settle(ticker.page);
+        assert.equal(await ticker.page.getAttribute('html', 'data-edition-state'), 'dated');
+        const labels = ticker.page.locator('.tdl-legend [data-entry] > span');
+        const entries = await labels.allTextContents();
+        assert.ok(entries.length > 0 && entries.every((entry) => entry.trim()));
+        assert.equal(legendSplitCounts.get(route), 3 * entries.length);
+        const items = await ticker.page.locator('.tdl-skyline .skyticker__item[data-label]').count();
+        assert.ok(items >= 3);
+        assert.equal(splitCounts.get(route), items);
+        const shifts = await ticker.page.evaluate(() => globalThis.__editionShifts);
+        check(`360px dated ${language} Today: streamed wheel labels and ticker glyphs keep exactly zero CLS`, total(shifts) === 0, JSON.stringify(shifts));
+      } finally {
+        await ticker.context.close();
+      }
     }
 
     const events = await open(eventStream, { width: 1280, height: 1600 }, datedNow);

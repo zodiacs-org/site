@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../../components/ArtFrame.astro';
+import DailyWheelLegend from '../../components/DailyWheelLegend.astro';
 import EditionText from '../../components/EditionText.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import AskGuideLine from '../../components/AskGuideLine.astro';
@@ -124,12 +125,6 @@ const allAspects = aspectsToday(daily);
 const aspectCards = allAspects.slice(0, 4);
 const wheelAspects = allAspects.map((aspect) => ({ a: aspect.a, b: aspect.b, type: aspect.type }));
 const aspectTypes = new Set(allAspects.map((aspect) => aspect.type));
-const legendEntries = [
-  { key: 'rx', label: 'Retrograde', shown: true },
-  { key: 'easy', label: 'Trine or sextile', shown: aspectTypes.has('trine') || aspectTypes.has('sextile') },
-  { key: 'tense', label: 'Square or opposition', shown: aspectTypes.has('square') || aspectTypes.has('opposition') },
-  { key: 'joined', label: 'Conjunction', shown: aspectTypes.has('conjunction') },
-].filter((entry) => entry.shown);
 const definition = (slug: string) => CONTEXT_TERMS.find((term) => term.slug === slug)?.plainDefinition ?? '';
 const named = (body: string) => (body === 'Sun' || body === 'Moon' ? `the ${body}` : body);
 const topic = (body: string) => NATAL_BODY_THEME[body as keyof typeof NATAL_BODY_THEME]?.topic ?? '';
@@ -292,17 +287,10 @@ const monthDay = (iso: string) => ({
             {todayMoonPath && todayMoonPath !== 'full' && <path d={moonPath(daily.moon.illumination, waxing, 18)} fill="#E6E2D6" />}
           </svg>
         </div>
-        <figcaption class="today-legend">
-          {[true, false].map((reserve) => legendEntries.map(({ key, label }, index) => (
-            <span class="today-legend__item" data-label={label} data-key={key}
-              data-slot={reserve ? key : undefined} data-entry={reserve ? undefined : key}
-              aria-hidden={reserve || undefined} style={`order:${index}`}>
-              {!reserve && <>
-                <i class={key === 'rx' ? 'today-legend__rx' : `today-legend__line today-legend__line--${key}`}>{key === 'rx' ? 'Rx' : ''}</i><span>{label}</span>
-              </>}
-            </span>
-          )))}
-        </figcaption>
+        <DailyWheelLegend
+          aspectTypes={aspectTypes}
+          labels={{ rx: 'Retrograde', easy: 'Trine or sextile', tense: 'Square or opposition', joined: 'Conjunction' }}
+        />
       </figure>
     </header>
 
@@ -733,30 +721,6 @@ const monthDay = (iso: string) => ({
     aspect-ratio: 1;
     transform: translate(-50%, -50%);
   }
-  .today-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-top: 14px; color: var(--ink-2); font-size: 12.5px; }
-  /* Size the entire caption before its first visible glyph arrives. A
-     reservation occupies the cell until that entry has a glyph to paint. */
-  .today-legend__item[data-slot] { display: none; visibility: hidden; }
-  @supports selector(:has(> i)) {
-    .today-legend__item[data-slot] { display: inline-grid; }
-    .today-legend__item[data-entry]:not(:has(> i)),
-    .today-legend:has([data-entry="rx"] > i) [data-slot="rx"],
-    .today-legend:has([data-entry="easy"] > i) [data-slot="easy"],
-    .today-legend:has([data-entry="tense"] > i) [data-slot="tense"],
-    .today-legend:has([data-entry="joined"] > i) [data-slot="joined"] { display: none; }
-  }
-  .today-legend__item { display: inline-grid; grid-template-columns: 18px max-content; align-items: center; column-gap: 7px; }
-  .today-legend__item[data-key="rx"] { grid-template-columns: max-content max-content; }
-  .today-legend__item[data-key="rx"]::before { content: 'Rx'; visibility: hidden; grid-area: 1 / 1; }
-  .today-legend__item::after { content: attr(data-label); visibility: hidden; grid-area: 1 / 2; }
-  .today-legend__item > span { grid-area: 1 / 2; }
-  .today-legend__item > i { grid-area: 1 / 1; font-style: normal; }
-  .today-legend__item[data-key="rx"]::before,
-  .today-legend__rx { color: rgba(224, 176, 128, 0.9); font-family: var(--font-mono); font-size: 11px; }
-  .today-legend__line { display: inline-block; width: 18px; height: 0; border-top: 1.5px solid; }
-  .today-legend__line--easy { color: rgba(182, 212, 228, 0.85); }
-  .today-legend__line--tense { color: rgba(222, 142, 121, 0.85); }
-  .today-legend__line--joined { color: rgba(238, 241, 247, 0.6); }
 
   /* ── 2. The sky line ──────────────────────────────────────────── */
   .today-skyline { margin-top: 18px; }
@@ -1437,7 +1401,6 @@ const monthDay = (iso: string) => ({
     .today-hero__lede { margin-top: 16px; font-size: 1.06rem; }
     .today-hero__actions { flex-direction: column; align-items: stretch; margin-top: 24px; }
     .today-hero__actions .btn { width: 100%; }
-    .today-legend { gap: 6px 14px; font-size: 12px; }
     .today-skyline .skyticker { gap: 10px 18px; }
     .today-lights { grid-template-columns: minmax(0, 1fr); gap: 16px; }
     .today-light__art .artframe { aspect-ratio: 16 / 9; }
