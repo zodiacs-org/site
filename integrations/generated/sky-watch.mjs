@@ -8460,7 +8460,7 @@ async function occasionCard(input, clock2) {
     evening = eveningSky({ latitude: place2.lat, longitude: place2.lon }, date3, offsetMinutes2);
   }
   const sign3 = (body3) => sky.bodies.find((row) => row.body === body3).sign;
-  const words = OCCASION_WORDS[input.occasion];
+  const words2 = OCCASION_WORDS[input.occasion];
   return {
     input,
     instant: instant3.toISOString(),
@@ -8468,9 +8468,9 @@ async function occasionCard(input, clock2) {
     moonSignChange,
     evening,
     words: {
-      title: words.title,
+      title: words2.title,
       interpretation: sunMoonLine(sign3("Sun"), sign3("Moon")),
-      closing: words.closing
+      closing: words2.closing
     }
   };
 }
@@ -28234,8 +28234,8 @@ var skyCalendarData = z3.object({
   note: z3.string()
 });
 var PLANET_ORDER = ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
-function listWords(words) {
-  return words.length < 2 ? words.join("") : `${words.slice(0, -1).join(", ")} and ${words.at(-1)}`;
+function listWords(words2) {
+  return words2.length < 2 ? words2.join("") : `${words2.slice(0, -1).join(", ")} and ${words2.at(-1)}`;
 }
 var iso2 = (value) => new Date(value).toISOString();
 function feedContents() {
@@ -36421,8 +36421,8 @@ function signPairAnswer(query, a, b, friendship, origin) {
 }
 function explainAstrology(args, origin = DEFAULT_ORIGIN5, options = {}) {
   const keys = keysFor(options);
-  const words = clean(args.topic);
-  const outside = OUT_OF_SCOPE.find((name) => ` ${words} `.includes(` ${name} `));
+  const words2 = clean(args.topic);
+  const outside = OUT_OF_SCOPE.find((name) => ` ${words2} `.includes(` ${name} `));
   const pair = outside ? null : matchSignPair(args.topic);
   if (pair) return signPairAnswer(args.topic, pair.a, pair.b, pair.friendship, origin);
   const topic = outside ? null : matchTopic(args.topic, options);
@@ -36595,11 +36595,11 @@ function countryFold(hint) {
   return COUNTRY_ALIAS[folded2] ?? folded2;
 }
 function countryMatches(country, hint) {
-  const words = (text2) => ` ${text2.replace(/[^a-z0-9]+/gu, " ").trim()} `;
+  const words2 = (text2) => ` ${text2.replace(/[^a-z0-9]+/gu, " ").trim()} `;
   const wanted = countryFold(hint);
   const name = fold2(country);
-  if (!words(wanted).trim()) return name === wanted;
-  return words(name).includes(words(wanted)) || words(wanted).includes(words(name));
+  if (!words2(wanted).trim()) return name === wanted;
+  return words2(name).includes(words2(wanted)) || words2(wanted).includes(words2(name));
 }
 function queryVariants(place2) {
   const query = foldedQuery(place2);
@@ -43219,6 +43219,11 @@ var astrocartographyData = z16.object({
   })).max(ACG_MAX_CITIES),
   /** Names that matched no town or city in the index. */
   unmatched: z16.array(z16.string()).max(ACG_MAX_CITIES),
+  /** Names that match more than one place equally well, with the places they could be: ask which one is meant. */
+  ambiguous: z16.array(z16.object({
+    asked: z16.string(),
+    places: z16.array(z16.object({ name: z16.string(), region: z16.string(), country: z16.string() })).min(2).max(5)
+  })).max(ACG_MAX_CITIES),
   readings: z16.object({ ASC: z16.string(), DSC: z16.string(), MC: z16.string(), IC: z16.string() }),
   confidence: z16.number().int().min(40).max(95),
   confidenceLabel: z16.string(),
@@ -43233,29 +43238,61 @@ function greenwichSiderealDegrees(utc) {
   return equatorialMoment(utc).gast;
 }
 function splitCity(text2) {
-  const comma = text2.lastIndexOf(",");
-  if (comma <= 0) return { place: text2.trim() };
-  const place2 = text2.slice(0, comma).trim();
-  const country = text2.slice(comma + 1).trim();
-  return place2.length >= 2 && country.length >= 2 ? { place: place2, country } : { place: text2.trim() };
+  const [place2, ...hints] = text2.split(",").map((part) => part.trim());
+  return place2.length >= 2 && hints.length && hints.every((hint) => hint.length >= 2) ? { place: place2, hints } : { place: text2.trim(), hints: [] };
 }
-function exactPlace(table, request2) {
-  for (const query of queryVariants(request2.place)) {
+var words = (text2) => ` ${fold2(text2).replace(/[^a-z0-9]+/gu, " ").trim()} `;
+function hintMatches(hint, region, country) {
+  return countryMatches(country, hint) || words(hint).trim() !== "" && words(region).includes(words(hint));
+}
+var Fit = { Whole: 0, Words: 1, Longer: 2, Contains: 3 };
+function fitOf(names, query) {
+  let best = null;
+  for (const name of names) {
+    let fit = null;
+    if (name === query) fit = Fit.Whole;
+    else if (name.startsWith(query)) fit = /[\p{L}\p{N}]/u.test(name[query.length] ?? "") ? Fit.Longer : Fit.Words;
+    else if (query[2] && name[0] === query[0] && name.includes(query)) fit = Fit.Contains;
+    if (fit !== null && (best === null || fit < best)) best = fit;
+  }
+  return best;
+}
+var MINOR_SHARE = 0.1;
+var ACG_CHOICES = 5;
+function resolvePlace(table, text2) {
+  const { place: place2, hints } = splitCity(text2);
+  const found = /* @__PURE__ */ new Map();
+  for (const query of queryVariants(place2)) {
     const key2 = shardKey(query);
     for (const row of queryRows(table.index, table.shards[key2] ?? [], key2)) {
-      if (fold2(row[0]) !== query && (row[1] === 0 || fold2(row[1]) !== query)) continue;
+      const fit = fitOf(row[1] === 0 ? [fold2(row[0])] : [fold2(row[0]), fold2(row[1])], query);
+      if (fit === null) continue;
+      const region = table.index.admin1[row[2]] ?? "";
       const country = table.index.countries[row[3]] ?? "";
-      if (request2.country && !countryMatches(country, request2.country)) continue;
-      return { name: row[0], region: table.index.admin1[row[2]] ?? "", country, latitude: row[4] / 100, longitude: row[5] / 100 };
+      if (!hints.every((hint) => hintMatches(hint, region, country))) continue;
+      const known = found.get(row);
+      if (known === void 0 || fit < known) found.set(row, fit);
     }
+  }
+  const toPlace = (row) => ({ name: row[0], region: table.index.admin1[row[2]] ?? "", country: table.index.countries[row[3]] ?? "", latitude: row[4] / 100, longitude: row[5] / 100 });
+  const rows3 = (fit) => [...found].filter(([, value]) => value === fit).map(([row]) => row).sort((a, b) => b[7] - a[7]);
+  const choose = (list3) => list3.length === 1 ? { place: toPlace(list3[0]) } : { choices: list3.slice(0, ACG_CHOICES).map(toPlace) };
+  const whole = rows3(Fit.Whole);
+  if (whole.length) {
+    if (hints.length) return choose(whole);
+    const [largest, next] = whole;
+    if (next && next[7] >= largest[7] * MINOR_SHARE) return choose(whole);
+    const larger = rows3(Fit.Words).filter((row) => row[7] > largest[7]);
+    return larger.length ? choose([...larger, largest]) : choose([largest]);
+  }
+  for (const fit of [Fit.Words, Fit.Longer, Fit.Contains]) {
+    const list3 = rows3(fit);
+    if (list3.length) return choose(list3);
   }
   return null;
 }
-function chosenPlace(listed, exact, place2) {
-  if (!listed || !exact) return listed ?? exact ?? void 0;
-  const name = fold2(listed.name);
-  const continuesWord = queryVariants(place2).some((query) => name !== query && name.startsWith(query) && /[\p{L}\p{N}]/u.test(name[query.length] ?? ""));
-  return continuesWord ? exact : listed;
+function placeLabel(place2) {
+  return [place2.name, place2.region, place2.country].filter(Boolean).join(", ");
 }
 async function getAstrocartography(args, context) {
   const natal = await castNatal(args, context.localTime);
@@ -43278,6 +43315,7 @@ async function getAstrocartography(args, context) {
   });
   const cities = [];
   const unmatched = [];
+  const ambiguous = [];
   const limits2 = [
     "Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.",
     `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`
@@ -43290,13 +43328,16 @@ async function getAstrocartography(args, context) {
     if (!context.placeTable) throw new RangeError("Town and city lookup is not offered here; leave out cities for the lines alone.");
     const table = await context.placeTable();
     for (const text2 of asked) {
-      const request2 = splitCity(text2);
-      const found = await findBirthplace(request2, context.now, context.localTime, table);
-      const place2 = chosenPlace(found.data.places[0], exactPlace(table, request2), request2.place);
-      if (!place2) {
+      const resolved = resolvePlace(table, text2);
+      if (!resolved) {
         unmatched.push(text2);
         continue;
       }
+      if ("choices" in resolved) {
+        ambiguous.push({ asked: text2, places: resolved.choices.map(({ name, region, country }) => ({ name, region, country })) });
+        continue;
+      }
+      const { place: place2 } = resolved;
       const point2 = { lat: place2.latitude, lon: place2.longitude };
       const distances = lineDistances(point2, bodies, gast);
       const far = farPlaceSummary(distances[0]);
@@ -43325,6 +43366,7 @@ async function getAstrocartography(args, context) {
       summary ??= `No line runs within ${STRONG_KM} km of ${place2.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString("en-GB")} km ${top.side ?? "away"}, so its pull is still noticeable there.`;
       cities.push({ asked: text2, name: place2.name, region: place2.region, country: place2.country, latitude: roundCoordinate(place2.latitude), longitude: roundCoordinate(place2.longitude), closest, summary });
     }
+    for (const entry of ambiguous) limits2.push(`More than one town or city matches ${entry.asked}: ${entry.places.map(placeLabel).join("; ")}. Add the region or country after a comma to choose one, such as ${placeLabel(entry.places[0])}.`);
     if (unmatched.length) limits2.push(`Some names matched no town or city of 15,000 people or more in the index: ${unmatched.join(", ")}. Try another spelling, or add the country after a comma.`);
   }
   return {
@@ -43335,6 +43377,7 @@ async function getAstrocartography(args, context) {
       lines,
       cities,
       unmatched,
+      ambiguous,
       readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
       confidence,
       confidenceLabel,
@@ -43352,7 +43395,7 @@ var astrocartographyTool = definePersonalTool({
   name: "get_astrocartography",
   title: "Your map lines",
   summary: "astrocartography lines, and the lines nearest named towns and cities",
-  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13: check the birth date first, and ask for no birth time or birthplace when it is less than 13 years ago, since the tool refuses that date. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
+  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13: check the birth date first, and ask for no birth time or birthplace when it is less than 13 years ago, since the tool refuses that date. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. A name that matches more than one place comes back under ambiguous with the places it could be; ask the person which one they mean. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
   // The readings change on the eighteenth birthday, so a repeat call can differ as the server's clock moves.
@@ -43770,8 +43813,8 @@ function moonSegmentsFactor(goal, segments, zone10, date3, noonSign) {
   const until = (index) => index < segments.length - 1 ? ` until ${clockOn(segments[index].to, zone10, date3)}` : "";
   const course = segments.map((segment, index) => `${signName7(segment.sign)}${until(index)}`).join(", then in ");
   const rated = segments.filter((segment) => moonSignWhy(goal, segment.sign));
-  const words = rated.length === 1 && rated[0] === segments.at(-1) ? `, ${moonSignWhy(goal, rated[0].sign)}` : `: ${rated.map((segment) => `${signName7(segment.sign)} is ${moonSignWhy(goal, segment.sign)}`).join(", and ")}`;
-  return { points, text: `The Moon is in ${course}${words}.`, clause: `the Moon in ${course}` };
+  const words2 = rated.length === 1 && rated[0] === segments.at(-1) ? `, ${moonSignWhy(goal, rated[0].sign)}` : `: ${rated.map((segment) => `${signName7(segment.sign)} is ${moonSignWhy(goal, segment.sign)}`).join(", and ")}`;
+  return { points, text: `The Moon is in ${course}${words2}.`, clause: `the Moon in ${course}` };
 }
 function eclipseFactor(day2) {
   const within = ECLIPSES2.filter((row) => row.at >= day2.start.getTime() && row.at < day2.end.getTime());

@@ -14,7 +14,7 @@ const faq = [
   { q: 'How is it calculated?', a: 'Each planet\'s position comes from the same engine as the birth chart, turned into right ascension and declination. A planet is overhead where the local sidereal time equals its right ascension, and on the horizon where its hour angle meets the latitude\'s rising arc. The lines use the true horizon, without refraction, as astrocartography maps conventionally do.' },
 ];
 const jsonLd = [
-  { '@type': 'WebApplication', name: 'Astrocartography Map', url: 'https://zodiacs.org/astrocartography/', applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } },
+  { '@type': 'WebApplication', name: 'Astrocartography Map', url: 'https://zodiacs.org/astrocartography/', applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', isAccessibleForFree: true },
   { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
 ];
 ---

@@ -2147,7 +2147,17 @@ export function astrocartographyCard(model: AstrocartographyCardModel, images: M
   }));
 }
 
-export function astrocartographyStory(model: AstrocartographyCardModel, images: Map<ShareSign, string>, art: string[]) {
+/**
+ * The map page's address as the story prints it, on the site the share was opened from: the request's origin is the
+ * validated one the share page links with (requestOrigin), so a staging share never points at production, where the
+ * page may be switched off.
+ */
+export function astrocartographyStoryAddress(requestUrl: string): string {
+  const host = new URL(requestUrl).host.toLowerCase();
+  return `${host === 'www.zodiacs.org' ? 'zodiacs.org' : host}/astrocartography`;
+}
+
+export function astrocartographyStory(model: AstrocartographyCardModel, images: Map<ShareSign, string>, art: string[], address = 'zodiacs.org/astrocartography') {
   return storyFrame(art, storyColumn([
     ...storyDiscs([model.sign], images),
     storyKicker('Astrocartography', model.hue),
@@ -2155,7 +2165,7 @@ export function astrocartographyStory(model: AstrocartographyCardModel, images: 
     h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 46, lineHeight: 1.2, color: INK_SOFT, marginTop: '22px', textAlign: 'center' } }, model.detail),
     ...(model.line ? [storyLine(model.line)] : []),
     ...storyConfidence(model.confidence),
-    storyAction('Draw your own map', 'zodiacs.org/astrocartography'),
+    storyAction('Draw your own map', address),
   ]));
 }
 
@@ -2172,7 +2182,8 @@ export async function handleAstrocartographyStoryRequest(request: Request): Prom
   const share = parseAstrocartographyShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = astrocartographyCardModel(share);
-  return storyFor([model.sign], artOfSigns([model.sign]), (images, art) => astrocartographyStory(model, images, art));
+  const address = astrocartographyStoryAddress(request.url);
+  return storyFor([model.sign], artOfSigns([model.sign]), (images, art) => astrocartographyStory(model, images, art, address));
 }
 
 const ASTROCARTOGRAPHY_ABOUT = 'An astrocartography map shows where on Earth each planet was rising, setting, overhead or underfoot at the moment of birth. Zodiacs draws it in your browser from your birth date, time and place; nothing is uploaded.';

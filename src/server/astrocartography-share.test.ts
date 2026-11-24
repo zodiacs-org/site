@@ -3,7 +3,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ACG_ANGLES, ACG_BODIES } from '../lib/astrocartography/lines';
 import { ASTROCARTOGRAPHY_SHARE_KEYS, astrocartographyCleanQuery, astrocartographyShareUrl, parseAstrocartographyShare } from '../lib/astrocartography/share';
 import { forbiddenClaim } from '../ai-tools/personal/shared';
-import { astrocartographyCardModel, handleAstrocartographyImageRequest, handleAstrocartographyLinkRequest, handleAstrocartographyStoryRequest, handleResultShareNodeRequest, type ResultShareRoute } from './result-preview';
+import { requestOrigin } from './chart-preview';
+import { astrocartographyCardModel, astrocartographyStory, astrocartographyStoryAddress, handleAstrocartographyImageRequest, handleAstrocartographyLinkRequest, handleAstrocartographyStoryRequest, handleResultShareNodeRequest, type ResultShareRoute } from './result-preview';
 
 afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
@@ -130,6 +131,20 @@ describe('the astrocartography share page and pictures', () => {
     expect(jpeg.byteLength).toBeLessThan(size[0] === 1200 ? 300_000 : 900_000);
     expect(fetchSpy).not.toHaveBeenCalled();
   }, 30_000);
+
+  it('prints the map page on the site the share was opened from, so a staging story never sends people to production', () => {
+    const staging = 'https://site-git-acg-zodiacsofficial.vercel.app/api/og/astrocartography-story?p=moon&a=ic';
+    expect(astrocartographyStoryAddress(staging)).toBe('site-git-acg-zodiacsofficial.vercel.app/astrocartography');
+    expect(astrocartographyStoryAddress('https://zodiacs.org/api/og/astrocartography-story?p=moon&a=ic')).toBe('zodiacs.org/astrocartography');
+    expect(astrocartographyStoryAddress('https://www.zodiacs.org/api/og/astrocartography-story?p=moon&a=ic')).toBe('zodiacs.org/astrocartography');
+    // The deployed entry builds the request from the validated origin (requestOrigin): an unknown host is production's.
+    expect(astrocartographyStoryAddress(`${requestOrigin({ headers: { host: 'evil.example' } })}/api/og/astrocartography-story`)).toBe('zodiacs.org/astrocartography');
+    expect(astrocartographyStoryAddress(`${requestOrigin({ headers: { host: 'site-git-acg-zodiacsofficial.vercel.app' } })}/api/og/astrocartography-story`)).toBe('site-git-acg-zodiacsofficial.vercel.app/astrocartography');
+    const model = astrocartographyCardModel({ planet: 'Moon', angle: 'IC', ref: null });
+    const drawn = JSON.stringify(astrocartographyStory(model, new Map(), [], astrocartographyStoryAddress(staging)));
+    expect(drawn).toContain('site-git-acg-zodiacsofficial.vercel.app/astrocartography');
+    expect(drawn).not.toContain('"zodiacs.org/astrocartography"');
+  });
 
   it('refuses a picture for anything but a share', async () => {
     for (const url of ['https://zodiacs.org/api/og/astrocartography-image?p=jupiter&a=mc&d=1990-05-03', 'https://zodiacs.org/api/og/astrocartography-image?p=jupiter'])

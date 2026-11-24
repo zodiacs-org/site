@@ -11,7 +11,7 @@ import { coverageInputRefusal, executeAiTool } from '../tools';
 import { createAiNodeHandler } from '../http';
 import { INPUT_SCHEMAS, UNDER_13_REFUSAL } from '../contracts';
 import { loadPlaceTable } from '../features/place-table';
-import { astrocartographyInput, astrocartographyTool, chosenPlace, equatorialBodies, exactPlace, greenwichSiderealDegrees } from './astrocartography';
+import { astrocartographyInput, astrocartographyTool, equatorialBodies, greenwichSiderealDegrees, resolvePlace } from './astrocartography';
 import { forbiddenClaim } from './shared';
 import { parseAstrocartographyShare } from '../../lib/astrocartography/share';
 import { astrocartographyCardModel } from '../../server/result-preview';
@@ -188,16 +188,44 @@ describe('get_astrocartography', () => {
     expect(result.data.cities[1]).toMatchObject({ latitude: expect.closeTo(25.6, 0), longitude: expect.closeTo(100.2, 0) });
   });
 
-  it('keeps a longer name that adds whole words, and leaves find_birthplace\'s own list as it was', async () => {
-    const result = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Mexico', 'Nara, Japan', 'New York', 'Saint Louis'] }, ON) as { ok: true; data: any };
-    expect(result.data.cities.map((city: { name: string }) => city.name)).toEqual(['Mexico City', 'Nara-shi', 'New York City', 'St. Louis']);
+  it('reads the place whose whole name was asked for in the country given, and asks when several share it', async () => {
+    const result = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Aparecida, Brazil', 'Belmont, United States', 'Kerman, Iran', 'Dali, China'] }, ON) as { ok: true; data: any };
+    expect(result.ok).toBe(true);
+    // Aparecida (Sao Paulo, about 22.8 S 45.2 W), not Aparecida de Goiânia (16.8 S 49.2 W); Kerman, not Kermanshah; Dali, not Dalian.
+    expect(result.data.cities.map((city: { name: string; region: string; country: string }) => `${city.name}, ${city.region}, ${city.country}`)).toEqual(['Aparecida, Sao Paulo, Brazil', 'Kerman, Kerman, Iran', 'Dali, Yunnan, China']);
+    expect(result.data.cities[0]).toMatchObject({ latitude: expect.closeTo(-22.8, 0), longitude: expect.closeTo(-45.2, 0) });
+    // Two towns are called Belmont in the United States: no guess, and never Belmont Cragin.
+    expect(result.data.ambiguous).toEqual([{ asked: 'Belmont, United States', places: [
+      { name: 'Belmont', region: 'California', country: 'United States' },
+      { name: 'Belmont', region: 'Massachusetts', country: 'United States' },
+    ] }]);
+    expect(result.data.unmatched).toEqual([]);
+    expect(result.data.limits).toContain('More than one town or city matches Belmont, United States: Belmont, California, United States; Belmont, Massachusetts, United States. Add the region or country after a comma to choose one, such as Belmont, California, United States.');
+    expect(JSON.stringify(result.data.cities)).not.toMatch(/Cragin|Goi|Kermanshah|Dalian/u);
+    // The choice, written as offered, reads that one place.
+    const chosen = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Belmont, Massachusetts, United States', 'Belmont, California', 'Aparecida de Goiânia, Brazil'] }, ON) as { ok: true; data: any };
+    expect(chosen.data.cities.map((city: { name: string; region: string }) => `${city.name}, ${city.region}`)).toEqual(['Belmont, Massachusetts', 'Belmont, California', 'Aparecida de Goiânia, Goias']);
+    expect(chosen.data.ambiguous).toEqual([]);
+  });
+
+  it('asks rather than guesses when the name alone fits several places, and leaves find_birthplace\'s own list as it was', async () => {
+    const result = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Mexico', 'Aparecida', 'Belmont', 'Nara, Japan', 'New York'] }, ON) as { ok: true; data: any };
+    expect(result.data.cities.map((city: { name: string }) => city.name)).toEqual(['Nara-shi', 'New York City']);
+    expect(result.data.ambiguous.map((entry: { asked: string; places: { name: string; country: string }[] }) => [entry.asked, entry.places.map((place) => `${place.name}, ${place.country}`)])).toEqual([
+      ['Mexico', ['Mexico City, Mexico', 'Mexico, Philippines']],
+      ['Aparecida', ['Aparecida de Goiânia, Brazil', 'Aparecida, Brazil']],
+      ['Belmont', ['Belmont, United States', 'Belmont, United States']],
+    ]);
+    // A whole name read alone: the largest place when every other sharing it is under a tenth of its size.
+    const alone = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Kerman', 'Dali', 'Saint Louis', 'London', 'Lisbon'] }, ON) as { ok: true; data: any };
+    expect(alone.data.cities.map((city: { name: string; country: string }) => `${city.name}, ${city.country}`)).toEqual(['Kerman, Iran', 'Dali, China', 'St. Louis, United States', 'London, United Kingdom', 'Lisbon, Portugal']);
+    expect(alone.data.ambiguous).toEqual([]);
+    const table = await loadPlaceTable();
+    expect(resolvePlace(table, 'Kerman, China')).toBeNull();
+    expect(resolvePlace(table, 'London, Canada')).toMatchObject({ place: { name: 'London', region: 'Ontario', country: 'Canada' } });
+    expect(resolvePlace(table, 'Springfield, United States')).toMatchObject({ choices: expect.arrayContaining([expect.objectContaining({ region: 'Missouri' })]) });
     const listed = await executeAiTool('find_birthplace', { place: 'Kerman', country: 'Iran' }, ON) as { ok: true; data: any };
     expect(listed.data.places.map((place: { name: string }) => place.name)).toEqual(['Kermanshah', 'Kerman']);
-    const table = await loadPlaceTable();
-    expect(exactPlace(table, { place: 'Kerman', country: 'Iran' })).toMatchObject({ name: 'Kerman', country: 'Iran' });
-    expect(exactPlace(table, { place: 'Kerman', country: 'China' })).toBeNull();
-    expect(chosenPlace({ name: 'Mexico City' }, { name: 'Mexico' }, 'Mexico')).toEqual({ name: 'Mexico City' });
-    expect(chosenPlace({ name: 'Kermanshah' }, { name: 'Kerman' }, 'Kerman')).toEqual({ name: 'Kerman' });
   });
 
   it('links to the page and its line cards only while the website page is switched on', async () => {

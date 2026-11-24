@@ -16,8 +16,8 @@ import { equatorialMoment } from '../../lib/astrocartography/positions';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, horizonLongitude, lineDistances, mcLongitude, strengthOf, wrapLongitude, type EquatorialBody } from '../../lib/astrocartography/lines';
 import { ACG_CONFIDENCE, ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, farPlaceSummary, lineMeaning, lineSentence, roundedDistanceKm, under18At } from '../../lib/astrocartography/meanings';
 import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
-import { countryMatches, findBirthplace, queryVariants, type PlaceTable } from '../features/birthplace';
-import { fold, queryRows, shardKey } from '../../lib/geo/rank';
+import { countryMatches, queryVariants, type PlaceTable } from '../features/birthplace';
+import { fold, queryRows, shardKey, type Row } from '../../lib/geo/rank';
 import { roundCoordinate } from '../plain-text';
 import { softenMinor, MINOR_NOTE } from '../features/reading-guards';
 import { readingConfidence, readingConfidenceText } from '../reading-confidence';
@@ -85,6 +85,11 @@ export const astrocartographyData = z.object({
   })).max(ACG_MAX_CITIES),
   /** Names that matched no town or city in the index. */
   unmatched: z.array(z.string()).max(ACG_MAX_CITIES),
+  /** Names that match more than one place equally well, with the places they could be: ask which one is meant. */
+  ambiguous: z.array(z.object({
+    asked: z.string(),
+    places: z.array(z.object({ name: z.string(), region: z.string(), country: z.string() })).min(2).max(5),
+  })).max(ACG_MAX_CITIES),
   readings: z.object({ ASC: z.string(), DSC: z.string(), MC: z.string(), IC: z.string() }),
   confidence: z.number().int().min(40).max(95),
   confidenceLabel: z.string(),
@@ -104,44 +109,89 @@ export function greenwichSiderealDegrees(utc: Date): number {
   return equatorialMoment(utc).gast;
 }
 
-/** "Lisbon" or "Paris, France". */
-function splitCity(text: string): { place: string; country?: string } {
-  const comma = text.lastIndexOf(',');
-  if (comma <= 0) return { place: text.trim() };
-  const place = text.slice(0, comma).trim();
-  const country = text.slice(comma + 1).trim();
-  return place.length >= 2 && country.length >= 2 ? { place, country } : { place: text.trim() };
-}
+/** A town or city as this tool reads it from the place index. */
+export interface AcgPlace { name: string; region: string; country: string; latitude: number; longitude: number }
 
 /**
- * The most populous place whose whole name is the one asked for, in the country when one is given. Null when no name
- * matches whole. Only this tool reads it, so find_birthplace's own list is unchanged.
+ * "Lisbon", "Paris, France" or "Belmont, Massachusetts, United States": the name, then any region or country after a
+ * comma. Each part after the name must be the place's country or its region.
  */
-export function exactPlace(table: PlaceTable, request: { place: string; country?: string }): { name: string; region: string; country: string; latitude: number; longitude: number } | null {
-  for (const query of queryVariants(request.place)) {
+function splitCity(text: string): { place: string; hints: string[] } {
+  const [place, ...hints] = text.split(',').map((part) => part.trim());
+  return place.length >= 2 && hints.length && hints.every((hint) => hint.length >= 2) ? { place, hints } : { place: text.trim(), hints: [] };
+}
+
+const words = (text: string) => ` ${fold(text).replace(/[^a-z0-9]+/gu, ' ').trim()} `;
+/** The hint is the place's country (countryMatches) or its region, or whole words of it. */
+function hintMatches(hint: string, region: string, country: string): boolean {
+  return countryMatches(country, hint) || (words(hint).trim() !== '' && words(region).includes(words(hint)));
+}
+
+/** How a place's name meets the name asked for: whole, then with whole words added, then a longer word, then containing it. */
+const Fit = { Whole: 0, Words: 1, Longer: 2, Contains: 3 } as const;
+type Fit = (typeof Fit)[keyof typeof Fit];
+function fitOf(names: readonly string[], query: string): Fit | null {
+  let best: Fit | null = null;
+  for (const name of names) {
+    let fit: Fit | null = null;
+    if (name === query) fit = Fit.Whole;
+    else if (name.startsWith(query)) fit = /[\p{L}\p{N}]/u.test(name[query.length] ?? '') ? Fit.Longer : Fit.Words;
+    else if (query[2] && name[0] === query[0] && name.includes(query)) fit = Fit.Contains;
+    if (fit !== null && (best === null || fit < best)) best = fit;
+  }
+  return best;
+}
+
+/** Below this share of the largest place's population, a place sharing the whole name is not asked about when no region or country is given. */
+const MINOR_SHARE = 0.1;
+export const ACG_CHOICES = 5;
+
+/**
+ * The one town or city a name asks for, or the places it could be when the index cannot tell. A place whose whole
+ * name is the one asked for comes first: Aparecida, Brazil is Aparecida, not Aparecida de Goiânia, and Kerman, Iran
+ * is Kerman, not Kermanshah. Several places with that whole name in the region or country given (Belmont, United
+ * States) are choices to ask about, not a guess; with no region or country given, the largest is read when every
+ * other is under a tenth of its size (London is London, England) and no longer name that adds whole words to it is
+ * larger (Mexico asks between Mexico City and Mexico, Philippines). With no whole-name match, a single place whose
+ * name adds whole words (New York City, Nara-shi) is read; several are choices. Null when nothing matches.
+ */
+export function resolvePlace(table: PlaceTable, text: string): { place: AcgPlace } | { choices: AcgPlace[] } | null {
+  const { place, hints } = splitCity(text);
+  const found = new Map<Row, Fit>();
+  for (const query of queryVariants(place)) {
     const key = shardKey(query);
-    // The rows are in population order (queryRows), so the first whole-name match is the most populous.
     for (const row of queryRows(table.index, table.shards[key] ?? [], key)) {
-      if (fold(row[0]) !== query && (row[1] === 0 || fold(row[1]) !== query)) continue;
+      const fit = fitOf(row[1] === 0 ? [fold(row[0])] : [fold(row[0]), fold(row[1])], query);
+      if (fit === null) continue;
+      const region = table.index.admin1[row[2]] ?? '';
       const country = table.index.countries[row[3]] ?? '';
-      if (request.country && !countryMatches(country, request.country)) continue;
-      return { name: row[0], region: table.index.admin1[row[2]] ?? '', country, latitude: row[4] / 100, longitude: row[5] / 100 };
+      if (!hints.every((hint) => hintMatches(hint, region, country))) continue;
+      const known = found.get(row);
+      if (known === undefined || fit < known) found.set(row, fit);
     }
+  }
+  const toPlace = (row: Row): AcgPlace => ({ name: row[0], region: table.index.admin1[row[2]] ?? '', country: table.index.countries[row[3]] ?? '', latitude: row[4] / 100, longitude: row[5] / 100 });
+  // Each fit's places, largest first.
+  const rows = (fit: Fit) => [...found].filter(([, value]) => value === fit).map(([row]) => row).sort((a, b) => b[7] - a[7]);
+  const choose = (list: Row[]) => (list.length === 1 ? { place: toPlace(list[0]) } : { choices: list.slice(0, ACG_CHOICES).map(toPlace) });
+  const whole = rows(Fit.Whole);
+  if (whole.length) {
+    if (hints.length) return choose(whole);
+    const [largest, next] = whole;
+    if (next && next[7] >= largest[7] * MINOR_SHARE) return choose(whole);
+    const larger = rows(Fit.Words).filter((row) => row[7] > largest[7]);
+    return larger.length ? choose([...larger, largest]) : choose([largest]);
+  }
+  for (const fit of [Fit.Words, Fit.Longer, Fit.Contains]) {
+    const list = rows(fit);
+    if (list.length) return choose(list);
   }
   return null;
 }
 
-/**
- * find_birthplace lists names that start with the text, by population, for the person to choose from; this tool
- * answers for one place. A whole-name match comes first when the list's first name only continues the last word
- * asked for: Kerman, Iran is Kerman, not Kermanshah, and Dali, China is Dali, not Dalian. A first name that adds
- * whole words keeps its place, so Mexico stays Mexico City and Nara stays Nara-shi.
- */
-export function chosenPlace<A extends { name: string }, B extends { name: string }>(listed: A | undefined, exact: B | null, place: string): A | B | undefined {
-  if (!listed || !exact) return listed ?? exact ?? undefined;
-  const name = fold(listed.name);
-  const continuesWord = queryVariants(place).some((query) => name !== query && name.startsWith(query) && /[\p{L}\p{N}]/u.test(name[query.length] ?? ''));
-  return continuesWord ? exact : listed;
+/** "Belmont, California, United States": a choice written as the cities input reads it. */
+export function placeLabel(place: Pick<AcgPlace, 'name' | 'region' | 'country'>): string {
+  return [place.name, place.region, place.country].filter(Boolean).join(', ');
 }
 
 export async function getAstrocartography(args: AstrocartographyInput, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'origin' | 'pageOn' | 'placeTable'>): Promise<{ data: AstrocartographyData; links: { title: string; url: string }[] }> {
@@ -173,6 +223,7 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
 
   const cities: AstrocartographyData['cities'] = [];
   const unmatched: string[] = [];
+  const ambiguous: AstrocartographyData['ambiguous'] = [];
   const limits: string[] = [
     'Lines move about 1 degree of longitude (about 110 km at the equator) for every 4 minutes of birth time, so a birth time 15 minutes out moves every line by about 400 km.',
     `Astrocartographers mostly work within about ${STRONG_KM} km of a line and treat it as fading by about ${NOTICEABLE_KM} km.`,
@@ -185,10 +236,13 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
     if (!context.placeTable) throw new RangeError('Town and city lookup is not offered here; leave out cities for the lines alone.');
     const table = await context.placeTable();
     for (const text of asked) {
-      const request = splitCity(text);
-      const found = await findBirthplace(request, context.now, context.localTime, table);
-      const place = chosenPlace(found.data.places[0], exactPlace(table, request), request.place);
-      if (!place) { unmatched.push(text); continue; }
+      const resolved = resolvePlace(table, text);
+      if (!resolved) { unmatched.push(text); continue; }
+      if ('choices' in resolved) {
+        ambiguous.push({ asked: text, places: resolved.choices.map(({ name, region, country }) => ({ name, region, country })) });
+        continue;
+      }
+      const { place } = resolved;
       const point = { lat: place.latitude, lon: place.longitude };
       const distances = lineDistances(point, bodies, gast);
       const far = farPlaceSummary(distances[0]);
@@ -212,12 +266,13 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
       summary ??= `No line runs within ${STRONG_KM} km of ${place.name}. The nearest is your ${top.title}, about ${top.distanceKm.toLocaleString('en-GB')} km ${top.side ?? 'away'}, so its pull is still noticeable there.`;
       cities.push({ asked: text, name: place.name, region: place.region, country: place.country, latitude: roundCoordinate(place.latitude), longitude: roundCoordinate(place.longitude), closest, summary });
     }
+    for (const entry of ambiguous) limits.push(`More than one town or city matches ${entry.asked}: ${entry.places.map(placeLabel).join('; ')}. Add the region or country after a comma to choose one, such as ${placeLabel(entry.places[0])}.`);
     if (unmatched.length) limits.push(`Some names matched no town or city of 15,000 people or more in the index: ${unmatched.join(', ')}. Try another spelling, or add the country after a comma.`);
   }
   return {
     data: {
       birthDate: args.birthDate, instantUtc: utc.toISOString(), siderealTimeDegrees: Math.round(gast * 10_000) / 10_000,
-      lines, cities, unmatched,
+      lines, cities, unmatched, ambiguous,
       readings: { ASC: `Ascendant lines (${ANGLE_NAME.ASC}): how you come across and how you feel in yourself there.`, DSC: under18 ? `Descendant lines (${ANGLE_NAME.DSC}).` : `Descendant lines (${ANGLE_NAME.DSC}): the people you meet and partner with there.`, MC: `Midheaven lines (${ANGLE_NAME.MC}): work, reputation and public life there.`, IC: `IC lines (${ANGLE_NAME.IC}): home, family and private life there.` },
       confidence, confidenceLabel, limits,
       pageUrl: pageOn ? `${context.origin}/astrocartography/` : null,
@@ -234,7 +289,7 @@ export const astrocartographyTool = definePersonalTool({
   name: 'get_astrocartography',
   title: 'Your map lines',
   summary: 'astrocartography lines, and the lines nearest named towns and cities',
-  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13: check the birth date first, and ask for no birth time or birthplace when it is less than 13 years ago, since the tool refuses that date. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
+  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. Zodiacs is not directed at children under 13: check the birth date first, and ask for no birth time or birthplace when it is less than 13 years ago, since the tool refuses that date. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. A name that matches more than one place comes back under ambiguous with the places it could be; ask the person which one they mean. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
   // The readings change on the eighteenth birthday, so a repeat call can differ as the server's clock moves.
