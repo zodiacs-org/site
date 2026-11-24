@@ -73,7 +73,7 @@ const squeeze = (text) => text.replace(/\s+/gu, ' ').trim();
 // A test checks that every attribute used by CSS generated content is included.
 export const LABEL_ATTRIBUTES = [
   'placeholder', 'aria-label', 'aria-description', 'title', 'label',
-  'data-label', 'data-name',
+  'data-label', 'data-name', 'data-copy', 'data-dated',
 ];
 const SHOWN_INPUT_VALUES = /^(?:|text|search|email|url|tel|number|submit|button|reset)$/iu;
 // Where a media element names the file it shows; the site lazy-loads with data-src (a test holds the site to this list).
