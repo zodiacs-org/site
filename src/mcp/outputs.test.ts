@@ -446,7 +446,7 @@ describe('the conventions vocabulary', () => {
       expect(['1.0.0', '1.1.0-rc.1'], version).toContain(version);
       return version === '1.0.0' ? 1000 : 1001;
     };
-    const astronomyWriters = SET_WRITERS.slice(0, -1);
+    const astronomyWriters = SET_WRITERS.slice(0, SET_WRITERS.findIndex(({ from }) => from === '1.1.0-rc.10'));
     expect(vocabulary.sets.map((set) => set.current)).toEqual(SET_WRITERS.map(({ to }) => to === null));
     expect(astronomyWriters[0].to).toBeNull();
     for (let index = 1; index < astronomyWriters.length; index += 1) {

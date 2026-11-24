@@ -4,15 +4,15 @@ API SOURCE: NASA/JPL Horizons API
 
 
 *******************************************************************************
-Ephemeris / API_USER Wed Sep 30 00:26:56 2026 Pasadena, USA      / Horizons    
+Ephemeris / API_USER Mon Nov 23 21:26:39 2026 Pasadena, USA      / Horizons    
 *******************************************************************************
 Target body name: Venus (299)                     {source: DE441}
 Center body name: Earth (399)                     {source: DE441}
 Center-site name: GEOCENTRIC
 *******************************************************************************
 Start time      : A.D. 1800-Jan-02 00:00:18.7070 TT      
-Stop  time      : A.D. 2199-Dec-31 12:02:06.2462 TT      
-Step-size       : 0 steps
+Stop  time      : A.D. 2199-Dec-31 12:01:09.1840 TT      
+Step-size       : DISCRETE TIME-LIST
 *******************************************************************************
 Target pole/equ : IAU_VENUS                       {East-longitude positive}
 Target radii    : 6051.8, 6051.8, 6051.8 km       {Equator_a, b, pole_c}       
@@ -28,8 +28,8 @@ Atmos refraction: NO (AIRLESS)
 RA format       : DEG
 Time format     : JD  
 Calendar mode   : Mixed Julian/Gregorian
-EOP file        : eop.260929.p261226                                           
-EOP coverage    : DATA-BASED 1962-JAN-20 TO 2026-SEP-29. PREDICTS-> 2026-DEC-25
+EOP file        : eop.261123.p270219                                           
+EOP coverage    : DATA-BASED 1962-JAN-20 TO 2026-NOV-23. PREDICTS-> 2027-FEB-18
 Units conversion: 1 au= 149597870.700 km, c= 299792.458 km/s, 1 day= 86400.0 s 
 Table cut-offs 1: Elevation (-90.0deg=NO ),Airmass (>38.000=NO), Daylight (NO )
 Table cut-offs 2: Solar elongation (  0.0,180.0=NO ),Local Hour Angle( 0.0=NO )
@@ -56,8 +56,8 @@ $$SOE
 2458849.500800741     314.4094923  -1.8390389
 2461041.500800729     279.2064734  -0.5050645
 2461222.500800741     140.1930405   1.7784336
-2524553.501460226     205.2959425   1.8676964
-2524593.001461183     254.1493077   1.0846142
+2524553.500800729     205.2951365   1.8676931
+2524593.000800741     254.1484841   1.0846397
 $$EOE
 *******************************************************************************
 Column meaning:
