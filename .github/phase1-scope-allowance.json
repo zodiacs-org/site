@@ -1,10 +1,8 @@
 {
   "version": 1,
-  "id": "zod-43-astrofolio-thesis-link",
-  "baseCommit": "49e098731d858e323fd4845041410a2fd8ffd425",
+  "id": "learn-hub-entrance-motion-2026-11-24",
+  "baseCommit": "26a485e7d5d67f70e2d001eccb3c9e9e05384a4b",
   "protectedPaths": [
-    "public/assets/app.js",
-    "scripts/registry-consumer-contract.test.mjs",
-    "src/app.jsx"
+    "src/pages/learn/index.astro"
   ]
 }
