@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-11-24T13:03:33.506Z",
+  "capturedAt": "2026-11-24T13:29:03.902Z",
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-11-24",
   "publicationCanonicalSha256": "bf041c49be3d4988836bd123503b08e5dde1f67d910b590d75d60d5a4101afc8",
-  "templateSourceSha256": "a000a30c0333beb01fa04d3e6bbb47129ab5d9db2e2a1db5e4ede57c40a5d82c",
+  "templateSourceSha256": "c3c57160f719ee728064cee1ec37877eeed2a62a438088c6c3b1afa331f12fdb",
   "renderPayloadSha256": {
     "daily": "0962d9cb97c2b41a9e67207820936ba9f5a07a41f2f7aaf41ef3fa0f258fe1cb",
     "dailyPublication": "280bd7483ced4f340cea4a653d78c36c95ee8d2e722a08d2b25585680765881a",
-    "dailyPublicationManifest": "a047d9be82b81a16a8d76a5493bff27cefd34584c9f3710f5a89108d95b6a120",
+    "dailyPublicationManifest": "49d6a64bf4dd09b697393e7ce2b69a7593d158c88615f57b37e8ed232d9a1068",
     "horoscopeProgram": "0bc859a41ccd1afd055d9cb2ff256fef00feac8290c6993fb02dc1c89d726790"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-11-24T13:02:51.419Z",
-    "templateSourceSha256": "a000a30c0333beb01fa04d3e6bbb47129ab5d9db2e2a1db5e4ede57c40a5d82c",
+    "builtAt": "2026-11-24T13:28:22.812Z",
+    "templateSourceSha256": "c3c57160f719ee728064cee1ec37877eeed2a62a438088c6c3b1afa331f12fdb",
     "dailyDate": "2026-11-24",
     "publicationCanonicalSha256": "bf041c49be3d4988836bd123503b08e5dde1f67d910b590d75d60d5a4101afc8",
     "renderPayloadSha256": {
       "daily": "0962d9cb97c2b41a9e67207820936ba9f5a07a41f2f7aaf41ef3fa0f258fe1cb",
       "dailyPublication": "280bd7483ced4f340cea4a653d78c36c95ee8d2e722a08d2b25585680765881a",
-      "dailyPublicationManifest": "a047d9be82b81a16a8d76a5493bff27cefd34584c9f3710f5a89108d95b6a120",
+      "dailyPublicationManifest": "49d6a64bf4dd09b697393e7ce2b69a7593d158c88615f57b37e8ed232d9a1068",
       "horoscopeProgram": "0bc859a41ccd1afd055d9cb2ff256fef00feac8290c6993fb02dc1c89d726790"
     }
   },

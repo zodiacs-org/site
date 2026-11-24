@@ -10,15 +10,17 @@ const nasa = JSON.parse(await readFile(new URL('../src/data/nasa-event-instants.
 // A DE440 instant reaches its NASA row through the archived engine key
 // (src/lib/published-event-time.ts), as the pages look it up.
 const links = JSON.parse(await readFile(new URL('../src/data/published-event-time-links.json', import.meta.url), 'utf8')).keys;
-// Pages measured to have changed in the DE440 release date that change
+// Pages measured to have changed in the DE440 release, or in the move to engine
+// 2.1.0, date that change
 // (src/lib/seo-lastmod.ts de440UpdatedDate).
-const de440Dates = JSON.parse(await readFile(new URL('../src/data/de440-sitemap-dates.json', import.meta.url), 'utf8'));
+const engineDates = await Promise.all(['de440-sitemap-dates.json', 'engine-2-1-sitemap-dates.json']
+  .map(async (name) => JSON.parse(await readFile(new URL(`../src/data/${name}`, import.meta.url), 'utf8'))));
 const iso = (value) => new Date(value).toISOString();
 const archived = (anchor) => Object.entries(links).find(([key]) => key.endsWith(`|${iso(anchor)}`))?.[1] ?? anchor;
 const nasaFor = (anchor) => [...nasa.ingresses, ...nasa.stations, ...nasa.aspects]
   .find((row) => row.engine.some((at) => iso(at) === iso(archived(anchor))));
 const modifiedFor = (event) => iso(Math.max(Date.parse(`${event.lastModified}T00:00:00.000Z`),
-  ...(de440Dates.paths.includes(event.path) ? [Date.parse(`${de440Dates.date}T00:00:00.000Z`)] : [])));
+  ...engineDates.filter(({ paths }) => paths.includes(event.path)).map(({ date }) => Date.parse(`${date}T00:00:00.000Z`))));
 const events = ids.map((id) => {
   const event = publication.pages.find((page) => page.id === id);
   if (!event) throw new Error(`Missing event fixture: ${id}`);

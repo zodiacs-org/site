@@ -1,8 +1,12 @@
 {
   "version": 1,
-  "id": "learn-hub-entrance-motion-2026-11-24",
-  "baseCommit": "26a485e7d5d67f70e2d001eccb3c9e9e05384a4b",
+  "id": "site-engine-2-1-0-2026-11-23",
+  "baseCommit": "6245adfd9d56b9f44fdf887acb0592905ce78b07",
   "protectedPaths": [
-    "src/pages/learn/index.astro"
+    "src/data/aura-moon-ingresses.json",
+    "src/pages/es/methodology/index.astro",
+    "src/pages/fr/methodology/index.astro",
+    "src/pages/it/methodology/index.astro",
+    "src/pages/pt/methodology/index.astro"
   ]
 }

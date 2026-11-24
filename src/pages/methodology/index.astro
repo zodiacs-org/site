@@ -65,9 +65,10 @@ const jsonLd = [
       <span id="swiss-comparison"></span>
       <h2 id="horizons-comparison">Agreement with NASA JPL Horizons</h2>
       <p>
-        On 18 November 2026 we compared the default DE440 calculation in
-        engine 1.1.0 with live <strong>NASA JPL Horizons</strong> DE441.
-        We used the original 18 chart dates and ten bodies. Horizons returned
+        On 18 November 2026 we recorded answers from live{' '}
+        <strong>NASA JPL Horizons</strong> DE441. On 23 November 2026 we
+        compared the default DE440 calculation in engine 2.1.0 with the
+        NASA JPL Horizons DE441 answers. We used the original 18 chart dates and ten bodies. Horizons returned
         apparent longitudes at Earth's centre in the ecliptic of date.
         Across the 160 measurements from 1801 to 2026, the median disagreement
         in longitude was <strong>0.05 arcseconds</strong>, the 95th percentile
@@ -75,7 +76,7 @@ const jsonLd = [
         <strong>0.53 arcseconds</strong> (Pluto in 1801). Among the 16 Moon
         measurements in that span the median was 0.05 arcseconds and the
         largest was 0.49 arcseconds. The largest of the 20 far-future
-        measurements was 28.88 arcseconds (the Moon in 2190).
+        measurements was 0.48 arcseconds (the Moon in 2190).
       </p>
       <p>
         We also sampled every tenth day from 1800 to 2199 at noon, for the ten
@@ -87,13 +88,15 @@ const jsonLd = [
         0.55 arcseconds of its edge.
       </p>
       <p>
-        The clock matters more for the far-future Moon. Beyond its prediction
+        The clock matters most for the far-future Moon. Beyond its prediction
         interval Horizons holds its UTC offset fixed. The engine estimates
-        the Earth's rotation with its ΔT model. On the same calendar labels
-        from 2100 to 2199, those clock readings put the calculation 9.7 to
-        57.1 seconds apart. From 2150 to 2199, the largest Moon difference
+        the Earth's rotation with its ΔT model. Since release 2.0.0 it also
+        holds Terrestrial Time a fixed 69.184 seconds ahead of UTC beyond 2 October
+        2027, as Horizons does. On the same calendar labels from 2100 to
+        2199, those clock readings put the calculation within 0.01 seconds
+        of Horizons. From 2150 to 2199, the largest Moon difference
         was <strong>0.53 arcseconds at matched Terrestrial Time</strong>{' '}
-        and <strong>35.65 arcseconds at the same input time</strong>.
+        and <strong>0.53 arcseconds at the same input time</strong>.
       </p>
       <p>
         Up to the present the engine uses the recorded values. Since its
@@ -101,8 +104,11 @@ const jsonLd = [
         began, to 2 October 2027 as UTC: atomic time comes from the IERS leap
         seconds, and the Earth's rotation, which the ascendant and midheaven
         turn with, from the IERS measurements of UT1 and their predictions.
-        For other dates it takes ΔT, as it did for every date from 25
-        September 2026 until that release, from Stephenson, Morrison and
+        Since release 2.0.0 it reads a later birth time as UTC too, with
+        Terrestrial Time a fixed 69.184 seconds ahead and the Earth's rotation
+        from its ΔT model.
+        For dates before 1972 it takes ΔT, as it did for every date from 25
+        September 2026 until release 0.1.1-rc.15, from Stephenson, Morrison and
         Hohenkerk's 2016 reconstruction before 1941, from US Naval Observatory
         and IERS records after it, and from the IERS predictions for the year
         ahead.
@@ -120,7 +126,7 @@ const jsonLd = [
         DE440 and DE441 are related JPL ephemerides. This comparison measures
         their agreement on the sampled dates. The exact requests, engine
         archive digest and comparison figures are in the{' '}
-        <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/site-engine-1-1-0/claims-horizons" rel="noopener noreferrer">measurement record</a>.
+        <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/site-engine-2-1-0/claims-horizons" rel="noopener noreferrer">measurement record</a>.
       </p>
 
       <h2>Angles and houses</h2>
@@ -240,7 +246,7 @@ const jsonLd = [
       <ul>
         <li><strong>Skipped times</strong> (spring-forward gaps) shift forward across the gap, the standard convention, and the chart says so.</li>
         <li><strong>Repeated times</strong> (fall-back folds) use the earlier pass, flagged on the chart.</li>
-        <li><strong>Very old dates</strong>, from before a place adopted a legal time, use the local mean time of the birthplace itself, worked out from its longitude at four minutes of time per degree, as professional software does. The time zone data records only its reference city's mean time, which for a town a few hundred kilometres away can be off by a quarter of an hour or more; Buffalo in 1870 ran 19 minutes 29 seconds behind New York. The date each place's local mean time ended comes from the IANA database's fuller historical records (release 2025c).</li>
+        <li><strong>Very old dates</strong>, from before a place adopted a legal time, use the local mean time of the birthplace itself, worked out from its longitude at four minutes of time per degree, as professional software does. The time zone data records only its reference city's mean time, which for a town a few hundred kilometres away can be off by a quarter of an hour or more; Buffalo in 1870 ran 19 minutes 29 seconds behind New York. The date each place's local mean time ended comes from the IANA database's fuller historical records (release 2026f).</li>
         <li><strong>From then until 1970</strong>, the legal time comes from the same release. That includes national mean times, such as Paris Mean Time from 1891, and the older records the database keeps apart for places whose clocks have matched another city's since 1970; its maintainers consider those records less reliable than the rest. Browsers leave them out and give such a place the other city's history, so for about 85 of the 356 time zones in our city index the browser's legal time before 1970 differs from the one used here at some point, 55 of them by an hour or more. Sweden, Norway, Denmark, Iceland and the Netherlands are among those 55. At noon on 1 July 1947, for example, a Stockholm birth reads 10:00 UTC with Berlin's summer time in the browser's history, where Sweden kept +1:00 and the chart uses 11:00. A handful of old zone names, none of them in the city index, keep the browser's history throughout, because their records differ after 1970 as well or browsers do not know them.</li>
       </ul>
       <p>

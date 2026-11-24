@@ -1558,7 +1558,7 @@
       "id": "full-moon-2027-10-15",
       "path": "/full-moon/2027-10-15/",
       "title": "Full moon in Aries, October 15, 2027",
-      "anchor": "2027-10-15T13:47:00.491Z",
+      "anchor": "2027-10-15T13:47:00.655Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1576,7 +1576,7 @@
       "id": "neptune-sextile-pluto-2027-10-16",
       "path": "/events/neptune-sextile-pluto-2027-10-16/",
       "title": "Neptune sextile Pluto, October 16, 2027",
-      "anchor": "2027-10-16T18:03:57.633Z",
+      "anchor": "2027-10-16T14:39:55.265Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -1595,7 +1595,7 @@
       "id": "new-moon-2027-10-29",
       "path": "/new-moon/2027-10-29/",
       "title": "New moon in Scorpio, October 29, 2027",
-      "anchor": "2027-10-29T13:36:34.105Z",
+      "anchor": "2027-10-29T13:36:34.188Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1613,7 +1613,7 @@
       "id": "full-moon-2027-11-14",
       "path": "/full-moon/2027-11-14/",
       "title": "Full moon in Taurus, November 14, 2027",
-      "anchor": "2027-11-14T03:25:55.827Z",
+      "anchor": "2027-11-14T03:25:55.992Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1631,7 +1631,7 @@
       "id": "new-moon-2027-11-28",
       "path": "/new-moon/2027-11-28/",
       "title": "New moon in Sagittarius, November 28, 2027",
-      "anchor": "2027-11-28T03:24:26.344Z",
+      "anchor": "2027-11-28T03:24:26.509Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1649,7 +1649,7 @@
       "id": "full-moon-2027-12-13",
       "path": "/full-moon/2027-12-13/",
       "title": "Full moon in Gemini, December 13, 2027",
-      "anchor": "2027-12-13T16:08:47.864Z",
+      "anchor": "2027-12-13T16:08:48.028Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1667,7 +1667,7 @@
       "id": "new-moon-2027-12-27",
       "path": "/new-moon/2027-12-27/",
       "title": "New moon in Capricorn, December 27, 2027",
-      "anchor": "2027-12-27T20:12:19.735Z",
+      "anchor": "2027-12-27T20:12:19.900Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3506,7 +3506,7 @@
       "id": "full-moon-2027-10-15",
       "path": "/full-moon/2027-10-15/",
       "title": "Full moon in Aries, October 15, 2027",
-      "anchor": "2027-10-15T13:47:00.491Z",
+      "anchor": "2027-10-15T13:47:00.655Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3523,7 +3523,7 @@
       "id": "neptune-sextile-pluto-2027-10-16",
       "path": "/events/neptune-sextile-pluto-2027-10-16/",
       "title": "Neptune sextile Pluto, October 16, 2027",
-      "anchor": "2027-10-16T18:03:57.633Z",
+      "anchor": "2027-10-16T14:39:55.265Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -3573,7 +3573,7 @@
       "id": "new-moon-2027-10-29",
       "path": "/new-moon/2027-10-29/",
       "title": "New moon in Scorpio, October 29, 2027",
-      "anchor": "2027-10-29T13:36:34.105Z",
+      "anchor": "2027-10-29T13:36:34.188Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3590,7 +3590,7 @@
       "id": "full-moon-2027-11-14",
       "path": "/full-moon/2027-11-14/",
       "title": "Full moon in Taurus, November 14, 2027",
-      "anchor": "2027-11-14T03:25:55.827Z",
+      "anchor": "2027-11-14T03:25:55.992Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3607,7 +3607,7 @@
       "id": "new-moon-2027-11-28",
       "path": "/new-moon/2027-11-28/",
       "title": "New moon in Sagittarius, November 28, 2027",
-      "anchor": "2027-11-28T03:24:26.344Z",
+      "anchor": "2027-11-28T03:24:26.509Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3624,7 +3624,7 @@
       "id": "full-moon-2027-12-13",
       "path": "/full-moon/2027-12-13/",
       "title": "Full moon in Gemini, December 13, 2027",
-      "anchor": "2027-12-13T16:08:47.864Z",
+      "anchor": "2027-12-13T16:08:48.028Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3673,7 +3673,7 @@
       "id": "new-moon-2027-12-27",
       "path": "/new-moon/2027-12-27/",
       "title": "New moon in Capricorn, December 27, 2027",
-      "anchor": "2027-12-27T20:12:19.735Z",
+      "anchor": "2027-12-27T20:12:19.900Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [

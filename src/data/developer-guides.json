@@ -566,7 +566,7 @@
       {
         "heading": "How the time was read",
         "paragraphs": [
-          "For a local time the answer says how it was read: its offset from UTC, flags for a clock time that was skipped (dst-gap) or repeated (dst-fold) or read on local mean time (lmt), and which zone history answered. Before 1970 that history is tzdb 2025c with its backzone file; from 1970 it is the server runtime's own time zone data.",
+          "For a local time the answer says how it was read: its offset from UTC, flags for a clock time that was skipped (dst-gap) or repeated (dst-fold) or read on local mean time (lmt), and which zone history answered. Before 1970 that history is tzdb 2026f with its backzone file; from 1970 it is the server runtime's own time zone data.",
           "The endpoint needs a time; it has no form for an unknown birth time. Without one, do not send noon as if it were known: ask for positions on the date, show the rising sign and the houses as unknown, and say that the Moon can change sign during the day."
         ]
       },
