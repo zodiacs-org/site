@@ -713,13 +713,18 @@ try {
   await wait(300);
   const carryState = () => carry.locator('#fig-1').evaluate((fig) => {
     const opacity = (node) => Number.parseFloat(getComputedStyle(node).opacity);
+    const veil = (node) => {
+      const style = getComputedStyle(node, '::after');
+      return style.content === 'none' || style.content === 'normal' ? 0 : Number.parseFloat(style.opacity);
+    };
     return {
       armed: fig.classList.contains('is-armed'),
       on: fig.classList.contains('is-on'),
       twelve: fig.classList.contains('is-twelve'),
       count: fig.querySelector('[data-carry-count]')?.textContent ?? '',
-      firstDisc: opacity(fig.querySelector('.era__object')),
-      eras: [...fig.querySelectorAll('.era > *')].map(opacity),
+      // A disc is dimmed by a veil in the plate's colour, so its shown strength is 1 minus the veil.
+      firstDisc: 1 - veil(fig.querySelector('.era__object')),
+      eras: [...fig.querySelectorAll('.era > *')].map((node) => (node.classList.contains('era__object') ? 1 - veil(node) : opacity(node))),
       ring: [...fig.querySelectorAll('.cw')].map(opacity),
       height: fig.getBoundingClientRect().height,
     };

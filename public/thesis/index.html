@@ -3718,8 +3718,11 @@
     @media screen and (prefers-reduced-motion:no-preference) {
       .thesis-carry.is-armed .transmission::after { transform:scaleX(0); }
       .thesis-carry.is-armed.is-on .transmission::after { transform:none; transition:transform 2.4s linear; }
-      .thesis-carry.is-armed .era > * { opacity:.12; }
-      .thesis-carry.is-armed.is-on .era > * { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--i) * 400ms); }
+      .thesis-carry.is-armed .era__name, .thesis-carry.is-armed .era__time { opacity:.12; }
+      .thesis-carry.is-armed.is-on .era__name, .thesis-carry.is-armed.is-on .era__time { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--i) * 400ms); }
+      /* A veil in the plate's own colour dims each disc, so the disc stays solid and the track never shows through it. */
+      .thesis-carry.is-armed .era__object::after { content:''; position:absolute; inset:0; border-radius:50%; background:var(--surface); opacity:.88; }
+      .thesis-carry.is-armed.is-on .era__object::after { opacity:0; transition:opacity .45s ease; transition-delay:calc(var(--i) * 400ms); }
       .thesis-carry.is-armed .cw { opacity:.12; }
       .thesis-carry.is-armed.is-twelve .cw { opacity:1; transition:opacity .45s ease; transition-delay:calc(var(--i) * 70ms); }
     }
@@ -3784,7 +3787,7 @@
         setTimeout(function () {
           carried.textContent = String(at + 1);
           if (at === forms - 1) carry.classList.add('is-twelve');
-        }, at * 400);
+        }, at * 400 + 200);
       })(step);
     });
   }
