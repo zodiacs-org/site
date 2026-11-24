@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { homeTrustFaq } from '../lib/home-trust';
 import ArtFrame from '../components/ArtFrame.astro';
+import Motion from '../components/Motion.astro';
 import AstroTerm from '../components/AstroTerm.astro';
 import SignIcon from '../components/SignIcon.astro';
 import ToolIcon from '../components/ToolIcon.astro';
@@ -710,9 +711,10 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
       </div>
       <a class="textlink only-desktop" href="/tools/">All tools <span class="arr" aria-hidden="true">→</span></a>
     </div>
+    <Motion />
     <div class="grid-4 home-tools">
       {tools.map((t) => (
-        <a class="kcard home-tool" href={t.href}>
+        <a class="kcard home-tool" href={t.href} data-enter="rise">
           <ToolIcon name={t.icon} size={52} />
           <h3 class="h-4">{t.title}</h3>
           <p>{t.promise}</p>
