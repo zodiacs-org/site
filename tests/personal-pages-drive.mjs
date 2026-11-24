@@ -69,12 +69,17 @@ const ALL_PAGES = [
         check(`${label}: refused at the date, birth time and birthplace disabled`, state.time === true && state.place === true && state.error !== '', JSON.stringify(state));
       };
       await tab.locator('input[name="acg-date-calendar"][value="julian"]').check();
+      // Old Style dates are typed: wait for the date field to become a text field.
+      await tab.locator('#acg-date[type="text"]').waitFor({ state: 'visible', timeout: 10_000 });
       await tab.fill('#acg-date', '1990-02-30');
       await shut('Old Style, then 1990-02-30');
-      await tab.locator('input[name="acg-date-calendar"][value="gregorian"]').check();
+      // The control closes once a 1924 or later date is Gregorian, so the choice is a click, not a checked state.
+      await tab.locator('input[name="acg-date-calendar"][value="gregorian"]').click();
       await shut('Old Style 1990-02-30, then Gregorian');
       await tab.fill('#acg-date', '1920-05-03');
       await tab.locator('input[name="acg-date-calendar"][value="julian"]').check();
+      // Old Style dates are typed: wait for the date field to become a text field.
+      await tab.locator('#acg-date[type="text"]').waitFor({ state: 'visible', timeout: 10_000 });
       await tab.fill('#acg-date', '1900-02-30');
       await shut('Old Style, then 1900-02-30');
       await tab.fill('#acg-date', '2020-05-03');
