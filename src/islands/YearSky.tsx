@@ -162,20 +162,27 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
         };
       }
       if (run !== generation.current) return;
-      const [found, moments, calendarModule] = await Promise.all([scan(natal), loadMoments(), loadCalendar()]);
+      const [found, moments] = await Promise.all([scan(natal), loadMoments()]);
       if (run !== generation.current) return;
       if (fromSaved && JSON.stringify(loadProfile().charts.find((chart) => chart.id === fromSaved.id)?.summary) !== JSON.stringify(fromSaved.summary)) {
         setError(w.savedRemoved);
         return;
       }
       const personal = moments.personalYear(found, natal, { eclipses, ingresses }, locale);
-      const calendar = calendarModule.yearCalendar(calendarModule.calendarMoments(personal.moments, general), {
-        locale,
-        timeZone: readerTimeZone(),
-        generatedAt: new Date(),
-        pageUrl: `https://zodiacs.org${pagePath}`,
-      });
       const front = ringFront(natal.bodies, natal.timeKnown);
+      let calendar: string | null = null;
+      try {
+        const calendarModule = await loadCalendar();
+        calendar = calendarModule.yearCalendar(calendarModule.calendarMoments(personal.moments, general), {
+          locale,
+          timeZone: readerTimeZone(),
+          generatedAt: new Date(),
+          pageUrl: `https://zodiacs.org${pagePath}`,
+        });
+      } catch (cause) {
+        if (run === generation.current) setError(entryRefusalMessage(cause) ?? calculationError(cause, locale, w.error));
+      }
+      if (run !== generation.current) return;
       setResult({ personal, calendar, front });
       requestAnimationFrame(() => {
         if (run !== generation.current) return;
