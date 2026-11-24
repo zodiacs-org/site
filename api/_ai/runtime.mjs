@@ -43239,6 +43239,24 @@ function splitCity(text2) {
   const country = text2.slice(comma + 1).trim();
   return place2.length >= 2 && country.length >= 2 ? { place: place2, country } : { place: text2.trim() };
 }
+function exactPlace(table, request2) {
+  for (const query of queryVariants(request2.place)) {
+    const key2 = shardKey(query);
+    for (const row of queryRows(table.index, table.shards[key2] ?? [], key2)) {
+      if (fold2(row[0]) !== query && (row[1] === 0 || fold2(row[1]) !== query)) continue;
+      const country = table.index.countries[row[3]] ?? "";
+      if (request2.country && !countryMatches(country, request2.country)) continue;
+      return { name: row[0], region: table.index.admin1[row[2]] ?? "", country, latitude: row[4] / 100, longitude: row[5] / 100 };
+    }
+  }
+  return null;
+}
+function chosenPlace(listed, exact, place2) {
+  if (!listed || !exact) return listed ?? exact ?? void 0;
+  const name = fold2(listed.name);
+  const continuesWord = queryVariants(place2).some((query) => name !== query && name.startsWith(query) && /[\p{L}\p{N}]/u.test(name[query.length] ?? ""));
+  return continuesWord ? exact : listed;
+}
 async function getAstrocartography(args, context) {
   const natal = await castNatal(args, context.localTime);
   const pageOn = context.pageOn === true;
@@ -43272,8 +43290,9 @@ async function getAstrocartography(args, context) {
     if (!context.placeTable) throw new RangeError("Town and city lookup is not offered here; leave out cities for the lines alone.");
     const table = await context.placeTable();
     for (const text2 of asked) {
-      const found = await findBirthplace(splitCity(text2), context.now, context.localTime, table);
-      const place2 = found.data.places[0];
+      const request2 = splitCity(text2);
+      const found = await findBirthplace(request2, context.now, context.localTime, table);
+      const place2 = chosenPlace(found.data.places[0], exactPlace(table, request2), request2.place);
       if (!place2) {
         unmatched.push(text2);
         continue;

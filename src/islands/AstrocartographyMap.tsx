@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { BirthDateField, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import { BirthDateField, birthDateForChart, calendarInPlay, loadBirthCalendar, type CalendarChoice } from './BirthFields';
 import PlaceSearch from './PlaceSearch';
 import type { City } from '../lib/geo/search';
 import type { AcgResult } from './astrocartography/compute';
@@ -143,6 +143,9 @@ export default function AstrocartographyMap() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const revision = useRef(0);
+  // The calendar control and its conversion load with the page, whatever date is entered, so no request tells a date
+  // before 1924 from a later one. BirthDateField and birthDateForChart then reuse the module already loaded.
+  useEffect(() => { loadBirthCalendar().catch(() => {}); }, []);
   // An edit to the birth details withdraws the map drawn for the old ones and any draw still running, so neither the
   // map nor its place readings stay on screen for details the form now holds differently (or refuses).
   function invalidate() {
@@ -240,7 +243,7 @@ export default function AstrocartographyMap() {
           </div>
           <figure class="acg__figure">
             <div class="acg__frame" ref={frame} tabIndex={0} aria-label="World map, scrolls sideways on small screens">
-            <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label="World map with your planetary lines; the table under it lists where each line runs" class="acg__map">
+            <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label="World map with your planetary lines" class="acg__map">
               <rect width={W} height={H} class="acg__sea" />
               <g class="acg__land">
                 {result.land.cells.map(([lat, lon]) => <circle key={`${lat}-${lon}`} cx={x(lon * result.land.cellDegrees - 180 + result.land.cellDegrees / 2)} cy={y(lat * result.land.cellDegrees - 90 + result.land.cellDegrees / 2)} r="1.3" />)}

@@ -131,6 +131,15 @@ describe('the astrocartography page', () => {
     });
   });
 
+  it('describes the map without saying the table lists every line, since the table gives only the Midheaven and IC', () => {
+    const source = readFileSync(new URL('./AstrocartographyMap.tsx', import.meta.url), 'utf8');
+    const map = /<svg\b[^>]*role="img"[^>]*aria-label="([^"]*)"/u.exec(source)?.[1];
+    expect(map).toBe('World map with your planetary lines');
+    const header = /<thead>(.*?)<\/thead>/su.exec(source)?.[1] ?? '';
+    expect((header.match(/<th scope="col">/gu) ?? []).length).toBe(3);
+    expect(header).toMatch(/Midheaven \(overhead\).*Lower heaven \(underfoot\)/su);
+  });
+
   it('searches places over the whole index, so no request carries a letter of the birthplace or a checked town', () => {
     const source = readFileSync(new URL('./AstrocartographyMap.tsx', import.meta.url), 'utf8');
     const searches = source.match(/<PlaceSearch\b[^>]*>/gu) ?? [];

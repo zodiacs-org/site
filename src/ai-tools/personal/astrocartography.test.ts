@@ -11,7 +11,7 @@ import { coverageInputRefusal, executeAiTool } from '../tools';
 import { createAiNodeHandler } from '../http';
 import { INPUT_SCHEMAS, UNDER_13_REFUSAL } from '../contracts';
 import { loadPlaceTable } from '../features/place-table';
-import { astrocartographyInput, astrocartographyTool, equatorialBodies, greenwichSiderealDegrees } from './astrocartography';
+import { astrocartographyInput, astrocartographyTool, chosenPlace, equatorialBodies, exactPlace, greenwichSiderealDegrees } from './astrocartography';
 import { forbiddenClaim } from './shared';
 import { parseAstrocartographyShare } from '../../lib/astrocartography/share';
 import { astrocartographyCardModel } from '../../server/result-preview';
@@ -177,6 +177,27 @@ describe('get_astrocartography', () => {
     expect(forbiddenClaim(text)).toBeNull();
     for (const url of text.match(/https:\/\/[^"]+/gu) ?? []) expect(url).not.toMatch(/1990|08:30|London|New|Lisbon|Paris/u);
     expect(result.data.lines).toHaveLength(10);
+  });
+
+  it('reads the city asked for when its whole name is in the index, not a longer name that starts with it', async () => {
+    const result = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Kerman, Iran', 'Dali, China', 'Kerman', 'Dali'] }, ON) as { ok: true; data: any };
+    expect(result.ok).toBe(true);
+    expect(result.data.cities.map((city: { name: string; country: string }) => `${city.name}, ${city.country}`)).toEqual(['Kerman, Iran', 'Dali, China', 'Kerman, Iran', 'Dali, China']);
+    // Kerman is at about 30.3 N 57.1 E (Kermanshah 34.3 N 47.1 E); Dali about 25.6 N 100.2 E (Dalian 38.9 N 121.6 E).
+    expect(result.data.cities[0]).toMatchObject({ latitude: expect.closeTo(30.3, 0), longitude: expect.closeTo(57.1, 0) });
+    expect(result.data.cities[1]).toMatchObject({ latitude: expect.closeTo(25.6, 0), longitude: expect.closeTo(100.2, 0) });
+  });
+
+  it('keeps a longer name that adds whole words, and leaves find_birthplace\'s own list as it was', async () => {
+    const result = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Mexico', 'Nara, Japan', 'New York', 'Saint Louis'] }, ON) as { ok: true; data: any };
+    expect(result.data.cities.map((city: { name: string }) => city.name)).toEqual(['Mexico City', 'Nara-shi', 'New York City', 'St. Louis']);
+    const listed = await executeAiTool('find_birthplace', { place: 'Kerman', country: 'Iran' }, ON) as { ok: true; data: any };
+    expect(listed.data.places.map((place: { name: string }) => place.name)).toEqual(['Kermanshah', 'Kerman']);
+    const table = await loadPlaceTable();
+    expect(exactPlace(table, { place: 'Kerman', country: 'Iran' })).toMatchObject({ name: 'Kerman', country: 'Iran' });
+    expect(exactPlace(table, { place: 'Kerman', country: 'China' })).toBeNull();
+    expect(chosenPlace({ name: 'Mexico City' }, { name: 'Mexico' }, 'Mexico')).toEqual({ name: 'Mexico City' });
+    expect(chosenPlace({ name: 'Kermanshah' }, { name: 'Kerman' }, 'Kerman')).toEqual({ name: 'Kerman' });
   });
 
   it('links to the page and its line cards only while the website page is switched on', async () => {

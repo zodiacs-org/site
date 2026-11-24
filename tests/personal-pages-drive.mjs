@@ -63,7 +63,19 @@ const ALL_PAGES = [
       // Every request address, to check the place searches ask for the same fixed set of city files whatever is typed.
       const addresses = [];
       tab.on('request', (request) => addresses.push(request.url()));
-      await tab.fill('#acg-date', BIRTH.date);
+      // The calendar module loads with the page, so a date before 1924 asks for nothing a later date does not.
+      const loaded = await tab.evaluate(() => performance.getEntriesByType('resource').map((entry) => new URL(entry.name).pathname));
+      check('the calendar module loads with the page, before any date', loaded.some((path) => /\/_astro\/BirthCalendar[.-]/u.test(path)), loaded.join(', '));
+      const afterDate = async (date) => {
+        const from = addresses.length;
+        await tab.fill('#acg-date', date);
+        await settle(tab);
+        return addresses.slice(from);
+      };
+      const early = await afterDate('1920-05-03');
+      check('a date before 1924 asks for no file', early.length === 0, early.join('\n'));
+      const modern = await afterDate(BIRTH.date);
+      check('a date after 1924 asks for no file', modern.length === 0, modern.join('\n'));
       await tab.fill('#acg-time', BIRTH.time);
       await choosePlace(tab, 'acg-place', BIRTH.place);
       await tab.getByRole('button', { name: 'Draw my map' }).click();

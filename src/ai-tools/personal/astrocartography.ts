@@ -16,7 +16,8 @@ import { equatorialMoment } from '../../lib/astrocartography/positions';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, horizonLongitude, lineDistances, mcLongitude, strengthOf, wrapLongitude, type EquatorialBody } from '../../lib/astrocartography/lines';
 import { ACG_CONFIDENCE, ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, farPlaceSummary, lineMeaning, lineSentence, roundedDistanceKm, under18At } from '../../lib/astrocartography/meanings';
 import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
-import { findBirthplace } from '../features/birthplace';
+import { countryMatches, findBirthplace, queryVariants, type PlaceTable } from '../features/birthplace';
+import { fold, queryRows, shardKey } from '../../lib/geo/rank';
 import { roundCoordinate } from '../plain-text';
 import { softenMinor, MINOR_NOTE } from '../features/reading-guards';
 import { readingConfidence, readingConfidenceText } from '../reading-confidence';
@@ -112,6 +113,37 @@ function splitCity(text: string): { place: string; country?: string } {
   return place.length >= 2 && country.length >= 2 ? { place, country } : { place: text.trim() };
 }
 
+/**
+ * The most populous place whose whole name is the one asked for, in the country when one is given. Null when no name
+ * matches whole. Only this tool reads it, so find_birthplace's own list is unchanged.
+ */
+export function exactPlace(table: PlaceTable, request: { place: string; country?: string }): { name: string; region: string; country: string; latitude: number; longitude: number } | null {
+  for (const query of queryVariants(request.place)) {
+    const key = shardKey(query);
+    // The rows are in population order (queryRows), so the first whole-name match is the most populous.
+    for (const row of queryRows(table.index, table.shards[key] ?? [], key)) {
+      if (fold(row[0]) !== query && (row[1] === 0 || fold(row[1]) !== query)) continue;
+      const country = table.index.countries[row[3]] ?? '';
+      if (request.country && !countryMatches(country, request.country)) continue;
+      return { name: row[0], region: table.index.admin1[row[2]] ?? '', country, latitude: row[4] / 100, longitude: row[5] / 100 };
+    }
+  }
+  return null;
+}
+
+/**
+ * find_birthplace lists names that start with the text, by population, for the person to choose from; this tool
+ * answers for one place. A whole-name match comes first when the list's first name only continues the last word
+ * asked for: Kerman, Iran is Kerman, not Kermanshah, and Dali, China is Dali, not Dalian. A first name that adds
+ * whole words keeps its place, so Mexico stays Mexico City and Nara stays Nara-shi.
+ */
+export function chosenPlace<A extends { name: string }, B extends { name: string }>(listed: A | undefined, exact: B | null, place: string): A | B | undefined {
+  if (!listed || !exact) return listed ?? exact ?? undefined;
+  const name = fold(listed.name);
+  const continuesWord = queryVariants(place).some((query) => name !== query && name.startsWith(query) && /[\p{L}\p{N}]/u.test(name[query.length] ?? ''));
+  return continuesWord ? exact : listed;
+}
+
 export async function getAstrocartography(args: AstrocartographyInput, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'origin' | 'pageOn' | 'placeTable'>): Promise<{ data: AstrocartographyData; links: { title: string; url: string }[] }> {
   const natal = await castNatal(args, context.localTime);
   // The page and its line cards exist only while the website's page is switched on; otherwise neither is linked.
@@ -153,8 +185,9 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
     if (!context.placeTable) throw new RangeError('Town and city lookup is not offered here; leave out cities for the lines alone.');
     const table = await context.placeTable();
     for (const text of asked) {
-      const found = await findBirthplace(splitCity(text), context.now, context.localTime, table);
-      const place = found.data.places[0];
+      const request = splitCity(text);
+      const found = await findBirthplace(request, context.now, context.localTime, table);
+      const place = chosenPlace(found.data.places[0], exactPlace(table, request), request.place);
       if (!place) { unmatched.push(text); continue; }
       const point = { lat: place.latitude, lon: place.longitude };
       const distances = lineDistances(point, bodies, gast);

@@ -89,7 +89,7 @@ function countryFold(hint: string): string {
 }
 
 /** The hint is the country's name, or whole words of it: Korea finds South Korea, and Oman never finds Romania. */
-function countryMatches(country: string, hint: string): boolean {
+export function countryMatches(country: string, hint: string): boolean {
   const words = (text: string) => ` ${text.replace(/[^a-z0-9]+/gu, ' ').trim()} `;
   const wanted = countryFold(hint);
   const name = fold(country);
@@ -98,7 +98,7 @@ function countryMatches(country: string, hint: string): boolean {
 }
 
 /** "St Louis", "St. Louis" and "Saint Louis" are one name to a person; the index writes each place one way. */
-function queryVariants(place: string): string[] {
+export function queryVariants(place: string): string[] {
   const query = foldedQuery(place);
   if (!query) return [];
   const rest = /^(?:st\.?|saint)\s+(.+)$/u.exec(query)?.[1];

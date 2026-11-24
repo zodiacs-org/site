@@ -13,6 +13,7 @@ const harness = vi.hoisted(() => ({
   effectCursor: 0,
   pending: [] as Array<() => void>,
   compute: vi.fn(),
+  calendar: vi.fn(async () => ({})),
 }));
 
 vi.mock('preact/hooks', () => ({
@@ -42,6 +43,11 @@ vi.mock('preact/hooks', () => ({
 vi.mock('../lib/module-load', async (importOriginal) => ({
   ...await importOriginal<object>(),
   loadModule: async () => ({ computeAstrocartography: harness.compute, nearestLines: () => [] }),
+}));
+
+vi.mock('./BirthFields', async (importOriginal) => ({
+  ...await importOriginal<object>(),
+  loadBirthCalendar: harness.calendar,
 }));
 
 import AstrocartographyMap, { AcgBirthFields } from './AstrocartographyMap';
@@ -80,6 +86,7 @@ async function filledIn() {
 beforeEach(() => {
   harness.slots = []; harness.effects = []; harness.pending = [];
   harness.compute.mockReset();
+  harness.calendar.mockClear();
 });
 afterEach(() => { vi.restoreAllMocks(); });
 
@@ -117,5 +124,17 @@ describe('the astrocartography map after the birth details change', () => {
     const after = render();
     expect(after.mapShown).toBe(false);
     expect(after.busy).toBe(false);
+  });
+});
+
+describe('the calendar module on the astrocartography page', () => {
+  it('loads with the page, before any date, and no date on either side of 1924 asks for it again', () => {
+    render();
+    expect(harness.calendar).toHaveBeenCalledTimes(1);
+    for (const date of ['1990-05-03', '1923-12-31', '1924-01-01', '1920-05-03']) {
+      render().fields.onDateChange(date);
+      render();
+    }
+    expect(harness.calendar).toHaveBeenCalledTimes(1);
   });
 });
