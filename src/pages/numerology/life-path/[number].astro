@@ -104,9 +104,9 @@ const jsonLd = [
   type="article"
   jsonLd={jsonLd}
 >
-  <Motion />
   <article class="container container--narrow lp-page" style={`--lp-hue:${NUMBER_HUES[number]}`}>
     <header class="lp-hero">
+      <Motion />
       <div class="lp-hero__top">
         <div class="lp-hero__text">
           <a class="crumb" href="/numerology/"><span class="crumb__arrow" aria-hidden="true">←</span>Life path numbers</a>
@@ -134,23 +134,23 @@ const jsonLd = [
       </div>
 
       <dl class="plc-panel mono">
-        <div class="plc-panel__row" data-enter="rise">
+        <div class="plc-panel__row">
           <dt>Totals that reduce to {number}</dt>
           <dd>{totalsLine}</dd>
         </div>
-        <div class="plc-panel__row" data-enter="rise">
+        <div class="plc-panel__row">
           <dt>Share of birth dates, 1900 to 2099</dt>
           <dd>{share}</dd>
         </div>
-        <div class="plc-panel__row" data-enter="rise">
+        <div class="plc-panel__row">
           <dt>Master number</dt>
           <dd>{masterLine}</dd>
         </div>
-        <div class="plc-panel__row" data-enter="rise">
+        <div class="plc-panel__row">
           <dt>Next birth dates from {asOf}</dt>
           <dd>{nextDatesLine}</dd>
         </div>
-        <div class="plc-panel__row" data-enter="rise">
+        <div class="plc-panel__row">
           <dt>Worked example, <time datetime={exampleDate}>{exampleDateLong}</time></dt>
           <dd>{exampleLine}</dd>
         </div>

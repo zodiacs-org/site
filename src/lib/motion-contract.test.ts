@@ -25,26 +25,25 @@ const NEVER_TAGS = new Set([
 ]);
 // Pages opened daily: no entrance motion at all. Any page whose path under
 // src/pages starts with one of these folders, at the top level or directly
-// under a locale folder (es/today/, [someLocale]/today/), plus the components
-// those pages are built from. Horoscope pages left this list on 2026-11-24,
-// when the site owner chose calm motion there (docs/MOTION.md).
+// under a locale folder (es/today/, [someLocale]/today/, [lang]/today/,
+// [locale]/today/, [...locale]/today/), plus the components those pages are
+// built from. Horoscope pages left this list on 2026-11-24, when the site
+// owner chose calm motion there (docs/MOTION.md).
 const DAILY_FOLDERS = new Set(['today']);
-const LOCALE_FOLDER = /^(?:[a-z]{2}(?:-[a-z]{4})?|\[\w*Locale\])$/u;
+const LOCALE_FOLDER = /^(?:[a-z]{2}(?:-[a-z]{4})?|\[(?:\.\.\.)?\w*(?:[Ll]ocale|[Ll]ang)\])$/u;
 const DAILY_COMPONENTS = [
   'islands/today/',
   'components/localized/LocalizedToday.astro',
 ];
 // A result the person asked for keeps the settled 200 ms arrival in base.css.
 const RESULT_CLASS = /\bclass(?:Name)?=\{?\s*["'`][^"'`]*(calc__result|sr-result|three-card)/u;
-// The exact marks that broke the rule on main before this guard existed, to
-// be removed in their own PR (#1190). Anything else that breaks the rule
-// fails, including another mark in the same file. When a listed mark is gone
-// from the source, delete its entry.
+// Exact marks that break the rule on main and are waiting for their own fix.
+// None now: the Big Three marks were removed in #1190. Anything that breaks
+// the rule fails unless listed here exactly; another mark in a listed file
+// fails too, and a listed mark that is gone from the source fails until its
+// entry is deleted.
 type Known = { file: string; tag: string; className: string; kind: string };
-const KNOWN_ON_MAIN: Known[] = [
-  { file: 'islands/BigThreeQuick.tsx', tag: 'div', className: 'three-card', kind: 'rise' },
-  { file: 'islands/BigThreeQuick.tsx', tag: 'picture', className: 'three-card__icon', kind: 'disc' },
-];
+const KNOWN_ON_MAIN: Known[] = [];
 const RULE = 'Marks always arrive; cards, tiles and rows may rise on occasional pages; never paragraphs, headings, forms, buttons, details, sections, heroes or results. See docs/MOTION.md.';
 const DAILY_RULE = 'Daily pages (Today) have no entrance motion. See docs/MOTION.md.';
 const RESULT_RULE = 'A result the person asked for keeps its own 200 ms arrival in base.css; never mark it. See docs/MOTION.md.';
@@ -189,6 +188,23 @@ function blockBody(text: string, index: number): { body: string; after: string }
 
 const OFF = "setAttribute('data-entrance', 'off')";
 
+// The source without // and /* */ comments (strings kept), so a statement
+// that is commented out no longer counts as code.
+function stripComments(text: string): string {
+  let out = '';
+  let j = 0;
+  while (j < text.length) {
+    const c = text[j];
+    if (c === '"' || c === "'" || c === '`') { const end = skipString(text, j); out += text.slice(j, end); j = end; continue; }
+    if (c === '/' && text[j + 1] === '/') { const end = text.indexOf('\n', j); j = end < 0 ? text.length : end; continue; }
+    if (c === '/' && text[j + 1] === '*') { const end = text.indexOf('*/', j + 2); j = end < 0 ? text.length : end + 2; continue; }
+    out += c;
+    j += 1;
+  }
+  return out;
+}
+const squash = (text: string): string => text.replace(/\s+/gu, ' ').trim();
+
 describe('entrance motion contract', () => {
   it('moves only opacity, transform and stroke-dashoffset, once, and stills for reduced motion and print', async () => {
     const css = await source('styles/motion.css');
@@ -216,18 +232,23 @@ describe('entrance motion contract', () => {
     }
     const scripts = [...runtime.matchAll(/<script is:inline>([\s\S]*?)<\/script>/gu)].map((match) => match[1]);
     expect(scripts, 'two inline scripts: the switch, then the runtime').toHaveLength(2);
-    const [gate, runner] = scripts;
+    const [gate, runner] = scripts.map(stripComments);
 
     // The switch's timer works on its own: it reads only the flag the runtime
     // sets, inside its own try, and turns motion off on any doubt.
     expect(gate, 'the switch never reads window.zodiacsMotion').not.toContain('zodiacsMotion');
     const timerAt = gate.search(/setTimeout\(\s*function\s*\(\)\s*\{/u);
     expect(timerAt, 'the switch has a timer').toBeGreaterThan(-1);
+    expect(gate.match(/setTimeout\(/gu), 'the switch has exactly one timer').toHaveLength(1);
+    expect(squash(gate), 'the timer is set whenever motion is on').toContain('if (on) window.setTimeout(function () {');
     const timer = blockBody(gate, timerAt);
     expect(timer.after, 'the timer fires after 3 s').toMatch(/^\s*,\s*3000\s*\)/u);
-    expect(timer.body, 'the timer turns motion off').toContain(OFF);
-    expect(timer.body, 'the timer reads the runtime flag').toContain('data-entrance-ready');
-    expect(timer.body, 'the timer has its own try').toMatch(/\btry\s*\{/u);
+    const timerTryAt = timer.body.search(/\btry\s*\{/u);
+    expect(timerTryAt, 'the timer has its own try').toBeGreaterThan(-1);
+    expect(
+      squash(blockBody(timer.body, timerTryAt).body),
+      'the timer turns motion off unless the runtime flagged the root',
+    ).toBe("if (!root.hasAttribute('data-entrance-ready')) root.setAttribute('data-entrance', 'off');");
 
     // Every catch, in either script, turns motion off.
     for (const [name, script] of [['switch', gate], ['runtime', runner]] as const) {
@@ -243,7 +264,7 @@ describe('entrance motion contract', () => {
     expect(runner.slice(0, tryAt), 'nothing before the try reads window.zodiacsMotion').not.toContain('zodiacsMotion');
     const body = blockBody(runner, tryAt).body;
     expect(body).toContain('if (window.zodiacsMotion) return;');
-    expect(body).toContain("root.setAttribute('data-entrance-ready'");
+    expect(squash(body), 'the runtime flags the root as the last step of its try').toMatch(/(?:^|[;{}] )root\.setAttribute\('data-entrance-ready', ''\);$/u);
   });
 
   it('finds the tag that owns a mark past attributes holding => and braces', () => {
@@ -280,8 +301,17 @@ describe('entrance motion contract', () => {
       const marks = marksIn(known.file, await readFile(`${srcDir}${known.file}`, 'utf8'));
       expect(
         marks.some((mark) => matchesKnown(mark, known)),
-        `KNOWN_ON_MAIN lists <${known.tag}.${known.className}> ${known.kind} in ${known.file}, but the source no longer has it. Delete that entry from KNOWN_ON_MAIN in src/lib/motion-contract.test.ts (and the Big Three note in docs/MOTION.md once the list is empty).`,
+        `KNOWN_ON_MAIN lists <${known.tag}.${known.className}> ${known.kind} in ${known.file}, but the source no longer has it. Delete that entry from KNOWN_ON_MAIN in src/lib/motion-contract.test.ts (and any note about it in docs/MOTION.md).`,
       ).toBe(true);
+    }
+  });
+
+  it('treats a dynamic locale folder as a locale folder for the daily rule', () => {
+    for (const page of ['pages/[lang]/today/index.astro', 'pages/[locale]/today/index.astro', 'pages/[...locale]/today/index.astro', 'pages/[releasedLocale]/today/index.astro']) {
+      expect(isDailyPage(page), page).toBe(true);
+    }
+    for (const page of ['pages/[sign]/today/index.astro', 'pages/[lang]/tools/index.astro', 'pages/[...locale]/horoscopes/[sign].astro', 'pages/feeds/today.xml.ts']) {
+      expect(isDailyPage(page), page).toBe(false);
     }
   });
 

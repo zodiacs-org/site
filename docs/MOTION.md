@@ -30,13 +30,14 @@ results never wait, and Today never moves.
 | Forms, form controls, buttons, `details` / `summary` | None. Present from the first frame |
 | Whole sections and articles | None. Mark the cards and marks inside them instead |
 | Hero pictures and hero headings (LCP) | None |
-| A result the person just asked for | The 200 ms arrival in `src/styles/base.css` only. Big Three's result still marks its cards and discs: it merged before the guard and is listed in `KNOWN_ON_MAIN` in the guard test, to be fixed in its own PR. |
+| A result the person just asked for | The 200 ms arrival in `src/styles/base.css` only. |
 | Keyboard-driven actions | None |
 | Daily pages | No entrance motion at all |
 
 Occasional pages, where cards, tiles and rows may rise: the tools hub, sign
 guides, learn pages, sky and event pages, people pages, birthday pages,
-compatibility pair pages, life path pages and the numerology page.
+compatibility pair pages, life path pages, the numerology page, the seasons
+hub, and the sample cards on group charts and chart twins.
 
 Horoscope pages (the horoscope hub and the sign horoscope pages: daily,
 weekly, monthly, yearly, love, career and their localized versions) follow
@@ -117,7 +118,6 @@ import Motion from '../components/Motion.astro';
   `--motion-delay` (extra delay).
 - An island that adds marks after the page loads (never a result the person
   asked for) can call `window.zodiacsMotion?.scan(root)` after rendering them.
-  Big Three still uses this call for its result entrances (see the rule above).
 
 ## Guarantees
 
@@ -154,5 +154,16 @@ import Motion from '../components/Motion.astro';
   chart explorer, so it is never used for this.
 - A marked element inside another marked element takes its parent's step
   (it inherits `--motion-i`), so a grid staggers by card, not by part.
+- Moon phase and the Moon journal: the Moon readout is a live answer inside an island.
+- Sky calendar: the calendar is a control.
+- Birthday hub: 366 day chips, too many to move.
+- Birthday date pages: the hero picture is the largest paint.
+- About, support, methodology, Learn articles and the glossary: reading text.
+- Occasions: a form.
+- Apps: its own designed landing page.
+- Ask: its three topic cards are whole `<section>`s of reading text, each with its heading.
+- Translated seasons hubs and every translated sharing page: only the English pages move.
+- Compatibility hub: the two ways to start a comparison are the page's main action; an entrance held them back about half a second on a throttled phone, so they paint with the page.
+
 - `.reveal` in `src/styles/base.css` stays as it is: the small heading
   entrance on pages that already use it.
