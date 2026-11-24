@@ -640,9 +640,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // draw them, so a first paint mid-parse no longer moves them; on the day of the daily edition it was built with.
   ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
     .map((loc) => [loc, '2026-10-27'] as const),
-  // The assistant showcase, which lists the Grok template from the day of the daily edition it was built with,
-  // and links the per-assistant pages (three from 16 November, Claude Code from 17 November).
-  ['/apps/', '2026-11-17'] as const,
+  // The showcase reserves its caption and link text while the hero image loads.
+  ['/apps/', '2026-11-24'] as const,
   // One landing page per assistant: Claude, ChatGPT and Cursor first published on 16 November, Claude Code on
   // 17 November, when each page started linking the other three.
   ...['/apps/claude/', '/apps/chatgpt/', '/apps/cursor/', '/apps/claude-code/'].map((loc) => [loc, '2026-11-17'] as const),
