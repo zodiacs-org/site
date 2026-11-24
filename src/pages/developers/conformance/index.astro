@@ -4,6 +4,7 @@ import packageDocument from '../../../../package.json';
 import Base from '../../../layouts/Base.astro';
 import summary from '../../../data/conformance/summary.json';
 import source from '../../../data/conformance/source.json';
+import { notesHtml } from '../../../data/conformance/notes-html';
 import { CONFORMANCE_LICENSE, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 
 const suiteTree = `${source.repository}/tree/${source.commit}/conformance`;
@@ -49,35 +50,6 @@ function residual(kind: KindSummary): string {
     return `${field} ${format(stats.median)}${unit} / ${format(stats.max)}${unit}`;
   });
   return parts.join('; ') || '—';
-}
-
-const escape = (text: string) => text.replace(/&/gu, '&amp;').replace(/</gu, '&lt;').replace(/>/gu, '&gt;');
-const inline = (text: string) => escape(text)
-  .replace(/\*\*([^*]+)\*\*/gu, '<strong>$1</strong>')
-  .replace(/`([^`]+)`/gu, '<code>$1</code>');
-
-/** The notes beside each run are Markdown bullet lists, one level of nesting. */
-function notesHtml(markdown: string | null): string {
-  if (!markdown) return '';
-  const out: string[] = ['<ul>'];
-  let nested = false;
-  for (const line of markdown.split('\n')) {
-    const item = /^(\s*)- (.*)$/u.exec(line);
-    if (!item) continue;
-    const deep = item[1].length > 0;
-    if (deep && !nested) {
-      out[out.length - 1] = out[out.length - 1].replace(/<\/li>$/u, '');
-      out.push('<ul>');
-      nested = true;
-    } else if (!deep && nested) {
-      out.push('</ul></li>');
-      nested = false;
-    }
-    out.push(`<li>${inline(item[2])}</li>`);
-  }
-  if (nested) out.push('</ul></li>');
-  out.push('</ul>');
-  return out.join('');
 }
 
 const runHeading = (run: (typeof summary.runs)[number]): string => {
