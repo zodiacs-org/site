@@ -3,7 +3,8 @@
  * docs/platform/evidence/deltat-2026-09-25/README.md §6.
  *
  *   node scripts/deltat-monitor.mjs [--date YYYY-MM-DD] [--finals <file>]...
- *     [--summary <file>] [--issue-body <file>] [--github-output <file>]
+ *     [--summary <file>] [--issue-body <file>] [--tz-issue-body <file>]
+ *     [--github-output <file>]
  *
  * Each engine release freezes its ΔT table (model zodiacs-deltat/1). Once a
  * week this compares that table with IERS's finals2000A.all and says when a
@@ -29,16 +30,29 @@
  * Status: "quiet", "fired", or "failed" when no mirror gave a valid file.
  * .github/workflows/deltat-monitor.yml opens or comments on the issue
  * "ΔT table needs a refresh" whenever the status is not quiet.
+ * The span rule also fires on a UT1 disagreement above 0.1 s where both
+ * IERS and the engine are predicting. The tzdb rule reports newer IANA
+ * releases through its own status and issue body. See the same README, §11.
  */
 import { appendFile, readFile, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { DELTA_T_MODEL, DELTA_T_TABLE, deltaTAt } from '@zodiacs/engine/deltat';
+import { TZDB } from '@zodiacs/engine/geo';
+import { timeBasis } from '@zodiacs/engine/time';
 
 export const MIRRORS = Object.freeze([
   'https://maia.usno.navy.mil/ser7/finals2000A.all',
   'https://datacenter.iers.org/data/9/finals2000A.all',
 ]);
 export const ISSUE_TITLE = 'ΔT table needs a refresh';
+export const TZ_ISSUE_TITLE = 'Time zone data needs a refresh';
+export const KNOWN_TZDB_HOLDS = Object.freeze([
+  Object.freeze({
+    zone: 'America/Yellowknife',
+    heldAt: '2025c',
+    reason: 'owner decision (engine PR 118)',
+  }),
+]);
 
 const DAY_MS = 86_400_000;
 const MJD_EPOCH_MS = Date.UTC(1858, 10, 17);
@@ -50,7 +64,11 @@ const WINDOW_DAYS = 90;
 const MAX_OBSERVED_AGE_DAYS = 14;
 const MIN_PREDICTED_DAYS = 300;
 const MIRROR_TOLERANCE_SECONDS = 0.0001;
+const SPAN_HALF_TOLERANCE_SECONDS = 0.05;
+const SPAN_THRESHOLD_SECONDS = 0.1;
 const TRIES = 3;
+const TZDB_URL = 'https://data.iana.org/time-zones/tzdb';
+const TZDB_TIMEOUT_MS = 10_000;
 
 /**
  * TAI − UTC from each leap second IERS has announced (Bulletin C), as the
@@ -236,11 +254,11 @@ export function evaluate(file, todayMjd, { table = DELTA_T_TABLE, model = deltaT
 
 const wait = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
 
-async function fetchText(url, { fetchImpl, tries, pause }) {
+async function fetchText(url, { fetchImpl, tries, pause, timeoutMs = 120_000 }) {
   const errors = [];
   for (let attempt = 1; attempt <= tries; attempt += 1) {
     try {
-      const response = await fetchImpl(url, { signal: AbortSignal.timeout(120_000) });
+      const response = await fetchImpl(url, { signal: AbortSignal.timeout(timeoutMs) });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return { url, text: await response.text() };
     } catch (error) {
@@ -249,6 +267,50 @@ async function fetchText(url, { fetchImpl, tries, pause }) {
     }
   }
   return { url, error: errors.join('; ') };
+}
+
+/** Compare the days where both IERS and the engine predict UT1. */
+export function evaluateSpan(rows, basis = timeBasis) {
+  let days = 0;
+  let worst = null;
+  let overSigmaDays = 0;
+  let overSigmaWorst = null;
+  let overHalfToleranceDays = 0;
+  let overHalfToleranceWorst = null;
+  for (const row of rows) {
+    if (row.flag !== 'P') continue;
+    // For UTC input the engine reports a predicted source only inside its table.
+    const ut1 = basis(MJD_EPOCH_MS + row.mjd * DAY_MS).timeScale.ut1MinusUtc;
+    if (ut1?.source !== 'predicted') continue;
+    days += 1;
+    const difference = Math.abs(row.ut1MinusUtc - ut1.seconds);
+    const point = { difference, on: dateOfMjd(row.mjd), sigma: ut1.sigma };
+    if (!worst || difference > worst.difference) worst = point;
+    if (typeof ut1.sigma === 'number' && Number.isFinite(ut1.sigma) && difference > ut1.sigma) {
+      overSigmaDays += 1;
+      if (!overSigmaWorst || difference > overSigmaWorst.difference) overSigmaWorst = point;
+    }
+    if (difference > SPAN_HALF_TOLERANCE_SECONDS) {
+      overHalfToleranceDays += 1;
+      if (!overHalfToleranceWorst || difference > overHalfToleranceWorst.difference) overHalfToleranceWorst = point;
+    }
+  }
+  const fires = worst !== null && worst.difference > SPAN_THRESHOLD_SECONDS;
+  const warningLevel = fires
+    ? 'refresh'
+    : overHalfToleranceDays > 0
+      ? 'half-tolerance'
+      : overSigmaDays > 0
+        ? 'sigma'
+        : 'none';
+  return {
+    days,
+    worst,
+    overSigma: { days: overSigmaDays, worst: overSigmaWorst },
+    overHalfTolerance: { days: overHalfToleranceDays, worst: overHalfToleranceWorst },
+    warningLevel,
+    fires,
+  };
 }
 
 /**
@@ -294,7 +356,76 @@ export async function runMonitor({
     }
   }
   const freshest = valid.reduce((best, copy) => (copy.observed.to > best.observed.to ? copy : best));
-  return { ...evaluate(freshest, todayMjd, { table, model }), source: freshest.url, mirrorsValid: valid.length, problems };
+  const result = evaluate(freshest, todayMjd, { table, model });
+  const span = evaluateSpan(freshest.rows);
+  return {
+    ...result,
+    status: span.fires ? 'fired' : result.status,
+    span,
+    source: freshest.url,
+    mirrorsValid: valid.length,
+    problems,
+  };
+}
+
+const TZDB_RELEASE = /^\d{4}[a-z]+$/u;
+const TZDB_NEWS_SECTIONS = new Set([
+  'Briefly:',
+  'Changes to past timestamps',
+  'Changes to future timestamps',
+  'Changes to past and future timestamps',
+]);
+
+function isLaterRelease(candidate, installed) {
+  const year = Number(candidate.slice(0, 4));
+  const installedYear = Number(installed.slice(0, 4));
+  if (year !== installedYear) return year > installedYear;
+  const suffix = candidate.slice(4);
+  const installedSuffix = installed.slice(4);
+  return suffix.length !== installedSuffix.length
+    ? suffix.length > installedSuffix.length
+    : suffix > installedSuffix;
+}
+
+function newsForNewReleases(news, installed, latest) {
+  const releases = new Map();
+  let lines;
+  let keep = false;
+  for (const line of news.split(/\r?\n/u)) {
+    const release = /^Release (\d{4}[a-z]+)(?:\s|$)/u.exec(line)?.[1];
+    if (release) {
+      lines = undefined;
+      keep = false;
+      if (isLaterRelease(release, installed) && !isLaterRelease(release, latest)) {
+        lines = [`### ${release}`, ''];
+        releases.set(release, lines);
+      }
+    } else if (lines) {
+      if (/^ {2}\S/u.test(line)) {
+        keep = TZDB_NEWS_SECTIONS.has(line.trimEnd().slice(2));
+        if (keep) lines.push('', `#### ${line.trim()}`, '');
+      } else if (keep) {
+        lines.push(line.trim());
+      }
+    }
+  }
+  return releases;
+}
+
+export async function runTzdbMonitor({ installed = TZDB.version, fetchImpl = fetch, pause = wait } = {}) {
+  const options = { fetchImpl, tries: TRIES, pause, timeoutMs: TZDB_TIMEOUT_MS };
+  const version = await fetchText(`${TZDB_URL}/version`, options);
+  if (version.error) return { status: 'failed', problem: `${version.url}: ${version.error}` };
+  const latest = version.text.trim();
+  if (!TZDB_RELEASE.test(latest)) return { status: 'failed', problem: `${version.url}: invalid release version` };
+  if (!isLaterRelease(latest, installed)) return { status: 'quiet', installed, latest };
+
+  const news = await fetchText(`${TZDB_URL}/NEWS`, options);
+  if (news.error) return { status: 'failed', problem: `${news.url}: ${news.error}` };
+  const releases = newsForNewReleases(news.text, installed, latest);
+  if (!releases.has(latest)) return { status: 'failed', problem: `${news.url}: release ${latest} is missing` };
+  const notes = [...releases.values()].map((lines) => lines.join('\n').trimEnd()).join('\n\n');
+  return { status: 'fired', installed, latest, notes };
 }
 
 const seconds = (value, digits = 4) => `${value.toFixed(digits)} s`;
@@ -329,11 +460,33 @@ export function renderReport(result) {
   if (result.problems.length > 0) {
     lines.push('', 'Mirror problems this run:', '', ...result.problems.map((problem) => `- ${problem}`));
   }
+  if (result.span) {
+    const { days, worst, overSigma, overHalfTolerance, fires } = result.span;
+    const peak = worst
+      ? `Largest absolute difference: ${seconds(worst.difference)} on ${worst.on} (engine σ ${seconds(worst.sigma)}).`
+      : 'No overlapping predictions.';
+    const levels = `Warning levels: over engine σ (${overSigma.days} days), over ${seconds(SPAN_HALF_TOLERANCE_SECONDS, 2)} (${overHalfTolerance.days} days).`;
+    lines.push('', `UT1 span: ${days} days compared. ${peak} ${levels} Fires above ${seconds(SPAN_THRESHOLD_SECONDS, 1)}: ${fires ? 'yes' : 'no'}.`);
+    if (fires || overHalfTolerance.days > 0 || overSigma.days > 0) {
+      lines.push('', "After the table's end the engine reads UTC on the continuous-UTC rule (TT = UTC + 69.184 s), so a stale table makes UT1 and chart angles less exact rather than making TT wrong.");
+    }
+  }
   if (result.status === 'fired') {
     lines.push('', 'A refresh is an engine release with a new table (docs/platform/evidence/deltat-2026-09-25/README.md §6), taken into the site through a normal pull request.');
   }
   lines.push('');
   return lines.join('\n');
+}
+
+export function renderTzdbReport(result) {
+  const heading = result.status === 'fired' ? `## ${TZ_ISSUE_TITLE}` : '## Time zone data monitor';
+  if (result.status === 'failed') return `${heading}\n\nIANA data could not be read. ${result.problem}\n`;
+  const versions = `The engine ships ${result.installed}. IANA reports ${result.latest}.`;
+  const holds = KNOWN_TZDB_HOLDS.map((hold) => `${hold.zone} held at ${hold.heldAt} (${hold.reason})`).join('; ');
+  const holdLine = `Known holds (do not alert): ${holds}.`;
+  if (result.status === 'quiet') return `${heading}\n\n${versions} No newer release.\n\n${holdLine}\n`;
+  const impact = `A new tzdb release makes the engine's pinned time zone data stale and turns ${result.installed} into a new host-probe baseline.`;
+  return `${heading}\n\n${versions}\n\n${impact}\n\n${holdLine}\n\n${result.notes}\n\nSource: ${TZDB_URL}/NEWS\n`;
 }
 
 function argument(name) {
@@ -349,16 +502,23 @@ async function main() {
   const finals = process.argv.flatMap((value, index) => (process.argv[index - 1] === '--finals' ? [value] : []));
   const summary = argument('--summary') ?? process.env.GITHUB_STEP_SUMMARY ?? null;
   const issueBody = argument('--issue-body');
+  const tzIssueBody = argument('--tz-issue-body');
   const githubOutput = argument('--github-output') ?? process.env.GITHUB_OUTPUT ?? null;
   const sources = finals.length > 0
     ? await Promise.all(finals.map(async (path) => ({ url: path, text: await readFile(path, 'utf8') })))
     : null;
-  const result = await runMonitor({ today: date ? new Date(`${date}T00:00:00Z`) : new Date(), sources });
+  const [result, tz] = await Promise.all([
+    runMonitor({ today: date ? new Date(`${date}T00:00:00Z`) : new Date(), sources }),
+    runTzdbMonitor(),
+  ]);
   const report = renderReport(result);
-  process.stdout.write(report);
-  if (summary) await appendFile(summary, report);
+  const tzReport = renderTzdbReport(tz);
+  const fullReport = `${report}\n${tzReport}`;
+  process.stdout.write(fullReport);
+  if (summary) await appendFile(summary, fullReport);
   if (issueBody && result.status !== 'quiet') await writeFile(issueBody, report);
-  if (githubOutput) await appendFile(githubOutput, `status=${result.status}\n`);
+  if (tzIssueBody && tz.status === 'fired') await writeFile(tzIssueBody, tzReport);
+  if (githubOutput) await appendFile(githubOutput, `status=${result.status}\ntz_status=${tz.status}\n`);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {

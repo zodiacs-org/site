@@ -8,12 +8,6 @@ import type { HoroscopeWindow } from './horoscope/window';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import { loadPlaceTable } from './features/place-table';
 
-/**
- * Tool results must not contain an en dash (U+2013) or an em dash (U+2014).
- * The thirteen published definitions still contain "(years 1800–2199)" in
- * input descriptions. That text is for the model, it cannot change, and this
- * check does not read it. A minus sign and an arrow are not dashes.
- */
 const DASH = /[–—]/u;
 const sources = {
   occasions: true,

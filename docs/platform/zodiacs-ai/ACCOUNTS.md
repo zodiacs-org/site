@@ -241,10 +241,16 @@ name and host family only).
    - Repeat step 3 for production, with resource `https://zodiacs.org/mcp` and
      site URL `https://zodiacs.org`.
    - Set `PUBLIC_ACCOUNT_SAVES_ENABLED=1` (if not already set) and
-     `ZODIACS_ACCOUNTS_ENABLED=1` in production, and redeploy. Then submit the
-   update to OpenAI and Anthropic with the auth details and reviewer account.
-   Publishing an OAuth tool changes the app's listing, so it needs the owner's
-   approval and a new submission.
+     `ZODIACS_ACCOUNTS_ENABLED=1` in production, and redeploy.
+   - Before that redeploy, reword `/developers/ai/` (the Connect paragraph and
+     the page description) and `/support/`: both say the hosted server needs
+     no account or sign-in and that every tool only reads, which stops being
+     true once the save tool is listed with its `oauth2` scheme. The claim
+     behind them, `priv.ai-no-account` in `docs/claims/ledger.json`, holds
+     only while accounts are off; `/privacy/` already branches on the flag.
+   - Then submit the update to OpenAI and Anthropic with the auth details and
+     reviewer account. Publishing an OAuth tool changes the app's listing, so
+     it needs the owner's approval and a new submission.
 
 Rollback: unset `ZODIACS_ACCOUNTS_ENABLED` and redeploy. The server returns to
 the 0.5.0 bytes, which the flag-off test pins. To stop a client without a
