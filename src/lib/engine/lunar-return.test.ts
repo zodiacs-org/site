@@ -8,7 +8,6 @@ import type { Chart, ChartInput } from './types';
 import policy from './fixtures/independent-lunar-return-policy.json';
 import references from './fixtures/independent-lunar-returns.json';
 import applicability from './fixtures/swiss-lunar-fixed-target-applicability.json';
-import { onBeforeContinuousUtcClock } from '../../../tests/helpers/pre-continuous-utc';
 
 // The resolver is the engine's, which the site loads on first use.
 beforeAll(() => prepareLocalTime('2000-01-01', 'UTC'));
@@ -117,10 +116,10 @@ describe('independent lunar return references', () => {
       .toBe('5db9f2ef1491fc96896d2d610bbe91a84b0743dd30b449f923e8c2d7aafa5ba5');
     // rc.16 nutation moves returned-chart instants; rebuild their Horizons/ERFA
     // references at those instants, retaining the independent crossings and gates.
-    // The 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1 and 1.1.0-rc.2 rebuilds with CI's Python 3.11 change only the
-    // recorded engine version (1.1.0-rc.2's also the digest of tools/engine-clock.ts, whose time basis now comes from @zodiacs/engine/time); numerical references and gates are unchanged.
+    // 2.1.0 rebuild: continuous-UTC clock after 2027-10-02 refreshed the post-2027
+    // Horizons responses and engine version metadata; policies and gates are unchanged.
     expect(digest(new URL('./fixtures/independent-lunar-returns.json', import.meta.url)))
-      .toBe('81a07a16b9a7a9c85ce4fc5ac633a110c5395dbd50c7235bf83138a44fda5243');
+      .toBe('bdb6de7b66d221a60f2ff951bf62dd9a85df4a7dc57ffb0406bf55761ba4c24b');
     expect(digest(new URL('./fixtures/swiss-lunar-fixed-target-applicability.json', import.meta.url)))
       .toBe('2f9056c0f93b22e3270bf1f496d804759a9057ac6b3e5a142604248ba1dddb1a');
     // The carried-over policy names the one it supersedes, and keeps its gates.
@@ -172,11 +171,8 @@ describe('independent lunar return references', () => {
 
   it.each(references.cases)('$id: chart at the separately preserved independent instant', (reference) => {
     const input = policy.cases.find((row) => row.id === reference.id)!;
-    // The references read an instant after the IERS table as UT1, as the engine
-    // did before 2.0.0; the chart is taken at that same UT1 and TT, so the
-    // comparison still measures positions and angles, not the clock.
     const chart = ephemeris.computeChart({
-      utc: onBeforeContinuousUtcClock(reference.independentChartUTC), ...locationFor(input.returnLocation),
+      utc: new Date(reference.independentChartUTC), ...locationFor(input.returnLocation),
       houseSystem: 'placidus', timeKnown: true,
     });
     record(reference.id, 'fixedIndependentChart', { chart });
@@ -201,7 +197,7 @@ describe('independent lunar return references', () => {
     const supplementUtc = new Date(reference.utc);
     expect(Math.abs(chart.input.utc.getTime() - supplementUtc.getTime()), 'The returned-chart reference no longer applies; rebuild the independent references at the new product timestamp')
       .toBeLessThanOrEqual(15_000);
-    expectIndependentChart(ephemeris.computeChart({ utc: onBeforeContinuousUtcClock(reference.utc), ...place }), reference.reference);
+    expectIndependentChart(ephemeris.computeChart({ utc: supplementUtc, ...place }), reference.reference);
   });
 
   it('retains geocentric event identity under relocation and the independent relocated component', () => {

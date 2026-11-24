@@ -12,21 +12,3 @@ export function asBeforeContinuousUtc(iso: string): string {
   if (timeScale.basis !== 'continuous-utc' || timeScale.ut1MinusUtc === null) return iso;
   return new Date(ms + timeScale.ut1MinusUtc.seconds * 1000).toISOString();
 }
-
-/**
- * The UTC label an engine from 2.0.0 reads at the UT1 (and so the TT) that an
- * engine before 2.0.0 read from `iso`: after the IERS table the earlier
- * engines took a label as UT1, so a reference built on their clock is matched
- * by the label whose continuous-UTC reading lands on that UT1. Other instants
- * come back unchanged.
- */
-export function onBeforeContinuousUtcClock(iso: string): Date {
-  const ut1 = Date.parse(iso);
-  let label = ut1;
-  for (let i = 0; i < 3; i += 1) {
-    const { timeScale } = timeBasis(label);
-    if (timeScale.basis !== 'continuous-utc' || timeScale.ut1MinusUtc === null) return new Date(ut1);
-    label = ut1 - timeScale.ut1MinusUtc.seconds * 1000;
-  }
-  return new Date(label);
-}

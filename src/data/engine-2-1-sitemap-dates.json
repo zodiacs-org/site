@@ -1,9 +1,10 @@
 {
-  "date": "2026-11-23",
+  "date": "2026-11-24",
   "paths": [
     "/developers/",
     "/developers/compare/",
     "/developers/compute/",
+    "/developers/conformance/",
     "/developers/conventions/",
     "/developers/demo/",
     "/developers/docs/",

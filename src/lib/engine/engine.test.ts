@@ -50,11 +50,10 @@ describe('independent true node and polar references', () => {
     const digest = (name: string) => createHash('sha256')
       .update(readFileSync(new URL(`./fixtures/${name}`, import.meta.url)))
       .digest('hex');
-    // 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1 and 1.1.0-rc.2 rebuilds: engine version metadata only (and
-    // 1.1.0-rc.2's also the digest of tools/engine-clock.ts, whose time basis now comes from @zodiacs/engine/time); policies and
-    // retained Horizons responses are unchanged.
+    // 2.1.0 rebuild: continuous-UTC clock after 2027-10-02 refreshed the post-2027
+    // Horizons responses and engine version metadata; policies and gates are unchanged.
     expect(digest('independent-node-polar.json'))
-      .toBe('813d0fcc81da81119b0ada087bd9bac12726cfc929757bb617dd07bf39e61776');
+      .toBe('257385b2de9e2f32d7f1076b55f8006fbe9ebd943b04224b70ef3c6951445e85');
     expect(digest('swiss-node-polar-policy.json'))
       .toBe('7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
   });
@@ -113,10 +112,10 @@ describe('independent representative supported epochs', () => {
       .digest('hex');
     // rc.16 nutation moves the product's solar-return instant; its independent
     // returned-chart references were re-evaluated there, with every gate unchanged.
-    // The 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1 and 1.1.0-rc.2 rebuilds update the recorded engine version
-    // (1.1.0-rc.2's also the digest of tools/engine-clock.ts, whose time basis now comes from @zodiacs/engine/time).
+    // 2.1.0 rebuild: continuous-UTC clock after 2027-10-02 refreshed the post-2027
+    // Horizons responses and engine version metadata; every gate is unchanged.
     expect(digest('independent-eight-cases.json'))
-      .toBe('a2715837f486fab86e400304328a28b714d8d9a7d01360c3db24062665365cdd');
+      .toBe('14cd1de6c6d7d49396a2026f7448554277c751537a43a50e0304edc271f28d67');
     expect(digest('swiss-eight-cases-policy.json'))
       .toBe('9dfc069be7c6854da1f0dff578c0b213e64624e720d21e27c6301b7612fd79a4');
   });
