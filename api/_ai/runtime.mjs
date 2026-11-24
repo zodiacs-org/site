@@ -43285,15 +43285,61 @@ function equatorialBodies(utc) {
 function greenwichSiderealDegrees(utc) {
   return equatorialMoment(utc).gast;
 }
-function splitCity(text2) {
-  const [place2, ...hints] = text2.split(",").map((part) => part.trim());
-  return place2.length >= 2 && hints.length && hints.every((hint) => hint.length >= 2) ? { place: place2, hints } : { place: text2.trim(), hints: [] };
-}
 var words = (text2) => ` ${fold2(text2).replace(/[^a-z0-9]+/gu, " ").trim()} `;
+var partKeys = (text2) => text2.split(",").map((part) => words(part).trim());
+function splitCity(text2, joined = []) {
+  const raw = text2.split(",").map((part) => part.trim());
+  const keys = raw.map((part) => words(part).trim());
+  const parts = [];
+  for (let at = 0; at < raw.length; ) {
+    const run2 = joined.find((name) => name.length <= raw.length - at && name.every((key2, offset) => keys[at + offset] === key2))?.length ?? 1;
+    parts.push(raw.slice(at, at + run2).join(", "));
+    at += run2;
+  }
+  const [place2, ...hints] = parts;
+  return place2.length >= 2 && hints.length && hints.every((hint) => hint.length >= 2) ? { place: place2, hints } : { place: parts.join(", "), hints: [] };
+}
+var labelIndexes = /* @__PURE__ */ new WeakMap();
+function labelIndex(table) {
+  let index = labelIndexes.get(table);
+  if (index) return index;
+  const labels = /* @__PURE__ */ new Map();
+  const add = (key2, row) => {
+    const list3 = labels.get(key2);
+    if (list3) list3.push(row);
+    else labels.set(key2, [row]);
+  };
+  const joined = /* @__PURE__ */ new Map();
+  for (const shard of Object.values(table.shards)) {
+    for (const row of shard) {
+      const point2 = rowPoint(table.index, row);
+      const label = placeLabelText(point2);
+      add(partKeys(label).join(","), row);
+      add(partKeys(`${label} (${coordinateText(point2.lat, point2.lon)})`).join(","), row);
+      for (const name of [point2.name, ...row[1] === 0 ? [] : [String(row[1])], point2.admin1, point2.country]) {
+        if (name.includes(",")) joined.set(partKeys(name).join(","), partKeys(name));
+      }
+    }
+  }
+  for (const list3 of labels.values()) list3.sort((a, b) => b[7] - a[7]);
+  index = { labels, joined: [...joined.values()].sort((a, b) => b.length - a.length) };
+  labelIndexes.set(table, index);
+  return index;
+}
+function placeByLabel(table, text2) {
+  if (PLACE_ID.test(text2.trim())) {
+    const place2 = placeById(table, text2);
+    if (place2) return { place: place2 };
+  }
+  const rows3 = labelIndex(table).labels.get(partKeys(text2).join(","));
+  if (!rows3?.length) return null;
+  return rows3.length === 1 ? { place: toPlace(table, rows3[0]) } : { choices: rows3.slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) };
+}
+var PLACE_ID = /^p[0-9a-z]{11}$/u;
 var REGION_NAMES = /* @__PURE__ */ new Set(["england", "scotland", "wales", "northern ireland"]);
 var isRegionName = (hint) => REGION_NAMES.has(words(hint).trim());
 function regionMatches(hint, region) {
-  return words(hint).trim() !== "" && words(region).includes(words(hint));
+  return words(hint).trim() !== "" && words(region).trim() === words(hint).trim();
 }
 var countryKey = (text2) => words(text2).trim().replace(/^the /u, "");
 var COUNTRY_ALIASES = foldedAliases({
@@ -43352,19 +43398,12 @@ function countryNameMatches(country, hint) {
 function countryHintMatches(hint, region, country) {
   return isRegionName(hint) ? regionMatches(hint, region) : countryNameMatches(country, hint);
 }
-function hintsMatch(hints, region, country, countries) {
+function hintsMatch(hints, region, country) {
   if (hints.length === 1) {
     const [hint] = hints;
-    const asRegion = countries.has(countryWanted(hint)) ? countryKey(region) === countryKey(hint) : regionMatches(hint, region);
-    return asRegion || countryHintMatches(hint, region, country);
+    return regionMatches(hint, region) || countryHintMatches(hint, region, country);
   }
   return hints.every((hint, index) => index === hints.length - 1 ? countryHintMatches(hint, region, country) : regionMatches(hint, region));
-}
-var countryKeys = /* @__PURE__ */ new WeakMap();
-function countrySet(countries) {
-  let set = countryKeys.get(countries);
-  if (!set) countryKeys.set(countries, set = new Set(countries.map(countryKey)));
-  return set;
 }
 var Fit = { Whole: 0, Words: 1, Longer: 2, Contains: 3 };
 function fitOf(names, query) {
@@ -43396,7 +43435,9 @@ function placeById(table, id) {
   return row ? toPlace(table, row) : null;
 }
 function resolvePlace(table, text2) {
-  const { place: place2, hints } = splitCity(text2);
+  const labelled = placeByLabel(table, text2);
+  if (labelled) return labelled;
+  const { place: place2, hints } = splitCity(text2, labelIndex(table).joined);
   const named2 = /* @__PURE__ */ new Map();
   for (const query of queryVariants(place2)) {
     const key2 = shardKey(query);
@@ -43407,8 +43448,7 @@ function resolvePlace(table, text2) {
       if (known === void 0 || fit < known) named2.set(row, fit);
     }
   }
-  const countries = countrySet(table.index.countries);
-  const found = new Map([...named2].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? "", table.index.countries[row[3]] ?? "", countries)));
+  const found = new Map([...named2].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? "", table.index.countries[row[3]] ?? "")));
   const rows3 = (from, fit) => [...from].filter(([, value]) => value === fit).map(([row]) => row).sort((a, b) => b[7] - a[7]);
   const best = (from) => {
     for (const fit of [Fit.Whole, Fit.Words, Fit.Longer, Fit.Contains]) {
@@ -45875,9 +45915,20 @@ function childBirthDateRefusal(tool, args, now, hostZone) {
   return birthDatesIn(tool, args, now, hostZone).some((date3) => isUnder13(date3, today2)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
 }
 var AGE_FIRST_TOOLS = /* @__PURE__ */ new Set(["get_astrocartography"]);
+var LOOSE_CIVIL_DATE = /^(\d{4})([-/.])(\d{1,2})\2(\d{1,2})$/u;
+function ageCheckDate(text2) {
+  const trimmed = text2.trim();
+  const match = LOOSE_CIVIL_DATE.exec(trimmed);
+  if (!match) return trimmed;
+  const [year, month, day2] = [Number(match[1]), Number(match[3]), Number(match[4])];
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth3 = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  if (month < 1 || month > 12 || day2 < 1 || day2 > daysInMonth3) return trimmed;
+  return `${match[1]}-${String(month).padStart(2, "0")}-${String(day2).padStart(2, "0")}`;
+}
 function ageFirstRefusal(tool, args, now, hostZone) {
   const birthDate = fieldOf(args, "birthDate");
-  const read = typeof birthDate === "string" ? { ...args, birthDate: birthDate.trim() } : args;
+  const read = typeof birthDate === "string" ? { ...args, birthDate: ageCheckDate(birthDate) } : args;
   return childBirthDateRefusal(tool, read, now, hostZone);
 }
 function occasionCardUrl(args) {

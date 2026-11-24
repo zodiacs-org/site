@@ -349,14 +349,35 @@ export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date
  */
 export const AGE_FIRST_TOOLS: ReadonlySet<string> = new Set<AiToolName>(['get_astrocartography']);
 
+/** A year first date with one separator, -, / or ., and a month and day of one or two digits: 2020-1-1, 2020/01/01, 2020.1.1. */
+const LOOSE_CIVIL_DATE = /^(\d{4})([-/.])(\d{1,2})\2(\d{1,2})$/u;
+
+/**
+ * A birth date as YYYY-MM-DD when it is a real calendar date written year first, with the spaces around it removed and
+ * the month and day padded (2020-1-1, 2020/01/01 and 2020.1.1 are 2020-01-01); otherwise the text with only its spaces
+ * removed, so a value that is not a date keeps the tool's own date sentence. Used only for the age check, never echoed.
+ */
+export function ageCheckDate(text: string): string {
+  const trimmed = text.trim();
+  const match = LOOSE_CIVIL_DATE.exec(trimmed);
+  if (!match) return trimmed;
+  const [year, month, day] = [Number(match[1]), Number(match[3]), Number(match[4])];
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth = month === 2 ? (leap ? 29 : 28) : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  if (month < 1 || month > 12 || day < 1 || day > daysInMonth) return trimmed;
+  return `${match[1]}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
 /**
  * The child refusal for a tool in AGE_FIRST_TOOLS, read before any missing field is named. The birth date is read
- * with the spaces around it removed, as the tool's own schema reads it, so a child's date written with a space is
- * refused for the age too and not answered with the fields still missing.
+ * with the spaces around it removed and, when it is a real date written year first with -, / or . and an unpadded
+ * month or day, as that date (ageCheckDate), so a child's date in any of those forms is refused for the age too and
+ * not answered with the date's format or the fields still missing. Only the age check reads the normalised date; the
+ * call itself is read as sent.
  */
 export function ageFirstRefusal(tool: AiToolName, args: unknown, now: Date, hostZone?: string) {
   const birthDate = fieldOf(args, 'birthDate');
-  const read = typeof birthDate === 'string' ? { ...(args as Record<string, unknown>), birthDate: birthDate.trim() } : args;
+  const read = typeof birthDate === 'string' ? { ...(args as Record<string, unknown>), birthDate: ageCheckDate(birthDate) } : args;
   return childBirthDateRefusal(tool, read, now, hostZone);
 }
 

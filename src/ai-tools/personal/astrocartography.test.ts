@@ -7,10 +7,11 @@ import { computeChart } from '../../lib/engine/full.js';
 import { meanObliquity } from '../../lib/engine/houses';
 import { ACG_BODIES, distanceKm, distanceToMeridianKm, eclipticToEquatorial, horizonLine, horizonLongitude, lineDistances, mcLongitude, ramcFromMc, wrapLongitude } from '../../lib/astrocartography/lines';
 import { LINE_MEANING, MINOR_NOTE } from '../../lib/astrocartography/meanings';
-import { coverageInputRefusal, executeAiTool } from '../tools';
+import { ageCheckDate, coverageInputRefusal, executeAiTool } from '../tools';
 import { createAiNodeHandler } from '../http';
 import { INPUT_SCHEMAS, UNDER_13_REFUSAL } from '../contracts';
 import { loadPlaceTable } from '../features/place-table';
+import { coordinateText, placeId, placeLabelText, rowPoint } from '../../lib/geo/place-label';
 import { astrocartographyInput, astrocartographyTool, COUNTRY_ALIASES, countryNameMatches, equatorialBodies, greenwichSiderealDegrees, resolvePlace } from './astrocartography';
 import { forbiddenClaim } from './shared';
 import { parseAstrocartographyShare } from '../../lib/astrocartography/share';
@@ -367,7 +368,8 @@ describe('get_astrocartography', () => {
     const ids = entry.places.map((place: { id: string }) => place.id);
     expect(new Set(ids).size).toBe(2);
     expect(result.data.limits).toContain('More than one town or city matches Udaipur, Rajasthan, India: Udaipur, Rajasthan, India (24.59° N, 73.71° E); Udaipur, Rajasthan, India (27.72° N, 75.47° E). Some share a name, region and country, so choose one by its id in placeIds.');
-    // Sending the same label back would ask again; the id reads exactly that place.
+    // The plain label asks again; the label with its coordinates, or the id, reads exactly that place.
+    expect(resolvePlace(await loadPlaceTable(), entry.places[1].label)).toMatchObject({ place: { id: ids[1] } });
     const chosen = await executeAiTool('get_astrocartography', { ...base, placeIds: [ids[1]] }, ON) as { ok: true; data: any };
     expect(chosen.ok).toBe(true);
     expect(chosen.data.ambiguous).toEqual([]);
@@ -387,6 +389,85 @@ describe('get_astrocartography', () => {
     const tooMany = await executeAiTool('get_astrocartography', { ...base, cities: ['Lisbon', 'Paris', 'Rome'], placeIds: ids.concat(lisbon) }, ON) as { ok: boolean };
     expect(tooMany.ok).toBe(false);
     expect(astrocartographyInput.safeParse({ ...base, cities: ['Lisbon', 'Paris', 'Rome'], placeIds: ids }).success).toBe(true);
+  });
+
+  it('reads a region only by its whole name, never by words inside a longer one: Virginia is not West Virginia', async () => {
+    const table = await loadPlaceTable();
+    const read = (text: string) => {
+      const resolved = resolvePlace(table, text);
+      return resolved && 'place' in resolved ? `${resolved.place.name}, ${resolved.place.region}, ${resolved.place.country}` : null;
+    };
+    const suggested = (text: string) => {
+      const resolved = resolvePlace(table, text);
+      return resolved && 'suggestions' in resolved ? resolved.suggestions.map((place) => `${place.name}, ${place.region}`) : null;
+    };
+    // The index has no Charleston in Virginia: the Charlestons it has are suggestions, never West Virginia's as the answer.
+    for (const text of ['Charleston, Virginia', 'Charleston, Virginia, US', 'Charleston, Virginia, United States', ' charleston ,  VIRGINIA ']) {
+      expect(read(text), text).toBeNull();
+      expect(suggested(text), text).toEqual(expect.arrayContaining(['Charleston, West Virginia', 'Charleston, South Carolina']));
+    }
+    for (const text of ['Charleston, West Virginia', 'Charleston, West Virginia, US', 'Charleston, west virginia, United States']) expect(read(text), text).toBe('Charleston, West Virginia, United States');
+    expect(read('Charleston, South Carolina')).toBe('Charleston, South Carolina, United States');
+    // Carolina is a region of Puerto Rico, not part of North or South Carolina; Dakota is no region at all.
+    for (const text of ['Wilmington, Carolina', 'Jacksonville, Carolina', 'Charleston, Carolina', 'Fargo, Dakota', 'Sioux Falls, Dakota', 'Fargo, Dakota, US']) {
+      expect(read(text), text).toBeNull();
+      expect(suggested(text), text).not.toBeNull();
+    }
+    expect(read('Carolina, Carolina')).toBe('Carolina, Carolina, Puerto Rico');
+    expect(read('Wilmington, North Carolina')).toBe('Wilmington, North Carolina, United States');
+    expect(read('Jacksonville, North Carolina, United States')).toBe('Jacksonville, North Carolina, United States');
+    expect(read('Fargo, North Dakota')).toBe('Fargo, North Dakota, United States');
+    expect(read('Sioux Falls, South Dakota')).toBe('Sioux Falls, South Dakota, United States');
+    expect(suggested('Fargo, South Dakota')).toEqual(['Fargo, North Dakota']);
+    // Sudan and South Sudan with a region before the country; and a region's whole name only (Equatoria is not Central Equatoria).
+    expect(read('Khartoum, Khartoum, Sudan')).toBe('Khartoum, Khartoum, Sudan');
+    expect(read('Juba, Central Equatoria, South Sudan')).toBe('Juba, Central Equatoria, South Sudan');
+    expect(suggested('Khartoum, Khartoum, South Sudan')).toEqual(['Khartoum, Khartoum']);
+    expect(suggested('Juba, Central Equatoria, Sudan')?.[0]).toBe('Juba, Central Equatoria');
+    expect(suggested('Juba, Equatoria')?.[0]).toBe('Juba, Central Equatoria');
+    expect(suggested('Juba, Equatoria, South Sudan')?.[0]).toBe('Juba, Central Equatoria');
+    // Through the tool: the Charlestons come back to ask about, and no reading is given for one the person did not name.
+    const result = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Charleston, Virginia', 'Charleston, West Virginia'] }, ON) as { ok: true; data: any };
+    expect(result.data.cities.map((city: { asked: string; region: string }) => [city.asked, city.region])).toEqual([['Charleston, West Virginia', 'West Virginia']]);
+    expect(result.data.didYouMean.map((entry: { asked: string }) => entry.asked)).toEqual(['Charleston, Virginia']);
+    expect(result.data.didYouMean[0].places.map((place: { label: string }) => place.label)).toContain('Charleston, West Virginia, United States');
+  });
+
+  it('reads a name with commas in it whole, and reads back every label and id an answer lists as the same place', async () => {
+    const table = await loadPlaceTable();
+    // Every place in the index whose name, region or country has a comma in it.
+    const withCommas = Object.values(table.shards).flat().map((row) => rowPoint(table.index, row)).filter((point) => [point.name, point.admin1, point.country].some((part) => part.includes(',')));
+    expect(withCommas.map((point) => point.name)).toEqual(expect.arrayContaining(['Mianzhu, Deyang, Sichuan', 'Misato, Saitama', 'Kralendijk']));
+    for (const point of withCommas) {
+      const id = placeId(point);
+      for (const text of [point.name, placeLabelText(point), `${placeLabelText(point)} (${coordinateText(point.lat, point.lon)})`, id, ` ${placeLabelText(point).toUpperCase()} `]) {
+        expect(resolvePlace(table, text), text).toMatchObject({ place: { id } });
+      }
+    }
+    expect(resolvePlace(table, 'Mianzhu, Deyang, Sichuan')).toMatchObject({ place: { name: 'Mianzhu, Deyang, Sichuan', region: 'Sichuan', country: 'China' } });
+    expect(resolvePlace(table, 'Mianzhu,Deyang,Sichuan, China')).toMatchObject({ place: { name: 'Mianzhu, Deyang, Sichuan', country: 'China' } });
+    expect(resolvePlace(table, 'Kralendijk, Bonaire, Saint Eustatius and Saba')).toMatchObject({ place: { name: 'Kralendijk' } });
+    // A country no such place is in: the suggestion's label and id each read back as the place suggested.
+    const asked = ['Mianzhu, Deyang, Sichuan, Japan', 'Misato, Saitama, Korea', 'Udaipur, Rajasthan, India', 'Belmont', 'Charleston, Virginia', 'London, Scotland', 'Springfield, United States', 'Kralendijk, Aruba'];
+    let listed = 0;
+    for (const text of asked) {
+      const answer = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: [text] }, ON) as { ok: true; data: any };
+      const places: { id: string; label: string }[] = [...answer.data.ambiguous, ...answer.data.didYouMean].flatMap((entry: { places: { id: string; label: string }[] }) => entry.places);
+      expect(places.length, text).toBeGreaterThan(0);
+      for (const place of places) {
+        listed += 1;
+        expect(resolvePlace(table, place.label), place.label).toMatchObject({ place: { id: place.id } });
+        expect(resolvePlace(table, place.id), place.label).toMatchObject({ place: { id: place.id } });
+      }
+    }
+    expect(listed).toBeGreaterThan(12);
+    // Through the tool: the name, its label and its id each read the same place.
+    const mianzhu = withCommas.find((point) => point.name === 'Mianzhu, Deyang, Sichuan')!;
+    const answer = await executeAiTool('get_astrocartography', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Mianzhu, Deyang, Sichuan', placeLabelText(mianzhu)], placeIds: [placeId(mianzhu)] }, ON) as { ok: true; data: any };
+    expect(answer.data.cities.map((city: { id: string }) => city.id)).toEqual([placeId(mianzhu), placeId(mianzhu), placeId(mianzhu)]);
+    expect(answer.data.ambiguous).toEqual([]);
+    expect(answer.data.didYouMean).toEqual([]);
+    expect(answer.data.unmatched).toEqual([]);
   });
 
   it('links to the page and its line cards only while the website page is switched on', async () => {
@@ -576,6 +657,31 @@ describe('get_astrocartography', () => {
     expect(adult.error.message).toMatch(/time is required\. zone is required\./u);
   });
 
+  it('refuses a child\'s birth date written unpadded or with slashes or dots before it names the date\'s form or any missing field', async () => {
+    // ON's clock is 2026-11-09T09:00Z: 2026-11-08 at UTC-12, so 2013-11-08 is the latest birth date accepted.
+    const childForms = ['2020-1-1', '2020/01/01', '2020.1.1', ' 2020/1/1 ', '\t2020.01.1\n', '2015/6/1', '2013.11.9', '2013/11/09'];
+    for (const birthDate of childForms) {
+      for (const extra of [{}, { zone: 'Europe/London' }, { time: '08:30' }, { time: '08:30', zone: 'Europe/London', cities: ['Lisbon'] }]) {
+        const answer = await executeAiTool('get_astrocartography', { birthDate, ...extra }, ON);
+        expect(answer, JSON.stringify({ birthDate, ...extra })).toMatchObject({ ok: false, error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+        expect(JSON.stringify(answer)).not.toMatch(/is required|must be a date|2020|2015|2013/u);
+      }
+    }
+    // An adult's date in the same forms gets the replies it got before: the date's form, then the fields still missing.
+    for (const birthDate of ['1990-5-3', '1990/05/03', '1990.5.3', ' 1990/5/3 ', '2013/11/8', '2013.11.08']) {
+      const alone = await executeAiTool('get_astrocartography', { birthDate }, ON) as { ok: false; error: { message: string } };
+      expect(alone.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14. time is required. zone is required.');
+      const timed = await executeAiTool('get_astrocartography', { birthDate, time: '08:30', zone: 'Europe/London' }, ON) as { ok: false; error: { message: string } };
+      expect(timed.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14.');
+    }
+    // A value that is not a calendar date keeps the date sentence, never the age refusal.
+    for (const birthDate of ['2020/13/01', '2020/02/30', '2021.2.29', '2020-01/01', '20/01/2020', 'soon']) {
+      const answer = await executeAiTool('get_astrocartography', { birthDate }, ON) as { ok: false; error: { message: string } };
+      expect(answer.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14. time is required. zone is required.');
+    }
+    expect(['2020-1-1', '2020/01/01', '2020.1.1', ' 2020/1/1 ', '2016.2.29', '2017.2.29', 'x'].map(ageCheckDate)).toEqual(['2020-01-01', '2020-01-01', '2020-01-01', '2020-01-01', '2016-02-29', '2017.2.29', 'x']);
+  });
+
   it('tells the assistant to check the age before it asks for a birth time or birthplace', () => {
     expect(astrocartographyTool.description).toMatch(/not directed at children under 13: check the birth date first, and ask for no birth time or birthplace when it is less than 13 years ago/u);
     expect(astrocartographyTool.description.indexOf('under 13')).toBeLessThan(astrocartographyTool.description.indexOf('A birth time is required'));
@@ -635,6 +741,23 @@ describe('get_astrocartography on the hosted server', () => {
       expect(result.structuredContent, JSON.stringify(birthDate)).toMatchObject({ ok: false, tool: 'get_astrocartography', error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
       expect(JSON.stringify(result)).not.toMatch(/is required|2020-01-01|birth time|timezone/iu);
     }
+  });
+
+  it('answers a child\'s birth date written unpadded or with slashes or dots with the age refusal, and an adult\'s as before', async () => {
+    const host = await serve();
+    for (const birthDate of ['2020-1-1', '2020/01/01', '2020.1.1', ' 2020/1/1 ', '2015/6/1', '2013.11.9']) {
+      for (const extra of [{}, { zone: 'Europe/London' }, { time: '08:30', zone: 'Europe/London' }]) {
+        const result = await call(host, 'get_astrocartography', { birthDate, ...extra });
+        expect(result.isError, JSON.stringify(birthDate)).toBe(true);
+        expect(result.structuredContent, JSON.stringify({ birthDate, ...extra })).toMatchObject({ ok: false, tool: 'get_astrocartography', error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+        expect(JSON.stringify(result)).not.toMatch(/is required|must be a date|2020|2015|2013|birth time|timezone/iu);
+      }
+    }
+    for (const birthDate of ['1990-5-3', '1990/05/03', '1990.5.3', ' 1990/5/3 ', '2013/11/8']) {
+      const alone = await call(host, 'get_astrocartography', { birthDate });
+      expect(alone.structuredContent, birthDate).toMatchObject({ ok: false, error: { message: 'birthDate must be a date such as 1994-05-14. time is required. zone is required.' } });
+    }
+    expect((await call(host, 'get_astrocartography', { birthDate: '2020/02/30' })).structuredContent.error.message).toBe('birthDate must be a date such as 1994-05-14. time is required. zone is required.');
   });
 
   it('links the page and its line cards on the staging site when the call comes in on the staging host', async () => {

@@ -18,7 +18,7 @@ import { ACG_CONFIDENCE, ANGLE_LABEL, ANGLE_NAME, clockChangeLimit, farPlaceSumm
 import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
 import { queryVariants, type PlaceTable } from '../features/birthplace';
 import { fold, queryRows, shardKey, type Row } from '../../lib/geo/rank';
-import { distinctPlaceLabels, placeId, placeLabelText, rowPoint } from '../../lib/geo/place-label';
+import { coordinateText, distinctPlaceLabels, placeId, placeLabelText, rowPoint } from '../../lib/geo/place-label';
 import { roundCoordinate } from '../plain-text';
 import { softenMinor, MINOR_NOTE } from '../features/reading-guards';
 import { readingConfidence, readingConfidenceText } from '../reading-confidence';
@@ -125,16 +125,80 @@ export function greenwichSiderealDegrees(utc: Date): number {
 /** A town or city as this tool reads it from the place index, with its id (placeId, src/lib/geo/place-label.ts). */
 export interface AcgPlace { id: string; name: string; region: string; country: string; latitude: number; longitude: number }
 
+const words = (text: string) => ` ${fold(text).replace(/[^a-z0-9]+/gu, ' ').trim()} `;
+/** A text's comma-separated parts, each folded to its words, so labels and names compare whatever the spacing and case. */
+const partKeys = (text: string) => text.split(',').map((part) => words(part).trim());
+
 /**
  * "Lisbon", "Paris, France", "Belmont, California" or "London, Ontario, Canada": the name, then a region or a country
- * after a comma, or a region and then the country.
+ * after a comma, or a region and then the country. A run of parts that is the whole of a name in the index with a
+ * comma in it (joined: a place such as Mianzhu, Deyang, Sichuan, or a country such as Bonaire, Saint Eustatius and
+ * Saba) stays one part, the longest such name first, so that name is never split into a name and its hints.
  */
-function splitCity(text: string): { place: string; hints: string[] } {
-  const [place, ...hints] = text.split(',').map((part) => part.trim());
-  return place.length >= 2 && hints.length && hints.every((hint) => hint.length >= 2) ? { place, hints } : { place: text.trim(), hints: [] };
+function splitCity(text: string, joined: readonly (readonly string[])[] = []): { place: string; hints: string[] } {
+  const raw = text.split(',').map((part) => part.trim());
+  const keys = raw.map((part) => words(part).trim());
+  const parts: string[] = [];
+  for (let at = 0; at < raw.length;) {
+    const run = joined.find((name) => name.length <= raw.length - at && name.every((key, offset) => keys[at + offset] === key))?.length ?? 1;
+    parts.push(raw.slice(at, at + run).join(', '));
+    at += run;
+  }
+  const [place, ...hints] = parts;
+  return place.length >= 2 && hints.length && hints.every((hint) => hint.length >= 2) ? { place, hints } : { place: parts.join(', '), hints: [] };
 }
 
-const words = (text: string) => ` ${fold(text).replace(/[^a-z0-9]+/gu, ' ').trim()} `;
+/** What a typed name is checked against before it is split at its commas: every place's label, and its id. */
+interface LabelIndex {
+  /** Each label's folded parts (partKeys joined by commas) to the places with that label, largest first. */
+  labels: Map<string, Row[]>;
+  /** The names in the index with a comma in them, as folded parts, longest first (splitCity's joined). */
+  joined: string[][];
+}
+const labelIndexes = new WeakMap<PlaceTable, LabelIndex>();
+/**
+ * The label index of a table: each place under its label (Udaipur, Rajasthan, India) and under the label with its
+ * coordinates that tells it apart from places sharing that label (Udaipur, Rajasthan, India (24.59° N, 73.71° E)),
+ * so any label an answer lists reads back as the place it was listed for.
+ */
+function labelIndex(table: PlaceTable): LabelIndex {
+  let index = labelIndexes.get(table);
+  if (index) return index;
+  const labels = new Map<string, Row[]>();
+  const add = (key: string, row: Row) => { const list = labels.get(key); if (list) list.push(row); else labels.set(key, [row]); };
+  const joined = new Map<string, string[]>();
+  for (const shard of Object.values(table.shards)) {
+    for (const row of shard) {
+      const point = rowPoint(table.index, row);
+      const label = placeLabelText(point);
+      add(partKeys(label).join(','), row);
+      add(partKeys(`${label} (${coordinateText(point.lat, point.lon)})`).join(','), row);
+      for (const name of [point.name, ...(row[1] === 0 ? [] : [String(row[1])]), point.admin1, point.country]) {
+        if (name.includes(',')) joined.set(partKeys(name).join(','), partKeys(name));
+      }
+    }
+  }
+  for (const list of labels.values()) list.sort((a, b) => b[7] - a[7]);
+  index = { labels, joined: [...joined.values()].sort((a, b) => b.length - a.length) };
+  labelIndexes.set(table, index);
+  return index;
+}
+
+/**
+ * The one place, or the places sharing it, that a typed text names whole: a place's id, or a label an answer lists
+ * (a place's name, region and country, with its coordinates where they tell it apart). Null when it is neither.
+ */
+function placeByLabel(table: PlaceTable, text: string): { place: AcgPlace } | { choices: AcgPlace[] } | null {
+  if (PLACE_ID.test(text.trim())) {
+    const place = placeById(table, text);
+    if (place) return { place };
+  }
+  const rows = labelIndex(table).labels.get(partKeys(text).join(','));
+  if (!rows?.length) return null;
+  return rows.length === 1 ? { place: toPlace(table, rows[0]) } : { choices: rows.slice(0, ACG_CHOICES).map((row) => toPlace(table, row)) };
+}
+/** The form of placeId's ids (src/lib/geo/place-label.ts). */
+const PLACE_ID = /^p[0-9a-z]{11}$/u;
 /**
  * Names a person may give as a country that are a region of it in the index: England, Scotland, Wales and Northern
  * Ireland are the United Kingdom's regions. A typed one must be the place's own region, never just its country, so
@@ -142,9 +206,12 @@ const words = (text: string) => ` ${fold(text).replace(/[^a-z0-9]+/gu, ' ').trim
  */
 const REGION_NAMES: ReadonlySet<string> = new Set(['england', 'scotland', 'wales', 'northern ireland']);
 const isRegionName = (hint: string) => REGION_NAMES.has(words(hint).trim());
-/** The hint is the place's region, or whole words of it. */
+/**
+ * The hint is the place's region by its whole name, folded, never by words inside a longer one: Virginia is not West
+ * Virginia, Carolina is not North or South Carolina, Dakota is not North or South Dakota.
+ */
 function regionMatches(hint: string, region: string): boolean {
-  return words(hint).trim() !== '' && words(region).includes(words(hint));
+  return words(hint).trim() !== '' && words(region).trim() === words(hint).trim();
 }
 /** A country's name as compared: folded words, without a leading "the" (The Netherlands, The Gambia). */
 const countryKey = (text: string) => words(text).trim().replace(/^the /u, '');
@@ -191,24 +258,16 @@ function countryHintMatches(hint: string, region: string, country: string): bool
   return isRegionName(hint) ? regionMatches(hint, region) : countryNameMatches(country, hint);
 }
 /**
- * One part after the name: the region or the country. Several: each a region, and the last the country. A single part
- * that is a country's name in the index (countries) is read as a region only when it is the region's whole name
- * (Atlanta, Georgia), never part of a longer one, so Niger is not Niger State in Nigeria and Ireland is not Northern
- * Ireland.
+ * One part after the name: the region or the country. Several: each a region, and the last the country. A region is
+ * read only by its whole name (regionMatches), so a single part that is also a country's name (Atlanta, Georgia) reads
+ * as that region, and Niger is not Niger State in Nigeria and Ireland is not Northern Ireland.
  */
-function hintsMatch(hints: readonly string[], region: string, country: string, countries: ReadonlySet<string>): boolean {
+function hintsMatch(hints: readonly string[], region: string, country: string): boolean {
   if (hints.length === 1) {
     const [hint] = hints;
-    const asRegion = countries.has(countryWanted(hint)) ? countryKey(region) === countryKey(hint) : regionMatches(hint, region);
-    return asRegion || countryHintMatches(hint, region, country);
+    return regionMatches(hint, region) || countryHintMatches(hint, region, country);
   }
   return hints.every((hint, index) => (index === hints.length - 1 ? countryHintMatches(hint, region, country) : regionMatches(hint, region)));
-}
-const countryKeys = new WeakMap<readonly string[], ReadonlySet<string>>();
-function countrySet(countries: readonly string[]): ReadonlySet<string> {
-  let set = countryKeys.get(countries);
-  if (!set) countryKeys.set(countries, (set = new Set(countries.map(countryKey))));
-  return set;
 }
 
 /** How a place's name meets the name asked for: whole, then with whole words added, then a longer word, then containing it. */
@@ -257,10 +316,15 @@ export function placeById(table: PlaceTable, id: string): AcgPlace | null {
  * larger (Mexico asks between Mexico City and Mexico, Philippines). With no whole-name match, a single place whose
  * name adds whole words (New York City, Nara-shi) is read; several are choices. A region or country given is never
  * overridden: when no place with the name is there (London, Scotland or Cardiff, England), the places with the name
- * elsewhere come back as suggestions to ask about, never as the answer. Null when nothing matches the name.
+ * elsewhere come back as suggestions to ask about, never as the answer (Charleston, Virginia is not Charleston, West
+ * Virginia). A whole label or id an answer lists is read first, as the place it was listed for, and a name in the
+ * index with a comma in it (Mianzhu, Deyang, Sichuan) is never split at its commas. Null when nothing matches the name.
  */
 export function resolvePlace(table: PlaceTable, text: string): { place: AcgPlace } | { choices: AcgPlace[] } | { suggestions: AcgPlace[] } | null {
-  const { place, hints } = splitCity(text);
+  // A label or id an answer listed reads back as its place, before the text is split at its commas.
+  const labelled = placeByLabel(table, text);
+  if (labelled) return labelled;
+  const { place, hints } = splitCity(text, labelIndex(table).joined);
   const named = new Map<Row, Fit>();
   for (const query of queryVariants(place)) {
     const key = shardKey(query);
@@ -271,8 +335,7 @@ export function resolvePlace(table: PlaceTable, text: string): { place: AcgPlace
       if (known === undefined || fit < known) named.set(row, fit);
     }
   }
-  const countries = countrySet(table.index.countries);
-  const found = new Map([...named].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? '', table.index.countries[row[3]] ?? '', countries)));
+  const found = new Map([...named].filter(([row]) => hintsMatch(hints, table.index.admin1[row[2]] ?? '', table.index.countries[row[3]] ?? '')));
   // Each fit's places, largest first.
   const rows = (from: Map<Row, Fit>, fit: Fit) => [...from].filter(([, value]) => value === fit).map(([row]) => row).sort((a, b) => b[7] - a[7]);
   const best = (from: Map<Row, Fit>) => {
