@@ -283,6 +283,7 @@ const heroFacts = [
   { label: `Ruled by ${sign.ruler}`, class: 'hz-hero__ruler' },
 ];
 const heroArtSizes = '(min-width: 761px) 74vw, calc(100vw - 16px)';
+const signRailLabel = 'Switch sign';
 
 // ── The sky behind the reading ──
 const daySpan = surface === 'today' || surface === 'tomorrow' || surface === 'love' || surface === 'career';
@@ -480,8 +481,8 @@ const ctaLede = edgeMoon && moonHouse
           </a>
         ))}
       </nav>
-      <nav class="hz-signrail" aria-label="Switch sign">
-        <span class="hz-signrail__label">Switch sign</span>
+      <nav class="hz-signrail" aria-label={signRailLabel}>
+        <span class="hz-signrail__label">{signRailLabel}</span>
         {SIGNS.map((other) => (
           <a
             href={surfacePath(other.slug, surface)}
@@ -862,13 +863,23 @@ const ctaLede = edgeMoon && moonHouse
     min-width: 0;
     margin-left: auto;
   }
-  .hz-signrail__label {
+  .hz-signrail__label,
+  .hz-signrail::before {
     margin-right: 12px;
     color: var(--muted);
     font-family: var(--font-serif);
     font-size: 1rem;
     font-style: italic;
     white-space: nowrap;
+  }
+  @media (width > 760px) {
+    /* Size the first column from the nav's name while its visible text streams. */
+    .hz-signrail::before {
+      content: attr(aria-label);
+      visibility: hidden;
+    }
+    .hz-signrail::before,
+    .hz-signrail__label { grid-area: 1 / 1; }
   }
   .hz-signrail a {
     display: grid;

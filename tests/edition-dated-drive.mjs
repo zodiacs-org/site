@@ -95,6 +95,7 @@ const total = (shifts) => shifts.reduce((sum, shift) => sum + shift.value, 0);
 await withPreview({ port: 4393 }, async (baseURL) => {
   const served = new Map();
   const ariesStream = '/horoscopes/aries/?stream=mobile';
+  const signRailStream = '/horoscopes/aries/?stream=signrail';
   const splitCounts = new Map();
   const eventStream = '/horoscopes/aries/?stream=events';
   const localizedStreams = new Map([
@@ -103,6 +104,12 @@ await withPreview({ port: 4393 }, async (baseURL) => {
   ]);
   const legendSplitCounts = new Map();
   const proxy = await startStreamedPreview(baseURL, (path, html) => {
+    if (path === signRailStream) {
+      const label = html.match(/<span class="hz-signrail__label"[^>]*>(Switch sign)<\/span>/);
+      assert.ok(label);
+      const start = label.index + label[0].indexOf('>') + 1;
+      return [start, start + 'Switch'.length, start + label[1].length];
+    }
     if (path === ariesStream) {
       const body = html.indexOf('<div class="hz-hero__body"');
       const bodyOpen = html.indexOf('>', body);
@@ -365,6 +372,20 @@ await withPreview({ port: 4393 }, async (baseURL) => {
       } finally {
         await ticker.context.close();
       }
+    }
+
+    const signRail = await open(signRailStream, { width: 1280, height: 1400 }, datedNow);
+    try {
+      assert.equal(signRail.status, 200);
+      await settle(signRail.page);
+      assert.equal(await signRail.page.getAttribute('html', 'data-edition-state'), 'dated');
+      const nav = signRail.page.getByRole('navigation', { name: 'Switch sign', exact: true });
+      assert.equal(await nav.locator('.hz-signrail__label').textContent(), 'Switch sign');
+      assert.equal(await nav.getByRole('link').count(), 12);
+      const shifts = await signRail.page.evaluate(() => globalThis.__editionShifts);
+      check('1280px dated Aries: streaming the sign switch label keeps exactly zero CLS', total(shifts) === 0, JSON.stringify(shifts));
+    } finally {
+      await signRail.context.close();
     }
 
     const events = await open(eventStream, { width: 1280, height: 1600 }, datedNow);
