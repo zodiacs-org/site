@@ -5524,7 +5524,7 @@
             </div>
             <div className="campaign-about__answer">
               <h3>Why the zodiac?</h3>
-              <p>Everyone is born under one of the twelve signs, and people have passed them down for 2,400 years, from clay tablets to your phone’s keyboard. A Zodiac makes your sign something you can own, give a friend on their birthday, and keep. <a href="/thesis/">Read the story <span aria-hidden="true">→</span></a></p>
+              <p>Everyone is born under one of the twelve signs, and people have passed them down for 2,400 years, from clay tablets to your phone’s keyboard. A Zodiac makes your sign something you can own, give a friend on their birthday, and keep. <a href="/thesis/">How is this different from other memecoins? <span aria-hidden="true">→</span></a></p>
             </div>
             <div className="campaign-about__answer">
               <h3>How do I get one?</h3>

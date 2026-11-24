@@ -55,13 +55,17 @@ describe('the English legal pages approved on 20 November 2026', () => {
       expect(source, path).toContain("const updated = '20 November 2026'");
       expect(source, path).toContain("const modifiedAt = '2026-11-20T00:00:00.000Z'");
     }
-    // The sitemap's later entries win, so the approval day must be each page's last entry.
+    // The sitemap's later entries win. /terms/ last entry is the approval day.
+    // /privacy/ last entry is 2026-11-22 from the arrival-word expansion on main
+    // (ZOD-182), which is later than this PR's 20 November wording and still
+    // covers it.
     const sitemap = await read('src/pages/sitemap.xml.ts');
-    for (const path of ['/privacy/', '/terms/']) {
-      const entry = `['${path}', '2026-11-20'] as const,`;
-      expect(sitemap, path).toContain(entry);
-      expect(sitemap.lastIndexOf(`['${path}', '`), path).toBe(sitemap.indexOf(entry));
-    }
+    const terms = "['/terms/', '2026-11-20'] as const,";
+    expect(sitemap, '/terms/').toContain(terms);
+    expect(sitemap.lastIndexOf("['/terms/', '"), '/terms/').toBe(sitemap.indexOf(terms));
+    const privacy = "['/privacy/', '2026-11-22'] as const,";
+    expect(sitemap, '/privacy/').toContain(privacy);
+    expect(sitemap.lastIndexOf("['/privacy/', '"), '/privacy/').toBe(sitemap.indexOf(privacy));
   });
 
   it('is run over the built pages by check-dist', async () => {
@@ -160,6 +164,11 @@ describe('the translated privacy pages revised on 20 November 2026', () => {
       expect(evergreen.lastIndexOf(`'${loc}'`), loc).toBeGreaterThan(evergreen.indexOf(entry));
     }
     expect(evergreen.lastIndexOf("'/es/privacy/'")).toBe(evergreen.indexOf(entry) + 4);
-    expect(evergreen.lastIndexOf('/privacy/')).toBeLessThan(evergreen.indexOf(entry) + entry.length);
+    // English /privacy/ 2026-11-22 comes after this block and wins for that
+    // route; the five translated pages still have 2026-11-20 as their last entry.
+    expect(evergreen.lastIndexOf("['/privacy/', '2026-11-22'] as const,")).toBeGreaterThan(evergreen.indexOf(entry) + entry.length);
+    for (const loc of LOCALIZED_PRIVACY_PATHS) {
+      expect(evergreen.lastIndexOf(`'${loc}'`), loc).toBeLessThan(evergreen.indexOf("['/privacy/', '2026-11-22'] as const,"));
+    }
   });
 });

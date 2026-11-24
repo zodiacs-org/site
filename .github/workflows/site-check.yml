@@ -241,6 +241,10 @@ jobs:
         timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/home-hero npm run test:home-hero:browser
 
+      - name: Homepage scroll layout stability
+        timeout-minutes: 3
+        run: node tests/home-scroll-cls-drive.mjs
+
       - name: Homepage interactive chart preview
         timeout-minutes: 5
         run: npm run test:home-demo:browser
@@ -437,7 +441,7 @@ jobs:
         run: git diff --exit-code -- src/lib/engine/fixtures/ docs/engine-validation/independent-references/
 
       - name: Replay the Horizons claims offline
-        run: python docs/platform/evidence/site-engine-1-1-0/claims-horizons/comparison.py --check
+        run: python docs/platform/evidence/site-engine-2-1-0/claims-horizons/comparison.py --check
 
   sky-watch-lifecycle:
     name: Sky Watch subscription lifecycle

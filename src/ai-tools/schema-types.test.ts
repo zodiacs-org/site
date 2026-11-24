@@ -55,7 +55,21 @@ function inlined(schema: unknown): unknown {
   if (Array.isArray(schema)) return schema.map(inlined);
   if (!schema || typeof schema !== 'object') return schema;
   const node = schema as Json;
-  if (typeof node.$ref === 'string') return inlined(COMPUTE_SCHEMAS[node.$ref.replace('#/components/schemas/', '')]);
+  if (typeof node.$ref === 'string') {
+    const name = node.$ref.replace('#/components/schemas/', '');
+    // The 13 published connector schemas freeze LocalResolution.flags to the original three flags (AGENTS.md).
+    if (name === 'LocalResolution') {
+      const local = COMPUTE_SCHEMAS.LocalResolution as Json;
+      return inlined({
+        ...local,
+        properties: {
+          ...(local.properties as Json),
+          flags: { type: 'array', items: { enum: ['dst-gap', 'dst-fold', 'lmt'] } },
+        },
+      });
+    }
+    return inlined(COMPUTE_SCHEMAS[name]);
+  }
   return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inlined(value)]));
 }
 
@@ -124,7 +138,7 @@ describe('what the tools return', () => {
   it('validates against the schemas they advertise, as a client checks it', async () => {
     const ajv = new Ajv2020({ strict: false, allErrors: true });
     addFormats(ajv);
-    const validators = new Map(EVERY_TOOL_WITH_GOOD_DAYS.map((tool) => [tool, ajv.compile(de440OutputSchema(advertised(OUTPUT_SCHEMAS[tool], 'output')) as Json)]));
+    const validators = new Map<string, ReturnType<typeof ajv.compile>>(EVERY_TOOL_WITH_GOOD_DAYS.map((tool) => [tool, ajv.compile(de440OutputSchema(advertised(OUTPUT_SCHEMAS[tool], 'output')) as Json)]));
     const dependencies = { occasions: true, horoscopeWindow: async () => committedWindow as HoroscopeWindow, allowEvents: async () => 'allowed' as const };
     const invalid: string[] = [];
     const refused: string[] = [];

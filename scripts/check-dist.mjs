@@ -22,6 +22,7 @@
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
  *  10. The inline profile access loader names the built bootstrap chunk.
+ *  11. No script or page in dist carries a publication record.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
 import { attr, canonicalHref, renderedLinks, crawlDepths, isDailyLastmodPath, robotsBlocks, robotsGroupBlockFailures, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
@@ -35,6 +36,9 @@ import {
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
+import { PUBLICATION_RECORD_MARKER, chunksWithPublicationRecord } from './publication-record-chunks.mjs';
+import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
+import { expansionFamilyPaths } from './i18n-hreflang-policy.mjs';
 import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
 import { pastPagesHidden, pastPagesHiddenFailures } from '../src/lib/indexing/past-pages-hidden.mjs';
 import { TIME_ATLAS_DATA_FILES, TIME_ATLAS_FOLDER, timeAtlasFileProblems, timeAtlasPageProblems } from './check-time-atlas.mjs';
@@ -1394,6 +1398,23 @@ const developerGuidePaths = new Set([
   ...JSON.parse(await readFile(resolve(repo, 'src/data/developer-guides.json'), 'utf8'))
     .map((guide) => `/developers/docs/${guide.slug}/`),
 ]);
+// The 2026-11 locale expansion (src/data/locale-expansion-publication.json):
+// every localized path of a released family. Held families add nothing.
+const expansionPublishedPaths = new Set(EXPANSION_FAMILY_IDS.flatMap((family) => expansionFamilyPaths(family)
+  .flatMap((path) => publishedLocalesForPath(path).map((locale) => `/${locale}${path}`))));
+const LOCALE_PREFIX = /^\/(?:es|pt|fr|it|ru)(?=\/)/u;
+/** English paths of these families with at least one released locale. */
+const releasedEnglish = (families) => new Set(families.flatMap((family) => expansionFamilyPaths(family)
+  .filter((path) => publishedLocalesForPath(path).length)));
+const countPublished = (families) => families.reduce((sum, family) => sum + expansionFamilyPaths(family)
+  .reduce((pages, path) => pages + (publishedLocalesForPath(path).length ? 1 + publishedLocalesForPath(path).length : 0), 0), 0);
+const PERIOD_FAMILIES = HOROSCOPE_PERIODS.map((period) => `horoscope-${period}`);
+const releasedPeriodPaths = releasedEnglish(PERIOD_FAMILIES);
+const releasedLunationPaths = releasedEnglish(['full-moon', 'new-moon']);
+const EXTENDED_HOROSCOPE = /^\/horoscopes\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/(?:tomorrow|weekly|monthly|love|career|2026|2027)\/$/u;
+/** A family matcher over sets of paths, for the indexed-family counts below. */
+const matcher = (test) => ({ test });
+
 const sitemapPolicy = {
   // 944 reflects Packet F's removal of 1,464 localized birthday previews,
   // twelve thin Russian sign guides, and three machine-contract artifacts;
@@ -1451,6 +1472,8 @@ const sitemapPolicy = {
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size + developerGuidePaths.size
+    // Localized pages of the 2026-11 locale expansion, once their families are released.
+    + expansionPublishedPaths.size
     // + one page per translated Learn article per locale (src/data/learn-translations.json).
     + Object.values(JSON.parse(await readFile(resolve(repo, 'src/data/learn-translations.json'), 'utf8')))
       .reduce((sum, paths) => sum + paths.length, 0),
@@ -1474,20 +1497,33 @@ const indexedFamilies = [
   { label: 'disclosures', pattern: /^\/(?:(?:es|pt|fr|it|ru)\/)?disclosure\/$/, expected: sitemapPolicy.disclosures, localized: true },
   {
     label: 'English-only extended horoscope pages',
-    pattern: /^\/horoscopes\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/(?:tomorrow|weekly|monthly|love|career|2026|2027)\/$/,
-    expected: sitemapPolicy.extendedHoroscopePages,
+    pattern: matcher((loc) => EXTENDED_HOROSCOPE.test(loc) && !releasedPeriodPaths.has(loc)),
+    expected: 84 - releasedPeriodPaths.size,
     localized: false,
   },
   {
+    label: 'localized extended horoscope pages',
+    pattern: matcher((loc) => releasedPeriodPaths.has(loc.replace(LOCALE_PREFIX, ''))),
+    expected: countPublished(PERIOD_FAMILIES),
+    localized: true,
+  },
+  {
     label: 'published daily editions',
-    pattern: /^\/(?:(?:es|pt)\/)?(?:today|horoscopes(?:\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces))?)\/$/,
-    expected: sitemapPolicy.dailyReadingPages,
+    pattern: /^\/(?:(?:es|pt|fr|it|ru)\/)?(?:today|horoscopes(?:\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces))?)\/$/,
+    expected: sitemapPolicy.dailyReadingPages
+      + [...expansionPublishedPaths].filter((path) => /^\/(?:fr|it|ru)\/(?:today|horoscopes(?:\/[a-z]+)?)\/$/u.test(path)).length,
+    localized: true,
+  },
+  {
+    label: 'localized full and new Moon pages',
+    pattern: matcher((loc) => releasedLunationPaths.has(loc.replace(LOCALE_PREFIX, ''))),
+    expected: countPublished(['full-moon', 'new-moon']),
     localized: true,
   },
   {
     label: 'Phase 2 event pages',
-    pattern: /^(?:\/events\/(?:[a-z0-9-]+\/)?|\/(?:full-moon|new-moon|eclipses|(?:mercury|venus|mars)-retrograde)\/\d{4}-\d{2}-\d{2}\/)$/,
-    expected: sitemapPolicy.eventPages,
+    pattern: matcher((loc) => /^(?:\/events\/(?:[a-z0-9-]+\/)?|\/(?:full-moon|new-moon|eclipses|(?:mercury|venus|mars)-retrograde)\/\d{4}-\d{2}-\d{2}\/)$/u.test(loc) && !releasedLunationPaths.has(loc)),
+    expected: sitemapPolicy.eventPages - releasedLunationPaths.size,
     localized: false,
   },
   {
@@ -1596,7 +1632,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?lunar-return\/$/u.test(path))),
   new Set(['/lunar-return/']),
 );
-if (!sitemapBlocksByPath.get('/lunar-return/')?.includes('<lastmod>2026-09-06</lastmod>')) {
+// Re-dated 2026-11-24: the tool's icon was added beside the hero heading (rendered content).
+if (!sitemapBlocksByPath.get('/lunar-return/')?.includes('<lastmod>2026-11-24</lastmod>')) {
   fail('sitemap.xml: lunar-return modification date must match the reviewed source revision');
 }
 requireExactSet(
@@ -1604,8 +1641,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?numerology\/$/u.test(path))),
   new Set(['/numerology/']),
 );
-// Re-dated 2026-11-17: the restyle added the letter key and the emblem (rendered content).
-if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-17</lastmod>')) {
+// The calculator now identifies each numerology reading as a separate tradition.
+if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-23</lastmod>')) {
   fail('sitemap.xml: numerology modification date must match the reviewed source revision');
 }
 requireExactSet(
@@ -2022,6 +2059,15 @@ for (const path of Object.keys(LEGAL_PAGE_RULES)) {
 {
   const { problems } = await verifyProfileAccessLoader(root);
   for (const problem of problems.slice(0, 20)) fail(`profile access loader: ${problem}`);
+}
+
+// ---- Publication records stay out of what the browser loads ------------------
+// The locale expansion and natal aspect records carry hold reasons and, once
+// released, reviewer names. They are server-only: src/lib/i18n reaches the
+// expansion policy only in its SSR branch, so no chunk, inline script or
+// island prop may carry them.
+for (const file of await chunksWithPublicationRecord(root)) {
+  fail(`browser bundle: ${file} contains "${PUBLICATION_RECORD_MARKER}", so a publication record reached the browser`);
 }
 
 // ---- Report ------------------------------------------------------------------

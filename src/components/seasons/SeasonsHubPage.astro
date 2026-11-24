@@ -18,6 +18,11 @@ import { seasonDate } from '../../lib/seasons/dates';
 
 interface Props { locale?: SeasonLocale }
 const { locale = 'en' } = Astro.props;
+// The English hub's cards rise once (docs/MOTION.md). The English route passes
+// <Motion /> in the motion slot, so the module and its stylesheet stay out of
+// the translated hubs, which render exactly as before.
+const moving = locale === 'en' && Astro.slots.has('motion');
+const rise = moving ? 'rise' : undefined;
 const ui = seasonUi(locale);
 const buildNow = new Date();
 const current = currentSunSeason(buildNow);
@@ -47,6 +52,7 @@ const image = current ? (locale === 'en' ? `/assets/og/v8/sign/${current.sign}.j
   <section class="kwrap seasons-hero">
     <h1 class="display">{ui.hubTitle}</h1>
     <p>{ui.hubLede}</p>
+    {moving && <slot name="motion" />}
   </section>
 
   <section class="kwrap seasons-sec" aria-label={ui.hubFeatureLabel}>
@@ -54,7 +60,7 @@ const image = current ? (locale === 'en' ? `/assets/og/v8/sign/${current.sign}.j
       {featured.map((window, index) => {
         const sign = SIGNS.find((entry) => entry.slug === window.sign)!;
         return (
-          <a class="seasons-feature__card" href={localizePath(locale, `/seasons/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
+          <a class="seasons-feature__card" href={localizePath(locale, `/seasons/${sign.slug}/`)} style={`--sign:${sign.hue}`} data-enter={rise}>
             <SignIcon sign={sign.slug} size={72} loading="eager" />
             <span class="seasons-feature__tag">{index === 0 && current ? ui.hubNow : ui.hubNext}</span>
             <span class="seasons-feature__name">{ui.title(signName(sign, locale))}</span>
@@ -71,7 +77,7 @@ const image = current ? (locale === 'en' ? `/assets/og/v8/sign/${current.sign}.j
     <ul class="seasons-list">
       {order.map(({ sign, name, focus, theme }) => (
         <li>
-          <a class="tile seasons-item" href={localizePath(locale, `/seasons/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
+          <a class="tile seasons-item" href={localizePath(locale, `/seasons/${sign.slug}/`)} style={`--sign:${sign.hue}`} data-enter={rise}>
             <SignIcon sign={sign.slug} size={40} />
             <span class="seasons-item__name">{ui.title(name)}</span>
             {focus && <span class="seasons-item__dates">{ui.range(day(focus.window.start), day(focus.window.end, true))}</span>}
