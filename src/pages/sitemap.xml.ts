@@ -7,6 +7,7 @@
 import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-pairs';
 import natalAspectsPublication from '../data/natal-aspects-publication.json';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
+import { READING_CONFIDENCE_UPDATED } from '../lib/reading-confidence-note';
 import type { APIRoute } from 'astro';
 import { ACCURACY_PATH, accuracyPublished } from '../accuracy/publication.mjs';
 import accuracyReceipt from '../data/accuracy/latest.json';
@@ -84,8 +85,6 @@ const YEAR_PAGES_LASTMOD = '2026-09-01';
 const SKY_HEADS_UP_LASTMOD = '2026-11-12';
 // The sign-season pages and their hub were published together.
 const SEASON_PAGES_LASTMOD = '2026-11-05';
-// The sign season pages' year tables run through 2040 from 2026-11-06.
-const SEASON_SIGN_PAGES_LASTMOD = '2026-11-06';
 // The Spanish, Portuguese, French and Italian editions of Your 2027 sky, the Moon journal, the sign-season hub
 // and its twelve season pages, published together, and the translated tools hubs that list them. Their English
 // pages only gained hreflang alternates, which the rendered-content dates leave out.
@@ -780,6 +779,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // data links for chart readers (docs/LEVELS.md). The day of the daily edition it was built with,
   // last so this date wins.
   ['/birth-chart/', '2026-11-19'] as const,
+  // The meaning of reading confidence and the numerology and tarot exception.
+  ...['/developers/demo/', '/your-2027-sky/', '/numerology/'].map((loc) => [loc, READING_CONFIDENCE_UPDATED] as const),
+  ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/year-score/', READING_CONFIDENCE_UPDATED] as const] : []),
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [['/good-days/', '2026-11-24'] as const] : []),
+  ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday-report/', READING_CONFIDENCE_UPDATED] as const] : []),
   // Conformance suite 0.3.0 (640 vectors) and results for @zodiacs/engine 2.0.0, Skyfield, astronomia
   // and PyEphem (ZOD-95 Part A), on the day of the daily edition it was built with, last so this date wins.
   ...['/developers/', '/developers/conformance/'].map((route) => [route, '2026-11-22'] as const),
@@ -947,7 +951,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ] : []),
     { loc: '/horoscopes/', priority: 0.8, lastmod: horoscopeProgram.anchorDate },
     { loc: '/seasons/', priority: 0.75, lastmod: SEASON_PAGES_LASTMOD },
-    ...SIGNS.map((sign) => ({ loc: `/seasons/${sign.slug}/`, priority: 0.7, lastmod: SEASON_SIGN_PAGES_LASTMOD })),
+    ...SIGNS.map((sign) => ({ loc: `/seasons/${sign.slug}/`, priority: 0.7, lastmod: READING_CONFIDENCE_UPDATED })),
     // Spanish and Portuguese daily surfaces render the same edition from the
     // same facts; they date with the edition like /today/ does.
     ...(['es', 'pt'] as const).flatMap((locale) => [
@@ -959,7 +963,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       loc: event.path,
       priority: 0.64,
       // A page written to the reading style guide prints this day as "Updated" and as dateModified (ZOD-211).
-      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVENT_EVIDENCE_MINUTE_LASTMOD,
+      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVENT_EVIDENCE_MINUTE_LASTMOD, READING_CONFIDENCE_UPDATED,
         EVERGREEN_LASTMOD.get(event.path) ?? '',
         STYLE_GUIDE_READING_IDS.includes(event.id) ? EVENT_READINGS_2027_UPDATED : '',
         // A solar eclipse page labels its degree as the Sun's, which is what eclipses.json keeps.

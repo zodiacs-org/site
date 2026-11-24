@@ -7,6 +7,8 @@
  */
 import { readShareRef, SHARE_SIGNS, type ShareRef, type ShareSign } from '../share-results.js';
 
+export const BIRTHDAY_TRADITIONS_NOTE = 'Numerology and tarot are separate traditions. They are not astrology.';
+
 export const BIRTHDAY_REPORT_SHARE_PATH = '/share/birthday-report/';
 export const BIRTHDAY_REPORT_SHARE_IMAGE_PATH = '/api/og/birthday-report-image';
 export const BIRTHDAY_REPORT_SHARE_KEYS: readonly string[] = Object.freeze(['s', 'v', 't', 'ref']);
