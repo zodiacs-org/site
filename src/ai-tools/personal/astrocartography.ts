@@ -153,19 +153,33 @@ const countryKey = (text: string) => words(text).trim().replace(/^the /u, '');
  * whole name or one of these, never by part of a name: Samoa is not American Samoa, Guinea is not Papua New Guinea,
  * Equatorial Guinea or Guinea-Bissau, Niger is not Nigeria, Dominica is not the Dominican Republic and Sudan is not
  * South Sudan. Korea reads as South Korea; a place only in North Korea then comes back as a suggestion, not the answer.
+ * Written as people spell them; each name on both sides is folded with countryKey, the fold the typed country goes
+ * through, so Côte d'Ivoire with either apostrophe, or none, and U.S.A. with or without its full stops read alike.
  */
-const COUNTRY_ALIASES: Readonly<Record<string, string>> = {
-  uk: 'united kingdom', 'u k': 'united kingdom', britain: 'united kingdom', 'great britain': 'united kingdom',
-  us: 'united states', 'u s': 'united states', usa: 'united states', 'u s a': 'united states', america: 'united states', 'united states of america': 'united states',
-  uae: 'united arab emirates', 'u a e': 'united arab emirates',
-  holland: 'netherlands',
-  korea: 'south korea', 'republic of korea': 'south korea', dprk: 'north korea',
-  'czech republic': 'czechia', burma: 'myanmar', swaziland: 'eswatini', macedonia: 'north macedonia',
-  'cape verde': 'cabo verde', 'cote d ivoire': 'ivory coast', 'east timor': 'timor leste', 'russian federation': 'russia',
-  'viet nam': 'vietnam', macau: 'macao', turkiye: 'turkey', palestine: 'palestinian territory', 'vatican city': 'vatican', 'holy see': 'vatican',
-  drc: 'democratic republic of the congo', 'dr congo': 'democratic republic of the congo', 'congo kinshasa': 'democratic republic of the congo',
-  'congo brazzaville': 'republic of the congo',
-};
+export const COUNTRY_ALIASES: Readonly<Record<string, string>> = foldedAliases({
+  UK: 'United Kingdom', 'U.K.': 'United Kingdom', Britain: 'United Kingdom', 'Great Britain': 'United Kingdom',
+  US: 'United States', 'U.S.': 'United States', USA: 'United States', 'U.S.A.': 'United States', America: 'United States', 'United States of America': 'United States',
+  'US Virgin Islands': 'U.S. Virgin Islands',
+  UAE: 'United Arab Emirates', 'U.A.E.': 'United Arab Emirates',
+  Holland: 'Netherlands',
+  Korea: 'South Korea', 'Republic of Korea': 'South Korea', DPRK: 'North Korea',
+  'Czech Republic': 'Czechia', Burma: 'Myanmar', Swaziland: 'Eswatini', Macedonia: 'North Macedonia',
+  'Cape Verde': 'Cabo Verde', "Côte d'Ivoire": 'Ivory Coast', 'Côte d Ivoire': 'Ivory Coast', 'East Timor': 'Timor-Leste', 'Russian Federation': 'Russia',
+  'Viet Nam': 'Vietnam', Macau: 'Macao', Türkiye: 'Turkey', Palestine: 'Palestinian Territory', 'Vatican City': 'Vatican', 'Holy See': 'Vatican',
+  DRC: 'Democratic Republic of the Congo', 'DR Congo': 'Democratic Republic of the Congo', 'D.R. Congo': 'Democratic Republic of the Congo',
+  'Congo-Kinshasa': 'Democratic Republic of the Congo', 'Congo-Brazzaville': 'Republic of the Congo',
+});
+/** The aliases keyed and valued by countryKey; two spellings that fold alike must name the same country. */
+function foldedAliases(aliases: Readonly<Record<string, string>>): Readonly<Record<string, string>> {
+  // No prototype, so a typed country such as Constructor is never read as an alias.
+  const folded: Record<string, string> = Object.create(null);
+  for (const [alias, country] of Object.entries(aliases)) {
+    const key = countryKey(alias);
+    if (key in folded && folded[key] !== countryKey(country)) throw new Error(`Country alias ${alias} folds to a key that names another country`);
+    folded[key] = countryKey(country);
+  }
+  return folded;
+}
 const countryWanted = (hint: string) => COUNTRY_ALIASES[countryKey(hint)] ?? countryKey(hint);
 /** The hint is the place's country by its whole name or a known other name for it (COUNTRY_ALIASES). */
 export function countryNameMatches(country: string, hint: string): boolean {

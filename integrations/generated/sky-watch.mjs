@@ -43296,42 +43296,54 @@ function regionMatches(hint, region) {
   return words(hint).trim() !== "" && words(region).includes(words(hint));
 }
 var countryKey = (text2) => words(text2).trim().replace(/^the /u, "");
-var COUNTRY_ALIASES = {
-  uk: "united kingdom",
-  "u k": "united kingdom",
-  britain: "united kingdom",
-  "great britain": "united kingdom",
-  us: "united states",
-  "u s": "united states",
-  usa: "united states",
-  "u s a": "united states",
-  america: "united states",
-  "united states of america": "united states",
-  uae: "united arab emirates",
-  "u a e": "united arab emirates",
-  holland: "netherlands",
-  korea: "south korea",
-  "republic of korea": "south korea",
-  dprk: "north korea",
-  "czech republic": "czechia",
-  burma: "myanmar",
-  swaziland: "eswatini",
-  macedonia: "north macedonia",
-  "cape verde": "cabo verde",
-  "cote d ivoire": "ivory coast",
-  "east timor": "timor leste",
-  "russian federation": "russia",
-  "viet nam": "vietnam",
-  macau: "macao",
-  turkiye: "turkey",
-  palestine: "palestinian territory",
-  "vatican city": "vatican",
-  "holy see": "vatican",
-  drc: "democratic republic of the congo",
-  "dr congo": "democratic republic of the congo",
-  "congo kinshasa": "democratic republic of the congo",
-  "congo brazzaville": "republic of the congo"
-};
+var COUNTRY_ALIASES = foldedAliases({
+  UK: "United Kingdom",
+  "U.K.": "United Kingdom",
+  Britain: "United Kingdom",
+  "Great Britain": "United Kingdom",
+  US: "United States",
+  "U.S.": "United States",
+  USA: "United States",
+  "U.S.A.": "United States",
+  America: "United States",
+  "United States of America": "United States",
+  "US Virgin Islands": "U.S. Virgin Islands",
+  UAE: "United Arab Emirates",
+  "U.A.E.": "United Arab Emirates",
+  Holland: "Netherlands",
+  Korea: "South Korea",
+  "Republic of Korea": "South Korea",
+  DPRK: "North Korea",
+  "Czech Republic": "Czechia",
+  Burma: "Myanmar",
+  Swaziland: "Eswatini",
+  Macedonia: "North Macedonia",
+  "Cape Verde": "Cabo Verde",
+  "C\xF4te d'Ivoire": "Ivory Coast",
+  "C\xF4te d Ivoire": "Ivory Coast",
+  "East Timor": "Timor-Leste",
+  "Russian Federation": "Russia",
+  "Viet Nam": "Vietnam",
+  Macau: "Macao",
+  T\u00FCrkiye: "Turkey",
+  Palestine: "Palestinian Territory",
+  "Vatican City": "Vatican",
+  "Holy See": "Vatican",
+  DRC: "Democratic Republic of the Congo",
+  "DR Congo": "Democratic Republic of the Congo",
+  "D.R. Congo": "Democratic Republic of the Congo",
+  "Congo-Kinshasa": "Democratic Republic of the Congo",
+  "Congo-Brazzaville": "Republic of the Congo"
+});
+function foldedAliases(aliases) {
+  const folded2 = /* @__PURE__ */ Object.create(null);
+  for (const [alias, country] of Object.entries(aliases)) {
+    const key2 = countryKey(alias);
+    if (key2 in folded2 && folded2[key2] !== countryKey(country)) throw new Error(`Country alias ${alias} folds to a key that names another country`);
+    folded2[key2] = countryKey(country);
+  }
+  return folded2;
+}
 var countryWanted = (hint) => COUNTRY_ALIASES[countryKey(hint)] ?? countryKey(hint);
 function countryNameMatches(country, hint) {
   const wanted = countryWanted(hint);

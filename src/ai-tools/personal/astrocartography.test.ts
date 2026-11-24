@@ -11,7 +11,7 @@ import { coverageInputRefusal, executeAiTool } from '../tools';
 import { createAiNodeHandler } from '../http';
 import { INPUT_SCHEMAS, UNDER_13_REFUSAL } from '../contracts';
 import { loadPlaceTable } from '../features/place-table';
-import { astrocartographyInput, astrocartographyTool, equatorialBodies, greenwichSiderealDegrees, resolvePlace } from './astrocartography';
+import { astrocartographyInput, astrocartographyTool, COUNTRY_ALIASES, countryNameMatches, equatorialBodies, greenwichSiderealDegrees, resolvePlace } from './astrocartography';
 import { forbiddenClaim } from './shared';
 import { parseAstrocartographyShare } from '../../lib/astrocartography/share';
 import { astrocartographyCardModel, astrocartographyStoryAddress, handleResultShareNodeRequest } from '../../server/result-preview';
@@ -314,6 +314,41 @@ describe('get_astrocartography', () => {
     }
     expect(suggested('Pyongyang, Korea')).toEqual(['Pyongyang, North Korea']);
     expect(suggested('Kinshasa, Congo')).toEqual(['Kinshasa, Democratic Republic of the Congo']);
+  });
+
+  it('folds a country alias the way it folds the typed country, so apostrophes, hyphens and full stops read alike', async () => {
+    const table = await loadPlaceTable();
+    const country = (text: string) => {
+      const resolved = resolvePlace(table, text);
+      return resolved && 'place' in resolved ? `${resolved.place.name}, ${resolved.place.country}` : null;
+    };
+    // The curly apostrophe, the straight one, none, a space, a hyphen and capitals all name Ivory Coast.
+    for (const text of ['Abidjan, Côte d’Ivoire', "Abidjan, Cote d'Ivoire", 'Abidjan, Cote dIvoire', 'Abidjan, Cote d Ivoire', "Abidjan, Côte-d'Ivoire", "Abidjan, CÔTE D'IVOIRE", 'Abidjan, Ivory Coast']) {
+      expect(country(text), text).toBe('Abidjan, Ivory Coast');
+    }
+    // Full stops and hyphens in the other aliases, and in the index's own names, fold the same way.
+    for (const [text, expected] of [
+      ['London, U.K.', 'London, United Kingdom'], ['London, U.K', 'London, United Kingdom'], ['New York, U.S.A.', 'New York City, United States'],
+      ['New York, U.S.', 'New York City, United States'], ['Dubai, U.A.E.', 'Dubai, United Arab Emirates'],
+      ['Kinshasa, D.R. Congo', 'Kinshasa, Democratic Republic of the Congo'], ['Kinshasa, Congo-Kinshasa', 'Kinshasa, Democratic Republic of the Congo'],
+      ['Kinshasa, Congo Kinshasa', 'Kinshasa, Democratic Republic of the Congo'], ['Brazzaville, Congo-Brazzaville', 'Brazzaville, Republic of the Congo'],
+      ['Dili, East Timor', 'Dili, Timor Leste'], ['Dili, Timor-Leste', 'Dili, Timor Leste'], ['Istanbul, Türkiye', 'Istanbul, Turkey'],
+      ['Bissau, Guinea Bissau', 'Bissau, Guinea-Bissau'], ['Charlotte Amalie, US Virgin Islands', 'Charlotte Amalie, U.S. Virgin Islands'],
+      ['Charlotte Amalie, U.S. Virgin Islands', 'Charlotte Amalie, U.S. Virgin Islands'],
+    ] as const) {
+      expect(country(text), text).toBe(expected);
+    }
+    // Every alias is stored folded, names a country in the index, and is found again from its own folded spelling.
+    const fold = (text: string) => ` ${text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/gu, ' ').trim()} `.trim().replace(/^the /u, '');
+    const indexCountries = new Set(table.index.countries.map(fold));
+    for (const [alias, name] of Object.entries(COUNTRY_ALIASES)) {
+      expect(fold(alias), alias).toBe(alias);
+      expect(indexCountries.has(name), `${alias} names ${name}`).toBe(true);
+      expect(countryNameMatches(table.index.countries.find((entry) => fold(entry) === name)!, alias), alias).toBe(true);
+    }
+    // An alias is looked up as its own key only: a country typed as Constructor is not an alias.
+    expect(countryNameMatches('United States', 'constructor')).toBe(false);
+    expect(resolvePlace(table, 'Paris, Constructor')).not.toMatchObject({ place: expect.anything() });
   });
 
   it('gives each place an id and a label that tells same-named places apart, and reads the place an id names', async () => {
