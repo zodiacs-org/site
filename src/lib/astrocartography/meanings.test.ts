@@ -224,10 +224,10 @@ describe('astrocartography readings and money', () => {
   });
 });
 
-describe('agreements on the Descendant lines', () => {
-  it('read Venus and Jupiter as negotiation and working together, never as how an agreement turns out', () => {
-    expect(LINE_MEANING.Venus.DSC).toBe('Traditionally one of the classic lines for love and partnership, and for negotiating agreements.');
-    expect(LINE_MEANING.Jupiter.DSC).toBe('Traditionally a place for generous partners, helpful advisers and working out agreements together.');
+describe('the Venus and Jupiter Descendant lines', () => {
+  it('read as reflection on partnership, never as how an agreement turns out', () => {
+    expect(LINE_MEANING.Venus.DSC).toBe('Traditionally one of the classic lines for love and partnership, a place to reflect on what you give to others and what you ask of them.');
+    expect(LINE_MEANING.Jupiter.DSC).toBe('Traditionally a place for generous partners and helpful advisers, and for reflecting on what you hope to build with others.');
     const OUTCOME = /\b(?:agreements?|contracts?|deals?|negotiations?)\b[^.]*\b(?:smooth\w*|favou?r\w*|succeed\w*|go(?:es)? well|win\w*|pay off)\b/iu;
     for (const body of ACG_BODIES) for (const angle of ACG_ANGLES) expect(LINE_MEANING[body][angle], `${body} ${angle}`).not.toMatch(OUTCOME);
   });

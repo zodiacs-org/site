@@ -44,8 +44,11 @@ Each page has its own build flag: `PUBLIC_VEDIC_SIGNS_ENABLED` for
 (`src/lib/launch-flags.ts`). Each is on only when exactly `1`. Off, the page
 redirects to the 404 page, and its hub card, menu entry, sitemap row, links
 from other pages, Guide line and share routes are all absent. Switch a page's
-flag on and deploy before `ZODIACS_PERSONAL_TOOLS_ENABLED`, or that tool's
-`pageUrl` and `shareUrl` lead to a missing page.
+flag on and deploy before `ZODIACS_PERSONAL_TOOLS_ENABLED`. The hosted MCP
+reads the same variable at run time: a tool whose definition names a
+`pageFlag` returns its `pageUrl`, its `shareUrl`s and the link to its page only
+while that flag is exactly `1`, and otherwise returns `null` for each and no
+page link, so the order cannot leave a link to a missing page.
 
 The Guide's line is the exception: the site assistant reads the committed
 `api/_assistant/context.ts`, which is generated with every switch unset, and

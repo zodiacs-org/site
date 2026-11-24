@@ -67,7 +67,7 @@ export const LINE_MEANING: Record<AcgBody, Record<AcgAngle, string>> = {
   },
   Venus: {
     ASC: 'Traditionally a place where you feel attractive and at ease, and where life is more pleasant and sociable.',
-    DSC: 'Traditionally one of the classic lines for love and partnership, and for negotiating agreements.',
+    DSC: 'Traditionally one of the classic lines for love and partnership, a place to reflect on what you give to others and what you ask of them.',
     MC: 'Traditionally good for work in the arts, design, beauty and diplomacy, and for being liked in public; often read as a place where work feels more pleasant and goes more smoothly.',
     IC: 'Traditionally a place for a beautiful, comfortable home and warm family life.',
   },
@@ -79,7 +79,7 @@ export const LINE_MEANING: Record<AcgBody, Record<AcgAngle, string>> = {
   },
   Jupiter: {
     ASC: 'Traditionally one of the luckiest lines: a place of optimism, growth and opportunities that seem to find you.',
-    DSC: 'Traditionally a place for generous partners, helpful advisers and working out agreements together.',
+    DSC: 'Traditionally a place for generous partners and helpful advisers, and for reflecting on what you hope to build with others.',
     MC: 'Traditionally one of the best lines for career growth and a good name: a place where work opens up, mentors are generous and your horizons widen.',
     IC: 'Traditionally a place for a large, happy home, good for family, property and feeling well provided for.',
   },

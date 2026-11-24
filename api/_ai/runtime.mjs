@@ -43010,7 +43010,7 @@ var LINE_MEANING = {
   },
   Venus: {
     ASC: "Traditionally a place where you feel attractive and at ease, and where life is more pleasant and sociable.",
-    DSC: "Traditionally one of the classic lines for love and partnership, and for negotiating agreements.",
+    DSC: "Traditionally one of the classic lines for love and partnership, a place to reflect on what you give to others and what you ask of them.",
     MC: "Traditionally good for work in the arts, design, beauty and diplomacy, and for being liked in public; often read as a place where work feels more pleasant and goes more smoothly.",
     IC: "Traditionally a place for a beautiful, comfortable home and warm family life."
   },
@@ -43022,7 +43022,7 @@ var LINE_MEANING = {
   },
   Jupiter: {
     ASC: "Traditionally one of the luckiest lines: a place of optimism, growth and opportunities that seem to find you.",
-    DSC: "Traditionally a place for generous partners, helpful advisers and working out agreements together.",
+    DSC: "Traditionally a place for generous partners and helpful advisers, and for reflecting on what you hope to build with others.",
     MC: "Traditionally one of the best lines for career growth and a good name: a place where work opens up, mentors are generous and your horizons widen.",
     IC: "Traditionally a place for a large, happy home, good for family, property and feeling well provided for."
   },
@@ -43185,8 +43185,11 @@ var nearLine = z16.object({
   side: z16.enum(["east", "west"]).nullable(),
   strength: z16.enum(["strong", "noticeable", "faint"]),
   line: z16.string(),
-  /** A share card of this line alone: the planet and the angle, never the birth details or the place. */
-  shareUrl: z16.url()
+  /**
+   * A share card of this line alone: the planet and the angle, never the birth details or the place. Null while the
+   * website's page is switched off.
+   */
+  shareUrl: z16.url().nullable()
 });
 var astrocartographyData = z16.object({
   birthDate: z16.string(),
@@ -43220,7 +43223,8 @@ var astrocartographyData = z16.object({
   confidence: z16.number().int().min(40).max(95),
   confidenceLabel: z16.string(),
   limits: z16.array(z16.string()),
-  pageUrl: z16.url()
+  /** The /astrocartography/ page; null while the website's page is switched off (PUBLIC_ASTROCARTOGRAPHY_ENABLED). */
+  pageUrl: z16.url().nullable()
 });
 function equatorialBodies(utc) {
   return equatorialMoment(utc).bodies;
@@ -43237,6 +43241,7 @@ function splitCity(text2) {
 }
 async function getAstrocartography(args, context) {
   const natal = await castNatal(args, context.localTime);
+  const pageOn = context.pageOn === true;
   const utc = natal.birthUtc;
   const bodies = equatorialBodies(utc);
   const gast = greenwichSiderealDegrees(utc);
@@ -43287,7 +43292,7 @@ async function getAstrocartography(args, context) {
           side: row.side,
           strength: strengthOf(row.km),
           line: far ?? `${guard(lineSentence(row.body, row.angle, under18))} ${confidenceLabel}.`,
-          shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle })
+          shareUrl: pageOn ? astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }) : null
         };
       });
       const strong = closest.filter((row) => row.strength === "strong");
@@ -43314,10 +43319,10 @@ async function getAstrocartography(args, context) {
       confidence,
       confidenceLabel,
       limits: limits2,
-      pageUrl: `${context.origin}/astrocartography/`
+      pageUrl: pageOn ? `${context.origin}/astrocartography/` : null
     },
     links: [
-      { title: "Draw your map on Zodiacs (calculated in your browser)", url: `${context.origin}/astrocartography/` },
+      ...pageOn ? [{ title: "Draw your map on Zodiacs (calculated in your browser)", url: `${context.origin}/astrocartography/` }] : [],
       { title: "Resolve a town or city (find_birthplace)", url: `${context.origin}/birth-chart/` },
       { title: "How we calculate", url: `${context.origin}/methodology/` }
     ]
@@ -43332,6 +43337,7 @@ var astrocartographyTool = definePersonalTool({
   data: astrocartographyData,
   // The readings change on the eighteenth birthday, so a repeat call can differ as the server's clock moves.
   clockDependent: true,
+  pageFlag: "PUBLIC_ASTROCARTOGRAPHY_ENABLED",
   example: { birthDate: "1990-05-03", time: "08:30", zone: "Europe/London", latitude: 51.51, longitude: -0.13, cities: ["Lisbon", "New York", "Tokyo"] },
   run: (args, context) => getAstrocartography(args, context)
 });
@@ -45734,6 +45740,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         resolveZone: (name, pointer) => zoneAt(name, pointer, resolveZone),
         hostZone: context.hostZone,
         origin: ORIGIN,
+        pageOn: definition.pageFlag === void 0 || dependencies.sitePageOn?.(definition.pageFlag) === true,
         ...dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {},
         ...dependencies.placeTable ? { placeTable: dependencies.placeTable } : {}
       }));
@@ -47680,6 +47687,7 @@ function createAiNodeHandler(options = {}) {
           return "unavailable";
         }
       } };
+      if (personal2) dependencies.sitePageOn = (flag) => env[flag] === "1";
       const sdk = createMcpHandler(() => createAiServer(dependencies, watch, account), { legacy: "stateless", responseMode: "auto", onerror: () => {
       } });
       try {

@@ -15,7 +15,8 @@ import { astrocartographyInput, astrocartographyTool, equatorialBodies, greenwic
 import { forbiddenClaim } from './shared';
 
 const BIRTH = new Date('1990-05-03T07:30:00Z');
-const ON = { occasions: true, coverage: true, personal: true, now: () => new Date('2026-11-09T09:00:00Z'), placeTable: async () => loadPlaceTable() };
+const PAGE_FLAG = 'PUBLIC_ASTROCARTOGRAPHY_ENABLED';
+const ON = { occasions: true, coverage: true, personal: true, now: () => new Date('2026-11-09T09:00:00Z'), placeTable: async () => loadPlaceTable(), sitePageOn: (flag: string) => flag === PAGE_FLAG };
 const bodies = equatorialBodies(BIRTH);
 const gast = greenwichSiderealDegrees(BIRTH);
 const minutesFrom = (at: Date) => Math.abs(at.getTime() - BIRTH.getTime()) / 60_000;
@@ -174,6 +175,32 @@ describe('get_astrocartography', () => {
     expect(forbiddenClaim(text)).toBeNull();
     for (const url of text.match(/https:\/\/[^"]+/gu) ?? []) expect(url).not.toMatch(/1990|08:30|London|New|Lisbon|Paris/u);
     expect(result.data.lines).toHaveLength(10);
+  });
+
+  it('links to the page and its line cards only while the website page is switched on', async () => {
+    expect(astrocartographyTool.pageFlag).toBe(PAGE_FLAG);
+    const args = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/London', cities: ['Lisbon', 'New York'] };
+    const linked = (result: Awaited<ReturnType<typeof executeAiTool>>) => {
+      if (!result.ok) throw new Error('refused');
+      const data = result.data as { pageUrl: string | null; cities: { closest: { shareUrl: string | null }[] }[] };
+      return { data, shares: data.cities.flatMap((city) => city.closest.map((row) => row.shareUrl)), urls: JSON.stringify(result).match(/https:\/\/[^"]+/gu) ?? [] };
+    };
+    // The MCP switches on and the page on: the page, and a card for each line near a place.
+    const on = linked(await executeAiTool('get_astrocartography', args, ON));
+    expect(on.data.pageUrl).toBe('https://zodiacs.org/astrocartography/');
+    expect(on.shares.length).toBeGreaterThan(0);
+    for (const share of on.shares) expect(share).toMatch(/^https:\/\/zodiacs\.org\/share\/astrocartography\//u);
+    expect(on.urls).toContain('https://zodiacs.org/astrocartography/');
+    // The MCP switches on and the page off (or no page switch read at all): neither, so no link is a 404.
+    for (const dependencies of [{ ...ON, sitePageOn: () => false }, { ...ON, sitePageOn: undefined }]) {
+      const off = linked(await executeAiTool('get_astrocartography', args, dependencies));
+      expect(off.data.pageUrl).toBeNull();
+      expect(off.shares.length).toBe(on.shares.length);
+      expect(off.shares.every((share) => share === null)).toBe(true);
+      expect(off.urls.filter((url) => url.includes('/astrocartography/') || url.includes('/share/'))).toEqual([]);
+      // The rest of the answer is the same reading.
+      expect({ ...off.data, pageUrl: null, cities: null }).toEqual({ ...on.data, pageUrl: null, cities: null });
+    }
   });
 
   it.each([
