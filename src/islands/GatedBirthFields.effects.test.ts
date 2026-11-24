@@ -13,9 +13,14 @@ const harness = vi.hoisted(() => ({
   effectCursor: 0,
   pending: [] as Array<() => void>,
   search: vi.fn(),
+  calendar: vi.fn(async () => ({})),
 }));
 
 vi.mock('../lib/geo/search', () => ({ searchCities: harness.search, preloadIndex: vi.fn() }));
+vi.mock('./BirthFields', async (importOriginal) => ({
+  ...await importOriginal<object>(),
+  loadBirthCalendar: harness.calendar,
+}));
 vi.mock('preact/hooks', () => ({
   useState: (initial: unknown) => {
     const slot = harness.cursor++;
@@ -40,7 +45,7 @@ import { UNDER_13_SENTENCE } from '../lib/birth-date-policy';
 
 const LISBON: City = { name: 'Lisbon', admin1: '', country: 'Portugal', lat: 38.72, lon: -9.14, tz: 'Europe/Lisbon', pop: 500000 };
 const flush = () => harness.pending.splice(0).forEach((run) => run());
-const reset = () => { harness.slots = []; harness.effects = []; harness.pending = []; harness.cursor = 0; harness.effectCursor = 0; harness.search.mockReset(); };
+const reset = () => { harness.slots = []; harness.effects = []; harness.pending = []; harness.cursor = 0; harness.effectCursor = 0; harness.search.mockReset(); harness.calendar.mockClear(); };
 const refuse = (birthDate: string) => (birthDate > '2013-11-09' ? UNDER_13_SENTENCE : null);
 
 function mount(check: BirthDateCheck, time: string, city: City | null) {
@@ -86,5 +91,22 @@ describe('the gated birth fields, as the date changes', () => {
     // A Gregorian date is checked at once.
     reset();
     expect(useBirthDateCheck('1990-05-03', 'gregorian', refuse)).toEqual({ date: '1990-05-03' });
+  });
+});
+
+describe('the gated birth fields\' requests, whatever is entered', () => {
+  beforeEach(reset);
+
+  it('load the calendar module once, with the fields, before any date and for dates either side of 1924', () => {
+    mount(null, '', null);
+    expect(harness.calendar).toHaveBeenCalledTimes(1);
+    for (const date of ['1990-05-03', '1923-12-31', '1924-01-01', '1920-05-03']) mount({ date }, '', null);
+    expect(harness.calendar).toHaveBeenCalledTimes(1);
+  });
+
+  it('search the birthplace over the whole city index, so no request address depends on the place typed', () => {
+    const { view } = mount({ date: '1990-05-03' }, '', null);
+    const place = view.flatMap((node) => [node.props.children].flat(3)).find((child) => (child as VNode<{ id?: string }> | null)?.props?.id === 'p') as VNode;
+    expect(place.props).toMatchObject({ wholeIndex: true });
   });
 });

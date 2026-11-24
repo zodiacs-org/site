@@ -43276,6 +43276,15 @@ function retrogradeLoops(planet2, now, rowsAt = positionsMemo()) {
   const previous = !retrogradeNow && position3 > 0 ? fill(loops[position3 - 1]) : null;
   return { current: fill(loops[position3]), previous, retrogradeNow };
 }
+function toolLoops(planet2, now, rowsAt = positionsMemo(), span2 = sky_default) {
+  const fromSky = loopsFromSky(planet2, now, span2, (body2, at) => rowOf(rowsAt(at), body2).lon);
+  if (!fromSky) return retrogradeLoops(planet2, now, rowsAt);
+  if (fromSky.current || !fromSky.previous) return fromSky;
+  const ended = fromSky.previous.stationDirect.at.getTime();
+  const engine = retrogradeLoops(planet2, now, rowsAt);
+  const after = engine.current.stationRetrograde.at.getTime() > ended ? engine.current : null;
+  return { ...fromSky, current: after };
+}
 async function retrogradeForMe(args, context) {
   if (args.time === void 0 && args.zone) {
     await context.localTime.prepareLocalTime(args.birthDate, args.zone);
@@ -43326,7 +43335,7 @@ async function retrogradeForMe(args, context) {
     basis,
     // The windows the page reads (src/data/sky.json) wherever they reach, so the tool and the page give the same status
     // to the second at a station or a shadow's edge; past the data, the engine's own station search.
-    loopsFor: (planet2) => loopsFromSky(planet2, now, sky_default, (body2, at) => rowOf(rowsAt(at), body2).lon) ?? retrogradeLoops(planet2, now, rowsAt),
+    loopsFor: (planet2) => toolLoops(planet2, now, rowsAt),
     leadingLimits: clock2.note ? [clock2.note] : []
   }), onClock.limit);
   const sunSign = sunHeld ? SIGNS2[signIndexForLongitude2(natal.chart.bodies.find((row) => row.body === "Sun").lon)].slug : null;

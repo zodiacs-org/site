@@ -42,20 +42,41 @@ const ALL_PAGES = [
     sharePath: '/share/retrograde-for-you/',
     linkedFrom: ['/', '/tools/', '/retrogrades/', '/mercury-retrograde/'],
     async run(tab) {
+      // Every request address, to check no request depends on the date or the place entered.
+      const addresses = [];
+      tab.on('request', (request) => addresses.push(request.url()));
+      // The calendar module loads with the page, so a date before 1924 asks for nothing a later date does not.
+      const loaded = await tab.evaluate(() => performance.getEntriesByType('resource').map((entry) => new URL(entry.name).pathname));
+      check('the calendar module loads with the page, before any date', loaded.some((path) => /\/_astro\/BirthCalendar[.-]/u.test(path)), loaded.join(', '));
+      const afterDate = async (date) => {
+        const from = addresses.length;
+        await tab.fill('#rfy-date', date);
+        await settle(tab);
+        return addresses.slice(from);
+      };
       // A date under 13 keeps the birth time and birthplace locked, with no birthplace search to send a request.
-      await tab.fill('#rfy-date', '2020-01-01');
+      await afterDate('2020-01-01');
       check('an under-13 date locks the birth time', await tab.locator('#rfy-time').isDisabled());
       check('an under-13 date offers no birthplace search', (await tab.locator('#rfy-place[role="combobox"]').count()) === 0 && await tab.locator('#rfy-place').isDisabled());
-      const addresses = [];
-      tab.on('request', (request) => addresses.push(new URL(request.url()).pathname));
-      await tab.fill('#rfy-date', BIRTH.date);
+      const early = await afterDate('1920-05-03');
+      check('a date before 1924 asks for no file', early.length === 0, early.join('\n'));
+      const modern = await afterDate(BIRTH.date);
+      check('a date after 1924 asks for no file', modern.length === 0, modern.join('\n'));
       await tab.fill('#rfy-time', BIRTH.time);
       await choosePlace(tab, 'rfy-place', BIRTH.place);
       await tab.getByRole('button', { name: 'Show my retrogrades' }).click();
       await tab.locator('.rfy__share-link').first().waitFor({ state: 'visible', timeout: 60_000 });
+      // The birthplace search asks for the whole city index, the same files whatever is typed.
+      const index = JSON.parse(await readFile(resolve(projectRoot, 'dist/data/cities/index.json'), 'utf8'));
+      const whole = ['/data/cities/index.json', ...index.shards.map((key) => `/data/cities/${key}.json`)].sort();
+      const cities = [...new Set(addresses.map((address) => new URL(address)).filter((url) => url.pathname.startsWith('/data/cities/')).map((url) => `${url.pathname}${url.search}`))].sort();
+      check('the birthplace search requests the whole city index, the same files whatever is typed', JSON.stringify(cities) === JSON.stringify(whole), cities.join(', '));
+      const typed = addresses.filter((address) => /london/iu.test(address));
+      check('no request carries the place typed into the search', typed.length === 0, typed.join('\n'));
       // A 1990 birth needs no zone history file, yet the page asks for the whole set, as it does for any birth.
+      const paths = addresses.map((address) => new URL(address).pathname);
       const builtHistories = (await readdir(resolve(projectRoot, 'dist/_astro'))).map((name) => `/_astro/${name}`).filter((path) => ZONE_HISTORY_FILE.test(path)).sort();
-      const asked = [...new Set(addresses.filter((path) => ZONE_HISTORY_FILE.test(path)))].sort();
+      const asked = [...new Set(paths.filter((path) => ZONE_HISTORY_FILE.test(path)))].sort();
       check('the page asks for every zone history file, whatever the birth', builtHistories.length === 16 && JSON.stringify(asked) === JSON.stringify(builtHistories), asked.join(', '));
       return '.rfy__share-link';
     },

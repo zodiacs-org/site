@@ -86,6 +86,21 @@ describe('get_retrograde_for_me against published stations', () => {
     expect(mercury.reading.match(/post-shadow/gu)).toHaveLength(1);
     expect(mercury.shareUrl).toContain('s=2026-10-24');
   });
+
+  it('keeps the published post-shadow of the data\'s last loop and finds the next loop past the data (12 January 2031)', async () => {
+    const data = await run({ birthDate: '1990-05-03', planets: ['Mercury'], currentZone: 'UTC' }, new Date('2031-01-12T12:00:00Z'));
+    const [mercury] = data.periods;
+    // The /retrogrades/ page's last Mercury window (src/data/sky.json): 2030-12-06 to 2030-12-25, post-shadow to 2031-01-13 14:45 UTC.
+    expect(mercury).toMatchObject({ retrogradeNow: false, status: 'post-shadow' });
+    expect(mercury.stationRetrograde.date).toBe('2030-12-06');
+    expect(mercury.stationDirect.date).toBe('2030-12-25');
+    near(mercury.postShadowEnd!.utc, '2031-01-13T14:45:30Z', 60_000);
+    // The data ends on 2031-01-01; the engine's station search gives the next loop, in March 2031.
+    expect(mercury.next).not.toBeNull();
+    expect(mercury.next!.stationRetrograde.startsWith('2031-03')).toBe(true);
+    expect(Date.parse(mercury.next!.stationDirect)).toBeGreaterThan(Date.parse(mercury.next!.stationRetrograde));
+    near(mercury.next!.stationRetrograde, retrogradeLoops('Mercury', new Date('2031-01-12T12:00:00Z')).current.stationRetrograde.at.toISOString(), 60_000);
+  });
 });
 
 describe('get_retrograde_for_me and the hosted event budget', () => {

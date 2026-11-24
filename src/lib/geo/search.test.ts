@@ -109,3 +109,33 @@ describe('birthplace request recovery', () => {
     expect(fetcher).toHaveBeenCalledTimes(2);
   });
 });
+
+describe('the whole-index search', () => {
+  it('requests the same addresses whatever is typed, with nothing typed in any of them, and still finds the place', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const served = async (url: string) => json(JSON.parse(await readFile(new URL(`../../../public${url}`, import.meta.url), 'utf8')));
+    const shards = JSON.parse(await readFile(new URL('../../../public/data/cities/index.json', import.meta.url), 'utf8')).shards as string[];
+    const everything = ['/data/cities/index.json', ...shards.map((key) => `/data/cities/${key}.json`)].sort();
+    for (const [typed, found] of [['London', 'London'], ['Tokyo', 'Tokyo'], ['Zürich', 'Zürich'], ['Ålesund', 'Ålesund']] as const) {
+      vi.resetModules();
+      const fetcher = vi.fn((url: string) => served(url));
+      vi.stubGlobal('fetch', fetcher);
+      const { searchWholeIndex } = await import('./search');
+      const cities = await searchWholeIndex(typed);
+      expect(cities[0]?.name, typed).toBe(found);
+      const requested = fetcher.mock.calls.map(([url]) => url);
+      expect([...requested].sort(), typed).toEqual(everything);
+      // A second search fetches nothing more.
+      await searchWholeIndex(typed.slice(0, 3));
+      expect(fetcher).toHaveBeenCalledTimes(requested.length);
+    }
+  });
+
+  it('loads the whole index on focus before anything is typed', async () => {
+    const fetcher = vi.fn().mockResolvedValueOnce(json({ ...index, shards: ['l', 'p'] })).mockResolvedValue(json(rows));
+    vi.stubGlobal('fetch', fetcher);
+    const { preloadWholeIndex } = await import('./search');
+    await preloadWholeIndex();
+    expect(fetcher.mock.calls.map(([url]) => url)).toEqual(['/data/cities/index.json', '/data/cities/l.json', '/data/cities/p.json']);
+  });
+});

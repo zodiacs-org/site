@@ -28,7 +28,7 @@ import { findLongitudeCrossings, positions } from '@zodiacs/engine';
 import { SampleBudget, positionsMemo, rowOf, stationCrossings } from '../../lib/compute-api/endpoints';
 import {
   POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, natalBasis, retrogradeReading,
-  type RetrogradeLoop, type RetrogradePlanet,
+  type LoopSet, type RetrogradeLoop, type RetrogradePlanet,
 } from '../../lib/retrograde-for-you/reading';
 import { loopsFromSky, type SkySpan } from '../../lib/retrograde-for-you/sky';
 import { RETROGRADE_FOR_YOU_PAGE_PATH, publishedRetrogradeDate, retrogradeForYouShareQuery, retrogradeForYouShareUrl, retrogradeTablePath } from '../../lib/retrograde-for-you/share';
@@ -170,6 +170,21 @@ export function retrogradeLoops(planet: RetrogradePlanet, now: Date, rowsAt = po
   return { current: fill(loops[position]), previous, retrogradeNow };
 }
 
+/**
+ * The loops the tool reads: the page's windows (src/data/sky.json) wherever they reach, and the engine's station
+ * search past them. When the data's last loop is in its post-shadow and the data holds no later loop, that published
+ * post-shadow stays and the engine supplies the next loop's stations, so the answer still says when it next turns.
+ */
+export function toolLoops(planet: RetrogradePlanet, now: Date, rowsAt = positionsMemo(), span: SkySpan = sky as SkySpan): LoopSet {
+  const fromSky = loopsFromSky(planet, now, span, (body, at) => rowOf(rowsAt(at), body).lon);
+  if (!fromSky) return retrogradeLoops(planet, now, rowsAt);
+  if (fromSky.current || !fromSky.previous) return fromSky;
+  const ended = fromSky.previous.stationDirect.at.getTime();
+  const engine = retrogradeLoops(planet, now, rowsAt);
+  const after = engine.current.stationRetrograde.at.getTime() > ended ? engine.current : null;
+  return { ...fromSky, current: after };
+}
+
 /** The retrogrades for one person. Throws RangeError for details it cannot use. */
 export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin' | 'allowEvents' | 'pageOn'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
   // A date the birthplace clock skipped whole has no day to read: refused before any chart, never read as the next date.
@@ -221,7 +236,7 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     planets, now, zone: clock.zone, basis,
     // The windows the page reads (src/data/sky.json) wherever they reach, so the tool and the page give the same status
     // to the second at a station or a shadow's edge; past the data, the engine's own station search.
-    loopsFor: (planet) => loopsFromSky(planet, now, sky as SkySpan, (body, at) => rowOf(rowsAt(at), body).lon) ?? retrogradeLoops(planet, now, rowsAt),
+    loopsFor: (planet) => toolLoops(planet, now, rowsAt),
     leadingLimits: clock.note ? [clock.note] : [],
   }), onClock.limit);
   const sunSign = sunHeld
