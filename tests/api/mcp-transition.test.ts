@@ -4,6 +4,7 @@ import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/cli
 import { expect, it } from 'vitest';
 import transition from '../../docs/platform/evidence/site-engine-1-1-0/connector-transition.json';
 import publishedReplies from '../../src/ai-tools/accounts/flag-off.fixture.json';
+import { textWithoutContinuousUtc } from '../../src/ai-tools/published-tools';
 
 it('keeps the published connector reply while a separate route advertises and returns DE440', async () => {
   const routes = await import('../../api/_ai/handler');
@@ -31,7 +32,8 @@ it('keeps the published connector reply while a separate route advertises and re
         'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18',
       }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) });
       expect(response.status).toBe(publishedReplies.released[fixture].status);
-      expect(await response.text()).toBe(publishedReplies.released[fixture].text);
+      // The frozen /mcp server predates the continuous UTC time schema (Dias, 2026-11-23), which /mcp/de440 carries.
+      expect(await response.text()).toBe(textWithoutContinuousUtc(publishedReplies.released[fixture].text));
     }
     for (const [path, expected] of Object.entries(transition.routes)) {
       const client = new Client({ name: 'transition-test', version: '1' });

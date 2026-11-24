@@ -161,7 +161,7 @@ export async function runLunarReturnChecks({ browser, baseURL, check, outDir }) 
         discovery.canonical === 'https://zodiacs.org/lunar-return/'
         && discovery.nodes.filter((node) => node['@type'] === 'WebApplication').length === 1
         && sitemap.ok() && lunarEntries.length === 1
-        && lunarEntries[0].includes('<lastmod>2026-11-16</lastmod>'));
+        && lunarEntries[0].includes('<lastmod>2026-11-24</lastmod>'));
       check(`Lunar ${width}: calculation and image modules wait for a request`, !responses.some((url) => /(?:LunarReturnResult|lunar-return-card|TransitRing|compute)\.[\w-]+\.js$/.test(url)));
       await geometry(page, check, outDir, `input-${width}`); await cast(page);
       const result = page.locator('[data-lunar-return-result]'); const instant = await result.getAttribute('data-lr-instant');

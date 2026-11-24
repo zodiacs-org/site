@@ -2,7 +2,7 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { RU_OG_ROUTE_CARDS } from '../src/strings/seo.ru.mjs';
-import { EXPANSION_FAMILY_IDS, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
+import { EXPANSION_FAMILY_IDS, enabledLocalesForPath, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 import { expansionFamilyPaths } from './i18n-hreflang-policy.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -41,9 +41,16 @@ const releasedSignRoutes = signs.map((sign) => `/ru/${sign}/`).filter((route) =>
 // Held sign guides keep the R2 contract (noindex, no Open Graph alternates); released ones join discovery.
 const heldSignPaths = new Set([...noindexSignRoutes].map((route) => route.slice(3)));
 // Other Russian pages the locale expansion has released (horoscopes, Moon pages, pairs and so on).
-const releasedExpansionRoutes = EXPANSION_FAMILY_IDS.filter((family) => family !== 'sign-guide')
-  .flatMap((family) => expansionFamilyPaths(family))
+const expansionPaths = EXPANSION_FAMILY_IDS.filter((family) => family !== 'sign-guide')
+  .flatMap((family) => expansionFamilyPaths(family));
+const releasedExpansionRoutes = expansionPaths
   .filter((path) => publishedLocalesForPath(path).includes('ru'))
+  .map((path) => `/ru${path}`);
+// A preview build (PUBLIC_LOCALE_EXPANSION_PREVIEW=1 or a list naming ru) also
+// builds the held pages, noindex and outside the sitemaps: they count as files,
+// never as released routes.
+const builtExpansionRoutes = expansionPaths
+  .filter((path) => enabledLocalesForPath(path).includes('ru'))
   .map((path) => `/ru${path}`);
 const expectedRoutes = [...indexedRoutes, ...releasedSignRoutes, ...noindexSignRoutes, ...hiddenChildRoutes, notFoundRoute, ...(withheldDailyRoute ? [withheldDailyRoute] : [])];
 const expectedFiles = new Map(expectedRoutes.map((route) => [
@@ -182,8 +189,8 @@ for (const [route, file] of expectedFiles) {
     fail(`${route}: expected Russian route is missing`);
   }
 }
-if (russianFiles.length !== expectedRoutes.length + releasedExpansionRoutes.length) {
-  fail(`Russian release has ${russianFiles.length} HTML files; expected exactly ${expectedRoutes.length + releasedExpansionRoutes.length}`);
+if (russianFiles.length !== expectedRoutes.length + builtExpansionRoutes.length) {
+  fail(`Russian release has ${russianFiles.length} HTML files; expected exactly ${expectedRoutes.length + builtExpansionRoutes.length}`);
 }
 
 for (const [route, file] of expectedFiles) {

@@ -69,10 +69,12 @@ function attributes(tag) {
 
 const squeeze = (text) => text.replace(/\s+/gu, ' ').trim();
 
-// Copy a reader sees or hears that lives in an attribute: a field's placeholder, an icon button's accessible name, a
-// tooltip, a button input's label, a text field's value, and a responsive table's data-label, which the site's
-// stylesheets show with `content: attr(data-label)` (a test holds every attribute they show to this list).
-export const LABEL_ATTRIBUTES = ['placeholder', 'aria-label', 'aria-description', 'title', 'label', 'data-label'];
+// Attribute copy includes accessible labels, responsive table labels and streamed horoscope text.
+// A test checks that every attribute used by CSS generated content is included.
+export const LABEL_ATTRIBUTES = [
+  'placeholder', 'aria-label', 'aria-description', 'title', 'label',
+  'data-label', 'data-name',
+];
 const SHOWN_INPUT_VALUES = /^(?:|text|search|email|url|tel|number|submit|button|reset)$/iu;
 // Where a media element names the file it shows; the site lazy-loads with data-src (a test holds the site to this list).
 export const MEDIA_ATTRIBUTES = ['src', 'srcset', 'poster', 'data', 'data-src', 'data-srcset', 'data-poster'];
