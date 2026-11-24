@@ -4,6 +4,7 @@ import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { wholeSignHouseFromAsc } from '../../lib/daily';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { UNDER_13_REFUSAL } from '../contracts';
+import { UNDER_13_SENTENCE as UNDER_13_PLAIN } from '../../lib/good-days/find';
 import { MINOR_NOTE } from '../features/reading-guards';
 import { executeAiTool } from '../tools';
 import { createAiNodeHandler } from '../http';
@@ -189,7 +190,10 @@ describe('get_retrograde_for_me in the birth chart', () => {
 describe('get_retrograde_for_me privacy and refusals', () => {
   it('is not offered with the switch off, refuses a child, and puts no birth detail in a link', async () => {
     expect((await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03' }, { occasions: true, coverage: true })).ok).toBe(false);
-    expect(await executeAiTool('get_retrograde_for_me', { birthDate: '2016-05-03' }, ON)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+    // The plain under-13 sentence of the shared age gate (src/ai-tools/birth-date-age-gate.test.ts), not the birthday card wording.
+    const child = await executeAiTool('get_retrograde_for_me', { birthDate: '2016-05-03' }, ON);
+    expect(child).toMatchObject({ ok: false, error: { code: 'invalid-request', message: UNDER_13_PLAIN } });
+    expect(JSON.stringify(child)).not.toContain(UNDER_13_REFUSAL);
     const result = await executeAiTool('get_retrograde_for_me', { ...MADRID, currentZone: 'Europe/Madrid' }, ON);
     expect(result.ok).toBe(true);
     const text = JSON.stringify(result);
@@ -377,5 +381,12 @@ describe('get_retrograde_for_me privacy and refusals', () => {
   it('refuses a time without a zone and an unknown planet', async () => {
     expect(await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', time: '08:30' }, ON)).toMatchObject({ ok: false });
     expect(await executeAiTool('get_retrograde_for_me', { birthDate: '1990-05-03', planets: ['Jupiter'] }, ON)).toMatchObject({ ok: false });
+  });
+});
+
+describe('get_retrograde_for_me description', () => {
+  it('tells the assistant the tool refuses anyone under 13, and to ask for the birth date alone first', () => {
+    expect(retrogradeForMeTool.description).toContain('Zodiacs is not directed at children under 13, and this tool refuses anyone under 13. Ask for the birth date alone first, with a four-digit year, and while that date does not yet show the person is 13 or older, ask for no birth time, time zone or birthplace and do not call find_birthplace.');
+    expect(retrogradeForMeTool.description.indexOf('under 13')).toBeLessThan(retrogradeForMeTool.description.indexOf('Give the birth date, and the time'));
   });
 });

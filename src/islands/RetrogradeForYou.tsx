@@ -8,6 +8,7 @@ import { retrogradeForYouShareUrl, retrogradeTablePath } from '../lib/retrograde
 import { loadModule } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { birthDateRefusal, FUTURE_BIRTH_DATE_SENTENCE } from '../lib/birth-date-policy';
+import { parseCivilDate } from '../lib/time/civil-date';
 import { prepareEveryZoneHistory } from '../lib/time/every-zone-history';
 import { SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
 
@@ -34,6 +35,8 @@ const SIGN_NAME: Record<string, string> = {
 export const notCoveredSentence = (planets: readonly RetrogradePlanet[], dataStarts: string) =>
   `${planets.join(' and ')}: the sky data this page uses starts on ${dataStarts} and cannot place ${planets.length > 1 ? 'them' : 'it'} on today's date on this device, so ${planets.length > 1 ? 'they are' : 'it is'} not shown here.`;
 const UNDER_13 ='Zodiacs is not made for children under 13, so it gives no reading for a birth date less than 13 years ago. Nothing was calculated. If you are 13 or older, enter your own birth date.';
+/** The calendar control's own sentence for such a day (BIRTH_CALENDAR_COPY.en.gregorianError), without loading its copy for every locale. */
+export const NO_SUCH_DAY = 'There is no such date in the Gregorian calendar.';
 const W = 600;
 
 /**
@@ -41,6 +44,9 @@ const W = 600;
  * (src/lib/birth-date-policy.ts), which reads today at UTC-12 whatever this device's clock and zone say.
  */
 export function retrogradeFormRefusal(birthDate: string, now: Date = new Date()): string | null {
+  // A day the calendar does not have (1990-02-30) is refused, whichever calendar was chosen before, so the birth time
+  // and birthplace never open for it.
+  if (!parseCivilDate(birthDate)) return NO_SUCH_DAY;
   const policy = birthDateRefusal(birthDate, now);
   return policy === null ? null : policy === 'under_13' ? UNDER_13 : FUTURE_BIRTH_DATE_SENTENCE;
 }

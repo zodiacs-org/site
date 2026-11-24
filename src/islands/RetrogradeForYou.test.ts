@@ -2,7 +2,9 @@ import { readFileSync } from 'node:fs';
 import { h } from 'preact';
 import { render } from 'preact-render-to-string';
 import { afterEach, describe, expect, it } from 'vitest';
-import RetrogradeForYou, { RETROGRADE_ERROR_CODE, retrogradeFormRefusal } from './RetrogradeForYou';
+import RetrogradeForYou, { NO_SUCH_DAY, RETROGRADE_ERROR_CODE, retrogradeFormRefusal } from './RetrogradeForYou';
+import { BIRTH_CALENDAR_COPY } from './birth-calendar-copy';
+import { checkedBirthDate, quickBirthDateCheck } from './GatedBirthFields';
 import { FUTURE_BIRTH_DATE_SENTENCE } from '../lib/birth-date-policy';
 
 const SOURCE = readFileSync(new URL('./RetrogradeForYou.tsx', import.meta.url), 'utf8');
@@ -49,6 +51,23 @@ describe('the Retrogrades for you form', () => {
       expect(retrogradeFormRefusal('2013-11-10', new Date('2026-11-10T12:00:00Z'))).toBeNull();
       expect(retrogradeFormRefusal('2026-11-12', new Date('2026-11-10T12:00:00Z'))).toBe(FUTURE_BIRTH_DATE_SENTENCE);
     });
+  });
+
+  it('opens the birth time and birthplace only for a real calendar day, whichever calendar was chosen', async () => {
+    const now = new Date('2026-11-09T12:00:00Z');
+    // The calendar control's own sentence for a day the calendar does not have.
+    expect(NO_SUCH_DAY).toBe(BIRTH_CALENDAR_COPY.en.gregorianError);
+    for (const date of ['1990-02-30', '2019-02-29', '1990-04-31', '1990-13-01', '1990-00-10']) {
+      expect(retrogradeFormRefusal(date, now), date).toBe(NO_SUCH_DAY);
+      expect(quickBirthDateCheck(date, 'gregorian', retrogradeFormRefusal, now), date).toEqual({ error: NO_SUCH_DAY });
+      expect(await checkedBirthDate(date, 'gregorian', retrogradeFormRefusal, now), date).toEqual({ error: NO_SUCH_DAY });
+    }
+    // Old Style chosen, then a 1924 or later day that does not exist, or an Old Style day that does not exist: refused.
+    expect(await checkedBirthDate('1990-02-30', 'julian', retrogradeFormRefusal, now)).toEqual({ error: NO_SUCH_DAY });
+    expect(await checkedBirthDate('1900-02-30', 'julian', retrogradeFormRefusal, now)).toEqual({ error: expect.any(String) });
+    // A real day still opens them, and an Old Style 29 February 1900 is a real Julian day.
+    expect(quickBirthDateCheck('1990-02-28', 'gregorian', retrogradeFormRefusal, now)).toEqual({ date: '1990-02-28' });
+    expect(await checkedBirthDate('1900-02-29', 'julian', retrogradeFormRefusal, now)).toEqual({ date: '1900-03-13' });
   });
 
   it('answers a birth time or a whole date the clock skipped with its own sentence, logging nothing', () => {

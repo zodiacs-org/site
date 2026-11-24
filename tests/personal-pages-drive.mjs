@@ -40,8 +40,9 @@ const HELD_BACK_MS = 1_500;
  * these instants (src/ai-tools/personal/page-ephemeris.test.ts), so the page and the tool agree only on one ephemeris.
  */
 /**
- * The one instant both sides of the cusp parity read as now: Chromium's clock is fixed to it before the page loads,
- * and the hosted tool is given it, so the comparison cannot drift as the published data runs out.
+ * The one instant every drive reads as now: Chromium's clock is fixed to it before any page loads (open), in the main
+ * drive as in the cusp parity drive, and the hosted tool is given it, so no result or comparison drifts as the
+ * published data runs out.
  */
 const PARITY_NOW = new Date('2026-11-24T12:00:00Z');
 const CUSP_BIRTHS = [
@@ -103,6 +104,32 @@ const ALL_PAGES = [
       check('an under-13 date offers no birthplace search', (await tab.locator('#rfy-place[role="combobox"]').count()) === 0 && await tab.locator('#rfy-place').isDisabled());
       const early = await afterDate('1920-05-03');
       check('a date before 1924 asks for no file', early.length === 0, early.join('\n'));
+      // Old Style, then a day no calendar has, then a child's date: each is refused at the date, and the birth time
+      // and birthplace stay disabled.
+      const shut = async (label) => {
+        await settle(tab);
+        const state = await tab.evaluate(() => ({
+          time: document.querySelector('#rfy-time')?.disabled, place: document.querySelector('#rfy-place')?.disabled,
+          error: document.querySelector('#rfy-date-error')?.textContent ?? '',
+        }));
+        check(`${label}: refused at the date, birth time and birthplace disabled`, state.time === true && state.place === true && state.error !== '', JSON.stringify(state));
+      };
+      await tab.locator('input[name="rfy-date-calendar"][value="julian"]').check();
+      // Old Style dates are typed: wait for the date field to become a text field.
+      await tab.locator('#rfy-date[type="text"]').waitFor({ state: 'visible', timeout: 10_000 });
+      await tab.fill('#rfy-date', '1990-02-30');
+      await shut('Old Style, then 1990-02-30');
+      // The control closes once a 1924 or later date is Gregorian, so the choice is a click, not a checked state.
+      await tab.locator('input[name="rfy-date-calendar"][value="gregorian"]').click();
+      await shut('Old Style 1990-02-30, then Gregorian');
+      await tab.fill('#rfy-date', '1920-05-03');
+      await tab.locator('input[name="rfy-date-calendar"][value="julian"]').check();
+      // Old Style dates are typed: wait for the date field to become a text field.
+      await tab.locator('#rfy-date[type="text"]').waitFor({ state: 'visible', timeout: 10_000 });
+      await tab.fill('#rfy-date', '1900-02-30');
+      await shut('Old Style, then 1900-02-30');
+      await tab.fill('#rfy-date', '2020-05-03');
+      await shut('Old Style, then a child\'s date');
       const modern = await afterDate(BIRTH.date);
       check('a date after 1924 asks for no file', modern.length === 0, modern.join('\n'));
       await tab.fill('#rfy-time', BIRTH.time);
@@ -202,6 +229,8 @@ async function open(browser, viewport) {
     }).observe({ type: 'layout-shift', buffered: true });
   });
   const tab = await context.newPage();
+  // Date.now() and new Date() read PARITY_NOW on every page; its timers keep running.
+  await tab.clock.setFixedTime(PARITY_NOW);
   const requests = [];
   tab.on('request', (request) => requests.push(`${request.url()} ${request.postData() ?? ''}`));
   const errors = [];
@@ -320,6 +349,7 @@ if (onPages.length) {
           }
           const { context, tab, requests, errors } = session;
           check(`${label}: first load has zero CLS`, load.cls === 0, JSON.stringify(load));
+          check(`${label}: the page reads the fixed clock`, await tab.evaluate(() => new Date().toISOString()) === PARITY_NOW.toISOString());
 
           const before = tab.url();
           const selector = await page.run(tab, label);
