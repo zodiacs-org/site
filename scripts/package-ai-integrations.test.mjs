@@ -25,15 +25,18 @@ let copy = '';
 /** Python on the copy alone: -B writes no bytecode, and -I reads no environment and puts no folder of the checkout on the path. */
 const python = (args) => spawnSync('python3', ['-B', '-I', ...args], { cwd: copy, encoding: 'utf8', timeout: 120_000 });
 
-const EXCLUDED_FIXTURE_PARTS = new Set(['node_modules', '.git', '.plugin-data', '__pycache__', '__MACOSX', '.DS_Store']);
+const EXCLUDED_FIXTURE_PARTS = new Set(['node_modules', '.git', '.plugin-data', '__pycache__', '__macosx', '.ds_store']);
 
-/** Refuse symlinks, excluded paths (such as .env*), or paths resolving outside ROOT before reading any fixture bytes. */
+/** Refuse symlinks, excluded paths (such as .env*, case-insensitively), or paths resolving outside ROOT before reading any fixture bytes. */
 async function safeFixtureSource(rootReal, relPath) {
   const parts = relPath.split('/').filter(Boolean);
-  if (parts.length === 0 || relPath.startsWith('/') || parts.some((part) => part === '.' || part === '..')) {
+  if (parts.length === 0 || relPath.startsWith('/') || relPath.includes('\\') || parts.some((part) => part === '.' || part === '..')) {
     throw new Error(`Invalid relative fixture path: ${relPath}`);
   }
-  if (parts.some((part) => EXCLUDED_FIXTURE_PARTS.has(part) || part.startsWith('.env') || part.startsWith('._'))) {
+  if (parts.some((part) => {
+    const lower = part.toLowerCase();
+    return EXCLUDED_FIXTURE_PARTS.has(lower) || lower.startsWith('.env') || lower.startsWith('._');
+  })) {
     throw new Error(`Refusing excluded fixture path: ${relPath}`);
   }
   let current = ROOT;
