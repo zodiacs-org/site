@@ -7,5 +7,5 @@
  * src/lib/analytics-config.mjs.
  */
 export const ARRIVAL_REF_VALUES = Object.freeze([
-  'video', 'chatgpt', 'assistant', 'card', 'app', 'note',
+  'video', 'chatgpt', 'assistant', 'card', 'app', 'note', 'hn', 'github', 'reddit',
 ]);

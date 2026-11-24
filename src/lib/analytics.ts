@@ -29,6 +29,7 @@ export type AnalyticsEventName =
   | 'terminal_view_switch'
   | 'sdk_click'
   | 'bio_click'
+  | 'thesis_click'
   | 'wallet_chart_computed'
   | 'aura_view'
   | 'aura_compose'
