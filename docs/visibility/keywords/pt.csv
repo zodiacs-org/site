@@ -1,64 +1,64 @@
 locale,kp_language,kp_locations,family,subfamily,query,target_url,coverage,monthly_volume,volume_source,competition,notes
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo áries hoje,/pt/horoscopes/aries/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo áries amanhã,/horoscopes/aries/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal áries,/horoscopes/aries/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal áries,/horoscopes/aries/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo áries 2027,/horoscopes/aries/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo áries amanhã,/pt/horoscopes/aries/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal áries,/pt/horoscopes/aries/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal áries,/pt/horoscopes/aries/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo áries 2027,/pt/horoscopes/aries/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo touro hoje,/pt/horoscopes/taurus/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo touro amanhã,/horoscopes/taurus/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal touro,/horoscopes/taurus/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal touro,/horoscopes/taurus/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo touro 2027,/horoscopes/taurus/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo touro amanhã,/pt/horoscopes/taurus/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal touro,/pt/horoscopes/taurus/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal touro,/pt/horoscopes/taurus/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo touro 2027,/pt/horoscopes/taurus/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo gêmeos hoje,/pt/horoscopes/gemini/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo gêmeos amanhã,/horoscopes/gemini/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal gêmeos,/horoscopes/gemini/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal gêmeos,/horoscopes/gemini/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo gêmeos 2027,/horoscopes/gemini/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo gêmeos amanhã,/pt/horoscopes/gemini/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal gêmeos,/pt/horoscopes/gemini/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal gêmeos,/pt/horoscopes/gemini/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo gêmeos 2027,/pt/horoscopes/gemini/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo câncer hoje,/pt/horoscopes/cancer/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo câncer amanhã,/horoscopes/cancer/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal câncer,/horoscopes/cancer/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal câncer,/horoscopes/cancer/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo câncer 2027,/horoscopes/cancer/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo câncer amanhã,/pt/horoscopes/cancer/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal câncer,/pt/horoscopes/cancer/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal câncer,/pt/horoscopes/cancer/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo câncer 2027,/pt/horoscopes/cancer/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo leão hoje,/pt/horoscopes/leo/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo leão amanhã,/horoscopes/leo/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal leão,/horoscopes/leo/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal leão,/horoscopes/leo/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo leão 2027,/horoscopes/leo/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo leão amanhã,/pt/horoscopes/leo/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal leão,/pt/horoscopes/leo/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal leão,/pt/horoscopes/leo/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo leão 2027,/pt/horoscopes/leo/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo virgem hoje,/pt/horoscopes/virgo/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo virgem amanhã,/horoscopes/virgo/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal virgem,/horoscopes/virgo/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal virgem,/horoscopes/virgo/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo virgem 2027,/horoscopes/virgo/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo virgem amanhã,/pt/horoscopes/virgo/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal virgem,/pt/horoscopes/virgo/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal virgem,/pt/horoscopes/virgo/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo virgem 2027,/pt/horoscopes/virgo/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo libra hoje,/pt/horoscopes/libra/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo libra amanhã,/horoscopes/libra/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal libra,/horoscopes/libra/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal libra,/horoscopes/libra/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo libra 2027,/horoscopes/libra/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo libra amanhã,/pt/horoscopes/libra/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal libra,/pt/horoscopes/libra/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal libra,/pt/horoscopes/libra/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo libra 2027,/pt/horoscopes/libra/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo escorpião hoje,/pt/horoscopes/scorpio/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo escorpião amanhã,/horoscopes/scorpio/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal escorpião,/horoscopes/scorpio/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal escorpião,/horoscopes/scorpio/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo escorpião 2027,/horoscopes/scorpio/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo escorpião amanhã,/pt/horoscopes/scorpio/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal escorpião,/pt/horoscopes/scorpio/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal escorpião,/pt/horoscopes/scorpio/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo escorpião 2027,/pt/horoscopes/scorpio/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo sagitário hoje,/pt/horoscopes/sagittarius/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo sagitário amanhã,/horoscopes/sagittarius/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal sagitário,/horoscopes/sagittarius/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal sagitário,/horoscopes/sagittarius/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo sagitário 2027,/horoscopes/sagittarius/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo sagitário amanhã,/pt/horoscopes/sagittarius/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal sagitário,/pt/horoscopes/sagittarius/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal sagitário,/pt/horoscopes/sagittarius/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo sagitário 2027,/pt/horoscopes/sagittarius/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo capricórnio hoje,/pt/horoscopes/capricorn/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo capricórnio amanhã,/horoscopes/capricorn/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal capricórnio,/horoscopes/capricorn/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal capricórnio,/horoscopes/capricorn/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo capricórnio 2027,/horoscopes/capricorn/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo capricórnio amanhã,/pt/horoscopes/capricorn/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal capricórnio,/pt/horoscopes/capricorn/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal capricórnio,/pt/horoscopes/capricorn/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo capricórnio 2027,/pt/horoscopes/capricorn/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo aquário hoje,/pt/horoscopes/aquarius/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo aquário amanhã,/horoscopes/aquarius/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal aquário,/horoscopes/aquarius/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal aquário,/horoscopes/aquarius/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo aquário 2027,/horoscopes/aquarius/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo aquário amanhã,/pt/horoscopes/aquarius/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal aquário,/pt/horoscopes/aquarius/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal aquário,/pt/horoscopes/aquarius/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo aquário 2027,/pt/horoscopes/aquarius/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,horoscope,today,horóscopo peixes hoje,/pt/horoscopes/pisces/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo peixes amanhã,/horoscopes/pisces/tomorrow/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal peixes,/horoscopes/pisces/weekly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal peixes,/horoscopes/pisces/monthly/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo peixes 2027,/horoscopes/pisces/2027/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,horoscope,tomorrow,horóscopo peixes amanhã,/pt/horoscopes/pisces/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,weekly,horóscopo semanal peixes,/pt/horoscopes/pisces/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,monthly,horóscopo mensal peixes,/pt/horoscopes/pisces/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,horoscope,yearly,horóscopo peixes 2027,/pt/horoscopes/pisces/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,compatibility,same-sign pair,áries e áries combinam,/pt/compatibility/aries-aries/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,compatibility,pair,áries e touro combinam,/pt/compatibility/aries-taurus/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,compatibility,pair,áries e gêmeos combinam,/pt/compatibility/aries-gemini/,full,TBD,TBD,TBD,
@@ -215,8 +215,8 @@ pt,Portuguese,Brazil; Portugal,birth-chart,moon-sign,signo lunar,/pt/moon-sign/,
 pt,Portuguese,Brazil; Portugal,birth-chart,big-three,sol lua e ascendente,/pt/big-three/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,sky-events,moon-phase,fase da lua hoje,/pt/moon-phase/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,sky-events,moon-phase,lua hoje,/pt/moon-phase/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,sky-events,full-moon,lua cheia novembro 2026,/full-moon/2026-11-24/,partial,TBD,TBD,TBD,English page only
-pt,Portuguese,Brazil; Portugal,sky-events,new-moon,lua nova novembro 2026,/new-moon/2026-11-09/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,sky-events,full-moon,lua cheia novembro 2026,/pt/full-moon/2026-11-24/,held,TBD,TBD,TBD,built in this language and held until its release batch
+pt,Portuguese,Brazil; Portugal,sky-events,new-moon,lua nova novembro 2026,/pt/new-moon/2026-11-09/,held,TBD,TBD,TBD,built in this language and held until its release batch
 pt,Portuguese,Brazil; Portugal,sky-events,mercury-retrograde,mercúrio retrógrado 2027,/pt/mercury-retrograde/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,sky-events,mercury-retrograde,mercúrio retrógrado hoje,/pt/mercury-retrograde/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,sky-events,retrogrades,planetas retrógrados agora,/pt/retrogrades/,full,TBD,TBD,TBD,
