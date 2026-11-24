@@ -46157,6 +46157,21 @@ function childBirthDateRefusal(tool, args, now, hostZone) {
 }
 var AGE_FIRST_TOOLS = /* @__PURE__ */ new Set(["get_astrocartography"]);
 var LOOSE_DATE_PARTS = [/^(\d{1,4})\s*([-/.])\s*(\d{1,2})\s*\2\s*(\d{1,4})$/u, /^(\d{1,4})\s+(\d{1,2})\s+(\d{1,4})$/u];
+var MONTH_NUMBERS = new Map(
+  ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"].flatMap((name, index) => [[name, index + 1], [name.slice(0, 3), index + 1], ...name === "september" ? [["sept", index + 1]] : []])
+);
+var MONTH_WORD = "(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sept|sep|oct|nov|dec)";
+var DAY_RUN = "(\\d{1,2})(?:st|nd|rd|th)?";
+var MONTH_NAME_DATES = [
+  { pattern: new RegExp(`^${MONTH_WORD}[\\s,./-]*${DAY_RUN}[\\s,./-]+(\\d{4}|\\d{2})$`, "iu"), order: "mdy" },
+  { pattern: new RegExp(`^${DAY_RUN}[\\s,./-]*(?:of\\s+)?${MONTH_WORD}[\\s,./-]*(\\d{4}|\\d{2})$`, "iu"), order: "dmy" },
+  { pattern: new RegExp(`^(\\d{4})[\\s,./-]*${MONTH_WORD}[\\s,./-]*${DAY_RUN}$`, "iu"), order: "ymd" }
+];
+function yearsOfRun(run2, now) {
+  if (run2.length === 4) return [Number(run2)];
+  const thisYear = Number(latestToday(now).slice(0, 4));
+  return [1900 + Number(run2), 2e3 + Number(run2)].filter((year) => year <= thisYear);
+}
 function calendarDate(year, month, day2) {
   const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
   const daysInMonth3 = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
@@ -46166,22 +46181,30 @@ function calendarDate(year, month, day2) {
 function ageCheckReadings(text2, now = /* @__PURE__ */ new Date()) {
   const trimmed = text2.trim();
   if (CIVIL_DATE.test(trimmed)) return [trimmed];
+  const readings = [];
+  const named2 = MONTH_NAME_DATES.map(({ pattern, order }) => ({ match: pattern.exec(trimmed), order })).find(({ match: match2 }) => match2);
+  if (named2?.match) {
+    const [, a, b, c] = named2.match;
+    const [yearRun, monthWord, dayRun] = named2.order === "mdy" ? [c, a, b] : named2.order === "dmy" ? [c, b, a] : [a, b, c];
+    const month = MONTH_NUMBERS.get(monthWord.toLowerCase());
+    if (month) for (const year of yearsOfRun(yearRun, now)) readings.push(calendarDate(year, month, Number(dayRun)));
+    return [...new Set(readings.filter((reading) => reading !== null))];
+  }
   const match = LOOSE_DATE_PARTS.map((pattern) => pattern.exec(trimmed)).find(Boolean);
   if (!match) return [];
   const [first2, middle, last2] = match.length === 5 ? [match[1], match[3], match[4]] : [match[1], match[2], match[3]];
-  const readings = [];
   if (first2.length === 4) readings.push(calendarDate(Number(first2), Number(middle), Number(last2)));
   else if (first2.length <= 2 && (last2.length === 4 || last2.length === 2)) {
-    const thisYear = Number(latestToday(now).slice(0, 4));
-    const years = last2.length === 4 ? [Number(last2)] : [1900 + Number(last2), 2e3 + Number(last2)].filter((year) => year <= thisYear);
-    for (const year of years) readings.push(calendarDate(year, Number(middle), Number(first2)), calendarDate(year, Number(first2), Number(middle)));
+    for (const year of yearsOfRun(last2, now)) readings.push(calendarDate(year, Number(middle), Number(first2)), calendarDate(year, Number(first2), Number(middle)));
   }
   return [...new Set(readings.filter((reading) => reading !== null))];
 }
 function ageFirstRefusal(tool, args, now, hostZone) {
   const birthDate = fieldOf(args, "birthDate");
-  if (typeof birthDate !== "string") return childBirthDateRefusal(tool, args, now, hostZone);
-  for (const reading of ageCheckReadings(birthDate, now)) {
+  if (birthDate === void 0) return failure(tool, "invalid-request", "birthDate is required.");
+  const readings = typeof birthDate === "string" ? ageCheckReadings(birthDate, now) : [];
+  if (readings.length === 0) return failure(tool, "invalid-request", `birthDate must be ${FIELD_FORMAT.birthDate}.`);
+  for (const reading of readings) {
     const refusal = childBirthDateRefusal(tool, { ...args, birthDate: reading }, now, hostZone);
     if (refusal) return refusal;
   }

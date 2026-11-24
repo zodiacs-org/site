@@ -353,6 +353,32 @@ export const AGE_FIRST_TOOLS: ReadonlySet<string> = new Set<AiToolName>(['get_as
 /** Three runs of digits joined by one separator used twice: -, / or . (with spaces around it allowed), or spaces alone. */
 const LOOSE_DATE_PARTS = [/^(\d{1,4})\s*([-/.])\s*(\d{1,2})\s*\2\s*(\d{1,4})$/u, /^(\d{1,4})\s+(\d{1,2})\s+(\d{1,4})$/u];
 
+/** English month names and their three letter abbreviations (and Sept), in any case, as month numbers. */
+const MONTH_NUMBERS: ReadonlyMap<string, number> = new Map(
+  ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+    .flatMap((name, index) => [[name, index + 1], [name.slice(0, 3), index + 1], ...(name === 'september' ? [['sept', index + 1]] : [])] as [string, number][]),
+);
+const MONTH_WORD = '(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sept|sep|oct|nov|dec)';
+/** A day with an optional ordinal ending (5, 05, 5th). */
+const DAY_RUN = '(\\d{1,2})(?:st|nd|rd|th)?';
+/**
+ * A date written with an English month name: month day year (January 5, 2020; Jan. 5 2020), day month year
+ * (5 January 2020; 5 Jan 2020; 5th of January, 2020) and year month day (2020 January 5). Commas, full stops,
+ * hyphens, slashes and spaces may stand between the parts; the digit runs need at least one of them between them.
+ */
+const MONTH_NAME_DATES: readonly { pattern: RegExp; order: 'mdy' | 'dmy' | 'ymd' }[] = [
+  { pattern: new RegExp(`^${MONTH_WORD}[\\s,./-]*${DAY_RUN}[\\s,./-]+(\\d{4}|\\d{2})$`, 'iu'), order: 'mdy' },
+  { pattern: new RegExp(`^${DAY_RUN}[\\s,./-]*(?:of\\s+)?${MONTH_WORD}[\\s,./-]*(\\d{4}|\\d{2})$`, 'iu'), order: 'dmy' },
+  { pattern: new RegExp(`^(\\d{4})[\\s,./-]*${MONTH_WORD}[\\s,./-]*${DAY_RUN}$`, 'iu'), order: 'ymd' },
+];
+
+/** The years a run of digits can name: itself when four digits long, 19YY and 20YY when two (20YY only once it has begun somewhere). */
+function yearsOfRun(run: string, now: Date): number[] {
+  if (run.length === 4) return [Number(run)];
+  const thisYear = Number(latestToday(now).slice(0, 4));
+  return [1900 + Number(run), 2000 + Number(run)].filter((year) => year <= thisYear);
+}
+
 /** YYYY-MM-DD when year, month and day make a real calendar date, otherwise null. */
 function calendarDate(year: number, month: number, day: number): string | null {
   const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
@@ -366,37 +392,48 @@ function calendarDate(year: number, month: number, day: number): string | null {
  * The text is read with the spaces around it removed. A date already in YYYY-MM-DD form is that date alone. Otherwise
  * three runs of digits joined by -, / or . (the same one twice) or by spaces are read in each order that fits: year
  * first (a four digit first run: year, month, day), and day first and month first (a last run of four digits, or of
- * two digits, which reads as both 19YY and 20YY unless 20YY has not begun anywhere on Earth). Only real calendar dates count.
- * 2020/1/1 is 2020-01-01 alone; 31/01/2020 is 2020-01-31 alone; 01/02/2015 is 2015-02-01 and 2015-01-02. An empty
- * list means no reading is a date, so the tool's own date sentence stands.
+ * two digits, which reads as both 19YY and 20YY unless 20YY has not begun anywhere on Earth). A date written with an
+ * English month name or its abbreviation (MONTH_NAME_DATES) is read in the order its words give, with the same years.
+ * Only real calendar dates count. 2020/1/1 is 2020-01-01 alone; 31/01/2020 is 2020-01-31 alone; 01/02/2015 is
+ * 2015-02-01 and 2015-01-02; January 5, 2020 and 5 Jan 2020 are 2020-01-05. An empty list means no reading is a date.
  */
 export function ageCheckReadings(text: string, now: Date = new Date()): string[] {
   const trimmed = text.trim();
   if (CIVIL_DATE.test(trimmed)) return [trimmed];
+  const readings: (string | null)[] = [];
+  const named = MONTH_NAME_DATES.map(({ pattern, order }) => ({ match: pattern.exec(trimmed), order })).find(({ match }) => match);
+  if (named?.match) {
+    const [, a, b, c] = named.match;
+    const [yearRun, monthWord, dayRun] = named.order === 'mdy' ? [c, a, b] : named.order === 'dmy' ? [c, b, a] : [a, b, c];
+    const month = MONTH_NUMBERS.get(monthWord.toLowerCase());
+    if (month) for (const year of yearsOfRun(yearRun, now)) readings.push(calendarDate(year, month, Number(dayRun)));
+    return [...new Set(readings.filter((reading): reading is string => reading !== null))];
+  }
   const match = LOOSE_DATE_PARTS.map((pattern) => pattern.exec(trimmed)).find(Boolean);
   if (!match) return [];
   const [first, middle, last] = match.length === 5 ? [match[1], match[3], match[4]] : [match[1], match[2], match[3]];
-  const readings: (string | null)[] = [];
   if (first.length === 4) readings.push(calendarDate(Number(first), Number(middle), Number(last)));
   else if (first.length <= 2 && (last.length === 4 || last.length === 2)) {
-    const thisYear = Number(latestToday(now).slice(0, 4));
-    const years = last.length === 4 ? [Number(last)] : [1900 + Number(last), 2000 + Number(last)].filter((year) => year <= thisYear);
-    for (const year of years) readings.push(calendarDate(year, Number(middle), Number(first)), calendarDate(year, Number(first), Number(middle)));
+    for (const year of yearsOfRun(last, now)) readings.push(calendarDate(year, Number(middle), Number(first)), calendarDate(year, Number(first), Number(middle)));
   }
   return [...new Set(readings.filter((reading): reading is string => reading !== null))];
 }
 
 /**
- * The child refusal for a tool in AGE_FIRST_TOOLS, read before any missing field is named. The birth date is read in
- * every plausible order (ageCheckReadings), and the call is refused for the age when any reading is less than 13 years
+ * The age check for a tool in AGE_FIRST_TOOLS, read before any other field is named. The birth date is read in every
+ * plausible order (ageCheckReadings), and the call is refused for the age when any reading is less than 13 years
  * before today at UTC-12 or still to come, so a child's date in any of those forms, or one that reads as a child's in
  * one order and an adult's in another, is refused and not answered with the date's format or the fields still
- * missing. Only when every reading is an adult's, or none is a date, does the call go on, read as sent.
+ * missing. Until the age is settled the call is asked for the birth date alone, with the tool's own sentence: when it
+ * is missing, that it is required, and when no reading of it is a date, the date's form; never for a birth time or a
+ * zone. Only when every reading is an adult's does the call go on, read as sent. The date is never echoed.
  */
 export function ageFirstRefusal(tool: AiToolName, args: unknown, now: Date, hostZone?: string) {
   const birthDate = fieldOf(args, 'birthDate');
-  if (typeof birthDate !== 'string') return childBirthDateRefusal(tool, args, now, hostZone);
-  for (const reading of ageCheckReadings(birthDate, now)) {
+  if (birthDate === undefined) return failure(tool, 'invalid-request', 'birthDate is required.');
+  const readings = typeof birthDate === 'string' ? ageCheckReadings(birthDate, now) : [];
+  if (readings.length === 0) return failure(tool, 'invalid-request', `birthDate must be ${FIELD_FORMAT.birthDate}.`);
+  for (const reading of readings) {
     const refusal = childBirthDateRefusal(tool, { ...(args as Record<string, unknown>), birthDate: reading }, now, hostZone);
     if (refusal) return refusal;
   }

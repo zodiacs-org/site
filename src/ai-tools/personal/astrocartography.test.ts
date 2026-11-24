@@ -706,10 +706,10 @@ describe('get_astrocartography', () => {
       const timed = await executeAiTool('get_astrocartography', { birthDate, time: '08:30', zone: 'Europe/London' }, ON) as { ok: false; error: { message: string } };
       expect(timed.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14.');
     }
-    // A value that is not a calendar date keeps the date sentence, never the age refusal.
+    // A value that is not a calendar date keeps the date sentence, never the age refusal, and is asked for nothing else.
     for (const birthDate of ['2020/13/01', '2020/02/30', '2021.2.29', '2020-01/01', '32/13/2020', '2020/01', 'soon']) {
       const answer = await executeAiTool('get_astrocartography', { birthDate }, ON) as { ok: false; error: { message: string } };
-      expect(answer.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14. time is required. zone is required.');
+      expect(answer.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14.');
     }
     const now = ON.now();
     expect(['2020-1-1', '2020/01/01', '2020.1.1', ' 2020/1/1 ', '2016.2.29', '2017.2.29', 'x'].map((text) => ageCheckReadings(text, now))).toEqual([['2020-01-01'], ['2020-01-01'], ['2020-01-01'], ['2020-01-01'], ['2016-02-29'], [], []]);
@@ -751,6 +751,49 @@ describe('get_astrocartography', () => {
     expect(await executeAiTool('get_astrocartography', { birthDate: '1990-01-31' }, ON)).toMatchObject({ ok: false, error: { message: 'time is required. zone is required.' } });
   });
 
+  it('asks for the birth date alone until its age is settled, and reads a date written with a month name for the age', async () => {
+    // ON's clock is 2026-11-09T09:00Z: 2026-11-08 at UTC-12, so 2013-11-08 is the latest birth date accepted.
+    const now = ON.now();
+    const DATE_FORM = 'birthDate must be a date such as 1994-05-14.';
+    // No birth date: the date is asked for, and nothing else, whatever else the call carries or lacks.
+    for (const args of [{}, { time: '08:30' }, { zone: 'Europe/London' }, { time: '08:30', zone: 'Europe/London' }, { cities: ['Lisbon'] }]) {
+      expect(await executeAiTool('get_astrocartography', args, ON), JSON.stringify(args)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'birthDate is required.' } });
+    }
+    // A birth date no reading of which is a date: the date's form, and nothing else.
+    for (const birthDate of ['sometime in spring', 'January 2020', '', 'Jan 32 2020', 'Smarch 5 2020', 'February 30, 1990']) {
+      for (const extra of [{}, { time: '08:30', zone: 'Europe/London' }]) {
+        const answer = await executeAiTool('get_astrocartography', { birthDate, ...extra }, ON) as { ok: false; error: { message: string } };
+        expect(answer.error.message, birthDate).toBe(DATE_FORM);
+        expect(JSON.stringify(answer)).not.toMatch(/time is required|zone is required|spring|2020/u);
+      }
+    }
+    expect((await executeAiTool('get_astrocartography', { birthDate: 19900105 }, ON) as { ok: false; error: { message: string } }).error.message).toBe(DATE_FORM);
+    // Month names and their abbreviations, in each order, in any case, with commas or full stops.
+    expect(['January 5, 2020', '5 January 2020', 'Jan 5 2020', '5 Jan 2020', '2020 January 5', 'jan. 5, 2020', '5TH OF JANUARY, 2020', '05-Jan-2020', 'Sept 1 2015', '5 Jan 20'].map((text) => ageCheckReadings(text, now)))
+      .toEqual([['2020-01-05'], ['2020-01-05'], ['2020-01-05'], ['2020-01-05'], ['2020-01-05'], ['2020-01-05'], ['2020-01-05'], ['2020-01-05'], ['2015-09-01'], ['1920-01-05', '2020-01-05']]);
+    expect(ageCheckReadings('January 5, 1990', now)).toEqual(['1990-01-05']);
+    const refused = [
+      'January 5, 2020', '5 January 2020', 'Jan 5 2020', '5 Jan 2020', '2020 January 5', // the five forms
+      'january 5 2020', 'JAN. 5, 2020', '5 jan. 2020', '2020, Jan 5', '5th January 2020', 'May 1st, 2015', // case, stops, commas, endings
+      'November 9, 2013', '9 Nov 2013', // the day after the latest accepted
+      'December 31, 2026', '5 Jan 20', // still to come, and a two digit year read as 2020 too
+    ];
+    for (const birthDate of refused) {
+      for (const extra of [{}, { zone: 'Europe/London' }, { time: '08:30', zone: 'Europe/London', cities: ['Lisbon'] }]) {
+        const answer = await executeAiTool('get_astrocartography', { birthDate, ...extra }, ON);
+        expect(answer, JSON.stringify({ birthDate, ...extra })).toMatchObject({ ok: false, error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+        expect(JSON.stringify(answer)).not.toMatch(/is required|must be a date|2020|2015|2013|2026|January|Jan|Nov|May/u);
+      }
+    }
+    // An adult's date with a month name gets the replies it got before.
+    for (const birthDate of ['January 5, 1990', '5 Jan 1990', '1990 January 5', 'November 8, 2013']) {
+      const alone = await executeAiTool('get_astrocartography', { birthDate }, ON) as { ok: false; error: { message: string } };
+      expect(alone.error.message, birthDate).toBe('birthDate must be a date such as 1994-05-14. time is required. zone is required.');
+      const timed = await executeAiTool('get_astrocartography', { birthDate, time: '08:30', zone: 'Europe/London' }, ON) as { ok: false; error: { message: string } };
+      expect(timed.error.message, birthDate).toBe(DATE_FORM);
+    }
+  });
+
   it('tells the assistant to check the age before it asks for a birth time or birthplace', () => {
     expect(astrocartographyTool.description).toMatch(/not directed at children under 13: check the birth date first, and ask for no birth time or birthplace when it is less than 13 years ago/u);
     expect(astrocartographyTool.description.indexOf('under 13')).toBeLessThan(astrocartographyTool.description.indexOf('A birth time is required'));
@@ -764,13 +807,13 @@ describe('get_astrocartography', () => {
 describe('get_astrocartography on the hosted server', () => {
   const servers: Server[] = [];
   afterAll(async () => { await Promise.all(servers.map((server) => new Promise<void>((resolve) => server.close(() => resolve())))); });
-  async function serve() {
+  async function serve(make: typeof createAiNodeHandler = createAiNodeHandler) {
     let handle: (req: unknown, res: unknown) => Promise<void> = async () => {};
     const server = createServer((req, res) => { void handle(req, res); });
     await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
     servers.push(server);
     const host = `127.0.0.1:${(server.address() as { port: number }).port}`;
-    handle = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1', ZODIACS_PERSONAL_TOOLS_ENABLED: '1' }, allowedHosts: [host],
+    handle = make({ env: { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1', ZODIACS_PERSONAL_TOOLS_ENABLED: '1' }, allowedHosts: [host],
       rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed', countUsage: async () => {}, dependencies: { now: ON.now, placeTable: ON.placeTable } });
     return host;
   }
@@ -826,7 +869,7 @@ describe('get_astrocartography on the hosted server', () => {
       const alone = await call(host, 'get_astrocartography', { birthDate });
       expect(alone.structuredContent, birthDate).toMatchObject({ ok: false, error: { message: 'birthDate must be a date such as 1994-05-14. time is required. zone is required.' } });
     }
-    expect((await call(host, 'get_astrocartography', { birthDate: '2020/02/30' })).structuredContent.error.message).toBe('birthDate must be a date such as 1994-05-14. time is required. zone is required.');
+    expect((await call(host, 'get_astrocartography', { birthDate: '2020/02/30' })).structuredContent.error.message).toBe('birthDate must be a date such as 1994-05-14.');
   });
 
   it('answers a date written day first or month first with the age refusal when any reading is a child\'s', async () => {
@@ -840,6 +883,30 @@ describe('get_astrocartography on the hosted server', () => {
       expect((await call(host, 'get_astrocartography', { birthDate })).structuredContent, birthDate).toMatchObject({ ok: false, error: { message: 'birthDate must be a date such as 1994-05-14. time is required. zone is required.' } });
     }
     expect((await call(host, 'get_astrocartography', { birthDate: '1990-01-31' })).structuredContent).toMatchObject({ ok: false, error: { message: 'time is required. zone is required.' } });
+  });
+
+  it('asks the hosted server for the birth date alone until its age is settled, in the source and the bundled handler', async () => {
+    const bundled = (await import('../../../api/_ai/runtime.mjs')) as unknown as { createAiNodeHandler: typeof createAiNodeHandler };
+    for (const make of [createAiNodeHandler, bundled.createAiNodeHandler]) {
+      const host = await serve(make);
+      for (const args of [{}, { time: '08:30', zone: 'Europe/London' }]) {
+        const missing = await call(host, 'get_astrocartography', args);
+        expect(missing.structuredContent, JSON.stringify(args)).toMatchObject({ ok: false, tool: 'get_astrocartography', error: { code: 'invalid-request', message: 'birthDate is required.' } });
+        expect(JSON.stringify(missing)).not.toMatch(/time is required|zone is required/u);
+      }
+      const unread = await call(host, 'get_astrocartography', { birthDate: 'sometime in spring' });
+      expect(unread.structuredContent).toMatchObject({ ok: false, tool: 'get_astrocartography', error: { code: 'invalid-request', message: 'birthDate must be a date such as 1994-05-14.' } });
+      expect(JSON.stringify(unread)).not.toMatch(/time is required|zone is required|spring/u);
+      for (const birthDate of ['January 5, 2020', '5 Jan 2020']) {
+        for (const extra of [{}, { time: '08:30', zone: 'Europe/London' }]) {
+          const result = await call(host, 'get_astrocartography', { birthDate, ...extra });
+          expect(result.structuredContent, JSON.stringify({ birthDate, ...extra })).toMatchObject({ ok: false, tool: 'get_astrocartography', error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+          expect(JSON.stringify(result)).not.toMatch(/is required|must be a date|2020|Jan|birth time|timezone/iu);
+        }
+      }
+      expect((await call(host, 'get_astrocartography', { birthDate: 'January 5, 1990' })).structuredContent).toMatchObject({ ok: false, error: { message: 'birthDate must be a date such as 1994-05-14. time is required. zone is required.' } });
+      expect((await call(host, 'get_astrocartography', { birthDate: 'January 5, 1990', time: '08:30', zone: 'Europe/London' })).structuredContent).toMatchObject({ ok: false, error: { message: 'birthDate must be a date such as 1994-05-14.' } });
+    }
   });
 
   it('links the page and its line cards on the staging site when the call comes in on the staging host', async () => {
