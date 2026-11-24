@@ -50,3 +50,11 @@ reproduced the committed 0.6.9 fixture byte for byte. The production
 Neptune path continues to use Astronomy Engine and the DE440 route keeps its
 separate calculation. The server reports 0.6.9. The portable plugin and
 registry record retain their existing versions.
+
+## Gated numerology guidance
+
+Starting from the reproduced 0.6.9 source, apply the changes to
+`src/ai-tools/tools.ts` and `src/lib/numerology/reading.ts` from the
+`runtimeSource.readingConfidence` commit with one line of diff context.
+Build the hosted entry with the same settings and lifetime boundary. The
+resulting digest is recorded in `publishedSha256`.

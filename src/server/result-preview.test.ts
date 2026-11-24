@@ -1,3 +1,4 @@
+import { CONTACT_CONFIDENCE_NOTE, READING_CONFIDENCE_FAQ, READING_CONFIDENCE_NOTE } from '../lib/reading-confidence-note';
 import { readFileSync } from 'node:fs';
 import { decode as decodeJpeg } from 'jpeg-js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -660,8 +661,14 @@ describe('share link pages', () => {
     expect(compat).toContain(`content="https://zodiacs.org/api/og/compatibility-image?${COMPAT.replaceAll('&', '&amp;')}&amp;c=75"`);
     const date = await (await handleOccasionLinkRequest(new Request(`https://zodiacs.org/share/occasion/?${OCCASION}&c=70`))).text();
     expect(date).toContain('any planets in retrograde. Reading confidence 70%.');
+    expect(date).not.toContain(READING_CONFIDENCE_NOTE);
+    expect(date).not.toContain(`<summary>${READING_CONFIDENCE_FAQ.q}</summary>`);
     const day = await (await handleHoroscopeLinkRequest(new Request(`https://zodiacs.org/share/horoscope/?s=leo&d=${TODAY}`))).text();
     expect(day).toContain('Reading confidence 40%.');
+    for (const [html, note] of [[compat, CONTACT_CONFIDENCE_NOTE], [day, READING_CONFIDENCE_NOTE]]) {
+      expect(html.split(`</p><small>${note}</small>`)).toHaveLength(2);
+      expect(html).toContain(`<summary>${READING_CONFIDENCE_FAQ.q}</summary><p>${note}</p>`);
+    }
     expect(await (await handleCompatibilityLinkRequest(new Request(`https://zodiacs.org/share/compatibility/?${COMPAT}`))).text()).not.toContain('Reading confidence');
   });
 
