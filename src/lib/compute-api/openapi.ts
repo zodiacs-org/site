@@ -384,7 +384,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     description: 'How a local time was read: the offset applied, the resolver\'s flags, the birthplace\'s own mean time if it was used, and which zone history gave the offset.',
     properties: {
       offsetMinutes: { type: 'number', description: 'Minutes east of UTC; fractional before standard time.' },
-      flags: { type: 'array', items: { enum: ['dst-gap', 'dst-fold', 'lmt'] } },
+      flags: { type: 'array', items: { enum: ['dst-gap', 'dst-fold', 'lmt', 'calendar-unknown', 'host-zone-data-differs'] } },
       localMeanTime: nullable({ type: 'object', required: ['longitude', 'zoneOffsetMinutes'], properties: { longitude: num, zoneOffsetMinutes: num } }),
       zoneHistory: { enum: ['pinned', 'runtime'] },
       zoneUncertain: bool,
@@ -608,8 +608,8 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       offsetMinutes: num,
       flags: {
         type: 'array',
-        items: { enum: ['dst-gap', 'dst-fold', 'lmt', 'zone-history-disputed', 'outside-reference-span'] },
-        description: 'The resolver\'s flags; zone-history-disputed when the server\'s time zone data gives the zone another offset at the instant than the pinned history does; and outside-reference-span when a local time at the ends of the accepted dates falls outside the instant span.',
+        items: { enum: ['dst-gap', 'dst-fold', 'lmt', 'calendar-unknown', 'host-zone-data-differs', 'zone-history-disputed', 'outside-reference-span'] },
+        description: 'The resolver\'s flags (including calendar-unknown when a date skipped by a calendar change has no country to settle it, and host-zone-data-differs when the host\'s time zone data differs from the pinned release near the instant); zone-history-disputed when the server\'s time zone data gives the zone another offset at the instant than the pinned history does; and outside-reference-span when a local time at the ends of the accepted dates falls outside the instant span.',
       },
       localMeanTime: nullable({ type: 'object', required: ['longitude', 'zoneOffsetMinutes'], properties: { longitude: num, zoneOffsetMinutes: num } }),
       zoneHistory: { enum: ['pinned', 'runtime'] },

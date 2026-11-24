@@ -557,7 +557,20 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           const verdict = await dependencies.allowEvents();
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
-        const calculation = await computeSkyFact(request, { localTime: localTime() });
+        const rawCalculation = await computeSkyFact(request, { localTime: localTime() });
+        const publishedLocalFlags = (flags: readonly string[]) => flags.filter((flag) => flag === 'dst-gap' || flag === 'dst-fold' || flag === 'lmt');
+        const calculation = rawCalculation.result.zone
+          ? {
+            ...rawCalculation,
+            result: {
+              ...rawCalculation.result,
+              zone: {
+                start: { ...rawCalculation.result.zone.start, flags: publishedLocalFlags(rawCalculation.result.zone.start.flags) },
+                end: { ...rawCalculation.result.zone.end, flags: publishedLocalFlags(rawCalculation.result.zone.end.flags) },
+              },
+            },
+          }
+          : rawCalculation;
         data = { answer: calculation.result.answer, calculation, interpretation: 'The verdict checks an astronomical proposition, not an astrological prediction.' };
         links = [methodLink, calendarLink];
         break;

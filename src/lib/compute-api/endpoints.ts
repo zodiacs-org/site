@@ -431,7 +431,11 @@ function atlasFacts(request: TimeRequest, utc: Date) {
 }
 
 export async function computeTime(request: TimeRequest, dependencies: ComputeDependencies) {
-  const local = await resolveLocal(dependencies.localTime, request.local, request.longitude);
+  const local = await resolveLocal(dependencies.localTime, request.local, request.longitude, {
+    writtenDate: request.writtenDate,
+    calendar: request.calendar,
+    country: request.country,
+  });
   // TT as the engine reads the instant: from 1972 to the end of its UT1 table,
   // UTC plus the leap seconds and 32.184 s; otherwise the instant read as UT1,
   // plus ΔT. Days from 2000-01-01T12:00 on TT, to the millisecond.

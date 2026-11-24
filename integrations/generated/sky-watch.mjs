@@ -6342,10 +6342,13 @@ function wallMilliseconds({ date: date3, time }) {
   wall.setUTCHours(hour, minute, 0, 0);
   return wall.getTime();
 }
-async function resolveLocal(module, input, longitude2) {
+async function resolveLocal(module, input, longitude2, context) {
   await module.prepareLocalTime(input.date, input.zone);
-  const options = longitude2 === null ? {} : { longitude: longitude2 };
-  const resolved = module.resolveLocalToUtc(input.date, input.time, input.zone, options);
+  const options = {};
+  if (longitude2 !== null) options.longitude = longitude2;
+  if (context?.calendar !== void 0) options.calendar = context.calendar;
+  if (context?.country) options.country = context.country;
+  const resolved = module.resolveLocalToUtc(context?.writtenDate ?? input.date, input.time, input.zone, options);
   const early = input.date <= PINNED_HISTORY_LAST_DATE;
   const pinned = resolved.zone.source === "tzdb";
   const gapShiftMinutes = (resolved.utc.getTime() + resolved.offsetMinutes * 6e4 - wallMilliseconds(input)) / 6e4;
@@ -7611,7 +7614,7 @@ var COMPUTE_SCHEMAS = Object.freeze({
     description: "How a local time was read: the offset applied, the resolver's flags, the birthplace's own mean time if it was used, and which zone history gave the offset.",
     properties: {
       offsetMinutes: { type: "number", description: "Minutes east of UTC; fractional before standard time." },
-      flags: { type: "array", items: { enum: ["dst-gap", "dst-fold", "lmt"] } },
+      flags: { type: "array", items: { enum: ["dst-gap", "dst-fold", "lmt", "calendar-unknown", "host-zone-data-differs"] } },
       localMeanTime: nullable({ type: "object", required: ["longitude", "zoneOffsetMinutes"], properties: { longitude: num, zoneOffsetMinutes: num } }),
       zoneHistory: { enum: ["pinned", "runtime"] },
       zoneUncertain: bool2
@@ -7836,8 +7839,8 @@ var COMPUTE_SCHEMAS = Object.freeze({
       offsetMinutes: num,
       flags: {
         type: "array",
-        items: { enum: ["dst-gap", "dst-fold", "lmt", "zone-history-disputed", "outside-reference-span"] },
-        description: "The resolver's flags; zone-history-disputed when the server's time zone data gives the zone another offset at the instant than the pinned history does; and outside-reference-span when a local time at the ends of the accepted dates falls outside the instant span."
+        items: { enum: ["dst-gap", "dst-fold", "lmt", "calendar-unknown", "host-zone-data-differs", "zone-history-disputed", "outside-reference-span"] },
+        description: "The resolver's flags (including calendar-unknown when a date skipped by a calendar change has no country to settle it, and host-zone-data-differs when the host's time zone data differs from the pinned release near the instant); zone-history-disputed when the server's time zone data gives the zone another offset at the instant than the pinned history does; and outside-reference-span when a local time at the ends of the accepted dates falls outside the instant span."
       },
       localMeanTime: nullable({ type: "object", required: ["longitude", "zoneOffsetMinutes"], properties: { longitude: num, zoneOffsetMinutes: num } }),
       zoneHistory: { enum: ["pinned", "runtime"] },
@@ -43814,7 +43817,18 @@ var publishedBackendSchema = {
   }
 };
 var publishedChartFlagSchema = { enum: ["dst-gap", "dst-fold", "lmt", "no-time", "polar-fallback", "outside-reference-span", "delta-t-extrapolated", "de440-unavailable", "outside-de440-span"] };
-var PUBLISHED_COMPUTE_SCHEMAS = { Backend: publishedBackendSchema, ChartFlag: publishedChartFlagSchema };
+var publishedLocalResolutionSchema = {
+  ...COMPUTE_SCHEMAS.LocalResolution,
+  properties: {
+    ...COMPUTE_SCHEMAS.LocalResolution.properties,
+    flags: { type: "array", items: { enum: ["dst-gap", "dst-fold", "lmt"] } }
+  }
+};
+var PUBLISHED_COMPUTE_SCHEMAS = {
+  Backend: publishedBackendSchema,
+  ChartFlag: publishedChartFlagSchema,
+  LocalResolution: publishedLocalResolutionSchema
+};
 var connectorComputeSchema = (name) => PUBLISHED_COMPUTE_SCHEMAS[name] ?? COMPUTE_SCHEMAS[name];
 function inlined(schema) {
   if (Array.isArray(schema)) return schema.map(inlined);
@@ -45552,7 +45566,18 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           const verdict = await dependencies.allowEvents();
           if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Zodiacs is busy. Try again in a minute.", verdict === "limited" ? 60 : 300);
         }
-        const calculation = await computeSkyFact(request2, { localTime: localTime2() });
+        const rawCalculation = await computeSkyFact(request2, { localTime: localTime2() });
+        const publishedLocalFlags = (flags) => flags.filter((flag) => flag === "dst-gap" || flag === "dst-fold" || flag === "lmt");
+        const calculation = rawCalculation.result.zone ? {
+          ...rawCalculation,
+          result: {
+            ...rawCalculation.result,
+            zone: {
+              start: { ...rawCalculation.result.zone.start, flags: publishedLocalFlags(rawCalculation.result.zone.start.flags) },
+              end: { ...rawCalculation.result.zone.end, flags: publishedLocalFlags(rawCalculation.result.zone.end.flags) }
+            }
+          }
+        } : rawCalculation;
         data = { answer: calculation.result.answer, calculation, interpretation: "The verdict checks an astronomical proposition, not an astrological prediction." };
         links = [methodLink, calendarLink];
         break;

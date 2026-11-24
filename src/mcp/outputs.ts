@@ -454,8 +454,8 @@ export const SKY_FACT_OUTPUT = computeBody('check_sky_fact', z.strictObject({
 export const TIME_OUTPUT = computeBody('resolve_birth_time', z.strictObject({
   utc: instantOut,
   offsetMinutes: z.number().describe('Minutes east of UTC; fractional before standard time.'),
-  flags: z.array(z.enum(['dst-gap', 'dst-fold', 'lmt', 'zone-history-disputed', 'outside-reference-span']))
-    .describe('dst-gap: the time was skipped and moved forward by the gap. dst-fold: it happened twice and the earlier was taken. lmt: it was read on a local mean time. zone-history-disputed: tzdb\'s default build, the runtime\'s own data, gives the zone another offset at the instant than the pinned history. outside-reference-span: the instant falls outside 1800 to 2200.'),
+  flags: z.array(z.enum(['dst-gap', 'dst-fold', 'lmt', 'calendar-unknown', 'host-zone-data-differs', 'zone-history-disputed', 'outside-reference-span']))
+    .describe('dst-gap: the time was skipped and moved forward by the gap. dst-fold: it happened twice and the earlier was taken. lmt: it was read on a local mean time. calendar-unknown: the date was skipped by a calendar change and no country settled which calendar it was written in. host-zone-data-differs: the runtime\'s time zone data differs from the pinned release near this instant. zone-history-disputed: tzdb\'s default build, the runtime\'s own data, gives the zone another offset at the instant than the pinned history. outside-reference-span: the instant falls outside 1800 to 2200.'),
   localMeanTime: z.strictObject({ longitude: z.number(), zoneOffsetMinutes: z.number() }).nullable()
     .describe('The place\'s own mean time, where the time was read on it, with the zone\'s offset then.'),
   zoneHistory: z.enum(['pinned', 'runtime'])

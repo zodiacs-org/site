@@ -297,7 +297,18 @@ const publishedBackendSchema = {
 // (src/ai-tools/published-tools.ts, asContinuousUtc). The three new chart flags keep the published list until a
 // connector release may change it; at run time flags are checked only as objects (computeValue below).
 const publishedChartFlagSchema = { enum: ['dst-gap', 'dst-fold', 'lmt', 'no-time', 'polar-fallback', 'outside-reference-span', 'delta-t-extrapolated', 'de440-unavailable', 'outside-de440-span'] };
-const PUBLISHED_COMPUTE_SCHEMAS: Readonly<Record<string, unknown>> = { Backend: publishedBackendSchema, ChartFlag: publishedChartFlagSchema };
+const publishedLocalResolutionSchema = {
+  ...COMPUTE_SCHEMAS.LocalResolution,
+  properties: {
+    ...(COMPUTE_SCHEMAS.LocalResolution.properties as Record<string, unknown>),
+    flags: { type: 'array', items: { enum: ['dst-gap', 'dst-fold', 'lmt'] } },
+  },
+};
+const PUBLISHED_COMPUTE_SCHEMAS: Readonly<Record<string, unknown>> = {
+  Backend: publishedBackendSchema,
+  ChartFlag: publishedChartFlagSchema,
+  LocalResolution: publishedLocalResolutionSchema,
+};
 const connectorComputeSchema = (name: string) => PUBLISHED_COMPUTE_SCHEMAS[name] ?? COMPUTE_SCHEMAS[name];
 
 /** A compute API schema with its references to other components written out, so it stands alone in a tool's schema. */

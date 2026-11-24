@@ -11132,10 +11132,13 @@ function wallMilliseconds({ date, time }) {
   wall.setUTCHours(hour, minute, 0, 0);
   return wall.getTime();
 }
-async function resolveLocal(module, input, longitude2) {
+async function resolveLocal(module, input, longitude2, context) {
   await module.prepareLocalTime(input.date, input.zone);
-  const options = longitude2 === null ? {} : { longitude: longitude2 };
-  const resolved = module.resolveLocalToUtc(input.date, input.time, input.zone, options);
+  const options = {};
+  if (longitude2 !== null) options.longitude = longitude2;
+  if (context?.calendar !== void 0) options.calendar = context.calendar;
+  if (context?.country) options.country = context.country;
+  const resolved = module.resolveLocalToUtc(context?.writtenDate ?? input.date, input.time, input.zone, options);
   const early = input.date <= PINNED_HISTORY_LAST_DATE;
   const pinned = resolved.zone.source === "tzdb";
   const gapShiftMinutes = (resolved.utc.getTime() + resolved.offsetMinutes * 6e4 - wallMilliseconds(input)) / 6e4;
@@ -12038,7 +12041,11 @@ function atlasFacts(request, utc) {
   return { ...reading2, secondsFromTzdb: first ? (Date.parse(first.utc) - utc.getTime()) / 1e3 : null, source: { ...ATLAS_SOURCE } };
 }
 async function computeTime(request, dependencies) {
-  const local = await resolveLocal(dependencies.localTime, request.local, request.longitude);
+  const local = await resolveLocal(dependencies.localTime, request.local, request.longitude, {
+    writtenDate: request.writtenDate,
+    calendar: request.calendar,
+    country: request.country
+  });
   const { deltaT: deltaT2, timeScale, ttDays } = basisOf2(local.utc);
   const tt = new Date(J2000_MS3 + Math.round(ttDays * DAY_MS2));
   const summary = localSummary(local);
