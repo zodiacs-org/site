@@ -11,11 +11,12 @@ the release's own documentation comments. The **engine** module is the root
 `@zodiacs/engine/calc`. This reference includes `/crossings` and `/deltat`,
 which are public standalone imports as well as root re-exports,
 `/conventions`, a standalone import new in 1.1.0-rc.1 that the root does not
-re-export, and `/time` and `/lite`, standalone imports new in 1.1.0-rc.2.
+re-export, `/time` and `/lite`, standalone imports new in 1.1.0-rc.2, and
+`/core`, new in 2.0.0, the root's functions computed on astronomy-engine.
 `/internal` and `/internal/math` are site compatibility entries outside the
 public API promise, may change without notice, and are deliberately excluded.
 
-This is a release candidate that npm does not carry; npm serves 1.0.0, which computes the same values. Signatures describe the implementation, not proof
+npm serves this release as its latest version. Signatures describe the implementation, not proof
 of accuracy or event-search completeness. Keep the limitations and failed or
 partial measurements in the [engine overview](/developers/engine/#accuracy),
 [release README](/developers/engine/reference/release/README.txt) and

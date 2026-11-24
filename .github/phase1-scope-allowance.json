@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "id": "sign-guide-entrance-motion-2026-11-23",
-  "baseCommit": "49c6b79edc126107a19be7ca6614b8d289908e10",
+  "id": "locale-expansion-hook-2026-11-09",
+  "baseCommit": "a87814ba29d3e22edfd434e1c17971d4413f7197",
   "protectedPaths": [
-    "src/pages/[sign]/index.astro"
+    "src/lib/i18n/index.ts"
   ]
 }
