@@ -64,6 +64,8 @@ describe('the /vedic-signs/ form', () => {
 
   it('gives a skipped birth time its own sentence, and logs nothing', () => {
     expect(SOURCE).toMatch(/cause instanceof SkippedBirthTimeError \? SKIPPED_BIRTH_TIME/u);
+    // A birth date the clock skipped whole gets its own sentence too, not the general one.
+    expect(SOURCE).toMatch(/cause instanceof SkippedBirthDateError \? SKIPPED_BIRTH_DATE : calculationError\(/u);
     expect(SOURCE).not.toMatch(/console\./u);
   });
 

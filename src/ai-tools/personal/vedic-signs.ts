@@ -19,6 +19,7 @@ import { SIGNS } from '../../lib/signs';
 import { computeVedicSigns } from '../../lib/vedic-signs/compute';
 import { vedicSignsShareUrl } from '../../lib/vedic-signs/share';
 import { SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
+import { untimedInstant } from '../../lib/vedic-signs/untimed';
 import { RASHIS, VEDIC_AYANAMSAS, type VedicAyanamsa } from '../../lib/vedic-signs/wording';
 import { birthDayEnds, birthFields, definePersonalTool, refineBirth, resolveBirth, withCheckedZone, type BirthArgs } from './shared';
 
@@ -93,9 +94,12 @@ export async function vedicSigns(args: BirthArgs & { ayanamsa?: VedicAyanamsa | 
   // its first pass, and the limits say so.
   const onClock = birthTimeOnClock(birth.flags, birth.timeKnown);
   if (onClock.skipped) throw new SkippedBirthTimeError();
+  const dayEnds = birth.timeKnown ? undefined : await birthDayEnds(args, clock);
+  // Untimed on a birthplace clock, local noon only when the clock showed it on the date; else the middle of the date,
+  // as the page reads it (src/lib/vedic-signs/untimed.ts).
+  const birthUtc = dayEnds && args.zone ? untimedInstant(birth.birthUtc, dayEnds) : birth.birthUtc;
   const reading = withClockLimit(computeVedicSigns({
-    birthUtc: birth.birthUtc, timeKnown: birth.timeKnown, latitude: birth.latitude, longitude: birth.longitude, ayanamsa,
-    dayEnds: birth.timeKnown ? undefined : await birthDayEnds(args, clock),
+    birthUtc, timeKnown: birth.timeKnown, latitude: birth.latitude, longitude: birth.longitude, ayanamsa, dayEnds,
   }), onClock.limit);
   return {
     // The page and its share card are linked only while the website's page is on: with it off they would be a 404.

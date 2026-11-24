@@ -22,6 +22,7 @@ import { localDaySpan, readsOnDate, type WallResolver } from '../../lib/time/loc
 import type { PlaceTable } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
 import { readingDetail, type ReadingDetail } from '../reading-confidence';
+import { SkippedBirthDateError } from '../../lib/vedic-signs/clock';
 
 export const PERSONAL_MIN_YEAR = 1800;
 export const PERSONAL_MAX_YEAR = 2199;
@@ -159,8 +160,8 @@ export async function resolveBirth(args: BirthArgs, clock: PersonalToolContext['
     await clock.prepareLocalTime(args.birthDate, args.zone);
     const wall = onBirthClock(args, clock);
     // A date the zone's clock never showed (Apia went from 29 to 31 December
-    // 2011) is refused, not moved onto the next date.
-    if (!readsOnDate(args.birthDate, wall('00:00'))) throw new RangeError(BIRTH_DATE_REFUSAL);
+    // 2011) is refused with its own sentence, not moved onto the next date.
+    if (!readsOnDate(args.birthDate, wall('00:00'))) throw new SkippedBirthDateError();
     const resolved = wall(args.time ?? '12:00');
     birthUtc = resolved.utc;
     flags = [...resolved.flags];
@@ -237,7 +238,7 @@ export async function birthDayEnds(args: BirthArgs, clock: PersonalToolContext['
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR)];
   await clock.prepareLocalTime(args.birthDate, args.zone);
   const span = localDaySpan(args.birthDate, wallOnBirthplaceClock(args, clock));
-  if (!span) throw new RangeError(BIRTH_DATE_REFUSAL);
+  if (!span) throw new SkippedBirthDateError();
   return span;
 }
 

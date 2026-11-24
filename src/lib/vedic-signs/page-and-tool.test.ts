@@ -7,7 +7,9 @@ import { vedicSigns } from '../../ai-tools/personal/vedic-signs';
 import { birthDayEnds } from '../../ai-tools/personal/shared';
 import { roundCoordinate } from '../../ai-tools/plain-text';
 import { roundPlace } from './place';
-import { REPEATED_BIRTH_TIME, SkippedBirthTimeError } from './clock';
+import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_DATE, SkippedBirthDateError, SkippedBirthTimeError } from './clock';
+import { untimedInstant } from './untimed';
+import { executeAiTool } from '../../ai-tools/tools';
 
 /**
  * The page's worker, run in this thread: the same sidereal half
@@ -124,6 +126,40 @@ describe('the /vedic-signs/ page and the get_vedic_signs tool on the same birth'
     const ends = await birthDayEnds({ birthDate: '1880-05-11', zone: NEW_YORK.tz, latitude: NEW_YORK.lat, longitude: NEW_YORK.lon }, createLocalTimeModule());
     expect(posted[0].ends!.map((end) => end.utc)).toEqual(ends.map((end) => end.toISOString()));
     expect(signs(page)).toEqual(signs(answer));
+  });
+
+  it('names an untimed reading from inside the date when the clock left it before noon (Manila, 31 December 1844), as the tool does', async () => {
+    // Manila moved to the Asian side of the date line at the end of 1844 and kept 31 December for about three seconds.
+    // Its local noon resolves onto 1 January, where the Moon was in Hasta; both ends of the date, and so the reading,
+    // have it in Uttara Phalguni.
+    const MANILA = { tz: 'Asia/Manila', lat: 14.6, lon: 120.98 };
+    const page = await form('1844-12-31', null, MANILA);
+    const ends = posted[0].ends!.map((end) => Date.parse(end.utc));
+    expect(ends[1] - ends[0]).toBeLessThan(60_000);
+    // The instant the page read the names at lies inside the date's span.
+    const at = Date.parse((posted[0] as unknown as { at: { utc: string } }).at.utc);
+    expect(at).toBeGreaterThanOrEqual(ends[0]);
+    expect(at).toBeLessThanOrEqual(ends[1]);
+    expect(page.nakshatraCandidates).toEqual([]);
+    expect(page.moonNakshatra?.name).toBe('Uttara Phalguni');
+    const answer = await tool('1844-12-31', undefined, MANILA);
+    expect(answer.moonNakshatra?.name).toBe('Uttara Phalguni');
+    expect(signs(page)).toEqual(signs(answer));
+    // An ordinary date keeps local noon.
+    const noon = new Date('2026-11-09T05:00:00Z');
+    expect(untimedInstant(noon, [new Date('2026-11-08T17:00:00Z'), new Date('2026-11-09T16:59:59Z')])).toBe(noon);
+  });
+
+  it('refuses a date the clock never showed with its own sentence, on the page and in the tool (Apia, 30 December 2011)', async () => {
+    await expect(form('2011-12-30', null)).rejects.toThrow(SkippedBirthDateError);
+    await expect(form('2011-12-30', null)).rejects.toThrow(SKIPPED_BIRTH_DATE);
+    for (const placed of [{ latitude: APIA.lat, longitude: APIA.lon }, {}]) {
+      const args = { birthDate: '2011-12-30', zone: APIA.tz, ...placed };
+      await expect(vedicSigns(args, createLocalTimeModule(), 'https://zodiacs.org')).rejects.toThrow(SkippedBirthDateError);
+      const refused = await executeAiTool('get_vedic_signs', args, { occasions: true, coverage: true, personal: true, now: () => new Date('2026-11-09T09:00:00Z') });
+      expect(refused, JSON.stringify(placed)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: SKIPPED_BIRTH_DATE } });
+      expect(JSON.stringify(refused)).not.toMatch(/2011|12-30|Apia|13\.83|171/u);
+    }
   });
 
   it('gives the same answer on a modern date (Kolkata, 3 May 1990, 08:30)', async () => {

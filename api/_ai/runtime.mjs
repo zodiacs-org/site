@@ -43644,10 +43644,17 @@ function vedicSignsShareUrl(origin, reading) {
 // src/lib/vedic-signs/clock.ts
 var SKIPPED_BIRTH_TIME = "That birth time never showed on the birthplace clock: the clocks jumped past it that day. Check the birth time.";
 var REPEATED_BIRTH_TIME = "The birthplace clock showed that birth time twice that day, when the clocks went back. This reading uses the first of the two.";
+var SKIPPED_BIRTH_DATE = "That date never showed on the birthplace clock: the clocks jumped past the whole day. Check the birth date.";
 var SkippedBirthTimeError = class extends RangeError {
   constructor() {
     super(SKIPPED_BIRTH_TIME);
     this.name = "SkippedBirthTimeError";
+  }
+};
+var SkippedBirthDateError = class extends RangeError {
+  constructor() {
+    super(SKIPPED_BIRTH_DATE);
+    this.name = "SkippedBirthDateError";
   }
 };
 function birthTimeOnClock(flags, timeKnown) {
@@ -43657,6 +43664,14 @@ function birthTimeOnClock(flags, timeKnown) {
 }
 function withClockLimit(reading, limit) {
   return limit ? { ...reading, limits: [limit, ...reading.limits] } : reading;
+}
+
+// src/lib/vedic-signs/untimed.ts
+function untimedInstant(noon2, span2) {
+  const at = noon2.getTime();
+  const start = span2[0].getTime();
+  const end = span2[1].getTime();
+  return at >= start && at <= end ? noon2 : new Date(Math.floor((start + end) / 2));
 }
 
 // src/ai-tools/personal/shared.ts
@@ -43740,7 +43755,7 @@ async function resolveBirth(args, clock2) {
   if (args.zone) {
     await clock2.prepareLocalTime(args.birthDate, args.zone);
     const wall = onBirthClock(args, clock2);
-    if (!readsOnDate(args.birthDate, wall("00:00"))) throw new RangeError(BIRTH_DATE_REFUSAL);
+    if (!readsOnDate(args.birthDate, wall("00:00"))) throw new SkippedBirthDateError();
     const resolved = wall(args.time ?? "12:00");
     birthUtc = resolved.utc;
     flags = [...resolved.flags];
@@ -43766,7 +43781,7 @@ async function birthDayEnds2(args, clock2) {
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - WIDEST_OFFSET_HOURS * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:59Z`) + WIDEST_OFFSET_HOURS * HOUR6)];
   await clock2.prepareLocalTime(args.birthDate, args.zone);
   const span2 = localDaySpan(args.birthDate, wallOnBirthplaceClock(args, clock2));
-  if (!span2) throw new RangeError(BIRTH_DATE_REFUSAL);
+  if (!span2) throw new SkippedBirthDateError();
   return span2;
 }
 
@@ -43832,13 +43847,15 @@ async function vedicSigns(args, clock2, origin, pageOn = false) {
   const birth = await resolveBirth(args, clock2);
   const onClock = birthTimeOnClock(birth.flags, birth.timeKnown);
   if (onClock.skipped) throw new SkippedBirthTimeError();
+  const dayEnds = birth.timeKnown ? void 0 : await birthDayEnds2(args, clock2);
+  const birthUtc = dayEnds && args.zone ? untimedInstant(birth.birthUtc, dayEnds) : birth.birthUtc;
   const reading = withClockLimit(computeVedicSigns({
-    birthUtc: birth.birthUtc,
+    birthUtc,
     timeKnown: birth.timeKnown,
     latitude: birth.latitude,
     longitude: birth.longitude,
     ayanamsa: ayanamsa2,
-    dayEnds: birth.timeKnown ? void 0 : await birthDayEnds2(args, clock2)
+    dayEnds
   }), onClock.limit);
   return {
     // The page and its share card are linked only while the website's page is on: with it off they would be a 404.

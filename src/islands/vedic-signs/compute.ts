@@ -13,7 +13,8 @@ import type { VedicAyanamsa } from '../../lib/vedic-signs/wording';
 import { localDaySpan, readsOnDate } from '../../lib/time/local-day';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 import { roundPlace } from '../../lib/vedic-signs/place';
-import { SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
+import { SkippedBirthDateError, SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
+import { untimedInstant } from '../../lib/vedic-signs/untimed';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
 
@@ -29,8 +30,8 @@ export interface VedicFormInput {
 /**
  * Call only after `await prepareLocalTime(input.birthDate, input.place.tz)`.
  * A date the birthplace clock never showed (Apia went from 29 to 31 December
- * 2011) rejects with a RangeError, which the page answers with its general
- * message, rather than being read as the next date.
+ * 2011) rejects with SkippedBirthDateError, which the page answers with its
+ * own sentence, rather than being read as the next date.
  */
 export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReading> {
   const timeKnown = input.birthTime !== null;
@@ -42,13 +43,12 @@ export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReadin
   // with it (New York, 11 May 1880, 03:34 at 74.006 degrees west).
   const rounded = { lat: roundPlace(input.place.lat), lon: roundPlace(input.place.lon) };
   const dayStart = resolveLocalToUtc(input.birthDate, '00:00', input.place.tz, { longitude: rounded.lon });
-  if (!readsOnDate(input.birthDate, dayStart)) return Promise.reject(new RangeError('The birth date was not on the birthplace clock.'));
+  if (!readsOnDate(input.birthDate, dayStart)) return Promise.reject(new SkippedBirthDateError());
   const birth = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: rounded.lon });
   // A birth time the clock skipped is refused, never read at the time the clock jumped to; a repeated one is read at
   // its first pass, and the limits say so (src/lib/vedic-signs/clock.ts, as get_vedic_signs does).
   const onClock = birthTimeOnClock(birth.flags, timeKnown);
   if (onClock.skipped) return Promise.reject(new SkippedBirthTimeError());
-  const birthUtc = birth.utc;
   // An untimed birth is read at local noon, and a placement holds only if both
   // ends of the local date keep it: from where the clock first reaches its
   // 00:00 to where it last leaves the date, so a date the clock showed twice
@@ -58,6 +58,8 @@ export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReadin
   // covers: the engine loads a zone's whole history for any date up to 1970.
   const dayEnds = timeKnown ? undefined : localDaySpan(input.birthDate,
     (date, time, fold) => resolveLocalToUtc(date, time, input.place.tz, { longitude: rounded.lon, fold })) ?? undefined;
+  // Untimed, local noon only when the clock showed it on the date; else the middle of the date (./untimed.ts).
+  const birthUtc = dayEnds ? untimedInstant(birth.utc, dayEnds) : birth.utc;
   return import('../../lib/vedic-signs/tropical').then(({ tropicalMoments }) => {
     const moments = tropicalMoments({ birthUtc, timeKnown, latitude: rounded.lat, longitude: rounded.lon, dayEnds });
     const wire = (moment: TropicalMoment) => ({ ...moment, utc: moment.utc.toISOString() });

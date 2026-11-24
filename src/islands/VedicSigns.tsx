@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { CalendarChoice } from './BirthFields';
 import { GatedBirthFields, birthDateOpen, checkedBirthDate, useBirthDateCheck } from './GatedBirthFields';
-import { SKIPPED_BIRTH_TIME, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
+import { SKIPPED_BIRTH_DATE, SKIPPED_BIRTH_TIME, SkippedBirthDateError, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
 import type { City } from '../lib/geo/search';
 import type { VedicReading, VedicSign } from '../lib/vedic-signs/reading';
 import { UNDER_13_MESSAGE, listOr } from '../lib/vedic-signs/reading';
@@ -148,7 +148,7 @@ export default function VedicSigns() {
       setResult(reading);
     } catch (cause) {
       // A birth time the clock skipped gets its own sentence; anything else the general one.
-      if (request === revision.current) setError(cause instanceof SkippedBirthTimeError ? SKIPPED_BIRTH_TIME : calculationError(cause, 'en', 'Your Vedic signs could not be worked out. Check the details and try again.'));
+      if (request === revision.current) setError(cause instanceof SkippedBirthTimeError ? SKIPPED_BIRTH_TIME : cause instanceof SkippedBirthDateError ? SKIPPED_BIRTH_DATE : calculationError(cause, 'en', 'Your Vedic signs could not be worked out. Check the details and try again.'));
     } finally {
       if (request === revision.current) setBusy(false);
     }
