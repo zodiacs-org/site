@@ -1604,7 +1604,7 @@ requireExactSet(
   new Set(['/numerology/']),
 );
 // The calculator now identifies each numerology reading as a separate tradition.
-if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-20</lastmod>')) {
+if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-23</lastmod>')) {
   fail('sitemap.xml: numerology modification date must match the reviewed source revision');
 }
 requireExactSet(
