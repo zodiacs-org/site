@@ -95,5 +95,12 @@ run_phase4_sql_file \
   "${phase4_repo_root}/supabase/tests/phase4_compat_invites.sql"
 run_phase4_sql_file \
   "${phase4_repo_root}/supabase/tests/phase4_compat_invites_concurrency.sql"
+# Invite consents (INVITE_SIGNUP_ENABLED=1): the consent table only, a row per
+# side for an allowlisted version, completion left to the released function;
+# the migration is replay-safe too.
+run_phase4_sql_file \
+  "${phase4_repo_root}/supabase/migrations/20261109120000_compat_invite_signups.sql"
+run_phase4_sql_file \
+  "${phase4_repo_root}/supabase/tests/compat_invite_signups.sql"
 
 echo "PostgreSQL 17 Phase 4 compatibility-invite SQL tests passed."
