@@ -159,8 +159,17 @@ function render(effects = true) {
 }
 
 const marker = (name: string) => render().find((node) => Object.hasOwn(node.props, name));
+function noteIsVisible(node: VNode<Record<string, any>>) {
+  const style = node.props.style;
+  const visibility = style && typeof style === 'object' ? style.visibility : undefined;
+  if (typeof visibility === 'string' && visibility.toLowerCase() === 'hidden') return false;
+  if (typeof style === 'string' && /visibility\s*:\s*hidden/i.test(style)) return false;
+  if (node.props.hidden === true) return false;
+  if (node.props['aria-hidden'] === true || node.props['aria-hidden'] === 'true') return false;
+  return true;
+}
 const hasNote = (tree = render()) => tree.some((node) => (
-  node.props.class === 'sharing-note' && node.props.children === CONTACT_CONFIDENCE_NOTE
+  node.props.class === 'sharing-note' && node.props.children === CONTACT_CONFIDENCE_NOTE && noteIsVisible(node)
 ));
 const hasResult = (tree = render()) => tree.some((node) => Object.hasOwn(node.props, 'data-year-sky-result'));
 const hasCalendar = (tree = render()) => tree.some((node) => node.props.class === 'ys-calendar');
