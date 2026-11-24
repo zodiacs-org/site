@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ToolHeroMark from '../../components/ToolHeroMark.astro';
 import AskGuideAbout from '../../components/AskGuideAbout.astro';
 import Motion from '../../components/Motion.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
@@ -143,6 +144,8 @@ const jsonLd = [
   sources={sources}
 >
   <section class="section--tight container container--narrow">
+    <Motion />
+    <ToolHeroMark name="retrogrades" />
     <div class="tool-hero reveal">
       <h1 class="display">See when Mercury turns retrograde.</h1>
       <p>
@@ -171,7 +174,6 @@ const jsonLd = [
     </div>
     {/* The windows table rises once as it scrolls in (docs/MOTION.md); the hero and the
         "right now" answer above stay still. */}
-    <Motion />
     <div class="table-wrap" data-enter="rise">
       <table class="rx-table">
         <thead>
@@ -282,4 +284,9 @@ const jsonLd = [
   }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* The tool's mark (ToolHeroMark) sits in the hero's top-right corner only where
+     the heading and intro leave it room on main; at these widths they do not. */
+  @media (max-width: 337px), (min-width: 617px) and (max-width: 709px) {
+    :global(.tool-hero-mark) { display: none; }
+  }
 </style>
