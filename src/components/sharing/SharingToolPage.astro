@@ -18,6 +18,8 @@ import { t } from '../../lib/i18n';
 import { planetLabel, aspectLabel } from '../../lib/i18n/astrology';
 import { signBySlug, signName } from '../../lib/signs';
 import { englishOnlyCue } from '../../lib/i18n/english-only';
+import ToolExplainer from '../ToolExplainer.astro';
+import { TOOL_EXPLAINERS, explainerFaqJsonLd } from '../../lib/seo/tool-explainers';
 import '../../styles/calculator.css';
 import '../../styles/sharing-tools.css';
 interface Props { kind: 'big' | 'invite' | 'group' | 'twins'; locale?: CatalogLocale }
@@ -35,9 +37,14 @@ const pair = kind === 'invite' ? SAMPLE_PAIR_SLUGS.map((slug) => DIRECTORY_PEOPL
 const pairContacts = pair.length === 2 && pair[0] && pair[1] ? sampleContacts(pair[0], pair[1]) : [];
 const personHref = (slug: string) => `/people/${slug}/`;
 const cardImage = ({ big: '/assets/og/v2/tool/big-three.png', invite: '/assets/og/v2/tool/compatibility-private-invite.png', group: '/assets/og/v2/tool/group-charts.png', twins: '/assets/og/v2/tool/chart-twins.png' })[kind];
-const jsonLd = [{ '@type': 'WebApplication', name: s(locale, titleKey), description: s(locale, ledeKey), url: `https://zodiacs.org${route}`, applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }];
+// English pages that otherwise serve little more than a form get a search title, a description and plain answers in the HTML.
+const explainerKind = locale === 'en' && (kind === 'group' || kind === 'twins') ? kind : null;
+const explainer = explainerKind ? TOOL_EXPLAINERS[explainerKind] : null;
+const pageTitle = explainer?.title ?? `${s(locale, titleKey)} | Zodiacs.org`;
+const pageDescription = explainer?.description ?? s(locale, ledeKey);
+const jsonLd = [{ '@type': 'WebApplication', name: s(locale, titleKey), description: pageDescription, url: `https://zodiacs.org${route}`, applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }, ...(explainerKind ? [explainerFaqJsonLd(explainerKind)] : [])];
 ---
-<Base privateSurface clientUi locale={locale} path={route} title={`${s(locale, titleKey)} | Zodiacs.org`} description={s(locale, ledeKey)} image={locale === 'ru' ? ruOgImageForPath(route) ?? '/assets/og/v2/ru/share.png' : cardImage} imageAlt={s(locale, titleKey)} jsonLd={jsonLd} glass>
+<Base privateSurface clientUi locale={locale} path={route} title={pageTitle} description={pageDescription} image={locale === 'ru' ? ruOgImageForPath(route) ?? '/assets/og/v2/ru/share.png' : cardImage} imageAlt={s(locale, titleKey)} jsonLd={jsonLd} glass>
   <section class:list={['section--tight', 'container', 'sharing-page', { 'container--narrow': kind !== 'group' }]}>
     <header class="tool-hero sharing-hero"><h1 class="display">{s(locale, headlineKey)}</h1><p>{s(locale, ledeKey)}</p></header>
     {groupSample.length > 0 && <aside class="sharing-sample" aria-label={s(locale, 'sampleLabel')} data-sharing-sample="group">
@@ -62,6 +69,7 @@ const jsonLd = [{ '@type': 'WebApplication', name: s(locale, titleKey), descript
     <noscript><p>{s(locale, 'jsRequired')}</p><a href={localizePath(locale, '/tools/')}>{s(locale, 'toolsLabel')}</a></noscript>
     {kind === 'big' && <HeroCrop crop="sun-moon-signs" locale={locale} class="sharing-art" />}
     {kind === 'twins' && <HeroCrop crop="twins" locale={locale} class="sharing-art" />}
+    {explainerKind && <ToolExplainer kind={explainerKind} />}
     <SharingToolLinks locale={locale} current={path} />
   </section>
   {kind === 'big' && locale !== 'en' && locale !== 'ru' && <BigThreeCardSection locale={locale as 'es' | 'pt' | 'fr' | 'it'} />}

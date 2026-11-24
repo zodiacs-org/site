@@ -8,6 +8,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import source from './source.json';
+import { notesHtml } from './notes-html';
 
 const bytes = readFileSync(resolve(__dirname, 'summary.json'));
 const summary = JSON.parse(bytes.toString('utf8'));
@@ -18,21 +19,67 @@ describe('vendored conformance summary', () => {
     expect(source.commit).toMatch(/^[0-9a-f]{40}$/u);
   });
 
-  it('has 500 vectors in three levels', () => {
-    expect(summary.levels.map((level: { level: string }) => level.level)).toEqual(['L1', 'L2', 'L3']);
-    expect(summary.levels.reduce((sum: number, level: { count: number }) => sum + level.count, 0)).toBe(500);
+  it('has 640 vectors in four levels', () => {
+    expect(summary.suiteVersion).toBe('0.3.0');
+    expect(summary.levels.map((level: { level: string }) => level.level)).toEqual(['L1', 'L2', 'L3', 'L4']);
+    expect(summary.levels.reduce((sum: number, level: { count: number }) => sum + level.count, 0)).toBe(640);
   });
 
   it('accounts for every vector in every run', () => {
     for (const run of summary.runs) {
       const total = run.summary.total;
       expect(total.pass + total.fail + total.unsupported + total.error).toBe(total.count);
-      expect(total.count).toBe(500);
+      expect(total.count).toBe(run.suiteVersion === '0.3.0' ? 640 : 500);
     }
+  });
+
+  it('includes @zodiacs/engine 2.1.0 default DE440 and astronomy-engine runs', () => {
+    const de440 = summary.runs.find(
+      (run: { file: string }) => run.file === 'results/zodiacs-engine.json',
+    );
+    const fallback = summary.runs.find(
+      (run: { file: string }) => run.file === 'results/zodiacs-engine-astronomy-engine.json',
+    );
+    expect(de440.adapter.engineVersion).toBe('2.1.0');
+    expect(de440.summary.byLevel.L1.pass).toBe(240);
+    expect(de440.summary.byLevel.L4).toMatchObject({ count: 140, pass: 140, fail: 0, unsupported: 0, error: 0 });
+    expect(de440.summary.total).toMatchObject({ count: 640, pass: 639, fail: 0, unsupported: 1, error: 0 });
+    expect(fallback.adapter.engineVersion).toBe('2.1.0');
+    expect(fallback.summary.byLevel.L1.pass).toBe(48);
+    expect(fallback.summary.byLevel.L4).toMatchObject({ count: 140, pass: 85, fail: 55, unsupported: 0, error: 0 });
+    expect(fallback.summary.total).toMatchObject({ count: 640, pass: 392, fail: 247, unsupported: 1, error: 0 });
   });
 
   it('publishes no per-vector values for Swiss Ephemeris', () => {
     const swiss = summary.runs.find((run: { adapter: { engine: string } }) => run.adapter.engine === 'Swiss Ephemeris');
     expect(swiss.values).toBe('none');
+  });
+
+  it('renders non-empty HTML notes for every engine, including paragraph and link notes', () => {
+    for (const run of summary.runs) {
+      const html = notesHtml(run.notes);
+      expect(html.length).toBeGreaterThan(100);
+      expect(html).not.toMatch(/\[[^\]]+\]\(https:\/\//u);
+    }
+    const pyephem = summary.runs.find((run: { file: string }) => run.file === 'results/pyephem.json');
+    const html = notesHtml(pyephem.notes);
+    expect(html).toContain('<p>');
+    expect(html).toContain('mean obliquity');
+    expect(html).toContain('<a href="https://github.com/brandon-rhodes/pyephem/blob/4.2.1/LICENSE">Engine licence (MIT)</a>');
+  });
+
+  it('preserves nested lists across blank lines, literal code spans, and balanced-paren URLs', () => {
+    const looseNested = '- Parent\n\n  - Child\n\n- Sibling';
+    expect(notesHtml(looseNested)).toBe('<ul><li>Parent<ul><li>Child</li></ul></li><li>Sibling</li></ul>');
+
+    const wrappedNested = '- Parent [split\n  link](https://example.com) with **bold `**` code**\n  - Child\n- Sibling';
+    expect(notesHtml(wrappedNested)).toBe(
+      '<ul><li>Parent <a href="https://example.com">split link</a> with <strong>bold <code>**</code> code</strong><ul><li>Child</li></ul></li><li>Sibling</li></ul>',
+    );
+
+    const codeAndParens = 'Literal `[a](https://example.com)` and [wiki](https://en.wikipedia.org/wiki/Delta_T_(timekeeping)).';
+    expect(notesHtml(codeAndParens)).toBe(
+      '<p>Literal <code>[a](https://example.com)</code> and <a href="https://en.wikipedia.org/wiki/Delta_T_(timekeeping)">wiki</a>.</p>',
+    );
   });
 });

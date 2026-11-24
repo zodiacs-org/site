@@ -5,6 +5,8 @@ import { signForLongitude } from '../../lib/signs';
 const PENDING_KEY_PREFIX = 'zodiacs.invites.pending.v2.';
 const SESSION_HANDLE_RE = /^[A-Za-z0-9_-]{22}$/u;
 const MAX_PENDING_COMPLETIONS = 24;
+/** The shape of a consent version (src/lib/invite/consent.ts); the server records only the ones it knows. */
+const CONSENT_VERSION_RE = /^[a-z0-9.-]{1,64}$/u;
 
 export type InviteSessionResult =
   | { state: 'ready'; handle: string; payload: InvitePublicPayload }
@@ -15,6 +17,13 @@ interface PendingCompletion {
   handle: string;
   expiresAt: string;
   rememberedAt: number;
+  /** The version of the text the recipient confirmed before their reading, when the page showed one. */
+  consentVersion?: string;
+}
+
+/** The completion body: empty, as released, or the version of the text the recipient confirmed. */
+function completionBody(consentVersion?: string): string {
+  return consentVersion ? JSON.stringify({ consentVersion }) : '{}';
 }
 
 function validSessionHandle(handle: string): boolean {
@@ -120,11 +129,14 @@ function pendingCompletions(): PendingCompletion[] {
           || Date.parse(pending.expiresAt) <= now
           || typeof pending.rememberedAt !== 'number'
           || !Number.isFinite(pending.rememberedAt)
-          || pending.rememberedAt < 0) throw new Error('invalid');
+          || pending.rememberedAt < 0
+          || (pending.consentVersion !== undefined
+            && (typeof pending.consentVersion !== 'string' || !CONSENT_VERSION_RE.test(pending.consentVersion)))) throw new Error('invalid');
         entries.push({
           handle,
           expiresAt: pending.expiresAt,
           rememberedAt: pending.rememberedAt,
+          ...(typeof pending.consentVersion === 'string' ? { consentVersion: pending.consentVersion } : {}),
         });
       } catch {
         localStorage.removeItem(key);
@@ -140,7 +152,7 @@ function pendingCompletions(): PendingCompletion[] {
   }
 }
 
-function rememberCompletion(handle: string, expiresAt: string): boolean {
+function rememberCompletion(handle: string, expiresAt: string, consentVersion?: string): boolean {
   if (!validSessionHandle(handle)
     || !Number.isFinite(Date.parse(expiresAt))
     || Date.parse(expiresAt) <= Date.now()) return false;
@@ -150,6 +162,7 @@ function rememberCompletion(handle: string, expiresAt: string): boolean {
       handle,
       expiresAt,
       rememberedAt: Date.now(),
+      ...(consentVersion ? { consentVersion } : {}),
     }));
     pendingCompletions();
   } catch {
@@ -158,12 +171,19 @@ function rememberCompletion(handle: string, expiresAt: string): boolean {
   return true;
 }
 
+/**
+ * Complete an invite once its reading shows. With invite signups on, the page
+ * passes the version of the text the recipient confirmed before their reading,
+ * and the server records it only if it knows it; nothing else is sent.
+ */
 export async function completeInvite(
   handle: string,
   expiresAt: string,
   fetcher: typeof fetch = fetch,
+  consentVersion?: string,
 ): Promise<boolean> {
-  if (!rememberCompletion(handle, expiresAt)) return false;
+  const version = typeof consentVersion === 'string' && CONSENT_VERSION_RE.test(consentVersion) ? consentVersion : undefined;
+  if (!rememberCompletion(handle, expiresAt, version)) return false;
   try {
     const response = await fetcher(
       `/api/compatibility/invite-complete?session=${encodeURIComponent(handle)}`,
@@ -172,7 +192,7 @@ export async function completeInvite(
       credentials: 'same-origin',
       keepalive: true,
       headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-      body: '{}',
+      body: completionBody(version),
       },
     );
     if (!response.ok) return false;
@@ -192,7 +212,7 @@ export async function replayPendingCompletion(fetcher: typeof fetch = fetch): Pr
   if (pending.length === 0) return false;
   let completed = false;
   for (const entry of pending) {
-    if (await completeInvite(entry.handle, entry.expiresAt, fetcher)) completed = true;
+    if (await completeInvite(entry.handle, entry.expiresAt, fetcher, entry.consentVersion)) completed = true;
   }
   return completed;
 }
@@ -203,7 +223,7 @@ export function beaconPendingCompletion(): boolean {
   for (const pending of pendingCompletions()) {
     queued = navigator.sendBeacon(
       `/api/compatibility/invite-complete?session=${encodeURIComponent(pending.handle)}`,
-      new Blob(['{}'], { type: 'application/json' }),
+      new Blob([completionBody(pending.consentVersion)], { type: 'application/json' }),
     ) || queued;
   }
   return queued;
