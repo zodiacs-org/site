@@ -35,11 +35,16 @@ def developer_compatibility(check):
                 path.write_bytes(expected)
 
 
+def macos_sidecar(relative):
+    """macOS metadata, never package material: the ._ AppleDouble file an ExFAT volume keeps beside every file, and __MACOSX folders."""
+    return any(part == "__MACOSX" or part.startswith("._") for part in relative.parts)
+
+
 def archive(name):
     root = ROOT / "plugins" / name
     paths = [root / filename for filename in FILES[name]]
     for directory in DIRS[name]:
-        paths.extend(path for path in (root / directory).rglob("*") if path.is_file())
+        paths.extend(path for path in (root / directory).rglob("*") if path.is_file() and not macos_sidecar(path.relative_to(root)))
     data = io.BytesIO()
     members = []
     with zipfile.ZipFile(data, "w", compression=zipfile.ZIP_STORED) as bundle:

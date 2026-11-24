@@ -11154,6 +11154,12 @@ async function resolveLocal(module, input, longitude2, context) {
     intlOffsetMinutes: pinned ? resolved.intlOffsetMinutes : null
   };
 }
+async function clockWentBackAcrossMidnight(module, date, zone) {
+  await module.prepareLocalTime(date, zone);
+  const second = module.resolveLocalToUtc(date, "00:00", zone, { fold: "later" });
+  if (second.jump?.kind !== "fold" || second.transition === null) return false;
+  return Date.parse(second.transition.at) < second.utc.getTime();
+}
 function zoneHistoriesDisagree(local) {
   if (local.intlOffsetMinutes === null) return false;
   const zoneOffset = local.localMeanTime ? local.localMeanTime.zoneOffsetMinutes : local.offsetMinutes;
@@ -11792,6 +11798,9 @@ function parseElectionsRequest(value) {
   return { from, to, conditions, place };
 }
 var VALIDATION_MESSAGES = TEXT;
+var LOCAL_DAY_MESSAGES = /* @__PURE__ */ Object.freeze({
+  splitDay: "This date happened in two parts in this zone: its clocks went back across midnight, so no single window holds the whole day."
+});
 
 // src/lib/compute-api/endpoints.ts
 var HOUR_MS = 36e5;
@@ -12086,6 +12095,15 @@ async function dayWindow(day, dependencies) {
       end: { utc: iso(end.utc), ...localSummary(end) }
     }
   };
+}
+async function refuseSplitDay(request, dependencies) {
+  const day = "day" in request ? request.day : "instant" in request.when ? null : request.when;
+  if (day === null || day.zone === null) return;
+  for (const date of [day.date, nextDate(day.date)]) {
+    if (await clockWentBackAcrossMidnight(dependencies.localTime, date, day.zone)) {
+      throw invalidRequest("/date", LOCAL_DAY_MESSAGES.splitDay);
+    }
+  }
 }
 function searchSpan(window) {
   return { from: new Date(window.from.getTime() - 1), to: new Date(window.to.getTime() - 1) };
@@ -12790,8 +12808,11 @@ async function dispatch(endpoint, body, dependencies, zones) {
       return computeEvents(parseEventsRequest(body));
     case "time":
       return computeTime(await parseTimeRequest(body, zones), dependencies);
-    case "sky-fact":
-      return computeSkyFact(await parseSkyFactRequest(body, zones), dependencies);
+    case "sky-fact": {
+      const request = await parseSkyFactRequest(body, zones);
+      await refuseSplitDay(request, dependencies);
+      return computeSkyFact(request, dependencies);
+    }
     case "elections":
       return computeElections(parseElectionsRequest(body));
   }

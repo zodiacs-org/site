@@ -10,7 +10,7 @@
  * bundles from local-time-source.ts with the engine's histories inlined, a
  * fresh copy for each request; tests pass the source module itself.
  */
-import type { CalendarName, LocalTimeResolution as EngineLocalTimeResolution, TZDB } from '@zodiacs/engine/geo';
+import type { CalendarName, FoldChoice, LocalTimeResolution as EngineLocalTimeResolution, TZDB } from '@zodiacs/engine/geo';
 import type { LocalInput } from './validate.js';
 import { isFixedOffsetZone } from '../time/fixed-zones.js';
 
@@ -20,7 +20,7 @@ export interface LocalTimeModule {
     date: string,
     time: string,
     timeZone: string,
-    options?: { longitude?: number; calendar?: CalendarName; country?: string },
+    options?: { longitude?: number; calendar?: CalendarName; country?: string; fold?: FoldChoice },
   ): EngineLocalTimeResolution;
   /** The tzdb spelling of a zone name given in any letter case, or null (src/lib/time/zone-names.ts). */
   canonicalZoneName(name: string): Promise<string | null>;
@@ -111,6 +111,23 @@ export async function resolveLocal(
     gapShiftMinutes,
     intlOffsetMinutes: pinned ? resolved.intlOffsetMinutes : null,
   };
+}
+
+/**
+ * Whether the zone's clock went back across the midnight that begins `date`:
+ * it read 00:00 on `date`, went back to a time on the day before, and read
+ * 00:00 on `date` again later. The dates on each side of that midnight then
+ * each come in two pieces (St. John's went from 00:01 back to 23:01 on
+ * 29 October 1989). A clock that went back to a midnight, or from one, keeps
+ * both dates whole: Apia went from the end of 4 July 1892 back to its start,
+ * and lived it as one day of 48 hours.
+ */
+export async function clockWentBackAcrossMidnight(module: LocalTimeModule, date: string, zone: string): Promise<boolean> {
+  await module.prepareLocalTime(date, zone);
+  // The second of the two instants that read 00:00, and the change of offset between them.
+  const second = module.resolveLocalToUtc(date, '00:00', zone, { fold: 'later' });
+  if (second.jump?.kind !== 'fold' || second.transition === null) return false;
+  return Date.parse(second.transition.at) < second.utc.getTime();
 }
 
 /**

@@ -54,6 +54,7 @@ import {
 } from './constants.js';
 import { budgetExhausted, invalidRequest } from './errors.js';
 import {
+  clockWentBackAcrossMidnight,
   resolveLocal,
   runtimeIdentity,
   timeResolutionFacts,
@@ -69,6 +70,7 @@ import {
   type SuccessBody,
 } from './receipt.js';
 import {
+  LOCAL_DAY_MESSAGES,
   VALIDATION_MESSAGES,
   type EventsRequest,
   type FactDay,
@@ -495,6 +497,30 @@ async function dayWindow(day: FactDay, dependencies: ComputeDependencies): Promi
       end: { utc: iso(end.utc), ...localSummary(end) },
     },
   };
+}
+
+/**
+ * Refuses a fact about a date its zone lived in two pieces. Where the clocks
+ * went back across one of the date's two midnights (clockWentBackAcrossMidnight
+ * in local-time.ts), the date and its neighbour on that side each come in two
+ * pieces, and a window from one midnight to the next would leave out a piece
+ * and take in part of the neighbour: St. John's read 23:25 on 28 October 1989
+ * after its clocks had first reached 29 October. The answer's window is a
+ * single span, so the date is refused rather than answered for the wrong day.
+ *
+ * Every caller that takes a zone runs this before computeSkyFact: the API's
+ * handler, the developer playground and the AI tools. computeSkyFact does not
+ * run it itself, because the MCP adapter's archive carries computeSkyFact byte
+ * for byte as it was cut, and that adapter's check_sky_fact takes no zone.
+ */
+export async function refuseSplitDay(request: SkyFactRequest, dependencies: ComputeDependencies): Promise<void> {
+  const day = 'day' in request ? request.day : 'instant' in request.when ? null : request.when;
+  if (day === null || day.zone === null) return;
+  for (const date of [day.date, nextDate(day.date)]) {
+    if (await clockWentBackAcrossMidnight(dependencies.localTime, date, day.zone)) {
+      throw invalidRequest('/date', LOCAL_DAY_MESSAGES.splitDay);
+    }
+  }
 }
 
 /**
