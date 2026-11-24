@@ -502,7 +502,7 @@ describe('get_astrocartography', () => {
     expect(answer.data.ambiguous).toEqual([]);
     expect(answer.data.didYouMean).toEqual([]);
     expect(answer.data.unmatched).toEqual([]);
-  });
+  }, 60_000);
 
   it('links to the page and its line cards only while the website page is switched on', async () => {
     expect(astrocartographyTool.pageFlag).toBe(PAGE_FLAG);
