@@ -1,0 +1,5917 @@
+{
+  "engine": "2.1.0",
+  "ephemeris": "de440",
+  "archiveSha256": "272bf36f705d033a19a5ad87e0e17113d6e53f96a02331cddefe7b41597b4afc",
+  "deltaTTableDigest": "6371988c510a1c6c",
+  "reference": "NASA JPL Horizons DE441",
+  "referenceValuesSha256": "d5f51e3f0e90e50bf081ce705e00ab0494b307afb489618b19f1c46908bf0f9d",
+  "stratified": {
+    "within": {
+      "n": 160,
+      "p50": 0.048392875191893836,
+      "p95": 0.520207638373904,
+      "max": 0.5268381971063718,
+      "maxAt": "1801-01-01T00:00:00.000Z",
+      "maxBody": "Pluto"
+    },
+    "moon": {
+      "n": 16,
+      "p50": 0.0460402290627826,
+      "p95": 0.4947838221823986,
+      "max": 0.4947838221823986,
+      "maxAt": "1801-01-01T00:00:00.000Z",
+      "maxBody": "Moon"
+    },
+    "future": {
+      "n": 20,
+      "p50": 0.46895454308923945,
+      "p95": 0.48241294346098584,
+      "max": 0.48241294346098584,
+      "maxAt": "2190-12-31T23:00:00.000Z",
+      "maxBody": "Moon"
+    },
+    "cases": [
+      {
+        "id": "modern-01",
+        "utc": "1988-03-21T06:45:00.000Z",
+        "stratum": "ordinary"
+      },
+      {
+        "id": "modern-02",
+        "utc": "1990-06-15T13:30:00.000Z",
+        "stratum": "ordinary"
+      },
+      {
+        "id": "modern-03",
+        "utc": "2001-09-11T12:00:00.000Z",
+        "stratum": "ordinary"
+      },
+      {
+        "id": "modern-04",
+        "utc": "2015-11-02T23:59:00.000Z",
+        "stratum": "ordinary"
+      },
+      {
+        "id": "modern-05",
+        "utc": "2024-02-29T00:00:00.000Z",
+        "stratum": "ordinary"
+      },
+      {
+        "id": "modern-06",
+        "utc": "2026-09-20T08:00:00.000Z",
+        "stratum": "ordinary"
+      },
+      {
+        "id": "ingress-01",
+        "utc": "2024-03-20T03:06:00.000Z",
+        "stratum": "boundary"
+      },
+      {
+        "id": "ingress-02",
+        "utc": "2024-06-20T20:51:00.000Z",
+        "stratum": "boundary"
+      },
+      {
+        "id": "historic-01",
+        "utc": "1900-01-01T12:00:00.000Z",
+        "stratum": "historical"
+      },
+      {
+        "id": "historic-02",
+        "utc": "1850-07-04T18:00:00.000Z",
+        "stratum": "historical"
+      },
+      {
+        "id": "historic-03",
+        "utc": "1801-01-01T00:00:00.000Z",
+        "stratum": "historical"
+      },
+      {
+        "id": "future-01",
+        "utc": "2100-01-01T00:00:00.000Z",
+        "stratum": "future"
+      },
+      {
+        "id": "future-02",
+        "utc": "2190-12-31T23:00:00.000Z",
+        "stratum": "future"
+      },
+      {
+        "id": "geo-01",
+        "utc": "2000-01-01T00:00:00.000Z",
+        "stratum": "geometry"
+      },
+      {
+        "id": "geo-02",
+        "utc": "2000-01-01T00:00:00.000Z",
+        "stratum": "geometry"
+      },
+      {
+        "id": "polar-01",
+        "utc": "1990-12-15T09:00:00.000Z",
+        "stratum": "polar"
+      },
+      {
+        "id": "polar-02",
+        "utc": "2020-06-21T00:00:00.000Z",
+        "stratum": "polar"
+      },
+      {
+        "id": "unknown-01",
+        "utc": "1975-05-05T12:00:00.000Z",
+        "stratum": "unknown-time"
+      }
+    ]
+  },
+  "dense": {
+    "ut": {
+      "all": {
+        "n": 160710,
+        "p50": 0.18146916310115557,
+        "p95": 0.4716852899946389,
+        "max": 0.545921638058644,
+        "maxAt": "1800-01-01T12:00:00.000Z",
+        "maxBody": "Moon"
+      },
+      "through2026": {
+        "n": 91201,
+        "p50": 0.15667064670878972,
+        "p95": 0.47017902577408677,
+        "max": 0.545921638058644,
+        "maxAt": "1800-01-01T12:00:00.000Z",
+        "maxBody": "Moon"
+      },
+      "futureMoon": {
+        "n": 1826,
+        "p50": 0.4297734113038132,
+        "p95": 0.503138749786558,
+        "max": 0.5227152781912991,
+        "maxAt": "2199-09-06T12:00:00.000Z",
+        "maxBody": "Moon"
+      }
+    },
+    "tt": {
+      "all": {
+        "n": 160710,
+        "p50": 0.18156172982344287,
+        "p95": 0.47412338365120377,
+        "max": 0.5314141428470975,
+        "maxAt": "1800-05-01T12:00:00.000Z",
+        "maxBody": "Pluto"
+      },
+      "through2026": {
+        "n": 91201,
+        "p50": 0.15520622948770324,
+        "p95": 0.47583966897946084,
+        "max": 0.5314141428470975,
+        "maxAt": "1800-05-01T12:00:00.000Z",
+        "maxBody": "Pluto"
+      },
+      "futureMoon": {
+        "n": 1826,
+        "p50": 0.4297449667546971,
+        "p95": 0.5030758748716835,
+        "max": 0.5228354478958863,
+        "maxAt": "2199-09-06T12:00:00.000Z",
+        "maxBody": "Moon"
+      }
+    }
+  },
+  "clock": {
+    "n": 36524,
+    "offset": [
+      2.576187227987248e-07,
+      0.0016837423812745556
+    ],
+    "motion": [
+      1.2718407007491744e-07,
+      0.0010754656199465247
+    ],
+    "sigma": [
+      42.389654298463704,
+      103.38631320585158
+    ]
+  },
+  "moonIngress": {
+    "n": 481,
+    "fromUtc": "2026-01-01T00:00:00.000Z",
+    "toUtc": "2029-01-01T00:00:00.000Z",
+    "medianAbsSeconds": 0.06085937493480742,
+    "maxAbsSeconds": 0.09492348181083798,
+    "tableSha256": "4d4f75737d67f3acdfbc5f039ec14d9c2e1af5f2e99394e7a909af9659990ff8",
+    "rows": [
+      {
+        "sign": "cancer",
+        "at": "2026-01-02T13:09:00.334Z",
+        "horizonsAt": "2026-01-02T13:09:00.379Z",
+        "differenceSeconds": -0.045302510261535645
+      },
+      {
+        "sign": "leo",
+        "at": "2026-01-04T13:43:25.956Z",
+        "horizonsAt": "2026-01-04T13:43:26.006Z",
+        "differenceSeconds": -0.05023782723583281
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-01-06T16:56:45.348Z",
+        "horizonsAt": "2026-01-06T16:56:45.418Z",
+        "differenceSeconds": -0.06987159722484648
+      },
+      {
+        "sign": "libra",
+        "at": "2026-01-09T00:05:46.892Z",
+        "horizonsAt": "2026-01-09T00:05:46.955Z",
+        "differenceSeconds": -0.06327336304821074
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-01-11T10:55:20.067Z",
+        "horizonsAt": "2026-01-11T10:55:20.149Z",
+        "differenceSeconds": -0.0817270134575665
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-01-13T23:33:48.706Z",
+        "horizonsAt": "2026-01-13T23:33:48.771Z",
+        "differenceSeconds": -0.06477534770965576
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-01-16T11:47:08.346Z",
+        "horizonsAt": "2026-01-16T11:47:08.429Z",
+        "differenceSeconds": -0.08279979228973389
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-01-18T22:17:56.247Z",
+        "horizonsAt": "2026-01-18T22:17:56.312Z",
+        "differenceSeconds": -0.06477534770965576
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-01-21T06:49:39.272Z",
+        "horizonsAt": "2026-01-21T06:49:39.346Z",
+        "differenceSeconds": -0.07437770836986601
+      },
+      {
+        "sign": "aries",
+        "at": "2026-01-23T13:25:41.436Z",
+        "horizonsAt": "2026-01-23T13:25:41.503Z",
+        "differenceSeconds": -0.06735026836395264
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-01-25T18:05:19.591Z",
+        "horizonsAt": "2026-01-25T18:05:19.657Z",
+        "differenceSeconds": -0.06595562444999814
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-01-27T20:55:00.292Z",
+        "horizonsAt": "2026-01-27T20:55:00.339Z",
+        "differenceSeconds": -0.04691183567047119
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-01-29T22:31:39.616Z",
+        "horizonsAt": "2026-01-29T22:31:39.680Z",
+        "differenceSeconds": -0.0637561606708914
+      },
+      {
+        "sign": "leo",
+        "at": "2026-02-01T00:08:56.351Z",
+        "horizonsAt": "2026-02-01T00:08:56.403Z",
+        "differenceSeconds": -0.05211542593315244
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-02-03T03:21:13.753Z",
+        "horizonsAt": "2026-02-03T03:21:13.832Z",
+        "differenceSeconds": -0.07899116026237607
+      },
+      {
+        "sign": "libra",
+        "at": "2026-02-05T09:32:32.324Z",
+        "horizonsAt": "2026-02-05T09:32:32.386Z",
+        "differenceSeconds": -0.06155669689178467
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-02-07T19:13:05.906Z",
+        "horizonsAt": "2026-02-07T19:13:05.984Z",
+        "differenceSeconds": -0.07770369993522763
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-02-10T07:21:50.393Z",
+        "horizonsAt": "2026-02-10T07:21:50.471Z",
+        "differenceSeconds": -0.07791822426952422
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-02-12T19:44:24.155Z",
+        "horizonsAt": "2026-02-12T19:44:24.234Z",
+        "differenceSeconds": -0.07888381951488554
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-02-15T06:16:38.601Z",
+        "horizonsAt": "2026-02-15T06:16:38.684Z",
+        "differenceSeconds": -0.08322899811901152
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-02-17T14:09:05.991Z",
+        "horizonsAt": "2026-02-17T14:09:06.070Z",
+        "differenceSeconds": -0.07947395788505673
+      },
+      {
+        "sign": "aries",
+        "at": "2026-02-19T19:39:04.069Z",
+        "horizonsAt": "2026-02-19T19:39:04.131Z",
+        "differenceSeconds": -0.06246870034374297
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-02-21T23:30:56.112Z",
+        "horizonsAt": "2026-02-21T23:30:56.183Z",
+        "differenceSeconds": -0.07094453321769834
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-02-24T02:28:54.767Z",
+        "horizonsAt": "2026-02-24T02:28:54.834Z",
+        "differenceSeconds": -0.06751120090484619
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-02-26T05:11:05.770Z",
+        "horizonsAt": "2026-02-26T05:11:05.842Z",
+        "differenceSeconds": -0.07164185517467558
+      },
+      {
+        "sign": "leo",
+        "at": "2026-02-28T08:16:41.237Z",
+        "horizonsAt": "2026-02-28T08:16:41.292Z",
+        "differenceSeconds": -0.054904870921745896
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-03-02T12:33:41.071Z",
+        "horizonsAt": "2026-03-02T12:33:41.127Z",
+        "differenceSeconds": -0.05608499050140381
+      },
+      {
+        "sign": "libra",
+        "at": "2026-03-04T18:55:46.847Z",
+        "horizonsAt": "2026-03-04T18:55:46.917Z",
+        "differenceSeconds": -0.07008612155914307
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-03-07T04:01:27.697Z",
+        "horizonsAt": "2026-03-07T04:01:27.776Z",
+        "differenceSeconds": -0.07877647876739502
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-03-09T15:36:31.304Z",
+        "horizonsAt": "2026-03-09T15:36:31.388Z",
+        "differenceSeconds": -0.08414100157096982
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-03-12T04:07:07.339Z",
+        "horizonsAt": "2026-03-12T04:07:07.426Z",
+        "differenceSeconds": -0.08709137910045683
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-03-14T15:13:30.103Z",
+        "horizonsAt": "2026-03-14T15:13:30.174Z",
+        "differenceSeconds": -0.07089078426361084
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-03-16T23:15:38.752Z",
+        "horizonsAt": "2026-03-16T23:15:38.822Z",
+        "differenceSeconds": -0.07046173559501767
+      },
+      {
+        "sign": "aries",
+        "at": "2026-03-19T04:02:58.389Z",
+        "horizonsAt": "2026-03-19T04:02:58.450Z",
+        "differenceSeconds": -0.0611276482231915
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-03-21T06:35:06.545Z",
+        "horizonsAt": "2026-03-21T06:35:06.616Z",
+        "differenceSeconds": -0.071427330840379
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-03-23T08:18:39.478Z",
+        "horizonsAt": "2026-03-23T08:18:39.543Z",
+        "differenceSeconds": -0.06541907787322998
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-03-25T10:32:56.055Z",
+        "horizonsAt": "2026-03-25T10:32:56.105Z",
+        "differenceSeconds": -0.050130486488342285
+      },
+      {
+        "sign": "leo",
+        "at": "2026-03-27T14:10:11.772Z",
+        "horizonsAt": "2026-03-27T14:10:11.845Z",
+        "differenceSeconds": -0.07309024804271758
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-03-29T19:33:19.922Z",
+        "horizonsAt": "2026-03-29T19:33:19.983Z",
+        "differenceSeconds": -0.06085937493480742
+      },
+      {
+        "sign": "libra",
+        "at": "2026-04-01T02:50:45.545Z",
+        "horizonsAt": "2026-04-01T02:50:45.607Z",
+        "differenceSeconds": -0.06171762943267822
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-04-03T12:10:51.955Z",
+        "horizonsAt": "2026-04-03T12:10:52.022Z",
+        "differenceSeconds": -0.06708215223625302
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-04-05T23:31:32.503Z",
+        "horizonsAt": "2026-04-05T23:31:32.571Z",
+        "differenceSeconds": -0.0678868149407208
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-04-08T12:04:19.661Z",
+        "horizonsAt": "2026-04-08T12:04:19.724Z",
+        "differenceSeconds": -0.06338070379570127
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-04-10T23:55:29.707Z",
+        "horizonsAt": "2026-04-10T23:55:29.784Z",
+        "differenceSeconds": -0.07722090231254697
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-04-13T08:55:33.360Z",
+        "horizonsAt": "2026-04-13T08:55:33.440Z",
+        "differenceSeconds": -0.08038580417633057
+      },
+      {
+        "sign": "aries",
+        "at": "2026-04-15T14:03:54.913Z",
+        "horizonsAt": "2026-04-15T14:03:54.987Z",
+        "differenceSeconds": -0.07368038641288877
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-04-17T15:57:46.460Z",
+        "horizonsAt": "2026-04-17T15:57:46.503Z",
+        "differenceSeconds": -0.043103203643113375
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-04-19T16:17:37.954Z",
+        "horizonsAt": "2026-04-19T16:17:38.005Z",
+        "differenceSeconds": -0.050988898146897554
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-04-21T17:00:15.461Z",
+        "horizonsAt": "2026-04-21T17:00:15.511Z",
+        "differenceSeconds": -0.04970143781974912
+      },
+      {
+        "sign": "leo",
+        "at": "2026-04-23T19:40:43.139Z",
+        "horizonsAt": "2026-04-23T19:40:43.196Z",
+        "differenceSeconds": -0.057372450828552246
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-04-26T01:04:26.225Z",
+        "horizonsAt": "2026-04-26T01:04:26.306Z",
+        "differenceSeconds": -0.08049314492382109
+      },
+      {
+        "sign": "libra",
+        "at": "2026-04-28T09:02:45.206Z",
+        "horizonsAt": "2026-04-28T09:02:45.267Z",
+        "differenceSeconds": -0.060644850600510836
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-04-30T19:01:51.071Z",
+        "horizonsAt": "2026-04-30T19:01:51.144Z",
+        "differenceSeconds": -0.07271479116752744
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-05-03T06:33:28.739Z",
+        "horizonsAt": "2026-05-03T06:33:28.804Z",
+        "differenceSeconds": -0.06515096174553037
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-05-05T19:06:06.942Z",
+        "horizonsAt": "2026-05-05T19:06:07.004Z",
+        "differenceSeconds": -0.06241510855033994
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-05-08T07:27:24.569Z",
+        "horizonsAt": "2026-05-08T07:27:24.659Z",
+        "differenceSeconds": -0.09031002991832793
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-05-10T17:39:26.096Z",
+        "horizonsAt": "2026-05-10T17:39:26.166Z",
+        "differenceSeconds": -0.06976425647735596
+      },
+      {
+        "sign": "aries",
+        "at": "2026-05-13T00:03:40.522Z",
+        "horizonsAt": "2026-05-13T00:03:40.582Z",
+        "differenceSeconds": -0.06048391805961728
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-05-15T02:31:06.603Z",
+        "horizonsAt": "2026-05-15T02:31:06.660Z",
+        "differenceSeconds": -0.05672872066497803
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-05-17T02:22:59.991Z",
+        "horizonsAt": "2026-05-17T02:23:00.038Z",
+        "differenceSeconds": -0.04712651716545224
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-05-19T01:46:04.488Z",
+        "horizonsAt": "2026-05-19T01:46:04.552Z",
+        "differenceSeconds": -0.0637561606708914
+      },
+      {
+        "sign": "leo",
+        "at": "2026-05-21T02:47:40.316Z",
+        "horizonsAt": "2026-05-21T02:47:40.390Z",
+        "differenceSeconds": -0.0737339782062918
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-05-23T06:57:01.772Z",
+        "horizonsAt": "2026-05-23T06:57:01.838Z",
+        "differenceSeconds": -0.06574094295501709
+      },
+      {
+        "sign": "libra",
+        "at": "2026-05-25T14:34:08.866Z",
+        "horizonsAt": "2026-05-25T14:34:08.930Z",
+        "differenceSeconds": -0.06370256887748837
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-05-28T00:52:32.471Z",
+        "horizonsAt": "2026-05-28T00:52:32.529Z",
+        "differenceSeconds": -0.05780165665782988
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-05-30T12:44:48.682Z",
+        "horizonsAt": "2026-05-30T12:44:48.755Z",
+        "differenceSeconds": -0.07260745042003691
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-06-02T01:19:15.952Z",
+        "horizonsAt": "2026-06-02T01:19:16.021Z",
+        "differenceSeconds": -0.06901334272697568
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-06-04T13:45:35.814Z",
+        "horizonsAt": "2026-06-04T13:45:35.894Z",
+        "differenceSeconds": -0.08022487163543701
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-06-07T00:42:46.515Z",
+        "horizonsAt": "2026-06-07T00:42:46.593Z",
+        "differenceSeconds": -0.0785083626396954
+      },
+      {
+        "sign": "aries",
+        "at": "2026-06-09T08:33:23.054Z",
+        "horizonsAt": "2026-06-09T08:33:23.126Z",
+        "differenceSeconds": -0.07223199354484677
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-06-11T12:28:08.542Z",
+        "horizonsAt": "2026-06-11T12:28:08.610Z",
+        "differenceSeconds": -0.06799399852752686
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-06-13T13:06:02.081Z",
+        "horizonsAt": "2026-06-13T13:06:02.129Z",
+        "differenceSeconds": -0.047984771663323045
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-06-15T12:14:13.718Z",
+        "horizonsAt": "2026-06-15T12:14:13.765Z",
+        "differenceSeconds": -0.04701917641796172
+      },
+      {
+        "sign": "leo",
+        "at": "2026-06-17T12:05:06.353Z",
+        "horizonsAt": "2026-06-17T12:05:06.420Z",
+        "differenceSeconds": -0.06659935461357236
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-06-19T14:36:54.183Z",
+        "horizonsAt": "2026-06-19T14:36:54.253Z",
+        "differenceSeconds": -0.0696570728905499
+      },
+      {
+        "sign": "libra",
+        "at": "2026-06-21T20:54:57.161Z",
+        "horizonsAt": "2026-06-21T20:54:57.228Z",
+        "differenceSeconds": -0.06740401731804013
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-06-24T06:43:18.046Z",
+        "horizonsAt": "2026-06-24T06:43:18.104Z",
+        "differenceSeconds": -0.0575871323235333
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-06-26T18:40:53.906Z",
+        "horizonsAt": "2026-06-26T18:40:53.970Z",
+        "differenceSeconds": -0.0642925500869751
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-06-29T07:18:33.573Z",
+        "horizonsAt": "2026-06-29T07:18:33.649Z",
+        "differenceSeconds": -0.07630889886058867
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-07-01T19:32:51.028Z",
+        "horizonsAt": "2026-07-01T19:32:51.100Z",
+        "differenceSeconds": -0.07233917713165283
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-07-04T06:30:12.221Z",
+        "horizonsAt": "2026-07-04T06:30:12.300Z",
+        "differenceSeconds": -0.07883022772148252
+      },
+      {
+        "sign": "aries",
+        "at": "2026-07-06T15:07:04.922Z",
+        "horizonsAt": "2026-07-06T15:07:04.983Z",
+        "differenceSeconds": -0.060698442393913865
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-07-08T20:30:43.531Z",
+        "horizonsAt": "2026-07-08T20:30:43.597Z",
+        "differenceSeconds": -0.06649201386608183
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-07-10T22:41:36.917Z",
+        "horizonsAt": "2026-07-10T22:41:36.983Z",
+        "differenceSeconds": -0.06622374057769775
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-07-12T22:46:30.334Z",
+        "horizonsAt": "2026-07-12T22:46:30.398Z",
+        "differenceSeconds": -0.06413161754608154
+      },
+      {
+        "sign": "leo",
+        "at": "2026-07-14T22:35:13.164Z",
+        "horizonsAt": "2026-07-14T22:35:13.229Z",
+        "differenceSeconds": -0.0652045535389334
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-07-17T00:07:07.862Z",
+        "horizonsAt": "2026-07-17T00:07:07.935Z",
+        "differenceSeconds": -0.07346570491790771
+      },
+      {
+        "sign": "libra",
+        "at": "2026-07-19T04:56:33.016Z",
+        "horizonsAt": "2026-07-19T04:56:33.074Z",
+        "differenceSeconds": -0.05849897861480713
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-07-21T13:34:33.915Z",
+        "horizonsAt": "2026-07-21T13:34:33.994Z",
+        "differenceSeconds": -0.07872288697399199
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-07-24T01:06:59.265Z",
+        "horizonsAt": "2026-07-24T01:06:59.338Z",
+        "differenceSeconds": -0.07303665624931455
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-07-26T13:44:16.548Z",
+        "horizonsAt": "2026-07-26T13:44:16.625Z",
+        "differenceSeconds": -0.07705996977165341
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-07-29T01:46:07.839Z",
+        "horizonsAt": "2026-07-29T01:46:07.927Z",
+        "differenceSeconds": -0.08773510926403105
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-07-31T12:13:51.910Z",
+        "horizonsAt": "2026-07-31T12:13:51.975Z",
+        "differenceSeconds": -0.06472175591625273
+      },
+      {
+        "sign": "aries",
+        "at": "2026-08-02T20:36:48.141Z",
+        "horizonsAt": "2026-08-02T20:36:48.200Z",
+        "differenceSeconds": -0.05903552519157529
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-08-05T02:35:26.292Z",
+        "horizonsAt": "2026-08-05T02:35:26.360Z",
+        "differenceSeconds": -0.06794040673412383
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-08-07T06:07:46.478Z",
+        "horizonsAt": "2026-08-07T06:07:46.545Z",
+        "differenceSeconds": -0.06659935461357236
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-08-09T07:45:40.374Z",
+        "horizonsAt": "2026-08-09T07:45:40.444Z",
+        "differenceSeconds": -0.06971066468395293
+      },
+      {
+        "sign": "leo",
+        "at": "2026-08-11T08:38:09.961Z",
+        "horizonsAt": "2026-08-11T08:38:10.009Z",
+        "differenceSeconds": -0.04777024732902646
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-08-13T10:18:09.540Z",
+        "horizonsAt": "2026-08-13T10:18:09.595Z",
+        "differenceSeconds": -0.055226736003533006
+      },
+      {
+        "sign": "libra",
+        "at": "2026-08-15T14:19:43.776Z",
+        "horizonsAt": "2026-08-15T14:19:43.848Z",
+        "differenceSeconds": -0.07217824459075928
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-08-17T21:46:03.006Z",
+        "horizonsAt": "2026-08-17T21:46:03.066Z",
+        "differenceSeconds": -0.05967925535514951
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-08-20T08:30:05.053Z",
+        "horizonsAt": "2026-08-20T08:30:05.123Z",
+        "differenceSeconds": -0.0696570728905499
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-08-22T20:59:05.149Z",
+        "horizonsAt": "2026-08-22T20:59:05.237Z",
+        "differenceSeconds": -0.08768151747062802
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-08-25T09:01:41.018Z",
+        "horizonsAt": "2026-08-25T09:01:41.104Z",
+        "differenceSeconds": -0.08639405714347959
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-08-27T19:03:44.340Z",
+        "horizonsAt": "2026-08-27T19:03:44.400Z",
+        "differenceSeconds": -0.060108304023742676
+      },
+      {
+        "sign": "aries",
+        "at": "2026-08-30T02:37:45.709Z",
+        "horizonsAt": "2026-08-30T02:37:45.785Z",
+        "differenceSeconds": -0.07593344198539853
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-09-01T08:01:17.919Z",
+        "horizonsAt": "2026-09-01T08:01:17.966Z",
+        "differenceSeconds": -0.047341041499748826
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-09-03T11:47:17.575Z",
+        "horizonsAt": "2026-09-03T11:47:17.621Z",
+        "differenceSeconds": -0.045570783549919724
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-09-05T14:30:26.367Z",
+        "horizonsAt": "2026-09-05T14:30:26.422Z",
+        "differenceSeconds": -0.05501221166923642
+      },
+      {
+        "sign": "leo",
+        "at": "2026-09-07T16:49:28.092Z",
+        "horizonsAt": "2026-09-07T16:49:28.144Z",
+        "differenceSeconds": -0.05179356085136533
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-09-09T19:35:04.375Z",
+        "horizonsAt": "2026-09-09T19:35:04.433Z",
+        "differenceSeconds": -0.05785524845123291
+      },
+      {
+        "sign": "libra",
+        "at": "2026-09-11T23:51:41.878Z",
+        "horizonsAt": "2026-09-11T23:51:41.938Z",
+        "differenceSeconds": -0.060108304023742676
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-09-14T06:43:51.306Z",
+        "horizonsAt": "2026-09-14T06:43:51.372Z",
+        "differenceSeconds": -0.06617014878429472
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-09-16T16:41:14.945Z",
+        "horizonsAt": "2026-09-16T16:41:15.018Z",
+        "differenceSeconds": -0.07287572370842099
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-09-19T04:54:49.113Z",
+        "horizonsAt": "2026-09-19T04:54:49.193Z",
+        "differenceSeconds": -0.0799030065536499
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-09-21T17:14:22.562Z",
+        "horizonsAt": "2026-09-21T17:14:22.646Z",
+        "differenceSeconds": -0.08355086320079863
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-09-24T03:23:37.262Z",
+        "horizonsAt": "2026-09-24T03:23:37.337Z",
+        "differenceSeconds": -0.07486050599254668
+      },
+      {
+        "sign": "aries",
+        "at": "2026-09-26T10:23:07.269Z",
+        "horizonsAt": "2026-09-26T10:23:07.335Z",
+        "differenceSeconds": -0.06595562444999814
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-09-28T14:40:02.379Z",
+        "horizonsAt": "2026-09-28T14:40:02.443Z",
+        "differenceSeconds": -0.06445348262786865
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-09-30T17:26:01.485Z",
+        "horizonsAt": "2026-09-30T17:26:01.531Z",
+        "differenceSeconds": -0.045517191756516695
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-10-02T19:54:04.398Z",
+        "horizonsAt": "2026-10-02T19:54:04.451Z",
+        "differenceSeconds": -0.052544474601745605
+      },
+      {
+        "sign": "leo",
+        "at": "2026-10-04T22:54:11.787Z",
+        "horizonsAt": "2026-10-04T22:54:11.840Z",
+        "differenceSeconds": -0.05329554551281035
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-10-07T02:52:36.948Z",
+        "horizonsAt": "2026-10-07T02:52:37.000Z",
+        "differenceSeconds": -0.05238354206085205
+      },
+      {
+        "sign": "libra",
+        "at": "2026-10-09T08:10:32.893Z",
+        "horizonsAt": "2026-10-09T08:10:32.956Z",
+        "differenceSeconds": -0.06295149796642363
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-10-11T15:21:14.769Z",
+        "horizonsAt": "2026-10-11T15:21:14.833Z",
+        "differenceSeconds": -0.06370256887748837
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-10-14T00:59:23.909Z",
+        "horizonsAt": "2026-10-14T00:59:23.986Z",
+        "differenceSeconds": -0.07716715335845947
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-10-16T12:57:01.306Z",
+        "horizonsAt": "2026-10-16T12:57:01.380Z",
+        "differenceSeconds": -0.07443130016326904
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-10-19T01:39:55.210Z",
+        "horizonsAt": "2026-10-19T01:39:55.300Z",
+        "differenceSeconds": -0.0902026891708374
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-10-21T12:35:08.687Z",
+        "horizonsAt": "2026-10-21T12:35:08.750Z",
+        "differenceSeconds": -0.06279056542553008
+      },
+      {
+        "sign": "aries",
+        "at": "2026-10-23T19:53:33.033Z",
+        "horizonsAt": "2026-10-23T19:53:33.107Z",
+        "differenceSeconds": -0.07389491074718535
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-10-25T23:34:41.579Z",
+        "horizonsAt": "2026-10-25T23:34:41.622Z",
+        "differenceSeconds": -0.04272758960723877
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-10-28T01:01:53.514Z",
+        "horizonsAt": "2026-10-28T01:01:53.561Z",
+        "differenceSeconds": -0.04701917641796172
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-10-30T02:05:33.764Z",
+        "horizonsAt": "2026-10-30T02:05:33.833Z",
+        "differenceSeconds": -0.06933520780876279
+      },
+      {
+        "sign": "leo",
+        "at": "2026-11-01T04:18:11.298Z",
+        "horizonsAt": "2026-11-01T04:18:11.355Z",
+        "differenceSeconds": -0.05683606141246855
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-11-03T08:27:44.894Z",
+        "horizonsAt": "2026-11-03T08:27:44.972Z",
+        "differenceSeconds": -0.07834743009880185
+      },
+      {
+        "sign": "libra",
+        "at": "2026-11-05T14:38:18.064Z",
+        "horizonsAt": "2026-11-05T14:38:18.142Z",
+        "differenceSeconds": -0.07807915681041777
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-11-07T22:39:57.271Z",
+        "horizonsAt": "2026-11-07T22:39:57.324Z",
+        "differenceSeconds": -0.053456478053703904
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-11-10T08:35:45.189Z",
+        "horizonsAt": "2026-11-10T08:35:45.271Z",
+        "differenceSeconds": -0.0817270134575665
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-11-12T20:27:14.187Z",
+        "horizonsAt": "2026-11-12T20:27:14.264Z",
+        "differenceSeconds": -0.07684528827667236
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-11-15T09:24:14.561Z",
+        "horizonsAt": "2026-11-15T09:24:14.636Z",
+        "differenceSeconds": -0.07528971182182431
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-11-17T21:19:27.488Z",
+        "horizonsAt": "2026-11-17T21:19:27.575Z",
+        "differenceSeconds": -0.08746683597564697
+      },
+      {
+        "sign": "aries",
+        "at": "2026-11-20T05:52:14.480Z",
+        "horizonsAt": "2026-11-20T05:52:14.548Z",
+        "differenceSeconds": -0.0682086800225079
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-11-22T10:09:41.752Z",
+        "horizonsAt": "2026-11-22T10:09:41.820Z",
+        "differenceSeconds": -0.0678330659866333
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-11-24T11:09:37.001Z",
+        "horizonsAt": "2026-11-24T11:09:37.045Z",
+        "differenceSeconds": -0.04390786634758115
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-11-26T10:51:08.342Z",
+        "horizonsAt": "2026-11-26T10:51:08.388Z",
+        "differenceSeconds": -0.04648278700187802
+      },
+      {
+        "sign": "leo",
+        "at": "2026-11-28T11:20:37.911Z",
+        "horizonsAt": "2026-11-28T11:20:37.983Z",
+        "differenceSeconds": -0.0719637202564627
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-11-30T14:12:38.770Z",
+        "horizonsAt": "2026-11-30T14:12:38.836Z",
+        "differenceSeconds": -0.0660628080368042
+      },
+      {
+        "sign": "libra",
+        "at": "2026-12-02T20:03:53.100Z",
+        "horizonsAt": "2026-12-02T20:03:53.157Z",
+        "differenceSeconds": -0.05678246961906552
+      },
+      {
+        "sign": "scorpio",
+        "at": "2026-12-05T04:35:02.288Z",
+        "horizonsAt": "2026-12-05T04:35:02.345Z",
+        "differenceSeconds": -0.056675128871575
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2026-12-07T15:06:33.557Z",
+        "horizonsAt": "2026-12-07T15:06:33.616Z",
+        "differenceSeconds": -0.05914270877838135
+      },
+      {
+        "sign": "capricorn",
+        "at": "2026-12-10T03:08:39.487Z",
+        "horizonsAt": "2026-12-10T03:08:39.570Z",
+        "differenceSeconds": -0.08290713303722441
+      },
+      {
+        "sign": "aquarius",
+        "at": "2026-12-12T16:05:37.032Z",
+        "horizonsAt": "2026-12-12T16:05:37.099Z",
+        "differenceSeconds": -0.06718933582305908
+      },
+      {
+        "sign": "pisces",
+        "at": "2026-12-15T04:35:37.966Z",
+        "horizonsAt": "2026-12-15T04:35:38.035Z",
+        "differenceSeconds": -0.06885241018608212
+      },
+      {
+        "sign": "aries",
+        "at": "2026-12-17T14:34:21.940Z",
+        "horizonsAt": "2026-12-17T14:34:22.013Z",
+        "differenceSeconds": -0.07303665624931455
+      },
+      {
+        "sign": "taurus",
+        "at": "2026-12-19T20:29:41.678Z",
+        "horizonsAt": "2026-12-19T20:29:41.727Z",
+        "differenceSeconds": -0.04943316453136504
+      },
+      {
+        "sign": "gemini",
+        "at": "2026-12-21T22:27:06.057Z",
+        "horizonsAt": "2026-12-21T22:27:06.113Z",
+        "differenceSeconds": -0.055602192878723145
+      },
+      {
+        "sign": "cancer",
+        "at": "2026-12-23T21:58:21.726Z",
+        "horizonsAt": "2026-12-23T21:58:21.786Z",
+        "differenceSeconds": -0.059786438941955566
+      },
+      {
+        "sign": "leo",
+        "at": "2026-12-25T21:12:15.698Z",
+        "horizonsAt": "2026-12-25T21:12:15.768Z",
+        "differenceSeconds": -0.07040798664093018
+      },
+      {
+        "sign": "virgo",
+        "at": "2026-12-27T22:12:50.854Z",
+        "horizonsAt": "2026-12-27T22:12:50.919Z",
+        "differenceSeconds": -0.06525814533233643
+      },
+      {
+        "sign": "libra",
+        "at": "2026-12-30T02:26:40.624Z",
+        "horizonsAt": "2026-12-30T02:26:40.689Z",
+        "differenceSeconds": -0.06515096174553037
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-01-01T10:15:53.310Z",
+        "horizonsAt": "2027-01-01T10:15:53.365Z",
+        "differenceSeconds": -0.055280327796936035
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-01-03T20:56:58.311Z",
+        "horizonsAt": "2027-01-03T20:56:58.394Z",
+        "differenceSeconds": -0.08296072483062744
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-01-06T09:17:13.208Z",
+        "horizonsAt": "2027-01-06T09:17:13.284Z",
+        "differenceSeconds": -0.0763624906539917
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-01-08T22:10:52.807Z",
+        "horizonsAt": "2027-01-08T22:10:52.897Z",
+        "differenceSeconds": -0.08982723229564726
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-01-11T10:35:48.347Z",
+        "horizonsAt": "2027-01-11T10:35:48.430Z",
+        "differenceSeconds": -0.08306806557811797
+      },
+      {
+        "sign": "aries",
+        "at": "2027-01-13T21:13:34.773Z",
+        "horizonsAt": "2027-01-13T21:13:34.831Z",
+        "differenceSeconds": -0.057962589198723435
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-01-16T04:43:47.434Z",
+        "horizonsAt": "2027-01-16T04:43:47.497Z",
+        "differenceSeconds": -0.06279056542553008
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-01-18T08:32:47.816Z",
+        "horizonsAt": "2027-01-18T08:32:47.866Z",
+        "differenceSeconds": -0.050076894694939256
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-01-20T09:21:02.383Z",
+        "horizonsAt": "2027-01-20T09:21:02.434Z",
+        "differenceSeconds": -0.05147169576957822
+      },
+      {
+        "sign": "leo",
+        "at": "2027-01-22T08:45:18.126Z",
+        "horizonsAt": "2027-01-22T08:45:18.182Z",
+        "differenceSeconds": -0.05597780691459775
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-01-24T08:44:58.406Z",
+        "horizonsAt": "2027-01-24T08:44:58.454Z",
+        "differenceSeconds": -0.04787743091583252
+      },
+      {
+        "sign": "libra",
+        "at": "2027-01-26T11:12:19.021Z",
+        "horizonsAt": "2027-01-26T11:12:19.075Z",
+        "differenceSeconds": -0.05356381880119443
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-01-28T17:21:13.588Z",
+        "horizonsAt": "2027-01-28T17:21:13.656Z",
+        "differenceSeconds": -0.06810133927501738
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-01-31T03:13:40.650Z",
+        "horizonsAt": "2027-01-31T03:13:40.723Z",
+        "differenceSeconds": -0.07325118058361113
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-02-02T15:32:59.021Z",
+        "horizonsAt": "2027-02-02T15:32:59.108Z",
+        "differenceSeconds": -0.0870377873070538
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-02-05T04:28:35.460Z",
+        "horizonsAt": "2027-02-05T04:28:35.526Z",
+        "differenceSeconds": -0.0660628080368042
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-02-07T16:31:43.517Z",
+        "horizonsAt": "2027-02-07T16:31:43.596Z",
+        "differenceSeconds": -0.07888381951488554
+      },
+      {
+        "sign": "aries",
+        "at": "2027-02-10T02:48:36.759Z",
+        "horizonsAt": "2027-02-10T02:48:36.817Z",
+        "differenceSeconds": -0.057694315910339355
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-02-12T10:44:29.897Z",
+        "horizonsAt": "2027-02-12T10:44:29.946Z",
+        "differenceSeconds": -0.04943316453136504
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-02-14T15:58:39.002Z",
+        "horizonsAt": "2027-02-14T15:58:39.049Z",
+        "differenceSeconds": -0.04712651716545224
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-02-16T18:38:25.865Z",
+        "horizonsAt": "2027-02-16T18:38:25.920Z",
+        "differenceSeconds": -0.05501221166923642
+      },
+      {
+        "sign": "leo",
+        "at": "2027-02-18T19:31:03.829Z",
+        "horizonsAt": "2027-02-18T19:31:03.899Z",
+        "differenceSeconds": -0.07008612155914307
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-02-20T19:59:05.561Z",
+        "horizonsAt": "2027-02-20T19:59:05.630Z",
+        "differenceSeconds": -0.0687450694385916
+      },
+      {
+        "sign": "libra",
+        "at": "2027-02-22T21:44:26.326Z",
+        "horizonsAt": "2027-02-22T21:44:26.395Z",
+        "differenceSeconds": -0.06912052631378174
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-02-25T02:24:17.747Z",
+        "horizonsAt": "2027-02-25T02:24:17.810Z",
+        "differenceSeconds": -0.06316602230072021
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-02-27T10:52:33.322Z",
+        "horizonsAt": "2027-02-27T10:52:33.383Z",
+        "differenceSeconds": -0.06080578314140439
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-03-01T22:35:31.182Z",
+        "horizonsAt": "2027-03-01T22:35:31.258Z",
+        "differenceSeconds": -0.07630889886058867
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-03-04T11:31:40.853Z",
+        "horizonsAt": "2027-03-04T11:31:40.941Z",
+        "differenceSeconds": -0.08816431509330869
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-03-06T23:25:26.466Z",
+        "horizonsAt": "2027-03-06T23:25:26.552Z",
+        "differenceSeconds": -0.08623312460258603
+      },
+      {
+        "sign": "aries",
+        "at": "2027-03-09T09:02:32.736Z",
+        "horizonsAt": "2027-03-09T09:02:32.798Z",
+        "differenceSeconds": -0.06177137838676572
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-03-11T16:16:13.084Z",
+        "horizonsAt": "2027-03-11T16:16:13.139Z",
+        "differenceSeconds": -0.05501221166923642
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-03-13T21:30:26.531Z",
+        "horizonsAt": "2027-03-13T21:30:26.603Z",
+        "differenceSeconds": -0.07207106100395322
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-03-16T01:10:41.436Z",
+        "horizonsAt": "2027-03-16T01:10:41.485Z",
+        "differenceSeconds": -0.04937957273796201
+      },
+      {
+        "sign": "leo",
+        "at": "2027-03-18T03:40:39.733Z",
+        "horizonsAt": "2027-03-18T03:40:39.800Z",
+        "differenceSeconds": -0.06654560565948486
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-03-20T05:36:55.007Z",
+        "horizonsAt": "2027-03-20T05:36:55.079Z",
+        "differenceSeconds": -0.07217824459075928
+      },
+      {
+        "sign": "libra",
+        "at": "2027-03-22T08:01:38.134Z",
+        "horizonsAt": "2027-03-22T08:01:38.206Z",
+        "differenceSeconds": -0.07174919592216611
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-03-24T12:18:16.627Z",
+        "horizonsAt": "2027-03-24T12:18:16.679Z",
+        "differenceSeconds": -0.0516862201038748
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-03-26T19:43:10.850Z",
+        "horizonsAt": "2027-03-26T19:43:10.927Z",
+        "differenceSeconds": -0.07689903723075986
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-03-29T06:32:59.817Z",
+        "horizonsAt": "2027-03-29T06:32:59.896Z",
+        "differenceSeconds": -0.07861554622650146
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-03-31T19:19:47.347Z",
+        "horizonsAt": "2027-03-31T19:19:47.428Z",
+        "differenceSeconds": -0.0813513994216919
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-04-03T07:25:05.071Z",
+        "horizonsAt": "2027-04-03T07:25:05.144Z",
+        "differenceSeconds": -0.07292931550182402
+      },
+      {
+        "sign": "aries",
+        "at": "2027-04-05T16:48:22.422Z",
+        "horizonsAt": "2027-04-05T16:48:22.478Z",
+        "differenceSeconds": -0.05629967199638486
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-04-07T23:09:38.209Z",
+        "horizonsAt": "2027-04-07T23:09:38.280Z",
+        "differenceSeconds": -0.0705153273884207
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-04-10T03:21:15.593Z",
+        "horizonsAt": "2027-04-10T03:21:15.657Z",
+        "differenceSeconds": -0.0643462990410626
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-04-12T06:31:53.350Z",
+        "horizonsAt": "2027-04-12T06:31:53.426Z",
+        "differenceSeconds": -0.075826101237908
+      },
+      {
+        "sign": "leo",
+        "at": "2027-04-14T09:29:57.417Z",
+        "horizonsAt": "2027-04-14T09:29:57.475Z",
+        "differenceSeconds": -0.058284454280510545
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-04-16T12:39:21.895Z",
+        "horizonsAt": "2027-04-16T12:39:21.961Z",
+        "differenceSeconds": -0.0661165569908917
+      },
+      {
+        "sign": "libra",
+        "at": "2027-04-18T16:21:49.760Z",
+        "horizonsAt": "2027-04-18T16:21:49.826Z",
+        "differenceSeconds": -0.06579469190910459
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-04-20T21:20:36.071Z",
+        "horizonsAt": "2027-04-20T21:20:36.128Z",
+        "differenceSeconds": -0.05694340215995908
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-04-23T04:37:15.359Z",
+        "horizonsAt": "2027-04-23T04:37:15.443Z",
+        "differenceSeconds": -0.08419459336437285
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-04-25T14:51:56.243Z",
+        "horizonsAt": "2027-04-25T14:51:56.314Z",
+        "differenceSeconds": -0.0713735818862915
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-04-28T03:23:36.576Z",
+        "horizonsAt": "2027-04-28T03:23:36.666Z",
+        "differenceSeconds": -0.09009550558403134
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-04-30T15:52:18.270Z",
+        "horizonsAt": "2027-04-30T15:52:18.365Z",
+        "differenceSeconds": -0.09492348181083798
+      },
+      {
+        "sign": "aries",
+        "at": "2027-05-03T01:42:47.420Z",
+        "horizonsAt": "2027-05-03T01:42:47.483Z",
+        "differenceSeconds": -0.06257604109123349
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-05-05T07:52:42.440Z",
+        "horizonsAt": "2027-05-05T07:52:42.508Z",
+        "differenceSeconds": -0.06836961256340146
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-05-07T11:06:33.117Z",
+        "horizonsAt": "2027-05-07T11:06:33.179Z",
+        "differenceSeconds": -0.06182497018016875
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-05-09T12:59:11.274Z",
+        "horizonsAt": "2027-05-09T12:59:11.343Z",
+        "differenceSeconds": -0.06858413689769804
+      },
+      {
+        "sign": "leo",
+        "at": "2027-05-11T15:00:32.738Z",
+        "horizonsAt": "2027-05-11T15:00:32.798Z",
+        "differenceSeconds": -0.060108304023742676
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-05-13T18:05:32.940Z",
+        "horizonsAt": "2027-05-13T18:05:32.999Z",
+        "differenceSeconds": -0.05941098206676543
+      },
+      {
+        "sign": "libra",
+        "at": "2027-05-15T22:33:29.700Z",
+        "horizonsAt": "2027-05-15T22:33:29.755Z",
+        "differenceSeconds": -0.05538766854442656
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-05-18T04:33:15.418Z",
+        "horizonsAt": "2027-05-18T04:33:15.479Z",
+        "differenceSeconds": -0.060644850600510836
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-05-20T12:27:18.747Z",
+        "horizonsAt": "2027-05-20T12:27:18.830Z",
+        "differenceSeconds": -0.08301447378471494
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-05-22T22:42:38.111Z",
+        "horizonsAt": "2027-05-22T22:42:38.173Z",
+        "differenceSeconds": -0.0619859027210623
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-05-25T11:04:54.103Z",
+        "horizonsAt": "2027-05-25T11:04:54.183Z",
+        "differenceSeconds": -0.07963489042595029
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-05-27T23:55:05.537Z",
+        "horizonsAt": "2027-05-27T23:55:05.622Z",
+        "differenceSeconds": -0.08478473173454404
+      },
+      {
+        "sign": "aries",
+        "at": "2027-05-30T10:39:20.714Z",
+        "horizonsAt": "2027-05-30T10:39:20.794Z",
+        "differenceSeconds": -0.07984941476024687
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-06-01T17:33:03.690Z",
+        "horizonsAt": "2027-06-01T17:33:03.756Z",
+        "differenceSeconds": -0.06600921624340117
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-06-03T20:43:15.958Z",
+        "horizonsAt": "2027-06-03T20:43:16.010Z",
+        "differenceSeconds": -0.05195449339225888
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-06-05T21:38:55.967Z",
+        "horizonsAt": "2027-06-05T21:38:56.033Z",
+        "differenceSeconds": -0.0664384220726788
+      },
+      {
+        "sign": "leo",
+        "at": "2027-06-07T22:12:56.539Z",
+        "horizonsAt": "2027-06-07T22:12:56.601Z",
+        "differenceSeconds": -0.06209324346855283
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-06-10T00:00:30.842Z",
+        "horizonsAt": "2027-06-10T00:00:30.895Z",
+        "differenceSeconds": -0.053134612971916795
+      },
+      {
+        "sign": "libra",
+        "at": "2027-06-12T03:57:08.749Z",
+        "horizonsAt": "2027-06-12T03:57:08.802Z",
+        "differenceSeconds": -0.053188204765319824
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-06-14T10:17:15.241Z",
+        "horizonsAt": "2027-06-14T10:17:15.306Z",
+        "differenceSeconds": -0.06541907787322998
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-06-16T18:53:29.490Z",
+        "horizonsAt": "2027-06-16T18:53:29.564Z",
+        "differenceSeconds": -0.07389491074718535
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-06-19T05:35:28.545Z",
+        "horizonsAt": "2027-06-19T05:35:28.624Z",
+        "differenceSeconds": -0.07915209280326962
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-06-21T18:00:29.524Z",
+        "horizonsAt": "2027-06-21T18:00:29.588Z",
+        "differenceSeconds": -0.06391709321178496
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-06-24T07:00:51.360Z",
+        "horizonsAt": "2027-06-24T07:00:51.422Z",
+        "differenceSeconds": -0.06209324346855283
+      },
+      {
+        "sign": "aries",
+        "at": "2027-06-26T18:35:21.733Z",
+        "horizonsAt": "2027-06-26T18:35:21.812Z",
+        "differenceSeconds": -0.07925927639007568
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-06-29T02:46:23.386Z",
+        "horizonsAt": "2027-06-29T02:46:23.445Z",
+        "differenceSeconds": -0.05882084369659424
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-07-01T06:55:52.229Z",
+        "horizonsAt": "2027-07-01T06:55:52.268Z",
+        "differenceSeconds": -0.039187073707580566
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-07-03T07:58:24.472Z",
+        "horizonsAt": "2027-07-03T07:58:24.530Z",
+        "differenceSeconds": -0.057962589198723435
+      },
+      {
+        "sign": "leo",
+        "at": "2027-07-05T07:40:20.287Z",
+        "horizonsAt": "2027-07-05T07:40:20.352Z",
+        "differenceSeconds": -0.06493628025054932
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-07-07T07:56:55.483Z",
+        "horizonsAt": "2027-07-07T07:56:55.540Z",
+        "differenceSeconds": -0.056675128871575
+      },
+      {
+        "sign": "libra",
+        "at": "2027-07-09T10:23:34.570Z",
+        "horizonsAt": "2027-07-09T10:23:34.615Z",
+        "differenceSeconds": -0.04481971263885498
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-07-11T15:54:41.367Z",
+        "horizonsAt": "2027-07-11T15:54:41.431Z",
+        "differenceSeconds": -0.06354163633659482
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-07-14T00:32:50.726Z",
+        "horizonsAt": "2027-07-14T00:32:50.784Z",
+        "differenceSeconds": -0.058230862487107515
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-07-16T11:39:03.987Z",
+        "horizonsAt": "2027-07-16T11:39:04.044Z",
+        "differenceSeconds": -0.056675128871575
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-07-19T00:15:32.326Z",
+        "horizonsAt": "2027-07-19T00:15:32.383Z",
+        "differenceSeconds": -0.05662153707817197
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-07-21T13:14:09.956Z",
+        "horizonsAt": "2027-07-21T13:14:10.017Z",
+        "differenceSeconds": -0.060644850600510836
+      },
+      {
+        "sign": "aries",
+        "at": "2027-07-24T01:09:23.487Z",
+        "horizonsAt": "2027-07-24T01:09:23.537Z",
+        "differenceSeconds": -0.05029141902923584
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-07-26T10:27:54.396Z",
+        "horizonsAt": "2027-07-26T10:27:54.442Z",
+        "differenceSeconds": -0.04610717296600342
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-07-28T16:10:02.489Z",
+        "horizonsAt": "2027-07-28T16:10:02.543Z",
+        "differenceSeconds": -0.05442207329906523
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-07-30T18:24:53.261Z",
+        "horizonsAt": "2027-07-30T18:24:53.317Z",
+        "differenceSeconds": -0.055870466167107224
+      },
+      {
+        "sign": "leo",
+        "at": "2027-08-01T18:24:57.656Z",
+        "horizonsAt": "2027-08-01T18:24:57.696Z",
+        "differenceSeconds": -0.040367350447922945
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-08-03T17:57:04.519Z",
+        "horizonsAt": "2027-08-03T17:57:04.562Z",
+        "differenceSeconds": -0.04272758960723877
+      },
+      {
+        "sign": "libra",
+        "at": "2027-08-05T18:54:44.224Z",
+        "horizonsAt": "2027-08-05T18:54:44.267Z",
+        "differenceSeconds": -0.04331772797740996
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-08-07T22:52:40.682Z",
+        "horizonsAt": "2027-08-07T22:52:40.724Z",
+        "differenceSeconds": -0.04186933510936797
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-08-10T06:35:42.305Z",
+        "horizonsAt": "2027-08-10T06:35:42.343Z",
+        "differenceSeconds": -0.037953362334519625
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-08-12T17:34:25.785Z",
+        "horizonsAt": "2027-08-12T17:34:25.845Z",
+        "differenceSeconds": -0.06016205297783017
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-08-15T06:19:38.694Z",
+        "horizonsAt": "2027-08-15T06:19:38.756Z",
+        "differenceSeconds": -0.06155669689178467
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-08-17T19:11:43.015Z",
+        "horizonsAt": "2027-08-17T19:11:43.080Z",
+        "differenceSeconds": -0.06488268845714629
+      },
+      {
+        "sign": "aries",
+        "at": "2027-08-20T06:54:22.005Z",
+        "horizonsAt": "2027-08-20T06:54:22.061Z",
+        "differenceSeconds": -0.05635326378978789
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-08-22T16:32:48.585Z",
+        "horizonsAt": "2027-08-22T16:32:48.622Z",
+        "differenceSeconds": -0.03725588321685791
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-08-24T23:26:36.642Z",
+        "horizonsAt": "2027-08-24T23:26:36.674Z",
+        "differenceSeconds": -0.03210604190826416
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-08-27T03:20:45.354Z",
+        "horizonsAt": "2027-08-27T03:20:45.390Z",
+        "differenceSeconds": -0.03623669617809355
+      },
+      {
+        "sign": "leo",
+        "at": "2027-08-29T04:42:34.650Z",
+        "horizonsAt": "2027-08-29T04:42:34.686Z",
+        "differenceSeconds": -0.0360757636372
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-08-31T04:43:46.940Z",
+        "horizonsAt": "2027-08-31T04:43:46.987Z",
+        "differenceSeconds": -0.04696558462455869
+      },
+      {
+        "sign": "libra",
+        "at": "2027-09-02T05:07:02.450Z",
+        "horizonsAt": "2027-09-02T05:07:02.477Z",
+        "differenceSeconds": -0.02727806568145752
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-09-04T07:44:02.596Z",
+        "horizonsAt": "2027-09-04T07:44:02.633Z",
+        "differenceSeconds": -0.03688042634166777
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-09-06T14:01:13.277Z",
+        "horizonsAt": "2027-09-06T14:01:13.321Z",
+        "differenceSeconds": -0.04374693380668759
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-09-09T00:11:46.035Z",
+        "horizonsAt": "2027-09-09T00:11:46.089Z",
+        "differenceSeconds": -0.0543684815056622
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-09-11T12:49:54.487Z",
+        "horizonsAt": "2027-09-11T12:49:54.556Z",
+        "differenceSeconds": -0.06912052631378174
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-09-14T01:38:53.962Z",
+        "horizonsAt": "2027-09-14T01:38:54.012Z",
+        "differenceSeconds": -0.049808621406555176
+      },
+      {
+        "sign": "aries",
+        "at": "2027-09-16T12:56:19.613Z",
+        "horizonsAt": "2027-09-16T12:56:19.659Z",
+        "differenceSeconds": -0.045570783549919724
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-09-18T22:05:17.119Z",
+        "horizonsAt": "2027-09-18T22:05:17.158Z",
+        "differenceSeconds": -0.03891895757988095
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-09-21T05:05:46.809Z",
+        "horizonsAt": "2027-09-21T05:05:46.850Z",
+        "differenceSeconds": -0.040742807323113084
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-09-23T10:02:12.795Z",
+        "horizonsAt": "2027-09-23T10:02:12.830Z",
+        "differenceSeconds": -0.03543203347362578
+      },
+      {
+        "sign": "leo",
+        "at": "2027-09-25T13:00:28.810Z",
+        "horizonsAt": "2027-09-25T13:00:28.866Z",
+        "differenceSeconds": -0.05624592304229736
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-09-27T14:28:09.147Z",
+        "horizonsAt": "2027-09-27T14:28:09.176Z",
+        "differenceSeconds": -0.029423937667161226
+      },
+      {
+        "sign": "libra",
+        "at": "2027-09-29T15:30:29.854Z",
+        "horizonsAt": "2027-09-29T15:30:29.894Z",
+        "differenceSeconds": -0.04026000970043242
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-10-01T17:45:25.350Z",
+        "horizonsAt": "2027-10-01T17:45:25.385Z",
+        "differenceSeconds": -0.034680962562561035
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-10-03T22:55:57.366Z",
+        "horizonsAt": "2027-10-03T22:55:57.426Z",
+        "differenceSeconds": -0.059786438941955566
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-10-06T07:59:21.738Z",
+        "horizonsAt": "2027-10-06T07:59:21.791Z",
+        "differenceSeconds": -0.052812747890129685
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-10-08T20:09:41.670Z",
+        "horizonsAt": "2027-10-08T20:09:41.728Z",
+        "differenceSeconds": -0.058230862487107515
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-10-11T09:01:36.211Z",
+        "horizonsAt": "2027-10-11T09:01:36.273Z",
+        "differenceSeconds": -0.06241510855033994
+      },
+      {
+        "sign": "aries",
+        "at": "2027-10-13T20:09:40.461Z",
+        "horizonsAt": "2027-10-13T20:09:40.501Z",
+        "differenceSeconds": -0.039723620284348726
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-10-16T04:36:53.579Z",
+        "horizonsAt": "2027-10-16T04:36:53.619Z",
+        "differenceSeconds": -0.03988455282524228
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-10-18T10:46:21.957Z",
+        "horizonsAt": "2027-10-18T10:46:22.012Z",
+        "differenceSeconds": -0.05501221166923642
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-10-20T15:24:51.091Z",
+        "horizonsAt": "2027-10-20T15:24:51.153Z",
+        "differenceSeconds": -0.06246870034374297
+      },
+      {
+        "sign": "leo",
+        "at": "2027-10-22T19:02:53.280Z",
+        "horizonsAt": "2027-10-22T19:02:53.343Z",
+        "differenceSeconds": -0.06338070379570127
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-10-24T21:53:47.233Z",
+        "horizonsAt": "2027-10-24T21:53:47.268Z",
+        "differenceSeconds": -0.03511016839183867
+      },
+      {
+        "sign": "libra",
+        "at": "2027-10-27T00:21:14.028Z",
+        "horizonsAt": "2027-10-27T00:21:14.063Z",
+        "differenceSeconds": -0.03473471151664853
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-10-29T03:22:49.911Z",
+        "horizonsAt": "2027-10-29T03:22:49.967Z",
+        "differenceSeconds": -0.056138739455491304
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-10-31T08:24:18.324Z",
+        "horizonsAt": "2027-10-31T08:24:18.377Z",
+        "differenceSeconds": -0.052866339683532715
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-11-02T16:40:39.760Z",
+        "horizonsAt": "2027-11-02T16:40:39.820Z",
+        "differenceSeconds": -0.059786438941955566
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-11-05T04:13:16.782Z",
+        "horizonsAt": "2027-11-05T04:13:16.857Z",
+        "differenceSeconds": -0.07486050599254668
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-11-07T17:09:00.417Z",
+        "horizonsAt": "2027-11-07T17:09:00.489Z",
+        "differenceSeconds": -0.07217824459075928
+      },
+      {
+        "sign": "aries",
+        "at": "2027-11-10T04:38:26.689Z",
+        "horizonsAt": "2027-11-10T04:38:26.751Z",
+        "differenceSeconds": -0.06214683526195586
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-11-12T12:57:49.975Z",
+        "horizonsAt": "2027-11-12T12:57:50.024Z",
+        "differenceSeconds": -0.0490039587020874
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-11-14T18:14:28.111Z",
+        "horizonsAt": "2027-11-14T18:14:28.166Z",
+        "differenceSeconds": -0.05533407675102353
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-11-16T21:39:29.476Z",
+        "horizonsAt": "2027-11-16T21:39:29.520Z",
+        "differenceSeconds": -0.04412239068187773
+      },
+      {
+        "sign": "leo",
+        "at": "2027-11-19T00:27:37.314Z",
+        "horizonsAt": "2027-11-19T00:27:37.378Z",
+        "differenceSeconds": -0.06407802575267851
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-11-21T03:25:11.964Z",
+        "horizonsAt": "2027-11-21T03:25:12.027Z",
+        "differenceSeconds": -0.06316602230072021
+      },
+      {
+        "sign": "libra",
+        "at": "2027-11-23T06:52:32.196Z",
+        "horizonsAt": "2027-11-23T06:52:32.262Z",
+        "differenceSeconds": -0.0655264186207205
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-11-25T11:10:14.574Z",
+        "horizonsAt": "2027-11-25T11:10:14.639Z",
+        "differenceSeconds": -0.06547282682731748
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-11-27T17:00:40.319Z",
+        "horizonsAt": "2027-11-27T17:00:40.367Z",
+        "differenceSeconds": -0.04841397749260068
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-11-30T01:18:24.042Z",
+        "horizonsAt": "2027-11-30T01:18:24.111Z",
+        "differenceSeconds": -0.0687450694385916
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-12-02T12:26:04.863Z",
+        "horizonsAt": "2027-12-02T12:26:04.941Z",
+        "differenceSeconds": -0.07775729172863066
+      },
+      {
+        "sign": "pisces",
+        "at": "2027-12-05T01:20:01.820Z",
+        "horizonsAt": "2027-12-05T01:20:01.896Z",
+        "differenceSeconds": -0.07561157690361142
+      },
+      {
+        "sign": "aries",
+        "at": "2027-12-07T13:30:29.744Z",
+        "horizonsAt": "2027-12-07T13:30:29.807Z",
+        "differenceSeconds": -0.06262963288463652
+      },
+      {
+        "sign": "taurus",
+        "at": "2027-12-09T22:35:40.712Z",
+        "horizonsAt": "2027-12-09T22:35:40.757Z",
+        "differenceSeconds": -0.04449784755706787
+      },
+      {
+        "sign": "gemini",
+        "at": "2027-12-12T03:54:40.928Z",
+        "horizonsAt": "2027-12-12T03:54:40.967Z",
+        "differenceSeconds": -0.03924082266166806
+      },
+      {
+        "sign": "cancer",
+        "at": "2027-12-14T06:24:05.250Z",
+        "horizonsAt": "2027-12-14T06:24:05.313Z",
+        "differenceSeconds": -0.06311243050731719
+      },
+      {
+        "sign": "leo",
+        "at": "2027-12-16T07:41:04.094Z",
+        "horizonsAt": "2027-12-16T07:41:04.146Z",
+        "differenceSeconds": -0.05211542593315244
+      },
+      {
+        "sign": "virgo",
+        "at": "2027-12-18T09:16:47.307Z",
+        "horizonsAt": "2027-12-18T09:16:47.368Z",
+        "differenceSeconds": -0.06091296672821045
+      },
+      {
+        "sign": "libra",
+        "at": "2027-12-20T12:13:17.002Z",
+        "horizonsAt": "2027-12-20T12:13:17.056Z",
+        "differenceSeconds": -0.05367100238800049
+      },
+      {
+        "sign": "scorpio",
+        "at": "2027-12-22T17:00:31.447Z",
+        "horizonsAt": "2027-12-22T17:00:31.500Z",
+        "differenceSeconds": -0.0525982235558331
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2027-12-24T23:50:06.957Z",
+        "horizonsAt": "2027-12-24T23:50:07.015Z",
+        "differenceSeconds": -0.058230862487107515
+      },
+      {
+        "sign": "capricorn",
+        "at": "2027-12-27T08:50:52.467Z",
+        "horizonsAt": "2027-12-27T08:50:52.528Z",
+        "differenceSeconds": -0.0611276482231915
+      },
+      {
+        "sign": "aquarius",
+        "at": "2027-12-29T20:04:03.977Z",
+        "horizonsAt": "2027-12-29T20:04:04.045Z",
+        "differenceSeconds": -0.06756494985893369
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-01-01T08:52:46.313Z",
+        "horizonsAt": "2028-01-01T08:52:46.377Z",
+        "differenceSeconds": -0.06370256887748837
+      },
+      {
+        "sign": "aries",
+        "at": "2028-01-03T21:35:24.315Z",
+        "horizonsAt": "2028-01-03T21:35:24.393Z",
+        "differenceSeconds": -0.0781864975579083
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-01-06T07:55:54.893Z",
+        "horizonsAt": "2028-01-06T07:55:54.966Z",
+        "differenceSeconds": -0.07341211312450469
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-01-08T14:26:22.634Z",
+        "horizonsAt": "2028-01-08T14:26:22.700Z",
+        "differenceSeconds": -0.06600921624340117
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-01-10T17:14:56.291Z",
+        "horizonsAt": "2028-01-10T17:14:56.333Z",
+        "differenceSeconds": -0.04186933510936797
+      },
+      {
+        "sign": "leo",
+        "at": "2028-01-12T17:42:56.952Z",
+        "horizonsAt": "2028-01-12T17:42:57.005Z",
+        "differenceSeconds": -0.053081021178513765
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-01-14T17:40:00.621Z",
+        "horizonsAt": "2028-01-14T17:40:00.665Z",
+        "differenceSeconds": -0.04385411739349365
+      },
+      {
+        "sign": "libra",
+        "at": "2028-01-16T18:51:22.789Z",
+        "horizonsAt": "2028-01-16T18:51:22.841Z",
+        "differenceSeconds": -0.05227635847404599
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-01-18T22:35:05.749Z",
+        "horizonsAt": "2028-01-18T22:35:05.807Z",
+        "differenceSeconds": -0.057640724116936326
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-01-21T05:23:50.116Z",
+        "horizonsAt": "2028-01-21T05:23:50.177Z",
+        "differenceSeconds": -0.061342172557488084
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-01-23T15:01:50.742Z",
+        "horizonsAt": "2028-01-23T15:01:50.814Z",
+        "differenceSeconds": -0.07153451442718506
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-01-26T02:43:44.687Z",
+        "horizonsAt": "2028-01-26T02:43:44.746Z",
+        "differenceSeconds": -0.05941098206676543
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-01-28T15:33:47.910Z",
+        "horizonsAt": "2028-01-28T15:33:47.996Z",
+        "differenceSeconds": -0.08607219206169248
+      },
+      {
+        "sign": "aries",
+        "at": "2028-01-31T04:22:28.901Z",
+        "horizonsAt": "2028-01-31T04:22:28.957Z",
+        "differenceSeconds": -0.056138739455491304
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-02-02T15:37:15.607Z",
+        "horizonsAt": "2028-02-02T15:37:15.675Z",
+        "differenceSeconds": -0.06794040673412383
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-02-04T23:45:52.953Z",
+        "horizonsAt": "2028-02-04T23:45:53.016Z",
+        "differenceSeconds": -0.06321977125480771
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-02-07T04:06:30.124Z",
+        "horizonsAt": "2028-02-07T04:06:30.193Z",
+        "differenceSeconds": -0.06885241018608212
+      },
+      {
+        "sign": "leo",
+        "at": "2028-02-09T05:12:29.156Z",
+        "horizonsAt": "2028-02-09T05:12:29.221Z",
+        "differenceSeconds": -0.06515096174553037
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-02-11T04:35:07.342Z",
+        "horizonsAt": "2028-02-11T04:35:07.407Z",
+        "differenceSeconds": -0.06525814533233643
+      },
+      {
+        "sign": "libra",
+        "at": "2028-02-13T04:12:49.178Z",
+        "horizonsAt": "2028-02-13T04:12:49.218Z",
+        "differenceSeconds": -0.0396162795368582
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-02-15T06:03:00.010Z",
+        "horizonsAt": "2028-02-15T06:03:00.049Z",
+        "differenceSeconds": -0.039455346995964646
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-02-17T11:29:27.315Z",
+        "horizonsAt": "2028-02-17T11:29:27.368Z",
+        "differenceSeconds": -0.05334913730621338
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-02-19T20:45:15.104Z",
+        "horizonsAt": "2028-02-19T20:45:15.171Z",
+        "differenceSeconds": -0.06681387894786894
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-02-22T08:43:44.962Z",
+        "horizonsAt": "2028-02-22T08:43:45.034Z",
+        "differenceSeconds": -0.07233917713165283
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-02-24T21:43:32.713Z",
+        "horizonsAt": "2028-02-24T21:43:32.785Z",
+        "differenceSeconds": -0.07164185517467558
+      },
+      {
+        "sign": "aries",
+        "at": "2028-02-27T10:21:59.677Z",
+        "horizonsAt": "2028-02-27T10:21:59.751Z",
+        "differenceSeconds": -0.07378756999969482
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-02-29T21:41:43.399Z",
+        "horizonsAt": "2028-02-29T21:41:43.473Z",
+        "differenceSeconds": -0.07389491074718535
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-03-03T06:48:57.358Z",
+        "horizonsAt": "2028-03-03T06:48:57.418Z",
+        "differenceSeconds": -0.06026923656463623
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-03-05T12:54:04.261Z",
+        "horizonsAt": "2028-03-05T12:54:04.321Z",
+        "differenceSeconds": -0.05984018789604306
+      },
+      {
+        "sign": "leo",
+        "at": "2028-03-07T15:42:40.747Z",
+        "horizonsAt": "2028-03-07T15:42:40.807Z",
+        "differenceSeconds": -0.06026923656463623
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-03-09T15:59:25.557Z",
+        "horizonsAt": "2028-03-09T15:59:25.622Z",
+        "differenceSeconds": -0.0652045535389334
+      },
+      {
+        "sign": "libra",
+        "at": "2028-03-11T15:21:21.251Z",
+        "horizonsAt": "2028-03-11T15:21:21.307Z",
+        "differenceSeconds": -0.05603139870800078
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-03-13T15:53:03.892Z",
+        "horizonsAt": "2028-03-13T15:53:03.935Z",
+        "differenceSeconds": -0.04299586289562285
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-03-15T19:33:15.226Z",
+        "horizonsAt": "2028-03-15T19:33:15.289Z",
+        "differenceSeconds": -0.06279056542553008
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-03-18T03:26:46.749Z",
+        "horizonsAt": "2028-03-18T03:26:46.827Z",
+        "differenceSeconds": -0.07775729172863066
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-03-20T14:57:16.879Z",
+        "horizonsAt": "2028-03-20T14:57:16.959Z",
+        "differenceSeconds": -0.08043955313041806
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-03-23T04:00:21.972Z",
+        "horizonsAt": "2028-03-23T04:00:22.043Z",
+        "differenceSeconds": -0.07072985172271729
+      },
+      {
+        "sign": "aries",
+        "at": "2028-03-25T16:30:29.442Z",
+        "horizonsAt": "2028-03-25T16:30:29.517Z",
+        "differenceSeconds": -0.0745922327041626
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-03-28T03:24:01.597Z",
+        "horizonsAt": "2028-03-28T03:24:01.672Z",
+        "differenceSeconds": -0.07502143853344023
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-03-30T12:23:17.432Z",
+        "horizonsAt": "2028-03-30T12:23:17.509Z",
+        "differenceSeconds": -0.07748901844024658
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-04-01T19:14:24.952Z",
+        "horizonsAt": "2028-04-01T19:14:25.004Z",
+        "differenceSeconds": -0.05195449339225888
+      },
+      {
+        "sign": "leo",
+        "at": "2028-04-03T23:37:50.295Z",
+        "horizonsAt": "2028-04-03T23:37:50.355Z",
+        "differenceSeconds": -0.060430169105529785
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-04-06T01:36:29.135Z",
+        "horizonsAt": "2028-04-06T01:36:29.204Z",
+        "differenceSeconds": -0.06922786706127226
+      },
+      {
+        "sign": "libra",
+        "at": "2028-04-08T02:02:52.786Z",
+        "horizonsAt": "2028-04-08T02:02:52.850Z",
+        "differenceSeconds": -0.06402443395927548
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-04-10T02:36:44.542Z",
+        "horizonsAt": "2028-04-10T02:36:44.597Z",
+        "differenceSeconds": -0.055495009291917086
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-04-12T05:18:27.311Z",
+        "horizonsAt": "2028-04-12T05:18:27.380Z",
+        "differenceSeconds": -0.06928145885467529
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-04-14T11:45:07.771Z",
+        "horizonsAt": "2028-04-14T11:45:07.839Z",
+        "differenceSeconds": -0.06767213344573975
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-04-16T22:11:22.524Z",
+        "horizonsAt": "2028-04-16T22:11:22.594Z",
+        "differenceSeconds": -0.06997893797233701
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-04-19T10:56:48.644Z",
+        "horizonsAt": "2028-04-19T10:56:48.720Z",
+        "differenceSeconds": -0.07646983140148222
+      },
+      {
+        "sign": "aries",
+        "at": "2028-04-21T23:26:37.411Z",
+        "horizonsAt": "2028-04-21T23:26:37.482Z",
+        "differenceSeconds": -0.07062266813591123
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-04-24T09:58:30.158Z",
+        "horizonsAt": "2028-04-24T09:58:30.228Z",
+        "differenceSeconds": -0.0696033239364624
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-04-26T18:14:43.025Z",
+        "horizonsAt": "2028-04-26T18:14:43.102Z",
+        "differenceSeconds": -0.07652342319488525
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-04-29T00:37:31.564Z",
+        "horizonsAt": "2028-04-29T00:37:31.643Z",
+        "differenceSeconds": -0.07872288697399199
+      },
+      {
+        "sign": "leo",
+        "at": "2028-05-01T05:23:08.286Z",
+        "horizonsAt": "2028-05-01T05:23:08.349Z",
+        "differenceSeconds": -0.06332695484161377
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-05-03T08:35:38.569Z",
+        "horizonsAt": "2028-05-03T08:35:38.622Z",
+        "differenceSeconds": -0.053402886260300875
+      },
+      {
+        "sign": "libra",
+        "at": "2028-05-05T10:33:54.721Z",
+        "horizonsAt": "2028-05-05T10:33:54.780Z",
+        "differenceSeconds": -0.05882084369659424
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-05-07T12:15:25.899Z",
+        "horizonsAt": "2028-05-07T12:15:25.946Z",
+        "differenceSeconds": -0.04744838224723935
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-05-09T15:12:13.528Z",
+        "horizonsAt": "2028-05-09T15:12:13.597Z",
+        "differenceSeconds": -0.06917427526786923
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-05-11T21:00:00.356Z",
+        "horizonsAt": "2028-05-11T21:00:00.418Z",
+        "differenceSeconds": -0.06171762943267822
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-05-14T06:26:26.919Z",
+        "horizonsAt": "2028-05-14T06:26:27.003Z",
+        "differenceSeconds": -0.08381913648918271
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-05-16T18:38:44.870Z",
+        "horizonsAt": "2028-05-16T18:38:44.947Z",
+        "differenceSeconds": -0.07668435573577881
+      },
+      {
+        "sign": "aries",
+        "at": "2028-05-19T07:12:31.793Z",
+        "horizonsAt": "2028-05-19T07:12:31.872Z",
+        "differenceSeconds": -0.07893741130828857
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-05-21T17:48:30.964Z",
+        "horizonsAt": "2028-05-21T17:48:31.020Z",
+        "differenceSeconds": -0.0557631254196167
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-05-24T01:35:20.140Z",
+        "horizonsAt": "2028-05-24T01:35:20.195Z",
+        "differenceSeconds": -0.055173144210129976
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-05-26T07:00:01.702Z",
+        "horizonsAt": "2028-05-26T07:00:01.761Z",
+        "differenceSeconds": -0.05898177623748779
+      },
+      {
+        "sign": "leo",
+        "at": "2028-05-28T10:54:51.310Z",
+        "horizonsAt": "2028-05-28T10:54:51.384Z",
+        "differenceSeconds": -0.0737339782062918
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-05-30T14:01:17.507Z",
+        "horizonsAt": "2028-05-30T14:01:17.560Z",
+        "differenceSeconds": -0.052759156096726656
+      },
+      {
+        "sign": "libra",
+        "at": "2028-06-01T16:47:03.073Z",
+        "horizonsAt": "2028-06-01T16:47:03.121Z",
+        "differenceSeconds": -0.04755556583404541
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-06-03T19:44:16.328Z",
+        "horizonsAt": "2028-06-03T19:44:16.386Z",
+        "differenceSeconds": -0.057962589198723435
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-06-05T23:44:37.999Z",
+        "horizonsAt": "2028-06-05T23:44:38.049Z",
+        "differenceSeconds": -0.05050610052421689
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-06-08T05:53:09.961Z",
+        "horizonsAt": "2028-06-08T05:53:10.017Z",
+        "differenceSeconds": -0.056460604537278414
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-06-10T14:57:19.598Z",
+        "horizonsAt": "2028-06-10T14:57:19.681Z",
+        "differenceSeconds": -0.08279979228973389
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-06-13T02:40:51.433Z",
+        "horizonsAt": "2028-06-13T02:40:51.494Z",
+        "differenceSeconds": -0.061020307475700974
+      },
+      {
+        "sign": "aries",
+        "at": "2028-06-15T15:18:48.377Z",
+        "horizonsAt": "2028-06-15T15:18:48.441Z",
+        "differenceSeconds": -0.06450723158195615
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-06-18T02:24:52.931Z",
+        "horizonsAt": "2028-06-18T02:24:52.994Z",
+        "differenceSeconds": -0.06295149796642363
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-06-20T10:24:51.639Z",
+        "horizonsAt": "2028-06-20T10:24:51.687Z",
+        "differenceSeconds": -0.048038363456726074
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-06-22T15:17:14.224Z",
+        "horizonsAt": "2028-06-22T15:17:14.266Z",
+        "differenceSeconds": -0.04154747002758086
+      },
+      {
+        "sign": "leo",
+        "at": "2028-06-24T18:02:26.392Z",
+        "horizonsAt": "2028-06-24T18:02:26.445Z",
+        "differenceSeconds": -0.05265181534923613
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-06-26T19:57:39.484Z",
+        "horizonsAt": "2028-06-26T19:57:39.536Z",
+        "differenceSeconds": -0.05216901772655547
+      },
+      {
+        "sign": "libra",
+        "at": "2028-06-28T22:09:53.645Z",
+        "horizonsAt": "2028-06-28T22:09:53.702Z",
+        "differenceSeconds": -0.05699699395336211
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-07-01T01:27:35.007Z",
+        "horizonsAt": "2028-07-01T01:27:35.045Z",
+        "differenceSeconds": -0.03816788666881621
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-07-03T06:24:16.182Z",
+        "horizonsAt": "2028-07-03T06:24:16.244Z",
+        "differenceSeconds": -0.0619859027210623
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-07-05T13:25:50.994Z",
+        "horizonsAt": "2028-07-05T13:25:51.058Z",
+        "differenceSeconds": -0.06380975246429443
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-07-07T22:49:15.486Z",
+        "horizonsAt": "2028-07-07T22:49:15.542Z",
+        "differenceSeconds": -0.05629967199638486
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-07-10T10:23:51.490Z",
+        "horizonsAt": "2028-07-10T10:23:51.548Z",
+        "differenceSeconds": -0.057694315910339355
+      },
+      {
+        "sign": "aries",
+        "at": "2028-07-12T23:04:18.095Z",
+        "horizonsAt": "2028-07-12T23:04:18.144Z",
+        "differenceSeconds": -0.0490577076561749
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-07-15T10:50:54.362Z",
+        "horizonsAt": "2028-07-15T10:50:54.421Z",
+        "differenceSeconds": -0.05871366010978818
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-07-17T19:46:06.301Z",
+        "horizonsAt": "2028-07-17T19:46:06.337Z",
+        "differenceSeconds": -0.03612935543060303
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-07-20T01:02:39.382Z",
+        "horizonsAt": "2028-07-20T01:02:39.434Z",
+        "differenceSeconds": -0.05211542593315244
+      },
+      {
+        "sign": "leo",
+        "at": "2028-07-22T03:16:52.197Z",
+        "horizonsAt": "2028-07-22T03:16:52.233Z",
+        "differenceSeconds": -0.03570030676200986
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-07-24T03:55:50.087Z",
+        "horizonsAt": "2028-07-24T03:55:50.128Z",
+        "differenceSeconds": -0.04111826419830322
+      },
+      {
+        "sign": "libra",
+        "at": "2028-07-26T04:41:03.957Z",
+        "horizonsAt": "2028-07-26T04:41:04.002Z",
+        "differenceSeconds": -0.04508798592723906
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-07-28T07:01:54.421Z",
+        "horizonsAt": "2028-07-28T07:01:54.467Z",
+        "differenceSeconds": -0.04648278700187802
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-07-30T11:54:48.619Z",
+        "horizonsAt": "2028-07-30T11:54:48.662Z",
+        "differenceSeconds": -0.043156795436516404
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-08-01T19:32:42.239Z",
+        "horizonsAt": "2028-08-01T19:32:42.297Z",
+        "differenceSeconds": -0.05849897861480713
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-08-04T05:33:52.277Z",
+        "horizonsAt": "2028-08-04T05:33:52.329Z",
+        "differenceSeconds": -0.05227635847404599
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-08-06T17:20:35.988Z",
+        "horizonsAt": "2028-08-06T17:20:36.037Z",
+        "differenceSeconds": -0.0490577076561749
+      },
+      {
+        "sign": "aries",
+        "at": "2028-08-09T06:01:41.732Z",
+        "horizonsAt": "2028-08-09T06:01:41.771Z",
+        "differenceSeconds": -0.03865068429149687
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-08-11T18:17:15.296Z",
+        "horizonsAt": "2028-08-11T18:17:15.345Z",
+        "differenceSeconds": -0.0490577076561749
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-08-14T04:22:31.811Z",
+        "horizonsAt": "2028-08-14T04:22:31.862Z",
+        "differenceSeconds": -0.05061328411102295
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-08-16T10:55:17.541Z",
+        "horizonsAt": "2028-08-16T10:55:17.596Z",
+        "differenceSeconds": -0.054958462715148926
+      },
+      {
+        "sign": "leo",
+        "at": "2028-08-18T13:45:42.268Z",
+        "horizonsAt": "2028-08-18T13:45:42.304Z",
+        "differenceSeconds": -0.03575389855541289
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-08-20T13:59:37.477Z",
+        "horizonsAt": "2028-08-20T13:59:37.516Z",
+        "differenceSeconds": -0.03934800624847412
+      },
+      {
+        "sign": "libra",
+        "at": "2028-08-22T13:27:53.409Z",
+        "horizonsAt": "2028-08-22T13:27:53.440Z",
+        "differenceSeconds": -0.03135512815788388
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-08-24T14:12:05.371Z",
+        "horizonsAt": "2028-08-24T14:12:05.401Z",
+        "differenceSeconds": -0.029477529460564256
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-08-26T17:51:18.643Z",
+        "horizonsAt": "2028-08-26T17:51:18.684Z",
+        "differenceSeconds": -0.040742807323113084
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-08-29T01:06:55.913Z",
+        "horizonsAt": "2028-08-29T01:06:55.973Z",
+        "differenceSeconds": -0.06000112043693662
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-08-31T11:26:24.612Z",
+        "horizonsAt": "2028-08-31T11:26:24.662Z",
+        "differenceSeconds": -0.050398759776726365
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-09-02T23:33:12.177Z",
+        "horizonsAt": "2028-09-02T23:33:12.241Z",
+        "differenceSeconds": -0.06413161754608154
+      },
+      {
+        "sign": "aries",
+        "at": "2028-09-05T12:15:04.036Z",
+        "horizonsAt": "2028-09-05T12:15:04.078Z",
+        "differenceSeconds": -0.04203026765026152
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-09-08T00:34:27.790Z",
+        "horizonsAt": "2028-09-08T00:34:27.843Z",
+        "differenceSeconds": -0.053402886260300875
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-09-10T11:24:40.268Z",
+        "horizonsAt": "2028-09-10T11:24:40.298Z",
+        "differenceSeconds": -0.03033578395843506
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-09-12T19:26:11.511Z",
+        "horizonsAt": "2028-09-12T19:26:11.557Z",
+        "differenceSeconds": -0.0463754462543875
+      },
+      {
+        "sign": "leo",
+        "at": "2028-09-14T23:48:24.756Z",
+        "horizonsAt": "2028-09-14T23:48:24.790Z",
+        "differenceSeconds": -0.03355443477630615
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-09-17T00:51:46.054Z",
+        "horizonsAt": "2028-09-17T00:51:46.094Z",
+        "differenceSeconds": -0.03966987133026123
+      },
+      {
+        "sign": "libra",
+        "at": "2028-09-19T00:06:00.625Z",
+        "horizonsAt": "2028-09-19T00:06:00.644Z",
+        "differenceSeconds": -0.018641457427293062
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-09-20T23:38:48.963Z",
+        "horizonsAt": "2028-09-20T23:38:48.990Z",
+        "differenceSeconds": -0.02695620059967041
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-09-23T01:39:00.499Z",
+        "horizonsAt": "2028-09-23T01:39:00.538Z",
+        "differenceSeconds": -0.03859709249809384
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-09-25T07:33:17.231Z",
+        "horizonsAt": "2028-09-25T07:33:17.284Z",
+        "differenceSeconds": -0.052490882808342576
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-09-27T17:21:13.314Z",
+        "horizonsAt": "2028-09-27T17:21:13.369Z",
+        "differenceSeconds": -0.05485127912834287
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-09-30T05:33:24.290Z",
+        "horizonsAt": "2028-09-30T05:33:24.346Z",
+        "differenceSeconds": -0.05570953362621367
+      },
+      {
+        "sign": "aries",
+        "at": "2028-10-02T18:17:52.319Z",
+        "horizonsAt": "2028-10-02T18:17:52.378Z",
+        "differenceSeconds": -0.05951832281425595
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-10-05T06:22:40.710Z",
+        "horizonsAt": "2028-10-05T06:22:40.770Z",
+        "differenceSeconds": -0.060322985518723726
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-10-07T17:09:52.299Z",
+        "horizonsAt": "2028-10-07T17:09:52.352Z",
+        "differenceSeconds": -0.05270540714263916
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-10-10T01:57:16.632Z",
+        "horizonsAt": "2028-10-10T01:57:16.668Z",
+        "differenceSeconds": -0.03639762871898711
+      },
+      {
+        "sign": "leo",
+        "at": "2028-10-12T07:53:32.868Z",
+        "horizonsAt": "2028-10-12T07:53:32.922Z",
+        "differenceSeconds": -0.05404661642387509
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-10-14T10:38:07.654Z",
+        "horizonsAt": "2028-10-14T10:38:07.694Z",
+        "differenceSeconds": -0.040367350447922945
+      },
+      {
+        "sign": "libra",
+        "at": "2028-10-16T10:55:44.374Z",
+        "horizonsAt": "2028-10-16T10:55:44.411Z",
+        "differenceSeconds": -0.037041358882561326
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-10-18T10:29:39.729Z",
+        "horizonsAt": "2028-10-18T10:29:39.754Z",
+        "differenceSeconds": -0.02454221248626709
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-10-20T11:29:40.333Z",
+        "horizonsAt": "2028-10-20T11:29:40.377Z",
+        "differenceSeconds": -0.04422973142936826
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-10-22T15:51:01.834Z",
+        "horizonsAt": "2028-10-22T15:51:01.876Z",
+        "differenceSeconds": -0.04176199436187744
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-10-25T00:22:31.948Z",
+        "horizonsAt": "2028-10-25T00:22:31.997Z",
+        "differenceSeconds": -0.04916489124298096
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-10-27T12:06:41.768Z",
+        "horizonsAt": "2028-10-27T12:06:41.828Z",
+        "differenceSeconds": -0.060108304023742676
+      },
+      {
+        "sign": "aries",
+        "at": "2028-10-30T00:51:45.669Z",
+        "horizonsAt": "2028-10-30T00:51:45.716Z",
+        "differenceSeconds": -0.04691183567047119
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-11-01T12:44:27.397Z",
+        "horizonsAt": "2028-11-01T12:44:27.436Z",
+        "differenceSeconds": -0.03940175520256162
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-11-03T22:58:04.368Z",
+        "horizonsAt": "2028-11-03T22:58:04.425Z",
+        "differenceSeconds": -0.05699699395336211
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-11-06T07:23:58.850Z",
+        "horizonsAt": "2028-11-06T07:23:58.901Z",
+        "differenceSeconds": -0.050667033065110445
+      },
+      {
+        "sign": "leo",
+        "at": "2028-11-08T13:50:18.492Z",
+        "horizonsAt": "2028-11-08T13:50:18.548Z",
+        "differenceSeconds": -0.05635326378978789
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-11-10T17:59:25.941Z",
+        "horizonsAt": "2028-11-10T17:59:26.001Z",
+        "differenceSeconds": -0.060430169105529785
+      },
+      {
+        "sign": "libra",
+        "at": "2028-11-12T19:59:37.972Z",
+        "horizonsAt": "2028-11-12T19:59:38.018Z",
+        "differenceSeconds": -0.045839056838303804
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-11-14T20:48:40.302Z",
+        "horizonsAt": "2028-11-14T20:48:40.335Z",
+        "differenceSeconds": -0.03301804536022246
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-11-16T22:05:51.177Z",
+        "horizonsAt": "2028-11-16T22:05:51.216Z",
+        "differenceSeconds": -0.03881161683239043
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-11-19T01:42:09.958Z",
+        "horizonsAt": "2028-11-19T01:42:10.004Z",
+        "differenceSeconds": -0.046160921920090914
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-11-21T08:56:33.263Z",
+        "horizonsAt": "2028-11-21T08:56:33.316Z",
+        "differenceSeconds": -0.05292008863762021
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-11-23T19:44:23.276Z",
+        "horizonsAt": "2028-11-23T19:44:23.328Z",
+        "differenceSeconds": -0.05195449339225888
+      },
+      {
+        "sign": "aries",
+        "at": "2028-11-26T08:19:26.692Z",
+        "horizonsAt": "2028-11-26T08:19:26.737Z",
+        "differenceSeconds": -0.044980645179748535
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-11-28T20:17:46.140Z",
+        "horizonsAt": "2028-11-28T20:17:46.204Z",
+        "differenceSeconds": -0.06445348262786865
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-12-01T06:09:40.077Z",
+        "horizonsAt": "2028-12-01T06:09:40.127Z",
+        "differenceSeconds": -0.050076894694939256
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-12-03T13:42:02.954Z",
+        "horizonsAt": "2028-12-03T13:42:03.006Z",
+        "differenceSeconds": -0.05173981189727783
+      },
+      {
+        "sign": "leo",
+        "at": "2028-12-05T19:19:46.577Z",
+        "horizonsAt": "2028-12-05T19:19:46.634Z",
+        "differenceSeconds": -0.05715792649425566
+      },
+      {
+        "sign": "virgo",
+        "at": "2028-12-07T23:28:49.219Z",
+        "horizonsAt": "2028-12-07T23:28:49.271Z",
+        "differenceSeconds": -0.05216901772655547
+      },
+      {
+        "sign": "libra",
+        "at": "2028-12-10T02:29:29.265Z",
+        "horizonsAt": "2028-12-10T02:29:29.327Z",
+        "differenceSeconds": -0.06155669689178467
+      },
+      {
+        "sign": "scorpio",
+        "at": "2028-12-12T04:51:36.935Z",
+        "horizonsAt": "2028-12-12T04:51:36.988Z",
+        "differenceSeconds": -0.05334913730621338
+      },
+      {
+        "sign": "sagittarius",
+        "at": "2028-12-14T07:28:36.393Z",
+        "horizonsAt": "2028-12-14T07:28:36.450Z",
+        "differenceSeconds": -0.05710433470085263
+      },
+      {
+        "sign": "capricorn",
+        "at": "2028-12-16T11:34:15.980Z",
+        "horizonsAt": "2028-12-16T11:34:16.038Z",
+        "differenceSeconds": -0.05839179502800107
+      },
+      {
+        "sign": "aquarius",
+        "at": "2028-12-18T18:20:10.060Z",
+        "horizonsAt": "2028-12-18T18:20:10.118Z",
+        "differenceSeconds": -0.058338046073913574
+      },
+      {
+        "sign": "pisces",
+        "at": "2028-12-21T04:16:01.714Z",
+        "horizonsAt": "2028-12-21T04:16:01.773Z",
+        "differenceSeconds": -0.05919645773246884
+      },
+      {
+        "sign": "aries",
+        "at": "2028-12-23T16:28:37.189Z",
+        "horizonsAt": "2028-12-23T16:28:37.253Z",
+        "differenceSeconds": -0.06423895829357207
+      },
+      {
+        "sign": "taurus",
+        "at": "2028-12-26T04:46:39.726Z",
+        "horizonsAt": "2028-12-26T04:46:39.778Z",
+        "differenceSeconds": -0.05211542593315244
+      },
+      {
+        "sign": "gemini",
+        "at": "2028-12-28T14:57:59.424Z",
+        "horizonsAt": "2028-12-28T14:57:59.486Z",
+        "differenceSeconds": -0.06241510855033994
+      },
+      {
+        "sign": "cancer",
+        "at": "2028-12-30T22:06:13.204Z",
+        "horizonsAt": "2028-12-30T22:06:13.254Z",
+        "differenceSeconds": -0.050130486488342285
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": "full-moon-2026-01-03",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-01-03T10:02:54.544Z",
+      "horizonsAt": "2026-01-03T10:02:54.517Z",
+      "differenceSeconds": 0.027
+    },
+    {
+      "id": "new-moon-2026-01-18",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-01-18T19:51:58.935Z",
+      "horizonsAt": "2026-01-18T19:51:58.917Z",
+      "differenceSeconds": 0.018
+    },
+    {
+      "id": "saturn-sextile-uranus-2026-01-20",
+      "family": "aspect",
+      "bodies": [
+        "Saturn",
+        "Uranus"
+      ],
+      "at": "2026-01-20T05:44:16.218Z",
+      "horizonsAt": "2026-01-20T05:18:45.541Z",
+      "differenceSeconds": 1530.677
+    },
+    {
+      "id": "neptune-enters-aries-2026-01-26",
+      "family": "ingress",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2026-01-26T17:34:38.262Z",
+      "horizonsAt": "2026-01-26T17:35:23.116Z",
+      "differenceSeconds": -44.854
+    },
+    {
+      "id": "full-moon-2026-02-01",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-02-01T22:09:14.725Z",
+      "horizonsAt": "2026-02-01T22:09:14.694Z",
+      "differenceSeconds": 0.031
+    },
+    {
+      "id": "uranus-stations-direct-2026-02-04",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2026-02-04T02:33:06.328Z",
+      "horizonsAt": "2026-02-04T02:33:12.613Z",
+      "differenceSeconds": -6.285
+    },
+    {
+      "id": "saturn-enters-aries-2026-02-14",
+      "family": "ingress",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2026-02-14T00:11:38.913Z",
+      "horizonsAt": "2026-02-14T00:11:49.424Z",
+      "differenceSeconds": -10.511
+    },
+    {
+      "id": "new-moon-2026-02-17",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-02-17T12:01:09.130Z",
+      "horizonsAt": "2026-02-17T12:01:09.064Z",
+      "differenceSeconds": 0.066
+    },
+    {
+      "id": "saturn-conjunction-neptune-2026-02-20",
+      "family": "aspect",
+      "bodies": [
+        "Saturn",
+        "Neptune"
+      ],
+      "at": "2026-02-20T18:29:22.728Z",
+      "horizonsAt": "2026-02-20T16:53:59.101Z",
+      "differenceSeconds": 5723.627
+    },
+    {
+      "id": "mercury-stations-retrograde-2026-02-26",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2026-02-26T06:48:20.390Z",
+      "horizonsAt": "2026-02-26T06:48:09.816Z",
+      "differenceSeconds": 10.574
+    },
+    {
+      "id": "full-moon-2026-03-03",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-03-03T11:37:53.811Z",
+      "horizonsAt": "2026-03-03T11:37:53.727Z",
+      "differenceSeconds": 0.084
+    },
+    {
+      "id": "jupiter-stations-direct-2026-03-11",
+      "family": "station",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2026-03-11T03:29:52.968Z",
+      "horizonsAt": "2026-03-11T03:29:49.803Z",
+      "differenceSeconds": 3.165
+    },
+    {
+      "id": "new-moon-2026-03-19",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-03-19T01:23:28.775Z",
+      "horizonsAt": "2026-03-19T01:23:28.723Z",
+      "differenceSeconds": 0.052
+    },
+    {
+      "id": "mercury-stations-direct-2026-03-20",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2026-03-20T19:33:23.026Z",
+      "horizonsAt": "2026-03-20T19:32:50.200Z",
+      "differenceSeconds": 32.826
+    },
+    {
+      "id": "saturn-sextile-pluto-2026-03-28",
+      "family": "aspect",
+      "bodies": [
+        "Saturn",
+        "Pluto"
+      ],
+      "at": "2026-03-28T22:34:36.112Z",
+      "horizonsAt": "2026-03-28T22:11:07.597Z",
+      "differenceSeconds": 1408.515
+    },
+    {
+      "id": "full-moon-2026-04-02",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-04-02T02:11:58.066Z",
+      "horizonsAt": "2026-04-02T02:11:57.990Z",
+      "differenceSeconds": 0.076
+    },
+    {
+      "id": "new-moon-2026-04-17",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-04-17T11:51:48.250Z",
+      "horizonsAt": "2026-04-17T11:51:48.231Z",
+      "differenceSeconds": 0.019
+    },
+    {
+      "id": "uranus-enters-gemini-2026-04-26",
+      "family": "ingress",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2026-04-26T00:51:32.436Z",
+      "horizonsAt": "2026-04-26T00:51:53.010Z",
+      "differenceSeconds": -20.574
+    },
+    {
+      "id": "full-moon-2026-05-01",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-05-01T17:23:10.758Z",
+      "horizonsAt": "2026-05-01T17:23:10.693Z",
+      "differenceSeconds": 0.065
+    },
+    {
+      "id": "pluto-stations-retrograde-2026-05-06",
+      "family": "station",
+      "bodies": [
+        "Pluto"
+      ],
+      "at": "2026-05-06T15:34:24.550Z",
+      "horizonsAt": "2026-05-06T15:34:09.821Z",
+      "differenceSeconds": 14.729
+    },
+    {
+      "id": "new-moon-2026-05-16",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-05-16T20:01:02.841Z",
+      "horizonsAt": "2026-05-16T20:01:02.790Z",
+      "differenceSeconds": 0.051
+    },
+    {
+      "id": "full-moon-2026-05-31",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-05-31T08:45:12.495Z",
+      "horizonsAt": "2026-05-31T08:45:12.463Z",
+      "differenceSeconds": 0.032
+    },
+    {
+      "id": "new-moon-2026-06-15",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-06-15T02:54:10.139Z",
+      "horizonsAt": "2026-06-15T02:54:10.109Z",
+      "differenceSeconds": 0.03
+    },
+    {
+      "id": "mercury-stations-retrograde-2026-06-29",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2026-06-29T17:36:00.351Z",
+      "horizonsAt": "2026-06-29T17:35:54.832Z",
+      "differenceSeconds": 5.519
+    },
+    {
+      "id": "full-moon-2026-06-29",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-06-29T23:56:41.256Z",
+      "horizonsAt": "2026-06-29T23:56:41.191Z",
+      "differenceSeconds": 0.065
+    },
+    {
+      "id": "jupiter-enters-leo-2026-06-30",
+      "family": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2026-06-30T05:52:21.765Z",
+      "horizonsAt": "2026-06-30T05:52:26.992Z",
+      "differenceSeconds": -5.227
+    },
+    {
+      "id": "neptune-stations-retrograde-2026-07-07",
+      "family": "station",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2026-07-07T10:55:08.203Z",
+      "horizonsAt": "2026-07-07T10:54:57.636Z",
+      "differenceSeconds": 10.567
+    },
+    {
+      "id": "new-moon-2026-07-14",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-07-14T09:43:36.943Z",
+      "horizonsAt": "2026-07-14T09:43:36.926Z",
+      "differenceSeconds": 0.017
+    },
+    {
+      "id": "uranus-sextile-neptune-2026-07-15",
+      "family": "aspect",
+      "bodies": [
+        "Uranus",
+        "Neptune"
+      ],
+      "at": "2026-07-15T22:23:00.761Z",
+      "horizonsAt": "2026-07-15T20:35:42.303Z",
+      "differenceSeconds": 6438.458
+    },
+    {
+      "id": "uranus-trine-pluto-2026-07-18",
+      "family": "aspect",
+      "bodies": [
+        "Uranus",
+        "Pluto"
+      ],
+      "at": "2026-07-18T04:39:50.707Z",
+      "horizonsAt": "2026-07-18T04:43:36.714Z",
+      "differenceSeconds": -226.007
+    },
+    {
+      "id": "jupiter-trine-neptune-2026-07-20",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Neptune"
+      ],
+      "at": "2026-07-20T07:47:59.076Z",
+      "horizonsAt": "2026-07-20T07:23:26.820Z",
+      "differenceSeconds": 1472.256
+    },
+    {
+      "id": "jupiter-opposition-pluto-2026-07-20",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Pluto"
+      ],
+      "at": "2026-07-20T14:45:49.903Z",
+      "horizonsAt": "2026-07-20T14:44:44.592Z",
+      "differenceSeconds": 65.311
+    },
+    {
+      "id": "jupiter-sextile-uranus-2026-07-21",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Uranus"
+      ],
+      "at": "2026-07-21T11:13:13.623Z",
+      "horizonsAt": "2026-07-21T11:10:22.900Z",
+      "differenceSeconds": 170.723
+    },
+    {
+      "id": "mercury-stations-direct-2026-07-23",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2026-07-23T22:57:22.675Z",
+      "horizonsAt": "2026-07-23T22:57:51.165Z",
+      "differenceSeconds": -28.49
+    },
+    {
+      "id": "neptune-sextile-pluto-2026-07-24",
+      "family": "aspect",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "at": "2026-07-24T23:09:38.401Z",
+      "horizonsAt": "2026-07-25T05:28:07.402Z",
+      "differenceSeconds": -22709.001
+    },
+    {
+      "id": "saturn-stations-retrograde-2026-07-26",
+      "family": "station",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2026-07-26T19:56:14.120Z",
+      "horizonsAt": "2026-07-26T19:56:15.397Z",
+      "differenceSeconds": -1.277
+    },
+    {
+      "id": "full-moon-2026-07-29",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-07-29T14:35:43.458Z",
+      "horizonsAt": "2026-07-29T14:35:43.444Z",
+      "differenceSeconds": 0.014
+    },
+    {
+      "id": "new-moon-2026-08-12",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-08-12T17:36:45.010Z",
+      "horizonsAt": "2026-08-12T17:36:44.986Z",
+      "differenceSeconds": 0.024
+    },
+    {
+      "id": "full-moon-2026-08-28",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-08-28T04:18:32.062Z",
+      "horizonsAt": "2026-08-28T04:18:32.048Z",
+      "differenceSeconds": 0.014
+    },
+    {
+      "id": "jupiter-trine-saturn-2026-08-31",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "at": "2026-08-31T22:05:22.447Z",
+      "horizonsAt": "2026-08-31T22:17:14.618Z",
+      "differenceSeconds": -712.171
+    },
+    {
+      "id": "uranus-stations-retrograde-2026-09-10",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2026-09-10T18:27:21.356Z",
+      "horizonsAt": "2026-09-10T18:27:08.785Z",
+      "differenceSeconds": 12.571
+    },
+    {
+      "id": "new-moon-2026-09-11",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-09-11T03:26:59.932Z",
+      "horizonsAt": "2026-09-11T03:26:59.922Z",
+      "differenceSeconds": 0.01
+    },
+    {
+      "id": "neptune-sextile-pluto-2026-09-16",
+      "family": "aspect",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "at": "2026-09-16T08:31:19.127Z",
+      "horizonsAt": "2026-09-16T02:07:22.402Z",
+      "differenceSeconds": 23036.725
+    },
+    {
+      "id": "full-moon-2026-09-26",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-09-26T16:49:02.439Z",
+      "horizonsAt": "2026-09-26T16:49:02.412Z",
+      "differenceSeconds": 0.027
+    },
+    {
+      "id": "venus-stations-retrograde-2026-10-03",
+      "family": "station",
+      "bodies": [
+        "Venus"
+      ],
+      "at": "2026-10-03T07:15:41.747Z",
+      "horizonsAt": "2026-10-03T07:15:54.955Z",
+      "differenceSeconds": -13.208
+    },
+    {
+      "id": "new-moon-2026-10-10",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-10-10T15:50:05.116Z",
+      "horizonsAt": "2026-10-10T15:50:05.061Z",
+      "differenceSeconds": 0.055
+    },
+    {
+      "id": "pluto-stations-direct-2026-10-16",
+      "family": "station",
+      "bodies": [
+        "Pluto"
+      ],
+      "at": "2026-10-16T02:39:44.472Z",
+      "horizonsAt": "2026-10-16T02:39:22.422Z",
+      "differenceSeconds": 22.05
+    },
+    {
+      "id": "mercury-stations-retrograde-2026-10-24",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2026-10-24T07:11:41.806Z",
+      "horizonsAt": "2026-10-24T07:12:42.287Z",
+      "differenceSeconds": -60.481
+    },
+    {
+      "id": "full-moon-2026-10-26",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-10-26T04:11:48.809Z",
+      "horizonsAt": "2026-10-26T04:11:48.770Z",
+      "differenceSeconds": 0.039
+    },
+    {
+      "id": "new-moon-2026-11-09",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-11-09T07:02:07.000Z",
+      "horizonsAt": "2026-11-09T07:02:06.910Z",
+      "differenceSeconds": 0.09
+    },
+    {
+      "id": "mercury-stations-direct-2026-11-13",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2026-11-13T15:54:37.441Z",
+      "horizonsAt": "2026-11-13T15:53:52.418Z",
+      "differenceSeconds": 45.023
+    },
+    {
+      "id": "venus-stations-direct-2026-11-14",
+      "family": "station",
+      "bodies": [
+        "Venus"
+      ],
+      "at": "2026-11-14T00:27:39.813Z",
+      "horizonsAt": "2026-11-14T00:27:27.870Z",
+      "differenceSeconds": 11.943
+    },
+    {
+      "id": "full-moon-2026-11-24",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-11-24T14:53:33.719Z",
+      "horizonsAt": "2026-11-24T14:53:33.710Z",
+      "differenceSeconds": 0.009
+    },
+    {
+      "id": "uranus-trine-pluto-2026-11-29",
+      "family": "aspect",
+      "bodies": [
+        "Uranus",
+        "Pluto"
+      ],
+      "at": "2026-11-29T11:27:06.991Z",
+      "horizonsAt": "2026-11-29T11:22:49.155Z",
+      "differenceSeconds": 257.836
+    },
+    {
+      "id": "new-moon-2026-12-09",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-12-09T00:51:51.163Z",
+      "horizonsAt": "2026-12-09T00:51:51.103Z",
+      "differenceSeconds": 0.06
+    },
+    {
+      "id": "saturn-stations-direct-2026-12-10",
+      "family": "station",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2026-12-10T23:31:12.948Z",
+      "horizonsAt": "2026-12-10T23:31:06.402Z",
+      "differenceSeconds": 6.546
+    },
+    {
+      "id": "neptune-stations-direct-2026-12-12",
+      "family": "station",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2026-12-12T22:18:04.130Z",
+      "horizonsAt": "2026-12-12T22:18:22.802Z",
+      "differenceSeconds": -18.672
+    },
+    {
+      "id": "jupiter-stations-retrograde-2026-12-13",
+      "family": "station",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2026-12-13T00:56:36.093Z",
+      "horizonsAt": "2026-12-13T00:56:30.926Z",
+      "differenceSeconds": 5.167
+    },
+    {
+      "id": "full-moon-2026-12-24",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2026-12-24T01:28:14.118Z",
+      "horizonsAt": "2026-12-24T01:28:14.109Z",
+      "differenceSeconds": 0.009
+    },
+    {
+      "id": "new-moon-2027-01-07",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-01-07T20:24:23.267Z",
+      "horizonsAt": "2027-01-07T20:24:23.226Z",
+      "differenceSeconds": 0.041
+    },
+    {
+      "id": "mars-stations-retrograde-2027-01-10",
+      "family": "station",
+      "bodies": [
+        "Mars"
+      ],
+      "at": "2027-01-10T12:59:03.750Z",
+      "horizonsAt": "2027-01-10T12:59:11.222Z",
+      "differenceSeconds": -7.472
+    },
+    {
+      "id": "uranus-sextile-neptune-2027-01-15",
+      "family": "aspect",
+      "bodies": [
+        "Uranus",
+        "Neptune"
+      ],
+      "at": "2027-01-15T07:21:23.862Z",
+      "horizonsAt": "2027-01-15T09:26:29.008Z",
+      "differenceSeconds": -7505.146
+    },
+    {
+      "id": "full-moon-2027-01-22",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-01-22T12:17:23.150Z",
+      "horizonsAt": "2027-01-22T12:17:23.079Z",
+      "differenceSeconds": 0.071
+    },
+    {
+      "id": "new-moon-2027-02-06",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-02-06T15:56:07.335Z",
+      "horizonsAt": "2027-02-06T15:56:07.251Z",
+      "differenceSeconds": 0.084
+    },
+    {
+      "id": "uranus-stations-direct-2027-02-08",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2027-02-08T12:29:26.601Z",
+      "horizonsAt": "2027-02-08T12:29:35.280Z",
+      "differenceSeconds": -8.679
+    },
+    {
+      "id": "mercury-stations-retrograde-2027-02-09",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2027-02-09T17:35:59.032Z",
+      "horizonsAt": "2027-02-09T17:36:05.030Z",
+      "differenceSeconds": -5.998
+    },
+    {
+      "id": "full-moon-2027-02-20",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-02-20T23:23:39.184Z",
+      "horizonsAt": "2027-02-20T23:23:39.119Z",
+      "differenceSeconds": 0.065
+    },
+    {
+      "id": "mercury-stations-direct-2027-03-03",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2027-03-03T12:32:45.672Z",
+      "horizonsAt": "2027-03-03T12:32:01.470Z",
+      "differenceSeconds": 44.202
+    },
+    {
+      "id": "new-moon-2027-03-08",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-03-08T09:29:28.990Z",
+      "horizonsAt": "2027-03-08T09:29:28.980Z",
+      "differenceSeconds": 0.01
+    },
+    {
+      "id": "full-moon-2027-03-22",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-03-22T10:43:47.929Z",
+      "horizonsAt": "2027-03-22T10:43:47.854Z",
+      "differenceSeconds": 0.075
+    },
+    {
+      "id": "mars-stations-direct-2027-04-01",
+      "family": "station",
+      "bodies": [
+        "Mars"
+      ],
+      "at": "2027-04-01T14:08:27.128Z",
+      "horizonsAt": "2027-04-01T14:08:17.765Z",
+      "differenceSeconds": 9.363
+    },
+    {
+      "id": "jupiter-trine-saturn-2027-04-03",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "at": "2027-04-03T13:23:03.398Z",
+      "horizonsAt": "2027-04-03T12:58:56.436Z",
+      "differenceSeconds": 1446.962
+    },
+    {
+      "id": "new-moon-2027-04-06",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-04-06T23:51:09.771Z",
+      "horizonsAt": "2027-04-06T23:51:09.727Z",
+      "differenceSeconds": 0.044
+    },
+    {
+      "id": "jupiter-stations-direct-2027-04-13",
+      "family": "station",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2027-04-13T02:11:31.698Z",
+      "horizonsAt": "2027-04-13T02:11:22.982Z",
+      "differenceSeconds": 8.716
+    },
+    {
+      "id": "full-moon-2027-04-20",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-04-20T22:27:09.601Z",
+      "horizonsAt": "2027-04-20T22:27:09.589Z",
+      "differenceSeconds": 0.012
+    },
+    {
+      "id": "new-moon-2027-05-06",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-05-06T10:58:38.150Z",
+      "horizonsAt": "2027-05-06T10:58:38.079Z",
+      "differenceSeconds": 0.071
+    },
+    {
+      "id": "pluto-stations-retrograde-2027-05-08",
+      "family": "station",
+      "bodies": [
+        "Pluto"
+      ],
+      "at": "2027-05-08T12:55:59.179Z",
+      "horizonsAt": "2027-05-08T12:56:13.525Z",
+      "differenceSeconds": -14.346
+    },
+    {
+      "id": "full-moon-2027-05-20",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-05-20T10:59:01.634Z",
+      "horizonsAt": "2027-05-20T10:59:01.577Z",
+      "differenceSeconds": 0.057
+    },
+    {
+      "id": "new-moon-2027-06-04",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-06-04T19:40:21.192Z",
+      "horizonsAt": "2027-06-04T19:40:21.111Z",
+      "differenceSeconds": 0.081
+    },
+    {
+      "id": "uranus-sextile-neptune-2027-06-06",
+      "family": "aspect",
+      "bodies": [
+        "Uranus",
+        "Neptune"
+      ],
+      "at": "2027-06-06T12:03:37.528Z",
+      "horizonsAt": "2027-06-06T10:12:08.712Z",
+      "differenceSeconds": 6688.816
+    },
+    {
+      "id": "mercury-stations-retrograde-2027-06-10",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2027-06-10T18:15:29.443Z",
+      "horizonsAt": "2027-06-10T18:15:13.953Z",
+      "differenceSeconds": 15.49
+    },
+    {
+      "id": "uranus-trine-pluto-2027-06-15",
+      "family": "aspect",
+      "bodies": [
+        "Uranus",
+        "Pluto"
+      ],
+      "at": "2027-06-15T08:01:32.585Z",
+      "horizonsAt": "2027-06-15T08:10:41.316Z",
+      "differenceSeconds": -548.731
+    },
+    {
+      "id": "full-moon-2027-06-19",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-06-19T00:44:21.353Z",
+      "horizonsAt": "2027-06-19T00:44:21.338Z",
+      "differenceSeconds": 0.015
+    },
+    {
+      "id": "neptune-sextile-pluto-2027-06-28",
+      "family": "aspect",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "at": "2027-06-28T20:34:28.560Z",
+      "horizonsAt": "2027-06-28T23:56:24.491Z",
+      "differenceSeconds": -12115.931
+    },
+    {
+      "id": "new-moon-2027-07-04",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-07-04T03:02:05.325Z",
+      "horizonsAt": "2027-07-04T03:02:05.289Z",
+      "differenceSeconds": 0.036
+    },
+    {
+      "id": "mercury-stations-direct-2027-07-04",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2027-07-04T19:38:57.890Z",
+      "horizonsAt": "2027-07-04T19:39:22.507Z",
+      "differenceSeconds": -24.617
+    },
+    {
+      "id": "neptune-stations-retrograde-2027-07-09",
+      "family": "station",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2027-07-09T22:41:42.684Z",
+      "horizonsAt": "2027-07-09T22:41:32.093Z",
+      "differenceSeconds": 10.591
+    },
+    {
+      "id": "jupiter-trine-saturn-2027-07-11",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "at": "2027-07-11T22:45:55.067Z",
+      "horizonsAt": "2027-07-11T23:16:10.976Z",
+      "differenceSeconds": -1815.909
+    },
+    {
+      "id": "full-moon-2027-07-18",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-07-18T15:44:55.714Z",
+      "horizonsAt": "2027-07-18T15:44:55.636Z",
+      "differenceSeconds": 0.078
+    },
+    {
+      "id": "jupiter-enters-virgo-2027-07-26",
+      "family": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2027-07-26T04:49:11.009Z",
+      "horizonsAt": "2027-07-26T04:49:15.662Z",
+      "differenceSeconds": -4.653
+    },
+    {
+      "id": "new-moon-2027-08-02",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-08-02T10:05:14.454Z",
+      "horizonsAt": "2027-08-02T10:05:14.390Z",
+      "differenceSeconds": 0.064
+    },
+    {
+      "id": "saturn-stations-retrograde-2027-08-09",
+      "family": "station",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2027-08-09T18:06:09.140Z",
+      "horizonsAt": "2027-08-09T18:06:12.269Z",
+      "differenceSeconds": -3.129
+    },
+    {
+      "id": "full-moon-2027-08-17",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-08-17T07:28:41.803Z",
+      "horizonsAt": "2027-08-17T07:28:41.719Z",
+      "differenceSeconds": 0.084
+    },
+    {
+      "id": "new-moon-2027-08-31",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-08-31T17:41:11.319Z",
+      "horizonsAt": "2027-08-31T17:41:11.261Z",
+      "differenceSeconds": 0.058
+    },
+    {
+      "id": "jupiter-square-uranus-2027-09-10",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Uranus"
+      ],
+      "at": "2027-09-10T16:36:59.814Z",
+      "horizonsAt": "2027-09-10T16:40:55.493Z",
+      "differenceSeconds": -235.679
+    },
+    {
+      "id": "uranus-stations-retrograde-2027-09-15",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2027-09-15T09:09:17.665Z",
+      "horizonsAt": "2027-09-15T09:09:15.607Z",
+      "differenceSeconds": 2.058
+    },
+    {
+      "id": "full-moon-2027-09-15",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-09-15T23:03:31.568Z",
+      "horizonsAt": "2027-09-15T23:03:31.520Z",
+      "differenceSeconds": 0.048
+    },
+    {
+      "id": "new-moon-2027-09-30",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-09-30T02:36:05.047Z",
+      "horizonsAt": "2027-09-30T02:36:04.992Z",
+      "differenceSeconds": 0.055
+    },
+    {
+      "id": "mercury-stations-retrograde-2027-10-07",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2027-10-07T14:36:09.579Z",
+      "horizonsAt": "2027-10-07T14:37:03.974Z",
+      "differenceSeconds": -54.395
+    },
+    {
+      "id": "full-moon-2027-10-15",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-10-15T13:47:00.655Z",
+      "horizonsAt": "2027-10-15T13:47:00.607Z",
+      "differenceSeconds": 0.048
+    },
+    {
+      "id": "neptune-sextile-pluto-2027-10-16",
+      "family": "aspect",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "at": "2027-10-16T14:39:55.265Z",
+      "horizonsAt": "2027-10-16T14:39:54.567Z",
+      "differenceSeconds": 0.698
+    },
+    {
+      "id": "pluto-stations-direct-2027-10-18",
+      "family": "station",
+      "bodies": [
+        "Pluto"
+      ],
+      "at": "2027-10-18T03:49:59.266Z",
+      "horizonsAt": "2027-10-18T03:50:22.041Z",
+      "differenceSeconds": -22.775
+    },
+    {
+      "id": "mercury-stations-direct-2027-10-28",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2027-10-28T14:11:06.649Z",
+      "horizonsAt": "2027-10-28T14:10:37.948Z",
+      "differenceSeconds": 28.701
+    },
+    {
+      "id": "new-moon-2027-10-29",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-10-29T13:36:34.188Z",
+      "horizonsAt": "2027-10-29T13:36:34.175Z",
+      "differenceSeconds": 0.013
+    },
+    {
+      "id": "full-moon-2027-11-14",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-11-14T03:25:55.992Z",
+      "horizonsAt": "2027-11-14T03:25:55.949Z",
+      "differenceSeconds": 0.043
+    },
+    {
+      "id": "new-moon-2027-11-28",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-11-28T03:24:26.509Z",
+      "horizonsAt": "2027-11-28T03:24:26.498Z",
+      "differenceSeconds": 0.011
+    },
+    {
+      "id": "full-moon-2027-12-13",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-12-13T16:08:48.028Z",
+      "horizonsAt": "2027-12-13T16:08:48.004Z",
+      "differenceSeconds": 0.024
+    },
+    {
+      "id": "neptune-stations-direct-2027-12-15",
+      "family": "station",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2027-12-15T09:07:05.829Z",
+      "horizonsAt": "2027-12-15T09:06:49.410Z",
+      "differenceSeconds": 16.419
+    },
+    {
+      "id": "saturn-stations-direct-2027-12-24",
+      "family": "station",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2027-12-24T02:46:31.844Z",
+      "horizonsAt": "2027-12-24T02:46:33.804Z",
+      "differenceSeconds": -1.96
+    },
+    {
+      "id": "new-moon-2027-12-27",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2027-12-27T20:12:19.900Z",
+      "horizonsAt": "2027-12-27T20:12:19.829Z",
+      "differenceSeconds": 0.071
+    },
+    {
+      "id": "full-moon-2028-01-12",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-01-12T04:03:05.255Z",
+      "horizonsAt": "2028-01-12T04:03:05.215Z",
+      "differenceSeconds": 0.04
+    },
+    {
+      "id": "jupiter-stations-retrograde-2028-01-12",
+      "family": "station",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2028-01-12T08:53:21.854Z",
+      "horizonsAt": "2028-01-12T08:53:21.872Z",
+      "differenceSeconds": -0.018
+    },
+    {
+      "id": "uranus-trine-pluto-2028-01-13",
+      "family": "aspect",
+      "bodies": [
+        "Uranus",
+        "Pluto"
+      ],
+      "at": "2028-01-13T06:40:44.897Z",
+      "horizonsAt": "2028-01-13T06:40:44.987Z",
+      "differenceSeconds": -0.09
+    },
+    {
+      "id": "mercury-stations-retrograde-2028-01-24",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2028-01-24T11:02:00.849Z",
+      "horizonsAt": "2028-01-24T11:02:25.811Z",
+      "differenceSeconds": -24.962
+    },
+    {
+      "id": "new-moon-2028-01-26",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-01-26T15:12:31.051Z",
+      "horizonsAt": "2028-01-26T15:12:31.042Z",
+      "differenceSeconds": 0.009
+    },
+    {
+      "id": "full-moon-2028-02-10",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-02-10T15:03:46.344Z",
+      "horizonsAt": "2028-02-10T15:03:46.338Z",
+      "differenceSeconds": 0.006
+    },
+    {
+      "id": "uranus-stations-direct-2028-02-12",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2028-02-12T23:49:15.321Z",
+      "horizonsAt": "2028-02-12T23:49:10.276Z",
+      "differenceSeconds": 5.045
+    },
+    {
+      "id": "mercury-stations-direct-2028-02-14",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2028-02-14T12:38:41.630Z",
+      "horizonsAt": "2028-02-14T12:37:47.728Z",
+      "differenceSeconds": 53.902
+    },
+    {
+      "id": "new-moon-2028-02-25",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-02-25T10:37:25.356Z",
+      "horizonsAt": "2028-02-25T10:37:25.336Z",
+      "differenceSeconds": 0.02
+    },
+    {
+      "id": "full-moon-2028-03-11",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-03-11T01:06:05.295Z",
+      "horizonsAt": "2028-03-11T01:06:05.219Z",
+      "differenceSeconds": 0.076
+    },
+    {
+      "id": "new-moon-2028-03-26",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-03-26T04:31:19.677Z",
+      "horizonsAt": "2028-03-26T04:31:19.603Z",
+      "differenceSeconds": 0.074
+    },
+    {
+      "id": "full-moon-2028-04-09",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-04-09T10:26:37.877Z",
+      "horizonsAt": "2028-04-09T10:26:37.797Z",
+      "differenceSeconds": 0.08
+    },
+    {
+      "id": "saturn-enters-taurus-2028-04-13",
+      "family": "ingress",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2028-04-13T03:39:44.766Z",
+      "horizonsAt": "2028-04-13T03:39:53.900Z",
+      "differenceSeconds": -9.134
+    },
+    {
+      "id": "new-moon-2028-04-24",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-04-24T19:46:56.454Z",
+      "horizonsAt": "2028-04-24T19:46:56.442Z",
+      "differenceSeconds": 0.012
+    },
+    {
+      "id": "full-moon-2028-05-08",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-05-08T19:48:56.836Z",
+      "horizonsAt": "2028-05-08T19:48:56.803Z",
+      "differenceSeconds": 0.033
+    },
+    {
+      "id": "pluto-stations-retrograde-2028-05-09",
+      "family": "station",
+      "bodies": [
+        "Pluto"
+      ],
+      "at": "2028-05-09T09:32:53.583Z",
+      "horizonsAt": "2028-05-09T09:32:52.203Z",
+      "differenceSeconds": 1.38
+    },
+    {
+      "id": "uranus-trine-pluto-2028-05-10",
+      "family": "aspect",
+      "bodies": [
+        "Uranus",
+        "Pluto"
+      ],
+      "at": "2028-05-10T03:03:59.363Z",
+      "horizonsAt": "2028-05-10T03:03:59.160Z",
+      "differenceSeconds": 0.203
+    },
+    {
+      "id": "venus-stations-retrograde-2028-05-10",
+      "family": "station",
+      "bodies": [
+        "Venus"
+      ],
+      "at": "2028-05-10T23:02:35.125Z",
+      "horizonsAt": "2028-05-10T23:02:45.911Z",
+      "differenceSeconds": -10.786
+    },
+    {
+      "id": "jupiter-stations-direct-2028-05-13",
+      "family": "station",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2028-05-13T20:00:16.698Z",
+      "horizonsAt": "2028-05-13T20:00:13.237Z",
+      "differenceSeconds": 3.461
+    },
+    {
+      "id": "mercury-stations-retrograde-2028-05-21",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2028-05-21T08:43:24.637Z",
+      "horizonsAt": "2028-05-21T08:42:59.542Z",
+      "differenceSeconds": 25.095
+    },
+    {
+      "id": "new-moon-2028-05-24",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-05-24T08:16:19.265Z",
+      "horizonsAt": "2028-05-24T08:16:19.232Z",
+      "differenceSeconds": 0.033
+    },
+    {
+      "id": "full-moon-2028-06-07",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-06-07T06:08:49.320Z",
+      "horizonsAt": "2028-06-07T06:08:49.280Z",
+      "differenceSeconds": 0.04
+    },
+    {
+      "id": "neptune-sextile-pluto-2028-06-09",
+      "family": "aspect",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "at": "2028-06-09T04:25:35.173Z",
+      "horizonsAt": "2028-06-09T04:25:35.279Z",
+      "differenceSeconds": -0.106
+    },
+    {
+      "id": "mercury-stations-direct-2028-06-14",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2028-06-14T06:05:41.454Z",
+      "horizonsAt": "2028-06-14T06:05:59.073Z",
+      "differenceSeconds": -17.619
+    },
+    {
+      "id": "new-moon-2028-06-22",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-06-22T18:27:33.633Z",
+      "horizonsAt": "2028-06-22T18:27:33.618Z",
+      "differenceSeconds": 0.015
+    },
+    {
+      "id": "venus-stations-direct-2028-06-22",
+      "family": "station",
+      "bodies": [
+        "Venus"
+      ],
+      "at": "2028-06-22T22:12:55.634Z",
+      "horizonsAt": "2028-06-22T22:12:39.974Z",
+      "differenceSeconds": 15.66
+    },
+    {
+      "id": "saturn-square-pluto-2028-06-24",
+      "family": "aspect",
+      "bodies": [
+        "Saturn",
+        "Pluto"
+      ],
+      "at": "2028-06-24T02:59:44.508Z",
+      "horizonsAt": "2028-06-24T02:59:44.790Z",
+      "differenceSeconds": -0.282
+    },
+    {
+      "id": "full-moon-2028-07-06",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-07-06T18:10:49.455Z",
+      "horizonsAt": "2028-07-06T18:10:49.378Z",
+      "differenceSeconds": 0.077
+    },
+    {
+      "id": "neptune-stations-retrograde-2028-07-11",
+      "family": "station",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2028-07-11T13:03:57.743Z",
+      "horizonsAt": "2028-07-11T13:04:12.829Z",
+      "differenceSeconds": -15.086
+    },
+    {
+      "id": "new-moon-2028-07-22",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-07-22T03:01:43.242Z",
+      "horizonsAt": "2028-07-22T03:01:43.168Z",
+      "differenceSeconds": 0.074
+    },
+    {
+      "id": "full-moon-2028-08-05",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-08-05T08:09:49.607Z",
+      "horizonsAt": "2028-08-05T08:09:49.597Z",
+      "differenceSeconds": 0.01
+    },
+    {
+      "id": "new-moon-2028-08-20",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-08-20T10:43:51.801Z",
+      "horizonsAt": "2028-08-20T10:43:51.739Z",
+      "differenceSeconds": 0.062
+    },
+    {
+      "id": "saturn-stations-retrograde-2028-08-22",
+      "family": "station",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2028-08-22T22:17:15.351Z",
+      "horizonsAt": "2028-08-22T22:17:14.351Z",
+      "differenceSeconds": 1
+    },
+    {
+      "id": "jupiter-enters-libra-2028-08-24",
+      "family": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2028-08-24T05:08:28.754Z",
+      "horizonsAt": "2028-08-24T05:08:32.740Z",
+      "differenceSeconds": -3.986
+    },
+    {
+      "id": "full-moon-2028-09-03",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-09-03T23:47:36.031Z",
+      "horizonsAt": "2028-09-03T23:47:35.978Z",
+      "differenceSeconds": 0.053
+    },
+    {
+      "id": "new-moon-2028-09-18",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-09-18T18:23:45.722Z",
+      "horizonsAt": "2028-09-18T18:23:45.683Z",
+      "differenceSeconds": 0.039
+    },
+    {
+      "id": "uranus-stations-retrograde-2028-09-19",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2028-09-19T00:01:36.239Z",
+      "horizonsAt": "2028-09-19T00:01:25.821Z",
+      "differenceSeconds": 10.418
+    },
+    {
+      "id": "mercury-stations-retrograde-2028-09-19",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2028-09-19T16:33:03.250Z",
+      "horizonsAt": "2028-09-19T16:33:48.501Z",
+      "differenceSeconds": -45.251
+    },
+    {
+      "id": "jupiter-trine-pluto-2028-09-24",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Pluto"
+      ],
+      "at": "2028-09-24T07:45:29.607Z",
+      "horizonsAt": "2028-09-24T07:45:29.610Z",
+      "differenceSeconds": -0.003
+    },
+    {
+      "id": "jupiter-opposition-neptune-2028-09-28",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Neptune"
+      ],
+      "at": "2028-09-28T19:15:56.085Z",
+      "horizonsAt": "2028-09-28T19:15:56.070Z",
+      "differenceSeconds": 0.015
+    },
+    {
+      "id": "full-moon-2028-10-03",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-10-03T16:24:59.742Z",
+      "horizonsAt": "2028-10-03T16:24:59.713Z",
+      "differenceSeconds": 0.029
+    },
+    {
+      "id": "mercury-stations-direct-2028-10-11",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2028-10-11T10:27:42.890Z",
+      "horizonsAt": "2028-10-11T10:27:30.871Z",
+      "differenceSeconds": 12.019
+    },
+    {
+      "id": "new-moon-2028-10-18",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-10-18T02:56:49.166Z",
+      "horizonsAt": "2028-10-18T02:56:49.118Z",
+      "differenceSeconds": 0.048
+    },
+    {
+      "id": "pluto-stations-direct-2028-10-19",
+      "family": "station",
+      "bodies": [
+        "Pluto"
+      ],
+      "at": "2028-10-19T03:42:36.297Z",
+      "horizonsAt": "2028-10-19T03:42:47.980Z",
+      "differenceSeconds": -11.683
+    },
+    {
+      "id": "jupiter-trine-uranus-2028-10-27",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Uranus"
+      ],
+      "at": "2028-10-27T09:05:53.978Z",
+      "horizonsAt": "2028-10-27T09:05:53.997Z",
+      "differenceSeconds": -0.019
+    },
+    {
+      "id": "full-moon-2028-11-02",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-11-02T09:17:21.914Z",
+      "horizonsAt": "2028-11-02T09:17:21.897Z",
+      "differenceSeconds": 0.017
+    },
+    {
+      "id": "neptune-sextile-pluto-2028-11-08",
+      "family": "aspect",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "at": "2028-11-08T01:44:40.333Z",
+      "horizonsAt": "2028-11-08T01:44:39.818Z",
+      "differenceSeconds": 0.515
+    },
+    {
+      "id": "saturn-square-pluto-2028-11-15",
+      "family": "aspect",
+      "bodies": [
+        "Saturn",
+        "Pluto"
+      ],
+      "at": "2028-11-15T12:56:54.961Z",
+      "horizonsAt": "2028-11-15T12:56:54.582Z",
+      "differenceSeconds": 0.379
+    },
+    {
+      "id": "new-moon-2028-11-16",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-11-16T13:18:02.234Z",
+      "horizonsAt": "2028-11-16T13:18:02.171Z",
+      "differenceSeconds": 0.063
+    },
+    {
+      "id": "full-moon-2028-12-02",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-12-02T01:40:14.765Z",
+      "horizonsAt": "2028-12-02T01:40:14.697Z",
+      "differenceSeconds": 0.068
+    },
+    {
+      "id": "new-moon-2028-12-16",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-12-16T02:06:19.906Z",
+      "horizonsAt": "2028-12-16T02:06:19.843Z",
+      "differenceSeconds": 0.063
+    },
+    {
+      "id": "neptune-stations-direct-2028-12-16",
+      "family": "station",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2028-12-16T20:43:45.731Z",
+      "horizonsAt": "2028-12-16T20:43:45.290Z",
+      "differenceSeconds": 0.441
+    },
+    {
+      "id": "full-moon-2028-12-31",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2028-12-31T16:48:31.786Z",
+      "horizonsAt": "2028-12-31T16:48:31.736Z",
+      "differenceSeconds": 0.05
+    },
+    {
+      "id": "saturn-stations-direct-2029-01-05",
+      "family": "station",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2029-01-05T12:38:52.177Z",
+      "horizonsAt": "2029-01-05T12:38:53.778Z",
+      "differenceSeconds": -1.601
+    },
+    {
+      "id": "mercury-stations-retrograde-2029-01-07",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2029-01-07T07:55:51.708Z",
+      "horizonsAt": "2029-01-07T07:56:32.527Z",
+      "differenceSeconds": -40.819
+    },
+    {
+      "id": "new-moon-2029-01-14",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-01-14T17:24:31.425Z",
+      "horizonsAt": "2029-01-14T17:24:31.389Z",
+      "differenceSeconds": 0.036
+    },
+    {
+      "id": "mercury-stations-direct-2029-01-27",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2029-01-27T18:41:11.922Z",
+      "horizonsAt": "2029-01-27T18:40:11.869Z",
+      "differenceSeconds": 60.053
+    },
+    {
+      "id": "full-moon-2029-01-30",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-01-30T06:03:37.692Z",
+      "horizonsAt": "2029-01-30T06:03:37.679Z",
+      "differenceSeconds": 0.013
+    },
+    {
+      "id": "jupiter-stations-retrograde-2029-02-10",
+      "family": "station",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2029-02-10T13:06:58.359Z",
+      "horizonsAt": "2029-02-10T13:06:54.376Z",
+      "differenceSeconds": 3.983
+    },
+    {
+      "id": "new-moon-2029-02-13",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-02-13T10:31:31.707Z",
+      "horizonsAt": "2029-02-13T10:31:31.672Z",
+      "differenceSeconds": 0.035
+    },
+    {
+      "id": "mars-stations-retrograde-2029-02-14",
+      "family": "station",
+      "bodies": [
+        "Mars"
+      ],
+      "at": "2029-02-14T08:16:11.191Z",
+      "horizonsAt": "2029-02-14T08:16:21.815Z",
+      "differenceSeconds": -10.624
+    },
+    {
+      "id": "uranus-stations-direct-2029-02-16",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2029-02-16T10:51:39.901Z",
+      "horizonsAt": "2029-02-16T10:51:54.495Z",
+      "differenceSeconds": -14.594
+    },
+    {
+      "id": "full-moon-2029-02-28",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-02-28T17:10:15.810Z",
+      "horizonsAt": "2029-02-28T17:10:15.782Z",
+      "differenceSeconds": 0.028
+    },
+    {
+      "id": "new-moon-2029-03-15",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-03-15T04:19:15.815Z",
+      "horizonsAt": "2029-03-15T04:19:15.775Z",
+      "differenceSeconds": 0.04
+    },
+    {
+      "id": "saturn-square-pluto-2029-03-29",
+      "family": "aspect",
+      "bodies": [
+        "Saturn",
+        "Pluto"
+      ],
+      "at": "2029-03-29T23:09:02.311Z",
+      "horizonsAt": "2029-03-29T23:09:02.457Z",
+      "differenceSeconds": -0.146
+    },
+    {
+      "id": "full-moon-2029-03-30",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-03-30T02:26:25.298Z",
+      "horizonsAt": "2029-03-30T02:26:25.216Z",
+      "differenceSeconds": 0.082
+    },
+    {
+      "id": "new-moon-2029-04-13",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-04-13T21:40:11.278Z",
+      "horizonsAt": "2029-04-13T21:40:11.185Z",
+      "differenceSeconds": 0.093
+    },
+    {
+      "id": "full-moon-2029-04-28",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-04-28T10:36:48.855Z",
+      "horizonsAt": "2029-04-28T10:36:48.825Z",
+      "differenceSeconds": 0.03
+    },
+    {
+      "id": "mercury-stations-retrograde-2029-05-01",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2029-05-01T23:06:00.790Z",
+      "horizonsAt": "2029-05-01T23:05:29.678Z",
+      "differenceSeconds": 31.112
+    },
+    {
+      "id": "mars-stations-direct-2029-05-05",
+      "family": "station",
+      "bodies": [
+        "Mars"
+      ],
+      "at": "2029-05-05T19:00:03.075Z",
+      "horizonsAt": "2029-05-05T18:59:53.761Z",
+      "differenceSeconds": 9.314
+    },
+    {
+      "id": "pluto-stations-retrograde-2029-05-11",
+      "family": "station",
+      "bodies": [
+        "Pluto"
+      ],
+      "at": "2029-05-11T04:17:21.943Z",
+      "horizonsAt": "2029-05-11T04:17:12.408Z",
+      "differenceSeconds": 9.535
+    },
+    {
+      "id": "new-moon-2029-05-13",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-05-13T13:42:09.546Z",
+      "horizonsAt": "2029-05-13T13:42:09.485Z",
+      "differenceSeconds": 0.061
+    },
+    {
+      "id": "neptune-sextile-pluto-2029-05-22",
+      "family": "aspect",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "at": "2029-05-22T19:15:37.544Z",
+      "horizonsAt": "2029-05-22T19:15:37.885Z",
+      "differenceSeconds": -0.341
+    },
+    {
+      "id": "mercury-stations-direct-2029-05-25",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2029-05-25T19:20:38.378Z",
+      "horizonsAt": "2029-05-25T19:20:46.660Z",
+      "differenceSeconds": -8.282
+    },
+    {
+      "id": "full-moon-2029-05-27",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-05-27T18:37:31.014Z",
+      "horizonsAt": "2029-05-27T18:37:30.929Z",
+      "differenceSeconds": 0.085
+    },
+    {
+      "id": "new-moon-2029-06-12",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-06-12T03:50:33.461Z",
+      "horizonsAt": "2029-06-12T03:50:33.413Z",
+      "differenceSeconds": 0.048
+    },
+    {
+      "id": "jupiter-stations-direct-2029-06-13",
+      "family": "station",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2029-06-13T21:06:38.144Z",
+      "horizonsAt": "2029-06-13T21:06:32.826Z",
+      "differenceSeconds": 5.318
+    },
+    {
+      "id": "full-moon-2029-06-26",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-06-26T03:22:21.265Z",
+      "horizonsAt": "2029-06-26T03:22:21.242Z",
+      "differenceSeconds": 0.023
+    },
+    {
+      "id": "new-moon-2029-07-11",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-07-11T15:51:04.360Z",
+      "horizonsAt": "2029-07-11T15:51:04.319Z",
+      "differenceSeconds": 0.041
+    },
+    {
+      "id": "neptune-stations-retrograde-2029-07-14",
+      "family": "station",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2029-07-14T02:09:55.458Z",
+      "horizonsAt": "2029-07-14T02:09:47.652Z",
+      "differenceSeconds": 7.806
+    },
+    {
+      "id": "full-moon-2029-07-25",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-07-25T13:35:46.150Z",
+      "horizonsAt": "2029-07-25T13:35:46.143Z",
+      "differenceSeconds": 0.007
+    },
+    {
+      "id": "new-moon-2029-08-10",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-08-10T01:55:47.917Z",
+      "horizonsAt": "2029-08-10T01:55:47.858Z",
+      "differenceSeconds": 0.059
+    },
+    {
+      "id": "full-moon-2029-08-24",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-08-24T01:51:14.193Z",
+      "horizonsAt": "2029-08-24T01:51:14.182Z",
+      "differenceSeconds": 0.011
+    },
+    {
+      "id": "mercury-stations-retrograde-2029-09-02",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2029-09-02T12:17:28.094Z",
+      "horizonsAt": "2029-09-02T12:18:03.372Z",
+      "differenceSeconds": -35.278
+    },
+    {
+      "id": "saturn-stations-retrograde-2029-09-06",
+      "family": "station",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2029-09-06T08:34:24.110Z",
+      "horizonsAt": "2029-09-06T08:34:20.552Z",
+      "differenceSeconds": 3.558
+    },
+    {
+      "id": "new-moon-2029-09-08",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-09-08T10:44:23.606Z",
+      "horizonsAt": "2029-09-08T10:44:23.535Z",
+      "differenceSeconds": 0.071
+    },
+    {
+      "id": "full-moon-2029-09-22",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-09-22T16:29:19.376Z",
+      "horizonsAt": "2029-09-22T16:29:19.285Z",
+      "differenceSeconds": 0.091
+    },
+    {
+      "id": "uranus-stations-retrograde-2029-09-23",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2029-09-23T16:21:46.932Z",
+      "horizonsAt": "2029-09-23T16:21:43.695Z",
+      "differenceSeconds": 3.237
+    },
+    {
+      "id": "jupiter-enters-scorpio-2029-09-24",
+      "family": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2029-09-24T06:24:06.670Z",
+      "horizonsAt": "2029-09-24T06:24:10.390Z",
+      "differenceSeconds": -3.72
+    },
+    {
+      "id": "mercury-stations-direct-2029-09-25",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2029-09-25T02:01:42.391Z",
+      "horizonsAt": "2029-09-25T02:01:47.946Z",
+      "differenceSeconds": -5.555
+    },
+    {
+      "id": "new-moon-2029-10-07",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-10-07T19:14:33.934Z",
+      "horizonsAt": "2029-10-07T19:14:33.905Z",
+      "differenceSeconds": 0.029
+    },
+    {
+      "id": "pluto-stations-direct-2029-10-21",
+      "family": "station",
+      "bodies": [
+        "Pluto"
+      ],
+      "at": "2029-10-21T03:53:36.796Z",
+      "horizonsAt": "2029-10-21T03:53:50.638Z",
+      "differenceSeconds": -13.842
+    },
+    {
+      "id": "full-moon-2029-10-22",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-10-22T09:27:34.951Z",
+      "horizonsAt": "2029-10-22T09:27:34.910Z",
+      "differenceSeconds": 0.041
+    },
+    {
+      "id": "jupiter-square-pluto-2029-11-01",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Pluto"
+      ],
+      "at": "2029-11-01T00:43:18.649Z",
+      "horizonsAt": "2029-11-01T00:43:18.603Z",
+      "differenceSeconds": 0.046
+    },
+    {
+      "id": "new-moon-2029-11-06",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-11-06T04:24:08.161Z",
+      "horizonsAt": "2029-11-06T04:24:08.122Z",
+      "differenceSeconds": 0.039
+    },
+    {
+      "id": "full-moon-2029-11-21",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-11-21T04:02:58.746Z",
+      "horizonsAt": "2029-11-21T04:02:58.734Z",
+      "differenceSeconds": 0.012
+    },
+    {
+      "id": "neptune-sextile-pluto-2029-11-30",
+      "family": "aspect",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "at": "2029-11-30T21:09:14.615Z",
+      "horizonsAt": "2029-11-30T21:09:14.210Z",
+      "differenceSeconds": 0.405
+    },
+    {
+      "id": "new-moon-2029-12-05",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-12-05T14:52:08.520Z",
+      "horizonsAt": "2029-12-05T14:52:08.469Z",
+      "differenceSeconds": 0.051
+    },
+    {
+      "id": "venus-stations-retrograde-2029-12-16",
+      "family": "station",
+      "bodies": [
+        "Venus"
+      ],
+      "at": "2029-12-16T23:47:24.579Z",
+      "horizonsAt": "2029-12-16T23:47:36.459Z",
+      "differenceSeconds": -11.88
+    },
+    {
+      "id": "neptune-stations-direct-2029-12-19",
+      "family": "station",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2029-12-19T08:23:49.979Z",
+      "horizonsAt": "2029-12-19T08:23:48.446Z",
+      "differenceSeconds": 1.533
+    },
+    {
+      "id": "full-moon-2029-12-20",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2029-12-20T22:46:31.570Z",
+      "horizonsAt": "2029-12-20T22:46:31.497Z",
+      "differenceSeconds": 0.073
+    },
+    {
+      "id": "mercury-stations-retrograde-2029-12-22",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2029-12-22T05:49:41.688Z",
+      "horizonsAt": "2029-12-22T05:50:35.534Z",
+      "differenceSeconds": -53.846
+    },
+    {
+      "id": "jupiter-opposition-saturn-2029-12-22",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "at": "2029-12-22T07:03:16.545Z",
+      "horizonsAt": "2029-12-22T07:03:16.397Z",
+      "differenceSeconds": 0.148
+    },
+    {
+      "id": "new-moon-2030-01-04",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-01-04T02:49:34.189Z",
+      "horizonsAt": "2030-01-04T02:49:34.114Z",
+      "differenceSeconds": 0.075
+    },
+    {
+      "id": "mercury-stations-direct-2030-01-11",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2030-01-11T05:46:34.481Z",
+      "horizonsAt": "2030-01-11T05:45:29.582Z",
+      "differenceSeconds": 64.899
+    },
+    {
+      "id": "saturn-stations-direct-2030-01-19",
+      "family": "station",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2030-01-19T03:54:07.118Z",
+      "horizonsAt": "2030-01-19T03:54:03.768Z",
+      "differenceSeconds": 3.35
+    },
+    {
+      "id": "full-moon-2030-01-19",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-01-19T15:54:22.773Z",
+      "horizonsAt": "2030-01-19T15:54:22.750Z",
+      "differenceSeconds": 0.023
+    },
+    {
+      "id": "venus-stations-direct-2030-01-26",
+      "family": "station",
+      "bodies": [
+        "Venus"
+      ],
+      "at": "2030-01-26T21:33:21.269Z",
+      "horizonsAt": "2030-01-26T21:33:05.973Z",
+      "differenceSeconds": 15.296
+    },
+    {
+      "id": "new-moon-2030-02-02",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-02-02T16:07:31.729Z",
+      "horizonsAt": "2030-02-02T16:07:31.712Z",
+      "differenceSeconds": 0.017
+    },
+    {
+      "id": "full-moon-2030-02-18",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-02-18T06:19:49.735Z",
+      "horizonsAt": "2030-02-18T06:19:49.666Z",
+      "differenceSeconds": 0.069
+    },
+    {
+      "id": "uranus-stations-direct-2030-02-20",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2030-02-20T23:22:32.196Z",
+      "horizonsAt": "2030-02-20T23:22:50.180Z",
+      "differenceSeconds": -17.984
+    },
+    {
+      "id": "new-moon-2030-03-04",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-03-04T06:34:40.946Z",
+      "horizonsAt": "2030-03-04T06:34:40.919Z",
+      "differenceSeconds": 0.027
+    },
+    {
+      "id": "jupiter-stations-retrograde-2030-03-13",
+      "family": "station",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2030-03-13T14:33:20.829Z",
+      "horizonsAt": "2030-03-13T14:33:27.180Z",
+      "differenceSeconds": -6.351
+    },
+    {
+      "id": "full-moon-2030-03-19",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-03-19T17:56:30.626Z",
+      "horizonsAt": "2030-03-19T17:56:30.537Z",
+      "differenceSeconds": 0.089
+    },
+    {
+      "id": "new-moon-2030-04-02",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-04-02T22:02:33.450Z",
+      "horizonsAt": "2030-04-02T22:02:33.364Z",
+      "differenceSeconds": 0.086
+    },
+    {
+      "id": "mercury-stations-retrograde-2030-04-13",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2030-04-13T02:33:56.425Z",
+      "horizonsAt": "2030-04-13T02:33:25.322Z",
+      "differenceSeconds": 31.103
+    },
+    {
+      "id": "full-moon-2030-04-18",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-04-18T03:20:02.343Z",
+      "horizonsAt": "2030-04-18T03:20:02.316Z",
+      "differenceSeconds": 0.027
+    },
+    {
+      "id": "jupiter-opposition-saturn-2030-04-24",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "at": "2030-04-24T01:56:26.891Z",
+      "horizonsAt": "2030-04-24T01:56:26.893Z",
+      "differenceSeconds": -0.002
+    },
+    {
+      "id": "new-moon-2030-05-02",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-05-02T14:12:10.095Z",
+      "horizonsAt": "2030-05-02T14:12:10.052Z",
+      "differenceSeconds": 0.043
+    },
+    {
+      "id": "neptune-sextile-pluto-2030-05-04",
+      "family": "aspect",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "at": "2030-05-04T15:27:54.480Z",
+      "horizonsAt": "2030-05-04T15:27:54.582Z",
+      "differenceSeconds": -0.102
+    },
+    {
+      "id": "mercury-stations-direct-2030-05-06",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2030-05-06T20:14:53.407Z",
+      "horizonsAt": "2030-05-06T20:14:49.842Z",
+      "differenceSeconds": 3.565
+    },
+    {
+      "id": "pluto-stations-retrograde-2030-05-12",
+      "family": "station",
+      "bodies": [
+        "Pluto"
+      ],
+      "at": "2030-05-12T23:12:48.163Z",
+      "horizonsAt": "2030-05-12T23:12:21.213Z",
+      "differenceSeconds": 26.95
+    },
+    {
+      "id": "full-moon-2030-05-17",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-05-17T11:19:09.745Z",
+      "horizonsAt": "2030-05-17T11:19:09.674Z",
+      "differenceSeconds": 0.071
+    },
+    {
+      "id": "saturn-enters-gemini-2030-06-01",
+      "family": "ingress",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2030-06-01T02:34:11.832Z",
+      "horizonsAt": "2030-06-01T02:34:19.357Z",
+      "differenceSeconds": -7.525
+    },
+    {
+      "id": "new-moon-2030-06-01",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-06-01T06:21:21.526Z",
+      "horizonsAt": "2030-06-01T06:21:21.512Z",
+      "differenceSeconds": 0.014
+    },
+    {
+      "id": "full-moon-2030-06-15",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-06-15T18:41:01.457Z",
+      "horizonsAt": "2030-06-15T18:41:01.411Z",
+      "differenceSeconds": 0.046
+    },
+    {
+      "id": "new-moon-2030-06-30",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-06-30T21:34:29.575Z",
+      "horizonsAt": "2030-06-30T21:34:29.531Z",
+      "differenceSeconds": 0.044
+    },
+    {
+      "id": "jupiter-stations-direct-2030-07-15",
+      "family": "station",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2030-07-15T01:26:31.698Z",
+      "horizonsAt": "2030-07-15T01:26:31.145Z",
+      "differenceSeconds": 0.553
+    },
+    {
+      "id": "full-moon-2030-07-15",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-07-15T02:12:00.290Z",
+      "horizonsAt": "2030-07-15T02:12:00.241Z",
+      "differenceSeconds": 0.049
+    },
+    {
+      "id": "neptune-stations-retrograde-2030-07-16",
+      "family": "station",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2030-07-16T16:28:29.032Z",
+      "horizonsAt": "2030-07-16T16:28:39.715Z",
+      "differenceSeconds": -10.683
+    },
+    {
+      "id": "new-moon-2030-07-30",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-07-30T11:11:00.962Z",
+      "horizonsAt": "2030-07-30T11:11:00.948Z",
+      "differenceSeconds": 0.014
+    },
+    {
+      "id": "full-moon-2030-08-13",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-08-13T10:44:25.089Z",
+      "horizonsAt": "2030-08-13T10:44:25.051Z",
+      "differenceSeconds": 0.038
+    },
+    {
+      "id": "mercury-stations-retrograde-2030-08-16",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2030-08-16T01:19:46.962Z",
+      "horizonsAt": "2030-08-16T01:20:11.287Z",
+      "differenceSeconds": -24.325
+    },
+    {
+      "id": "new-moon-2030-08-28",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-08-28T23:07:22.857Z",
+      "horizonsAt": "2030-08-28T23:07:22.810Z",
+      "differenceSeconds": 0.047
+    },
+    {
+      "id": "mercury-stations-direct-2030-09-08",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2030-09-08T09:27:17.401Z",
+      "horizonsAt": "2030-09-08T09:27:36.170Z",
+      "differenceSeconds": -18.769
+    },
+    {
+      "id": "full-moon-2030-09-11",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-09-11T21:17:56.686Z",
+      "horizonsAt": "2030-09-11T21:17:56.636Z",
+      "differenceSeconds": 0.05
+    },
+    {
+      "id": "saturn-stations-retrograde-2030-09-20",
+      "family": "station",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2030-09-20T21:29:46.375Z",
+      "horizonsAt": "2030-09-20T21:29:42.951Z",
+      "differenceSeconds": 3.424
+    },
+    {
+      "id": "new-moon-2030-09-27",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-09-27T09:54:41.725Z",
+      "horizonsAt": "2030-09-27T09:54:41.671Z",
+      "differenceSeconds": 0.054
+    },
+    {
+      "id": "uranus-stations-retrograde-2030-09-28",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2030-09-28T08:26:55.868Z",
+      "horizonsAt": "2030-09-28T08:26:58.175Z",
+      "differenceSeconds": -2.307
+    },
+    {
+      "id": "full-moon-2030-10-11",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-10-11T10:46:51.757Z",
+      "horizonsAt": "2030-10-11T10:46:51.721Z",
+      "differenceSeconds": 0.036
+    },
+    {
+      "id": "jupiter-enters-sagittarius-2030-10-22",
+      "family": "ingress",
+      "bodies": [
+        "Jupiter"
+      ],
+      "at": "2030-10-22T23:14:20.303Z",
+      "horizonsAt": "2030-10-22T23:14:23.885Z",
+      "differenceSeconds": -3.582
+    },
+    {
+      "id": "pluto-stations-direct-2030-10-23",
+      "family": "station",
+      "bodies": [
+        "Pluto"
+      ],
+      "at": "2030-10-23T03:05:30.907Z",
+      "horizonsAt": "2030-10-23T03:05:52.906Z",
+      "differenceSeconds": -21.999
+    },
+    {
+      "id": "new-moon-2030-10-26",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-10-26T20:17:00.628Z",
+      "horizonsAt": "2030-10-26T20:17:00.556Z",
+      "differenceSeconds": 0.072
+    },
+    {
+      "id": "full-moon-2030-11-10",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-11-10T03:30:19.087Z",
+      "horizonsAt": "2030-11-10T03:30:19.027Z",
+      "differenceSeconds": 0.06
+    },
+    {
+      "id": "jupiter-opposition-saturn-2030-11-20",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Saturn"
+      ],
+      "at": "2030-11-20T01:05:40.080Z",
+      "horizonsAt": "2030-11-20T01:05:39.942Z",
+      "differenceSeconds": 0.138
+    },
+    {
+      "id": "new-moon-2030-11-25",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-11-25T06:46:30.059Z",
+      "horizonsAt": "2030-11-25T06:46:30.052Z",
+      "differenceSeconds": 0.007
+    },
+    {
+      "id": "mercury-stations-retrograde-2030-12-06",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2030-12-06T02:46:21.297Z",
+      "horizonsAt": "2030-12-06T02:47:24.263Z",
+      "differenceSeconds": -62.966
+    },
+    {
+      "id": "jupiter-sextile-pluto-2030-12-08",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Pluto"
+      ],
+      "at": "2030-12-08T06:42:26.739Z",
+      "horizonsAt": "2030-12-08T06:42:26.620Z",
+      "differenceSeconds": 0.119
+    },
+    {
+      "id": "full-moon-2030-12-09",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-12-09T22:40:28.361Z",
+      "horizonsAt": "2030-12-09T22:40:28.291Z",
+      "differenceSeconds": 0.07
+    },
+    {
+      "id": "jupiter-trine-neptune-2030-12-10",
+      "family": "aspect",
+      "bodies": [
+        "Jupiter",
+        "Neptune"
+      ],
+      "at": "2030-12-10T08:02:06.533Z",
+      "horizonsAt": "2030-12-10T08:02:06.406Z",
+      "differenceSeconds": 0.127
+    },
+    {
+      "id": "neptune-stations-direct-2030-12-21",
+      "family": "station",
+      "bodies": [
+        "Neptune"
+      ],
+      "at": "2030-12-21T20:39:18.104Z",
+      "horizonsAt": "2030-12-21T20:39:38.288Z",
+      "differenceSeconds": -20.184
+    },
+    {
+      "id": "new-moon-2030-12-24",
+      "family": "lunation",
+      "bodies": [
+        "Moon",
+        "Sun"
+      ],
+      "at": "2030-12-24T17:32:14.334Z",
+      "horizonsAt": "2030-12-24T17:32:14.321Z",
+      "differenceSeconds": 0.013
+    },
+    {
+      "id": "mercury-stations-direct-2030-12-25",
+      "family": "station",
+      "bodies": [
+        "Mercury"
+      ],
+      "at": "2030-12-25T21:15:29.443Z",
+      "horizonsAt": "2030-12-25T21:14:23.235Z",
+      "differenceSeconds": 66.208
+    },
+    {
+      "id": "neptune-sextile-pluto-2030-12-26",
+      "family": "aspect",
+      "bodies": [
+        "Neptune",
+        "Pluto"
+      ],
+      "at": "2030-12-26T14:35:55.654Z",
+      "horizonsAt": "2030-12-26T14:35:55.501Z",
+      "differenceSeconds": 0.153
+    },
+    {
+      "id": "saturn-stations-direct-2031-02-02",
+      "family": "station",
+      "bodies": [
+        "Saturn"
+      ],
+      "at": "2031-02-02T02:24:45.351Z",
+      "horizonsAt": "2031-02-02T02:24:49.506Z",
+      "differenceSeconds": -4.155
+    },
+    {
+      "id": "uranus-stations-direct-2031-02-25",
+      "family": "station",
+      "bodies": [
+        "Uranus"
+      ],
+      "at": "2031-02-25T11:24:15.028Z",
+      "horizonsAt": "2031-02-25T11:24:12.264Z",
+      "differenceSeconds": 2.764
+    }
+  ]
+}
