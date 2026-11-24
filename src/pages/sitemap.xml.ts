@@ -77,7 +77,8 @@ const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 const REGISTRY_SIGN_LASTMOD = '2026-11-22';
 // A missing saved price now shows as unavailable, not $0.
 const REGISTRY_ROSTER_LASTMOD = '2026-11-22';
-const THESIS_LASTMOD = '2026-11-14';
+// The transmission figure became the eight-form timeline plate (rendered content).
+const THESIS_LASTMOD = '2026-11-24';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
 const SKY_HEADS_UP_LASTMOD = '2026-11-12';
