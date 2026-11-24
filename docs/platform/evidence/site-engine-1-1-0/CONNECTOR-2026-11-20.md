@@ -58,3 +58,14 @@ Starting from the reproduced 0.6.9 source, apply the changes to
 `runtimeSource.readingConfidence` commit with one line of diff context.
 Build the hosted entry with the same settings and lifetime boundary. The
 resulting digest is recorded in `publishedSha256`.
+
+## Split-day refusal for check_sky_fact
+
+Add the same split-day midnight-rollback refusal (`clockWentBackAcrossMidnight`
+and `refuseSplitDay` using `LOCAL_DAY_MESSAGES.splitDay`) before
+`computeSkyFact` in `api/_ai/published/runtime.mjs` so both `/mcp` and
+`/mcp/de440` refuse dates split across midnight (such as `1989-10-28` and
+`1989-10-29` in `America/St_Johns`, and `1867-10-18` in `America/Juneau`),
+while keeping all published tool definitions, directory fixtures, and the
+Astronomy Engine ephemeris unchanged. The resulting digest is recorded in
+`publishedSha256`.

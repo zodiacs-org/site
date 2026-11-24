@@ -5,6 +5,7 @@ import { expect, it } from 'vitest';
 import transition from '../../docs/platform/evidence/site-engine-1-1-0/connector-transition.json';
 import publishedReplies from '../../src/ai-tools/accounts/flag-off.fixture.json';
 import { textWithoutContinuousUtc } from '../../src/ai-tools/published-tools';
+import { LOCAL_DAY_MESSAGES } from '../../src/lib/compute-api/validate';
 
 it('keeps the published connector reply while a separate route advertises and returns DE440', async () => {
   const routes = await import('../../api/_ai/handler');
@@ -50,6 +51,33 @@ it('keeps the published connector reply while a separate route advertises and re
         calculation: { backend: { ephemeris: { name: expected.ephemeris } } },
       } });
       expect(answer.content[0]).toMatchObject({ type: 'text', text: JSON.stringify(answer.structuredContent) });
+
+      for (const [date, zone] of [
+        ['1989-10-29', 'America/St_Johns'],
+        ['1989-10-28', 'America/St_Johns'],
+        ['1867-10-18', 'America/Juneau'],
+      ] as const) {
+        const refused = await client.callTool({
+          name: 'check_sky_fact',
+          arguments: { kind: 'ingress', body: 'Moon', sign: 'scorpio', date, zone },
+        });
+        expect(refused.isError, `${path} ${date} ${zone}`).toBe(true);
+        expect(refused.structuredContent, `${path} ${date} ${zone}`).toMatchObject({
+          ok: false,
+          error: { code: 'invalid-request', message: `date: ${LOCAL_DAY_MESSAGES.splitDay}` },
+        });
+      }
+      for (const [date, zone] of [
+        ['1892-07-04', 'Pacific/Apia'],
+        ['2026-11-01', 'America/New_York'],
+      ] as const) {
+        const accepted = await client.callTool({
+          name: 'check_sky_fact',
+          arguments: { kind: 'sign', body: 'Sun', sign: 'scorpio', date, zone },
+        });
+        expect(accepted.isError, `${path} ${date} ${zone}`).toBe(false);
+        expect(accepted.structuredContent, `${path} ${date} ${zone}`).toMatchObject({ ok: true });
+      }
     }
 
     const numerologyOptions = {
