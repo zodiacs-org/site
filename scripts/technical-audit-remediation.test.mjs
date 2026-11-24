@@ -179,7 +179,10 @@ describe('technical audit remediation contracts', () => {
     expect(privacy).toContain("const modifiedAt = '2026-11-20T00:00:00.000Z'");
     expect(sitemap).toContain("['/privacy/', '2026-11-11'] as const,");
     expect(sitemap).toContain("['/privacy/', '2026-11-13'] as const,");
-    expect(sitemap).toContain("['/privacy/', '2026-11-20'] as const,");
+    // 2026-11-22 from ZOD-182 on main is later than this PR's 20 November
+    // wording and is the final English /privacy/ lastmod.
+    expect(sitemap).toContain("['/privacy/', '2026-11-22'] as const,");
+    expect(sitemap.lastIndexOf("['/privacy/', '")).toBe(sitemap.indexOf("['/privacy/', '2026-11-22'] as const,"));
     expect(sitemap).toContain("const ASSISTANT_REF_LASTMOD = '2026-10-14'");
     expect(sitemap).toContain("const MCP_HOST_LOGS_LASTMOD = '2026-10-09'");
     expect(sitemap).toContain("...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const)");
