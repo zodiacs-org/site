@@ -30,7 +30,7 @@ daily pages never move.
 | Forms, form controls, buttons, `details` / `summary` | None. Present from the first frame |
 | Whole sections and articles | None. Mark the cards and marks inside them instead |
 | Hero pictures and hero headings (LCP) | None |
-| A result the person just asked for | The 200 ms arrival in `src/styles/base.css` only. Big Three's result still marks its cards and discs: it merged before the guard and is listed in `KNOWN_ON_MAIN` in the guard test, to be fixed in its own PR. |
+| A result the person just asked for | The 200 ms arrival in `src/styles/base.css` only. |
 | Keyboard-driven actions | None |
 | Daily pages | No entrance motion at all |
 
@@ -110,7 +110,6 @@ import Motion from '../components/Motion.astro';
   `--motion-delay` (extra delay).
 - An island that adds marks after the page loads (never a result the person
   asked for) can call `window.zodiacsMotion?.scan(root)` after rendering them.
-  Big Three still uses this call for its result entrances (see the rule above).
 
 ## Guarantees
 
