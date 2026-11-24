@@ -79,7 +79,7 @@ const jsonLd = [
     <p class="horo-jump-label">Jump to your sign</p>
     <nav class="horo-picker" aria-label="Choose your horoscope sign">
       {cards.map(({ sign }) => (
-        <a href={`/horoscopes/${sign.slug}/`} style={`--sign:${sign.hue}`}>
+        <a href={`/horoscopes/${sign.slug}/`} data-name={sign.name} style={`--sign:${sign.hue}`}>
           <SignIcon sign={sign.slug} size={24} webpOnly fetchPriority="low" />
           <span>{sign.name}</span>
         </a>
@@ -151,7 +151,11 @@ const jsonLd = [
   }
 
   .horo-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 28px; }
-  .horo-picker a { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 48px; border: 1px solid var(--hair-2); border-radius: var(--r-md); color: var(--text-2); font-size: 13px; text-decoration: none; }
+  .horo-picker a { display: grid; grid-template-areas: "icon label"; grid-template-columns: 24px max-content; align-items: center; justify-content: center; gap: 7px; min-height: 48px; border: 1px solid var(--hair-2); border-radius: var(--r-md); color: var(--text-2); font-size: 13px; text-decoration: none; }
+  .horo-picker a :global(.sign-icon) { grid-area: icon; }
+  /* Reserve each complete sign name when the icon arrives before its text. */
+  .horo-picker a::before { content: attr(data-name); visibility: hidden; }
+  .horo-picker a::before, .horo-picker a > span { grid-area: label; }
   .horo-picker a:hover { border-color: var(--sign); background: var(--void-2); }
   .horo-picker a:focus-visible { outline: 2px solid var(--sign); outline-offset: 3px; }
   @media (max-width: 359px) { .horo-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
