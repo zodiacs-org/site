@@ -9,7 +9,6 @@
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import EvidenceDisclosure from './EvidenceDisclosure';
-import { motionScan } from '../lib/motion';
 import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { NUMEROLOGY_SEPARATE } from '../lib/numerology/reading';
 import { POSITION_READINGS, type ReadingPosition } from '../data/numerology-readings';
@@ -149,7 +148,7 @@ function NumberCard({ position, value, chain = '', summary, meta }: CardProps) {
   const meaning = meaningFor(value);
   const label = POSITION_LABEL[position];
   return (
-    <div class="tile num__tile" data-enter="rise" style={`--sign:${hueFor(value)}`}>
+    <div class="tile num__tile" style={`--sign:${hueFor(value)}`}>
       <span class="mono--label num__label">{label}</span>
       <div class="num__figure">
         <span class="display num__number">{value}</span>
@@ -251,7 +250,6 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
   const [error, setError] = useState('');
   const resultHeadingRef = useRef<HTMLHeadingElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
-  const resultGridRef = useRef<HTMLDivElement>(null);
   const focusAfterComputeRef = useRef(false);
 
   function submit(e: Event) {
@@ -295,12 +293,6 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
       setError(errorMessage(err));
     }
   }
-
-  // Hand the result's cards to the shared entrance motion (docs/MOTION.md):
-  // they rise in once, the first time a result appears, then stay still.
-  useEffect(() => {
-    if (result) motionScan(resultGridRef.current?.parentElement ?? undefined);
-  }, [result]);
 
   useEffect(() => {
     if (!focusAfterComputeRef.current) return;
@@ -378,7 +370,7 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
 
           {result?.nameEmptied && <p class="notice" role="status">{NAME_EMPTIED_NOTE}</p>}
 
-          <div class="num__lead shell tinted" data-enter="rise" style={`--sign:${hueFor(lifePath.value)}`}>
+          <div class="num__lead shell tinted" style={`--sign:${hueFor(lifePath.value)}`}>
             <div class="core tinted num__lead-core">
               <span class="mono--label num__label">Life Path</span>
               <div class="num__figure num__figure--lead">
@@ -403,7 +395,7 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
             </div>
           </div>
 
-          <div class="num__grid" ref={resultGridRef}>
+          <div class="num__grid">
             <NumberCard position="birthday" value={profile.date.birthday.value} chain={chainIfLonger(profile.date.birthday)} />
             {profile.name && (
               <>

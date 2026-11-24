@@ -1,0 +1,336 @@
+{
+  "generatedAt": "2026-11-22T01:10:07.112Z",
+  "before": "http://127.0.0.1:4411",
+  "after": "http://127.0.0.1:4421",
+  "markAttribute": "data-enter",
+  "viewports": [
+    "390x844",
+    "1440x900"
+  ],
+  "stripTimes": [
+    0,
+    100,
+    200,
+    300,
+    440,
+    700,
+    1100,
+    1600,
+    2200
+  ],
+  "throttle": {
+    "latency": 150,
+    "downloadThroughput": 209715,
+    "uploadThroughput": 96000,
+    "cpuRate": 4
+  },
+  "routes": [
+    {
+      "path": "/",
+      "rest": "identical",
+      "primaryAction": null,
+      "loops": {
+        "before": [
+          "hero-poster-drift on img.hero__poster",
+          "looping video on video.hero__video.is-playing"
+        ],
+        "after": [
+          "hero-poster-drift on img.hero__poster",
+          "looping video on video.hero__video.is-playing"
+        ]
+      },
+      "sheets": [
+        {
+          "label": "390x844 first view",
+          "file": "home-390x844-first-view.webp",
+          "bytes": 407324,
+          "frameWidth": 260
+        },
+        {
+          "label": "1440x900 first view",
+          "file": "home-1440x900-first-view.webp",
+          "bytes": 228950,
+          "frameWidth": 360
+        }
+      ],
+      "viewports": {
+        "390x844": {
+          "before": {
+            "cls": 0.343992,
+            "lcp": {
+              "time": 236,
+              "selector": "img.hero__poster"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 524,
+              "domContentLoaded": 1322,
+              "firstMarkShown": 1369
+            },
+            "longFrames": {
+              "count": 3,
+              "longest": 216.6,
+              "frames": 114
+            },
+            "animatedProperties": [],
+            "markedCount": 0,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "after": {
+            "cls": 0.344478,
+            "lcp": {
+              "time": 292,
+              "selector": "img.hero__poster"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 480,
+              "domContentLoaded": 1288,
+              "firstMarkShown": 1401
+            },
+            "longFrames": {
+              "count": 2,
+              "longest": 133.3,
+              "frames": 133
+            },
+            "animatedProperties": [],
+            "markedCount": 16,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 0,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "rest": {
+            "share": 0,
+            "differing": 0,
+            "heightChanged": null,
+            "widthChanged": null,
+            "dailyOnly": false,
+            "comparedArea": "390x8113"
+          },
+          "checks": [
+            {
+              "check": "cls",
+              "status": "fail",
+              "detail": "0.3445"
+            },
+            {
+              "check": "lcpMarked",
+              "status": "pass",
+              "detail": "LCP element img.hero__poster is not marked"
+            },
+            {
+              "check": "rootMarked",
+              "status": "pass",
+              "detail": "html does not have is-in"
+            },
+            {
+              "check": "hiddenAboveAfterReload",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "animatedProperties",
+              "status": "pass",
+              "detail": "none"
+            },
+            {
+              "check": "reducedMotion",
+              "status": "pass",
+              "detail": "0 running, 0 not opaque"
+            },
+            {
+              "check": "noScript",
+              "status": "pass",
+              "detail": "0 not opaque"
+            },
+            {
+              "check": "longFrames",
+              "status": "note",
+              "detail": "runner too slow to judge: longest 133.3 ms, 216.6 ms without marks"
+            },
+            {
+              "check": "rest",
+              "status": "pass",
+              "detail": "0.000% differs"
+            }
+          ]
+        },
+        "1440x900": {
+          "before": {
+            "cls": 1.030061,
+            "lcp": {
+              "time": 384,
+              "selector": "img.hero__poster"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 648,
+              "domContentLoaded": 1360,
+              "firstMarkShown": 1369
+            },
+            "longFrames": {
+              "count": 5,
+              "longest": 166.6,
+              "frames": 119
+            },
+            "animatedProperties": [],
+            "markedCount": 0,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 1,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "after": {
+            "cls": 0.49042,
+            "lcp": {
+              "time": 388,
+              "selector": "img.hero__poster"
+            },
+            "lcpMarked": false,
+            "throttled": {
+              "firstPaint": 644,
+              "domContentLoaded": 1386,
+              "firstMarkShown": 1404
+            },
+            "longFrames": {
+              "count": 6,
+              "longest": 233.4,
+              "frames": 108
+            },
+            "animatedProperties": [],
+            "markedCount": 16,
+            "nestedMarks": 0,
+            "rootMarked": false,
+            "hiddenAboveAfterReload": 0,
+            "primaryActionTop": null,
+            "reducedMotion": {
+              "running": 0,
+              "notOpaque": 0
+            },
+            "noScript": {
+              "notOpaque": 0
+            },
+            "strip": {
+              "animations": 1,
+              "lost": 0
+            },
+            "steps": [],
+            "notes": []
+          },
+          "rest": {
+            "share": 0,
+            "differing": 0,
+            "heightChanged": null,
+            "widthChanged": null,
+            "dailyOnly": false,
+            "comparedArea": "1440x6799"
+          },
+          "checks": [
+            {
+              "check": "cls",
+              "status": "fail",
+              "detail": "0.4904"
+            },
+            {
+              "check": "lcpMarked",
+              "status": "pass",
+              "detail": "LCP element img.hero__poster is not marked"
+            },
+            {
+              "check": "rootMarked",
+              "status": "pass",
+              "detail": "html does not have is-in"
+            },
+            {
+              "check": "hiddenAboveAfterReload",
+              "status": "pass",
+              "detail": "0"
+            },
+            {
+              "check": "animatedProperties",
+              "status": "pass",
+              "detail": "none"
+            },
+            {
+              "check": "reducedMotion",
+              "status": "pass",
+              "detail": "0 running, 0 not opaque"
+            },
+            {
+              "check": "noScript",
+              "status": "pass",
+              "detail": "0 not opaque"
+            },
+            {
+              "check": "longFrames",
+              "status": "note",
+              "detail": "runner too slow to judge: longest 233.4 ms, 166.6 ms without marks"
+            },
+            {
+              "check": "rest",
+              "status": "pass",
+              "detail": "0.000% differs"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "failures": [
+    {
+      "path": "/",
+      "viewport": "390x844",
+      "check": "cls",
+      "detail": "0.3445"
+    },
+    {
+      "path": "/",
+      "viewport": "1440x900",
+      "check": "cls",
+      "detail": "0.4904"
+    }
+  ]
+}
