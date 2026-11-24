@@ -5,9 +5,11 @@ import SignIcon from '../SignIcon.astro';
 interface Props {
   person: PersonRecord;
   compact?: boolean;
+  /** Rise once when first seen (docs/MOTION.md). Only the directory passes it. */
+  enter?: boolean;
 }
 
-const { person, compact = false } = Astro.props;
+const { person, compact = false, enter = false } = Astro.props;
 const birthDate = new Intl.DateTimeFormat('en-US', {
   timeZone: 'UTC',
   month: 'long',
@@ -22,6 +24,7 @@ const birthDate = new Intl.DateTimeFormat('en-US', {
   data-sign={person.sunSign.slug}
   data-disciplines={peopleDisciplineGroups(person).join(' ')}
   data-person-name={person.displayName.toLowerCase()}
+  data-enter={enter ? 'rise' : undefined}
 >
   <SignIcon sign={person.sunSign.slug} size={compact ? 36 : 44} loading="lazy" />
   <span class="people-card__body">
