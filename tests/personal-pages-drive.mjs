@@ -85,12 +85,13 @@ const ALL_PAGES = [
     keys: { file: 'src/lib/retrograde-for-you/share.ts', name: 'RETROGRADE_FOR_YOU_SHARE_KEYS' },
     sharePath: '/share/retrograde-for-you/',
     linkedFrom: ['/', '/tools/', '/retrogrades/', '/mercury-retrograde/'],
-    async run(tab, label) {
+    async run(tab, label, requests) {
       // Every request address, to check no request depends on the date or the place entered.
       const addresses = [];
       tab.on('request', (request) => addresses.push(request.url()));
       // The calendar module loads with the page, so a date before 1924 asks for nothing a later date does not.
-      const loaded = await tab.evaluate(() => performance.getEntriesByType('resource').map((entry) => new URL(entry.name).pathname));
+      // Read from the requests recorded since the page opened: with the clock fixed, performance lists no resources.
+      const loaded = requests.map((line) => new URL(line.split(' ')[0]).pathname);
       check('the calendar module loads with the page, before any date', loaded.some((path) => /\/_astro\/BirthCalendar[.-]/u.test(path)), loaded.join(', '));
       const afterDate = async (date) => {
         const from = addresses.length;
@@ -350,9 +351,11 @@ if (onPages.length) {
           const { context, tab, requests, errors } = session;
           check(`${label}: first load has zero CLS`, load.cls === 0, JSON.stringify(load));
           check(`${label}: the page reads the fixed clock`, await tab.evaluate(() => new Date().toISOString()) === PARITY_NOW.toISOString());
+          // The fixed clock fakes performance, not PerformanceObserver: the layout shift checks still read the browser's own entries.
+          check(`${label}: the layout shift observer is the browser's own`, await tab.evaluate(() => /\[native code\]/u.test(String(PerformanceObserver)) && PerformanceObserver.supportedEntryTypes.includes('layout-shift')));
 
           const before = tab.url();
-          const selector = await page.run(tab, label);
+          const selector = await page.run(tab, label, requests);
           await settle(tab);
           check(`${label}: the address bar is unchanged after the result`, tab.url() === before, tab.url());
           const leaked = requests.filter((line) => line.includes(BIRTH.date) || line.includes('1990'));
