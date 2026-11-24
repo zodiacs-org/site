@@ -72,7 +72,7 @@ describe('the pinned zone history before 1970', () => {
   });
 
   it('leaves a name whose pinned history differs after 1970 to the default build', async () => {
-    // One of the 16 names the engine ships in the default build's form, so the hand-over at 1970 cannot jump.
+    // One of the 14 names the engine ships in the default build's form, so the hand-over at 1970 cannot jump.
     await preparePackageLocalTime('1950-06-15', 'WET');
     expect(packageResolveLocalToUtc('1950-06-15', '12:00', 'WET').zone.dataForm).toBe('main');
     const resolved = resolveLocalToUtc('1950-06-15', '12:00', 'WET', { longitude: -9.14 });
