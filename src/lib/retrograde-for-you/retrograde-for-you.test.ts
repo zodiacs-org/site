@@ -12,6 +12,8 @@ import { MINOR_NOTE } from '../../ai-tools/features/reading-guards';
 import { CONTACT_LINE, POINT_NAMES, RETROGRADE_ASK, RETROGRADE_LINE, natalBasis } from './reading';
 import { loopsFromSky } from './sky';
 import { parseRetrogradeForYouShare, publishedRetrogradeDate, retrogradeForYouQuery } from './share';
+import { REPEATED_BIRTH_TIME, SKIPPED_BIRTH_TIME, SkippedBirthTimeError } from '../vedic-signs/clock';
+import { executeAiTool } from '../../ai-tools/tools';
 
 const clock = createLocalTimeModule();
 const MINUTES = 60_000;
@@ -247,11 +249,42 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     expect(split.page.limits).toContain(line);
     expect(split.mcp.limits).toContain(line);
     expect(split.page.limits).toEqual(split.mcp.limits.filter((entry) => !entry.startsWith('Today is read')));
-    // At 02:50 both passes give Leo rising, and an ordinary time is no fold at all: no limit.
-    for (const time of ['02:50', '04:10']) {
-      const same = await both({ birthDate: '1990-09-30', time }, now, 'Europe/Madrid');
-      expect(same.page.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
-      expect(same.mcp.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
+    // Every repeated time says first which pass it reads, the sentence the other personal pages use.
+    expect(split.page.limits[0]).toBe(REPEATED_BIRTH_TIME);
+    expect(split.mcp.limits[0]).toBe(REPEATED_BIRTH_TIME);
+    // At 02:50 both passes give Leo rising: no rising-sign limit, but the pass is still named.
+    const same = await both({ birthDate: '1990-09-30', time: '02:50' }, now, 'Europe/Madrid');
+    for (const limits of [same.page.limits, same.mcp.limits]) {
+      expect(limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
+      expect(limits[0]).toBe(REPEATED_BIRTH_TIME);
+    }
+    // An ordinary time is no fold at all: neither limit.
+    const ordinary = await both({ birthDate: '1990-09-30', time: '04:10' }, now, 'Europe/Madrid');
+    for (const limits of [ordinary.page.limits, ordinary.mcp.limits]) {
+      expect(limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
+      expect(limits).not.toContain(REPEATED_BIRTH_TIME);
+    }
+  });
+
+  it('refuses a birth time the clocks skipped on the page and in the tool, never reading it an hour on', async () => {
+    // Madrid, 25 Mar 1990: clocks went from 02:00 straight to 03:00. 02:30 never showed; read forward it is 03:30,
+    // which moves the rising sign and every house with no notice.
+    const now = new Date('2026-11-09T09:00:00Z');
+    const ON = { occasions: true, coverage: true, personal: true, now: () => now };
+    for (const time of ['02:00', '02:30', '02:59']) {
+      await prepareLocalTime('1990-03-25', MADRID.tz);
+      expect(() => computeRetrogradeForYou({ birthDate: '1990-03-25', birthTime: time, place: MADRID, planets: ['Mercury'], now, zone: 'UTC' })).toThrow(SkippedBirthTimeError);
+      const args = { birthDate: '1990-03-25', time, zone: MADRID.tz, latitude: MADRID.lat, longitude: MADRID.lon, currentZone: 'UTC' };
+      await expect(retrogradeForMe(args, { now, localTime: clock, resolveZone: async (name: string) => name, origin: 'https://zodiacs.org', pageOn: true })).rejects.toThrow(SkippedBirthTimeError);
+      const refused = await executeAiTool('get_retrograde_for_me', args, ON);
+      expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request', message: SKIPPED_BIRTH_TIME } });
+      expect(JSON.stringify(refused)).not.toMatch(/1990|03-25|02:|Madrid|40\.42|3\.7/u);
+    }
+    // The minutes either side are read as given, with no clock limit; a date with no birth time reads its day whole.
+    for (const birth of [{ birthDate: '1990-03-25', time: '01:59' }, { birthDate: '1990-03-25', time: '03:00' }, { birthDate: '1990-03-25' }]) {
+      const read = await both(birth, now, 'UTC');
+      expect(read.page.limits).not.toContain(REPEATED_BIRTH_TIME);
+      expect(read.page.limits).toEqual(read.mcp.limits.filter((entry) => !entry.startsWith('Today is read')));
     }
   });
 
@@ -271,6 +304,7 @@ describe('the reading guards on Retrogrades for you (ZOD-26)', () => {
     expect(mcp.periods[0].houses.length).toBeGreaterThan(0);
     expect(page.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
     expect(mcp.limits.some((entry) => entry.startsWith('Clocks repeated'))).toBe(false);
+    expect(page.limits[0]).toBe(REPEATED_BIRTH_TIME);
     expect(page.limits).toEqual(mcp.limits.filter((entry) => !entry.startsWith('Today is read')));
   });
 
@@ -388,5 +422,11 @@ describe('the page’s words', () => {
     for (const text of [page, island, CONTACT_LINE, ...Object.values(RETROGRADE_LINE), ...Object.values(RETROGRADE_ASK)]) {
       expect(forbiddenClaim(text.replace(/<!--[\s\S]*?-->/gu, ''))).toBeNull();
     }
+  });
+  it('reflect on values and spending for Venus without advising when to buy (owner wording, 24 Nov)', () => {
+    expect(RETROGRADE_LINE.Venus).toBe('Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful. It is read as a time to reflect on what you spend on and why, to look again at old ties, and to notice what still feels like you.');
+    // No planet's words say when to make a purchase, a sale or an investment, or call a stretch good or poor for one.
+    const TIMING = /\b(?:purchas\w*|buy\w*|sell\w*|invest\w*)\b|\b(?:good|poor|bad|best|worst|right|wrong)\s+(?:window|time|moment)\b/iu;
+    for (const text of [CONTACT_LINE, ...Object.values(RETROGRADE_LINE), ...Object.values(RETROGRADE_ASK)]) expect(text).not.toMatch(TIMING);
   });
 });

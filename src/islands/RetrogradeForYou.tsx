@@ -4,10 +4,11 @@ import { GatedBirthFields, birthDateOpen, checkedBirthDate, useBirthDateCheck } 
 import type { City } from '../lib/geo/search';
 import type { RetrogradePlanet, RetrogradeStatus } from '../lib/retrograde-for-you/reading';
 import type { RetrogradeForYouOutcome } from './retrograde-for-you/compute';
-import { retrogradeTablePath } from '../lib/retrograde-for-you/share';
+import { retrogradeForYouShareUrl, retrogradeTablePath } from '../lib/retrograde-for-you/share';
 import { loadModule } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { birthDateRefusal, FUTURE_BIRTH_DATE_SENTENCE } from '../lib/birth-date-policy';
+import { SKIPPED_BIRTH_TIME, SkippedBirthTimeError } from '../lib/vedic-signs/clock';
 
 type Result = Exclude<RetrogradeForYouOutcome, { refused: string }>;
 type Period = Result['periods'][number];
@@ -26,7 +27,6 @@ const SIGN_NAME: Record<string, string> = {
   libra: 'Libra', scorpio: 'Scorpio', sagittarius: 'Sagittarius', capricorn: 'Capricorn', aquarius: 'Aquarius', pisces: 'Pisces',
 };
 const UNDER_13 = 'Zodiacs is not made for children under 13, so it gives no reading for a birth date less than 13 years ago. Nothing was calculated. If you are 13 or older, enter your own birth date.';
-const SHARE_ORIGIN = 'https://zodiacs.org';
 const W = 600;
 
 /**
@@ -66,10 +66,11 @@ function Timeline({ period, now }: { period: Period; now: number }) {
   );
 }
 
-function ShareButton({ query, planet }: { query: string; planet: RetrogradePlanet }) {
+export function ShareButton({ query, planet }: { query: string; planet: RetrogradePlanet }) {
   const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle');
-  const url = `${SHARE_ORIGIN}/share/retrograde-for-you/?${query}`;
   async function share() {
+    // The card on the site this page was opened on: a preview shares its own card, which production may not have yet.
+    const url = retrogradeForYouShareUrl(window.location.origin, query);
     try {
       if (typeof navigator.share === 'function') {
         await navigator.share({ title: `${planet} retrograde in my chart`, url });
@@ -201,7 +202,9 @@ export default function RetrogradeForYou() {
       if (outcome.refused) setRefused(outcome.refused === 'under-13' ? UNDER_13 : FUTURE_BIRTH_DATE_SENTENCE);
       else setResult(outcome);
     } catch (cause) {
-      if (request === revision.current) {
+      // A birth time the clock skipped gets its own sentence; anything else the general one, with a fixed error code.
+      if (request === revision.current && cause instanceof SkippedBirthTimeError) setError(SKIPPED_BIRTH_TIME);
+      else if (request === revision.current) {
         console.error(RETROGRADE_ERROR_CODE);
         setError(calculationError(cause, 'en', 'The retrogrades could not be worked out. Check the details and try again.'));
       }

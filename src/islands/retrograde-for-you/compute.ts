@@ -19,6 +19,7 @@ import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
 import sky from '../../data/sky.json';
 import { birthDateRefusal } from '../../lib/birth-date-policy';
+import { SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
 
@@ -69,6 +70,10 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
   if (refused) return refused;
   const timeKnown = input.birthTime !== null;
   const resolved = resolveLocalToUtc(input.birthDate, input.birthTime ?? '12:00', input.place.tz, { longitude: input.place.lon });
+  // A birth time the clock skipped is refused, never read at the time the clock jumped to; a repeated one is read at
+  // its first pass, and the limits say so (src/lib/vedic-signs/clock.ts, as get_retrograde_for_me does).
+  const onClock = birthTimeOnClock(resolved.flags, timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
   const birthUtc = resolved.utc;
   const chart = computeChart({ utc: birthUtc, latitude: input.place.lat, longitude: input.place.lon, houseSystem: 'whole', timeKnown });
   const angles = timeKnown && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
@@ -90,10 +95,10 @@ export function computeRetrogradeForYou(input: RetrogradeForYouInput): Retrograd
   }
   const basis = natalBasis({ timeKnown, placed: true, angles, bodies: chart.bodies, sunHeld, birthDate: input.birthDate, now: input.now, dayEnds, foldAsc });
   const span = sky as SkySpan;
-  const reading = retrogradeReading({
+  const reading = withClockLimit(retrogradeReading({
     planets: input.planets, now: input.now, zone: input.zone, basis,
     loopsFor: (planet) => loopsFromSky(planet, input.now, span, (body, at) => bodyLongitude(body, at)),
-  });
+  }), onClock.limit);
   const sunSign = sunHeld
     ? (SIGNS[signIndexForLongitude(chart.bodies.find((row) => row.body === 'Sun')!.lon)].slug as ShareSign)
     : null;

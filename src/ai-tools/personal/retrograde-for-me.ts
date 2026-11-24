@@ -32,6 +32,7 @@ import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import type { ShareSign } from '../../lib/share-results';
 import { computeChart } from '../../lib/engine/full.js';
 import sky from '../../data/sky.json';
+import { SkippedBirthTimeError, birthTimeOnClock, withClockLimit } from '../../lib/vedic-signs/clock';
 import { birthDayEnds, birthFields, castNatal, currentClock, definePersonalTool, refineBirth, zoneField, type BirthArgs, type PersonalToolContext } from './shared';
 
 export { RETROGRADE_ASK, RETROGRADE_LINE, RETROGRADE_PLANETS, formatPosition, type RetrogradeLoop, type RetrogradePlanet };
@@ -167,6 +168,10 @@ export function retrogradeLoops(planet: RetrogradePlanet, now: Date, rowsAt = po
 /** The retrogrades for one person. Throws RangeError for details it cannot use. */
 export async function retrogradeForMe(args: BirthArgs & { planets?: readonly RetrogradePlanet[] | undefined; currentZone?: string | undefined }, context: Pick<PersonalToolContext, 'now' | 'localTime' | 'resolveZone' | 'hostZone' | 'origin' | 'allowEvents' | 'pageOn'>): Promise<{ data: RetrogradeForMeData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
   const natal = await castNatal(args, context.localTime);
+  // A birth time the clock skipped is refused, never read at the time the clock jumped to; a repeated one is read at
+  // its first pass, and the limits say so (src/lib/vedic-signs/clock.ts, as the page does).
+  const onClock = birthTimeOnClock(natal.flags, natal.timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
   const clock = await currentClock(args.currentZone, args.zone, context as PersonalToolContext);
   const now = context.now;
   const planets = RETROGRADE_PLANETS.filter((planet) => !args.planets || args.planets.includes(planet));
@@ -200,11 +205,11 @@ export async function retrogradeForMe(args: BirthArgs & { planets?: readonly Ret
     if (verdict !== 'allowed') return { refused: verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable' };
   }
   const rowsAt = positionsMemo();
-  const reading = retrogradeReading({
+  const reading = withClockLimit(retrogradeReading({
     planets, now, zone: clock.zone, basis,
     loopsFor: (planet) => retrogradeLoops(planet, now, rowsAt),
     leadingLimits: clock.note ? [clock.note] : [],
-  });
+  }), onClock.limit);
   const sunSign = sunHeld
     ? (SIGNS[signIndexForLongitude(natal.chart.bodies.find((row) => row.body === 'Sun')!.lon)].slug as ShareSign)
     : null;

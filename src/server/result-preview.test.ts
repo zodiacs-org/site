@@ -924,6 +924,12 @@ describe('a retrograde in one person’s chart', () => {
     expect(extra.status).toBe(303);
     expect(extra.headers.get('location')).toBe('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24');
     expect(await extra.text()).toBe('');
+    // A date that starts no published window is checked before the redirect, so it is not carried to the new address.
+    for (const query of ['p=mercury&s=1990-05-03&d=2026-10-24', 'p=venus&s=1990-05-03&sun=taurus', 'p=mars&s=2026-10-24']) {
+      const unpublished = await handleRetrogradeForYouLinkRequest(new Request(`https://zodiacs.org/share/retrograde-for-you/?${query}`));
+      expect(unpublished.status, query).toBe(303);
+      expect(unpublished.headers.get('location'), query).toBe('https://zodiacs.org/share/retrograde-for-you/');
+    }
     // A link that is not a share opens the plain page, which still leads to the retrogrades page.
     const plain = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/'))).text();
     expect(plain).toContain('content="https://zodiacs.org/assets/og/v2/tool/retrogrades.png"');
@@ -951,6 +957,12 @@ describe('a retrograde in one person’s chart', () => {
       [{ p: 'mercury', s: ['2026-10-24', '1990-05-03'] }, '/share/retrograde-for-you/'],
       [{ p: 'jupiter', s: '2026-10-24', d: '1990-05-03' }, '/share/retrograde-for-you/'],
       [{ birthDate: '1990-05-03' }, '/share/retrograde-for-you/'],
+      // A well-formed date that starts no published window of that planet is cleared with the rest, whether the link
+      // carries another key or is otherwise clean: no full date the sky data does not list reaches an address.
+      [{ p: 'mercury', s: '1990-05-03', d: '2026-10-24' }, '/share/retrograde-for-you/'],
+      [{ p: 'mercury', s: '1990-05-03', sun: 'taurus', fbclid: 'IwAR0' }, '/share/retrograde-for-you/'],
+      [{ p: 'mercury', s: '1990-05-03' }, '/share/retrograde-for-you/'],
+      [{ p: 'mars', s: '2026-10-24', ref: 'chatgpt' }, '/share/retrograde-for-you/'],
     ] as const)('sends %j to %s', async (query, location) => {
       const res = await deployed('retrograde-for-you-link', query as Record<string, string | string[]>);
       expect(res.statusCode).toBe(303);

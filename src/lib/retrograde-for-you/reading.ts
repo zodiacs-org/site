@@ -32,7 +32,7 @@ export const RETROGRADE_HUE_SIGN: Readonly<Record<RetrogradePlanet, string>> = {
 /** What each planet's retrograde is traditionally read as, in general. */
 export const RETROGRADE_LINE: Readonly<Record<RetrogradePlanet, string>> = {
   Mercury: 'Mercury retrograde is traditionally a time to review, revise and reconnect rather than launch: check the details, back up what matters, reread contracts before signing them, and leave room for delays in travel and messages.',
-  Venus: 'Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful. It is read as a good window to review finances and old ties, and a poor one for big purchases or a sudden change of look.',
+  Venus: 'Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful. It is read as a time to reflect on what you spend on and why, to look again at old ties, and to notice what still feels like you.',
   Mars: 'Mars retrograde traditionally slows drive and ambition: plans stall, tempers run shorter and old disputes come back. It asks you to rework a strategy rather than force it, and to take rest seriously when energy dips.',
 };
 

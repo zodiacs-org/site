@@ -2177,10 +2177,14 @@ export async function handleRetrogradeForYouLinkRequest(request: Request): Promi
   const url = new URL(request.url);
   // A key the share does not use, or a repeated one, is cleared from the address before the page opens: the page
   // has no script to do it, so the browser is sent to the share's own address (the retrograde alone, or the plain page).
-  const clean = retrogradeForYouCleanQuery(url.searchParams);
-  if (url.searchParams.toString() !== clean) return seeOther(`${url.origin}${RETROGRADE_FOR_YOU_SHARE_PATH}${clean ? `?${clean}` : ''}`);
-  const share = parseRetrogradeForYouShare(url.searchParams);
+  // The planet and the date are checked together against the published sky data before any address is built: a
+  // date that starts no published window of that planet (a birth date, say) is cleared too, never carried to the
+  // new address or left in the old one.
+  const kept = retrogradeForYouCleanQuery(url.searchParams);
+  const share = kept ? parseRetrogradeForYouShare(new URLSearchParams(kept)) : null;
   const model = share ? retrogradeForYouCardModel(share, (await loadShareData().catch(() => null))?.skyEvents ?? []) : null;
+  const clean = model ? kept : '';
+  if (url.searchParams.toString() !== clean) return seeOther(`${url.origin}${RETROGRADE_FOR_YOU_SHARE_PATH}${clean ? `?${clean}` : ''}`);
   if (!share || !model) return htmlResponse(sharePageHtml(defaultRetrogradeForYouPage(url.origin)));
   return htmlResponse(sharePageHtml({
     title: `${model.title}: retrogrades on Zodiacs`,

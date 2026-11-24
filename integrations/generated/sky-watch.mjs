@@ -42835,7 +42835,7 @@ function earliestToday(now = /* @__PURE__ */ new Date()) {
 var RETROGRADE_PLANETS = ["Mercury", "Venus", "Mars"];
 var RETROGRADE_LINE = {
   Mercury: "Mercury retrograde is traditionally a time to review, revise and reconnect rather than launch: check the details, back up what matters, reread contracts before signing them, and leave room for delays in travel and messages.",
-  Venus: "Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful. It is read as a good window to review finances and old ties, and a poor one for big purchases or a sudden change of look.",
+  Venus: "Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful. It is read as a time to reflect on what you spend on and why, to look again at old ties, and to notice what still feels like you.",
   Mars: "Mars retrograde traditionally slows drive and ambition: plans stall, tempers run shorter and old disputes come back. It asks you to rework a strategy rather than force it, and to take rest seriously when energy dips."
 };
 var RETROGRADE_ASK = {
@@ -43045,6 +43045,24 @@ function retrogradeTablePath(planet2, skyDate) {
   return skyDate ? `/retrogrades/#retrograde-${slug}-${skyDate}` : "/retrogrades/";
 }
 
+// src/lib/vedic-signs/clock.ts
+var SKIPPED_BIRTH_TIME = "That birth time never showed on the birthplace clock: the clocks jumped past it that day. Check the birth time.";
+var REPEATED_BIRTH_TIME = "The birthplace clock showed that birth time twice that day, when the clocks went back. This reading uses the first of the two.";
+var SkippedBirthTimeError = class extends RangeError {
+  constructor() {
+    super(SKIPPED_BIRTH_TIME);
+    this.name = "SkippedBirthTimeError";
+  }
+};
+function birthTimeOnClock(flags, timeKnown) {
+  if (!timeKnown) return { skipped: false, limit: null };
+  if (flags.includes("dst-gap")) return { skipped: true, limit: null };
+  return { skipped: false, limit: flags.includes("dst-fold") ? REPEATED_BIRTH_TIME : null };
+}
+function withClockLimit(reading, limit) {
+  return limit ? { ...reading, limits: [limit, ...reading.limits] } : reading;
+}
+
 // src/ai-tools/personal/shared.ts
 import { z as z15 } from "zod";
 var PERSONAL_MIN_YEAR = 1800;
@@ -43222,6 +43240,8 @@ function retrogradeLoops(planet2, now, rowsAt = positionsMemo()) {
 }
 async function retrogradeForMe(args, context) {
   const natal = await castNatal(args, context.localTime);
+  const onClock = birthTimeOnClock(natal.flags, natal.timeKnown);
+  if (onClock.skipped) throw new SkippedBirthTimeError();
   const clock2 = await currentClock(args.currentZone, args.zone, context);
   const now = context.now;
   const planets = RETROGRADE_PLANETS.filter((planet2) => !args.planets || args.planets.includes(planet2));
@@ -43255,14 +43275,14 @@ async function retrogradeForMe(args, context) {
     if (verdict !== "allowed") return { refused: verdict === "limited" ? "rate-limited" : "rate-limit-unavailable" };
   }
   const rowsAt = positionsMemo();
-  const reading = retrogradeReading({
+  const reading = withClockLimit(retrogradeReading({
     planets,
     now,
     zone: clock2.zone,
     basis,
     loopsFor: (planet2) => retrogradeLoops(planet2, now, rowsAt),
     leadingLimits: clock2.note ? [clock2.note] : []
-  });
+  }), onClock.limit);
   const sunSign = sunHeld ? SIGNS2[signIndexForLongitude2(natal.chart.bodies.find((row) => row.body === "Sun").lon)].slug : null;
   const pageOn = context.pageOn === true;
   const periods = reading.periods.map((period2) => {
